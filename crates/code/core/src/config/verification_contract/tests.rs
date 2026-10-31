@@ -2,7 +2,7 @@
 
 use super::*;
 use crate::config::{withhold_untrusted_host_authoritative_blocks, LayerAcl};
-use a3s_acl::Document;
+use aster_acl::Document;
 
 fn block(workspace: &Path, id: &str) -> Block {
     let mut block = Block {
@@ -27,7 +27,7 @@ fn block(workspace: &Path, id: &str) -> Block {
 }
 
 fn acl(blocks: Vec<Block>) -> String {
-    a3s_acl::generate_acl(&Document { blocks })
+    aster_acl::generate_acl(&Document { blocks })
 }
 
 #[test]

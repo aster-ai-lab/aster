@@ -1,7 +1,7 @@
 //! Bounded personal and project instruction discovery for workspace sessions.
 //!
 //! A session gets one immutable instruction chain at construction time. The
-//! chain starts with the personal `~/.a3s` document, then walks from the
+//! chain starts with the personal `~/.aster` document, then walks from the
 //! nearest Git root to the selected workspace. Later, more local documents
 //! therefore have the final word.
 
@@ -14,14 +14,14 @@ const DEFAULT_PROJECT_DOC_MAX_BYTES: usize = 32 * 1024;
 const MAX_PROJECT_DOC_MAX_BYTES: usize = 1024 * 1024;
 const MAX_PROJECT_INSTRUCTION_DEPTH: usize = 256;
 const PROJECT_DOC_SEPARATOR: &str = "\n\n--- instruction-doc ---\n\n";
-const PROJECT_DOC_SOURCES_METADATA: &str = "a3s.context.project_instruction_sources";
+const PROJECT_DOC_SOURCES_METADATA: &str = "aster.context.project_instruction_sources";
 
 pub(super) fn load_context_item(code_config: &CodeConfig, workspace: &Path) -> Option<ContextItem> {
     let loaded = load_project_instructions(code_config, workspace)?;
     let source = if loaded.sources.len() == 1 {
         format!("file://{}", loaded.sources[0].display())
     } else {
-        "a3s://workspace-instructions".to_string()
+        "aster://workspace-instructions".to_string()
     };
     let source_uris = loaded
         .sources
@@ -131,7 +131,7 @@ fn user_instruction_directory(code_config: &CodeConfig) -> Option<PathBuf> {
     let configured = code_config
         .user_instructions_dir
         .clone()
-        .or_else(|| dirs::home_dir().map(|home| home.join(".a3s")))?;
+        .or_else(|| dirs::home_dir().map(|home| home.join(".aster")))?;
     let metadata = std::fs::symlink_metadata(&configured).ok()?;
     if metadata.file_type().is_symlink() || !metadata.is_dir() {
         tracing::warn!(

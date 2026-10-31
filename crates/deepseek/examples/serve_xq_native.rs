@@ -1,5 +1,5 @@
 //! Explicit native Power composition. Both host inputs are private ACL files.
-use a3s_deepseek::{
+use aster_deepseek::{
     backend::NativeXqBackend,
     execution::XqPipelinePlan,
     hosting::{read_private_acl, FileLeaseAuth, NativeServingConfig},
@@ -12,7 +12,7 @@ use a3s_deepseek::{
         xq::{gguf::XQ_GGUF_BYTES, storage::XqWeights, XQ_GGUF_SHA256},
     },
 };
-use a3s_power::{
+use aster_power::{
     backend::Backend,
     config::PowerConfig,
     error::{PowerError, Result},
@@ -126,7 +126,7 @@ async fn main() -> Result<()> {
         WeightFileDescriptor {
             relative_path: hosting.tokenizer_file.clone(),
             bytes: hosting.tokenizer_bytes,
-            sha256: a3s_deepseek::tokenizer::OFFICIAL_TOKENIZER_SHA256.into(),
+            sha256: aster_deepseek::tokenizer::OFFICIAL_TOKENIZER_SHA256.into(),
         },
         &limits,
         16 * 1024 * 1024,

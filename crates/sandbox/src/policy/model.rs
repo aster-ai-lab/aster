@@ -178,8 +178,8 @@ impl Default for SandboxPolicy {
 }
 
 impl SandboxPolicy {
-    /// Strict A3S Bash baseline document: network deny-all, no mediation flags.
-    pub fn a3s_bash_baseline() -> Self {
+    /// Strict Aster Bash baseline document: network deny-all, no mediation flags.
+    pub fn aster_bash_baseline() -> Self {
         Self::default()
     }
 
@@ -414,12 +414,12 @@ mod tests {
 
     #[test]
     fn baseline_policy_validates() {
-        SandboxPolicy::a3s_bash_baseline().validate().unwrap();
+        SandboxPolicy::aster_bash_baseline().validate().unwrap();
     }
 
     #[test]
     fn rejects_wrong_version() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.version = 99;
         let error = policy.validate().unwrap_err().to_string();
         assert!(
@@ -430,7 +430,7 @@ mod tests {
 
     #[test]
     fn rejects_network_allow_without_mediation_flag() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.network.allow.push(NetworkAllowRule {
             host: "example.com".into(),
             port: Some(443),
@@ -442,7 +442,7 @@ mod tests {
 
     #[test]
     fn rejects_mediated_network_flag_without_allowlist() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_network = true;
         let error = policy.validate().unwrap_err().to_string();
         assert!(
@@ -453,7 +453,7 @@ mod tests {
 
     #[test]
     fn mediated_network_document_validates_shape_but_backend_fails_closed() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_network = true;
         policy.network.allow.push(NetworkAllowRule {
             host: "example.com".into(),
@@ -476,7 +476,7 @@ mod tests {
 
     #[test]
     fn rejects_dotdot_in_path_rules() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy
             .filesystem
             .allow_write
@@ -487,7 +487,7 @@ mod tests {
 
     #[test]
     fn rejects_recursive_glob() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy
             .filesystem
             .deny_read
@@ -498,7 +498,7 @@ mod tests {
 
     #[test]
     fn rejects_zero_timeout() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.resources.timeout_ms = 0;
         assert!(policy.validate().is_err());
     }

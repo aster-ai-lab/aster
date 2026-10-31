@@ -42,7 +42,7 @@ execFileSync(
     join(root, '.build/domain'),
     '--out-name',
     'scene',
-    join(wasmRoot, 'target/wasm32-unknown-unknown/release/a3s_digital_twin_wasm.wasm')
+    join(wasmRoot, 'target/wasm32-unknown-unknown/release/aster_digital_twin_wasm.wasm')
   ],
   { stdio: 'inherit' }
 )
@@ -64,9 +64,9 @@ const result = await Bun.build({
     {
       name: 'repository-ui',
       setup(build) {
-        build.onResolve({ filter: /^@a3s-lab\/ui\/components\// }, ({ path }) => ({
+        build.onResolve({ filter: /^@aster-lab\/ui\/components\// }, ({ path }) => ({
           path: Bun.resolveSync(
-            join(repository, 'packages/ui/src/components', path.slice('@a3s-lab/ui/components/'.length)),
+            join(repository, 'packages/ui/src/components', path.slice('@aster-ai-lab/ui/components/'.length)),
             repository
           )
         }))

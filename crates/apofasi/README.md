@@ -29,11 +29,11 @@ Default builds pull no ML framework. Neural inference is an opt-in feature.
 ## Use
 
 ```rust
-use a3s_apofasi::{Client, Criteria, DecisionKind, Question, State, SystemOneRequest};
+use aster_apofasi::{Client, Criteria, DecisionKind, Question, State, SystemOneRequest};
 use indexmap::IndexMap;
 use serde_json::json;
 
-fn main() -> a3s_apofasi::Result<()> {
+fn main() -> aster_apofasi::Result<()> {
     let mut opts = IndexMap::new();
     opts.insert("billing".into(), Some(json!("refunds")));
     opts.insert("other".into(), Some(json!("else")));
@@ -63,7 +63,7 @@ select the GPU path; `mlx` is the fast path and links a prebuilt
 
 ```bash
 cargo build --release
-cargo build --release --features cli,metal,mlx --bin a3s-apofasi
+cargo build --release --features cli,metal,mlx --bin aster-apofasi
 ```
 
 ## Versus Jev
@@ -143,11 +143,11 @@ See [`docs/publish-layout.md`](docs/publish-layout.md).
 
 | Item | Value |
 | --- | --- |
-| Package | `a3s-apofasi` |
+| Package | `aster-apofasi` |
 | Version | 0.1.1 |
-| Repository | [A3S-Lab/Apofasi](https://github.com/A3S-Lab/Apofasi) |
+| Repository | [aster-ai-lab/Apofasi](https://github.com/aster-ai-lab/Apofasi) |
 | License | MIT |
 
 ## License
 
-MIT © A3S Lab
+MIT © Aster

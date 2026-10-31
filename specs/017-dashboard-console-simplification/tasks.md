@@ -57,5 +57,5 @@
 - [ ] PR2–PR7 identity continuity and PR8 M1–M6/UAT evidence are retained before product completion
 - [ ] Keyboard, contrast, reduced-motion, supported reflow, locale and reference-viewport reviews pass
 - [ ] `cargo fmt --all -- --check` runs for any future Rust edit; N-A for dashboard-only slices
-- [ ] No new crates.io `a3s-*` dependency, native `<select>`, second design system, second authority or non-ACL product configuration
+- [ ] No new crates.io `aster-*` dependency, native `<select>`, second design system, second authority or non-ACL product configuration
 - [ ] No commit unless separately requested

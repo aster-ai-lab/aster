@@ -14,15 +14,15 @@ export function FieldHelp({ description, id, label }: FieldHelpProps) {
 
   if (!collapsible) {
     return (
-      <p className="a3s-form-help" id={id}>
+      <p className="aster-form-help" id={id}>
         {description}
       </p>
     );
   }
 
   return (
-    <div className="a3s-form-help-disclosure">
-      <p className="a3s-form-help" id={id} data-expanded={expanded || undefined}>
+    <div className="aster-form-help-disclosure">
+      <p className="aster-form-help" id={id} data-expanded={expanded || undefined}>
         {description}
       </p>
       <button

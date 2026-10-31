@@ -1,15 +1,15 @@
 [package]
 publish = false
-name = "a3s-oci-runtime"
+name = "aster-oci-runtime"
 version = "0.3.6"
 edition = "2021"
 license = "MIT"
-description = "Cross-platform host runtime for A3S OCI workloads"
+description = "Cross-platform host runtime for Aster OCI workloads"
 
 [dependencies]
-a3s-oci-agent-protocol = { path = "../agent-protocol" }
-a3s-oci-core = { path = "../core" }
-a3s-oci-sdk = { path = "../sdk" }
+aster-oci-agent-protocol = { path = "../agent-protocol" }
+aster-oci-core = { path = "../core" }
+aster-oci-sdk = { path = "../sdk" }
 base64.workspace = true
 cap-fs-ext.workspace = true
 cap-std.workspace = true
@@ -31,7 +31,7 @@ libc = "0.2"
 sha2 = { workspace = true, features = ["asm"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
-a3s-oci-agent = { path = "../agent" }
+aster-oci-agent = { path = "../agent" }
 
 [dev-dependencies]
 tempfile = "3.20"

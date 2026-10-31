@@ -37,7 +37,7 @@ impl ContextProvider for SandboxContextProvider {
                          Independently available file and lookup tools remain usable."
                     ),
                 )
-                .with_source("a3s://runtime/execution")
+                .with_source("aster://runtime/execution")
                 .with_provenance("host_sandbox")
                 .with_relevance(1.0)
                 .with_required(),

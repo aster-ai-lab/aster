@@ -5,7 +5,7 @@
 
 use std::sync::{atomic::AtomicBool, Arc};
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use tokio_util::sync::CancellationToken;
 
 use super::{

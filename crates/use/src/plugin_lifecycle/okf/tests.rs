@@ -1,12 +1,12 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use a3s_use_core::{
+use aster_use_core::{
     OkfKnowledgeObservation, OkfKnowledgeObservedState, OkfProjectionReceipt,
     OkfSelectedGeneration, UseError, UseResult, OKF_KNOWLEDGE_OBSERVATION_SCHEMA,
     OKF_PROJECTION_RECEIPT_SCHEMA,
 };
-use a3s_use_extension::ExtensionManifest;
+use aster_use_extension::ExtensionManifest;
 use async_trait::async_trait;
 use sha2::{Digest, Sha256};
 use tokio::sync::Mutex;
@@ -23,7 +23,7 @@ use crate::plugin_lifecycle::{
 use super::*;
 
 const MANIFEST: &str = include_str!(
-    "../../../extension//fixtures/packages/plugin-v3-okf/package/a3s-use-extension.acl"
+    "../../../extension//fixtures/packages/plugin-v3-okf/package/aster-use-extension.acl"
 );
 const PACKAGE_DIGEST: &str =
     include_str!("../../../extension//fixtures/packages/plugin-v3-okf/package.sha256");
@@ -135,7 +135,7 @@ async fn stages_promotes_hides_and_receipt_removes_the_real_okf_fixture() {
         .surfaces
         .iter()
         .find(|candidate| candidate.surface.id == surface.id)
-        .map(|candidate| a3s_use_core::PlanQualifiedSurfaceRef {
+        .map(|candidate| aster_use_core::PlanQualifiedSurfaceRef {
             package_id: intent.package_id.clone(),
             surface: candidate.surface.clone(),
         })
@@ -212,10 +212,10 @@ async fn real_sqlite_backend_runs_lifecycle_and_cited_retrieval_end_to_end() {
         .idempotency_key;
 
     host.prepare_okf(&intent, surface, key).await.unwrap();
-    let qualified = a3s_use_core::PlanQualifiedSurfaceRef {
+    let qualified = aster_use_core::PlanQualifiedSurfaceRef {
         package_id: intent.package_id.clone(),
-        surface: a3s_use_core::PluginSurfaceRef {
-            kind: a3s_use_core::PackageSurfaceKind::Okf,
+        surface: aster_use_core::PluginSurfaceRef {
+            kind: aster_use_core::PackageSurfaceKind::Okf,
             id: surface.id.clone(),
         },
     };
@@ -269,8 +269,8 @@ fn intent(manifest: &ExtensionManifest, action: PluginLifecycleAction) -> Plugin
         PluginLifecycleIntentSpec {
             operation_id: format!("okf-{}", action_name(action)),
             plan_digest: format!("sha256:{}", "1".repeat(64)),
-            scope: a3s_use_core::PlanScope {
-                kind: a3s_use_core::PlanScopeKind::Workspace,
+            scope: aster_use_core::PlanScope {
+                kind: aster_use_core::PlanScopeKind::Workspace,
                 id: "knowledge".to_string(),
             },
             package_id: manifest.package_id.clone(),
@@ -316,7 +316,7 @@ fn observation(
     let index_digest = format!("sha256:{:064x}", receipt.generation);
     let selected = selected
         .map(|selected| {
-            Ok::<_, a3s_use_core::UseError>(OkfSelectedGeneration {
+            Ok::<_, aster_use_core::UseError>(OkfSelectedGeneration {
                 generation: selected.generation,
                 package_digest: selected.package_digest.clone(),
                 bundle_digest: selected.bundle.content_digest.clone(),

@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{Any, Array, ArrayRef, Map, MapRef, Out, Transact};
 
 use super::super::{
@@ -252,7 +252,7 @@ fn pdf_text_span_conflict(
     expected_index_utf16: u32,
     message: &str,
     suggestion: &str,
-) -> a3s_use_core::UseError {
+) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_match_conflict", message)
         .with_suggestion(suggestion)
         .with_detail("expectedIndexUtf16", u64::from(expected_index_utf16))
@@ -601,6 +601,6 @@ fn is_ecmascript_trim_character(character: char) -> bool {
     )
 }
 
-pub(super) fn invalid_shared_pdf(message: impl Into<String>) -> a3s_use_core::UseError {
+pub(super) fn invalid_shared_pdf(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.content_invalid", message)
 }

@@ -1,6 +1,6 @@
 //! WC-BG1: background execution as a Run-owned governed effect.
 //!
-//! Design contract (docs/a3s-code-world-class-gap-roadmap.md, `WC-BG1`):
+//! Design contract (docs/aster-world-class-gap-roadmap.md, `WC-BG1`):
 //! a model-facing tool starts a process in the background and its output
 //! lines arrive as `background.output` facts through the normal ingest path
 //! — the session's one fact log, appended via the Run's shared `FileLog`
@@ -20,7 +20,7 @@ use std::collections::{HashMap, VecDeque};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_effect::{background_output_fact, FileLog, LogStore};
+use aster_effect::{background_output_fact, FileLog, LogStore};
 use async_trait::async_trait;
 
 use crate::tools::types::{Tool, ToolContext, ToolErrorKind, ToolOutput};
@@ -293,7 +293,7 @@ impl BackgroundTask {
             .clone()
     }
 
-    fn append(&self, mut fact: a3s_effect::NewFact) {
+    fn append(&self, mut fact: aster_effect::NewFact) {
         // Names may be reused by later Runs on the same session log. The
         // immutable task identity, rather than its display name, owns keys.
         fact.key = format!(
@@ -1021,7 +1021,7 @@ async fn execute_background(
     let observed = span.finish_observed(&ctx).await;
     let effects = crate::porcelain::observe_path_effects(ctx.workspace.as_path(), observed.clone());
     let observation_incomplete = observed.incomplete
-        || (effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
+        || (effects.completeness == aster_effect::ToolObservationCompleteness::Incomplete
             && !effects.budget_exceeded)
         || effects.validate().is_err();
     let paths = observed.paths;

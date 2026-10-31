@@ -61,7 +61,7 @@ jobs:
       - name: Build the shipped Gateway release profile
         run: |
           bash scripts/run-cargo-annotated.sh cargo build --locked --release \
-            --bin a3s-gateway \
+            --bin aster-gateway \
             --example protocol_benchmark_upstream \
             --example protocol_benchmark_load \
             --example ai_benchmark_upstream \
@@ -88,22 +88,22 @@ jobs:
           python3 -m json.tool website/assets/performance-comparison.json >/dev/null
           python3 website/scripts/check_site.py
           echo '## Same-host multi-protocol comparison' >> "$GITHUB_STEP_SUMMARY"
-          echo '| Traffic | A3S ops/s | NGINX ops/s | A3S/NGINX | P99 ratio | Alignment |' >> "$GITHUB_STEP_SUMMARY"
+          echo '| Traffic | Aster ops/s | NGINX ops/s | Aster/NGINX | P99 ratio | Alignment |' >> "$GITHUB_STEP_SUMMARY"
           echo '| --- | ---: | ---: | ---: | ---: | --- |' >> "$GITHUB_STEP_SUMMARY"
           python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
           import json
 
           data = json.load(open("website/assets/performance-comparison.json"))
           for profile in data["profiles"].values():
-              a3s = profile["proxies"]["a3s-gateway"]["median"]
+              aster = profile["proxies"]["aster-gateway"]["median"]
               nginx = profile["proxies"]["nginx"]["median"]
               ratios = profile["comparison"]
               print(
                   f'| {profile["label"]} '
-                  f'| {a3s["operations_per_second"]:,.0f} '
+                  f'| {aster["operations_per_second"]:,.0f} '
                   f'| {nginx["operations_per_second"]:,.0f} '
-                  f'| {ratios["a3s_to_nginx_throughput_ratio"]:.3f}× '
-                  f'| {ratios["a3s_to_nginx_p99_latency_ratio"]:.3f}× '
+                  f'| {ratios["aster_to_nginx_throughput_ratio"]:.3f}× '
+                  f'| {ratios["aster_to_nginx_p99_latency_ratio"]:.3f}× '
                   f'| {profile["capability_alignment"]} |'
               )
           PY
@@ -124,23 +124,23 @@ jobs:
           python3 -m json.tool website/assets/ai-gateway-comparison.json >/dev/null
           python3 website/scripts/check_site.py
           echo '## AI token-streaming comparison' >> "$GITHUB_STEP_SUMMARY"
-          echo '| Profile | A3S TTFT P50 | NGINX TTFT P50 | TTFT ratio | ITL P99 ratio | Token goodput ratio |' >> "$GITHUB_STEP_SUMMARY"
+          echo '| Profile | Aster TTFT P50 | NGINX TTFT P50 | TTFT ratio | ITL P99 ratio | Token goodput ratio |' >> "$GITHUB_STEP_SUMMARY"
           echo '| --- | ---: | ---: | ---: | ---: | ---: |' >> "$GITHUB_STEP_SUMMARY"
           python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
           import json
 
           data = json.load(open("website/assets/ai-gateway-comparison.json"))
           for profile in data["profiles"].values():
-              a3s = profile["products"]["a3s-gateway"]["median"]
+              aster = profile["products"]["aster-gateway"]["median"]
               nginx = profile["products"]["nginx"]["median"]
               ratios = profile["comparison"]
               print(
                   f'| {profile["label"]} '
-                  f'| {a3s["ttft"]["p50_us"] / 1000:,.2f} ms '
+                  f'| {aster["ttft"]["p50_us"] / 1000:,.2f} ms '
                   f'| {nginx["ttft"]["p50_us"] / 1000:,.2f} ms '
-                  f'| {ratios["a3s_to_nginx_ttft_p50_ratio"]:.3f}x '
-                  f'| {ratios["a3s_to_nginx_inter_token_latency_p99_ratio"]:.3f}x '
-                  f'| {ratios["a3s_to_nginx_token_goodput_ratio"]:.3f}x |'
+                  f'| {ratios["aster_to_nginx_ttft_p50_ratio"]:.3f}x '
+                  f'| {ratios["aster_to_nginx_inter_token_latency_p99_ratio"]:.3f}x '
+                  f'| {ratios["aster_to_nginx_token_goodput_ratio"]:.3f}x |'
               )
           PY
 

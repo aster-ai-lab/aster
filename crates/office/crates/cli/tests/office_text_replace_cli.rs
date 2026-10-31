@@ -6,13 +6,13 @@ use std::time::Duration;
 use tokio::io::{AsyncReadExt, AsyncWriteExt, BufReader};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(provider: &Path, args: &[&str]) -> Output {
     Command::new(binary())
         .args(args)
-        .env("A3S_OFFICECLI_EXECUTABLE", provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", provider)
         .output()
         .unwrap()
 }
@@ -171,7 +171,7 @@ fn native_cli_replaces_bounded_text_in_all_formats_without_officecli() {
             "--find",
             "Alpha",
             "--replace",
-            "A3S",
+            "Aster",
             "--json",
         ],
     );
@@ -186,7 +186,7 @@ fn native_cli_replaces_bounded_text_in_all_formats_without_officecli() {
                 "--json",
             ],
         )["data"]["node"]["text"],
-        "A3S roadmap"
+        "Aster roadmap"
     );
     assert!(!provider.exists());
 }
@@ -321,7 +321,7 @@ async fn native_standard_mcp_applies_and_persists_typed_text_replacement() {
     let document = temp.path().join("mcp-replace.docx");
     let mut child = tokio::process::Command::new(binary())
         .args(["mcp"])
-        .env("A3S_OFFICECLI_EXECUTABLE", &provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", &provider)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())

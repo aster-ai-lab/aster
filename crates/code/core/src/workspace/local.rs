@@ -17,9 +17,9 @@ use super::{
     WorkspaceGitRemoveWorktreeRequest, WorkspaceGitStash, WorkspaceGitStashProvider,
     WorkspaceGitStashRequest, WorkspaceGitStatus, WorkspaceGitWorktree,
     WorkspaceGitWorktreeMutation, WorkspaceGitWorktreeProvider, WorkspaceGlobRequest,
-    WorkspaceGlobResult, WorkspaceGrepOutcome, WorkspaceGrepRequest, WorkspaceGrepResult,
-    WorkspacePath, WorkspacePathResolver, WorkspaceResult, WorkspaceSearch, WorkspaceTextRange,
-    WorkspaceTextReader, WorkspaceWriteOutcome,
+    WorkspaceGlobResult, WorkspaceGrepMatch, WorkspaceGrepOutcome, WorkspaceGrepRequest,
+    WorkspaceGrepResult, WorkspacePath, WorkspacePathResolver, WorkspaceResult, WorkspaceSearch,
+    WorkspaceTextRange, WorkspaceTextReader, WorkspaceWriteOutcome,
 };
 use crate::sandbox::native::hard_link_count_for_open_file;
 use anyhow::{anyhow, bail, Result};
@@ -119,7 +119,7 @@ impl LocalWorkspaceBackend {
     }
 
     fn local_path_for_read(&self, path: &WorkspacePath) -> Result<PathBuf> {
-        a3s_common::tools::resolve_path(&self.root, path.as_str()).map_err(|e| anyhow!("{}", e))
+        aster_common::tools::resolve_path(&self.root, path.as_str()).map_err(|e| anyhow!("{}", e))
     }
 
     fn local_path_for_write(&self, path: &WorkspacePath) -> Result<PathBuf> {
@@ -142,7 +142,7 @@ impl LocalWorkspaceBackend {
             })?;
         }
 
-        a3s_common::tools::resolve_path_for_write(&self.root, path.as_str())
+        aster_common::tools::resolve_path_for_write(&self.root, path.as_str())
             .map_err(|e| anyhow!("{}", e))
     }
 
@@ -1362,7 +1362,7 @@ fn ensure_range_within_bound(path: &WorkspacePath, consumed: usize) -> Result<()
 
 /// True when a search skipped `path` for its size, not for being unreadable.
 fn search_file_is_oversize_at(root: &Path, path: &WorkspacePath) -> bool {
-    a3s_common::tools::resolve_path(root, path.as_str())
+    aster_common::tools::resolve_path(root, path.as_str())
         .ok()
         .and_then(|resolved| std::fs::metadata(resolved).ok())
         .is_some_and(|metadata| metadata.is_file() && metadata.len() > MAX_TEXT_FILE_BYTES)
@@ -1373,7 +1373,7 @@ fn read_search_file_at(
     boundary: Option<&LocalWorkspaceAccessBoundary>,
     path: &WorkspacePath,
 ) -> Option<String> {
-    let resolved = a3s_common::tools::resolve_path(root, path.as_str()).ok()?;
+    let resolved = aster_common::tools::resolve_path(root, path.as_str()).ok()?;
     // FIFO/device liveness gate: opening a writer-less FIFO blocks the
     // walk thread, so the regular-file check runs before the open
     // (metadata follows symlinks; the open-file re-check below stays
@@ -1452,6 +1452,7 @@ fn grep_walk(
     let mut file_count = 0;
     let mut total_size = 0;
     let mut matched_paths = Vec::new();
+    let mut matches = Vec::new();
     let mut skipped_oversize = Vec::new();
     let metadata_only = request.max_output_size == 0;
 
@@ -1499,6 +1500,7 @@ fn grep_walk(
                         file_count,
                         truncated: true,
                     },
+                    matches: Some(matches),
                     matched_paths: Some(matched_paths),
                     skipped_oversize,
                 });
@@ -1513,6 +1515,7 @@ fn grep_walk(
                 continue;
             }
 
+            let output_start = output.len();
             let start = match_idx.saturating_sub(request.context_lines);
             let end = (match_idx + request.context_lines + 1).min(lines.len());
 
@@ -1528,6 +1531,10 @@ fn grep_walk(
                 output.push_str("--\n");
                 total_size += 3;
             }
+            matches.push(WorkspaceGrepMatch {
+                path: workspace_path.clone(),
+                output_range: output_start..output.len(),
+            });
         }
     }
 
@@ -1538,6 +1545,7 @@ fn grep_walk(
             file_count,
             truncated: false,
         },
+        matches: Some(matches),
         matched_paths: Some(matched_paths),
         skipped_oversize,
     })

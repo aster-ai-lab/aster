@@ -1,6 +1,6 @@
 use std::path::{Component, Path, PathBuf};
 
-use a3s_use_core::{
+use aster_use_core::{
     inspect_okf_bundle_files, ExecutablePlanningSurface, McpReleaseDescriptor, OkfBundleFile,
     PlanningSurfaceActivation, PluginPlanningBundle, ToolReleaseDescriptor,
     ToolWorkloadContract as ToolReleaseWorkload, UseError, UseResult, MAX_RELEASE_DESCRIPTOR_BYTES,
@@ -21,7 +21,7 @@ const MAX_UI_ROOT_FILE_BYTES: u64 = 8 * 1024 * 1024;
 const MAX_TOOL_API_CONTRACT_BYTES: u64 = 4 * 1024 * 1024;
 const MAX_FLOW_SOURCE_BYTES: u64 = 4 * 1024 * 1024;
 const MAX_SKILL_BYTES: u64 = 2 * 1024 * 1024;
-const SURFACE_FILE_EVIDENCE_SCHEMA: &[u8] = b"a3s.use.plugin-surface-files.v1\0";
+const SURFACE_FILE_EVIDENCE_SCHEMA: &[u8] = b"aster.use.plugin-surface-files.v1\0";
 
 #[cfg(test)]
 mod planning_binding_tests;
@@ -119,7 +119,7 @@ pub(super) async fn validate_named_surface_files(
     for flow in &manifest.flows {
         validate_text_asset(
             "use.extension.flow_source_invalid",
-            "A3S Flow source",
+            "Aster Flow source",
             "UTF-8 TypeScript",
             canonical_root,
             &package_root.join(&flow.source),
@@ -364,7 +364,7 @@ pub async fn load_okf_bundle_files(
     let metadata = fs::symlink_metadata(package_root)
         .await
         .map_err(|error| io_error("inspect OKF package root", package_root, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(okf_package_error(format!(
             "OKF package root '{}' must be a real directory.",
             package_root.display()
@@ -577,10 +577,10 @@ pub async fn inspect_skill_surface_file(
     digest_surface_files(package_root, &canonical_root, vec![surface.path.clone()]).await
 }
 
-/// Revalidate and digest one immutable A3S Flow TypeScript source.
+/// Revalidate and digest one immutable Aster Flow TypeScript source.
 ///
 /// This verifies package evidence only. Compilation, preflight, and execution
-/// remain owned by a typed `a3s-flow` host adapter.
+/// remain owned by a typed `aster-flow` host adapter.
 pub async fn inspect_flow_surface_file(
     surface: &super::PluginFlowSurface,
     package_root: &Path,
@@ -588,7 +588,7 @@ pub async fn inspect_flow_surface_file(
     let canonical_root = canonical_package_root(package_root, "Flow").await?;
     validate_text_asset(
         "use.extension.flow_source_invalid",
-        "A3S Flow source",
+        "Aster Flow source",
         "UTF-8 TypeScript",
         &canonical_root,
         &package_root.join(&surface.source),
@@ -696,7 +696,7 @@ async fn list_ui_root(
     let metadata = fs::symlink_metadata(&root_path)
         .await
         .map_err(|error| io_error("inspect UI root", &root_path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(UseError::new(
             "use.extension.ui_asset_invalid",
             format!("UI root '{}' must be a real directory.", root.display()),
@@ -727,7 +727,7 @@ async fn list_ui_root(
             let metadata = fs::symlink_metadata(&path)
                 .await
                 .map_err(|error| io_error("inspect UI asset", &path, error))?;
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) {
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata) {
                 return Err(UseError::new(
                     "use.extension.ui_asset_invalid",
                     format!("UI asset '{}' must not be a link.", path.display()),
@@ -879,7 +879,7 @@ async fn canonical_package_root(package_root: &Path, label: &str) -> UseResult<P
             error,
         )
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(UseError::new(
             "use.extension.surface_invalid",
             format!(
@@ -993,7 +993,7 @@ async fn validate_okf_bundle(
     let metadata = fs::symlink_metadata(&root)
         .await
         .map_err(|error| io_error("inspect OKF bundle root", &root, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(okf_package_error(format!(
             "OKF bundle root '{}' must be a real package directory.",
             root.display()
@@ -1031,7 +1031,7 @@ async fn validate_okf_bundle(
             let metadata = fs::symlink_metadata(&path)
                 .await
                 .map_err(|error| io_error("inspect OKF bundle entry", &path, error))?;
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) {
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata) {
                 return Err(okf_package_error(format!(
                     "OKF bundle entry '{}' cannot be a link or reparse point.",
                     path.display()

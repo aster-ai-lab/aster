@@ -9,7 +9,7 @@ commit identities and measurements are not current Aster release evidence.
 For the current root-workspace procedure and optional-semantic hybrid contract,
 see [WORKSPACE_RETRIEVAL_OPERATIONS.md](WORKSPACE_RETRIEVAL_OPERATIONS.md).
 
-Status: Passed and delivered on 2026-08-14. A3S CLI `main` commit `53821c8`
+Status: Passed and delivered on 2026-08-14. Aster CLI `main` commit `53821c8`
 pins the qualified Code and Memory revisions, and the post-pin release build
 and DeepSeek CLI integration rerun passed. A later paired Core evaluation also
 passed with real DeepSeek chat, explicit retrieval enable/disable control,
@@ -27,7 +27,7 @@ Code `5aa9642` repeated the public three-SDK matrix and Core adversarial suite
 from the published `v7.0.1` checkout on 2026-08-17; every gate passed.
 
 This report qualifies the first session-bound Workspace Retrieval (`WSR`)
-release across A3S Memory, A3S Code, and the A3S CLI host. The release uses an
+release across Aster Memory, Aster Code, and the Aster CLI host. The release uses an
 exact, memory-resident vector index and does not require a vector database or
 persist vectors in session snapshots.
 
@@ -84,7 +84,7 @@ also avoids reopening a mutable path to obtain link-count evidence.
 
 ## Independent oracles
 
-- A3S Memory exact-search tests calculate expected top-k results with a
+- Aster Memory exact-search tests calculate expected top-k results with a
   separately implemented brute-force `f64` oracle across randomized corpora,
   mutations, filters, and ties.
 - The nine-query Code fixture stores relevance labels separately from returned
@@ -107,7 +107,7 @@ also avoids reopening a mutable path to obtain link-count evidence.
 The locked fixture contains nine queries spanning exact terms, identifiers,
 CJK, and paraphrases.
 
-| Metric | a3s-vec FTS/BM25 | Hybrid | Gate |
+| Metric | aster-vec FTS/BM25 | Hybrid | Gate |
 | --- | ---: | ---: | --- |
 | Recall@10 | 0.6667 | 1.0000 | Hybrid at least 0.85 and at least +0.15 |
 | Mean reciprocal rank | 0.6667 | 1.0000 | Improve without identifier regression |
@@ -117,7 +117,7 @@ CJK, and paraphrases.
 
 The gate is implemented by
 `locked_hybrid_fixture_meets_quality_and_identifier_gates`; it exercises the
-real catalog, a3s-vec FTS/BM25, semantic partition, RRF, diversity, and current-file
+real catalog, aster-vec FTS/BM25, semantic partition, RRF, diversity, and current-file
 verification paths.
 
 ## Performance results
@@ -126,7 +126,7 @@ Reference profile: Intel64 Family 6 Model 143, 20 logical CPUs, Windows
 x86_64, release build, 25,000 normalized 384-dimensional records, top-20, 20
 warmup queries, and 100 measured queries. Provider network latency is excluded.
 The hybrid measurement includes authoritative source reads from the warm OS
-cache. A3S Memory is compiled with package-local `opt-level = 3`; the rest of
+cache. Aster Memory is compiled with package-local `opt-level = 3`; the rest of
 the size-oriented release profile is unchanged.
 
 | Run | Exact p50 | Exact p95 | Exact max | Hybrid p50 | Hybrid p95 | Hybrid max |
@@ -147,7 +147,7 @@ ephemeral index.
 The permanent benchmark is:
 
 ```bash
-cargo run --release -p a3s-code-core --example workspace_retrieval_benchmark
+cargo run --release -p aster-core --example workspace_retrieval_benchmark
 ```
 
 It emits machine-readable JSON and exits non-zero when a latency, candidate,
@@ -184,7 +184,7 @@ against an independent embedding-server request count for each 39-chunk session.
 
 ### Native lexical qualification
 
-The 2026-09-04 schema-v5 backend run uses the official a3s-vec FTS adapter for
+The 2026-09-04 schema-v5 backend run uses the official aster-vec FTS adapter for
 the catalog and query-time lexical paths. The locked exact, identifier, and CJK
 fixture passes; portable minimal builds pass the same result contract. Native
 collections are flushed and closed before publication. Up to four hot
@@ -205,7 +205,7 @@ requests met the lower-bound and cleanup gates, with zero lexical or rerank
 fallbacks. These figures qualify the schema-v5 workload on the recorded
 machine; they do not replace the locked Windows reference budgets above.
 
-Semantic retrieval is backed only by the A3S Memory exact index. One validated
+Semantic retrieval is backed only by the Aster Memory exact index. One validated
 provider response creates one Memory partition; no duplicate semantic index or
 authority comparison is performed. A native lexical failure is surfaced as a
 bounded lexical degradation and leaves exact, semantic, and source-verification
@@ -241,7 +241,7 @@ stayed within budget, not that deterministic reranking accelerates retrieval.
 ### Real DeepSeek adversarial rerank slice
 
 An ignored, reproducible Core integration test loaded
-`deepseek/deepseek-v4-pro` through the repository `.a3s/config.acl` and ran
+`deepseek/deepseek-v4-pro` through the repository `.aster/config.acl` and ran
 three paired tasks against eight cross-channel collision files per task. The
 embedding oracle remained deterministic and process-local. The RRF-only arm
 had 0/3 exact completions, 0.0 Recall@5, 0.0 MRR, and 15/15 collision results.
@@ -279,7 +279,7 @@ RRF-only remains the compatibility default.
 
 ## Deterministic test evidence
 
-### A3S Memory
+### Aster Memory
 
 - Default suite: 105 tests passed.
 - `sqlite` feature suite: 124 tests passed.
@@ -289,10 +289,10 @@ RRF-only remains the compatibility default.
 - The Windows `cargo test --all-features` failure at `no such module: vec0`
   reproduces on clean Memory `main`; WSR neither enables nor uses `sqlite-vec`.
 
-A3S Memory `main` commit `3293f572` contains the exact-scan hot-path changes and
+Aster Memory `main` commit `3293f572` contains the exact-scan hot-path changes and
 the permanent `vector_search_benchmark` example.
 
-### A3S Code
+### Aster Code
 
 Code `main` commit `cf41f09` contains the source-egress path policy,
 same-open-handle hard-link enforcement, and catalog/tool access separation.
@@ -320,7 +320,7 @@ clean pre-WSR Code baseline and are tracked as unrelated release-contract
 fixtures. High-parallelism Windows runs additionally exhibit scheduling
 timeouts; the serial library result is the deterministic gate.
 
-### A3S CLI host
+### Aster CLI host
 
 The host qualification covers default-off ACL parsing, the separate
 OpenAI-compatible embedding route, trusted-layer egress authorization,
@@ -332,7 +332,7 @@ and strict Clippy compiled. The complete Windows suite had the same 23
 pre-existing failures and 10 ignored tests as clean CLI baseline `f4377c2`,
 with no WSR regression.
 
-A3S CLI `main` commit `53821c8` pins Code `47770057` and Memory `3293f572`,
+Aster CLI `main` commit `53821c8` pins Code `47770057` and Memory `3293f572`,
 applies the Memory package-local release optimization, and passed the final
 post-pin retrieval filter (19/19), formatting, all-target Clippy, and release
 build gates.
@@ -350,12 +350,12 @@ DeepSeek rerun with matching Core and independent provider counters.
 
 ## Real DeepSeek integration
 
-The repository `.a3s/config.acl` was validated and inspected without printing
+The repository `.aster/config.acl` was validated and inspected without printing
 provider URLs, headers, environment-variable names, or secret values. It
 contained one provider, two models, default model
 `deepseek/deepseek-v4-pro`, retrieval disabled, and no source-egress grant.
 
-The final release `a3s 0.11.1` build then ran in JSONL/read-only mode against
+The final release `aster 0.11.1` build then ran in JSONL/read-only mode against
 an isolated workspace. DeepSeek selected and completed exactly one governed
 `Read` tool call, executed no other tool, and returned the exact marker
 `WSR_FINAL_CODE_47770057_MEMORY_3293F572`. The run produced 79 events, one
@@ -416,7 +416,7 @@ same digest
 injects the same deterministic eight-dimensional embedding oracle, selects
 recursive 512/64 chunking and the typed deterministic reranker, and loads the
 real `deepseek/deepseek-v4-pro` chat route from the repository
-`.a3s/config.acl`. DeepSeek is evaluated for schema inspection, exact tool
+`.aster/config.acl`. DeepSeek is evaluated for schema inspection, exact tool
 selection, evidence use, and completion; it is not the ranking oracle.
 
 | Quality metric | Node.js | Python | Go |
@@ -523,7 +523,7 @@ and SLO thresholds are in [`sdk/evaluation/README.md`](../sdk/evaluation/README.
 The bounded local churn gate then replaced one source file 64 times. Every
 published generation retained exactly one vector record and returned only the
 latest marker; close released all records and bytes. Code
-[CI #249](https://github.com/A3S-Lab/Code/actions/runs/31862118069) passes the
+[CI #249](https://github.com/aster-ai-lab/Code/actions/runs/31862118069) passes the
 same ignored test on Ubuntu, macOS, and Windows. Operational state handling and
 configuration-only rollback are defined in the
 [Workspace Retrieval Operations runbook](WORKSPACE_RETRIEVAL_OPERATIONS.md).
@@ -541,15 +541,15 @@ Recall@5 1.0, MRR 0.3444, nDCG@5 0.5059, 1.0x document-request amplification,
 and zero non-text inputs. The Windows provider gate records 7,045/19 ms cold/
 warm calls, 0 ms cancellation, 267 ms recovery, and a 1,018,519,552-byte peak-
 RSS increase below 1 GiB. Native
-[CLI CI #31917686424](https://github.com/A3S-Lab/CLI/actions/runs/31917686424)
+[CLI CI #31917686424](https://github.com/aster-ai-lab/CLI/actions/runs/31917686424)
 passes offline admission, inference, cancellation, recovery, and RSS on Linux
 x64/ARM64, Windows x64, and macOS ARM64, plus artifact substitution, simulated
 unsupported CPU, and cancellation-storm adversaries. RRF-only remains default.
 
-## A3S Test coverage boundary
+## Aster Test coverage boundary
 
-`a3s-test capabilities --json` and `a3s-test agent schema` were run from the
-checked-out A3S Test implementation. The Web driver reported
+`aster-test capabilities --json` and `aster-test agent schema` were run from the
+checked-out Aster Test implementation. The Web driver reported
 `test.driver.web.capability_unavailable` because the browser command is not
 installed in this environment. Therefore no browser screenshot is claimed.
 The real DeepSeek evidence covers the CLI read workflow, the Core Search tool

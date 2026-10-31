@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{Any, Out, ReadTxn, Xml, XmlElementRef, XmlOut};
 
 use super::super::super::collaboration_error;
@@ -138,7 +138,7 @@ fn next_document_paragraph_id(value: &str) -> String {
     format!("{next:08X}")
 }
 
-fn invalid_shared_identity(name: &str) -> a3s_use_core::UseError {
+fn invalid_shared_identity(name: &str) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.content_invalid",
         format!("The shared Document Word identity attribute '{name}' is invalid."),

@@ -1,0 +1,49 @@
+extension "aster/g1-arm" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "g1-arm"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  skill "g1-arm" {
+    path          = "skills/g1-arm/SKILL.md"
+    requires_tool = []
+    requires_mcp  = []
+    optional      = false
+  }
+
+  agent "g1-arm" {
+    harness        = "package"
+    runtime        = "edge"
+    entry          = "agent/run.mjs"
+    instructions   = "agents/g1-arm/INSTRUCTIONS.md"
+    requires_skill = ["g1-arm"]
+    optional       = false
+
+    resources {
+      cpu_millis   = 500
+      memory_bytes = 268435456
+    }
+  }
+
+  ui "workbench" {
+    title            = "宇树 G1 人形机器人"
+    description      = "Unitree G1 右臂 + 平行夹爪 MuJoCo WASM 仿真实验台：搬运入盘、方块堆叠、越障搬运。每个决策点由本包 edge agent 经 aster 网关选择，agent 不可用时由规则控制器选择并标明。"
+    icon             = "bot"
+    entry            = "ui/workbench/index.html"
+    root             = "ui/workbench"
+    styles           = ["ui/workbench/app.css"]
+    scripts          = ["ui/workbench/app.js"]
+    skill            = "g1-arm"
+    presentation     = "webview"
+    point            = "studio.applets"
+    contract_version = 1
+    mode             = "append"
+    optional         = false
+  }
+}

@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{semantic_error, DocumentNode, OfficeNodeType};
 
@@ -751,7 +751,7 @@ fn word_boundary(expression: &str, index: usize) -> bool {
             .is_some_and(char::is_whitespace)
 }
 
-fn selector_error(message: impl Into<String>) -> a3s_use_core::UseError {
+fn selector_error(message: impl Into<String>) -> aster_use_core::UseError {
     semantic_error("use.office.selector_invalid", message)
 }
 

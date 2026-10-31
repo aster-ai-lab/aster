@@ -3,7 +3,7 @@ use std::io::{self, Read};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_sdk::{Error as RuntimeError, ErrorCode, Generation, OutputStream};
+use aster_oci_sdk::{Error as RuntimeError, ErrorCode, Generation, OutputStream};
 use async_trait::async_trait;
 use tokio::io::{unix::AsyncFd, Interest};
 use tokio::sync::mpsc;
@@ -23,8 +23,8 @@ use output::{validate_output_chunk, validate_output_stream_state};
 
 const FIFO_BUFFER_BYTES: usize = 64 * 1024;
 const OUTPUT_READ_BYTES: u32 = 64 * 1024;
-const _: () = assert!(FIFO_BUFFER_BYTES <= a3s_oci_sdk::MAX_STDIN_WRITE_BYTES);
-const _: () = assert!(OUTPUT_READ_BYTES <= a3s_oci_sdk::MAX_OUTPUT_READ_BYTES);
+const _: () = assert!(FIFO_BUFFER_BYTES <= aster_oci_sdk::MAX_STDIN_WRITE_BYTES);
+const _: () = assert!(OUTPUT_READ_BYTES <= aster_oci_sdk::MAX_OUTPUT_READ_BYTES);
 const OUTPUT_WAIT_MILLIS: u64 = 250;
 const PUMP_REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
 const PUMP_STOP_TIMEOUT: Duration = Duration::from_secs(2);
@@ -89,7 +89,7 @@ struct StdinCloseRequest<'a> {
     task: &'a TaskIdentity,
     generation: Generation,
     exec_id: Option<&'a ExecIdentity>,
-    target: &'a a3s_oci_sdk::ProcessTarget,
+    target: &'a aster_oci_sdk::ProcessTarget,
     journal: Option<&'a dyn StdinJournal>,
 }
 
@@ -98,7 +98,7 @@ struct RestoredStdinClose {
     task: TaskIdentity,
     generation: Generation,
     exec_id: Option<ExecIdentity>,
-    target: a3s_oci_sdk::ProcessTarget,
+    target: aster_oci_sdk::ProcessTarget,
     journal: Option<Arc<dyn StdinJournal>>,
 }
 
@@ -450,7 +450,7 @@ async fn pump_stdin(
     task: TaskIdentity,
     generation: Generation,
     exec_id: Option<ExecIdentity>,
-    target: a3s_oci_sdk::ProcessTarget,
+    target: aster_oci_sdk::ProcessTarget,
     fifo: AsyncFd<File>,
     mut cancelled: watch::Receiver<bool>,
     mut drain_requested: watch::Receiver<bool>,
@@ -693,7 +693,7 @@ async fn write_stdin_chunk(
     task: &TaskIdentity,
     generation: Generation,
     exec_id: Option<&ExecIdentity>,
-    target: &a3s_oci_sdk::ProcessTarget,
+    target: &aster_oci_sdk::ProcessTarget,
     sequence: &mut u64,
     data: &[u8],
     stdin_journal: Option<&dyn StdinJournal>,
@@ -729,7 +729,7 @@ async fn replay_stdin_write(
     task: &TaskIdentity,
     generation: Generation,
     exec_id: Option<&ExecIdentity>,
-    target: &a3s_oci_sdk::ProcessTarget,
+    target: &aster_oci_sdk::ProcessTarget,
     sequence: &mut u64,
     pending: &PendingStdinWrite,
     stdin_journal: Option<&dyn StdinJournal>,
@@ -776,7 +776,7 @@ async fn dispatch_stdin_write(
     task: &TaskIdentity,
     generation: Generation,
     exec_id: Option<&ExecIdentity>,
-    target: &a3s_oci_sdk::ProcessTarget,
+    target: &aster_oci_sdk::ProcessTarget,
     sequence: u64,
     data: &[u8],
     stdin_journal: Option<&dyn StdinJournal>,
@@ -904,7 +904,7 @@ async fn stdin_target_state(
     adapter: &RuntimeAdapter,
     task: &TaskIdentity,
     generation: Generation,
-    target: &a3s_oci_sdk::ProcessTarget,
+    target: &aster_oci_sdk::ProcessTarget,
     error: &RuntimeError,
     cancelled: &mut watch::Receiver<bool>,
 ) -> StdinTargetState {
@@ -937,8 +937,8 @@ async fn stdin_target_state(
 
 pub(crate) fn late_process_io_can_be_ignored(
     error: &RuntimeError,
-    processes: &[a3s_oci_sdk::ProcessRecord],
-    target: &a3s_oci_sdk::ProcessTarget,
+    processes: &[aster_oci_sdk::ProcessRecord],
+    target: &aster_oci_sdk::ProcessTarget,
 ) -> bool {
     matches!(
         error.code,

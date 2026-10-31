@@ -1,4 +1,4 @@
-//! `a3s-box run` command — Pull + Create + Start.
+//! `aster-box run` command — Pull + Create + Start.
 
 use std::io::IsTerminal;
 use std::path::PathBuf;
@@ -9,36 +9,36 @@ use super::pool::{
 };
 use crate::output::parse_memory;
 use crate::state::{generate_name, BoxRecord, StateFile};
-use a3s_box_core::config::{BoxConfig, ResourceConfig, SidecarConfig, TeeConfig};
-use a3s_box_core::{
+use aster_box_core::config::{BoxConfig, ResourceConfig, SidecarConfig, TeeConfig};
+use aster_box_core::{
     CreateExecutionRequest, ExecutionGeneration, ExecutionId, ExecutionManager,
     ExecutionRecordPolicy, ExecutionRestartPolicy, ExecutionState, OperationId,
 };
-use a3s_box_runtime::pool::PoolClientRun;
-use a3s_box_runtime::LocalExecutionManager;
+use aster_box_runtime::pool::PoolClientRun;
+use aster_box_runtime::LocalExecutionManager;
 use clap::{Args, ValueEnum};
 
-const PNPM_CACHE_VOLUME_SPEC: &str = "a3s-cache-pnpm:/a3s-cache/pnpm";
+const PNPM_CACHE_VOLUME_SPEC: &str = "aster-cache-pnpm:/aster-cache/pnpm";
 const PNPM_CONFIG_STORE_ENV: &str = "PNPM_CONFIG_STORE_DIR";
 const PNPM_STORE_ENV: &str = "npm_config_store_dir";
-const PNPM_STORE_DIR: &str = "/a3s-cache/pnpm/store";
+const PNPM_STORE_DIR: &str = "/aster-cache/pnpm/store";
 const PNPM_COREPACK_HOME_ENV: &str = "COREPACK_HOME";
-const PNPM_COREPACK_HOME_DIR: &str = "/a3s-cache/pnpm/corepack";
+const PNPM_COREPACK_HOME_DIR: &str = "/aster-cache/pnpm/corepack";
 const PNPM_HOME_ENV: &str = "PNPM_HOME";
-const PNPM_HOME_DIR: &str = "/a3s-cache/pnpm/home";
+const PNPM_HOME_DIR: &str = "/aster-cache/pnpm/home";
 const PNPM_NPM_CACHE_ENV: &str = NPM_CACHE_ENV;
-const PNPM_NPM_CACHE_DIR: &str = "/a3s-cache/pnpm/npm-cache";
+const PNPM_NPM_CACHE_DIR: &str = "/aster-cache/pnpm/npm-cache";
 const PNPM_CONFIG_PREFER_OFFLINE_ENV: &str = "PNPM_CONFIG_PREFER_OFFLINE";
 const PNPM_PREFER_OFFLINE_ENV: &str = NPM_PREFER_OFFLINE_ENV;
 const PNPM_PREFER_OFFLINE_VALUE: &str = NPM_PREFER_OFFLINE_VALUE;
-const NPM_CACHE_VOLUME_SPEC: &str = "a3s-cache-npm:/a3s-cache/npm";
+const NPM_CACHE_VOLUME_SPEC: &str = "aster-cache-npm:/aster-cache/npm";
 const NPM_CACHE_ENV: &str = "npm_config_cache";
-const NPM_CACHE_DIR: &str = "/a3s-cache/npm/cache";
+const NPM_CACHE_DIR: &str = "/aster-cache/npm/cache";
 const NPM_PREFER_OFFLINE_ENV: &str = "npm_config_prefer_offline";
 const NPM_PREFER_OFFLINE_VALUE: &str = "true";
 const COREPACK_DOWNLOAD_PROMPT_ENV: &str = "COREPACK_ENABLE_DOWNLOAD_PROMPT";
 const COREPACK_DOWNLOAD_PROMPT_VALUE: &str = "0";
-const RUN_POOL_SOCKET_ENV: &str = "A3S_BOX_RUN_POOL_SOCKET";
+const RUN_POOL_SOCKET_ENV: &str = "ASTER_BOX_RUN_POOL_SOCKET";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
 pub enum PackageCache {
@@ -125,7 +125,7 @@ pub struct RunArgs {
 
     /// Sidecar OCI image to run alongside the main container inside the VM.
     /// Intended for security proxies such as SafeClaw.
-    /// Example: --sidecar ghcr.io/a3s-lab/safeclaw:latest
+    /// Example: --sidecar ghcr.io/aster-lab/safeclaw:latest
     #[arg(long)]
     pub sidecar: Option<String>,
 
@@ -155,7 +155,7 @@ pub(super) fn is_completed_managed_start(record: &BoxRecord) -> bool {
     record.exit_code.is_some()
         && record
             .managed_state()
-            .is_ok_and(|state| state == Some(a3s_box_runtime::ManagedExecutionState::Stopped))
+            .is_ok_and(|state| state == Some(aster_box_runtime::ManagedExecutionState::Stopped))
 }
 
 pub async fn execute(args: RunArgs) -> Result<(), Box<dyn std::error::Error>> {
@@ -176,8 +176,8 @@ pub async fn execute(args: RunArgs) -> Result<(), Box<dyn std::error::Error>> {
 
     let mut ctx = setup_and_boot(&args).await?;
     crate::audit::record(
-        a3s_box_core::audit::AuditAction::BoxStart,
-        a3s_box_core::audit::AuditOutcome::Success,
+        aster_box_core::audit::AuditAction::BoxStart,
+        aster_box_core::audit::AuditOutcome::Success,
         &ctx.box_id,
         &format!("started box from image {}", args.common.image),
     );
@@ -366,7 +366,7 @@ async fn execute_pool_run(args: &RunArgs, socket: &str) -> Result<(), Box<dyn st
     use std::io::Write;
 
     let output =
-        a3s_box_runtime::pool::client::run_client(build_pool_client_run(args, socket)?).await?;
+        aster_box_runtime::pool::client::run_client(build_pool_client_run(args, socket)?).await?;
 
     std::io::stdout().write_all(&output.stdout)?;
     std::io::stderr().write_all(&output.stderr)?;
@@ -436,8 +436,8 @@ use setup::{
 #[cfg(not(windows))]
 async fn run_tty(mut ctx: RunContext, args: &RunArgs) -> Result<(), Box<dyn std::error::Error>> {
     use crate::terminal;
-    use a3s_box_core::pty::PtyRequest;
-    use a3s_box_core::ExecutionSessionManager;
+    use aster_box_core::pty::PtyRequest;
+    use aster_box_core::ExecutionSessionManager;
 
     let entrypoint_override = args
         .common
@@ -649,7 +649,7 @@ async fn cleanup_managed_execution(
             ctx.box_id
         )
     })?;
-    a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+    aster_box_core::lifecycle_profile::record_lifecycle_phase(
         "foreground.manager_reconcile",
         manager_reconcile_start.elapsed(),
     );
@@ -671,8 +671,8 @@ async fn cleanup_managed_execution(
                 },
             )?;
         }
-        let home = a3s_box_core::dirs_home();
-        a3s_box_runtime::teardown_sandbox_host_netdevice_lease(&home, &ctx.box_id).map_err(
+        let home = aster_box_core::dirs_home();
+        aster_box_runtime::teardown_sandbox_host_netdevice_lease(&home, &ctx.box_id).map_err(
             |error| {
                 format!(
                     "removed box {} state but refused to wipe {}: host netdevice lease teardown failed: {error}",
@@ -681,7 +681,7 @@ async fn cleanup_managed_execution(
                 )
             },
         )?;
-        a3s_box_runtime::cleanup_microvm_virtiofs_ro_shares(&ctx.box_dir).map_err(|error| {
+        aster_box_runtime::cleanup_microvm_virtiofs_ro_shares(&ctx.box_dir).map_err(|error| {
             format!(
                 "removed box {} state but refused to wipe {}: MicroVM :ro virtio-fs alias detach failed: {error}",
                 ctx.box_id,
@@ -705,7 +705,7 @@ async fn cleanup_managed_execution(
         })
         .map_err(|error| format!("failed to mark box {} stopped: {error}", ctx.box_id))?;
     }
-    a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+    aster_box_core::lifecycle_profile::record_lifecycle_phase(
         "foreground.removal",
         removal_start.elapsed(),
     );
@@ -728,7 +728,7 @@ fn archive_auto_removed_logs(
         Ok(Some(path)) => {
             if should_print_retained_log_hint(exit_code, stopped_by_user) {
                 eprintln!(
-                    "Retained logs for removed box {} at {}. View with: a3s-box logs {}",
+                    "Retained logs for removed box {} at {}. View with: aster-box logs {}",
                     ctx.name,
                     path.display(),
                     ctx.name

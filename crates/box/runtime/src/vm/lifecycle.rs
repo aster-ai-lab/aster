@@ -318,7 +318,7 @@ impl VmManager {
             let handler_timeout_ms = if guest_stop_delivered { 0 } else { timeout_ms };
 
             // Observing provider exit proves that the workload stopped, but it
-            // does not finalize the backend. In particular, A3S OCI owns its
+            // does not finalize the backend. In particular, Aster OCI owns its
             // terminal generation and private endpoint until `stop` performs
             // the authoritative delete. Every handler implementation treats an
             // already-exited process idempotently, so always run this finalizer;
@@ -903,12 +903,12 @@ impl VmManager {
                 return false;
             };
             let guest_control_ready =
-                layout_path.with_file_name(a3s_box_core::exec::WINDOWS_GUEST_CONTROL_READY_FILE);
+                layout_path.with_file_name(aster_box_core::exec::WINDOWS_GUEST_CONTROL_READY_FILE);
             if !guest_control_ready.is_file() {
                 return false;
             }
             let pipe =
-                std::path::PathBuf::from(a3s_box_core::exec::windows_exec_pipe_path(&self.box_id));
+                std::path::PathBuf::from(aster_box_core::exec::windows_exec_pipe_path(&self.box_id));
             let client = crate::grpc::ExecClient::for_socket(&pipe);
             return matches!(
                 tokio::time::timeout(HEARTBEAT_TIMEOUT, client.heartbeat()).await,
@@ -973,7 +973,7 @@ impl VmManager {
     /// Tier 1 changes (provisioned vCPU count and memory size) retain the public
     /// stop/recreate contract across backends.
     ///
-    /// Tier 2 changes use one backend-owned path: the exact-generation A3S OCI
+    /// Tier 2 changes use one backend-owned path: the exact-generation Aster OCI
     /// update for a host Sandbox, or guest cgroup writes for a MicroVM.
     #[cfg(unix)]
     pub async fn update_resources(
@@ -1008,7 +1008,7 @@ impl VmManager {
             .await
             .map_err(|error| {
                 BoxError::StateError(format!(
-                    "A3S OCI resource update worker failed for {}: {error}",
+                    "Aster OCI resource update worker failed for {}: {error}",
                     self.box_id
                 ))
             })??;
@@ -1025,7 +1025,7 @@ impl VmManager {
         let commands = update.build_microvm_cgroup_commands();
         for cmd_str in &commands {
             let shell_cmd = vec!["sh".to_string(), "-c".to_string(), cmd_str.clone()];
-            let request = a3s_box_core::exec::ExecRequest {
+            let request = aster_box_core::exec::ExecRequest {
                 // Same live guest: key the journal so a lost response can replay
                 // instead of double-applying the cgroup write.
                 request_id: Some(format!("vm-cgroup-{}", uuid::Uuid::new_v4().simple())),
@@ -1170,7 +1170,7 @@ impl OriginalVmFinalization {
                 .all(|step| matches!(step, FinalizationStep::Pending | FinalizationStep::Complete))
     }
 
-    pub(crate) fn run(&mut self, budget: a3s_box_core::vmm::OwnedCleanupBudget) -> Result<()> {
+    pub(crate) fn run(&mut self, budget: aster_box_core::vmm::OwnedCleanupBudget) -> Result<()> {
         if !self.network_none || self.network.is_some() {
             return Err(BoxError::StateError(
                 "required companion cleanup has no actual completion proof".into(),
@@ -1234,7 +1234,7 @@ fn remove_original_directory(path: &Path) -> Result<()> {
     }
 }
 
-fn require_original_physical_time(budget: a3s_box_core::vmm::OwnedCloseBudget) -> Result<()> {
+fn require_original_physical_time(budget: aster_box_core::vmm::OwnedCloseBudget) -> Result<()> {
     if budget
         .remaining_physical_at(std::time::Instant::now())
         .is_zero()
@@ -1268,8 +1268,8 @@ impl VmManager {
         scope: &OriginalVmScope,
         lifecycle: &Arc<crate::local_execution::ExecutionLifecycleLock>,
         signal: i32,
-        budget: a3s_box_core::vmm::OwnedCloseBudget,
-    ) -> Result<a3s_box_core::vmm::VmExitConfirmation> {
+        budget: aster_box_core::vmm::OwnedCloseBudget,
+    ) -> Result<aster_box_core::vmm::VmExitConfirmation> {
         scope.validate(self)?;
         require_original_physical_time(budget)?;
         let _same_guard = lifecycle;
@@ -1345,7 +1345,7 @@ impl VmManager {
         let confirmation = handler.exit_confirmation().ok_or_else(|| {
             BoxError::StateError("handler returned no actual owned exit confirmation".into())
         })?;
-        if confirmation.kind() != a3s_box_core::vmm::VmExitEvidenceKind::OwnedReaped
+        if confirmation.kind() != aster_box_core::vmm::VmExitEvidenceKind::OwnedReaped
             || confirmation.pid() != handler.pid()
         {
             return Err(BoxError::StateError(
@@ -1359,11 +1359,11 @@ impl VmManager {
     pub(crate) fn take_original_finalization(
         &mut self,
         scope: &OriginalVmScope,
-        confirmation: a3s_box_core::vmm::VmExitConfirmation,
+        confirmation: aster_box_core::vmm::VmExitConfirmation,
         preserve_rootfs: bool,
     ) -> Result<OriginalVmFinalization> {
         scope.validate(self)?;
-        if confirmation.kind() != a3s_box_core::vmm::VmExitEvidenceKind::OwnedReaped {
+        if confirmation.kind() != aster_box_core::vmm::VmExitEvidenceKind::OwnedReaped {
             return Err(BoxError::StateError(
                 "finalization requires actual owned physical proof".into(),
             ));
@@ -1397,7 +1397,7 @@ impl VmManager {
         Ok(OriginalVmFinalization {
             rootfs: Arc::clone(&self.rootfs_provider),
             network: self.net_manager.take(),
-            network_none: matches!(self.config.network, a3s_box_core::NetworkMode::None),
+            network_none: matches!(self.config.network, aster_box_core::NetworkMode::None),
             box_dir,
             socket_dir: self.socket_dir(),
             preserve_rootfs,

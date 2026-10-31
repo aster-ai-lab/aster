@@ -9,7 +9,7 @@
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  background: var(--a3s-bg);
+  background: var(--aster-bg);
 }
 
 .work-presentation-workspace {
@@ -34,7 +34,7 @@
   flex: 1;
   padding: 30px;
   overflow: auto;
-  background: color-mix(in srgb, var(--a3s-bg) 86%, #dfe3e9);
+  background: color-mix(in srgb, var(--aster-bg) 86%, #dfe3e9);
 }
 
 .work-presentation-sorter-grid {
@@ -57,19 +57,19 @@
   border: 2px solid transparent;
   border-radius: 8px;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font: inherit;
   text-align: left;
   cursor: pointer;
 }
 
 .work-presentation-sorter-grid > button:hover {
-  background: color-mix(in srgb, var(--a3s-panel) 66%, transparent);
+  background: color-mix(in srgb, var(--aster-panel) 66%, transparent);
 }
 
 .work-presentation-sorter-grid > button.active {
-  border-color: color-mix(in srgb, var(--a3s-ink) 68%, transparent);
-  background: var(--a3s-panel);
+  border-color: color-mix(in srgb, var(--aster-ink) 68%, transparent);
+  background: var(--aster-panel);
 }
 
 .work-presentation-sorter .work-slide-canvas {
@@ -79,13 +79,13 @@
 }
 
 .work-presentation-sorter-grid > button > span {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 9px;
 }
 
 .work-presentation-sorter-grid > button > strong {
   overflow: hidden;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 9px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -116,10 +116,10 @@
   height: 24px;
   box-sizing: border-box;
   padding: 0 8px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
   font: inherit;
   font-size: 12px;
   line-height: 1;
@@ -138,19 +138,19 @@
 .presentation-align-trigger[aria-expanded="true"] {
   border-color: color-mix(
     in srgb,
-    var(--a3s-accent, #2563eb) 45%,
-    var(--a3s-line)
+    var(--aster-accent, #2563eb) 45%,
+    var(--aster-line)
   );
   background: color-mix(
     in srgb,
-    var(--a3s-accent, #2563eb) 6%,
-    var(--a3s-panel)
+    var(--aster-accent, #2563eb) 6%,
+    var(--aster-panel)
   );
 }
 
 .presentation-align-trigger:focus-visible {
   outline: 2px solid
-    color-mix(in srgb, var(--a3s-accent, #2563eb) 55%, transparent);
+    color-mix(in srgb, var(--aster-accent, #2563eb) 55%, transparent);
   outline-offset: 1px;
 }
 
@@ -184,9 +184,9 @@
   min-width: 0;
   flex: 0 0 auto;
   flex-direction: column;
-  border-bottom: 1px solid var(--a3s-line);
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-muted);
+  border-bottom: 1px solid var(--aster-line);
+  background: var(--aster-panel-soft);
+  color: var(--aster-muted);
   font-size: 9px;
 }
 
@@ -203,7 +203,7 @@
   min-height: 32px;
   justify-content: space-between;
   padding: 4px 9px 3px 12px;
-  border-bottom: 1px solid color-mix(in srgb, var(--a3s-line) 72%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--aster-line) 72%, transparent);
 }
 
 .work-presentation-design-panel > header > div {
@@ -212,21 +212,21 @@
 
 .work-presentation-design-panel > header strong,
 .work-presentation-design-editing > strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 10px;
 }
 
 .work-presentation-design-panel > header span {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
 }
 
 .work-presentation-design-panel input:not([type="checkbox"], [type="color"]) {
   height: 27px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 5px;
   outline: 0;
-  background: var(--a3s-bg);
-  color: var(--a3s-muted);
+  background: var(--aster-bg);
+  color: var(--aster-muted);
   font: inherit;
 }
 
@@ -272,8 +272,8 @@
 }
 
 .work-presentation-design-editing {
-  border-top: 1px solid color-mix(in srgb, var(--a3s-line) 68%, transparent);
-  background: color-mix(in srgb, var(--a3s-ink) 3%, var(--a3s-panel));
+  border-top: 1px solid color-mix(in srgb, var(--aster-line) 68%, transparent);
+  background: color-mix(in srgb, var(--aster-ink) 3%, var(--aster-panel));
 }
 
 .work-presentation-design-editing input:not([type="checkbox"], [type="color"]) {
@@ -342,10 +342,10 @@
   flex: 0 0 auto;
   flex-direction: column;
   overflow: hidden;
-  border-left: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
+  border-left: 1px solid var(--aster-line);
+  background: var(--aster-panel);
   box-shadow: -10px 0 28px rgb(26 35 52 / 8%);
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
 }
 
@@ -366,8 +366,8 @@
   justify-content: space-between;
   gap: 12px;
   padding: 7px 9px 7px 14px;
-  border-bottom: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
+  border-bottom: 1px solid var(--aster-line);
+  background: var(--aster-panel);
 }
 
 .work-presentation-chart-panel > header > div {
@@ -387,14 +387,14 @@
 }
 
 .work-presentation-chart-panel > header strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 12px;
   font-weight: 680;
 }
 
 .work-presentation-chart-panel > header span {
   overflow: hidden;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 9px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -403,11 +403,11 @@
 .work-presentation-chart-panel button,
 .work-presentation-chart-panel input,
 .work-presentation-chart-panel textarea {
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 5px;
   outline: 0;
-  background: var(--a3s-bg);
-  color: var(--a3s-ink);
+  background: var(--aster-bg);
+  color: var(--aster-ink);
   font: inherit;
 }
 
@@ -419,13 +419,13 @@
   justify-content: center;
   gap: 4px;
   padding: 0 8px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   cursor: pointer;
 }
 
 .work-presentation-chart-panel button:hover:not(:disabled) {
-  border-color: color-mix(in srgb, var(--a3s-ink) 45%, var(--a3s-line));
-  color: var(--a3s-ink);
+  border-color: color-mix(in srgb, var(--aster-ink) 45%, var(--aster-line));
+  color: var(--aster-ink);
 }
 
 .work-presentation-chart-panel button:disabled {
@@ -434,7 +434,7 @@
 }
 
 .work-presentation-chart-panel button.danger:hover {
-  border-color: color-mix(in srgb, #b93832 45%, var(--a3s-line));
+  border-color: color-mix(in srgb, #b93832 45%, var(--aster-line));
   color: #b93832;
 }
 
@@ -514,7 +514,7 @@
   height: 28px;
   align-items: center;
   gap: 6px;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
 }
 
 .work-presentation-chart-layout {
@@ -523,9 +523,9 @@
   min-width: 0;
   gap: 8px;
   padding: 9px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 58%, transparent);
+  background: color-mix(in srgb, var(--aster-panel-soft) 58%, transparent);
 }
 
 .work-presentation-chart-layout > header {
@@ -534,13 +534,13 @@
 }
 
 .work-presentation-chart-layout > header strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 10px;
 }
 
 .work-presentation-chart-layout > header span,
 .work-presentation-chart-layout > p {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -571,7 +571,7 @@
   min-width: 0;
   gap: 7px;
   padding: 9px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
 }
 
@@ -585,7 +585,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   padding-top: 7px;
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .work-presentation-chart-data-labels .work-office-checkbox.check {
@@ -630,9 +630,9 @@
   align-content: start;
   gap: 8px;
   padding: 9px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 7px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 48%, transparent);
+  background: color-mix(in srgb, var(--aster-panel-soft) 48%, transparent);
 }
 
 .work-presentation-chart-series-card > .work-spreadsheet-chart-series-style {
@@ -644,7 +644,7 @@
   label {
   display: grid;
   gap: 3px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-presentation-chart-series-card
@@ -680,9 +680,9 @@
   gap: 7px;
   margin: 0;
   padding: 25px 8px 8px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
 }
 
 .work-presentation-chart-series-card > fieldset > legend {
@@ -690,7 +690,7 @@
   top: 7px;
   left: 9px;
   padding: 0;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
 }
 
 .work-presentation-chart-series-card > fieldset > input {
@@ -725,9 +725,9 @@
   min-width: 0;
   gap: 8px;
   padding: 8px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 64%, transparent);
+  background: color-mix(in srgb, var(--aster-panel-soft) 64%, transparent);
 }
 
 .work-presentation-chart-series-analysis > header {
@@ -736,13 +736,13 @@
 }
 
 .work-presentation-chart-series-analysis > header strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 9px;
 }
 
 .work-presentation-chart-series-analysis > header span,
 .work-presentation-chart-series-analysis small {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
   line-height: 1.4;
 }
@@ -751,7 +751,7 @@
   display: grid;
   min-width: 0;
   gap: 3px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-presentation-chart-series-analysis .work-office-checkbox.check {

@@ -1,13 +1,13 @@
 //! Live-provider qualification for public steer and interrupt controls.
 //!
 //! Ignored by default because it consumes provider quota. Select a model from
-//! the same ACL with `A3S_TEST_MODEL=provider/model`.
+//! the same ACL with `ASTER_TEST_MODEL=provider/model`.
 
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentEvent, AgentSession, InterruptRequest, PlanningMode, RunControlOperation,
     RunControlReceiptState, RunStatus, SessionOptions, SteerRequest, SystemPromptSlots,
 };
@@ -48,7 +48,7 @@ fn options(model: &str, session_id: &str, command: &str) -> SessionOptions {
     SessionOptions::new()
         .with_session_id(session_id)
         .with_model(model)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning_mode(PlanningMode::Disabled)
@@ -63,7 +63,7 @@ fn options(model: &str, session_id: &str, command: &str) -> SessionOptions {
         ))
 }
 
-async fn active_snapshot(session: &AgentSession) -> a3s_code_core::RunControlSnapshot {
+async fn active_snapshot(session: &AgentSession) -> aster_core::RunControlSnapshot {
     tokio::time::timeout(MODEL_TIMEOUT, async {
         loop {
             if let Some(snapshot) = session.run_control_snapshot().await {
@@ -79,7 +79,7 @@ async fn active_snapshot(session: &AgentSession) -> a3s_code_core::RunControlSna
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_model_applies_steer_after_an_in_flight_tool() {
     let workspace = tempfile::tempdir().expect("steer workspace");
     let (agent, model) = configured_agent_and_model().await;
@@ -168,7 +168,7 @@ async fn real_model_applies_steer_after_an_in_flight_tool() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_model_interrupt_cancels_an_in_flight_tool_without_late_effects() {
     let workspace = tempfile::tempdir().expect("interrupt workspace");
     let (agent, model) = configured_agent_and_model().await;
@@ -258,7 +258,7 @@ async fn real_model_interrupt_cancels_an_in_flight_tool_without_late_effects() {
 /// After an interrupt settles a Cancelled run, the same session must still
 /// accept a follow-up turn (session continue), not stay wedged.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_model_session_continues_after_interrupt() {
     let workspace = tempfile::tempdir().expect("continue workspace");
     let (agent, model) = configured_agent_and_model().await;

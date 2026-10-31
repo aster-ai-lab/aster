@@ -80,7 +80,7 @@ function loadPresentationRuntime(runtimeUrl: string): Promise<PptxConstructor> {
   const runtime = new Promise<PptxConstructor>((resolve, reject) => {
     const existing = Array.from(
       document.querySelectorAll<HTMLScriptElement>(
-        'script[data-a3s-pptx-runtime]',
+        'script[data-aster-pptx-runtime]',
       ),
     ).find((script) => script.src === resolvedUrl);
     const script = existing ?? document.createElement('script');
@@ -104,7 +104,7 @@ function loadPresentationRuntime(runtimeUrl: string): Promise<PptxConstructor> {
     );
     if (!existing) {
       script.src = resolvedUrl;
-      script.dataset.a3sPptxRuntime = 'true';
+      script.dataset.asterPptxRuntime = 'true';
       document.head.append(script);
     }
   }).catch((error) => {

@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::io::{Cursor, Read, Write};
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{
+use aster_use_core::{
     CatalogArchive, CatalogAvailability, CatalogPackage, CatalogSurface, PackageSurfaceKind,
     PluginCatalogRecord, PluginPermissionCeiling, PluginReleaseChannel, PLUGIN_CATALOG_SCHEMA_V3,
     PLUGIN_PERMISSION_SCHEMA,
@@ -76,9 +76,9 @@ impl TestRepository {
         expires: &str,
     ) -> Self {
         let target = host_target();
-        let archive_name = format!("a3s-use-science-{package_version}-{target}.tar.gz");
+        let archive_name = format!("aster-use-science-{package_version}-{target}.tar.gz");
         let target_name =
-            format!("extensions/a3s/science/{package_version}/stable/{target}/{archive_name}");
+            format!("extensions/aster/science/{package_version}/stable/{target}/{archive_name}");
         let (package_sha256, file_count, expanded_bytes, manifest) =
             expanded_archive_fingerprint(&archive);
         let permission_ceiling = PluginPermissionCeiling {
@@ -87,10 +87,10 @@ impl TestRepository {
         };
         let custom = serde_json::to_value(PluginCatalogRecord {
             schema: PLUGIN_CATALOG_SCHEMA_V3.to_string(),
-            package_id: "a3s/science".to_string(),
-            display_name: "A3S Science".to_string(),
-            description: "Static scientific guidance for A3S agents.".to_string(),
-            publisher: "a3s".to_string(),
+            package_id: "aster/science".to_string(),
+            display_name: "Aster Science".to_string(),
+            description: "Static scientific guidance for Aster agents.".to_string(),
+            publisher: "aster".to_string(),
             keywords: vec!["science".to_string()],
             categories: vec!["research".to_string()],
             version: package_version.to_string(),
@@ -123,7 +123,7 @@ impl TestRepository {
                 manifest_sha256: Some(format!("sha256:{}", sha256(&manifest))),
             },
             license: "Apache-2.0".to_string(),
-            repository: "https://github.com/A3S-Lab/Science".to_string(),
+            repository: "https://github.com/aster-ai-lab/Science".to_string(),
             availability: CatalogAvailability::Available,
         })
         .unwrap();
@@ -191,8 +191,8 @@ impl TestRepository {
                     .get("__rawTufCustom")
                     .cloned()
                     .expect("raw TUF custom metadata marker must retain its value"),
-                Some(metadata) => json!({"a3s": metadata}),
-                None => json!({"a3sPlanning": {"schema": "a3s.use.plugin-planning-target.v1"}}),
+                Some(metadata) => json!({"aster": metadata}),
+                None => json!({"asterPlanning": {"schema": "aster.use.plugin-planning-target.v1"}}),
             };
             targets_map.insert(
                 target.target_name.clone(),
@@ -358,7 +358,7 @@ fn hex_lower(bytes: &[u8]) -> String {
 
 pub(crate) fn extension_archive(version: &str) -> Vec<u8> {
     let manifest = format!(
-        "extension \"a3s/science\" {{\n  schema_version = 3\n  version        = \"{version}\"\n  route          = \"science\"\n  requires_use   = \">=0.3.0, <0.4.0\"\n  actions        = [\"read\"]\n\n  repository {{\n    url      = \"https://github.com/A3S-Lab/Science\"\n    revision = \"0123456789abcdef0123456789abcdef01234567\"\n  }}\n\n  skill \"science\" {{\n    path          = \"skills/science/SKILL.md\"\n    requires_tool = []\n    requires_mcp  = []\n    optional      = false\n  }}\n}}\n"
+        "extension \"aster/science\" {{\n  schema_version = 3\n  version        = \"{version}\"\n  route          = \"science\"\n  requires_use   = \">=0.3.0, <0.4.0\"\n  actions        = [\"read\"]\n\n  repository {{\n    url      = \"https://github.com/aster-ai-lab/Science\"\n    revision = \"0123456789abcdef0123456789abcdef01234567\"\n  }}\n\n  skill \"science\" {{\n    path          = \"skills/science/SKILL.md\"\n    requires_tool = []\n    requires_mcp  = []\n    optional      = false\n  }}\n}}\n"
     );
     let mut bytes = Vec::new();
     {
@@ -366,7 +366,7 @@ pub(crate) fn extension_archive(version: &str) -> Vec<u8> {
         let mut archive = tar::Builder::new(encoder);
         append_tar_file(
             &mut archive,
-            "package/a3s-use-extension.acl",
+            "package/aster-use-extension.acl",
             0o644,
             manifest.as_bytes(),
         );
@@ -374,7 +374,7 @@ pub(crate) fn extension_archive(version: &str) -> Vec<u8> {
             &mut archive,
             "package/README.md",
             0o644,
-            b"# A3S Science\n\nStatic scientific guidance fixture.\n",
+            b"# Aster Science\n\nStatic scientific guidance fixture.\n",
         );
         append_tar_file(
             &mut archive,
@@ -410,7 +410,7 @@ fn expanded_archive_fingerprint(archive: &[u8]) -> (String, u64, u64, Vec<u8>) {
     files.sort_by(|left, right| left.0.cmp(&right.0));
 
     let mut digest = Sha256::new();
-    digest.update(b"a3s-use-expanded-package-v1\0");
+    digest.update(b"aster-use-expanded-package-v1\0");
     let mut expanded_bytes = 0_u64;
     let mut manifest = None;
     for (path, body) in &files {
@@ -420,7 +420,7 @@ fn expanded_archive_fingerprint(archive: &[u8]) -> (String, u64, u64, Vec<u8>) {
         digest.update(path.as_bytes());
         digest.update(size.to_be_bytes());
         digest.update(body);
-        if path == "a3s-use-extension.acl" {
+        if path == "aster-use-extension.acl" {
             manifest = Some(body.clone());
         }
     }

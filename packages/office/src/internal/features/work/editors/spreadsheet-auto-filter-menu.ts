@@ -113,7 +113,7 @@ export function enhanceSpreadsheetAutoFilterSurface(
       actionLabel === '\u6309\u689d\u4ef6\u904e\u6ffe' ||
       actionLabel === 'Filter by condition'
     ) {
-      action.dataset.a3sAutoFilterCondition = '';
+      action.dataset.asterAutoFilterCondition = '';
       action.setAttribute('aria-haspopup', 'dialog');
     }
   }
@@ -128,7 +128,7 @@ function synchronizeSpreadsheetAutoFilterRankAction(
   dateSystem: WorkSpreadsheetDateSystem,
 ): void {
   const existing = menu.querySelector<HTMLElement>(
-    '[data-a3s-auto-filter-rank]',
+    '[data-aster-auto-filter-rank]',
   );
   const range = normalizedWorkSpreadsheetAutoFilterRange(sheet?.filter_select);
   const column = Number(trigger?.dataset.filterColumn);
@@ -148,7 +148,7 @@ function synchronizeSpreadsheetAutoFilterRankAction(
   }
   const action = document.createElement('div');
   action.className = 'luckysheet-cols-menuitem';
-  action.dataset.a3sAutoFilterRank = '';
+  action.dataset.asterAutoFilterRank = '';
   action.dataset.filterColumn = String(column);
   action.dataset.officeShortcuts = 'ignore';
   action.tabIndex = 0;
@@ -159,7 +159,7 @@ function synchronizeSpreadsheetAutoFilterRankAction(
   action.setAttribute('aria-label', top10);
   action.setAttribute('aria-haspopup', 'dialog');
   const condition = menu.querySelector<HTMLElement>(
-    '[data-a3s-auto-filter-condition]',
+    '[data-aster-auto-filter-condition]',
   );
   condition ? condition.before(action) : menu.prepend(action);
 }
@@ -204,7 +204,7 @@ export function spreadsheetAutoFilterConditionAction(
   target: EventTarget | null,
 ): HTMLElement | null {
   return target instanceof Element
-    ? target.closest<HTMLElement>('[data-a3s-auto-filter-condition]')
+    ? target.closest<HTMLElement>('[data-aster-auto-filter-condition]')
     : null;
 }
 
@@ -212,7 +212,7 @@ export function spreadsheetAutoFilterRankAction(
   target: EventTarget | null,
 ): HTMLElement | null {
   return target instanceof Element
-    ? target.closest<HTMLElement>('[data-a3s-auto-filter-rank]')
+    ? target.closest<HTMLElement>('[data-aster-auto-filter-rank]')
     : null;
 }
 

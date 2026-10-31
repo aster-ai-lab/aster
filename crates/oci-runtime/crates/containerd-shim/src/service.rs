@@ -3,8 +3,8 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Weak};
 use std::time::{Duration, SystemTime};
 
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerRecord, Error as RuntimeError, ErrorCode, ExitStatus, IsolationRequest, ProcessRecord,
     TerminalSize,
 };
@@ -152,7 +152,7 @@ impl Service {
         &self,
         adapter: &RuntimeAdapter,
         identity: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         bundle: &Path,
         rootfs_mounted: bool,
         context: &str,

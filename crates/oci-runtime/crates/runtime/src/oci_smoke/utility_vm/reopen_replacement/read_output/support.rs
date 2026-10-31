@@ -1,6 +1,6 @@
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     Error, ErrorCode, IoMode, OutputChunk, OutputStream, ProcessId, ProcessIo, TerminalSize,
 };
 
@@ -14,9 +14,9 @@ pub(super) fn read_output_exec(
 ) -> std::result::Result<(ProcessId, Process, ProcessIo, Vec<u8>), String> {
     let process_id = ProcessId::new(format!("reader-{nonce}"))
         .map_err(|error| format!("failed to construct ReadOutput process ID: {error}"))?;
-    let output = format!("a3s-oci-read-output-{nonce}\n").into_bytes();
+    let output = format!("aster-oci-read-output-{nonce}\n").into_bytes();
     let command = format!(
-        "set -eu; printf 'a3s-oci-read-output-{nonce}\\n'; printf 'a3s-oci-read-output-ready-{nonce}\\n' > /{READ_OUTPUT_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"
+        "set -eu; printf 'aster-oci-read-output-{nonce}\\n'; printf 'aster-oci-read-output-ready-{nonce}\\n' > /{READ_OUTPUT_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"
     );
     let process: Process = serde_json::from_value(serde_json::json!({
         "terminal": false,

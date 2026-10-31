@@ -122,13 +122,13 @@ fn workspace_wiki_sources_exclude_secrets_state_dependencies_and_host_output() {
     let root = tempfile::tempdir().unwrap();
     let files = [
         ".env",
-        ".a3s/config.acl",
-        ".a3s/kb/sources/private.md",
+        ".aster/config.acl",
+        ".aster/kb/sources/private.md",
         ".git/config",
         "node_modules/pkg/source.ts",
         "target/out.rs",
-        "meta/a3s-session.json",
-        "child-task/meta/a3s-session.json",
+        "meta/aster-session.json",
+        "child-task/meta/aster-session.json",
         "knowledge-output/overview.md",
         "src/main.rs",
         "meta/design.md",

@@ -2,9 +2,9 @@
 
 ## Status and boundary
 
-`a3s-code-core` defines a closed, bounded admission contract for an immutable
-Agent release manifest at `.a3s/asset.acl`. The current schema identifier is
-`a3s.code.agent-release.v1`.
+`aster-core` defines a closed, bounded admission contract for an immutable
+Agent release manifest at `.aster/asset.acl`. The current schema identifier is
+`aster.code.agent-release.v1`.
 
 The `release` module owns:
 
@@ -13,7 +13,7 @@ The `release` module owns:
 - deriving a schema-aware canonical ACL document and release identity; and
 - checking the declared protocol and capability requirements before activation.
 
-The `agent_protocol` module owns the matching `a3s.code.agent.v1` host
+The `agent_protocol` module owns the matching `aster.code.agent.v1` host
 contract. It defines exact release/session/run start, cancellation, and
 checkpoint-recovery commands; digest-bound receipts; and bounded cursor pages
 that carry the existing lossless `EventEnvelopeV1` values directly. A host may
@@ -25,7 +25,7 @@ semantics.
 `AgentSession`. Exact run IDs are admitted atomically in Code's existing run
 store, detached work uses the ordinary Code event and checkpoint pipeline, and
 replayed commands never create a second run. The executable service boundary
-belongs to `a3s code`; Cloud and node software transport its values and do not
+belongs to `aster code`; Cloud and node software transport its values and do not
 implement another Harness.
 
 The closed `AgentProtocolCommandV1` recovery request intentionally retains its
@@ -94,7 +94,7 @@ The version-one process transport uses Code-owned paths: commands are posted to
 `/v1/agent/commands`, bounded `AgentProtocolEventPageRequestV1` values are
 posted to `/v1/agent/events:page`, and exact terminal-run identities are posted
 to `/v1/agent/changes`. The last endpoint returns one immutable
-`a3s.code.agent-change-set.v1` value: a SHA-256-bound, base64-encoded binary Git
+`aster.code.agent-change-set.v1` value: a SHA-256-bound, base64-encoded binary Git
 patch between exact `base_tree` and `result_tree` identities, with a 4 MiB raw
 patch bound. Hosts must forward the corresponding Code types intact rather
 than translating them into another lifecycle or change-set protocol.
@@ -111,12 +111,12 @@ admission rather than silently losing host changes.
 The Core crate does not build an OCI image, launch the manifest's declared
 entrypoint, implement the declared HTTP health endpoints or a network listener,
 bind the manifest grace period to a process supervisor, or certify a deployment
-as a Runtime Service. The `a3s code` executable and Runtime integration own
+as a Runtime Service. The `aster code` executable and Runtime integration own
 those process and transport pieces.
 
 ## Native release process
 
-The native version-one process is `a3s code harness`. It admits the release
+The native version-one process is `aster code harness`. It admits the release
 manifest and verifies the exact Harness protocol and capability surface,
 verifies every declared external-secret injection slot, initializes the Agent,
 and only then binds the manifest-declared HTTP port. Protocol and capability
@@ -150,19 +150,19 @@ Terminal failures expose stable `SERVE_*` codes. Rust hosts must wait for
 readiness and inspect the returned daemon handle for lifecycle status.
 
 This is a lifecycle primitive, not the v1 release runtime. It does not read or
-bind `.a3s/asset.acl`, listen on the declared readiness/liveness paths, accept a
+bind `.aster/asset.acl`, listen on the declared readiness/liveness paths, accept a
 headless Agent request protocol, launch the declared artifact entrypoint, or
 prove Runtime Service deployment. The declared `health.shutdown_grace_seconds`
 also remains distinct from the daemon's library default until a release-aware
 supervisor owns that mapping.
 
 The checked-in template at
-[`fixtures/agent-release-contract/.a3s/asset.acl`](../fixtures/agent-release-contract/.a3s/asset.acl)
+[`fixtures/agent-release-contract/.aster/asset.acl`](../fixtures/agent-release-contract/.aster/asset.acl)
 is a parser and identity contract fixture. Its repeated hexadecimal digests are
 test values, not published OCI or provenance digests, so that file alone is not
 a deployable release. The surrounding
 [`agent-release-contract`](../fixtures/agent-release-contract/README.md)
-directory is a minimal publication recipe: it packages an exact Linux A3S CLI
+directory is a minimal publication recipe: it packages an exact Linux Aster CLI
 binary without the final manifest, publishes one OCI image manifest, binds the
 resolved artifact and provenance through `AgentReleaseManifest::bind_publication`,
 and emits a final canonical ACL beside a secret-free publication record and a
@@ -182,12 +182,12 @@ The final manifest cannot be an input to the OCI image whose digest it declares:
 that would create a cryptographic self-reference. A conforming producer must use
 this order:
 
-1. package the exact `a3s code harness` executable and immutable runtime files,
+1. package the exact `aster code harness` executable and immutable runtime files,
    without the final release manifest;
 2. build and publish the OCI graph once, then resolve its immutable manifest
    digest;
 3. retain each referenced provenance object and generate and admit
-   `.a3s/asset.acl` with its exact digest;
+   `.aster/asset.acl` with its exact digest;
 4. verify the retained provenance bytes and inject the admitted manifest at the
    declared entrypoint path when creating
    the Runtime Service; and
@@ -209,9 +209,9 @@ into a separately caller-authored generic Service template is insufficient: it
 would make the bytes immutable while allowing the release's execution semantics
 to drift.
 
-The final `a3s.code.agent-release.v1` document is also distinct from any
+The final `aster.code.agent-release.v1` document is also distinct from any
 build-input Asset manifest, even when a repository convention gives both files
-the relative name `.a3s/asset.acl` at different lifecycle stages. A build-input
+the relative name `.aster/asset.acl` at different lifecycle stages. A build-input
 manifest, its digest, and the OCI coordinates cannot substitute for the final
 canonical release document or its identity. A catalog or controller claiming
 this contract must retain or retrieve the exact final canonical bytes as one
@@ -223,8 +223,8 @@ The fixture publisher is invoked from the repository root:
 
 ```bash
 bash fixtures/agent-release-contract/scripts/publish-release.sh \
-  /path/to/linux-amd64/a3s \
-  registry.example.com/a3s/code-agent:8.0.3 \
+  /path/to/linux-amd64/aster \
+  registry.example.com/aster/code-agent:8.0.3 \
   ./release-output
 ```
 
@@ -235,7 +235,7 @@ declared external-secret forms, checks health and value-redacting errors, sends
 
 ```bash
 bash fixtures/agent-release-contract/scripts/verify-local-release.sh \
-  /path/to/linux-amd64/a3s \
+  /path/to/linux-amd64/aster \
   ./release-output
 ```
 
@@ -246,12 +246,12 @@ certification.
 ## File and schema
 
 A release producer places exactly one `agent_release` block in
-`.a3s/asset.acl`:
+`.aster/asset.acl`:
 
 ```acl
 agent_release {
-  schema = "a3s.code.agent-release.v1"
-  protocol = "a3s.code.agent.v1"
+  schema = "aster.code.agent-release.v1"
+  protocol = "aster.code.agent.v1"
 
   artifact {
     digest = "sha256:1111111111111111111111111111111111111111111111111111111111111111"
@@ -259,8 +259,8 @@ agent_release {
   }
 
   entrypoint {
-    command = "/usr/bin/a3s"
-    args = ["code", "harness", "--manifest", "/app/.a3s/asset.acl"]
+    command = "/usr/bin/aster"
+    args = ["code", "harness", "--manifest", "/app/.aster/asset.acl"]
   }
 
   health {
@@ -282,7 +282,7 @@ agent_release {
   }
 
   provenance "source" {
-    uri = "https://github.com/A3S-Lab/Code"
+    uri = "https://github.com/aster-ai-lab/Code"
     digest = "sha256:2222222222222222222222222222222222222222222222222222222222222222"
   }
 }
@@ -291,8 +291,8 @@ agent_release {
 Unknown attributes, blocks, calls, and value shapes fail admission. All strings
 below are measured in UTF-8 bytes.
 
-`schema` must be exactly `a3s.code.agent-release.v1`. `protocol` is independently
-versioned and uses the canonical form `a3s.code.agent.v<N>`, where `N` is an
+`schema` must be exactly `aster.code.agent-release.v1`. `protocol` is independently
+versioned and uses the canonical form `aster.code.agent.v<N>`, where `N` is an
 integer from 1 through 65,535 with no leading zero. Admission understands that
 version syntax; activation still requires an exact match with a protocol the
 runtime supplies.
@@ -303,12 +303,12 @@ runtime supplies.
 | --- | --- |
 | `artifact.digest` | Lowercase `sha256:` plus exactly 64 hexadecimal characters |
 | `artifact.media_type` | Exactly `application/vnd.oci.image.manifest.v1+json` |
-| `entrypoint.command` | Exactly `/usr/bin/a3s` |
-| `entrypoint.args` | Exactly `["code", "harness", "--manifest", "/app/.a3s/asset.acl"]` |
+| `entrypoint.command` | Exactly `/usr/bin/aster` |
+| `entrypoint.args` | Exactly `["code", "harness", "--manifest", "/app/.aster/asset.acl"]` |
 
 The artifact digest is immutable input to the declared release identity. A tag,
 branch, mutable workspace, or registry label is not accepted as an artifact
-reference. The fixed entrypoint makes the umbrella `a3s code` command the sole
+reference. The fixed entrypoint makes the umbrella `aster code` command the sole
 v1 Harness process; release images cannot substitute a parallel Harness
 implementation.
 
@@ -459,7 +459,7 @@ The runtime supplies an `AgentReleaseCompatibility` containing its exact
 protocol and unique available capability levels:
 
 ```rust,no_run
-use a3s_code_core::release::{
+use aster_core::release::{
     AgentReleaseCapability, AgentReleaseCompatibility, AgentReleaseManifest,
     AGENT_PROTOCOL_V1,
 };
@@ -484,10 +484,10 @@ Errors expose stable machine codes:
 
 | Condition | Code |
 | --- | --- |
-| Protocol mismatch | `a3s.code.agent_release.incompatible_protocol` |
-| Missing or insufficient capability | `a3s.code.agent_release.unsupported_capability` |
-| Invalid semantic field | `a3s.code.agent_release.invalid_field` |
-| Closed-schema rejection | `a3s.code.agent_release.schema` |
+| Protocol mismatch | `aster.code.agent_release.incompatible_protocol` |
+| Missing or insufficient capability | `aster.code.agent_release.unsupported_capability` |
+| Invalid semantic field | `aster.code.agent_release.invalid_field` |
+| Closed-schema rejection | `aster.code.agent_release.schema` |
 
 Compatibility verification is an admission gate only. A successful result
 does not prove artifact availability, secret resolution, storage isolation,

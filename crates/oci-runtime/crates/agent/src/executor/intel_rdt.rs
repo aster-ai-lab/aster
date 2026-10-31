@@ -4,8 +4,8 @@ use std::io::{self, Read, Write};
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Component, Path, PathBuf};
 
-use a3s_oci_sdk::oci_spec::runtime::LinuxIntelRdt;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::LinuxIntelRdt;
+use aster_oci_sdk::{
     Error, ErrorCode, Result, OCI_LINUX_INTEL_RDT_MAX_CLOS_ID_BYTES,
     OCI_LINUX_INTEL_RDT_MAX_SCHEMATA_BYTES, OCI_LINUX_INTEL_RDT_MAX_SCHEMATA_LINES,
     OCI_LINUX_INTEL_RDT_MAX_SCHEMATA_LINE_BYTES,
@@ -701,7 +701,7 @@ mod test_support;
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::oci_spec::runtime::LinuxIntelRdt;
+    use aster_oci_sdk::oci_spec::runtime::LinuxIntelRdt;
 
     use super::test_support::Fixture;
     use super::{
@@ -886,7 +886,7 @@ mod tests {
             fixture.filesystem.clone(),
         )
         .expect_err("missing preconfigured CLOS must fail");
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::FailedPrecondition);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::FailedPrecondition);
         assert!(!fixture.root.join("missing").exists());
     }
 
@@ -949,7 +949,7 @@ mod tests {
             fixture.filesystem.clone(),
         )
         .expect_err("monitoring group failure must propagate");
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::FailedPrecondition);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::FailedPrecondition);
         assert!(!fixture.root.join("container-monitor-failure").exists());
     }
 

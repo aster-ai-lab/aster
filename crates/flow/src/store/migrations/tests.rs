@@ -10,11 +10,11 @@ use crate::store::PostgresEventStore;
 #[cfg(feature = "sqlite")]
 use crate::store::SqliteEventStore;
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
-use a3s_orm::{sql_query, Database, Migrator};
+use aster_orm::{sql_query, Database, Migrator};
 #[cfg(feature = "postgres")]
-use a3s_orm::{PostgresDialect, PostgresExecutor};
+use aster_orm::{PostgresDialect, PostgresExecutor};
 #[cfg(feature = "sqlite")]
-use a3s_orm::{SqliteDialect, SqliteExecutor};
+use aster_orm::{SqliteDialect, SqliteExecutor};
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use chrono::{DateTime, Utc};
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
@@ -145,58 +145,58 @@ fn sqlite_migrations_keep_every_published_checksum() {
     assert_eq!(
         migration_rows(&migrations),
         vec![
-            ("a3s-flow-0001-events".into(), EVENTS_CHECKSUM.into()),
-            ("a3s-flow-0002-retention".into(), RETENTION_CHECKSUM.into()),
+            ("aster-flow-0001-events".into(), EVENTS_CHECKSUM.into()),
+            ("aster-flow-0002-retention".into(), RETENTION_CHECKSUM.into()),
             (
-                "a3s-flow-0003-active-hooks".into(),
+                "aster-flow-0003-active-hooks".into(),
                 SQLITE_ACTIVE_HOOKS_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0004-scheduled-wakeups".into(),
+                "aster-flow-0004-scheduled-wakeups".into(),
                 SQLITE_SCHEDULED_WAKEUPS_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0005-continue-as-new".into(),
+                "aster-flow-0005-continue-as-new".into(),
                 SQLITE_CONTINUE_AS_NEW_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0006-step-cancellation-wakeup".into(),
+                "aster-flow-0006-step-cancellation-wakeup".into(),
                 SQLITE_SCHEDULED_WAKEUPS_CANCELLATION_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0007-event-envelope-schema".into(),
+                "aster-flow-0007-event-envelope-schema".into(),
                 EVENT_ENVELOPE_SCHEMA_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0008-projection-checkpoints".into(),
+                "aster-flow-0008-projection-checkpoints".into(),
                 PROJECTION_CHECKPOINTS_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0009-projection-checkpoint-digest".into(),
+                "aster-flow-0009-projection-checkpoint-digest".into(),
                 PROJECTION_CHECKPOINT_DIGEST_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0010-history-partitions".into(),
+                "aster-flow-0010-history-partitions".into(),
                 HISTORY_PARTITIONS_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0011-activity-retry-wakeup".into(),
+                "aster-flow-0011-activity-retry-wakeup".into(),
                 SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0012-activity-retry-wakeup-kind".into(),
+                "aster-flow-0012-activity-retry-wakeup-kind".into(),
                 SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_KIND_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0013-select-timer-wakeup".into(),
+                "aster-flow-0013-select-timer-wakeup".into(),
                 SQLITE_SCHEDULED_WAKEUPS_SELECT_TIMER_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0014-scope-cancel-wakeup".into(),
+                "aster-flow-0014-scope-cancel-wakeup".into(),
                 SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0015-scope-cancel-open-descendant".into(),
+                "aster-flow-0015-scope-cancel-open-descendant".into(),
                 SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_CHECKSUM.into(),
             ),
         ]
@@ -210,67 +210,67 @@ fn postgres_migrations_keep_every_published_checksum() {
     assert_eq!(
         migration_rows(&migrations),
         vec![
-            ("a3s-flow-0001-events".into(), EVENTS_CHECKSUM.into()),
-            ("a3s-flow-0002-tasks".into(), POSTGRES_TASKS_CHECKSUM.into(),),
-            ("a3s-flow-0003-retention".into(), RETENTION_CHECKSUM.into()),
+            ("aster-flow-0001-events".into(), EVENTS_CHECKSUM.into()),
+            ("aster-flow-0002-tasks".into(), POSTGRES_TASKS_CHECKSUM.into(),),
+            ("aster-flow-0003-retention".into(), RETENTION_CHECKSUM.into()),
             (
-                "a3s-flow-0004-active-hooks".into(),
+                "aster-flow-0004-active-hooks".into(),
                 POSTGRES_ACTIVE_HOOKS_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0005-scheduled-wakeups".into(),
+                "aster-flow-0005-scheduled-wakeups".into(),
                 POSTGRES_SCHEDULED_WAKEUPS_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0006-continue-as-new".into(),
+                "aster-flow-0006-continue-as-new".into(),
                 POSTGRES_CONTINUE_AS_NEW_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0007-step-cancellation-wakeup".into(),
+                "aster-flow-0007-step-cancellation-wakeup".into(),
                 POSTGRES_SCHEDULED_WAKEUPS_CANCELLATION_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0008-event-envelope-schema".into(),
+                "aster-flow-0008-event-envelope-schema".into(),
                 EVENT_ENVELOPE_SCHEMA_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0009-projection-checkpoints".into(),
+                "aster-flow-0009-projection-checkpoints".into(),
                 PROJECTION_CHECKPOINTS_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0010-projection-checkpoint-digest".into(),
+                "aster-flow-0010-projection-checkpoint-digest".into(),
                 PROJECTION_CHECKPOINT_DIGEST_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0011-history-partitions".into(),
+                "aster-flow-0011-history-partitions".into(),
                 HISTORY_PARTITIONS_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0012-task-partition-key".into(),
+                "aster-flow-0012-task-partition-key".into(),
                 POSTGRES_TASK_PARTITION_KEY_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0013-activity-retry-wakeup".into(),
+                "aster-flow-0013-activity-retry-wakeup".into(),
                 POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0014-activity-retry-wakeup-kind".into(),
+                "aster-flow-0014-activity-retry-wakeup-kind".into(),
                 POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_KIND_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0015-select-timer-wakeup".into(),
+                "aster-flow-0015-select-timer-wakeup".into(),
                 POSTGRES_SCHEDULED_WAKEUPS_SELECT_TIMER_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0016-scope-cancel-wakeup".into(),
+                "aster-flow-0016-scope-cancel-wakeup".into(),
                 POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0017-scope-cancel-open-descendant".into(),
+                "aster-flow-0017-scope-cancel-open-descendant".into(),
                 POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_CHECKSUM.into(),
             ),
             (
-                "a3s-flow-0018-function-names".into(),
+                "aster-flow-0018-function-names".into(),
                 POSTGRES_FUNCTION_NAMES_CHECKSUM.into(),
             ),
         ]
@@ -307,7 +307,7 @@ async fn insert_sqlite_legacy_history(executor: &SqliteExecutor, run_id: &str) {
 async fn sqlite_applied_migrations(executor: &SqliteExecutor) -> Vec<(String, String)> {
     Database::new(SqliteDialect, executor.clone())
         .fetch_all_as(sql_query::<(String, String)>(
-            "SELECT version, checksum FROM a3s_orm_migrations ORDER BY version",
+            "SELECT version, checksum FROM aster_orm_migrations ORDER BY version",
         ))
         .await
         .unwrap()
@@ -454,7 +454,7 @@ async fn insert_postgres_legacy_history(executor: &PostgresExecutor, run_id: &st
 async fn postgres_applied_migrations(executor: &PostgresExecutor) -> Vec<(String, String)> {
     Database::new(PostgresDialect, executor.clone())
         .fetch_all_as(sql_query::<(String, String)>(
-            "SELECT version, checksum FROM a3s_orm_migrations ORDER BY version",
+            "SELECT version, checksum FROM aster_orm_migrations ORDER BY version",
         ))
         .await
         .unwrap()

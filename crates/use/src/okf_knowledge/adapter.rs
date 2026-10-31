@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_use_core::{
+use aster_use_core::{
     inspect_okf_bundle_files, OkfBundleContract, OkfBundleFile, OkfKnowledgeObservation,
     OkfKnowledgeObservedState, OkfProjectionReceipt, PackageSurfaceKind, PlanQualifiedSurfaceRef,
     PlanScope, PluginPackageId, UseError, UseResult,
@@ -44,7 +44,7 @@ impl OkfKnowledgeStageSpec {
     }
 }
 
-/// Exact, bounded OKF bytes handed to an injected A3S Knowledge adapter.
+/// Exact, bounded OKF bytes handed to an injected Aster Knowledge adapter.
 ///
 /// Construction re-runs OKF conformance against the reviewed bundle contract,
 /// avoiding a path-based time-of-check/time-of-use gap at the adapter port.
@@ -92,14 +92,14 @@ impl OkfKnowledgeStageRequest {
             || receipt.bundle != self.spec.bundle
         {
             return Err(adapter_evidence_error(
-                "The A3S Knowledge stage receipt does not match the exact reviewed candidate.",
+                "The Aster Knowledge stage receipt does not match the exact reviewed candidate.",
             ));
         }
         Ok(())
     }
 }
 
-/// Injected A3S Knowledge boundary for one exact OKF package generation.
+/// Injected Aster Knowledge boundary for one exact OKF package generation.
 ///
 /// Implementations own index staging and atomic promotion. They must remain
 /// idempotent for the same receipt and must never mutate personal knowledge or
@@ -148,7 +148,7 @@ impl OkfKnowledgeClient {
             OkfKnowledgeObservedState::Staged | OkfKnowledgeObservedState::Failed
         ) {
             return Err(adapter_evidence_error(
-                "The A3S Knowledge stage operation returned a non-staged terminal state.",
+                "The Aster Knowledge stage operation returned a non-staged terminal state.",
             ));
         }
         Ok(binding)
@@ -162,7 +162,7 @@ impl OkfKnowledgeClient {
             OkfKnowledgeObservedState::Promoted | OkfKnowledgeObservedState::Failed
         ) {
             return Err(adapter_evidence_error(
-                "The A3S Knowledge promote operation returned neither promoted nor failed evidence.",
+                "The Aster Knowledge promote operation returned neither promoted nor failed evidence.",
             ));
         }
         OkfKnowledgeBinding::new(receipt.clone(), observation)
@@ -178,7 +178,7 @@ impl OkfKnowledgeClient {
         observation.validate_for_receipt(receipt)?;
         if observation.state != OkfKnowledgeObservedState::Removed {
             return Err(adapter_evidence_error(
-                "The A3S Knowledge remove operation did not return removed evidence.",
+                "The Aster Knowledge remove operation did not return removed evidence.",
             ));
         }
         OkfKnowledgeBinding::new(receipt.clone(), observation)

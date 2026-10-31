@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     runtime_bundle_handoff_directory, ContainerId, ContainerTarget, CreateAttachments,
     CreateRequest, DeleteMode, DeleteRequest, IsolationRequest, LocalIpcEndpoint, OciBundle,
     OperationContext, OperationId, ProcessId, ProcessIo, ProcessTarget, ReadOutputRequest,
@@ -245,13 +245,13 @@ async fn qualify(
         return Err("runtime share leaked after delete".into());
     }
     Ok(
-        json!({"schema_version":"a3s.oci.hvf-workspace-qualification.v1", "status":"passed",
+        json!({"schema_version":"aster.oci.hvf-workspace-qualification.v1", "status":"passed",
         "target":target,"exit_status":status,"guest_rw_visible_on_host":true,
         "host_ro_survives_privileged_guest_remount":true,"caller_data_preserved":true,
         "caller_permissions_preserved":true,"runtime_share_clean":true}),
     )
 }
 
-fn operation(name: &str) -> a3s_oci_sdk::Result<OperationContext> {
+fn operation(name: &str) -> aster_oci_sdk::Result<OperationContext> {
     Ok(OperationContext::new(OperationId::new(name)?))
 }

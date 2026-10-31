@@ -2,7 +2,7 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 use super::super::dockerfile::{
     Instruction, RunBindMount, RunCacheMount, RunCommand, RunTmpfsMount,
@@ -20,7 +20,7 @@ use super::utils::{
 use super::BuildState;
 
 #[cfg(target_os = "macos")]
-const UNSAFE_HOST_RUN_ENV: &str = "A3S_BOX_UNSAFE_HOST_RUN";
+const UNSAFE_HOST_RUN_ENV: &str = "ASTER_BOX_UNSAFE_HOST_RUN";
 const RUN_OUTPUT_CONTEXT_BYTES: usize = 16 * 1024;
 
 fn resolve_guest_child(
@@ -435,7 +435,7 @@ pub(super) async fn handle_run(
             return Err(BoxError::BuildError(format!(
                 "Dockerfile RUN is not supported on macOS yet because isolated Linux build \
                  execution is not implemented locally. Re-run on Linux, use \
-                 `a3s-box build --run-pool` with an A3S warm-pool daemon, or set \
+                 `aster-box build --run-pool` with an Aster warm-pool daemon, or set \
                  {UNSAFE_HOST_RUN_ENV}=1 to opt into unsafe host-side execution for local \
                  experiments."
             )));
@@ -1462,13 +1462,13 @@ fn sync_run_cache_mount(target: &Path, cache_dir: &Path) -> Result<()> {
 
 /// Create one private overlay backup directory as a fresh rootfs entry.
 ///
-/// A fixed image-visible parent such as `.a3s-box-run-*-overlays` is unsafe:
+/// A fixed image-visible parent such as `.aster-box-run-*-overlays` is unsafe:
 /// an OCI layer can pre-create that entry as a symlink and make the host move
 /// guest files outside the rootfs. `create_dir` creates the random final entry
 /// atomically and fails instead of following a pre-existing link.
 fn create_run_overlay_staging_dir(rootfs_dir: &Path, kind: &str) -> Result<PathBuf> {
     let staging_dir = rootfs_dir.join(format!(
-        ".a3s-box-run-{kind}-overlay-{}",
+        ".aster-box-run-{kind}-overlay-{}",
         uuid::Uuid::new_v4()
     ));
     std::fs::create_dir(&staging_dir).map_err(|error| {
@@ -2248,7 +2248,7 @@ impl LinuxRunMounts {
     ) -> Result<Self> {
         for mount in cache_mounts {
             let cache_dir = tempfile::Builder::new()
-                .prefix("a3s-box-run-cache-")
+                .prefix("aster-box-run-cache-")
                 .tempdir()
                 .map_err(|e| {
                     BoxError::BuildError(format!("Failed to create RUN cache mount: {}", e))
@@ -2918,7 +2918,7 @@ mod tests {
     };
     use crate::oci::build::engine::{BuildConfig, BuildNetworkPolicy, BuildState};
     #[cfg(unix)]
-    use a3s_box_core::error::BoxError;
+    use aster_box_core::error::BoxError;
     use std::collections::HashMap;
     use std::path::PathBuf;
 
@@ -3472,7 +3472,7 @@ mod tests {
         std::fs::create_dir_all(&outside).unwrap();
         std::fs::write(context.join("src/input.txt"), "context").unwrap();
         std::fs::write(target.join("original.txt"), "rootfs").unwrap();
-        std::os::unix::fs::symlink(&outside, rootfs.join(".a3s-box-run-bind-overlays")).unwrap();
+        std::os::unix::fs::symlink(&outside, rootfs.join(".aster-box-run-bind-overlays")).unwrap();
         let mounts = vec![RunBindMount {
             from: None,
             raw: "--mount=type=bind,source=src,target=/work".to_string(),
@@ -3492,7 +3492,7 @@ mod tests {
             "rootfs"
         );
         assert!(
-            std::fs::symlink_metadata(rootfs.join(".a3s-box-run-bind-overlays"))
+            std::fs::symlink_metadata(rootfs.join(".aster-box-run-bind-overlays"))
                 .unwrap()
                 .file_type()
                 .is_symlink()
@@ -3599,7 +3599,7 @@ mod tests {
         std::fs::create_dir_all(&target).unwrap();
         std::fs::create_dir_all(&outside).unwrap();
         std::fs::write(target.join("original.txt"), "rootfs").unwrap();
-        std::os::unix::fs::symlink(&outside, rootfs.join(".a3s-box-run-tmpfs-overlays")).unwrap();
+        std::os::unix::fs::symlink(&outside, rootfs.join(".aster-box-run-tmpfs-overlays")).unwrap();
         let mounts = vec![RunTmpfsMount {
             raw: "--mount=type=tmpfs,target=/work/tmp".to_string(),
             target: "/work/tmp".to_string(),
@@ -3614,7 +3614,7 @@ mod tests {
             "rootfs"
         );
         assert!(
-            std::fs::symlink_metadata(rootfs.join(".a3s-box-run-tmpfs-overlays"))
+            std::fs::symlink_metadata(rootfs.join(".aster-box-run-tmpfs-overlays"))
                 .unwrap()
                 .file_type()
                 .is_symlink()
@@ -3685,7 +3685,7 @@ mod tests {
         std::fs::create_dir_all(&target).unwrap();
         std::fs::create_dir_all(&outside).unwrap();
         std::fs::write(target.join("original.txt"), "rootfs").unwrap();
-        std::os::unix::fs::symlink(&outside, rootfs.join(".a3s-box-run-cache-overlays")).unwrap();
+        std::os::unix::fs::symlink(&outside, rootfs.join(".aster-box-run-cache-overlays")).unwrap();
         let mounts = vec![RunCacheMount {
             raw: "--mount=type=cache,target=/root/.cache".to_string(),
             id: None,
@@ -3710,7 +3710,7 @@ mod tests {
             "rootfs"
         );
         assert!(
-            std::fs::symlink_metadata(rootfs.join(".a3s-box-run-cache-overlays"))
+            std::fs::symlink_metadata(rootfs.join(".aster-box-run-cache-overlays"))
                 .unwrap()
                 .file_type()
                 .is_symlink()

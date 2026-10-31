@@ -1,6 +1,6 @@
 use std::fs;
 
-use a3s_use_core::{OkfKnowledgeObservedState, PlanScope, PlanScopeKind};
+use aster_use_core::{OkfKnowledgeObservedState, PlanScope, PlanScopeKind};
 use sha2::{Digest, Sha256};
 use tempfile::TempDir;
 
@@ -415,7 +415,7 @@ async fn store_rejects_wrong_scope_and_surface_identity() {
         "use.okf.knowledge_binding_path_invalid"
     );
     let mut wrong_kind = surface();
-    wrong_kind.surface.kind = a3s_use_core::PackageSurfaceKind::Skill;
+    wrong_kind.surface.kind = aster_use_core::PackageSurfaceKind::Skill;
     assert_eq!(
         store
             .snapshot(&scope(PlanScopeKind::Workspace), &wrong_kind)

@@ -99,7 +99,7 @@ def start(exact_benchmark_usage=False, max_concurrent=4):
         (ROOT/name).mkdir(parents=True, exist_ok=True)
     ROOT.chmod(0o700)
     ensure_ports_free((30102, 30103))
-    power = ROOT/'bin/a3s-power'
+    power = ROOT/'bin/aster-power'
     if hashlib.sha256(power.read_bytes()).hexdigest() != POWER_SHA256:
         raise RuntimeError('Power binary differs from the H200-validated build')
     engine = safe_engine_state()
@@ -118,7 +118,7 @@ def start(exact_benchmark_usage=False, max_concurrent=4):
                       f'proxy_upstream "{MODEL}" {{\n url = "http://127.0.0.1:30103"\n}}\n')
     config.chmod(0o600)
     environment = dict(os.environ)
-    environment['A3S_POWER_HOME'] = str(ROOT/'data')
+    environment['ASTER_POWER_HOME'] = str(ROOT/'data')
     bridge_path = Path(__file__).with_name('loopback_recipe.py')
     bridge = ownership.start_process('official-recipe', [str(RECIPE_PYTHON), str(bridge_path)], environment)
     try:
@@ -282,7 +282,7 @@ def main():
     else:
         ownership.ROOT = ROOT
         ownership.PRIVATE = ROOT
-        ownership.stop_owned('official-power', ROOT/'bin/a3s-power')
+        ownership.stop_owned('official-power', ROOT/'bin/aster-power')
         ownership.stop_owned('official-recipe', Path(__file__).with_name('loopback_recipe.py'))
         print('OWN_OFFICIAL_FRONTEND_STOPPED', flush=True)
 

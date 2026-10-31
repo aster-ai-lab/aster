@@ -36,7 +36,7 @@ export class DocxHiddenTextPatchCollector {
     if (existing) return existing;
     let marker = '';
     do {
-      marker = `A3SOfficeHiddenText${value ? 'On' : 'Off'}${String(
+      marker = `AsterOfficeHiddenText${value ? 'On' : 'Off'}${String(
         this.nextMarker,
       ).padStart(8, '0')}`;
       this.nextMarker += 1;

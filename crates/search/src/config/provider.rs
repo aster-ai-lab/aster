@@ -1,9 +1,9 @@
 //! Typed ACL configuration for native search providers.
 
-use a3s_acl::ast::Block;
+use aster_acl::ast::Block;
 
 use crate::providers::{
-    A3sConfig, A3sProvider, AliyunConfig, AliyunProvider, AnySearchConfig, AnySearchProvider,
+    AsterConfig, AsterProvider, AliyunConfig, AliyunProvider, AnySearchConfig, AnySearchProvider,
     BochaConfig, BochaProvider, BuiltinProvider, DeepSeekConfig, DeepSeekProvider, DoubaoConfig,
     DoubaoProvider, FirecrawlConfig, FirecrawlProvider, ProviderEngine, TavilyConfig,
     TavilyProvider, TencentConfig, TencentProvider, TinyFishConfig, TinyFishProvider,
@@ -49,7 +49,7 @@ const ALIYUN_ATTRIBUTES: &[&str] = &["engine_type", "max_results", "include_main
 
 const TENCENT_ATTRIBUTES: &[&str] = &["max_results", "site", "industry"];
 
-const A3S_ATTRIBUTES: &[&str] = &["max_results", "include_markdown", "auth_header"];
+const ASTER_ATTRIBUTES: &[&str] = &["max_results", "include_markdown", "auth_header"];
 
 const DOUBAO_ATTRIBUTES: &[&str] = &["max_results", "authoritative_only", "query_rewrite"];
 
@@ -108,8 +108,8 @@ pub enum ProviderSettings {
     Tencent(TencentConfig),
     /// Native Firecrawl configuration.
     Firecrawl(FirecrawlConfig),
-    /// Native A3S configuration.
-    A3s(A3sConfig),
+    /// Native Aster configuration.
+    Aster(AsterConfig),
     /// Native Doubao Search configuration.
     Doubao(DoubaoConfig),
     /// Native DeepSeek Search configuration.
@@ -127,7 +127,7 @@ impl ProviderSettings {
             Self::Aliyun(_) => BuiltinProvider::Aliyun,
             Self::Tencent(_) => BuiltinProvider::Tencent,
             Self::Firecrawl(_) => BuiltinProvider::Firecrawl,
-            Self::A3s(_) => BuiltinProvider::A3s,
+            Self::Aster(_) => BuiltinProvider::Aster,
             Self::Doubao(_) => BuiltinProvider::Doubao,
             Self::DeepSeek(_) => BuiltinProvider::DeepSeek,
         }
@@ -154,7 +154,7 @@ impl ProviderSettings {
             Self::Firecrawl(config) => {
                 Ok(ProviderEngine::new(FirecrawlProvider::new(config.clone())?))
             }
-            Self::A3s(config) => Ok(ProviderEngine::new(A3sProvider::new(config.clone())?)),
+            Self::Aster(config) => Ok(ProviderEngine::new(AsterProvider::new(config.clone())?)),
             Self::Doubao(config) => Ok(ProviderEngine::new(DoubaoProvider::new(config.clone())?)),
             Self::DeepSeek(config) => {
                 Ok(ProviderEngine::new(DeepSeekProvider::new(config.clone())?))
@@ -244,7 +244,7 @@ pub(super) fn parse_provider_block(block: &Block) -> Result<(String, ProviderEnt
         BuiltinProvider::Aliyun => ALIYUN_ATTRIBUTES,
         BuiltinProvider::Tencent => TENCENT_ATTRIBUTES,
         BuiltinProvider::Firecrawl => FIRECRAWL_ATTRIBUTES,
-        BuiltinProvider::A3s => A3S_ATTRIBUTES,
+        BuiltinProvider::Aster => ASTER_ATTRIBUTES,
         BuiltinProvider::Doubao => DOUBAO_ATTRIBUTES,
         BuiltinProvider::DeepSeek => DEEPSEEK_ATTRIBUTES,
     };
@@ -280,7 +280,7 @@ pub(super) fn parse_provider_block(block: &Block) -> Result<(String, ProviderEnt
         BuiltinProvider::Firecrawl => {
             ProviderSettings::Firecrawl(ai::parse_firecrawl(block, provider)?)
         }
-        BuiltinProvider::A3s => ProviderSettings::A3s(ai::parse_a3s(block, provider)?),
+        BuiltinProvider::Aster => ProviderSettings::Aster(ai::parse_aster(block, provider)?),
         BuiltinProvider::Doubao => ProviderSettings::Doubao(ai::parse_doubao(block, provider)?),
         BuiltinProvider::DeepSeek => {
             ProviderSettings::DeepSeek(ai::parse_deepseek(block, provider)?)
@@ -300,7 +300,7 @@ pub(super) fn parse_provider_block(block: &Block) -> Result<(String, ProviderEnt
 
 #[cfg(test)]
 mod tests {
-    use a3s_acl::ast::Value;
+    use aster_acl::ast::Value;
     use serde_json::Value as JsonValue;
 
     use super::*;
@@ -379,7 +379,7 @@ mod tests {
                 api_key = null
             }
             provider "tavily" {
-                api_key = env("A3S_SEARCH_CONFIG_TEST_KEY_THAT_MUST_NOT_EXIST")
+                api_key = env("ASTER_SEARCH_CONFIG_TEST_KEY_THAT_MUST_NOT_EXIST")
             }
             provider "bocha" {
                 api_key = "bocha-secret"
@@ -439,9 +439,9 @@ mod tests {
             r#"provider "tencent" { max_results = 15 }"#,
             r#"provider "firecrawl" { max_results = 0 }"#,
             r#"provider "firecrawl" { include_domains = ["example.com"] exclude_domains = ["other.com"] }"#,
-            r#"provider "a3s" { categories = ["research"] }"#,
-            r#"provider "a3s" { max_results = 0 }"#,
-            r#"provider "a3s" { auth_header = "basic" }"#,
+            r#"provider "aster" { categories = ["research"] }"#,
+            r#"provider "aster" { max_results = 0 }"#,
+            r#"provider "aster" { auth_header = "basic" }"#,
             r#"provider "doubao" { max_results = 51 }"#,
             r#"provider "doubao" { authoritative_only = "yes" }"#,
             r#"provider "doubao" { auth_level = 1 }"#,

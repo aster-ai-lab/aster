@@ -2,7 +2,7 @@ use std::fs::OpenOptions;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use fs2::FileExt;
 use sha2::{Digest, Sha256};
 use tokio::io::AsyncWriteExt;
@@ -107,7 +107,7 @@ pub async fn repair_office_cli() -> UseResult<OfficeRuntimeStatus> {
     }
 }
 
-/// Remove only files owned by the A3S-managed OfficeCLI installation.
+/// Remove only files owned by the Aster-managed OfficeCLI installation.
 pub async fn uninstall_managed_office_cli() -> UseResult<bool> {
     let root = managed_root()?;
     let _lock = acquire_lock(&root).await?;
@@ -232,7 +232,7 @@ async fn download(url: &str, destination: &Path) -> UseResult<DownloadedArtifact
         }
     });
     let client = reqwest::Client::builder()
-        .user_agent("a3s-use/0.1")
+        .user_agent("aster-use/0.1")
         .redirect(redirect)
         .timeout(std::time::Duration::from_secs(300))
         .build()
@@ -451,7 +451,7 @@ async fn activate(stage: &Path, target: &Path) -> UseResult<()> {
         return Err(office_error(
             "use.office.install_stage_unowned",
             format!(
-                "OfficeCLI staging directory '{}' has no valid A3S install receipt.",
+                "OfficeCLI staging directory '{}' has no valid Aster install receipt.",
                 stage.display()
             ),
         ));
@@ -470,7 +470,7 @@ async fn activate(stage: &Path, target: &Path) -> UseResult<()> {
                 target.display()
             ),
         )
-        .with_suggestion("Move the directory aside or restore its A3S install receipt."));
+        .with_suggestion("Move the directory aside or restore its Aster install receipt."));
     }
     let backup = unique_backup_path(target).await?;
     if had_target {

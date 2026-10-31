@@ -169,10 +169,10 @@ pub(super) fn mount_virtio_fs_shares() -> Result<(), Box<dyn std::error::Error>>
 /// `MS_RDONLY` and `noload` so this observational path cannot replay a journal.
 #[cfg(target_os = "linux")]
 pub(super) fn mount_rootfs_maintenance_device() -> Result<(), Box<dyn std::error::Error>> {
-    use a3s_box_core::guest_exec::{
+    use aster_box_core::guest_exec::{
         GUEST_ROOTFS_MAINTENANCE_DEVICE_ENV, GUEST_ROOTFS_MAINTENANCE_MOUNT_PATH,
     };
-    use a3s_box_core::vmm::GUEST_EXT4_ROOT_DEVICE;
+    use aster_box_core::vmm::GUEST_EXT4_ROOT_DEVICE;
     use nix::mount::{mount, MsFlags};
 
     let device = std::env::var(GUEST_ROOTFS_MAINTENANCE_DEVICE_ENV)
@@ -221,7 +221,7 @@ pub(super) fn mount_rootfs_maintenance_device() -> Result<(), Box<dyn std::error
 
 #[cfg(target_os = "linux")]
 pub(super) fn unmount_rootfs_maintenance_device() -> Result<(), Box<dyn std::error::Error>> {
-    use a3s_box_core::guest_exec::GUEST_ROOTFS_MAINTENANCE_MOUNT_PATH;
+    use aster_box_core::guest_exec::GUEST_ROOTFS_MAINTENANCE_MOUNT_PATH;
     use nix::mount::{umount2, MntFlags};
 
     umount2(GUEST_ROOTFS_MAINTENANCE_MOUNT_PATH, MntFlags::empty())?;
@@ -329,7 +329,7 @@ pub(super) fn virtiofs_mount_options_from_env_value(value: Option<&str>) -> Opti
 
 #[cfg_attr(not(target_os = "linux"), allow(dead_code))]
 pub(super) fn virtiofs_mount_options() -> Option<String> {
-    virtiofs_mount_options_from_env_value(std::env::var("A3S_VIRTIOFS_CACHE").ok().as_deref())
+    virtiofs_mount_options_from_env_value(std::env::var("ASTER_VIRTIOFS_CACHE").ok().as_deref())
 }
 
 #[cfg(target_os = "linux")]
@@ -388,7 +388,7 @@ pub(super) fn mount_user_volumes() -> Result<(), Box<dyn std::error::Error>> {
                 let guest_path = parts[1];
                 if guest_mount_path_overlaps_runtime_state(guest_path) {
                     return Err(format!(
-                        "guest volume path {guest_path:?} overlaps reserved runtime state /run/a3s-box"
+                        "guest volume path {guest_path:?} overlaps reserved runtime state /run/aster-box"
                     )
                     .into());
                 }
@@ -411,7 +411,7 @@ pub(super) fn mount_user_volumes() -> Result<(), Box<dyn std::error::Error>> {
                     // onto guest_path. This preserves the target's parent directory
                     // (e.g. /etc) instead of clobbering it with the share.
                     let file_name = guest_path.rsplit('/').next().unwrap_or(guest_path);
-                    let private_mp = format!("/run/.a3s-filemounts/{}", index);
+                    let private_mp = format!("/run/.aster-filemounts/{}", index);
                     std::fs::create_dir_all(&private_mp)?;
                     mount_virtiofs(tag, private_mp.as_str(), MsFlags::empty())?;
 
@@ -501,8 +501,8 @@ pub(super) fn guest_mount_path_overlaps_runtime_state(path: &str) -> bool {
     );
     normalized == "/"
         || normalized == "/run"
-        || normalized == "/run/a3s-box"
-        || normalized.starts_with("/run/a3s-box/")
+        || normalized == "/run/aster-box"
+        || normalized.starts_with("/run/aster-box/")
 }
 
 /// Mount a managed volume privately, seed it from the image directory when
@@ -550,7 +550,7 @@ pub(super) fn volume_staging_path(
 ) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     for root in ["/run", "/dev", "/tmp"] {
         let root = std::fs::canonicalize(root)?;
-        let candidate = root.join(".a3s-volume-mounts").join(index.to_string());
+        let candidate = root.join(".aster-volume-mounts").join(index.to_string());
         if !candidate.starts_with(source) {
             return Ok(candidate);
         }

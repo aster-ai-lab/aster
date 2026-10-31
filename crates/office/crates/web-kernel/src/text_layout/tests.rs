@@ -74,7 +74,7 @@ fn preserves_explicit_line_breaks() {
 
 #[test]
 fn resolves_mixed_direction_text_into_line_scoped_bidi_runs() {
-    let text = "A3S שלום 2026";
+    let text = "Aster שלום 2026";
     let bidi = ResolvedBidiText::new(text, TextDirection::Ltr);
     let runs = bidi.directional_runs(0, text.len()).collect::<Vec<_>>();
 
@@ -95,8 +95,8 @@ fn resolves_mixed_direction_text_into_line_scoped_bidi_runs() {
 
 #[test]
 fn rejects_structured_tabs_when_the_resolved_line_contains_rtl_text() {
-    let ltr = ResolvedBidiText::new("A3S\tOffice", TextDirection::Ltr);
-    let mixed = ResolvedBidiText::new("A3S\tשלום", TextDirection::Ltr);
+    let ltr = ResolvedBidiText::new("Aster\tOffice", TextDirection::Ltr);
+    let mixed = ResolvedBidiText::new("Aster\tשלום", TextDirection::Ltr);
 
     assert!(text_tabs_support_bidi(&ltr));
     assert!(!text_tabs_support_bidi(&mixed));
@@ -106,7 +106,7 @@ fn rejects_structured_tabs_when_the_resolved_line_contains_rtl_text() {
 fn rejects_duplicate_paragraph_ids() {
     let paragraph = TextLayoutParagraph {
         id: "same".into(),
-        text: "A3S".into(),
+        text: "Aster".into(),
         runs: vec![TextLayoutRun {
             start_utf16: 0,
             end_utf16: 3,
@@ -152,7 +152,7 @@ fn rejects_gaps_between_text_runs() {
         document_revision: 1,
         paragraphs: vec![TextLayoutParagraph {
             id: "paragraph".into(),
-            text: "A3S 文档".into(),
+            text: "Aster 文档".into(),
             runs: vec![
                 TextLayoutRun {
                     start_utf16: 0,
@@ -252,7 +252,7 @@ fn rejects_utf16_offsets_inside_a_surrogate_pair() {
 fn rejects_duplicate_primary_and_fallback_font_ids() {
     let paragraph = TextLayoutParagraph {
         id: "fallback".into(),
-        text: "A3S".into(),
+        text: "Aster".into(),
         runs: vec![TextLayoutRun {
             start_utf16: 0,
             end_utf16: 3,
@@ -284,7 +284,7 @@ fn rejects_duplicate_primary_and_fallback_font_ids() {
 fn validates_optional_text_run_language_tags() {
     let mut paragraph = TextLayoutParagraph {
         id: "language".into(),
-        text: "A3S".into(),
+        text: "Aster".into(),
         runs: vec![TextLayoutRun {
             start_utf16: 0,
             end_utf16: 3,

@@ -18,6 +18,6 @@ fn gateway_and_power_share_the_same_worker_observation_schema_id() {
     assert_eq!(
         crate::config::POWER_WORKER_OBSERVATION_SCHEMA,
         power_schema,
-        "Gateway and Power must agree on a3s.power.worker-observation schema id"
+        "Gateway and Power must agree on aster.power.worker-observation schema id"
     );
 }

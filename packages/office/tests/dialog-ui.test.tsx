@@ -69,11 +69,11 @@ describe('Office dialog dismissal', () => {
       Object.defineProperty(event, 'animationName', { value: name });
       target.dispatchEvent(event);
     };
-    await act(async () => end(panel.querySelector('input')!, 'a3s-dialog-out'));
+    await act(async () => end(panel.querySelector('input')!, 'aster-dialog-out'));
     expect(panel.isConnected).toBe(true);
-    await act(async () => end(panel, 'a3s-dialog-in'));
+    await act(async () => end(panel, 'aster-dialog-in'));
     expect(panel.isConnected).toBe(true);
-    await act(async () => end(panel, 'a3s-dialog-out'));
+    await act(async () => end(panel, 'aster-dialog-out'));
     expect(panel.isConnected).toBe(false);
   });
 

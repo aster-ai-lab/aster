@@ -1,4 +1,4 @@
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, MemoryAccessEvent, MemoryChangeSet,
     MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryQuery, MemoryRepository,
     MemoryRepositoryError, MemorySnapshotRequest, MemoryStatus, RevisionMode,
@@ -14,7 +14,7 @@ fn time(second: u32) -> chrono::DateTime<Utc> {
 
 fn evidence(name: &str, second: u32) -> EvidenceRef {
     EvidenceRef::try_new(
-        format!("a3s://contract/run/turn/{name}"),
+        format!("aster://contract/run/turn/{name}"),
         format!("sha256:{name:0>64}"),
         EvidenceKind::SessionTurn,
         time(second),
@@ -65,7 +65,7 @@ pub async fn assert_repository_contract(repository: &dyn MemoryRepository, scope
                 node_id: "contract-node".into(),
                 expected_revision: 1,
                 evidence: vec![EvidenceRef::try_new(
-                    "a3s://contract/review/activation",
+                    "aster://contract/review/activation",
                     format!("sha256:{:0>64}", "activation"),
                     EvidenceKind::Verification,
                     time(2),
@@ -198,7 +198,7 @@ pub async fn assert_repository_contract(repository: &dyn MemoryRepository, scope
                 node_id: "contract-cjk-node".into(),
                 expected_revision: 1,
                 evidence: vec![EvidenceRef::try_new(
-                    "a3s://contract/review/cjk-activation",
+                    "aster://contract/review/cjk-activation",
                     format!("sha256:{:0>64}", "cjk-activation"),
                     EvidenceKind::Verification,
                     time(6),

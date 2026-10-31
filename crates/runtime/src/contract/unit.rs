@@ -251,7 +251,7 @@ pub struct RuntimeUnitSpec {
 }
 
 impl RuntimeUnitSpec {
-    pub const SCHEMA: &'static str = "a3s.runtime.unit-spec.v4";
+    pub const SCHEMA: &'static str = "aster.runtime.unit-spec.v4";
 
     pub fn validate(&self) -> Result<(), String> {
         if self.schema != Self::SCHEMA {
@@ -355,7 +355,7 @@ mod tests {
 
     fn artifact() -> ArtifactRef {
         ArtifactRef {
-            uri: format!("oci://registry.example/a3s/demo@sha256:{}", "a".repeat(64)),
+            uri: format!("oci://registry.example/aster/demo@sha256:{}", "a".repeat(64)),
             digest: format!("sha256:{}", "a".repeat(64)),
             media_type: "application/vnd.oci.image.manifest.v1+json".into(),
         }

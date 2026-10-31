@@ -8,7 +8,7 @@ the baseline an assertion in the packaging step instead of a claim in the
 release notes.
 
 Usage:
-    check-glibc-symbols.py --max 2.31 path/to/aster path/to/a3s-code-acp
+    check-glibc-symbols.py --max 2.31 path/to/aster path/to/aster-acp
 
 Exit status is 0 when every required version is at or below the ceiling, 1 when
 any binary exceeds it, and 2 when the versions cannot be read at all. Failing to

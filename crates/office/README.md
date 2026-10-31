@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="A3S Office brings five format-native editors into a host-owned product boundary">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Aster Office brings five format-native editors into a host-owned product boundary">
 </p>
 
 
@@ -18,16 +18,16 @@
 </p>
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/Office/playground/"><strong>Open the Playground</strong></a>
+  <a href="https://aster-lab.github.io/Office/playground/"><strong>Open the Playground</strong></a>
   ·
-  <a href="https://a3s-lab.github.io/Office/docs/">Read the documentation</a>
+  <a href="https://aster-lab.github.io/Office/docs/">Read the documentation</a>
   ·
   <a href="#quick-start">Embed an editor</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/Office/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/Office/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
-  <a href="https://www.npmjs.com/package/@a3s-lab/office"><img alt="npm version" src="https://img.shields.io/npm/v/@a3s-lab/office?style=flat-square&amp;color=1456f0"></a>
+  <a href="https://github.com/aster-ai-lab/Office/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/Office/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
+  <a href="https://www.npmjs.com/package/@aster-ai-lab/office"><img alt="npm version" src="https://img.shields.io/npm/v/@aster-ai-lab/office?style=flat-square&amp;color=1456f0"></a>
   <a href="#project-status"><img alt="Project status: pre-1.0" src="https://img.shields.io/badge/status-pre--1.0-7457c8?style=flat-square"></a>
   <a href="./LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-16845b?style=flat-square"></a>
 </p>
@@ -45,25 +45,25 @@
 
 ---
 
-A3S Office is an open-source Office engine for teams building editing into
+Aster Office is an open-source Office engine for teams building editing into
 their own products. It provides complete browser surfaces for documents,
 spreadsheets, presentations, Markdown, and PDFs, plus a separate Rust
 automation plane for files and coding agents.
 
-The product boundary is deliberate: A3S Office owns format-aware editing,
+The product boundary is deliberate: Aster Office owns format-aware editing,
 layout, import, export, and typed mutations. Your application keeps control of
 content, persistence, identity, authorization, collaboration transport, and AI
-providers. Core editing and file workflows require no A3S backend or bundled
+providers. Core editing and file workflows require no Aster backend or bundled
 cloud service.
 
 ## Proof, not promises
 
 These are committed visual-regression baselines from the real
-[Playground](https://a3s-lab.github.io/Office/playground/), not concept art.
+[Playground](https://aster-lab.github.io/Office/playground/), not concept art.
 
 <p align="center">
   <a href="./visual-tests/__snapshots__/linux/desktop-1280/document.png">
-    <img src="./visual-tests/__snapshots__/linux/desktop-1280/document.png" alt="A3S Office Document editor with an Office-style ribbon and paginated project brief" width="100%">
+    <img src="./visual-tests/__snapshots__/linux/desktop-1280/document.png" alt="Aster Office Document editor with an Office-style ribbon and paginated project brief" width="100%">
   </a>
 </p>
 
@@ -71,13 +71,13 @@ These are committed visual-regression baselines from the real
   <tr>
     <td width="50%" valign="top">
       <a href="./visual-tests/__snapshots__/linux/desktop-1280/spreadsheet.png">
-        <img src="./visual-tests/__snapshots__/linux/desktop-1280/spreadsheet.png" alt="A3S Office Spreadsheet editor showing a quarterly execution plan">
+        <img src="./visual-tests/__snapshots__/linux/desktop-1280/spreadsheet.png" alt="Aster Office Spreadsheet editor showing a quarterly execution plan">
       </a>
       <br><sub><strong>Spreadsheet</strong> — formulas, tables, formatting, sort, filter, and print workflows</sub>
     </td>
     <td width="50%" valign="top">
       <a href="./visual-tests/__snapshots__/linux/desktop-1280/presentation.png">
-        <img src="./visual-tests/__snapshots__/linux/desktop-1280/presentation.png" alt="A3S Office Presentation editor with slide thumbnails and a slide canvas">
+        <img src="./visual-tests/__snapshots__/linux/desktop-1280/presentation.png" alt="Aster Office Presentation editor with slide thumbnails and a slide canvas">
       </a>
       <br><sub><strong>Presentation</strong> — structured slides, objects, animations, and presenter flows</sub>
     </td>
@@ -85,20 +85,20 @@ These are committed visual-regression baselines from the real
   <tr>
     <td width="50%" valign="top">
       <a href="./visual-tests/__snapshots__/linux/desktop-1280/markdown.png">
-        <img src="./visual-tests/__snapshots__/linux/desktop-1280/markdown.png" alt="A3S Office Markdown editor in synchronized source and preview mode">
+        <img src="./visual-tests/__snapshots__/linux/desktop-1280/markdown.png" alt="Aster Office Markdown editor in synchronized source and preview mode">
       </a>
       <br><sub><strong>Markdown</strong> — GFM source, visual editing, and synchronized preview</sub>
     </td>
     <td width="50%" valign="top">
       <a href="./visual-tests/__snapshots__/linux/desktop-1280/pdf.png">
-        <img src="./visual-tests/__snapshots__/linux/desktop-1280/pdf.png" alt="A3S Office PDF editor with search, annotation, page organization, save, and download controls">
+        <img src="./visual-tests/__snapshots__/linux/desktop-1280/pdf.png" alt="Aster Office PDF editor with search, annotation, page organization, save, and download controls">
       </a>
       <br><sub><strong>PDF</strong> — PDFium rendering, forms, annotations, page organization, and save</sub>
     </td>
   </tr>
 </table>
 
-## Why A3S Office exists
+## Why Aster Office exists
 
 Embedding Office work is not one problem. A dependable product needs four
 things at the same time:
@@ -112,7 +112,7 @@ things at the same time:
 4. **Deterministic automation** — agents and backend jobs need typed,
    conflict-aware mutations instead of UI scraping.
 
-A3S Office keeps those concerns separate while exposing them through one
+Aster Office keeps those concerns separate while exposing them through one
 package and one set of bounded contracts.
 
 ## Five surfaces, one product boundary
@@ -139,7 +139,7 @@ Core API use the same controlled content models.
 
 <p align="center">
   <a href="./assets/readme/architecture.svg">
-    <img src="./assets/readme/architecture.svg" width="100%" alt="A3S Office architecture with browser editing and native automation planes controlled by the host product">
+    <img src="./assets/readme/architecture.svg" width="100%" alt="Aster Office architecture with browser editing and native automation planes controlled by the host product">
   </a>
 </p>
 
@@ -154,14 +154,14 @@ The two execution planes solve different jobs:
 
 Both planes are controlled by the host:
 
-| A3S Office owns | Your product owns |
+| Aster Office owns | Your product owns |
 | --- | --- |
 | Format-native models and commands | Content persistence and version history |
 | Import, export, layout, and rendering | Identity, authorization, and policy |
 | Editor UI and responsive interaction | Application shell and navigation |
 | Typed collaboration and agent ports | Rooms, transport, model providers, and AI lifecycle |
 
-Neither plane requires an A3S backend. Read the
+Neither plane requires an Aster backend. Read the
 [browser architecture](./docs/latest/en/browser-editor-architecture.md) and
 [native engine design](./docs/latest/en/native-office-engine.md) for the exact
 boundaries.
@@ -171,14 +171,14 @@ boundaries.
 ### Try the complete product
 
 The fastest first success is the
-[live Playground](https://a3s-lab.github.io/Office/playground/). It exposes
+[live Playground](https://aster-lab.github.io/Office/playground/). It exposes
 normal document templates, recent capabilities, file import, and every editor
 without a local install.
 
 To run the same Playground locally, use Node.js 20+, Bun 1.3+, and Rust 1.85+:
 
 ```bash
-git clone https://github.com/A3S-Lab/Office.git
+git clone https://github.com/aster-ai-lab/Office.git
 cd Office
 bun install --frozen-lockfile
 bun run playground
@@ -187,7 +187,7 @@ bun run playground
 ### Embed a controlled React editor
 
 ```bash
-bun add @a3s-lab/office react react-dom
+bun add @aster-ai-lab/office react react-dom
 ```
 
 Import the stylesheet once, give the editor an explicit-height host, and retain
@@ -195,9 +195,9 @@ the complete value emitted by `onChange`:
 
 ```tsx
 import { useState } from 'react';
-import type { DocumentContent } from '@a3s-lab/office/core';
-import { DocumentEditor } from '@a3s-lab/office/react';
-import '@a3s-lab/office/styles.css';
+import type { DocumentContent } from '@aster-ai-lab/office/core';
+import { DocumentEditor } from '@aster-ai-lab/office/react';
+import '@aster-ai-lab/office/styles.css';
 
 const initialContent: DocumentContent = {
   type: 'document',
@@ -228,14 +228,14 @@ and how the controlled value is stored.
 
 | Entry point | Use it for |
 | --- | --- |
-| `@a3s-lab/office/react` | Lazy React editor components and preload helpers |
-| `@a3s-lab/office/vue` | Vue 3 adapters with `v-model:content` |
-| `@a3s-lab/office/web-component` | Framework-agnostic Custom Elements |
-| `@a3s-lab/office/core` | Models, templates, import/export, file workflows, and Yjs bindings |
-| `@a3s-lab/office/styles.css` | Shared editor and interaction-system styles |
+| `@aster-ai-lab/office/react` | Lazy React editor components and preload helpers |
+| `@aster-ai-lab/office/vue` | Vue 3 adapters with `v-model:content` |
+| `@aster-ai-lab/office/web-component` | Framework-agnostic Custom Elements |
+| `@aster-ai-lab/office/core` | Models, templates, import/export, file workflows, and Yjs bindings |
+| `@aster-ai-lab/office/styles.css` | Shared editor and interaction-system styles |
 
 Copyable integrations live in the
-[component documentation](https://a3s-lab.github.io/Office/docs/components/).
+[component documentation](https://aster-lab.github.io/Office/docs/components/).
 
 ## Files stay files
 
@@ -246,7 +246,7 @@ import {
   createArtifact,
   createArtifactBlob,
   importOfficeFile,
-} from '@a3s-lab/office/core';
+} from '@aster-ai-lab/office/core';
 
 const shell = createArtifact('blank-document');
 const artifact = await importOfficeFile(file, {
@@ -276,18 +276,18 @@ contracts.
 
 Every editor exposes the same transport-neutral collaboration boundary through
 Yjs/Yrs content and Awareness. Browser users, native replicas, CLI sessions,
-MCP clients, and A3S Code can participate in the same host-owned document.
+MCP clients, and Aster Code can participate in the same host-owned document.
 
-A3S Office provides format-specific bindings, local undo, validated presence,
+Aster Office provides format-specific bindings, local undo, validated presence,
 remote selections or locations, comments, suggestions, and conflict-local
 typed mutations. The host provides rooms, authentication, authorization,
 delivery, offline buffering, persistence, and the `Y.Doc`.
 
 This separation makes collaboration optional infrastructure rather than a
 mandatory account or storage service. Start with the
-[collaboration guide](https://a3s-lab.github.io/Office/docs/components/collaboration.html)
+[collaboration guide](https://aster-lab.github.io/Office/docs/components/collaboration.html)
 or the runnable
-[A3S Boot example](./examples/collaboration-server/).
+[Aster Boot example](./examples/collaboration-server/).
 
 ## Automation without UI scraping
 
@@ -296,27 +296,27 @@ share the same bounded file contracts:
 
 ```bash
 # Validate and inspect a file.
-cargo run -p a3s-office-cli -- validate report.docx --json
-cargo run -p a3s-office-cli -- view report.docx outline --json
+cargo run -p aster-office-cli -- validate report.docx --json
+cargo run -p aster-office-cli -- view report.docx outline --json
 
 # Apply an exact guarded mutation.
-cargo run -p a3s-office-cli -- set report.docx /body \
+cargo run -p aster-office-cli -- set report.docx /body \
   --find Draft --replace Final --json
 
 # Expose the same contracts over standard MCP.
-cargo run -p a3s-office-cli -- mcp
+cargo run -p aster-office-cli -- mcp
 ```
 
 Native collaboration replicas can exchange standard Yjs updates and state
 vectors, then apply typed Document, Markdown, Spreadsheet, Presentation, and
 PDF mutations without interpreting Office's private CRDT schema.
 
-Read the [automation guide](https://a3s-lab.github.io/Office/docs/automation/)
+Read the [automation guide](https://aster-lab.github.io/Office/docs/automation/)
 and [CLI reference](./docs/latest/en/cli-reference.md).
 
 Before a coding agent uses cached guidance, verify the packaged Skill contract
-with `cargo run -p a3s-office-cli -- skills manifest a3s-office --json` (or
-`a3s-office skills manifest a3s-office --json` after installation). The
+with `cargo run -p aster-office-cli -- skills manifest aster-office --json` (or
+`aster-office skills manifest aster-office --json` after installation). The
 manifest includes byte counts and SHA-256 values for `SKILL.md` and every
 bundled reference.
 
@@ -337,22 +337,22 @@ bun run office:ops -- visual spreadsheet --project compact-768
 `office-ui-ops plan <surface> --json` is the typed inventory entry point for that
 matrix (`bun run office:ops -- plan <surface> --json`).
 
-The declarative operator checks the focused A3S Test ACLs; `gate --run`
+The declarative operator checks the focused Aster Test ACLs; `gate --run`
 executes them as the primary interaction contract, while Playwright is only a
 supplemental desktop/compact pixel baseline. Screenshots and diagnostics stay
-below `.a3s-test/office-ops/`. It never polls CI or changes a committed visual
-baseline. Use `a3s agent start/observe/act/finish` for bounded exploratory
-sessions and `a3s cua certification --json` before native GUI work. The locked
+below `.aster-test/office-ops/`. It never polls CI or changes a committed visual
+baseline. Use `aster agent start/observe/act/finish` for bounded exploratory
+sessions and `aster cua certification --json` before native GUI work. The locked
 CUA Driver 0.10.0 Windows profiles are currently unsupported, so Windows
-browser-editor evidence uses A3S Test Web/CDP. On Windows,
+browser-editor evidence uses Aster Test Web/CDP. On Windows,
 supplying `--cdp-port` automatically compiles a native `.exe` adapter under
-`.a3s-test/office-ops/`, keeping interactive arguments out of `.cmd` parsing.
+`.aster-test/office-ops/`, keeping interactive arguments out of `.cmd` parsing.
 `bun run office:ops -- wps-probe --connector` captures the bounded WPS COM
 reference used for UI/OOXML parity; that probe is evidence, not a product
 runtime. Use `--connector-type straight|elbow|curved` to select the typed WPS
 reference shape through the Commander CLI. `wps-fields-probe --profile
 numeric|common --json` records the installed WPS numeric or common field
-instructions and feeds the corresponding A3S Test fixtures; it is likewise an
+instructions and feeds the corresponding Aster Test fixtures; it is likewise an
 explicit local reference capture, never a CI prerequisite.
 `wps-ui-probe --profile shell|fields|all --json` records the installed WPS
 Writer window shell, Ribbon/status bars, and field-related command IDs as a
@@ -360,13 +360,13 @@ typed JSON UX reference. It starts and closes one owned COM instance, so the
 receipt can guide UI decisions without turning WPS into a product runtime or
 CI dependency.
 
-For exploratory browser work, the same Commander operator exposes typed A3S
+For exploratory browser work, the same Commander operator exposes typed Aster
 Test agent actions: `click`, `hover`, `focus`, `double-click`, `context-click`,
 `fill`, `type`, `check`, `uncheck`, `select`, `drag`, `press`, `wheel`,
 `viewport`, waits, assertions, screenshots, accessibility, console, and page
 errors. Use the explicit target grammar (`@e7`, `css=...`, `role=role|name`,
 `label=...`, `placeholder=...`, `testid=...`, `automation=...`, or `text=...`)
-and keep the A3S Test `observe → one action → observe` lifecycle. This keeps
+and keep the Aster Test `observe → one action → observe` lifecycle. This keeps
 Codex editor operations typed and reproducible across all five surfaces.
 
 ## Current release
@@ -378,14 +378,14 @@ Version `0.312.0` returns the caret in the same collaboration frame as the edit:
 - A host save writes the replica back into the Office package. While that replica is live, `office_open` does not open a second session.
 
 Earlier releases stay on the product
-[What's new](https://a3s-lab.github.io/Office/docs/changelog.html) timeline and
+[What's new](https://aster-lab.github.io/Office/docs/changelog.html) timeline and
 the exhaustive engineering [changelog](./CHANGELOG.md). The
-[live Playground](https://a3s-lab.github.io/Office/playground/) exposes these
+[live Playground](https://aster-lab.github.io/Office/playground/) exposes these
 workflows from the release-labelled template grid.
 
 ## Capabilities and boundaries
 
-A3S Office favors explicit fidelity boundaries over silent approximation.
+Aster Office favors explicit fidelity boundaries over silent approximation.
 `Supported` means a path has deterministic behavioral or native round-trip
 evidence. `Partial` means a useful path exists with a documented boundary.
 
@@ -438,7 +438,7 @@ The complete capability inventory, priorities, and exit evidence live in the
 
 ## Project status
 
-A3S Office is pre-1.0. Public models and component props are usable, but a
+Aster Office is pre-1.0. Public models and component props are usable, but a
 minor release may still include breaking model changes. Required migrations
 are documented in the [changelog](./CHANGELOG.md).
 
@@ -461,7 +461,7 @@ bun run test
 bun run build
 ```
 
-Focused local A3S Test gates cover first-open focus and IME composition:
+Focused local Aster Test gates cover first-open focus and IME composition:
 
 ```bash
 bun run test:e2e:initial-focus:check
@@ -477,7 +477,7 @@ WebKit engine in CI:
 bun run playground:ime:webkit
 ```
 
-GitHub Actions does not require A3S Test. See
+GitHub Actions does not require Aster Test. See
 [CONTRIBUTING.md](./CONTRIBUTING.md),
 [the E2E guide](./tests/e2e/README.md), and
 [the visual-test guide](./visual-tests/README.md) for the complete validation
@@ -485,12 +485,12 @@ matrix.
 
 ## Documentation
 
-- [Live Playground](https://a3s-lab.github.io/Office/playground/)
-- [Documentation center](https://a3s-lab.github.io/Office/docs/)
-- [What's new](https://a3s-lab.github.io/Office/docs/changelog.html)
-- [React, Vue, Web Component, and Core API](https://a3s-lab.github.io/Office/docs/components/)
-- [Real-time collaboration](https://a3s-lab.github.io/Office/docs/components/collaboration.html)
-- [CLI, MCP, and Office Skill](https://a3s-lab.github.io/Office/docs/automation/)
+- [Live Playground](https://aster-lab.github.io/Office/playground/)
+- [Documentation center](https://aster-lab.github.io/Office/docs/)
+- [What's new](https://aster-lab.github.io/Office/docs/changelog.html)
+- [React, Vue, Web Component, and Core API](https://aster-lab.github.io/Office/docs/components/)
+- [Real-time collaboration](https://aster-lab.github.io/Office/docs/components/collaboration.html)
+- [CLI, MCP, and Office Skill](https://aster-lab.github.io/Office/docs/automation/)
 - [Browser editor architecture](./docs/latest/en/browser-editor-architecture.md)
 - [Native Office engine](./docs/latest/en/native-office-engine.md)
 - [Editor quality roadmap](./docs/latest/en/editor-quality-roadmap.md)
@@ -506,7 +506,7 @@ suspected vulnerabilities through the private process in
 
 ## License
 
-A3S Office is available under the [MIT License](./LICENSE). Bundled PDFium and
+Aster Office is available under the [MIT License](./LICENSE). Bundled PDFium and
 other third-party assets carry additional notices in
 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
 

@@ -1,7 +1,7 @@
-//! Studio passes one admitted assemble on `_meta.a3sHarness.components`.
+//! Studio passes one admitted assemble on `_meta.asterHarness.components`.
 //! Any other list is refused. An absent field keeps the default stock list.
 
-use a3s_code_core::{BuiltinHostHarnessRegistry, HarnessComposeOptions, SessionOptions};
+use aster_core::{BuiltinHostHarnessRegistry, HarnessComposeOptions, SessionOptions};
 use serde_json::Value;
 use std::sync::Arc;
 
@@ -19,11 +19,11 @@ const HOST: &[&str] = &[
 pub fn components_from_meta(
     meta: Option<&serde_json::Map<String, Value>>,
 ) -> Result<Vec<String>, String> {
-    let Some(harness) = meta.and_then(|meta| meta.get("a3sHarness")) else {
+    let Some(harness) = meta.and_then(|meta| meta.get("asterHarness")) else {
         return Ok(owned(DEFAULT));
     };
     let Some(items) = harness.get("components").and_then(Value::as_array) else {
-        return Err("a3sHarness.components must be a list".to_owned());
+        return Err("asterHarness.components must be a list".to_owned());
     };
     let names: Vec<String> = items
         .iter()
@@ -32,7 +32,7 @@ pub fn components_from_meta(
     if same(&names, DEFAULT) || same(&names, LEAN) || same(&names, HOST) {
         return Ok(names);
     }
-    Err("a3sHarness.components is not an admitted assemble".to_owned())
+    Err("asterHarness.components is not an admitted assemble".to_owned())
 }
 
 pub fn apply(options: SessionOptions, components: &[String]) -> Result<SessionOptions, String> {
@@ -73,7 +73,7 @@ mod tests {
 
     #[test]
     fn host_list_installs_the_builtin_registry() {
-        let meta = json!({ "a3sHarness": { "components": HOST } });
+        let meta = json!({ "asterHarness": { "components": HOST } });
         let names = components_from_meta(meta.as_object()).expect("host");
         let options = apply(SessionOptions::new(), &names).expect("apply");
         let harness = options.harness.expect("harness");
@@ -83,7 +83,7 @@ mod tests {
 
     #[test]
     fn a_fourth_list_is_refused() {
-        let meta = json!({ "a3sHarness": { "components": ["system", "infer"] } });
+        let meta = json!({ "asterHarness": { "components": ["system", "infer"] } });
         assert!(components_from_meta(meta.as_object()).is_err());
     }
 }

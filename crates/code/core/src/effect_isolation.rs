@@ -106,7 +106,7 @@ pub fn bind_sync(
         return Ok(Some(binding));
     }
     // Sibling paths are keyed only by session id under the source parent. A
-    // crashed prior run can leave an empty `.a3s-isolate-*` directory that is
+    // crashed prior run can leave an empty `.aster-isolate-*` directory that is
     // not a git worktree; refuse to adopt it and clear the orphan so bind can
     // recreate. Do not delete a path that still has `.git` metadata.
     if worktree_path.exists() {
@@ -119,7 +119,7 @@ pub fn bind_sync(
     }
     crate::git::create_worktree(
         source_root,
-        &format!("a3s-isolate-{session_id}"),
+        &format!("aster-isolate-{session_id}"),
         &worktree_path,
         true,
     )?;
@@ -213,7 +213,7 @@ impl IsolatedChangeSet {
                 }
             }
         }
-        digest_bytes("a3s.code.isolation-promote.v1", &bytes)
+        digest_bytes("aster.code.isolation-promote.v1", &bytes)
     }
 
     fn apply(self, binding: &IsolationBinding) -> Result<()> {
@@ -573,7 +573,7 @@ pub fn refuse_retargeted_worktree(source_root: &Path, worktree_path: &Path) -> R
         .and_then(|name| name.to_str())
         .unwrap_or("");
     let single_sibling = worktree_path.parent() == Some(expected_parent)
-        && name.starts_with(".a3s-isolate-")
+        && name.starts_with(".aster-isolate-")
         && !name.contains(['/', '\\'])
         && !worktree_path
             .components()
@@ -604,7 +604,7 @@ fn refuse_symlink_worktree(path: &Path) -> Result<()> {
 /// not trusted as a relative path; bind still refuses a retarget onto the source.
 pub fn worktree_path_for(source_root: &Path, session_id: &str) -> PathBuf {
     let parent = source_root.parent().unwrap_or(source_root);
-    parent.join(format!(".a3s-isolate-{session_id}"))
+    parent.join(format!(".aster-isolate-{session_id}"))
 }
 
 fn git_process_lock() -> &'static std::sync::Mutex<()> {

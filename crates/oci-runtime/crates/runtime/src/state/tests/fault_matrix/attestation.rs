@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     CreateAttachments, IsolationRequest, OciBundle, OperationContext, ProcessIo, RuntimeArtifact,
     TeeAttestationRequest, TeeAttestationResponse, TeeEvidence, TeeLaunchRequest, TeeMeasurement,
     TeeMode, TeeReportData, TeeSha256Digest, TeeTechnology, AMD_SEV_SNP_LAUNCH_EXTENSION,
@@ -111,7 +111,7 @@ fn attestation_request(source: &ContainerRecord, operation: &str) -> TeeAttestat
 async fn drive_success(
     store: &DurableStateStore,
     request: &TeeAttestationRequest,
-) -> a3s_oci_sdk::Result<TeeAttestationResponse> {
+) -> aster_oci_sdk::Result<TeeAttestationResponse> {
     match store.prepare_attestation(request).await? {
         AttestationOperationPreparation::Prepared(source)
         | AttestationOperationPreparation::Resume(source) => {
@@ -152,7 +152,7 @@ async fn drive_failure(
     store: &DurableStateStore,
     request: &TeeAttestationRequest,
     failure: &Error,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_attestation(request).await {
         Ok(AttestationOperationPreparation::Prepared(_))
         | Ok(AttestationOperationPreparation::Resume(_)) => {

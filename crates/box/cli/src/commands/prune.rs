@@ -1,4 +1,4 @@
-//! `a3s-box prune` command — Remove all stopped boxes.
+//! `aster-box prune` command — Remove all stopped boxes.
 //!
 //! The box-only counterpart to `system-prune` (which also removes images and
 //! networks): removes every created/stopped/dead box in one call, mirroring

@@ -1,4 +1,4 @@
-use a3s_code_core::release::{
+use aster_core::release::{
     agent_harness_compatibility_v1, AgentReleaseArtifact, AgentReleaseCacheMode,
     AgentReleaseCapability, AgentReleaseCompatibility, AgentReleaseEntrypoint, AgentReleaseError,
     AgentReleaseField, AgentReleaseHealth, AgentReleaseManifest, AgentReleasePersistentDataMode,
@@ -8,7 +8,7 @@ use a3s_code_core::release::{
 };
 use std::path::Path;
 
-const RAW_FIXTURE: &str = include_str!("../../fixtures/agent-release-contract/.a3s/asset.acl");
+const RAW_FIXTURE: &str = include_str!("../../fixtures/agent-release-contract/.aster/asset.acl");
 
 fn fixture() -> &'static str {
     static NORMALIZED: std::sync::OnceLock<String> = std::sync::OnceLock::new();
@@ -118,12 +118,12 @@ fn fixture_is_typed_canonical_and_digest_bound() {
     assert_eq!(manifest.provenance()[0].kind(), "builder");
     assert_eq!(
         manifest.provenance()[0].uri(),
-        "urn:a3s:builder:github-actions"
+        "urn:aster:builder:github-actions"
     );
     assert_eq!(manifest.provenance()[1].kind(), "source");
     assert_eq!(
         manifest.provenance()[1].uri(),
-        "https://github.com/A3S-Lab/Code"
+        "https://github.com/aster-ai-lab/Code"
     );
     assert!(manifest.identity().starts_with("sha256:"));
     assert_eq!(manifest.identity().len(), 71);
@@ -138,7 +138,7 @@ fn fixture_is_typed_canonical_and_digest_bound() {
     assert_eq!(round_trip.identity(), manifest.identity());
     assert_eq!(round_trip.canonical_acl(), manifest.canonical_acl());
     let fixture_path = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../fixtures/agent-release-contract/.a3s/asset.acl");
+        .join("../fixtures/agent-release-contract/.aster/asset.acl");
     assert_eq!(
         AgentReleaseManifest::from_file(fixture_path)
             .expect("the conventional asset path should load")
@@ -163,13 +163,13 @@ fn publication_binding_changes_only_artifact_and_exact_provenance() {
             [
                 AgentReleaseProvenance::new(
                     "source",
-                    "urn:a3s:source:a3s-cli-binary",
+                    "urn:aster:source:aster-cli-binary",
                     format!("sha256:{}", "b".repeat(64)),
                 )
                 .unwrap(),
                 AgentReleaseProvenance::new(
                     "builder",
-                    "urn:a3s:builder:oci-buildkit-v1",
+                    "urn:aster:builder:oci-buildkit-v1",
                     format!("sha256:{}", "c".repeat(64)),
                 )
                 .unwrap(),
@@ -199,12 +199,12 @@ fn publication_binding_changes_only_artifact_and_exact_provenance() {
     assert_eq!(published.provenance()[0].kind(), "builder");
     assert_eq!(
         published.provenance()[0].uri(),
-        "urn:a3s:builder:oci-buildkit-v1"
+        "urn:aster:builder:oci-buildkit-v1"
     );
     assert_eq!(published.provenance()[1].kind(), "source");
     assert_eq!(
         published.provenance()[1].uri(),
-        "urn:a3s:source:a3s-cli-binary"
+        "urn:aster:source:aster-cli-binary"
     );
     assert!(!published.canonical_acl().contains(&"1".repeat(64)));
     assert!(!published.canonical_acl().contains(&"2".repeat(64)));
@@ -223,7 +223,7 @@ fn publication_binding_requires_the_exact_provenance_shape() {
     let digest = format!("sha256:{}", "a".repeat(64));
     let source = AgentReleaseProvenance::new(
         "source",
-        "urn:a3s:source:fixture",
+        "urn:aster:source:fixture",
         format!("sha256:{}", "b".repeat(64)),
     )
     .unwrap();
@@ -238,7 +238,7 @@ fn publication_binding_requires_the_exact_provenance_shape() {
         .expect_err("duplicate provenance must fail");
     assert_eq!(
         duplicate.code(),
-        "a3s.code.agent_release.duplicate_provenance"
+        "aster.code.agent_release.duplicate_provenance"
     );
 
     let attacker = "https://example.com/source?secret=TOP_SECRET_VALUE";
@@ -267,12 +267,12 @@ fn identity_ignores_formatting_and_set_like_block_order_only() {
             "  # Capability requirements are a set.\n  capability \"workspace.local\" { level = 1 }\n  capability \"runtime.service\" { level = 1 }\n  capability \"secrets.external\" { level = 1 }",
         )
         .replace(
-            "  schema = \"a3s.code.agent-release.v1\"\n  protocol = \"a3s.code.agent.v1\"",
-            "  protocol = \"a3s.code.agent.v1\"\n  schema = \"a3s.code.agent-release.v1\"",
+            "  schema = \"aster.code.agent-release.v1\"\n  protocol = \"aster.code.agent.v1\"",
+            "  protocol = \"aster.code.agent.v1\"\n  schema = \"aster.code.agent-release.v1\"",
         )
         .replace(
-            "  provenance \"source\" {\n    uri = \"https://github.com/A3S-Lab/Code\"\n    digest = \"sha256:2222222222222222222222222222222222222222222222222222222222222222\"\n  }\n\n  provenance \"builder\" {\n    uri = \"urn:a3s:builder:github-actions\"\n    digest = \"sha256:4444444444444444444444444444444444444444444444444444444444444444\"\n  }",
-            "  provenance \"builder\" { uri = \"urn:a3s:builder:github-actions\" digest = \"sha256:4444444444444444444444444444444444444444444444444444444444444444\" }\n  provenance \"source\" { uri = \"https://github.com/A3S-Lab/Code\" digest = \"sha256:2222222222222222222222222222222222222222222222222222222222222222\" }",
+            "  provenance \"source\" {\n    uri = \"https://github.com/aster-ai-lab/Code\"\n    digest = \"sha256:2222222222222222222222222222222222222222222222222222222222222222\"\n  }\n\n  provenance \"builder\" {\n    uri = \"urn:aster:builder:github-actions\"\n    digest = \"sha256:4444444444444444444444444444444444444444444444444444444444444444\"\n  }",
+            "  provenance \"builder\" { uri = \"urn:aster:builder:github-actions\" digest = \"sha256:4444444444444444444444444444444444444444444444444444444444444444\" }\n  provenance \"source\" { uri = \"https://github.com/aster-ai-lab/Code\" digest = \"sha256:2222222222222222222222222222222222222222222222222222222222222222\" }",
         )
         .replace(
             "  secret \"provider-api-key\" {\n    target = \"environment\"\n    destination = \"PROVIDER_API_KEY\"\n  }\n\n  secret \"signing-key\" {\n    target = \"file\"\n    destination = \"/run/secrets/signing-key\"\n  }",
@@ -294,23 +294,23 @@ fn identity_ignores_formatting_and_set_like_block_order_only() {
 }
 
 #[test]
-fn entrypoint_is_locked_to_the_a3s_code_harness() {
-    let separate_harness = fixture().replace("/usr/bin/a3s", "/usr/bin/custom-agent-harness");
+fn entrypoint_is_locked_to_the_aster_harness() {
+    let separate_harness = fixture().replace("/usr/bin/aster", "/usr/bin/custom-agent-harness");
     let error = AgentReleaseManifest::parse(&separate_harness)
         .expect_err("a separate Harness executable must not be admitted");
     assert_eq!(error.field(), Some(AgentReleaseField::EntrypointCommand));
 
     let bypassed_code = fixture().replace(
-        "args = [\"code\", \"harness\", \"--manifest\", \"/app/.a3s/asset.acl\"]",
-        "args = [\"harness\", \"--manifest\", \"/app/.a3s/asset.acl\"]",
+        "args = [\"code\", \"harness\", \"--manifest\", \"/app/.aster/asset.acl\"]",
+        "args = [\"harness\", \"--manifest\", \"/app/.aster/asset.acl\"]",
     );
     let error = AgentReleaseManifest::parse(&bypassed_code)
         .expect_err("the release must select the Code-owned Harness");
     assert_eq!(error.field(), Some(AgentReleaseField::EntrypointArgument));
 
     let reordered_args = fixture().replace(
-        "args = [\"code\", \"harness\", \"--manifest\", \"/app/.a3s/asset.acl\"]",
-        "args = [\"harness\", \"code\", \"--manifest\", \"/app/.a3s/asset.acl\"]",
+        "args = [\"code\", \"harness\", \"--manifest\", \"/app/.aster/asset.acl\"]",
+        "args = [\"harness\", \"code\", \"--manifest\", \"/app/.aster/asset.acl\"]",
     );
     let error = AgentReleaseManifest::parse(&reordered_args)
         .expect_err("entrypoint arguments must preserve the canonical command path");
@@ -320,11 +320,11 @@ fn entrypoint_is_locked_to_the_a3s_code_harness() {
 #[test]
 fn admission_is_bounded_closed_and_value_redacting() {
     let unknown = fixture().replace(
-        "  protocol = \"a3s.code.agent.v1\"",
-        "  protocol = \"a3s.code.agent.v1\"\n  secret = \"TOP_SECRET\"",
+        "  protocol = \"aster.code.agent.v1\"",
+        "  protocol = \"aster.code.agent.v1\"\n  secret = \"TOP_SECRET\"",
     );
     let error = AgentReleaseManifest::parse(&unknown).expect_err("unknown field must fail");
-    assert_eq!(error.code(), "a3s.code.agent_release.schema");
+    assert_eq!(error.code(), "aster.code.agent_release.schema");
     assert!(!error.to_string().contains("TOP_SECRET"));
 
     let call = fixture().replace(
@@ -332,7 +332,7 @@ fn admission_is_bounded_closed_and_value_redacting() {
         "digest = env(\"TOP_SECRET\")",
     );
     let error = AgentReleaseManifest::parse(&call).expect_err("function calls must fail");
-    assert_eq!(error.code(), "a3s.code.agent_release.schema");
+    assert_eq!(error.code(), "aster.code.agent_release.schema");
     assert!(!error.to_string().contains("TOP_SECRET"));
 
     let uppercase_digest = fixture().replace(
@@ -341,7 +341,7 @@ fn admission_is_bounded_closed_and_value_redacting() {
     );
     let error =
         AgentReleaseManifest::parse(&uppercase_digest).expect_err("digest must be lowercase");
-    assert_eq!(error.code(), "a3s.code.agent_release.invalid_field");
+    assert_eq!(error.code(), "aster.code.agent_release.invalid_field");
     assert!(!error.to_string().contains("AAAA"));
 
     let duplicate = fixture().replace(
@@ -350,12 +350,12 @@ fn admission_is_bounded_closed_and_value_redacting() {
     );
     let error =
         AgentReleaseManifest::parse(&duplicate).expect_err("duplicate requirement must fail");
-    assert_eq!(error.code(), "a3s.code.agent_release.duplicate_capability");
+    assert_eq!(error.code(), "aster.code.agent_release.duplicate_capability");
 
     let duplicate_provenance = fixture().replace("provenance \"source\"", "provenance \"builder\"");
     let error = AgentReleaseManifest::parse(&duplicate_provenance)
         .expect_err("provenance kinds must be unique");
-    assert_eq!(error.code(), "a3s.code.agent_release.duplicate_provenance");
+    assert_eq!(error.code(), "aster.code.agent_release.duplicate_provenance");
 
     let plaintext_secret = fixture().replace(
         "target = \"environment\"\n    destination = \"PROVIDER_API_KEY\"",
@@ -363,7 +363,7 @@ fn admission_is_bounded_closed_and_value_redacting() {
     );
     let error = AgentReleaseManifest::parse(&plaintext_secret)
         .expect_err("secret plaintext fields must be closed");
-    assert_eq!(error.code(), "a3s.code.agent_release.schema");
+    assert_eq!(error.code(), "aster.code.agent_release.schema");
     assert!(!error.to_string().contains("TOP_SECRET"));
 
     let duplicate_secret = fixture().replace(
@@ -372,7 +372,7 @@ fn admission_is_bounded_closed_and_value_redacting() {
     );
     let error =
         AgentReleaseManifest::parse(&duplicate_secret).expect_err("secret slots must be unique");
-    assert_eq!(error.code(), "a3s.code.agent_release.duplicate_secret");
+    assert_eq!(error.code(), "aster.code.agent_release.duplicate_secret");
 
     let missing_secret_capability = fixture().replace(
         "  capability \"secrets.external\" {\n    level = 1\n  }\n\n",
@@ -380,15 +380,15 @@ fn admission_is_bounded_closed_and_value_redacting() {
     );
     let error = AgentReleaseManifest::parse(&missing_secret_capability)
         .expect_err("secret slots require the external-secret capability");
-    assert_eq!(error.code(), "a3s.code.agent_release.invalid_field");
+    assert_eq!(error.code(), "aster.code.agent_release.invalid_field");
 
     let oversized = "x".repeat(AGENT_RELEASE_LIMITS.max_document_bytes + 1);
     let error = AgentReleaseManifest::parse(&oversized).expect_err("input must be bounded");
-    assert_eq!(error.code(), "a3s.code.agent_release.parse");
+    assert_eq!(error.code(), "aster.code.agent_release.parse");
 
     let attacker_named_field = fixture().replace(
-        "  protocol = \"a3s.code.agent.v1\"",
-        "  protocol = \"a3s.code.agent.v1\"\n  TOP_SECRET_VALUE = true",
+        "  protocol = \"aster.code.agent.v1\"",
+        "  protocol = \"aster.code.agent.v1\"\n  TOP_SECRET_VALUE = true",
     );
     let error = AgentReleaseManifest::parse(&attacker_named_field)
         .expect_err("unknown attacker-controlled field must fail");
@@ -401,7 +401,7 @@ fn compatibility_fails_before_activation_with_typed_reasons() {
     let manifest = AgentReleaseManifest::parse(fixture()).unwrap();
 
     let wrong_protocol = AgentReleaseCompatibility::new(
-        "a3s.code.agent.v2",
+        "aster.code.agent.v2",
         [
             AgentReleaseCapability::new("runtime.service", 1).unwrap(),
             AgentReleaseCapability::new("secrets.external", 1).unwrap(),
@@ -412,15 +412,15 @@ fn compatibility_fails_before_activation_with_typed_reasons() {
     let error = manifest
         .verify_compatibility(&wrong_protocol)
         .expect_err("protocol mismatch must fail");
-    assert_eq!(error.code(), "a3s.code.agent_release.incompatible_protocol");
+    assert_eq!(error.code(), "aster.code.agent_release.incompatible_protocol");
 
-    let future_source = fixture().replace(AGENT_PROTOCOL_V1, "a3s.code.agent.v2");
+    let future_source = fixture().replace(AGENT_PROTOCOL_V1, "aster.code.agent.v2");
     let future_manifest =
         AgentReleaseManifest::parse(&future_source).expect("schema and protocol are independent");
     let error = future_manifest
         .verify_compatibility(&compatibility())
         .expect_err("a valid but unavailable protocol must fail before activation");
-    assert_eq!(error.code(), "a3s.code.agent_release.incompatible_protocol");
+    assert_eq!(error.code(), "aster.code.agent_release.incompatible_protocol");
 
     let missing = AgentReleaseCompatibility::new(
         AGENT_PROTOCOL_V1,
@@ -435,7 +435,7 @@ fn compatibility_fails_before_activation_with_typed_reasons() {
         .expect_err("missing capability must fail");
     assert_eq!(
         error.code(),
-        "a3s.code.agent_release.unsupported_capability"
+        "aster.code.agent_release.unsupported_capability"
     );
     assert!(matches!(
         error,
@@ -444,7 +444,7 @@ fn compatibility_fails_before_activation_with_typed_reasons() {
 
     let invalid_level = AgentReleaseCapability::new("workspace.local", 0)
         .expect_err("zero capability level must fail");
-    assert_eq!(invalid_level.code(), "a3s.code.agent_release.invalid_field");
+    assert_eq!(invalid_level.code(), "aster.code.agent_release.invalid_field");
 
     let demanding_source = fixture().replacen(
         "capability \"workspace.local\" {\n    level = 1",
@@ -466,7 +466,7 @@ fn compatibility_fails_before_activation_with_typed_reasons() {
         .expect_err("capability level mismatch must fail");
     assert_eq!(
         error.code(),
-        "a3s.code.agent_release.unsupported_capability"
+        "aster.code.agent_release.unsupported_capability"
     );
 }
 
@@ -533,7 +533,7 @@ fn storage_and_secret_destinations_are_closed_and_collision_free() {
     );
     let error = AgentReleaseManifest::parse(&duplicate_destination)
         .expect_err("two slots must not inject into the same target");
-    assert_eq!(error.code(), "a3s.code.agent_release.duplicate_secret");
+    assert_eq!(error.code(), "aster.code.agent_release.duplicate_secret");
 }
 
 #[test]
@@ -548,10 +548,10 @@ fn compatibility_inputs_are_canonical_unique_and_value_redacting() {
     .expect_err("available capabilities must be unique");
     assert_eq!(
         duplicate.code(),
-        "a3s.code.agent_release.duplicate_capability"
+        "aster.code.agent_release.duplicate_capability"
     );
 
-    for protocol in ["a3s.code.agent.v0", "a3s.code.agent.v01", "agent.v1"] {
+    for protocol in ["aster.code.agent.v0", "aster.code.agent.v01", "agent.v1"] {
         let error = AgentReleaseCompatibility::new(protocol, [])
             .expect_err("non-canonical protocol versions must fail");
         assert_eq!(error.field(), Some(AgentReleaseField::Protocol));
@@ -637,7 +637,7 @@ fn soak_release_admits_collapse_to_one_binding() {
         match AgentReleaseManifest::parse(&bad) {
             Ok(_) => admitted_bad += 1,
             Err(error) => {
-                assert_eq!(error.code(), "a3s.code.agent_release.invalid_field");
+                assert_eq!(error.code(), "aster.code.agent_release.invalid_field");
                 assert!(!error.to_string().contains("BBBB"));
             }
         }

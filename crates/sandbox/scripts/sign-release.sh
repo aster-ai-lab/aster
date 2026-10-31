@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Produce release provenance for a3s-sandbox artifacts.
+# Produce release provenance for aster-sandbox artifacts.
 #
 # Creates:
 #   - SHA-256 checksums for the listed files
 #   - optional cosign keyless / key-based signatures when `cosign` is installed
 #
 # Usage:
-#   ./scripts/sign-release.sh dist/a3s-sandbox dist/a3s-sandbox-relay
-#   OUT_DIR=./release-out ./scripts/sign-release.sh target/release/a3s-sandbox
+#   ./scripts/sign-release.sh dist/aster-sandbox dist/aster-sandbox-relay
+#   OUT_DIR=./release-out ./scripts/sign-release.sh target/release/aster-sandbox
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -67,7 +67,7 @@ for line in sums.read_text().splitlines():
     digest, name = line.split(None, 1)
     entries.append({"path": name, "sha256": digest})
 payload = {
-    "type": "a3s-sandbox-release-provenance",
+    "type": "aster-sandbox-release-provenance",
     "created": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     "artifacts": entries,
     "notes": "Attach CI run URL, git SHA, and cosign bundle when publishing.",

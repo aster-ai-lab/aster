@@ -2,7 +2,7 @@ mod presentation;
 mod spreadsheet;
 mod word;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::output::BoundedOutput;
 use crate::{DocumentKind, DocumentNode, NativeOfficeDocument};
@@ -36,10 +36,10 @@ fn render_selected(
     limit: usize,
 ) -> UseResult<String> {
     let mut output = BoundedOutput::new(limit);
-    output.push("<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; img-src data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>A3S Native Office semantic preview</title><style>")?;
+    output.push("<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; img-src data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Aster Native Office semantic preview</title><style>")?;
     output.push(STYLES)?;
     output.push(
-        "</style></head><body data-renderer=\"a3s-office-semantic-v1\" data-document-kind=\"",
+        "</style></head><body data-renderer=\"aster-office-semantic-v1\" data-document-kind=\"",
     )?;
     output.push(document_kind(document.kind()))?;
     output.push("\"")?;

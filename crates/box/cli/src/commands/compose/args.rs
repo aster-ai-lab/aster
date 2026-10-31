@@ -65,7 +65,7 @@ pub enum ComposeCommand {
     Images(ProjectServicesArgs),
     /// Pull service images
     Pull(ComposePullArgs),
-    /// List Compose projects known to A3S Box
+    /// List Compose projects known to Aster Box
     Ls(ComposeLsArgs),
     /// List named volumes declared by the project
     Volumes,

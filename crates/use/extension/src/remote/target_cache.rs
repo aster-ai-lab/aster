@@ -2,7 +2,7 @@ use std::fs::{File, OpenOptions};
 use std::io::SeekFrom;
 use std::path::{Component, Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use fs2::FileExt;
 use sha2::{Digest, Sha256};
 use tempfile::TempDir;
@@ -200,7 +200,7 @@ async fn open_verified_file(
         Ok(input) => input,
         Err(error) => {
             if fs::symlink_metadata(path).await.is_ok_and(|metadata| {
-                a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file()
+                aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file()
             }) {
                 return Err(target_cache_error(
                     error_code,
@@ -328,7 +328,7 @@ fn validate_regular_metadata(
     error_code: &'static str,
     message: &'static str,
 ) -> UseResult<()> {
-    if a3s_use_core::metadata_is_link_or_reparse_point(metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(metadata)
         || !metadata.is_file()
         || metadata.len() != expected_length
         || metadata.len() > MAX_REMOTE_ARCHIVE_BYTES
@@ -389,7 +389,7 @@ async fn inspect_real_directory(path: &Path, label: &str) -> UseResult<()> {
             io_error(&format!("inspect {label}"), path, error)
         }
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(target_cache_error(
             "use.extension.registry_target_cache_invalid",
             format!("The {label} must be a real directory."),
@@ -401,7 +401,7 @@ async fn inspect_real_directory(path: &Path, label: &str) -> UseResult<()> {
 fn acquire_target_cache_lock(datastore: &Path, exclusive: bool) -> UseResult<TargetCacheLock> {
     let path = datastore.join(TARGET_CACHE_LOCK);
     if let Ok(metadata) = std::fs::symlink_metadata(&path) {
-        if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+        if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
             return Err(target_cache_error(
                 "use.extension.registry_target_cache_invalid",
                 "The verified target cache lock must be a regular file.",

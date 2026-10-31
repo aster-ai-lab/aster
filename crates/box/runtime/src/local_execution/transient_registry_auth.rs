@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use a3s_box_core::{ExecutionManagerError, ExecutionManagerResult};
+use aster_box_core::{ExecutionManagerError, ExecutionManagerResult};
 use dashmap::mapref::entry::Entry;
 use dashmap::DashMap;
 

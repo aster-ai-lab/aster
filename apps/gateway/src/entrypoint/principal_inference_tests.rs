@@ -19,8 +19,8 @@ use tokio::io::AsyncWriteExt;
 use tokio::net::TcpListener;
 use uuid::Uuid;
 
-const SESSION: &str = "a3s_us_session-token";
-const PERSONAL_KEY: &str = "a3s_sk_personal-key";
+const SESSION: &str = "aster_us_session-token";
+const PERSONAL_KEY: &str = "aster_sk_personal-key";
 
 /// Forward-auth style verifier accepting two credentials for `user-1`.
 async fn spawn_auth_verifier() -> (SocketAddr, Arc<AtomicUsize>) {
@@ -41,7 +41,7 @@ async fn spawn_auth_verifier() -> (SocketAddr, Arc<AtomicUsize>) {
                     .iter()
                     .any(|token| lower.contains(&format!("authorization: bearer {token}")));
                 let response = if accepted {
-                    "HTTP/1.1 200 OK\r\nx-a3s-subject: user-1\r\nx-a3s-org: org-1\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}"
+                    "HTTP/1.1 200 OK\r\nx-aster-subject: user-1\r\nx-aster-org: org-1\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}"
                 } else {
                     "HTTP/1.1 401 Unauthorized\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}"
                 };
@@ -182,8 +182,8 @@ fn principal_config(
                 wire: InferenceWire::Openai,
                 principal: Some(InferencePrincipalConfig {
                     verify_url: format!("http://{verifier}/auth/verify"),
-                    subject_header: "x-a3s-subject".into(),
-                    org_header: Some("x-a3s-org".into()),
+                    subject_header: "x-aster-subject".into(),
+                    org_header: Some("x-aster-org".into()),
                     cache_ttl_secs: 60,
                     models: vec!["*".into()],
                     endpoints: vec![
@@ -223,8 +223,8 @@ fn split_request(request: Vec<u8>) -> (String, serde_json::Value) {
 
 #[tokio::test]
 async fn signed_in_users_reach_providers_on_the_native_wire() {
-    let openai_env = format!("A3S_TEST_OPENAI_KEY_{}", Uuid::new_v4().simple());
-    let anthropic_env = format!("A3S_TEST_ANTHROPIC_KEY_{}", Uuid::new_v4().simple());
+    let openai_env = format!("ASTER_TEST_OPENAI_KEY_{}", Uuid::new_v4().simple());
+    let anthropic_env = format!("ASTER_TEST_ANTHROPIC_KEY_{}", Uuid::new_v4().simple());
     std::env::set_var(&openai_env, "sk-upstream-openai");
     std::env::set_var(&anthropic_env, "sk-upstream-anthropic");
     let (verifier, verify_calls) = spawn_auth_verifier().await;
@@ -245,7 +245,7 @@ async fn signed_in_users_reach_providers_on_the_native_wire() {
 
     let response = client
         .get(format!("http://{address}/v1/models"))
-        .bearer_auth("a3s_us_forged")
+        .bearer_auth("aster_us_forged")
         .send()
         .await
         .unwrap();
@@ -275,7 +275,7 @@ async fn signed_in_users_reach_providers_on_the_native_wire() {
     let response = client
         .post(format!("http://{address}/v1/chat/completions"))
         .bearer_auth(SESSION)
-        .header("cookie", "a3s_us=browser-session")
+        .header("cookie", "aster_us=browser-session")
         .json(&serde_json::json!({"model": "qwen", "stream": true, "messages": []}))
         .send()
         .await
@@ -330,7 +330,7 @@ async fn signed_in_users_reach_providers_on_the_native_wire() {
 #[tokio::test]
 async fn targets_without_their_provider_key_are_never_called() {
     let (verifier, _) = spawn_auth_verifier().await;
-    let unset = format!("A3S_TEST_UNSET_KEY_{}", Uuid::new_v4().simple());
+    let unset = format!("ASTER_TEST_UNSET_KEY_{}", Uuid::new_v4().simple());
     let blackhole = SocketAddr::from(([127, 0, 0, 1], 9));
     let config = principal_config(verifier, blackhole, blackhole, &unset, &unset);
     config.validate().unwrap();

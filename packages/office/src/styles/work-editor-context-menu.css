@@ -14,7 +14,7 @@
   background: #ffffff;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   color: #171717;
-  font-family: var(--a3s-ui-font);
+  font-family: var(--aster-ui-font);
   font-size: 13px;
   line-height: 1.25;
   overscroll-behavior: contain;
@@ -105,7 +105,7 @@
   height: 1px;
   margin: 4px 7px;
   border: 0;
-  background: var(--a3s-line);
+  background: var(--aster-line);
 }
 
 @media (max-width: 640px) {
@@ -120,7 +120,7 @@
     max-height: min(62dvh, 480px);
     padding: 8px;
     border-radius: 12px;
-    scrollbar-color: var(--a3s-overlay-border) transparent;
+    scrollbar-color: var(--aster-overlay-border) transparent;
     scrollbar-width: thin;
   }
 
@@ -129,7 +129,7 @@
     height: 4px;
     margin: 1px 0 5px;
     border-radius: 999px;
-    background: var(--a3s-overlay-border);
+    background: var(--aster-overlay-border);
     content: "";
     justify-self: center;
   }
@@ -157,7 +157,7 @@
 
   .workspace-context-menu::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    background: var(--a3s-overlay-border);
+    background: var(--aster-overlay-border);
   }
 }
 

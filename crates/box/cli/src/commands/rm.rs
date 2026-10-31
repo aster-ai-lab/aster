@@ -1,9 +1,9 @@
-//! `a3s-box rm` command — Remove one or more boxes.
+//! `aster-box rm` command — Remove one or more boxes.
 
 use clap::Args;
 
-use a3s_box_core::{ExecutionGeneration, ExecutionId, ExecutionManager, KillExecutionOptions};
-use a3s_box_runtime::ManagedExecutionState;
+use aster_box_core::{ExecutionGeneration, ExecutionId, ExecutionManager, KillExecutionOptions};
+use aster_box_runtime::ManagedExecutionState;
 
 use crate::cleanup;
 use crate::resolve;
@@ -63,7 +63,7 @@ async fn rm_one(
     {
         let name = record.name.clone();
         drop(lifecycle_lock);
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         let manager = super::configured_local_execution_manager(&home).await?;
         if terminate {
             manager
@@ -80,8 +80,8 @@ async fn rm_one(
         manager.remove_execution(&execution_id, generation).await?;
         state.forget(&box_id);
         crate::audit::record(
-            a3s_box_core::audit::AuditAction::BoxDestroy,
-            a3s_box_core::audit::AuditOutcome::Success,
+            aster_box_core::audit::AuditAction::BoxDestroy,
+            aster_box_core::audit::AuditOutcome::Success,
             &box_id,
             &format!("removed box {name}"),
         );
@@ -112,8 +112,8 @@ async fn rm_one(
     StateFile::remove_record(&box_id)?;
     state.forget(&box_id);
     crate::audit::record(
-        a3s_box_core::audit::AuditAction::BoxDestroy,
-        a3s_box_core::audit::AuditOutcome::Success,
+        aster_box_core::audit::AuditAction::BoxDestroy,
+        aster_box_core::audit::AuditOutcome::Success,
         &box_id,
         &format!("removed box {name}"),
     );
@@ -199,8 +199,8 @@ fn validate_remove_request(
 mod tests {
     use super::*;
     use crate::test_helpers::fixtures::make_record;
-    use a3s_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
-    use a3s_box_runtime::{ManagedExecutionMetadata, ManagedExecutionOperation};
+    use aster_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
+    use aster_box_runtime::{ManagedExecutionMetadata, ManagedExecutionOperation};
     use std::collections::BTreeMap;
 
     fn managed_record(state: ManagedExecutionState) -> crate::state::BoxRecord {

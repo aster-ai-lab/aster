@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootResponse, BoxFuture, ControllerDefinition, HttpAdapter,
     HttpMethod, Module, ModuleRef, ProviderDefinition, ProviderRef, ProviderToken, Result,
     RouteDefinition,
@@ -375,7 +375,7 @@ async fn module_route_prefixes_apply_to_nested_http_routes() {
     assert_eq!(controller_route.controller_prefix(), Some("/cats"));
 
     let response = app
-        .call(a3s_boot::BootRequest::new(
+        .call(aster_boot::BootRequest::new(
             HttpMethod::Get,
             "/v1/api/children/cats/42",
         ))
@@ -388,7 +388,7 @@ async fn module_route_prefixes_apply_to_nested_http_routes() {
 fn dynamic_module_route_prefixes_apply_to_declared_routes() {
     let app = BootApplication::builder()
         .import(
-            a3s_boot::DynamicModule::new("dynamic-routes")
+            aster_boot::DynamicModule::new("dynamic-routes")
                 .route_prefix("/dynamic")
                 .route(
                     RouteDefinition::get("/health", |_| async {

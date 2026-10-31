@@ -9,7 +9,7 @@ use crate::{
         xq::storage::XqWeights,
     },
 };
-use a3s_power::{
+use aster_power::{
     error::{PowerError, Result},
     inference::{DevicePreference, InferenceLimits, RuntimeDevice},
 };

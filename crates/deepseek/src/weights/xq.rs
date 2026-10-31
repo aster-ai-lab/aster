@@ -8,7 +8,7 @@
 //! fallback for native CUDA inference. GGUF/file integrity and CUDA dispatch
 //! are separate obligations.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 
 use super::invalid;
 

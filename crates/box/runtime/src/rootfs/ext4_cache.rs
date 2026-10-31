@@ -11,7 +11,7 @@ use std::os::fd::AsRawFd;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
@@ -20,11 +20,11 @@ use super::ext4::{
 };
 use super::ext4_artifact::open_ext4_artifact;
 
-pub const EXT4_CACHE_SCHEMA: &str = "a3s.box.rootfs-ext4-cache.v1";
+pub const EXT4_CACHE_SCHEMA: &str = "aster.box.rootfs-ext4-cache.v1";
 const CACHE_MANIFEST_NAME: &str = "cache.json";
 const ARTIFACT_DIRECTORY_NAME: &str = "artifact";
-pub(super) const CACHE_STAGING_PREFIX: &str = ".a3s-rootfs-ext4-cache-";
-pub(super) const CLONE_STAGING_PREFIX: &str = ".a3s-rootfs-ext4-clone-";
+pub(super) const CACHE_STAGING_PREFIX: &str = ".aster-rootfs-ext4-cache-";
+pub(super) const CLONE_STAGING_PREFIX: &str = ".aster-rootfs-ext4-clone-";
 const MAX_CACHE_MANIFEST_BYTES: u64 = 64 * 1024;
 const MAX_IDENTITY_FIELD_BYTES: usize = 512;
 const COPY_BUFFER_BYTES: usize = 1024 * 1024;
@@ -623,7 +623,7 @@ pub(crate) fn sparse_sha256(path: &Path, expected_length: u64) -> Result<String>
         )));
     }
     let mut hasher = Sha256::new();
-    hash_field(&mut hasher, b"a3s.box.sparse-file-sha256.v1");
+    hash_field(&mut hasher, b"aster.box.sparse-file-sha256.v1");
     hash_field(&mut hasher, &length.to_le_bytes());
     let mut offset = 0u64;
     let mut buffer = vec![0u8; COPY_BUFFER_BYTES];

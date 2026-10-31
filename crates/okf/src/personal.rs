@@ -8,7 +8,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
-use a3s_use_core::{inspect_okf_bundle, OkfBundleFile, OkfBundleLimits, OkfFormatVersion};
+use aster_use_core::{inspect_okf_bundle, OkfBundleFile, OkfBundleLimits, OkfFormatVersion};
 
 use crate::{
     compile_concept, concept_file_name, content_generation, extract_document, published_generation,
@@ -369,7 +369,7 @@ fn safe_relative(relative: &str) -> bool {
 fn pin_dir(root: &Path) -> io::Result<PathBuf> {
     let canonical = root.canonicalize()?;
     let digest = content_generation(canonical.to_string_lossy().as_bytes());
-    Ok(std::env::temp_dir().join("a3s-okf-pin").join(digest))
+    Ok(std::env::temp_dir().join("aster-okf-pin").join(digest))
 }
 
 fn note_written_after_pin(vault: &Path, relative: &str, pinned: &fs::Metadata) -> io::Result<bool> {
@@ -1146,7 +1146,7 @@ mod tests {
     use std::sync::atomic::{AtomicU64, Ordering};
     use std::time::{SystemTime, UNIX_EPOCH};
 
-    use a3s_use_core::{inspect_okf_bundle, OkfBundleFile, OkfDiagnosticCode, OkfFormatVersion};
+    use aster_use_core::{inspect_okf_bundle, OkfBundleFile, OkfDiagnosticCode, OkfFormatVersion};
 
     use super::*;
     use crate::published_generation;
@@ -1161,7 +1161,7 @@ mod tests {
                 .duration_since(UNIX_EPOCH)
                 .unwrap()
                 .as_nanos();
-            let path = std::env::temp_dir().join(format!("a3s-okf-personal-{nanos}-{n}"));
+            let path = std::env::temp_dir().join(format!("aster-okf-personal-{nanos}-{n}"));
             fs::create_dir_all(&path).unwrap();
             Self(path)
         }
@@ -1227,7 +1227,7 @@ mod tests {
         assert!(concept.contains("resource: \"../甲.md\""));
         assert!(concept.contains(&format!("source_generation: \"{generation}\"")));
         assert_eq!(crate::published_parser(&concept), Some(PARSER_GENERATION));
-        assert!(concept.contains("by: a3s-okf-compiler/0.2"));
+        assert!(concept.contains("by: aster-okf-compiler/0.2"));
         assert!(concept.contains("句子仍在。"));
         assert!(concept.contains("[[乙]]"));
         assert!(!concept.contains("type: Note"));

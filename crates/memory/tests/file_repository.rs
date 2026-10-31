@@ -1,4 +1,4 @@
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, FileMemoryRepository, MemoryAccessEvent,
     MemoryChangeSet, MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRepository,
     MemoryRepositoryError, MemorySnapshotRequest, MemoryStatus, RevisionMode,
@@ -23,7 +23,7 @@ fn namespace() -> MemoryNamespace {
 
 fn evidence(name: &str, second: u32) -> EvidenceRef {
     EvidenceRef::try_new(
-        format!("a3s://session/run/turn/{name}"),
+        format!("aster://session/run/turn/{name}"),
         format!("sha256:{name:0>64}"),
         EvidenceKind::SessionTurn,
         time(second),

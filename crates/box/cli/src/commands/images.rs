@@ -1,4 +1,4 @@
-//! `a3s-box images` command.
+//! `aster-box images` command.
 
 use clap::Args;
 
@@ -136,13 +136,13 @@ pub async fn execute(args: ImagesArgs) -> Result<(), Box<dyn std::error::Error>>
 }
 
 /// Whether a stored image satisfies one `--filter` predicate.
-fn image_matches(image: &a3s_box_runtime::StoredImage, filter: &ImageFilter) -> bool {
+fn image_matches(image: &aster_box_runtime::StoredImage, filter: &ImageFilter) -> bool {
     match filter {
         ImageFilter::Reference(pattern) => {
             // Match the glob against several name forms so `alpine`,
             // `alpine:3.19`, and `docker.io/library/alpine:3.19` all work.
             let mut candidates = vec![image.reference.clone()];
-            if let Ok(r) = a3s_box_runtime::ImageReference::parse(&image.reference) {
+            if let Ok(r) = aster_box_runtime::ImageReference::parse(&image.reference) {
                 let tag = r.tag.clone().unwrap_or_else(|| "latest".to_string());
                 candidates.push(format!("{}/{}:{}", r.registry, r.repository, tag));
                 candidates.push(format!("{}:{}", r.repository, tag));
@@ -156,7 +156,7 @@ fn image_matches(image: &a3s_box_runtime::StoredImage, filter: &ImageFilter) -> 
             candidates.iter().any(|c| glob_match(pattern, c))
         }
         ImageFilter::Label(key, value) => {
-            let Ok(oci) = a3s_box_runtime::OciImage::from_path(&image.path) else {
+            let Ok(oci) = aster_box_runtime::OciImage::from_path(&image.path) else {
                 return false;
             };
             match oci.config().labels.get(key) {
@@ -178,13 +178,13 @@ struct ImageRow {
 }
 
 impl ImageRow {
-    fn from_stored(image: &a3s_box_runtime::StoredImage) -> Self {
+    fn from_stored(image: &aster_box_runtime::StoredImage) -> Self {
         let (repository, tag) = if crate::image_usage::is_dangling_reference(&image.reference) {
             // Dangling image (digest-keyed, no repo:tag) — Docker renders it as
             // `<none> <none>` rather than splitting the digest into repo + tag.
             ("<none>".to_string(), "<none>".to_string())
         } else {
-            match a3s_box_runtime::ImageReference::parse(&image.reference) {
+            match aster_box_runtime::ImageReference::parse(&image.reference) {
                 Ok(r) => {
                     let repo = format!("{}/{}", r.registry, r.repository);
                     let tag = r.tag.unwrap_or_else(|| "<none>".to_string());
@@ -231,7 +231,7 @@ impl ImageRow {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_runtime::StoredImage;
+    use aster_box_runtime::StoredImage;
     use chrono::Utc;
     use std::path::PathBuf;
 
@@ -310,13 +310,13 @@ mod tests {
     #[test]
     fn test_from_stored_custom_registry() {
         let stored = sample_stored(
-            "ghcr.io/a3s-box/code:v0.1.0",
+            "ghcr.io/aster-box/code:v0.1.0",
             "sha256:aabbccdd11223344aabbccdd",
             2048,
         );
         let row = ImageRow::from_stored(&stored);
 
-        assert_eq!(row.repository, "ghcr.io/a3s-box/code");
+        assert_eq!(row.repository, "ghcr.io/aster-box/code");
         assert_eq!(row.tag, "v0.1.0");
         assert_eq!(row.digest, "sha256:aabbccdd1122");
     }

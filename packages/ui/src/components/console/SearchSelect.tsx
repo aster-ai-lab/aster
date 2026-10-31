@@ -15,6 +15,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '../../lib/cn';
 import { menuCardClass, menuRowClass, menuRowSelectedClass } from '../../lib/menu-surface';
 import { usePortalContainer } from '../primitives/portal-container';
+import { usePopupDismissal } from '../primitives/popup-dismissal';
 
 function wheelDeltaY(event: WheelEvent, el: HTMLElement) {
   if (event.deltaMode === 1) return event.deltaY * 16;
@@ -135,6 +136,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
+  const dismissal = usePopupDismissal(panelRef, { open, onOpenChange: setOpen });
   const [instantMotion, setInstantMotion] = useState(false);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -276,20 +278,6 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     return () => window.clearTimeout(t);
   }, [open, searchable]);
 
-  useEffect(() => {
-    if (!open) return;
-    const onDoc = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (rootRef.current?.contains(target)) return;
-      if (panelRef.current?.contains(target)) return;
-      setOpen(false);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => {
-      document.removeEventListener('mousedown', onDoc);
-    };
-  }, [open]);
-
   function isChosen(value: string) {
     return multiple ? props.value.includes(value) : props.value === value;
   }
@@ -396,6 +384,8 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
       data-size={size}
       data-disabled={disabled ? 'true' : undefined}
       data-invalid={invalid ? 'true' : undefined}
+      onPointerDownCapture={dismissal.inside}
+      onClickCapture={dismissal.inside}
       onBlur={(event) => {
         const next = event.relatedTarget;
         if (next instanceof Node && (rootRef.current?.contains(next) || panelRef.current?.contains(next))) return;
@@ -492,7 +482,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
       {open && typeof document !== 'undefined'
         ? createPortal(
             <div
-              ref={panelRef}
+              ref={dismissal.ref}
               className={cn(
                 'ui-search-select__panel ui-search-select__panel--portal',
                 menuCardClass,

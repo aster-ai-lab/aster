@@ -1,6 +1,6 @@
 use crate::error::{CodeError, Result};
 use crate::goal_control::GoalContinuationPolicyV1;
-use a3s_acl::{Document, Lexer, Token, Value};
+use aster_acl::{Document, Lexer, Token, Value};
 use std::collections::HashSet;
 use std::num::NonZeroU64;
 

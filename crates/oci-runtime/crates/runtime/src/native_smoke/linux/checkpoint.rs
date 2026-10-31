@@ -5,9 +5,9 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_core::{CapabilityStatus, DriverKind, HostPlatform};
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, DriverKind, HostPlatform};
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     CheckpointArtifactPath, CheckpointRequest, ContainerId, ContainerOperationRequest,
     ContainerTarget, CreateAttachments, CreateRequest, DeleteMode, DeleteRequest, Error, ErrorCode,
     ExitStatus, Generation, IoMode, IsolationRequest, KillRequest, OciBundle, OperationContext,
@@ -34,7 +34,7 @@ const CHECKPOINT_TIMEOUT: Duration = Duration::from_secs(5 * 60 + 15);
 const MARKER_TIMEOUT: Duration = Duration::from_secs(15);
 const POLL_INTERVAL: Duration = Duration::from_millis(25);
 const PREEXISTING_CONTENT: &[u8] = b"caller-owned-checkpoint-destination\n";
-const CHECKPOINT_STATE_DIRECTORY: &str = ".a3s-oci-native-checkpoint-v1";
+const CHECKPOINT_STATE_DIRECTORY: &str = ".aster-oci-native-checkpoint-v1";
 
 struct CheckpointExercise {
     restore_seed: CrossProcessRestoreSeed,
@@ -135,7 +135,7 @@ pub(super) async fn run(
         Ok(path) => path,
         Err(reason) => return failed(report, reason),
     };
-    let init_executable = match canonical_file(init_executable, "a3s-oci-agent").await {
+    let init_executable = match canonical_file(init_executable, "aster-oci-agent").await {
         Ok(path) => path,
         Err(reason) => return failed(report, reason),
     };
@@ -170,7 +170,7 @@ pub(super) async fn run(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let session_root = work_parent.join(format!("a3s-oci-native-checkpoint-{nonce}"));
+    let session_root = work_parent.join(format!("aster-oci-native-checkpoint-{nonce}"));
     if let Err(reason) = create_private_directory(&session_root).await {
         return failed(report, reason);
     }

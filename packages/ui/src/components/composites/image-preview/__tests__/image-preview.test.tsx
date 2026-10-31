@@ -214,7 +214,7 @@ describe('ImagePreviewDialog', () => {
     const closeButton = screen.getByRole('button', { name: LABELS.close })
     expect(closeButton).toHaveClass('rounded-none', 'bg-transparent', 'shadow-none', 'transition-none')
     expect(closeButton).not.toHaveClass('rounded-full')
-    expect(closeButton).toHaveStyle({ top: 'calc(var(--a3s-titlebar-height, 0px) + 1rem)' })
+    expect(closeButton).toHaveStyle({ top: 'calc(var(--aster-titlebar-height, 0px) + 1rem)' })
     expect(closeButton).not.toHaveClass('top-4')
     const preview = screen.getByTestId('image-preview-dialog')
     expect(preview).toHaveClass('rounded-none', 'data-[state=open]:animate-none')

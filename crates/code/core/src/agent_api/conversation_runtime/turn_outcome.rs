@@ -108,7 +108,7 @@ pub(super) fn strip_attachment_annotation(messages: &mut [Message]) {
     }
 }
 
-pub(super) fn tool_results_since_last_user_message(log: &[a3s_effect::Fact]) -> usize {
+pub(super) fn tool_results_since_last_user_message(log: &[aster_effect::Fact]) -> usize {
     let start = log
         .iter()
         .rposition(|fact| fact.kind == "user.message")
@@ -228,7 +228,7 @@ pub(crate) fn gate_surface_result(
 }
 
 pub(super) fn agent_result(
-    settled: &a3s_effect::Settlement<a3s_effect::CodingView>,
+    settled: &aster_effect::Settlement<aster_effect::CodingView>,
     messages: Vec<Message>,
     usage: crate::llm::TokenUsage,
 ) -> AgentResult {

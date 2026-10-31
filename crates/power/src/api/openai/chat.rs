@@ -1,0 +1,2769 @@
+use axum::extract::State;
+use axum::response::IntoResponse;
+use axum::Json;
+use std::time::Instant;
+
+use super::openai_error;
+use crate::api::types::ChatCompletionRequest;
+use crate::backend::types::{ChatMessage, ChatRequest, ChatResponseChunk, ToolChoice};
+use crate::server::auth::AuthId;
+use crate::server::request_context::RequestContext;
+use crate::server::state::AppState;
+
+#[path = "chat_runtime.rs"]
+mod runtime;
+
+#[cfg(test)]
+#[path = "chat_policy_tests.rs"]
+mod policy_tests;
+
+fn chunk_emits_token(chunk: &ChatResponseChunk) -> bool {
+    !chunk.done
+        || !chunk.content.is_empty()
+        || chunk
+            .thinking_content
+            .as_ref()
+            .is_some_and(|content| !content.is_empty())
+        || chunk
+            .tool_calls
+            .as_ref()
+            .is_some_and(|calls| !calls.is_empty())
+}
+
+fn has_effective_tools(request: &ChatCompletionRequest) -> bool {
+    request
+        .effective_tools()
+        .as_ref()
+        .is_some_and(|tools| !tools.is_empty())
+}
+
+fn unsupported_local_tool_choice_message(request: &ChatCompletionRequest) -> Option<String> {
+    let tool_choice = request.effective_tool_choice()?;
+    let has_tools = has_effective_tools(request);
+
+    match tool_choice {
+        ToolChoice::String(value) if value == "auto" => None,
+        ToolChoice::String(value) if value == "none" && !has_tools => None,
+        ToolChoice::String(value) if value == "none" => Some(
+            "local chat backends cannot enforce tool_choice=\"none\" while tools are provided; omit tools or use a remote model"
+                .to_string(),
+        ),
+        ToolChoice::String(value) if value == "required" => Some(
+            "local chat backends cannot enforce tool_choice=\"required\"; use tool_choice=\"auto\" or a remote model"
+                .to_string(),
+        ),
+        ToolChoice::String(value) => Some(format!(
+            "unsupported tool_choice value '{value}'; supported values are auto, none, and required"
+        )),
+        ToolChoice::Specific(_) => Some(
+            "local chat backends cannot enforce named tool_choice or legacy function_call; use tool_choice=\"auto\" or a remote model"
+                .to_string(),
+        ),
+    }
+}
+
+fn unsupported_local_parallel_tool_calls_message(
+    request: &ChatCompletionRequest,
+) -> Option<String> {
+    if request.parallel_tool_calls == Some(false) && has_effective_tools(request) {
+        Some(
+            "local chat backends cannot enforce parallel_tool_calls=false while tools are provided; omit tools or use a remote model"
+                .to_string(),
+        )
+    } else {
+        None
+    }
+}
+
+fn unsupported_local_message_role_message(request: &ChatCompletionRequest) -> Option<String> {
+    for (index, message) in request.messages.iter().enumerate() {
+        if !matches!(
+            message.role.as_str(),
+            "system" | "user" | "assistant" | "tool"
+        ) {
+            return Some(format!(
+                "unsupported local chat message role at messages[{index}]: '{}'; supported roles are system, user, assistant, and tool",
+                message.role
+            ));
+        }
+    }
+    None
+}
+
+/// POST /v1/chat/completions - OpenAI-compatible chat completion.
+pub async fn handler(
+    State(state): State<AppState>,
+    auth_id: Option<axum::Extension<AuthId>>,
+    Json(request): Json<ChatCompletionRequest>,
+) -> impl IntoResponse {
+    let request_started = Instant::now();
+    let model_name = request.model.clone();
+    let request_id = format!("chatcmpl-{}", uuid::Uuid::new_v4());
+    if let Err(message) =
+        crate::api::prompt_cache::validate_prompt_cache_key(request.prompt_cache_key.as_deref())
+    {
+        return openai_error("invalid_prompt_cache_key", &message).into_response();
+    }
+    if let Some(message) = request.unsupported_fields_message() {
+        return openai_error("unsupported_request_fields", &message).into_response();
+    }
+    if let Some(choice_count) = request.n {
+        if choice_count != 1 {
+            return openai_error(
+                "unsupported_choice_count",
+                &format!(
+                    "unsupported chat completion choice count n={choice_count}; only n=1 is supported"
+                ),
+            )
+            .into_response();
+        }
+    }
+    if request.has_conflicting_max_token_limits() {
+        return openai_error(
+            "conflicting_max_token_limits",
+            "max_tokens and max_completion_tokens must match when both are provided",
+        )
+        .into_response();
+    }
+    if request.has_stream_options_without_stream() {
+        return openai_error(
+            "unsupported_stream_options",
+            "chat completion stream_options are only supported when stream=true",
+        )
+        .into_response();
+    }
+    if let Some(message) = request
+        .stream_options
+        .as_ref()
+        .and_then(|options| options.unsupported_fields_message())
+    {
+        return openai_error("unsupported_stream_options", &message).into_response();
+    }
+    if request.logprobs.unwrap_or(false) || request.top_logprobs.is_some() {
+        return openai_error(
+            "unsupported_logprobs",
+            "chat completion logprobs are not supported; omit logprobs and top_logprobs",
+        )
+        .into_response();
+    }
+    if request.logit_bias.is_some() {
+        return openai_error(
+            "unsupported_logit_bias",
+            "chat completion logit_bias is not supported; omit logit_bias",
+        )
+        .into_response();
+    }
+    if request.has_unsupported_modalities() {
+        return openai_error(
+            "unsupported_chat_modalities",
+            r#"chat completion modalities are not supported except ["text"]"#,
+        )
+        .into_response();
+    }
+    if request.audio.is_some() {
+        return openai_error(
+            "unsupported_chat_audio",
+            "chat completion audio output is not supported; omit audio",
+        )
+        .into_response();
+    }
+    if request.prediction.is_some() {
+        return openai_error(
+            "unsupported_prediction",
+            "chat completion prediction hints are not supported; omit prediction",
+        )
+        .into_response();
+    }
+    if request.reasoning_effort.is_some() {
+        return openai_error(
+            "unsupported_reasoning_effort",
+            "chat completion reasoning_effort is not supported; omit reasoning_effort",
+        )
+        .into_response();
+    }
+    if let Some((code, message)) = request
+        .response_format
+        .as_ref()
+        .and_then(|format| format.validation_error())
+    {
+        return openai_error(code, &message).into_response();
+    }
+    if let Some(message) = request.unsupported_message_fields_message() {
+        return openai_error("unsupported_message_fields", &message).into_response();
+    }
+    if request.has_thinking_inputs() {
+        return openai_error(
+            "unsupported_message_thinking",
+            "chat message thinking input is not supported; omit message.thinking",
+        )
+        .into_response();
+    }
+    if request.has_conflicting_tool_definitions() {
+        return openai_error(
+            "conflicting_tool_definitions",
+            "tools and legacy functions cannot both be provided",
+        )
+        .into_response();
+    }
+    if request.has_conflicting_tool_choice() {
+        return openai_error(
+            "conflicting_tool_choice",
+            "tool_choice and legacy function_call cannot both be provided",
+        )
+        .into_response();
+    }
+    if let Some(message) = request.unsupported_tool_fields_message() {
+        return openai_error("unsupported_tool_definition", &message).into_response();
+    }
+    if let Some(message) = request.unsupported_tool_choice_fields_message() {
+        return openai_error("unsupported_tool_choice", &message).into_response();
+    }
+
+    // Build request context for isolation and audit tracking
+    let ctx = RequestContext::new(auth_id.map(|a| a.0 .0.clone()));
+    state.metrics.increment_active_requests();
+    let active_request = runtime::ActiveRequest::new(state.metrics.clone());
+
+    // Privacy: redact inference content from logs
+    if state.should_redact() {
+        let sanitized = state.sanitize_log(&format!("chat request model={model_name}"));
+        tracing::debug!("{sanitized}");
+    } else {
+        tracing::debug!(model = %model_name, "Chat completion request");
+    }
+
+    let manifest = match state.registry.get(&model_name) {
+        Ok(m) => m,
+        Err(_) => {
+            return openai_error(
+                "model_not_found",
+                &format!("model '{model_name}' not found"),
+            )
+            .into_response();
+        }
+    };
+    let request_keep_alive = match super::parse_request_keep_alive(request.keep_alive.as_deref()) {
+        Ok(keep_alive) => keep_alive,
+        Err(message) => {
+            return openai_error("invalid_keep_alive", &message).into_response();
+        }
+    };
+
+    if !matches!(manifest.format, crate::model::manifest::ModelFormat::Remote) {
+        if let Some(message) = unsupported_local_message_role_message(&request) {
+            return openai_error("unsupported_message_role", &message).into_response();
+        }
+    }
+
+    let runtime_policy =
+        match crate::api::prompt_policy::runtime_policy_claim(&manifest, Some(&state.config)) {
+            Ok(policy) => policy,
+            Err(e) => {
+                return openai_error(
+                    "receipt_failed",
+                    &format!("failed to build runtime policy receipt claim: {e}"),
+                )
+                .into_response();
+            }
+        };
+
+    let backend = match state.find_backend_for_manifest(&manifest) {
+        Ok(b) => b,
+        Err(e) => {
+            return openai_error("backend_unavailable", &state.sanitize_error(&e.to_string()))
+                .into_response();
+        }
+    };
+    if !matches!(manifest.format, crate::model::manifest::ModelFormat::Remote)
+        && !backend.supports_openai_tool_selection()
+    {
+        if let Some(message) = unsupported_local_tool_choice_message(&request) {
+            return openai_error("unsupported_tool_choice", &message).into_response();
+        }
+        if let Some(message) = unsupported_local_parallel_tool_calls_message(&request) {
+            return openai_error("unsupported_parallel_tool_calls", &message).into_response();
+        }
+    }
+    if let Some(message) = super::unsupported_local_response_format_for_backend(
+        &manifest.format,
+        backend.name(),
+        request.response_format.as_ref(),
+    ) {
+        return openai_error("unsupported_response_format", &message).into_response();
+    }
+    let prompt_cache_session_id = match request.prompt_cache_key.as_deref() {
+        Some(key) => {
+            if !backend.prompt_cache_support().is_supported() {
+                return openai_error(
+                    "prompt_cache_unsupported",
+                    &format!(
+                        "backend '{}' cannot guarantee prompt-prefix cache reuse; omit prompt_cache_key or select a supporting backend",
+                        backend.name()
+                    ),
+                )
+                .into_response();
+            }
+            if request.has_image_inputs() {
+                return openai_error(
+                    "prompt_cache_unsupported",
+                    "prompt_cache_key currently supports text-only chat requests",
+                )
+                .into_response();
+            }
+            Some(crate::api::prompt_cache::scoped_prompt_cache_key(
+                ctx.auth_id.as_deref(),
+                crate::api::prompt_cache::PromptCacheEndpoint::Chat,
+                &model_name,
+                key,
+            ))
+        }
+        None => None,
+    };
+
+    let permit = match state.limiter.acquire_http().await {
+        Ok(permit) => permit,
+        Err(error) => return crate::server::limiter::admission_response(error),
+    };
+
+    let load_result = match crate::api::autoload::ensure_loaded_with_keep_alive(
+        &state,
+        &model_name,
+        &manifest,
+        &backend,
+        request_keep_alive,
+    )
+    .await
+    {
+        Ok(r) => r,
+        Err(e) => {
+            return openai_error("model_load_failed", &state.sanitize_error(&e.to_string()))
+                .into_response();
+        }
+    };
+    let resources = runtime::Resources::new(
+        state.clone(),
+        backend.clone(),
+        model_name.clone(),
+        ctx,
+        permit,
+        active_request,
+        load_result.unload_after_use,
+    );
+
+    let effective_tools = request.effective_tools();
+    let effective_tool_choice = request.effective_tool_choice();
+    let response_format =
+        super::backend_response_format(&manifest.format, request.response_format.as_ref());
+    let backend_request = ChatRequest {
+        messages: request
+            .messages
+            .iter()
+            .map(|m| ChatMessage {
+                role: m.role.clone(),
+                content: m.content.clone(),
+                name: m.name.clone(),
+                tool_calls: m.tool_calls.clone(),
+                tool_call_id: m.tool_call_id.clone(),
+                images: m.images.clone(),
+            })
+            .collect(),
+        temperature: request.temperature,
+        top_p: request.top_p,
+        max_tokens: request.effective_max_tokens(),
+        stop: request.stop.clone(),
+        stream: request.stream.unwrap_or(false),
+        top_k: request.top_k,
+        min_p: request.min_p,
+        repeat_penalty: request.repeat_penalty,
+        frequency_penalty: request.frequency_penalty,
+        presence_penalty: request.presence_penalty,
+        seed: request.seed,
+        num_ctx: request.num_ctx,
+        mirostat: request.mirostat,
+        mirostat_tau: request.mirostat_tau,
+        mirostat_eta: request.mirostat_eta,
+        tfs_z: request.tfs_z,
+        typical_p: request.typical_p,
+        response_format,
+        stream_options: request
+            .stream_options
+            .as_ref()
+            .map(|options| serde_json::json!(options)),
+        tools: effective_tools,
+        tool_choice: effective_tool_choice,
+        parallel_tool_calls: request.parallel_tool_calls,
+        repeat_last_n: request.repeat_last_n,
+        penalize_newline: request.penalize_newline,
+        num_batch: None,
+        num_thread: state.config.num_thread,
+        num_thread_batch: None,
+        flash_attention: if state.config.flash_attention {
+            Some(true)
+        } else {
+            None
+        },
+        num_gpu: None,
+        main_gpu: None,
+        use_mmap: None,
+        use_mlock: if state.config.use_mlock {
+            Some(true)
+        } else {
+            None
+        },
+        num_parallel: Some(state.config.num_parallel as u32),
+        images: None,
+        session_id: prompt_cache_session_id,
+    };
+
+    let effective_prompt = match backend
+        .effective_chat_prompt_digest(&model_name, &backend_request)
+        .await
+    {
+        Ok(digest) => digest,
+        Err(e) => {
+            return openai_error(
+                "receipt_failed",
+                &format!("failed to build effective prompt receipt claim: {e}"),
+            )
+            .into_response();
+        }
+    };
+    let effective_prompt =
+        match super::chat_effective_prompt_for_receipt(&request, effective_prompt) {
+            Ok(digest) => digest,
+            Err(message) => {
+                return openai_error("receipt_failed", &message).into_response();
+            }
+        };
+    let attestation_receipt =
+        match crate::api::receipt::chat_receipt_with_runtime_policy_and_effective_prompt(
+            &request,
+            runtime_policy,
+            effective_prompt,
+        ) {
+            Ok(receipt) => receipt,
+            Err(e) => {
+                return openai_error(
+                    "receipt_failed",
+                    &format!("failed to build attestation receipt: {e}"),
+                )
+                .into_response();
+            }
+        };
+    let attestation_receipt_sha256 = match crate::api::receipt::receipt_digest(&attestation_receipt)
+    {
+        Ok(digest) => digest,
+        Err(e) => {
+            return openai_error(
+                "receipt_failed",
+                &format!("failed to digest attestation receipt: {e}"),
+            )
+            .into_response();
+        }
+    };
+
+    let is_stream = request.stream.unwrap_or(false);
+    let suppress_token_metrics = state.suppress_token_metrics();
+    let include_usage_chunk = suppress_token_metrics
+        || request
+            .stream_options
+            .as_ref()
+            .map(|o| o.include_usage)
+            .unwrap_or(false);
+
+    // Both remote backends own tokenization; SSE chunks are not token counts.
+    let upstream_accounting =
+        backend.reports_exact_chat_usage() || matches!(backend.name(), "prism" | "proxy");
+    match backend.chat(&model_name, backend_request).await {
+        Ok(stream) => {
+            runtime::respond(
+                stream,
+                resources,
+                runtime::Presentation {
+                    id: request_id,
+                    model: model_name,
+                    started: request_started,
+                    stream: is_stream,
+                    include_usage: include_usage_chunk,
+                    suppress: suppress_token_metrics,
+                    receipt: attestation_receipt,
+                    receipt_sha256: attestation_receipt_sha256,
+                },
+                upstream_accounting,
+            )
+            .await
+        }
+        Err(error) => {
+            resources.audit_failure(error.to_string());
+            let code = runtime::backend_error_code(&error);
+            openai_error(code, &state.sanitize_error(&error.to_string())).into_response()
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::api::types::ChatCompletionRequest;
+    use crate::backend::test_utils::{sample_manifest, test_state_with_mock, MockBackend};
+    use crate::backend::types::{ChatResponseChunk, EffectivePromptDigest};
+    use crate::model::manifest::ModelFormat;
+    use crate::server::router;
+    use axum::body::Body;
+    use axum::http::{Request, StatusCode};
+    use serial_test::serial;
+    use tower::util::ServiceExt;
+
+    #[test]
+    fn terminal_chat_payload_chunks_count_as_output_tokens() {
+        let terminal_token = ChatResponseChunk {
+            content: "last".to_string(),
+            thinking_content: None,
+            done: true,
+            prompt_tokens: Some(3),
+            done_reason: Some("length".to_string()),
+            prompt_eval_duration_ns: None,
+            tool_calls: None,
+            upstream_timings: None,
+        };
+        let terminal_metadata = ChatResponseChunk {
+            content: String::new(),
+            thinking_content: None,
+            done: true,
+            prompt_tokens: Some(3),
+            done_reason: Some("length".to_string()),
+            prompt_eval_duration_ns: None,
+            tool_calls: None,
+            upstream_timings: None,
+        };
+        assert!(super::chunk_emits_token(&terminal_token));
+        assert!(!super::chunk_emits_token(&terminal_metadata));
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn streaming_preserves_terminal_chat_payload() {
+        let directory = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", directory.path());
+        let state = test_state_with_mock(MockBackend::with_terminal_payload());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let response = router::build(state)
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/v1/chat/completions")
+                    .header("content-type", "application/json")
+                    .body(Body::from(
+                        r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":true,"stream_options":{"include_usage":true}}"#,
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let body = String::from_utf8(body.to_vec()).unwrap();
+        assert!(body.contains("\"content\":\"Hello\""));
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[test]
+    fn backend_response_format_preserves_remote_json_schema_wire_shape() {
+        let format: crate::api::types::ResponseFormat = serde_json::from_value(serde_json::json!({
+            "type": "json_schema",
+            "json_schema": {
+                "name": "Weather",
+                "description": "Weather answer",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "city": { "type": "string" }
+                    },
+                    "required": ["city"]
+                },
+                "strict": true
+            }
+        }))
+        .unwrap();
+
+        let value =
+            super::super::backend_response_format(&ModelFormat::Remote, Some(&format)).unwrap();
+
+        assert_eq!(value["type"], "json_schema");
+        assert_eq!(value["json_schema"]["name"], "Weather");
+        assert_eq!(value["json_schema"]["description"], "Weather answer");
+        assert_eq!(value["json_schema"]["strict"], true);
+        assert_eq!(
+            value["json_schema"]["schema"]["properties"]["city"]["type"],
+            "string"
+        );
+    }
+
+    #[test]
+    fn backend_response_format_extracts_schema_for_local_backends() {
+        let format: crate::api::types::ResponseFormat = serde_json::from_value(serde_json::json!({
+            "type": "json_schema",
+            "json_schema": {
+                "name": "Weather",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "city": { "type": "string" }
+                    }
+                }
+            }
+        }))
+        .unwrap();
+
+        let value =
+            super::super::backend_response_format(&ModelFormat::Gguf, Some(&format)).unwrap();
+
+        assert_eq!(value["type"], "object");
+        assert_eq!(value["properties"]["city"]["type"], "string");
+        assert!(value.get("json_schema").is_none());
+    }
+
+    #[test]
+    fn local_tool_choice_validation_rejects_non_default_policy() {
+        let auto: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object"}}}],
+                "tool_choice":"auto"
+            }"#,
+        )
+        .unwrap();
+        assert!(super::unsupported_local_tool_choice_message(&auto).is_none());
+
+        let none_without_tools: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "tool_choice":"none"
+            }"#,
+        )
+        .unwrap();
+        assert!(super::unsupported_local_tool_choice_message(&none_without_tools).is_none());
+
+        let none_with_tools: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object"}}}],
+                "tool_choice":"none"
+            }"#,
+        )
+        .unwrap();
+        assert!(
+            super::unsupported_local_tool_choice_message(&none_with_tools)
+                .unwrap()
+                .contains("cannot enforce tool_choice=\"none\"")
+        );
+
+        let required: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object"}}}],
+                "tool_choice":"required"
+            }"#,
+        )
+        .unwrap();
+        assert!(super::unsupported_local_tool_choice_message(&required)
+            .unwrap()
+            .contains("cannot enforce tool_choice=\"required\""));
+
+        let specific: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "functions":[{"name":"lookup","parameters":{"type":"object"}}],
+                "function_call":{"name":"lookup"}
+            }"#,
+        )
+        .unwrap();
+        assert!(super::unsupported_local_tool_choice_message(&specific)
+            .unwrap()
+            .contains("named tool_choice"));
+    }
+
+    #[test]
+    fn local_parallel_tool_calls_validation_rejects_false_with_tools() {
+        let false_without_tools: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "parallel_tool_calls":false
+            }"#,
+        )
+        .unwrap();
+        assert!(
+            super::unsupported_local_parallel_tool_calls_message(&false_without_tools).is_none()
+        );
+
+        let true_with_tools: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object"}}}],
+                "parallel_tool_calls":true
+            }"#,
+        )
+        .unwrap();
+        assert!(super::unsupported_local_parallel_tool_calls_message(&true_with_tools).is_none());
+
+        let false_with_tools: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object"}}}],
+                "parallel_tool_calls":false
+            }"#,
+        )
+        .unwrap();
+        assert!(
+            super::unsupported_local_parallel_tool_calls_message(&false_with_tools)
+                .unwrap()
+                .contains("cannot enforce parallel_tool_calls=false")
+        );
+
+        let false_with_legacy_functions: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "functions":[{"name":"lookup","parameters":{"type":"object"}}],
+                "parallel_tool_calls":false
+            }"#,
+        )
+        .unwrap();
+        assert!(
+            super::unsupported_local_parallel_tool_calls_message(&false_with_legacy_functions)
+                .unwrap()
+                .contains("cannot enforce parallel_tool_calls=false")
+        );
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_model_not_found() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"nonexistent","messages":[{"role":"user","content":"hi"}]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("not found"));
+        assert_eq!(json["error"]["code"], "model_not_found");
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_multi_choice_request() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"n":2}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_choice_count");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("only n=1 is supported"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_top_level_fields() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"service_tier":"priority"}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_request_fields");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("service_tier"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_invalid_prompt_cache_key_before_lookup() {
+        let state = test_state_with_mock(MockBackend::success());
+        let response = router::build(state)
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/v1/chat/completions")
+                    .header("content-type", "application/json")
+                    .body(Body::from(
+                        r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"prompt_cache_key":" leading"}"#,
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "invalid_prompt_cache_key");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_prompt_cache_fails_closed_or_forwards_opaque_key() {
+        let directory = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", directory.path());
+
+        let unsupported_state = test_state_with_mock(MockBackend::success());
+        unsupported_state
+            .registry
+            .register(sample_manifest("unsupported"))
+            .unwrap();
+        let response = router::build(unsupported_state)
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/v1/chat/completions")
+                    .header("content-type", "application/json")
+                    .body(Body::from(
+                        r#"{"model":"unsupported","messages":[{"role":"user","content":"hi"}],"prompt_cache_key":"agent-v1"}"#,
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "prompt_cache_unsupported");
+
+        let mock = MockBackend::success().with_prompt_cache_support();
+        let capture = mock.chat_request_capture();
+        let supported_state = test_state_with_mock(mock);
+        supported_state
+            .registry
+            .register(sample_manifest("supported"))
+            .unwrap();
+        supported_state.mark_loaded("supported");
+        let response = router::build(supported_state)
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/v1/chat/completions")
+                    .header("content-type", "application/json")
+                    .body(Body::from(
+                        r#"{"model":"supported","messages":[{"role":"user","content":"hi"}],"prompt_cache_key":"agent-v1"}"#,
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let captured = capture
+            .lock()
+            .expect("chat request lock poisoned")
+            .clone()
+            .expect("expected captured request");
+        let session_id = captured.session_id.expect("expected opaque cache key");
+        assert!(session_id.starts_with("aster-pcache-v1:"));
+        assert!(!session_id.contains("agent-v1"));
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_local_message_role() {
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"developer","content":"policy"}]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_message_role");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("developer"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_allows_remote_message_role_passthrough() {
+        let mock = MockBackend::success().with_remote_support();
+        let state = test_state_with_mock(mock);
+        let mut manifest = sample_manifest("test");
+        manifest.format = ModelFormat::Remote;
+        state.registry.register_transient(manifest).unwrap();
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"developer","content":"policy"}]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_conflicting_max_completion_tokens() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"max_tokens":8,"max_completion_tokens":9}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "conflicting_max_token_limits");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("must match"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_stream_options_without_stream() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"stream_options":{"include_usage":true}}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_stream_options");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("stream=true"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_stream_options_fields() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"stream":true,"stream_options":{"include_usage":true,"include_obfuscation":true}}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_stream_options");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("include_obfuscation"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_logprobs_request() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"logprobs":true}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_logprobs");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("logprobs are not supported"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_logit_bias_request() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"logit_bias":{"123":-100}}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_logit_bias");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("logit_bias is not supported"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_allows_text_modalities_request() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"modalities":["text"]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "model_not_found");
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_modalities_request() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"modalities":["text","audio"]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_chat_modalities");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("modalities are not supported"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_audio_request() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"audio":{"format":"wav","voice":"alloy"}}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_chat_audio");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("audio output is not supported"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_prediction_request() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"prediction":{"type":"content","content":"hi"}}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_prediction");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("prediction hints are not supported"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_reasoning_effort_request() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"reasoning_effort":"high"}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_reasoning_effort");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("reasoning_effort is not supported"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_response_format_type() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"response_format":{"type":"xml"}}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_response_format");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("supported values"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_response_format_field() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"response_format":{"type":"json_object","future_policy":true}}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_response_format");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("unsupported response_format field(s): future_policy"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_incomplete_json_schema_response_format() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":"hi"}],"response_format":{"type":"json_schema","json_schema":{"name":"Answer"}}}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "invalid_response_format");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("json_schema.schema"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_message_thinking_input() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"assistant","content":"answer","thinking":"hidden reasoning"}]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_message_thinking");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("message.thinking"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_message_content_fields() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"missing","messages":[{"role":"user","content":[{"type":"text","text":"hi","cache_control":true}]}]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_message_fields");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("messages[0].content[0]"));
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("cache_control"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_conflicting_tool_definition_fields() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"missing",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object"}}}],
+                    "functions":[{"name":"lookup","parameters":{"type":"object"}}]
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "conflicting_tool_definitions");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("cannot both be provided"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_conflicting_tool_choice_fields() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"missing",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "tool_choice":"auto",
+                    "function_call":"auto"
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "conflicting_tool_choice");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("cannot both be provided"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_tool_choice_fields() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"missing",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "tool_choice":{
+                        "type":"function",
+                        "function":{"name":"lookup"},
+                        "cache_control":true
+                    }
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_tool_choice");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("unsupported tool_choice field(s): cache_control"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_tool_definition_fields() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"missing",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "tools":[{
+                        "type":"function",
+                        "cache_control":true,
+                        "function":{
+                            "name":"lookup",
+                            "parameters":{"type":"object"}
+                        }
+                    }]
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_tool_definition");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("cache_control"));
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_unsupported_tool_function_fields() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"missing",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "tools":[{
+                        "type":"function",
+                        "function":{
+                            "name":"lookup",
+                            "parameters":{"type":"object"},
+                            "x-strict-mode":true
+                        }
+                    }]
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_tool_definition");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("x-strict-mode"));
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_rejects_local_tool_choice_none_with_tools() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state.clone());
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"test",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object"}}}],
+                    "tool_choice":"none"
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_tool_choice");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("cannot enforce tool_choice=\"none\""));
+        assert_eq!(state.metrics.active_requests(), 0);
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_rejects_local_named_legacy_function_call() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"test",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "functions":[{"name":"lookup","parameters":{"type":"object"}}],
+                    "function_call":{"name":"lookup"}
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_tool_choice");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("named tool_choice"));
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_rejects_local_parallel_tool_calls_false_with_tools() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state.clone());
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"test",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object"}}}],
+                    "parallel_tool_calls":false
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unsupported_parallel_tool_calls");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("cannot enforce parallel_tool_calls=false"));
+        assert_eq!(state.metrics.active_requests(), 0);
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_backend_not_found() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        let mut manifest = sample_manifest("st-model");
+        manifest.format = ModelFormat::SafeTensors;
+        state.registry.register(manifest).unwrap();
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"st-model","messages":[{"role":"user","content":"hi"}]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::SERVICE_UNAVAILABLE);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("No backend"));
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_receipt_includes_effective_prompt_digest() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let prompt_digest = EffectivePromptDigest::chat_rendered_prompt("mock", "rendered prompt");
+        let state = test_state_with_mock(
+            MockBackend::success().with_effective_prompt(prompt_digest.clone()),
+        );
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":false}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(
+            json["attestation_receipt"]["effective_prompt"]["kind"],
+            "chat.rendered-prompt"
+        );
+        assert_eq!(
+            json["attestation_receipt"]["effective_prompt"]["sha256"],
+            prompt_digest.sha256
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_non_streaming_success() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":false}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["object"], "chat.completion");
+        assert_eq!(json["model"], "test");
+        assert!(json["choices"][0]["message"]["content"]
+            .as_str()
+            .unwrap()
+            .contains("Hello"));
+        assert_eq!(
+            json["attestation_receipt"]["schema"],
+            "aster.power.inference-receipt.v2"
+        );
+        assert_eq!(
+            json["attestation_receipt"]["request_type"],
+            "chat-completion"
+        );
+        assert_eq!(
+            json["attestation_receipt"]["decoding"]["parameters"]["n"],
+            serde_json::Value::Null
+        );
+        assert_eq!(
+            json["attestation_receipt_sha256"].as_str().unwrap().len(),
+            64
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_accepts_single_choice_request() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"n":1}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["choices"].as_array().unwrap().len(), 1);
+        assert_eq!(
+            json["attestation_receipt"]["decoding"]["parameters"]["n"],
+            serde_json::json!(1)
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_forwards_max_completion_tokens() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let mock = MockBackend::success();
+        let chat_request_capture = mock.chat_request_capture();
+        let state = test_state_with_mock(mock);
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":false,"max_completion_tokens":12}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+
+        let captured = chat_request_capture
+            .lock()
+            .expect("chat request lock poisoned")
+            .clone()
+            .expect("expected backend chat request to be captured");
+        assert_eq!(captured.max_tokens, Some(12));
+        assert_eq!(
+            json["attestation_receipt"]["decoding"]["parameters"]["max_tokens"],
+            serde_json::Value::Null
+        );
+        assert_eq!(
+            json["attestation_receipt"]["decoding"]["parameters"]["max_completion_tokens"],
+            serde_json::json!(12)
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_streaming_returns_sse() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":true}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let content_type = resp
+            .headers()
+            .get("content-type")
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
+        assert!(content_type.contains("text/event-stream"));
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let body_str = String::from_utf8_lossy(&body);
+        assert!(
+            body_str.contains("\"attestation_receipt_sha256\""),
+            "expected attestation receipt digest in SSE stream"
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_load_failure() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::load_fails());
+        state.registry.register(sample_manifest("test")).unwrap();
+
+        let app = router::build(state.clone());
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::SERVICE_UNAVAILABLE);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("mock load failure"));
+        // active_requests must return to zero after load failure
+        assert_eq!(state.metrics.active_requests(), 0);
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_with_tools() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"weather in SF?"}],
+                "tools":[{
+                    "type":"function",
+                    "function":{
+                        "name":"get_weather",
+                        "description":"Get weather",
+                        "parameters":{"type":"object","properties":{"location":{"type":"string"}}}
+                    }
+                }],
+                "tool_choice":"auto"
+            }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["object"], "chat.completion");
+        assert!(json["choices"][0]["finish_reason"].as_str().is_some());
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_maps_legacy_functions_to_tools() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let mock = MockBackend::success().with_remote_support();
+        let chat_request_capture = mock.chat_request_capture();
+        let state = test_state_with_mock(mock);
+        let mut manifest = sample_manifest("test");
+        manifest.format = ModelFormat::Remote;
+        state.registry.register(manifest).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"test",
+                    "messages":[{"role":"user","content":"weather in SF?"}],
+                    "functions":[{
+                        "name":"get_weather",
+                        "description":"Get weather",
+                        "parameters":{"type":"object","properties":{"location":{"type":"string"}}},
+                        "strict":true
+                    }],
+                    "function_call":{"name":"get_weather"}
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+
+        let captured = chat_request_capture
+            .lock()
+            .expect("chat request lock poisoned")
+            .clone()
+            .expect("expected backend chat request to be captured");
+        let tools = captured.tools.expect("expected legacy functions as tools");
+        assert_eq!(tools.len(), 1);
+        assert_eq!(tools[0].tool_type, "function");
+        assert_eq!(tools[0].function.name, "get_weather");
+        assert_eq!(tools[0].function.strict, Some(true));
+        assert_eq!(
+            serde_json::to_value(captured.tool_choice.expect("expected mapped tool choice"))
+                .unwrap(),
+            serde_json::json!({
+                "type": "function",
+                "function": {"name": "get_weather"}
+            })
+        );
+        assert!(json["attestation_receipt"]["decoding"]["tools_sha256"].is_string());
+        assert!(json["attestation_receipt"]["decoding"]["tool_choice_sha256"].is_string());
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_non_streaming_preserves_tool_calls() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::with_tool_calls());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"test",
+                    "messages":[{"role":"user","content":"weather in Paris?"}],
+                    "tools":[{
+                        "type":"function",
+                        "function":{
+                            "name":"get_weather",
+                            "description":"Get weather",
+                            "parameters":{"type":"object"}
+                        }
+                    }],
+                    "stream":false
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        let choice = &json["choices"][0];
+        assert_eq!(choice["finish_reason"], "tool_calls");
+        let calls = choice["message"]["tool_calls"].as_array().unwrap();
+        assert_eq!(calls.len(), 1);
+        assert_eq!(calls[0]["id"], "call_1");
+        assert_eq!(calls[0]["type"], "function");
+        assert_eq!(calls[0]["function"]["name"], "get_weather");
+        assert_eq!(calls[0]["function"]["arguments"], "{\"city\":\"Paris\"}");
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_with_vision() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                "model":"test",
+                "messages":[{
+                    "role":"user",
+                    "content":[
+                        {"type":"text","text":"What is this?"},
+                        {"type":"image_url","image_url":{"url":"https://example.com/img.jpg"}}
+                    ]
+                }]
+            }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["object"], "chat.completion");
+        assert!(json["attestation_receipt"]["effective_prompt"].is_null());
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_rejects_text_effective_prompt_for_image_url_parts() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        // Adversarial backend: would invent a text-only digest for vision input.
+        let prompt_digest = EffectivePromptDigest::chat_rendered_prompt("mock", "text-only digest");
+        let state =
+            test_state_with_mock(MockBackend::success().with_effective_prompt(prompt_digest));
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                "model":"test",
+                "messages":[{
+                    "role":"user",
+                    "content":[
+                        {"type":"text","text":"What is this?"},
+                        {"type":"image_url","image_url":{"url":"data:image/png;base64,abc"}}
+                    ]
+                }],
+                "stream":false
+            }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "receipt_failed");
+        let message = json["error"]["message"].as_str().unwrap();
+        assert!(message.contains("image-bearing"));
+        assert!(message.contains("effective_prompt"));
+        assert!(message.contains("chat.rendered-prompt"));
+        assert!(!message.contains("text-only digest"));
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_rejects_text_effective_prompt_for_message_images() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let prompt_digest = EffectivePromptDigest::chat_prompt_token_ids("mock", &[7, 8, 9]);
+        let state =
+            test_state_with_mock(MockBackend::success().with_effective_prompt(prompt_digest));
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"What is this?","images":["aGVsbG8="]}],"stream":false}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "receipt_failed");
+        let message = json["error"]["message"].as_str().unwrap();
+        assert!(message.contains("image-bearing"));
+        assert!(message.contains("chat.prompt-token-ids"));
+        assert!(!message.contains("aGVsbG8="));
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_forwards_message_images_to_backend() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let mock = MockBackend::success();
+        let chat_request_capture = mock.chat_request_capture();
+        let state = test_state_with_mock(mock);
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"What is this?","images":["aGVsbG8="]}]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+
+        let captured = chat_request_capture
+            .lock()
+            .expect("chat request lock poisoned")
+            .clone()
+            .expect("expected backend chat request to be captured");
+        assert_eq!(captured.messages.len(), 1);
+        assert_eq!(
+            captured.messages[0].images.as_deref(),
+            Some(&["aGVsbG8=".to_string()][..])
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_forwards_extended_sampling_controls() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let mock = MockBackend::success();
+        let chat_request_capture = mock.chat_request_capture();
+        let state = test_state_with_mock(mock);
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"test",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "stream":false,
+                    "top_k":40,
+                    "min_p":0.5,
+                    "repeat_penalty":1.25,
+                    "repeat_last_n":64,
+                    "penalize_newline":true,
+                    "num_ctx":4096,
+                    "mirostat":2,
+                    "mirostat_tau":5.0,
+                    "mirostat_eta":0.25,
+                    "tfs_z":0.75,
+                    "typical_p":0.5
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+
+        let captured = chat_request_capture
+            .lock()
+            .expect("chat request lock poisoned")
+            .clone()
+            .expect("expected backend chat request to be captured");
+        assert_eq!(captured.top_k, Some(40));
+        assert_eq!(captured.min_p, Some(0.5));
+        assert_eq!(captured.repeat_penalty, Some(1.25));
+        assert_eq!(captured.repeat_last_n, Some(64));
+        assert_eq!(captured.penalize_newline, Some(true));
+        assert_eq!(captured.num_ctx, Some(4096));
+        assert_eq!(captured.mirostat, Some(2));
+        assert_eq!(captured.mirostat_tau, Some(5.0));
+        assert_eq!(captured.mirostat_eta, Some(0.25));
+        assert_eq!(captured.tfs_z, Some(0.75));
+        assert_eq!(captured.typical_p, Some(0.5));
+        assert_eq!(
+            json["attestation_receipt"]["decoding"]["parameters"]["top_k"],
+            serde_json::json!(40)
+        );
+        assert_eq!(
+            json["attestation_receipt"]["decoding"]["parameters"]["penalize_newline"],
+            serde_json::json!(true)
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_preserves_remote_parallel_tool_calls() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let mock = MockBackend::success().with_remote_support();
+        let chat_request_capture = mock.chat_request_capture();
+        let state = test_state_with_mock(mock);
+        let mut manifest = sample_manifest("test");
+        manifest.format = ModelFormat::Remote;
+        state.registry.register(manifest).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"test",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object"}}}],
+                    "parallel_tool_calls":false
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+
+        let captured = chat_request_capture
+            .lock()
+            .expect("chat request lock poisoned")
+            .clone()
+            .expect("expected backend chat request to be captured");
+        assert_eq!(captured.parallel_tool_calls, Some(false));
+        assert!(captured
+            .tools
+            .as_ref()
+            .is_some_and(|tools| !tools.is_empty()));
+        assert_eq!(
+            json["attestation_receipt"]["decoding"]["parameters"]["parallel_tool_calls"],
+            serde_json::json!(false)
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_preserves_remote_json_schema_response_format() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let mock = MockBackend::success().with_remote_support();
+        let chat_request_capture = mock.chat_request_capture();
+        let state = test_state_with_mock(mock);
+        let mut manifest = sample_manifest("test");
+        manifest.format = ModelFormat::Remote;
+        state.registry.register(manifest).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{
+                    "model":"test",
+                    "messages":[{"role":"user","content":"hi"}],
+                    "stream":false,
+                    "response_format":{
+                        "type":"json_schema",
+                        "json_schema":{
+                            "name":"Weather",
+                            "description":"Weather answer",
+                            "schema":{
+                                "type":"object",
+                                "properties":{"city":{"type":"string"}},
+                                "required":["city"]
+                            },
+                            "strict":true
+                        }
+                    }
+                }"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+
+        let captured = chat_request_capture
+            .lock()
+            .expect("chat request lock poisoned")
+            .clone()
+            .expect("expected backend chat request to be captured");
+        let response_format = captured
+            .response_format
+            .expect("expected response_format to be forwarded");
+        assert_eq!(response_format["type"], "json_schema");
+        assert_eq!(response_format["json_schema"]["name"], "Weather");
+        assert_eq!(
+            response_format["json_schema"]["description"],
+            "Weather answer"
+        );
+        assert_eq!(response_format["json_schema"]["strict"], true);
+        assert_eq!(
+            response_format["json_schema"]["schema"]["properties"]["city"]["type"],
+            "string"
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_with_tool_result() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(r#"{
+                "model":"test",
+                "messages":[
+                    {"role":"user","content":"weather?"},
+                    {"role":"assistant","content":"","tool_calls":[{"id":"call_1","type":"function","function":{"name":"get_weather","arguments":"{}"}}]},
+                    {"role":"tool","content":"72F","tool_call_id":"call_1"}
+                ]
+            }"#))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["object"], "chat.completion");
+        assert!(json["choices"][0]["message"]["content"].as_str().is_some());
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_streaming_with_tools() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(r#"{
+                "model":"test",
+                "messages":[{"role":"user","content":"hi"}],
+                "tools":[{"type":"function","function":{"name":"test","description":"test","parameters":{"type":"object"}}}],
+                "stream":true
+            }"#))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let content_type = resp
+            .headers()
+            .get("content-type")
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
+        assert!(content_type.contains("text/event-stream"));
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_has_usage_field() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":false}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert!(json["usage"].is_object());
+        assert!(json["usage"]["completion_tokens"].is_number());
+        assert!(json["usage"]["total_tokens"].is_number());
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_has_choices() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":false}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        let choices = json["choices"].as_array().unwrap();
+        assert_eq!(choices.len(), 1);
+        assert_eq!(choices[0]["index"], 0);
+        assert!(choices[0]["message"]["role"].is_string());
+        assert!(choices[0]["message"]["content"].is_string());
+        assert!(choices[0]["finish_reason"].is_string());
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_with_temperature() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"temperature":0.5,"max_tokens":100,"stream":false}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_default_stream_false() {
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        // OpenAI default is stream=false
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}]}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let content_type = resp
+            .headers()
+            .get("content-type")
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
+        // Non-streaming should return JSON, not SSE
+        assert!(content_type.contains("application/json"));
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_openai_chat_streaming_with_include_usage() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let mock = MockBackend::success();
+        let chat_request_capture = mock.chat_request_capture();
+        let state = test_state_with_mock(mock);
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":true,"stream_options":{"include_usage":true}}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let body_str = String::from_utf8_lossy(&body);
+        // The SSE stream should contain a usage chunk before [DONE]
+        assert!(
+            body_str.contains("\"usage\""),
+            "expected usage chunk in SSE stream"
+        );
+        assert!(
+            body_str.contains("\"completion_tokens\":1"),
+            "explicit include_usage must return the exact token count"
+        );
+        assert!(
+            body_str.contains("\"attestation_receipt_sha256\""),
+            "expected attestation receipt digest in SSE stream"
+        );
+        let captured = chat_request_capture
+            .lock()
+            .expect("chat request lock poisoned")
+            .clone()
+            .expect("expected backend chat request to be captured");
+        assert_eq!(
+            captured.stream_options,
+            Some(serde_json::json!({"include_usage": true}))
+        );
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[test]
+    fn test_round_tokens_rounds_to_nearest_10() {
+        assert_eq!(super::super::round_tokens(0), 0);
+        assert_eq!(super::super::round_tokens(1), 0);
+        assert_eq!(super::super::round_tokens(4), 0);
+        assert_eq!(super::super::round_tokens(5), 10);
+        assert_eq!(super::super::round_tokens(9), 10);
+        assert_eq!(super::super::round_tokens(10), 10);
+        assert_eq!(super::super::round_tokens(14), 10);
+        assert_eq!(super::super::round_tokens(15), 20);
+        assert_eq!(super::super::round_tokens(99), 100);
+        assert_eq!(super::super::round_tokens(100), 100);
+        assert_eq!(super::super::round_tokens(1234), 1230);
+        assert_eq!(super::super::round_tokens(1235), 1240);
+    }
+
+    #[tokio::test]
+    async fn test_active_requests_decremented_on_model_not_found() {
+        let state = test_state_with_mock(MockBackend::success());
+        let app = router::build(state.clone());
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"nonexistent","messages":[{"role":"user","content":"hi"}]}"#,
+            ))
+            .unwrap();
+        let _ = app.oneshot(req).await.unwrap();
+        assert_eq!(state.metrics.active_requests(), 0);
+    }
+
+    #[tokio::test]
+    async fn test_openai_chat_rejects_invalid_keep_alive() {
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+
+        let app = router::build(state);
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"keep_alive":"eventually"}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "invalid_keep_alive");
+        assert!(json["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("keep_alive"));
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_keep_alive_zero_unloads_after_inference() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state.clone());
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":false,"keep_alive":"0"}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        // Model should be unloaded after inference when keep_alive=0
+        assert!(!state.is_model_loaded("test"));
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[tokio::test]
+    #[serial]
+    async fn test_keep_alive_zero_streaming_unloads_after_inference() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        let state = test_state_with_mock(MockBackend::success());
+        state.registry.register(sample_manifest("test")).unwrap();
+        state.mark_loaded("test");
+
+        let app = router::build(state.clone());
+        let req = Request::builder()
+            .method("POST")
+            .uri("/v1/chat/completions")
+            .header("content-type", "application/json")
+            .body(Body::from(
+                r#"{"model":"test","messages":[{"role":"user","content":"hi"}],"stream":true,"keep_alive":"0"}"#,
+            ))
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        // Consume the full SSE stream so the done_event fires
+        axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        // Model should be unloaded after the stream is fully consumed
+        assert!(!state.is_model_loaded("test"));
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+}

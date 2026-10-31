@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::io::Read;
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use mkext4::{Meta, SpecialKind};
 use tar::Archive;
 
@@ -26,7 +26,7 @@ pub(super) fn apply_layer(
         rootfs.spool.path(),
     )?;
     let limit = crate::oci::limited_reader::cap_from_env(
-        "A3S_BOX_MAX_LAYER_BYTES",
+        "ASTER_BOX_MAX_LAYER_BYTES",
         DEFAULT_MAX_LAYER_BYTES,
     );
     let decoder = crate::oci::limited_reader::LimitedReader::new(decoder, limit);
@@ -222,11 +222,11 @@ fn reject_reserved_path(path: &GuestPath) -> Result<()> {
         return Ok(());
     };
     let reserved = [
-        b".a3s_image_metadata_v1.json".as_slice(),
-        b".a3s_image_metadata_v1.json.tmp".as_slice(),
-        b".a3s_rootfs_metadata_v1.json".as_slice(),
-        b".a3s_rootfs_metadata_v1.json.tmp".as_slice(),
-        b".a3s_rootfs_metadata_v1.previous.json".as_slice(),
+        b".aster_image_metadata_v1.json".as_slice(),
+        b".aster_image_metadata_v1.json.tmp".as_slice(),
+        b".aster_rootfs_metadata_v1.json".as_slice(),
+        b".aster_rootfs_metadata_v1.json.tmp".as_slice(),
+        b".aster_rootfs_metadata_v1.previous.json".as_slice(),
     ];
     if reserved.contains(&first.as_slice()) {
         return Err(oci_error(format!(

@@ -1,0 +1,25 @@
+extension "aster/probe-custom-editor" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "probe-custom-editor"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  ui "view" {
+    title            = "自定义编辑器探针"
+    description      = "按 Cmd+Shift+P，选择这一项打开页面。选择器是 *.probe。"
+    icon             = "database"
+    entry            = "ui/view/index.html"
+    presentation     = "webview"
+    point            = "studio.editor.custom"
+    selector         = "*.probe"
+    priority         = "default"
+    contract_version = 1
+    mode             = "append"
+  }
+}

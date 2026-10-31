@@ -9,8 +9,8 @@ export interface CreateFormDocumentOptions {
 
 export function createFormDocument(options: CreateFormDocumentOptions = {}): FormDocument {
   const document: FormDocument = {
-    kind: 'a3s.form',
-    apiVersion: 'a3s.dev/form/v1alpha1',
+    kind: 'aster.form',
+    apiVersion: 'aster.dev/form/v1alpha1',
     revision: 0,
     metadata: {
       title: options.title ?? '未命名表单',

@@ -1,6 +1,6 @@
 //! Container state management.
 //!
-//! Maps CRI Container to sessions within an A3S Box microVM.
+//! Maps CRI Container to sessions within an Aster Box microVM.
 
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -8,7 +8,7 @@ use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
 
-use a3s_box_core::exec::ExecRequest;
+use aster_box_core::exec::ExecRequest;
 
 /// Container lifecycle state.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -345,7 +345,7 @@ mod tests {
             annotations: HashMap::new(),
             log_path: format!("/var/log/pods/{}.log", id),
             rootfs_path: "/".to_string(),
-            rootfs_guest_path: format!("/run/a3s/cri/container-rootfs/{sandbox_id}/{id}/rootfs"),
+            rootfs_guest_path: format!("/run/aster/cri/container-rootfs/{sandbox_id}/{id}/rootfs"),
         }
     }
 
@@ -536,7 +536,7 @@ mod tests {
         assert_eq!(req.working_dir, Some("/".to_string()));
         assert_eq!(
             req.rootfs,
-            Some("/run/a3s/cri/container-rootfs/sb1/c1/rootfs".to_string())
+            Some("/run/aster/cri/container-rootfs/sb1/c1/rootfs".to_string())
         );
         assert_eq!(req.user, Some("1000:1001".to_string()));
         assert!(req.stdin.is_none());

@@ -1,7 +1,7 @@
 //! Opt-in qualification: an owned H200 is required. Never substitutes the
 //! developer workstation's different architecture or silently skips a case.
 use super::*;
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 
 #[test]
 #[ignore = "requires an owned H200; run explicitly with --ignored --nocapture"]

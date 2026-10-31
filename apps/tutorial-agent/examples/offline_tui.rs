@@ -1,6 +1,6 @@
 mod support;
 
-use a3s_code_core::{
+use aster_core::{
     SessionOptions,
     permissions::{PermissionDecision, PermissionPolicy},
 };

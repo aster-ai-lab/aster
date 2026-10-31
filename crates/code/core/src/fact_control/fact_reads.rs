@@ -2,7 +2,7 @@
 
 use super::*;
 
-pub fn read_workspace_facts(workspace: &Path, thread: &str) -> Result<Vec<a3s_effect::Fact>> {
+pub fn read_workspace_facts(workspace: &Path, thread: &str) -> Result<Vec<aster_effect::Fact>> {
     let log = FileLog::open(crate::session_folder::effect_log_dir(workspace, thread))
         .map_err(|error| anyhow::anyhow!(error))?;
     log.read(thread).map_err(|error| anyhow::anyhow!(error))
@@ -47,7 +47,7 @@ pub(crate) fn tool_result_weights(workspace: &Path, thread: &str) -> Result<Vec<
                 .rsplit_once(&repeat_note_prefix(&tool))
                 .map_or(text.as_str(), |(observed, _)| observed);
             let key = crate::content_digest::digest_bytes(
-                "a3s.code.context-view.result.v1",
+                "aster.code.context-view.result.v1",
                 format!("{tool}\n{args}\n{observed}").as_bytes(),
             );
             weights.push(ToolResultWeight {
@@ -80,7 +80,7 @@ pub(crate) fn retained_transcript(surface: &SessionSurface) -> Result<Vec<Messag
     Ok(messages)
 }
 
-pub(crate) fn compaction_transcript_from_facts(facts: &[a3s_effect::Fact]) -> Vec<Message> {
+pub(crate) fn compaction_transcript_from_facts(facts: &[aster_effect::Fact]) -> Vec<Message> {
     let start = facts
         .iter()
         .rposition(|fact| fact.kind == "compaction.done")
@@ -119,7 +119,7 @@ pub(crate) fn compaction_transcript_from_facts(facts: &[a3s_effect::Fact]) -> Ve
 /// not start an inference.
 pub(crate) fn append_compaction_done(
     log: &FileLog,
-    writer: &a3s_effect::FileLogWriterFence,
+    writer: &aster_effect::FileLogWriterFence,
     session_id: &str,
     summary: &str,
     source: Option<&crate::store::SessionFactSourceV1>,
@@ -158,7 +158,7 @@ pub(super) fn message_from_kept_line(line: &serde_json::Value) -> Option<Message
     line.strip_prefix("assistant\n").map(Message::assistant)
 }
 
-pub(super) fn message_from_fact(fact: &a3s_effect::Fact) -> Option<Message> {
+pub(super) fn message_from_fact(fact: &aster_effect::Fact) -> Option<Message> {
     match fact.kind.as_str() {
         "user.message" | "question.answered" => {
             let text = fact.payload.get("text")?.as_str()?;

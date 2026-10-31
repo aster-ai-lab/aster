@@ -1,36 +1,36 @@
 //! Packaged Windows/WHPX OCI Host artifact discovery.
 //!
 //! Production cutover gate 1 ([docs/microvm-whpx-ga-evidence.md](../../../docs/microvm-whpx-ga-evidence.md)):
-//! resolve `a3s-oci.exe`, `a3s-oci-krun-shim.exe`, bootstrap `vm-rootfs`, and
-//! `system-image.json` from packaged A3S locations without requiring
-//! `A3S_BOX_OCI_WHPX_ENDPOINT`. Explicit path / service env overrides still
+//! resolve `aster-oci.exe`, `aster-oci-krun-shim.exe`, bootstrap `vm-rootfs`, and
+//! `system-image.json` from packaged Aster locations without requiring
+//! `ASTER_BOX_OCI_WHPX_ENDPOINT`. Explicit path / service env overrides still
 //! win. `PATH` is ignored (same policy as Sandbox / KVM packaged discovery).
 //!
 //! Layout contract: OCI `packaging/windows/README.md` / Box #650.
-//! Durable install keeps Host binaries under `bin/` (or `%USERPROFILE%\\.a3s\\bin`)
+//! Durable install keeps Host binaries under `bin/` (or `%USERPROFILE%\\.aster\\bin`)
 //! and immutable `system-image/` as a sibling directory — never nested under the
 //! shim/runtime directory (WHPX `WindowsSystemImage::load` requires that
 //! disjointness).
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::{ExecutionManagerError, ExecutionManagerResult};
+use aster_box_core::{ExecutionManagerError, ExecutionManagerResult};
 
 /// Keep in sync with `oci_migration::OCI_WHPX_*` / `OCI_WHPX_ENDPOINT_ENV`.
-const OCI_WHPX_ENDPOINT_ENV: &str = "A3S_BOX_OCI_WHPX_ENDPOINT";
-const OCI_WHPX_SERVICE_BIN_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_BIN";
-const OCI_WHPX_SERVICE_SHIM_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_SHIM";
-const OCI_WHPX_SERVICE_VM_ROOTFS_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_VM_ROOTFS";
-const OCI_WHPX_SERVICE_MANIFEST_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_MANIFEST";
+const OCI_WHPX_ENDPOINT_ENV: &str = "ASTER_BOX_OCI_WHPX_ENDPOINT";
+const OCI_WHPX_SERVICE_BIN_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_BIN";
+const OCI_WHPX_SERVICE_SHIM_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_SHIM";
+const OCI_WHPX_SERVICE_VM_ROOTFS_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_VM_ROOTFS";
+const OCI_WHPX_SERVICE_MANIFEST_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_MANIFEST";
 
 #[cfg(windows)]
-const RUNTIME_FILENAME: &str = "a3s-oci.exe";
+const RUNTIME_FILENAME: &str = "aster-oci.exe";
 #[cfg(windows)]
-const SHIM_FILENAME: &str = "a3s-oci-krun-shim.exe";
+const SHIM_FILENAME: &str = "aster-oci-krun-shim.exe";
 #[cfg(not(windows))]
-const RUNTIME_FILENAME: &str = "a3s-oci.exe";
+const RUNTIME_FILENAME: &str = "aster-oci.exe";
 #[cfg(not(windows))]
-const SHIM_FILENAME: &str = "a3s-oci-krun-shim.exe";
+const SHIM_FILENAME: &str = "aster-oci-krun-shim.exe";
 
 const MANIFEST_FILENAME: &str = "system-image.json";
 const BOOTSTRAP_DIRNAME: &str = "bootstrap-vm-rootfs";
@@ -70,14 +70,14 @@ pub(crate) fn discover_packaged_windows_whpx_artifacts_in(
         overrides.runtime_path.as_deref(),
         OCI_WHPX_SERVICE_BIN_ENV,
         RUNTIME_FILENAME,
-        "A3S OCI Runtime (WHPX Host)",
+        "Aster OCI Runtime (WHPX Host)",
         search_roots,
     )?;
     let shim_path = resolve_file(
         overrides.shim_path.as_deref(),
         OCI_WHPX_SERVICE_SHIM_ENV,
         SHIM_FILENAME,
-        "A3S OCI WHPX shim",
+        "Aster OCI WHPX shim",
         search_roots,
     )?;
     let system_image_manifest =
@@ -111,14 +111,14 @@ fn default_search_roots() -> Vec<PathBuf> {
             }
         }
     }
-    roots.push(a3s_box_core::dirs_home().join("bin"));
-    roots.push(a3s_box_core::dirs_home().join("share").join("a3s"));
+    roots.push(aster_box_core::dirs_home().join("bin"));
+    roots.push(aster_box_core::dirs_home().join("share").join("aster"));
     roots
 }
 
 /// WHPX Host requires the shim/runtime directory and the system-image directory
 /// to be disjoint (`WindowsSystemImage::load`). Flat installs that place
-/// `system-image/` under the same directory as `a3s-oci-krun-shim.exe` fail at
+/// `system-image/` under the same directory as `aster-oci-krun-shim.exe` fail at
 /// VM entry with a masked agent-bridge error; reject them at discovery.
 fn assert_runtime_disjoint_from_system_image(
     artifacts: &PackagedWindowsWhpxArtifacts,
@@ -147,7 +147,7 @@ fn assert_runtime_disjoint_from_system_image(
             || system_image_directory.starts_with(directory)
         {
             return Err(ExecutionManagerError::InvalidRequest(format!(
-                "packaged WHPX {label} directory {} and system-image directory {} must be disjoint; keep Host binaries under `bin/` (or `%USERPROFILE%\\.a3s\\bin`) and `system-image/` as a sibling (see OCI packaging/windows/README.md)",
+                "packaged WHPX {label} directory {} and system-image directory {} must be disjoint; keep Host binaries under `bin/` (or `%USERPROFILE%\\.aster\\bin`) and `system-image/` as a sibling (see OCI packaging/windows/README.md)",
                 directory.display(),
                 system_image_directory.display()
             )));
@@ -290,7 +290,7 @@ fn finalize_dir(
 
 fn missing_packaged(label: &str, filename: &str, environment: &str) -> ExecutionManagerError {
     ExecutionManagerError::InvalidRequest(format!(
-        "{label} `{filename}` was not found in packaged A3S locations; install the A3S Box/OCI WHPX Host package, set {environment}, or set {OCI_WHPX_ENDPOINT_ENV} for an external qualification Host"
+        "{label} `{filename}` was not found in packaged Aster locations; install the Aster Box/OCI WHPX Host package, set {environment}, or set {OCI_WHPX_ENDPOINT_ENV} for an external qualification Host"
     ))
 }
 
@@ -308,7 +308,7 @@ mod tests {
 
     #[test]
     fn discovers_sibling_bin_and_system_image_layout() {
-        let root = std::env::temp_dir().join(format!("a3s-whpx-packaged-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("aster-whpx-packaged-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(root.join("bin")).unwrap();
         fs::create_dir_all(root.join("system-image")).unwrap();
@@ -344,7 +344,7 @@ mod tests {
     #[test]
     fn rejects_flat_layout_nesting_system_image_under_runtime_directory() {
         let root =
-            std::env::temp_dir().join(format!("a3s-whpx-packaged-flat-{}", std::process::id()));
+            std::env::temp_dir().join(format!("aster-whpx-packaged-flat-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(root.join("system-image")).unwrap();
         plant_file(&root.join(RUNTIME_FILENAME));
@@ -365,7 +365,7 @@ mod tests {
     #[test]
     fn missing_packaged_artifacts_fail_closed() {
         let root =
-            std::env::temp_dir().join(format!("a3s-whpx-packaged-empty-{}", std::process::id()));
+            std::env::temp_dir().join(format!("aster-whpx-packaged-empty-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).unwrap();
         let error = discover_packaged_windows_whpx_artifacts_in(
@@ -375,7 +375,7 @@ mod tests {
         .expect_err("missing package must fail");
         let message = error.to_string();
         assert!(
-            message.contains("was not found in packaged A3S locations"),
+            message.contains("was not found in packaged Aster locations"),
             "{message}"
         );
         let _ = fs::remove_dir_all(&root);

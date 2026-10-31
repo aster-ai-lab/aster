@@ -1,4 +1,4 @@
-use a3s_oci_core::HostPlatform;
+use aster_oci_core::HostPlatform;
 use serde_json::{json, Value};
 use std::sync::Arc;
 use tokio::sync::Notify;
@@ -20,7 +20,7 @@ use super::{
 fn valid_output(platform: &str) -> BoundedOutput {
     BoundedOutput {
         bytes: serde_json::to_vec(&json!({
-            "schema_version": "a3s.oci.krun-agent-vm-smoke.v7",
+            "schema_version": "aster.oci.krun-agent-vm-smoke.v7",
             "platform": platform,
             "status": "available",
             "runtime_bundle_loaded": true,
@@ -180,7 +180,7 @@ fn retains_only_bounded_versioned_failure_evidence() {
     let mut wrong_schema = valid_output("linux");
     let mut value: Value =
         serde_json::from_slice(&wrong_schema.bytes).expect("decode test evidence");
-    value["schema_version"] = json!("a3s.oci.krun-agent-vm-smoke.unsupported");
+    value["schema_version"] = json!("aster.oci.krun-agent-vm-smoke.unsupported");
     wrong_schema.bytes = serde_json::to_vec(&value).expect("serialize test evidence");
     assert!(bounded_unverified_shim_report(&wrong_schema).is_none());
 }
@@ -502,7 +502,7 @@ mod durable_host_control_connect_honesty {
     use super::{
         durable_host_control_connect_error_is_permanent, remap_durable_host_control_connect_error,
     };
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
     use std::io;
     use std::path::Path;
 
@@ -511,7 +511,7 @@ mod durable_host_control_connect_honesty {
         let error = io::Error::new(io::ErrorKind::PermissionDenied, "EACCES");
         assert!(durable_host_control_connect_error_is_permanent(&error));
         let remapped = remap_durable_host_control_connect_error(
-            Path::new("/tmp/a3s-oci-test-host-control.sock"),
+            Path::new("/tmp/aster-oci-test-host-control.sock"),
             error,
         );
         assert_eq!(remapped.code, ErrorCode::PermissionDenied);

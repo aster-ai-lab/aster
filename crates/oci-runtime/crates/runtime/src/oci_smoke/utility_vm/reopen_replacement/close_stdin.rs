@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
+use aster_oci_sdk::{
     CloseStdinRequest, ContainerTarget, CreateRequest, ExecRequest, OperationId, ProcessId,
     StartRequest,
 };
@@ -10,7 +10,7 @@ use a3s_oci_sdk::{
 use super::QualificationHvfDriver;
 use crate::{DriverCloseStdinRequest, DriverExecRequest, OciVmOperationReopenReplacementReport};
 
-pub(super) const CLOSE_MARKER_NAME: &str = ".a3s-oci-close-stdin-reopen-smoke";
+pub(super) const CLOSE_MARKER_NAME: &str = ".aster-oci-close-stdin-reopen-smoke";
 
 struct Qualification {
     shim: PathBuf,

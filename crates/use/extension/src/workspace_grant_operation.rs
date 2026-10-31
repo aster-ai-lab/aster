@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     PluginOperationPlan, PluginPermissionCeiling, PluginWorkspaceGrant,
     ResolvedWorkspaceGrantChangeSet, UseError, UseResult, WorkspaceGrantAuthority,
     WorkspaceGrantEvidence, MAX_PLUGIN_PLAN_ITEMS,
@@ -10,9 +10,9 @@ use super::workspace_grant::{
     valid_sha256, StoredWorkspaceGrant, WorkspaceGrantReceipt, WorkspaceGrantStore,
 };
 
-pub const WORKSPACE_GRANT_OPERATION_SCHEMA: &str = "a3s.use.plugin-workspace-grant-operation.v1";
-pub const WORKSPACE_GRANT_CUTOVER_SCHEMA: &str = "a3s.use.plugin-workspace-grant-cutover.v1";
-pub const WORKSPACE_GRANT_ROLLBACK_SCHEMA: &str = "a3s.use.plugin-workspace-grant-rollback.v1";
+pub const WORKSPACE_GRANT_OPERATION_SCHEMA: &str = "aster.use.plugin-workspace-grant-operation.v1";
+pub const WORKSPACE_GRANT_CUTOVER_SCHEMA: &str = "aster.use.plugin-workspace-grant-cutover.v1";
+pub const WORKSPACE_GRANT_ROLLBACK_SCHEMA: &str = "aster.use.plugin-workspace-grant-rollback.v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]

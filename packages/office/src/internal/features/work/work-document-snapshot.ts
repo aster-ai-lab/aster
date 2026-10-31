@@ -2,10 +2,10 @@ import { documentModelForContent } from './work-document-model';
 import type { WorkDocumentContent } from './work-types';
 
 export const WORK_DOCUMENT_SNAPSHOT_SCHEMA =
-  'a3s.office.document.snapshot' as const;
+  'aster.office.document.snapshot' as const;
 export const WORK_DOCUMENT_SNAPSHOT_VERSION = 1 as const;
 export const WORK_DOCUMENT_SNAPSHOT_MEDIA_TYPE =
-  'application/vnd.a3s.office.document-snapshot+json;version=1' as const;
+  'application/vnd.aster.office.document-snapshot+json;version=1' as const;
 
 const MAX_DOCUMENT_SNAPSHOT_BYTES = 16 * 1024 * 1024;
 const MAX_DOCUMENT_SNAPSHOT_DEPTH = 512;
@@ -37,7 +37,7 @@ export function encodeWorkDocumentSnapshot(
     } satisfies WorkDocumentSnapshot);
   } catch (error) {
     throw new Error(
-      'A3S Office document snapshots must contain only JSON-compatible values.',
+      'Aster Office document snapshots must contain only JSON-compatible values.',
       { cause: error },
     );
   }
@@ -50,26 +50,26 @@ export function decodeWorkDocumentSnapshot(
   encoded: string,
 ): WorkDocumentContent {
   if (typeof encoded !== 'string') {
-    throw new TypeError('An A3S Office document snapshot must be a string.');
+    throw new TypeError('An Aster Office document snapshot must be a string.');
   }
   assertSnapshotSize(encoded);
   let candidate: unknown;
   try {
     candidate = JSON.parse(encoded);
   } catch (error) {
-    throw new Error('The A3S Office document snapshot is not valid JSON.', {
+    throw new Error('The Aster Office document snapshot is not valid JSON.', {
       cause: error,
     });
   }
   if (!isRecord(candidate)) {
-    throw new Error('The A3S Office document snapshot envelope is invalid.');
+    throw new Error('The Aster Office document snapshot envelope is invalid.');
   }
   if (candidate.schema !== WORK_DOCUMENT_SNAPSHOT_SCHEMA) {
-    throw new Error('The A3S Office document snapshot schema is unsupported.');
+    throw new Error('The Aster Office document snapshot schema is unsupported.');
   }
   if (candidate.version !== WORK_DOCUMENT_SNAPSHOT_VERSION) {
     throw new Error(
-      `A3S Office document snapshot version ${String(candidate.version)} is unsupported.`,
+      `Aster Office document snapshot version ${String(candidate.version)} is unsupported.`,
     );
   }
   const envelopeKeys = Object.keys(candidate);
@@ -79,7 +79,7 @@ export function decodeWorkDocumentSnapshot(
     !envelopeKeys.includes('version') ||
     !envelopeKeys.includes('content')
   ) {
-    throw new Error('The A3S Office document snapshot envelope is invalid.');
+    throw new Error('The Aster Office document snapshot envelope is invalid.');
   }
   assertStructuredDocumentContent(candidate.content);
   return candidate.content;
@@ -95,7 +95,7 @@ function assertStructuredDocumentContent(
     (candidate.pageSize !== 'a4' && candidate.pageSize !== 'letter')
   ) {
     throw new Error(
-      'An A3S Office document snapshot must contain a valid document value.',
+      'An Aster Office document snapshot must contain a valid document value.',
     );
   }
   if (
@@ -103,7 +103,7 @@ function assertStructuredDocumentContent(
     !documentModelForContent(candidate as unknown as WorkDocumentContent)
   ) {
     throw new Error(
-      'An A3S Office document snapshot requires a synchronized structured model.',
+      'An Aster Office document snapshot requires a synchronized structured model.',
     );
   }
 }
@@ -113,7 +113,7 @@ function assertSnapshotSize(encoded: string): void {
     new TextEncoder().encode(encoded).byteLength > MAX_DOCUMENT_SNAPSHOT_BYTES
   ) {
     throw new Error(
-      `The A3S Office document snapshot exceeds ${MAX_DOCUMENT_SNAPSHOT_BYTES} bytes.`,
+      `The Aster Office document snapshot exceeds ${MAX_DOCUMENT_SNAPSHOT_BYTES} bytes.`,
     );
   }
 }

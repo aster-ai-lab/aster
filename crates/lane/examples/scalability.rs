@@ -6,7 +6,7 @@
 //! - Queue partitioning
 //! - Multi-core parallelism
 
-use a3s_lane::{
+use aster_lane::{
     Command, DistributedQueue, EventEmitter, LaneConfig, LocalDistributedQueue, PartitionConfig,
     PriorityBoostConfig, QueueManagerBuilder, RateLimitConfig, Result,
 };
@@ -38,7 +38,7 @@ impl Command for WorkCommand {
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
-    println!("=== A3S Lane: Scalability Features Example ===\n");
+    println!("=== Aster Lane: Scalability Features Example ===\n");
 
     // Example 1: Rate Limiting
     println!("=== Example 1: Rate Limiting ===");

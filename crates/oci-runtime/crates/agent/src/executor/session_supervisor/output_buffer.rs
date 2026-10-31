@@ -8,7 +8,7 @@ use std::collections::VecDeque;
 use std::sync::{Arc, Condvar, Mutex};
 use std::time::{Duration, Instant};
 
-use a3s_oci_sdk::{Error, ErrorCode, OutputChunk, OutputStream, Result};
+use aster_oci_sdk::{Error, ErrorCode, OutputChunk, OutputStream, Result};
 
 /// Must match `io::OUTPUT_BUFFER_BYTES`.
 pub(super) const OUTPUT_BUFFER_BYTES: usize = 8 * 1024 * 1024;

@@ -12,16 +12,16 @@ CLI 和嵌入式 Rust API 使用同一个默认级联计划。调用方可以选
 从 Aster 仓库根目录构建：
 
 ```bash
-cargo build --locked -p a3s-search
-./target/debug/a3s-search "Rust async runtime guidance" --format json --limit 10
+cargo build --locked -p aster-search
+./target/debug/aster-search "Rust async runtime guidance" --format json --limit 10
 ```
 
-默认 Headless 层使用 Moli。只有该层需要运行时，才安装 Moli。可执行文件不在 `PATH` 时，设置 `A3S_MOLI_EXECUTABLE`。
+默认 Headless 层使用 Moli。只有该层需要运行时，才安装 Moli。可执行文件不在 `PATH` 时，设置 `ASTER_MOLI_EXECUTABLE`。
 
 显式来源列表不会被默认计划扩展：
 
 ```bash
-./target/debug/a3s-search "Rust async runtime guidance" \
+./target/debug/aster-search "Rust async runtime guidance" \
   --engines anysearch,tavily \
   --format json \
   --limit 10
@@ -33,11 +33,11 @@ cargo build --locked -p a3s-search
 
 ```rust
 use std::time::Duration;
-use a3s_search::product::{self, HeadlessBrowser};
-use a3s_search::{EngineTierPlan, SearchQuery};
+use aster_search::product::{self, HeadlessBrowser};
+use aster_search::{EngineTierPlan, SearchQuery};
 
 #[tokio::main]
-async fn main() -> a3s_search::Result<()> {
+async fn main() -> aster_search::Result<()> {
     let plan = EngineTierPlan::builtin_default();
     let outcome = product::execute_cascade(
         &plan,
@@ -82,8 +82,8 @@ async fn main() -> a3s_search::Result<()> {
 `--config` 是父参数：
 
 ```bash
-./target/debug/a3s-search --config search.acl engines
-./target/debug/a3s-search "query" --config search.acl --format json
+./target/debug/aster-search --config search.acl engines
+./target/debug/aster-search "query" --config search.acl --format json
 ```
 
 以下示例显式请求 Tavily 的答案、图片和用量：

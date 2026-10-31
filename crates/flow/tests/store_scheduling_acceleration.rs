@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime,
     FlowScheduler, FlowTaskQueue, FlowWorker, InMemoryEventStore, InMemoryFlowTaskQueue,
     RuntimeCommand, ScheduledWakeup, ScheduledWakeupKind, StepInvocation, WorkflowInvocation,
@@ -100,7 +100,7 @@ impl FlowEventStore for IndexedScheduleStore {
         &self,
         _run_id: &str,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store("append is not available".into()))
     }
 
@@ -109,11 +109,11 @@ impl FlowEventStore for IndexedScheduleStore {
         _run_id: &str,
         _expected_sequence: u64,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store("append is not available".into()))
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.targeted_history_loads.fetch_add(1, Ordering::SeqCst);
         if run_id == "indexed-schedule-run" {
             return Ok(self.history.clone());
@@ -121,12 +121,12 @@ impl FlowEventStore for IndexedScheduleStore {
         Err(FlowError::RunNotFound(run_id.to_string()))
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.global_history_scans.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::Store("global history scan is forbidden".into()))
     }
 
-    async fn list_due_wakeups(&self, now: DateTime<Utc>) -> a3s_flow::Result<Vec<ScheduledWakeup>> {
+    async fn list_due_wakeups(&self, now: DateTime<Utc>) -> aster_flow::Result<Vec<ScheduledWakeup>> {
         self.due_queries.fetch_add(1, Ordering::SeqCst);
         let mut wakeups = self
             .wakeups
@@ -144,7 +144,7 @@ impl FlowEventStore for IndexedScheduleStore {
         Ok(wakeups)
     }
 
-    async fn next_scheduled_wakeup(&self) -> a3s_flow::Result<Option<ScheduledWakeup>> {
+    async fn next_scheduled_wakeup(&self) -> aster_flow::Result<Option<ScheduledWakeup>> {
         self.next_queries.fetch_add(1, Ordering::SeqCst);
         Ok(self.wakeups.iter().cloned().min_by(|left, right| {
             (
@@ -171,7 +171,7 @@ struct CountingScheduleStore {
 
 #[async_trait]
 impl FlowEventStore for CountingScheduleStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -180,21 +180,21 @@ impl FlowEventStore for CountingScheduleStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 
-    async fn list_due_wakeups(&self, now: DateTime<Utc>) -> a3s_flow::Result<Vec<ScheduledWakeup>> {
+    async fn list_due_wakeups(&self, now: DateTime<Utc>) -> aster_flow::Result<Vec<ScheduledWakeup>> {
         self.due_queries.fetch_add(1, Ordering::SeqCst);
         self.inner.list_due_wakeups(now).await
     }
@@ -207,7 +207,7 @@ impl FlowRuntime for CompletingWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.wait_completed("timer") {
             return Ok(ctx.complete(json!({ "done": true })));
@@ -215,7 +215,7 @@ impl FlowRuntime for CompletingWaitRuntime {
         Ok(ctx.wait_until("timer", timestamp("2026-08-07T00:00:01.000000100Z")))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("wait workflow does not run steps")
     }
 }
@@ -227,11 +227,11 @@ impl FlowRuntime for UnusedRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Err(FlowError::Runtime("runtime must not be called".into()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime("runtime must not be called".into()))
     }
 }
@@ -330,7 +330,7 @@ struct BoundedScheduleStore {
 
 #[async_trait]
 impl FlowEventStore for BoundedScheduleStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -339,13 +339,13 @@ impl FlowEventStore for BoundedScheduleStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, _run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, _run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history read is not allowed for schedule resume".into(),
         ))
@@ -355,7 +355,7 @@ impl FlowEventStore for BoundedScheduleStore {
         &self,
         _run_id: &str,
         _sequence: u64,
-    ) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history tail read is not allowed for schedule resume".into(),
         ))
@@ -366,7 +366,7 @@ impl FlowEventStore for BoundedScheduleStore {
         run_id: &str,
         after_sequence: u64,
         limit: usize,
-    ) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         let history = self.inner.list(run_id).await?;
         Ok(history
             .into_iter()
@@ -375,11 +375,11 @@ impl FlowEventStore for BoundedScheduleStore {
             .collect())
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 
-    async fn latest_event(&self, run_id: &str) -> a3s_flow::Result<Option<(u64, Uuid)>> {
+    async fn latest_event(&self, run_id: &str) -> aster_flow::Result<Option<(u64, Uuid)>> {
         self.inner.latest_event(run_id).await
     }
 }

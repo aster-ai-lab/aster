@@ -10,11 +10,11 @@
 //! 2. **Dynamic write → reload chain** — the section-preserving config
 //!    editor rewrites `default_model` on disk (comments, `env()` references,
 //!    and unrelated blocks survive); the reparsed file drives a real model
-//!    turn. This is the `a3s model use` dynamic-config path end to end.
+//!    turn. This is the `aster model use` dynamic-config path end to end.
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_config_dynamic_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_config_dynamic_real_llm \
 //!   -- --ignored --nocapture --test-threads=1
 //! ```
 
@@ -22,8 +22,8 @@ mod support;
 
 use std::time::{Duration, Instant};
 
-use a3s_code_core::config::{CodeConfig, ConfigSection};
-use a3s_code_core::{Agent, AgentEvent, SessionOptions};
+use aster_core::config::{CodeConfig, ConfigSection};
+use aster_core::{Agent, AgentEvent, SessionOptions};
 use support::layer_c_model::{load_pinned_layer_c_config, pinned_layer_c_model};
 
 const TURN_TIMEOUT: Duration = Duration::from_secs(420);
@@ -100,7 +100,7 @@ async fn run_turn(agent: &Agent, model: &str, session_id: &str) -> String {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn layered_overlay_serves_real_traffic_through_the_workspace_layer() {
     let started = Instant::now();
     let endpoint = live_endpoint();
@@ -184,7 +184,7 @@ providers "{provider}" {{
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn section_edit_persists_reloads_and_serves_real_traffic() {
     let started = Instant::now();
     let endpoint = live_endpoint();
@@ -195,11 +195,11 @@ async fn section_edit_persists_reloads_and_serves_real_traffic() {
     // A realistic on-disk config: comments, an env() credential indirection
     // seeded through the environment, and an unrelated unknown-tolerated
     // block (storage) that the edit must preserve.
-    let api_key_var = "A3S_CONFIG_DYNAMIC_TEST_KEY";
+    let api_key_var = "ASTER_CONFIG_DYNAMIC_TEST_KEY";
     std::env::set_var(api_key_var, &endpoint.api_key);
     let original = format!(
         r#"// Workspace configuration managed by hand.
-// The default model below is switched by `a3s model use`.
+// The default model below is switched by `aster model use`.
 
 storage_backend = "file"
 
@@ -230,7 +230,7 @@ providers "{provider}" {{
     // persist (section-preserving), reload from disk.
     let mut config = CodeConfig::from_file(&config_path).expect("parse the on-disk config");
     config.default_model = Some(model.clone());
-    let updated = a3s_code_core::config::rewrite_acl_sections(
+    let updated = aster_core::config::rewrite_acl_sections(
         &original,
         &config,
         &[ConfigSection::DefaultModel],

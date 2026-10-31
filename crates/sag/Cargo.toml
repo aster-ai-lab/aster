@@ -1,13 +1,13 @@
 [package]
-name = "a3s-sag"
+name = "aster-sag"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 publish = false
-description = "Local event-entity retrieval over a3s-vec with query-time expansion and original evidence"
+description = "Local event-entity retrieval over aster-vec with query-time expansion and original evidence"
 
 [dependencies]
-a3s-vec = { path = "../vec" }
+aster-vec = { path = "../vec" }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 sha2 = { workspace = true }

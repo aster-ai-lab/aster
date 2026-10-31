@@ -1,4 +1,4 @@
-# A3S Code Advanced Developer Manual
+# Aster Code Advanced Developer Manual
 
 For core developers, architects, and advanced users
 
@@ -19,7 +19,7 @@ For core developers, architects, and advanced users
 
 ## 1.1 Runtime Architecture
 
-A3S Code uses multi-threaded architecture:
+Aster Code uses multi-threaded architecture:
 - Main Thread: HTTP API / WebSocket / AgentSession calls
 - Worker Thread Pool: workspace-bound AgentSession executions
 - I/O Thread Pool: LLM Client / Tool Execution / File I/O
@@ -49,7 +49,7 @@ pub struct CircuitBreaker {
 
 ## 1.4 Scoped Capabilities
 
-Installable package lifecycle belongs to A3S Use. Code projects one
+Installable package lifecycle belongs to Aster Use. Code projects one
 exact immutable Use capability generation into a Session-local catalog, then
 pins the catalog and its governance ceiling when a Run is admitted. Temporary
 Turn and Subtask capabilities are child scopes and cannot expand the parent
@@ -64,7 +64,7 @@ definition/execution identity, child-ceiling intersection, and bounded explicit
 asynchronous close semantics.
 
 The delivered `CAP-SET1` identity plane is available as
-`a3s_code_core::capability`. Hosts can construct validated Host, Session, and
+`aster_core::capability`. Hosts can construct validated Host, Session, and
 exact Use-package source batches; Built-in source construction remains sealed
 inside Core. `CapabilitySet::from_contributions` canonicalizes those complete
 batches, rejects mixed Use cursors and conflicts, and returns an immutable
@@ -79,7 +79,7 @@ remain on compatibility APIs until their later migration cuts.
 `CapabilityCeiling` against the exact `CapabilitySet`, create a typed Session
 scope, and admit child scopes only with ceilings that are subsets of the
 parent. A Use-backed Run uses `admit_use_run` and consumes a host adapter that
-implements `RetainedUseGeneration` while owning the real non-clone A3S Use
+implements `RetainedUseGeneration` while owning the real non-clone Aster Use
 snapshot lease. Do not replace that adapter with a generation number or a
 fresh Registry lookup.
 
@@ -126,7 +126,7 @@ failed, cancelled, or dropped transactions move to the catalog cleanup queue,
 and retired-generation effects enter that queue only after the last old lease
 drops. Call `drain_cleanup_with_policy(policy).await` from the owning Session
 supervisor. This Code lease pins the local projection only; a Use-backed Run
-must still separately retain the real A3S Use `CapabilitySnapshotLease` through
+must still separately retain the real Aster Use `CapabilitySnapshotLease` through
 `RetainedUseGeneration`.
 
 `CAP-DEP1` makes adapter preparation dependency-aware without moving package
@@ -138,7 +138,7 @@ adapter before any adapter starts. Preparation then follows dependency-first
 waves; a failed prerequisite prevents dependent adapters from starting and
 completed effects enter reverse rollback.
 
-Do not derive these edges from package manifests inside Code. A3S Use must
+Do not derive these edges from package manifests inside Code. Aster Use must
 first resolve, verify, and publish the complete package generation. Code may
 then order the resulting surface descriptors while retaining that exact Use
 cursor. `CapabilityReadinessPlan` is neither a package graph nor a service
@@ -155,7 +155,7 @@ normally be staged with `McpProjectionAdapter`; it connects one exact client,
 completes initialization and `tools/list`, freezes the validated `McpBinding`,
 and returns the connection as a reversible effect. For a Use-backed set,
 construct the batch with `from_use_projection` and a generation-specific
-`UseGenerationLeaseProvider`. Its `acquire` implementation must call A3S Use
+`UseGenerationLeaseProvider`. Its `acquire` implementation must call Aster Use
 `CapabilityRegistry::acquire_snapshot_lease` with the exact cursor and return a
 wrapper that owns the resulting non-clone `CapabilitySnapshotLease` while
 implementing `RetainedUseGeneration`.
@@ -165,7 +165,7 @@ A Flow value is an immutable `FlowBinding`. Construct it from one validated
 replay, and runtime-build compatibility. `WorkflowSpec::name` must match the
 capability descriptor. Use `AgentSession::projected_flow` to acquire a
 non-clone host handle for the current generation, keep it alive for the whole
-operation, and call `close` to release its exact A3S Use lease. The lookup is
+operation, and call `close` to release its exact Aster Use lease. The lookup is
 host-only and does not make the Flow model-visible.
 
 Construct `McpServerConfig` only after the trusted host has selected the exact
@@ -176,7 +176,7 @@ package resolver, or service locator. Projected wrappers call their exact
 client directly; they never reconnect or fall back through `McpManager`.
 
 Do not acquire one Use lease during Session publication and share it through
-an `Arc`. Every Run calls the provider again so A3S Use can reject a hidden or
+an `Arc`. Every Run calls the provider again so Aster Use can reject a hidden or
 stale generation at its own visibility boundary. Code checks the returned
 generation, capability revision, and Registry revision again, then keeps the
 lease in the Run supervisor until child scopes, tasks, and effects settle.
@@ -206,7 +206,7 @@ host operation owns both Hook metadata and callback. Rust hosts use these
 atomic APIs; the older piecemeal Rust methods
 remain compatibility surfaces. Observational Hook work is registered with the
 Run supervisor, including `async_execution` and timed-out blocking callback
-settlement, so the exact A3S Use lease remains owned while accepted work
+settlement, so the exact Aster Use lease remains owned while accepted work
 settles. Rust cannot forcibly stop a `spawn_blocking` callback that has already
 started. If it ignores the configured scope-close deadline, close reports a
 timeout and may release the lease while that host callback finishes; callbacks
@@ -216,12 +216,12 @@ The official CLI and Desktop adapters complete the `HOST-CAP1` Tool/Skill host
 gate. `HOST-AGENT1` completes the Core Agent runtime cut, and
 `HOST-COMMAND1` completes the Core Command runtime cut. `HOST-HOOK1` completes
 the Core Hook runtime cut. `HOST-MCP1` completes the Core exact-client MCP
-runtime cut. It does not claim that A3S Use already projects every MCP surface
+runtime cut. It does not claim that Aster Use already projects every MCP surface
 into this adapter or that official hosts have adopted it; that wiring remains
 separate integration work. `HOST-CONTEXT1` completes the general Run-frozen
 Context cut; providers with package bindings must still use the
 persisted Knowledge/session API. `HOST-FLOW1` completes the named host Flow cut
-while A3S Flow retains store, runtime, replay, and observation ownership.
+while Aster Flow retains store, runtime, replay, and observation ownership.
 `HOST-KNOWLEDGE1` completes the exact package provider/binding cut while the
 Knowledge host retains OKF and query-lease ownership. `HOST-UI1` completes the
 Core UI value and host-handle cut: use `UiAsset`, `UiDocument`, and `UiBinding`
@@ -235,7 +235,7 @@ official renderer-host wiring remain host integration responsibilities.
 Choose model-facing Tool shape with a typed Profile, not a backend name:
 
 ```rust
-use a3s_code_core::{SessionOptions, ToolPresentationProfileV1};
+use aster_core::{SessionOptions, ToolPresentationProfileV1};
 
 let options = SessionOptions::new()
     .with_tool_presentation_profile(ToolPresentationProfileV1::code());
@@ -250,7 +250,7 @@ preview; it is not execution authority because Run admission freezes the exact
 permission and capability generation.
 
 The Profile persists with the Session and must match on resume. Delegated runs
-inherit it exactly. It never installs a Tool, selects an A3S Use generation, or
+inherit it exactly. It never installs a Tool, selects an Aster Use generation, or
 replaces governed execution; calls still pass through the pinned Tool instance,
 permission, confirmation, budget, hooks, cancellation, security, and audit.
 
@@ -396,7 +396,7 @@ let output = session.bash("printf sandboxed").await?;
 ```
 
 `NativeBashSandbox` adapts the independent
-[`a3s-sandbox`](https://github.com/A3S-Lab/Sandbox) crate. It uses Seatbelt on
+[`aster-sandbox`](https://github.com/aster-ai-lab/Sandbox) crate. It uses Seatbelt on
 macOS, namespaces plus seccomp on Linux, and AppContainer plus a Job Object on
 Windows. A local session installs it automatically before registering tools and
 delegated workers. Initialization failure installs an error-only handle, so no
@@ -443,8 +443,8 @@ RUN cargo build --release
 
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y libssl3
-COPY --from=builder /app/target/release/a3s-code /usr/local/bin/
-ENTRYPOINT ["a3s-code"]
+COPY --from=builder /app/target/release/aster /usr/local/bin/
+ENTRYPOINT ["aster"]
 ```
 
 ## 8.2 Kubernetes Deployment
@@ -453,20 +453,20 @@ ENTRYPOINT ["a3s-code"]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: a3s-code
+  name: aster
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: a3s-code
+      app: aster
   template:
     metadata:
       labels:
-        app: a3s-code
+        app: aster
     spec:
       containers:
-      - name: a3s-code
-        image: a3s-lab/code:latest
+      - name: aster
+        image: aster-lab/code:latest
         resources:
           limits:
             memory: "2Gi"
@@ -501,7 +501,7 @@ pub trait CustomStorage: Send + Sync {
 
 ```bash
 export RUST_LOG=debug
-export A3S_DEBUG=1
+export ASTER_DEBUG=1
 ```
 
 ## 10.2 Common Issues

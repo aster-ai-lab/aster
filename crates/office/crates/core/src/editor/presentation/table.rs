@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::table_xml::{
     cell_xml, drawing_namespace, graphic_frame_xml, grid_column_xml, insert_ordered_child,
@@ -654,13 +654,13 @@ fn require_presentation(package: &NativeOfficePackage, operation: &str) -> UseRe
     }
 }
 
-fn invalid_table(path: &str, problem: &str) -> a3s_use_core::UseError {
+fn invalid_table(path: &str, problem: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.presentation_table_invalid",
         format!("Presentation table '{path}' {problem}."),
     )
 }
 
-fn table_limit(message: impl Into<String>) -> a3s_use_core::UseError {
+fn table_limit(message: impl Into<String>) -> aster_use_core::UseError {
     editor_error("use.office.presentation_table_limit", message)
 }

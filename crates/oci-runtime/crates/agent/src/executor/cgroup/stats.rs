@@ -3,7 +3,7 @@ use std::io;
 use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerStats, ContainerTarget, CpuStats, MemoryStats, Result, IO_READ_BYTES_METRIC,
     IO_WRITE_BYTES_METRIC, PIDS_LIMIT_METRIC,
 };
@@ -281,7 +281,7 @@ fn record_io_stat_counter(
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         ContainerId, ContainerTarget, Generation, IO_READ_BYTES_METRIC, IO_WRITE_BYTES_METRIC,
         PIDS_LIMIT_METRIC,
     };

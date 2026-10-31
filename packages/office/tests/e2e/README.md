@@ -24,11 +24,11 @@ From the repository root:
 
 ```sh
 python3 packages/office/tests/e2e/markdownMatrix.py target/markdown-editor.acl
-a3s-test check target/markdown-editor.acl --json
-a3s-test run target/markdown-editor.acl \
+aster-test check target/markdown-editor.acl --json
+aster-test run target/markdown-editor.acl \
   --browser-driver standalone --browser-executable agent-browser \
   --max-parallel-scenarios 2 --infrastructure-retries 0 --json
-a3s-test run packages/office/tests/e2e/markdown-journeys.acl \
+aster-test run packages/office/tests/e2e/markdown-journeys.acl \
   --browser-driver standalone --browser-executable agent-browser \
   --max-parallel-scenarios 2 --infrastructure-retries 0 --json
 ```
@@ -42,7 +42,7 @@ split-preview task checkbox history. Use
 the installed runner's `run --help` for supported scenario filtering; the current
 runner has no `--only` option. The matrix generator's `--base` accepts an
 explicit loopback origin when another test lane owns port 58128. The installed
-driver must support A3S Test protocol 15; the observed standalone driver is
+driver must support Aster Test protocol 15; the observed standalone driver is
 `agent-browser 0.26.0`. Value assertions use role/name because this driver's
 label-state probe only matches associated HTML labels. Textarea selections use
 arrow keys because its CDP Meta+A did not invoke native textarea Select All.
@@ -75,8 +75,8 @@ All dialog lifecycle tests wait for actual entry/exit before the original
 visibility, content and focus assertions.
 
 ```sh
-a3s-test check packages/office/tests/e2e/controls-journeys.acl --json
-a3s-test run packages/office/tests/e2e/controls-journeys.acl \
+aster-test check packages/office/tests/e2e/controls-journeys.acl --json
+aster-test run packages/office/tests/e2e/controls-journeys.acl \
   --browser-driver standalone --browser-executable agent-browser \
   --max-parallel-scenarios 2 --infrastructure-retries 0 --json
 ```
@@ -87,12 +87,12 @@ events occur. It does not change the operating system preference:
 
 ```sh
 AGENT_BROWSER_ARGS=--force-prefers-reduced-motion \
-  a3s-test run packages/office/tests/e2e/controls-reduced-motion.acl \
+  aster-test run packages/office/tests/e2e/controls-reduced-motion.acl \
   --browser-driver standalone --browser-executable agent-browser \
   --max-parallel-scenarios 1 --infrastructure-retries 0 --json
 ```
 
-The default `a3s` adapter currently reports browser 0.3.2 as unsupported. The
+The default `aster` adapter currently reports browser 0.3.2 as unsupported. The
 repository's standalone adapter works with protocol 15. This harness does not
 claim native IME, screen-reader, complete editor or Studio workflow acceptance.
 
@@ -113,8 +113,8 @@ From packages/office, after building:
 From the root:
 
 ```sh
-a3s-test check packages/office/tests/e2e/editors-journeys.acl --json
-a3s-test run packages/office/tests/e2e/editors-journeys.acl \
+aster-test check packages/office/tests/e2e/editors-journeys.acl --json
+aster-test run packages/office/tests/e2e/editors-journeys.acl \
   --browser-driver standalone --browser-executable agent-browser \
   --max-parallel-scenarios 2 --infrastructure-retries 0 --json
 ```
@@ -152,8 +152,8 @@ From packages/office, after building:
 From the repository root:
 
 ```sh
-a3s-test check packages/office/tests/e2e/pdf-journeys.acl --json
-a3s-test run packages/office/tests/e2e/pdf-journeys.acl \
+aster-test check packages/office/tests/e2e/pdf-journeys.acl --json
+aster-test run packages/office/tests/e2e/pdf-journeys.acl \
   --browser-driver standalone --browser-executable agent-browser \
   --max-parallel-scenarios 2 --infrastructure-retries 0 --json
 ```

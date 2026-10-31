@@ -1,13 +1,13 @@
 # Aster Development Standards
 
-Migrated from the A3S OS standards in the sibling `a3s` repository and
+Migrated from the Aster OS standards in the sibling `aster` repository and
 restated for this workspace. The rules below describe how Aster is
 built and verified. Each section states the rule, the rationale, and
 the enforcement mechanism.
 
 This repository has three Cargo workspaces and one constitution.
 The regime of a change is the regime of its path. Crate names that
-still start with `a3s-` stay; they are API identifiers, not the
+still start with `aster-` stay; they are API identifiers, not the
 product name.
 
 This is one of three governance surfaces, each with a distinct job:
@@ -36,23 +36,27 @@ Tauri commands and stay in the root Cargo workspace. Members keep
 
 ### Control-plane regime
 
-Paths: `apps/cloud`, `apps/api`, `apps/auth`, `apps/billing`,
-`apps/config`.
+Paths: `apps/cloud`, `apps/api`, `apps/control-plane` (auth,
+billing, config, runtime, runner).
 
 A module keeps bounded contexts. A cloud migration bump includes
 `CLOUD_MIGRATION_COUNT`. An HTTP surface uses `#[controller]` with
 a guard and `auth.scopes`. A repository proof is a dual-adapter
 proof against the in-memory adapter and live PostgreSQL.
-`apps/api` and `apps/cloud` keep their own workspaces.
+`apps/api`, `apps/cloud`, and `apps/control-plane` keep their own
+workspaces. Compat symlinks keep the legacy `apps/auth` family of
+paths resolvable. `apps/gateway` remains a root member because the
+desktop host embeds it.
 
 ## 1. Repository layout
 
-**Rule.** Three Cargo workspaces live in this repository. The root
-workspace serves the product paths. `apps/api` and `apps/cloud` keep
-their own workspaces and lockfiles, and they are not root members.
+**Rule.** Four Cargo workspaces live in this repository. The root
+workspace serves the product paths (including the embedded gateway).
+`apps/api`, `apps/cloud`, and `apps/control-plane` keep their own
+workspaces and lockfiles, and they are not root members.
 
 - `apps/aster` is the `aster` terminal binary. `crates/code/acp` is
-  its `a3s-code-acp` companion. Build and distribute both together.
+  its `aster-acp` companion. Build and distribute both together.
 - `crates/code/core` is the embeddable Rust SDK and harness. Do not
   add Node, Python, or Go bindings, SDKs, or package publishing jobs.
 - `apps/studio` is the shared desktop host. Build it with
@@ -64,7 +68,7 @@ their own workspaces and lockfiles, and they are not root members.
 - `crates/` holds Rust libraries, including internalized upstream
   trees. `packages/` holds TypeScript and React libraries (`ui`,
   `office`, and the other workspace packages).
-- All members have `publish = false`. Internal `a3s-*` dependencies,
+- All members have `publish = false`. Internal `aster-*` dependencies,
   including optional ones, resolve to a path inside this repository.
   `tests/workspace_dependencies.py` guards that.
 
@@ -75,7 +79,7 @@ tree people edit.
 **Enforcement.** `AGENTS.md`, `tests/workspace_dependencies.py`, and
 the root `Cargo.lock`. The user-authorized private desktop submodule at
 `apps/studio` remains part of that workspace; its sources are committed only
-to `git@github.com:kense-labs/studio.git`. Other new remotes or sibling
+to `git@github.com:aster-ai-lab/studio.git`. Other new remotes or sibling
 checkouts created for Aster work violate principle XIII. A second checkout of
 this same repository is a git worktree.
 
@@ -89,7 +93,7 @@ covers every piece, then commit.
 
 **Rule.** Rust on toolchain `1.97.1`. Build from the repository root
 with the pinned toolchain. Product configuration is ACL (`.acl`),
-parsed and generated only with `a3s-acl`. Do not create, restore,
+parsed and generated only with `aster-acl`. Do not create, restore,
 document, or parse another product configuration format.
 
 **Rationale.** One configuration language with one parser keeps
@@ -152,11 +156,11 @@ repository-wide unwrap census in this tree. A new production
 
 - Closed sets use an enum plus `parse()` / `as_str()`. The parse
   error names the set it refused.
-- Crate and package identifiers that already start with `a3s-` stay,
-  including `a3s-acl` and `a3s-code-acp`. Do not rename them in
+- Crate and package identifiers that already start with `aster-` stay,
+  including `aster-acl` and `aster-acp`. Do not rename them in
   passing.
 - The default user-visible product name is Aster (desktop tenant branding remains explicit). Do
-  not describe this product as A3S OS or as a Grok release.
+  not describe this product as Aster OS or as a Grok release.
 - Files are snake_case. Rust modules are snake_case. Types are
   CamelCase. ACL attributes are snake_case.
 - Example domains use `.example`. Do not reintroduce retired brand
@@ -203,7 +207,7 @@ not append thousands of inline test lines to a production file.
   Vitest project, over a live external service.
 - On a control-plane path, a repository or authority proof is a
   dual-adapter proof. PostgreSQL harnesses use
-  `A3S_CLOUD_TEST_POSTGRES_URL` and `--test-threads=1`.
+  `ASTER_CLOUD_TEST_POSTGRES_URL` and `--test-threads=1`.
 - Whole-file test modules start with `#![cfg(test)]`.
 - After a run with many failures, re-run each distinct failure alone
   before treating it as a product defect. Parallel runs can fail
@@ -225,7 +229,7 @@ not append thousands of inline test lines to a production file.
   repository.
 - Fail closed on security surfaces. Degrade, with a signal, on
   convenience surfaces.
-- Updates must not replace Aster with an A3S or Grok release.
+- Updates must not replace Aster with an Aster or Grok release.
 - Preserve host and workspace trust boundaries and sandbox
   enforcement.
 
@@ -332,7 +336,7 @@ the model path. Matcher vocabularies do not grow to cover it.
 
 **Rule.** A product dropdown is drawn by the design system. Native
 `<select>`, `<datalist>`, and `document.createElement('select')` do
-not ship. Use `SearchSelect` from `@a3s-lab/ui`, `Combobox` when the
+not ship. Use `SearchSelect` from `@aster-ai-lab/ui`, `Combobox` when the
 trigger must read as a text field, or the same anatomy drawn where
 React is not available. The contract is `DESIGN.md` §6 "Picker
 (dropdown)". The Radix `Select` list only shrinks.
@@ -354,8 +358,8 @@ positioning transform and does not set `filter`. A phone-width
 bottom sheet is the only edge travel. Durations and the rest of
 the contract are `DESIGN.md` §6 "Dialogs".
 
-The existing class names `.a3s-dialog-scrim`, `.a3s-dialog-surface`,
-`.a3s-popup-rise`, `.a3s-row-enter`, and `.a3s-row-leave` stay.
+The existing class names `.aster-dialog-scrim`, `.aster-dialog-surface`,
+`.aster-popup-rise`, `.aster-row-enter`, and `.aster-row-leave` stay.
 They are implementation identifiers.
 
 **Enforcement.** Constitution principle XVII.

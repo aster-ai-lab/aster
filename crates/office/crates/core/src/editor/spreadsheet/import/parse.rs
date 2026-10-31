@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::editor::{
     NativeSpreadsheetDelimitedImport, SpreadsheetCellValue, MAX_NATIVE_SPREADSHEET_IMPORT_CELLS,
@@ -363,11 +363,11 @@ fn days_from_civil(year: i32, month: u32, day: u32) -> i64 {
     i64::from(era * 146_097 + day_of_era)
 }
 
-fn import_error(code: &str, message: impl Into<String>) -> a3s_use_core::UseError {
+fn import_error(code: &str, message: impl Into<String>) -> aster_use_core::UseError {
     super::super::editor_error(code, message)
 }
 
-fn import_cell_count_limit() -> a3s_use_core::UseError {
+fn import_cell_count_limit() -> aster_use_core::UseError {
     import_error(
         "use.office.spreadsheet_import_cell_count_limit",
         format!(
@@ -380,7 +380,7 @@ fn delimited_invalid(
     rows: &[Vec<String>],
     row: &[String],
     message: impl Into<String>,
-) -> a3s_use_core::UseError {
+) -> aster_use_core::UseError {
     import_error("use.office.spreadsheet_import_delimited_invalid", message)
         .with_detail("row", rows.len() + 1)
         .with_detail("column", row.len() + 1)

@@ -245,7 +245,7 @@ async fn exec_wait_can_arrive_before_start_and_completes_from_the_recorded_exit(
 
     let record = ProcessRecord {
         target: RuntimeAdapter::from_client(
-            a3s_oci_sdk::RuntimeClient::new(RecoveryService {
+            aster_oci_sdk::RuntimeClient::new(RecoveryService {
                 record: task.record.clone(),
                 processes: Arc::new(std::sync::Mutex::new(Vec::new())),
                 exec_calls: Arc::new(std::sync::atomic::AtomicUsize::new(0)),
@@ -313,7 +313,7 @@ async fn rehydration_reuses_a_starting_exec_already_in_runtime_inventory() {
     .expect("OCI process");
     let exec_identity = ExecIdentity::new("exec-a", 1).expect("exec identity");
     let process_target = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(RecoveryService {
+        aster_oci_sdk::RuntimeClient::new(RecoveryService {
             record: task.record.clone(),
             processes: Arc::new(std::sync::Mutex::new(Vec::new())),
             exec_calls: Arc::new(std::sync::atomic::AtomicUsize::new(0)),
@@ -449,7 +449,7 @@ async fn rehydration_publishes_task_before_output_replay_can_commit() {
         .expect("store running task metadata");
     let output = b"output-ready-before-restore".to_vec();
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(RecoveryService {
+        aster_oci_sdk::RuntimeClient::new(RecoveryService {
             record: task.record.clone(),
             processes: Arc::new(std::sync::Mutex::new(Vec::new())),
             exec_calls: Arc::new(std::sync::atomic::AtomicUsize::new(0)),
@@ -521,7 +521,7 @@ async fn task_delete_response_replays_after_service_reopen_and_delete_shim() {
         confirmed_delete_mode: Some(DeleteMode::StoppedOnly),
     };
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::RuntimeClient::new(runtime),
         IsolationRequest::SharedHostKernel,
     );
     let service = recovery_service_instance(directory.path(), adapter);
@@ -643,7 +643,7 @@ async fn delete_shim_replays_committed_task_delete_receipt_before_metadata_clean
         confirmed_delete_mode: Some(DeleteMode::StoppedOnly),
     };
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::RuntimeClient::new(runtime),
         IsolationRequest::SharedHostKernel,
     );
     let mut service = recovery_service_instance(directory.path(), adapter);
@@ -696,7 +696,7 @@ async fn durable_new_task_generation_consumes_stale_task_delete_receipt() {
         attachments_digest: None,
     };
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(CreateIntentCleanupService {
+        aster_oci_sdk::RuntimeClient::new(CreateIntentCleanupService {
             record,
             calls: Arc::new(std::sync::Mutex::new(CreateIntentCleanupCalls::default())),
             retryable_create_failures: Arc::new(std::sync::atomic::AtomicUsize::new(0)),

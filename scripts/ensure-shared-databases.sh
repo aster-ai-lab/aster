@@ -13,8 +13,8 @@ for helper in compose-postgres-host.sh resolve-container.sh; do
   fi
 done
 
-container="${A3S_PG_CONTAINER:-$(bash "$repo_root/scripts/resolve-container.sh" a3s-postgres a3s-postgres)}"
-admin_user="${A3S_PG_ADMIN_USER:-a3s_api}"
+container="${ASTER_PG_CONTAINER:-$(bash "$repo_root/scripts/resolve-container.sh" aster-postgres aster-postgres)}"
+admin_user="${ASTER_PG_ADMIN_USER:-aster_api}"
 
 if ! command -v docker >/dev/null 2>&1; then
   echo "docker is required to prepare shared databases" >&2
@@ -47,7 +47,7 @@ if [[ "$pg_host" == "127.0.0.1" ]]; then
       echo ""
       echo "FATAL: 127.0.0.1:5432 is OrbStack, and ${container} is not reachable on its bridge address."
       echo "  Host services would authenticate against the guest database."
-      echo "  Re-run after 'docker compose up -d a3s-postgres' can publish :5432."
+      echo "  Re-run after 'docker compose up -d aster-postgres' can publish :5432."
       echo ""
     } >&2
     exit 1
@@ -55,14 +55,14 @@ if [[ "$pg_host" == "127.0.0.1" ]]; then
 fi
 if command -v python3 >/dev/null 2>&1; then
   host_probe="$(python3 "$repo_root/scripts/host-pg-probe.py" \
-    "${A3S_PG_HOST_PROBE_USER:-a3s_api}" \
-    "${A3S_PG_HOST_PROBE_PASSWORD:-a3s_api}" \
+    "${ASTER_PG_HOST_PROBE_USER:-aster_api}" \
+    "${ASTER_PG_HOST_PROBE_PASSWORD:-aster_api}" \
     "$pg_host")"
   if [[ "$host_probe" != "ok" ]]; then
     {
       echo ""
       echo "FATAL: ${pg_host}:5432 did not accept the Postgres credentials (probe: ${host_probe})."
-      echo "  (Override with A3S_PG_HOST_PROBE_USER / A3S_PG_HOST_PROBE_PASSWORD.)"
+      echo "  (Override with ASTER_PG_HOST_PROBE_USER / ASTER_PG_HOST_PROBE_PASSWORD.)"
       echo ""
     } >&2
     exit 1
@@ -95,17 +95,17 @@ ensure_database() {
   psql_admin -c "GRANT ALL PRIVILEGES ON DATABASE ${database} TO ${owner}"
 }
 
-ensure_role a3s_cloud a3s_cloud
-ensure_role a3s_cloud_serving a3s_cloud_serving
-ensure_role a3s_auth a3s_auth
-ensure_role a3s_billing a3s_billing
-ensure_role a3s_config a3s_config
+ensure_role aster_cloud aster_cloud
+ensure_role aster_cloud_serving aster_cloud_serving
+ensure_role aster_auth aster_auth
+ensure_role aster_billing aster_billing
+ensure_role aster_config aster_config
 
-ensure_database a3s_cloud a3s_cloud
-ensure_database a3s_auth a3s_auth
-ensure_database a3s_billing a3s_billing
-ensure_database a3s_config a3s_config
+ensure_database aster_cloud aster_cloud
+ensure_database aster_auth aster_auth
+ensure_database aster_billing aster_billing
+ensure_database aster_config aster_config
 
-psql_admin -c "GRANT CONNECT ON DATABASE a3s_cloud TO a3s_cloud_serving"
+psql_admin -c "GRANT CONNECT ON DATABASE aster_cloud TO aster_cloud_serving"
 
-echo "shared Postgres ready: a3s_api, a3s_cloud, a3s_auth, a3s_billing, a3s_config on :5432"
+echo "shared Postgres ready: aster_api, aster_cloud, aster_auth, aster_billing, aster_config on :5432"

@@ -1,12 +1,12 @@
 {
-  "root": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv",
+  "root": "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv",
   "source_revision": "dc30d18352b521da7e69eb5b0918b56408f9812e",
   "source_dirty": false,
   "sha256": {
     "qualify_hvf_workspace": "ec9a770a7d528c7455f31a9d93d62a115834c187e0c001349635d801264aec56",
-    "a3s-oci": "927495ce677f1381f7cf1d12f9a7ab1f3cce9277219c928226181b9c0e024303",
-    "a3s-oci-krun-shim": "283634f567ec98aacbbd223367dc2f23e163a3305d080d6af6dc5636f6c4228d",
-    "a3s-oci-krun-runtime/libkrun.1.17.0.dylib": "c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d",
-    "a3s-oci-krun-runtime/libkrunfw.5.dylib": "841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4"
+    "aster-oci": "927495ce677f1381f7cf1d12f9a7ab1f3cce9277219c928226181b9c0e024303",
+    "aster-oci-krun-shim": "283634f567ec98aacbbd223367dc2f23e163a3305d080d6af6dc5636f6c4228d",
+    "aster-oci-krun-runtime/libkrun.1.17.0.dylib": "c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d",
+    "aster-oci-krun-runtime/libkrunfw.5.dylib": "841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4"
   }
 }

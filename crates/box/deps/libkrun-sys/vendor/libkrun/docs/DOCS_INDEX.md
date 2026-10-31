@@ -5,8 +5,8 @@ Current documentation kept in this repository:
 - `README.md`
 - `docs/WINDOWS_WHPX_README.md`
 - `docs/WINDOWS_ROADMAP.md`
-- `docs/windows-backend-a3s-readiness.md`
-- `docs/a3s-libkrun-sys-plan.md`
+- `docs/windows-backend-aster-readiness.md`
+- `docs/aster-libkrun-sys-plan.md`
 - `docs/APIC_IMPROVEMENT.md`
 - `docs/tsi-windows-feasibility.md`
 - `docs/tsi-windows-integration-plan.md`

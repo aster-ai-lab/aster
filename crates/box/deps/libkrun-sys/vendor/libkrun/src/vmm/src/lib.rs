@@ -519,7 +519,7 @@ impl Vmm {
                 .on_vmm_exit();
         }
 
-        // A3S runs libkrun inside a dedicated shim. Its Windows guest streams
+        // Aster runs libkrun inside a dedicated shim. Its Windows guest streams
         // live in the shared rootfs, so the shim needs a bounded opportunity to
         // drain them before exiting. Keep libkrun's process-takeover contract
         // unless that host explicitly opts into returning.

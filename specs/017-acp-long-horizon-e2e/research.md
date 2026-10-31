@@ -54,7 +54,7 @@
 4. 计划初始 130 case 的分母公开：120 product + 10 test-oracle；LH01–LH12 只是组合编排，不增加 case 基数。矩阵 variants 和重复 seed 单列。
 5. 真 LLM 凭证只由既有可信配置/宿主控制；新本地 relay 若确有必要，持有凭证的父进程不序列化秘密，不复制用户状态；ACP 子进程只拿测试 fixture 的无秘密配置。
 6. 工具链不为覆盖率换版。已安装 `cargo-llvm-cov` 和 LLVM tools；其 branch flag 是 unstable，因此不能预先保证可测分支百分比。行/函数、分支、功能、执行率和通过率分别呈现。
-7. U 层使用 a3s-test 已有协议；TUI 稳定路径观察后再写 ACL，GUI 一 lane 一 owner，绑定失效就结束该 attempt。
+7. U 层使用 aster-test 已有协议；TUI 稳定路径观察后再写 ACL，GUI 一 lane 一 owner，绑定失效就结束该 attempt。
 
 ## 需要在 T001 实际发现的运行变量
 
@@ -72,7 +72,7 @@
 
 - 只读核验清零停滞计数、跨回合 unknown 长期禁止写入，以及 V1 将债务增长当进展均有历史缺陷证据；新调用身份收据仍可被当作新信息，是待证伪的收敛风险。不能用“没有异常”或一次长任务通过排除这些逻辑问题。
 - 工具结果的事实 envelope 含 typed exit_code，但旧 `message_from_folded_tool` 投影只保留 text。OpenAI-compatible 序列化也没有独立 is_error 字段，因而模型可能看不到失败状态。共享投影已加数字状态并保留原始回执；488 项相关 Core 回归通过。实际 H1 还须将模型所见数字与本次真实工具回执绑定，不能硬编码期望 rustc 的 101：OCI bash 当前观察到的码可能是 1。硬编码断言的失败保留，不计产品失败或通过。
-- 本仓库最早 `d5398e219` 是 2026-10-18 源码快照边界，不能证明更早 LoopX 机制的引入点。只读检查既有 `../a3s/apps/code` 历史，2026-09-29 `411d19bb` 已存在丢弃 exit_code 的同一投影；2026-10-17 `c3b95614` 是后续文件拆分。因此缺陷早于 Aster 仓库导入，但是否由用户所指 LoopX 内化引入，仍缺内化前的对应版本与原评测轨迹。
+- 本仓库最早 `d5398e219` 是 2026-10-18 源码快照边界，不能证明更早 LoopX 机制的引入点。只读检查既有 `../aster/apps/code` 历史，2026-09-29 `411d19bb` 已存在丢弃 exit_code 的同一投影；2026-10-17 `c3b95614` 是后续文件拆分。因此缺陷早于 Aster 仓库导入，但是否由用户所指 LoopX 内化引入，仍缺内化前的对应版本与原评测轨迹。
 - 既有上游 `docs/evidence/code-harness/20261017-terminal-bench-subset/OUTCOME.md` 记录 native runner 固定十任务诊断全部超时、七项有 empty-retry；它不是 ACP cohort，也没有 token 用量。这份历史记录不能与当前 ACP 交互式 R1 的 12 次请求合并统计。
 - 上游 `scripts/harbor/run_acp_tb.sh` 明确不构建二进制，并默认将总执行预算设为 28,000,000 ms（约 7.8 小时），高于产品原始 840,000 ms；它记录命名 job 的二进制/ACL SHA、模型和 effort，但未将构建产物与当前源码编码绑定。原 cohort 的实际 launch 不在此仓库，不能断言它一定用了该默认值或最新构建；重放必须同时冻结实际二进制和配置。这是停滞风险的预算放大条件，不是成功样本性能结论。
 - 当前 R1 不启用 unattended 自动 Goal，仍有 217,377 输入 / 4,866 输出的 ACP 用量投影，说明高输入并非只能由目标重启导致。主请求每次工具 schema 42,761 字节、system 约 19 KiB，缓存下降仅有相关证据。按 [DeepSeek 缓存文档](https://api-docs.deepseek.com/guides/kv_cache/)，复用依赖匹配前缀且为 best effort；需同任务受控比较，不能把总输入都当作缓存未命中或据此计算账单。

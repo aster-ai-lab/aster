@@ -1,4 +1,4 @@
-//! One-way projection from committed A3S Flow history into the state graph.
+//! One-way projection from committed Aster Flow history into the state graph.
 //!
 //! Flow remains authoritative for scheduling and execution. This module only
 //! maintains an auditable domain projection; it never edits a Flow snapshot.
@@ -7,7 +7,7 @@ use crate::state_graph::{
     ExternalEvent, ExternalProjectionOutcome, GraphPatch, GraphRuntime, PatchOperation,
     RuntimeError,
 };
-use a3s_flow::{FlowEvent, FlowEventEnvelope, FlowEventObserver};
+use aster_flow::{FlowEvent, FlowEventEnvelope, FlowEventObserver};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value};
@@ -27,7 +27,7 @@ pub use decision_ledger::{
     MemoryFlowDecisionLedger,
 };
 
-pub const FLOW_GRAPH_SOURCE: &str = "a3s-flow";
+pub const FLOW_GRAPH_SOURCE: &str = "aster-flow";
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]

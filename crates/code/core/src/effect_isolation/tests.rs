@@ -5,8 +5,8 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 fn init_repo(root: &Path) {
     fs::create_dir_all(root).unwrap();
     git(root, &["init"]);
-    git(root, &["config", "user.email", "a3s@example.com"]);
-    git(root, &["config", "user.name", "a3s"]);
+    git(root, &["config", "user.email", "aster@example.com"]);
+    git(root, &["config", "user.name", "aster"]);
     fs::write(root.join("README.md"), "source\n").unwrap();
     git(root, &["add", "README.md"]);
     git(root, &["commit", "-m", "init"]);
@@ -188,7 +188,7 @@ async fn bind_does_not_place_the_worktree_inside_the_source_via_session_id() {
     let parent = tempfile::tempdir().unwrap();
     let source = parent.path().join("repo");
     init_repo(&source);
-    fs::create_dir(parent.path().join(".a3s-isolate-nested")).unwrap();
+    fs::create_dir(parent.path().join(".aster-isolate-nested")).unwrap();
     let session_id = "nested/../repo".to_string();
 
     let bound = bind_sync(&session_id, &source, true, true);
@@ -406,7 +406,7 @@ fn forget_leaked_session(session_id: &str) {
     {
         let _ = fs::remove_dir_all(binding.worktree_path);
     }
-    let _ = fs::remove_dir_all(std::env::temp_dir().join(format!(".a3s-isolate-{session_id}")));
+    let _ = fs::remove_dir_all(std::env::temp_dir().join(format!(".aster-isolate-{session_id}")));
     crate::external_observation::release_session(session_id);
 }
 
@@ -845,7 +845,7 @@ async fn bind_adopts_a_preexisting_worktree_directory() {
     let worktree = worktree_path_for(root.path(), session);
     crate::git::create_worktree(
         root.path(),
-        &format!("a3s-isolate-{session}"),
+        &format!("aster-isolate-{session}"),
         &worktree,
         true,
     )
@@ -889,7 +889,7 @@ async fn bind_falls_through_when_existing_worktree_directory_is_gone() {
     let root = tempfile::tempdir().unwrap();
     init_repo(root.path());
     let session = format!("missing-worktree-{}", std::process::id());
-    let branch = format!("a3s-isolate-{session}");
+    let branch = format!("aster-isolate-{session}");
     let first = bind(&session, root.path(), true).await.unwrap();
     // Force-remove the worktree registration and its branch so recreate
     // can allocate the same session id again.
@@ -1006,7 +1006,7 @@ fn git_stdout_reports_spawn_failure_when_git_is_missing_from_path() {
         .lock()
         .unwrap_or_else(|error| error.into_inner());
     let _restore = RestorePath(std::env::var_os("PATH"));
-    std::env::set_var("PATH", "/var/empty-a3s-no-git");
+    std::env::set_var("PATH", "/var/empty-aster-no-git");
     let error = super::git_stdout_unlocked(root.path(), &["status"]).unwrap_err();
     drop(_restore);
     drop(_guard);

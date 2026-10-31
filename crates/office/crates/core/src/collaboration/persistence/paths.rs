@@ -2,7 +2,7 @@ use std::fs::{self, File};
 use std::io::{ErrorKind, Read, Write};
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 use super::{MAX_JSON_BYTES, OPERATION_DIRECTORY};

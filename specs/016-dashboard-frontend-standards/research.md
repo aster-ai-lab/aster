@@ -11,7 +11,7 @@
 
 ### One application alias: `@/`
 
-Use `@/` for cross-area application imports and relative imports within a cohesive feature area. `@a3s-lab/ui` remains a separate package/design-system import. Remove `@renderer` and `@shared` from TypeScript/Vitest configuration and authored source rather than maintaining three spellings.
+Use `@/` for cross-area application imports and relative imports within a cohesive feature area. `@aster-ai-lab/ui` remains a separate package/design-system import. Remove `@renderer` and `@shared` from TypeScript/Vitest configuration and authored source rather than maintaining three spellings.
 
 **Rejected alternative**: preserve `@renderer` for textual comparison with ToWork. The dashboard is now an independent application and the user explicitly requested naming optimization; structural ownership is clearer than copied-path parity. Git history remains the comparison mechanism.
 
@@ -43,7 +43,7 @@ The platform shell must be <=400 lines. Every authored production module must be
 
 ## Safety invariants
 
-- Preserve `a3s.*` storage keys, member paths, API payload/wire field spellings, SWR keys and menu IDs.
+- Preserve `aster.*` storage keys, member paths, API payload/wire field spellings, SWR keys and menu IDs.
 - Keep `PlatformTenantBoundary` and member/org scoping around all platform views.
 - Keep preview mode explicit and never use it as production failure fallback.
 - Preserve Chinese/English keys, native-picker ban and dialog motion.

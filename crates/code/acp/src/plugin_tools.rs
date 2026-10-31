@@ -1,14 +1,14 @@
 //! Installed plugin executables from native publications or legacy ACP metadata.
 //!
 //! Studio binds an exact native selection on `session/new`. Older hosts can
-//! still supply `_meta.a3sTools`; native selection sessions refuse that path.
+//! still supply `_meta.asterTools`; native selection sessions refuse that path.
 //! Preparing a Tool does not start it. `execute` owns the actual process.
 
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::tools::{
+use aster_core::tools::{
     execute_owned_process, OwnedProcessTermination, Tool, ToolContext, ToolErrorKind, ToolOutput,
 };
 use anyhow::Result;
@@ -27,9 +27,9 @@ struct InstalledExecutable {
     workspace: Option<crate::plugin_workspace::WorkspaceBinding>,
 }
 
-/// The `a3sTools` array from a decoded `session/new` meta map.
+/// The `asterTools` array from a decoded `session/new` meta map.
 pub fn entries_from_meta(meta: Option<&serde_json::Map<String, Value>>) -> Vec<Value> {
-    meta.and_then(|meta| meta.get("a3sTools"))
+    meta.and_then(|meta| meta.get("asterTools"))
         .and_then(Value::as_array)
         .map(|entries| entries.iter().take(TOOL_LIMIT).cloned().collect())
         .unwrap_or_default()
@@ -156,7 +156,7 @@ impl Tool for InstalledExecutable {
         }
         let scope_cancellation = if self.workspace.is_some() {
             match ctx
-                .workspace_operation(a3s_code_core::capability::WorkspaceOperation::Execute)
+                .workspace_operation(aster_core::capability::WorkspaceOperation::Execute)
                 .and_then(|access| access.cancellation())
             {
                 Ok(cancellation) => Some(cancellation),

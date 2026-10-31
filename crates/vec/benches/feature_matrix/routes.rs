@@ -417,7 +417,7 @@ fn measure_full_routes(collection: &Collection, config: Config) {
         let result = collection
             .iter_with_options(Some(&["category"]), false)
             .expect("iterator must be created")
-            .collect::<a3s_vec::Result<Vec<_>>>()
+            .collect::<aster_vec::Result<Vec<_>>>()
             .expect("iterator must succeed");
         assert_eq!(result.len(), config.documents);
         u64::try_from(result.len()).expect("result count fits u64")

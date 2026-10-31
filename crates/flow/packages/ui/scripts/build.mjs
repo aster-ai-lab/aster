@@ -14,8 +14,8 @@ await rm(outputRoot, { force: true, recursive: true });
 await mkdir(outputRoot, { recursive: true });
 
 const external = [
-  '@a3s-lab/ui/form/core',
-  '@a3s-lab/ui/form/react',
+  '@aster-ai-lab/ui/form/core',
+  '@aster-ai-lab/ui/form/react',
   'react',
   'react/jsx-runtime',
   'react-dom',

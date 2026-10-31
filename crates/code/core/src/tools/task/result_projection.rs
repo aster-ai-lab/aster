@@ -292,7 +292,7 @@ pub(super) fn task_artifact_id(result: &TaskResult) -> String {
 
 pub(super) fn task_artifact_uri(result: &TaskResult) -> String {
     format!(
-        "a3s://tasks/{}/runs/{}/output",
+        "aster://tasks/{}/runs/{}/output",
         result.session_id, result.task_id
     )
 }

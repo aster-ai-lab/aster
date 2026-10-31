@@ -2,7 +2,7 @@
 description: "Task list for specs/005-os-convergence-execution"
 ---
 
-# Tasks: A3S OS 技术收敛执行（W0–W3）
+# Tasks: Aster OS 技术收敛执行（W0–W3）
 
 **Input**: `specs/005-os-convergence-execution/{spec.md, plan.md, research.md}`
 
@@ -37,12 +37,12 @@ US-6 证据修正）
 - [x] T004 [P] [US1] `crates/use` 测试编译修复：7 个上游根级 fixture 恢复
       （`.github/workflows/*`、`Cargo.lock`、`install.sh/ps1`）+ 33 处陈旧
       嵌套 include 重指向拍平布局（15 文件）；验证 =
-      `cargo check --locked -p a3s-use --all-targets`（exit 0）+
-      `cargo fmt -p a3s-use -- --check` ✅
-- [x] T004b [P] [US1] `a3s-gateway` 已提交债务修复：`benches/routing.rs`
+      `cargo check --locked -p aster-use --all-targets`（exit 0）+
+      `cargo fmt -p aster-use -- --check` ✅
+- [x] T004b [P] [US1] `aster-gateway` 已提交债务修复：`benches/routing.rs`
       补 `parking: None`（对齐 `src/config/router.rs:95` 的 Default）；
       `examples/protocol_benchmark_load.rs:138` `Vec<u8>`→`Bytes`；
-      验证 = `cargo check -p a3s-gateway --benches --examples` 零错误 +
+      验证 = `cargo check -p aster-gateway --benches --examples` 零错误 +
       包级 fmt 干净 ✅
 - [x] T005 [US3] 决策材料与外联草稿 `specs/005-.../research.md`（D-A/
       D-B/D-D 对比、D-F issue 草稿、US-5 上游 PR 草稿）✅
@@ -62,7 +62,7 @@ US-6 证据修正）
       fail-closed token、gitlink pin、不持久化凭据）；hermetic 矩阵带
       `submodule`/`test_args`、按真值门控检出；campaigns 三命令
       `--manifest-path` 作用域；rust-cache 补 `workspaces`。**2026-10-22 修正**：
-      a3s-api 移出 hermetic 矩阵——其 tobot/git_store PG 证明对不可达服务
+      aster-api 移出 hermetic 矩阵——其 tobot/git_store PG 证明对不可达服务
       panic 而非跳过（实证见 research.md），hermetic 无服务容器首跑必红；
       api 覆盖只在 campaigns 活栈串行腿。本地证明：YAML
       解析、五包在各自 manifest 下可解析、gitlink 可定位；真实 CI 执行未
@@ -85,8 +85,8 @@ US-6 证据修正）
       research.md 备 owner 后续外发，不再占执行位 ✅
 - [ ] T015 [US4] T0.4.2 runbook 首执行 + OUTCOME 证据——取证腿已落
       （2026-10-21：「krun 引导链失败」根因 = 10-19 硬拷贝 shim 缺
-      `~/.a3s/lib` 的 rpath 库，dyld 加载失败被误诊为 VM boot 失败；六格
-      实验矩阵定案，补全 `~/.a3s/lib` 后 stock 3.3.0 链对 compose.acl
+      `~/.aster/lib` 的 rpath 库，dyld 加载失败被误诊为 VM boot 失败；六格
+      实验矩阵定案，补全 `~/.aster/lib` 后 stock 3.3.0 链对 compose.acl
       两服务 converged。D-D 对 box 路径失效——compose 用的正是 pinned
       digest。**步骤 1 已执行并证明**（建链 201→解析 200→负控 404，
       human principal + HTTPS issuer 两条 runbook 修订；前置 1 环境半边
@@ -98,10 +98,10 @@ US-6 证据修正）
       `docs/evidence/development/2026-10-21-t042-step1-subject-link/`）
 - [ ] T016 [P] [US4] G0/P0/WEB0 aging 日期回填——**材料完备性已查（2026-10-22）：
       阻塞是数据，不只是通道**。本地 kense-labs/cloud 克隆仅 13 笔提交（根
-      =`0eb6f63` 2026-10-19「Import the A3S Cloud control plane」，此前 0 笔），
+      =`0eb6f63` 2026-10-19「Import the Aster Cloud control plane」，此前 0 笔），
       G0/P0（ROADMAP L327/328，无子行）与 WEB0.1–4（L3322–3325）全行零日
       期、零 evidence 链接，本地 docs/evidence 亦无该三 lane 的 retained 目
-      录——完成日期只存在于上游 A3S-Lab/Cloud 前导入史或 owner 记忆。回填
+      录——完成日期只存在于上游 aster-ai-lab/Cloud 前导入史或 owner 记忆。回填
       日期喂「两季度无 retained 证据即降级」的治理钟，猜值即腐蚀月度评审决
       策（宪法 fail-closed 禁）。通道侧照旧：日期由 owner/上游史供给后，
       本地编辑 + 排队 PR + 指针提升（与 T017 同队列）
@@ -110,13 +110,13 @@ US-6 证据修正）
       `JsonCommand` 覆写真值 + `enqueue` 在 move 进 wrapper 前捕获并落盘
       （替换 `json!({})`）；保真测试 = CapturingStorage 回环，断言落盘
       字节与提交 payload 相等；三副本（根/`apps/api`/`apps/cloud`）同一
-      diff，各 402+6 全绿、fmt 干净；drift 集保持 15 不生长、`a3s-lane`
+      diff，各 402+6 全绿、fmt 干净；drift 集保持 15 不生长、`aster-lane`
       零漂移。落地顺序照草稿：api `7091f80` → cloud `2ff9eed` → aster
       根副本 + 双 gitlink 同一提交 `8a8f99881`，均已推送 ✅
 
 ## Phase C+: krun fork 修复轨（2026-10-21 新增，替代 T014 的外发路径）
 
-- [x] T020 [US4] fork `A3S-Lab/libkrun` → **aster-ai-lab/libkrun**；分支
+- [x] T020 [US4] fork `aster-ai-lab/libkrun` → **aster-ai-lab/libkrun**；分支
       `boot-diagnostics`（`02e1414`）：`krun_start_enter` 全部 11 处早退
       经 `boot_abort(stage, code)` 输出 `KRUN_BOOT_ABORT` 行 + 4 个
       `KRUN_BOOT_STAGE` 标记（含原两处静默退出）；纯插桩、控制流不变、
@@ -151,7 +151,7 @@ US-6 证据修正）
 - [x] T023 [US4] `/app-releases` 鉴权核查——**发现已勘误（2026-10-21 晚）**：
       实挂载在 `/v1/api/admin/app-releases`（API_PREFIX），在拦截器前缀门
       之内；真实洞 = 前缀门只查令牌形状，控制器层零会话验证（任意
-      `a3s_us_` 形状令牌可写）。发现、勘误与上游 PR 材料入 research.md ✅
+      `aster_us_` 形状令牌可写）。发现、勘误与上游 PR 材料入 research.md ✅
 - [x] T024 [US4] AppRelease 上游 PR（kense-labs/api）——**加固已落上游 main**
       （2026-10-22：本地实现+证明后经 owner 指令直推——api
       `aa0e7ae..079e746`；写面全 `operator()` 验证 + SQLSTATE 23505 命名
@@ -159,18 +159,18 @@ US-6 证据修正）
       栈；整栈随全量套件 818+17+3 绿验证；读面公开化未代决——仍是 owner
       独立决策）✅
 
-## Phase F: a3s-api 缺口收敛（2026-10-21 完成度核查后分类）
+## Phase F: aster-api 缺口收敛（2026-10-21 完成度核查后分类）
 
 8 缺口 → 3 类：**设计关闭**（SMS 本地适配器不建——成员面按 D4/P3 只读投影
 走 Cloud SMS 联邦；About 占位文案待 owner 提供联系方式后一并换）；**上游
 排队**（发现 P4.1、PG 队列 flow/repeat[共享副本三份对账]、继承测试债、
 Redis 启动依赖[Phase 2 T2.5]、AppRelease 治理[T024]）；**本仓可执行**：
 
-- [x] T029 [US7] 计量环生产者侧：`apps/runtime` 经 a3s-event/NATS 发布
-      `events.runtime.usage`（尽力语义、断线降级、`A3S_RUNTIME_NATS_URL`
+- [x] T029 [US7] 计量环生产者侧：`apps/runtime` 经 aster-event/NATS 发布
+      `events.runtime.usage`（尽力语义、断线降级、`ASTER_RUNTIME_NATS_URL`
       未设即拒绝闭合）；批端点三态契约（501 not_wired / 200 真实条数 /
       503 publish_failed）；六契约用例 + 存量 2 全绿（7/7）✅ 原
-      `a3s.gateway.usage-batch.v1` 批次（usage store 记录→批→POST api 摄取
+      `aster.gateway.usage-batch.v1` 批次（usage store 记录→批→POST api 摄取
       端），替换今日的 501 拒绝为真实导出；先设计步（事件源=UsageStore
       生命周期记录、摄取端契约核对 api usage 上下文），再实现+契约测试
       （200 仅真实 records 的既有契约保持）
@@ -179,7 +179,7 @@ Redis 启动依赖[Phase 2 T2.5]、AppRelease 治理[T024]）；**本仓可执�
       全、库内零测）——**已落上游 main**（2026-10-22：`f14f605` 随
       `aa0e7ae..079e746` 直推）——notes 5（model_service 模式脚本仓）+ oem 14（域不变式 +
       new/bind 准入与生命周期脚本目录）+ config_center 3（wire e2e：进程内
-      脚本化 a3s-config 服务 + 真 HttpConfigClient + 真控制器；死服务目录
+      脚本化 aster-config 服务 + 真 HttpConfigClient + 真控制器；死服务目录
       200+命名错误、remote 404→404/409→409 映射、删幂等）；合计 22，全
       进程内零外部依赖；fmt 债随队清偿（api `079e746`，crate fmt 门全绿）；
       整栈经全量套件（CI 原话串行调用）818+17+3 绿/0 败 ✅
@@ -216,7 +216,7 @@ CD0 机器已 90% 在库（10-02/03 落地：九编译器/晋升治理/韧性/SD
       `runs-on: [self-hosted, aster-os]`、机器 deploy-key 检出
       （gitlink 160000 → pinned sha → 命名失败不跳过）、复刻 backend.yml
       验证集（1.97.1/fmt/--all-targets/服务无关四包集/依赖守卫——2026-10-22
-      与 backend.yml 同步移除 a3s-api：该管道无任何服务，tobot/git_store
+      与 backend.yml 同步移除 aster-api：该管道无任何服务，tobot/git_store
       PG 证明必 panic；见 research.md）+ 90 天产物保留；
       本地证明 = YAML 解析 + gitlink 逻辑对 HEAD 实跑（api `aa0e7ae`/
       cloud `4f65537` 均可解析）。原边界（cloud pin 上游不可达则首跑命名
@@ -228,12 +228,12 @@ CD0 机器已 90% 在库（10-02/03 落地：九编译器/晋升治理/韧性/SD
 
 ## Final Verification Gate
 
-- [x] 拥有包聚焦测试通过：`cargo test --locked -p a3s-gateway-runtime`
-      → 5 passed / 0 failed；`cargo check -p a3s-use --all-targets` →
+- [x] 拥有包聚焦测试通过：`cargo test --locked -p aster-gateway-runtime`
+      → 5 passed / 0 failed；`cargo check -p aster-use --all-targets` →
       exit 0
 - [x] 本切片 Rust 编辑的 `cargo fmt -p <pkg> -- --check` 干净
-      （a3s-gateway-runtime、a3s-use；全库门见 T010）
-- [x] 无新增 crates.io `a3s-*` 依赖（恢复的 fixture 是数据文件；
+      （aster-gateway-runtime、aster-use；全库门见 T010）
+- [x] 无新增 crates.io `aster-*` 依赖（恢复的 fixture 是数据文件；
       `tests/workspace_dependencies.py` 不受影响）
 - [x] 未新增原生 `<select>`（无 UI 改动）
 - [x] 未新增产品配置（无配置面；D-A 产物将来必须 ACL——spec FR-012）

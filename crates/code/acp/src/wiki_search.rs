@@ -1,12 +1,12 @@
 //! Retrieval over the session's saved wiki pages.
 //!
-//! Search reads the current workspace publication through its original a3s-vec index and owner read lock.
+//! Search reads the current workspace publication through its original aster-vec index and owner read lock.
 //! It does not wait for an in-flight build, and it does not change the permission policy.
 
 use std::sync::{Arc, Mutex};
 
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
-use a3s_code_core::workspace::{WikiIndex, WikiSearchPhase, WikiSearchResult};
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_core::workspace::{WikiIndex, WikiSearchPhase, WikiSearchResult};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -28,6 +28,8 @@ struct HostSearch {
 #[derive(Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 enum Scope {
+    /// Legacy models still emit `local`; admit it as this task's pages.
+    #[serde(alias = "local")]
     Current,
     All,
 }
@@ -117,7 +119,7 @@ pub(crate) fn shared_index(root: &std::path::Path) -> anyhow::Result<Arc<WikiInd
 
 /// The trusted Studio broker admits cold saved publications; the model supplies no filesystem roots.
 pub(crate) async fn search_admitted_body(wiki: &std::path::Path, query: &str) -> Value {
-    if !matches!(a3s_okf::try_workspace_knowledge_read(wiki), Ok(Some(_))) {
+    if !matches!(aster_okf::try_workspace_knowledge_read(wiki), Ok(Some(_))) {
         return json!({"phase":"not-ready","hits":[]});
     }
     let Ok(index) = shared_index(wiki) else {
@@ -154,7 +156,7 @@ pub(crate) async fn search_admitted_body(wiki: &std::path::Path, query: &str) ->
 
 /// Search the index registered for `wiki`. Missing and in-flight generations are not-ready.
 pub fn search_published(wiki: &std::path::Path, query: &str) -> WikiSearchResult {
-    let Ok(Some(_guard)) = a3s_okf::try_workspace_knowledge_read(wiki) else {
+    let Ok(Some(_guard)) = aster_okf::try_workspace_knowledge_read(wiki) else {
         return idle_search();
     };
     let query = query.trim();
@@ -194,7 +196,7 @@ pub fn search_published_body(wiki: &std::path::Path, query: &str) -> Value {
 fn idle_search() -> WikiSearchResult {
     WikiSearchResult {
         phase: WikiSearchPhase::NotReady,
-        lexical_engine: "a3s_vec_fts_v1",
+        lexical_engine: "aster_vec_fts_v1",
         source_revision: 0,
         catalog_revision: 0,
         hits: Vec::new(),
@@ -262,7 +264,7 @@ impl Tool for SearchWikiTool {
             let value = host
                 .bridge
                 .search_workspace_wikis(
-                    ctx.workspace_operation(a3s_code_core::capability::WorkspaceOperation::Read)?,
+                    ctx.workspace_operation(aster_core::capability::WorkspaceOperation::Read)?,
                     &host.session,
                     query,
                     scope.as_str(),
@@ -279,7 +281,7 @@ impl Tool for SearchWikiTool {
                 return Ok(ToolOutput::error("denied"));
             }
             validate_host_reply(&value, &host.session, scope, query)?;
-            return Ok(ToolOutput::success(value.to_string()).with_metadata(json!({"phase":value["phase"],"scope":scope.as_str(),"nextCursor":value["nextCursor"],"pending":value["pending"],"lexical_engine":"a3s_vec_fts_v1","wiki_result":value})));
+            return Ok(ToolOutput::success(value.to_string()).with_metadata(json!({"phase":value["phase"],"scope":scope.as_str(),"nextCursor":value["nextCursor"],"pending":value["pending"],"lexical_engine":"aster_vec_fts_v1","wiki_result":value})));
         }
         if scope == Scope::All {
             return Ok(ToolOutput::error(
@@ -305,7 +307,7 @@ impl Tool for SearchWikiTool {
         let record_root = root.clone();
         let query = query.to_owned();
         let result = tokio::task::spawn_blocking(move || {
-            let Ok(Some(_guard)) = a3s_okf::try_workspace_knowledge_read(&root) else {
+            let Ok(Some(_guard)) = aster_okf::try_workspace_knowledge_read(&root) else {
                 return Ok(idle_search());
             };
             index.search(query)
@@ -443,7 +445,7 @@ fn bound_hits(mut result: WikiSearchResult) -> WikiSearchResult {
     result
 }
 
-/// The documents list reads `{workspace}/.a3s-agent-retrievals`, one canonical path per retrieval.
+/// The documents list reads `{workspace}/.aster-agent-retrievals`, one canonical path per retrieval.
 fn note_retrieved_pages(wiki_root: &std::path::Path, result: &WikiSearchResult) {
     if !matches!(result.phase, WikiSearchPhase::Published) {
         return;
@@ -473,7 +475,7 @@ fn note_retrieved_pages(wiki_root: &std::path::Path, result: &WikiSearchResult) 
     if let Ok(mut file) = std::fs::OpenOptions::new()
         .create(true)
         .append(true)
-        .open(workspace.join(".a3s-agent-retrievals"))
+        .open(workspace.join(".aster-agent-retrievals"))
     {
         use std::io::Write;
         let _ = file.write_all(lines.as_bytes());

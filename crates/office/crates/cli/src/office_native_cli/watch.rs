@@ -1,7 +1,7 @@
 use std::io::Write;
 use std::time::Duration;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use crate::office_watch::{NativeOfficeWatchOptions, NativeOfficeWatchServer};
 use crate::CommandOutput;

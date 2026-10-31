@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime, FlowTask,
     FlowWorker, InMemoryEventStore, RuntimeCommand, SignalWaitStatus, StepInvocation,
     WorkflowInvocation, WorkflowRunStatus, WorkflowSignal, WorkflowSpec, WorkflowUpdate,
@@ -31,7 +31,7 @@ impl FlowRuntime for ApprovalRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let Some(approval) = context.signal_payload_as::<Approval>("approval")? else {
             return Ok(context.wait_for_signal("approval", APPROVAL_SIGNAL));
@@ -39,7 +39,7 @@ impl FlowRuntime for ApprovalRuntime {
         Ok(context.complete(json!({ "approved": approval.approved })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime(
             "signal workflow does not execute steps".to_string(),
         ))
@@ -126,7 +126,7 @@ impl FlowRuntime for OrderedSignalRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.signal_payload("release").is_none() {
             return Ok(context.wait_for_signal("release", RELEASE_SIGNAL));
@@ -140,7 +140,7 @@ impl FlowRuntime for OrderedSignalRuntime {
         })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal workflow does not execute steps")
     }
 }
@@ -250,7 +250,7 @@ impl FlowRuntime for ContinueThenSignalRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let generation = context.input()["generation"].as_u64().unwrap();
         if generation == 0 {
@@ -262,7 +262,7 @@ impl FlowRuntime for ContinueThenSignalRuntime {
         Ok(context.complete(payload.clone()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal workflow does not execute steps")
     }
 }
@@ -374,7 +374,7 @@ impl FlowRuntime for FailAfterSignalPairingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let Some(payload) = context.signal_payload("approval") else {
             return Ok(context.wait_for_signal("approval", APPROVAL_SIGNAL));
@@ -387,14 +387,14 @@ impl FlowRuntime for FailAfterSignalPairingRuntime {
         Ok(context.complete(payload.clone()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal workflow does not execute steps")
     }
 }
 
 #[tokio::test]
 async fn redelivery_recovers_after_signal_pairing_commits_before_replay_finishes() {
-    let store = Arc::new(a3s_flow::InMemoryEventStore::new());
+    let store = Arc::new(aster_flow::InMemoryEventStore::new());
     let first_engine = FlowEngine::new(
         store.clone(),
         Arc::new(FailAfterSignalPairingRuntime {
@@ -450,7 +450,7 @@ async fn redelivery_recovers_after_signal_pairing_commits_before_replay_finishes
 
 #[tokio::test]
 async fn signal_delivery_recovers_a_run_created_without_run_started() {
-    let store = Arc::new(a3s_flow::InMemoryEventStore::new());
+    let store = Arc::new(aster_flow::InMemoryEventStore::new());
     store
         .append(
             "signal-pending-start",
@@ -501,7 +501,7 @@ impl FlowRuntime for CancellableSignalRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.cancellation_request().is_some() {
             return Ok(context.cancel());
@@ -509,7 +509,7 @@ impl FlowRuntime for CancellableSignalRuntime {
         Ok(context.wait_for_signal("approval", APPROVAL_SIGNAL))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal workflow does not execute steps")
     }
 }
@@ -525,7 +525,7 @@ async fn cancellation_deactivates_signal_waits_and_rejects_late_delivery() {
     let cancelled = engine
         .request_cancellation(
             &run_id,
-            a3s_flow::CancellationRequest::new(Some("operator request".to_string())),
+            aster_flow::CancellationRequest::new(Some("operator request".to_string())),
         )
         .await
         .unwrap();
@@ -562,7 +562,7 @@ impl FlowRuntime for TwoApprovalRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.signal_payload("release").is_none() {
             return Ok(context.wait_for_signal("release", RELEASE_SIGNAL));
@@ -579,7 +579,7 @@ impl FlowRuntime for TwoApprovalRuntime {
         })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal workflow does not execute steps")
     }
 }
@@ -628,7 +628,7 @@ impl FlowRuntime for SignalWaitDriftRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let signal_name = if self.drift.load(Ordering::SeqCst) {
             RELEASE_SIGNAL
         } else {
@@ -639,7 +639,7 @@ impl FlowRuntime for SignalWaitDriftRuntime {
             .wait_for_signal("approval", signal_name))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal workflow does not execute steps")
     }
 }
@@ -677,7 +677,7 @@ impl FlowRuntime for UnsafeContinuationRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.signal_payload("release").is_none() {
             return Ok(context.wait_for_signal("release", RELEASE_SIGNAL));
@@ -685,7 +685,7 @@ impl FlowRuntime for UnsafeContinuationRuntime {
         Ok(context.continue_as_new(json!({})))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal workflow does not execute steps")
     }
 }
@@ -732,7 +732,7 @@ impl FlowRuntime for SignalBesideOpenWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.signal_payload("approval").is_some() {
             return Ok(context.complete(json!("approved")));
@@ -747,14 +747,14 @@ impl FlowRuntime for SignalBesideOpenWaitRuntime {
         Ok(context.wait_until("pause", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal-beside-wait runtime does not schedule steps")
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -815,7 +815,7 @@ impl CrashAfterSignalWaitCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterSignalWaitCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -824,7 +824,7 @@ impl FlowEventStore for CrashAfterSignalWaitCompletedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -844,11 +844,11 @@ impl FlowEventStore for CrashAfterSignalWaitCompletedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -892,7 +892,7 @@ async fn signal_wait_completed_recovery_wakes_via_drive_while_unscoped_timer_is_
         mid.signal_waits["approval"].status,
         SignalWaitStatus::Completed
     );
-    assert_eq!(mid.waits["pause"].status, a3s_flow::WaitStatus::Waiting);
+    assert_eq!(mid.waits["pause"].status, aster_flow::WaitStatus::Waiting);
 
     let recovered = engine.drive("signal-wait-completed-drive").await.unwrap();
     assert_eq!(
@@ -910,7 +910,7 @@ impl FlowRuntime for BufferedSignalBesideOpenWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.signal_payload("approval").is_some() {
             return Ok(context.complete(json!("approved")));
@@ -934,7 +934,7 @@ impl FlowRuntime for BufferedSignalBesideOpenWaitRuntime {
         Ok(context.wait_until("pause", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("buffered-signal runtime does not schedule steps")
     }
 }
@@ -955,7 +955,7 @@ impl CrashAfterSignalReceivedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterSignalReceivedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -964,7 +964,7 @@ impl FlowEventStore for CrashAfterSignalReceivedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -979,11 +979,11 @@ impl FlowEventStore for CrashAfterSignalReceivedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -1018,7 +1018,7 @@ async fn signal_received_recovery_wakes_via_drive_while_unscoped_timer_is_open()
         .iter()
         .any(|signal| signal.signal_id == "delivery-1"));
     assert!(mid.signal_waits.is_empty());
-    assert_eq!(mid.waits["pause"].status, a3s_flow::WaitStatus::Waiting);
+    assert_eq!(mid.waits["pause"].status, aster_flow::WaitStatus::Waiting);
 
     let recovered = engine.drive("signal-received-drive").await.unwrap();
     assert_eq!(

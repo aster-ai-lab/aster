@@ -35,10 +35,10 @@ describe('anchored popup motion', () => {
       expect(source, path).not.toMatch(/transform:\s+(?!none\b)|filter:/)
     }
     const motion = readFileSync(sources[0], 'utf8')
-    expect(motion).toContain(".a3s-popup-rise[data-state='closed']")
-    expect(motion).toContain('a3s-popup-leave-below 200ms')
-    expect(motion).toContain('a3s-drawer-in 160ms')
-    expect(motion).toContain('a3s-drawer-out 200ms')
+    expect(motion).toContain(".aster-popup-rise[data-state='closed']")
+    expect(motion).toContain('aster-popup-leave-below 200ms')
+    expect(motion).toContain('aster-drawer-in 160ms')
+    expect(motion).toContain('aster-drawer-out 200ms')
   })
 
   it('shows a menu item when the menu is open', () => {

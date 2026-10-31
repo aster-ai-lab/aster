@@ -2,8 +2,8 @@
 
 use std::sync::Arc;
 
-use a3s_box_core::pty::PtyRequest;
-use a3s_box_core::{
+use aster_box_core::pty::PtyRequest;
+use aster_box_core::{
     BoxError, ExecEvent, ExecOutput, ExecRequest, ExecutionGeneration, ExecutionId,
     ExecutionManagerError, ExecutionManagerResult, ExecutionProcess, ExecutionProcessInput,
     ExecutionProcessSignal, ExecutionProcessStream, ExecutionSessionManager, FileRequest,
@@ -374,7 +374,7 @@ fn validate_microvm_exec_request_id(request: &ExecRequest) -> ExecutionManagerRe
                 || request_id.contains('\0') =>
         {
             Err(ExecutionManagerError::InvalidRequest(
-                "A3S MicroVM exec request ID is invalid".to_string(),
+                "Aster MicroVM exec request ID is invalid".to_string(),
             ))
         }
         _ => Ok(()),

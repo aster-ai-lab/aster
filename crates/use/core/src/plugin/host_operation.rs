@@ -11,8 +11,8 @@ use super::{
     PluginPackageId,
 };
 
-pub const PLUGIN_HOST_APPLY_REQUEST_SCHEMA: &str = "a3s.use.plugin-host-apply-request.v1";
-pub const PLUGIN_HOST_APPLY_RESULT_SCHEMA: &str = "a3s.use.plugin-host-apply-result.v1";
+pub const PLUGIN_HOST_APPLY_REQUEST_SCHEMA: &str = "aster.use.plugin-host-apply-request.v1";
+pub const PLUGIN_HOST_APPLY_RESULT_SCHEMA: &str = "aster.use.plugin-host-apply-result.v1";
 
 const APPLY_REQUEST_ERROR: &str = "use.plugin.host_apply_request_invalid";
 const APPLY_RESULT_ERROR: &str = "use.plugin.host_apply_result_invalid";

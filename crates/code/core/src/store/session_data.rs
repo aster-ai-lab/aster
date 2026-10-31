@@ -237,7 +237,7 @@ pub struct SessionData {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub durable_memory_binding: Option<crate::durable_memory::DurableMemoryBindingV1>,
 
-    /// Exact A3S Use package generation visible to the next Run.
+    /// Exact Aster Use package generation visible to the next Run.
     ///
     /// The provider/lease is intentionally not serialized. A resume host must
     /// inject a provider with this byte-equivalent binding; Code never resolves

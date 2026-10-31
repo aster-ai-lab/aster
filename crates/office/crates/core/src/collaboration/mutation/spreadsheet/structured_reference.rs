@@ -4,7 +4,7 @@
 
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::Value as JsonValue;
 use yrs::{Any, Map, Out, ReadTxn, Transact};
 

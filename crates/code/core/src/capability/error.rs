@@ -30,7 +30,7 @@ pub enum CapabilitySetError {
     #[error("Capability source '{source_id}' was contributed more than once")]
     DuplicateSource { source_id: String },
     #[error(
-        "A capability set mixes A3S Use cursor identities (generation {expected_generation} vs {actual_generation}, capability revision mismatch: {revision_mismatch}, Registry revision mismatch: {registry_revision_mismatch}, publication origin mismatch: {origin_mismatch})"
+        "A capability set mixes Aster Use cursor identities (generation {expected_generation} vs {actual_generation}, capability revision mismatch: {revision_mismatch}, Registry revision mismatch: {registry_revision_mismatch}, publication origin mismatch: {origin_mismatch})"
     )]
     MixedUseGeneration {
         expected_generation: u64,

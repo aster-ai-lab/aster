@@ -12,10 +12,10 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 use thiserror::Error;
 
-pub const CORE_IDENTITY_SCHEMA_V1: &str = "a3s.code.core-identity.v1";
-pub const CORE_EVENT_IDENTITY_SCHEMA_V1: &str = "a3s.code.core-event-identity.v1";
-pub const CORE_EVENT_PAYLOAD_DIGEST_DOMAIN_V1: &str = "a3s.code.core-event.payload.v1";
-pub const CORE_EVENT_IDENTITY_DIGEST_DOMAIN_V1: &str = "a3s.code.core-event.identity.v1";
+pub const CORE_IDENTITY_SCHEMA_V1: &str = "aster.code.core-identity.v1";
+pub const CORE_EVENT_IDENTITY_SCHEMA_V1: &str = "aster.code.core-event-identity.v1";
+pub const CORE_EVENT_PAYLOAD_DIGEST_DOMAIN_V1: &str = "aster.code.core-event.payload.v1";
+pub const CORE_EVENT_IDENTITY_DIGEST_DOMAIN_V1: &str = "aster.code.core-event.identity.v1";
 pub const CORE_IDENTITY_MAX_ID_BYTES: usize = 256;
 pub const CORE_IDENTITY_MAX_EVENT_TYPE_BYTES: usize = 128;
 pub const CORE_IDENTITY_MAX_PAYLOAD_BYTES: usize = 4 * 1024 * 1024;

@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
-use a3s_use_core::{
+use aster_use_core::{
     LockedPluginPackage, PlanScope, PluginDesiredState, PluginHostPackageState,
     PluginObservedState, PluginOperationConfirmation, PluginOperationPlan,
     PluginOperationPlanEnvelope, PluginPackageId, UseError, UseResult,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionLifecycleIdentity, ExtensionRegistrySnapshot, InstalledExtension,
     EXTENSION_RECEIPT_SCHEMA_VERSION,
 };
@@ -30,8 +30,8 @@ use super::{
     installation_mutation_busy, package_manager_error, plugin_operation_action_name, PackageManager,
 };
 
-pub const PACKAGE_ENABLEMENT_REQUEST_SCHEMA: &str = "a3s.use.package-enablement-request.v1";
-pub const PACKAGE_ENABLEMENT_RESULT_SCHEMA: &str = "a3s.use.package-enablement-result.v1";
+pub const PACKAGE_ENABLEMENT_REQUEST_SCHEMA: &str = "aster.use.package-enablement-request.v1";
+pub const PACKAGE_ENABLEMENT_RESULT_SCHEMA: &str = "aster.use.package-enablement-result.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -250,9 +250,9 @@ impl PackageManager {
             )
         })?;
         let expected_action = if request.enabled {
-            a3s_use_core::PluginOperationAction::Enable
+            aster_use_core::PluginOperationAction::Enable
         } else {
-            a3s_use_core::PluginOperationAction::Disable
+            aster_use_core::PluginOperationAction::Disable
         };
         if reviewed_plan.plan.operation_id != request.operation_id
             || reviewed_plan.plan.package_id != request.package_id.as_str()

@@ -1,12 +1,12 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::{
+use aster_use_core::{
     LockedPluginPackage, PlanAuthority, PlanPackageChangeKind, PlanScope, PluginDesiredState,
     PluginHostPackageState, PluginOperationAction, PluginOperationPlan, PluginOperationPlanBinding,
     PluginOperationPlanDraft, PluginOperationPlanEnvelope, PluginPlanningBundle,
     PluginWorkspaceGrantSnapshot, UseError, UseResult, PLUGIN_OPERATION_PLAN_SCHEMA_V4,
 };
-use a3s_use_extension::ExtensionManifest;
+use aster_use_extension::ExtensionManifest;
 use olpc_cjson::CanonicalFormatter;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -20,7 +20,7 @@ use super::plan::{
 };
 use super::{package_manager_error, PackageAuthorizationProvider, PackageManager};
 
-pub const PACKAGE_ENABLEMENT_PLAN_RESULT_SCHEMA: &str = "a3s.use.package-enablement-plan-result.v1";
+pub const PACKAGE_ENABLEMENT_PLAN_RESULT_SCHEMA: &str = "aster.use.package-enablement-plan-result.v1";
 
 /// Provider-neutral evidence for one exact installed enablement transition.
 ///
@@ -38,7 +38,7 @@ pub struct PackageEnablementDraft {
     pub grant_snapshot: PluginWorkspaceGrantSnapshot,
     pub planning_bundles: BTreeMap<String, PluginPlanningBundle>,
     pub installed_generations: BTreeMap<String, u64>,
-    selected_surfaces: Vec<a3s_use_core::PluginSurfaceRef>,
+    selected_surfaces: Vec<aster_use_core::PluginSurfaceRef>,
     package: LockedPluginPackage,
     manifest: ExtensionManifest,
     receipt_digest: String,

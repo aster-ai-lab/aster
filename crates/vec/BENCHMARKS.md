@@ -9,7 +9,7 @@ concurrency levels.
 Environment for the 2026-08-30 and 2026-08-31 measurements: Apple M5, 16 GiB
 memory, Darwin arm64, Rust/Cargo 1.98.0.
 
-## First-principles a3s-vec ↔ zvec comparison (current)
+## First-principles aster-vec ↔ zvec comparison (current)
 
 Protocol: [`docs/scale-compare-protocol.md`](docs/scale-compare-protocol.md).
 Runner: `scripts/run_fp_compare.sh`. Companion harnesses:
@@ -25,14 +25,14 @@ insert, stay historical and are not a split of this run.
 | Item | Value |
 | --- | --- |
 | Host | Apple M5 Max, macOS arm64 |
-| a3s-vec | `0.1.8` (proof measured on the `0.1.7` ranking code), `RAYON_NUM_THREADS=1` |
+| aster-vec | `0.1.8` (proof measured on the `0.1.7` ranking code), `RAYON_NUM_THREADS=1` |
 | zvec | `0.7.0`, `IndexOption(concurrency=1)`, `init(query_threads=1)`, `is_using_refiner=False` |
 | Fixture | Cosine, top-10, 32 queries × 3 rounds, batch 512, HNSW `m=16`, `ef_construction=96`, `ef=64` |
 | Processes | 2,000×32 and 100,000×128: three. 1,000,000×128: one |
 | Stamp | 2026-09-23 |
 
 Asymmetries that remain material: portable Rust crate vs native C++ wheel,
-a3s exact `f64` re-rank vs zvec without refiner, and a3s Flat
+aster exact `f64` re-rank vs zvec without refiner, and aster Flat
 `rebuild_index` time (reported in `index_build_ms`) vs zvec Flat `0`.
 Insert time still includes batch insert and the final flush.
 
@@ -40,31 +40,31 @@ Insert time still includes batch insert and the final flush.
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 28.220 | 0.721 | 28.975 | 11.541 | 13.167 | 16.167 | 82,341.59 | 1.0000 |
+| aster-vec flat | 28.220 | 0.721 | 28.975 | 11.541 | 13.167 | 16.167 | 82,341.59 | 1.0000 |
 | zvec 0.7.0 flat | 28.817 | 0.000 | 28.817 | 53.375 | 74.833 | 93.333 | 17,390.65 | 1.0000 |
-| a3s-vec HNSW | 28.220 | 66.201 | 94.422 | 29.250 | 34.875 | 36.667 | 32,757.98 | 1.0000 |
+| aster-vec HNSW | 28.220 | 66.201 | 94.422 | 29.250 | 34.875 | 36.667 | 32,757.98 | 1.0000 |
 | zvec 0.7.0 HNSW | 28.817 | 67.831 | 96.639 | 57.625 | 69.917 | 85.625 | 16,688.03 | 1.0000 |
 
 ### 100,000 × 128 (three-process median)
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 345.696 | 48.013 | 393.709 | 770.416 | 817.833 | 854.458 | 1,287.79 | 1.0000 |
+| aster-vec flat | 345.696 | 48.013 | 393.709 | 770.416 | 817.833 | 854.458 | 1,287.79 | 1.0000 |
 | zvec 0.7.0 flat | 964.416 | 0.000 | 964.416 | 1,694.083 | 1,910.208 | 2,332.167 | 583.18 | 1.0000 |
-| a3s-vec HNSW | 345.696 | 12,405.774 | 12,750.889 | 98.291 | 127.667 | 145.000 | 9,842.96 | 0.6000 |
+| aster-vec HNSW | 345.696 | 12,405.774 | 12,750.889 | 98.291 | 127.667 | 145.000 | 9,842.96 | 0.6000 |
 | zvec 0.7.0 HNSW | 964.416 | 45,275.918 | 46,240.335 | 136.333 | 181.542 | 226.084 | 6,928.93 | 0.5813 |
 
 ### 1,000,000 × 128 (one process)
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 3,332.440 | 533.593 | 3,866.032 | 7,538.708 | 7,708.417 | 8,454.000 | 132.47 | 1.0000 |
+| aster-vec flat | 3,332.440 | 533.593 | 3,866.032 | 7,538.708 | 7,708.417 | 8,454.000 | 132.47 | 1.0000 |
 | zvec 0.7.0 flat | 9,999.630 | 0.000 | 9,999.630 | 23,638.417 | 24,077.792 | 24,581.792 | 42.30 | 1.0000 |
-| a3s-vec HNSW | 3,332.440 | 201,843.549 | 205,175.989 | 135.666 | 220.583 | 279.292 | 6,777.27 | 0.3063 |
+| aster-vec HNSW | 3,332.440 | 201,843.549 | 205,175.989 | 135.666 | 220.583 | 279.292 | 6,777.27 | 0.3063 |
 | zvec 0.7.0 HNSW | 9,999.630 | 558,963.467 | 568,963.097 | 180.292 | 230.584 | 249.667 | 5,448.29 | 0.2594 |
 
-On every fixture in this run, a3s-vec insert and one-worker Flat p50 are lower
-than zvec, and a3s-vec HNSW build, HNSW p50, and Recall@10 are not worse.
+On every fixture in this run, aster-vec insert and one-worker Flat p50 are lower
+than zvec, and aster-vec HNSW build, HNSW p50, and Recall@10 are not worse.
 Public scores stay `f64` from exact re-rank. Default `ef` stays 64.
 
 ## Historical fairness harness (2026-09-20)
@@ -77,7 +77,7 @@ The rows below are the previous same-host record. The million-document insert
 | Item | Value |
 | --- | --- |
 | Host | Apple M5 Max, 64 GiB, macOS 26.6.2 arm64 |
-| a3s-vec | `0.1.3` on Apple M5 Max, `RAYON_NUM_THREADS=1` |
+| aster-vec | `0.1.3` on Apple M5 Max, `RAYON_NUM_THREADS=1` |
 | zvec | `0.7.0` macOS arm64 wheel, Python 3.13.15, `IndexOption(concurrency=1)`, `init(query_threads=1)`, `is_using_refiner=False` |
 | Fixture | Cosine, top-10, 32 queries × 3 rounds, batch 512, HNSW `m=16`, `ef_construction=96`, `ef=64` |
 | Artifacts | `target/fp-compare-20260920/{small,scale}/` (local; not committed) |
@@ -87,24 +87,24 @@ The rows below are the previous same-host record. The million-document insert
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 1,278.853 | 52.696 | 1,331.549 | 3,550.375 | 3,895.000 | 4,226.208 | 277.31 | 1.0000 |
+| aster-vec flat | 1,278.853 | 52.696 | 1,331.549 | 3,550.375 | 3,895.000 | 4,226.208 | 277.31 | 1.0000 |
 | zvec 0.7.0 flat | 1,036.483 | 0.000 | 1,036.483 | 1,841.084 | 2,285.334 | 2,315.667 | 534.10 | 1.0000 |
-| a3s-vec HNSW | 1,278.853 | 26,341.207 | 27,733.976 | 103.417 | 139.917 | 154.458 | 9,255.35 | 0.6000 |
+| aster-vec HNSW | 1,278.853 | 26,341.207 | 27,733.976 | 103.417 | 139.917 | 154.458 | 9,255.35 | 0.6000 |
 | zvec 0.7.0 HNSW | 1,036.483 | 46,167.887 | 47,194.801 | 149.000 | 201.584 | 210.583 | 6,507.28 | 0.5813 |
 
 Relative medians (same controls):
 
-- HNSW index build: a3s-vec ≈ **1.75×** shorter than zvec.
-- HNSW query p50: a3s-vec ≈ **1.44×** lower than zvec, with exact re-ranking kept.
-- HNSW Recall@10: a3s-vec stable **0.6000**; zvec **0.5656–0.6031** (median 0.5813).
-- Flat query under one Rayon worker: a3s-vec ≈ **1.93×** higher p50 than zvec
+- HNSW index build: aster-vec ≈ **1.75×** shorter than zvec.
+- HNSW query p50: aster-vec ≈ **1.44×** lower than zvec, with exact re-ranking kept.
+- HNSW Recall@10: aster-vec stable **0.6000**; zvec **0.5656–0.6031** (median 0.5813).
+- Flat query under one Rayon worker: aster-vec ≈ **1.93×** higher p50 than zvec
   (`f64` public score / exact scan vs native `f32` path). Insert is about
-  **1.23×** longer on a3s-vec in this run.
+  **1.23×** longer on aster-vec in this run.
 
 ### Product-default Flat (not the fairness harness)
 
 Exact Flat scan is embarrassingly parallel. With Rayon **unset** (host
-reports 18 logical CPUs) on the same 100k×128 fixture, three-process a3s-vec
+reports 18 logical CPUs) on the same 100k×128 fixture, three-process aster-vec
 Flat median p50 is **650.584 µs** (Recall@10 = 1.0) versus zvec’s one-worker
 Flat median **1,841.084 µs** — about **2.83×** lower p50. Do **not** mix this
 row into the one-worker HNSW fairness table.
@@ -117,12 +117,12 @@ One process per engine. Not a three-process median. The insert column
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 77,339.081 | 651.834 | 77,990.915 | 42,871.000 | 46,497.917 | 48,390.625 | 23.37 | 1.0000 |
+| aster-vec flat | 77,339.081 | 651.834 | 77,990.915 | 42,871.000 | 46,497.917 | 48,390.625 | 23.37 | 1.0000 |
 | zvec 0.7.0 flat | 13,507.130 | 0.000 | 13,507.130 | 26,201.459 | 28,228.583 | 29,535.583 | 37.94 | 1.0000 |
-| a3s-vec HNSW | 77,339.081 | 422,410.953 | 499,750.034 | 158.750 | 238.708 | 279.375 | 5,953.86 | 0.3063 |
+| aster-vec HNSW | 77,339.081 | 422,410.953 | 499,750.034 | 158.750 | 238.708 | 279.375 | 5,953.86 | 0.3063 |
 | zvec 0.7.0 HNSW | 13,507.130 | 627,723.432 | 641,230.562 | 231.417 | 283.458 | 334.167 | 4,243.70 | 0.2437 |
 
-Directional: a3s HNSW builds and queries faster; zvec Flat insert/query is
+Directional: aster HNSW builds and queries faster; zvec Flat insert/query is
 faster under one worker. Protocol-default Recall@10 is low on both engines—
 do not quote it as an accuracy SLO without raising `ef` / `ef_construction`.
 
@@ -130,20 +130,20 @@ do not quote it as an accuracy SLO without raising `ef` / `ef_construction`.
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 30.947 | 0.718 | 31.673 | 19.667 | 23.542 | 36.167 | 48,104.22 | 1.0000 |
+| aster-vec flat | 30.947 | 0.718 | 31.673 | 19.667 | 23.542 | 36.167 | 48,104.22 | 1.0000 |
 | zvec 0.7.0 flat | 33.379 | 0.000 | 33.379 | 55.750 | 111.791 | 200.458 | 15,257.27 | 1.0000 |
-| a3s-vec HNSW | 30.947 | 94.657 | 124.797 | 30.709 | 37.833 | 40.542 | 31,102.77 | 1.0000 |
+| aster-vec HNSW | 30.947 | 94.657 | 124.797 | 30.709 | 37.833 | 40.542 | 31,102.77 | 1.0000 |
 | zvec 0.7.0 HNSW | 33.379 | 69.722 | 101.882 | 57.333 | 113.125 | 163.250 | 15,231.55 | 1.0000 |
 
-In that run, zvec HNSW built faster while a3s-vec HNSW query p50 was lower.
+In that run, zvec HNSW built faster while aster-vec HNSW query p50 was lower.
 Recall@10 was 1.0 for both. The current section above replaces this row.
 
 ## Historical: Xeon smoke comparison (2026-09-03)
 
 This is a supplemental, same-host API comparison refreshed on 2026-09-03. It
 is not the release gate and is not a substitute for a VectorDBBench run at
-production scale. The a3s-vec side uses its Rust API and the zvec side uses
-the zvec 0.7.0 Python/native binding. Unless noted otherwise, a3s-vec is built
+production scale. The aster-vec side uses its Rust API and the zvec side uses
+the zvec 0.7.0 Python/native binding. Unless noted otherwise, aster-vec is built
 with Cargo's portable default target features, while the zvec wheel contains
 its release native C++ backend. That shipped-portability versus native-wheel
 asymmetry is material for CPU-bound distance work, so these rows are a
@@ -162,27 +162,27 @@ than an SLO.
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 33.564 | 0 | 33.564 | 88.6 | 93.7 | 136.3 | 11,048.32 | 1.0000 |
+| aster-vec flat | 33.564 | 0 | 33.564 | 88.6 | 93.7 | 136.3 | 11,048.32 | 1.0000 |
 | zvec 0.7.0 flat | 58.135 | 0 | 58.135 | 161.1 | 275.7 | 435.5 | 5,394.47 | 1.0000 |
-| a3s-vec HNSW (`m=16`, `ef_construction=96`, `ef=64`) | 33.564 | 394.229 | 429.689 | 187.4 | 213.9 | 264.5 | 5,178.44 | 1.0000 |
+| aster-vec HNSW (`m=16`, `ef_construction=96`, `ef=64`) | 33.564 | 394.229 | 429.689 | 187.4 | 213.9 | 264.5 | 5,178.44 | 1.0000 |
 | zvec 0.7.0 HNSW (same nominal controls) | 58.135 | 129.571 | 189.094 | 159.6 | 289.5 | 436.0 | 5,284.57 | 1.0000 |
 
-On this current small fixture, a3s-vec's median Flat query p50 is about 1.8x
+On this current small fixture, aster-vec's median Flat query p50 is about 1.8x
 lower, while zvec's HNSW query p50 is about 1.2x lower. zvec's HNSW
 index-build time is about 3.0x lower and its total build time about 2.3x
-lower. Recall is identical at this scale. The a3s-vec rows include the
+lower. Recall is identical at this scale. The aster-vec rows include the
 borrowed exact-score kernel and one-query-norm path added after the earlier
 2026-09-02 table is intentionally superseded: it
 used implicit zvec index concurrency and therefore did not enforce the
 one-worker comparison. The two engines also have different persistence and
 index lifecycle semantics, and process-to-process timing variance remains
-material. The a3s-vec executor always exact-reranks authoritative vectors as
+material. The aster-vec executor always exact-reranks authoritative vectors as
 a correctness invariant. The zvec harness sets `is_using_refiner=False`; zvec's
 optional refiner requires a separate flat reference index and is not enabled
 by this fixture. Consequently the HNSW rows are not a strict same-refiner
 comparison and should be treated as directional. Flat is closer to an
 exact-vs-exact comparison, but its numeric kernels and storage layouts still
-differ. The a3s-vec release `ann_recall` gate uses its authoritative HNSW
+differ. The aster-vec release `ann_recall` gate uses its authoritative HNSW
 refiner; this cross-project smoke run must not be read as a replacement for
 the release-gate numbers above.
 
@@ -203,10 +203,10 @@ documents x 128 dimensions, 32 queries, three measured rounds, batches of
 512, one query/build worker, cosine distance, and HNSW `m=16`,
 `ef_construction=96`, `ef=64`. zvec post-optimize and its optional
 `is_using_refiner` path were disabled. The zvec harness passes
-`IndexOption(concurrency=1)`; the a3s-vec harness uses `RAYON_NUM_THREADS=1`.
-The a3s-vec executor still exact-reranks authoritative vectors after
+`IndexOption(concurrency=1)`; the aster-vec harness uses `RAYON_NUM_THREADS=1`.
+The aster-vec executor still exact-reranks authoritative vectors after
 candidate generation, so HNSW latency is directional rather than a strict
-same-refiner comparison. The a3s-vec run uses manual durability;
+same-refiner comparison. The aster-vec run uses manual durability;
 `insert_ms` includes the initial insert-plus-flush/checkpoint boundary in
 both harnesses, while index lifecycle timings are reported separately.
 Percentiles are based on 96 samples per process. zvec's HNSW graph is not
@@ -216,9 +216,9 @@ SLOs.
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 2,767.024 | 0 | 2,767.024 | 34,581.500 | 36,223.000 | 37,494.600 | 28.94 | 1.0000 |
+| aster-vec flat | 2,767.024 | 0 | 2,767.024 | 34,581.500 | 36,223.000 | 37,494.600 | 28.94 | 1.0000 |
 | zvec 0.7.0 flat | 2,720.001 | 0 | 2,720.001 | 6,206.500 | 6,769.200 | 9,067.300 | 159.96 | 1.0000 |
-| a3s-vec HNSW | 2,767.024 | 185,429.317 | 188,288.828 | 1,725.400 | 2,499.600 | 2,666.600 | 550.80 | 0.6000 |
+| aster-vec HNSW | 2,767.024 | 185,429.317 | 188,288.828 | 1,725.400 | 2,499.600 | 2,666.600 | 550.80 | 0.6000 |
 | zvec 0.7.0 HNSW | 2,720.001 | 82,119.333 | 86,154.840 | 340.300 | 464.400 | 571.100 | 2,722.18 | 0.5719 |
 
 ### HNSW candidate refresh (2026-09-20, pre-tag)
@@ -228,16 +228,16 @@ and `f64` public scores. Navigation uses the packed `f32` slab, cosine-norm
 cache, heap-skip, visited TLS, and construction-time edge-score reuse that
 preserves the rescored neighbor lists. Values below are three-process medians
 on the same Xeon w5-2445 host and controls as the 2026-09-03 table. zvec
-Recall@10 ranged 0.5625–0.6219; a3s-vec was 0.6000 in every process.
+Recall@10 ranged 0.5625–0.6219; aster-vec was 0.6000 in every process.
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec 0.1.1 candidate HNSW | 2,913.047 | 49,316.543 | 52,364.205 | 355.000 | 415.700 | 486.900 | 2,736.66 | 0.6000 |
+| aster-vec 0.1.1 candidate HNSW | 2,913.047 | 49,316.543 | 52,364.205 | 355.000 | 415.700 | 486.900 | 2,736.66 | 0.6000 |
 | zvec 0.7.0 HNSW (same day) | 2,490.961 | 70,919.508 | 73,410.469 | 348.500 | 461.300 | 718.100 | 2,759.95 | 0.5875 |
 
 Relative to same-day zvec: index build is about 1.44× shorter, Recall@10 is
 higher, and query p50 is within about 2% (noise). Relative to the 2026-09-03
-a3s-vec HNSW row above, query p50 falls from 1,725.4 µs to 355.0 µs (−79.4%)
+aster-vec HNSW row above, query p50 falls from 1,725.4 µs to 355.0 µs (−79.4%)
 and index build from 185,429 ms to 49,317 ms (−73.4%) without lowering `ef`
 or dropping exact re-ranking.
 
@@ -245,21 +245,21 @@ The matching 2,000 × 32 three-process medians on the same day:
 
 | Engine / mode | Index build (ms) | p50 (µs) | Recall@10 |
 | --- | ---: | ---: | ---: |
-| a3s-vec 0.1.1 candidate HNSW | 145.869 | 62.800 | 1.0000 |
+| aster-vec 0.1.1 candidate HNSW | 145.869 | 62.800 | 1.0000 |
 | zvec 0.7.0 HNSW | 123.652 | 206.800 | 1.0000 |
 
 At this corpus size and configuration, zvec's median flat query p50 is about
 5.6x lower and its historical 2026-09-03 HNSW query p50 about 5.1x lower than
-the then-current a3s-vec row. The 2026-09-20 candidate closes the HNSW query
+the then-current aster-vec row. The 2026-09-20 candidate closes the HNSW query
 gap to noise while remaining faster to build. The
 three zvec HNSW processes on 2026-09-03 produced Recall@10 values from 0.5625 to 0.5781
-(median 0.5719); a3s-vec produced 0.6000 in all three, or 2.81 percentage
+(median 0.5719); aster-vec produced 0.6000 in all three, or 2.81 percentage
 points higher than the zvec median at this parameter point. Both recall
 values are too low to serve as a production target without increasing
 `ef`. These results do not establish a universal engine ranking: they are
 one host, one corpus, one worker, one compiler/runtime pairing, and one
 parameter point. The HNSW build
-lifecycle also differs: a3s-vec maintains and checkpoints its graph during
+lifecycle also differs: aster-vec maintains and checkpoints its graph during
 the index-creation transaction, while the zvec call has different persistence
 and post-insert lifecycle semantics. Repeat the run with identical durability,
 optimize, and recall targets before using it for a capacity decision.
@@ -285,12 +285,12 @@ three independent processes.
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 30.022 | 0.000 | 30.022 | 38.708 | 64.125 | 154.541 | 23,376.39 | 1.0000 |
+| aster-vec flat | 30.022 | 0.000 | 30.022 | 38.708 | 64.125 | 154.541 | 23,376.39 | 1.0000 |
 | zvec 0.7.0 flat | 28.668 | 0.000 | 28.668 | 54.750 | 84.708 | 114.500 | 16,679.34 | 1.0000 |
-| a3s-vec HNSW | 30.022 | 93.073 | 123.095 | 35.667 | 42.042 | 45.791 | 27,197.71 | 1.0000 |
+| aster-vec HNSW | 30.022 | 93.073 | 123.095 | 35.667 | 42.042 | 45.791 | 27,197.71 | 1.0000 |
 | zvec 0.7.0 HNSW | 28.668 | 66.635 | 95.574 | 52.083 | 66.917 | 85.000 | 18,165.05 | 1.0000 |
 
-On this small fixture a3s-vec HNSW query p50 is about **1.46×** lower than
+On this small fixture aster-vec HNSW query p50 is about **1.46×** lower than
 zvec; zvec HNSW index build is about **1.40×** shorter. Recall@10 is 1.0000
 for both.
 
@@ -298,12 +298,12 @@ for both.
 
 | Engine / mode | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| a3s-vec flat | 1,007.213 | 0.000 | 1,007.213 | 9,283.875 | 10,328.542 | 11,898.375 | 107.82 | 1.0000 |
+| aster-vec flat | 1,007.213 | 0.000 | 1,007.213 | 9,283.875 | 10,328.542 | 11,898.375 | 107.82 | 1.0000 |
 | zvec 0.7.0 flat | 1,058.536 | 0.000 | 1,058.536 | 2,019.750 | 2,447.375 | 2,775.750 | 470.02 | 1.0000 |
-| a3s-vec HNSW | 1,007.213 | 33,608.264 | 34,614.808 | 232.250 | 338.792 | 390.541 | 4,055.37 | 0.6000 |
+| aster-vec HNSW | 1,007.213 | 33,608.264 | 34,614.808 | 232.250 | 338.792 | 390.541 | 4,055.37 | 0.6000 |
 | zvec 0.7.0 HNSW | 1,058.536 | 49,333.605 | 50,415.331 | 152.083 | 208.667 | 228.333 | 6,250.29 | 0.5750 |
 
-On this host a3s-vec HNSW builds about **1.47×** faster than zvec and holds
+On this host aster-vec HNSW builds about **1.47×** faster than zvec and holds
 Recall@10 0.6000 in every process (zvec 0.5719–0.6062, median 0.5750). HNSW
 query p50 remains about **1.53×** higher than zvec while retaining exact
 re-ranking. Flat exact `f64` stays slower than zvec's native path (~4.6×
@@ -315,7 +315,7 @@ Intel is unsupported.
 
 Exact Flat scan is embarrassingly parallel. With the default Rayon pool
 (host core count) and the same 100k×128 fixture, three-process medians show
-a3s-vec Flat query p50 **below** zvec Flat while keeping public `f64`
+aster-vec Flat query p50 **below** zvec Flat while keeping public `f64`
 re-score and Recall@10 = 1.0. Pinning `RAYON_NUM_THREADS=1` restores the
 prior ~1.5–2× `f64`-vs-`f32` floor. Flat insert beats zvec either way.
 See README for the current product summary.
@@ -329,11 +329,11 @@ Three-process HNSW-only medians on the same host and controls:
 
 | Engine / mode | Index build (ms) | p50 (µs) | Recall@10 |
 | --- | ---: | ---: | ---: |
-| a3s-vec HNSW | 21,393.174 | 149.167 | 0.6000 |
+| aster-vec HNSW | 21,393.174 | 149.167 | 0.6000 |
 | zvec 0.7.0 HNSW | 49,141.421 | 146.875 | 0.5938 |
 
 Relative to same-day zvec: index build about **2.30×** faster; query p50 within
-about **1.6%** (noise band on this host; a3s process p50s were 124–176 µs);
+about **1.6%** (noise band on this host; aster process p50s were 124–176 µs);
 Recall@10 still higher and stable at 0.6000.
 
 #### After ordinal exact re-rank (same day, HNSW-only interleaved)
@@ -346,7 +346,7 @@ interleaved HNSW-only medians on the same host and controls
 
 | Engine / mode | Index build (ms) | p50 (µs) | Recall@10 |
 | --- | ---: | ---: | ---: |
-| a3s-vec HNSW | 22,375.451 | 99.500 | 0.6000 |
+| aster-vec HNSW | 22,375.451 | 99.500 | 0.6000 |
 | zvec 0.7.0 HNSW | 50,761.445 | 146.000 | 0.5844 |
 
 Relative to same-day zvec: index build about **2.27×** faster; query p50 about
@@ -371,7 +371,7 @@ Windows x86_64 Intel Xeon w5-2445 host (128 GiB RAM), with 128 dimensions,
 HNSW `m=16`, `ef_construction=96`, `ef=64`. Values below are medians across
 the three runs; Recall@10 was 0.6000 in every run.
 
-| a3s-vec HNSW candidate | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
+| aster-vec HNSW candidate | Insert (ms) | Index build (ms) | Total build (ms) | p50 (µs) | p95 (µs) | p99 (µs) | QPS | Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Previous recorded revision | 2,767.024 | 185,429.317 | 188,288.828 | 1,725.400 | 2,499.600 | 2,666.600 | 550.80 | 0.6000 |
 | Qualified revision 13585ccd | 2,624.877 | 141,622.863 | 144,213.026 | 923.400 | 1,143.200 | 1,511.900 | 1,061.96 | 0.6000 |
@@ -382,12 +382,12 @@ median is still about 2.71x slower than the zvec 0.7.0 HNSW row above
 (340.300 µs), and its build median is about 1.72x longer than zvec
 (82,119.333 ms). The remaining gap is expected from the native zvec wheel's
 CPU-specialized implementation and different graph/storage lifecycle; this
-optimization narrows the A3S query gap without trading away the exact
+optimization narrows the Aster query gap without trading away the exact
 re-ranking or the measured Recall.
 
 To isolate compiler target selection from engine design, three additional Flat
 runs used the same host and fixture with `RUSTFLAGS="-C target-cpu=native"`.
-Their median p50 was 29,988.7 microseconds, 13.3% below the portable a3s-vec
+Their median p50 was 29,988.7 microseconds, 13.3% below the portable aster-vec
 row's 34,581.5 microseconds, but still 4.83x above zvec's 6,206.5 microseconds.
 Native code generation therefore explains part, not most, of the observed Flat
 gap. This control is diagnostic only and is not the portable release baseline.
@@ -395,13 +395,13 @@ gap. This control is diagnostic only and is not the portable release baseline.
 Run the Rust side at smoke or selected scale with:
 
 ```sh
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench scale_compare --quiet
-A3S_VEC_SCALE_DOCUMENTS=100000 \
-A3S_VEC_SCALE_DIMENSIONS=128 \
-A3S_VEC_SCALE_QUERIES=32 \
-A3S_VEC_SCALE_ROUNDS=3 \
-A3S_VEC_SCALE_BATCH_SIZE=512 \
-A3S_VEC_SCALE_MODE=both \
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench scale_compare --quiet
+ASTER_VEC_SCALE_DOCUMENTS=100000 \
+ASTER_VEC_SCALE_DIMENSIONS=128 \
+ASTER_VEC_SCALE_QUERIES=32 \
+ASTER_VEC_SCALE_ROUNDS=3 \
+ASTER_VEC_SCALE_BATCH_SIZE=512 \
+ASTER_VEC_SCALE_MODE=both \
 RAYON_NUM_THREADS=1 \
 cargo bench --locked --bench scale_compare --quiet
 ```
@@ -426,11 +426,11 @@ default `>` redirection in Windows PowerShell is UTF-16 and cannot be parsed by
 the Unix validator:
 
 ```powershell
-$env:A3S_VEC_BENCH_SCALE = "smoke"
+$env:ASTER_VEC_BENCH_SCALE = "smoke"
 $env:RAYON_NUM_THREADS = "1"
 cargo bench --locked --bench scale_compare --quiet |
   Set-Content -Encoding utf8 target/scale-compare.csv
-wsl bash -lc 'cd /mnt/d/code/a3s-vec && awk -F, -f .github/check_scale_compare.awk target/scale-compare.csv'
+wsl bash -lc 'cd /mnt/d/code/aster-vec && awk -F, -f .github/check_scale_compare.awk target/scale-compare.csv'
 ```
 
 The hosted Windows job uses Bash redirection and therefore already emits
@@ -438,7 +438,7 @@ UTF-8. The same capture rule applies to the feature, concurrent, and mixed
 workload CSVs when they are validated through WSL.
 
 The same validator accepts the zvec companion CSV (`engine` must be either
-`a3s-vec` or `zvec`), so both sides can be checked before a comparison is
+`aster-vec` or `zvec`), so both sides can be checked before a comparison is
 recorded.
 
 For scale context, zvec's published benchmark page evaluates Cohere 1M and
@@ -494,7 +494,7 @@ queries, and three rounds; CI uses the smaller smoke scale:
 
 ```sh
 cargo bench --locked --bench feature_matrix --features async
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench feature_matrix --features async
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench feature_matrix --features async
 ```
 
 The same CSV contract used by CI can be checked locally with
@@ -516,7 +516,7 @@ performance artifacts.
 
 ```sh
 cargo bench --locked --bench lifecycle_matrix
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench lifecycle_matrix
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench lifecycle_matrix
 ```
 
 A representative local Windows x86_64 smoke run (96 documents × 8 dimensions, two
@@ -552,7 +552,7 @@ The CI platform matrix runs the same smoke-scale feature, concurrent-reader,
 mixed-read/write, scale, and lifecycle benches on Linux x86_64, Linux arm64,
 Windows x86_64, macOS arm64, and macOS Intel. Each platform validates its five CSVs
 with the same AWK gates and uploads them as a revision-bound artifact named
-`a3s-vec-platform-performance-<platform>-<revision>`. This catches platform-
+`aster-vec-platform-performance-<platform>-<revision>`. This catches platform-
 specific regressions in latency, throughput, ANN recall, and mixed-workload
 revision/accounting behavior instead of treating a single Linux run as
 portable evidence.
@@ -564,7 +564,7 @@ intentionally small; the default-scale
 same-host measurements below remain the source for trend comparisons, and
 process RSS/allocator attribution still requires an OS-specific harness.
 
-The latest complete hosted run is [CI run 33772179017](https://github.com/A3S-Lab/Vec/actions/runs/33772179017)
+The latest complete hosted run is [CI run 33772179017](https://github.com/aster-ai-lab/Vec/actions/runs/33772179017)
 for revision `13585ccd3f956f6cb7d669b2ee6acc7096fca03d`. All ten jobs
 passed, including the versioned release-candidate package. The following compact
 extraction comes from its revision-bound platform artifacts. It uses the smoke
@@ -600,11 +600,11 @@ two rounds), requires Recall@10 >= 0.80, and validates the CSV with
 
 ```sh
 cargo bench --locked --bench concurrent_queries --quiet
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench concurrent_queries --quiet
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench concurrent_queries --quiet
 ```
 
-Set `A3S_VEC_CONCURRENCY` to a comma-separated positive worker list (for
-example, `1,2,4,8`) and use the `A3S_VEC_CONCURRENT_*` variables to select a
+Set `ASTER_VEC_CONCURRENCY` to a comma-separated positive worker list (for
+example, `1,2,4,8`) and use the `ASTER_VEC_CONCURRENT_*` variables to select a
 larger fixture. This is read-only query contention evidence. It does not claim
 mixed read/write behavior, process RSS, or a portable latency SLO.
 
@@ -620,12 +620,12 @@ CSV with `.github/check_mixed.awk`; both CI gates require Recall@10 >= 0.80.
 
 ```sh
 cargo bench --locked --bench mixed_workload --quiet
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench mixed_workload --quiet
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench mixed_workload --quiet
 ```
 
 The default fixture is 2,000 documents x 32 dimensions, 48 queries, five
-rounds, and 192 scalar updates. Set `A3S_VEC_MIXED_READERS` and the
-`A3S_VEC_MIXED_*` variables to repeat a larger or smaller deterministic run.
+rounds, and 192 scalar updates. Set `ASTER_VEC_MIXED_READERS` and the
+`ASTER_VEC_MIXED_*` variables to repeat a larger or smaller deterministic run.
 Logical accounted bytes are an engine-owned estimate, not process RSS; an
 allocator/process-memory result still requires an OS-specific external harness.
 
@@ -786,7 +786,7 @@ implementations now also accept inner product, cosine, and MIPS-L2; their
 metric-specific correctness and bounded-work evidence is in the public feature
 matrix and ANN contract tests. Every positioned or mmap row closes and reopens the
 collection read-only, asserts a validated cache hit and the requested backend,
-performs one untimed warmup, and then traverses the A3S-native sidecar. The
+performs one untimed warmup, and then traverses the Aster-native sidecar. The
 benchmark also asserts identical mapped and positioned result IDs and exact
 backend telemetry counts. PQ uses eight balanced chunks and up to 256 centroids
 per chunk. Open-time full-file validation and the mmap backend's full-copy setup
@@ -956,15 +956,15 @@ belongs to authoritative snapshot recovery and document normalization; the
 remaining differences approximate derived-index work, but small schema
 differences mean they are not a component profiler.
 
-The benchmark accepts positive `A3S_VEC_REOPEN_DOCUMENTS` and
-`A3S_VEC_REOPEN_ROUNDS` values. Setting
-`A3S_VEC_REOPEN_SCALAR_FTS_ONLY=1` skips the HNSW fixture, which permits larger
+The benchmark accepts positive `ASTER_VEC_REOPEN_DOCUMENTS` and
+`ASTER_VEC_REOPEN_ROUNDS` values. Setting
+`ASTER_VEC_REOPEN_SCALAR_FTS_ONLY=1` skips the HNSW fixture, which permits larger
 workspace-scale measurements without ANN construction dominating the run:
 
 ```sh
-A3S_VEC_REOPEN_DOCUMENTS=100000 \
-A3S_VEC_REOPEN_ROUNDS=5 \
-A3S_VEC_REOPEN_SCALAR_FTS_ONLY=1 \
+ASTER_VEC_REOPEN_DOCUMENTS=100000 \
+ASTER_VEC_REOPEN_ROUNDS=5 \
+ASTER_VEC_REOPEN_SCALAR_FTS_ONLY=1 \
 cargo bench --bench reopen_index
 ```
 
@@ -1356,8 +1356,8 @@ maintenance from per-write fsync latency.
 cargo bench --bench ngram_fts
 ```
 
-The benchmark accepts positive `A3S_VEC_NGRAM_DOCUMENTS` and
-`A3S_VEC_NGRAM_ROUNDS` values. The second of two consecutive default runs
+The benchmark accepts positive `ASTER_VEC_NGRAM_DOCUMENTS` and
+`ASTER_VEC_NGRAM_ROUNDS` values. The second of two consecutive default runs
 produced:
 
 | Query | Default operator | Candidates/query | Microseconds/query |
@@ -1403,8 +1403,8 @@ asserts identical result IDs and score bits between both collections.
 cargo bench --bench structured_fts
 ```
 
-Positive `A3S_VEC_STRUCTURED_FTS_DOCUMENTS` and
-`A3S_VEC_STRUCTURED_FTS_ROUNDS` values override the defaults. The second of two
+Positive `ASTER_VEC_STRUCTURED_FTS_DOCUMENTS` and
+`ASTER_VEC_STRUCTURED_FTS_ROUNDS` values override the defaults. The second of two
 consecutive default runs produced:
 
 | Query | Planner path | Candidates/query | Planner µs/query | Explicit scan µs/query |

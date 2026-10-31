@@ -1,8 +1,8 @@
 name: Check out pinned workspace submodules
-description: Check out the desktop and Power revisions pinned by the parent gitlinks.
+description: Check out the desktop revision pinned by the parent gitlink.
 inputs:
   token:
-    description: Read-only token for kense-labs/studio.
+    description: Read-only token for aster-ai-lab/studio.
     required: true
 runs:
   using: composite
@@ -13,7 +13,7 @@ runs:
         STUDIO_READ_TOKEN: ${{ inputs.token }}
       run: |
         if [[ -z "$STUDIO_READ_TOKEN" ]]; then
-          echo '::error::Configure STUDIO_READ_TOKEN with read access to kense-labs/studio.'
+          echo '::error::Configure STUDIO_READ_TOKEN with read access to aster-ai-lab/studio.'
           exit 1
         fi
     - name: Resolve pinned revision
@@ -24,19 +24,16 @@ runs:
         git config --global --add safe.directory "${GITHUB_WORKSPACE:?}"
         test "$(git -C "$GITHUB_WORKSPACE" ls-tree HEAD apps/studio | cut -d ' ' -f 1)" = 160000
         echo "sha=$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD:apps/studio)" >> "$GITHUB_OUTPUT"
-        test "$(git -C "$GITHUB_WORKSPACE" ls-tree HEAD crates/power | cut -d ' ' -f 1)" = 160000
-        echo "power_sha=$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD:crates/power)" >> "$GITHUB_OUTPUT"
+        # Power is vendored into the parent tree (not a gitlink).
+        if git -C "$GITHUB_WORKSPACE" ls-files -s -- crates/power | grep -q '^160000 '; then
+          echo '::error::crates/power must be a normal tree in the parent repository, not a gitlink.'
+          exit 1
+        fi
+        test -f "${GITHUB_WORKSPACE}/crates/power/Cargo.toml"
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
-        repository: kense-labs/studio
+        repository: aster-ai-lab/studio
         ref: ${{ steps.revision.outputs.sha }}
         path: apps/studio
         token: ${{ inputs.token }}
-        persist-credentials: false
-    - name: Check out public Power sources
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      with:
-        repository: A3S-Lab/Power
-        ref: ${{ steps.revision.outputs.power_sha }}
-        path: crates/power
         persist-credentials: false

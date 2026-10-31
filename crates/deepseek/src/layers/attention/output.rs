@@ -5,7 +5,7 @@
 //! none of those kernels are imported or claimed to execute on SM90 here.
 //! DeepInfer Apache-2.0 attn.py at 9bd9cf243fc53ef9afbf8f04d391d989117d6ab9.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

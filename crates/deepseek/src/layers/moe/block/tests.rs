@@ -1,6 +1,6 @@
 use super::*;
 use crate::layers::linear::DeviceMatrix;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 
 fn matrix(device: &CudaLayerDevice, layout: MatrixLayout, code: u8) -> DeviceMatrix {
     let columns = if layout == MatrixLayout::Mxfp4Block32 {

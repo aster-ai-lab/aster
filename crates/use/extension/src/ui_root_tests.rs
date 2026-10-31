@@ -10,7 +10,7 @@ extension "acme/spa" {
   actions        = ["read"]
 
   repository {
-    url = "https://github.com/A3S-Lab/Use-Registry"
+    url = "https://github.com/aster-ai-lab/Use-Registry"
   }
 
   ui "panel" {

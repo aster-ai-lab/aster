@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_memory::{FileMemoryStore, InMemoryStore, MemoryItem, MemoryStore};
+use aster_durable_memory::{FileMemoryStore, InMemoryStore, MemoryItem, MemoryStore};
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Mutex;
@@ -75,7 +75,7 @@ impl MemoryStore for AuditedStore {
     async fn count(&self) -> anyhow::Result<usize> {
         self.inner.count().await
     }
-    async fn prune(&self, policy: &a3s_memory::PrunePolicy) -> anyhow::Result<usize> {
+    async fn prune(&self, policy: &aster_durable_memory::PrunePolicy) -> anyhow::Result<usize> {
         self.inner.prune(policy).await
     }
 }
@@ -384,7 +384,7 @@ async fn same_remember_bytes_require_valid_model_authority_in_both_stores() {
             assert_eq!(items.len(), expected, "{kind:?}");
             if let Some(item) = items.first() {
                 assert_eq!(item.content, DISTILLED);
-                assert_eq!(item.metadata.get("schema").map(String::as_str), Some("a3s.memory.durable.v1"));
+                assert_eq!(item.metadata.get("schema").map(String::as_str), Some("aster.memory.durable.v1"));
                 assert_eq!(item.metadata.get("source").map(String::as_str), Some("preference"));
             }
             assert_no_ticket(&session).await;

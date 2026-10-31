@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     initialize, shutdown, Collection, CollectionSchema, DataType, Doc, FieldSchema, Fts,
     IndexParams, MetricType, MultiQuery, SearchQuery, SubQuery,
 };
@@ -27,9 +27,9 @@ impl Drop for ExampleDirectory {
 }
 
 #[allow(clippy::too_many_lines)]
-fn main() -> a3s_vec::Result<()> {
+fn main() -> aster_vec::Result<()> {
     initialize(None)?;
-    let directory = ExampleDirectory::new("a3s-vec-retrieval-workflows");
+    let directory = ExampleDirectory::new("aster-vec-retrieval-workflows");
     let data_path = directory.path().to_string_lossy();
 
     let mut category = FieldSchema::new("category", DataType::String, false, 0)?;

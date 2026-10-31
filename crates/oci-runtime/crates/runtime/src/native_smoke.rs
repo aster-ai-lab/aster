@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
 #[cfg(not(target_os = "linux"))]
-use a3s_oci_core::HostPlatform;
+use aster_oci_core::HostPlatform;
 
 use crate::{
     LifecycleFaultPoint, NativeLinuxCheckpointSmokeReport, NativeLinuxFaultCleanupReport,
@@ -36,8 +36,8 @@ pub async fn native_linux_smoke(
 
 /// Exercise the complete native Linux lifecycle over the packaged Unix SDK service.
 ///
-/// This gate binds the same single-container service used by A3S Box, connects
-/// through [`a3s_oci_sdk::RuntimeClient::connect`], and verifies service-owned
+/// This gate binds the same single-container service used by Aster Box, connects
+/// through [`aster_oci_sdk::RuntimeClient::connect`], and verifies service-owned
 /// descriptor, process, socket, and executor cleanup.
 pub async fn native_linux_service_smoke(
     init_executable: &Path,
@@ -264,7 +264,7 @@ pub async fn native_linux_checkpoint_restore_owner(
     request_file: &Path,
     ready_file: &Path,
     crash_point: crate::NativeLinuxCheckpointRestoreCrashPoint,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     linux::run_checkpoint_restore_owner(
         init_executable,
         criu_executable,

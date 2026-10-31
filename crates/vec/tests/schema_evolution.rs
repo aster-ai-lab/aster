@@ -9,7 +9,7 @@
 
 //! Schema rename / alter fail-closed and document rewrite contracts (I2).
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     IndexParams, MetricType, SearchQuery,
 };
@@ -68,7 +68,7 @@ fn rename_scalar_and_vector_columns_rewrites_documents_and_rejects_conflicts() {
     assert_eq!(hits.len(), 1);
     assert_eq!(hits[0].get_pk(), Some("a"));
     match hits[0].field("label") {
-        Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "rust"),
+        Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "rust"),
         other => panic!("expected renamed label, got {other:?}"),
     }
 }
@@ -103,7 +103,7 @@ fn alter_and_add_column_paths_cover_schema_mutations() {
 
 #[test]
 fn alter_column_rejects_type_changes_and_accepts_compatible_updates() {
-    use a3s_vec::AlterColumnOption;
+    use aster_vec::AlterColumnOption;
 
     let temporary = tempdir().expect("temp");
     let collection = Collection::create(

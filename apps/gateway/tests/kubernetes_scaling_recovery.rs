@@ -277,7 +277,7 @@ struct GatewayProcess {
 
 impl GatewayProcess {
     fn start(config_path: &Path, kubeconfig_path: &Path) -> Self {
-        let mut command = Command::new(env!("CARGO_BIN_EXE_a3s-gateway"));
+        let mut command = Command::new(env!("CARGO_BIN_EXE_aster-gateway"));
         command
             .arg("--config")
             .arg(config_path)
@@ -398,7 +398,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 

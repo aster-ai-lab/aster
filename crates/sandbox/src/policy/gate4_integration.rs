@@ -17,7 +17,7 @@ fn gate4_mediated_http_capability_is_platform_scoped() {
 #[cfg(not(any(target_os = "macos", target_os = "linux", windows)))]
 #[test]
 fn gate4_allowlist_requires_backend_capability() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "api.example.com".into(),
@@ -38,7 +38,7 @@ fn gate4_allowlist_requires_backend_capability() {
 #[cfg(any(target_os = "macos", target_os = "linux", windows))]
 #[test]
 fn gate4_claiming_platforms_accept_mediated_network_capability() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "api.example.com".into(),
@@ -68,7 +68,7 @@ async fn gate4_connect_mediator_allow_and_deny_integration() {
         stream.write_all(b"ok").await.unwrap();
     });
 
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "127.0.0.1".into(),
@@ -106,7 +106,7 @@ async fn gate4_connect_mediator_allow_and_deny_integration() {
 
 #[test]
 fn gate4_rejects_path_prefix_with_dotdot() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "example.com".into(),
@@ -121,7 +121,7 @@ fn gate4_rejects_path_prefix_with_dotdot() {
 #[test]
 fn gate4_native_sandbox_refuses_mediated_network_policies() {
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "example.com".into(),
@@ -163,7 +163,7 @@ async fn gate4_linux_sandbox_mediator_tunnels_allowed_connect() {
     });
 
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "127.0.0.1".into(),
@@ -175,10 +175,10 @@ async fn gate4_linux_sandbox_mediator_tunnels_allowed_connect() {
     let relay_bin = test_exe
         .parent()
         .and_then(|p| p.parent())
-        .map(|debug| debug.join("a3s-sandbox-relay"))
+        .map(|debug| debug.join("aster-sandbox-relay"))
         .unwrap();
     assert!(relay_bin.is_file(), "missing {}", relay_bin.display());
-    std::env::set_var("A3S_SANDBOX_RELAY", &relay_bin);
+    std::env::set_var("ASTER_SANDBOX_RELAY", &relay_bin);
 
     let sandbox = NativeSandbox::with_policy(workspace.path(), policy).unwrap();
     let probe = workspace.path().join("gate4_linux_probe.py");
@@ -212,7 +212,7 @@ print('gate4-linux-tunnel-ok')\n",
         })
         .await
         .unwrap();
-    std::env::remove_var("A3S_SANDBOX_RELAY");
+    std::env::remove_var("ASTER_SANDBOX_RELAY");
     assert!(
         output.stdout.contains("gate4-linux-tunnel-ok"),
         "stdout={} stderr={} exit={}",
@@ -243,7 +243,7 @@ async fn gate4_macos_sandbox_mediator_tunnels_allowed_connect() {
     });
 
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "127.0.0.1".into(),
@@ -291,7 +291,7 @@ PY"#
 
 #[test]
 fn gate4_does_not_weaken_default_deny_all() {
-    let policy = SandboxPolicy::a3s_bash_baseline();
+    let policy = SandboxPolicy::aster_bash_baseline();
     assert!(!policy.features.mediated_network);
     assert!(policy.network.allow.is_empty());
     // Ephemeral is unrelated; keep baseline persistent.

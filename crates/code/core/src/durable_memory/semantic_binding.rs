@@ -1,6 +1,6 @@
 use crate::embedding::{EmbeddingError, EmbeddingExecutorConfig, EmbeddingProviderDescriptor};
-use a3s_memory::repository::{MemoryRepositoryError, MAX_QUERY_LIMIT};
-use a3s_memory::vector::{
+use aster_durable_memory::repository::{MemoryRepositoryError, MAX_QUERY_LIMIT};
+use aster_durable_memory::vector::{
     VectorIndexDescriptor, VectorIndexError, VectorMetric, VectorMutationConsistency,
     VectorNormalization,
 };
@@ -8,11 +8,11 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 pub const DURABLE_MEMORY_SEMANTIC_BINDING_SCHEMA_V1: &str =
-    "a3s.code.memory.semantic-recall-binding.v1";
-pub const DURABLE_MEMORY_SEMANTIC_FUSION_PROFILE_V1: &str = "a3s.code.memory.hybrid.rrf-k60.v1";
+    "aster.code.memory.semantic-recall-binding.v1";
+pub const DURABLE_MEMORY_SEMANTIC_FUSION_PROFILE_V1: &str = "aster.code.memory.hybrid.rrf-k60.v1";
 
-const EXECUTION_POLICY_DIGEST_DOMAIN: &str = "a3s.code.memory.semantic-embedding-execution.v1";
-const SERVING_GENERATION_DIGEST_DOMAIN: &str = "a3s.code.memory.semantic-serving-generation.v1";
+const EXECUTION_POLICY_DIGEST_DOMAIN: &str = "aster.code.memory.semantic-embedding-execution.v1";
+const SERVING_GENERATION_DIGEST_DOMAIN: &str = "aster.code.memory.semantic-serving-generation.v1";
 const MAX_DESCRIPTOR_TEXT_BYTES: usize = 256;
 const MAX_SEMANTIC_EMBEDDING_DIMENSION: usize = 65_536;
 

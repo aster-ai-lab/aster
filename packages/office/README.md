@@ -1,6 +1,6 @@
-<a id="a3s-office-source-for-desktop"></a>
+<a id="aster-office-source-for-desktop"></a>
 
-# A3S Office source for Aster
+# Aster Office source for Aster
 
 This private package is Aster's shared Office frontend. It contains document,
 Markdown, spreadsheet, presentation and PDF editors, with React, Vue and web
@@ -15,9 +15,9 @@ newer. Install the `wasm32-unknown-unknown` target first. Packaging sets
 `OFFICE_KERNEL_REQUIRED=1` and stops when that target is missing.
 
 Run `bun run test` from this package for its owning tests. Browser harnesses and
-A3S Test commands live in [tests/e2e/README.md](tests/e2e/README.md). Product chrome
+Aster Test commands live in [tests/e2e/README.md](tests/e2e/README.md). Product chrome
 follows the root [DESIGN.md](../../DESIGN.md); shared pickers and role tokens come
-from the local `@a3s-lab/ui` package.
+from the local `@aster-ai-lab/ui` package.
 
 Document, Markdown, spreadsheet and presentation React editors are controlled:
 pass accepted `onChange` content back through `content`. Pass the host's resolved

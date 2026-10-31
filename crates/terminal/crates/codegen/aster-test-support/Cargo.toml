@@ -1,0 +1,51 @@
+[package]
+license = "Apache-2.0"
+name = "aster-test-support"
+version = "0.1.0"
+description = "Shared test-support for grok-build crates: mock inference server, SSE generators, ACP stdio client, headless runner, env sandbox"
+publish = false
+edition = "2024"
+
+[dependencies]
+agent-client-protocol = {workspace = true}
+anyhow = {workspace = true}
+async-trait = {workspace = true}
+axum = {workspace = true}
+axum-server = {workspace = true}
+base64 = {workspace = true}
+clap = {workspace = true}
+futures-util = {workspace = true}
+opentelemetry-proto = {version = "0.32", features = ["gen-tonic", "logs", "metrics", "trace"]}
+portable-pty = {workspace = true}
+prost = {workspace = true}
+rcgen = {workspace = true}
+regex = {workspace = true}
+ring = {version = "0.17"}
+# `ring` feature: the TLS mock picks the same provider per target as aster-extra-ca.
+rustls = {version = "0.23", features = ["aws-lc-rs", "ring"]}
+serde = {workspace = true}
+serde_json = {workspace = true}
+tempfile = {workspace = true}
+thiserror = {workspace = true}
+tokio = {workspace = true}
+tokio-tungstenite = {version = "0.28"}
+tokio-util = {version = "0.7", features = ["rt", "compat"]}
+tracing = {workspace = true}
+tracing-subscriber = {version = "0.3.23", default-features = false, features = ["env-filter", "smallvec", "tracing-log", "std", "ansi", "fmt"]}
+url = {workspace = true}
+aster-tty-utils = {path = "../aster-tty-utils"}
+aster-acp-lib = {path = "../aster-acp-lib"}
+
+[dev-dependencies]
+reqwest = {workspace = true}
+# `test-util` enables the paused clock the recorder's deadline tests run on.
+tokio = {version = "1", features = ["full", "test-util"]}
+[features]
+default = []
+default-bazel = []
+
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+
+[lints]
+workspace = true

@@ -15,7 +15,7 @@ cleanup() {
   trap - EXIT
   if [[ -n "$build_root" ]]; then
     case "$build_root" in
-      /var/tmp/a3s-oci-runtime-tools-build.????????)
+      /var/tmp/aster-oci-runtime-tools-build.????????)
         rm -rf --one-file-system -- "$build_root" || cleanup_status=1
         ;;
       *)
@@ -76,7 +76,7 @@ if [[ ! -f "$lock_file" || -L "$lock_file" ]]; then
   exit 2
 fi
 jq --exit-status \
-  '.schema_version == "a3s.oci.upstream-runtime-tools-lock.v2"
+  '.schema_version == "aster.oci.upstream-runtime-tools-lock.v2"
    and (.repository | type == "string" and length > 0)
    and (.commit | test("^[0-9a-f]{40}$"))
    and (.version | test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))
@@ -152,7 +152,7 @@ if [[ "$actual_go_version" != "$required_go_version" ]]; then
 fi
 
 destination="$(realpath -m -- "$destination")"
-expected_destination="/usr/local/lib/a3s-oci-tools/runtime-tools-$upstream_commit"
+expected_destination="/usr/local/lib/aster-oci-tools/runtime-tools-$upstream_commit"
 if [[ "$destination" != "$expected_destination" ]]; then
   printf 'Pinned Runtime Tools install directory must be exactly %s, found %s\n' \
     "$expected_destination" "$destination" >&2
@@ -174,7 +174,7 @@ else
   sudo_command=(sudo)
 fi
 
-build_root="$(mktemp -d /var/tmp/a3s-oci-runtime-tools-build.XXXXXXXX)"
+build_root="$(mktemp -d /var/tmp/aster-oci-runtime-tools-build.XXXXXXXX)"
 source_directory="$build_root/source"
 git init --quiet "$source_directory"
 git -C "$source_directory" remote add origin "$upstream_repository"
@@ -375,7 +375,7 @@ done
 
 manifest="$build_root/upstream-runtime-tools-build.json"
 jq --null-input \
-  --arg schema_version 'a3s.oci.upstream-runtime-tools-build.v3' \
+  --arg schema_version 'aster.oci.upstream-runtime-tools-build.v3' \
   --arg repository "$upstream_repository" \
   --arg commit "$upstream_commit" \
   --arg version "$upstream_version" \
@@ -575,7 +575,7 @@ jq --exit-status \
   )" \
   --argjson test_count "${#lifecycle_tests[@]}" \
   --argjson upstream_harness_defects "$(jq --compact-output '.lifecycle.upstream_harness_defects' "$lock_file")" \
-  '.schema_version == "a3s.oci.upstream-runtime-tools-build.v3"
+  '.schema_version == "aster.oci.upstream-runtime-tools-build.v3"
    and .binary.sha256 == $sha256
    and .binary.size == $size
    and .lifecycle.profile == $lifecycle_profile

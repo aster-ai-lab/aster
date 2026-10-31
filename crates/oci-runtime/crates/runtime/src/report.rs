@@ -1,23 +1,23 @@
-use a3s_oci_agent_protocol::{AgentOperation, AGENT_PROTOCOL_VERSION_MAX};
-use a3s_oci_core::CapabilityStatus;
-use a3s_oci_core::HostPlatform;
-use a3s_oci_sdk::{ExitStatus, RuntimeOperation};
+use aster_oci_agent_protocol::{AgentOperation, AGENT_PROTOCOL_VERSION_MAX};
+use aster_oci_core::CapabilityStatus;
+use aster_oci_core::HostPlatform;
+use aster_oci_sdk::{ExitStatus, RuntimeOperation};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 /// Schema emitted by the WHPX smoke command.
-pub const WHPX_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.whpx-smoke.v1";
+pub const WHPX_SMOKE_SCHEMA_VERSION: &str = "aster.oci.whpx-smoke.v1";
 /// Schema emitted by the Hypervisor.framework VM-object smoke.
-pub const HVF_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.hvf-smoke.v1";
+pub const HVF_SMOKE_SCHEMA_VERSION: &str = "aster.oci.hvf-smoke.v1";
 /// Schema emitted by the authenticated guest-agent VM smoke.
-pub const AGENT_VM_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.agent-vm-smoke.v10";
+pub const AGENT_VM_SMOKE_SCHEMA_VERSION: &str = "aster.oci.agent-vm-smoke.v10";
 /// Schema emitted by the fixed OCI core-lifecycle utility-VM smoke.
-pub const OCI_VM_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.oci-vm-smoke.v9";
+pub const OCI_VM_SMOKE_SCHEMA_VERSION: &str = "aster.oci.oci-vm-smoke.v9";
 /// Schema emitted by the native Linux SDK lifecycle smoke.
-pub const NATIVE_LINUX_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.native-linux-smoke.v20";
+pub const NATIVE_LINUX_SMOKE_SCHEMA_VERSION: &str = "aster.oci.native-linux-smoke.v20";
 /// Schema emitted by the native Linux rootless lifecycle smoke.
 pub const NATIVE_LINUX_ROOTLESS_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.native-linux-rootless-smoke.v4";
+    "aster.oci.native-linux-rootless-smoke.v4";
 
 fn default_true() -> bool {
     true
@@ -386,7 +386,7 @@ pub struct NativeLinuxSmokeReport {
     pub kvm_device_present: bool,
     /// Whether the host loaded and validated the submitted OCI bundle.
     pub bundle_loaded: bool,
-    /// Whether host-created A3S Box listener and log descriptors passed validation.
+    /// Whether host-created Aster Box listener and log descriptors passed validation.
     pub control_descriptors_prepared: bool,
     /// Operations advertised by the explicitly opened native service.
     pub service_operations: Vec<RuntimeOperation>,
@@ -730,7 +730,7 @@ pub struct NativeLinuxRootlessSmokeReport {
     pub cgroup_delegation_verified: bool,
     /// Whether the synchronous effective-root helper bootstrap completed.
     pub device_policy_helper_verified: bool,
-    /// Whether all six fixed A3S Box device nodes were available in-container.
+    /// Whether all six fixed Aster Box device nodes were available in-container.
     pub device_nodes_verified: bool,
     /// Whether policy replace, disable, and re-enable were exercised live.
     pub device_policy_updates_verified: bool,
@@ -1083,8 +1083,8 @@ impl OciVmSmokeReport {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_agent_protocol::{AgentOperation, AGENT_PROTOCOL_VERSION_MAX};
-    use a3s_oci_core::{CapabilityStatus, HostPlatform};
+    use aster_oci_agent_protocol::{AgentOperation, AGENT_PROTOCOL_VERSION_MAX};
+    use aster_oci_core::{CapabilityStatus, HostPlatform};
 
     use super::{
         AgentVmSmokeReport, MacosHostCleanupEvidence, NativeLinuxSmokeReport,
@@ -1095,7 +1095,7 @@ mod tests {
         let mut report = AgentVmSmokeReport::initial(HostPlatform::Macos);
         report.status = CapabilityStatus::Available;
         report.endpoint_bound = true;
-        report.endpoint_name = Some("a3s-oci-agent-00000000000000000000000000000000".into());
+        report.endpoint_name = Some("aster-oci-agent-00000000000000000000000000000000".into());
         report.shim_spawned = true;
         report.shim_process_id = Some(41);
         report.bridge_process_id = Some(42);
@@ -1201,7 +1201,7 @@ mod tests {
     fn native_linux_smoke_accepts_omitted_memory_policy_when_not_configured() {
         let report: NativeLinuxSmokeReport = serde_json::from_str(
             r#"{
-              "schema_version":"a3s.oci.native-linux-smoke.v20",
+              "schema_version":"aster.oci.native-linux-smoke.v20",
               "platform":"linux",
               "status":"available",
               "kvm_device_present":false,
@@ -1282,7 +1282,7 @@ mod tests {
     fn native_linux_smoke_missing_memory_policy_configured_defaults_to_required() {
         let report: NativeLinuxSmokeReport = serde_json::from_str(
             r#"{
-              "schema_version":"a3s.oci.native-linux-smoke.v20",
+              "schema_version":"aster.oci.native-linux-smoke.v20",
               "platform":"linux",
               "status":"unavailable",
               "kvm_device_present":false,

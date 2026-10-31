@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Bell, Check, FileText, Mail, Shield, Star } from 'lucide-react'
 import { useState } from 'react'
 
-import { Checkbox, type CheckedState } from '@a3s-lab/ui'
+import { Checkbox, type CheckedState } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Checkbox> = {
   title: 'Components/Primitives/Checkbox',

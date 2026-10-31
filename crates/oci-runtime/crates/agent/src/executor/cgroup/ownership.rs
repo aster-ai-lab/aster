@@ -7,7 +7,7 @@ use std::os::unix::ffi::OsStrExt;
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Component, Path};
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use super::super::mount::MountPlan;
 use super::super::namespace::NamespacePlan;
@@ -318,7 +318,7 @@ mod tests {
     use std::cell::RefCell;
     use std::os::unix::fs::MetadataExt;
 
-    use a3s_oci_sdk::oci_spec::runtime::{Linux, Mount};
+    use aster_oci_sdk::oci_spec::runtime::{Linux, Mount};
 
     use super::*;
     use crate::executor::{mount, namespace::NamespacePlan};

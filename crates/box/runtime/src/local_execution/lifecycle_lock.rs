@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_box_core::{ExecutionManagerError, ExecutionManagerResult};
+use aster_box_core::{ExecutionManagerError, ExecutionManagerResult};
 
 /// Cross-process lock shared with the CLI's stopped-commit/start lock.
 pub struct ExecutionLifecycleLock {

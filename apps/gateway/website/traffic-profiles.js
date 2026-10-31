@@ -1,7 +1,7 @@
 (function exposeTrafficProfiles(global) {
   "use strict";
 
-  global.A3S_GATEWAY_TRAFFIC_PROFILES = Object.freeze([
+  global.ASTER_GATEWAY_TRAFFIC_PROFILES = Object.freeze([
     {
       id: "http1-small",
       label: "HTTP/1.1",

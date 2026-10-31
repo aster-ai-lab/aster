@@ -516,7 +516,7 @@ export function contentControlCss(
 ): string {
   const properties = normalizeDocumentContentControlProperties(value);
   return [
-    `--work-document-content-control-color:${properties.color ?? 'var(--a3s-accent)'}`,
+    `--work-document-content-control-color:${properties.color ?? 'var(--aster-accent)'}`,
     `--work-document-content-control-appearance:${properties.appearance}`,
   ].join(';');
 }

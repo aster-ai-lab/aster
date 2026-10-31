@@ -2,7 +2,7 @@ use std::io::Write;
 use std::process::{Command, Stdio};
 
 fn run(command: &str, input: &[u8]) -> std::process::Output {
-    let mut child = Command::new(env!("CARGO_BIN_EXE_a3s-form-core"))
+    let mut child = Command::new(env!("CARGO_BIN_EXE_aster-form-core"))
         .arg(command)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -40,7 +40,7 @@ fn computes_document_digest_from_standard_input() {
 fn compiles_a_versioned_request_from_standard_input() {
     let output = run(
         "compile",
-        br#"{"apiVersion":"a3s.dev/form-core/compile-request/v1alpha1","document":{"kind":"a3s.form","apiVersion":"a3s.dev/form/v1alpha1","revision":1,"metadata":{"title":"CLI"},"schema":{"type":"object"},"ui":{"root":"root","nodes":[{"id":"root","kind":"root"}]}}}"#,
+        br#"{"apiVersion":"aster.dev/form-core/compile-request/v1alpha1","document":{"kind":"aster.form","apiVersion":"aster.dev/form/v1alpha1","revision":1,"metadata":{"title":"CLI"},"schema":{"type":"object"},"ui":{"root":"root","nodes":[{"id":"root","kind":"root"}]}}}"#,
     );
     assert!(output.status.success());
     let response: serde_json::Value =

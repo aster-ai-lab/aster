@@ -77,7 +77,7 @@ fn compatibility() -> CheckpointCompatibility {
         HostPlatform::Linux,
         "x86_64",
         RuntimeArtifact::new(
-            "a3s-oci-runtime",
+            "aster-oci-runtime",
             "0.1.0",
             digest('a').to_string(),
             Some("checkpoint-contract-test".to_string()),
@@ -132,7 +132,7 @@ fn immutable_reference_round_trips_and_binds_the_paused_source() {
     );
     assert_eq!(
         reference.compatibility().runtime_artifact().name(),
-        "a3s-oci-runtime"
+        "aster-oci-runtime"
     );
     assert_eq!(
         reference.compatibility().driver_build_digest(),
@@ -208,7 +208,7 @@ fn reference_creation_requires_a_matching_paused_source_stack() {
         IsolationClass::DedicatedVm,
         HostPlatform::Linux,
         "x86_64",
-        RuntimeArtifact::new("a3s-oci-runtime", "0.1.0", digest('a').to_string(), None)
+        RuntimeArtifact::new("aster-oci-runtime", "0.1.0", digest('a').to_string(), None)
             .expect("runtime artifact"),
         digest('b'),
         CheckpointFormat::new("vm-snapshot", 1).expect("checkpoint format"),
@@ -226,7 +226,7 @@ fn reference_deserialization_rejects_tampered_evidence() {
 
     let mut tampered = Vec::new();
     let mut schema = canonical.clone();
-    schema["schemaVersion"] = json!("a3s.oci.checkpoint-reference.v2");
+    schema["schemaVersion"] = json!("aster.oci.checkpoint-reference.v2");
     tampered.push(schema);
     let mut size = canonical.clone();
     size["artifactSizeBytes"] = json!(0);

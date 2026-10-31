@@ -2,15 +2,15 @@
 
 ## Repository
 
-This crate owns the local BGE model engines for A3S Use: the `bge-m3`
+This crate owns the local BGE model engines for Aster Use: the `bge-m3`
 embedding encoder and the `bge-reranker-v2-m3` cross-encoder, their
-manifest-driven installer, and the `a3s-use-bge` binary.
+manifest-driven installer, and the `aster-use-bge` binary.
 
 ## Boundaries
 
 - The installer is manifest-driven: every file arrives with an explicit
   URL, byte length, and sha256. There is no pinned-bundle constant and
-  no implicit download source; the platform model supply (a3s-api +
+  no implicit download source; the platform model supply (aster-api +
   RustFS) provides the manifest.
 - The gateway never auto-downloads. A missing or unreadable model is a
   named `use.bge.*` error carrying an install suggestion.
@@ -22,7 +22,7 @@ manifest-driven installer, and the `a3s-use-bge` binary.
   from the loaded artifacts; do not hard-code them.
 - Requests carry closed-set limits (item counts and byte bounds) and
   name the refused limit in every rejection.
-- `a3s-use-core` owns shared machine contracts; depend on its released
+- `aster-use-core` owns shared machine contracts; depend on its released
   crate.
 
 ## Engineering

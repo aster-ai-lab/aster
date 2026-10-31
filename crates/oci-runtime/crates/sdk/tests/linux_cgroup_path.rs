@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{OciLinuxCgroupPath, OciLinuxCgroupPathErrorKind};
+use aster_oci_sdk::{OciLinuxCgroupPath, OciLinuxCgroupPathErrorKind};
 
 #[test]
 fn preserves_absolute_and_relative_oci_cgroup_path_semantics() {
@@ -25,7 +25,7 @@ fn rejects_ambiguous_or_dangerous_cgroup_paths_before_execution() {
             OciLinuxCgroupPathErrorKind::UnsafePath,
         ),
         (
-            "system.slice:a3s:workload",
+            "system.slice:aster:workload",
             OciLinuxCgroupPathErrorKind::UnsafePath,
         ),
         ("tenant\nworkload", OciLinuxCgroupPathErrorKind::UnsafePath),

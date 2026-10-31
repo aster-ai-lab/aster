@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::{KrunAgentVmSmokeReport, MacosBootAssetsEvidence};
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
 
 #[test]
 fn macos_agent_success_requires_explicit_host_confinement_evidence() {

@@ -1,6 +1,6 @@
-import { TreeView } from '@a3s-lab/ui/components/composites/tree-view'
-import { Button } from '@a3s-lab/ui/components/primitives/button'
-import { Input } from '@a3s-lab/ui/components/primitives/input'
+import { TreeView } from '@aster-ai-lab/ui/components/composites/tree-view'
+import { Button } from '@aster-ai-lab/ui/components/primitives/button'
+import { Input } from '@aster-ai-lab/ui/components/primitives/input'
 import { Box, ChevronDown, ChevronRight, Circle } from 'lucide-react'
 import { useMemo, useState } from 'react'
 

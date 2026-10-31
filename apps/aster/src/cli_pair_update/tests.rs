@@ -59,17 +59,33 @@ fn updater_accepts_the_three_platform_manifest_and_refuses_a_retired_channel() {
         "assets": {}
     });
     for (os, extension) in [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")] {
-        manifest["assets"][os] = serde_json::json!({
-            "name": format!("aster-cli-v0.1.3-{os}.{extension}"),
-            "sha256": "a".repeat(64)
-        });
+        manifest
+            .get_mut("assets")
+            .unwrap()
+            .as_object_mut()
+            .unwrap()
+            .insert(
+                os.into(),
+                serde_json::json!({
+                    "name": format!("aster-cli-v0.1.3-{os}.{extension}"),
+                    "sha256": "a".repeat(64)
+                }),
+            );
     }
     let parsed = parse_manifest(&serde_json::to_vec(&manifest).unwrap(), "").unwrap();
     assert_eq!(parsed.assets.len(), 3);
-    manifest["assets"]["kylin"] = serde_json::json!({
-        "name": "aster-cli-v0.1.3-kylin.tar.gz",
-        "sha256": "a".repeat(64)
-    });
+    manifest
+        .get_mut("assets")
+        .unwrap()
+        .as_object_mut()
+        .unwrap()
+        .insert(
+            "kylin".into(),
+            serde_json::json!({
+                "name": "aster-cli-v0.1.3-kylin.tar.gz",
+                "sha256": "a".repeat(64)
+            }),
+        );
     let error = parse_manifest(&serde_json::to_vec(&manifest).unwrap(), "")
         .err()
         .unwrap();
@@ -124,7 +140,7 @@ fn rollback_restores_the_pair_and_runtime_before_or_after_runtime_promotion() {
         fs::create_dir(&stage_dir).unwrap();
         fs::create_dir(&lock).unwrap();
         let dest_aster = work.path.join("aster");
-        let dest_acp = work.path.join("a3s-code-acp");
+        let dest_acp = work.path.join("aster-acp");
         let dest_sandbox = work.path.join("sandbox");
         fs::write(&dest_aster, "new aster").unwrap();
         fs::write(&dest_acp, "new acp").unwrap();
@@ -177,7 +193,7 @@ fn a_failed_runtime_restore_retains_the_backup_and_install_lock() {
         dir: stage_dir.clone(),
         lock: lock.clone(),
         dest_aster: work.path.join("aster"),
-        dest_acp: work.path.join("a3s-code-acp"),
+        dest_acp: work.path.join("aster-acp"),
         had_aster: false,
         had_acp: false,
         aster_promoted: false,
@@ -287,7 +303,7 @@ fn installed_sandbox_contract_matches_the_shared_producer_and_keeps_executables(
             fs::read(installed.join(relative)).unwrap()
         );
     }
-    for name in ["a3s-oci", "a3s-oci-krun-shim"] {
+    for name in ["aster-oci", "aster-oci-krun-shim"] {
         assert_eq!(
             fs::metadata(installed.join(name))
                 .unwrap()

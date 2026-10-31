@@ -1361,7 +1361,7 @@ async fn measure_declared_content_length(
         .map_err(|_| format!("request {request_index} connect timed out"))?
         .map_err(|error| format!("request {request_index} connect failed: {error}"))?;
     let mut request = format!(
-        "POST {path} HTTP/1.1\r\nHost: {authority}\r\nContent-Type: application/json\r\nContent-Length: {declared}\r\nAccept: text/event-stream\r\nx-a3s-benchmark-request: {request_index}\r\nConnection: close\r\n"
+        "POST {path} HTTP/1.1\r\nHost: {authority}\r\nContent-Type: application/json\r\nContent-Length: {declared}\r\nAccept: text/event-stream\r\nx-aster-benchmark-request: {request_index}\r\nConnection: close\r\n"
     );
     if let Some(api_key) = &context.api_key {
         if !omit_api_key {
@@ -1449,7 +1449,7 @@ async fn measure_json_completion(
         .post(&context.url)
         .header(ACCEPT, "application/json")
         .header(CONTENT_TYPE, "application/json")
-        .header("x-a3s-benchmark-request", request_index.to_string())
+        .header("x-aster-benchmark-request", request_index.to_string())
         .json(&body);
     if context.scenario.force_connection_close {
         request = request.header(CONNECTION, "close");
@@ -1621,7 +1621,7 @@ async fn measure_stream(
         .post(&context.url)
         .header(ACCEPT, "text/event-stream")
         .header(CONTENT_TYPE, "application/json")
-        .header("x-a3s-benchmark-request", request_index.to_string());
+        .header("x-aster-benchmark-request", request_index.to_string());
     if context.scenario.force_connection_close {
         request = request.header(CONNECTION, "close");
     }

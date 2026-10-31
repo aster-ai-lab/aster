@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::{ContainerTarget, Error, ErrorCode, OperationId, StartRequest};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::{ContainerTarget, Error, ErrorCode, OperationId, StartRequest};
 
 pub(super) use super::super::super::workload_marker::{
     path_absent, reset_marker, runtime_marker, wait_for_replacement_marker,

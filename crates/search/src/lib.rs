@@ -1,4 +1,4 @@
-//! # a3s-search
+//! # aster-search
 //!
 //! An embeddable metasearch library with browser, conventional HTTP/RSS, and
 //! native third-party provider sources.
@@ -11,7 +11,7 @@
 //! - Configurable ranking algorithms
 //! - Extensible engine interface
 //! - Provider-neutral [`SearchProvider`](providers::SearchProvider) extensions
-//! - Native AnySearch and Tavily integrations in the default plan, plus explicit TinyFish, Bocha, Alibaba Cloud IQS, Tencent Cloud Search, Firecrawl, A3S, Volcengine Doubao Search, and DeepSeek Search providers. Those billed APIs stay out of [`BuiltinProvider::DEFAULT`](providers::BuiltinProvider::DEFAULT) so a missing key cannot fail every search and an ambient key cannot start billing.
+//! - Native AnySearch and Tavily integrations in the default plan, plus explicit TinyFish, Bocha, Alibaba Cloud IQS, Tencent Cloud Search, Firecrawl, Aster, Volcengine Doubao Search, and DeepSeek Search providers. Those billed APIs stay out of [`BuiltinProvider::DEFAULT`](providers::BuiltinProvider::DEFAULT) so a missing key cannot fail every search and an ambient key cannot start billing.
 //! - Rich answers, full text, images, relevance, usage, and request reports
 //! - Dynamic proxy IP pool for anti-crawler protection
 //!
@@ -23,11 +23,11 @@
 //! ```rust,no_run
 //! use std::time::Duration;
 //!
-//! use a3s_search::product::{self, HeadlessBrowser};
-//! use a3s_search::{EngineTierPlan, SearchQuery};
+//! use aster_search::product::{self, HeadlessBrowser};
+//! use aster_search::{EngineTierPlan, SearchQuery};
 //!
 //! #[tokio::main]
-//! async fn main() -> a3s_search::Result<()> {
+//! async fn main() -> aster_search::Result<()> {
 //!     let plan = EngineTierPlan::builtin_default();
 //!     let outcome = product::execute_cascade(
 //!         &plan,
@@ -51,7 +51,7 @@
 //! ## Using Proxy
 //!
 //! ```rust,no_run
-//! use a3s_search::{Search, SearchQuery, engines::DuckDuckGo, HttpFetcher, PageFetcher};
+//! use aster_search::{Search, SearchQuery, engines::DuckDuckGo, HttpFetcher, PageFetcher};
 //! use std::sync::Arc;
 //!
 //! #[tokio::main]
@@ -62,7 +62,7 @@
 //!
 //!     let mut search = Search::new();
 //!     search.add_engine(DuckDuckGo::with_fetcher(
-//!         a3s_search::engines::DuckDuckGoParser, fetcher,
+//!         aster_search::engines::DuckDuckGoParser, fetcher,
 //!     ));
 //!
 //!     let query = SearchQuery::new("rust programming");
@@ -76,16 +76,16 @@
 //!
 //! ```rust,no_run
 //! use std::sync::Arc;
-//! use a3s_search::{Search, SearchQuery, PooledHttpFetcher, PageFetcher};
-//! use a3s_search::engines::{DuckDuckGo, DuckDuckGoParser};
-//! use a3s_search::proxy::{ProxyPool, ProxyProvider, ProxyConfig, spawn_auto_refresh};
+//! use aster_search::{Search, SearchQuery, PooledHttpFetcher, PageFetcher};
+//! use aster_search::engines::{DuckDuckGo, DuckDuckGoParser};
+//! use aster_search::proxy::{ProxyPool, ProxyProvider, ProxyConfig, spawn_auto_refresh};
 //!
 //! // Implement your own provider to fetch proxies from any source
 //! struct MyProxyProvider { /* ... */ }
 //!
 //! #[async_trait::async_trait]
 //! impl ProxyProvider for MyProxyProvider {
-//!     async fn fetch_proxies(&self) -> a3s_search::Result<Vec<ProxyConfig>> {
+//!     async fn fetch_proxies(&self) -> aster_search::Result<Vec<ProxyConfig>> {
 //!         // Fetch from your proxy API, database, etc.
 //!         Ok(vec![ProxyConfig::new("10.0.0.1", 8080)])
 //!     }
@@ -148,7 +148,7 @@ pub mod browser;
 pub mod moli;
 
 #[cfg(feature = "headless")]
-pub use a3s_use_browser;
+pub use aster_use_browser;
 
 pub use aggregator::Aggregator;
 pub use bulkhead::{

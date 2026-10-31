@@ -1,14 +1,14 @@
 use std::collections::BTreeSet;
 use std::path::{Component, Path};
 
-use a3s_acl::{Block, Value};
-use a3s_use_core::{
+use aster_acl::{Block, Value};
+use aster_use_core::{
     PackageSurfaceKind, PluginPackageDependency, PluginSurfaceRef, RiskClass, UseError, UseResult,
 };
 use serde::{Deserialize, Serialize};
 
 #[cfg(test)]
-extern crate self as a3s_use_extension;
+extern crate self as aster_use_extension;
 
 #[cfg(all(test, any(unix, windows)))]
 mod test_filesystem;
@@ -246,7 +246,7 @@ pub struct ExtensionRepository {
 
 impl ExtensionManifest {
     pub fn parse_acl(input: &str) -> UseResult<Self> {
-        let document = a3s_acl::parse_acl(input).map_err(|error| {
+        let document = aster_acl::parse_acl(input).map_err(|error| {
             UseError::new(
                 "use.extension.manifest_invalid",
                 format!("Failed to parse extension ACL: {error}"),
@@ -563,14 +563,14 @@ impl ExtensionManifest {
 
     pub fn supports_use_version(&self, version: &str) -> UseResult<bool> {
         let version = semver::Version::parse(version).map_err(|error| {
-            manifest_error(format!("Invalid A3S Use host version '{version}': {error}"))
+            manifest_error(format!("Invalid Aster Use host version '{version}': {error}"))
         })?;
         let Some(requirement) = &self.requires_use else {
             return Ok(true);
         };
         let requirement = semver::VersionReq::parse(requirement).map_err(|error| {
             manifest_error(format!(
-                "Invalid A3S Use compatibility requirement '{requirement}': {error}"
+                "Invalid Aster Use compatibility requirement '{requirement}': {error}"
             ))
         })?;
         Ok(requirement.matches(&version))
@@ -583,7 +583,7 @@ impl ExtensionManifest {
             return Err(UseError::new(
                 "use.extension.host_incompatible",
                 format!(
-                    "Package '{}' is incompatible with A3S Use {host}.",
+                    "Package '{}' is incompatible with Aster Use {host}.",
                     self.package_id
                 ),
             ));
@@ -825,7 +825,7 @@ fn parse_extension_block(block: &Block) -> UseResult<ExtensionManifest> {
         .ok_or_else(|| manifest_error("Package manifests require 'requires_use'."))?;
     let requirement = semver::VersionReq::parse(requirement).map_err(|error| {
         manifest_error(format!(
-            "Invalid A3S Use compatibility requirement '{requirement}': {error}"
+            "Invalid Aster Use compatibility requirement '{requirement}': {error}"
         ))
     })?;
     if repository.is_none() {
@@ -837,7 +837,7 @@ fn parse_extension_block(block: &Block) -> UseResult<ExtensionManifest> {
     let obsolete_host = semver::Version::new(0, 2, 1);
     if !requirement.matches(&current_host) || requirement.matches(&obsolete_host) {
         return Err(manifest_error(
-            "Schema version 3 must require A3S Use 0.3 and exclude pre-0.3 hosts.",
+            "Schema version 3 must require Aster Use 0.3 and exclude pre-0.3 hosts.",
         ));
     }
     Ok(ExtensionManifest {
@@ -1099,9 +1099,9 @@ mod review_package_manifest {
     use super::ExtensionManifest;
 
     #[test]
-    fn a3s_review_declares_skill_and_picker_together() {
+    fn aster_review_declares_skill_and_picker_together() {
         let path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../../../apps/use-registry/packages/review/a3s-use-extension.acl");
+            .join("../../../../apps/use-registry/packages/review/aster-use-extension.acl");
         // Use can be built outside the OS monorepo, where this package source is absent.
         if !path.is_file() {
             return;
@@ -1109,7 +1109,7 @@ mod review_package_manifest {
         let manifest =
             ExtensionManifest::parse_acl(&std::fs::read_to_string(&path).expect("review manifest"))
                 .expect("review manifest");
-        assert_eq!(manifest.package_id, "a3s/review");
+        assert_eq!(manifest.package_id, "aster/review");
         assert_eq!(manifest.version, "1.0.0");
         assert_eq!(manifest.skills.len(), 1);
         assert_eq!(manifest.skills[0].id, "review");
@@ -1122,10 +1122,10 @@ mod review_package_manifest {
     }
 
     #[test]
-    fn a3s_robot_workbenches_declare_the_workbench_and_skill() {
+    fn aster_robot_workbenches_declare_the_workbench_and_skill() {
         for name in ["cobot-arm", "g1-arm"] {
             let path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(format!(
-                "../../../../apps/use-registry/packages/{name}/a3s-use-extension.acl"
+                "../../../../apps/use-registry/packages/{name}/aster-use-extension.acl"
             ));
             // Use can be built outside the OS monorepo, where this package source is absent.
             if !path.is_file() {
@@ -1135,7 +1135,7 @@ mod review_package_manifest {
                 &std::fs::read_to_string(&path).expect("workbench manifest"),
             )
             .expect("workbench manifest");
-            assert_eq!(manifest.package_id, format!("a3s/{name}"));
+            assert_eq!(manifest.package_id, format!("aster/{name}"));
             assert_eq!(manifest.version, "1.0.0");
             assert_eq!(manifest.skills.len(), 1);
             assert_eq!(manifest.skills[0].id, name);

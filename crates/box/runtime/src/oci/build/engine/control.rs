@@ -7,7 +7,7 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use async_trait::async_trait;
 
 use crate::oci::build::cache::RecordedBuildCache;

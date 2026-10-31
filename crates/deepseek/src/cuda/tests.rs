@@ -2,7 +2,7 @@ use super::*;
 use crate::layers::linear::activation::Fp8Activations;
 use crate::layers::linear::DeviceMatrix;
 use crate::layers::CudaLayerDevice;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

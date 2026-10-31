@@ -5,10 +5,10 @@ use crate::NativeSandbox;
 
 #[test]
 fn gate7_release_default_profile_keeps_mediation_off() {
-    let policy = SandboxPolicy::a3s_bash_baseline();
+    let policy = SandboxPolicy::aster_bash_baseline();
     assert!(
         !policy.features.mediated_network && !policy.features.mediated_socks,
-        "default A3S Bash profile must keep mediation flags off"
+        "default Aster Bash profile must keep mediation flags off"
     );
     assert!(
         policy.network.allow.is_empty(),

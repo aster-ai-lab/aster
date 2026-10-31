@@ -1,0 +1,77 @@
+# Generated rename map: aster* → aster*
+# package	old	new	rust_ident_old	rust_ident_new
+package	aster	aster	aster	aster
+package	aster-acp	aster-acp	aster_acp	aster_acp
+package	aster-active-sessions	aster-active-sessions	aster_active_sessions	aster_active_sessions
+package	aster-agent	aster-agent	aster_agent	aster_agent
+package	aster-announcements	aster-announcements	aster_announcements	aster_announcements
+package	aster-auth	aster-auth	aster_auth	aster_auth
+package	aster-bundle	aster-bundle	aster_bundle	aster_bundle
+package	aster-compaction	aster-compaction	aster_compaction	aster_compaction
+package	aster-config	aster-config	aster_config	aster_config
+package	aster-config-types	aster-config-types	aster_config_types	aster_config_types
+package	aster-core	aster-core	aster_core	aster_core
+package	aster-dashboard-store	aster-dashboard-store	aster_dashboard_store	aster_dashboard_store
+package	aster-diag-server	aster-diag-server	aster_diag_server	aster_diag_server
+package	aster-env	aster-env	aster_env	aster_env
+package	aster-extra-ca	aster-extra-ca	aster_extra_ca	aster_extra_ca
+package	aster-feedback	aster-feedback	aster_feedback	aster_feedback
+package	aster-file-lock	aster-file-lock	aster_file_lock	aster_file_lock
+package	aster-foreign-sessions	aster-foreign-sessions	aster_foreign_sessions	aster_foreign_sessions
+package	aster-gboom	aster-gboom	aster_gboom	aster_gboom
+package	aster-hooks	aster-hooks	aster_hooks	aster_hooks
+package	aster-http	aster-http	aster_http	aster_http
+package	aster-image	aster-image	aster_image	aster_image
+package	aster-login	aster-login	aster_login	aster_login
+package	aster-markdown	aster-markdown	aster_markdown	aster_markdown
+package	aster-markdown-core	aster-markdown-core	aster_markdown_core	aster_markdown_core
+package	aster-markdown-fuzz	aster-markdown-fuzz	aster_markdown_fuzz	aster_markdown_fuzz
+package	aster-mcp	aster-mcp	aster_mcp	aster_mcp
+package	aster-memory	aster-memory	aster_memory	aster_memory
+package	aster-mermaid	aster-mermaid	aster_mermaid	aster_mermaid
+package	aster-models	aster-models	aster_models	aster_models
+package	aster-otel	aster-otel	aster_otel	aster_otel
+package	aster-pager	aster-pager	aster_pager	aster_pager
+package	aster-pager-bin	aster-pager-bin	aster_pager_bin	aster_pager_bin
+package	aster-pager-diff	aster-pager-diff	aster_pager_diff	aster_pager_diff
+package	aster-pager-minimal	aster-pager-minimal	aster_pager_minimal	aster_pager_minimal
+package	aster-pager-pty-harness	aster-pager-pty-harness	aster_pager_pty_harness	aster_pager_pty_harness
+package	aster-pager-render	aster-pager-render	aster_pager_render	aster_pager_render
+package	aster-paths	aster-paths	aster_paths	aster_paths
+package	aster-plugin-marketplace	aster-plugin-marketplace	aster_plugin_marketplace	aster_plugin_marketplace
+package	aster-s3-compat	aster-s3-compat	aster_s3_compat	aster_s3_compat
+package	aster-sampler	aster-sampler	aster_sampler	aster_sampler
+package	aster-sampling-types	aster-sampling-types	aster_sampling_types	aster_sampling_types
+package	aster-sandbox	aster-sandbox	aster_sandbox	aster_sandbox
+package	aster-secrets	aster-secrets	aster_secrets	aster_secrets
+package	aster-session-events	aster-session-events	aster_session_events	aster_session_events
+package	aster-session-search	aster-session-search	aster_session_search	aster_session_search
+package	aster-shared	aster-shared	aster_shared	aster_shared
+package	aster-shell	aster-shell	aster_shell	aster_shell
+package	aster-shell-all	aster-shell-all	aster_shell_all	aster_shell_all
+package	aster-shell-base	aster-shell-base	aster_shell_base	aster_shell_base
+package	aster-shell-session-support	aster-shell-session-support	aster_shell_session_support	aster_shell_session_support
+package	aster-shell-terminal	aster-shell-terminal	aster_shell_terminal	aster_shell_terminal
+package	aster-status-line	aster-status-line	aster_status_line	aster_status_line
+package	aster-subagent-resolution	aster-subagent-resolution	aster_subagent_resolution	aster_subagent_resolution
+package	aster-telemetry	aster-telemetry	aster_telemetry	aster_telemetry
+package	aster-test-support	aster-test-support	aster_test_support	aster_test_support
+package	aster-tools	aster-tools	aster_tools	aster_tools
+package	aster-tools-api	aster-tools-api	aster_tools_api	aster_tools_api
+package	aster-update	aster-update	aster_update	aster_update
+package	aster-version	aster-version	aster_version	aster_version
+package	aster-voice	aster-voice	aster_voice	aster_voice
+package	aster-workspace	aster-workspace	aster_workspace	aster_workspace
+package	aster-workspace-client	aster-workspace-client	aster_workspace_client	aster_workspace_client
+package	aster-workspace-daemon	aster-workspace-daemon	aster_workspace_daemon	aster_workspace_daemon
+package	aster-workspace-types	aster-workspace-types	aster_workspace_types	aster_workspace_types
+package	aster-codebase-graph	aster-codebase-graph	aster_codebase_graph	aster_codebase_graph
+
+# General brand rules (applied after aster* renames)
+# aster-<rest> → aster-<rest>   (Cargo package / bin)
+# aster_<rest> → aster_<rest>   (Rust crate ident)
+# @aster-ai-lab/<pkg> → @aster-ai-lab/<pkg>   (npm scope; org is aster-ai-lab)
+# @aster/workspace → @aster/workspace
+# Aster → Aster
+# ~/.aster → ~/.aster
+# .aster/ → .aster/  (repo-local agent dirs)

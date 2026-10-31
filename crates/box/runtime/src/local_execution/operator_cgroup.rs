@@ -1,7 +1,7 @@
 //! When an operator setuid spawn may ignore a cgroup v2 ancestor denial.
 //!
 //! `pre_exec` still runs as the unprivileged parent. EACCES there is not a
-//! failed owner: `a3s-oci` migrates after the mode 4755 exec. Other failures,
+//! failed owner: `aster-oci` migrates after the mode 4755 exec. Other failures,
 //! and every non-operator spawn, stay fail-closed.
 
 /// Defer only the operator setuid parent's cgroup-ancestor denial.

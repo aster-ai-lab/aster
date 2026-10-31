@@ -3,12 +3,12 @@
 use super::*;
 
 #[cfg(target_os = "macos")]
-use a3s_box_core::guest_exec::{
+use aster_box_core::guest_exec::{
     GuestBootConfig, GUEST_BOOT_CONFIG_ENV, GUEST_BOOT_CONFIG_PATH,
     GUEST_ROOTFS_MAINTENANCE_DEVICE_ENV, GUEST_ROOTFS_MAINTENANCE_ENV,
 };
 #[cfg(target_os = "macos")]
-use a3s_box_core::vmm::{
+use aster_box_core::vmm::{
     Entrypoint, InstanceSpec, RawBlockDevice, RootfsSource, GUEST_EXT4_ROOT_DEVICE,
 };
 
@@ -16,7 +16,7 @@ use a3s_box_core::vmm::{
 /// VM and always tear that VM down before returning.
 ///
 /// The user disk is an auxiliary raw block device opened read-only. PID 1 and
-/// the archive implementation come from the current A3S installation, not from
+/// the archive implementation come from the current Aster installation, not from
 /// the mutable filesystem being inspected.
 pub async fn archive_stopped_guest_native_rootfs<W>(
     config: BoxConfig,
@@ -62,23 +62,23 @@ where
 
 #[cfg(target_os = "macos")]
 fn sanitize_maintenance_config(config: &mut BoxConfig) {
-    config.isolation = a3s_box_core::ExecutionIsolation::Microvm;
+    config.isolation = aster_box_core::ExecutionIsolation::Microvm;
     config.workspace = PathBuf::new();
     config.volumes.clear();
     config.extra_env.clear();
     config.port_map.clear();
     config.dns.clear();
     config.add_hosts.clear();
-    config.network = a3s_box_core::NetworkMode::None;
+    config.network = aster_box_core::NetworkMode::None;
     config.tmpfs.clear();
-    config.resource_limits = a3s_box_core::ResourceLimits::default();
+    config.resource_limits = aster_box_core::ResourceLimits::default();
     config.cap_add.clear();
     config.cap_drop.clear();
     config.security_opt.clear();
     config.sysctls.clear();
     config.privileged = false;
     config.sidecar = None;
-    config.tee = a3s_box_core::config::TeeConfig::None;
+    config.tee = aster_box_core::config::TeeConfig::None;
     config.deferred_main = false;
     config.snapshot_mem_file = None;
     config.snapshot_sock = None;
@@ -113,7 +113,7 @@ impl VmManager {
             vcpus: 1,
             memory_mib: self.config.resources.memory_mb.clamp(256, 512),
             rootfs: RootfsSource::directory(root),
-            block_devices: vec![RawBlockDevice::new("a3s-rootfs", disk, true)],
+            block_devices: vec![RawBlockDevice::new("aster-rootfs", disk, true)],
             exec_socket_path: exec_socket.clone(),
             pty_socket_path: PathBuf::new(),
             attest_socket_path: PathBuf::new(),
@@ -142,8 +142,8 @@ impl VmManager {
             network: None,
             disable_tsi: true,
             host_services: Vec::new(),
-            resource_limits: a3s_box_core::ResourceLimits::default(),
-            log_config: a3s_box_core::log::LogConfig::default(),
+            resource_limits: aster_box_core::ResourceLimits::default(),
+            log_config: aster_box_core::log::LogConfig::default(),
             ksm: false,
             snapshot_mem_file: None,
             snapshot_sock: None,
@@ -262,7 +262,7 @@ fn prepare_trusted_maintenance_root(maintenance_dir: &Path) -> Result<PathBuf> {
 
     remove_path_no_follow(maintenance_dir)?;
     let root = maintenance_dir.join("root");
-    for directory in ["dev", "proc", "sys", "run", "tmp", "sbin", "mnt/a3s-rootfs"] {
+    for directory in ["dev", "proc", "sys", "run", "tmp", "sbin", "mnt/aster-rootfs"] {
         std::fs::create_dir_all(root.join(directory)).map_err(BoxError::IoError)?;
     }
     std::fs::set_permissions(maintenance_dir, std::fs::Permissions::from_mode(0o700))
@@ -349,7 +349,7 @@ fn maintenance_diagnostics(maintenance_dir: &Path) -> String {
 #[cfg(test)]
 mod invent_refusal_tests {
     use super::*;
-    use a3s_box_core::{BoxConfig, EventEmitter};
+    use aster_box_core::{BoxConfig, EventEmitter};
 
     /// Maintenance Ready publish must use the same authenticated-client gate as
     /// cold boot / Sandbox (#433). Path presence alone must leave Created.
@@ -385,7 +385,7 @@ mod tests {
             volumes: vec!["/host:/guest".to_string()],
             extra_env: vec![("SECRET".to_string(), "value".to_string())],
             port_map: vec!["8080:80".to_string()],
-            network: a3s_box_core::NetworkMode::Bridge {
+            network: aster_box_core::NetworkMode::Bridge {
                 network: "default".to_string(),
             },
             privileged: true,
@@ -398,7 +398,7 @@ mod tests {
         assert!(config.volumes.is_empty());
         assert!(config.extra_env.is_empty());
         assert!(config.port_map.is_empty());
-        assert_eq!(config.network, a3s_box_core::NetworkMode::None);
+        assert_eq!(config.network, aster_box_core::NetworkMode::None);
         assert!(!config.privileged);
         assert!(config.persistent);
     }

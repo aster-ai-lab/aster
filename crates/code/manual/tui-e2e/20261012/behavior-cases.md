@@ -6,11 +6,11 @@
 
 ## BOOT01 安装入口与版本一致性
 
-入口：a3s code / a3s-code-tui。优先级：P0。执行通道：`U`。夹具：`clean-home`。
+入口：aster code / aster-tui。优先级：P0。执行通道：`U`。夹具：`clean-home`。
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/cli/src/code_pager.rs](../../../../cli/src/code_pager.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs)。
+源码：[apps/cli/src/code_pager.rs](../../../../cli/src/code_pager.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/acp/aster_spawn.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/acp/aster_spawn.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -42,7 +42,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mod.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mod.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -74,7 +74,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs)。
 
 动作参数化：`SendPrompt`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -92,7 +92,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs)。
 
 动作参数化：`ToggleMultiline`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -110,7 +110,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -126,7 +126,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs)。
 
 动作参数化：`StashPrompt`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -144,7 +144,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs)。
 
 动作参数化：`EditPromptExternal`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -162,7 +162,7 @@
 
 可达性：CONDITIONAL: 仅产品实际启动路径广告并可执行时运行正向；否则记录入口拒绝与正向 BLOCKED。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -178,7 +178,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)。
 
 动作参数化：`CommandPalette`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -196,7 +196,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/actions/defaults.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/actions/defaults.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/actions.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/actions.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/actions/defaults.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/actions/defaults.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/actions.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/actions.rs)。
 
 动作参数化：`FocusPrompt`、`FocusScrollback`、`ShortcutsHelp`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -214,7 +214,7 @@
 
 可达性：CONDITIONAL: 仅产品实际启动路径广告并可执行时运行正向；否则记录入口拒绝与正向 BLOCKED。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs)。
 
 动作参数化：`BashMode`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -232,7 +232,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs)。
 
 动作参数化：`NewSession`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -250,7 +250,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -266,7 +266,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -282,7 +282,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -298,7 +298,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -314,7 +314,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -330,7 +330,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -346,7 +346,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 动作参数化：`CopyBlockContent`、`CopyBlockMeta`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -364,7 +364,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -380,7 +380,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 动作参数化：`NextTurn`、`PrevTurn`、`NextResponse`、`PrevResponse`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -398,7 +398,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/actions/defaults.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/actions/defaults.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/actions.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/actions.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/actions/defaults.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/actions/defaults.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/actions.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/actions.rs)。
 
 动作参数化：`SelectNext`、`SelectPrev`、`GotoTop`、`GotoBottom`、`ScrollUp`、`ScrollDown`、`HalfPageUp`、`HalfPageDown`、`PageUp`、`PageDown`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -416,7 +416,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 动作参数化：`Collapse`、`Expand`、`ToggleFold`、`ToggleExpandAll`、`ExpandAllThinking`、`ToggleRaw`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -434,7 +434,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 动作参数化：`OpenBlockViewer`、`OpenNextLink`、`OpenPrevLink`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -452,7 +452,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/model.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/model.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/effort.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/effort.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/model.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/model.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/effort.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/effort.rs)。
 
 动作参数化：`ModelPicker`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -470,7 +470,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/model.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/model.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/effort.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/effort.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/model.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/model.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/effort.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/effort.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -486,7 +486,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/document.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/document.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/document.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/document.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -502,7 +502,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/document.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/document.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/document.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/document.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -518,7 +518,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/document.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/document.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/document.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/document.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -534,7 +534,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/document.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/document.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/document.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/document.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -550,7 +550,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mod.rs)；[apps/code/acp/tests/tui_913_real_llm.rs](../../../acp/tests/tui_913_real_llm.rs)；[apps/code/acp/tests/tui_913_real_llm/tui_coding.rs](../../../acp/tests/tui_913_real_llm/tui_coding.rs)；[apps/code/acp/tests/tui_913_real_llm/tui_coding/turns.rs](../../../acp/tests/tui_913_real_llm/tui_coding/turns.rs)；[apps/code/acp/tests/tui_913_real_llm/acp_trace_proxy.py](../../../acp/tests/tui_913_real_llm/acp_trace_proxy.py)；[apps/code/acp/tests/tui_913_real_llm/acp_trace_proxy_tests.py](../../../acp/tests/tui_913_real_llm/acp_trace_proxy_tests.py)；[apps/code/scripts/verify_tui_coding_evidence.py](../../../scripts/verify_tui_coding_evidence.py)；[apps/code/scripts/tui_coding_evidence_tests.py](../../../scripts/tui_coding_evidence_tests.py)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mod.rs)；[apps/code/acp/tests/tui_913_real_llm.rs](../../../acp/tests/tui_913_real_llm.rs)；[apps/code/acp/tests/tui_913_real_llm/tui_coding.rs](../../../acp/tests/tui_913_real_llm/tui_coding.rs)；[apps/code/acp/tests/tui_913_real_llm/tui_coding/turns.rs](../../../acp/tests/tui_913_real_llm/tui_coding/turns.rs)；[apps/code/acp/tests/tui_913_real_llm/acp_trace_proxy.py](../../../acp/tests/tui_913_real_llm/acp_trace_proxy.py)；[apps/code/acp/tests/tui_913_real_llm/acp_trace_proxy_tests.py](../../../acp/tests/tui_913_real_llm/acp_trace_proxy_tests.py)；[apps/code/scripts/verify_tui_coding_evidence.py](../../../scripts/verify_tui_coding_evidence.py)；[apps/code/scripts/tui_coding_evidence_tests.py](../../../scripts/tui_coding_evidence_tests.py)。
 
 架构判据：以实际 ACP request/response 和原始回执绑定 session/prompt/Run；每次新提交必须在前一请求终结后；执行前拒绝、真实检查失败及 Verified 分开判定，Unknown 不得由后续轮次清除。
 
@@ -584,7 +584,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mod.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mod.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -600,7 +600,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/permissions.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/permissions.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/permissions.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/permissions.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
 
 动作参数化：`CycleMode`、`ToggleYolo`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -618,7 +618,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/permissions.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/permissions.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/permissions.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/permissions.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -634,7 +634,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/interactions.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/interactions.rs)；[apps/code/core/src/tools/builtin/ask_user.rs](../../../core/src/tools/builtin/ask_user.rs)；[apps/code/core/src/tools/builtin/ask_user_form.rs](../../../core/src/tools/builtin/ask_user_form.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/interactions.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/interactions.rs)；[apps/code/core/src/tools/builtin/ask_user.rs](../../../core/src/tools/builtin/ask_user.rs)；[apps/code/core/src/tools/builtin/ask_user_form.rs](../../../core/src/tools/builtin/ask_user_form.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -650,7 +650,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/turn.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/turn.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/turn.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/turn.rs)。
 
 动作参数化：`CancelTurn`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -668,7 +668,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/interject.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/interject.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/interject.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/interject.rs)。
 
 动作参数化：`InterjectPrompt`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -678,7 +678,7 @@
 | TUI-RT08-02 | 用 send-now 打断并提交新要求 | 旧轮次先结算；新内容只执行一次 |
 | TUI-RT08-03 | 补充后再取消 | 队列和当前轮次状态可解释；无隐性继续 |
 | TUI-RT08-04 | 连续补充三个带序号任务 | 不合并丢字；执行顺序有证据 |
-| TUI-RT08-05 | 在 a3s 禁用 /queue 时用键盘入口 | 不能绕过能力门；不调用缺失扩展并假成功 |
+| TUI-RT08-05 | 在 aster 禁用 /queue 时用键盘入口 | 不能绕过能力门；不调用缺失扩展并假成功 |
 
 ## RT09 ACP 断连与重连
 
@@ -686,7 +686,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/routing.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/routing.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/routing.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/routing.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -750,7 +750,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/context.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/context.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/compact.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/compact.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/context.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/context.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/compact.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/compact.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -766,7 +766,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/context.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/context.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/compact.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/compact.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/context.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/context.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/compact.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/compact.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -782,7 +782,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/session_notification.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/session_notification.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/session_notification.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/session_notification.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1152,7 +1152,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/core/src/tools/builtin/git.rs](../../../core/src/tools/builtin/git.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/lifecycle.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/lifecycle.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/new_worktree_dialog.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/new_worktree_dialog.rs)。
+源码：[apps/code/core/src/tools/builtin/git.rs](../../../core/src/tools/builtin/git.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/lifecycle.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/lifecycle.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/new_worktree_dialog.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/new_worktree_dialog.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1245,7 +1245,7 @@
 | --- | --- | --- |
 | TUI-TL28-01 | 创建三步计划 | 真实 PlanEntry 与任务 id 显示对应 |
 | TUI-TL28-02 | 逐步更新 pending/in_progress/completed | 状态单调且与实际动作相符 |
-| TUI-TL28-03 | 任务 Failed/Skipped/Cancelled | 保留 a3sStatus；UI 不只显示成功完成 |
+| TUI-TL28-03 | 任务 Failed/Skipped/Cancelled | 保留 asterStatus；UI 不只显示成功完成 |
 | TUI-TL28-04 | 无任务时打开 todo 面板 | 明确空态；无虚构条目 |
 | TUI-TL28-05 | 恢复长任务后打开计划 | 未完成步骤仍在；历史不重复 |
 
@@ -1335,7 +1335,7 @@
 
 可达性：CONDITIONAL: 仅产品实际启动路径广告并可执行时运行正向；否则记录入口拒绝与正向 BLOCKED。
 
-源码：[apps/code/core/src/mcp/manager.rs](../../../core/src/mcp/manager.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mcp.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mcp.rs)。
+源码：[apps/code/core/src/mcp/manager.rs](../../../core/src/mcp/manager.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mcp.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mcp.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1351,7 +1351,7 @@
 
 可达性：CONDITIONAL: 仅产品实际启动路径广告并可执行时运行正向；否则记录入口拒绝与正向 BLOCKED。
 
-源码：[apps/code/core/src/mcp/manager.rs](../../../core/src/mcp/manager.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mcp.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mcp.rs)。
+源码：[apps/code/core/src/mcp/manager.rs](../../../core/src/mcp/manager.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mcp.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mcp.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1367,7 +1367,7 @@
 
 可达性：CONDITIONAL: 仅产品实际启动路径广告并可执行时运行正向；否则记录入口拒绝与正向 BLOCKED。
 
-源码：[apps/code/core/src/mcp/manager.rs](../../../core/src/mcp/manager.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mcp.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mcp.rs)。
+源码：[apps/code/core/src/mcp/manager.rs](../../../core/src/mcp/manager.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mcp.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mcp.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1383,7 +1383,7 @@
 
 可达性：CONDITIONAL: 仅产品实际启动路径广告并可执行时运行正向；否则记录入口拒绝与正向 BLOCKED。
 
-源码：[apps/code/core/src/mcp/manager.rs](../../../core/src/mcp/manager.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mcp.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mcp.rs)。
+源码：[apps/code/core/src/mcp/manager.rs](../../../core/src/mcp/manager.rs)；[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mcp.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mcp.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1463,7 +1463,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 动作参数化：`OpenSettings`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -1481,7 +1481,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1497,7 +1497,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/mode_switch.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/mode_switch.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/screen_mode_switch.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/screen_mode_switch.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/mode_switch.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/mode_switch.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/screen_mode_switch.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/screen_mode_switch.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1513,7 +1513,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1529,7 +1529,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/actions/defaults.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/actions/defaults.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/actions.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/actions.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/actions/defaults.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/actions/defaults.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/actions.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/actions.rs)。
 
 动作参数化：`ToggleMouseCapture`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -1547,7 +1547,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1563,7 +1563,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1579,7 +1579,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1595,7 +1595,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1611,7 +1611,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1627,7 +1627,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1643,7 +1643,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/doctor.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/doctor.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/doctor.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/doctor.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1659,7 +1659,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs)。
+源码：[apps/code/acp/src/agent.rs](../../../acp/src/agent.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1675,7 +1675,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/voice.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/voice.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/voice.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/voice.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)。
 
 动作参数化：`EnableVoiceMode`、`VoiceToggle`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -1693,7 +1693,7 @@
 
 可达性：当前源码入口；实际行为待运行确认。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/actions/defaults.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/actions/defaults.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/actions.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/actions.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/actions/defaults.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/actions/defaults.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/actions.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/actions.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -1771,13 +1771,13 @@
 
 入口：欢迎页 Changelog 菜单；与禁用斜杠入口分别验收。优先级：P1。执行通道：`C`。夹具：`welcome-release-notes`。
 
-可达性：实际启动视口已显示；点击行为、合法 A3S 数据来源和能力合同尚未资格核实。
+可达性：实际启动视口已显示；点击行为、合法 Aster 数据来源和能力合同尚未资格核实。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/event_loop.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/event_loop.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-shell-base/src/util/changelog.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-shell-base/src/util/changelog.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/event_loop.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/event_loop.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-shell-base/src/util/changelog.rs](../../../vendor/aster-ui/crates/codegen/aster-shell-base/src/util/changelog.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
-| TUI-UI16-01 | 预先固定合法 A3S 发布源和版本，有发布记录时从欢迎页打开 Changelog | 记录实际目标、版本和内容摘要；展示对应 A3S 记录；新增模型请求=0；无合法 A3S 数据源则正向 BLOCKED |
+| TUI-UI16-01 | 预先固定合法 Aster 发布源和版本，有发布记录时从欢迎页打开 Changelog | 记录实际目标、版本和内容摘要；展示对应 Aster 记录；新增模型请求=0；无合法 Aster 数据源则正向 BLOCKED |
 | TUI-UI16-02 | 缓存为空，合法发布源分别慢、断连或错误时点击欢迎页 Changelog | 有界失败并说明状态；不是无反馈死入口；输入与退出仍可用；不能按失败结果改选限制 profile |
 | TUI-UI16-03 | 离线重启后从欢迎页打开已有合法缓存 | 来源、版本和离线状态准确；旧记录不冒充当前；缓存不被半写；新增模型请求=0 |
 | TUI-UI16-04 | 合法发布数据包含长 Markdown、控制字符和外链时打开 | 渲染有界；无终端控制注入、自动打开、上传或凭证转发副作用；输入与关闭可用 |

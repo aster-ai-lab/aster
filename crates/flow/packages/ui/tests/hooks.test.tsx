@@ -1,16 +1,16 @@
 import { act, renderHook } from "@testing-library/react";
 import { effectScope } from "vue";
 import {
-  createA3sFlowDagNodeCatalog,
-  defineA3sFlowCustomDagNode,
+  createAsterFlowDagNodeCatalog,
+  defineAsterFlowCustomDagNode,
 } from "../src";
-import { useA3sFlowNode as useReactFlowNode } from "../src/react";
-import { useA3sFlowNode as useVueFlowNode } from "../src/vue";
+import { useAsterFlowNode as useReactFlowNode } from "../src/react";
+import { useAsterFlowNode as useVueFlowNode } from "../src/vue";
 
-describe("A3S Flow framework hooks", () => {
+describe("Aster Flow framework hooks", () => {
   const customCatalog = () =>
-    createA3sFlowDagNodeCatalog([
-      defineA3sFlowCustomDagNode({
+    createAsterFlowDagNodeCatalog([
+      defineAsterFlowCustomDagNode({
         manifest: {
           type: "commerce.review.assign",
           display_name: "Assign review",

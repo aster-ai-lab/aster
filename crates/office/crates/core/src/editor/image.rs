@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use base64::Engine as _;
 
 use super::part::{dialect, relationship_part, relative_target, worksheet_drawing, OfficeDialect};

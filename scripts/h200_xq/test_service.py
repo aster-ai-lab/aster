@@ -138,7 +138,7 @@ class ActivationBoundaryTests(unittest.TestCase):
             try:
                 (Path(directory)/'power.pid').write_text(str(child.pid))
                 with self.assertRaisesRegex(RuntimeError, 'unrelated'):
-                    service.stop_owned('power', Path('/not/this/deployment/a3s-power'))
+                    service.stop_owned('power', Path('/not/this/deployment/aster-power'))
                 self.assertIsNone(child.poll())
             finally:
                 child.terminate()
@@ -239,7 +239,7 @@ class UsageModeTests(unittest.TestCase):
             private = Path(directory)/'private'
             (root/'bin').mkdir(parents=True)
             private.mkdir()
-            (root/'bin/a3s-power').write_bytes(b'pinned synthetic binary')
+            (root/'bin/aster-power').write_bytes(b'pinned synthetic binary')
             (private/'power.acl').write_text('changed after startup')
             stack.enter_context(patch.object(service, 'ROOT', root))
             stack.enter_context(patch.object(service, 'PRIVATE', private))

@@ -6,12 +6,12 @@
 //! child role through parent-owned environment values:
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/absolute/path/config.acl \
-//!   cargo test -p a3s-code-core --test test_tool_effect_receipts_real_llm \
+//! ASTER_CONFIG_FILE=/absolute/path/config.acl \
+//!   cargo test -p aster-core --test test_tool_effect_receipts_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 //!
-//! Optional A3S_TEST_TOOL_EFFECT_EVIDENCE_DIR places retained attempt directories
+//! Optional ASTER_TEST_TOOL_EFFECT_EVIDENCE_DIR places retained attempt directories
 //! under an existing evidence directory. Every attempt retains stdout/stderr,
 //! the workspace/log/store, independent counter, and observed usage. No provider
 //! configuration or key is copied into these artifacts.
@@ -26,13 +26,13 @@ use std::process::Stdio;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::config::{CodeConfig, ModelCost};
-use a3s_code_core::fact_control::{read_workspace_facts, thread_for_session};
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::store::{FileSessionStore, SessionStore};
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
-use a3s_code_core::{Agent, AgentEvent, SessionOptions, SystemPromptSlots};
-use a3s_effect::{
+use aster_core::config::{CodeConfig, ModelCost};
+use aster_core::fact_control::{read_workspace_facts, thread_for_session};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::store::{FileSessionStore, SessionStore};
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_core::{Agent, AgentEvent, SessionOptions, SystemPromptSlots};
+use aster_effect::{
     ToolExecutionOutcome, ToolExecutionResultV1, ToolObservationCompleteness, ToolPreparedV1,
 };
 use serde_json::{json, Value};
@@ -40,8 +40,8 @@ use support::layer_c_model::{load_pinned_layer_c_config, pinned_layer_c_model, r
 
 const SESSION: &str = "tool-effect-process-crash-live";
 const CHILD_TEST: &str = "real_llm_write_before_result_crash_recovers_unknown_without_reexecution";
-const CHILD_ROOT_ENV: &str = "A3S_TEST_TOOL_EFFECT_CHILD_ROOT";
-const EVIDENCE_ENV: &str = "A3S_TEST_TOOL_EFFECT_EVIDENCE_DIR";
+const CHILD_ROOT_ENV: &str = "ASTER_TEST_TOOL_EFFECT_CHILD_ROOT";
+const EVIDENCE_ENV: &str = "ASTER_TEST_TOOL_EFFECT_EVIDENCE_DIR";
 const WRITE_TOOL: &str = "receipt_write_barrier";
 const FAIL_TOOL: &str = "receipt_fail_after_write";
 const FILE_NAME: &str = "effect.txt";
@@ -71,7 +71,7 @@ fn sync_write(path: &Path, bytes: &[u8]) -> std::io::Result<()> {
 /// Capture facts at the named boundary, independently of ignored state dirs.
 /// This qualification uses only its fixed prompts, public {} tool arguments,
 /// file bytes and frozen binding digests; provider configuration is not copied.
-fn retain_fact_snapshot(root: &Path, phase: &str, session: &str, facts: &[a3s_effect::Fact]) {
+fn retain_fact_snapshot(root: &Path, phase: &str, session: &str, facts: &[aster_effect::Fact]) {
     let artifacts = root.join("artifacts");
     std::fs::create_dir_all(&artifacts).expect("create retained fact snapshot directory");
     let counter = std::fs::read_to_string(root.join("executions.counter"))
@@ -101,7 +101,7 @@ fn retain_fact_snapshot(root: &Path, phase: &str, session: &str, facts: &[a3s_ef
     sync_write(
         &artifacts.join(format!("{phase}.json")),
         &serde_json::to_vec_pretty(&json!({
-            "schema":"a3s.test.tool-effects-fact-snapshot.v1", "capture_phase":phase,
+            "schema":"aster.test.tool-effects-fact-snapshot.v1", "capture_phase":phase,
             "session_id":session, "thread_id":thread_for_session(session),
             "source_run_id":std::fs::read_to_string(root.join("source-run-id")).ok(),
             "executions_observed":counter, "independent_file_digest":file_digest,
@@ -181,7 +181,7 @@ fn retained_attempt(name: &str) -> PathBuf {
         .unwrap_or_else(std::env::temp_dir);
     std::fs::create_dir_all(&parent).expect("create retained evidence parent");
     let root = tempfile::Builder::new()
-        .prefix(&format!("a3s-tool-effects-{name}-"))
+        .prefix(&format!("aster-tool-effects-{name}-"))
         .tempdir_in(parent)
         .expect("allocate isolated retained attempt")
         .keep();
@@ -222,7 +222,7 @@ fn options(root: &Path, model: &str, session: &str, tool: &str) -> SessionOption
         .with_session_id(session)
         .with_model(model)
         .with_file_session_store(root.join("sessions"))
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(permission)
         .with_default_security()
         .with_planning(false)
@@ -272,7 +272,7 @@ fn execution_count(root: &Path) -> usize {
         .count()
 }
 
-fn preparations(facts: &[a3s_effect::Fact]) -> Vec<ToolPreparedV1> {
+fn preparations(facts: &[aster_effect::Fact]) -> Vec<ToolPreparedV1> {
     facts
         .iter()
         .filter(|fact| fact.kind == "tool.prepared")
@@ -285,7 +285,7 @@ fn preparations(facts: &[a3s_effect::Fact]) -> Vec<ToolPreparedV1> {
         .collect()
 }
 
-fn receipts(facts: &[a3s_effect::Fact]) -> Vec<ToolExecutionResultV1> {
+fn receipts(facts: &[aster_effect::Fact]) -> Vec<ToolExecutionResultV1> {
     facts
         .iter()
         .filter(|fact| fact.kind == "tool.result")
@@ -360,7 +360,7 @@ async fn real_llm_write_before_result_crash_recovers_unknown_without_reexecution
         ])
         .env(CHILD_ROOT_ENV, &root)
         .env(
-            "A3S_CONFIG_FILE",
+            "ASTER_CONFIG_FILE",
             repo_config_path()
                 .canonicalize()
                 .expect("explicit ACL configuration exists"),
@@ -585,7 +585,7 @@ async fn real_llm_failed_write_retains_complete_byte_receipt_and_refuses_narrati
             .changes
             .iter()
             .any(|change| change.path == FILE_NAME
-                && change.after.kind == a3s_effect::ToolFileKind::File
+                && change.after.kind == aster_effect::ToolFileKind::File
                 && change.after.content_digest.as_deref() == Some(expected_digest.as_str())),
         "known failed receipt must bind the independently read actual bytes: expected {expected_digest}, observed {:?}",
         known.effects.changes,

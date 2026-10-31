@@ -7,7 +7,7 @@
 //! > Reactive, not a pre-execution gate … A true input gate (hold a prompt until judged) needs an
 //! > inline proxy … the `Judge` pipeline is transport-agnostic, so an inline mode can be added later.
 //!
-//! a3s-gateway's wire proxy is that inline transport: on each decoded request/response body it calls
+//! aster-gateway's wire proxy is that inline transport: on each decoded request/response body it calls
 //! [`inspect`](Pipeline) (via [`Sentry::inspect_wire`](crate::Sentry::inspect_wire)). The detection
 //! reuses the existing tiers verbatim — the wire content is wrapped as an [`Event::SslContent`] and
 //! run through the same [`Pipeline`], so the built-in `prompt-injection` / `secret-in-egress` rules
@@ -184,7 +184,7 @@ fn redactions(content: &str) -> Vec<Redaction> {
             start,
             end,
             kind,
-            placeholder: format!("{{{{A3S_REDACTED:{kind}:{n}}}}}"),
+            placeholder: format!("{{{{ASTER_REDACTED:{kind}:{n}}}}}"),
         });
         cursor = end;
     }
@@ -217,7 +217,7 @@ mod tests {
             !masked.contains("sk-ABCDEF"),
             "real key is gone from the wire"
         );
-        assert!(masked.contains("A3S_REDACTED:openai_key:1"));
+        assert!(masked.contains("ASTER_REDACTED:openai_key:1"));
         // restoring the placeholder reconstructs the original exactly (round-trip).
         let mut back = masked.clone();
         for (ph, orig) in &restores {

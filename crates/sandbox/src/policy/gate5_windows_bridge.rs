@@ -4,7 +4,7 @@
 //! (`platform::windows::tests::windows_appcontainer_named_pipe_connect_allow_deny_and_blocks_raw_egress`)
 //! proves allow tunnels, denied CONNECT, and raw egress failure under zero
 //! AppContainer network capabilities. The guest speaks CONNECT over an
-//! inherited connected named-pipe handle (`A3S_SANDBOX_MEDIATOR_PIPE_HANDLE`);
+//! inherited connected named-pipe handle (`ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE`);
 //! name-open alone remains Access Denied under AppContainer on GHA.
 //! `mediated_http` is therefore claimed on Windows. SOCKS and Unix-socket
 //! allowlists remain fail-closed.
@@ -28,7 +28,7 @@ fn gate5_windows_mediated_http_is_claimed_socks_remain_unclaimed() {
 
 #[test]
 fn gate5_windows_mediated_http_policy_compiles_on_windows_capabilities() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "example.com".into(),
@@ -52,7 +52,7 @@ fn gate5_windows_bridge_acceptance_checklist_is_documented() {
     let required = [
         "guest retains zero AppContainer network capabilities (no raw TCP)",
         "guest reaches host mediator via inherited connected pipe handle",
-        "guest contract is A3S_SANDBOX_MEDIATOR_PIPE_HANDLE (not HTTP_PROXY)",
+        "guest contract is ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE (not HTTP_PROXY)",
         "denied CONNECT never reaches upstream",
         "NO_PROXY and proxy env bypasses cannot restore raw egress",
         "pipe pair setup failure fails closed (no host fallback)",
@@ -72,7 +72,7 @@ fn gate5_windows_guest_contract_rejects_http_proxy_as_bridge() {
     // Documented invariant: zero-net AppContainers cannot use loopback TCP, so
     // HTTP_PROXY is not a valid Windows mediation contract.
     assert_ne!(
-        "HTTP_PROXY", "A3S_SANDBOX_MEDIATOR_PIPE_HANDLE",
+        "HTTP_PROXY", "ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE",
         "Windows guest contract must not be HTTP_PROXY"
     );
 }

@@ -8,7 +8,7 @@
 //! stand in for one patches call.
 //!
 //! ```text
-//! cargo +1.97.1 test -p a3s-code-core --test test_multi_patch_real_llm \
+//! cargo +1.97.1 test -p aster-core --test test_multi_patch_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -17,15 +17,15 @@ mod support;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, SessionOptions};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 const REAL_TIMEOUT: Duration = Duration::from_secs(300);
 const FILES: [(&str, i32, i32); 3] = [("alpha", 1, 11), ("bravo", 2, 22), ("charlie", 3, 33)];
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from the repo .a3s/config.acl"]
+#[ignore = "requires the model and credentials from the repo .aster/config.acl"]
 async fn one_patches_call_edits_three_files_on_the_real_model() {
     let config = load_pinned_layer_c_config();
     let model = config
@@ -67,7 +67,7 @@ console.log("PAR_PATCH_OK");
             Some(
                 SessionOptions::new()
                     .with_session_id("par-patch")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_permission_policy(policy)
                     .with_default_security()
                     .with_max_tool_rounds(12)
@@ -77,7 +77,7 @@ console.log("PAR_PATCH_OK");
                     // Host-declared suite: `node check.mjs` covers the
                     // three mutated files, so its passing run binds.
                     .with_verification_contract(
-                        a3s_code_core::verification::VerificationContractV1::new(
+                        aster_core::verification::VerificationContractV1::new(
                             "check-suite",
                             "node check.mjs",
                             ["alpha.mjs", "bravo.mjs", "charlie.mjs", "check.mjs"],
@@ -105,7 +105,7 @@ console.log("PAR_PATCH_OK");
     let answer = match answer {
         Ok(answer) => answer,
         Err(error) => {
-            let facts = a3s_code_core::fact_control::read_workspace_facts(&root, "par-patch")
+            let facts = aster_core::fact_control::read_workspace_facts(&root, "par-patch")
                 .unwrap_or_default();
             for fact in &facts {
                 if fact.kind == "model.turn" {

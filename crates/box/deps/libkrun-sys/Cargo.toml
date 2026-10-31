@@ -1,9 +1,9 @@
 [package]
 publish = false
-name = "a3s-libkrun-sys"
+name = "aster-libkrun-sys"
 version = "3.2.7"
 edition = "2021"
-authors = ["A3S Lab Team"]
+authors = ["Aster Team"]
 description = "FFI bindings to libkrun with Windows WHPX backend support"
 license = "MIT"
 repository = "https://github.com/aster-ai-lab/libkrun"
@@ -34,7 +34,7 @@ include = [
     "vendor/krun-windows-x64.tar.xz",
 ]
 
-links = "a3s_krun"
+links = "aster_krun"
 
 [build-dependencies]
 pkg-config = "0.3"

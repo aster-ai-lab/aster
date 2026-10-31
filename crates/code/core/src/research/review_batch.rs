@@ -6,9 +6,9 @@ use super::{
 };
 use serde::{Deserialize, Serialize};
 
-pub const RESEARCH_REVIEW_BATCH_SCHEMA_V1: &str = "a3s.code.review-batch.v1";
+pub const RESEARCH_REVIEW_BATCH_SCHEMA_V1: &str = "aster.code.review-batch.v1";
 pub const RESEARCH_MAX_REVIEW_FINDINGS: usize = 512;
-const RESEARCH_REVIEW_BATCH_DIGEST_DOMAIN: &str = "a3s.code.review-batch.identity.v1";
+const RESEARCH_REVIEW_BATCH_DIGEST_DOMAIN: &str = "aster.code.review-batch.identity.v1";
 
 /// One immutable projection of an evaluator result into bounded findings.
 ///

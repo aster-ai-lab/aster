@@ -106,7 +106,7 @@ async fn an_automatic_slice_child_task_is_billed_once_through_the_original_guard
     let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
     let closeout = facts
         .iter()
-        .rfind(|fact| fact.kind == "a3s.goal.slice.settled")
+        .rfind(|fact| fact.kind == "aster.goal.slice.settled")
         .unwrap();
     let body = &closeout.payload["body"];
     assert_eq!(body["outcome"], "completed");

@@ -1,4 +1,4 @@
-//! Portable, content-addressed A3S Code session checkpoints.
+//! Portable, content-addressed Aster Code session checkpoints.
 //!
 //! A checkpoint artifact binds one complete [`SessionSnapshotV1`] and,
 //! optionally, the exact [`LoopCheckpoint`] from which Code can continue a
@@ -17,21 +17,21 @@ use self::codec::{
 };
 
 pub const SESSION_CHECKPOINT_DESCRIPTOR_SCHEMA_V1: &str =
-    "a3s.code.session-checkpoint-descriptor.v1";
-pub const SESSION_CHECKPOINT_PAYLOAD_SCHEMA_V1: &str = "a3s.code.session-checkpoint-payload.v1";
-pub const SESSION_SNAPSHOT_EVIDENCE_SCHEMA_V1: &str = "a3s.code.session-snapshot-evidence.v1";
-pub const SESSION_LOGICAL_RESUME_EVIDENCE_SCHEMA_V1: &str = "a3s.code.logical-resume-evidence.v1";
-pub const SESSION_CHECKPOINT_FORMAT_V1: &str = "a3s_code_session_checkpoint_v1";
+    "aster.code.session-checkpoint-descriptor.v1";
+pub const SESSION_CHECKPOINT_PAYLOAD_SCHEMA_V1: &str = "aster.code.session-checkpoint-payload.v1";
+pub const SESSION_SNAPSHOT_EVIDENCE_SCHEMA_V1: &str = "aster.code.session-snapshot-evidence.v1";
+pub const SESSION_LOGICAL_RESUME_EVIDENCE_SCHEMA_V1: &str = "aster.code.logical-resume-evidence.v1";
+pub const SESSION_CHECKPOINT_FORMAT_V1: &str = "aster_session_checkpoint_v1";
 pub const SESSION_CHECKPOINT_MEDIA_TYPE_V1: &str =
-    "application/vnd.a3s.code.session-checkpoint.v1+json";
+    "application/vnd.aster.code.session-checkpoint.v1+json";
 pub const SESSION_CHECKPOINT_ENCODING_V1: &str = "canonical_json_v1";
 pub const SESSION_CHECKPOINT_LOGICAL_RESUME_SEMANTICS_V1: &str = "between_tool_rounds_v1";
 pub const SESSION_CHECKPOINT_MAX_CONTENT_BYTES: u64 = 256 * 1024 * 1024;
 
-const SNAPSHOT_EVIDENCE_DIGEST_DOMAIN_V1: &str = "a3s.code.session-snapshot-evidence-digest.v1";
-const LOGICAL_RESUME_EVIDENCE_DIGEST_DOMAIN_V1: &str = "a3s.code.logical-resume-evidence-digest.v1";
+const SNAPSHOT_EVIDENCE_DIGEST_DOMAIN_V1: &str = "aster.code.session-snapshot-evidence-digest.v1";
+const LOGICAL_RESUME_EVIDENCE_DIGEST_DOMAIN_V1: &str = "aster.code.logical-resume-evidence-digest.v1";
 const CHECKPOINT_DESCRIPTOR_DIGEST_DOMAIN_V1: &str =
-    "a3s.code.session-checkpoint-descriptor-digest.v1";
+    "aster.code.session-checkpoint-descriptor-digest.v1";
 pub(super) const MAX_ID_BYTES: usize = 256;
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -75,10 +75,10 @@ impl SessionCheckpointError {
     /// Stable machine-readable code for host and protocol adapters.
     pub const fn code(&self) -> &'static str {
         match self {
-            Self::InvalidDescriptor(_) => "a3s.code.session_checkpoint.invalid_descriptor",
-            Self::InvalidPayload(_) => "a3s.code.session_checkpoint.invalid_payload",
-            Self::ContentDrift(_) => "a3s.code.session_checkpoint.content_drift",
-            Self::Encoding(_) => "a3s.code.session_checkpoint.encoding",
+            Self::InvalidDescriptor(_) => "aster.code.session_checkpoint.invalid_descriptor",
+            Self::InvalidPayload(_) => "aster.code.session_checkpoint.invalid_payload",
+            Self::ContentDrift(_) => "aster.code.session_checkpoint.content_drift",
+            Self::Encoding(_) => "aster.code.session_checkpoint.encoding",
         }
     }
 }
@@ -491,19 +491,19 @@ mod tests {
     fn checkpoint_error_codes_are_stable() {
         assert_eq!(
             SessionCheckpointError::InvalidDescriptor("x".into()).code(),
-            "a3s.code.session_checkpoint.invalid_descriptor"
+            "aster.code.session_checkpoint.invalid_descriptor"
         );
         assert_eq!(
             SessionCheckpointError::InvalidPayload("x".into()).code(),
-            "a3s.code.session_checkpoint.invalid_payload"
+            "aster.code.session_checkpoint.invalid_payload"
         );
         assert_eq!(
             SessionCheckpointError::ContentDrift("x".into()).code(),
-            "a3s.code.session_checkpoint.content_drift"
+            "aster.code.session_checkpoint.content_drift"
         );
         assert_eq!(
             SessionCheckpointError::Encoding("x".into()).code(),
-            "a3s.code.session_checkpoint.encoding"
+            "aster.code.session_checkpoint.encoding"
         );
     }
 

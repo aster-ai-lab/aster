@@ -1,5 +1,5 @@
 use super::*;
-use a3s_code_core::capability::{CapabilityEffect, CapabilityEffectError};
+use aster_core::capability::{CapabilityEffect, CapabilityEffectError};
 
 #[derive(Clone)]
 pub(super) struct RetainedRun {

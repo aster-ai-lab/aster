@@ -141,7 +141,7 @@ impl DynamicWorkflowControl {
             dynamic_workflow_runtime_configuration(self.runtime_build_compatibility.as_ref())?;
         let source_hash = source_hash(self.source.as_ref());
         let base_spec = WorkflowSpec::rust_embedded(
-            "a3s-code.dynamic-workflow",
+            "aster.dynamic-workflow",
             source_hash.as_str(),
             "ptc",
             "run",
@@ -152,11 +152,11 @@ impl DynamicWorkflowControl {
         };
         let prior_history = match store.list(&self.run_id).await {
             Ok(history) => history,
-            Err(a3s_flow::FlowError::RunNotFound(_)) if allow_missing => Vec::new(),
+            Err(aster_flow::FlowError::RunNotFound(_)) if allow_missing => Vec::new(),
             Err(error) => return Err(error.into()),
         };
         if !allow_missing && prior_history.is_empty() {
-            return Err(a3s_flow::FlowError::RunNotFound(self.run_id.clone()).into());
+            return Err(aster_flow::FlowError::RunNotFound(self.run_id.clone()).into());
         }
         let (spec, effective_runtime_build_id) = prior_history
             .iter()

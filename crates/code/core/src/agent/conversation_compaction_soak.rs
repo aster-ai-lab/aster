@@ -66,6 +66,7 @@ fn offline_config() -> CodeConfig {
             ..MemoryConfig::default()
         }),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,

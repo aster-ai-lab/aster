@@ -5,7 +5,7 @@
  * - `<StreamingMarkdown>` — token-by-token output with AST-stable per-id
  *   animation that does NOT re-fade already-rendered text on mid-stream
  *   structural changes.
- * - Plugin presets are exported from `@a3s/ui` so math / Mermaid
+ * - Plugin presets are exported from `@aster/ui` so math / Mermaid
  *   dependencies remain opt-in at the call site.
  * - rehype plugins + sanitize schema — used by chat to ship its own
  *   pre-processing layer on top.

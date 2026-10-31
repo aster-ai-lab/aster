@@ -2,13 +2,13 @@
 //!
 //! Corpus construction is excluded from query latency. The measured profile
 //! includes ranking, deduplication, prompt rendering, and the Code-owned
-//! `AgentMemory` recall call over the pinned `a3s-memory` in-process store.
+//! `AgentMemory` recall call over the pinned `aster-memory` in-process store.
 
-use a3s_code_core::context::{
+use aster_core::context::{
     ContextAssembler, ContextBudget, ContextItem, ContextResult, ContextSourcePolicy, ContextType,
 };
-use a3s_code_core::memory::AgentMemory;
-use a3s_memory::{InMemoryStore, MemoryItem, MemoryStore, MemoryType};
+use aster_core::memory::AgentMemory;
+use aster_durable_memory::{InMemoryStore, MemoryItem, MemoryStore, MemoryType};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use serde_json::json;
@@ -151,7 +151,7 @@ async fn main() -> anyhow::Result<()> {
             "passed": context_passed,
         },
         "memoryRecall": {
-            "backend": "a3s-memory/InMemoryStore",
+            "backend": "aster-memory/InMemoryStore",
             "codeBoundary": "AgentMemory::recall_similar",
             "corpusItems": MEMORY_CORPUS_ITEMS,
             "resultLimit": MEMORY_RESULT_LIMIT,

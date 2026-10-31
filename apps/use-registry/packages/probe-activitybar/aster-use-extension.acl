@@ -1,0 +1,30 @@
+extension "aster/probe-activitybar" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "probe-activitybar"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  view_container "bar" {
+    title    = "活动栏探针"
+    icon     = "panels"
+    order    = 80
+    location = "activitybar"
+  }
+
+  ui "view" {
+    title            = "活动栏探针"
+    description      = "点击左侧活动栏图标，页面出现在侧栏。"
+    icon             = "panels"
+    entry            = "ui/view/index.html"
+    presentation     = "webview"
+    container        = "bar"
+    contract_version = 1
+    mode             = "append"
+  }
+}

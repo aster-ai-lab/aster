@@ -16,9 +16,9 @@ export const meta = {
 在 `runtime.rs` 添加下面的函数。它先用诊断日志展示事件，下一章再把这些事件交给终端界面。
 
 ```rust
-use a3s_code_core::AgentEvent;
+use aster_core::AgentEvent;
 
-pub async fn inspect_stream(session: &a3s_code_core::AgentSession)
+pub async fn inspect_stream(session: &aster_core::AgentSession)
     -> anyhow::Result<()>
 {
     let mut stream = session.stream_with_run("说明 README 和测试入口。", None).await?;

@@ -2,7 +2,7 @@
 
 use std::path::{Component, Path, PathBuf};
 
-use a3s_code_core::permissions::{
+use aster_core::permissions::{
     canonical_tool_name, PermissionChecker, PermissionDecision, PermissionPolicy,
 };
 use serde::Deserialize;
@@ -31,9 +31,9 @@ impl CompileScope {
     fn owned_workspace(&self) -> Result<PathBuf, String> {
         match &self.workspace_revision {
             Some(revision) => {
-                a3s_okf::workspace_knowledge_compile_workspace(&self.root, &self.job_id, revision)
+                aster_okf::workspace_knowledge_compile_workspace(&self.root, &self.job_id, revision)
             }
-            None => a3s_okf::knowledge_compile_workspace(&self.root, &self.job_id),
+            None => aster_okf::knowledge_compile_workspace(&self.root, &self.job_id),
         }
         .map_err(|error| error.to_string())
     }
@@ -134,7 +134,7 @@ impl CompileGuard {
                     if path == Path::new(".wiki-changes.json") {
                         return true;
                     }
-                    path.to_str().is_some_and(a3s_okf::knowledge_page_path)
+                    path.to_str().is_some_and(aster_okf::knowledge_page_path)
                 }),
             "batch" => args
                 .get("invocations")

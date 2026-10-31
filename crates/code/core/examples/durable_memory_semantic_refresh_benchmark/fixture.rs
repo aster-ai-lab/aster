@@ -1,8 +1,8 @@
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingNormalization, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, MemoryChangeSet, MemoryNamespace,
     MemoryNodeDraft, MemoryOperation, MemoryRepository, MemoryStatus, RevisionMode,
     MAX_CHANGE_OPERATIONS,
@@ -165,7 +165,7 @@ pub async fn revise_source_node(
                 content: content.clone(),
                 mode: RevisionMode::Correction,
                 evidence: vec![EvidenceRef::try_new(
-                    "a3s://qualification/source-drift",
+                    "aster://qualification/source-drift",
                     format!("sha256:{}", "d".repeat(64)),
                     EvidenceKind::Verification,
                     occurred_at,
@@ -202,7 +202,7 @@ fn node_id(index: usize) -> String {
 
 fn evidence(index: usize, occurred_at: DateTime<Utc>) -> Result<EvidenceRef> {
     EvidenceRef::try_new(
-        format!("a3s://qualification/evidence/{index:05}"),
+        format!("aster://qualification/evidence/{index:05}"),
         format!("sha256:{index:064x}"),
         EvidenceKind::Verification,
         occurred_at,

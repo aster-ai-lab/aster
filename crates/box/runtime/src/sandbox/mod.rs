@@ -1,17 +1,17 @@
 //! Shared-kernel Sandbox backend support.
 //!
 //! The public isolation selector stays backend-neutral. This module owns the
-//! Linux host evidence and OCI artifacts required by the A3S OCI backend;
+//! Linux host evidence and OCI artifacts required by the Aster OCI backend;
 //! VM-specific code must not depend on these types.
 
 #[cfg(target_os = "linux")]
-pub(crate) mod a3s_oci_client;
+pub(crate) mod aster_oci_client;
 #[cfg(target_os = "linux")]
-pub(crate) mod a3s_oci_controller;
+pub(crate) mod aster_oci_controller;
 #[cfg(target_os = "linux")]
-pub(crate) mod a3s_oci_handler;
+pub(crate) mod aster_oci_handler;
 #[cfg(target_os = "linux")]
-pub(crate) mod a3s_oci_owner;
+pub(crate) mod aster_oci_owner;
 pub mod capability;
 pub mod controller;
 mod mount_alias;
@@ -21,14 +21,14 @@ pub mod rootfs;
 #[cfg(target_os = "linux")]
 pub(crate) mod runtime_record;
 
-/// Lifecycle envelope certified by the pinned A3S OCI native service.
+/// Lifecycle envelope certified by the pinned Aster OCI native service.
 ///
 /// The native service allows its Linux executor up to ten seconds to reap a
 /// process and uses a fifteen-second shutdown envelope in its own lifecycle
 /// certification. Box must give container wait and owner shutdown that same
 /// bounded opportunity before declaring provider loss.
 #[cfg(target_os = "linux")]
-pub(crate) const A3S_OCI_LIFECYCLE_TIMEOUT_MS: u64 = 15_000;
+pub(crate) const ASTER_OCI_LIFECYCLE_TIMEOUT_MS: u64 = 15_000;
 
 /// Environment override for the Sandbox OCI delegated cgroup root.
 ///
@@ -36,13 +36,13 @@ pub(crate) const A3S_OCI_LIFECYCLE_TIMEOUT_MS: u64 = 15_000;
 /// path (for example CI runners using a temporary cgroup tree) set this to an
 /// absolute, pre-created, caller-owned cgroup v2 directory.
 #[cfg(target_os = "linux")]
-pub(crate) const SANDBOX_DELEGATED_CGROUP_ROOT_ENV: &str = "A3S_BOX_SANDBOX_DELEGATED_CGROUP_ROOT";
+pub(crate) const SANDBOX_DELEGATED_CGROUP_ROOT_ENV: &str = "ASTER_BOX_SANDBOX_DELEGATED_CGROUP_ROOT";
 
 /// Host cgroup root handed to the setuid Sandbox launcher / native OCI owner.
 ///
 /// When set, [`SANDBOX_DELEGATED_CGROUP_ROOT_ENV`] must be an absolute path to
 /// the tree prepared by `scripts/prepare-linux-sandbox-host.sh` (typically
-/// `/sys/fs/cgroup/a3s-box-sandbox/delegated`). Capability preflight and the
+/// `/sys/fs/cgroup/aster-box-sandbox/delegated`). Capability preflight and the
 /// OCI owner both use this same root (#616). If unset, fall back to a path
 /// under the caller's systemd user instance.
 #[cfg(target_os = "linux")]
@@ -55,7 +55,7 @@ pub(crate) fn linux_sandbox_delegated_cgroup_root() -> String {
     }
     // SAFETY: See the enclosing function's safety documentation.
     let uid = unsafe { libc::geteuid() };
-    format!("/sys/fs/cgroup/user.slice/user-{uid}.slice/user@{uid}.service/a3s-box-delegated")
+    format!("/sys/fs/cgroup/user.slice/user-{uid}.slice/user@{uid}.service/aster-box-delegated")
 }
 
 /// Resolve the administrator-owned setuid launcher used for Sandbox OCI owners.
@@ -65,7 +65,7 @@ pub(crate) fn linux_sandbox_delegated_cgroup_root() -> String {
 #[cfg(target_os = "linux")]
 pub(crate) fn resolve_sandbox_oci_launcher(
     explicit: Option<&std::path::Path>,
-) -> a3s_box_core::error::Result<std::path::PathBuf> {
+) -> aster_box_core::error::Result<std::path::PathBuf> {
     capability::resolve_sandbox_oci_launcher(explicit)
 }
 
@@ -73,67 +73,67 @@ pub(crate) fn resolve_sandbox_oci_launcher(
 #[cfg(target_os = "linux")]
 pub(crate) fn require_operator_setuid_launcher(
     path: &std::path::Path,
-) -> a3s_box_core::error::Result<()> {
+) -> aster_box_core::error::Result<()> {
     capability::require_operator_setuid_launcher(path)
 }
 
 /// Apply a complete resource contract to the exact recorded Sandbox generation.
 ///
-/// The A3S OCI SDK is the only live-update path for a host Sandbox. MicroVM
+/// The Aster OCI SDK is the only live-update path for a host Sandbox. MicroVM
 /// cgroup updates remain guest-local and never pass through this function.
 #[cfg(target_os = "linux")]
 pub fn update_recorded_resources(
     box_dir: &std::path::Path,
     box_id: &str,
-    config: &a3s_box_core::config::BoxConfig,
-) -> a3s_box_core::Result<()> {
+    config: &aster_box_core::config::BoxConfig,
+) -> aster_box_core::Result<()> {
     if !config.isolation.is_sandbox() {
-        return Err(a3s_box_core::BoxError::ConfigError(
-            "A3S OCI resource updates require Sandbox isolation".to_string(),
+        return Err(aster_box_core::BoxError::ConfigError(
+            "Aster OCI resource updates require Sandbox isolation".to_string(),
         ));
     }
     let runtime = crate::vm::reap::load_recorded_sandbox_runtime(
-        &a3s_box_core::dirs_home(),
+        &aster_box_core::dirs_home(),
         box_dir,
         box_id,
     )?
     .ok_or_else(|| {
-        a3s_box_core::BoxError::StateError(format!(
-            "Recorded A3S OCI runtime is missing for Sandbox {box_id}"
+        aster_box_core::BoxError::StateError(format!(
+            "Recorded Aster OCI runtime is missing for Sandbox {box_id}"
         ))
     })?;
     let socket = runtime.runtime_socket.as_deref().ok_or_else(|| {
-        a3s_box_core::BoxError::StateError(format!(
-            "Recorded A3S OCI runtime socket is missing for Sandbox {box_id}"
+        aster_box_core::BoxError::StateError(format!(
+            "Recorded Aster OCI runtime socket is missing for Sandbox {box_id}"
         ))
     })?;
     let generation = runtime.generation.ok_or_else(|| {
-        a3s_box_core::BoxError::StateError(format!(
-            "Recorded A3S OCI generation is missing for Sandbox {box_id}"
+        aster_box_core::BoxError::StateError(format!(
+            "Recorded Aster OCI generation is missing for Sandbox {box_id}"
         ))
     })?;
     let resources = oci::compile_resources(&SandboxResources::from_box_config(config)?)?;
-    A3sOciHandler::update_at(socket, box_id, generation, resources)
+    AsterOciHandler::update_at(socket, box_id, generation, resources)
 }
 
 #[cfg(not(target_os = "linux"))]
 pub fn update_recorded_resources(
     _box_dir: &std::path::Path,
     _box_id: &str,
-    _config: &a3s_box_core::config::BoxConfig,
-) -> a3s_box_core::Result<()> {
-    Err(a3s_box_core::BoxError::StateError(
-        "A3S OCI Sandbox resource updates require Linux".to_string(),
+    _config: &aster_box_core::config::BoxConfig,
+) -> aster_box_core::Result<()> {
+    Err(aster_box_core::BoxError::StateError(
+        "Aster OCI Sandbox resource updates require Linux".to_string(),
     ))
 }
 
 #[cfg(target_os = "linux")]
-pub use a3s_oci_controller::A3sOciController;
+pub use aster_oci_controller::AsterOciController;
 #[cfg(target_os = "linux")]
-pub use a3s_oci_handler::A3sOciHandler;
+pub use aster_oci_handler::AsterOciHandler;
 pub use capability::{
     map_container_gid, map_container_uid, plan_id_mappings, probe_sandbox_capabilities,
-    probe_sandbox_capabilities_for, unmap_host_gid, unmap_host_uid, CertifiedA3sOci, IdMapping,
+    probe_sandbox_capabilities_for, unmap_host_gid, unmap_host_uid, CertifiedAsterOci, IdMapping,
     SandboxCapabilitySnapshot, SandboxIdMappingPlan, UserNamespaceEvidence,
 };
 pub use controller::{write_bundle, SandboxLaunchSpec};
@@ -143,10 +143,10 @@ pub(crate) use mount_alias::sandbox_mount_alias_root;
 #[cfg(feature = "vm")]
 pub(crate) use mount_alias::stage_external_mount_aliases;
 #[cfg(not(target_os = "linux"))]
-pub struct A3sOciController;
+pub struct AsterOciController;
 #[cfg(not(target_os = "linux"))]
-impl A3sOciController {
-    pub fn new(_runtime: CertifiedA3sOci) -> Self {
+impl AsterOciController {
+    pub fn new(_runtime: CertifiedAsterOci) -> Self {
         Self
     }
 
@@ -154,33 +154,33 @@ impl A3sOciController {
         &self,
         _runtime_root: &std::path::Path,
         _container_id: &str,
-    ) -> a3s_box_core::Result<()> {
-        Err(a3s_box_core::BoxError::BoxBootError {
-            message: "A3S OCI Sandbox execution requires Linux".to_string(),
+    ) -> aster_box_core::Result<()> {
+        Err(aster_box_core::BoxError::BoxBootError {
+            message: "Aster OCI Sandbox execution requires Linux".to_string(),
             hint: None,
         })
     }
 
-    pub async fn start(&self, _launch: SandboxLaunchSpec) -> a3s_box_core::Result<A3sOciHandler> {
-        Err(a3s_box_core::BoxError::BoxBootError {
-            message: "A3S OCI Sandbox execution requires Linux".to_string(),
+    pub async fn start(&self, _launch: SandboxLaunchSpec) -> aster_box_core::Result<AsterOciHandler> {
+        Err(aster_box_core::BoxError::BoxBootError {
+            message: "Aster OCI Sandbox execution requires Linux".to_string(),
             hint: None,
         })
     }
 }
 
 #[cfg(not(target_os = "linux"))]
-pub struct A3sOciHandler;
+pub struct AsterOciHandler;
 #[cfg(not(target_os = "linux"))]
-impl a3s_box_core::vmm::VmHandler for A3sOciHandler {
-    fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> a3s_box_core::Result<()> {
-        Err(a3s_box_core::BoxError::StateError(
-            "A3S OCI Sandbox execution requires Linux".to_string(),
+impl aster_box_core::vmm::VmHandler for AsterOciHandler {
+    fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> aster_box_core::Result<()> {
+        Err(aster_box_core::BoxError::StateError(
+            "Aster OCI Sandbox execution requires Linux".to_string(),
         ))
     }
 
-    fn metrics(&self) -> a3s_box_core::vmm::VmMetrics {
-        a3s_box_core::vmm::VmMetrics::default()
+    fn metrics(&self) -> aster_box_core::vmm::VmMetrics {
+        aster_box_core::vmm::VmMetrics::default()
     }
 
     fn is_running(&self) -> bool {

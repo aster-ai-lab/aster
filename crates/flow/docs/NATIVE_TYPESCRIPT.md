@@ -1,6 +1,6 @@
 # Native TypeScript Workflows
 
-A3S Flow remains a Rust SDK. `NativeTsRuntime` is an optional runtime adapter
+Aster Flow remains a Rust SDK. `NativeTsRuntime` is an optional runtime adapter
 for hosts that want workflow authors to write TypeScript while Rust still owns
 run creation, event storage, replay, workers, scheduling, and inspection.
 
@@ -10,23 +10,23 @@ artifact that a Rust host compiles and invokes.
 ## Compiler Contract
 
 Install the compiler from crates.io. It requires Bun on `PATH`; set
-`A3S_FLOW_BUN` to an explicit executable when the host does not expose Bun
+`ASTER_FLOW_BUN` to an explicit executable when the host does not expose Bun
 globally.
 
 ```sh
-cargo install a3s-flow --version 1.1.0 --locked \
-  --bin a3s-flow-native-compiler
+cargo install aster-flow --version 1.1.0 --locked \
+  --bin aster-flow-native-compiler
 
-a3s-flow-native-compiler --version
-a3s-flow-native-compiler capabilities
+aster-flow-native-compiler --version
+aster-flow-native-compiler capabilities
 ```
 
 The compiler surface is closed and versioned:
 
 ```sh
-a3s-flow-native-compiler capabilities
-a3s-flow-native-compiler dependencies <entrypoint.ts>
-a3s-flow-native-compiler compile <entrypoint.ts> -o <artifact>
+aster-flow-native-compiler capabilities
+aster-flow-native-compiler dependencies <entrypoint.ts>
+aster-flow-native-compiler compile <entrypoint.ts> -o <artifact>
 ```
 
 `capabilities` emits the compiler protocol and whether dependency manifests are
@@ -35,7 +35,7 @@ an opaque compiler identity:
 
 ```json
 {
-  "protocol": "a3s.flow.native_ts.dependencies.v1",
+  "protocol": "aster.flow.native_ts.dependencies.v1",
   "compilerIdentity": "bun-sha256:...",
   "files": ["package.json", "src/main.ts", "src/shared.ts"]
 }
@@ -52,7 +52,7 @@ duplicates, more than 4,096 entries, paths over 4,096 bytes, and documents over
 The produced artifact must:
 
 - be executable by the host,
-- accept `--a3s-flow-runtime`,
+- accept `--aster-flow-runtime`,
 - read one `NativeRuntimeRequest` JSON object from stdin,
 - write one `NativeRuntimeResponse` JSON object to stdout,
 - dispatch workflow requests to the `exportName` function from the request,
@@ -64,11 +64,11 @@ The produced artifact must:
 Set a custom compiler path in Rust:
 
 ```rust
-use a3s_flow::NativeTsDependencyMode;
+use aster_flow::NativeTsDependencyMode;
 
 let runtime = NativeTsRuntime::new(NativeTsRuntimeConfig::new(
-    "/path/to/a3s-flow-native-compiler",
-    ".a3s/flow/native-ts",
+    "/path/to/aster-flow-native-compiler",
+    ".aster/flow/native-ts",
     ".",
 ))
 .with_dependency_mode(NativeTsDependencyMode::CompilerManifest);
@@ -172,8 +172,8 @@ or compiler diagnostics:
 use std::time::Duration;
 
 let runtime = NativeTsRuntime::new(NativeTsRuntimeConfig::new(
-    "/path/to/a3s-flow-native-compiler",
-    ".a3s/flow/native-ts",
+    "/path/to/aster-flow-native-compiler",
+    ".aster/flow/native-ts",
     ".",
 ))
 .with_output_limits(16 * 1024 * 1024, 512 * 1024)
@@ -200,13 +200,13 @@ cancellation can still end the same operation sooner.
 The runnable example also accepts:
 
 ```sh
-KENSE_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
+KENSE_FLOW_NATIVE_TS_COMPILER=/path/to/aster-flow-native-compiler \
   cargo run --example native_ts_greeting
 
-KENSE_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
+KENSE_FLOW_NATIVE_TS_COMPILER=/path/to/aster-flow-native-compiler \
   cargo run --example native_ts_preflight
 
-KENSE_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
+KENSE_FLOW_NATIVE_TS_COMPILER=/path/to/aster-flow-native-compiler \
   just native-ts-bun-test
 ```
 
@@ -254,7 +254,7 @@ The request envelope is stable and versioned:
 
 ```json
 {
-  "protocol": "a3s.flow.native_ts.v1",
+  "protocol": "aster.flow.native_ts.v1",
   "kind": "workflow",
   "exportName": "main",
   "sourceHash": "sha256...",
@@ -270,7 +270,7 @@ The response envelope must mirror the request kind:
 
 ```json
 {
-  "protocol": "a3s.flow.native_ts.v1",
+  "protocol": "aster.flow.native_ts.v1",
   "kind": "workflow",
   "ok": true,
   "output": {
@@ -285,7 +285,7 @@ requests, `output` is a `RuntimeCommand`.
 
 ## Authoring Types
 
-Use [`examples/native-ts/a3s-flow-runtime.d.ts`](../examples/native-ts/a3s-flow-runtime.d.ts)
+Use [`examples/native-ts/aster-flow-runtime.d.ts`](../examples/native-ts/aster-flow-runtime.d.ts)
 as the authoring contract for workflow and step source. It mirrors the Rust
 serde field names used in `NativeRuntimeRequest`, `WorkflowInvocation`,
 `StepInvocation`, `RuntimeCommand`, and `FlowEventEnvelope`. The file is a type
@@ -390,7 +390,7 @@ import type {
   RuntimeCommand,
   StepInvocation,
   WorkflowInvocation,
-} from "./a3s-flow-runtime";
+} from "./aster-flow-runtime";
 
 export async function main(
   invocation: WorkflowInvocation<GreetingInput>,

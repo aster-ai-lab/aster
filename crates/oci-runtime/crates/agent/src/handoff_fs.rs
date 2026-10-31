@@ -13,7 +13,7 @@ use std::os::fd::{AsRawFd, FromRawFd};
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::Path;
 
-use a3s_oci_agent_protocol::{AGENT_RECOVERY_REPORT_MAX_BYTES, AGENT_SESSION_TOKEN_BYTES};
+use aster_oci_agent_protocol::{AGENT_RECOVERY_REPORT_MAX_BYTES, AGENT_SESSION_TOKEN_BYTES};
 use zeroize::Zeroizing;
 
 const PRIVATE_DIRECTORY_MODE: u32 = 0o700;
@@ -564,7 +564,7 @@ mod tests {
     #[test]
     fn token_consumption_zeroizes_the_opened_inode_before_unlink() {
         let temporary = tempfile::tempdir().expect("create token fixture");
-        let directory = temporary.path().join(".a3s-oci-bootstrap-test");
+        let directory = temporary.path().join(".aster-oci-bootstrap-test");
         private_directory(&directory);
         let path = directory.join("session-token");
         private_file(&path, &[b'a'; TOKEN_TEXT_BYTES as usize]);
@@ -579,7 +579,7 @@ mod tests {
     #[test]
     fn windows_virtiofs_normalizes_known_synthetic_modes() {
         let temporary = tempfile::tempdir().expect("create Windows handoff fixture");
-        let directory = temporary.path().join(".a3s-oci-bootstrap-windows");
+        let directory = temporary.path().join(".aster-oci-bootstrap-windows");
         synthetic_directory(&directory);
         let path = directory.join("session-token");
         synthetic_file(&path, &[b'a'; TOKEN_TEXT_BYTES as usize]);
@@ -596,7 +596,7 @@ mod tests {
     #[test]
     fn posix_contract_rejects_synthetic_modes() {
         let temporary = tempfile::tempdir().expect("create strict handoff fixture");
-        let directory = temporary.path().join(".a3s-oci-bootstrap-strict");
+        let directory = temporary.path().join(".aster-oci-bootstrap-strict");
         synthetic_directory(&directory);
         let path = directory.join("session-token");
         synthetic_file(&path, &[b'a'; TOKEN_TEXT_BYTES as usize]);
@@ -610,7 +610,7 @@ mod tests {
     #[test]
     fn windows_contract_rejects_unexpected_public_modes() {
         let temporary = tempfile::tempdir().expect("create mode-fence fixture");
-        let directory = temporary.path().join(".a3s-oci-bootstrap-mode-fence");
+        let directory = temporary.path().join(".aster-oci-bootstrap-mode-fence");
         std::fs::create_dir(&directory).expect("create mode-fence directory");
         std::fs::set_permissions(&directory, std::fs::Permissions::from_mode(0o777))
             .expect("set unexpected directory mode");
@@ -627,7 +627,7 @@ mod tests {
     #[test]
     fn windows_recovery_report_is_normalized_and_private() {
         let temporary = tempfile::tempdir().expect("create Windows recovery fixture");
-        let directory = temporary.path().join(".a3s-oci-recovery-windows");
+        let directory = temporary.path().join(".aster-oci-recovery-windows");
         synthetic_directory(&directory);
         let path = directory.join("report.json");
 
@@ -646,7 +646,7 @@ mod tests {
     #[test]
     fn cleanup_refuses_a_replaced_entry() {
         let temporary = tempfile::tempdir().expect("create replacement fixture");
-        let directory = temporary.path().join(".a3s-oci-bootstrap-test");
+        let directory = temporary.path().join(".aster-oci-bootstrap-test");
         private_directory(&directory);
         let path = directory.join("session-token");
         private_file(&path, &[b'a'; TOKEN_TEXT_BYTES as usize]);
@@ -676,7 +676,7 @@ mod tests {
     #[test]
     fn token_consumption_leaves_a_replacement_untouched() {
         let temporary = tempfile::tempdir().expect("create token replacement fixture");
-        let directory = temporary.path().join(".a3s-oci-bootstrap-test");
+        let directory = temporary.path().join(".aster-oci-bootstrap-test");
         private_directory(&directory);
         let path = directory.join("session-token");
         private_file(&path, &[b'a'; TOKEN_TEXT_BYTES as usize]);
@@ -696,7 +696,7 @@ mod tests {
     #[test]
     fn report_publish_is_exclusive() {
         let temporary = tempfile::tempdir().expect("create report fixture");
-        let directory = temporary.path().join(".a3s-oci-recovery-test");
+        let directory = temporary.path().join(".aster-oci-recovery-test");
         private_directory(&directory);
         let path = directory.join("report.json");
         private_file(&path, b"incumbent");
@@ -709,7 +709,7 @@ mod tests {
     #[test]
     fn report_publish_is_private_and_durable() {
         let temporary = tempfile::tempdir().expect("create report fixture");
-        let directory = temporary.path().join(".a3s-oci-recovery-test");
+        let directory = temporary.path().join(".aster-oci-recovery-test");
         private_directory(&directory);
         let path = directory.join("report.json");
 
@@ -724,7 +724,7 @@ mod tests {
     #[test]
     fn report_publish_rejects_a_symlink_destination() {
         let temporary = tempfile::tempdir().expect("create symlink fixture");
-        let directory = temporary.path().join(".a3s-oci-recovery-test");
+        let directory = temporary.path().join(".aster-oci-recovery-test");
         private_directory(&directory);
         let victim = temporary.path().join("victim");
         private_file(&victim, b"victim");

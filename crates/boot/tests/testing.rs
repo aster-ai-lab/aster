@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootError, BootRequest, BootResponse, BoxFuture, ControllerDefinition, ExceptionFilter,
     ExecutionContext, Guard, HttpMethod, Interceptor, Module, ModuleRef, Pipe, ProviderDefinition,
     ProviderToken, Result, RouteDefinition, TestingModule, TransportContext,
@@ -377,7 +377,7 @@ impl WebSocketInterceptor for ReplacementWebSocketInterceptor {
 #[derive(Debug)]
 struct OriginalWebSocketFilter;
 
-impl a3s_boot::WebSocketExceptionFilter for OriginalWebSocketFilter {
+impl aster_boot::WebSocketExceptionFilter for OriginalWebSocketFilter {
     fn catch(
         &self,
         _context: WebSocketContext,
@@ -394,7 +394,7 @@ impl a3s_boot::WebSocketExceptionFilter for OriginalWebSocketFilter {
 #[derive(Debug)]
 struct ReplacementWebSocketFilter;
 
-impl a3s_boot::WebSocketExceptionFilter for ReplacementWebSocketFilter {
+impl aster_boot::WebSocketExceptionFilter for ReplacementWebSocketFilter {
     fn catch(
         &self,
         _context: WebSocketContext,
@@ -419,16 +419,16 @@ impl Module for TransportPipelineOverrideModule {
     fn message_patterns(
         &self,
         _module_ref: &ModuleRef,
-    ) -> Result<Vec<a3s_boot::MessagePatternDefinition>> {
+    ) -> Result<Vec<aster_boot::MessagePatternDefinition>> {
         Ok(vec![
-            a3s_boot::MessagePatternDefinition::request(
+            aster_boot::MessagePatternDefinition::request(
                 "testing.ok",
                 |message: TransportMessage| async move { Ok(TransportReply::new(message.data)) },
             )?
             .with_pipe(OriginalTransportPipe)
             .with_guard(DenyTransportGuard)
             .with_interceptor(OriginalTransportInterceptor),
-            a3s_boot::MessagePatternDefinition::request("testing.fail", |_| async {
+            aster_boot::MessagePatternDefinition::request("testing.fail", |_| async {
                 Err::<TransportReply, _>(BootError::BadRequest("transport failed".to_string()))
             })?
             .with_filter(OriginalTransportFilter),
@@ -527,7 +527,7 @@ impl TransportInterceptor for ReplacementTransportInterceptor {
 #[derive(Debug)]
 struct OriginalTransportFilter;
 
-impl a3s_boot::TransportExceptionFilter for OriginalTransportFilter {
+impl aster_boot::TransportExceptionFilter for OriginalTransportFilter {
     fn catch(
         &self,
         _context: TransportContext,
@@ -544,7 +544,7 @@ impl a3s_boot::TransportExceptionFilter for OriginalTransportFilter {
 #[derive(Debug)]
 struct ReplacementTransportFilter;
 
-impl a3s_boot::TransportExceptionFilter for ReplacementTransportFilter {
+impl aster_boot::TransportExceptionFilter for ReplacementTransportFilter {
     fn catch(
         &self,
         _context: TransportContext,

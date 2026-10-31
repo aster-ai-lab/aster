@@ -279,11 +279,11 @@ async fn resume(agent: &Agent, options: crate::SessionOptions) -> (AgentSession,
     (session, executed)
 }
 
-fn facts(root: &std::path::Path) -> Vec<a3s_effect::Fact> {
+fn facts(root: &std::path::Path) -> Vec<aster_effect::Fact> {
     crate::fact_control::read_workspace_facts(root, SESSION).unwrap()
 }
 
-fn count(facts: &[a3s_effect::Fact], kind: &str) -> usize {
+fn count(facts: &[aster_effect::Fact], kind: &str) -> usize {
     facts.iter().filter(|fact| fact.kind == kind).count()
 }
 
@@ -476,7 +476,7 @@ async fn prove_modes(file: bool) {
             "the restored policy reaches the next Run once: {mode}"
         );
         assert_eq!(
-            count(&facts(root.path()), "a3s.goal.completed"),
+            count(&facts(root.path()), "aster.goal.completed"),
             usize::from(with_goal),
             "{mode}"
         );
@@ -619,8 +619,8 @@ async fn combined_revision_race_admits_one_plan() {
     let after = facts(root.path());
     assert_eq!(after.len(), before.len() + 1);
     assert_eq!(
-        count(&after, "a3s.goal.plan.proposed"),
-        count(&before, "a3s.goal.plan.proposed") + 1
+        count(&after, "aster.goal.plan.proposed"),
+        count(&before, "aster.goal.plan.proposed") + 1
     );
     assert_eq!(
         session.goal_definition().unwrap().unwrap().goal_sequence,
@@ -662,7 +662,7 @@ async fn combined_unknown_receipt_stays_unknown_without_effect() {
         .unwrap()
         .seq;
     let log =
-        a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(root.path(), SESSION))
+        aster_effect::FileLog::open(crate::session_folder::effect_log_dir(root.path(), SESSION))
             .unwrap();
     log.truncate_after(&crate::fact_control::thread_for_session(SESSION), prepared)
         .unwrap();
@@ -758,7 +758,7 @@ async fn combined_child_task_gets_the_policy_and_no_goal_tool() {
     assert_eq!(client.inputs.lock().unwrap()[1].matches(POLICY).count(), 1);
     let after = facts(root.path());
     assert_eq!(
-        count(&after, "a3s.goal.slice.admitted"),
+        count(&after, "aster.goal.slice.admitted"),
         1,
         "the child admits no slice"
     );

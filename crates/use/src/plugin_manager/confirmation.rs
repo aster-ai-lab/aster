@@ -1,4 +1,4 @@
-use a3s_use_core::{PluginHostPlanResult, PluginOperationConfirmation, UseResult};
+use aster_use_core::{PluginHostPlanResult, PluginOperationConfirmation, UseResult};
 use async_trait::async_trait;
 
 /// Trusted host boundary for reopening an explicit user confirmation.

@@ -2,23 +2,23 @@
 
 `scripts/workspace_search_real_llm.sh` is the bounded end-to-end gate for the
 framework-owned workspace search path. It loads the default model and provider
-from `.a3s/config.acl`; it does not require MCP and does not expose provider
+from `.aster/config.acl`; it does not require MCP and does not expose provider
 credentials to the model or the command line.
 
 The gate follows the smallest useful chain of evidence:
 
 1. Deterministic Core tests construct the normal local workspace services,
-   prove that the durable `persistent_a3s_vec_fts` projection is used, verify
+   prove that the durable `persistent_aster_vec_fts` projection is used, verify
    that a replaced source cannot leak through a stale generation, and check
    that a burst of saves produces one newest generation. They also cover
    transient publication retry, `Building` status, and obsolete-generation
    cleanup.
 2. One ignored live test creates a temporary workspace with a known answer,
-   waits for `.a3s-code/index/CURRENT`, and gives the model only the unified
+   waits for `.aster/index/CURRENT`, and gives the model only the unified
    `search` tool.
 3. The prompt leaves mode selection to the model. A natural-language relevance
    question should produce one `bm25` call; the framework keeps the public mode
-   stable and routes it to a3s-vec internally.
+   stable and routes it to aster-vec internally.
 4. The test rejects extra tools, failed calls, incorrect paths, stale or
    unverified metadata, missing native-index metadata, and an answer not found
    in the returned evidence. The request, tool rounds, context, and timeout
@@ -41,7 +41,7 @@ refresh.
 Index publication is driven by a single background coordinator. It receives
 immutable catalog snapshots through a latest-only queue and waits briefly for
 an editor save burst to settle before starting one staged build. Catalog
-reconciliation and queries therefore never wait for a3s-vec construction; if a
+reconciliation and queries therefore never wait for aster-vec construction; if a
 newer snapshot arrives during a build, the old generation remains readable and
 the queued newest snapshot is built next. Transient build failures retry with
 bounded backoff, and successful publication removes obsolete generations after
@@ -59,7 +59,7 @@ scripts/workspace_search_real_llm.sh
 Use another ACL location without changing the test:
 
 ```bash
-A3S_CONFIG_FILE=/absolute/path/.a3s/config.acl \
+ASTER_CONFIG_FILE=/absolute/path/.aster/config.acl \
   scripts/workspace_search_real_llm.sh
 ```
 
@@ -71,7 +71,7 @@ scripts/workspace_search_real_llm.sh --dry-run
 
 The live result prints only the selected `provider/model`, mode, index kind,
 token count, and elapsed turn time. A successful run must report
-`mode=bm25 index=persistent_a3s_vec_fts result=pass`.
+`mode=bm25 index=persistent_aster_vec_fts result=pass`.
 
 The latest release benchmark reports (64 chunks, warm native queries)
 approximately 0.39 ms p50, 0.51 ms p95, 219 ms initial build, 0.26 ms for a

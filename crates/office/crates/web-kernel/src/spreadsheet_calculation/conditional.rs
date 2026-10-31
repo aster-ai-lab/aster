@@ -1,4 +1,4 @@
-use a3s_office_formula_parser::{
+use aster_office_formula_parser::{
     SpreadsheetFormulaBinaryOperator, SpreadsheetFormulaExpression,
     SpreadsheetFormulaExpressionKind,
 };

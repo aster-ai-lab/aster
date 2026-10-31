@@ -20,7 +20,7 @@
 //! # Example
 //!
 //! ```rust,ignore
-//! use a3s_lane::{LaneConfig, RetryPolicy, RateLimitConfig};
+//! use aster_lane::{LaneConfig, RetryPolicy, RateLimitConfig};
 //! use std::time::Duration;
 //!
 //! // Create a lane with timeout, retry, and rate limiting
@@ -59,7 +59,7 @@ use std::time::Duration;
 /// # Example
 ///
 /// ```rust,ignore
-/// use a3s_lane::{LaneConfig, RetryPolicy};
+/// use aster_lane::{LaneConfig, RetryPolicy};
 /// use std::time::Duration;
 ///
 /// // High-priority lane with timeout and retries
@@ -148,7 +148,7 @@ impl LaneConfig {
     /// # Example
     ///
     /// ```rust
-    /// use a3s_lane::LaneConfig;
+    /// use aster_lane::LaneConfig;
     ///
     /// // Lane with 1-10 concurrent commands
     /// let config = LaneConfig::new(1, 10);
@@ -174,7 +174,7 @@ impl LaneConfig {
     /// # Example
     ///
     /// ```rust
-    /// use a3s_lane::LaneConfig;
+    /// use aster_lane::LaneConfig;
     /// use std::time::Duration;
     ///
     /// let config = LaneConfig::new(1, 5)
@@ -192,7 +192,7 @@ impl LaneConfig {
     /// # Example
     ///
     /// ```rust
-    /// use a3s_lane::{LaneConfig, RetryPolicy};
+    /// use aster_lane::{LaneConfig, RetryPolicy};
     ///
     /// // Retry up to 3 times with exponential backoff
     /// let config = LaneConfig::new(1, 5)
@@ -210,7 +210,7 @@ impl LaneConfig {
     /// # Example
     ///
     /// ```rust
-    /// use a3s_lane::{LaneConfig, RateLimitConfig};
+    /// use aster_lane::{LaneConfig, RateLimitConfig};
     ///
     /// // Limit to 100 commands per second
     /// let config = LaneConfig::new(1, 10)
@@ -229,7 +229,7 @@ impl LaneConfig {
     /// # Example
     ///
     /// ```rust
-    /// use a3s_lane::{LaneConfig, PriorityBoostConfig};
+    /// use aster_lane::{LaneConfig, PriorityBoostConfig};
     /// use std::time::Duration;
     ///
     /// // Boost priority as deadline approaches (5 minute deadline)
@@ -250,7 +250,7 @@ impl LaneConfig {
     /// # Example
     ///
     /// ```rust
-    /// use a3s_lane::LaneConfig;
+    /// use aster_lane::LaneConfig;
     ///
     /// // Emit pressure event when 50+ commands are queued
     /// let config = LaneConfig::new(1, 10)

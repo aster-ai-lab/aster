@@ -13,7 +13,7 @@
   gap: 14px 18px;
   margin: 0;
   padding: 15px 16px 17px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 10px;
 }
 
@@ -28,7 +28,7 @@
 .work-document-font-dialog-script-fonts > legend,
 .work-document-font-dialog-spacing > legend {
   padding: 0 5px;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
   font-weight: 700;
 }
@@ -37,7 +37,7 @@
   display: grid;
   min-width: 0;
   gap: 6px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-weight: 650;
 }
@@ -56,9 +56,9 @@
   min-width: 0;
   margin: 0;
   padding: 10px 12px;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 78%, transparent);
   border-radius: 8px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-document-font-dialog-run-border,
@@ -71,9 +71,9 @@
   min-width: 0;
   margin: 0;
   padding: 10px 12px 12px;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 78%, transparent);
   border-radius: 8px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-document-font-dialog-run-shading {
@@ -88,7 +88,7 @@
 .work-document-font-dialog-run-shading > legend,
 .work-document-font-dialog-opentype > legend {
   padding: 0 4px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-weight: 700;
 }
@@ -114,7 +114,7 @@
 }
 
 .work-document-font-dialog-measure > span {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-weight: 600;
 }
@@ -128,11 +128,11 @@
 }
 
 .work-document-font-dialog-mixed {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-document-font-dialog-error {
-  color: var(--a3s-red);
+  color: var(--aster-red);
 }
 
 .work-document-font-dialog-preview {
@@ -141,14 +141,14 @@
   place-items: center;
   overflow: hidden;
   padding: 14px 18px 18px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 10px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-document-font-dialog-preview > span {
   justify-self: start;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   font-weight: 650;
 }
@@ -156,7 +156,7 @@
 .work-document-font-dialog-preview > output {
   max-width: 100%;
   overflow: hidden;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 22px;
   line-height: 1.5;
   text-align: center;

@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{editor_error, prefix, qualified, validate_mutation_path};
 use crate::editor::NativeSpreadsheetConditionalFormat;
@@ -405,7 +405,7 @@ fn content_around_rule_is_whitespace(
         .all(u8::is_ascii_whitespace)
 }
 
-fn rule_not_found(sheet: &str, index: usize) -> a3s_use_core::UseError {
+fn rule_not_found(sheet: &str, index: usize) -> aster_use_core::UseError {
     let path = format!("{sheet}/cf[{index}]");
     editor_error(
         "use.office.node_not_found",
@@ -414,7 +414,7 @@ fn rule_not_found(sheet: &str, index: usize) -> a3s_use_core::UseError {
     .with_detail("path", path)
 }
 
-fn invalid(part_name: &str, reason: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid(part_name: &str, reason: impl Into<String>) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_conditional_format_invalid",
         format!(

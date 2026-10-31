@@ -24,7 +24,7 @@ export function DataGridSelectionBar(props: {
     props.minimum === 1 ? props.messages.dataGridRowSingular : props.messages.dataGridRowPlural;
 
   return (
-    <div className="a3s-form-data-grid-selection" role="status" aria-live="polite">
+    <div className="aster-form-data-grid-selection" role="status" aria-live="polite">
       <span>
         {confirmDelete
           ? formatFormMessage(props.messages, 'dataGridDeleteConfirmation', {
@@ -56,7 +56,7 @@ export function DataGridSelectionBar(props: {
             </button>
             <button
               type="button"
-              className="btn a3s-form-danger"
+              className="btn aster-form-danger"
               data-variant="destructive"
               onClick={props.onDelete}
             >
@@ -71,7 +71,7 @@ export function DataGridSelectionBar(props: {
             {props.canFill && (
               <button
                 type="button"
-                className="btn a3s-form-secondary"
+                className="btn aster-form-secondary"
                 data-variant="secondary"
                 disabled={
                   props.disabled || !props.fillColumnsAvailable || props.visibleSelectedCount < 2
@@ -90,7 +90,7 @@ export function DataGridSelectionBar(props: {
             )}
             <button
               type="button"
-              className="btn a3s-form-danger"
+              className="btn aster-form-danger"
               data-variant="destructive"
               disabled={props.disabled || !props.canDelete}
               onClick={() => setConfirmedSelectionKey(props.selectionKey)}

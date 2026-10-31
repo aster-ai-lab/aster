@@ -49,12 +49,12 @@ const WORDPROCESSING_SHAPE_URI =
 const EMUS_PER_MILLIMETER = 36_000;
 const POINTS_PER_MILLIMETER = 72 / 25.4;
 const MAX_IMPORTED_CONNECTORS = 1_024;
-const CONNECTOR_MARKER_PATTERN = /__A3S_WORK_CONNECTOR_\d+__/g;
+const CONNECTOR_MARKER_PATTERN = /__ASTER_WORK_CONNECTOR_\d+__/g;
 
 /**
  * Rewrites the supported straight connector subset to a Mammoth-safe marker.
  * VML connectors are the native WPS 12 shape emitted by Shapes.AddConnector;
- * the DrawingML branch is the representation emitted by A3S on export.
+ * the DrawingML branch is the representation emitted by Aster on export.
  */
 export function markDocxConnectors(
   document: Document,
@@ -118,7 +118,7 @@ export function applyImportedDocxConnectorMarkers(
   );
   const nodes = textNodes(document.body);
   for (const node of nodes) {
-    if (!node.data.includes('__A3S_WORK_CONNECTOR_')) continue;
+    if (!node.data.includes('__ASTER_WORK_CONNECTOR_')) continue;
     const match = node.data
       .match(CONNECTOR_MARKER_PATTERN)
       ?.find((value) => byMarker.has(value));
@@ -625,12 +625,12 @@ function nextConnectorMarker(document: Document, start: number): string {
   let index = start;
   while (
     document.documentElement.textContent?.includes(
-      `__A3S_WORK_CONNECTOR_${index}__`,
+      `__ASTER_WORK_CONNECTOR_${index}__`,
     )
   ) {
     index += 1;
   }
-  return `__A3S_WORK_CONNECTOR_${index}__`;
+  return `__ASTER_WORK_CONNECTOR_${index}__`;
 }
 
 function closestAncestor(element: Element, localName: string): Element | null {

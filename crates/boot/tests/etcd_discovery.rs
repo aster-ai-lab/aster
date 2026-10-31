@@ -3,10 +3,10 @@
 //! Live etcd discovery smoke test.
 //!
 //! ```bash
-//! ETCD_ENDPOINTS=127.0.0.1:2379 cargo test -p a3s-boot --features etcd-discovery --test etcd_discovery -- --ignored --nocapture
+//! ETCD_ENDPOINTS=127.0.0.1:2379 cargo test -p aster-boot --features etcd-discovery --test etcd_discovery -- --ignored --nocapture
 //! ```
 
-use a3s_boot::{EtcdDiscoveryOptions, EtcdServiceDiscovery, ServiceDiscovery, ServiceInstance};
+use aster_boot::{EtcdDiscoveryOptions, EtcdServiceDiscovery, ServiceDiscovery, ServiceInstance};
 use std::time::Duration;
 
 fn endpoints_from_env() -> Option<Vec<String>> {
@@ -25,7 +25,7 @@ fn endpoints_from_env() -> Option<Vec<String>> {
 async fn etcd_register_is_visible_to_another_client() {
     let endpoints = endpoints_from_env().expect("ETCD_ENDPOINTS");
     let prefix = format!(
-        "/a3s/services-test/{}",
+        "/aster/services-test/{}",
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()

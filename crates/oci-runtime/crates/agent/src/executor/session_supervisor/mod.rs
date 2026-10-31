@@ -15,7 +15,7 @@
 //!    status).
 //!
 //! Qualification may enable production wiring with
-//! `A3S_OCI_NATIVE_SESSION_SUPERVISOR=1`. Default create keeps Host-bound
+//! `ASTER_OCI_NATIVE_SESSION_SUPERVISOR=1`. Default create keeps Host-bound
 //! PDEATHSIG so stopped-only recovery gates stay green.
 
 mod output_buffer;
@@ -33,7 +33,7 @@ use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use a3s_oci_sdk::{Error, ErrorCode, OutputChunk, OutputStream, Result};
+use aster_oci_sdk::{Error, ErrorCode, OutputChunk, OutputStream, Result};
 use serde::{Deserialize, Serialize};
 
 use super::pid_supervisor::{
@@ -42,7 +42,7 @@ use super::pid_supervisor::{
 use super::pidfd::PidFd;
 use output_buffer::{SyncOutputBuffer, OUTPUT_READER_CHUNK_BYTES};
 
-const IDENTITY_SCHEMA_VERSION: &str = "a3s.oci.native-linux-session-supervisor-identity.v1";
+const IDENTITY_SCHEMA_VERSION: &str = "aster.oci.native-linux-session-supervisor-identity.v1";
 const MAX_STAT_BYTES: usize = 4096;
 #[cfg(test)]
 const READY_BYTE: u8 = b'R';
@@ -80,7 +80,7 @@ const MAX_ARG_BYTES: usize = 8 * 1024;
 /// control/workload + 11 inherited ≈ 17; keep headroom for SCM_RIGHTS.
 const MAX_SPAWN_FDS: usize = 20;
 const MAX_INHERITED_SPAWN_FDS: usize = 16;
-const ENV_OPT_IN: &str = "A3S_OCI_NATIVE_SESSION_SUPERVISOR";
+const ENV_OPT_IN: &str = "ASTER_OCI_NATIVE_SESSION_SUPERVISOR";
 const FLAG_JOIN_CGROUP: u8 = 0b0000_0001;
 const FLAG_CONTROL_WORKLOAD: u8 = 0b0000_0010;
 const FLAG_STDIN: u8 = 0b0000_0100;
@@ -91,7 +91,7 @@ const FLAG_INHERITED: u8 = 0b0010_0000;
 /// Host-private `/proc/self/fd/<n>` executable, sent via SCM_RIGHTS so the
 /// supervisor can exec the same inode without resolving the Host FD table.
 const FLAG_PROGRAM_FD: u8 = 0b0100_0000;
-const REATTACH_ENDPOINT_PREFIX: &str = "a3s.oci.session-supervise.";
+const REATTACH_ENDPOINT_PREFIX: &str = "aster.oci.session-supervise.";
 const REATTACH_CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
 const REATTACH_ACCEPT_TIMEOUT: Duration = Duration::from_secs(30);
 const REATTACH_POLL_INTERVAL: Duration = Duration::from_millis(20);
@@ -1566,7 +1566,7 @@ fn spawn_exclusive_output_reader(
     buffer: Arc<SyncOutputBuffer>,
 ) -> Result<()> {
     std::thread::Builder::new()
-        .name(format!("a3s-oci-output-{stream:?}"))
+        .name(format!("aster-oci-output-{stream:?}"))
         .spawn(move || {
             let mut reader = std::fs::File::from(fd);
             let mut bytes = vec![0_u8; OUTPUT_READER_CHUNK_BYTES];
@@ -2355,7 +2355,7 @@ mod tests {
     fn rejects_unknown_identity_schema() {
         let live = SessionSupervisorIdentity::current().expect("capture current identity");
         let forged = SessionSupervisorIdentity {
-            schema_version: "a3s.oci.native-linux-session-supervisor-identity.v0".to_string(),
+            schema_version: "aster.oci.native-linux-session-supervisor-identity.v0".to_string(),
             pid: live.pid(),
             start_time_ticks: live.start_time_ticks(),
         };

@@ -22,7 +22,7 @@ $Git = try { git rev-parse HEAD } catch { 'unknown' }
 $Version = (Select-String -Path Cargo.toml -Pattern '^version = "([^"]+)"').Matches[0].Groups[1].Value
 $Dirty = @(git status --porcelain).Count
 
-Log '# a3s-sandbox Windows release evidence'
+Log '# aster-sandbox Windows release evidence'
 Log ''
 Log ("- collected: {0:yyyy-MM-ddTHH:mm:ssZ}" -f (Get-Date).ToUniversalTime())
 Log ("- host: {0} {1}" -f [Environment]::OSVersion.VersionString, $env:PROCESSOR_ARCHITECTURE)
@@ -62,8 +62,8 @@ Log ''
 Log '## release binaries'
 cargo build --release -q
 $Arts = @()
-if (Test-Path 'target/release/a3s-sandbox.exe') { $Arts += 'target/release/a3s-sandbox.exe' }
-if (Test-Path 'target/release/a3s-sandbox-relay.exe') { $Arts += 'target/release/a3s-sandbox-relay.exe' }
+if (Test-Path 'target/release/aster-sandbox.exe') { $Arts += 'target/release/aster-sandbox.exe' }
+if (Test-Path 'target/release/aster-sandbox-relay.exe') { $Arts += 'target/release/aster-sandbox-relay.exe' }
 Log ("- built: {0}" -f ($Arts -join ', '))
 Get-FileHash -Algorithm SHA256 $Arts | ForEach-Object {
   $line = "{0}  {1}" -f $_.Hash.ToLowerInvariant(), $_.Path

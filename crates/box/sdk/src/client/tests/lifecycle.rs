@@ -23,29 +23,29 @@ enum LifecycleCall {
     Events {
         execution_id: String,
         generation: u64,
-        request: a3s_box_core::ExecutionEventsRequest,
+        request: aster_box_core::ExecutionEventsRequest,
     },
     Update {
         execution_id: String,
         generation: u64,
         operation_id: String,
-        update: a3s_box_core::ExecutionResourceUpdate,
+        update: aster_box_core::ExecutionResourceUpdate,
     },
 }
 
 struct RecordingExecutionManager {
     calls: std::sync::Mutex<Vec<LifecycleCall>>,
-    reservation: a3s_box_core::ExecutionReservation,
-    lease: a3s_box_core::ExecutionLease,
+    reservation: aster_box_core::ExecutionReservation,
+    lease: aster_box_core::ExecutionLease,
 }
 
 #[async_trait::async_trait]
-impl a3s_box_core::ExecutionManager for RecordingExecutionManager {
+impl aster_box_core::ExecutionManager for RecordingExecutionManager {
     async fn create(
         &self,
-        request: a3s_box_core::CreateExecutionRequest,
-        operation_id: &a3s_box_core::OperationId,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionReservation> {
+        request: aster_box_core::CreateExecutionRequest,
+        operation_id: &aster_box_core::OperationId,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionReservation> {
         self.calls.lock().unwrap().push(LifecycleCall::Create {
             request: serde_json::to_value(request).unwrap(),
             operation_id: operation_id.to_string(),
@@ -55,9 +55,9 @@ impl a3s_box_core::ExecutionManager for RecordingExecutionManager {
 
     async fn start(
         &self,
-        execution_id: &a3s_box_core::ExecutionId,
-        generation: a3s_box_core::ExecutionGeneration,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionLease> {
+        execution_id: &aster_box_core::ExecutionId,
+        generation: aster_box_core::ExecutionGeneration,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionLease> {
         self.calls.lock().unwrap().push(LifecycleCall::Start {
             execution_id: execution_id.to_string(),
             generation: generation.get(),
@@ -67,9 +67,9 @@ impl a3s_box_core::ExecutionManager for RecordingExecutionManager {
 
     async fn create_and_start(
         &self,
-        request: a3s_box_core::CreateExecutionRequest,
-        operation_id: &a3s_box_core::OperationId,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionLease> {
+        request: aster_box_core::CreateExecutionRequest,
+        operation_id: &aster_box_core::OperationId,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionLease> {
         self.calls.lock().unwrap().push(LifecycleCall::Run {
             request: serde_json::to_value(request).unwrap(),
             operation_id: operation_id.to_string(),
@@ -79,26 +79,26 @@ impl a3s_box_core::ExecutionManager for RecordingExecutionManager {
 
     async fn inspect(
         &self,
-        execution_id: &a3s_box_core::ExecutionId,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionStatus> {
-        Err(a3s_box_core::ExecutionManagerError::NotFound(
+        execution_id: &aster_box_core::ExecutionId,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionStatus> {
+        Err(aster_box_core::ExecutionManagerError::NotFound(
             execution_id.clone(),
         ))
     }
 
     async fn list_processes(
         &self,
-        execution_id: &a3s_box_core::ExecutionId,
-        generation: a3s_box_core::ExecutionGeneration,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionProcessInventory> {
+        execution_id: &aster_box_core::ExecutionId,
+        generation: aster_box_core::ExecutionGeneration,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionProcessInventory> {
         self.calls.lock().unwrap().push(LifecycleCall::Processes {
             execution_id: execution_id.to_string(),
             generation: generation.get(),
         });
-        Ok(a3s_box_core::ExecutionProcessInventory {
+        Ok(aster_box_core::ExecutionProcessInventory {
             execution_id: execution_id.clone(),
             generation,
-            processes: vec![a3s_box_core::ExecutionProcessInfo {
+            processes: vec![aster_box_core::ExecutionProcessInfo {
                 process_id: "init".to_string(),
                 pid: Some(42),
                 terminal: false,
@@ -108,9 +108,9 @@ impl a3s_box_core::ExecutionManager for RecordingExecutionManager {
 
     async fn stats(
         &self,
-        execution_id: &a3s_box_core::ExecutionId,
-        generation: a3s_box_core::ExecutionGeneration,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionStats> {
+        execution_id: &aster_box_core::ExecutionId,
+        generation: aster_box_core::ExecutionGeneration,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionStats> {
         let sample = {
             let mut calls = self.calls.lock().unwrap();
             let sample = calls
@@ -128,41 +128,41 @@ impl a3s_box_core::ExecutionManager for RecordingExecutionManager {
         } else {
             (1_200_000_000, 300_000_000, 180_000_000, 120_000_000)
         };
-        Ok(a3s_box_core::ExecutionStats {
+        Ok(aster_box_core::ExecutionStats {
             execution_id: execution_id.clone(),
             generation,
             timestamp_unix_ns,
-            cpu: a3s_box_core::ExecutionCpuStats {
+            cpu: aster_box_core::ExecutionCpuStats {
                 usage_ns,
                 user_ns,
                 system_ns,
                 throttled_ns: 0,
             },
-            memory: a3s_box_core::ExecutionMemoryStats {
+            memory: aster_box_core::ExecutionMemoryStats {
                 usage_bytes: 256 * 1024 * 1024,
                 limit_bytes: Some(512 * 1024 * 1024),
                 peak_bytes: Some(300 * 1024 * 1024),
             },
             process_count: 1,
             metrics: std::collections::BTreeMap::from([
-                (a3s_box_runtime::IO_READ_BYTES_METRIC.to_string(), 4_096),
-                (a3s_box_runtime::IO_WRITE_BYTES_METRIC.to_string(), 8_192),
+                (aster_box_runtime::IO_READ_BYTES_METRIC.to_string(), 4_096),
+                (aster_box_runtime::IO_WRITE_BYTES_METRIC.to_string(), 8_192),
             ]),
         })
     }
 
     async fn events(
         &self,
-        execution_id: &a3s_box_core::ExecutionId,
-        generation: a3s_box_core::ExecutionGeneration,
-        request: a3s_box_core::ExecutionEventsRequest,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionEventBatch> {
+        execution_id: &aster_box_core::ExecutionId,
+        generation: aster_box_core::ExecutionGeneration,
+        request: aster_box_core::ExecutionEventsRequest,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionEventBatch> {
         self.calls.lock().unwrap().push(LifecycleCall::Events {
             execution_id: execution_id.to_string(),
             generation: generation.get(),
             request: request.clone(),
         });
-        Ok(a3s_box_core::ExecutionEventBatch {
+        Ok(aster_box_core::ExecutionEventBatch {
             execution_id: execution_id.clone(),
             generation,
             events: Vec::new(),
@@ -172,11 +172,11 @@ impl a3s_box_core::ExecutionManager for RecordingExecutionManager {
 
     async fn update_resources(
         &self,
-        execution_id: &a3s_box_core::ExecutionId,
-        generation: a3s_box_core::ExecutionGeneration,
-        operation_id: &a3s_box_core::OperationId,
-        update: a3s_box_core::ExecutionResourceUpdate,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionLease> {
+        execution_id: &aster_box_core::ExecutionId,
+        generation: aster_box_core::ExecutionGeneration,
+        operation_id: &aster_box_core::OperationId,
+        update: aster_box_core::ExecutionResourceUpdate,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionLease> {
         self.calls.lock().unwrap().push(LifecycleCall::Update {
             execution_id: execution_id.to_string(),
             generation: generation.get(),
@@ -188,40 +188,40 @@ impl a3s_box_core::ExecutionManager for RecordingExecutionManager {
 
     async fn pause(
         &self,
-        execution_id: &a3s_box_core::ExecutionId,
-        _generation: a3s_box_core::ExecutionGeneration,
+        execution_id: &aster_box_core::ExecutionId,
+        _generation: aster_box_core::ExecutionGeneration,
         _keep_memory: bool,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionLease> {
-        Err(a3s_box_core::ExecutionManagerError::NotFound(
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionLease> {
+        Err(aster_box_core::ExecutionManagerError::NotFound(
             execution_id.clone(),
         ))
     }
 
     async fn resume(
         &self,
-        execution_id: &a3s_box_core::ExecutionId,
-        _generation: a3s_box_core::ExecutionGeneration,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionLease> {
-        Err(a3s_box_core::ExecutionManagerError::NotFound(
+        execution_id: &aster_box_core::ExecutionId,
+        _generation: aster_box_core::ExecutionGeneration,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionLease> {
+        Err(aster_box_core::ExecutionManagerError::NotFound(
             execution_id.clone(),
         ))
     }
 
     async fn kill(
         &self,
-        execution_id: &a3s_box_core::ExecutionId,
-        _generation: a3s_box_core::ExecutionGeneration,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::KillOutcome> {
-        Err(a3s_box_core::ExecutionManagerError::NotFound(
+        execution_id: &aster_box_core::ExecutionId,
+        _generation: aster_box_core::ExecutionGeneration,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::KillOutcome> {
+        Err(aster_box_core::ExecutionManagerError::NotFound(
             execution_id.clone(),
         ))
     }
 
     async fn reconcile(
         &self,
-        _operation_id: &a3s_box_core::OperationId,
-    ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ReconcileOutcome> {
-        Ok(a3s_box_core::ReconcileOutcome::Absent)
+        _operation_id: &aster_box_core::OperationId,
+    ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ReconcileOutcome> {
+        Ok(aster_box_core::ReconcileOutcome::Absent)
     }
 }
 
@@ -230,7 +230,7 @@ async fn lifecycle_calls_preserve_complete_request_and_fencing_identity() {
     use std::collections::BTreeMap;
     use std::sync::Arc;
 
-    use a3s_box_core::{
+    use aster_box_core::{
         resolve_execution, BoxConfig, CreateExecutionRequest, ExecutionGeneration,
         ExecutionHealthCheck, ExecutionId, ExecutionLease, ExecutionRecordPolicy,
         ExecutionReservation, ExecutionRestartPolicy, OperationId, ResourceLimits,
@@ -240,7 +240,7 @@ async fn lifecycle_calls_preserve_complete_request_and_fencing_identity() {
     let temp = tempfile::tempdir().unwrap();
     let config = BoxConfig {
         image: "registry.example/sdk:latest".to_string(),
-        isolation: a3s_box_core::ExecutionIsolation::Sandbox,
+        isolation: aster_box_core::ExecutionIsolation::Sandbox,
         extra_env: vec![("SDK_CALLER".to_string(), "preserved".to_string())],
         dns: vec!["1.1.1.1".to_string()],
         read_only: true,
@@ -267,7 +267,7 @@ async fn lifecycle_calls_preserve_complete_request_and_fencing_identity() {
                 start_period_secs: 1,
             }),
             healthcheck_disabled: false,
-            log_config: a3s_box_core::log::LogConfig::default(),
+            log_config: aster_box_core::log::LogConfig::default(),
             volume_names: vec!["sdk-data".to_string()],
             platform: Some("linux/amd64".to_string()),
             init: true,
@@ -306,7 +306,7 @@ async fn lifecycle_calls_preserve_complete_request_and_fencing_identity() {
         lease,
     });
     let client =
-        A3sBoxClient::with_execution_manager(A3sBoxPaths::from_home(temp.path()), manager.clone());
+        AsterBoxClient::with_execution_manager(AsterBoxPaths::from_home(temp.path()), manager.clone());
 
     let created = client
         .create_box(request.clone(), &operation_id)
@@ -330,7 +330,7 @@ async fn lifecycle_calls_preserve_complete_request_and_fencing_identity() {
         .await
         .unwrap();
     assert_eq!(stats.process_count, 1);
-    let events_request = a3s_box_core::ExecutionEventsRequest {
+    let events_request = aster_box_core::ExecutionEventsRequest {
         after_sequence: 9,
         limit: 32,
         wait_timeout_ms: Some(100),
@@ -345,7 +345,7 @@ async fn lifecycle_calls_preserve_complete_request_and_fencing_identity() {
         .unwrap();
     assert_eq!(events.next_sequence, 9);
     let update_operation = OperationId::new("sdk-resource-update").unwrap();
-    let resource_update = a3s_box_core::ExecutionResourceUpdate {
+    let resource_update = aster_box_core::ExecutionResourceUpdate {
         pids_limit: Some(64),
         ..Default::default()
     };
@@ -420,11 +420,11 @@ async fn lifecycle_calls_preserve_complete_request_and_fencing_identity() {
 async fn oci_sandbox_stats_project_exact_runtime_counters() {
     use std::sync::Arc;
 
-    use a3s_box_core::{
+    use aster_box_core::{
         resolve_execution, BoxConfig, CreateExecutionRequest, ExecutionGeneration, ExecutionId,
         ExecutionIsolation, ExecutionLease, ExecutionReservation, OperationId,
     };
-    use a3s_box_runtime::{ManagedExecutionMetadata, ManagedRuntimeRoute};
+    use aster_box_runtime::{ManagedExecutionMetadata, ManagedRuntimeRoute};
     use chrono::Utc;
 
     let temp = tempfile::tempdir().unwrap();
@@ -464,7 +464,7 @@ async fn oci_sandbox_stats_project_exact_runtime_counters() {
         lease,
     });
     let client =
-        A3sBoxClient::with_execution_manager(A3sBoxPaths::from_home(temp.path()), manager.clone());
+        AsterBoxClient::with_execution_manager(AsterBoxPaths::from_home(temp.path()), manager.clone());
     let mut record = box_record(execution_id.as_str(), "api", "running");
     let mut metadata = ManagedExecutionMetadata::new(
         OperationId::new("sdk-runtime-stats-create").unwrap(),
@@ -507,7 +507,7 @@ async fn oci_sandbox_stats_project_exact_runtime_counters() {
         .unwrap_err();
     assert!(matches!(
         error,
-        ClientError::Execution(a3s_box_core::ExecutionManagerError::Conflict { .. })
+        ClientError::Execution(aster_box_core::ExecutionManagerError::Conflict { .. })
     ));
 
     let calls = manager.calls.lock().unwrap();
@@ -530,7 +530,7 @@ async fn oci_sandbox_stats_project_exact_runtime_counters() {
 #[tokio::test]
 async fn sdk_create_rejects_unsupported_microvm_security_before_persistence() {
     let temp = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(temp.path());
+    let client = AsterBoxClient::from_home(temp.path());
 
     for (index, (security_option, expected)) in [
         ("apparmor=runtime/default", "AppArmor"),
@@ -540,11 +540,11 @@ async fn sdk_create_rejects_unsupported_microvm_security_before_persistence() {
     .into_iter()
     .enumerate()
     {
-        let request = a3s_box_core::CreateExecutionRequest {
+        let request = aster_box_core::CreateExecutionRequest {
             external_sandbox_id: format!("sdk-unsupported-security-{index}"),
-            config: a3s_box_core::BoxConfig {
+            config: aster_box_core::BoxConfig {
                 image: "alpine:3.20".to_string(),
-                isolation: a3s_box_core::ExecutionIsolation::Microvm,
+                isolation: aster_box_core::ExecutionIsolation::Microvm,
                 security_opt: vec![security_option.to_string()],
                 ..Default::default()
             },
@@ -553,14 +553,14 @@ async fn sdk_create_rejects_unsupported_microvm_security_before_persistence() {
             rootfs_snapshot_id: None,
         };
         let operation_id =
-            a3s_box_core::OperationId::new(format!("sdk-unsupported-security-operation-{index}"))
+            aster_box_core::OperationId::new(format!("sdk-unsupported-security-operation-{index}"))
                 .unwrap();
 
         let error = client.create_box(request, &operation_id).await.unwrap_err();
 
         assert!(matches!(
             &error,
-            ClientError::Execution(a3s_box_core::ExecutionManagerError::InvalidRequest(message))
+            ClientError::Execution(aster_box_core::ExecutionManagerError::InvalidRequest(message))
                 if message.contains(expected)
         ));
         assert!(!client.paths().boxes_file.exists());
@@ -571,10 +571,10 @@ async fn sdk_create_rejects_unsupported_microvm_security_before_persistence() {
 #[tokio::test]
 async fn sdk_create_rejects_windows_health_check_before_persistence() {
     let temp = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(temp.path());
-    let mut request = a3s_box_core::CreateExecutionRequest {
+    let client = AsterBoxClient::from_home(temp.path());
+    let mut request = aster_box_core::CreateExecutionRequest {
         external_sandbox_id: "sdk-windows-health".to_string(),
-        config: a3s_box_core::BoxConfig {
+        config: aster_box_core::BoxConfig {
             image: "alpine:3.20".to_string(),
             ..Default::default()
         },
@@ -582,20 +582,20 @@ async fn sdk_create_rejects_windows_health_check_before_persistence() {
         policy: Default::default(),
         rootfs_snapshot_id: None,
     };
-    request.policy.health_check = Some(a3s_box_core::ExecutionHealthCheck {
+    request.policy.health_check = Some(aster_box_core::ExecutionHealthCheck {
         cmd: vec!["true".to_string()],
         interval_secs: 30,
         timeout_secs: 5,
         retries: 3,
         start_period_secs: 0,
     });
-    let operation_id = a3s_box_core::OperationId::new("sdk-windows-health-operation").unwrap();
+    let operation_id = aster_box_core::OperationId::new("sdk-windows-health-operation").unwrap();
 
     let error = client.create_box(request, &operation_id).await.unwrap_err();
 
     assert!(matches!(
         &error,
-        ClientError::Execution(a3s_box_core::ExecutionManagerError::InvalidRequest(message))
+        ClientError::Execution(aster_box_core::ExecutionManagerError::InvalidRequest(message))
             if message.contains("health checks are not supported on Windows")
     ));
     assert!(!client.paths().boxes_file.exists());
@@ -605,10 +605,10 @@ async fn sdk_create_rejects_windows_health_check_before_persistence() {
 #[tokio::test]
 async fn sdk_start_rejects_persisted_windows_health_check_without_claiming() {
     let temp = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(temp.path());
-    let mut request = a3s_box_core::CreateExecutionRequest {
+    let client = AsterBoxClient::from_home(temp.path());
+    let mut request = aster_box_core::CreateExecutionRequest {
         external_sandbox_id: "sdk-persisted-windows-health".to_string(),
-        config: a3s_box_core::BoxConfig {
+        config: aster_box_core::BoxConfig {
             image: "alpine:3.20".to_string(),
             ..Default::default()
         },
@@ -616,7 +616,7 @@ async fn sdk_start_rejects_persisted_windows_health_check_without_claiming() {
         policy: Default::default(),
         rootfs_snapshot_id: None,
     };
-    request.policy.health_check = Some(a3s_box_core::ExecutionHealthCheck {
+    request.policy.health_check = Some(aster_box_core::ExecutionHealthCheck {
         cmd: vec!["true".to_string()],
         interval_secs: 30,
         timeout_secs: 5,
@@ -625,7 +625,7 @@ async fn sdk_start_rejects_persisted_windows_health_check_without_claiming() {
     });
     request.policy.healthcheck_disabled = true;
     let operation_id =
-        a3s_box_core::OperationId::new("sdk-persisted-windows-health-operation").unwrap();
+        aster_box_core::OperationId::new("sdk-persisted-windows-health-operation").unwrap();
     let reservation = client.create_box(request, &operation_id).await.unwrap();
 
     let state_path = &client.paths().boxes_file;
@@ -644,7 +644,7 @@ async fn sdk_start_rejects_persisted_windows_health_check_without_claiming() {
 
     assert!(matches!(
         &error,
-        ClientError::Execution(a3s_box_core::ExecutionManagerError::InvalidRequest(message))
+        ClientError::Execution(aster_box_core::ExecutionManagerError::InvalidRequest(message))
             if message.contains("health checks are not supported on Windows")
     ));
     let persisted: serde_json::Value =

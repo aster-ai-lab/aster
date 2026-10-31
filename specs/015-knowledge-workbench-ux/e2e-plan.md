@@ -3,7 +3,7 @@
 **日期**：2026-10-24。**状态**：规划完成待实施，本计划没有运行端到端场景、修复产品或恢复此前暂停的实施目标。
 **依据**：[015 spec](spec.md)、[UX](ux.md)、[018 本地记忆](../018-local-memory-studio/spec.md)、[012 百科发布](../012-living-knowledge-wiki/spec.md)、[JSON Render](../../tests/e2e/JSON_RENDER.md)。
 **目录**：[146个场景族](e2e-cases.md)，其中144个要求真实原生GUI参与、2个为协议/故障补充；12条完整业务旅程包含在146之内，不额外相加。参数化变体分别出结果。
-**范围**：当前实际可见的笔记、百科、记忆全部能力、跨页业务、共享Office编辑器、条件云端入口、实际a3s-code/ACP及其已承诺的后续功能。没有新增手动记忆编辑、批量清空、云同步等产品范围。
+**范围**：当前实际可见的笔记、百科、记忆全部能力、跨页业务、共享Office编辑器、条件云端入口、实际aster/ACP及其已承诺的后续功能。没有新增手动记忆编辑、批量清空、云同步等产品范围。
 
 ## 1. 验收结论如何成立
 
@@ -97,7 +97,7 @@ P0/P1/P2仅决定次序，不是豁免。文件夹整体移动、未支持的发
 | --- | --- | --- |
 | L0 | 现有Core/OKF/ACP/native/Office/renderer hermetic回归；故障点和边界 | 不叫原生E2E，不代替GUI或真实持久化 |
 | L1 | 同次构建的Aster原生宿主、ACP、Office、真实工作区与VecMemoryStore；本地确定性HTTP模型 | 只替换模型供应方；不拦截文件/管理/发布API，不seed目标业务最终答案 |
-| L2 | A3S Test GUI，生产renderer与真实L1链路，实际用户操作及独立oracle | 不用Playwright Electron/HTTP预览代替Tauri，不注入DOM/window.api |
+| L2 | Aster Test GUI，生产renderer与真实L1链路，实际用户操作及独立oracle | 不用Playwright Electron/HTTP预览代替Tauri，不注入DOM/window.api |
 | L3 | 同一隔离实例接入受控真实模型，执行所有标L族的真实模型变体 | 独立报告，脚本模型通过不能抵消真实模型失败；人工语义审阅也需留证 |
 
 **产品矩阵**：Aster与ToYou分别构建和启动，各用独立profile、实例和动态loopback端口；Aster无账户前提，ToYou使用专用合成测试成员/团队。认证夹具通过现有合法测试渠道提供，不复制用户会话或绕过鉴权。`TEAM`用例在ToYou授权范围执行，Aster核对相应入口/能力边界；不是随意标记N/A。
@@ -149,7 +149,7 @@ P0/P1/P2仅决定次序，不是豁免。文件夹整体移动、未支持的发
 - 复用[test JSON Render HTTP模型](../../tests/e2e/json_render_model.py)的loopback、脱敏事件和真实ACP工具回执模式。拟新增knowledge测试模型及其小型协议测试，按明确`case_id`、模型请求结构和运行状态分派，不从自然语言猜业务意图。当前JSON Render模型的记忆分支返回空items，不能直接用于“记忆生成成功”。
 - 笔记工具名从真实握手/工具定义冻结，不虚构`remember`等工具。记忆按`crates/code/core/src/agent_api/conversation_runtime/memory_retention_tests.rs`及`agent/memory_extraction_runtime/`的真实触发、schema、source/scope、importance/confidence和authority合同走提取。
 - KA02/KJ07既跑合法提取，也跑空items、坏JSON、未知source、临时进度、敏感信息等拒绝变体。是否写入由实际authority决定，提示中出现“记住”不能授予存储权限。
-- 普通`ask_user`和`ask_user_form`分别验证；后者必须收到`a3s.code.user-form.v1`、正确number/boolean等值、原tool_call_id和`permission_grant=false`，之后只恢复原任务一次。
+- 普通`ask_user`和`ask_user_form`分别验证；后者必须收到`aster.code.user-form.v1`、正确number/boolean等值、原tool_call_id和`permission_grant=false`，之后只恢复原任务一次。
 - JSON Render同时验证未知组件/动作、循环/超限JSON、未完成流和旧OpenUI语法的拒绝；只接受当前root/elements/state协议，不通过回退另一套UI机制获得成功。
 - 后台知识整理保留012现行策略：普通新内容可自动发布，替换/冲突/重要新结论按实际policy审核；staging不是已发布正文，不改原始资料。阅读/搜索/导航允许检索准备，但不调用模型；业务整理和显式Agent任务的模型请求另列。
 - 真实模型只使用测试scope和合成输入。预设每场景最多20次请求、单次120秒、累计900秒及50000 tokens；超过预算记失败/基础设施原因，不盲重试。正式执行前根据实际工具链记录并冻结预算，不能事后为了通过放宽。
@@ -166,7 +166,7 @@ P0/P1/P2仅决定次序，不是豁免。文件夹整体移动、未支持的发
 | 右键、拖放、指针滚轮 | 必须是已认证且符合后台约束的语义能力；菜单/键盘替代只证明对应业务路径 | 独立交互case阻断，不放开现有guard、不调用前台/坐标工具 |
 | 真实IME组合 | 受认证worker能驱动真实预编辑、候选确认和取消，记录输入法与链路 | committed Unicode/DOM composition模拟只算相应补充，KU02仍阻断 |
 | 原生尺寸、400%、主题 | 现有产品/宿主允许的真实动作，记录实际内容宽度及结果 | Web预览可补设计检查，不能替原生参数变体通过 |
-| 杀进程和恢复 | A3S Test已证明拥有的进程；异常终止场景通过受控owner handle | 不按进程名杀用户实例，不跟随绑定丢失后的替代窗口 |
+| 杀进程和恢复 | Aster Test已证明拥有的进程；异常终止场景通过受控owner handle | 不按进程名杀用户实例，不跟随绑定丢失后的替代窗口 |
 
 `test_finish/abort`若报告retryable cleanup_error，仅重试同一终止操作，不再观察或输入。超时/协议/能力问题与产品失败分列。没有cleanup_error为空和零存活拥有进程的结果，整个session不能作为合格通过证据。
 
@@ -217,7 +217,7 @@ PR快速组只用于及时反馈，不叫全量通过：KG01/02/03/05/06、KN01/
 
 | 层/用途 | 已有文件/模式 | 后续实施位置（不是本轮已生成的运行器） |
 | --- | --- | --- |
-| 测试引擎 | A3S Test MCP agent与[test JSON Render ACL](../../tests/e2e/json-render-desktop.acl) | `apps/studio/tests/e2e/knowledge/native_*.acl`，先观察稳定路径再逐条提取 |
+| 测试引擎 | Aster Test MCP agent与[test JSON Render ACL](../../tests/e2e/json-render-desktop.acl) | `apps/studio/tests/e2e/knowledge/native_*.acl`，先观察稳定路径再逐条提取 |
 | 私有桌面夹具/回读 | `apps/studio/tests/e2e/towork/knowledge_profile.py`、实际SDK/新ACP种子和回读模式 | `apps/studio/tests/e2e/knowledge/native_fixture.py`、`native_oracle.py`；仅测试进程编排，不新增Python SDK或生产接口 |
 | 防打扰和安全输入 | `apps/studio/tests/e2e/task-catalog/cua_guard.py`及已保留的background语义约束 | 复用guard，先补已获准能力；不直接复用会raise窗口/像素点击的旧ToWork suite |
 | 确定性模型 | `tests/e2e/json_render_model.py`与其小型协议测试 | `tests/e2e/knowledge_model.py`、`test_knowledge_model.py`，闭集case_id和最少状态；不模拟被测存储/工具/发布服务 |
@@ -238,25 +238,25 @@ PR快速组只用于及时反馈，不叫全量通过：KG01/02/03/05/06、KN01/
 # 从根目录；读取元数据/能力不启动用户应用
  git submodule status apps/studio
  rustup show active-toolchain
- a3s-test capabilities --json
- a3s-test gui-certification --json
- a3s-test agent schema
+ aster-test capabilities --json
+ aster-test gui-certification --json
+ aster-test agent schema
 
 # root workspace已有底层/真实进程回归
- cargo test --locked --offline -p a3s-code-core --lib durable_memory_vec -- --test-threads=2
- cargo test --locked --offline -p a3s-code-acp --test memory_management -- --nocapture
- cargo test --locked --offline -p a3s-studio --no-default-features --features tenant-aster --lib local_memory -- --test-threads=2
- cargo test --locked --offline -p a3s-studio --no-default-features --features tenant-aster --lib knowledge_ -- --test-threads=2
+ cargo test --locked --offline -p aster-core --lib durable_memory_vec -- --test-threads=2
+ cargo test --locked --offline -p aster-acp --test memory_management -- --nocapture
+ cargo test --locked --offline -p aster-studio --no-default-features --features tenant-aster --lib local_memory -- --test-threads=2
+ cargo test --locked --offline -p aster-studio --no-default-features --features tenant-aster --lib knowledge_ -- --test-threads=2
 
 # 本机已核对的真实just二进制；其他worker换成其实际验证并记录的二进制路径
 # 两个产品分别构建宿主+匹配ACP+Office，不调用另一个仓库的just包装脚本
  /opt/homebrew/Cellar/just/1.58.0/bin/just --justfile "$PWD/justfile" build-studio aster
  /opt/homebrew/Cellar/just/1.58.0/bin/just --justfile "$PWD/justfile" build-studio toyou
- cargo build --locked --offline -p aster -p a3s-code-acp
+ cargo build --locked --offline -p aster -p aster-acp
 
 # 既有协议表单夹具回归
  python3 -m unittest discover -s tests/e2e -p test_json_render_model.py -v
- a3s-test check tests/e2e/json-render-desktop.acl --json
+ aster-test check tests/e2e/json-render-desktop.acl --json
 ```
 
 Studio内现有前端回归、非原生select与构建门可直接执行：
@@ -266,7 +266,7 @@ node node_modules/vitest/vitest.mjs run --project renderer src/renderer/pages/kn
 node node_modules/tsx/dist/cli.mjs scripts/i18n-check.ts
 ```
 
-原生执行由已配置MCP host绑定隔离bundle/profile/window，协议先initialize(2025-06-18)并notifications/initialized，再列tools、schema与start。具体launch及可信host配置随worker manifest记录，禁止通过agent临时改捕获范围。观测稳定后才生成private Studio的ACL，并对每个实际存在的文件执行`a3s-test check <suite.acl> --json`和同一host配置下的`a3s-test run <suite.acl> --json`。`check`只证明协议合法，不证明业务或GUI通过。
+原生执行由已配置MCP host绑定隔离bundle/profile/window，协议先initialize(2025-06-18)并notifications/initialized，再列tools、schema与start。具体launch及可信host配置随worker manifest记录，禁止通过agent临时改捕获范围。观测稳定后才生成private Studio的ACL，并对每个实际存在的文件执行`aster-test check <suite.acl> --json`和同一host配置下的`aster-test run <suite.acl> --json`。`check`只证明协议合法，不证明业务或GUI通过。
 
 ## 14. 任务、依赖与小型测试义务
 
@@ -298,7 +298,7 @@ node node_modules/tsx/dist/cli.mjs scripts/i18n-check.ts
 | VI Schema owner | PASS | 层级等T门先在真实owner定义契约，计划不引入影子schema/数据库 |
 | VII Shrink-only | PASS | 不扩权限/legacy allowlist或quarantine来压过必需失败 |
 | VIII Transports | PASS | 模型lane/测试host在测试层选择，不泄露到业务共享envelope |
-| IX ACL | PASS | 产品/可信launch配置仍ACL；未来确定性suite使用a3s-acl；无新产品配置格式 |
+| IX ACL | PASS | 产品/可信launch配置仍ACL；未来确定性suite使用aster-acl；无新产品配置格式 |
 | X Commands/windows | PASS | 主窗口权限负例和受限调用者全覆盖，不加生产测试后门 |
 | XIII One repository | PASS | 所有源码/夹具/工作区均在此仓库或owner合法隔离profile；不创建外部仓库 |
 | XIV/XV Names/meaning | PASS | 目录和分类依显式owner身份；业务断言用冻结事实/公共parser，模型质量不靠词表猜 |

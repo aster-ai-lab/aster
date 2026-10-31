@@ -5,7 +5,7 @@
 
 use std::collections::BTreeSet;
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::Tensor;
 use tokio_util::sync::CancellationToken;
 

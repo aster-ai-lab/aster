@@ -1,6 +1,6 @@
 //! Box-owned aliases for caller-owned Sandbox attachments.
 //!
-//! A3S OCI resolves bind sources after entering the workload user namespace.
+//! Aster OCI resolves bind sources after entering the workload user namespace.
 //! A readable/writable Artifact root below a private provider directory can
 //! therefore be inaccessible even though the Box service itself opened it
 //! successfully. These aliases pin the already-open source into the Box-owned
@@ -11,7 +11,7 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 use super::SandboxIdMappingPlan;
 
@@ -456,7 +456,7 @@ mod tests {
     #[test]
     fn alias_root_creates_its_missing_managed_sandbox_parent() {
         let fixture = tempfile::tempdir().unwrap();
-        let home = fixture.path().join("a3s");
+        let home = fixture.path().join("aster");
         std::fs::create_dir_all(home.join("boxes/execution-1")).unwrap();
         let root = sandbox_mount_alias_root(&home, "execution-1");
 
@@ -473,7 +473,7 @@ mod tests {
     #[test]
     fn alias_root_rejects_a_symlinked_sandbox_parent() {
         let fixture = tempfile::tempdir().unwrap();
-        let home = fixture.path().join("a3s");
+        let home = fixture.path().join("aster");
         let box_dir = home.join("boxes/execution-1");
         let outside = fixture.path().join("outside");
         std::fs::create_dir_all(&box_dir).unwrap();
@@ -501,7 +501,7 @@ mod tests {
         set_mode(&private, 0o700);
         set_mode(&source, 0o755);
 
-        let home = fixture.path().join("a3s");
+        let home = fixture.path().join("aster");
         std::fs::create_dir_all(home.join("boxes/execution-1/sandbox")).unwrap();
         assert!(validate_external_mount_access(&source, &mappings(), true).is_err());
 
@@ -547,7 +547,7 @@ mod tests {
         set_mode(&private, 0o700);
         set_mode(&source, 0o775);
 
-        let home = fixture.path().join("a3s");
+        let home = fixture.path().join("aster");
         std::fs::create_dir_all(home.join("boxes/execution-rw/sandbox")).unwrap();
         assert!(validate_external_mount_access(&source, &mappings(), false).is_err());
 
@@ -594,7 +594,7 @@ mod tests {
         std::fs::create_dir(&unreadable).unwrap();
         set_mode(&readable, 0o755);
         set_mode(&unreadable, 0o700);
-        let home = fixture.path().join("a3s");
+        let home = fixture.path().join("aster");
         std::fs::create_dir_all(home.join("boxes/execution-2/sandbox")).unwrap();
 
         assert!(stage_external_mount_aliases(

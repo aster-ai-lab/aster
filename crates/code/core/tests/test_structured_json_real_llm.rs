@@ -1,31 +1,31 @@
 //! Real-LLM validation of the JSON-object-generation stability fix.
 //!
 //! Exercises the changed code paths against the live provider configured in
-//! `.a3s/config.acl`:
+//! `.aster/config.acl`:
 //!   * requested Tool/Json/Strict modes safely downgrade to prompt+schema parsing
 //!     when an OpenAI-compatible endpoint does not advertise native support;
 //!   * the `generate_object` tool entrypoint across object, array, scalar,
 //!     blocking, and streaming paths;
 //!   * the hardened planner pre-analysis JSON path (`LlmPlanner::pre_analyze`).
 //!
-//! `#[ignore]` — requires a live provider in `.a3s/config.acl` and network
+//! `#[ignore]` — requires a live provider in `.aster/config.acl` and network
 //! access to it. Run:
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_structured_json_real_llm -- --ignored --nocapture
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_structured_json_real_llm -- --ignored --nocapture
 //! ```
 
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::llm::structured::{
+use aster_core::llm::structured::{
     generate_blocking, generate_streaming, PartialObjectCallback, StructuredMode,
     StructuredRequest, StructuredResult,
 };
-use a3s_code_core::llm::{create_client_with_config, LlmClient};
-use a3s_code_core::planning::LlmPlanner;
-use a3s_code_core::tools::{register_generate_object, ToolContext, ToolRegistry, ToolStreamEvent};
+use aster_core::llm::{create_client_with_config, LlmClient};
+use aster_core::planning::LlmPlanner;
+use aster_core::tools::{register_generate_object, ToolContext, ToolRegistry, ToolStreamEvent};
 use serde_json::{json, Value};
 
 mod support;

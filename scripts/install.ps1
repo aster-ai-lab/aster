@@ -5,7 +5,7 @@
 # The newest release is discovered from the channel manifest:
 #   https://github.com/aster-ai-lab/aster/releases/download/aster-cli-stable/latest.json
 # -Version X.Y.Z installs that exact release. The Windows archive contains
-# aster.exe and a3s-code-acp.exe. Does not clone and does not compile.
+# aster.exe and aster-acp.exe. Does not clone and does not compile.
 param(
     [string]$Prefix = "",
     [string]$Version = ""
@@ -142,7 +142,7 @@ try {
     $unpack = Join-Path $work "unpack"
     Expand-Archive -LiteralPath $archive -DestinationPath $unpack -Force
     $srcAster = Join-Path $unpack "aster.exe"
-    $srcAcp = Join-Path $unpack "a3s-code-acp.exe"
+    $srcAcp = Join-Path $unpack "aster-acp.exe"
     if (-not (Test-Path -LiteralPath $srcAster) -or -not (Test-Path -LiteralPath $srcAcp)) {
         Write-Error "archive $assetName did not contain both aster-cli binaries"
         exit 1
@@ -153,7 +153,7 @@ try {
         throw "release is missing paired build identity or checksums"
     }
     $expectedSums = @("$((Get-FileHash -LiteralPath $srcAster -Algorithm SHA256).Hash.ToLowerInvariant())  aster.exe",
-        "$((Get-FileHash -LiteralPath $srcAcp -Algorithm SHA256).Hash.ToLowerInvariant())  a3s-code-acp.exe") -join "`n"
+        "$((Get-FileHash -LiteralPath $srcAcp -Algorithm SHA256).Hash.ToLowerInvariant())  aster-acp.exe") -join "`n"
     if ((Get-Content -LiteralPath $checksumPath -Raw).Trim() -cne $expectedSums) {
         throw "paired binary checksum mismatch"
     }
@@ -174,7 +174,7 @@ try {
     try {
         New-Item -ItemType Directory -Path $stage | Out-Null
         # shortcut: two renames cannot survive every power loss; use one version-directory pointer when crash-atomic upgrades are required.
-        foreach ($name in @("aster.exe", "a3s-code-acp.exe")) {
+        foreach ($name in @("aster.exe", "aster-acp.exe")) {
             if (Test-Path -LiteralPath (Join-Path $Prefix $name) -PathType Container) {
                 throw "binary destination is a directory"
             }
@@ -184,7 +184,7 @@ try {
                 Copy-Item -LiteralPath $destination -Destination (Join-Path $stage "old-$name")
             }
         }
-        foreach ($name in @("aster.exe", "a3s-code-acp.exe")) {
+        foreach ($name in @("aster.exe", "aster-acp.exe")) {
             Move-Item -LiteralPath (Join-Path $stage "new-$name") -Destination (Join-Path $Prefix $name) -Force
             $promoted += $name
         }
@@ -212,14 +212,14 @@ try {
         }
     }
     $destAster = Join-Path $Prefix "aster.exe"
-    $destAcp = Join-Path $Prefix "a3s-code-acp.exe"
+    $destAcp = Join-Path $Prefix "aster-acp.exe"
     if ($releaseVersion) {
         Write-Output "installed Aster v$releaseVersion into $Prefix"
     } else {
         Write-Output "installed Aster into $Prefix"
     }
     Write-Output "aster=$destAster"
-    Write-Output "a3s-code-acp=$destAcp"
+    Write-Output "aster-acp=$destAcp"
 } finally {
     Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
 }

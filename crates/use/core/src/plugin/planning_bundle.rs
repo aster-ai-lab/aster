@@ -62,7 +62,7 @@ pub struct PlanningArtifactRef {
     deny_unknown_fields
 )]
 pub enum ExecutablePlanningSurface {
-    /// Package-local executable invoked directly by the native A3S launcher.
+    /// Package-local executable invoked directly by the native Aster launcher.
     ToolTaskNative {
         id: String,
         activation: PlanningSurfaceActivation,

@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, FlowTask, FlowTaskQueue, FlowWorker,
     LocalFileFlowTaskQueue, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowSpec,
 };
@@ -14,7 +14,7 @@ impl FlowRuntime for SleepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.wait_completed("sleep") {
             return Ok(ctx.complete(json!({ "slept": true })));
@@ -29,16 +29,16 @@ impl FlowRuntime for SleepRuntime {
         Ok(ctx.wait_until("sleep", resume_at))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("sleep runtime does not schedule steps")
     }
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let now = Utc::now();
     let queue_root = std::env::temp_dir().join(format!(
-        "a3s-flow-task-queue-example-{}",
+        "aster-flow-task-queue-example-{}",
         std::process::id()
     ));
     let _ = tokio::fs::remove_dir_all(&queue_root).await;

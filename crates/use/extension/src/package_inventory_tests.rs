@@ -20,7 +20,7 @@ extension "proof/views" {
 
 fn inventory() -> BTreeSet<PathBuf> {
     [
-        "a3s-use-extension.acl",
+        "aster-use-extension.acl",
         "README.md",
         "ui/connections/index.html",
         "ui/connections/app.js",

@@ -70,7 +70,7 @@ index c4486a2b38bec4eff10cdfda4d3748d40bfb71ba..c49c3bc621bac2e1b7f26c79138a385f
 -              r: i,
 -              c: j
 -            });
-+      var indexedShownCells = flowdata.__a3sShownCommentCells;
++      var indexedShownCells = flowdata.__asterShownCommentCells;
 +      if (Array.isArray(indexedShownCells) && indexedShownCells.length === 0 && _.isEmpty(context.commentBoxes) && !context.editingCommentBox && !context.hoveredCommentBox) return;
 +      var psShownCells = Array.isArray(indexedShownCells) ? indexedShownCells : [];
 +      if (!Array.isArray(indexedShownCells)) {
@@ -93,7 +93,7 @@ index c4486a2b38bec4eff10cdfda4d3748d40bfb71ba..c49c3bc621bac2e1b7f26c79138a385f
 +            }
            }
          }
-+        attachA3sShownCommentCells(flowdata, psShownCells);
++        attachAsterShownCommentCells(flowdata, psShownCells);
        }
        setContext(function (ctx) {
          return showComments(ctx, psShownCells);
@@ -412,17 +412,17 @@ index c4486a2b38bec4eff10cdfda4d3748d40bfb71ba..c49c3bc621bac2e1b7f26c79138a385f
  var _excluded = ["onChange", "onOp", "data"];
  enablePatches();
 +setAutoFreeze(false);
-+var A3S_SHOWN_COMMENT_CELLS_PROPERTY = "__a3sShownCommentCells";
-+var attachA3sShownCommentCells = function attachA3sShownCommentCells(data, cells) {
-+  if (!data || !Object.isExtensible(data) || Object.prototype.hasOwnProperty.call(data, A3S_SHOWN_COMMENT_CELLS_PROPERTY)) return;
-+  Object.defineProperty(data, A3S_SHOWN_COMMENT_CELLS_PROPERTY, {
++var ASTER_SHOWN_COMMENT_CELLS_PROPERTY = "__asterShownCommentCells";
++var attachAsterShownCommentCells = function attachAsterShownCommentCells(data, cells) {
++  if (!data || !Object.isExtensible(data) || Object.prototype.hasOwnProperty.call(data, ASTER_SHOWN_COMMENT_CELLS_PROPERTY)) return;
++  Object.defineProperty(data, ASTER_SHOWN_COMMENT_CELLS_PROPERTY, {
 +    configurable: false,
 +    enumerable: false,
 +    value: cells,
 +    writable: false
 +  });
 +};
-+var carryA3sShownCommentCells = function carryA3sShownCommentCells(contextBefore, contextAfter, patches) {
++var carryAsterShownCommentCells = function carryAsterShownCommentCells(contextBefore, contextAfter, patches) {
 +  var changedSheets = new Set();
 +  var invalidatedSheets = new Set();
 +  var commentCellsBySheet = new Map();
@@ -450,11 +450,11 @@ index c4486a2b38bec4eff10cdfda4d3748d40bfb71ba..c49c3bc621bac2e1b7f26c79138a385f
 +    var _contextBefore$lucky, _contextAfter$luckys;
 +    var sourceData = (_contextBefore$lucky = contextBefore.luckysheetfile[sheetIndex]) === null || _contextBefore$lucky === void 0 ? void 0 : _contextBefore$lucky.data;
 +    var targetData = (_contextAfter$luckys = contextAfter.luckysheetfile[sheetIndex]) === null || _contextAfter$luckys === void 0 ? void 0 : _contextAfter$luckys.data;
-+    var sourceCells = sourceData === null || sourceData === void 0 ? void 0 : sourceData[A3S_SHOWN_COMMENT_CELLS_PROPERTY];
++    var sourceCells = sourceData === null || sourceData === void 0 ? void 0 : sourceData[ASTER_SHOWN_COMMENT_CELLS_PROPERTY];
 +    if (sourceData === targetData || !Array.isArray(sourceCells) || invalidatedSheets.has(sheetIndex)) return;
 +    var changedCommentCells = commentCellsBySheet.get(sheetIndex);
 +    if (!changedCommentCells || changedCommentCells.size === 0) {
-+      attachA3sShownCommentCells(targetData, sourceCells);
++      attachAsterShownCommentCells(targetData, sourceCells);
 +      return;
 +    }
 +    var indexedCells = new Map(sourceCells.map(function (cell) {
@@ -468,7 +468,7 @@ index c4486a2b38bec4eff10cdfda4d3748d40bfb71ba..c49c3bc621bac2e1b7f26c79138a385f
 +        indexedCells.delete(key);
 +      }
 +    });
-+    attachA3sShownCommentCells(targetData, Array.from(indexedCells.values()).sort(function (left, right) {
++    attachAsterShownCommentCells(targetData, Array.from(indexedCells.values()).sort(function (left, right) {
 +      return left.r - right.r || left.c - right.c;
 +    }));
 +  });
@@ -548,7 +548,7 @@ index c4486a2b38bec4eff10cdfda4d3748d40bfb71ba..c49c3bc621bac2e1b7f26c79138a385f
          result = _produceWithPatches2[0],
          patches = _produceWithPatches2[1],
          inversePatches = _produceWithPatches2[2];
-+      result = carryA3sShownCommentCells(ctx_, result, patches);
++      result = carryAsterShownCommentCells(ctx_, result, patches);
        if (patches.length > 0 && !options.noHistory) {
          if (options.logPatch) {
            console.info("patch", patches);
@@ -557,7 +557,7 @@ index c4486a2b38bec4eff10cdfda4d3748d40bfb71ba..c49c3bc621bac2e1b7f26c79138a385f
            });
          }
 -        var newContext = applyPatches(ctx_, history.inversePatches);
-+        var newContext = carryA3sShownCommentCells(ctx_, applyPatches(ctx_, history.inversePatches), history.inversePatches);
++        var newContext = carryAsterShownCommentCells(ctx_, applyPatches(ctx_, history.inversePatches), history.inversePatches);
          globalCache.current.redoList.push(history);
          var inversedOptions = inverseRowColOptions(history.options);
          if (inversedOptions === null || inversedOptions === void 0 ? void 0 : inversedOptions.insertRowColOp) {
@@ -566,7 +566,7 @@ index c4486a2b38bec4eff10cdfda4d3748d40bfb71ba..c49c3bc621bac2e1b7f26c79138a385f
        setContext(function (ctx_) {
          var _history$options7, _history$options8, _history$options9;
 -        var newContext = applyPatches(ctx_, history.patches);
-+        var newContext = carryA3sShownCommentCells(ctx_, applyPatches(ctx_, history.patches), history.patches);
++        var newContext = carryAsterShownCommentCells(ctx_, applyPatches(ctx_, history.patches), history.patches);
          globalCache.current.undoList.push(history);
          emitOp(newContext, history.patches, history.options);
          if (((_history$options7 = history.options) === null || _history$options7 === void 0 ? void 0 : _history$options7.deleteRowColOp) || ((_history$options8 = history.options) === null || _history$options8 === void 0 ? void 0 : _history$options8.insertRowColOp) || ((_history$options9 = history.options) === null || _history$options9 === void 0 ? void 0 : _history$options9.restoreDeletedCells)) newContext.formulaCache.formulaCellInfoMap = null;else newContext.formulaCache.updateFormulaCache(newContext, history, "redo");
@@ -633,7 +633,7 @@ index e4045518773578e3faaa3a58985a5585f9683088..6f8195be472bbd76c4d78acf42b5b5c0
 -              r: i,
 -              c: j
 -            });
-+      var indexedShownCells = flowdata.__a3sShownCommentCells;
++      var indexedShownCells = flowdata.__asterShownCommentCells;
 +      if (Array.isArray(indexedShownCells) && indexedShownCells.length === 0 && _.isEmpty(context.commentBoxes) && !context.editingCommentBox && !context.hoveredCommentBox) return;
 +      var psShownCells = Array.isArray(indexedShownCells) ? indexedShownCells : [];
 +      if (!Array.isArray(indexedShownCells)) {
@@ -656,7 +656,7 @@ index e4045518773578e3faaa3a58985a5585f9683088..6f8195be472bbd76c4d78acf42b5b5c0
 +            }
            }
          }
-+        attachA3sShownCommentCells(flowdata, psShownCells);
++        attachAsterShownCommentCells(flowdata, psShownCells);
        }
        setContext(function (ctx) {
          return core.showComments(ctx, psShownCells);
@@ -979,17 +979,17 @@ index e4045518773578e3faaa3a58985a5585f9683088..6f8195be472bbd76c4d78acf42b5b5c0
  var _excluded = ["onChange", "onOp", "data"];
  produce.enablePatches();
 +produce.setAutoFreeze(false);
-+var A3S_SHOWN_COMMENT_CELLS_PROPERTY = "__a3sShownCommentCells";
-+var attachA3sShownCommentCells = function attachA3sShownCommentCells(data, cells) {
-+  if (!data || !Object.isExtensible(data) || Object.prototype.hasOwnProperty.call(data, A3S_SHOWN_COMMENT_CELLS_PROPERTY)) return;
-+  Object.defineProperty(data, A3S_SHOWN_COMMENT_CELLS_PROPERTY, {
++var ASTER_SHOWN_COMMENT_CELLS_PROPERTY = "__asterShownCommentCells";
++var attachAsterShownCommentCells = function attachAsterShownCommentCells(data, cells) {
++  if (!data || !Object.isExtensible(data) || Object.prototype.hasOwnProperty.call(data, ASTER_SHOWN_COMMENT_CELLS_PROPERTY)) return;
++  Object.defineProperty(data, ASTER_SHOWN_COMMENT_CELLS_PROPERTY, {
 +    configurable: false,
 +    enumerable: false,
 +    value: cells,
 +    writable: false
 +  });
 +};
-+var carryA3sShownCommentCells = function carryA3sShownCommentCells(contextBefore, contextAfter, patches) {
++var carryAsterShownCommentCells = function carryAsterShownCommentCells(contextBefore, contextAfter, patches) {
 +  var changedSheets = new Set();
 +  var invalidatedSheets = new Set();
 +  var commentCellsBySheet = new Map();
@@ -1017,11 +1017,11 @@ index e4045518773578e3faaa3a58985a5585f9683088..6f8195be472bbd76c4d78acf42b5b5c0
 +    var _contextBefore$lucky, _contextAfter$luckys;
 +    var sourceData = (_contextBefore$lucky = contextBefore.luckysheetfile[sheetIndex]) === null || _contextBefore$lucky === void 0 ? void 0 : _contextBefore$lucky.data;
 +    var targetData = (_contextAfter$luckys = contextAfter.luckysheetfile[sheetIndex]) === null || _contextAfter$luckys === void 0 ? void 0 : _contextAfter$luckys.data;
-+    var sourceCells = sourceData === null || sourceData === void 0 ? void 0 : sourceData[A3S_SHOWN_COMMENT_CELLS_PROPERTY];
++    var sourceCells = sourceData === null || sourceData === void 0 ? void 0 : sourceData[ASTER_SHOWN_COMMENT_CELLS_PROPERTY];
 +    if (sourceData === targetData || !Array.isArray(sourceCells) || invalidatedSheets.has(sheetIndex)) return;
 +    var changedCommentCells = commentCellsBySheet.get(sheetIndex);
 +    if (!changedCommentCells || changedCommentCells.size === 0) {
-+      attachA3sShownCommentCells(targetData, sourceCells);
++      attachAsterShownCommentCells(targetData, sourceCells);
 +      return;
 +    }
 +    var indexedCells = new Map(sourceCells.map(function (cell) {
@@ -1035,7 +1035,7 @@ index e4045518773578e3faaa3a58985a5585f9683088..6f8195be472bbd76c4d78acf42b5b5c0
 +        indexedCells.delete(key);
 +      }
 +    });
-+    attachA3sShownCommentCells(targetData, Array.from(indexedCells.values()).sort(function (left, right) {
++    attachAsterShownCommentCells(targetData, Array.from(indexedCells.values()).sort(function (left, right) {
 +      return left.r - right.r || left.c - right.c;
 +    }));
 +  });
@@ -1115,7 +1115,7 @@ index e4045518773578e3faaa3a58985a5585f9683088..6f8195be472bbd76c4d78acf42b5b5c0
          result = _produceWithPatches2[0],
          patches = _produceWithPatches2[1],
          inversePatches = _produceWithPatches2[2];
-+      result = carryA3sShownCommentCells(ctx_, result, patches);
++      result = carryAsterShownCommentCells(ctx_, result, patches);
        if (patches.length > 0 && !options.noHistory) {
          if (options.logPatch) {
            console.info("patch", patches);
@@ -1124,7 +1124,7 @@ index e4045518773578e3faaa3a58985a5585f9683088..6f8195be472bbd76c4d78acf42b5b5c0
            });
          }
 -        var newContext = produce.applyPatches(ctx_, history.inversePatches);
-+        var newContext = carryA3sShownCommentCells(ctx_, produce.applyPatches(ctx_, history.inversePatches), history.inversePatches);
++        var newContext = carryAsterShownCommentCells(ctx_, produce.applyPatches(ctx_, history.inversePatches), history.inversePatches);
          globalCache.current.redoList.push(history);
          var inversedOptions = core.inverseRowColOptions(history.options);
          if (inversedOptions === null || inversedOptions === void 0 ? void 0 : inversedOptions.insertRowColOp) {
@@ -1133,7 +1133,7 @@ index e4045518773578e3faaa3a58985a5585f9683088..6f8195be472bbd76c4d78acf42b5b5c0
        setContext(function (ctx_) {
          var _history$options7, _history$options8, _history$options9;
 -        var newContext = produce.applyPatches(ctx_, history.patches);
-+        var newContext = carryA3sShownCommentCells(ctx_, produce.applyPatches(ctx_, history.patches), history.patches);
++        var newContext = carryAsterShownCommentCells(ctx_, produce.applyPatches(ctx_, history.patches), history.patches);
          globalCache.current.undoList.push(history);
          emitOp(newContext, history.patches, history.options);
          if (((_history$options7 = history.options) === null || _history$options7 === void 0 ? void 0 : _history$options7.deleteRowColOp) || ((_history$options8 = history.options) === null || _history$options8 === void 0 ? void 0 : _history$options8.insertRowColOp) || ((_history$options9 = history.options) === null || _history$options9 === void 0 ? void 0 : _history$options9.restoreDeletedCells)) newContext.formulaCache.formulaCellInfoMap = null;else newContext.formulaCache.updateFormulaCache(newContext, history, "redo");
@@ -1156,7 +1156,7 @@ index e1c484068e24e3dc31a2831de32b58e898edde85..8d12280a35afd540a433ebdc260f7e7c
 -                r: i,
 -                c: j
 -              });
-+        var indexedShownCells = flowdata.__a3sShownCommentCells;
++        var indexedShownCells = flowdata.__asterShownCommentCells;
 +        if (Array.isArray(indexedShownCells) && indexedShownCells.length === 0 && _.isEmpty(context.commentBoxes) && !context.editingCommentBox && !context.hoveredCommentBox) return;
 +        var psShownCells = Array.isArray(indexedShownCells) ? indexedShownCells : [];
 +        if (!Array.isArray(indexedShownCells)) {
@@ -1179,7 +1179,7 @@ index e1c484068e24e3dc31a2831de32b58e898edde85..8d12280a35afd540a433ebdc260f7e7c
 +              }
              }
            }
-+          attachA3sShownCommentCells(flowdata, psShownCells);
++          attachAsterShownCommentCells(flowdata, psShownCells);
          }
          setContext(function (ctx) {
            return showComments(ctx, psShownCells);
@@ -1249,17 +1249,17 @@ index e1c484068e24e3dc31a2831de32b58e898edde85..8d12280a35afd540a433ebdc260f7e7c
    var _excluded = ["onChange", "onOp", "data"];
    T();
 +  sn(false);
-+  var A3S_SHOWN_COMMENT_CELLS_PROPERTY = "__a3sShownCommentCells";
-+  var attachA3sShownCommentCells = function attachA3sShownCommentCells(data, cells) {
-+    if (!data || !Object.isExtensible(data) || Object.prototype.hasOwnProperty.call(data, A3S_SHOWN_COMMENT_CELLS_PROPERTY)) return;
-+    Object.defineProperty(data, A3S_SHOWN_COMMENT_CELLS_PROPERTY, {
++  var ASTER_SHOWN_COMMENT_CELLS_PROPERTY = "__asterShownCommentCells";
++  var attachAsterShownCommentCells = function attachAsterShownCommentCells(data, cells) {
++    if (!data || !Object.isExtensible(data) || Object.prototype.hasOwnProperty.call(data, ASTER_SHOWN_COMMENT_CELLS_PROPERTY)) return;
++    Object.defineProperty(data, ASTER_SHOWN_COMMENT_CELLS_PROPERTY, {
 +      configurable: false,
 +      enumerable: false,
 +      value: cells,
 +      writable: false
 +    });
 +  };
-+  var carryA3sShownCommentCells = function carryA3sShownCommentCells(contextBefore, contextAfter, patches) {
++  var carryAsterShownCommentCells = function carryAsterShownCommentCells(contextBefore, contextAfter, patches) {
 +    var changedSheets = new Set();
 +    var invalidatedSheets = new Set();
 +    var commentCellsBySheet = new Map();
@@ -1287,11 +1287,11 @@ index e1c484068e24e3dc31a2831de32b58e898edde85..8d12280a35afd540a433ebdc260f7e7c
 +      var _contextBefore$lucky, _contextAfter$luckys;
 +      var sourceData = (_contextBefore$lucky = contextBefore.luckysheetfile[sheetIndex]) === null || _contextBefore$lucky === void 0 ? void 0 : _contextBefore$lucky.data;
 +      var targetData = (_contextAfter$luckys = contextAfter.luckysheetfile[sheetIndex]) === null || _contextAfter$luckys === void 0 ? void 0 : _contextAfter$luckys.data;
-+      var sourceCells = sourceData === null || sourceData === void 0 ? void 0 : sourceData[A3S_SHOWN_COMMENT_CELLS_PROPERTY];
++      var sourceCells = sourceData === null || sourceData === void 0 ? void 0 : sourceData[ASTER_SHOWN_COMMENT_CELLS_PROPERTY];
 +      if (sourceData === targetData || !Array.isArray(sourceCells) || invalidatedSheets.has(sheetIndex)) return;
 +      var changedCommentCells = commentCellsBySheet.get(sheetIndex);
 +      if (!changedCommentCells || changedCommentCells.size === 0) {
-+        attachA3sShownCommentCells(targetData, sourceCells);
++        attachAsterShownCommentCells(targetData, sourceCells);
 +        return;
 +      }
 +      var indexedCells = new Map(sourceCells.map(function (cell) {
@@ -1305,7 +1305,7 @@ index e1c484068e24e3dc31a2831de32b58e898edde85..8d12280a35afd540a433ebdc260f7e7c
 +          indexedCells.delete(key);
 +        }
 +      });
-+      attachA3sShownCommentCells(targetData, Array.from(indexedCells.values()).sort(function (left, right) {
++      attachAsterShownCommentCells(targetData, Array.from(indexedCells.values()).sort(function (left, right) {
 +        return left.r - right.r || left.c - right.c;
 +      }));
 +    });
@@ -1318,7 +1318,7 @@ index e1c484068e24e3dc31a2831de32b58e898edde85..8d12280a35afd540a433ebdc260f7e7c
            result = _produceWithPatches2[0],
            patches = _produceWithPatches2[1],
            inversePatches = _produceWithPatches2[2];
-+        result = carryA3sShownCommentCells(ctx_, result, patches);
++        result = carryAsterShownCommentCells(ctx_, result, patches);
          if (patches.length > 0 && !options.noHistory) {
            if (options.logPatch) {
              console.info("patch", patches);
@@ -1327,7 +1327,7 @@ index e1c484068e24e3dc31a2831de32b58e898edde85..8d12280a35afd540a433ebdc260f7e7c
              });
            }
 -          var newContext = pn(ctx_, history.inversePatches);
-+          var newContext = carryA3sShownCommentCells(ctx_, pn(ctx_, history.inversePatches), history.inversePatches);
++          var newContext = carryAsterShownCommentCells(ctx_, pn(ctx_, history.inversePatches), history.inversePatches);
            globalCache.current.redoList.push(history);
            var inversedOptions = inverseRowColOptions(history.options);
            if (inversedOptions === null || inversedOptions === void 0 ? void 0 : inversedOptions.insertRowColOp) {
@@ -1336,7 +1336,7 @@ index e1c484068e24e3dc31a2831de32b58e898edde85..8d12280a35afd540a433ebdc260f7e7c
          setContext(function (ctx_) {
            var _history$options7, _history$options8, _history$options9;
 -          var newContext = pn(ctx_, history.patches);
-+          var newContext = carryA3sShownCommentCells(ctx_, pn(ctx_, history.patches), history.patches);
++          var newContext = carryAsterShownCommentCells(ctx_, pn(ctx_, history.patches), history.patches);
            globalCache.current.undoList.push(history);
            emitOp(newContext, history.patches, history.options);
            if (((_history$options7 = history.options) === null || _history$options7 === void 0 ? void 0 : _history$options7.deleteRowColOp) || ((_history$options8 = history.options) === null || _history$options8 === void 0 ? void 0 : _history$options8.insertRowColOp) || ((_history$options9 = history.options) === null || _history$options9 === void 0 ? void 0 : _history$options9.restoreDeletedCells)) newContext.formulaCache.formulaCellInfoMap = null;else newContext.formulaCache.updateFormulaCache(newContext, history, "redo");

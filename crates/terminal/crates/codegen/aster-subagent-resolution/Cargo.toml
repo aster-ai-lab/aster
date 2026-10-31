@@ -1,0 +1,29 @@
+[package]
+license = "Apache-2.0"
+name = "aster-subagent-resolution"
+version = "0.1.0"
+description = "Shared subagent definition, runtime, prompt, and resume resolution"
+edition = "2024"
+publish = false
+
+[dependencies]
+chrono = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+thiserror = {workspace = true}
+tracing = {workspace = true}
+aster-tool-types = {path = "../../common/aster-tool-types"}
+aster-tools = {path = "../aster-tools"}
+aster-sampling-types = {path = "../aster-sampling-types"}
+aster-agent = {path = "../aster-agent"}
+
+[features]
+default = []
+
+[dev-dependencies]
+tempfile = {workspace = true}
+tokio = {version = "1", features = ["full", "macros", "rt"]}
+toml = {workspace = true}
+
+[lints]
+workspace = true

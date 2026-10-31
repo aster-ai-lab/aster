@@ -10,7 +10,7 @@ export const meta = {
 `WorkPolicyV1` 保存宿主选择的一段工作要求，带有 ID 和版本号。它在会话的事实日志中记录，并进入原有的 `guidelines` 提示槽。
 
 ```rust
-use a3s_code_core::{SessionOptions, WorkPolicyV1};
+use aster_core::{SessionOptions, WorkPolicyV1};
 
 let policy = WorkPolicyV1::new(
     "project-engineering",
@@ -74,7 +74,7 @@ Core／SDK 未设置续跑策略时关闭自动续跑。
 
 ## ACP 中怎样使用
 
-新会话默认选择产品的 `engineering-v1` 工作策略，Core／SDK 默认则仍是可选。ACP 的 `_meta.a3sEngineering.policy` 可以选择 `engineering-v1` 或 `none`，未知值会拒绝。
+新会话默认选择产品的 `engineering-v1` 工作策略，Core／SDK 默认则仍是可选。ACP 的 `_meta.asterEngineering.policy` 可以选择 `engineering-v1` 或 `none`，未知值会拒绝。
 
 显式 `/goal <目标>` 用于创建并唤醒目标；普通消息不会自行变成长期目标。产品还提供 `/goal status`、`pause`、`resume` 和 `clear`。取消或完成的目标保留历史，切换到另一项工作时应建立新会话。
 

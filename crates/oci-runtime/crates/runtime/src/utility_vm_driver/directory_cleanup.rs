@@ -8,7 +8,7 @@
 use std::io;
 use std::path::Path;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use cap_fs_ext::{DirExt, OsMetadataExt};
 use cap_std::ambient_authority;
 use cap_std::fs::Dir;

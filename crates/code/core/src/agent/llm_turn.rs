@@ -131,7 +131,7 @@ impl crate::agent::TurnEngine {
             estimate_prompt_tokens(&[], augmented_system.as_deref(), &selected_tools);
 
         tracing::info!(
-            a3s.llm.streaming = event_tx.is_some(),
+            aster.llm.streaming = event_tx.is_some(),
             "LLM completion started"
         );
 
@@ -561,7 +561,7 @@ impl crate::agent::TurnEngine {
         );
         tracing::info!(
             turn = turn,
-            a3s.llm.total_tokens = response.usage.total_tokens,
+            aster.llm.total_tokens = response.usage.total_tokens,
             "Turn token usage"
         );
         self.config.rl_trajectory_recorder.record_llm_response(

@@ -37,10 +37,23 @@ class StudioCheckout(unittest.TestCase):
             accepted = subprocess.run(["bash", "-euo", "pipefail", "-c", script], cwd=ROOT, env=env, text=True, capture_output=True, timeout=10)
             self.assertEqual(accepted.returncode, 0, accepted.stderr)
             output = dict(line.split("=", 1) for line in (temporary / "output").read_text().splitlines())
-            self.assertEqual(set(output), {"sha", "power_sha"})
-            for key, path in [("sha", "apps/studio"), ("power_sha", "crates/power")]:
-                expected = subprocess.check_output(["git", "rev-parse", "HEAD:" + path], cwd=ROOT, env=env, text=True).strip()
-                self.assertEqual(output[key], expected)
+            self.assertEqual(set(output), {"sha"})
+            expected = subprocess.check_output(
+                ["git", "rev-parse", "HEAD:apps/studio"], cwd=ROOT, env=env, text=True
+            ).strip()
+            self.assertEqual(output["sha"], expected)
+            staged_power = subprocess.check_output(
+                ["git", "ls-files", "-s", "--", "crates/power"],
+                cwd=ROOT,
+                env=env,
+                text=True,
+            )
+            self.assertTrue(staged_power.strip(), "crates/power must be tracked in the parent tree")
+            self.assertFalse(
+                any(line.startswith("160000 ") for line in staged_power.splitlines()),
+                "crates/power must not remain a gitlink",
+            )
+            self.assertTrue((ROOT / "crates/power/Cargo.toml").is_file())
             elsewhere = subprocess.run(["bash", "-euo", "pipefail", "-c", script], cwd=temporary, env=env, text=True, capture_output=True, timeout=10)
             self.assertEqual(elsewhere.returncode, 0, elsewhere.stderr)
             downstream = subprocess.run(["git", "ls-files", "--error-unmatch", "apps/aster/Cargo.toml"], cwd=ROOT, env=env, text=True, capture_output=True, timeout=10)

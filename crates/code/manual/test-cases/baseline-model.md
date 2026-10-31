@@ -74,7 +74,7 @@ OpenAI-compatible route. Adapter correctness is hermetic first.
 ### I-MA-L1
 
 - **Invariant:** the Flash pin answers a no-tool turn and a one-tool turn without schema rejection.
-- **Pre:** `A3S_CONFIG_FILE` and `A3S_TEST_MODEL` pin. Ignored. Outer budget 420s where the suite documents it.
+- **Pre:** `ASTER_CONFIG_FILE` and `ASTER_TEST_MODEL` pin. Ignored. Outer budget 420s where the suite documents it.
 - **Stimulus:** Layer C cluster/config suites.
 - **Oracle:** HTTP 200; terminal run; no tool-schema 500.
 - **Fail:** timeout treated as pass, or assertions weakened to fit latency.

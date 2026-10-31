@@ -4,8 +4,8 @@ use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll};
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, Process};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, Process};
+use aster_oci_sdk::{
     async_trait, ContainerId, ContainerStats, ContainerTarget, CpuStats, DeleteMode, Error,
     ErrorCode, ExitStatus, FileOp, FileRequest, FileResponse, FilesystemEntry, FilesystemEntryKind,
     FilesystemOp, FilesystemRequest, FilesystemResponse, Generation, IoMode, MemoryStats,
@@ -616,7 +616,7 @@ impl TestAgent {
     }
 }
 
-fn identifier<T>(value: &str, constructor: impl FnOnce(String) -> a3s_oci_sdk::Result<T>) -> T {
+fn identifier<T>(value: &str, constructor: impl FnOnce(String) -> aster_oci_sdk::Result<T>) -> T {
     constructor(value.to_string()).unwrap_or_else(|error| panic!("valid identifier: {error}"))
 }
 
@@ -655,14 +655,14 @@ fn create_request() -> AgentCreateRequest {
 }
 
 fn create_request_for(container: &str, generation: u64, operation: &str) -> AgentCreateRequest {
-    let directory = std::env::temp_dir().join(format!("a3s-agent-protocol-{container}"));
+    let directory = std::env::temp_dir().join(format!("aster-agent-protocol-{container}"));
     let bundle = OciBundle::from_json(directory, TEST_CONFIG).expect("valid OCI bundle");
     AgentCreateRequest {
         context: OperationContext::new(operation_id(operation)),
         target: ContainerTarget::exact(container_id(container), Generation(generation)),
         bundle: crate::AgentBundle::new(
             &bundle,
-            GuestPath::new(format!("/run/a3s/bundles/{container}")).expect("guest path"),
+            GuestPath::new(format!("/run/aster/bundles/{container}")).expect("guest path"),
         ),
         io: ProcessIo::default(),
     }
@@ -675,7 +675,7 @@ fn exec_request(target: ContainerTarget, process_name: &str, operation: &str) ->
             "user": {"uid": 0, "gid": 0},
             "args": ["/bin/sh", "-c", "exit 0"],
             "cwd": "/",
-            "env": ["A3S_EXEC_TEST=1"]
+            "env": ["ASTER_EXEC_TEST=1"]
         }"#,
     )
     .expect("valid OCI exec process");

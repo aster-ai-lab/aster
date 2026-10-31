@@ -1,7 +1,7 @@
-//! The block path — turn a `Block` decision into a kernel deny via a3s-observer.
+//! The block path — turn a `Block` decision into a kernel deny via aster-observer.
 //!
 //! Sentry doesn't enforce anything itself; it appends the target to the plain deny-files that
-//! a3s-observer's `enforce` (egress) and `fileguard` (file/exec) guards read and hot-reload. This
+//! aster-observer's `enforce` (egress) and `fileguard` (file/exec) guards read and hot-reload. This
 //! keeps sentry a pure policy brain and the kernel the single enforcement point. Appends are
 //! deduped and line-oriented so the guards pick them up within their ~2s reload.
 

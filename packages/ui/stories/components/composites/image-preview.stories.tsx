@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Copy } from 'lucide-react'
 import * as React from 'react'
 
-import { ImagePreviewDialog, type ImagePreviewItem, ImagePreviewTrigger } from '@a3s-lab/ui'
+import { ImagePreviewDialog, type ImagePreviewItem, ImagePreviewTrigger } from '@aster-ai-lab/ui'
 
 const ITEMS: ImagePreviewItem[] = [
   {

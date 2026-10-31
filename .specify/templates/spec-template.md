@@ -61,8 +61,8 @@ campaign unless this feature's store really has two adapters.]
 - [ ] New behavior has a small hermetic test in the owning package
 - [ ] Closed sets: every new enum has `parse()` / `as_str()`
 - [ ] No production `unwrap()` / `expect()` without an infallibility comment
-- [ ] Internal `a3s-*` dependencies stay on a path in this repository
-- [ ] Product configuration, if any, is ACL parsed by `a3s-acl`
+- [ ] Internal `aster-*` dependencies stay on a path in this repository
+- [ ] Product configuration, if any, is ACL parsed by `aster-acl`
 - [ ] Evidence target: `docs/evidence/<domain>/<date-slug>/OUTCOME.md`
       when the landing is recorded
 

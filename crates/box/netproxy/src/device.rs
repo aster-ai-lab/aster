@@ -86,7 +86,7 @@ pub(super) struct UnixgramDevice {
 /// Attached-CIDR plus first-match rules applied before peer switch and smoltcp.
 pub(super) struct EgressGate {
     pub(super) attached_cidr: Option<(std::net::Ipv4Addr, u8)>,
-    pub(super) rules: Vec<a3s_box_core::EgressMatchRule>,
+    pub(super) rules: Vec<aster_box_core::EgressMatchRule>,
     /// DNS names whose resolved addresses earn a dynamic allow rule. A
     /// name is not a packet field; the DNS mediation point is the only
     /// place both representations coexist, so name-to-CIDR translation
@@ -101,11 +101,11 @@ impl EgressGate {
     pub(super) fn allow_resolved(&mut self, address: std::net::Ipv4Addr) {
         let cidr = format!("{address}/32");
         for protocol in ["tcp", "udp"] {
-            self.rules.push(a3s_box_core::EgressMatchRule {
+            self.rules.push(aster_box_core::EgressMatchRule {
                 cidr: Some(cidr.clone()),
                 protocol: protocol.to_owned(),
                 port: None,
-                action: a3s_box_core::network::PolicyAction::Allow,
+                action: aster_box_core::network::PolicyAction::Allow,
             });
         }
     }
@@ -290,9 +290,9 @@ impl BridgePort {
         }
         if is_group_mac(destination) {
             // passt proxy-answers ARP requests with its gateway MAC, including
-            // requests for another guest on the same logical A3S network. If
+            // requests for another guest on the same logical Aster network. If
             // that request also reaches the peer switch, the two replies race
-            // and the sender can cache passt's MAC for the peer IP. A3S derives
+            // and the sender can cache passt's MAC for the peer IP. Aster derives
             // every endpoint MAC from its IPv4 address, so route peer ARP
             // requests only to the matching registered switch port.
             if let Some(peer_mac) = peer_mac_from_arp_request(frame) {

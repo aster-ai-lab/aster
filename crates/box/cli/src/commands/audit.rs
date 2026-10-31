@@ -1,9 +1,9 @@
-//! `a3s-box audit` command — View the audit log.
+//! `aster-box audit` command — View the audit log.
 //!
 //! Reads persistent audit events with optional filters.
 
-use a3s_box_core::audit::{AuditAction, AuditOutcome};
-use a3s_box_runtime::{read_audit_log, AuditLog, AuditQuery};
+use aster_box_core::audit::{AuditAction, AuditOutcome};
+use aster_box_runtime::{read_audit_log, AuditLog, AuditQuery};
 use clap::Args;
 
 #[derive(Args)]

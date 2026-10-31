@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     editor_error, escape_attribute, index_xml, indexed_cells_in_row, indexed_rows,
@@ -657,7 +657,7 @@ fn require_spreadsheet(package: &NativeOfficePackage) -> UseResult<()> {
     }
 }
 
-fn invalid_column_definition(attribute: &str) -> a3s_use_core::UseError {
+fn invalid_column_definition(attribute: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_column_definition_invalid",
         format!("Spreadsheet column definition has an invalid '{attribute}' attribute."),

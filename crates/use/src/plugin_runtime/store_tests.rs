@@ -1,12 +1,12 @@
 use std::collections::BTreeMap;
 use std::fs;
 
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     RuntimeEvidence, RuntimeHealthObservation, RuntimeHealthState, RuntimeObservation,
     RuntimeServiceEndpoint, RuntimeUnitState,
 };
 
-use a3s_use_core::{
+use aster_use_core::{
     PackageSurfaceKind, PlanEnforcementProfile, PlanQualifiedSurfaceRef, PlanScope, PlanScopeKind,
     PlannedProviderEvidence, PluginSurfaceRef,
 };
@@ -64,7 +64,7 @@ fn task_receipt_for_scope(generation: u64, scope: PlanScope) -> RuntimeBindingRe
         artifact(&descriptor.artifact.digest, &descriptor.artifact.media_type),
         RuntimeTaskInvocation::new("store-template", Vec::new()).unwrap(),
         policy(),
-        a3s_runtime::contract::NetworkMode::None,
+        aster_runtime::contract::NetworkMode::None,
     )
     .unwrap();
     let capabilities = capabilities(&plan);

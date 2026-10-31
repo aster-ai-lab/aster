@@ -4,7 +4,7 @@
 //! `atomic_validated_append`. This gate proves concurrent expected-sequence
 //! writers still have exactly one winner inside one process.
 
-use a3s_flow::{FlowError, FlowEvent, FlowEventStore, InMemoryEventStore, WorkflowSpec};
+use aster_flow::{FlowError, FlowEvent, FlowEventStore, InMemoryEventStore, WorkflowSpec};
 use serde_json::json;
 use std::sync::Arc;
 use tokio::sync::Barrier;

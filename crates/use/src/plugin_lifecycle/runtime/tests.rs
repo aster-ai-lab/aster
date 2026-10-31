@@ -3,22 +3,22 @@ use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     ArtifactRef, HealthCheckKind, IsolationLevel, MountKind, NetworkMode, ResourceControl,
     RuntimeActionRequest, RuntimeApplyRequest, RuntimeCapabilities, RuntimeEvidence,
     RuntimeExecRequest, RuntimeExecResult, RuntimeFeature, RuntimeHealthObservation,
     RuntimeHealthState, RuntimeInspection, RuntimeLogChunk, RuntimeLogQuery, RuntimeObservation,
     RuntimeRemoval, RuntimeServiceEndpoint, RuntimeUnitClass, RuntimeUnitState,
 };
-use a3s_runtime::{
+use aster_runtime::{
     ProviderId, RuntimeClient, RuntimeClientRegistry, RuntimeError, RuntimeProviderFactory,
     RuntimeResult,
 };
-use a3s_use_core::{
+use aster_use_core::{
     McpReleaseDescriptor, PackageSurfaceKind, PlanQualifiedSurfaceRef, PluginSurfaceRef,
     ToolReleaseDescriptor, UseError, UseResult,
 };
-use a3s_use_extension::{ExtensionManifest, PluginMcpLaunch, ToolTaskSource, ToolWorkload};
+use aster_use_extension::{ExtensionManifest, PluginMcpLaunch, ToolTaskSource, ToolWorkload};
 use async_trait::async_trait;
 use sha2::{Digest, Sha256};
 
@@ -31,7 +31,7 @@ use crate::plugin_runtime::{
 use self::fake_runtime::{selection, FakeRuntime, StaticRuntimeFactory};
 use super::*;
 
-const MANIFEST: &str = include_str!("../../../fixtures/runtime-v4/package/a3s-use-extension.acl");
+const MANIFEST: &str = include_str!("../../../fixtures/runtime-v4/package/aster-use-extension.acl");
 const PACKAGE_DIGEST: &str = include_str!("../../../fixtures/runtime-v4/package.sha256");
 const TOOL_DESCRIPTOR: &[u8] =
     include_bytes!("../../../fixtures/runtime-v4/package/releases/index-tool-v1.json");
@@ -798,8 +798,8 @@ fn intent_generation(
         PluginLifecycleIntentSpec {
             operation_id: format!("runtime-generation-{generation}"),
             plan_digest: format!("sha256:{}", "1".repeat(64)),
-            scope: a3s_use_core::PlanScope {
-                kind: a3s_use_core::PlanScopeKind::Workspace,
+            scope: aster_use_core::PlanScope {
+                kind: aster_use_core::PlanScopeKind::Workspace,
                 id: "research".to_string(),
             },
             package_id: manifest.package_id.clone(),

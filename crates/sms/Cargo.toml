@@ -1,20 +1,20 @@
 [package]
-name = "a3s-sms"
+name = "aster-sms"
 publish = false
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-description = "Provider-neutral SMS contracts and explicit native adapters for A3S OS"
+description = "Provider-neutral SMS contracts and explicit native adapters for Aster OS"
 
 [features]
 default = []
-smsbao = ["dep:a3s-acl", "dep:md-5", "dep:reqwest", "dep:serde_json", "dep:tokio"]
+smsbao = ["dep:aster-acl", "dep:md-5", "dep:reqwest", "dep:serde_json", "dep:tokio"]
 
 [dependencies]
 async-trait = "0.1"
 thiserror = "2"
 zeroize = "1"
-a3s-acl = { path = "../acl", version = "0.3", optional = true }
+aster-acl = { path = "../acl", version = "0.3", optional = true }
 md-5 = { version = "0.10", optional = true }
 reqwest = { version = "0.12.24", default-features = false, features = ["rustls-tls"], optional = true }
 serde_json = { version = "1", optional = true }

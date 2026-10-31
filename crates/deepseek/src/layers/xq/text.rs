@@ -1,7 +1,7 @@
 //! Exact XQ F16 token embedding and F32 shifted-head -> norm -> Q8_0 logits.
 //! These endpoints complement the layer owner; they do not bypass the trunk.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::Tensor;
 use tokio_util::sync::CancellationToken;
 

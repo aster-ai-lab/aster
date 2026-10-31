@@ -145,7 +145,7 @@ async fn permission_grants_follow_install_upgrade_uninstall_and_survive_replay()
 
     let mut legacy_permission_operation = pending;
     legacy_permission_operation["schema"] =
-        serde_json::json!("a3s.use.pending-package-graph-operation.v1");
+        serde_json::json!("aster.use.pending-package-graph-operation.v1");
     tampered.push((
         "permission-bearing legacy pending schema",
         "use.plugin.package_graph_store_invalid",
@@ -424,7 +424,7 @@ async fn permission_bearing_enablement_scenario() {
     assert_eq!(planned_envelope.plan.action, PluginOperationAction::Disable);
     assert_eq!(
         planned_envelope.plan.schema,
-        a3s_use_core::PLUGIN_OPERATION_PLAN_SCHEMA_V4
+        aster_use_core::PLUGIN_OPERATION_PLAN_SCHEMA_V4
     );
     assert_eq!(
         planned_envelope.plan.authority.decision,

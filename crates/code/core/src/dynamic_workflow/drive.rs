@@ -60,7 +60,7 @@ pub(super) async fn drive_dynamic_workflow_control_future<F>(
     future: F,
 ) -> Result<DynamicWorkflowExecution>
 where
-    F: Future<Output = a3s_flow::Result<WorkflowRunSnapshot>>,
+    F: Future<Output = aster_flow::Result<WorkflowRunSnapshot>>,
 {
     let DynamicWorkflowDriveContext {
         source,
@@ -75,7 +75,7 @@ where
     async fn collect_result(
         engine: &FlowEngine,
         run_id: &str,
-        result: a3s_flow::Result<WorkflowRunSnapshot>,
+        result: aster_flow::Result<WorkflowRunSnapshot>,
         source: &str,
         input: &Value,
         runtime_build_id: &str,
@@ -291,7 +291,7 @@ pub(super) async fn drive_dynamic_workflow_with_lease(
 
 /// Drive short, persisted step retries inside the originating tool call.
 ///
-/// A3S Flow deliberately suspends at a delayed retry boundary. Interactive
+/// Aster Flow deliberately suspends at a delayed retry boundary. Interactive
 /// waits and hooks must remain suspended for an external host, but a bounded
 /// retry delay is ordinary fault recovery: returning it as a terminal tool
 /// error forces every caller to reimplement the scheduler and previously made

@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{CreateRequest, IsolationRequest, OciBundle, OperationContext, OperationId};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{CreateRequest, IsolationRequest, OciBundle, OperationContext, OperationId};
 
 use super::exec::nonce_bound_bundle;
 use super::{bundle_marker, directory_is_empty, operation_id, unique_nonce};
@@ -71,7 +71,7 @@ pub async fn linux_kvm_resume_reopen_replacement(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let container_id = match a3s_oci_sdk::ContainerId::new(format!("kvm-resume-reopen-{nonce}")) {
+    let container_id = match aster_oci_sdk::ContainerId::new(format!("kvm-resume-reopen-{nonce}")) {
         Ok(id) => id,
         Err(error) => return failed(report, format!("failed to construct container ID: {error}")),
     };
@@ -163,7 +163,7 @@ pub async fn linux_kvm_resume_reopen_replacement(
         delete_operation_id,
         stale_guest_operation_id,
         stale_host_operation_id,
-        marker_contents: format!("a3s-oci-exec-init-{nonce}\n").into_bytes(),
+        marker_contents: format!("aster-oci-exec-init-{nonce}\n").into_bytes(),
         stage: config.stage,
     };
     let state_root = prepared.runtime_root.join("operation-reopen-state");

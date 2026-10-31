@@ -11,9 +11,9 @@ use super::{
 };
 
 pub const PLUGIN_HOST_ENABLEMENT_PLAN_REQUEST_SCHEMA: &str =
-    "a3s.use.plugin-host-enablement-plan-request.v1";
+    "aster.use.plugin-host-enablement-plan-request.v1";
 pub const PLUGIN_HOST_ENABLEMENT_PLAN_RESULT_SCHEMA: &str =
-    "a3s.use.plugin-host-enablement-plan-result.v1";
+    "aster.use.plugin-host-enablement-plan-result.v1";
 
 const ENABLEMENT_PLAN_REQUEST_ERROR: &str = "use.plugin.host_enablement_plan_request_invalid";
 const ENABLEMENT_PLAN_RESULT_ERROR: &str = "use.plugin.host_enablement_plan_result_invalid";

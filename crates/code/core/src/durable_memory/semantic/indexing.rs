@@ -5,8 +5,8 @@ use super::{
 };
 use crate::durable_memory::semantic_binding::{invalid, DurableMemorySemanticError};
 use crate::embedding::{EmbeddingError, EmbeddingInput, EmbeddingProviderRequestMetrics};
-use a3s_memory::repository::{MemoryNamespace, MemoryNode, MemoryStatus};
-use a3s_memory::vector::{
+use aster_durable_memory::repository::{MemoryNamespace, MemoryNode, MemoryStatus};
+use aster_durable_memory::vector::{
     VectorIndexStatus, VectorMutationConsistency, VectorRecord, VectorRevision,
 };
 use std::collections::{HashMap, HashSet};

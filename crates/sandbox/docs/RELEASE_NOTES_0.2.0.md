@@ -1,10 +1,10 @@
-# a3s-sandbox 0.2.0
+# aster-sandbox 0.2.0
 
 ## Highlights
 
 - **Gate 8 — credential containment (secrets never land).**
   `NativeSandbox::execute_with_secrets` accepts host-held secret environment
-  entries and delivers only `a3s:secret:<NAME>` sentinels to the child; the
+  entries and delivers only `aster:secret:<NAME>` sentinels to the child; the
   host re-injects real bytes at the mediation point. Entries fail closed
   without `mediated_network`, on reserved names, on collisions with explicit
   env entries, or on malformed entries. The CONNECT/HTTP mediator now also

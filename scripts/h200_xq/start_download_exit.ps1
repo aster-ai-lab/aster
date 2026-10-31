@@ -4,7 +4,7 @@ $null = [IO.Directory]::CreateDirectory($taskStateDirectory)
 $taskKeyBytes = [byte[]]::new(32)
 [Security.Cryptography.RandomNumberGenerator]::Fill($taskKeyBytes)
 $taskPassword = [Convert]::ToHexString($taskKeyBytes).ToLowerInvariant()
-$taskBootstrap = @{username='a3s-download'; password=$taskPassword; port=18890} | ConvertTo-Json -Compress
+$taskBootstrap = @{username='aster-download'; password=$taskPassword; port=18890} | ConvertTo-Json -Compress
 $taskNodeInfo = [Diagnostics.ProcessStartInfo]::new()
 $taskNodeInfo.FileName = (Get-Command node).Source
 $taskNodeInfo.ArgumentList.Add((Join-Path $PSScriptRoot 'download_exit.cjs'))
@@ -26,7 +26,7 @@ try {
 import json,os,sys
 from pathlib import Path
 value=json.loads(sys.stdin.read(2049))
-if value.get("username")!="a3s-download" or len(value.get("password",""))!=64:
+if value.get("username")!="aster-download" or len(value.get("password",""))!=64:
     raise RuntimeError("invalid authentication bootstrap")
 root=Path.home()/".aster-h200-xq-download"
 if root.exists() and (root.is_symlink() or root.stat().st_uid!=os.getuid() or root.stat().st_mode&0o777!=0o700):

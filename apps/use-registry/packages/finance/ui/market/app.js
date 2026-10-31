@@ -1,5 +1,5 @@
 const SYMBOLS = [
-  { id: 'A3S', name: 'A3S', seed: 11, start: 128 },
+  { id: 'Aster', name: 'Aster', seed: 11, start: 128 },
   { id: 'BTC', name: 'BTC', seed: 29, start: 64000 },
   { id: 'ETH', name: 'ETH', seed: 47, start: 3200 }
 ]
@@ -90,7 +90,7 @@ for (const symbol of SYMBOLS) {
 
 window.addEventListener('message', (event) => {
   const data = event.data
-  if (!data || data.type !== 'a3s.plugin.config') return
+  if (!data || data.type !== 'aster.plugin.config') return
   applyConfig(data.values)
 })
 

@@ -4,7 +4,7 @@ export function fileNameWithoutExtension(value: string): string {
 
 export function safeFileName(value: string): string {
   return (
-    value.replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_').trim() || 'A3S Work 文件'
+    value.replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_').trim() || 'Aster Work 文件'
   );
 }
 

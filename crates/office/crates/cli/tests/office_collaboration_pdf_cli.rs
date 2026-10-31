@@ -8,7 +8,7 @@ use base64::Engine as _;
 use support::{pdf_collaboration_fixture, pdf_snapshot};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(args: &[&str]) -> Output {
@@ -219,7 +219,7 @@ fn cli_creates_updates_and_tombstones_portable_pdf_annotations() {
         "color": "#ffd400",
         "opacity": 0.48,
         "contents": "CLI annotation",
-        "author": "A3S Agent",
+        "author": "Aster Agent",
         "created": "2026-08-15T08:00:00.000Z",
     });
     let create = serde_json::json!({
@@ -311,7 +311,7 @@ fn cli_replaces_one_freetext_span_from_find_and_rejects_drift() {
             "size": { "width": 220, "height": 36 },
         },
         "contents": "xx Draft tail",
-        "author": "A3S Agent",
+        "author": "Aster Agent",
         "created": "2026-08-15T08:00:00.000Z",
         "fontSize": 12.0,
         "fontColor": "#111111",

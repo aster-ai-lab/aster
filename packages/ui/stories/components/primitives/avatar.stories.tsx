@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Bot, User } from 'lucide-react'
 
-import { Avatar, AvatarBadge, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from '@a3s-lab/ui'
+import { Avatar, AvatarBadge, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Avatar> = {
   title: 'Components/Primitives/Avatar',

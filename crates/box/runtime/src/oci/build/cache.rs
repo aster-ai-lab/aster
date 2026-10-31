@@ -6,7 +6,7 @@
 //! (RUN/COPY/ADD) is reached with a chain key that has been seen before, the
 //! previously produced layer is reused instead of re-executing the instruction.
 //!
-//! The cache lives under `~/.a3s/buildcache`:
+//! The cache lives under `~/.aster/buildcache`:
 //! - `blobs/<digest>`  — the cached layer tar.gz, content-addressed.
 //! - `keys/<chain-key>` — a small JSON record `{digest, diff_id, size}` pointing
 //!   at the blob.
@@ -18,7 +18,7 @@ use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 
-use a3s_box_core::dirs_home;
+use aster_box_core::dirs_home;
 use serde::{Deserialize, Serialize};
 
 use super::layer::{sha256_bytes, sha256_file, LayerInfo};
@@ -37,16 +37,16 @@ pub use import::hydrate_recorded_build_cache;
 static STORE_SEQ: AtomicU64 = AtomicU64::new(0);
 
 // Invalidate layers exported before guest-only ownership and mode were preserved.
-const CACHE_KEY_PROFILE: &str = "a3s.box.build-cache-key.v2";
+const CACHE_KEY_PROFILE: &str = "aster.box.build-cache-key.v2";
 
 /// Default cap on the total size of cached layer blobs (2 GiB). Override with
-/// `A3S_BOX_BUILDCACHE_MAX_BYTES`. When the cap is exceeded after a store, the
+/// `ASTER_BOX_BUILDCACHE_MAX_BYTES`. When the cap is exceeded after a store, the
 /// oldest blobs are evicted (FIFO) until the total is back under the cap; a
 /// later build that needs an evicted layer simply re-runs the instruction.
 const DEFAULT_MAX_BYTES: u64 = 2 * 1024 * 1024 * 1024;
 
 fn configured_max_bytes() -> u64 {
-    std::env::var("A3S_BOX_BUILDCACHE_MAX_BYTES")
+    std::env::var("ASTER_BOX_BUILDCACHE_MAX_BYTES")
         .ok()
         .and_then(|s| s.parse::<u64>().ok())
         .unwrap_or(DEFAULT_MAX_BYTES)
@@ -73,7 +73,7 @@ pub(crate) struct CachedLayer {
     pub(crate) size: u64,
 }
 
-/// Layer-level build cache rooted at `~/.a3s/buildcache`.
+/// Layer-level build cache rooted at `~/.aster/buildcache`.
 pub(crate) struct BuildCache {
     dir: PathBuf,
 }
@@ -214,7 +214,7 @@ impl BuildCache {
         if let Ok(bytes) = serde_json::to_vec(&record) {
             let target = self.dir.join("keys").join(key);
             let temporary = target.with_extension("tmp");
-            if a3s_box_core::fs_atomic::write_durable(&temporary, &target, &bytes).is_ok() {
+            if aster_box_core::fs_atomic::write_durable(&temporary, &target, &bytes).is_ok() {
                 return true;
             }
         }

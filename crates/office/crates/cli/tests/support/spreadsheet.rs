@@ -23,7 +23,7 @@ pub fn spreadsheet_cell(update: &[u8], sheet_id: &str, row: u32, column: u32) ->
         .transact_mut()
         .apply_update(Update::decode_v1(update).unwrap())
         .unwrap();
-    let sheets = document.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = document.get_or_insert_map("aster.office.spreadsheet.sheets");
     let transaction = document.transact();
     let record = match sheets.get(&transaction, sheet_id) {
         Some(Out::YMap(record)) => record,

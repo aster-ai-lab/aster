@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     with_trace_context, FlowEngine, FlowError, FlowRuntime, FlowTraceContext, JsonValue,
     RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowSpec,
 };
@@ -15,7 +15,7 @@ impl FlowRuntime for TraceRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         *self.seen.lock().unwrap() = invocation.trace_context.clone();
         let ctx = invocation.context();
         if !ctx.step_completed("work") {
@@ -24,7 +24,7 @@ impl FlowRuntime for TraceRuntime {
         Ok(ctx.complete(json!({ "ok": true })))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
         assert!(invocation.trace_context.is_some());
         Ok(json!({ "step": invocation.step_name }))
     }

@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema, Fts,
     IndexParams, IndexType, MetricType, MultiQuery, SearchQuery, SubQuery,
 };
@@ -92,7 +92,7 @@ fn document(index: usize) -> Doc {
     doc.add_string("label", &format!("src/module-{bucket}/file-{index:03}.rs"))
         .expect("label must be valid");
     if index % 5 == 0 {
-        doc.set_field_value("optional", a3s_vec::FieldValue::Null)
+        doc.set_field_value("optional", aster_vec::FieldValue::Null)
             .expect("explicit null must be valid");
     } else if index % 7 != 0 {
         doc.add_string("optional", if index % 2 == 0 { "even" } else { "odd" })
@@ -266,7 +266,7 @@ fn scalar_index_lifecycle_tracks_mutations_delete_by_filter_and_reopen() {
     let mut inserted = document(255);
     inserted.set_pk("doc-0999");
     inserted
-        .set_field_value("bucket", a3s_vec::FieldValue::Int32(3))
+        .set_field_value("bucket", aster_vec::FieldValue::Int32(3))
         .expect("bucket replacement must be valid");
     collection
         .upsert(&[&inserted])

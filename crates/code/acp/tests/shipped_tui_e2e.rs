@@ -2,7 +2,7 @@
 //!
 //! The model is a local OpenAI-compatible server, except the ignored
 //! `shipped_bound_goal_real_llm`, which runs the operator's live ACL. The agent process is
-//! `a3s-code-acp`. Palette and launch cases spawn `aster` on a PTY.
+//! `aster-acp`. Palette and launch cases spawn `aster` on a PTY.
 //! Nothing here substitutes a scripted `LlmClient` or the pager's content mock.
 
 // These fixtures execute POSIX shell scripts and require Unix executable modes.
@@ -49,7 +49,7 @@ const UNAVAILABLE: &[(&str, &str)] = &[
     ("usage", "View usage"),
     ("view-plan", "View the current plan"),
     ("plan", "Enter plan mode"),
-    ("tutorial", "Quick tips to get the most out of A3S Code"),
+    ("tutorial", "Quick tips to get the most out of Aster Code"),
     ("docs", "Open How-to Guides"),
     ("privacy", "coding data, retention"),
     ("login", "Log in or re-authenticate"),
@@ -370,7 +370,7 @@ fn has_tools(body: &serde_json::Value) -> bool {
 }
 
 fn returned_form_values(value: &serde_json::Value) -> Option<serde_json::Value> {
-    if value["schema"] == "a3s.code.user-form.v1" {
+    if value["schema"] == "aster.code.user-form.v1" {
         return value.get("values").cloned();
     }
     match value {
@@ -388,7 +388,7 @@ fn returned_form_values(value: &serde_json::Value) -> Option<serde_json::Value> 
 #[test]
 fn submitted_form_values_survive_the_tool_exit_status_prefix() {
     let values = serde_json::json!({"name":"Ada","amount":4.0,"ready":true});
-    let result = serde_json::json!({"schema":"a3s.code.user-form.v1","values":values});
+    let result = serde_json::json!({"schema":"aster.code.user-form.v1","values":values});
     let messages =
         serde_json::json!([{"role":"tool","content":format!("Tool exit code: 0\n{result}")}]);
     assert_eq!(returned_form_values(&messages), Some(values));
@@ -580,7 +580,7 @@ struct AgentProc {
 
 fn isolate_dir(label: &str) -> PathBuf {
     let path = std::env::temp_dir().join(format!(
-        "a3s-shipped-e2e-{label}-{}-{}",
+        "aster-shipped-e2e-{label}-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -592,7 +592,7 @@ fn isolate_dir(label: &str) -> PathBuf {
 }
 
 fn write_acl(home: &Path, workspace: &Path, base_url: &str) -> PathBuf {
-    let config_dir = workspace.join(".a3s");
+    let config_dir = workspace.join(".aster");
     std::fs::create_dir_all(&config_dir).expect("acl dir");
     let path = config_dir.join("config.acl");
     std::fs::write(
@@ -632,10 +632,10 @@ async fn spawn_agent_with_env(
     let mut child = tokio::process::Command::new(bin)
         .arg("--cwd")
         .arg(workspace)
-        .env("A3S_CONFIG", config)
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_CONFIG", config)
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("XAI_API_KEY", "sk-dummy-not-a-model")
         .env("HOME", home)
         .env("GROK_HOME", home.join("grok"))
@@ -645,7 +645,7 @@ async fn spawn_agent_with_env(
         .stderr(Stdio::from(stderr))
         .kill_on_drop(true)
         .spawn()
-        .expect("spawn a3s-code-acp");
+        .expect("spawn aster-acp");
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
     let (gate_tx, gate_rx) = tokio::sync::mpsc::unbounded_channel();
@@ -712,7 +712,7 @@ async fn session_info_body(
     .expect("session info params");
     let response = acp::Agent::ext_method(
         conn,
-        acp::ExtRequest::new("a3s/session/info", std::sync::Arc::from(params)),
+        acp::ExtRequest::new("aster/session/info", std::sync::Arc::from(params)),
     )
     .await
     .expect("session info");
@@ -745,8 +745,8 @@ fn append_jsonl_dir(dir: &Path, out: &mut String) {
 
 fn log_text(workspace: &Path) -> String {
     let mut out = String::new();
-    append_jsonl_dir(&workspace.join(".a3s").join("effect-log"), &mut out);
-    let Ok(dates) = std::fs::read_dir(workspace.join(".a3s").join("sessions")) else {
+    append_jsonl_dir(&workspace.join(".aster").join("effect-log"), &mut out);
+    let Ok(dates) = std::fs::read_dir(workspace.join(".aster").join("sessions")) else {
         return out;
     };
     for date in dates.flatten() {
@@ -827,8 +827,8 @@ async fn shipped_agent_refuses_repeated_reads_without_new_progress() {
                 "unexpected error: {error:?}"
             );
             let thread =
-                a3s_code_core::fact_control::thread_for_session(session.session_id.0.as_ref());
-            let directory = a3s_code_core::session_folder::effect_log_dir(
+                aster_core::fact_control::thread_for_session(session.session_id.0.as_ref());
+            let directory = aster_core::session_folder::effect_log_dir(
                 &workspace,
                 session.session_id.0.as_ref(),
             );
@@ -871,7 +871,7 @@ async fn shipped_agent_session_wire() {
             .expect("initialize");
             let meta = init.meta.expect("initialize meta");
             assert_eq!(
-                meta.get("a3sCode").and_then(serde_json::Value::as_bool),
+                meta.get("asterCode").and_then(serde_json::Value::as_bool),
                 Some(true)
             );
             let current = meta
@@ -1190,9 +1190,9 @@ async fn shipped_agent_session_wire() {
                 .expect("cancel result");
             assert_eq!(cancelled.stop_reason, acp::StopReason::Cancelled);
             tokio::time::sleep(Duration::from_secs(5)).await;
-            let cancel_thread = a3s_code_core::fact_control::thread_for_session(cancel_session.0.as_ref());
-            let cancel_facts = a3s_code_core::fact_control::read_workspace_facts(&workspace, &cancel_thread).expect("cancel facts");
-            assert_eq!(cancel_facts.iter().filter(|fact| fact.kind == "a3s.goal.slice.admitted").count(), 1,
+            let cancel_thread = aster_core::fact_control::thread_for_session(cancel_session.0.as_ref());
+            let cancel_facts = aster_core::fact_control::read_workspace_facts(&workspace, &cancel_thread).expect("cancel facts");
+            assert_eq!(cancel_facts.iter().filter(|fact| fact.kind == "aster.goal.slice.admitted").count(), 1,
                 "cancelling the goal wake must not admit another slice");
             assert!(
                 !late_path.exists(),
@@ -1221,7 +1221,7 @@ async fn shipped_agent_session_wire() {
             .expect("params");
             acp::Agent::ext_method(
                 agent.conn.as_ref(),
-                acp::ExtRequest::new("a3s/compact_conversation", std::sync::Arc::from(params)),
+                acp::ExtRequest::new("aster/compact_conversation", std::sync::Arc::from(params)),
             )
             .await
             .expect("compact");
@@ -1267,7 +1267,7 @@ async fn shipped_agent_session_wire() {
             )
             .await
             .expect("goal set");
-            let goal_folder = a3s_code_core::session_folder::find_session_dir(
+            let goal_folder = aster_core::session_folder::find_session_dir(
                 &workspace,
                 goal_session.0.as_ref(),
             )
@@ -1279,7 +1279,7 @@ async fn shipped_agent_session_wire() {
             assert!(bound["work_policy_digest"].is_string());
             assert!(!goal_folder.join("durable-goal.json").exists(), "new goals use original facts");
             assert!(
-                !workspace.join(".a3s/durable-goal.json").exists(),
+                !workspace.join(".aster/durable-goal.json").exists(),
                 "a session goal must not become workspace-wide state"
             );
             oracle(
@@ -1454,7 +1454,7 @@ async fn shipped_agent_sends_aster_identity_to_the_model() {
                 "Aster identity must reach the model"
             );
             assert!(
-                !system.contains("You are A3S Code"),
+                !system.contains("You are Aster Code"),
                 "the inherited identity must be replaced"
             );
             assert!(
@@ -1467,7 +1467,7 @@ async fn shipped_agent_sends_aster_identity_to_the_model() {
 }
 
 #[test]
-#[ignore = "requires a3s-test and built Aster/ACP executables"]
+#[ignore = "requires aster-test and built Aster/ACP executables"]
 fn shipped_native_form_submit_cancel_and_reject() {
     let root = tempfile::Builder::new()
         .prefix("aster-native-form-")
@@ -1482,7 +1482,7 @@ fn shipped_native_form_submit_cancel_and_reject() {
     let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
     let manifest =
         PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../tests/e2e/ask-form.acl");
-    let output = std::process::Command::new("a3s-test")
+    let output = std::process::Command::new("aster-test")
         .args(["run"])
         .arg(manifest)
         .arg("--tui-executable")
@@ -1492,14 +1492,14 @@ fn shipped_native_form_submit_cancel_and_reject() {
         .args(["--tui-columns", "120", "--tui-rows", "40", "--json"])
         .current_dir(&root)
         .envs(child_env(&binaries::acp_binary(), &config, &home))
-        .env("A3S_HOME", home.join(".a3s"))
+        .env("ASTER_HOME", home.join(".aster"))
         .output()
-        .expect("run a3s-test");
+        .expect("run aster-test");
     let evidence = std::env::temp_dir().join("aster-form-e2e-result.json");
     std::fs::write(&evidence, &output.stdout).expect("save bounded test result");
     assert!(
         output.status.success(),
-        "A3S Test failed: {}\n{}",
+        "Aster Test failed: {}\n{}",
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     );
@@ -1544,7 +1544,7 @@ fn passed_step_text(result: &serde_json::Value, step_id: &str) -> String {
             return text;
         }
     }
-    panic!("a3s-test result has no step {step_id}");
+    panic!("aster-test result has no step {step_id}");
 }
 
 #[test]
@@ -1562,10 +1562,10 @@ fn shipped_tui_reports_configuration_failure_before_the_connect_budget() {
     let acp_binary = binaries::acp_binary();
     let env = [
         ("HOME", home_text.as_str()),
-        ("A3S_HOME", home_text.as_str()),
-        ("A3S_CONFIG", config_text.as_str()),
-        ("A3S_ACP_AGENT_BIN", acp_binary.as_str()),
-        ("A3S_CODE_CONNECT_TIMEOUT_SECS", "60"),
+        ("ASTER_HOME", home_text.as_str()),
+        ("ASTER_CONFIG", config_text.as_str()),
+        ("ASTER_ACP_AGENT_BIN", acp_binary.as_str()),
+        ("ASTER_CONNECT_TIMEOUT_SECS", "60"),
     ];
     let started = Instant::now();
     let mut pty = open_pty_cleared(&binary, &[], &env, &workspace);
@@ -1589,7 +1589,7 @@ fn shipped_tui_reports_configuration_failure_before_the_connect_budget() {
         "{raw}"
     );
     assert!(
-        raw.contains("trusted ACL") && raw.contains("A3S_CONFIG"),
+        raw.contains("trusted ACL") && raw.contains("ASTER_CONFIG"),
         "{raw}"
     );
     assert!(!raw.contains("startup timed out"), "{raw}");
@@ -1609,7 +1609,7 @@ fn shipped_tui_keeps_a_bounded_wait_for_a_running_unresponsive_agent() {
     let agent_text = agent.to_string_lossy().to_string();
     let binary = tui_binary();
     for variable in [
-        "A3S_CODE_CONNECT_TIMEOUT_SECS",
+        "ASTER_CONNECT_TIMEOUT_SECS",
         "GROK_CONNECT_UI_TIMEOUT_SECS",
     ] {
         let home = root.path().join(variable);
@@ -1617,8 +1617,8 @@ fn shipped_tui_keeps_a_bounded_wait_for_a_running_unresponsive_agent() {
         let home_text = home.to_string_lossy().to_string();
         let env = [
             ("HOME", home_text.as_str()),
-            ("A3S_HOME", home_text.as_str()),
-            ("A3S_ACP_AGENT_BIN", agent_text.as_str()),
+            ("ASTER_HOME", home_text.as_str()),
+            ("ASTER_ACP_AGENT_BIN", agent_text.as_str()),
             (variable, "1"),
         ];
         let started = Instant::now();
@@ -1640,7 +1640,7 @@ fn shipped_tui_keeps_a_bounded_wait_for_a_running_unresponsive_agent() {
         assert!(!status.success(), "an unresponsive agent cannot start");
         assert!(raw.contains("startup timed out"), "{raw}");
         assert!(
-            raw.contains("A3S_CODE_CONNECT_TIMEOUT_SECS=60 aster"),
+            raw.contains("ASTER_CONNECT_TIMEOUT_SECS=60 aster"),
             "{raw}"
         );
     }
@@ -1671,7 +1671,7 @@ impl Drop for PtySession {
 }
 
 fn tui_binary() -> PathBuf {
-    if let Some(path) = std::env::var_os("A3S_CODE_TUI_BIN") {
+    if let Some(path) = std::env::var_os("ASTER_TUI_BIN") {
         return PathBuf::from(path);
     }
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../target/debug/aster")
@@ -1905,7 +1905,7 @@ impl PtySession {
 
 /// `default_model` as written into the ACL file, not a hard-coded id.
 fn acl_default_model(config: &Path) -> String {
-    a3s_code_core::CodeConfig::from_file(config)
+    aster_core::CodeConfig::from_file(config)
         .unwrap_or_else(|_| panic!("invalid trusted ACL configuration"))
         .default_model
         .expect("ACL must declare its default model")
@@ -1929,8 +1929,8 @@ fn model_field(screen: &str) -> Option<String> {
 /// Launch necessities plus one credential. No model selector and no importer switch.
 fn key_only_env(acp: &str, config: &Path, home: &Path) -> Vec<(String, String)> {
     vec![
-        ("A3S_ACP_AGENT_BIN".into(), acp.into()),
-        ("A3S_CONFIG".into(), config.display().to_string()),
+        ("ASTER_ACP_AGENT_BIN".into(), acp.into()),
+        ("ASTER_CONFIG".into(), config.display().to_string()),
         ("XAI_API_KEY".into(), "sk-dummy-not-a-model".into()),
         ("HOME".into(), home.display().to_string()),
         ("GROK_HOME".into(), home.join("grok").display().to_string()),
@@ -1939,13 +1939,13 @@ fn key_only_env(acp: &str, config: &Path, home: &Path) -> Vec<(String, String)> 
 }
 
 const KEY_ONLY_FORBIDDEN: &[&str] = &[
-    "A3S_DEFAULT_MODEL",
-    "A3S_PREFER_GROK",
-    "A3S_PREFER_CC_SWITCH",
-    "A3S_DISABLE_GROK_ACCOUNT",
-    "A3S_DISABLE_CC_SWITCH",
-    "A3S_GROK_HOME",
-    "A3S_CC_SWITCH_DB",
+    "ASTER_DEFAULT_MODEL",
+    "ASTER_PREFER_GROK",
+    "ASTER_PREFER_CC_SWITCH",
+    "ASTER_DISABLE_GROK_ACCOUNT",
+    "ASTER_DISABLE_CC_SWITCH",
+    "ASTER_GROK_HOME",
+    "ASTER_CC_SWITCH_DB",
     "CC_SWITCH_HOME",
     "ANTHROPIC_API_KEY",
     "ANTHROPIC_MODEL",
@@ -1955,11 +1955,11 @@ const KEY_ONLY_FORBIDDEN: &[&str] = &[
 
 fn child_env(acp: &str, config: &Path, home: &Path) -> Vec<(String, String)> {
     vec![
-        ("A3S_ACP_AGENT_BIN".into(), acp.into()),
-        ("A3S_CONFIG".into(), config.display().to_string()),
-        ("A3S_DISABLE_CC_SWITCH".into(), "1".into()),
-        ("A3S_DISABLE_GROK_ACCOUNT".into(), "1".into()),
-        ("A3S_DISABLE_CURSOR_ACCOUNT".into(), "1".into()),
+        ("ASTER_ACP_AGENT_BIN".into(), acp.into()),
+        ("ASTER_CONFIG".into(), config.display().to_string()),
+        ("ASTER_DISABLE_CC_SWITCH".into(), "1".into()),
+        ("ASTER_DISABLE_GROK_ACCOUNT".into(), "1".into()),
+        ("ASTER_DISABLE_CURSOR_ACCOUNT".into(), "1".into()),
         ("XAI_API_KEY".into(), "sk-dummy-not-a-model".into()),
         ("HOME".into(), home.display().to_string()),
         ("GROK_HOME".into(), home.join("grok").display().to_string()),
@@ -2162,7 +2162,7 @@ fn wait_body_all(
 
 fn wait_prompt_response(pty: &mut PtySession, trace: &Path, prompt: &str) {
     let digest =
-        a3s_code_core::content_digest::digest_bytes("a3s.test.tui-prompt.v1", prompt.as_bytes());
+        aster_core::content_digest::digest_bytes("aster.test.tui-prompt.v1", prompt.as_bytes());
     let deadline = Instant::now() + Duration::from_secs(20);
     while Instant::now() < deadline {
         if let Ok(text) = std::fs::read_to_string(trace) {
@@ -2378,19 +2378,19 @@ fn exercise_marker_navigation(
     std::fs::set_permissions(&relay, std::fs::Permissions::from_mode(0o700)).expect("relay mode");
     let real_acp = env
         .iter()
-        .find(|(key, _)| *key == "A3S_ACP_AGENT_BIN")
+        .find(|(key, _)| *key == "ASTER_ACP_AGENT_BIN")
         .expect("selected ACP")
         .1;
     let mut owned: Vec<(String, String)> = env
         .iter()
-        .filter(|(key, _)| *key != "A3S_ACP_AGENT_BIN")
+        .filter(|(key, _)| *key != "ASTER_ACP_AGENT_BIN")
         .map(|(key, value)| (key.to_string(), value.to_string()))
         .collect();
     owned.extend([
-        ("A3S_ACP_AGENT_BIN".into(), relay.display().to_string()),
-        ("A3S_CODE_TUI_TEST_ACP_REAL".into(), real_acp.into()),
+        ("ASTER_ACP_AGENT_BIN".into(), relay.display().to_string()),
+        ("ASTER_TUI_TEST_ACP_REAL".into(), real_acp.into()),
         (
-            "A3S_CODE_TUI_TEST_ACP_TRACE".into(),
+            "ASTER_TUI_TEST_ACP_TRACE".into(),
             trace.display().to_string(),
         ),
     ]);
@@ -2722,7 +2722,7 @@ fn shipped_tui_prefix_fork_inherits_history_and_resumes_the_child() {
         summary_for(&home, &child).is_some(),
         "fork missing from the resume catalog"
     );
-    let child_log = a3s_code_core::session_folder::effect_log_dir(&workspace, &child);
+    let child_log = aster_core::session_folder::effect_log_dir(&workspace, &child);
     let completed_turns = || {
         let mut raw = String::new();
         append_jsonl_dir(&child_log, &mut raw);
@@ -2847,12 +2847,12 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     eprintln!("---LAUNCH-2---\n{second_frame}\n---END-LAUNCH-2---");
 
     // The same continue path with the agent found beside the pager, not via
-    // A3S_ACP_AGENT_BIN. A separate directory keeps this summary out of the
+    // ASTER_ACP_AGENT_BIN. A separate directory keeps this summary out of the
     // launch pair above.
     let discover_ws = isolate_dir("pty-discover");
     let discover_config = write_acl(&home, &discover_ws, &format!("http://{addr}/v1"));
     let mut discover_owned = child_env(&acp_bin, &discover_config, &home);
-    discover_owned.retain(|(key, _)| key != "A3S_ACP_AGENT_BIN");
+    discover_owned.retain(|(key, _)| key != "ASTER_ACP_AGENT_BIN");
     let discover_env: Vec<(&str, &str)> = discover_owned
         .iter()
         .map(|(key, value)| (key.as_str(), value.as_str()))
@@ -2865,7 +2865,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     let (continued_id, continued_frame) = launch_once(true, &discover_env, &discover_ws);
     assert_eq!(
         discovered_id, continued_id,
-        "continue without A3S_ACP_AGENT_BIN opened a different session"
+        "continue without ASTER_ACP_AGENT_BIN opened a different session"
     );
     assert!(continued_frame.contains(MODEL_ID));
     oracle(
@@ -2927,12 +2927,12 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         .expect("relay executable");
     let trace = home.join("interactive-acp-trace.jsonl");
     let mut interactive_owned = owned.clone();
-    interactive_owned.retain(|(key, _)| key != "A3S_ACP_AGENT_BIN");
+    interactive_owned.retain(|(key, _)| key != "ASTER_ACP_AGENT_BIN");
     interactive_owned.extend([
-        ("A3S_ACP_AGENT_BIN".into(), relay.display().to_string()),
-        ("A3S_CODE_TUI_TEST_ACP_REAL".into(), acp_bin.into()),
+        ("ASTER_ACP_AGENT_BIN".into(), relay.display().to_string()),
+        ("ASTER_TUI_TEST_ACP_REAL".into(), acp_bin.into()),
         (
-            "A3S_CODE_TUI_TEST_ACP_TRACE".into(),
+            "ASTER_TUI_TEST_ACP_TRACE".into(),
             trace.display().to_string(),
         ),
     ]);
@@ -3077,7 +3077,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.write_bytes(b"\x15");
     pty.type_text(&format!("/goal {GOAL_OBJECTIVE}"));
     pty.enter();
-    let created = wait_goal_fact(&mut pty, &workspace, "a3s.goal.created");
+    let created = wait_goal_fact(&mut pty, &workspace, "aster.goal.created");
     assert!(created.to_string().contains(GOAL_OBJECTIVE));
     let stopped = pty.wait_for("Durable goal tick: needs_input", Duration::from_secs(30));
     assert!(
@@ -3096,7 +3096,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.write_bytes(b"\x15");
     pty.type_text("/goal pause");
     pty.enter();
-    wait_goal_fact(&mut pty, &workspace, "a3s.goal.paused");
+    wait_goal_fact(&mut pty, &workspace, "aster.goal.paused");
     let paused = pty.wait_for("Durable goal paused:", Duration::from_secs(8));
     assert!(paused.contains(GOAL_OBJECTIVE), "{paused}");
     assert_eq!(
@@ -3112,7 +3112,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.write_bytes(b"\x15");
     pty.type_text("/goal resume");
     pty.enter();
-    wait_goal_fact(&mut pty, &workspace, "a3s.goal.resumed");
+    wait_goal_fact(&mut pty, &workspace, "aster.goal.resumed");
     let resumed = pty.wait_for("Durable goal tick: needs_input", Duration::from_secs(8));
     assert!(
         resumed.contains("Durable goal tick: needs_input"),
@@ -3132,7 +3132,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
     pty.write_bytes(b"\x15");
     pty.type_text("/goal clear");
     pty.enter();
-    wait_goal_fact(&mut pty, &workspace, "a3s.goal.cancelled");
+    wait_goal_fact(&mut pty, &workspace, "aster.goal.cancelled");
     let cleared = pty.wait_for("Durable goal cancelled:", Duration::from_secs(8));
     assert!(cleared.contains(GOAL_OBJECTIVE), "{cleared}");
     assert_eq!(
@@ -3140,7 +3140,7 @@ fn shipped_tui_launch_resume_and_visible_commands() {
         bodies_before_pause
     );
     assert!(
-        log_text(&workspace).contains("a3s.goal.created"),
+        log_text(&workspace).contains("aster.goal.created"),
         "clear retains the original history"
     );
     oracle(
@@ -3902,7 +3902,7 @@ const REAL_GOAL_MODEL: &str = "boyue/deepseek-v4-flash";
 
 /// Explicit host ACL: the operator's live file plus trusted goal bounds.
 fn write_real_goal_acl(home: &Path) -> PathBuf {
-    let source = std::env::var_os("A3S_CONFIG_FILE").expect("A3S_CONFIG_FILE names the live ACL");
+    let source = std::env::var_os("ASTER_CONFIG_FILE").expect("ASTER_CONFIG_FILE names the live ACL");
     let mut acl = std::fs::read_to_string(source).expect("live ACL");
     let deadline = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -3936,7 +3936,7 @@ async fn goal_ext(
 async fn goal_state(agent: &AgentProc, id: &acp::SessionId) -> serde_json::Value {
     goal_ext(
         agent,
-        "a3s/goal/state",
+        "aster/goal/state",
         serde_json::json!({"session_id": id.0.as_ref()}),
     )
     .await
@@ -4011,7 +4011,7 @@ fn create_goal_command(
 /// A policy session's real Run admits the policy; a goal binds only to that
 /// digest, and review admission works on the bound session.
 async fn policy_goal_review(agent: &AgentProc, workspace: &Path) {
-    let meta = serde_json::json!({"a3sEngineering": {"policy": "engineering-v1"}});
+    let meta = serde_json::json!({"asterEngineering": {"policy": "engineering-v1"}});
     let id = acp::Agent::new_session(
         agent.conn.as_ref(),
         acp::NewSessionRequest::new(workspace.to_path_buf()).meta(meta.as_object().cloned()),
@@ -4051,25 +4051,25 @@ async fn policy_goal_review(agent: &AgentProc, workspace: &Path) {
     assert!(
         acp::Agent::ext_method(
             agent.conn.as_ref(),
-            acp::ExtRequest::new("a3s/goal/definition", std::sync::Arc::from(raw)),
+            acp::ExtRequest::new("aster/goal/definition", std::sync::Arc::from(raw)),
         )
         .await
         .is_err(),
         "a goal must bind the admitted policy"
     );
     create["work_policy_digest"] = digest.clone();
-    let bound = goal_ext(agent, "a3s/goal/definition", create).await;
+    let bound = goal_ext(agent, "aster/goal/definition", create).await;
     assert_eq!(bound["binding"]["work_policy_digest"], digest);
     let target = goal_ext(
         agent,
-        "a3s/review/target",
+        "aster/review/target",
         serde_json::json!({"sessionId": id.0.as_ref(), "paths": ["release.txt"]}),
     )
     .await["digest"]
         .clone();
     let admitted = goal_ext(
         agent,
-        "a3s/review/admit",
+        "aster/review/admit",
         serde_json::json!({
             "sessionId": id.0.as_ref(), "scenarioId": "engineering.change",
             "sourceReviewId": "pager-review-1", "workPolicyDigest": digest,
@@ -4103,7 +4103,7 @@ async fn bind_pager_session(agent: &AgentProc, workspace: &Path, id: &acp::Sessi
     );
     let created = goal_ext(
         agent,
-        "a3s/goal/definition",
+        "aster/goal/definition",
         create_goal_command(
             id,
             workspace,
@@ -4125,11 +4125,11 @@ async fn bind_pager_session(agent: &AgentProc, workspace: &Path, id: &acp::Sessi
                    "status": "pending", "priority": "medium",
                    "success_criteria": "report.txt holds exactly the release code from release.txt and `test -f report.txt` passed after the write"}],
     });
-    let proposed = goal_ext(agent, "a3s/goal/plan", propose).await;
+    let proposed = goal_ext(agent, "aster/goal/plan", propose).await;
     let mut accept = goal_command("accept_plan", "pager-accept", &proposed);
     accept["plan"] = serde_json::Value::Null;
     accept["proposal_sequence"] = proposed["plan_fact_sequence"].clone();
-    let accepted = goal_ext(agent, "a3s/goal/plan", accept).await;
+    let accepted = goal_ext(agent, "aster/goal/plan", accept).await;
     assert_eq!(accepted["plan_accepted"], true);
     let status = slash(agent, id, "/goal status").await;
     assert!(
@@ -4152,7 +4152,7 @@ async fn bind_pager_session(agent: &AgentProc, workspace: &Path, id: &acp::Sessi
 }
 
 #[test]
-#[ignore = "requires A3S_CONFIG_FILE with boyue/deepseek-v4-flash and a built aster"]
+#[ignore = "requires ASTER_CONFIG_FILE with boyue/deepseek-v4-flash and a built aster"]
 fn shipped_bound_goal_real_llm() {
     let binary = tui_binary();
     assert!(binary.is_file(), "build aster: {}", binary.display());
@@ -4168,7 +4168,7 @@ fn shipped_bound_goal_real_llm() {
     let config = write_real_goal_acl(&home);
     // A policy session refuses a model switch before its first Run admits the
     // policy, so every agent starts on the model. This ignored test runs alone.
-    std::env::set_var("A3S_DEFAULT_MODEL", REAL_GOAL_MODEL);
+    std::env::set_var("ASTER_DEFAULT_MODEL", REAL_GOAL_MODEL);
     let acp_bin = binaries::acp_binary();
     let owned = child_env(&acp_bin, &config, &home);
     let env: Vec<(&str, &str)> = owned
@@ -4294,7 +4294,7 @@ fn shipped_bound_goal_real_llm() {
         .session_id;
         let created = goal_ext(
             &agent,
-            "a3s/goal/definition",
+            "aster/goal/definition",
             create_goal_command(&other, &workspace, "clear-me", "Never started", "Cancelled"),
         )
         .await;

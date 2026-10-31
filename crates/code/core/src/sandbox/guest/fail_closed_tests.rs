@@ -89,7 +89,7 @@ async fn expired_timeout_does_not_start_a_command() {
         Err(error) => assert!(is_native_process_lifetime_unqualified(&error), "{error}"),
     }
     assert!(!sentinel.exists());
-    assert!(!workspace.path().join(".a3s-guest-command").exists());
+    assert!(!workspace.path().join(".aster-guest-command").exists());
 }
 
 #[tokio::test]
@@ -264,7 +264,7 @@ done
 if [ -z "$share" ]; then
   exit 2
 fi
-script="$share/.a3s-guest-command"
+script="$share/.aster-guest-command"
 if grep -q generation-hold "$script"; then
   echo $$ > "$share/hold.pid"
   (sleep 0.6; touch "$share/late") &

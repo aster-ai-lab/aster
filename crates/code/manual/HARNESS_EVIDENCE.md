@@ -16,7 +16,7 @@ external.
 
 A configured Agent is an intention. An auditable run needs evidence of what the
 model could actually use, what arguments reached the provider-neutral model
-boundary, and what validated Tool requests entered governance. A3S Code records
+boundary, and what validated Tool requests entered governance. Aster Code records
 that evidence in the existing Run event journal; it does not introduce a second
 audit database or a provider-specific request model.
 
@@ -53,7 +53,7 @@ typed origins.
 ## Capability snapshot
 
 `RunCapabilitySnapshotV1` uses schema
-`a3s.code.run-capability-snapshot.v1`. It records:
+`aster.code.run-capability-snapshot.v1`. It records:
 
 - the count and digest of the actual `ToolDefinition` list visible to the model;
 - read, write, execution, search, Git, and Code Intelligence availability from
@@ -74,7 +74,7 @@ depend on event adjacency.
 
 `HARNESS-SCOPE1` leaves this strict v1 wire shape unchanged. The internal
 `CapabilityScope` kernel now pins one immutable catalog, a monotonic governance
-ceiling, and the exact A3S Use Run lease while borrowed marker-specific leases
+ceiling, and the exact Aster Use Run lease while borrowed marker-specific leases
 control access. Agent orchestration, provider/Tool work, recursive Skill/Task
 children, and promoted Task/memory work now execute inside the corresponding
 Turn/Subtask/Run lifetime, but existing evidence remains derived from the live
@@ -84,7 +84,7 @@ snapshot may expose the internal identity; fields are not appended to v1.
 ## Tool-request snapshot
 
 `ToolRequestSnapshotV1` uses schema
-`a3s.code.tool-request-snapshot.v1`. It records a closed request origin, the
+`aster.code.tool-request-snapshot.v1`. It records a closed request origin, the
 canonical serialized argument byte count, and separate domain-separated
 SHA-256 digests for the Tool call identifier, Tool name, arguments, and complete
 snapshot. Origins distinguish model, nested, trusted host-direct, governed
@@ -106,7 +106,7 @@ an approved call actually began execution.
 ## Model-presentation snapshot
 
 `ModelPresentationSnapshotV1` uses schema
-`a3s.code.model-presentation-snapshot.v1`. It binds one closed
+`aster.code.model-presentation-snapshot.v1`. It binds one closed
 `ToolPresentationProfileV1` value to the canonical Tool-definition source and
 the exact provider-facing projection for a call. It records source and
 presented counts, domain-separated definition digests, Code token estimates,
@@ -128,7 +128,7 @@ The version-1 Profile has four modes:
 Permission visibility is evaluated before the Profile. Consequently, code-mode
 catalog generation cannot restore or name a permission-hidden Tool. A Profile
 owns no Tool value and cannot add a name, alter a parameter schema, select an
-A3S Use generation, or replace the governed executor. The main turn executes
+Aster Use generation, or replace the governed executor. The main turn executes
 through the same Run-owned `ToolExecutor` and pinned `Arc<dyn Tool>` values.
 
 The Profile is persisted in the Session snapshot and an explicit different
@@ -139,7 +139,7 @@ typed Profile objects rather than a primitive backend selector.
 
 ## Model-input snapshot
 
-`ModelInputSnapshotV1` uses schema `a3s.code.model-input-snapshot.v1` and a
+`ModelInputSnapshotV1` uses schema `aster.code.model-input-snapshot.v1` and a
 positive, run-local call sequence. It records counts and canonical serialized
 byte measurements for messages, content blocks, images, Tool results, Tool
 definitions, structured-output directives, and the complete provider-neutral
@@ -160,7 +160,7 @@ it is host-only validation metadata and is not transmitted to a provider.
 
 ## Model-usage snapshot
 
-`ModelUsageSnapshotV1` uses schema `a3s.code.model-usage-snapshot.v1`. It binds
+`ModelUsageSnapshotV1` uses schema `aster.code.model-usage-snapshot.v1`. It binds
 the positive call sequence, input snapshot digest, and Code prompt-token
 estimate to the prompt, completion, total, cache-read, and cache-write values
 returned through `LlmClient::TokenUsage`. A zero remains zero when an adapter
@@ -210,7 +210,7 @@ configured, Code never silently writes that content to the local
 `ArtifactStore` as a fallback.
 
 The complete reference is placed under Tool metadata
-`artifact.content_reference`; `a3s_tool_result_evidence.content_ref` contains
+`artifact.content_reference`; `aster_tool_result_evidence.content_ref` contains
 the same URI. A lossless bounded result remains visible to the model unchanged.
 For a lossy result, the reference shown in the bounded projection is rewritten
 from the compatibility URI to the adapter's validated URI. The session
@@ -235,21 +235,21 @@ fallback uses the create-only operation.
 ## Tool-result transform binding
 
 An executed Tool result carries a separate
-`metadata.a3s_tool_result_transform_binding` object using schema
-`a3s.code.tool-result-transform-binding.v1`. Keeping this object beside, rather
-than inside, `a3s.code.tool-result-evidence.v1` preserves the existing v1
+`metadata.aster_tool_result_transform_binding` object using schema
+`aster.code.tool-result-transform-binding.v1`. Keeping this object beside, rather
+than inside, `aster.code.tool-result-evidence.v1` preserves the existing v1
 evidence wire shape. The binding contains:
 
-- the exact `a3s.code.tool-result-transform.v1` algorithm identity;
+- the exact `aster.code.tool-result-transform.v1` algorithm identity;
 - a SHA-256 digest of the complete validated
   `ToolResultTransformPolicyV1`; and
 - a second SHA-256 digest binding the schema, algorithm, and policy digest.
 
 The policy digest is SHA-256 over the UTF-8 domain
-`a3s.code.tool-result-transform-policy-digest.v1`, one zero byte, and compact
+`aster.code.tool-result-transform-policy-digest.v1`, one zero byte, and compact
 JSON for the policy in its declared field order. The binding digest uses the
 same construction with domain
-`a3s.code.tool-result-transform-binding.v1` and the ordered `schema`,
+`aster.code.tool-result-transform-binding.v1` and the ordered `schema`,
 `transform_algorithm`, and `policy_digest` fields. These fixed inputs let a
 managed host pin an expected identity without copying tenant, provider,
 credential, endpoint, or object-path data into Core.
@@ -271,9 +271,9 @@ into one portable provider artifact:
 - optionally, one exact schema-v1 `LoopCheckpoint` taken after a completed
   Tool round.
 
-The payload uses schema `a3s.code.session-checkpoint-payload.v1`, media type
-`application/vnd.a3s.code.session-checkpoint.v1+json`, and format
-`a3s_code_session_checkpoint_v1`. Its `canonical_json_v1` encoding is compact
+The payload uses schema `aster.code.session-checkpoint-payload.v1`, media type
+`application/vnd.aster.code.session-checkpoint.v1+json`, and format
+`aster_session_checkpoint_v1`. Its `canonical_json_v1` encoding is compact
 UTF-8 JSON with every object key recursively sorted lexicographically, array
 order preserved, and no insignificant whitespace. Import accepts no alternate
 encoding under the same identity. The complete payload is bounded to 256 MiB

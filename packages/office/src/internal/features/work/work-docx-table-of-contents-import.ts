@@ -40,7 +40,7 @@ export function markDocxTablesOfContents(
     if (!parsed.supported) continue;
     const tableIndex = tables.length + 1;
     const marker: ImportedDocxTableOfContentsMarker = {
-      marker: `__A3S_WORK_TABLE_OF_CONTENTS_${tableIndex}__`,
+      marker: `__ASTER_WORK_TABLE_OF_CONTENTS_${tableIndex}__`,
       id: `docx-table-of-contents-${tableIndex}`,
       options: {
         ...parsed.options,

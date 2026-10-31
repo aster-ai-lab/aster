@@ -28,14 +28,14 @@ use std::os::unix::process::CommandExt;
 
 #[test]
 fn context_smoke_emits_consistent_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci-krun-shim"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci-krun-shim"))
         .arg("context-smoke")
         .output()
         .expect("context smoke command must start");
 
-    let report: a3s_oci_krun::KrunContextSmokeReport =
+    let report: aster_oci_krun::KrunContextSmokeReport =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
-    assert_eq!(report.schema_version, "a3s.oci.krun-context-smoke.v2");
+    assert_eq!(report.schema_version, "aster.oci.krun-context-smoke.v2");
     assert_eq!(output.status.success(), report.is_success());
 
     if cfg!(any(
@@ -69,23 +69,23 @@ fn whpx_handle_reclamation_rejects_missing_inputs_with_versioned_evidence() {
         .expect("system time must follow the Unix epoch")
         .as_nanos();
     let missing_rootfs = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-reclamation-rootfs-{}-{nonce}",
+        "aster-oci-missing-reclamation-rootfs-{}-{nonce}",
         std::process::id()
     ));
     let missing_manifest = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-reclamation-image-{}-{nonce}.json",
+        "aster-oci-missing-reclamation-image-{}-{nonce}.json",
         std::process::id()
     ));
     let missing_share = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-reclamation-share-{}-{nonce}",
+        "aster-oci-missing-reclamation-share-{}-{nonce}",
         std::process::id()
     ));
     let missing_consoles = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-reclamation-consoles-{}-{nonce}",
+        "aster-oci-missing-reclamation-consoles-{}-{nonce}",
         std::process::id()
     ));
 
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci-krun-shim"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci-krun-shim"))
         .args(["whpx-handle-reclamation-smoke", "--rootfs"])
         .arg(&missing_rootfs)
         .arg("--system-image-manifest")
@@ -99,12 +99,12 @@ fn whpx_handle_reclamation_rejects_missing_inputs_with_versioned_evidence() {
         .output()
         .expect("WHPX handle-reclamation command must start");
 
-    let report: a3s_oci_krun::WhpxHandleReclamationSmokeReport =
+    let report: aster_oci_krun::WhpxHandleReclamationSmokeReport =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
     assert_eq!(output.status.code(), Some(2));
     assert_eq!(
         report.schema_version,
-        "a3s.oci.krun-whpx-handle-reclamation-smoke.v1"
+        "aster.oci.krun-whpx-handle-reclamation-smoke.v1"
     );
     assert!(!report.is_success());
     assert_eq!(report.requested_iterations, 8);
@@ -144,17 +144,17 @@ fn linux_context_smoke_rejects_a_tampered_adjacent_runtime() {
 ))]
 #[test]
 fn linux_context_smoke_rejects_an_adjacent_runtime_symlink() {
-    let source_shim = PathBuf::from(env!("CARGO_BIN_EXE_a3s-oci-krun-shim"));
+    let source_shim = PathBuf::from(env!("CARGO_BIN_EXE_aster-oci-krun-shim"));
     let source_runtime = source_shim
         .parent()
         .expect("shim executable directory")
-        .join("a3s-oci-krun-runtime");
+        .join("aster-oci-krun-runtime");
     let directory = tempfile::tempdir().expect("temporary shim directory");
-    let shim = directory.path().join("a3s-oci-krun-shim");
+    let shim = directory.path().join("aster-oci-krun-shim");
     fs::copy(&source_shim, &shim).expect("copy context-smoke shim");
     symlink(
         &source_runtime,
-        directory.path().join("a3s-oci-krun-runtime"),
+        directory.path().join("aster-oci-krun-runtime"),
     )
     .expect("create adjacent runtime symlink");
 
@@ -170,15 +170,15 @@ fn linux_context_smoke_rejects_an_adjacent_runtime_symlink() {
     any(target_arch = "x86_64", target_arch = "aarch64")
 ))]
 fn copied_linux_context_fixture() -> (tempfile::TempDir, PathBuf, PathBuf) {
-    let source_shim = PathBuf::from(env!("CARGO_BIN_EXE_a3s-oci-krun-shim"));
+    let source_shim = PathBuf::from(env!("CARGO_BIN_EXE_aster-oci-krun-shim"));
     let source_runtime = source_shim
         .parent()
         .expect("shim executable directory")
-        .join("a3s-oci-krun-runtime");
+        .join("aster-oci-krun-runtime");
     let directory = tempfile::tempdir().expect("temporary shim directory");
-    let shim = directory.path().join("a3s-oci-krun-shim");
+    let shim = directory.path().join("aster-oci-krun-shim");
     fs::copy(&source_shim, &shim).expect("copy context-smoke shim");
-    let runtime = directory.path().join("a3s-oci-krun-runtime");
+    let runtime = directory.path().join("aster-oci-krun-runtime");
     fs::create_dir(&runtime).expect("create copied runtime directory");
     for name in ["libkrun.so.1.17.0", "libkrunfw.so.5"] {
         fs::copy(source_runtime.join(name), runtime.join(name))
@@ -191,13 +191,13 @@ fn copied_linux_context_fixture() -> (tempfile::TempDir, PathBuf, PathBuf) {
     target_os = "linux",
     any(target_arch = "x86_64", target_arch = "aarch64")
 ))]
-fn failed_linux_context_smoke(shim: &Path) -> a3s_oci_krun::KrunContextSmokeReport {
+fn failed_linux_context_smoke(shim: &Path) -> aster_oci_krun::KrunContextSmokeReport {
     let output = Command::new(shim)
         .arg("context-smoke")
         .output()
         .expect("context smoke command must start");
     assert_eq!(output.status.code(), Some(2));
-    let report: a3s_oci_krun::KrunContextSmokeReport =
+    let report: aster_oci_krun::KrunContextSmokeReport =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
     assert!(!report.is_success());
     assert!(!report.runtime_bundle_loaded);
@@ -216,10 +216,10 @@ fn linux_system_image_context_smoke_rejects_a_missing_manifest_before_context_cr
         .expect("system time must follow the Unix epoch")
         .as_nanos();
     let missing_manifest = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-linux-system-image-{}-{nonce}.json",
+        "aster-oci-missing-linux-system-image-{}-{nonce}.json",
         std::process::id(),
     ));
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci-krun-shim"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci-krun-shim"))
         .arg("system-image-context-smoke")
         .arg("--system-image-manifest")
         .arg(&missing_manifest)
@@ -227,11 +227,11 @@ fn linux_system_image_context_smoke_rejects_a_missing_manifest_before_context_cr
         .expect("system-image context smoke command must start");
 
     assert_eq!(output.status.code(), Some(2));
-    let report: a3s_oci_krun::KrunSystemImageContextSmokeReport =
+    let report: aster_oci_krun::KrunSystemImageContextSmokeReport =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
     assert_eq!(
         report.schema_version,
-        "a3s.oci.krun-system-image-context-smoke.v1"
+        "aster.oci.krun-system-image-context-smoke.v1"
     );
     assert!(!report.is_success());
     assert!(report.runtime_bundle_loaded);
@@ -251,11 +251,11 @@ fn vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
         .expect("system time must follow the Unix epoch")
         .as_nanos();
     let missing_rootfs = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-vm-rootfs-{}-{nonce}",
+        "aster-oci-missing-vm-rootfs-{}-{nonce}",
         std::process::id(),
     ));
     let missing_manifest = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-system-image-{}-{nonce}.json",
+        "aster-oci-missing-system-image-{}-{nonce}.json",
         std::process::id(),
     ));
     let runtime_share = tempfile::tempdir().expect("runtime share");
@@ -266,11 +266,11 @@ fn vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
     std::fs::set_permissions(&runtime_state, std::fs::Permissions::from_mode(0o700))
         .expect("private runtime state mode");
     let console = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-vm-console-{}-{nonce}.log",
+        "aster-oci-missing-vm-console-{}-{nonce}.log",
         std::process::id(),
     ));
 
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci-krun-shim"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci-krun-shim"))
         .args(["vm-smoke", "--rootfs"])
         .arg(&missing_rootfs)
         .arg("--system-image-manifest")
@@ -282,10 +282,10 @@ fn vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
         .output()
         .expect("VM smoke command must start");
 
-    let report: a3s_oci_krun::KrunVmSmokeReport =
+    let report: aster_oci_krun::KrunVmSmokeReport =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
     assert_eq!(output.status.code(), Some(2));
-    assert_eq!(report.schema_version, "a3s.oci.krun-vm-smoke.v2");
+    assert_eq!(report.schema_version, "aster.oci.krun-vm-smoke.v2");
     assert!(!report.is_success());
     assert!(report.runtime_bundle_loaded);
     assert!(!report.context_created);
@@ -301,7 +301,7 @@ fn vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 #[test]
 fn agent_vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
-    use a3s_oci_agent_protocol::{SessionToken, AGENT_SESSION_TOKEN_ENV};
+    use aster_oci_agent_protocol::{SessionToken, AGENT_SESSION_TOKEN_ENV};
     use std::os::unix::net::UnixListener;
 
     let nonce = std::time::SystemTime::now()
@@ -309,11 +309,11 @@ fn agent_vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
         .expect("system time must follow the Unix epoch")
         .as_nanos();
     let missing_rootfs = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-agent-rootfs-{}-{nonce}",
+        "aster-oci-missing-agent-rootfs-{}-{nonce}",
         std::process::id(),
     ));
     let missing_manifest = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-agent-system-image-{}-{nonce}.json",
+        "aster-oci-missing-agent-system-image-{}-{nonce}.json",
         std::process::id(),
     ));
     let runtime_share = tempfile::tempdir().expect("runtime share");
@@ -324,10 +324,10 @@ fn agent_vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
     std::fs::set_permissions(&runtime_state, std::fs::Permissions::from_mode(0o700))
         .expect("private runtime state mode");
     let console = std::env::temp_dir().join(format!(
-        "a3s-oci-missing-agent-console-{}-{nonce}.log",
+        "aster-oci-missing-agent-console-{}-{nonce}.log",
         std::process::id(),
     ));
-    let pipe_name = format!("a3s-oci-agent-missing-image-{}-{nonce}", std::process::id());
+    let pipe_name = format!("aster-oci-agent-missing-image-{}-{nonce}", std::process::id());
     let socket_directory = std::path::Path::new("/private/tmp").join(&pipe_name);
     std::fs::create_dir(&socket_directory).expect("private socket directory");
     std::fs::set_permissions(&socket_directory, std::fs::Permissions::from_mode(0o700))
@@ -339,7 +339,7 @@ fn agent_vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
     let token = SessionToken::generate().expect("operating-system random source");
     let encoded = token.expose_hex();
 
-    let mut command = Command::new(env!("CARGO_BIN_EXE_a3s-oci-krun-shim"));
+    let mut command = Command::new(env!("CARGO_BIN_EXE_aster-oci-krun-shim"));
     command
         .process_group(0)
         .args(["agent-vm-smoke", "--rootfs"])
@@ -362,10 +362,10 @@ fn agent_vm_smoke_rejects_a_missing_system_image_before_starting_a_worker() {
     std::fs::remove_file(&missing_socket).expect("remove private Unix socket");
     std::fs::remove_dir(&socket_directory).expect("remove private socket directory");
 
-    let report: a3s_oci_krun::KrunAgentVmSmokeReport =
+    let report: aster_oci_krun::KrunAgentVmSmokeReport =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
     assert_eq!(output.status.code(), Some(2));
-    assert_eq!(report.schema_version, "a3s.oci.krun-agent-vm-smoke.v7");
+    assert_eq!(report.schema_version, "aster.oci.krun-agent-vm-smoke.v7");
     assert!(!report.is_success());
     assert!(report.runtime_bundle_loaded);
     assert!(!report.context_created);

@@ -1,22 +1,22 @@
 //! Packaged Linux/KVM OCI Host artifact discovery.
 //!
 //! Production cutover gate 1 ([docs/microvm-kvm-ga-evidence.md](../../../docs/microvm-kvm-ga-evidence.md)):
-//! resolve `a3s-oci`, `a3s-oci-krun-shim`, and `system-image.json` from packaged
-//! A3S locations without requiring `A3S_BOX_OCI_KVM_ENDPOINT`. Explicit path /
+//! resolve `aster-oci`, `aster-oci-krun-shim`, and `system-image.json` from packaged
+//! Aster locations without requiring `ASTER_BOX_OCI_KVM_ENDPOINT`. Explicit path /
 //! service env overrides still win. `PATH` is ignored (same policy as Sandbox).
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::{ExecutionManagerError, ExecutionManagerResult};
+use aster_box_core::{ExecutionManagerError, ExecutionManagerResult};
 
 /// Keep in sync with `oci_migration::OCI_KVM_*` / `OCI_KVM_ENDPOINT_ENV`.
-const OCI_KVM_ENDPOINT_ENV: &str = "A3S_BOX_OCI_KVM_ENDPOINT";
-const OCI_KVM_SERVICE_BIN_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_BIN";
-const OCI_KVM_SERVICE_SHIM_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_SHIM";
-const OCI_KVM_SERVICE_MANIFEST_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_MANIFEST";
+const OCI_KVM_ENDPOINT_ENV: &str = "ASTER_BOX_OCI_KVM_ENDPOINT";
+const OCI_KVM_SERVICE_BIN_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_BIN";
+const OCI_KVM_SERVICE_SHIM_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_SHIM";
+const OCI_KVM_SERVICE_MANIFEST_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_MANIFEST";
 
-const RUNTIME_FILENAME: &str = "a3s-oci";
-const SHIM_FILENAME: &str = "a3s-oci-krun-shim";
+const RUNTIME_FILENAME: &str = "aster-oci";
+const SHIM_FILENAME: &str = "aster-oci-krun-shim";
 const MANIFEST_FILENAME: &str = "system-image.json";
 
 /// Absolute packaged paths for a Box-owned Linux/KVM OCI Host.
@@ -52,7 +52,7 @@ pub(crate) fn discover_packaged_linux_kvm_artifacts_in(
         overrides.runtime_path.as_deref(),
         OCI_KVM_SERVICE_BIN_ENV,
         RUNTIME_FILENAME,
-        "A3S OCI Runtime (KVM Host)",
+        "Aster OCI Runtime (KVM Host)",
         search_roots,
         true,
     )?;
@@ -60,7 +60,7 @@ pub(crate) fn discover_packaged_linux_kvm_artifacts_in(
         overrides.shim_path.as_deref(),
         OCI_KVM_SERVICE_SHIM_ENV,
         SHIM_FILENAME,
-        "A3S OCI KVM shim",
+        "Aster OCI KVM shim",
         search_roots,
         true,
     )?;
@@ -85,8 +85,8 @@ fn default_search_roots() -> Vec<PathBuf> {
             }
         }
     }
-    roots.push(a3s_box_core::dirs_home().join("bin"));
-    roots.push(a3s_box_core::dirs_home().join("share").join("a3s"));
+    roots.push(aster_box_core::dirs_home().join("bin"));
+    roots.push(aster_box_core::dirs_home().join("share").join("aster"));
     roots
 }
 
@@ -182,7 +182,7 @@ fn finalize_file(
 
 fn missing_packaged(label: &str, filename: &str, environment: &str) -> ExecutionManagerError {
     ExecutionManagerError::InvalidRequest(format!(
-        "{label} `{filename}` was not found in packaged A3S locations; install the A3S Box/OCI KVM package, set {environment}, or set {OCI_KVM_ENDPOINT_ENV} for an external qualification Host"
+        "{label} `{filename}` was not found in packaged Aster locations; install the Aster Box/OCI KVM package, set {environment}, or set {OCI_KVM_ENDPOINT_ENV} for an external qualification Host"
     ))
 }
 
@@ -204,7 +204,7 @@ mod tests {
 
     #[test]
     fn discovers_runtime_shim_and_manifest_from_search_root() {
-        let root = std::env::temp_dir().join(format!("a3s-kvm-packaged-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("aster-kvm-packaged-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).unwrap();
         plant_executable(&root.join(RUNTIME_FILENAME));
@@ -234,7 +234,7 @@ mod tests {
     #[test]
     fn discovers_manifest_under_system_image_subdirectory() {
         let root =
-            std::env::temp_dir().join(format!("a3s-kvm-packaged-subdir-{}", std::process::id()));
+            std::env::temp_dir().join(format!("aster-kvm-packaged-subdir-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(root.join("system-image")).unwrap();
         plant_executable(&root.join(RUNTIME_FILENAME));
@@ -259,8 +259,8 @@ mod tests {
     #[test]
     fn overrides_win_over_search_root() {
         let root =
-            std::env::temp_dir().join(format!("a3s-kvm-packaged-override-{}", std::process::id()));
-        let alt = std::env::temp_dir().join(format!("a3s-kvm-packaged-alt-{}", std::process::id()));
+            std::env::temp_dir().join(format!("aster-kvm-packaged-override-{}", std::process::id()));
+        let alt = std::env::temp_dir().join(format!("aster-kvm-packaged-alt-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         let _ = fs::remove_dir_all(&alt);
         fs::create_dir_all(&root).unwrap();
@@ -300,7 +300,7 @@ mod tests {
     #[test]
     fn fails_closed_when_artifacts_missing() {
         let empty =
-            std::env::temp_dir().join(format!("a3s-kvm-packaged-empty-{}", std::process::id()));
+            std::env::temp_dir().join(format!("aster-kvm-packaged-empty-{}", std::process::id()));
         let _ = fs::remove_dir_all(&empty);
         fs::create_dir_all(&empty).unwrap();
         let error = discover_packaged_linux_kvm_artifacts_in(

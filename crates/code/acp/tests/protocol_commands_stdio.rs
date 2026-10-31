@@ -28,18 +28,18 @@ providers "mock" {
 
 #[tokio::test]
 async fn deleting_a_session_removes_its_core_snapshot_and_refuses_reload() {
-    use a3s_code_core::store::SessionStore;
+    use aster_core::store::SessionStore;
     let mut agent = Agent::launch();
     let id = uuid::Uuid::new_v4().to_string();
     persist_empty_snapshot(agent._root.path(), &agent.workspace, &id).await;
     agent.initialize().await;
     let deleted = agent
         .rpc(json!({"jsonrpc":"2.0","id":81,
-        "method":"_a3s/session/delete","params":{"sessionId":id,"cwd":agent.workspace}}))
+        "method":"_aster/session/delete","params":{"sessionId":id,"cwd":agent.workspace}}))
         .await;
     assert_eq!(deleted["result"]["success"], true, "{deleted}");
-    let store = a3s_code_core::store::FileSessionStore::new(
-        agent._root.path().join("home/.a3s/session-store"),
+    let store = aster_core::store::FileSessionStore::new(
+        agent._root.path().join("home/.aster/session-store"),
     )
     .await
     .unwrap();
@@ -59,7 +59,7 @@ async fn global_models_list_matches_the_session_catalog_without_a_model_request(
     let mut agent = Agent::launch();
     agent.initialize().await;
     let listed = agent
-        .rpc(json!({"jsonrpc":"2.0","id":91,"method":"_a3s/models/list","params":{}}))
+        .rpc(json!({"jsonrpc":"2.0","id":91,"method":"_aster/models/list","params":{}}))
         .await;
     assert!(listed.get("error").is_none(), "{listed}");
     let catalog = &listed["result"]["result"];
@@ -72,7 +72,7 @@ async fn global_models_list_matches_the_session_catalog_without_a_model_request(
         .await;
     assert_eq!(*catalog, opened["result"]["models"]);
     let unknown = agent
-        .rpc(json!({"jsonrpc":"2.0","id":93,"method":"_a3s/models/list/extra","params":{}}))
+        .rpc(json!({"jsonrpc":"2.0","id":93,"method":"_aster/models/list/extra","params":{}}))
         .await;
     assert_eq!(unknown["error"]["code"], -32601, "{unknown}");
 }
@@ -86,14 +86,14 @@ async fn wiki_search_admits_two_cold_publications_through_the_actual_acp_process
         std::fs::create_dir(&root).unwrap();
         let bytes = format!("crossstdioevidence identifies {name}.\n");
         std::fs::write(root.join("source.md"), &bytes).unwrap();
-        let input = a3s_okf::WorkspaceKnowledgeInput::new(
+        let input = aster_okf::WorkspaceKnowledgeInput::new(
             &root,
             name,
             &format!("sha256:{}", "b".repeat(64)),
-            vec![a3s_okf::WorkspaceKnowledgeSource::text("source.md", bytes.as_bytes()).unwrap()],
+            vec![aster_okf::WorkspaceKnowledgeSource::text("source.md", bytes.as_bytes()).unwrap()],
         )
         .unwrap();
-        let job = a3s_okf::begin_workspace_knowledge_maintenance(&input)
+        let job = aster_okf::begin_workspace_knowledge_maintenance(&input)
             .unwrap()
             .unwrap();
         let stage = Path::new(&job.staging);
@@ -103,19 +103,19 @@ async fn wiki_search_admits_two_cold_publications_through_the_actual_acp_process
         )
         .unwrap();
         std::fs::write(stage.join(".wiki-changes.json"), json!({"sources":job.sources,"summary":"Stdio fixture","categories":{},"pages":[{"path":"concepts/overview.md","title":name,"kind":"synthesis","change":"create","reason":"Admitted source","requires_review":false,"sources":job.sources}]}).to_string()).unwrap();
-        a3s_okf::finish_workspace_knowledge_maintenance(&input, &job.id).unwrap();
+        aster_okf::finish_workspace_knowledge_maintenance(&input, &job.id).unwrap();
         publications.push((name, input.output_root().to_owned()));
     }
     agent.initialize().await;
     let started = std::time::Instant::now();
     for (index, (name, wiki)) in publications.iter().enumerate() {
-        let cold = agent.rpc(json!({"jsonrpc":"2.0","id":10+index*3,"method":"_a3s/wiki/search","params":{"wiki":wiki,"query":"crossstdioevidence"}})).await;
+        let cold = agent.rpc(json!({"jsonrpc":"2.0","id":10+index*3,"method":"_aster/wiki/search","params":{"wiki":wiki,"query":"crossstdioevidence"}})).await;
         assert_eq!(cold["result"]["phase"], "not-ready");
-        let found = agent.rpc(json!({"jsonrpc":"2.0","id":11+index*3,"method":"_a3s/wiki/search","params":{"wiki":wiki,"query":"crossstdioevidence","admit":true}})).await;
+        let found = agent.rpc(json!({"jsonrpc":"2.0","id":11+index*3,"method":"_aster/wiki/search","params":{"wiki":wiki,"query":"crossstdioevidence","admit":true}})).await;
         assert_eq!(found["result"]["phase"], "published", "{found}");
         assert_eq!(found["result"]["hits"].as_array().unwrap().len(), 1);
         assert_eq!(found["result"]["hits"][0]["name"], *name);
-        let warm = agent.rpc(json!({"jsonrpc":"2.0","id":12+index*3,"method":"_a3s/wiki/search","params":{"wiki":wiki,"query":"crossstdioevidence","admit":true}})).await;
+        let warm = agent.rpc(json!({"jsonrpc":"2.0","id":12+index*3,"method":"_aster/wiki/search","params":{"wiki":wiki,"query":"crossstdioevidence","admit":true}})).await;
         assert_eq!(
             warm["result"]["source_revision"],
             found["result"]["source_revision"]
@@ -143,10 +143,10 @@ async fn workspace_search_reads_the_automatic_index_through_the_actual_acp_proce
         .await;
     assert!(mode.get("result").is_some(), "{mode}");
     let workspace = agent.workspace.clone();
-    let params = json!({"schema":"a3s.acp.workspace-search.v1","sessionId":session,
+    let params = json!({"schema":"aster.acp.workspace-search.v1","sessionId":session,
         "operationId":"stdio-search","cwd":workspace,"query":"stdio_wiki_evidence_marker"});
     let found = agent
-        .rpc(json!({"jsonrpc":"2.0","id":4,"method":"_a3s/workspace/search/v1","params":params}))
+        .rpc(json!({"jsonrpc":"2.0","id":4,"method":"_aster/workspace/search/v1","params":params}))
         .await;
     assert!(
         found["result"]["output"]
@@ -166,12 +166,12 @@ async fn workspace_search_reads_the_automatic_index_through_the_actual_acp_proce
     let mut invalid = params.clone();
     invalid["cwd"] = json!(foreign.path());
     let refused = agent
-        .rpc(json!({"jsonrpc":"2.0","id":5,"method":"_a3s/workspace/search/v1","params":invalid}))
+        .rpc(json!({"jsonrpc":"2.0","id":5,"method":"_aster/workspace/search/v1","params":invalid}))
         .await;
     assert_eq!(refused["error"]["code"], -32002);
     std::fs::write(&source, "pub fn stdio_updated_evidence_marker() {}\n").unwrap();
     let stale = agent
-        .rpc(json!({"jsonrpc":"2.0","id":6,"method":"_a3s/workspace/search/v1","params":params}))
+        .rpc(json!({"jsonrpc":"2.0","id":6,"method":"_aster/workspace/search/v1","params":params}))
         .await;
     assert!(!stale["result"]["output"]
         .as_str()
@@ -182,7 +182,7 @@ async fn workspace_search_reads_the_automatic_index_through_the_actual_acp_proce
     tokio::time::timeout(Duration::from_secs(10), async {
         let mut id = 10;
         loop {
-            let found = agent.rpc(json!({"jsonrpc":"2.0","id":id,"method":"_a3s/workspace/search/v1","params":updated})).await;
+            let found = agent.rpc(json!({"jsonrpc":"2.0","id":id,"method":"_aster/workspace/search/v1","params":updated})).await;
             if found["result"]["output"].as_str().unwrap().contains("stdio_updated_evidence_marker") { break; }
             id += 1;
             tokio::time::sleep(Duration::from_millis(20)).await;
@@ -192,7 +192,7 @@ async fn workspace_search_reads_the_automatic_index_through_the_actual_acp_proce
     secret["query"] = json!("private_qxv_stdio");
     let secret = agent
         .rpc(
-            json!({"jsonrpc":"2.0","id":10000,"method":"_a3s/workspace/search/v1","params":secret}),
+            json!({"jsonrpc":"2.0","id":10000,"method":"_aster/workspace/search/v1","params":secret}),
         )
         .await;
     assert!(!secret["result"]["output"]
@@ -200,11 +200,11 @@ async fn workspace_search_reads_the_automatic_index_through_the_actual_acp_proce
         .unwrap()
         .contains("private_qxv_stdio"));
     let review = agent.rpc(json!({"jsonrpc":"2.0","id":10001,"method":"session/new",
-        "params":{"cwd":workspace,"mcpServers":[],"_meta":{"a3sHost":{"sourceReview":true,"assets":{"wiki":workspace}}}}})).await;
+        "params":{"cwd":workspace,"mcpServers":[],"_meta":{"asterHost":{"sourceReview":true,"assets":{"wiki":workspace}}}}})).await;
     let review_id = review["result"]["sessionId"].as_str().unwrap();
     let mut restricted = params;
     restricted["sessionId"] = json!(review_id);
-    let denied = agent.rpc(json!({"jsonrpc":"2.0","id":10002,"method":"_a3s/workspace/search/v1","params":restricted})).await;
+    let denied = agent.rpc(json!({"jsonrpc":"2.0","id":10002,"method":"_aster/workspace/search/v1","params":restricted})).await;
     assert_eq!(denied["error"]["code"], -32602, "{denied}");
     assert!(denied["error"]["data"]
         .as_str()
@@ -242,12 +242,12 @@ async fn workspace_hybrid_search_uses_offline_vectors_and_refreshes_current_sour
             "private_vector_qxz=excluded\n",
         )
         .unwrap();
-        for path in ["meta/a3s-session.json", "child-task/meta/a3s-session.json"] {
+        for path in ["meta/aster-session.json", "child-task/meta/aster-session.json"] {
             let locator = agent.workspace.join(path);
             std::fs::create_dir_all(locator.parent().unwrap()).unwrap();
             std::fs::write(
                 locator,
-                r#"{"id":"private_session_locator_qxz","runtime":"a3s-code"}"#,
+                r#"{"id":"private_session_locator_qxz","runtime":"aster"}"#,
             )
             .unwrap();
         }
@@ -263,13 +263,13 @@ async fn workspace_hybrid_search_uses_offline_vectors_and_refreshes_current_sour
             .await;
         assert!(mode.get("result").is_some(), "{mode}");
         agent.wait_for_workspace_index().await;
-        let params = json!({"schema":"a3s.acp.workspace-search.v1","sessionId":session,
+        let params = json!({"schema":"aster.acp.workspace-search.v1","sessionId":session,
             "operationId":"offline-vector-search","cwd":agent.workspace,"query":"parse application configuration"});
         let mut id = 10;
         let found = tokio::time::timeout(Duration::from_secs(15), async {
             loop {
                 id += 1;
-                let found = agent.rpc(json!({"jsonrpc":"2.0","id":id,"method":"_a3s/workspace/search/v1","params":params})).await;
+                let found = agent.rpc(json!({"jsonrpc":"2.0","id":id,"method":"_aster/workspace/search/v1","params":params})).await;
                 assert!(found.get("error").is_none(), "{found}");
                 if found["result"]["metadata"]["semantic_status"]["phase"] == "ready" { break found; }
                 tokio::time::sleep(Duration::from_millis(20)).await;
@@ -306,7 +306,7 @@ async fn workspace_hybrid_search_uses_offline_vectors_and_refreshes_current_sour
         std::fs::write(&source, "pub fn replaced_configuration_marker() {}\n").unwrap();
         id += 1;
         let current = agent
-            .rpc(json!({"jsonrpc":"2.0","id":id,"method":"_a3s/workspace/search/v1","params":params}))
+            .rpc(json!({"jsonrpc":"2.0","id":id,"method":"_aster/workspace/search/v1","params":params}))
             .await;
         assert!(!current["result"]["output"]
             .as_str()
@@ -317,7 +317,7 @@ async fn workspace_hybrid_search_uses_offline_vectors_and_refreshes_current_sour
         tokio::time::timeout(Duration::from_secs(15), async {
             loop {
                 id += 1;
-                let found = agent.rpc(json!({"jsonrpc":"2.0","id":id,"method":"_a3s/workspace/search/v1","params":updated})).await;
+                let found = agent.rpc(json!({"jsonrpc":"2.0","id":id,"method":"_aster/workspace/search/v1","params":updated})).await;
                 if found["result"]["output"].as_str().unwrap().contains("replaced_configuration_marker")
                     && found["result"]["metadata"]["semantic_status"]["phase"] == "ready" { break; }
                 tokio::time::sleep(Duration::from_millis(20)).await;
@@ -329,7 +329,7 @@ async fn workspace_hybrid_search_uses_offline_vectors_and_refreshes_current_sour
             secret["query"] = json!(query);
             id += 1;
             let secret = agent
-                .rpc(json!({"jsonrpc":"2.0","id":id,"method":"_a3s/workspace/search/v1","params":secret}))
+                .rpc(json!({"jsonrpc":"2.0","id":id,"method":"_aster/workspace/search/v1","params":secret}))
                 .await;
             assert!(!secret.to_string().contains(query), "{secret}");
         }
@@ -345,7 +345,7 @@ async fn workspace_hybrid_search_uses_offline_vectors_and_refreshes_current_sour
 }
 
 #[tokio::test]
-async fn workspace_hybrid_search_uses_the_published_a3s_vec_index() {
+async fn workspace_hybrid_search_uses_the_published_aster_vec_index() {
     let mut agent = Agent::launch();
     std::fs::write(
         agent.workspace.join("evidence.rs"),
@@ -362,8 +362,8 @@ async fn workspace_hybrid_search_uses_the_published_a3s_vec_index() {
     let workspace = agent.workspace.clone();
     let found = agent
         .rpc(
-            json!({"jsonrpc":"2.0","id":4,"method":"_a3s/workspace/search/v1",
-        "params":{"schema":"a3s.acp.workspace-search.v1","sessionId":session,
+            json!({"jsonrpc":"2.0","id":4,"method":"_aster/workspace/search/v1",
+        "params":{"schema":"aster.acp.workspace-search.v1","sessionId":session,
             "operationId":"persistent-hybrid","cwd":workspace,"query":"indexed_hybrid_marker"}}),
         )
         .await;
@@ -376,11 +376,11 @@ async fn workspace_hybrid_search_uses_the_published_a3s_vec_index() {
     );
     assert_eq!(
         found["result"]["metadata"]["lexical_engine"],
-        "a3s_vec_fts_v1"
+        "aster_vec_fts_v1"
     );
     assert_eq!(
         found["result"]["metadata"]["index_kind"],
-        "persistent_a3s_vec_fts"
+        "persistent_aster_vec_fts"
     );
     agent.stop().await;
 }
@@ -408,20 +408,20 @@ impl Agent {
         let home = root.path().join("home");
         let state = root.path().join("state");
         let workspace = root.path().join("workspace");
-        for dir in [home.join(".a3s"), state.clone(), workspace.clone()] {
+        for dir in [home.join(".aster"), state.clone(), workspace.clone()] {
             std::fs::create_dir_all(dir).unwrap();
         }
-        std::fs::write(home.join(".a3s/config.acl"), config).unwrap();
+        std::fs::write(home.join(".aster/config.acl"), config).unwrap();
         let mut child = tokio::process::Command::new(binaries::acp_binary())
             .current_dir(&workspace)
             .args(["--cwd", "."])
             .env_clear()
             .env("PATH", std::env::var_os("PATH").unwrap_or_default())
             .env("HOME", &home)
-            .env("A3S_STATE_HOME", &state)
-            .env("A3S_DISABLE_CC_SWITCH", "1")
-            .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-            .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+            .env("ASTER_STATE_HOME", &state)
+            .env("ASTER_DISABLE_CC_SWITCH", "1")
+            .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+            .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
@@ -529,7 +529,7 @@ impl Agent {
 
     async fn wait_for_workspace_index(&self) {
         tokio::time::timeout(Duration::from_secs(15), async {
-            while !self.workspace.join(".a3s-code/index/CURRENT").is_file() {
+            while !self.workspace.join(".aster/index/CURRENT").is_file() {
                 tokio::time::sleep(Duration::from_millis(20)).await;
             }
         })
@@ -564,16 +564,16 @@ fn command_names(commands: &[Value]) -> Vec<&str> {
 
 async fn persist_empty_snapshot(root: &Path, workspace: &Path, session_id: &str) {
     let store = std::sync::Arc::new(
-        a3s_code_core::store::FileSessionStore::new(root.join("home/.a3s/session-store"))
+        aster_core::store::FileSessionStore::new(root.join("home/.aster/session-store"))
             .await
             .unwrap(),
     );
-    let core = a3s_code_core::Agent::new(USER_ACL).await.unwrap();
+    let core = aster_core::Agent::new(USER_ACL).await.unwrap();
     let session = core
         .session_async(
             workspace.display().to_string(),
             Some(
-                a3s_code_core::SessionOptions::new()
+                aster_core::SessionOptions::new()
                     .with_session_id(session_id)
                     .with_session_store(store),
             ),
@@ -689,7 +689,7 @@ async fn an_unknown_extension_method_is_method_not_found() {
     let (session_id, _) = agent.open_session().await;
     let unknown = agent
         .rpc(
-            json!({"jsonrpc":"2.0","id":3,"method":"_a3s/no-such-method",
+            json!({"jsonrpc":"2.0","id":3,"method":"_aster/no-such-method",
                     "params":{"sessionId": session_id}}),
         )
         .await;
@@ -697,7 +697,7 @@ async fn an_unknown_extension_method_is_method_not_found() {
     assert!(unknown.get("result").is_none(), "{unknown}");
 
     let known = agent
-        .rpc(json!({"jsonrpc":"2.0","id":4,"method":"_a3s/session/info",
+        .rpc(json!({"jsonrpc":"2.0","id":4,"method":"_aster/session/info",
                     "params":{"sessionId": session_id}}))
         .await;
     assert!(known.get("error").is_none(), "{known}");
@@ -706,7 +706,7 @@ async fn an_unknown_extension_method_is_method_not_found() {
 
 #[tokio::test]
 async fn terminal_inspection_commands_use_current_memory_and_task_contracts_without_a_model() {
-    use a3s_code_core::durable_memory_vec::{MemoryRecord, VecMemoryStore};
+    use aster_core::durable_memory_vec::{MemoryRecord, VecMemoryStore};
     let root = tempfile::tempdir().unwrap();
     let directory = root.path().join("memory");
     let store = VecMemoryStore::open(&directory).unwrap();
@@ -816,7 +816,7 @@ async fn terminal_inspection_commands_use_current_memory_and_task_contracts_with
     for (id, binding) in [(38, None), (39, Some(session.as_str()))] {
         let refused = agent
             .rpc(
-                json!({"jsonrpc":"2.0","id":id,"method":"_a3s/memory/manage",
+                json!({"jsonrpc":"2.0","id":id,"method":"_aster/memory/manage",
             "params":{"workspace_root":second_workspace,"session_id":binding,
             "request":{"operation":"list","query":"","memory_type":null,"cursor":null}}}),
             )
@@ -826,7 +826,7 @@ async fn terminal_inspection_commands_use_current_memory_and_task_contracts_with
     let deleted = agent.rpc(json!({"jsonrpc":"2.0","id":40,"method":"session/prompt",
         "params":{"sessionId":session,"prompt":[{"type":"text","text":format!("/memory delete stdio-memory {revision}")}]}})).await;
     assert_eq!(deleted["result"]["stopReason"], "end_turn", "{deleted}");
-    let page = agent.rpc(json!({"jsonrpc":"2.0","id":41,"method":"_a3s/memory/manage",
+    let page = agent.rpc(json!({"jsonrpc":"2.0","id":41,"method":"_aster/memory/manage",
         "params":{"workspace_root":agent.workspace,"request":{"operation":"list","query":"","memory_type":null,"cursor":null}}})).await;
     assert_eq!(page["result"]["outcome"]["Ok"]["total"], 0, "{page}");
     agent.child.kill().await.unwrap();
@@ -845,21 +845,21 @@ async fn tooling_response_and_update_publish_the_real_versioned_session_projecti
     let (session_id, response_at) = agent.open_session().await;
     let update_at = agent
         .read_until("session tooling update", |value| {
-            value["method"] == "_a3s/session/tooling/update"
+            value["method"] == "_aster/session/tooling/update"
                 && value["params"]["sessionId"] == session_id
         })
         .await;
     assert!(update_at > response_at);
     let update = agent.seen[update_at]["params"].clone();
-    assert_eq!(update["schema"], "a3s.acp.session-tooling.v1");
+    assert_eq!(update["schema"], "aster.acp.session-tooling.v1");
     assert!(update["tools"].as_array().unwrap().len() > 5);
 
     let workspace = agent.workspace.clone();
     let response = agent
         .rpc(
-            json!({"jsonrpc":"2.0","id":3,"method":"_a3s/session/tooling/v1",
+            json!({"jsonrpc":"2.0","id":3,"method":"_aster/session/tooling/v1",
             "params":{
-                "schema":"a3s.acp.session-tooling.v1",
+                "schema":"aster.acp.session-tooling.v1",
                 "sessionId":session_id,
                 "operationId":"stdio-tooling",
                 "cwd":workspace,
@@ -888,7 +888,7 @@ async fn tooling_response_and_update_publish_the_real_versioned_session_projecti
 async fn load_without_a_snapshot_never_creates_a_same_id_empty_session() {
     let mut agent = Agent::launch();
     agent.initialize().await;
-    let log = agent.workspace.join(".a3s/effect-log");
+    let log = agent.workspace.join(".aster/effect-log");
     std::fs::create_dir_all(&log).unwrap();
     std::fs::write(
         log.join("snapshot-missing.jsonl"),
@@ -907,9 +907,9 @@ async fn load_without_a_snapshot_never_creates_a_same_id_empty_session() {
 
     let page = agent
         .rpc(
-            json!({"jsonrpc":"2.0","id":3,"method":"_a3s/session/transcript/page/v1",
+            json!({"jsonrpc":"2.0","id":3,"method":"_aster/session/transcript/page/v1",
             "params":{
-                "schema":"a3s.acp.session-transcript-page.v1",
+                "schema":"aster.acp.session-transcript-page.v1",
                 "sessionId":"snapshot-missing",
                 "operationId":"must-not-exist",
                 "cwd":workspace,
@@ -922,6 +922,6 @@ async fn load_without_a_snapshot_never_creates_a_same_id_empty_session() {
     assert!(page["error"]["data"]
         .as_str()
         .is_some_and(|reason| reason.contains("unknown session id")));
-    assert!(!agent.workspace.join(".a3s/sessions").exists());
+    assert!(!agent.workspace.join(".aster/sessions").exists());
     agent.stop().await;
 }

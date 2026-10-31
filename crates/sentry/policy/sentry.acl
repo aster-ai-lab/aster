@@ -1,4 +1,4 @@
-# a3s-sentry — unified ACL config for the embeddable SDK (`Sentry.create("sentry.acl")`).
+# aster-sentry — unified ACL config for the embeddable SDK (`Sentry.create("sentry.acl")`).
 #
 # Where the daemon takes env vars + a rules-only policy, the in-process SDK reads ONE ACL file with
 # everything: the fail mode, the L2/L3 backends, the deny-file sinks, and the L1 rules. Every block /
@@ -10,8 +10,8 @@ fail_closed = false
 # L2 — a fast LLM classifier (OpenAI-compatible). Omit for rules-only / rules+L3.
 # llm { url = "http://llm:18051/v1", model = "glm", key = "...", timeout_s = 30 }
 
-# L3 — a deep a3s-code agent investigation. Omit if you don't run L3.
-# agent { bin = "a3s-code", skills = "./skills", timeout_s = 120 }
+# L3 — a deep aster agent investigation. Omit if you don't run L3.
+# agent { bin = "aster", skills = "./skills", timeout_s = 120 }
 
 # Deny-file sinks the kernel guards read. Omit to judge without enforcing.
 deny {

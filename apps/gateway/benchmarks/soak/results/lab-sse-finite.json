@@ -14,10 +14,10 @@
     "dedicated_runner": false
   },
   "gateway": {
-    "version": "a3s-gateway 1.1.1",
+    "version": "aster-gateway 1.1.1",
     "git_sha": "fa360f6566759cc689b37dc602e8b87370dfec11",
     "features": [],
-    "bin": "target\\debug\\a3s-gateway.exe"
+    "bin": "target\\debug\\aster-gateway.exe"
   },
   "requests": {
     "ok": 12207,

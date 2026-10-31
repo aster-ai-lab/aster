@@ -8,16 +8,16 @@ Layer A–D verification matrix used by the E2E goal.
 | Gate | Status | Evidence |
 | --- | --- | --- |
 | `HARNESS-CONV4` | Delivered | Model-visible `parallel_task` unregistered; SDK helpers removed; durable-memory Active-only (`CAP-GA1`) |
-| `HARNESS-CONV5` | Delivered | Core/SDK `default` ≈ `local-code` / a3s-vec; CLI pins `scientific` |
+| `HARNESS-CONV5` | Delivered | Core/SDK `default` ≈ `local-code` / aster-vec; CLI pins `scientific` |
 | `HARNESS-CONV6` | Delivered | Prompt bodies are a replaceable default pack; permission overlays stay Core-owned |
 | `HARNESS-CONV7` | Code prep Done / external In progress | Runbooks below; close only with secret-free linked reports |
 | `TB-QUAL1` | Deferred by product (2026-10-03); no verifier receipt on `439cc740` | [TERMINAL_BENCH.md](TERMINAL_BENCH.md) |
 | `DM-PROD1` | Delivered on `3b2f72aa`; does not cover changelog fold `439cc740` | [DURABLE_MEMORY_PRODUCTION_QUALIFICATION.md](../docs/evidence/evaluations/DURABLE_MEMORY_PRODUCTION_QUALIFICATION.md) |
-| L6 on `439cc740` | Recorded; not Enterprise GA | CI [`37117714232`](https://github.com/A3S-Lab/Code/actions/runs/37117714232) attempt 2; performance [`37117721745`](https://github.com/A3S-Lab/Code/actions/runs/37117721745) nine `passed: true`; hermetic artifact `hermetic-integrations-37117714232-1` three `passed: true`. F-table and Layer C stay on parent `9f521169`. See [PERFORMANCE_QUALIFICATION.md](PERFORMANCE_QUALIFICATION.md) |
+| L6 on `439cc740` | Recorded; not Enterprise GA | CI [`37117714232`](https://github.com/aster-ai-lab/Code/actions/runs/37117714232) attempt 2; performance [`37117721745`](https://github.com/aster-ai-lab/Code/actions/runs/37117721745) nine `passed: true`; hermetic artifact `hermetic-integrations-37117714232-1` three `passed: true`. F-table and Layer C stay on parent `9f521169`. See [PERFORMANCE_QUALIFICATION.md](PERFORMANCE_QUALIFICATION.md) |
 | L7 on `439cc740` | Not closed | `DM-PROD1` pack `3b2f72aa` does not cover this fold. `TB-QUAL1` has no verifier receipt. CAR stays out of scope |
-| L6 on `9f521169` | Recorded; not Enterprise GA | CI [`37110650044`](https://github.com/A3S-Lab/Code/actions/runs/37110650044); performance [`37112230393`](https://github.com/A3S-Lab/Code/actions/runs/37112230393) nine `passed: true`; hermetic artifact `hermetic-integrations-37110650044-1` three `passed: true`; F-table 44/44 kernels ≥ 95%; Layer C `LAYER_C_PASS model=boyue/bailian/deepseek-v4.1-flash`. See [PERFORMANCE_QUALIFICATION.md](PERFORMANCE_QUALIFICATION.md) |
+| L6 on `9f521169` | Recorded; not Enterprise GA | CI [`37110650044`](https://github.com/aster-ai-lab/Code/actions/runs/37110650044); performance [`37112230393`](https://github.com/aster-ai-lab/Code/actions/runs/37112230393) nine `passed: true`; hermetic artifact `hermetic-integrations-37110650044-1` three `passed: true`; F-table 44/44 kernels ≥ 95%; Layer C `LAYER_C_PASS model=boyue/bailian/deepseek-v4.1-flash`. See [PERFORMANCE_QUALIFICATION.md](PERFORMANCE_QUALIFICATION.md) |
 | L7 on `9f521169` | Not closed | `DM-PROD1` pack `3b2f72aa` does not cover this tip. `TB-QUAL1` has no verifier receipt. CAR stays out of scope |
-| L6 on `2bd6a234` | Recorded; not Enterprise GA | CI [`37103577874`](https://github.com/A3S-Lab/Code/actions/runs/37103577874); performance [`37103577761`](https://github.com/A3S-Lab/Code/actions/runs/37103577761) nine `passed: true`; hermetic artifact `hermetic-integrations-37103577874-1` three `passed: true`; F-table 44/44 kernels ≥ 95%; Layer C `LAYER_C_PASS model=boyue/bailian/deepseek-v4.1-flash`. See [PERFORMANCE_QUALIFICATION.md](PERFORMANCE_QUALIFICATION.md) |
+| L6 on `2bd6a234` | Recorded; not Enterprise GA | CI [`37103577874`](https://github.com/aster-ai-lab/Code/actions/runs/37103577874); performance [`37103577761`](https://github.com/aster-ai-lab/Code/actions/runs/37103577761) nine `passed: true`; hermetic artifact `hermetic-integrations-37103577874-1` three `passed: true`; F-table 44/44 kernels ≥ 95%; Layer C `LAYER_C_PASS model=boyue/bailian/deepseek-v4.1-flash`. See [PERFORMANCE_QUALIFICATION.md](PERFORMANCE_QUALIFICATION.md) |
 | L7 on `2bd6a234` | Not closed | `DM-PROD1` pack `3b2f72aa` does not cover this admission. `TB-QUAL1` has no verifier receipt. CAR stays out of scope |
 | `CAR-01`…`CAR-05` | Checklist ready | [CLOUD_HARNESS_CONFORMANCE.md](CLOUD_HARNESS_CONFORMANCE.md) |
 
@@ -25,37 +25,37 @@ Refuse list (do not reopen): Core reviewer/rubric prompts; restore `server` /
 `advanced-harness` to library default; Core unified approval UI; a second
 *imperative* message loop or completion-gate / permission bypass; baseline
 evaluation Gate semantics. **Allowed:** multi-component Meta Harness trees on
-one fact log (`SessionOptions.harness` / `a3s-effect` compose) —
+one fact log (`SessionOptions.harness` / `aster-effect` compose) —
 see [META_HARNESS.md](META_HARNESS.md).
 
 ## Local verification (Code)
 
 ```bash
 # Thin default must stay clean of Advanced/server stacks
-cargo check -p a3s-code-core
-cargo tree -p a3s-code-core -e normal | rg -i 'evaluation|research|chromiumoxide|aws-sdk-s3' && exit 1 || true
+cargo check -p aster-core
+cargo tree -p aster-core -e normal | rg -i 'evaluation|research|chromiumoxide|aws-sdk-s3' && exit 1 || true
 
 # CI gate matrix
-cargo check -p a3s-code-core --no-default-features --features local-code
-cargo test -p a3s-code-core --no-default-features --features local-code --lib
+cargo check -p aster-core --no-default-features --features local-code
+cargo test -p aster-core --no-default-features --features local-code --lib
 
 # Dual-path regressions
-cargo test -p a3s-code-core --lib parallel_task -- --nocapture
-cargo test -p a3s-code-core --lib candidate_write_stays_inactive -- --nocapture
+cargo test -p aster-core --lib parallel_task -- --nocapture
+cargo test -p aster-core --lib candidate_write_stays_inactive -- --nocapture
 
 # SDK surface alignment (no parallel_task helpers)
-cargo test --locked -p a3s-code-core --lib sdk_capabilities
+cargo test --locked -p aster-core --lib sdk_capabilities
 ```
 
 Optional live gates (not TB/DM/CAR substitutes):
 
 ```bash
-A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-  cargo test -p a3s-code-core --test test_deepseek_adversarial_e2e -- \
+ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+  cargo test -p aster-core --test test_deepseek_adversarial_e2e -- \
   --ignored --test-threads=1 --nocapture
 
-A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-  cargo test -p a3s-code-core --test test_prompt_capability_real_llm -- \
+ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+  cargo test -p aster-core --test test_prompt_capability_real_llm -- \
   --ignored --test-threads=1 --nocapture
 ```
 
@@ -92,7 +92,7 @@ prompts.
 
 | Gate | External run / artifact | Blocking party cleared |
 | --- | --- | --- |
-| `CAR-01` | Out of scope: A3S Cloud retired by product decision (2026-09-26); last partial run was Cloud [`36180557882`](https://github.com/A3S-Lab/Cloud/actions/runs/36180557882) (Box profiles, recovery, Skill hydration green) | n/a |
+| `CAR-01` | Out of scope: Aster Cloud retired by product decision (2026-09-26); last partial run was Cloud [`36180557882`](https://github.com/aster-ai-lab/Cloud/actions/runs/36180557882) (Box profiles, recovery, Skill hydration green) | n/a |
 | `CAR-03` | Out of scope (Cloud retired) | n/a |
 | `CAR-04` | Out of scope (Cloud retired) | n/a |
 | `CAR-05` | Out of scope (Cloud retired) | n/a |

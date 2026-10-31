@@ -19,7 +19,7 @@ mod package_lifecycle;
 #[path = "registry_tests/snapshot_lease.rs"]
 mod snapshot_lease;
 
-const MANIFEST_NAME: &str = "a3s-use-extension.acl";
+const MANIFEST_NAME: &str = "aster-use-extension.acl";
 
 #[test]
 fn published_generation_lease_is_send_and_sync() {
@@ -111,7 +111,7 @@ async fn verified_knowledge_catalog(
 ) -> VerifiedPluginCatalogRecord {
     let (_, manifest_bytes) = read_manifest(root).await.unwrap();
     let fingerprint = crate::digest::package_fingerprint(root).await.unwrap();
-    let mut catalog = a3s_use_core::PluginCatalogRecord::from_json(include_bytes!(
+    let mut catalog = aster_use_core::PluginCatalogRecord::from_json(include_bytes!(
         "../../core/fixtures/plugins/catalog-record-okf-v3.json"
     ))
     .unwrap();
@@ -125,7 +125,7 @@ async fn verified_knowledge_catalog(
     catalog.dependencies = dependencies
         .iter()
         .map(|(dependency, requirement)| {
-            a3s_use_core::PluginPackageDependency::new(*dependency, *requirement).unwrap()
+            aster_use_core::PluginPackageDependency::new(*dependency, *requirement).unwrap()
         })
         .collect();
     catalog.archive.target_name =
@@ -137,7 +137,7 @@ async fn verified_knowledge_catalog(
     catalog.package.sha256 = Some(format!("sha256:{}", fingerprint.sha256));
     catalog.package.manifest_sha256 = Some(format!("sha256:{}", sha256(&manifest_bytes)));
     catalog.validate().unwrap();
-    let provenance = a3s_use_core::VerifiedCatalogProvenance {
+    let provenance = aster_use_core::VerifiedCatalogProvenance {
         registry_name: "fixture".to_string(),
         registry_url: "https://packages.example.test/catalog/".to_string(),
         root_sha256: format!("sha256:{}", "f".repeat(64)),

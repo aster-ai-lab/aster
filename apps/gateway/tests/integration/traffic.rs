@@ -12,7 +12,7 @@ async fn test_gateway_lifecycle() {
 
     // Health check
     let health = gw.health();
-    assert_eq!(health.state, a3s_gateway::GatewayState::Running);
+    assert_eq!(health.state, aster_gateway::GatewayState::Running);
 
     gw.shutdown().await;
     assert!(gw.is_shutdown());

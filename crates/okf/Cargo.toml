@@ -1,5 +1,5 @@
 [package]
-name = "a3s-okf"
+name = "aster-okf"
 version = "0.1.0"
 edition = "2021"
 description = "OKF v0.2 compiler shared by the encyclopedia and the local wiki"
@@ -13,5 +13,5 @@ lopdf = "0.42"
 pdf-inspector = "1"
 sha2 = {workspace = true}
 zip = {version = "7.2", default-features = false, features = ["deflate"]}
-a3s-use-core = {path = "../use/core"}
+aster-use-core = {path = "../use/core"}
 

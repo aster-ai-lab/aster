@@ -31,7 +31,7 @@ impl crate::tools::Tool for CountProbe {
 async fn counted_session(
     round_limit: usize,
     harness: Option<crate::HarnessComposeOptions>,
-) -> (crate::agent::AgentResult, usize, Vec<a3s_effect::Fact>) {
+) -> (crate::agent::AgentResult, usize, Vec<aster_effect::Fact>) {
     let workspace = tempfile::tempdir().unwrap();
     let mut config = test_config();
     config.memory = Some(crate::memory::MemoryConfig {

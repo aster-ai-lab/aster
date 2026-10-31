@@ -91,8 +91,8 @@ A reviewer can distinguish presentational components, stateful feature container
 - [ ] New behavior has a small hermetic test in the owning package (architecture and preserved-behavior Vitest coverage; addressed by plan/tasks).
 - [ ] Closed sets: every new enum has `parse()` / `as_str()` (no new enum planned; existing TypeScript closed sets stay unchanged).
 - [ ] No production `unwrap()` / `expect()` without an infallibility comment (TypeScript scope; existing non-null assertions are reviewed during extraction).
-- [ ] Internal `a3s-*` dependencies stay on a path in this repository (no dependency changes planned).
-- [ ] Product configuration, if any, is ACL parsed by `a3s-acl` (no product configuration added; frontend standards are contributor documentation).
+- [ ] Internal `aster-*` dependencies stay on a path in this repository (no dependency changes planned).
+- [ ] Product configuration, if any, is ACL parsed by `aster-acl` (no product configuration added; frontend standards are contributor documentation).
 - [ ] Evidence target: `docs/evidence/dashboard/2026-10-27-frontend-standards/OUTCOME.md` when the landing is recorded.
 
 ## Success Criteria *(mandatory)*

@@ -1,4 +1,4 @@
-# A3S Runtime Implementation Plan
+# Aster Runtime Implementation Plan
 
 ## Goal
 
@@ -10,8 +10,8 @@ parallel with that foundation, freeze the proposed ADR 0005 boundary; certify
 the modern MCP Service profile only after its required provider gates pass and
 without importing MCP protocol or product fields into Runtime core. Work is
 ordered by dependency. ADR 0006 additionally makes Runtime the single generic
-Task/Service substrate for A3S Cloud AaaS, WaaS executable nodes, FaaS, hosted
-MCP, and Durable Cell application Services, with A3S Box as the production
+Task/Service substrate for Aster Cloud AaaS, WaaS executable nodes, FaaS, hosted
+MCP, and Durable Cell application Services, with Aster Box as the production
 provider. A later task cannot claim completion from mocks when its required
 real-provider evidence is absent.
 
@@ -20,8 +20,8 @@ real-provider evidence is absent.
 - Preserve user changes and keep each task reviewable.
 - Write or update tests before completing the corresponding implementation.
 - Run Cargo, provider, fault, performance, and soak validation only on Linux CI
-  or A3S OS. Do not run those workloads on a developer laptop.
-- A3S OS obtains every repository through Git at an exact commit.
+  or Aster OS. Do not run those workloads on a developer laptop.
+- Aster OS obtains every repository through Git at an exact commit.
 - Shared production nodes run only the bounded canary defined by the deep test
   plan. Destructive tests require a disposable production-equivalent worker.
 - Code and documentation are English, and product configuration remains ACL.
@@ -45,13 +45,13 @@ real-provider evidence is absent.
 | R12 | Add Runtime repository CI and compatibility gate | R01-R11 | Required Linux MSRV/stable format, lint, docs, unit, integration, and golden checks |
 | R13 | Certify Docker identity, lifecycle, and generation handling | R09-R12 | Real Docker Base and Recovery profiles pass; zero duplicate/leaked containers |
 | R14 | Certify Docker network, mounts, health, resources, and logs | R11-R13 | Every advertised Docker capability has inspect plus behavioral evidence |
-| R15 | Complete A3S Cloud consumer recovery paths | R13-R14 | Projection, journal, restart, redelivery, reconciliation, logs, cancel, and cleanup E2E pass |
-| R16 | Integrate and maintain A3S Box RuntimeDriver | R11 | Typed `sandbox` capability mapping with no provider-specific public fields |
-| R17 | Certify A3S Box profiles | R16 | Base/Recovery and every advertised Box profile pass on production-equivalent Linux |
+| R15 | Complete Aster Cloud consumer recovery paths | R13-R14 | Projection, journal, restart, redelivery, reconciliation, logs, cancel, and cleanup E2E pass |
+| R16 | Integrate and maintain Aster Box RuntimeDriver | R11 | Typed `sandbox` capability mapping with no provider-specific public fields |
+| R17 | Certify Aster Box profiles | R16 | Base/Recovery and every advertised Box profile pass on production-equivalent Linux |
 | R18 | Add fuzz, property, and security campaigns | R10-R17 | All declared targets run, regressions checked in, zero unresolved crash/hang/leak |
 | R19 | Add benchmarks and regression budgets | R10-R17 | Three clean same-runner baselines and enforced median/p95 budgets |
 | R20 | Add churn, fault, and 24/72-hour soak automation | R13-R19 | Evidence bundles prove zero resource/FD/state growth and all stop conditions |
-| R21 | Run bounded A3S OS production canary | R12-R20 | Git-only exact-SHA canary passes with complete cleanup and no safety stop |
+| R21 | Run bounded Aster OS production canary | R12-R20 | Git-only exact-SHA canary passes with complete cleanup and no safety stop |
 | R22 | Perform release completion audit | R01-R21 | Every deep-test-plan release gate maps to authoritative passing evidence |
 | R23 | Freeze the modern MCP Service-profile boundary | R00 | ADR 0005 accepted or explicitly superseded; no MCP fields enter the Runtime wire contract |
 | R24 | Define the MCP-ready Service consumer profile and fixture manifest | R23 | Existing generic capabilities map to stable case IDs and one pinned black-box fixture |
@@ -122,7 +122,7 @@ Deliverables:
 Exit gate: mock and file-state correctness is independently reproducible for an
 exact commit on Linux CI.
 
-### Package D: Docker and A3S Cloud (`R13`-`R15`)
+### Package D: Docker and Aster Cloud (`R13`-`R15`)
 
 Deliverables:
 
@@ -138,7 +138,7 @@ Deliverables:
 Exit gate: real Docker and Cloud evidence covers every source-advertised
 capability, and post-run provider inventory equals its baseline.
 
-### Package E: A3S Box (`R16`-`R17`)
+### Package E: Aster Box (`R16`-`R17`)
 
 Deliverables:
 
@@ -150,8 +150,8 @@ Deliverables:
   when implemented and tested;
 - crash, shim loss, VM loss, host restart, and cleanup profiles.
 
-Exit gate: A3S Box passes Base and Recovery plus every capability it advertises
-on production-equivalent A3S OS Linux.
+Exit gate: Aster Box passes Base and Recovery plus every capability it advertises
+on production-equivalent Aster OS Linux.
 
 ### Package F: Non-functional release proof (`R18`-`R22`)
 
@@ -174,7 +174,7 @@ Checkpoint (2026-07-30): the `R23`/`R24` foundation is implemented. ADR 0005,
 the canonical consumer fixture, exact semantics-profile binding, typed
 endpoint/generation acceptance, and stale evidence rejection pass focused
 tests without adding MCP protocol fields to Runtime core. `R25` is next and
-requires production-equivalent Linux plus the real A3S Box adapter; that
+requires production-equivalent Linux plus the real Aster Box adapter; that
 external evidence cannot be replaced by the current Windows fixture.
 
 Deliverables:
@@ -186,7 +186,7 @@ Deliverables:
 - a canonical fixture manifest binding the MCP server image, Service
   specification, semantics profile digest, declared TCP port, readiness probe,
   optional liveness/graceful-stop policy, and expected endpoint evidence;
-- real A3S Box apply, inspect, readiness, liveness, logs, graceful/forced stop,
+- real Aster Box apply, inspect, readiness, liveness, logs, graceful/forced stop,
   remove, restart, generation, and cleanup evidence;
 - distinct Runtime Unit identities and typed endpoints for every replica;
 - a black-box `server/discover` reachability probe whose protocol assertions
@@ -216,10 +216,10 @@ Deliverables:
 - Cloud adoption through exact Git revision pinning;
 - no Workflow Runtime Unit: Flow coordinates only owner-created executable
   children;
-- a required production A3S Box provider path with capability-triggered
+- a required production Aster Box provider path with capability-triggered
   conformance;
 - internal, generation-bound Service endpoints admitted by Cloud and published
-  only through A3S Gateway; and
+  only through Aster Gateway; and
 - per-profile recovery, cleanup, tenant isolation, and exact-revision evidence.
 
 Exit gate: AaaS, WaaS executable nodes, FaaS, MCP, and Durable Cell deployments
@@ -231,17 +231,17 @@ public ingress.
 
 1. Preserve the existing optional ephemeral-storage and `unknown` recovery
    changes as inputs to ADR 0002.
-2. Implement `R01`-`R04` with contract tests and update A3S Cloud constructors
+2. Implement `R01`-`R04` with contract tests and update Aster Cloud constructors
    in the same compatibility change.
-3. Push an exact feature commit so the A3S OS runner can build and test through
+3. Push an exact feature commit so the Aster OS runner can build and test through
    Git; do not upload a working tree archive.
 4. Implement `R05`-`R10`, rerunning the server-side core matrix after each
    durable-state slice.
-5. Enable and expand real Docker conformance before starting the A3S Box
+5. Enable and expand real Docker conformance before starting the Aster Box
    adapter, so the shared provider oracles are proven by one real driver first.
 6. Review and land component-complete `R29`/`R30`, then pin Cloud to that exact
    Runtime commit and complete `R31`.
-7. Treat A3S Box as the production provider: close `R32` before any Cloud AI
+7. Treat Aster Box as the production provider: close `R32` before any Cloud AI
    service availability claim.
 8. Prove Workflow Agent/Function child composition in `R33`, then run the joint
    Gateway/Cloud/Runtime/Box gate in `R34`.

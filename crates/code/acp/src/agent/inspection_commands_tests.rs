@@ -39,7 +39,7 @@ fn commands_parse_mechanical_syntax_and_refuse_invalid_mutations() {
 
 #[test]
 fn a_filtered_next_page_command_keeps_the_real_cursor_and_filter() {
-    use a3s_code_core::durable_memory_vec::{MemoryRecord, VecMemoryStore};
+    use aster_core::durable_memory_vec::{MemoryRecord, VecMemoryStore};
     let root = tempfile::tempdir().unwrap();
     let store = VecMemoryStore::open(root.path()).unwrap();
     for index in 0..51 {
@@ -90,7 +90,7 @@ async fn terminal_memory_commands_use_revision_guards_and_do_not_call_the_model(
         provider.base_url = Some("http://127.0.0.1:9/v1".into());
     }
     launch.config.memory_dir = Some(root.path().join("memory"));
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let id = host
         .new_session(acp::NewSessionRequest::new(&workspace))
         .await
@@ -155,7 +155,7 @@ async fn terminal_tasks_stop_only_the_session_owned_canceller() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = test_launch(None);
     launch.workspace = root.path().into();
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let id = host
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -212,7 +212,7 @@ async fn memory_commands_follow_the_session_workspace_without_widening_unbound_a
     let mut launch = test_launch(Some(root.path().join("sessions")));
     launch.workspace = a.clone();
     assert!(launch.config.memory_dir.is_none());
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let mut live = Vec::new();
     for (workspace, note) in [(&a, "scope-alpha"), (&a, "scope-gamma"), (&b, "scope-beta")] {
         let id = host
@@ -247,14 +247,14 @@ async fn memory_commands_follow_the_session_workspace_without_widening_unbound_a
     let query = serde_json::json!({"operation":"list","query":"","memory_type":null,"cursor":null});
     for session in [None, Some(live[0].0 .0.to_string()), Some("unknown".into())] {
         let request = body(
-            "a3s/memory/manage",
+            "aster/memory/manage",
             serde_json::json!({"workspace_root":b,"session_id":session,"request":query}),
         );
         assert!(host.handle_memory_management(&request).await.is_err());
     }
     for (session, count) in [(None, 2), (Some(live[0].0 .0.to_string()), 1)] {
         let request = body(
-            "a3s/memory/snapshot",
+            "aster/memory/snapshot",
             serde_json::json!({"workspace_root":a,"session_id":session,"layer":"session"}),
         );
         let reply = host.handle_memory_snapshot(&request).await.unwrap();
@@ -268,7 +268,7 @@ async fn memory_commands_follow_the_session_workspace_without_widening_unbound_a
         }
     }
     let count = body(
-        "a3s/memory/snapshot",
+        "aster/memory/snapshot",
         serde_json::json!({"workspace_root":b,"session_id":live[2].0.0,"layer":"durable","count_only":true}),
     );
     let reply = host.handle_memory_snapshot(&count).await.unwrap();
@@ -284,7 +284,7 @@ async fn memory_commands_follow_the_session_workspace_without_widening_unbound_a
         std::fs::rename(&b, &original).unwrap();
         std::os::unix::fs::symlink(&a, &b).unwrap();
         let request = body(
-            "a3s/memory/manage",
+            "aster/memory/manage",
             serde_json::json!({"workspace_root":a,"session_id":live[2].0.0,"request":query}),
         );
         assert!(

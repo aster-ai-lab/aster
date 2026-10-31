@@ -1,9 +1,9 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_oci_sdk::oci_spec::runtime::{
+use aster_oci_sdk::oci_spec::runtime::{
     Linux, LinuxSeccomp, LinuxSeccompAction, LinuxSeccompArg, LinuxSeccompOperator,
 };
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use seccompiler::{
     BpfProgram, SeccompAction, SeccompCmpArgLen, SeccompCmpOp, SeccompCondition, SeccompFilter,
     SeccompRule,

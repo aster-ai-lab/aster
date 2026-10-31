@@ -1,7 +1,7 @@
 use super::*;
 
 #[async_trait::async_trait(?Send)]
-impl acp::Agent for A3sCodeAgent {
+impl acp::Agent for AsterCodeAgent {
     async fn initialize(
         &self,
         args: acp::InitializeRequest,
@@ -26,7 +26,7 @@ impl acp::Agent for A3sCodeAgent {
             .meta(
                 serde_json::json!({
                     "grokShell": false,
-                    "a3sCode": true,
+                    "asterCode": true,
                     "agentVersion": env!("CARGO_PKG_VERSION"),
                     "currentWorkingDirectory": cwd,
                     "modelState": model_state,
@@ -36,7 +36,7 @@ impl acp::Agent for A3sCodeAgent {
                     "cancelRewind": false,
                     "sessionRecap": false,
                     "feedbackTraceOffer": false,
-                    "a3s": self.workspace_admission_meta(),
+                    "aster": self.workspace_admission_meta(),
                     "openModelConfig": self.first_run_config,
                 })
                 .as_object()
@@ -61,7 +61,7 @@ impl acp::Agent for A3sCodeAgent {
         if !args
             .meta
             .as_ref()
-            .is_some_and(|meta| meta.contains_key("a3sEngineering"))
+            .is_some_and(|meta| meta.contains_key("asterEngineering"))
         {
             host.work_policy = Some(
                 crate::engineering::named_policy("engineering-v1")
@@ -86,22 +86,22 @@ impl acp::Agent for A3sCodeAgent {
         let session_kind = match args.meta.as_ref().and_then(|meta| meta.get("sessionKind")) {
             None => None,
             Some(serde_json::Value::String(kind)) if kind == "interactive" => {
-                Some(a3s_code_core::session_folder::SessionKind::Interactive)
+                Some(aster_core::session_folder::SessionKind::Interactive)
             }
             Some(serde_json::Value::String(kind)) if kind == "headless" => {
-                Some(a3s_code_core::session_folder::SessionKind::Headless)
+                Some(aster_core::session_folder::SessionKind::Headless)
             }
             Some(_) => {
                 return Err(acp::Error::invalid_params().data("unsupported session kind"));
             }
         };
         match session_kind {
-            Some(kind) => a3s_code_core::session_folder::prepare_session_home_with_kind(
+            Some(kind) => aster_core::session_folder::prepare_session_home_with_kind(
                 &workspace,
                 &session_id,
                 kind,
             ),
-            None => a3s_code_core::session_folder::prepare_session_home(&workspace, &session_id),
+            None => aster_core::session_folder::prepare_session_home(&workspace, &session_id),
         }
         .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         let session_mcp = session_mcp_configs(&args.mcp_servers);
@@ -299,7 +299,7 @@ impl acp::Agent for A3sCodeAgent {
             .config_options(config_options))
     }
 
-    /// ACP session modes: the A3S permission/mode surface. `plan` enables
+    /// ACP session modes: the Aster permission/mode surface. `plan` enables
     /// maker planning; every other mode runs with the session's configured
     /// planning default.
     async fn set_session_mode(
@@ -473,7 +473,7 @@ impl acp::Agent for A3sCodeAgent {
         }
         let output_schema = match args.meta.as_ref().and_then(|meta| meta.get("outputSchema")) {
             Some(schema) if schema.is_object() => {
-                a3s_code_core::validate_output_schema(schema)
+                aster_core::validate_output_schema(schema)
                     .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?;
                 Some(schema.clone())
             }
@@ -552,7 +552,7 @@ impl acp::Agent for A3sCodeAgent {
                 .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
                 client
                     .ext_notification(acp::ExtNotification::new(
-                        "a3s/queue/changed",
+                        "aster/queue/changed",
                         params.into(),
                     ))
                     .await?;

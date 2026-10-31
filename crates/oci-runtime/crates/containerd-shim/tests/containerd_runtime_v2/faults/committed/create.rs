@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerId, ContainerRecord, ContainerTarget, CreateAttachments,
     CreateRequest as RuntimeCreateRequest, DriverKind, ErrorCode, Generation, IoMode,
     IsolationClass, IsolationRequest, OciBundle, OperationContext, ProcessIo,
@@ -50,7 +50,7 @@ pub(crate) async fn qualify_create_effect_committed_shim_sigkill(
     let channel = connect_ready(config).await?;
     let rootfs = task_rootfs(config, &channel, &id).await?;
     let host_pid = find_runtime_host_pid(config).await?;
-    let mut suspended_host = SuspendedProcess::stop(host_pid, "A3S OCI host service")?;
+    let mut suspended_host = SuspendedProcess::stop(host_pid, "Aster OCI host service")?;
 
     let create_channel = channel.clone();
     let create_namespace = config.namespace.clone();
@@ -78,14 +78,14 @@ pub(crate) async fn qualify_create_effect_committed_shim_sigkill(
         .is_ok()
     {
         return Err(qualification_error(
-            "Create completed while the exact A3S OCI host service was suspended",
+            "Create completed while the exact Aster OCI host service was suspended",
         )
         .into());
     }
 
     let shim_pid = find_exact_shim_pid(config, &id).await?;
     let suspended_shim = SuspendedProcess::stop(shim_pid, "create-committed shim")?;
-    suspended_host.resume("A3S OCI host service")?;
+    suspended_host.resume("Aster OCI host service")?;
 
     let committed = commit_runtime_create(config, &intent).await?;
     validate_committed_record(&intent, &committed)?;

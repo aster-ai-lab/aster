@@ -9,7 +9,7 @@ use crate::{
 use super::{SqliteExecutor, SqliteMigrationError};
 
 const CREATE_TABLE: &str = "
-    create table if not exists a3s_orm_migrations (
+    create table if not exists aster_orm_migrations (
         version text primary key,
         name text not null,
         checksum text not null,
@@ -24,7 +24,7 @@ impl MigrationLedger for SqliteExecutor {
         self.connection
             .call(|connection| {
                 let mut statement = connection
-                    .prepare("select version, checksum from a3s_orm_migrations order by version")?;
+                    .prepare("select version, checksum from aster_orm_migrations order by version")?;
                 let applied = statement
                     .query_map([], |row| {
                         Ok(AppliedMigration {
@@ -96,7 +96,7 @@ fn migrate(
 ) -> rusqlite::Result<Result<MigrationReport, MigrationFailure>> {
     connection.execute_batch(CREATE_TABLE)?;
     let mut statement =
-        connection.prepare("select version, checksum from a3s_orm_migrations order by version")?;
+        connection.prepare("select version, checksum from aster_orm_migrations order by version")?;
     let applied = statement
         .query_map([], |row| {
             Ok(AppliedMigration {
@@ -119,7 +119,7 @@ fn migrate(
             }));
         }
         connection.execute(
-            "insert into a3s_orm_migrations (version, name, checksum) values (?1, ?2, ?3)",
+            "insert into aster_orm_migrations (version, name, checksum) values (?1, ?2, ?3)",
             rusqlite::params![migration.version(), migration.name(), migration.checksum()],
         )?;
         versions.push(migration.version().to_owned());

@@ -335,7 +335,7 @@ fn windows_detached_command(
             .map(|elapsed| elapsed.as_nanos())
             .unwrap_or(0);
         let path =
-            std::env::temp_dir().join(format!("a3s-detach-{}-{unique}.ps1", std::process::id()));
+            std::env::temp_dir().join(format!("aster-detach-{}-{unique}.ps1", std::process::id()));
         let literal = path.to_string_lossy().replace('\'', "''");
         let body = format!(
             "trap {{ exit 1 }}\nRegister-EngineEvent -SourceIdentifier PowerShell.Exiting -Action {{ Remove-Item -LiteralPath '{literal}' -Force -ErrorAction SilentlyContinue }} | Out-Null\n{wrapped}\nif (-not $?) {{ exit 1 }}\n"
@@ -493,17 +493,17 @@ mod tests {
         let other = "overlay-other";
         bind_session(owner, root.path());
         bind_session(other, root.path());
-        set_env(owner, "A3S_SHELL_OVERLAY", "owner-only").unwrap();
-        set_env(other, "A3S_SHELL_OVERLAY", "other-only").unwrap();
+        set_env(owner, "ASTER_SHELL_OVERLAY", "owner-only").unwrap();
+        set_env(other, "ASTER_SHELL_OVERLAY", "other-only").unwrap();
         assert_eq!(
             overlay_env(other)
-                .get("A3S_SHELL_OVERLAY")
+                .get("ASTER_SHELL_OVERLAY")
                 .map(String::as_str),
             Some("other-only")
         );
         run_bounded(
             other,
-            "printf '%s' \"$A3S_SHELL_OVERLAY\" > other-overlay.txt",
+            "printf '%s' \"$ASTER_SHELL_OVERLAY\" > other-overlay.txt",
             Duration::from_secs(5),
         )
         .unwrap();
@@ -640,7 +640,7 @@ mod tests {
         let nested = root.path().join("nested");
         std::fs::create_dir(&nested).unwrap();
         let outside =
-            std::env::temp_dir().join(format!("a3s-shell-escape-{}.txt", std::process::id()));
+            std::env::temp_dir().join(format!("aster-shell-escape-{}.txt", std::process::id()));
         let _ = std::fs::remove_file(&outside);
         let session = format!("soak-wt-{}", std::process::id());
         bind_session_rooted(&session, root.path(), root.path());

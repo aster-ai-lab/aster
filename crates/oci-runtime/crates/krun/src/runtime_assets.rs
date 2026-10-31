@@ -4,7 +4,7 @@ use std::sync::OnceLock;
 
 use serde::{Deserialize, Serialize};
 
-const SCHEMA_VERSION: &str = "a3s.oci.krun-runtime-assets.v1";
+const SCHEMA_VERSION: &str = "aster.oci.krun-runtime-assets.v1";
 const RUNTIME_ASSETS_JSON: &str = include_str!("../runtime/runtime-assets.json");
 const SUPPORTED_TARGETS: &[(&str, &str, &str)] = &[
     ("windows", "x86_64", "windows-x86_64"),

@@ -27,6 +27,6 @@ Input: [spec.md](spec.md), [plan.md](plan.md).
   in `docs/evidence/desktop/2026-10-23-living-wiki/OUTCOME.md`.
 - [x] Owning focused native/renderer tests pass.
 - [x] Rust fmt and relevant workspace checks run; unrelated failures retained.
-- [x] Internal A3S dependencies stay local; no native select or new config format.
+- [x] Internal Aster dependencies stay local; no native select or new config format.
 - [x] Source/review bytes and stale revisions are verified by owner-side tests.
 - [x] No provider calls on real user knowledge, no commit without request.

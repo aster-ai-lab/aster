@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "retrieval_profile": "a3s.memory.lexical.word-cjk-bigram.v1",
+  "retrieval_profile": "aster.memory.lexical.word-cjk-bigram.v1",
   "policy": {
     "max_results": 3,
     "min_lexical_score": 0.25,

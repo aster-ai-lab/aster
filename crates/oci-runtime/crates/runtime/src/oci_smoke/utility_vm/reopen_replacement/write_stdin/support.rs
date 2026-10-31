@@ -1,8 +1,8 @@
 use std::path::Path;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{Error, ErrorCode, IoMode, OperationId, ProcessId, ProcessIo, ProcessTarget};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{Error, ErrorCode, IoMode, OperationId, ProcessId, ProcessIo, ProcessTarget};
 
 use super::super::exec::support::dispatch_may_have_reached;
 use super::super::{append_failure, QualificationHvfDriver, FAULT_OPERATION};
@@ -30,7 +30,7 @@ pub(super) fn stdin_exec_process(
     let process_id = ProcessId::new(format!("stdin-worker-{nonce}"))
         .map_err(|error| format!("failed to construct stdin Exec process ID: {error}"))?;
     let command = format!(
-        "set -eu; printf 'a3s-oci-exec-process-{nonce}\\n' > /{}; IFS= read -r input; printf '%s\\n' \"$input\" > /{WRITE_MARKER_NAME}; while :; do /bin/busybox sleep 1; done",
+        "set -eu; printf 'aster-oci-exec-process-{nonce}\\n' > /{}; IFS= read -r input; printf '%s\\n' \"$input\" > /{WRITE_MARKER_NAME}; while :; do /bin/busybox sleep 1; done",
         super::super::exec::EXEC_MARKER_NAME,
     );
     let process: Process = serde_json::from_value(serde_json::json!({

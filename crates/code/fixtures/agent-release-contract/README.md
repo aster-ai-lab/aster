@@ -1,34 +1,34 @@
 # Immutable Agent Release Fixture
 
-This directory contains the version-one A3S Code Agent release publication
-fixture. The checked-in [`.a3s/asset.acl`](.a3s/asset.acl) is an admitted parser
+This directory contains the version-one Aster Code Agent release publication
+fixture. The checked-in [`.aster/asset.acl`](.aster/asset.acl) is an admitted parser
 template with conspicuous test digests. It is not itself a published release.
 
 The final manifest cannot be copied into the image because it declares that
 image's own OCI manifest digest. Publication therefore has one strict order:
 
-1. supply an already-built Linux amd64 `a3s` executable from the matching CLI
+1. supply an already-built Linux amd64 `aster` executable from the matching CLI
    and Code release, requiring no newer than GLIBC 2.39;
 2. build and push the image without the final manifest;
 3. resolve the pushed OCI image-manifest digest;
 4. retain canonical, digest-addressed BuildKit provenance and bind it together
    with the exact binary through `AgentReleaseManifest::bind_publication`; and
-5. inject the generated manifest read-only at `/app/.a3s/asset.acl` when the
+5. inject the generated manifest read-only at `/app/.aster/asset.acl` when the
    digest-pinned image starts.
 
 Publish to an authenticated registry with:
 
 ```bash
 bash fixtures/agent-release-contract/scripts/publish-release.sh \
-  /path/to/linux-amd64/a3s \
-  registry.example.com/a3s/code-agent:8.0.3 \
+  /path/to/linux-amd64/aster \
+  registry.example.com/aster/code-agent:8.0.3 \
   ./release-output
 ```
 
 The script refuses existing output, forces one `linux/amd64` OCI image
-manifest on a digest-pinned Ubuntu 24.04 base, executes `a3s --version` inside
+manifest on a digest-pinned Ubuntu 24.04 base, executes `aster --version` inside
 that image before publication, pushes once, and writes canonical
-`release-output/.a3s/asset.acl`, a secret-free `publication.json`, and the exact
+`release-output/.aster/asset.acl`, a secret-free `publication.json`, and the exact
 canonical `release-output/provenance/builder.json` object whose SHA-256 is the
 manifest's `builder` provenance digest. Deploy only the
 `exactImageReference` recorded there, never the mutable input tag. The supplied
@@ -43,7 +43,7 @@ For a hermetic lifecycle check, use a local ephemeral registry:
 
 ```bash
 bash fixtures/agent-release-contract/scripts/verify-local-release.sh \
-  /path/to/linux-amd64/a3s \
+  /path/to/linux-amd64/aster \
   ./release-output
 ```
 

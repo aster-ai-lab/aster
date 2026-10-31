@@ -22,7 +22,7 @@ use super::redis_store::{
     FIELD_BYTE_COUNT, FIELD_DESCRIPTOR, FIELD_PARTITION_COUNT, FIELD_RECORD_COUNT, FIELD_REVISION,
     MAX_CAS_ATTEMPTS,
 };
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     VectorIndex, VectorIndexChangeToken, VectorIndexDescriptor, VectorIndexError,
     VectorIndexObservation, VectorIndexStatus, VectorMutationConsistency, VectorRecord,
     VectorResult, VectorRevision, VectorSearchHit, VectorSearchRequest, VectorSearchResult,

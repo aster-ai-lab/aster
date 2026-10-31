@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowRunStatus, WorkflowSpec,
 };
@@ -14,7 +14,7 @@ impl FlowRuntime for InspectionRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         match ctx.input()["mode"].as_str() {
             Some("complete") => {
@@ -50,7 +50,7 @@ impl FlowRuntime for InspectionRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "finish_report" => Ok(json!({
                 "label": invocation.input["label"],
@@ -62,7 +62,7 @@ impl FlowRuntime for InspectionRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let now = Utc::now();
     let engine = FlowEngine::in_memory(Arc::new(InspectionRuntime));
     let spec = WorkflowSpec::rust_embedded("examples.run-inspection", "0.1.0", "examples", "main");

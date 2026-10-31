@@ -35,7 +35,7 @@ ledger shapes unless those are frozen contracts in-repo.
    is live, if every Power observation expires, chat completions fail closed
    with `authorization_unavailable` and never contact upstream.
 5. **Schema id lock** — `POWER_WORKER_OBSERVATION_SCHEMA` equals Power's
-   `WORKER_OBSERVATION_SCHEMA` (`a3s.power.worker-observation.v1`), locked via
+   `WORKER_OBSERVATION_SCHEMA` (`aster.power.worker-observation.v1`), locked via
    `tests/fixtures/contracts/power_worker_observation.rs`.
 6. **Nested→flat projection lock** — Power's nested `WorkerObservation` JSON
    (capabilities/admission/prompt_cache) projects into Gateway's flat
@@ -441,7 +441,7 @@ first watcher poll, so a buildable client cannot soft-open a forever-warn
 provider after logging watcher start
 (`validate_activation_fails_closed_when_kubernetes_ingress_list_unreachable`,
 `validate_activation_probes_kubernetes_ingress_list` with `--features kube`).
-Labeled IngressRoute ConfigMaps (`a3s-gateway.io/type=ingressroute`) fail closed
+Labeled IngressRoute ConfigMaps (`aster-gateway.io/type=ingressroute`) fail closed
 when `data` / `data.spec` is missing or unparseable — one bad ConfigMap rejects
 the whole poll (no warn-and-skip partial overlay)
 (`parse_ingress_route_configmap_spec_rejects_malformed_json`,
@@ -465,7 +465,7 @@ no warn-and-skip partial overlay
 `generate_config_fails_closed_on_invalid_weight_label`). Non-opt-in containers
 (`enable` absent/`false`) still skip silently.
 Declared `protocol=tcp|udp` without a listen address
-(`entrypoint.address` / `a3s-gateway.io/listen`) fails closed on Docker and
+(`entrypoint.address` / `aster-gateway.io/listen`) fails closed on Docker and
 Kubernetes Ingress conversion; unknown protocol values no longer soft-default
 to HTTP
 (`generate_config_fails_closed_on_tcp_protocol_without_listen_address`,
@@ -486,7 +486,7 @@ not resolve Service named ports)
 (`ingress_to_config_fails_closed_on_zero_backend_port`,
 `ingress_to_config_fails_closed_on_named_backend_port_without_number`,
 `ingress_to_config_uses_explicit_backend_port`).
-Declared Ingress `a3s-gateway.io/request-timeout` fails closed when present but
+Declared Ingress `aster-gateway.io/request-timeout` fails closed when present but
 empty or unparseable (absent still defaults to `30s`); empty whitespace must
 not soft-default back to `30s`
 (`parse_declared_request_timeout_rejects_empty`,

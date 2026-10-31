@@ -226,7 +226,7 @@ ConnectNamedPipe(pipe, None);
 ### 短期（立即）
 
 1. **评估需求**：
-   - a3s box 是否真正需要 TSI？
+   - aster box 是否真正需要 TSI？
    - virtio-net 是否足够？
    - 哪些应用场景依赖 TSI？
 
@@ -268,18 +268,18 @@ ConnectNamedPipe(pipe, None);
 
 **TSI Windows 实现是可行的，但需要权衡：**
 
-1. **如果 a3s box 不依赖 TSI**：
+1. **如果 aster box 不依赖 TSI**：
    - ✅ 使用 virtio-net（当前方案）
    - ✅ Windows 后端已经生产就绪（95%）
    - ✅ 可以立即部署
 
-2. **如果 a3s box 必须有 TSI**：
+2. **如果 aster box 必须有 TSI**：
    - ⚠️ 需要 4-6 周开发时间
    - ⚠️ 建议先实现 TCP only（2-3 周）
    - ⚠️ 然后根据需求扩展
 
 3. **推荐行动**：
-   - **立即**：与 a3s box 团队确认 TSI 是否必需
+   - **立即**：与 aster box 团队确认 TSI 是否必需
    - **如果必需**：启动 Phase 1（TCP only）
    - **如果不必需**：使用当前 virtio-net 方案
 

@@ -191,9 +191,9 @@ export async function loadThemeContractInputs(stylesDir = STYLES_DIR): Promise<T
 export async function writeThemeContractCss(outputPath = THEME_OUTPUT_PATH, stylesDir = STYLES_DIR): Promise<void> {
   const inputs = await loadThemeContractInputs(stylesDir)
   const css = buildThemeContractCss(inputs)
-  // The a3s compatibility bridge (legacy --color-* Kense names + DESIGN.md values) is authored
-  // in src/styles/a3s-compat.css and mirrored into the generated output so one import covers it.
-  const compatPath = path.join(stylesDir, 'a3s-compat.css')
+  // The aster compatibility bridge (legacy --color-* Kense names + DESIGN.md values) is authored
+  // in src/styles/aster-compat.css and mirrored into the generated output so one import covers it.
+  const compatPath = path.join(stylesDir, 'aster-compat.css')
   let compat = ''
   try {
     compat = await fs.readFile(compatPath, 'utf8')
@@ -205,7 +205,7 @@ export async function writeThemeContractCss(outputPath = THEME_OUTPUT_PATH, styl
   await writeSpecRolesCss()
   const design = await fs.readFile(DEFAULT_DESIGN_DOC, 'utf8')
   const specRoles = buildSpecRolesCss(design)
-  const out = `${css}\n${specRoles}\n/* ==================== */\n/* a3s compatibility bridge */\n/* ==================== */\n\n${compat}`
+  const out = `${css}\n${specRoles}\n/* ==================== */\n/* aster compatibility bridge */\n/* ==================== */\n\n${compat}`
   await fs.writeFile(outputPath, out, 'utf8')
 }
 

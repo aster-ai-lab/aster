@@ -15,7 +15,7 @@ export interface SpreadsheetClipboardPort {
 }
 
 const spreadsheetSystemClipboardTimeoutMs = 800;
-const spreadsheetLocalClipboardKey = 'a3s-office-spreadsheet-clipboard';
+const spreadsheetLocalClipboardKey = 'aster-office-spreadsheet-clipboard';
 
 let richSpreadsheetClipboard: SpreadsheetClipboardSnapshot | null = null;
 let browserClipboardWriteRevision = 0;

@@ -51,7 +51,7 @@ specs/020-business-acceptance/
 | Core 证据 | `verification.rs`、`agent_api/session_verification.rs`、`agent/tool_completion_runtime.rs`、`fact_control/goal_evidence.rs`、`harness_loop.rs` | 补充条件/检查身份与当前性校验；保留原完成门与豁免 |
 | Core 修复/恢复 | `session_review/`、`agent_api/session_review_facade.rs`、`agent_api/session_persistence.rs`、`session_checkpoint.rs` | 沿用 Finding 与原存储；仅补缺失关联和恢复测试 |
 | ACP | `crates/code/acp/src/agent/goal_ext.rs`、`host_methods.rs`、`turn.rs`、`goal/import.rs` | 类型化操作、快照、显式历史导入；更新相关 parser、catalog、stdio tests |
-| CLI 呈现 | `crates/terminal/crates/codegen/a3s-code-pager/src/app/turn_completion.rs`、`app/acp_handler/session_notification.rs`、`scrollback/blocks/session_event.rs` | 复用原状态解析和摘要，不先增加 slash command |
+| CLI 呈现 | `crates/terminal/crates/codegen/aster-pager/src/app/turn_completion.rs`、`app/acp_handler/session_notification.rs`、`scrollback/blocks/session_event.rs` | 复用原状态解析和摘要，不先增加 slash command |
 | Studio 原生 | `apps/studio/src-tauri/src/agent_plane/runtime_client.rs`、`goal_snapshot.rs`、`controllers.rs`、现有 Tauri 注册/permissions/capabilities | 类型化转发、只读投影与最小主窗口授权；不得增加模型/Shell 调用 |
 | Studio UI | `apps/studio/src/shared/types/studioGoal.ts`、`renderer/hooks/useStudioGoal.ts`、`renderer/data/studioAgentPlane.ts`、`renderer/pages/agents/WorkbenchProjectTray.tsx`、`WorkbenchHomeComposerExtras.tsx` | 小型验收分组和 sibling tests；同步中英文文案、a11y 与根 DESIGN |
 | 验收夹具 | Core/ACP 原测试树及 `crates/code/acp/tests/long_horizon/` | 小型隔离夹具、独立状态断言；不创建新工作区、锁文件或测试框架 |
@@ -84,9 +84,9 @@ specs/020-business-acceptance/
 
 ## Verification Plan
 
-- Core：`cargo test --locked -p a3s-code-core --lib business_acceptance`；沿用并运行受影响的 `verification`、`harness_loop`、Goal acceptance/recovery 与 Review 测试。新测试的命名使用该过滤前缀；这些是计划命令，尚未执行。
-- ACP：新增 `business_acceptance_stdio` owning-package 集成测试，运行 `cargo test --locked -p a3s-code-acp --test business_acceptance_stdio`，并跑现有 `acp_conformance_stdio`。
-- Studio：新增测试沿用 `business_acceptance` 过滤；`cargo test --locked -p a3s-studio business_acceptance`。在子模块运行 `pnpm exec vitest run --project renderer <本期精确测试路径>`，同步受影响 shared/parser 测试。
+- Core：`cargo test --locked -p aster-core --lib business_acceptance`；沿用并运行受影响的 `verification`、`harness_loop`、Goal acceptance/recovery 与 Review 测试。新测试的命名使用该过滤前缀；这些是计划命令，尚未执行。
+- ACP：新增 `business_acceptance_stdio` owning-package 集成测试，运行 `cargo test --locked -p aster-acp --test business_acceptance_stdio`，并跑现有 `acp_conformance_stdio`。
+- Studio：新增测试沿用 `business_acceptance` 过滤；`cargo test --locked -p aster-studio business_acceptance`。在子模块运行 `pnpm exec vitest run --project renderer <本期精确测试路径>`，同步受影响 shared/parser 测试。
 - 集成：独立断言的订阅夹具完整旅程，以及第二任务复用；实际 ACP/合格执行后端与原生桌面分别记录。脚本模型不替代真实模型，renderer 不替代原生窗口。
 - 仓库门禁：`cargo fmt --all -- --check`、`python3 tests/workspace_dependencies.py`、`python3 tests/studio_runtime_authority.py`、受影响类型/i18n/架构检查及项目 CI。既有失败独立报告，不删除基线或声称全仓通过。
 - 每项结论保留原始失败、重跑原因、当前源码与成对 CLI/ACP 身份；只汇总真正执行且去重的结果。

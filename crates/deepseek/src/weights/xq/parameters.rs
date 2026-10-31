@@ -1,7 +1,7 @@
 //! Explicit small XQ floating parameters over authenticated Power ranges.
 //! Large/quantized matrices use XqDeviceMatrix, never a full F32 decode here.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

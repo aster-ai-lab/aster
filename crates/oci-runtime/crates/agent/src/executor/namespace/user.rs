@@ -6,7 +6,7 @@ use std::os::unix::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use super::{namespace_error, IdMapping, NamespacePlan};
 

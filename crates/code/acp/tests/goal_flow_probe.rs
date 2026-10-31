@@ -1,6 +1,6 @@
 //! Goal command flow probe over the REAL pager path: an in-process
 //! ClientSideConnection (the pager's exact transport role) drives the
-//! A3sCodeAgent backend (AgentSideConnection) across cross-wired duplexes,
+//! AsterCodeAgent backend (AgentSideConnection) across cross-wired duplexes,
 //! and the recording client captures every streamed session update.
 //!
 //! Contracts asserted:
@@ -10,8 +10,8 @@
 //! 4. Queued mid-turn commands serialize (resume + immediate status race).
 //! 5. Streamed replies deliver their text exactly once (no duplication).
 //!
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-acp --test goal_flow_probe -- --ignored --nocapture --test-threads=1
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-acp --test goal_flow_probe -- --ignored --nocapture --test-threads=1
 //!
 //! `goal_horizon_qwen_flash_keeps_admitting_slices` loads that ACL, forces
 //! `anthropic/qwen3.8-flash`, and resumes a bound goal under a two-slice host policy.
@@ -21,7 +21,7 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::time::Duration;
 
-use a3s_code_acp::{load_launch_config, A3sCodeAgent};
+use aster_acp::{load_launch_config, AsterCodeAgent};
 use agent_client_protocol as acp;
 use async_trait::async_trait;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
@@ -68,24 +68,24 @@ const ASK_PROMPT: &str =
     "What is the workspace codename? Reply with exactly the codename and nothing else.";
 
 #[tokio::test(flavor = "current_thread")]
-#[ignore = "requires the model configured in .a3s/config.acl"]
+#[ignore = "requires the model configured in .aster/config.acl"]
 async fn goal_commands_flow_end_to_end() {
     tokio::task::LocalSet::new()
         .run_until(async move {
-            let config_path = std::env::var_os("A3S_CONFIG_FILE").map(PathBuf::from);
+            let config_path = std::env::var_os("ASTER_CONFIG_FILE").map(PathBuf::from);
             let workspace =
-                std::env::temp_dir().join(format!("a3s-goal-probe-{}", std::process::id()));
+                std::env::temp_dir().join(format!("aster-goal-probe-{}", std::process::id()));
             let _ = std::fs::remove_dir_all(&workspace);
             std::fs::create_dir_all(&workspace).expect("workspace");
 
             let mut launch =
                 load_launch_config(workspace.clone(), config_path).expect("launch config");
-            if let Ok(raw) = std::env::var("A3S_TEST_MODEL") {
+            if let Ok(raw) = std::env::var("ASTER_TEST_MODEL") {
                 let model = raw.trim().to_string();
                 launch.model_id = model.clone();
                 launch.config.default_model = Some(model);
             }
-            let agent = Rc::new(A3sCodeAgent::new(launch));
+            let agent = Rc::new(AsterCodeAgent::new(launch));
             let recording = Rc::new(RecordingClient::default());
 
             // Cross-wired duplexes: the agent-side connection hosts the agent
@@ -291,11 +291,11 @@ impl acp::Client for AllowingClient {
 /// `goal_control` of two slices. One unfinished slice must not be the end
 /// of the goal.
 #[tokio::test(flavor = "current_thread")]
-#[ignore = "requires A3S_CONFIG_FILE pointing at a host ACL that declares anthropic/qwen3.8-flash"]
+#[ignore = "requires ASTER_CONFIG_FILE pointing at a host ACL that declares anthropic/qwen3.8-flash"]
 async fn goal_horizon_qwen_flash_keeps_admitting_slices() {
     tokio::task::LocalSet::new()
         .run_until(async move {
-            let source = std::env::var_os("A3S_CONFIG_FILE").expect("A3S_CONFIG_FILE");
+            let source = std::env::var_os("ASTER_CONFIG_FILE").expect("ASTER_CONFIG_FILE");
             let live = std::fs::read_to_string(&source).expect("read host ACL");
             // A pasted URL or token sitting between sections is not ACL.
             // The provider blocks stay intact.
@@ -317,7 +317,7 @@ async fn goal_horizon_qwen_flash_keeps_admitting_slices() {
             );
             let workspace = std::fs::canonicalize({
                 let path =
-                    std::env::temp_dir().join(format!("a3s-goal-horizon-{}", std::process::id()));
+                    std::env::temp_dir().join(format!("aster-goal-horizon-{}", std::process::id()));
                 let _ = std::fs::remove_dir_all(&path);
                 std::fs::create_dir_all(&path).expect("workspace");
                 path
@@ -353,7 +353,7 @@ async fn goal_horizon_qwen_flash_keeps_admitting_slices() {
             );
             assert!(launch.config.goal_control.is_some());
 
-            let agent = Rc::new(A3sCodeAgent::new(launch));
+            let agent = Rc::new(AsterCodeAgent::new(launch));
             let recording = Rc::new(AllowingClient {
                 chunks: RefCell::new(Vec::new()),
             });
@@ -393,7 +393,7 @@ async fn goal_horizon_qwen_flash_keeps_admitting_slices() {
             let root = workspace.display().to_string();
             let created_goal = ext(
                 &client_conn,
-                "a3s/goal/definition",
+                "aster/goal/definition",
                 serde_json::json!({
                     "kind": "create",
                     "operation_id": "horizon-create",
@@ -432,11 +432,11 @@ async fn goal_horizon_qwen_flash_keeps_admitting_slices() {
                     "success_criteria": "The assistant reply is exactly HORIZON-OK"
                 }]
             });
-            let proposed = ext(&client_conn, "a3s/goal/plan", propose).await;
+            let proposed = ext(&client_conn, "aster/goal/plan", propose).await;
             let mut accept = goal_ref("accept_plan", "horizon-accept", &proposed);
             accept["plan"] = serde_json::Value::Null;
             accept["proposal_sequence"] = proposed["plan_fact_sequence"].clone();
-            let accepted = ext(&client_conn, "a3s/goal/plan", accept).await;
+            let accepted = ext(&client_conn, "aster/goal/plan", accept).await;
             assert_eq!(accepted["plan_accepted"], true);
 
             let resume = tokio::time::timeout(
@@ -465,7 +465,7 @@ async fn goal_horizon_qwen_flash_keeps_admitting_slices() {
             let slices = text.matches("Goal slice").count();
             let state = ext(
                 &client_conn,
-                "a3s/goal/state",
+                "aster/goal/state",
                 serde_json::json!({"session_id": session_id.0.as_ref()}),
             )
             .await;
@@ -526,18 +526,18 @@ fn goal_ref(kind: &str, operation_id: &str, view: &serde_json::Value) -> serde_j
 }
 
 #[tokio::test(flavor = "current_thread")]
-#[ignore = "requires A3S_CONFIG_FILE with anthropic/qwen3.8-flash and no goal_control override"]
+#[ignore = "requires ASTER_CONFIG_FILE with anthropic/qwen3.8-flash and no goal_control override"]
 async fn default_engineering_and_goal_continuation_reach_the_live_model() {
     tokio::task::LocalSet::new()
         .run_until(async {
             let workspace = tempfile::tempdir().expect("workspace");
             let workspace = std::fs::canonicalize(workspace.path()).expect("canonical workspace");
-            let config = PathBuf::from(std::env::var_os("A3S_CONFIG_FILE").expect("host ACL"));
+            let config = PathBuf::from(std::env::var_os("ASTER_CONFIG_FILE").expect("host ACL"));
             let mut launch = load_launch_config(workspace.clone(), Some(config)).expect("host ACL");
             assert!(launch.config.goal_control.is_none(), "exercise product defaults");
             launch.model_id = "anthropic/qwen3.8-flash".into();
             launch.config.default_model = Some(launch.model_id.clone());
-            let agent = Rc::new(A3sCodeAgent::new(launch));
+            let agent = Rc::new(AsterCodeAgent::new(launch));
             let recording = Rc::new(RecordingClient::default());
             let (agent_in, client_out) = tokio::io::duplex(65536);
             let (client_in, agent_out) = tokio::io::duplex(65536);
@@ -561,7 +561,7 @@ async fn default_engineering_and_goal_continuation_reach_the_live_model() {
 
             async fn goal_state(client: &acp::ClientSideConnection, session: &acp::SessionId) -> serde_json::Value {
                 let params = serde_json::value::to_raw_value(&serde_json::json!({"session_id":session.0.as_ref()})).expect("params");
-                let result = acp::Agent::ext_method(client, acp::ExtRequest::new("a3s/goal/state", std::sync::Arc::from(params)))
+                let result = acp::Agent::ext_method(client, acp::ExtRequest::new("aster/goal/state", std::sync::Arc::from(params)))
                     .await.expect("state");
                 serde_json::from_str(result.0.get()).expect("state JSON")
             }

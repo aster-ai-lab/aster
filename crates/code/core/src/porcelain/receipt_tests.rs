@@ -34,7 +34,7 @@ fn fixture_repository(root: &Path) {
 #[tokio::test]
 #[cfg(unix)]
 async fn receipt_preimages_bind_known_nongit_and_dirty_git_bytes_without_rewrite_progress() {
-    use a3s_effect::ToolObservationCompleteness;
+    use aster_effect::ToolObservationCompleteness;
     for git_backed in [false, true] {
         let root = tempfile::tempdir().unwrap();
         if git_backed {
@@ -90,7 +90,7 @@ async fn receipt_preimages_do_not_invent_the_first_clean_git_file_baseline() {
     let effects = watch.finish_effects_with_revision(root.path(), false).await;
     assert_eq!(
         effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     let changed = effects
         .changes
@@ -107,7 +107,7 @@ async fn receipt_preimages_do_not_invent_the_first_clean_git_file_baseline() {
 #[tokio::test]
 #[cfg(unix)]
 async fn receipt_preimages_use_complete_nongit_absence_for_creation_and_known_bytes_for_deletion() {
-    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
+    use aster_effect::{ToolFileKind, ToolObservationCompleteness};
     let root = tempfile::tempdir().unwrap();
     let watch = Watch::start(root.path()).await;
     fs::write(root.path().join("created.txt"), b"created bytes\n").unwrap();
@@ -151,7 +151,7 @@ async fn receipt_preimages_keep_uncaptured_existing_bytes_unknown_after_baseline
     let effects = watch.finish_effects_with_revision(root.path(), false).await;
     assert_eq!(
         effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     let changed = effects
         .changes
@@ -171,7 +171,7 @@ async fn receipt_preimages_keep_uncaptured_existing_bytes_unknown_after_baseline
 #[tokio::test]
 #[cfg(unix)]
 async fn a_nested_git_workspace_observes_only_its_exact_relative_bytes() {
-    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
+    use aster_effect::{ToolFileKind, ToolObservationCompleteness};
     let repository = tempfile::tempdir().unwrap();
     fixture_repository(repository.path());
     let workspace = repository.path().join("run spaced/workspace");
@@ -209,7 +209,7 @@ async fn a_nested_git_workspace_observes_only_its_exact_relative_bytes() {
 #[tokio::test]
 #[cfg(unix)]
 async fn an_ignored_nested_workspace_observes_its_actual_bytes_and_no_parent_paths() {
-    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
+    use aster_effect::{ToolFileKind, ToolObservationCompleteness};
     for force_tracked in [false, true] {
         let repository = tempfile::tempdir().unwrap();
         fixture_repository(repository.path());
@@ -334,7 +334,7 @@ async fn an_ignored_nested_workspace_boundary_change_or_lost_baseline_stays_unkn
         let effects = watch.finish_effects_with_revision(&workspace, false).await;
         assert_eq!(
             effects.completeness,
-            a3s_effect::ToolObservationCompleteness::Incomplete
+            aster_effect::ToolObservationCompleteness::Incomplete
         );
         assert!(effects
             .changes
@@ -353,10 +353,10 @@ async fn an_ignored_nested_workspace_boundary_change_or_lost_baseline_stays_unkn
 #[tokio::test]
 #[cfg(unix)]
 async fn harness_directory_components_do_not_hide_literal_unix_backslash_files() {
-    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
+    use aster_effect::{ToolFileKind, ToolObservationCompleteness};
     let names = [
-        ".a3s\\effect.txt",
-        ".a3s-code\\effect.txt",
+        ".aster\\effect.txt",
+        ".aster\\effect.txt",
         ".git\\effect.txt",
     ];
     let payload = b"literal backslash file bytes\n";
@@ -372,17 +372,17 @@ async fn harness_directory_components_do_not_hide_literal_unix_backslash_files()
             fs::write(root.path().join(name), payload).unwrap();
             assert!(!is_harness_path(name));
         }
-        for metadata in [".a3s", ".a3s-code"] {
+        for metadata in [".aster", ".aster"] {
             fs::create_dir(root.path().join(metadata)).unwrap();
             fs::write(root.path().join(metadata).join("internal"), "harness state").unwrap();
             assert!(is_harness_path(&format!("{metadata}/internal")));
         }
         fs::write(
-            root.path().join(".a3s-agent-retrievals"),
+            root.path().join(".aster-agent-retrievals"),
             "host retrieval paths",
         )
         .unwrap();
-        assert!(is_harness_path(".a3s-agent-retrievals"));
+        assert!(is_harness_path(".aster-agent-retrievals"));
         let observed = watch
             .finish_observed_with_revision(root.path(), false)
             .await;
@@ -480,7 +480,7 @@ async fn nested_revision_deltas_exclude_outside_commits_and_keep_inside_relative
 #[test]
 #[cfg(unix)]
 fn typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct() {
-    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
+    use aster_effect::{ToolFileKind, ToolObservationCompleteness};
     let root = tempfile::tempdir().unwrap();
     fs::write(root.path().join("not-a-directory"), "data").unwrap();
     let missing = observe_path_effects(
@@ -501,8 +501,8 @@ fn typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct() {
             paths: vec![
                 "not-a-directory/child".into(),
                 "../escape".into(),
-                "../.a3s/outside".into(),
-                "/.a3s/outside".into(),
+                "../.aster/outside".into(),
+                "/.aster/outside".into(),
             ],
             incomplete: false,
             budget_exceeded: false,
@@ -524,8 +524,8 @@ fn typed_path_observation_keeps_missing_unknown_and_contract_bounds_distinct() {
         root.path(),
         PathDelta {
             paths: vec![
-                "../.a3s/outside".into(),
-                "/.a3s/outside".into(),
+                "../.aster/outside".into(),
+                "/.aster/outside".into(),
                 "nul\0path".into(),
             ],
             incomplete: false,
@@ -809,7 +809,7 @@ fn non_git_delta_sees_preserved_mtime_writes_and_keeps_all_forty_paths() {
     let effects = observe_path_effects(root.path(), observed.clone());
     assert_eq!(
         effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     assert_eq!(
         effects.changes[39].after.content_digest,
@@ -893,7 +893,7 @@ fn path_budget_exhaustion_is_explicit_and_cannot_become_an_empty_success() {
     assert!(effects.budget_exceeded);
     assert_ne!(
         effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
 }
 
@@ -954,7 +954,7 @@ fn total_byte_budget_is_shared_and_overflow_marks_the_changed_paths_incomplete()
     );
     assert_eq!(
         effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Incomplete
+        aster_effect::ToolObservationCompleteness::Incomplete
     );
     assert_eq!(
         effects
@@ -1209,7 +1209,7 @@ fn a_changed_data_file_larger_than_a_baseline_budget_has_byte_identity() {
     );
     assert_eq!(
         effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     assert_eq!(
         effects.changes[0].after.content_digest.as_deref(),

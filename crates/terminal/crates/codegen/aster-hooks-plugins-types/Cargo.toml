@@ -1,0 +1,16 @@
+[package]
+license = "Apache-2.0"
+name = "aster-hooks-plugins-types"
+version = "0.1.0"
+description = "Shared DTO types for hooks/plugins ACP extensions (wire format only)"
+edition = "2024"
+publish = false
+
+[dependencies]
+serde = {workspace = true}
+
+[dev-dependencies]
+serde_json = {workspace = true}
+
+[lints]
+workspace = true

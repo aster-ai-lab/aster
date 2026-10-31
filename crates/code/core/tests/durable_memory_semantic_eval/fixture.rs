@@ -1,4 +1,4 @@
-use a3s_memory::repository::{DurableMemoryKind, MemoryStatus};
+use aster_durable_memory::repository::{DurableMemoryKind, MemoryStatus};
 use serde::Deserialize;
 
 pub(super) const FIXTURE: &str =

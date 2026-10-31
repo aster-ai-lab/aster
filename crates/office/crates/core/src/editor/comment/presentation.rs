@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     comment_error, derive_initials, ensure_related_part, related_part, remove_related_part,

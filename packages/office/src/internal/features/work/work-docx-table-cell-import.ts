@@ -109,7 +109,7 @@ const TABLE_BORDER_EDGES: readonly DocumentTableBorderEdge[] = [
 const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
-const TABLE_CELL_MARKER_PATTERN = /__A3S_WORK_TABLE_CELL_\d+__/g;
+const TABLE_CELL_MARKER_PATTERN = /__ASTER_WORK_TABLE_CELL_\d+__/g;
 const PIXELS_PER_TWIP = 96 / 1440;
 
 export function markDocxTableCells(
@@ -210,7 +210,7 @@ export function markDocxTableCells(
     }
     const paragraph = firstTableCellParagraph(document, cell);
     if (!paragraph) continue;
-    const marker = `__A3S_WORK_TABLE_CELL_${cells.length + 1}__`;
+    const marker = `__ASTER_WORK_TABLE_CELL_${cells.length + 1}__`;
     insertCellMarker(document, paragraph, marker);
     cells.push({
       marker,
@@ -242,7 +242,7 @@ export function applyImportedDocxTableCellMarkers(
     markers.cells.map((cell) => [cell.marker, cell]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_TABLE_CELL_')) continue;
+    if (!node.data.includes('__ASTER_WORK_TABLE_CELL_')) continue;
     const cell = node.parentElement?.closest('td, th');
     node.data = node.data.replace(TABLE_CELL_MARKER_PATTERN, (marker) => {
       const format = cellByMarker.get(marker);

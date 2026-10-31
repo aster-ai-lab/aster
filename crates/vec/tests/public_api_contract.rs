@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     AddColumnOption, AlterColumnOption, Collection, CollectionHealth, CollectionHealthStatus,
     CollectionMaintenanceHealth, CollectionMaintenanceOptions, CollectionMaintenanceRuntime,
     CollectionOptions, CollectionResourceLimits, CollectionSchema, CollectionSchemaBuilder,
@@ -101,21 +101,21 @@ fn public_version_functions_match_the_package_version() {
         })
         .collect::<Vec<_>>();
     assert_eq!(components.len(), 3, "package version must be semver-shaped");
-    assert_eq!(a3s_vec::version(), expected);
+    assert_eq!(aster_vec::version(), expected);
     assert_eq!(
         (
-            a3s_vec::version_major(),
-            a3s_vec::version_minor(),
-            a3s_vec::version_patch(),
+            aster_vec::version_major(),
+            aster_vec::version_minor(),
+            aster_vec::version_patch(),
         ),
         (components[0], components[1], components[2])
     );
-    assert!(a3s_vec::check_version(
+    assert!(aster_vec::check_version(
         components[0],
         components[1],
         components[2]
     ));
-    assert!(!a3s_vec::check_version(
+    assert!(!aster_vec::check_version(
         components[0],
         components[1],
         components[2]
@@ -126,27 +126,27 @@ fn public_version_functions_match_the_package_version() {
 
 #[test]
 fn process_configuration_lifecycle_controls_new_collections_only() {
-    a3s_vec::shutdown().expect("resetting process configuration must succeed");
-    assert!(!a3s_vec::is_initialized());
-    let defaults = a3s_vec::default_config();
+    aster_vec::shutdown().expect("resetting process configuration must succeed");
+    assert!(!aster_vec::is_initialized());
+    let defaults = aster_vec::default_config();
     let defaults_json = serde_json::to_value(&defaults).expect("defaults must serialize");
     assert_eq!(defaults_json["durability"], "Always");
     assert_eq!(defaults_json["io_backend"], "positioned");
     assert_eq!(
         defaults_json["storage_ceilings"]["max_snapshot_bytes"],
-        a3s_vec::DEFAULT_SNAPSHOT_BYTES
+        aster_vec::DEFAULT_SNAPSHOT_BYTES
     );
     assert_eq!(
         defaults_json["storage_ceilings"]["max_index_cache_bytes"],
-        a3s_vec::DEFAULT_INDEX_CACHE_BYTES
+        aster_vec::DEFAULT_INDEX_CACHE_BYTES
     );
     assert_eq!(
         defaults_json["storage_ceilings"]["max_wal_replay_bytes"],
-        a3s_vec::DEFAULT_WAL_REPLAY_BYTES
+        aster_vec::DEFAULT_WAL_REPLAY_BYTES
     );
     assert_eq!(
         defaults_json["storage_ceilings"]["max_diskann_file_bytes"],
-        a3s_vec::DEFAULT_DISKANN_FILE_BYTES
+        aster_vec::DEFAULT_DISKANN_FILE_BYTES
     );
 
     let mut options = CollectionOptions::new().expect("options must be constructible");
@@ -189,9 +189,9 @@ fn process_configuration_lifecycle_controls_new_collections_only() {
         .io_backend(IoBackend::Mmap)
         .storage_ceilings(ceilings)
         .build();
-    a3s_vec::initialize(Some(&configured))
+    aster_vec::initialize(Some(&configured))
         .expect("initializing process configuration must succeed");
-    assert!(a3s_vec::is_initialized());
+    assert!(aster_vec::is_initialized());
 
     let temporary = tempdir().expect("temporary directory must be available");
     let path = temporary.path().join("configured");
@@ -208,8 +208,8 @@ fn process_configuration_lifecycle_controls_new_collections_only() {
     );
     collection.close().expect("collection must close");
 
-    a3s_vec::shutdown().expect("shutting down process configuration must succeed");
-    assert!(!a3s_vec::is_initialized());
+    aster_vec::shutdown().expect("shutting down process configuration must succeed");
+    assert!(!aster_vec::is_initialized());
     let defaulted_path = temporary.path().join("defaulted");
     let defaulted = Collection::create(
         defaulted_path

@@ -12,7 +12,7 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 
 fn allow_policy(host: &str, port: u16) -> SandboxPolicy {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: host.into(),

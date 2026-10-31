@@ -1,5 +1,5 @@
 {
-  "schema": "a3s.runtime.capabilities.v6",
+  "schema": "aster.runtime.capabilities.v6",
   "provider_id": "golden-runtime",
   "provider_build": "golden-runtime/1.2.3",
   "unit_classes": ["task", "service"],

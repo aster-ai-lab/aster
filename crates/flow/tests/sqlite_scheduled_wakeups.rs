@@ -1,10 +1,10 @@
 #![cfg(feature = "sqlite")]
 
-use a3s_flow::{
+use aster_flow::{
     CancellationRequest, FlowError, FlowEvent, FlowEventStore, RetryPolicy, RuntimeBuildId,
     ScheduledWakeupKind, SelectArm, SelectMode, SqliteEventStore, WorkflowSpec,
 };
-use a3s_orm::{sql_query, Database, Migration, Migrator, SqliteDialect, SqliteExecutor};
+use aster_orm::{sql_query, Database, Migration, Migrator, SqliteDialect, SqliteExecutor};
 use chrono::{DateTime, Utc};
 use serde_json::json;
 use std::time::Duration;
@@ -807,7 +807,7 @@ async fn sqlite_scheduled_wakeup_migration_backfills_and_tracks_legacy_writers()
     let executor = SqliteExecutor::open(&database_path).await.unwrap();
     Migrator::new(executor.clone())
         .run([Migration::new(
-            "a3s-flow-0001-events",
+            "aster-flow-0001-events",
             "create Flow event history",
             LEGACY_EVENTS_SQL,
         )])

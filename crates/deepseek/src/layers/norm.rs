@@ -3,7 +3,7 @@
 //! Math follows DeepInfer's Apache-2.0 norm/runtime contract at revision
 //! 9bd9cf243fc53ef9afbf8f04d391d989117d6ab9.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 
 use super::{invalid, tensor_error, validate_finite, CudaLayerDevice};

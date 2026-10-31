@@ -2,7 +2,7 @@ use std::path::Path;
 
 #[test]
 fn skill_locate_then_patch_forbids_whole_document_overwrite() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("skills/a3s-office");
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("skills/aster-office");
     let files = [
         (
             "SKILL.md",

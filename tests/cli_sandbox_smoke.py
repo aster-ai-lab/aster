@@ -87,10 +87,10 @@ def main():
             version = match[1]
             (assets / "latest.json").write_text(json.dumps({"version": version, "tag": "aster-cli-v" + version,
                 "assets": {"macos": {"name": args.archive.name, "sha256": result["sha256"]}}}, separators=(",", ":")))
-            env = dict(os.environ, HOME=str(home), A3S_HOME=str(home / ".a3s"), GROK_HOME=str(home / ".a3s"),
-                       ASTER_RELEASE_BASE=str(assets), A3S_DISABLE_CC_SWITCH="1", A3S_DISABLE_GROK_ACCOUNT="1",
-                       A3S_DISABLE_CURSOR_ACCOUNT="1", A3S_ACP_AGENT_BIN=str(pair / "a3s-code-acp"))
-            for key in ("ASTER_SANDBOX_DIR", "A3S_CODE_GUEST_SYSTEM_IMAGE", "A3S_CODE_KRUN_SHIM",
+            env = dict(os.environ, HOME=str(home), ASTER_HOME=str(home / ".aster"), GROK_HOME=str(home / ".aster"),
+                       ASTER_RELEASE_BASE=str(assets), ASTER_DISABLE_CC_SWITCH="1", ASTER_DISABLE_GROK_ACCOUNT="1",
+                       ASTER_DISABLE_CURSOR_ACCOUNT="1", ASTER_ACP_AGENT_BIN=str(pair / "aster-acp"))
+            for key in ("ASTER_SANDBOX_DIR", "ASTER_GUEST_SYSTEM_IMAGE", "ASTER_KRUN_SHIM",
                         "ASTER_INSTALL_URL", "GROK_INSTALL_URL"):
                 env.pop(key, None)
             with (output / "install.log").open("w") as log:
@@ -110,7 +110,7 @@ def main():
                                   ' api_key = "synthetic-release-fixture"\n'
                                   f' base_url = "http://127.0.0.1:{server.server_port}/v1"\n'
                                   ' models "release-sandbox" {}\n}\n')
-                env.update(A3S_CONFIG=str(config), A3S_CONFIG_FILE=str(config))
+                env.update(ASTER_CONFIG=str(config), ASTER_CONFIG_FILE=str(config))
                 with (output / "terminal.log").open("w") as log:
                     process = subprocess.Popen([str(pair / "aster"), "--single", "RELEASE-SANDBOX-PROBE",
                         "--no-plan", "--no-auto-update",

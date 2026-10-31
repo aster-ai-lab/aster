@@ -1,6 +1,6 @@
 //! Compose file types for multi-container orchestration.
 //!
-//! Defines A3S ACL and Docker Compose-compatible YAML schemas for declaring
+//! Defines Aster ACL and Docker Compose-compatible YAML schemas for declaring
 //! multi-service workloads. Each service maps to a single MicroVM.
 
 use serde::{Deserialize, Serialize};
@@ -399,14 +399,14 @@ impl DnsConfig {
 }
 
 impl ComposeConfig {
-    /// Parse an A3S Compose ACL document using the process environment for
+    /// Parse an Aster Compose ACL document using the process environment for
     /// `env("NAME")` calls.
     pub fn from_acl_str(source: &str) -> Result<Self, ComposeAclError> {
         let environment = std::env::vars().collect();
         Self::from_acl_str_with_environment(source, &environment)
     }
 
-    /// Parse an A3S Compose ACL document using an explicit environment.
+    /// Parse an Aster Compose ACL document using an explicit environment.
     pub fn from_acl_str_with_environment(
         source: &str,
         environment: &HashMap<String, String>,

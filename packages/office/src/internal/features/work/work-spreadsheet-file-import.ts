@@ -93,7 +93,7 @@ export async function importWorkSpreadsheetFile(
       ? await OoxmlPackage.load(arrayBuffer).catch(() => null)
       : null;
   recordSpreadsheetImportMeasure(
-    'a3s-office.spreadsheet.package',
+    'aster-office.spreadsheet.package',
     packageStartedAt,
     spreadsheetImportNow(),
     { loaded: archive !== null },
@@ -159,7 +159,7 @@ export async function importWorkSpreadsheetFile(
         : await xlsxPackageRequiresSheetJsCellStyles(archive))
     : true;
   recordSpreadsheetImportMeasure(
-    'a3s-office.spreadsheet.style-gate',
+    'aster-office.spreadsheet.style-gate',
     styleGateStartedAt,
     spreadsheetImportNow(),
     { required: requiresCellStyles, worker: packageScanResult !== null },
@@ -175,7 +175,7 @@ export async function importWorkSpreadsheetFile(
     workerWorkbook = Promise.resolve(packageScanResult.workbook);
     usesPlainXlsxFastPath = true;
     recordSpreadsheetImportMeasure(
-      'a3s-office.spreadsheet.plain-xlsx-fast-path',
+      'aster-office.spreadsheet.plain-xlsx-fast-path',
       styleGateStartedAt,
       spreadsheetImportNow(),
       { sheetCount: packageScanResult.workbook.SheetNames.length },
@@ -199,7 +199,7 @@ export async function importWorkSpreadsheetFile(
     const sheetJsStartedAt = spreadsheetImportNow();
     sheetJsModule = import('xlsx').then((module) => {
       recordSpreadsheetImportMeasure(
-        'a3s-office.spreadsheet.sheetjs-module',
+        'aster-office.spreadsheet.sheetjs-module',
         sheetJsStartedAt,
         spreadsheetImportNow(),
       );
@@ -233,7 +233,7 @@ export async function importWorkSpreadsheetFile(
       : Promise.resolve(null),
   ]).then((features) => {
     recordSpreadsheetImportMeasure(
-      'a3s-office.spreadsheet.features',
+      'aster-office.spreadsheet.features',
       featuresStartedAt,
       spreadsheetImportNow(),
     );
@@ -524,7 +524,7 @@ export async function importWorkSpreadsheetFile(
     pivotFeatures,
   );
   recordSpreadsheetImportMeasure(
-    'a3s-office.spreadsheet.canonical-conversion',
+    'aster-office.spreadsheet.canonical-conversion',
     conversionStartedAt,
     spreadsheetImportNow(),
     {
@@ -548,13 +548,13 @@ export async function importWorkSpreadsheetFile(
     },
   );
   recordSpreadsheetImportMeasure(
-    'a3s-office.spreadsheet.compatibility',
+    'aster-office.spreadsheet.compatibility',
     compatibilityStartedAt,
     spreadsheetImportNow(),
   );
   context.controller.report('analyzing', 1);
   recordSpreadsheetImportMeasure(
-    'a3s-office.spreadsheet.import-total',
+    'aster-office.spreadsheet.import-total',
     importStartedAt,
     spreadsheetImportNow(),
     { sheetCount: sheets.length },

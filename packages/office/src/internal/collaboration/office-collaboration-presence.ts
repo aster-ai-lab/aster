@@ -8,7 +8,7 @@ import {
   type WorkOfficeCollaborationSession,
 } from './office-collaboration';
 
-export const WORK_OFFICE_COLLABORATION_PRESENCE_FIELD = 'a3sOffice' as const;
+export const WORK_OFFICE_COLLABORATION_PRESENCE_FIELD = 'asterOffice' as const;
 
 const MAX_PRESENCE_RANGES = 64;
 const MAX_PRESENCE_ELEMENT_IDS = 128;
@@ -182,7 +182,7 @@ class WorkOfficeCollaborationPresenceImpl
     if (existing !== undefined && existing !== null) {
       throw new WorkOfficeCollaborationError(
         'office.collaboration.presence_conflict',
-        'The local Awareness state already has an A3S Office presence owner.',
+        'The local Awareness state already has an Aster Office presence owner.',
       );
     }
 
@@ -323,7 +323,7 @@ class WorkOfficeCollaborationPresenceImpl
     if (!isRecord(current) || current.presenceId !== this.#presenceId) {
       throw new WorkOfficeCollaborationError(
         'office.collaboration.presence_conflict',
-        'The local A3S Office presence field was replaced by another owner.',
+        'The local Aster Office presence field was replaced by another owner.',
       );
     }
   }

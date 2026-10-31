@@ -8,11 +8,11 @@ use crate::jsonl::{
     append_jsonl_record, load_jsonl, repair_jsonl_tail, JsonlTailRepair, LoadedJsonl,
 };
 
-use super::{A3sFlowEvent, A3sFlowEventSink};
+use super::{AsterFlowEvent, AsterFlowEventSink};
 
 /// JSONL-backed Kense Flow event sink for local audit logs.
 ///
-/// `A3sFlowEventSink::emit` is intentionally best-effort because observers run
+/// `AsterFlowEventSink::emit` is intentionally best-effort because observers run
 /// after the event store commit. Write failures are recorded in `last_error()`
 /// and logged, while the workflow event store remains the source of truth. An
 /// unterminated malformed tail is treated as a torn append and truncated before
@@ -21,7 +21,7 @@ use super::{A3sFlowEvent, A3sFlowEventSink};
 /// instance are serialized, but separate instances or processes are not
 /// coordinated; use a hosted sink when multiple writers share one audit log.
 #[derive(Debug)]
-pub struct LocalFileA3sFlowEventSink {
+pub struct LocalFileAsterFlowEventSink {
     path: PathBuf,
     state: Mutex<LocalFileSinkState>,
     last_error: Mutex<Option<String>>,
@@ -32,7 +32,7 @@ struct LocalFileSinkState {
     prepared: bool,
 }
 
-impl LocalFileA3sFlowEventSink {
+impl LocalFileAsterFlowEventSink {
     /// Creates a JSONL audit sink at `path`.
     pub fn new(path: impl Into<PathBuf>) -> Self {
         Self {
@@ -53,7 +53,7 @@ impl LocalFileA3sFlowEventSink {
     }
 
     /// Loads every complete audit event after validating and repairing its tail.
-    pub async fn events(&self) -> Result<Vec<A3sFlowEvent>> {
+    pub async fn events(&self) -> Result<Vec<AsterFlowEvent>> {
         let mut state = self.state.lock().await;
         match self.load_events().await {
             Ok(loaded) => {
@@ -67,7 +67,7 @@ impl LocalFileA3sFlowEventSink {
         }
     }
 
-    async fn load_events(&self) -> Result<LoadedJsonl<A3sFlowEvent>> {
+    async fn load_events(&self) -> Result<LoadedJsonl<AsterFlowEvent>> {
         let file = match File::open(&self.path).await {
             Ok(file) => file,
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
@@ -83,7 +83,7 @@ impl LocalFileA3sFlowEventSink {
         repair_jsonl_tail(&self.path, loaded.tail_repair).await
     }
 
-    async fn append_event(&self, event: &A3sFlowEvent) -> Result<()> {
+    async fn append_event(&self, event: &AsterFlowEvent) -> Result<()> {
         if let Some(parent) = self
             .path
             .parent()
@@ -96,8 +96,8 @@ impl LocalFileA3sFlowEventSink {
 }
 
 #[async_trait]
-impl A3sFlowEventSink for LocalFileA3sFlowEventSink {
-    async fn emit(&self, event: A3sFlowEvent) {
+impl AsterFlowEventSink for LocalFileAsterFlowEventSink {
+    async fn emit(&self, event: AsterFlowEvent) {
         let mut state = self.state.lock().await;
         let result = async {
             if !state.prepared {

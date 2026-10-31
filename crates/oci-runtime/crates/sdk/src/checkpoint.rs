@@ -13,7 +13,7 @@ pub use request::{CheckpointRequest, RestoreRequest};
 pub use response::{CheckpointResponse, RestoreResponse};
 
 /// First immutable checkpoint-reference schema.
-pub const CHECKPOINT_REFERENCE_SCHEMA_V1: &str = "a3s.oci.checkpoint-reference.v1";
+pub const CHECKPOINT_REFERENCE_SCHEMA_V1: &str = "aster.oci.checkpoint-reference.v1";
 /// Maximum UTF-8 length of one already-authorized local checkpoint artifact path.
 pub const MAX_CHECKPOINT_ARTIFACT_PATH_BYTES: usize = 4_096;
 

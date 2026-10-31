@@ -1,4 +1,4 @@
-use a3s_use_ocr::{OcrProvider, PpOcrV6Provider, PP_OCR_V6_PROVIDER_ID};
+use aster_use_ocr::{OcrProvider, PpOcrV6Provider, PP_OCR_V6_PROVIDER_ID};
 
 #[test]
 fn pp_ocr_v6_is_one_provider_behind_the_public_interface() {

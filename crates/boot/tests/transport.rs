@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootErrorKind, BoxFuture, CallHandler, ExecutionContext,
     ExecutionInterceptor, ExecutionProtocol, ExecutionTransportKind, Guard, InProcessTransport,
     MessagePatternDefinition, MessageTransport, Module, ModuleRef, ProviderDefinition, Result,
@@ -6,19 +6,19 @@ use a3s_boot::{
     TransportReply, Validate, ValidationOptions, ValidationSchema,
 };
 #[cfg(feature = "grpc-transport")]
-use a3s_boot::{GrpcTransport, GrpcTransportClient, GrpcTransportOptions};
+use aster_boot::{GrpcTransport, GrpcTransportClient, GrpcTransportOptions};
 #[cfg(feature = "kafka-transport")]
-use a3s_boot::{KafkaTransport, KafkaTransportClient, KafkaTransportOptions};
+use aster_boot::{KafkaTransport, KafkaTransportClient, KafkaTransportOptions};
 #[cfg(feature = "mqtt-transport")]
-use a3s_boot::{MqttTransport, MqttTransportClient, MqttTransportOptions, MqttTransportQoS};
+use aster_boot::{MqttTransport, MqttTransportClient, MqttTransportOptions, MqttTransportQoS};
 #[cfg(feature = "nats-transport")]
-use a3s_boot::{NatsTransport, NatsTransportClient, NatsTransportOptions};
+use aster_boot::{NatsTransport, NatsTransportClient, NatsTransportOptions};
 #[cfg(feature = "rabbitmq-transport")]
-use a3s_boot::{RabbitMqTransport, RabbitMqTransportClient, RabbitMqTransportOptions};
+use aster_boot::{RabbitMqTransport, RabbitMqTransportClient, RabbitMqTransportOptions};
 #[cfg(feature = "redis-transport")]
-use a3s_boot::{RedisTransport, RedisTransportClient, RedisTransportOptions};
+use aster_boot::{RedisTransport, RedisTransportClient, RedisTransportOptions};
 #[cfg(feature = "tcp-transport")]
-use a3s_boot::{TcpTransport, TcpTransportClient};
+use aster_boot::{TcpTransport, TcpTransportClient};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -961,8 +961,8 @@ async fn in_process_transport_builds_a_message_client() {
 fn kafka_transport_builds_a_message_client_with_custom_options() {
     let brokers = vec!["127.0.0.1:9092".to_string()];
     let options = KafkaTransportOptions::new()
-        .with_topic_prefix("a3s.boot.test")
-        .with_client_id_prefix("a3s-boot-test")
+        .with_topic_prefix("aster.boot.test")
+        .with_client_id_prefix("aster-boot-test")
         .with_request_timeout(Duration::from_secs(2))
         .with_partition(1)
         .with_fetch_batch_size(2, 2048)
@@ -977,13 +977,13 @@ fn kafka_transport_builds_a_message_client_with_custom_options() {
 
     assert_eq!(client.brokers(), brokers.as_slice());
     assert_eq!(client.options(), &options);
-    assert_eq!(client.options().request_topic(), "a3s.boot.test.requests");
-    assert_eq!(client.options().event_topic(), "a3s.boot.test.events");
+    assert_eq!(client.options().request_topic(), "aster.boot.test.requests");
+    assert_eq!(client.options().event_topic(), "aster.boot.test.events");
     assert_eq!(
         client.options().reply_topic_prefix(),
-        "a3s.boot.test.replies"
+        "aster.boot.test.replies"
     );
-    assert_eq!(client.options().client_id_prefix(), "a3s-boot-test");
+    assert_eq!(client.options().client_id_prefix(), "aster-boot-test");
     assert_eq!(client.options().partition(), 1);
     assert_eq!(client.options().fetch_min_batch_size(), 2);
     assert_eq!(client.options().fetch_max_batch_size(), 2048);
@@ -1001,7 +1001,7 @@ async fn kafka_transport_round_trips_when_kafka_brokers_are_set() {
     };
     let options = KafkaTransportOptions::new()
         .with_topic_prefix(unique_transport_prefix("kafka-round-trip"))
-        .with_client_id_prefix("a3s-boot-test")
+        .with_client_id_prefix("aster-boot-test")
         .with_request_timeout(Duration::from_secs(3))
         .with_fetch_max_wait_ms(100)
         .with_auto_create_topics(true);
@@ -1048,7 +1048,7 @@ async fn kafka_transport_emits_events_when_kafka_brokers_are_set() {
     let event_log = Arc::clone(&observed);
     let options = KafkaTransportOptions::new()
         .with_topic_prefix(unique_transport_prefix("kafka-event"))
-        .with_client_id_prefix("a3s-boot-test")
+        .with_client_id_prefix("aster-boot-test")
         .with_request_timeout(Duration::from_secs(3))
         .with_fetch_max_wait_ms(100)
         .with_auto_create_topics(true);
@@ -1088,8 +1088,8 @@ async fn kafka_transport_emits_events_when_kafka_brokers_are_set() {
 #[test]
 fn mqtt_transport_builds_a_message_client_with_custom_options() {
     let options = MqttTransportOptions::new()
-        .with_topic_prefix("a3s/boot/test")
-        .with_client_id_prefix("a3s-boot-test")
+        .with_topic_prefix("aster/boot/test")
+        .with_client_id_prefix("aster-boot-test")
         .with_qos(MqttTransportQoS::AtLeastOnce)
         .with_request_timeout(Duration::from_secs(2))
         .with_keep_alive(Duration::from_secs(5))
@@ -1104,13 +1104,13 @@ fn mqtt_transport_builds_a_message_client_with_custom_options() {
     assert_eq!(client.host(), "127.0.0.1");
     assert_eq!(client.port(), 1883);
     assert_eq!(client.options(), &options);
-    assert_eq!(client.options().request_topic(), "a3s/boot/test/requests");
-    assert_eq!(client.options().event_topic(), "a3s/boot/test/events");
+    assert_eq!(client.options().request_topic(), "aster/boot/test/requests");
+    assert_eq!(client.options().event_topic(), "aster/boot/test/events");
     assert_eq!(
         client.options().reply_topic_prefix(),
-        "a3s/boot/test/replies"
+        "aster/boot/test/replies"
     );
-    assert_eq!(client.options().client_id_prefix(), "a3s-boot-test");
+    assert_eq!(client.options().client_id_prefix(), "aster-boot-test");
     assert_eq!(client.options().qos(), MqttTransportQoS::AtLeastOnce);
     assert_eq!(client.options().credentials(), Some(("user", "password")));
 }
@@ -1123,7 +1123,7 @@ async fn mqtt_transport_round_trips_when_mqtt_endpoint_is_set() {
     };
     let options = MqttTransportOptions::new()
         .with_topic_prefix(unique_transport_prefix("mqtt-round-trip"))
-        .with_client_id_prefix("a3s-boot-test")
+        .with_client_id_prefix("aster-boot-test")
         .with_request_timeout(Duration::from_secs(2));
     let app = BootApplication::builder()
         .message_pattern(
@@ -1168,7 +1168,7 @@ async fn mqtt_transport_emits_events_when_mqtt_endpoint_is_set() {
     let event_log = Arc::clone(&observed);
     let options = MqttTransportOptions::new()
         .with_topic_prefix(unique_transport_prefix("mqtt-event"))
-        .with_client_id_prefix("a3s-boot-test")
+        .with_client_id_prefix("aster-boot-test")
         .with_request_timeout(Duration::from_secs(2));
     let app = BootApplication::builder()
         .message_pattern(
@@ -1206,7 +1206,7 @@ async fn mqtt_transport_emits_events_when_mqtt_endpoint_is_set() {
 #[test]
 fn rabbitmq_transport_builds_a_message_client_with_custom_options() {
     let options = RabbitMqTransportOptions::new()
-        .with_queue_prefix("a3s.boot.test")
+        .with_queue_prefix("aster.boot.test")
         .with_request_timeout(Duration::from_secs(2))
         .with_durable(true)
         .with_auto_delete(false);
@@ -1217,15 +1217,15 @@ fn rabbitmq_transport_builds_a_message_client_with_custom_options() {
 
     assert_eq!(client.uri(), "amqp://127.0.0.1:5672/%2f");
     assert_eq!(client.options(), &options);
-    assert_eq!(client.options().request_queue(), "a3s.boot.test.requests");
-    assert_eq!(client.options().event_queue(), "a3s.boot.test.events");
+    assert_eq!(client.options().request_queue(), "aster.boot.test.requests");
+    assert_eq!(client.options().event_queue(), "aster.boot.test.events");
     assert_eq!(
         client.options().reply_queue_prefix(),
-        "a3s.boot.test.replies"
+        "aster.boot.test.replies"
     );
     assert_eq!(
         client.options().consumer_tag_prefix(),
-        "a3s.boot.test.consumer"
+        "aster.boot.test.consumer"
     );
     assert!(client.options().durable());
     assert!(!client.options().auto_delete());
@@ -1322,7 +1322,7 @@ async fn rabbitmq_transport_emits_events_when_rabbitmq_uri_is_set() {
 #[test]
 fn nats_transport_builds_a_message_client_with_custom_options() {
     let options = NatsTransportOptions::new()
-        .with_subject_prefix("a3s.boot.test")
+        .with_subject_prefix("aster.boot.test")
         .with_queue_group("workers")
         .with_request_timeout(Duration::from_secs(2));
     let app = BootApplication::builder().build().unwrap();
@@ -1332,8 +1332,8 @@ fn nats_transport_builds_a_message_client_with_custom_options() {
 
     assert_eq!(client.url(), "nats://127.0.0.1:4222");
     assert_eq!(client.options(), &options);
-    assert_eq!(client.options().request_subject(), "a3s.boot.test.requests");
-    assert_eq!(client.options().event_subject(), "a3s.boot.test.events");
+    assert_eq!(client.options().request_subject(), "aster.boot.test.requests");
+    assert_eq!(client.options().event_subject(), "aster.boot.test.events");
     assert_eq!(client.options().queue_group(), Some("workers"));
 }
 
@@ -1428,7 +1428,7 @@ async fn nats_transport_emits_events_when_nats_url_is_set() {
 #[test]
 fn redis_transport_builds_a_message_client_with_custom_options() {
     let options = RedisTransportOptions::new()
-        .with_channel_prefix("a3s.boot.test")
+        .with_channel_prefix("aster.boot.test")
         .with_request_timeout(Duration::from_secs(2));
     let app = BootApplication::builder().build().unwrap();
     let client = RedisTransport::with_options("redis://127.0.0.1/", options.clone())
@@ -1437,11 +1437,11 @@ fn redis_transport_builds_a_message_client_with_custom_options() {
 
     assert_eq!(client.url(), "redis://127.0.0.1/");
     assert_eq!(client.options(), &options);
-    assert_eq!(client.options().request_channel(), "a3s.boot.test.requests");
-    assert_eq!(client.options().event_channel(), "a3s.boot.test.events");
+    assert_eq!(client.options().request_channel(), "aster.boot.test.requests");
+    assert_eq!(client.options().event_channel(), "aster.boot.test.events");
     assert_eq!(
         client.options().reply_channel_prefix(),
-        "a3s.boot.test.replies"
+        "aster.boot.test.replies"
     );
 }
 
@@ -2051,7 +2051,7 @@ fn should_retry_grpc_error(message: &str) -> bool {
 
 #[cfg(feature = "kafka-transport")]
 fn kafka_test_brokers() -> Option<Vec<String>> {
-    std::env::var("A3S_BOOT_KAFKA_BROKERS")
+    std::env::var("ASTER_BOOT_KAFKA_BROKERS")
         .ok()
         .map(|value| {
             value
@@ -2127,17 +2127,17 @@ fn should_retry_kafka_error(message: &str) -> bool {
 
 #[cfg(feature = "mqtt-transport")]
 fn mqtt_test_endpoint() -> Option<(String, u16)> {
-    if let Ok(value) = std::env::var("A3S_BOOT_MQTT_URL") {
+    if let Ok(value) = std::env::var("ASTER_BOOT_MQTT_URL") {
         let value = value.trim();
         if !value.is_empty() {
             return parse_mqtt_endpoint(value);
         }
     }
 
-    let host = std::env::var("A3S_BOOT_MQTT_HOST")
+    let host = std::env::var("ASTER_BOOT_MQTT_HOST")
         .ok()
         .filter(|value| !value.trim().is_empty())?;
-    let port = std::env::var("A3S_BOOT_MQTT_PORT")
+    let port = std::env::var("ASTER_BOOT_MQTT_PORT")
         .ok()
         .and_then(|value| value.parse::<u16>().ok())
         .unwrap_or(1883);
@@ -2217,14 +2217,14 @@ async fn emit_mqtt_until_observed(
 
 #[cfg(feature = "nats-transport")]
 fn nats_test_url() -> Option<String> {
-    std::env::var("A3S_BOOT_NATS_URL")
+    std::env::var("ASTER_BOOT_NATS_URL")
         .ok()
         .filter(|value| !value.trim().is_empty())
 }
 
 #[cfg(feature = "rabbitmq-transport")]
 fn rabbitmq_test_uri() -> Option<String> {
-    std::env::var("A3S_BOOT_RABBITMQ_URI")
+    std::env::var("ASTER_BOOT_RABBITMQ_URI")
         .ok()
         .filter(|value| !value.trim().is_empty())
 }
@@ -2339,7 +2339,7 @@ fn should_retry_rabbitmq_error(message: &str) -> bool {
 
 #[cfg(feature = "redis-transport")]
 fn redis_test_url() -> Option<String> {
-    std::env::var("A3S_BOOT_REDIS_URL")
+    std::env::var("ASTER_BOOT_REDIS_URL")
         .ok()
         .filter(|value| !value.trim().is_empty())
 }
@@ -2406,5 +2406,5 @@ fn unique_transport_prefix(name: &str) -> String {
         .duration_since(UNIX_EPOCH)
         .map(|duration| duration.as_nanos())
         .unwrap_or_default();
-    format!("a3s.boot.tests.{name}.{nanos}")
+    format!("aster.boot.tests.{name}.{nanos}")
 }

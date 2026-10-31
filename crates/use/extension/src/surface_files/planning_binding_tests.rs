@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     ExecutablePlanningSurface, PlanningSurfaceActivation, PluginPlanningBundle,
     PluginReleaseChannel, PLUGIN_PLANNING_BUNDLE_SCHEMA,
 };
@@ -9,7 +9,7 @@ use super::*;
 async fn native_planning_launchers_bind_exactly_to_the_package_manifest() {
     let manifest = ExtensionManifest::parse_acl(
         r#"
-extension "a3s/science" {
+extension "aster/science" {
   schema_version = 3
   version = "0.2.2"
   route = "science"
@@ -17,14 +17,14 @@ extension "a3s/science" {
   actions = ["read"]
 
   repository {
-    url = "https://github.com/A3S-Lab/Science"
+    url = "https://github.com/aster-ai-lab/Science"
   }
 
   tool "science" {
     workload = "task"
     interface = "cli"
-    executable = "bin/a3s-use-science"
-    command = "a3s-use-science"
+    executable = "bin/aster-use-science"
+    command = "aster-use-science"
     json_output = true
     interactive = false
     timeout_ms = 120000
@@ -34,7 +34,7 @@ extension "a3s/science" {
 
   mcp "science" {
     transport = "stdio"
-    executable = "bin/a3s-use-science"
+    executable = "bin/aster-use-science"
     args = ["serve", "--mcp"]
     activation = "lazy"
     optional = false
@@ -45,7 +45,7 @@ extension "a3s/science" {
     .unwrap();
     let mut bundle = PluginPlanningBundle {
         schema: PLUGIN_PLANNING_BUNDLE_SCHEMA.to_owned(),
-        package_id: "a3s/science".to_owned(),
+        package_id: "aster/science".to_owned(),
         version: "0.2.2".to_owned(),
         channel: PluginReleaseChannel::Stable,
         target: "linux-x86_64".to_owned(),
@@ -57,14 +57,14 @@ extension "a3s/science" {
             ExecutablePlanningSurface::McpStdio {
                 id: "science".to_owned(),
                 activation: PlanningSurfaceActivation::Lazy,
-                executable: "bin/a3s-use-science".to_owned(),
+                executable: "bin/aster-use-science".to_owned(),
                 args: vec!["serve".to_owned(), "--mcp".to_owned()],
             },
             ExecutablePlanningSurface::ToolTaskNative {
                 id: "science".to_owned(),
                 activation: PlanningSurfaceActivation::Lazy,
-                executable: "bin/a3s-use-science".to_owned(),
-                command: "a3s-use-science".to_owned(),
+                executable: "bin/aster-use-science".to_owned(),
+                command: "aster-use-science".to_owned(),
                 json_output: true,
                 timeout_ms: 120_000,
             },

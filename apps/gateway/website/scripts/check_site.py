@@ -227,7 +227,7 @@ def validate_proxy_results(
     if not isinstance(proxies, dict):
         errors.append(f"{context} proxies must be an object")
         return
-    for proxy in ("a3s-gateway", "nginx"):
+    for proxy in ("aster-gateway", "nginx"):
         result = proxies.get(proxy)
         if not isinstance(result, dict):
             errors.append(f"{context} is missing {proxy}")
@@ -258,21 +258,21 @@ def validate_positions(
         errors.append(f"{context} is missing positions")
         return
     if schema_version == 2:
-        allowed = {"a3s_leads", "within_threshold", "nginx_leads"}
+        allowed = {"aster_leads", "within_threshold", "nginx_leads"}
         for metric in ("throughput", "p50_latency", "p90_latency", "p99_latency"):
             if positions.get(metric) not in allowed:
                 errors.append(f"{context} has an invalid {metric} position")
         return
 
     if positions.get("throughput") not in {
-        "a3s_higher",
+        "aster_higher",
         "within_threshold",
         "nginx_higher",
     }:
         errors.append(f"{context} has an invalid throughput position")
     for metric in ("p50_latency", "p90_latency", "p99_latency"):
         if positions.get(metric) not in {
-            "a3s_lower",
+            "aster_lower",
             "within_threshold",
             "nginx_lower",
         }:
@@ -505,7 +505,7 @@ def validate_ai_comparison(errors: list[str]) -> None:
         if not isinstance(products, dict):
             errors.append(f"{context} is missing products")
             continue
-        for product in ("a3s-gateway", "nginx"):
+        for product in ("aster-gateway", "nginx"):
             result = products.get(product)
             product_context = f"{context} {product}"
             if not isinstance(result, dict):
@@ -571,16 +571,16 @@ def validate_ai_comparison(errors: list[str]) -> None:
             errors.append(f"{context} is missing comparison ratios")
             continue
         ratio_fields = (
-            "a3s_to_nginx_token_goodput_ratio",
-            "a3s_to_nginx_stream_rate_ratio",
-            "a3s_to_nginx_ttft_p50_ratio",
-            "a3s_to_nginx_ttft_p99_ratio",
-            "a3s_to_nginx_inter_token_latency_p50_ratio",
-            "a3s_to_nginx_inter_token_latency_p99_ratio",
-            "a3s_to_nginx_time_per_output_token_p50_ratio",
-            "a3s_to_nginx_time_per_output_token_p99_ratio",
-            "a3s_to_nginx_end_to_end_p50_ratio",
-            "a3s_to_nginx_end_to_end_p99_ratio",
+            "aster_to_nginx_token_goodput_ratio",
+            "aster_to_nginx_stream_rate_ratio",
+            "aster_to_nginx_ttft_p50_ratio",
+            "aster_to_nginx_ttft_p99_ratio",
+            "aster_to_nginx_inter_token_latency_p50_ratio",
+            "aster_to_nginx_inter_token_latency_p99_ratio",
+            "aster_to_nginx_time_per_output_token_p50_ratio",
+            "aster_to_nginx_time_per_output_token_p99_ratio",
+            "aster_to_nginx_end_to_end_p50_ratio",
+            "aster_to_nginx_end_to_end_p99_ratio",
         )
         for field in ratio_fields:
             value = comparison.get(field)
@@ -810,7 +810,7 @@ def main() -> int:
             'id="performance"',
             "RATE / P50 / P90 / P99",
             "all ten traffic profiles",
-            "A3S Cloud",
+            "Aster Cloud",
             "Current posture: Production Candidate",
             "Enterprise GA",
         ):
@@ -821,7 +821,7 @@ def main() -> int:
         html = page_html.get(SITE_ROOT / relative_path)
         if html is None:
             continue
-        for obsolete_brand in ("A3S OS Docs", "A3S OS Gateway home"):
+        for obsolete_brand in ("Aster OS Docs", "Aster OS Gateway home"):
             if obsolete_brand in html:
                 errors.append(
                     f"{relative_path} exposes obsolete product branding: "

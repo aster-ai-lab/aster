@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{direct_text, semantic_error, DocumentNode, OfficeNodeType, XmlElement, XmlNode};
 use crate::spreadsheet_named_range::{
@@ -201,7 +201,7 @@ fn unqualified_attribute<'a>(element: &'a XmlElement, local_name: &str) -> Optio
         .map(|attribute| attribute.value.as_str())
 }
 
-fn invalid(reason: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid(reason: impl Into<String>) -> aster_use_core::UseError {
     semantic_error(
         "use.office.spreadsheet_named_range_invalid",
         format!("Spreadsheet workbook.xml {}.", reason.into()),

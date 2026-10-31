@@ -1,7 +1,7 @@
-# a3s-libkrun-sys
+# aster-libkrun-sys
 
-[![Crates.io](https://img.shields.io/crates/v/a3s-libkrun-sys.svg)](https://crates.io/crates/a3s-libkrun-sys)
-[![Documentation](https://docs.rs/a3s-libkrun-sys/badge.svg)](https://docs.rs/a3s-libkrun-sys)
+[![Crates.io](https://img.shields.io/crates/v/aster-libkrun-sys.svg)](https://crates.io/crates/aster-libkrun-sys)
+[![Documentation](https://docs.rs/aster-libkrun-sys/badge.svg)](https://docs.rs/aster-libkrun-sys)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 FFI bindings to [libkrun](https://github.com/containers/libkrun) with **Windows WHPX backend support**.
@@ -31,7 +31,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-a3s-libkrun-sys = "3"
+aster-libkrun-sys = "3"
 ```
 
 ### Windows Requirements
@@ -55,7 +55,7 @@ Get-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform
 ## Usage
 
 ```rust
-use a3s_libkrun_sys::*;
+use aster_libkrun_sys::*;
 use std::ffi::CString;
 
 unsafe {
@@ -188,7 +188,7 @@ deadlock the nested build.
 
 ```powershell
 # Clone with submodules
-git clone --recursive https://github.com/A3S-Lab/Box.git
+git clone --recursive https://github.com/aster-ai-lab/Box.git
 cd Box/src/deps/libkrun-sys
 
 # Build libkrun
@@ -216,7 +216,7 @@ Windows build-time download.
 The native files have additional license and source-delivery obligations; see
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and
 [`SOURCE-PROVENANCE.md`](SOURCE-PROVENANCE.md). The crate's MIT metadata covers
-the A3S Rust wrapper and does not relicense the bundled native components.
+the Aster Rust wrapper and does not relicense the bundled native components.
 The Windows build script always creates a real stripped Linux `init/init`
 payload first and remaps host source/profile paths out of the Rust release
 artifacts; the generated payload remains ignored by Git.
@@ -224,7 +224,7 @@ artifacts; the generated payload remains ignored by Git.
 Windows virtiofs retains guest-created and guest-updated POSIX mode, UID, and
 GID values for the VM lifetime. A runtime that needs cross-generation
 persistence must capture these values before shutdown and replay them after
-boot; A3S Box performs that handoff with its rootfs metadata manifests.
+boot; Aster Box performs that handoff with its rootfs metadata manifests.
 
 ## Architecture
 
@@ -254,12 +254,12 @@ cargo test --target x86_64-pc-windows-msvc --lib test_krun_create_ctx -- --test-
 ## Documentation
 
 - [Windows Integration Guide](../../WINDOWS_INTEGRATION_TEST.md)
-- [API Documentation](https://docs.rs/a3s-libkrun-sys)
+- [API Documentation](https://docs.rs/aster-libkrun-sys)
 - [libkrun Documentation](https://github.com/containers/libkrun)
 
 ## License
 
-The A3S Rust wrapper is MIT licensed; see [LICENSE](LICENSE). Bundled native
+The Aster Rust wrapper is MIT licensed; see [LICENSE](LICENSE). Bundled native
 components retain their own licenses and notices as documented in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
@@ -270,4 +270,4 @@ Contributions welcome! Please see [CONTRIBUTING.md](../../CONTRIBUTING.md).
 ## Credits
 
 - Based on [libkrun](https://github.com/containers/libkrun) by Red Hat
-- Windows WHPX backend by A3S Lab Team
+- Windows WHPX backend by Aster Team

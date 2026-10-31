@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::{ContainerTarget, Error, ErrorCode, OperationId};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::{ContainerTarget, Error, ErrorCode, OperationId};
 
 use super::super::{path_exists, remove_marker};
 use super::{QualificationHvfDriver, FAULT_OPERATION};

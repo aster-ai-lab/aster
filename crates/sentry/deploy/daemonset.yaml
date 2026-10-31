@@ -1,22 +1,22 @@
-# a3s-sentry — REFERENCE DaemonSet wiring it after a3s-observer on every node.
+# aster-sentry — REFERENCE DaemonSet wiring it after aster-observer on every node.
 #
 #   observer-collector (NDJSON) ─▶ sentry (judge) ─▶ deny-files (shared volume) ─▶ observer guards ─▶ EPERM
 #
 # Sentry is the policy brain; the kernel (via observer's enforce/fileguard) is the single enforcement
 # point. This is a REFERENCE — set your images, the agent cgroup path, RBAC, resources, and the LLM
-# secret for your cluster. ROLL OUT SAFELY: start with A3S_SENTRY_DRY_RUN=1 (shadow mode — judge +
+# secret for your cluster. ROLL OUT SAFELY: start with ASTER_SENTRY_DRY_RUN=1 (shadow mode — judge +
 # audit, write no deny-files), watch the decision stream, then drop dry-run to enforce.
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: a3s-sentry
+  name: aster-sentry
   namespace: observability
 spec:
   selector:
-    matchLabels: { app: a3s-sentry }
+    matchLabels: { app: aster-sentry }
   template:
     metadata:
-      labels: { app: a3s-sentry }
+      labels: { app: aster-sentry }
       annotations: # scrape sentry's own metrics (overload_degraded / enforce_failed = block didn't land)
         prometheus.io/scrape: "true"
         prometheus.io/port: "9100"
@@ -28,32 +28,32 @@ spec:
         - name: deny # deny-files: sentry writes, the guards read (one node-local scratch dir)
           emptyDir: {}
         - name: policy
-          configMap: { name: a3s-sentry-policy } # rules.acl — hot-reloaded if you update it
+          configMap: { name: aster-sentry-policy } # rules.acl — hot-reloaded if you update it
         - name: cgroup
           hostPath: { path: /sys/fs/cgroup }
       containers:
         # observe + judge: collector | sentry in one container (needs both binaries in the image)
         - name: observe-judge
           # Needs both binaries to pipe collector → sentry in one container. Build by layering the
-          # published a3s-sentry onto observer's image:
-          #   FROM ghcr.io/a3s-lab/observer:latest
-          #   COPY --from=ghcr.io/a3s-lab/sentry:latest /usr/local/bin/a3s-sentry /usr/local/bin/
-          image: ghcr.io/a3s-lab/observer-sentry:latest
+          # published aster-sentry onto observer's image:
+          #   FROM ghcr.io/aster-lab/observer:latest
+          #   COPY --from=ghcr.io/aster-lab/sentry:latest /usr/local/bin/aster-sentry /usr/local/bin/
+          image: ghcr.io/aster-lab/observer-sentry:latest
           securityContext: { privileged: true } # eBPF (CAP_BPF/CAP_PERFMON) + SSL uprobe
           command: ["/bin/sh", "-c"]
           args:
             - >
-              A3S_OBSERVER_JSON=1 A3S_OBSERVER_SSL=1 a3s-observer-collector |
-              A3S_SENTRY_POLICY=/etc/sentry/rules.acl
-              A3S_SENTRY_EGRESS_DENY=/deny/egress.txt
-              A3S_SENTRY_FILE_DENY=/deny/file.txt A3S_SENTRY_EXEC_DENY=/deny/exec.txt
-              A3S_SENTRY_LLM_URL="$LLM_URL" A3S_SENTRY_LLM_KEY="$LLM_KEY"
-              A3S_SENTRY_METRICS_ADDR=0.0.0.0:9100
-              A3S_SENTRY_DRY_RUN=1
-              a3s-sentry
+              ASTER_OBSERVER_JSON=1 ASTER_OBSERVER_SSL=1 aster-observer-collector |
+              ASTER_SENTRY_POLICY=/etc/sentry/rules.acl
+              ASTER_SENTRY_EGRESS_DENY=/deny/egress.txt
+              ASTER_SENTRY_FILE_DENY=/deny/file.txt ASTER_SENTRY_EXEC_DENY=/deny/exec.txt
+              ASTER_SENTRY_LLM_URL="$LLM_URL" ASTER_SENTRY_LLM_KEY="$LLM_KEY"
+              ASTER_SENTRY_METRICS_ADDR=0.0.0.0:9100
+              ASTER_SENTRY_DRY_RUN=1
+              aster-sentry
           env:
-            - { name: LLM_URL, valueFrom: { secretKeyRef: { name: a3s-sentry-llm, key: url } } }
-            - { name: LLM_KEY, valueFrom: { secretKeyRef: { name: a3s-sentry-llm, key: key } } }
+            - { name: LLM_URL, valueFrom: { secretKeyRef: { name: aster-sentry-llm, key: url } } }
+            - { name: LLM_KEY, valueFrom: { secretKeyRef: { name: aster-sentry-llm, key: key } } }
           ports:
             - { name: metrics, containerPort: 9100 }
           livenessProbe: # the daemon's metrics thread answers /healthz while the process is alive
@@ -68,19 +68,19 @@ spec:
             - { name: policy, mountPath: /etc/sentry }
         # enforce egress denies (cgroup/connect4). Scope to the agent workload's cgroup in production.
         - name: enforce-egress
-          image: ghcr.io/a3s-lab/observer:latest
+          image: ghcr.io/aster-lab/observer:latest
           securityContext: { privileged: true }
-          command: ["a3s-observer-enforce", "/sys/fs/cgroup", "/deny/egress.txt"]
+          command: ["aster-observer-enforce", "/sys/fs/cgroup", "/deny/egress.txt"]
           volumeMounts:
             - { name: deny, mountPath: /deny }
             - { name: cgroup, mountPath: /sys/fs/cgroup }
         # enforce file + exec denies (fanotify FAN_OPEN_PERM | FAN_OPEN_EXEC_PERM)
         - name: fileguard
-          image: ghcr.io/a3s-lab/observer:latest
+          image: ghcr.io/aster-lab/observer:latest
           securityContext: { privileged: true }
           command:
             - /bin/sh
             - -c
-            - a3s-observer-fileguard /deny/file.txt & a3s-observer-fileguard /deny/exec.txt & wait
+            - aster-observer-fileguard /deny/file.txt & aster-observer-fileguard /deny/exec.txt & wait
           volumeMounts:
             - { name: deny, mountPath: /deny }

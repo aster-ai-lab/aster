@@ -32,7 +32,7 @@ const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const PARAGRAPH_PAGINATION_MARKER_PATTERN =
-  /__A3S_WORK_PARAGRAPH_PAGINATION_\d+__/g;
+  /__ASTER_WORK_PARAGRAPH_PAGINATION_\d+__/g;
 
 export function markDocxParagraphPagination(
   document: Document,
@@ -54,7 +54,7 @@ export function markDocxParagraphPagination(
     );
     if (!Object.keys(pagination).length) continue;
     properties ??= insertParagraphProperties(document, paragraph);
-    const marker = `__A3S_WORK_PARAGRAPH_PAGINATION_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_PAGINATION_${paragraphs.length + 1}__`;
     insertParagraphMarker(document, paragraph, properties, marker);
     paragraphs.push({ marker, pagination });
   }
@@ -69,7 +69,7 @@ export function applyImportedDocxParagraphPaginationMarkers(
     markers.paragraphs.map(({ marker, pagination }) => [marker, pagination]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_PAGINATION_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_PAGINATION_')) continue;
     const block = closestParagraphBlock(node.parentElement);
     node.data = node.data.replace(
       PARAGRAPH_PAGINATION_MARKER_PATTERN,

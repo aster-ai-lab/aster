@@ -32,7 +32,7 @@ export class DocxIndexPatchCollector {
   add(element: HTMLElement): DocxIndexPatch {
     const value = documentIndexValueFromElement(element);
     const patch: DocxIndexPatch = {
-      marker: `__A3S_WORK_DOCUMENT_INDEX_${this.patches.length + 1}__`,
+      marker: `__ASTER_WORK_DOCUMENT_INDEX_${this.patches.length + 1}__`,
       options: value.options,
       entries: value.entries,
     };

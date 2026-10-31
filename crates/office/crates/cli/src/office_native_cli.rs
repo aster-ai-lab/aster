@@ -1,10 +1,10 @@
-use a3s_office::{
+use aster_office::{
     DocumentKind, DocumentNode, NativeOfficeCommentPosition, NativeOfficeCommentUpdate,
     NativeOfficeDocument, NativeOfficeEditor, NativeOfficeMutation, NativeOfficeTextReplacement,
     OfficeNodeType, SpreadsheetCellValue, DEFAULT_NATIVE_OFFICE_TEXT_FIND_LIMIT,
     MAX_NATIVE_OFFICE_TEXT_FIND_LIMIT,
 };
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use crate::CommandOutput;
 
@@ -35,45 +35,45 @@ const MAX_BATCH_INPUT_BYTES: u64 = 8 * 1024 * 1024;
 const MAX_IMAGE_INPUT_BYTES: u64 = 64 * 1024 * 1024;
 
 const HELP: &str = concat!(
-    "a3s-office — dependency-free OOXML operations\n\n",
+    "aster-office — dependency-free OOXML operations\n\n",
     "usage:\n",
-    "  a3s-office get <file> [path] [--depth <n>] [--json]\n",
-    "  a3s-office query <file> <selector> [--json]\n",
-    "  a3s-office find <file> [path] --find <text> [--regex] [--limit <1-200>] [--json]\n",
-    "  a3s-office view <file> text|annotated|outline|stats|issues|html|svg|screenshot [--type <filter>] [--limit <n>] [--output <file>] [--timeout-ms <ms>] [--json]\n",
-    "  a3s-office watch <file> [--port <0-65535>] [--poll-ms <50-10000>] [--timeout-ms <ms>] [--json]\n",
-    "  a3s-office raw <file> <part> [--output <xml-file>] [--json]\n",
-    "  a3s-office raw-set <file> <part> --input <xml-file> [--output <file>] [--json]\n",
-    "  a3s-office dump <file> [path] [--output <batch.json>] [--json]\n",
-    "  a3s-office merge <template> <output> --data <json|@file.json> [--force] [--json]\n",
-    "  a3s-office validate <file> [--json]\n",
-    "  a3s-office create <file.docx|file.xlsx|file.pptx> [--json]\n",
-    "  a3s-office add <file> <parent> --type paragraph|table|row|cell|sheet|slide|shape|picture|hyperlink|comment|data-validation|conditional-format|named-range|auto-filter [--author <name>] [--initials <value>] [--x-emu <i32> --y-emu <i32>] [--url <http|https|mailto>|--location <internal>] [--display <text>] [--tooltip <text>] [--input <image>] [--name <name>] [--alt <text>] [--width <pixels>] [--height <pixels>] [--rows <n>] [--columns <n>] [--text <value>] [--output <file>] [--json]\n",
-    "  a3s-office add <file.xlsx> <sheet> --type data-validation --validation-type list|whole|decimal|date|time|text-length|custom --range <A1-range> [--range <A1-range>] --formula1 <value> [--operator <comparison>] [--formula2 <value>] [--allow-blank <true|false>] [--show-input <true|false>] [--show-error <true|false>] [--prompt-title <text>] [--prompt <text>] [--error-title <text>] [--error-message <text>] [--error-style stop|warning|information] [--in-cell-dropdown <true|false>] [--output <file>] [--json]\n",
-    "  a3s-office add <file.xlsx> <sheet> --type conditional-format --rule-type cell-is|formula|contains-text|not-contains-text|begins-with|ends-with|top|bottom|above-average|below-average|duplicate-values|unique-values|contains-blanks|not-contains-blanks|contains-errors|not-contains-errors|time-period|data-bar|color-scale|icon-set --range <A1-range> [rule-specific options] [--stop-if-true <true|false>] [--output <file>] [--json]\n",
-    "  a3s-office add <file.xlsx> </|sheet> --type named-range --name <name> --ref <expression> [--scope workbook|worksheet:workbook|<sheet>] [--comment <text>] [--volatile <true|false>] [--output <file>] [--json]\n",
-    "  a3s-office add <file.xlsx> <sheet> --type auto-filter --range <A1-range> [--filter <strict-json-column> ...] [--output <file>] [--json]\n",
-    "  a3s-office add <file.xlsx> <sheet> --type table --name <name> --range <A1-range> --table-column <name> [--table-column <name> ...] [--filter <strict-json-column> ...] [--display-name <name>] [--header-row <true|false>] [--totals-row <true|false>] [--style none|light:<1-21>|medium:<1-28>|dark:<1-11>] [--show-first-column <true|false>] [--show-last-column <true|false>] [--show-row-stripes <true|false>] [--show-column-stripes <true|false>] [--output <file>] [--json]\n",
-    "  a3s-office add-part <file> <parent> --type chart|header|footer [--output <file>] [--json]\n",
-    "  a3s-office set <file> <path> [--find <text> --replace <text> [--regex] [--occurrence <n>]|--text <value>|--number <value>|--boolean <true|false>|--formula <expression>|--width-emu <n>] [--author <name>] [--initials <value>] [--x-emu <i32> --y-emu <i32>] [--bold <true|false>] [--italic <true|false>] [--underline <none|single|double>] [--script <baseline|superscript|subscript>] [--strikethrough <true|false>] [--double-strikethrough <true|false>] [--text-case <none|small-caps|all-caps>] [--highlight <color>] [--language <BCP-47>] [--font-family <name>] [--font-size <points>] [--text-color <RRGGBB>] [--align <left|center|right|justify>] [--number-format <code>] [--fill <none|RRGGBB>] [--border-all <style>] [--border-color <RRGGBB>] [--border-left|--border-right|--border-top|--border-bottom <style>] [--border-left-color|--border-right-color|--border-top-color|--border-bottom-color <RRGGBB>] [--border-diagonal <style>] [--border-diagonal-color <RRGGBB>] [--border-diagonal-up <true|false>] [--border-diagonal-down <true|false>] [--vertical-align <top|center|bottom|justify|distributed>] [--wrap-text <true|false>] [--text-rotation <0..180|255>] [--indent <0..255>] [--shrink-to-fit <true|false>] [--reading-order <context|ltr|rtl>] [--merge-cells <true|false>] [--url <http|https|mailto>|--location <internal>] [--display <text>] [--tooltip <text>] [--output <file>] [--json]\n",
-    "  a3s-office set <file.xlsx> <sheet/dataValidation[N]> [data-validation options from add; unspecified fields are preserved, use none or an empty value to clear optional text/formula2] [--output <file>] [--json]\n",
-    "  a3s-office set <file.xlsx> <sheet/cf[N]> [conditional-format options from add; unspecified fields are preserved] [--output <file>] [--json]\n",
-    "  a3s-office set <file.xlsx> <namedrange-selector> [--name <name>] [--ref <expression>] [--scope workbook|worksheet:workbook|<sheet>] [--comment <text|none>] [--volatile <true|false>] [--output <file>] [--json]\n",
-    "  a3s-office set <file.xlsx> <sheet/autofilter> [--range <A1-range>] [--filter <strict-json-column> ...|--clear-filters] [--output <file>] [--json]\n",
-    "  a3s-office set <file.xlsx> <sheet/table[N]> [--name <name>] [--display-name <name|none>] [--range <A1-range>] [--table-column <name> ...] [--filter <strict-json-column> ...|--clear-filters] [--header-row <true|false>] [--totals-row <true|false>] [--style none|light:<1-21>|medium:<1-28>|dark:<1-11>] [--show-first-column <true|false>] [--show-last-column <true|false>] [--show-row-stripes <true|false>] [--show-column-stripes <true|false>] [--output <file>] [--json]\n",
-    "  a3s-office sort <file.xlsx> </Sheet|/Sheet/A1:D100> --key <A:XFD[:asc|desc]> [--key <column[:direction]> ...] [--header <true|false>] [--case-sensitive <true|false>] [--output <file>] [--json]\n",
-    "  a3s-office import <file.xlsx> <sheet> [source.csv|source.tsv] [--file <source>] [--stdin] [--format csv|tsv] [--header] [--start-cell <A1>] [--output <file>] [--json]\n",
-    "  a3s-office recalculate <file.xlsx> [--output <file>] [--json]\n",
-    "  a3s-office remove <file> <path> [--output <file>] [--json]\n",
-    "  a3s-office move <file> <path> [--to <parent>] [--index <zero-based>|--before <path>|--after <path>] [--output <file>] [--json]\n",
-    "  a3s-office copy <file> <path> [--to <parent>] [--name <worksheet-name>] [--index <zero-based>|--before <path>|--after <path>] [--output <file>] [--json]\n",
-    "  a3s-office swap <file> <path> <with> [--output <file>] [--json]\n",
-    "  a3s-office insert-rows|delete-rows <file> <sheet> <start> [--count <n>] [--output <file>] [--json]\n",
-    "  a3s-office insert-columns|delete-columns <file> <sheet> <start> [--count <n>] [--output <file>] [--json]\n",
-    "  a3s-office rename-sheet <file> <sheet> <new-name> [--output <file>] [--json]\n",
-    "  a3s-office move-sheet <file> <sheet> <one-based-position> [--output <file>] [--json]\n",
-    "  a3s-office copy-sheet <file> <sheet> <new-name> [--position <one-based-position>] [--output <file>] [--json]\n",
-    "  a3s-office batch <file> --input <batch.json> [--output <file>] [--json]"
+    "  aster-office get <file> [path] [--depth <n>] [--json]\n",
+    "  aster-office query <file> <selector> [--json]\n",
+    "  aster-office find <file> [path] --find <text> [--regex] [--limit <1-200>] [--json]\n",
+    "  aster-office view <file> text|annotated|outline|stats|issues|html|svg|screenshot [--type <filter>] [--limit <n>] [--output <file>] [--timeout-ms <ms>] [--json]\n",
+    "  aster-office watch <file> [--port <0-65535>] [--poll-ms <50-10000>] [--timeout-ms <ms>] [--json]\n",
+    "  aster-office raw <file> <part> [--output <xml-file>] [--json]\n",
+    "  aster-office raw-set <file> <part> --input <xml-file> [--output <file>] [--json]\n",
+    "  aster-office dump <file> [path] [--output <batch.json>] [--json]\n",
+    "  aster-office merge <template> <output> --data <json|@file.json> [--force] [--json]\n",
+    "  aster-office validate <file> [--json]\n",
+    "  aster-office create <file.docx|file.xlsx|file.pptx> [--json]\n",
+    "  aster-office add <file> <parent> --type paragraph|table|row|cell|sheet|slide|shape|picture|hyperlink|comment|data-validation|conditional-format|named-range|auto-filter [--author <name>] [--initials <value>] [--x-emu <i32> --y-emu <i32>] [--url <http|https|mailto>|--location <internal>] [--display <text>] [--tooltip <text>] [--input <image>] [--name <name>] [--alt <text>] [--width <pixels>] [--height <pixels>] [--rows <n>] [--columns <n>] [--text <value>] [--output <file>] [--json]\n",
+    "  aster-office add <file.xlsx> <sheet> --type data-validation --validation-type list|whole|decimal|date|time|text-length|custom --range <A1-range> [--range <A1-range>] --formula1 <value> [--operator <comparison>] [--formula2 <value>] [--allow-blank <true|false>] [--show-input <true|false>] [--show-error <true|false>] [--prompt-title <text>] [--prompt <text>] [--error-title <text>] [--error-message <text>] [--error-style stop|warning|information] [--in-cell-dropdown <true|false>] [--output <file>] [--json]\n",
+    "  aster-office add <file.xlsx> <sheet> --type conditional-format --rule-type cell-is|formula|contains-text|not-contains-text|begins-with|ends-with|top|bottom|above-average|below-average|duplicate-values|unique-values|contains-blanks|not-contains-blanks|contains-errors|not-contains-errors|time-period|data-bar|color-scale|icon-set --range <A1-range> [rule-specific options] [--stop-if-true <true|false>] [--output <file>] [--json]\n",
+    "  aster-office add <file.xlsx> </|sheet> --type named-range --name <name> --ref <expression> [--scope workbook|worksheet:workbook|<sheet>] [--comment <text>] [--volatile <true|false>] [--output <file>] [--json]\n",
+    "  aster-office add <file.xlsx> <sheet> --type auto-filter --range <A1-range> [--filter <strict-json-column> ...] [--output <file>] [--json]\n",
+    "  aster-office add <file.xlsx> <sheet> --type table --name <name> --range <A1-range> --table-column <name> [--table-column <name> ...] [--filter <strict-json-column> ...] [--display-name <name>] [--header-row <true|false>] [--totals-row <true|false>] [--style none|light:<1-21>|medium:<1-28>|dark:<1-11>] [--show-first-column <true|false>] [--show-last-column <true|false>] [--show-row-stripes <true|false>] [--show-column-stripes <true|false>] [--output <file>] [--json]\n",
+    "  aster-office add-part <file> <parent> --type chart|header|footer [--output <file>] [--json]\n",
+    "  aster-office set <file> <path> [--find <text> --replace <text> [--regex] [--occurrence <n>]|--text <value>|--number <value>|--boolean <true|false>|--formula <expression>|--width-emu <n>] [--author <name>] [--initials <value>] [--x-emu <i32> --y-emu <i32>] [--bold <true|false>] [--italic <true|false>] [--underline <none|single|double>] [--script <baseline|superscript|subscript>] [--strikethrough <true|false>] [--double-strikethrough <true|false>] [--text-case <none|small-caps|all-caps>] [--highlight <color>] [--language <BCP-47>] [--font-family <name>] [--font-size <points>] [--text-color <RRGGBB>] [--align <left|center|right|justify>] [--number-format <code>] [--fill <none|RRGGBB>] [--border-all <style>] [--border-color <RRGGBB>] [--border-left|--border-right|--border-top|--border-bottom <style>] [--border-left-color|--border-right-color|--border-top-color|--border-bottom-color <RRGGBB>] [--border-diagonal <style>] [--border-diagonal-color <RRGGBB>] [--border-diagonal-up <true|false>] [--border-diagonal-down <true|false>] [--vertical-align <top|center|bottom|justify|distributed>] [--wrap-text <true|false>] [--text-rotation <0..180|255>] [--indent <0..255>] [--shrink-to-fit <true|false>] [--reading-order <context|ltr|rtl>] [--merge-cells <true|false>] [--url <http|https|mailto>|--location <internal>] [--display <text>] [--tooltip <text>] [--output <file>] [--json]\n",
+    "  aster-office set <file.xlsx> <sheet/dataValidation[N]> [data-validation options from add; unspecified fields are preserved, use none or an empty value to clear optional text/formula2] [--output <file>] [--json]\n",
+    "  aster-office set <file.xlsx> <sheet/cf[N]> [conditional-format options from add; unspecified fields are preserved] [--output <file>] [--json]\n",
+    "  aster-office set <file.xlsx> <namedrange-selector> [--name <name>] [--ref <expression>] [--scope workbook|worksheet:workbook|<sheet>] [--comment <text|none>] [--volatile <true|false>] [--output <file>] [--json]\n",
+    "  aster-office set <file.xlsx> <sheet/autofilter> [--range <A1-range>] [--filter <strict-json-column> ...|--clear-filters] [--output <file>] [--json]\n",
+    "  aster-office set <file.xlsx> <sheet/table[N]> [--name <name>] [--display-name <name|none>] [--range <A1-range>] [--table-column <name> ...] [--filter <strict-json-column> ...|--clear-filters] [--header-row <true|false>] [--totals-row <true|false>] [--style none|light:<1-21>|medium:<1-28>|dark:<1-11>] [--show-first-column <true|false>] [--show-last-column <true|false>] [--show-row-stripes <true|false>] [--show-column-stripes <true|false>] [--output <file>] [--json]\n",
+    "  aster-office sort <file.xlsx> </Sheet|/Sheet/A1:D100> --key <A:XFD[:asc|desc]> [--key <column[:direction]> ...] [--header <true|false>] [--case-sensitive <true|false>] [--output <file>] [--json]\n",
+    "  aster-office import <file.xlsx> <sheet> [source.csv|source.tsv] [--file <source>] [--stdin] [--format csv|tsv] [--header] [--start-cell <A1>] [--output <file>] [--json]\n",
+    "  aster-office recalculate <file.xlsx> [--output <file>] [--json]\n",
+    "  aster-office remove <file> <path> [--output <file>] [--json]\n",
+    "  aster-office move <file> <path> [--to <parent>] [--index <zero-based>|--before <path>|--after <path>] [--output <file>] [--json]\n",
+    "  aster-office copy <file> <path> [--to <parent>] [--name <worksheet-name>] [--index <zero-based>|--before <path>|--after <path>] [--output <file>] [--json]\n",
+    "  aster-office swap <file> <path> <with> [--output <file>] [--json]\n",
+    "  aster-office insert-rows|delete-rows <file> <sheet> <start> [--count <n>] [--output <file>] [--json]\n",
+    "  aster-office insert-columns|delete-columns <file> <sheet> <start> [--count <n>] [--output <file>] [--json]\n",
+    "  aster-office rename-sheet <file> <sheet> <new-name> [--output <file>] [--json]\n",
+    "  aster-office move-sheet <file> <sheet> <one-based-position> [--output <file>] [--json]\n",
+    "  aster-office copy-sheet <file> <sheet> <new-name> [--position <one-based-position>] [--output <file>] [--json]\n",
+    "  aster-office batch <file> --input <batch.json> [--output <file>] [--json]"
 );
 
 pub async fn run(args: &[String]) -> UseResult<CommandOutput> {
@@ -1337,7 +1337,7 @@ mod tests {
         std::fs::write(
             unsupported_replay.path(),
             serde_json::to_vec(&serde_json::json!({
-                "format": "a3s.office.native-replay",
+                "format": "aster.office.native-replay",
                 "schemaVersion": 2,
                 "documentKind": "word",
                 "scope": "/",

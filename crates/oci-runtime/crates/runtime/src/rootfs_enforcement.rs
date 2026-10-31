@@ -15,7 +15,7 @@ use std::{
     },
 };
 
-use a3s_oci_sdk::OciBundle;
+use aster_oci_sdk::OciBundle;
 use serde_json::{json, Map, Value};
 use tokio::io::AsyncReadExt;
 
@@ -29,9 +29,9 @@ const EVIDENCE_FILE: &str = "evidence";
 const BIND_SOURCE_FILE: &str = "bind-source";
 const IDMAP_BIND_SOURCE_DIRECTORY: &str = "idmap-bind-source";
 const FOREIGN_READONLY_BIND_SOURCE_FILE: &str = "foreign-readonly-secret";
-const BIND_SOURCE_CONTENTS: &[u8] = b"a3s-oci-bind-source-v1";
+const BIND_SOURCE_CONTENTS: &[u8] = b"aster-oci-bind-source-v1";
 #[cfg(target_os = "linux")]
-const FOREIGN_READONLY_BIND_CONTENTS: &[u8] = b"a3s-oci-foreign-readonly-bind-v1";
+const FOREIGN_READONLY_BIND_CONTENTS: &[u8] = b"aster-oci-foreign-readonly-bind-v1";
 const MAX_EVIDENCE_BYTES: u64 = 1_024;
 const IDMAP_VISIBLE_ID_RANGE: u32 = 65_536;
 const EXPECTED_COMMON_EVIDENCE: &[u8] = b"pid1-supervision-enforced\n\
@@ -102,8 +102,8 @@ impl RootfsEnforcementFixture {
         native_idmap_bind_expected: bool,
     ) -> Result<Self, String> {
         let component = safe_component(nonce)?;
-        let output_name = format!(".a3s-oci-rootfs-output-{component}");
-        let target_name = format!(".a3s-oci-rootfs-target-{component}");
+        let output_name = format!(".aster-oci-rootfs-output-{component}");
+        let target_name = format!(".aster-oci-rootfs-target-{component}");
         let output_directory = base.directory().join(&output_name);
         let target_directory = base.directory().join("rootfs").join(&target_name);
         ensure_absent(&output_directory, "rootfs evidence output").await?;
@@ -416,7 +416,7 @@ impl EnforcementIdMappings {
 }
 
 fn collect_fixture_mappings(
-    mappings: Option<&[a3s_oci_sdk::oci_spec::runtime::LinuxIdMapping]>,
+    mappings: Option<&[aster_oci_sdk::oci_spec::runtime::LinuxIdMapping]>,
     missing: &str,
 ) -> Result<Vec<FixtureIdMapping>, String> {
     mappings.ok_or_else(|| missing.to_string()).map(|mappings| {
@@ -672,7 +672,7 @@ fn build_bundle(
     linux.insert("readonlyPaths".into(), json!(["/proc/sys"]));
 
     let evidence_path = format!("{target_root}/output/{EVIDENCE_FILE}");
-    let write_probe = format!("/.a3s-oci-readonly-probe-{nonce}");
+    let write_probe = format!("/.aster-oci-readonly-probe-{nonce}");
     let command = enforcement_command(
         EnforcementCommandPaths {
             evidence: &evidence_path,

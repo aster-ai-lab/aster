@@ -32,7 +32,7 @@ checkpoint/
   ['mlx', '启用 Apple MLX decision forward', '通过 MLX_ROOT 链接预构建 libmlx'],
   ['cuda', '启用 Candle CUDA', '需要兼容的 NVIDIA 环境'],
   ['train', '启用 RLCD 训练与发布布局', '训练数据与校准另由宿主管理'],
-  ['cli', '构建 a3s-apofasi 二进制', '用于 smoke 与 bench'],
+  ['cli', '构建 aster-apofasi 二进制', '用于 smoke 与 bench'],
 ]} />
 
 设备在加载时解析一次。Apple Silicon 优先选择 MLX 或 Candle Metal，NVIDIA 使用 CUDA，其他路径使用 Candle CPU f32。加速器 OOM 会回退到 CPU 并记录结构化警告。

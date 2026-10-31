@@ -23,7 +23,7 @@ set `envelope_status: "published"` and fill every hardware pin field.
     "version": null,
     "git_sha": null,
     "features": [],
-    "bin": "target/debug/a3s-gateway"
+    "bin": "target/debug/aster-gateway"
   },
   "requests": { "ok": 0, "err": 0 },
   "rss_kb": { "min": null, "max": null, "growth": null, "samples": 0 },

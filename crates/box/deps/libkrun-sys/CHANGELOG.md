@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed TSI EventSet::OUT error log pollution on macOS
   - Changed spurious "EventSet::OUT while not connecting" error logs to debug level
   - This was caused by residual kqueue EVFILT_WRITE events after state transition
-  - Fixes compatibility with OpenClaw and other network services in a3s-box
+  - Fixes compatibility with OpenClaw and other network services in aster-box
 
 ### Changed
 - Updated to libkrun with TSI bug fix (commit e8b1854)

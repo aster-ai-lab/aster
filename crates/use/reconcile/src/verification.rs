@@ -2,7 +2,7 @@ use std::fs;
 use std::io::Read;
 use std::path::Path;
 
-use a3s_use_core::metadata_is_link_or_reparse_point;
+use aster_use_core::metadata_is_link_or_reparse_point;
 
 use crate::spec::{validate_relative, PackageFile, Payload};
 use crate::unpack::{prepare, MAX_ENTRIES, MAX_UNPACKED};

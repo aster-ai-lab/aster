@@ -11,8 +11,8 @@ use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::tools::{Tool, ToolContext, ToolOutput};
 use anyhow::Result;
 use async_trait::async_trait;
 use serde_json::{json, Value};
@@ -176,7 +176,7 @@ pub fn open_local_asset(
     denies: &[String],
 ) -> Result<String, &'static str> {
     let args = json!({ "kind": kind, "name": name });
-    let mut policy = a3s_code_core::permissions::policy_for_posture(posture);
+    let mut policy = aster_core::permissions::policy_for_posture(posture);
     for rule in denies {
         policy = policy.deny(rule);
     }
@@ -185,7 +185,7 @@ pub fn open_local_asset(
     }
     policy = policy.allow(TOOL_NAME);
     let found =
-        match a3s_code_core::fact_control::admit_tool_call(&policy, TOOL_NAME, &args, || {
+        match aster_core::fact_control::admit_tool_call(&policy, TOOL_NAME, &args, || {
             load_catalog(roots)
                 .into_iter()
                 .find(|item| item.kind == kind && item.name == name)
@@ -534,7 +534,7 @@ mod tests {
     #[test]
     fn open_skips_the_file_when_the_tool_is_denied() {
         let dir = std::env::temp_dir().join(format!(
-            "a3s-asset-deny-{}-{}",
+            "aster-asset-deny-{}-{}",
             std::process::id(),
             uuid::Uuid::new_v4()
         ));
@@ -565,7 +565,7 @@ mod tests {
     #[test]
     fn a_connector_without_a_usage_note_opens_as_its_transport() {
         let dir = std::env::temp_dir().join(format!(
-            "a3s-asset-transport-{}-{}",
+            "aster-asset-transport-{}-{}",
             std::process::id(),
             uuid::Uuid::new_v4()
         ));

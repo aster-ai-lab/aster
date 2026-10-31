@@ -16,7 +16,7 @@ struct RetainRecoveryTrace {
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
 fn real_llm_tui_cancel_active_shell_and_recover() {
     let mut session =
-        open_live_with_verification(true).expect("A3S_CONFIG_FILE is unset; refusing to pass");
+        open_live_with_verification(true).expect("ASTER_CONFIG_FILE is unset; refusing to pass");
     let workspace = session.workspace.clone();
     let home = session.home.clone();
     let _retention = RetainRecoveryTrace {
@@ -173,7 +173,7 @@ fn real_llm_tui_cancel_active_shell_and_recover() {
 
 impl Drop for RetainRecoveryTrace {
     fn drop(&mut self) {
-        let Some(dir) = std::env::var_os("A3S_CODE_TUI_RECOVERY_EVIDENCE_DIR") else {
+        let Some(dir) = std::env::var_os("ASTER_TUI_RECOVERY_EVIDENCE_DIR") else {
             return;
         };
         let rows = facts(&self.workspace, &self.home).into_iter().filter_map(|fact| {
@@ -196,7 +196,7 @@ impl Drop for RetainRecoveryTrace {
         let dir = PathBuf::from(dir);
         let result = std::fs::create_dir_all(&dir).and_then(|()| {
             std::fs::write(dir.join(format!("{}.json", self.case_name)), json!({
-                "schema":"a3s.test.tui-native-refusal-recovery.v1",
+                "schema":"aster.test.tui-native-refusal-recovery.v1",
                 "case":self.case_name,
                 "facts":rows,
                 "command_sentinel_exists":self.workspace.join("must-not-run.txt").exists(),
@@ -216,7 +216,7 @@ impl Drop for RetainRecoveryTrace {
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
 fn real_llm_tui_native_refusal_does_not_poison_the_next_turn() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is unset; refusing to pass");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is unset; refusing to pass");
     let workspace = session.workspace.clone();
     let home = session.home.clone();
     let _retention = RetainRecoveryTrace {
@@ -292,7 +292,7 @@ fn real_llm_tui_native_refusal_does_not_poison_the_next_turn() {
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
 fn real_llm_tui_ten_turn_refusal_recovery_stays_usable() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is unset; refusing to pass");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is unset; refusing to pass");
     let workspace = session.workspace.clone();
     let home = session.home.clone();
     let command_sentinels: Vec<_> = (0..5)

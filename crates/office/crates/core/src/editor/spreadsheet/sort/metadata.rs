@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::super::editor_error;
 use crate::spreadsheet_reference::CellRange;
@@ -348,6 +348,6 @@ fn element_text(part: &LosslessXmlPart, element: &IndexedXmlElement) -> UseResul
         })
 }
 
-fn metadata_error(code: &str, message: impl Into<String>) -> a3s_use_core::UseError {
+fn metadata_error(code: &str, message: impl Into<String>) -> aster_use_core::UseError {
     editor_error(code, message)
 }

@@ -1,6 +1,6 @@
 # Release checklist (Gate 7 / production standard)
 
-This package is the in-repo evidence and process checklist for an `a3s-sandbox`
+This package is the in-repo evidence and process checklist for an `aster-sandbox`
 production release. Completing code gates is not enough: independent review and
 signed artifacts are required before mediated network may become a **default**
 profile.
@@ -9,7 +9,7 @@ profile.
 
 Verified by `policy::gate7_release_invariants` plus CI on each OS:
 
-- [x] Default A3S Bash profile keeps `mediated_network` / `mediated_socks` off
+- [x] Default Aster Bash profile keeps `mediated_network` / `mediated_socks` off
 - [x] Capability probe lists unavailable surfaces (`mediated_http`, etc.)
 - [x] Claims match `THREAT_MODEL.md` (no silent OS widening) — matrix asserted in
   `gate7_release_claims_match_capability_matrix`

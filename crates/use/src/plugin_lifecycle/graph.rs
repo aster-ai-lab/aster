@@ -1,11 +1,11 @@
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanPackageChangeKind, PluginOperationAction, PluginOperationPlanEnvelope, PluginPackageId,
     PluginPackageLock, UseError, UseResult,
 };
-use a3s_use_extension::ExtensionManifest;
+use aster_use_extension::ExtensionManifest;
 use async_trait::async_trait;
 
 mod recovery;

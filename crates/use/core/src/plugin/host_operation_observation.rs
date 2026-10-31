@@ -11,11 +11,11 @@ use super::{
 };
 
 pub const PLUGIN_HOST_OPERATION_OBSERVATION_REQUEST_SCHEMA: &str =
-    "a3s.use.plugin-host-operation-observation-request.v1";
+    "aster.use.plugin-host-operation-observation-request.v1";
 pub const PLUGIN_HOST_OPERATION_OBSERVATION_RESULT_SCHEMA: &str =
-    "a3s.use.plugin-host-operation-observation-result.v1";
+    "aster.use.plugin-host-operation-observation-result.v1";
 pub const PLUGIN_HOST_OPERATION_WATCH_REQUEST_SCHEMA: &str =
-    "a3s.use.plugin-host-operation-watch-request.v1";
+    "aster.use.plugin-host-operation-watch-request.v1";
 
 pub const MAX_PLUGIN_HOST_OPERATION_WATCH_TIMEOUT_MS: u64 = 30_000;
 
@@ -26,7 +26,7 @@ const WATCH_REQUEST_ERROR: &str = "use.plugin.host_operation_watch_request_inval
 /// Factual, product-safe phase for one exact reviewed operation.
 ///
 /// This projection deliberately avoids percentages. A host may report a more
-/// specific phase only when durable A3S Use evidence supports it.
+/// specific phase only when durable Aster Use evidence supports it.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum PluginHostOperationPhase {

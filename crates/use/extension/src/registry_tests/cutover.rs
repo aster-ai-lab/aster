@@ -173,8 +173,8 @@ async fn lifecycle_cutover_capacity_fails_before_receipt_or_generation_mutation(
         .enabled());
 
     let catalog = verified_knowledge_catalog(&source, "acme/capacity", &[], 'c').await;
-    let package_lock = a3s_use_core::PluginPackageResolver::new(
-        a3s_use_core::PluginPackageLockHost::new("linux-x86_64", "0.3.0").unwrap(),
+    let package_lock = aster_use_core::PluginPackageResolver::new(
+        aster_use_core::PluginPackageLockHost::new("linux-x86_64", "0.3.0").unwrap(),
     )
     .resolve(catalog, Vec::new())
     .unwrap();
@@ -261,8 +261,8 @@ async fn graph_cutover_rejects_a_stale_expected_generation_before_receipt_mutati
     let receipt_before = std::fs::read(&receipt_path).unwrap();
 
     let catalog = verified_knowledge_catalog(&candidate_source, "acme/candidate", &[], 'c').await;
-    let package_lock = a3s_use_core::PluginPackageResolver::new(
-        a3s_use_core::PluginPackageLockHost::new("linux-x86_64", "0.3.0").unwrap(),
+    let package_lock = aster_use_core::PluginPackageResolver::new(
+        aster_use_core::PluginPackageLockHost::new("linux-x86_64", "0.3.0").unwrap(),
     )
     .resolve(catalog, Vec::new())
     .unwrap();

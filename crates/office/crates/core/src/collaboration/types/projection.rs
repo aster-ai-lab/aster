@@ -9,7 +9,7 @@ use super::{
 };
 
 pub const NATIVE_OFFICE_COLLABORATION_PROJECTION_SCHEMA: &str =
-    "a3s.office.collaboration.projection";
+    "aster.office.collaboration.projection";
 pub const NATIVE_OFFICE_COLLABORATION_PROJECTION_VERSION: u32 = 4;
 
 /// A bounded, Office-owned view of the current collaborative document.

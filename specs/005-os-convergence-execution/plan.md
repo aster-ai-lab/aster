@@ -1,4 +1,4 @@
-# Implementation Plan: A3S OS 技术收敛执行（W0–W3）
+# Implementation Plan: Aster OS 技术收敛执行（W0–W3）
 
 **Branch**: `main` | **Spec**: [`specs/005-os-convergence-execution/spec.md`] | **Input**: [`specs/005-os-convergence-execution/spec.md`]
 
@@ -75,7 +75,7 @@ specs/005-os-convergence-execution/
 
 ## Verification Plan
 
-- Hermetic test：`cargo test --locked -p a3s-gateway-runtime`
+- Hermetic test：`cargo test --locked -p aster-gateway-runtime`
   （当前 5 passed / 0 failed）。
 - Ratchet 必须保持绿：`tests/crate_drift_report.py`（US-5 落地时）、
   `tests/workspace_dependencies.py`（US-6 残余注册时）。

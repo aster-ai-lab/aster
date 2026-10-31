@@ -12,7 +12,7 @@ The published `v7.0.1` checkout at Code `5aa9642` repeated the public
 three-SDK DeepSeek matrix and the Core adversarial suite on 2026-08-17; every
 gate passed again.
 
-This report records the reproducible real-chat-model ablation for A3S Code's
+This report records the reproducible real-chat-model ablation for Aster Code's
 session-bound, in-memory Workspace Retrieval. It complements the deterministic
 [release qualification](../../../manual/WORKSPACE_RETRIEVAL_QA.md); it does not replace its
 independent relevance and security oracles.
@@ -34,7 +34,7 @@ workspace manifest
         -> separate knowledge compiler boundary
 ```
 
-A3S Code does not parse, OCR, transcribe, unpack, or vectorize non-text
+Aster Code does not parse, OCR, transcribe, unpack, or vectorize non-text
 workspace assets. A separate knowledge compiler owns those transformations and
 may later publish an explicitly typed text artifact. Code must never infer such
 a handoff from an arbitrary generated file or silently run a second document
@@ -84,7 +84,7 @@ larger adversarial suites.
 
 ## Test configuration
 
-The repository `.a3s/config.acl` was parsed through the Code ACL loader without
+The repository `.aster/config.acl` was parsed through the Code ACL loader without
 printing provider URLs, headers, environment-variable names, or secret values.
 The selected chat model was `deepseek/deepseek-v4-pro`.
 
@@ -234,13 +234,13 @@ does not justify changing the line default.
 ## Real CLI ACL-host composition
 
 The Core matrices above inject typed retrieval options directly. The final host
-variant instead exercised the production `a3s code exec` path, effective ACL
+variant instead exercised the production `aster code exec` path, effective ACL
 layering, shared manifest backend, asynchronous catalog, semantic runtime,
 hybrid Search metadata, JSONL projection, session close, and the real DeepSeek
-tool loop. A3S CLI `main` commit `f435950` pins Code `bdb86e17`.
+tool loop. Aster CLI `main` commit `f435950` pins Code `bdb86e17`.
 
-The test created a workspace below the A3S monorepo root, allowing normal
-ancestor discovery to select the repository `.a3s/config.acl` for the
+The test created a workspace below the Aster monorepo root, allowing normal
+ancestor discovery to select the repository `.aster/config.acl` for the
 `deepseek/deepseek-v4-pro` chat route. A temporary trusted user ACL supplied a
 process-local embedding endpoint, the two explicit egress gates, recursive
 512/64 chunking with explicit separators, and the typed deterministic
@@ -299,7 +299,7 @@ retained vector allocations.
 This qualifies the ACL-host arm of `WSR-EVAL2`, not a new default chunker or
 reranker. The complete host-side threat matrix and machine-readable schema are
 documented in the
-[A3S CLI evaluation](https://github.com/A3S-Lab/CLI/blob/main/docs/workspace-retrieval-evaluation.md).
+[Aster CLI evaluation](https://github.com/aster-ai-lab/CLI/blob/main/docs/workspace-retrieval-evaluation.md).
 
 ## Cross-SDK public API matrix
 
@@ -413,7 +413,7 @@ excluded; hybrid includes authoritative source reads from the warm OS cache.
 | Vector bytes | 41,397,932 | bounded |
 | Source bytes | 4,000,000 | fixed profile |
 
-Both locked latency gates passed. A3S Memory's independent exact-vector run on
+Both locked latency gates passed. Aster Memory's independent exact-vector run on
 the same profile reported p50 7.797 ms, p95 10.725 ms, max 21.591 ms, and
 39,900,117 accounted bytes.
 
@@ -471,7 +471,7 @@ superseded batch is cancelled before publication.
 
 ## In-process local CPU host qualification
 
-The final A3S CLI profile replaced the HTTP embedding route with the trusted
+The final Aster CLI profile replaced the HTTP embedding route with the trusted
 typed `local_cpu` ACL block while retaining the same recursive 512/64 corpus,
 real `deepseek/deepseek-v4-pro` chat route, exact task prompts, permissions, and
 fresh-session lifecycle. The revision-locked multilingual FastEmbed/ONNX model
@@ -497,7 +497,7 @@ part of the qualified contract: a 64-input cancellation probe reached about
 1.60 GiB and was rejected. Deterministic MMR remains optional because it did
 not improve this corpus.
 
-[CLI CI #31917686424](https://github.com/A3S-Lab/CLI/actions/runs/31917686424)
+[CLI CI #31917686424](https://github.com/aster-ai-lab/CLI/actions/runs/31917686424)
 passes real offline smoke-model admission, inference, cancellation, recovery,
 and RSS checks on Linux x64/ARM64, Windows x64, and macOS ARM64. Artifact
 substitution/shape failures, simulated missing x86-64-v3, and a 32-waiter
@@ -506,11 +506,11 @@ model-free/remote because the pinned ONNX Runtime does not ship that target.
 
 ## Reproduction
 
-From the A3S Code repository on PowerShell:
+From the Aster Code repository on PowerShell:
 
 ```powershell
-$env:A3S_CONFIG_FILE = (Resolve-Path '..\..\.a3s\config.acl').Path
-cargo test --offline --locked -p a3s-code-core `
+$env:ASTER_CONFIG_FILE = (Resolve-Path '..\..\.aster\config.acl').Path
+cargo test --offline --locked -p aster-core `
   --test test_workspace_retrieval_real_llm -- `
   --ignored --nocapture --test-threads=1
 ```
@@ -519,7 +519,7 @@ The semantic ablation prints one `WSR_DEEPSEEK_EVAL=<json>` record. The paired
 rerank slice can be run independently with:
 
 ```powershell
-cargo test --offline --locked -p a3s-code-core `
+cargo test --offline --locked -p aster-core `
   --test test_workspace_retrieval_real_llm `
   real_deepseek_deterministic_rerank_defeats_duplicate_channel_collisions -- `
   --ignored --exact --nocapture --test-threads=1
@@ -534,7 +534,7 @@ The orthogonal built-in chunking matrix and Rust custom negative control can be
 run independently with:
 
 ```powershell
-cargo test --offline --locked -p a3s-code-core `
+cargo test --offline --locked -p aster-core `
   --test test_workspace_retrieval_real_llm `
   strategy_matrix::real_deepseek_chunking_strategy_matrix_qualifies_builtins_and_audits_custom_control -- `
   --ignored --exact --nocapture --test-threads=1
@@ -544,11 +544,11 @@ It prints `WSR_DEEPSEEK_CHUNKING_SUMMARY=<json>` and, after all gates pass, the
 full `WSR_DEEPSEEK_CHUNKING_EVAL=<json>` record. The non-network fixture gate is
 `strategy_matrix::locked_strategy_fixture_has_stable_chunks_and_complete_answer_tokens`.
 
-The real ACL-host variant is owned by the A3S CLI repository and can be run
-from that checkout with the monorepo root containing `.a3s/config.acl`:
+The real ACL-host variant is owned by the Aster CLI repository and can be run
+from that checkout with the monorepo root containing `.aster/config.acl`:
 
 ```powershell
-$env:A3S_REAL_EVAL_ROOT = (Resolve-Path 'C:\path\to\a3s').Path
+$env:ASTER_REAL_EVAL_ROOT = (Resolve-Path 'C:\path\to\aster').Path
 cargo test --offline --locked `
   --test workspace_retrieval_real_deepseek `
   real_deepseek_acl_host_executes_recursive_reranked_workspace_tasks -- `
@@ -556,17 +556,17 @@ cargo test --offline --locked `
 ```
 
 It prints one `WSR_DEEPSEEK_ACL_HOST_EVAL=<json>` record after all gates pass.
-For the in-process profile, set `A3S_LOCAL_CPU_MODEL_MANIFEST` to the already
+For the in-process profile, set `ASTER_LOCAL_CPU_MODEL_MANIFEST` to the already
 installed `model.acl` and add `--features local-cpu-embedding` to that CLI test
 command. The provider-only qualification command and complete immutable
 artifact schema are documented in the CLI
-[local CPU guide](https://github.com/A3S-Lab/CLI/blob/main/docs/local-cpu-workspace-embedding.md).
+[local CPU guide](https://github.com/aster-ai-lab/CLI/blob/main/docs/local-cpu-workspace-embedding.md).
 
 The Node.js, Python, and Go runners and their hermetic fixture commands are
 listed in [`sdk/evaluation/README.md`](../../../sdk/evaluation/README.md). Each live
 runner prints one normalized `WSR_SDK_DEEPSEEK_EVAL=<json>` record.
 
-`a3s-test capabilities --json` succeeded during the review. The optional Web
+`aster-test capabilities --json` succeeded during the review. The optional Web
 driver schema probe reported `test.driver.web.capability_unavailable` because a
 browser command was not installed, so this report claims Core/tool-loop E2E
 coverage, public SDK parity, and no browser screenshot evidence.

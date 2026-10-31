@@ -4,10 +4,10 @@ use std::path::Path;
 use std::time::Duration;
 
 #[cfg(unix)]
-use a3s_box_core::ExecutionBackend;
+use aster_box_core::ExecutionBackend;
 #[cfg(unix)]
-use a3s_box_core::ExecutionUdpPortIo;
-use a3s_box_core::{
+use aster_box_core::ExecutionUdpPortIo;
+use aster_box_core::{
     ExecutionGeneration, ExecutionId, ExecutionManagerError, ExecutionManagerResult,
     ExecutionPortConnector, ExecutionPortStream, ExecutionUdpPort,
 };
@@ -414,7 +414,7 @@ async fn connect_in_network_namespace(
 ) -> ExecutionManagerResult<tokio::net::TcpStream> {
     let (sender, receiver) = tokio::sync::oneshot::channel();
     std::thread::Builder::new()
-        .name(format!("a3s-port-{pid}-{}", port.get()))
+        .name(format!("aster-port-{pid}-{}", port.get()))
         .spawn(move || {
             let result = connect_in_network_namespace_blocking(
                 &execution_id,
@@ -522,7 +522,7 @@ async fn connect_udp_in_network_namespace(
 ) -> ExecutionManagerResult<NamespaceUdpPort> {
     let (sender, receiver) = tokio::sync::oneshot::channel();
     std::thread::Builder::new()
-        .name(format!("a3s-udp-{pid}-{}", port.get()))
+        .name(format!("aster-udp-{pid}-{}", port.get()))
         .spawn(move || {
             let result = connect_udp_in_network_namespace_blocking(
                 &execution_id,

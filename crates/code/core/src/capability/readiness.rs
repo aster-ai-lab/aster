@@ -5,14 +5,14 @@ use super::{
     MAX_CAPABILITIES, MAX_CAPABILITY_DEPENDENCY_EDGES,
 };
 
-pub const CAPABILITY_READINESS_PLAN_SCHEMA: &str = "a3s.code.capability-readiness-plan.v1";
+pub const CAPABILITY_READINESS_PLAN_SCHEMA: &str = "aster.code.capability-readiness-plan.v1";
 pub const MAX_CAPABILITY_READINESS_WAVES: usize = MAX_CAPABILITIES;
 
 /// Deterministic dependency-first ordering for one immutable capability set.
 ///
 /// The plan reads only descriptor-level surface edges already published in a
 /// [`CapabilitySet`]. It does not inspect package manifests, select versions,
-/// resolve A3S Use dependencies, or provide a service container.
+/// resolve Aster Use dependencies, or provide a service container.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CapabilityReadinessPlan {
     generation: CodeCatalogGeneration,

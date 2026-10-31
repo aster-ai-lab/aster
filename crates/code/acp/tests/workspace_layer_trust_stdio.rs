@@ -1,7 +1,7 @@
 #![cfg(test)]
 #![cfg(unix)]
 
-//! SEC-WSTRUST1: a cloned repository's `.a3s/config.acl` is untrusted
+//! SEC-WSTRUST1: a cloned repository's `.aster/config.acl` is untrusted
 //! content. Opening the actual ACP binary inside it must not start a
 //! process the repository declared until the user trusts that exact
 //! declaration, and an edited declaration must lose that trust.
@@ -40,10 +40,10 @@ impl Fixture {
         let home = root.path().join("home");
         let state = root.path().join("state");
         let workspace = root.path().join("cloned-repo");
-        std::fs::create_dir_all(home.join(".a3s")).unwrap();
+        std::fs::create_dir_all(home.join(".aster")).unwrap();
         std::fs::create_dir_all(&state).unwrap();
-        std::fs::create_dir_all(workspace.join(".a3s")).unwrap();
-        std::fs::write(home.join(".a3s/config.acl"), USER_ACL).unwrap();
+        std::fs::create_dir_all(workspace.join(".aster")).unwrap();
+        std::fs::write(home.join(".aster/config.acl"), USER_ACL).unwrap();
         let marker = root.path().join("repository-command-ran");
         let fixture = Self {
             _root: root,
@@ -58,7 +58,7 @@ impl Fixture {
 
     fn write_workspace_server(&self, revision: &str) {
         std::fs::write(
-            self.workspace.join(".a3s/config.acl"),
+            self.workspace.join(".aster/config.acl"),
             format!(
                 r#"
 mcp_servers "repo-tools" {{
@@ -80,10 +80,10 @@ mcp_servers "repo-tools" {{
             .env_clear()
             .env("PATH", std::env::var_os("PATH").unwrap_or_default())
             .env("HOME", &self.home)
-            .env("A3S_STATE_HOME", &self.state)
-            .env("A3S_DISABLE_CC_SWITCH", "1")
-            .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-            .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+            .env("ASTER_STATE_HOME", &self.state)
+            .env("ASTER_DISABLE_CC_SWITCH", "1")
+            .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+            .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
@@ -192,7 +192,7 @@ async fn stop(mut child: Child) {
 
 fn assert_no_workspace_trust_written(workspace: &Path) {
     assert!(
-        !workspace.join(".a3s/workspace-mcp-trust.json").exists(),
+        !workspace.join(".aster/workspace-mcp-trust.json").exists(),
         "trust must never be recorded inside the repository"
     );
 }
@@ -207,7 +207,7 @@ async fn untrusted_workspace_mcp_server_does_not_start_until_trusted() {
         fixture.marker_lines().is_empty(),
         "opening an untrusted repository started its declared command"
     );
-    let pending = &initialized["result"]["_meta"]["a3s"]["workspaceMcp"]["pending"];
+    let pending = &initialized["result"]["_meta"]["aster"]["workspaceMcp"]["pending"];
     assert_eq!(pending.as_array().map(Vec::len), Some(1), "{initialized}");
     assert_eq!(pending[0]["name"], "repo-tools", "{initialized}");
 
@@ -230,7 +230,7 @@ async fn untrusted_workspace_mcp_server_does_not_start_until_trusted() {
         !lines.is_empty() && lines.iter().all(|line| line == "first"),
         "the trusted declaration starts: {lines:?}"
     );
-    let pending = &initialized["result"]["_meta"]["a3s"]["workspaceMcp"]["pending"];
+    let pending = &initialized["result"]["_meta"]["aster"]["workspaceMcp"]["pending"];
     assert_eq!(pending.as_array().map(Vec::len), Some(0), "{initialized}");
 
     fixture.write_workspace_server("edited");
@@ -247,7 +247,7 @@ async fn untrusted_workspace_mcp_server_does_not_start_until_trusted() {
 #[tokio::test]
 async fn explicit_config_mcp_servers_stay_host_trusted() {
     let fixture = Fixture::new();
-    std::fs::remove_file(fixture.workspace.join(".a3s/config.acl")).unwrap();
+    std::fs::remove_file(fixture.workspace.join(".aster/config.acl")).unwrap();
     let explicit = fixture.home.join("explicit.acl");
     std::fs::write(
         &explicit,

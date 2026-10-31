@@ -2,7 +2,7 @@
 
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 pub(crate) const DEFAULT_CONTAINER_PATH: &str =
     "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";

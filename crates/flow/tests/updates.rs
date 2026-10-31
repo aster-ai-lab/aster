@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime,
     InMemoryEventStore, JsonValue, QueryInvocation, RuntimeCommand, UpdateInvocation, WaitStatus,
     WorkflowInvocation, WorkflowRunStatus, WorkflowSpec, WorkflowUpdate,
@@ -19,7 +19,7 @@ impl FlowRuntime for UpdateRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         self.workflow_calls.fetch_add(1, Ordering::SeqCst);
         let context = invocation.context();
         if context.update("bump").is_some() {
@@ -37,16 +37,16 @@ impl FlowRuntime for UpdateRuntime {
 
     async fn run_step(
         &self,
-        _invocation: a3s_flow::StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
-    async fn run_query(&self, invocation: QueryInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_query(&self, invocation: QueryInvocation) -> aster_flow::Result<JsonValue> {
         Ok(json!({ "query": invocation.query_name }))
     }
 
-    async fn run_update(&self, invocation: UpdateInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_update(&self, invocation: UpdateInvocation) -> aster_flow::Result<JsonValue> {
         self.update_calls.fetch_add(1, Ordering::SeqCst);
         let current = invocation.workflow_invocation().context().updates().len();
         Ok(json!({
@@ -188,7 +188,7 @@ impl CrashBeforeRunCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeRunCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -197,7 +197,7 @@ impl FlowEventStore for CrashBeforeRunCompletedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(event, FlowEvent::RunCompleted { .. })
             && self.armed.swap(false, Ordering::SeqCst)
         {
@@ -210,11 +210,11 @@ impl FlowEventStore for CrashBeforeRunCompletedStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -297,7 +297,7 @@ impl CrashAfterUpdateAppliedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterUpdateAppliedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -306,7 +306,7 @@ impl FlowEventStore for CrashAfterUpdateAppliedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -323,11 +323,11 @@ impl FlowEventStore for CrashAfterUpdateAppliedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -376,7 +376,7 @@ impl FlowRuntime for RelativeWaitUpdateRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         // Observe updates without completing so forced replay re-issues the open wait.
         let _ = context.updates().len();
@@ -385,12 +385,12 @@ impl FlowRuntime for RelativeWaitUpdateRuntime {
 
     async fn run_step(
         &self,
-        _invocation: a3s_flow::StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
-    async fn run_update(&self, _invocation: UpdateInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_update(&self, _invocation: UpdateInvocation) -> aster_flow::Result<JsonValue> {
         Ok(json!({ "ok": true }))
     }
 }

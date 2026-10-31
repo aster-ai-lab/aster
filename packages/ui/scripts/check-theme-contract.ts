@@ -8,7 +8,7 @@ import { validateMigrationContract } from './validate-migration-contract'
 import { validateThemeContract } from './validate-theme-contract'
 
 /**
- * Mirror of writeThemeContractCss's tail: the authored a3s compatibility bridge
+ * Mirror of writeThemeContractCss's tail: the authored aster compatibility bridge
  * is appended to the generated contract so both build and check compose identically.
  */
 async function composeThemeCss(stylesDir: string): Promise<string> {
@@ -17,8 +17,8 @@ async function composeThemeCss(stylesDir: string): Promise<string> {
   const design = await fs.readFile(DEFAULT_DESIGN_DOC, 'utf8')
   const specRoles = buildSpecRolesCss(design)
   try {
-    const compat = await fs.readFile(path.join(stylesDir, 'a3s-compat.css'), 'utf8')
-    return `${css}\n${specRoles}\n/* ==================== */\n/* a3s compatibility bridge */\n/* ==================== */\n\n${compat}`
+    const compat = await fs.readFile(path.join(stylesDir, 'aster-compat.css'), 'utf8')
+    return `${css}\n${specRoles}\n/* ==================== */\n/* aster compatibility bridge */\n/* ==================== */\n\n${compat}`
   } catch {
     return `${css}\n${specRoles}`
   }
@@ -31,7 +31,7 @@ const DEFAULT_STYLES_DIR = path.resolve(__dirname, '../src/styles')
 
 export function assertGeneratedThemeCssCurrent(actual: string, expected: string): void {
   if (actual !== expected) {
-    throw new Error('[theme-contract] generated theme.css is stale; run pnpm --filter @a3s/ui theme:build')
+    throw new Error('[theme-contract] generated theme.css is stale; run pnpm --filter @aster/ui theme:build')
   }
 }
 
@@ -53,7 +53,7 @@ export async function checkThemeContract(
   const actualSpecRoles = await fs.readFile(path.join(stylesDir, 'tokens/spec-roles.css'), 'utf8')
   if (actualSpecRoles !== expectedSpecRoles) {
     throw new Error(
-      '[theme-contract] tokens/spec-roles.css is stale against DESIGN.md; run pnpm --filter @a3s-lab/ui theme:build'
+      '[theme-contract] tokens/spec-roles.css is stale against DESIGN.md; run pnpm --filter @aster-ai-lab/ui theme:build'
     )
   }
   await validateMigrationContract(repositoryRoot)

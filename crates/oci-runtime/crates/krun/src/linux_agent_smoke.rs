@@ -5,12 +5,12 @@ use std::process::{Command, Stdio};
 use std::thread;
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentTransportQualificationRequest, AgentVsockEndpoint, AGENT_RECOVERY_REPORT_ENV,
     AGENT_RUNTIME_SHARE_ENV, AGENT_RUNTIME_SHARE_TAG, AGENT_SESSION_TOKEN_FILE_ENV,
     AGENT_TRANSPORT_QUALIFICATION_ENV, AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV, AGENT_VSOCK_PORT,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
 use serde::{Deserialize, Serialize};
 
 use crate::linux_compatibility_drift::CompatibilityDriftBarrier;
@@ -26,9 +26,9 @@ use crate::unix_process::{
 };
 use crate::{KrunAgentVmSmokeReport, LinuxBootAssetsEvidence, VmConfig};
 
-const AGENT_GUEST_PATH: &str = "/usr/bin/a3s-oci-agent";
+const AGENT_GUEST_PATH: &str = "/usr/bin/aster-oci-agent";
 const WORKER_COMMAND: &str = "__linux-agent-vm-worker";
-const WORKER_SCHEMA_VERSION: &str = "a3s.oci.linux-kvm-agent-vm-worker.v4";
+const WORKER_SCHEMA_VERSION: &str = "aster.oci.linux-kvm-agent-vm-worker.v4";
 const POST_PROBE_FAILURE_REASON: &str =
     "injected Linux KVM failure after device verification and before native VM entry";
 const WORKER_TIMEOUT: Duration = Duration::from_secs(90);
@@ -515,9 +515,9 @@ pub(crate) fn run_worker(configuration: LinuxAgentVmWorkerConfig<'_>) -> bool {
             digest.to_string(),
         ));
     }
-    if let Ok(value) = std::env::var("A3S_OCI_GUEST_HOST_RECONNECT") {
+    if let Ok(value) = std::env::var("ASTER_OCI_GUEST_HOST_RECONNECT") {
         if !value.is_empty() {
-            environment.push(("A3S_OCI_GUEST_HOST_RECONNECT".to_string(), value));
+            environment.push(("ASTER_OCI_GUEST_HOST_RECONNECT".to_string(), value));
         }
     }
     if let Err(error) = context.set_exec(AGENT_GUEST_PATH, &[], &environment) {
@@ -659,7 +659,7 @@ fn emit_worker_evidence(evidence: &WorkerEvidence) -> io::Result<()> {
 fn fail_worker(evidence: &mut WorkerEvidence, reason: String) -> bool {
     evidence.reason = Some(reason);
     if let Err(error) = emit_worker_evidence(evidence) {
-        eprintln!("a3s-oci-krun-shim: failed to emit Linux KVM worker failure: {error}");
+        eprintln!("aster-oci-krun-shim: failed to emit Linux KVM worker failure: {error}");
     }
     false
 }

@@ -74,7 +74,7 @@ function TemporalWidget({ mode, ...props }: FormWidgetProps & { mode: 'date-time
   } = props;
   const isDateTime = mode === 'date-time';
   return (
-    <div className="a3s-form-temporal input-group">
+    <div className="aster-form-temporal input-group">
       <input
         id={id}
         className="input"
@@ -136,7 +136,7 @@ export function MultiSelectWidget({
   };
   return (
     <fieldset
-      className="a3s-form-multi-select fieldset"
+      className="aster-form-multi-select fieldset"
       aria-label={labelledBy ? undefined : (node.label ?? node.id)}
       aria-labelledby={labelledBy}
       aria-invalid={invalid || undefined}
@@ -148,13 +148,13 @@ export function MultiSelectWidget({
       onFocus={onFocus}
     >
       {requirementId && (
-        <span className="a3s-form-visually-hidden" id={requirementId}>
+        <span className="aster-form-visually-hidden" id={requirementId}>
           {messages.validationRequired}
         </span>
       )}
-      <div className="a3s-form-multi-select-options" data-slot="checkbox-group">
+      <div className="aster-form-multi-select-options" data-slot="checkbox-group">
         {options.length === 0 && (
-          <span className="a3s-form-multi-select-empty">{messages.dataSourceEmpty}</span>
+          <span className="aster-form-multi-select-empty">{messages.dataSourceEmpty}</span>
         )}
         {options.map((option, index) => {
           const checked = selected.some((item) => Object.is(item, option.value));
@@ -184,7 +184,7 @@ export function MultiSelectWidget({
           );
         })}
       </div>
-      <span className="a3s-form-multi-select-summary" aria-live="polite">
+      <span className="aster-form-multi-select-summary" aria-live="polite">
         {formatFormMessage(messages, 'multiSelectSummary', { count: selected.length })}
       </span>
     </fieldset>
@@ -238,7 +238,7 @@ export function TagsWidget({
   };
   return (
     <fieldset
-      className="a3s-form-tags fieldset"
+      className="aster-form-tags fieldset"
       aria-label={labelledBy ? undefined : (node.label ?? node.id)}
       aria-labelledby={labelledBy}
       aria-describedby={[describedBy, requirementId].filter(Boolean).join(' ') || undefined}
@@ -249,14 +249,14 @@ export function TagsWidget({
       onFocus={onFocus}
     >
       {requirementId && (
-        <span className="a3s-form-visually-hidden" id={requirementId}>
+        <span className="aster-form-visually-hidden" id={requirementId}>
           {messages.validationRequired}
         </span>
       )}
       {tags.length > 0 && (
-        <div className="a3s-form-tag-list">
+        <div className="aster-form-tag-list">
           {tags.map((tag) => (
-            <span className="a3s-form-tag badge" data-variant="secondary" key={tag}>
+            <span className="aster-form-tag badge" data-variant="secondary" key={tag}>
               <span>{tag}</span>
               <button
                 type="button"
@@ -283,7 +283,7 @@ export function TagsWidget({
           ))}
         </div>
       )}
-      <div className="a3s-form-tag-entry input-group">
+      <div className="aster-form-tag-entry input-group">
         <input
           id={id}
           className="input"
@@ -313,7 +313,7 @@ export function TagsWidget({
           {messages.tagsAdd}
         </button>
       </div>
-      <span className="a3s-form-tag-feedback" id={feedbackId} role="status" aria-live="polite">
+      <span className="aster-form-tag-feedback" id={feedbackId} role="status" aria-live="polite">
         {feedback}
       </span>
     </fieldset>
@@ -337,8 +337,8 @@ export function CurrencyWidget({
   const currency = /^[A-Z]{3}$/.test(configuredCurrency) ? configuredCurrency : 'CNY';
   const step = numberProperty(node.customProps?.step, 0.01, { minimum: Number.EPSILON });
   return (
-    <div className="a3s-form-currency input-group">
-      <span className="a3s-form-currency-code" id={`${id}-currency`} data-align="start">
+    <div className="aster-form-currency input-group">
+      <span className="aster-form-currency-code" id={`${id}-currency`} data-align="start">
         {currency}
       </span>
       <input
@@ -398,7 +398,7 @@ export function RatingWidget({
   const selectedRating = ratings.find((option) => Object.is(option.value, value));
   return (
     <div
-      className="a3s-form-rating field"
+      className="aster-form-rating field"
       data-orientation="horizontal"
       role="radiogroup"
       data-slot="radio-group"
@@ -465,8 +465,8 @@ export function SliderWidget({
   const numberFormat = new Intl.NumberFormat(locale, { maximumFractionDigits: 6 });
   return (
     <div
-      className="a3s-form-slider"
-      style={{ '--a3s-form-slider-progress': progress } as CSSProperties}
+      className="aster-form-slider"
+      style={{ '--aster-form-slider-progress': progress } as CSSProperties}
     >
       <input
         id={id}
@@ -491,7 +491,7 @@ export function SliderWidget({
         onFocus={onFocus}
       />
       <output htmlFor={id}>{current}</output>
-      <div className="a3s-form-slider-scale" aria-hidden="true">
+      <div className="aster-form-slider-scale" aria-hidden="true">
         <span>{numberFormat.format(minimum)}</span>
         <span>{numberFormat.format(maximum)}</span>
       </div>
@@ -519,7 +519,7 @@ export function CalculatedWidget({
   return (
     <output
       id={id}
-      className="a3s-form-calculated"
+      className="aster-form-calculated"
       aria-label={node.label ?? node.id}
       aria-invalid={invalid || undefined}
       aria-describedby={describedBy}

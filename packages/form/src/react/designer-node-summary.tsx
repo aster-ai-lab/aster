@@ -29,7 +29,7 @@ export function DesignerNodeSummary({
   const statuses = nodeStatuses(document, node);
   return (
     <article
-      className="a3s-form-node-profile item"
+      className="aster-form-node-profile item"
       data-size="xs"
       data-variant="muted"
       data-testid="designer-node-profile"
@@ -40,7 +40,7 @@ export function DesignerNodeSummary({
         <CatalogIcon id={profile.id} fallback={profile.glyph || profile.typeLabel.slice(0, 1)} />
       </figure>
       <section>
-        <header className="a3s-form-node-profile-meta">
+        <header className="aster-form-node-profile-meta">
           <span className="badge" data-variant="outline">
             {profile.typeLabel}
           </span>
@@ -48,7 +48,7 @@ export function DesignerNodeSummary({
         </header>
         <h2>{node.kind === 'root' ? document.metadata.title : (node.label ?? node.id)}</h2>
         <p>{profile.purpose}</p>
-        <footer className="a3s-form-node-profile-status">
+        <footer className="aster-form-node-profile-status">
           {selectedProperty && (
             <code className="badge" data-variant="secondary" title="字段绑定">
               {selectedProperty}

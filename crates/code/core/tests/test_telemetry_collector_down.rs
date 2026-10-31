@@ -7,10 +7,10 @@
 
 use std::time::{Duration, Instant};
 
-use a3s_code_core::config::CodeConfig;
-use a3s_code_core::telemetry_otel::TelemetryConfig;
-use a3s_code_core::trace::TraceEventKind;
-use a3s_code_core::Agent;
+use aster_core::config::CodeConfig;
+use aster_core::telemetry_otel::TelemetryConfig;
+use aster_core::trace::TraceEventKind;
+use aster_core::Agent;
 
 fn test_config() -> CodeConfig {
     CodeConfig::from_acl(

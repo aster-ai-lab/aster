@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_oci_core::CapabilityStatus;
+use aster_oci_core::CapabilityStatus;
 use serde::{Deserialize, Serialize};
 
 /// Schema for the Native Linux Live Host reopen evidence gate.
@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 /// **not** flip default create / B2 / cutover flags (reports never self-certify
 /// B2/R6 close).
 pub const LINUX_NATIVE_LIVE_RECOVERY_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.linux-native-live-recovery-smoke.v3";
+    "aster.oci.linux-native-live-recovery-smoke.v3";
 
 /// Nested evidence for one Native Live Host reopen attempt.
 ///

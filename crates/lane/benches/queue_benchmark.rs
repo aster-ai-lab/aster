@@ -1,8 +1,8 @@
-//! Performance benchmarks for a3s-lane
+//! Performance benchmarks for aster-lane
 //!
 //! Run with: cargo bench
 
-use a3s_lane::{Command, EventEmitter, LaneConfig, QueueManagerBuilder, Result};
+use aster_lane::{Command, EventEmitter, LaneConfig, QueueManagerBuilder, Result};
 use async_trait::async_trait;
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
 use std::time::Duration;
@@ -202,7 +202,7 @@ fn bench_metrics_overhead(c: &mut Criterion) {
     group.bench_function("with_metrics", |b| {
         b.to_async(&rt).iter(|| async {
             let emitter = EventEmitter::new(1000);
-            let metrics = a3s_lane::QueueMetrics::local();
+            let metrics = aster_lane::QueueMetrics::local();
 
             let manager = QueueManagerBuilder::new(emitter)
                 .with_metrics(metrics.clone())
@@ -239,7 +239,7 @@ fn bench_rate_limiting(c: &mut Criterion) {
         b.to_async(&rt).iter(|| async {
             let emitter = EventEmitter::new(1000);
             let config =
-                LaneConfig::new(1, 10).with_rate_limit(a3s_lane::RateLimitConfig::per_second(50));
+                LaneConfig::new(1, 10).with_rate_limit(aster_lane::RateLimitConfig::per_second(50));
 
             let manager = QueueManagerBuilder::new(emitter)
                 .with_lane("bench", config, 0)

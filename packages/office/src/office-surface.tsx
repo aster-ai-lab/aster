@@ -16,8 +16,8 @@ export function OfficeSurface({
 }: OfficeSurfaceProps & { children: ReactNode }) {
   return (
     <div
-      className={`a3s-office${className ? ` ${className}` : ''}`}
-      data-a3s-office=""
+      className={`aster-office${className ? ` ${className}` : ''}`}
+      data-aster-office=""
       data-theme={theme}
       style={style}
     >

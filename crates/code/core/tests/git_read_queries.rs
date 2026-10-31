@@ -4,7 +4,7 @@ use std::path::Path;
 use std::process::Stdio;
 use std::time::Duration;
 
-use a3s_code_core::tools::ToolExecutor;
+use aster_core::tools::ToolExecutor;
 use serde_json::{json, Value};
 
 const FIXTURE_ENV: &str = "ASTER_GIT_READ_FIXTURE";

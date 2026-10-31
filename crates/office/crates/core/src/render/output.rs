@@ -1,6 +1,6 @@
 use std::fmt::{self, Write as _};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::render_error;
 
@@ -91,7 +91,7 @@ fn is_xml_character(value: char) -> bool {
     matches!(value, '\u{9}' | '\u{a}' | '\u{d}') || value >= '\u{20}'
 }
 
-fn output_too_large(limit: usize) -> a3s_use_core::UseError {
+fn output_too_large(limit: usize) -> aster_use_core::UseError {
     render_error(
         "use.office.render_output_too_large",
         format!("Native Office semantic render exceeds the {limit}-byte output limit."),

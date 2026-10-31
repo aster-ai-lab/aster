@@ -1,22 +1,22 @@
 [package]
-name = "a3s-box-cli"
+name = "aster-box-cli"
 version = "3.2.7"
 edition = "2021"
 license = "MIT"
 
 [[bin]]
-name = "a3s-box"
+name = "aster-box"
 path = "src/main.rs"
 
 [lib]
-name = "a3s_box_cli"
+name = "aster_box_cli"
 path = "src/lib.rs"
 
 [dependencies]
-a3s-box-core = { path = "../core" }
-a3s-box-runtime = { path = "../runtime" }
-a3s-box-sdk = { path = "../sdk" }
-a3s-transport = { workspace = true }
+aster-box-core = { path = "../core" }
+aster-box-runtime = { path = "../runtime" }
+aster-box-sdk = { path = "../sdk" }
+aster-transport = { workspace = true }
 
 # Async runtime
 tokio = { workspace = true }

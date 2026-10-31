@@ -3,7 +3,7 @@ use std::io::{Read, Seek, Write};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tempfile::NamedTempFile;
@@ -56,7 +56,7 @@ impl Default for PackageLimits {
     }
 }
 
-/// An A3S-owned, loss-preserving OOXML package.
+/// An Aster-owned, loss-preserving OOXML package.
 ///
 /// The package kernel understands OPC container boundaries, document kind,
 /// resource limits, and atomic persistence. Format-specific semantic engines
@@ -151,7 +151,7 @@ impl NativeOfficePackage {
         validate_structure(kind, &parts)?;
         validate_part_limits(&parts, limits)?;
         Ok(Self {
-            path: PathBuf::from(format!("a3s-native-replay.{}", kind.extension())),
+            path: PathBuf::from(format!("aster-native-replay.{}", kind.extension())),
             kind,
             limits,
             source_revision: PackageRevision {
@@ -345,7 +345,7 @@ impl NativeOfficePackage {
 
 fn content_sha256(parts: &BTreeMap<String, Arc<[u8]>>) -> String {
     let mut digest = Sha256::new();
-    digest.update(b"a3s-office-package-v1\0");
+    digest.update(b"aster-office-package-v1\0");
     digest.update((parts.len() as u64).to_be_bytes());
     for (name, bytes) in parts {
         digest.update((name.len() as u64).to_be_bytes());

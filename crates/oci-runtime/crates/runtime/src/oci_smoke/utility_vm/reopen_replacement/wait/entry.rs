@@ -143,13 +143,13 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
     report.setup_kill_operation_id = Some(kill_operation_id.clone());
     report.container_id = Some(exact_target.id.clone());
 
-    let state_root = console_directory.join(format!("a3s-oci-wait-reopen-{nonce}-state"));
+    let state_root = console_directory.join(format!("aster-oci-wait-reopen-{nonce}-state"));
     if let Err(reason) = create_qualification_state_root(&state_root).await {
         return failed(report, reason);
     }
-    let first_console = console_directory.join(format!("a3s-oci-wait-reopen-{nonce}-first.log"));
+    let first_console = console_directory.join(format!("aster-oci-wait-reopen-{nonce}-first.log"));
     let replacement_console =
-        console_directory.join(format!("a3s-oci-wait-reopen-{nonce}-replacement.log"));
+        console_directory.join(format!("aster-oci-wait-reopen-{nonce}-replacement.log"));
 
     let exercise = exercise(
         shim,

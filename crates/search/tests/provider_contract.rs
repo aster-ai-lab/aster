@@ -3,13 +3,13 @@ mod support;
 use std::collections::BTreeMap;
 use std::time::Duration;
 
-use a3s_search::providers::{
+use aster_search::providers::{
     AnySearchConfig, AnySearchDomain, AnySearchProvider, AnySearchSubDomain, CredentialSource,
     ProviderAuthentication, ProviderHttpConfig, ProviderReadiness, ProviderRequest, SearchProvider,
     TavilyAnswer, TavilyConfig, TavilyCountry, TavilyDate, TavilyProvider, TavilyRawContent,
     TavilySearchDepth, TavilyTopic,
 };
-use a3s_search::{SafeSearch, SearchError, TimeRange};
+use aster_search::{SafeSearch, SearchError, TimeRange};
 use serde_json::{json, Value};
 use support::provider_server::{MockResponse, MockServer};
 
@@ -65,7 +65,7 @@ async fn anysearch_anonymous_mcp_request_and_response_match_contract() {
     assert_eq!(requests[0].header("content-type"), Some("application/json"));
     assert!(requests[0]
         .header("x-anysearch-client")
-        .is_some_and(|value| value.starts_with("a3s-search/")));
+        .is_some_and(|value| value.starts_with("aster-search/")));
     let body: Value = serde_json::from_slice(&requests[0].body).unwrap();
     assert_eq!(body["jsonrpc"], "2.0");
     assert_eq!(body["method"], "tools/call");

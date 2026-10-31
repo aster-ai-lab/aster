@@ -15,7 +15,7 @@ use std::collections::BTreeSet;
 use std::sync::Arc;
 use thiserror::Error;
 
-pub const EVIDENCE_SNAPSHOT_SCHEMA_V1: &str = "a3s.code.evidence-snapshot.v1";
+pub const EVIDENCE_SNAPSHOT_SCHEMA_V1: &str = "aster.code.evidence-snapshot.v1";
 pub const EVIDENCE_MAX_EVENTS: usize = 4096;
 pub const EVIDENCE_MAX_EVENT_BYTES: usize = 16 * 1024 * 1024;
 pub const EVIDENCE_MAX_ARTIFACTS: usize = 256;
@@ -173,7 +173,7 @@ impl EvidenceRunStateV1 {
         };
         let prompt_bytes =
             u64::try_from(snapshot.prompt.len()).map_err(|_| EvidenceError::NumericOverflow)?;
-        let prompt_digest = digest_bytes("a3s.code.evidence.prompt.v1", snapshot.prompt.as_bytes());
+        let prompt_digest = digest_bytes("aster.code.evidence.prompt.v1", snapshot.prompt.as_bytes());
         let result_bytes = snapshot
             .result_text
             .as_ref()
@@ -183,7 +183,7 @@ impl EvidenceRunStateV1 {
         let result_digest = snapshot
             .result_text
             .as_deref()
-            .map(|value| digest_bytes("a3s.code.evidence.result.v1", value.as_bytes()));
+            .map(|value| digest_bytes("aster.code.evidence.result.v1", value.as_bytes()));
         let error_bytes = snapshot
             .error
             .as_ref()
@@ -193,7 +193,7 @@ impl EvidenceRunStateV1 {
         let error_digest = snapshot
             .error
             .as_deref()
-            .map(|value| digest_bytes("a3s.code.evidence.error.v1", value.as_bytes()));
+            .map(|value| digest_bytes("aster.code.evidence.error.v1", value.as_bytes()));
         let result = if include_terminal_text {
             snapshot
                 .result_text
@@ -213,23 +213,23 @@ impl EvidenceRunStateV1 {
         let workspace_change_set_digest = snapshot
             .workspace_change_set
             .as_ref()
-            .map(|value| digest_json("a3s.code.evidence.workspace-change-set.v1", value))
+            .map(|value| digest_json("aster.code.evidence.workspace-change-set.v1", value))
             .transpose()
             .map_err(EvidenceError::Serialization)?;
         let capability_binding_digest = snapshot
             .capability_binding
             .as_ref()
-            .map(|value| digest_json("a3s.code.evidence.capability-binding.v1", value))
+            .map(|value| digest_json("aster.code.evidence.capability-binding.v1", value))
             .transpose()
             .map_err(EvidenceError::Serialization)?;
         let package_binding_digest = snapshot
             .package_binding
             .as_ref()
-            .map(|value| digest_json("a3s.code.evidence.package-binding.v1", value))
+            .map(|value| digest_json("aster.code.evidence.package-binding.v1", value))
             .transpose()
             .map_err(EvidenceError::Serialization)?;
         Ok(Self {
-            schema: "a3s.code.evidence-run-state.v1".to_string(),
+            schema: "aster.code.evidence-run-state.v1".to_string(),
             target: target.clone(),
             status: snapshot.status,
             created_at_ms: snapshot.created_at_ms,
@@ -309,7 +309,7 @@ impl EvidenceSnapshotV1 {
         {
             return Err(EvidenceError::InvalidField("first_available_sequence"));
         }
-        if self.state.schema != "a3s.code.evidence-run-state.v1" {
+        if self.state.schema != "aster.code.evidence-run-state.v1" {
             return Err(EvidenceError::UnsupportedSchema);
         }
         if self.state.event_count != self.latest_sequence_exclusive {
@@ -346,7 +346,7 @@ impl EvidenceSnapshotV1 {
                 return Err(EvidenceError::InvalidField("state.prompt_bytes"));
             }
             if self.state.prompt_digest
-                != digest_bytes("a3s.code.evidence.prompt.v1", prompt.as_bytes())
+                != digest_bytes("aster.code.evidence.prompt.v1", prompt.as_bytes())
             {
                 return Err(EvidenceError::DigestMismatch("state.prompt_digest"));
             }
@@ -377,7 +377,7 @@ impl EvidenceSnapshotV1 {
             if self.state.result_bytes != u64::try_from(result.len()).ok() {
                 return Err(EvidenceError::InvalidField("state.result_bytes"));
             }
-            if digest != digest_bytes("a3s.code.evidence.result.v1", result.as_bytes()) {
+            if digest != digest_bytes("aster.code.evidence.result.v1", result.as_bytes()) {
                 return Err(EvidenceError::DigestMismatch("state.result_digest"));
             }
         }
@@ -388,7 +388,7 @@ impl EvidenceSnapshotV1 {
             if self.state.error_bytes != u64::try_from(error.len()).ok() {
                 return Err(EvidenceError::InvalidField("state.error_bytes"));
             }
-            if digest != digest_bytes("a3s.code.evidence.error.v1", error.as_bytes()) {
+            if digest != digest_bytes("aster.code.evidence.error.v1", error.as_bytes()) {
                 return Err(EvidenceError::DigestMismatch("state.error_digest"));
             }
         }
@@ -473,7 +473,7 @@ impl EvidenceSnapshotV1 {
                 }
             } else if event.payload_bytes != u64::try_from(payload.len()).unwrap_or(u64::MAX)
                 || event.payload_digest
-                    != digest_bytes("a3s.code.evidence.event-payload.v1", &payload)
+                    != digest_bytes("aster.code.evidence.event-payload.v1", &payload)
             {
                 return Err(EvidenceError::DigestMismatch("payload_digest"));
             }
@@ -529,7 +529,7 @@ impl EvidenceSnapshotV1 {
             }
             if let Some(content) = artifact.content.as_deref() {
                 if artifact.content_digest
-                    != digest_bytes("a3s.code.evidence.artifact-content.v1", content.as_bytes())
+                    != digest_bytes("aster.code.evidence.artifact-content.v1", content.as_bytes())
                 {
                     return Err(EvidenceError::DigestMismatch("artifact.content_digest"));
                 }
@@ -594,7 +594,7 @@ impl EvidenceSnapshotV1 {
             retention_gap: bool,
         }
         digest_json(
-            "a3s.code.evidence-snapshot.identity.v1",
+            "aster.code.evidence-snapshot.identity.v1",
             &Identity {
                 schema: &self.schema,
                 target: &self.target,
@@ -756,7 +756,7 @@ impl RunEvidenceReader {
                 run_event_envelope_v1(record, &request.target.run_id, &request.target.session_id)
                     .map_err(|_| EvidenceError::InvalidField("event"))?;
             let encoded = serde_json::to_vec(&envelope).map_err(EvidenceError::Serialization)?;
-            let payload_digest = digest_bytes("a3s.code.evidence.event-payload.v1", &encoded);
+            let payload_digest = digest_bytes("aster.code.evidence.event-payload.v1", &encoded);
             let payload_bytes =
                 u64::try_from(encoded.len()).map_err(|_| EvidenceError::NumericOverflow)?;
             let mut projected = envelope.clone();
@@ -898,7 +898,7 @@ impl RunEvidenceReader {
             }
             let content_bytes = artifact.content.len();
             let digest = digest_bytes(
-                "a3s.code.evidence.artifact-content.v1",
+                "aster.code.evidence.artifact-content.v1",
                 artifact.content.as_bytes(),
             );
             let content = if include_content
@@ -1030,7 +1030,7 @@ fn fact_payload_matches_event(fact: &ExecutionFactV1, event: &EvidenceEventV1) -
         return false;
     };
     u64::try_from(encoded.len()).ok() == Some(fact.payload_bytes)
-        && digest_bytes("a3s.code.execution-fact.payload.v1", &encoded) == fact.payload_digest
+        && digest_bytes("aster.code.execution-fact.payload.v1", &encoded) == fact.payload_digest
 }
 
 fn collect_refs_from_value(value: &Value, refs: &mut BTreeSet<String>) -> bool {

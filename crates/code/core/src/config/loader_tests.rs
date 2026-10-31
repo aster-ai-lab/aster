@@ -35,7 +35,7 @@ providers "openai" {
   api_key = "provider-secret"
   base_url = "https://llm.example.test/v1"
   session_id_header = "x-session-id"
-  headers = { Authorization = "Bearer provider-secret", X_Tenant = "a3s" }
+  headers = { Authorization = "Bearer provider-secret", X_Tenant = "aster" }
 
   models "gpt-test" {
     name = "GPT Test"
@@ -121,7 +121,7 @@ search {
     auto_download_moli = false
     moli_version = "1.1.1"
     moli_sha256 = "56deed4634b9c77641ce31f3802b9bb3f32c6d7f28073f73901540429a29864b"
-    moli_cache_dir = "/var/cache/a3s-code/moli"
+    moli_cache_dir = "/var/cache/aster/moli"
     moli_download_timeout_secs = 45
     launch_args = ["--disable-gpu"]
     proxy_url = "http://127.0.0.1:7890"
@@ -257,7 +257,7 @@ mcp_servers "filesystem" {
             .moli_cache_dir
             .as_ref()
             .map(|path| path.to_string_lossy()),
-        Some("/var/cache/a3s-code/moli".into())
+        Some("/var/cache/aster/moli".into())
     );
     assert_eq!(headless.moli_download_timeout_secs, 45);
     assert_eq!(
@@ -349,6 +349,81 @@ providers "openai" {
     let message = error.to_string();
     assert!(message.contains("region"), "{message}");
     assert!(message.contains("api_key"), "{message}");
+    assert!(message.contains("protocol"), "{message}");
+}
+
+#[test]
+fn provider_protocol_defaults_to_openai_and_honors_explicit_value() {
+    let config = CodeConfig::from_acl(
+        r#"
+providers "custom-gateway" {
+  api_key = "k"
+  base_url = "https://llm.example.test/v1"
+  models "m" {}
+}
+
+providers "glm-01" {
+  protocol = "anthropic"
+  api_key = "k"
+  base_url = "https://open.bigmodel.cn/api/anthropic"
+  models "glm-5.3-flash" {}
+}
+
+providers "url-inferred" {
+  api_key = "k"
+  base_url = "https://open.bigmodel.cn/api/anthropic"
+  models "m" {}
+}
+"#,
+    )
+    .expect("config parses");
+
+    let custom = config.find_provider("custom-gateway").expect("custom");
+    assert_eq!(custom.protocol, None);
+    assert_eq!(
+        custom.resolved_protocol(),
+        crate::config::ProviderProtocol::Openai
+    );
+    assert_eq!(
+        config
+            .llm_config("custom-gateway", "m")
+            .expect("resolves")
+            .protocol,
+        crate::config::ProviderProtocol::Openai
+    );
+
+    let glm = config.find_provider("glm-01").expect("glm-01");
+    assert_eq!(glm.protocol, Some(crate::config::ProviderProtocol::Anthropic));
+    assert_eq!(
+        config
+            .llm_config("glm-01", "glm-5.3-flash")
+            .expect("resolves")
+            .protocol,
+        crate::config::ProviderProtocol::Anthropic
+    );
+
+    let inferred = config.find_provider("url-inferred").expect("url-inferred");
+    assert_eq!(inferred.protocol, None);
+    assert_eq!(
+        inferred.resolved_protocol(),
+        crate::config::ProviderProtocol::Anthropic
+    );
+}
+
+#[test]
+fn unknown_provider_protocol_names_the_closed_set() {
+    let error = CodeConfig::from_acl(
+        r#"
+providers "custom" {
+  protocol = "soap"
+}
+"#,
+    )
+    .unwrap_err();
+    let message = error.to_string();
+    assert!(message.contains("soap"), "{message}");
+    assert!(message.contains("openai"), "{message}");
+    assert!(message.contains("anthropic"), "{message}");
 }
 
 #[test]

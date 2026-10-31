@@ -4,7 +4,7 @@
 //! Service (KDS) at `kds.amd.com`. Certificates are cached locally to
 //! avoid repeated network requests.
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use std::path::PathBuf;
 
 use super::attestation::{CertificateChain, TcbVersion};

@@ -4,9 +4,9 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::platform::Platform;
-use a3s_box_core::StoredImage;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::platform::Platform;
+use aster_box_core::StoredImage;
 use serde::{Deserialize, Serialize};
 
 use crate::oci::image::canonical_sha256_digest_hex;

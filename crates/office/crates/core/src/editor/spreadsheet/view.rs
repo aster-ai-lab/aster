@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{editor_error, prefix, qualified, validate_mutation_path};
 use crate::xml_edit::{apply_patches, index_xml, insert_child, insert_ordered_child, XmlPatch};
@@ -283,7 +283,7 @@ fn require_mutable_pane(
     Ok(())
 }
 
-fn node_not_found(path: &str) -> a3s_use_core::UseError {
+fn node_not_found(path: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.node_not_found",
         format!("Office semantic path '{path}' does not exist."),
@@ -291,7 +291,7 @@ fn node_not_found(path: &str) -> a3s_use_core::UseError {
     .with_detail("path", path)
 }
 
-fn view_part_error(part: &str, reason: &str) -> a3s_use_core::UseError {
+fn view_part_error(part: &str, reason: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_freeze_invalid",
         format!("Spreadsheet worksheet part '{part}' {reason}."),

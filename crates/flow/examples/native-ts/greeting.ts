@@ -3,7 +3,7 @@ import type {
   RuntimeCommand,
   StepInvocation,
   WorkflowInvocation,
-} from "./a3s-flow-runtime";
+} from "./aster-flow-runtime";
 
 type GreetingInput = {
   name: string;

@@ -10,7 +10,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -26,7 +26,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -42,7 +42,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -58,7 +58,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -74,7 +74,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -90,7 +90,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -106,7 +106,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -122,7 +122,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -138,7 +138,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -154,7 +154,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -170,7 +170,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -186,7 +186,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -202,7 +202,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -218,7 +218,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -234,7 +234,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -250,7 +250,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -266,7 +266,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -282,7 +282,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -298,7 +298,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -314,7 +314,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -330,7 +330,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -346,7 +346,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -362,7 +362,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -378,7 +378,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -394,7 +394,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -410,7 +410,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -426,7 +426,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -442,7 +442,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -458,7 +458,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -474,7 +474,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -490,7 +490,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -506,7 +506,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -522,7 +522,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -538,7 +538,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -554,7 +554,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -570,7 +570,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -586,7 +586,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -602,7 +602,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -618,7 +618,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -634,7 +634,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -650,7 +650,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -666,7 +666,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -682,7 +682,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -698,7 +698,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -714,7 +714,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -730,7 +730,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -746,7 +746,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -762,7 +762,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -778,7 +778,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -794,7 +794,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -810,7 +810,7 @@
 
 可达性：当前可见设置；其效果必须实测，可能暴露无 backing 缺陷；语音项正向不代表可开启语音服务。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -826,7 +826,7 @@
 
 可达性：CODE BACKEND HIDDEN：仅入口限制验收，不声称该设置功能通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |

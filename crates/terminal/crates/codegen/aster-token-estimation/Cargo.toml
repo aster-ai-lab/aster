@@ -1,0 +1,12 @@
+[package]
+license = "Apache-2.0"
+name = "aster-token-estimation"
+version = "0.1.0"
+description = "Pure shared token-estimation primitives."
+edition = "2024"
+publish = false
+
+[dependencies]
+
+[lints]
+workspace = true

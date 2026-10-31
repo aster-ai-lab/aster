@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ActivityResolution, ChildWorkflowCancellationPolicy, ChildWorkflowCommand, FlowError,
     FlowEvent, FlowEventEnvelope, FlowEventStore, NativeRuntimeKind, NativeRuntimeRequest,
     NativeRuntimeResponse, NativeTsCompilerCapabilities, NativeTsDependencyManifest,
@@ -48,7 +48,7 @@ fn activity_protocol_preserves_fencing_and_checkpoint_fields() {
     assert_eq!(encoded["type"], "schedule_activity");
     assert_eq!(encoded["activity_id"], "a1");
 
-    let timed_command = a3s_flow::ActivityCommand::new("a1", "sendEmail", json!({}))
+    let timed_command = aster_flow::ActivityCommand::new("a1", "sendEmail", json!({}))
         .with_timeout(std::time::Duration::from_millis(25));
     let timed_command = RuntimeCommand::from(timed_command);
     assert_eq!(
@@ -93,7 +93,7 @@ fn activity_protocol_preserves_fencing_and_checkpoint_fields() {
 
 #[tokio::test]
 async fn event_payload_budget_rejects_oversized_history_mutations() {
-    let store = a3s_flow::InMemoryEventStore::new();
+    let store = aster_flow::InMemoryEventStore::new();
     let error = store
         .append(
             "oversized-event",
@@ -414,7 +414,7 @@ fn child_workflow_events_use_stable_wire_shapes_and_event_keys() {
     let requested = FlowEvent::ChildWorkflowRequested {
         child_id: "invoice".into(),
         child_run_id: "child-run-1".into(),
-        spec: a3s_flow::WorkflowSpec::rust_embedded(
+        spec: aster_flow::WorkflowSpec::rust_embedded(
             "invoice.child",
             "1",
             "tests::protocol",
@@ -522,7 +522,7 @@ fn signal_contracts_commands_and_events_use_stable_wire_shapes() {
 
 #[test]
 fn native_ts_authoring_types_track_runtime_protocol_shape() {
-    let types = include_str!("../examples/native-ts/a3s-flow-runtime.d.ts");
+    let types = include_str!("../examples/native-ts/aster-flow-runtime.d.ts");
     for event_type in [
         "run_created",
         "run_started",

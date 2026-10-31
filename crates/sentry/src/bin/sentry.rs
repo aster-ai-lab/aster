@@ -1,17 +1,17 @@
-//! `sentry` — the daemon: read a3s-observer NDJSON on stdin, judge each event through L1→L2→L3,
+//! `sentry` — the daemon: read aster-observer NDJSON on stdin, judge each event through L1→L2→L3,
 //! enforce blocks via observer's deny-files, and emit a decision audit line per non-allow.
 //!
 //! Wire it downstream of the collector, exactly where observer's README leaves "your controller":
 //!
 //! ```text
-//! A3S_OBSERVER_JSON=1 A3S_OBSERVER_SSL=1 sudo -E a3s-observer-collector \
-//!   | A3S_SENTRY_EGRESS_DENY=egress-deny.txt \
-//!     A3S_SENTRY_LLM_URL=http://host:18051/v1 a3s-sentry
+//! ASTER_OBSERVER_JSON=1 ASTER_OBSERVER_SSL=1 sudo -E aster-observer-collector \
+//!   | ASTER_SENTRY_EGRESS_DENY=egress-deny.txt \
+//!     ASTER_SENTRY_LLM_URL=http://host:18051/v1 aster-sentry
 //! ```
 //!
 //! Config is all env (see `--help`): policy file, L2/L3 backends, deny-file sinks, fail mode.
 
-use a3s_sentry::{
+use aster_sentry::{
     AgentJudge, Decision, Enforcer, LiveRules, LlmJudge, Metrics, ObservedEvent, Pipeline,
     Severity, Tier, Verdict,
 };
@@ -25,7 +25,7 @@ use std::time::Duration;
 fn main() -> anyhow::Result<()> {
     match std::env::args().nth(1).as_deref() {
         Some("--version" | "-V") => {
-            println!("a3s-sentry {}", env!("CARGO_PKG_VERSION"));
+            println!("aster-sentry {}", env!("CARGO_PKG_VERSION"));
             return Ok(());
         }
         Some("--help" | "-h") => {
@@ -44,13 +44,13 @@ fn main() -> anyhow::Result<()> {
     // didn't take effect. Bind fails fast on a bad address rather than silently running blind.
     let metrics = Metrics::default();
     if let Some(addr) = &cfg.metrics_addr {
-        let bound = a3s_sentry::metrics::serve(addr, metrics.clone())
+        let bound = aster_sentry::metrics::serve(addr, metrics.clone())
             .map_err(|e| anyhow::anyhow!("binding metrics endpoint {addr}: {e}"))?;
-        eprintln!("a3s-sentry: metrics at http://{bound}/metrics, liveness at /healthz");
+        eprintln!("aster-sentry: metrics at http://{bound}/metrics, liveness at /healthz");
     }
 
     eprintln!(
-        "a3s-sentry {}: L1={} rules L2={} L3={} fail={} speculate={} dry_run={} — reading observer NDJSON on stdin",
+        "aster-sentry {}: L1={} rules L2={} L3={} fail={} speculate={} dry_run={} — reading observer NDJSON on stdin",
         env!("CARGO_PKG_VERSION"),
         live.rule_count(),
         if cfg.llm_url.is_some() { "on" } else { "off" },
@@ -62,9 +62,9 @@ fn main() -> anyhow::Result<()> {
     // Loud footgun warning: rules-only + fail-open silently ALLOWS every escalate rule.
     if !cfg.fail_closed && cfg.llm_url.is_none() && cfg.agent_bin.is_none() {
         eprintln!(
-            "a3s-sentry: WARNING — rules-only + fail-open: every `escalate` rule (credential reads, \
-             secret egress, persistence, bind, …) resolves to ALLOW. Set A3S_SENTRY_FAIL_CLOSED=1, \
-             or configure A3S_SENTRY_LLM_URL / A3S_SENTRY_AGENT_BIN, to act on them."
+            "aster-sentry: WARNING — rules-only + fail-open: every `escalate` rule (credential reads, \
+             secret egress, persistence, bind, …) resolves to ALLOW. Set ASTER_SENTRY_FAIL_CLOSED=1, \
+             or configure ASTER_SENTRY_LLM_URL / ASTER_SENTRY_AGENT_BIN, to act on them."
         );
     }
 
@@ -76,12 +76,12 @@ fn main() -> anyhow::Result<()> {
             std::thread::sleep(Duration::from_secs(2));
             match reloader.reload_if_changed() {
                 Ok(true) => eprintln!(
-                    "a3s-sentry: policy reloaded — {} rules",
+                    "aster-sentry: policy reloaded — {} rules",
                     reloader.rule_count()
                 ),
                 Ok(false) => {}
                 Err(e) => {
-                    eprintln!("a3s-sentry: policy reload failed (keeping current rules): {e}")
+                    eprintln!("aster-sentry: policy reload failed (keeping current rules): {e}")
                 }
             }
         });
@@ -109,7 +109,7 @@ fn main() -> anyhow::Result<()> {
             match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| pipeline.evaluate(&ev)))
             {
                 Ok(d) => handle(&ev, &d, &enforcer, &metrics),
-                Err(_) => eprintln!("a3s-sentry: a judge panicked on an escalated event — skipped"),
+                Err(_) => eprintln!("aster-sentry: a judge panicked on an escalated event — skipped"),
             }
         }));
     }
@@ -139,7 +139,7 @@ fn main() -> anyhow::Result<()> {
         })) {
             Ok(d) => d,
             Err(_) => {
-                eprintln!("a3s-sentry: L1 panicked on an event — skipped");
+                eprintln!("aster-sentry: L1 panicked on an event — skipped");
                 continue;
             }
         };
@@ -157,7 +157,7 @@ fn main() -> anyhow::Result<()> {
 
         if total.is_multiple_of(10_000) {
             eprintln!(
-                "a3s-sentry: {total} events, {} blocked, {} overload-degraded",
+                "aster-sentry: {total} events, {} blocked, {} overload-degraded",
                 metrics.blocked.load(Ordering::Relaxed),
                 metrics.degraded.load(Ordering::Relaxed)
             );
@@ -169,7 +169,7 @@ fn main() -> anyhow::Result<()> {
         let _ = w.join();
     }
     eprintln!(
-        "a3s-sentry: stopped — {} events, {} blocked, {} overload-degraded",
+        "aster-sentry: stopped — {} events, {} blocked, {} overload-degraded",
         metrics.events.load(Ordering::Relaxed),
         metrics.blocked.load(Ordering::Relaxed),
         metrics.degraded.load(Ordering::Relaxed)
@@ -196,7 +196,7 @@ fn handle(ev: &ObservedEvent, d: &Decision, enforcer: &Mutex<Enforcer>, m: &Metr
                 Err(e) => {
                     // A block that didn't land. Count it so an operator can alarm — don't just log.
                     m.enforce_failed.fetch_add(1, Ordering::Relaxed);
-                    eprintln!("a3s-sentry: enforce write failed: {e}");
+                    eprintln!("aster-sentry: enforce write failed: {e}");
                 }
             }
         }
@@ -252,37 +252,37 @@ impl Config {
     fn from_env() -> Self {
         let env = |k: &str| std::env::var(k).ok().filter(|v| !v.is_empty());
         Self {
-            policy_path: env("A3S_SENTRY_POLICY").map(PathBuf::from),
-            llm_url: env("A3S_SENTRY_LLM_URL"),
-            llm_model: env("A3S_SENTRY_LLM_MODEL").unwrap_or_else(|| "default".into()),
-            llm_key: env("A3S_SENTRY_LLM_KEY"),
-            agent_bin: env("A3S_SENTRY_AGENT_BIN"),
-            skills_dir: env("A3S_SENTRY_SKILLS"),
-            egress_deny: env("A3S_SENTRY_EGRESS_DENY").map(PathBuf::from),
-            file_deny: env("A3S_SENTRY_FILE_DENY").map(PathBuf::from),
-            exec_deny: env("A3S_SENTRY_EXEC_DENY").map(PathBuf::from),
-            fail_closed: env("A3S_SENTRY_FAIL_CLOSED").is_some(),
+            policy_path: env("ASTER_SENTRY_POLICY").map(PathBuf::from),
+            llm_url: env("ASTER_SENTRY_LLM_URL"),
+            llm_model: env("ASTER_SENTRY_LLM_MODEL").unwrap_or_else(|| "default".into()),
+            llm_key: env("ASTER_SENTRY_LLM_KEY"),
+            agent_bin: env("ASTER_SENTRY_AGENT_BIN"),
+            skills_dir: env("ASTER_SENTRY_SKILLS"),
+            egress_deny: env("ASTER_SENTRY_EGRESS_DENY").map(PathBuf::from),
+            file_deny: env("ASTER_SENTRY_FILE_DENY").map(PathBuf::from),
+            exec_deny: env("ASTER_SENTRY_EXEC_DENY").map(PathBuf::from),
+            fail_closed: env("ASTER_SENTRY_FAIL_CLOSED").is_some(),
             // Presence enables speculation; the value sets the severity threshold (default High).
-            speculate_above: env("A3S_SENTRY_SPECULATE").map(|v| parse_sev(&v)),
+            speculate_above: env("ASTER_SENTRY_SPECULATE").map(|v| parse_sev(&v)),
             // Reasoning LLMs are slow (a real GLM-5 classification measured ~16s) — default 30s, not
             // the old 10s, and make it tunable per model.
-            llm_timeout_s: env("A3S_SENTRY_LLM_TIMEOUT")
+            llm_timeout_s: env("ASTER_SENTRY_LLM_TIMEOUT")
                 .and_then(|v| v.parse().ok())
                 .unwrap_or(30),
-            agent_timeout_s: env("A3S_SENTRY_AGENT_TIMEOUT")
+            agent_timeout_s: env("ASTER_SENTRY_AGENT_TIMEOUT")
                 .and_then(|v| v.parse().ok())
                 .unwrap_or(120),
             // worker pool for the slow L2/L3 tiers so they never head-of-line-block the L1 stream
-            workers: env("A3S_SENTRY_WORKERS")
+            workers: env("ASTER_SENTRY_WORKERS")
                 .and_then(|v| v.parse().ok())
                 .filter(|&n| n > 0)
                 .unwrap_or(4),
-            queue_cap: env("A3S_SENTRY_QUEUE")
+            queue_cap: env("ASTER_SENTRY_QUEUE")
                 .and_then(|v| v.parse().ok())
                 .filter(|&n| n > 0)
                 .unwrap_or(256),
-            dry_run: env("A3S_SENTRY_DRY_RUN").is_some(),
-            metrics_addr: env("A3S_SENTRY_METRICS_ADDR"),
+            dry_run: env("ASTER_SENTRY_DRY_RUN").is_some(),
+            metrics_addr: env("ASTER_SENTRY_METRICS_ADDR"),
         }
     }
 
@@ -342,29 +342,29 @@ fn parse_sev(s: &str) -> Severity {
 }
 
 const HELP: &str = "\
-a3s-sentry — tiered (L1 rules / L2 LLM / L3 a3s-code) runtime security control for AI agents.
+aster-sentry — tiered (L1 rules / L2 LLM / L3 aster) runtime security control for AI agents.
 
-Reads a3s-observer NDJSON on stdin, judges each event, enforces blocks via observer deny-files,
-and writes a decision audit (NDJSON) on stdout. Pipe it after a3s-observer-collector.
+Reads aster-observer NDJSON on stdin, judges each event, enforces blocks via observer deny-files,
+and writes a decision audit (NDJSON) on stdout. Pipe it after aster-observer-collector.
 
 Env config:
-  A3S_SENTRY_POLICY=<file.acl>    extra L1 rules (ACL); built-ins always apply; HOT-RELOADED (~2s)
-  A3S_SENTRY_LLM_URL=<base/v1>    enable L2; OpenAI-compatible chat endpoint
-  A3S_SENTRY_LLM_MODEL=<name>     L2 model (default: \"default\")
-  A3S_SENTRY_LLM_KEY=<key>        L2 bearer token (optional)
-  A3S_SENTRY_AGENT_BIN=<bin>      enable L3; the a3s-code binary/path
-  A3S_SENTRY_SKILLS=<dir>         L3 security-skills directory
-  A3S_SENTRY_EGRESS_DENY=<file>   observer egress deny-file to append blocked IPs/hosts
-  A3S_SENTRY_FILE_DENY=<file>     observer file deny-file
-  A3S_SENTRY_EXEC_DENY=<file>     observer exec deny-file
-  A3S_SENTRY_FAIL_CLOSED=1        unresolved escalations BLOCK (default: fail-open / allow)
-  A3S_SENTRY_SPECULATE=<sev>      run L2+L3 in PARALLEL when L1 escalates at >= <sev> (default: high)
-  A3S_SENTRY_LLM_TIMEOUT=<secs>   L2 request timeout (default 30; reasoning models take ~15-30s)
-  A3S_SENTRY_AGENT_TIMEOUT=<secs> L3 investigation timeout (default 120)
-  A3S_SENTRY_WORKERS=<n>          L2/L3 worker threads off the ingest thread (default 4)
-  A3S_SENTRY_QUEUE=<n>            escalation queue depth (default 256; full → graceful fail-mode)
-  A3S_SENTRY_DRY_RUN=1            judge + audit, but never write a deny-file
-  A3S_SENTRY_METRICS_ADDR=<ip:port> serve Prometheus /metrics + /healthz (e.g. 0.0.0.0:9100; off by default)
+  ASTER_SENTRY_POLICY=<file.acl>    extra L1 rules (ACL); built-ins always apply; HOT-RELOADED (~2s)
+  ASTER_SENTRY_LLM_URL=<base/v1>    enable L2; OpenAI-compatible chat endpoint
+  ASTER_SENTRY_LLM_MODEL=<name>     L2 model (default: \"default\")
+  ASTER_SENTRY_LLM_KEY=<key>        L2 bearer token (optional)
+  ASTER_SENTRY_AGENT_BIN=<bin>      enable L3; the aster binary/path
+  ASTER_SENTRY_SKILLS=<dir>         L3 security-skills directory
+  ASTER_SENTRY_EGRESS_DENY=<file>   observer egress deny-file to append blocked IPs/hosts
+  ASTER_SENTRY_FILE_DENY=<file>     observer file deny-file
+  ASTER_SENTRY_EXEC_DENY=<file>     observer exec deny-file
+  ASTER_SENTRY_FAIL_CLOSED=1        unresolved escalations BLOCK (default: fail-open / allow)
+  ASTER_SENTRY_SPECULATE=<sev>      run L2+L3 in PARALLEL when L1 escalates at >= <sev> (default: high)
+  ASTER_SENTRY_LLM_TIMEOUT=<secs>   L2 request timeout (default 30; reasoning models take ~15-30s)
+  ASTER_SENTRY_AGENT_TIMEOUT=<secs> L3 investigation timeout (default 120)
+  ASTER_SENTRY_WORKERS=<n>          L2/L3 worker threads off the ingest thread (default 4)
+  ASTER_SENTRY_QUEUE=<n>            escalation queue depth (default 256; full → graceful fail-mode)
+  ASTER_SENTRY_DRY_RUN=1            judge + audit, but never write a deny-file
+  ASTER_SENTRY_METRICS_ADDR=<ip:port> serve Prometheus /metrics + /healthz (e.g. 0.0.0.0:9100; off by default)
 
 The policy file is hot-reloaded: rewrite it from any program (or your config system) and the rules
 update live within ~2s, no restart. A parse error keeps the current rules.

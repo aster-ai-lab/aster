@@ -2,9 +2,9 @@ import * as Y from 'yjs';
 import type { WorkArtifactKind } from '../features/work/work-types';
 
 export const WORK_OFFICE_COLLABORATION_PROTOCOL =
-  'a3s.office.collaboration' as const;
+  'aster.office.collaboration' as const;
 export const WORK_OFFICE_COLLABORATION_VERSION = 1 as const;
-export const WORK_OFFICE_COLLABORATION_NAMESPACE = 'a3s.office' as const;
+export const WORK_OFFICE_COLLABORATION_NAMESPACE = 'aster.office' as const;
 
 export type WorkOfficeCollaborationMode =
   | 'view'

@@ -603,7 +603,7 @@ pub(crate) struct FactSession {
     max_tool_rounds: usize,
     surface: Option<crate::fact_control::SessionSurface>,
     original_model: Option<super::OriginalModelCallPort>,
-    fact_log: Arc<std::sync::Mutex<Option<Arc<a3s_effect::FileLog>>>>,
+    fact_log: Arc<std::sync::Mutex<Option<Arc<aster_effect::FileLog>>>>,
 }
 
 impl FactSession {

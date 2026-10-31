@@ -18,7 +18,7 @@ impl SqliteSavepoint {
         guard: OwnedMutexGuard<()>,
         id: u64,
     ) -> Result<Self, SqliteError> {
-        let name = format!("a3s_sp_{id}");
+        let name = format!("aster_sp_{id}");
         executor
             .execute_control(format!("SAVEPOINT \"{name}\""))
             .await?;

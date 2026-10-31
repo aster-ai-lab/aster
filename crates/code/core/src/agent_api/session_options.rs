@@ -8,7 +8,7 @@ use super::SessionOptions;
 use crate::prompts::{PlanningMode, SystemPromptSlots};
 use crate::queue::SessionQueueConfig;
 use crate::subagent::WorkerAgentSpec;
-use a3s_memory::MemoryStore;
+use aster_durable_memory::MemoryStore;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -218,7 +218,7 @@ impl SessionOptions {
         self
     }
 
-    /// Bind this session to one exact A3S Use package generation.
+    /// Bind this session to one exact Aster Use package generation.
     ///
     /// The supplied runtime value contains a serializable immutable binding
     /// and a host-owned provider. On restart the host must inject the same
@@ -290,7 +290,7 @@ impl SessionOptions {
 
     /// Add the compatibility built-in skill registry.
     ///
-    /// A3S Code no longer ships embedded built-in skills, so this currently
+    /// Aster Code no longer ships embedded built-in skills, so this currently
     /// installs an empty registry. Use skill directories, inline skills, or a
     /// custom skill registry for reusable behavior.
     pub fn with_builtin_skills(mut self) -> Self {
@@ -346,7 +346,7 @@ impl SessionOptions {
 
     /// Watch directories for later installs without loading them now. A
     /// session created before its project/user skills directory exists still
-    /// sees the first `a3s code skills add` land there.
+    /// sees the first `aster code skills add` land there.
     pub fn with_watch_skill_dirs(
         mut self,
         dirs: impl IntoIterator<Item = impl Into<std::path::PathBuf>>,
@@ -532,7 +532,7 @@ impl SessionOptions {
     ///
     /// This is the preferred programmatic path for RL training and deployed
     /// service data collection. Environment-only deployments can instead set
-    /// `A3S_CODE_TRAJECTORY_PATH`.
+    /// `ASTER_TRAJECTORY_PATH`.
     pub fn with_rl_trajectory(mut self, config: crate::rl_trajectory::RlTrajectoryConfig) -> Self {
         self.rl_trajectory = Some(config);
         self
@@ -658,7 +658,7 @@ impl SessionOptions {
 
     /// Override the default native [`BashSandbox`] for this session.
     ///
-    /// Local sessions automatically bind the A3S native sandbox. Use this
+    /// Local sessions automatically bind the Aster native sandbox. Use this
     /// option only when the host owns another equivalent isolation boundary.
     /// The host remains responsible for constructing and lifecycle-managing a
     /// custom sandbox.
@@ -675,7 +675,7 @@ impl SessionOptions {
     /// machines. It only applies when native initialization fails and the host
     /// already provides an outer isolation boundary (Harbor task containers).
     /// Equivalent environment opt-in:
-    /// `A3S_CODE_ALLOW_PROCESS_HOST_SANDBOX=1`.
+    /// `ASTER_ALLOW_PROCESS_HOST_SANDBOX=1`.
     pub fn with_allow_process_host_sandbox(mut self, allow: bool) -> Self {
         self.allow_process_host_sandbox = allow;
         self

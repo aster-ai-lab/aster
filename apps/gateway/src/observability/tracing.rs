@@ -347,7 +347,7 @@ fn default_sample_rate() -> f64 {
 }
 
 fn default_service_name() -> String {
-    "a3s-gateway".to_string()
+    "aster-gateway".to_string()
 }
 
 impl Default for TracingConfig {
@@ -700,7 +700,7 @@ mod tests {
         assert!(config.otlp_endpoint.is_none());
         assert_eq!(config.propagation, "w3c");
         assert_eq!(config.sample_rate, 1.0);
-        assert_eq!(config.service_name, "a3s-gateway");
+        assert_eq!(config.service_name, "aster-gateway");
         assert!(!config.is_export_enabled());
     }
 

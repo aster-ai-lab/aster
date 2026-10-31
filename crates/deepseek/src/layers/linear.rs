@@ -5,7 +5,7 @@
 //! F32 tiled control remains available. Full model resource reservation and
 //! numerical/performance promotion remain separate qualification obligations.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

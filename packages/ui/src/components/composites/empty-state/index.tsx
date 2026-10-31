@@ -117,7 +117,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'a3s-row-enter flex flex-col items-center justify-center text-center',
+        'aster-row-enter flex flex-col items-center justify-center text-center',
         compact ? 'px-4 py-8' : 'flex-1 px-6 py-12',
         className
       )}>

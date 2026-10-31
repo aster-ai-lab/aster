@@ -563,7 +563,7 @@ fn request_model(body: &str) -> Option<String> {
 }
 
 fn tui_binary() -> PathBuf {
-    if let Some(path) = std::env::var_os("A3S_CODE_TUI_BIN") {
+    if let Some(path) = std::env::var_os("ASTER_TUI_BIN") {
         return PathBuf::from(path);
     }
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../target/debug/aster")
@@ -739,11 +739,11 @@ fn write_acl(path: &Path, body: &str) {
 fn child_env(config: &Path, home: &Path) -> Vec<(String, String)> {
     let acp = binaries::acp_binary();
     vec![
-        ("A3S_ACP_AGENT_BIN".into(), acp.to_string()),
-        ("A3S_CONFIG".into(), config.display().to_string()),
-        ("A3S_DISABLE_CC_SWITCH".into(), "1".into()),
-        ("A3S_DISABLE_GROK_ACCOUNT".into(), "1".into()),
-        ("A3S_DISABLE_CURSOR_ACCOUNT".into(), "1".into()),
+        ("ASTER_ACP_AGENT_BIN".into(), acp.to_string()),
+        ("ASTER_CONFIG".into(), config.display().to_string()),
+        ("ASTER_DISABLE_CC_SWITCH".into(), "1".into()),
+        ("ASTER_DISABLE_GROK_ACCOUNT".into(), "1".into()),
+        ("ASTER_DISABLE_CURSOR_ACCOUNT".into(), "1".into()),
         ("HOME".into(), home.display().to_string()),
         ("GROK_HOME".into(), home.join("grok").display().to_string()),
         ("TMPDIR".into(), std::env::temp_dir().display().to_string()),
@@ -763,7 +763,7 @@ fn prepare(acl_body: &str) -> Fixture {
     std::fs::create_dir_all(home.join("grok")).expect("grok home");
     std::fs::create_dir_all(&workspace).expect("workspace");
     std::fs::write(workspace.join("sentinel.txt"), b"unchanged").expect("sentinel");
-    let config = workspace.join(".a3s").join("config.acl");
+    let config = workspace.join(".aster").join("config.acl");
     write_acl(&config, acl_body);
     let env = child_env(&config, &home);
     Fixture {
@@ -1025,32 +1025,32 @@ fn arm_shop(mock: &Mock, fixture: &mut Fixture) {
     let workspace = &fixture.workspace;
     write_shop_fixture(workspace);
     *mock.workspace.lock().expect("workspace") = Some(workspace.to_path_buf());
-    let config = workspace.join(".a3s/config.acl");
-    let mut document = a3s_acl::parse_acl(&std::fs::read_to_string(&config).unwrap()).unwrap();
-    document.blocks.push(a3s_acl::Block {
+    let config = workspace.join(".aster/config.acl");
+    let mut document = aster_acl::parse_acl(&std::fs::read_to_string(&config).unwrap()).unwrap();
+    document.blocks.push(aster_acl::Block {
         name: "verification_contract".into(),
         labels: vec!["dual-defect".into()],
         blocks: Vec::new(),
         attributes: std::collections::HashMap::from([
             (
                 "workspace".into(),
-                a3s_acl::Value::String(workspace.to_str().unwrap().into()),
+                aster_acl::Value::String(workspace.to_str().unwrap().into()),
             ),
             (
                 "command".into(),
-                a3s_acl::Value::String("python3 gate.py".into()),
+                aster_acl::Value::String("python3 gate.py".into()),
             ),
             (
                 "covers".into(),
-                a3s_acl::Value::List(
+                aster_acl::Value::List(
                     ["rate.py", "fee.py", "runs.txt"]
-                        .map(|path| a3s_acl::Value::String(path.into()))
+                        .map(|path| aster_acl::Value::String(path.into()))
                         .into(),
                 ),
             ),
         ]),
     });
-    std::fs::write(config, a3s_acl::generate_acl(&document)).unwrap();
+    std::fs::write(config, aster_acl::generate_acl(&document)).unwrap();
     if let Some(directory) = std::env::var_os("ASTER_SANDBOX_DIR") {
         fixture.env.push((
             "ASTER_SANDBOX_DIR".into(),

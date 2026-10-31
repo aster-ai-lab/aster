@@ -8,7 +8,7 @@ use std::os::unix::ffi::OsStrExt;
 use std::os::unix::net::{SocketAddr as StdSocketAddr, UnixStream};
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::{Error, ErrorCode, OciBundle, ProcessIo, Result, MAX_CONFIG_BYTES};
+use aster_oci_sdk::{Error, ErrorCode, OciBundle, ProcessIo, Result, MAX_CONFIG_BYTES};
 
 use super::bundle_scope::{PinnedBundleDirectory, PinnedRootfsDirectory};
 use super::control::{
@@ -370,7 +370,7 @@ fn run_container_init(invocation: ContainerInitInvocation) -> Result<()> {
     )?;
     let mut namespace_isolation = plan.sysctls.namespace_isolation();
     if !plan.network_devices.is_empty() {
-        namespace_isolation.require(a3s_oci_sdk::OciLinuxSysctlNamespace::Network);
+        namespace_isolation.require(aster_oci_sdk::OciLinuxSysctlNamespace::Network);
     }
     if let Err(error) =
         namespace::enter_new_namespaces(&plan.namespaces, &namespace_isolation, &mut control)
@@ -394,7 +394,7 @@ fn run_container_init(invocation: ContainerInitInvocation) -> Result<()> {
         // enable domain controllers only after the create-hook barrier proves
         // that management is empty again.
         if let Err(error) =
-            super::cgroup::join_current_process(a3s_oci_sdk::CONTROL_CGROUP_PROCS_FD)
+            super::cgroup::join_current_process(aster_oci_sdk::CONTROL_CGROUP_PROCS_FD)
         {
             return reject_before_ready(
                 &mut control,
@@ -454,7 +454,7 @@ pub(super) fn complete_create_and_wait_for_start(
     };
     drop(detached_sources);
     let creating = match create.hook_state.encode(
-        a3s_oci_sdk::oci_spec::runtime::ContainerState::Creating,
+        aster_oci_sdk::oci_spec::runtime::ContainerState::Creating,
         Some(runtime_pid),
     ) {
         Ok(state) => state,
@@ -978,7 +978,7 @@ fn enter_rootfs_run_start_hooks_and_exec(
         rootfs::chroot(rootfs)?;
     }
     let created = hook_state.encode(
-        a3s_oci_sdk::oci_spec::runtime::ContainerState::Created,
+        aster_oci_sdk::oci_spec::runtime::ContainerState::Created,
         Some(runtime_pid),
     )?;
     plan.hooks.run_sync(HookPhase::StartContainer, &created)?;

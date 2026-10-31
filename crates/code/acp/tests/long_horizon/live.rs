@@ -1,7 +1,7 @@
 #![cfg(all(test, unix))]
 
 use super::{candidate::Candidate, config, driver::Driver, fixture, relay::Relay, upstream};
-use a3s_code_core::config::CodeConfig;
+use aster_core::config::CodeConfig;
 use std::path::{Path, PathBuf};
 
 pub fn build_id(binary: &Path) -> Result<String, &'static str> {
@@ -18,7 +18,7 @@ pub fn build_id(binary: &Path) -> Result<String, &'static str> {
 }
 
 pub fn freeze_pair(directory: &Path) -> (PathBuf, PathBuf) {
-    let source = Path::new(env!("CARGO_BIN_EXE_a3s-code-acp"));
+    let source = Path::new(env!("CARGO_BIN_EXE_aster-acp"));
     let expected = env!("ASTER_PAIR_BUILD_ID");
     let candidate = Candidate::from_environment(expected)
         .expect("registered candidate must match its source and bytes");
@@ -28,7 +28,7 @@ pub fn freeze_pair(directory: &Path) -> (PathBuf, PathBuf) {
             .copy_into(directory)
             .expect("freeze the registered pair without canonical fallback");
     } else {
-        for name in ["aster", "a3s-code-acp"] {
+        for name in ["aster", "aster-acp"] {
             let source = source.parent().unwrap().join(name);
             assert_eq!(
                 build_id(&source).unwrap(),
@@ -46,7 +46,7 @@ pub fn freeze_pair(directory: &Path) -> (PathBuf, PathBuf) {
             assert_eq!(build_id(&frozen).unwrap(), expected);
         }
     }
-    for name in ["aster", "a3s-code-acp"] {
+    for name in ["aster", "aster-acp"] {
         assert_eq!(build_id(&directory.join(name)).unwrap(), expected);
     }
     std::fs::write(directory.join("pair-input.json"), serde_json::to_vec_pretty(&serde_json::json!({
@@ -58,7 +58,7 @@ pub fn freeze_pair(directory: &Path) -> (PathBuf, PathBuf) {
     std::fs::copy(&test, &frozen_test).unwrap();
     assert_eq!(fixture::digest(&frozen_test).unwrap(), test_hash);
     std::fs::write(directory.join("test-identity.json"),serde_json::to_vec_pretty(&serde_json::json!({"sha256":test_hash,"pair_build_id":expected,"scope":"exact executed test bytes retained; registered candidate selection is independently recorded in pair-input.json"})).unwrap()).unwrap();
-    (directory.join("a3s-code-acp"), directory.join("aster"))
+    (directory.join("aster-acp"), directory.join("aster"))
 }
 
 pub struct Campaign {
@@ -78,12 +78,12 @@ pub struct Campaign {
 
 impl Campaign {
     pub async fn prepare(prefix: &str) -> Self {
-        let selected = std::env::var("A3S_LIVE_MODEL").expect("explicit A3S_LIVE_MODEL required");
+        let selected = std::env::var("ASTER_LIVE_MODEL").expect("explicit ASTER_LIVE_MODEL required");
         let source = PathBuf::from(
-            std::env::var_os("A3S_CONFIG_FILE").expect("explicit trusted ACL required"),
+            std::env::var_os("ASTER_CONFIG_FILE").expect("explicit trusted ACL required"),
         );
         let evidence = PathBuf::from(
-            std::env::var_os("A3S_LH_EVIDENCE_DIR").expect("explicit evidence directory required"),
+            std::env::var_os("ASTER_LH_EVIDENCE_DIR").expect("explicit evidence directory required"),
         );
         assert!(source.is_absolute() && evidence.is_absolute());
         let trusted = CodeConfig::from_file(&source)

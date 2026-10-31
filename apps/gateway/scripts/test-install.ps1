@@ -9,28 +9,28 @@ Set-StrictMode -Version Latest
 
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $installer = Join-Path $repositoryRoot "install.ps1"
-$fixtureRoot = Join-Path ([System.IO.Path]::GetTempPath()) "a3s-gateway-installer-test-$([guid]::NewGuid().ToString('N'))"
+$fixtureRoot = Join-Path ([System.IO.Path]::GetTempPath()) "aster-gateway-installer-test-$([guid]::NewGuid().ToString('N'))"
 $server = $null
 
 try {
     if (-not $Version) {
         $binaryVersion = (& $Binary --version 2>&1 | Out-String).Trim()
-        if ($binaryVersion -notmatch '^a3s-gateway\s+(.+)$') {
+        if ($binaryVersion -notmatch '^aster-gateway\s+(.+)$') {
             throw "Binary did not report a usable version: $binaryVersion"
         }
         $Version = $Matches[1]
     }
 
     $platform = "windows-x86_64"
-    $archiveName = "a3s-gateway-$Version-$platform.zip"
+    $archiveName = "aster-gateway-$Version-$platform.zip"
     $releaseDir = Join-Path $fixtureRoot "download/v$Version"
     $archiveStage = Join-Path $fixtureRoot "archive"
     $installDir = Join-Path $fixtureRoot "install"
     New-Item -ItemType Directory -Force -Path $releaseDir, $archiveStage | Out-Null
-    Copy-Item -LiteralPath $Binary -Destination (Join-Path $archiveStage "a3s-gateway.exe")
+    Copy-Item -LiteralPath $Binary -Destination (Join-Path $archiveStage "aster-gateway.exe")
 
     $archivePath = Join-Path $releaseDir $archiveName
-    Compress-Archive -Path (Join-Path $archiveStage "a3s-gateway.exe") -DestinationPath $archivePath
+    Compress-Archive -Path (Join-Path $archiveStage "aster-gateway.exe") -DestinationPath $archivePath
     $archiveHash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
     Set-Content -LiteralPath "$archivePath.sha256" -Value "$archiveHash  $archiveName" -Encoding ascii
     Set-Content -LiteralPath (Join-Path $fixtureRoot "latest.json") -Value "{`"tag_name`":`"v$Version`"}" -Encoding ascii
@@ -71,26 +71,26 @@ try {
         throw "Test server did not start with $pythonExecutable"
     }
 
-    $env:A3S_GATEWAY_RELEASES_URL = "http://127.0.0.1:$port/download"
-    $env:A3S_GATEWAY_PLATFORM = $platform
-    $env:A3S_GATEWAY_ALLOW_INSECURE = "1"
+    $env:ASTER_GATEWAY_RELEASES_URL = "http://127.0.0.1:$port/download"
+    $env:ASTER_GATEWAY_PLATFORM = $platform
+    $env:ASTER_GATEWAY_ALLOW_INSECURE = "1"
 
     & $installer -Version $Version -InstallDir $installDir -NoModifyPath
-    $installedBinary = Join-Path $installDir "a3s-gateway.exe"
+    $installedBinary = Join-Path $installDir "aster-gateway.exe"
     if (-not (Test-Path -LiteralPath $installedBinary -PathType Leaf)) {
         throw "Installer did not create $installedBinary"
     }
     $reportedVersion = (& $installedBinary --version 2>&1 | Out-String).Trim()
-    if ($reportedVersion -ne "a3s-gateway $Version") {
+    if ($reportedVersion -ne "aster-gateway $Version") {
         throw "Installed binary reported an unexpected version: $reportedVersion"
     }
 
     $latestInstallDir = Join-Path $fixtureRoot "install-latest"
-    $env:A3S_GATEWAY_LATEST_API_URL = "http://127.0.0.1:$port/latest.json"
+    $env:ASTER_GATEWAY_LATEST_API_URL = "http://127.0.0.1:$port/latest.json"
     & $installer -InstallDir $latestInstallDir -NoModifyPath
-    $latestBinary = Join-Path $latestInstallDir "a3s-gateway.exe"
+    $latestBinary = Join-Path $latestInstallDir "aster-gateway.exe"
     $latestReportedVersion = (& $latestBinary --version 2>&1 | Out-String).Trim()
-    if ($latestReportedVersion -ne "a3s-gateway $Version") {
+    if ($latestReportedVersion -ne "aster-gateway $Version") {
         throw "Latest release resolution installed an unexpected version: $latestReportedVersion"
     }
 
@@ -110,7 +110,7 @@ try {
         throw "Failed installation replaced the existing binary"
     }
 
-    $env:A3S_GATEWAY_PLATFORM = "plan9-mips"
+    $env:ASTER_GATEWAY_PLATFORM = "plan9-mips"
     $invalidPlatformFailed = $false
     try {
         & $installer -Version $Version -InstallDir $installDir -NoModifyPath

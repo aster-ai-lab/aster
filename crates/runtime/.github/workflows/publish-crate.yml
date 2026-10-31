@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: publish-a3s-runtime-${{ inputs.version }}
+  group: publish-aster-runtime-${{ inputs.version }}
   cancel-in-progress: false
 
 env:
@@ -26,7 +26,7 @@ env:
 
 jobs:
   publish:
-    name: Publish a3s-runtime
+    name: Publish aster-runtime
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -62,7 +62,7 @@ jobs:
           fi
           PACKAGE_VERSION="$(
             cargo metadata --locked --no-deps --format-version 1 |
-              jq -r '.packages[] | select(.name == "a3s-runtime") | .version'
+              jq -r '.packages[] | select(.name == "aster-runtime") | .version'
           )"
           if [ "$PACKAGE_VERSION" != "$RELEASE_VERSION" ]; then
             echo "::error::Cargo version $PACKAGE_VERSION does not match $RELEASE_VERSION"
@@ -77,8 +77,8 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: |
           set -euo pipefail
-          CRATE_URL="https://crates.io/api/v1/crates/a3s-runtime/$RELEASE_VERSION"
-          USER_AGENT="A3S-Lab-Runtime-release-publisher/$RELEASE_VERSION (https://github.com/A3S-Lab/Runtime)"
+          CRATE_URL="https://crates.io/api/v1/crates/aster-runtime/$RELEASE_VERSION"
+          USER_AGENT="aster-ai-lab-Runtime-release-publisher/$RELEASE_VERSION (https://github.com/aster-ai-lab/Runtime)"
 
           crate_status() {
             curl --retry 5 --retry-all-errors --silent --show-error \
@@ -89,7 +89,7 @@ jobs:
           STATUS="$(crate_status)"
           case "$STATUS" in
             200)
-              echo "a3s-runtime@$RELEASE_VERSION already exists; skipping upload"
+              echo "aster-runtime@$RELEASE_VERSION already exists; skipping upload"
               ;;
             404)
               cargo publish --locked
@@ -103,7 +103,7 @@ jobs:
           for attempt in $(seq 1 18); do
             STATUS="$(crate_status)"
             if [ "$STATUS" = "200" ]; then
-              echo "Verified a3s-runtime@$RELEASE_VERSION on crates.io"
+              echo "Verified aster-runtime@$RELEASE_VERSION on crates.io"
               exit 0
             fi
             if [ "$STATUS" != "404" ]; then
@@ -114,7 +114,7 @@ jobs:
               sleep 10
             fi
           done
-          echo "::error::a3s-runtime@$RELEASE_VERSION did not become visible on crates.io"
+          echo "::error::aster-runtime@$RELEASE_VERSION did not become visible on crates.io"
           exit 1
 
       - name: Create GitHub release
@@ -136,6 +136,6 @@ jobs:
             gh release create "$TAG" \
               --repo "$GITHUB_REPOSITORY" \
               --target "$RELEASE_REF" \
-              --title "a3s-runtime $RELEASE_VERSION" \
+              --title "aster-runtime $RELEASE_VERSION" \
               --generate-notes
           fi

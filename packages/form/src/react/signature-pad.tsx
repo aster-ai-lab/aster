@@ -129,7 +129,7 @@ export function SignaturePad({
 
   return (
     <svg
-      className="a3s-form-signature-pad"
+      className="aster-form-signature-pad"
       data-pen-color={penColor}
       viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
       preserveAspectRatio="none"
@@ -173,9 +173,9 @@ export function SignaturePad({
       }}
     >
       <title>{label}</title>
-      <line className="a3s-form-signature-guide" x1="58" x2="942" y1="260" y2="260" />
+      <line className="aster-form-signature-guide" x1="58" x2="942" y1="260" y2="260" />
       <path
-        className="a3s-form-signature-stroke"
+        className="aster-form-signature-stroke"
         d={signaturePath(strokes)}
         fill="none"
         strokeLinecap="round"

@@ -5,12 +5,12 @@ mod refresh_support;
 #[path = "durable_memory_semantic_refresh/checkpoint_support.rs"]
 mod checkpoint_support;
 
-use a3s_code_core::memory::{ScheduledSemanticRefresh, SemanticRefreshRunOutcome};
-use a3s_code_core::{
+use aster_core::memory::{ScheduledSemanticRefresh, SemanticRefreshRunOutcome};
+use aster_core::{
     DurableMemorySemanticRefreshCheckpoint, DURABLE_MEMORY_SEMANTIC_REFRESH_CHECKPOINT_SCHEMA_V1,
 };
-use a3s_memory::repository::{InMemoryRepository, MemoryRepository, MemoryStatus};
-use a3s_memory::vector::{
+use aster_durable_memory::repository::{InMemoryRepository, MemoryRepository, MemoryStatus};
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorMutationConsistency,
 };
 use checkpoint_support::*;
@@ -63,7 +63,7 @@ async fn serialized_checkpoint_recovers_with_one_snapshot_and_no_provider_or_pub
     unknown["sourceChangeToken"] = serde_json::json!({"profile": "forged", "sequence": 1});
     assert!(serde_json::from_value::<DurableMemorySemanticRefreshCheckpoint>(unknown).is_err());
     let mut unsupported = serde_json::to_value(&checkpoint).unwrap();
-    unsupported["schema"] = serde_json::json!("a3s.code.memory.semantic-refresh-checkpoint.v2");
+    unsupported["schema"] = serde_json::json!("aster.code.memory.semantic-refresh-checkpoint.v2");
     let unsupported =
         serde_json::from_value::<DurableMemorySemanticRefreshCheckpoint>(unsupported).unwrap();
     assert!(

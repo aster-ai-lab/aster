@@ -12,8 +12,8 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut
-} from '@a3s-lab/ui'
-import { Button } from '@a3s-lab/ui'
+} from '@aster-ai-lab/ui'
+import { Button } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Command> = {
   title: 'Components/Primitives/Command',

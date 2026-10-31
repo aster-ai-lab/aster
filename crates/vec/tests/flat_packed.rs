@@ -14,7 +14,7 @@
 //! Public scores remain the DocumentMap Cosine/`f64` contract. Packed Flat is
 //! only an acceleration cache rebuilt by `optimize` / `rebuild_index`.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexParams, IndexType, MetricType,
     SearchQuery,
 };

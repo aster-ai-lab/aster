@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::DevicePreference;
+use aster_power::inference::DevicePreference;
 
 const CONFIG: &[u8] = include_bytes!("../../fixtures/official-config.json");
 const XQ_CONFIG: &[u8] = include_bytes!("../../fixtures/xq-model-config.json");

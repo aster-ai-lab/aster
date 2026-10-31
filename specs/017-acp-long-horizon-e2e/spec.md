@@ -3,8 +3,8 @@
 **Feature Branch**: 当前分支；未请求新分支或提交。
 **Created**: 2026-10-24
 **Status**: 规划与一致性审查已完成；已授权实施，T001–T003 基础工作进行中。
-**Input**: 从架构师和测试工程师视角规划 a3s-code-acp 长程任务的全角度、全流程 E2E 用例。追加目标：根据开发规范按规划完成真实 LLM 各项端到端测试以及优化。
-**Gate context**: Product regime。面向真实 `a3s-code-acp` 进程、Core harness、配对 `aster` 和私有 Studio 宿主；补齐分散模块测试到完整长任务旅程的证据，不延续已退休的 GUI 评测活动。
+**Input**: 从架构师和测试工程师视角规划 aster-acp 长程任务的全角度、全流程 E2E 用例。追加目标：根据开发规范按规划完成真实 LLM 各项端到端测试以及优化。
+**Gate context**: Product regime。面向真实 `aster-acp` 进程、Core harness、配对 `aster` 和私有 Studio 宿主；补齐分散模块测试到完整长任务旅程的证据，不延续已退休的 GUI 评测活动。
 
 ## User Scenarios & Testing
 
@@ -39,7 +39,7 @@
 ### US4 — 宿主与可选能力真实可用（P1）
 
 CLI、TUI、Studio 从真实入口执行相同核心契约；Office、编辑器、浏览器、MCP 和检索按能力协商激活。
-**Independent Test**: capability inventory + 实际工具 schema/执行证据 + a3s-test 可观察界面断言；私有宿主用例仍在子模块。
+**Independent Test**: capability inventory + 实际工具 schema/执行证据 + aster-test 可观察界面断言；私有宿主用例仍在子模块。
 **Acceptance Scenarios**:
 1. Given 未开启 Office 或 headless 特性，When 请求相关能力，Then 不广告不可用工具或明确拒绝，不隐式下载/扩权。
 2. Given 未保存编辑器内容，When 明确启用文档桥，Then 使用版本绑定的缓冲区；磁盘内容和编辑器内容分别核验。
@@ -100,7 +100,7 @@ CLI、TUI、Studio 从真实入口执行相同核心契约；Office、编辑器�
 - [ ] 测试实施时，所有测试工具的新分支均附 owning-package hermetic test（T001–T010）。
 - [ ] 新的测试结果枚举使用封闭解析，未知值拒绝（T002）。
 - [ ] 生产代码不在本规划修改；实施时禁止无论证 unwrap/expect（T003–T009）。
-- [x] 内部 a3s 依赖仍为本地路径；规划不新增依赖或 SDK。
+- [x] 内部 aster 依赖仍为本地路径；规划不新增依赖或 SDK。
 - [x] 执行配置仍为 ACL；JSON 仅用于协议与测试结果证据。
 - [x] 规划审计证据目标：`docs/evidence/code/2026-10-24-acp-long-horizon-plan/OUTCOME.md`；未来运行另建 dated campaign。
 

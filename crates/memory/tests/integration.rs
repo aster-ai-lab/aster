@@ -1,10 +1,10 @@
-//! Integration tests for a3s-memory.
+//! Integration tests for aster-memory.
 //!
 //! These tests exercise the full public API across both storage backends,
 //! verifying that `InMemoryStore` and `FileMemoryStore` behave identically
 //! from a caller's perspective.
 
-use a3s_memory::{
+use aster_durable_memory::{
     FileMemoryStore, InMemoryStore, MemoryItem, MemoryStore, MemoryType, RelevanceConfig,
 };
 use std::sync::Arc;
@@ -351,7 +351,7 @@ async fn contract_prune_protects_curated_memories(store: &dyn MemoryStore) {
     stale.timestamp = chrono::Utc::now() - chrono::Duration::days(120);
     store.store(stale).await.unwrap();
 
-    let policy = a3s_memory::PrunePolicy {
+    let policy = aster_durable_memory::PrunePolicy {
         max_age_days: 90,
         min_importance_to_keep: 0.5,
         max_items: 2,

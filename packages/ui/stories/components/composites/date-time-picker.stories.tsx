@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import type { DateTimeGranularity } from '@a3s-lab/ui'
-import { DateTimePicker } from '@a3s-lab/ui'
+import type { DateTimeGranularity } from '@aster-ai-lab/ui'
+import { DateTimePicker } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof DateTimePicker> = {
   title: 'Components/Composites/date-time-picker',

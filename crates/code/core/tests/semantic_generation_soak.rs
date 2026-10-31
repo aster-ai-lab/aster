@@ -4,12 +4,12 @@
 #[path = "durable_memory_semantic_refresh/support.rs"]
 mod refresh_support;
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingExecutorConfig, EmbeddingNormalization,
     EmbeddingProvider, EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
-use a3s_memory::repository::{MemoryRepository, MemoryStatus};
-use a3s_memory::vector::{
+use aster_durable_memory::repository::{MemoryRepository, MemoryStatus};
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorSearchRequest,
 };
 use async_trait::async_trait;
@@ -19,7 +19,7 @@ use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 
 const ATTEMPTS: usize = 32;
-const NODE_ID_LABEL: &str = "a3s.memory.semantic.node_id";
+const NODE_ID_LABEL: &str = "aster.memory.semantic.node_id";
 const DELTA: &str = "Seal the violet audit trail after the failed refresh.";
 
 struct FlakyProvider {
@@ -83,7 +83,7 @@ fn generation_of(node_ids: &[String]) -> &'static str {
 #[ignore = "S-CM-02 soak: 32 semantic publications with concurrent recall"]
 async fn soak_failed_semantic_publications_do_not_tear_generations() {
     let namespace = namespace("generation-soak");
-    let repository = Arc::new(a3s_memory::repository::InMemoryRepository::new());
+    let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let specs = [
         ("create-gen-a-0", "gen-a-0", ALPHA),
         ("create-gen-a-1", "gen-a-1", BETA),

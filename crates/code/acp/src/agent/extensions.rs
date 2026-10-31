@@ -3,8 +3,8 @@
 
 use super::*;
 
-const TRANSCRIPT_UPDATE_METHOD: &str = "a3s/session/transcript/update";
-const TRANSCRIPT_UPDATE_SCHEMA: &str = "a3s.acp.session-transcript-update.v1";
+const TRANSCRIPT_UPDATE_METHOD: &str = "aster/session/transcript/update";
+const TRANSCRIPT_UPDATE_SCHEMA: &str = "aster.acp.session-transcript-update.v1";
 
 #[derive(Debug)]
 enum ReplayNotification {
@@ -12,7 +12,7 @@ enum ReplayNotification {
     Typed(acp::ExtNotification),
 }
 
-fn replay_meta(entry: &a3s_code_core::store::TranscriptEntry) -> acp::Meta {
+fn replay_meta(entry: &aster_core::store::TranscriptEntry) -> acp::Meta {
     let mut meta = acp::Meta::new();
     meta.insert("isReplay".into(), serde_json::json!(true));
     meta.insert("entryId".into(), serde_json::json!(entry.entry_id));
@@ -52,9 +52,9 @@ fn replay_typed(
 
 fn transcript_replay_notifications(
     session_id: &acp::SessionId,
-    entry: &a3s_code_core::store::TranscriptEntry,
+    entry: &aster_core::store::TranscriptEntry,
 ) -> acp::Result<Vec<ReplayNotification>> {
-    use a3s_code_core::store::TranscriptEntryPayload as Payload;
+    use aster_core::store::TranscriptEntryPayload as Payload;
 
     let meta = replay_meta(entry);
     let mut notifications = Vec::new();
@@ -190,7 +190,7 @@ fn transcript_replay_notifications(
     Ok(notifications)
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) async fn handle_compact_extension(
         &self,
         args: &acp::ExtRequest,
@@ -240,7 +240,7 @@ impl A3sCodeAgent {
                 .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?
         };
         session
-            .steer(a3s_code_core::SteerRequest::new(request.text))
+            .steer(aster_core::SteerRequest::new(request.text))
             .await
             .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         let body = serde_json::value::to_raw_value(&serde_json::json!({ "ok": true }))
@@ -248,8 +248,8 @@ impl A3sCodeAgent {
         Ok(acp::ExtResponse::new(body.into()))
     }
 
-    /// `a3s/review/target` pins current target bytes; `a3s/review/admit` admits
-    /// bound drafts; `a3s/review/settle` moves an admitted Finding under its
+    /// `aster/review/target` pins current target bytes; `aster/review/admit` admits
+    /// bound drafts; `aster/review/settle` moves an admitted Finding under its
     /// admitted scope. All wait behind the session's turn queue like goal import.
     pub(super) async fn handle_review(
         &self,
@@ -279,7 +279,7 @@ impl A3sCodeAgent {
         Ok(acp::ExtResponse::new(raw.into()))
     }
 
-    /// `a3s/session/info` is the pager's `/session-info` and `/context` source.
+    /// `aster/session/info` is the pager's `/session-info` and `/context` source.
     /// The pager decodes `ExtMethodResult<SessionInfoResponse>` and treats any
     /// other body, including JSON null, as an invalid response.
     pub(super) async fn handle_session_info(
@@ -352,7 +352,7 @@ impl A3sCodeAgent {
         let mut entries = Vec::new();
         loop {
             let page = session
-                .transcript_page(a3s_code_core::store::TranscriptPageRequest { cursor, limit: 256 })
+                .transcript_page(aster_core::store::TranscriptPageRequest { cursor, limit: 256 })
                 .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
             entries.extend(page.entries);
             match page.next_cursor {
@@ -403,7 +403,7 @@ impl A3sCodeAgent {
         Ok(())
     }
 
-    /// `a3s/permission_posture` admits a named next-run posture.
+    /// `aster/permission_posture` admits a named next-run posture.
     ///
     /// Optional `deny` rules are stored on that policy. This method does not
     /// execute a tool or write a caller-supplied path. A later prompt is what
@@ -485,10 +485,10 @@ impl A3sCodeAgent {
         Ok(acp::ExtResponse::new(raw.into()))
     }
 
-    /// `a3s/session/delete` is the pager's `/delete` confirmation.
+    /// `aster/session/delete` is the pager's `/delete` confirmation.
     ///
     /// The pager removes its live view only after this returns without an
-    /// error. The session directory under the a3s home is what `--continue`
+    /// error. The session directory under the aster home is what `--continue`
     /// reads, so a null body would report success and leave that directory.
     pub(super) async fn handle_session_delete(
         &self,
@@ -540,7 +540,7 @@ impl A3sCodeAgent {
                 failures.push(error);
             }
         }
-        use a3s_code_core::store::{FileSessionStore, SessionStore};
+        use aster_core::store::{FileSessionStore, SessionStore};
         let directory =
             Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
         if directory
@@ -632,14 +632,14 @@ pub(super) async fn answer_wiki_search(args: &acp::ExtRequest) -> acp::Result<ac
 }
 
 pub(super) fn remove_fact_log(workspace: &std::path::Path, session_id: &str) -> Result<(), String> {
-    let thread = a3s_code_core::fact_control::thread_for_session(session_id);
-    let path = a3s_code_core::session_folder::legacy_effect_log_dir(workspace)
+    let thread = aster_core::fact_control::thread_for_session(session_id);
+    let path = aster_core::session_folder::legacy_effect_log_dir(workspace)
         .join(format!("{thread}.jsonl"));
     if path.is_file() {
         std::fs::remove_file(&path)
             .map_err(|error| format!("remove fact log {}: {error}", path.display()))?;
     }
-    match a3s_code_core::session_folder::find_session_dir(workspace, session_id) {
+    match aster_core::session_folder::find_session_dir(workspace, session_id) {
         Ok(Some(dir)) => {
             let date_dir = dir.parent().map(std::path::Path::to_path_buf);
             std::fs::remove_dir_all(&dir)
@@ -665,17 +665,17 @@ pub(super) fn remove_fact_log(workspace: &std::path::Path, session_id: &str) -> 
     Ok(())
 }
 
-/// Remove `{a3s-home}/sessions/{cwd}/{session_id}` for every recorded cwd.
+/// Remove `{aster-home}/sessions/{cwd}/{session_id}` for every recorded cwd.
 ///
 /// The directory name is the url-encoded cwd. Matching the session id keeps
 /// the delete on that session's own record.
 pub(super) fn recorded_session_homes(
-    a3s_home: Option<&std::ffi::OsStr>,
+    aster_home: Option<&std::ffi::OsStr>,
     grok_home: Option<&std::ffi::OsStr>,
     os_home: Option<&std::ffi::OsStr>,
 ) -> Vec<PathBuf> {
     let mut homes = Vec::new();
-    if let Some(env) = a3s_home.filter(|value| !value.is_empty()) {
+    if let Some(env) = aster_home.filter(|value| !value.is_empty()) {
         homes.push(PathBuf::from(env));
     }
     if let Some(env) = grok_home.filter(|value| !value.is_empty()) {
@@ -683,7 +683,7 @@ pub(super) fn recorded_session_homes(
     }
     if let Some(home) = os_home.filter(|value| !value.is_empty()) {
         let home = PathBuf::from(home);
-        homes.push(home.join(".a3s"));
+        homes.push(home.join(".aster"));
         homes.push(home.join(".grok"));
     }
     homes.sort();
@@ -733,7 +733,7 @@ pub(super) fn remove_recorded_session_under(
 
 pub(super) fn remove_recorded_session(session_id: &str) -> Result<(), String> {
     let homes = recorded_session_homes(
-        std::env::var_os("A3S_HOME").as_deref(),
+        std::env::var_os("ASTER_HOME").as_deref(),
         std::env::var_os("GROK_HOME").as_deref(),
         std::env::var_os("HOME").as_deref(),
     );

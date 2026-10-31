@@ -16,7 +16,7 @@ capacity promises.
 ## How to regenerate lab-extended rows
 
 ```bash
-cargo build --bin a3s-gateway
+cargo build --bin aster-gateway
 # default 120s × 4 profiles
 ./scripts/run-soak-gateway-extended.sh
 # Windows: ./scripts/run-soak-gateway-extended.ps1
@@ -30,7 +30,7 @@ without the matching JSON.
 ## Draft table (latest lab-extended on this workspace)
 
 Captured 2026-09-18 from `run-soak-gateway-extended.ps1` with
-`A3S_GATEWAY_SOAK_DURATION=20`, concurrency 4, host `DESKTOP-BM5D1UH`
+`ASTER_GATEWAY_SOAK_DURATION=20`, concurrency 4, host `DESKTOP-BM5D1UH`
 (`dedicated_runner: false`). **Not** a capacity promise.
 
 | Profile | Duration | Concurrency | ok/s | RSS growth | Host | Pass | Result file |

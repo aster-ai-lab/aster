@@ -28,7 +28,7 @@ use uuid::Uuid;
 
 const MAX_INFERENCE_KEY_BYTES: usize = 512;
 const MAX_PARALLEL_ARGON2_VERIFICATIONS: usize = 2;
-const INFERENCE_KEY_PREFIX: &str = "a3s_inf_";
+const INFERENCE_KEY_PREFIX: &str = "aster_inf_";
 
 #[cfg(test)]
 #[derive(Clone)]
@@ -1375,7 +1375,7 @@ fn bearer_token(headers: &HeaderMap) -> Result<&str, InferenceAccessError> {
 
 fn valid_inference_key(token: &str) -> bool {
     token.len() <= MAX_INFERENCE_KEY_BYTES
-        && token.starts_with("a3s_inf_")
+        && token.starts_with("aster_inf_")
         && token.bytes().all(|byte| {
             byte.is_ascii_alphanumeric()
                 || matches!(byte, b'-' | b'.' | b'_' | b'~' | b'+' | b'/' | b'=')

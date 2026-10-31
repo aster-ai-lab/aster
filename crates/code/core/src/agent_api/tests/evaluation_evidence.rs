@@ -114,7 +114,7 @@ async fn fixture(retention: Option<crate::retention::SessionRetentionLimits>) ->
                 args: None,
                 output: "original tool output".into(),
                 exit_code: 0,
-                metadata: Some(serde_json::json!({"artifact_uri":"a3s://artifact/original"})),
+                metadata: Some(serde_json::json!({"artifact_uri":"aster://artifact/original"})),
                 error_kind: None,
             },
         )
@@ -134,7 +134,7 @@ async fn fixture(retention: Option<crate::retention::SessionRetentionLimits>) ->
         .await;
     session.tool_executor.artifact_store().put(ToolArtifact {
         artifact_id: "original".into(),
-        artifact_uri: "a3s://artifact/original".into(),
+        artifact_uri: "aster://artifact/original".into(),
         tool_name: "read".into(),
         content: "original artifact bytes".into(),
         original_bytes: 23,
@@ -362,7 +362,7 @@ async fn requested_artifact_content_and_missing_references_never_become_complete
                 args: None,
                 output: "missing referenced bytes".into(),
                 exit_code: 0,
-                metadata: Some(serde_json::json!({"artifact_uri":"a3s://artifact/missing"})),
+                metadata: Some(serde_json::json!({"artifact_uri":"aster://artifact/missing"})),
                 error_kind: None,
             },
         )

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# First-principles same-host a3s-vec ↔ zvec compare runner.
+# First-principles same-host aster-vec ↔ zvec compare runner.
 # See docs/scale-compare-protocol.md.
 set -euo pipefail
 
@@ -10,9 +10,9 @@ STAMP="${COMPARE_STAMP:-$(date -u +%Y%m%dT%H%M%SZ)}"
 OUT="${COMPARE_OUT:-$ROOT/target/fp-compare-$STAMP}"
 PYTHON="${COMPARE_PYTHON:-$ROOT/.venv-zvec/bin/python}"
 PROCESSES="${COMPARE_PROCESSES:-3}"
-DOCUMENTS="${A3S_VEC_SCALE_DOCUMENTS:-100000}"
-DIMENSIONS="${A3S_VEC_SCALE_DIMENSIONS:-128}"
-MODE="${A3S_VEC_SCALE_MODE:-both}"
+DOCUMENTS="${ASTER_VEC_SCALE_DOCUMENTS:-100000}"
+DIMENSIONS="${ASTER_VEC_SCALE_DIMENSIONS:-128}"
+MODE="${ASTER_VEC_SCALE_MODE:-both}"
 RAYON="${RAYON_NUM_THREADS:-1}"
 
 if [[ ! -x "$PYTHON" ]]; then
@@ -34,18 +34,18 @@ mkdir -p "$OUT"
 } | tee "$OUT/meta.txt"
 
 HEADER='engine,version,mode,documents,dimensions,queries,rounds,batch_size,ef_search,hnsw_m,ef_construction,insert_ms,index_build_ms,optimize_ms,total_build_ms,recall_at_10,p50_us,p95_us,p99_us,qps'
-echo "$HEADER" >"$OUT/a3s-all.csv"
+echo "$HEADER" >"$OUT/aster-all.csv"
 echo "$HEADER" >"$OUT/zvec-all.csv"
 
 for i in $(seq 1 "$PROCESSES"); do
-  echo "a3s process $i/$PROCESSES" >&2
+  echo "aster process $i/$PROCESSES" >&2
   RAYON_NUM_THREADS="$RAYON" \
-    A3S_VEC_SCALE_DOCUMENTS="$DOCUMENTS" \
-    A3S_VEC_SCALE_DIMENSIONS="$DIMENSIONS" \
-    A3S_VEC_SCALE_MODE="$MODE" \
+    ASTER_VEC_SCALE_DOCUMENTS="$DOCUMENTS" \
+    ASTER_VEC_SCALE_DIMENSIONS="$DIMENSIONS" \
+    ASTER_VEC_SCALE_MODE="$MODE" \
     cargo bench --bench scale_compare --quiet \
-    | tee "$OUT/a3s-p$i.csv" \
-    | awk -F, 'NR>1 {print}' >>"$OUT/a3s-all.csv"
+    | tee "$OUT/aster-p$i.csv" \
+    | awk -F, 'NR>1 {print}' >>"$OUT/aster-all.csv"
 done
 
 for i in $(seq 1 "$PROCESSES"); do
@@ -109,7 +109,7 @@ def median_table(rows):
         medians.append(entry)
     return medians
 
-combined = load(out / "a3s-all.csv") + load(out / "zvec-all.csv")
+combined = load(out / "aster-all.csv") + load(out / "zvec-all.csv")
 medians = median_table(combined)
 fields = [
     "engine",

@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_oci_sdk::OciBundle;
+use aster_oci_sdk::OciBundle;
 use serde_json::Value;
 use tempfile::tempdir;
 
@@ -69,16 +69,16 @@ async fn derives_and_cleans_a_complete_rootfs_enforcement_fixture() {
         serde_json::json!(["nosuid", "strictatime", "mode=0755", "size=64k"])
     );
     assert_eq!(
-        mount_at(mounts, "/.a3s-oci-rootfs-target-fixture-123/output")["source"],
-        Value::String(".a3s-oci-rootfs-output-fixture-123".into())
+        mount_at(mounts, "/.aster-oci-rootfs-target-fixture-123/output")["source"],
+        Value::String(".aster-oci-rootfs-output-fixture-123".into())
     );
     assert_eq!(
-        mount_at(mounts, "/.a3s-oci-rootfs-target-fixture-123/bound-file")["source"],
-        Value::String(".a3s-oci-rootfs-output-fixture-123/bind-source".into())
+        mount_at(mounts, "/.aster-oci-rootfs-target-fixture-123/bound-file")["source"],
+        Value::String(".aster-oci-rootfs-output-fixture-123/bind-source".into())
     );
     let recursive_mount = mount_at(
         mounts,
-        "/.a3s-oci-rootfs-target-fixture-123/recursive/readonly",
+        "/.aster-oci-rootfs-target-fixture-123/recursive/readonly",
     );
     assert_eq!(
         recursive_mount["options"],
@@ -139,7 +139,7 @@ async fn derives_and_cleans_a_complete_rootfs_enforcement_fixture() {
     assert!(fixture.evidence_absent().await.expect("evidence state"));
     assert!(fixture.cleanup().await.expect("fixture cleanup"));
     assert!(!PathBuf::from(base.directory())
-        .join(".a3s-oci-rootfs-output-fixture-123")
+        .join(".aster-oci-rootfs-output-fixture-123")
         .exists());
 }
 
@@ -256,8 +256,8 @@ fn native_fixture_declares_ordered_idmap_and_ridmap_bind_evidence() {
         .expect("qualified native base bundle");
     let bundle = build_bundle(
         &base,
-        ".a3s-oci-rootfs-output-native",
-        ".a3s-oci-rootfs-target-native",
+        ".aster-oci-rootfs-output-native",
+        ".aster-oci-rootfs-target-native",
         "native",
         true,
     )

@@ -28,7 +28,7 @@ violation stops the plan.*
 | II. Evidence retained | PASS | `docs/evidence/desktop/2026-10-22-desktop-auto-update/OUTCOME.md` |
 | III. Hermetic tests | PASS | Host lib tests (fixtures, no network), renderer vitest, python manifest check; the loopback e2e runs a local static server, not GitHub |
 | IV. Closed sets | PASS | `FeedKind` with `parse()`/`as_str()`; manifest platform keys are a closed match on the running platform |
-| V. One workspace / published APIs | PASS | No new crates; `a3s-studio` stays in the root workspace, `publish = false` unchanged |
+| V. One workspace / published APIs | PASS | No new crates; `aster-studio` stays in the root workspace, `publish = false` unchanged |
 | VI. Local schema changes | N-A | No database schema |
 | VII. Shrink-only ratchets | N-A | No allowlists touched |
 | VIII. Replaceable transports | PASS | The GitHub transport is added beside the gateway transport behind one enum; the gateway transport is not modified |
@@ -81,7 +81,7 @@ specs/008-desktop-auto-update/
 
 ## Verification Plan
 
-1. `cargo test -p a3s-studio --lib -- app_updater` — new cases counted.
+1. `cargo test -p aster-studio --lib -- app_updater` — new cases counted.
 2. Renderer vitest — auto-check state machine.
 3. `python3 tests/desktop_channel_manifest.py` — manifest contract.
 4. Loopback e2e: a scratch bundle + a local static file server serving a

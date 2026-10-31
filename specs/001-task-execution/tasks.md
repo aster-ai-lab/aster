@@ -391,7 +391,7 @@ failed four-cell screening campaign. Optional ONNX is outside this assessment.
 - [ ] Each changed owning package's focused tests pass on current source.
 - [ ] Real pipeline tests and the full acceptance matrix prove all FR/SC rows.
 - [ ] `cargo fmt --all -- --check` and applicable workspace CI checks pass.
-- [ ] No new remote `a3s-*` dependency or product configuration format.
+- [ ] No new remote `aster-*` dependency or product configuration format.
 - [ ] No product native select or new authority bypass.
 - [x] Paired terminal/companion build and `just build-work` pass.
 - [ ] Live corpus and actual GUI gates are verified; environment/missing oracle

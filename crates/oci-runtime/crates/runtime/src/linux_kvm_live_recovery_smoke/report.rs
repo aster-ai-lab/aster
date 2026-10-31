@@ -1,14 +1,14 @@
 use std::path::PathBuf;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::ContainerTarget;
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::ContainerTarget;
 use serde::{Deserialize, Serialize};
 
 use crate::linux_kvm_recovery_smoke::report::canonical_sha256_digest;
 use crate::linux_kvm_recovery_smoke::{LinuxKvmRecoveryArtifacts, LinuxProcessIdentity};
 
 pub const LINUX_KVM_LIVE_RECOVERY_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.linux-kvm-live-recovery-smoke.v3";
+    "aster.oci.linux-kvm-live-recovery-smoke.v3";
 
 /// Live Host reopen evidence: Guest survives Host SIGKILL and reattaches Running.
 ///
@@ -110,7 +110,7 @@ impl LinuxKvmLiveRecoveryEvidence {
             && self
                 .durable_pipe_name
                 .as_deref()
-                .is_some_and(|name| name.starts_with("a3s-oci-agent-") && name.len() > 16)
+                .is_some_and(|name| name.starts_with("aster-oci-agent-") && name.len() > 16)
             && self
                 .retained_exec_process_id
                 .as_deref()
@@ -204,7 +204,7 @@ impl LinuxKvmLiveRecoverySmokeReport {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{ContainerId, Generation};
+    use aster_oci_sdk::{ContainerId, Generation};
 
     use super::*;
 
@@ -214,7 +214,7 @@ mod tests {
             parent_pid,
             process_group_id: pid,
             start_time_ticks: u64::from(pid) * 10,
-            command: "a3s-oci-krun-shim".to_string(),
+            command: "aster-oci-krun-shim".to_string(),
         }
     }
 
@@ -233,9 +233,9 @@ mod tests {
             case_count: 1,
             evidence_root: PathBuf::from("/tmp/evidence"),
             artifacts: LinuxKvmRecoveryArtifacts {
-                host_service_executable: PathBuf::from("/tmp/a3s-oci"),
+                host_service_executable: PathBuf::from("/tmp/aster-oci"),
                 host_service_executable_sha256: "1".repeat(64),
-                shim: PathBuf::from("/tmp/a3s-oci-krun-shim"),
+                shim: PathBuf::from("/tmp/aster-oci-krun-shim"),
                 shim_sha256: "2".repeat(64),
                 system_image_manifest: PathBuf::from("/tmp/system-image.json"),
                 system_image_manifest_sha256: "3".repeat(64),
@@ -262,7 +262,7 @@ mod tests {
                 shim_identity: Some(shim),
                 live_binding_published: true,
                 durable_guest_endpoint_retained: true,
-                durable_pipe_name: Some(format!("a3s-oci-agent-{}", "a".repeat(32))),
+                durable_pipe_name: Some(format!("aster-oci-agent-{}", "a".repeat(32))),
                 retained_exec_process_id: Some("live-io-exec".to_string()),
                 exec_io_before_kill: true,
                 write_stdin_after_reattach: true,

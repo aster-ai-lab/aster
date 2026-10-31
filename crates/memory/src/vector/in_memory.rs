@@ -9,7 +9,7 @@ use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::{Arc, RwLock, RwLockReadGuard, RwLockWriteGuard};
 
-const HISTORY_DIGEST_DOMAIN: &str = "a3s.memory.vector-index-history.v1";
+const HISTORY_DIGEST_DOMAIN: &str = "aster.memory.vector-index-history.v1";
 
 /// Exact, session-ephemeral vector index backed by immutable partition blocks.
 #[derive(Clone)]

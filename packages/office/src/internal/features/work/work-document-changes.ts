@@ -202,7 +202,7 @@ export const DocumentChange = Mark.create<DocumentChangeOptions>({
       isTracking: () => false,
       createChange: () => ({
         id: createDocumentChangeId(),
-        author: 'A3S Work',
+        author: 'Aster Work',
         date: new Date().toISOString(),
       }),
       onTrackingChange: () => undefined,
@@ -1504,7 +1504,7 @@ function changeMark(
     kind,
     id: identity.id || createDocumentChangeId(),
     actorId: identity.actorId ?? '',
-    author: identity.author || 'A3S Work',
+    author: identity.author || 'Aster Work',
     date: identity.date || new Date().toISOString(),
     before,
   });

@@ -1,9 +1,9 @@
-//! Configuration module for A3S Code
+//! Configuration module for Aster Code
 //!
 //! Provides configuration for:
 //! - LLM providers and models (defaultModel in "provider/model" format, providers)
-//! - Queue configuration (a3s-lane integration)
-//! - Search configuration (a3s-search integration)
+//! - Queue configuration (aster-lane integration)
+//! - Search configuration (aster-search integration)
 //! - Directories for dynamic skill and agent loading
 //!
 //! Configuration is loaded from ACL-compatible files or strings.
@@ -29,13 +29,15 @@ pub use account_import::AccountImport;
 pub use editor::{rewrite_acl_sections, ConfigSection};
 pub(crate) use loader::parse_mcp_server_block;
 /// Built-in provider name for Cloud-admitted Inference route models.
-pub const A3S_INFERENCE_PROVIDER: &str = "a3s-inference";
+pub const ASTER_INFERENCE_PROVIDER: &str = "aster-inference";
 
 pub use loader::{
     host_authoritative_block, withhold_untrusted_host_authoritative_blocks, LayerAcl,
     HOST_AUTHORITATIVE_BLOCKS,
 };
-pub use provider::{ModelConfig, ModelCost, ModelLimit, ModelModalities, ProviderConfig};
+pub use provider::{
+    ModelConfig, ModelCost, ModelLimit, ModelModalities, ProviderConfig, ProviderProtocol,
+};
 pub use search::{
     BrowserBackend, DocumentCacheConfig, DocumentParserConfig, HeadlessConfig, SearchCascadeTier,
     SearchConfig, SearchEngineConfig, SearchHealthConfig,
@@ -120,7 +122,7 @@ pub struct OsConfig {
     pub address: String,
 }
 
-/// Configuration for A3S Code
+/// Configuration for Aster Code
 /// Parsed `workspace_retrieval { enabled, local_cpu {} }` block: the
 /// host-facing semantic-retrieval declaration. The feature itself is
 /// host-injected (`WorkspaceRetrievalOptions` needs an embedding
@@ -210,12 +212,12 @@ pub struct CodeConfig {
 
     /// Memory directory for the default file-backed memory store.
     ///
-    /// If unset, sessions use `<workspace>/.a3s/memory` unless the host passes
+    /// If unset, sessions use `<workspace>/.aster/memory` unless the host passes
     /// an explicit memory store or file memory directory.
     #[serde(default, alias = "memoryDir", skip_serializing_if = "Option::is_none")]
     pub memory_dir: Option<PathBuf>,
 
-    /// Connection URL for custom storage backend (e.g., "redis://localhost:6379", "postgres://user:pass@localhost/a3s")
+    /// Connection URL for custom storage backend (e.g., "redis://localhost:6379", "postgres://user:pass@localhost/aster")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage_url: Option<String>,
 
@@ -229,8 +231,8 @@ pub struct CodeConfig {
 
     /// Directory containing personal instructions loaded before project files.
     ///
-    /// When unset, instruction discovery checks `~/.a3s/AGENTS.override.md`
-    /// and then `~/.a3s/AGENTS.md`, using the first non-empty regular file.
+    /// When unset, instruction discovery checks `~/.aster/AGENTS.override.md`
+    /// and then `~/.aster/AGENTS.md`, using the first non-empty regular file.
     #[serde(
         default,
         alias = "user_instructions_dir",
@@ -293,11 +295,11 @@ pub struct CodeConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<MemoryConfig>,
 
-    /// Queue configuration (a3s-lane integration)
+    /// Queue configuration (aster-lane integration)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queue: Option<crate::queue::SessionQueueConfig>,
 
-    /// Search configuration (a3s-search integration)
+    /// Search configuration (aster-search integration)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub search: Option<SearchConfig>,
 

@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::{DevicePreference, InferenceLimits, RuntimeDevice};
+use aster_power::inference::{DevicePreference, InferenceLimits, RuntimeDevice};
 use candle_core::Device;
 
 fn numerics() -> MhcNumerics {

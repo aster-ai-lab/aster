@@ -26,7 +26,7 @@ fn checkpoint(source: Option<SessionFactSourceV1>) -> LoopCheckpoint {
 fn source(kind: &str) -> SessionFactSourceV1 {
     SessionFactSourceV1::from_facts(
         "session",
-        &[a3s_effect::Fact {
+        &[aster_effect::Fact {
             seq: 1,
             kind: kind.into(),
             key: "source".into(),
@@ -40,8 +40,8 @@ fn source(kind: &str) -> SessionFactSourceV1 {
 
 #[test]
 fn durable_loop_source_rejects_downgrade_stripping_foreign_and_future_versions() {
-    let policy = source("a3s.work-policy.admitted");
-    let goal = source("a3s.goal.created");
+    let policy = source("aster.work-policy.admitted");
+    let goal = source("aster.goal.created");
     let original = checkpoint(Some(policy.clone()));
     original.validate_source(Some(&policy)).unwrap();
     assert!(original.validate_source(None).is_err());
@@ -80,9 +80,9 @@ async fn durable_loop_source_roundtrips_both_stores_and_actual_file_reopen() {
         };
         for (index, source) in [
             None,
-            Some(source("a3s.work-policy.admitted")),
-            Some(source("a3s.goal.created")),
-            Some(source("a3s.goal.plan.accepted")),
+            Some(source("aster.work-policy.admitted")),
+            Some(source("aster.goal.created")),
+            Some(source("aster.goal.plan.accepted")),
         ]
         .into_iter()
         .enumerate()

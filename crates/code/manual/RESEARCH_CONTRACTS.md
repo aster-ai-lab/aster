@@ -1,6 +1,6 @@
 # Native Research Contracts
 
-`a3s-code-core::research` is the Code-side identity and evidence boundary for
+`aster-core::research` is the Code-side identity and evidence boundary for
 scientific workflows. It makes a research run replayable and reviewable
 without turning Code into a package manager, a scientific policy engine, or a
 second Cloud audit authority.
@@ -9,7 +9,7 @@ second Cloud audit authority.
 
 - Code owns bounded wire values, canonical serialization, domain-separated
   digests, run lifecycle transitions, and fail-closed validation.
-- A3S Use owns signed package and environment selection. A host injects the
+- Aster Use owns signed package and environment selection. A host injects the
   exact `RunCapabilityBindingV1` produced by that selection.
 - The host or Desktop owns project aggregates, source retrieval, reviewer
   prompts and rubrics, severity thresholds, human decisions, retention, and
@@ -23,22 +23,22 @@ interpret a review finding as approval.
 
 | Value | Schema | Purpose |
 | --- | --- | --- |
-| `ResearchRunV1` | `a3s.code.research-run.v1` | Binds project revision, source/evidence snapshots, Code/Use capability identity, provider/model, reproducibility promise, and lifecycle status. |
-| `ResearchEvidenceFactV1` | `a3s.code.evidence-fact.v1` | Append-only, digest-only observation with a monotonic sequence and bounded metadata. |
-| `ResearchClaimV1` | `a3s.code.research-claim.v1` | Digest-only claim statement with explicit `proposed`, `supported`, `conflicted`, or `unsupported` status; support, conflict, and gap digests are mutually exclusive by state. |
-| `ResearchCitationV1` | `a3s.code.research-citation.v1` | Bounded citation linking one claim to a source digest and source-span digest without retaining source plaintext. |
-| `ResearchEvidenceGraphV1` | `a3s.code.evidence-graph.v1` | Canonical claim/citation projection for one Run; measures publication completeness and rejects orphan citations or unlinked support digests. |
-| `ResearchWorkflowStepV1` | `a3s.code.research-workflow-step.v1` | Research-visible workflow step with input/output digests, dependency edges, and optional binding to an `ExecutionResultReceiptV1`. |
-| `ResearchWorkflowPlanV1` | `a3s.code.research-workflow-plan.v1` | Bounded DAG of workflow steps for one Run, fenced to the Run seed and workflow digest. |
-| `ResearchRerunLineageV1` | `a3s.code.research-rerun-lineage.v1` | Finding-triggered affected-step set in dependency-first order for partial recompute without rewriting parent evidence. |
-| `ResearchProvenanceReceiptV1` | `a3s.code.provenance-receipt.v1` | Binds an artifact to its inputs, workflow, code, environment, provider, optional model/seed, and validation output. |
-| `ResearchReproducibilityManifestV1` | `a3s.code.reproducibility-manifest.v1` | Digests and non-secret parameters that make one Run reproducible: provider/model, optional model revision, environment lock, code/workflow/parameter digests, seed, tolerances, and output artifacts. |
-| `ResearchReviewFindingV1` | `a3s.code.review-finding.v1` | Bounded host-produced observation linked to exact artifact and evidence digests; optional immutable provenance-receipt and evaluation-record bindings prevent artifact, evaluator, Run, or evidence drift; resolution and waiver are explicit lifecycle transitions. |
-| `ResearchReviewBatchV1` | `a3s.code.review-batch.v1` | Bounded immutable projection of one evaluator result into findings; all findings share the same project, Run, evaluation record, and evidence snapshot. |
-| `ResearchEventV1` | `a3s.code.science-event.v1` | Digest-only project/run event projection for Desktop and other hosts. |
+| `ResearchRunV1` | `aster.code.research-run.v1` | Binds project revision, source/evidence snapshots, Code/Use capability identity, provider/model, reproducibility promise, and lifecycle status. |
+| `ResearchEvidenceFactV1` | `aster.code.evidence-fact.v1` | Append-only, digest-only observation with a monotonic sequence and bounded metadata. |
+| `ResearchClaimV1` | `aster.code.research-claim.v1` | Digest-only claim statement with explicit `proposed`, `supported`, `conflicted`, or `unsupported` status; support, conflict, and gap digests are mutually exclusive by state. |
+| `ResearchCitationV1` | `aster.code.research-citation.v1` | Bounded citation linking one claim to a source digest and source-span digest without retaining source plaintext. |
+| `ResearchEvidenceGraphV1` | `aster.code.evidence-graph.v1` | Canonical claim/citation projection for one Run; measures publication completeness and rejects orphan citations or unlinked support digests. |
+| `ResearchWorkflowStepV1` | `aster.code.research-workflow-step.v1` | Research-visible workflow step with input/output digests, dependency edges, and optional binding to an `ExecutionResultReceiptV1`. |
+| `ResearchWorkflowPlanV1` | `aster.code.research-workflow-plan.v1` | Bounded DAG of workflow steps for one Run, fenced to the Run seed and workflow digest. |
+| `ResearchRerunLineageV1` | `aster.code.research-rerun-lineage.v1` | Finding-triggered affected-step set in dependency-first order for partial recompute without rewriting parent evidence. |
+| `ResearchProvenanceReceiptV1` | `aster.code.provenance-receipt.v1` | Binds an artifact to its inputs, workflow, code, environment, provider, optional model/seed, and validation output. |
+| `ResearchReproducibilityManifestV1` | `aster.code.reproducibility-manifest.v1` | Digests and non-secret parameters that make one Run reproducible: provider/model, optional model revision, environment lock, code/workflow/parameter digests, seed, tolerances, and output artifacts. |
+| `ResearchReviewFindingV1` | `aster.code.review-finding.v1` | Bounded host-produced observation linked to exact artifact and evidence digests; optional immutable provenance-receipt and evaluation-record bindings prevent artifact, evaluator, Run, or evidence drift; resolution and waiver are explicit lifecycle transitions. |
+| `ResearchReviewBatchV1` | `aster.code.review-batch.v1` | Bounded immutable projection of one evaluator result into findings; all findings share the same project, Run, evaluation record, and evidence snapshot. |
+| `ResearchEventV1` | `aster.code.science-event.v1` | Digest-only project/run event projection for Desktop and other hosts. |
 
 Hosts that need a process-boundary envelope use `ResearchWireEnvelopeV1`
-(`a3s.code.research-wire.v1`) with the generated Rust/ACP projections
+(`aster.code.research-wire.v1`) with the generated Rust/ACP projections
 under `sdk/research/`. Regenerate with
 `node scripts/generate_research_protocol_artifacts.mjs`.
 
@@ -140,11 +140,11 @@ The end-to-end qualification fixture in
 temporary workspace. It reopens the serialized Run, evaluator dispatch ledger,
 and evaluator result store; rejects a missing or gapped evidence cursor;
 verifies terminal cancellation cannot resume; checks create-only artifact
-replay; and proves that the Code catalog and upstream A3S Use generation remain
+replay; and proves that the Code catalog and upstream Aster Use generation remain
 bound to the same Run. Run it with:
 
 ```bash
-CARGO_TARGET_DIR=/tmp/a3s-code-target \
+CARGO_TARGET_DIR=/tmp/aster-target \
   cargo test --locked --features advanced-harness --test research_execution_qualification
 ```
 
@@ -152,6 +152,6 @@ Focused contract tests live beside the implementations in
 `core/src/research/`. Run them with:
 
 ```bash
-CARGO_TARGET_DIR=/tmp/a3s-code-target \
-  cargo test --locked --features advanced-harness -p a3s-code-core research:: --lib
+CARGO_TARGET_DIR=/tmp/aster-target \
+  cargo test --locked --features advanced-harness -p aster-core research:: --lib
 ```

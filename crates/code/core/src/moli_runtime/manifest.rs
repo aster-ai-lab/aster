@@ -129,7 +129,7 @@ pub(crate) fn asset_for(target: &str) -> Option<ManifestAsset> {
 pub(crate) fn _manifest_resource_is_parseable() -> Result<(), serde_json::Error> {
     let manifest: RuntimeManifest =
         serde_json::from_str(include_str!("../../resources/moli-runtime-manifest.json"))?;
-    debug_assert_eq!(manifest.schema, "a3s-code/moli-runtime-manifest/v1");
+    debug_assert_eq!(manifest.schema, "aster/moli-runtime-manifest/v1");
     debug_assert_eq!(manifest.repository, MOLI_REPOSITORY_URL);
     debug_assert_eq!(manifest.version, DEFAULT_MOLI_VERSION);
     debug_assert!(!manifest.assets.is_empty());

@@ -1,11 +1,11 @@
 use std::sync::{Arc, Mutex};
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanAuthority, PluginOperationAction, PluginOperationPlan, PluginOperationPlanBinding,
     PluginOperationPlanDraft, PluginOperationPlanEnvelope, PluginReleaseChannel, PluginSurfaceRef,
     PluginWorkspaceGrantChangeSet, UseError, UseResult,
 };
-use a3s_use_extension::TrustedRegistry;
+use aster_use_extension::TrustedRegistry;
 use async_trait::async_trait;
 
 use super::grant::{PackageAuthorizationEvidence, PackageAuthorizationProvider};
@@ -412,7 +412,7 @@ impl PackageManager {
             .envelope
             .package_lock
             .as_ref()
-            .map(a3s_use_core::PluginPackageLock::descriptor_digest)
+            .map(aster_use_core::PluginPackageLock::descriptor_digest)
             .transpose()?
             .ok_or_else(|| plan_error("The stored package graph plan omitted its exact lock."))?;
         if lock_digest != expected_package_lock_digest {

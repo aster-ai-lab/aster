@@ -8,7 +8,7 @@ use super::{
 fn legacy_worker_status_cannot_be_accepted_as_payload_exit() {
     for exit_code in [0, 7, 127] {
         let legacy = serde_json::json!({
-            "schema_version": "a3s.oci.guest-command.v1",
+            "schema_version": "aster.oci.guest-command.v1",
             "settlement": "settled",
             "exit_code": exit_code,
             "vm_entered": true,

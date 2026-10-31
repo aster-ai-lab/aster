@@ -1,8 +1,8 @@
-use a3s_office::{
+use aster_office::{
     DocumentKind, NativeCreatedImage, NativeOfficeComment, NativeOfficeCommentPosition,
     NativeOfficeEditor, NativeOfficeImage,
 };
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::arguments::{AllowedOptions, ParsedArguments};
 use super::bounded_input::{read_bounded_input, NativeInputKind};

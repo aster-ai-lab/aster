@@ -18,7 +18,7 @@ pub(super) fn openapi_route_definition(
         route_definition = quote! {
             (#route_definition).with_response(
                 #status,
-                ::a3s_boot::OpenApiResponse::description("Success")
+                ::aster_boot::OpenApiResponse::description("Success")
             )
         };
     }
@@ -147,7 +147,7 @@ fn body_fields_openapi_token(input: &RouteMethodInput) -> Option<proc_macro2::To
     }
 
     Some(quote! {
-        with_json_request_body(::a3s_boot::OpenApiSchema::object_with_properties(
+        with_json_request_body(::aster_boot::OpenApiSchema::object_with_properties(
             [#(#properties),*],
             [#(#required),*],
         ))

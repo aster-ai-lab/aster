@@ -517,7 +517,7 @@ function ensureRootNamespace(
   }
   let prefix: string;
   do {
-    prefix = `a3sExt${context.nextExtensionPrefix}`;
+    prefix = `asterExt${context.nextExtensionPrefix}`;
     context.nextExtensionPrefix += 1;
   } while (xmlNamespaceUri(context.generatedRoot, prefix));
   context.generatedRoot.setAttributeNS(

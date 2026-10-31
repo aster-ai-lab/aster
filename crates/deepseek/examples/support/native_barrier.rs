@@ -6,7 +6,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-const MODEL_SHA: &str = a3s_deepseek::weights::xq::XQ_GGUF_SHA256;
+const MODEL_SHA: &str = aster_deepseek::weights::xq::XQ_GGUF_SHA256;
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]

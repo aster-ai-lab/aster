@@ -1,7 +1,7 @@
-# A3S Code 高级开发者手册
+# Aster Code 高级开发者手册
 
 > **面向核心开发者、架构师和高级用户**  
-> 深入理解 A3S Code 内部机制、高级扩展与生产环境部署
+> 深入理解 Aster Code 内部机制、高级扩展与生产环境部署
 
 ---
 
@@ -27,7 +27,7 @@
 
 ### 1.1.1 线程模型
 
-A3S Code 使用多线程架构设计：
+Aster Code 使用多线程架构设计：
 
 - **主线程**：处理 HTTP API / WebSocket / AgentSession 调用
 - **工作线程池**：绑定工作空间的 AgentSession 执行
@@ -131,7 +131,7 @@ pub struct Context {
 
 # 第二章：高级配置与调优
 
-## 2.1 队列系统配置 (a3s-lane)
+## 2.1 队列系统配置 (aster-lane)
 
 ### 2.1.1 完整队列配置
 
@@ -554,7 +554,7 @@ pub trait BashSandbox {
 ### 6.2.2 沙盒实现
 
 ```rust
-impl BashSandbox for A3sBoxSandbox {
+impl BashSandbox for AsterBoxSandbox {
     async fn run(&self, command: &str, cwd: &Path) -> Result<SandboxOutput> {
         // 1. 进入隔离环境
         // 2. 设置资源限制
@@ -712,7 +712,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/target/release/a3s-code /usr/local/bin/
+COPY --from=builder /app/target/release/aster /usr/local/bin/
 COPY --from=builder /app/target/release/*.so /usr/local/lib/
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
@@ -720,8 +720,8 @@ ENV RUST_LOG=info
 
 EXPOSE 8080
 
-ENTRYPOINT ["a3s-code"]
-CMD ["--config", "/etc/a3s-code/agent.acl"]
+ENTRYPOINT ["aster"]
+CMD ["--config", "/etc/aster/agent.acl"]
 ```
 
 ### 8.1.2 Docker Compose
@@ -730,12 +730,12 @@ CMD ["--config", "/etc/a3s-code/agent.acl"]
 version: '3.8'
 
 services:
-  a3s-code:
-    image: a3s-lab/code:latest
+  aster:
+    image: aster-lab/code:latest
     ports:
       - "8080:8080"
     volumes:
-      - ./config:/etc/a3s-code
+      - ./config:/etc/aster
       - ./data:/data
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
@@ -765,22 +765,22 @@ volumes:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: a3s-code
+  name: aster
   labels:
-    app: a3s-code
+    app: aster
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: a3s-code
+      app: aster
   template:
     metadata:
       labels:
-        app: a3s-code
+        app: aster
     spec:
       containers:
-      - name: a3s-code
-        image: a3s-lab/code:latest
+      - name: aster
+        image: aster-lab/code:latest
         ports:
         - containerPort: 8080
         env:
@@ -816,10 +816,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: a3s-code
+  name: aster
 spec:
   selector:
-    app: a3s-code
+    app: aster
   ports:
   - port: 80
     targetPort: 8080
@@ -957,18 +957,18 @@ export RUST_LOG=debug
 export RUST_LOG=trace
 
 # 模块级调试
-export RUST_LOG=a3s_code_core=debug,a3s_code_core::agent=trace
+export RUST_LOG=aster_core=debug,aster_core::agent=trace
 
 # 启用内部调试
-export A3S_DEBUG=1
-export A3S_TRACE_TOOLS=1
+export ASTER_DEBUG=1
+export ASTER_TRACE_TOOLS=1
 ```
 
 ### 10.1.2 性能分析
 
 ```bash
 # 使用 cargo flamegraph
-cargo flamegraph --bin a3s-code
+cargo flamegraph --bin aster
 
 # 使用 perf
 perf record -g -- cargo run --release
@@ -1082,23 +1082,23 @@ tar -czf sessions-backup-$(date +%Y%m%d).tar.gz ./sessions/
 tar -czf memory-backup-$(date +%Y%m%d).tar.gz ./memory/
 
 # 完整备份
-a3s-code admin backup --output ./backup-$(date +%Y%m%d).zip
+aster admin backup --output ./backup-$(date +%Y%m%d).zip
 ```
 
 ### 10.4.3 紧急处理
 
 ```bash
 # 强制清理所有会话
-a3s-code admin sessions kill-all
+aster admin sessions kill-all
 
 # 重置队列
-a3s-code admin queue reset
+aster admin queue reset
 
 # 清除缓存
-a3s-code admin cache clear
+aster admin cache clear
 
 # 重启服务
-systemctl restart a3s-code
+systemctl restart aster
 ```
 
 ---
@@ -1116,11 +1116,11 @@ systemctl restart a3s-code
 
 ### C. 社区资源
 
-- GitHub: https://github.com/a3s-lab/a3s-code
-- 文档: https://a3s.dev/docs/code
-- Discord: https://discord.gg/a3s-lab
+- GitHub: https://github.com/aster-lab/aster
+- 文档: https://aster.dev/docs/code
+- Discord: https://discord.gg/aster-lab
 
 ---
 
 **最后更新**: 2026-03-24  
-**版本**: 与 A3S Code 主版本同步
+**版本**: 与 Aster Code 主版本同步

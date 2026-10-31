@@ -1,13 +1,13 @@
 [package]
 name = "aster"
-version = "0.1.5"
+version = "0.1.6"
 license = "MIT"
-authors = ["A3S Lab"]
+authors = ["Aster"]
 default-run = "aster"
 
 # Composition-root binary for Aster. This package links both the pager
-# library and the optional `a3s-code-pager-minimal` render mode: `minimal`
-# depends on `a3s-code-pager`, so the pager library cannot depend back on it
+# library and the optional `aster-pager-minimal` render mode: `minimal`
+# depends on `aster-pager`, so the pager library cannot depend back on it
 # (cargo cycle). The binary installs the minimal-mode IoC hooks at startup.
 edition = "2024"
 description = "Aster terminal coding agent"
@@ -37,20 +37,20 @@ serde_json = {workspace = true}
 dunce = {workspace = true}
 semver = {workspace = true}
 
-a3s-code-extra-ca = {path = "../../crates/terminal/crates/codegen/a3s-code-extra-ca"}
-a3s-code-sandbox = {default-features = false, path = "../../crates/terminal/crates/codegen/a3s-code-sandbox"}
-a3s-code-config = {path = "../../crates/terminal/crates/codegen/a3s-code-config"}
-a3s-tty-utils = {path = "../../crates/terminal/crates/codegen/a3s-tty-utils"}
-a3s-acp-lib = {path = "../../crates/terminal/crates/codegen/a3s-acp-lib"}
-a3s-crash-handler = {path = "../../crates/terminal/crates/codegen/a3s-crash-handler"}
-a3s-code-workspace = {default-features = false, path = "../../crates/terminal/crates/codegen/a3s-code-workspace"}
-a3s-code-telemetry = {path = "../../crates/terminal/crates/codegen/a3s-code-telemetry"}
-a3s-code-version = {path = "../../crates/terminal/crates/codegen/a3s-code-version"}
-a3s-code-update = {path = "../../crates/terminal/crates/codegen/a3s-code-update"}
-a3s-code-shell = {path = "../../crates/terminal/crates/codegen/a3s-code-shell"}
-a3s-code-login = {path = "../../crates/terminal/crates/codegen/a3s-code-login"}
-a3s-code-pager-minimal = {path = "../../crates/terminal/crates/codegen/a3s-code-pager-minimal"}
-a3s-code-pager = {path = "../../crates/terminal/crates/codegen/a3s-code-pager"}
+aster-extra-ca = {path = "../../crates/terminal/crates/codegen/aster-extra-ca"}
+aster-sandbox = {default-features = false, path = "../../crates/terminal/crates/codegen/aster-sandbox"}
+aster-config = {path = "../../crates/terminal/crates/codegen/aster-config"}
+aster-tty-utils = {path = "../../crates/terminal/crates/codegen/aster-tty-utils"}
+aster-acp-lib = {path = "../../crates/terminal/crates/codegen/aster-acp-lib"}
+aster-crash-handler = {path = "../../crates/terminal/crates/codegen/aster-crash-handler"}
+aster-workspace = {default-features = false, path = "../../crates/terminal/crates/codegen/aster-workspace"}
+aster-telemetry = {path = "../../crates/terminal/crates/codegen/aster-telemetry"}
+aster-version = {path = "../../crates/terminal/crates/codegen/aster-version"}
+aster-update = {path = "../../crates/terminal/crates/codegen/aster-update"}
+aster-shell = {path = "../../crates/terminal/crates/codegen/aster-shell"}
+aster-login = {path = "../../crates/terminal/crates/codegen/aster-login"}
+aster-pager-minimal = {path = "../../crates/terminal/crates/codegen/aster-pager-minimal"}
+aster-pager = {path = "../../crates/terminal/crates/codegen/aster-pager"}
 
 [target.'cfg(target_os = "linux")'.dependencies]
 
@@ -71,9 +71,9 @@ tikv-jemalloc-ctl = {version = "0.7", optional = true, features = ["stats", "use
 
 [dev-dependencies]
 serde = {workspace = true}
-a3s-acl = {path = "../../crates/acl"}
-a3s-code-core = {path = "../../crates/code/core"}
-a3s-code-markdown = {path = "../../crates/terminal/crates/codegen/a3s-code-markdown"}
+aster-acl = {path = "../../crates/acl"}
+aster-core = {path = "../../crates/code/core"}
+aster-markdown = {path = "../../crates/terminal/crates/codegen/aster-markdown"}
 tempfile = {workspace = true}
 uuid = {version = "1", features = ["v4"]}
 vt100 = "0.15"
@@ -94,14 +94,14 @@ default-bazel = [
     "local-workspace",
     ]
 jemalloc = ["dep:tikv-jemallocator", "dep:tikv-jemalloc-sys", "dep:tikv-jemalloc-ctl"]
-# a3s-code-workspace no longer enables sandbox-enforce by default, so enable it here.
-sandbox-enforce = ["a3s-code-pager/sandbox-enforce", "a3s-code-workspace/sandbox-enforce"]
-local-workspace = ["a3s-code-pager/local-workspace"]
+# aster-workspace no longer enables sandbox-enforce by default, so enable it here.
+sandbox-enforce = ["aster-pager/sandbox-enforce", "aster-workspace/sandbox-enforce"]
+local-workspace = ["aster-pager/local-workspace"]
 # Test-only, prod-inert seam: lets the e2e harness install a TEST-signed managed-policy key the
 # spawned pager trusts. Double locked out of production: absent from `default`, `default-bazel`, and
 # `release-dist`, and the install hook is additionally gated on `debug_assertions` (off in shipped
 # `-c opt`/release builds). Never add this to a shipped feature set.
 test-seams = []
 release-dist = [
-    "a3s-code-pager/release-dist",
+    "aster-pager/release-dist",
     ]

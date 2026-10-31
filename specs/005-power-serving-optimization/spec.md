@@ -106,8 +106,8 @@ The operator gets an evidence-backed decision for each speculative candidate and
 - [ ] New behavior has a small hermetic test in its owner (T002–T005, T009–T010).
 - [ ] Closed sets retain `parse()` / `as_str()` and reject unknown values (T004, T009–T010).
 - [ ] No production `unwrap()` / `expect()` without an infallibility comment (T011).
-- [ ] Internal `a3s-*` dependencies stay local; no new SDK/workspace/repository (T011).
-- [ ] Product configuration remains ACL parsed by `a3s-acl` (T004, T009–T010).
+- [ ] Internal `aster-*` dependencies stay local; no new SDK/workspace/repository (T011).
+- [ ] Product configuration remains ACL parsed by `aster-acl` (T004, T009–T010).
 - [ ] Evidence target: `docs/evidence/power/2026-10-21-serving-optimization/OUTCOME.md` (T001, T006–T013).
 
 These boxes remain unchecked until implementation verification; none is waived.

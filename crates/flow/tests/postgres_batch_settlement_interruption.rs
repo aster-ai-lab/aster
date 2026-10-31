@@ -8,7 +8,7 @@
 
 #![cfg(feature = "postgres")]
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime,
     PostgresEventStore, RetryPolicy, RuntimeCommand, StepInvocation, StepStatus,
     WorkflowInvocation, WorkflowRunStatus, WorkflowSpec,
@@ -42,7 +42,7 @@ struct CrashBeforeBatchSettlementStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeBatchSettlementStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -51,7 +51,7 @@ impl FlowEventStore for CrashBeforeBatchSettlementStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::StepCancelled { step_id, .. } if step_id == "slow"
@@ -66,11 +66,11 @@ impl FlowEventStore for CrashBeforeBatchSettlementStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -85,7 +85,7 @@ impl FlowRuntime for BatchFailureRecoveryRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_steps(vec![
             invocation.context().step_with_retry(
                 "fail",
@@ -102,12 +102,12 @@ impl FlowRuntime for BatchFailureRecoveryRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.step_invocations.fetch_add(1, Ordering::SeqCst);
         if invocation.step_id == "fail" {
             return Err(FlowError::Runtime("permanent batch failure".into()));
         }
-        pending::<a3s_flow::Result<serde_json::Value>>().await
+        pending::<aster_flow::Result<serde_json::Value>>().await
     }
 }
 

@@ -10,7 +10,7 @@
 //   the keyframe, with timestep 0.002, collision friction 1.8 .02 .002 and a
 //   tcp site 0.1034 m below the hand. Every body keeps its explicit inertial, so
 //   dropping the visual geoms does not change the dynamics. The page inserts the
-//   task geometry at the <!-- a3s:world --> marker.
+//   task geometry at the <!-- aster:world --> marker.
 // - FILES: the collision meshes, byte for byte, for MuJoCo's virtual file system.
 // - MESHES and VISUALS: the visual OBJ meshes for three.js, drawn in their body
 //   frame (the visual geoms have no pos or quat). Positions are deduplicated and
@@ -59,7 +59,7 @@ for (const line of upstream.split('\n')) {
     continue
   }
   if (trimmed.startsWith('<mujoco ')) {
-    out.push('<mujoco model="a3s cobot-arm">')
+    out.push('<mujoco model="aster cobot-arm">')
     continue
   }
   if (trimmed.startsWith('<compiler ')) {
@@ -108,7 +108,7 @@ for (const line of upstream.split('\n')) {
     tcp = true
   }
   if (trimmed.startsWith('<light ') && bodies.length === 0) {
-    out.push('    <!-- a3s:world -->')
+    out.push('    <!-- aster:world -->')
     marker = true
   }
 }

@@ -126,7 +126,7 @@ retains an unresolved recovered candidate for the user's decision. The connected
 composition proof, not actual application quit/relaunch.
 
 The preceding checkpoints were blocked on GUI configuration. The retained
-2026-10-23 A3S Test MCP launcher and background semantic guard have now been
+2026-10-23 Aster Test MCP launcher and background semantic guard have now been
 recovered unchanged. No foreground input, coordinate action or broader policy
 was introduced. A fresh isolated bundle needed the existing development-launch
 marker; it now starts. Its first blank content capture remains a failed journey;
@@ -328,7 +328,7 @@ publication checks. Drafts, staging and private host state are never search corp
 - Native temporary-vault cases prove CAS, confinement, journals/drafts, exact
   query scope, partial metadata and permission registration. Core additions get
   Core sibling tests; OKF behavior stays under existing maintenance tests.
-- Reuse A3S Test agentic GUI exploration on an isolated instance first, then
+- Reuse Aster Test agentic GUI exploration on an isolated instance first, then
   promote proved paths to ACL. Background semantic actions only; an adapter's
   completion report is not proof a rich editor received text. Assert native bytes.
 - Representative fixture: 5,000 notes / ~50 MiB, Chinese/emoji, same-named files,

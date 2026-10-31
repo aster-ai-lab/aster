@@ -8,14 +8,14 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 
-use a3s_box_core::config::BoxConfig;
-use a3s_box_core::network::NetworkMode;
-use a3s_box_core::{
+use aster_box_core::config::BoxConfig;
+use aster_box_core::network::NetworkMode;
+use aster_box_core::{
     parse_port_mapping, sandbox_named_bridge_opt_in_enabled, CreateExecutionRequest, ExecutionId,
     ExecutionManager, ExecutionRecordPolicy, ExecutionRestartPolicy, KillExecutionOptions,
     OperationId, OCI_NATIVE_KEEP_NETWORK_DEVICE_AUTHORITY_ENV,
 };
-use a3s_box_runtime::{ComposeRuntimePlan, ManagedExecutionState};
+use aster_box_runtime::{ComposeRuntimePlan, ManagedExecutionState};
 
 use crate::state::{BoxRecord, StateFile};
 
@@ -125,7 +125,7 @@ pub(super) async fn boot_sandbox_service(
         health_check,
         healthcheck_disabled,
     } = request;
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let manager = super::super::configured_local_execution_manager(&home).await?;
     manager.preflight_isolation(box_config.isolation).await?;
 
@@ -203,7 +203,7 @@ pub(super) async fn teardown_managed_service(
     let state = record
         .managed_state()?
         .ok_or_else(|| format!("Box {} lost managed lifecycle metadata", record.name))?;
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let manager = super::super::configured_local_execution_manager(&home).await?;
     let execution_id = ExecutionId::new(record.id.clone())?;
     let terminate = matches!(
@@ -250,7 +250,7 @@ pub(super) fn lease_secret_root(lease: Option<&ComposeSecretLease>) -> Option<&P
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::compose::{ComposeConfig, ServiceConfig, StringOrList};
+    use aster_box_core::compose::{ComposeConfig, ServiceConfig, StringOrList};
     use std::collections::HashMap;
     use std::sync::Mutex;
 

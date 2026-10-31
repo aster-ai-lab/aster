@@ -35,10 +35,10 @@ mod resilience;
 #[path = "durable_memory_prod1_host/session.rs"]
 mod session;
 
-use a3s_code_core::embedding::EmbeddingProvider;
-use a3s_code_core::memory::{ScheduledSemanticRefresh, SemanticRefreshRunOutcome};
-use a3s_memory::repository::{FileMemoryRepository, MemoryNamespace, MemoryRepository};
-use a3s_memory::vector::{VectorIndex, VectorIndexDescriptor};
+use aster_core::embedding::EmbeddingProvider;
+use aster_core::memory::{ScheduledSemanticRefresh, SemanticRefreshRunOutcome};
+use aster_durable_memory::repository::{FileMemoryRepository, MemoryNamespace, MemoryRepository};
+use aster_durable_memory::vector::{VectorIndex, VectorIndexDescriptor};
 use anyhow::{Context, Result};
 use boyue::BoyueEmbeddingProvider;
 use concurrency::ConcurrencyEvidence;
@@ -228,7 +228,7 @@ async fn main() -> Result<()> {
         NODE_LIMIT,
     )?;
     peer.refresh_semantic_recall_requiring(
-        a3s_memory::vector::VectorMutationConsistency::IndexRevisionCas,
+        aster_durable_memory::vector::VectorMutationConsistency::IndexRevisionCas,
         CancellationToken::new(),
     )
     .await?;
@@ -354,7 +354,7 @@ async fn main() -> Result<()> {
 
     // A checkpoint-recovered schedule must adopt the persisted receipt and
     // settle its first run as Unchanged, which is the exact-resume proof.
-    let decoded: a3s_code_core::DurableMemorySemanticRefreshCheckpoint =
+    let decoded: aster_core::DurableMemorySemanticRefreshCheckpoint =
         serde_json::from_slice(&checkpoint_json)?;
     let recovered_schedule =
         ScheduledSemanticRefresh::try_new_with_checkpoint(REFRESH_INTERVAL, decoded.clone())?;
@@ -671,7 +671,7 @@ async fn main() -> Result<()> {
     let all_passed = dimensions.iter().all(|dimension| dimension.passed);
     let report = json!({
         "schemaVersion": 1,
-        "profile": "a3s.code.dm-prod1-host.v1",
+        "profile": "aster.code.dm-prod1-host.v1",
         "gate": "DM-PROD1 (HARNESS-CONV7)",
         "codeRevision": config.revision,
         "generatedAtUnixMs": chrono::Utc::now().timestamp_millis(),

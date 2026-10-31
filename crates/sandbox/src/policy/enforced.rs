@@ -1,4 +1,4 @@
-//! Platform-neutral A3S sandbox policy construction.
+//! Platform-neutral Aster sandbox policy construction.
 
 use anyhow::{bail, Context, Result};
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -15,7 +15,7 @@ const MAX_CREDENTIAL_ALIAS_SCAN_ENTRIES: usize = 5_000_000;
 /// Workspace-relative directories that can alter the agent, repository, or
 /// surrounding tool control plane.
 pub const PROTECTED_WORKSPACE_DIRECTORIES: &[&str] = &[
-    ".git", ".a3s", ".agents", ".codex", ".claude", ".vscode", ".idea",
+    ".git", ".aster", ".agents", ".codex", ".claude", ".vscode", ".idea",
 ];
 
 /// Workspace-relative files that can alter command discovery or repository
@@ -34,8 +34,8 @@ pub const PROTECTED_WORKSPACE_FILES: &[&str] = &[
 /// Return whether a normalized workspace-relative path targets protected
 /// control metadata.
 ///
-/// Durable `/goal` loop artifacts under `.a3s/loops/` are intentionally
-/// agent-writable (ACCEPTANCE/STATE/RUN_LOG). Other `.a3s` control-plane
+/// Durable `/goal` loop artifacts under `.aster/loops/` are intentionally
+/// agent-writable (ACCEPTANCE/STATE/RUN_LOG). Other `.aster` control-plane
 /// siblings stay protected.
 pub fn is_protected_workspace_path(path: &str) -> bool {
     let normalized = path.replace('\\', "/");
@@ -49,7 +49,7 @@ pub fn is_protected_workspace_path(path: &str) -> bool {
         return false;
     }
 
-    if first.eq_ignore_ascii_case(".a3s") {
+    if first.eq_ignore_ascii_case(".aster") {
         return !components
             .next()
             .is_some_and(|second| second.eq_ignore_ascii_case("loops"));
@@ -72,7 +72,7 @@ pub(crate) struct EnforcedPolicy {
     pub(crate) allow_write: Vec<PathBuf>,
     pub(crate) deny_write: Vec<PathBuf>,
     /// Writable carve-outs under an otherwise write-denied ancestor (e.g.
-    /// `.a3s/loops` under protected `.a3s`). Applied after deny rules.
+    /// `.aster/loops` under protected `.aster`). Applied after deny rules.
     pub(crate) write_exceptions: Vec<PathBuf>,
     pub(crate) resources: crate::policy::ResourceLimits,
     pub(crate) session_write: crate::policy::SessionWriteMode,
@@ -84,7 +84,7 @@ pub(crate) struct EnforcedPolicy {
     /// [`crate::GUEST_HTTP_CONNECT_RELAY_PORT`].
     pub(crate) mediator_unix_path: Option<PathBuf>,
     /// Windows AppContainer named-pipe CONNECT path (`\\.\pipe\...`).
-    /// Guest contract is `A3S_SANDBOX_MEDIATOR_PIPE` — not `HTTP_PROXY`,
+    /// Guest contract is `ASTER_SANDBOX_MEDIATOR_PIPE` — not `HTTP_PROXY`,
     /// because zero-net AppContainers cannot reach loopback TCP.
     pub(crate) mediator_pipe_name: Option<String>,
     /// Loopback SOCKS5 mediator port when Gate 5 SOCKS mediation is active.
@@ -113,7 +113,7 @@ enum OverlayKind {
 impl EnforcedPolicy {
     /// Compile a validated [`crate::policy::SandboxPolicy`] into OS path sets.
     ///
-    /// Materializes the A3S Bash baseline, then applies Exact overlays. Glob
+    /// Materializes the Aster Bash baseline, then applies Exact overlays. Glob
     /// overlays and allow-paths outside workspace/scratch fail closed.
     pub(crate) fn compile(
         document: &crate::policy::SandboxPolicy,
@@ -124,25 +124,25 @@ impl EnforcedPolicy {
         document
             .validate_for_backend(capabilities)
             .context("sandbox policy is not enforceable on this backend")?;
-        let mut enforced = Self::materialize_a3s_bash_baseline(workspace, scratch)?;
+        let mut enforced = Self::materialize_aster_bash_baseline(workspace, scratch)?;
         enforced.resources = document.resources.clone();
         enforced.session_write = document.filesystem.session_write;
         enforced.apply_document_overlays(document)?;
         Ok(enforced)
     }
 
-    /// Test helper that compiles the A3S Bash baseline document.
+    /// Test helper that compiles the Aster Bash baseline document.
     #[cfg(test)]
     pub(crate) fn for_execution(workspace: &Path, scratch: &Path) -> Result<Self> {
         Self::compile(
-            &crate::policy::SandboxPolicy::a3s_bash_baseline(),
+            &crate::policy::SandboxPolicy::aster_bash_baseline(),
             workspace,
             scratch,
             crate::policy::BackendCapabilities::native_gate1(),
         )
     }
 
-    fn materialize_a3s_bash_baseline(workspace: &Path, scratch: &Path) -> Result<Self> {
+    fn materialize_aster_bash_baseline(workspace: &Path, scratch: &Path) -> Result<Self> {
         let workspace = workspace
             .canonicalize()
             .context("failed to resolve the native sandbox workspace")?;
@@ -174,9 +174,9 @@ impl EnforcedPolicy {
         deny_write.extend(sensitive);
         validate_denied_workspace_entries(&workspace, &deny_write)?;
 
-        // Goal Engineering writes ACCEPTANCE/STATE under `.a3s/loops`. Keep the
-        // rest of `.a3s` write-denied, but carve the loops tree back open.
-        let loops = workspace.join(".a3s").join("loops");
+        // Goal Engineering writes ACCEPTANCE/STATE under `.aster/loops`. Keep the
+        // rest of `.aster` write-denied, but carve the loops tree back open.
+        let loops = workspace.join(".aster").join("loops");
         std::fs::create_dir_all(&loops).with_context(|| {
             format!(
                 "failed to create goal-loop write carve-out {}",
@@ -496,8 +496,8 @@ fn compose_child_env(
     scrub_proxy_environment(&mut environment);
     environment.retain(|key, _| {
         let key = key.to_string_lossy();
-        !key.eq_ignore_ascii_case("A3S_SANDBOX_MEDIATOR_PIPE")
-            && !key.eq_ignore_ascii_case("A3S_SANDBOX_MEDIATOR_PIPE_HANDLE")
+        !key.eq_ignore_ascii_case("ASTER_SANDBOX_MEDIATOR_PIPE")
+            && !key.eq_ignore_ascii_case("ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE")
     });
     if let Some(port) = mediator_port {
         let proxy = OsString::from(format!("http://127.0.0.1:{port}"));
@@ -518,7 +518,7 @@ fn compose_child_env(
         // Windows AppContainer bridge: named pipe only. HTTP_PROXY would imply
         // guest loopback TCP, which zero-net AppContainers cannot use.
         environment.insert(
-            OsString::from("A3S_SANDBOX_MEDIATOR_PIPE"),
+            OsString::from("ASTER_SANDBOX_MEDIATOR_PIPE"),
             OsString::from(pipe_name),
         );
     }
@@ -608,8 +608,8 @@ pub(crate) fn secret_env_name_is_reserved(name: &str) -> bool {
     ]
     .into_iter()
     .any(|group| group.iter().any(|key| name.eq_ignore_ascii_case(key)))
-        || name.eq_ignore_ascii_case("A3S_SANDBOX_MEDIATOR_PIPE")
-        || name.eq_ignore_ascii_case("A3S_SANDBOX_MEDIATOR_PIPE_HANDLE")
+        || name.eq_ignore_ascii_case("ASTER_SANDBOX_MEDIATOR_PIPE")
+        || name.eq_ignore_ascii_case("ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE")
 }
 
 pub(crate) fn resolve_executable(
@@ -731,11 +731,11 @@ pub fn sensitive_paths() -> Vec<PathBuf> {
     extend_configured_secret(&mut paths, "CLAUDE_CONFIG_DIR", Some(".credentials.json"));
     extend_configured_secret(&mut paths, "CARGO_HOME", Some("credentials"));
     extend_configured_secret(&mut paths, "CARGO_HOME", Some("credentials.toml"));
-    for variable in ["A3S_KIMI_HOME", "KIMI_CODE_HOME", "KIMI_SHARE_DIR"] {
+    for variable in ["ASTER_KIMI_HOME", "KIMI_CODE_HOME", "KIMI_SHARE_DIR"] {
         extend_configured_secret(&mut paths, variable, Some("credentials/kimi-code.json"));
     }
     for variable in [
-        "A3S_KIMI_DESKTOP_HOME",
+        "ASTER_KIMI_DESKTOP_HOME",
         "KIMI_DESKTOP_HOME",
         "WORKBUDDY_CONFIG_DIR",
         "CODEBUDDY_CONFIG_DIR",
@@ -829,7 +829,7 @@ fn default_sensitive_paths(home: &Path) -> Vec<PathBuf> {
         ".terraform.d/credentials.tfrc.json",
         ".local/share/keyrings",
         ".password-store",
-        ".a3s/os-auth.json",
+        ".aster/os-auth.json",
         "Library/Keychains",
     ]
     .into_iter()
@@ -847,7 +847,7 @@ const FIXED_WORKSPACE_SECRET_FILES: &[&str] = &[
     ".npmrc",
     ".pypirc",
     ".git-credentials",
-    ".a3s/os-auth.json",
+    ".aster/os-auth.json",
     ".codex/auth.json",
     ".claude/.credentials.json",
     ".claude.json",
@@ -1749,10 +1749,10 @@ mod tests {
     #[test]
     fn child_environment_mediator_pipe_sets_named_pipe_not_http_proxy() {
         let scratch = tempfile::tempdir().unwrap();
-        let pipe = r"\\.\pipe\a3s-sandbox-test";
+        let pipe = r"\\.\pipe\aster-sandbox-test";
         let environment = compose_child_env(None, scratch.path(), None, Some(pipe), None).unwrap();
         assert_eq!(
-            environment.get(OsStr::new("A3S_SANDBOX_MEDIATOR_PIPE")),
+            environment.get(OsStr::new("ASTER_SANDBOX_MEDIATOR_PIPE")),
             Some(&OsString::from(pipe))
         );
         assert!(
@@ -1768,7 +1768,7 @@ mod tests {
         for path in [
             ".git/config",
             ".GIT/HEAD",
-            r".a3s\policy.acl",
+            r".aster\policy.acl",
             ".mcp.json",
             ".zshrc",
         ] {
@@ -1779,8 +1779,8 @@ mod tests {
             "../.git/config",
             ".gitignore",
             "src/main.rs",
-            ".a3s/loops/goal-1/ACCEPTANCE.md",
-            r".a3s\loops\goal-1\STATE.md",
+            ".aster/loops/goal-1/ACCEPTANCE.md",
+            r".aster\loops\goal-1\STATE.md",
         ] {
             assert!(!is_protected_workspace_path(path), "{path}");
         }
@@ -1879,7 +1879,7 @@ mod tests {
         let outside = tempfile::tempdir().unwrap();
         let source = outside.path().join("source");
         std::fs::write(&source, "outside").unwrap();
-        for directory in ["node_modules", "target", ".a3s"] {
+        for directory in ["node_modules", "target", ".aster"] {
             let directory = workspace.path().join(directory);
             std::fs::create_dir_all(&directory).unwrap();
             std::fs::hard_link(&source, directory.join("linked")).unwrap();
@@ -1894,7 +1894,7 @@ mod tests {
             .iter()
             .any(|path| path.ends_with("node_modules/linked")));
         assert!(!hardlinks.iter().any(|path| path.ends_with("target/linked")));
-        assert!(!hardlinks.iter().any(|path| path.ends_with(".a3s/linked")));
+        assert!(!hardlinks.iter().any(|path| path.ends_with(".aster/linked")));
     }
 
     #[cfg(any(unix, windows))]
@@ -2075,7 +2075,7 @@ mod tests {
         let workspace = Path::new("/workspace");
         assert!(requires_directory_placeholder(
             workspace,
-            &workspace.join(".a3s")
+            &workspace.join(".aster")
         ));
         assert!(requires_directory_placeholder(
             workspace,
@@ -2087,11 +2087,11 @@ mod tests {
         ));
         assert!(!requires_directory_placeholder(
             workspace,
-            &workspace.join(".a3s/os-auth.json")
+            &workspace.join(".aster/os-auth.json")
         ));
         assert!(!requires_directory_placeholder(
             workspace,
-            Path::new("/outside/.a3s")
+            Path::new("/outside/.aster")
         ));
     }
 

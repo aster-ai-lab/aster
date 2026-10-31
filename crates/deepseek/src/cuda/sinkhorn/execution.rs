@@ -1,6 +1,6 @@
 use super::{Plan, ABI, SOURCE};
 use crate::layers::{tensor_error, validate_finite};
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::cuda_backend::{cudarc, WrapErr};
 use candle_core::{CpuStorage, CudaStorage, CustomOp1, DType, Layout, Shape, Tensor};
 use cudarc::driver::{LaunchConfig, PushKernelArg};

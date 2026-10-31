@@ -27,7 +27,7 @@ mod snp;
 mod tests;
 
 /// Vsock port for the attestation server.
-pub const ATTEST_VSOCK_PORT: u32 = a3s_transport::ports::TEE_CHANNEL;
+pub const ATTEST_VSOCK_PORT: u32 = aster_transport::ports::TEE_CHANNEL;
 
 /// Size of the report_data field in the SNP report request.
 #[cfg(any(target_os = "linux", test))]
@@ -195,8 +195,8 @@ fn generate_ratls_config(
     // Build X.509 certificate with SNP report extensions
     let mut params = CertificateParams::default();
     let mut dn = DistinguishedName::new();
-    dn.push(DnType::CommonName, "A3S Box RA-TLS");
-    dn.push(DnType::OrganizationName, "A3S Lab");
+    dn.push(DnType::CommonName, "Aster Box RA-TLS");
+    dn.push(DnType::OrganizationName, "Aster");
     params.distinguished_name = dn;
 
     // Add SNP report as custom extension
@@ -232,12 +232,12 @@ fn generate_ratls_config(
 
 #[cfg(any(target_os = "linux", test))]
 fn runtime_attestation_binding() -> Result<Option<[u8; RUNTIME_BINDING_SIZE]>, String> {
-    match std::env::var(a3s_box_core::tee::RUNTIME_ATTESTATION_BINDING_ENV) {
+    match std::env::var(aster_box_core::tee::RUNTIME_ATTESTATION_BINDING_ENV) {
         Ok(value) => parse_runtime_attestation_binding(&value).map(Some),
         Err(std::env::VarError::NotPresent) => Ok(None),
         Err(std::env::VarError::NotUnicode(_)) => Err(format!(
             "{} must contain canonical lowercase SHA-256 hex",
-            a3s_box_core::tee::RUNTIME_ATTESTATION_BINDING_ENV
+            aster_box_core::tee::RUNTIME_ATTESTATION_BINDING_ENV
         )),
     }
 }
@@ -251,7 +251,7 @@ fn parse_runtime_attestation_binding(value: &str) -> Result<[u8; RUNTIME_BINDING
     {
         return Err(format!(
             "{} must contain canonical lowercase SHA-256 hex",
-            a3s_box_core::tee::RUNTIME_ATTESTATION_BINDING_ENV
+            aster_box_core::tee::RUNTIME_ATTESTATION_BINDING_ENV
         ));
     }
 
@@ -261,7 +261,7 @@ fn parse_runtime_attestation_binding(value: &str) -> Result<[u8; RUNTIME_BINDING
         *output = u8::from_str_radix(&value[offset..offset + 2], 16).map_err(|_| {
             format!(
                 "{} must contain canonical lowercase SHA-256 hex",
-                a3s_box_core::tee::RUNTIME_ATTESTATION_BINDING_ENV
+                aster_box_core::tee::RUNTIME_ATTESTATION_BINDING_ENV
             )
         })?;
     }

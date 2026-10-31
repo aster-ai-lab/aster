@@ -156,7 +156,7 @@ function CompactPortList({
   if (ports.length === 0) return null;
   return (
     <section
-      className="a3s-form-workflow-node-preview-compact-ports"
+      className="aster-form-workflow-node-preview-compact-ports"
       data-direction={direction}
       aria-label={direction === "input" ? copy.inputPorts : copy.outputPorts}
     >
@@ -178,7 +178,7 @@ function CompactPortList({
               {canAddNext && (
                 <button
                   type="button"
-                  className="a3s-form-workflow-node-preview-next"
+                  className="aster-form-workflow-node-preview-next"
                   aria-label={copy.addNext(port.label)}
                   onClick={() => onRequestNext(port)}
                 >
@@ -210,12 +210,12 @@ function PortList({
   if (ports.length === 0) return null;
   return (
     <section
-      className="a3s-form-workflow-node-preview-port-list"
+      className="aster-form-workflow-node-preview-port-list"
       data-direction={direction}
       aria-label={direction === "input" ? copy.inputPorts : copy.outputPorts}
     >
       <span
-        className="a3s-form-workflow-node-preview-port-heading"
+        className="aster-form-workflow-node-preview-port-heading"
         aria-hidden="true"
       >
         {direction === "input" ? copy.inputPorts : copy.outputPorts}
@@ -227,7 +227,7 @@ function PortList({
             direction === "output" && kind === "control" && onRequestNext;
           return (
             <li
-              className="a3s-form-workflow-node-preview-port"
+              className="aster-form-workflow-node-preview-port"
               data-port-id={port.id}
               data-port-kind={kind}
               key={port.id}
@@ -246,7 +246,7 @@ function PortList({
               {canAddNext && (
                 <button
                   type="button"
-                  className="a3s-form-workflow-node-preview-next"
+                  className="aster-form-workflow-node-preview-next"
                   aria-label={copy.addNext(port.label)}
                   onClick={() => onRequestNext(port)}
                 >
@@ -301,7 +301,7 @@ export function WorkflowNodePreview({
   const accessibleName = `${node.display_name}${chinese ? "节点预览" : " workflow node preview"}`;
   return (
     <article
-      className={["a3s-form-workflow-node-preview", className]
+      className={["aster-form-workflow-node-preview", className]
         .filter(Boolean)
         .join(" ")}
       data-node-type={node.type}
@@ -329,7 +329,7 @@ export function WorkflowNodePreview({
       {interactive && (
         <button
           type="button"
-          className="a3s-form-workflow-node-preview-select"
+          className="aster-form-workflow-node-preview-select"
           data-node-family={visual.family}
           data-node-shape={shape}
           data-node-tone={visual.tone}
@@ -341,7 +341,7 @@ export function WorkflowNodePreview({
         />
       )}
       {!technical && shape === "entry" && (
-        <span className="a3s-form-workflow-node-preview-entry-label">
+        <span className="aster-form-workflow-node-preview-entry-label">
           {copy.entry}
         </span>
       )}
@@ -355,7 +355,7 @@ export function WorkflowNodePreview({
         </div>
         {status !== "idle" && (
           <span
-            className="a3s-form-workflow-node-preview-status"
+            className="aster-form-workflow-node-preview-status"
             data-status={status}
             aria-label={copy.status[status]}
             role="status"
@@ -376,10 +376,10 @@ export function WorkflowNodePreview({
           </em>
         )}
       </header>
-      <div className="a3s-form-workflow-node-preview-body">
+      <div className="aster-form-workflow-node-preview-body">
         {summary.length > 0 && (
           <dl
-            className="a3s-form-workflow-node-preview-summary"
+            className="aster-form-workflow-node-preview-summary"
             aria-label={copy.configurationSummary}
           >
             {summary.map((entry) => (
@@ -407,10 +407,10 @@ export function WorkflowNodePreview({
         )}
         {shape === "container" && (
           <section
-            className="a3s-form-workflow-node-preview-container"
+            className="aster-form-workflow-node-preview-container"
             aria-label={copy.containerScope}
           >
-            <span className="a3s-form-workflow-node-preview-container-start">
+            <span className="aster-form-workflow-node-preview-container-start">
               <DesignerIcon name="play" size={13} />
               <strong>{copy.containerStart}</strong>
             </span>
@@ -443,7 +443,7 @@ export function WorkflowNodePreview({
         )}
       </div>
       {node.description && (
-        <p className="a3s-form-workflow-node-preview-description">
+        <p className="aster-form-workflow-node-preview-description">
           {node.description}
         </p>
       )}

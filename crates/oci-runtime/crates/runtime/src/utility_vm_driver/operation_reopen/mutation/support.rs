@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, FileRequest, FileResponse, FilesystemRequest, FilesystemResponse, Generation,
     OciRuntimeService, OperationContext, OperationId,
 };
@@ -38,7 +38,7 @@ pub(super) enum MutationJournalStatus {
 pub(super) async fn dispatch_host_mutation(
     service: &HostRuntimeService,
     mutation: &Mutation,
-) -> a3s_oci_sdk::Result<MutationResponse> {
+) -> aster_oci_sdk::Result<MutationResponse> {
     match mutation {
         Mutation::File { request, .. } => service
             .file(request.clone())
@@ -182,7 +182,7 @@ pub(super) async fn direct_effect_query(
     driver: &QualificationKvmOperationDriver,
     mutation: &Mutation,
     target: &ContainerTarget,
-) -> a3s_oci_sdk::Result<MutationResponse> {
+) -> aster_oci_sdk::Result<MutationResponse> {
     match mutation {
         Mutation::File { download, .. } => driver
             .guest_file(FileRequest {
@@ -205,7 +205,7 @@ pub(super) async fn direct_effect_cleanup(
     driver: &QualificationKvmOperationDriver,
     mutation: &Mutation,
     target: &ContainerTarget,
-) -> a3s_oci_sdk::Result<FilesystemResponse> {
+) -> aster_oci_sdk::Result<FilesystemResponse> {
     let cleanup = match mutation {
         Mutation::File { cleanup, .. } | Mutation::Filesystem { cleanup, .. } => {
             FilesystemRequest {
@@ -220,7 +220,7 @@ pub(super) async fn direct_effect_cleanup(
 pub(super) async fn dispatch_changed_host_mutation(
     service: &HostRuntimeService,
     mutation: &Mutation,
-) -> a3s_oci_sdk::Result<MutationResponse> {
+) -> aster_oci_sdk::Result<MutationResponse> {
     match mutation {
         Mutation::File { request, .. } => service
             .file(FileRequest {
@@ -244,7 +244,7 @@ pub(super) async fn dispatch_stale_guest_mutation(
     mutation: &Mutation,
     target: ContainerTarget,
     operation_id: OperationId,
-) -> a3s_oci_sdk::Result<MutationResponse> {
+) -> aster_oci_sdk::Result<MutationResponse> {
     match mutation {
         Mutation::File { request, .. } => driver
             .guest_file(FileRequest {
@@ -270,7 +270,7 @@ pub(super) async fn dispatch_stale_host_mutation(
     mutation: &Mutation,
     target: ContainerTarget,
     operation_id: OperationId,
-) -> a3s_oci_sdk::Result<MutationResponse> {
+) -> aster_oci_sdk::Result<MutationResponse> {
     match mutation {
         Mutation::File { request, .. } => service
             .file(FileRequest {

@@ -1,6 +1,6 @@
 use super::*;
 use crate::model::DeepSeekModel;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use sha2::{Digest, Sha256};
 
 fn architecture() -> TextArchitecture {

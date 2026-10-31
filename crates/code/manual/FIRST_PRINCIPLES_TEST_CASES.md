@@ -1,4 +1,4 @@
-# First-Principles Test Cases (`a3s-code`)
+# First-Principles Test Cases (`aster`)
 
 Mission under test: a **governed coding-agent harness** (loop / tools /
 policy / events / retrieval / evidence) — not Cloud UI, not Desktop chrome,
@@ -12,26 +12,26 @@ implement that feature**, measured with:
 ```bash
 just f-table-cov
 # or:
-A3S_F_TABLE_MIN_LINE_PCT=95 scripts/f_table_coverage.sh
+ASTER_F_TABLE_MIN_LINE_PCT=95 scripts/f_table_coverage.sh
 ```
 
 Underlying llvm-cov invocation (see `scripts/f_table_coverage.sh`):
 
 ```bash
-cargo llvm-cov -p a3s-code-core --tests --no-cfg-coverage \
+cargo llvm-cov -p aster-core --tests --no-cfg-coverage \
   --ignore-filename-regex '(/\.cargo/registry/|/rustc/)' --summary-only
 ```
 
 It does **not** mean crate-wide TOTAL ≥95% (includes login helpers, optional
 transports, and Advanced-only arms). TOTAL is a health signal only.
 
-Pass token: `ALL_F_TABLE_KERNELS_GE_95` in `$A3S_F_TABLE_EVIDENCE/FINAL.txt`.
+Pass token: `ALL_F_TABLE_KERNELS_GE_95` in `$ASTER_F_TABLE_EVIDENCE/FINAL.txt`.
 
 Opt-in features (`advanced-harness`, `s3`, `headless-search`) keep
 their own kernels gated; Layer B/C feature suites prove them when enabled.
 
-Live model pin (full-feature L5): `A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash`
-against `A3S_CONFIG_FILE=./.a3s/config.acl` (maps to declared
+Live model pin (full-feature L5): `ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash`
+against `ASTER_CONFIG_FILE=./.aster/config.acl` (maps to declared
 `boyue/bailian/deepseek-v4.1-flash` via `support/layer_c_model.rs`). Recipe
 fallback without override remains ACL `default_model`
 (`boyue/deepseek-v4-flash`).
@@ -97,7 +97,7 @@ Case-level unit, integration, and soak oracles (not a second capability list):
    in [FIRST_PRINCIPLES_E2E.md](FIRST_PRINCIPLES_E2E.md) list the refused
    fits (single Harbor task, GatePolicy, serve/cron, standing reviewer,
    headless on the fast path).
-5. **Evidence dirs** — live runs write `/tmp/a3s-layer-c-*` with `FINAL.txt`.
+5. **Evidence dirs** — live runs write `/tmp/aster-layer-c-*` with `FINAL.txt`.
 
 ---
 
@@ -105,10 +105,10 @@ Case-level unit, integration, and soak oracles (not a second capability list):
 
 | Gate | Evidence | Status |
 | --- | --- | --- |
-| Layer C full matrix (bailian Flash) | `/tmp/a3s-layer-c-bailian-flash-combined/FINAL.txt` (`LAYER_C_PASS`; first pass + serial fail-recovery rerun; pin → `boyue/bailian/deepseek-v4.1-flash`; live outer/API budgets raised for bailian latency; retrieval hang fixed via cancel-on-timeout) | PASS |
-| Layer C prior clean matrix | `/tmp/a3s-layer-c-bailian-flash-r19-full/FINAL.txt` (23/23 clean orchestrator) | PASS |
-| All F-table kernels ≥90% LINE | `/tmp/a3s-llvm-cov-r24/FINAL.txt` (`ALL_F_TABLE_KERNELS_GE_90`; debuginfo=0 instrumented lib + protocol/checkpoint integ) — prior recorded PASS; not re-measured this execution goal | PRIOR |
-| Layer A `harness-convergence-check` | `/tmp/a3s-goal-integ-use/layer-a.FINAL.txt` EXIT:0 (3632 lib + SDK alignment). Prior: `/tmp/a3s-layer-a-bailian-exec/FINAL3.txt` | PASS |
+| Layer C full matrix (bailian Flash) | `/tmp/aster-layer-c-bailian-flash-combined/FINAL.txt` (`LAYER_C_PASS`; first pass + serial fail-recovery rerun; pin → `boyue/bailian/deepseek-v4.1-flash`; live outer/API budgets raised for bailian latency; retrieval hang fixed via cancel-on-timeout) | PASS |
+| Layer C prior clean matrix | `/tmp/aster-layer-c-bailian-flash-r19-full/FINAL.txt` (23/23 clean orchestrator) | PASS |
+| All F-table kernels ≥90% LINE | `/tmp/aster-llvm-cov-r24/FINAL.txt` (`ALL_F_TABLE_KERNELS_GE_90`; debuginfo=0 instrumented lib + protocol/checkpoint integ) — prior recorded PASS; not re-measured this execution goal | PRIOR |
+| Layer A `harness-convergence-check` | `/tmp/aster-goal-integ-use/layer-a.FINAL.txt` EXIT:0 (3632 lib + SDK alignment). Prior: `/tmp/aster-layer-a-bailian-exec/FINAL3.txt` | PASS |
 | 29-cap integrated use | [CAPABILITY_INTEGRATED_USE_LEDGER.md](CAPABILITY_INTEGRATED_USE_LEDGER.md) | PASS |
 | Release remaining | L2 remeasure + L6 digests + L7 receipts/waivers + L8 pins (plan §14) | OPEN |
 | This matrix | `manual/FIRST_PRINCIPLES_TEST_CASES.md` | THIS FILE |

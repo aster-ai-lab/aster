@@ -6,7 +6,7 @@ use std::os::unix::fs::{MetadataExt, PermissionsExt};
 #[test]
 fn private_parent_is_checked_against_process_identity_before_binding() {
     let directory = tempfile::Builder::new()
-        .prefix("a3s-owner-")
+        .prefix("aster-owner-")
         .tempdir_in("/tmp")
         .unwrap();
     let parent = directory.path().canonicalize().unwrap();

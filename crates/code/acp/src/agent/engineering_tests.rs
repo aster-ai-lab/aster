@@ -1,7 +1,7 @@
 #![cfg(test)]
 
-use super::{A3sCodeAgent, SessionSetup};
-use a3s_code_core::{
+use super::{AsterCodeAgent, SessionSetup};
+use aster_core::{
     llm::{LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition},
     WorkPolicyV1,
 };
@@ -17,11 +17,11 @@ async fn new_sessions_default_to_engineering_and_reopen_preserves_selection() {
         let root = tempfile::tempdir().unwrap();
         let mut launch = super::test_launch(Some(root.path().join("store")));
         launch.workspace = root.path().into();
-        let host = A3sCodeAgent::new(launch.clone());
+        let host = AsterCodeAgent::new(launch.clone());
         let mut request = acp::NewSessionRequest::new(root.path());
         if disabled {
             request = request.meta(
-                serde_json::json!({"a3sEngineering":{"policy":"none"}})
+                serde_json::json!({"asterEngineering":{"policy":"none"}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -55,7 +55,7 @@ async fn new_sessions_default_to_engineering_and_reopen_preserves_selection() {
         session.close().await;
         drop(session);
         drop(host);
-        let reopened = A3sCodeAgent::new(launch);
+        let reopened = AsterCodeAgent::new(launch);
         reopened
             .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
             .await
@@ -75,8 +75,8 @@ async fn new_sessions_default_to_engineering_and_reopen_preserves_selection() {
 }
 
 fn selected_meta() -> acp::Meta {
-    serde_json::json!({"a3sEngineering":{"policy":"engineering-v1"},
-        "a3sHost":{"role":"ENGINEERING-HOST-ROLE","guidelines":"KEEP-HOST-GUIDANCE","outputLanguage":"zh-CN"}})
+    serde_json::json!({"asterEngineering":{"policy":"engineering-v1"},
+        "asterHost":{"role":"ENGINEERING-HOST-ROLE","guidelines":"KEEP-HOST-GUIDANCE","outputLanguage":"zh-CN"}})
         .as_object().unwrap().clone()
 }
 
@@ -124,20 +124,20 @@ struct PromptBudget {
     estimates: Mutex<Vec<usize>>,
 }
 #[async_trait]
-impl a3s_code_core::budget::BudgetGuard for PromptBudget {
+impl aster_core::budget::BudgetGuard for PromptBudget {
     async fn check_before_llm(
         &self,
         _: &str,
         estimate: usize,
-    ) -> a3s_code_core::budget::BudgetDecision {
+    ) -> aster_core::budget::BudgetDecision {
         self.estimates.lock().unwrap().push(estimate);
         if estimate > self.limit {
-            a3s_code_core::budget::BudgetDecision::Deny {
+            aster_core::budget::BudgetDecision::Deny {
                 resource: "prompt_tokens".into(),
                 reason: "original whole-request budget".into(),
             }
         } else {
-            a3s_code_core::budget::BudgetDecision::Allow
+            aster_core::budget::BudgetDecision::Allow
         }
     }
 }
@@ -147,8 +147,8 @@ async fn engineering_unknown_meta_refuses_new_and_load_before_activation() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = super::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
-    let host = A3sCodeAgent::new(launch);
-    let meta = serde_json::json!({"a3sEngineering":{"policy":"unknown"}})
+    let host = AsterCodeAgent::new(launch);
+    let meta = serde_json::json!({"asterEngineering":{"policy":"unknown"}})
         .as_object()
         .unwrap()
         .clone();
@@ -162,19 +162,19 @@ async fn engineering_unknown_meta_refuses_new_and_load_before_activation() {
         .is_err());
     assert!(host.core_agent.lock().await.is_none());
     assert!(host.sessions.lock().await.is_empty());
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
     assert!(!root.path().join("store").exists());
 }
 
 #[tokio::test]
 async fn engineering_shared_host_options_preserve_policy_and_contracts_after_file_reopen() {
-    use a3s_code_core::{
+    use aster_core::{
         config::WorkspaceVerificationContract, verification::VerificationContractV1,
     };
     let root = tempfile::tempdir().unwrap();
     let store = root.path().join("store");
     let mut config = super::test_launch(Some(store.clone())).config;
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
@@ -192,12 +192,12 @@ async fn engineering_shared_host_options_preserve_policy_and_contracts_after_fil
         .unwrap()
         .unwrap();
     for reopened in [false, true] {
-        let agent = a3s_code_core::Agent::from_config(config.clone())
+        let agent = aster_core::Agent::from_config(config.clone())
             .await
             .unwrap();
         let mut meta = selected_meta();
         if reopened {
-            meta.remove("a3sEngineering");
+            meta.remove("asterEngineering");
         }
         let setup = SessionSetup {
             workspace: root.path().into(),
@@ -208,12 +208,12 @@ async fn engineering_shared_host_options_preserve_policy_and_contracts_after_fil
             mcp_servers: vec![],
         };
         let options =
-            A3sCodeAgent::host_session_options("engineering-file", &setup, &config, &store)
+            AsterCodeAgent::host_session_options("engineering-file", &setup, &config, &store)
                 .unwrap()
                 .with_llm_client(client.clone())
                 .with_budget_guard(budget.clone())
                 .with_auto_save(true)
-                .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+                .with_planning_mode(aster_core::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_continuation(false);
         assert_eq!(options.work_policy.is_some(), !reopened);
@@ -268,15 +268,15 @@ async fn engineering_shared_host_options_preserve_policy_and_contracts_after_fil
             .any(|estimate| *estimate > 0));
     }
     let facts =
-        a3s_code_core::fact_control::read_workspace_facts(root.path(), "engineering-file").unwrap();
+        aster_core::fact_control::read_workspace_facts(root.path(), "engineering-file").unwrap();
     assert_eq!(
         facts
             .iter()
-            .filter(|f| f.kind == "a3s.work-policy.admitted")
+            .filter(|f| f.kind == "aster.work-policy.admitted")
             .count(),
         1
     );
-    assert!(!facts.iter().any(|f| f.kind.starts_with("a3s.goal.")));
+    assert!(!facts.iter().any(|f| f.kind.starts_with("aster.goal.")));
 }
 
 #[tokio::test]
@@ -285,7 +285,7 @@ async fn engineering_original_budget_and_legacy_rebind_refuse_before_provider() 
         let root = tempfile::tempdir().unwrap();
         let store = root.path().join("store");
         let mut config = super::test_launch(Some(store.clone())).config;
-        config.memory = Some(a3s_code_core::memory::MemoryConfig {
+        config.memory = Some(aster_core::memory::MemoryConfig {
             llm_extraction: false,
             prune_policy: None,
             ..Default::default()
@@ -300,15 +300,15 @@ async fn engineering_original_budget_and_legacy_rebind_refuse_before_provider() 
             mcp_servers: vec![],
         };
         let options =
-            A3sCodeAgent::host_session_options("refuse-engineering", &setup, &config, &store)
+            AsterCodeAgent::host_session_options("refuse-engineering", &setup, &config, &store)
                 .unwrap()
                 .with_llm_client(client.clone())
                 .with_auto_save(true)
-                .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+                .with_planning_mode(aster_core::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_continuation(false);
         if legacy {
-            let agent = a3s_code_core::Agent::from_config(config.clone())
+            let agent = aster_core::Agent::from_config(config.clone())
                 .await
                 .unwrap();
             let mut plain = options.clone();
@@ -332,7 +332,7 @@ async fn engineering_original_budget_and_legacy_rebind_refuse_before_provider() 
         } else {
             options.with_budget_guard(budget.clone())
         };
-        let agent = a3s_code_core::Agent::from_config(config).await.unwrap();
+        let agent = aster_core::Agent::from_config(config).await.unwrap();
         if legacy {
             let Err(error) = agent
                 .resume_session_async("refuse-engineering", options)
@@ -372,27 +372,27 @@ async fn engineering_explicit_conflict_refuses_acp_load_without_changing_source(
     let store = root.path().join("store");
     let mut launch = super::test_launch(Some(store.clone()));
     launch.workspace = root.path().into();
-    launch.config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    launch.config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
     });
     let id = "engineering-conflict";
-    a3s_code_core::session_folder::prepare_session_home(root.path(), id).unwrap();
+    aster_core::session_folder::prepare_session_home(root.path(), id).unwrap();
     let client = Arc::new(CapturingClient::default());
-    let agent = a3s_code_core::Agent::from_config(launch.config.clone())
+    let agent = aster_core::Agent::from_config(launch.config.clone())
         .await
         .unwrap();
     let session = agent
         .session_async(
             root.path().to_string_lossy(),
             Some(
-                a3s_code_core::SessionOptions::new()
+                aster_core::SessionOptions::new()
                     .with_session_id(id)
                     .with_file_session_store(&store)
                     .with_auto_save(true)
                     .with_llm_client(client)
-                    .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+                    .with_planning_mode(aster_core::PlanningMode::Disabled)
                     .with_auto_delegation_enabled(false)
                     .with_continuation(false)
                     .with_work_policy(
@@ -411,8 +411,8 @@ async fn engineering_explicit_conflict_refuses_acp_load_without_changing_source(
     session.save().await.unwrap();
     session.close().await;
     drop(agent);
-    let before = a3s_code_core::fact_control::read_workspace_facts(root.path(), id).unwrap();
-    let host = A3sCodeAgent::new(launch);
+    let before = aster_core::fact_control::read_workspace_facts(root.path(), id).unwrap();
+    let host = AsterCodeAgent::new(launch);
     let error = host
         .load_session(acp::LoadSessionRequest::new(id, root.path()).meta(selected_meta()))
         .await
@@ -424,22 +424,22 @@ async fn engineering_explicit_conflict_refuses_acp_load_without_changing_source(
     assert!(host.sessions.lock().await.is_empty());
     assert_eq!(
         before,
-        a3s_code_core::fact_control::read_workspace_facts(root.path(), id).unwrap()
+        aster_core::fact_control::read_workspace_facts(root.path(), id).unwrap()
     );
 }
 
 #[tokio::test]
-#[ignore = "requires A3S_CONFIG_FILE and the live boyue/deepseek-v4-flash model"]
+#[ignore = "requires ASTER_CONFIG_FILE and the live boyue/deepseek-v4-flash model"]
 async fn engineering_real_model_acp_new_model_replacement_and_new_host_reopen() {
     let root = tempfile::tempdir().unwrap();
-    let config = std::env::var_os("A3S_CONFIG_FILE").expect("explicit live ACL path");
+    let config = std::env::var_os("ASTER_CONFIG_FILE").expect("explicit live ACL path");
     let mut launch =
         crate::config::load_launch_config(root.path().into(), Some(config.into())).unwrap();
     launch.model_id = "boyue/deepseek-v4-flash".into();
     launch.config.default_model = Some(launch.model_id.clone());
     launch.config.sessions_dir = Some(root.path().join("store"));
     let model_id = launch.model_id.clone();
-    let first = A3sCodeAgent::new(launch.clone());
+    let first = AsterCodeAgent::new(launch.clone());
     let id = first
         .new_session(acp::NewSessionRequest::new(root.path()).meta(selected_meta()))
         .await
@@ -487,9 +487,9 @@ async fn engineering_real_model_acp_new_model_replacement_and_new_host_reopen() 
     replaced.save().await.unwrap();
     replaced.close().await;
     drop(first);
-    let next = A3sCodeAgent::new(launch);
+    let next = AsterCodeAgent::new(launch);
     let mut meta = selected_meta();
-    meta.remove("a3sEngineering");
+    meta.remove("asterEngineering");
     next.load_session(acp::LoadSessionRequest::new(id.clone(), root.path()).meta(meta))
         .await
         .unwrap();
@@ -529,10 +529,10 @@ async fn engineering_real_model_acp_new_model_replacement_and_new_host_reopen() 
         .unwrap()
         .unwrap();
     let facts =
-        a3s_code_core::fact_control::read_workspace_facts(root.path(), id.0.as_ref()).unwrap();
+        aster_core::fact_control::read_workspace_facts(root.path(), id.0.as_ref()).unwrap();
     let admitted: Vec<_> = facts
         .iter()
-        .filter(|f| f.kind == "a3s.work-policy.admitted")
+        .filter(|f| f.kind == "aster.work-policy.admitted")
         .collect();
     assert_eq!(admitted.len(), 1);
     assert_eq!(admitted[0].payload["digest"], policy.digest().unwrap());

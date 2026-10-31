@@ -63,7 +63,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION a3s_flow_normalize_wakeup_timestamp(timestamp_text TEXT)
+CREATE OR REPLACE FUNCTION aster_flow_normalize_wakeup_timestamp(timestamp_text TEXT)
 RETURNS TEXT
 LANGUAGE plpgsql
 IMMUTABLE
@@ -131,7 +131,7 @@ SELECT
     created.run_id,
     0,
     created.event_json::jsonb ->> 'wait_id',
-    a3s_flow_normalize_wakeup_timestamp(
+    aster_flow_normalize_wakeup_timestamp(
         created.event_json::jsonb ->> 'resume_at'
     ),
     created.sequence
@@ -172,7 +172,7 @@ SELECT
     retrying.run_id,
     2,
     retrying.event_json::jsonb ->> 'step_id',
-    a3s_flow_normalize_wakeup_timestamp(
+    aster_flow_normalize_wakeup_timestamp(
         retrying.event_json::jsonb ->> 'retry_after'
     ),
     retrying.sequence
@@ -207,7 +207,7 @@ WHERE retrying.event_json::jsonb ->> 'type' = 'step_retrying'
   )
 ORDER BY retrying.run_id, retrying.sequence;
 
-CREATE OR REPLACE FUNCTION a3s_flow_project_scheduled_wakeup()
+CREATE OR REPLACE FUNCTION aster_flow_project_scheduled_wakeup()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
@@ -218,7 +218,7 @@ DECLARE
 BEGIN
     IF event_type = 'wait_created' THEN
         event_subject_id := NEW.event_json::jsonb ->> 'wait_id';
-        event_scheduled_at := a3s_flow_normalize_wakeup_timestamp(
+        event_scheduled_at := aster_flow_normalize_wakeup_timestamp(
             NEW.event_json::jsonb ->> 'resume_at'
         );
         INSERT INTO flow_scheduled_wakeups (
@@ -249,7 +249,7 @@ BEGIN
           AND subject_id = event_subject_id;
 
         IF NEW.event_json::jsonb ->> 'retry_after' IS NOT NULL THEN
-            event_scheduled_at := a3s_flow_normalize_wakeup_timestamp(
+            event_scheduled_at := aster_flow_normalize_wakeup_timestamp(
                 NEW.event_json::jsonb ->> 'retry_after'
             );
             INSERT INTO flow_scheduled_wakeups (
@@ -292,7 +292,7 @@ DROP TRIGGER IF EXISTS flow_scheduled_wakeups_after_event ON flow_events;
 CREATE TRIGGER flow_scheduled_wakeups_after_event
 AFTER INSERT ON flow_events
 FOR EACH ROW
-EXECUTE FUNCTION a3s_flow_project_scheduled_wakeup();
+EXECUTE FUNCTION aster_flow_project_scheduled_wakeup();
 "#;
 
 /// Incremental projection migration for the `step_cancelled` event added by
@@ -313,7 +313,7 @@ WHERE wakeup.wakeup_kind = 2
         AND cancelled.event_json::jsonb ->> 'step_id' = wakeup.subject_id
   );
 
-CREATE OR REPLACE FUNCTION a3s_flow_cancel_scheduled_wakeup()
+CREATE OR REPLACE FUNCTION aster_flow_cancel_scheduled_wakeup()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
@@ -333,7 +333,7 @@ DROP TRIGGER IF EXISTS flow_scheduled_wakeups_after_step_cancelled ON flow_event
 CREATE TRIGGER flow_scheduled_wakeups_after_step_cancelled
 AFTER INSERT ON flow_events
 FOR EACH ROW
-EXECUTE FUNCTION a3s_flow_cancel_scheduled_wakeup();
+EXECUTE FUNCTION aster_flow_cancel_scheduled_wakeup();
 "#;
 
 /// Indexes delayed activity retries the same way delayed step retries are
@@ -354,7 +354,7 @@ SELECT
     retrying.run_id,
     2,
     retrying.event_json::jsonb ->> 'activity_id',
-    a3s_flow_normalize_wakeup_timestamp(
+    aster_flow_normalize_wakeup_timestamp(
         retrying.event_json::jsonb ->> 'retry_after'
     ),
     retrying.sequence
@@ -400,7 +400,7 @@ ON CONFLICT (run_id, wakeup_kind, subject_id) DO UPDATE SET
     scheduled_at_key = EXCLUDED.scheduled_at_key,
     created_sequence = EXCLUDED.created_sequence;
 
-CREATE OR REPLACE FUNCTION a3s_flow_project_activity_retry_wakeup()
+CREATE OR REPLACE FUNCTION aster_flow_project_activity_retry_wakeup()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
@@ -426,7 +426,7 @@ BEGIN
                 NEW.run_id,
                 2,
                 event_subject_id,
-                a3s_flow_normalize_wakeup_timestamp(
+                aster_flow_normalize_wakeup_timestamp(
                     NEW.event_json::jsonb ->> 'retry_after'
                 ),
                 NEW.sequence
@@ -465,7 +465,7 @@ WHEN ((NEW.event_json::jsonb ->> 'type') IN (
     'activity_unknown',
     'activity_cancelled'
 ))
-EXECUTE FUNCTION a3s_flow_project_activity_retry_wakeup();
+EXECUTE FUNCTION aster_flow_project_activity_retry_wakeup();
 "#;
 
 /// Separates activity retries onto reserved wakeup kind 1 so a step and an
@@ -494,7 +494,7 @@ SELECT
     retrying.run_id,
     2,
     retrying.event_json::jsonb ->> 'step_id',
-    a3s_flow_normalize_wakeup_timestamp(
+    aster_flow_normalize_wakeup_timestamp(
         retrying.event_json::jsonb ->> 'retry_after'
     ),
     retrying.sequence
@@ -542,7 +542,7 @@ SELECT
     retrying.run_id,
     1,
     retrying.event_json::jsonb ->> 'activity_id',
-    a3s_flow_normalize_wakeup_timestamp(
+    aster_flow_normalize_wakeup_timestamp(
         retrying.event_json::jsonb ->> 'retry_after'
     ),
     retrying.sequence
@@ -585,7 +585,7 @@ WHERE retrying.event_json::jsonb ->> 'type' = 'activity_retrying'
         )
   );
 
-CREATE OR REPLACE FUNCTION a3s_flow_project_activity_retry_wakeup()
+CREATE OR REPLACE FUNCTION aster_flow_project_activity_retry_wakeup()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
@@ -611,7 +611,7 @@ BEGIN
                 NEW.run_id,
                 1,
                 event_subject_id,
-                a3s_flow_normalize_wakeup_timestamp(
+                aster_flow_normalize_wakeup_timestamp(
                     NEW.event_json::jsonb ->> 'retry_after'
                 ),
                 NEW.sequence
@@ -650,5 +650,5 @@ WHEN ((NEW.event_json::jsonb ->> 'type') IN (
     'activity_unknown',
     'activity_cancelled'
 ))
-EXECUTE FUNCTION a3s_flow_project_activity_retry_wakeup();
+EXECUTE FUNCTION aster_flow_project_activity_retry_wakeup();
 "#;

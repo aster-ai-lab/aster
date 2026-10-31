@@ -95,7 +95,7 @@ impl SnapshotImageHealthCheck {
 }
 
 /// Label key stamped on managed SandboxViaOci filesystem captures.
-pub const MANAGED_SANDBOX_OCI_CAPTURE_LABEL: &str = "a3s.box.snapshot.capture";
+pub const MANAGED_SANDBOX_OCI_CAPTURE_LABEL: &str = "aster.box.snapshot.capture";
 /// Label value for captures that must not restore onto the MicroVM CLI/SDK path.
 pub const MANAGED_SANDBOX_OCI_CAPTURE_VALUE: &str = "managed-sandbox-oci";
 
@@ -215,7 +215,7 @@ impl SnapshotMetadata {
     pub fn require_image_config(&self) -> Result<&SnapshotImageConfig> {
         self.image_config.as_ref().ok_or_else(|| {
             BoxError::ConfigError(format!(
-                "Snapshot '{}' does not contain resolved OCI image configuration and cannot be restored safely; recreate it with the current A3S Box version",
+                "Snapshot '{}' does not contain resolved OCI image configuration and cannot be restored safely; recreate it with the current Aster Box version",
                 self.id
             ))
         })
@@ -270,7 +270,7 @@ impl SnapshotMetadata {
 pub struct SnapshotConfig {
     /// Whether snapshots are enabled
     pub enabled: bool,
-    /// Directory to store snapshots (default: ~/.a3s/snapshots)
+    /// Directory to store snapshots (default: ~/.aster/snapshots)
     pub snapshot_dir: Option<PathBuf>,
     /// Maximum number of snapshots to keep (0 = unlimited)
     pub max_snapshots: usize,

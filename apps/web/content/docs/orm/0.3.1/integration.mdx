@@ -10,7 +10,7 @@ export const meta = {
 ## 编译类型化查询
 
 ```rust
-use a3s_orm::{orm_table, select_from, OrderDirection, PostgresDialect, Query};
+use aster_orm::{orm_table, select_from, OrderDirection, PostgresDialect, Query};
 
 orm_table! {
     pub struct Person => "person" {
@@ -20,7 +20,7 @@ orm_table! {
     }
 }
 
-fn main() -> Result<(), a3s_orm::Error> {
+fn main() -> Result<(), aster_orm::Error> {
     let query = select_from::<Person>()
         .select((Person::id(), Person::name()))
         .filter(Person::age().gte(18))
@@ -43,20 +43,20 @@ fn main() -> Result<(), a3s_orm::Error> {
 
 ```toml
 [dependencies]
-a3s-orm = "0.3"
+aster-orm = "0.3"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
 使用内置 PostgreSQL 驱动：
 
 ```toml
-a3s-orm = { version = "0.3", default-features = false, features = ["postgres"] }
+aster-orm = { version = "0.3", default-features = false, features = ["postgres"] }
 ```
 
 只使用 Builder 和 Dialect：
 
 ```toml
-a3s-orm = { version = "0.3", default-features = false }
+aster-orm = { version = "0.3", default-features = false }
 ```
 
 ## 执行 SQLite 往返

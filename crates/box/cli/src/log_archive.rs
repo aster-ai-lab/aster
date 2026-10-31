@@ -40,7 +40,7 @@ pub(crate) struct RemovedLogArchive {
     pub created_at: DateTime<Utc>,
     pub started_at: Option<DateTime<Utc>>,
     pub exit_code: Option<i32>,
-    pub log_config: a3s_box_core::log::LogConfig,
+    pub log_config: aster_box_core::log::LogConfig,
 }
 
 impl RemovedLogArchive {
@@ -84,7 +84,7 @@ fn archive_removed_logs_in(
     std::fs::write(archive_dir.join(METADATA_FILE), data)?;
 
     let mut archived_logs = false;
-    if record.log_config.driver != a3s_box_core::log::LogDriver::None {
+    if record.log_config.driver != aster_box_core::log::LogDriver::None {
         let archived_log_dir = archive_dir.join("logs");
         if source_log_dir.is_dir() {
             archived_logs = copy_dir_contents(&source_log_dir, &archived_log_dir)?;
@@ -276,7 +276,7 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> std::io::Result<bool> {
 }
 
 fn archive_root() -> PathBuf {
-    a3s_box_core::dirs_home().join(ARCHIVE_DIR)
+    aster_box_core::dirs_home().join(ARCHIVE_DIR)
 }
 
 fn archive_dir(archive_root: &Path, id: &str) -> PathBuf {
@@ -327,13 +327,13 @@ mod tests {
             (
                 "550e8400-e29b-41d4-a716-446655440001",
                 "logging-disabled",
-                a3s_box_core::log::LogDriver::None,
+                aster_box_core::log::LogDriver::None,
                 17,
             ),
             (
                 "550e8400-e29b-41d4-a716-446655440002",
                 "logs-missing",
-                a3s_box_core::log::LogDriver::JsonFile,
+                aster_box_core::log::LogDriver::JsonFile,
                 23,
             ),
         ] {
@@ -479,7 +479,7 @@ mod tests {
             created_at: removed_at,
             started_at: Some(removed_at),
             exit_code: Some(1),
-            log_config: a3s_box_core::log::LogConfig::default(),
+            log_config: aster_box_core::log::LogConfig::default(),
         };
         std::fs::write(
             dir.join(METADATA_FILE),

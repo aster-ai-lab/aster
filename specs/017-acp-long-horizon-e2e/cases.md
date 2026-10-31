@@ -215,7 +215,7 @@ C01 / LH01 的 Rust 诊断 variant `rust-multifile-host-contract-real-diagnostic
 | L04 | P0 / H1/S | 历史截断与累计量 | 事件 FIFO/字节上限已声明 | 超过上限后查询旧 cursor、usage 并重启 | 显式 retention_gap；累计使用量不归零；不把缺历史伪造成完整重放 |
 | L05 | P0 / H0/H1 | 系统时间跳变 | 单调时钟可核验，wall clock 可控 fixture | 任务运行中前拨/回拨 wall clock | deadline/退避/过期检查遵守其契约；无无限等待或绕过期限 |
 | L06 | P1 / H0/S | 冷/热启动和回归基线 | 相同平台、缓存状态、feature 和负载 | 分开运行首次/预热后多次并记录阶段耗时 | 不混算编译/下载/审批与模型时间；只按预登记绝对限额和测后 ratchet 判 |
-| L07 | P0 / U | 真实 TUI 全链路 | 配对 aster、已观察稳定的 a3s-test ACL | 从启动输入长任务，审批、停止/恢复，打开/导出产物 | 用户可见状态与 wire/文件一致；不是只检查 palette 或 SDK 返回 |
+| L07 | P0 / U | 真实 TUI 全链路 | 配对 aster、已观察稳定的 aster-test ACL | 从启动输入长任务，审批、停止/恢复，打开/导出产物 | 用户可见状态与 wire/文件一致；不是只检查 palette 或 SDK 返回 |
 | L08 | P0 / U | Studio 租户长程交付 | 私有 fixture 与明确 tenant、独占窗口 lane | Aster/ToWork 分别从用户入口提交、授权、恢复、打开产物 | 租户/账户边界、卡片和文件内容都正确；私有源码不进入父仓库 |
 | L09 | P0 / U | 背景窗口绑定失败 | 已取得有效观察引用 | 制造/观察 stale ref、window binding lost 或 cgWindowNotFound | 停止该测试并记录基础设施 BLOCKED；无前台兜底或替换窗口继续凑通过 |
 | L10 | P1 / H1/U/S | 进度与可审计诊断 | 有可证明阶段推进、长人等待与故障 | 查询/展示进度、导出有界报告并核验日志 | 进度不虚构完成百分比；错误层/等待原因可解释；stdout 无非协议日志，证据不泄密 |

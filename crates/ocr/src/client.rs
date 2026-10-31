@@ -1,7 +1,7 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_use_core::{Artifact, UseError, UseResult};
+use aster_use_core::{Artifact, UseError, UseResult};
 use sha2::{Digest, Sha256};
 use tokio::io::AsyncReadExt;
 
@@ -207,7 +207,7 @@ fn detect_image_type(bytes: &[u8]) -> Option<&'static str> {
 
 #[cfg(test)]
 mod tests {
-    use a3s_use_core::Readiness;
+    use aster_use_core::Readiness;
     use async_trait::async_trait;
 
     use crate::{OcrBlock, OcrProviderStatus};

@@ -9,7 +9,7 @@
 
 //! Filtered DiskANN over mmap sidecars must keep allow-list + exact re-rank (I5/I6).
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, DiskannQueryParams, Doc, Durability,
     FieldSchema, IndexParams, IoBackend, MetricType, SearchQuery,
 };
@@ -98,7 +98,7 @@ fn filtered_mmap_diskann_stays_inside_allow_list() {
     assert!(after.diskann_query_count > before.diskann_query_count);
     for hit in &hits {
         match hit.field("scope") {
-            Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
+            Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
             other => panic!("expected allowed, got {other:?}"),
         }
     }

@@ -2,7 +2,7 @@
 
 use crate::llm::{LlmClient, LlmResponse, Message, StreamEvent, ToolDefinition};
 use crate::store::{FileSessionStore, MemorySessionStore, SessionStore};
-use a3s_effect::{FileLog, LogStore, NewFact};
+use aster_effect::{FileLog, LogStore, NewFact};
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;

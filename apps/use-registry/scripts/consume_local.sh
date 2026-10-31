@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Prove an a3s-use package-manager client can consume the local registry.
+# Prove an aster-use package-manager client can consume the local registry.
 #
 # Requires a Use binary that exposes `registry` / `plugin` routes (for example
-# crates/use target/debug/a3s-use 0.3.x). Homebrew a3s-use 0.1.x capability
+# crates/use target/debug/aster-use 0.3.x). Homebrew aster-use 0.1.x capability
 # wrappers do not implement Registry routes.
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-EXPECTED_ROOT="${A3S_USE_REGISTRY_EXPECTED_ROOT:-sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172}"
-PACKAGE_ID="${A3S_USE_REGISTRY_PACKAGE_ID:-a3s/registry-selftest}"
-SOURCE_NAME="${A3S_USE_REGISTRY_SOURCE_NAME:-local}"
-USE_BIN="${A3S_USE_BIN:-}"
+EXPECTED_ROOT="${ASTER_USE_REGISTRY_EXPECTED_ROOT:-sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172}"
+PACKAGE_ID="${ASTER_USE_REGISTRY_PACKAGE_ID:-aster/registry-selftest}"
+SOURCE_NAME="${ASTER_USE_REGISTRY_SOURCE_NAME:-local}"
+USE_BIN="${ASTER_USE_BIN:-}"
 
 supports_registry() {
   local bin="$1"
@@ -21,8 +21,8 @@ supports_registry() {
 resolve_use_bin() {
   if [[ -n "${USE_BIN}" ]]; then
     if ! supports_registry "${USE_BIN}"; then
-      echo "error: A3S_USE_BIN='${USE_BIN}' does not support 'registry source'" >&2
-      echo "note: Homebrew a3s-use capability wrappers (0.1.x) are not Registry clients" >&2
+      echo "error: ASTER_USE_BIN='${USE_BIN}' does not support 'registry source'" >&2
+      echo "note: Homebrew aster-use capability wrappers (0.1.x) are not Registry clients" >&2
       exit 1
     fi
     printf '%s\n' "${USE_BIN}"
@@ -30,20 +30,20 @@ resolve_use_bin() {
   fi
   local candidate
   for candidate in \
-    "${ROOT_DIR}/../crates/use/target/debug/a3s-use" \
-    "${ROOT_DIR}/../crates/use/target/release/a3s-use"; do
+    "${ROOT_DIR}/../crates/use/target/debug/aster-use" \
+    "${ROOT_DIR}/../crates/use/target/release/aster-use"; do
     if supports_registry "${candidate}"; then
       printf '%s\n' "${candidate}"
       return 0
     fi
   done
-  if command -v a3s-use >/dev/null 2>&1 && supports_registry "$(command -v a3s-use)"; then
-    command -v a3s-use
+  if command -v aster-use >/dev/null 2>&1 && supports_registry "$(command -v aster-use)"; then
+    command -v aster-use
     return 0
   fi
-  echo "error: set A3S_USE_BIN to an a3s-use package-manager binary with registry routes" >&2
-  echo "hint: from crates/use run 'cargo build -p a3s-use', then export A3S_USE_BIN=\$PWD/target/debug/a3s-use" >&2
-  echo "note: Homebrew a3s-use capability wrappers (0.1.x) do not expose registry routes" >&2
+  echo "error: set ASTER_USE_BIN to an aster-use package-manager binary with registry routes" >&2
+  echo "hint: from crates/use run 'cargo build -p aster-use', then export ASTER_USE_BIN=\$PWD/target/debug/aster-use" >&2
+  echo "note: Homebrew aster-use capability wrappers (0.1.x) do not expose registry routes" >&2
   exit 1
 }
 
@@ -56,13 +56,13 @@ URL="$("${ROOT_DIR}/scripts/serve_local.sh" url)"
 
 HOME_TMP=""
 CLEANUP_HOME=0
-if [[ "${A3S_USE_REGISTRY_KEEP_HOME:-0}" == "1" && -n "${A3S_USE_HOME:-}" ]]; then
-  HOME_TMP="${A3S_USE_HOME}"
+if [[ "${ASTER_USE_REGISTRY_KEEP_HOME:-0}" == "1" && -n "${ASTER_USE_HOME:-}" ]]; then
+  HOME_TMP="${ASTER_USE_HOME}"
 else
-  HOME_TMP="$(mktemp -d "${TMPDIR:-/tmp}/a3s-use-registry-consume.XXXXXX")"
+  HOME_TMP="$(mktemp -d "${TMPDIR:-/tmp}/aster-use-registry-consume.XXXXXX")"
   CLEANUP_HOME=1
 fi
-export A3S_USE_HOME="${HOME_TMP}"
+export ASTER_USE_HOME="${HOME_TMP}"
 
 cleanup() {
   if [[ "${CLEANUP_HOME}" -eq 1 ]]; then
@@ -76,8 +76,8 @@ trap cleanup EXIT
   --trust-root "${EXPECTED_ROOT}" \
   --json >/dev/null
 
-SCOPE_KIND="${A3S_USE_REGISTRY_SCOPE_KIND:-user}"
-SCOPE_ID="${A3S_USE_REGISTRY_SCOPE_ID:-user/registry-local}"
+SCOPE_KIND="${ASTER_USE_REGISTRY_SCOPE_KIND:-user}"
+SCOPE_ID="${ASTER_USE_REGISTRY_SCOPE_ID:-user/registry-local}"
 
 PLAN_OUT="$("${USE_BIN}" plugin plan-install "${PACKAGE_ID}" \
   --registry-name "${SOURCE_NAME}" \

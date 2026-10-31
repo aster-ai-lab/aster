@@ -47,7 +47,7 @@ generation from the reviewed evidence byte for byte at the data-model level.
 Regenerate it with:
 
 ```sh
-cargo run -q -p a3s-oci-sdk --example generate_schema_coverage -- \
+cargo run -q -p aster-oci-sdk --example generate_schema_coverage -- \
   conformance/oci-1.3.0-schema-evidence.json \
   conformance/oci-1.3.0-schema-coverage.json
 ```
@@ -127,7 +127,7 @@ rules in semantic validation. A dedicated negative fixture rejects NUL bytes
 in all executable VM paths and hypervisor or kernel parameters. The scoped
 coverage gate freezes all 26 VM-related schema items as fail-closed and the
 normative split as four validated path requirements plus 20 runtime-owned
-controls. No current A3S driver executes bundle-selected VM launch material:
+controls. No current Aster driver executes bundle-selected VM launch material:
 the host rejects any caller-provided `vm` section after driver selection but
 before durable generation reservation, bundle handoff, hypervisor launch, or
 mutating driver dispatch. A future driver must explicitly replace that
@@ -218,7 +218,7 @@ schema before it leaves the service. The advertised minimum and maximum
 versions are the same constants used by bundle admission, and both boundaries
 have direct acceptance tests. Hooks, Linux availability, namespaces, cgroup
 managers, seccomp actions/operators/architectures/flags, AppArmor, SELinux, and
-ID-mapped mounts are bound to exact report and executor tests. A3S resolves
+ID-mapped mounts are bound to exact report and executor tests. Aster resolves
 driver-specific capabilities when the configured service is constructed, then
 keeps the report stable across workload execution. This satisfies the intent
 of the compile-time recommendation without making probe-only discovery claim
@@ -227,7 +227,7 @@ unconfigured drivers.
 The final 17 pending entries are now owner-bound. Two common value-policy
 entries require deterministic rejection of invalid or unsupported values and
 an explicit supported subset. Two Linux runtime entries bind optional file
-descriptors to the exact typed inherited-descriptor plan and record that A3S
+descriptors to the exact typed inherited-descriptor plan and record that Aster
 does not add optional null descriptors. Two network-device entries prove that
 Create moves interfaces in while workload termination neither reconfigures nor
 moves them out. Six cgroup entries bind optional fit checks, the private

@@ -6,8 +6,8 @@
 //! reuses that journal instead of re-running the command. Streaming / SPDY /
 //! stdin sessions stay unkeyed (guest rejects `request_id` on streaming).
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::exec::{ExecOutput, ExecRequest};
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::exec::{ExecOutput, ExecRequest};
 
 /// Mint a durable process-journal identity for one CRI one-shot exec.
 pub fn mint_cri_exec_request_id() -> String {

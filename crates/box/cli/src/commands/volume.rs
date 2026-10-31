@@ -1,10 +1,10 @@
-//! `a3s-box volume` subcommands — Manage named volumes.
+//! `aster-box volume` subcommands — Manage named volumes.
 //!
 //! Provides create/ls/rm/inspect/prune for persistent named volumes
 //! that can be shared across box instances.
 
-use a3s_box_core::volume::VolumeConfig;
-use a3s_box_runtime::VolumeStore;
+use aster_box_core::volume::VolumeConfig;
+use aster_box_runtime::VolumeStore;
 use clap::{Args, Subcommand};
 
 /// Manage volumes.
@@ -332,7 +332,7 @@ pub(crate) fn attach_volumes_with_store(
 ///
 /// Missing volumes are success (`modify` → `Ok(false)`). Store open / lock /
 /// write failures fail closed so `in_use_by` cannot stay stale after stop/rm.
-pub fn detach_volumes(volume_names: &[String], box_id: &str) -> a3s_box_core::error::Result<()> {
+pub fn detach_volumes(volume_names: &[String], box_id: &str) -> aster_box_core::error::Result<()> {
     if volume_names.is_empty() {
         return Ok(());
     }

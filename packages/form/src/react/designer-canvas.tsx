@@ -19,8 +19,8 @@ import {
   designerWidgetValue,
 } from './widget-contract';
 
-export const catalogDragType = 'application/x-a3s-form-catalog';
-export const nodeDragType = 'application/x-a3s-form-node';
+export const catalogDragType = 'application/x-aster-form-catalog';
+export const nodeDragType = 'application/x-aster-form-node';
 
 const DESIGN_DATA_SOURCE: FormDataSourceState = {
   options: [],
@@ -94,13 +94,13 @@ export function DesignerCanvas(props: DesignerCanvasProps) {
   }, [props.selectedId]);
 
   return (
-    <div className={`a3s-form-design-stage is-${props.viewport}`} ref={stageRef}>
-      <div className="a3s-form-design-page">
+    <div className={`aster-form-design-stage is-${props.viewport}`} ref={stageRef}>
+      <div className="aster-form-design-page">
         {root ? (
           <>
             <button
               type="button"
-              className={`a3s-form-page-heading${props.selectedId === root.id ? ' is-selected' : ''}`}
+              className={`aster-form-page-heading${props.selectedId === root.id ? ' is-selected' : ''}`}
               data-node-id={root.id}
               aria-label={`选择${root.label ?? root.id}`}
               onClick={() => props.onSelect(root.id)}
@@ -120,7 +120,7 @@ export function DesignerCanvas(props: DesignerCanvasProps) {
             />
           </>
         ) : (
-          <div className="a3s-form-canvas-unavailable">根节点不可用，请先修复编译诊断。</div>
+          <div className="aster-form-canvas-unavailable">根节点不可用，请先修复编译诊断。</div>
         )}
       </div>
     </div>
@@ -136,19 +136,19 @@ function CanvasChildren(props: CanvasTreeProps & { container: UiNode; ancestry?:
   const { container } = props;
   const children = container.children ?? [];
   const style = {
-    '--a3s-form-columns': container.columns ?? 12,
-    '--a3s-form-gap': `${container.gap ?? 16}px`,
+    '--aster-form-columns': container.columns ?? 12,
+    '--aster-form-gap': `${container.gap ?? 16}px`,
   } as CSSProperties;
   return (
-    <div className="a3s-form-design-grid" style={style}>
+    <div className="aster-form-design-grid" style={style}>
       {children.map((child, index) => {
         const childNode = props.document.ui.nodes.find((node) => node.id === child);
         return (
           <div
-            className="a3s-form-canvas-item"
+            className="aster-form-canvas-item"
             style={
               {
-                '--a3s-form-item-column': `span ${childNode?.width ?? 12}`,
+                '--aster-form-item-column': `span ${childNode?.width ?? 12}`,
               } as CSSProperties
             }
             key={child}
@@ -193,7 +193,7 @@ function CustomCanvasNode(
   const acceptsChildren = isDesignerContainer(props.document, props.node);
   return (
     <article
-      className={`a3s-form-design-custom card${props.selected ? ' is-selected' : ''}`}
+      className={`aster-form-design-custom card${props.selected ? ' is-selected' : ''}`}
       data-node-id={props.node.id}
       data-node-kind={props.node.kind}
       data-node-type={props.node.widget}
@@ -203,18 +203,18 @@ function CustomCanvasNode(
     >
       <button
         type="button"
-        className="a3s-form-node-select"
+        className="aster-form-node-select"
         aria-label={`选择${props.node.label ?? props.node.id}`}
         onClick={() => props.onSelect(props.node.id)}
       />
-      <span className="a3s-form-node-handle" aria-hidden="true">
+      <span className="aster-form-node-handle" aria-hidden="true">
         <DesignerIcon name="grip" size={15} />
       </span>
-      <div className="a3s-form-design-custom-body">
+      <div className="aster-form-design-custom-body">
         {Design ? (
           <Design node={props.node} schema={schema} required={required} />
         ) : (
-          <div className="a3s-form-design-custom-fallback">
+          <div className="aster-form-design-custom-fallback">
             <strong>{props.node.label ?? props.definition.catalog.label}</strong>
             <span>{props.definition.catalog.description}</span>
           </div>
@@ -234,13 +234,13 @@ function CanvasNode(
   const node = props.document.ui.nodes.find((candidate) => candidate.id === props.nodeId);
   if (!node) return null;
   if (props.ancestry?.has(node.id)) {
-    return <div className="a3s-form-canvas-unavailable">布局存在循环：{node.id}</div>;
+    return <div className="aster-form-canvas-unavailable">布局存在循环：{node.id}</div>;
   }
   const ancestry = new Set(props.ancestry ?? []);
   ancestry.add(node.id);
   const selected = props.selectedId === node.id;
   const style = {
-    '--a3s-form-gap': `${node.gap ?? 24}px`,
+    '--aster-form-gap': `${node.gap ?? 24}px`,
     width: '100%',
   } as CSSProperties;
 
@@ -270,7 +270,7 @@ function CanvasNode(
     return (
       <fieldset
         aria-label={node.label ?? node.id}
-        className={`a3s-form-design-container fieldset is-${node.layout ?? 'flow'}${node.layout === 'card' ? ' card' : ''}${selected ? ' is-selected' : ''}`}
+        className={`aster-form-design-container fieldset is-${node.layout ?? 'flow'}${node.layout === 'card' ? ' card' : ''}${selected ? ' is-selected' : ''}`}
         data-node-id={node.id}
         data-node-kind={node.kind}
         data-node-type={node.layout ?? 'flow'}
@@ -279,7 +279,7 @@ function CanvasNode(
         onDragStart={(event) => beginNodeDrag(event, node.id)}
       >
         <ContainerHeading {...props} node={node} selected={selected} />
-        {node.description && <p className="a3s-form-container-description">{node.description}</p>}
+        {node.description && <p className="aster-form-container-description">{node.description}</p>}
         <CanvasChildren {...props} container={node} ancestry={ancestry} />
       </fieldset>
     );
@@ -300,7 +300,7 @@ function CanvasNode(
     return (
       <fieldset
         aria-label={node.label ?? node.id}
-        className={`a3s-form-design-container a3s-form-design-repeater-group fieldset${selected ? ' is-selected' : ''}`}
+        className={`aster-form-design-container aster-form-design-repeater-group fieldset${selected ? ' is-selected' : ''}`}
         data-node-id={node.id}
         data-node-kind={node.kind}
         data-node-type={node.layout ?? 'repeater-group'}
@@ -309,8 +309,8 @@ function CanvasNode(
         onDragStart={(event) => beginNodeDrag(event, node.id)}
       >
         <ContainerHeading {...props} node={node} selected={selected} />
-        {node.description && <p className="a3s-form-container-description">{node.description}</p>}
-        <p className="a3s-form-repeater-template-note">每一项使用以下字段</p>
+        {node.description && <p className="aster-form-container-description">{node.description}</p>}
+        <p className="aster-form-repeater-template-note">每一项使用以下字段</p>
         <CanvasChildren {...props} container={node} ancestry={ancestry} />
       </fieldset>
     );
@@ -324,7 +324,7 @@ function CanvasNode(
   const required = Boolean(binding?.parentSchema.required?.includes(binding.property));
   return (
     <article
-      className={`a3s-form-design-field card${selected ? ' is-selected' : ''}`}
+      className={`aster-form-design-field card${selected ? ' is-selected' : ''}`}
       data-node-id={node.id}
       data-node-kind={node.kind}
       data-node-type={node.widget ?? 'text'}
@@ -334,19 +334,19 @@ function CanvasNode(
     >
       <button
         type="button"
-        className="a3s-form-node-select"
+        className="aster-form-node-select"
         aria-label={`选择${node.label ?? node.id}`}
         onClick={() => props.onSelect(node.id)}
       />
-      <span className="a3s-form-node-handle" aria-hidden="true">
+      <span className="aster-form-node-handle" aria-hidden="true">
         <DesignerIcon name="grip" size={15} />
       </span>
       {node.kind === 'repeater' ? (
-        <fieldset className="a3s-form-design-repeater-preview fieldset">
+        <fieldset className="aster-form-design-repeater-preview fieldset">
           <legend className={required ? 'is-required' : undefined}>{node.label ?? node.id}</legend>
           {node.description && <p>{node.description}</p>}
-          <div className="a3s-form-mock-repeater">
-            <div className="a3s-form-mock-repeater-row">
+          <div className="aster-form-mock-repeater">
+            <div className="aster-form-mock-repeater-row">
               <input
                 type="text"
                 className="input"
@@ -355,7 +355,7 @@ function CanvasNode(
                 readOnly
                 disabled
               />
-              <span className="a3s-form-repeater-row-actions">
+              <span className="aster-form-repeater-row-actions">
                 <button
                   type="button"
                   className="btn"
@@ -388,10 +388,10 @@ function CanvasNode(
                 </button>
               </span>
             </div>
-            <div className="a3s-form-repeater-footer">
+            <div className="aster-form-repeater-footer">
               <button
                 type="button"
-                className="a3s-form-secondary btn"
+                className="aster-form-secondary btn"
                 data-size="sm"
                 data-variant="secondary"
                 disabled
@@ -422,12 +422,12 @@ function DataGridDesignContainer(
     .map((id) => props.document.ui.nodes.find((node) => node.id === id))
     .filter((node): node is UiNode => Boolean(node));
   const gridStyle = {
-    '--a3s-form-design-grid-columns': columns.length,
+    '--aster-form-design-grid-columns': columns.length,
   } as CSSProperties;
   return (
     <fieldset
       aria-label={props.node.label ?? props.node.id}
-      className={`a3s-form-design-container a3s-form-design-data-grid fieldset${props.selected ? ' is-selected' : ''}`}
+      className={`aster-form-design-container aster-form-design-data-grid fieldset${props.selected ? ' is-selected' : ''}`}
       data-node-id={props.node.id}
       data-node-kind={props.node.kind}
       data-node-type="data-grid"
@@ -437,9 +437,9 @@ function DataGridDesignContainer(
     >
       <ContainerHeading {...props} node={props.node} selected={props.selected} />
       {props.node.description && (
-        <p className="a3s-form-container-description">{props.node.description}</p>
+        <p className="aster-form-container-description">{props.node.description}</p>
       )}
-      <p className="a3s-form-repeater-template-note">
+      <p className="aster-form-repeater-template-note">
         {props.node.dataGrid
           ? [
               props.node.dataGrid.editMode === 'dialog' ? '对话框草稿编辑' : '表内直接编辑',
@@ -455,13 +455,13 @@ function DataGridDesignContainer(
           : '列标题来自字段名称，窄屏按行展示。'}
       </p>
       {columns.length > 0 ? (
-        <div className="a3s-form-design-data-grid-scroll table-container">
+        <div className="aster-form-design-data-grid-scroll table-container">
           <table
-            className="a3s-form-design-data-grid-table table"
+            className="aster-form-design-data-grid-table table"
             aria-label={`${props.node.label ?? props.node.id}设计预览`}
           >
             <thead>
-              <tr className="a3s-form-design-data-grid-row is-header" style={gridStyle}>
+              <tr className="aster-form-design-data-grid-row is-header" style={gridStyle}>
                 {columns.map((column) => (
                   <th scope="col" key={column.id}>
                     <button type="button" onClick={() => props.onSelect(column.id)}>
@@ -472,10 +472,10 @@ function DataGridDesignContainer(
               </tr>
             </thead>
             <tbody>
-              <tr className="a3s-form-design-data-grid-row is-preview" style={gridStyle}>
+              <tr className="aster-form-design-data-grid-row is-preview" style={gridStyle}>
                 {columns.map((column, index) => (
                   <td
-                    className="a3s-form-canvas-item"
+                    className="aster-form-canvas-item"
                     data-column-label={column.label ?? column.id}
                     key={column.id}
                   >
@@ -522,7 +522,7 @@ function WizardDesignContainer(
   return (
     <fieldset
       aria-label={props.node.label ?? props.node.id}
-      className={`a3s-form-design-container fieldset is-wizard${props.selected ? ' is-selected' : ''}`}
+      className={`aster-form-design-container fieldset is-wizard${props.selected ? ' is-selected' : ''}`}
       style={{ width: '100%' }}
       data-node-id={props.node.id}
       data-node-kind={props.node.kind}
@@ -531,11 +531,11 @@ function WizardDesignContainer(
       onDragStart={(event) => beginNodeDrag(event, props.node.id)}
     >
       <ContainerHeading {...props} node={props.node} selected={props.selected} />
-      <nav className="a3s-form-design-wizard-progress" aria-label="向导步骤">
+      <nav className="aster-form-design-wizard-progress" aria-label="向导步骤">
         {pages.map((page, index) => (
           <button
             type="button"
-            id={`a3s-form-design-step-${page.id}`}
+            id={`aster-form-design-step-${page.id}`}
             aria-current={page.id === activeId ? 'step' : undefined}
             data-page-role={page.pageRole ?? 'form'}
             key={page.id}
@@ -546,7 +546,7 @@ function WizardDesignContainer(
               props.onActivateTab(props.node.id, next.id);
               props.onSelect(next.id);
               window.requestAnimationFrame(() =>
-                window.document.getElementById(`a3s-form-design-step-${next.id}`)?.focus(),
+                window.document.getElementById(`aster-form-design-step-${next.id}`)?.focus(),
               );
             }}
             onClick={() => {
@@ -562,11 +562,11 @@ function WizardDesignContainer(
       </nav>
       {active ? (
         <section
-          className={`a3s-form-design-wizard-panel${props.selectedId === active.id ? ' is-selected' : ''}`}
+          className={`aster-form-design-wizard-panel${props.selectedId === active.id ? ' is-selected' : ''}`}
           data-node-id={active.id}
-          aria-labelledby={`a3s-form-design-step-${active.id}`}
+          aria-labelledby={`aster-form-design-step-${active.id}`}
         >
-          <div className="a3s-form-design-panel-heading">
+          <div className="aster-form-design-panel-heading">
             <button type="button" onClick={() => props.onSelect(active.id)}>
               {active.pageRole === 'review' ? '确认页内容' : '步骤内容'}
             </button>
@@ -598,7 +598,7 @@ function TabbedContainer(
   return (
     <fieldset
       aria-label={props.node.label ?? props.node.id}
-      className={`a3s-form-design-container fieldset tabs is-tabs${props.selected ? ' is-selected' : ''}`}
+      className={`aster-form-design-container fieldset tabs is-tabs${props.selected ? ' is-selected' : ''}`}
       style={{ width: '100%' }}
       data-node-id={props.node.id}
       data-node-kind={props.node.kind}
@@ -608,7 +608,7 @@ function TabbedContainer(
     >
       <ContainerHeading {...props} node={props.node} selected={props.selected} />
       <div
-        className="a3s-form-design-tablist"
+        className="aster-form-design-tablist"
         role="tablist"
         aria-label={props.node.label}
         aria-orientation="horizontal"
@@ -617,9 +617,9 @@ function TabbedContainer(
           <button
             type="button"
             role="tab"
-            id={`a3s-form-design-tab-${tab.id}`}
+            id={`aster-form-design-tab-${tab.id}`}
             aria-selected={tab.id === activeId}
-            aria-controls={`a3s-form-design-panel-${props.node.id}`}
+            aria-controls={`aster-form-design-panel-${props.node.id}`}
             tabIndex={tab.id === activeId ? 0 : -1}
             className={tab.id === activeId ? 'is-active' : ''}
             key={tab.id}
@@ -630,7 +630,7 @@ function TabbedContainer(
               props.onActivateTab(props.node.id, next.id);
               props.onSelect(next.id);
               window.requestAnimationFrame(() =>
-                window.document.getElementById(`a3s-form-design-tab-${next.id}`)?.focus(),
+                window.document.getElementById(`aster-form-design-tab-${next.id}`)?.focus(),
               );
             }}
             onClick={() => {
@@ -648,8 +648,8 @@ function TabbedContainer(
           node={active}
           ancestry={props.ancestry}
           label="标签页内容"
-          panelId={`a3s-form-design-panel-${props.node.id}`}
-          labelledBy={`a3s-form-design-tab-${active.id}`}
+          panelId={`aster-form-design-panel-${props.node.id}`}
+          labelledBy={`aster-form-design-tab-${active.id}`}
         />
       ) : (
         <CanvasDropSlot {...props} containerId={props.node.id} index={0} placement="empty" />
@@ -671,7 +671,7 @@ function CollapseContainer(
   return (
     <fieldset
       aria-label={props.node.label ?? props.node.id}
-      className={`a3s-form-design-container fieldset is-collapse${props.selected ? ' is-selected' : ''}`}
+      className={`aster-form-design-container fieldset is-collapse${props.selected ? ' is-selected' : ''}`}
       style={{ width: '100%' }}
       data-node-id={props.node.id}
       data-node-kind={props.node.kind}
@@ -680,7 +680,7 @@ function CollapseContainer(
       onDragStart={(event) => beginNodeDrag(event, props.node.id)}
     >
       <ContainerHeading {...props} node={props.node} selected={props.selected} />
-      <div className="a3s-form-design-collapse-list accordion">
+      <div className="aster-form-design-collapse-list accordion">
         {panels.map((panel) => (
           <details open data-node-id={panel.id} key={panel.id}>
             <summary>
@@ -689,12 +689,12 @@ function CollapseContainer(
             </summary>
             <button
               type="button"
-              className="a3s-form-design-collapse-select"
+              className="aster-form-design-collapse-select"
               aria-label={panel.label ?? '未命名面板'}
               onClick={() => props.onSelect(panel.id)}
             />
             {props.selectedId === panel.id && (
-              <div className="a3s-form-design-collapse-actions">
+              <div className="aster-form-design-collapse-actions">
                 <NodeActions actionNode={panel} {...props} />
               </div>
             )}
@@ -721,13 +721,13 @@ function CanvasPanel(
   const selected = props.selectedId === props.node.id;
   return (
     <div
-      className={`a3s-form-design-panel${selected ? ' is-selected' : ''}`}
+      className={`aster-form-design-panel${selected ? ' is-selected' : ''}`}
       data-node-id={props.node.id}
       id={props.panelId}
       role="tabpanel"
       aria-labelledby={props.labelledBy}
     >
-      <div className="a3s-form-design-panel-heading">
+      <div className="aster-form-design-panel-heading">
         <button type="button" onClick={() => props.onSelect(props.node.id)}>
           {props.label}
         </button>
@@ -741,9 +741,9 @@ function CanvasPanel(
 function ContainerHeading(props: CanvasTreeProps & { node: UiNode; selected: boolean }) {
   const fallback = props.node.kind === 'section' ? '未命名分组' : '布局容器';
   return (
-    <header className="a3s-form-design-container-heading">
+    <header className="aster-form-design-container-heading">
       <button type="button" onClick={() => props.onSelect(props.node.id)}>
-        <span className="a3s-form-node-handle" aria-hidden="true">
+        <span className="aster-form-node-handle" aria-hidden="true">
           <DesignerIcon name="grip" size={15} />
         </span>
         <span>{props.node.label ?? fallback}</span>
@@ -760,7 +760,7 @@ function ContentNode(
     style: CSSProperties;
   },
 ) {
-  const className = `a3s-form-design-content is-${props.node.presentation ?? 'text'}${props.selected ? ' is-selected' : ''}`;
+  const className = `aster-form-design-content is-${props.node.presentation ?? 'text'}${props.selected ? ' is-selected' : ''}`;
   return (
     <article
       className={className}
@@ -773,20 +773,20 @@ function ContentNode(
     >
       <button
         type="button"
-        className="a3s-form-node-select"
+        className="aster-form-node-select"
         aria-label={`选择${props.node.label ?? props.node.id}`}
         onClick={() => props.onSelect(props.node.id)}
       />
       {props.node.presentation === 'divider' ? (
-        <div className="a3s-form-mock-divider field-separator">
+        <div className="aster-form-mock-divider field-separator">
           <hr />
           {props.node.content && <span>{props.node.content}</span>}
         </div>
       ) : props.node.presentation === 'spacer' ? (
-        <div className="a3s-form-mock-spacer">间距 {props.node.gap ?? 24}px</div>
+        <div className="aster-form-mock-spacer">间距 {props.node.gap ?? 24}px</div>
       ) : (
         <>
-          <span className="a3s-form-content-icon" aria-hidden="true">
+          <span className="aster-form-content-icon" aria-hidden="true">
             <DesignerIcon name="info" size={15} />
           </span>
           <p>{props.node.content ?? '在属性面板中编辑说明文字。'}</p>
@@ -810,7 +810,7 @@ function DesignerFieldPreview({
   const widget = node.widget ?? 'text';
   const booleanField = BOOLEAN_FIELD_WIDGETS.has(widget);
   const compositeField = COMPOSITE_FIELD_WIDGETS.has(widget);
-  const inputId = `a3s-form-design-preview-${node.id}`;
+  const inputId = `aster-form-design-preview-${node.id}`;
   const labelId = `${inputId}-label`;
   const helpId = node.description ? `${inputId}-help` : undefined;
   const locale = document.metadata.locale ?? 'zh-CN';
@@ -822,7 +822,7 @@ function DesignerFieldPreview({
 
   if (widget === 'hidden') {
     return (
-      <div className="a3s-form-design-hidden a3s-form-field field">
+      <div className="aster-form-design-hidden aster-form-field field">
         <span className="label">{node.label ?? node.id}</span>
         <input
           id={inputId}
@@ -837,7 +837,7 @@ function DesignerFieldPreview({
 
   return (
     <div
-      className={`a3s-form-design-widget a3s-form-field field${booleanField ? ' is-boolean' : ''}`}
+      className={`aster-form-design-widget aster-form-field field${booleanField ? ' is-boolean' : ''}`}
       data-orientation={booleanField ? 'horizontal' : undefined}
       data-disabled={previewDisabled || undefined}
       data-preview-state={previewDisabled ? 'readonly' : 'sample'}
@@ -847,7 +847,7 @@ function DesignerFieldPreview({
         (compositeField ? (
           <div
             id={labelId}
-            className={`a3s-form-field-label label${required ? ' is-required' : ''}`}
+            className={`aster-form-field-label label${required ? ' is-required' : ''}`}
           >
             {node.label ?? node.id}
           </div>
@@ -879,7 +879,7 @@ function DesignerFieldPreview({
 
 function NodeActions(props: CanvasTreeProps & { actionNode: UiNode }) {
   return (
-    <div className="a3s-form-node-actions">
+    <div className="aster-form-node-actions">
       <button
         type="button"
         className="btn"
@@ -952,7 +952,7 @@ function CanvasDropSlot(
     <button
       type="button"
       tabIndex={-1}
-      className={`a3s-form-canvas-drop is-${props.placement}${active ? ' is-active' : ''}`}
+      className={`aster-form-canvas-drop is-${props.placement}${active ? ' is-active' : ''}`}
       aria-label={`插入到${props.containerId}第${props.index + 1}位`}
       onDragEnter={(event) => {
         event.preventDefault();

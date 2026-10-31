@@ -359,7 +359,7 @@ fn rate_limit_subject_hash(request: &BootRequest, options: &RateLimitOptions) ->
 
 fn hash_subject(parts: &[&str]) -> String {
     let mut digest = Sha256::new();
-    digest.update(b"a3s-boot-rate-limit-subject-v1\0");
+    digest.update(b"aster-boot-rate-limit-subject-v1\0");
     for part in parts {
         digest.update((part.len() as u64).to_be_bytes());
         digest.update(part.as_bytes());

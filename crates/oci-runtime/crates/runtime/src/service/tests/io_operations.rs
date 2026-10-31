@@ -290,7 +290,7 @@ async fn process_io_request_limits_fail_before_driver_dispatch() {
         .read_output(ReadOutputRequest {
             process: process.clone(),
             after_sequence: 0,
-            max_bytes: a3s_oci_sdk::MAX_OUTPUT_READ_BYTES + 1,
+            max_bytes: aster_oci_sdk::MAX_OUTPUT_READ_BYTES + 1,
             wait_timeout_ms: None,
         })
         .await
@@ -301,7 +301,7 @@ async fn process_io_request_limits_fail_before_driver_dispatch() {
         .write_stdin(WriteStdinRequest {
             context: OperationContext::new(operation_id("oversized-write")),
             process,
-            data: vec![0; a3s_oci_sdk::MAX_STDIN_WRITE_BYTES + 1],
+            data: vec![0; aster_oci_sdk::MAX_STDIN_WRITE_BYTES + 1],
         })
         .await
         .expect_err("oversized stdin write must fail");

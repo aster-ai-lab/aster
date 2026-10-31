@@ -1,6 +1,6 @@
 //! Reproducible filter-aware ANN latency and recall fixture.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     HnswQueryParams, IndexParams, IvfQueryParams, MetricType, SearchQuery,
 };

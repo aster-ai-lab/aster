@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{ReadTxn, StateVector, Transact};
 
 use super::document::inspect_document;
@@ -569,10 +569,10 @@ mod tests {
     fn replica_documents_use_browser_utf16_offsets() {
         let doc = new_replica_document(
             7,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Markdown,
         );
-        let text = doc.get_or_insert_text("a3s.office.markdown.source");
+        let text = doc.get_or_insert_text("aster.office.markdown.source");
         text.insert(&mut doc.transact_mut(), 0, "A😀B");
         text.remove_range(&mut doc.transact_mut(), 1, 2);
         assert_eq!(text.get_string(&doc.transact()), "AB");

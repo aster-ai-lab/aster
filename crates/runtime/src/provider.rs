@@ -59,7 +59,7 @@ mod tests {
 
     #[test]
     fn provider_ids_are_portable_and_have_no_default_policy() {
-        for invalid in ["", "Docker", "a3s_box", "-docker", "docker-", "a/b"] {
+        for invalid in ["", "Docker", "aster_box", "-docker", "docker-", "a/b"] {
             assert!(ProviderId::parse(invalid).is_err(), "accepted {invalid:?}");
         }
         assert_eq!(

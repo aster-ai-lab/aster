@@ -8,13 +8,13 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::net::SocketAddr;
 
-pub(super) const STATE_SCHEMA: &str = "a3s.gateway.managed-service-state.v1";
-pub(super) const REQUEST_SCHEMA: &str = "a3s.gateway.managed-service-binding.v1";
+pub(super) const STATE_SCHEMA: &str = "aster.gateway.managed-service-state.v1";
+pub(super) const REQUEST_SCHEMA: &str = "aster.gateway.managed-service-binding.v1";
 const ENDPOINT_PREFIX: &str = "gateway:managed-services/";
-const ROUTE_PREFIX: &str = "/_a3s/runtime";
-pub(crate) const MANAGED_SERVICE_MIDDLEWARE_NAME: &str = "a3s-managed-services-strip-v1";
-pub(crate) const MANAGED_SERVICE_NAME_PREFIX: &str = "a3s-managed-service-";
-pub(crate) const MANAGED_SERVICE_ROUTER_PREFIX: &str = "a3s-managed-router-";
+const ROUTE_PREFIX: &str = "/_aster/runtime";
+pub(crate) const MANAGED_SERVICE_MIDDLEWARE_NAME: &str = "aster-managed-services-strip-v1";
+pub(crate) const MANAGED_SERVICE_NAME_PREFIX: &str = "aster-managed-service-";
+pub(crate) const MANAGED_SERVICE_ROUTER_PREFIX: &str = "aster-managed-router-";
 const MAX_EXACT_JSON_INTEGER: u64 = (1_u64 << 53) - 1;
 
 /// HTTP health contract for one private Runtime Service.
@@ -473,7 +473,7 @@ pub(super) fn apply_overlay(
     // The base ACL is validated before it reaches this closed overlay. Do not
     // re-run public ACL mode validation here: `ServerConfig::target` remains a
     // Cloud-only ACL field, while this programmatic host-owned overlay also
-    // needs exact-generation identity in standalone A3S Code hosts. Every
+    // needs exact-generation identity in standalone Aster Code hosts. Every
     // injected router, service, middleware, endpoint, health contract, and
     // target above is constructed and validated from the durable request.
     Ok(())
@@ -515,7 +515,7 @@ fn endpoint_url(
 
 fn binding_id(key: &str) -> String {
     let mut digest = Sha256::new();
-    digest.update(b"a3s-gateway-managed-service-v1");
+    digest.update(b"aster-gateway-managed-service-v1");
     digest.update([0]);
     digest.update(key.as_bytes());
     format!("{:x}", digest.finalize())

@@ -6,8 +6,8 @@ use sha2::{Digest, Sha256};
 
 use crate::error::ActorError;
 
-pub const TOOL_PREPARED_SCHEMA: &str = "a3s.code.tool-prepared.v1";
-pub const TOOL_RESULT_SCHEMA: &str = "a3s.code.tool-result.v1";
+pub const TOOL_PREPARED_SCHEMA: &str = "aster.code.tool-prepared.v1";
+pub const TOOL_RESULT_SCHEMA: &str = "aster.code.tool-result.v1";
 pub const MAX_TOOL_EFFECT_PATHS: usize = 4096;
 pub const MAX_TOOL_EFFECT_CANONICAL_BYTES: usize = 1024 * 1024;
 
@@ -99,7 +99,7 @@ impl ToolInvocationIdentityV1 {
 
     pub fn key(&self) -> Result<String, ActorError> {
         self.validate()?;
-        digest_json("a3s.code.tool-invocation.v1", self)
+        digest_json("aster.code.tool-invocation.v1", self)
     }
 }
 
@@ -270,7 +270,7 @@ impl ToolPreparedV1 {
 
     pub fn digest(&self) -> Result<String, ActorError> {
         self.validate()?;
-        digest_json("a3s.code.tool-prepared-digest.v1", self)
+        digest_json("aster.code.tool-prepared-digest.v1", self)
     }
 }
 
@@ -323,7 +323,7 @@ impl ToolExecutionResultV1 {
 }
 
 pub fn tool_args_digest(args: &Value) -> Result<String, ActorError> {
-    digest_json("a3s.code.tool-arguments.v1", args)
+    digest_json("aster.code.tool-arguments.v1", args)
 }
 
 fn digest_json<T: Serialize>(domain: &str, value: &T) -> Result<String, ActorError> {

@@ -1,6 +1,6 @@
 # Release cadence
 
-`a3s-code-core` and `a3s-code-acp` ship on a two-week train. A train
+`aster-core` and `aster-acp` ship on a two-week train. A train
 leaves on time or not at all. Work that misses it waits for the next one.
 
 ## Schedule
@@ -21,14 +21,14 @@ that is uploaded:
    version.
 2. `just ci`: format, clippy `-D warnings`, the workspace tests and the
    landing check.
-3. `cargo publish -p a3s-code-core -p a3s-code-acp --dry-run`: Cargo
+3. `cargo publish -p aster-core -p aster-acp --dry-run`: Cargo
    verifies ACP against the packaged Core.
 4. `just release-smoke`: one ACP turn through the real binary against a
    real provider. The turn must end with `end_turn` and stream a reply.
-   - `A3S_RELEASE_SMOKE_CONFIG`: required ACL file with the provider. The
+   - `ASTER_RELEASE_SMOKE_CONFIG`: required ACL file with the provider. The
      test fails when it is unset.
-   - `A3S_RELEASE_SMOKE_MODEL`: optional `provider/model`.
-   - `A3S_RELEASE_SMOKE_BIN`: optional binary. Point it at a clean
+   - `ASTER_RELEASE_SMOKE_MODEL`: optional `provider/model`.
+   - `ASTER_RELEASE_SMOKE_BIN`: optional binary. Point it at a clean
      `cargo install --path acp --locked` of the candidate.
 
 When any step is red on the train day, the train is cancelled and the

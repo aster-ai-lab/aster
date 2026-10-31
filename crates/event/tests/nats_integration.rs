@@ -5,11 +5,11 @@
 //!   nats-server -js
 //!
 //! Tests are skipped automatically if NATS is not available, unless
-//! `A3S_EVENT_REQUIRE_NATS` is set. CI sets this variable so an unavailable
+//! `ASTER_EVENT_REQUIRE_NATS` is set. CI sets this variable so an unavailable
 //! or misconfigured server fails the suite instead of producing a false pass.
 
-use a3s_event::provider::nats::{NatsConfig, NatsProvider, StorageType};
-use a3s_event::{
+use aster_event::provider::nats::{NatsConfig, NatsProvider, StorageType};
+use aster_event::{
     DeliverPolicy, Event, EventBus, EventProvider, PublishOptions, SubscribeOptions,
     SubscriptionFilter,
 };
@@ -32,7 +32,7 @@ async fn try_nats_provider(stream_suffix: &str) -> Option<NatsProvider> {
 
     match NatsProvider::connect(config).await {
         Ok(provider) => Some(provider),
-        Err(error) if std::env::var_os("A3S_EVENT_REQUIRE_NATS").is_some() => {
+        Err(error) if std::env::var_os("ASTER_EVENT_REQUIRE_NATS").is_some() => {
             panic!("NATS JetStream is required but unavailable: {error}");
         }
         Err(error) => {

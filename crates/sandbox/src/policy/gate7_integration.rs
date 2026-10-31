@@ -11,7 +11,7 @@ use crate::policy::{
 use crate::NativeSandbox;
 
 fn mediated_http_policy(host: &str, port: u16) -> SandboxPolicy {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: host.into(),
@@ -22,7 +22,7 @@ fn mediated_http_policy(host: &str, port: u16) -> SandboxPolicy {
 }
 
 fn mediated_socks_policy(host: &str, port: u16) -> SandboxPolicy {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_socks = true;
     policy.network.allow.push(NetworkAllowRule {
         host: host.into(),
@@ -58,7 +58,7 @@ fn gate7_socks_does_not_authorize_literal_ip_when_hostname_allowlisted() {
 
 #[test]
 fn gate7_path_prefix_never_authorizes_opaque_tunnels() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.features.mediated_socks = true;
     policy.network.allow.push(NetworkAllowRule {
@@ -114,7 +114,7 @@ fn gate7_capability_report_never_hides_unavailable_mediation() {
 
 #[test]
 fn gate7_narrowing_then_rebroadening_requires_opt_in_each_time() {
-    let mut tight = SandboxPolicy::a3s_bash_baseline();
+    let mut tight = SandboxPolicy::aster_bash_baseline();
     tight.resources.timeout_ms = 5_000;
     let mut wider = tight.clone();
     wider.resources.timeout_ms = 10_000;
@@ -281,7 +281,7 @@ fn gate7_policy_validate_rejects_malformed_network_hosts() {
         "host with spaces",
     ];
     for host in malformed {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_network = true;
         policy.network.allow.push(NetworkAllowRule {
             host: host.into(),
@@ -298,7 +298,7 @@ fn gate7_policy_validate_rejects_malformed_network_hosts() {
 
 #[test]
 fn gate7_policy_validate_rejects_zero_resource_ceilings() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.resources.max_output_bytes = 0;
     assert!(policy
         .validate()

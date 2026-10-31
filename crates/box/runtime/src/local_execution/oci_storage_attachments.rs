@@ -1,4 +1,4 @@
-//! Bind Box-owned storage allocations into `a3s.oci.attachments.v2`.
+//! Bind Box-owned storage allocations into `aster.oci.attachments.v2`.
 //!
 //! Volume lookup, authorization, and deletion stay in Box. The runtime only
 //! receives immutable storage identities + caller-owned detach-only lifetime.
@@ -6,8 +6,8 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::{ExecutionManagerError, ExecutionManagerResult};
-use a3s_oci_sdk::{
+use aster_box_core::{ExecutionManagerError, ExecutionManagerResult};
+use aster_oci_sdk::{
     CreateAttachments, OciBundle, StorageAccessMode, StorageAttachmentId, StorageCleanup,
     StorageOwnership,
 };
@@ -15,10 +15,10 @@ use a3s_oci_sdk::{
 use crate::{BoxRecord, VolumeStore};
 
 /// Stable storage identity for the Box-owned Sandbox workspace bind.
-const WORKSPACE_STORAGE_IDENTITY: &str = "a3s.box.workspace";
+const WORKSPACE_STORAGE_IDENTITY: &str = "aster.box.workspace";
 
 /// Attach Box-owned VolumeStore mounts and the implicit `/workspace` bind into
-/// `a3s.oci.attachments.v2`.
+/// `aster.oci.attachments.v2`.
 ///
 /// Caller ownership + DetachOnly matches Box retaining deletion authority.
 /// Staged caller bind aliases are attached separately via
@@ -45,10 +45,10 @@ pub(super) fn attach_box_owned_volume_storage(
 }
 
 /// Classify Box-staged caller bind aliases under
-/// `{box_dir}/sandbox/attachments/{slot}` into `a3s.oci.attachments.v2`.
+/// `{box_dir}/sandbox/attachments/{slot}` into `aster.oci.attachments.v2`.
 ///
 /// Preparation rewrites external `-v` sources onto these O_PATH aliases; this
-/// attaches the matching storage identity (`a3s.box.bind.{slot}`) so create no
+/// attaches the matching storage identity (`aster.box.bind.{slot}`) so create no
 /// longer sees an unclassified bind for the common Docker bind surface.
 pub(super) fn attach_staged_caller_bind_aliases(
     bundle: &OciBundle,
@@ -86,7 +86,7 @@ pub(super) fn attach_staged_caller_bind_aliases(
                 alias_root.display()
             ))
         })?;
-        let identity = format!("a3s.box.bind.{slot}");
+        let identity = format!("aster.box.bind.{slot}");
         attachments = attach_storage(bundle, attachments, index, &identity, mount.read_only)?;
     }
     Ok(attachments)
@@ -394,8 +394,8 @@ fn oci_bind_mounts(bundle: &OciBundle) -> ExecutionManagerResult<Vec<OciBindMoun
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::volume::VolumeConfig;
-    use a3s_oci_sdk::ProcessIo;
+    use aster_box_core::volume::VolumeConfig;
+    use aster_oci_sdk::ProcessIo;
     use serde_json::json;
 
     fn make_record(home_dir: &Path, id: &str) -> BoxRecord {
@@ -465,12 +465,12 @@ mod tests {
         record.volume_names = vec!["dataset-a".to_string()];
 
         let attachments = CreateAttachments::from_bundle(&bundle, ProcessIo::default()).unwrap();
-        assert_eq!(attachments.schema_version(), "a3s.oci.attachments.v1");
+        assert_eq!(attachments.schema_version(), "aster.oci.attachments.v1");
 
         let attached =
             attach_box_owned_volume_storage(&bundle, attachments, home.path(), &record, &[])
                 .unwrap();
-        assert_eq!(attached.schema_version(), "a3s.oci.attachments.v2");
+        assert_eq!(attached.schema_version(), "aster.oci.attachments.v2");
         assert_eq!(attached.storage().len(), 1);
         assert_eq!(attached.storage()[0].identity().as_str(), "dataset-a");
         assert_eq!(
@@ -515,7 +515,7 @@ mod tests {
         let attached =
             attach_box_owned_volume_storage(&bundle, attachments, home.path(), &record, &[])
                 .unwrap();
-        assert_eq!(attached.schema_version(), "a3s.oci.attachments.v2");
+        assert_eq!(attached.schema_version(), "aster.oci.attachments.v2");
         assert_eq!(attached.storage().len(), 1);
         assert_eq!(
             attached.storage()[0].identity().as_str(),
@@ -564,11 +564,11 @@ mod tests {
         assert!(attached.storage().is_empty());
         let attached =
             attach_staged_caller_bind_aliases(&bundle, attached, home.path(), &record).unwrap();
-        assert_eq!(attached.schema_version(), "a3s.oci.attachments.v2");
+        assert_eq!(attached.schema_version(), "aster.oci.attachments.v2");
         assert_eq!(attached.storage().len(), 1);
         assert_eq!(
             attached.storage()[0].identity().as_str(),
-            "a3s.box.bind.0000"
+            "aster.box.bind.0000"
         );
         assert_eq!(
             attached.storage()[0].access_mode(),

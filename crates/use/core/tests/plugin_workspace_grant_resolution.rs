@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     PlanActor, PlanPolicyDecision, PluginGrantConfirmation, PluginPermissionCeiling,
     PluginWorkspaceGrantProposal, WorkspaceGrantProposalAuthority,
     PLUGIN_GRANT_CONFIRMATION_SCHEMA, PLUGIN_WORKSPACE_GRANT_PROPOSAL_SCHEMA,

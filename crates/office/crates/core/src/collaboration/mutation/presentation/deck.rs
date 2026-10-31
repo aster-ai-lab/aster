@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::Value as JsonValue;
 use yrs::{Any, Array, Map, MapRef, Out, ReadTxn, Transact};
 

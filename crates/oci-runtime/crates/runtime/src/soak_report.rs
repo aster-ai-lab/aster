@@ -1,11 +1,11 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{ContainerTarget, Generation, OperationId, RuntimeOperation};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{ContainerTarget, Generation, OperationId, RuntimeOperation};
 use serde::{Deserialize, Serialize};
 
 /// Schema emitted by the native Linux complex-container soak diagnostic.
-pub const NATIVE_LINUX_SOAK_SCHEMA_VERSION: &str = "a3s.oci.native-linux-soak.v2";
+pub const NATIVE_LINUX_SOAK_SCHEMA_VERSION: &str = "aster.oci.native-linux-soak.v2";
 
 /// Lower bound for a multi-container soak run.
 pub const MIN_SOAK_CONCURRENT_CONTAINERS: u32 = 2;
@@ -405,8 +405,8 @@ mod tests {
         NativeLinuxSoakConfig, NativeLinuxSoakPauseResumeEvidence, NativeLinuxSoakReport,
         MAX_SOAK_CONCURRENT_CONTAINERS, MAX_SOAK_ITERATIONS,
     };
-    use a3s_oci_core::{CapabilityStatus, HostPlatform};
-    use a3s_oci_sdk::{ContainerId, ContainerTarget, Generation, OperationId};
+    use aster_oci_core::{CapabilityStatus, HostPlatform};
+    use aster_oci_sdk::{ContainerId, ContainerTarget, Generation, OperationId};
 
     #[test]
     fn configuration_rejects_unbounded_or_non_concurrent_runs() {
@@ -443,7 +443,7 @@ mod tests {
         report.distinct_bundles_and_rootfs = true;
         report
             .service_operations
-            .push(a3s_oci_sdk::RuntimeOperation::Create);
+            .push(aster_oci_sdk::RuntimeOperation::Create);
         report.completed_iterations = 3;
         report.completed_container_lifecycles = expected;
         report.operation_counts.features = 7;

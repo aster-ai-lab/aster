@@ -1,4 +1,4 @@
-//! `a3s-box compose` command — Multi-container orchestration.
+//! `aster-box compose` command — Multi-container orchestration.
 //!
 //! Project discovery, service selection, and lifecycle operations are kept in
 //! this command while individual box behavior is delegated to the existing
@@ -17,10 +17,10 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use a3s_box_core::compose::{normalize_compose, ComposeConfig, ComposeSourceFormat, ServiceConfig};
-use a3s_box_core::config::DEFAULT_VCPUS;
-use a3s_box_core::event::EventEmitter;
-use a3s_box_runtime::{ComposeRuntimePlan, NetworkStore, VmManager};
+use aster_box_core::compose::{normalize_compose, ComposeConfig, ComposeSourceFormat, ServiceConfig};
+use aster_box_core::config::DEFAULT_VCPUS;
+use aster_box_core::event::EventEmitter;
+use aster_box_runtime::{ComposeRuntimePlan, NetworkStore, VmManager};
 use sha2::{Digest, Sha256};
 
 use super::common;
@@ -36,13 +36,13 @@ use operations::{ComposeStopArgs, ProjectServicesArgs};
 use read::{execute_config, execute_logs, execute_ps};
 
 /// Label key for compose project name.
-const LABEL_PROJECT: &str = "com.a3s.compose.project";
+const LABEL_PROJECT: &str = "com.aster.compose.project";
 /// Label key for compose service name.
-const LABEL_SERVICE: &str = "com.a3s.compose.service";
+const LABEL_SERVICE: &str = "com.aster.compose.service";
 /// Label key for the normalized service configuration digest.
-const LABEL_CONFIG_HASH: &str = "com.a3s.compose.config-hash";
+const LABEL_CONFIG_HASH: &str = "com.aster.compose.config-hash";
 /// Label key for the non-sensitive transient Secret-set identity.
-pub(crate) const LABEL_SECRET_ID: &str = "com.a3s.compose.secret-identity";
+pub(crate) const LABEL_SECRET_ID: &str = "com.aster.compose.secret-identity";
 type ExistingService = (ServiceBox, Option<String>);
 
 /// Limit concurrent Compose image pulls so a multi-service deployment can
@@ -162,7 +162,7 @@ fn load_compose_file_with_environment(
         .join(".env");
     match std::fs::read_to_string(&environment_path) {
         Ok(contents) => {
-            for (key, value) in a3s_box_core::env::parse_env_file_content(&contents) {
+            for (key, value) in aster_box_core::env::parse_env_file_content(&contents) {
                 environment.insert(key, value);
             }
         }
@@ -301,7 +301,7 @@ fn validate_known_compose_health(
     service_name: &str,
     healthcheck_disabled: bool,
     service_health_check: Option<HealthCheck>,
-    cached_image_config: Option<&a3s_box_runtime::oci::OciImageConfig>,
+    cached_image_config: Option<&aster_box_runtime::oci::OciImageConfig>,
 ) -> Result<(), String> {
     if healthcheck_disabled {
         return Ok(());
@@ -372,7 +372,7 @@ async fn execute_up(
             let mut config = project.build_box_config(service_name, Some(&default_network))?;
             config = sandbox_managed::sandbox_box_config(config);
             config.isolation = isolation;
-            a3s_box_core::resolve_execution(&config)?;
+            aster_box_core::resolve_execution(&config)?;
         }
     }
     let mut state = StateFile::load_default()?;
@@ -412,7 +412,7 @@ async fn execute_up(
             }
         } else {
             let subnet = format!("10.89.{}.0/24", 100 + i);
-            let config = match a3s_box_core::network::NetworkConfig::new(net_name, &subnet) {
+            let config = match aster_box_core::network::NetworkConfig::new(net_name, &subnet) {
                 Ok(config) => config,
                 Err(error) => {
                     return rollback_compose_up(
@@ -449,7 +449,7 @@ async fn execute_up(
 
     // Step 2: Boot services in dependency order
     let default_net = project.default_network_name();
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
 
     println!(
         "Starting project '{}' ({} services)...",
@@ -655,7 +655,7 @@ async fn execute_up(
         let network_mode = box_config.network.clone();
         let record_isolation = box_config.isolation;
         let network_name = match &network_mode {
-            a3s_box_core::NetworkMode::Bridge { network } => Some(network.clone()),
+            aster_box_core::NetworkMode::Bridge { network } => Some(network.clone()),
             _ => None,
         };
 
@@ -731,7 +731,7 @@ async fn execute_up(
             let endpoint =
                 match net_store.with_write_lock(
                     |networks| -> Result<
-                        a3s_box_core::network::NetworkEndpoint,
+                        aster_box_core::network::NetworkEndpoint,
                         Box<dyn std::error::Error>,
                     > {
                         let net_config = networks.get_mut(net_name).ok_or_else(
@@ -1039,10 +1039,10 @@ async fn prefetch_compose_images(config: &ComposeConfig) -> Result<(), Box<dyn s
         let store = store.clone();
         tasks.spawn(async move {
             let _permit = permit;
-            let reference = a3s_box_runtime::ImageReference::parse(&image)
+            let reference = aster_box_runtime::ImageReference::parse(&image)
                 .map_err(|error| format!("invalid image '{image}': {error}"))?;
-            let auth = a3s_box_runtime::RegistryAuth::from_credential_store(&reference.registry);
-            let puller = a3s_box_runtime::ImagePuller::with_platform(store, auth, None);
+            let auth = aster_box_runtime::RegistryAuth::from_credential_store(&reference.registry);
+            let puller = aster_box_runtime::ImagePuller::with_platform(store, auth, None);
             puller
                 .pull(&image)
                 .await
@@ -1072,7 +1072,7 @@ async fn prefetch_compose_images(config: &ComposeConfig) -> Result<(), Box<dyn s
 
 fn service_config_hash(
     service: &ServiceConfig,
-    config: &a3s_box_core::BoxConfig,
+    config: &aster_box_core::BoxConfig,
 ) -> Result<String, serde_json::Error> {
     let mut normalized = config.clone();
     normalized.extra_env.sort();

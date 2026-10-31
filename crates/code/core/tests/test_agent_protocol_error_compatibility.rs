@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use a3s_code_core::{AgentProtocolHostError, CodeError};
+use aster_core::{AgentProtocolHostError, CodeError};
 
 const HOST_CODE: &str = AgentProtocolHostError::RunUnavailable.code();
 const CORE_CODE: &str = CodeError::TaskSchedulerClosed.code();
@@ -28,7 +28,7 @@ fn published_v912_client_error_match_remains_exhaustive() {
         v912_client_category(&AgentProtocolHostError::RunUnavailable),
         "unavailable"
     );
-    assert_eq!(HOST_CODE, "a3s.code.agent_protocol.run_unavailable");
+    assert_eq!(HOST_CODE, "aster.code.agent_protocol.run_unavailable");
     assert_eq!(CORE_CODE, "TASK_SCHEDULER_CLOSED");
     assert_eq!(
         v912_core_category(&CodeError::TaskSchedulerClosed),

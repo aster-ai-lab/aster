@@ -1,4 +1,4 @@
-use a3s_office::{NativeSpreadsheetDelimitedFormat, NativeSpreadsheetDelimitedImport};
+use aster_office::{NativeSpreadsheetDelimitedFormat, NativeSpreadsheetDelimitedImport};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, schemars::JsonSchema)]

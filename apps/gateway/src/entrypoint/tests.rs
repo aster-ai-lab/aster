@@ -4286,7 +4286,7 @@ async fn an_idempotency_key_replays_the_saved_search_and_rejects_a_different_bod
             client
                 .post(&url)
                 .header("authorization", "Bearer caller-secret")
-                .header("x-a3s-org", org)
+                .header("x-aster-org", org)
                 .header("idempotency-key", key)
                 .header("connection", "close")
                 .body(body)

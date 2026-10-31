@@ -1,4 +1,4 @@
-//! `a3s-box inspect` command — Detailed box information as JSON.
+//! `aster-box inspect` command — Detailed box information as JSON.
 
 use clap::Args;
 use serde::Serialize;
@@ -29,7 +29,7 @@ pub async fn execute(args: InspectArgs) -> Result<(), Box<dyn std::error::Error>
             match super::observe_inventory::refresh_managed_inventory_record(record.clone()).await?
             {
                 Some(record) => {
-                    let home = a3s_box_core::dirs_home();
+                    let home = aster_box_core::dirs_home();
                     super::observe_inventory::observe_bridge_passt_backend_loss(&home)?;
                     let record = StateFile::load_default()?
                         .find_by_id(&record.id)
@@ -116,7 +116,7 @@ mod tests {
         assert!(json.contains("\"status\": \"dead\""));
         assert!(json.contains("\"status_detail\""));
         assert!(json.contains("\"summary\": \"dead (Exit 137)\""));
-        assert!(json.contains("a3s-box restart box"));
+        assert!(json.contains("aster-box restart box"));
     }
 
     #[test]

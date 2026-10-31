@@ -18,7 +18,7 @@ Agent 持有模型与共享服务；Session 绑定工作区和会话状态；一
 先读取当前 Run 状态，把输入绑定到用户看到的 Run 和 Turn 版本。下面接收一个正在运行的会话；它不是创建第二个任务的入口。
 
 ```rust
-use a3s_code_core::{AgentSession, SteerRequest};
+use aster_core::{AgentSession, SteerRequest};
 
 async fn append_instruction(session: &AgentSession) -> anyhow::Result<()> {
     let current = session.run_control_snapshot().await

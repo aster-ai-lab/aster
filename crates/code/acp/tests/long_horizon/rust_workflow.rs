@@ -49,7 +49,7 @@ pub fn wire_checks(events: &[Value]) -> Value {
             })
     });
     let verified = events.iter().any(|event| {
-        event["method"] == "a3s/turn/outcome"
+        event["method"] == "aster/turn/outcome"
             && event["params"]["outcome"]["terminal"] == "verified"
             && event["params"]["outcome"]["status"] == "passed"
     });
@@ -205,7 +205,7 @@ fn wire_oracle_requires_failed_then_passing_exact_commands_and_bound_outcome() {
     let events = vec![
         check(101, "test result: FAILED. 0 passed; 3 failed"),
         check(0, "test tests::formats_cents ... ok\ntest tests::quantity_rejects_zero ... ok\ntest tests::rounds_half_up ... ok\ntest extra::legitimate ... ok\ntest result: ok. 4 passed; 0 failed; 0 ignored"),
-        json!({"method":"a3s/turn/outcome","params":{"outcome":{"terminal":"verified","status":"passed"}}}),
+        json!({"method":"aster/turn/outcome","params":{"outcome":{"terminal":"verified","status":"passed"}}}),
     ];
     let valid = wire_checks(&events);
     assert!(

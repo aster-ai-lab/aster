@@ -503,7 +503,7 @@ impl ScopedToolInvoker {
         &self,
         invocation: &ToolInvocation,
         result: &ToolResult,
-        effects: &a3s_effect::ToolEffectObservationV1,
+        effects: &aster_effect::ToolEffectObservationV1,
         parent: &ToolContext,
         child: &ToolContext,
         shell_window: Option<u64>,

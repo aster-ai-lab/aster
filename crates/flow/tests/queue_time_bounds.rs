@@ -1,6 +1,6 @@
 #[cfg(feature = "postgres")]
-use a3s_flow::PostgresFlowTaskQueue;
-use a3s_flow::{FlowTask, FlowTaskQueue, LocalFileFlowTaskQueue};
+use aster_flow::PostgresFlowTaskQueue;
+use aster_flow::{FlowTask, FlowTaskQueue, LocalFileFlowTaskQueue};
 use chrono::{DateTime, Utc};
 use std::sync::Arc;
 #[cfg(feature = "postgres")]

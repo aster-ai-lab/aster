@@ -1,4 +1,4 @@
-//! Backend-neutral lifecycle interface for managed A3S executions.
+//! Backend-neutral lifecycle interface for managed Aster executions.
 
 use std::collections::BTreeMap;
 use std::num::NonZeroU16;
@@ -291,7 +291,7 @@ pub struct ExecutionRecordPolicy {
     /// Runtime-owned Linux tmpfs root containing transient Secret files.
     ///
     /// This path is persisted only so a reconstructed backend can distinguish
-    /// caller-owned bind mounts from transient files that A3S Box is allowed to
+    /// caller-owned bind mounts from transient files that Aster Box is allowed to
     /// prepare for the Sandbox user namespace. Secret values never enter this
     /// policy or the creation request.
     #[serde(default)]

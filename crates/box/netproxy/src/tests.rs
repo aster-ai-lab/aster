@@ -477,7 +477,7 @@ fn outbound_tcp_proxy_accepts_public_destination() {
 fn networkstore_tcp_dns_answers_alias_without_upstream() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("networks.json");
-    let mut net = a3s_box_core::network::NetworkConfig::new("mynet", "10.88.0.0/24").unwrap();
+    let mut net = aster_box_core::network::NetworkConfig::new("mynet", "10.88.0.0/24").unwrap();
     let endpoint = net
         .connect_with_aliases("box-db", "proj-db", &["db".to_string()])
         .unwrap();
@@ -960,7 +960,7 @@ fn test_write_stats_file_writes_json_snapshot() {
 
     let json: serde_json::Value =
         serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
-    assert_eq!(json["schema"], "a3s-box.netproxy.stats.v1");
+    assert_eq!(json["schema"], "aster-box.netproxy.stats.v1");
     assert_eq!(json["rx_bytes"], 1024);
     assert_eq!(json["tx_bytes"], 2048);
     assert_eq!(json["rx_packets"], 3);

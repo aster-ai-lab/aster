@@ -58,7 +58,7 @@ export class DocxOpenTypePatchCollector {
     if (existing) return existing;
     let marker = '';
     do {
-      marker = `A3SOfficeOpenType${String(this.nextMarker).padStart(8, '0')}`;
+      marker = `AsterOfficeOpenType${String(this.nextMarker).padStart(8, '0')}`;
       this.nextMarker += 1;
     } while (
       this.occupied.includes(marker) ||

@@ -8,13 +8,13 @@ use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::collections::VecDeque;
 
-pub const TOOL_RESULT_TRANSFORM_SCHEMA_V1: &str = "a3s.code.tool-result-transform-policy.v1";
-pub const TOOL_RESULT_TRANSFORM_ALGORITHM_V1: &str = "a3s.code.tool-result-transform.v1";
+pub const TOOL_RESULT_TRANSFORM_SCHEMA_V1: &str = "aster.code.tool-result-transform-policy.v1";
+pub const TOOL_RESULT_TRANSFORM_ALGORITHM_V1: &str = "aster.code.tool-result-transform.v1";
 pub const TOOL_RESULT_TRANSFORM_BINDING_SCHEMA_V1: &str =
-    "a3s.code.tool-result-transform-binding.v1";
-pub const TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY: &str = "a3s_tool_result_transform_binding";
+    "aster.code.tool-result-transform-binding.v1";
+pub const TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY: &str = "aster_tool_result_transform_binding";
 pub const TOOL_RESULT_TRANSFORM_POLICY_DIGEST_DOMAIN_V1: &str =
-    "a3s.code.tool-result-transform-policy-digest.v1";
+    "aster.code.tool-result-transform-policy-digest.v1";
 const MARKER_RESERVE_BYTES: usize = 512;
 const MAX_STRUCTURED_SAMPLE_ITEMS: usize = 1024;
 
@@ -33,7 +33,7 @@ pub struct ToolResultTransformPolicyV1 {
 /// Default model-facing budget. Terminal-Bench ACP trajectories (4793 tool
 /// results) put p99 at 15 KB: a 16 KB cut touches under 1% of results and
 /// removes up to 16% of resident result bytes. The original stays pageable as a
-/// `a3s://tool-output/...` artifact.
+/// `aster://tool-output/...` artifact.
 pub const CONTEXT_BOUNDED_MAX_OUTPUT_BYTES: usize = 16 * 1024;
 
 impl Default for ToolResultTransformPolicyV1 {
@@ -334,7 +334,7 @@ fn fold_repeated_lines(value: &str, threshold: usize) -> Option<String> {
             }
             output.push_str(line);
             output.push_str(&format!(
-                "[a3s repeated-line fold: {} additional exact copies omitted]\n",
+                "[aster repeated-line fold: {} additional exact copies omitted]\n",
                 count - 1
             ));
             folded_run = true;
@@ -360,7 +360,7 @@ fn sample_structured(value: &str, max_items: usize) -> Option<String> {
     deserializer.end().ok()?;
     let (original_items, sampled) = sample;
     serde_json::to_string(&serde_json::json!({
-        "$a3s_sample": {
+        "$aster_sample": {
             "schema": TOOL_RESULT_TRANSFORM_ALGORITHM_V1,
             "kind": "json_array",
             "original_items": original_items,

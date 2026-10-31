@@ -1,17 +1,17 @@
-//! `a3s-box monitor` command — Background daemon that restarts dead boxes.
+//! `aster-box monitor` command — Background daemon that restarts dead boxes.
 //!
 //! Polls `boxes.json` periodically, detects dead VMs via PID liveness checks,
 //! and restarts boxes according to their restart policy. Also monitors health
 //! check status and restarts unhealthy boxes. Uses exponential backoff to
 //! prevent crash loops.
 //!
-//! Usage: `a3s-box monitor` (long-running, typically run as a background service)
+//! Usage: `aster-box monitor` (long-running, typically run as a background service)
 
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
-use a3s_box_core::{ExecutionGeneration, ExecutionManager, OperationId, RestartExecutionOptions};
-use a3s_box_runtime::ManagedRestartOutcome;
+use aster_box_core::{ExecutionGeneration, ExecutionManager, OperationId, RestartExecutionOptions};
+use aster_box_runtime::ManagedRestartOutcome;
 use clap::Args;
 
 use crate::boot;
@@ -177,7 +177,7 @@ pub async fn execute(args: MonitorArgs) -> Result<(), Box<dyn std::error::Error>
     let mut tracker = BackoffTracker::new();
 
     println!(
-        "a3s-box monitor started (poll interval: {}s)",
+        "aster-box monitor started (poll interval: {}s)",
         args.interval
     );
 
@@ -220,7 +220,7 @@ pub async fn execute(args: MonitorArgs) -> Result<(), Box<dyn std::error::Error>
         tokio::select! {
             _ = tokio::time::sleep(interval) => {}
             _ = &mut shutdown => {
-                println!("a3s-box monitor: received shutdown signal, exiting after completing the poll cycle");
+                println!("aster-box monitor: received shutdown signal, exiting after completing the poll cycle");
                 break;
             }
         }
@@ -470,7 +470,7 @@ async fn poll_once(tracker: &mut BackoffTracker) -> Result<(), Box<dyn std::erro
 
 async fn restart_managed_candidate(
     record: &BoxRecord,
-    execution_id: a3s_box_core::ExecutionId,
+    execution_id: aster_box_core::ExecutionId,
     source_generation: ExecutionGeneration,
     operation_id: Option<OperationId>,
     stop_timeout_secs: Option<u64>,
@@ -479,7 +479,7 @@ async fn restart_managed_candidate(
         Some(operation_id) => operation_id,
         None => OperationId::new(format!("monitor-restart-{}", uuid::Uuid::new_v4()))?,
     };
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let manager = super::configured_local_execution_manager(&home).await?;
     let lease = manager
         .restart_with_options(
@@ -762,8 +762,8 @@ async fn run_due_health_checks(state: &StateFile) -> Result<(), Box<dyn std::err
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation};
-    use a3s_box_runtime::{ManagedExecutionMetadata, ManagedRestartCompletion};
+    use aster_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation};
+    use aster_box_runtime::{ManagedExecutionMetadata, ManagedRestartCompletion};
     use std::collections::BTreeMap;
 
     use crate::test_helpers::fixtures::make_record;

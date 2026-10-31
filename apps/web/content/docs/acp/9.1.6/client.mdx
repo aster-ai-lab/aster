@@ -16,8 +16,8 @@ export const meta = {
 先按仓库要求初始化 Studio 子模块，从根目录构建配套程序。准备一份已经验证可用的可信 ACL，以及不含私人资料的练习工作区：
 
 ```bash
-cargo build --locked -p aster -p a3s-code-acp
-cargo run --locked -p a3s-code-acp --example interactive_client -- ./target/debug/a3s-code-acp /absolute/host.acl /absolute/practice-repo
+cargo build --locked -p aster -p aster-acp
+cargo run --locked -p aster-acp --example interactive_client -- ./target/debug/aster-acp /absolute/host.acl /absolute/practice-repo
 ```
 
 三个位置参数分别是代理二进制、可信 ACL、工作区。例子将它们变成准确路径，再通过 `--cwd` 和 `--config` 传给子进程。协议只占子进程的 stdin/stdout，日志保留在 stderr。
@@ -48,7 +48,7 @@ initialize 返回当前能力和模型信息后，程序创建会话并打印 se
 
 请求中的 `_meta.question.allowFreeText` 为 true 时，`/answer` 才生效。自由回答通过响应元数据 followup_message 返回；其 permission outcome 使用 Cancelled，不把回答伪装成 allow-once。
 
-普通工具确认不能走这条路线。若用户输入“是”作为文本，客户端不会自行猜成许可；必须选择代理给出的具体选项。结构化表单也使用独立的 a3s/form/request，不把 JSON 对象发回普通确认通道。
+普通工具确认不能走这条路线。若用户输入“是”作为文本，客户端不会自行猜成许可；必须选择代理给出的具体选项。结构化表单也使用独立的 aster/form/request，不把 JSON 对象发回普通确认通道。
 
 ## 取消后继续读取
 
@@ -61,7 +61,7 @@ initialize 返回当前能力和模型信息后，程序创建会话并打印 se
 记录程序打印的 sessionId，在第四个位置参数传回它：
 
 ```bash
-cargo run --locked -p a3s-code-acp --example interactive_client -- ./target/debug/a3s-code-acp /absolute/host.acl /absolute/practice-repo SESSION_ID
+cargo run --locked -p aster-acp --example interactive_client -- ./target/debug/aster-acp /absolute/host.acl /absolute/practice-repo SESSION_ID
 ```
 
 程序改用 session/load，重放通知仍由同一个 Client 接收。工作区和存储绑定由代理核对；加载错误不会自动新建另一个同名会话。较长历史的分页与前缀分支见[会话目录](../sessions/)。
@@ -69,7 +69,7 @@ cargo run --locked -p a3s-code-acp --example interactive_client -- ./target/debu
 ## 检查程序的交互逻辑
 
 ```bash
-cargo test --locked -p a3s-code-acp --example interactive_client
+cargo test --locked -p aster-acp --example interactive_client
 ```
 
 测试核对原选项身份、无效编号、自由回答不能用于批准、表单必须为对象，以及取消时所有待处理者都收到取消。真实模型、恢复存储和客户端操作流程还应在目标环境验收，不能用这两项单元测试代替。

@@ -18,12 +18,12 @@ concurrency:
 env:
   CARGO_TERM_COLOR: always
   RUSTUP_TOOLCHAIN: 1.97.1
-  A3S_CLOUD_TEST_POSTGRES_URL: postgres://a3s_test:a3s_test@127.0.0.1:5432/postgres
-  A3S_CLOUD_TEST_S3_ENDPOINT: http://127.0.0.1:9000
-  A3S_CLOUD_TEST_S3_REGION: us-east-1
-  A3S_CLOUD_TEST_S3_BUCKET: a3s-test
-  A3S_CLOUD_TEST_S3_ACCESS_KEY_ID: a3s-test
-  A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY: a3s-test-secret
+  ASTER_CLOUD_TEST_POSTGRES_URL: postgres://aster_test:aster_test@127.0.0.1:5432/postgres
+  ASTER_CLOUD_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+  ASTER_CLOUD_TEST_S3_REGION: us-east-1
+  ASTER_CLOUD_TEST_S3_BUCKET: aster-test
+  ASTER_CLOUD_TEST_S3_ACCESS_KEY_ID: aster-test
+  ASTER_CLOUD_TEST_S3_SECRET_ACCESS_KEY: aster-test-secret
 
 jobs:
   fmt:
@@ -37,6 +37,7 @@ jobs:
       - run: rustup toolchain install 1.97.1 --profile minimal && rustup default 1.97.1
       - run: rustup component add rustfmt
       - run: cargo fmt --all -- --check
+      - run: cargo fmt --all --manifest-path apps/control-plane/Cargo.toml -- --check
 
   check:
     runs-on: ubuntu-latest
@@ -62,7 +63,10 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Object fixture startup contract
         run: python3 tests/backend_object_fixture.py
-      - run: cargo check --locked --workspace --all-targets
+      - name: Check product-embedded gateway and shared root crates
+        run: cargo check --locked --workspace --all-targets
+      - name: Check control-plane edge workspace
+        run: cargo check --locked --manifest-path apps/control-plane/Cargo.toml --workspace --all-targets
 
   hermetic:
     runs-on: ubuntu-latest
@@ -73,41 +77,47 @@ jobs:
         include:
           # Submodule workspaces: the package lives in apps/api or apps/cloud,
           # which keep their own Cargo workspaces and lockfiles.
-          # a3s-api is deliberately absent: its suite carries live PostgreSQL
+          # aster-api is deliberately absent: its suite carries live PostgreSQL
           # proofs (tobot_memory, git_store) that panic when the service is
           # unreachable, so it runs only in the campaigns job with real
-          # PostgreSQL/S3 under --test-threads=1. a3s-cloud-control-plane is
+          # PostgreSQL/S3 under --test-threads=1. aster-cloud-control-plane is
           # absent for the same reason.
-          - package: a3s-cloud-contracts
+          - package: aster-cloud-contracts
             submodule: apps/cloud
-            test_args: --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-contracts
-          - package: a3s-cloud-node-agent
+            test_args: --manifest-path apps/cloud/Cargo.toml -p aster-cloud-contracts
+          - package: aster-cloud-node-agent
             submodule: apps/cloud
-            test_args: --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-node-agent
-          - package: a3s-cloud-sdk
+            test_args: --manifest-path apps/cloud/Cargo.toml -p aster-cloud-node-agent
+          - package: aster-cloud-sdk
             submodule: apps/cloud
-            test_args: --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-sdk
-          # Root workspace members.
-          - package: a3s-auth
-            test_args: -p a3s-auth
-          - package: a3s-billing
-            test_args: -p a3s-billing
-          - package: a3s-config
-            test_args: -p a3s-config
-          - package: a3s-gateway
-            test_args: -p a3s-gateway
-          - package: a3s-gateway-runtime
-            test_args: -p a3s-gateway-runtime
-          - package: a3s-runner
-            test_args: -p a3s-runner
-          - package: a3s-sms
-            test_args: -p a3s-sms
-          - package: a3s-form-core
-            test_args: -p a3s-form-core
-          - package: a3s-box-runtime
-            test_args: -p a3s-box-runtime
-          - package: a3s-use-core
-            test_args: -p a3s-use-core
+            test_args: --manifest-path apps/cloud/Cargo.toml -p aster-cloud-sdk
+          # Control-plane edge workspace (apps/control-plane).
+          - package: aster-auth
+            test_args: --manifest-path apps/control-plane/Cargo.toml -p aster-auth
+            workspaces: apps/control-plane/Cargo.toml
+          - package: aster-billing
+            test_args: --manifest-path apps/control-plane/Cargo.toml -p aster-billing
+            workspaces: apps/control-plane/Cargo.toml
+          - package: aster-config
+            test_args: --manifest-path apps/control-plane/Cargo.toml -p aster-config
+            workspaces: apps/control-plane/Cargo.toml
+          - package: aster-gateway-runtime
+            test_args: --manifest-path apps/control-plane/Cargo.toml -p aster-gateway-runtime
+            workspaces: apps/control-plane/Cargo.toml
+          - package: aster-runner
+            test_args: --manifest-path apps/control-plane/Cargo.toml -p aster-runner
+            workspaces: apps/control-plane/Cargo.toml
+          # Root workspace members (product-embedded gateway + shared crates).
+          - package: aster-gateway
+            test_args: -p aster-gateway
+          - package: aster-sms
+            test_args: -p aster-sms
+          - package: aster-form-core
+            test_args: -p aster-form-core
+          - package: aster-box-runtime
+            test_args: -p aster-box-runtime
+          - package: aster-use-core
+            test_args: -p aster-use-core
     steps:
       - uses: actions/checkout@v4
       - name: Check out pinned desktop sources
@@ -121,7 +131,7 @@ jobs:
           path: ${{ matrix.submodule }}
           token: ${{ secrets.STUDIO_READ_TOKEN }}
       - name: Check out pinned API sources for the Auth architecture scan
-        if: matrix.package == 'a3s-auth'
+        if: matrix.package == 'aster-auth'
         uses: ./.github/actions/checkout-os-backend
         with:
           path: apps/api
@@ -131,7 +141,7 @@ jobs:
       - run: rustup toolchain install 1.97.1 --profile minimal && rustup default 1.97.1
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: ${{ matrix.submodule && format('{0}/Cargo.toml', matrix.submodule) || '' }}
+          workspaces: ${{ matrix.workspaces || (matrix.submodule && format('{0}/Cargo.toml', matrix.submodule) || '') }}
       - run: cargo test --locked ${{ matrix.test_args }}
 
   campaigns:
@@ -141,12 +151,12 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: a3s_test
-          POSTGRES_PASSWORD: a3s_test
+          POSTGRES_USER: aster_test
+          POSTGRES_PASSWORD: aster_test
           POSTGRES_DB: postgres
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U a3s_test"
+          --health-cmd "pg_isready -U aster_test"
           --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
@@ -174,31 +184,31 @@ jobs:
             apps/cloud/Cargo.toml
       - name: Start the campaign object store and create its bucket
         run: |
-          docker run -d --name a3s-s3 --network host \
-            -e RUSTFS_ACCESS_KEY="$A3S_CLOUD_TEST_S3_ACCESS_KEY_ID" \
-            -e RUSTFS_SECRET_KEY="$A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY" \
+          docker run -d --name aster-s3 --network host \
+            -e RUSTFS_ACCESS_KEY="$ASTER_CLOUD_TEST_S3_ACCESS_KEY_ID" \
+            -e RUSTFS_SECRET_KEY="$ASTER_CLOUD_TEST_S3_SECRET_ACCESS_KEY" \
             -e RUSTFS_ADDRESS=:9000 -e RUSTFS_CONSOLE_ENABLE=false \
             rustfs/rustfs:1.0.0@sha256:8cc9801755448b71a786705ce76692c77e14936cccd87cf2fc31842e58f4d1ff /data
           for attempt in {1..60}; do
-            if curl --fail --silent "$A3S_CLOUD_TEST_S3_ENDPOINT/health" >/dev/null; then
+            if curl --fail --silent "$ASTER_CLOUD_TEST_S3_ENDPOINT/health" >/dev/null; then
               break
             fi
             if [[ "$attempt" == 60 ]]; then
-              docker logs a3s-s3
+              docker logs aster-s3
               exit 1
             fi
             sleep 1
           done
           docker run --rm --network host \
-            -e AWS_ACCESS_KEY_ID="$A3S_CLOUD_TEST_S3_ACCESS_KEY_ID" \
-            -e AWS_SECRET_ACCESS_KEY="$A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY" \
+            -e AWS_ACCESS_KEY_ID="$ASTER_CLOUD_TEST_S3_ACCESS_KEY_ID" \
+            -e AWS_SECRET_ACCESS_KEY="$ASTER_CLOUD_TEST_S3_SECRET_ACCESS_KEY" \
             -e AWS_MAX_ATTEMPTS=10 \
-            amazon/aws-cli:2.31.18@sha256:1a491b258590cc66866cd550f592edff80082f44daf1d903820daeca2f4954de --endpoint-url "$A3S_CLOUD_TEST_S3_ENDPOINT" s3 mb "s3://$A3S_CLOUD_TEST_S3_BUCKET"
+            amazon/aws-cli:2.31.18@sha256:1a491b258590cc66866cd550f592edff80082f44daf1d903820daeca2f4954de --endpoint-url "$ASTER_CLOUD_TEST_S3_ENDPOINT" s3 mb "s3://$ASTER_CLOUD_TEST_S3_BUCKET"
       - name: Serial Postgres/S3 campaigns (api, node-agent, control-plane)
         run: |
-          cargo test --locked --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-control-plane -- --test-threads=1
-          cargo test --locked --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-node-agent -- --test-threads=1
-          cargo test --locked --manifest-path apps/api/Cargo.toml -p a3s-api -- --test-threads=1
+          cargo test --locked --manifest-path apps/cloud/Cargo.toml -p aster-cloud-control-plane -- --test-threads=1
+          cargo test --locked --manifest-path apps/cloud/Cargo.toml -p aster-cloud-node-agent -- --test-threads=1
+          cargo test --locked --manifest-path apps/api/Cargo.toml -p aster-api -- --test-threads=1
       - name: Stop the campaign object store
         if: always()
-        run: docker rm -f a3s-s3
+        run: docker rm -f aster-s3

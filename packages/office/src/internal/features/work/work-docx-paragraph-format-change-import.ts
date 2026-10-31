@@ -44,7 +44,7 @@ const WORD_2012_NAMESPACE =
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const MAX_PARAGRAPH_FORMATTING_CHANGES = 65_536;
 const PARAGRAPH_FORMATTING_CHANGE_MARKER_PATTERN =
-  /__A3S_WORK_PARAGRAPH_FORMAT_CHANGE_\d+__/g;
+  /__ASTER_WORK_PARAGRAPH_FORMAT_CHANGE_\d+__/g;
 const SUPPORTED_PARAGRAPH_PROPERTY_CHANGE_CHILDREN = new Set([
   'jc',
   'bidi',
@@ -118,7 +118,7 @@ export function markDocxParagraphFormattingChanges(
       paragraphShading: resolveDocxParagraphShadingFromSources(sources, theme),
       defaultCollapsed: pagination.defaultCollapsed ?? null,
     });
-    const marker = `__A3S_WORK_PARAGRAPH_FORMAT_CHANGE_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_FORMAT_CHANGE_${paragraphs.length + 1}__`;
     insertParagraphMarker(document, paragraph, properties, marker);
     paragraphs.push({
       marker,
@@ -139,7 +139,7 @@ export function applyImportedDocxParagraphFormattingChangeMarkers(
     markers.paragraphs.map((change) => [change.marker, change]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_FORMAT_CHANGE_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_FORMAT_CHANGE_')) continue;
     node.data = node.data.replace(
       PARAGRAPH_FORMATTING_CHANGE_MARKER_PATTERN,
       (marker) => {

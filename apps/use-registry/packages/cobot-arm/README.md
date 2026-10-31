@@ -1,11 +1,11 @@
 # 七轴轻量化协作机器人
 
-Package `a3s/cobot-arm@1.0.0`. One self-contained `.aix` package, three surfaces:
+Package `aster/cobot-arm@1.0.0`. One self-contained `.aix` package, three surfaces:
 
 | Surface | Id | Role |
 | --- | --- | --- |
 | Skill | `cobot-arm` | Reads one observation and returns exactly one offered `choice`. |
-| Agent | `cobot-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Aster keeps one warm `a3s-box` per open view. |
+| Agent | `cobot-arm` | Edge package harness, entry `agent/run.mjs`, 500 cpu millis, 256 MiB. Aster keeps one warm `aster-box` per open view. |
 | UI | `workbench` | Mini app (`desktop.applets`): no Activity Bar entry; after install, 打开 opens it in its own system window. Root `ui/workbench`. |
 
 Nothing runs on the host outside Aster. There is no lab server, no port, and no Python.
@@ -25,13 +25,13 @@ The rule baseline completes each task in 8 cycles, the same as upstream `run_hea
 
 Each cycle has two decisions: a phase, then an action. When only one key is offered, the page takes it without a call. Otherwise it sends the observation to the package agent with `aix.agent.invoke`. Aster runs `agent/run.mjs` in a warm edge box for the life of the view:
 
-1. The agent emits a `model_request`. For the default decision model `platform/apofasi`, the request has `api: "systemone"` and a System One body: one `choice` question whose criteria are exactly the offered keys. For any other model given in `parameters.model`, it is a chat-completion body. Aster checks the body, calls the a3s gateway (`/v1/systemone` or `/v1/chat/completions`) with the member session, and posts the reply to `/v1/agent/model-responses`. The box never holds a credential.
+1. The agent emits a `model_request`. For the default decision model `platform/apofasi`, the request has `api: "systemone"` and a System One body: one `choice` question whose criteria are exactly the offered keys. For any other model given in `parameters.model`, it is a chat-completion body. Aster checks the body, calls the aster gateway (`/v1/systemone` or `/v1/chat/completions`) with the member session, and posts the reply to `/v1/agent/model-responses`. The box never holds a credential.
 2. A System One reply counts only when it chooses an offered key and publishes a probability for exactly the offered keys, summing to 1. A chat reply counts only when it names one offered option. Otherwise, or when the gateway is unavailable, the agent uses the rule: the only option, else an offered `baseline_choice`, else the first option.
 3. The output is `{"choice", "source": "model" | "rule", ...}`, plus `probabilities`, `confidence`, and the serving `model` from the decision model. The page refuses a choice it did not offer.
 
 决策门槛 (default 0.55) works as upstream. When the chosen key's probability is below it, the episode stops in 等待人工处理 until the user continues; lower the threshold to let it go on. A rule decision has no probability and never stops. On the lexical decision model in this repo's gateway, the chosen probability was 0.42–0.79 on the three tasks, so at 0.55 most action steps wait for a person.
 
-When the agent cannot run (for example, `a3s-box` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
+When the agent cannot run (for example, `aster-box` is not installed), the page chooses with the same rule and labels the step `规则控制器（agent 不可用）` with the reason.
 
 ## LIBERO
 
@@ -80,7 +80,7 @@ The load proof measures navigation to the first robot frame, phase by phase, in 
 
 `tests/desktop-open.swift` measures the same load in a running Aster window, by hand: it opens the installed workbench from the activity bar and times the press to the first robot frame on screen.
 
-The end-to-end test runs Aster's real authority: catalog install, view session, asset route, view-agent turn route, a warm `a3s-box`, and the member gateway. `tests/desktop.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `cobot_arm_runs_end_to_end_through_desktop` in `apps/desktop/src-tauri`. Without environment it serves a fake gateway; with `A3S_DESKTOP_E2E_GATEWAY` and `A3S_DESKTOP_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
+The end-to-end test runs Aster's real authority: catalog install, view session, asset route, view-agent turn route, a warm `aster-box`, and the member gateway. `tests/desktop.e2e.mjs` plays the renderer in Chromium. It is the ignored Rust test `cobot_arm_runs_end_to_end_through_desktop` in `apps/desktop/src-tauri`. Without environment it serves a fake gateway; with `ASTER_DESKTOP_E2E_GATEWAY` and `ASTER_DESKTOP_E2E_MEMBER_SESSION` it runs against a real one, and the member token stays in Rust.
 
 `tests/PLAN.md` is the functional test plan. It maps each case to the test that proves it.
 
@@ -88,6 +88,6 @@ The end-to-end test runs Aster's real authority: catalog install, view session, 
 
 ## Supply
 
-This directory is package source. The admission is `a3s/cobot-arm` in `admissions.acl`. Operators publish it with `a3s-use-registry-tools assemble`. The API seeds the same files as the catalog package `a3s-cobot-arm`.
+This directory is package source. The admission is `aster/cobot-arm` in `admissions.acl`. Operators publish it with `aster-use-registry-tools assemble`. The API seeds the same files as the catalog package `aster-cobot-arm`.
 
 Third-party notices: `ui/workbench/THIRD_PARTY_NOTICES.md`.

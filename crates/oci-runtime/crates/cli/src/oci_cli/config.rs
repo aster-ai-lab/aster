@@ -1,13 +1,13 @@
 use std::env;
 use std::path::PathBuf;
 
-use a3s_oci_sdk::{Error, ErrorCode, IsolationRequest, LocalIpcEndpoint, Result, TrustDomainId};
+use aster_oci_sdk::{Error, ErrorCode, IsolationRequest, LocalIpcEndpoint, Result, TrustDomainId};
 
-const RUNTIME_ENDPOINT_ENV: &str = "A3S_OCI_RUNTIME_ENDPOINT";
-const LEGACY_RUNTIME_ENDPOINT_ENV: &str = "A3S_OCI_RUNTIME_SOCKET";
-const STATE_ROOT_ENV: &str = "A3S_OCI_CLI_STATE_ROOT";
-const ISOLATION_ENV: &str = "A3S_OCI_CLI_ISOLATION";
-const TRUST_DOMAIN_ENV: &str = "A3S_OCI_CLI_TRUST_DOMAIN";
+const RUNTIME_ENDPOINT_ENV: &str = "ASTER_OCI_RUNTIME_ENDPOINT";
+const LEGACY_RUNTIME_ENDPOINT_ENV: &str = "ASTER_OCI_RUNTIME_SOCKET";
+const STATE_ROOT_ENV: &str = "ASTER_OCI_CLI_STATE_ROOT";
+const ISOLATION_ENV: &str = "ASTER_OCI_CLI_ISOLATION";
+const TRUST_DOMAIN_ENV: &str = "ASTER_OCI_CLI_TRUST_DOMAIN";
 
 pub(super) struct AdapterConfig {
     pub(super) endpoint: LocalIpcEndpoint,

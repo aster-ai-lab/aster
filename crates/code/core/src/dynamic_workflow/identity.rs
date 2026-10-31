@@ -153,7 +153,7 @@ pub fn dynamic_workflow_continuation_identity(
     let input_identity = dynamic_workflow_input_identity(input)?;
     let expected_source_hash = source_hash(source);
     let expected_spec = WorkflowSpec::rust_embedded(
-        "a3s-code.dynamic-workflow",
+        "aster.dynamic-workflow",
         expected_source_hash.as_str(),
         "ptc",
         "run",

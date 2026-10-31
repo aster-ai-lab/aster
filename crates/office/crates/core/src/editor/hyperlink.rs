@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::part::{dialect, ensure_namespace as ensure_part_namespace, relationship_part};
 use super::NativeOfficeHyperlink;

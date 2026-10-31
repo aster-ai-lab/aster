@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_use_core::{
+use aster_use_core::{
     CatalogPlanningTarget, CatalogSurface, PackageSurfaceKind, PlanEnforcementProfile,
     PlanQualifiedSurfaceRef, PlannedProviderEvidence, PlannedWorkspaceImpact,
     PluginPermissionCeiling, PluginSurfaceRef, PluginWorkspaceGrant, PluginWorkspaceGrantSnapshot,
@@ -8,7 +8,7 @@ use a3s_use_core::{
     WorkspaceGrantAuthority, WorkspaceGrantEvidence, PLUGIN_WORKSPACE_GRANT_SCHEMA,
     PLUGIN_WORKSPACE_GRANT_SNAPSHOT_SCHEMA,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     StoredWorkspaceGrant, WorkspaceGrantCandidateCeiling, WorkspaceGrantLifecyclePhase,
     WorkspaceGrantReceipt, WorkspaceGrantStore,
 };
@@ -49,7 +49,7 @@ struct GrantUpgradeFixture {
     _temp: Option<tempfile::TempDir>,
     grant_root: PathBuf,
     envelope: PluginOperationPlanEnvelope,
-    prior_lock: a3s_use_core::PluginPackageLock,
+    prior_lock: aster_use_core::PluginPackageLock,
     candidates: Vec<PluginPackageLifecycleUnit>,
     retirements: Vec<PluginPackageLifecycleUnit>,
     host: Arc<RecordingHost>,
@@ -697,8 +697,8 @@ fn operation_envelope(
     workspace_impact: PlannedWorkspaceImpact,
     state_revision: u64,
     receipt_digest: Option<String>,
-    candidate_lock: Option<a3s_use_core::PluginPackageLock>,
-    prior_lock: Option<a3s_use_core::PluginPackageLock>,
+    candidate_lock: Option<aster_use_core::PluginPackageLock>,
+    prior_lock: Option<aster_use_core::PluginPackageLock>,
 ) -> PluginOperationPlanEnvelope {
     let release = transitions[0]
         .after
@@ -863,7 +863,7 @@ pub(super) fn tool_catalog(version: &str, seed: char) -> VerifiedPluginCatalogRe
     .unwrap()
 }
 
-fn package_lock(catalog: VerifiedPluginCatalogRecord) -> a3s_use_core::PluginPackageLock {
+fn package_lock(catalog: VerifiedPluginCatalogRecord) -> aster_use_core::PluginPackageLock {
     PluginPackageResolver::new(PluginPackageLockHost::new("linux-x86_64", "0.3.0").unwrap())
         .resolve(catalog, Vec::new())
         .unwrap()

@@ -10,7 +10,7 @@ async fn terminal_initial_effort_reaches_new_session_and_allows_later_selection(
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
-    let host = A3sCodeAgent::new(launch)
+    let host = AsterCodeAgent::new(launch)
         .with_default_reasoning_effort("medium")
         .unwrap();
     let created = host
@@ -32,7 +32,7 @@ async fn terminal_initial_effort_reaches_new_session_and_allows_later_selection(
     .await
     .unwrap();
     assert_eq!(host.effort.lock().await.unwrap().thinking_budget, 2048);
-    assert!(A3sCodeAgent::new(tests::test_launch(None))
+    assert!(AsterCodeAgent::new(tests::test_launch(None))
         .with_default_reasoning_effort("unknown")
         .is_err());
 }
@@ -42,7 +42,7 @@ async fn explicit_effort_default_clears_override_and_absence_preserves_selection
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let created = host
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -86,7 +86,7 @@ async fn unsupported_effort_is_refused_without_replacing_the_session() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let id = host
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -215,13 +215,13 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
     let mut launch = tests::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
     launch.config.providers[0].base_url = Some(base);
-    launch.config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    launch.config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
     });
     let model = launch.model_id.clone();
-    let host = A3sCodeAgent::new(launch.clone());
+    let host = AsterCodeAgent::new(launch.clone());
     let initialize = || {
         acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(Some(
             [(
@@ -294,7 +294,7 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
     session.close().await;
     drop(session);
     drop(host);
-    let reopened = A3sCodeAgent::new(launch);
+    let reopened = AsterCodeAgent::new(launch);
     reopened.initialize(initialize()).await.unwrap();
     reopened
         .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))

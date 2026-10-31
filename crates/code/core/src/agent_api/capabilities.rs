@@ -556,10 +556,10 @@ fn built_in_agent_dirs(workspace: &Path) -> Vec<PathBuf> {
     if let Some(home) = std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE")) {
         let home = PathBuf::from(home);
         dirs.push(home.join(".claude").join("agents"));
-        dirs.push(home.join(".a3s").join("agents"));
+        dirs.push(home.join(".aster").join("agents"));
     }
     dirs.push(workspace.join(".claude").join("agents"));
-    dirs.push(workspace.join(".a3s").join("agents"));
+    dirs.push(workspace.join(".aster").join("agents"));
     dirs
 }
 

@@ -42,7 +42,7 @@ T001 precedes all mutations/experiments. T002–T005 share provider/admission st
 
 - [x] Owner-focused Power and Gateway suites pass with exact counts (T002–T005, T011).
 - [ ] `cargo fmt --all -- --check` is clean for Rust edits in each owning workspace (T011). Owner-format checks pass; global checks remain non-green from recorded unrelated baseline differences and Windows path limits. This checkbox is retained rather than relabeling those checks as clean.
-- [x] No new crates.io `a3s-*` dependency or new repository/workspace/SDK (T011).
+- [x] No new crates.io `aster-*` dependency or new repository/workspace/SDK (T011).
 - [x] No native `<select>` added on a product surface (T011).
 - [x] Product configuration, if added, is ACL (T004, T009–T011).
 - [x] Baseline and candidate full end-to-end/pressure tests pass or the failure and retained safe release are recorded; planning/fixtures alone are insufficient (T007–T008, T012–T013).

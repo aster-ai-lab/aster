@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import type { ComponentProps } from 'react'
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@a3s-lab/ui'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Accordion> = {
   title: 'Components/Primitives/Accordion',

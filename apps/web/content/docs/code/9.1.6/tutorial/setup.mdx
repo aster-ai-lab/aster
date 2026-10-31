@@ -31,7 +31,7 @@ edition = "2024"
 publish = false
 
 [dependencies]
-a3s-code-core = { path = "../../crates/code/core" }
+aster-core = { path = "../../crates/code/core" }
 anyhow = { workspace = true }
 tokio = { workspace = true }
 ```
@@ -45,8 +45,8 @@ tokio = { workspace = true }
 ```rust
 use std::path::PathBuf;
 use anyhow::{Context, Result};
-use a3s_code_core::{Agent, AgentSession, SessionOptions};
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentSession, SessionOptions};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
 
 pub fn arguments() -> Result<(PathBuf, PathBuf)> {
     let mut args = std::env::args_os().skip(1);

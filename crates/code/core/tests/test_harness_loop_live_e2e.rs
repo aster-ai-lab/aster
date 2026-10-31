@@ -1,4 +1,4 @@
-//! Live kernel checks against the DeepSeek Flash model in `.a3s/config.acl`.
+//! Live kernel checks against the DeepSeek Flash model in `.aster/config.acl`.
 //!
 //! These tests assert kernel outcomes, not assistant wording. A narrative
 //! finish after a real write must be rejected. A read-only run may still succeed.
@@ -10,8 +10,8 @@
 //! Opt-in:
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_harness_loop_live_e2e \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_harness_loop_live_e2e \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -19,9 +19,9 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::harness_loop::CompletionTerminal;
-use a3s_code_core::permissions::{InteractiveToolGuardrail, PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentEvent, SessionOptions};
+use aster_core::harness_loop::CompletionTerminal;
+use aster_core::permissions::{InteractiveToolGuardrail, PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentEvent, SessionOptions};
 
 mod support;
 use support::layer_c_model::load_pinned_layer_c_config;
@@ -37,7 +37,7 @@ async fn configured_agent() -> Agent {
     let config = load_pinned_layer_c_config();
     Agent::from_config(config)
         .await
-        .expect("build agent from .a3s/config.acl")
+        .expect("build agent from .aster/config.acl")
 }
 
 fn options(session_id: &str, allow_write: bool) -> SessionOptions {
@@ -52,7 +52,7 @@ fn options(session_id: &str, allow_write: bool) -> SessionOptions {
     }
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning(false)
@@ -65,7 +65,7 @@ fn options(session_id: &str, allow_write: bool) -> SessionOptions {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_read_only_run_can_succeed() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -93,7 +93,7 @@ async fn deepseek_flash_read_only_run_can_succeed() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_narrative_mutation_is_rejected_by_the_gate() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -127,20 +127,20 @@ async fn deepseek_flash_narrative_mutation_is_rejected_by_the_gate() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_isolated_write_does_not_touch_the_source_tree() {
     let session_id = "live-isolate";
     let workspace = tempfile::tempdir().expect("workspace");
     git(workspace.path(), &["init", "-q"]);
     git(
         workspace.path(),
-        &["config", "user.email", "tests@a3s.local"],
+        &["config", "user.email", "tests@aster.local"],
     );
-    git(workspace.path(), &["config", "user.name", "A3S Tests"]);
+    git(workspace.path(), &["config", "user.name", "Aster Tests"]);
     std::fs::write(workspace.path().join("README.md"), "base\n").expect("fixture");
     git(workspace.path(), &["add", "README.md"]);
     git(workspace.path(), &["commit", "-q", "-m", "base"]);
-    let worktree = a3s_code_core::effect_isolation::worktree_path_for(workspace.path(), session_id);
+    let worktree = aster_core::effect_isolation::worktree_path_for(workspace.path(), session_id);
     let _cleanup = IsolateCleanup {
         path: worktree.clone(),
     };
@@ -179,13 +179,13 @@ async fn deepseek_flash_isolated_write_does_not_touch_the_source_tree() {
         message.contains("completion gate:"),
         "expected completion gate rejection, got {message}"
     );
-    a3s_code_core::effect_isolation::discard(session_id)
+    aster_core::effect_isolation::discard(session_id)
         .await
         .expect("discard isolation worktree");
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_plan_mode_denies_an_attempted_write() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -247,14 +247,14 @@ async fn deepseek_flash_plan_mode_denies_an_attempted_write() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_narrative_cannot_clear_an_open_observation() {
-    let observation = a3s_code_core::external_observation::ExternalObservationV1::new(
+    let observation = aster_core::external_observation::ExternalObservationV1::new(
         "ci",
         "pipeline",
         "obs-live-ci",
         "the required check is still red",
-        a3s_code_core::external_observation::RequiredAction::WorkspaceChange,
+        aster_core::external_observation::RequiredAction::WorkspaceChange,
     )
     .expect("observation");
     let agent = configured_agent().await;
@@ -291,7 +291,7 @@ async fn deepseek_flash_narrative_cannot_clear_an_open_observation() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_write_attaches_a_mutation_observation() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -362,7 +362,7 @@ async fn deepseek_flash_write_attaches_a_mutation_observation() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_verified_mutation_can_complete() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -399,7 +399,7 @@ Then stop. Do not invent verification; the host check must be that bash call.",
         Err(error) => {
             let log_path = workspace
                 .path()
-                .join(".a3s/effect-log/live-verified-mutation.jsonl");
+                .join(".aster/effect-log/live-verified-mutation.jsonl");
             let log = std::fs::read_to_string(&log_path).unwrap_or_default();
             let tools = log
                 .lines()
@@ -429,7 +429,7 @@ Then stop. Do not invent verification; the host check must be that bash call.",
 /// SDK governance path: after a live write, `session.verify_commands` must
 /// report host shell effect (Passed/Failed), not assistant narrative.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_verify_commands_reports_host_shell_effect() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -457,13 +457,13 @@ async fn deepseek_flash_verify_commands_reports_host_shell_effect() {
     );
 
     let commands = vec![
-        a3s_code_core::verification::VerificationCommand::required(
+        aster_core::verification::VerificationCommand::required(
             "check:exists",
             "smoke",
             "Host existence check",
             "test -f verify-me.txt",
         ),
-        a3s_code_core::verification::VerificationCommand::required(
+        aster_core::verification::VerificationCommand::required(
             "check:content",
             "smoke",
             "Host content check",
@@ -476,12 +476,12 @@ async fn deepseek_flash_verify_commands_reports_host_shell_effect() {
         .expect("session.verify_commands");
     assert_eq!(
         report.status,
-        a3s_code_core::verification::VerificationStatus::Passed,
+        aster_core::verification::VerificationStatus::Passed,
         "verify_commands must Pass on host shell effect: {report:?}"
     );
     assert!(
         report.checks.iter().all(|check| {
-            check.status == a3s_code_core::verification::VerificationStatus::Passed
+            check.status == aster_core::verification::VerificationStatus::Passed
         }),
         "every verify_commands check must Pass: {:?}",
         report.checks
@@ -505,7 +505,7 @@ fn mutation_observation_schema(metadata: Option<&serde_json::Value>) -> Option<&
 fn plan_options(workspace: &Path) -> SessionOptions {
     SessionOptions::new()
         .with_session_id("live-plan")
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_checker(Arc::new(
             InteractiveToolGuardrail::for_mode("plan")
                 .expect("plan mode must be valid")
@@ -545,7 +545,7 @@ fn workspace_files(root: &Path) -> Vec<(String, Vec<u8>)> {
         for entry in entries.flatten() {
             let path = entry.path();
             let name = entry.file_name();
-            if name == ".a3s" || name == ".git" {
+            if name == ".aster" || name == ".git" {
                 continue;
             }
             if path.is_dir() {

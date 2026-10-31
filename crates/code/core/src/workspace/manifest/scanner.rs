@@ -332,20 +332,20 @@ fn scan_with_ignore(
     Ok(Some(files))
 }
 
-/// Workspace `.gitignore` often lists `.a3s/`, which would hide the personal
-/// vault from ignore-aware walks. Re-scan `.a3s/kb/` without gitignore so agent
-/// search/grep can discover shared notes without admitting other `.a3s` control
+/// Workspace `.gitignore` often lists `.aster/`, which would hide the personal
+/// vault from ignore-aware walks. Re-scan `.aster/kb/` without gitignore so agent
+/// search/grep can discover shared notes without admitting other `.aster` control
 /// plane files.
 fn append_personal_kb_files(
     root: &Path,
     files: &mut Vec<LocalWorkspaceFile>,
     is_cancelled: &impl Fn() -> bool,
 ) -> Option<()> {
-    let kb_root = root.join(".a3s").join("kb");
+    let kb_root = root.join(".aster").join("kb");
     if !kb_root.is_dir() {
         return Some(());
     }
-    // `.a3s/kb` is re-scanned because gitignore hides it. That second walk must
+    // `.aster/kb` is re-scanned because gitignore hides it. That second walk must
     // not treat a symlink to another tree as vault content.
     if !stays_in_workspace(root, &kb_root) {
         return Some(());
@@ -450,14 +450,14 @@ pub(super) fn path_has_noise_component(path: &Path) -> bool {
         matches!(
             name.to_string_lossy().as_ref(),
             // Control-plane and package/build trees must not invalidate the
-            // workspace catalog. Persistent retrieval writes under `.a3s-code/`
+            // workspace catalog. Persistent retrieval writes under `.aster/`
             // inside the workspace; treating those as source changes republishes
             // mid-query and empties hybrid hits (revision-changed). The personal
-            // vault (`.a3s/kb/`) is carved out above via `is_personal_kb_path`.
+            // vault (`.aster/kb/`) is carved out above via `is_personal_kb_path`.
             ".git"
-                | ".a3s"
-                | ".a3s-code"
-                | ".a3s-agent-retrievals"
+                | ".aster"
+                | ".aster"
+                | ".aster-agent-retrievals"
                 | "node_modules"
                 | "target"
                 | ".next"
@@ -500,11 +500,11 @@ mod cancellation_tests {
     #[test]
     fn control_plane_and_package_dirs_are_noise() {
         for path in [
-            ".a3s-code/index/CURRENT",
-            ".a3s-agent-retrievals",
-            "meta/a3s-session.json",
-            "child-task/meta/a3s-session.json",
-            ".a3s/os-auth.json",
+            ".aster/index/CURRENT",
+            ".aster-agent-retrievals",
+            "meta/aster-session.json",
+            "child-task/meta/aster-session.json",
+            ".aster/os-auth.json",
             "node_modules/pkg/index.js",
             "target/debug/build.rs",
             ".git/config",
@@ -516,22 +516,22 @@ mod cancellation_tests {
         }
         assert!(!path_has_noise_component(Path::new("src/lib.rs")));
         assert!(
-            !path_has_noise_component(Path::new(".a3s/kb/sources/note.md")),
+            !path_has_noise_component(Path::new(".aster/kb/sources/note.md")),
             "personal KB vault must stay discoverable for agent search"
         );
     }
 
     #[test]
-    fn scan_includes_personal_kb_even_when_dot_a3s_is_gitignored() {
+    fn scan_includes_personal_kb_even_when_dot_aster_is_gitignored() {
         let workspace = tempfile::tempdir().unwrap();
-        std::fs::write(workspace.path().join(".gitignore"), ".a3s/\n").unwrap();
-        std::fs::create_dir_all(workspace.path().join(".a3s/kb/sources")).unwrap();
+        std::fs::write(workspace.path().join(".gitignore"), ".aster/\n").unwrap();
+        std::fs::create_dir_all(workspace.path().join(".aster/kb/sources")).unwrap();
         std::fs::write(
-            workspace.path().join(".a3s/kb/sources/seeded-kb-token.md"),
+            workspace.path().join(".aster/kb/sources/seeded-kb-token.md"),
             "seeded_kb_token_for_scan\n",
         )
         .unwrap();
-        std::fs::write(workspace.path().join(".a3s/config.acl"), "x = 1\n").unwrap();
+        std::fs::write(workspace.path().join(".aster/config.acl"), "x = 1\n").unwrap();
         std::fs::write(workspace.path().join("lib.rs"), "fn main() {}\n").unwrap();
 
         let files = scan_workspace_files(workspace.path());
@@ -542,7 +542,7 @@ mod cancellation_tests {
         );
         assert!(
             !paths.iter().any(|path| path.contains("config.acl")),
-            "control-plane files under .a3s must stay out of catalog"
+            "control-plane files under .aster must stay out of catalog"
         );
     }
 
@@ -554,13 +554,13 @@ mod cancellation_tests {
         let outside = parent.path().join("outside");
         std::fs::create_dir_all(outside.join("sources")).unwrap();
         std::fs::create_dir_all(&workspace).unwrap();
-        std::fs::create_dir_all(workspace.join(".a3s")).unwrap();
+        std::fs::create_dir_all(workspace.join(".aster")).unwrap();
         std::fs::write(
             outside.join("sources/outside-kb-token.md"),
             "outside_kb_token_91c4\n",
         )
         .unwrap();
-        std::os::unix::fs::symlink(&outside, workspace.join(".a3s/kb")).unwrap();
+        std::os::unix::fs::symlink(&outside, workspace.join(".aster/kb")).unwrap();
 
         let files = scan_workspace_files(&workspace);
         let paths: Vec<_> = files.iter().map(|file| file.path.as_str()).collect();

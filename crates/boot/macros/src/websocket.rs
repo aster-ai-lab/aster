@@ -63,7 +63,7 @@ pub(crate) fn expand_websocket_gateway(
     let self_ty = item_impl.self_ty.clone();
     let path = args.path;
     let namespace = args.namespace.as_ref().map(
-        |namespace| quote!(__a3s_boot_gateway = __a3s_boot_gateway.with_namespace(#namespace)?;),
+        |namespace| quote!(__aster_boot_gateway = __aster_boot_gateway.with_namespace(#namespace)?;),
     );
     let mut subscriptions = Vec::new();
     let mut lifecycle_hooks = Vec::new();
@@ -207,23 +207,23 @@ pub(crate) fn expand_websocket_gateway(
         impl #self_ty {
             pub fn gateway(
                 self: ::std::sync::Arc<Self>,
-            ) -> ::a3s_boot::Result<::a3s_boot::WebSocketGatewayDefinition> {
-                let mut __a3s_boot_gateway =
-                    ::a3s_boot::WebSocketGatewayDefinition::new(#path)?;
+            ) -> ::aster_boot::Result<::aster_boot::WebSocketGatewayDefinition> {
+                let mut __aster_boot_gateway =
+                    ::aster_boot::WebSocketGatewayDefinition::new(#path)?;
                 #namespace
                 #(
-                    __a3s_boot_gateway = __a3s_boot_gateway.#gateway_metadata?;
+                    __aster_boot_gateway = __aster_boot_gateway.#gateway_metadata?;
                 )*
                 #(
-                    __a3s_boot_gateway = __a3s_boot_gateway.#gateway_pipeline;
+                    __aster_boot_gateway = __aster_boot_gateway.#gateway_pipeline;
                 )*
                 #(
-                    __a3s_boot_gateway = #subscriptions;
+                    __aster_boot_gateway = #subscriptions;
                 )*
                 #(
-                    __a3s_boot_gateway = #lifecycle_hooks;
+                    __aster_boot_gateway = #lifecycle_hooks;
                 )*
-                Ok(__a3s_boot_gateway)
+                Ok(__aster_boot_gateway)
             }
         }
     })
@@ -324,19 +324,19 @@ fn websocket_subscription(
     pipeline_specs: &[PipelineSpec],
 ) -> Result<proc_macro2::TokenStream> {
     let method_ident = &method.sig.ident;
-    let controller_name = format_ident!("__a3s_boot_ws_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_ws_{}", method_ident);
     let args = websocket_subscription_args(input)?;
     let handler = websocket_subscription_handler(method_ident, &controller_name, &args);
     let pipeline_specs = pipeline_specs.iter().map(PipelineSpec::token);
     let subscription = websocket_subscription_metadata_definition(
         quote! {
-            ::a3s_boot::WebSocketSubscriptionDefinition::new_with_connection(#handler)
+            ::aster_boot::WebSocketSubscriptionDefinition::new_with_connection(#handler)
         },
         metadata_specs,
     );
     let subscription = websocket_validation_subscription(subscription, &args, validation_options)?;
     Ok(quote! {
-        __a3s_boot_gateway.subscribe_definition(
+        __aster_boot_gateway.subscribe_definition(
             #event,
             (#subscription)
                 #(.#pipeline_specs)*
@@ -527,25 +527,25 @@ fn websocket_subscription_handler(
         let MethodArg { ident, ty, .. } = &arg.arg;
         match &arg.kind {
             WebSocketSubscriptionArgKind::Connection => quote! {
-                let #ident: #ty = __a3s_boot_connection.clone();
+                let #ident: #ty = __aster_boot_connection.clone();
             },
             WebSocketSubscriptionArgKind::Server => quote! {
-                let #ident: #ty = __a3s_boot_connection.server();
+                let #ident: #ty = __aster_boot_connection.server();
             },
             WebSocketSubscriptionArgKind::Message => quote! {
-                let #ident: #ty = __a3s_boot_message.clone();
+                let #ident: #ty = __aster_boot_message.clone();
             },
             WebSocketSubscriptionArgKind::Payload(extractor) => json_payload_binding_tokens(
                 ident.clone(),
                 ty.clone(),
                 extractor.clone(),
-                |value_ty| quote!(__a3s_boot_message.data_as::<#value_ty>()),
-                |value_ty, name| quote!(__a3s_boot_message.data_field_as::<#value_ty>(#name)),
+                |value_ty| quote!(__aster_boot_message.data_as::<#value_ty>()),
+                |value_ty, name| quote!(__aster_boot_message.data_field_as::<#value_ty>(#name)),
                 |value_ty, name| {
-                    quote!(__a3s_boot_message.optional_data_field_as::<#value_ty>(#name))
+                    quote!(__aster_boot_message.optional_data_field_as::<#value_ty>(#name))
                 },
-                |name| quote!(__a3s_boot_message.data_field_string(#name)),
-                |name| quote!(__a3s_boot_message.optional_data_field_string(#name)),
+                |name| quote!(__aster_boot_message.data_field_string(#name)),
+                |name| quote!(__aster_boot_message.optional_data_field_string(#name)),
             ),
         }
     });
@@ -555,8 +555,8 @@ fn websocket_subscription_handler(
         {
             let #controller_name = ::std::sync::Arc::clone(&self);
             move |
-                __a3s_boot_connection: ::a3s_boot::WebSocketGatewayConnection,
-                __a3s_boot_message: ::a3s_boot::WebSocketMessage,
+                __aster_boot_connection: ::aster_boot::WebSocketGatewayConnection,
+                __aster_boot_message: ::aster_boot::WebSocketMessage,
             | {
                 let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                 async move {
@@ -624,19 +624,19 @@ fn websocket_lifecycle_hook(
     kind: WebSocketLifecycleHookKind,
 ) -> Result<proc_macro2::TokenStream> {
     let method_ident = &method.sig.ident;
-    let gateway_name = format_ident!("__a3s_boot_ws_{}", method_ident);
+    let gateway_name = format_ident!("__aster_boot_ws_{}", method_ident);
     let (builder, context_ty) = match kind {
         WebSocketLifecycleHookKind::Init => (
             quote!(with_after_init),
-            quote!(::a3s_boot::WebSocketGatewayInitContext),
+            quote!(::aster_boot::WebSocketGatewayInitContext),
         ),
         WebSocketLifecycleHookKind::Connection => (
             quote!(with_connection_hook),
-            quote!(::a3s_boot::WebSocketGatewayConnection),
+            quote!(::aster_boot::WebSocketGatewayConnection),
         ),
         WebSocketLifecycleHookKind::Disconnect => (
             quote!(with_disconnect_hook),
-            quote!(::a3s_boot::WebSocketGatewayConnection),
+            quote!(::aster_boot::WebSocketGatewayConnection),
         ),
     };
     let args = websocket_lifecycle_args(input, kind)?;
@@ -645,7 +645,7 @@ fn websocket_lifecycle_hook(
     let handler = quote! {
         {
             let #gateway_name = ::std::sync::Arc::clone(&self);
-            move |__a3s_boot_context: #context_ty| {
+            move |__aster_boot_context: #context_ty| {
                 let #gateway_name = ::std::sync::Arc::clone(&#gateway_name);
                 async move {
                     #(#bindings)*
@@ -656,7 +656,7 @@ fn websocket_lifecycle_hook(
     };
 
     Ok(quote! {
-        __a3s_boot_gateway.#builder(#handler)
+        __aster_boot_gateway.#builder(#handler)
     })
 }
 
@@ -673,10 +673,10 @@ impl WebSocketLifecycleArgs {
                 let MethodArg { ident, ty, .. } = &arg.arg;
                 match arg.kind {
                     WebSocketLifecycleArgKind::Context => quote! {
-                        let #ident: #ty = __a3s_boot_context.clone();
+                        let #ident: #ty = __aster_boot_context.clone();
                     },
                     WebSocketLifecycleArgKind::Server => quote! {
-                        let #ident: #ty = __a3s_boot_context.server();
+                        let #ident: #ty = __aster_boot_context.server();
                     },
                 }
             })

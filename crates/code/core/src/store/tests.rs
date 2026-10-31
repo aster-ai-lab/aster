@@ -124,7 +124,7 @@ pub(crate) async fn create_test_snapshot() -> SessionSnapshotV1 {
     let artifacts = ArtifactStore::new();
     artifacts.put(crate::tools::ToolArtifact {
         artifact_id: "tool-output:test:snapshot".to_string(),
-        artifact_uri: "a3s://tool-output/test/snapshot".to_string(),
+        artifact_uri: "aster://tool-output/test/snapshot".to_string(),
         tool_name: "test".to_string(),
         content: "snapshot artifact".to_string(),
         original_bytes: 17,
@@ -508,7 +508,7 @@ async fn test_file_store_save_and_load_artifacts() {
     let artifacts = ArtifactStore::new();
     artifacts.put(crate::tools::ToolArtifact {
         artifact_id: "tool-output:test:a".to_string(),
-        artifact_uri: "a3s://tool-output/test/a".to_string(),
+        artifact_uri: "aster://tool-output/test/a".to_string(),
         tool_name: "test".to_string(),
         content: "artifact content".to_string(),
         original_bytes: 16,
@@ -525,7 +525,7 @@ async fn test_file_store_save_and_load_artifacts() {
     assert_eq!(loaded.len(), 1);
     assert_eq!(
         loaded
-            .get("a3s://tool-output/test/a")
+            .get("aster://tool-output/test/a")
             .expect("artifact")
             .content,
         "artifact content"
@@ -544,7 +544,7 @@ async fn test_file_store_save_and_load_trace_events() {
         12,
         Some(&serde_json::json!({
             "artifact": {
-                "artifact_uri": "a3s://tool-output/read/abc"
+                "artifact_uri": "aster://tool-output/read/abc"
             }
         })),
     );
@@ -607,7 +607,7 @@ async fn test_memory_store_save_load_and_delete_artifacts() {
     let artifacts = ArtifactStore::new();
     artifacts.put(crate::tools::ToolArtifact {
         artifact_id: "tool-output:test:a".to_string(),
-        artifact_uri: "a3s://tool-output/test/a".to_string(),
+        artifact_uri: "aster://tool-output/test/a".to_string(),
         tool_name: "test".to_string(),
         content: "artifact content".to_string(),
         original_bytes: 16,
@@ -620,7 +620,7 @@ async fn test_memory_store_save_load_and_delete_artifacts() {
         .await
         .unwrap()
         .expect("artifacts")
-        .get("a3s://tool-output/test/a")
+        .get("aster://tool-output/test/a")
         .is_some());
 
     store.delete(&session.id).await.unwrap();
@@ -674,7 +674,7 @@ fn snapshot_rehydration_does_not_apply_smaller_default_artifact_limits() {
     for index in 0..257 {
         artifacts.put(crate::tools::ToolArtifact {
             artifact_id: format!("artifact-{index}"),
-            artifact_uri: format!("a3s://artifact/{index}"),
+            artifact_uri: format!("aster://artifact/{index}"),
             tool_name: "test".to_string(),
             content: "x".to_string(),
             original_bytes: 1,
@@ -1690,14 +1690,14 @@ async fn file_and_memory_store_persist_artifact_retention_roots() {
     for (name, content) in [("keep", "keep-bytes"), ("drop", "drop-bytes")] {
         artifacts.put(crate::tools::ToolArtifact {
             artifact_id: format!("tool-output:test:{name}"),
-            artifact_uri: format!("a3s://tool-output/test/{name}"),
+            artifact_uri: format!("aster://tool-output/test/{name}"),
             tool_name: "test".to_string(),
             content: content.to_string(),
             original_bytes: content.len(),
             shown_bytes: content.len(),
         });
     }
-    artifacts.pin_uris(["a3s://tool-output/test/keep"]);
+    artifacts.pin_uris(["aster://tool-output/test/keep"]);
 
     let session = create_test_session_data();
     let snapshot = SessionSnapshotV1::new(
@@ -1725,12 +1725,12 @@ async fn file_and_memory_store_persist_artifact_retention_roots() {
         .artifact_store();
     assert!(file_store
         .retained_uris()
-        .contains("a3s://tool-output/test/keep"));
+        .contains("aster://tool-output/test/keep"));
     assert_eq!(file_store.gc_unreferenced(), 1);
-    assert!(file_store.get("a3s://tool-output/test/keep").is_some());
-    assert!(file_store.get("a3s://tool-output/test/drop").is_none());
+    assert!(file_store.get("aster://tool-output/test/keep").is_some());
+    assert!(file_store.get("aster://tool-output/test/drop").is_none());
     assert_eq!(memory_store.gc_unreferenced(), 1);
-    assert!(memory_store.get("a3s://tool-output/test/keep").is_some());
+    assert!(memory_store.get("aster://tool-output/test/keep").is_some());
 }
 
 #[tokio::test]

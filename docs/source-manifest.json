@@ -13,7 +13,7 @@
   "note": "Local source snapshots include working-tree changes. All members are maintained in this repository and cannot be published independently.",
   "packages": [
     {
-      "package": "a3s-deepseek",
+      "package": "aster-deepseek",
       "version": "0.1.0",
       "path": "crates/deepseek",
       "source": "https://github.com/deepseek-ai/TileKernels/blob/c1cf914a82e6901c679445f872051ce44ac2cc63/tile_kernels/torch/mhc.py",
@@ -224,13 +224,12 @@
       "note": "Packaged licenses/source/tests retained; private SmallVec scanner stacks use stable SmallVec without changing public parser API or inline capacity. Missing recovered files restored from the retained original deployment snapshot; all maintained Rust source is formatted with the root pinned toolchain."
     },
     {
-      "package": "a3s-power",
-      "version": "0.10.0",
+      "package": "aster-power",
+      "version": "0.11.0",
       "path": "crates/power",
-      "source": "git@github.com:A3S-Lab/Power.git",
-      "revision": "24b364c6935c1b62a689d91839ec394bfc74c059",
-      "source_manifest_sha256": "ee7e386eeeb226d81a21fe846e91c203dd8d5b86f985d1f0feaa32288d97b865",
-      "note": "Published Power main merges the existing H200/native-storage branch and upstream WorkBuddy metadata compatibility; adds managed native Xolotl lifecycle, bounded readiness, DSpark/FP4 KV configuration, and shared OpenAI tool compatibility. Root workspace retains the lockfile and local dependencies."
+      "source": "git@github.com:aster-ai-lab/Power.git",
+      "revision": "cbe53bd40a4a3ba5fdb80861c11e491ab84e62be",
+      "note": "Vendored into the parent Aster tree on 2026-10-31 (no longer a gitlink). Snapshot matches the previously pinned aster-ai-lab/Power revision. Root workspace retains the lockfile and local dependencies."
     },
     {
       "package": "crossterm",
@@ -256,7 +255,7 @@
       "package": "aster",
       "version": "0.1.0",
       "path": "apps/aster",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager-bin",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-pager-bin",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "5469f0f4de48e06cf64b5a30b9bc6644a122d5b8bc2fed233b613bacbbadc644"
     },
@@ -268,18 +267,18 @@
       "version": "0.1.0"
     },
     {
-      "package": "a3s-acl",
+      "package": "aster-acl",
       "version": "0.3.0",
       "path": "crates/acl",
-      "source": "../a3s/crates/acl",
+      "source": "../aster/crates/acl",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "c72cc92d4dde9eed844964158adcc2d2e4621cfe3ff1ce7fdc95144b4ad5101f"
     },
     {
-      "package": "a3s-apofasi",
+      "package": "aster-apofasi",
       "version": "0.1.1",
       "path": "crates/apofasi",
-      "source": "../a3s/crates/apofasi",
+      "source": "../aster/crates/apofasi",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "6941da4b24359fb2f7fb82e68b647a0eab1140270346945147e6aa1e884282e4"
     },
@@ -287,83 +286,83 @@
       "path": "crates/boot",
       "source": "/Users/roylin/.cargo/git/checkouts/boot-7d9ab1c200bbaba0/ac36050",
       "revision": "ac3605043b5212b507d1fdb09e46f5647f90c389",
-      "package": "a3s-boot",
+      "package": "aster-boot",
       "version": "0.2.0"
     },
     {
       "path": "crates/boot/macros",
       "source": "/Users/roylin/.cargo/git/checkouts/boot-7d9ab1c200bbaba0/ac36050",
       "revision": "ac3605043b5212b507d1fdb09e46f5647f90c389",
-      "package": "a3s-boot-macros",
+      "package": "aster-boot-macros",
       "version": "0.1.2"
     },
     {
-      "package": "a3s-use-browser",
+      "package": "aster-use-browser",
       "version": "0.3.2",
       "path": "crates/browser",
-      "source": "../a3s/crates/browser/crates/browser",
+      "source": "../aster/crates/browser/crates/browser",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "64d88878c60c01d6cc512f77ed06123e1fcd379a9592983b041c830c249ec64c"
     },
     {
-      "package": "a3s-code-acp",
+      "package": "aster-acp",
       "version": "9.1.4",
       "path": "crates/code/acp",
-      "source": "../a3s/apps/code/acp",
+      "source": "../aster/apps/code/acp",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "17f5c4f7db93b35dc571006b2946ff536c8d2c621f80da394a152cc81aaa245f"
     },
     {
-      "package": "a3s-code-core",
+      "package": "aster-core",
       "version": "9.1.4",
       "path": "crates/code/core",
-      "source": "../a3s/apps/code/core",
+      "source": "../aster/apps/code/core",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "cf8454fe19b1fee3c83d09c695f9967f68b0975d844bf7f60501a4eebbafa4c8"
     },
     {
-      "package": "a3s-common",
+      "package": "aster-common",
       "version": "0.1.1",
       "path": "crates/common",
-      "source": "https://crates.io/crates/a3s-common/0.1.1",
+      "source": "https://crates.io/crates/aster-common/0.1.1",
       "revision": null,
       "source_manifest_sha256": "5cf4569e997baebbbd685eb14566a52cc769909aa0f8e7af8568f75f7f435470"
     },
     {
-      "package": "a3s-effect",
+      "package": "aster-effect",
       "version": "0.2.1",
       "path": "crates/effect",
-      "source": "../a3s/crates/effect",
+      "source": "../aster/crates/effect",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "3fc2a25c7056992a3ec571f2c6cb8ab9de353f8ecb15be8fbb16a94c9324f899"
     },
     {
       "path": "crates/event",
-      "source": "/tmp/aster-import/a3s-event-0.3.0",
-      "revision": "crates.io/a3s-event/0.3.0",
-      "package": "a3s-event",
+      "source": "/tmp/aster-import/aster-event-0.3.0",
+      "revision": "crates.io/aster-event/0.3.0",
+      "package": "aster-event",
       "version": "0.3.0"
     },
     {
       "path": "crates/flow",
       "source": "apps/work/vendor/crates/flow",
       "revision": null,
-      "package": "a3s-flow",
+      "package": "aster-flow",
       "version": "2.0.0"
     },
     {
-      "package": "a3s-lane",
+      "package": "aster-lane",
       "version": "0.5.1",
       "path": "crates/lane",
-      "source": "https://crates.io/crates/a3s-lane/0.5.1",
+      "source": "https://crates.io/crates/aster-lane/0.5.1",
       "revision": null,
       "source_manifest_sha256": "9c33ecb3cef56e67051d342d829dd5f962074186f312a510eac7981b81edce56"
     },
     {
-      "package": "a3s-memory",
+      "package": "aster-memory",
       "version": "0.1.5",
       "path": "crates/memory",
-      "source": "../a3s/crates/memory",
+      "source": "../aster/crates/memory",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "faab75fedc68f0e4edfdd1abfe540e8457f0528346b100b7358298a6bd5d4152"
     },
@@ -371,42 +370,42 @@
       "path": "crates/ocr",
       "source": "apps/work/vendor/crates/ocr",
       "revision": null,
-      "package": "a3s-use-ocr",
+      "package": "aster-use-ocr",
       "version": "0.3.2"
     },
     {
       "path": "crates/office/crates/cli",
-      "source": "../a3s/packages/office/crates/cli",
+      "source": "../aster/packages/office/crates/cli",
       "revision": null,
-      "package": "a3s-office-cli",
+      "package": "aster-office-cli",
       "version": "0.45.0"
     },
     {
       "path": "crates/office/crates/core",
-      "source": "../a3s/packages/office/crates/core",
+      "source": "../aster/packages/office/crates/core",
       "revision": null,
-      "package": "a3s-office",
+      "package": "aster-office",
       "version": "0.45.0"
     },
     {
       "path": "crates/office/crates/formula-parser",
-      "source": "../a3s/packages/office/crates/formula-parser",
+      "source": "../aster/packages/office/crates/formula-parser",
       "revision": null,
-      "package": "a3s-office-formula-parser",
+      "package": "aster-office-formula-parser",
       "version": "0.45.0"
     },
     {
       "path": "crates/office/crates/web-kernel",
-      "source": "../a3s/packages/office/crates/web-kernel",
+      "source": "../aster/packages/office/crates/web-kernel",
       "revision": null,
-      "package": "a3s-office-web-kernel",
+      "package": "aster-office-web-kernel",
       "version": "0.45.0"
     },
     {
-      "package": "a3s-okf",
+      "package": "aster-okf",
       "version": "0.1.0",
       "path": "crates/okf",
-      "source": "../a3s/crates/okf",
+      "source": "../aster/crates/okf",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "1021d5aa099a818b860331bc4d3c9ea40dc2890bc9a7543b48aaa93187da72d6"
     },
@@ -414,678 +413,678 @@
       "path": "crates/orm",
       "source": "/Users/roylin/.cargo/git/checkouts/orm-0627553974caac07/4c0cd9e",
       "revision": "4c0cd9eb1ed586e27a5fd0446a92824717eb095e",
-      "package": "a3s-orm",
+      "package": "aster-orm",
       "version": "0.3.1"
     },
     {
-      "package": "a3s-sandbox",
+      "package": "aster-sandbox",
       "version": "0.2.3",
       "path": "crates/sandbox",
-      "source": "../a3s/crates/sandbox",
+      "source": "../aster/crates/sandbox",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "740f564b33009066b8b86f3b3e0accb811d4ab12ef9f1366b8b9c2b680a0ed4b"
     },
     {
-      "package": "a3s-search",
+      "package": "aster-search",
       "version": "3.4.0",
       "path": "crates/search",
-      "source": "../a3s/crates/search",
+      "source": "../aster/crates/search",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "a9957e25059f3d41012a7a0ea31191185a5f9c083e1f1bfc52b0270d27cbb0bb"
     },
     {
-      "package": "a3s-proto-build",
+      "package": "aster-proto-build",
       "version": "0.0.0",
-      "path": "crates/terminal/crates/build/a3s-proto-build",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/build/a3s-proto-build",
+      "path": "crates/terminal/crates/build/aster-proto-build",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/build/aster-proto-build",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "7b364dd6207ef4431853bd55a4eb6477eeae523f5059a1a4713d37a725993482"
     },
     {
-      "package": "a3s-acp-lib",
+      "package": "aster-acp-lib",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-acp-lib",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-acp-lib",
+      "path": "crates/terminal/crates/codegen/aster-acp-lib",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-acp-lib",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "f60d77f1cf20fc53034eae3d0225330e073609d76a2b3db41cc17358c9a65a61"
     },
     {
-      "package": "a3s-agent-lifecycle",
+      "package": "aster-agent-lifecycle",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-agent-lifecycle",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-agent-lifecycle",
+      "path": "crates/terminal/crates/codegen/aster-agent-lifecycle",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-agent-lifecycle",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "11eea3001d6197bf03451091fd67e6ec2284fa47cf8ab7a7f5d3c69ad5998319"
     },
     {
-      "package": "a3s-chat-state",
+      "package": "aster-chat-state",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-chat-state",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-chat-state",
+      "path": "crates/terminal/crates/codegen/aster-chat-state",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-chat-state",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "27e9297403ef4b11866e775bad0546a9c0f2f84e5cd806c1e5d05f89220391b3"
     },
     {
-      "package": "a3s-code-active-sessions",
+      "package": "aster-active-sessions",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-active-sessions",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-active-sessions",
+      "path": "crates/terminal/crates/codegen/aster-active-sessions",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-active-sessions",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "facd7ab9ae620f35156cbda681abb2ea8c92c172771e22dca67a75e07db59f6d"
     },
     {
-      "package": "a3s-code-agent",
+      "package": "aster-agent",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-agent",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-agent",
+      "path": "crates/terminal/crates/codegen/aster-agent",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-agent",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "c77c9494af4a8e21327bc8c5be4a52408cee9d9f197f52660cd4b00e5d5b590c"
     },
     {
-      "package": "a3s-code-announcements",
+      "package": "aster-announcements",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-announcements",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-announcements",
+      "path": "crates/terminal/crates/codegen/aster-announcements",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-announcements",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "48a4ad9fc4472be1f0e42d8e636be51527b6323eb22048e676cc3648b0d59037"
     },
     {
-      "package": "a3s-code-auth",
+      "package": "aster-auth",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-auth",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-auth",
+      "path": "crates/terminal/crates/codegen/aster-auth",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-auth",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "b0993e614f7116afb17e7bb41b048625810c7af195ac69dee44ff0e1a2bd2b55"
     },
     {
-      "package": "a3s-code-bundle",
+      "package": "aster-bundle",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-bundle",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-bundle",
+      "path": "crates/terminal/crates/codegen/aster-bundle",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-bundle",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "af300ac02968ca8e8bdbbdc4d49c5b362eb63cf116f6249a7ba69c952e99fb44"
     },
     {
-      "package": "a3s-code-config",
+      "package": "aster-config",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-config",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-config",
+      "path": "crates/terminal/crates/codegen/aster-config",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-config",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "c9ccacc4daddea707f8112bae0e5180e09023f1433948da727fda76ef50fa504"
     },
     {
-      "package": "a3s-code-config-types",
+      "package": "aster-config-types",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-config-types",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-config-types",
+      "path": "crates/terminal/crates/codegen/aster-config-types",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-config-types",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "95a8815f277aaee3a8d3f87215ee482b957f9f674d45ed4e3c300161bfa6f8cd"
     },
     {
-      "package": "a3s-code-dashboard-store",
+      "package": "aster-dashboard-store",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-dashboard-store",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-dashboard-store",
+      "path": "crates/terminal/crates/codegen/aster-dashboard-store",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-dashboard-store",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "8e3f761b3f5b0a0ef826db3ee8a3b736f59ca97cfb0cfe6675294d94ec3fb642"
     },
     {
-      "package": "a3s-code-diag-server",
+      "package": "aster-diag-server",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-diag-server",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-diag-server",
+      "path": "crates/terminal/crates/codegen/aster-diag-server",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-diag-server",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "bf35d023f3383e83a8a19c317e7b33503fa646f4dc4b9a511f661da32743b7d0"
     },
     {
-      "package": "a3s-code-env",
+      "package": "aster-env",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-env",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-env",
+      "path": "crates/terminal/crates/codegen/aster-env",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-env",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "609373d4d186a8a66fb284b13eff50de3a60aa6788e9a12ccfa564be1fd075a2"
     },
     {
-      "package": "a3s-code-extra-ca",
+      "package": "aster-extra-ca",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-extra-ca",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-extra-ca",
+      "path": "crates/terminal/crates/codegen/aster-extra-ca",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-extra-ca",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "217008b057ddd68b8f82f97c99ecea965ec4568e146e9c3188a548f468a7fe55"
     },
     {
-      "package": "a3s-code-feedback",
+      "package": "aster-feedback",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-feedback",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-feedback",
+      "path": "crates/terminal/crates/codegen/aster-feedback",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-feedback",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "cc1ed02f193154b6eabf77bbab2ffc7533113963d54ba62d31f0f4ff485378db"
     },
     {
-      "package": "a3s-code-file-lock",
+      "package": "aster-file-lock",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-file-lock",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-file-lock",
+      "path": "crates/terminal/crates/codegen/aster-file-lock",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-file-lock",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "5f61c9f50d8a58f57f5b48969135729b81a0ba9883380545414d81f2b7753482"
     },
     {
-      "package": "a3s-code-foreign-sessions",
+      "package": "aster-foreign-sessions",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-foreign-sessions",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-foreign-sessions",
+      "path": "crates/terminal/crates/codegen/aster-foreign-sessions",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-foreign-sessions",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "a217d4f6cb9222b311403cf8cb56084727baa702f77985ae847bfb3823fe5a40"
     },
     {
-      "package": "a3s-code-gboom",
+      "package": "aster-gboom",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-gboom",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-gboom",
+      "path": "crates/terminal/crates/codegen/aster-gboom",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-gboom",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "963a88df44e85ee607b5d55dcbb2eb88f6b9209a919f996326dcac7b5c1c0f6f"
     },
     {
-      "package": "a3s-code-hooks",
+      "package": "aster-hooks",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-hooks",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-hooks",
+      "path": "crates/terminal/crates/codegen/aster-hooks",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-hooks",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "5d3d1173e70f66886a98d9d5d4de366842883c669cfe5bc8185f4d3993d741c6"
     },
     {
-      "package": "a3s-code-http",
+      "package": "aster-http",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-http",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-http",
+      "path": "crates/terminal/crates/codegen/aster-http",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-http",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "62990e4bd2042dcc049783762a0ea1df624a789e817f277b0f2c060b5fd96dfc"
     },
     {
-      "package": "a3s-code-image",
+      "package": "aster-image",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-image",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-image",
+      "path": "crates/terminal/crates/codegen/aster-image",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-image",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "2ac7bef554fcb96e12208e369c4524b7daf4af1f62264f4add7d28778ce3507c"
     },
     {
-      "package": "a3s-code-login",
+      "package": "aster-login",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-login",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-login",
+      "path": "crates/terminal/crates/codegen/aster-login",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-login",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "b0b9b8690404d27a316d40200e954d7bb3145af60b8368a10d6e775304d778bb"
     },
     {
-      "package": "a3s-code-markdown",
+      "package": "aster-markdown",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-markdown",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-markdown",
+      "path": "crates/terminal/crates/codegen/aster-markdown",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-markdown",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "c0d33c2e9e7435f961841bd7e38c0076b68660da4897cfb5ca4e7d009f5a3dc3"
     },
     {
-      "package": "a3s-code-markdown-core",
+      "package": "aster-markdown-core",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-markdown-core",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-markdown-core",
+      "path": "crates/terminal/crates/codegen/aster-markdown-core",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-markdown-core",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "2b34bc292f67c1a14b903020338cac3546a7081f30b1a3f6936968a0572e5c0b"
     },
     {
-      "package": "a3s-code-mcp",
+      "package": "aster-mcp",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-mcp",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-mcp",
+      "path": "crates/terminal/crates/codegen/aster-mcp",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-mcp",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "63f648ae87e891b729402bb6b8c6df0ab2435703c3fdcfa078e4a35fc436183a"
     },
     {
-      "package": "a3s-code-memory",
+      "package": "aster-memory",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-memory",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-memory",
+      "path": "crates/terminal/crates/codegen/aster-memory",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-memory",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "1961130524d7142536f5737ea3867eb98e69ad55b9e880d213f874d417ca8fc9"
     },
     {
-      "package": "a3s-code-mermaid",
+      "package": "aster-mermaid",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-mermaid",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-mermaid",
+      "path": "crates/terminal/crates/codegen/aster-mermaid",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-mermaid",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "f8dda6dcddae94a87cf1fe4e3493d314f2243be1ab75ed0d6d0cce81a51a97c6"
     },
     {
-      "package": "a3s-code-models",
+      "package": "aster-models",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-models",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-models",
+      "path": "crates/terminal/crates/codegen/aster-models",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-models",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "e3f47a707d5d0b600a45b9621e43fa9010689c946f1e6185dd195835c938fb05"
     },
     {
-      "package": "a3s-code-otel",
+      "package": "aster-otel",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-otel",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-otel",
+      "path": "crates/terminal/crates/codegen/aster-otel",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-otel",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "aaec1c85d3464639c87410733231c505e99f2fedff47008929a91eda163469f7"
     },
     {
-      "package": "a3s-code-pager",
+      "package": "aster-pager",
       "version": "9.1.4",
-      "path": "crates/terminal/crates/codegen/a3s-code-pager",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager",
+      "path": "crates/terminal/crates/codegen/aster-pager",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-pager",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "19b9ff2b099f39397dbd4307f93e1944892e3405f100baa0ec488660945d14ff"
     },
     {
-      "package": "a3s-code-pager-diff",
+      "package": "aster-pager-diff",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-pager-diff",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager-diff",
+      "path": "crates/terminal/crates/codegen/aster-pager-diff",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-pager-diff",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "512c2d9ed1c87cd91f185466c794c63f17454acb9169ba8d240d42b2a9366b84"
     },
     {
-      "package": "a3s-code-pager-minimal",
+      "package": "aster-pager-minimal",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-pager-minimal",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager-minimal",
+      "path": "crates/terminal/crates/codegen/aster-pager-minimal",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-pager-minimal",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "12ce2f9986d2224559cd68b9495cb2adba15872f57c21ae0c3ad8eab06ed88db"
     },
     {
-      "package": "a3s-code-pager-pty-harness",
+      "package": "aster-pager-pty-harness",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-pager-pty-harness",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager-pty-harness",
+      "path": "crates/terminal/crates/codegen/aster-pager-pty-harness",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-pager-pty-harness",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "04f59b22d58a77b760a40c0586c0c9db9027f09287358d46ab6767c4dc0e3cf6"
     },
     {
-      "package": "a3s-code-pager-render",
+      "package": "aster-pager-render",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-pager-render",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager-render",
+      "path": "crates/terminal/crates/codegen/aster-pager-render",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-pager-render",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "829a1ba700a264e698e665c2643516f9ad946df62e3ab1cf674455754c19a648"
     },
     {
-      "package": "a3s-code-paths",
+      "package": "aster-paths",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-paths",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-paths",
+      "path": "crates/terminal/crates/codegen/aster-paths",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-paths",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "43d0f3e6b77944de2b47e80181c03e164e36bea463043434654f6323250d95ea"
     },
     {
-      "package": "a3s-code-plugin-marketplace",
+      "package": "aster-plugin-marketplace",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-plugin-marketplace",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-plugin-marketplace",
+      "path": "crates/terminal/crates/codegen/aster-plugin-marketplace",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-plugin-marketplace",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "8245f2657c4d5c68ea56cf0613e8a9299774a147a9f3e9358f51275ff660ffa9"
     },
     {
-      "package": "a3s-code-sampler",
+      "package": "aster-sampler",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-sampler",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-sampler",
+      "path": "crates/terminal/crates/codegen/aster-sampler",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-sampler",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "d6d12e27b0e4416005c4d4b920b3e1900967cc716f41b73ad527d53091e41f10"
     },
     {
-      "package": "a3s-code-sampling-types",
+      "package": "aster-sampling-types",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-sampling-types",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-sampling-types",
+      "path": "crates/terminal/crates/codegen/aster-sampling-types",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-sampling-types",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "e2b83b7b7af1988ccd8c7bffc2f815d712827ac29e7d3c02dcebd95b557b693f"
     },
     {
-      "package": "a3s-code-sandbox",
+      "package": "aster-sandbox",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-sandbox",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-sandbox",
+      "path": "crates/terminal/crates/codegen/aster-sandbox",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-sandbox",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "3e6a92f7a90e38ea56f3586d83bb3b8a7b56ae1199c72d0e8b183ae998f0825b"
     },
     {
-      "package": "a3s-code-secrets",
+      "package": "aster-secrets",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-secrets",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-secrets",
+      "path": "crates/terminal/crates/codegen/aster-secrets",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-secrets",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "e0eb91adbaa53e32264383defa34c1b260c536d0c051e9c4c945134d47f3b535"
     },
     {
-      "package": "a3s-code-session-events",
+      "package": "aster-session-events",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-session-events",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-session-events",
+      "path": "crates/terminal/crates/codegen/aster-session-events",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-session-events",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "fd12b0a8630033d042ebcd1206afc66d84baae0f58623382287042d44e3b571f"
     },
     {
-      "package": "a3s-code-session-search",
+      "package": "aster-session-search",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-session-search",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-session-search",
+      "path": "crates/terminal/crates/codegen/aster-session-search",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-session-search",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "46a10bbb67914fff8a913c2cd7ffe918984d04ebd2cbe6c033c0aec4063c3ee5"
     },
     {
-      "package": "a3s-code-shared",
+      "package": "aster-shared",
       "version": "0.0.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-shared",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-shared",
+      "path": "crates/terminal/crates/codegen/aster-shared",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-shared",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "5870060e432f817ce8e464cbf664b1afaaa6457dcac7a67b611b60c8f4759a27"
     },
     {
-      "package": "a3s-code-shell",
+      "package": "aster-shell",
       "version": "1.0.41",
-      "path": "crates/terminal/crates/codegen/a3s-code-shell",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-shell",
+      "path": "crates/terminal/crates/codegen/aster-shell",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-shell",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "ebb8022b6d8a99bad7c634797400e16978393e7dd34314819e7be5b7c7c105a3"
     },
     {
-      "package": "a3s-code-shell-base",
+      "package": "aster-shell-base",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-shell-base",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-shell-base",
+      "path": "crates/terminal/crates/codegen/aster-shell-base",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-shell-base",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "c19b278abdbf0a9592a11fa60a167909fc2e80a711d11f13d73ab84d7f6b4d93"
     },
     {
-      "package": "a3s-code-shell-session-support",
+      "package": "aster-shell-session-support",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-shell-session-support",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-shell-session-support",
+      "path": "crates/terminal/crates/codegen/aster-shell-session-support",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-shell-session-support",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "c020cd8fd0907198748f763b5b5d45e58b53c4583f26c8b21189e5d160931b2c"
     },
     {
-      "package": "a3s-code-shell-terminal",
+      "package": "aster-shell-terminal",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-shell-terminal",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-shell-terminal",
+      "path": "crates/terminal/crates/codegen/aster-shell-terminal",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-shell-terminal",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "5a1771f41c1f7aacfd5ce8496b86c5a4d939d1d8de6b0885e52167ee23775997"
     },
     {
-      "package": "a3s-code-status-line",
+      "package": "aster-status-line",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-status-line",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-status-line",
+      "path": "crates/terminal/crates/codegen/aster-status-line",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-status-line",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "be09311fd7cc13cf3ef0d1b3ff05bcd471f4880e9259c145c4b9d017e377c5f8"
     },
     {
-      "package": "a3s-code-subagent-resolution",
+      "package": "aster-subagent-resolution",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-subagent-resolution",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-subagent-resolution",
+      "path": "crates/terminal/crates/codegen/aster-subagent-resolution",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-subagent-resolution",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "105c32edbad2ddc38bf94f8eedfd41acfec44d3e15f19b07572ab19b1d1f7291"
     },
     {
-      "package": "a3s-code-telemetry",
+      "package": "aster-telemetry",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-telemetry",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-telemetry",
+      "path": "crates/terminal/crates/codegen/aster-telemetry",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-telemetry",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "bf81ce526402efe900673ca6357d3d13e12e52cbdacbb1858c818e5a972253aa"
     },
     {
-      "package": "a3s-code-test-support",
+      "package": "aster-test-support",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-test-support",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-test-support",
+      "path": "crates/terminal/crates/codegen/aster-test-support",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-test-support",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "b9eafc15862f6a30f712a789386e563bc678db774aaf42181260533627a7f1dc"
     },
     {
-      "package": "a3s-code-tools",
+      "package": "aster-tools",
       "version": "0.1.220-alpha.4",
-      "path": "crates/terminal/crates/codegen/a3s-code-tools",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-tools",
+      "path": "crates/terminal/crates/codegen/aster-tools",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-tools",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "fe0e137953cb419bf3bbbd2cdacbae0654ed351c13e203b6224a107f82d75baf"
     },
     {
-      "package": "a3s-code-tools-api",
+      "package": "aster-tools-api",
       "version": "0.1.220-alpha.4",
-      "path": "crates/terminal/crates/codegen/a3s-code-tools-api",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-tools-api",
+      "path": "crates/terminal/crates/codegen/aster-tools-api",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-tools-api",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "03764e4a6ece55f9b59d5d68506b281723bf4593ed8bcd943ad1578f363056cd"
     },
     {
-      "package": "a3s-code-update",
+      "package": "aster-update",
       "version": "0.1.220-alpha.4",
-      "path": "crates/terminal/crates/codegen/a3s-code-update",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-update",
+      "path": "crates/terminal/crates/codegen/aster-update",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-update",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "8aa19a65637bf2e7350f716a845f954ae8e27d0557afd037c529344bf460e6b1"
     },
     {
-      "package": "a3s-code-version",
+      "package": "aster-version",
       "version": "9.1.4",
-      "path": "crates/terminal/crates/codegen/a3s-code-version",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-version",
+      "path": "crates/terminal/crates/codegen/aster-version",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-version",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "8bee35f06df096d1bd7505b8f1d062b014ffd7c202f411a27b73165b2e08d30b"
     },
     {
-      "package": "a3s-code-voice",
+      "package": "aster-voice",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-voice",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-voice",
+      "path": "crates/terminal/crates/codegen/aster-voice",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-voice",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "68b7ba2af3e1d8bd3b9712bfea4c41dd27c9ac629615aea9e1a507292d963048"
     },
     {
-      "package": "a3s-code-workspace",
+      "package": "aster-workspace",
       "version": "0.1.220-alpha.4",
-      "path": "crates/terminal/crates/codegen/a3s-code-workspace",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-workspace",
+      "path": "crates/terminal/crates/codegen/aster-workspace",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-workspace",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "38c500a5f9ab420362c1fee59d3ebc86575256676e51d501cc23a72b3912d4e4"
     },
     {
-      "package": "a3s-code-workspace-client",
+      "package": "aster-workspace-client",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-workspace-client",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-workspace-client",
+      "path": "crates/terminal/crates/codegen/aster-workspace-client",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-workspace-client",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "aad398ce3c197ba2dcff8c99b0ba52e10de140e364fc9a609f6285e6a79f7269"
     },
     {
-      "package": "a3s-code-workspace-daemon",
+      "package": "aster-workspace-daemon",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-workspace-daemon",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-workspace-daemon",
+      "path": "crates/terminal/crates/codegen/aster-workspace-daemon",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-workspace-daemon",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "6fdc0b4765f808393b0ce1de6401343d614987bc243bc23c457bcdec817017ec"
     },
     {
-      "package": "a3s-code-workspace-types",
+      "package": "aster-workspace-types",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-code-workspace-types",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-workspace-types",
+      "path": "crates/terminal/crates/codegen/aster-workspace-types",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-workspace-types",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "08e075a3de0d8d3f798eeb524b3582a0baafc0e8f66c47d75e2c05c5232da0a0"
     },
     {
-      "package": "a3s-codebase-graph",
+      "package": "aster-codebase-graph",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-codebase-graph",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-codebase-graph",
+      "path": "crates/terminal/crates/codegen/aster-codebase-graph",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-codebase-graph",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "aeffd59a75c63a0b76659d619dad4eee829dc1c0cd52a45951473774d40f958b"
     },
     {
-      "package": "a3s-compaction-transcript",
+      "package": "aster-compaction-transcript",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-compaction-transcript",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-compaction-transcript",
+      "path": "crates/terminal/crates/codegen/aster-compaction-transcript",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-compaction-transcript",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "8f4cffcc57968397ed6dfe5464b46620a0b734b631abb88eb4e292e9595a5b0c"
     },
     {
-      "package": "a3s-crash-handler",
+      "package": "aster-crash-handler",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-crash-handler",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-crash-handler",
+      "path": "crates/terminal/crates/codegen/aster-crash-handler",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-crash-handler",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "5b8371d8cf0b4ba119df9dfd7d25dec08f1615a29ba1a89a8975e14bdddb018d"
     },
     {
-      "package": "a3s-dirs",
+      "package": "aster-dirs",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-dirs",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-dirs",
+      "path": "crates/terminal/crates/codegen/aster-dirs",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-dirs",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "d6017b8f25e66c1c62b64cb9072dd39f40fcb4aba0f6f7b8437147bb8c5626bc"
     },
     {
-      "package": "a3s-fast-worktree",
+      "package": "aster-fast-worktree",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-fast-worktree",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-fast-worktree",
+      "path": "crates/terminal/crates/codegen/aster-fast-worktree",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-fast-worktree",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "c4a44ee64cf04904d42d4dd372d1ed32e05ce099ac5e0f9f904e310c565211e0"
     },
     {
-      "package": "a3s-file-utils",
+      "package": "aster-file-utils",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-file-utils",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-file-utils",
+      "path": "crates/terminal/crates/codegen/aster-file-utils",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-file-utils",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "782bb83beb38e72a2476b355863af7f09e725c31db0c6c9418d7a7a05772185f"
     },
     {
-      "package": "a3s-fsnotify",
+      "package": "aster-fsnotify",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-fsnotify",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-fsnotify",
+      "path": "crates/terminal/crates/codegen/aster-fsnotify",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-fsnotify",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "7e7707f881eb17d0c3bf80bd6756507c039e781c653e63d75470e80320eff409"
     },
     {
-      "package": "a3s-fuzzy-file-search",
+      "package": "aster-fuzzy-file-search",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-fuzzy-file-search",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-fuzzy-file-search",
+      "path": "crates/terminal/crates/codegen/aster-fuzzy-file-search",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-fuzzy-file-search",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "f1fb41e5d253b0329259493281ff88047913e2213c83015395eb4d8ed66e6694"
     },
     {
-      "package": "a3s-gix-status",
+      "package": "aster-gix-status",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-gix-status",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-gix-status",
+      "path": "crates/terminal/crates/codegen/aster-gix-status",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-gix-status",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "455022aafeb9ad373244e2b0cab7c68d4d445f1fc8cc5bc1e10d79899c38076b"
     },
     {
-      "package": "a3s-hooks-plugins-types",
+      "package": "aster-hooks-plugins-types",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-hooks-plugins-types",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-hooks-plugins-types",
+      "path": "crates/terminal/crates/codegen/aster-hooks-plugins-types",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-hooks-plugins-types",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "53b2a67aa36aeadc6f79ef795eaed1760e17811150568398acdbe82804449be6"
     },
     {
-      "package": "a3s-hunk-tracker",
+      "package": "aster-hunk-tracker",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-hunk-tracker",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-hunk-tracker",
+      "path": "crates/terminal/crates/codegen/aster-hunk-tracker",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-hunk-tracker",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "f5a47d4d3df56e65672fc49862ce5827400892d2f82b83cc5dbe26d7b382070b"
     },
     {
-      "package": "a3s-mixpanel",
+      "package": "aster-mixpanel",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-mixpanel",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-mixpanel",
+      "path": "crates/terminal/crates/codegen/aster-mixpanel",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-mixpanel",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "b06b77b66989986b4fc5cd28383250aefd9c77041e452610c2beabbeefbd9695"
     },
     {
-      "package": "a3s-prompt-queue",
+      "package": "aster-prompt-queue",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-prompt-queue",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-prompt-queue",
+      "path": "crates/terminal/crates/codegen/aster-prompt-queue",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-prompt-queue",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "fb135ac06a75d8c8c20b6bfb8d6015795832ca057677141ee5039620ebe37cbb"
     },
     {
-      "package": "a3s-ratatui-inline",
+      "package": "aster-ratatui-inline",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-ratatui-inline",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-ratatui-inline",
+      "path": "crates/terminal/crates/codegen/aster-ratatui-inline",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-ratatui-inline",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "7c45c2a766b21ada90ae8089d1dd5d3bcf594da9660fd35effe91e29dab2ac54"
     },
     {
-      "package": "a3s-ratatui-textarea",
+      "package": "aster-ratatui-textarea",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-ratatui-textarea",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-ratatui-textarea",
+      "path": "crates/terminal/crates/codegen/aster-ratatui-textarea",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-ratatui-textarea",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "4e891b3d2c4e3e8004fd30b6763955f8e0328ebc0ccc563e5d84a82cfc3985f1"
     },
     {
-      "package": "a3s-sqlite-journal",
+      "package": "aster-sqlite-journal",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-sqlite-journal",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-sqlite-journal",
+      "path": "crates/terminal/crates/codegen/aster-sqlite-journal",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-sqlite-journal",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "0d1173e8c72ad9a9a1a1d573d92a742711a7fa1f0500ae19d559a9aba614b409"
     },
     {
-      "package": "a3s-system-power",
+      "package": "aster-system-power",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-system-power",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-system-power",
+      "path": "crates/terminal/crates/codegen/aster-system-power",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-system-power",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "bf54a0d65682823c77ab19e30cbf9aa2c0460024ba94f26eaac7711b13589d38"
     },
     {
-      "package": "a3s-token-estimation",
+      "package": "aster-token-estimation",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-token-estimation",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-token-estimation",
+      "path": "crates/terminal/crates/codegen/aster-token-estimation",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-token-estimation",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "90ee1d93095ce82563b128da783e63d1fa25aae0d83775def753f205863f2041"
     },
     {
-      "package": "a3s-tracing-macros",
+      "package": "aster-tracing-macros",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-tracing-macros",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-tracing-macros",
+      "path": "crates/terminal/crates/codegen/aster-tracing-macros",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-tracing-macros",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "e0701a366de411ea849120d4afecf0a62b810331b322f0a75d3c6f076c45aeca"
     },
     {
-      "package": "a3s-tty-utils",
+      "package": "aster-tty-utils",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-tty-utils",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-tty-utils",
+      "path": "crates/terminal/crates/codegen/aster-tty-utils",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-tty-utils",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "a8f0ccea3c7ba1feffc244ce4dd70182eadff0d1f7dd3598232d4fec7e2fb4df"
     },
     {
-      "package": "a3s-workflow",
+      "package": "aster-workflow",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/codegen/a3s-workflow",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/a3s-workflow",
+      "path": "crates/terminal/crates/codegen/aster-workflow",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/aster-workflow",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "fcded118ebbcd869160506a70d5494ffd154a2208bfbb9d60c335a95c0ee8d4b"
     },
@@ -1093,7 +1092,7 @@
       "package": "ptyctl",
       "version": "0.1.0",
       "path": "crates/terminal/crates/codegen/ptyctl",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/ptyctl",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/ptyctl",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "8d8158fdd33a02ac54e8748d8de9bab0477d6f6269e4b04f76424c2d996625db"
     },
@@ -1101,103 +1100,103 @@
       "package": "ptyctl-cli",
       "version": "0.1.0",
       "path": "crates/terminal/crates/codegen/ptyctl-cli",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/codegen/ptyctl-cli",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/codegen/ptyctl-cli",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "70bc18560d1360bb90799f9eb25f5539240245614a20e7d826b142551c7ce40f"
     },
     {
-      "package": "a3s-circuit-breaker",
+      "package": "aster-circuit-breaker",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-circuit-breaker",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-circuit-breaker",
+      "path": "crates/terminal/crates/common/aster-circuit-breaker",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-circuit-breaker",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "1cb3021ebb0fdab2a63e5198a6611e9732b683b52486f8bd23e0e66bddf206dd"
     },
     {
-      "package": "a3s-code-compaction",
+      "package": "aster-compaction",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-code-compaction",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-code-compaction",
+      "path": "crates/terminal/crates/common/aster-compaction",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-compaction",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "3083ff6008eaaf028aa0243f47e0576c8105262a5ed765543f40f057f47b045d"
     },
     {
-      "package": "a3s-computer-hub-core",
+      "package": "aster-computer-hub-core",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-computer-hub-core",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-computer-hub-core",
+      "path": "crates/terminal/crates/common/aster-computer-hub-core",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-computer-hub-core",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "52fdfc0dc647565a8f1ec8e89d7e1dcd941d4010b891d6c8ae9e95ca6d54dc9a"
     },
     {
-      "package": "a3s-computer-hub-mcp-adapter",
+      "package": "aster-computer-hub-mcp-adapter",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-computer-hub-mcp-adapter",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-computer-hub-mcp-adapter",
+      "path": "crates/terminal/crates/common/aster-computer-hub-mcp-adapter",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-computer-hub-mcp-adapter",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "d2004ebb79b16318d23d4e15092501a050e40f71aeae6dcb8d3e1bcd48e4ff9c"
     },
     {
-      "package": "a3s-computer-hub-sdk",
+      "package": "aster-computer-hub-sdk",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-computer-hub-sdk",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-computer-hub-sdk",
+      "path": "crates/terminal/crates/common/aster-computer-hub-sdk",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-computer-hub-sdk",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "939464a7aa8bdac068a2403df4541769161c5e6dd0f84b6574276045b4841ca4"
     },
     {
-      "package": "a3s-interjection-core",
+      "package": "aster-interjection-core",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-interjection-core",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-interjection-core",
+      "path": "crates/terminal/crates/common/aster-interjection-core",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-interjection-core",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "dbe945c63b18fded65d853fee2b4a464d6e36a9047ff4c2ecff3a5541eacdfc6"
     },
     {
-      "package": "a3s-message-delivery-core",
+      "package": "aster-message-delivery-core",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-message-delivery-core",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-message-delivery-core",
+      "path": "crates/terminal/crates/common/aster-message-delivery-core",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-message-delivery-core",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "ff91c1fc284a7c5d5538ec2d7888d9bebe05b38b642e839515300d3008cff0c9"
     },
     {
-      "package": "a3s-test-utils",
+      "package": "aster-test-utils",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-test-utils",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-test-utils",
+      "path": "crates/terminal/crates/common/aster-test-utils",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-test-utils",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "8cea52d03169ee1a9d201389d7903211ce9dbf85068d02df38b355512e67cb93"
     },
     {
-      "package": "a3s-tool-protocol",
+      "package": "aster-tool-protocol",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-tool-protocol",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-tool-protocol",
+      "path": "crates/terminal/crates/common/aster-tool-protocol",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-tool-protocol",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "8c99aff752aeb0e2f77288cd277e2d00898adfbbe7fadc65c6a36547009a10ae"
     },
     {
-      "package": "a3s-tool-runtime",
+      "package": "aster-tool-runtime",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-tool-runtime",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-tool-runtime",
+      "path": "crates/terminal/crates/common/aster-tool-runtime",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-tool-runtime",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "77620db3c867210a3d10fda2165bcf881a74227b3becb6d1634635dcda1fc8c0"
     },
     {
-      "package": "a3s-tool-types",
+      "package": "aster-tool-types",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-tool-types",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-tool-types",
+      "path": "crates/terminal/crates/common/aster-tool-types",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-tool-types",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "998f6a303a51e8b118473ea6e26325a3040826d281e7d6325cce0fc50108c521"
     },
     {
-      "package": "a3s-tracing",
+      "package": "aster-tracing",
       "version": "0.1.0",
-      "path": "crates/terminal/crates/common/a3s-tracing",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/crates/common/a3s-tracing",
+      "path": "crates/terminal/crates/common/aster-tracing",
+      "source": "../aster/apps/code/vendor/aster-ui/crates/common/aster-tracing",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "906779fc14a09817fac2af9a8f6137c78099530d1cbeaa822aab06bf0dc29fb8"
     },
@@ -1205,7 +1204,7 @@
       "package": "prod-mc-cli-chat-proxy-types",
       "version": "0.1.0",
       "path": "crates/terminal/prod/mc/cli-chat-proxy-types",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/prod/mc/cli-chat-proxy-types",
+      "source": "../aster/apps/code/vendor/aster-ui/prod/mc/cli-chat-proxy-types",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "2c0f45c8f33b3780c8167f6e9860d46bb26a899de4b8a113e51f19bcc3e03b79"
     },
@@ -1213,7 +1212,7 @@
       "package": "dagre_rust",
       "version": "0.0.5",
       "path": "crates/terminal/third_party/dagre_rust",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/third_party/dagre_rust",
+      "source": "../aster/apps/code/vendor/aster-ui/third_party/dagre_rust",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "a1943c70b76b45cb7b8a5dd6d4769a9826e0af916945a042bd7f3b791a20a860"
     },
@@ -1221,7 +1220,7 @@
       "package": "graphlib_rust",
       "version": "0.0.2",
       "path": "crates/terminal/third_party/graphlib_rust",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/third_party/graphlib_rust",
+      "source": "../aster/apps/code/vendor/aster-ui/third_party/graphlib_rust",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "088a1d961866580d8a7c5119a86e33d312cd43ac11d997bbdaff2851101ec6a3"
     },
@@ -1229,7 +1228,7 @@
       "package": "mermaid-to-svg",
       "version": "0.1.0",
       "path": "crates/terminal/third_party/mermaid-to-svg",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/third_party/mermaid-to-svg",
+      "source": "../aster/apps/code/vendor/aster-ui/third_party/mermaid-to-svg",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "1627b5aa5ff3cb38406f662331f4bce13db9eb7489667d4e7479c3597cbdb9c2"
     },
@@ -1237,7 +1236,7 @@
       "package": "ordered_hashmap",
       "version": "0.0.3",
       "path": "crates/terminal/third_party/ordered_hashmap",
-      "source": "../a3s/apps/code/vendor/a3s-code-ui/third_party/ordered_hashmap",
+      "source": "../aster/apps/code/vendor/aster-ui/third_party/ordered_hashmap",
       "revision": "d6bac5d85b7ff2bd587b43a2ff8219edac656268",
       "source_manifest_sha256": "f648ce1064ff1f46a507c1fc4bf7c72aabef8c816da1158e50586f13c013f724"
     },
@@ -1263,10 +1262,10 @@
       "version": "0.1.1"
     },
     {
-      "package": "a3s-use-core",
+      "package": "aster-use-core",
       "version": "0.2.4",
       "path": "crates/use/core",
-      "source": "../a3s/crates/use/crates/core",
+      "source": "../aster/crates/use/crates/core",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "aae431d638af4ddc54e6bb47f62c30833dafcb98bd2fbf7ffaa306b1ba37ea77"
     },
@@ -1274,14 +1273,14 @@
       "path": "crates/use/extension",
       "source": "apps/work/vendor/crates/use/crates/extension",
       "revision": null,
-      "package": "a3s-use-extension",
+      "package": "aster-use-extension",
       "version": "0.3.3"
     },
     {
-      "package": "a3s-use-reconcile",
+      "package": "aster-use-reconcile",
       "version": "0.2.10",
       "path": "crates/use/reconcile",
-      "source": "../a3s/crates/use/crates/reconcile",
+      "source": "../aster/crates/use/crates/reconcile",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "2549162ac8b018f1cf09fb2c447c0198dfe3d1500568dde5435e9ff4c787f1db"
     },
@@ -1289,80 +1288,80 @@
       "path": "crates/use/tool-acquire",
       "source": "apps/work/vendor/crates/use/crates/tool-acquire",
       "revision": null,
-      "package": "a3s-use-tool-acquire",
+      "package": "aster-use-tool-acquire",
       "version": "0.2.4"
     },
     {
-      "package": "a3s-vec",
+      "package": "aster-vec",
       "version": "0.1.8",
       "path": "crates/vec",
-      "source": "../a3s/crates/vec",
+      "source": "../aster/crates/vec",
       "revision": "924c65cc626c46b102db1e36873113fa8da7a166",
       "source_manifest_sha256": "28111e8b7e94a865adfef866630e48e4d2661455355c298453ce6971203e3775"
     },
     {
       "path": "apps/desktop/src-tauri",
-      "source": "../a3s/apps/desktop/src-tauri",
+      "source": "../aster/apps/desktop/src-tauri",
       "revision": "f31479b0eb5f687d715b7c468764ff19707bc8e7",
       "source_manifest_sha256": "a08d2f5f14f0391f398c17d0ed3c1a947c26eaaf874cd9df21d9cc7d85ad3ed9",
-      "package": "a3s-desktop",
+      "package": "aster-desktop",
       "version": "2.1.3"
     },
     {
       "path": "apps/desktop/native/data-sqlite",
-      "source": "../a3s/apps/desktop/native/data-sqlite",
+      "source": "../aster/apps/desktop/native/data-sqlite",
       "revision": "f31479b0eb5f687d715b7c468764ff19707bc8e7",
       "source_manifest_sha256": "6662058564c55d1d5f6bfed17804f094217df76739bac3d8f1f89f543581db98",
-      "package": "a3s-desktop-data-sqlite",
+      "package": "aster-desktop-data-sqlite",
       "version": "0.1.0"
     },
     {
       "path": "apps/desktop/src-tauri/contract",
-      "source": "../a3s/apps/desktop/src-tauri/contract",
+      "source": "../aster/apps/desktop/src-tauri/contract",
       "revision": "f31479b0eb5f687d715b7c468764ff19707bc8e7",
       "source_manifest_sha256": "8728acce86fe8f320b79a0e99b6c34de2e1f5ccae2e4fd7d8c84807c5abd103c",
-      "package": "a3s-desktop-desktop-contract",
+      "package": "aster-desktop-desktop-contract",
       "version": "0.0.0"
     }
   ],
   "desktop_import": {
     "date": "2026-10-18",
-    "source": "../a3s/apps/desktop",
+    "source": "../aster/apps/desktop",
     "note": "Includes local source changes. Shared Rust APIs are merged additively. Credentials, sessions, nested Git metadata, Cargo lockfiles, and build caches are excluded.",
     "sources": [
       {
         "path": "apps/desktop",
-        "source": "../a3s/apps/desktop",
+        "source": "../aster/apps/desktop",
         "revision": "f31479b0eb5f687d715b7c468764ff19707bc8e7",
         "source_manifest_sha256": "5892ea2800c705ba982507df13acd7a5b8839eb8b13519261d598fd67c7df1b5"
       },
       {
         "path": "packages/ui",
-        "source": "../a3s/packages/ui",
+        "source": "../aster/packages/ui",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7",
         "source_manifest_sha256": "dae86d9854233d6490e0dff05441de3f6999594a328ece0ff0939e7d6ef6f0d6"
       },
       {
         "path": "packages/intelligent-ui",
-        "source": "../a3s/packages/intelligent-ui",
+        "source": "../aster/packages/intelligent-ui",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7",
         "source_manifest_sha256": "5a3107d29b3168c8f0d9619d0aefedb1266dbcf0707382405966c3a041bf32e7"
       },
       {
         "path": "packages/intelligent-ui-aix",
-        "source": "../a3s/packages/intelligent-ui-aix",
+        "source": "../aster/packages/intelligent-ui-aix",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7",
         "source_manifest_sha256": "a79078c97035c893c73950aa85a3793e68d067202b2f8fdd8bb1b4acb251ab7e"
       },
       {
         "path": "packages/ce",
-        "source": "../a3s/packages/ce",
+        "source": "../aster/packages/ce",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7",
         "source_manifest_sha256": "40ebc1383291f3eb5973682d188cb5fe4baebefe773a93526e4951790adb1c26"
       },
       {
         "path": "packages/form",
-        "source": "../a3s/packages/form",
+        "source": "../aster/packages/form",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7",
         "source_manifest_sha256": "60793e80e11cfeb201b867b172460ae0efbf546f85d54d93c83edad8966952a0"
       },
@@ -1374,29 +1373,29 @@
       },
       {
         "path": "crates/orm",
-        "source": "../a3s/crates/orm",
+        "source": "../aster/crates/orm",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7",
         "source_manifest_sha256": "d80367f4f4219e2733c7675f63cc3e1489afda6d50ceeffd25f69beb4c2fc4b8"
       },
       {
         "path": "crates/use/extension",
-        "source": "../a3s/crates/use/crates/extension",
+        "source": "../aster/crates/use/crates/extension",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7",
         "source_manifest_sha256": "72c5cfcab6929ec9403e4a59cba0883fca665f480923db927f365111cb10eb5c"
       },
       {
         "path": "apps/use-registry/packages",
-        "source": "../a3s/apps/use-registry/packages",
+        "source": "../aster/apps/use-registry/packages",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7"
       },
       {
         "path": "apps/web/src/flow-designer",
-        "source": "../a3s/apps/web/src/flow-designer",
+        "source": "../aster/apps/web/src/flow-designer",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7"
       },
       {
         "path": "apps/web/public/tenant",
-        "source": "../a3s/apps/web/public/tenant",
+        "source": "../aster/apps/web/public/tenant",
         "revision": "200f65cf6a9d866e5dbb1562f57c600600e797b7"
       }
     ],
@@ -1413,45 +1412,45 @@
         "packages/ce",
         "crates/flow/packages/ui"
       ],
-      "backend_fixture": "../a3s/fixtures/paperloom/two-pages.pdf",
+      "backend_fixture": "../aster/fixtures/paperloom/two-pages.pdf",
       "recovery_location": "/Users/roylin/.Trash/aster-desktop-migration-20261018-154138"
     }
   },
   "backend_import": {
     "date": "2026-10-18",
-    "source_root": "../a3s",
+    "source_root": "../aster",
     "revision": "cde6ae1e0a1b0ee36078e12cf5defeeb814715d4",
-    "note": "OS backend services registered as workspace members. Git dependencies on A3S-Lab Boot and ORM are replaced by the local crates/boot and crates/orm copies; the Use extension path follows this repository's crates/use layout. Member Cargo.lock files are dropped for the one-lockfile rule. Rust sources are reformatted to workspace rustfmt defaults and the maas-leave remote agent is removed together with the deleted a3s-maas service. The hash is taken over the landed tree: sha256 of the sorted 'sha256(file)  path' manifest, excluding target, .data, .a3s, Cargo.lock, and .env.",
+    "note": "OS backend services registered as workspace members. Git dependencies on aster-ai-lab Boot and ORM are replaced by the local crates/boot and crates/orm copies; the Use extension path follows this repository's crates/use layout. Member Cargo.lock files are dropped for the one-lockfile rule. Rust sources are reformatted to workspace rustfmt defaults and the maas-leave remote agent is removed together with the deleted aster-maas service. The hash is taken over the landed tree: sha256 of the sorted 'sha256(file)  path' manifest, excluding target, .data, .aster, Cargo.lock, and .env.",
     "sources": [
       {
-        "path": "apps/auth",
-        "source": "../a3s/apps/auth",
+        "path": "apps/control-plane/auth",
+        "source": "../aster/apps/auth",
         "source_manifest_sha256": "b73bbdee89b1494deb372bb19deb3c2abe824adc8a7abb7b4df9d0d8671356c4"
       },
       {
-        "path": "apps/billing",
-        "source": "../a3s/apps/billing",
+        "path": "apps/control-plane/billing",
+        "source": "../aster/apps/billing",
         "source_manifest_sha256": "f14b8638f08b7afc187917c16c86e0312c99e70316b037432db4063fea3951bf"
       },
       {
-        "path": "apps/config",
-        "source": "../a3s/apps/config",
+        "path": "apps/control-plane/config",
+        "source": "../aster/apps/config",
         "source_manifest_sha256": "e253d2b15d722c59f28df64767c0d482c40de8d5ec9f0c99b5bc99de45859f27"
       },
       {
         "path": "apps/use-registry",
-        "source": "../a3s/apps/use-registry",
+        "source": "../aster/apps/use-registry",
         "note": "Content only; caches and build outputs excluded. The maas-leave package is removed with the service.",
         "source_manifest_sha256": "fb26710dbe4e92b0bf4b4bae207562926dc4603cb6558522b24aad1f7d7dc345"
       },
       {
         "path": "apps/web",
-        "source": "../a3s/apps/web",
+        "source": "../aster/apps/web",
         "note": "Content only; node_modules and build outputs excluded.",
         "source_manifest_sha256": "25d1b4f8854cbbadf17ff619694acc78016c58bcad845ee6819a9d529918e4c4"
       }
     ],
-    "verification": "cargo check --tests on the five members; workspace cargo fmt --check; clean-room boot of a3s-config :7654, a3s-auth :7642, a3s-billing :7655, a3s-api :3000 against the live middleware with fresh databases: /health all up, admin login through the auth directory, notes round-trip."
+    "verification": "cargo check --tests on the five members; workspace cargo fmt --check; clean-room boot of aster-config :7654, aster-auth :7642, aster-billing :7655, aster-api :3000 against the live middleware with fresh databases: /health all up, admin login through the auth directory, notes round-trip."
   },
   "desktop_brand_resource_repair_20261021": {
     "source_commit": "e07fd7c69307e33239053c7bb3c5cdb64d78b80d^",
@@ -1667,7 +1666,7 @@
     "current_milestone": {
       "target_single_gpu_single_request_decode_tok_s": 300,
       "achieved": false,
-      "user_instruction": "先做到单卡300 token/s",
+      "user_instruction": "\u5148\u505a\u5230\u5355\u5361300 token/s",
       "basis": "93.417856 pooled serial tok/s for the qualified expert hybrid; no aggregate substitution"
     },
     "lower_draft_confidence_candidate": {
@@ -2671,8 +2670,8 @@
           "cases": [
             {
               "name": "matched-count-32",
-              "prompt": "按顺序列出从1到20的整数，用逗号分隔，不要解释。",
-              "rendered": "<｜begin▁of▁sentence｜><｜User｜>按顺序列出从1到20的整数，用逗号分隔，不要解释。<｜Assistant｜></think>",
+              "prompt": "\u6309\u987a\u5e8f\u5217\u51fa\u4ece1\u523020\u7684\u6574\u6570\uff0c\u7528\u9017\u53f7\u5206\u9694\uff0c\u4e0d\u8981\u89e3\u91ca\u3002",
+              "rendered": "<\uff5cbegin\u2581of\u2581sentence\uff5c><\uff5cUser\uff5c>\u6309\u987a\u5e8f\u5217\u51fa\u4ece1\u523020\u7684\u6574\u6570\uff0c\u7528\u9017\u53f7\u5206\u9694\uff0c\u4e0d\u8981\u89e3\u91ca\u3002<\uff5cAssistant\uff5c></think>",
               "ids": [
                 0,
                 128803,
@@ -2702,7 +2701,7 @@
             {
               "name": "arithmetic",
               "prompt": "Calculate 17 + 25. Reply with only the integer answer.",
-              "rendered": "<｜begin▁of▁sentence｜><｜User｜>Calculate 17 + 25. Reply with only the integer answer.<｜Assistant｜></think>",
+              "rendered": "<\uff5cbegin\u2581of\u2581sentence\uff5c><\uff5cUser\uff5c>Calculate 17 + 25. Reply with only the integer answer.<\uff5cAssistant\uff5c></think>",
               "ids": [
                 0,
                 128803,
@@ -2728,7 +2727,7 @@
             {
               "name": "code-128",
               "prompt": "Write a Python function that returns the first n Fibonacci numbers. Include a short explanation.",
-              "rendered": "<｜begin▁of▁sentence｜><｜User｜>Write a Python function that returns the first n Fibonacci numbers. Include a short explanation.<｜Assistant｜></think>",
+              "rendered": "<\uff5cbegin\u2581of\u2581sentence\uff5c><\uff5cUser\uff5c>Write a Python function that returns the first n Fibonacci numbers. Include a short explanation.<\uff5cAssistant\uff5c></think>",
               "ids": [
                 0,
                 128803,
@@ -2757,7 +2756,7 @@
             {
               "name": "prose-128",
               "prompt": "Explain how an LRU cache works, including a concrete example and its time complexity.",
-              "rendered": "<｜begin▁of▁sentence｜><｜User｜>Explain how an LRU cache works, including a concrete example and its time complexity.<｜Assistant｜></think>",
+              "rendered": "<\uff5cbegin\u2581of\u2581sentence\uff5c><\uff5cUser\uff5c>Explain how an LRU cache works, including a concrete example and its time complexity.<\uff5cAssistant\uff5c></think>",
               "ids": [
                 0,
                 128803,
@@ -2785,8 +2784,8 @@
             },
             {
               "name": "chinese-128",
-              "prompt": "用中文解释大语言模型推理中的 KV Cache，说明它保存什么、如何加速生成，以及长上下文的内存代价。",
-              "rendered": "<｜begin▁of▁sentence｜><｜User｜>用中文解释大语言模型推理中的 KV Cache，说明它保存什么、如何加速生成，以及长上下文的内存代价。<｜Assistant｜></think>",
+              "prompt": "\u7528\u4e2d\u6587\u89e3\u91ca\u5927\u8bed\u8a00\u6a21\u578b\u63a8\u7406\u4e2d\u7684 KV Cache\uff0c\u8bf4\u660e\u5b83\u4fdd\u5b58\u4ec0\u4e48\u3001\u5982\u4f55\u52a0\u901f\u751f\u6210\uff0c\u4ee5\u53ca\u957f\u4e0a\u4e0b\u6587\u7684\u5185\u5b58\u4ee3\u4ef7\u3002",
+              "rendered": "<\uff5cbegin\u2581of\u2581sentence\uff5c><\uff5cUser\uff5c>\u7528\u4e2d\u6587\u89e3\u91ca\u5927\u8bed\u8a00\u6a21\u578b\u63a8\u7406\u4e2d\u7684 KV Cache\uff0c\u8bf4\u660e\u5b83\u4fdd\u5b58\u4ec0\u4e48\u3001\u5982\u4f55\u52a0\u901f\u751f\u6210\uff0c\u4ee5\u53ca\u957f\u4e0a\u4e0b\u6587\u7684\u5185\u5b58\u4ee3\u4ef7\u3002<\uff5cAssistant\uff5c></think>",
               "ids": [
                 0,
                 128803,
@@ -2954,7 +2953,7 @@
         "soak_test_claimed": false
       },
       "secret_retained": false,
-      "implementation": "Original Xolotl; not a3s-power Rust native",
+      "implementation": "Original Xolotl; not aster-power Rust native",
       "lease_ends_unix": 1792859870.529365,
       "target300_met": false,
       "target500_met": false,
@@ -2963,7 +2962,7 @@
     },
     "current_serving_optimization_roles": {
       "unix": 1792913141.6488562,
-      "goal_objective": "深度完成单卡H200 DeepSeek v4.1 Flash 1M上下文 三值量化版本模型推理速度优化",
+      "goal_objective": "\u6df1\u5ea6\u5b8c\u6210\u5355\u5361H200 DeepSeek v4.1 Flash 1M\u4e0a\u4e0b\u6587 \u4e09\u503c\u91cf\u5316\u7248\u672c\u6a21\u578b\u63a8\u7406\u901f\u5ea6\u4f18\u5316",
       "goal_met": false,
       "active_service": {
         "base_url": "http://10.102.93.68/v1",
@@ -4090,7 +4089,7 @@
     "modifications": [
       "Join the existing root Cargo workspace with publish = false and one root lockfile.",
       "Add swift-testing at 48d727cc1cf4eda667c858c501495f1018f69d21 to run CaptureKit tests under Command Line Tools.",
-      "Align a3s-code-voice with cpal 0.18.2 and its device-description, sample-rate and stream-config APIs.",
+      "Align aster-voice with cpal 0.18.2 and its device-description, sample-rate and stream-config APIs.",
       "Rename first-party Scrawl and ScrawlKit identifiers to Capture and CaptureKit while preserving legacy bundles and upstream provenance.",
       "Default to the embedded macOS evidence library; retain the standalone GPUI application as an explicit ui feature.",
       "Disable the standalone JSON configuration reader and writer in Studio through the aster feature.",

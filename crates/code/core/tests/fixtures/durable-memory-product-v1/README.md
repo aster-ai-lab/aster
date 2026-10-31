@@ -1,7 +1,7 @@
 # Durable Memory Product Evaluation Fixture v1
 
-This fixture closes the product-integration gate declared by A3S Memory V2.
-It evaluates one frozen workload through the real A3S Code session path rather
+This fixture closes the product-integration gate declared by Aster Memory V2.
+It evaluates one frozen workload through the real Aster Code session path rather
 than treating repository queries alone as evidence of model-facing behavior.
 
 The evaluation has two parts:
@@ -26,7 +26,7 @@ ceilings are regression bounds, not performance claims about a remote model.
 Run the machine-readable report from the Code workspace:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_product_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_product_eval -- --nocapture
 ```
 
 Future changes must add a new fixture version instead of rewriting labels or

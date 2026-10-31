@@ -1,5 +1,5 @@
 #[cfg(feature = "sqlite")]
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowRuntime, FlowScheduler, FlowTaskQueue, FlowWorker, LocalFileFlowTaskQueue,
     RuntimeCommand, SqliteEventStore, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
     WorkflowSpec,
@@ -32,7 +32,7 @@ impl FlowRuntime for ReminderRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         let input = ctx.input_as::<ReminderInput>()?;
 
@@ -46,16 +46,16 @@ impl FlowRuntime for ReminderRuntime {
         Ok(ctx.wait_until("reminder-due", input.resume_at))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("reminder runtime does not schedule steps")
     }
 }
 
 #[cfg(feature = "sqlite")]
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let now = Utc::now();
-    let root = std::env::temp_dir().join(format!("a3s-flow-sqlite-worker-{}", std::process::id()));
+    let root = std::env::temp_dir().join(format!("aster-flow-sqlite-worker-{}", std::process::id()));
     let db_path = root.join("flow.db");
     let task_root = root.join("tasks");
     let _ = tokio::fs::remove_dir_all(&root).await;

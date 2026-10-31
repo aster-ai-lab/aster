@@ -94,11 +94,11 @@ impl ServerHandler for OcrMcpServer {
         ServerInfo {
             capabilities: ServerCapabilities::builder().enable_tools().build(),
             server_info: Implementation {
-                name: "a3s-use-ocr".to_string(),
-                title: Some("A3S Use OCR".to_string()),
+                name: "aster-use-ocr".to_string(),
+                title: Some("Aster Use OCR".to_string()),
                 version: env!("CARGO_PKG_VERSION").to_string(),
                 icons: None,
-                website_url: Some("https://github.com/A3S-Lab/OCR".to_string()),
+                website_url: Some("https://github.com/aster-ai-lab/OCR".to_string()),
             },
             instructions: Some(format!(
                 "Call ocr_doctor first. Use ocr_extract only for a local image path supplied by the task. The configured provider is '{}' using '{}'. {data_policy} Preserve the source SHA-256 and distinguish OCR text from verified source text.",
@@ -129,7 +129,7 @@ fn tool_error(error: UseError) -> CallToolResult {
     CallToolResult::structured_error(serde_json::to_value(error).unwrap_or_else(|_| {
         serde_json::json!({
             "code": "use.error_encoding_failed",
-            "message": "Failed to encode A3S Use error."
+            "message": "Failed to encode Aster Use error."
         })
     }))
 }

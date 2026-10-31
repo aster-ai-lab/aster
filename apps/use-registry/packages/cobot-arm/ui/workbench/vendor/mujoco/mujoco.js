@@ -5206,7 +5206,7 @@ async function createWasm() {
       }
       closureArgs.push(checkArgCount, minArgs, expectedArgCount);
   
-      // a3s patch: closure invoker, not generated code (view policy has no 'unsafe-eval').
+      // aster patch: closure invoker, not generated code (view policy has no 'unsafe-eval').
       var invokerFn = function(...callArgs) {
         checkArgCount(callArgs.length, minArgs, expectedArgCount, humanName, throwBindingError);
         var destructors = needsDestructorStack ? [] : null;
@@ -6209,7 +6209,7 @@ async function createWasm() {
       functionBody +=
         "};\n";
   
-      // a3s patch: closure method caller, not generated code (view policy has no 'unsafe-eval').
+      // aster patch: closure method caller, not generated code (view policy has no 'unsafe-eval').
       var invokerFunction = (obj, func, destructorsRef, argsPointer) => {
         var values = kind === /* FUNCTION */ 0 ? [obj] : [];
         var offset = 0;

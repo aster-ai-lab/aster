@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
-  <title id="title">A3S OCI Runtime — durable execution across owner replacement</title>
-  <desc id="desc">A3S OCI Runtime binds each container generation and operation journal to one execution owner, then verifies Create, State, Start, Kill, Delete, Wait, and Exec across real HVF owner replacement without claiming supported readiness.</desc>
+  <title id="title">Aster OCI Runtime — durable execution across owner replacement</title>
+  <desc id="desc">Aster OCI Runtime binds each container generation and operation journal to one execution owner, then verifies Create, State, Start, Kill, Delete, Wait, and Exec across real HVF owner replacement without claiming supported readiness.</desc>
 
   <rect width="1200" height="420" rx="22" fill="#071018"/>
   <path d="M612 30V390" stroke="#263746" stroke-width="1.5"/>
@@ -13,10 +13,10 @@
     </g>
     <text x="112" y="72" fill="#90a2b3" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" letter-spacing="2.2">OCI EXECUTION PLANE / 0.2</text>
 
-    <text x="58" y="154" fill="#f4f7fa" font-size="66" font-weight="760" letter-spacing="-2.2">A3S OCI</text>
+    <text x="58" y="154" fill="#f4f7fa" font-size="66" font-weight="760" letter-spacing="-2.2">Aster OCI</text>
     <text x="58" y="218" fill="#67c8ff" font-size="66" font-weight="760" letter-spacing="-2.2">RUNTIME</text>
 
-    <text x="60" y="267" fill="#d4dde5" font-size="24" font-weight="650">Durable Linux execution for A3S.</text>
+    <text x="60" y="267" fill="#d4dde5" font-size="24" font-weight="650">Durable Linux execution for Aster.</text>
     <text x="60" y="301" fill="#90a2b3" font-size="21">Exact generations, replayable operations, explicit readiness.</text>
 
     <g transform="translate(58 330)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">

@@ -8,7 +8,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { loadA3SUIRuntime } from './a3s-ui-runtime';
+import { loadAsterUIRuntime } from './aster-ui-runtime';
 import { DesignerIcon } from './designer-icons';
 
 type CodeEditorElement = HTMLElement & {
@@ -91,7 +91,7 @@ export interface WorkflowCodeEditorProps {
   wrap?: boolean;
 }
 
-/** Theme-aware A3S UI code-editor surface shared by workflow configuration fields. */
+/** Theme-aware Aster UI code-editor surface shared by workflow configuration fields. */
 export function WorkflowCodeEditor({
   ariaControls,
   ariaExpanded,
@@ -147,7 +147,7 @@ export function WorkflowCodeEditor({
   // legacy React wrapper did the same hand-off via onReady).
   useEffect(() => {
     let cancelled = false;
-    void loadA3SUIRuntime('code-editor', () => import('@a3s-lab/ce/code-editor')).then(() => {
+    void loadAsterUIRuntime('code-editor', () => import('@aster-ai-lab/ce/code-editor')).then(() => {
       if (!cancelled && editorRef.current) onReady?.(editorRef.current);
     });
     return () => {
@@ -159,9 +159,9 @@ export function WorkflowCodeEditor({
   return (
     <div
       role="group"
-      data-a3s-components="code-editor"
+      data-aster-components="code-editor"
       aria-label={ariaLabel}
-      className={['code-editor', 'a3s-form-workflow-code-editor', className]
+      className={['code-editor', 'aster-form-workflow-code-editor', className]
         .filter(Boolean)
         .join(' ')}
       data-dirty={dirty ? 'true' : 'false'}

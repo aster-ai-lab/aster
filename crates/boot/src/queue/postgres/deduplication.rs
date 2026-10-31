@@ -1,4 +1,4 @@
-use a3s_orm::{sql_query, PostgresTransaction};
+use aster_orm::{sql_query, PostgresTransaction};
 
 use crate::Result;
 
@@ -10,7 +10,7 @@ pub(super) async fn lock_deduplication(
     queue_name: &str,
     deduplication_id: &str,
 ) -> Result<()> {
-    let key = format!("a3s-boot:{queue_name}:{deduplication_id}");
+    let key = format!("aster-boot:{queue_name}:{deduplication_id}");
     fetch_one_query(
         transaction,
         sql_query::<i32>("SELECT 1 FROM pg_advisory_xact_lock(hashtextextended(")

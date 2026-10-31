@@ -2,8 +2,8 @@
 
 use super::*;
 
-fn facts(workspace: &std::path::Path, id: &str) -> Vec<a3s_effect::Fact> {
-    a3s_code_core::fact_control::read_workspace_facts(workspace, id).unwrap()
+fn facts(workspace: &std::path::Path, id: &str) -> Vec<aster_effect::Fact> {
+    aster_core::fact_control::read_workspace_facts(workspace, id).unwrap()
 }
 
 fn confirm_step() -> Task {
@@ -46,7 +46,7 @@ async fn settlement_real_owner_closes_with_governed_usage_and_a_stopped_owner_re
     assert_eq!(step_status(&session, "inspect"), TaskStatus::Completed);
     let (inspect_calls, inspect_tokens) = tokens(&guard);
     let closeout = facts(workspace.path(), id).pop().unwrap();
-    assert_eq!(closeout.kind, "a3s.goal.slice.settled");
+    assert_eq!(closeout.kind, "aster.goal.slice.settled");
     let body = &closeout.payload["body"];
     assert_eq!(body["run_id"], "wake-inspect");
     assert_eq!(body["outcome"], "completed");
@@ -59,13 +59,13 @@ async fn settlement_real_owner_closes_with_governed_usage_and_a_stopped_owner_re
     agent.close().await;
 
     // The owner stops after acceptance, before its closeout.
-    let log = a3s_effect::FileLog::open(a3s_code_core::session_folder::effect_log_dir(
+    let log = aster_effect::FileLog::open(aster_core::session_folder::effect_log_dir(
         workspace.path(),
         id,
     ))
     .unwrap();
     log.truncate_after(
-        &a3s_code_core::fact_control::thread_for_session(id),
+        &aster_core::fact_control::thread_for_session(id),
         accepted,
     )
     .unwrap();
@@ -91,7 +91,7 @@ async fn settlement_real_owner_closes_with_governed_usage_and_a_stopped_owner_re
     assert_eq!(
         after
             .iter()
-            .filter(|f| f.kind == "a3s.goal.step.accepted")
+            .filter(|f| f.kind == "aster.goal.step.accepted")
             .count(),
         1
     );
@@ -108,7 +108,7 @@ async fn settlement_real_owner_closes_with_governed_usage_and_a_stopped_owner_re
     assert_eq!(body["usage"]["total_tokens"], confirm_tokens);
     assert_eq!(
         last.iter()
-            .filter(|f| f.kind == "a3s.goal.slice.settled")
+            .filter(|f| f.kind == "aster.goal.slice.settled")
             .count(),
         2
     );
@@ -180,9 +180,9 @@ async fn completion_real_last_step_closes_the_goal_and_later_ticks_run_nothing()
     assert_eq!(
         tail,
         [
-            "a3s.goal.completed",
-            "a3s.goal.slice.settled",
-            "a3s.goal.step.accepted"
+            "aster.goal.completed",
+            "aster.goal.slice.settled",
+            "aster.goal.step.accepted"
         ]
     );
     let accepted = &all[all.len() - 3];

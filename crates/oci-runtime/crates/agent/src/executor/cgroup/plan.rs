@@ -1,8 +1,8 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
-use a3s_oci_sdk::oci_spec::runtime::{Linux, LinuxResources};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{Linux, LinuxResources};
+use aster_oci_sdk::{
     Error, ErrorCode, OciLinuxCgroupPath, Result, CONTROL_CGROUP_CPU_HEADROOM_ANNOTATION,
     CONTROL_CGROUP_MEMORY_HEADROOM_ANNOTATION, CONTROL_CGROUP_PIDS_HEADROOM_ANNOTATION,
     CONTROL_WORKLOAD_CGROUP_LAYOUT_ANNOTATION, CONTROL_WORKLOAD_CGROUP_LAYOUT_V1,
@@ -610,8 +610,8 @@ fn unsupported(field: &str, reason: &str) -> Error {
 mod tests {
     use std::collections::{BTreeMap, BTreeSet};
 
-    use a3s_oci_sdk::oci_spec::runtime::Linux;
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::oci_spec::runtime::Linux;
+    use aster_oci_sdk::{
         CONTROL_CGROUP_CPU_HEADROOM_ANNOTATION, CONTROL_CGROUP_MEMORY_HEADROOM_ANNOTATION,
         CONTROL_CGROUP_PIDS_HEADROOM_ANNOTATION, CONTROL_WORKLOAD_CGROUP_LAYOUT_ANNOTATION,
         CONTROL_WORKLOAD_CGROUP_LAYOUT_V1,
@@ -625,7 +625,7 @@ mod tests {
 
     fn fixture_linux() -> Linux {
         let config: serde_json::Value =
-            serde_json::from_str(include_str!("../../../../../fixtures/a3s-box/config.json"))
+            serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
                 .expect("decode fixture");
         serde_json::from_value(config["linux"].clone()).expect("decode Linux config")
     }
@@ -784,19 +784,19 @@ mod tests {
             "tenant//workload",
             "tenant/./workload",
             "tenant/../workload",
-            "system.slice:a3s:workload",
+            "system.slice:aster:workload",
             "tenant\nworkload",
             "tenant\0workload",
         ] {
             let error =
                 CgroupPlan::from_linux(Some(&linux_with_cgroup_path(path)), &BTreeMap::new())
                     .expect_err("unsafe cgroup path must fail planning");
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
         }
     }
 
     #[test]
-    fn plans_exact_a3s_box_cgroup_v2_settings() {
+    fn plans_exact_aster_box_cgroup_v2_settings() {
         let plan =
             CgroupPlan::from_linux(Some(&fixture_linux()), &BTreeMap::new()).expect("cgroup plan");
         assert_eq!(
@@ -1006,7 +1006,7 @@ mod tests {
             .expect("decode conflicting Linux resources");
             let error = CgroupPlan::from_linux(Some(&linux), &BTreeMap::new())
                 .expect_err("typed/unified ownership conflict must fail");
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
             assert!(error
                 .message
                 .contains("conflicts with a typed OCI resource"));
@@ -1118,7 +1118,7 @@ mod tests {
             )
             .expect_err("a memory value below -1 must fail planning");
 
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
             assert!(error.message.contains("-1 or non-negative"));
         }
     }
@@ -1139,7 +1139,7 @@ mod tests {
             )
             .expect_err("unsupported cgroup v1 memory control must fail planning");
 
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::Unsupported);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::Unsupported);
             assert!(error
                 .message
                 .contains(&format!("linux.resources.memory.{field}")));
@@ -1158,7 +1158,7 @@ mod tests {
                 CgroupPlan::from_linux(Some(&linux_with_network(network)), &BTreeMap::new())
                     .expect_err("cgroup v1 network controls must fail before create mutation");
 
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::Unsupported);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::Unsupported);
             assert!(error.message.contains("linux.resources.network"));
             assert!(error.message.contains("net_cls"));
             assert!(error.message.contains("net_prio"));
@@ -1176,7 +1176,7 @@ mod tests {
             let error = CgroupPlan::from_linux(Some(&linux_with_memory(memory)), &BTreeMap::new())
                 .expect_err("finite swap needs a compatible finite memory limit");
 
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
             assert!(error.message.contains("memory.swap"));
         }
     }
@@ -1186,7 +1186,7 @@ mod tests {
         let error = CgroupPlan::from_linux(Some(&linux_with_pids(-2)), &BTreeMap::new())
             .expect_err("a PIDs limit below -1 must fail planning");
 
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
         assert!(error.message.contains("-1 or non-negative"));
     }
 
@@ -1213,7 +1213,7 @@ mod tests {
             serde_json::from_value(unlimited).expect("decode unlimited-PIDs Linux fixture");
         let error = CgroupPlan::from_linux(Some(&unlimited), &annotations)
             .expect_err("control/workload layout must retain a finite PIDs limit");
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
         assert!(error.message.contains("finite memory, CPU, and PID limits"));
     }
 
@@ -1242,7 +1242,7 @@ mod tests {
             serde_json::from_value(unlimited).expect("decode unlimited-memory Linux fixture");
         let error = CgroupPlan::from_linux(Some(&unlimited), &annotations)
             .expect_err("control/workload layout must retain a finite memory limit");
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
         assert!(error.message.contains("finite memory, CPU, and PID limits"));
     }
 
@@ -1255,7 +1255,7 @@ mod tests {
         ] {
             let error = CgroupPlan::from_linux(Some(&linux_with_cpu(cpu)), &BTreeMap::new())
                 .expect_err("invalid CPU control must fail planning");
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
         }
 
         for cpu in [
@@ -1264,7 +1264,7 @@ mod tests {
         ] {
             let error = CgroupPlan::from_linux(Some(&linux_with_cpu(cpu)), &BTreeMap::new())
                 .expect_err("cgroup v1 realtime CPU control must fail planning");
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::Unsupported);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::Unsupported);
         }
     }
 

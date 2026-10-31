@@ -1,4 +1,4 @@
-// Copyright 2026 A3S Lab
+// Copyright 2026 Aster
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{mem, ptr, slice};

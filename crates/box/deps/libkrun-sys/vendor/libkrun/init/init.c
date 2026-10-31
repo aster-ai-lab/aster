@@ -135,7 +135,7 @@ static void console_trace(const char *fmt, ...)
 static bool should_import_cmdline_env(const char *name)
 {
     return strncmp(name, "KRUN_", 5) == 0 || strncmp(name, "BOX_", 4) == 0 ||
-           strncmp(name, "A3S_", 4) == 0 || strncmp(name, "LD_", 3) == 0;
+           strncmp(name, "ASTER_", 4) == 0 || strncmp(name, "LD_", 3) == 0;
 }
 
 static void trim_cmdline_token_quotes(char *token)

@@ -17,7 +17,7 @@ fn snapshot_preserves_nested_credentials_package_aliases_and_control_write_excep
     .unwrap();
     std::fs::write(root.join("source.rs"), "fn main() {}").unwrap();
     let snapshot = WorkspaceFilesystemBoundary::compile(
-        &SandboxPolicy::a3s_bash_baseline(),
+        &SandboxPolicy::aster_bash_baseline(),
         &root,
         scratch.path(),
     )
@@ -32,10 +32,10 @@ fn snapshot_preserves_nested_credentials_package_aliases_and_control_write_excep
             "{secret}"
         );
     }
-    for control in [".git", ".a3s", ".agents"] {
+    for control in [".git", ".aster", ".agents"] {
         assert!(snapshot.deny_write.contains(&root.join(control)));
     }
-    assert!(snapshot.write_exceptions.contains(&root.join(".a3s/loops")));
+    assert!(snapshot.write_exceptions.contains(&root.join(".aster/loops")));
     assert!(!snapshot
         .deny_read
         .iter()

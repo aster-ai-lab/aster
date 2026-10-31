@@ -1,6 +1,6 @@
 use std::sync::atomic::Ordering;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerStats, ContainerTarget, ErrorCode, ExitStatus, FileRequest, FileResponse,
     FilesystemRequest, FilesystemResponse, OutputChunk, ProcessRecord, Result,
 };

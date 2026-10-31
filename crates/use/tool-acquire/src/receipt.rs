@@ -2,8 +2,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::error::ToolAcquireError;
 
-pub const RECEIPT_SCHEMA: &str = "a3s.use.tool-acquire.receipt.v1";
-pub const FAILURE_SCHEMA: &str = "a3s.use.tool-acquire.failure.v1";
+pub const RECEIPT_SCHEMA: &str = "aster.use.tool-acquire.receipt.v1";
+pub const FAILURE_SCHEMA: &str = "aster.use.tool-acquire.failure.v1";
 
 /// Machine record that a version directory is the current install.
 ///

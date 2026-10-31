@@ -31,7 +31,7 @@ impl ContextProvider for SkillCatalogContextProvider {
     async fn query(&self, query: &ContextQuery) -> anyhow::Result<ContextResult> {
         // The skills directory is live: pick up installs, updates, and
         // removals that landed since the last query (a running session sees
-        // `a3s code skills add` on its next turn).
+        // `aster code skills add` on its next turn).
         self.skill_registry.refresh_watched_dirs();
         let skill_prompt = self.skill_registry.to_system_prompt();
         if skill_prompt.is_empty() {
@@ -39,7 +39,7 @@ impl ContextProvider for SkillCatalogContextProvider {
         }
 
         let item = ContextItem::new("skills_catalog", ContextType::Skill, skill_prompt)
-            .with_source("a3s://skills/catalog")
+            .with_source("aster://skills/catalog")
             .with_provenance("skill_registry")
             .with_priority(0.85)
             .with_trust(0.9)

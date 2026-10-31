@@ -68,7 +68,7 @@ Gateway 有两类缓存亲和配置。它们作用于不同的选择层。
 
 `prefix_matched_bytes` 是用于路由的规范化前缀长度。该值不是已缓存 token 数。`prefix_estimated_ms` 也不是实测 TTFT 或服务等级承诺。
 
-P/D 请求使用 `prompt_cache_key` 时，Gateway 不转发原始值。Gateway 按身份、模型、端点和调用方键分域，只转发 `a3s-gw-pcache-v1:` 开头的 opaque 值。
+P/D 请求使用 `prompt_cache_key` 时，Gateway 不转发原始值。Gateway 按身份、模型、端点和调用方键分域，只转发 `aster-gw-pcache-v1:` 开头的 opaque 值。
 
 ## 配置片段
 
@@ -90,7 +90,7 @@ models "chat-model" {
     queue_timeout_ms = 500
     prompt_cache_affinity = true
     distributed_serving {
-      api_key_env = "A3S_POWER_DISTRIBUTED_API_KEY"
+      api_key_env = "ASTER_POWER_DISTRIBUTED_API_KEY"
       execution_timeout_ms = 30000
     }
   }

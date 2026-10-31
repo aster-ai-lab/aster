@@ -30,8 +30,8 @@ export function useFormErrorFocus({
   const focusControl = useCallback(
     function focusValuePath(path: string, revealDialog = true, revealVirtualRow = true) {
       const field = [
-        ...(formRef.current?.querySelectorAll<HTMLElement>('[data-a3s-form-path]') ?? []),
-      ].find((element) => element.getAttribute('data-a3s-form-path') === path);
+        ...(formRef.current?.querySelectorAll<HTMLElement>('[data-aster-form-path]') ?? []),
+      ].find((element) => element.getAttribute('data-aster-form-path') === path);
       const invalidControlSelector =
         'input:not(:disabled)[aria-invalid="true"], select:not(:disabled)[aria-invalid="true"], textarea:not(:disabled)[aria-invalid="true"], button:not(:disabled)[aria-invalid="true"]';
       const describedControlSelector =
@@ -68,10 +68,10 @@ export function useFormErrorFocus({
       }
       if (revealDialog) {
         const editButton = [
-          ...(formRef.current?.querySelectorAll<HTMLButtonElement>('[data-a3s-form-grid-edit]') ??
+          ...(formRef.current?.querySelectorAll<HTMLButtonElement>('[data-aster-form-grid-edit]') ??
             []),
         ].find((button) => {
-          const rowPath = button.getAttribute('data-a3s-form-grid-edit');
+          const rowPath = button.getAttribute('data-aster-form-grid-edit');
           return rowPath && (path === rowPath || path.startsWith(`${rowPath}.`));
         });
         if (editButton) {
@@ -85,12 +85,12 @@ export function useFormErrorFocus({
       if (revealVirtualRow) {
         const virtualGrid = [
           ...(formRef.current?.querySelectorAll<HTMLElement>(
-            '[data-a3s-form-virtual-grid="true"]',
+            '[data-aster-form-virtual-grid="true"]',
           ) ?? []),
         ]
           .map((element) => ({
             element,
-            path: element.getAttribute('data-a3s-form-path'),
+            path: element.getAttribute('data-aster-form-path'),
           }))
           .filter(
             (candidate): candidate is { element: HTMLElement; path: string } =>
@@ -99,7 +99,7 @@ export function useFormErrorFocus({
           .sort((left, right) => right.path.length - left.path.length)[0];
         if (virtualGrid) {
           const handled = !virtualGrid.element.dispatchEvent(
-            new CustomEvent('a3s-form-reveal-path', {
+            new CustomEvent('aster-form-reveal-path', {
               cancelable: true,
               detail: { path },
             }),

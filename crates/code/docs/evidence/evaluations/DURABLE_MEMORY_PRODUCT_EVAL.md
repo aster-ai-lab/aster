@@ -104,7 +104,7 @@ one atomic change set can:
 
 The test demonstrates the mechanism and integrity boundary. The host still
 owns the semantic decision to propose and verify a replacement; neither Code's
-scheduler nor A3S Memory's repository invents that policy.
+scheduler nor Aster Memory's repository invents that policy.
 
 ## Known limits
 
@@ -117,7 +117,7 @@ scheduler nor A3S Memory's repository invents that policy.
   quality or robustness to a real provider.
 - Cost and tokens are normalized proxies, not billed usage.
 - File-repository crash recovery, concurrency, and revision integrity are
-  covered in A3S Memory's kernel tests rather than duplicated here. Code's
+  covered in Aster Memory's kernel tests rather than duplicated here. Code's
   separate `durable_memory_restart` gate covers exact binding reinjection,
   repository reopen, serving, access replay, collision rejection, and lock
   release. The separate restart-endurance gate covers three process epochs,
@@ -137,13 +137,13 @@ production qualification.
 Run from the Code crate workspace:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_product_eval -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_multilingual_eval -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_semantic_eval -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_restart -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_restart_endurance_eval -- --nocapture
-cargo test -p a3s-code-core --test memory_maintenance_lifecycle owned_host_job_applies_verified_atomic_v2_supersession -- --nocapture
+cargo test -p aster-core --test durable_memory_product_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_multilingual_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_semantic_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_restart -- --nocapture
+cargo test -p aster-core --test durable_memory_restart_endurance_eval -- --nocapture
+cargo test -p aster-core --test memory_maintenance_lifecycle owned_host_job_applies_verified_atomic_v2_supersession -- --nocapture
 ```
 
 The first command prints the complete report after the stable
-`A3S_DURABLE_MEMORY_PRODUCT_EVAL=` marker.
+`ASTER_DURABLE_MEMORY_PRODUCT_EVAL=` marker.

@@ -1,9 +1,9 @@
-//! `a3s-box kill` command — Send a signal to one or more active boxes.
+//! `aster-box kill` command — Send a signal to one or more active boxes.
 
 use clap::Args;
 
-use a3s_box_core::{ExecutionGeneration, ExecutionId, ExecutionManager, KillExecutionOptions};
-use a3s_box_runtime::ManagedExecutionState;
+use aster_box_core::{ExecutionGeneration, ExecutionId, ExecutionManager, KillExecutionOptions};
+use aster_box_runtime::ManagedExecutionState;
 
 use crate::cleanup;
 use crate::lifecycle;
@@ -117,7 +117,7 @@ async fn kill_one(
             generation,
         } => {
             drop(lifecycle_lock.take());
-            let home = a3s_box_core::dirs_home();
+            let home = aster_box_core::dirs_home();
             let manager = super::configured_local_execution_manager(&home).await?;
             manager.pause(&execution_id, generation, true).await?;
             println!("{}", record.name);
@@ -128,7 +128,7 @@ async fn kill_one(
             generation,
         } => {
             drop(lifecycle_lock.take());
-            let home = a3s_box_core::dirs_home();
+            let home = aster_box_core::dirs_home();
             let manager = super::configured_local_execution_manager(&home).await?;
             manager.resume(&execution_id, generation).await?;
             println!("{}", record.name);
@@ -141,7 +141,7 @@ async fn kill_one(
             let name = record.name.clone();
             let auto_remove = record.auto_remove;
             drop(lifecycle_lock.take());
-            let home = a3s_box_core::dirs_home();
+            let home = aster_box_core::dirs_home();
             let manager = super::configured_local_execution_manager(&home).await?;
             manager
                 .kill_with_options(
@@ -389,8 +389,8 @@ fn signal_status_transition(signal: i32) -> Option<&'static str> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
-    use a3s_box_runtime::{ManagedExecutionMetadata, ManagedExecutionOperation};
+    use aster_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
+    use aster_box_runtime::{ManagedExecutionMetadata, ManagedExecutionOperation};
     use std::collections::BTreeMap;
 
     fn managed_record(state: ManagedExecutionState) -> crate::state::BoxRecord {

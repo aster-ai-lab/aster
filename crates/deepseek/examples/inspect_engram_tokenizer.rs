@@ -1,5 +1,5 @@
 //! Read-only audit of a pinned public tokenizer. No inference or GPU allocation.
-use a3s_deepseek::tokenizer::{CompressedVocabulary, MAX_TOKENIZER_BYTES};
+use aster_deepseek::tokenizer::{CompressedVocabulary, MAX_TOKENIZER_BYTES};
 use std::io::Read;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

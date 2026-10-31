@@ -1,6 +1,6 @@
-# A3S Code TUI 全功能端到端测试计划
+# Aster Code TUI 全功能端到端测试计划
 
-日期：2026-10-12。对象：产品启动链 **`a3s code → a3s-code-tui → a3s-code-acp → Code Core`**，以及这一启动链实际开放的工具与宿主能力。当前仓库候选为 9.1.3。**本交付是规划，不是执行报告，也不是发布资格证明。**
+日期：2026-10-12。对象：产品启动链 **`aster code → aster-tui → aster-acp → Code Core`**，以及这一启动链实际开放的工具与宿主能力。当前仓库候选为 9.1.3。**本交付是规划，不是执行报告，也不是发布资格证明。**
 
 目的：证明用户可以持续完成编码任务，并在拒绝、故障、取消、重启后获得准确的状态。针对“每个 turn 都报错”，首先证明已知未执行的拒绝不会污染下一轮，同时真实未知副作用仍保持 fail closed。
 
@@ -23,9 +23,9 @@
 
 [选定用例执行状态](execution-status.md)另记真实运行结果。最新请求终结驱动使用同一冻结候选，完整十条真实 LLM 门禁连续三次 **10/10**；四次编码请求分别绑定独立 Run，部分检查实际退出 1，后两次获得绑定当前效果的 Verified。此前 8/2、9/1 和 SOLO 结果分别保留。此结果只覆盖选定门禁；计划目录的 PLANNED 状态不充当执行通过率，完整 P0、1,020 条目录及平台/模型矩阵尚未通过。
 
-后续已用实际 A3S Test ACL 引擎执行直接 Bash/background 拒绝后恢复，各连续三次通过；任务文件变体仍有省略所需工具调用的失败，单独保留。见 [ACL 引擎证据](../../../../../docs/evidence/code-harness/20261012-tui-acl-native-refusal/OUTCOME.md)。RT10-03/04/05 的真实故障场景继续开放，篡改证据副本不算这些场景已执行。
+后续已用实际 Aster Test ACL 引擎执行直接 Bash/background 拒绝后恢复，各连续三次通过；任务文件变体仍有省略所需工具调用的失败，单独保留。见 [ACL 引擎证据](../../../../../docs/evidence/code-harness/20261012-tui-acl-native-refusal/OUTCOME.md)。RT10-03/04/05 的真实故障场景继续开放，篡改证据副本不算这些场景已执行。
 
-实际启动观察发现欢迎页还有独立分发入口。已把 worktree 菜单五例归入 TL23、旧设置导入菜单五例归入 GT27，并新增本地 Changelog 五例 UI16，共补充 15 例。Resume、Quit 和反馈提示也已映射到原功能。它们均保持 PLANNED；启动视口只证明入口显示，不证明功能通过。Changelog 的合法 A3S 数据来源和导入入口的条件可达性仍需核实。
+实际启动观察发现欢迎页还有独立分发入口。已把 worktree 菜单五例归入 TL23、旧设置导入菜单五例归入 GT27，并新增本地 Changelog 五例 UI16，共补充 15 例。Resume、Quit 和反馈提示也已映射到原功能。它们均保持 PLANNED；启动视口只证明入口显示，不证明功能通过。Changelog 的合法 Aster 数据来源和导入入口的条件可达性仍需核实。
 
 ### 范围边界
 
@@ -82,7 +82,7 @@ flowchart LR
 
 1. 固定同一候选的 CLI/pager/ACP/Core 组合；记录路径、版本、构建 profile、特性、Git HEAD、dirty patch 摘要、二进制 SHA-256。仓库当前共享且有未提交修改；HEAD 本身不足以标识候选。
 2. 每个场景创建独占工作区、测试产品 home 和 PTY；通过子进程环境隔离用户目录，不能改操作者真实 HOME，也不能在共享仓库运行破坏性 Git 用例。
-3. 只用 **A3S ACL** 创建产品配置，并用 `a3s-acl` 解析/生成；保存初始与最终摘要。机读 JSON 报告与目录只是测试数据，不作为产品配置读取。
+3. 只用 **Aster ACL** 创建产品配置，并用 `aster-acl` 解析/生成；保存初始与最终摘要。机读 JSON 报告与目录只是测试数据，不作为产品配置读取。
 4. 真实 LLM 预检确认 provider、实际 model id、连接和预算；记录请求次数/token usage。认证不足、缺凭证、quota、模型不可用必须给非通过状态，不能 early-return 伪绿。模型具体 id 从本次有效 ACL 选取，不硬编码不存在的别名。
 5. 采集初始工作区摘要、Git HEAD/index、拥有进程树和外部 sentinel。权限先按默认姿态运行，再跑 Plan/YOLO；每次变更需要宿主接受值作证。
 6. 用随机 canary 区分夹具与模型猜测；用于检验读回/检索的答案不能直接写进提示。复杂编码任务使用独立 checker，模型不得修改 checker。
@@ -108,7 +108,7 @@ flowchart LR
 | `native-refusal`、`qualified-native`、`owned-process`、`fault-ledger` | 已知预执行拒绝；实际开始后的未知结果；stdin、stdout/stderr、后代树、忽略终止信号；另起不归本测试所有的 sentinel 进程 |
 | `search-corpus`、`semantic-runtime` | 同名/同义/无关文档、路径过滤、更新删除；预先人工标注相关性与排名阈值；真实索引/embedding 及版本 |
 | `disposable-git` | 独占临时仓库与两个 worktree；固定提交、暂存/未跟踪/脏文件、冲突、stash、含秘密 canary 的 remote；禁止操作共享仓库 |
-| `welcome-release-notes` | 固定合法 A3S 版本、发布数据来源和能力合同；空/损坏/离线缓存、慢响应、长 Markdown 和控制字符；不得把上游收费产品数据冒充 A3S 数据 |
+| `welcome-release-notes` | 固定合法 Aster 版本、发布数据来源和能力合同；空/损坏/离线缓存、慢响应、长 Markdown 和控制字符；不得把上游收费产品数据冒充 Aster 数据 |
 | `controlled-public-http`、`controlled-search` | 测试拥有的公开端点；唯一标记、摘要、重定向、大/慢响应；禁区 sentinel 端点应收到零次请求。不能为测试关闭 SSRF/私网安全门 |
 | `fixture-skill-pack`、`fixture-agent-pack`、`memory-profile` | 通过产品允许目录/ACL 开放；固定技能工具限制、agent 身份、代际变更、真实记忆写入/提交/Active-only scope；不能仅注入 SDK 对象 |
 | `fixture-mcp`、`code-intelligence-host` | 实际产品已授权的 MCP stdio/HTTP/SSE 与语言服务；协议错误、progress、目录变化、用户同意、UTF-16 位置；每条 wire 请求可核对 |
@@ -168,9 +168,9 @@ flowchart LR
 
 ## 9. 自动化落地
 
-采用 `a3s-test` 技能所述的确定性终端驱动原则；技能在操作者本机的实际位置是 `/Users/roylin/.codex/skills/a3s-test/SKILL.md`。仓库内不依赖该个人路径运行。
+采用 `aster-test` 技能所述的确定性终端驱动原则；技能在操作者本机的实际位置是 `/Users/roylin/.codex/skills/aster-test/SKILL.md`。仓库内不依赖该个人路径运行。
 
-后续可重复、已观察的工作流按域归档；当前已实现的拒绝恢复套件位于 `apps/code/acp/tests/a3s-test/native_*refusal_recovery.acl`，配套 runner 为 `scripts/tui_refusal_e2e.py`。它们只覆盖选定变体，未生成其余 1,020 例脚本。A3S Test 拥有 PTY 与进程树，使用 `terminal_paste`、`press`、`terminal_resize`、文本/正则语义等待和有界 `terminal_recording`；正则只用于屏幕状态等待，不用于推断用户意图或消除效果债务。
+后续可重复、已观察的工作流按域归档；当前已实现的拒绝恢复套件位于 `apps/code/acp/tests/aster-test/native_*refusal_recovery.acl`，配套 runner 为 `scripts/tui_refusal_e2e.py`。它们只覆盖选定变体，未生成其余 1,020 例脚本。Aster Test 拥有 PTY 与进程树，使用 `terminal_paste`、`press`、`terminal_resize`、文本/正则语义等待和有界 `terminal_recording`；正则只用于屏幕状态等待，不用于推断用户意图或消除效果债务。
 
 先用官方 CLI `check` 验证 ACL，再 `run --tui-executable <固定候选> --tui-working-directory <绝对夹具目录> --json`；其他参数以本次 runner `--help` 为准。尚未观察的模态/快捷键流程先探索和固定，不从本计划猜坐标生成脚本。独立 artifact/receipt oracle 用现有 Rust/Python 辅助检查器或受控外层 runner 实现，不能假造 ACL 不存在的断言语法。
 

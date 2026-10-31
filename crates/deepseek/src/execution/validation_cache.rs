@@ -7,7 +7,7 @@
 //! under an equal/stronger predicate. No values, precision or errors are deferred.
 //! This must not be enabled around arbitrary caller-owned Candle tensors: Candle
 //! also exposes mutating APIs, which would invalidate this ownership proof.
-use a3s_power::{
+use aster_power::{
     error::{PowerError, Result},
     inference::InferenceLimits,
 };

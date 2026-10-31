@@ -44,7 +44,7 @@ fn reject_unsupported_platforms(
                 format!("/{field}"),
                 rules::PLATFORM_LINUX_ONLY,
                 format!(
-                    "native {field} workload configuration is not supported; A3S hosts execute Linux OCI workloads"
+                    "native {field} workload configuration is not supported; Aster hosts execute Linux OCI workloads"
                 ),
             );
         }

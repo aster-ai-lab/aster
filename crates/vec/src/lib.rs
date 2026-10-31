@@ -1,4 +1,4 @@
-//! `a3s-vec` is A3S's native Rust in-process vector database.
+//! `aster-vec` is Aster's native Rust in-process vector database.
 //!
 //! The crate provides the collection, document, schema, query, index, and
 //! durability primitives needed by an embedded vector store.  It follows the
@@ -10,7 +10,7 @@
 //! A collection's document snapshot and WAL are authoritative. Flat queries
 //! execute against that snapshot; revision-tagged HNSW, IVF, metric-aware
 //! Vamana, and product-quantized `DiskANN` generations select bounded
-//! candidates before exact re-ranking. Each Vamana/DiskANN base also has an A3S-native,
+//! candidates before exact re-ranking. Each Vamana/DiskANN base also has an Aster-native,
 //! sector-aligned recovery sidecar. Native
 //! numeric vector encodings are preserved at rest and remain distinct from index-only
 //! FP16/INT8/INT4 scalar quantization. Revisioned scalar and full-text indexes
@@ -28,10 +28,10 @@
 //! direct file-backed mmap remain explicit future optimizations.
 //!
 //! Filter parsing, tokenization, and index quantization live in this crate.
-//! They are not part of the stable A3S API:
+//! They are not part of the stable Aster API:
 //!
 //! ```compile_fail
-//! use a3s_vec::core;
+//! use aster_vec::core;
 //! ```
 
 mod collection;

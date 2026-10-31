@@ -23,7 +23,7 @@ use std::sync::{Arc, Mutex, MutexGuard};
 use std::time::Duration;
 use tokio_util::sync::CancellationToken;
 
-pub const EVALUATION_PLAN_SCHEMA_V1: &str = "a3s.code.evaluation-plan.v1";
+pub const EVALUATION_PLAN_SCHEMA_V1: &str = "aster.code.evaluation-plan.v1";
 pub const EVALUATION_MAX_PENDING: usize = 1024;
 pub const EVALUATION_MAX_COOLDOWN_MS: u64 = 24 * 60 * 60 * 1000;
 
@@ -752,7 +752,7 @@ fn deterministic_auxiliary_id(
         "purpose": purpose,
         "fact_digest": fact.fact_digest.clone(),
     });
-    let digest = digest_json("a3s.code.evaluation-dispatch.v1", &identity)
+    let digest = digest_json("aster.code.evaluation-dispatch.v1", &identity)
         .map_err(|error| SupervisorError::Evidence(error.to_string()))?;
     Ok(format!("aux-{digest}"))
 }
@@ -761,10 +761,10 @@ fn dispatch_request_digest(
     fact: &ExecutionFactV1,
     plan: &EvaluationPlanV1,
 ) -> Result<String, SupervisorError> {
-    let plan_digest = digest_json("a3s.code.evaluation-plan.identity.v1", plan)
+    let plan_digest = digest_json("aster.code.evaluation-plan.identity.v1", plan)
         .map_err(|error| SupervisorError::Evidence(error.to_string()))?;
     digest_json(
-        "a3s.code.evaluation-dispatch.request.v1",
+        "aster.code.evaluation-dispatch.request.v1",
         &serde_json::json!({
             "fact_digest": &fact.fact_digest,
             "purpose": &plan.purpose,

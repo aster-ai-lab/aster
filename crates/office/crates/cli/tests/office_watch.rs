@@ -1,7 +1,7 @@
 use std::time::Duration;
 
-use a3s_office::NativeOfficeEditor;
-use a3s_office_cli::office_watch::{
+use aster_office::NativeOfficeEditor;
+use aster_office_cli::office_watch::{
     NativeOfficeWatchOptions, NativeOfficeWatchServer, NativeOfficeWatchStatus,
     MIN_NATIVE_OFFICE_WATCH_POLL_MS,
 };
@@ -10,16 +10,16 @@ use futures_util::StreamExt;
 const WAIT: Duration = Duration::from_secs(10);
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 #[tokio::test]
 async fn native_watch_binds_every_ooxml_format_without_an_external_runtime() {
     let temp = tempfile::tempdir().unwrap();
     for (name, kind) in [
-        ("document.docx", a3s_office::DocumentKind::Word),
-        ("workbook.xlsx", a3s_office::DocumentKind::Spreadsheet),
-        ("presentation.pptx", a3s_office::DocumentKind::Presentation),
+        ("document.docx", aster_office::DocumentKind::Word),
+        ("workbook.xlsx", aster_office::DocumentKind::Spreadsheet),
+        ("presentation.pptx", aster_office::DocumentKind::Presentation),
     ] {
         let path = temp.path().join(name);
         NativeOfficeEditor::create(&path).await.unwrap();
@@ -52,7 +52,7 @@ async fn native_watch_is_authenticated_read_only_and_recovers_across_revisions()
     .unwrap();
     let ready = server.ready().clone();
     assert_eq!(ready.version, 1);
-    assert_eq!(ready.kind, a3s_office::DocumentKind::Word);
+    assert_eq!(ready.kind, aster_office::DocumentKind::Word);
     assert_eq!(ready.url.matches("token=").count(), 1);
     assert_eq!(ready.render_sha256.len(), 64);
 
@@ -83,7 +83,7 @@ async fn native_watch_is_authenticated_read_only_and_recovers_across_revisions()
     );
     assert!(page.headers().contains_key("set-cookie"));
     let page = page.text().await.unwrap();
-    assert!(page.contains("A3S Native Office semantic preview"));
+    assert!(page.contains("Aster Native Office semantic preview"));
     assert!(!page.contains("secret-watch-source.docx"));
 
     let preview_url = format!("{origin}/preview?token={token}");
@@ -177,7 +177,7 @@ async fn native_watch_cli_refreshes_after_a_separate_native_command_without_offi
             "10000",
             "--json",
         ])
-        .env("A3S_OFFICECLI_EXECUTABLE", &provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", &provider)
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()
@@ -208,7 +208,7 @@ async fn native_watch_cli_refreshes_after_a_separate_native_command_without_offi
             "CLI live <update>",
             "--json",
         ])
-        .env("A3S_OFFICECLI_EXECUTABLE", &provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", &provider)
         .output()
         .await
         .unwrap();

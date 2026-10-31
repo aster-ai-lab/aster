@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, LocalFileEventStore, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowRunStatus, WorkflowSpec,
 };
@@ -13,7 +13,7 @@ impl FlowRuntime for GreetingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(greeting) = ctx.step_output("greet") {
             return Ok(ctx.complete(greeting.clone()));
@@ -26,7 +26,7 @@ impl FlowRuntime for GreetingRuntime {
         ))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "greet_user" => Ok(json!({
                 "message": format!("hello {}", invocation.input["name"].as_str().unwrap_or("unknown")),
@@ -37,9 +37,9 @@ impl FlowRuntime for GreetingRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let root = std::env::temp_dir().join(format!(
-        "a3s-flow-local-file-example-{}",
+        "aster-flow-local-file-example-{}",
         std::process::id()
     ));
     let _ = tokio::fs::remove_dir_all(&root).await;

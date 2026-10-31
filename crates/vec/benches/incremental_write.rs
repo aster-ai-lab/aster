@@ -1,6 +1,6 @@
 //! Reproducible single-document ANN update fixture.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     HnswQueryParams, IndexParams, MetricType, SearchQuery,
 };

@@ -3,7 +3,7 @@
 **Feature Branch**: `001-task-execution` (no branch requested or created)
 **Created**: 2026-10-18
 **Status**: In progress; completion is unproven
-**Input**: 根据业界最佳实践审查和深度完善和优化 AsterDream 的任务执行能力，确保功能丰富且底层 a3s-code 各项机制有效且高效。
+**Input**: 根据业界最佳实践审查和深度完善和优化 AsterDream 的任务执行能力，确保功能丰富且底层 aster 各项机制有效且高效。
 **Gate context**: AsterDream's ordinary task path through the local Code SDK and
 ACP companion. This expands the earlier file-delivery repair into a durable
 audit of the complete task execution path. The original objective remains

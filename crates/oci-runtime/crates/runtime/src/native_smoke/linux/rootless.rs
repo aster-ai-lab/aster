@@ -3,9 +3,9 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources, Process};
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources, Process};
+use aster_oci_sdk::{
     ContainerId, ContainerOperationRequest, ContainerTarget, CreateAttachments, CreateRequest,
     DeleteMode, DeleteRequest, Error, ErrorCode, EventsRequest, ExecRequest, ExitStatus, IoMode,
     IsolationRequest, KillRequest, ListRequest, OciBundle, OperationContext, OperationId,
@@ -32,10 +32,10 @@ use config::{
 
 const LIFECYCLE_TIMEOUT: Duration = Duration::from_secs(15);
 const POLL_INTERVAL: Duration = Duration::from_millis(25);
-const MARKER_NAME: &str = ".a3s-oci-rootless-smoke";
-const MARKER_CONTENTS: &[u8] = b"a3s-oci-rootless-mapping-v1\n";
-const PROGRESS_NAME: &str = ".a3s-oci-rootless-progress";
-const PROGRESS_PENDING_NAME: &str = ".a3s-oci-rootless-progress.next";
+const MARKER_NAME: &str = ".aster-oci-rootless-smoke";
+const MARKER_CONTENTS: &[u8] = b"aster-oci-rootless-mapping-v1\n";
+const PROGRESS_NAME: &str = ".aster-oci-rootless-progress";
+const PROGRESS_PENDING_NAME: &str = ".aster-oci-rootless-progress.next";
 const UPDATED_MEMORY_LIMIT: u64 = 192 * 1024 * 1024;
 const FREEZER_OBSERVATION_INTERVAL: Duration = Duration::from_millis(300);
 
@@ -52,7 +52,7 @@ struct RootlessRun<'a> {
     delegated_cgroup_root: Option<&'a Path>,
     ready_file: Option<&'a Path>,
     continue_file: Option<&'a Path>,
-    device_policy_bootstrap: Option<a3s_oci_agent::RootlessDevicePolicyBootstrap>,
+    device_policy_bootstrap: Option<aster_oci_agent::RootlessDevicePolicyBootstrap>,
     exercise_device_policy: bool,
 }
 
@@ -201,7 +201,7 @@ async fn run_inner(run: RootlessRun<'_>) -> NativeLinuxRootlessSmokeReport {
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let session_root = work_parent.join(format!("a3s-oci-native-rootless-smoke-{nonce}"));
+    let session_root = work_parent.join(format!("aster-oci-native-rootless-smoke-{nonce}"));
     if let Err(reason) = create_private_directory(&session_root).await {
         return failed(report, reason);
     }
@@ -323,7 +323,7 @@ pub(super) async fn run_device_policy(
     init_executable: &Path,
     bundle_directory: &Path,
     work_parent: &Path,
-    bootstrap: a3s_oci_agent::RootlessDevicePolicyBootstrap,
+    bootstrap: aster_oci_agent::RootlessDevicePolicyBootstrap,
 ) -> NativeLinuxRootlessSmokeReport {
     let delegated_cgroup_root = bootstrap.delegated_cgroup_root().to_path_buf();
     run_inner(RootlessRun {
@@ -343,7 +343,7 @@ pub(super) async fn run_device_bootstrap(
     init_executable: &Path,
     bundle_directory: &Path,
     work_parent: &Path,
-    bootstrap: a3s_oci_agent::RootlessDevicePolicyBootstrap,
+    bootstrap: aster_oci_agent::RootlessDevicePolicyBootstrap,
     ready_file: Option<&Path>,
     continue_file: Option<&Path>,
 ) -> NativeLinuxRootlessSmokeReport {
@@ -685,7 +685,7 @@ async fn verify_events(
         client.events(EventsRequest {
             container: Some(target.clone()),
             after_sequence: 0,
-            limit: a3s_oci_sdk::MAX_EVENT_BATCH_ITEMS,
+            limit: aster_oci_sdk::MAX_EVENT_BATCH_ITEMS,
             wait_timeout_ms: None,
         }),
     )
@@ -1091,7 +1091,7 @@ async fn best_effort_delete(client: &RuntimeClient, nonce: &str) {
 
 async fn call<T>(
     operation: &str,
-    future: impl Future<Output = a3s_oci_sdk::Result<T>>,
+    future: impl Future<Output = aster_oci_sdk::Result<T>>,
 ) -> Result<T, String> {
     match timeout(CALL_TIMEOUT, future).await {
         Ok(Ok(value)) => Ok(value),
@@ -1185,7 +1185,7 @@ async fn delegated_cgroup_has_no_children(root: &Path) -> Result<bool, String> {
             && entry
                 .file_name()
                 .to_str()
-                .is_none_or(|name| name.starts_with("a3s-oci-"))
+                .is_none_or(|name| name.starts_with("aster-oci-"))
         {
             return Ok(false);
         }
@@ -1232,7 +1232,7 @@ fn failed(
 #[cfg(test)]
 mod tests {
     use super::rootless_device_bootstrap_configuration_error;
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     #[test]
     fn invalid_device_bootstrap_configuration_is_reported_contextually() {

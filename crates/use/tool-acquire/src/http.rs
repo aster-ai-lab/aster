@@ -154,7 +154,7 @@ impl HttpSource {
                 }
             }))
             .timeout(Duration::from_secs(60))
-            .user_agent("a3s-use-tool-acquire")
+            .user_agent("aster-use-tool-acquire")
             .build()
             .map_err(|_| ToolAcquireError::DownloadRejected)?;
         Ok(Self {
@@ -724,8 +724,8 @@ fn host_matches<'a>(assets: &'a [ReleaseAsset], tokens: &[&str]) -> Vec<&'a Rele
     Vec::new()
 }
 
-/// Basename starts with the executable, so `a3s-box-v3.3.0-…` matches and
-/// `a3s-libkrun-sys-…` or `containerd-shim-a3s-box-…` does not.
+/// Basename starts with the executable, so `aster-box-v3.3.0-…` matches and
+/// `aster-libkrun-sys-…` or `containerd-shim-aster-box-…` does not.
 fn asset_names_product(name: &str, executable: &str) -> bool {
     let base = name.rsplit(['/', '\\']).next().unwrap_or(name);
     let base = base.to_ascii_lowercase();
@@ -1694,8 +1694,8 @@ mod tests {
         let libkrun = github_release(
             "libkrun-sys-v3.3.0",
             &[
-                "a3s-libkrun-source.tar",
-                "a3s-libkrun-sys-3.3.0-windows-x86_64.zip",
+                "aster-libkrun-source.tar",
+                "aster-libkrun-sys-3.3.0-windows-x86_64.zip",
                 "libkrunfw-x86_64-v5.5.0.tgz",
                 "linux-6.12.91.tar.xz",
             ],
@@ -1703,24 +1703,24 @@ mod tests {
         let product = github_release(
             "3.3.0",
             &[
-                "a3s-box-v3.3.0-linux-arm64.tar.gz",
-                "a3s-box-v3.3.0-linux-arm64.sha256",
-                "a3s-box-v3.3.0-linux-x86_64.tar.gz",
-                "a3s-box-v3.3.0-macos-arm64.tar.gz",
-                "a3s-box-v3.3.0-macos-arm64.sha256",
-                "a3s-box-v3.3.0-windows-x86_64.zip",
-                "a3s-box-v3.3.0-windows-x86_64.sha256",
-                "containerd-shim-a3s-box-v2-linux-arm64",
-                "containerd-shim-a3s-box-v2-linux-x86_64",
-                "a3s_box-3.3.0-py3-none-any.whl",
+                "aster-box-v3.3.0-linux-arm64.tar.gz",
+                "aster-box-v3.3.0-linux-arm64.sha256",
+                "aster-box-v3.3.0-linux-x86_64.tar.gz",
+                "aster-box-v3.3.0-macos-arm64.tar.gz",
+                "aster-box-v3.3.0-macos-arm64.sha256",
+                "aster-box-v3.3.0-windows-x86_64.zip",
+                "aster-box-v3.3.0-windows-x86_64.sha256",
+                "containerd-shim-aster-box-v2-linux-arm64",
+                "containerd-shim-aster-box-v2-linux-x86_64",
+                "aster_box-3.3.0-py3-none-any.whl",
             ],
         );
         let both = [libkrun.clone(), product.clone()];
-        let mac = choose_release(&both, MAC_ARM_TOKENS, "a3s-box").unwrap();
+        let mac = choose_release(&both, MAC_ARM_TOKENS, "aster-box").unwrap();
         assert_eq!(mac.version, "3.3.0");
-        assert_eq!(mac.asset.name, "a3s-box-v3.3.0-macos-arm64.tar.gz");
+        assert_eq!(mac.asset.name, "aster-box-v3.3.0-macos-arm64.tar.gz");
         let libkrun_only = [libkrun.clone()];
-        let missing = match choose_release(&libkrun_only, MAC_ARM_TOKENS, "a3s-box") {
+        let missing = match choose_release(&libkrun_only, MAC_ARM_TOKENS, "aster-box") {
             Ok(choice) => panic!("selected {}", choice.asset.name),
             Err(error) => error,
         };
@@ -1728,13 +1728,13 @@ mod tests {
 
         let windows = &["windows-x86_64"];
         let windows_releases = [libkrun.clone(), product.clone()];
-        let windows_choice = choose_release(&windows_releases, windows, "a3s-box").unwrap();
+        let windows_choice = choose_release(&windows_releases, windows, "aster-box").unwrap();
         assert_eq!(
             windows_choice.asset.name,
-            "a3s-box-v3.3.0-windows-x86_64.zip"
+            "aster-box-v3.3.0-windows-x86_64.zip"
         );
         let windows_libkrun_only = [libkrun];
-        let windows_libkrun = match choose_release(&windows_libkrun_only, windows, "a3s-box") {
+        let windows_libkrun = match choose_release(&windows_libkrun_only, windows, "aster-box") {
             Ok(choice) => panic!("selected {}", choice.asset.name),
             Err(error) => error,
         };
@@ -1742,8 +1742,8 @@ mod tests {
 
         let linux = &["linux-arm64"];
         let linux_releases = [product];
-        let linux_choice = choose_release(&linux_releases, linux, "a3s-box").unwrap();
-        assert_eq!(linux_choice.asset.name, "a3s-box-v3.3.0-linux-arm64.tar.gz");
+        let linux_choice = choose_release(&linux_releases, linux, "aster-box").unwrap();
+        assert_eq!(linux_choice.asset.name, "aster-box-v3.3.0-linux-arm64.tar.gz");
     }
 
     #[test]
@@ -1759,19 +1759,19 @@ mod tests {
     }
 
     #[test]
-    fn extract_tree_keeps_a3s_box_sibling_runtime_files() {
-        let script = b"#!/bin/sh\nprintf '%s\\n' 'a3s-box version 3.3.0'\n";
+    fn extract_tree_keeps_aster_box_sibling_runtime_files() {
+        let script = b"#!/bin/sh\nprintf '%s\\n' 'aster-box version 3.3.0'\n";
         let archive = tar_gz_files(&[
-            ("a3s-box-v3.3.0-macos-arm64/a3s-box", script),
-            ("a3s-box-v3.3.0-macos-arm64/a3s-box-shim", b"shim"),
+            ("aster-box-v3.3.0-macos-arm64/aster-box", script),
+            ("aster-box-v3.3.0-macos-arm64/aster-box-shim", b"shim"),
             (
-                "a3s-box-v3.3.0-macos-arm64/a3s-box-guest-init",
+                "aster-box-v3.3.0-macos-arm64/aster-box-guest-init",
                 b"guest-init",
             ),
-            ("a3s-box-v3.3.0-macos-arm64/lib/libkrun.dylib", b"libkrun"),
+            ("aster-box-v3.3.0-macos-arm64/lib/libkrun.dylib", b"libkrun"),
         ]);
         let extracted =
-            extract_tree("a3s-box-v3.3.0-macos-arm64.tar.gz", &archive, "a3s-box").unwrap();
+            extract_tree("aster-box-v3.3.0-macos-arm64.tar.gz", &archive, "aster-box").unwrap();
         assert_eq!(extracted.executable, script);
         let mut paths: Vec<&str> = extracted
             .companions
@@ -1781,28 +1781,28 @@ mod tests {
         paths.sort_unstable();
         assert_eq!(
             paths,
-            vec!["a3s-box-guest-init", "a3s-box-shim", "lib/libkrun.dylib",]
+            vec!["aster-box-guest-init", "aster-box-shim", "lib/libkrun.dylib",]
         );
     }
 
     #[test]
-    fn a3s_box_install_runs_version_and_remove_leaves_the_sibling_receipt() {
-        let script = b"#!/bin/sh\nif [ \"${1:-}\" = version ]; then printf '%s\\n' 'a3s-box version 3.3.0'; exit 0; fi\nexit 1\n";
+    fn aster_box_install_runs_version_and_remove_leaves_the_sibling_receipt() {
+        let script = b"#!/bin/sh\nif [ \"${1:-}\" = version ]; then printf '%s\\n' 'aster-box version 3.3.0'; exit 0; fi\nexit 1\n";
         let archive = tar_gz_files(&[
-            ("a3s-box-v3.3.0-macos-arm64/a3s-box", script),
-            ("a3s-box-v3.3.0-macos-arm64/a3s-box-shim", b"shim"),
+            ("aster-box-v3.3.0-macos-arm64/aster-box", script),
+            ("aster-box-v3.3.0-macos-arm64/aster-box-shim", b"shim"),
             (
-                "a3s-box-v3.3.0-macos-arm64/a3s-box-guest-init",
+                "aster-box-v3.3.0-macos-arm64/aster-box-guest-init",
                 b"guest-init",
             ),
-            ("a3s-box-v3.3.0-macos-arm64/lib/libkrun.dylib", b"libkrun"),
+            ("aster-box-v3.3.0-macos-arm64/lib/libkrun.dylib", b"libkrun"),
         ]);
         let digest = hex_encode(&Sha256::digest(&archive));
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
-        let product_name = "a3s-box-v3.3.0-test-host.tar.gz";
+        let product_name = "aster-box-v3.3.0-test-host.tar.gz";
         let product_url = format!("http://127.0.0.1:{port}/{product_name}");
-        let decoy_name = "a3s-libkrun-sys-3.3.0-test-host.zip";
+        let decoy_name = "aster-libkrun-sys-3.3.0-test-host.zip";
         let latest = serde_json::json!({
             "tag_name": "libkrun-sys-v3.3.0",
             "assets": [{
@@ -1823,12 +1823,12 @@ mod tests {
                 "tag_name": "v3.3.0",
                 "assets": [
                     {
-                        "name": "a3s-box-v3.3.0-linux-arm64.tar.gz",
-                        "browser_download_url": format!("http://127.0.0.1:{port}/a3s-box-v3.3.0-linux-arm64.tar.gz")
+                        "name": "aster-box-v3.3.0-linux-arm64.tar.gz",
+                        "browser_download_url": format!("http://127.0.0.1:{port}/aster-box-v3.3.0-linux-arm64.tar.gz")
                     },
                     {
-                        "name": "containerd-shim-a3s-box-v2-test-host",
-                        "browser_download_url": format!("http://127.0.0.1:{port}/containerd-shim-a3s-box-v2-test-host")
+                        "name": "containerd-shim-aster-box-v2-test-host",
+                        "browser_download_url": format!("http://127.0.0.1:{port}/containerd-shim-aster-box-v2-test-host")
                     },
                     {
                         "name": product_name,
@@ -1836,8 +1836,8 @@ mod tests {
                         "digest": format!("sha256:{digest}")
                     },
                     {
-                        "name": "a3s-box-v3.3.0-test-host.tar.gz.sha256",
-                        "browser_download_url": format!("http://127.0.0.1:{port}/a3s-box-v3.3.0-test-host.tar.gz.sha256")
+                        "name": "aster-box-v3.3.0-test-host.tar.gz.sha256",
+                        "browser_download_url": format!("http://127.0.0.1:{port}/aster-box-v3.3.0-test-host.tar.gz.sha256")
                     }
                 ]
             }
@@ -1882,7 +1882,7 @@ mod tests {
         .unwrap();
         let root = tempfile::tempdir().unwrap();
         let store = crate::store::ToolStore::open(root.path()).unwrap();
-        assert!(store.which("a3s-box").unwrap().is_none());
+        assert!(store.which("aster-box").unwrap().is_none());
         let fd_bytes = b"#!/bin/sh\necho fd\n";
         let mut sibling = crate::source::StaticSource::new();
         sibling.insert(
@@ -1907,16 +1907,16 @@ mod tests {
         let receipt = store
             .acquire_with(
                 crate::acquire::AcquireRequest {
-                    name: "a3s-box".to_string(),
-                    spec: "github:A3S-Lab/Box".to_string(),
+                    name: "aster-box".to_string(),
+                    spec: "github:aster-ai-lab/Box".to_string(),
                     version: None,
-                    executable_name: "a3s-box".to_string(),
+                    executable_name: "aster-box".to_string(),
                 },
                 &source,
             )
             .unwrap();
         assert_eq!(receipt.version, "3.3.0");
-        assert_eq!(receipt.spec, "github:A3S-Lab/Box");
+        assert_eq!(receipt.spec, "github:aster-ai-lab/Box");
         assert_eq!(receipt.schema, crate::RECEIPT_SCHEMA);
         let requests = seen.lock().unwrap().clone();
         assert!(
@@ -1927,20 +1927,20 @@ mod tests {
             requests.iter().all(|path| !path.contains(decoy_name)),
             "{requests:?}"
         );
-        let version_dir = root.path().join("installs/a3s-box/3.3.0");
+        let version_dir = root.path().join("installs/aster-box/3.3.0");
         assert_eq!(
-            std::fs::read(version_dir.join("a3s-box-shim")).unwrap(),
+            std::fs::read(version_dir.join("aster-box-shim")).unwrap(),
             b"shim"
         );
         assert_eq!(
-            std::fs::read(version_dir.join("a3s-box-guest-init")).unwrap(),
+            std::fs::read(version_dir.join("aster-box-guest-init")).unwrap(),
             b"guest-init"
         );
         assert_eq!(
             std::fs::read(version_dir.join("lib/libkrun.dylib")).unwrap(),
             b"libkrun"
         );
-        let shim = store.which("a3s-box").unwrap().expect("shim");
+        let shim = store.which("aster-box").unwrap().expect("shim");
         let output = std::process::Command::new(&shim)
             .arg("version")
             .output()
@@ -1954,15 +1954,15 @@ mod tests {
         );
         assert!(
             text.lines()
-                .any(|line| line.starts_with("a3s-box version ")),
+                .any(|line| line.starts_with("aster-box version ")),
             "{text}"
         );
-        store.remove_sync("a3s-box").unwrap();
-        assert!(store.which("a3s-box").unwrap().is_none());
-        assert!(!root.path().join("shims/a3s-box").exists());
-        assert!(!root.path().join("receipts/a3s-box.json").exists());
-        assert!(!root.path().join("current/a3s-box").exists());
-        assert!(!root.path().join("installs/a3s-box").exists());
+        store.remove_sync("aster-box").unwrap();
+        assert!(store.which("aster-box").unwrap().is_none());
+        assert!(!root.path().join("shims/aster-box").exists());
+        assert!(!root.path().join("receipts/aster-box.json").exists());
+        assert!(!root.path().join("current/aster-box").exists());
+        assert!(!root.path().join("installs/aster-box").exists());
         let sibling_receipt: serde_json::Value =
             serde_json::from_slice(&std::fs::read(root.path().join("receipts/fd.json")).unwrap())
                 .unwrap();
@@ -1973,10 +1973,10 @@ mod tests {
     }
 
     #[test]
-    fn a3s_box_without_a_checksum_is_refused() {
+    fn aster_box_without_a_checksum_is_refused() {
         let archive = tar_gz(
-            "a3s-box",
-            b"#!/bin/sh\nprintf '%s\\n' 'a3s-box version 3.3.0'\n",
+            "aster-box",
+            b"#!/bin/sh\nprintf '%s\\n' 'aster-box version 3.3.0'\n",
         );
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
@@ -1984,22 +1984,22 @@ mod tests {
             {
                 "tag_name": "libkrun-sys-v3.3.0",
                 "assets": [{
-                    "name": "a3s-libkrun-sys-3.3.0-test-host.zip",
+                    "name": "aster-libkrun-sys-3.3.0-test-host.zip",
                     "browser_download_url": format!("http://127.0.0.1:{port}/libkrun.zip")
                 }]
             },
             {
                 "tag_name": "v3.3.0",
                 "assets": [{
-                    "name": "a3s-box-v3.3.0-test-host.tar.gz",
-                    "browser_download_url": format!("http://127.0.0.1:{port}/a3s-box-v3.3.0-test-host.tar.gz")
+                    "name": "aster-box-v3.3.0-test-host.tar.gz",
+                    "browser_download_url": format!("http://127.0.0.1:{port}/aster-box-v3.3.0-test-host.tar.gz")
                 }]
             }
         ]);
         let latest = serde_json::json!({
             "tag_name": "libkrun-sys-v3.3.0",
             "assets": [{
-                "name": "a3s-libkrun-source.tar",
+                "name": "aster-libkrun-source.tar",
                 "browser_download_url": format!("http://127.0.0.1:{port}/source.tar")
             }]
         });
@@ -2017,7 +2017,7 @@ mod tests {
                     latest_bytes.clone()
                 } else if path.contains("/releases?") {
                     listed_bytes.clone()
-                } else if path.contains("a3s-box-v3.3.0-test-host.tar.gz") {
+                } else if path.contains("aster-box-v3.3.0-test-host.tar.gz") {
                     archive_for_thread.clone()
                 } else {
                     let header =
@@ -2044,17 +2044,17 @@ mod tests {
         let error = store
             .acquire_with(
                 crate::acquire::AcquireRequest {
-                    name: "a3s-box".to_string(),
-                    spec: "github:A3S-Lab/Box".to_string(),
+                    name: "aster-box".to_string(),
+                    spec: "github:aster-ai-lab/Box".to_string(),
                     version: None,
-                    executable_name: "a3s-box".to_string(),
+                    executable_name: "aster-box".to_string(),
                 },
                 &source,
             )
             .unwrap_err();
         assert_eq!(error.code(), "use.tool_acquire.checksum_required");
-        assert!(!root.path().join("receipts/a3s-box.json").exists());
-        assert!(!root.path().join("installs/a3s-box").exists());
+        assert!(!root.path().join("receipts/aster-box.json").exists());
+        assert!(!root.path().join("installs/aster-box").exists());
     }
 
     #[test]

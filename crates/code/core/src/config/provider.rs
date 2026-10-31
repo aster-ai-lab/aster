@@ -100,12 +100,110 @@ pub(crate) fn default_true() -> bool {
     true
 }
 
+/// Wire protocol a provider's HTTP client must speak.
+///
+/// This is independent of [`ProviderConfig::name`], which is only the account
+/// / picker identity (`glm-01`, `work-kimi`, …).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
+#[serde(rename_all = "kebab-case")]
+pub enum ProviderProtocol {
+    /// OpenAI Chat Completions (and compatible gateways). Default when unset.
+    #[default]
+    Openai,
+    /// Anthropic Messages (`/v1/messages`), including BigModel's Anthropic gateway.
+    Anthropic,
+    /// Zhipu / BigModel PaaS Chat Completions (`/api/paas/v4/...`).
+    Glm,
+    /// Cursor account Connect RPC.
+    Cursor,
+    /// Codex / ChatGPT plan account Responses session.
+    Codex,
+    /// OpenAI Responses API (non-account).
+    OpenaiResponses,
+}
+
+impl ProviderProtocol {
+    pub fn parse(value: &str) -> Result<Self, String> {
+        match value.trim() {
+            "openai" | "kimi" => Ok(Self::Openai),
+            "anthropic" | "claude" => Ok(Self::Anthropic),
+            "glm" | "zhipu" | "bigmodel" => Ok(Self::Glm),
+            "cursor" => Ok(Self::Cursor),
+            "codex" => Ok(Self::Codex),
+            "openai-responses" => Ok(Self::OpenaiResponses),
+            other => Err(format!(
+                "unknown provider protocol {other:?} (closed set: openai, anthropic, glm, kimi, cursor, codex, openai-responses)"
+            )),
+        }
+    }
+
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Openai => "openai",
+            Self::Anthropic => "anthropic",
+            Self::Glm => "glm",
+            Self::Cursor => "cursor",
+            Self::Codex => "codex",
+            Self::OpenaiResponses => "openai-responses",
+        }
+    }
+
+    /// Resolve the wire protocol for a provider block.
+    ///
+    /// Explicit `protocol = "..."` wins. Otherwise known provider names keep
+    /// their historical mapping; every other name defaults to OpenAI-compatible.
+    pub fn resolve(explicit: Option<Self>, provider_name: &str, base_url: Option<&str>) -> Self {
+        if let Some(protocol) = explicit {
+            return protocol;
+        }
+        let name = provider_name.trim();
+        if matches!(name, "anthropic" | "claude" | "cc-switch") || name.starts_with("cc-switch-") {
+            return Self::Anthropic;
+        }
+        if matches!(name, "glm" | "zhipu" | "bigmodel") {
+            return Self::Glm;
+        }
+        if name == "cursor" {
+            return Self::Cursor;
+        }
+        if name == "codex" {
+            return Self::Codex;
+        }
+        if name == "openai-responses" {
+            return Self::OpenaiResponses;
+        }
+        if base_url_looks_like_anthropic_messages(base_url) {
+            return Self::Anthropic;
+        }
+        Self::Openai
+    }
+}
+
+fn base_url_looks_like_anthropic_messages(base_url: Option<&str>) -> bool {
+    let Some(raw) = base_url.map(str::trim).filter(|value| !value.is_empty()) else {
+        return false;
+    };
+    if let Ok(url) = url::Url::parse(raw) {
+        let host = url.host_str().unwrap_or("").to_ascii_lowercase();
+        if host == "api.anthropic.com" {
+            return true;
+        }
+        let path = url.path().trim_end_matches('/').to_ascii_lowercase();
+        return path.ends_with("/anthropic") || path.contains("/anthropic/");
+    }
+    let lower = raw.to_ascii_lowercase();
+    lower.contains("api.anthropic.com") || lower.contains("/anthropic")
+}
+
 /// Provider configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ProviderConfig {
     /// Provider name (e.g., "anthropic", "openai")
     pub name: String,
+    /// Wire protocol. `None` means unset in ACL (resolved at client build).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<ProviderProtocol>,
     /// API key for this provider
     #[serde(default)]
     pub api_key: Option<String>,
@@ -160,6 +258,11 @@ pub(crate) fn apply_model_caps(
 }
 
 impl ProviderConfig {
+    /// Effective wire protocol for this provider.
+    pub fn resolved_protocol(&self) -> ProviderProtocol {
+        ProviderProtocol::resolve(self.protocol, &self.name, self.base_url.as_deref())
+    }
+
     /// Find a model by ID
     pub fn find_model(&self, model_id: &str) -> Option<&ModelConfig> {
         self.models.iter().find(|m| m.id == model_id)
@@ -188,5 +291,50 @@ impl ProviderConfig {
             .session_id_header
             .as_deref()
             .or(self.session_id_header.as_deref())
+    }
+}
+
+#[cfg(test)]
+mod protocol_resolve_tests {
+    use super::ProviderProtocol;
+
+    #[test]
+    fn explicit_protocol_wins_over_name_and_url() {
+        assert_eq!(
+            ProviderProtocol::resolve(
+                Some(ProviderProtocol::Openai),
+                "anthropic",
+                Some("https://api.anthropic.com")
+            ),
+            ProviderProtocol::Openai
+        );
+        assert_eq!(
+            ProviderProtocol::resolve(
+                Some(ProviderProtocol::Anthropic),
+                "glm-01",
+                Some("https://open.bigmodel.cn/api/paas/v4")
+            ),
+            ProviderProtocol::Anthropic
+        );
+    }
+
+    #[test]
+    fn unset_defaults_to_openai_compat_except_known_wires() {
+        assert_eq!(
+            ProviderProtocol::resolve(None, "work-kimi", None),
+            ProviderProtocol::Openai
+        );
+        assert_eq!(
+            ProviderProtocol::resolve(None, "glm", None),
+            ProviderProtocol::Glm
+        );
+        assert_eq!(
+            ProviderProtocol::resolve(
+                None,
+                "glm-01",
+                Some("https://open.bigmodel.cn/api/anthropic")
+            ),
+            ProviderProtocol::Anthropic
+        );
     }
 }

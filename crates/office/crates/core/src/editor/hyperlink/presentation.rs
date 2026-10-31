@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     add_external_relationship, ensure_namespace, existing_external_relationship,
@@ -234,7 +234,7 @@ fn resolve_slide_target(
     Ok((path, part.trim_start_matches('/').to_string()))
 }
 
-fn invalid_slide_location(location: &str) -> a3s_use_core::UseError {
+fn invalid_slide_location(location: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.hyperlink_location_invalid",
         "Native Presentation internal hyperlinks require an existing slide[N] or /slide[N] target.",

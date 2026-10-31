@@ -1,15 +1,15 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
+use aster_oci_sdk::{
     ContainerTarget, CreateRequest, ExecRequest, OperationId, SignalProcessRequest, StartRequest,
 };
 
 use super::QualificationHvfDriver;
 use crate::{DriverExecRequest, DriverSignalProcessRequest, OciVmOperationReopenReplacementReport};
 
-pub(super) const SIGNAL_MARKER_NAME: &str = ".a3s-oci-signal-process-reopen-smoke";
+pub(super) const SIGNAL_MARKER_NAME: &str = ".aster-oci-signal-process-reopen-smoke";
 pub(super) const SIGNAL_PROCESS_SIGNAL: i32 = 10;
 
 struct Qualification {

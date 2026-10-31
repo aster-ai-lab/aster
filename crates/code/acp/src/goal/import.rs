@@ -1,16 +1,16 @@
 //! Explicit legacy source selection and original writer-bound import admission.
 
 use super::DurableGoal;
-use a3s_code_core::execution_identity::ExecutionIdentityV1;
-use a3s_code_core::goal_control::{
+use aster_core::execution_identity::ExecutionIdentityV1;
+use aster_core::goal_control::{
     DurableGoalDefinitionV1, GoalDefinitionCommandV1, GOAL_LEGACY_SOURCE_DOMAIN_V1,
 };
-use a3s_code_core::workspace::{WorkspaceRef, WorkspaceServices};
+use aster_core::workspace::{WorkspaceRef, WorkspaceServices};
 use anyhow::{bail, Context, Result};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 
-const SOURCE_PATH: &str = ".a3s/durable-goal.json";
+const SOURCE_PATH: &str = ".aster/durable-goal.json";
 const MAX_SOURCE_BYTES: usize = 64 * 1024;
 
 #[derive(Deserialize)]
@@ -75,7 +75,7 @@ pub(crate) async fn preview_import(
 }
 
 pub(crate) async fn commit_import(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     command: GoalDefinitionCommandV1,
 ) -> Result<DurableGoalDefinitionV1> {
     let source = command
@@ -91,9 +91,9 @@ pub(crate) async fn commit_import(
         .apply_goal_import(command, || async {
             let selected = preview_import(session.workspace(), &request)
                 .await
-                .map_err(|error| a3s_code_core::CodeError::Session(error.to_string()))?;
+                .map_err(|error| aster_core::CodeError::Session(error.to_string()))?;
             if selected.goal.objective != objective || selected.goal.paused != source.paused {
-                return Err(a3s_code_core::CodeError::Session(
+                return Err(aster_core::CodeError::Session(
                     "goal.conflict: imported content or pause posture differs from source".into(),
                 ));
             }
@@ -114,7 +114,7 @@ pub(super) async fn read_source_at(
     relative_path: &str,
     max_bytes: usize,
 ) -> Result<(WorkspaceRef, String)> {
-    let directory = std::fs::symlink_metadata(workspace.join(".a3s"))
+    let directory = std::fs::symlink_metadata(workspace.join(".aster"))
         .context("goal.not_found: legacy source directory unavailable")?;
     let metadata = std::fs::symlink_metadata(workspace.join(relative_path))
         .context("goal.not_found: legacy source unavailable")?;

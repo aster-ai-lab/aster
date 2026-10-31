@@ -1,6 +1,6 @@
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
-use a3s_code_core::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
+use aster_core::{
     Agent, AgentProtocolChangeSetRequestV1, AgentProtocolCommandV1,
     AgentProtocolEventPageRequestV1, AgentProtocolHost, AgentProtocolHostError,
     AgentProtocolRunCancelV1, AgentProtocolRunIdentityV1, AgentProtocolRunRecoverV1,
@@ -51,7 +51,7 @@ impl LlmClient for StaticStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         Ok(self.response())
     }
@@ -60,7 +60,7 @@ impl LlmClient for StaticStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let (sender, receiver) = mpsc::channel(4);
@@ -80,7 +80,7 @@ impl LlmClient for PendingStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         anyhow::bail!("pending fixture only supports streaming")
     }
@@ -89,7 +89,7 @@ impl LlmClient for PendingStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let (sender, receiver) = mpsc::channel(2);
@@ -105,6 +105,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/static".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -164,7 +165,7 @@ async fn exact_run_replay_never_executes_the_same_code_run_twice() {
         .unwrap();
     assert_eq!(
         completed.status,
-        a3s_code_core::RunStatus::Completed,
+        aster_core::RunStatus::Completed,
         "exact Run failed: {:?}",
         completed.error
     );
@@ -206,8 +207,8 @@ async fn protocol_host_executes_and_observes_the_code_owned_run() {
             .await
             .unwrap(),
     );
-    let manifest = a3s_code_core::release::AgentReleaseManifest::parse(include_str!(
-        "../../fixtures/agent-release-contract/.a3s/asset.acl"
+    let manifest = aster_core::release::AgentReleaseManifest::parse(include_str!(
+        "../../fixtures/agent-release-contract/.aster/asset.acl"
     ))
     .unwrap();
     let host = AgentProtocolHost::from_manifest(&manifest, Arc::clone(&session)).unwrap();
@@ -275,16 +276,16 @@ async fn protocol_host_rejects_a_release_for_another_code_protocol() {
             .await
             .unwrap(),
     );
-    let manifest_source = include_str!("../../fixtures/agent-release-contract/.a3s/asset.acl")
-        .replace(AGENT_PROTOCOL_V1, "a3s.code.agent.v2");
-    let manifest = a3s_code_core::release::AgentReleaseManifest::parse(&manifest_source).unwrap();
+    let manifest_source = include_str!("../../fixtures/agent-release-contract/.aster/asset.acl")
+        .replace(AGENT_PROTOCOL_V1, "aster.code.agent.v2");
+    let manifest = aster_core::release::AgentReleaseManifest::parse(&manifest_source).unwrap();
     let error = match AgentProtocolHost::from_manifest(&manifest, session) {
         Ok(_) => panic!("a v1 host must reject a release for another protocol"),
         Err(error) => error,
     };
     assert_eq!(
         error.code(),
-        "a3s.code.agent_protocol.release_protocol_mismatch"
+        "aster.code.agent_protocol.release_protocol_mismatch"
     );
 }
 
@@ -351,7 +352,7 @@ async fn protocol_cancellation_targets_only_the_active_code_run() {
     assert!(!cancelled.replayed);
     assert_eq!(
         cancelled.state,
-        a3s_code_core::AgentProtocolRunStateV1::Cancelled
+        aster_core::AgentProtocolRunStateV1::Cancelled
     );
     cancelled.validate_for(&cancel).unwrap();
 
@@ -362,8 +363,8 @@ async fn protocol_cancellation_targets_only_the_active_code_run() {
 
 #[tokio::test]
 async fn protocol_recovery_uses_code_checkpoint_semantics_and_a_fresh_exact_run() {
-    use a3s_code_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
-    use a3s_code_core::store::{MemorySessionStore, SessionStore};
+    use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
+    use aster_core::store::{MemorySessionStore, SessionStore};
 
     let workspace = tempfile::tempdir().unwrap();
     let store = Arc::new(MemorySessionStore::new());
@@ -447,7 +448,7 @@ async fn protocol_recovery_uses_code_checkpoint_semantics_and_a_fresh_exact_run(
     .expect("recovered Code run must terminate");
     assert_eq!(
         page.state,
-        a3s_code_core::AgentProtocolRunStateV1::Completed
+        aster_core::AgentProtocolRunStateV1::Completed
     );
     assert_eq!(session.runs().await.len(), 1);
     assert_eq!(session.runs().await[0].id, recovered_identity.run_id);
@@ -486,12 +487,12 @@ async fn protocol_host_rejects_invalid_release_digest_and_observation_bounds() {
     let zero_limit = host.event_page(&identity, None, 0).await.unwrap_err();
     assert_eq!(
         zero_limit.code(),
-        a3s_code_core::AgentProtocolError::InvalidField("limit").code()
+        aster_core::AgentProtocolError::InvalidField("limit").code()
     );
     let oversized = host.event_page(&identity, None, 10_000).await.unwrap_err();
     assert_eq!(
         oversized.code(),
-        a3s_code_core::AgentProtocolError::InvalidField("limit").code()
+        aster_core::AgentProtocolError::InvalidField("limit").code()
     );
     let missing = host.event_page(&identity, None, 8).await.unwrap_err();
     assert_eq!(missing.code(), AgentProtocolHostError::RunNotFound.code());
@@ -669,17 +670,17 @@ async fn protocol_host_event_page_rejects_bad_limit_and_identity_mismatch() {
         .event_page(&identity, None, 0)
         .await
         .expect_err("limit zero must fail");
-    assert_eq!(zero.code(), "a3s.code.agent_protocol.invalid_field");
+    assert_eq!(zero.code(), "aster.code.agent_protocol.invalid_field");
 
     let oversized = host
         .event_page(
             &identity,
             None,
-            a3s_code_core::AGENT_PROTOCOL_MAX_EVENTS_PER_PAGE + 1,
+            aster_core::AGENT_PROTOCOL_MAX_EVENTS_PER_PAGE + 1,
         )
         .await
         .expect_err("oversized limit must fail");
-    assert_eq!(oversized.code(), "a3s.code.agent_protocol.invalid_field");
+    assert_eq!(oversized.code(), "aster.code.agent_protocol.invalid_field");
 
     let mut foreign_release = identity.clone();
     foreign_release.agent_release_identity = format!("sha256:{}", "b".repeat(64));

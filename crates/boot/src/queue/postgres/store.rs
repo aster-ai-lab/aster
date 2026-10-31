@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use a3s_orm::{
+use aster_orm::{
     sql_query, DecodeError, Executor, FromRow, FromValue, MigrationReport, Migrator,
     PostgresDialect, PostgresError, PostgresExecutor, PostgresRow, PostgresTransaction,
     PostgresTransactionError, Query, Row, SqlQuery,
@@ -951,7 +951,7 @@ pub(super) fn decode<T: FromValue>(
     T::from_value(value, index)
 }
 
-fn query_error(error: a3s_orm::Error) -> BootError {
+fn query_error(error: aster_orm::Error) -> BootError {
     BootError::Internal(format!("PostgreSQL queue query build failed: {error}"))
 }
 

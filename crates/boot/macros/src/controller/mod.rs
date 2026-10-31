@@ -340,67 +340,67 @@ pub(crate) fn expand_controller(
         impl #self_ty {
             pub fn controller(
                 self: ::std::sync::Arc<Self>,
-            ) -> ::a3s_boot::Result<::a3s_boot::ControllerDefinition> {
-                let mut __a3s_boot_controller =
-                    ::a3s_boot::ControllerDefinition::new(#prefix)?;
+            ) -> ::aster_boot::Result<::aster_boot::ControllerDefinition> {
+                let mut __aster_boot_controller =
+                    ::aster_boot::ControllerDefinition::new(#prefix)?;
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_openapi;
+                    __aster_boot_controller = __aster_boot_controller.#controller_openapi;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_metadata?;
+                    __aster_boot_controller = __aster_boot_controller.#controller_metadata?;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_cache;
+                    __aster_boot_controller = __aster_boot_controller.#controller_cache;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_pipeline;
+                    __aster_boot_controller = __aster_boot_controller.#controller_pipeline;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_host?;
+                    __aster_boot_controller = __aster_boot_controller.#controller_host?;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_version;
+                    __aster_boot_controller = __aster_boot_controller.#controller_version;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_serialization;
+                    __aster_boot_controller = __aster_boot_controller.#controller_serialization;
                 )*
                 #(
-                    __a3s_boot_controller = #routes;
+                    __aster_boot_controller = #routes;
                 )*
-                Ok(__a3s_boot_controller)
+                Ok(__aster_boot_controller)
             }
 
-            pub fn provider_controller() -> ::a3s_boot::Result<::a3s_boot::ControllerDefinition>
+            pub fn provider_controller() -> ::aster_boot::Result<::aster_boot::ControllerDefinition>
             where
                 Self: ::std::marker::Send + ::std::marker::Sync + 'static,
             {
-                let mut __a3s_boot_controller =
-                    ::a3s_boot::ControllerDefinition::new(#prefix)?;
+                let mut __aster_boot_controller =
+                    ::aster_boot::ControllerDefinition::new(#prefix)?;
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_openapi;
+                    __aster_boot_controller = __aster_boot_controller.#controller_openapi;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_metadata?;
+                    __aster_boot_controller = __aster_boot_controller.#controller_metadata?;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_cache;
+                    __aster_boot_controller = __aster_boot_controller.#controller_cache;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_pipeline;
+                    __aster_boot_controller = __aster_boot_controller.#controller_pipeline;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_host?;
+                    __aster_boot_controller = __aster_boot_controller.#controller_host?;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_version;
+                    __aster_boot_controller = __aster_boot_controller.#controller_version;
                 )*
                 #(
-                    __a3s_boot_controller = __a3s_boot_controller.#controller_serialization;
+                    __aster_boot_controller = __aster_boot_controller.#controller_serialization;
                 )*
                 #(
-                    __a3s_boot_controller = #provider_routes;
+                    __aster_boot_controller = #provider_routes;
                 )*
-                Ok(__a3s_boot_controller)
+                Ok(__aster_boot_controller)
             }
         }
     })
@@ -462,7 +462,7 @@ fn route_registration(
     let method_ident = &method.sig.ident;
     let receiver = match controller_route_kind {
         ControllerRouteKind::Instance => quote! { &self },
-        ControllerRouteKind::Provider => quote! { &__a3s_boot_provider_controller },
+        ControllerRouteKind::Provider => quote! { &__aster_boot_provider_controller },
     };
     let explicit_status = route.args.explicit_status(http_code)?;
     let status = status_value(explicit_status)?;
@@ -507,8 +507,8 @@ fn route_registration(
         let handler =
             rendered_view_handler(method_ident, input.clone(), view, status.clone(), &receiver)?;
         quote! {
-            ::a3s_boot::RouteDefinition::#builder(#path, #handler)?
-                .with_response(#status, ::a3s_boot::OpenApiResponse::description("Success"))
+            ::aster_boot::RouteDefinition::#builder(#path, #handler)?
+                .with_response(#status, ::aster_boot::OpenApiResponse::description("Success"))
                 .with_metadata("render:view", #view)?
         }
     } else {
@@ -532,7 +532,7 @@ fn route_registration(
                     raw_or_json_request_handler(method_ident, input, &receiver)?
                 };
                 quote! {
-                    ::a3s_boot::RouteDefinition::sse(#path, #handler)?
+                    ::aster_boot::RouteDefinition::sse(#path, #handler)?
                 }
             }
             RouteFlavor::Raw => {
@@ -549,7 +549,7 @@ fn route_registration(
                     raw_or_json_request_handler(method_ident, input, &receiver)?
                 };
                 quote! {
-                    ::a3s_boot::RouteDefinition::#builder(#path, #handler)?
+                    ::aster_boot::RouteDefinition::#builder(#path, #handler)?
                 }
             }
             RouteFlavor::JsonRequest => {
@@ -563,7 +563,7 @@ fn route_registration(
                     )?;
                     json_success_status = Some(status.clone());
                     quote! {
-                        ::a3s_boot::RouteDefinition::#builder(#path, #handler)?
+                        ::aster_boot::RouteDefinition::#builder(#path, #handler)?
                     }
                 } else {
                     let builder = route.kind.json_builder_ident().ok_or_else(|| {
@@ -574,7 +574,7 @@ fn route_registration(
                     })?;
                     let handler = raw_or_json_request_handler(method_ident, input, &receiver)?;
                     quote! {
-                        ::a3s_boot::RouteDefinition::#builder(#path, #status, #handler)?
+                        ::aster_boot::RouteDefinition::#builder(#path, #status, #handler)?
                     }
                 }
             }
@@ -589,7 +589,7 @@ fn route_registration(
                     )?;
                     json_success_status = Some(status.clone());
                     quote! {
-                        ::a3s_boot::RouteDefinition::#builder(#path, #handler)?
+                        ::aster_boot::RouteDefinition::#builder(#path, #handler)?
                     }
                 } else {
                     let Some(input) = input.into_legacy_arg()? else {
@@ -606,7 +606,7 @@ fn route_registration(
                     })?;
                     let handler = json_body_handler(method_ident, input, &receiver);
                     quote! {
-                        ::a3s_boot::RouteDefinition::#builder(#path, #status, #handler)?
+                        ::aster_boot::RouteDefinition::#builder(#path, #status, #handler)?
                     }
                 }
             }
@@ -618,12 +618,12 @@ fn route_registration(
         let method = route.kind.http_method_ident();
         let provider_route = route_definition;
         route_definition = quote! {
-            ::a3s_boot::RouteDefinition::new_provider::<Self, _>(
-                ::a3s_boot::HttpMethod::#method,
+            ::aster_boot::RouteDefinition::new_provider::<Self, _>(
+                ::aster_boot::HttpMethod::#method,
                 #path,
-                move |__a3s_boot_provider_controller: ::std::sync::Arc<Self>| {
-                    let __a3s_boot_provider_route = #provider_route;
-                    Ok(__a3s_boot_provider_route)
+                move |__aster_boot_provider_controller: ::std::sync::Arc<Self>| {
+                    let __aster_boot_provider_route = #provider_route;
+                    Ok(__aster_boot_provider_route)
                 },
             )?
         };
@@ -634,7 +634,7 @@ fn route_registration(
                 (#route_definition)
                     .with_response(
                         #status,
-                        ::a3s_boot::OpenApiResponse::description("Success")
+                        ::aster_boot::OpenApiResponse::description("Success")
                     )
                     .with_metadata("render:view", #view)?
             };
@@ -676,6 +676,6 @@ fn route_registration(
     )?;
 
     Ok(quote! {
-        __a3s_boot_controller.route(#route_definition)?
+        __aster_boot_controller.route(#route_definition)?
     })
 }

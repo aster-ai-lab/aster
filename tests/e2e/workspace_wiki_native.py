@@ -153,7 +153,7 @@ def main():
 
     plane = loopback(request('GET', '/api/agent-plane', base=authority)['baseUrl'])
     agent = request('GET', '/api/agents/' + urllib.parse.quote(args.agent_id, safe=''))
-    assert agent['type'] == 'a3s-code', 'a3s-code agent required'
+    assert agent['type'] == 'aster', 'aster agent required'
     receipt['agent_id'] = agent['id']
     receipt['model'] = agent.get('model')
     try:

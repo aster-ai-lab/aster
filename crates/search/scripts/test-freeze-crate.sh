@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repository_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-temporary_root=$(mktemp -d "${TMPDIR:-/tmp}/a3s-search-freeze-test.XXXXXX")
+temporary_root=$(mktemp -d "${TMPDIR:-/tmp}/aster-search-freeze-test.XXXXXX")
 
 cleanup() {
   if [[ -d "${temporary_root}" ]]; then
@@ -60,8 +60,8 @@ package_name, package_version, git_commit, git_ref = sys.argv[3:]
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 crate_bytes = crate_path.read_bytes()
 
-assert manifest["schema"] == "a3s/search-frozen-crate/v1"
-assert manifest["repository"] == "https://github.com/A3S-Lab/Search"
+assert manifest["schema"] == "aster/search-frozen-crate/v1"
+assert manifest["repository"] == "https://github.com/aster-ai-lab/Search"
 assert manifest["git_commit"] == git_commit
 assert manifest["git_ref"] == git_ref
 assert manifest["package"]["name"] == package_name

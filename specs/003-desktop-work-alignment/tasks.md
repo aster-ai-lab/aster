@@ -31,7 +31,7 @@
 - [x] Root local-dependency/workspace guards and relevant AsterDream UI ratchets executed, no allowlist expansion
 - [ ] `just build-studio`, renderer production and applicable package/upgrade gates succeed
 - [ ] Interactive AsterDream evidence matches FR-001–FR-012; missing evidence remains incomplete
-- [x] No new crates.io A3S dependency, second Cargo workspace, native select or non-ACL product configuration
+- [x] No new crates.io Aster dependency, second Cargo workspace, native select or non-ACL product configuration
 - [x] Exact product/tenant/data and execution ownership retained; cloud/other lanes not falsely covered by local ACP evidence
 - [x] Final OUTCOME includes Explicitly not claimed and links to retained failures
 

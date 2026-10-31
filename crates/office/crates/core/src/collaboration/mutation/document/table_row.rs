@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::xml::XmlIn;
 use yrs::{
     GetString, ReadTxn, Transact, Xml, XmlElementPrelim, XmlElementRef, XmlFragment, XmlOut,
@@ -481,15 +481,15 @@ fn parent_element(element: &XmlElementRef, message: &str) -> UseResult<XmlElemen
     }
 }
 
-fn invalid_table_row(message: &str) -> a3s_use_core::UseError {
+fn invalid_table_row(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_invalid", message)
 }
 
-fn structure_conflict(message: &str) -> a3s_use_core::UseError {
+fn structure_conflict(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_structure_conflict", message)
 }
 
-fn table_too_large() -> a3s_use_core::UseError {
+fn table_too_large() -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_too_large",
         "The target Document table contains too many rows for a structural mutation.",

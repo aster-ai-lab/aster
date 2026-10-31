@@ -1,6 +1,6 @@
 #![cfg(feature = "queue")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BoxFuture, Module, ModuleRef, ProviderDefinition, Queue,
     QueueContext, QueueJob, QueueJobOptions, QueueJobState, QueueModule, QueueOptions,
     QueueRetryPolicy, Result,

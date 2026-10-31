@@ -275,7 +275,7 @@ function placeholderName(element: WorkSlideElement, index: number): string {
   const type = element.placeholder?.type || 'body';
   const key =
     element.placeholder?.key.replace(/[^a-z0-9_-]/gi, '-') || `${index + 1}`;
-  return `A3S-${type}-${key}`;
+  return `Aster-${type}-${key}`;
 }
 
 function placeholderType(

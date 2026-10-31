@@ -11,7 +11,7 @@
 use std::env;
 use std::process::ExitCode;
 
-use a3s_apofasi::{
+use aster_apofasi::{
     any_escalate, gate_response, Criteria, DecisionEngine, DecisionKind, GateAction, GatePolicy,
     LexicalEngine, Question, State, SystemOneRequest,
 };
@@ -53,7 +53,7 @@ fn run() -> Result<(), String> {
     let response = if let Some(root) = checkpoint {
         #[cfg(feature = "infer")]
         {
-            use a3s_apofasi::{DeviceRequest, NeuralEngine};
+            use aster_apofasi::{DeviceRequest, NeuralEngine};
             let engine =
                 NeuralEngine::load_with(&root, DeviceRequest::Auto).map_err(|e| e.to_string())?;
             engine.decide(&req).map_err(|e| e.to_string())?

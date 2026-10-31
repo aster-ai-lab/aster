@@ -1,7 +1,7 @@
 //! Scale executor — trait and implementations for executing scaling decisions
 //!
 //! Provides the `ScaleExecutor` async trait with three implementations:
-//! - `BoxScaleExecutor` — calls the A3S Box Scale API over HTTP (always compiled)
+//! - `BoxScaleExecutor` — calls the Aster Box Scale API over HTTP (always compiled)
 //! - `MockScaleExecutor` — records decisions in memory (for tests)
 //! - `K8sScaleExecutor` — updates Kubernetes Scale subresources (feature-gated behind `kube`)
 
@@ -109,10 +109,10 @@ pub trait ScaleExecutor: Send + Sync {
 }
 
 // ---------------------------------------------------------------------------
-// BoxScaleExecutor — calls A3S Box Scale API over HTTP
+// BoxScaleExecutor — calls Aster Box Scale API over HTTP
 // ---------------------------------------------------------------------------
 
-/// Scale executor that calls the A3S Box Scale API
+/// Scale executor that calls the Aster Box Scale API
 pub struct BoxScaleExecutor {
     /// Base URL of the Box Scale API (e.g., "http://localhost:9090")
     base_url: String,
@@ -364,7 +364,7 @@ fn probe_box_scale_url_sync(
             })
         }
         Ok(_) | Err(_) => std::thread::Builder::new()
-            .name("a3s-box-scale-activation-probe".into())
+            .name("aster-box-scale-activation-probe".into())
             .spawn(move || {
                 let runtime = tokio::runtime::Builder::new_current_thread()
                     .enable_all()

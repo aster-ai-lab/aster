@@ -85,7 +85,7 @@ fn secret_environment_manifest_is_validated_consumed_and_injected() {
     use std::os::unix::fs::PermissionsExt;
 
     let directory = tempfile::tempdir().unwrap();
-    let internal_root = directory.path().join(".a3s-box-secrets");
+    let internal_root = directory.path().join(".aster-box-secrets");
     let digest = "a".repeat(64);
     let secret_directory = internal_root.join(&digest);
     std::fs::create_dir_all(&secret_directory).unwrap();
@@ -93,7 +93,7 @@ fn secret_environment_manifest_is_validated_consumed_and_injected() {
     std::fs::write(&secret_path, b"guest-secret-value").unwrap();
     std::fs::set_permissions(&secret_path, std::fs::Permissions::from_mode(0o400)).unwrap();
     let manifest = serde_json::to_string(&vec![SecretEnvironmentBinding {
-        variable: "A3S_PROVIDER_TOKEN".into(),
+        variable: "ASTER_PROVIDER_TOKEN".into(),
         path: secret_path.to_string_lossy().into_owned(),
     }])
     .unwrap();
@@ -110,7 +110,7 @@ fn secret_environment_manifest_is_validated_consumed_and_injected() {
         config
             .env
             .iter()
-            .find(|(key, _)| key == "A3S_PROVIDER_TOKEN")
+            .find(|(key, _)| key == "ASTER_PROVIDER_TOKEN")
             .map(|(_, value)| value.as_str()),
         Some("guest-secret-value")
     );
@@ -124,7 +124,7 @@ fn secret_environment_manifest_is_validated_consumed_and_injected() {
 #[test]
 fn secret_environment_manifest_fails_closed_on_tamper() {
     let directory = tempfile::tempdir().unwrap();
-    let internal_root = directory.path().join(".a3s-box-secrets");
+    let internal_root = directory.path().join(".aster-box-secrets");
     std::fs::create_dir_all(&internal_root).unwrap();
 
     let mut invalid_json = test_exec_config(vec![(
@@ -142,7 +142,7 @@ fn secret_environment_manifest_fails_closed_on_tamper() {
         .all(|(key, _)| key != SECRET_ENVIRONMENT_MANIFEST));
 
     let escaped = serde_json::to_string(&vec![SecretEnvironmentBinding {
-        variable: "A3S_PROVIDER_TOKEN".into(),
+        variable: "ASTER_PROVIDER_TOKEN".into(),
         path: "/etc/passwd".into(),
     }])
     .unwrap();
@@ -169,7 +169,7 @@ fn tmpfs_mount_parser_separates_access_mode_from_mount_data() {
         ("/ephemeral", None, false)
     );
     assert!(parse_tmpfs_mount("/scratch:ro,rw").is_err());
-    assert!(parse_tmpfs_mount("/run/a3s-box/boot:size=4096").is_err());
+    assert!(parse_tmpfs_mount("/run/aster-box/boot:size=4096").is_err());
 }
 
 #[test]
@@ -248,7 +248,7 @@ fn staged_exec_config_accepts_long_arguments_and_rejects_invalid_input() {
     assert_eq!(parse_staged_exec_config(&bytes).unwrap(), config);
 
     let mut wrong_schema = config;
-    wrong_schema.schema = "a3s.box.guest-exec.v2".to_string();
+    wrong_schema.schema = "aster.box.guest-exec.v2".to_string();
     let error = parse_staged_exec_config(&serde_json::to_vec(&wrong_schema).unwrap())
         .unwrap_err()
         .to_string();
@@ -283,7 +283,7 @@ fn guest_boot_config_parser_accepts_bundle_and_rejects_invalid_input() {
     assert_eq!(parse_guest_boot_config(&bytes).unwrap(), config);
 
     let mut wrong_schema = config;
-    wrong_schema.schema = "a3s.box.guest-boot.v2".to_string();
+    wrong_schema.schema = "aster.box.guest-boot.v2".to_string();
     let error = parse_guest_boot_config(&serde_json::to_vec(&wrong_schema).unwrap())
         .unwrap_err()
         .to_string();
@@ -296,13 +296,13 @@ fn guest_boot_config_parser_accepts_bundle_and_rejects_invalid_input() {
 
 #[test]
 fn guest_volume_mounts_cannot_cover_runtime_state() {
-    assert!(guest_mount_path_overlaps_runtime_state("/run/a3s-box"));
+    assert!(guest_mount_path_overlaps_runtime_state("/run/aster-box"));
     assert!(guest_mount_path_overlaps_runtime_state("/run"));
     assert!(guest_mount_path_overlaps_runtime_state(
-        "/run//a3s-box/./boot"
+        "/run//aster-box/./boot"
     ));
     assert!(guest_mount_path_overlaps_runtime_state(
-        "/srv/../run/a3s-box"
+        "/srv/../run/aster-box"
     ));
     assert!(!guest_mount_path_overlaps_runtime_state("/workspace"));
 }
@@ -330,12 +330,12 @@ fn test_sidecar_config_from_env() {
 
     // Subtest 4: with env vars
     set_sidecar_env(
-        "ghcr.io/a3s-lab/safeclaw:latest",
+        "ghcr.io/aster-lab/safeclaw:latest",
         4092,
         &[("LOG_LEVEL", "debug"), ("MODE", "proxy")],
     );
     let config = SidecarConfig::from_env().unwrap();
-    assert_eq!(config.image, "ghcr.io/a3s-lab/safeclaw:latest");
+    assert_eq!(config.image, "ghcr.io/aster-lab/safeclaw:latest");
     assert_eq!(config.env.len(), 2);
     assert_eq!(
         config.env[0],

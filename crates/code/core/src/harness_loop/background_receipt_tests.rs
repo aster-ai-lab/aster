@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{ToolEffectObservationV1, ToolFileIdentityV1, ToolFileKind, ToolPathChangeV1};
+use aster_effect::{ToolEffectObservationV1, ToolFileIdentityV1, ToolFileKind, ToolPathChangeV1};
 
 fn observed(bytes: &[u8], mode: u32) -> ToolEffectObservationV1 {
     ToolEffectObservationV1::complete(vec![ToolPathChangeV1 {
@@ -58,7 +58,7 @@ fn a_background_path_budget_does_not_become_unresolved_debt() {
 fn incomplete_invalid_and_external_background_observations_remain_debt() {
     let mut ledger = MutationLedger::default();
     let mut incomplete = observed(b"partial bytes", 0o644);
-    incomplete.completeness = a3s_effect::ToolObservationCompleteness::Incomplete;
+    incomplete.completeness = aster_effect::ToolObservationCompleteness::Incomplete;
     incomplete.reason = Some("workspace read budget exceeded".into());
     incomplete
         .unresolved_external_operations
@@ -108,9 +108,9 @@ fn full_log_replay_preserves_later_foreground_after_an_unprojected_background() 
     let mut ledger = MutationLedger::default();
     let background = observed(b"older background bytes", 0o644);
     let foreground_effects = observed(b"newer foreground bytes", 0o644);
-    let foreground = a3s_effect::ToolExecutionResultV1 {
-        schema: a3s_effect::TOOL_RESULT_SCHEMA.into(),
-        identity: a3s_effect::ToolInvocationIdentityV1 {
+    let foreground = aster_effect::ToolExecutionResultV1 {
+        schema: aster_effect::TOOL_RESULT_SCHEMA.into(),
+        identity: aster_effect::ToolInvocationIdentityV1 {
             turn: 1,
             cycle: 0,
             tool_call_id: "later-foreground".into(),
@@ -118,7 +118,7 @@ fn full_log_replay_preserves_later_foreground_after_an_unprojected_background() 
             admission: None,
         },
         prepared_digest: format!("sha256:{}", "a".repeat(64)),
-        outcome: a3s_effect::ToolExecutionOutcome::Succeeded,
+        outcome: aster_effect::ToolExecutionOutcome::Succeeded,
         exit_code: Some(0),
         output: serde_json::json!("ok"),
         effects: foreground_effects,

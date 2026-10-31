@@ -58,8 +58,8 @@ type PdfDocumentBytes = {
 const PDF_VIEWER_READY_TIMEOUT_MS = 45_000;
 const PDF_MOBILE_PAGE_NAVIGATION_QUERY = '(max-width: 640px)';
 
-export const a3sPdfUiSchema: UISchema = {
-  id: 'a3s-office-pdf',
+export const asterPdfUiSchema: UISchema = {
+  id: 'aster-office-pdf',
   version: '1',
   toolbars: {},
   menus: {},
@@ -609,31 +609,31 @@ export function PdfViewer({
               theme: {
                 preference: themePreference,
                 light: {
-                  background: { app: 'var(--a3s-bg)' },
+                  background: { app: 'var(--aster-bg)' },
                   accent: {
-                    primary: 'var(--a3s-ink)',
-                    primaryHover: 'var(--a3s-body)',
-                    primaryActive: 'var(--a3s-ink)',
+                    primary: 'var(--aster-ink)',
+                    primaryHover: 'var(--aster-body)',
+                    primaryActive: 'var(--aster-ink)',
                     primaryLight: 'var(--spec-selected-row)',
-                    primaryForeground: 'var(--a3s-panel)',
+                    primaryForeground: 'var(--aster-panel)',
                   },
                   interactive: {
                     hover: 'var(--spec-hover-row)',
                     active: 'var(--spec-selected-row)',
                     selected: 'var(--spec-selected-row)',
-                    focus: 'var(--a3s-ink)',
+                    focus: 'var(--aster-ink)',
                     focusRing: 'rgb(0 0 0 / 10%)',
                   },
                   scrollbar: {
-                    track: 'var(--a3s-scrollbar-track)',
-                    thumb: 'var(--a3s-scrollbar-thumb)',
-                    thumbHover: 'var(--a3s-scrollbar-thumb-hover)',
+                    track: 'var(--aster-scrollbar-track)',
+                    thumb: 'var(--aster-scrollbar-thumb)',
+                    thumbHover: 'var(--aster-scrollbar-thumb-hover)',
                   },
                 },
-                dark: { accent: { primary: 'var(--a3s-ink)' } },
+                dark: { accent: { primary: 'var(--aster-ink)' } },
               },
               i18n: { defaultLocale: 'zh-CN' },
-              ui: { schema: a3sPdfUiSchema },
+              ui: { schema: asterPdfUiSchema },
               thumbnails: {
                 autoScroll: false,
                 buffer: 4,

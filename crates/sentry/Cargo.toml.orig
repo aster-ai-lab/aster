@@ -1,10 +1,10 @@
 [package]
-name = "a3s-sentry"
+name = "aster-sentry"
 version = "0.7.0"
 edition = "2021"
 license = "MIT"
-description = "Tiered (L1 rules / L2 LLM / L3 agent) runtime security control for AI agents, built on a3s-observer."
-repository = "https://github.com/A3S-Lab/Sentry"
+description = "Tiered (L1 rules / L2 LLM / L3 agent) runtime security control for AI agents, built on aster-observer."
+repository = "https://github.com/aster-ai-lab/Sentry"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

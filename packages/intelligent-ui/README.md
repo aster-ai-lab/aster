@@ -1,6 +1,6 @@
 # Intelligent UI
 
-Aster renders JSON Render documents directly inside messages and pending agent forms. The only component protocol is `root` / `elements` / `state`, with named props and `$bindState` field bindings. The closed catalog is generated from `a3s-form-core json-render-catalog`.
+Aster renders JSON Render documents directly inside messages and pending agent forms. The only component protocol is `root` / `elements` / `state`, with named props and `$bindState` field bindings. The closed catalog is generated from `aster-form-core json-render-catalog`.
 
 ```json-render
 {

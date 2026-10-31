@@ -8,7 +8,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKSPACE_ROOT="$(cd "${ROOT_DIR}/../.." && pwd)"
 TARGET="wasm32-unknown-unknown"
 PRIMARY="${ROOT_DIR}/generated/office-kernel.wasm"
-SOURCE="${CARGO_TARGET_DIR:-${WORKSPACE_ROOT}/target}/${TARGET}/release/a3s_office_web_kernel.wasm"
+SOURCE="${CARGO_TARGET_DIR:-${WORKSPACE_ROOT}/target}/${TARGET}/release/aster_office_web_kernel.wasm"
 
 outputs=("${PRIMARY}")
 
@@ -75,7 +75,7 @@ fi
 "${CARGO}" build \
   --locked \
   --manifest-path "${MANIFEST_PATH}" \
-  --package a3s-office-web-kernel \
+  --package aster-office-web-kernel \
   --target "${TARGET}" \
   --release
 

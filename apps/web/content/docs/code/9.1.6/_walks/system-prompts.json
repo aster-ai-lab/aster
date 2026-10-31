@@ -19,7 +19,7 @@
       "takeaway": "这里显示编入本版程序的原始文本。",
       "source": {
         "path": "crates/code/core/prompts/common/system_default.md",
-        "match": "You are A3S Code, an expert AI coding agent working inside the user's workspace.",
+        "match": "You are Aster Code, an expert AI coding agent working inside the user's workspace.",
         "after": 25
       }
     },

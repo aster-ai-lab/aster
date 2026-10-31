@@ -2,9 +2,9 @@
 
 ## Status and boundary
 
-Managed Runtime Service routing is a Gateway foundation for embedded A3S
+Managed Runtime Service routing is a Gateway foundation for embedded Aster
 hosts. It is not an ACL mutation API, a public control-plane endpoint, or a
-claim that the complete A3S Use and A3S Code package workflow is production
+claim that the complete Aster Use and Aster Code package workflow is production
 ready.
 
 Gateway-local cross-platform real OS-process qualification is covered by
@@ -73,11 +73,11 @@ original drain key replayable to `Drained`
 ## Embedded example
 
 ```rust,no_run
-use a3s_gateway::config::{GatewayConfig, ManagedTargetConfig};
-use a3s_gateway::managed_service::{
+use aster_gateway::config::{GatewayConfig, ManagedTargetConfig};
+use aster_gateway::managed_service::{
     ManagedServiceBindingRequest, ManagedServiceHealthCheck,
 };
-use a3s_gateway::{Gateway, Result};
+use aster_gateway::{Gateway, Result};
 use std::time::Duration;
 use uuid::Uuid;
 
@@ -86,7 +86,7 @@ async fn main() -> Result<()> {
     let config = GatewayConfig::from_file("gateway.acl").await?;
     let gateway = Gateway::with_managed_service_state(
         config,
-        "/var/lib/a3s-gateway/managed-runtime-services.json",
+        "/var/lib/aster-gateway/managed-runtime-services.json",
     )?;
     gateway.start().await?;
 

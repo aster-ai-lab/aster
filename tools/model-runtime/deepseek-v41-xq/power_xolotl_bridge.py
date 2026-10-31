@@ -15,10 +15,10 @@ import stat
 import sys
 import uuid
 
-SCHEMA = "a3s.power.xolotl.launch.v1"
-READY_SCHEMA = "a3s.power.xolotl.ready.v2"
+SCHEMA = "aster.power.xolotl.launch.v1"
+READY_SCHEMA = "aster.power.xolotl.ready.v2"
 MAX_IPC_BYTES = 64 * 1024
-SENTINEL = "a3s-power-owned-ipc"
+SENTINEL = "aster-power-owned-ipc"
 FIELDS = {"schema", "nonce", "parent_pid", "server", "tokenizer", "model_name",
           "engine_argv", "engine_env", "host", "port"}
 
@@ -247,7 +247,7 @@ def run_owned(value, protocol):
     os.environ.pop("STRATA_REQUEST_LINES", None)
     sys.stdout = sys.stderr
     sys.argv = [str(server)]
-    module = runpy.run_path(str(server), run_name="a3s_power_owned_xolotl")
+    module = runpy.run_path(str(server), run_name="aster_power_owned_xolotl")
     install_dsml_tool_choice(module)
     service = module["S"]
     root = Path(module["STRATA"])

@@ -1,18 +1,18 @@
 #![cfg(test)]
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingExecutorConfig, EmbeddingNormalization,
     EmbeddingProvider, EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
-use a3s_code_core::{
+use aster_core::{
     DurableMemoryRecallPolicy, DurableMemorySemanticRecall, DurableMemorySemanticRecallPolicy,
     DurableMemorySession,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet,
     MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRepository, MemoryStatus,
 };
-use a3s_memory::vector::VectorIndex;
+use aster_durable_memory::vector::VectorIndex;
 use async_trait::async_trait;
 use chrono::{TimeZone, Utc};
 use std::sync::Arc;
@@ -37,7 +37,7 @@ pub fn namespace(scope: &str) -> MemoryNamespace {
 
 pub fn evidence(name: &str, second: u32) -> EvidenceRef {
     EvidenceRef::try_new(
-        format!("a3s://semantic-refresh/{name}"),
+        format!("aster://semantic-refresh/{name}"),
         format!("sha256:{name:0>64}"),
         EvidenceKind::Verification,
         time(second),

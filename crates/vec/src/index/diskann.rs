@@ -1,6 +1,6 @@
 //! Native, sector-aligned persistence for Vamana and `DiskANN` generations.
 //!
-//! This is an A3S-owned format, not the Microsoft `DiskANN` C++ wire format.
+//! This is an Aster-owned format, not the Microsoft `DiskANN` C++ wire format.
 //! It mirrors the immutable in-memory Vamana base so recovery can validate the
 //! graph before a later disk reader makes it authoritative for search.
 
@@ -25,7 +25,7 @@ use std::sync::Arc;
 pub(super) const SECTOR_BYTES: usize = 4_096;
 pub(crate) use crate::storage_ceilings::DEFAULT_DISKANN_FILE_BYTES as MAX_FILE_BYTES;
 
-const MAGIC: &[u8; 8] = b"A3SDAN01";
+const MAGIC: &[u8; 8] = b"ASTRDAN1";
 const FORMAT_VERSION: u32 = 2;
 const FIXED_HEADER_BYTES: usize = 64;
 const CHECKSUM_OFFSET: usize = 48;

@@ -1,0 +1,37 @@
+extension "aster/home-process" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "home-process"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  plugin "shelf" {
+    entry    = "probe.txt"
+    optional = true
+  }
+
+
+  home "pdf-to-word" {
+    shelf       = "process"
+    title       = "PDF 转 Word"
+    description = "把 PDF 转成可编辑的 Word 文档"
+    order       = 10
+    action      = "file"
+    file_kind   = "pdf-to-word"
+    format      = "pdf"
+  }
+  home "word-to-pdf" {
+    shelf       = "process"
+    title       = "Word 转 PDF"
+    description = "把 Word 文档转成 PDF，方便传阅归档"
+    order       = 20
+    action      = "file"
+    file_kind   = "word-to-pdf"
+    format      = "word"
+  }
+}

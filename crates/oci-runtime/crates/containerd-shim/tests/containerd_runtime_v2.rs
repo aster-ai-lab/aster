@@ -35,7 +35,7 @@ const LINUX_RESOURCES_TYPE: &str =
     "types.containerd.io/opencontainers/runtime-spec/1/LinuxResources";
 
 #[tokio::test(flavor = "current_thread")]
-#[ignore = "requires root, a live A3S OCI host service, containerd, ctr, and permission to restart containerd"]
+#[ignore = "requires root, a live Aster OCI host service, containerd, ctr, and permission to restart containerd"]
 async fn real_containerd_runtime_v2_qualification() -> TestResult<()> {
     let config = QualificationConfig::from_environment()?;
     require_root().await?;
@@ -48,7 +48,7 @@ async fn real_containerd_runtime_v2_qualification() -> TestResult<()> {
         .duration_since(UNIX_EPOCH)
         .map_err(|error| qualification_error(format!("system clock precedes Unix epoch: {error}")))?
         .as_nanos();
-    let prefix = format!("a3s-r9-{}-{nonce:x}", std::process::id());
+    let prefix = format!("aster-r9-{}-{nonce:x}", std::process::id());
     let lifecycle_id = format!("{prefix}-lifecycle");
     let result = qualify(&config, &prefix, &lifecycle_id).await;
     let cleanup = cleanup_exact(&config, &prefix).await;
@@ -77,7 +77,7 @@ async fn real_containerd_linux_kvm_dedicated_vm_lifecycle() -> TestResult<()> {
         .duration_since(UNIX_EPOCH)
         .map_err(|error| qualification_error(format!("system clock precedes Unix epoch: {error}")))?
         .as_nanos();
-    let prefix = format!("a3s-kvm-ctrd-{}-{nonce:x}", std::process::id());
+    let prefix = format!("aster-kvm-ctrd-{}-{nonce:x}", std::process::id());
     let result = dedicated_vm::qualify_dedicated_vm_lifecycle(&config, &prefix).await;
     let cleanup = cleanup_exact(&config, &prefix).await;
     match (result, cleanup) {

@@ -1,4 +1,4 @@
-//! a3s-box SDK — drive a3s-box from Rust.
+//! aster-box SDK — drive aster-box from Rust.
 //!
 //! Provides [`client`]: typed, runtime-backed local management APIs for boxes,
 //! pause/unpause/stop/remove/prune lifecycle transitions, images, volumes,
@@ -15,7 +15,7 @@ pub mod sandbox;
 pub mod pipeline;
 
 pub use client::{
-    A3sBoxClient, A3sBoxPaths, BoxLogLine, BoxStatsSummary, BoxSummary, BuildImage,
+    AsterBoxClient, AsterBoxPaths, BoxLogLine, BoxStatsSummary, BoxSummary, BuildImage,
     BuildImageSummary, ClientError, CreateNetwork, CreateSnapshot, CreateVolume, ImageBuilder,
     ImageHealthCheckSummary, ImageHistoryEntry, ImageInspectSummary, ImageSummary,
     ListBoxesOptions, NetworkBuilder, NetworkEndpointSummary, NetworkSummary, PullImage, PushImage,
@@ -32,7 +32,7 @@ pub use sandbox::{
     DEFAULT_SANDBOX_TIMEOUT_SECONDS, MAX_ARTIFACT_BYTES,
 };
 
-pub use a3s_box_core::{
+pub use aster_box_core::{
     BoxConfig, CreateExecutionRequest, ExecOutput, ExecRequest, ExecutionCpuStats,
     ExecutionEventBatch, ExecutionEventKind, ExecutionEventsRequest, ExecutionGeneration,
     ExecutionHealthCheck, ExecutionId, ExecutionIsolation, ExecutionLease, ExecutionManager,
@@ -44,12 +44,12 @@ pub use a3s_box_core::{
     PortMapping, PortProtocol, ReconcileOutcome, RestartExecutionOptions,
     MAX_EXECUTION_EVENT_BATCH_ITEMS,
 };
-pub use a3s_box_runtime::{
+pub use aster_box_runtime::{
     NativeLinuxOciMigrationConfig, RegistryAuth, RegistryProtocol, SignaturePolicy,
 };
 
 #[cfg(unix)]
-pub use a3s_box_runtime::{
+pub use aster_box_runtime::{
     AttestationPolicy, AttestationReport, AttestationRequest, ExecClient, PtyClient,
     RaTlsAttestationClient, StreamingExec, StreamingExecInput, StreamingPty, StreamingPtyInput,
     VerificationResult,

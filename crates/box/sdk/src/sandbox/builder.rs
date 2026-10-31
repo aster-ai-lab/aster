@@ -1,19 +1,19 @@
 use std::path::PathBuf;
 
-use a3s_box_core::{ExecutionIsolation, ExecutionSnapshotId, PortMapping};
+use aster_box_core::{ExecutionIsolation, ExecutionSnapshotId, PortMapping};
 
 use super::{Sandbox, SandboxCreateOptions, SandboxNetwork, TmpfsMount, VolumeMount};
-use crate::{A3sBoxClient, Result};
+use crate::{AsterBoxClient, Result};
 
 /// Fluent builder for a local Sandbox.
 #[derive(Debug, Clone)]
 pub struct SandboxBuilder {
-    client: A3sBoxClient,
+    client: AsterBoxClient,
     options: SandboxCreateOptions,
 }
 
 impl SandboxBuilder {
-    pub(crate) fn new(client: A3sBoxClient, image: impl Into<String>) -> Self {
+    pub(crate) fn new(client: AsterBoxClient, image: impl Into<String>) -> Self {
         Self {
             client,
             options: SandboxCreateOptions::new(image),
@@ -132,7 +132,7 @@ impl SandboxBuilder {
         self.options.ports.push(PortMapping {
             host_port,
             guest_port,
-            protocol: a3s_box_core::PortProtocol::Tcp,
+            protocol: aster_box_core::PortProtocol::Tcp,
         });
         self
     }
@@ -172,7 +172,7 @@ impl SandboxBuilder {
     }
 }
 
-impl A3sBoxClient {
+impl AsterBoxClient {
     /// Start a fluent builder for a local Sandbox.
     pub fn sandbox(&self, image: impl Into<String>) -> SandboxBuilder {
         SandboxBuilder::new(self.clone(), image)

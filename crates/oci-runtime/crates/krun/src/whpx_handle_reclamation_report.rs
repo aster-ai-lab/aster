@@ -1,13 +1,13 @@
 use std::path::PathBuf;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
 use serde::{Deserialize, Serialize};
 
 use crate::WindowsBootAssetsEvidence;
 
 /// Schema emitted by the same-process Windows WHPX handle-reclamation gate.
 pub const WHPX_HANDLE_RECLAMATION_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.krun-whpx-handle-reclamation-smoke.v1";
+    "aster.oci.krun-whpx-handle-reclamation-smoke.v1";
 
 /// Fixed process-handle margin allowed after the warmed WHPX lifecycle.
 pub const WHPX_HANDLE_RECLAMATION_ALLOWED_FINAL_DELTA: u32 = 2;
@@ -80,7 +80,7 @@ impl WhpxHandleReclamationSmokeReport {
             schema_version: WHPX_HANDLE_RECLAMATION_SMOKE_SCHEMA_VERSION.to_string(),
             platform: HostPlatform::Windows,
             status: CapabilityStatus::Unavailable,
-            runtime_bundle_loaded: option_env!("A3S_OCI_KRUN_RUNTIME_DIR").is_some(),
+            runtime_bundle_loaded: option_env!("ASTER_OCI_KRUN_RUNTIME_DIR").is_some(),
             process_id: std::process::id(),
             requested_iterations,
             completed_iterations: 0,
@@ -162,7 +162,7 @@ impl WhpxHandleReclamationSmokeReport {
 mod tests {
     use std::path::PathBuf;
 
-    use a3s_oci_core::{CapabilityStatus, HostPlatform};
+    use aster_oci_core::{CapabilityStatus, HostPlatform};
 
     use super::{
         WhpxHandleReclamationSample, WhpxHandleReclamationSmokeReport,

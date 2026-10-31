@@ -117,8 +117,8 @@ A developer opens Operations or Usage and sees state correlated to their Applica
 - [ ] New behavior has small hermetic tests in the owning package; owner persistence follows its existing adapter regime.
 - [ ] Closed sets: new route/destination/capability sets have one typed definition and explicit unknown-value refusal.
 - [ ] No production `unwrap()` / `expect()` without an infallibility comment.
-- [ ] Internal `a3s-*` dependencies stay on a path in this repository.
-- [ ] Product configuration, if any, is ACL parsed by `a3s-acl`; UX specifications are documentation, not a second runtime configuration language.
+- [ ] Internal `aster-*` dependencies stay on a path in this repository.
+- [ ] Product configuration, if any, is ACL parsed by `aster-acl`; UX specifications are documentation, not a second runtime configuration language.
 - [ ] Evidence target: `docs/evidence/dashboard/<date>-console-simplification/OUTCOME.md` for each implementation slice.
 
 ## Success Criteria *(mandatory)*

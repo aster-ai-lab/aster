@@ -1,7 +1,7 @@
 use std::io::{Read, Seek, SeekFrom, Write};
 use std::sync::Arc;
 
-use a3s_use_core::{
+use aster_use_core::{
     inspect_okf_bundle_files, OkfBundleContract, OkfBundleFile, OkfBundleLimits,
     OkfCapabilityProjection, OkfFormatVersion, PackageSurfaceKind, PlanQualifiedSurfaceRef,
     PlanScope, PlanScopeKind, PluginSurfaceRef, OKF_BUNDLE_CONTRACT_SCHEMA,
@@ -628,7 +628,7 @@ async fn storage_accounting_rejects_receipt_row_identity_tampering() {
         .await
         .unwrap_err();
     assert_eq!(repair.code, "use.okf.knowledge_database_invalid");
-    let backup = temporary.path().join("tampered.a3s-okf-backup");
+    let backup = temporary.path().join("tampered.aster-okf-backup");
     let error = adapter.backup(&workspace_scope, &backup).await.unwrap_err();
     assert_eq!(error.code, "use.okf.knowledge_database_invalid");
     assert!(!backup.exists());
@@ -710,7 +710,7 @@ async fn backup_is_scope_bound_verified_and_never_overwrites() {
         files,
     )
     .await;
-    let backup = temporary.path().join("workspace.a3s-okf-backup");
+    let backup = temporary.path().join("workspace.aster-okf-backup");
 
     let created = adapter.backup(&workspace_scope, &backup).await.unwrap();
     assert_eq!(created.scope, workspace_scope);
@@ -727,14 +727,14 @@ async fn backup_is_scope_bound_verified_and_never_overwrites() {
     unknown_field["storage"]["unexpected"] = serde_json::json!(true);
     assert!(serde_json::from_value::<OkfKnowledgeBackupManifest>(unknown_field).is_err());
 
-    let manifest_tamper = temporary.path().join("manifest-tamper.a3s-okf-backup");
+    let manifest_tamper = temporary.path().join("manifest-tamper.aster-okf-backup");
     std::fs::copy(&backup, &manifest_tamper).unwrap();
     let mut file = std::fs::OpenOptions::new()
         .read(true)
         .write(true)
         .open(&manifest_tamper)
         .unwrap();
-    let manifest_offset = u64::try_from(b"A3S-OKF-BACKUP\n".len() + 4 + 32).unwrap();
+    let manifest_offset = u64::try_from(b"Aster-OKF-BACKUP\n".len() + 4 + 32).unwrap();
     file.seek(SeekFrom::Start(manifest_offset)).unwrap();
     let mut manifest_byte = [0_u8; 1];
     file.read_exact(&mut manifest_byte).unwrap();

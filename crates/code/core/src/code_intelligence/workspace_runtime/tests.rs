@@ -151,7 +151,7 @@ async fn missing_language_program_is_unavailable_before_the_first_query() {
         &initial,
         file_system,
         Duration::from_secs(1),
-        vec![LanguageServerProfile::rust("a3s-missing-language-server")],
+        vec![LanguageServerProfile::rust("aster-missing-language-server")],
     );
 
     let status = runtime.subscribe_status().borrow().clone();
@@ -159,7 +159,7 @@ async fn missing_language_program_is_unavailable_before_the_first_query() {
     assert!(status.languages[0]
         .message
         .as_deref()
-        .is_some_and(|message| message.contains("a3s-missing-language-server")));
+        .is_some_and(|message| message.contains("aster-missing-language-server")));
     let error = runtime
         .document_symbols(
             &WorkspacePath::from_normalized("src/lib.rs"),
@@ -168,7 +168,7 @@ async fn missing_language_program_is_unavailable_before_the_first_query() {
         .await
         .unwrap_err();
     assert!(
-        error.to_string().contains("a3s-missing-language-server"),
+        error.to_string().contains("aster-missing-language-server"),
         "{error}"
     );
 }

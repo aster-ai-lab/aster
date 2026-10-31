@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "binding_schema_version": 5,
-  "semantic_binding_schema": "a3s.code.memory.semantic-recall-binding.v1",
-  "fusion_profile": "a3s.code.memory.hybrid.rrf-k60.v1",
+  "semantic_binding_schema": "aster.code.memory.semantic-recall-binding.v1",
+  "fusion_profile": "aster.code.memory.hybrid.rrf-k60.v1",
   "embedding": {
     "provider": "fixture",
     "model": "cross-language-semantic-v1",

@@ -20,7 +20,7 @@ export class DocxImageLayerPatchCollector {
     layer: WorkDocumentImageLayer,
   ): string {
     if (layout === 'inline') return '';
-    const marker = `__A3S_IMAGE_LAYER_${this.nextMarker}__`;
+    const marker = `__ASTER_IMAGE_LAYER_${this.nextMarker}__`;
     this.nextMarker += 1;
     this.patches.push({ marker, layer: normalizeDocumentImageLayer(layer) });
     return marker;

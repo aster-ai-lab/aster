@@ -11,8 +11,8 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 
-FIXTURE_TITLE = "A3S Controlled CDP Fixture"
-FIXTURE_URL = "https://docs.a3s.dev/controlled-cdp-fixture"
+FIXTURE_TITLE = "Aster Controlled CDP Fixture"
+FIXTURE_URL = "https://docs.aster.dev/controlled-cdp-fixture"
 
 
 class FixtureHandler(BaseHTTPRequestHandler):

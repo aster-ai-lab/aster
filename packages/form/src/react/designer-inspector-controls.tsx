@@ -46,15 +46,15 @@ export function InspectorSection({
     return (
       <section
         className={[
-          'a3s-form-inspector-section',
-          'a3s-form-inspector-disclosure',
+          'aster-form-inspector-section',
+          'aster-form-inspector-disclosure',
           'accordion',
           className,
         ]
           .filter(Boolean)
           .join(' ')}
       >
-        <details className="a3s-form-disclosure" open={defaultOpen}>
+        <details className="aster-form-disclosure" open={defaultOpen}>
           <summary>
             <span>
               <h3>{title}</h3>
@@ -63,18 +63,18 @@ export function InspectorSection({
             {summary && <small>{summary}</small>}
             <DesignerIcon name="chevron-down" size={12} />
           </summary>
-          <div className="a3s-form-inspector-section-content">{children}</div>
+          <div className="aster-form-inspector-section-content">{children}</div>
         </details>
       </section>
     );
   }
   return (
-    <section className={['a3s-form-inspector-section', className].filter(Boolean).join(' ')}>
+    <section className={['aster-form-inspector-section', className].filter(Boolean).join(' ')}>
       <header>
         <h3>{title}</h3>
         {description && <p>{description}</p>}
       </header>
-      <div className="a3s-form-inspector-section-content">{children}</div>
+      <div className="aster-form-inspector-section-content">{children}</div>
     </section>
   );
 }
@@ -95,7 +95,7 @@ export function SettingGroup({
   if (collapsible) {
     return (
       <details
-        className="a3s-form-setting-group a3s-form-disclosure is-collapsible"
+        className="aster-form-setting-group aster-form-disclosure is-collapsible"
         open={defaultOpen}
       >
         <summary>
@@ -108,7 +108,7 @@ export function SettingGroup({
     );
   }
   return (
-    <section className="a3s-form-setting-group">
+    <section className="aster-form-setting-group">
       <h4>{title}</h4>
       <div>{children}</div>
     </section>
@@ -176,7 +176,7 @@ export function ValueShape({
           ? '多项选择'
           : undefined;
   return (
-    <div className="a3s-form-value-shape">
+    <div className="aster-form-value-shape">
       <span>值结构</span>
       <strong>{detail ? `${type} · ${detail}` : type}</strong>
     </div>
@@ -199,8 +199,8 @@ export function ComponentContext({ node }: { node: UiNode }) {
     hidden: '隐藏值保留在受控数据中，填写页不显示。',
     calculated: '计算结果只读展示受控值或 computed 规则结果。',
     currency: '货币代码只负责展示，受控值保持为数值。',
-    'a3s.file-upload': '文件类型和上传并发在此设置；数量限制在校验面板中设置。',
-    'a3s.signature': '签名方式和笔迹外观在此设置；签名内容由宿主服务保存。',
+    'aster.file-upload': '文件类型和上传并发在此设置；数量限制在校验面板中设置。',
+    'aster.signature': '签名方式和笔迹外观在此设置；签名内容由宿主服务保存。',
   };
   const message =
     node.layout === 'data-grid'
@@ -208,7 +208,7 @@ export function ComponentContext({ node }: { node: UiNode }) {
       : node.kind === 'repeater'
         ? '重复项按数组存储，行标识用于稳定排序和组件状态。'
         : messages[node.widget ?? ''];
-  return message ? <p className="a3s-form-component-context">{message}</p> : null;
+  return message ? <p className="aster-form-component-context">{message}</p> : null;
 }
 
 export function Control({
@@ -220,9 +220,9 @@ export function Control({
   hint?: string;
   children: ReactElement<{ id?: string; className?: string }>;
 }) {
-  const generatedId = `a3s-form-control-${useId().replaceAll(':', '')}`;
+  const generatedId = `aster-form-control-${useId().replaceAll(':', '')}`;
   const controlId = children.props.id ?? generatedId;
-  const a3sUiClass =
+  const asterUiClass =
     children.type === 'input'
       ? 'input'
       : children.type === 'textarea'
@@ -230,10 +230,10 @@ export function Control({
         : children.type === 'select'
           ? 'select'
           : undefined;
-  const className = [a3sUiClass, children.props.className].filter(Boolean).join(' ') || undefined;
+  const className = [asterUiClass, children.props.className].filter(Boolean).join(' ') || undefined;
   const child = cloneElement(children, { id: controlId, className });
   return (
-    <div className="a3s-form-control field">
+    <div className="aster-form-control field">
       <label htmlFor={controlId}>
         <span>{label}</span>
         {hint && <small>{hint}</small>}
@@ -252,9 +252,9 @@ export function Toggle({
   checked: boolean;
   onChange: (checked: boolean) => void;
 }) {
-  const id = `a3s-form-toggle-${useId().replaceAll(':', '')}`;
+  const id = `aster-form-toggle-${useId().replaceAll(':', '')}`;
   return (
-    <div className="a3s-form-toggle field" data-orientation="horizontal">
+    <div className="aster-form-toggle field" data-orientation="horizontal">
       <input
         id={id}
         className="input"

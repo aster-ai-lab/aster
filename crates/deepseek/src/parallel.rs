@@ -8,7 +8,7 @@ use crate::{
     },
     model::topology::TextArchitecture,
 };
-use a3s_power::{
+use aster_power::{
     error::Result,
     inference::{CudaPeerCopyReceipt, CudaPeerGroup, CudaPeerSession, InferenceLimits},
 };

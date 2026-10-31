@@ -18,7 +18,7 @@ CI = WORKFLOWS / "ci.yml"
 class CodeReleaseWorkflowTest(unittest.TestCase):
     def test_core_acp_release_does_not_build_test_or_package_product_apps(self):
         text = WORKFLOW.read_text()
-        self.assertIn("cargo build --locked --release -p a3s-code-acp --bin a3s-code-acp", text)
+        self.assertIn("cargo build --locked --release -p aster-acp --bin aster-acp", text)
         self.assertNotIn("cargo test", text)
         self.assertNotIn("cargo fmt", text)
         self.assertNotIn("cargo build --locked --release -p aster", text)
@@ -28,7 +28,7 @@ class CodeReleaseWorkflowTest(unittest.TestCase):
 
     def test_tag_publish_waits_for_qualification_and_all_cached_code_lanes(self):
         text = WORKFLOW.read_text()
-        self.assertIn('tags:\n      - "a3s-code-v[0-9]+.[0-9]+.[0-9]+"', text)
+        self.assertIn('tags:\n      - "aster-v[0-9]+.[0-9]+.[0-9]+"', text)
         self.assertIn("needs: qualified", text)
         self.assertIn("needs: build", text)
         self.assertIn("actions/workflows/qualify-code.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed", text)
@@ -51,8 +51,8 @@ class CodeReleaseWorkflowTest(unittest.TestCase):
             self.assertIn('push:\n    branches: ["**"]\n  pull_request:', workflow.read_text())
         text = QUALIFY.read_text()
         self.assertIn("name: Test ACP unit and wire contracts", text)
-        self.assertIn("cargo test --locked -p a3s-code-acp --lib -- --test-threads=1", text)
-        self.assertIn("cargo test --locked -p a3s-code-acp --test acp_conformance_stdio", text)
+        self.assertIn("cargo test --locked -p aster-acp --lib -- --test-threads=1", text)
+        self.assertIn("cargo test --locked -p aster-acp --test acp_conformance_stdio", text)
         self.assertIn("Core/ACP portable tests (windows-latest)", text)
         self.assertIn("agent::tests::unsupported_prompt_content_fails_closed_before_a_turn", text)
         self.assertEqual(text.count("uses: Swatinem/rust-cache@"), 2)
@@ -95,9 +95,9 @@ printf '%s\\n' "$QUALIFIED_COUNT"
 
 
 class CodePublication(unittest.TestCase):
-    def publish(self, *, tag="a3s-code-v9.1.6", core="9.1.6", notes=True, wrong_asset=False):
+    def publish(self, *, tag="aster-v9.1.6", core="9.1.6", notes=True, wrong_asset=False):
         script = workflow_script("release-code.yml", "Publish versioned release")
-        with tempfile.TemporaryDirectory(prefix="aster-code-release-") as directory:
+        with tempfile.TemporaryDirectory(prefix="aster-release-") as directory:
             root = Path(directory)
             commands, dist = root / "commands", root / "dist"
             commands.mkdir()
@@ -111,7 +111,7 @@ class CodePublication(unittest.TestCase):
             if notes:
                 note.write_text("Qualified source notes.\n")
             for platform, suffix in [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")]:
-                name = f"a3s-code-acp-v9.1.6-{platform}.{suffix}"
+                name = f"aster-acp-v9.1.6-{platform}.{suffix}"
                 if wrong_asset and platform == "windows":
                     name = "retired-product.zip"
                 (dist / name).write_bytes(b"opaque archive fixture")

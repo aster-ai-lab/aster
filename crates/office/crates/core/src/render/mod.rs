@@ -4,7 +4,7 @@ mod output;
 mod svg;
 mod unit;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 

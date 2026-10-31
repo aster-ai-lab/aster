@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex};
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
+use aster_oci_sdk::{
     async_trait, ContainerId, ContainerRecord, CreateAttachments, CreateRequest, DeleteMode,
     DeleteRequest, DriverKind, Error, ErrorCode, ExitStatus, Generation, IsolationClass,
     IsolationRequest, KillRequest, OciBundle, OciRuntimeService, OperationContext, OperationId,
@@ -326,7 +326,7 @@ async fn missing_start_process_fails_before_create_mutation() {
     }))
     .expect("decode create-only OCI fixture");
     request.create.bundle = OciBundle::from_spec(
-        std::env::temp_dir().join("a3s-oci-sdk-run-without-process"),
+        std::env::temp_dir().join("aster-oci-sdk-run-without-process"),
         spec,
     )
     .expect("construct create-only OCI bundle");
@@ -353,7 +353,7 @@ fn run_request() -> RunRequest {
     }))
     .expect("decode OCI fixture");
     let bundle = OciBundle::from_spec(
-        std::env::temp_dir().join("a3s-oci-sdk-run-composition"),
+        std::env::temp_dir().join("aster-oci-sdk-run-composition"),
         spec,
     )
     .expect("construct OCI bundle");
@@ -382,7 +382,7 @@ fn record(
         .id(id.as_str())
         .status(status)
         .pid(4242)
-        .bundle(std::env::temp_dir().join("a3s-oci-sdk-run-composition"))
+        .bundle(std::env::temp_dir().join("aster-oci-sdk-run-composition"))
         .build()
         .map_err(|error| Error::new(ErrorCode::Internal, error.to_string()))?;
     Ok(ContainerRecord {

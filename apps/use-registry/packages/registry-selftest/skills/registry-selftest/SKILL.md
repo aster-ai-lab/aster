@@ -1,9 +1,9 @@
 ---
 name: registry-selftest
-description: How to discover, review, install, and remove packages from the official A3S Use Registry.
+description: How to discover, review, install, and remove packages from the official Aster Use Registry.
 ---
 
-# A3S Use Registry consumption
+# Aster Use Registry consumption
 
 This Registry serves signed packages through static TUF metadata.
 Every package is verified end to end before anything is installed. Use the
@@ -22,25 +22,25 @@ workflow below; never bypass the review boundary.
 
 ```bash
 # Configure the pinned source (digest obtained out of band):
-a3s-use registry source add official \
-  --github A3S-Lab/Use-Registry \
+aster-use registry source add official \
+  --github aster-ai-lab/Use-Registry \
   --trust-root sha256:<pinned-root-digest> \
   --json
 
 # Discover and inspect:
-a3s-use plugin search <query> --scope-kind user --scope-id user/<name> --json
-a3s-use plugin inspect <publisher>/<name> --scope-kind user --scope-id user/<name> --json
+aster-use plugin search <query> --scope-kind user --scope-id user/<name> --json
+aster-use plugin inspect <publisher>/<name> --scope-kind user --scope-id user/<name> --json
 
 # Plan first, review the plan digest, then apply:
-a3s-use plugin plan-install <publisher>/<name> \
+aster-use plugin plan-install <publisher>/<name> \
   --scope-kind user --scope-id user/<name> --json
-a3s-use plugin apply-plan --operation-id <id> --plan-digest <sha256> \
+aster-use plugin apply-plan --operation-id <id> --plan-digest <sha256> \
   --scope-kind user --scope-id user/<name> --yes --json
 
 # Observe, cancel before admission, or remove:
-a3s-use plugin observe-operation <publisher>/<name> --operation-id <id> \
+aster-use plugin observe-operation <publisher>/<name> --operation-id <id> \
   --plan-digest <sha256> --scope-kind user --scope-id user/<name> --json
-a3s-use uninstall <publisher>/<name> --scope-kind user --scope-id user/<name> --json
+aster-use uninstall <publisher>/<name> --scope-kind user --scope-id user/<name> --json
 ```
 
 ## Rules that keep you safe

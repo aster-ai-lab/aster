@@ -1,10 +1,10 @@
 use crate::{BootError, BoxFuture, ModuleRef, Result};
-pub use a3s_lane::{
+pub use aster_lane::{
     DeduplicationOptions as QueueDeduplicationOptions, JobOptions as QueueJobOptions,
     JobPriority as QueueJobPriority, JobRetention as QueueJobRetention,
     RetryPolicy as QueueRetryPolicy,
 };
-use a3s_lane::{
+use aster_lane::{
     InMemoryJobQueue, Job, JobListOptions, JobQueueBackend as LaneJobQueueBackend,
     JobQueueStats as LaneJobQueueStats, JobState as LaneJobState, LaneError,
 };
@@ -428,7 +428,7 @@ impl fmt::Debug for InProcessQueueBackend {
             .map(|handles| handles.len())
             .unwrap_or(0);
         f.debug_struct("InProcessQueueBackend")
-            .field("engine", &"a3s-lane")
+            .field("engine", &"aster-lane")
             .field("options", &self.options)
             .field("processors", &processors)
             .field("workers", &workers)

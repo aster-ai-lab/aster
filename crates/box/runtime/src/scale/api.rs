@@ -2,7 +2,7 @@
 
 use std::{net::SocketAddr, sync::Arc};
 
-use a3s_box_core::scale::{ScaleObservation, ScaleOperationConflict, ScaleOperationRequest};
+use aster_box_core::scale::{ScaleObservation, ScaleOperationConflict, ScaleOperationRequest};
 use axum::{
     extract::{DefaultBodyLimit, Path, State},
     http::StatusCode,
@@ -245,7 +245,7 @@ mod tests {
     };
 
     use super::*;
-    use a3s_box_core::{
+    use aster_box_core::{
         scale::{ScaleDirection, ScaleOperationResponse, SCALE_OPERATION_SCHEMA_VERSION},
         ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult, ExecutionState,
         KillOutcome,

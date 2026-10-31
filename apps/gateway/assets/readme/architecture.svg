@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
   <title id="title">Kense Gateway desired-state and local traffic boundaries</title>
-  <desc id="desc">Standalone ACL or A3S Cloud supplies complete desired state. Gateway validates it, activates one immutable snapshot, and handles policy and streaming locally before selecting healthy model backends.</desc>
+  <desc id="desc">Standalone ACL or Aster Cloud supplies complete desired state. Gateway validates it, activates one immutable snapshot, and handles policy and streaming locally before selecting healthy model backends.</desc>
 
   <rect x="1" y="1" width="1198" height="558" rx="26" fill="#f8fbff" stroke="#d5e1f0" stroke-width="2"/>
   <text x="56" y="62" fill="#101827" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="42" font-weight="740" letter-spacing="-1.2">Desired state changes. Token traffic stays local.</text>
@@ -19,7 +19,7 @@
     <text x="0" y="184" fill="#7d899b" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17">OR</text>
 
     <rect x="0" y="206" width="246" height="118" rx="16" fill="#ffffff" stroke="#a9cfbf"/>
-    <text x="24" y="246" fill="#0c8a65" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="24" font-weight="720">A3S Cloud</text>
+    <text x="24" y="246" fill="#0c8a65" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="24" font-weight="720">Aster Cloud</text>
     <text x="24" y="278" fill="#56657b" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17">exact revision + digest</text>
     <text x="24" y="304" fill="#7d899b" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16">certificate · target generation</text>
   </g>

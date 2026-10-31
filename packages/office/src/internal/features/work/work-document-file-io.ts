@@ -37,7 +37,7 @@ export async function importWorkDocumentFile(
       () => null,
     );
     recordDocumentImportMeasure(
-      'a3s-office.document.package',
+      'aster-office.document.package',
       packageStartedAt,
       documentImportNow(),
     );
@@ -59,7 +59,7 @@ export async function importWorkDocumentFile(
         .bytes('word/document.xml')
         .catch(() => null);
       recordDocumentImportMeasure(
-        'a3s-office.document.large-simple-inflate',
+        'aster-office.document.large-simple-inflate',
         inflateStartedAt,
         documentImportNow(),
       );
@@ -81,7 +81,7 @@ export async function importWorkDocumentFile(
       }
     }
     recordDocumentImportMeasure(
-      'a3s-office.document.large-simple-inspection',
+      'aster-office.document.large-simple-inspection',
       largeSimpleStartedAt,
       documentImportNow(),
       { accepted: Boolean(largeSimple), path: largeSimplePath },
@@ -107,7 +107,7 @@ export async function importWorkDocumentFile(
         ),
       };
       recordDocumentImportMeasure(
-        'a3s-office.document.structured-model',
+        'aster-office.document.structured-model',
         modelStartedAt,
         documentImportNow(),
         {
@@ -131,7 +131,7 @@ export async function importWorkDocumentFile(
       };
       rememberWorkSourceBlob(artifact.id, file);
       recordDocumentImportMeasure(
-        'a3s-office.document.import-total',
+        'aster-office.document.import-total',
         importStartedAt,
         documentImportNow(),
         { path: 'large-simple' },
@@ -147,7 +147,7 @@ export async function importWorkDocumentFile(
       sourcePackage ?? undefined,
     ).catch(() => null);
     recordDocumentImportMeasure(
-      'a3s-office.document.prepare',
+      'aster-office.document.prepare',
       prepareStartedAt,
       documentImportNow(),
     );
@@ -162,7 +162,7 @@ export async function importWorkDocumentFile(
       ? { value: plainHtml, messages: [] }
       : await convertDocxHtmlWithMammoth(conversionBuffer);
     recordDocumentImportMeasure(
-      'a3s-office.document.mammoth',
+      'aster-office.document.mammoth',
       mammothStartedAt,
       documentImportNow(),
     );
@@ -209,7 +209,7 @@ export async function importWorkDocumentFile(
         )
       : result.value;
     recordDocumentImportMeasure(
-      'a3s-office.document.markers',
+      'aster-office.document.markers',
       markersStartedAt,
       documentImportNow(),
     );
@@ -240,7 +240,7 @@ export async function importWorkDocumentFile(
         : {}),
     });
     recordDocumentImportMeasure(
-      'a3s-office.document.structured-model',
+      'aster-office.document.structured-model',
       modelStartedAt,
       documentImportNow(),
       { windowed: false },
@@ -253,7 +253,7 @@ export async function importWorkDocumentFile(
       sourcePackage,
     );
     recordDocumentImportMeasure(
-      'a3s-office.document.compatibility',
+      'aster-office.document.compatibility',
       compatibilityStartedAt,
       documentImportNow(),
     );
@@ -267,7 +267,7 @@ export async function importWorkDocumentFile(
     };
     rememberWorkSourceBlob(artifact.id, file);
     recordDocumentImportMeasure(
-      'a3s-office.document.import-total',
+      'aster-office.document.import-total',
       importStartedAt,
       documentImportNow(),
       { path: 'complete' },

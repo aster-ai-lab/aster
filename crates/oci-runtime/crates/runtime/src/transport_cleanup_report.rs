@@ -1,16 +1,16 @@
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportFaultPoint, AgentTransportFaultStage,
     AgentTransportOperationStage, AgentTransportShutdownStage, AGENT_PROTOCOL_VERSION_MAX,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{ErrorCode, OperationId};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{ErrorCode, OperationId};
 use serde::{Deserialize, Serialize};
 
 use crate::report::AgentVmSmokeReport;
 
 /// Schema emitted by the real utility-VM Host/Guest transport cleanup diagnostic.
 pub const OCI_VM_TRANSPORT_FAULT_CLEANUP_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-transport-fault-cleanup.v3";
+    "aster.oci.oci-vm-transport-fault-cleanup.v3";
 
 /// Retained evidence for one real utility-VM transport interruption.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -241,12 +241,12 @@ pub(crate) fn is_retryable_disconnect_operation(operation: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AgentOperation, AgentTransportFaultPoint, AgentTransportOperationStage,
         AgentTransportShutdownStage, AGENT_PROTOCOL_VERSION_MAX,
     };
-    use a3s_oci_core::{CapabilityStatus, HostPlatform};
-    use a3s_oci_sdk::{ErrorCode, OperationId};
+    use aster_oci_core::{CapabilityStatus, HostPlatform};
+    use aster_oci_sdk::{ErrorCode, OperationId};
     use serde_json::json;
 
     use super::OciVmTransportFaultCleanupReport;
@@ -397,7 +397,7 @@ mod tests {
         let mut report = AgentVmSmokeReport::initial(HostPlatform::Macos);
         report.status = CapabilityStatus::Available;
         report.endpoint_bound = true;
-        report.endpoint_name = Some("a3s-oci-agent-00000000000000000000000000000000".into());
+        report.endpoint_name = Some("aster-oci-agent-00000000000000000000000000000000".into());
         report.shim_spawned = true;
         report.shim_process_id = Some(41);
         report.bridge_process_id = Some(42);
@@ -427,7 +427,7 @@ mod tests {
         let mut report = AgentVmSmokeReport::initial(HostPlatform::Linux);
         report.status = CapabilityStatus::Available;
         report.endpoint_bound = true;
-        report.endpoint_name = Some("a3s-oci-agent-linux-transport".into());
+        report.endpoint_name = Some("aster-oci-agent-linux-transport".into());
         report.shim_spawned = true;
         report.shim_process_id = Some(101);
         report.bridge_process_id = Some(102);

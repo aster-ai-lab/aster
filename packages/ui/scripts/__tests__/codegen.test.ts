@@ -21,7 +21,7 @@ describe('generateAvatar', () => {
 
       const content = readFileSync(outPath, 'utf-8')
       expect(content).toMatch(
-        /import \{ Avatar, AvatarFallback \} from '@a3s\/ui\/components\/primitives\/avatar';?\nimport \{ cn \} from '@a3s\/ui\/lib\/utils';?\n\nimport \{ type IconAvatarProps \} from '\.\.\/\.\.\/types';?/
+        /import \{ Avatar, AvatarFallback \} from '@aster\/ui\/components\/primitives\/avatar';?\nimport \{ cn \} from '@aster\/ui\/lib\/utils';?\n\nimport \{ type IconAvatarProps \} from '\.\.\/\.\.\/types';?/
       )
       expect(content).toMatch(/<ExampleLight[\s\S]*?style=\{\{ width: size, height: size \}\}/)
       expect(content).not.toContain('size * 0.6')

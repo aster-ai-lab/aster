@@ -152,13 +152,13 @@ fn accepts_validated_normative_cross_field_boundaries() {
             }
         },
         "vm": {
-            "hypervisor": {"path": "/usr/bin/a3s-vmm"},
+            "hypervisor": {"path": "/usr/bin/aster-vmm"},
             "kernel": {
-                "path": "/usr/lib/a3s/vmlinux",
-                "initrd": "/usr/lib/a3s/initrd"
+                "path": "/usr/lib/aster/vmlinux",
+                "initrd": "/usr/lib/aster/initrd"
             },
             "image": {
-                "path": "/var/lib/a3s/root.raw",
+                "path": "/var/lib/aster/root.raw",
                 "format": "raw"
             }
         }
@@ -204,10 +204,10 @@ fn validates_linux_device_identity_and_conditional_numbers() {
         "linux": {
             "devices": [
                 {"type": "c", "path": "/dev/null", "major": 1, "minor": 3},
-                {"type": "p", "path": "/run/a3s/device-fifo"},
+                {"type": "p", "path": "/run/aster/device-fifo"},
                 {
                     "type": "p",
-                    "path": "/run/a3s/device-fifo-with-ignored-numbers",
+                    "path": "/run/aster/device-fifo-with-ignored-numbers",
                     "major": -1,
                     "minor": 9223372036854775807_i64
                 }
@@ -397,7 +397,7 @@ fn validates_pinned_oci_image_annotation_values() {
             "org.opencontainers.image.os.features": r#"["sse4","aes"]"#,
             "org.opencontainers.image.architecture": "arm64",
             "org.opencontainers.image.variant": "v8",
-            "org.opencontainers.image.author": "A3S Lab <dev@a3s.dev>",
+            "org.opencontainers.image.author": "Aster <dev@aster.dev>",
             "org.opencontainers.image.created": "2026-08-17T10:11:12.123456789+08:00",
             "org.opencontainers.image.stopSignal": "SIGRTMIN+3"
         }
@@ -742,8 +742,8 @@ fn rejects_nul_in_vm_runtime_paths_and_parameters() {
         "root": {"path": "rootfs"},
         "vm": {
             "hypervisor": {
-                "path": "/runtime/a3s-vmm\u{0}",
-                "parameters": ["--machine", "a3s\u{0}"]
+                "path": "/runtime/aster-vmm\u{0}",
+                "parameters": ["--machine", "aster\u{0}"]
             },
             "kernel": {
                 "path": "/runtime/vmlinux\u{0}",

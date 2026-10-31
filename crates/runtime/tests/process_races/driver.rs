@@ -1,10 +1,10 @@
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     IsolationLevel, NetworkMode, ResourceControl, RuntimeActionRequest, RuntimeCapabilities,
     RuntimeExecRequest, RuntimeExecResult, RuntimeFailure, RuntimeFeature, RuntimeInspection,
     RuntimeLogChunk, RuntimeLogQuery, RuntimeObservation, RuntimeRemoval, RuntimeUnitClass,
     RuntimeUnitSpec, RuntimeUnitState,
 };
-use a3s_runtime::{ProviderId, RuntimeDriver, RuntimeError, RuntimeResult, RuntimeUnitRecord};
+use aster_runtime::{ProviderId, RuntimeDriver, RuntimeError, RuntimeResult, RuntimeUnitRecord};
 use async_trait::async_trait;
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
@@ -16,8 +16,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 pub const IMAGE_MEDIA_TYPE: &str = "application/vnd.oci.image.manifest.v1+json";
 const PROVIDER_BUILD: &str = "process-race-driver/1";
-const FAILPOINT_ENV: &str = "A3S_RUNTIME_PROCESS_DRIVER_FAILPOINT";
-const FAILPOINT_READY_ENV: &str = "A3S_RUNTIME_PROCESS_DRIVER_FAILPOINT_READY";
+const FAILPOINT_ENV: &str = "ASTER_RUNTIME_PROCESS_DRIVER_FAILPOINT";
+const FAILPOINT_READY_ENV: &str = "ASTER_RUNTIME_PROCESS_DRIVER_FAILPOINT_READY";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -255,7 +255,7 @@ impl RuntimeDriver for ProcessRaceDriver {
 
     async fn apply(
         &self,
-        request: &a3s_runtime::contract::RuntimeApplyRequest,
+        request: &aster_runtime::contract::RuntimeApplyRequest,
         current: &RuntimeObservation,
     ) -> RuntimeResult<RuntimeObservation> {
         let driver = self.clone();

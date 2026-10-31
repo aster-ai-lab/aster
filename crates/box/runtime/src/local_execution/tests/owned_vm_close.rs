@@ -5,8 +5,8 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex as StdMutex;
 use std::time::Instant;
 
-use a3s_box_core::vmm::OwnedCloseBudget;
-use a3s_box_core::{
+use aster_box_core::vmm::OwnedCloseBudget;
+use aster_box_core::{
     BoxConfig, CreateExecutionRequest, ExecutionGeneration, ExecutionIsolation, NetworkMode,
     OperationId,
 };

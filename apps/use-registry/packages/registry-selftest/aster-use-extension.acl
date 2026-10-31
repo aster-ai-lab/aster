@@ -1,0 +1,19 @@
+extension "aster/registry-selftest" {
+  schema_version = 3
+  version        = "0.1.0"
+  route          = "registry-selftest"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "c1dcedcd84794ce4bb0010c8d17a7eff4c62d212"
+  }
+
+  skill "registry-selftest" {
+    path          = "skills/registry-selftest/SKILL.md"
+    requires_tool = []
+    requires_mcp  = []
+    optional      = false
+  }
+}

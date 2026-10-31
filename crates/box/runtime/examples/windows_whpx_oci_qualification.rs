@@ -1,9 +1,9 @@
-//! Destructive product-lifecycle qualification for Box over A3S OCI Runtime/WHPX.
+//! Destructive product-lifecycle qualification for Box over Aster OCI Runtime/WHPX.
 //!
 //! The PowerShell qualification runner owns the isolated home, runtime service,
 //! image import, artifact verification, and process-leak checks. This executable
 //! exercises only the public Box lifecycle boundary and always emits a versioned
-//! JSON report when `A3S_BOX_WHPX_OCI_REPORT` names an absolute output path.
+//! JSON report when `ASTER_BOX_WHPX_OCI_REPORT` names an absolute output path.
 
 #[cfg(not(all(target_os = "windows", target_arch = "x86_64")))]
 fn main() {
@@ -29,33 +29,33 @@ mod qualification {
     use std::path::{Path, PathBuf};
     use std::time::Duration;
 
-    use a3s_box_core::{
+    use aster_box_core::{
         BoxConfig, CreateExecutionRequest, ExecutionBackend, ExecutionGeneration, ExecutionId,
         ExecutionIsolation, ExecutionManager, ExecutionState, IsolationClass as BoxIsolationClass,
         NetworkMode, OperationId, ReconcileOutcome, ResourceConfig,
     };
-    use a3s_box_runtime::{
+    use aster_box_runtime::{
         LocalExecutionManager, ManagedExecutionStore, ManagedRuntimeRoute, OciRuntimeBinding,
         WindowsWhpxOciMigrationConfig,
     };
-    use a3s_oci_sdk::{DriverKind, IsolationClass as OciIsolationClass};
+    use aster_oci_sdk::{DriverKind, IsolationClass as OciIsolationClass};
     use serde::Serialize;
 
-    const ENABLE_ENV: &str = "A3S_BOX_WHPX_OCI_QUALIFICATION";
-    const HOME_ENV: &str = "A3S_HOME";
-    const RUNTIME_ROOT_ENV: &str = "A3S_BOX_OCI_HOST_ROOT";
-    const ENDPOINT_ENV: &str = "A3S_BOX_OCI_WHPX_ENDPOINT";
-    const IMAGE_ENV: &str = "A3S_BOX_WHPX_OCI_IMAGE";
-    const REPORT_ENV: &str = "A3S_BOX_WHPX_OCI_REPORT";
-    const BOX_OWNED_ENV: &str = "A3S_BOX_WHPX_OCI_BOX_OWNED";
-    const SERVICE_ROOT_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_ROOT";
-    const SERVICE_BIN_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_BIN";
-    const SERVICE_SHIM_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_SHIM";
-    const SERVICE_VM_ROOTFS_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_VM_ROOTFS";
-    const SERVICE_MANIFEST_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_MANIFEST";
-    const SCHEMA_VERSION: &str = "a3s.box.windows-whpx-oci-qualification.v1";
-    const STDOUT_MARKER: &str = "a3s-box-whpx-oci-stdout";
-    const STDERR_MARKER: &str = "a3s-box-whpx-oci-stderr";
+    const ENABLE_ENV: &str = "ASTER_BOX_WHPX_OCI_QUALIFICATION";
+    const HOME_ENV: &str = "ASTER_HOME";
+    const RUNTIME_ROOT_ENV: &str = "ASTER_BOX_OCI_HOST_ROOT";
+    const ENDPOINT_ENV: &str = "ASTER_BOX_OCI_WHPX_ENDPOINT";
+    const IMAGE_ENV: &str = "ASTER_BOX_WHPX_OCI_IMAGE";
+    const REPORT_ENV: &str = "ASTER_BOX_WHPX_OCI_REPORT";
+    const BOX_OWNED_ENV: &str = "ASTER_BOX_WHPX_OCI_BOX_OWNED";
+    const SERVICE_ROOT_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_ROOT";
+    const SERVICE_BIN_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_BIN";
+    const SERVICE_SHIM_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_SHIM";
+    const SERVICE_VM_ROOTFS_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_VM_ROOTFS";
+    const SERVICE_MANIFEST_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_MANIFEST";
+    const SCHEMA_VERSION: &str = "aster.box.windows-whpx-oci-qualification.v1";
+    const STDOUT_MARKER: &str = "aster-box-whpx-oci-stdout";
+    const STDERR_MARKER: &str = "aster-box-whpx-oci-stderr";
     const EXPECTED_EXIT_CODE: i32 = 23;
 
     type AnyError = Box<dyn Error + Send + Sync>;
@@ -210,12 +210,12 @@ mod qualification {
                 .file_name()
                 .and_then(|name| name.to_str())
                 .is_some_and(|name| name.contains("whpx-oci-qualification")),
-            "A3S_HOME must name a dedicated whpx-oci-qualification directory",
+            "ASTER_HOME must name a dedicated whpx-oci-qualification directory",
         )?;
         let runtime_root = absolute_environment_path(RUNTIME_ROOT_ENV)?;
         require(
             runtime_root.starts_with(&home_dir),
-            "A3S_BOX_OCI_HOST_ROOT must be inside the dedicated A3S_HOME",
+            "ASTER_BOX_OCI_HOST_ROOT must be inside the dedicated ASTER_HOME",
         )?;
         let endpoint = required_environment_string(ENDPOINT_ENV)?;
         let image = required_environment_string(IMAGE_ENV)?;
@@ -519,7 +519,7 @@ mod qualification {
             })?;
         if !status.success() {
             // Already gone is acceptable for ensure reclaim.
-            let still_running = a3s_box_runtime::is_process_running_with_identity(pid, None);
+            let still_running = aster_box_runtime::is_process_running_with_identity(pid, None);
             require(
                 !still_running,
                 format!("taskkill failed and Host pid {pid} is still running"),
@@ -527,7 +527,7 @@ mod qualification {
         }
         let deadline = std::time::Instant::now() + Duration::from_secs(30);
         while std::time::Instant::now() < deadline {
-            if !a3s_box_runtime::is_process_running_with_identity(pid, None) {
+            if !aster_box_runtime::is_process_running_with_identity(pid, None) {
                 return Ok(());
             }
             std::thread::sleep(Duration::from_millis(100));

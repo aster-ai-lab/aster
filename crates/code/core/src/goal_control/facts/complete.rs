@@ -15,7 +15,7 @@ struct CompletedBody {
 type CompletedFact = GoalFact<CompletedBody>;
 
 fn operation_id(goal_id: &str) -> String {
-    crate::content_digest::digest_bytes("a3s.code.goal-complete-operation.v1", goal_id.as_bytes())
+    crate::content_digest::digest_bytes("aster.code.goal-complete-operation.v1", goal_id.as_bytes())
 }
 
 fn digest(

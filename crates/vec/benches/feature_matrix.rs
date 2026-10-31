@@ -6,7 +6,7 @@
 //! gate; a disconnected route makes the benchmark fail rather than producing
 //! a plausible-looking number.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, DiskannQueryParams, Doc, Durability,
     FieldSchema, Fts, GroupBySearchQuery, HnswQueryParams, IndexParams, IoBackend, IvfQueryParams,
     IvfRabitqQueryParams, MetricType, MultiQuery, SearchQuery, SubQuery,
@@ -37,7 +37,7 @@ struct Config {
 
 impl Config {
     fn from_environment() -> Self {
-        if std::env::var("A3S_VEC_BENCH_SCALE").as_deref() == Ok("smoke") {
+        if std::env::var("ASTER_VEC_BENCH_SCALE").as_deref() == Ok("smoke") {
             Self {
                 documents: 96,
                 dimensions: 8,

@@ -22,7 +22,7 @@
   };
 
   const languageButton = document.querySelector("[data-language-toggle]");
-  const preferredLanguage = storage.get("a3s-gateway-language");
+  const preferredLanguage = storage.get("aster-gateway-language");
   const initialLanguage = preferredLanguage === "zh" || preferredLanguage === "en"
     ? preferredLanguage
     : (navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en");
@@ -30,7 +30,7 @@
   function setLanguage(language) {
     root.dataset.language = language;
     root.lang = language === "zh" ? "zh-CN" : "en";
-    storage.set("a3s-gateway-language", language);
+    storage.set("aster-gateway-language", language);
     if (languageButton) {
       languageButton.setAttribute(
         "aria-label",
@@ -158,7 +158,7 @@
       proof: { en: "native ZIP / explicit Cargo fallback", zh: "原生 ZIP / 明确的 Cargo 回退" },
     },
     cargo: {
-      command: "cargo install a3s-gateway",
+      command: "cargo install aster-gateway",
       proof: { en: "Rust 1.88+ from crates.io", zh: "通过 crates.io 安装 / Rust 1.88+" },
     },
   };
@@ -300,7 +300,7 @@
     return `${value.toFixed(value >= 100 ? 0 : 1)} µs`;
   }
 
-  const proxyProfileCatalog = window.A3S_GATEWAY_TRAFFIC_PROFILES || [];
+  const proxyProfileCatalog = window.ASTER_GATEWAY_TRAFFIC_PROFILES || [];
 
   function appendLocalized(element, english, chinese) {
     const en = document.createElement("span");
@@ -349,17 +349,17 @@
 
       rows.forEach((row) => {
         const profile = profiles[row.dataset.aiProfile];
-        const a3s = profile?.products?.["a3s-gateway"]?.median;
+        const aster = profile?.products?.["aster-gateway"]?.median;
         const nginx = profile?.products?.nginx?.median;
         const ratios = profile?.comparison;
         const values = [
-          a3s?.ttft?.p50_us,
-          a3s?.inter_token_latency?.p99_us,
+          aster?.ttft?.p50_us,
+          aster?.inter_token_latency?.p99_us,
           nginx?.ttft?.p50_us,
           nginx?.inter_token_latency?.p99_us,
-          ratios?.a3s_to_nginx_ttft_p50_ratio,
-          ratios?.a3s_to_nginx_inter_token_latency_p99_ratio,
-          ratios?.a3s_to_nginx_token_goodput_ratio,
+          ratios?.aster_to_nginx_ttft_p50_ratio,
+          ratios?.aster_to_nginx_inter_token_latency_p99_ratio,
+          ratios?.aster_to_nginx_token_goodput_ratio,
         ];
         if (!values.every(Number.isFinite)) {
           throw new Error(`AI profile ${row.dataset.aiProfile} is incomplete`);
@@ -369,17 +369,17 @@
           const element = row.querySelector(selector);
           if (element) element.textContent = value;
         };
-        setRowText("[data-ai-a3s-ttft]", `TTFT ${formatAiLatency(a3s.ttft.p50_us)}`);
-        setRowText("[data-ai-a3s-itl]", `ITL P99 ${formatAiLatency(a3s.inter_token_latency.p99_us)}`);
+        setRowText("[data-ai-aster-ttft]", `TTFT ${formatAiLatency(aster.ttft.p50_us)}`);
+        setRowText("[data-ai-aster-itl]", `ITL P99 ${formatAiLatency(aster.inter_token_latency.p99_us)}`);
         setRowText("[data-ai-nginx-ttft]", `TTFT ${formatAiLatency(nginx.ttft.p50_us)}`);
         setRowText("[data-ai-nginx-itl]", `ITL P99 ${formatAiLatency(nginx.inter_token_latency.p99_us)}`);
         setRowText(
           "[data-ai-ratios]",
-          `TTFT ${ratios.a3s_to_nginx_ttft_p50_ratio.toFixed(2)}× · ITL ${ratios.a3s_to_nginx_inter_token_latency_p99_ratio.toFixed(2)}×`,
+          `TTFT ${ratios.aster_to_nginx_ttft_p50_ratio.toFixed(2)}× · ITL ${ratios.aster_to_nginx_inter_token_latency_p99_ratio.toFixed(2)}×`,
         );
         setRowText(
           "[data-ai-goodput]",
-          `Token goodput ${ratios.a3s_to_nginx_token_goodput_ratio.toFixed(2)}×`,
+          `Token goodput ${ratios.aster_to_nginx_token_goodput_ratio.toFixed(2)}×`,
         );
       });
 
@@ -413,15 +413,15 @@
   void loadAiPerformance();
 
   function comparisonPosition(profile) {
-    if (profile.capability_alignment === "a3s_feature_enabled_vs_nginx_transport") {
+    if (profile.capability_alignment === "aster_feature_enabled_vs_nginx_transport") {
       return { en: "FEATURE-COST ROW", zh: "功能成本场景", value: "neutral" };
     }
     const positions = profile.comparison?.positions || {};
-    const a3sRate = ["a3s_higher", "a3s_leads"].includes(positions.throughput);
-    const a3sP99 = ["a3s_lower", "a3s_leads"].includes(positions.p99_latency);
+    const asterRate = ["aster_higher", "aster_leads"].includes(positions.throughput);
+    const asterP99 = ["aster_lower", "aster_leads"].includes(positions.p99_latency);
     const nginxRate = ["nginx_higher", "nginx_leads"].includes(positions.throughput);
     const nginxP99 = ["nginx_lower", "nginx_leads"].includes(positions.p99_latency);
-    if (a3sRate && a3sP99) {
+    if (asterRate && asterP99) {
       return { en: "KENSE RATE + P99 LEAD", zh: "KENSE 吞吐与 P99 更优", value: "kense" };
     }
     if (nginxRate && nginxP99) {
@@ -466,26 +466,26 @@
       let measuredProfiles = 0;
 
       profiles.forEach(([profileId, profile]) => {
-        const a3s = profile.proxies?.["a3s-gateway"]?.median;
+        const aster = profile.proxies?.["aster-gateway"]?.median;
         const nginx = profile.proxies?.nginx?.median;
         const ratios = profile.comparison;
-        const a3sRate = a3s?.operations_per_second ?? a3s?.requests_per_second;
+        const asterRate = aster?.operations_per_second ?? aster?.requests_per_second;
         const nginxRate = nginx?.operations_per_second ?? nginx?.requests_per_second;
         const measured = [
-          a3sRate,
+          asterRate,
           nginxRate,
-          a3s?.average_latency_us,
-          a3s?.p50_latency_us,
-          a3s?.p90_latency_us,
-          a3s?.p99_latency_us,
+          aster?.average_latency_us,
+          aster?.p50_latency_us,
+          aster?.p90_latency_us,
+          aster?.p99_latency_us,
           nginx?.average_latency_us,
           nginx?.p50_latency_us,
           nginx?.p90_latency_us,
           nginx?.p99_latency_us,
-          ratios?.a3s_to_nginx_throughput_ratio,
-          ratios?.a3s_to_nginx_p50_latency_ratio,
-          ratios?.a3s_to_nginx_p90_latency_ratio,
-          ratios?.a3s_to_nginx_p99_latency_ratio,
+          ratios?.aster_to_nginx_throughput_ratio,
+          ratios?.aster_to_nginx_p50_latency_ratio,
+          ratios?.aster_to_nginx_p90_latency_ratio,
+          ratios?.aster_to_nginx_p99_latency_ratio,
         ].every(Number.isFinite);
         if (measured) measuredProfiles += 1;
 
@@ -503,7 +503,7 @@
           profile.workloadZh || profile.workload || "暂无负载说明",
         );
         traffic.append(label, workload);
-        if (profile.capability_alignment === "a3s_feature_enabled_vs_nginx_transport") {
+        if (profile.capability_alignment === "aster_feature_enabled_vs_nginx_transport") {
           const alignment = document.createElement("em");
           appendLocalized(alignment, "FEATURE COST", "功能成本");
           traffic.append(alignment);
@@ -562,10 +562,10 @@
           const ratioList = document.createElement("dl");
           ratioList.className = "traffic-ratios";
           [
-            ["RATE", ratios.a3s_to_nginx_throughput_ratio],
-            ["P50", ratios.a3s_to_nginx_p50_latency_ratio],
-            ["P90", ratios.a3s_to_nginx_p90_latency_ratio],
-            ["P99", ratios.a3s_to_nginx_p99_latency_ratio],
+            ["RATE", ratios.aster_to_nginx_throughput_ratio],
+            ["P50", ratios.aster_to_nginx_p50_latency_ratio],
+            ["P90", ratios.aster_to_nginx_p90_latency_ratio],
+            ["P99", ratios.aster_to_nginx_p99_latency_ratio],
           ].forEach(([name, value]) => {
             const term = document.createElement("dt");
             term.textContent = name;
@@ -590,7 +590,7 @@
         row.append(
           traffic,
           load,
-          productCell(a3s, a3sRate),
+          productCell(aster, asterRate),
           productCell(nginx, nginxRate),
           ratioCell,
         );
@@ -667,7 +667,7 @@
         "[data-proxy-environment]",
         `${environment.cpu_model || "Shared runner CPU"} / ${memory}`,
       );
-      updateText("[data-proxy-a3s-version]", payload.versions?.a3s_gateway || "Kense Gateway release");
+      updateText("[data-proxy-aster-version]", payload.versions?.aster_gateway || "Kense Gateway release");
       updateText("[data-proxy-nginx-version]", payload.versions?.nginx || "NGINX package baseline");
 
       const provenance = document.querySelector("[data-proxy-provenance]");
@@ -718,13 +718,13 @@
 
       section.querySelectorAll("[data-performance-profile]").forEach((row) => {
         const profile = profiles[row.dataset.performanceProfile];
-        const a3s = profile?.proxies?.["a3s-gateway"]?.median;
+        const aster = profile?.proxies?.["aster-gateway"]?.median;
         const nginx = profile?.proxies?.nginx?.median;
         const ratios = profile?.comparison;
-        const a3sRate = a3s?.operations_per_second ?? a3s?.requests_per_second;
+        const asterRate = aster?.operations_per_second ?? aster?.requests_per_second;
         const nginxRate = nginx?.operations_per_second ?? nginx?.requests_per_second;
-        if (![a3sRate, nginxRate, a3s?.p99_latency_us, nginx?.p99_latency_us,
-          ratios?.a3s_to_nginx_throughput_ratio, ratios?.a3s_to_nginx_p99_latency_ratio]
+        if (![asterRate, nginxRate, aster?.p99_latency_us, nginx?.p99_latency_us,
+          ratios?.aster_to_nginx_throughput_ratio, ratios?.aster_to_nginx_p99_latency_ratio]
           .every(Number.isFinite)) return;
 
         const setRowText = (selector, value) => {
@@ -732,22 +732,22 @@
           if (element) element.textContent = value;
         };
 
-        setRowText("[data-performance-a3s-rate]", formatOperationsPerSecond(a3sRate, profile.unit));
+        setRowText("[data-performance-aster-rate]", formatOperationsPerSecond(asterRate, profile.unit));
         setRowText("[data-performance-nginx-rate]", formatOperationsPerSecond(nginxRate, profile.unit));
-        setRowText("[data-performance-a3s-p99]", `P99 ${formatLatencyMicroseconds(a3s.p99_latency_us)}`);
+        setRowText("[data-performance-aster-p99]", `P99 ${formatLatencyMicroseconds(aster.p99_latency_us)}`);
         setRowText("[data-performance-nginx-p99]", `P99 ${formatLatencyMicroseconds(nginx.p99_latency_us)}`);
 
         const english = [
-          describePerformanceRatio(ratios.a3s_to_nginx_throughput_ratio, "throughput", "en"),
-          describePerformanceRatio(ratios.a3s_to_nginx_p99_latency_ratio, "p99", "en"),
+          describePerformanceRatio(ratios.aster_to_nginx_throughput_ratio, "throughput", "en"),
+          describePerformanceRatio(ratios.aster_to_nginx_p99_latency_ratio, "p99", "en"),
         ].join(" / ");
         const chinese = [
-          describePerformanceRatio(ratios.a3s_to_nginx_throughput_ratio, "throughput", "zh"),
-          describePerformanceRatio(ratios.a3s_to_nginx_p99_latency_ratio, "p99", "zh"),
+          describePerformanceRatio(ratios.aster_to_nginx_throughput_ratio, "throughput", "zh"),
+          describePerformanceRatio(ratios.aster_to_nginx_p99_latency_ratio, "p99", "zh"),
         ].join(" / ");
         const outcome = row.querySelector("[data-performance-outcome]");
         if (outcome) {
-          const featureCost = profile.capability_alignment === "a3s_feature_enabled_vs_nginx_transport";
+          const featureCost = profile.capability_alignment === "aster_feature_enabled_vs_nginx_transport";
           outcome.replaceChildren();
           appendLocalized(
             outcome,
@@ -756,11 +756,11 @@
           );
         }
 
-        const a3sLeads = ratios.a3s_to_nginx_throughput_ratio > 1.03
-          && ratios.a3s_to_nginx_p99_latency_ratio < 0.97;
-        row.dataset.profileStatus = profile.capability_alignment === "a3s_feature_enabled_vs_nginx_transport"
+        const asterLeads = ratios.aster_to_nginx_throughput_ratio > 1.03
+          && ratios.aster_to_nginx_p99_latency_ratio < 0.97;
+        row.dataset.profileStatus = profile.capability_alignment === "aster_feature_enabled_vs_nginx_transport"
           ? "feature"
-          : (a3sLeads ? "lead" : "mixed");
+          : (asterLeads ? "lead" : "mixed");
       });
 
       const methodology = payload.methodology || {};

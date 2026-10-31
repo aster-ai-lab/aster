@@ -19,7 +19,7 @@ fn malformed_documents_are_rejected_before_waiting_for_an_answer() {
 #[test]
 fn tool_description_uses_the_shared_json_component_catalog() {
     let description = AskUserFormTool.description();
-    assert!(description.contains(&a3s_form_core::json_render_component_catalog().to_string()));
+    assert!(description.contains(&aster_form_core::json_render_component_catalog().to_string()));
     assert!(description.contains("$bindState"));
     assert!(description.contains("root, elements"));
 }
@@ -82,7 +82,7 @@ async fn a_host_without_values_fails_the_call_instead_of_hanging() {
 #[tokio::test]
 async fn a_rejected_renderer_returns_the_reason_without_claiming_submission() {
     let output = run_form(
-        r#"["a3s.code.user-form-error.v1","unsupported terminal form component: Metric"]"#,
+        r#"["aster.code.user-form-error.v1","unsupported terminal form component: Metric"]"#,
     )
     .await;
     assert!(!output.success);

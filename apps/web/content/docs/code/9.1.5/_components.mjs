@@ -81,7 +81,7 @@ export function CompletionStates() {
 export function StackDiagram() {
   return h('figure', { className: 'stack-figure' }, ...[
     ['应用', 'Aster · IDE · 业务应用', '提供界面、用户任务与业务信息'],
-    ['Agent Harness', 'A3S Code · Codex · Claude Agent SDK · Deep Agents', '模型循环、工具、上下文、运行规则'],
+    ['Agent Harness', 'Aster Code · Codex · Claude Agent SDK · Deep Agents', '模型循环、工具、上下文、运行规则'],
     ['编排运行时', '例如 LangGraph', '保存状态、安排步骤，处理暂停与恢复'],
   ].map(([label, title, text]) => h('div', { key: label }, h('span', { className: 'mini-label' }, label), h('strong', null, title), h('span', null, text))),
     h('figcaption', null, 'FIG. 04 · 各 harness 采用各自的编排实现，其中 Deep Agents 使用 LangGraph。'));
@@ -89,7 +89,7 @@ export function StackDiagram() {
 
 export function FrameworkTable() {
   return table('Harness 与编排运行时对比', ['框架', '提供什么', '如何接入或扩展'], [
-    ['A3S Code', '可嵌入的 Rust 编码运行时', '直接创建 Rust 会话；组合执行组件，接入不同模型供应商'],
+    ['Aster Code', '可嵌入的 Rust 编码运行时', '直接创建 Rust 会话；组合执行组件，接入不同模型供应商'],
     ['Codex', '完整 agent harness', 'CLI、SDK、app-server；管理会话、工具、沙箱、审批与事件'],
     ['Claude Agent SDK', '在应用中使用 Claude Code 的执行能力', '用 Python、TypeScript 调用；配置工具、权限和生命周期钩子（hooks）'],
     ['Deep Agents', '面向多步任务的通用 harness', '基于 LangGraph 提供文件系统、子代理和记忆；可替换后端和中间件'],

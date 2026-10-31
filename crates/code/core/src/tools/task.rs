@@ -53,7 +53,7 @@ const MAX_TASK_SOURCE_CANDIDATES: usize = MAX_TASK_SOURCE_ANCHORS * 4;
 const MAX_TASK_SOURCE_TOOL_BYTES: usize = 64;
 const MAX_TASK_SOURCE_VALUE_BYTES: usize = 4 * 1024;
 const MAX_PARALLEL_TASK_SOURCE_ANCHORS: usize = MAX_TASK_SOURCE_ANCHORS;
-const TASK_TOOL_DESCRIPTION: &str = "Delegate one or more bounded tasks to specialized child runs. Pass one item for a focused child run or multiple INDEPENDENT items for concurrent fan-out. A single item may run in the background; multi-item calls are collected by the parent. By default any failed child makes a multi-item call fail; evidence-gathering callers may set allow_partial_failure=true. Choose canonical worker names from the live agent catalog. Custom agents from agent_dirs and .a3s/agents are supported; .claude/agents is read for compatibility.";
+const TASK_TOOL_DESCRIPTION: &str = "Delegate one or more bounded tasks to specialized child runs. Pass one item for a focused child run or multiple INDEPENDENT items for concurrent fan-out. A single item may run in the background; multi-item calls are collected by the parent. By default any failed child makes a multi-item call fail; evidence-gathering callers may set allow_partial_failure=true. Choose canonical worker names from the live agent catalog. Custom agents from agent_dirs and .aster/agents are supported; .claude/agents is read for compatibility.";
 
 /// Task tool parameters
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -244,11 +244,11 @@ pub struct TaskExecutor {
     /// Search configuration captured from the invoking parent context.
     search_config: Option<Arc<crate::config::SearchConfig>>,
     /// Agent-scoped search admission shared with delegated child runs.
-    search_bulkhead: Option<a3s_search::Bulkhead>,
+    search_bulkhead: Option<aster_search::Bulkhead>,
     /// Agent-scoped headless retry allowance shared with delegated child runs.
-    search_retry_budget: Option<a3s_search::retry::RetryBudget>,
+    search_retry_budget: Option<aster_search::retry::RetryBudget>,
     /// Parent-session request flights shared with delegated child runs.
-    search_request_coalescer: Option<a3s_search::SearchCoalescer>,
+    search_request_coalescer: Option<aster_search::SearchCoalescer>,
     /// Weak capability parents captured from the invoking Tool Turn.
     capability_context: Option<crate::capability::AgentToolCapabilityContext>,
     /// Optional lifetime boundary inherited from the session that created this

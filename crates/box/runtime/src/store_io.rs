@@ -13,7 +13,7 @@ use std::path::{Path, PathBuf};
 /// Falls back to a copy if rename fails (e.g. cross-device). Returns the backup
 /// path on success, `None` if even the copy failed.
 pub(crate) fn quarantine_corrupt(path: &Path) -> Option<PathBuf> {
-    a3s_box_core::fs_atomic::quarantine_corrupt(path)
+    aster_box_core::fs_atomic::quarantine_corrupt(path)
 }
 
 /// Render the backup path from [`quarantine_corrupt`] for a log message.
@@ -34,7 +34,7 @@ pub(crate) fn quarantine_label(path: &Path) -> String {
 /// recovery while leaving the live catalog untouched. Returns the backup path,
 /// `None` if the copy failed.
 pub(crate) fn quarantine_copy(path: &Path) -> Option<PathBuf> {
-    a3s_box_core::fs_atomic::quarantine_copy(path)
+    aster_box_core::fs_atomic::quarantine_copy(path)
 }
 
 #[cfg(test)]

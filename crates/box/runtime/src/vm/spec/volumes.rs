@@ -14,7 +14,7 @@ pub(crate) struct PlannedAnonymousVolume {
 
 impl VmManager {
     #[cfg(not(any(target_os = "linux", target_os = "windows")))]
-    pub(crate) fn validate_virtiofs_mount_support(config: &a3s_box_core::BoxConfig) -> Result<()> {
+    pub(crate) fn validate_virtiofs_mount_support(config: &aster_box_core::BoxConfig) -> Result<()> {
         for volume in &config.volumes {
             let volume = Self::parse_volume_spec(volume)?;
             if volume.read_only {
@@ -84,11 +84,11 @@ impl VmManager {
         );
         if normalized == "/"
             || normalized == "/run"
-            || normalized == "/run/a3s-box"
-            || normalized.starts_with("/run/a3s-box/")
+            || normalized == "/run/aster-box"
+            || normalized.starts_with("/run/aster-box/")
         {
             return Err(BoxError::ConfigError(format!(
-                "Guest volume path {guest_path:?} overlaps reserved runtime state /run/a3s-box"
+                "Guest volume path {guest_path:?} overlaps reserved runtime state /run/aster-box"
             )));
         }
         Ok(normalized)
@@ -142,7 +142,7 @@ impl VmManager {
             }
 
             let mut identity = Sha256::new();
-            identity.update(b"a3s-box-anonymous-volume-v1\0");
+            identity.update(b"aster-box-anonymous-volume-v1\0");
             identity.update(self.box_id.as_bytes());
             identity.update(b"\0");
             identity.update(guest_path.as_bytes());

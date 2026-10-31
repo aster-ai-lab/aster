@@ -84,7 +84,7 @@ impl Tool for HybridSearchTool {
                 let mut output = render_result(result, query);
                 if let Some(metadata) = output.metadata.as_mut() {
                     if let Some(engine) = persistent_engine {
-                        metadata["index_kind"] = serde_json::json!("persistent_a3s_vec_fts");
+                        metadata["index_kind"] = serde_json::json!("persistent_aster_vec_fts");
                         metadata["lexical_engine"] = serde_json::json!(engine.stable_id());
                     } else if let Some(catalog) = ctx.workspace_services.chunk_catalog() {
                         metadata["lexical_engine"] =

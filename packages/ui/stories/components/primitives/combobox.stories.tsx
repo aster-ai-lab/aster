@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { ChevronDown, User } from 'lucide-react'
 import { useState } from 'react'
 
-import { Combobox } from '@a3s-lab/ui'
+import { Combobox } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Combobox> = {
   title: 'Components/Primitives/Combobox',

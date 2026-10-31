@@ -11,7 +11,7 @@ use std::os::windows::io::AsRawHandle;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentRecoveryReport, AgentVsockEndpoint, AuthenticatedAgentRecoveryReport, SessionToken,
     AGENT_RECOVERY_REPORT_DIRECTORY_PREFIX, AGENT_RECOVERY_REPORT_FILE_NAME,
     AGENT_RECOVERY_REPORT_MAX_BYTES, AGENT_RECOVERY_REPORT_PENDING_SUFFIX,
@@ -898,11 +898,11 @@ fn contextual(error: io::Error, context: String) -> io::Error {
 mod tests {
     use std::path::Path;
 
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AgentRecoveryRecord, AgentRecoveryReport, AgentVsockEndpoint,
         AuthenticatedAgentRecoveryReport, SessionToken,
     };
-    use a3s_oci_sdk::{ContainerId, ContainerTarget, ExitStatus, Generation};
+    use aster_oci_sdk::{ContainerId, ContainerTarget, ExitStatus, Generation};
 
     use super::{pending_path, RecoveryReportHandoff};
 
@@ -950,7 +950,7 @@ mod tests {
         create_private_directory(&rootfs);
         create_private_directory(&trusted);
         let destination = trusted.join("box-7.json");
-        let endpoint = AgentVsockEndpoint::new("a3s-oci-agent-recovery-test").unwrap();
+        let endpoint = AgentVsockEndpoint::new("aster-oci-agent-recovery-test").unwrap();
         let handoff =
             RecoveryReportHandoff::create(&rootfs, "/", &endpoint, &destination).expect("handoff");
         handoff.reverify().expect("reverify recovery handoff");
@@ -978,7 +978,7 @@ mod tests {
         create_private_directory(&rootfs);
         create_private_directory(&trusted);
         let destination = trusted.join("box-7.json");
-        let endpoint = AgentVsockEndpoint::new("a3s-oci-agent-tamper-test").unwrap();
+        let endpoint = AgentVsockEndpoint::new("aster-oci-agent-tamper-test").unwrap();
         let handoff =
             RecoveryReportHandoff::create(&rootfs, "/", &endpoint, &destination).expect("handoff");
         let guest_path = rootfs.join(handoff.guest_path().trim_start_matches('/'));
@@ -1002,7 +1002,7 @@ mod tests {
         create_private_directory(&rootfs);
         create_private_directory(&trusted);
         let destination = trusted.join("box-7.json");
-        let endpoint = AgentVsockEndpoint::new("a3s-oci-agent-recovery-replacement").unwrap();
+        let endpoint = AgentVsockEndpoint::new("aster-oci-agent-recovery-replacement").unwrap();
         let handoff =
             RecoveryReportHandoff::create(&rootfs, "/", &endpoint, &destination).expect("handoff");
         let guest_path = rootfs.join(handoff.guest_path().trim_start_matches('/'));
@@ -1040,7 +1040,7 @@ mod tests {
         create_private_directory(&rootfs);
         create_private_directory(&trusted);
         let destination = trusted.join("box-7.json");
-        let endpoint = AgentVsockEndpoint::new("a3s-oci-agent-pending-replacement").unwrap();
+        let endpoint = AgentVsockEndpoint::new("aster-oci-agent-pending-replacement").unwrap();
         let handoff =
             RecoveryReportHandoff::create(&rootfs, "/", &endpoint, &destination).expect("handoff");
         let cleanup = handoff.cleanup_paths();
@@ -1095,7 +1095,7 @@ mod tests {
         let base = tempfile::tempdir().expect("temporary base");
         let rootfs = base.path().join("rootfs");
         create_private_directory(&rootfs);
-        let endpoint = AgentVsockEndpoint::new("a3s-oci-agent-path-test").unwrap();
+        let endpoint = AgentVsockEndpoint::new("aster-oci-agent-path-test").unwrap();
         assert!(
             RecoveryReportHandoff::create(&rootfs, "/", &endpoint, &rootfs.join("box-7.json"),)
                 .is_err()
@@ -1110,7 +1110,7 @@ mod tests {
         create_private_directory(&rootfs);
         create_private_directory(&trusted);
         let destination = trusted.join("box-7.json");
-        let endpoint = AgentVsockEndpoint::new("a3s-oci-agent-drop-test").unwrap();
+        let endpoint = AgentVsockEndpoint::new("aster-oci-agent-drop-test").unwrap();
         let handoff =
             RecoveryReportHandoff::create(&rootfs, "/", &endpoint, &destination).expect("handoff");
         let guest_directory = rootfs

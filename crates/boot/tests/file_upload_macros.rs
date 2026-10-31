@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use a3s_boot::{
+use aster_boot::{
     controller, injectable, BootApplication, BootError, BootRequest, ControllerDefinition,
     HttpMethod, Module, OpenApiInfo, Result, UploadedFile,
 };
@@ -15,10 +15,10 @@ struct UploadController;
 
 #[controller("/uploads")]
 impl UploadController {
-    #[a3s_boot::post("/avatar", status = 201)]
+    #[aster_boot::post("/avatar", status = 201)]
     async fn avatar(
         &self,
-        #[a3s_boot::uploaded_file("avatar")] avatar: UploadedFile,
+        #[aster_boot::uploaded_file("avatar")] avatar: UploadedFile,
     ) -> Result<UploadResult> {
         Ok(UploadResult {
             count: 1,
@@ -27,10 +27,10 @@ impl UploadController {
         })
     }
 
-    #[a3s_boot::post("/optional", status = 200)]
+    #[aster_boot::post("/optional", status = 200)]
     async fn optional_avatar(
         &self,
-        #[a3s_boot::uploaded_file("avatar")] avatar: Option<UploadedFile>,
+        #[aster_boot::uploaded_file("avatar")] avatar: Option<UploadedFile>,
     ) -> Result<UploadResult> {
         Ok(UploadResult {
             count: usize::from(avatar.is_some()),
@@ -42,10 +42,10 @@ impl UploadController {
         })
     }
 
-    #[a3s_boot::post("/photos", status = 201)]
+    #[aster_boot::post("/photos", status = 201)]
     async fn photos(
         &self,
-        #[a3s_boot::uploaded_files("photos")] photos: Vec<UploadedFile>,
+        #[aster_boot::uploaded_files("photos")] photos: Vec<UploadedFile>,
     ) -> Result<UploadResult> {
         Ok(UploadResult {
             count: photos.len(),
@@ -66,7 +66,7 @@ impl Module for UploadModule {
         "uploads"
     }
 
-    fn controllers(&self, _module_ref: &a3s_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
+    fn controllers(&self, _module_ref: &aster_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
         Ok(vec![Arc::new(UploadController).controller()?])
     }
 }

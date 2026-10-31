@@ -35,7 +35,7 @@ use windows_sys::Win32::System::Threading::{
 /// When unset/false, Host remains the shim owner (stopped-only on Host death).
 /// When true, callers must use [`spawn_via_session_owner_helper`] with a
 /// host-control pipe for the AgentVmSession Live path.
-pub const WHPX_SESSION_OWNER_ENV: &str = "A3S_OCI_WHPX_SESSION_OWNER";
+pub const WHPX_SESSION_OWNER_ENV: &str = "ASTER_OCI_WHPX_SESSION_OWNER";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WhpxOwnerMode {
@@ -112,7 +112,7 @@ pub fn require_durable_spawn_ready(mode: WhpxOwnerMode) -> io::Result<()> {
     Ok(())
 }
 
-/// Spawn `a3s-oci-krun-shim session-owner` as a Host child (Tokio-safe).
+/// Spawn `aster-oci-krun-shim session-owner` as a Host child (Tokio-safe).
 ///
 /// Uses `CREATE_BREAKAWAY_FROM_JOB | CREATE_NEW_PROCESS_GROUP | DETACHED_PROCESS`
 /// so Host taskkill does not tear down the session-owner. `shim_argv` must not
@@ -417,7 +417,7 @@ mod tests {
     #[test]
     fn session_owner_argv_includes_host_control_before_shim() {
         let ready = PathBuf::from(r"C:\temp\ready");
-        let host_control = r"\\.\pipe\a3s-oci-whpx-live-control-test";
+        let host_control = r"\\.\pipe\aster-oci-whpx-live-control-test";
         let prefix = session_owner_argv_prefix(&ready, Some(host_control));
         assert_eq!(prefix[0], "session-owner");
         assert_eq!(prefix[1], "--ready-file");
@@ -444,7 +444,7 @@ mod tests {
     }
 
     fn resolve_krun_shim() -> Option<PathBuf> {
-        if let Ok(path) = env::var("A3S_OCI_KRUN_SHIM") {
+        if let Ok(path) = env::var("ASTER_OCI_KRUN_SHIM") {
             let path = PathBuf::from(path);
             if path.is_file() {
                 return Some(path);
@@ -453,8 +453,8 @@ mod tests {
         let mut dir = env::current_exe().ok()?.parent()?.to_path_buf();
         for _ in 0..6 {
             for candidate in [
-                dir.join("a3s-oci-krun-shim.exe"),
-                dir.join("deps").join("a3s-oci-krun-shim.exe"),
+                dir.join("aster-oci-krun-shim.exe"),
+                dir.join("deps").join("aster-oci-krun-shim.exe"),
             ] {
                 if candidate.is_file() {
                     return Some(candidate);
@@ -470,7 +470,7 @@ mod tests {
     #[test]
     fn session_owner_helper_parents_probe_and_survives_host_detach() {
         let Some(shim) = resolve_krun_shim() else {
-            eprintln!("skipping: build a3s-oci-krun-shim or set A3S_OCI_KRUN_SHIM");
+            eprintln!("skipping: build aster-oci-krun-shim or set ASTER_OCI_KRUN_SHIM");
             return;
         };
         assert!(shim.is_file(), "krun shim must be a file: {shim:?}");
@@ -523,13 +523,13 @@ mod tests {
     #[test]
     fn session_owner_host_control_bridge_echoes_across_host_reconnect() {
         let Some(shim) = resolve_krun_shim() else {
-            eprintln!("skipping: build a3s-oci-krun-shim or set A3S_OCI_KRUN_SHIM");
+            eprintln!("skipping: build aster-oci-krun-shim or set ASTER_OCI_KRUN_SHIM");
             return;
         };
 
-        let leaf = format!("a3s-oci-whpx-bridge-{}", std::process::id());
-        let guest_pipe_name = format!("a3s-oci-agent-{leaf}");
-        let host_control = format!(r"\\.\pipe\a3s-oci-whpx-live-control-{leaf}");
+        let leaf = format!("aster-oci-whpx-bridge-{}", std::process::id());
+        let guest_pipe_name = format!("aster-oci-agent-{leaf}");
+        let host_control = format!(r"\\.\pipe\aster-oci-whpx-live-control-{leaf}");
         let temporary = tempfile::tempdir().expect("tempdir");
         let ready = temporary.path().join("ready");
         let argv = [

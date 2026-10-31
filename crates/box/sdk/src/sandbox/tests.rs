@@ -1,9 +1,9 @@
 use std::collections::{BTreeMap, VecDeque};
 use std::sync::{Arc, Mutex};
 
-use a3s_box_core::log::LogEntry;
-use a3s_box_core::pty::PtyRequest;
-use a3s_box_core::{
+use aster_box_core::log::LogEntry;
+use aster_box_core::pty::PtyRequest;
+use aster_box_core::{
     resolve_execution, BoxConfig, CreateExecutionRequest, ExecOutput, ExecRequest,
     ExecutionEventBatch, ExecutionEventKind, ExecutionEventsRequest, ExecutionGeneration,
     ExecutionId, ExecutionIsolation, ExecutionLease, ExecutionManager, ExecutionManagerError,
@@ -24,7 +24,7 @@ use super::{
     SandboxEventStreamOptions, SandboxLogOptions, SandboxNetwork, SandboxRestartOptions,
     MAX_ARTIFACT_BYTES,
 };
-use crate::{A3sBoxClient, A3sBoxPaths, ClientError};
+use crate::{AsterBoxClient, AsterBoxPaths, ClientError};
 
 #[derive(Debug)]
 struct RecordingRuntime {
@@ -504,8 +504,8 @@ impl ExecutionSessionManager for RecordingRuntime {
     }
 }
 
-fn test_client(runtime: Arc<RecordingRuntime>, home: &std::path::Path) -> A3sBoxClient {
-    A3sBoxClient::with_execution_services(A3sBoxPaths::from_home(home), runtime.clone(), runtime)
+fn test_client(runtime: Arc<RecordingRuntime>, home: &std::path::Path) -> AsterBoxClient {
+    AsterBoxClient::with_execution_services(AsterBoxPaths::from_home(home), runtime.clone(), runtime)
 }
 
 #[tokio::test]

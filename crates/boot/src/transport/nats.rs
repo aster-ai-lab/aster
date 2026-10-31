@@ -72,8 +72,8 @@ impl NatsTransportOptions {
 impl Default for NatsTransportOptions {
     fn default() -> Self {
         Self {
-            request_subject: "a3s.boot.requests".to_string(),
-            event_subject: "a3s.boot.events".to_string(),
+            request_subject: "aster.boot.requests".to_string(),
+            event_subject: "aster.boot.events".to_string(),
             queue_group: None,
             request_timeout: Duration::from_secs(5),
         }

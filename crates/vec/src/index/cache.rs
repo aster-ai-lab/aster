@@ -15,7 +15,7 @@ use roaring::RoaringTreemap;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
-const CACHE_MAGIC: &[u8; 8] = b"A3SIDX01";
+const CACHE_MAGIC: &[u8; 8] = b"ASTRIDX1";
 const CACHE_FORMAT_VERSION: u32 = 10;
 const HEADER_BYTES: usize = CACHE_MAGIC.len() + 8 + 4;
 pub(crate) use crate::storage_ceilings::DEFAULT_INDEX_CACHE_BYTES as MAX_PAYLOAD_BYTES;

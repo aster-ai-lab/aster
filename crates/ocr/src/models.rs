@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_use_core::{Artifact, Readiness};
+use aster_use_core::{Artifact, Readiness};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, schemars::JsonSchema)]

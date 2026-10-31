@@ -1,12 +1,12 @@
 #[path = "durable_memory_restart_endurance_eval/support.rs"]
 mod support;
 
-use a3s_code_core::store::{FileSessionStore, SessionStore};
-use a3s_code_core::{
+use aster_core::store::{FileSessionStore, SessionStore};
+use aster_core::{
     Agent, AgentSession, DurableMemoryRecallPolicy, DurableMemorySession,
     DURABLE_MEMORY_BINDING_SCHEMA_VERSION, DURABLE_MEMORY_CONTEXT_ID_PROFILE_V2,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, FileMemoryRepository, MemoryChangeSet,
     MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRepository, MemoryStatus,
     RevisionMode,
@@ -51,7 +51,7 @@ async fn seed_fixture(
                         MemoryStatus::Active,
                         &fixture.active_node.revisions[0],
                         vec![evidence(
-                            "a3s://fixture/restart-endurance/active",
+                            "aster://fixture/restart-endurance/active",
                             &fixture.active_node.revisions[0],
                             EvidenceKind::Verification,
                         )],
@@ -66,7 +66,7 @@ async fn seed_fixture(
                         MemoryStatus::Candidate,
                         &fixture.candidate_node.content,
                         vec![evidence(
-                            "a3s://fixture/restart-endurance/candidate",
+                            "aster://fixture/restart-endurance/candidate",
                             &fixture.candidate_node.content,
                             EvidenceKind::SessionTurn,
                         )],
@@ -90,7 +90,7 @@ async fn seed_fixture(
                     MemoryStatus::Active,
                     &fixture.foreign_node.content,
                     vec![evidence(
-                        "a3s://fixture/restart-endurance/foreign",
+                        "aster://fixture/restart-endurance/foreign",
                         &fixture.foreign_node.content,
                         EvidenceKind::Verification,
                     )],
@@ -118,7 +118,7 @@ async fn revise_active_node(
                 content: fixture.active_node.revisions[1].clone(),
                 mode: RevisionMode::Correction,
                 evidence: vec![evidence(
-                    "a3s://fixture/restart-endurance/revision-2",
+                    "aster://fixture/restart-endurance/revision-2",
                     &fixture.active_node.revisions[1],
                     EvidenceKind::Verification,
                 )],
@@ -367,7 +367,7 @@ async fn repeated_restart_reuse_preserves_every_context_and_current_revision() {
     }
 
     println!(
-        "A3S_DURABLE_MEMORY_RESTART_ENDURANCE_EVAL={}",
+        "ASTER_DURABLE_MEMORY_RESTART_ENDURANCE_EVAL={}",
         serde_json::to_string(&Report {
             schema_version: fixture.schema_version,
             binding_schema_version: DURABLE_MEMORY_BINDING_SCHEMA_VERSION,

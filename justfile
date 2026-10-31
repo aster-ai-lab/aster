@@ -36,12 +36,12 @@ code *args: build
     from pathlib import Path
     import subprocess
     import sys
-    # A workspace .a3s/config.acl is untrusted unless the host names it.
-    # Opt into that local file when the user has not already set A3S_CONFIG.
-    if not os.environ.get("A3S_CONFIG"):
-        acl = Path(r"{{justfile_directory()}}") / ".a3s" / "config.acl"
+    # A workspace .aster/config.acl is untrusted unless the host names it.
+    # Opt into that local file when the user has not already set ASTER_CONFIG.
+    if not os.environ.get("ASTER_CONFIG"):
+        acl = Path(r"{{justfile_directory()}}") / ".aster" / "config.acl"
         if acl.is_file():
-            os.environ["A3S_CONFIG"] = str(acl.resolve())
+            os.environ["ASTER_CONFIG"] = str(acl.resolve())
     metadata = json.loads(subprocess.check_output(["cargo", "metadata", "--locked", "--offline", "--no-deps", "--format-version", "1"]))
     if sys.platform == "darwin" and platform.machine() in ("arm64", "aarch64") and not os.environ.get("ASTER_SANDBOX_DIR"):
         os.environ["ASTER_SANDBOX_DIR"] = subprocess.check_output([sys.executable, str(Path(r"{{justfile_directory()}}") / "scripts/aster_sandbox.py"), "cache", "--target-dir", metadata["target_directory"]], text=True).strip()
@@ -62,12 +62,12 @@ code *args: build
         [Console]::Error.WriteLine("Build did not produce $executable")
         exit 1
     }
-    # A workspace .a3s/config.acl is untrusted unless the host names it.
-    # Opt into that local file when the user has not already set A3S_CONFIG.
-    if ([string]::IsNullOrWhiteSpace($env:A3S_CONFIG)) {
-        $workspaceAcl = Join-Path "{{justfile_directory()}}" ".a3s\config.acl"
+    # A workspace .aster/config.acl is untrusted unless the host names it.
+    # Opt into that local file when the user has not already set ASTER_CONFIG.
+    if ([string]::IsNullOrWhiteSpace($env:ASTER_CONFIG)) {
+        $workspaceAcl = Join-Path "{{justfile_directory()}}" ".aster\config.acl"
         if (Test-Path -LiteralPath $workspaceAcl -PathType Leaf) {
-            $env:A3S_CONFIG = (Resolve-Path -LiteralPath $workspaceAcl).Path
+            $env:ASTER_CONFIG = (Resolve-Path -LiteralPath $workspaceAcl).Path
         }
     }
     & $executable @args
@@ -78,14 +78,14 @@ build-companions:
     #!/usr/bin/env bash
     set -euo pipefail
     if [ "${RUSTC_WRAPPER+x}" != x ] && command -v sccache >/dev/null 2>&1; then export RUSTC_WRAPPER=sccache; fi
-    cargo build --locked -p a3s-code-acp -p a3s-office-cli --features a3s-code-acp/headless-search
+    cargo build --locked -p aster-acp -p aster-office-cli --features aster-acp/headless-search
 
 # Build Studio and its companions apart from CLI/check/test artifacts.
-build-studio $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+build-studio $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
     #!/usr/bin/env bash
     set -euo pipefail
     feature="$(python3 apps/studio/scripts/studio_product.py "$slug" feature)"
-    export A3S_TENANT_SLUG="$slug"
+    export ASTER_TENANT_SLUG="$slug"
     TAURI_CONFIG="$(python3 apps/studio/scripts/studio_product.py "$slug" tauri-config)"
     export TAURI_CONFIG
     if [ "${CARGO_TARGET_DIR+x}" != x ]; then
@@ -97,22 +97,22 @@ build-studio $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     if [ "${RUSTC_WRAPPER+x}" != x ] && command -v sccache >/dev/null 2>&1; then export RUSTC_WRAPPER=sccache; fi
     # One feature graph keeps shared dependencies reusable across both stages.
     python3 apps/studio/scripts/document_assets.py "$CARGO_TARGET_DIR/debug/studio-resources/document"
-    build_args=(build --locked -p a3s-studio -p a3s-code-acp -p a3s-office-cli --no-default-features --features "a3s-studio/$feature,a3s-code-acp/default,a3s-code-acp/headless-search,a3s-office-cli/default")
-    cargo "${build_args[@]}" --bin a3s-code-acp --bin a3s-office
+    build_args=(build --locked -p aster-studio -p aster-acp -p aster-office-cli --no-default-features --features "aster-studio/$feature,aster-acp/default,aster-acp/headless-search,aster-office-cli/default")
+    cargo "${build_args[@]}" --bin aster-acp --bin aster-office
     python3 apps/studio/scripts/studio_product.py "$slug" stage-companions
     cargo "${build_args[@]}" --bin Studio
 
 # Second window on an already-built app: no cargo, so it never waits on the build-directory lock.
-fork $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster') port='4321':
+fork $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster') port='4321':
     #!/usr/bin/env bash
     set -euo pipefail
-    export A3S_STUDIO_INSTANCE=fork
+    export ASTER_STUDIO_INSTANCE=fork
     export STUDIO_RENDERER_PORT="{{port}}"
     exec just studio "$slug"
 
 # Start Studio with isolated renderer hot reload: Aster on 4318, ToYou on 4319.
 # Default tenant is aster. `just studio toyou` starts the original ToWork product.
-studio $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+studio $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
     #!/usr/bin/env bash
     set -euo pipefail
     if ! [[ "${slug}" =~ ^[a-z][a-z0-9-]{0,31}$ ]]; then
@@ -132,7 +132,7 @@ studio $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     if [ "$(id -u)" -eq 0 ]; then
       echo "warning: Studio is starting as root; the fcitx immodule cannot commit composed text for a non-session uid, so IME input will not work. Start it as the session user." >&2
     fi
-    export A3S_TENANT_SLUG="${slug}"
+    export ASTER_TENANT_SLUG="${slug}"
     export STUDIO_RENDERER_DEV="${STUDIO_RENDERER_DEV:-1}"
     cd apps/studio
     exec scripts/studio-shell.sh
@@ -146,7 +146,7 @@ studio $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
 # "你好". The XIM bridge talks to the same input method over X11 instead, so
 # it commits composed text for any client that can open the display.
 # Measured on this host: fcitx module -> "nihao", XIM -> "你好".
-studio-ime $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+studio-ime $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
     #!/usr/bin/env bash
     set -euo pipefail
     if ! [[ "${slug}" =~ ^[a-z][a-z0-9-]{0,31}$ ]]; then
@@ -157,7 +157,7 @@ studio-ime $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     if [ "$(id -u)" -eq 0 ]; then
       echo "warning: Studio is starting as root; the XIM bridge still commits text, but the session input method is owned by another uid, so prefer the session user." >&2
     fi
-    export A3S_TENANT_SLUG="${slug}"
+    export ASTER_TENANT_SLUG="${slug}"
     export STUDIO_RENDERER_DEV="${STUDIO_RENDERER_DEV:-1}"
     export GDK_BACKEND=x11
     export GTK_IM_MODULE=xim
@@ -166,10 +166,10 @@ studio-ime $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     exec scripts/studio-shell.sh
 
 [macos]
-build-studio-release $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+build-studio-release $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
     #!/usr/bin/env bash
     set -euo pipefail
-    export A3S_TENANT_SLUG="$slug"
+    export ASTER_TENANT_SLUG="$slug"
     cd apps/studio
     exec pnpm package:host
 
@@ -189,23 +189,23 @@ studio-desktop action='install':
     python3 apps/studio/scripts/studio-desktop.py {{action}}
 
 # Documented desktop host build. Same result as the shared host recipe.
-build-desktop $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+build-desktop $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
     just build-studio {{slug}}
 
 [macos]
-build-desktop-release $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+build-desktop-release $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
     just build-studio-release {{slug}}
 
 # Start Aster Studio with renderer hot reload. `just dev:toyou` selects that tenant.
-dev $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+dev $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'):
     STUDIO_RENDERER_DEV=1 just studio "$slug"
 
 # Start Aster Studio for this tenant. `just work:toyou` selects that tenant.
-work $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'): (studio slug)
+work $slug=env_var_or_default('ASTER_TENANT_SLUG', 'aster'): (studio slug)
 
 # Middleware plus the host processes that exist in this tree.
-# Default tenant is a3s. `just up toyou` selects another public tenant.
-up $slug='a3s':
+# Default tenant is aster. `just up toyou` selects another public tenant.
+up $slug='aster':
     #!/usr/bin/env bash
     set -euo pipefail
     if ! [[ "${slug}" =~ ^[a-z][a-z0-9-]{0,31}$ ]]; then
@@ -218,11 +218,11 @@ up $slug='a3s':
       echo "  macOS: brew install tilt" >&2
       exit 1
     fi
-    export A3S_TENANT_SLUG="${slug}"
+    export ASTER_TENANT_SLUG="${slug}"
     tilt up
 
 # Non-interactive spine boot. Same tenant parameter as `just up`.
-up-ci $slug='a3s':
+up-ci $slug='aster':
     #!/usr/bin/env bash
     set -euo pipefail
     if ! [[ "${slug}" =~ ^[a-z][a-z0-9-]{0,31}$ ]]; then
@@ -234,7 +234,7 @@ up-ci $slug='a3s':
       echo "tilt not found — install from https://docs.tilt.dev/install.html" >&2
       exit 1
     fi
-    export A3S_TENANT_SLUG="${slug}"
+    export ASTER_TENANT_SLUG="${slug}"
     tilt ci
 
 # Stop everything started by `just up`. Leaves Postgres volumes in place.
@@ -259,4 +259,5 @@ middleware-up:
 # Run the layered backend test suites (hermetic members in parallel,
 # Postgres/S3 campaigns serially). Requires the middleware for campaigns.
 backend-test:
-    cargo test --locked -p a3s-gateway -p a3s-gateway-runtime -p a3s-runner -p a3s-vec
+    cargo test --locked -p aster-gateway -p aster-vec
+    cargo test --locked --manifest-path apps/control-plane/Cargo.toml -p aster-gateway-runtime -p aster-runner

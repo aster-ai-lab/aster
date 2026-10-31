@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
 use super::{validate_relative_path, ExtensionManifest};
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 impl ExtensionManifest {
     /// File inventory comes from the host's bounded, link-free archive reader.
@@ -14,7 +14,7 @@ impl ExtensionManifest {
             validate_relative_path(path)?;
         }
         self.validate_package_root(Path::new("."))?;
-        let required = [Path::new("a3s-use-extension.acl"), Path::new("README.md")];
+        let required = [Path::new("aster-use-extension.acl"), Path::new("README.md")];
         let mut references = required.to_vec();
         for tool in &self.tools {
             references.extend(tool.package_paths());

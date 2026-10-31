@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::{Map as JsonMap, Number as JsonNumber, Value as JsonValue};
 use yrs::Any;
 
@@ -467,7 +467,7 @@ fn optional_json_equal(left: Option<&JsonValue>, right: Option<&JsonValue>) -> b
     }
 }
 
-fn invalid_element(shared: bool, message: String) -> a3s_use_core::UseError {
+fn invalid_element(shared: bool, message: String) -> aster_use_core::UseError {
     if shared {
         invalid_shared_presentation(message)
     } else {

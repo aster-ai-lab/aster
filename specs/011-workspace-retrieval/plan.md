@@ -40,7 +40,7 @@ Repair ACP's stale local-provider compile gate, reuse the existing hybrid orches
 | Core | crates/code/core/src/workspace/retrieval, workspace/services.rs | Reuse one hybrid implementation with optional semantic input and existing lifetime/budget controls |
 | Tool/API | crates/code/core/src/tools/builtin, agent_api, permissions | Independent hybrid availability, relevant windows, output budget, callers/tests |
 | ACP | crates/code/acp/src/agent, tests | Repair local provider gate; honest prompt/tool declaration and real stdio tests |
-| Terminal | tests/e2e, existing ACP test harness | A3S Test regression over built Aster/ACP fixture flow |
+| Terminal | tests/e2e, existing ACP test harness | Aster Test regression over built Aster/ACP fixture flow |
 | Qualification | crates/code/core/examples, tests/fixtures | Reuse existing benchmark/report patterns for fixed Aster corpus and strategy/resource comparison |
 | Docs/CI | crates/code/manual, .github/workflows/ci.yml if needed | Current Aster commands, capabilities, focused admission checks |
 
@@ -52,14 +52,14 @@ Repair ACP's stale local-provider compile gate, reuse the existing hybrid orches
 - `tools/builtin/hybrid_search.rs` currently displays a fixed prefix. Use the existing canonical lexical tokenizer for ranking source lines; literal matching is ranking, never name/intent inference. Reuse bounded UTF-8 truncation and rendering conventions.
 - `acp/src/agent/local_embedding.rs` already validates asset revision, output shape and bounds. The dependency is compiled already; remove the undeclared feature gate rather than add another optional surface.
 - Existing `workspace_retrieval_benchmark.rs`, `workspace_persistent_index_production.rs`, and `test_workspace_retrieval_real_llm.rs` provide resource/strategy patterns. Extend/reuse them; keep deterministic and real-model evidence distinct.
-- `tests/e2e` and ACP stdio tests provide real entry-point test patterns. A3S Test TUI ACL owns terminal execution and cleanup.
+- `tests/e2e` and ACP stdio tests provide real entry-point test patterns. Aster Test TUI ACL owns terminal execution and cleanup.
 - P3/P4 are measured decisions: first compare Lines/Recursive and RRF/MMR, provider call amplification and lifetime memory; add AST/runtime/dependencies only when the evidence establishes a specific unmet requirement.
 
 ## Verification Plan
 
 - Focused Core retrieval/search/session/permission tests; ACP local embedding, retrieval seam, workspace trust and stdio end-to-end tests.
 - Existing release retrieval and persistent-index qualification; versioned Aster quality/strategy report and bounded late-match output proof.
-- A3S Test ACL check/run against the actual built terminal; real ACP fixture server captures tool invocations and asserts evidence reaches the next model request.
-- Root `cargo fmt --all -- --check`, focused Clippy, CI workspace scripts, paired `cargo build --locked -p aster -p a3s-code-acp`.
+- Aster Test ACL check/run against the actual built terminal; real ACP fixture server captures tool invocations and asserts evidence reaches the next model request.
+- Root `cargo fmt --all -- --check`, focused Clippy, CI workspace scripts, paired `cargo build --locked -p aster -p aster-acp`.
 - Existing installed local-model qualification when assets are available; never auto-download or claim deterministic providers establish real semantic quality.
 - No live PostgreSQL, remote model billing, unrelated full-workspace test campaign, commit, or deployment.

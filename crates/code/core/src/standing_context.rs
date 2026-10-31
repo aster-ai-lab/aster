@@ -20,15 +20,15 @@
 use std::io::Read;
 use std::path::Path;
 
-use a3s_effect::{LogStore, NewFact};
+use aster_effect::{LogStore, NewFact};
 use anyhow::{bail, Context, Result};
 use serde::Serialize;
 
 use crate::content_digest::digest_json;
 
-pub(crate) const STANDING_CONTEXT_FACT_KIND: &str = "a3s.standing-context";
+pub(crate) const STANDING_CONTEXT_FACT_KIND: &str = "aster.standing-context";
 const STANDING_CONTEXT_FACT_KEY: &str = "standing-context";
-const STANDING_CONTEXT_DOMAIN: &str = "a3s.code.standing-context-admission.v1";
+const STANDING_CONTEXT_DOMAIN: &str = "aster.code.standing-context-admission.v1";
 const MAX_TEXT_BYTES: usize = 32 * 1024;
 
 #[derive(Serialize)]
@@ -69,7 +69,7 @@ pub(crate) struct AdmittedStanding {
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn admit(
     log: &dyn LogStore,
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     workspace: &Path,
     thread: &str,
     agent_system: Option<&str>,
@@ -104,7 +104,7 @@ pub(crate) fn admit(
     Ok(Some(AdmittedStanding { digest, projection }))
 }
 
-fn stored_standings(facts: &[a3s_effect::Fact]) -> Result<Vec<StoredStanding>> {
+fn stored_standings(facts: &[aster_effect::Fact]) -> Result<Vec<StoredStanding>> {
     let mut stored = Vec::new();
     for fact in facts {
         if fact.kind != STANDING_CONTEXT_FACT_KIND {

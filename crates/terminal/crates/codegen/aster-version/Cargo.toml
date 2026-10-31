@@ -1,0 +1,13 @@
+[package]
+license = "Apache-2.0"
+name = "aster-version"
+version = "9.1.4"
+description = "Lockstepped grok CLI version."
+edition = "2024"
+publish = false
+
+[dependencies]
+semver = {workspace = true}
+
+[lints]
+workspace = true

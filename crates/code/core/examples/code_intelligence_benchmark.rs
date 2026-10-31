@@ -4,7 +4,7 @@
 //! `rust-analyzer`, so this profile exercises the real process protocol without
 //! depending on a developer machine or a public service.
 
-use a3s_code_core::{
+use aster_core::{
     LocalCodeIntelligence, LocalWorkspaceManifest, LocalWorkspaceManifestSnapshot,
     ManifestWorkspaceBackend, WorkspaceCodeIntelligence, WorkspaceFileSystem, WorkspacePath,
 };
@@ -204,10 +204,10 @@ async fn main() -> anyhow::Result<()> {
 }
 
 fn fake_lsp_path() -> anyhow::Result<PathBuf> {
-    let path = std::env::var_os("A3S_CODE_BENCH_FAKE_LSP")
+    let path = std::env::var_os("ASTER_BENCH_FAKE_LSP")
         .map(PathBuf::from)
         .ok_or_else(|| {
-            anyhow::anyhow!("A3S_CODE_BENCH_FAKE_LSP must identify the checked-in fake LSP binary")
+            anyhow::anyhow!("ASTER_BENCH_FAKE_LSP must identify the checked-in fake LSP binary")
         })?;
     if !path.is_file() {
         anyhow::bail!("fake LSP binary does not exist at {}", path.display());
@@ -216,7 +216,7 @@ fn fake_lsp_path() -> anyhow::Result<PathBuf> {
 }
 
 fn create_workspace(root: &Path) -> anyhow::Result<usize> {
-    let manifest = "[package]\nname = \"a3s-code-intelligence-benchmark\"\nversion = \"0.0.0\"\nedition = \"2021\"\n";
+    let manifest = "[package]\nname = \"aster-intelligence-benchmark\"\nversion = \"0.0.0\"\nedition = \"2021\"\n";
     std::fs::write(root.join("Cargo.toml"), manifest)?;
     let mut source_bytes = manifest.len();
     for index in 0..WORKSPACE_FILES {
@@ -261,7 +261,7 @@ async fn wait_for_manifest(
 async fn wait_for_document_symbols(
     provider: &dyn WorkspaceCodeIntelligence,
     target: &WorkspacePath,
-) -> anyhow::Result<a3s_code_core::CodeQueryResult<a3s_code_core::DocumentSymbol>> {
+) -> anyhow::Result<aster_core::CodeQueryResult<aster_core::DocumentSymbol>> {
     // LocalCodeIntelligence::start returns before the first layout refresh
     // installs a runtime lease. Cold-query qualification includes that prepare
     // window instead of racing it.
@@ -273,7 +273,7 @@ async fn wait_for_document_symbols(
                 .await
             {
                 Ok(result) => return Ok(result),
-                Err(a3s_code_core::CodeIntelligenceError::Unavailable { .. }) => {
+                Err(aster_core::CodeIntelligenceError::Unavailable { .. }) => {
                     // Avoid missing a status update that landed between the
                     // unavailable probe and this waiter.
                     let _ = tokio::time::timeout(Duration::from_millis(50), status.changed()).await;

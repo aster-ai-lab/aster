@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use sha2::{Digest, Sha256};
 
 use super::diagnostic::tests::completed_operation_diagnostic;

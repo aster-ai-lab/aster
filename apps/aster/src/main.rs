@@ -18,23 +18,23 @@ mod jemalloc_malloc_conf {
     #[unsafe(export_name = "_rjem_malloc_conf")]
     static MALLOC_CONF: MallocConfPtr = MallocConfPtr(CONF.as_ptr());
 }
-use a3s_code_pager::agent_runtime::AgentRuntime;
-use a3s_code_pager::app::{
+use aster_pager::agent_runtime::AgentRuntime;
+use aster_pager::app::{
     AgentCmd, Command, EARLY_PREFETCH_WAIT, HeadlessArgs, LeaderMgmtArgs, LeaderMgmtCommand,
     LeaderMode, LeaderTargetArgs, PagerArgs, resolve_use_leader, warn_leader_disabled_by_sandbox,
 };
-use a3s_code_pager::app::{WorkspaceMgmtArgs, WorkspaceMgmtCommand, WorkspaceStartArgs};
-use a3s_code_pager::client_identity::PAGER_CLIENT_VERSION;
-use a3s_code_shell::agent::app::{run_headless, run_leader};
-use a3s_code_shell::agent::config::Config as AgentConfig;
-use a3s_code_shell::leader::{
+use aster_pager::app::{WorkspaceMgmtArgs, WorkspaceMgmtCommand, WorkspaceStartArgs};
+use aster_pager::client_identity::PAGER_CLIENT_VERSION;
+use aster_shell::agent::app::{run_headless, run_leader};
+use aster_shell::agent::config::Config as AgentConfig;
+use aster_shell::leader::{
     ClientCapabilities, ClientMode, ControlCommand, LeaderCapabilities, LeaderDescriptor,
     LeaderRegistration, LeaderTarget,
 };
-use a3s_code_shell::leader::{
+use aster_shell::leader::{
     ControlPayload, LeaderClient, LeaderEnvUrls, connect_or_spawn, socket_path_for_ws_url,
 };
-use a3s_code_telemetry::process_info::{
+use aster_telemetry::process_info::{
     Entrypoint, Interactivity, ProcessIdentity, ReleaseChannel, set_identity, set_release_channel,
 };
 use anyhow::Result;
@@ -44,7 +44,7 @@ use std::num::NonZeroUsize;
 use tokio_util::sync::CancellationToken;
 mod agent_command;
 fn process_identity(command: Option<&Command>, is_interactive: bool) -> Option<ProcessIdentity> {
-    use a3s_code_telemetry::process_info::LeaderMode::Standalone;
+    use aster_telemetry::process_info::LeaderMode::Standalone;
     let (entrypoint, interactivity) = match command {
         Some(Command::Agent(_)) => return None,
         Some(Command::Dashboard) => return None,
@@ -113,7 +113,7 @@ fn command_needs_pre_sandbox_policy_heal(command: Option<&Command>) -> bool {
         ) => false,
     }
 }
-use a3s_code_update::{UpdateConfig, auto_update, enforce_version_policy_or_exit};
+use aster_update::{UpdateConfig, auto_update, enforce_version_policy_or_exit};
 use std::env;
 
 mod cli_pair_update;
@@ -152,7 +152,7 @@ mod test_seam {
             );
             return;
         }
-        a3s_code_config::signed_policy::test_seam::set_embedded_keys(Some(&[(key_id, public_key)]));
+        aster_config::signed_policy::test_seam::set_embedded_keys(Some(&[(key_id, public_key)]));
     }
 }
 /// Apply headless args to an existing config, only overriding values that are explicitly set.
@@ -167,14 +167,14 @@ fn apply_headless_args_to_config(args: &HeadlessArgs, config: &mut AgentConfig) 
 }
 /// Apply global endpoint CLI args to an existing config.
 fn apply_agent_endpoint_args(
-    agent_args: &a3s_code_pager::app::AgentArgs,
+    agent_args: &aster_pager::app::AgentArgs,
     config: &mut AgentConfig,
 ) {
     if let Some(v) = &agent_args.cli_chat_proxy_base_url {
         config.endpoints.cli_chat_proxy_base_url = Some(v.clone());
     }
-    if let Some(v) = &agent_args.a3s_api_base_url {
-        config.endpoints.a3s_api_base_url = v.clone();
+    if let Some(v) = &agent_args.aster_api_base_url {
+        config.endpoints.aster_api_base_url = v.clone();
     }
 }
 /// Resolve --agent-profile path: canonicalize and verify the file exists.
@@ -208,11 +208,11 @@ fn print_serve_startup_info(bind_addr: SocketAddr, secret: &str) {
     );
     eprintln!();
 }
-/// Entrypoint tag for `a3s -p`; keys the quiet stderr default in `init_tracing_simple`.
+/// Entrypoint tag for `aster -p`; keys the quiet stderr default in `init_tracing_simple`.
 const HEADLESS_ENTRYPOINT: &str = "headless";
 /// Initialize simple tracing for non-TUI agent modes.
 fn init_tracing_simple(app_entrypoint: &'static str) {
-    use a3s_code_telemetry::debug_log::RMCP_SSE_NOISE_TARGET;
+    use aster_telemetry::debug_log::RMCP_SSE_NOISE_TARGET;
     use tracing_subscriber::{EnvFilter, Layer as _, fmt, layer::SubscriberExt as _};
     let default_filter = if app_entrypoint == HEADLESS_ENTRYPOINT {
         "off"
@@ -233,35 +233,35 @@ fn init_tracing_simple(app_entrypoint: &'static str) {
         .with_writer(std::io::stderr);
     let registry = tracing_subscriber::registry()
         .with(fmt_layer.with_filter(env_filter))
-        .with(a3s_code_telemetry::sampling_log::layer())
-        .with(a3s_code_telemetry::span_profile::layer(app_entrypoint))
-        .with(a3s_code_telemetry::instrumentation::layer())
-        .with(a3s_code_telemetry::hooks_log::layer())
-        .with(a3s_code_telemetry::otel_layer::build_otel_layer(
-            a3s_code_telemetry::otel_layer::OtelClientInfo {
+        .with(aster_telemetry::sampling_log::layer())
+        .with(aster_telemetry::span_profile::layer(app_entrypoint))
+        .with(aster_telemetry::instrumentation::layer())
+        .with(aster_telemetry::hooks_log::layer())
+        .with(aster_telemetry::otel_layer::build_otel_layer(
+            aster_telemetry::otel_layer::OtelClientInfo {
                 client_name: "aster",
-                client_version: a3s_code_version::VERSION,
+                client_version: aster_version::VERSION,
                 service_version: env!("VERSION_WITH_COMMIT"),
                 app_entrypoint,
             },
-            a3s_code_shell::agent::init::build_default_otel_layer_config(),
+            aster_shell::agent::init::build_default_otel_layer_config(),
         ));
-    a3s_code_telemetry::debug_log::install_firehose(registry, app_entrypoint);
-    a3s_code_telemetry::external::init(
-        a3s_code_shell::agent::config::resolve_external_otel_config(
-            a3s_code_telemetry::external::config::ExternalClientInfo {
+    aster_telemetry::debug_log::install_firehose(registry, app_entrypoint);
+    aster_telemetry::external::init(
+        aster_shell::agent::config::resolve_external_otel_config(
+            aster_telemetry::external::config::ExternalClientInfo {
                 service_version: env!("VERSION_WITH_COMMIT").to_owned(),
-                client_version: a3s_code_version::VERSION.to_owned(),
+                client_version: aster_version::VERSION.to_owned(),
                 app_entrypoint: app_entrypoint.to_owned(),
             },
         ),
     );
 }
-/// `a3s setup`: rendering and exit codes only; fetch logic lives in `a3s_code_shell::managed_config`.
+/// `aster setup`: rendering and exit codes only; fetch logic lives in `aster_shell::managed_config`.
 /// `json` prints the served configuration instead of installing it, including when no principal is present.
 #[tracing::instrument(level = "debug", skip_all)]
 async fn run_setup_command(json: bool) {
-    use a3s_code_shell::managed_config::{self, SetupOutcome};
+    use aster_shell::managed_config::{self, SetupOutcome};
     if json {
         match managed_config::fetch_setup_report().await {
             Ok(report) => {
@@ -270,7 +270,7 @@ async fn run_setup_command(json: bool) {
                 println!("{out}");
                 if !report.configured {
                     eprintln!(
-                        "Your team doesn't have a managed configuration yet. A team admin can set one up at docs.a3s.ai."
+                        "Your team doesn't have a managed configuration yet. A team admin can set one up at docs.aster.ai."
                     );
                 }
             }
@@ -308,7 +308,7 @@ async fn run_setup_command(json: bool) {
         SetupOutcome::Installed => eprintln!("Applied managed configuration."),
         SetupOutcome::NothingConfigured => {
             eprintln!(
-                "Your team doesn't have a managed configuration yet. A team admin can set one up at docs.a3s.ai."
+                "Your team doesn't have a managed configuration yet. A team admin can set one up at docs.aster.ai."
             );
         }
         SetupOutcome::Skipped => {
@@ -332,7 +332,7 @@ async fn run_leader_mgmt(args: LeaderMgmtArgs) -> Result<()> {
     match args.command {
         LeaderMgmtCommand::Kill => kill_leaders().await,
         LeaderMgmtCommand::List { json } => {
-            let leaders = a3s_code_shell::leader::discover_leaders().await;
+            let leaders = aster_shell::leader::discover_leaders().await;
             if json {
                 let payload: Vec<_> = leaders.iter().map(leader_descriptor_json).collect();
                 println!(
@@ -376,7 +376,7 @@ async fn run_leader_mgmt(args: LeaderMgmtArgs) -> Result<()> {
 }
 #[tracing::instrument(level = "debug", skip_all)]
 async fn kill_leaders() -> Result<()> {
-    let leaders = a3s_code_shell::leader::discover_leaders().await;
+    let leaders = aster_shell::leader::discover_leaders().await;
     if leaders.is_empty() {
         eprintln!("No leader candidates found.");
         return Ok(());
@@ -387,7 +387,7 @@ async fn kill_leaders() -> Result<()> {
         let Some(pid) = leader_pid(d) else {
             continue;
         };
-        if !a3s_code_shell::util::is_grok_process(pid) {
+        if !aster_shell::util::is_grok_process(pid) {
             if let Some(ref lock) = d.lock_path {
                 eprintln!("  PID {pid} is not a grok process, removing stale lock");
                 let _ = std::fs::remove_file(lock);
@@ -399,7 +399,7 @@ async fn kill_leaders() -> Result<()> {
             continue;
         }
         eprintln!("  Killing leader PID {pid}");
-        if let Err(e) = a3s_code_shell::util::kill_process_by_pid(pid) {
+        if let Err(e) = aster_shell::util::kill_process_by_pid(pid) {
             eprintln!("  warning: failed to terminate PID {pid}: {e}");
             continue;
         }
@@ -417,21 +417,21 @@ async fn kill_leaders() -> Result<()> {
 fn resolve_target(args: &LeaderTargetArgs) -> LeaderTarget {
     match args.pid {
         Some(pid) => LeaderTarget::Pid(pid),
-        None => LeaderTarget::Environment(a3s_code_shell::env::GrokBuildEnvironment::Production),
+        None => LeaderTarget::Environment(aster_shell::env::GrokBuildEnvironment::Production),
     }
 }
 #[tracing::instrument(skip_all)]
 async fn connect_to_leader(
     args: &LeaderTargetArgs,
-) -> Result<(LeaderDescriptor, a3s_code_shell::leader::LeaderClient)> {
+) -> Result<(LeaderDescriptor, aster_shell::leader::LeaderClient)> {
     let target = resolve_target(args);
-    let selection = a3s_code_shell::leader::resolve_leader_target(target)
+    let selection = aster_shell::leader::resolve_leader_target(target)
         .await
         .map_err(|e| anyhow::anyhow!("{}", e.message))?;
     let socket_path = selection
         .socket_path()
         .ok_or_else(|| anyhow::anyhow!("resolved leader target did not include a socket path"))?;
-    let client = a3s_code_shell::leader::LeaderClient::connect(
+    let client = aster_shell::leader::LeaderClient::connect(
         socket_path.to_path_buf(),
         "aster-leader-cli",
         ClientMode::Stdio,
@@ -470,7 +470,7 @@ fn leader_descriptor_json(d: &LeaderDescriptor) -> serde_json::Value {
 fn leader_info_json(
     d: &LeaderDescriptor,
     reg: &LeaderRegistration,
-    info: Option<&a3s_code_shell::leader::ControlPayload>,
+    info: Option<&aster_shell::leader::ControlPayload>,
 ) -> Result<serde_json::Value> {
     let mut val = leader_descriptor_json(d);
     if let Some(obj) = val.as_object_mut() {
@@ -486,12 +486,12 @@ fn ensure_control_caps(reg: &LeaderRegistration) -> Result<&LeaderCapabilities> 
         .as_ref()
         .ok_or_else(|| anyhow::anyhow!("Leader does not advertise capabilities (legacy version)"))
 }
-/// Env override for the `a3s workspace` gate: any truthy value enables the command locally, a falsy one disables it.
+/// Env override for the `aster workspace` gate: any truthy value enables the command locally, a falsy one disables it.
 /// Either way it bypasses the remote settings flag.
 const WORKSPACE_COMMAND_ENV: &str = "GROK_WORKSPACE_COMMAND";
 /// One leader door's CLI identity, shared by `connect_leader_control` and `spawn_and_connect_leader`.
 struct LeaderDoorCli {
-    /// The command name as the user types it (`a3s workspace`); `<name> start` is its start command.
+    /// The command name as the user types it (`aster workspace`); `<name> start` is its start command.
     name: &'static str,
     /// IPC client type the leader records for connections from this command.
     client_type: &'static str,
@@ -503,7 +503,7 @@ const WORKSPACE_DOOR: LeaderDoorCli = LeaderDoorCli {
     client_type: "grok-workspace-cli",
     leader_mode_reason: "the workspace is shared via the leader",
 };
-/// Resolution of the `a3s workspace` gate.
+/// Resolution of the `aster workspace` gate.
 /// `Unknown` is kept separate from `Disabled` so we don't tell the user the flag is off when the settings were never read.
 /// Both fail closed, but `Unknown` earns an honest message.
 #[derive(Debug, PartialEq, Eq)]
@@ -540,7 +540,7 @@ fn workspace_command_env_override() -> Option<bool> {
 /// Precedence: the env override, then remote `Some(true)`, then loaded-but-off (`Disabled`), then settings-not-loaded (`Unknown`).
 fn workspace_command_gate(
     env_override: Option<bool>,
-    remote_settings: Option<&a3s_code_shell::util::config::RemoteSettings>,
+    remote_settings: Option<&aster_shell::util::config::RemoteSettings>,
 ) -> WorkspaceGate {
     if let Some(enabled) = env_override {
         return if enabled {
@@ -555,7 +555,7 @@ fn workspace_command_gate(
         None => WorkspaceGate::Unknown,
     }
 }
-/// Truthy parse for a3s on/off env vars: everything enables except the common falsy spellings (`0`, `false`, `off`, `no`, empty).
+/// Truthy parse for aster on/off env vars: everything enables except the common falsy spellings (`0`, `false`, `off`, `no`, empty).
 fn env_flag_enabled(value: &str) -> bool {
     !matches!(
         value.trim().to_ascii_lowercase().as_str(),
@@ -563,8 +563,8 @@ fn env_flag_enabled(value: &str) -> bool {
     )
 }
 /// File and managed IdP for a settings query that runs before effective-config load.
-fn load_grok_com_config_for_settings() -> a3s_code_shell::auth::GrokComConfig {
-    a3s_code_shell::config::load_agent_config_disk_only()
+fn load_grok_com_config_for_settings() -> aster_shell::auth::GrokComConfig {
+    aster_shell::config::load_agent_config_disk_only()
         .map(|cfg| cfg.grok_com_config)
         .unwrap_or_default()
 }
@@ -575,19 +575,19 @@ fn load_grok_com_config_for_settings() -> a3s_code_shell::auth::GrokComConfig {
 /// value, so it would fall open and let workspace refuse the command before the
 /// load could complete.
 async fn fetch_remote_settings(
-    grok_com_config: &a3s_code_shell::auth::GrokComConfig,
-) -> Option<a3s_code_shell::util::config::RemoteSettings> {
-    let query = a3s_code_shell::agent::remote_config::settings_get::SettingsQuery::resolve(
+    grok_com_config: &aster_shell::auth::GrokComConfig,
+) -> Option<aster_shell::util::config::RemoteSettings> {
+    let query = aster_shell::agent::remote_config::settings_get::SettingsQuery::resolve(
         None,
         Some(grok_com_config.clone()),
     );
-    let wait = a3s_code_shell::agent::remote_config::settings_get::await_startup_settings(
+    let wait = aster_shell::agent::remote_config::settings_get::await_startup_settings(
         query,
         EARLY_PREFETCH_WAIT,
         &tokio_util::sync::CancellationToken::new(),
     )
     .await;
-    a3s_code_shell::agent::remote_config::settings_get::consume_wait(wait, None, grok_com_config)
+    aster_shell::agent::remote_config::settings_get::consume_wait(wait, None, grok_com_config)
 }
 #[tracing::instrument(level = "debug", skip_all)]
 async fn run_workspace_mgmt(args: WorkspaceMgmtArgs) -> Result<()> {
@@ -596,7 +596,7 @@ async fn run_workspace_mgmt(args: WorkspaceMgmtArgs) -> Result<()> {
         WorkspaceMgmtCommand::Start(_)
             | WorkspaceMgmtCommand::Restart(_)
             | WorkspaceMgmtCommand::Resume { .. }
-    ) && let Some(profile) = a3s_code_sandbox::requested_confinement_profile()
+    ) && let Some(profile) = aster_sandbox::requested_confinement_profile()
     {
         anyhow::bail!(
             "`aster workspace` start/restart/resume is unavailable under sandbox profile '{profile}': \
@@ -687,12 +687,12 @@ async fn connect_leader_control(
 async fn spawn_and_connect_leader(
     leader: bool,
     no_leader: bool,
-    remote_settings: Option<&a3s_code_shell::util::config::RemoteSettings>,
+    remote_settings: Option<&aster_shell::util::config::RemoteSettings>,
     door: &LeaderDoorCli,
 ) -> Result<LeaderClient> {
-    use a3s_code_login::ensure_authenticated;
-    a3s_code_shell::util::config::set_remote_campaigns_from_settings(remote_settings);
-    let raw_config = a3s_code_shell::config::load_effective_config()
+    use aster_login::ensure_authenticated;
+    aster_shell::util::config::set_remote_campaigns_from_settings(remote_settings);
+    let raw_config = aster_shell::config::load_effective_config()
         .map_err(|e| anyhow::anyhow!("Failed to load config: {e}"))?;
     let agent_config = AgentConfig::new_from_toml_cfg(&raw_config)
         .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
@@ -702,7 +702,7 @@ async fn spawn_and_connect_leader(
         &raw_config,
         remote_settings,
         true,
-        a3s_code_sandbox::requested_confinement_profile(),
+        aster_sandbox::requested_confinement_profile(),
     );
     if !use_leader {
         anyhow::bail!(
@@ -737,7 +737,7 @@ async fn workspace_control(
     json: bool,
     command: ControlCommand,
 ) -> Result<()> {
-    let agent_config = a3s_code_shell::config::load_agent_config_disk_only()
+    let agent_config = aster_shell::config::load_agent_config_disk_only()
         .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
     let client = connect_leader_control(&agent_config, target, &WORKSPACE_DOOR).await?;
     ensure_workspace_caps(client.registration())?;
@@ -750,7 +750,7 @@ async fn workspace_control(
 async fn workspace_start(
     args: WorkspaceStartArgs,
     restart: bool,
-    remote_settings: Option<a3s_code_shell::util::config::RemoteSettings>,
+    remote_settings: Option<aster_shell::util::config::RemoteSettings>,
 ) -> Result<()> {
     let client = spawn_and_connect_leader(
         args.leader,
@@ -850,7 +850,7 @@ struct StdioReplayState {
     /// Folded into `sessions` when the response carrying the assigned session id arrives.
     /// Never replayed while unconfirmed (the id is unknown; the client's own request died with the old leader and is its to retry).
     pending_new: Option<CachedSession>,
-    /// Most recently created/loaded session id, reported in `a3s/leader_reconnected` as the primary restored session.
+    /// Most recently created/loaded session id, reported in `aster/leader_reconnected` as the primary restored session.
     last_session_id: Option<String>,
 }
 impl StdioReplayState {
@@ -907,8 +907,8 @@ const CACHED_METHODS: &[&str] = &[
     "\"session/load\"",
     "\"session/resume\"",
     "\"session/close\"",
-    "\"a3s/session/close\"",
-    "\"_a3s/session/close\"",
+    "\"aster/session/close\"",
+    "\"_aster/session/close\"",
 ];
 fn cache_outgoing_acp_state(msg: &str, state: &std::sync::Mutex<StdioReplayState>) {
     if !CACHED_METHODS.iter().any(|m| msg.contains(m)) {
@@ -962,7 +962,7 @@ fn cache_outgoing_acp_state(msg: &str, state: &std::sync::Mutex<StdioReplayState
                     .and_then(|m| serde_json::to_string(m).ok()),
             });
         }
-        "session/close" | "a3s/session/close" | "_a3s/session/close" => {
+        "session/close" | "aster/session/close" | "_aster/session/close" => {
             if let Some(sid) = json
                 .get("params")
                 .and_then(|p| p.get("sessionId").or_else(|| p.get("session_id")))
@@ -993,7 +993,7 @@ fn cache_incoming_session_id(msg: &str, state: &std::sync::Mutex<StdioReplayStat
 }
 /// Synthetic JSON-RPC id for the `session/load` the bridge constructs itself (when the external client only ever sent `session/new`).
 /// A string id can never collide with a numeric id the external client may have in flight.
-const REPLAY_LOAD_REQUEST_ID: &str = "a3s/leader-replay/session-load";
+const REPLAY_LOAD_REQUEST_ID: &str = "aster/leader-replay/session-load";
 /// Max silence between two messages from the leader during a replayed request.
 /// A `session/load` streams replay notifications continuously once it starts.
 /// The phase before the replay (MCP resolution, session file reads) can be quiet for a while on large sessions.
@@ -1175,15 +1175,15 @@ async fn replay_acp_state_after_reconnect(
 fn shutdown_and_flush_telemetry(exit_code: i32) -> ! {
     {
         let _exit_span = tracing::info_span!("teardown.process_exit").entered();
-        a3s_code_telemetry::sentry::flush_on_shutdown();
+        aster_telemetry::sentry::flush_on_shutdown();
     }
-    a3s_code_telemetry::otel_layer::shutdown_otel();
-    a3s_code_telemetry::debug_log::flush();
+    aster_telemetry::otel_layer::shutdown_otel();
+    aster_telemetry::debug_log::flush();
     finalize_span_profile();
     std::process::exit(exit_code);
 }
 fn finalize_span_profile() {
-    if let Some(path) = a3s_code_telemetry::span_profile::finalize() {
+    if let Some(path) = aster_telemetry::span_profile::finalize() {
         eprintln!("Aster: span profile written to {}", path.display());
     }
 }
@@ -1224,7 +1224,7 @@ const PLUGIN_DIR_LEADER_WARNING: &str = "Aster: --plugin-dir is ignored in leade
 /// Run the `agent` subcommand, dispatching to the appropriate mode.
 #[tracing::instrument(level = "debug", skip_all)]
 async fn run_agent_command(
-    agent_args: Box<a3s_code_pager::app::AgentArgs>,
+    agent_args: Box<aster_pager::app::AgentArgs>,
     permission_mode_flag: Option<String>,
     trust: bool,
     no_auto_update: bool,
@@ -1236,13 +1236,13 @@ async fn run_agent_command(
         agent_args.mode,
         Some(AgentCmd::Leader(_) | AgentCmd::Stdio | AgentCmd::Headless(_) | AgentCmd::Serve(_))
     ) {
-        a3s_code_shell::agent::app::suppress_otel();
+        aster_shell::agent::app::suppress_otel();
     }
     init_tracing_simple("agent");
-    let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-    a3s_code_telemetry::instrumentation::install_panic_hook();
+    let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+    aster_telemetry::instrumentation::install_panic_hook();
     if trust {
-        use a3s_code_workspace::folder_trust::{grant_folder_trust, report_cli_trust_grant};
+        use aster_workspace::folder_trust::{grant_folder_trust, report_cli_trust_grant};
         match std::env::current_dir() {
             Ok(cwd) => report_cli_trust_grant(&grant_folder_trust(&cwd)),
             Err(e) => {
@@ -1255,14 +1255,14 @@ async fn run_agent_command(
         }
     }
     let grok_com_config = load_grok_com_config_for_settings();
-    let settings_query = a3s_code_shell::agent::remote_config::settings_get::SettingsQuery::resolve(
+    let settings_query = aster_shell::agent::remote_config::settings_get::SettingsQuery::resolve(
         None,
         Some(grok_com_config.clone()),
     );
     let had_prefetch =
-        a3s_code_shell::agent::remote_config::settings_get::is_eligible(&settings_query);
+        aster_shell::agent::remote_config::settings_get::is_eligible(&settings_query);
     if had_prefetch {
-        a3s_code_shell::agent::remote_config::settings_get::warm_startup_settings(
+        aster_shell::agent::remote_config::settings_get::warm_startup_settings(
             settings_query.clone(),
         );
     }
@@ -1271,9 +1271,9 @@ async fn run_agent_command(
     if !is_stdio && !is_leader {
         eprintln!(
             "Aster (pager) - v{}",
-            a3s_code_version::display_version_with_commit(
+            aster_version::display_version_with_commit(
                 env!("VERSION_WITH_COMMIT"),
-                a3s_code_update::channel_label(),
+                aster_update::channel_label(),
             )
         );
         if should_check_for_updates(no_auto_update) {
@@ -1288,13 +1288,13 @@ async fn run_agent_command(
         }
     }
     let remote_settings = if had_prefetch {
-        let wait = a3s_code_shell::agent::remote_config::settings_get::await_startup_settings(
+        let wait = aster_shell::agent::remote_config::settings_get::await_startup_settings(
             settings_query,
             EARLY_PREFETCH_WAIT,
             &tokio_util::sync::CancellationToken::new(),
         )
         .await;
-        a3s_code_shell::agent::remote_config::settings_get::consume_wait(
+        aster_shell::agent::remote_config::settings_get::consume_wait(
             wait,
             None,
             &grok_com_config,
@@ -1302,8 +1302,8 @@ async fn run_agent_command(
     } else {
         None
     };
-    a3s_code_shell::util::config::set_remote_campaigns_from_settings(remote_settings.as_ref());
-    let raw_config = a3s_code_shell::config::load_effective_config()
+    aster_shell::util::config::set_remote_campaigns_from_settings(remote_settings.as_ref());
+    let raw_config = aster_shell::config::load_effective_config()
         .map_err(|e| anyhow::anyhow!("Failed to load config: {}", e))?;
     let mut agent_config = AgentConfig::new_from_toml_cfg(&raw_config)
         .map_err(|e| anyhow::anyhow!("Failed to create agent config: {}", e))?;
@@ -1311,8 +1311,8 @@ async fn run_agent_command(
     agent_config.reasoning_effort_override = agent_args
         .reasoning_effort
         .as_deref()
-        .and_then(a3s_code_shell::sampling::types::parse_canonical_effort_token);
-    let launch_yolo = a3s_code_shell::util::config::effective_yolo_for_launch(
+        .and_then(aster_shell::sampling::types::parse_canonical_effort_token);
+    let launch_yolo = aster_shell::util::config::effective_yolo_for_launch(
         agent_args.yolo,
         permission_mode_flag.as_deref(),
         None,
@@ -1321,11 +1321,11 @@ async fn run_agent_command(
         eprintln!("Aster: {warning}");
     }
     agent_config.default_yolo_mode = launch_yolo.yolo;
-    agent_config.default_auto_mode = a3s_code_shell::util::config::effective_auto_for_launch(
+    agent_config.default_auto_mode = aster_shell::util::config::effective_auto_for_launch(
         agent_args.yolo,
         permission_mode_flag.as_deref(),
         None,
-        a3s_code_shell::util::config::PermissionMode::Ask,
+        aster_shell::util::config::PermissionMode::Ask,
     );
     agent_config.agent_profile_path = agent_args
         .agent_profile
@@ -1339,7 +1339,7 @@ async fn run_agent_command(
     }
     apply_agent_endpoint_args(&agent_args, &mut agent_config);
     agent_config.remote_settings = remote_settings.clone();
-    agent_config.resolve_runtime_fields(&a3s_code_shell::agent::config::RuntimeResolutionContext {
+    agent_config.resolve_runtime_fields(&aster_shell::agent::config::RuntimeResolutionContext {
         raw_config: &raw_config,
         remote_settings: remote_settings.as_ref(),
         is_headless: !is_leader,
@@ -1354,7 +1354,7 @@ async fn run_agent_command(
     });
     let agent_memory_config = agent_config.memory_config.clone();
     let runtime = AgentRuntime::from_args(&agent_args, &agent_config, &raw_config);
-    let requested_confinement = a3s_code_sandbox::requested_confinement_profile();
+    let requested_confinement = aster_sandbox::requested_confinement_profile();
     let LeaderMode {
         use_leader,
         policy_disable_reason,
@@ -1370,7 +1370,7 @@ async fn run_agent_command(
     if let Some(profile) = disabled_by_confinement {
         warn_leader_disabled_by_sandbox(profile);
     }
-    use a3s_code_telemetry::process_info::LeaderMode::{Attached, Standalone};
+    use aster_telemetry::process_info::LeaderMode::{Attached, Standalone};
     set_identity(ProcessIdentity {
         entrypoint: match &agent_args.mode {
             Some(AgentCmd::Stdio) => Entrypoint::Embedded,
@@ -1387,7 +1387,7 @@ async fn run_agent_command(
     });
     let managed_install = is_managed_install(
         std::env::current_exe().ok(),
-        &a3s_code_shell::util::grok_home::grok_home(),
+        &aster_shell::util::grok_home::grok_home(),
     );
     if stdio_auto_update_enabled(
         is_stdio,
@@ -1413,7 +1413,7 @@ async fn run_agent_command(
         if !agent_args.plugin_dirs.is_empty() {
             eprintln!("{PLUGIN_DIR_LEADER_WARNING}");
         }
-        use a3s_code_shell::leader::{
+        use aster_shell::leader::{
             ClientCapabilities, ClientMode, LeaderReconnector, ReconnectPolicy, connect_or_spawn,
         };
         use std::sync::Arc;
@@ -1424,7 +1424,7 @@ async fn run_agent_command(
             Some(AgentCmd::Headless(_)) | None => ClientMode::Headless,
             _ => ClientMode::Stdio,
         };
-        let env_urls = a3s_code_shell::leader::LeaderEnvUrls::from(&agent_config.grok_com_config);
+        let env_urls = aster_shell::leader::LeaderEnvUrls::from(&agent_config.grok_com_config);
         let default_model = agent_config
             .default_model_override
             .clone()
@@ -1455,7 +1455,7 @@ async fn run_agent_command(
         let cancel = CancellationToken::new();
         match mode {
             ClientMode::Stdio => {
-                if let Err(error) = a3s_tty_utils::kill_current_process_on_parent_death() {
+                if let Err(error) = aster_tty_utils::kill_current_process_on_parent_death() {
                     tracing::warn!(
                         %error,
                         "failed to bind to parent death; stdio bridge will not die \
@@ -1468,7 +1468,7 @@ async fn run_agent_command(
                 let replay_state_stdin = replay_state.clone();
                 let cancel_stdin = cancel.clone();
                 let stdin_task = tokio::spawn(async move {
-                    let mut stdin_lines = a3s_acp_lib::spawn_stdin_line_reader();
+                    let mut stdin_lines = aster_acp_lib::spawn_stdin_line_reader();
                     loop {
                         tokio::select! {
                             biased;
@@ -1537,7 +1537,7 @@ async fn run_agent_command(
                                             None => "{}".to_string(),
                                         };
                                         let notification = format!(
-                                            r#"{{"jsonrpc":"2.0","method":"a3s/leader_reconnected","params":{params}}}"#
+                                            r#"{{"jsonrpc":"2.0","method":"aster/leader_reconnected","params":{params}}}"#
                                         );
                                         let _ = stdout.write_all(notification.as_bytes()).await;
                                         let _ = stdout.write_all(b"\n").await;
@@ -1610,12 +1610,12 @@ async fn run_agent_command(
             let mut agent_config = agent_config.clone();
             apply_headless_args_to_config(&a.headless, &mut agent_config);
             let secret = a.get_secret();
-            let server_config = a3s_code_shell::agent::ServerConfig {
+            let server_config = aster_shell::agent::ServerConfig {
                 bind_addr: a.bind,
                 secret: secret.clone(),
             };
             print_serve_startup_info(a.bind, &secret);
-            a3s_code_shell::agent::run_agent_server(server_config, agent_config).await
+            aster_shell::agent::run_agent_server(server_config, agent_config).await
         }
         Some(AgentCmd::Leader(a)) => {
             let mut agent_config = agent_config.clone();
@@ -1627,19 +1627,19 @@ async fn run_agent_command(
                 None
             } else {
                 let update_config_for_leader = update_config.clone();
-                Some(a3s_code_shell::agent::app::LeaderAutoUpdateConfig {
+                Some(aster_shell::agent::app::LeaderAutoUpdateConfig {
                     check_interval: std::time::Duration::from_secs(60 * 60),
                     check_fn: Box::new(move || {
                         let uc = update_config_for_leader.clone();
                         Box::pin(async move {
-                            let current_config = a3s_code_shell::util::config::load_config().await;
+                            let current_config = aster_shell::util::config::load_config().await;
                             if current_config.cli.auto_update == Some(false) {
                                 return false;
                             }
                             match auto_update::ensure_latest_on_disk(&uc).await {
                                 Ok(outcome) => {
                                     if let Some(v) = &outcome.installed {
-                                        if let Err(e) = a3s_code_shell::managed_config::sync().await
+                                        if let Err(e) = aster_shell::managed_config::sync().await
                                         {
                                             tracing::warn!(
                                                 "Leader auto-update: managed config refresh failed: {e}"
@@ -1671,7 +1671,7 @@ async fn run_agent_command(
             let cursor_worker = None;
             run_leader(
                 &agent_config,
-                a3s_code_shell::agent::app::LeaderRunOptions {
+                aster_shell::agent::app::LeaderRunOptions {
                     no_exit_on_disconnect: a.no_exit_on_disconnect,
                     relay_on_demand: a.relay_on_demand,
                     auto_update_check: leader_auto_update,
@@ -1729,7 +1729,7 @@ fn flag_dashboard_at_startup_if_requested(args: &mut PagerArgs) -> Result<()> {
     if !matches!(args.command, Some(Command::Dashboard)) {
         return Ok(());
     }
-    if !a3s_code_pager::views::dashboard::dashboard_enabled() {
+    if !aster_pager::views::dashboard::dashboard_enabled() {
         anyhow::bail!(
             "the Agent Dashboard is disabled. Enable it by removing \
              `[dashboard] enabled = false` from ~/.grok/config.toml and \
@@ -1742,7 +1742,7 @@ fn flag_dashboard_at_startup_if_requested(args: &mut PagerArgs) -> Result<()> {
 }
 /// Kick off background work that overlaps startup. Add new prewarms here.
 fn schedule_startup_prewarm() {
-    a3s_code_shell::agent::mvp_agent::warm_async_http_client();
+    aster_shell::agent::mvp_agent::warm_async_http_client();
 }
 fn configure_process_env(mut args: PagerArgs) -> Result<PagerArgs> {
     flag_dashboard_at_startup_if_requested(&mut args)?;
@@ -1755,10 +1755,10 @@ fn configure_process_env(mut args: PagerArgs) -> Result<PagerArgs> {
             std::env::set_var("GROK_COMPACTION_DETAIL", detail);
         }
         if args.chat() {
-            std::env::set_var(a3s_code_shell::agent::chat_modes::GROK_CHAT_MODE_ENV, "1");
+            std::env::set_var(aster_shell::agent::chat_modes::GROK_CHAT_MODE_ENV, "1");
         }
         if let Some(socket) = args.leader_socket.as_deref() {
-            std::env::set_var(a3s_code_shell::leader::LEADER_SOCKET_ENV, socket);
+            std::env::set_var(aster_shell::leader::LEADER_SOCKET_ENV, socket);
         }
         if args.log_sampling {
             std::env::set_var("GROK_LOG_SAMPLING", "1");
@@ -1902,7 +1902,7 @@ fn purge_jemalloc_retained_pages() {
 /// Returns `None` if any mallctl fails (trace records the absence).
 /// Uses the `tikv-jemalloc-ctl` raw helpers (shared with the heap-profile hooks below) instead of hand-rolled mallctl.
 #[cfg(all(feature = "jemalloc", unix))]
-fn jemalloc_allocator_stats() -> Option<a3s_code_pager::memory_trace::AllocatorStats> {
+fn jemalloc_allocator_stats() -> Option<aster_pager::memory_trace::AllocatorStats> {
     /// SAFETY: callers pass fixed NUL-terminated `stats.*` size_t ctl names.
     unsafe fn gauge(name: &[u8]) -> Option<u64> {
         unsafe {
@@ -1913,7 +1913,7 @@ fn jemalloc_allocator_stats() -> Option<a3s_code_pager::memory_trace::AllocatorS
     }
     unsafe {
         tikv_jemalloc_ctl::raw::write(b"epoch\0", 1u64).ok()?;
-        Some(a3s_code_pager::memory_trace::AllocatorStats {
+        Some(aster_pager::memory_trace::AllocatorStats {
             allocated: gauge(b"stats.allocated\0")?,
             active: gauge(b"stats.active\0")?,
             resident: gauge(b"stats.resident\0")?,
@@ -1945,12 +1945,12 @@ fn jemalloc_stats_dump() -> String {
     out
 }
 #[cfg(all(feature = "jemalloc", unix))]
-fn jemalloc_heap_stats() -> Option<a3s_code_shell::heap_profile::JemallocStats> {
+fn jemalloc_heap_stats() -> Option<aster_shell::heap_profile::JemallocStats> {
     unsafe {
         tikv_jemalloc_ctl::raw::write(b"epoch\0", 1u64).ok()?;
         let allocated = tikv_jemalloc_ctl::raw::read::<usize>(b"stats.allocated\0").ok()? as u64;
         let resident = tikv_jemalloc_ctl::raw::read::<usize>(b"stats.resident\0").ok()? as u64;
-        Some(a3s_code_shell::heap_profile::JemallocStats {
+        Some(aster_shell::heap_profile::JemallocStats {
             allocated,
             resident,
         })
@@ -1979,7 +1979,7 @@ fn jemalloc_dump_to_path(path: &std::path::Path) -> Result<(), String> {
 }
 #[cfg(all(feature = "jemalloc", unix))]
 fn install_heap_profile_hooks() {
-    a3s_code_shell::heap_profile::install(a3s_code_shell::heap_profile::HeapProfileHooks {
+    aster_shell::heap_profile::install(aster_shell::heap_profile::HeapProfileHooks {
         stats: jemalloc_heap_stats,
         set_prof_active: jemalloc_set_prof_active,
         dump_to_path: jemalloc_dump_to_path,
@@ -1989,8 +1989,8 @@ fn install_heap_profile_hooks() {
 fn version_text(channel_label: &str) -> String {
     format!(
         "aster {}\n",
-        a3s_code_version::display_version_with_commit(
-            a3s_code_version::full_version(),
+        aster_version::display_version_with_commit(
+            aster_version::full_version(),
             channel_label,
         )
     )
@@ -2001,7 +2001,7 @@ fn write_version(writer: &mut impl std::io::Write, channel_label: &str) -> std::
 /// The leader gets its own crash directory: `install()` opens `last-crash.bin` with `O_TRUNC`, so a pager and a
 /// leader sharing one directory would each wipe the other's pending crash blob on start.
 fn crash_dir_for(args: &PagerArgs) -> std::path::PathBuf {
-    let base = a3s_code_shell::util::grok_home::grok_home().join("crash");
+    let base = aster_shell::util::grok_home::grok_home().join("crash");
     let is_leader = matches!(
         &args.command,
         Some(Command::Agent(agent)) if matches!(agent.mode, Some(AgentCmd::Leader(_)))
@@ -2014,7 +2014,7 @@ fn dispatch_version_if_requested(args: &PagerArgs) -> bool {
     }
     if let Err(error) = write_version(
         &mut std::io::stdout().lock(),
-        a3s_code_update::channel_label(),
+        aster_update::channel_label(),
     ) {
         eprintln!("Error: {error}");
         std::process::exit(1);
@@ -2025,7 +2025,7 @@ fn dispatch_doctor_if_requested(args: &PagerArgs) -> bool {
     let Some(Command::Doctor(doctor_args)) = &args.command else {
         return false;
     };
-    if let Err(error) = a3s_code_pager::doctor_cmd::run(doctor_args.clone()) {
+    if let Err(error) = aster_pager::doctor_cmd::run(doctor_args.clone()) {
         eprintln!("Error: {error:#}");
         std::process::exit(1);
     }
@@ -2036,17 +2036,17 @@ fn main() {
         println!("{}", env!("ASTER_PAIR_BUILD_ID"));
         return;
     }
-    a3s_code_pager::acp::a3s_spawn::set_expected_pair_build_id(env!("ASTER_PAIR_BUILD_ID"));
-    a3s_code_version::set_full_version(env!("VERSION_WITH_COMMIT"));
-    a3s_code_telemetry::startup::mark_process_start();
-    if let Some(code) = a3s_code_pager::app::mermaid_worker::maybe_run_render_subprocess() {
+    aster_pager::acp::aster_spawn::set_expected_pair_build_id(env!("ASTER_PAIR_BUILD_ID"));
+    aster_version::set_full_version(env!("VERSION_WITH_COMMIT"));
+    aster_telemetry::startup::mark_process_start();
+    if let Some(code) = aster_pager::app::mermaid_worker::maybe_run_render_subprocess() {
         std::process::exit(code);
     }
-    if let Some(code) = a3s_code_pager::voice::maybe_run_capture_subprocess() {
+    if let Some(code) = aster_pager::voice::maybe_run_capture_subprocess() {
         std::process::exit(code);
     }
     set_release_channel(ReleaseChannel::from_label(
-        a3s_code_update::channel_name().unwrap_or_default(),
+        aster_update::channel_name().unwrap_or_default(),
     ));
     let args = PagerArgs::parse_cli();
     if dispatch_version_if_requested(&args)
@@ -2069,20 +2069,20 @@ fn main() {
         }
         return;
     }
-    a3s_code_pager_minimal::install();
+    aster_pager_minimal::install();
     #[cfg(all(feature = "test-seams", debug_assertions))]
     test_seam::install();
     #[cfg(all(feature = "jemalloc", unix))]
-    a3s_code_pager::memory_release::install_release_hook(purge_jemalloc_retained_pages);
+    aster_pager::memory_release::install_release_hook(purge_jemalloc_retained_pages);
     #[cfg(all(feature = "jemalloc", unix))]
     {
-        a3s_code_pager::memory_trace::install_allocator_stats_provider(jemalloc_allocator_stats);
-        a3s_code_pager::memory_trace::install_allocator_dump_provider(jemalloc_stats_dump);
+        aster_pager::memory_trace::install_allocator_stats_provider(jemalloc_allocator_stats);
+        aster_pager::memory_trace::install_allocator_dump_provider(jemalloc_stats_dump);
     }
     #[cfg(all(feature = "jemalloc", unix))]
     install_heap_profile_hooks();
     unsafe {
-        a3s_code_shell::agent::external_otel_pin::strip_conflicting_process_env();
+        aster_shell::agent::external_otel_pin::strip_conflicting_process_env();
     }
     let args = configure_process_env(args).unwrap_or_else(|err| {
         eprintln!("Aster: {err:#}");
@@ -2092,11 +2092,11 @@ fn main() {
     // and returns before spawn; library tests leave it unset.
     #[cfg(target_os = "macos")]
     unsafe {
-        std::env::set_var("A3S_REFUSE_UNQUALIFIED_NATIVE_SHELL", "1");
+        std::env::set_var("ASTER_REFUSE_UNQUALIFIED_NATIVE_SHELL", "1");
     }
-    a3s_code_pager::memory_trace::start(a3s_code_pager::memory_trace::default_dir());
+    aster_pager::memory_trace::start(aster_pager::memory_trace::default_dir());
     raise_fd_limit();
-    if let Err(e) = a3s_code_config::validate_requirements() {
+    if let Err(e) = aster_config::validate_requirements() {
         eprintln!("Couldn't start Aster: {e}");
         eprintln!();
         eprintln!(
@@ -2105,24 +2105,24 @@ fn main() {
         );
         std::process::exit(2);
     }
-    let _sentry_guard = a3s_code_telemetry::sentry::init(a3s_code_telemetry::sentry::Config {
+    let _sentry_guard = aster_telemetry::sentry::init(aster_telemetry::sentry::Config {
         client: "aster",
         client_version: PAGER_CLIENT_VERSION,
         release: env!("VERSION_WITH_COMMIT"),
-        disabled: a3s_code_shell::agent::config::is_error_reporting_disabled_sync(),
+        disabled: aster_shell::agent::config::is_error_reporting_disabled_sync(),
     });
-    a3s_code_pager::docs::extract_user_guide_docs(&a3s_code_shell::util::grok_home::grok_home());
-    a3s_crash_handler::install_terminal_restore_only();
-    if a3s_code_shell::util::config::load_crash_handler_enabled_sync() {
+    aster_pager::docs::extract_user_guide_docs(&aster_shell::util::grok_home::grok_home());
+    aster_crash_handler::install_terminal_restore_only();
+    if aster_shell::util::config::load_crash_handler_enabled_sync() {
         let crash_dir = crash_dir_for(&args);
-        if let Some(report) = a3s_crash_handler::check_previous_crash(&crash_dir) {
+        if let Some(report) = aster_crash_handler::check_previous_crash(&crash_dir) {
             eprintln!("Aster crashed during your last session.");
             eprintln!("  Signal:  {}", report.signal_name);
             eprintln!("  Version: {}", report.app_version);
             eprintln!("  Report:  {}", report.report_path.display());
             eprintln!();
         }
-        if !a3s_crash_handler::install(a3s_crash_handler::CrashHandlerConfig {
+        if !aster_crash_handler::install(aster_crash_handler::CrashHandlerConfig {
             app_version: env!("VERSION_WITH_COMMIT").to_string(),
             crash_dir: crash_dir.clone(),
         }) {
@@ -2136,20 +2136,20 @@ fn main() {
     let mut builder = tokio::runtime::Builder::new_multi_thread();
     builder.worker_threads(workers.get()).enable_all();
     let runtime =
-        a3s_tty_utils::runtime::build_with_blocking_pool(&mut builder).unwrap_or_else(|e| {
+        aster_tty_utils::runtime::build_with_blocking_pool(&mut builder).unwrap_or_else(|e| {
             eprintln!("Aster: failed to start tokio runtime: {e}");
             shutdown_and_flush_telemetry(1);
         });
     let result = run_and_shutdown(runtime, async_main(args), RUNTIME_SHUTDOWN_GRACE);
-    a3s_code_telemetry::debug_log::flush();
+    aster_telemetry::debug_log::flush();
     if let Err(e) = result {
-        a3s_tty_utils::restore_native_stderr();
+        aster_tty_utils::restore_native_stderr();
         finalize_span_profile();
-        let report = match e.downcast_ref::<a3s_code_pager::app::StartupFailure>() {
+        let report = match e.downcast_ref::<aster_pager::app::StartupFailure>() {
             Some(startup) => startup.user_report(),
             None => format!("Error: {e:#}"),
         };
-        a3s_code_pager::best_effort_stderr::eprint_line(&report);
+        aster_pager::best_effort_stderr::eprint_line(&report);
         drop(_sentry_guard);
         std::process::exit(1);
     }
@@ -2157,29 +2157,29 @@ fn main() {
 }
 #[tracing::instrument(level = "debug", skip_all)]
 async fn async_main(mut args: PagerArgs) -> Result<()> {
-    a3s_code_extra_ca::ensure_default_crypto_provider();
+    aster_extra_ca::ensure_default_crypto_provider();
     if let Some(Command::Completions { shell }) = &args.command {
-        a3s_code_pager::completions_cmd::run(*shell);
+        aster_pager::completions_cmd::run(*shell);
         return Ok(());
     }
     if let Some(Command::Wrap(ref wrap_args)) = args.command {
-        return a3s_code_pager::wrap_cmd::run(wrap_args);
+        return aster_pager::wrap_cmd::run(wrap_args);
     }
     let is_interactive = args.command.is_none()
         && args.single.is_none()
         && args.prompt_json.is_none()
         && args.prompt_file.is_none();
-    a3s_code_shell::http::set_client_name(if is_interactive {
-        a3s_code_workspace::permission::ClientType::GrokPager
+    aster_shell::http::set_client_name(if is_interactive {
+        aster_workspace::permission::ClientType::GrokPager
     } else {
-        a3s_code_workspace::permission::ClientType::Generic
+        aster_workspace::permission::ClientType::Generic
     });
     schedule_startup_prewarm();
     args.pin_local_resume_target()?;
     let saved_profile = args.saved_resume_profile();
     let sandbox_profile_arg = match args.startup_sandbox_profile(saved_profile.as_deref()) {
-        a3s_code_pager::app::cli::SandboxStartup::Apply(profile) => profile,
-        a3s_code_pager::app::cli::SandboxStartup::Conflict { requested, saved } => {
+        aster_pager::app::cli::SandboxStartup::Apply(profile) => profile,
+        aster_pager::app::cli::SandboxStartup::Conflict { requested, saved } => {
             eprintln!(
                 "error: cannot resume this session under sandbox profile '{requested}' — \
                  it was created with '{saved}'. Omit --sandbox to resume with '{saved}', \
@@ -2189,7 +2189,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
         }
     };
     if args.trust {
-        use a3s_code_workspace::folder_trust::{grant_folder_trust, report_cli_trust_grant};
+        use aster_workspace::folder_trust::{grant_folder_trust, report_cli_trust_grant};
         match std::env::current_dir() {
             Ok(cwd) => report_cli_trust_grant(&grant_folder_trust(&cwd)),
             Err(e) => {
@@ -2202,11 +2202,11 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
         }
     }
     if command_needs_pre_sandbox_policy_heal(args.command.as_ref()) {
-        match a3s_code_shell::config::load_agent_config_disk_only() {
+        match aster_shell::config::load_agent_config_disk_only() {
             Ok(agent_cfg) => {
                 let auth_manager =
-                    std::sync::Arc::new(a3s_code_login::AuthManager::new_with_proxy_base_url(
-                        &a3s_code_shell::util::grok_home::grok_home(),
+                    std::sync::Arc::new(aster_login::AuthManager::new_with_proxy_base_url(
+                        &aster_shell::util::grok_home::grok_home(),
                         agent_cfg.grok_com_config.clone(),
                         agent_cfg.endpoints.proxy_url(),
                     ));
@@ -2214,7 +2214,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
                     agent_cfg.grok_com_config.auth_provider_command.clone(),
                     None,
                 );
-                a3s_code_shell::managed_config::ensure_managed_policy_present(&auth_manager).await;
+                aster_shell::managed_config::ensure_managed_policy_present(&auth_manager).await;
             }
             Err(e) => {
                 tracing::warn!(
@@ -2224,7 +2224,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
             }
         }
     }
-    a3s_code_shell::config::apply_sandbox(
+    aster_shell::config::apply_sandbox(
         None,
         sandbox_profile_arg.as_deref(),
         args.cwd.as_deref(),
@@ -2240,13 +2240,13 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
                     let payload = serde_json::json!({
                         "product": "Aster",
                         "currentVersion": env!("VERSION_WITH_COMMIT"),
-                        "channel": a3s_code_update::channel_name().unwrap_or("unknown"),
+                        "channel": aster_update::channel_name().unwrap_or("unknown"),
                     });
                     println!("{}", serde_json::to_string(&payload)?);
                 } else {
                     write_version(
                         &mut std::io::stdout().lock(),
-                        a3s_code_update::channel_label(),
+                        aster_update::channel_label(),
                     )?;
                 }
                 return Ok(());
@@ -2279,103 +2279,103 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
             }
             Command::Inspect { json } => {
                 let cwd = std::env::current_dir().unwrap_or_default();
-                a3s_code_shell::inspect::inspect(&cwd, json).await?;
+                aster_shell::inspect::inspect(&cwd, json).await?;
                 return Ok(());
             }
             Command::Setup { json } => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
                 run_setup_command(json).await;
                 return Ok(());
             }
             Command::Mcp(mcp_args) => {
                 init_tracing_simple("cli");
-                return a3s_code_pager::mcp_cmd::run(mcp_args).await;
+                return aster_pager::mcp_cmd::run(mcp_args).await;
             }
             Command::Plugin(plugin_args) => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-                return a3s_code_pager::plugin_cmd::run(plugin_args).await;
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+                return aster_pager::plugin_cmd::run(plugin_args).await;
             }
             Command::Models => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-                let agent_config = a3s_code_shell::config::load_agent_config_disk_only()
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+                let agent_config = aster_shell::config::load_agent_config_disk_only()
                     .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
-                return a3s_code_pager::models::list_available_models(&agent_config).await;
+                return aster_pager::models::list_available_models(&agent_config).await;
             }
             Command::Leader(leader_args) => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
                 return run_leader_mgmt(leader_args).await;
             }
             Command::Worktree(worktree_args) => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-                let agent_config = a3s_code_shell::config::load_agent_config_disk_only()
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+                let agent_config = aster_shell::config::load_agent_config_disk_only()
                     .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
-                let result = a3s_code_pager::worktree_cmd::run(worktree_args, &agent_config).await;
+                let result = aster_pager::worktree_cmd::run(worktree_args, &agent_config).await;
                 return result;
             }
             Command::DiskUsage(disk_usage_args) => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-                return a3s_code_pager::disk_usage_cmd::run(disk_usage_args);
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+                return aster_pager::disk_usage_cmd::run(disk_usage_args);
             }
             Command::Workspace(workspace_args) => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
                 return run_workspace_mgmt(workspace_args).await;
             }
             Command::Sessions(sessions_args) => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-                let agent_config = a3s_code_shell::config::load_agent_config_disk_only()
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+                let agent_config = aster_shell::config::load_agent_config_disk_only()
                     .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
-                return a3s_code_pager::sessions_cmd::run(sessions_args, &agent_config).await;
+                return aster_pager::sessions_cmd::run(sessions_args, &agent_config).await;
             }
             Command::Usage(usage_args) => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-                return a3s_code_pager::usage_cmd::run(usage_args);
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+                return aster_pager::usage_cmd::run(usage_args);
             }
             Command::Share(ref share_args) => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-                let agent_config = a3s_code_shell::config::load_agent_config_disk_only()
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+                let agent_config = aster_shell::config::load_agent_config_disk_only()
                     .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
-                return a3s_code_pager::share_cmd::run(share_args, &agent_config).await;
+                return aster_pager::share_cmd::run(share_args, &agent_config).await;
             }
             Command::Export(export_args) => {
                 init_tracing_simple("cli");
-                return a3s_code_pager::export_cmd::run(export_args);
+                return aster_pager::export_cmd::run(export_args);
             }
             Command::Trace(trace_args) => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-                let mut agent_config = a3s_code_shell::config::load_agent_config_disk_only()
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+                let mut agent_config = aster_shell::config::load_agent_config_disk_only()
                     .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
                 if !trace_args.local {
                     agent_config.remote_settings =
                         fetch_remote_settings(&agent_config.grok_com_config).await;
                 }
-                return a3s_code_pager::trace_cmd::run(trace_args, &agent_config).await;
+                return aster_pager::trace_cmd::run(trace_args, &agent_config).await;
             }
             Command::Memory(memory_args) => {
                 let grok_com_config = load_grok_com_config_for_settings();
                 let remote_settings = fetch_remote_settings(&grok_com_config).await;
-                a3s_code_shell::util::config::set_remote_campaigns_from_settings(
+                aster_shell::util::config::set_remote_campaigns_from_settings(
                     remote_settings.as_ref(),
                 );
-                let config = a3s_code_shell::config::load_effective_config()?;
-                let mode = a3s_code_shell::config::MemoryConfig::resolve(
+                let config = aster_shell::config::load_effective_config()?;
+                let mode = aster_shell::config::MemoryConfig::resolve(
                     args.experimental_memory,
                     args.no_memory,
                     &config,
                     remote_settings.as_ref(),
                 )
                 .mode;
-                return a3s_code_pager::memory_cmd::run(memory_args, mode);
+                return aster_pager::memory_cmd::run(memory_args, mode);
             }
             Command::Update {
                 check,
@@ -2389,7 +2389,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
                 auto,
             } => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
                 let channel_switch = get_channel_switch(alpha, stable, enterprise);
                 let trigger = resolve_update_trigger(trigger.as_deref(), auto);
                 return run_update_command(
@@ -2410,10 +2410,10 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
                 devbox,
             } => {
                 init_tracing_simple("cli");
-                let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
-                let config = a3s_code_shell::config::load_agent_config_disk_only()
+                let _otel_guard = aster_telemetry::otel_layer::otel_guard();
+                let config = aster_shell::config::load_agent_config_disk_only()
                     .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
-                let authenticated = a3s_code_login::run_cli_login(
+                let authenticated = aster_login::run_cli_login(
                     config.grok_com_config.clone(),
                     config.login_device_flow,
                     config.endpoints.proxy_url(),
@@ -2421,26 +2421,26 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
                     device_auth,
                     devbox,
                     |auth_manager| {
-                        a3s_code_shell::agent::init::update_telemetry_config(&config, auth_manager)
+                        aster_shell::agent::init::update_telemetry_config(&config, auth_manager)
                     },
                 )
                 .await?;
-                a3s_code_shell::agent::init::apply_post_login_config(authenticated).await?;
+                aster_shell::agent::init::apply_post_login_config(authenticated).await?;
                 println!();
-                a3s_code_shell::instrumentation::finalize_and_exit(0);
+                aster_shell::instrumentation::finalize_and_exit(0);
             }
             Command::Logout => {
                 init_tracing_simple("cli");
-                let config = a3s_code_shell::config::load_agent_config_disk_only()
+                let config = aster_shell::config::load_agent_config_disk_only()
                     .map_err(|e| anyhow::anyhow!("Failed to create agent config: {e}"))?;
-                a3s_code_shell::agent::init::run_cli_logout(&config.grok_com_config)?;
-                a3s_code_shell::instrumentation::finalize_and_exit(0);
+                aster_shell::agent::init::run_cli_logout(&config.grok_com_config)?;
+                aster_shell::instrumentation::finalize_and_exit(0);
             }
             Command::Wrap(ref wrap_args) => {
-                return a3s_code_pager::wrap_cmd::run(wrap_args);
+                return aster_pager::wrap_cmd::run(wrap_args);
             }
             Command::Completions { shell } => {
-                a3s_code_pager::completions_cmd::run(shell);
+                aster_pager::completions_cmd::run(shell);
                 return Ok(());
             }
             Command::Dashboard => {
@@ -2449,7 +2449,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
             }
         }
     }
-    let headless_prompt = a3s_code_pager::headless::HeadlessPrompt::from_args(
+    let headless_prompt = aster_pager::headless::HeadlessPrompt::from_args(
         args.single.as_deref(),
         args.prompt_json.as_deref(),
         args.prompt_file.as_deref(),
@@ -2464,9 +2464,9 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
             anyhow::bail!("--memory-flush without a prompt requires --resume/-r or --continue/-c");
         }
         init_tracing_simple(HEADLESS_ENTRYPOINT);
-        let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
+        let _otel_guard = aster_telemetry::otel_layer::otel_guard();
         enforce_version_policy_or_exit();
-        let launch_yolo = a3s_code_shell::util::config::effective_yolo_for_launch(
+        let launch_yolo = aster_shell::util::config::effective_yolo_for_launch(
             args.yolo,
             args.permission_mode_flag.as_deref(),
             None,
@@ -2477,19 +2477,19 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
         let json_schema = args
             .json_schema
             .as_deref()
-            .map(a3s_code_pager::headless::parse_json_schema)
+            .map(aster_pager::headless::parse_json_schema)
             .transpose()?;
         if json_schema.is_some()
-            && args.output_format == a3s_code_pager::headless::OutputFormat::Plain
+            && args.output_format == aster_pager::headless::OutputFormat::Plain
         {
-            args.output_format = a3s_code_pager::headless::OutputFormat::Json;
+            args.output_format = aster_pager::headless::OutputFormat::Json;
         }
         let memory_enabled_override = args.memory_enabled_override();
         let memory_flush = args.memory_flush;
-        return a3s_code_pager::headless::run_single_turn(
+        return aster_pager::headless::run_single_turn(
             headless_prompt,
             args.verbatim,
-            a3s_code_pager::headless::HeadlessOptions {
+            aster_pager::headless::HeadlessOptions {
                 session_id: args.session_id.clone(),
                 resume: args.resume_session.or(args.load_session),
                 resume_title_pinned: args.resume_target_pinned,
@@ -2528,7 +2528,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
         .await;
     }
     enforce_version_policy_or_exit();
-    let _otel_guard = a3s_code_telemetry::otel_layer::otel_guard();
+    let _otel_guard = aster_telemetry::otel_layer::otel_guard();
     type UpdateWaitHandle = tokio::task::JoinHandle<std::io::Result<std::process::ExitStatus>>;
     let bg_update_wait: std::sync::Arc<tokio::sync::Mutex<Option<UpdateWaitHandle>>> =
         std::sync::Arc::new(tokio::sync::Mutex::new(None));
@@ -2548,8 +2548,8 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
         } else {
             None
         };
-    let result = a3s_code_pager::app::run(args, bg_update_rx).await;
-    a3s_code_sandbox::flush();
+    let result = aster_pager::app::run(args, bg_update_rx).await;
+    aster_sandbox::flush();
     match result {
         Ok(true) => {
             let adopted = bg_update_wait.lock().await.take();
@@ -2564,7 +2564,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
         Err(e) => Err(e),
     }
 }
-/// Returns `true` when an update path completed without a reported failure. It falls back to a fresh blocking `a3s
+/// Returns `true` when an update path completed without a reported failure. It falls back to a fresh blocking `aster
 /// update` only when there is no waiter or the child failed. (No waiter means the spawn failed or no download was
 /// needed because the target was already on disk.).
 #[tracing::instrument(level = "debug", skip_all)]
@@ -2577,15 +2577,15 @@ async fn finish_update_on_exit(
 }
 /// Build an [`UpdateConfig`] from the current environment and config files.
 fn build_update_config() -> UpdateConfig {
-    let environment = a3s_code_shell::env::GrokBuildEnvironment::from_flags(false, false);
+    let environment = aster_shell::env::GrokBuildEnvironment::from_flags(false, false);
     let mut config = UpdateConfig::from_environment(&environment);
     config.deployment_key =
-        a3s_code_shell::agent::config::EndpointsConfig::default().deployment_key;
+        aster_shell::agent::config::EndpointsConfig::default().deployment_key;
     config.npm_registry = std::env::var("GROK_NPM_REGISTRY")
         .ok()
-        .or_else(a3s_code_shell::util::config::load_npm_registry_sync);
-    if let Ok(root) = a3s_code_shell::config::load_effective_config_disk_only()
-        && let Some(ch) = a3s_code_shell::util::config::channel_from_toml_opt(&root)
+        .or_else(aster_shell::util::config::load_npm_registry_sync);
+    if let Ok(root) = aster_shell::config::load_effective_config_disk_only()
+        && let Some(ch) = aster_shell::util::config::channel_from_toml_opt(&root)
     {
         config.channel = ch;
     }
@@ -2605,9 +2605,9 @@ fn stdio_auto_update_enabled(
 ) -> bool {
     is_stdio && !use_leader && updates_enabled && managed_install
 }
-/// True when `exe` is the binary `<grok_home>/bin/a3s` resolves to, the install that adopts a staged update on
+/// True when `exe` is the binary `<grok_home>/bin/aster` resolves to, the install that adopts a staged update on
 /// respawn. Both sides are canonicalized; any failure reports unmanaged and skips the update. The npm shim
-/// hardcodes `~/.a3s`, so a custom `GROK_HOME` skips here too.
+/// hardcodes `~/.aster`, so a custom `GROK_HOME` skips here too.
 fn is_managed_install(exe: Option<std::path::PathBuf>, grok_home: &std::path::Path) -> bool {
     if grok_home.as_os_str().is_empty() {
         return false;
@@ -2615,7 +2615,7 @@ fn is_managed_install(exe: Option<std::path::PathBuf>, grok_home: &std::path::Pa
     let Some(exe) = exe else {
         return false;
     };
-    let managed = a3s_code_config::grok_application_in(grok_home);
+    let managed = aster_config::grok_application_in(grok_home);
     match (dunce::canonicalize(&exe), dunce::canonicalize(&managed)) {
         (Ok(exe), Ok(managed)) => exe == managed,
         _ => false,
@@ -2634,7 +2634,7 @@ fn get_channel_switch(alpha: bool, stable: bool, enterprise: bool) -> Option<&'s
         None
     }
 }
-/// Handle `a3s-pager update [--check] [--json] [--force-reinstall] [--version X] [--alpha|--stable|--enterprise]`.
+/// Handle `aster-pager update [--check] [--json] [--force-reinstall] [--version X] [--alpha|--stable|--enterprise]`.
 /// --trigger is the one representation; --auto is the compat alias from older parents.
 /// Unknown values fall back to user_command (a human is the only caller that can produce them).
 fn resolve_update_trigger(flag: Option<&str>, auto: bool) -> auto_update::CliUpdateTrigger {
@@ -2828,7 +2828,7 @@ mod tests {
     }
     #[test]
     fn version_output_writer_preserves_channel_aware_contract() {
-        a3s_code_version::set_full_version(env!("VERSION_WITH_COMMIT"));
+        aster_version::set_full_version(env!("VERSION_WITH_COMMIT"));
         for (label, expected_suffix) in [
             (" [alpha]", " [alpha]\n"),
             (" [stable]", " [stable]\n"),
@@ -2894,7 +2894,7 @@ mod tests {
         eprintln!(
             "skip jemalloc prof checks: opt.prof false \
              (release-dist static conf, or MALLOC_CONF=prof:true,prof_active:false,lg_prof_sample={})",
-            a3s_code_shell::heap_profile::LG_PROF_SAMPLE
+            aster_shell::heap_profile::LG_PROF_SAMPLE
         );
         false
     }
@@ -2925,7 +2925,7 @@ mod tests {
         }
     }
     #[cfg(all(feature = "jemalloc", unix))]
-    fn assert_stats_sane(stats: a3s_code_shell::heap_profile::JemallocStats) {
+    fn assert_stats_sane(stats: aster_shell::heap_profile::JemallocStats) {
         assert!(stats.allocated > 0, "allocated={}", stats.allocated);
         assert!(stats.resident > 0, "resident={}", stats.resident);
         assert!(
@@ -2981,25 +2981,25 @@ mod tests {
     fn install_heap_profile_hooks_wires_shell_apis() {
         install_heap_profile_hooks();
         assert_stats_sane(
-            a3s_code_shell::heap_profile::stats().expect("shell stats after install"),
+            aster_shell::heap_profile::stats().expect("shell stats after install"),
         );
         if !require_opt_prof() {
-            assert!(!a3s_code_shell::heap_profile::prof_available());
+            assert!(!aster_shell::heap_profile::prof_available());
             return;
         }
-        assert!(a3s_code_shell::heap_profile::prof_available());
+        assert!(aster_shell::heap_profile::prof_available());
         assert_prof_active(false);
         {
             let _guard = ProfActiveGuard::set(true);
             assert_prof_active(true);
-            assert!(a3s_code_shell::heap_profile::set_prof_active(true));
+            assert!(aster_shell::heap_profile::set_prof_active(true));
             assert_prof_active(true);
         }
         assert_prof_active(false);
-        assert!(a3s_code_shell::heap_profile::set_prof_active(false));
+        assert!(aster_shell::heap_profile::set_prof_active(false));
         assert_prof_active(false);
         let dump = TempHeapDump::new("shell");
-        a3s_code_shell::heap_profile::dump_to_path(dump.path()).expect("shell dump");
+        aster_shell::heap_profile::dump_to_path(dump.path()).expect("shell dump");
         dump.assert_nonempty_dump();
     }
     #[cfg(unix)]
@@ -3054,7 +3054,7 @@ mod tests {
         );
     }
     use clap::Parser as _;
-    /// `a3s dashboard` flags the startup hook without forcing leader mode.
+    /// `aster dashboard` flags the startup hook without forcing leader mode.
     /// The dashboard is independent of leader mode, so the launch keeps whatever leader setting the user (or config) chose.
     #[serial_test::serial(GROK_AGENT_DASHBOARD)]
     #[test]
@@ -3074,7 +3074,7 @@ mod tests {
         );
         unsafe { std::env::remove_var("GROK_OPEN_DASHBOARD_AT_STARTUP") };
     }
-    /// `a3s dashboard --no-leader` is allowed.
+    /// `aster dashboard --no-leader` is allowed.
     /// The dashboard does not require a leader, so the combination launches into the dashboard in non-leader mode.
     #[serial_test::serial(GROK_AGENT_DASHBOARD)]
     #[test]
@@ -3112,7 +3112,7 @@ mod tests {
     }
     #[test]
     fn workspace_command_gate_resolution() {
-        use a3s_code_shell::util::config::RemoteSettings;
+        use aster_shell::util::config::RemoteSettings;
         let on = RemoteSettings {
             workspace_command_enabled: Some(true),
             ..RemoteSettings::default()
@@ -3220,14 +3220,14 @@ mod tests {
             &state,
         );
         cache_outgoing_acp_state(
-            r#"{"jsonrpc":"2.0","id":3,"method":"_a3s/session/close","params":{"sessionId":"s1"}}"#,
+            r#"{"jsonrpc":"2.0","id":3,"method":"_aster/session/close","params":{"sessionId":"s1"}}"#,
             &state,
         );
         let s = state.lock().unwrap();
         assert!(s.sessions.is_empty(), "closed session must not be replayed");
         assert!(s.last_session_id.is_none());
     }
-    /// The standard close spelling must stop the replay exactly like the `a3s/` extension spelling.
+    /// The standard close spelling must stop the replay exactly like the `aster/` extension spelling.
     /// Adopting `session/close` without teaching the cache would resurrect closed sessions on every leader reconnect.
     #[test]
     fn cache_standard_session_close_stops_replaying_it() {
@@ -3544,7 +3544,7 @@ mod tests {
             let _init = leader_rx.recv().await.unwrap();
             response_tx
                 .send(
-                    r#"{"jsonrpc":"2.0","method":"a3s/leader/version_mismatch","params":{}}"#
+                    r#"{"jsonrpc":"2.0","method":"aster/leader/version_mismatch","params":{}}"#
                         .to_string(),
                 )
                 .unwrap();
@@ -3592,7 +3592,7 @@ mod tests {
         responder.await.unwrap();
     }
     /// A `session/load` rejected by the new leader (error response) must surface as a failed replay (`None`).
-    /// The bridge then emits `a3s/leader_reconnected` with empty params and the external client knows to re-establish state itself.
+    /// The bridge then emits `aster/leader_reconnected` with empty params and the external client knows to re-establish state itself.
     #[tokio::test]
     async fn replay_returns_none_when_load_is_rejected() {
         let (leader_tx, mut leader_rx) = tokio::sync::mpsc::unbounded_channel();

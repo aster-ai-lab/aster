@@ -1,5 +1,5 @@
 use super::*;
-use a3s_code_core::durable_memory_vec::management::{
+use aster_core::durable_memory_vec::management::{
     ManagedMemory, MemoryInspectionLayer, MemoryManagementRequest,
 };
 
@@ -21,14 +21,14 @@ struct SnapshotRequest {
     count_only: bool,
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     async fn memory_scope(
         &self,
         workspace_root: &std::path::Path,
         session_id: Option<&str>,
     ) -> acp::Result<(
         PathBuf,
-        Arc<a3s_code_core::durable_memory_vec::LazyFileMemoryStore>,
+        Arc<aster_core::durable_memory_vec::LazyFileMemoryStore>,
     )> {
         let missing = || acp::Error::resource_not_found(None);
         let workspace = if let Some(id) = session_id {
@@ -54,7 +54,7 @@ impl A3sCodeAgent {
         let store = if self.launch.workspace.canonicalize().ok().as_ref() == Some(&workspace) {
             Arc::clone(&self.managed_memory)
         } else {
-            Arc::new(a3s_code_core::durable_memory_vec::LazyFileMemoryStore::new(
+            Arc::new(aster_core::durable_memory_vec::LazyFileMemoryStore::new(
                 session_memory_dir(&workspace, &self.launch.config),
             ))
         };
@@ -79,7 +79,7 @@ impl A3sCodeAgent {
             return Err(invalid());
         }
         if request.count_only && request.layer == MemoryInspectionLayer::Durable {
-            use a3s_memory::MemoryStore as _;
+            use aster_durable_memory::MemoryStore as _;
             let count = store
                 .count()
                 .await

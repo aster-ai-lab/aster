@@ -3,8 +3,8 @@
 
 use std::path::Path;
 
-use a3s_code_core::{session_folder, state_root};
-use a3s_effect::{FileLog, LogStore, NewFact};
+use aster_core::{session_folder, state_root};
+use aster_effect::{FileLog, LogStore, NewFact};
 
 const ID: &str = "33333333-3333-4333-8333-333333333333";
 
@@ -19,7 +19,7 @@ fn an_override_keeps_harness_state_out_of_the_workspace() {
     assert!(state_root::state_root_override().is_none());
     assert_eq!(
         session_folder::sessions_root(workspace),
-        workspace.join(".a3s").join("sessions")
+        workspace.join(".aster").join("sessions")
     );
     assert!(state_root::set_state_root_override(Path::new("relative/state")).is_err());
     assert!(state_root::set_state_root_override(&state.join("missing")).is_err());
@@ -48,7 +48,7 @@ fn an_override_keeps_harness_state_out_of_the_workspace() {
     FileLog::open(&home)
         .unwrap()
         .append(
-            &a3s_code_core::fact_control::thread_for_session(ID),
+            &aster_core::fact_control::thread_for_session(ID),
             &[NewFact {
                 kind: "user.message".into(),
                 key: "user:1".into(),
@@ -67,26 +67,26 @@ fn an_override_keeps_harness_state_out_of_the_workspace() {
 
     std::fs::write(workspace.join("main.py"), "print('graded')\n").unwrap();
     assert!(
-        a3s_code_core::workspace::TrigramGrepCandidateIndex::default_index_dir(workspace)
+        aster_core::workspace::TrigramGrepCandidateIndex::default_index_dir(workspace)
             .starts_with(state.join("indexes"))
     );
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let _entered = runtime.enter();
     let services =
-        a3s_code_core::workspace::WorkspaceServices::local_with_indexed_retrieval(workspace)
+        aster_core::workspace::WorkspaceServices::local_with_indexed_retrieval(workspace)
             .unwrap();
     assert!(services.persistent_index().is_some());
     assert!(
         std::fs::read_dir(state.join("indexes")).unwrap().count() == 1,
-        "the a3s-vec index lands under the state root"
+        "the aster-vec index lands under the state root"
     );
 
     assert!(
-        !workspace.join(".a3s").exists(),
+        !workspace.join(".aster").exists(),
         "the graded workspace holds no harness state"
     );
     assert!(
-        !workspace.join(".a3s-code").exists(),
+        !workspace.join(".aster").exists(),
         "the graded workspace holds no index"
     );
 }

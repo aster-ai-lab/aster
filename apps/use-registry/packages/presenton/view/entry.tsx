@@ -21,14 +21,14 @@ import { startHomeDocument } from "./homeDocument";
 // The homepage drive sets this before the document loads, then reads the deck
 // the opened view actually holds. Absent on a normal open, so the branch is dead.
 const viewTest = globalThis as typeof globalThis & {
-  __A3S_VIEW_TEST__?: boolean;
-  __a3sPresentonTesting?: {
+  __ASTER_VIEW_TEST__?: boolean;
+  __asterPresentonTesting?: {
     setOutlines(lines: string[]): void;
     snapshot(): { content: string | null; outlines: string[] | null; seed: unknown; modelRequests: number };
   };
 };
-if (viewTest.__A3S_VIEW_TEST__) {
-  viewTest.__a3sPresentonTesting = {
+if (viewTest.__ASTER_VIEW_TEST__) {
+  viewTest.__asterPresentonTesting = {
     setOutlines(lines) {
       if (!deck) throw new Error("deck missing");
       setDeck({ ...deck, outlines: lines });

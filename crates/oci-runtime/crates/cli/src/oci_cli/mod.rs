@@ -4,8 +4,8 @@ mod signal;
 
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, State};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, State};
+use aster_oci_sdk::{
     ContainerId, ContainerRecord, ContainerTarget, CreateAttachments, CreateRequest, DeleteMode,
     DeleteRequest, Error, ErrorCode, IsolationRequest, KillRequest, OciBundle, OperationContext,
     OperationId, ProcessIo, Result, RuntimeClient, Signal, StartRequest, StateRequest,
@@ -587,7 +587,7 @@ fn operation_id(
 ) -> Result<OperationId> {
     let mut digest = Sha256::new();
     for value in [
-        "a3s.oci.cli-operation.v1",
+        "aster.oci.cli-operation.v1",
         id.as_str(),
         action,
         &incarnation.to_string(),

@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{decoded_text, require_spreadsheet, updated_start_tag};
 use crate::semantic::{NativeOfficeDocument, OfficeNodeType};
@@ -243,6 +243,6 @@ fn defined_name_fragment(
     )
 }
 
-pub(super) fn copy_error(message: impl Into<String>) -> a3s_use_core::UseError {
+pub(super) fn copy_error(message: impl Into<String>) -> aster_use_core::UseError {
     super::super::editor_error("use.office.spreadsheet_copy_failed", message)
 }

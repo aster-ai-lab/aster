@@ -103,10 +103,10 @@ const WORKSPACE_STYLE = `
 `
 
 function ensureWorkspaceStyle() {
-  let style = document.getElementById('a3s-data-workspace')
+  let style = document.getElementById('aster-data-workspace')
   if (!style) {
     style = document.createElement('style')
-    style.id = 'a3s-data-workspace'
+    style.id = 'aster-data-workspace'
     document.head.append(style)
   }
   if (style.textContent !== WORKSPACE_STYLE) style.textContent = WORKSPACE_STYLE

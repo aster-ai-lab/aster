@@ -80,7 +80,7 @@ impl Default for IggyConfig {
             username: None,
             password: None,
             token: None,
-            stream_name: "a3s_events".to_string(),
+            stream_name: "aster_events".to_string(),
             subject_prefix: "events".to_string(),
             partitioning: IggyPartitioning::Single,
             partitions_count: 1,
@@ -118,7 +118,7 @@ mod tests {
     fn test_default_config() {
         let config = IggyConfig::default();
         assert_eq!(config.server_address, "127.0.0.1:5102");
-        assert_eq!(config.stream_name, "a3s_events");
+        assert_eq!(config.stream_name, "aster_events");
         assert_eq!(config.subject_prefix, "events");
         assert_eq!(config.partitioning, IggyPartitioning::Single);
         assert_eq!(config.max_age_secs, 604_800);

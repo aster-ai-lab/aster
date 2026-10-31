@@ -5,7 +5,7 @@ use std::str::FromStr;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_boot::{
+use aster_boot::{
     controller, injectable, ApiVersioning, BootApplication, BootError, BootErrorKind, BootRequest,
     BootResponse, BoxFuture, CallHandler, ControllerDefinition, ExceptionFilter, ExecutionContext,
     FromModuleRef, Guard, Interceptor, Module, ModuleRef, OpenApiInfo, ParseArrayPipe,
@@ -183,10 +183,10 @@ impl FromStr for MacroCatKind {
     }
 }
 
-#[a3s_boot::websocket_gateway("/macro-cats/ws", namespace = "/macro-cats")]
-#[a3s_boot::metadata("resource", "macro-gateway")]
+#[aster_boot::websocket_gateway("/macro-cats/ws", namespace = "/macro-cats")]
+#[aster_boot::metadata("resource", "macro-gateway")]
 impl MacroCatsGateway {
-    #[a3s_boot::on_gateway_init]
+    #[aster_boot::on_gateway_init]
     async fn after_init(
         &self,
         context: WebSocketGatewayInitContext,
@@ -201,15 +201,15 @@ impl MacroCatsGateway {
         Ok(())
     }
 
-    #[a3s_boot::on_gateway_connection]
+    #[aster_boot::on_gateway_connection]
     async fn handle_connection(&self, connection: WebSocketGatewayConnection) -> Result<()> {
         self.lifecycle_log
             .push(format!("connect:{}", connection.request().path()));
         Ok(())
     }
 
-    #[a3s_boot::subscribe_message("cat.find")]
-    #[a3s_boot::metadata("action", "find")]
+    #[aster_boot::subscribe_message("cat.find")]
+    #[aster_boot::metadata("action", "find")]
     async fn find(&self, message: WebSocketMessage) -> Result<WebSocketMessage> {
         let id = message
             .data()
@@ -220,13 +220,13 @@ impl MacroCatsGateway {
         WebSocketMessage::json("cat.found", &cat)
     }
 
-    #[a3s_boot::subscribe_message("cat.typed")]
+    #[aster_boot::subscribe_message("cat.typed")]
     async fn typed(&self, payload: MacroFindCatMessage) -> Result<WebSocketMessage> {
         let cat = self.cats.find_one(&payload.id);
         WebSocketMessage::json("cat.typed", &cat)
     }
 
-    #[a3s_boot::subscribe_message("cat.server")]
+    #[aster_boot::subscribe_message("cat.server")]
     async fn server(&self, server: WebSocketGatewayServer) -> Result<WebSocketMessage> {
         Ok(WebSocketMessage::new(
             "cat.server",
@@ -238,12 +238,12 @@ impl MacroCatsGateway {
         ))
     }
 
-    #[a3s_boot::subscribe_message("cat.field")]
+    #[aster_boot::subscribe_message("cat.field")]
     async fn field(
         &self,
-        #[a3s_boot::message_body("id")] id: String,
-        #[a3s_boot::message_body("page", default = 1, pipe = ParseIntPipe)] page: u16,
-        #[a3s_boot::message_body("tag")] tag: Option<String>,
+        #[aster_boot::message_body("id")] id: String,
+        #[aster_boot::message_body("page", default = 1, pipe = ParseIntPipe)] page: u16,
+        #[aster_boot::message_body("tag")] tag: Option<String>,
     ) -> Result<WebSocketMessage> {
         Ok(WebSocketMessage::new(
             "cat.field",
@@ -255,7 +255,7 @@ impl MacroCatsGateway {
         ))
     }
 
-    #[a3s_boot::subscribe_message("cat.connection")]
+    #[aster_boot::subscribe_message("cat.connection")]
     async fn connection(
         &self,
         connection: WebSocketGatewayConnection,
@@ -271,8 +271,8 @@ impl MacroCatsGateway {
         ))
     }
 
-    #[a3s_boot::subscribe_message("cat.create")]
-    #[a3s_boot::validate(transform)]
+    #[aster_boot::subscribe_message("cat.create")]
+    #[aster_boot::validate(transform)]
     async fn create(&self, payload: MacroTransformCreateDto) -> Result<WebSocketMessage> {
         Ok(WebSocketMessage::new(
             "cat.created",
@@ -283,8 +283,8 @@ impl MacroCatsGateway {
         ))
     }
 
-    #[a3s_boot::subscribe_message("cat.validate")]
-    #[a3s_boot::validate]
+    #[aster_boot::subscribe_message("cat.validate")]
+    #[aster_boot::validate]
     async fn validate(&self, payload: MacroValidatedCreateDto) -> Result<WebSocketMessage> {
         Ok(WebSocketMessage::new(
             "cat.validated",
@@ -292,13 +292,13 @@ impl MacroCatsGateway {
         ))
     }
 
-    #[a3s_boot::subscribe_message("cat.fail")]
-    #[a3s_boot::use_filter(MacroBadRequestFilter::catch_filter())]
+    #[aster_boot::subscribe_message("cat.fail")]
+    #[aster_boot::use_filter(MacroBadRequestFilter::catch_filter())]
     async fn fail(&self) -> Result<WebSocketMessage> {
         Err(BootError::BadRequest("macro websocket filter".to_string()))
     }
 
-    #[a3s_boot::on_gateway_disconnect]
+    #[aster_boot::on_gateway_disconnect]
     async fn handle_disconnect(&self, connection: WebSocketGatewayConnection) -> Result<()> {
         self.lifecycle_log
             .push(format!("disconnect:{}", connection.request().path()));
@@ -306,21 +306,21 @@ impl MacroCatsGateway {
     }
 }
 
-#[a3s_boot::message_controller]
-#[a3s_boot::metadata("resource", "macro-messages")]
+#[aster_boot::message_controller]
+#[aster_boot::metadata("resource", "macro-messages")]
 impl MacroCatsMessages {
-    #[a3s_boot::message_pattern("macro.cat.find")]
-    #[a3s_boot::metadata("action", "find")]
+    #[aster_boot::message_pattern("macro.cat.find")]
+    #[aster_boot::metadata("action", "find")]
     async fn find(&self, payload: MacroFindCatMessage) -> Result<MacroCatDto> {
         Ok(self.cats.find_one(&payload.id))
     }
 
-    #[a3s_boot::message_pattern("macro.cat.field")]
+    #[aster_boot::message_pattern("macro.cat.field")]
     async fn field(
         &self,
-        #[a3s_boot::payload("id")] id: String,
-        #[a3s_boot::payload("page", default = 1, pipe = ParseIntPipe)] page: u16,
-        #[a3s_boot::payload("tag")] tag: Option<String>,
+        #[aster_boot::payload("id")] id: String,
+        #[aster_boot::payload("page", default = 1, pipe = ParseIntPipe)] page: u16,
+        #[aster_boot::payload("tag")] tag: Option<String>,
     ) -> Result<MacroCatDto> {
         Ok(MacroCatDto {
             id,
@@ -328,7 +328,7 @@ impl MacroCatsMessages {
         })
     }
 
-    #[a3s_boot::message_pattern("macro.cat.raw", raw)]
+    #[aster_boot::message_pattern("macro.cat.raw", raw)]
     async fn raw(&self, message: TransportMessage) -> Result<TransportReply> {
         Ok(TransportReply::text(format!(
             "{}:{}",
@@ -337,13 +337,13 @@ impl MacroCatsMessages {
         )))
     }
 
-    #[a3s_boot::message_pattern("macro.cat.fail")]
-    #[a3s_boot::use_filter(MacroBadRequestFilter::catch_filter())]
+    #[aster_boot::message_pattern("macro.cat.fail")]
+    #[aster_boot::use_filter(MacroBadRequestFilter::catch_filter())]
     async fn fail(&self) -> Result<MacroCatDto> {
         Err(BootError::BadRequest("macro message filter".to_string()))
     }
 
-    #[a3s_boot::event_pattern("macro.cat.seen")]
+    #[aster_boot::event_pattern("macro.cat.seen")]
     async fn seen(&self, payload: MacroFindCatMessage) -> Result<()> {
         let _ = self.cats.find_one(&payload.id);
         Ok(())
@@ -354,19 +354,19 @@ impl MacroCatsMessages {
 #[tag("macro-cats")]
 #[api_extra_model(
     name = "MacroCatPageDto",
-    schema = ::a3s_boot::OpenApiSchema::all_of([
-        ::a3s_boot::OpenApiSchema::object_with_properties(
+    schema = ::aster_boot::OpenApiSchema::all_of([
+        ::aster_boot::OpenApiSchema::object_with_properties(
             [(
                 "items",
-                ::a3s_boot::OpenApiSchema::array(
-                    ::a3s_boot::OpenApiSchema::reference("MacroCatDto")
+                ::aster_boot::OpenApiSchema::array(
+                    ::aster_boot::OpenApiSchema::reference("MacroCatDto")
                 )
             )],
             ["items"]
         ),
-        ::a3s_boot::OpenApiSchema::object()
-            .with_property("next_cursor", ::a3s_boot::OpenApiSchema::string().nullable())
-            .with_property("status", ::a3s_boot::OpenApiSchema::string_enum(["fresh", "stale"]))
+        ::aster_boot::OpenApiSchema::object()
+            .with_property("next_cursor", ::aster_boot::OpenApiSchema::string().nullable())
+            .with_property("status", ::aster_boot::OpenApiSchema::string_enum(["fresh", "stale"]))
     ])
 )]
 #[api_extension(
@@ -410,8 +410,8 @@ impl MacroCatsController {
         description = "Cat details",
         schema = MacroCatDetailsDto
     )]
-    #[a3s_boot::api_param(name = "id", schema = String, description = "Cat identifier")]
-    #[a3s_boot::api_query(
+    #[aster_boot::api_param(name = "id", schema = String, description = "Cat identifier")]
+    #[aster_boot::api_query(
         name = "include_toys",
         schema = bool,
         required = false,
@@ -423,7 +423,7 @@ impl MacroCatsController {
         example_name = "with_toys",
         example = json!(true)
     )]
-    #[a3s_boot::api_header(
+    #[aster_boot::api_header(
         name = "x-request-id",
         schema = String,
         required = false,
@@ -605,7 +605,7 @@ impl MacroCatsController {
     #[response(
         status = 202,
         description = "Cat import accepted",
-        content_type = "application/vnd.a3s.cat+json",
+        content_type = "application/vnd.aster.cat+json",
         schema = MacroCatDto,
         example = json!({ "id": "imported", "name": "Milo" })
     )]
@@ -696,7 +696,7 @@ struct MacroCatDetailsDto {
     tenant: String,
 }
 
-#[a3s_boot::module(
+#[aster_boot::module(
     name = "macro-cats",
     imports = [
         ViewModule::new(
@@ -722,7 +722,7 @@ struct MacroCatDetailsDto {
 #[derive(Debug)]
 struct MacroCatsModule;
 
-#[a3s_boot::module(
+#[aster_boot::module(
     name = "macro-provider-flavors",
     imports = [
         ViewModule::new(
@@ -833,7 +833,7 @@ impl Validate for MacroValidatedSearch {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize, a3s_boot::ValidationSchema)]
+#[derive(Debug, Deserialize, Serialize, aster_boot::ValidationSchema)]
 struct MacroWhitelistCreateDto {
     name: String,
     #[serde(rename = "displayName")]
@@ -842,7 +842,7 @@ struct MacroWhitelistCreateDto {
 
 impl Validate for MacroWhitelistCreateDto {}
 
-#[derive(Debug, Deserialize, Serialize, a3s_boot::ValidationSchema)]
+#[derive(Debug, Deserialize, Serialize, aster_boot::ValidationSchema)]
 struct MacroTransformCreateDto {
     name: String,
     #[serde(default = "macro_default_kind")]
@@ -907,7 +907,7 @@ impl MacroWhitelistValidationController {
     }
 }
 
-#[a3s_boot::module(
+#[aster_boot::module(
     name = "macro-validation",
     providers = [
         MacroValidationController::request_scoped_provider(),
@@ -951,7 +951,7 @@ impl Pipe for MacroRequestPipe {
     }
 }
 
-#[a3s_boot::catch(BadRequest)]
+#[aster_boot::catch(BadRequest)]
 #[derive(Default)]
 struct MacroBadRequestFilter;
 
@@ -1005,7 +1005,7 @@ impl WebSocketExceptionFilter for MacroBadRequestFilter {
     }
 }
 
-#[a3s_boot::catch(Conflict)]
+#[aster_boot::catch(Conflict)]
 #[derive(Default)]
 struct MacroConflictFilter;
 
@@ -1063,7 +1063,7 @@ impl MacroPipelineController {
     }
 }
 
-#[a3s_boot::module(
+#[aster_boot::module(
     name = "macro-pipeline",
     providers = [MacroPipelineController::request_scoped_provider()],
     controllers = [MacroPipelineController],
@@ -1216,7 +1216,7 @@ impl MacroPrefixedController {
     }
 }
 
-#[a3s_boot::module(
+#[aster_boot::module(
     name = "macro-prefixed",
     route_prefix = "/api",
     providers = [MacroPrefixedController],
@@ -1235,7 +1235,7 @@ struct MacroForwardFeatureService {
     root: ProviderRef<MacroForwardRootService>,
 }
 
-#[a3s_boot::module(
+#[aster_boot::module(
     name = "macro-forward-root",
     forward_imports = [MacroForwardFeatureModule],
     providers = [MacroForwardRootService],
@@ -1244,7 +1244,7 @@ struct MacroForwardFeatureService {
 #[derive(Debug)]
 struct MacroForwardRootModule;
 
-#[a3s_boot::module(
+#[aster_boot::module(
     name = "macro-forward-feature",
     forward_imports = [MacroForwardRootModule],
     providers = [MacroForwardFeatureService],
@@ -1271,11 +1271,11 @@ struct MacroBubbledController {
 }
 
 #[controller("/macro-bubbled-controller")]
-#[a3s_boot::metadata("controller-scope", "bubbled")]
-#[a3s_boot::use_interceptor(MacroControllerHeaderInterceptor)]
+#[aster_boot::metadata("controller-scope", "bubbled")]
+#[aster_boot::use_interceptor(MacroControllerHeaderInterceptor)]
 impl MacroBubbledController {
-    #[a3s_boot::get("/", raw)]
-    #[a3s_boot::metadata("route-scope", "bubbled")]
+    #[aster_boot::get("/", raw)]
+    #[aster_boot::metadata("route-scope", "bubbled")]
     async fn current(&self) -> Result<BootResponse> {
         Ok(BootResponse::text(format!(
             "{}:{}:{}",
@@ -1299,7 +1299,7 @@ struct MacroRequestController {
 
 #[controller("/macro-request-controller")]
 impl MacroRequestController {
-    #[a3s_boot::get("/", raw)]
+    #[aster_boot::get("/", raw)]
     async fn current(&self) -> Result<BootResponse> {
         Ok(BootResponse::text(self.state.id.to_string()))
     }
@@ -1319,7 +1319,7 @@ impl FromModuleRef for MacroRetryRequestController {
         })
     }
 
-    fn provider_dependencies() -> Option<Vec<a3s_boot::ProviderDependency>> {
+    fn provider_dependencies() -> Option<Vec<aster_boot::ProviderDependency>> {
         Some(Vec::new())
     }
 }
@@ -1342,9 +1342,9 @@ impl Interceptor for MacroRetryOnceInterceptor {
 }
 
 #[controller("/macro-retry-request-controller")]
-#[a3s_boot::use_interceptor(MacroRetryOnceInterceptor)]
+#[aster_boot::use_interceptor(MacroRetryOnceInterceptor)]
 impl MacroRetryRequestController {
-    #[a3s_boot::get("/", raw)]
+    #[aster_boot::get("/", raw)]
     async fn current(&self) -> Result<BootResponse> {
         MACRO_RETRY_CONTROLLER_ATTEMPTS
             .lock()
@@ -1358,7 +1358,7 @@ impl MacroRetryRequestController {
     }
 }
 
-#[a3s_boot::module(
+#[aster_boot::module(
     name = "macro-provider-controllers",
     providers = [
         ProviderDefinition::request_scoped::<MacroBubbledState, _>(|_| {
@@ -1446,28 +1446,28 @@ async fn module_macros_use_provider_backed_contextual_controllers() {
     );
     let first_bubbled = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-bubbled-controller",
         ))
         .await
         .unwrap();
     let second_bubbled = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-bubbled-controller",
         ))
         .await
         .unwrap();
     let first_request = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-request-controller",
         ))
         .await
         .unwrap();
     let second_request = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-request-controller",
         ))
         .await
@@ -1509,7 +1509,7 @@ async fn module_macros_use_provider_backed_contextual_controllers() {
 
     assert_eq!(
         app.reflector().unwrap().metadata_value(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-bubbled-controller",
             "controller-scope",
         ),
@@ -1517,7 +1517,7 @@ async fn module_macros_use_provider_backed_contextual_controllers() {
     );
     assert_eq!(
         app.reflector().unwrap().metadata_value(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-bubbled-controller",
             "route-scope",
         ),
@@ -1543,14 +1543,14 @@ async fn interceptor_retry_reuses_the_request_scoped_controller_instance() {
 
     let first = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-retry-request-controller",
         ))
         .await
         .unwrap();
     let second = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-retry-request-controller",
         ))
         .await
@@ -1574,7 +1574,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     let raw = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/raw-id",
         ))
         .await
@@ -1583,7 +1583,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     let json_response = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/json-id/json")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/json-id/json")
                 .with_header("accept", "application/json"),
         )
         .await
@@ -1596,7 +1596,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
         },
     );
 
-    let json_body = BootRequest::new(a3s_boot::HttpMethod::Post, "/macro-cats")
+    let json_body = BootRequest::new(aster_boot::HttpMethod::Post, "/macro-cats")
         .with_json(&MacroCreateCatDto {
             name: "Nori".to_string(),
         })
@@ -1614,7 +1614,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
     let extracted = app
         .call(
             BootRequest::new(
-                a3s_boot::HttpMethod::Get,
+                aster_boot::HttpMethod::Get,
                 "/macro-cats/pipe/cat_extracted?page=3",
             )
             .with_header("x-cat-kind", "  TABBY  "),
@@ -1632,7 +1632,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
     let extracted_raw = app
         .call(
             BootRequest::new(
-                a3s_boot::HttpMethod::Get,
+                aster_boot::HttpMethod::Get,
                 "/macro-cats/extracted-raw/raw-details",
             )
             .with_header("x-request-id", "provider-request")
@@ -1646,7 +1646,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
     );
 
     let extracted_body =
-        BootRequest::new(a3s_boot::HttpMethod::Post, "/macro-cats/adopted/adoptions")
+        BootRequest::new(aster_boot::HttpMethod::Post, "/macro-cats/adopted/adoptions")
             .with_json(&MacroCreateCatDto {
                 name: "Nori".to_string(),
             })
@@ -1663,7 +1663,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     let catch_all = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Patch,
+            aster_boot::HttpMethod::Patch,
             "/macro-cats/catch",
         ))
         .await
@@ -1678,7 +1678,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     let rendered = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/rendered/card",
         ))
         .await
@@ -1690,7 +1690,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     let cached = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/cache",
         ))
         .await
@@ -1699,7 +1699,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     let redirected = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/legacy",
         ))
         .await
@@ -1709,7 +1709,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     let events = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/events")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/events")
                 .with_header("accept", "text/event-stream"),
         )
         .await
@@ -1723,7 +1723,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     let extracted_events = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/provider-sse/events")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/provider-sse/events")
                 .with_header("accept", "text/event-stream"),
         )
         .await
@@ -1737,7 +1737,7 @@ async fn provider_backed_controllers_support_all_http_handler_flavors() {
 
     assert_eq!(
         app.reflector().unwrap().metadata_value(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/{id}/details",
             "roles",
         ),
@@ -1800,7 +1800,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
     assert!(Arc::ptr_eq(&reader, &controller.reader));
     assert_eq!(
         app.reflector().unwrap().metadata_value(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/{id}/details",
             "roles"
         ),
@@ -1808,7 +1808,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
     );
     assert_eq!(
         app.reflector().unwrap().metadata_value(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/{id}/details",
             "resource"
         ),
@@ -1845,7 +1845,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let text = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/42",
         ))
         .await
@@ -1854,7 +1854,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let json = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/42/json",
         ))
         .await
@@ -1869,7 +1869,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let card = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/42/card",
         ))
         .await
@@ -1880,7 +1880,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
     let details = app
         .call(
             BootRequest::new(
-                a3s_boot::HttpMethod::Get,
+                aster_boot::HttpMethod::Get,
                 "/macro-cats/42/details?include_toys=true&page=3&tag=quiet",
             )
             .with_header("x-request-id", "req-1")
@@ -1902,7 +1902,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let piped = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/pipe/cat_42?page=7")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/pipe/cat_42?page=7")
                 .with_header("x-cat-kind", "tabby"),
         )
         .await
@@ -1917,7 +1917,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let piped_without_page = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/pipe/cat_99")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/pipe/cat_99")
                 .with_header("x-cat-kind", "calico"),
         )
         .await
@@ -1932,7 +1932,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let invalid_piped_id = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/pipe/42?page=1")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/pipe/42?page=1")
                 .with_header("x-cat-kind", "tabby"),
         )
         .await
@@ -1943,7 +1943,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let invalid_piped_page = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/pipe/cat_42?page=0")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/pipe/cat_42?page=0")
                 .with_header("x-cat-kind", "tabby"),
         )
         .await
@@ -1954,7 +1954,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let builtin_pipes = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/builtin-pipes/42?active=true",
         ))
         .await
@@ -1970,7 +1970,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
     let builtin_pipes_with_values = app
         .call(
             BootRequest::new(
-                a3s_boot::HttpMethod::Get,
+                aster_boot::HttpMethod::Get,
                 "/macro-cats/builtin-pipes/99?active=0&ratio=1.5&page=7",
             )
             .with_header("x-retry", "2"),
@@ -1989,7 +1989,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let invalid_builtin_pipe = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/builtin-pipes/not-int?active=true",
         ))
         .await
@@ -2000,7 +2000,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let uuid_pipe = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/uuid/550e8400-e29b-41d4-a716-446655440000?request=550e8400-e29b-41d4-a716-446655440000",
         ))
         .await
@@ -2015,7 +2015,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let invalid_uuid_pipe = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/uuid/not-a-uuid?request=550e8400-e29b-41d4-a716-446655440000",
         ))
         .await
@@ -2026,7 +2026,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let invalid_uuid_version_pipe = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/uuid/550e8400-e29b-41d4-a716-446655440000?request=6ba7b810-9dad-11d1-80b4-00c04fd430c8",
         ))
         .await
@@ -2037,7 +2037,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let array_enum_pipe = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/array-enum?ids=1,2,3&kind=tabby",
         ))
         .await
@@ -2052,7 +2052,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let invalid_array_pipe = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/array-enum?ids=1,cat&kind=tabby",
         ))
         .await
@@ -2063,7 +2063,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let invalid_enum_pipe = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/array-enum?ids=1,2&kind=calico",
         ))
         .await
@@ -2074,7 +2074,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let params = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/params/99/tabby",
         ))
         .await
@@ -2089,7 +2089,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let raw = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/42/raw-details")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/42/raw-details")
                 .with_header("x-request-id", "req-raw")
                 .with_header("user-agent", "macro-test"),
         )
@@ -2102,21 +2102,21 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let all_get = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/catch",
         ))
         .await
         .unwrap();
     let all_post = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Post,
+            aster_boot::HttpMethod::Post,
             "/macro-cats/catch",
         ))
         .await
         .unwrap();
     let raw_all = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Patch,
+            aster_boot::HttpMethod::Patch,
             "/macro-cats/raw-catch",
         ))
         .await
@@ -2138,7 +2138,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
     );
     assert_eq!(raw_all.body_text().unwrap(), "raw:PATCH");
 
-    let create = BootRequest::new(a3s_boot::HttpMethod::Post, "/macro-cats")
+    let create = BootRequest::new(aster_boot::HttpMethod::Post, "/macro-cats")
         .with_json(&MacroCreateCatDto {
             name: "Luna".to_string(),
         })
@@ -2156,7 +2156,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let touched = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Post, "/macro-cats/42/touch")
+            BootRequest::new(aster_boot::HttpMethod::Post, "/macro-cats/42/touch")
                 .with_header("accept", "application/json"),
         )
         .await
@@ -2172,7 +2172,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let cached = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/cache")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/cache")
                 .with_header("accept", "application/json"),
         )
         .await
@@ -2188,7 +2188,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let legacy = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/legacy")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/legacy")
                 .with_header("accept", "application/json"),
         )
         .await
@@ -2197,7 +2197,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
     assert_eq!(legacy.location(), Some("/macro-cats/42"));
     assert!(legacy.body().is_empty());
 
-    let adopt = BootRequest::new(a3s_boot::HttpMethod::Post, "/macro-cats/42/adoptions")
+    let adopt = BootRequest::new(aster_boot::HttpMethod::Post, "/macro-cats/42/adoptions")
         .with_json(&MacroCreateCatDto {
             name: "Nori".to_string(),
         })
@@ -2214,7 +2214,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let events = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/events")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/events")
                 .with_header("accept", "text/event-stream"),
         )
         .await
@@ -2229,7 +2229,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let cat_events = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-cats/42/events")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-cats/42/events")
                 .with_header("accept", "text/event-stream"),
         )
         .await
@@ -2243,7 +2243,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let missing_query = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/42/details",
         ))
         .await
@@ -2254,7 +2254,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
 
     let missing_header = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/42/raw-details",
         ))
         .await
@@ -2420,11 +2420,11 @@ async fn macros_register_injectable_services_and_controller_routes() {
     );
     assert!(import_operation["requestBody"]["content"]["application/json"].is_null());
     assert_eq!(
-        import_operation["responses"]["202"]["content"]["application/vnd.a3s.cat+json"]["schema"],
+        import_operation["responses"]["202"]["content"]["application/vnd.aster.cat+json"]["schema"],
         json!({ "$ref": "#/components/schemas/MacroCatDto" })
     );
     assert_eq!(
-        import_operation["responses"]["202"]["content"]["application/vnd.a3s.cat+json"]["example"],
+        import_operation["responses"]["202"]["content"]["application/vnd.aster.cat+json"]["example"],
         json!({ "id": "imported", "name": "Milo" })
     );
     assert_eq!(
@@ -2457,7 +2457,7 @@ async fn macros_register_injectable_services_and_controller_routes() {
     app.bootstrap().await.unwrap();
     let ws_connection = app.gateways()[0]
         .connect_async(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-cats/ws",
         ))
         .await
@@ -2682,7 +2682,7 @@ async fn macro_pipeline_decorators_register_controller_and_route_hooks() {
 
     let guarded = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-pipeline/guarded",
         ))
         .await
@@ -2692,7 +2692,7 @@ async fn macro_pipeline_decorators_register_controller_and_route_hooks() {
 
     let piped = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-pipeline/piped",
         ))
         .await
@@ -2702,7 +2702,7 @@ async fn macro_pipeline_decorators_register_controller_and_route_hooks() {
 
     let filtered = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-pipeline/filtered",
         ))
         .await
@@ -2719,7 +2719,7 @@ async fn macro_pipeline_decorators_register_controller_and_route_hooks() {
 
     let filtered_conflict = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-pipeline/filtered-conflict",
         ))
         .await
@@ -2736,7 +2736,7 @@ async fn macro_pipeline_decorators_register_controller_and_route_hooks() {
 
     let unfiltered = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-pipeline/unfiltered",
         ))
         .await
@@ -2753,7 +2753,7 @@ async fn controller_level_hide_from_openapi_macro_hides_routes() {
 
     let response = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-hidden-openapi",
         ))
         .await
@@ -2806,7 +2806,7 @@ async fn module_macro_registers_route_prefixes() {
     assert_eq!(app.routes()[0].path(), "/api/dogs/{id}");
 
     let response = app
-        .call(BootRequest::new(a3s_boot::HttpMethod::Get, "/api/dogs/42"))
+        .call(BootRequest::new(aster_boot::HttpMethod::Get, "/api/dogs/42"))
         .await
         .unwrap();
     assert_eq!(
@@ -2827,7 +2827,7 @@ async fn macro_host_and_ip_extractors_register_host_scoped_routes() {
 
     let response = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-host/who")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-host/who")
                 .with_header("host", "acme.example.com:3000")
                 .with_header("x-forwarded-for", "203.0.113.7, 203.0.113.8"),
         )
@@ -2844,7 +2844,7 @@ async fn macro_host_and_ip_extractors_register_host_scoped_routes() {
 
     let api = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-host/api")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-host/api")
                 .with_header("host", "api.example.com")
                 .with_header("x-real-ip", "192.0.2.24"),
         )
@@ -2855,7 +2855,7 @@ async fn macro_host_and_ip_extractors_register_host_scoped_routes() {
 
     let pipe_ip = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-host/pipe-ip")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-host/pipe-ip")
                 .with_header("host", "api.example.com")
                 .with_header("x-real-ip", "192.0.2.25"),
         )
@@ -2866,7 +2866,7 @@ async fn macro_host_and_ip_extractors_register_host_scoped_routes() {
 
     let missing = app
         .handle(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-host/who")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-host/who")
                 .with_header("host", "www.other.com"),
         )
         .await;
@@ -2884,28 +2884,28 @@ async fn macro_version_decorators_register_controller_and_route_versions() {
 
     let v1 = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-version/cats")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-version/cats")
                 .with_header("x-api-version", "1"),
         )
         .await
         .unwrap();
     let v2 = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-version/cats")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-version/cats")
                 .with_header("x-api-version", "2"),
         )
         .await
         .unwrap();
     let neutral = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-version/health",
         ))
         .await
         .unwrap();
     let multi = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Get, "/macro-version/multi")
+            BootRequest::new(aster_boot::HttpMethod::Get, "/macro-version/multi")
                 .with_header("x-api-version", "3"),
         )
         .await
@@ -2927,14 +2927,14 @@ async fn macro_serialize_decorators_register_controller_and_route_options() {
 
     let user = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-serialization/user",
         ))
         .await
         .unwrap();
     let public = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-serialization/public",
         ))
         .await
@@ -2971,7 +2971,7 @@ async fn validate_macro_enables_body_and_query_dto_validation() {
 
     let body_error = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Post, "/macro-validation")
+            BootRequest::new(aster_boot::HttpMethod::Post, "/macro-validation")
                 .with_json(&MacroValidatedCreateDto {
                     name: " ".to_string(),
                 })
@@ -2981,21 +2981,21 @@ async fn validate_macro_enables_body_and_query_dto_validation() {
         .unwrap_err();
     let query_error = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-validation/search?page=0",
         ))
         .await
         .unwrap_err();
     let skipped = app
         .call(BootRequest::new(
-            a3s_boot::HttpMethod::Get,
+            aster_boot::HttpMethod::Get,
             "/macro-validation/skip?page=0",
         ))
         .await
         .unwrap();
     let route_error = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Post, "/macro-route-validation")
+            BootRequest::new(aster_boot::HttpMethod::Post, "/macro-route-validation")
                 .with_json(&MacroValidatedCreateDto {
                     name: "".to_string(),
                 })
@@ -3005,7 +3005,7 @@ async fn validate_macro_enables_body_and_query_dto_validation() {
         .unwrap_err();
     let whitelisted = app
         .call(
-            BootRequest::new(a3s_boot::HttpMethod::Post, "/macro-whitelist-validation")
+            BootRequest::new(aster_boot::HttpMethod::Post, "/macro-whitelist-validation")
                 .with_content_type("application/json")
                 .with_body(r#"{"name":"Milo","displayName":"Mr. Milo","role":"admin"}"#),
         )
@@ -3014,7 +3014,7 @@ async fn validate_macro_enables_body_and_query_dto_validation() {
     let forbidden = app
         .call(
             BootRequest::new(
-                a3s_boot::HttpMethod::Post,
+                aster_boot::HttpMethod::Post,
                 "/macro-whitelist-validation/strict",
             )
             .with_content_type("application/json")
@@ -3025,7 +3025,7 @@ async fn validate_macro_enables_body_and_query_dto_validation() {
     let transformed = app
         .call(
             BootRequest::new(
-                a3s_boot::HttpMethod::Post,
+                aster_boot::HttpMethod::Post,
                 "/macro-whitelist-validation/transform",
             )
             .with_content_type("application/json")

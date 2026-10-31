@@ -270,7 +270,7 @@ impl StdioTransport {
                                         "error": {
                                             "code": -32601,
                                             "message": format!(
-                                                "a3s-code MCP client does not implement \
+                                                "aster MCP client does not implement \
                                                  {method} (capability not declared)"
                                             ),
                                         },

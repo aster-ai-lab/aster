@@ -94,8 +94,8 @@ struct PortablePosting {
 }
 
 /// Small, deterministic scorer used by minimal builds that intentionally omit
-/// the a3s-vec artifact. It shares the exact tokenizer and result contract
-/// with the a3s-vec path, so disabling engine feature never removes BM25.
+/// the aster-vec artifact. It shares the exact tokenizer and result contract
+/// with the aster-vec path, so disabling engine feature never removes BM25.
 pub(crate) struct PortableLexicalIndex {
     documents: Vec<PortableDocument>,
     postings: HashMap<String, Vec<PortablePosting>>,
@@ -309,12 +309,12 @@ impl PortableLexicalIndex {
     }
 }
 
-/// Backend-neutral lexical index handle. The a3s-vec binding is the
+/// Backend-neutral lexical index handle. The aster-vec binding is the
 /// product default; the portable variant is available only for minimal builds.
 pub(crate) enum LexicalIndex {
     Portable(PortableLexicalIndex),
-    #[cfg(feature = "a3s-vec-fts")]
-    A3sVec(super::a3s_vec::A3sVecLexicalIndex),
+    #[cfg(feature = "aster-vec-fts")]
+    AsterVec(super::aster_vec::AsterVecLexicalIndex),
 }
 
 impl LexicalIndex {
@@ -326,21 +326,21 @@ impl LexicalIndex {
             WorkspaceLexicalEngine::Portable => {
                 PortableLexicalIndex::build(documents).map(Self::Portable)
             }
-            WorkspaceLexicalEngine::A3sVec => {
-                #[cfg(feature = "a3s-vec-fts")]
+            WorkspaceLexicalEngine::AsterVec => {
+                #[cfg(feature = "aster-vec-fts")]
                 {
-                    super::a3s_vec::A3sVecLexicalIndex::build(documents.to_vec())
-                        .map(Self::A3sVec)
+                    super::aster_vec::AsterVecLexicalIndex::build(documents.to_vec())
+                        .map(Self::AsterVec)
                         .map_err(|error| {
                             WorkspaceIndexError::InvalidConfig(format!(
-                                "a3s-vec lexical index failed: {error}"
+                                "aster-vec lexical index failed: {error}"
                             ))
                         })
                 }
-                #[cfg(not(feature = "a3s-vec-fts"))]
+                #[cfg(not(feature = "aster-vec-fts"))]
                 {
                     Err(WorkspaceIndexError::InvalidConfig(
-                        "WorkspaceLexicalEngine::A3sVec requires the a3s-vec-fts feature"
+                        "WorkspaceLexicalEngine::AsterVec requires the aster-vec-fts feature"
                             .to_owned(),
                     ))
                 }
@@ -351,24 +351,24 @@ impl LexicalIndex {
     pub(crate) fn document_count(&self) -> usize {
         match self {
             Self::Portable(index) => index.document_count(),
-            #[cfg(feature = "a3s-vec-fts")]
-            Self::A3sVec(index) => index.document_count(),
+            #[cfg(feature = "aster-vec-fts")]
+            Self::AsterVec(index) => index.document_count(),
         }
     }
 
     pub(crate) fn estimated_bytes(&self) -> usize {
         match self {
             Self::Portable(index) => index.estimated_bytes(),
-            #[cfg(feature = "a3s-vec-fts")]
-            Self::A3sVec(index) => index.estimated_bytes(),
+            #[cfg(feature = "aster-vec-fts")]
+            Self::AsterVec(index) => index.estimated_bytes(),
         }
     }
 
     pub(crate) fn has_any_term(&self, terms: &[String]) -> bool {
         match self {
             Self::Portable(index) => index.has_any_term(terms),
-            #[cfg(feature = "a3s-vec-fts")]
-            Self::A3sVec(index) => index.has_any_term(terms),
+            #[cfg(feature = "aster-vec-fts")]
+            Self::AsterVec(index) => index.has_any_term(terms),
         }
     }
 
@@ -379,9 +379,9 @@ impl LexicalIndex {
     ) -> WorkspaceIndexResult<Vec<(usize, f64)>> {
         match self {
             Self::Portable(index) => index.search(terms, limit),
-            #[cfg(feature = "a3s-vec-fts")]
-            Self::A3sVec(index) => index.search(terms, limit).map_err(|error| {
-                WorkspaceIndexError::InvalidQuery(format!("a3s-vec FTS search failed: {error}"))
+            #[cfg(feature = "aster-vec-fts")]
+            Self::AsterVec(index) => index.search(terms, limit).map_err(|error| {
+                WorkspaceIndexError::InvalidQuery(format!("aster-vec FTS search failed: {error}"))
             }),
         }
     }

@@ -1,6 +1,6 @@
 # Threat model (Gate 7)
 
-This document records what `a3s-sandbox` claims to enforce today, by
+This document records what `aster-sandbox` claims to enforce today, by
 operating system, and what remains residual. Claims require OS-backed
 evidence in tests; residuals must stay fail-closed or explicitly probed.
 
@@ -8,7 +8,7 @@ evidence in tests; residuals must stay fail-closed or explicitly probed.
 
 - Host secrets and credentials reachable from the workspace tree
 - Host network egress and local IPC (Unix sockets)
-- Integrity of A3S / Git / editor control metadata
+- Integrity of Aster / Git / editor control metadata
 - Availability of the host (process-tree DoS)
 
 ## Adversary
@@ -28,7 +28,7 @@ binary are trusted.
 | Bounded output + tree kill | Deadline and capture ceilings | Gate 2 resources |
 | Policy spine | Unsupported features fail closed | Gate 1–6 validate/compile tests |
 
-Default A3S Bash profile never enables mediation.
+Default Aster Bash profile never enables mediation.
 
 ## macOS (Seatbelt)
 
@@ -59,7 +59,7 @@ cannot allow only `127.0.0.1:<mediator>`. Sharing the host net and allowing
 loopback, so the host mediator is unreachable without an explicit bridge.
 
 **Foundation (claimed for HTTP and SOCKS5):** bind-mounted host Unix
-mediators + in-guest TCP→Unix relays (`a3s-sandbox-relay`, one per mediated
+mediators + in-guest TCP→Unix relays (`aster-sandbox-relay`, one per mediated
 protocol) + `--unshare-net` + socket-allow seccomp mode. Live guest tests
 prove allow tunnels, denied requests, and raw egress failure for both
 protocols. `unix_socket_allowlist` stays false: path-granular connect
@@ -77,7 +77,7 @@ allowlisting has no cBPF enforcement path.
 
 **Bridge:** `create_appcontainer_mediation_pipe` +
 `ConnectMediator::bind_named_pipe_connected` create a connected pipe pair;
-the guest inherits the client handle as `A3S_SANDBOX_MEDIATOR_PIPE_HANDLE`
+the guest inherits the client handle as `ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE`
 (not `HTTP_PROXY`). Name-open alone stays Access Denied under AppContainer
 on GHA. SOCKS and Unix-socket allowlists remain fail-closed.
 

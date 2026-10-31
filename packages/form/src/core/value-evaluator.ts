@@ -89,11 +89,11 @@ export function evaluateFormValueWithCore(
     return evaluationFailure(
       value,
       'evaluator.unavailable',
-      'The portable A3S Form semantic core is unavailable.',
+      'The portable Aster Form semantic core is unavailable.',
     );
   }
   const response = core.evaluate({
-    apiVersion: 'a3s.dev/form-core/evaluate-request/v1alpha1',
+    apiVersion: 'aster.dev/form-core/evaluate-request/v1alpha1',
     formPlan: plan,
     value,
     options: {
@@ -125,7 +125,7 @@ export function evaluateFormValueWithCore(
   return evaluationFailure(
     value,
     'evaluator.response',
-    'The portable A3S Form semantic core did not return a complete evaluation response.',
+    'The portable Aster Form semantic core did not return a complete evaluation response.',
   );
 }
 

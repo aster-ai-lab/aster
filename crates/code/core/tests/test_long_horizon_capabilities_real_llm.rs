@@ -19,8 +19,8 @@
 //!   `agent_api/tests/long_horizon_capabilities.rs` twins pin hermetically).
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +1.97.1 test -p a3s-code-core --test test_long_horizon_capabilities_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +1.97.1 test -p aster-core --test test_long_horizon_capabilities_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -30,9 +30,9 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::store::SessionStore;
-use a3s_code_core::{Agent, PlanningMode, SessionOptions, SystemPromptSlots};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::store::SessionStore;
+use aster_core::{Agent, PlanningMode, SessionOptions, SystemPromptSlots};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 const REAL_TIMEOUT: Duration = Duration::from_secs(600);
@@ -76,7 +76,7 @@ fn seed_workspace(root: &Path) {
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn plan_parallel_and_fault_recovery_complete_one_long_task() {
     let workspace = tempfile::tempdir().expect("workspace");
     let root = workspace.path().to_path_buf();
@@ -101,7 +101,7 @@ async fn plan_parallel_and_fault_recovery_complete_one_long_task() {
             Some(
                 SessionOptions::new()
                     .with_session_id("lh4-capabilities")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_permission_policy(policy)
                     .with_default_security()
                     .with_planning_mode(PlanningMode::Enabled)
@@ -115,7 +115,7 @@ async fn plan_parallel_and_fault_recovery_complete_one_long_task() {
                     // and it exercises src/**. A passing run of it verifies
                     // the mutated paths — the model cannot grant this.
                     .with_verification_contract(
-                        a3s_code_core::verification::VerificationContractV1::new(
+                        aster_core::verification::VerificationContractV1::new(
                             "node-suite",
                             "node test.mjs",
                             ["src/**"],
@@ -147,7 +147,7 @@ async fn plan_parallel_and_fault_recovery_complete_one_long_task() {
     .expect("turn failed");
     println!("LH4 reply: {}", answer.text.trim());
 
-    let facts = a3s_code_core::fact_control::read_workspace_facts(&root, "lh4-capabilities")
+    let facts = aster_core::fact_control::read_workspace_facts(&root, "lh4-capabilities")
         .expect("facts");
 
     // PLAN oracle: an update_plan call is on record.
@@ -217,7 +217,7 @@ async fn plan_parallel_and_fault_recovery_complete_one_long_task() {
     assert!(
         matches!(
             answer.completion,
-            a3s_code_core::harness_loop::CompletionTerminal::Verified { .. }
+            aster_core::harness_loop::CompletionTerminal::Verified { .. }
         ),
         "the declared suite contract must complete the run Verified; got {:?} (answer: {})",
         answer.completion,
@@ -262,7 +262,7 @@ fn recovery_session_options(store_dir: &Path) -> SessionOptions {
     policy.default_decision = PermissionDecision::Deny;
     SessionOptions::new()
         .with_session_id("lh4-live-recovery")
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning_mode(PlanningMode::Disabled)
@@ -274,7 +274,7 @@ fn recovery_session_options(store_dir: &Path) -> SessionOptions {
         .with_continuation(false)
         .with_file_session_store(store_dir.to_path_buf())
         .with_verification_contract(
-            a3s_code_core::verification::VerificationContractV1::new(
+            aster_core::verification::VerificationContractV1::new(
                 "node-suite",
                 "node test.mjs",
                 ["src/**"],
@@ -328,7 +328,7 @@ async fn lh4_recovery_helper() {
 
         // The durable boundary: the fix landed AND the committed checkpoint
         // carries the mutation ledger. Then die — no publish, no cleanup.
-        let poll_store = a3s_code_core::store::FileSessionStore::new(&store_dir)
+        let poll_store = aster_core::store::FileSessionStore::new(&store_dir)
             .await
             .expect("open store");
         let deadline = std::time::Instant::now() + Duration::from_secs(300);
@@ -343,7 +343,7 @@ async fn lh4_recovery_helper() {
                 .expect("checkpoint load")
                 .is_some_and(|checkpoint| {
                     checkpoint.convergence.mutations
-                        != a3s_code_core::harness_loop::MutationLedger::default()
+                        != aster_core::harness_loop::MutationLedger::default()
                 });
             if wait_fixed(&root) && checkpoint_committed {
                 break;
@@ -367,8 +367,8 @@ async fn lh4_recovery_helper() {
             .await
             .expect("spawn recovery run");
         let worker = match spawn {
-            a3s_code_core::AgentRunSpawn::Started { worker, .. } => worker,
-            a3s_code_core::AgentRunSpawn::Replayed { .. } => {
+            aster_core::AgentRunSpawn::Started { worker, .. } => worker,
+            aster_core::AgentRunSpawn::Replayed { .. } => {
                 panic!("fresh recovery id must not replay")
             }
         };
@@ -387,7 +387,7 @@ async fn lh4_recovery_helper() {
         .expect("resumed run never settled");
         assert_eq!(
             status,
-            a3s_code_core::run::RunStatus::Completed,
+            aster_core::run::RunStatus::Completed,
             "the resumed long task must complete; events: {:?}",
             session.run_events(LH4_RESUMED_RUN).await
         );
@@ -396,7 +396,7 @@ async fn lh4_recovery_helper() {
             .await
             .into_iter()
             .find_map(|record| match record.event {
-                a3s_code_core::AgentEvent::End { text, .. } => Some(text),
+                aster_core::AgentEvent::End { text, .. } => Some(text),
                 _ => None,
             });
         assert_eq!(
@@ -408,9 +408,9 @@ async fn lh4_recovery_helper() {
         // crash and recover processes; a read of an unknown thread returns
         // Ok(empty), so there is no fallback chain here — read the one
         // thread directly.
-        let facts = a3s_code_core::fact_control::read_workspace_facts(
+        let facts = aster_core::fact_control::read_workspace_facts(
             &root,
-            &a3s_code_core::fact_control::thread_for_session("lh4-live-recovery"),
+            &aster_core::fact_control::thread_for_session("lh4-live-recovery"),
         )
         .expect("facts");
         assert!(
@@ -435,7 +435,7 @@ async fn lh4_recovery_helper() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn crashed_long_task_resumes_across_processes_and_completes_verified() {
     let workspace = tempfile::tempdir().expect("workspace");
     let store_dir = tempfile::tempdir().expect("store");
@@ -508,7 +508,7 @@ async fn crashed_long_task_resumes_across_processes_and_completes_verified() {
 // accounted for.
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn interrupted_long_task_continues_into_a_verified_completion() {
     let workspace = tempfile::tempdir().expect("workspace");
     let store_dir = tempfile::tempdir().expect("store");
@@ -551,9 +551,9 @@ async fn interrupted_long_task_continues_into_a_verified_completion() {
         // interrupt lands between the edit's disk write and its
         // `tool.result` fact, the mutation is real but invisible to the
         // replay. Wait for the fact to be on the log.
-        let fact_committed = a3s_code_core::fact_control::read_workspace_facts(
+        let fact_committed = aster_core::fact_control::read_workspace_facts(
             &root,
-            &a3s_code_core::fact_control::thread_for_session("lh4-live-continuation"),
+            &aster_core::fact_control::thread_for_session("lh4-live-continuation"),
         )
         .map(|facts| facts.iter().any(|fact| fact.kind == "tool.result"))
         .unwrap_or(false);
@@ -576,7 +576,7 @@ async fn interrupted_long_task_continues_into_a_verified_completion() {
     .expect("no active run-control snapshot mid-task");
     let receipt = session
         .interrupt(
-            a3s_code_core::run_control::InterruptRequest::new()
+            aster_core::run_control::InterruptRequest::new()
                 .with_reason("continuation leg")
                 .with_run_id(snapshot.run_id.clone()),
         )
@@ -584,7 +584,7 @@ async fn interrupted_long_task_continues_into_a_verified_completion() {
         .expect("interrupt rejected");
     assert_eq!(
         receipt.state,
-        a3s_code_core::run_control::RunControlReceiptState::Accepted
+        aster_core::run_control::RunControlReceiptState::Accepted
     );
     tokio::time::timeout(Duration::from_secs(30), async {
         while session.run_control_snapshot().await.is_some() {
@@ -611,16 +611,16 @@ async fn interrupted_long_task_continues_into_a_verified_completion() {
     assert!(
         matches!(
             answer.completion,
-            a3s_code_core::harness_loop::CompletionTerminal::Verified { .. }
+            aster_core::harness_loop::CompletionTerminal::Verified { .. }
         ),
         "the continuation must complete Verified over the inherited effect; got {:?}",
         answer.completion
     );
     assert_eq!(answer.text, "completed");
 
-    let facts = a3s_code_core::fact_control::read_workspace_facts(
+    let facts = aster_core::fact_control::read_workspace_facts(
         &root,
-        &a3s_code_core::fact_control::thread_for_session("lh4-live-continuation"),
+        &aster_core::fact_control::thread_for_session("lh4-live-continuation"),
     )
     .expect("facts");
     assert!(
@@ -635,7 +635,7 @@ async fn interrupted_long_task_continues_into_a_verified_completion() {
     assert!(
         facts
             .iter()
-            .any(|fact| fact.kind == a3s_code_core::fact_control::TURN_COMPLETE_FACT_KIND),
+            .any(|fact| fact.kind == aster_core::fact_control::TURN_COMPLETE_FACT_KIND),
         "the settled continuation must append the turn.complete marker"
     );
     drop(worker);

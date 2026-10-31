@@ -2,7 +2,7 @@
 
 use super::connection::RedisSocket;
 use super::redis_index::RedisVectorIndex;
-use a3s_memory::vector::{VectorIndex, VectorIndexDescriptor};
+use aster_durable_memory::vector::{VectorIndex, VectorIndexDescriptor};
 use anyhow::{Context, Result};
 use redis::RedisError;
 use serde::Serialize;
@@ -83,7 +83,7 @@ pub async fn rotate_alternate_keyspace(
     alternate
         .replace_partition(
             "alternate-partition",
-            vec![a3s_memory::vector::VectorRecord::new(
+            vec![aster_durable_memory::vector::VectorRecord::new(
                 "alternate-record",
                 unit_vector(descriptor.dimension),
             )],
@@ -113,7 +113,7 @@ fn unit_vector(dimension: usize) -> Vec<f32> {
 }
 
 /// Digest of a session binding, used to prove exact resume identity.
-pub fn binding_digest(binding: &a3s_code_core::DurableMemoryBindingV1) -> Result<String> {
+pub fn binding_digest(binding: &aster_core::DurableMemoryBindingV1) -> Result<String> {
     use sha2::{Digest, Sha256};
     let encoded = serde_json::to_vec(binding).context("binding is not serializable")?;
     Ok(format!("sha256:{:x}", Sha256::digest(&encoded)))

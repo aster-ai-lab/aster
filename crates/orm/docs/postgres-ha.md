@@ -12,9 +12,9 @@ and five-second recycle timeouts.
 
 ```rust,no_run
 use std::time::Duration;
-use a3s_orm::{PostgresExecutor, PostgresPoolOptions};
+use aster_orm::{PostgresExecutor, PostgresPoolOptions};
 
-# fn build() -> Result<PostgresExecutor, a3s_orm::PostgresError> {
+# fn build() -> Result<PostgresExecutor, aster_orm::PostgresError> {
 let pool = PostgresPoolOptions::new(32)
     .with_wait_timeout(Some(Duration::from_secs(2)))
     .with_create_timeout(Some(Duration::from_secs(5)))
@@ -42,12 +42,12 @@ transaction-local `set_config` calls and cannot leak to a later pool user.
 
 ```rust,no_run
 use std::time::Duration;
-use a3s_orm::{
+use aster_orm::{
     PostgresExecutor, PostgresIsolationLevel, PostgresTransactionAccessMode,
     PostgresTransactionOptions, Transaction,
 };
 
-# async fn run(executor: &PostgresExecutor) -> Result<(), a3s_orm::PostgresError> {
+# async fn run(executor: &PostgresExecutor) -> Result<(), aster_orm::PostgresError> {
 let options = PostgresTransactionOptions::new()
     .with_isolation_level(PostgresIsolationLevel::Serializable)
     .with_access_mode(PostgresTransactionAccessMode::ReadOnly)
@@ -106,7 +106,7 @@ Read certificate files asynchronously in the application, then pass their
 bytes to the typed options:
 
 ```rust,no_run
-use a3s_orm::{PostgresExecutor, PostgresPoolOptions, PostgresTlsOptions};
+use aster_orm::{PostgresExecutor, PostgresPoolOptions, PostgresTlsOptions};
 
 # async fn read_secret(_path: &str) -> std::io::Result<Vec<u8>> { Ok(Vec::new()) }
 # async fn connect() -> Result<PostgresExecutor, Box<dyn std::error::Error>> {
@@ -132,11 +132,11 @@ and closes the old pool to new acquisitions; already checked-out connections
 may complete naturally.
 
 ```rust,no_run
-# use a3s_orm::{PostgresExecutor, PostgresPoolOptions, PostgresTlsOptions};
+# use aster_orm::{PostgresExecutor, PostgresPoolOptions, PostgresTlsOptions};
 # async fn rotate(
 #     executor: &PostgresExecutor,
 #     replacement: &PostgresTlsOptions,
-# ) -> Result<(), a3s_orm::PostgresError> {
+# ) -> Result<(), aster_orm::PostgresError> {
 let generation = executor
     .rotate_tls(
         "postgres://app@db.internal/app?sslmode=require",
@@ -183,9 +183,9 @@ deadline when multiple independent schemas share one database:
 
 ```rust,no_run
 use std::time::Duration;
-use a3s_orm::{PostgresExecutor, PostgresMigrationOptions};
+use aster_orm::{PostgresExecutor, PostgresMigrationOptions};
 
-# fn configure(executor: PostgresExecutor) -> Result<PostgresExecutor, a3s_orm::PostgresError> {
+# fn configure(executor: PostgresExecutor) -> Result<PostgresExecutor, aster_orm::PostgresError> {
 let executor = executor.with_migration_options(
     PostgresMigrationOptions::new()
         .with_advisory_lock_id(0x4150_505f_4442)

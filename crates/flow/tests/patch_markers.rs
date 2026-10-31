@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventStore, FlowRuntime, InMemoryEventStore,
     RuntimeBuildCompatibility, RuntimeBuildId, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowPatchId, WorkflowRunStatus, WorkflowSpec, MAX_WORKFLOW_PATCH_MARKERS,
@@ -34,7 +34,7 @@ impl FlowRuntime for PatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
 
         if !context.step_completed("prepare") {
@@ -56,7 +56,7 @@ impl FlowRuntime for PatchRuntime {
         Ok(context.complete(json!({ "branch": branch })))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<Value> {
         Ok(json!({ "step": invocation.step_name }))
     }
 }

@@ -47,7 +47,7 @@ DEEP_E2E_ROW id=typed_decisions commit=5f5528f42595d0747515c79607cd0fa1e7d1cb5b 
 DEEP_E2E_ROW id=moli_runtime commit=5f5528f42595d0747515c79607cd0fa1e7d1cb5b model=deepseek-v4.1-flash oracle=install-lock-timeout
 DEEP_E2E_ROW id=s3_workspace commit=5f5528f42595d0747515c79607cd0fa1e7d1cb5b model=deepseek-v4.1-flash oracle=VersionConflict
 DEEP_E2E_ROW id=opentelemetry commit=5f5528f42595d0747515c79607cd0fa1e7d1cb5b model=deepseek-v4.1-flash oracle=shutdown-empty-slot
-DEEP_E2E_ROW id=Effect isolation / orphan `.a3s-isolate-*` commit=5f5528f42595d0747515c79607cd0fa1e7d1cb5b model=deepseek-v4.1-flash oracle=PromoteOutcome-Conflict
+DEEP_E2E_ROW id=Effect isolation / orphan `.aster-isolate-*` commit=5f5528f42595d0747515c79607cd0fa1e7d1cb5b model=deepseek-v4.1-flash oracle=PromoteOutcome-Conflict
 DEEP_E2E_ROW id=Native sandbox and process-host opt-in commit=5f5528f42595d0747515c79607cd0fa1e7d1cb5b model=deepseek-v4.1-flash oracle=UnavailableDefaultSandbox
 DEEP_E2E_ROW id=Safe HTTP / Fake-IP / SSRF commit=5f5528f42595d0747515c79607cd0fa1e7d1cb5b model=deepseek-v4.1-flash oracle=SafeHttpError
 DEEP_E2E_ROW id=Mutation verify gate commit=5f5528f42595d0747515c79607cd0fa1e7d1cb5b model=deepseek-v4.1-flash oracle=Incomplete-then-Verified

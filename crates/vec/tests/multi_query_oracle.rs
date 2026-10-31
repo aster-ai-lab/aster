@@ -9,7 +9,7 @@
 
 //! MultiQuery / SubQuery builder contract coverage (TESTING.md F-P1-7).
 
-use a3s_vec::{
+use aster_vec::{
     ErrorCode, FlatQueryParams, Fts, FtsQueryParams, HnswQueryParams, MultiQuery, RerankMethod,
     SubQuery,
 };
@@ -59,13 +59,13 @@ fn sub_query_routes_and_controls_are_exclusive_and_typed() {
         ErrorCode::NotSupported
     );
     dense
-        .set_ivf_params(a3s_vec::IvfQueryParams::new(4, false, 1.0))
+        .set_ivf_params(aster_vec::IvfQueryParams::new(4, false, 1.0))
         .expect("ivf");
     dense
-        .set_ivf_rabitq_params(a3s_vec::IvfRabitqQueryParams::new(4, 0.0, false, false))
+        .set_ivf_rabitq_params(aster_vec::IvfRabitqQueryParams::new(4, 0.0, false, false))
         .expect("rabitq");
     dense
-        .set_diskann_params(a3s_vec::DiskannQueryParams::new(32))
+        .set_diskann_params(aster_vec::DiskannQueryParams::new(32))
         .expect("diskann");
     dense
         .set_fts_params(FtsQueryParams::new(None).expect("fts params"))
@@ -123,7 +123,7 @@ fn multi_query_fusion_controls_validate_and_default() {
 
 #[test]
 fn multi_query_rrf_and_weighted_execute_deterministically() {
-    use a3s_vec::{
+    use aster_vec::{
         Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexParams, MetricType,
         SearchQuery,
     };

@@ -1,5 +1,5 @@
 {
-  "name": "@a3s-lab/office",
+  "name": "@aster-ai-lab/office",
   "version": "0.312.0",
   "description": "Open-source collaborative browser editors for documents, Markdown, spreadsheets, presentations, and PDFs.",
   "keywords": [
@@ -15,16 +15,16 @@
     "vue",
     "web-components"
   ],
-  "homepage": "https://github.com/A3S-Lab/Office#readme",
+  "homepage": "https://github.com/aster-ai-lab/Office#readme",
   "bugs": {
-    "url": "https://github.com/A3S-Lab/Office/issues"
+    "url": "https://github.com/aster-ai-lab/Office/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/A3S-Lab/Office.git"
+    "url": "git+https://github.com/aster-ai-lab/Office.git"
   },
   "license": "MIT",
-  "author": "A3S Lab",
+  "author": "Aster",
   "type": "module",
   "exports": {
     ".": {
@@ -83,7 +83,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@a3s-lab/ui": "workspace:*",
+    "@aster-ai-lab/ui": "workspace:*",
     "@embedpdf/fonts-arabic": "1.0.0",
     "@embedpdf/fonts-hebrew": "1.0.0",
     "@embedpdf/fonts-latin": "1.0.0",

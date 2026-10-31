@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_form_core::{
+use aster_form_core::{
     canonical_sha256, canonicalize_value, compile_bytes, parse_json, CanonicalValue,
     COMPILE_REQUEST_API_VERSION,
 };
@@ -43,8 +43,8 @@ fn fixture() -> Fixture {
 
 fn schema_document(case: &SchemaCase) -> serde_json::Value {
     serde_json::json!({
-        "kind": "a3s.form",
-        "apiVersion": "a3s.dev/form/v1alpha1",
+        "kind": "aster.form",
+        "apiVersion": "aster.dev/form/v1alpha1",
         "revision": 1,
         "metadata": { "title": format!("Schema {}", case.name), "locale": "en-US" },
         "schema": serde_json::from_str::<serde_json::Value>(&case.schema_input_json)
@@ -61,7 +61,7 @@ fn matches_schema_profile_compiler_cases() {
     let fixture = fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-compiler-schema-profile-conformance/v1"
+        "aster.dev/form-compiler-schema-profile-conformance/v1"
     );
     assert_eq!(fixture.generator, "root-only-form-v1");
     for case in fixture.cases {

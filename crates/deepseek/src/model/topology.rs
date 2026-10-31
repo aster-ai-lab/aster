@@ -4,7 +4,7 @@
 //! Only hash-verified checkpoint metadata can construct a public architecture.
 //! This binds cache owners and numerical profiles; it does not execute a model.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use serde_json::Value;
 
 use crate::layers::kv::MainKvFormat;

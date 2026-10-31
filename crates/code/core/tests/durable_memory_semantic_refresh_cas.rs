@@ -2,15 +2,15 @@
 #[path = "durable_memory_semantic_refresh/support.rs"]
 mod refresh_support;
 
-use a3s_code_core::embedding::EmbeddingExecutorConfig;
-use a3s_code_core::{DurableMemoryRecallPolicy, DurableMemorySemanticError, DurableMemorySession};
-use a3s_memory::repository::{
+use aster_core::embedding::EmbeddingExecutorConfig;
+use aster_core::{DurableMemoryRecallPolicy, DurableMemorySemanticError, DurableMemorySession};
+use aster_durable_memory::repository::{
     InMemoryRepository, MemoryAccessEvent, MemoryChangeResult, MemoryChangeSet, MemoryNamespace,
     MemoryNamespaceSnapshot, MemoryNode, MemoryOperation, MemoryQuery, MemoryQueryResult,
     MemoryRepository, MemoryRepositoryError, MemorySnapshotRequest, MemoryUsageSummary,
     RevisionMode,
 };
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorIndexError,
     VectorMutationConsistency, VectorRevision,
 };
@@ -107,7 +107,7 @@ async fn delayed_drift_cleanup_cannot_remove_a_newer_independent_refresh() {
         &namespace,
         "create-alpha",
         "alpha",
-        a3s_memory::repository::MemoryStatus::Active,
+        aster_durable_memory::repository::MemoryStatus::Active,
         ALPHA,
         1,
     )

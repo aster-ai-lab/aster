@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{ContainerTarget, Error, ErrorCode, ExitStatus, Result};
+use aster_oci_sdk::{ContainerTarget, Error, ErrorCode, ExitStatus, Result};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
@@ -7,9 +7,9 @@ use crate::SessionToken;
 /// Version of the authenticated guest shutdown report.
 pub const AGENT_RECOVERY_REPORT_SCHEMA_VERSION: u16 = 1;
 /// Guest environment key containing the one-time recovery report path.
-pub const AGENT_RECOVERY_REPORT_ENV: &str = "A3S_OCI_AGENT_RECOVERY_REPORT";
+pub const AGENT_RECOVERY_REPORT_ENV: &str = "ASTER_OCI_AGENT_RECOVERY_REPORT";
 /// Runtime-owned guest directory prefix for one recovery report.
-pub const AGENT_RECOVERY_REPORT_DIRECTORY_PREFIX: &str = ".a3s-oci-recovery-";
+pub const AGENT_RECOVERY_REPORT_DIRECTORY_PREFIX: &str = ".aster-oci-recovery-";
 /// Fixed file name inside a one-time guest recovery directory.
 pub const AGENT_RECOVERY_REPORT_FILE_NAME: &str = "report.json";
 /// Suffix on the protected host marker while a shim owns report handoff.
@@ -23,7 +23,7 @@ const CONFIG_DIGEST_PREFIX: &str = "sha256:";
 const SHA256_HEX_BYTES: usize = 64;
 const HMAC_BLOCK_BYTES: usize = 64;
 const HMAC_BYTES: usize = 32;
-const AUTHENTICATION_DOMAIN: &[u8] = b"a3s-oci-agent-recovery-v1\0";
+const AUTHENTICATION_DOMAIN: &[u8] = b"aster-oci-agent-recovery-v1\0";
 
 /// Exact init-process evidence retained while a utility VM shuts down.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -340,7 +340,7 @@ fn recovery_error(code: ErrorCode, message: impl Into<String>) -> Error {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{ContainerId, ContainerTarget, ExitStatus, Generation};
+    use aster_oci_sdk::{ContainerId, ContainerTarget, ExitStatus, Generation};
 
     use super::{
         encode_hex, hmac_sha256, AgentRecoveryRecord, AgentRecoveryReport,

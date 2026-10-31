@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
-use a3s_office::NativeOfficeEditor;
-use a3s_use_core::{UseError, UseResult};
+use aster_office::NativeOfficeEditor;
+use aster_use_core::{UseError, UseResult};
 
 use super::bounded_input::{input_error, input_too_large, read_bounded_input, NativeInputKind};
 use super::{usage_error, AllowedOptions, CommandOutput, ParsedArguments};

@@ -1,4 +1,4 @@
-# A3S Sandbox
+# Aster Sandbox
 
 <p align="center">
   <strong>语言 / Language:</strong>
@@ -7,18 +7,18 @@
 </p>
 
 <p align="center">
-  <img src="./assets/readme/boundary.svg" width="100%" alt="a3s-sandbox 将不受信任的命令经策略边界与原生 macOS、Linux 或 Windows 后端处理后，再返回有界输出">
+  <img src="./assets/readme/boundary.svg" width="100%" alt="aster-sandbox 将不受信任的命令经策略边界与原生 macOS、Linux 或 Windows 后端处理后，再返回有界输出">
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/Sandbox/actions/workflows/ci.yml"><img src="https://github.com/A3S-Lab/Sandbox/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
-  <a href="https://github.com/A3S-Lab/Sandbox/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-d6a85f.svg" alt="MIT license"></a>
-  <a href="https://github.com/A3S-Lab/Sandbox/releases"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-7fb6a4.svg" alt="macOS, Linux, and Windows"></a>
+  <a href="https://github.com/aster-ai-lab/Sandbox/actions/workflows/ci.yml"><img src="https://github.com/aster-ai-lab/Sandbox/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="https://github.com/aster-ai-lab/Sandbox/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-d6a85f.svg" alt="MIT license"></a>
+  <a href="https://github.com/aster-ai-lab/Sandbox/releases"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-7fb6a4.svg" alt="macOS, Linux, and Windows"></a>
 </p>
 
-`a3s-sandbox` 是面向 A3S Bash 及其他 A3S 产品的 Rust 原生、失败闭合（fail-closed）命令边界。它将不受信任的命令变成有界进程树，并由宿主操作系统强制执行显式的工作区、凭证、环境、网络与生命周期限制。
+`aster-sandbox` 是面向 Aster Bash 及其他 Aster 产品的 Rust 原生、失败闭合（fail-closed）命令边界。它将不受信任的命令变成有界进程树，并由宿主操作系统强制执行显式的工作区、凭证、环境、网络与生命周期限制。
 
-执行路径中没有 Node.js 运行时、npm 包或 SRT 进程。该库刻意独立于 A3S Code，以便可被 CLI、Agent 或未来的 SDK 嵌入。
+执行路径中没有 Node.js 运行时、npm 包或 SRT 进程。该库刻意独立于 Aster Code，以便可被 CLI、Agent 或未来的 SDK 嵌入。
 
 ## 快速开始
 
@@ -26,13 +26,13 @@
 
 ```toml
 [dependencies]
-a3s-sandbox = "0.1.1"
+aster-sandbox = "0.1.1"
 ```
 
 通过原生边界运行命令：
 
 ```rust,no_run
-use a3s_sandbox::NativeSandbox;
+use aster_sandbox::NativeSandbox;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -52,11 +52,11 @@ async fn main() -> anyhow::Result<()> {
 
 ## 当前强制执行的内容
 
-默认的 A3S Bash 配置故意严格：
+默认的 Aster Bash 配置故意严格：
 
 - 拒绝网络访问与宿主 Unix 域套接字；
 - 写入仅限于规范工作区与私有临时目录；
-- 保护凭证、密钥文件、`.git`、`.a3s`、Agent 元数据，以及 shell/工具引导文件；
+- 保护凭证、密钥文件、`.git`、`.aster`、Agent 元数据，以及 shell/工具引导文件；
 - 拒绝符号链接与硬链接逃逸路径；
 - 清理子进程环境、重定向临时状态，并移除 shell 注入变量；
 - 截止时间终止完整后代树，输出捕获保持有界；
@@ -94,11 +94,11 @@ CommandRequest
 
 ## 范围与路线图
 
-Gate 0——完整的 A3S Bash 基线——已在 macOS、Linux 与 Windows 上交付并测试。后续门禁按第一性原理排序：类型化策略 → 结构化拒绝与 OS 资源配额 → 更深的文件系统挂载 → 可选中介 HTTP(S) → 更广的 IPC/SOCKS → CLI/适配器 → 安全发布。虚拟 bash 与进程内语言 VM 为非目标。
+Gate 0——完整的 Aster Bash 基线——已在 macOS、Linux 与 Windows 上交付并测试。后续门禁按第一性原理排序：类型化策略 → 结构化拒绝与 OS 资源配额 → 更深的文件系统挂载 → 可选中介 HTTP(S) → 更广的 IPC/SOCKS → CLI/适配器 → 安全发布。虚拟 bash 与进程内语言 VM 为非目标。
 
 使命、非目标、能力排序、退出条件、架构与风险见 [ROADMAP.md](ROADMAP.md)。
 
-目标是为 A3S 产品提供由 OS 强制的安全结果与 Rust 自有 API——不是 SRT TypeScript 克隆，也不是模拟 shell。
+目标是为 Aster 产品提供由 OS 强制的安全结果与 Rust 自有 API——不是 SRT TypeScript 克隆，也不是模拟 shell。
 
 ## 开发
 

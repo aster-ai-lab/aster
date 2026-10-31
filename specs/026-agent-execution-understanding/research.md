@@ -46,7 +46,7 @@
 | 无工具模型隔离 | `crates/code/acp/src/host_context.rs`、`agent/session_open.rs` 的 `sourceReview` | 单次语义注释采用该路径；宿主提供有界节点与原文，模型无文件或 Shell 工具 |
 | 候选写权限 | `crates/code/acp/src/knowledge_compile.rs` | 不复用：它允许 wiki staging candidate writes，会话分析只需要 `sourceReview` 的更低权限 |
 | 内部会话过滤 | `isKnowledgeCompileWorkbenchRow` 及 Agent／Knowledge 调用点 | 新增明确分析目的标识，并在相同列表边界排除；不借用 knowledge-compile 名称 |
-| UI／选择器 | `@a3s-lab/ui`、根 `DESIGN.md`、现有 `SearchSelect` | 原生 Aster 控件与视觉规范；不使用两个上游 Viewer 的主题或 iframe |
+| UI／选择器 | `@aster-ai-lab/ui`、根 `DESIGN.md`、现有 `SearchSelect` | 原生 Aster 控件与视觉规范；不使用两个上游 Viewer 的主题或 iframe |
 | 测试 | `workspaceAnalysisProjection.test.ts`、frontend testing guide | 最低充分层级：纯投影／状态机单元测试，联动组件测试，跨进程与原生旅程单独验收 |
 
 ## 4. 关键设计选择

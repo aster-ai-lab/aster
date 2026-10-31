@@ -6,7 +6,7 @@
         record.box_dir = dir.path().join("boxes").join(&record.id);
         record.cmd = vec!["sh".to_string(), "-lc".to_string(), "echo ok".to_string()];
         record.env.insert("ENV".to_string(), "test".to_string());
-        record.health_check = Some(a3s_box_core::ExecutionHealthCheck {
+        record.health_check = Some(aster_box_core::ExecutionHealthCheck {
             cmd: vec!["test".to_string(), "-f".to_string(), "/ready".to_string()],
             interval_secs: 11,
             timeout_secs: 3,
@@ -78,10 +78,10 @@
         let logical = record.box_dir.join("logical-rootfs");
         std::fs::create_dir_all(&logical).unwrap();
         std::fs::write(logical.join("state"), b"native-snapshot").unwrap();
-        a3s_box_runtime::rootfs::publish_ext4_artifact(
+        aster_box_runtime::rootfs::publish_ext4_artifact(
             &logical,
             &record.box_dir.join("rootfs-ext4-v1"),
-            a3s_box_runtime::rootfs::Ext4ArtifactOptions::from_disk_mib(16, [9; 16]).unwrap(),
+            aster_box_runtime::rootfs::Ext4ArtifactOptions::from_disk_mib(16, [9; 16]).unwrap(),
         )
         .unwrap();
         write_resolved_image_config(&record);
@@ -96,7 +96,7 @@
         let store = client.snapshot_store().unwrap();
         assert_eq!(
             store.rootfs_format(&snapshot.id).unwrap(),
-            a3s_box_runtime::SnapshotRootfsFormat::GuestNativeExt4
+            aster_box_runtime::SnapshotRootfsFormat::GuestNativeExt4
         );
         assert!(!store.rootfs_path(&snapshot.id).exists());
 
@@ -262,7 +262,7 @@
     #[tokio::test]
     async fn removes_and_evicts_images_via_runtime_store() {
         let dir = tempfile::tempdir().unwrap();
-        let client = A3sBoxClient::from_home(dir.path()).with_image_cache_size(1);
+        let client = AsterBoxClient::from_home(dir.path()).with_image_cache_size(1);
         let store = client.open_image_store().unwrap();
         let source = dir.path().join("image-source");
         std::fs::create_dir_all(&source).unwrap();

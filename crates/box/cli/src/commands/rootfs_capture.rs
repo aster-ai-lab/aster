@@ -17,7 +17,7 @@ where
     let config = crate::boot::config_from_record(record)
         .map_err(|error| -> Box<dyn std::error::Error> { error.into() })?;
     let written =
-        a3s_box_runtime::archive_stopped_guest_native_rootfs(config, record.id.clone(), output)
+        aster_box_runtime::archive_stopped_guest_native_rootfs(config, record.id.clone(), output)
             .await?;
     if written == 0 {
         return Err("Guest rootfs maintenance archive was empty".into());

@@ -36,8 +36,8 @@ use std::collections::HashMap;
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_acl::ast::{Document, Value};
-use a3s_acl::parse;
+use aster_acl::ast::{Document, Value};
+use aster_acl::parse;
 
 use crate::providers::ProviderEngine;
 use crate::{Engine, EngineConfig, HealthConfig, RankingConfig, SearchError};

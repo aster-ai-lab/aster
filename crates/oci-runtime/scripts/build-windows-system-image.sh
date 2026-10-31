@@ -5,15 +5,15 @@ script_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/lib/build-system-image.sh
 source "$script_directory/lib/build-system-image.sh"
 
-export A3S_SYSTEM_IMAGE_SCHEMA_VERSION='a3s.oci.windows-system-image.v1'
-export A3S_SYSTEM_IMAGE_ARCHITECTURE='x86_64'
-export A3S_SYSTEM_IMAGE_ELF_PATTERN='ELF 64-bit.*x86-64.*(static-pie|statically) linked'
-export A3S_SYSTEM_IMAGE_ALPINE_URL='https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-minirootfs-3.22.5-x86_64.tar.gz'
-export A3S_SYSTEM_IMAGE_ALPINE_SHA256='4b4daa9fe2fc696c4919c4412a4c3d3e770d8fb70292a004a2c72f5096175282'
-export A3S_SYSTEM_IMAGE_ALPINE_SIZE=3638276
-export A3S_SYSTEM_IMAGE_FILESYSTEM_UUID='a3a30c1a-2026-4000-8000-000000000011'
-export A3S_SYSTEM_IMAGE_DIRECTORY_HASH_SEED='a3a30c1a-2026-4000-8000-000000000012'
-export A3S_SYSTEM_IMAGE_RUNTIME_JSON='{
+export ASTER_SYSTEM_IMAGE_SCHEMA_VERSION='aster.oci.windows-system-image.v1'
+export ASTER_SYSTEM_IMAGE_ARCHITECTURE='x86_64'
+export ASTER_SYSTEM_IMAGE_ELF_PATTERN='ELF 64-bit.*x86-64.*(static-pie|statically) linked'
+export ASTER_SYSTEM_IMAGE_ALPINE_URL='https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-minirootfs-3.22.5-x86_64.tar.gz'
+export ASTER_SYSTEM_IMAGE_ALPINE_SHA256='4b4daa9fe2fc696c4919c4412a4c3d3e770d8fb70292a004a2c72f5096175282'
+export ASTER_SYSTEM_IMAGE_ALPINE_SIZE=3638276
+export ASTER_SYSTEM_IMAGE_FILESYSTEM_UUID='a3a30c1a-2026-4000-8000-000000000011'
+export ASTER_SYSTEM_IMAGE_DIRECTORY_HASH_SEED='a3a30c1a-2026-4000-8000-000000000012'
+export ASTER_SYSTEM_IMAGE_RUNTIME_JSON='{
   "archive_size": 8967364,
   "archive_sha256": "5650721e43c2a1825314367d60bc2bdace2a88be4a424ba42711f9580c4b69af",
   "krun_dll": {
@@ -47,4 +47,4 @@ export A3S_SYSTEM_IMAGE_RUNTIME_JSON='{
   }
 }'
 
-a3s_build_system_image "$@"
+aster_build_system_image "$@"

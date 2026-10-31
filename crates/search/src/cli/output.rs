@@ -3,7 +3,7 @@
 use anyhow::Result;
 use clap::ValueEnum;
 
-use a3s_search::{select_structural_window, SearchCascadeOutcomeV2, SearchResult, SearchResults};
+use aster_search::{select_structural_window, SearchCascadeOutcomeV2, SearchResult, SearchResults};
 
 /// CLI output format.
 #[derive(Clone, Copy, ValueEnum, Debug)]
@@ -147,7 +147,7 @@ pub(crate) fn truncate_str(value: &str, max_bytes: usize) -> String {
 
 #[cfg(test)]
 mod tests {
-    use a3s_search::{
+    use aster_search::{
         RetrievalRequirements, SearchCascade, SearchQuery, SearchResult, SearchResults,
     };
 

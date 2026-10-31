@@ -16,7 +16,7 @@ pub struct Release {
 /// A single release asset (downloadable file).
 #[derive(Debug, Clone, Deserialize)]
 pub struct Asset {
-    /// File name (e.g. `"a3s-code-0.3.0-darwin-arm64.tar.gz"`).
+    /// File name (e.g. `"aster-0.3.0-darwin-arm64.tar.gz"`).
     pub name: String,
     /// Direct download URL.
     pub browser_download_url: String,
@@ -51,7 +51,7 @@ pub async fn fetch_release(
 }
 
 fn github_api_base() -> String {
-    std::env::var("A3S_UPDATER_GITHUB_API_BASE")
+    std::env::var("ASTER_UPDATER_GITHUB_API_BASE")
         .unwrap_or_else(|_| "https://api.github.com".to_string())
         .trim_end_matches('/')
         .to_string()
@@ -59,7 +59,7 @@ fn github_api_base() -> String {
 
 async fn fetch_release_url(url: &str) -> anyhow::Result<Release> {
     let client = reqwest::Client::builder()
-        .user_agent("a3s-updater/0.1")
+        .user_agent("aster-updater/0.1")
         .build()
         .map_err(|e| anyhow::anyhow!("Failed to build HTTP client: {}", e))?;
 

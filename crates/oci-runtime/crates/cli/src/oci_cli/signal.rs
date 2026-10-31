@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{Error, ErrorCode, Result, Signal};
+use aster_oci_sdk::{Error, ErrorCode, Result, Signal};
 
 pub(super) fn parse(value: &str) -> Result<Signal> {
     if let Ok(number) = value.parse::<i32>() {
@@ -67,7 +67,7 @@ fn parse_realtime(value: &str) -> Option<i32> {
 #[cfg(test)]
 mod tests {
     use super::parse;
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     #[test]
     fn accepts_required_names_aliases_and_numbers() {

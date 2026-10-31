@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime,
     FlowScheduler, FlowTask, FlowTaskQueue, FlowWorker, InMemoryEventStore, InMemoryFlowTaskQueue,
     RetryPolicy, RuntimeCommand, StepInvocation, WaitStatus, WorkflowInvocation, WorkflowRunStatus,
@@ -19,7 +19,7 @@ fn completed_wait(invocation: &WorkflowInvocation, wait_id: &str) -> bool {
     invocation.history.iter().any(|event| {
         matches!(
             &event.event,
-            a3s_flow::FlowEvent::WaitCompleted { wait_id: id } if id == wait_id
+            aster_flow::FlowEvent::WaitCompleted { wait_id: id } if id == wait_id
         )
     })
 }
@@ -31,7 +31,7 @@ impl FlowRuntime for SleepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if completed_wait(&invocation, "sleep") {
             return Ok(RuntimeCommand::Complete {
                 output: json!({ "slept": true }),
@@ -50,7 +50,7 @@ impl FlowRuntime for SleepRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("sleep runtime does not schedule steps")
     }
 }
@@ -65,7 +65,7 @@ impl FlowRuntime for DelayedRetryRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(output) = ctx.step_output("flaky") {
             return Ok(ctx.complete(output.clone()));
@@ -79,7 +79,7 @@ impl FlowRuntime for DelayedRetryRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
         if attempt == 0 {
             Err(FlowError::Runtime("first attempt failed".to_string()))
@@ -100,7 +100,7 @@ impl FlowRuntime for DelayedBatchRetryRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.step_output("alpha").is_some() && ctx.step_output("beta").is_some() {
             return Ok(ctx.complete(json!({ "done": true })));
@@ -113,7 +113,7 @@ impl FlowRuntime for DelayedBatchRetryRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempts = match invocation.step_id.as_str() {
             "alpha" => &self.alpha_attempts,
             "beta" => &self.beta_attempts,
@@ -344,7 +344,7 @@ impl FlowRuntime for WaitBesideOpenTimerRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.wait_completed("due") {
             return Ok(context.complete(json!("due")));
@@ -359,14 +359,14 @@ impl FlowRuntime for WaitBesideOpenTimerRuntime {
         Ok(context.wait_until("hold", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("wait-beside-timer runtime does not schedule steps")
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -386,8 +386,8 @@ async fn due_wait_wakes_workflow_while_another_timer_is_open() {
         .await
         .unwrap();
     assert_eq!(armed.snapshot.status, WorkflowRunStatus::Suspended);
-    assert!(armed.snapshot.waits["hold"].status == a3s_flow::WaitStatus::Waiting);
-    assert!(armed.snapshot.waits["due"].status == a3s_flow::WaitStatus::Waiting);
+    assert!(armed.snapshot.waits["hold"].status == aster_flow::WaitStatus::Waiting);
+    assert!(armed.snapshot.waits["due"].status == aster_flow::WaitStatus::Waiting);
 
     engine
         .resume_wait("wait-beside-timer", "due")
@@ -415,7 +415,7 @@ impl CrashAfterWaitCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterWaitCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -424,7 +424,7 @@ impl FlowEventStore for CrashAfterWaitCompletedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -441,11 +441,11 @@ impl FlowEventStore for CrashAfterWaitCompletedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -497,7 +497,7 @@ impl FlowRuntime for RetryBesideOpenTimerRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if let Some(output) = context.step_output("flaky") {
             return Ok(context.complete(output.clone()));
@@ -513,7 +513,7 @@ impl FlowRuntime for RetryBesideOpenTimerRuntime {
         Ok(context.wait_until("hold", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
         if attempt == 0 {
             Err(FlowError::Runtime("first attempt failed".to_string()))
@@ -524,8 +524,8 @@ impl FlowRuntime for RetryBesideOpenTimerRuntime {
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -563,7 +563,7 @@ async fn due_retry_runs_while_another_timer_is_open() {
 
     assert_eq!(runtime.attempts.load(Ordering::SeqCst), 2);
     assert!(resumed.iter().any(|wakeup| {
-        wakeup.kind == a3s_flow::ScheduledWakeupKind::Retry && wakeup.subject_id == "flaky"
+        wakeup.kind == aster_flow::ScheduledWakeupKind::Retry && wakeup.subject_id == "flaky"
     }));
     let snapshot = engine.snapshot("retry-beside-timer").await.unwrap();
     assert_eq!(snapshot.status, WorkflowRunStatus::Completed);
@@ -577,7 +577,7 @@ impl FlowRuntime for StepBesideOpenTimerRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if let Some(output) = context.step_output("work") {
             return Ok(context.complete(output.clone()));
@@ -594,14 +594,14 @@ impl FlowRuntime for StepBesideOpenTimerRuntime {
         Ok(context.wait_until("hold", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({ "done": true }))
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -622,7 +622,7 @@ impl CrashAfterStepCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterStepCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -631,7 +631,7 @@ impl FlowEventStore for CrashAfterStepCompletedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -648,11 +648,11 @@ impl FlowEventStore for CrashAfterStepCompletedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -679,7 +679,7 @@ async fn step_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open() 
 
     let mid = engine.snapshot("step-completed-drive").await.unwrap();
     assert!(!mid.status.is_terminal());
-    assert_eq!(mid.steps["work"].status, a3s_flow::StepStatus::Completed);
+    assert_eq!(mid.steps["work"].status, aster_flow::StepStatus::Completed);
     assert_eq!(mid.waits["hold"].status, WaitStatus::Waiting);
 
     let recovered = engine.drive("step-completed-drive").await.unwrap();
@@ -709,7 +709,7 @@ impl FlowRuntime for RetryBesideOpenChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "scheduler.sleeping-child" {
             return Ok(context.wait_until("child-hold", "2030-01-01T00:00:00Z".parse().unwrap()));
@@ -728,7 +728,7 @@ impl FlowRuntime for RetryBesideOpenChildRuntime {
         Ok(context.start_child_workflow("sleeper", sleeping_child_spec(), json!({})))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
         if attempt == 0 {
             Err(FlowError::Runtime("first attempt failed".to_string()))
@@ -739,8 +739,8 @@ impl FlowRuntime for RetryBesideOpenChildRuntime {
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({ "armed": true }))
     }
 }

@@ -359,7 +359,7 @@ mod tests {
                 WorkspaceFolder::new(Url::parse("file:///workspace/web").unwrap(), "web"),
             ],
             Some(json!({"check": {"command": "clippy"}})),
-            "a3s-code",
+            "aster",
             "5.2.4",
         )
     }
@@ -417,7 +417,7 @@ mod tests {
         );
         assert_eq!(
             params["clientInfo"],
-            json!({"name": "a3s-code", "version": "5.2.4"})
+            json!({"name": "aster", "version": "5.2.4"})
         );
         assert!(params["processId"].is_number());
         assert_eq!(params["capabilities"]["workspace"]["applyEdit"], false);

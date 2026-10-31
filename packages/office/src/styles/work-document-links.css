@@ -15,7 +15,7 @@
     .work-pdf-export-page.document
   )
   a.work-document-link-missing {
-  color: var(--a3s-red);
+  color: var(--aster-red);
   text-decoration-line: underline;
   text-decoration-style: wavy;
   text-decoration-color: currentColor;

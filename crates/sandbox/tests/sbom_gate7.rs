@@ -8,7 +8,7 @@
 use std::process::Command;
 
 #[test]
-fn gate7_sbom_script_emits_cyclonedx_with_a3s_sandbox() {
+fn gate7_sbom_script_emits_cyclonedx_with_aster_cmd_sandbox() {
     let out = tempfile::NamedTempFile::new().unwrap();
     let out_path = out.path();
     let script = concat!(env!("CARGO_MANIFEST_DIR"), "/scripts/generate-sbom.sh");
@@ -23,7 +23,7 @@ fn gate7_sbom_script_emits_cyclonedx_with_a3s_sandbox() {
     let json: serde_json::Value = serde_json::from_str(&body).unwrap();
     assert_eq!(json["bomFormat"], "CycloneDX");
     assert_eq!(json["specVersion"], "1.5");
-    assert_eq!(json["metadata"]["component"]["name"], "a3s-sandbox");
+    assert_eq!(json["metadata"]["component"]["name"], "aster-sandbox");
     let names = json["components"]
         .as_array()
         .unwrap()
@@ -31,8 +31,8 @@ fn gate7_sbom_script_emits_cyclonedx_with_a3s_sandbox() {
         .filter_map(|c| c["name"].as_str())
         .collect::<Vec<_>>();
     assert!(
-        names.contains(&"a3s-sandbox"),
-        "SBOM missing a3s-sandbox component: {names:?}"
+        names.contains(&"aster-sandbox"),
+        "SBOM missing aster-sandbox component: {names:?}"
     );
     assert!(
         names.contains(&"tokio"),

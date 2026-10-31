@@ -7,7 +7,7 @@ use serde_json::json;
 fn explicit_policy_is_validated_and_omission_keeps_defaults() {
     assert!(policy_from_meta(None).unwrap().is_none());
     assert!(
-        policy_from_meta(json!({"a3sEngineering":{"policy":"none"}}).as_object())
+        policy_from_meta(json!({"asterEngineering":{"policy":"none"}}).as_object())
             .unwrap()
             .is_none()
     );
@@ -15,7 +15,7 @@ fn explicit_policy_is_validated_and_omission_keeps_defaults() {
         .unwrap()
         .is_none());
     let policy =
-        policy_from_meta(json!({"a3sEngineering":{"policy":"engineering-v1"}}).as_object())
+        policy_from_meta(json!({"asterEngineering":{"policy":"engineering-v1"}}).as_object())
             .unwrap()
             .unwrap();
     assert_eq!(policy.id(), EngineeringPolicy::V1.as_str());
@@ -46,7 +46,7 @@ fn malformed_or_unknown_experiment_never_defaults() {
         json!({"policy":"engineering-v1","instructions":"replace"}),
     ] {
         assert!(
-            policy_from_meta(json!({"a3sEngineering":value}).as_object()).is_err(),
+            policy_from_meta(json!({"asterEngineering":value}).as_object()).is_err(),
             "{value}"
         );
     }

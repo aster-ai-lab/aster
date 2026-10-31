@@ -3,7 +3,7 @@
 use super::{CodeConfig, WorkspaceRetrievalConfig};
 use crate::error::{CodeError, Result};
 use crate::tools::{ToolPresentationModeV1, ToolPresentationProfileV1};
-use a3s_acl::{Block, Document, Lexer, Token, Value};
+use aster_acl::{Block, Document, Lexer, Token, Value};
 use std::collections::HashSet;
 
 fn invalid(name: &str, reason: &str) -> CodeError {

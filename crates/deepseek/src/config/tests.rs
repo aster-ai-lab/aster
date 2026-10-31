@@ -69,7 +69,7 @@ fn acl_roundtrip_escapes_filesystem_text() {
 #[test]
 fn schema_model_revision_and_execution_are_required_closed_sets() {
     for (from, to) in [
-        (CONFIG_SCHEMA, "a3s.deepseek.native.v2"),
+        (CONFIG_SCHEMA, "aster.deepseek.native.v2"),
         (
             DeepSeekModel::V41Flash1017Official.as_str(),
             "unknown/model",

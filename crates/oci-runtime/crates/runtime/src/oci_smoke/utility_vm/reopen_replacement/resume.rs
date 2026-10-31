@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
+use aster_oci_sdk::{
     ContainerOperationRequest, ContainerTarget, CreateRequest, OperationId, StartRequest,
 };
 

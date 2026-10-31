@@ -3,13 +3,13 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportFaultInjector, AgentTransportFaultStage,
     AgentTransportOperationStage, AgentTransportQualificationRequest, AGENT_PROTOCOL_VERSION_MAX,
 };
-use a3s_oci_core::{CapabilityStatus, DriverKind, HostPlatform, IsolationClass};
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, DriverKind, HostPlatform, IsolationClass};
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerTarget, CreateRequest, DeleteMode, DeleteRequest, Error, ErrorCode, IsolationRequest,
     ListRequest, OciBundle, OciRuntimeService, OperationContext, OperationId,
 };
@@ -78,8 +78,8 @@ pub use write_stdin::{linux_kvm_write_stdin_reopen_replacement, LinuxKvmWriteStd
 // contention; keep this harness-only bound above observed isolated stage totals.
 const QUALIFICATION_TIMEOUT: Duration = Duration::from_secs(45);
 const QUALIFICATION_FAULT_OPERATION: &str = "oci-vm-transport-qualification-fault";
-const GUEST_RUNTIME_PREFIX: &str = "a3s-oci-agent-";
-const MARKER_NAME: &str = ".a3s-oci-create-start-smoke";
+const GUEST_RUNTIME_PREFIX: &str = "aster-oci-agent-";
+const MARKER_NAME: &str = ".aster-oci-create-start-smoke";
 
 /// Exact inputs for one real Linux KVM Create interruption and owner reopen.
 #[derive(Debug, Clone)]
@@ -124,7 +124,7 @@ pub async fn linux_kvm_create_reopen_replacement(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let container_id = match a3s_oci_sdk::ContainerId::new(format!("kvm-reopen-{nonce}")) {
+    let container_id = match aster_oci_sdk::ContainerId::new(format!("kvm-reopen-{nonce}")) {
         Ok(id) => id,
         Err(error) => return failed(report, format!("failed to construct container ID: {error}")),
     };

@@ -1,10 +1,10 @@
-//! Small, reproducible qualification for the workspace-owned a3s-vec FTS index.
+//! Small, reproducible qualification for the workspace-owned aster-vec FTS index.
 //!
 //! Run from `crates/code` in release mode:
 //!
-//! `cargo run --locked --release -p a3s-code-core --example workspace_persistent_index_benchmark --features a3s-vec-fts`
+//! `cargo run --locked --release -p aster-core --example workspace_persistent_index_benchmark --features aster-vec-fts`
 
-use a3s_code_core::workspace::{
+use aster_core::workspace::{
     ChunkCatalogLimits, ChunkingConfig, LexicalSearchRequest, WorkspaceChunkCatalog,
     WorkspaceLexicalEngine, WorkspacePath, WorkspacePersistentIndex,
 };
@@ -14,10 +14,10 @@ use std::time::{Duration, Instant};
 // Catalog admission is intentionally not part of this benchmark. The public
 // single-file mutation API publishes an immutable snapshot on every call, so
 // constructing thousands of files through it would measure O(n²) fixture setup
-// instead of a3s-vec indexing/query performance. Production reconciliation builds
+// instead of aster-vec indexing/query performance. Production reconciliation builds
 // the initial snapshot in one pass before this layer is invoked.
 fn file_count() -> usize {
-    std::env::var("A3S_BENCH_FILES")
+    std::env::var("ASTER_BENCH_FILES")
         .ok()
         .and_then(|value| value.parse().ok())
         .unwrap_or(64)
@@ -30,9 +30,9 @@ fn main() -> Result<()> {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
-    .context("create a3s-vec catalog")?;
+    .context("create aster-vec catalog")?;
     let file_count = file_count();
     for index in 0..file_count {
         let path = WorkspacePath::from_normalized(format!("src/module-{index:04}.rs"));
@@ -42,17 +42,17 @@ fn main() -> Result<()> {
                 Some("rust"),
                 1,
                 &format!(
-                    "pub fn module_{index}() {{\n    // persistent a3s-vec benchmark sentinel\n}}\n"
+                    "pub fn module_{index}() {{\n    // persistent aster-vec benchmark sentinel\n}}\n"
                 ),
             )
             .with_context(|| format!("admit {}", path.as_str()))?;
     }
     let fixture_ms = elapsed_ms(fixture_started.elapsed());
     let index = WorkspacePersistentIndex::open(
-        workspace.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        workspace.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
-    .context("open persistent a3s-vec index")?;
+    .context("open persistent aster-vec index")?;
 
     let build_started = Instant::now();
     index
@@ -60,7 +60,7 @@ fn main() -> Result<()> {
         .context("build persistent generation")?;
     let build_ms = elapsed_ms(build_started.elapsed());
 
-    let request = LexicalSearchRequest::new("persistent a3s-vec benchmark sentinel");
+    let request = LexicalSearchRequest::new("persistent aster-vec benchmark sentinel");
     let mut latencies = Vec::with_capacity(QUERY_SAMPLES);
     for _ in 0..QUERY_SAMPLES {
         let started = Instant::now();
@@ -81,7 +81,7 @@ fn main() -> Result<()> {
         &unchanged_path,
         Some("rust"),
         2,
-        "pub fn module_0() {\n    // persistent a3s-vec benchmark sentinel\n}\n",
+        "pub fn module_0() {\n    // persistent aster-vec benchmark sentinel\n}\n",
     )?;
     let reuse_started = Instant::now();
     index
@@ -96,7 +96,7 @@ fn main() -> Result<()> {
         &unchanged_path,
         Some("rust"),
         3,
-        "pub fn module_0() {\n    // incrementally edited persistent a3s-vec benchmark sentinel\n}\n",
+        "pub fn module_0() {\n    // incrementally edited persistent aster-vec benchmark sentinel\n}\n",
     )?;
     let incremental_started = Instant::now();
     index
@@ -122,7 +122,7 @@ fn main() -> Result<()> {
             Some("rust"),
             4,
             &format!(
-                "pub fn module_{file}() {{\n    // fully churned persistent a3s-vec benchmark sentinel\n}}\n"
+                "pub fn module_{file}() {{\n    // fully churned persistent aster-vec benchmark sentinel\n}}\n"
             ),
         )?;
     }

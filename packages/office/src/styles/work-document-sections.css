@@ -1,7 +1,7 @@
 .work-document-layout-panel > legend {
   float: none;
   margin: 0 4px 0 0;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-weight: 650;
 }
 
@@ -49,7 +49,7 @@
 }
 
 .work-document-custom-column strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-weight: 650;
 }
 
@@ -57,7 +57,7 @@
   min-width: 240px;
   flex: 1 1 100%;
   margin: 0;
-  color: var(--a3s-subtle);
+  color: var(--aster-subtle);
 }
 
 .work-document-layout-panel .work-document-page-chrome-panel {
@@ -67,12 +67,12 @@
   grid-template-columns: minmax(260px, 1fr) minmax(260px, 1fr);
   gap: 7px 10px;
   padding-top: 7px;
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .work-document-layout-panel .work-document-page-chrome-panel > legend {
   grid-column: 1 / -1;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-weight: 650;
 }
 
@@ -120,23 +120,23 @@
   min-width: 24px;
   height: 23px;
   padding: 0 5px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 4px;
-  background: var(--a3s-bg);
-  color: var(--a3s-muted);
+  background: var(--aster-bg);
+  color: var(--aster-muted);
   font: inherit;
   cursor: pointer;
 }
 
 .work-document-page-chrome-toolbar button:hover {
-  border-color: var(--a3s-blue);
-  color: var(--a3s-blue);
+  border-color: var(--aster-blue);
+  color: var(--aster-blue);
 }
 
 .work-document-page-chrome-toolbar button.active {
-  border-color: color-mix(in srgb, var(--a3s-blue) 30%, var(--a3s-line));
-  background: color-mix(in srgb, var(--a3s-blue) 10%, var(--a3s-bg));
-  color: var(--a3s-blue);
+  border-color: color-mix(in srgb, var(--aster-blue) 30%, var(--aster-line));
+  background: color-mix(in srgb, var(--aster-blue) 10%, var(--aster-bg));
+  color: var(--aster-blue);
 }
 
 .work-document-page-chrome-toolbar button:disabled {
@@ -145,7 +145,7 @@
 }
 
 .work-document-page-chrome-toolbar button:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--a3s-blue) 65%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--aster-blue) 65%, transparent);
   outline-offset: 1px;
 }
 
@@ -154,9 +154,9 @@
   width: 24px;
   height: 23px;
   place-items: center;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 4px;
-  background: var(--a3s-bg);
+  background: var(--aster-bg);
 }
 
 .work-document-page-chrome-color input {
@@ -171,17 +171,17 @@
   max-height: 100px;
   padding: 6px 8px;
   overflow: auto;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 5px;
   outline: 0;
   background: #ffffff;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-family: var(
-    --a3s-document-font-family,
-    "A3S Office Noto Sans",
-    "A3S Office Noto Sans Hans",
-    "A3S Office Noto Naskh Arabic",
-    "A3S Office Noto Sans Hebrew",
+    --aster-document-font-family,
+    "Aster Office Noto Sans",
+    "Aster Office Noto Sans Hans",
+    "Aster Office Noto Naskh Arabic",
+    "Aster Office Noto Sans Hebrew",
     sans-serif
   );
   font-size: 11px;
@@ -189,7 +189,7 @@
 }
 
 .work-document-page-chrome-content:focus-visible {
-  border-color: var(--a3s-blue);
+  border-color: var(--aster-blue);
   box-shadow: 0 0 0 2px rgb(47 111 237 / 10%);
 }
 
@@ -228,7 +228,7 @@
   max-height: 76px;
   padding: 4px 6px;
   overflow: auto;
-  border: 1px solid color-mix(in srgb, var(--a3s-blue) 58%, var(--a3s-line));
+  border: 1px solid color-mix(in srgb, var(--aster-blue) 58%, var(--aster-line));
   border-radius: 4px;
   background: rgb(255 255 255 / 92%);
   box-shadow: 0 0 0 2px rgb(47 111 237 / 8%);
@@ -241,7 +241,7 @@
 .work-document-page
   .work-document-page-chrome-inline-editor
   .work-document-page-chrome-content:focus-visible {
-  border-color: var(--a3s-blue);
+  border-color: var(--aster-blue);
   box-shadow: 0 0 0 2px rgb(47 111 237 / 14%);
 }
 
@@ -332,7 +332,7 @@
   background: #ffffff;
   color: #778196;
   content: "分节符";
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
   font-size: 9px;
   letter-spacing: 0.08em;
   transform: translateX(-50%);
@@ -341,9 +341,9 @@
 .work-document-note-reference,
 [data-document-note-reference] {
   margin-inline: 1px;
-  color: var(--a3s-blue);
+  color: var(--aster-blue);
   cursor: default;
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
   font-size: 0.72em;
   font-weight: 650;
   line-height: 0;
@@ -364,9 +364,9 @@
 }
 
 .work-document-page .tiptap .work-document-note::before {
-  color: var(--a3s-blue);
+  color: var(--aster-blue);
   content: attr(data-note-number);
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
   font-weight: 650;
 }
 
@@ -472,7 +472,7 @@
   min-height: 1123px;
   flex-direction: column;
   margin: 0 auto 28px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   background: #ffffff;
   box-shadow: 0 8px 30px rgb(30 38 55 / 7%);
 }
@@ -544,7 +544,7 @@
 .work-document-page-notes h3 {
   margin: 0 0 6px;
   color: #343d4e;
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
   font-size: 11px;
 }
 
@@ -573,7 +573,7 @@
   flex: 1;
   place-items: center;
   color: #a0a7b4;
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
   font-size: 11px;
 }
 

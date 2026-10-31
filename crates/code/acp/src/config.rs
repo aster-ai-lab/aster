@@ -11,16 +11,16 @@
 //! is read.
 //!
 //! Layer authority: only a layer the host consented to (`--config`,
-//! `A3S_CONFIG`, or `~/.a3s/config.acl`) may set host-authoritative posture
-//! (sandbox, providers, verification_contract and goal_control). A workspace `.a3s/config.acl` is untrusted
+//! `ASTER_CONFIG`, or `~/.aster/config.acl`) may set host-authoritative posture
+//! (sandbox, providers, verification_contract and goal_control). A workspace `.aster/config.acl` is untrusted
 //! repository content; it may configure the agent but never arm, narrow, or
 //! reroute host surfaces.
 
 use std::io::Read as _;
 use std::path::{Path, PathBuf};
 
-use a3s_code_core::config::{AccountImport, WorkspaceLayerAdmission, WorkspaceMcpDeclaration};
-use a3s_code_core::CodeConfig;
+use aster_core::config::{AccountImport, WorkspaceLayerAdmission, WorkspaceMcpDeclaration};
+use aster_core::CodeConfig;
 use anyhow::{anyhow, Context, Result};
 
 #[cfg(feature = "account-import")]
@@ -38,7 +38,7 @@ pub struct LaunchConfig {
     pub config: CodeConfig,
 }
 
-/// Load ACL from `--config`, else `~/.a3s/config.acl` + workspace `.a3s/config.acl`.
+/// Load ACL from `--config`, else `~/.aster/config.acl` + workspace `.aster/config.acl`.
 ///
 /// Imports no local account; see [`load_launch_config_with_imports`].
 pub fn load_launch_config(
@@ -80,7 +80,7 @@ pub fn load_launch_config_with_imports(
                     .map(|layer| layer.path.display().to_string())
                     .collect::<Vec<_>>()
                     .join(", ");
-                anyhow!("failed to parse merged A3S ACL from {sources}: {error}")
+                anyhow!("failed to parse merged Aster ACL from {sources}: {error}")
             })?;
             // Layered documents may re-declare a provider; the later
             // (workspace) layer must overlay the earlier (user) one instead
@@ -101,7 +101,7 @@ pub fn load_launch_config_with_imports(
                 empty
             } else if explicit_config.is_none() && is_missing_acl(&error) {
                 // A new install has no trusted file. The terminal can open
-                // and write ~/.a3s/config.acl from /config. Do not create it here.
+                // and write ~/.aster/config.acl from /config. Do not create it here.
                 empty
             } else {
                 return Err(error);
@@ -144,7 +144,7 @@ pub fn load_launch_config_with_imports(
         }
         return Err(anyhow!(
             "default_model must be set in provider/model format \
-             (configure ~/.a3s/config.acl, or opt into a local account with \
+             (configure ~/.aster/config.acl, or opt into a local account with \
              `import_accounts = [\"cursor\"]` there or `--import-accounts cursor`; \
              sources: cc-switch, grok, cursor)"
         ));
@@ -154,7 +154,7 @@ pub fn load_launch_config_with_imports(
             "default_model must use the provider/model format (got {model_id})"
         ));
     }
-    // A typo, or an explicit A3S_DEFAULT_MODEL the catalog does not
+    // A typo, or an explicit ASTER_DEFAULT_MODEL the catalog does not
     // declare, still refuses. A withheld workspace provider is handled
     // above, before the account imports fill a missing default.
     if !catalog_declares(&config, &model_id) {
@@ -190,7 +190,7 @@ pub fn workspace_mcp_declarations(
     let layers = layer_sources(workspace, explicit_config)?;
     let acls: Vec<&str> = layers.iter().map(|layer| layer.acl.as_str()).collect();
     let mut config = CodeConfig::from_acl_layers(&acls)
-        .map_err(|error| anyhow!("failed to parse merged A3S ACL: {error}"))?;
+        .map_err(|error| anyhow!("failed to parse merged Aster ACL: {error}"))?;
     Ok(admit_workspace_layer(&mut config, &layers, workspace)?.workspace_mcp)
 }
 
@@ -222,7 +222,7 @@ pub fn trust_workspace_mcp(
     };
     let ids: Vec<String> = selected.iter().map(|d| d.id.clone()).collect();
     if !ids.is_empty() {
-        a3s_code_core::config::WorkspaceMcpTrust::trust(&trust_store_path(workspace)?, &ids)?;
+        aster_core::config::WorkspaceMcpTrust::trust(&trust_store_path(workspace)?, &ids)?;
     }
     Ok(selected)
 }
@@ -254,7 +254,7 @@ fn merge_account_imports(config: &mut CodeConfig, selected: &[AccountImport]) ->
                 AccountImport::Grok => grok_account::merge_into_config(config),
                 AccountImport::Cursor => cursor_account::merge_into_config(config),
                 AccountImport::Codex => {
-                    a3s_code_core::llm::CodexLoginClient::import_local_account(config)
+                    aster_core::llm::CodexLoginClient::import_local_account(config)
                 }
             };
             match merged {
@@ -269,7 +269,7 @@ fn merge_account_imports(config: &mut CodeConfig, selected: &[AccountImport]) ->
 }
 
 fn trust_store_path(workspace: &Path) -> Result<PathBuf> {
-    a3s_code_core::config::workspace_mcp_trust_path(workspace)
+    aster_core::config::workspace_mcp_trust_path(workspace)
 }
 
 /// The one place an untrusted workspace layer is admitted: host-authoritative
@@ -290,7 +290,7 @@ fn admit_workspace_layer(
     // A store that cannot be read grants nothing; the pending list still
     // names every declaration so the user can see what was held back.
     let trust = match trust_store_path(workspace)
-        .and_then(|path| a3s_code_core::config::WorkspaceMcpTrust::load(&path))
+        .and_then(|path| aster_core::config::WorkspaceMcpTrust::load(&path))
     {
         Ok(trust) => trust,
         Err(error) => {
@@ -298,14 +298,14 @@ fn admit_workspace_layer(
             Default::default()
         }
     };
-    let layer_acls: Vec<a3s_code_core::config::LayerAcl> = layers
+    let layer_acls: Vec<aster_core::config::LayerAcl> = layers
         .iter()
-        .map(|layer| a3s_code_core::config::LayerAcl {
+        .map(|layer| aster_core::config::LayerAcl {
             trusted: layer.kind.is_trusted(),
             acl: layer.acl.clone(),
         })
         .collect();
-    let admission = a3s_code_core::config::admit_untrusted_layers(
+    let admission = aster_core::config::admit_untrusted_layers(
         config,
         &layer_acls,
         &repository_root,
@@ -316,7 +316,7 @@ fn admit_workspace_layer(
             withheld_blocks = ?admission.withheld_blocks,
             "workspace configuration layer sets a host-authoritative block; \
              host-authoritative settings stay with the host layer \
-             (~/.a3s/config.acl or --config)"
+             (~/.aster/config.acl or --config)"
         );
     }
     for declaration in admission.pending_mcp() {
@@ -325,7 +325,7 @@ fn admit_workspace_layer(
             server = %declaration.name,
             command = %declaration.summary,
             "workspace MCP server is not trusted and was not started; \
-             review it, then run `a3s-code-acp --trust-workspace-mcp {}`",
+             review it, then run `aster-acp --trust-workspace-mcp {}`",
             declaration.short_id()
         );
     }
@@ -375,18 +375,25 @@ fn user_acl_is_configured(path: &Path) -> bool {
     std::fs::metadata(path).is_ok_and(|meta| meta.is_file() && meta.len() > 0)
 }
 
-/// Create `~/.a3s/config.acl` when the user has none.
+/// Create `~/.aster/config.acl` when the user has none.
 ///
 /// Returns whether this call wrote the file. An existing non-empty file is
 /// left unchanged. An empty file is replaced with the first-run template.
-/// The models are the current GLM and DeepSeek ids; the key is a placeholder.
+/// When `~/.a3s/config.acl` exists (pre-rebrand home), that file is copied
+/// into `~/.aster` instead of the empty first-run template, and
+/// `config.toml` is copied when missing. The models are the current GLM and
+/// DeepSeek ids; the key is a placeholder.
 pub fn ensure_user_acl() -> Result<bool> {
     let Some(home) = user_home() else {
         return Ok(false);
     };
-    let path = home.join(".a3s").join("config.acl");
+    let aster_home = home.join(".aster");
+    let path = aster_home.join("config.acl");
     match std::fs::metadata(&path) {
-        Ok(meta) if meta.is_file() && meta.len() > 0 => return Ok(false),
+        Ok(meta) if meta.is_file() && meta.len() > 0 => {
+            migrate_legacy_toml_if_missing(&home, &aster_home)?;
+            return Ok(false);
+        }
         Ok(meta) if meta.is_file() => {}
         Ok(_) => {
             anyhow::bail!("{} exists and is not a regular file", path.display());
@@ -400,6 +407,14 @@ pub fn ensure_user_acl() -> Result<bool> {
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent).with_context(|| format!("create {}", parent.display()))?;
     }
+    let legacy_acl = home.join(".a3s").join("config.acl");
+    let body = if user_acl_is_configured(&legacy_acl) {
+        let raw = std::fs::read_to_string(&legacy_acl)
+            .with_context(|| format!("read legacy {}", legacy_acl.display()))?;
+        rewrite_legacy_a3s_paths(&raw)
+    } else {
+        FIRST_RUN_ACL.to_string()
+    };
     let mut options = std::fs::OpenOptions::new();
     options.write(true);
     if replacing_empty {
@@ -420,7 +435,7 @@ pub fn ensure_user_acl() -> Result<bool> {
             return Err(error).with_context(|| format!("create {}", path.display()));
         }
     };
-    if let Err(error) = std::io::Write::write_all(&mut file, FIRST_RUN_ACL.as_bytes()) {
+    if let Err(error) = std::io::Write::write_all(&mut file, body.as_bytes()) {
         drop(file);
         let _ = std::fs::remove_file(&path);
         return Err(error).with_context(|| format!("write {}", path.display()));
@@ -435,14 +450,54 @@ pub fn ensure_user_acl() -> Result<bool> {
             return Err(error).with_context(|| format!("restrict {}", path.display()));
         }
     }
-    tracing::info!(path = %path.display(), "created the first-run ACL");
+    migrate_legacy_toml_if_missing(&home, &aster_home)?;
+    if user_acl_is_configured(&legacy_acl) {
+        tracing::info!(
+            path = %path.display(),
+            legacy = %legacy_acl.display(),
+            "migrated legacy ACL from ~/.a3s"
+        );
+    } else {
+        tracing::info!(path = %path.display(), "created the first-run ACL");
+    }
     Ok(true)
+}
+
+/// Rewrite product-home path tokens left in a pre-rebrand ACL.
+fn rewrite_legacy_a3s_paths(raw: &str) -> String {
+    raw.replace(".a3s/", ".aster/")
+        .replace(".a3s\"", ".aster\"")
+        .replace(".a3s'", ".aster'")
+}
+
+/// Copy `~/.a3s/config.toml` into `~/.aster` when the new home has none.
+fn migrate_legacy_toml_if_missing(os_home: &Path, aster_home: &Path) -> Result<()> {
+    let dest = aster_home.join("config.toml");
+    if dest.is_file() {
+        return Ok(());
+    }
+    let legacy = os_home.join(".a3s").join("config.toml");
+    if !legacy.is_file() {
+        return Ok(());
+    }
+    std::fs::create_dir_all(aster_home)
+        .with_context(|| format!("create {}", aster_home.display()))?;
+    let raw = std::fs::read_to_string(&legacy)
+        .with_context(|| format!("read legacy {}", legacy.display()))?;
+    std::fs::write(&dest, rewrite_legacy_a3s_paths(&raw))
+        .with_context(|| format!("write {}", dest.display()))?;
+    tracing::info!(
+        path = %dest.display(),
+        legacy = %legacy.display(),
+        "migrated legacy config.toml from ~/.a3s"
+    );
+    Ok(())
 }
 
 fn is_missing_acl(error: &anyhow::Error) -> bool {
     error
         .to_string()
-        .contains("A3S ACL configuration was not found")
+        .contains("Aster ACL configuration was not found")
 }
 
 fn layer_sources(workspace: &Path, explicit: Option<&Path>) -> Result<Vec<LayerSource>> {
@@ -453,7 +508,7 @@ fn layer_sources(workspace: &Path, explicit: Option<&Path>) -> Result<Vec<LayerS
     let home = user_home();
     let user = home
         .as_ref()
-        .map(|h| h.join(".a3s/config.acl"))
+        .map(|h| h.join(".aster/config.acl"))
         .filter(|path| user_acl_is_configured(path));
     if let Some(path) = user.as_deref() {
         layers.push(LayerSource::read(LayerKind::User, path)?);
@@ -468,7 +523,7 @@ fn layer_sources(workspace: &Path, explicit: Option<&Path>) -> Result<Vec<LayerS
     }
     if layers.is_empty() {
         return Err(anyhow!(
-            "A3S ACL configuration was not found; pass --config or create ~/.a3s/config.acl"
+            "Aster ACL configuration was not found; pass --config or create ~/.aster/config.acl"
         ));
     }
     Ok(layers)
@@ -477,11 +532,11 @@ fn layer_sources(workspace: &Path, explicit: Option<&Path>) -> Result<Vec<LayerS
 /// Which trust boundary a configuration layer came from.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum LayerKind {
-    /// `--config` / `A3S_CONFIG`: explicit host consent, may set anything.
+    /// `--config` / `ASTER_CONFIG`: explicit host consent, may set anything.
     Explicit,
-    /// `~/.a3s/config.acl`: host-owned, may set anything.
+    /// `~/.aster/config.acl`: host-owned, may set anything.
     User,
-    /// `.a3s/config.acl` found by ancestor search inside the workspace
+    /// `.aster/config.acl` found by ancestor search inside the workspace
     /// tree: untrusted repository content, no host-authoritative say.
     Workspace,
 }
@@ -507,7 +562,7 @@ const MAX_ACL_LAYER_BYTES: u64 = 1024 * 1024;
 impl LayerSource {
     fn read(kind: LayerKind, path: &Path) -> Result<Self> {
         let acl = read_layer_bounded(path)
-            .with_context(|| format!("could not read A3S ACL {}", path.display()))?;
+            .with_context(|| format!("could not read Aster ACL {}", path.display()))?;
         Ok(Self {
             kind,
             path: path.to_path_buf(),
@@ -517,7 +572,7 @@ impl LayerSource {
 }
 
 /// Size-bounded, symlink-refusing layer read. A workspace layer is
-/// untrusted repository content: a hostile multi-gigabyte `.a3s/config.acl`
+/// untrusted repository content: a hostile multi-gigabyte `.aster/config.acl`
 /// must not materialize, and a symlinked layer must not redirect the read.
 fn read_layer_bounded(path: &Path) -> Result<String> {
     let metadata = std::fs::symlink_metadata(path)?;
@@ -543,7 +598,7 @@ fn read_layer_bounded(path: &Path) -> Result<String> {
 }
 
 /// Host-authoritative blocks stay with the host: a workspace
-/// `.a3s/config.acl` (untrusted repository content) may configure the
+/// `.aster/config.acl` (untrusted repository content) may configure the
 /// agent but must not arm or narrow egress (`sandbox`) nor route the
 /// host's model traffic and credentials to endpoints of its choosing
 /// (`providers`). The merged config's authoritative fields are
@@ -558,35 +613,35 @@ fn withhold_workspace_host_authoritative_blocks(config: &mut CodeConfig, layers:
         .iter()
         .filter(|layer| !layer.kind.is_trusted())
         .filter_map(|layer| {
-            a3s_code_core::config::host_authoritative_block(&layer.acl)
+            aster_core::config::host_authoritative_block(&layer.acl)
                 .map(|block| (layer.path.as_path(), block))
         })
         .collect();
     if withheld.is_empty() {
         return;
     }
-    let layer_acls: Vec<a3s_code_core::config::LayerAcl> = layers
+    let layer_acls: Vec<aster_core::config::LayerAcl> = layers
         .iter()
-        .map(|layer| a3s_code_core::config::LayerAcl {
+        .map(|layer| aster_core::config::LayerAcl {
             trusted: layer.kind.is_trusted(),
             acl: layer.acl.clone(),
         })
         .collect();
     let blocks =
-        a3s_code_core::config::withhold_untrusted_host_authoritative_blocks(config, &layer_acls);
+        aster_core::config::withhold_untrusted_host_authoritative_blocks(config, &layer_acls);
     tracing::warn!(
         layers = ?withheld,
         withheld_blocks = ?blocks,
         "workspace configuration layer sets a host-authoritative block; \
          host-authoritative settings stay with the host layer \
-         (~/.a3s/config.acl or --config)"
+         (~/.aster/config.acl or --config)"
     );
 }
 
 fn workspace_config_path(workspace: &Path) -> Option<PathBuf> {
     workspace
         .ancestors()
-        .map(|directory| directory.join(".a3s/config.acl"))
+        .map(|directory| directory.join(".aster/config.acl"))
         .find(|candidate| candidate.is_file())
 }
 
@@ -674,7 +729,7 @@ fn withheld_workspace_orphaned_default(layers: &[LayerSource], model_id: &str) -
 }
 
 fn apply_default_model_env(config: &mut CodeConfig) -> Result<()> {
-    let Some(value) = std::env::var_os("A3S_DEFAULT_MODEL") else {
+    let Some(value) = std::env::var_os("ASTER_DEFAULT_MODEL") else {
         return Ok(());
     };
     if value.is_empty() {
@@ -682,16 +737,16 @@ fn apply_default_model_env(config: &mut CodeConfig) -> Result<()> {
     }
     let model = value
         .into_string()
-        .map_err(|_| anyhow!("A3S_DEFAULT_MODEL must be valid UTF-8"))?;
+        .map_err(|_| anyhow!("ASTER_DEFAULT_MODEL must be valid UTF-8"))?;
     let Some((provider, id)) = model.split_once('/') else {
         return Err(anyhow!(
-            "A3S_DEFAULT_MODEL must use the provider/model format"
+            "ASTER_DEFAULT_MODEL must use the provider/model format"
         ));
     };
     // Model ids may themselves contain `/` (e.g. boyue/bailian/deepseek-v4.1-flash).
     if provider.is_empty() || id.is_empty() {
         return Err(anyhow!(
-            "A3S_DEFAULT_MODEL must use a non-empty provider/model identifier"
+            "ASTER_DEFAULT_MODEL must use a non-empty provider/model identifier"
         ));
     }
     config.default_model = Some(model);
@@ -707,7 +762,7 @@ mod tests {
     use std::io::Write;
 
     fn env_locked<T>(test: impl FnOnce() -> T) -> T {
-        // HOME/A3S_DEFAULT_MODEL are process-global; serialize layering
+        // HOME/ASTER_DEFAULT_MODEL are process-global; serialize layering
         // tests and restore on exit.
         static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
         #[cfg(feature = "account-import")]
@@ -715,12 +770,12 @@ mod tests {
         let _guard = LOCK.lock().unwrap_or_else(|poison| poison.into_inner());
         let home = std::env::var_os("HOME");
         let user_profile = std::env::var_os("USERPROFILE");
-        let model = std::env::var_os("A3S_DEFAULT_MODEL");
-        let cursor_disable = std::env::var_os("A3S_DISABLE_CURSOR_ACCOUNT");
+        let model = std::env::var_os("ASTER_DEFAULT_MODEL");
+        let cursor_disable = std::env::var_os("ASTER_DISABLE_CURSOR_ACCOUNT");
         std::env::remove_var("USERPROFILE");
-        std::env::set_var("A3S_DISABLE_CC_SWITCH", "1");
-        std::env::set_var("A3S_DISABLE_GROK_ACCOUNT", "1");
-        std::env::set_var("A3S_DISABLE_CURSOR_ACCOUNT", "1");
+        std::env::set_var("ASTER_DISABLE_CC_SWITCH", "1");
+        std::env::set_var("ASTER_DISABLE_GROK_ACCOUNT", "1");
+        std::env::set_var("ASTER_DISABLE_CURSOR_ACCOUNT", "1");
         let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(test));
         match home {
             Some(value) => std::env::set_var("HOME", value),
@@ -731,14 +786,14 @@ mod tests {
             None => std::env::remove_var("USERPROFILE"),
         }
         match model {
-            Some(value) => std::env::set_var("A3S_DEFAULT_MODEL", value),
-            None => std::env::remove_var("A3S_DEFAULT_MODEL"),
+            Some(value) => std::env::set_var("ASTER_DEFAULT_MODEL", value),
+            None => std::env::remove_var("ASTER_DEFAULT_MODEL"),
         }
-        std::env::remove_var("A3S_DISABLE_CC_SWITCH");
-        std::env::remove_var("A3S_DISABLE_GROK_ACCOUNT");
+        std::env::remove_var("ASTER_DISABLE_CC_SWITCH");
+        std::env::remove_var("ASTER_DISABLE_GROK_ACCOUNT");
         match cursor_disable {
-            Some(value) => std::env::set_var("A3S_DISABLE_CURSOR_ACCOUNT", value),
-            None => std::env::remove_var("A3S_DISABLE_CURSOR_ACCOUNT"),
+            Some(value) => std::env::set_var("ASTER_DISABLE_CURSOR_ACCOUNT", value),
+            None => std::env::remove_var("ASTER_DISABLE_CURSOR_ACCOUNT"),
         }
         outcome.unwrap_or_else(|payload| std::panic::resume_unwind(payload))
     }
@@ -746,7 +801,7 @@ mod tests {
     /// Workspace temp dirs must not sit under the developer profile.
     /// `workspace_config_path` walks ancestors, and on this machine
     /// `tempfile::tempdir()` is under `%LOCALAPPDATA%\Temp`, so a real
-    /// `%USERPROFILE%\.a3s\config.acl` is loaded as an untrusted workspace layer.
+    /// `%USERPROFILE%\.aster\config.acl` is loaded as an untrusted workspace layer.
     fn hermetic_workspace() -> tempfile::TempDir {
         #[cfg(windows)]
         {
@@ -767,9 +822,9 @@ mod tests {
         env_locked(|| {
             let user = tempfile::tempdir().unwrap();
             let workspace = tempfile::tempdir().unwrap();
-            std::fs::create_dir_all(user.path().join(".a3s")).unwrap();
+            std::fs::create_dir_all(user.path().join(".aster")).unwrap();
             std::fs::write(
-                user.path().join(".a3s/config.acl"),
+                user.path().join(".aster/config.acl"),
                 r#"
 providers "mock" {
   api_key = "user-key"
@@ -780,9 +835,9 @@ providers "mock" {
 "#,
             )
             .unwrap();
-            std::fs::create_dir_all(workspace.path().join(".a3s")).unwrap();
+            std::fs::create_dir_all(workspace.path().join(".aster")).unwrap();
             std::fs::write(
-                workspace.path().join(".a3s/config.acl"),
+                workspace.path().join(".aster/config.acl"),
                 r#"
 default_model = "mock/m1"
 
@@ -837,9 +892,9 @@ providers "mock" {
             let home = tempfile::tempdir().unwrap();
             let workspace = hermetic_workspace();
             std::env::set_var("HOME", home.path());
-            std::env::remove_var("A3S_DEFAULT_MODEL");
+            std::env::remove_var("ASTER_DEFAULT_MODEL");
             assert!(ensure_user_acl().unwrap());
-            let path = home.path().join(".a3s/config.acl");
+            let path = home.path().join(".aster/config.acl");
             let template = std::fs::read_to_string(&path).unwrap();
 
             let launch = load_launch_config(workspace.path().into(), None).unwrap();
@@ -866,14 +921,48 @@ providers "mock" {
     }
 
     #[test]
+    fn legacy_a3s_acl_is_migrated_instead_of_first_run_template() {
+        env_locked(|| {
+            let home = tempfile::tempdir().unwrap();
+            let workspace = hermetic_workspace();
+            std::env::set_var("HOME", home.path());
+            std::env::remove_var("ASTER_DEFAULT_MODEL");
+            let legacy_dir = home.path().join(".a3s");
+            std::fs::create_dir_all(&legacy_dir).unwrap();
+            std::fs::write(
+                legacy_dir.join("config.acl"),
+                "default_model = \"kimi/k3.1-pro\"\n\nproviders \"kimi\" {\n  api_key = \"sk-test\"\n  models \"k3.1-pro\" { name = \"K3.1 Pro\" }\n}\nskill_dirs = [\".a3s/skills\"]\n",
+            )
+            .unwrap();
+            std::fs::write(
+                legacy_dir.join("config.toml"),
+                "default = \"kimi/k3.1-pro\"\n",
+            )
+            .unwrap();
+            assert!(ensure_user_acl().unwrap());
+            let path = home.path().join(".aster/config.acl");
+            let body = std::fs::read_to_string(&path).unwrap();
+            assert!(body.contains("providers \"kimi\""));
+            assert!(body.contains(".aster/skills"));
+            assert!(!body.contains(".a3s/skills"));
+            assert!(!body.contains("替换为你的密钥"));
+            let toml = std::fs::read_to_string(home.path().join(".aster/config.toml")).unwrap();
+            assert!(toml.contains("kimi/k3.1-pro"));
+            let launch = load_launch_config(workspace.path().to_path_buf(), None).unwrap();
+            assert_eq!(launch.model_id, "kimi/k3.1-pro");
+            assert!(launch.config.llm_config("kimi", "k3.1-pro").is_some());
+            assert!(!ensure_user_acl().unwrap());
+        });
+    }
+
     fn first_run_acl_is_created_once_and_lists_unconfigured_models() {
         env_locked(|| {
             let home = tempfile::tempdir().unwrap();
             let workspace = hermetic_workspace();
             std::env::set_var("HOME", home.path());
-            std::env::remove_var("A3S_DEFAULT_MODEL");
+            std::env::remove_var("ASTER_DEFAULT_MODEL");
             assert!(ensure_user_acl().unwrap());
-            let path = home.path().join(".a3s/config.acl");
+            let path = home.path().join(".aster/config.acl");
             let launch = load_launch_config(workspace.path().to_path_buf(), None).unwrap();
             assert_eq!(launch.model_id, "deepseek/deepseek-flash");
             let deepseek = launch
@@ -932,8 +1021,8 @@ providers "mock" {
             let home = tempfile::tempdir().unwrap();
             let workspace = hermetic_workspace();
             std::env::set_var("HOME", home.path());
-            std::env::remove_var("A3S_DEFAULT_MODEL");
-            let path = home.path().join(".a3s/config.acl");
+            std::env::remove_var("ASTER_DEFAULT_MODEL");
+            let path = home.path().join(".aster/config.acl");
             std::fs::create_dir_all(path.parent().unwrap()).unwrap();
             std::fs::write(&path, "").unwrap();
             let launch = load_launch_config(workspace.path().to_path_buf(), None).unwrap();
@@ -959,13 +1048,13 @@ providers "mock" {
                 .expect("a missing ACL file still starts");
             assert!(launch.model_id.is_empty());
             assert!(launch.config.providers.is_empty());
-            assert!(!user.path().join(".a3s/config.acl").exists());
+            assert!(!user.path().join(".aster/config.acl").exists());
         });
     }
 
     #[test]
     fn load_launch_config_reads_explicit_acl() {
-        let dir = std::env::temp_dir().join(format!("a3s-acp-test-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("aster-acp-test-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         let config_path = dir.join("config.acl");
@@ -994,7 +1083,7 @@ default_model = "mock/gpt"
 
     #[test]
     fn load_launch_config_keeps_slash_in_model_id() {
-        let dir = std::env::temp_dir().join(format!("a3s-acp-slash-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("aster-acp-slash-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         let config_path = dir.join("config.acl");
@@ -1027,10 +1116,10 @@ default_model = "boyue/bailian/deepseek-v4.1-flash"
     ) -> (tempfile::TempDir, tempfile::TempDir) {
         let user = tempfile::tempdir().unwrap();
         let workspace = tempfile::tempdir().unwrap();
-        std::fs::create_dir_all(user.path().join(".a3s")).unwrap();
-        std::fs::write(user.path().join(".a3s/config.acl"), user_acl).unwrap();
-        std::fs::create_dir_all(workspace.path().join(".a3s")).unwrap();
-        std::fs::write(workspace.path().join(".a3s/config.acl"), workspace_acl).unwrap();
+        std::fs::create_dir_all(user.path().join(".aster")).unwrap();
+        std::fs::write(user.path().join(".aster/config.acl"), user_acl).unwrap();
+        std::fs::create_dir_all(workspace.path().join(".aster")).unwrap();
+        std::fs::write(workspace.path().join(".aster/config.acl"), workspace_acl).unwrap();
         std::env::set_var("HOME", user.path());
         (user, workspace)
     }
@@ -1045,9 +1134,9 @@ default_model = "boyue/bailian/deepseek-v4.1-flash"
             // the repository chose.
             let home = tempfile::tempdir().unwrap();
             let workspace = tempfile::tempdir().unwrap();
-            std::fs::create_dir_all(workspace.path().join(".a3s")).unwrap();
+            std::fs::create_dir_all(workspace.path().join(".aster")).unwrap();
             std::fs::write(
-                workspace.path().join(".a3s/config.acl"),
+                workspace.path().join(".aster/config.acl"),
                 r#"
 providers "attacker" {
   api_key = "leaked-host-key"
@@ -1094,7 +1183,7 @@ sandbox {
                 load_launch_config(workspace.path().to_path_buf(), None).expect("launch loads");
             assert_eq!(
                 launch.config.sandbox_network,
-                a3s_code_core::sandbox::SandboxNetworkMode::Deny,
+                aster_core::sandbox::SandboxNetworkMode::Deny,
                 "the workspace layer must not arm egress"
             );
             assert!(
@@ -1128,7 +1217,7 @@ sandbox {
                 load_launch_config(workspace.path().to_path_buf(), None).expect("launch loads");
             assert_eq!(
                 launch.config.sandbox_network,
-                a3s_code_core::sandbox::SandboxNetworkMode::Mediated,
+                aster_core::sandbox::SandboxNetworkMode::Mediated,
                 "the host layer's posture must survive a workspace denial"
             );
             assert_eq!(
@@ -1164,7 +1253,7 @@ sandbox {
             // --config is explicit host consent: the posture is honored.
             assert_eq!(
                 launch.config.sandbox_network,
-                a3s_code_core::sandbox::SandboxNetworkMode::Mediated
+                aster_core::sandbox::SandboxNetworkMode::Mediated
             );
             assert_eq!(
                 launch.config.sandbox_network_allow,
@@ -1226,11 +1315,11 @@ sandbox {
             let config = profile.path().join("codex.acl");
             std::fs::write(&config, "import_accounts = [\"codex\"]\n").unwrap();
             std::env::set_var("HOME", profile.path());
-            std::env::remove_var("A3S_DEFAULT_MODEL");
+            std::env::remove_var("ASTER_DEFAULT_MODEL");
             let _account_env = RestoreEnv::set(&[
-                ("A3S_CODEX_HOME", Some(account.to_str().unwrap())),
-                ("A3S_DISABLE_CODEX_ACCOUNT", None),
-                ("A3S_PREFER_CODEX", None),
+                ("ASTERX_HOME", Some(account.to_str().unwrap())),
+                ("ASTER_DISABLE_CODEX_ACCOUNT", None),
+                ("ASTER_PREFER_CODEX", None),
             ]);
             let (launch, _) =
                 load_launch_config_with_imports(workspace.path().to_owned(), Some(config), &[])
@@ -1267,13 +1356,13 @@ sandbox {
         )
         .unwrap();
         RestoreEnv::set(&[
-            ("A3S_DISABLE_CURSOR_ACCOUNT", None),
-            ("A3S_PREFER_CURSOR", None),
-            ("A3S_CURSOR_HOME", Some(home.to_str().unwrap())),
-            ("A3S_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
-            ("A3S_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
-            ("A3S_CURSOR_STATE_DB", None),
-            ("A3S_CURSOR_CLIENT_VERSION", None),
+            ("ASTER_DISABLE_CURSOR_ACCOUNT", None),
+            ("ASTER_PREFER_CURSOR", None),
+            ("ASTER_CURSOR_HOME", Some(home.to_str().unwrap())),
+            ("ASTER_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
+            ("ASTER_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
+            ("ASTER_CURSOR_STATE_DB", None),
+            ("ASTER_CURSOR_CLIENT_VERSION", None),
             ("CURSOR_API_ENDPOINT", None),
         ])
     }
@@ -1293,8 +1382,8 @@ providers "boyue" {
 }
 "#;
             let (user, workspace) = write_user_and_workspace_layers(user_acl, workspace_acl);
-            let user_path = user.path().join(".a3s/config.acl");
-            let workspace_path = workspace.path().join(".a3s/config.acl");
+            let user_path = user.path().join(".aster/config.acl");
+            let workspace_path = workspace.path().join(".aster/config.acl");
             let user_before = std::fs::read(&user_path).unwrap();
             let workspace_before = std::fs::read(&workspace_path).unwrap();
 

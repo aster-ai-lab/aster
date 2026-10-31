@@ -6,7 +6,7 @@ use std::io::Write;
 use std::io::{Read, Seek, SeekFrom};
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use flate2::read::GzDecoder;
 #[cfg(any(target_os = "macos", all(unix, test)))]
 use sha2::{Digest, Sha256};

@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootRequest, BootResponse, BoxFuture, CallHandler,
     ExecutionContext, FromModuleRef, HttpMethod, Interceptor, MessagePatternDefinition, Module,
     ModuleRef, ProviderDefinition, ProviderDependency, Result, RouteDefinition, TransportContext,
@@ -80,7 +80,7 @@ impl Interceptor for HttpRetryInterceptor {
     }
 }
 
-impl a3s_boot::Pipe for HttpRetryPipe {
+impl aster_boot::Pipe for HttpRetryPipe {
     fn transform(&self, request: BootRequest) -> BoxFuture<'static, Result<BootRequest>> {
         let result = self.0.ensure_request_context(&request).map(|()| {
             self.0.record("http-pipe");

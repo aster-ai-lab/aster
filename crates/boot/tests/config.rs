@@ -1,6 +1,6 @@
 #![cfg(feature = "config")]
 
-use a3s_boot::{
+use aster_boot::{
     acl_document_to_json, BootApplication, BootError, ConfigModule, Module, ProviderDefinition,
     Result, Validate,
 };
@@ -117,11 +117,11 @@ fn config_module_loads_typed_values_from_acl() {
 
 #[test]
 fn config_module_supports_acl_env_and_concat_functions() {
-    std::env::set_var("A3S_BOOT_CONFIG_TEST_DATABASE_URL", "postgres://env/app");
+    std::env::set_var("ASTER_BOOT_CONFIG_TEST_DATABASE_URL", "postgres://env/app");
     let module = ConfigModule::<AppConfig>::from_acl_str(
         "app-config",
         r#"
-            database_url = env("A3S_BOOT_CONFIG_TEST_DATABASE_URL")
+            database_url = env("ASTER_BOOT_CONFIG_TEST_DATABASE_URL")
             port = 3000
             features = [concat("trans", "port")]
 
@@ -130,7 +130,7 @@ fn config_module_supports_acl_env_and_concat_functions() {
             }
 
             providers "openai" {
-                api_key = env("A3S_BOOT_CONFIG_TEST_API_KEY", "test-key")
+                api_key = env("ASTER_BOOT_CONFIG_TEST_API_KEY", "test-key")
                 base_url = concat("https://", "api.openai.com", "/v1")
             }
         "#,
@@ -155,7 +155,7 @@ fn config_module_supports_acl_env_and_concat_functions() {
 #[test]
 fn config_module_supports_acl_files_and_named_exports() {
     let path = std::env::temp_dir().join(format!(
-        "a3s-boot-config-{}-{}.acl",
+        "aster-boot-config-{}-{}.acl",
         std::process::id(),
         "named"
     ));
@@ -203,7 +203,7 @@ fn config_module_rejects_invalid_acl_and_invalid_config_shapes() {
 
 #[test]
 fn acl_documents_convert_to_json_values() {
-    let document = a3s_acl::parse(app_config_acl()).unwrap();
+    let document = aster_acl::parse(app_config_acl()).unwrap();
     let value = acl_document_to_json(&document).unwrap();
 
     assert_eq!(value["database_url"], json!("postgres://localhost/app"));
@@ -213,11 +213,11 @@ fn acl_documents_convert_to_json_values() {
 
 #[test]
 fn acl_config_rejects_missing_env_without_default() {
-    std::env::remove_var("A3S_BOOT_CONFIG_TEST_MISSING");
+    std::env::remove_var("ASTER_BOOT_CONFIG_TEST_MISSING");
     let error = ConfigModule::<AppConfig>::from_acl_str(
         "app-config",
         r#"
-            database_url = env("A3S_BOOT_CONFIG_TEST_MISSING")
+            database_url = env("ASTER_BOOT_CONFIG_TEST_MISSING")
             port = 3000
             features = []
             limits { body_bytes = 1 }

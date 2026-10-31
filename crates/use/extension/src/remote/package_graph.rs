@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::{
+use aster_use_core::{
     CatalogAvailability, PluginPackageLock, PluginPackageLockHost, PluginPackageResolver,
     PluginReleaseChannel, UseError, UseResult, VerifiedPluginCatalogRecord,
     MAX_PLUGIN_RESOLUTION_CANDIDATES, PLUGIN_CATALOG_SCHEMA_V3,
@@ -530,7 +530,7 @@ fn package_graph_error(code: &'static str, message: impl Into<String>) -> UseErr
 
 #[cfg(test)]
 mod tests {
-    use a3s_use_core::{
+    use aster_use_core::{
         PluginCatalogRecord, VerifiedCatalogProvenance, VerifiedPluginCatalogRecord,
     };
 

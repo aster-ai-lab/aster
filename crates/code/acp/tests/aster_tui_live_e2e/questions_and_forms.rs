@@ -4,15 +4,15 @@ use super::driver::LiveTui;
 use serde_json::{json, Value};
 
 fn latest_answer(tui: &LiveTui, session: &str, expected: &str) -> String {
-    let thread = a3s_code_core::fact_control::thread_for_session(session);
-    let facts = a3s_code_core::fact_control::read_workspace_facts(&tui.workspace, &thread).unwrap();
+    let thread = aster_core::fact_control::thread_for_session(session);
+    let facts = aster_core::fact_control::read_workspace_facts(&tui.workspace, &thread).unwrap();
     let answered = facts
         .iter()
         .rev()
         .find(|fact| fact.kind == "question.answered")
         .unwrap();
     let answer: Value = serde_json::from_str(answered.payload["text"].as_str().unwrap()).unwrap();
-    assert_eq!(answer["schema"], "a3s.code.user-answer.v1");
+    assert_eq!(answer["schema"], "aster.code.user-answer.v1");
     assert_eq!(answer["status"], "answered");
     assert_eq!(answer["answer"], expected);
     assert_eq!(answer["permission_grant"], false);
@@ -82,8 +82,8 @@ fn kimi_ask_user_cancel_has_no_default_answer_and_session_recovers() {
     tui.wait_for("Tab:next option", 120);
     tui.bytes(b"\x03");
     tui.wait_fact("turn.complete", before);
-    let thread = a3s_code_core::fact_control::thread_for_session(&session);
-    let facts = a3s_code_core::fact_control::read_workspace_facts(&tui.workspace, &thread).unwrap();
+    let thread = aster_core::fact_control::thread_for_session(&session);
+    let facts = aster_core::fact_control::read_workspace_facts(&tui.workspace, &thread).unwrap();
     assert!(!facts.iter().any(|fact| fact.kind == "question.answered"));
     tui.record(
         "question-cancel-no-answer",
@@ -108,7 +108,7 @@ fn kimi_ask_user_cancel_has_no_default_answer_and_session_recovers() {
 fn kimi_cancelled_question_returns_cancelled_without_completion_and_recovers() {
     let mut tui = LiveTui::new("question-cancel-protocol-recovery");
     let proxy = std::path::PathBuf::from(
-        std::env::var_os("A3S_CODE_ACP_TRACE_PROXY").expect("transparent ACP trace proxy"),
+        std::env::var_os("ASTER_ACP_TRACE_PROXY").expect("transparent ACP trace proxy"),
     );
     tui.trace_acp(&proxy);
     tui.launch(&[]);
@@ -135,8 +135,8 @@ fn kimi_cancelled_question_returns_cancelled_without_completion_and_recovers() {
     assert!(!tui.facts()[before..]
         .iter()
         .any(|fact| fact["type"] == "turn.complete"));
-    let thread = a3s_code_core::fact_control::thread_for_session(&session);
-    let facts = a3s_code_core::fact_control::read_workspace_facts(&tui.workspace, &thread).unwrap();
+    let thread = aster_core::fact_control::thread_for_session(&session);
+    let facts = aster_core::fact_control::read_workspace_facts(&tui.workspace, &thread).unwrap();
     assert!(!facts.iter().any(|fact| fact.kind == "question.answered"));
     tui.record("question-cancel-wire", "the actual ACP prompt response is cancelled, the UI becomes idle, and neither a default answer nor a successful completion fact is fabricated");
     let facts = tui.turn(

@@ -1,10 +1,10 @@
 //! Active-only durable-memory binding contract (`HARNESS-CONV4` / `CAP-GA1`).
 //! Filename retained for historical test discovery; shadow mode is gone.
 
-use a3s_code_core::{
+use aster_core::{
     DurableMemoryMode, DurableMemoryRecallPolicy, DurableMemorySession, SessionOptions,
 };
-use a3s_memory::repository::{InMemoryRepository, MemoryNamespace};
+use aster_durable_memory::repository::{InMemoryRepository, MemoryNamespace};
 use std::sync::Arc;
 
 #[test]

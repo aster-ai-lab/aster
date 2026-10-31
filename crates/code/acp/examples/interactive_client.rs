@@ -84,7 +84,7 @@ impl acp::Client for Client {
         Ok(rx.await.unwrap_or_else(|_| cancelled()))
     }
     async fn ext_method(&self, args: acp::ExtRequest) -> acp::Result<acp::ExtResponse> {
-        if args.method.as_ref() != "a3s/form/request" {
+        if args.method.as_ref() != "aster/form/request" {
             return Err(acp::Error::method_not_found());
         }
         if self.cancelling.get() {

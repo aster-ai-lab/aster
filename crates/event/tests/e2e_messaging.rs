@@ -1,7 +1,7 @@
 //! MessagingPort end-to-end: targeted vs broadcast delivery, wildcard
 //! subscriptions, multiple concurrent subscribers, handler refs, timeouts.
 
-use a3s_event::{InMemoryMessaging, Message, MessagingPort};
+use aster_event::{InMemoryMessaging, Message, MessagingPort};
 use std::time::Duration;
 
 #[tokio::test]

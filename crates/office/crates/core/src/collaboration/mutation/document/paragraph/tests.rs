@@ -180,7 +180,7 @@ fn paragraph_delete_preserves_required_nested_container_blocks() {
 #[test]
 fn paragraph_insert_rejects_partial_ancestor_row_identity_before_writing() {
     let (doc, _, _, _) = document_with_single_nested_paragraph("tableCell");
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let row = {
         let transaction = doc.transact();
         fragment
@@ -211,10 +211,10 @@ fn paragraph_insert_rejects_partial_ancestor_row_identity_before_writing() {
 fn paragraph_mutations_reject_malformed_container_ancestry() {
     let doc = new_replica_document(
         7,
-        "a3s.office",
+        "aster.office",
         NativeOfficeCollaborationArtifactKind::Document,
     );
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let mut transaction = doc.transact_mut();
     let section = fragment.push_back(&mut transaction, XmlElementPrelim::empty("documentSection"));
     let malformed = section.push_back(&mut transaction, XmlElementPrelim::empty("listItem"));
@@ -244,10 +244,10 @@ fn paragraph_mutations_reject_malformed_container_ancestry() {
 fn document_with_paragraphs(values: &[(&str, &str, &str)]) -> yrs::Doc {
     let doc = new_replica_document(
         7,
-        "a3s.office",
+        "aster.office",
         NativeOfficeCollaborationArtifactKind::Document,
     );
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let mut transaction = doc.transact_mut();
     let section = fragment.push_back(&mut transaction, XmlElementPrelim::empty("documentSection"));
     section.insert_attribute(&mut transaction, "id", "document-section-1");
@@ -266,10 +266,10 @@ fn document_with_paragraphs(values: &[(&str, &str, &str)]) -> yrs::Doc {
 fn document_with_list_and_table() -> yrs::Doc {
     let doc = new_replica_document(
         7,
-        "a3s.office",
+        "aster.office",
         NativeOfficeCollaborationArtifactKind::Document,
     );
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let mut transaction = doc.transact_mut();
     let section = fragment.push_back(&mut transaction, XmlElementPrelim::empty("documentSection"));
     let list = section.push_back(&mut transaction, XmlElementPrelim::empty("bulletList"));
@@ -303,10 +303,10 @@ fn document_with_list_and_table() -> yrs::Doc {
 fn document_with_header_and_blockquote() -> yrs::Doc {
     let doc = new_replica_document(
         7,
-        "a3s.office",
+        "aster.office",
         NativeOfficeCollaborationArtifactKind::Document,
     );
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let mut transaction = doc.transact_mut();
     let section = fragment.push_back(&mut transaction, XmlElementPrelim::empty("documentSection"));
     let table = section.push_back(&mut transaction, XmlElementPrelim::empty("table"));
@@ -332,10 +332,10 @@ fn document_with_single_nested_paragraph(
 ) -> (yrs::Doc, &'static str, &'static str, &'static str) {
     let doc = new_replica_document(
         7,
-        "a3s.office",
+        "aster.office",
         NativeOfficeCollaborationArtifactKind::Document,
     );
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let mut transaction = doc.transact_mut();
     let section = fragment.push_back(&mut transaction, XmlElementPrelim::empty("documentSection"));
     let container = match container_tag {
@@ -361,10 +361,10 @@ fn document_with_single_nested_paragraph(
 fn document_with_list_head_followed_only_by_nested_list() -> yrs::Doc {
     let doc = new_replica_document(
         7,
-        "a3s.office",
+        "aster.office",
         NativeOfficeCollaborationArtifactKind::Document,
     );
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let mut transaction = doc.transact_mut();
     let section = fragment.push_back(&mut transaction, XmlElementPrelim::empty("documentSection"));
     let list = section.push_back(&mut transaction, XmlElementPrelim::empty("bulletList"));
@@ -403,7 +403,7 @@ fn push_identity_paragraph(
 }
 
 fn paragraph_parent_tag(doc: &yrs::Doc, paragraph_id: &str) -> String {
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let transaction = doc.transact();
     fragment
         .successors(&transaction)
@@ -426,7 +426,7 @@ fn paragraph_parent_tag(doc: &yrs::Doc, paragraph_id: &str) -> String {
 }
 
 fn table_row_text_id(doc: &yrs::Doc, row_id: &str) -> String {
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let transaction = doc.transact();
     fragment
         .successors(&transaction)
@@ -449,7 +449,7 @@ fn table_row_text_id(doc: &yrs::Doc, row_id: &str) -> String {
 }
 
 fn paragraphs(doc: &yrs::Doc) -> Vec<(String, String, String)> {
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let transaction = doc.transact();
     fragment
         .successors(&transaction)
@@ -478,7 +478,7 @@ fn manifest() -> NativeOfficeCollaborationManifest {
         schema_version: 1,
         protocol: String::new(),
         protocol_version: 1,
-        namespace: "a3s.office".to_owned(),
+        namespace: "aster.office".to_owned(),
         artifact_id: "document".to_owned(),
         kind: NativeOfficeCollaborationArtifactKind::Document,
         actor_id: "agent".to_owned(),

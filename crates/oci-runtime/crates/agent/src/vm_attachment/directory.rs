@@ -4,8 +4,8 @@ use std::os::fd::AsRawFd;
 use std::os::unix::fs::{DirBuilderExt, OpenOptionsExt, PermissionsExt};
 use std::path::Path;
 
-use a3s_oci_agent_protocol::{AgentVmAttachmentManifest, AGENT_VM_DIRECTORY_GUEST_ROOT};
-use a3s_oci_sdk::{Error, ErrorCode, Result, StorageAccessMode};
+use aster_oci_agent_protocol::{AgentVmAttachmentManifest, AGENT_VM_DIRECTORY_GUEST_ROOT};
+use aster_oci_sdk::{Error, ErrorCode, Result, StorageAccessMode};
 
 pub(super) fn configure_guest_directories(manifest: &AgentVmAttachmentManifest) -> Result<()> {
     if manifest.directories().is_empty() {
@@ -56,7 +56,7 @@ pub(super) fn configure_guest_directories(manifest: &AgentVmAttachmentManifest) 
 fn ensure_mountpoint(path: &Path) -> Result<()> {
     // Searchable by the mapped macOS caller. umask can clear the bit mkdir
     // requests, so the mode is set again after the directory exists.
-    let mode = a3s_oci_sdk::WORKSPACE_STAGING_DIRECTORY_MODE;
+    let mode = aster_oci_sdk::WORKSPACE_STAGING_DIRECTORY_MODE;
     match DirBuilder::new().mode(mode).create(path) {
         Ok(()) => {}
         Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}

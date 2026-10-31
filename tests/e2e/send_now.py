@@ -72,7 +72,7 @@ def main():
     stage = Path(sys.argv[1]).resolve()
     evidence = Path(sys.argv[2]).resolve()
     evidence.mkdir(parents=True, exist_ok=False)
-    hashes = {name: hashlib.sha256((stage / name).read_bytes()).hexdigest() for name in ['aster', 'a3s-code-acp']}
+    hashes = {name: hashlib.sha256((stage / name).read_bytes()).hexdigest() for name in ['aster', 'aster-acp']}
     with tempfile.TemporaryDirectory(prefix='aster-send-now-') as temporary:
         root = Path(temporary)
         workspace, home = root / 'workspace', root / 'home'
@@ -92,15 +92,15 @@ def main():
         relay = root / 'acp-trace-proxy'
         relay.write_bytes((REPO / 'apps/aster/tests/tui_913_real_llm/acp_trace_proxy.py').read_bytes())
         relay.chmod(0o700)
-        env = dict(os.environ, HOME=str(home), GROK_HOME=str(home / 'grok'), A3S_CONFIG=str(config), A3S_ACP_AGENT_BIN=str(relay), A3S_CODE_TUI_TEST_ACP_REAL=str(stage / 'a3s-code-acp'), A3S_CODE_TUI_TEST_ACP_TRACE=str(evidence / 'acp.jsonl'), A3S_DISABLE_CC_SWITCH='1', A3S_DISABLE_GROK_ACCOUNT='1', A3S_DISABLE_CURSOR_ACCOUNT='1', TERM='xterm-256color', TERM_PROGRAM='Apple_Terminal')
-        env.pop('A3S_LH_CANDIDATE_MANIFEST', None)
+        env = dict(os.environ, HOME=str(home), GROK_HOME=str(home / 'grok'), ASTER_CONFIG=str(config), ASTER_ACP_AGENT_BIN=str(relay), ASTER_TUI_TEST_ACP_REAL=str(stage / 'aster-acp'), ASTER_TUI_TEST_ACP_TRACE=str(evidence / 'acp.jsonl'), ASTER_DISABLE_CC_SWITCH='1', ASTER_DISABLE_GROK_ACCOUNT='1', ASTER_DISABLE_CURSOR_ACCOUNT='1', TERM='xterm-256color', TERM_PROGRAM='Apple_Terminal')
+        env.pop('ASTER_LH_CANDIDATE_MANIFEST', None)
         try:
-            admitted = subprocess.run(['a3s-test', 'check', str(suite), '--json'], cwd=REPO, capture_output=True, text=True)
+            admitted = subprocess.run(['aster-test', 'check', str(suite), '--json'], cwd=REPO, capture_output=True, text=True)
             (evidence / 'check.json').write_text(admitted.stdout)
             assert admitted.returncode == 0, admitted.stderr
-            command = ['a3s-test', 'run', str(suite), '--tui-executable', str(stage / 'aster'), '--tui-arg=--no-plan', '--tui-working-directory', str(workspace), '--tui-columns', '120', '--tui-rows', '40', '--json']
+            command = ['aster-test', 'run', str(suite), '--tui-executable', str(stage / 'aster'), '--tui-arg=--no-plan', '--tui-working-directory', str(workspace), '--tui-columns', '120', '--tui-rows', '40', '--json']
             result = subprocess.run(command, cwd=REPO, env=env, capture_output=True, text=True)
-            (evidence / 'a3s-test.json').write_text(result.stdout)
+            (evidence / 'aster-test.json').write_text(result.stdout)
             (evidence / 'stderr.log').write_text(result.stderr)
         finally:
             server.stop.set()

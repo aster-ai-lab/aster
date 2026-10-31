@@ -1,10 +1,10 @@
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportFaultPoint, AgentTransportOperationStage,
     AGENT_PROTOCOL_VERSION_MAX,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::oci_spec::runtime::LinuxResources;
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::oci_spec::runtime::LinuxResources;
+use aster_oci_sdk::{
     ContainerId, ContainerStats, DeleteMode, ErrorCode, ExitStatus, FileOp, FilesystemOp,
     Generation, OperationId, OutputChunk, ProcessId, ProcessRecord, TerminalSize,
 };
@@ -14,79 +14,79 @@ use crate::report::AgentVmSmokeReport;
 
 /// Schema emitted by the real HVF non-Create reopen and owner-replacement diagnostic.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v3";
+    "aster.oci.oci-vm-operation-reopen-replacement.v3";
 
 /// Delete schema with exact stopped-only journal and no-live-record evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_DELETE_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v4";
+    "aster.oci.oci-vm-operation-reopen-replacement.v4";
 
 /// Wait schema with durable init-exit cache and dispatch-free replay evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_WAIT_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v5";
+    "aster.oci.oci-vm-operation-reopen-replacement.v5";
 
 /// Exec schema with exact live-process rehydration and journal-rebind evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_EXEC_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v6";
+    "aster.oci.oci-vm-operation-reopen-replacement.v6";
 
 /// SignalProcess schema with exact live-process signal replay and marker evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_SIGNAL_PROCESS_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v7";
+    "aster.oci.oci-vm-operation-reopen-replacement.v7";
 
 /// WaitProcess schema with exact Exec-exit cache and replay evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_WAIT_PROCESS_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v8";
+    "aster.oci.oci-vm-operation-reopen-replacement.v8";
 
 /// Pause schema with exact freezer recovery and journal-rebind evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_PAUSE_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v9";
+    "aster.oci.oci-vm-operation-reopen-replacement.v9";
 
 /// Resume schema with paused setup reconstruction and journal-rebind evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_RESUME_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v10";
+    "aster.oci.oci-vm-operation-reopen-replacement.v10";
 
 /// Processes schema with exact rebuilt live-inventory evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_PROCESSES_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v11";
+    "aster.oci.oci-vm-operation-reopen-replacement.v11";
 
 /// Update schema with exact resource replay and replacement Stats evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_UPDATE_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v12";
+    "aster.oci.oci-vm-operation-reopen-replacement.v12";
 
 /// Stats schema with fresh-owner resource snapshot evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_STATS_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v13";
+    "aster.oci.oci-vm-operation-reopen-replacement.v13";
 
 /// ReadOutput schema with rebuilt captured-output evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_READ_OUTPUT_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v14";
+    "aster.oci.oci-vm-operation-reopen-replacement.v14";
 
 /// WriteStdin schema with committed-input replay in the replacement Exec.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_WRITE_STDIN_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v15";
+    "aster.oci.oci-vm-operation-reopen-replacement.v15";
 
 /// CloseStdin schema with committed-EOF replay in the replacement Exec.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_CLOSE_STDIN_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v16";
+    "aster.oci.oci-vm-operation-reopen-replacement.v16";
 
 /// Resize schema with committed terminal dimensions replayed in the replacement Exec.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_RESIZE_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v17";
+    "aster.oci.oci-vm-operation-reopen-replacement.v17";
 
 /// File schema with a durable Host upload rebuilt in the replacement Guest.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_FILE_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v18";
+    "aster.oci.oci-vm-operation-reopen-replacement.v18";
 
 /// Filesystem schema with a durable Host mkdir rebuilt in the replacement Guest.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_FILESYSTEM_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v19";
+    "aster.oci.oci-vm-operation-reopen-replacement.v19";
 
 /// Start schema retained for compatibility with existing evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_START_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v2";
+    "aster.oci.oci-vm-operation-reopen-replacement.v2";
 
 /// Original State-only schema retained for compatibility with existing evidence.
 pub const OCI_VM_OPERATION_REOPEN_REPLACEMENT_STATE_SCHEMA_VERSION: &str =
-    "a3s.oci.oci-vm-operation-reopen-replacement.v1";
+    "aster.oci.oci-vm-operation-reopen-replacement.v1";
 
 const QUALIFICATION_FAULT_OPERATION: &str = "oci-vm-transport-qualification-fault";
 
@@ -1061,11 +1061,11 @@ mod write_stdin;
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AgentOperation, AgentTransportOperationStage, AGENT_PROTOCOL_VERSION_MAX,
     };
-    use a3s_oci_core::{CapabilityStatus, HostPlatform};
-    use a3s_oci_sdk::{ContainerId, ErrorCode, Generation, OperationId};
+    use aster_oci_core::{CapabilityStatus, HostPlatform};
+    use aster_oci_sdk::{ContainerId, ErrorCode, Generation, OperationId};
     use serde_json::json;
 
     use super::OciVmOperationReopenReplacementReport;
@@ -1307,7 +1307,7 @@ mod tests {
         let mut report = AgentVmSmokeReport::initial(HostPlatform::Macos);
         report.status = CapabilityStatus::Available;
         report.endpoint_bound = true;
-        report.endpoint_name = Some(format!("a3s-oci-agent-{name}"));
+        report.endpoint_name = Some(format!("aster-oci-agent-{name}"));
         report.shim_spawned = true;
         report.shim_process_id = Some(shim);
         report.bridge_process_id = Some(bridge);
@@ -1337,7 +1337,7 @@ mod tests {
         let mut report = AgentVmSmokeReport::initial(HostPlatform::Linux);
         report.status = CapabilityStatus::Available;
         report.endpoint_bound = true;
-        report.endpoint_name = Some(format!("a3s-oci-agent-{name}"));
+        report.endpoint_name = Some(format!("aster-oci-agent-{name}"));
         report.shim_spawned = true;
         report.shim_process_id = Some(shim);
         report.bridge_process_id = Some(bridge);
@@ -1358,7 +1358,7 @@ mod tests {
         let mut report = AgentVmSmokeReport::initial(HostPlatform::Windows);
         report.status = CapabilityStatus::Available;
         report.endpoint_bound = true;
-        report.endpoint_name = Some(format!("a3s-oci-agent-{name}"));
+        report.endpoint_name = Some(format!("aster-oci-agent-{name}"));
         report.shim_spawned = true;
         report.shim_process_id = Some(process_id);
         report.bridge_process_id = Some(process_id);

@@ -1,5 +1,5 @@
 #![cfg(feature = "research")]
-use a3s_code_core::research::{
+use aster_core::research::{
     ResearchArtifactKindV1, ResearchEventV1, ResearchProtocolError, ResearchProvenanceReceiptV1,
     ResearchWireEnvelopeV1, ResearchWireKindV1, RESEARCH_PROTOCOL_MAX_MESSAGE_BYTES,
     RESEARCH_PROTOCOL_SCHEMA_V1, RESEARCH_PROTOCOL_VERSION_V1, RESEARCH_WIRE_KIND_DESCRIPTORS_V1,

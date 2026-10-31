@@ -121,7 +121,7 @@ class ColdLifecycle(unittest.TestCase):
             manifest_path.parent.mkdir(parents=True)
             environment = proc / '42/environ'
             environment.parent.mkdir(parents=True)
-            environment.write_bytes(b'A3S_POWER_HOME=' + str(home).encode() + b'\0')
+            environment.write_bytes(b'ASTER_POWER_HOME=' + str(home).encode() + b'\0')
             value = {'name': l.e.ALIAS, 'format': 'gguf', 'path': l.m.MODEL_PATH, 'sha256': MANIFEST['model_sha256']}
             manifest_path.write_text(json.dumps(value))
             api = json.dumps({'data': [{'id': l.e.ALIAS, 'format': 'gguf', 'sha256': MANIFEST['model_sha256']}]}).encode()
@@ -133,7 +133,7 @@ class ColdLifecycle(unittest.TestCase):
                     with self.subTest(field=field), self.assertRaises(l.m.GuardError):
                         l.private_registrations([7], {7: MANIFEST}, {7: {'power': {'pid': 42}}}, 'fixture-key')
                 manifest_path.write_text(json.dumps(value))
-                environment.write_bytes(b'A3S_POWER_HOME=/foreign/home\0')
+                environment.write_bytes(b'ASTER_POWER_HOME=/foreign/home\0')
                 with self.assertRaises(l.m.GuardError): l.private_registrations([7], {7: MANIFEST}, {7: {'power': {'pid': 42}}}, 'fixture-key')
 
     def test_private_cold_before_warmup_but_strict_residency_after_warmup(self):

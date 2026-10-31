@@ -1,4 +1,4 @@
-//! Live hybrid-retrieval channel-disagreement gate against `.a3s/config.acl`.
+//! Live hybrid-retrieval channel-disagreement gate against `.aster/config.acl`.
 //!
 //! Hybrid retrieval earns its fourth channel only when single channels
 //! genuinely disagree. This suite pins a two-task adversarial matrix:
@@ -23,8 +23,8 @@
 //! `NOT_FOUND`, never an identifier echoed from the prompt.
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_workspace_hybrid_disagreement_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_workspace_hybrid_disagreement_real_llm \
 //!   -- --ignored --nocapture --test-threads=1
 //! ```
 
@@ -35,12 +35,12 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingNormalization, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentEvent, SessionOptions, SystemPromptSlots, WorkspaceRetrievalOptions,
     WorkspaceRetrievalPhase, WorkspaceRetrievalStatus,
 };
@@ -233,7 +233,7 @@ pub fn decoy_queue_window_{index}() -> u32 {{ {index} }}
     }
 }
 
-async fn wait_until_ready(session: &a3s_code_core::AgentSession) -> WorkspaceRetrievalStatus {
+async fn wait_until_ready(session: &aster_core::AgentSession) -> WorkspaceRetrievalStatus {
     tokio::time::timeout(READY_TIMEOUT, async {
         loop {
             let status = session.workspace_retrieval_status();
@@ -259,7 +259,7 @@ struct TurnOutcome {
 }
 
 async fn run_turn(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     task: DisagreementTask,
     variant: Variant,
 ) -> TurnOutcome {
@@ -380,7 +380,7 @@ fn matrix() -> Vec<MatrixCell> {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_model_hybrid_resolves_channel_disagreement() {
     let started = Instant::now();
     let mut config = load_pinned_layer_c_config();

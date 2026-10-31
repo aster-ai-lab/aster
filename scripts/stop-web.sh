@@ -33,4 +33,4 @@ for pid in $(lsof -tiTCP:3100 -sTCP:LISTEN 2>/dev/null || true); do
   fi
 done
 
-echo "a3s console stopped"
+echo "aster console stopped"

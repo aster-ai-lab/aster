@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use fs2::FileExt;
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
@@ -39,7 +39,7 @@ pub(super) async fn acquire_lock(state_root: &Path, root: &Path) -> UseResult<Wo
     let lock_path = root.join(".store.lock");
     match fs::symlink_metadata(&lock_path).await {
         Ok(metadata)
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                 || !metadata.is_file() =>
         {
             return Err(store_error(
@@ -127,7 +127,7 @@ pub(super) async fn validate_existing_directory_chain(
         }
         match fs::symlink_metadata(&current).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => {
                 return Err(store_error(
@@ -159,7 +159,7 @@ pub(super) async fn read_optional_record(path: &Path) -> UseResult<Option<Stored
             return Err(path_io_error("inspect workspace grant record", path, error));
         }
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > MAX_WORKSPACE_GRANT_RECORD_BYTES
@@ -243,7 +243,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_io_error("inspect workspace grant directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(store_error(
             "use.plugin.grant_store.path_invalid",
             format!(
@@ -314,14 +314,14 @@ pub(super) fn unique_suffix() -> String {
     format!("{}-{timestamp}-{sequence}", std::process::id())
 }
 
-fn invalid_path() -> a3s_use_core::UseError {
+fn invalid_path() -> aster_use_core::UseError {
     store_error(
         "use.plugin.grant_store.path_invalid",
         "A workspace grant record path is invalid.",
     )
 }
 
-fn path_io_error(action: &str, path: &Path, error: io::Error) -> a3s_use_core::UseError {
+fn path_io_error(action: &str, path: &Path, error: io::Error) -> aster_use_core::UseError {
     store_error(
         "use.plugin.grant_store.io",
         format!("Failed to {action} '{}': {error}", path.display()),

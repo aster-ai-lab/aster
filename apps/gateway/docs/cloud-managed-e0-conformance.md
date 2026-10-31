@@ -2,8 +2,8 @@
 
 Status: **verified** on 2026-08-13.
 
-This record closes the Gateway side of the A3S Cloud E0 route-publication
-gate. It certifies the exact boundary between A3S Cloud, which owns desired
+This record closes the Gateway side of the Aster Cloud E0 route-publication
+gate. It certifies the exact boundary between Aster Cloud, which owns desired
 state and certificate lifecycle, and Kense Gateway, which validates and applies
 one complete snapshot before reporting exact readiness.
 
@@ -14,13 +14,13 @@ one complete snapshot before reporting exact readiness.
   generation-bound target implementation at
   `e92896769953aee28ef69261f77265e427f9d396` (pre-rebrand upstream revision).
 - Cloud H0.2 merge
-  [`5a090d1`](https://github.com/A3S-Lab/Cloud/commit/5a090d1cf87b2319bd99cffc0777f59e486430d8),
+  [`5a090d1`](https://github.com/aster-ai-lab/Cloud/commit/5a090d1cf87b2319bd99cffc0777f59e486430d8),
   including the final clean-host fix at
-  [`d40effb`](https://github.com/A3S-Lab/Cloud/commit/d40effb73a0f0b23b4fe8856820cd9359e1c57c7).
+  [`d40effb`](https://github.com/aster-ai-lab/Cloud/commit/d40effb73a0f0b23b4fe8856820cd9359e1c57c7).
 - Gateway release-commit
   [CI run 31671953440](https://github.com/kense-labs/gateway/actions/runs/31671953440)
   and Cloud H0.2
-  [E0 clean-host run 30182939128](https://github.com/A3S-Lab/Cloud/actions/runs/30182939128)
+  [E0 clean-host run 30182939128](https://github.com/aster-ai-lab/Cloud/actions/runs/30182939128)
   completed successfully.
 
 The Cloud gate builds the exact Gateway target commit above rather than a
@@ -50,5 +50,5 @@ and usage delivery remain `I0.2b` and `I0.2c`.
 
 Gateway deliberately does not become a certificate authority, scheduler,
 tenant store, rollout controller, or long-term usage ledger. Those states stay
-with A3S Cloud; Gateway's machine Node API reports only local health and exact
+with Aster Cloud; Gateway's machine Node API reports only local health and exact
 applied snapshot evidence.

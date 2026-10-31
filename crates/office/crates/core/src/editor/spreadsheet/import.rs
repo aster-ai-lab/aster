@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     editor_error, expanded_element, indexed_cells, indexed_cells_in_row, indexed_rows,
@@ -471,21 +471,21 @@ fn workbook_uses_1904_date_system(package: &NativeOfficePackage) -> UseResult<bo
     }
 }
 
-fn row_limit() -> a3s_use_core::UseError {
+fn row_limit() -> aster_use_core::UseError {
     import_error(
         "use.office.spreadsheet_import_row_limit",
         format!("Spreadsheet import cannot exceed Excel's {MAX_ROWS} rows."),
     )
 }
 
-fn column_limit() -> a3s_use_core::UseError {
+fn column_limit() -> aster_use_core::UseError {
     import_error(
         "use.office.spreadsheet_import_column_limit",
         format!("Spreadsheet import cannot exceed Excel's {MAX_COLUMNS} columns."),
     )
 }
 
-fn cell_limit() -> a3s_use_core::UseError {
+fn cell_limit() -> aster_use_core::UseError {
     import_error(
         "use.office.spreadsheet_import_cell_count_limit",
         format!(
@@ -494,14 +494,14 @@ fn cell_limit() -> a3s_use_core::UseError {
     )
 }
 
-fn import_cell_invalid() -> a3s_use_core::UseError {
+fn import_cell_invalid() -> aster_use_core::UseError {
     import_error(
         "use.office.spreadsheet_import_cell_invalid",
         "Spreadsheet import attempted to materialize an empty source field.",
     )
 }
 
-fn import_part_error(part: &str, reason: &str) -> a3s_use_core::UseError {
+fn import_part_error(part: &str, reason: &str) -> aster_use_core::UseError {
     import_error(
         "use.office.spreadsheet_import_part_invalid",
         format!("Spreadsheet worksheet part '{part}' {reason}."),
@@ -509,6 +509,6 @@ fn import_part_error(part: &str, reason: &str) -> a3s_use_core::UseError {
     .with_detail("part", part)
 }
 
-fn import_error(code: &str, message: impl Into<String>) -> a3s_use_core::UseError {
+fn import_error(code: &str, message: impl Into<String>) -> aster_use_core::UseError {
     editor_error(code, message)
 }

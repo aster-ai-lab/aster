@@ -743,7 +743,7 @@ impl CommandQueue {
                                 tracing::info!(
                                     command_id = %command_id,
                                     retry_attempt = attempt + 1,
-                                    "a3s.lane.retry: retrying command"
+                                    "aster.lane.retry: retrying command"
                                 );
 
                                 lane_clone.retry_command(wrapper, delay).await;

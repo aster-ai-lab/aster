@@ -1,6 +1,6 @@
-# A3S Flow
+# Aster Flow
 <p align="center">
-  <img src="assets/readme/hero.svg" width="100%" alt="A3S Flow commits workflow decisions to append-only history and resumes safely after worker replacement" />
+  <img src="assets/readme/hero.svg" width="100%" alt="Aster Flow commits workflow decisions to append-only history and resumes safely after worker replacement" />
 </p>
 
 
@@ -17,17 +17,17 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/Flow/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/A3S-Lab/Flow/actions/workflows/ci.yml/badge.svg?branch=main" /></a>
-  <a href="https://github.com/A3S-Lab/Flow/actions/workflows/security.yml"><img alt="Security" src="https://github.com/A3S-Lab/Flow/actions/workflows/security.yml/badge.svg?branch=main" /></a>
-  <a href="https://crates.io/crates/a3s-flow"><img alt="crates.io" src="https://img.shields.io/crates/v/a3s-flow.svg" /></a>
-  <a href="https://docs.rs/a3s-flow"><img alt="docs.rs" src="https://docs.rs/a3s-flow/badge.svg" /></a>
-  <a href="https://opensource.org/license/mit"><img alt="MIT license" src="https://img.shields.io/crates/l/a3s-flow.svg" /></a>
+  <a href="https://github.com/aster-ai-lab/Flow/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/aster-ai-lab/Flow/actions/workflows/ci.yml/badge.svg?branch=main" /></a>
+  <a href="https://github.com/aster-ai-lab/Flow/actions/workflows/security.yml"><img alt="Security" src="https://github.com/aster-ai-lab/Flow/actions/workflows/security.yml/badge.svg?branch=main" /></a>
+  <a href="https://crates.io/crates/aster-flow"><img alt="crates.io" src="https://img.shields.io/crates/v/aster-flow.svg" /></a>
+  <a href="https://docs.rs/aster-flow"><img alt="docs.rs" src="https://docs.rs/aster-flow/badge.svg" /></a>
+  <a href="https://opensource.org/license/mit"><img alt="MIT license" src="https://img.shields.io/crates/l/aster-flow.svg" /></a>
 </p>
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/Flow/">中文文档</a>·
-  <a href="https://a3s-lab.github.io/Flow/en/">英文文档</a>·
-  <a href="https://a3s-lab.github.io/Flow/playground/">工作流 Playground</a>·
+  <a href="https://aster-lab.github.io/Flow/">中文文档</a>·
+  <a href="https://aster-lab.github.io/Flow/en/">英文文档</a>·
+  <a href="https://aster-lab.github.io/Flow/playground/">工作流 Playground</a>·
   <a href="#quick-start">快速开始</a>·
   <a href="#execution-model">执行模型</a>·
   <a href="#capability-map">功能</a>·
@@ -37,7 +37,7 @@
   <a href="#release-status">状态</a>
 </p>
 
-A3S Flow 是一个 AI 原生工作流引擎和 Rust SDK，用于必须生存的工作
+Aster Flow 是一个 AI 原生工作流引擎和 Rust SDK，用于必须生存的工作
 进程重新启动、延迟重试、计时器、异步消息、回调、
 以及 worker 替换。每一个有意义的转变都会追加到历史。
 引擎根据历史记录投影状态并拒绝重放漂移而不是
@@ -58,33 +58,33 @@ A3S Flow 是一个 AI 原生工作流引擎和 Rust SDK，用于必须生存的�
 > Flow 拥有工作流程图验证、追加式历史记录、持久重播以及
 > 生命周期状态。主机拥有节点实现、授权、租户
 > 外部的策略、凭证、工具访问和逻辑幂等性
-> 效果。 A3S Cloud绑定了这些产品能力；它不重复
+> 效果。 Aster Cloud绑定了这些产品能力；它不重复
 > Flow 的编译器或运行时。
 
 ## 编写组件、挂钩、CLI 和技能
 
-`@a3s-lab/flow-ui` 是 Flow 工作流程的可重用创作包。它
+`@aster-ai-lab/flow-ui` 是 Flow 工作流程的可重用创作包。它
 保留节点目录、编辑器组件、框架挂钩、命令行工具、
 以及同一清单和图表合同上的代理指令。
 
 |表面|当前合同|
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|Playground|集成的可视化创作路线，具有 35 节点跨境订单履行示例，涵盖所有 20 个注册表清单、完整的清单合同检查、拖放、类型化连接、可编辑的仅演示边缘标签、A3S UI 配置表单、Worker 和 WebAssembly 布局、可见节点渲染、DAG 编译、DSL 检查以及主机可注入的 CLI/Skill/Copilot 扩展抽屉 |
+|Playground|集成的可视化创作路线，具有 35 节点跨境订单履行示例，涵盖所有 20 个注册表清单、完整的清单合同检查、拖放、类型化连接、可编辑的仅演示边缘标签、Aster UI 配置表单、Worker 和 WebAssembly 布局、可见节点渲染、DAG 编译、DSL 检查以及主机可注入的 CLI/Skill/Copilot 扩展抽屉 |
 |节点目录 |六个创作组中的 18 个公共清单，包含字段、默认值、端口、运行时绑定和持久节点标识 |
 |反应 |节点预览和配置组件加上`useKenseFlowNode`用于受控就绪节点状态； `createKenseFlowDesignerContext` 和 `KenseFlowDesignerExtensionArea` 向主机扩展公开不可变的完整 DSL 和选择上下文 |
 |视图 | `useKenseFlowNode` 可在同一节点对象、默认值和清单注册表上组合 |
-|自定义节点 |具有 A3S UI 表单渲染、精确执行器功能和发布门的不可变主机目录 |
-|命令行|用于节点发现和文件 CRUD 的 JSON-first `a3s-flow` 命令：`create`、`read`、`update`、`delete`、`validate`、`compile` 和 `digest`；更新包括保留稳定 ID 的节点移动和边缘重定向、作用域容器子放置、来自标准输入或文件的批量或 NDJSON 流式补丁、乐观摘要检查、空运行、原子写入和最终候选重新验证 |
-|技能|可安装的`a3s-flow` 技能，可在创建、连接、验证、查看或安全编辑工作流程文件之前查询 CLI |
+|自定义节点 |具有 Aster UI 表单渲染、精确执行器功能和发布门的不可变主机目录 |
+|命令行|用于节点发现和文件 CRUD 的 JSON-first `aster-flow` 命令：`create`、`read`、`update`、`delete`、`validate`、`compile` 和 `digest`；更新包括保留稳定 ID 的节点移动和边缘重定向、作用域容器子放置、来自标准输入或文件的批量或 NDJSON 流式补丁、乐观摘要检查、空运行、原子写入和最终候选重新验证 |
+|技能|可安装的`aster-flow` 技能，可在创建、连接、验证、查看或安全编辑工作流程文件之前查询 CLI |
 
-[Workflow Playground](https://a3s-lab.github.io/Flow/playground/)，
-[React guide](https://a3s-lab.github.io/Flow/reference/react),
-[Vue guide](https://a3s-lab.github.io/Flow/reference/vue),
-[custom node guide](https://a3s-lab.github.io/Flow/reference/custom-nodes),
-[CLI reference](https://a3s-lab.github.io/Flow/reference/cli)，以及
-[Skill guide](https://a3s-lab.github.io/Flow/reference/agent-skill) 记录每个
+[Workflow Playground](https://aster-lab.github.io/Flow/playground/)，
+[React guide](https://aster-lab.github.io/Flow/reference/react),
+[Vue guide](https://aster-lab.github.io/Flow/reference/vue),
+[custom node guide](https://aster-lab.github.io/Flow/reference/custom-nodes),
+[CLI reference](https://aster-lab.github.io/Flow/reference/cli)，以及
+[Skill guide](https://aster-lab.github.io/Flow/reference/agent-skill) 记录每个
 表面。完整的节点目录和配置参考位于
-[Workflow nodes](https://a3s-lab.github.io/Flow/nodes/)。
+[Workflow nodes](https://aster-lab.github.io/Flow/nodes/)。
 
 ## 快速开始
 
@@ -92,7 +92,7 @@ A3S Flow 是一个 AI 原生工作流引擎和 Rust SDK，用于必须生存的�
 
 ```toml
 [dependencies]
-a3s-flow = "=1.1.0"
+aster-flow = "=1.1.0"
 async-trait = "0.1"
 serde_json = "1"
 tokio = { version = "1", features = ["macros", "rt"] }
@@ -101,7 +101,7 @@ tokio = { version = "1", features = ["macros", "rt"] }
 将确定性工作流程决策与副作用步骤分开：
 
 ```rust
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowSpec,
 };
@@ -116,7 +116,7 @@ impl FlowRuntime for GreetingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
 
         if let Some(output) = ctx.step_output("greet") {
@@ -133,7 +133,7 @@ impl FlowRuntime for GreetingRuntime {
     async fn run_step(
         &self,
         invocation: StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "greet_user" => {
                 let name = invocation.input["name"].as_str().unwrap_or("unknown");
@@ -145,7 +145,7 @@ impl FlowRuntime for GreetingRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(GreetingRuntime));
     let spec = WorkflowSpec::rust_embedded("demo.greeting", "0.1.0", "demo", "main");
 
@@ -170,7 +170,7 @@ cargo run --example sequential_steps
 ## 执行模型
 
 <p align="center">
-  <img src="assets/readme/execution-model.svg" width="100%" alt="A3S Flow projects history, asks workflow code for one command, commits resulting events, then replays or suspends" />
+  <img src="assets/readme/execution-model.svg" width="100%" alt="Aster Flow projects history, asks workflow code for one command, commits resulting events, then replays or suspends" />
 </p>
 
 一个重播周期有四个明确的阶段：
@@ -223,9 +223,9 @@ cargo run --example sequential_steps
 |子工作流程 |一流的单个子级和有界并发批处理在执行前保留每个子级身份并恢复部分跨流进度 | [`child_workflow`](examples/child_workflow.rs)、[`child_workflow_batch`](examples/child_workflow_batch.rs) |
 |历史悠久 | `continue_as_new` 关闭一个流并从具有确切继承的工作流权限的新链接流恢复 | [`continue_as_new`](examples/continue_as_new.rs) |
 |安全推出 |精确的运行时构建路由在突变之前拒绝不兼容的工作人员；不可变的补丁标记保留新旧重放分支[`replay_safe_patch`](examples/replay_safe_patch.rs)、[rollout recipe](docs/COOKBOOK.md#replay-safe-workflow-patches) |
-|坚持|内置内存和 JSONL 存储； SQLite 和 PostgreSQL 共享 `FlowEventStore` 合约和规范的 A3S ORM 迁移 | [`local_file_durability`](examples/local_file_durability.rs)、[`sqlite_durability`](examples/sqlite_durability.rs)、[`postgres_durability`](examples/postgres_durability.rs) |
-|调度|推荐A3S Boot任务管理；嵌入式兼容性队列和 `FlowWorker` 仍然可用 | [`boot_task_policy`](examples/boot_task_policy.rs)、[`task_queue_durability`](examples/task_queue_durability.rs) |
-|可观察性|具有有限恐慌/超时隔离、并发扇出、A3S 事件桥和修复感知本地 JSONL 审计接收器的提交后观察者镜像已提交的事件，而无需成为状态权威 | [`observer_fanout`](examples/observer_fanout.rs)、[`local_audit_log`](examples/local_audit_log.rs) |
+|坚持|内置内存和 JSONL 存储； SQLite 和 PostgreSQL 共享 `FlowEventStore` 合约和规范的 Aster ORM 迁移 | [`local_file_durability`](examples/local_file_durability.rs)、[`sqlite_durability`](examples/sqlite_durability.rs)、[`postgres_durability`](examples/postgres_durability.rs) |
+|调度|推荐Aster Boot任务管理；嵌入式兼容性队列和 `FlowWorker` 仍然可用 | [`boot_task_policy`](examples/boot_task_policy.rs)、[`task_queue_durability`](examples/task_queue_durability.rs) |
+|可观察性|具有有限恐慌/超时隔离、并发扇出、Aster 事件桥和修复感知本地 JSONL 审计接收器的提交后观察者镜像已提交的事件，而无需成为状态权威 | [`observer_fanout`](examples/observer_fanout.rs)、[`local_audit_log`](examples/local_audit_log.rs) |
 |原生 TypeScript |可选的源编译、工件标识、依赖项清单验证和版本化 JSON 调用协议； Rust 仍然是持久的权威 | [`native_ts_preflight`](examples/native_ts_preflight.rs)、[protocol guide](docs/NATIVE_TYPESCRIPT.md) |
 
 ### 有限重试
@@ -235,7 +235,7 @@ cargo run --example sequential_steps
 更改选定的持久期限：
 
 ```rust
-use a3s_flow::RetryPolicy;
+use aster_flow::RetryPolicy;
 use std::time::Duration;
 
 let retry = RetryPolicy::exponential(
@@ -287,13 +287,13 @@ Ok(ctx.start_child_workflows(children))
 授权执行人。
 
 <p align="center">
-  <img src="assets/readme/workflow-dag.svg" width="100%" alt="A3S Flow takes nodes and edges through one structural compiler, then a host binds node capabilities before the durable runtime executes them" />
+  <img src="assets/readme/workflow-dag.svg" width="100%" alt="Aster Flow takes nodes and edges through one structural compiler, then a host binds node capabilities before the durable runtime executes them" />
 </p>
 
 将相同的线形状编译成稳定的计划和语义标识：
 
 ```rust
-use a3s_flow::WorkflowDag;
+use aster_flow::WorkflowDag;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let source = std::fs::read_to_string("workflow.json")?;
@@ -329,7 +329,7 @@ JavaScript 数字格式和 UTF-16 键排序，拒绝不安全的整数，
 | `SqliteEventStore` |单节点持久应用| `sqlite` |
 | `PostgresEventStore` |多进程工作者共享权威历史| `postgres` |
 
-SQLite 和 PostgreSQL 使用 `a3s-orm` 进行类型化访问、校验和迁移、
+SQLite 和 PostgreSQL 使用 `aster-orm` 进行类型化访问、校验和迁移、
 投影验证的事务附加、主动挂钩路由、预定唤醒索引、
 持久的投影检查点和整个历史保留。 `FlowEngine::checkpoint`
 仅持续一次性物化状态； SQL 追加事务推进了这一点
@@ -378,8 +378,8 @@ SQLite 和 PostgreSQL 使用 `a3s-orm` 进行类型化访问、校验和迁移�
 | `native-ts`（默认）|本机 TypeScript 编译和调用适配器 |
 | `sqlite` | SQLite 事件历史记录和保留 |
 | `postgres` | PostgreSQL 历史和兼容性任务队列 |
-| `boot` |推荐的 A3S Boot 任务管理器集成 |
-| `a3s-event` |提交后 A3S 事件接收器 |
+| `boot` |推荐的 Aster Boot 任务管理器集成 |
+| `aster-event` |提交后 Aster 事件接收器 |
 
 `BootFlowTaskManager` 拥有处理器注册、作业状态、重试/超时
 策略、停滞作业处理、逻辑重复数据删除、启动和关闭。
@@ -394,13 +394,13 @@ SQLite 和 PostgreSQL 使用 `a3s-orm` 进行类型化访问、校验和迁移�
 架构。在严格的编译器清单模式下，Flow 会验证完整的
 原子发布之前和之后的依赖图。
 
-安装编译器并在`PATH`上提供Bun（或设置`A3S_FLOW_BUN`）：
+安装编译器并在`PATH`上提供Bun（或设置`ASTER_FLOW_BUN`）：
 
 ```sh
-cargo install a3s-flow --version 1.1.0 --locked \
-  --bin a3s-flow-native-compiler
+cargo install aster-flow --version 1.1.0 --locked \
+  --bin aster-flow-native-compiler
 
-a3s-flow-native-compiler capabilities
+aster-flow-native-compiler capabilities
 ```
 
 TypeScript 是一个适配器，而不是第二个 SDK、事件存储、调度程序或工作流程
@@ -440,19 +440,19 @@ TypeScript 是一个适配器，而不是第二个 SDK、事件存储、调度�
 
 |参考|它拥有什么 |
 | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| [Documentation website](https://a3s-lab.github.io/Flow/) |指导设置、执行概念、生产操作、运行时、示例和 API 映射 |
+| [Documentation website](https://aster-lab.github.io/Flow/) |指导设置、执行概念、生产操作、运行时、示例和 API 映射 |
 | [Architecture](docs/ARCHITECTURE.md) |事件源、重放、存储、调度程序和本机运行时边界 |
 | [Cookbook](docs/COOKBOOK.md) |稳定的ID、重试、批量、计时器、挂钩、信号、取消和补偿|
 | [Execution-kernel roadmap](docs/ROADMAP.md) |有序的内核工作、流程/云所有权、兼容性、规模和发布门 |
 | [Functional plan](docs/FUNCTIONAL_PLAN.md) |能力级别证据、完成门、维护工作和非目标 |
 | [API stability](docs/API_STABILITY.md) | SemVer、持久兼容性、MSRV 和 `1.0.0` 发布合约 |
 | [Upgrading to Flow 1.0](docs/UPGRADING_TO_V1.md) |支持 v1 之前的历史/模式、部署、验证和回滚 |
-| [API docs](https://docs.rs/a3s-flow) |公共 Rust 类型和方法 |
+| [API docs](https://docs.rs/aster-flow) |公共 Rust 类型和方法 |
 | [Security policy](SECURITY.md) |支持的发布、信任边界和私人报告 |
 
 ＃＃ 发展
 
-从此箱子运行检查，而不是从 A3S monorepo 根运行检查：
+从此箱子运行检查，而不是从 Aster monorepo 根运行检查：
 
 ```sh
 cargo +1.88.0 check --all-targets --all-features --locked
@@ -467,9 +467,9 @@ Rust 1.88 是支持的最低 Rust 版本。存储库配方提供了
 
 ```sh
 just deep-test-non-pg
-KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
+KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/aster_flow \
   just postgres-test
-A3S_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
+ASTER_FLOW_NATIVE_TS_COMPILER=/path/to/aster-flow-native-compiler \
   just native-ts-bun-test
 ```
 
@@ -486,7 +486,7 @@ CI 还检查公共 API 兼容性、功能矩阵、真正的 PostgreSQL
 可重用的工作流程创作组件、React 和 Vue 挂钩、CLI 以及
 技能保存在此存储库中。托管租赁、授权、
 特定于产品的功能绑定、部署策略和多租户
-控制平面保留在 Rust 箱之外； A3S Cloud 拥有这些产品
+控制平面保留在 Rust 箱之外； Aster Cloud 拥有这些产品
 表面。
 
 维护以合同为主导：保留 SemVer 和重播兼容性，保持
@@ -497,4 +497,4 @@ SQLite/PostgreSQL 奇偶校验门对齐，跟踪本机编译器协议并
 
 ＃＃ 执照
 
-[MIT](https://opensource.org/license/mit) &复制； A3S实验室
+[MIT](https://opensource.org/license/mit) &复制； Aster实验室

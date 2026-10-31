@@ -7,9 +7,9 @@ use std::collections::HashMap;
 
 use tonic::Status;
 
-use a3s_box_core::error::BoxError;
-use a3s_box_core::NetworkMode;
-use a3s_box_runtime::NetworkStore;
+use aster_box_core::error::BoxError;
+use aster_box_core::NetworkMode;
+use aster_box_runtime::NetworkStore;
 
 use crate::config_mapper::ANN_NETWORK;
 use crate::error::box_error_to_status;
@@ -66,7 +66,7 @@ fn parse_sandbox_ip(value: &str) -> Result<String, Status> {
         })
 }
 
-pub(super) fn bridge_network_name(config: &a3s_box_core::config::BoxConfig) -> Option<String> {
+pub(super) fn bridge_network_name(config: &aster_box_core::config::BoxConfig) -> Option<String> {
     match &config.network {
         NetworkMode::Bridge { network } if !network.trim().is_empty() => {
             Some(network.trim().to_string())
@@ -147,7 +147,7 @@ pub(super) fn default_network_store() -> NetworkStore {
                 error = %e,
                 "Failed to resolve default network store path; falling back to dirs_home"
             );
-            NetworkStore::new(a3s_box_core::dirs_home().join("networks.json"))
+            NetworkStore::new(aster_box_core::dirs_home().join("networks.json"))
         }
     }
 }
@@ -155,7 +155,7 @@ pub(super) fn default_network_store() -> NetworkStore {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::network::NetworkConfig;
+    use aster_box_core::network::NetworkConfig;
     use std::collections::HashSet;
     use std::sync::Arc;
 

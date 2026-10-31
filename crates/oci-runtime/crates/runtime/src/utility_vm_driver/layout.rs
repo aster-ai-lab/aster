@@ -2,7 +2,7 @@ use std::io;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Component, Path, PathBuf};
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     runtime_bundle_handoff_root, ContainerTarget, Error, ErrorCode, Generation,
     GuestSessionAttachment, Result,
 };

@@ -1,7 +1,7 @@
 //! Owned-H200 endpoint/mHC component qualification, not complete generation.
 use super::*;
 use crate::layers::xq::mhc::XqMhcBlock;
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 
 fn reference_step(
     residual: &[Vec<f64>],

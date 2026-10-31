@@ -1,9 +1,9 @@
 # Guest Agent Protocol
 
-`a3s-oci-agent-protocol` is the boundary between a utility-VM driver and the
+`aster-oci-agent-protocol` is the boundary between a utility-VM driver and the
 Linux guest executor. Windows WHPX, Linux KVM, and macOS HVF use the same
 messages. The crate does not expose libkrun, hypervisor, or guest details to
-A3S Box.
+Aster Box.
 
 ## Versioned Contract
 
@@ -224,7 +224,7 @@ receives the successful `create` response, then closes a retained client clone.
 The selected before- or after-shutdown point returns one qualification error;
 the VM owner's second close is idempotent and must still reap the Guest, shim,
 bridge, endpoint, runtime root, and prepared container. Report schema
-`a3s.oci.oci-vm-transport-fault-cleanup.v3` distinguishes the shutdown point
+`aster.oci.oci-vm-transport-fault-cleanup.v3` distinguishes the shutdown point
 from the nine `create` request-response points.
 
 In-memory qualification drops a create response at the guest's
@@ -235,7 +235,7 @@ receives the original exact-generation response, and leaves the effect count at
 one. Reusing the ID with changed request content returns `Conflict`. This proves
 the protocol and session-local replay boundary.
 
-The real `a3s.oci.oci-vm-reopen-replacement.v2` gate covers all nine Host and
+The real `aster.oci.oci-vm-reopen-replacement.v2` gate covers all nine Host and
 Guest Create request/dispatch/response points through durable service reopen
 and an actual utility-VM owner replacement. The Host points and first four
 Guest points leave the journal in `creating`; a fresh VM receives the unchanged
@@ -250,7 +250,7 @@ console evidence emitted after executor cleanup. Every report retains both
 owner identities and requires force-delete cleanup. In-place Guest-agent
 restart remains open.
 
-The companion `a3s.oci.oci-vm-operation-reopen-replacement.v1` gate applies
+The companion `aster.oci.oci-vm-operation-reopen-replacement.v1` gate applies
 the same nine points to `state`. State intentionally carries no idempotency
 context, so the Guest injector matches the exact operation and stage while the
 boot handoff nonce binds the retained cleanup evidence. The first owner keeps
@@ -260,7 +260,7 @@ identity and generation. Reissued State must return the recovered durable
 record. At `guest-after-response-write`, the delivered first response must
 also match that record and a second State call must expose the disconnect.
 
-Schema `a3s.oci.oci-vm-operation-reopen-replacement.v2` adds the same real-owner
+Schema `aster.oci.oci-vm-operation-reopen-replacement.v2` adds the same real-owner
 matrix for `start`. Before the completed-response point, durable state remains
 `created`; the replacement Guest rebuilds the process and receives the original
 Start OperationId and exact target. At `guest-after-response-write`, durable
@@ -269,7 +269,7 @@ Host rebinds its PID in both completed Create and Start journal responses, and
 the later Start replay does not dispatch again. The gate removes any first-owner
 marker before replacement and requires the exact marker from the new workload.
 
-Schema `a3s.oci.oci-vm-operation-reopen-replacement.v3` adds `kill`. Before the
+Schema `aster.oci.oci-vm-operation-reopen-replacement.v3` adds `kill`. Before the
 completed-response point, durable state remains `running`; the replacement
 Guest receives the original Create and Start identities, rebuilds the running
 process, and receives the unchanged signal-9 Kill identity once. At
@@ -279,7 +279,7 @@ tombstone, while the completed Host Kill journal answers the retry without an
 API-driven driver dispatch. Every path verifies the replacement workload before
 Kill and uses stopped-only Delete.
 
-Schema `a3s.oci.oci-vm-operation-reopen-replacement.v4` adds stopped-only
+Schema `aster.oci.oci-vm-operation-reopen-replacement.v4` adds stopped-only
 `delete`. The first eight points retain a Prepared journal and stopped record;
 the completed-response point retains only SucceededEmpty replay evidence, so
 the replacement performs no workload recovery or driver Delete. Version 5 adds
@@ -425,9 +425,9 @@ Driver-owned WHPX sessions additionally separate the fixed guest system root
 from one writable host share. The runtime accepts only the plain directory at
 `shares/<container ID>/<generation>`, applies its protected DACL, and passes
 only that exact directory to `krun_add_virtiofs` with tag
-`a3s-oci-runtime`. The Linux agent must mount it at
-`/run/a3s-oci-runtime` before it can read the one-time token or connect to the
-host. Shim report schema `a3s.oci.krun-agent-vm-smoke.v7` records the separate
+`aster-oci-runtime`. The Linux agent must mount it at
+`/run/aster-oci-runtime` before it can read the one-time token or connect to the
+host. Shim report schema `aster.oci.krun-agent-vm-smoke.v7` records the separate
 device plus the exact immutable boot assets. On Windows it also records the
 current-process handle count immediately before libkrun context creation and
 after `krun_start_enter` returns. The Host accepts cleanup only when both
@@ -438,9 +438,9 @@ manifest. Bundle paths, token files, and recovery-report paths are then
 validated below the fixed guest mount rather than below the system root.
 
 Windows WHPX additionally sets the exact
-`A3S_OCI_AGENT_RUNTIME_SHARE_SECURITY=windows-virtiofs-acl-v1` handoff
+`ASTER_OCI_AGENT_RUNTIME_SHARE_SECURITY=windows-virtiofs-acl-v1` handoff
 selector. The selector is accepted only alongside a one-time token file below
-`/run/a3s-oci-runtime`; it permits the Linux Guest to normalize only the
+`/run/aster-oci-runtime`; it permits the Linux Guest to normalize only the
 virtio-fs backend's known synthetic directory/file modes (`0755`/`0644`) to
 the private `0700`/`0600` contract through already-open descriptors. Type,
 length, device/inode identity, no-follow, and final cleanup checks remain
@@ -514,7 +514,7 @@ reserved inode. Other pathname-consuming subsystems still retain their own
 descriptor or handle pinning requirements.
 
 The dedicated Linux KVM path can additionally carry the internal
-`a3s.oci.agent-vm-attachments.v2` bootstrap manifest for authorized v2 raw
+`aster.oci.agent-vm-attachments.v2` bootstrap manifest for authorized v2 raw
 storage together with a v3 TAP contract. Network-only handoff retains the
 byte-compatible v1 schema. The Host writes one canonical, mode-`0600` file in
 the protected runtime share and passes its raw SHA-256 as a shim argument. The
@@ -539,13 +539,13 @@ then fences the first and replayed Create to that target, bundle path, and
 configuration. This bootstrap is outside the Agent request/response wire
 protocol, so it does not change protocol v10. The private Linux worker evidence
 schema is v4; the public shim report remains
-`a3s.oci.krun-agent-vm-smoke.v7`. KVM continues to advertise attachment v1
+`aster.oci.krun-agent-vm-smoke.v7`. KVM continues to advertise attachment v1
 pending destructive real-host cumulative v2/v3 qualification.
 
 The Linux real-host gate also has a hidden qualification-only failure path. It
 uses the normal Host endpoint and one-time token setup, creates the isolated
 worker, opens and pins the real `/dev/kvm`, and requires API version 12. Shim
-schema `a3s.oci.krun-agent-vm-smoke.v7` then records
+schema `aster.oci.krun-agent-vm-smoke.v7` then records
 `kvm_post_probe_failure_injected=true` and exits before the native VM-entry
 call. The Host must observe no bridge or protocol negotiation and must restore
 the exact endpoint, shim-process, token-handoff, and runtime-share inventories.
@@ -623,7 +623,7 @@ explicitly.
 The real macOS `agent-vm-smoke` builds the same agent as a static aarch64 musl
 binary, boots it through HVF, maps guest CID-host port 4093 to the verified
 Unix stream, and retains both the public shim PID and the direct VM worker PID
-in the versioned `a3s.oci.agent-vm-smoke.v10` report schema. The current signed
+in the versioned `aster.oci.agent-vm-smoke.v10` report schema. The current signed
 path negotiates protocol version 10 and the exact 20 workload operations plus
 `acknowledge-operations`. The missing-entitlement path
 must exit with status `2`, report no negotiation, terminate the shim process
@@ -662,7 +662,7 @@ PID, and time namespace setup follows the authenticated user-namespace
 mapping barrier and is atomic with UTS and mount isolation. The parent accepts
 one mapping request only from the already verified wrapper PID, installs and
 reads back exact UID/GID maps, then acknowledges the child. Native Linux CI
-uses the A3S Box mapping of container root to host UID 100000 and GID 200000
+uses the Aster Box mapping of container root to host UID 100000 and GID 200000
 and requires the workload to verify both maps. The wrapper writes and verifies
 monotonic/boottime offsets, clears inherited supplementary groups, and switches
 to mapped namespace-root UID/GID credentials before rootfs mutation. For a new
@@ -679,7 +679,7 @@ rootfs enforcement evidence. The current Windows WHPX profile retains PID
 supervision and the core pivot/mount lifecycle but deliberately omits user and
 time namespaces plus recursive and ID-mapped mount claims; its same-VM
 multi-container report therefore uses the distinct
-`a3s.oci.windows-oci-vm-multi-container-smoke.v1` schema.
+`aster.oci.windows-oci-vm-multi-container-smoke.v1` schema.
 
 The same create plan now retains the configured capability and seccomp
 security ceiling plus its owned cgroup-v2 topology. Every later exec applies
@@ -690,7 +690,7 @@ starts in the outer envelope, creates the cgroup namespace there, moves into
 the control child through its pre-opened descriptor, and crosses the create
 barrier before the runtime delegates controllers. OCI exec joins the workload
 child directly. The
-bounded A3S Box profile additionally creates and verifies its exact device
+bounded Aster Box profile additionally creates and verifies its exact device
 nodes after the `/dev` mount. These controls have focused Linux tests;
 complete native/utility-VM lifecycle evidence remains a promotion gate.
 
@@ -705,7 +705,7 @@ the retained seccomp policy, then blocks on a start barrier. Before release,
 the agent validates the helper peer PID,
 payload parent, host-visible PID, pidfd, root identity, every namespace
 identity, and that init is still alive. The helper monitors init's pidfd and
-uses the same non-destructive `waitid(WNOWAIT)` ownership pattern as the A3S
+uses the same non-destructive `waitid(WNOWAIT)` ownership pattern as the Aster
 Box PID 1 reaper so descendants are killed before the leader PID/PGID can be
 reused.
 
@@ -719,7 +719,7 @@ target therefore cannot be reused during delivery. A cross-process advisory
 lease on the private process directory serializes pidfd validation plus group
 delivery against the supervisor's final cleanup and reap.
 
-Terminal execution adapts the existing A3S Box PTY mechanism: `openpty`
+Terminal execution adapts the existing Aster Box PTY mechanism: `openpty`
 allocates the pair, the launcher creates a session and acquires the slave as
 its controlling terminal, and the workload process group becomes foreground.
 OCI Runtime keeps its own Tokio backpressure and byte-cursor output buffer
@@ -767,7 +767,7 @@ proves the successful exec transition, while any pre-exec or start-hook error
 is returned as the exact bounded rejection. Create/start failures therefore
 retain their error class and context without trusting a pathname socket.
 
-Native Linux additionally exposes an in-process create method for A3S Box
+Native Linux additionally exposes an in-process create method for Aster Box
 control descriptors. The host validates two listening Unix stream sockets and
 one writable regular file, duplicates collision-safe close-on-exec sources
 above targets 3/4/5, and installs those exact targets in the prepared child

@@ -63,7 +63,7 @@ impl StateStore for JsonStateStore {
         // Durable atomic write: fsync the tmp file before the rename + fsync the
         // parent dir, so a hard crash can't leave a truncated state.json that
         // fails to parse on recovery and orphans every sandbox/container.
-        a3s_box_core::fs_atomic::write_durable(&tmp, &self.path, &json)
+        aster_box_core::fs_atomic::write_durable(&tmp, &self.path, &json)
     }
 
     fn load(&self) -> std::io::Result<PersistedState> {
@@ -79,7 +79,7 @@ impl StateStore for JsonStateStore {
                 // letting the next save() silently overwrite (and destroy) it: its
                 // records name the previous run's sandboxes/containers and are
                 // needed to recover their leaked microVMs. Start from empty state.
-                let preserved = a3s_box_core::fs_atomic::quarantine_corrupt(&self.path)
+                let preserved = aster_box_core::fs_atomic::quarantine_corrupt(&self.path)
                     .map(|path| path.display().to_string())
                     .unwrap_or_else(|| "<backup failed>".to_string());
                 tracing::warn!(
@@ -106,11 +106,11 @@ impl StateStore for NoopStateStore {
     }
 }
 
-/// Resolve the default state file path: `~/.a3s/cri/state.json`.
+/// Resolve the default state file path: `~/.aster/cri/state.json`.
 pub fn default_state_path() -> PathBuf {
     dirs::home_dir()
         .unwrap_or_else(|| PathBuf::from("/tmp"))
-        .join(".a3s")
+        .join(".aster")
         .join("cri")
         .join("state.json")
 }
@@ -164,7 +164,7 @@ mod tests {
             labels: HashMap::from([("app".to_string(), "test".to_string())]),
             annotations: HashMap::new(),
             log_directory: "/var/log/pods".to_string(),
-            runtime_handler: "a3s".to_string(),
+            runtime_handler: "aster".to_string(),
             network_ip: String::new(),
             additional_ips: vec![],
             dns: crate::sandbox::SandboxDns::default(),
@@ -200,7 +200,7 @@ mod tests {
             annotations: HashMap::new(),
             log_path: String::new(),
             rootfs_path: "/".to_string(),
-            rootfs_guest_path: format!("/run/a3s/cri/container-rootfs/{sandbox_id}/{id}/rootfs"),
+            rootfs_guest_path: format!("/run/aster/cri/container-rootfs/{sandbox_id}/{id}/rootfs"),
         }
     }
 
@@ -323,6 +323,6 @@ mod tests {
     fn test_default_state_path_is_absolute() {
         let path = default_state_path();
         assert!(path.is_absolute());
-        assert!(path.to_string_lossy().contains(".a3s"));
+        assert!(path.to_string_lossy().contains(".aster"));
     }
 }

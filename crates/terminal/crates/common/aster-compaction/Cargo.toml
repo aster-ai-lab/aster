@@ -1,0 +1,22 @@
+[package]
+license = "Apache-2.0"
+name = "aster-compaction"
+version = "0.1.0"
+description = "Shared, transport-agnostic compaction engine for Aster Code chat and Aster Code."
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = {workspace = true}
+async-trait = {workspace = true}
+serde = {workspace = true}
+thiserror = {workspace = true}
+tokio = {version = "1", features = ["full", "time", "macros"]}
+tracing = {workspace = true}
+
+[dev-dependencies]
+serde_json = {workspace = true}
+tokio = {workspace = true}
+
+[lints]
+workspace = true

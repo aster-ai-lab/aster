@@ -5,7 +5,7 @@ use crate::{
     model::DeepSeekModel,
     state::CompressionKind,
 };
-use a3s_power::{error::PowerError, inference::InferenceLimits};
+use aster_power::{error::PowerError, inference::InferenceLimits};
 use candle_core::{DType, Tensor};
 
 fn device() -> CudaLayerDevice {

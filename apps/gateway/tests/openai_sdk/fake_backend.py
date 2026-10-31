@@ -196,7 +196,7 @@ class FakeOpenAIBackend:
     ) -> None:
         if request.path == "/v1/chat/completions":
             document = {
-                "id": "chatcmpl-a3s-conformance",
+                "id": "chatcmpl-aster-conformance",
                 "object": "chat.completion",
                 "created": 1_700_000_000,
                 "model": "internal-conformance-model",
@@ -215,7 +215,7 @@ class FakeOpenAIBackend:
             }
         elif request.path == "/v1/completions":
             document = {
-                "id": "cmpl-a3s-conformance",
+                "id": "cmpl-aster-conformance",
                 "object": "text_completion",
                 "created": 1_700_000_000,
                 "model": "internal-conformance-model",
@@ -293,7 +293,7 @@ class FakeOpenAIBackend:
     def _stream_content_chunk(path: str, content: str) -> Dict[str, Any]:
         if path == "/v1/completions":
             return {
-                "id": "cmpl-a3s-conformance",
+                "id": "cmpl-aster-conformance",
                 "object": "text_completion",
                 "created": 1_700_000_000,
                 "model": "internal-conformance-model",
@@ -307,7 +307,7 @@ class FakeOpenAIBackend:
                 ],
             }
         return {
-            "id": "chatcmpl-a3s-conformance",
+            "id": "chatcmpl-aster-conformance",
             "object": "chat.completion.chunk",
             "created": 1_700_000_000,
             "model": "internal-conformance-model",
@@ -324,7 +324,7 @@ class FakeOpenAIBackend:
     def _stream_finish_chunk(path: str) -> Dict[str, Any]:
         if path == "/v1/completions":
             return {
-                "id": "cmpl-a3s-conformance",
+                "id": "cmpl-aster-conformance",
                 "object": "text_completion",
                 "created": 1_700_000_000,
                 "model": "internal-conformance-model",
@@ -338,7 +338,7 @@ class FakeOpenAIBackend:
                 ],
             }
         return {
-            "id": "chatcmpl-a3s-conformance",
+            "id": "chatcmpl-aster-conformance",
             "object": "chat.completion.chunk",
             "created": 1_700_000_000,
             "model": "internal-conformance-model",
@@ -355,9 +355,9 @@ class FakeOpenAIBackend:
     def _stream_usage_chunk(path: str) -> Dict[str, Any]:
         return {
             "id": (
-                "cmpl-a3s-conformance"
+                "cmpl-aster-conformance"
                 if path == "/v1/completions"
-                else "chatcmpl-a3s-conformance"
+                else "chatcmpl-aster-conformance"
             ),
             "object": (
                 "text_completion"

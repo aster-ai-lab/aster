@@ -2,7 +2,7 @@
 /fuzz/artifacts/
 /fuzz/corpus/
 /fuzz/target/
-/.a3s-vec-test/
+/.aster-vec-test/
 /.venv-zvec/
 scripts/__pycache__/
 .DS_Store

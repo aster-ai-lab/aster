@@ -45,7 +45,7 @@ fn node_api_exposes_version() {
     let response = api.handle(&Method::GET, "/api/gateway/version", &state);
 
     assert_eq!(response.status, 200);
-    assert!(response.body.contains("a3s-gateway"));
+    assert!(response.body.contains("aster-gateway"));
 }
 
 #[test]
@@ -112,14 +112,14 @@ async fn node_api_health_exposes_the_durable_usage_spool() {
 fn version_info_identifies_the_machine_contract() {
     let version = VersionInfo::current();
 
-    assert_eq!(version.name, "a3s-gateway");
+    assert_eq!(version.name, "aster-gateway");
     assert!(!version.version.is_empty());
     assert_eq!(version.api_version, "v1");
 }
 
 #[test]
 fn node_api_policy_reconfiguration_is_prepared_and_published_atomically() {
-    let token_env = "A3S_TEST_NODE_API_POLICY_TOKEN";
+    let token_env = "ASTER_TEST_NODE_API_POLICY_TOKEN";
     std::env::set_var(token_env, "old-token");
     let config = ManagementConfig {
         enabled: true,

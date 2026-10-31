@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use base64::Engine as _;
 use serde::{Deserialize, Serialize};
 use url::Url;

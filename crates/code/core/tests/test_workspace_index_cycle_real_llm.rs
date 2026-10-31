@@ -1,15 +1,15 @@
-//! Live durable a3s-vec index lifecycle against `.a3s/config.acl`.
+//! Live durable aster-vec index lifecycle against `.aster/config.acl`.
 //!
 //! Two product-contract gates over the persistent workspace FTS projection:
 //!
 //! - **Incremental update**: one live session keeps serving `bm25` from the
-//!   durable a3s-vec index after a mid-session source edit — manifest watcher
+//!   durable aster-vec index after a mid-session source edit — manifest watcher
 //!   → catalog reconciliation → new published generation, with the real model
 //!   driving the search tool against the *new* content.
 //! - **Cold-start reuse**: a restarted session object graph over the same
 //!   workspace root reopens the published generation instead of rebuilding
 //!   it (`CURRENT` and the generation directory set stay byte-identical), and
-//!   the real model still retrieves through `persistent_a3s_vec_fts`.
+//!   the real model still retrieves through `persistent_aster_vec_fts`.
 //!
 //! The restart boundary here is the object graph plus the on-disk index — the
 //! generation directories and storage locks are the cross-process artifacts;
@@ -18,8 +18,8 @@
 //! boundary.
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_workspace_index_cycle_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_workspace_index_cycle_real_llm \
 //!   -- --ignored --nocapture --test-threads=1
 //! ```
 
@@ -30,9 +30,9 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::workspace::WorkspaceServices;
-use a3s_code_core::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::workspace::WorkspaceServices;
+use aster_core::{
     Agent, AgentEvent, PlanningMode, SessionOptions, SystemPromptSlots,
     WorkspacePersistentIndexPhase, WorkspacePersistentIndexStatus,
 };
@@ -122,8 +122,8 @@ async fn wait_for_native_index(
         .expect("local retrieval sessions expose a chunk catalog");
     let index = services
         .persistent_index()
-        .expect("a3s-vec-fts builds must expose a durable workspace index");
-    let current = root.join(".a3s-code/index/CURRENT");
+        .expect("aster-vec-fts builds must expose a durable workspace index");
+    let current = root.join(".aster/index/CURRENT");
     tokio::time::timeout(INDEX_READY_TIMEOUT, async {
         loop {
             if let Ok(snapshot) = catalog.snapshot() {
@@ -140,7 +140,7 @@ async fn wait_for_native_index(
     .await
     .unwrap_or_else(|_| {
         panic!(
-            "a3s-vec index did not become ready: status={:?} path={}",
+            "aster-vec index did not become ready: status={:?} path={}",
             index.status(),
             current.display()
         )
@@ -150,7 +150,7 @@ async fn wait_for_native_index(
 async fn wait_for_catalog_term(
     services: &WorkspaceServices,
     term: &str,
-) -> a3s_code_core::workspace::ChunkCatalogSnapshot {
+) -> aster_core::workspace::ChunkCatalogSnapshot {
     let catalog = services
         .chunk_catalog()
         .expect("chunk catalog must stay attached");
@@ -238,7 +238,7 @@ struct SearchTurn {
     elapsed_ms: u128,
 }
 
-async fn run_search_turn(session: &a3s_code_core::AgentSession, prompt: &str) -> SearchTurn {
+async fn run_search_turn(session: &aster_core::AgentSession, prompt: &str) -> SearchTurn {
     let started = Instant::now();
     let (mut events, worker) = session
         .stream(prompt, None)
@@ -338,7 +338,7 @@ fn search_session(
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_model_retrieves_incremental_updates_within_one_session() {
     let config = load_pinned_layer_c_config();
     let model = config
@@ -352,7 +352,7 @@ async fn real_model_retrieves_incremental_updates_within_one_session() {
     let workspace = tempfile::tempdir().expect("create fixture workspace");
     write_cycle_fixture(workspace.path());
     let services = WorkspaceServices::local_with_indexed_retrieval(workspace.path())
-        .expect("configure durable a3s-vec workspace index");
+        .expect("configure durable aster-vec workspace index");
     let initial = wait_for_native_index(workspace.path(), services.as_ref()).await;
 
     let options = search_session(
@@ -375,7 +375,7 @@ async fn real_model_retrieves_incremental_updates_within_one_session() {
     )
     .await;
     assert_eq!(warmup.mode, "bm25");
-    assert_eq!(warmup.execution_mode, "persistent_a3s_vec_fts");
+    assert_eq!(warmup.execution_mode, "persistent_aster_vec_fts");
     assert!(
         warmup.final_text.contains(STABLE_IDENTIFIER),
         "warmup answer must be grounded in durable-index evidence: {:?}",
@@ -409,7 +409,7 @@ async fn real_model_retrieves_incremental_updates_within_one_session() {
     )
     .await;
     assert_eq!(incremental.mode, "bm25");
-    assert_eq!(incremental.execution_mode, "persistent_a3s_vec_fts");
+    assert_eq!(incremental.execution_mode, "persistent_aster_vec_fts");
     assert_eq!(incremental.freshness, "ready");
     assert!(
         incremental
@@ -440,7 +440,7 @@ async fn real_model_retrieves_incremental_updates_within_one_session() {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_model_reuses_persistent_generation_across_restart() {
     let config = load_pinned_layer_c_config();
     let model = config
@@ -457,10 +457,10 @@ async fn real_model_reuses_persistent_generation_across_restart() {
     // Phase 1: a fresh workspace builds and publishes its first generation.
     let first_build_started = Instant::now();
     let services = WorkspaceServices::local_with_indexed_retrieval(workspace.path())
-        .expect("configure durable a3s-vec workspace index (first pass)");
+        .expect("configure durable aster-vec workspace index (first pass)");
     let first = wait_for_native_index(workspace.path(), services.as_ref()).await;
     let first_build_ms = first_build_started.elapsed().as_millis();
-    let index_root = workspace.path().join(".a3s-code/index");
+    let index_root = workspace.path().join(".aster/index");
     let first_current = std::fs::read_to_string(index_root.join("CURRENT"))
         .expect("first pass must publish CURRENT");
     let first_generations = generation_dirs(&index_root);
@@ -485,7 +485,7 @@ async fn real_model_reuses_persistent_generation_across_restart() {
     // published generation rather than rebuild the postings from scratch.
     let reopen_started = Instant::now();
     let services = WorkspaceServices::local_with_indexed_retrieval(workspace.path())
-        .expect("configure durable a3s-vec workspace index (restart)");
+        .expect("configure durable aster-vec workspace index (restart)");
     let index = services
         .persistent_index()
         .expect("restart must expose the durable workspace index");
@@ -535,7 +535,7 @@ async fn real_model_reuses_persistent_generation_across_restart() {
     )
     .await;
     assert_eq!(turn.mode, "bm25");
-    assert_eq!(turn.execution_mode, "persistent_a3s_vec_fts");
+    assert_eq!(turn.execution_mode, "persistent_aster_vec_fts");
     assert!(
         turn.final_text.contains(REOPEN_IDENTIFIER),
         "model answer must be grounded in the reopened generation: {:?}",
@@ -552,7 +552,7 @@ async fn real_model_reuses_persistent_generation_across_restart() {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_model_retrieves_post_restart_edits_through_the_durable_index() {
     // Regression shape: a restarted object graph reopens the published
     // generation with the dead epoch's revision counters. The first edit in
@@ -571,7 +571,7 @@ async fn real_model_retrieves_post_restart_edits_through_the_durable_index() {
     let workspace = tempfile::tempdir().expect("create fixture workspace");
     write_cycle_fixture(workspace.path());
     let services = WorkspaceServices::local_with_indexed_retrieval(workspace.path())
-        .expect("configure durable a3s-vec workspace index (epoch one)");
+        .expect("configure durable aster-vec workspace index (epoch one)");
     let initial = wait_for_native_index(workspace.path(), services.as_ref()).await;
     drop(services);
     drop(agent);
@@ -582,7 +582,7 @@ async fn real_model_retrieves_post_restart_edits_through_the_durable_index() {
 
     // Restart epoch: fresh counters, loaded generation.
     let services = WorkspaceServices::local_with_indexed_retrieval(workspace.path())
-        .expect("configure durable a3s-vec workspace index (restart epoch)");
+        .expect("configure durable aster-vec workspace index (restart epoch)");
     let index = services
         .persistent_index()
         .expect("restart epoch exposes the durable workspace index");
@@ -625,7 +625,7 @@ async fn real_model_retrieves_post_restart_edits_through_the_durable_index() {
     )
     .await;
     assert_eq!(turn.mode, "bm25");
-    assert_eq!(turn.execution_mode, "persistent_a3s_vec_fts");
+    assert_eq!(turn.execution_mode, "persistent_aster_vec_fts");
     assert!(
         turn.final_text.contains(POST_RESTART_BEACON_IDENTIFIER),
         "model answer must reflect the post-restart edit: {:?}",

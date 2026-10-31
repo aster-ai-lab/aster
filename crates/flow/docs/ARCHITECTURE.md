@@ -1,4 +1,4 @@
-# A3S Flow Architecture
+# Aster Flow Architecture
 
 ## References
 
@@ -9,7 +9,7 @@ The design is based on two current reference points:
 - Native workflow runtimes: workflow source is compiled into a native artifact
   and invoked through a small, typed process protocol.
 
-`a3s-flow` combines these ideas without copying either implementation. The SDK
+`aster-flow` combines these ideas without copying either implementation. The SDK
 surface is Rust-only for now; TypeScript workflow code is treated as an optional
 runtime plugin that a Rust host can compile to native executables.
 
@@ -35,11 +35,11 @@ Durable engine layer
           v
 Event store layer
   append-only FlowEventStore, validated projections, disposable checkpoints,
-  JSONL or A3S ORM SQL adapters
+  JSONL or Aster ORM SQL adapters
           |
           v
 Dispatch layer
-  FlowTaskDispatcher, exact-build router, FlowScheduler, A3S Boot task manager
+  FlowTaskDispatcher, exact-build router, FlowScheduler, Aster Boot task manager
   FlowWorker and Flow-owned queues for embedded/compatibility hosts
 ```
 
@@ -81,7 +81,7 @@ programmatically, then reuse this exact structural compiler.
 ### Streaming authoring updates
 
 Workflow authoring uses typed domain operations rather than arbitrary JSON
-pointer writes. `@a3s-lab/flow-ui` exposes a bounded NDJSON decoder and an async
+pointer writes. `@aster-ai-lab/flow-ui` exposes a bounded NDJSON decoder and an async
 operation applier, while Rust exposes `WorkflowAuthoringSession` and an
 iterator-based batch helper. Both sides also expose canonical operation
 encoding (`canonicalizeFlowCliWorkflowUpdate` and
@@ -114,7 +114,7 @@ objects cannot be safely edited in place while preserving lossless extensions
 and atomic crash recovery, so the local CLI deliberately writes one validated
 snapshot at commit time even when the operation input is streamed. Hosted
 append-only operation journals, cursors, subscriptions, conflict resolution,
-and snapshot compaction belong to A3S Cloud; Cloud replays the same Flow
+and snapshot compaction belong to Aster Cloud; Cloud replays the same Flow
 operations and hands Flow only validated snapshots for compilation/execution.
 
 ## Durable Execution Model
@@ -523,7 +523,7 @@ late callbacks receive `HookTokenNotFound`. Typed errors retain the bearer value
 for programmatic routing, while `Display` and `Debug` diagnostics redact it.
 `FlowEventStore` exposes overridable active-hook lookup and listing queries.
 In-memory, local-file, and custom stores default to replay; the SQLite and
-PostgreSQL adapters answer from an A3S ORM-managed indexed projection.
+PostgreSQL adapters answer from an Aster ORM-managed indexed projection.
 
 Scheduled discovery follows the same compatible store boundary.
 `FlowEventStore::list_due_wakeups()` and `next_scheduled_wakeup()` replay all
@@ -540,7 +540,7 @@ source of truth. Engine writes use expected-sequence appends with projection
 validation, and conflict-aware entrypoints re-read history before deciding what
 to do next. A stale writer gets
 an explicit replay signal instead of silently extending a changed history. This
-gives A3S Flow:
+gives Aster Flow:
 
 Start recovery fills a missing `run_started` event only when the projected run
 is still pending. Both an idempotent start and a replacement worker handling
@@ -556,7 +556,7 @@ of extending the terminal stream.
 - room for SQL, object storage, or event-bus persistence without changing the
   engine surface.
 
-Event keys are dot-separated A3S keys such as `flow.step.completed`.
+Event keys are dot-separated Aster keys such as `flow.step.completed`.
 Projection preserves store order and validates event sequence continuity and
 lifecycle transitions, including duplicate step/wait/hook creation, exact step
 attempt progression, signal delivery/wait uniqueness and pairing, retry-budget
@@ -611,7 +611,7 @@ only. All three evaluate one shared eligibility planner, protecting
 non-terminal or recent runs and linked child-operation, child-workflow, and
 continuation components that are not entirely eligible. The local adapter evaluates one consistent view under its in-process
 store lock. SQLite and PostgreSQL additionally protect durable audit holds and
-run deletion inside A3S ORM transactions. SQLite uses an immediate transaction
+run deletion inside Aster ORM transactions. SQLite uses an immediate transaction
 to serialize the scan with appends. PostgreSQL takes an exclusive retention
 guard while append transactions take the shared form, then locks existing
 streams in stable order.
@@ -642,7 +642,7 @@ do not claim cross-process locking for those store-wide invariants; hosts that
 need production-ready multi-worker admission should keep one database (or use
 the built-in single-process sharded memory/file stores).
 
-Both SQL stores are adapters over `a3s-orm`. ORM executors own connection and
+Both SQL stores are adapters over `aster-orm`. ORM executors own connection and
 pool behavior, typed decoding, and transaction completion. Flow owns the event
 schema and supplies canonical checksummed migrations to the ORM migrator. The
 PostgreSQL append lock retains the earlier `(hashtext(run_id), 0)` key shape so
@@ -770,7 +770,7 @@ runtime builds whose histories cannot follow the remaining code.
 
 `FlowScheduler` targets the enqueue-only `FlowTaskDispatcher` boundary. The
 recommended application integration is `BootFlowTaskManager`: it registers a
-Flow processor on an `a3s-boot` queue and converts Boot jobs back into
+Flow processor on an `aster-boot` queue and converts Boot jobs back into
 `FlowTask` values. Boot owns queue backend selection, job state, processor
 workers, lease configuration, failure records, startup, and shutdown. Flow owns
 workflow task serialization and execution against `FlowEngine`.
@@ -826,9 +826,9 @@ run-ID defaults) so one partition cannot monopolize FIFO dispatch. PostgreSQL
 queues persist the same opaque `partition_key` column and apply the same
 round-robin lease selection when fairness is enabled. Cloud still owns tenant
 identity and maps it onto those opaque keys; application processor lifecycle
-remains owned by A3S Boot and Cloud.
+remains owned by Aster Boot and Cloud.
 
-Worker replacement uses the versioned `a3s.flow.worker.v1` capability contract.
+Worker replacement uses the versioned `aster.flow.worker.v1` capability contract.
 Hosts negotiate the required task kinds and kernel guarantees before leasing;
 protocol mismatches and missing capabilities are typed failures. The handshake
 does not negotiate Cloud-owned tenant policy, placement, queue admission, or
@@ -864,7 +864,7 @@ It serializes access inside one process and is intended for local
 crash/restart recovery.
 
 `PostgresFlowTaskQueue` stores pending, inflight, and dead-letter records in
-Postgres tables scoped by `queue_name`. It is implemented on `a3s-orm` and uses
+Postgres tables scoped by `queue_name`. It is implemented on `aster-orm` and uses
 the same canonical migration set as the PostgreSQL event store. Leasing uses an
 atomic `FOR UPDATE SKIP LOCKED` CTE, so multiple workers can lease concurrently
 without taking the same task.
@@ -897,7 +897,7 @@ boundaries.
 Observers are for telemetry, audit, and host integration; they are not the
 source of truth for workflow state and cannot roll back a committed event.
 
-`A3sFlowEventBridge` converts committed envelopes into A3S-style records with
+`AsterFlowEventBridge` converts committed envelopes into Aster-style records with
 workflow identity, event key, status, subject, audit identity, and optional
 step/activity attempt correlation (`attempt`, `attempt_id`, and
 `idempotency_key`). When a host binds ambient W3C Trace Context with
@@ -914,8 +914,8 @@ anchors used by checkpoints. It omits workflow input, output, and per-step
 payloads. Hosts rebuild from a tip-validated snapshot path or by paging
 authoritative history; the visibility record is never a second execution
 history.
-`InMemoryA3sFlowEventSink` keeps those records in
-process for tests and examples. `LocalFileA3sFlowEventSink` appends them to
+`InMemoryAsterFlowEventSink` keeps those records in
+process for tests and examples. `LocalFileAsterFlowEventSink` appends them to
 JSONL for local audit trails and records write failures in `last_error()`. On
 first append after startup or a write failure, it preserves a complete final
 record missing its newline, truncates only an unterminated malformed tail, and
@@ -935,7 +935,7 @@ changing engine persistence semantics.
    graph and backend identity.
 3. Compile the workflow entrypoint when the selected artifact cache is cold,
    then verify the graph again before publication.
-4. Execute the compiled binary with `--a3s-flow-runtime`.
+4. Execute the compiled binary with `--aster-flow-runtime`.
 5. Send a `NativeRuntimeRequest` JSON envelope on stdin.
 6. Read a `NativeRuntimeResponse` JSON envelope from stdout.
 
@@ -943,7 +943,7 @@ Request envelope:
 
 ```json
 {
-  "protocol": "a3s.flow.native_ts.v1",
+  "protocol": "aster.flow.native_ts.v1",
   "kind": "workflow",
   "exportName": "main",
   "sourceHash": "sha256...",
@@ -955,7 +955,7 @@ Response envelope:
 
 ```json
 {
-  "protocol": "a3s.flow.native_ts.v1",
+  "protocol": "aster.flow.native_ts.v1",
   "kind": "workflow",
   "ok": true,
   "output": {}
@@ -1016,7 +1016,7 @@ an independent guard that removes its temporary build workspace on parent loss.
 
 ## Conditional Extensions
 
-- Hosted observability sinks for `A3sFlowEventBridge`, such as A3S Observer,
+- Hosted observability sinks for `AsterFlowEventBridge`, such as Aster Observer,
   OpenTelemetry, or remote audit streams, when a host selects that backend.
 - Additional task queue adapters when concrete deployments need a backend other
   than Postgres.

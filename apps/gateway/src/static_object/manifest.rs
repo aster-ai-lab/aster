@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashSet};
 
 /// Frozen until Cloud publishes a `WEB0.1` fixture lock.
-pub const STATIC_BUNDLE_MANIFEST_SCHEMA: &str = "a3s.gateway.static-bundle-manifest.v1";
+pub const STATIC_BUNDLE_MANIFEST_SCHEMA: &str = "aster.gateway.static-bundle-manifest.v1";
 
 const MAX_ENTRIES: usize = 50_000;
 const MAX_PATH_BYTES: usize = 1024;

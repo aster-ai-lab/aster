@@ -21,7 +21,7 @@ export const meta = {
 先为会话配置持久存储。下面的两个函数分别展示保存和重新打开；恢复时，原会话不能仍在同一个 Agent 上活动。
 
 ```rust
-use a3s_code_core::{Agent, AgentSession, SessionOptions};
+use aster_core::{Agent, AgentSession, SessionOptions};
 
 async fn save_progress(agent: &Agent) -> anyhow::Result<()> {
     let options = SessionOptions::new()

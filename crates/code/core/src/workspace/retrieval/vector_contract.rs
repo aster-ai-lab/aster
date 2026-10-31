@@ -6,7 +6,7 @@
 //! value types are re-exported from the Memory crate through this narrow
 //! contract boundary.
 
-pub(super) use a3s_memory::vector::{
+pub(super) use aster_durable_memory::vector::{
     VectorIndexChangeToken, VectorIndexDescriptor, VectorIndexError, VectorIndexObservation,
     VectorIndexStatus, VectorMutationConsistency, VectorRecord, VectorResult, VectorRevision,
     VectorSearchRequest, VectorSearchResult,

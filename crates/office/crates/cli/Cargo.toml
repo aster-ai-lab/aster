@@ -1,28 +1,28 @@
 [package]
-name = "a3s-office-cli"
-description = "Command-line interface for native A3S Office document operations"
+name = "aster-office-cli"
+description = "Command-line interface for native Aster Office document operations"
 version = "0.45.0"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Office"
-authors = ["A3S Lab"]
+repository = "https://github.com/aster-ai-lab/Office"
+authors = ["Aster"]
 rust-version = "1.85"
 publish = false
 
 [lib]
-name = "a3s_office_cli"
+name = "aster_office_cli"
 path = "src/lib.rs"
 
 [[bin]]
-name = "a3s-office"
+name = "aster-office"
 path = "src/main.rs"
 
 [features]
 default = ["browser"]
-browser = ["dep:a3s-use-browser"]
+browser = ["dep:aster-use-browser"]
 
 [dependencies]
-a3s-office = {path = "../core"}
+aster-office = {path = "../core"}
 url = {version = "2"}
 tokio = {version = "1", features = ["fs", "io-std", "io-util", "macros", "net", "rt-multi-thread", "process", "signal", "sync", "time"]}
 tempfile = {version = "3"}
@@ -35,8 +35,8 @@ getrandom = {version = "0.3"}
 futures-util = {version = "0.3"}
 base64 = {version = "0.22"}
 axum = {version = "0.8"}
-a3s-use-core = {path = "../../../use/core"}
-a3s-use-browser = {optional = true, path = "../../../browser"}
+aster-use-core = {path = "../../../use/core"}
+aster-use-browser = {optional = true, path = "../../../browser"}
 [dev-dependencies]
 yrs = {version = "=0.27.3", features = ["sync"]}
 reqwest = {version = "0.12", default-features = false, features = ["rustls-tls", "stream"]}

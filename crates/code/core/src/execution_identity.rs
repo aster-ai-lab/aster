@@ -10,49 +10,49 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use thiserror::Error;
 
-pub const EXECUTION_IDENTITY_SCHEMA_V1: &str = "a3s.code.execution-identity.v1";
-pub const MODEL_CALL_IDENTITY_DOMAIN_V1: &str = "a3s.code.model-call.identity.v1";
-pub const TOOL_INVOCATION_IDENTITY_DOMAIN_V1: &str = "a3s.code.tool-invocation.identity.v1";
-pub const FLOW_DECISION_IDENTITY_DOMAIN_V1: &str = "a3s.code.flow-decision.identity.v1";
-/// Identity domain for a dynamically admitted A3S Flow step.
+pub const EXECUTION_IDENTITY_SCHEMA_V1: &str = "aster.code.execution-identity.v1";
+pub const MODEL_CALL_IDENTITY_DOMAIN_V1: &str = "aster.code.model-call.identity.v1";
+pub const TOOL_INVOCATION_IDENTITY_DOMAIN_V1: &str = "aster.code.tool-invocation.identity.v1";
+pub const FLOW_DECISION_IDENTITY_DOMAIN_V1: &str = "aster.code.flow-decision.identity.v1";
+/// Identity domain for a dynamically admitted Aster Flow step.
 ///
 /// Dynamic Flow steps are intentionally separate from delegated Agent steps:
 /// the former are identified by the Flow run/step/name and JSON input, while
 /// the latter are identified by an [`AgentStepSpec`](crate::orchestration::AgentStepSpec).
-pub const FLOW_STEP_IDENTITY_DOMAIN_V1: &str = "a3s.code.flow-step.identity.v1";
+pub const FLOW_STEP_IDENTITY_DOMAIN_V1: &str = "aster.code.flow-step.identity.v1";
 /// Identity domain for a process-local scheduler admission scope.
 ///
 /// Scope identities are derived from a run/host boundary and only their
 /// digest is retained by the scheduler. They are capacity keys, not durable
 /// workflow claims or result identities.
 pub const TASK_ADMISSION_SCOPE_IDENTITY_DOMAIN_V1: &str =
-    "a3s.code.task-admission-scope.identity.v1";
+    "aster.code.task-admission-scope.identity.v1";
 /// Identity domain for a provider/model generation-capacity pool.
 ///
 /// Pool identities deliberately bind only non-secret routing facts. API keys,
 /// session tokens, prompts, and request payloads must never influence or
 /// appear in a scheduler capacity key.
 pub const MODEL_GENERATION_POOL_IDENTITY_DOMAIN_V1: &str =
-    "a3s.code.model-generation-pool.identity.v1";
+    "aster.code.model-generation-pool.identity.v1";
 /// Identity domain for the immutable input portion of a dynamic workflow.
 pub const DYNAMIC_WORKFLOW_INPUT_IDENTITY_DOMAIN_V1: &str =
-    "a3s.code.dynamic-workflow.input.identity.v1";
+    "aster.code.dynamic-workflow.input.identity.v1";
 /// Identity domain for a dynamic workflow continuation reconstructed from its
 /// durable immutable facts.
 pub const DYNAMIC_WORKFLOW_CONTINUATION_IDENTITY_DOMAIN_V1: &str =
-    "a3s.code.dynamic-workflow.continuation.identity.v1";
+    "aster.code.dynamic-workflow.continuation.identity.v1";
 /// Identity domain for the stable root claim that fences one dynamic
 /// workflow continuation while workers replay its evolving step history.
 pub const DYNAMIC_WORKFLOW_CLAIM_IDENTITY_DOMAIN_V1: &str =
-    "a3s.code.dynamic-workflow.claim.identity.v1";
+    "aster.code.dynamic-workflow.claim.identity.v1";
 /// Identity domain for the immutable definition of a projected execution plan.
-pub const EXECUTION_PLAN_IDENTITY_DOMAIN_V1: &str = "a3s.code.execution-plan.identity.v1";
-pub const WORKFLOW_STEP_IDENTITY_DOMAIN_V1: &str = "a3s.code.workflow-step.identity.v1";
-pub const WORKFLOW_STEP_EVIDENCE_DOMAIN_V1: &str = "a3s.code.workflow-step.evidence.v1";
-pub const WORKFLOW_STEP_RESULT_DOMAIN_V1: &str = "a3s.code.workflow-step.result.v1";
-pub const EVALUATION_DISPATCH_IDENTITY_DOMAIN_V1: &str = "a3s.code.evaluation-dispatch.identity.v1";
-pub const EVALUATION_DISPATCH_REQUEST_DOMAIN_V1: &str = "a3s.code.evaluation-dispatch.request.v1";
-pub const EXECUTION_RESULT_RECEIPT_SCHEMA_V1: &str = "a3s.code.execution-result-receipt.v1";
+pub const EXECUTION_PLAN_IDENTITY_DOMAIN_V1: &str = "aster.code.execution-plan.identity.v1";
+pub const WORKFLOW_STEP_IDENTITY_DOMAIN_V1: &str = "aster.code.workflow-step.identity.v1";
+pub const WORKFLOW_STEP_EVIDENCE_DOMAIN_V1: &str = "aster.code.workflow-step.evidence.v1";
+pub const WORKFLOW_STEP_RESULT_DOMAIN_V1: &str = "aster.code.workflow-step.result.v1";
+pub const EVALUATION_DISPATCH_IDENTITY_DOMAIN_V1: &str = "aster.code.evaluation-dispatch.identity.v1";
+pub const EVALUATION_DISPATCH_REQUEST_DOMAIN_V1: &str = "aster.code.evaluation-dispatch.request.v1";
+pub const EXECUTION_RESULT_RECEIPT_SCHEMA_V1: &str = "aster.code.execution-result-receipt.v1";
 pub const EXECUTION_RESULT_MAX_BYTES: u64 = 1024 * 1024;
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -350,8 +350,8 @@ mod tests {
         let left = serde_json::json!({"a": 1, "b": 2});
         let right = serde_json::json!({"b": 2, "a": 1});
         assert_eq!(
-            ExecutionIdentityV1::derive("a3s.test", &left).unwrap(),
-            ExecutionIdentityV1::derive("a3s.test", &right).unwrap()
+            ExecutionIdentityV1::derive("aster.test", &left).unwrap(),
+            ExecutionIdentityV1::derive("aster.test", &right).unwrap()
         );
     }
 
@@ -361,7 +361,7 @@ mod tests {
             ExecutionIdentityV1::derive("Bad Domain", &"value"),
             Err(ExecutionIdentityError::InvalidDomain)
         ));
-        let mut identity = ExecutionIdentityV1::derive("a3s.test", &"value").unwrap();
+        let mut identity = ExecutionIdentityV1::derive("aster.test", &"value").unwrap();
         identity.digest = "sha256:ABC".to_string();
         assert!(matches!(
             identity.validate(),
@@ -372,7 +372,7 @@ mod tests {
     #[test]
     fn identity_validation_detects_content_tampering() {
         let value = serde_json::json!({"a": 1, "b": {"c": true}});
-        let identity = ExecutionIdentityV1::derive("a3s.test", &value).unwrap();
+        let identity = ExecutionIdentityV1::derive("aster.test", &value).unwrap();
         let changed = serde_json::json!({"a": 2, "b": {"c": true}});
         assert!(matches!(
             identity.validate_for(&changed),
@@ -383,7 +383,7 @@ mod tests {
     #[test]
     fn claim_binds_canonical_identity_to_a_legacy_ledger_key() {
         let payload = serde_json::json!({"secret": "do-not-persist"});
-        let identity = ExecutionIdentityV1::derive("a3s.test", &payload).unwrap();
+        let identity = ExecutionIdentityV1::derive("aster.test", &payload).unwrap();
         let claim = ExecutionClaimV1::new(identity.clone(), "dispatch-1", "legacy-hash", "owner-1")
             .unwrap();
 
@@ -397,7 +397,7 @@ mod tests {
 
     #[test]
     fn result_receipt_is_digest_only_and_bounded() {
-        let identity = ExecutionIdentityV1::derive("a3s.test", &"request").unwrap();
+        let identity = ExecutionIdentityV1::derive("aster.test", &"request").unwrap();
         let claim =
             ExecutionClaimV1::new(identity.clone(), "record-1", "legacy-hash", "owner-1").unwrap();
         let receipt = claim

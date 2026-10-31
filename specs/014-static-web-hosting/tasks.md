@@ -53,6 +53,6 @@ memory/live PG；未实际验证不勾选。根/Cloud workspace 分别验证。
 - [ ] 所有新 repository/authority 场景同 memory + live PostgreSQL，单线程（T003–T005）
 - [ ] 六个 WEB0 门逐项有相应证据，完整真实链与恢复/回滚/清理通过（T006）
 - [ ] 根 `cargo fmt --all -- --check`；Cloud workspace 对应 fmt；其他会话失败单列（T007）
-- [ ] 无新增 crates.io A3S 依赖、无新 workspace/锁文件；适用依赖/漂移守卫通过（T007）
+- [ ] 无新增 crates.io Aster 依赖、无新 workspace/锁文件；适用依赖/漂移守卫通过（T007）
 - [ ] 无新增 native select；产品配置均 ACL；guard/scopes/owner 边界守卫通过（T007）
 - [ ] evidence 中结论与实际结果一致；没有推送、生产部署或修改其他会话文件（T007）

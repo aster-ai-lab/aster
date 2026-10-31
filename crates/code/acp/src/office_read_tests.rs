@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_office::{NativeOfficeEditor, NativeSpreadsheetCellFormat, SpreadsheetCellValue};
+use aster_office::{NativeOfficeEditor, NativeSpreadsheetCellFormat, SpreadsheetCellValue};
 
 #[path = "office_read_governed_tests.rs"]
 mod governed;
@@ -273,7 +273,7 @@ async fn source_reads_refuse_leaf_and_parent_symlink_escapes() {
 
 #[tokio::test]
 async fn native_reads_keep_the_selected_credential_and_hardlink_boundary() {
-    use a3s_code_core::workspace::{
+    use aster_core::workspace::{
         LocalWorkspaceAccessPolicy, ManifestWorkspaceBackend, WorkspaceServices,
     };
     let root = tempfile::tempdir().unwrap();

@@ -89,7 +89,7 @@ Maintainers can reproduce a versioned Aster retrieval comparison and end-to-end 
 - **FR-005**: Semantic vectors MUST remain session-local and be released on close; the epic MUST NOT add implicit persistence or cross-tenant sharing.
 - **FR-006**: Aster-specific versioned quality/resource reports MUST compare existing strategies before defaults change; unsupported superiority claims MUST be refused.
 - **FR-007**: Tests MUST exercise real Core/session/ACP/terminal paths, including disabled/degraded/canceled cases; deterministic providers MUST NOT be represented as real-model quality evidence.
-- **FR-008**: Build/packaging/CI/docs MUST agree with shipped capabilities. Builds MUST use the initialized Studio submodule and pinned root workspace; internal A3S dependencies MUST stay local.
+- **FR-008**: Build/packaging/CI/docs MUST agree with shipped capabilities. Builds MUST use the initialized Studio submodule and pinned root workspace; internal Aster dependencies MUST stay local.
 
 ### Key Entities
 
@@ -104,7 +104,7 @@ Maintainers can reproduce a versioned Aster retrieval comparison and end-to-end 
 - [x] Closed sets retain existing enums; any new enum gets parse/as_str (T001–T005).
 - [x] No new unexplained production unwrap/expect (T006).
 - [x] Internal dependencies remain local (T006).
-- [x] Product configuration remains ACL parsed by a3s-acl (T001, T004).
+- [x] Product configuration remains ACL parsed by aster-acl (T001, T004).
 - [x] Evidence target: `docs/evidence/code/2026-10-23-workspace-retrieval/OUTCOME.md` (T007).
 
 ## Success Criteria *(mandatory)*

@@ -1,11 +1,11 @@
 use std::path::PathBuf;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{ContainerTarget, ExitStatus, RuntimeOperation};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{ContainerTarget, ExitStatus, RuntimeOperation};
 use serde::{Deserialize, Serialize};
 
 pub const MACOS_HVF_HOST_SERVICE_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.macos-hvf-host-service-smoke.v1";
+    "aster.oci.macos-hvf-host-service-smoke.v1";
 
 /// Exact macOS process incarnation retained for owner-death and leak checks.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -389,7 +389,7 @@ fn canonical_sha256_digest(value: &str) -> bool {
 mod tests {
     use std::path::PathBuf;
 
-    use a3s_oci_sdk::{ContainerId, ContainerTarget, ExitStatus, Generation};
+    use aster_oci_sdk::{ContainerId, ContainerTarget, ExitStatus, Generation};
 
     use super::{
         canonical_git_revision, MacosHvfArtifactEvidence, MacosHvfHostServiceSmokeReport,
@@ -398,9 +398,9 @@ mod tests {
 
     fn complete_artifacts() -> MacosHvfArtifactEvidence {
         MacosHvfArtifactEvidence {
-            host_service_executable: PathBuf::from("/tmp/a3s-oci"),
+            host_service_executable: PathBuf::from("/tmp/aster-oci"),
             host_service_executable_sha256: "1".repeat(64),
-            shim: PathBuf::from("/tmp/a3s-oci-krun-shim"),
+            shim: PathBuf::from("/tmp/aster-oci-krun-shim"),
             shim_sha256: "2".repeat(64),
             system_image_manifest: PathBuf::from("/tmp/system-image.json"),
             system_image_manifest_sha256: "3".repeat(64),
@@ -418,7 +418,7 @@ mod tests {
                 parent_pid: 100,
                 process_group_id: 101,
                 start_time_unix_us: 3,
-                command: "a3s-oci".to_string(),
+                command: "aster-oci".to_string(),
             }),
             target: Some(ContainerTarget::exact(
                 ContainerId::new("owner-death-test").expect("container ID"),
@@ -431,14 +431,14 @@ mod tests {
                     parent_pid: 101,
                     process_group_id: 102,
                     start_time_unix_us: 1,
-                    command: "a3s-oci-krun-shim".to_string(),
+                    command: "aster-oci-krun-shim".to_string(),
                 },
                 MacosProcessIdentity {
                     pid: 103,
                     parent_pid: 102,
                     process_group_id: 102,
                     start_time_unix_us: 2,
-                    command: "a3s-oci-krun-worker".to_string(),
+                    command: "aster-oci-krun-worker".to_string(),
                 },
             ],
             authenticated_endpoint_consumed: true,
@@ -454,7 +454,7 @@ mod tests {
                 parent_pid: 100,
                 process_group_id: 104,
                 start_time_unix_us: 4,
-                command: "a3s-oci".to_string(),
+                command: "aster-oci".to_string(),
             }),
             replacement_socket_new_owner: true,
             replacement_connected: true,
@@ -513,7 +513,7 @@ mod tests {
 
         report.artifacts.source_revision.clear();
         assert!(!report.artifacts.is_complete());
-        report.schema_version = "a3s.oci.macos-hvf-host-service-smoke.unknown".into();
+        report.schema_version = "aster.oci.macos-hvf-host-service-smoke.unknown".into();
         assert!(!report.is_success());
     }
 

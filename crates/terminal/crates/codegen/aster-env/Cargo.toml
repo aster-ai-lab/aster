@@ -1,0 +1,20 @@
+[package]
+license = "Apache-2.0"
+name = "aster-env"
+version = "0.1.0"
+description = "Backend environment for the Aster Code CLI crate family: endpoint URL presets, shared GROK_*/ASTER_* readers, the credentials-path resolver, and the first-party credential list."
+edition = "2024"
+publish = false
+
+[features]
+# Exposes `EnvVarGuard` (and its process-wide env lock) to downstream
+# crates' test targets.
+test-support = []
+default-bazel = ["test-support"]
+
+[dependencies]
+tracing = {workspace = true}
+url = {workspace = true}
+
+[lints]
+workspace = true

@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerRecord, EventsRequest, RuntimeArtifact, RuntimeEventKind, TeeAttestationRequest,
     TeeAttestationResponse, TeeEvidence, TeeLaunchRequest, TeeMeasurement, TeeMode, TeeReportData,
     TeeSha256Digest, TeeTechnology, AMD_SEV_SNP_LAUNCH_EXTENSION, TEE_REPORT_DATA_BYTES,

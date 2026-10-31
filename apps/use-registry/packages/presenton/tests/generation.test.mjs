@@ -230,7 +230,7 @@ function recordFinishedDeck(presentation) {
   assert.equal(deck.slides.length, presentation.slides.length)
   assert.ok(deck.template)
   assert.ok(deck.slides.every((slide) => slide.layout && slide.group && slide.content))
-  if (process.env.A3S_PPT_DECK_RECORD !== '1') return
+  if (process.env.ASTER_PPT_DECK_RECORD !== '1') return
   const skip = new Set(['__speaker_note__', 'image_prompt'])
   const slides = presentation.slides.map((slide, index) => {
     const heading = firstHeading(presentation.outlines[index])
@@ -1064,7 +1064,7 @@ test('DECK-CONTROL a typed tool result writes, reads, and edits one outline item
   assert.equal(hosted.slides[1].text, body.slides[1].text)
   const bundle = readFileSync(new URL('../ui/workbench/app.js', import.meta.url), 'utf8')
   assert.equal(bundle.includes('aix.view.deck'), true)
-  assert.equal(bundle.includes('__a3sPresentonApplyDeckToolPart'), true)
+  assert.equal(bundle.includes('__asterPresentonApplyDeckToolPart'), true)
   assert.equal(bundle.includes('aix.view.deck-snapshot'), true)
 })
 

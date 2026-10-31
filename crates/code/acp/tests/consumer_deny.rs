@@ -1,4 +1,4 @@
-use a3s_code_acp::check_admitted_tool;
+use aster_acp::check_admitted_tool;
 
 #[test]
 fn seam_admission_consumer_denies_tool() {

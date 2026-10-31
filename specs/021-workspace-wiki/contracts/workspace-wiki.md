@@ -65,21 +65,21 @@ Wiki 只查原 WikiIndex 已发布的 `concepts` 页面，排除历史、候选�
 
 两类工具保持原 WorkspaceOperationAccess、取消与前后权限检查；归档、删除、改绑和符号链接不扩权。引文带中文编号、工作区/任务、页面或记忆类型，详细信息保留路径、时间、代次/版本；原始正文按证据显示，不执行其指令。打开来源工作区先比较已保存路径与检索时的源根，进入原百科/记忆 tab；不把历史引文当作当前文件或伪造精确锚点。
 
-复用原维护任务、Core Run、预算、取消及 ACP。workspace scope 支持解析状态、开始/更新、停止/重试、读取页面和读取来源；沿用原公开 API 和 `a3s/wiki/*` 边界，不提供任意 root RPC。
+复用原维护任务、Core Run、预算、取消及 ACP。workspace scope 支持解析状态、开始/更新、停止/重试、读取页面和读取来源；沿用原公开 API 和 `aster/wiki/*` 边界，不提供任意 root RPC。
 
 所有 Wiki 编译工作携带精确绑定和代次。原 RuntimeClient 是桌面唯一 ACP 调用入口；Tauri 命令有注册与最小主窗口 capability；renderer 不直接读任意目录、调用模型或自行发布。编译只能写 host-owned staging，不调用 Shell/网络，不修改原来源。原 DiskContentAttestor 校验实际产物摘要，OKF 另行校验来源、manifest、引用、审阅和整批发布。
 
 任务的只读 `GET /api/agent-sessions/{id}/wiki-inputs` 接口由原本地 agent-plane 权威保护。请求不接收源 root；宿主两次解析当前已存任务绑定，期间复用 Core 有界来源扫描/准入与 OKF 文档转换，再返回绑定、源/输入代次、预期输出根、覆盖和逐文件转换状态。返回值不包含正文、不创建 Wiki 或维护任务、不启动模型。`included`、`truncated`、`unparsed`、`failed` 是封闭的转换状态；跳过、失败和截断不能伪装为完整覆盖。项目范围与实际生成/发布另行接入同一原流程，不以此读取接口替代。
 
-既有 `_meta.a3sHost.knowledgeCompile` 使用 `root`、`jobId`；工作区模式明确增加 `workspaceRevision`，由原 OKF workspace owner 验证输出根、绑定与运行中的任务。缺省时仍走原 personal owner，不按目录名切换或回退。未知字段及错误类型在原 host parser 拒绝。每次工具调用重新验证任务仍有效；切换运行模式不能扩大快照读取和候选页写入边界，停止后的迟到工具调用被拒绝。
+既有 `_meta.asterHost.knowledgeCompile` 使用 `root`、`jobId`；工作区模式明确增加 `workspaceRevision`，由原 OKF workspace owner 验证输出根、绑定与运行中的任务。缺省时仍走原 personal owner，不按目录名切换或回退。未知字段及错误类型在原 host parser 拒绝。每次工具调用重新验证任务仍有效；切换运行模式不能扩大快照读取和候选页写入边界，停止后的迟到工具调用被拒绝。
 
 已保存任务改绑、归档或删除，或维护 owner 明确取消/放弃/标记失败时，原 store 通知仅唤醒原 OKF scope 校验；通知不是另一份权限或任务状态。失效后通过原 Run abort 退出，包括等待表单的编译。其他工作区变化与同绑定重命名不停止当前编译；维护锁忙只触发有界退避重查，不冒充撤销。
 
 原运行时复用同时比较 `knowledgeCompile` 与 `sourceReview` 范围；普通预热会话不能因为目录与模型相同就被编译复用。内部编译消息区不申请普通预热，native 对内部编译会话的普通 prewarm 返回 409。编译 Run 结束后释放原 ACP 运行时，普通会话保持原复用行为。
 
-宿主无模型检索通过原 ACP transport 的 `_a3s/workspace/search/v1`（extension 名 `a3s/workspace/search/v1`）进入，schema 为 `a3s.acp.workspace-search.v1`。封闭参数仅含 `schema`、`sessionId`、`operationId`、`cwd`、`query`；`cwd` 必须解析为该既存 Core 会话的工作目录，不接受另一个 root 或 path。query 非空、不含 NUL且不超过 2048 字节。结果回传同一 schema、会话/操作身份、cwd及原有界 `output`／`metadata`；固定最多 8 个 hybrid 命中，经过 `governed_tool` 保留原权限和确认边界，不发送 prompt。只读 `sourceReview` 会话继续拒绝此工具调用；不能把宿主接口作为权限旁路。
+宿主无模型检索通过原 ACP transport 的 `_aster/workspace/search/v1`（extension 名 `aster/workspace/search/v1`）进入，schema 为 `aster.acp.workspace-search.v1`。封闭参数仅含 `schema`、`sessionId`、`operationId`、`cwd`、`query`；`cwd` 必须解析为该既存 Core 会话的工作目录，不接受另一个 root 或 path。query 非空、不含 NUL且不超过 2048 字节。结果回传同一 schema、会话/操作身份、cwd及原有界 `output`／`metadata`；固定最多 8 个 hybrid 命中，经过 `governed_tool` 保留原权限和确认边界，不发送 prompt。只读 `sourceReview` 会话继续拒绝此工具调用；不能把宿主接口作为权限旁路。
 
-原 hybrid 的 lexical 通道优先查询已由原协调器验证且与当前 catalog/source 代次一致的持久 a3s-vec。重启加载的计数先经原 snapshot 对账；锁忙、未发布、不同代或有界等待失败沿用原 catalog 回退，命中仍经原文件内容校验。只有实际查询此持久代次才返回 `metadata.index_kind = "persistent_a3s_vec_fts"`；`lexical_engine` 表示实际路径，不把索引存在当成已使用。SDK 原公开 hybrid 返回类型保持不变。
+原 hybrid 的 lexical 通道优先查询已由原协调器验证且与当前 catalog/source 代次一致的持久 aster-vec。重启加载的计数先经原 snapshot 对账；锁忙、未发布、不同代或有界等待失败沿用原 catalog 回退，命中仍经原文件内容校验。只有实际查询此持久代次才返回 `metadata.index_kind = "persistent_aster_vec_fts"`；`lexical_engine` 表示实际路径，不把索引存在当成已使用。SDK 原公开 hybrid 返回类型保持不变。
 
 `sourceReview` 的原 options 同时启用 session-local 空记忆及指令/技能隔离，关闭配置的 hook executor，并在原共享资源装配入口拒绝 personal assets。原宿主指令保留，普通会话的个人资源照旧可用。Studio 受信 ACL 的 `workspace_retrieval { enabled = true; local_cpu {} }` 启用既有离线 Model2Vec；加载不阻塞异步执行器，原 session 后台构建向量，关闭释放对应索引。受限审阅/编译会话跳过此环境索引，不扩大快照准入。
 

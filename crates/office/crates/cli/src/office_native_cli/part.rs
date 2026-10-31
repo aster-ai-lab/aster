@@ -1,5 +1,5 @@
-use a3s_office::{NativeOfficeEditor, NativeOfficePartType};
-use a3s_use_core::UseResult;
+use aster_office::{NativeOfficeEditor, NativeOfficePartType};
+use aster_use_core::UseResult;
 
 use super::{save_editor, usage_error, AllowedOptions, CommandOutput, ParsedArguments};
 

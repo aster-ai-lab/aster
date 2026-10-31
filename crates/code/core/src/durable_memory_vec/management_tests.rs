@@ -182,8 +182,8 @@ fn live_inspection_preserves_real_layers_owners_and_stable_revisions() {
         make("first", MemoryInspectionLayer::Working).revision
     );
     assert_eq!(working.memory_type, StoredMemoryType::Semantic);
-    assert_eq!(working.metadata["a3s.session_id"], "first");
-    assert_eq!(working.metadata["a3s.memory_id"], item.id);
+    assert_eq!(working.metadata["aster.session_id"], "first");
+    assert_eq!(working.metadata["aster.memory_id"], item.id);
     assert!(ManagedMemory::from_session_item(
         root,
         "first",

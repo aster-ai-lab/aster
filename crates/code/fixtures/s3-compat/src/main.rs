@@ -12,9 +12,9 @@ use std::path::PathBuf;
 use tokio::net::TcpListener;
 
 const DEFAULT_BIND: &str = "127.0.0.1:9000";
-const DEFAULT_BUCKET: &str = "a3s-code-tests";
-const DEFAULT_ACCESS_KEY: &str = "a3s-code-akid";
-const DEFAULT_SECRET_KEY: &str = "a3s-code-test-secret";
+const DEFAULT_BUCKET: &str = "aster-tests";
+const DEFAULT_ACCESS_KEY: &str = "aster-akid";
+const DEFAULT_SECRET_KEY: &str = "aster-test-secret";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -23,7 +23,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let access_key = arg_value("--access-key").unwrap_or_else(|| DEFAULT_ACCESS_KEY.to_string());
     let secret_key = arg_value("--secret-key").unwrap_or_else(|| DEFAULT_SECRET_KEY.to_string());
     let data_dir = arg_value("--data-dir").map(PathBuf::from).unwrap_or_else(|| {
-        std::env::temp_dir().join(format!("a3s-code-s3-compat-{}", std::process::id()))
+        std::env::temp_dir().join(format!("aster-s3-compat-{}", std::process::id()))
     });
     // s3s-fs stores each bucket as a directory under the filesystem root.
     std::fs::create_dir_all(data_dir.join(&bucket))?;

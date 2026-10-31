@@ -78,7 +78,7 @@ export class DocxParagraphIdentityPatchCollector {
     }
     let marker = '';
     do {
-      marker = `__A3S_PARAGRAPH_IDENTITY_${this.nextMarker}__`;
+      marker = `__ASTER_PARAGRAPH_IDENTITY_${this.nextMarker}__`;
       this.nextMarker += 1;
     } while (this.source.includes(marker));
     this.patches.push({ marker, identity, target });
@@ -254,7 +254,7 @@ function ensureNamespacePrefix(
   let suffix = 1;
   let prefix = '';
   do {
-    prefix = `a3s${suffix}`;
+    prefix = `aster${suffix}`;
     suffix += 1;
   } while (xmlNamespaceUri(root, prefix));
   root.setAttributeNS(XMLNS_NAMESPACE, `xmlns:${prefix}`, namespace);

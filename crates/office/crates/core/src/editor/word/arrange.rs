@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{editor_error, locate_word_path, node_not_found, DOCUMENT_PART};
 use crate::editor::{NativeOfficeInsertPosition, NativeOfficeSwapResult};

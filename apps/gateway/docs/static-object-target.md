@@ -11,7 +11,7 @@ snapshot fixtures wait on Cloud `WEB0.1`.
 
 | Component | Owns | Does not own |
 | --- | --- | --- |
-| A3S Cloud / Edge | Immutable Web release identity, manifest publication, route binding, object credentials | Per-request path serving |
+| Aster Cloud / Edge | Immutable Web release identity, manifest publication, route binding, object credentials | Per-request path serving |
 | Kense Gateway | `GET`/`HEAD` delivery, path normalize, manifest select, digest/size admit, response headers | List/write/delete objects; discovering "current" release; S3 endpoints in ACL |
 | Object authority | Digest-addressed bytes | Browser-facing URLs or tenant policy |
 
@@ -30,7 +30,7 @@ static_bundles "web" {
   object_namespace = "org/project/release"
   base_path = "/"
   spa_fallback = "index.html"
-  local_digest_store = "/var/lib/a3s-gateway/static-objects"
+  local_digest_store = "/var/lib/aster-gateway/static-objects"
   manifest {
     entry_document = "index.html"
     entries "index.html" {
@@ -111,5 +111,5 @@ routers "site" {
 - `docs/first-principles-test-plan.md` §`WEB0.4`
 
 Architecture source:
-[Cloud static web hosting architecture](https://github.com/A3S-Lab/Cloud/blob/main/docs/static-web-hosting-architecture.md)
+[Cloud static web hosting architecture](https://github.com/aster-ai-lab/Cloud/blob/main/docs/static-web-hosting-architecture.md)
 §6.

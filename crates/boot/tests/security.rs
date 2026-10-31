@@ -1,6 +1,6 @@
 #![cfg(feature = "security")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootRequest, BootResponse, BoxFuture, CorsOptions, CsrfOptions,
     HttpMethod, InMemoryRateLimitProvider, RateLimitDecision, RateLimitOptions, RateLimitProvider,
     RateLimitRequest, Result, RouteDefinition, SecurityHeadersOptions,

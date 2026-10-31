@@ -73,7 +73,7 @@ fn should_trace_path(path: &Path) -> bool {
             | "ld-linux-x86-64.so.2"
             | "libgcc_s.so.1"
             | "libc.so.6"
-            | "a3s-box-port-forward.progress"
+            | "aster-box-port-forward.progress"
             | "krun-debug.log"
             | "probe.txt"
             | "ping.txt"

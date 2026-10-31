@@ -17,7 +17,7 @@
 libkrun 是一个**动态库形式的轻量级 VMM（Virtual Machine Monitor）**，它让任何程序只需链接这个库，就能获得基于硬件虚拟化的进程隔离能力。
 
 ```
-应用程序 (crun / krunkit / muvm / a3s box)
+应用程序 (crun / krunkit / muvm / aster box)
          ↓ 链接
     libkrun.so / libkrun.dylib
          ↓ 调用
@@ -263,7 +263,7 @@ WHPX 后端的实现让 libkrun 真正成为跨平台的虚拟化库：
 
 1. **Windows 容器生态**：为 Windows 上的容器运行时（如 crun 的 Windows 版本）提供虚拟化隔离能力
 2. **开发环境一致性**：开发者在 Windows 上也能使用与 Linux/macOS 相同的隔离机制
-3. **a3s box 跨平台**：让 a3s box 能够在 Windows 上提供与其他平台一致的安全隔离体验
+3. **aster box 跨平台**：让 aster box 能够在 Windows 上提供与其他平台一致的安全隔离体验
 
 ---
 

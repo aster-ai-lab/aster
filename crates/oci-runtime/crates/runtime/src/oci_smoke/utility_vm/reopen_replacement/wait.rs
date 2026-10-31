@@ -1,14 +1,14 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportFaultInjector, AgentTransportFaultStage,
     AgentTransportOperationStage, AgentTransportQualificationRequest, AgentWaitRequest,
     AGENT_PROTOCOL_VERSION_MAX,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform, IsolationClass};
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, HostPlatform, IsolationClass};
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerTarget, CreateAttachments, CreateRequest, DeleteMode, DeleteRequest, Error, ErrorCode,
     ExitStatus, IoMode, IsolationRequest, KillRequest, ListRequest, OciBundle, OciRuntimeService,
     OperationContext, OperationId, ProcessIo, Signal, StartRequest, StateRequest, WaitRequest,
@@ -827,7 +827,7 @@ async fn exercise(
 
     let stale_target = ContainerTarget::exact(
         create.id.clone(),
-        a3s_oci_sdk::Generation(created.generation.0 + 1),
+        aster_oci_sdk::Generation(created.generation.0 + 1),
     );
     match replacement_session
         .client()

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde::{Deserialize, Serialize};
 
 use crate::semantic::{DocumentNode, OfficeNodeType};
@@ -125,6 +125,6 @@ impl NativeSpreadsheetFrozenPane {
     }
 }
 
-fn view_error(code: &str, message: impl Into<String>) -> a3s_use_core::UseError {
+fn view_error(code: &str, message: impl Into<String>) -> aster_use_core::UseError {
     super::super::editor_error(code, message)
 }

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      width="1200" height="470" viewBox="0 0 1200 470"
      role="img" aria-labelledby="title desc">
-  <title id="title">A3S Runtime architecture</title>
+  <title id="title">Aster Runtime architecture</title>
   <desc id="desc">Caller policy enters the provider-neutral ManagedRuntimeClient, which persists state through RuntimeStateStore and dispatches provider mechanics through RuntimeDriver to an external runtime.</desc>
 
   <rect width="1200" height="470" rx="28" fill="#0b0d10"/>

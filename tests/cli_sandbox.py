@@ -50,7 +50,7 @@ class CliSandbox(unittest.TestCase):
             fixture(source)
             sandbox.copy_verified(source, dest, sandbox.manifest_digest(source))
             before = sandbox.verify(dest)
-            (source / "a3s-oci").write_bytes(b"corrupt")
+            (source / "aster-oci").write_bytes(b"corrupt")
             with self.assertRaisesRegex(ValueError, "checksum mismatch"):
                 sandbox.copy_verified(source, dest, sandbox.manifest_digest(source))
             self.assertEqual(sandbox.verify(dest), before)
@@ -91,9 +91,9 @@ class CliSandbox(unittest.TestCase):
 
             def replace_before_copy(src, dest, *args, **kwargs):
                 if src == source:
-                    (source / "a3s-oci").write_bytes(b"a different valid runtime")
+                    (source / "aster-oci").write_bytes(b"a different valid runtime")
                     receipt = json.loads((source / "manifest.json").read_text())
-                    receipt["files"]["a3s-oci"] = hashlib.sha256((source / "a3s-oci").read_bytes()).hexdigest()
+                    receipt["files"]["aster-oci"] = hashlib.sha256((source / "aster-oci").read_bytes()).hexdigest()
                     (source / "manifest.json").write_text(json.dumps(receipt))
                 return original_copy(src, dest, *args, **kwargs)
 
@@ -113,9 +113,9 @@ class CliSandbox(unittest.TestCase):
             original_copy = sandbox.copy_verified
 
             def replace_source(*args):
-                (source / "a3s-oci").write_bytes(b"new source before copy")
+                (source / "aster-oci").write_bytes(b"new source before copy")
                 receipt = json.loads((source / "manifest.json").read_text())
-                receipt["files"]["a3s-oci"] = hashlib.sha256((source / "a3s-oci").read_bytes()).hexdigest()
+                receipt["files"]["aster-oci"] = hashlib.sha256((source / "aster-oci").read_bytes()).hexdigest()
                 (source / "manifest.json").write_text(json.dumps(receipt))
                 return original_copy(*args)
 

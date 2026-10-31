@@ -1,11 +1,11 @@
-//! End-to-end feature matrix for the advertised `a3s-vec` surface.
+//! End-to-end feature matrix for the advertised `aster-vec` surface.
 //!
 //! The focused tests in the other integration modules remain the detailed
 //! regression fixtures.  This file intentionally walks every public workflow
 //! once in one small, deterministic corpus so a release cannot accidentally
 //! pass unit tests while a route is disconnected from the collection planner.
 
-use a3s_vec::{
+use aster_vec::{
     AlterColumnOption, Collection, CollectionOptions, CollectionSchema, DataType,
     DiskannQueryParams, Doc, Durability, FieldSchema, Fts, GroupBySearchQuery, HnswQueryParams,
     IndexParams, IndexType, IoBackend, IvfQueryParams, IvfRabitqQueryParams, MetricType,
@@ -150,7 +150,7 @@ fn every_public_query_route_and_lifecycle_has_a_small_oracle() {
     let iterated = collection
         .iter_with_options(Some(&["category"]), false)
         .expect("iterator must be created")
-        .collect::<a3s_vec::Result<Vec<_>>>()
+        .collect::<aster_vec::Result<Vec<_>>>()
         .expect("iterator must succeed");
     assert_eq!(iterated.len(), DOCUMENTS);
     assert!(iterated.iter().all(|doc| doc.vector("embedding").is_none()));

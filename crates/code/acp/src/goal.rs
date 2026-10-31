@@ -4,11 +4,11 @@
 //! planning on or off with [`AgentSession::set_planning_mode`]. It does not
 //! start a second planner, classifier, or background workflow.
 
-use a3s_code_core::goal_control::{
+use aster_core::goal_control::{
     DurableGoalDefinitionV1, GoalCommandKindV1, GoalControlCommandV1, GoalControlError,
     GoalRefusal, GoalState, GoalTickDecisionV1,
 };
-use a3s_code_core::PlanningMode;
+use aster_core::PlanningMode;
 
 /// One user-set objective for an ACP session.
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
@@ -81,13 +81,13 @@ pub(crate) fn host_clock_ms() -> anyhow::Result<u64> {
 /// Product-host bounds; a trusted ACL declaration, including disabled, wins.
 pub(crate) fn default_continuation_policy(
     now_ms: u64,
-) -> anyhow::Result<a3s_code_core::goal_control::GoalContinuationPolicyV1> {
+) -> anyhow::Result<aster_core::goal_control::GoalContinuationPolicyV1> {
     use anyhow::Context;
     use std::num::NonZeroU64;
     let deadline = now_ms
         .checked_add(24 * 60 * 60 * 1_000)
         .context("goal deadline overflow")?;
-    let policy = a3s_code_core::goal_control::GoalContinuationPolicyV1 {
+    let policy = aster_core::goal_control::GoalContinuationPolicyV1 {
         automatic_enabled: true,
         max_slices: NonZeroU64::new(8).context("goal slice bound")?,
         max_no_progress_slices: NonZeroU64::new(2).context("goal progress bound")?,
@@ -264,7 +264,7 @@ pub fn apply_goal(current: Option<DurableGoal>, op: GoalOp) -> AppliedGoal {
     }
 }
 
-/// `a3s/goal/state` request: the bound definition of one live session.
+/// `aster/goal/state` request: the bound definition of one live session.
 #[derive(Debug, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct GoalStateRequest {
@@ -299,7 +299,7 @@ fn control_command(
 /// A first `set` binds the exact explicit task; `set` and `resume` wake the
 /// original bounded driver. Core gates each slice on the trusted host policy.
 pub(crate) async fn apply_bound_goal(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     op: &GoalOp,
     language: GoalLanguage,
 ) -> anyhow::Result<Option<BoundGoalReply>> {
@@ -345,7 +345,7 @@ pub(crate) async fn apply_bound_goal(
         GoalOp::Set(_) => {
             return Err(GoalControlError::Refused {
                 refusal: GoalRefusal::ConditionUnsupported,
-                reason: "a bound Goal is revised only through a3s/goal/definition",
+                reason: "a bound Goal is revised only through aster/goal/definition",
             }
             .into());
         }
@@ -362,7 +362,7 @@ pub(crate) async fn apply_bound_goal(
 
 /// State, accepted plan progress and the next decision Core would take.
 pub(crate) async fn bound_status(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     current: &DurableGoalDefinitionV1,
     language: GoalLanguage,
 ) -> anyhow::Result<String> {
@@ -386,7 +386,7 @@ pub(crate) async fn bound_status(
             let done = plan
                 .steps
                 .iter()
-                .filter(|step| step.status == a3s_code_core::planning::TaskStatus::Completed)
+                .filter(|step| step.status == aster_core::planning::TaskStatus::Completed)
                 .count();
             let accepted = if current.plan_accepted {
                 "accepted"
@@ -452,7 +452,7 @@ impl std::fmt::Display for GoalContinuationStopped {
 impl std::error::Error for GoalContinuationStopped {}
 
 pub(crate) async fn bound_goal_step(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
 ) -> anyhow::Result<BoundGoalStep> {
     let Some(current) = session.goal_definition()? else {
         return Ok(BoundGoalStep::Finished);
@@ -465,8 +465,8 @@ pub(crate) async fn bound_goal_step(
     };
     let decision = session.preview_goal_tick(&command).await?;
     Ok(match decision {
-        a3s_code_core::goal_control::GoalTickDecisionV1::Advance => BoundGoalStep::Advance(command),
-        a3s_code_core::goal_control::GoalTickDecisionV1::Complete => BoundGoalStep::Finished,
+        aster_core::goal_control::GoalTickDecisionV1::Advance => BoundGoalStep::Advance(command),
+        aster_core::goal_control::GoalTickDecisionV1::Complete => BoundGoalStep::Finished,
         other => BoundGoalStep::Stopped(other),
     })
 }
@@ -475,11 +475,11 @@ pub(crate) async fn bound_goal_step(
 /// return the tick for that step. The task text is the goal, the step and its
 /// criterion; nothing is derived from it.
 pub(crate) fn bind_task_goal(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     task: &str,
 ) -> anyhow::Result<GoalControlCommandV1> {
-    use a3s_code_core::goal_control::{GoalDefinitionCommandV1, GoalPlanCommandV1};
-    use a3s_code_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task};
+    use aster_core::goal_control::{GoalDefinitionCommandV1, GoalPlanCommandV1};
+    use aster_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task};
     let criterion = "Every requirement of the task holds in the workspace.";
     let definition = session.apply_goal_definition(GoalDefinitionCommandV1 {
         kind: GoalCommandKindV1::Create,
@@ -487,7 +487,7 @@ pub(crate) fn bind_task_goal(
         operation_id: "unattended-create".into(),
         goal_id: "unattended-task".into(),
         session_id: session.session_id().into(),
-        workspace: a3s_code_core::workspace::WorkspaceServices::local(session.workspace())
+        workspace: aster_core::workspace::WorkspaceServices::local(session.workspace())
             .workspace_ref()
             .clone(),
         goal: AgentGoal::new(task).with_criteria(vec![criterion.into()]),
@@ -526,7 +526,7 @@ pub(crate) fn bind_task_goal(
 }
 
 pub(crate) fn bound_tick_command(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
 ) -> anyhow::Result<Option<GoalControlCommandV1>> {
     Ok(session.goal_definition()?.map(|current| {
         let operation_id = format!("acp-tick-{}", uuid::Uuid::new_v4());
@@ -536,7 +536,7 @@ pub(crate) fn bound_tick_command(
 
 /// The slice's Run outcome (when one ran) and the goal status after it.
 pub(crate) async fn bound_slice_report(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     run_id: Option<&str>,
     language: GoalLanguage,
 ) -> anyhow::Result<String> {

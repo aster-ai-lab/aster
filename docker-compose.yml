@@ -1,45 +1,45 @@
-# The only Docker Compose file for local A3S OS.
+# The only Docker Compose file for local Aster OS.
 # One Postgres, one Redis, one Iggy events broker, one etcd. Databases stay separate.
 # This file starts middleware. `just api` runs `docker compose up` and, beside
-# a3s-api, starts the docs site at http://127.0.0.1:3100/docs (scripts/ensure-docs.sh).
+# aster-api, starts the docs site at http://127.0.0.1:3100/docs (scripts/ensure-docs.sh).
 # Data-plane credentials below intentionally keep their historical values
 # (kense / kense): renaming them orphans existing dev volumes — they
 # move with the coordinated env/credential rename track, not infra naming.
-# Postgres already moved with that track: the existing a3s_api_pg volume's
+# Postgres already moved with that track: the existing aster_api_pg volume's
 # bootstrap role and database were renamed in place (ALTER ROLE ... RENAME),
-# so the postgres service below states the migrated a3s_api identity.
-name: a3s
+# so the postgres service below states the migrated aster_api identity.
+name: aster
 
 services:
-  a3s-postgres:
+  aster-postgres:
     build:
       context: ./apps/api/postgres
-    image: a3s-postgres:16-alpine-pgvector
-    container_name: a3s-postgres
+    image: aster-postgres:16-alpine-pgvector
+    container_name: aster-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: a3s_api
-      POSTGRES_PASSWORD: a3s_api
-      POSTGRES_DB: a3s_api
+      POSTGRES_USER: aster_api
+      POSTGRES_PASSWORD: aster_api
+      POSTGRES_DB: aster_api
     ports:
       - "5432:5432"
     volumes:
-      - a3s_api_pg:/var/lib/postgresql/data
+      - aster_api_pg:/var/lib/postgresql/data
       - ./apps/api/migrations/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U a3s_api -d a3s_api"]
+      test: ["CMD-SHELL", "pg_isready -U aster_api -d aster_api"]
       interval: 5s
       timeout: 5s
       retries: 10
 
-  a3s-redis:
+  aster-redis:
     image: redis:7-alpine
-    container_name: a3s-redis
+    container_name: aster-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
-      - a3s_api_redis:/data
+      - aster_api_redis:/data
     command: ["redis-server", "--appendonly", "yes"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -47,23 +47,23 @@ services:
       timeout: 3s
       retries: 10
 
-  # Boot service discovery (a3s-boot etcd-discovery). Client :2379.
-  a3s-etcd:
+  # Boot service discovery (aster-boot etcd-discovery). Client :2379.
+  aster-etcd:
     image: gcr.io/etcd-development/etcd:v3.5.21
-    container_name: a3s-etcd
+    container_name: aster-etcd
     restart: unless-stopped
     ports:
       - "2379:2379"
       - "2380:2380"
     environment:
-      ETCD_NAME: a3s-etcd
+      ETCD_NAME: aster-etcd
       ETCD_DATA_DIR: /etcd-data
       ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
       ETCD_ADVERTISE_CLIENT_URLS: http://127.0.0.1:2379
       ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
       ETCD_INITIAL_ADVERTISE_PEER_URLS: http://127.0.0.1:2380
-      ETCD_INITIAL_CLUSTER: a3s-etcd=http://127.0.0.1:2380
-      ETCD_INITIAL_CLUSTER_TOKEN: a3s-etcd-dev
+      ETCD_INITIAL_CLUSTER: aster-etcd=http://127.0.0.1:2380
+      ETCD_INITIAL_CLUSTER_TOKEN: aster-etcd-dev
       ETCD_INITIAL_CLUSTER_STATE: new
     # Distroless image: no shell to switch new/existing. A persisted member
     # directory with state=new refuses the next start. Discovery is rewritten
@@ -77,24 +77,24 @@ services:
       retries: 12
       start_period: 5s
 
-  a3s-rustfs:
+  aster-rustfs:
     image: rustfs/rustfs:1.0.0
-    container_name: a3s-rustfs
+    container_name: aster-rustfs
     restart: unless-stopped
     ports:
       - "9000:9000"
       - "9001:9001"
     environment:
       RUSTFS_ACCESS_KEY: kense
-      RUSTFS_SECRET_KEY: a3s-rustfs-dev-secret
+      RUSTFS_SECRET_KEY: aster-rustfs-dev-secret
       RUSTFS_ADDRESS: ":9000"
       RUSTFS_CONSOLE_ADDRESS: ":9001"
       RUSTFS_CONSOLE_ENABLE: "true"
       RUSTFS_OBS_LOGGER_LEVEL: error
       RUSTFS_OBS_LOG_DIRECTORY: /var/log/rustfs/
     volumes:
-      - a3s_api_rustfs:/data
-      - a3s_api_rustfs_logs:/var/log/rustfs/
+      - aster_api_rustfs:/data
+      - aster_api_rustfs_logs:/var/log/rustfs/
     command: ["/data"]
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:9000/health || exit 1"]
@@ -108,9 +108,9 @@ services:
   # iggy-integration-path.md). The runtime kense.config.changed fan-out
   # plane still speaks NATS core and migrates on its own track; run a
   # broker for it ad hoc until then (docker run -p 4222:4222 nats:2.10-alpine).
-  a3s-iggy:
+  aster-iggy:
     image: apache/iggy:0.9.0
-    container_name: a3s-iggy
+    container_name: aster-iggy
     restart: unless-stopped
     ports:
       - "5102:5102"
@@ -144,15 +144,15 @@ services:
       retries: 15
       start_period: 10s
 
-  # OCI registry for a3s-api. Not the Cloud publication registry.
-  a3s-registry:
+  # OCI registry for aster-api. Not the Cloud publication registry.
+  aster-registry:
     image: registry:2.8.3@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
-    container_name: a3s-registry
+    container_name: aster-registry
     restart: unless-stopped
     ports:
       - "50030:5000"
     volumes:
-      - a3s_oci_registry:/var/lib/registry
+      - aster_oci_registry:/var/lib/registry
     healthcheck:
       test: ["CMD-SHELL", "wget --quiet --spider http://127.0.0.1:5000/v2/"]
       interval: 5s
@@ -160,15 +160,15 @@ services:
       retries: 12
       start_period: 3s
 
-  # Cloud publication registry. Separate store from a3s-registry.
-  a3s-cloud-registry:
+  # Cloud publication registry. Separate store from aster-registry.
+  aster-cloud-registry:
     image: registry:2.8.3@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
-    container_name: a3s-cloud-registry
+    container_name: aster-cloud-registry
     restart: unless-stopped
     ports:
       - "50020:5000"
     volumes:
-      - a3s_cloud_registry:/var/lib/registry
+      - aster_cloud_registry:/var/lib/registry
     healthcheck:
       test: ["CMD-SHELL", "wget --quiet --spider http://127.0.0.1:5000/v2/"]
       interval: 5s
@@ -176,7 +176,7 @@ services:
       retries: 12
       start_period: 3s
 
-  a3s-gateway:
+  aster-gateway:
     build:
       context: ./apps/gateway
       dockerfile: Dockerfile
@@ -186,50 +186,50 @@ services:
         apofasi: ./crates/apofasi
         bge: ./crates/bge
         ocr: ./crates/ocr
-    image: a3s-gateway:local
-    container_name: a3s-gateway
+    image: aster-gateway:local
+    container_name: aster-gateway
     restart: unless-stopped
     environment:
       # The management (node API) auth token — must match the api-side
-      # value (apps/api/.env.example: a3s-local-gateway-admin).
-      A3S_GATEWAY_ADMIN_TOKEN: a3s-local-gateway-admin
-      # Signed-in inference facts. a3s-api resolves the subject to a membership.
-      A3S_USAGE_INGEST_URL: http://host.docker.internal:3000/v1/api/admin/internal/usage/facts
+      # value (apps/api/.env.example: aster-local-gateway-admin).
+      ASTER_GATEWAY_ADMIN_TOKEN: aster-local-gateway-admin
+      # Signed-in inference facts. aster-api resolves the subject to a membership.
+      ASTER_USAGE_INGEST_URL: http://host.docker.internal:3000/v1/api/admin/internal/usage/facts
       # Deployment key for POST /v1/search. scripts/ensure-search.sh uses the
       # same value and listens on 0.0.0.0:8090.
-      A3S_SEARCH_API_KEY: a3s-local-search
+      ASTER_SEARCH_API_KEY: aster-local-search
       # Deployment key for POST /v1/parse. scripts/ensure-parse.sh uses the
       # same value and listens on 0.0.0.0:8091.
-      A3S_PARSE_API_KEY: a3s-local-parse
+      ASTER_PARSE_API_KEY: aster-local-parse
       # Successful /v1/search and /v1/parse calls are charged here.
-      A3S_BILLING_URL: http://host.docker.internal:7651
-      A3S_BILLING_INTERNAL_TOKEN: a3s-local-billing
+      ASTER_BILLING_URL: http://host.docker.internal:7651
+      ASTER_BILLING_INTERNAL_TOKEN: aster-local-billing
       # Boyue's key is the console supplier secret. The gateway reads it from
-      # a3s-api at startup. Do not put that secret in this file.
+      # aster-api at startup. Do not put that secret in this file.
       # Platform engine weights (OCR + BGE) live on the host and mount
       # read-only; swap models by reinstalling, never by rebuilding.
-      A3S_DATA_HOME: /var/lib/a3s-use-models
+      ASTER_DATA_HOME: /var/lib/aster-use-models
     ports:
       - "8080:8080"
     volumes:
       - ./apps/api/gateway/gateway.acl:/etc/gateway/gateway.acl:ro
-      - ./local-state/a3s-use-models:/var/lib/a3s-use-models
+      - ./local-state/aster-use-models:/var/lib/aster-use-models
     command: ["--config", "/etc/gateway/gateway.acl"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
-      a3s-registry:
+      aster-registry:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "pidof a3s-gateway >/dev/null"]
+      test: ["CMD-SHELL", "pidof aster-gateway >/dev/null"]
       interval: 5s
       timeout: 3s
       retries: 12
       start_period: 5s
 
-  a3s-clickhouse:
+  aster-clickhouse:
     image: clickhouse/clickhouse-server:25.3
-    container_name: a3s-clickhouse
+    container_name: aster-clickhouse
     restart: unless-stopped
     ports:
       - "8123:8123"
@@ -239,7 +239,7 @@ services:
       CLICKHOUSE_PASSWORD: kense
       CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
     volumes:
-      - a3s_api_clickhouse:/var/lib/clickhouse
+      - aster_api_clickhouse:/var/lib/clickhouse
     ulimits:
       nofile:
         soft: 262144
@@ -252,22 +252,22 @@ services:
       start_period: 10s
 
 volumes:
-  a3s_api_pg:
+  aster_api_pg:
     external: true
-    name: api_a3s_api_pg
-  a3s_api_redis:
+    name: api_aster_api_pg
+  aster_api_redis:
     external: true
-    name: api_a3s_api_redis
-  a3s_api_rustfs:
+    name: api_aster_api_redis
+  aster_api_rustfs:
     external: true
-    name: api_a3s_api_rustfs
-  a3s_api_rustfs_logs:
+    name: api_aster_api_rustfs
+  aster_api_rustfs_logs:
     external: true
-    name: api_a3s_api_rustfs_logs
-  a3s_oci_registry:
+    name: api_aster_api_rustfs_logs
+  aster_oci_registry:
     external: true
-    name: api_a3s_oci_registry
-  a3s_api_clickhouse:
-    name: api_a3s_api_clickhouse
-  a3s_cloud_registry:
-    name: a3s_cloud_registry
+    name: api_aster_oci_registry
+  aster_api_clickhouse:
+    name: api_aster_api_clickhouse
+  aster_cloud_registry:
+    name: aster_cloud_registry

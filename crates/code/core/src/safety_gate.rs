@@ -223,10 +223,15 @@ impl<'a> ToolSafetyGate<'a> {
         args: &serde_json::Value,
         tool_requires_confirmation: bool,
     ) -> ToolGateDecision {
-        if self.config.permission_checker.as_ref().is_some_and(|checker| {
-            checker.allows_unsandboxed_execution()
-                && checker.check(tool_name, args) == PermissionDecision::Allow
-        }) {
+        if self
+            .config
+            .permission_checker
+            .as_ref()
+            .is_some_and(|checker| {
+                checker.allows_unsandboxed_execution()
+                    && checker.check(tool_name, args) == PermissionDecision::Allow
+            })
+        {
             return ToolGateDecision::Execute {
                 reason: ToolGateApproval::PermissionAllow,
             };

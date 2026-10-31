@@ -660,7 +660,7 @@ mod tests {
         let mut message = Message::assistant(
             r#"I'll list the workspace.<tool_calls:group_1>
 <tool_call:call_1>ls">
-<parameter name="path">/work/a3s</parameter>
+<parameter name="path">/work/aster</parameter>
 </invoke>
 </function_calls>"#,
         );
@@ -668,7 +668,7 @@ mod tests {
         assert_eq!(calls.len(), 1);
         assert_eq!(calls[0].id, "call_1");
         assert_eq!(calls[0].name, "ls");
-        assert_eq!(calls[0].args["path"], "/work/a3s");
+        assert_eq!(calls[0].args["path"], "/work/aster");
         assert_eq!(message.text(), "I'll list the workspace.");
         assert!(!message.text().contains("<tool_call"));
         assert!(!message.text().contains("</invoke>"));
@@ -719,14 +719,14 @@ mod tests {
     #[test]
     fn recovers_deepseek_dsml_v4_tool_calls() {
         let mut message = Message::assistant(
-            "正在检索。\n<｜DSML｜tool_calls>\n<｜DSML｜invoke name=\"search\">\n<｜DSML｜parameter name=\"mode\" string=\"true\">glob</｜DSML｜parameter>\n<｜DSML｜parameter name=\"query\" string=\"true\">测试一下</｜DSML｜parameter>\n<｜DSML｜parameter name=\"path\" string=\"true\">.a3s/kb/wiki/science</｜DSML｜parameter>\n<｜DSML｜parameter name=\"limit\" string=\"true\">8</｜DSML｜parameter>\n</｜DSML｜invoke>\n</｜DSML｜tool_calls>",
+            "正在检索。\n<｜DSML｜tool_calls>\n<｜DSML｜invoke name=\"search\">\n<｜DSML｜parameter name=\"mode\" string=\"true\">glob</｜DSML｜parameter>\n<｜DSML｜parameter name=\"query\" string=\"true\">测试一下</｜DSML｜parameter>\n<｜DSML｜parameter name=\"path\" string=\"true\">.aster/kb/wiki/science</｜DSML｜parameter>\n<｜DSML｜parameter name=\"limit\" string=\"true\">8</｜DSML｜parameter>\n</｜DSML｜invoke>\n</｜DSML｜tool_calls>",
         );
         let calls = recover_text_tool_calls(&mut message);
         assert_eq!(calls.len(), 1);
         assert_eq!(calls[0].name, "search");
         assert_eq!(calls[0].args["mode"], "glob");
         assert_eq!(calls[0].args["query"], "测试一下");
-        assert_eq!(calls[0].args["path"], ".a3s/kb/wiki/science");
+        assert_eq!(calls[0].args["path"], ".aster/kb/wiki/science");
         assert_eq!(calls[0].args["limit"], "8");
         assert_eq!(message.text(), "正在检索。");
         assert!(!message.text().contains("DSML"));

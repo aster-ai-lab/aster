@@ -1,0 +1,30 @@
+[package]
+license = "Apache-2.0"
+name = "aster-workspace-client"
+version = "0.1.0"
+description = "Lightweight typed client for hub-proxied workspace.* RPCs (shared by aster-shell proxy mode and other consumers)"
+edition = "2024"
+publish = false
+
+[dependencies]
+semver = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+thiserror = {workspace = true}
+tokio = {version = "1", features = ["full", "time"]}
+tracing = {workspace = true}
+aster-tool-runtime = {path = "../../common/aster-tool-runtime"}
+aster-tool-protocol = {path = "../../common/aster-tool-protocol"}
+aster-workspace-types = {path = "../aster-workspace-types"}
+aster-computer-hub-sdk = {path = "../../common/aster-computer-hub-sdk"}
+
+[features]
+default = []
+default-bazel = []
+[dev-dependencies]
+schemars = {workspace = true}
+tokio = {version = "1", features = ["full", "macros", "rt", "test-util"]}
+aster-tool-types = {path = "../../common/aster-tool-types"}
+
+[lints]
+workspace = true

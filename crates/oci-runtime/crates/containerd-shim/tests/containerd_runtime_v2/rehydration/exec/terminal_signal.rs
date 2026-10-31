@@ -1,7 +1,7 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, ExitStatus, Generation, OperationContext, ProcessTarget, ProcessesRequest,
     Signal, SignalProcessRequest, WaitProcessRequest as RuntimeWaitProcessRequest,
 };
@@ -66,7 +66,7 @@ pub(super) async fn qualify(
     let host_pid = faults::find_runtime_host_pid(config).await?;
     let mut suspended_host = faults::SuspendedProcess::stop(
         host_pid,
-        "committed terminal-SignalProcess A3S OCI host service",
+        "committed terminal-SignalProcess Aster OCI host service",
     )?;
     let signal_address = bootstrap.address.clone();
     let signal_id = id.to_string();
@@ -81,7 +81,7 @@ pub(super) async fn qualify(
         old_shim_pid,
         "committed terminal-SignalProcess original shim",
     )?;
-    suspended_host.resume("committed terminal-SignalProcess A3S OCI host service")?;
+    suspended_host.resume("committed terminal-SignalProcess Aster OCI host service")?;
 
     let target = exact_exec_target(config, id, identity)?;
     commit_runtime_signal(config, id, identity, &target).await?;
@@ -297,7 +297,7 @@ async fn require_signal_journal(
 
 async fn read_exec_evidence(bundle: &Path) -> TestResult<ExecEvidence> {
     let document: ShimEvidence = serde_json::from_slice(
-        &tokio::fs::read(bundle.join("a3s-oci-shim-v1.json"))
+        &tokio::fs::read(bundle.join("aster-oci-shim-v1.json"))
             .await
             .map_err(|error| qualification_error(format!("read shim metadata: {error}")))?,
     )

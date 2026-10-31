@@ -1,7 +1,7 @@
 use std::io::{ErrorKind, Write as _};
 use std::path::Path;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum OfficeArtifactKind {

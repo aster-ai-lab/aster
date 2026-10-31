@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::xml::XmlIn;
 use yrs::{
     GetString, ReadTxn, Transact, Xml, XmlElementPrelim, XmlElementRef, XmlFragment, XmlOut,
@@ -445,19 +445,19 @@ fn valid_section_id(value: &str) -> bool {
     chars.all(|character| character.is_ascii_alphanumeric() || character == '-' || character == '_')
 }
 
-fn match_conflict(message: &str) -> a3s_use_core::UseError {
+fn match_conflict(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_match_conflict", message)
 }
 
-fn invalid_section(message: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_section(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_invalid", message)
 }
 
-fn structure_conflict(message: &str) -> a3s_use_core::UseError {
+fn structure_conflict(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_structure_conflict", message)
 }
 
-fn section_too_large() -> a3s_use_core::UseError {
+fn section_too_large() -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_too_large",
         "The Document contains too many sections for a structural mutation.",

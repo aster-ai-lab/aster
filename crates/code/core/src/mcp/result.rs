@@ -1,4 +1,4 @@
-//! Loss-aware projection of MCP tool results into A3S Code tool output.
+//! Loss-aware projection of MCP tool results into Aster Code tool output.
 
 use crate::llm::Attachment;
 use crate::mcp::protocol::{CallToolResult, ResourceContent, ToolContent};
@@ -340,14 +340,14 @@ async fn prune_artifact_directory(directory: &Path, current: &Path) {
 fn artifact_root(context: &ToolContext) -> PathBuf {
     #[cfg(test)]
     {
-        context.workspace.join(".a3s-test-mcp-artifacts")
+        context.workspace.join(".aster-test-mcp-artifacts")
     }
     #[cfg(not(test))]
     {
         let _ = context;
         dirs::cache_dir()
             .unwrap_or_else(std::env::temp_dir)
-            .join("a3s-code")
+            .join("aster")
             .join("mcp-artifacts")
     }
 }
@@ -501,7 +501,7 @@ mod tests {
                 data: BASE64_STANDARD.encode(png),
                 mime_type: "image/png".to_string(),
             }],
-            structured_content: Some(json!({"text": "A3S"})),
+            structured_content: Some(json!({"text": "Aster"})),
             is_error: false,
             meta: Some(json!({"requestId": "one"})),
         };
@@ -514,7 +514,7 @@ mod tests {
         assert_eq!(output.images[0].data, png);
         assert_eq!(
             output.metadata.as_ref().unwrap()["mcp"]["structuredContent"]["text"],
-            "A3S"
+            "Aster"
         );
         assert_eq!(
             output.metadata.as_ref().unwrap()["mcp"]["_meta"]["requestId"],

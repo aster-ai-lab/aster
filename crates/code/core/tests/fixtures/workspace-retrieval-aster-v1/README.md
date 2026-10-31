@@ -11,13 +11,13 @@ quality gates remain in the emitted report before the example exits nonzero.
 Run from the initialized repository root:
 
 ```sh
-cargo run --locked --release -p a3s-code-core --example workspace_retrieval_aster
+cargo run --locked --release -p aster-core --example workspace_retrieval_aster
 ```
 
 The example executes the real public session, hybrid search and tool-rendering
 paths for Lines/Recursive × RRF/MMR.
 The lexical engine is fixed to Portable for this controlled strategy comparison;
-the shipping native a3s-vec engine has separate locked release and persistent
+the shipping native aster-vec engine has separate locked release and persistent
 production qualification. This corpus does not prove equal native-engine quality.
 It exits unsuccessfully on missing evidence,
 displaced identifiers, manufactured negative-control hits, excess provider

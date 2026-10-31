@@ -1,5 +1,5 @@
 [package]
-name = "a3s-gateway"
+name = "aster-gateway"
 version = "1.1.1"
 edition = "2021"
 rust-version = "1.88"
@@ -13,11 +13,11 @@ keywords = ["gateway", "api", "proxy", "routing", "load-balancer"]
 categories = ["web-programming::http-server", "network-programming"]
 
 [lib]
-name = "a3s_gateway"
+name = "aster_gateway"
 path = "src/lib.rs"
 
 [[bin]]
-name = "a3s-gateway"
+name = "aster-gateway"
 path = "src/main.rs"
 
 # Test-only loopback upstream for Managed Runtime Service real-process
@@ -84,7 +84,7 @@ futures-util = "0.3"
 # Serialization
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-a3s-acl = { path = "../../crates/acl", version = "=0.3.0" }
+aster-acl = { path = "../../crates/acl", version = "=0.3.0" }
 sha2 = "0.10"
 argon2 = "0.5"
 url = "2"
@@ -149,23 +149,23 @@ kube = { version = "2.0", features = ["client", "runtime"], optional = true }
 k8s-openapi = { version = "0.26", features = ["latest"], optional = true }
 
 # Self-update
-a3s-updater = { path = "../../crates/updater", version = "=0.3.0" }
-a3s-apofasi = { path = "../../crates/apofasi", default-features = false }
+aster-updater = { path = "../../crates/updater", version = "=0.3.0" }
+aster-apofasi = { path = "../../crates/apofasi", default-features = false }
 indexmap = "2"
 # Platform PP-OCRv6. The weight bundle is installed at runtime, not vendored.
-a3s-use-bge = { path = "../../crates/bge", default-features = false, features = ["bge-m3", "bge-reranker-v2-m3"] }
-a3s-use-ocr = { path = "../../crates/ocr", default-features = false, features = ["ppocr-v6"] }
+aster-use-bge = { path = "../../crates/bge", default-features = false, features = ["bge-m3", "bge-reranker-v2-m3"] }
+aster-use-ocr = { path = "../../crates/ocr", default-features = false, features = ["ppocr-v6"] }
 
 # Inline LLM/MCP wire firewall (agentfw-style): the detection + masking brain (optional)
-a3s-sentry = { path = "../../crates/sentry", version = "=0.7.0", optional = true }
+aster-sentry = { path = "../../crates/sentry", version = "=0.7.0", optional = true }
 
 [features]
 default = []
-neural = ["a3s-apofasi/infer", "a3s-apofasi/router"]
+neural = ["aster-apofasi/infer", "aster-apofasi/router"]
 redis = ["dep:redis"]
 kube = ["dep:kube", "dep:k8s-openapi"]
 # Inline wire firewall: a local proxy that masks secrets + runs sentry's detectors on the LLM/MCP wire
-wire = ["dep:a3s-sentry"]
+wire = ["dep:aster-sentry"]
 
 [dev-dependencies]
 tokio-test = "0.4"

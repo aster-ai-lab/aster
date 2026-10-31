@@ -40,7 +40,7 @@ async fn shared_members_use_one_vm_and_session_scoped_guest_paths() {
     assert!(fixture
         .driver
         .attachment_capabilities()
-        .supports_schema(a3s_oci_sdk::ATTACHMENT_SCHEMA_V4));
+        .supports_schema(aster_oci_sdk::ATTACHMENT_SCHEMA_V4));
     let alpha = named_target("shared-alpha", 1);
     let beta = named_target("shared-beta", 3);
 
@@ -75,7 +75,7 @@ async fn shared_members_use_one_vm_and_session_scoped_guest_paths() {
         .expect("create second shared member");
 
     let session_root = fixture.shared_session_root(SESSION_ID, 7);
-    let marker = std::fs::metadata(session_root.join(".a3s-oci-guest-session.json"))
+    let marker = std::fs::metadata(session_root.join(".aster-oci-guest-session.json"))
         .expect("session ownership marker");
     assert_eq!(marker.permissions().mode() & 0o777, 0o600);
     assert_eq!(fixture.factory.launches.load(Ordering::Relaxed), 1);

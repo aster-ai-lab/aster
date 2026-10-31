@@ -1,10 +1,10 @@
-use a3s_office::{
+use aster_office::{
     NativeOfficeHighlightColor, NativeOfficeHorizontalAlignment, NativeOfficeHyperlink,
     NativeOfficeRgbColor, NativeOfficeTextCase, NativeOfficeTextFormat, NativeOfficeTextScript,
     NativeOfficeUnderline, NativeSpreadsheetCellFormat, NativeSpreadsheetFill,
     NativeSpreadsheetReadingOrder, NativeSpreadsheetVerticalAlignment,
 };
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{usage_error, ParsedArguments};
 

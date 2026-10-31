@@ -5,7 +5,7 @@ use crate::layers::{
     moe::router::MoeRouter,
 };
 use crate::weights::MatrixLayout;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::DType;
 
 fn mhc(device: &CudaLayerDevice) -> MhcBlock {

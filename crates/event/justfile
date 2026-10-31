@@ -1,4 +1,4 @@
-# A3S Event - Justfile
+# Aster Event - Justfile
 
 default:
     @just --list
@@ -57,9 +57,9 @@ test:
             done
     }
 
-    print_header "🧪 A3S Event Test Suite"
+    print_header "🧪 Aster Event Test Suite"
     echo ""
-    echo -ne "${CYAN}▶${RESET} ${BOLD}a3s-event${RESET} "
+    echo -ne "${CYAN}▶${RESET} ${BOLD}aster-event${RESET} "
 
     # Run tests and capture output
     if OUTPUT=$(cargo test --lib 2>&1); then
@@ -153,7 +153,7 @@ test-store:
 
 # NATS integration tests; fail if JetStream is unavailable
 test-integration:
-    A3S_EVENT_REQUIRE_NATS=1 cargo test --test nats_integration -- --test-threads=1
+    ASTER_EVENT_REQUIRE_NATS=1 cargo test --test nats_integration -- --test-threads=1
 
 # ============================================================================
 # Benchmarks (requires: cargo install criterion)
@@ -196,9 +196,9 @@ test-cov:
         echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
     }
 
-    print_header "🧪 A3S Event Test Suite with Coverage"
+    print_header "🧪 Aster Event Test Suite with Coverage"
     echo ""
-    echo -e "${CYAN}▶${RESET} ${BOLD}a3s-event${RESET}"
+    echo -e "${CYAN}▶${RESET} ${BOLD}aster-event${RESET}"
     echo ""
 
     # Temp files for tracking
@@ -335,7 +335,7 @@ test-cov:
 cov:
     #!/usr/bin/env bash
     set -e
-    COV_FILE="/tmp/a3s-event-coverage.lcov"
+    COV_FILE="/tmp/aster-event-coverage.lcov"
     echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
     echo "┃                    🧪 Running Tests with Coverage                     ┃"
     echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
@@ -442,7 +442,7 @@ publish:
 
     echo ""
     echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-    echo -e "${BOLD}  📦 Publishing a3s-event to crates.io${RESET}"
+    echo -e "${BOLD}  📦 Publishing aster-event to crates.io${RESET}"
     echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
     echo ""
 
@@ -488,7 +488,7 @@ publish:
     if cargo publish; then
         echo ""
         echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-        echo -e "  ${GREEN}${BOLD}✓ Successfully published a3s-event v${VERSION}${RESET}"
+        echo -e "  ${GREEN}${BOLD}✓ Successfully published aster-event v${VERSION}${RESET}"
         echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
     else
         print_error "Publish failed."
@@ -501,7 +501,7 @@ publish-dry:
     set -e
     echo ""
     echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
-    echo "┃                    📦 Publish Dry Run (a3s-event)                      ┃"
+    echo "┃                    📦 Publish Dry Run (aster-event)                      ┃"
     echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
     echo ""
     VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')

@@ -6,10 +6,10 @@ revision=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 candidate=json.loads((materials/'candidate.json').read_text());binary=Path(candidate['root'])
 for name,expected in candidate['sha256'].items():assert hashlib.sha256((binary/name).read_bytes()).hexdigest()==expected
 root=Path(tempfile.mkdtemp(prefix='oh-',dir='/private/var/tmp'))
-args=[str(binary/'a3s-oci'),'macos-hvf-host-service-smoke','--shim',str(binary/'a3s-oci-krun-shim'),'--system-image-manifest',str(materials/'clean-system/system-image.json'),'--bundle',str(materials.parent/'macos-vmm-confinement-20261018/fixture'),'--work-parent',str(root),'--iterations','25','--source-revision',revision]
+args=[str(binary/'aster-oci'),'macos-hvf-host-service-smoke','--shim',str(binary/'aster-oci-krun-shim'),'--system-image-manifest',str(materials/'clean-system/system-image.json'),'--bundle',str(materials.parent/'macos-vmm-confinement-20261018/fixture'),'--work-parent',str(root),'--iterations','25','--source-revision',revision]
 meta={'root':str(root),'source_revision':revision,'candidate':candidate,'args':args}
 (materials/'public-location.json').write_text(json.dumps(meta,indent=2)+'\n')
-sentinel='A3S_OCI_TEST_AMBIENT_SENTINEL='+uuid.uuid4().hex
+sentinel='ASTER_OCI_TEST_AMBIENT_SENTINEL='+uuid.uuid4().hex
 environment=dict(os.environ);environment.update([sentinel.split('=',1)])
 observed=set();leaked=False;deadline=time.monotonic()+900;timed_out=False
 with (root/'stdout.json').open('wb') as output,(root/'stderr.log').open('wb') as error:

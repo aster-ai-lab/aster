@@ -1,7 +1,7 @@
 //! Console-managed model catalog delivery (spec 002).
 //!
 //! Routes that declare a `console_catalog` block serve whatever the console
-//! (a3s-api) publishes: the poller fetches the compiled catalog, merges it
+//! (aster-api) publishes: the poller fetches the compiled catalog, merges it
 //! into a config clone (models, synthesized supplier services, failover
 //! policies), and applies it through the standard reload path under the
 //! lifecycle lock. A failed fetch keeps the last applied snapshot — the
@@ -441,10 +441,10 @@ async fn fetch_catalog(config: &GatewayConfig, api_service: &str) -> Result<Stri
         .and_then(|service| service.load_balancer.servers.first())
         .map(|server| server.url.trim_end_matches('/').to_owned())
         .ok_or_else(|| format!("catalog service '{api_service}' has no server"))?;
-    let token = std::env::var("A3S_GATEWAY_ADMIN_TOKEN")
+    let token = std::env::var("ASTER_GATEWAY_ADMIN_TOKEN")
         .ok()
         .filter(|value| !value.trim().is_empty())
-        .ok_or_else(|| "A3S_GATEWAY_ADMIN_TOKEN is unset".to_string())?;
+        .ok_or_else(|| "ASTER_GATEWAY_ADMIN_TOKEN is unset".to_string())?;
     let client = reqwest::Client::builder()
         .timeout(Duration::from_secs(10))
         .build()

@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::{self, Read};
 use std::os::fd::{AsRawFd, FromRawFd};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::namespace::RetainedExecutionContext;
 use super::plan::InitPlan;
@@ -469,7 +469,7 @@ mod tests {
 
     #[test]
     fn parses_parent_and_nested_pid_namespace_identity() {
-        let status = "Name:\ta3s-oci-agent\nPid:\t413\nPPid:\t407\nNSpid:\t413\t1\n";
+        let status = "Name:\taster-oci-agent\nPid:\t413\nPPid:\t407\nNSpid:\t413\t1\n";
         assert_eq!(
             parse_pid_identity(status).expect("parse PID identity"),
             PidIdentity {
@@ -487,7 +487,7 @@ mod tests {
             "PPid:\t407\nNSpid:\t\n",
         ] {
             let error = parse_pid_identity(status).expect_err("invalid PID identity must fail");
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::FailedPrecondition);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::FailedPrecondition);
         }
     }
 
@@ -555,7 +555,7 @@ mod tests {
         ] {
             let error = validate_new_pid_identity_chain(407, 413, 419, &namespace_init, &payload)
                 .expect_err("broken PID supervision chain must fail");
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::PermissionDenied);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::PermissionDenied);
         }
     }
 

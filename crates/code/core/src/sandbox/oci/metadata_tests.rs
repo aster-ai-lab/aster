@@ -4,8 +4,8 @@ use super::*;
 
 fn fixture(directory: &Path) {
     for name in [
-        "a3s-oci",
-        "a3s-oci-krun-shim",
+        "aster-oci",
+        "aster-oci-krun-shim",
         "system-image.json",
         "bundle/config.json",
         "bundle/rootfs/bin/bash",
@@ -49,8 +49,8 @@ fn actual_oci_metadata_reports_per_call_lifetime_without_guessing_optional_tools
 fn every_missing_required_companion_fails_before_command_dispatch() {
     let directory = tempfile::tempdir().unwrap();
     for name in [
-        "a3s-oci",
-        "a3s-oci-krun-shim",
+        "aster-oci",
+        "aster-oci-krun-shim",
         "system-image.json",
         "bundle/config.json",
         "bundle/rootfs/bin/bash",

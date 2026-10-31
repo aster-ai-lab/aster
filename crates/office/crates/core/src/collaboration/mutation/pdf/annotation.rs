@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::Value as JsonValue;
 
 use super::super::super::{
@@ -692,7 +692,7 @@ fn validate_supported_annotation_type(annotation_type: u32, field: &str) -> UseR
     .with_detail(field, annotation_type as u64))
 }
 
-fn annotation_range_error(page_index: u32, page_count: u32) -> a3s_use_core::UseError {
+fn annotation_range_error(page_index: u32, page_count: u32) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_range_invalid",
         format!(
@@ -703,11 +703,11 @@ fn annotation_range_error(page_index: u32, page_count: u32) -> a3s_use_core::Use
     .with_detail("pageCount", page_count as u64)
 }
 
-fn invalid_annotation_mutation(message: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_annotation_mutation(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_invalid", message)
 }
 
-fn annotation_match_conflict(message: String) -> a3s_use_core::UseError {
+fn annotation_match_conflict(message: String) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_match_conflict", message).with_suggestion(
         "Read the latest PDF annotation record and retry with a fresh expected value or stable ID.",
     )

@@ -7,7 +7,7 @@ export const meta = {
 
 ## 标准 ACP 与宿主扩展
 
-标准入口见[协议生命周期](../protocol/)。下表对应当前 HostMethod 解析集合：22 个处理分支，共 28 个明确 method 或前缀族。compact_conversation 与 interject 使用源码定义的 `a3s/` 前缀族；不能据此前缀为其他任意名称宣称支持。
+标准入口见[协议生命周期](../protocol/)。下表对应当前 HostMethod 解析集合：22 个处理分支，共 28 个明确 method 或前缀族。compact_conversation 与 interject 使用源码定义的 `aster/` 前缀族；不能据此前缀为其他任意名称宣称支持。
 
 未知 method 返回 method_not_found。扩展参数以公开的 typed schema 为准，不能以模型能理解某段 JSON 为兼容标准。operationId 用于标识这次宿主操作；遇到冲突先读取当前状态，不隐式放宽条件。
 
@@ -20,13 +20,13 @@ export const meta = {
 | 方向 | method / 标准消息 | 用途 |
 | --- | --- | --- |
 | 请求 | session/request_permission | 工具确认，或带 question 标记的业务提问 |
-| 请求 | a3s/form/request | 结构化表单，正常结果为 values 对象 |
+| 请求 | aster/form/request | 结构化表单，正常结果为 values 对象 |
 | 通知 | session/update | 文本、工具、计划、命令、模式等标准更新 |
-| 通知 | _a3s/execution/observe | 可选的 Run 与模型轮次观测 |
-| 通知 | a3s/session/tooling/update | 当前能力目录与不可用原因 |
-| 通知 | a3s/session/transcript/update/v1 | 标准 ACP 未覆盖的类型化转录重放 |
-| 请求 | fs/read_text_file | 已声明客户端文本读取能力，富观测使用 a3sDocument 元数据 |
-| 请求 | a3s/document/release_run | 释放该 sessionId / runId 的原文档引用 |
+| 通知 | _aster/execution/observe | 可选的 Run 与模型轮次观测 |
+| 通知 | aster/session/tooling/update | 当前能力目录与不可用原因 |
+| 通知 | aster/session/transcript/update/v1 | 标准 ACP 未覆盖的类型化转录重放 |
+| 请求 | fs/read_text_file | 已声明客户端文本读取能力，富观测使用 asterDocument 元数据 |
+| 请求 | aster/document/release_run | 释放该 sessionId / runId 的原文档引用 |
 
 这些方向不能互换：客户端不能把 run observe 通知当成可调用的状态修改接口。更多文档桥接方法见文档章节引用的 DocumentBridge 实现。
 
@@ -36,24 +36,24 @@ export const meta = {
 
 | 字段或分组 | 作用与限制 |
 | --- | --- |
-| a3sHost.role / guidelines | 宿主角色与常设说明，文本受长度限制 |
-| a3sHost.outputLanguage | 支持的输出语言选择 |
-| a3sHost.review | subagent 审阅约定，不自动授予工具 |
-| a3sHost.sourceReview | 固定源审阅，禁止暴露工具 |
-| a3sHost.officeTools | 显式请求原生 Office；布尔类型，权限另查 |
-| a3sHost.completionAttestation | 当前 disk_content 完成证明 |
-| a3sHost.knowledgeCompile | 受范围约束的知识编译任务 |
-| a3sHost.assets | 宿主声明的绝对资产根，由代理重扫 |
-| a3sEngineering.policy | 已编入的 engineering-v1 或 none |
+| asterHost.role / guidelines | 宿主角色与常设说明，文本受长度限制 |
+| asterHost.outputLanguage | 支持的输出语言选择 |
+| asterHost.review | subagent 审阅约定，不自动授予工具 |
+| asterHost.sourceReview | 固定源审阅，禁止暴露工具 |
+| asterHost.officeTools | 显式请求原生 Office；布尔类型，权限另查 |
+| asterHost.completionAttestation | 当前 disk_content 完成证明 |
+| asterHost.knowledgeCompile | 受范围约束的知识编译任务 |
+| asterHost.assets | 宿主声明的绝对资产根，由代理重扫 |
+| asterEngineering.policy | 已编入的 engineering-v1 或 none |
 | permissionPosture / autoMode / yoloMode | 兼容姿态声明，显式 posture 优先 |
-| a3sStudioDocuments | 会话级编辑器文档支持声明 |
-| a3sHarness.components | 从已编入的有限 Harness 组合中选择 |
+| asterStudioDocuments | 会话级编辑器文档支持声明 |
+| asterHarness.components | 从已编入的有限 Harness 组合中选择 |
 
 ## 单轮元数据
 
-`a3sTurn.directives` 为有界的本轮约束，`research` 选择本轮研究约束，`planFirst` 仅本轮先计划。它们不改变存储的权限姿态，也不能替代 provider。常设 guidelines 上限 12,000 字符、role 500 字符；directives 最多八项、每项 500 字符，按当前实现裁剪和清理。
+`asterTurn.directives` 为有界的本轮约束，`research` 选择本轮研究约束，`planFirst` 仅本轮先计划。它们不改变存储的权限姿态，也不能替代 provider。常设 guidelines 上限 12,000 字符、role 500 字符；directives 最多八项、每项 500 字符，按当前实现裁剪和清理。
 
-`a3sExecutionObservation=1` 与有效 promptId 打开只读执行观测，见[流式展示](../events/)。reasoningEffort 必须使用模型元数据允许的值。
+`asterExecutionObservation=1` 与有效 promptId 打开只读执行观测，见[流式展示](../events/)。reasoningEffort 必须使用模型元数据允许的值。
 
 ## 构建与能力面
 

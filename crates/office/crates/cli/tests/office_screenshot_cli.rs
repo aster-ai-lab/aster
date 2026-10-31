@@ -5,12 +5,12 @@ use std::process::{Command, Output};
 use sha2::{Digest, Sha256};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn command(provider: &Path) -> Command {
     let mut command = Command::new(binary());
-    command.env("A3S_OFFICECLI_EXECUTABLE", provider);
+    command.env("ASTER_OFFICECLI_EXECUTABLE", provider);
     command
 }
 
@@ -21,7 +21,7 @@ fn execute(provider: &Path, args: &[&str]) -> Output {
 #[cfg(feature = "browser")]
 fn execute_with_browser(provider: &Path, browser: &Path, args: &[&str]) -> Output {
     command(provider)
-        .env("A3S_BROWSER_EXECUTABLE", browser)
+        .env("ASTER_BROWSER_EXECUTABLE", browser)
         .args(args)
         .output()
         .unwrap()
@@ -173,7 +173,7 @@ fn native_cli_screenshot_has_a_stable_browser_disabled_error() {
 )]
 #[test]
 fn native_cli_screenshots_all_office_formats_with_discovered_chrome() {
-    let Some(browser) = a3s_use_browser::detect_chrome() else {
+    let Some(browser) = aster_use_browser::detect_chrome() else {
         return;
     };
     let temp = tempfile::tempdir().unwrap();
@@ -242,7 +242,7 @@ async fn native_mcp_screenshot_uses_the_browser_contract_when_chrome_is_availabl
 
     const TIMEOUT: Duration = Duration::from_secs(30);
 
-    let Some(browser) = a3s_use_browser::detect_chrome() else {
+    let Some(browser) = aster_use_browser::detect_chrome() else {
         return;
     };
     let temp = tempfile::tempdir().unwrap();
@@ -251,8 +251,8 @@ async fn native_mcp_screenshot_uses_the_browser_contract_when_chrome_is_availabl
     let output = temp.path().join("mcp-preview.png");
     let mut child = tokio::process::Command::new(binary())
         .args(["mcp"])
-        .env("A3S_OFFICECLI_EXECUTABLE", &provider)
-        .env("A3S_BROWSER_EXECUTABLE", browser)
+        .env("ASTER_OFFICECLI_EXECUTABLE", &provider)
+        .env("ASTER_BROWSER_EXECUTABLE", browser)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())

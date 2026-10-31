@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "a3s-libkrun-sys"
+name = "aster-libkrun-sys"
 version = "3.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "beaf6186b5791f42dc720aba0ec9f24af8d2703ec0a92d08bf3ad2c9adb5ed4f"
@@ -16,11 +16,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-oci-agent"
+name = "aster-oci-agent"
 version = "0.3.6"
 dependencies = [
- "a3s-oci-agent-protocol",
- "a3s-oci-sdk",
+ "aster-oci-agent-protocol",
+ "aster-oci-sdk",
  "base64",
  "libc",
  "nix 0.29.0",
@@ -35,10 +35,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-oci-agent-protocol"
+name = "aster-oci-agent-protocol"
 version = "0.1.0"
 dependencies = [
- "a3s-oci-sdk",
+ "aster-oci-sdk",
  "async-trait",
  "base64",
  "getrandom 0.3.4",
@@ -50,12 +50,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-oci-cli"
+name = "aster-oci-cli"
 version = "0.1.0"
 dependencies = [
- "a3s-oci-core",
- "a3s-oci-runtime",
- "a3s-oci-sdk",
+ "aster-oci-core",
+ "aster-oci-runtime",
+ "aster-oci-sdk",
  "async-trait",
  "clap",
  "fs2",
@@ -69,10 +69,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-oci-containerd-shim"
+name = "aster-oci-containerd-shim"
 version = "0.1.0"
 dependencies = [
- "a3s-oci-sdk",
+ "aster-oci-sdk",
  "async-trait",
  "containerd-shim",
  "containerd-shim-protos",
@@ -94,7 +94,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-oci-core"
+name = "aster-oci-core"
 version = "0.3.2"
 dependencies = [
  "serde",
@@ -103,13 +103,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-oci-krun"
+name = "aster-oci-krun"
 version = "0.1.0"
 dependencies = [
- "a3s-libkrun-sys",
- "a3s-oci-agent-protocol",
- "a3s-oci-core",
- "a3s-oci-sdk",
+ "aster-libkrun-sys",
+ "aster-oci-agent-protocol",
+ "aster-oci-core",
+ "aster-oci-sdk",
  "clap",
  "libc",
  "libloading",
@@ -124,13 +124,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-oci-runtime"
+name = "aster-oci-runtime"
 version = "0.1.0"
 dependencies = [
- "a3s-oci-agent",
- "a3s-oci-agent-protocol",
- "a3s-oci-core",
- "a3s-oci-sdk",
+ "aster-oci-agent",
+ "aster-oci-agent-protocol",
+ "aster-oci-core",
+ "aster-oci-sdk",
  "base64",
  "cap-fs-ext",
  "cap-std",
@@ -147,10 +147,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-oci-sdk"
+name = "aster-oci-sdk"
 version = "0.3.2"
 dependencies = [
- "a3s-oci-core",
+ "aster-oci-core",
  "async-trait",
  "base64",
  "cap-fs-ext",

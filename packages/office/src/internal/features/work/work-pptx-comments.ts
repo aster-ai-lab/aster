@@ -190,7 +190,7 @@ function collectExportAuthors(
 ): Map<string, ExportCommentAuthor> {
   const authors = new Map<string, ExportCommentAuthor>();
   for (const comment of slides.flatMap((slide) => slide.comments ?? [])) {
-    const name = comment.author.trim() || 'A3S Work';
+    const name = comment.author.trim() || 'Aster Work';
     const initials = comment.initials?.trim() || commentInitials(name);
     const key = authorKey(name, initials);
     if (authors.has(key)) continue;
@@ -214,7 +214,7 @@ function serializeSlideComments(
 ): string {
   const document = presentationDocument('cmLst');
   for (const comment of comments) {
-    const name = comment.author.trim() || 'A3S Work';
+    const name = comment.author.trim() || 'Aster Work';
     const initials = comment.initials?.trim() || commentInitials(name);
     const author = authors.get(authorKey(name, initials));
     if (!author) continue;

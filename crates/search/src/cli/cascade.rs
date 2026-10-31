@@ -2,12 +2,12 @@
 
 use anyhow::Result;
 
-pub(crate) use a3s_search::product::DEFAULT_TIMEOUT_SECONDS;
-use a3s_search::product::{
+pub(crate) use aster_search::product::DEFAULT_TIMEOUT_SECONDS;
+use aster_search::product::{
     execute_cascade as execute_product_cascade, CascadeControls,
     CascadeRequest as ProductCascadeRequest, HeadlessBrowser as ProductHeadlessBrowser,
 };
-pub(crate) use a3s_search::EngineTierPlan;
+pub(crate) use aster_search::EngineTierPlan;
 
 mod plan;
 
@@ -44,11 +44,11 @@ impl From<HeadlessBrowser> for ProductHeadlessBrowser {
 
 /// CLI request shape before conversion into the library product request.
 pub(crate) struct CascadeRequest<'a> {
-    pub query: a3s_search::SearchQuery,
+    pub query: aster_search::SearchQuery,
     pub limit: usize,
     pub timeout: std::time::Duration,
     pub proxy: Option<&'a str>,
-    pub config: Option<&'a a3s_search::SearchConfig>,
+    pub config: Option<&'a aster_search::SearchConfig>,
     pub browser: HeadlessBrowser,
     pub browser_max_retries: u32,
 }
@@ -57,8 +57,8 @@ pub(crate) struct CascadeRequest<'a> {
 pub(crate) async fn execute_cascade(
     plan: &EngineTierPlan,
     request: CascadeRequest<'_>,
-    circuit: a3s_search::CircuitBreaker,
-) -> Result<a3s_search::SearchCascadeOutcomeV2> {
+    circuit: aster_search::CircuitBreaker,
+) -> Result<aster_search::SearchCascadeOutcomeV2> {
     let product_request = ProductCascadeRequest {
         query: request.query,
         limit: request.limit,

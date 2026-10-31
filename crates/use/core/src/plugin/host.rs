@@ -22,8 +22,8 @@ use super::{
     PLUGIN_OPERATION_PLAN_SCHEMA_V4,
 };
 
-pub const PLUGIN_MANAGED_SCOPE_SCHEMA_V2: &str = "a3s.use.plugin-managed-scope.v2";
-pub const PLUGIN_HOST_CAPABILITIES_SCHEMA_V6: &str = "a3s.use.plugin-host-capabilities.v6";
+pub const PLUGIN_MANAGED_SCOPE_SCHEMA_V2: &str = "aster.use.plugin-managed-scope.v2";
+pub const PLUGIN_HOST_CAPABILITIES_SCHEMA_V6: &str = "aster.use.plugin-host-capabilities.v6";
 pub const PLUGIN_HOST_PROTOCOL_LEVEL_V6: u32 = 6;
 
 const MANAGED_SCOPE_ERROR: &str = "use.plugin.managed_scope_invalid";
@@ -45,7 +45,7 @@ pub struct PluginManagedScope {
     pub fence_digest: String,
 }
 
-/// Exact current A3S Use host protocol supported by one manager build.
+/// Exact current Aster Use host protocol supported by one manager build.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PluginHostCapabilities {
@@ -208,7 +208,7 @@ impl PluginHostCapabilities {
 
 /// Sole typed host port for remote managed-scope plugin operations.
 ///
-/// Implementations are adapters over the shared A3S Use Plugin Manager. They
+/// Implementations are adapters over the shared Aster Use Plugin Manager. They
 /// must not install, reconcile, grant, bind, or publish capabilities through a
 /// second lifecycle implementation.
 #[async_trait]
@@ -355,7 +355,7 @@ mod tests {
     fn managed_scope_preserves_the_existing_standalone_scope_identity() {
         let scope = PluginManagedScope {
             schema: PLUGIN_MANAGED_SCOPE_SCHEMA_V2.to_owned(),
-            host_id: "host:a3s-use-standalone".to_owned(),
+            host_id: "host:aster-use-standalone".to_owned(),
             scope_kind: PlanScopeKind::User,
             scope_id: "user/current".to_owned(),
             authority_id: "user:current".to_owned(),
@@ -366,7 +366,7 @@ mod tests {
         scope.validate().unwrap();
 
         let mut invalid_host = scope.clone();
-        invalid_host.host_id = "host/a3s-use-standalone".to_owned();
+        invalid_host.host_id = "host/aster-use-standalone".to_owned();
         assert_eq!(
             invalid_host.validate().unwrap_err().code,
             "use.plugin.managed_scope_invalid"
@@ -385,7 +385,7 @@ mod tests {
         let capabilities =
             PluginHostCapabilities::v6("host:node-01", "0.3.0", "use:0.3.0:linux-x86_64").unwrap();
         verify_supported_plan_schema(&capabilities, PLUGIN_OPERATION_PLAN_SCHEMA_V4).unwrap();
-        let error = verify_supported_plan_schema(&capabilities, "a3s.use.plugin-operation-plan.v3")
+        let error = verify_supported_plan_schema(&capabilities, "aster.use.plugin-operation-plan.v3")
             .unwrap_err();
         assert_eq!(error.code, "use.plugin.host_plan_schema_unsupported");
     }

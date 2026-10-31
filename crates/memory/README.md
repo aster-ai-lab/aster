@@ -1,4 +1,4 @@
-# a3s-memory
+# aster-memory
 
 <p align="center">
   <strong>Language / 语言:</strong>
@@ -6,7 +6,7 @@
   <a href="README.zh-CN.md">中文</a>
 </p>
 
-Pluggable memory storage for A3S.
+Pluggable memory storage for Aster.
 
 Provides the `MemoryStore` trait and two default implementations. Agents that need to persist and recall knowledge across sessions depend on this crate directly — nothing else required.
 
@@ -36,7 +36,7 @@ The crate follows a minimal core + external extensions pattern:
 - `InMemoryStore` — default, ephemeral (testing and non-persistent use)
 - `FileMemoryStore` — persistent, atomic writes, in-memory index
 
-Three-tier session memory (`AgentMemory`) and context injection (`MemoryContextProvider`) live in `a3s-code`, not here. This crate only owns the storage layer.
+Three-tier session memory (`AgentMemory`) and context injection (`MemoryContextProvider`) live in `aster`, not here. This crate only owns the storage layer.
 
 ### Durable repository V2
 
@@ -91,13 +91,13 @@ gates.
 
 ```toml
 [dependencies]
-a3s-memory = { version = "0.1", path = "../memory" }
+aster-memory = { version = "0.1", path = "../memory" }
 ```
 
 ### Store and retrieve
 
 ```rust
-use a3s_memory::{InMemoryStore, MemoryItem, MemoryStore, MemoryType};
+use aster_durable_memory::{InMemoryStore, MemoryItem, MemoryStore, MemoryType};
 use std::sync::Arc;
 
 let store = Arc::new(InMemoryStore::new());
@@ -115,7 +115,7 @@ let results = store.search("file I/O", 5).await?;
 ### Persistent storage
 
 ```rust
-use a3s_memory::{FileMemoryStore, MemoryStore};
+use aster_durable_memory::{FileMemoryStore, MemoryStore};
 
 let store = FileMemoryStore::new("/var/lib/agent/memory").await?;
 // Directory layout:
@@ -129,7 +129,7 @@ let store = FileMemoryStore::new("/var/lib/agent/memory").await?;
 Implement `MemoryStore` to use any storage system (SQLite, vector DB, etc.):
 
 ```rust
-use a3s_memory::{MemoryItem, MemoryStore};
+use aster_durable_memory::{MemoryItem, MemoryStore};
 
 struct MyStore { /* ... */ }
 
@@ -150,7 +150,7 @@ persist data, call an embedding model, or spawn a background task. The index is
 released when its final owner is dropped.
 
 ```rust
-use a3s_memory::{
+use aster_durable_memory::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord,
     VectorRevision, VectorSearchRequest,
 };
@@ -226,7 +226,7 @@ runs on Tokio's blocking pool. This is local durability and fencing, not a
 distributed lease or remote replicated store.
 
 ```rust
-use a3s_memory::{SqliteVectorIndex, VectorIndex, VectorIndexDescriptor};
+use aster_durable_memory::{SqliteVectorIndex, VectorIndex, VectorIndexDescriptor};
 
 let index = SqliteVectorIndex::open(
     "/var/lib/agent/semantic.sqlite3",
@@ -255,7 +255,7 @@ decay = exp(−age_days / decay_days)
 Default: `importance_weight = 0.7`, `recency_weight = 0.3`, `decay_days = 30`.
 
 ```rust
-use a3s_memory::{MemoryItem, RelevanceConfig};
+use aster_durable_memory::{MemoryItem, RelevanceConfig};
 
 let config = RelevanceConfig {
     decay_days: 7.0,        // faster decay
@@ -289,11 +289,11 @@ tags or metadata, repeatedly accessed items, and memories carrying
 
 | Concern | Lives in |
 |---------|----------|
-| Three-tier session memory (working / short-term / long-term) | `a3s-code` |
-| `MemoryConfig` (max_short_term, max_working) | `a3s-code` |
-| `MemoryStats` | `a3s-code` |
-| Context injection into agent prompts | `a3s-code` |
-| Workspace scanning, code chunking, embeddings, and hybrid ranking | `a3s-code` |
+| Three-tier session memory (working / short-term / long-term) | `aster` |
+| `MemoryConfig` (max_short_term, max_working) | `aster` |
+| `MemoryStats` | `aster` |
+| Context injection into agent prompts | `aster` |
+| Workspace scanning, code chunking, embeddings, and hybrid ranking | `aster` |
 
 ## Tests
 

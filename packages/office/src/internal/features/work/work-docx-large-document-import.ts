@@ -122,7 +122,7 @@ export function createLargeSimpleDocxParseResult(
   );
   const canonicalHtml = `<section${htmlAttributes(sectionAttributes)}>${html.join('')}</section>`;
   recordLargeDocxImportMeasure(
-    'a3s-office.document.large-simple-html',
+    'aster-office.document.large-simple-html',
     projectionStartedAt,
     largeDocxImportNow(),
   );
@@ -144,7 +144,7 @@ export function createLargeSimpleDocxParseResult(
     },
   );
   recordLargeDocxImportMeasure(
-    'a3s-office.document.large-simple-windowing',
+    'aster-office.document.large-simple-windowing',
     windowingStartedAt,
     largeDocxImportNow(),
   );

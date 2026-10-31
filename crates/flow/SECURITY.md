@@ -14,7 +14,7 @@ the migration and version boundary.
 ## Reporting A Vulnerability
 
 Report suspected vulnerabilities through a
-[private GitHub security advisory](https://github.com/A3S-Lab/Flow/security/advisories/new).
+[private GitHub security advisory](https://github.com/aster-ai-lab/Flow/security/advisories/new).
 Do not open a public issue for an undisclosed vulnerability.
 
 Include the following information when it is safe to do so:
@@ -61,7 +61,7 @@ schedule, and every release.
 
 `Cargo.lock` contains `rkyv` 0.7.46 through inactive optional dependency
 metadata from `chrono` 0.4.45 and `rust_decimal` 1.42.1. Flow does not enable
-Chrono's `rkyv` feature family. A3S ORM enables only `rust_decimal`'s `std` and
+Chrono's `rkyv` feature family. Aster ORM enables only `rust_decimal`'s `std` and
 `db-tokio-postgres` features for Flow; it does not enable `rkyv` or
 `rkyv-safe`. Consequently, `rkyv` is absent from Cargo's all-feature,
 all-target build graph and none of the affected archive-validation code is

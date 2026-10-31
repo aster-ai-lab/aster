@@ -1,6 +1,6 @@
 # Guest Agent Bootstrap
 
-`a3s-oci-agent` is the Linux process behind utility-VM execution. It shares
+`aster-oci-agent` is the Linux process behind utility-VM execution. It shares
 one versioned protocol with the Windows, Linux, and macOS host drivers and does
 not link libkrun.
 
@@ -12,9 +12,9 @@ The host must:
    system random source;
 2. bind the protected host transport before starting the VM;
 3. provision the token through the protected
-   `A3S_OCI_AGENT_SESSION_TOKEN` environment entry, or through a one-time
-   `A3S_OCI_AGENT_SESSION_TOKEN_FILE` below the protected runtime share;
-4. execute `/usr/bin/a3s-oci-agent` as the fixed guest process.
+   `ASTER_OCI_AGENT_SESSION_TOKEN` environment entry, or through a one-time
+   `ASTER_OCI_AGENT_SESSION_TOKEN_FILE` below the protected runtime share;
+4. execute `/usr/bin/aster-oci-agent` as the fixed guest process.
 
 At startup the agent removes the selected environment entry, retains the
 encoded input in zeroizing memory only while decoding it, and connects to host
@@ -70,9 +70,9 @@ The accepted bootstrap profile requires:
 - bounded arguments and environment with unique environment names.
 
 The opt-in portable rootfs-metadata extension is narrower than the general OCI
-profile. Its exact `dev.a3s.oci.rootfs-metadata` annotation requires a relative
+profile. Its exact `dev.aster.oci.rootfs-metadata` annotation requires a relative
 root, a new mount namespace, no user namespace, and the fixed
-`.a3s-oci-rootfs-metadata.v1.json` manifest. The prepared init validates the
+`.aster-oci-rootfs-metadata.v1.json` manifest. The prepared init validates the
 whole bounded manifest without following symlink parents, restores
 guest-visible UID/GID and mode values, consumes the manifest durably, and only
 then begins OCI rootfs and mount setup. Bundles without the extension are
@@ -94,7 +94,7 @@ parent verifies that the target entered a distinct namespace.
 When the executor runs as root, the parent writes each
 `/proc/<pid>/{uid,gid}_map` directly, reads both maps back, and requires
 `/proc/<pid>/setgroups` to remain `allow`. Native rootful qualification uses
-the A3S Box mapping of container root to host UID 100000 and GID 200000.
+the Aster Box mapping of container root to host UID 100000 and GID 200000.
 
 When the native executor runs without host root, startup requires no active
 supplementary groups, enabled unprivileged user namespaces, and fixed
@@ -208,7 +208,7 @@ before the Create barrier. Rootless Native Linux cannot create sources after
 dropping privilege, so a parent-bound helper opens and verifies only the six
 fixed defaults and passes detached descriptors to the unprivileged owner.
 Supplying those defaults does not fabricate an OCI device-access policy; when
-the exact A3S Box policy is present, the same helper owns its bounded
+the exact Aster Box policy is present, the same helper owns its bounded
 cgroup-device BPF operations. Ordered rootful rules preserve wildcard, reset,
 and access-subset behavior. An omitted or empty access string is an ordered
 no-op, and a list containing only no-ops does not load BPF.
@@ -332,7 +332,7 @@ process settings.
 Inherited descriptors remain owned by the runtime launcher and are
 deliberately absent from SDK read/write operations. A separate Linux-only
 native create attachment implements the fixed
-A3S Box control contract: validated Unix stream listeners become FD 3 and FD 4
+Aster Box control contract: validated Unix stream listeners become FD 3 and FD 4
 and a writable regular init log becomes FD 5. Raw handles never enter the
 guest protocol; the native driver supplies a process-local descriptor plan
 directly to `LinuxExecutor`. It retains and applies all 16 OCI
@@ -408,7 +408,7 @@ success or failure. Replaying a stdin write therefore cannot append its bytes
 again, while changing the payload, target, size, or mutation kind under the
 same operation ID fails closed.
 
-Terminal execution adapts the A3S Box PTY design. `openpty` supplies one
+Terminal execution adapts the Aster Box PTY design. `openpty` supplies one
 runtime-owned master and child descriptors 0-2 use the slave. The launcher
 creates a session and acquires the slave as its controlling terminal. The
 configured payload then becomes the leader of its dedicated supervised
@@ -438,7 +438,7 @@ Per-process signal and wait are bound to the exact target; bounded wait returns
 The helper monitors init's pidfd and terminates the complete exec process group
 when init exits. It peeks natural exit with `waitid(WNOWAIT)` before killing
 remaining group members, preserving the leader PID/PGID until cleanup is
-issued—the same ownership mechanism proven by A3S Box's PID 1 reaper. Delete,
+issued—the same ownership mechanism proven by Aster Box's PID 1 reaper. Delete,
 shutdown, and session EOF also force-stop and reap every registered exec
 helper and process group before removing state.
 
@@ -514,30 +514,30 @@ A trusted in-container control plane can opt in to the versioned
 
 | Annotation | Meaning |
 | --- | --- |
-| `dev.a3s.oci.cgroup.layout=control-workload-v1` | Select the versioned two-child layout |
-| `dev.a3s.oci.cgroup.control-memory-headroom-bytes` | Positive memory added only to the outer management envelope |
-| `dev.a3s.oci.cgroup.control-cpu-headroom-micros` | Positive CPU quota added to the outer envelope for the configured period |
-| `dev.a3s.oci.cgroup.control-pids-headroom` | Positive process capacity added only to the outer envelope |
+| `dev.aster.oci.cgroup.layout=control-workload-v1` | Select the versioned two-child layout |
+| `dev.aster.oci.cgroup.control-memory-headroom-bytes` | Positive memory added only to the outer management envelope |
+| `dev.aster.oci.cgroup.control-cpu-headroom-micros` | Positive CPU quota added to the outer envelope for the configured period |
+| `dev.aster.oci.cgroup.control-pids-headroom` | Positive process capacity added only to the outer envelope |
 
 This layout requires finite memory, CPU, and PID limits in
 `linux.resources` plus a newly created cgroup namespace. The runtime creates
-an outer management cgroup and fixed `a3s-control` and `a3s-workload`
+an outer management cgroup and fixed `aster-control` and `aster-workload`
 children before spawning init. It starts the namespace root in the empty
 outer cgroup and installs pre-opened `cgroup.procs` files at FD 6 and FD 7.
-Init creates the cgroup namespace, moves itself into `a3s-control`, and reports
+Init creates the cgroup namespace, moves itself into `aster-control`, and reports
 the create barrier; only then does the runtime delegate domain controllers and
 apply the exact workload settings. This ordering keeps the management envelope
 visible as the namespace root without violating cgroup v2's no-internal-process
 rule.
 The trusted configured init receives those descriptor numbers through
-`A3S_CONTROL_CGROUP_PROCS_FD` and `A3S_WORKLOAD_CGROUP_PROCS_FD`; conflicting
+`ASTER_CONTROL_CGROUP_PROCS_FD` and `ASTER_WORKLOAD_CGROUP_PROCS_FD`; conflicting
 environment variables or inherited descriptor targets fail create. The
 container can therefore keep `/sys/fs/cgroup` read-only while its trusted init
 moves control and workload processes through authority retained by the
 runtime-opened files.
 
 `linux.resources` remains the only exact workload source of truth. The
-runtime applies it to `a3s-workload` with `memory.oom.group=0`, derives the
+runtime applies it to `aster-workload` with `memory.oom.group=0`, derives the
 outer memory, CPU, and PID envelope from the declared headroom, and sends all
 later OCI exec processes directly to the workload child. Live updates modify
 the derived outer envelope and workload settings only after preflight. Typed
@@ -729,7 +729,7 @@ dispatch. The replacement signal marker is mandatory even when the first VM
 exits before its shell can schedule the trap. Changed content under the same
 operation ID and stale generations fail at both Host and Guest boundaries. All
 nine stages passed in 18 fresh VMs on August 11, 2026 under schema
-`a3s.oci.oci-vm-operation-reopen-replacement.v7`.
+`aster.oci.oci-vm-operation-reopen-replacement.v7`.
 
 WaitProcess now carries the same owner handoff through a terminated non-init
 Exec. Recovery rebuilds the terminal process, waits for its exact readiness
@@ -740,7 +740,7 @@ first response is already cached by the Host, so replacement and later API
 calls do not reach the driver; the temporary rebuilt process is also omitted
 from the recovered live inventory. Stale generations fail at both Host and
 Guest boundaries. All nine stages passed in 18 fresh VMs on August 11, 2026
-under `a3s.oci.oci-vm-operation-reopen-replacement.v8`.
+under `aster.oci.oci-vm-operation-reopen-replacement.v8`.
 Clean revision `4338d37` also passed all nine stages on x86_64 Linux KVM on
 August 30, 2026. The first eight replacement owners dispatched the resolved
 WaitProcess exactly once after rebuilding and terminating the Exec; the final
@@ -758,7 +758,7 @@ Start, and Pause journal PIDs without a second API-driven dispatch. Changed
 requests and stale generations fail at both Host and Guest boundaries, and
 force-delete cleans up the frozen replacement. All nine stages passed in 18
 fresh VMs on August 11, 2026 under
-`a3s.oci.oci-vm-operation-reopen-replacement.v9`.
+`aster.oci.oci-vm-operation-reopen-replacement.v9`.
 Clean revision `3e9fc4b` also passed all nine stages on x86_64 Linux KVM on
 August 30, 2026. The first eight replacement owners dispatched the unchanged
 Pause once after rebuilding an unpaused init; the final stage reapplied Pause
@@ -776,7 +776,7 @@ the historical paused response from the current unpaused record while rebinding
 Create, Start, Pause, and Resume to the replacement PID. Changed requests and
 stale generations fail at both boundaries. All nine stages passed in 18 fresh
 VMs on August 11, 2026 under
-`a3s.oci.oci-vm-operation-reopen-replacement.v10`.
+`aster.oci.oci-vm-operation-reopen-replacement.v10`.
 Clean revision `b4c3a85` also passed all nine stages on x86_64 Linux KVM on
 August 30, 2026. The first eight replacement owners reconstructed the setup
 Pause and dispatched the unchanged Resume once; the final stage reapplied the
@@ -793,7 +793,7 @@ Guest wrote a complete response. The Host validates the exact generation,
 positive unique PIDs, init presence, process IDs, and terminal mode; stale
 generations fail at both boundaries. All nine stages passed in 18 fresh VMs on
 August 11, 2026 under
-`a3s.oci.oci-vm-operation-reopen-replacement.v11`.
+`aster.oci.oci-vm-operation-reopen-replacement.v11`.
 Clean revision `9a1a37c` also passed all nine stages on x86_64 Linux KVM on
 August 30, 2026. Every replacement Guest recreated the live init and terminal
 Exec with rebound positive PIDs before one exact read-only query; the final
@@ -812,7 +812,7 @@ another dispatch. Two Stats queries to the fresh Guest must report the 512 MiB
 memory limit, live CPU and process counters, and the required memory/PID event
 metrics. Changed resources and stale generations fail at both boundaries. All
 nine stages passed in 18 fresh VMs on August 11, 2026 under
-`a3s.oci.oci-vm-operation-reopen-replacement.v12`.
+`aster.oci.oci-vm-operation-reopen-replacement.v12`.
 Clean revision `aa0f56a` also passed all nine stages on x86_64 Linux KVM on
 August 31, 2026. The first eight replacement Guests received the unchanged
 complete Linux resource request once; the final stage reapplied the committed
@@ -832,7 +832,7 @@ CPU and process counters, and the required memory/PID event metrics. A
 delivered first-owner snapshot must differ from and precede the replacement
 snapshot. Stale generations fail at both boundaries. All nine stages passed in
 18 fresh VMs on August 11, 2026 under
-`a3s.oci.oci-vm-operation-reopen-replacement.v13`.
+`aster.oci.oci-vm-operation-reopen-replacement.v13`.
 Clean revision `09286d8` also passed all nine stages on x86_64 Linux KVM on
 August 31, 2026. Every replacement Guest received exactly one fresh Stats
 query after rebuilding the updated running init. The delivered final-stage
@@ -846,7 +846,7 @@ Start, and Exec requests and repairs their response PIDs. Because ReadOutput is
 read-only, the replacement Guest receives one new request at every stage with
 the same process target, cursor, byte limit, and timeout. Stale generations
 fail at both boundaries. All nine stages passed in 18 fresh VMs on August 11,
-2026 under `a3s.oci.oci-vm-operation-reopen-replacement.v14`.
+2026 under `aster.oci.oci-vm-operation-reopen-replacement.v14`.
 Clean revision `dd47146` also passed all nine stages on x86_64 Linux KVM on
 August 31, 2026. Every replacement Guest rebuilt the live non-terminal Exec,
 rebound its PID, and received exactly one fresh ReadOutput request. The final
@@ -862,7 +862,7 @@ Host journal serves the retry. Its journal then rejects changed bytes under
 the same operation ID, and the rebuilt Exec must write the exact line to its
 effect marker. Stale generations fail at both boundaries. All nine stages
 passed in 18 fresh VMs on August 11, 2026 under
-`a3s.oci.oci-vm-operation-reopen-replacement.v15`.
+`aster.oci.oci-vm-operation-reopen-replacement.v15`.
 Clean revision `17b307d` also passed all nine stages on x86_64 Linux KVM on
 August 31, 2026. The first eight replacement Guests received the exact write
 once when the Prepared Host journal resumed. The final stage rehydrated the
@@ -905,15 +905,15 @@ blockers rather than silently accepted compatibility gaps.
 Build the static x86-64 Linux artifact from Windows with:
 
 ```powershell
-cargo zigbuild -p a3s-oci-agent --release `
+cargo zigbuild -p aster-oci-agent --release `
   --target x86_64-unknown-linux-musl
 ```
 
-`a3s-oci agent-vm-smoke` proves the authenticated
+`aster-oci agent-vm-smoke` proves the authenticated
 guest-AF_VSOCK/libkrun/Windows-named-pipe path and verifies the exact
 20 workload operations, including `file` and `filesystem`, plus the
 protocol-v10 maintenance acknowledgement.
-`a3s-oci oci-vm-smoke` additionally loads a
+`aster-oci oci-vm-smoke` additionally loads a
 bundle below the VM rootfs and proves the distinct create/start barrier, state
 observation, exact create/kill/delete replay, bounded running wait, exact
 repeated init status, exact-target exec replay, duplicate process-ID rejection,
@@ -926,7 +926,7 @@ PTY allocation, initial and resized dimensions, interactive input, merged
 terminal output, VEOF close, init-exit exec cleanup, signal-driven stop,
 post-delete NotFound, marker cleanup, and nominal guest runtime cleanup.
 
-`a3s-oci oci-vm-multi-container-smoke` keeps two distinct bundle rootfs and
+`aster-oci oci-vm-multi-container-smoke` keeps two distinct bundle rootfs and
 runtime slots live behind the create barrier, proves that A's start, kill,
 wait, delete, recreation, stale generation, and replay conflicts do not alter
 or block B, then completes B independently. The macOS HVF gate sends both
@@ -952,7 +952,7 @@ namespace PID 1 and that PID 1 reaps an adopted child. The native Linux
 schema-v11 report additionally requires bind-source ownership preservation and
 non-recursive versus recursive bind evidence.
 
-`a3s-oci oci-vm-fault-cleanup` stops after create, start, or kill, explicitly
+`aster-oci oci-vm-fault-cleanup` stops after create, start, or kill, explicitly
 records that delete was not attempted, and requires guest executor shutdown to
 remove the container process and runtime root. On macOS the nested report also
 requires exact endpoint removal, both host PIDs to disappear, and the complete
@@ -979,7 +979,7 @@ both filesystem types and proved that its IPC, network, and cgroup namespace
 identities differed from guest PID 1 before producing its marker. A
 joined-network negative bundle retained its typed `Unsupported` error and left
 no guest runtime state. This historical run proves the then-current fixed
-bootstrap slice, not the immutable A3S system image, complete OCI enforcement,
+bootstrap slice, not the immutable Aster system image, complete OCI enforcement,
 restart recovery, or exhaustive durable-write fault injection.
 
 The current Windows hardware soak supersedes that historical run for the
@@ -991,12 +991,12 @@ typed negatives, lifecycle cleanup faults, and owner-death cleanup. It retains
 start/final inventories, operation and resource tables, and a hard-gated
 verification result. User/time namespaces, recursive and ID-mapped mounts,
 tmpfs, fresh-host qualification of restart-stable exact exit evidence, and the
-immutable A3S system image remain outside that evidence. The implemented
+immutable Aster system image remain outside that evidence. The implemented
 guest/shim/host recovery chain authenticates and durably caches exact init
 termination when present, with a stopped-only fallback when it is absent, but
 the WHPX driver remains `probe-only` until the real-host gate passes. Candidate
 sessions now attach only the exact generation's protected writable share,
-mount its fixed `a3s-oci-runtime` tag at `/run/a3s-oci-runtime` before token
+mount its fixed `aster-oci-runtime` tag at `/run/aster-oci-runtime` before token
 access, and keep that share disjoint from the guest system root. Host and guest
 unit gates cover path fencing, one-time handoff, and required shim-v2 evidence;
 the existing hardware report predates this layout and therefore does not yet

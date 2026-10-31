@@ -298,10 +298,10 @@ async fn lifecycle_release_operation(
     version: &str,
     selected_surfaces: Vec<PluginSurfaceRef>,
     label: &str,
-    prior_lock: Option<a3s_use_core::PluginPackageLock>,
+    prior_lock: Option<aster_use_core::PluginPackageLock>,
 ) -> (
     PluginHostPlanRequest,
-    a3s_use_core::PluginHostPlanResult,
+    aster_use_core::PluginHostPlanResult,
     PluginHostApplyRequest,
 ) {
     let (candidate, package_lock) = if action == PluginOperationAction::Uninstall {
@@ -381,7 +381,7 @@ async fn lifecycle_release_operation(
 async fn assert_scope_kind_substitution_rejected(
     host: &PackageHostManager,
     request: &PluginHostPlanRequest,
-    planned: &a3s_use_core::PluginHostPlanResult,
+    planned: &aster_use_core::PluginHostPlanResult,
     apply: &PluginHostApplyRequest,
     wrong_scope: PluginManagedScope,
 ) {
@@ -440,7 +440,7 @@ async fn assert_completed_operation(
     scope: &PluginManagedScope,
     capabilities_digest: &str,
     package_id: &PluginPackageId,
-    planned: &a3s_use_core::PluginHostPlanResult,
+    planned: &aster_use_core::PluginHostPlanResult,
     request_id: &str,
     result_digest: &str,
 ) {

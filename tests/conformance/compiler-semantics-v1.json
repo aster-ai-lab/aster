@@ -1,9 +1,9 @@
 {
-  "apiVersion": "a3s.dev/form-compiler-semantics-conformance/v1",
+  "apiVersion": "aster.dev/form-compiler-semantics-conformance/v1",
   "bases": {
     "wizard": {
-      "kind": "a3s.form",
-      "apiVersion": "a3s.dev/form/v1alpha1",
+      "kind": "aster.form",
+      "apiVersion": "aster.dev/form/v1alpha1",
       "revision": 1,
       "metadata": {
         "title": "Wizard semantics"
@@ -58,8 +58,8 @@
       "actions": []
     },
     "repeater": {
-      "kind": "a3s.form",
-      "apiVersion": "a3s.dev/form/v1alpha1",
+      "kind": "aster.form",
+      "apiVersion": "aster.dev/form/v1alpha1",
       "revision": 1,
       "metadata": {
         "title": "Repeater semantics"
@@ -128,8 +128,8 @@
       "actions": []
     },
     "dataGrid": {
-      "kind": "a3s.form",
-      "apiVersion": "a3s.dev/form/v1alpha1",
+      "kind": "aster.form",
+      "apiVersion": "aster.dev/form/v1alpha1",
       "revision": 1,
       "metadata": {
         "title": "Data-grid semantics"
@@ -191,8 +191,8 @@
       "actions": []
     },
     "rules": {
-      "kind": "a3s.form",
-      "apiVersion": "a3s.dev/form/v1alpha1",
+      "kind": "aster.form",
+      "apiVersion": "aster.dev/form/v1alpha1",
       "revision": 1,
       "metadata": {
         "title": "Rule and data-source semantics"

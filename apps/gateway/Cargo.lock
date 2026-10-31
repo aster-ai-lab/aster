@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "a3s-acl"
+name = "aster-acl"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "add06e627b80ea0d3f6de5ecfb2708cfcf4c6d022806ae33aec0905aeffde3ce"
@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-apofasi"
+name = "aster-apofasi"
 version = "0.1.1"
 dependencies = [
  "cc",
@@ -24,15 +24,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-gateway"
+name = "aster-gateway"
 version = "1.1.1"
 dependencies = [
- "a3s-acl",
- "a3s-apofasi",
- "a3s-sentry",
- "a3s-updater",
- "a3s-use-bge",
- "a3s-use-ocr",
+ "aster-acl",
+ "aster-apofasi",
+ "aster-sentry",
+ "aster-updater",
+ "aster-use-bge",
+ "aster-use-ocr",
  "ab_glyph",
  "arc-swap",
  "argon2",
@@ -79,7 +79,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-sentry"
+name = "aster-sentry"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6726c7fb4b635dc39ffb3c8bd518f337c5e35376b560fc1154d925a968dc4c12"
@@ -94,7 +94,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-updater"
+name = "aster-updater"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2ec6f6a3004ac108482a751309e2c3f68edf6a68630131c56626d1341902dabe"
@@ -113,10 +113,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-use-bge"
+name = "aster-use-bge"
 version = "0.1.0"
 dependencies = [
- "a3s-use-core",
+ "aster-use-core",
  "fs2",
  "ort",
  "reqwest",
@@ -128,7 +128,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-use-core"
+name = "aster-use-core"
 version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f87fb53addcfecc5e5110c46f1b531889089cae382359139e31df0f651613d7"
@@ -147,10 +147,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-use-ocr"
+name = "aster-use-ocr"
 version = "0.3.2"
 dependencies = [
- "a3s-use-core",
+ "aster-use-core",
  "async-trait",
  "clipper2",
  "flate2",

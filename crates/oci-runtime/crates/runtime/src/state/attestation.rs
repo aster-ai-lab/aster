@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerTarget, ErrorCode, OperationId, Result, RuntimeEventKind, TeeAttestationRequest,
     TeeAttestationResponse, ValidateRequest,
 };
@@ -24,7 +24,7 @@ use super::{
 #[derive(Serialize)]
 struct AttestationFingerprint<'a> {
     target: &'a ContainerTarget,
-    report_data: &'a a3s_oci_sdk::TeeReportData,
+    report_data: &'a aster_oci_sdk::TeeReportData,
 }
 
 impl DurableStateStore {
@@ -255,7 +255,7 @@ impl DurableStateStore {
         &self,
         stored: &StoredContainer,
     ) -> Result<AttestationSource> {
-        if stored.record.isolation != a3s_oci_core::IsolationClass::DedicatedVm {
+        if stored.record.isolation != aster_oci_core::IsolationClass::DedicatedVm {
             return Err(state_error(
                 ErrorCode::FailedPrecondition,
                 "attest",
@@ -353,7 +353,7 @@ pub(super) fn attestation_request_digest(
     )
 }
 
-fn invalid_outcome(operation_id: &OperationId) -> a3s_oci_sdk::Error {
+fn invalid_outcome(operation_id: &OperationId) -> aster_oci_sdk::Error {
     state_error(
         ErrorCode::FailedPrecondition,
         "attest",

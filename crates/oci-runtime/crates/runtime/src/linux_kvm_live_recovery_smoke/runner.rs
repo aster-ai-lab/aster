@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, Process};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, Process};
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, CreateRequest, DeleteMode, DeleteRequest, ErrorCode, ExecRequest,
     FileOp, FileRequest, IoMode, IsolationRequest, KillRequest, ListRequest, OutputStream,
     ProcessId, ProcessIo, ProcessTarget, ProcessesRequest, ReadOutputRequest, Signal, StartRequest,
@@ -94,16 +94,16 @@ pub async fn run(config: LinuxKvmLiveRecoverySmokeConfig) -> LinuxKvmLiveRecover
         let _ = persist_report(&report.evidence_root, &report, "KVM Live recovery report");
         return report;
     }
-    report.status = a3s_oci_core::CapabilityStatus::Available;
+    report.status = aster_oci_core::CapabilityStatus::Available;
     report.case_count = 1;
     if !report.is_success() {
-        report.status = a3s_oci_core::CapabilityStatus::Unavailable;
+        report.status = aster_oci_core::CapabilityStatus::Unavailable;
         report.case_count = 0;
         report.reason = Some("Linux KVM Live recovery report failed its final audit".to_string());
     }
     if let Err(reason) = persist_report(&report.evidence_root, &report, "KVM Live recovery report")
     {
-        report.status = a3s_oci_core::CapabilityStatus::Unavailable;
+        report.status = aster_oci_core::CapabilityStatus::Unavailable;
         report.case_count = 0;
         report.reason = Some(reason);
     }
@@ -439,7 +439,7 @@ async fn run_replacement(
 
 async fn prove_retained_exec_io_before_kill(
     prepared: &PreparedQualification,
-    client: &a3s_oci_sdk::RuntimeClient,
+    client: &aster_oci_sdk::RuntimeClient,
     target: &ContainerTarget,
     evidence: &mut super::report::LinuxKvmLiveRecoveryEvidence,
 ) -> Result<(), String> {
@@ -489,7 +489,7 @@ async fn prove_retained_exec_io_before_kill(
 
 async fn prove_retained_exec_io_after_reattach(
     prepared: &PreparedQualification,
-    client: &a3s_oci_sdk::RuntimeClient,
+    client: &aster_oci_sdk::RuntimeClient,
     target: &ContainerTarget,
     evidence: &mut super::report::LinuxKvmLiveRecoveryEvidence,
 ) -> Result<(), String> {
@@ -532,7 +532,7 @@ async fn prove_retained_exec_io_after_reattach(
 
 async fn prove_new_exec_io_after_reattach(
     prepared: &PreparedQualification,
-    client: &a3s_oci_sdk::RuntimeClient,
+    client: &aster_oci_sdk::RuntimeClient,
     target: &ContainerTarget,
     evidence: &mut super::report::LinuxKvmLiveRecoveryEvidence,
 ) -> Result<(), String> {
@@ -587,7 +587,7 @@ async fn prove_new_exec_io_after_reattach(
 
 async fn prove_retained_filesystem_before_kill(
     prepared: &PreparedQualification,
-    client: &a3s_oci_sdk::RuntimeClient,
+    client: &aster_oci_sdk::RuntimeClient,
     target: &ContainerTarget,
     evidence: &mut super::report::LinuxKvmLiveRecoveryEvidence,
 ) -> Result<(), String> {
@@ -619,7 +619,7 @@ async fn prove_retained_filesystem_before_kill(
 
 async fn prove_retained_filesystem_after_reattach(
     prepared: &PreparedQualification,
-    client: &a3s_oci_sdk::RuntimeClient,
+    client: &aster_oci_sdk::RuntimeClient,
     target: &ContainerTarget,
     evidence: &mut super::report::LinuxKvmLiveRecoveryEvidence,
 ) -> Result<(), String> {
@@ -668,11 +668,11 @@ async fn prove_retained_filesystem_after_reattach(
 }
 
 fn retained_filesystem_path(nonce: &str) -> String {
-    format!("/tmp/.a3s-oci-live-fs-{nonce}.bin")
+    format!("/tmp/.aster-oci-live-fs-{nonce}.bin")
 }
 
 fn retained_filesystem_payload(nonce: &str) -> Vec<u8> {
-    format!("a3s-oci-live-fs-{nonce}\0binary\n").into_bytes()
+    format!("aster-oci-live-fs-{nonce}\0binary\n").into_bytes()
 }
 
 fn retained_echo_process() -> Result<Process, String> {
@@ -692,7 +692,7 @@ fn retained_echo_process() -> Result<Process, String> {
 }
 
 async fn wait_for_captured_needle(
-    client: &a3s_oci_sdk::RuntimeClient,
+    client: &aster_oci_sdk::RuntimeClient,
     process: &ProcessTarget,
     needle: &[u8],
     mut after_sequence: u64,
@@ -730,7 +730,7 @@ async fn wait_for_captured_needle(
 }
 
 async fn assert_no_invented_exit(
-    client: &a3s_oci_sdk::RuntimeClient,
+    client: &aster_oci_sdk::RuntimeClient,
     target: &ContainerTarget,
     runtime_root: &Path,
 ) -> Result<bool, String> {

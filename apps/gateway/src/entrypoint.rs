@@ -778,7 +778,7 @@ where
             } else {
                 let mut rendered = error.to_string();
                 rendered.truncate(180);
-                if rendered.contains("a3s_") || rendered.contains("Bearer") {
+                if rendered.contains("aster_") || rendered.contains("Bearer") {
                     rendered = "redacted".to_string();
                 }
                 tracing::warn!(error = %rendered, "request body could not be read");
@@ -1212,7 +1212,7 @@ async fn run_idempotent_agent_request(
     }
     let Some(org_id) = req_parts
         .headers
-        .get("x-a3s-org")
+        .get("x-aster-org")
         .and_then(|value| value.to_str().ok())
         .map(str::trim)
         .filter(|value| uuid::Uuid::parse_str(value).is_ok())

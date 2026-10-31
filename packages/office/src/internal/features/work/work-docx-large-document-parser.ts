@@ -58,7 +58,7 @@ export function streamLargeSimpleDocxDocumentXml(
   const eligibilityStartedAt = largeDocxImportNow();
   if (!simpleDocxXmlHasSupportedStructure(source)) {
     recordLargeDocxImportMeasure(
-      'a3s-office.document.large-simple-eligibility',
+      'aster-office.document.large-simple-eligibility',
       eligibilityStartedAt,
       largeDocxImportNow(),
       { accepted: false },
@@ -66,7 +66,7 @@ export function streamLargeSimpleDocxDocumentXml(
     return null;
   }
   recordLargeDocxImportMeasure(
-    'a3s-office.document.large-simple-eligibility',
+    'aster-office.document.large-simple-eligibility',
     eligibilityStartedAt,
     largeDocxImportNow(),
     { accepted: true },
@@ -77,7 +77,7 @@ export function streamLargeSimpleDocxDocumentXml(
   if (body === null) return null;
   const layout = simpleDocumentLayout(source, body.start, body.end);
   recordLargeDocxImportMeasure(
-    'a3s-office.document.large-simple-envelope',
+    'aster-office.document.large-simple-envelope',
     envelopeStartedAt,
     largeDocxImportNow(),
   );
@@ -132,7 +132,7 @@ export function streamLargeSimpleDocxDocumentXml(
   }
   if (!topLevelBlockCount) return null;
   recordLargeDocxImportMeasure(
-    'a3s-office.document.large-simple-content',
+    'aster-office.document.large-simple-content',
     contentStartedAt,
     largeDocxImportNow(),
     {

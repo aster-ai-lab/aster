@@ -1,7 +1,7 @@
 #![allow(clippy::items_after_test_module)]
-//! # A3S Gateway
+//! # Aster Gateway
 //!
-//! An AI Native Traffic Layer for standalone and A3S Cloud-managed deployments.
+//! An AI Native Traffic Layer for standalone and Aster Cloud-managed deployments.
 //!
 //! ## Architecture
 //!
@@ -23,10 +23,10 @@
 //! ## Quick Start
 //!
 //! ```rust,ignore
-//! use a3s_gateway::{Gateway, config::GatewayConfig};
+//! use aster_gateway::{Gateway, config::GatewayConfig};
 //!
 //! #[tokio::main]
-//! async fn main() -> a3s_gateway::Result<()> {
+//! async fn main() -> aster_gateway::Result<()> {
 //!     let config = GatewayConfig::from_file("gateway.acl").await?;
 //!     let gateway = Gateway::new(config)?;
 //!     gateway.start().await?;

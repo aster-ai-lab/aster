@@ -2,7 +2,7 @@
 # Run inside the H200 RJob, never on the operator workstation.
 set -euo pipefail
 
-ROOT=/nvme/a3s-power-xq-20261021
+ROOT=/nvme/aster-power-xq-20261021
 ASSETS=/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq
 XOLOTL_REVISION=b3452666e07a6374d06bb8c2185dffa271e8f65f
 LLAMA_REVISION=3cf03257f219afbe7334045ff7c6a06ac68c627d

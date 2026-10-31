@@ -1,20 +1,20 @@
 [package]
-name = "a3s-box-cri"
+name = "aster-box-cri"
 version = "3.2.7"
 edition = "2021"
 license = "MIT"
 
 [[bin]]
-name = "a3s-box-cri"
+name = "aster-box-cri"
 path = "src/main.rs"
 
 [lib]
-name = "a3s_box_cri"
+name = "aster_box_cri"
 path = "src/lib.rs"
 
 [dependencies]
-a3s-box-core = { path = "../core" }
-a3s-box-runtime = { path = "../runtime" }
+aster-box-core = { path = "../core" }
+aster-box-runtime = { path = "../runtime" }
 
 # Async runtime
 tokio = { workspace = true }
@@ -62,5 +62,5 @@ tonic-build = { workspace = true }
 
 [dev-dependencies]
 tempfile = { workspace = true }
-a3s-transport = { workspace = true }
+aster-transport = { workspace = true }
 sha2 = { workspace = true }

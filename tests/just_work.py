@@ -12,7 +12,7 @@ import unittest
 @unittest.skipUnless(os.name == "posix", "Launcher fixtures use POSIX scripts")
 class CodeLauncherTest(unittest.TestCase):
     def test_code_runs_the_built_binary_and_preserves_arguments(self):
-        with tempfile.TemporaryDirectory(prefix="aster-code-test-") as directory:
+        with tempfile.TemporaryDirectory(prefix="aster-test-") as directory:
             root = Path(directory)
             shutil.copy2(Path(__file__).resolve().parents[1] / "justfile", root / "justfile")
             scripts = root / "scripts"
@@ -38,7 +38,7 @@ class CodeLauncherTest(unittest.TestCase):
             executable.parent.mkdir(parents=True)
             executable.write_text(
                 '#!/bin/sh\nprintf "%s\\n" "$@" > "$ASTER_OPEN_LOG"\n'
-                'printf "%s" "${A3S_CONFIG-}" > "$ASTER_CONFIG_LOG"\n'
+                'printf "%s" "${ASTER_CONFIG-}" > "$ASTER_CONFIG_LOG"\n'
                 'printf "%s" "${ASTER_SANDBOX_DIR-}" > "$ASTER_SANDBOX_LOG"\n'
             )
             executable.chmod(0o755)
@@ -49,7 +49,7 @@ class CodeLauncherTest(unittest.TestCase):
                        ASTER_CONFIG_LOG=str(config_log), ASTER_WRAPPER_LOG=str(root / "wrapper.txt"),
                        ASTER_TEST_SANDBOX=str(root / "trusted runtime"), ASTER_SANDBOX_LOG=str(root / "sandbox.txt"))
             env.pop("RUSTC_WRAPPER", None)
-            env.pop("A3S_CONFIG", None)
+            env.pop("ASTER_CONFIG", None)
             env.pop("ASTER_SANDBOX_DIR", None)
             result = subprocess.run(["just", "code", "--cwd", "/tmp/aster project"],
                                     cwd=root, env=env, capture_output=True, text=True)
@@ -60,7 +60,7 @@ class CodeLauncherTest(unittest.TestCase):
             if sys.platform == "darwin" and platform.machine() in ("arm64", "aarch64"):
                 self.assertEqual((root / "sandbox.txt").read_text(), env["ASTER_TEST_SANDBOX"])
             env["RUSTC_WRAPPER"] = "my-compiler-wrapper"
-            acl = root / ".a3s" / "config.acl"
+            acl = root / ".aster" / "config.acl"
             acl.parent.mkdir()
             acl.write_text('default_model = "fixture/local"\n')
             result = subprocess.run(["just", "code"], cwd=root, env=env, capture_output=True, text=True)
@@ -68,14 +68,14 @@ class CodeLauncherTest(unittest.TestCase):
             self.assertEqual(Path(config_log.read_text()), acl.resolve())
             self.assertEqual((root / "wrapper.txt").read_text(), "my-compiler-wrapper")
             env["RUSTC_WRAPPER"] = ""
-            env["A3S_CONFIG"] = "/tmp/kept-by-user.acl"
+            env["ASTER_CONFIG"] = "/tmp/kept-by-user.acl"
             env["ASTER_SANDBOX_DIR"] = "/tmp/explicit-sandbox"
             result = subprocess.run(["just", "code"], cwd=root, env=env, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(config_log.read_text(), "/tmp/kept-by-user.acl")
             self.assertEqual((root / "wrapper.txt").read_text(), "")
             self.assertEqual((root / "sandbox.txt").read_text(), "/tmp/explicit-sandbox")
-            env.pop("A3S_CONFIG", None)
+            env.pop("ASTER_CONFIG", None)
             log.unlink()
             env["ASTER_TEST_FAIL"] = "1"
             result = subprocess.run(["just", "code"], cwd=root, env=env, capture_output=True)
@@ -92,7 +92,7 @@ using System.IO;
 public class AsterProbe {
     public static int Main(string[] args) {
         File.WriteAllLines(Environment.GetEnvironmentVariable("ASTER_OPEN_LOG"), args);
-        var config = Environment.GetEnvironmentVariable("A3S_CONFIG") ?? "";
+        var config = Environment.GetEnvironmentVariable("ASTER_CONFIG") ?? "";
         File.WriteAllText(Environment.GetEnvironmentVariable("ASTER_CONFIG_LOG"), config, new System.Text.UTF8Encoding(false));
         return 0;
     }
@@ -113,7 +113,7 @@ public class AsterProbe {
         self.assertTrue(executable.is_file(), result.stderr)
 
     def test_code_runs_the_built_binary_and_preserves_arguments(self):
-        with tempfile.TemporaryDirectory(prefix="aster-code-win-") as directory:
+        with tempfile.TemporaryDirectory(prefix="aster-win-") as directory:
             root = Path(directory)
             shutil.copy2(Path(__file__).resolve().parents[1] / "justfile", root / "justfile")
             tools = root / "bin"
@@ -161,7 +161,7 @@ public class AsterProbe {
                 ASTER_TEST_FAIL="0",
             )
             env.pop("PROTOC", None)
-            env.pop("A3S_CONFIG", None)
+            env.pop("ASTER_CONFIG", None)
             result = subprocess.run(
                 ["just", "code", "--cwd", str(project)],
                 cwd=root,
@@ -173,7 +173,7 @@ public class AsterProbe {
             self.assertEqual(log.read_text().splitlines(), ["--cwd", str(project)])
             self.assertEqual(config_log.read_text(), "")
             self.assertEqual(protoc_log.read_text().strip(), str(known_protoc))
-            acl = root / ".a3s" / "config.acl"
+            acl = root / ".aster" / "config.acl"
             acl.parent.mkdir()
             acl.write_text('default_model = "fixture/local"\n', encoding="ascii")
             result = subprocess.run(
@@ -185,7 +185,7 @@ public class AsterProbe {
             )
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual(Path(config_log.read_text().strip()), acl.resolve())
-            env["A3S_CONFIG"] = str(root / "kept-by-user.acl")
+            env["ASTER_CONFIG"] = str(root / "kept-by-user.acl")
             result = subprocess.run(
                 ["just", "code"],
                 cwd=root,
@@ -194,8 +194,8 @@ public class AsterProbe {
                 text=True,
             )
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-            self.assertEqual(config_log.read_text().strip(), env["A3S_CONFIG"])
-            env.pop("A3S_CONFIG", None)
+            self.assertEqual(config_log.read_text().strip(), env["ASTER_CONFIG"])
+            env.pop("ASTER_CONFIG", None)
             log.unlink()
             env["ASTER_TEST_FAIL"] = "1"
             result = subprocess.run(
@@ -231,11 +231,11 @@ class StudioLauncherTest(unittest.TestCase):
     def test_explicit_toyou_and_environment_selection_are_preserved(self):
         with tempfile.TemporaryDirectory(prefix="aster-studio-selection-") as directory:
             root, env, opened = self.fixture(directory)
-            env["A3S_TENANT_SLUG"] = "aster"
+            env["ASTER_TENANT_SLUG"] = "aster"
             result = subprocess.run(["just", "studio", "toyou"], cwd=root, env=env, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(opened.read_text().strip(), "toyou 1")
-            env["A3S_TENANT_SLUG"] = "toyou"
+            env["ASTER_TENANT_SLUG"] = "toyou"
             result = subprocess.run(["just", "studio"], cwd=root, env=env, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(opened.read_text().strip(), "toyou 1")
@@ -253,12 +253,12 @@ class StudioLauncherTest(unittest.TestCase):
         for recipe in ("dev", "work"):
             with self.subTest(recipe=recipe), tempfile.TemporaryDirectory(prefix="aster-studio-tenant-") as directory:
                 root, env, opened = self.fixture(directory)
-                env["A3S_TENANT_SLUG"] = "aster"
+                env["ASTER_TENANT_SLUG"] = "aster"
                 result = subprocess.run(["just", recipe, "toyou"], cwd=root, env=env, capture_output=True, text=True)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(opened.read_text().strip(), "toyou 1")
                 opened.unlink()
-                env["A3S_TENANT_SLUG"] = "kense"
+                env["ASTER_TENANT_SLUG"] = "kense"
                 result = subprocess.run(["just", recipe], cwd=root, env=env, capture_output=True, text=True)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(opened.read_text().strip(), "kense 1")
@@ -271,18 +271,18 @@ class StudioLauncherTest(unittest.TestCase):
                 if override is not None:
                     env["CARGO_TARGET_DIR"] = str(root / override)
                 cargo = root / "bin/cargo"
-                cargo.write_text('#!/usr/bin/env python3\nimport json,os,sys\nfrom pathlib import Path\ntarget=Path(os.environ.get("CARGO_TARGET_DIR",str(Path.cwd()/"target")))\nif sys.argv[1]=="metadata": print(json.dumps({"target_directory":str(target)}))\nelse:\n with open(os.environ["ASTER_CARGO_LOG"],"a") as out: out.write(json.dumps(sys.argv[1:])+"\\n")\n for name in ["a3s-code-acp","a3s-office"]:\n  path=target/"debug"/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(b"fixture")\n')
+                cargo.write_text('#!/usr/bin/env python3\nimport json,os,sys\nfrom pathlib import Path\ntarget=Path(os.environ.get("CARGO_TARGET_DIR",str(Path.cwd()/"target")))\nif sys.argv[1]=="metadata": print(json.dumps({"target_directory":str(target)}))\nelse:\n with open(os.environ["ASTER_CARGO_LOG"],"a") as out: out.write(json.dumps(sys.argv[1:])+"\\n")\n for name in ["aster-acp","aster-office"]:\n  path=target/"debug"/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(b"fixture")\n')
                 result = subprocess.run(["just", "build-studio", tenant], cwd=root, env=env, capture_output=True, text=True)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 import json
                 calls = [json.loads(line) for line in (root / "cargo.txt").read_text().splitlines()]
-                shared = ["build", "--locked", "-p", "a3s-studio", "-p", "a3s-code-acp", "-p", "a3s-office-cli", "--no-default-features", "--features",
-                          f"a3s-studio/tenant-{tenant},a3s-code-acp/default,a3s-code-acp/headless-search,a3s-office-cli/default"]
-                self.assertEqual(calls[0], [*shared, "--bin", "a3s-code-acp", "--bin", "a3s-office"])
+                shared = ["build", "--locked", "-p", "aster-studio", "-p", "aster-acp", "-p", "aster-office-cli", "--no-default-features", "--features",
+                          f"aster-studio/tenant-{tenant},aster-acp/default,aster-acp/headless-search,aster-office-cli/default"]
+                self.assertEqual(calls[0], [*shared, "--bin", "aster-acp", "--bin", "aster-office"])
                 self.assertEqual(calls[1], [*shared, "--bin", "Studio"])
                 expected_target = root / override if override else root / f"target/studio/{tenant}"
-                self.assertTrue((expected_target / "debug/a3s-code-acp").is_file())
-                self.assertFalse((root / "target/debug/a3s-code-acp").exists())
+                self.assertTrue((expected_target / "debug/aster-acp").is_file())
+                self.assertFalse((root / "target/debug/aster-acp").exists())
 
     def test_staged_build_reuses_shared_features_and_embeds_finished_companions(self):
         real_cargo = shutil.which("cargo")
@@ -297,9 +297,9 @@ class StudioLauncherTest(unittest.TestCase):
             (root / "Cargo.toml").write_text('[workspace]\nresolver="3"\nmembers=["shared","host","acp","office"]\n')
             packages = [
                 ("shared", "shared", '[features]\nagent=[]\ndesktop=[]\n', 'pub fn value()->bool{cfg!(all(feature="agent",feature="desktop"))}'),
-                ("acp", "a3s-code-acp", '[features]\ndefault=["svg-png","account-import"]\nsvg-png=[]\naccount-import=[]\nheadless-search=[]\n[dependencies]\nshared={path="../shared",features=["agent"]}\n', 'fn main(){assert!(shared::value());assert!(cfg!(all(feature="svg-png",feature="account-import",feature="headless-search")));}'),
-                ("office", "a3s-office-cli", '[[bin]]\nname="a3s-office"\npath="src/main.rs"\n[features]\ndefault=["browser"]\nbrowser=[]\n[dependencies]\nshared={path="../shared"}\n', 'fn main(){assert!(shared::value());assert!(cfg!(feature="browser"));}'),
-                ("host", "a3s-studio", '[[bin]]\nname="Studio"\npath="src/main.rs"\n[features]\ndefault=["tenant-aster"]\ntenant-aster=[]\ntenant-toyou=[]\n[dependencies]\nshared={path="../shared",features=["desktop"]}\n', 'fn main(){assert!(shared::value());assert!(cfg!(feature="tenant-toyou"));assert!(!cfg!(feature="tenant-aster"));}')
+                ("acp", "aster-acp", '[features]\ndefault=["svg-png","account-import"]\nsvg-png=[]\naccount-import=[]\nheadless-search=[]\n[dependencies]\nshared={path="../shared",features=["agent"]}\n', 'fn main(){assert!(shared::value());assert!(cfg!(all(feature="svg-png",feature="account-import",feature="headless-search")));}'),
+                ("office", "aster-office-cli", '[[bin]]\nname="aster-office"\npath="src/main.rs"\n[features]\ndefault=["browser"]\nbrowser=[]\n[dependencies]\nshared={path="../shared"}\n', 'fn main(){assert!(shared::value());assert!(cfg!(feature="browser"));}'),
+                ("host", "aster-studio", '[[bin]]\nname="Studio"\npath="src/main.rs"\n[features]\ndefault=["tenant-aster"]\ntenant-aster=[]\ntenant-toyou=[]\n[dependencies]\nshared={path="../shared",features=["desktop"]}\n', 'fn main(){assert!(shared::value());assert!(cfg!(feature="tenant-toyou"));assert!(!cfg!(feature="tenant-aster"));}')
             ]
             for folder, name, settings, source in packages:
                 base = root / folder
@@ -307,7 +307,7 @@ class StudioLauncherTest(unittest.TestCase):
                 (base / "Cargo.toml").write_text(f'[package]\nname="{name}"\nversion="0.0.0"\nedition="2021"\n'+settings)
                 (base / "src" / ("lib.rs" if folder=="shared" else "main.rs")).write_text(source)
             (root / "shared/build.rs").write_text('use std::io::Write;fn main(){let p=std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../compiled.txt");writeln!(std::fs::OpenOptions::new().create(true).append(true).open(p).unwrap(),"built").unwrap();}')
-            (root / "host/build.rs").write_text('fn main(){for name in ["a3s-code-acp","a3s-office"]{assert!(std::process::Command::new(std::path::Path::new(&std::env::var("CARGO_TARGET_DIR").unwrap()).join("debug").join(name)).status().unwrap().success());}}')
+            (root / "host/build.rs").write_text('fn main(){for name in ["aster-acp","aster-office"]{assert!(std::process::Command::new(std::path::Path::new(&std::env::var("CARGO_TARGET_DIR").unwrap()).join("debug").join(name)).status().unwrap().success());}}')
             subprocess.run([real_cargo,"generate-lockfile","--offline"],cwd=root,env=env,check=True,capture_output=True)
             import fcntl
             global_target = root / "target/debug"
@@ -379,12 +379,12 @@ class StudioLauncherTest(unittest.TestCase):
             command.chmod(0o755)
         script = root / "apps/studio/scripts/studio-shell.sh"
         script.parent.mkdir(parents=True)
-        script.write_text('#!/bin/sh\nprintf "%s %s\\n" "$A3S_TENANT_SLUG" "$STUDIO_RENDERER_DEV" > "$ASTER_OPEN_LOG"\n')
+        script.write_text('#!/bin/sh\nprintf "%s %s\\n" "$ASTER_TENANT_SLUG" "$STUDIO_RENDERER_DEV" > "$ASTER_OPEN_LOG"\n')
         script.chmod(0o755)
         opened = root / "opened.txt"
         env = dict(os.environ, PATH=f"{tools}:{os.environ['PATH']}", ASTER_OPEN_LOG=str(opened),
                    ASTER_CARGO_LOG=str(root / "cargo.txt"))
-        env.pop("A3S_TENANT_SLUG", None)
+        env.pop("ASTER_TENANT_SLUG", None)
         env.pop("STUDIO_RENDERER_DEV", None)
         env.pop("CARGO_TARGET_DIR", None)
         return root, env, opened
@@ -408,10 +408,10 @@ class BuildPreflightTest(unittest.TestCase):
     def refuses_before_cargo(self, body):
         with tempfile.TemporaryDirectory(prefix="aster-build-refusal-") as directory:
             marker = Path(directory) / "compiler-called"
-            env = dict(os.environ, ASTER_COMPILER_MARKER=str(marker), A3S_TENANT_SLUG="toyou",
+            env = dict(os.environ, ASTER_COMPILER_MARKER=str(marker), ASTER_TENANT_SLUG="toyou",
                        STUDIO_RENDERER_DIST="fixture-renderer", CARGO_TARGET_DIR=str(Path(directory) / "target"))
             runner = '''
-python3() { if [[ "${3:-}" == tauri-config ]]; then return 42; fi; printf 'tenant-%s\\n' "$A3S_TENANT_SLUG"; }
+python3() { if [[ "${3:-}" == tauri-config ]]; then return 42; fi; printf 'tenant-%s\\n' "$ASTER_TENANT_SLUG"; }
 cargo() { printf called >"$ASTER_COMPILER_MARKER"; return 73; }
 '''
             result = subprocess.run(["bash", "-euo", "pipefail", "-c", runner + body], env=env,

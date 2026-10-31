@@ -1,5 +1,5 @@
 #[cfg(not(any(target_os = "linux", target_os = "macos", windows)))]
-use a3s_oci_core::{
+use aster_oci_core::{
     CapabilityStatus, DriverCapability, DriverKind, DriverReadiness, IsolationClass,
     RuntimeFeatures,
 };
@@ -34,7 +34,7 @@ pub(crate) fn whpx_smoke() -> WhpxSmokeReport {
 #[cfg(not(target_os = "macos"))]
 pub(crate) fn hvf_smoke() -> HvfSmokeReport {
     HvfSmokeReport::unsupported(
-        a3s_oci_core::HostPlatform::current(),
+        aster_oci_core::HostPlatform::current(),
         "Hypervisor.framework smoke is available only on macOS hosts",
     )
 }

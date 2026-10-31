@@ -161,8 +161,8 @@ pub(crate) fn observe_file_identity(
     }
 }
 
-pub(super) fn tool_file_identity(stamp: &ContentStamp) -> Option<a3s_effect::ToolFileIdentityV1> {
-    use a3s_effect::{ToolFileIdentityV1, ToolFileKind};
+pub(super) fn tool_file_identity(stamp: &ContentStamp) -> Option<aster_effect::ToolFileIdentityV1> {
+    use aster_effect::{ToolFileIdentityV1, ToolFileKind};
     let kind = if !stamp.present {
         ToolFileKind::Missing
     } else {

@@ -4,7 +4,7 @@
 //! Composition follows DeepInfer's Apache-2.0 hc_blocks.py at revision
 //! 9bd9cf243fc53ef9afbf8f04d391d989117d6ab9.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::Tensor;
 use tokio_util::sync::CancellationToken;
 

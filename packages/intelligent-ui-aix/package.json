@@ -1,5 +1,5 @@
 {
-  "name": "@a3s-lab/intelligent-ui-aix",
+  "name": "@aster-ai-lab/intelligent-ui-aix",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,6 +8,6 @@
     "build": "node scripts/build.mjs"
   },
   "dependencies": {
-    "@a3s-lab/intelligent-ui": "file:../intelligent-ui"
+    "@aster-ai-lab/intelligent-ui": "file:../intelligent-ui"
   }
 }

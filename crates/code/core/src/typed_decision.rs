@@ -1,4 +1,4 @@
-//! Optional typed System-1 decisions via A3S Apofasi.
+//! Optional typed System-1 decisions via Aster Apofasi.
 //!
 //! This module is a host substrate, not a generative model path and not a
 //! Use-projected capability kind. Enable Cargo feature `apofasi` (lexical) or
@@ -21,7 +21,7 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 
-use a3s_apofasi::{any_escalate, gate_response, Client, LexicalEngine};
+use aster_apofasi::{any_escalate, gate_response, Client, LexicalEngine};
 use serde::{Deserialize, Serialize};
 
 use crate::content_digest::digest_json;
@@ -39,20 +39,20 @@ pub use host::{
     HostEvidenceError, TypedDecisionComposition,
 };
 
-pub use a3s_apofasi::{
+pub use aster_apofasi::{
     analyse, gate_answer, Answer, CheckpointId, Criteria, DecisionKind, Detection, GateAction,
     GatePolicy, Question, RouteDecision, State, SystemOneRequest, SystemOneResponse,
     TemperatureTable, TokenUsage, VERSION as APOFASI_VERSION,
 };
 
 #[cfg(feature = "apofasi-infer")]
-pub use a3s_apofasi::{CheckpointRegistry, DeviceRequest, NeuralEngine};
+pub use aster_apofasi::{CheckpointRegistry, DeviceRequest, NeuralEngine};
 
 /// Wire schema id for [`TypedDecisionReceiptV1`].
-pub const TYPED_DECISION_RECEIPT_SCHEMA_V1: &str = "a3s-code/typed-decision-receipt/v1";
+pub const TYPED_DECISION_RECEIPT_SCHEMA_V1: &str = "aster/typed-decision-receipt/v1";
 
-const REQUEST_DIGEST_DOMAIN: &str = "a3s.code.typed_decision.request.v1";
-const RESPONSE_DIGEST_DOMAIN: &str = "a3s.code.typed_decision.response.v1";
+const REQUEST_DIGEST_DOMAIN: &str = "aster.code.typed_decision.request.v1";
+const RESPONSE_DIGEST_DOMAIN: &str = "aster.code.typed_decision.response.v1";
 
 /// Error surface for the optional typed-decision substrate.
 #[derive(Debug, thiserror::Error)]
@@ -62,7 +62,7 @@ pub enum TypedDecisionError {
     EmptyRequest(&'static str),
     /// Apofasi engine / schema failure.
     #[error(transparent)]
-    Apofasi(#[from] a3s_apofasi::Error),
+    Apofasi(#[from] aster_apofasi::Error),
     /// Digest or receipt serialization failure.
     #[error("typed decision receipt serialization failed: {0}")]
     Serialization(#[from] serde_json::Error),
@@ -327,12 +327,12 @@ impl NeuralEngineHandle {
 #[cfg(feature = "apofasi-infer")]
 impl TypedDecisionEngine for NeuralEngineHandle {
     fn model_id(&self) -> &str {
-        use a3s_apofasi::DecisionEngine;
+        use aster_apofasi::DecisionEngine;
         self.engine.model_id()
     }
 
     fn decide(&self, request: SystemOneRequest) -> TypedDecisionResult<SystemOneResponse> {
-        use a3s_apofasi::DecisionEngine;
+        use aster_apofasi::DecisionEngine;
         validate_system_one_request(&request)?;
         Ok(self.engine.decide(&request)?)
     }

@@ -458,7 +458,7 @@ async fn test_registry_truncates_large_tool_output() {
     assert!(result.output.contains("[tool output bounded by"));
     assert!(result
         .output
-        .contains("Full output artifact: a3s://tool-output/large_output/"));
+        .contains("Full output artifact: aster://tool-output/large_output/"));
     assert!(result.output.len() < policy.max_output_bytes + 512);
     let metadata = result.metadata.expect("artifact metadata");
     assert_eq!(
@@ -476,9 +476,9 @@ async fn test_registry_truncates_large_tool_output() {
     assert!(metadata["artifact"]["artifact_uri"]
         .as_str()
         .unwrap()
-        .starts_with("a3s://tool-output/large_output/"));
+        .starts_with("aster://tool-output/large_output/"));
     let evidence: super::super::ToolResultEvidenceV1 =
-        serde_json::from_value(metadata["a3s_tool_result_evidence"].clone()).unwrap();
+        serde_json::from_value(metadata["aster_tool_result_evidence"].clone()).unwrap();
     assert_eq!(
         evidence.schema,
         super::super::TOOL_RESULT_EVIDENCE_SCHEMA_V1
@@ -517,7 +517,7 @@ async fn unknown_tool_result_still_carries_context_evidence() {
         .unwrap();
     let metadata = result.metadata.unwrap();
     let evidence: super::super::ToolResultEvidenceV1 =
-        serde_json::from_value(metadata["a3s_tool_result_evidence"].clone()).unwrap();
+        serde_json::from_value(metadata["aster_tool_result_evidence"].clone()).unwrap();
     let transform_binding: super::super::ToolResultTransformBindingV1 = serde_json::from_value(
         metadata[super::super::TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY].clone(),
     )

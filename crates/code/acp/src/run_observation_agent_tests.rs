@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
 use serde_json::{json, Value};
@@ -26,7 +26,7 @@ impl acp::Client for Host {
     }
 
     async fn ext_notification(&self, args: acp::ExtNotification) -> acp::Result<()> {
-        if args.method.as_ref() == "a3s/turn/outcome" {
+        if args.method.as_ref() == "aster/turn/outcome" {
             return Ok(());
         }
         assert_eq!(args.method.as_ref(), crate::run_observation::METHOD);
@@ -140,15 +140,15 @@ impl Fixture {
                             calls: AtomicUsize::new(0),
                         }))
                         .with_permission_policy(
-                            a3s_code_core::permissions::PermissionPolicy::new().allow("read"),
+                            aster_core::permissions::PermissionPolicy::new().allow("read"),
                         )
-                        .with_planning_mode(a3s_code_core::PlanningMode::Disabled),
+                        .with_planning_mode(aster_core::PlanningMode::Disabled),
                 ),
             )
             .await
             .unwrap(),
         );
-        let agent = Rc::new(A3sCodeAgent::new(launch));
+        let agent = Rc::new(AsterCodeAgent::new(launch));
         let (left, right) = tokio::io::duplex(1024 * 1024);
         let (ar, aw) = tokio::io::split(left);
         let (cr, cw) = tokio::io::split(right);
@@ -208,7 +208,7 @@ impl Fixture {
         let mut meta = acp::Meta::new();
         meta.insert("promptId".into(), json!(prompt_id));
         if enabled {
-            meta.insert("a3sExecutionObservation".into(), json!(1));
+            meta.insert("asterExecutionObservation".into(), json!(1));
         }
         request.meta = Some(meta);
         request
@@ -240,7 +240,7 @@ impl Fixture {
 
 fn assert_run(
     packets: &[Value],
-    run: &a3s_code_core::run::RunSnapshot,
+    run: &aster_core::run::RunSnapshot,
     session_id: &acp::SessionId,
     prompt_id: &str,
 ) {
@@ -296,7 +296,7 @@ async fn actual_acp_prompt_projects_core_runs_and_keeps_commands_and_legacy_clie
                 let runs = fixture.session.runs().await;
                 let run = runs.last().unwrap();
                 assert_run(&packets, run, &fixture.session_id, prompt);
-                assert_eq!(run.status, a3s_code_core::run::RunStatus::Completed);
+                assert_eq!(run.status, aster_core::run::RunStatus::Completed);
                 assert_eq!(
                     packets
                         .iter()
@@ -363,7 +363,7 @@ async fn actual_acp_prompt_projects_core_runs_and_keeps_commands_and_legacy_clie
             assert_eq!(packets[1]["turn"], 1);
             assert_eq!(packets[3]["turn"], 2);
             retained.extend(packets);
-            if let Some(path) = std::env::var_os("A3S_CLOUD_TEST_AIX_EXECUTION_OBSERVATIONS") {
+            if let Some(path) = std::env::var_os("ASTER_CLOUD_TEST_AIX_EXECUTION_OBSERVATIONS") {
                 let lines = retained
                     .iter()
                     .map(|value| serde_json::to_string(value).unwrap())
@@ -383,8 +383,8 @@ async fn actual_acp_failure_and_cancel_close_only_with_the_core_terminal_outcome
     tokio::task::LocalSet::new()
         .run_until(async {
             for (mode, expected) in [
-                (Mode::Fail, a3s_code_core::run::RunStatus::Failed),
-                (Mode::Wait, a3s_code_core::run::RunStatus::Cancelled),
+                (Mode::Fail, aster_core::run::RunStatus::Failed),
+                (Mode::Wait, aster_core::run::RunStatus::Cancelled),
             ] {
                 let mut fixture = Fixture::new(mode).await;
                 let request = fixture.request("terminal-prompt", "private terminal prompt", true);

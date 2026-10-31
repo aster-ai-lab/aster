@@ -1,9 +1,9 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{
+use aster_use_core::{
     PackageSurfaceKind, PlanQualifiedSurfaceRef, PlanScope, PluginSurfaceRef, UseError, UseResult,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionLifecycleIdentity, InstalledExtension, ToolTaskSource, ToolWorkload,
 };
 use sha2::{Digest, Sha256};
@@ -146,9 +146,9 @@ fn readable_segment(value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use a3s_runtime::contract::NetworkMode;
-    use a3s_use_core::{PlanEnforcementProfile, PlanScopeKind, PlannedProviderEvidence};
-    use a3s_use_extension::{ExtensionManifest, ExtensionReceipt, ExtensionTrust};
+    use aster_runtime::contract::NetworkMode;
+    use aster_use_core::{PlanEnforcementProfile, PlanScopeKind, PlannedProviderEvidence};
+    use aster_use_extension::{ExtensionManifest, ExtensionReceipt, ExtensionTrust};
 
     use crate::plugin_runtime::{
         plan_tool_task_release, RuntimePreparedTaskBinding, RuntimeSurfaceContext,

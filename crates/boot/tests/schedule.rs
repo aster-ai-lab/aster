@@ -1,6 +1,6 @@
 #![cfg(feature = "schedule")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BoxFuture, Module, ModuleRef, ProviderDefinition, Result,
     ScheduleContext, ScheduleModule, ScheduleTrigger, Scheduler,
 };
@@ -78,9 +78,9 @@ struct MacroScheduleTasks {
 }
 
 #[cfg(feature = "macros")]
-#[a3s_boot::schedule]
+#[aster_boot::schedule]
 impl MacroScheduleTasks {
-    #[a3s_boot::interval("macro.refresh", 10)]
+    #[aster_boot::interval("macro.refresh", 10)]
     async fn refresh(&self, context: ScheduleContext) -> Result<()> {
         assert_eq!(context.job_name, "macro.refresh");
         assert_eq!(
@@ -91,13 +91,13 @@ impl MacroScheduleTasks {
         Ok(())
     }
 
-    #[a3s_boot::timeout(10)]
+    #[aster_boot::timeout(10)]
     async fn warmup(&self) -> Result<()> {
         self.timeout_calls.fetch_add(1, Ordering::SeqCst);
         Ok(())
     }
 
-    #[a3s_boot::cron("macro.prune", "0 0 0 * * * *")]
+    #[aster_boot::cron("macro.prune", "0 0 0 * * * *")]
     async fn prune(&self) -> Result<()> {
         Ok(())
     }

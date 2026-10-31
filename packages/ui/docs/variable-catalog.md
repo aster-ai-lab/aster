@@ -211,7 +211,7 @@ Before adding a variable:
 6. Define a root value and ensure light/dark resolution is intentional.
 7. Add shared names to `theme-contract.ts`; add Tailwind exposure only when semantic utilities are required.
 8. Add migration metadata when replacing an existing name.
-9. Run `theme:build`, then `pnpm --filter @a3s/ui theme:check`; the check also covers generated output,
+9. Run `theme:build`, then `pnpm --filter @aster/ui theme:check`; the check also covers generated output,
    migration rules, and the renderer migration boundary.
 10. Update this catalog and the relevant visual guidance.
 

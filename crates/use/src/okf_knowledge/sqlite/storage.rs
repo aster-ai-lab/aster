@@ -1,4 +1,4 @@
-use a3s_use_core::{OkfProjectionReceipt, PlanScope, UseError, UseResult};
+use aster_use_core::{OkfProjectionReceipt, PlanScope, UseError, UseResult};
 use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 

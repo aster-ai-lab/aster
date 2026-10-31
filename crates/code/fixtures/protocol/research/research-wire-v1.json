@@ -1,5 +1,5 @@
 {
-  "schema": "a3s.code.research-wire.v1",
+  "schema": "aster.code.research-wire.v1",
   "version": 1,
   "max_message_bytes": 33554432,
   "kinds": [

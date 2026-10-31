@@ -17,18 +17,18 @@ Results must identify one of these lanes. Ratios from different lanes must
 never be presented as capability-equivalent.
 
 1. **OpenAI wire path** — both products forward the same OpenAI-compatible
-   request to the same deterministic upstream. A3S performs its bounded JSON
+   request to the same deterministic upstream. Aster performs its bounded JSON
    and model validation; NGINX performs transport-only forwarding. This is the
    customer-visible product overhead, not a policy-equivalent comparison.
 2. **Streaming transport control** — a non-OpenAI SSE route isolates HTTP
    relay cost. It is the control needed to distinguish generic streaming
-   overhead from A3S OpenAI request processing.
-3. **AI policy path** — A3S enables model aliases, identity, admission,
+   overhead from Aster OpenAI request processing.
+3. **AI policy path** — Aster enables model aliases, identity, admission,
    fallback, telemetry, or rollout policy. Standard NGINX has no native
-   equivalent; report A3S absolute measurements and mark the NGINX capability
+   equivalent; report Aster absolute measurements and mark the NGINX capability
    as unavailable unless the exact external modules and configuration are
    supplied and versioned.
-4. **Inference lifecycle** — A3S Box/Sandbox scale-to-zero, cold start,
+4. **Inference lifecycle** — Aster Box/Sandbox scale-to-zero, cold start,
    recovery, and isolation are measured end to end. A static NGINX upstream is
    a control for warm relay latency, not an equivalent lifecycle manager.
 
@@ -91,7 +91,7 @@ comparable.
 | `prompt-32k` | 32 KiB prompt | Common long-context upload |
 | `prompt-256k` | 256 KiB prompt | Validation and allocation pressure |
 | `prompt-1m` | 1 MiB prompt | Large-context tail latency |
-| `prompt-limit` | Exactly the A3S body limit | Boundary success and memory ceiling |
+| `prompt-limit` | Exactly the Aster body limit | Boundary success and memory ceiling |
 | `prompt-over-limit` | Declared length past limit | Early 413, no body read, no upstream work |
 | `json-short` | Non-streaming short completion | Normal JSON E2E |
 | `json-large` | Multi-MiB completion or embedding | Response relay and memory behavior |
@@ -129,7 +129,7 @@ comparable.
 
 ### AI policy and routing
 
-| ID | A3S feature | Baseline interpretation |
+| ID | Aster feature | Baseline interpretation |
 | --- | --- | --- |
 | `model-alias` | External alias to internal service | NGINX requires custom routing logic |
 | `many-models` | 10/100/1,000 aliases | Routing lookup and reload scale |
@@ -146,7 +146,7 @@ comparable.
 
 | ID | Workload | Required reading |
 | --- | --- | --- |
-| `warm-sandbox` | Ready A3S Box Sandbox | Warm TTFT versus static NGINX |
+| `warm-sandbox` | Ready Aster Box Sandbox | Warm TTFT versus static NGINX |
 | `cold-sandbox` | Scale from zero | Cold TTFT broken into queue/start/first token |
 | `cold-herd` | Many requests for one zero replica model | Single-flight activation and fan-out |
 | `multi-model-cold` | Independent cold models | Isolation and parallel activation |
@@ -169,11 +169,11 @@ are dimensions, not separate cherry-picked headline results.
 The checked-in NGINX configuration is versioned with every result and must:
 
 - use the same upstream address, request corpus, connection policy, and
-  measurement order as A3S;
+  measurement order as Aster;
 - disable response buffering (`proxy_buffering off`) and compression for
   token-stream profiles;
 - state whether request buffering is enabled. Both settings are measured for
-  large/chunked prompts because A3S intentionally performs bounded OpenAI JSON
+  large/chunked prompts because Aster intentionally performs bounded OpenAI JSON
   validation;
 - keep the core prompt sweep within the checked-in 512 KiB client-body buffer.
   Disk-spill profiles use a dedicated writable volume (`disk-spill` /
@@ -222,16 +222,16 @@ and [`proxy_next_upstream`](https://nginx.org/en/docs/http/ngx_http_proxy_module
    steady-state trials.
 4. **Dedicated inference runner:** vLLM/TGI/llama.cpp or another pinned real
    engine, fixed model artifacts, dedicated CPU/GPU, network-separated and
-   A3S Box/Sandbox cold-start lanes.
+   Aster Box/Sandbox cold-start lanes.
 
 ## Implemented baseline
 
 The repository now owns a deterministic OpenAI-compatible upstream, a
-streaming-aware Rust load client, A3S and NGINX fixtures, a repeated-trial
+streaming-aware Rust load client, Aster and NGINX fixtures, a repeated-trial
 runner, and a strict exporter. Run the release-profile baseline on Linux with:
 
 ```bash
-cargo build --locked --release --bin a3s-gateway \
+cargo build --locked --release --bin aster-gateway \
   --example ai_benchmark_upstream --example ai_benchmark_load
 bash scripts/run-ai-gateway-comparison.sh
 ```
@@ -242,7 +242,7 @@ currently automates zero-delay and paced concurrency lanes, long output,
 Chat/Completions parity, and 32/256 KiB prompts. Opt-in `sse-transport-c1` /
 `sse-transport-c64` use the same C1/C64 zero-delay schedule as
 `stream-overhead-*` against non-OpenAI `POST /benchmark/sse`, isolating generic
-SSE relay cost from A3S OpenAI JSON validation. Opt-in cancellation smoke
+SSE relay cost from Aster OpenAI JSON validation. Opt-in cancellation smoke
 profiles `disconnect-before-token` and `disconnect-after-token` exercise
 client close before/after the first token (`--disconnect-after-tokens`); the
 deterministic upstream exposes `/benchmark/stats` client-cancel counters.
@@ -274,11 +274,11 @@ records proxy-error latency (`--expect-proxy-error`, warmup 0). Opt-in
 (TEST-NET-3 `203.0.113.1`) with service `connect_timeout = "2s"` so dial is
 bounded independently of `request_timeout`. Opt-in `telemetry-on` switches
 onto `gateway-telemetry.acl` (metrics, access log, and tracing enabled) for
-the paced C16 workload and records A3S absolute medians only—NGINX is marked
+the paced C16 workload and records Aster absolute medians only—NGINX is marked
 unsupported for that policy lane unless a pinned equivalent module is
 supplied. Opt-in `telemetry-off` runs the matching paced C16 schedule on the
 default fixture (observability left off) so feature-cost deltas vs
-`telemetry-on` stay A3S-only absolute. Opt-in `fallback` switches onto `gateway-fallback.acl` /
+`telemetry-on` stay Aster-only absolute. Opt-in `fallback` switches onto `gateway-fallback.acl` /
 `nginx-fallback.conf`: primary points at a closed port; the runner trips
 Gateway passive health (and NGINX `max_fails`) quarantine before each trial,
 then the measured complete-stream batch (`warmup_requests=0`) recovers through
@@ -304,10 +304,10 @@ prompt (`prompt_bytes=1048576`). Opt-in `chunked-upload` sends the OpenAI JSON
 body with `--chunked-upload-frames` (`Transfer-Encoding: chunked`). Opt-in
 `request-buffering-on` / `request-buffering-off` reuse that chunked schedule
 while varying only NGINX `proxy_request_buffering` (`nginx.conf` vs
-`nginx-request-buffering-off.conf`); A3S stays on `gateway.acl` bounded OpenAI
+`nginx-request-buffering-off.conf`); Aster stays on `gateway.acl` bounded OpenAI
 validation for both. Opt-in `disk-spill` reuses the paced 32 KiB prompt schedule
 with `nginx-disk-spill.conf` (`client_body_buffer_size 16k` +
-`client_body_temp_path /tmp/a3s-ai-bench-client-body`); the runner creates that
+`client_body_temp_path /tmp/aster-ai-bench-client-body`); the runner creates that
 volume and records it in `AI_BENCH_OUTPUT/disk-spill-volume.txt`. Opt-in
 `gateway-restart` kills and restarts the product under test with the same
 standalone `gateway.acl` / `nginx.conf` desired state, records
@@ -333,7 +333,7 @@ reuse versus `--force-connection-close` (Connection: close, idle pool 0). Opt-in
 `transport-tls-http1` / `transport-tls-http2` terminate TLS on both products
 (`gateway-tls.acl` / `nginx-tls.conf` + checked-in self-signed certs) with plain HTTP upstream;
 load client uses `--insecure-tls` and optional `--http2` ALPN. Dual-product via
-`nginx-tls.conf` (cert material copied to `/tmp/a3s-ai-bench-*.pem`). Opt-in
+`nginx-tls.conf` (cert material copied to `/tmp/aster-ai-bench-*.pem`). Opt-in
 `transport-upstream-tls` keeps plain HTTP downstream and verifies HTTPS
 upstreams with Gateway `load_balancer.tls_ca_file` and NGINX
 `proxy_ssl_trusted_certificate` against the private test CA (no production
@@ -351,7 +351,7 @@ and uses `--accept-http-status 429` so one batch mixes admitted SSE streams
 with intentional 429 rejections. Opt-in `api-key-auth` switches onto
 `gateway-apikey.acl` (Authorization Bearer gate) and mixes valid-key admits
 with omitted-key HTTP 401s via `--api-key` / `--omit-api-key-every 2` /
-`--accept-http-status 401`; NGINX is A3S-only for that policy lane until a
+`--accept-http-status 401`; NGINX is Aster-only for that policy lane until a
 pinned auth module is supplied. Opt-in `no-replay-after-token` switches onto
 `gateway-noreplay.acl` / `nginx-noreplay.conf` (primary + failover/backup,
 Gateway retry + `Idempotency-Key`, NGINX `proxy_next_upstream`), injects
@@ -367,7 +367,7 @@ with complete-stream medians. It emits a separate versioned
 `website/assets/ai-gateway-comparison.json`; the existing protocol artifact
 stays intact so protocol RPS and AI token-latency claims cannot be mixed.
 
-Main-branch publication runs every core profile for five alternating A3S and
+Main-branch publication runs every core profile for five alternating Aster and
 NGINX trials, rejects any incomplete or misordered token stream, validates the
 exported site artifact, and publishes the raw trials plus medians at
 [`ai-gateway-comparison.json`](https://kense-labs.github.io/gateway/assets/ai-gateway-comparison.json).

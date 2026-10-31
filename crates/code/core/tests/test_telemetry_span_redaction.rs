@@ -12,10 +12,10 @@ use std::net::TcpListener;
 use std::sync::mpsc;
 use std::time::Duration;
 
-use a3s_code_core::config::CodeConfig;
-use a3s_code_core::telemetry_otel::TelemetryConfig;
-use a3s_code_core::trace::TraceEventKind;
-use a3s_code_core::Agent;
+use aster_core::config::CodeConfig;
+use aster_core::telemetry_otel::TelemetryConfig;
+use aster_core::trace::TraceEventKind;
+use aster_core::Agent;
 
 const SECRET: &str = "OTLP-SECRET-91";
 
@@ -152,7 +152,7 @@ async fn exported_span_omits_tool_argument_secrets() {
 
     let exported = String::from_utf8_lossy(&payload);
     assert!(
-        exported.contains("a3s.tool.execute"),
+        exported.contains("aster.tool.execute"),
         "collector did not receive the tool span (connections={}): {exported}",
         hits.load(std::sync::atomic::Ordering::Relaxed)
     );

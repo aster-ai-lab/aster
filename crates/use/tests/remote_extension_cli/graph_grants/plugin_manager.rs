@@ -1,7 +1,7 @@
 use super::*;
 
-use a3s_use::plugin_manager::PluginManagerService;
-use a3s_use_core::{
+use aster_use::plugin_manager::PluginManagerService;
+use aster_use_core::{
     PluginHostEnablementPlanStatus, PluginManagerApplyPlanInput, PluginManagerInstallPlanInput,
     PluginManagerListInstalledInput, PluginManagerPackageScopeInput,
 };

@@ -1,7 +1,7 @@
 #[path = "support/schema_fixture.rs"]
 mod schema_fixture;
 
-use a3s_acl::{
+use aster_acl::{
     parse, validate_document, validate_document_with_limits, AttributeSchema, Cardinality,
     Document, ObjectSchema, ParseLimits, Schema, SchemaDiagnostic, SchemaReport, Value,
     ValueSchema,
@@ -155,7 +155,7 @@ fn open_schema_flags_accept_extension_points() {
 #[test]
 fn programmatic_object_duplicates_are_rejected() {
     let document = Document {
-        blocks: vec![a3s_acl::Block {
+        blocks: vec![aster_acl::Block {
             name: "payload".to_string(),
             labels: Vec::new(),
             blocks: Vec::new(),

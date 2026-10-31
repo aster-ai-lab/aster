@@ -33,7 +33,7 @@ pub(super) async fn with_inference_metrics(
         .unwrap_or(false);
     if is_json {
         if let Ok(value) = HeaderValue::from_str(&latency_ms.to_string()) {
-            response.headers_mut().insert("x-a3s-latency-ms", value);
+            response.headers_mut().insert("x-aster-latency-ms", value);
         }
         let (parts, body) = response.into_parts();
         match body.collect().await {
@@ -52,7 +52,7 @@ pub(super) async fn with_inference_metrics(
                                 Response::from_parts(parts, ResponseBody::full(bytes));
                             response
                                 .headers_mut()
-                                .insert("x-a3s-tokens-per-second", value);
+                                .insert("x-aster-tokens-per-second", value);
                             return response;
                         }
                     }
@@ -63,7 +63,7 @@ pub(super) async fn with_inference_metrics(
         }
     } else {
         if let Ok(value) = HeaderValue::from_str(&latency_ms.to_string()) {
-            response.headers_mut().insert("x-a3s-ttft-ms", value);
+            response.headers_mut().insert("x-aster-ttft-ms", value);
         }
         response
     }

@@ -1,14 +1,14 @@
 //! Live E2E for the Code-owned Agent Protocol surface (Layer C8).
 //!
 //! Drives `AgentProtocolHarness` with the pinned Flash model from
-//! `.a3s/config.acl`. Pass criteria are protocol kernel effects only:
+//! `.aster/config.acl`. Pass criteria are protocol kernel effects only:
 //! receipt/identity binding, event-page projection, idempotent replay,
 //! change-set capture after a live tool mutation, and Cancel of an in-flight
 //! run. Assistant wording is never a pass criterion.
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_agent_protocol_live_e2e \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_agent_protocol_live_e2e \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -18,9 +18,9 @@ use std::process::Command;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::hitl::AutoApproveConfirmation;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::hitl::AutoApproveConfirmation;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentProtocolChangeSetRequestV1, AgentProtocolCommandV1,
     AgentProtocolEventPageRequestV1, AgentProtocolEventPageV1, AgentProtocolHarness,
     AgentProtocolHarnessError, AgentProtocolRunCancelV1, AgentProtocolRunIdentityV1,
@@ -39,9 +39,9 @@ const CANCEL_COMMAND: &str =
 #[cfg(windows)]
 const CANCEL_COMMAND: &str = "[System.IO.File]::WriteAllText('ap-protocol-cancel-started.txt','STARTED'); Start-Sleep -Seconds 20; [System.IO.File]::WriteAllText('ap-protocol-cancel-leak.txt','LEAK')";
 
-fn release_manifest() -> a3s_code_core::release::AgentReleaseManifest {
-    a3s_code_core::release::AgentReleaseManifest::parse(include_str!(
-        "../../fixtures/agent-release-contract/.a3s/asset.acl"
+fn release_manifest() -> aster_core::release::AgentReleaseManifest {
+    aster_core::release::AgentReleaseManifest::parse(include_str!(
+        "../../fixtures/agent-release-contract/.aster/asset.acl"
     ))
     .expect("admit release fixture")
 }
@@ -62,10 +62,10 @@ fn git(workspace: &std::path::Path, args: &[&str]) {
 
 fn initialize_git_workspace(workspace: &std::path::Path) {
     git(workspace, &["init"]);
-    git(workspace, &["config", "user.name", "A3S Protocol Live"]);
+    git(workspace, &["config", "user.name", "Aster Protocol Live"]);
     git(
         workspace,
-        &["config", "user.email", "protocol-live@a3s.invalid"],
+        &["config", "user.email", "protocol-live@aster.invalid"],
     );
     std::fs::write(workspace.join("seed.txt"), "seed\n").expect("write seed");
     git(workspace, &["add", "seed.txt"]);
@@ -77,7 +77,7 @@ async fn live_agent() -> Agent {
     assert_pinned_layer_c_flash(&config, "protocol live suite");
     Agent::from_config(config)
         .await
-        .expect("build agent from .a3s/config.acl")
+        .expect("build agent from .aster/config.acl")
 }
 
 fn policy(allows: &[&str]) -> PermissionPolicy {
@@ -94,7 +94,7 @@ fn policy(allows: &[&str]) -> PermissionPolicy {
 
 fn live_options(allows: &[&str]) -> SessionOptions {
     SessionOptions::new()
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy(allows))
         .with_planning_mode(PlanningMode::Disabled)
         .with_confirmation_manager(Arc::new(AutoApproveConfirmation))
@@ -157,7 +157,7 @@ async fn wait_for_terminal(
 async fn wait_for_change_set(
     harness: &AgentProtocolHarness,
     command: &AgentProtocolCommandV1,
-) -> a3s_code_core::AgentProtocolChangeSetV1 {
+) -> aster_core::AgentProtocolChangeSetV1 {
     tokio::time::timeout(Duration::from_secs(60), async {
         loop {
             match harness
@@ -169,7 +169,7 @@ async fn wait_for_change_set(
             {
                 Ok(change_set) => break change_set,
                 Err(AgentProtocolHarnessError::Host(
-                    a3s_code_core::AgentProtocolHostError::ChangeSetPending,
+                    aster_core::AgentProtocolHostError::ChangeSetPending,
                 )) => tokio::time::sleep(Duration::from_millis(50)).await,
                 Err(error) => panic!("unexpected change-set error: {error}"),
             }
@@ -210,7 +210,7 @@ fn non_empty_tool_names(page: &AgentProtocolEventPageV1) -> Vec<String> {
 
 /// C8a: Start → receipt → event page → idempotent replay through the Harness.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires boyue/deepseek-v4-flash via .a3s/config.acl"]
+#[ignore = "requires boyue/deepseek-v4-flash via .aster/config.acl"]
 async fn live_harness_start_projects_events_and_replays() {
     let workspace = tempfile::tempdir().expect("workspace");
     let manifest = release_manifest();
@@ -262,7 +262,7 @@ async fn live_harness_start_projects_events_and_replays() {
 
 /// C8b: Live write through Harness must project tool names and a digest-bound change set.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires boyue/deepseek-v4-flash via .a3s/config.acl"]
+#[ignore = "requires boyue/deepseek-v4-flash via .aster/config.acl"]
 async fn live_harness_tool_mutation_exports_change_set() {
     let workspace = tempfile::tempdir().expect("workspace");
     initialize_git_workspace(workspace.path());
@@ -318,7 +318,7 @@ async fn live_harness_tool_mutation_exports_change_set() {
 
 /// C8c: Protocol Cancel must terminate an in-flight live tool without late effects.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires boyue/deepseek-v4-flash via .a3s/config.acl"]
+#[ignore = "requires boyue/deepseek-v4-flash via .aster/config.acl"]
 async fn live_harness_cancel_stops_in_flight_tool() {
     let workspace = tempfile::tempdir().expect("workspace");
     let manifest = release_manifest();

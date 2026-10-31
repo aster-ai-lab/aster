@@ -158,7 +158,7 @@ async fn managed_inference_selects_the_eligible_worker_and_forwards_only_scoped_
         + 4;
     let routed: serde_json::Value = serde_json::from_slice(&request[body_offset..]).unwrap();
     let scoped = routed["prompt_cache_key"].as_str().unwrap();
-    assert!(scoped.starts_with("a3s-gw-pcache-v1:"));
+    assert!(scoped.starts_with("aster-gw-pcache-v1:"));
     assert!(!scoped.contains("private-session"));
     assert_eq!(routed["model"], "internal-allowed-model");
 

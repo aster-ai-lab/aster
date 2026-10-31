@@ -11,15 +11,15 @@ use crate::{
 };
 
 /// Required create-time extension for AMD SEV-SNP launch isolation.
-pub const AMD_SEV_SNP_LAUNCH_EXTENSION: &str = "dev.a3s.tee.amd-sev-snp";
+pub const AMD_SEV_SNP_LAUNCH_EXTENSION: &str = "dev.aster.tee.amd-sev-snp";
 /// Required create-time extension for Intel TDX launch isolation.
-pub const INTEL_TDX_LAUNCH_EXTENSION: &str = "dev.a3s.tee.intel-tdx";
+pub const INTEL_TDX_LAUNCH_EXTENSION: &str = "dev.aster.tee.intel-tdx";
 /// First immutable TEE launch-extension contract.
 pub const TEE_LAUNCH_EXTENSION_VERSION: u16 = 1;
 /// First immutable TEE launch annotation schema.
-pub const TEE_LAUNCH_SCHEMA_V1: &str = "a3s.oci.tee-launch.v1";
+pub const TEE_LAUNCH_SCHEMA_V1: &str = "aster.oci.tee-launch.v1";
 /// First immutable TEE attestation response schema.
-pub const TEE_ATTESTATION_SCHEMA_V1: &str = "a3s.oci.tee-attestation.v1";
+pub const TEE_ATTESTATION_SCHEMA_V1: &str = "aster.oci.tee-attestation.v1";
 /// Exact size of the guest report-data field used by the v1 contract.
 pub const TEE_REPORT_DATA_BYTES: usize = 64;
 /// Maximum decoded evidence payload accepted from a runtime driver.

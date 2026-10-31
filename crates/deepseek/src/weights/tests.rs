@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::{InferenceLimits, WeightReadStrategy, WeightStoreConfig};
+use aster_power::inference::{InferenceLimits, WeightReadStrategy, WeightStoreConfig};
 use tempfile::TempDir;
 
 type FixtureTensor<'a> = (&'a str, &'a str, Vec<usize>, Vec<u8>);

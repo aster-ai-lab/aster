@@ -84,7 +84,7 @@ async fn review_package_publishes_skill_and_ui() {
     let store = ReconcileStore::open(root.path()).unwrap();
     let publication = store
         .apply(&PackageSpec {
-            package_id: "a3s/review".to_string(),
+            package_id: "aster/review".to_string(),
             surfaces: review_surfaces(),
         })
         .await
@@ -103,7 +103,7 @@ async fn review_package_publishes_skill_and_ui() {
         .unwrap();
     assert!(skill.directory.join("skills/review/SKILL.md").is_file());
     assert!(ui.entry.as_ref().unwrap().ends_with("ui/picker/index.html"));
-    assert!(store.current("a3s/review").await.unwrap().is_some());
+    assert!(store.current("aster/review").await.unwrap().is_some());
 }
 
 #[tokio::test]
@@ -111,7 +111,7 @@ async fn five_surfaces_publish_as_one_generation() {
     let root = tempfile::tempdir().unwrap();
     let store = ReconcileStore::open(root.path()).unwrap();
     let spec = PackageSpec {
-        package_id: "a3s/review".to_string(),
+        package_id: "aster/review".to_string(),
         surfaces: five_surfaces(),
     };
     let first = store.apply(&spec).await.unwrap();
@@ -138,7 +138,7 @@ async fn digest_mismatch_keeps_the_published_generation() {
     let root = tempfile::tempdir().unwrap();
     let store = ReconcileStore::open(root.path()).unwrap();
     let spec = PackageSpec {
-        package_id: "a3s/review".to_string(),
+        package_id: "aster/review".to_string(),
         surfaces: five_surfaces(),
     };
     let published = store.apply(&spec).await.unwrap();
@@ -157,13 +157,13 @@ async fn digest_mismatch_keeps_the_published_generation() {
         "sha256:0000000000000000000000000000000000000000000000000000000000000000".to_string();
     let error = store
         .apply(&PackageSpec {
-            package_id: "a3s/review".to_string(),
+            package_id: "aster/review".to_string(),
             surfaces: broken,
         })
         .await
         .unwrap_err();
     assert_eq!(error.code(), ReconcileError::DigestMismatch.code());
-    let current = store.current("a3s/review").await.unwrap().unwrap();
+    let current = store.current("aster/review").await.unwrap().unwrap();
     assert_eq!(current.generation, 1);
     assert_eq!(
         std::fs::read(skill.directory.join("skills/review/SKILL.md")).unwrap(),
@@ -177,7 +177,7 @@ async fn missing_skill_file_does_not_replace_the_generation() {
     let store = ReconcileStore::open(root.path()).unwrap();
     store
         .apply(&PackageSpec {
-            package_id: "a3s/review".to_string(),
+            package_id: "aster/review".to_string(),
             surfaces: review_surfaces(),
         })
         .await
@@ -192,7 +192,7 @@ async fn missing_skill_file_does_not_replace_the_generation() {
     skill.payload = Payload::Files(files);
     let error = store
         .apply(&PackageSpec {
-            package_id: "a3s/review".to_string(),
+            package_id: "aster/review".to_string(),
             surfaces,
         })
         .await
@@ -200,7 +200,7 @@ async fn missing_skill_file_does_not_replace_the_generation() {
     assert_eq!(error.code(), "use.reconcile.skill_missing");
     assert_eq!(
         store
-            .current("a3s/review")
+            .current("aster/review")
             .await
             .unwrap()
             .unwrap()
@@ -215,7 +215,7 @@ async fn zip_link_and_escape_do_not_replace_the_generation() {
     let store = ReconcileStore::open(root.path()).unwrap();
     store
         .apply(&PackageSpec {
-            package_id: "a3s/review".to_string(),
+            package_id: "aster/review".to_string(),
             surfaces: review_surfaces(),
         })
         .await
@@ -225,7 +225,7 @@ async fn zip_link_and_escape_do_not_replace_the_generation() {
         let digest = format!("sha256:{:x}", Sha256::digest(&bytes));
         let error = store
             .apply(&PackageSpec {
-                package_id: "a3s/review".to_string(),
+                package_id: "aster/review".to_string(),
                 surfaces: vec![SurfaceSpec {
                     kind: SurfaceKind::Skill,
                     id: "review".to_string(),
@@ -242,7 +242,7 @@ async fn zip_link_and_escape_do_not_replace_the_generation() {
         );
         assert_eq!(
             store
-                .current("a3s/review")
+                .current("aster/review")
                 .await
                 .unwrap()
                 .unwrap()
@@ -251,7 +251,7 @@ async fn zip_link_and_escape_do_not_replace_the_generation() {
         );
         assert_eq!(
             store
-                .current("a3s/review")
+                .current("aster/review")
                 .await
                 .unwrap()
                 .unwrap()
@@ -280,7 +280,7 @@ async fn withdraw_removes_only_that_package() {
     let store = ReconcileStore::open(root.path()).unwrap();
     store
         .apply(&PackageSpec {
-            package_id: "a3s/review".to_string(),
+            package_id: "aster/review".to_string(),
             surfaces: review_surfaces(),
         })
         .await
@@ -300,9 +300,9 @@ async fn withdraw_removes_only_that_package() {
     let outside = root.path().join("keep.txt");
     std::fs::write(&outside, "keep").unwrap();
 
-    store.withdraw("a3s/review").await.unwrap();
+    store.withdraw("aster/review").await.unwrap();
 
-    assert!(store.current("a3s/review").await.unwrap().is_none());
+    assert!(store.current("aster/review").await.unwrap().is_none());
     let notes = store.current("acme/notes").await.unwrap().unwrap();
     let skill = notes
         .surfaces
@@ -314,7 +314,7 @@ async fn withdraw_removes_only_that_package() {
         "# notes\n"
     );
     assert_eq!(std::fs::read_to_string(&outside).unwrap(), "keep");
-    store.withdraw("a3s/review").await.unwrap();
+    store.withdraw("aster/review").await.unwrap();
 }
 
 fn zip_with_escape() -> Vec<u8> {

@@ -1,5 +1,5 @@
 use super::*;
-use a3s_office::{
+use aster_office::{
     NativeOfficeComment, NativeOfficeCommentPosition, NativeOfficeHighlightColor,
     NativeOfficeHyperlinkTarget, NativeOfficeMutation, NativeOfficeRgbColor, NativeOfficeTextCase,
     NativeOfficeTextFormat, NativeOfficeTextMatchMode, NativeOfficeTextScript,
@@ -450,9 +450,9 @@ fn office_batch_schema_exposes_native_spreadsheet_recalculation() {
         encoded.contains("recalculate-spreadsheet-formulas"),
         "{encoded}"
     );
-    let skill = include_str!("../../skills/a3s-office/SKILL.md");
-    let spreadsheet = include_str!("../../skills/a3s-office/references/spreadsheet.md");
-    for definition in a3s_office::SpreadsheetFormulaFunctionRegistry::default().definitions() {
+    let skill = include_str!("../../skills/aster-office/SKILL.md");
+    let spreadsheet = include_str!("../../skills/aster-office/references/spreadsheet.md");
+    for definition in aster_office::SpreadsheetFormulaFunctionRegistry::default().definitions() {
         let listed = format!("`{}`", definition.name);
         assert!(encoded.contains(&listed), "schema missing {listed}");
         assert!(skill.contains(&listed), "skill missing {listed}");
@@ -555,7 +555,7 @@ fn office_batch_schema_exposes_typed_spreadsheet_import_and_frozen_panes() {
             if sheet == "/Sheet1"
                 && import.header
                 && import.start_cell == "B2"
-                && import.format == a3s_office::NativeSpreadsheetDelimitedFormat::Csv
+                && import.format == aster_office::NativeSpreadsheetDelimitedFormat::Csv
     ));
     assert!(matches!(
         input.mutations[1].clone().into_native().unwrap(),
@@ -613,14 +613,14 @@ fn office_batch_schema_exposes_typed_spreadsheet_data_validation() {
         input.mutations[0].clone().into_native().unwrap(),
         NativeOfficeMutation::AddDataValidation {
             ref sheet,
-            validation: a3s_office::NativeSpreadsheetDataValidation {
-                validation_type: a3s_office::NativeSpreadsheetDataValidationType::Whole,
+            validation: aster_office::NativeSpreadsheetDataValidation {
+                validation_type: aster_office::NativeSpreadsheetDataValidationType::Whole,
                 operator: Some(
-                    a3s_office::NativeSpreadsheetDataValidationOperator::Between
+                    aster_office::NativeSpreadsheetDataValidationOperator::Between
                 ),
                 allow_blank: false,
                 error_style:
-                    a3s_office::NativeSpreadsheetDataValidationErrorStyle::Warning,
+                    aster_office::NativeSpreadsheetDataValidationErrorStyle::Warning,
                 ..
             }
         } if sheet == "/Sheet1"
@@ -689,7 +689,7 @@ fn office_batch_schema_exposes_typed_spreadsheet_conditional_formatting() {
         input.mutations[0].clone().into_native().unwrap(),
         NativeOfficeMutation::AddConditionalFormat {
             ref sheet,
-            conditional_format: a3s_office::NativeSpreadsheetConditionalFormat {
+            conditional_format: aster_office::NativeSpreadsheetConditionalFormat {
                 stop_if_true: true,
                 rule: NativeSpreadsheetConditionalFormatRule::CellIs {
                     operator: NativeSpreadsheetConditionalFormatOperator::GreaterThan,
@@ -751,7 +751,7 @@ fn office_batch_schema_exposes_typed_spreadsheet_named_ranges() {
     assert!(matches!(
         input.mutations[0].clone().into_native().unwrap(),
         NativeOfficeMutation::AddNamedRange {
-            named_range: a3s_office::NativeSpreadsheetNamedRange {
+            named_range: aster_office::NativeSpreadsheetNamedRange {
                 ref name,
                 ref reference,
                 scope: NativeSpreadsheetNamedRangeScope::Worksheet(ref sheet),
@@ -807,7 +807,7 @@ fn office_batch_schema_exposes_typed_text_replacement() {
     assert!(matches!(
         mutation.into_native().unwrap(),
         NativeOfficeMutation::ReplaceText {
-            replacement: a3s_office::NativeOfficeTextReplacement {
+            replacement: aster_office::NativeOfficeTextReplacement {
                 mode: NativeOfficeTextMatchMode::Regex,
                 ref find,
                 ref replace,
@@ -854,7 +854,7 @@ fn office_batch_schema_exposes_typed_hyperlinks() {
     assert!(matches!(
         mutation.into_native().unwrap(),
         NativeOfficeMutation::SetHyperlink {
-            hyperlink: a3s_office::NativeOfficeHyperlink {
+            hyperlink: aster_office::NativeOfficeHyperlink {
                 target: NativeOfficeHyperlinkTarget::External { ref uri },
                 display: Some(ref display),
                 tooltip: Some(ref tooltip),

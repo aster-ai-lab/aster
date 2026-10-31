@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{
     ContainerTarget, CreateRequest, FilesystemOp, FilesystemRequest, IsolationRequest, OciBundle,
     OperationContext,
 };
@@ -56,7 +56,7 @@ pub async fn linux_kvm_filesystem_reopen_replacement(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let container_id = match a3s_oci_sdk::ContainerId::new(format!("kvm-filesystem-reopen-{nonce}"))
+    let container_id = match aster_oci_sdk::ContainerId::new(format!("kvm-filesystem-reopen-{nonce}"))
     {
         Ok(id) => id,
         Err(error) => {
@@ -137,7 +137,7 @@ pub async fn linux_kvm_filesystem_reopen_replacement(
         Err(reason) => return failed(report, reason),
     };
 
-    let path = format!("/tmp/.a3s-oci-filesystem-reopen-{nonce}");
+    let path = format!("/tmp/.aster-oci-filesystem-reopen-{nonce}");
     let current_target = ContainerTarget::current(container_id.clone());
     let filesystem = FilesystemRequest {
         target: current_target.clone(),
@@ -195,7 +195,7 @@ pub async fn linux_kvm_filesystem_reopen_replacement(
             stat,
             cleanup,
         },
-        init_marker_contents: format!("a3s-oci-exec-init-{nonce}\n").into_bytes(),
+        init_marker_contents: format!("aster-oci-exec-init-{nonce}\n").into_bytes(),
         stage: config.stage,
     };
     let state_root = prepared.runtime_root.join("operation-reopen-state");

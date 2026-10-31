@@ -1,6 +1,6 @@
-//! Versioned headless protocol owned by A3S Code.
+//! Versioned headless protocol owned by Aster Code.
 //!
-//! Cloud and other hosts may transport these values, but A3S Code remains the
+//! Cloud and other hosts may transport these values, but Aster Code remains the
 //! authority for Agent session/run lifecycle, event names, cancellation, and
 //! checkpoint recovery. The protocol intentionally contains no Cloud tenant,
 //! scheduler, Workload, Runtime, or provider identity.
@@ -31,25 +31,25 @@ pub const AGENT_PROTOCOL_MAX_CHANGE_SET_RESPONSE_BYTES: usize =
 pub const AGENT_PROTOCOL_CHANGE_SET_FORMAT_V1: &str = "git_unified_diff_v1";
 pub const AGENT_PROTOCOL_CHANGE_SET_ENCODING_V1: &str = "base64";
 
-/// Canonical HTTP endpoint served by `a3s code harness` for v1 commands.
+/// Canonical HTTP endpoint served by `aster code harness` for v1 commands.
 pub const AGENT_PROTOCOL_COMMAND_HTTP_PATH_V1: &str = "/v1/agent/commands";
 
-/// Canonical HTTP endpoint served by `a3s code harness` for v1 event pages.
+/// Canonical HTTP endpoint served by `aster code harness` for v1 event pages.
 pub const AGENT_PROTOCOL_EVENT_PAGE_HTTP_PATH_V1: &str = "/v1/agent/events:page";
 
-/// Canonical HTTP endpoint served by `a3s code harness` for immutable run changes.
+/// Canonical HTTP endpoint served by `aster code harness` for immutable run changes.
 pub const AGENT_PROTOCOL_CHANGE_SET_HTTP_PATH_V1: &str = "/v1/agent/changes";
 
 /// Stable validation failures for the headless Agent protocol.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 pub enum AgentProtocolError {
-    #[error("unsupported A3S Code Agent protocol schema")]
+    #[error("unsupported Aster Code Agent protocol schema")]
     UnsupportedSchema,
-    #[error("invalid A3S Code Agent protocol field: {0}")]
+    #[error("invalid Aster Code Agent protocol field: {0}")]
     InvalidField(&'static str),
-    #[error("A3S Code Agent protocol identity or sequence does not match")]
+    #[error("Aster Code Agent protocol identity or sequence does not match")]
     IdentityMismatch,
-    #[error("A3S Code Agent protocol value exceeds its bounded encoding")]
+    #[error("Aster Code Agent protocol value exceeds its bounded encoding")]
     Encoding,
 }
 
@@ -57,15 +57,15 @@ impl AgentProtocolError {
     /// Stable machine-readable error code for SDK and service boundaries.
     pub const fn code(&self) -> &'static str {
         match self {
-            Self::UnsupportedSchema => "a3s.code.agent_protocol.unsupported_schema",
-            Self::InvalidField(_) => "a3s.code.agent_protocol.invalid_field",
-            Self::IdentityMismatch => "a3s.code.agent_protocol.identity_mismatch",
-            Self::Encoding => "a3s.code.agent_protocol.encoding",
+            Self::UnsupportedSchema => "aster.code.agent_protocol.unsupported_schema",
+            Self::InvalidField(_) => "aster.code.agent_protocol.invalid_field",
+            Self::IdentityMismatch => "aster.code.agent_protocol.identity_mismatch",
+            Self::Encoding => "aster.code.agent_protocol.encoding",
         }
     }
 }
 
-/// Exact A3S Code release, session, and run selected by a host.
+/// Exact Aster Code release, session, and run selected by a host.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AgentProtocolRunIdentityV1 {
@@ -77,7 +77,7 @@ pub struct AgentProtocolRunIdentityV1 {
 }
 
 impl AgentProtocolRunIdentityV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-run-identity.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-run-identity.v1";
 
     pub fn validate(&self) -> Result<(), AgentProtocolError> {
         validate_schema(&self.schema, Self::SCHEMA)?;
@@ -94,7 +94,7 @@ impl AgentProtocolRunIdentityV1 {
     }
 }
 
-/// Start a fresh A3S Code run with an exact host-selected identity.
+/// Start a fresh Aster Code run with an exact host-selected identity.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AgentProtocolRunStartV1 {
@@ -118,7 +118,7 @@ pub struct AgentProtocolModelPinV1 {
     pub model_id: Uuid,
     pub model_revision_id: Uuid,
     /// The route's stable name for the model; names the environment pair
-    /// (`A3S_INFERENCE_ENDPOINT_<ALIAS>` / `A3S_INFERENCE_CREDENTIAL_<ALIAS>`)
+    /// (`ASTER_INFERENCE_ENDPOINT_<ALIAS>` / `ASTER_INFERENCE_CREDENTIAL_<ALIAS>`)
     /// the governing host materializes for this pin.
     pub alias: String,
     pub profile_digest: String,
@@ -149,7 +149,7 @@ fn valid_model_digest(digest: &str) -> bool {
 }
 
 impl AgentProtocolRunStartV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-run-start.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-run-start.v1";
 
     pub fn validate(&self) -> Result<(), AgentProtocolError> {
         validate_schema(&self.schema, Self::SCHEMA)?;
@@ -179,7 +179,7 @@ impl AgentProtocolRunStartV1 {
     }
 }
 
-/// Cancel the current exact A3S Code run.
+/// Cancel the current exact Aster Code run.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AgentProtocolRunCancelV1 {
@@ -190,7 +190,7 @@ pub struct AgentProtocolRunCancelV1 {
 }
 
 impl AgentProtocolRunCancelV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-run-cancel.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-run-cancel.v1";
 
     pub fn validate(&self) -> Result<(), AgentProtocolError> {
         validate_schema(&self.schema, Self::SCHEMA)?;
@@ -200,7 +200,7 @@ impl AgentProtocolRunCancelV1 {
     }
 }
 
-/// Resume an A3S Code loop checkpoint into a fresh exact run identity.
+/// Resume an Aster Code loop checkpoint into a fresh exact run identity.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AgentProtocolRunRecoverV1 {
@@ -211,7 +211,7 @@ pub struct AgentProtocolRunRecoverV1 {
 }
 
 impl AgentProtocolRunRecoverV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-run-recover.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-run-recover.v1";
 
     pub fn validate(&self) -> Result<(), AgentProtocolError> {
         validate_schema(&self.schema, Self::SCHEMA)?;
@@ -225,7 +225,7 @@ impl AgentProtocolRunRecoverV1 {
     }
 }
 
-/// Resume one exact, content-addressed A3S Code tool-round boundary.
+/// Resume one exact, content-addressed Aster Code tool-round boundary.
 ///
 /// This is an additive recovery request beside [`AgentProtocolRunRecoverV1`].
 /// The original request keeps its "latest checkpoint for this run" semantics
@@ -243,7 +243,7 @@ pub struct AgentProtocolRunRecoverExactV1 {
 }
 
 impl AgentProtocolRunRecoverExactV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-run-recover-exact.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-run-recover-exact.v1";
 
     pub fn validate(&self) -> Result<(), AgentProtocolError> {
         validate_schema(&self.schema, Self::SCHEMA)?;
@@ -283,7 +283,7 @@ pub enum AgentProtocolCommandActionV1 {
     Recover,
 }
 
-/// One typed command for the A3S Code session/run lifecycle.
+/// One typed command for the Aster Code session/run lifecycle.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "action", rename_all = "snake_case", deny_unknown_fields)]
 pub enum AgentProtocolCommandV1 {
@@ -375,7 +375,7 @@ impl From<RunStatus> for AgentProtocolRunStateV1 {
     }
 }
 
-/// Exact observation returned after A3S Code accepts a command.
+/// Exact observation returned after Aster Code accepts a command.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AgentProtocolCommandReceiptV1 {
@@ -391,7 +391,7 @@ pub struct AgentProtocolCommandReceiptV1 {
 }
 
 impl AgentProtocolCommandReceiptV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-command-receipt.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-command-receipt.v1";
 
     pub fn validate(&self) -> Result<(), AgentProtocolError> {
         validate_schema(&self.schema, Self::SCHEMA)?;
@@ -438,7 +438,7 @@ impl AgentProtocolCommandReceiptV1 {
     }
 }
 
-/// One authoritative A3S Code event at its run-local sequence.
+/// One authoritative Aster Code event at its run-local sequence.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AgentProtocolEventRecordV1 {
@@ -526,7 +526,7 @@ impl AgentProtocolEventRecordV1 {
     }
 }
 
-/// Bounded cursor query accepted by the A3S Code Harness event endpoint.
+/// Bounded cursor query accepted by the Aster Code Harness event endpoint.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AgentProtocolEventPageRequestV1 {
@@ -537,7 +537,7 @@ pub struct AgentProtocolEventPageRequestV1 {
 }
 
 impl AgentProtocolEventPageRequestV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-event-page-request.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-event-page-request.v1";
 
     pub fn validate(&self) -> Result<(), AgentProtocolError> {
         validate_schema(&self.schema, Self::SCHEMA)?;
@@ -553,7 +553,7 @@ impl AgentProtocolEventPageRequestV1 {
     }
 }
 
-/// Cursor page projected directly from A3S Code's authoritative run store.
+/// Cursor page projected directly from Aster Code's authoritative run store.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AgentProtocolEventPageV1 {
@@ -571,7 +571,7 @@ pub struct AgentProtocolEventPageV1 {
 }
 
 impl AgentProtocolEventPageV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-event-page.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-event-page.v1";
 
     pub fn from_run_page(
         identity: AgentProtocolRunIdentityV1,
@@ -713,7 +713,7 @@ pub struct AgentProtocolChangeSetRequestV1 {
 }
 
 impl AgentProtocolChangeSetRequestV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-change-set-request.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-change-set-request.v1";
 
     pub fn validate(&self) -> Result<(), AgentProtocolError> {
         validate_schema(&self.schema, Self::SCHEMA)?;
@@ -748,7 +748,7 @@ pub struct AgentProtocolChangeSetV1 {
 }
 
 impl AgentProtocolChangeSetV1 {
-    pub const SCHEMA: &'static str = "a3s.code.agent-change-set.v1";
+    pub const SCHEMA: &'static str = "aster.code.agent-change-set.v1";
 
     pub fn validate(&self) -> Result<(), AgentProtocolError> {
         validate_schema(&self.schema, Self::SCHEMA)?;
@@ -861,7 +861,7 @@ fn validate_json_size(
     }
 }
 
-const AGENT_PROTOCOL_PAYLOAD_TRUNCATION_MARK: &str = "\n…[a3s.code.agent-protocol.truncated]";
+const AGENT_PROTOCOL_PAYLOAD_TRUNCATION_MARK: &str = "\n…[aster.code.agent-protocol.truncated]";
 
 /// Shrink oversized payload / non-identity metadata strings until the record
 /// validates. Prefer truncating the largest string leaves; if that cannot fit,
@@ -1268,26 +1268,26 @@ mod tests {
     fn protocol_error_codes_are_stable() {
         assert_eq!(
             AgentProtocolError::UnsupportedSchema.code(),
-            "a3s.code.agent_protocol.unsupported_schema"
+            "aster.code.agent_protocol.unsupported_schema"
         );
         assert_eq!(
             AgentProtocolError::InvalidField("prompt").code(),
-            "a3s.code.agent_protocol.invalid_field"
+            "aster.code.agent_protocol.invalid_field"
         );
         assert_eq!(
             AgentProtocolError::IdentityMismatch.code(),
-            "a3s.code.agent_protocol.identity_mismatch"
+            "aster.code.agent_protocol.identity_mismatch"
         );
         assert_eq!(
             AgentProtocolError::Encoding.code(),
-            "a3s.code.agent_protocol.encoding"
+            "aster.code.agent_protocol.encoding"
         );
     }
 
     #[test]
     fn identity_rejects_foreign_protocol_and_digests_when_valid() {
         let mut bad = identity();
-        bad.protocol = "a3s.code.agent.v0".into();
+        bad.protocol = "aster.code.agent.v0".into();
         assert_eq!(
             bad.validate(),
             Err(AgentProtocolError::InvalidField("protocol"))
@@ -1413,7 +1413,7 @@ mod tests {
         ));
         let mutated = value.to_string();
         assert!(
-            mutated.contains("a3s.code.agent-protocol.truncated"),
+            mutated.contains("aster.code.agent-protocol.truncated"),
             "expected truncation mark in {mutated}"
         );
 

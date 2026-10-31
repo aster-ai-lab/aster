@@ -2,7 +2,7 @@ mod r0_cross_project_support;
 
 use std::path::Path;
 
-use a3s_code_core::{
+use aster_core::{
     AgentProtocolRunIdentityV1, PackageBindingV1, PackageContextLimits, PackageKnowledgeBindingV1,
     PackageKnowledgeCitationV1,
 };
@@ -123,7 +123,7 @@ fn code_binds_one_use_generation_capability_and_cited_result() {
     runtime_knowledge.validate().unwrap();
     let capability: CapabilitySnapshotFixture =
         read_json(root, "fixtures/capability-snapshot.json");
-    assert_eq!(capability.schema, "a3s.use.capability-snapshot.v1");
+    assert_eq!(capability.schema, "aster.use.capability-snapshot.v1");
     assert_eq!(capability.package_id, contract.code.package_id);
     assert_eq!(capability.package_version, contract.code.package_version);
     assert_eq!(
@@ -143,7 +143,7 @@ fn code_binds_one_use_generation_capability_and_cited_result() {
     assert_eq!(
         capability.snapshot_digest,
         canonical_digest(
-            "a3s.use.capability-snapshot.v1",
+            "aster.use.capability-snapshot.v1",
             &(
                 capability.package_id.as_str(),
                 capability.package_version.as_str(),
@@ -189,7 +189,7 @@ fn code_binds_one_use_generation_capability_and_cited_result() {
     assert_eq!(
         citation.citation_digest,
         canonical_digest(
-            "a3s.use.okf-knowledge-citation.v1",
+            "aster.use.okf-knowledge-citation.v1",
             &(
                 citation.package_id.as_str(),
                 citation.package_version.as_str(),
@@ -205,12 +205,12 @@ fn code_binds_one_use_generation_capability_and_cited_result() {
     );
 
     let result: TaskResultFixture = read_json(root, "fixtures/code-task-result.json");
-    assert_eq!(result.schema, "a3s.code.agent-task-result.v1");
+    assert_eq!(result.schema, "aster.code.agent-task-result.v1");
     assert_eq!(result.citation_digests, [citation.citation_digest]);
     assert_eq!(
         result.result_digest,
         canonical_digest(
-            "a3s.code.agent-task-result.v1",
+            "aster.code.agent-task-result.v1",
             &(
                 result.schema.as_str(),
                 result.text.as_str(),

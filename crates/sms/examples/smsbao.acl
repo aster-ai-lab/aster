@@ -1,7 +1,7 @@
 provider "smsbao" {
   profile_id = "smsbao-cn"
   profile_revision = 1
-  signature = "A3S"
+  signature = "Aster"
   username_secret_ref = "smsbao-username@1"
   credential_secret_ref = "smsbao-password@1"
   auth_method = "password"

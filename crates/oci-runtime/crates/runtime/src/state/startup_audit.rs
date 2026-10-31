@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::ffi::OsString;
 use std::path::Path;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, ErrorCode, Generation, OperationId, ProcessId, ProcessTarget,
     Result,
 };
@@ -552,6 +552,6 @@ fn parse_process_id(value: &str, operation: &'static str, name: &str) -> Result<
     })
 }
 
-fn audit_error(operation: &'static str, message: impl Into<String>) -> a3s_oci_sdk::Error {
+fn audit_error(operation: &'static str, message: impl Into<String>) -> aster_oci_sdk::Error {
     state_error(ErrorCode::FailedPrecondition, operation, message)
 }

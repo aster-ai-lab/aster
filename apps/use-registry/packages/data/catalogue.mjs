@@ -1,7 +1,7 @@
-export const DATA_PACKAGE_ID = 'use/a3s/data'
+export const DATA_PACKAGE_ID = 'use/aster/data'
 
 export const dataWorkbenchPackage = {
-  slug: 'a3s-data',
+  slug: 'aster-data',
   packageId: DATA_PACKAGE_ID,
   generation: 1,
   revision: `sha256:${'ab'.repeat(32)}`,

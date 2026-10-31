@@ -3,12 +3,12 @@
 //! Package, OPC, XML, selector, and semantic read APIs execute in-process and
 //! do not require OfficeCLI, Microsoft Office, LibreOffice, or another runtime.
 //! Compatibility-only commands still invoke the pinned OfficeCLI binary during
-//! migration. A3S Use does not implement OfficeCLI's private resident protocol.
+//! migration. Aster Use does not implement OfficeCLI's private resident protocol.
 
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
-use a3s_use_core::{UseError, UseResult, UseSessionId};
+use aster_use_core::{UseError, UseResult, UseSessionId};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
@@ -256,7 +256,7 @@ pub struct ReadRequest {
 /// One command in OfficeCLI's documented batch-item shape.
 ///
 /// This is an Office-specific data model passed to `officecli batch`; it is not
-/// an A3S RPC envelope or a cross-domain action protocol.
+/// an Aster RPC envelope or a cross-domain action protocol.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BatchCommand {

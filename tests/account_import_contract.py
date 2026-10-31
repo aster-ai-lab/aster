@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ENUM = ROOT / "crates/code/core/src/config/account_import.rs"
-USAGE = ROOT / "crates/code/acp/src/bin/a3s-code-acp.rs"
+USAGE = ROOT / "crates/code/acp/src/bin/aster-acp.rs"
 
 
 def enum_names():

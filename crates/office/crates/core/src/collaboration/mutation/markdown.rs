@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{GetString, Text, Transact};
 
 use super::super::{
@@ -345,7 +345,7 @@ fn invalid_markdown_range(
     index_utf16: u32,
     delete_utf16: u32,
     length_utf16: u32,
-) -> a3s_use_core::UseError {
+) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_range_invalid",
         "The Markdown splice range is outside the current source or splits a UTF-16 surrogate pair.",
@@ -371,7 +371,7 @@ mod tests {
             schema_version: 1,
             protocol: String::new(),
             protocol_version: 1,
-            namespace: "a3s.office".to_owned(),
+            namespace: "aster.office".to_owned(),
             artifact_id: "markdown".to_owned(),
             kind: NativeOfficeCollaborationArtifactKind::Markdown,
             actor_id: "agent".to_owned(),
@@ -393,7 +393,7 @@ mod tests {
     fn find_and_replace_share_non_overlapping_utf16_walk() {
         let doc = new_replica_document(
             7,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Markdown,
         );
         let manifest = manifest();
@@ -440,7 +440,7 @@ mod tests {
     fn replace_rejects_match_count_conflict() {
         let doc = new_replica_document(
             8,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Markdown,
         );
         let manifest = manifest();
@@ -459,7 +459,7 @@ mod tests {
     fn replace_rejects_drifted_index_utf16() {
         let doc = new_replica_document(
             9,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Markdown,
         );
         let manifest = manifest();

@@ -1,7 +1,7 @@
 # Native runtime source provenance
 
 This document maps the native Windows runtime shipped by
-`a3s-libkrun-sys` to its source and corresponding Linux kernel source. Hashes
+`aster-libkrun-sys` to its source and corresponding Linux kernel source. Hashes
 are lowercase SHA-256 unless noted otherwise.
 
 ## Packaged Windows runtime
@@ -16,7 +16,7 @@ and contains exactly:
 | `krun.lib` | 11,870 | `3ac760758158bd4d2d6570db58037d47cd370a8e6ea04ccf54a8b24fd1fdec3d` |
 | `libkrunfw.dll` | 21,473,280 | `44f25540f58155c01258fe123617636fdc6cff27873e38e71dbc75f139602077` |
 
-`krun.dll` and its import library correspond to A3S-Lab/libkrun commit
+`krun.dll` and its import library correspond to aster-ai-lab/libkrun commit
 `dc5519faeabd8bf38d984ed29c44e6da977f0b5c`. That revision retains segmented
 Windows host-to-guest stream reads and reopens writable virtio-fs files with
 write access before `fsync`, so authenticated guest recovery reports can be
@@ -27,10 +27,10 @@ in `vendor/libkrun-source.tar` (SHA-256
 `b92b7d00e0b60ca729e0b1e98feff6471d3c7f62de29c8b706309ae3c0528b3b`).
 The deterministic archive was generated from local tooling commit
 `f7c69184ad3cf3436343836176859cd2fc9c732e`; that revision keeps guest→host
-TSI reverse-proxy streams open until FIN/reaper (A3S-Lab/libkrun#13) and
+TSI reverse-proxy streams open until FIN/reaper (aster-ai-lab/libkrun#13) and
 hairpins guest connects that target host-forwarded ports back into the guest
-(A3S-Lab/libkrun#14), on top of `-EPERM` for unpublished TSI listen
-(A3S-Lab/libkrun#12, Box#370), allowlist-only host binds, macOS VirtioFS
+(aster-ai-lab/libkrun#14), on top of `-EPERM` for unpublished TSI listen
+(aster-ai-lab/libkrun#12, Box#370), allowlist-only host binds, macOS VirtioFS
 directory-entry snapshotting, mutation-stable synthetic FUSE resume cookies,
 directory-stream ownership independent from the retained file handle, and
 retryable Unix-datagram TX backpressure handling. It does not change the
@@ -66,7 +66,7 @@ it must not be described as a clean build of the different historical
 Every `libkrun-sys-v<VERSION>` GitHub release is prepared before the matching
 crate is published and carries checksum-verified copies of:
 
-- `a3s-libkrun-source.tar`, the source for the packaged `krun.dll` and Windows
+- `aster-libkrun-source.tar`, the source for the packaged `krun.dll` and Windows
   wrapper;
 - `libkrunfw-5.5.0-source.tar.gz`, the upstream v5.5.0 source, generic x86_64
   configuration, complete patch series, and GPL/LGPL license texts;
@@ -85,7 +85,7 @@ accepted only with the kernel.org-published SHA-256
 
 GitHub-generated source archives are not promised to remain byte-stable. The
 workflow therefore fails closed on a digest change and republishes the verified
-bytes as an immutable asset of the A3S release instead of relying on the
+bytes as an immutable asset of the Aster release instead of relying on the
 generated URL as the long-term distribution location.
 
 ## Reproducibility note
@@ -101,7 +101,7 @@ pinned DLL hash.
 ## Ownership transition (2026-10-21)
 
 The libkrun sources this crate builds are now owned by the
-`aster-ai-lab/libkrun` fork (created from `A3S-Lab/libkrun` on
+`aster-ai-lab/libkrun` fork (created from `aster-ai-lab/libkrun` on
 2026-10-21). Lineage corrected the same evening: unshallowing the fork
 clone proved `f7c69184` is an ancestor of the fork main (the earlier
 "divergent lineage" reading was a shallow-clone boundary artifact), and

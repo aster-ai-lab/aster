@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_office_formula_parser::{
+use aster_office_formula_parser::{
     parse_spreadsheet_structured_reference, SpreadsheetFormulaQualifier,
     SpreadsheetStructuredReference,
 };
@@ -251,7 +251,7 @@ fn resolve_columns(
 
 fn resolve_rows(
     table: &SpreadsheetTableDefinition,
-    rows: a3s_office_formula_parser::SpreadsheetStructuredRowSelection,
+    rows: aster_office_formula_parser::SpreadsheetStructuredRowSelection,
     current_row: u32,
 ) -> Result<Vec<(u32, u32)>, String> {
     let mut selected = Vec::new();

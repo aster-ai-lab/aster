@@ -48,7 +48,7 @@ impl SamplingConsentBridge {
 }
 
 #[async_trait::async_trait]
-impl a3s_code_core::mcp::SamplingApprover for SamplingConsentBridge {
+impl aster_core::mcp::SamplingApprover for SamplingConsentBridge {
     async fn approve_sampling(&self, server: &str, excerpt: &str) -> bool {
         let (reply_tx, reply_rx) = oneshot::channel();
         let question = format!(
@@ -74,7 +74,7 @@ impl a3s_code_core::mcp::SamplingApprover for SamplingConsentBridge {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_code_core::mcp::SamplingApprover as _;
+    use aster_core::mcp::SamplingApprover as _;
 
     async fn bridged() -> (SamplingConsentBridge, mpsc::Receiver<SamplingConsentAsk>) {
         let (tx, rx) = mpsc::channel(1);

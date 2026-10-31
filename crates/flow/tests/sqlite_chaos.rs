@@ -5,7 +5,7 @@
 
 #![cfg(feature = "sqlite")]
 
-use a3s_flow::{FlowError, FlowEvent, FlowEventStore, SqliteEventStore, WorkflowSpec};
+use aster_flow::{FlowError, FlowEvent, FlowEventStore, SqliteEventStore, WorkflowSpec};
 use serde_json::json;
 use std::sync::Arc;
 use tokio::sync::Barrier;

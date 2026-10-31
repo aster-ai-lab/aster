@@ -1,5 +1,5 @@
-use a3s_box_core::config::ExecutionIsolation;
-use a3s_box_runtime::hardware_vm::{
+use aster_box_core::config::ExecutionIsolation;
+use aster_box_runtime::hardware_vm::{
     open_vm_only, select_isolation, stored_profile_bytes, ContractError, IsolationSelection,
     VmOnlyFeature,
 };
@@ -17,7 +17,7 @@ fn omitted_isolation_selects_hardware_vm_and_microvm_stays_rejected() {
     assert!(IsolationArg::from_str("microvm", true).is_err());
     assert!(IsolationArg::from_str("sandbox", true).is_ok());
 
-    let live = std::env::var("A3S_BOX_OCI_MIGRATION").ok();
+    let live = std::env::var("ASTER_BOX_OCI_MIGRATION").ok();
     let baseline = stored_profile_bytes(None);
     assert_eq!(stored_profile_bytes(live.as_deref()), baseline);
     for migration in [None, Some("off"), Some("microvm"), Some("all")] {

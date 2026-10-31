@@ -6,7 +6,7 @@ use crate::store::{
     TranscriptPageRequest, TranscriptSourceCut, TranscriptSourceSpan, TranscriptToolCall,
     TranscriptToolResult,
 };
-use a3s_effect::{Fact, LogStore, ModelDecision};
+use aster_effect::{Fact, LogStore, ModelDecision};
 use std::collections::HashSet;
 
 const MAX_PAGE_LIMIT: usize = 256;
@@ -31,7 +31,7 @@ pub(crate) fn read_facts(session: &AgentSession) -> Result<Vec<Fact>> {
         match cached.as_ref() {
             Some(log) => Arc::clone(log),
             None => {
-                let log = Arc::new(a3s_effect::FileLog::open(directory).map_err(transcript_error)?);
+                let log = Arc::new(aster_effect::FileLog::open(directory).map_err(transcript_error)?);
                 *cached = Some(Arc::clone(&log));
                 log
             }
@@ -70,7 +70,7 @@ fn entry(facts: &[Fact], payload: TranscriptEntryPayload) -> Result<TranscriptEn
         TranscriptEntryPayload::TurnComplete { .. } => TranscriptEntryKind::TurnComplete,
         TranscriptEntryPayload::LegacyHistory { .. } => TranscriptEntryKind::LegacyHistory,
     };
-    let digest = crate::content_digest::digest_json("a3s.code.session-transcript-entry.v1", &facts)
+    let digest = crate::content_digest::digest_json("aster.code.session-transcript-entry.v1", &facts)
         .map_err(transcript_error)?;
     Ok(TranscriptEntry {
         entry_id: format!("fact:{}:{digest}", first.seq),
@@ -107,13 +107,13 @@ fn tool_output(fact: &Fact) -> Result<(String, bool)> {
     let Ok(value) = serde_json::from_str::<serde_json::Value>(output) else {
         return Ok((output.to_string(), false));
     };
-    if value.get("kind").and_then(serde_json::Value::as_str) != Some("a3s.fact_tool_result") {
+    if value.get("kind").and_then(serde_json::Value::as_str) != Some("aster.fact_tool_result") {
         return Ok((output.to_string(), false));
     }
     let envelope: ToolEnvelope = serde_json::from_value(value).map_err(|error| {
         transcript_error(format!("corrupt tool result at seq {}: {error}", fact.seq))
     })?;
-    if envelope.kind != "a3s.fact_tool_result" {
+    if envelope.kind != "aster.fact_tool_result" {
         return Err(transcript_error(format!(
             "unknown tool result envelope at seq {}",
             fact.seq
@@ -122,7 +122,7 @@ fn tool_output(fact: &Fact) -> Result<(String, bool)> {
     Ok((envelope.text, !envelope.images.is_empty()))
 }
 
-fn tool_call(call: a3s_effect::ToolCall) -> TranscriptToolCall {
+fn tool_call(call: aster_effect::ToolCall) -> TranscriptToolCall {
     TranscriptToolCall {
         id: call.id,
         name: call.name,
@@ -574,14 +574,14 @@ pub(crate) fn prepare_prefix_snapshot(
         .iter()
         .position(|fact| fact.seq == marker.fact_seq)
         .ok_or_else(|| transcript_error("turn.complete source span is missing"))?;
-    let verified_cut = TranscriptSourceCut::from(a3s_effect::cut_log(&facts[..marker_index]));
+    let verified_cut = TranscriptSourceCut::from(aster_effect::cut_log(&facts[..marker_index]));
     if *log_cut != verified_cut {
         return Err(transcript_error(
             "assistant boundary turn.complete digest is not verified",
         ));
     }
     let prefix = facts[..=marker_index].to_vec();
-    let boundary_cut = TranscriptSourceCut::from(a3s_effect::cut_log(&prefix));
+    let boundary_cut = TranscriptSourceCut::from(aster_effect::cut_log(&prefix));
     if boundary_cut.seq != marker.fact_seq {
         return Err(transcript_error("prefix fork boundary sequence mismatch"));
     }
@@ -628,7 +628,7 @@ impl AgentSession {
             )));
         }
         let facts = read_facts(self)?;
-        let source_cut = TranscriptSourceCut::from(a3s_effect::cut_log(&facts));
+        let source_cut = TranscriptSourceCut::from(aster_effect::cut_log(&facts));
         if let Some(source) = self.saved_durable_source() {
             source
                 .verify(&self.session_id, &facts)
@@ -670,7 +670,7 @@ impl AgentSession {
     pub async fn plan_projection(&self) -> Result<SessionPlanProjection> {
         let tasks = self.plan_snapshot().await?;
         let digest =
-            crate::content_digest::digest_json("a3s.code.session-plan-projection.v1", &tasks)
+            crate::content_digest::digest_json("aster.code.session-plan-projection.v1", &tasks)
                 .map_err(|error| CodeError::Session(format!("plan projection: {error}")))?;
         Ok(SessionPlanProjection {
             tasks,

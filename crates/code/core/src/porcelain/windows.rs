@@ -98,7 +98,7 @@ pub(super) fn directory_entries(
         }
         let name = entry.file_name();
         // Runtime metadata directories are outside the observed source tree.
-        if name == ".git" || name == ".a3s" || name == ".a3s-code" {
+        if name == ".git" || name == ".aster" || name == ".aster" {
             continue;
         }
         match open_node(&directory, &name)

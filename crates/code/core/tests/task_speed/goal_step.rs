@@ -1,15 +1,15 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::goal_control::{
+use aster_core::goal_control::{
     GoalCommandKindV1, GoalControlCommandV1, GoalDefinitionCommandV1, GoalPlanCommandV1, GoalState,
     GoalTickDecisionV1,
 };
-use a3s_code_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task, TaskStatus};
-use a3s_code_core::store::FileSessionStore;
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
-use a3s_code_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
-use a3s_code_core::workspace::WorkspaceServices;
+use aster_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task, TaskStatus};
+use aster_core::store::FileSessionStore;
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
+use aster_core::workspace::WorkspaceServices;
 use std::sync::{
     atomic::{AtomicUsize, Ordering},
     Arc,
@@ -21,7 +21,7 @@ struct ByteAttestor {
     calls: AtomicUsize,
 }
 
-fn tick_request(session: &a3s_code_core::AgentSession, operation_id: &str) -> GoalControlCommandV1 {
+fn tick_request(session: &aster_core::AgentSession, operation_id: &str) -> GoalControlCommandV1 {
     let goal = session.goal_definition().unwrap().unwrap();
     GoalControlCommandV1 {
         kind: GoalCommandKindV1::Tick,
@@ -36,11 +36,11 @@ fn tick_request(session: &a3s_code_core::AgentSession, operation_id: &str) -> Go
     }
 }
 
-async fn preview_does_not_execute(session: &a3s_code_core::AgentSession) {
+async fn preview_does_not_execute(session: &aster_core::AgentSession) {
     let command = tick_request(session, "preview-only");
     let workspace = std::path::PathBuf::from(&command.workspace.display_root);
     let before =
-        a3s_code_core::fact_control::read_workspace_facts(&workspace, session.session_id())
+        aster_core::fact_control::read_workspace_facts(&workspace, session.session_id())
             .unwrap();
     let runs = serde_json::to_value(session.runs().await).unwrap();
     assert_eq!(
@@ -48,18 +48,18 @@ async fn preview_does_not_execute(session: &a3s_code_core::AgentSession) {
         GoalTickDecisionV1::BudgetExhausted
     );
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(&workspace, session.session_id())
+        aster_core::fact_control::read_workspace_facts(&workspace, session.session_id())
             .unwrap(),
         before
     );
     assert_eq!(serde_json::to_value(session.runs().await).unwrap(), runs);
 }
 
-impl a3s_code_core::CompletionAttestor for ByteAttestor {
+impl aster_core::CompletionAttestor for ByteAttestor {
     fn attest(
         &self,
         digest: &str,
-        paths: &[a3s_code_core::MutatedPathRecord],
+        paths: &[aster_core::MutatedPathRecord],
     ) -> Option<VerificationReport> {
         use std::io::Read;
         self.calls.fetch_add(1, Ordering::SeqCst);
@@ -170,7 +170,7 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
         .as_millis()
         + 180_000;
     // Parsed host bounds do not relabel an ordinary Run as an automatic slice.
-    config.goal_control = a3s_code_core::CodeConfig::from_acl(&format!(
+    config.goal_control = aster_core::CodeConfig::from_acl(&format!(
         r#"goal_control {{
             automatic_enabled = true
             max_slices = "1"
@@ -181,7 +181,7 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
     .unwrap()
     .goal_control;
     assert!(config.goal_control.as_ref().unwrap().automatic_enabled);
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
@@ -190,7 +190,7 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
     let store = Arc::new(FileSessionStore::new(storage.path()).await.unwrap());
     let guard = Arc::new(compaction::UsageProbe::default());
     let workflow =
-        Arc::new(a3s_code_core::WorkflowBudget::new(Some(100_000)).with_inner(guard.clone()));
+        Arc::new(aster_core::WorkflowBudget::new(Some(100_000)).with_inner(guard.clone()));
     let mut permission = PermissionPolicy::new().allow("verify_source(*)");
     permission.default_decision = PermissionDecision::Deny;
     let session = agent
@@ -228,7 +228,7 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
     assert!(guard.0.lock().unwrap().is_empty());
     let prompt = "Execute only the current admitted step using fresh evidence.";
     let started = std::time::Instant::now();
-    let a3s_code_core::AgentRunSpawn::Started { worker, .. } =
+    let aster_core::AgentRunSpawn::Started { worker, .. } =
         session.spawn_run_with_id(&run_id, prompt).await.unwrap()
     else {
         panic!("the explicit original request must create its first Run");
@@ -247,7 +247,7 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
         "GOAL-EXACT status={:?} result={:?}",
         snapshot.status, snapshot.result_text
     );
-    assert_eq!(snapshot.status, a3s_code_core::run::RunStatus::Completed);
+    assert_eq!(snapshot.status, aster_core::run::RunStatus::Completed);
     assert!(snapshot.result_text.as_deref().unwrap().contains(&value));
     let goal = session.goal_definition().unwrap().unwrap();
     assert_eq!(
@@ -260,11 +260,11 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
     );
     assert_eq!(goal.state, GoalState::Active);
     let before =
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "goal-exact-live")
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-exact-live")
             .unwrap();
     let slices: Vec<_> = before
         .iter()
-        .filter(|f| f.kind == "a3s.goal.slice.admitted")
+        .filter(|f| f.kind == "aster.goal.slice.admitted")
         .collect();
     assert_eq!(slices.len(), 1);
     assert!(slices[0].payload["body"].get("continuation").is_none());
@@ -275,7 +275,7 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
         request.expected_goal_sequence
     );
     for fact in before.iter().filter(|f| f.kind == "tool.result") {
-        let receipt: a3s_effect::ToolExecutionResultV1 =
+        let receipt: aster_effect::ToolExecutionResultV1 =
             serde_json::from_value(fact.payload["receipt"].clone()).unwrap();
         assert_eq!(receipt.identity.admission.as_ref().unwrap().run_id, run_id);
         assert!(receipt.effects.changes.is_empty());
@@ -283,18 +283,18 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
     assert_eq!(
         before
             .iter()
-            .filter(|f| f.kind == "a3s.goal.step.accepted" && f.payload["body"]["run_id"] == run_id)
+            .filter(|f| f.kind == "aster.goal.step.accepted" && f.payload["body"]["run_id"] == run_id)
             .count(),
         1
     );
-    assert!(!before.iter().any(|f| f.kind == "a3s.goal.completed"));
+    assert!(!before.iter().any(|f| f.kind == "aster.goal.completed"));
     let calls = guard.0.lock().unwrap().clone();
     let total = calls.iter().map(|usage| usage.total_tokens).sum::<usize>();
     let events = session.run_events(&run_id).await;
     let end = events
         .iter()
         .find_map(|event| match &event.event {
-            a3s_code_core::AgentEvent::End { usage, .. } => Some(usage),
+            aster_core::AgentEvent::End { usage, .. } => Some(usage),
             _ => None,
         })
         .unwrap();
@@ -325,7 +325,7 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
     assert_eq!(guard.0.lock().unwrap().len(), calls.len());
     assert_eq!(workflow.consumed_tokens(), total as u64);
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "goal-exact-live")
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-exact-live")
             .unwrap(),
         before
     );
@@ -354,7 +354,7 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
     assert_eq!(guard.0.lock().unwrap().len(), calls.len());
     assert_eq!(workflow.consumed_tokens(), total as u64);
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "goal-exact-live")
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-exact-live")
             .unwrap(),
         before
     );
@@ -369,7 +369,7 @@ async fn current_step_real_exact_operation_replays_after_file_reopen() {
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires the pinned real provider"]
 async fn automatic_tick_real_admits_one_run_and_keeps_finite_use_after_reopen() {
-    use a3s_code_core::{AgentRunSpawn, GoalTickAdmission};
+    use aster_core::{AgentRunSpawn, GoalTickAdmission};
     let workspace = tempfile::tempdir().unwrap();
     let storage = tempfile::tempdir().unwrap();
     let value = format!("VERIFIED-{}", uuid::Uuid::new_v4());
@@ -380,7 +380,7 @@ async fn automatic_tick_real_admits_one_run_and_keeps_finite_use_after_reopen() 
         .unwrap()
         .as_millis()
         + 180_000;
-    config.goal_control = a3s_code_core::CodeConfig::from_acl(&format!(
+    config.goal_control = aster_core::CodeConfig::from_acl(&format!(
         r#"goal_control {{
             automatic_enabled = true
             max_slices = "1"
@@ -390,7 +390,7 @@ async fn automatic_tick_real_admits_one_run_and_keeps_finite_use_after_reopen() 
     ))
     .unwrap()
     .goal_control;
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
@@ -399,7 +399,7 @@ async fn automatic_tick_real_admits_one_run_and_keeps_finite_use_after_reopen() 
     let store = Arc::new(FileSessionStore::new(storage.path()).await.unwrap());
     let guard = Arc::new(compaction::UsageProbe::default());
     let workflow =
-        Arc::new(a3s_code_core::WorkflowBudget::new(Some(100_000)).with_inner(guard.clone()));
+        Arc::new(aster_core::WorkflowBudget::new(Some(100_000)).with_inner(guard.clone()));
     let mut permission = PermissionPolicy::new().allow("verify_source(*)");
     permission.default_decision = PermissionDecision::Deny;
     let session = agent
@@ -429,7 +429,7 @@ async fn automatic_tick_real_admits_one_run_and_keeps_finite_use_after_reopen() 
         .unwrap();
     admit_source_plan(&session, workspace.path(), false, &value);
     let facts = || {
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "goal-auto-live")
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-auto-live")
             .unwrap()
     };
     let tick = tick_request(&session, &format!("auto-{}", uuid::Uuid::new_v4()));
@@ -455,7 +455,7 @@ async fn automatic_tick_real_admits_one_run_and_keeps_finite_use_after_reopen() 
             }
             Ok(GoalTickAdmission::Admitted(AgentRunSpawn::Replayed { .. }))
             | Ok(GoalTickAdmission::Decided(GoalTickDecisionV1::Reconcile))
-            | Err(a3s_code_core::CodeError::SessionBusy { .. }) => {}
+            | Err(aster_core::CodeError::SessionBusy { .. }) => {}
             Ok(GoalTickAdmission::Decided(other)) => panic!("unexpected decision {other:?}"),
             Err(error) => panic!("unexpected tick failure: {error}"),
         }
@@ -467,7 +467,7 @@ async fn automatic_tick_real_admits_one_run_and_keeps_finite_use_after_reopen() 
         "GOAL-AUTO status={:?} result={:?}",
         snapshot.status, snapshot.result_text
     );
-    assert_eq!(snapshot.status, a3s_code_core::run::RunStatus::Completed);
+    assert_eq!(snapshot.status, aster_core::run::RunStatus::Completed);
     assert!(snapshot.result_text.as_deref().unwrap().contains(&value));
     let goal = session.goal_definition().unwrap().unwrap();
     assert_eq!(
@@ -481,7 +481,7 @@ async fn automatic_tick_real_admits_one_run_and_keeps_finite_use_after_reopen() 
     let after = facts();
     let slices: Vec<_> = after
         .iter()
-        .filter(|f| f.kind == "a3s.goal.slice.admitted")
+        .filter(|f| f.kind == "aster.goal.slice.admitted")
         .collect();
     assert_eq!(slices.len(), 1);
     assert_eq!(slices[0].payload["body"]["run_id"], tick.operation_id);
@@ -554,7 +554,7 @@ async fn prove_current_step(modify: bool) {
     )
     .unwrap();
     let mut config = load_pinned_layer_c_config();
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
@@ -622,10 +622,10 @@ async fn prove_current_step(modify: bool) {
         guard.0.lock().unwrap()
     );
     let diagnostic =
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), session.session_id())
+        aster_core::fact_control::read_workspace_facts(workspace.path(), session.session_id())
             .unwrap();
     for fact in diagnostic.iter().filter(|f| f.kind == "tool.result") {
-        let receipt: a3s_effect::ToolExecutionResultV1 =
+        let receipt: aster_effect::ToolExecutionResultV1 =
             serde_json::from_value(fact.payload["receipt"].clone()).unwrap();
         let body = receipt.output.as_str().unwrap_or("");
         let kind = serde_json::from_str::<serde_json::Value>(body)
@@ -651,16 +651,16 @@ async fn prove_current_step(modify: bool) {
     assert_eq!(plan.get_ready_steps()[0].id, "follow-up");
     assert_eq!(goal.state, GoalState::Active);
     let facts =
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), session.session_id())
+        aster_core::fact_control::read_workspace_facts(workspace.path(), session.session_id())
             .unwrap();
     let accepted: Vec<_> = facts
         .iter()
-        .filter(|f| f.kind == "a3s.goal.step.accepted")
+        .filter(|f| f.kind == "aster.goal.step.accepted")
         .collect();
     assert_eq!(accepted.len(), 1);
     let admission = facts
         .iter()
-        .find(|f| f.kind == "a3s.goal.slice.admitted")
+        .find(|f| f.kind == "aster.goal.slice.admitted")
         .unwrap();
     assert_eq!(
         accepted[0].payload["body"]["run_id"],
@@ -671,7 +671,7 @@ async fn prove_current_step(modify: bool) {
     assert!(!results.is_empty());
     let mut changes = 0;
     for fact in results {
-        let receipt: a3s_effect::ToolExecutionResultV1 =
+        let receipt: aster_effect::ToolExecutionResultV1 =
             serde_json::from_value(fact.payload["receipt"].clone()).unwrap();
         assert_eq!(
             receipt.identity.admission.as_ref().unwrap().run_id,
@@ -703,7 +703,7 @@ async fn prove_current_step(modify: bool) {
         let report: VerificationReport =
             serde_json::from_value(accepted[0].payload["body"]["attestation"].clone()).unwrap();
         assert_eq!(report.subject, "host:authored-source");
-        let a3s_code_core::harness_loop::CompletionTerminal::Verified { effect_digest } =
+        let aster_core::harness_loop::CompletionTerminal::Verified { effect_digest } =
             &answer.completion
         else {
             panic!("original completion must be verified");
@@ -722,10 +722,10 @@ async fn prove_current_step(modify: bool) {
                     .unwrap()
         })
         .unwrap();
-    let cut = a3s_effect::cut_log(&facts[..=cut_index]);
+    let cut = aster_effect::cut_log(&facts[..=cut_index]);
     assert_eq!(accepted[0].payload["body"]["source_digest"], cut.digest);
     assert_eq!(facts[cut_index + 1].kind, "turn.complete");
-    assert!(!facts.iter().any(|f| f.kind == "a3s.goal.completed"));
+    assert!(!facts.iter().any(|f| f.kind == "aster.goal.completed"));
     let calls = guard.0.lock().unwrap().clone();
     let infer_calls = facts.iter().filter(|f| f.kind == "model.turn").count();
     assert!(
@@ -778,7 +778,7 @@ async fn prove_current_step(modify: bool) {
     );
     preview_does_not_execute(&restored).await;
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live")
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live")
             .unwrap(),
         facts
     );
@@ -819,7 +819,7 @@ async fn prove_current_step(modify: bool) {
         command.plan = None;
         restored.apply_goal_plan(command).unwrap();
         let before =
-            a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live")
+            aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live")
                 .unwrap();
         let (measurement, rechecked) = timed_send("GOAL-REVALIDATE", &restored, "Execute the current revalidation step with fresh evidence. Preserve the earlier modification.").await;
         print_row(&measurement);
@@ -835,13 +835,13 @@ async fn prove_current_step(modify: bool) {
             TaskStatus::Pending
         );
         let after =
-            a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live")
+            aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live")
                 .unwrap();
         assert_eq!(&after[..before.len()], before.as_slice());
         let fresh = &after[before.len()..];
         let mut observations = 0;
         for fact in fresh.iter().filter(|f| f.kind == "tool.result") {
-            let receipt: a3s_effect::ToolExecutionResultV1 =
+            let receipt: aster_effect::ToolExecutionResultV1 =
                 serde_json::from_value(fact.payload["receipt"].clone()).unwrap();
             assert!(
                 receipt.effects.changes.is_empty(),
@@ -854,11 +854,11 @@ async fn prove_current_step(modify: bool) {
         assert_eq!(
             fresh
                 .iter()
-                .filter(|f| f.kind == "a3s.goal.step.accepted" && f.payload["plan_revision"] == 2)
+                .filter(|f| f.kind == "aster.goal.step.accepted" && f.payload["plan_revision"] == 2)
                 .count(),
             1
         );
-        assert!(!after.iter().any(|f| f.kind == "a3s.goal.completed"));
+        assert!(!after.iter().any(|f| f.kind == "aster.goal.completed"));
         assert_eq!(attestor.calls.load(Ordering::SeqCst), 1);
         assert_eq!(
             std::fs::read(workspace.path().join("source.txt")).unwrap(),
@@ -892,7 +892,7 @@ async fn prove_current_step(modify: bool) {
             serde_json::to_value(goal).unwrap()
         );
         assert_eq!(
-            a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live")
+            aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-step-live")
                 .unwrap(),
             after
         );
@@ -911,7 +911,7 @@ async fn prove_current_step(modify: bool) {
 }
 
 fn admit_source_plan(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     workspace: &std::path::Path,
     modify: bool,
     value: &str,

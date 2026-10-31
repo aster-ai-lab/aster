@@ -101,7 +101,7 @@ pub fn read(path: &Path) -> Result<Manifest> {
         return Err(Error::new(
             crate::error::ErrorCode::NotSupported,
             format!(
-                "unsupported a3s-vec format version {}",
+                "unsupported aster-vec format version {}",
                 manifest.format_version
             ),
         ));

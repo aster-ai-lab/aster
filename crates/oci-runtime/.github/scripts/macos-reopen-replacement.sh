@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-rootfs_dir="$RUNNER_TEMP/a3s-oci-alpine-aarch64"
-signed_dir="$RUNNER_TEMP/a3s-oci-agent-vm-signed"
-system_image_manifest="${A3S_OCI_MACOS_SYSTEM_IMAGE_MANIFEST:?macOS system-image manifest is required}"
-bundle_dir="$rootfs_dir/var/lib/a3s-oci-smoke/bundle"
-marker="$bundle_dir/rootfs/.a3s-oci-create-start-smoke"
-exec_marker="$bundle_dir/rootfs/.a3s-oci-exec-reopen-smoke"
-signal_process_marker="$bundle_dir/rootfs/.a3s-oci-signal-process-reopen-smoke"
-read_output_marker="$bundle_dir/rootfs/.a3s-oci-read-output-reopen-smoke"
-write_stdin_marker="$bundle_dir/rootfs/.a3s-oci-write-stdin-reopen-smoke"
-close_stdin_marker="$bundle_dir/rootfs/.a3s-oci-close-stdin-reopen-smoke"
-resize_marker="$bundle_dir/rootfs/.a3s-oci-resize-reopen-smoke"
-console_root="$RUNNER_TEMP/a3s-oci-reopen-replacement"
+rootfs_dir="$RUNNER_TEMP/aster-oci-alpine-aarch64"
+signed_dir="$RUNNER_TEMP/aster-oci-agent-vm-signed"
+system_image_manifest="${ASTER_OCI_MACOS_SYSTEM_IMAGE_MANIFEST:?macOS system-image manifest is required}"
+bundle_dir="$rootfs_dir/var/lib/aster-oci-smoke/bundle"
+marker="$bundle_dir/rootfs/.aster-oci-create-start-smoke"
+exec_marker="$bundle_dir/rootfs/.aster-oci-exec-reopen-smoke"
+signal_process_marker="$bundle_dir/rootfs/.aster-oci-signal-process-reopen-smoke"
+read_output_marker="$bundle_dir/rootfs/.aster-oci-read-output-reopen-smoke"
+write_stdin_marker="$bundle_dir/rootfs/.aster-oci-write-stdin-reopen-smoke"
+close_stdin_marker="$bundle_dir/rootfs/.aster-oci-close-stdin-reopen-smoke"
+resize_marker="$bundle_dir/rootfs/.aster-oci-resize-reopen-smoke"
+console_root="$RUNNER_TEMP/aster-oci-reopen-replacement"
 support="$(sysctl -n kern.hv_support 2>/dev/null || printf unavailable)"
 test -f "$system_image_manifest"
 mkdir -p \
@@ -38,10 +38,10 @@ mkdir -p \
   "$console_root/wait"
 
 endpoint_baseline="$({
-  find /private/tmp -maxdepth 1 -name 'a3s-oci-agent-*' -print | sort
+  find /private/tmp -maxdepth 1 -name 'aster-oci-agent-*' -print | sort
 })"
 runtime_baseline="$({
-  find "$rootfs_dir/run" -maxdepth 1 -name 'a3s-oci-agent-*' -print | sort
+  find "$rootfs_dir/run" -maxdepth 1 -name 'aster-oci-agent-*' -print | sort
 })"
 
 stages=(
@@ -64,10 +64,10 @@ assert_cleanup_baseline() {
   local stage_console_dir="$1"
   local endpoint_after runtime_after
   endpoint_after="$({
-    find /private/tmp -maxdepth 1 -name 'a3s-oci-agent-*' -print | sort
+    find /private/tmp -maxdepth 1 -name 'aster-oci-agent-*' -print | sort
   })"
   runtime_after="$({
-    find "$rootfs_dir/run" -maxdepth 1 -name 'a3s-oci-agent-*' -print | sort
+    find "$rootfs_dir/run" -maxdepth 1 -name 'aster-oci-agent-*' -print | sort
   })"
   test "$endpoint_after" = "$endpoint_baseline"
   test "$runtime_after" = "$runtime_baseline"
@@ -103,9 +103,9 @@ run_create_stage() {
   mkdir "$stage_console_dir"
   set +e
   output="$(
-    target/debug/a3s-oci oci-vm-reopen-replacement \
+    target/debug/aster-oci oci-vm-reopen-replacement \
       --operation create \
-      --shim "$signed_dir/a3s-oci-krun-shim" \
+      --shim "$signed_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs_dir" \
       --system-image-manifest "$system_image_manifest" \
       --bundle "$bundle_dir" \
@@ -119,7 +119,7 @@ run_create_stage() {
   if hardware_available; then
     test "$gate_exit_code" -eq 0
     jq --exit-status --arg stage "$fault_stage" \
-      '.schema_version == "a3s.oci.oci-vm-reopen-replacement.v3"
+      '.schema_version == "aster.oci.oci-vm-reopen-replacement.v3"
        and .platform == "macos" and .status == "available"
        and .bundle_loaded
        and .requested_operation == "create"
@@ -207,7 +207,7 @@ run_create_stage() {
   else
     test "$gate_exit_code" -eq 2
     jq --exit-status --arg stage "$fault_stage" \
-      '.schema_version == "a3s.oci.oci-vm-reopen-replacement.v3"
+      '.schema_version == "aster.oci.oci-vm-reopen-replacement.v3"
        and .platform == "macos"
        and .status != "available"
        and .requested_operation == "create"
@@ -224,9 +224,9 @@ run_state_stage() {
   mkdir "$stage_console_dir"
   set +e
   output="$(
-    target/debug/a3s-oci oci-vm-reopen-replacement \
+    target/debug/aster-oci oci-vm-reopen-replacement \
       --operation state \
-      --shim "$signed_dir/a3s-oci-krun-shim" \
+      --shim "$signed_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs_dir" \
       --system-image-manifest "$system_image_manifest" \
       --bundle "$bundle_dir" \
@@ -241,7 +241,7 @@ run_state_stage() {
     test "$gate_exit_code" -eq 0
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v1"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v1"
        and .platform == "macos" and .status == "available"
        and .bundle_loaded
        and .requested_operation == "state"
@@ -324,7 +324,7 @@ run_state_stage() {
     test "$gate_exit_code" -eq 2
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v1"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v1"
        and .platform == "macos"
        and .status != "available"
        and .requested_operation == "state"
@@ -341,9 +341,9 @@ run_start_stage() {
   mkdir "$stage_console_dir"
   set +e
   output="$(
-    target/debug/a3s-oci oci-vm-reopen-replacement \
+    target/debug/aster-oci oci-vm-reopen-replacement \
       --operation start \
-      --shim "$signed_dir/a3s-oci-krun-shim" \
+      --shim "$signed_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs_dir" \
       --system-image-manifest "$system_image_manifest" \
       --bundle "$bundle_dir" \
@@ -358,7 +358,7 @@ run_start_stage() {
     test "$gate_exit_code" -eq 0
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v2"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v2"
        and .platform == "macos" and .status == "available"
        and .bundle_loaded
        and .requested_operation == "start"
@@ -454,7 +454,7 @@ run_start_stage() {
     test "$gate_exit_code" -eq 2
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v2"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v2"
        and .platform == "macos"
        and .status != "available"
        and .requested_operation == "start"
@@ -471,9 +471,9 @@ run_kill_stage() {
   mkdir "$stage_console_dir"
   set +e
   output="$(
-    target/debug/a3s-oci oci-vm-reopen-replacement \
+    target/debug/aster-oci oci-vm-reopen-replacement \
       --operation kill \
-      --shim "$signed_dir/a3s-oci-krun-shim" \
+      --shim "$signed_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs_dir" \
       --system-image-manifest "$system_image_manifest" \
       --bundle "$bundle_dir" \
@@ -488,7 +488,7 @@ run_kill_stage() {
     test "$gate_exit_code" -eq 0
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v3"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v3"
        and .platform == "macos" and .status == "available"
        and .bundle_loaded
        and .requested_operation == "kill"
@@ -593,7 +593,7 @@ run_kill_stage() {
     test "$gate_exit_code" -eq 2
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v3"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v3"
        and .platform == "macos"
        and .status != "available"
        and .requested_operation == "kill"
@@ -612,9 +612,9 @@ run_delete_stage() {
   mkdir "$stage_console_dir"
   set +e
   output="$(
-    target/debug/a3s-oci oci-vm-reopen-replacement \
+    target/debug/aster-oci oci-vm-reopen-replacement \
       --operation delete \
-      --shim "$signed_dir/a3s-oci-krun-shim" \
+      --shim "$signed_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs_dir" \
       --system-image-manifest "$system_image_manifest" \
       --bundle "$bundle_dir" \
@@ -629,7 +629,7 @@ run_delete_stage() {
     test "$gate_exit_code" -eq 0
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v4"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v4"
        and .platform == "macos" and .status == "available"
        and .bundle_loaded
        and .requested_operation == "delete"
@@ -748,7 +748,7 @@ run_delete_stage() {
     test "$gate_exit_code" -eq 2
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v4"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v4"
        and .platform == "macos"
        and .status != "available"
        and .requested_operation == "delete"
@@ -768,9 +768,9 @@ run_wait_stage() {
   mkdir "$stage_console_dir"
   set +e
   output="$(
-    target/debug/a3s-oci oci-vm-reopen-replacement \
+    target/debug/aster-oci oci-vm-reopen-replacement \
       --operation wait \
-      --shim "$signed_dir/a3s-oci-krun-shim" \
+      --shim "$signed_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs_dir" \
       --system-image-manifest "$system_image_manifest" \
       --bundle "$bundle_dir" \
@@ -785,7 +785,7 @@ run_wait_stage() {
     test "$gate_exit_code" -eq 0
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v5"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v5"
        and .platform == "macos" and .status == "available"
        and .bundle_loaded
        and .requested_operation == "wait"
@@ -915,7 +915,7 @@ run_wait_stage() {
     test "$gate_exit_code" -eq 2
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v5"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v5"
        and .platform == "macos"
        and .status != "available"
        and .requested_operation == "wait"

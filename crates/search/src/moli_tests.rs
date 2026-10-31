@@ -1,5 +1,5 @@
 use super::*;
-use a3s_use_browser::WaitCondition;
+use aster_use_browser::WaitCondition;
 use std::fs;
 use std::sync::Arc;
 
@@ -54,7 +54,7 @@ fn arguments_map_every_typed_wait_condition() {
             url: url::Url::parse("https://example.test/").unwrap(),
             timeout_ms: 1_000,
             wait,
-            user_agent: Some("a3s-test".to_string()),
+            user_agent: Some("aster-test".to_string()),
             screenshot_path: None,
         };
         let args = fetch_arguments(&config, &request)
@@ -68,7 +68,7 @@ fn arguments_map_every_typed_wait_condition() {
         );
         assert!(args
             .windows(2)
-            .any(|pair| pair == ["--user-agent", "a3s-test"]));
+            .any(|pair| pair == ["--user-agent", "aster-test"]));
         assert!(args.windows(2).any(|pair| pair == ["--timeout", "1000"]));
     }
 }
@@ -225,7 +225,7 @@ async fn renders_html_through_the_real_process_boundary() {
         url: url::Url::parse("https://example.test/page").unwrap(),
         timeout_ms: 10_000,
         wait: WaitCondition::Load,
-        user_agent: Some("a3s-test-agent".to_string()),
+        user_agent: Some("aster-test-agent".to_string()),
         screenshot_path: None,
     };
     let page = pool.render(request).await.unwrap();

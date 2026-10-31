@@ -2,7 +2,7 @@ use std::io;
 use std::mem::size_of;
 use std::os::fd::{AsRawFd, FromRawFd, OwnedFd};
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use super::namespace_error;
 
@@ -279,7 +279,7 @@ fn invalid_acknowledgement(message: String) -> io::Error {
     io::Error::new(io::ErrorKind::InvalidData, message)
 }
 
-fn network_error(code: ErrorCode, operation: &str, error: io::Error) -> a3s_oci_sdk::Error {
+fn network_error(code: ErrorCode, operation: &str, error: io::Error) -> aster_oci_sdk::Error {
     namespace_error(
         code,
         format!("failed to {operation} in the new Linux network namespace: {error}"),

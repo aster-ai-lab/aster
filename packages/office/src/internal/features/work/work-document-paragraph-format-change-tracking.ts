@@ -34,7 +34,7 @@ export function trackDocumentParagraphFormattingTransaction(
       paragraphChangeKind: 'paragraph-formatting',
       paragraphChangeId: identity.id,
       paragraphChangeActorId: identity.actorId ?? '',
-      paragraphChangeAuthor: identity.author || 'A3S Work',
+      paragraphChangeAuthor: identity.author || 'Aster Work',
       paragraphChangeDate: identity.date || new Date().toISOString(),
       paragraphChangeBefore: previous,
     });

@@ -1,7 +1,7 @@
 use std::io;
 use std::path::Path;
 
-use a3s_use_core::{PluginOperationAction, UseResult};
+use aster_use_core::{PluginOperationAction, UseResult};
 use tokio::fs;
 
 use super::{
@@ -29,7 +29,7 @@ pub(super) async fn read_pending_operations_locked(
         let action_root = root.join(action_name(action));
         match fs::symlink_metadata(&action_root).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(path_identity_error()),
             Err(error) if error.kind() == io::ErrorKind::NotFound => continue,
@@ -63,7 +63,7 @@ pub(super) async fn read_pending_operations_locked(
                         error,
                     )
                 })?;
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
                 return Err(path_identity_error());
             }
             let mut records = fs::read_dir(&publisher_path).await.map_err(|error| {

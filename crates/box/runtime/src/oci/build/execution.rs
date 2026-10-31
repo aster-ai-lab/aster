@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_box_core::error::BoxError;
+use aster_box_core::error::BoxError;
 use thiserror::Error;
 
 use super::cache::{inspect_build_cache_artifact, BuildCacheExportIdentity, RecordedBuildCache};
@@ -29,7 +29,7 @@ const EXECUTION_POLL_INTERVAL: Duration = Duration::from_millis(25);
 /// Successful native output bound to the canonical admitted build plan.
 #[derive(Debug)]
 pub(super) struct PlannedBuildResult {
-    /// Canonical A3S ACL plan identity.
+    /// Canonical Aster ACL plan identity.
     pub plan_digest: String,
     /// Durable typed OCI output owned by the Box image store.
     pub output: BuildResult,

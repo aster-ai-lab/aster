@@ -51,8 +51,8 @@
 //! | 31 | info() counts consumer groups | `info_counts_consumer_groups` |
 //! | 32 | concurrent publishes all land | `concurrent_publish` |
 
-use a3s_event::provider::iggy::{IggyConfig, IggyPartitioning, IggyProvider};
-use a3s_event::{DeliverPolicy, Event, EventBus, EventProvider, PublishOptions, SubscribeOptions};
+use aster_event::provider::iggy::{IggyConfig, IggyPartitioning, IggyProvider};
+use aster_event::{DeliverPolicy, Event, EventBus, EventProvider, PublishOptions, SubscribeOptions};
 
 /// Try to connect to Iggy. Returns None if server is unavailable.
 async fn try_iggy_provider(stream_suffix: &str) -> Option<IggyProvider> {
@@ -82,10 +82,10 @@ async fn try_iggy_provider(stream_suffix: &str) -> Option<IggyProvider> {
                     Some(provider)
                 }
                 Err(e) => {
-                    // CI sets A3S_EVENT_REQUIRE_IGGY=1 so a dead service
+                    // CI sets ASTER_EVENT_REQUIRE_IGGY=1 so a dead service
                     // container FAILS the build instead of skip-passing.
-                    if std::env::var_os("A3S_EVENT_REQUIRE_IGGY").is_some()
-                        || std::env::var_os("A3S_EVENT_REQUIRE_BROKERS").is_some()
+                    if std::env::var_os("ASTER_EVENT_REQUIRE_IGGY").is_some()
+                        || std::env::var_os("ASTER_EVENT_REQUIRE_BROKERS").is_some()
                     {
                         panic!("Iggy required but unreachable: {e}");
                     }

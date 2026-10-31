@@ -12,7 +12,7 @@ use serde_json::Value;
 /// Strategy: try parsing as-is first. If that fails, run a single-pass JSON
 /// scanner that trims incomplete trailing tokens and closes open containers.
 /// This mirrors the practical behavior of Vercel AI SDK's partial JSON parser
-/// while keeping A3S's final schema validation strict.
+/// while keeping Aster's final schema validation strict.
 #[cfg(test)]
 pub(super) fn try_parse_partial_json(text: &str) -> Option<Value> {
     parse_partial_json(text).map(|parsed| parsed.value)

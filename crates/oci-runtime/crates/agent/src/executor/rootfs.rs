@@ -10,7 +10,7 @@ use std::os::unix::fs::{DirBuilderExt, MetadataExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};
 
 use super::mount::{MOVE_MOUNT_F_EMPTY_PATH, MOVE_MOUNT_T_EMPTY_PATH};
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 const CURRENT_DIRECTORY: &[u8] = b".\0";
 const ROOT_DIRECTORY: &[u8] = b"/\0";

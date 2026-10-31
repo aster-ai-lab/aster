@@ -2,7 +2,7 @@
 #
 # Workflow_dispatch only: nothing runs automatically until the self-hosted
 # runner (label `aster-os`) registers — that pending state is the designed
-# pre-position, not a skip. Machine-side deploy keys read the kense-labs
+# pre-position, not a skip. Machine-side deploy keys read the aster-ai-lab
 # submodules; no STUDIO_READ_TOKEN is used or required. Private submodules
 # that fail to check out fail this run by name; checkout is never skipped.
 # Retention: logs and the workspace check log are uploaded as artifacts so
@@ -37,7 +37,7 @@ jobs:
             mode="$(git ls-tree HEAD "$sub" | cut -d ' ' -f 1)"
             [[ "$mode" = "160000" ]] || fail "$sub is not a gitlink (mode $mode)"
             sha="$(git rev-parse "HEAD:$sub")"
-            repo="kense-labs/$(basename "$sub")"
+            repo="aster-ai-lab/$(basename "$sub")"
             echo "Checking out $repo@$sha into $sub"
             rm -rf "$sub"
             git clone --quiet "git@github.com:$repo.git" "$sub" \
@@ -56,6 +56,7 @@ jobs:
         run: |
           mkdir -p .retained-logs
           cargo check --locked --workspace --all-targets 2>&1 | tee .retained-logs/workspace-check.log
+          cargo check --locked --manifest-path apps/control-plane/Cargo.toml --workspace --all-targets 2>&1 | tee .retained-logs/control-plane-check.log
 
       - name: Hermetic package tests (the service-free set)
         run: |
@@ -65,15 +66,15 @@ jobs:
             echo "== $label"
             cargo test --locked "$@" 2>&1 | tee ".retained-logs/tests-$label.log"
           }
-          # a3s-api and a3s-cloud-control-plane are deliberately absent: their
+          # aster-api and aster-cloud-control-plane are deliberately absent: their
           # suites carry live PostgreSQL proofs that panic when the service is
           # unreachable (and the api tobot pair additionally requires
           # --test-threads=1). They need the campaigns shape (real
           # PostgreSQL/S3, serial) which this pipeline does not provide.
-          run_tests cloud-contracts --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-contracts
-          run_tests cloud-node-agent --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-node-agent
-          run_tests cloud-sdk --manifest-path apps/cloud/Cargo.toml -p a3s-cloud-sdk
-          run_tests auth -p a3s-auth
+          run_tests cloud-contracts --manifest-path apps/cloud/Cargo.toml -p aster-cloud-contracts
+          run_tests cloud-node-agent --manifest-path apps/cloud/Cargo.toml -p aster-cloud-node-agent
+          run_tests cloud-sdk --manifest-path apps/cloud/Cargo.toml -p aster-cloud-sdk
+          run_tests auth --manifest-path apps/control-plane/Cargo.toml -p aster-auth
 
       - name: Workspace dependency guard
         run: python3 tests/workspace_dependencies.py

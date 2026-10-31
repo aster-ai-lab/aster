@@ -969,7 +969,7 @@ async fn dynamic_workflow_optionally_projects_committed_flow_history_into_graph(
 }
 
 #[tokio::test]
-async fn dynamic_workflow_tool_runs_ptc_step_through_a3s_flow() {
+async fn dynamic_workflow_tool_runs_ptc_step_through_aster_flow() {
     let dir = tempfile::tempdir().unwrap();
     tokio::fs::write(dir.path().join("fixture.txt"), "hello from fixture")
         .await
@@ -1060,13 +1060,13 @@ return await ctx.read(inputs.input.path);
         )
         .await
         .unwrap(),
-        "dynamic workflow history should be stored under .a3s/workflow"
+        "dynamic workflow history should be stored under .aster/workflow"
     );
     assert!(
-        !tokio::fs::try_exists(dir.path().join(".a3s/flow"))
+        !tokio::fs::try_exists(dir.path().join(".aster/flow"))
             .await
             .unwrap(),
-        "dynamic workflows must not recreate the legacy .a3s/flow directory"
+        "dynamic workflows must not recreate the legacy .aster/flow directory"
     );
 }
 
@@ -1259,10 +1259,10 @@ async fn dynamic_workflow_refuses_symlinked_project_store() {
 
     let workspace = tempfile::tempdir().unwrap();
     let outside = tempfile::tempdir().unwrap();
-    tokio::fs::create_dir_all(workspace.path().join(".a3s"))
+    tokio::fs::create_dir_all(workspace.path().join(".aster"))
         .await
         .unwrap();
-    symlink(outside.path(), workspace.path().join(".a3s/workflow")).unwrap();
+    symlink(outside.path(), workspace.path().join(".aster/workflow")).unwrap();
     let context = ToolContext::new(workspace.path().to_path_buf());
 
     let error = match flow_store_for_context(&context, Some("symlink-test")).await {
@@ -1886,7 +1886,7 @@ fn dynamic_workflow_continuation_identity_binds_persisted_facts_not_progress() {
         FlowEventEnvelope::new(run_id, sequence, uuid::Uuid::new_v4(), Utc::now(), event)
     };
     let spec = WorkflowSpec::rust_embedded(
-        "a3s-code.dynamic-workflow",
+        "aster.dynamic-workflow",
         source_hash(source),
         "ptc",
         "run",
@@ -1990,7 +1990,7 @@ fn dynamic_workflow_continuation_identity_binds_persisted_facts_not_progress() {
             step_id: "read".to_string(),
             step_name: "read".to_string(),
             input: json!({"path": "scientific-notes.txt"}),
-            retry: a3s_flow::RetryPolicy::fixed(2, Duration::from_millis(1)),
+            retry: aster_flow::RetryPolicy::fixed(2, Duration::from_millis(1)),
         },
     ));
     assert!(dynamic_workflow_continuation_identity(
@@ -2025,7 +2025,7 @@ fn dynamic_workflow_claim_identity_is_stable_across_history_progress() {
         dynamic_workflow_claim_identity(run_id, source, &input, runtime_build.as_str(), &[])
             .unwrap();
     let spec = WorkflowSpec::rust_embedded(
-        "a3s-code.dynamic-workflow",
+        "aster.dynamic-workflow",
         source_hash(source),
         "ptc",
         "run",
@@ -2129,7 +2129,7 @@ async function run(ctx, inputs) {
     )));
     let legacy_engine = FlowEngine::new(store, runtime);
     let spec = WorkflowSpec::rust_embedded(
-        "a3s-code.dynamic-workflow",
+        "aster.dynamic-workflow",
         source_hash(source),
         "ptc",
         "run",
@@ -2371,7 +2371,7 @@ async fn cross_process_flow_store_serializes_independent_writers() {
     let first = Arc::new(CrossProcessFlowEventStore::new(directory.path()));
     let second = Arc::new(CrossProcessFlowEventStore::new(directory.path()));
     let spec = WorkflowSpec::rust_embedded(
-        "a3s-code.dynamic-workflow",
+        "aster.dynamic-workflow",
         source_hash("cross-process-store"),
         "ptc",
         "run",
@@ -2398,7 +2398,7 @@ async fn cross_process_flow_store_serializes_independent_writers() {
     let conflict = if left.is_err() { left } else { right };
     assert!(matches!(
         conflict,
-        Err(a3s_flow::FlowError::EventConflict {
+        Err(aster_flow::FlowError::EventConflict {
             expected_sequence: 1,
             actual_sequence: 2,
             ..

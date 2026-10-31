@@ -10,7 +10,7 @@ use std::sync::atomic::{AtomicU8, Ordering};
 use std::time::Duration;
 
 #[cfg(target_os = "linux")]
-use a3s_transport::FrameType;
+use aster_transport::FrameType;
 
 #[cfg(target_os = "linux")]
 const ROOTFS_MAINTENANCE_IDLE: u8 = 0;
@@ -142,7 +142,7 @@ fn handle_connection(
             )?;
             return Ok(());
         };
-        let root = Path::new(a3s_box_core::guest_exec::GUEST_ROOTFS_MAINTENANCE_MOUNT_PATH);
+        let root = Path::new(aster_box_core::guest_exec::GUEST_ROOTFS_MAINTENANCE_MOUNT_PATH);
         if let Err(error) = super::stream_rootfs_archive_from(&mut stream, root, false) {
             super::send_error_frame(
                 &mut stream,

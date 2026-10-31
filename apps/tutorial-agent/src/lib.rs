@@ -2,7 +2,7 @@ pub mod chapters;
 pub mod runtime;
 pub mod ui;
 
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use serde_json::{Value, json};
 
 pub struct ProjectLabel;

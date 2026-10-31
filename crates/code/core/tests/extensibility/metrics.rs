@@ -2,9 +2,9 @@
 
 use std::collections::BTreeMap;
 
-use a3s_code_core::harness_evidence::ToolRequestOriginV1;
-use a3s_code_core::run::RunEventRecord;
-use a3s_code_core::AgentEvent;
+use aster_core::harness_evidence::ToolRequestOriginV1;
+use aster_core::run::RunEventRecord;
+use aster_core::AgentEvent;
 use serde_json::{json, Value};
 
 pub(super) fn summarize(
@@ -197,9 +197,9 @@ fn unavailable_tokens_and_vm_counts_are_null_instead_of_zero() {
 
 #[test]
 fn available_provider_tokens_are_preserved_without_substituting_estimates() {
-    use a3s_code_core::harness_evidence::{ModelUsageSnapshotV1, ToolResultContextUsageV1};
+    use aster_core::harness_evidence::{ModelUsageSnapshotV1, ToolResultContextUsageV1};
     let snapshot = ModelUsageSnapshotV1 {
-        schema: "a3s.code.model-usage-snapshot.v1".into(),
+        schema: "aster.code.model-usage-snapshot.v1".into(),
         call_sequence: 1,
         input_snapshot_digest: "a".repeat(64),
         estimated_prompt_tokens: 999,
@@ -345,7 +345,7 @@ fn unidentified_tool_origin_cannot_establish_a_zero_child_count() {
 
 #[test]
 fn overlapping_parent_child_receipts_keep_distinct_counts_and_bytes() {
-    use a3s_code_core::harness_evidence::ToolRequestSnapshotV1;
+    use aster_core::harness_evidence::ToolRequestSnapshotV1;
     let mut events = Vec::new();
     for (id, name, origin, start, end, output) in [
         (
@@ -373,7 +373,7 @@ fn overlapping_parent_child_receipts_keep_distinct_counts_and_bytes() {
                     tool_id: id.into(),
                     tool_name: name.into(),
                     snapshot: ToolRequestSnapshotV1 {
-                        schema: "a3s.code.tool-request-snapshot.v1".into(),
+                        schema: "aster.code.tool-request-snapshot.v1".into(),
                         origin,
                         tool_id_digest: "a".repeat(64),
                         tool_name_digest: "b".repeat(64),

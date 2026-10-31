@@ -1,6 +1,6 @@
 //! Opt-in durable WHPX Live session binding for Host reopen reattach.
 //!
-//! When `A3S_OCI_WHPX_SESSION_OWNER=1`, the first Host publishes authenticated
+//! When `ASTER_OCI_WHPX_SESSION_OWNER=1`, the first Host publishes authenticated
 //! process identities into the runtime share after the session-owner owns the
 //! host-control named pipe. A replacement Host loads that binding,
 //! re-authenticates PID + `GetProcessTimes` creation ticks, and reconnects to
@@ -24,16 +24,16 @@ use windows_sys::Win32::System::Threading::{
 };
 
 /// Binding schema published under the container runtime share.
-pub const WHPX_LIVE_SESSION_BINDING_SCHEMA: &str = "a3s.oci.whpx-live-session-binding.v1";
+pub const WHPX_LIVE_SESSION_BINDING_SCHEMA: &str = "aster.oci.whpx-live-session-binding.v1";
 
 /// Filename under the runtime share for the Live reattach binding.
-pub const WHPX_LIVE_SESSION_BINDING_FILE: &str = ".a3s-oci-whpx-live-session-binding.json";
+pub const WHPX_LIVE_SESSION_BINDING_FILE: &str = ".aster-oci-whpx-live-session-binding.json";
 
 /// Guest agent env: after a clean Host EOF, reconnect vsock (same as KVM Live).
 ///
 /// Forwarded into the Linux guest by the Windows WHPX agent-vm smoke path when
 /// durable session-owner mode is enabled.
-pub const GUEST_HOST_RECONNECT_ENV: &str = "A3S_OCI_GUEST_HOST_RECONNECT";
+pub const GUEST_HOST_RECONNECT_ENV: &str = "ASTER_OCI_GUEST_HOST_RECONNECT";
 
 const MAX_BINDING_BYTES: u64 = 16 * 1024;
 
@@ -101,7 +101,7 @@ impl WhpxLiveSessionBinding {
             .next()
             .filter(|part| !part.is_empty())
             .unwrap_or(service_pipe);
-        format!(r"\\.\pipe\a3s-oci-whpx-live-control-{leaf}")
+        format!(r"\\.\pipe\aster-oci-whpx-live-control-{leaf}")
     }
 
     /// Persist the binding under the runtime share (create-new, fail closed).
@@ -273,12 +273,12 @@ mod tests {
     #[test]
     fn host_control_pipe_derives_stable_leaf_from_service_pipe() {
         assert_eq!(
-            WhpxLiveSessionBinding::host_control_pipe_for_service(r"\\.\pipe\a3s-oci-agent-abc"),
-            r"\\.\pipe\a3s-oci-whpx-live-control-a3s-oci-agent-abc"
+            WhpxLiveSessionBinding::host_control_pipe_for_service(r"\\.\pipe\aster-oci-agent-abc"),
+            r"\\.\pipe\aster-oci-whpx-live-control-aster-oci-agent-abc"
         );
         assert_eq!(
-            WhpxLiveSessionBinding::host_control_pipe_for_service("a3s-oci-agent-abc"),
-            r"\\.\pipe\a3s-oci-whpx-live-control-a3s-oci-agent-abc"
+            WhpxLiveSessionBinding::host_control_pipe_for_service("aster-oci-agent-abc"),
+            r"\\.\pipe\aster-oci-whpx-live-control-aster-oci-agent-abc"
         );
     }
 
@@ -294,8 +294,8 @@ mod tests {
             config_digest: Some("deadbeef".into()),
             session_owner: self_id,
             shim: self_id,
-            host_control_pipe: r"\\.\pipe\a3s-oci-whpx-live-control-test".into(),
-            service_pipe: r"\\.\pipe\a3s-box-whpx-owner-test".into(),
+            host_control_pipe: r"\\.\pipe\aster-oci-whpx-live-control-test".into(),
+            service_pipe: r"\\.\pipe\aster-box-whpx-owner-test".into(),
             session_token_hex: "00".repeat(16),
         };
         binding.publish(dir.path()).expect("publish");
@@ -319,8 +319,8 @@ mod tests {
             config_digest: None,
             session_owner: forged,
             shim: self_id,
-            host_control_pipe: r"\\.\pipe\a3s-oci-whpx-live-control-test".into(),
-            service_pipe: r"\\.\pipe\a3s-box-whpx-owner-test".into(),
+            host_control_pipe: r"\\.\pipe\aster-oci-whpx-live-control-test".into(),
+            service_pipe: r"\\.\pipe\aster-box-whpx-owner-test".into(),
             session_token_hex: "11".repeat(16),
         };
         let error = binding.authenticate_live().expect_err("forged owner");

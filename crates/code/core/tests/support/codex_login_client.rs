@@ -3,11 +3,11 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
 
-pub use a3s_code_core::llm::CodexLoginClient;
+pub use aster_core::llm::CodexLoginClient;
 use std::path::Path;
 
 pub fn default_codex_model() -> String {
-    std::env::var("A3S_CODEX_MODEL")
+    std::env::var("ASTERX_MODEL")
         .ok()
         .filter(|model| !model.trim().is_empty())
         .unwrap_or_else(|| {

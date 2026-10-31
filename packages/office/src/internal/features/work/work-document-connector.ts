@@ -733,7 +733,7 @@ function connectorArrowPath(arrow: WorkDocumentConnectorArrow): string {
 
 function connectorMarkerId(id: string): string {
   const safe = id.replace(/[^a-zA-Z0-9_-]/g, '-').slice(0, 80);
-  return `a3s-connector-${safe || 'default'}`;
+  return `aster-connector-${safe || 'default'}`;
 }
 
 function connectorStrokeWidth(width: number): string {

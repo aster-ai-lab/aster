@@ -14,7 +14,7 @@ mod matrix;
 mod plan;
 mod rules;
 
-const FORM_DOCUMENT_API_VERSION: &str = "a3s.dev/form/v1alpha1";
+const FORM_DOCUMENT_API_VERSION: &str = "aster.dev/form/v1alpha1";
 
 const DEFAULT_WIDGETS: &[&str] = &[
     "text",
@@ -212,8 +212,8 @@ fn inspect_document_structure(input: &CanonicalValue, diagnostics: &mut Vec<Diag
         ));
         return false;
     }
-    if input.get("kind").and_then(CanonicalValue::as_str) != Some("a3s.form") {
-        diagnostics.push(error("document.kind", "kind must be a3s.form.", "/kind"));
+    if input.get("kind").and_then(CanonicalValue::as_str) != Some("aster.form") {
+        diagnostics.push(error("document.kind", "kind must be aster.form.", "/kind"));
     }
     if input.get("apiVersion").and_then(CanonicalValue::as_str) != Some(FORM_DOCUMENT_API_VERSION) {
         diagnostics.push(error_with_hint(

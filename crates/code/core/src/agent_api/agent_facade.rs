@@ -301,7 +301,7 @@ impl Agent {
     ///
     /// This is the cattle-mode companion to [`Agent::session_for_agent`]: callers
     /// provide a small [`WorkerAgentSpec`](crate::subagent::WorkerAgentSpec), and
-    /// A3S Code compiles it into the same runtime definition used by delegated agents.
+    /// Aster Code compiles it into the same runtime definition used by delegated agents.
     pub fn session_for_worker(
         &self,
         workspace: impl Into<String>,
@@ -471,7 +471,7 @@ impl Agent {
     ) -> Result<AgentSession> {
         let mut opts = opts.clone().with_llm_client(llm_client);
         if opts.memory_store.is_none() && opts.file_memory_dir.is_none() {
-            opts = opts.with_memory(Arc::new(a3s_memory::InMemoryStore::new()));
+            opts = opts.with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()));
         }
         agent_sessions::create_session(self, workspace, Some(opts))
     }

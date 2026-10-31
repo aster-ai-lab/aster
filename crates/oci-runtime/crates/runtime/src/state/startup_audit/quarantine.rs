@@ -1,4 +1,4 @@
-use a3s_oci_sdk::Result;
+use aster_oci_sdk::Result;
 
 use super::{audit_error, entry_name, parse_operation_id, OperationInventory};
 use crate::state::model::{StoredOperationKind, StoredOperationStatus};

@@ -1,0 +1,459 @@
+use axum::body::Body;
+use axum::extract::{DefaultBodyLimit, State};
+use axum::http::{Request, StatusCode};
+use axum::middleware;
+use axum::middleware::Next;
+use axum::response::{IntoResponse, Response};
+use axum::routing::get;
+use axum::Router;
+use std::sync::{Arc, Mutex};
+use std::time::Instant;
+use tower_http::cors::CorsLayer;
+use tower_http::trace::TraceLayer;
+
+use super::state::AppState;
+use crate::api;
+use crate::server::lock::mutex_lock;
+use crate::server::{auth, metrics};
+
+/// Shared state for the rate limiter middleware.
+///
+/// This enforces a requests-per-second token bucket only. Concurrency is bounded
+/// separately by [`crate::server::limiter::ConcurrencyLimiter`], which (unlike a
+/// middleware that releases when the handler returns) holds its permit across the
+/// streamed response body and queues rather than rejecting — matching vLLM's
+/// `max_num_seqs` backpressure.
+#[derive(Clone)]
+struct RateLimiter {
+    /// Max requests per second.
+    rps: u64,
+    inner: Arc<Mutex<RateLimiterInner>>,
+}
+
+struct RateLimiterInner {
+    /// Token bucket: tokens available.
+    tokens: f64,
+    /// Last refill time.
+    last_refill: Instant,
+}
+
+impl RateLimiter {
+    fn new(rps: u64) -> Self {
+        Self {
+            rps,
+            inner: Arc::new(Mutex::new(RateLimiterInner {
+                tokens: rps as f64,
+                last_refill: Instant::now(),
+            })),
+        }
+    }
+
+    /// Try to consume a token from the bucket. Returns false when the per-second
+    /// rate is exceeded.
+    fn try_acquire(&self) -> bool {
+        if self.rps == 0 {
+            return true;
+        }
+        let mut inner = mutex_lock(&self.inner);
+        let now = Instant::now();
+        let elapsed = now.duration_since(inner.last_refill).as_secs_f64();
+        inner.tokens = (inner.tokens + elapsed * self.rps as f64).min(self.rps as f64);
+        inner.last_refill = now;
+
+        if inner.tokens < 1.0 {
+            return false;
+        }
+        inner.tokens -= 1.0;
+        true
+    }
+}
+
+/// Middleware that enforces the per-second request rate limit.
+async fn rate_limit_middleware(
+    State(limiter): State<RateLimiter>,
+    request: Request<Body>,
+    next: Next,
+) -> Response {
+    if !limiter.try_acquire() {
+        return (
+            StatusCode::TOO_MANY_REQUESTS,
+            axum::Json(serde_json::json!({
+                "error": {
+                    "message": "Too many requests",
+                    "type": "rate_limit_error",
+                    "code": "rate_limit_exceeded"
+                }
+            })),
+        )
+            .into_response();
+    }
+    next.run(request).await
+}
+
+/// Build the complete axum Router with all API routes.
+pub fn build(state: AppState) -> Router {
+    let rate_limit_rps = state.config.rate_limit_rps;
+
+    // Public OpenAI routes retain their opt-in authentication behavior.
+    // Million-token requests exceed axum's 2 MiB default even as plain text.
+    // The larger finite bound is selected only by an explicit Xolotl profile.
+    let body_limit = if state.config.xolotl.enabled && state.config.xolotl.tuning.is_some() {
+        16 * 1024 * 1024
+    } else {
+        2 * 1024 * 1024
+    };
+    let v1_routes = api::openai::routes()
+        .layer(DefaultBodyLimit::max(body_limit))
+        .layer(middleware::from_fn_with_state(
+            state.clone(),
+            auth::middleware,
+        ));
+
+    // Browser-facing routes receive CORS headers. The internal distributed
+    // protocol is service-to-service only and deliberately has no CORS layer.
+    let mut public_routes = Router::new()
+        .route("/health", get(api::health::handler))
+        .route("/metrics", get(metrics::handler))
+        .nest("/v1", v1_routes)
+        .layer(CorsLayer::permissive());
+
+    // The public rate is expressed in end-user requests. One distributed
+    // request intentionally expands into several internal phase calls, which
+    // are bounded by DistributedServingRuntime instead of this token bucket.
+    if rate_limit_rps > 0 {
+        let limiter = RateLimiter::new(rate_limit_rps);
+        public_routes = public_routes.layer(middleware::from_fn_with_state(
+            limiter,
+            rate_limit_middleware,
+        ));
+    }
+
+    let distributed_routes = api::distributed_serving::routes().layer(
+        middleware::from_fn_with_state(state.clone(), auth::required_middleware),
+    );
+
+    public_routes
+        .nest("/internal/v1/distributed-serving", distributed_routes)
+        .layer(TraceLayer::new_for_http())
+        .layer(middleware::from_fn_with_state(
+            state.clone(),
+            metrics::middleware,
+        ))
+        .layer(middleware::from_fn(request_id_middleware))
+        .with_state(state)
+}
+
+/// Middleware that ensures every request has an `X-Request-ID`.
+///
+/// If the client sends an `X-Request-ID` header, it is preserved.
+/// Otherwise, a new UUID v4 is generated. The ID is added to the
+/// response headers for traceability.
+async fn request_id_middleware(request: Request<Body>, next: Next) -> Response {
+    let request_id = request
+        .headers()
+        .get("x-request-id")
+        .and_then(|v| v.to_str().ok())
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| uuid::Uuid::new_v4().to_string());
+
+    let mut response = next.run(request).await;
+
+    if let Ok(value) = axum::http::HeaderValue::from_str(&request_id) {
+        response.headers_mut().insert("x-request-id", value);
+    }
+
+    response
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::backend::BackendRegistry;
+    use crate::config::PowerConfig;
+    use crate::model::registry::ModelRegistry;
+    use crate::server::auth::ApiKeyAuth;
+    use axum::body::Body;
+    use axum::http::{Request, StatusCode};
+    use std::sync::Arc;
+    use tower::util::ServiceExt;
+
+    fn test_state() -> AppState {
+        AppState::new(
+            Arc::new(ModelRegistry::new()),
+            Arc::new(BackendRegistry::new()),
+            Arc::new(PowerConfig::default()),
+        )
+    }
+
+    fn test_state_with_auth() -> AppState {
+        let auth = ApiKeyAuth::new(&["test-secret-key".to_string()]);
+        test_state().with_auth(Arc::new(auth))
+    }
+
+    #[tokio::test]
+    async fn test_v1_models_returns_ok() {
+        let app = build(test_state());
+        let req = Request::builder()
+            .uri("/v1/models")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn test_unknown_route_returns_404() {
+        let app = build(test_state());
+        let req = Request::builder()
+            .uri("/nonexistent")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+    }
+
+    #[tokio::test]
+    async fn test_health_endpoint_returns_ok() {
+        let app = build(test_state());
+        let req = Request::builder()
+            .uri("/health")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn test_health_endpoint_json_body() {
+        let app = build(test_state());
+        let req = Request::builder()
+            .uri("/health")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["status"], "ok");
+        assert!(json["version"].is_string());
+        assert!(json["uptime_seconds"].is_number());
+        assert!(json["loaded_models"].is_number());
+    }
+
+    #[tokio::test]
+    async fn test_metrics_endpoint_returns_ok() {
+        let app = build(test_state());
+        let req = Request::builder()
+            .uri("/metrics")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn test_metrics_endpoint_returns_prometheus_format() {
+        let app = build(test_state());
+        let req = Request::builder()
+            .uri("/metrics")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let text = String::from_utf8(body.to_vec()).unwrap();
+        assert!(text.contains("# HELP power_http_requests_total"));
+        assert!(text.contains("power_models_loaded"));
+    }
+
+    // --- Auth middleware tests ---
+
+    #[tokio::test]
+    async fn test_no_auth_configured_allows_all() {
+        let app = build(test_state());
+        let req = Request::builder()
+            .uri("/v1/models")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn test_valid_bearer_token_passes() {
+        let app = build(test_state_with_auth());
+        let req = Request::builder()
+            .uri("/v1/models")
+            .header("authorization", "Bearer test-secret-key")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn test_invalid_bearer_token_rejected() {
+        let app = build(test_state_with_auth());
+        let req = Request::builder()
+            .uri("/v1/models")
+            .header("authorization", "Bearer wrong-key")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+    }
+
+    #[tokio::test]
+    async fn test_missing_auth_header_rejected() {
+        let app = build(test_state_with_auth());
+        let req = Request::builder()
+            .uri("/v1/models")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+    }
+
+    #[tokio::test]
+    async fn test_health_endpoint_no_auth_required() {
+        let app = build(test_state_with_auth());
+        let req = Request::builder()
+            .uri("/health")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn test_metrics_endpoint_no_auth_required() {
+        let app = build(test_state_with_auth());
+        let req = Request::builder()
+            .uri("/metrics")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn test_auth_failure_returns_openai_error_format() {
+        let app = build(test_state_with_auth());
+        let req = Request::builder()
+            .uri("/v1/models")
+            .header("authorization", "Bearer bad-key")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+        let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(json["error"]["code"], "unauthorized");
+        assert!(json["error"]["message"].as_str().is_some());
+    }
+
+    // --- Request ID middleware tests ---
+
+    #[tokio::test]
+    async fn test_response_has_request_id_header() {
+        let app = build(test_state());
+        let req = Request::builder()
+            .uri("/health")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert!(resp.headers().contains_key("x-request-id"));
+    }
+
+    #[tokio::test]
+    async fn test_client_request_id_preserved() {
+        let app = build(test_state());
+        let req = Request::builder()
+            .uri("/health")
+            .header("x-request-id", "my-custom-id-123")
+            .body(Body::empty())
+            .unwrap();
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(
+            resp.headers()
+                .get("x-request-id")
+                .unwrap()
+                .to_str()
+                .unwrap(),
+            "my-custom-id-123"
+        );
+    }
+
+    #[tokio::test]
+    async fn xolotl_long_context_body_reaches_model_admission_and_retains_a_finite_bound() {
+        use crate::{
+            backend::BackendRegistry,
+            config::{PowerConfig, XolotlTuning},
+            model::registry::ModelRegistry,
+        };
+        for (enabled, size, expected) in [
+            (false, 3 * 1024 * 1024, StatusCode::PAYLOAD_TOO_LARGE),
+            (true, 3 * 1024 * 1024, StatusCode::NOT_FOUND),
+            (true, 17 * 1024 * 1024, StatusCode::PAYLOAD_TOO_LARGE),
+        ] {
+            let mut cfg = PowerConfig::default();
+            cfg.xolotl.enabled = enabled;
+            cfg.xolotl.tuning = Some(XolotlTuning {
+                context_tokens: 1_048_576,
+                cpu_threads: 8,
+                arena_gib: 60,
+                prompt_batch: 8192,
+                prefill_chunk: 512,
+                pcie_bp: 7500,
+                tier_batch_pcie_bp: 10_000,
+            });
+            let state = AppState::new(
+                Arc::new(ModelRegistry::new()),
+                Arc::new(BackendRegistry::new()),
+                Arc::new(cfg),
+            );
+            let body = serde_json::to_vec(&serde_json::json!({"model":"unregistered-context-fixture", "messages":[{"role":"user","content":"x".repeat(size)}]})).unwrap();
+            let req = Request::builder()
+                .method("POST")
+                .uri("/v1/chat/completions")
+                .header("content-type", "application/json")
+                .body(Body::from(body))
+                .unwrap();
+            let response = build(state).oneshot(req).await.unwrap();
+            assert_eq!(
+                response.status(),
+                expected,
+                "enabled={enabled}, size={size}"
+            );
+        }
+    }
+
+    // --- RateLimiter unit tests ---
+
+    #[test]
+    fn test_rate_limiter_allows_within_limit() {
+        let limiter = RateLimiter::new(10);
+        assert!(limiter.try_acquire());
+    }
+
+    #[test]
+    fn test_rate_limiter_token_bucket_exhausted() {
+        // 1 RPS rate limit.
+        let limiter = RateLimiter::new(1);
+        assert!(limiter.try_acquire()); // uses the 1 token
+                                        // Bucket is empty — second acquire should fail.
+        assert!(!limiter.try_acquire());
+    }
+
+    #[test]
+    fn test_rate_limiter_no_limits_always_allows() {
+        let limiter = RateLimiter::new(0);
+        for _ in 0..100 {
+            assert!(limiter.try_acquire());
+        }
+    }
+}

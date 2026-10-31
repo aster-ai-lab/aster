@@ -1,6 +1,6 @@
 # Styles Reference
 
-This document is a lightweight index for the active style sources used by `@a3s/ui`.
+This document is a lightweight index for the active style sources used by `@aster/ui`.
 
 The v2 architecture and migration contract are defined in
 [design-token-system.md](./design-token-system.md). Official Shadcn and approved Aster product semantics
@@ -34,7 +34,7 @@ Development-only migration policy lives outside the runtime styles copied into t
 
 Do not consume files from `packages/ui/docs` at runtime.
 
-- Use the exported `@a3s/ui/styles/theme.css` or `@a3s/ui/styles/tokens.css` entries for app and
+- Use the exported `@aster/ui/styles/theme.css` or `@aster/ui/styles/tokens.css` entries for app and
   package integration.
 - Treat this document as reference only, not as part of the public runtime contract.
 - If you need to inspect shipped style outputs, check `dist/styles/` instead.

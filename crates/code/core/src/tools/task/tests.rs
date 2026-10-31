@@ -10,23 +10,23 @@ async fn lock_provider_capacity_tests() -> tokio::sync::MutexGuard<'static, ()> 
 }
 
 struct DelegatedCoalescingEngine {
-    config: a3s_search::EngineConfig,
+    config: aster_search::EngineConfig,
     calls: Arc<std::sync::atomic::AtomicUsize>,
 }
 
 #[async_trait::async_trait]
-impl a3s_search::Engine for DelegatedCoalescingEngine {
-    fn config(&self) -> &a3s_search::EngineConfig {
+impl aster_search::Engine for DelegatedCoalescingEngine {
+    fn config(&self) -> &aster_search::EngineConfig {
         &self.config
     }
 
     async fn search(
         &self,
-        query: &a3s_search::SearchQuery,
-    ) -> a3s_search::Result<Vec<a3s_search::SearchResult>> {
+        query: &aster_search::SearchQuery,
+    ) -> aster_search::Result<Vec<aster_search::SearchResult>> {
         self.calls.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         tokio::time::sleep(std::time::Duration::from_millis(25)).await;
-        Ok(vec![a3s_search::SearchResult::new(
+        Ok(vec![aster_search::SearchResult::new(
             "https://example.test/delegated",
             query.query.clone(),
             "shared delegated result",
@@ -238,12 +238,12 @@ async fn delegated_context_inherits_search_limits_and_flights_but_gets_a_fresh_c
         Arc::new(StaticLlmClient::new("done")),
         workspace.path().to_string_lossy().to_string(),
     ));
-    let bulkhead = a3s_search::Bulkhead::new(a3s_search::BulkheadConfig {
+    let bulkhead = aster_search::Bulkhead::new(aster_search::BulkheadConfig {
         max_concurrent: 1,
         max_queued: 0,
         max_queue_wait: std::time::Duration::ZERO,
     });
-    let retry_budget = a3s_search::retry::RetryBudget::new(a3s_search::retry::RetryBudgetConfig {
+    let retry_budget = aster_search::retry::RetryBudget::new(aster_search::retry::RetryBudgetConfig {
         capacity: 1,
         retry_cost: 1,
         success_credit: 0,
@@ -281,7 +281,7 @@ async fn delegated_context_inherits_search_limits_and_flights_but_gets_a_fresh_c
             .acquire("shared-engine")
             .await
             .expect_err("child must observe parent capacity"),
-        a3s_search::BulkheadRejection::Saturated
+        aster_search::BulkheadRejection::Saturated
     );
 
     assert!(parent.search_retry_budget().try_acquire_retry());
@@ -291,7 +291,7 @@ async fn delegated_context_inherits_search_limits_and_flights_but_gets_a_fresh_c
         .search_circuit_breaker()
         .acquire("failing-engine")
         .expect("parent probe")
-        .record_failure(&a3s_search::EngineFailure::new(
+        .record_failure(&aster_search::EngineFailure::new(
             "Failing Engine",
             "provider_unavailable",
             "synthetic failure",
@@ -307,20 +307,20 @@ async fn delegated_context_inherits_search_limits_and_flights_but_gets_a_fresh_c
 
     let calls = Arc::new(std::sync::atomic::AtomicUsize::new(0));
     let mut parent_search =
-        a3s_search::Search::new().with_request_coalescer(parent.search_request_coalescer());
+        aster_search::Search::new().with_request_coalescer(parent.search_request_coalescer());
     let mut child_search =
-        a3s_search::Search::new().with_request_coalescer(child.search_request_coalescer());
+        aster_search::Search::new().with_request_coalescer(child.search_request_coalescer());
     for search in [&mut parent_search, &mut child_search] {
         search.add_engine(DelegatedCoalescingEngine {
-            config: a3s_search::EngineConfig {
+            config: aster_search::EngineConfig {
                 name: "Delegated Coalescing".to_string(),
                 shortcut: "delegated_coalescing".to_string(),
-                ..a3s_search::EngineConfig::default()
+                ..aster_search::EngineConfig::default()
             },
             calls: Arc::clone(&calls),
         });
     }
-    let query = a3s_search::SearchQuery::new("same delegated request");
+    let query = aster_search::SearchQuery::new("same delegated request");
 
     let (parent_result, child_result) = tokio::join!(
         parent_search.search(query.clone()),
@@ -457,7 +457,7 @@ fn test_format_task_result_for_context_truncates_large_output() {
     assert!(formatted.contains("Output excerpt"));
     assert!(formatted.contains("bytes omitted"));
     assert!(formatted.contains("Artifact ID: task-output:task-1"));
-    assert!(formatted.contains("Artifact URI: a3s://tasks/session-1/runs/task-1/output"));
+    assert!(formatted.contains("Artifact URI: aster://tasks/session-1/runs/task-1/output"));
     assert!(formatted.contains("TAIL"));
     assert!(formatted.len() < result.output.len());
 }
@@ -478,12 +478,12 @@ fn test_task_artifact_reference_is_stable() {
     assert_eq!(task_artifact_id(&result), "task-output:task-1");
     assert_eq!(
         task_artifact_uri(&result),
-        "a3s://tasks/session-1/runs/task-1/output"
+        "aster://tasks/session-1/runs/task-1/output"
     );
 
     let (formatted, truncated) = format_task_result_for_context(&result);
     assert!(!truncated);
-    assert!(formatted.contains("Artifact URI: a3s://tasks/session-1/runs/task-1/output"));
+    assert!(formatted.contains("Artifact URI: aster://tasks/session-1/runs/task-1/output"));
 }
 
 #[test]
@@ -3972,7 +3972,7 @@ async fn delegated_child_retains_large_tool_original_through_parent_content_adap
             crate::tools::ImmutableContentReferenceV1::new(
                 request.binding(),
                 request.descriptor(),
-                format!("a3s+test://delegated-content/{digest}"),
+                format!("aster+test://delegated-content/{digest}"),
             )
         }
     }

@@ -5,7 +5,7 @@ export const meta = {
   updated: '2026-10-29',
 };
 
-Meta Harness 是 A3S Code 的执行组合层。宿主用它改变智能体的工作方式，无需重写整个执行循环。
+Meta Harness 是 Aster Code 的执行组合层。宿主用它改变智能体的工作方式，无需重写整个执行循环。
 
 Meta Harness 组合执行组件。Core 负责权限判定、事实记录、完成检查和资源收尾。
 
@@ -59,7 +59,7 @@ Meta Harness 不会自动提高模型能力。它提供可替换的执行过程�
 
 ## 接入方式
 
-示例接收一个能正常发送请求的 Rust `Agent`。模型配置与异步运行环境见[宿主接入](../integration/)。示例不会另建模型连接。组件示例还使用工作区内的 `a3s-effect`，无需为这些接口启用 `advanced-harness`。
+示例接收一个能正常发送请求的 Rust `Agent`。模型配置与异步运行环境见[宿主接入](../integration/)。示例不会另建模型连接。组件示例还使用工作区内的 `aster-effect`，无需为这些接口启用 `advanced-harness`。
 
 多数嵌入场景使用 `SessionOptions::with_harness` 选择默认组件并调整参数。补充一个组件时使用 `HostHarnessRegistry`。需要完整组件树时使用 `HostHarnessAssembler`。
 

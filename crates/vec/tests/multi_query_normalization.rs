@@ -9,7 +9,7 @@
 
 //! Multi-query fusion + score normalization contracts (I1 / deterministic fusion).
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema, Fts,
     IndexParams, MetricType, MultiQuery, SubQuery,
 };

@@ -27,8 +27,8 @@ import {
   type FormWidgetRegistry,
 } from './react';
 
-export const A3SFormRenderer = defineComponent({
-  name: 'A3SFormRenderer',
+export const AsterFormRenderer = defineComponent({
+  name: 'AsterFormRenderer',
   props: {
     plan: { type: Object as PropType<FormPlan>, required: true },
     modelValue: { type: Object as PropType<JsonObject>, required: true },
@@ -88,12 +88,12 @@ export const A3SFormRenderer = defineComponent({
       { deep: true },
     );
     onBeforeUnmount(() => root?.unmount());
-    return () => h('div', { ref: container, class: 'a3s-form-vue-host' });
+    return () => h('div', { ref: container, class: 'aster-form-vue-host' });
   },
 });
 
-export const A3SFormDesigner = defineComponent({
-  name: 'A3SFormDesigner',
+export const AsterFormDesigner = defineComponent({
+  name: 'AsterFormDesigner',
   props: {
     document: { type: Object as PropType<FormDocument>, required: true },
     modelValue: { type: Object as PropType<JsonObject>, default: () => ({}) },
@@ -157,6 +157,6 @@ export const A3SFormDesigner = defineComponent({
       { deep: true },
     );
     onBeforeUnmount(() => root?.unmount());
-    return () => h('div', { ref: container, class: 'a3s-form-vue-host' });
+    return () => h('div', { ref: container, class: 'aster-form-vue-host' });
   },
 });

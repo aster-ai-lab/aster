@@ -163,10 +163,10 @@ pub(crate) fn schema_tokens(ty: &Type) -> proc_macro2::TokenStream {
     }
 
     let Type::Path(type_path) = ty else {
-        return quote!(::a3s_boot::OpenApiSchema::object());
+        return quote!(::aster_boot::OpenApiSchema::object());
     };
     let Some(segment) = type_path.path.segments.last() else {
-        return quote!(::a3s_boot::OpenApiSchema::object());
+        return quote!(::aster_boot::OpenApiSchema::object());
     };
     let ident = &segment.ident;
     let ident_string = ident.to_string();
@@ -175,18 +175,18 @@ pub(crate) fn schema_tokens(ty: &Type) -> proc_macro2::TokenStream {
         if let PathArguments::AngleBracketed(arguments) = &segment.arguments {
             if let Some(GenericArgument::Type(inner)) = arguments.args.first() {
                 let inner_schema = schema_tokens(inner);
-                return quote!(::a3s_boot::OpenApiSchema::array(#inner_schema));
+                return quote!(::aster_boot::OpenApiSchema::array(#inner_schema));
             }
         }
     }
 
     match ident_string.as_str() {
-        "String" | "str" => quote!(::a3s_boot::OpenApiSchema::string()),
-        "bool" => quote!(::a3s_boot::OpenApiSchema::boolean()),
+        "String" | "str" => quote!(::aster_boot::OpenApiSchema::string()),
+        "bool" => quote!(::aster_boot::OpenApiSchema::boolean()),
         "i8" | "i16" | "i32" | "i64" | "i128" | "isize" | "u8" | "u16" | "u32" | "u64" | "u128"
-        | "usize" => quote!(::a3s_boot::OpenApiSchema::integer()),
-        "f32" | "f64" => quote!(::a3s_boot::OpenApiSchema::number()),
-        _ => quote!(::a3s_boot::OpenApiSchema::reference(#ident_string)),
+        | "usize" => quote!(::aster_boot::OpenApiSchema::integer()),
+        "f32" | "f64" => quote!(::aster_boot::OpenApiSchema::number()),
+        _ => quote!(::aster_boot::OpenApiSchema::reference(#ident_string)),
     }
 }
 
@@ -318,7 +318,7 @@ impl ResponseArgs {
                     .schema
                     .as_ref()
                     .map(schema_tokens)
-                    .unwrap_or_else(|| quote!(::a3s_boot::OpenApiSchema::object()));
+                    .unwrap_or_else(|| quote!(::aster_boot::OpenApiSchema::object()));
                 let content_type = self
                     .content_type
                     .as_ref()
@@ -341,7 +341,7 @@ impl ResponseArgs {
                 quote! {
                 with_response(
                     #status,
-                    ::a3s_boot::OpenApiResponse::description(#description)
+                    ::aster_boot::OpenApiResponse::description(#description)
                 )
                 }
             },
@@ -416,7 +416,7 @@ impl RequestBodyArgs {
             .schema
             .as_ref()
             .map(schema_tokens)
-            .unwrap_or_else(|| quote!(::a3s_boot::OpenApiSchema::object()));
+            .unwrap_or_else(|| quote!(::aster_boot::OpenApiSchema::object()));
         let content_type = self
             .content_type
             .as_ref()
@@ -424,15 +424,15 @@ impl RequestBodyArgs {
             .unwrap_or_else(|| quote!("application/json"));
         let mut request_body = match (&self.content_type, &self.example_name, &self.example) {
             (_, Some(example_name), Some(example)) => {
-                quote!(::a3s_boot::OpenApiRequestBody::content(#content_type, #schema).try_with_content_named_example(#content_type, #example_name, #example)?)
+                quote!(::aster_boot::OpenApiRequestBody::content(#content_type, #schema).try_with_content_named_example(#content_type, #example_name, #example)?)
             }
             (_, None, Some(example)) => {
-                quote!(::a3s_boot::OpenApiRequestBody::try_content_example(#content_type, #schema, #example)?)
+                quote!(::aster_boot::OpenApiRequestBody::try_content_example(#content_type, #schema, #example)?)
             }
             (Some(_), None, None) => {
-                quote!(::a3s_boot::OpenApiRequestBody::content(#content_type, #schema))
+                quote!(::aster_boot::OpenApiRequestBody::content(#content_type, #schema))
             }
-            (None, None, None) => quote!(::a3s_boot::OpenApiRequestBody::json(#schema)),
+            (None, None, None) => quote!(::aster_boot::OpenApiRequestBody::json(#schema)),
             (_, Some(_), None) => unreachable!("validated during parsing"),
         };
 
@@ -503,8 +503,8 @@ impl OpenApiResponseHeaderArgs {
             .schema
             .as_ref()
             .map(schema_tokens)
-            .unwrap_or_else(|| quote!(::a3s_boot::OpenApiSchema::string()));
-        let mut header = quote!(::a3s_boot::OpenApiHeader::new(#schema));
+            .unwrap_or_else(|| quote!(::aster_boot::OpenApiSchema::string()));
+        let mut header = quote!(::aster_boot::OpenApiHeader::new(#schema));
 
         if let Some(description) = &self.description {
             header = quote!((#header).with_description(#description));
@@ -685,7 +685,7 @@ impl OpenApiParameterSpec {
             .schema
             .as_ref()
             .map(schema_tokens)
-            .unwrap_or_else(|| quote!(::a3s_boot::OpenApiSchema::string()));
+            .unwrap_or_else(|| quote!(::aster_boot::OpenApiSchema::string()));
         let required = match &self.args.required {
             Some(required) => required.value,
             None => true,
@@ -700,13 +700,13 @@ impl OpenApiParameterSpec {
 
         let mut parameter = match self.kind {
             OpenApiParameterSpecKind::Path => {
-                quote!(::a3s_boot::OpenApiParameter::path(#name, #schema))
+                quote!(::aster_boot::OpenApiParameter::path(#name, #schema))
             }
             OpenApiParameterSpecKind::Query => {
-                quote!(::a3s_boot::OpenApiParameter::query(#name, #required, #schema))
+                quote!(::aster_boot::OpenApiParameter::query(#name, #required, #schema))
             }
             OpenApiParameterSpecKind::Header => {
-                quote!(::a3s_boot::OpenApiParameter::header(#name, #required, #schema))
+                quote!(::aster_boot::OpenApiParameter::header(#name, #required, #schema))
             }
         };
 

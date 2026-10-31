@@ -19,7 +19,7 @@ async fn required_restore_fixture(root: &Path) -> RequiredRestoreFixture {
     let file = paths.state_root().join("knowledge/value.bin");
     std::fs::create_dir_all(file.parent().unwrap()).unwrap();
     std::fs::write(&file, b"candidate").unwrap();
-    let backup_path = root.join("candidate.a3s-use-state-backup");
+    let backup_path = root.join("candidate.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -32,7 +32,7 @@ async fn required_restore_fixture(root: &Path) -> RequiredRestoreFixture {
         paths,
         manager,
         backup_path,
-        rollback_path: root.join("rollback.a3s-use-state-backup"),
+        rollback_path: root.join("rollback.aster-use-state-backup"),
         file,
         plan,
         plan_digest,
@@ -87,7 +87,7 @@ async fn apply_rejects_a_mismatched_existing_rollback_before_mutation() {
     assert!(!fixture
         .paths
         .state_root()
-        .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER)
+        .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER)
         .exists());
 }
 
@@ -99,7 +99,7 @@ async fn validly_encoded_marker_and_operation_tampering_fail_closed() {
     let marker_path = marker_fixture
         .paths
         .state_root()
-        .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER);
+        .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER);
     let mut marker: serde_json::Value =
         serde_json::from_slice(&std::fs::read(&marker_path).unwrap()).unwrap();
     marker["operationDigest"] = serde_json::json!(format!("sha256:{}", "0".repeat(64)));
@@ -164,9 +164,9 @@ async fn whole_install_restore_never_takes_over_a_standalone_knowledge_marker() 
     let marker_path = fixture
         .paths
         .state_root()
-        .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER);
+        .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER);
     let foreign_marker = serde_json::to_vec(&serde_json::json!({
-        "schema": "a3s.use.active-state-restore.v2",
+        "schema": "aster.use.active-state-restore.v2",
         "scope": { "kind": "workspace", "id": "fixture" },
         "planDigest": format!("sha256:{}", "1".repeat(64)),
         "operation": {}
@@ -359,7 +359,7 @@ async fn restore_preserves_windows_read_only_evidence() {
     let mut permissions = std::fs::metadata(&file).unwrap().permissions();
     permissions.set_readonly(true);
     std::fs::set_permissions(&file, permissions).unwrap();
-    let backup = temporary.path().join("read-only.a3s-use-state-backup");
+    let backup = temporary.path().join("read-only.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup)
         .await
@@ -376,7 +376,7 @@ async fn restore_preserves_windows_read_only_evidence() {
     manager
         .apply_restore(
             backup,
-            temporary.path().join("rollback.a3s-use-state-backup"),
+            temporary.path().join("rollback.aster-use-state-backup"),
             &plan_digest,
         )
         .await

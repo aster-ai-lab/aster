@@ -1,4 +1,4 @@
-//! Host path access required while A3S OCI Runtime enters a user namespace.
+//! Host path access required while Aster OCI Runtime enters a user namespace.
 //!
 //! A root-run service deliberately maps container root to a subordinate host
 //! identity. The runtime resolves the OCI bundle and rootfs while setting up
@@ -7,16 +7,16 @@
 
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 #[cfg(target_os = "linux")]
 use super::mapped_root_ids;
 use super::{SandboxIdMappingPlan, SandboxMount};
 
-/// Make only A3S-owned bundle/rootfs parents searchable by mapped container root.
+/// Make only Aster-owned bundle/rootfs parents searchable by mapped container root.
 ///
 /// The bundle artifacts and credentials keep their private modes.  Paths above
-/// `A3S_HOME` are never modified; an inaccessible deployment parent is rejected
+/// `ASTER_HOME` are never modified; an inaccessible deployment parent is rejected
 /// with an actionable error instead.
 #[cfg(target_os = "linux")]
 pub fn prepare_sandbox_path_access(
@@ -42,13 +42,13 @@ pub fn prepare_sandbox_path_access(
                 rootfs_path.display(),
                 box_dir.display()
             ),
-            hint: Some("Rebuild the Sandbox rootfs inside its A3S box directory".to_string()),
+            hint: Some("Rebuild the Sandbox rootfs inside its Aster box directory".to_string()),
         });
     }
 
     let (mapped_uid, mapped_gid) = mapped_root_ids(id_mappings)?;
     // `home_dir`, `boxes`, the per-box directory, and `sandbox` are all owned
-    // by A3S.  Add only the single search bit selected by normal DAC rules.
+    // by Aster.  Add only the single search bit selected by normal DAC rules.
     // Do not touch siblings such as `auth` or any bundle artifact mode.
     for path in [home_dir, &boxes_dir, &box_dir, &sandbox_dir] {
         make_managed_directory_searchable(path, mapped_uid, mapped_gid)?;
@@ -114,14 +114,14 @@ fn invalid_runtime_path(label: &str, actual: &Path, expected: &Path) -> BoxError
 fn make_managed_directory_searchable(path: &Path, uid: u32, gid: u32) -> Result<()> {
     use std::os::unix::fs::{MetadataExt, PermissionsExt};
 
-    let metadata = require_directory(path, "A3S-managed Sandbox directory")?;
+    let metadata = require_directory(path, "Aster-managed Sandbox directory")?;
     let search_bit = identity_search_bit(&metadata, uid, gid);
     let mode = metadata.mode() & 0o7777;
     if mode & search_bit == 0 {
         std::fs::set_permissions(path, std::fs::Permissions::from_mode(mode | search_bit))
             .map_err(|error| BoxError::BoxBootError {
                 message: format!(
-                    "Failed to make A3S-managed Sandbox directory {} searchable: {error}",
+                    "Failed to make Aster-managed Sandbox directory {} searchable: {error}",
                     path.display()
                 ),
                 hint: None,
@@ -173,7 +173,7 @@ fn require_searchable_chain(path: &Path, uid: u32, gid: u32) -> Result<()> {
                     ancestor.display()
                 ),
                 hint: Some(
-                    "Grant execute-only traversal on the deployment parent or move A3S_HOME under a searchable service directory"
+                    "Grant execute-only traversal on the deployment parent or move ASTER_HOME under a searchable service directory"
                         .to_string(),
                 ),
             });

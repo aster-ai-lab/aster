@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { ChevronRight, Loader2, Mail } from 'lucide-react'
 
-import { Button } from '@a3s-lab/ui'
+import { Button } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Button> = {
   title: 'Components/Primitives/Button',

@@ -1,0 +1,12 @@
+[package]
+license = "Apache-2.0"
+name = "aster-tracing-macros"
+version = "0.1.0"
+description = "Tracing-based utility macros for timestamped logging and timing"
+edition = "2024"
+publish = false
+
+[dependencies]
+
+[lints]
+workspace = true

@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ActivityInvocation, ActivityStatus, CancellationRequest, FlowEngine, FlowError, FlowEvent,
     FlowEventEnvelope, FlowEventStore, FlowRuntime, FlowTask, FlowWorker, InMemoryEventStore,
     InMemoryFlowTaskQueue, RetryPolicy, RuntimeCommand, StepInvocation, StepStatus,
@@ -31,7 +31,7 @@ impl CrashBeforeRunStartedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeRunStartedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -40,7 +40,7 @@ impl FlowEventStore for CrashBeforeRunStartedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(event, FlowEvent::RunStarted) && self.armed.swap(false, Ordering::SeqCst) {
             return Err(FlowError::Store(
                 "injected crash before run start became durable".into(),
@@ -51,11 +51,11 @@ impl FlowEventStore for CrashBeforeRunStartedStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -76,7 +76,7 @@ impl CrashBeforeRetryExhaustionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeRetryExhaustionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -85,7 +85,7 @@ impl FlowEventStore for CrashBeforeRetryExhaustionStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::RunRetryExhausted { step_id, .. } if step_id == "permanent-failure"
@@ -100,11 +100,11 @@ impl FlowEventStore for CrashBeforeRetryExhaustionStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -125,7 +125,7 @@ impl CrashBeforeBatchSettlementStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeBatchSettlementStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -134,7 +134,7 @@ impl FlowEventStore for CrashBeforeBatchSettlementStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::StepCancelled { step_id, .. } if step_id == "slow"
@@ -149,11 +149,11 @@ impl FlowEventStore for CrashBeforeBatchSettlementStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -174,7 +174,7 @@ impl CrashBeforeStepCompletionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeStepCompletionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -183,7 +183,7 @@ impl FlowEventStore for CrashBeforeStepCompletionStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::StepCompleted { step_id, .. } if step_id == "durable-effect"
@@ -198,11 +198,11 @@ impl FlowEventStore for CrashBeforeStepCompletionStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -223,7 +223,7 @@ impl CrashBeforeActivityCompletionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeActivityCompletionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -232,7 +232,7 @@ impl FlowEventStore for CrashBeforeActivityCompletionStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::ActivityCompleted { activity_id, .. } if activity_id == "durable-effect"
@@ -247,11 +247,11 @@ impl FlowEventStore for CrashBeforeActivityCompletionStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -272,7 +272,7 @@ impl CrashBeforeActivityStartedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeActivityStartedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -281,7 +281,7 @@ impl FlowEventStore for CrashBeforeActivityStartedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::ActivityStarted { activity_id, .. } if activity_id == "durable-effect"
@@ -296,11 +296,11 @@ impl FlowEventStore for CrashBeforeActivityStartedStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -321,7 +321,7 @@ impl CrashBeforeActivityUnknownStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeActivityUnknownStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -330,7 +330,7 @@ impl FlowEventStore for CrashBeforeActivityUnknownStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::ActivityUnknown { activity_id, .. } if activity_id == "durable-effect"
@@ -345,11 +345,11 @@ impl FlowEventStore for CrashBeforeActivityUnknownStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -370,7 +370,7 @@ impl CrashBeforeActivityHeartbeatStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeActivityHeartbeatStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -379,7 +379,7 @@ impl FlowEventStore for CrashBeforeActivityHeartbeatStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::ActivityHeartbeat { activity_id, .. } if activity_id == "durable-effect"
@@ -394,11 +394,11 @@ impl FlowEventStore for CrashBeforeActivityHeartbeatStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -441,7 +441,7 @@ impl FlowRuntime for BatchFailureRecoveryRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_steps(vec![
             invocation.context().step_with_retry(
                 "fail",
@@ -458,12 +458,12 @@ impl FlowRuntime for BatchFailureRecoveryRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.step_invocations.fetch_add(1, Ordering::SeqCst);
         if invocation.step_id == "fail" {
             return Err(FlowError::Runtime("permanent batch failure".into()));
         }
-        pending::<a3s_flow::Result<serde_json::Value>>().await
+        pending::<aster_flow::Result<serde_json::Value>>().await
     }
 }
 
@@ -472,7 +472,7 @@ impl FlowRuntime for PermanentFailureRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.cancellation_request().is_some() {
             return Ok(context.cancel());
@@ -485,7 +485,7 @@ impl FlowRuntime for PermanentFailureRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.step_invocations.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::Runtime("permanent step failure".into()))
     }
@@ -496,7 +496,7 @@ impl FlowRuntime for DurableEffectRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.step_output("durable-effect") {
             Some(output) => Ok(context.complete(output.clone())),
@@ -509,7 +509,7 @@ impl FlowRuntime for DurableEffectRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.effect_invocations.fetch_add(1, Ordering::SeqCst);
         Ok(json!({"effectId": "stable-effect"}))
     }
@@ -520,7 +520,7 @@ impl FlowRuntime for DurableActivityEffectRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.activity_output("durable-effect") {
             Some(output) => Ok(context.complete(output.clone())),
@@ -533,14 +533,14 @@ impl FlowRuntime for DurableActivityEffectRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         _invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         self.effect_invocations.fetch_add(1, Ordering::SeqCst);
         Ok(json!({"effectId": "stable-effect"}))
     }
@@ -551,7 +551,7 @@ impl FlowRuntime for AmbiguousThenCompleteActivityRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.activity_output("durable-effect") {
             Some(output) => Ok(context.complete(output.clone())),
@@ -564,14 +564,14 @@ impl FlowRuntime for AmbiguousThenCompleteActivityRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         _invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         let call = self.effect_invocations.fetch_add(1, Ordering::SeqCst);
         if call == 0 {
             return Err(FlowError::UnknownOutcome(
@@ -587,7 +587,7 @@ impl FlowRuntime for HeartbeatThenCrashActivityRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.activity_output("durable-effect") {
             Some(output) => Ok(context.complete(output.clone())),
@@ -600,14 +600,14 @@ impl FlowRuntime for HeartbeatThenCrashActivityRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         _invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         let call = self.effect_invocations.fetch_add(1, Ordering::SeqCst);
         if call == 0 {
             self.started.notify_one();

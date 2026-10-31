@@ -3,8 +3,8 @@
 use super::*;
 use crate::llm::{ContentBlock, ToolResultContentField};
 
-fn fact(kind: &str, payload: serde_json::Value) -> a3s_effect::Fact {
-    a3s_effect::Fact {
+fn fact(kind: &str, payload: serde_json::Value) -> aster_effect::Fact {
+    aster_effect::Fact {
         seq: 1,
         kind: kind.into(),
         key: String::new(),

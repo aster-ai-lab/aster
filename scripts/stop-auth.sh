@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Stop the background a3s-auth started by ensure-auth.sh / just up.
+# Stop the background aster-auth started by ensure-auth.sh / just up.
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 pid_file="apps/auth/.data/auth.pid"
-port="${A3S_AUTH_LISTEN:-127.0.0.1:7641}"
+port="${ASTER_AUTH_LISTEN:-127.0.0.1:7641}"
 port="${port##*:}"
 
 stop_pid() {
@@ -34,9 +34,9 @@ fi
 
 for pid in $(lsof -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null || true); do
   cmd="$(ps -p "$pid" -o comm= 2>/dev/null || true)"
-  if [[ "$cmd" == *a3s-auth* ]]; then
+  if [[ "$cmd" == *aster-auth* ]]; then
     stop_pid "$pid"
   fi
 done
 
-echo "a3s-auth stopped"
+echo "aster-auth stopped"

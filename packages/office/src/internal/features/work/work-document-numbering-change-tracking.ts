@@ -42,7 +42,7 @@ export function trackDocumentNumberingChangeTransaction(
       numberingChangeKind: 'numbering',
       numberingChangeId: identity.id,
       numberingChangeActorId: identity.actorId ?? '',
-      numberingChangeAuthor: identity.author || 'A3S Work',
+      numberingChangeAuthor: identity.author || 'Aster Work',
       numberingChangeDate: identity.date || new Date().toISOString(),
       numberingChangeBefore: previous,
     });

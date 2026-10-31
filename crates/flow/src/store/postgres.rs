@@ -1,6 +1,6 @@
 use std::fmt;
 
-use a3s_orm::{
+use aster_orm::{
     sql_query, Database, Executor, FromRow, PostgresDialect, PostgresError, PostgresExecutor,
     PostgresRow, PostgresTransaction, PostgresTransactionError, Query, SqlQuery,
 };
@@ -24,7 +24,7 @@ use super::{
 
 mod retention;
 
-/// A3S ORM-backed PostgreSQL event store for multi-process durable hosts.
+/// Aster ORM-backed PostgreSQL event store for multi-process durable hosts.
 ///
 /// The store keeps one row per [`FlowEventEnvelope`]. Appends take the same
 /// transaction-scoped advisory lock used by earlier Flow releases before
@@ -1212,7 +1212,7 @@ fn map_postgres_transaction<T>(
     }
 }
 
-fn postgres_query_error(error: a3s_orm::Error) -> FlowError {
+fn postgres_query_error(error: aster_orm::Error) -> FlowError {
     FlowError::Store(format!("PostgreSQL Flow query build failed: {error}"))
 }
 
@@ -1220,10 +1220,10 @@ fn postgres_driver_error(error: PostgresError) -> FlowError {
     FlowError::Store(format!("PostgreSQL Flow storage failed: {error}"))
 }
 
-fn postgres_decode_error(error: a3s_orm::DecodeError) -> FlowError {
+fn postgres_decode_error(error: aster_orm::DecodeError) -> FlowError {
     FlowError::Store(format!("PostgreSQL Flow row decoding failed: {error}"))
 }
 
-fn postgres_orm_error(error: a3s_orm::DatabaseError<PostgresError>) -> FlowError {
+fn postgres_orm_error(error: aster_orm::DatabaseError<PostgresError>) -> FlowError {
     FlowError::Store(format!("PostgreSQL Flow storage failed: {error}"))
 }

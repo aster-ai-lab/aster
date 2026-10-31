@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 use crate::discovery::office_error;
@@ -16,11 +16,11 @@ use crate::semantic::{DocumentNode, NativeOfficeDocument, OfficeNodeType};
 use crate::spreadsheet_reference::{CellRange, CellReference};
 use crate::{DocumentKind, NativeOfficePackage};
 
-pub const NATIVE_OFFICE_REPLAY_FORMAT: &str = "a3s.office.native-replay";
+pub const NATIVE_OFFICE_REPLAY_FORMAT: &str = "aster.office.native-replay";
 pub const NATIVE_OFFICE_REPLAY_SCHEMA_VERSION: u32 = 1;
 pub const MAX_NATIVE_OFFICE_REPLAY_MUTATIONS: usize = 10_000;
 
-const EMPTY_PRESENTATION_TITLE_SEED: &str = "a3s-replay-title";
+const EMPTY_PRESENTATION_TITLE_SEED: &str = "aster-replay-title";
 
 /// Required starting state for a native replay artifact.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -30,7 +30,7 @@ pub enum NativeOfficeReplayBase {
 }
 
 /// A versioned, non-RPC batch artifact that exactly recreates a supported
-/// native OOXML package from the A3S blank template named by `baseSha256`.
+/// native OOXML package from the Aster blank template named by `baseSha256`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct NativeOfficeReplayArtifact {

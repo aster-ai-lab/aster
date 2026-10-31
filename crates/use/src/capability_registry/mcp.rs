@@ -1,11 +1,11 @@
 use std::collections::BTreeSet;
 use std::path::Path;
 
-use a3s_use_core::{
+use aster_use_core::{
     McpReleaseDescriptor, PackageSurfaceKind, PlanQualifiedSurfaceRef, PlanScope, PluginSurfaceRef,
     UseError, UseResult, MAX_RELEASE_DESCRIPTOR_BYTES,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionLifecycleIdentity, InstalledExtension, PluginMcpLaunch, SurfaceActivation,
 };
 use sha2::{Digest, Sha256};
@@ -21,7 +21,7 @@ use crate::plugin_runtime::{
 };
 use crate::surface_reconciler::{SurfaceObservations, SurfaceObservedState};
 
-const MCP_RUNTIME_BINDING_DIGEST_SCHEMA: &[u8] = b"a3s.use.mcp-runtime-binding-projection.v1\0";
+const MCP_RUNTIME_BINDING_DIGEST_SCHEMA: &[u8] = b"aster.use.mcp-runtime-binding-projection.v1\0";
 
 pub(super) struct McpEvidence {
     pub(super) projections: Vec<McpServerProjection>,
@@ -76,7 +76,7 @@ pub(super) async fn mcp_evidence_from_store(
             kind: PackageSurfaceKind::Mcp,
             id: surface.id.clone(),
         };
-        let file_evidence = match a3s_use_extension::inspect_mcp_surface_files(
+        let file_evidence = match aster_use_extension::inspect_mcp_surface_files(
             surface,
             &extension.receipt.package_root,
         )
@@ -278,8 +278,8 @@ fn runtime_binding_digest(
 
 #[cfg(test)]
 mod tests {
-    use a3s_use_core::{PlanEnforcementProfile, PlanScopeKind};
-    use a3s_use_extension::{ExtensionManifest, ExtensionReceipt, ExtensionTrust};
+    use aster_use_core::{PlanEnforcementProfile, PlanScopeKind};
+    use aster_use_extension::{ExtensionManifest, ExtensionReceipt, ExtensionTrust};
 
     use crate::plugin_runtime::{
         RuntimeEndpointRef, RuntimeMcpInitializeEvidence, RuntimeServiceBindingReceipt,
@@ -603,7 +603,7 @@ extension "acme/research" {
     async fn mhs_bridge_publishes_only_after_its_exact_gateway_and_dependency_graph_are_ready() {
         let package_root = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("extension//fixtures/packages/plugin-v3-mhs-bridge/package");
-        let source = tokio::fs::read_to_string(package_root.join("a3s-use-extension.acl"))
+        let source = tokio::fs::read_to_string(package_root.join("aster-use-extension.acl"))
             .await
             .unwrap();
         let extension = installed_extension(&source, &package_root);

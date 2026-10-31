@@ -160,7 +160,7 @@ impl GrpcProxy {
     /// Fallible constructor used by validate ≡ activate and `build_runtime`.
     pub fn try_new() -> std::result::Result<Self, String> {
         let client = HttpsConnectorBuilder::new()
-            .with_provider_and_webpki_roots(Arc::new(rustls::crypto::ring::default_provider()))
+            .with_provider_and_webpki_roots(rustls::crypto::ring::default_provider())
             .map_err(|error| error.to_string())?
             .https_or_http()
             .enable_http2()

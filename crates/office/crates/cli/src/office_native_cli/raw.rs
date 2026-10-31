@@ -1,7 +1,7 @@
 use std::io::ErrorKind;
 
-use a3s_office::{NativeOfficeEditor, NativeRawXmlPart};
-use a3s_use_core::{UseError, UseResult};
+use aster_office::{NativeOfficeEditor, NativeRawXmlPart};
+use aster_use_core::{UseError, UseResult};
 use tokio::io::AsyncWriteExt;
 
 use super::bounded_input::{input_error, read_bounded_input, NativeInputKind};

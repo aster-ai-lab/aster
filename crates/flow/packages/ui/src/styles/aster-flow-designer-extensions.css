@@ -1,0 +1,58 @@
+/* Minimal defaults for the reusable extension area. Hosts can override these
+   tokens and classes to match their designer chrome. */
+.aster-flow-designer-extensions {
+  --aster-flow-extension-border: #d8e0eb;
+  --aster-flow-extension-muted: #56657b;
+  --aster-flow-extension-accent: #1264ff;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--aster-flow-extension-border);
+  background: #fff;
+  color: #101827;
+  flex-direction: column;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.aster-flow-designer-extensions__header {
+  display: grid;
+  padding: 0.75rem 1rem 0;
+  border-bottom: 1px solid var(--aster-flow-extension-border);
+  gap: 0.5rem;
+}
+
+.aster-flow-designer-extensions__tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.aster-flow-designer-extensions__tabs button {
+  padding: 0.55rem 0.75rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--aster-flow-extension-muted);
+  cursor: pointer;
+}
+
+.aster-flow-designer-extensions__tabs button.is-active {
+  border-bottom-color: var(--aster-flow-extension-accent);
+  color: var(--aster-flow-extension-accent);
+}
+
+.aster-flow-designer-extensions__panel {
+  min-height: 0;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.aster-flow-designer-extensions__panel pre,
+.aster-flow-designer-extensions pre {
+  max-width: 100%;
+  margin: 0;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+

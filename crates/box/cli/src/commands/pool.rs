@@ -1,4 +1,4 @@
-//! `a3s-box pool` — Warm VM pool daemon + client.
+//! `aster-box pool` — Warm VM pool daemon + client.
 //!
 //! Pre-boots keepalive MicroVMs of one image so a command can run in an
 //! already-ready sandbox instead of paying a full cold boot. `pool start` is the
@@ -15,32 +15,32 @@
 
 use clap::{Parser, Subcommand};
 
-use a3s_box_core::config::{BoxConfig, PoolConfig, ResourceConfig};
-use a3s_box_core::event::EventEmitter;
+use aster_box_core::config::{BoxConfig, PoolConfig, ResourceConfig};
+use aster_box_core::event::EventEmitter;
 #[cfg(not(windows))]
-use a3s_box_runtime::pool::client::{
+use aster_box_runtime::pool::client::{
     read_frame_with_timeout, run_client, stop_client, write_frame, FRAME_READ_TIMEOUT,
 };
 #[cfg(not(windows))]
-use a3s_box_runtime::pool::{
+use aster_box_runtime::pool::{
     PoolClientRun, PoolLeaseReleaseRequest, PoolLeaseReleaseResponse, PoolLeaseResponse,
     PoolStopResponse,
 };
 #[cfg(any(not(windows), test))]
-use a3s_box_runtime::pool::{
+use aster_box_runtime::pool::{
     PoolImageStat, PoolLeaseExecRequest, PoolLeaseRequest, PoolRequest, PoolRunRequest,
     PoolRunResponse, PoolStatusResponse,
 };
-use a3s_box_runtime::pool::{PoolStats, WarmPool};
+use aster_box_runtime::pool::{PoolStats, WarmPool};
 #[cfg(target_os = "linux")]
-use a3s_box_runtime::vm::reap::reap_orphaned_box;
+use aster_box_runtime::vm::reap::reap_orphaned_box;
 // Stub returns 0 on non-Linux; call site must compile on macOS pool CLI.
-use a3s_box_runtime::vm::reap::reap_orphaned_boxes_for_home;
+use aster_box_runtime::vm::reap::reap_orphaned_boxes_for_home;
 #[cfg(not(windows))]
 use tokio::task::JoinSet;
 
 /// Default Unix socket the `pool` daemon listens on.
-pub(crate) const DEFAULT_SOCKET: &str = "/tmp/a3s-box-pool.sock";
+pub(crate) const DEFAULT_SOCKET: &str = "/tmp/aster-box-pool.sock";
 const DEFAULT_POOL_VCPUS: u32 = 2;
 const DEFAULT_POOL_MEMORY: &str = "512m";
 const DEFAULT_POOL_MEMORY_MB: u32 = 512;
@@ -122,7 +122,7 @@ fn pool_autostart_lock_path(socket: &str) -> std::path::PathBuf {
 pub(crate) async fn ensure_pool_daemon_running(
     config: &PoolAutoStartConfig,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    if a3s_box_runtime::pool::client::status_client(&config.socket)
+    if aster_box_runtime::pool::client::status_client(&config.socket)
         .await
         .is_ok()
     {
@@ -132,7 +132,7 @@ pub(crate) async fn ensure_pool_daemon_running(
     #[cfg(unix)]
     let _autostart_lock = PoolAutoStartLock::acquire(&config.socket)?;
 
-    if a3s_box_runtime::pool::client::status_client(&config.socket)
+    if aster_box_runtime::pool::client::status_client(&config.socket)
         .await
         .is_ok()
     {
@@ -157,7 +157,7 @@ pub(crate) async fn ensure_pool_daemon_running(
 
     let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
     while std::time::Instant::now() < deadline {
-        if a3s_box_runtime::pool::client::status_client(&config.socket)
+        if aster_box_runtime::pool::client::status_client(&config.socket)
             .await
             .is_ok()
         {
@@ -484,7 +484,7 @@ impl PoolKey {
 #[cfg(not(windows))]
 struct LeasedVm {
     key: PoolKey,
-    vm: std::sync::Arc<tokio::sync::Mutex<a3s_box_runtime::VmManager>>,
+    vm: std::sync::Arc<tokio::sync::Mutex<aster_box_runtime::VmManager>>,
     last_used_ms: std::sync::Arc<std::sync::atomic::AtomicU64>,
     active_execs: std::sync::Arc<std::sync::atomic::AtomicUsize>,
     _permit: tokio::sync::OwnedSemaphorePermit,
@@ -571,7 +571,7 @@ struct PoolRegistry {
     /// Optional Prometheus metrics shared across every pool this registry
     /// creates, so warm_pool hit/miss + vm_boot/cache numbers are scrapeable
     /// from the long-lived daemon (the one process where they matter most).
-    metrics: Option<a3s_box_runtime::RuntimeMetrics>,
+    metrics: Option<aster_box_runtime::RuntimeMetrics>,
 }
 
 impl PoolRegistry {
@@ -907,7 +907,7 @@ impl PoolRegistry {
         let output = vm
             .lock()
             .await
-            .exec_request(&a3s_box_core::exec::ExecRequest {
+            .exec_request(&aster_box_core::exec::ExecRequest {
                 request_id: Some(request_id.clone()),
                 cmd: req.cmd,
                 timeout_ns: req.timeout_ns.unwrap_or(60_000_000_000),
@@ -1004,8 +1004,8 @@ impl PoolRegistry {
 /// Destroy a VM; on Linux, best-effort reap leftovers if destroy fails.
 #[cfg(not(windows))]
 async fn destroy_vm_or_reap(
-    vm: &mut a3s_box_runtime::VmManager,
-) -> Result<(), a3s_box_core::error::BoxError> {
+    vm: &mut aster_box_runtime::VmManager,
+) -> Result<(), aster_box_core::error::BoxError> {
     let box_id = vm.box_id().to_string();
     let result = vm.destroy().await;
     if let Err(error) = &result {
@@ -1025,7 +1025,7 @@ async fn destroy_vm_or_reap(
 async fn destroy_leased_vm(
     lease_id: String,
     leased: LeasedVm,
-) -> (String, String, Result<(), a3s_box_core::error::BoxError>) {
+) -> (String, String, Result<(), aster_box_core::error::BoxError>) {
     let mut vm = leased.vm.lock().await;
     let box_id = vm.box_id().to_string();
     let result = destroy_vm_or_reap(&mut vm).await;
@@ -1057,11 +1057,11 @@ async fn execute_start(args: PoolStartArgs) -> Result<(), Box<dyn std::error::Er
     #[cfg(not(windows))]
     {
         // Pool VM ownership is in-memory only. After a previous daemon SIGKILL,
-        // orphan shims stay reparented to init with box dirs under A3S_HOME.
+        // orphan shims stay reparented to init with box dirs under ASTER_HOME.
         // Reap them before bind/prewarm so pool stop / capacity cannot hide
         // invisible MicroVMs (#373). Does not reattach and does not kill
         // shims still owned by a live parent.
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         let reaped = reap_orphaned_boxes_for_home(&home);
         if reaped > 0 {
             eprintln!(
@@ -1075,7 +1075,7 @@ async fn execute_start(args: PoolStartArgs) -> Result<(), Box<dyn std::error::Er
         // RuntimeMetrics shares the underlying registry, so the server scrapes what the
         // pools record (warm_pool hit/miss, vm_boot, boot phases, cache).
         let metrics = if args.metrics_addr.is_some() {
-            a3s_box_runtime::RuntimeMetrics::try_new().ok()
+            aster_box_runtime::RuntimeMetrics::try_new().ok()
         } else {
             None
         };
@@ -1281,7 +1281,7 @@ async fn reap_expired_leases_task(registry: std::sync::Arc<PoolRegistry>, lease_
 /// Serve a Prometheus `/metrics` endpoint exposing the pool daemon's runtime
 /// metrics (warm_pool hit/miss, vm_boot, boot phases, cache). Minimal raw-HTTP server,
 /// mirroring the monitor's metrics endpoint.
-async fn serve_pool_metrics(addr: String, metrics: a3s_box_runtime::RuntimeMetrics) {
+async fn serve_pool_metrics(addr: String, metrics: aster_box_runtime::RuntimeMetrics) {
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
     use tokio::net::TcpListener;
 
@@ -1567,7 +1567,7 @@ async fn handle_conn(
                             // response, so a keyed request_id cannot span
                             // client retries (new VM, empty replay cache).
                             // Lease exec mints/reuses `cli-pool-*` instead.
-                            vm.exec_request(&a3s_box_core::exec::ExecRequest {
+                            vm.exec_request(&aster_box_core::exec::ExecRequest {
                                 request_id: None,
                                 cmd: run.cmd,
                                 timeout_ns: run.timeout_ns.unwrap_or(EXEC_TIMEOUT_NS),
@@ -1671,10 +1671,10 @@ async fn execute_stop(args: PoolStopArgs) -> Result<(), Box<dyn std::error::Erro
     };
 
     // Pool ownership is in-memory. After a SIGKILL'd daemon, orphan shims stay
-    // reparented to init under A3S_HOME and remain invisible to a socket-only
+    // reparented to init under ASTER_HOME and remain invisible to a socket-only
     // stop. Reap the same home-fenced PPID-1 set as `pool start` (#373) so
     // "pool compute is gone" is honest when the daemon is already dead.
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let reaped = reap_orphaned_boxes_for_home(&home);
 
     if args.json {
@@ -1714,7 +1714,7 @@ async fn execute_status(args: PoolStatusArgs) -> Result<(), Box<dyn std::error::
             if args.json {
                 println!("[]");
             } else {
-                println!("No pool daemon running (start one with `a3s-box pool start`).");
+                println!("No pool daemon running (start one with `aster-box pool start`).");
             }
             return Ok(());
         }
@@ -1779,8 +1779,8 @@ fn format_stats_json(image: &str, stats: &PoolStats) -> String {
 mod tests {
     use super::*;
     #[cfg(not(windows))]
-    use a3s_box_runtime::pool::client::read_frame;
-    use a3s_box_runtime::pool::PoolStats;
+    use aster_box_runtime::pool::client::read_frame;
+    use aster_box_runtime::pool::PoolStats;
 
     fn sample_stats() -> PoolStats {
         PoolStats {
@@ -1871,7 +1871,7 @@ mod tests {
     #[test]
     fn test_pool_autostart_start_args() {
         let config = PoolAutoStartConfig {
-            socket: "/tmp/a3s-pool.sock".to_string(),
+            socket: "/tmp/aster-pool.sock".to_string(),
             image: Some("alpine:latest".to_string()),
             size: 1,
             max: 4,
@@ -1883,7 +1883,7 @@ mod tests {
                 "pool",
                 "start",
                 "--socket",
-                "/tmp/a3s-pool.sock",
+                "/tmp/aster-pool.sock",
                 "--size",
                 "1",
                 "--max",
@@ -2165,7 +2165,7 @@ mod tests {
             image: "alpine:latest".to_string(),
             ..Default::default()
         };
-        let vm = a3s_box_runtime::VmManager::with_box_id(
+        let vm = aster_box_runtime::VmManager::with_box_id(
             config,
             EventEmitter::new(16),
             format!("test-lease-{lease_id}"),
@@ -2215,7 +2215,7 @@ mod tests {
         let plain_key = PoolKey::default_for_image("alpine:latest");
         let volume_key = PoolKey {
             image: "alpine:latest".to_string(),
-            volumes: vec!["/host/stage:/run/a3s/build-rootfs:rw".to_string()],
+            volumes: vec!["/host/stage:/run/aster/build-rootfs:rw".to_string()],
             vcpus: DEFAULT_POOL_VCPUS,
             memory_mb: DEFAULT_POOL_MEMORY_MB,
         };
@@ -2485,7 +2485,7 @@ mod tests {
     #[tokio::test]
     async fn test_execute_stop_is_ok() {
         let result = execute_stop(PoolStopArgs {
-            socket: "/tmp/a3s-box-pool-does-not-exist.sock".to_string(),
+            socket: "/tmp/aster-box-pool-does-not-exist.sock".to_string(),
             json: false,
         })
         .await;
@@ -2499,7 +2499,7 @@ mod tests {
         // orphan reap count (0 when this process tree has no matching PPID-1
         // shims). Proves stop no longer short-circuits before crash recovery.
         let result = execute_stop(PoolStopArgs {
-            socket: "/tmp/a3s-box-pool-does-not-exist-json.sock".to_string(),
+            socket: "/tmp/aster-box-pool-does-not-exist-json.sock".to_string(),
             json: true,
         })
         .await;
@@ -2563,7 +2563,7 @@ mod tests {
         // With no daemon listening, status reports "nothing running" and SUCCEEDS —
         // a status query shouldn't fail just because no pool is up (like `ps`).
         let result = execute_status(PoolStatusArgs {
-            socket: "/tmp/a3s-box-pool-does-not-exist.sock".to_string(),
+            socket: "/tmp/aster-box-pool-does-not-exist.sock".to_string(),
             json: false,
         })
         .await;
@@ -2598,13 +2598,13 @@ mod tests {
 
         let lease = serde_json::to_string(&PoolRequest::Lease(PoolLeaseRequest {
             image: Some("alpine".into()),
-            volumes: vec!["/host/rootfs:/run/a3s/build-rootfs:rw".into()],
+            volumes: vec!["/host/rootfs:/run/aster/build-rootfs:rw".into()],
             vcpus: Some(2),
             memory_mb: Some(512),
         }))
         .unwrap();
         assert!(lease.contains(r#""op":"lease""#));
-        assert!(lease.contains("/run/a3s/build-rootfs"));
+        assert!(lease.contains("/run/aster/build-rootfs"));
 
         let exec = serde_json::to_string(&PoolRequest::Exec(PoolLeaseExecRequest {
             lease_id: "lease-1".into(),
@@ -2612,7 +2612,7 @@ mod tests {
             timeout_ns: Some(5_000_000_000),
             env: vec!["FOO=bar".into()],
             working_dir: Some("/".into()),
-            rootfs: Some("/run/a3s/build-rootfs".into()),
+            rootfs: Some("/run/aster/build-rootfs".into()),
             stdin: None,
             user: None,
             request_id: Some("cli-pool-stable-1".into()),
@@ -2620,7 +2620,7 @@ mod tests {
         .unwrap();
         assert!(exec.contains(r#""op":"exec""#));
         assert!(exec.contains(r#""lease_id":"lease-1""#));
-        assert!(exec.contains(r#""rootfs":"/run/a3s/build-rootfs""#));
+        assert!(exec.contains(r#""rootfs":"/run/aster/build-rootfs""#));
         assert!(exec.contains(r#""request_id":"cli-pool-stable-1""#));
 
         let exec_omit: PoolLeaseExecRequest =

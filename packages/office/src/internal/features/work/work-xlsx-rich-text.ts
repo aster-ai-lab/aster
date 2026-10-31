@@ -190,7 +190,7 @@ export function patchSpreadsheetRichTextFontRuns(
     if (patch.fontSize !== undefined) next.fs = patch.fontSize;
     if (normalizedColor !== undefined) {
       next.fc = normalizedColor;
-      delete next.a3sXlsxColorOrigin;
+      delete next.asterXlsxColorOrigin;
     }
     if (patch.bold !== undefined) next.bl = patch.bold ? 1 : 0;
     if (patch.italic !== undefined) next.it = patch.italic ? 1 : 0;
@@ -223,7 +223,7 @@ export function xlsxRichTextStyleOrigins(sheet: Sheet): XlsxCellStyleOrigin[] {
       if (!cell) continue;
       for (const run of normalizeXlsxRichTextCell(cell)?.runs ?? []) {
         const fontColor = normalizeXlsxSemanticColorOrigin(
-          run.a3sXlsxColorOrigin,
+          run.asterXlsxColorOrigin,
         );
         if (
           fontColor &&
@@ -362,7 +362,7 @@ function readRichTextRun(
   const color = resolveXlsxColor(colorElement, colors);
   if (color) run.fc = color;
   const colorOrigin = readXlsxSemanticColorOrigin(colorElement, colors);
-  if (colorOrigin) run.a3sXlsxColorOrigin = colorOrigin;
+  if (colorOrigin) run.asterXlsxColorOrigin = colorOrigin;
   return run;
 }
 
@@ -430,7 +430,7 @@ function writeRichTextRunProperties(
   if (run.fc) {
     const color = document.createElementNS(namespace, 'color');
     const semanticOrigin = activeXlsxSemanticColorOrigin(
-      normalizeXlsxSemanticColorOrigin(run.a3sXlsxColorOrigin),
+      normalizeXlsxSemanticColorOrigin(run.asterXlsxColorOrigin),
       run.fc,
       semanticPalette,
     );

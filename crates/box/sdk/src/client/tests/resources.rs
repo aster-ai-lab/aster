@@ -80,7 +80,7 @@
                     .get_mut("attached")
                     .unwrap()
                     .connect("box-2", "worker")
-                    .map_err(a3s_box_core::error::BoxError::NetworkError)
+                    .map_err(aster_box_core::error::BoxError::NetworkError)
             })
             .unwrap();
 
@@ -184,8 +184,8 @@
             "source-box".to_string(),
             "alpine:3.20".to_string(),
         );
-        metadata.image_config = Some(a3s_box_core::SnapshotImageConfig {
-            health_check: Some(a3s_box_core::SnapshotImageHealthCheck {
+        metadata.image_config = Some(aster_box_core::SnapshotImageConfig {
+            health_check: Some(aster_box_core::SnapshotImageHealthCheck {
                 test: vec!["CMD".to_string(), "true".to_string()],
                 interval: Some(30),
                 timeout: Some(5),
@@ -241,7 +241,7 @@
             .labels
             .insert("tier".to_string(), "api".to_string());
         metadata.network_mode = Some("bridge".to_string());
-        metadata.health_check = Some(a3s_box_core::ExecutionHealthCheck {
+        metadata.health_check = Some(aster_box_core::ExecutionHealthCheck {
             cmd: vec!["test".to_string(), "-f".to_string(), "/ready".to_string()],
             interval_secs: 11,
             timeout_secs: 3,
@@ -249,7 +249,7 @@
             start_period_secs: 2,
         });
         metadata.healthcheck_disabled = true;
-        metadata.image_config = Some(a3s_box_core::SnapshotImageConfig::default());
+        metadata.image_config = Some(aster_box_core::SnapshotImageConfig::default());
         store.save(metadata, &source).unwrap();
 
         let restored = client
@@ -324,7 +324,7 @@
             "box-1".to_string(),
             "alpine:latest".to_string(),
         );
-        metadata.image_config = Some(a3s_box_core::SnapshotImageConfig::default());
+        metadata.image_config = Some(aster_box_core::SnapshotImageConfig::default());
         store.save(metadata, &source).unwrap();
 
         let restored = client

@@ -2,8 +2,8 @@
 //! JSON generation on the production session path.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +stable test -p a3s-code-core --test test_attachment_json_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +stable test -p aster-core --test test_attachment_json_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -12,14 +12,14 @@ mod support;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::llm::Attachment;
-use a3s_code_core::{Agent, PlanningMode, SessionOptions};
+use aster_core::llm::Attachment;
+use aster_core::{Agent, PlanningMode, SessionOptions};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 fn opts(session_id: &str) -> SessionOptions {
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_planning(false)
         .with_planning_mode(PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
@@ -37,7 +37,7 @@ const RED_PIXEL_PNG: &[u8] = &[
 ];
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn attachment_message_round_trips_on_the_real_model() {
     let mut config = load_pinned_layer_c_config();
     config.default_model = Some(support::layer_c_model::pinned_layer_c_model(&config));
@@ -90,7 +90,7 @@ async fn attachment_message_round_trips_on_the_real_model() {
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn generate_object_produces_schema_valid_json_on_the_real_model() {
     let mut config = load_pinned_layer_c_config();
     config.default_model = Some(support::layer_c_model::pinned_layer_c_model(&config));

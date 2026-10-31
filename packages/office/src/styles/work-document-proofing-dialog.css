@@ -13,13 +13,13 @@
   gap: 14px;
   margin: 0;
   padding: 15px 16px 17px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 10px;
 }
 
 .work-document-proofing-dialog legend {
   padding: 0 5px;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
   font-weight: 700;
 }
@@ -33,7 +33,7 @@
 
 .work-document-proofing-dialog-language > label,
 .work-document-proofing-dialog-state-label {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-weight: 650;
 }
@@ -65,7 +65,7 @@
 
 .work-office-combobox-panel .ui-search-select__option[data-selected='true'] {
   background: var(--spec-hover-row);
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
 }
 
 .work-office-combobox-panel .ui-search-select__option > div {
@@ -103,7 +103,7 @@
 .work-document-proofing-dialog-language > p,
 .work-document-proofing-dialog-state > p,
 .work-document-proofing-dialog-help {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-document-proofing-dialog-state {
@@ -112,9 +112,9 @@
   align-items: center;
   gap: 8px 14px;
   padding: 14px 16px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 10px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-document-proofing-dialog-state > p {
@@ -127,11 +127,11 @@
 }
 
 .work-document-proofing-dialog-help code {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
 }
 
 .work-document-proofing-dialog-error {
-  color: var(--a3s-red);
+  color: var(--aster-red);
 }
 
 @media (max-width: 620px) {

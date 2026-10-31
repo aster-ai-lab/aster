@@ -17,12 +17,12 @@ use crate::workspace::manifest::LocalWorkspaceManifestSnapshot;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-pub const WORKSPACE_SOURCE_SNAPSHOT_SCHEMA_V1: &str = "a3s.code.workspace-source-snapshot.v1";
+pub const WORKSPACE_SOURCE_SNAPSHOT_SCHEMA_V1: &str = "aster.code.workspace-source-snapshot.v1";
 pub const WORKSPACE_SOURCE_SNAPSHOT_DIGEST_DOMAIN_V1: &str =
-    "a3s.code.workspace-source-snapshot.identity.v1";
+    "aster.code.workspace-source-snapshot.identity.v1";
 /// Digest domain binding the eligible file set of one manifest revision.
 pub const WORKSPACE_SOURCE_CONTENT_DOMAIN_V1: &str =
-    "a3s.code.workspace-source-snapshot.content.v1";
+    "aster.code.workspace-source-snapshot.content.v1";
 const MAX_ROOT_BYTES: usize = 1024;
 const MAX_ELIGIBLE_FILES: u64 = u32::MAX as u64;
 

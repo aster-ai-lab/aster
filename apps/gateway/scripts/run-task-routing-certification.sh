@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 
 echo "== HR L3: task-routing certification lane =="
 echo "1/4 building the gateway binary"
-rustup run 1.97.1 cargo build --bin a3s-gateway
+rustup run 1.97.1 cargo build --bin aster-gateway
 
 echo "2/4 preparing the pinned SDK environment"
 (
@@ -29,6 +29,6 @@ echo "3/4 the official-SDK L2 suite (conformance + task routing)"
 )
 
 echo "4/4 the L1 routing battery (the full HR family)"
-rustup run 1.97.1 cargo test -p a3s-gateway --lib hr_
+rustup run 1.97.1 cargo test -p aster-gateway --lib hr_
 
 echo "GREEN: the task-routing certification lane passed."

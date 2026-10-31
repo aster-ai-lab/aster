@@ -3,7 +3,7 @@ use super::{
     XqPipelinePlan, XqStepOutput,
 };
 use crate::layers::xq::{check_cancel, invalid};
-use a3s_power::{error::Result, inference::InferenceLimits};
+use aster_power::{error::Result, inference::InferenceLimits};
 use serde::Serialize;
 use std::time::Instant;
 use tokio_util::sync::CancellationToken;

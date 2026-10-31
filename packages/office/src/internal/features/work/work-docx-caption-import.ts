@@ -145,8 +145,8 @@ function captionMarker(
   kind: WorkDocumentCaptionKind,
 ): ImportedCaptionMarker {
   return {
-    start: `__A3S_WORK_CAPTION_START_${index}__`,
-    end: `__A3S_WORK_CAPTION_END_${index}__`,
+    start: `__ASTER_WORK_CAPTION_START_${index}__`,
+    end: `__ASTER_WORK_CAPTION_END_${index}__`,
     id,
     kind,
   };
@@ -157,8 +157,8 @@ function referenceMarker(
   targetId: string,
 ): ImportedReferenceMarker {
   return {
-    start: `__A3S_WORK_REFERENCE_START_${index}__`,
-    end: `__A3S_WORK_REFERENCE_END_${index}__`,
+    start: `__ASTER_WORK_REFERENCE_START_${index}__`,
+    end: `__ASTER_WORK_REFERENCE_END_${index}__`,
     targetId,
   };
 }

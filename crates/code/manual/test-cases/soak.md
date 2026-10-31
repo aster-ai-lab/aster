@@ -16,17 +16,17 @@ Linux, macOS, and Windows. Otherwise Linux is enough and the waiver says so.
 ## Host blockers (this Windows agent)
 
 - Ubuntu / macOS matrix soaks: macOS still hosted-CI only. **Local WSL Ubuntu
-  (DESKTOP WSL2) re-proven 2026-09-20** (`~/a3s-wsl-evidence/FINAL-GOAL4.txt`):
+  (DESKTOP WSL2) re-proven 2026-09-20** (`~/aster-wsl-evidence/FINAL-GOAL4.txt`):
   hermetic `--lib` 3660/0 under `--test-threads=8`; S-WR-01 default+portable;
   S-CM-01; S-EI-01; S-S3-01; plus MS/PS/WS/SG/SC/delegation and the broader
   ignored soak batch. Parallel `--lib` flakes fixed by unique agent-dir fixtures
   (`config/agent_dir.rs` `unique_temp`) and catalog wait budgets
   (`retrieval/tests/lifecycle.rs` → `external_resource_start_timeout`).
 - S-WS-01: unlocked via optional `SearchEngineConfig.endpoint` (loopback HTTP / HTTPS only; SSRF unchanged). Proven Windows 2026-09-20; WSL Ubuntu 2026-09-20.
-- S-S3-01: unlocked via in-repo `fixtures/s3-compat` + `A3S_S3_TEST_*`. Proven Windows 2026-09-20; **WSL Ubuntu 2026-09-20** (access key `a3s-code-akid` so bucket names cannot false-positive the leak oracle).
+- S-S3-01: unlocked via in-repo `fixtures/s3-compat` + `ASTER_S3_TEST_*`. Proven Windows 2026-09-20; **WSL Ubuntu 2026-09-20** (access key `aster-akid` so bucket names cannot false-positive the leak oracle).
 - S-RX-01: blocked - no append-only evidence fact store to reopen.
 - Do not soak the live Flash provider account for hermetic retry/load soaks.
-- Flash Layer C (boyue/bailian/deepseek-v4-flash → v4.1-flash): prior-fail + prior-pass + optional `advanced-harness` extensibility suite PASS 2026-09-20. Evidence under `%TEMP%\a3s-layer-c-bailian-rerun*`. **WSL Ubuntu 2026-09-20:** full Layer C matrix PASS (`~/a3s-wsl-evidence/FINAL-GOAL6.txt`); export `NVM_DIR` so native sandbox can re-allow the nvm toolchain under masked `$HOME`; live suite outer budgets raised to 300s where WSL provider turns exceeded 180s. Catalog blockers that remain: macOS matrix (CI), S-RX-01 (no inventable evidence store). AgentDir HTTP serve is removed; do not treat historical serve soak notes as current gates.
+- Flash Layer C (boyue/bailian/deepseek-v4-flash → v4.1-flash): prior-fail + prior-pass + optional `advanced-harness` extensibility suite PASS 2026-09-20. Evidence under `%TEMP%\aster-layer-c-bailian-rerun*`. **WSL Ubuntu 2026-09-20:** full Layer C matrix PASS (`~/aster-wsl-evidence/FINAL-GOAL6.txt`); export `NVM_DIR` so native sandbox can re-allow the nvm toolchain under masked `$HOME`; live suite outer budgets raised to 300s where WSL provider turns exceeded 180s. Catalog blockers that remain: macOS matrix (CI), S-RX-01 (no inventable evidence store). AgentDir HTTP serve is removed; do not treat historical serve soak notes as current gates.
 
 ## Program
 
@@ -39,7 +39,7 @@ Wired today:
 | --- | --- |
 | S-WR-01 | `.github/workflows/workspace-retrieval-soak.yml` (20 min, three OS targets). Windows default-feature run passed locally 2026-09-19 (46.71s). **WSL Ubuntu 2026-09-20:** default ~35s + portable ~12s. |
 | S-CM-01 | `.github/workflows/durable-memory-restart-soak.yml` (20 min, three OS targets). Windows test passed locally 2026-09-19. | Re-proven 2026-09-20 Windows; **WSL Ubuntu 2026-09-20**. |
-| S-EI-01 | `cargo test -p a3s-code-core --lib soak_bind_discard -- --ignored` (100 cycles; passed locally 2026-09-19). **WSL Ubuntu 2026-09-20**. |
+| S-EI-01 | `cargo test -p aster-core --lib soak_bind_discard -- --ignored` (100 cycles; passed locally 2026-09-19). **WSL Ubuntu 2026-09-20**. |
 
 ## Retrieval and memory
 
@@ -84,7 +84,7 @@ Wired today:
 
 - **Capability:** `agent_runtime`
 - **Cycles:** 200 open/close on one workspace, one process.
-- **Oracle:** after the loop, fd count ≤ start + 5; no `.a3s-isolate-*` orphan left; a final open succeeds.
+- **Oracle:** after the loop, fd count ≤ start + 5; no `.aster-isolate-*` orphan left; a final open succeeds.
 - **Fail:** fd growth linear with iterations, or the 201st open hits a lock held by a closed session.
 - **Home:** `core/tests/test_session_open_close_soak.rs` `soak_two_hundred_session_open_close_cycles_stay_bounded` (`#[ignore]`). The +5 handle bound is measured after the first open, which installs process-lifetime runtime handles; later cycles must stay flat. Re-proven Windows 2026-09-20 (`--test test_session_open_close_soak --ignored`).
 
@@ -134,7 +134,7 @@ Wired today:
 
 - **Capability:** kernel for `workspace_tools` / `governance`
 - **Cycles:** 100 bind / mutate / discard, and 20 bind / promote, on one git root.
-- **Oracle:** source digest equals the promoted set only; discard cycles leave source digest unchanged; zero orphan `.a3s-isolate-*` directories after close; no symlink adoption.
+- **Oracle:** source digest equals the promoted set only; discard cycles leave source digest unchanged; zero orphan `.aster-isolate-*` directories after close; no symlink adoption.
 - **Fail:** source drift on a discard cycle, or orphan count > 0.
 - **Home:** `soak_bind_discard_does_not_leak_into_source` in `core/src/effect_isolation.rs` (`#[ignore]`, 100 cycles). Single-shot discard tests cover the same oracle once. Re-proven Windows 2026-09-20 (`--lib --ignored`, ~79s).
 
@@ -168,7 +168,7 @@ Wired today:
 - **Cycles:** 100 searches against a local HTTP fixture, connection pool enabled.
 - **Oracle:** open connection count ≤ pool cap at idle; result bytes per call ≤ cap; no file descriptor growth after idle.
 - **Fail:** connections = 100 after idle.
-- **Home:** `soak_web_search_loopback_fixture_stays_connection_and_byte_capped` in `core/src/tools/builtin/web_search/tests.rs` (`#[ignore]`). Native API engines (`tavily`/`anysearch`) accept optional `SearchEngineConfig.endpoint`; validation stays in `a3s-search` (`validate_provider_endpoint`: HTTPS or loopback HTTP). Proven Windows 2026-09-20 (`--lib --ignored`).
+- **Home:** `soak_web_search_loopback_fixture_stays_connection_and_byte_capped` in `core/src/tools/builtin/web_search/tests.rs` (`#[ignore]`). Native API engines (`tavily`/`anysearch`) accept optional `SearchEngineConfig.endpoint`; validation stays in `aster-search` (`validate_provider_endpoint`: HTTPS or loopback HTTP). Proven Windows 2026-09-20 (`--lib --ignored`).
 
 ### S-WF-01
 
@@ -302,7 +302,7 @@ This is not a live provider soak. Do not soak the Flash account.
 - **Cycles:** 40 put/get/delete against the hermetic backend, including 5 oversize puts.
 - **Oracle:** object count returns to the prefix baseline; oversize puts absent; error strings contain no key id.
 - **Fail:** object count climbs, or credentials in an error.
-- **Home:** `soak_s3_put_get_delete_returns_to_prefix_baseline` in `core/tests/test_s3_backend.rs` (`#[ignore]`, `--features s3`). Start `fixtures/s3-compat`, set `A3S_S3_TEST_*`, then run the soak. Writes larger than `max_read_bytes` fail closed and leave no object. Proven Windows 2026-09-20.
+- **Home:** `soak_s3_put_get_delete_returns_to_prefix_baseline` in `core/tests/test_s3_backend.rs` (`#[ignore]`, `--features s3`). Start `fixtures/s3-compat`, set `ASTER_S3_TEST_*`, then run the soak. Writes larger than `max_read_bytes` fail closed and leave no object. Proven Windows 2026-09-20.
 
 ### S-SV-01
 

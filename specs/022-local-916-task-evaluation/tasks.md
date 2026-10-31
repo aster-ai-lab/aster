@@ -43,8 +43,8 @@ description: "Local 9.1.6 integration and 28 native Aster evaluations"
 
 - [ ] 受影响 owning package 的 focused 测试通过；新评分与输入隔离的负例不能通过。
 - [ ] Rust 修改执行 `cargo fmt --all -- --check` 并单列未改动的既有失败；前端修改执行所需类型、i18n、格式及 focused 测试，不清理他人改动。
-- [ ] 无新的 crates.io A3S 依赖、第二 Cargo workspace/lockfile、SDK bindings 或私有源码复制。
-- [ ] 无 native select；若产品配置有改动仍为 a3s-acl 解析的 ACL，不增加模型授予权限的路线。
+- [ ] 无新的 crates.io Aster 依赖、第二 Cargo workspace/lockfile、SDK bindings 或私有源码复制。
+- [ ] 无 native select；若产品配置有改动仍为 aster-acl 解析的 ACL，不增加模型授予权限的路线。
 - [ ] 28/28 当前独立结果通过；扫描件、额外代码任务、结构/内容/变体检查与预算均未被豁免。
 - [ ] 后台动作全部有证据，无坐标、鼠标、前台或不明投递；原用户窗口和原任务材料未被修改。
 - [ ] OUTCOME 保留失败与成功、版本/输入/输出身份、效率及 Explicitly Not Claimed；不把旧报告沿用为本次资格。

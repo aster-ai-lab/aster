@@ -8,7 +8,7 @@ use crate::{
     OCI_LINUX_MOUNT_OPTIONS,
 };
 
-use super::{profile_error, OciLinuxSupport, A3S_CUSTOM_LINUX_MOUNT_OPTIONS};
+use super::{profile_error, OciLinuxSupport, ASTER_CUSTOM_LINUX_MOUNT_OPTIONS};
 
 impl OciLinuxSupport {
     /// Reject configuration outside this profile before durable mutation.
@@ -58,7 +58,7 @@ impl OciLinuxSupport {
             let standardized = OCI_LINUX_MOUNT_OPTIONS
                 .iter()
                 .any(|known| known.name() == option)
-                || A3S_CUSTOM_LINUX_MOUNT_OPTIONS.contains(&option.as_str());
+                || ASTER_CUSTOM_LINUX_MOUNT_OPTIONS.contains(&option.as_str());
             if standardized && !self.mount_options.iter().any(|known| known == option) {
                 let reason = if option == "tmpcopyup" {
                     "Linux mount option \"tmpcopyup\" is not advertised because tmpfs copy-up is not implemented"

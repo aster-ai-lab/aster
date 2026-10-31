@@ -1,6 +1,6 @@
 #![cfg(feature = "sqlite-vec")]
 
-use a3s_memory::SqliteMemoryStore;
+use aster_durable_memory::SqliteMemoryStore;
 
 #[tokio::test]
 async fn concurrent_first_opens_register_vec_before_creating_connections() {

@@ -7,15 +7,15 @@ or vendored application bundle. Both the product page and documentation are
 hand-authored HTML, CSS, and JavaScript; they do not use Rspress, React, or a
 Node-based site build.
 
-The product page lives at `/Gateway/`. Its visual system follows the A3S UI
-documentation site: a cool neutral canvas, white reading surfaces, one A3S
+The product page lives at `/Gateway/`. Its visual system follows the Aster UI
+documentation site: a cool neutral canvas, white reading surfaces, one Aster
 blue accent, Geist typography, compact radii, border-first hierarchy, and
 bounded product diagrams. The header and documentation use the
 Gateway-specific route mark with an explicit `Kense Gateway` product label; they
-do not present Gateway as A3S OS. Small interface accents use vendored Phosphor
+do not present Gateway as Aster OS. Small interface accents use vendored Phosphor
 icons under their included MIT license. First-party technical documentation
 lives at `/Gateway/docs/`; it is deployed with the runtime and follows the same
-stable/`next` version model as A3S Cloud.
+stable/`next` version model as Aster Cloud.
 
 ## Local preview
 
@@ -61,7 +61,7 @@ relative metric positions, and limitations for HTTP/1.1, HTTPS, HTTP/2, gRPC,
 SSE, WebSocket, TCP, UDP, OpenAI JSON, and OpenAI streaming. HTTP-family
 profiles use pinned `oha`; the repository-owned Rust load generator measures
 WebSocket, TCP, and UDP round trips. The documentation presents the complete
-matrix and labels the OpenAI rows as bounded A3S request-validation cost versus
+matrix and labels the OpenAI rows as bounded Aster request-validation cost versus
 NGINX transport-only forwarding. The product page highlights HTTPS/HTTP/2,
 WebSocket, and OpenAI streaming as three complementary readings of throughput,
 tail latency, and enabled feature cost, with links to the complete matrix and

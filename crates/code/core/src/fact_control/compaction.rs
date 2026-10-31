@@ -12,7 +12,7 @@ impl Completion for UsageStamp {
         &self,
         request: CompletionRequest,
         cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         let inner = Arc::clone(&self.inner);
         let prompt_tokens = Arc::clone(&self.prompt_tokens);
         Box::pin(async move {
@@ -40,7 +40,7 @@ impl Compactor for SessionCompact {
     fn compact(
         &self,
         messages: &[String],
-    ) -> a3s_effect::coding::BoxFuture<Result<String, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
         let client = Arc::clone(&self.client);
         let source = self.source.clone();
         let events = self.events.clone();

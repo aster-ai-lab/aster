@@ -79,7 +79,7 @@ async fn original_worker_barrier(pending_deadline: bool, cleanup_first: bool) {
         ));
         assert_eq!(
             error.runtime_code(),
-            "a3s.code.agent_protocol.run_cancellation_pending"
+            "aster.code.agent_protocol.run_cancellation_pending"
         );
         assert_eq!(error.code(), "INTERNAL_ERROR");
         assert!(original.original_cancel.is_cancelled());

@@ -1,13 +1,13 @@
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use sha2::{Digest, Sha256};
 use tokio::io::AsyncReadExt;
 
 use crate::CommandOutput;
 
-const SKILLS_ENV: &str = "A3S_USE_OFFICE_SKILLS_DIR";
-const PRIMARY_SKILL: &str = "a3s-office";
+const SKILLS_ENV: &str = "ASTER_USE_OFFICE_SKILLS_DIR";
+const PRIMARY_SKILL: &str = "aster-office";
 const MAX_SKILLS: usize = 64;
 const MAX_REFERENCES: usize = 128;
 const MAX_SKILL_BYTES: u64 = 256 * 1024;
@@ -184,12 +184,12 @@ async fn path(args: &[&str]) -> UseResult<CommandOutput> {
 fn help() -> CommandOutput {
     CommandOutput::success(
         concat!(
-            "a3s-office skills — packaged Office agent guidance\n\n",
+            "aster-office skills — packaged Office agent guidance\n\n",
             "usage:\n",
-            "  a3s-office skills list [--json]\n",
-            "  a3s-office skills get <name> [--full] [--json]\n",
-            "  a3s-office skills manifest <name> [--json]\n",
-            "  a3s-office skills path [name] [--json]"
+            "  aster-office skills list [--json]\n",
+            "  aster-office skills get <name> [--full] [--json]\n",
+            "  aster-office skills manifest <name> [--json]\n",
+            "  aster-office skills path [name] [--json]"
         ),
         serde_json::json!({
             "commands": ["list", "get", "manifest", "path"],
@@ -298,7 +298,7 @@ async fn find_skill(name: &str) -> UseResult<OfficeSkill> {
                 "use.office.skill_not_found",
                 format!("Packaged Office Skill '{name}' was not found."),
             )
-            .with_suggestion("Run 'a3s use office skills list'.")
+            .with_suggestion("Run 'aster use office skills list'.")
         })
 }
 
@@ -505,10 +505,10 @@ fn valid_skill_name(value: &str) -> bool {
 fn skills_missing() -> UseError {
     UseError::new(
         "use.office.skills_missing",
-        "Packaged A3S Office Skills could not be located.",
+        "Packaged Aster Office Skills could not be located.",
     )
     .with_suggestion(format!(
-        "Repair A3S Use or set {SKILLS_ENV} to the absolute packaged Office Skills directory."
+        "Repair Aster Use or set {SKILLS_ENV} to the absolute packaged Office Skills directory."
     ))
 }
 
@@ -524,7 +524,7 @@ fn skills_io_error(action: &str, path: &Path, error: std::io::Error) -> UseError
 
 fn skills_usage_error(message: impl Into<String>) -> UseError {
     UseError::new("use.cli.invalid_usage", message)
-        .with_suggestion("Run 'a3s use office skills help' or 'a3s use office skills list'.")
+        .with_suggestion("Run 'aster use office skills help' or 'aster use office skills list'.")
 }
 
 #[cfg(test)]
@@ -539,7 +539,7 @@ mod tests {
             .find(|skill| skill.name == PRIMARY_SKILL)
             .unwrap();
         assert!(primary.skill_path.is_absolute());
-        assert!(primary.skill_path.ends_with("a3s-office/SKILL.md"));
+        assert!(primary.skill_path.ends_with("aster-office/SKILL.md"));
         assert!(primary.description.contains(".docx"));
     }
 
@@ -547,12 +547,12 @@ mod tests {
     async fn primary_skill_surface_stays_inside_its_package_root() {
         let (root, path) = primary_skill_surface().await.unwrap();
         assert!(path.starts_with(root));
-        assert!(path.ends_with("a3s-office/SKILL.md"));
+        assert!(path.ends_with("aster-office/SKILL.md"));
     }
 
     #[test]
     fn skill_names_and_frontmatter_fail_closed() {
-        assert!(valid_skill_name("a3s-office"));
+        assert!(valid_skill_name("aster-office"));
         assert!(!valid_skill_name("../office"));
         assert!(!valid_skill_name("Office"));
         assert!(parse_frontmatter("---\nname: mismatch\ndescription: Useful\n---\n").is_some());

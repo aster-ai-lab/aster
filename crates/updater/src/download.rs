@@ -11,7 +11,7 @@ const MAX_ARCHIVE_BYTES: u64 = 4 * 1024 * 1024 * 1024;
 /// Download one release asset into memory.
 pub async fn download_asset(url: &str) -> anyhow::Result<Vec<u8>> {
     let client = reqwest::Client::builder()
-        .user_agent("a3s-updater/0.3")
+        .user_agent("aster-updater/0.3")
         .timeout(std::time::Duration::from_secs(300))
         .build()
         .context("failed to build release download client")?;
@@ -196,7 +196,7 @@ pub async fn download_and_extract(
     binary_name: &str,
 ) -> anyhow::Result<(PathBuf, TempDir)> {
     let client = reqwest::Client::builder()
-        .user_agent("a3s-updater/0.1")
+        .user_agent("aster-updater/0.1")
         .timeout(std::time::Duration::from_secs(300))
         .build()
         .map_err(|e| anyhow::anyhow!("Failed to build HTTP client: {}", e))?;
@@ -283,11 +283,11 @@ mod tests {
 
     #[test]
     fn sha256_verification_accepts_prefix_and_rejects_mismatch() {
-        let digest = sha256_hex(b"a3s");
-        verify_sha256(b"a3s", &digest).unwrap();
-        verify_sha256(b"a3s", &format!("sha256:{digest}")).unwrap();
+        let digest = sha256_hex(b"aster");
+        verify_sha256(b"aster", &digest).unwrap();
+        verify_sha256(b"aster", &format!("sha256:{digest}")).unwrap();
         assert!(verify_sha256(b"other", &digest).is_err());
-        assert!(verify_sha256(b"a3s", "not-a-digest").is_err());
+        assert!(verify_sha256(b"aster", "not-a-digest").is_err());
     }
 
     #[test]
@@ -299,7 +299,7 @@ mod tests {
             let mut builder = tar::Builder::new(encoder);
             let body = b"hello";
             let mut header = tar::Header::new_gnu();
-            header.set_path("package/bin/a3s-use").unwrap();
+            header.set_path("package/bin/aster-use").unwrap();
             header.set_size(body.len() as u64);
             header.set_mode(0o755);
             header.set_cksum();
@@ -310,7 +310,7 @@ mod tests {
         let files = extract_tar_gz_archive(&tar_bytes, temp.path()).unwrap();
         assert_eq!(files.len(), 1);
         assert_eq!(
-            std::fs::read_to_string(temp.path().join("package/bin/a3s-use")).unwrap(),
+            std::fs::read_to_string(temp.path().join("package/bin/aster-use")).unwrap(),
             "hello"
         );
 
@@ -341,14 +341,14 @@ mod tests {
             let cursor = Cursor::new(&mut bytes);
             let mut writer = zip::ZipWriter::new(cursor);
             writer
-                .start_file("package/a3s-use.exe", SimpleFileOptions::default())
+                .start_file("package/aster-use.exe", SimpleFileOptions::default())
                 .unwrap();
             writer.write_all(b"fixture").unwrap();
             writer.finish().unwrap();
         }
         let temp = tempfile::tempdir().unwrap();
         let files = extract_zip_archive(&bytes, temp.path()).unwrap();
-        assert_eq!(files, [temp.path().join("package/a3s-use.exe")]);
+        assert_eq!(files, [temp.path().join("package/aster-use.exe")]);
         assert_eq!(std::fs::read(&files[0]).unwrap(), b"fixture");
 
         let mut traversal = Vec::new();

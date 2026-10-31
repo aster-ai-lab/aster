@@ -63,7 +63,7 @@ const WORD_NAMESPACE =
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const EMUS_PER_MILLIMETER = 36_000;
 const IMAGE_LAYOUT_MARKER_PATTERN =
-  /__A3S_WORK_IMAGE_LAYOUT_\d+_(?:START|END)__/g;
+  /__ASTER_WORK_IMAGE_LAYOUT_\d+_(?:START|END)__/g;
 const MAX_IMPORTED_IMAGE_LAYOUTS = 4_096;
 
 export function createImportedDocxImageLayoutMarkerState(): ImportedDocxImageLayoutMarkerState {
@@ -97,8 +97,8 @@ export function markDocxImageLayouts(
     markedRuns.add(run);
     const index = state.nextMarker;
     state.nextMarker += 1;
-    const startMarker = `__A3S_WORK_IMAGE_LAYOUT_${index}_START__`;
-    const endMarker = `__A3S_WORK_IMAGE_LAYOUT_${index}_END__`;
+    const startMarker = `__ASTER_WORK_IMAGE_LAYOUT_${index}_START__`;
+    const endMarker = `__ASTER_WORK_IMAGE_LAYOUT_${index}_END__`;
     insertMarkerRun(document, run, startMarker, 'before');
     insertMarkerRun(document, run, endMarker, 'after');
     images.push({

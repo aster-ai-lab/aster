@@ -21,9 +21,9 @@ test('Sandbox product registration separates command and lifecycle guides', () =
 test('Sandbox pages preserve native, Box and SDK boundaries without JavaScript', async (t) => {
   const expectations = [
     ['', 'Aster Sandbox 产品概览', 'Aster Sandbox 的组件边界'],
-    ['native/', 'a3s-sandbox 命令边界', 'a3s-sandbox probe'],
-    ['box/', 'a3s-box 生命周期与隔离', 'LocalExecutionManager'],
-    ['integration/', 'Sandbox 接入与验证', 'a3s_box_sdk::Sandbox'],
+    ['native/', 'aster-sandbox 命令边界', 'aster-sandbox probe'],
+    ['box/', 'aster-box 生命周期与隔离', 'LocalExecutionManager'],
+    ['integration/', 'Sandbox 接入与验证', 'aster_box_sdk::Sandbox'],
   ];
   for (const [route, title, text] of expectations) {
     const html = await readFile(path.join(root, 'apps/web/dist/docs/sandbox/current', route, 'index.html'), 'utf8');

@@ -92,7 +92,7 @@ pub(crate) use facts::{
 };
 pub use facts::{goal_fact_key, GoalFactKindV1, GOAL_FACT_SCHEMA_V1};
 
-pub const GOAL_LEGACY_SOURCE_DOMAIN_V1: &str = "a3s.code.goal-legacy-source.v1";
+pub const GOAL_LEGACY_SOURCE_DOMAIN_V1: &str = "aster.code.goal-legacy-source.v1";
 
 /// Original source identity and pause posture; never an execution entitlement.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -570,7 +570,7 @@ pub enum GoalControlError {
         reason: &'static str,
     },
     #[error("goal.writer_unavailable: original log failed: {0}")]
-    Log(#[from] a3s_effect::ActorError),
+    Log(#[from] aster_effect::ActorError),
     #[error("goal.conflict: definition encoding failed: {0}")]
     Encoding(#[from] serde_json::Error),
     #[error("unknown {set} value {value:?}")]

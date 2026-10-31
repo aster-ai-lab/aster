@@ -3,7 +3,7 @@ use std::{
     collections::{BTreeMap, BinaryHeap},
 };
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{semantic_error, DocumentNode, OfficeNodeType};
 use crate::spreadsheet_reference::{

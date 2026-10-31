@@ -875,7 +875,7 @@ impl AgentIdlePolicyTable {
     /// Parse the `agent_idle_policies` ACL block children: one `policy
     /// "<execution>"` child per entry with organization_id,
     /// idle_policy_digest, and hold_ms attributes.
-    pub fn from_acl_block_children(blocks: &[a3s_acl::Block]) -> Result<Self, String> {
+    pub fn from_acl_block_children(blocks: &[aster_acl::Block]) -> Result<Self, String> {
         let mut entries = Vec::with_capacity(blocks.len());
         for block in blocks {
             if block.labels.len() != 1 {
@@ -890,7 +890,7 @@ impl AgentIdlePolicyTable {
                 .attributes
                 .get("organization_id")
                 .and_then(|value| match value {
-                    a3s_acl::Value::String(text) => Some(text.clone()),
+                    aster_acl::Value::String(text) => Some(text.clone()),
                     _ => None,
                 })
                 .ok_or_else(|| "agent idle policy requires organization_id".to_string())?;
@@ -900,7 +900,7 @@ impl AgentIdlePolicyTable {
                 .attributes
                 .get("idle_policy_digest")
                 .and_then(|value| match value {
-                    a3s_acl::Value::String(text) => Some(text.clone()),
+                    aster_acl::Value::String(text) => Some(text.clone()),
                     _ => None,
                 })
                 .ok_or_else(|| "agent idle policy requires idle_policy_digest".to_string())?;
@@ -908,7 +908,7 @@ impl AgentIdlePolicyTable {
                 .attributes
                 .get("hold_ms")
                 .and_then(|value| match value {
-                    a3s_acl::Value::Number(number) => Some(*number as u64),
+                    aster_acl::Value::Number(number) => Some(*number as u64),
                     _ => None,
                 })
                 .ok_or_else(|| "agent idle policy requires hold_ms".to_string())?;
@@ -1001,7 +1001,7 @@ agent_idle_policies {
   }
 }
 "#;
-        let doc = a3s_acl::parse_acl(acl).expect("acl");
+        let doc = aster_acl::parse_acl(acl).expect("acl");
         let block = doc
             .blocks
             .iter()
@@ -1027,7 +1027,7 @@ agent_idle_policies {
   }
 }
 "#;
-        let doc = a3s_acl::parse_acl(acl).expect("acl");
+        let doc = aster_acl::parse_acl(acl).expect("acl");
         let block = doc
             .blocks
             .iter()

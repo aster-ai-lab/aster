@@ -1,4 +1,4 @@
-// The shared A3S UI React adapters load the browser-wide runtime. jsdom does
+// The shared Aster UI React adapters load the browser-wide runtime. jsdom does
 // not provide matchMedia, which the runtime uses while registering responsive
 // navigation behavior. Keep the test environment browser-shaped without
 // changing production code paths.
@@ -19,7 +19,7 @@ if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
 }
 
 // jsdom's selector engine does not implement the CSS :user-invalid pseudo
-// class used by the A3S accessibility scanner. Preserve the scanner's other
+// class used by the Aster accessibility scanner. Preserve the scanner's other
 // matching behavior while treating that browser-only pseudo as a no-op in
 // tests.
 if (typeof Element !== 'undefined') {

@@ -1,7 +1,7 @@
 use std::io;
 
-use a3s_oci_sdk::oci_spec::runtime::{Capabilities, Capability, LinuxCapabilities};
-use a3s_oci_sdk::{oci_linux_capability_number, Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::{Capabilities, Capability, LinuxCapabilities};
+use aster_oci_sdk::{oci_linux_capability_number, Error, ErrorCode, Result};
 use serde::{Deserialize, Serialize};
 
 mod warning;

@@ -7,7 +7,7 @@ import type {
   JsonValue,
   UiNode,
   UiOption,
-} from '@a3s-lab/form/core';
+} from '@aster-ai-lab/form/core';
 import type {
   WorkflowNodeDefinition,
   WorkflowNodeFieldDefinition,
@@ -23,24 +23,24 @@ export type {
 } from './workflow-node-manifest';
 
 export const WORKFLOW_CONFIGURATION_WIDGETS = Object.freeze({
-  actionPicker: 'a3s.workflow.action-picker',
-  code: 'a3s.workflow.code',
-  connection: 'a3s.workflow.connection',
-  dataDisplay: 'a3s.workflow.data-display',
-  duration: 'a3s.workflow.duration',
-  file: 'a3s.workflow.file',
-  flowBatch: 'a3s.flow.batch',
-  flowChildren: 'a3s.flow.children',
-  flowExpression: 'a3s.flow.expression',
-  flowSchema: 'a3s.flow.schema',
-  flowSpec: 'a3s.flow.spec',
-  json: 'a3s.workflow.json',
-  mcp: 'a3s.workflow.mcp',
-  model: 'a3s.workflow.model',
-  parameter: 'a3s.workflow.parameter',
-  prompt: 'a3s.workflow.prompt',
-  sortableList: 'a3s.workflow.sortable-list',
-  tabs: 'a3s.workflow.tabs',
+  actionPicker: 'aster.workflow.action-picker',
+  code: 'aster.workflow.code',
+  connection: 'aster.workflow.connection',
+  dataDisplay: 'aster.workflow.data-display',
+  duration: 'aster.workflow.duration',
+  file: 'aster.workflow.file',
+  flowBatch: 'aster.flow.batch',
+  flowChildren: 'aster.flow.children',
+  flowExpression: 'aster.flow.expression',
+  flowSchema: 'aster.flow.schema',
+  flowSpec: 'aster.flow.spec',
+  json: 'aster.workflow.json',
+  mcp: 'aster.workflow.mcp',
+  model: 'aster.workflow.model',
+  parameter: 'aster.workflow.parameter',
+  prompt: 'aster.workflow.prompt',
+  sortableList: 'aster.workflow.sortable-list',
+  tabs: 'aster.workflow.tabs',
 });
 
 /**
@@ -477,7 +477,7 @@ function isCollectionField(field: WorkflowNodeFieldDefinition): boolean {
     field.list === true ||
     field.is_list === true ||
     inputType === 'TableInput' ||
-    inputType === 'A3sFlowChildrenInput' ||
+    inputType === 'AsterFlowChildrenInput' ||
     inputType === 'MultiselectInput'
   );
 }
@@ -506,8 +506,8 @@ function scalarSchemaTypeForField(
     inputType === 'JSONInput' ||
     inputType === 'McpInput' ||
     inputType === 'DurationInput' ||
-    inputType === 'A3sFlowSpecInput' ||
-    inputType === 'A3sFlowChildrenInput'
+    inputType === 'AsterFlowSpecInput' ||
+    inputType === 'AsterFlowChildrenInput'
   ) {
     return 'object';
   }
@@ -567,16 +567,16 @@ function workflowControlWidget(field: WorkflowNodeFieldDefinition): string {
 
   const inputType = workflowInputType(field);
   const options = simpleOptions(field);
-  if (inputType === 'A3sFlowExpressionInput') {
+  if (inputType === 'AsterFlowExpressionInput') {
     return WORKFLOW_CONFIGURATION_WIDGETS.flowExpression;
   }
-  if (inputType === 'A3sFlowSchemaInput')
+  if (inputType === 'AsterFlowSchemaInput')
     return WORKFLOW_CONFIGURATION_WIDGETS.flowSchema;
-  if (inputType === 'A3sFlowBatchInput')
+  if (inputType === 'AsterFlowBatchInput')
     return WORKFLOW_CONFIGURATION_WIDGETS.flowBatch;
-  if (inputType === 'A3sFlowChildrenInput')
+  if (inputType === 'AsterFlowChildrenInput')
     return WORKFLOW_CONFIGURATION_WIDGETS.flowChildren;
-  if (inputType === 'A3sFlowSpecInput')
+  if (inputType === 'AsterFlowSpecInput')
     return WORKFLOW_CONFIGURATION_WIDGETS.flowSpec;
   if (field.type === 'model' || inputType === 'ModelInput') {
     return WORKFLOW_CONFIGURATION_WIDGETS.model;
@@ -655,7 +655,7 @@ function workflowControlWidget(field: WorkflowNodeFieldDefinition): string {
   return 'text';
 }
 
-/** Returns the canonical A3S UI control selected for a workflow field. */
+/** Returns the canonical Aster UI control selected for a workflow field. */
 export function workflowNodeFieldControl(
   field: WorkflowNodeFieldDefinition,
 ): string {
@@ -817,7 +817,7 @@ function semanticFieldPresentation(
   if (
     field.type === 'table' ||
     workflowInputType(field) === 'TableInput' ||
-    workflowInputType(field) === 'A3sFlowChildrenInput'
+    workflowInputType(field) === 'AsterFlowChildrenInput'
   )
     arrayItemType = 'object';
   else if (
@@ -1311,17 +1311,17 @@ export function createWorkflowNodeForm(
   }
 
   return {
-    kind: 'a3s.form',
-    apiVersion: 'a3s.dev/form/v1alpha1',
+    kind: 'aster.form',
+    apiVersion: 'aster.dev/form/v1alpha1',
     metadata: {
       title: isChineseLocale(options.locale)
         ? `${node.display_name}配置`
         : `${node.display_name} configuration`,
       description: node.description,
       locale: options.locale ?? 'en',
-      owner: 'A3S UI',
+      owner: 'Aster UI',
       tags: ['Workflow node', node.categoryLabel, node.type],
-      compatibility: [...(options.compatibility ?? ['a3s-workflow/v1'])],
+      compatibility: [...(options.compatibility ?? ['aster-workflow/v1'])],
     },
     revision: 1,
     schema: {

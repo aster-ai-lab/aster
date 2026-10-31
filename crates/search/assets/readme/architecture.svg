@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      width="1200" height="600" viewBox="0 0 1200 600"
      role="img" aria-labelledby="title desc">
-  <title id="title">A3S Search metasearch responsibility boundary</title>
+  <title id="title">Aster Search metasearch responsibility boundary</title>
   <desc id="desc">One exact SearchQuery fans out through browser, HTTP and RSS, and native API engines. Search isolates execution, the aggregator normalizes URLs and performs weighted reciprocal-rank fusion, and SearchResults preserves provenance and failures. An optional structural cascade produces receipt V2 while semantic evaluation remains outside the kernel.</desc>
 
   <defs>
@@ -135,7 +135,7 @@
       <rect width="532" height="96" rx="10" fill="#122238" stroke="#4678b8" stroke-width="2"/>
       <text x="20" y="30" fill="#7fb6ff"
             font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
-            font-size="18" font-weight="700">A3S SEARCH OWNS</text>
+            font-size="18" font-weight="700">Aster SEARCH OWNS</text>
       <text x="20" y="61" fill="#f3f6f9"
             font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
             font-size="20" font-weight="680">transport · normalization · dedupe</text>

@@ -16,10 +16,10 @@ export const meta = {
 从仓库根目录构建：
 
 ```bash
-cargo build --locked -p a3s-gateway
+cargo build --locked -p aster-gateway
 ```
 
-生成二进制位于 `target/debug/a3s-gateway`。使用已安装的版本时，直接运行 `a3s-gateway`。
+生成二进制位于 `target/debug/aster-gateway`。使用已安装的版本时，直接运行 `aster-gateway`。
 
 ## 编写 gateway.acl
 
@@ -56,14 +56,14 @@ services "models" {
 先校验配置，再查看摘要：
 
 ```bash
-./target/debug/a3s-gateway validate --config gateway.acl
-./target/debug/a3s-gateway config --config gateway.acl summary
+./target/debug/aster-gateway validate --config gateway.acl
+./target/debug/aster-gateway config --config gateway.acl summary
 ```
 
 校验通过后启动：
 
 ```bash
-./target/debug/a3s-gateway --config gateway.acl
+./target/debug/aster-gateway --config gateway.acl
 curl http://127.0.0.1:8080/v1/models
 ```
 

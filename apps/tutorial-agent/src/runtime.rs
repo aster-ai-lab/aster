@@ -1,9 +1,9 @@
 use std::{ffi::OsString, path::PathBuf, sync::Arc, time::Duration};
 
-use a3s_code_core::hitl::{ConfirmationManager, ConfirmationPolicy, TimeoutAction};
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::store::{FileSessionStore, SessionStore};
-use a3s_code_core::{Agent, AgentEvent, AgentSession, SessionOptions};
+use aster_core::hitl::{ConfirmationManager, ConfirmationPolicy, TimeoutAction};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::store::{FileSessionStore, SessionStore};
+use aster_core::{Agent, AgentEvent, AgentSession, SessionOptions};
 use anyhow::{Context, Result, ensure};
 use tokio::sync::broadcast;
 
@@ -223,7 +223,7 @@ pub async fn inspect_stream(session: &AgentSession, prompt: &str) -> Result<()> 
         let status = run.status().await;
         eprintln!("\n运行 {}：{status:?}", run.id());
         ensure!(
-            status == Some(a3s_code_core::run::RunStatus::Completed),
+            status == Some(aster_core::run::RunStatus::Completed),
             "原运行未完成：{status:?}"
         );
     }

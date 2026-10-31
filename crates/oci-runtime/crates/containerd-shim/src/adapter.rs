@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, Process};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, Process};
+use aster_oci_sdk::{
     CheckpointArtifactPath, CheckpointReference, CheckpointRequest, CheckpointResponse,
     CloseStdinRequest, ContainerId, ContainerOperationRequest, ContainerRecord, ContainerStats,
     ContainerTarget, CreateAttachments, CreateRequest, DeleteMode, DeleteRequest, Error, ErrorCode,
@@ -155,7 +155,7 @@ impl RuntimeAdapter {
 
     #[cfg(test)]
     pub(crate) fn from_client(client: RuntimeClient, isolation: IsolationRequest) -> Self {
-        use a3s_oci_sdk::{
+        use aster_oci_sdk::{
             AttachmentCapabilities, DriverKind, IsolationClass, RuntimeArtifact,
             RuntimeDriverCapabilities, RuntimeOperationCapability,
         };
@@ -168,7 +168,7 @@ impl RuntimeAdapter {
             }
         };
         let artifact = RuntimeArtifact::new(
-            "a3s-oci-runtime",
+            "aster-oci-runtime",
             "0.2.0",
             format!("sha256:{}", "b".repeat(64)),
             Some("containerd-test-adapter".to_string()),
@@ -210,8 +210,8 @@ impl RuntimeAdapter {
 
     fn ensure_optional_operation(
         &self,
-        isolation: a3s_oci_sdk::IsolationClass,
-        driver: a3s_oci_sdk::DriverKind,
+        isolation: aster_oci_sdk::IsolationClass,
+        driver: aster_oci_sdk::DriverKind,
         operation: RuntimeOperation,
     ) -> Result<()> {
         let request = RuntimeNegotiationRequest::new(isolation)
@@ -350,7 +350,7 @@ impl RuntimeAdapter {
     pub(crate) async fn exact_state(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
     ) -> Result<ContainerRecord> {
         self.client
             .state(StateRequest {
@@ -362,7 +362,7 @@ impl RuntimeAdapter {
     pub(crate) async fn start(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
     ) -> Result<ContainerRecord> {
         self.client
             .start(StartRequest {
@@ -375,7 +375,7 @@ impl RuntimeAdapter {
     pub(crate) async fn kill(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         signal: i32,
         all: bool,
     ) -> Result<ContainerRecord> {
@@ -392,7 +392,7 @@ impl RuntimeAdapter {
     pub(crate) async fn kill_with_sequence(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         sequence: u64,
         signal: i32,
         all: bool,
@@ -410,7 +410,7 @@ impl RuntimeAdapter {
     pub(crate) async fn wait(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
     ) -> Result<ExitStatus> {
         self.client
             .wait(WaitRequest {
@@ -423,7 +423,7 @@ impl RuntimeAdapter {
     pub(crate) async fn delete(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         force: bool,
     ) -> Result<()> {
         let request = DeleteRequest {
@@ -450,7 +450,7 @@ impl RuntimeAdapter {
     pub(crate) async fn exec(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         exec: &ExecIdentity,
         process: Process,
         io: ProcessIo,
@@ -470,7 +470,7 @@ impl RuntimeAdapter {
     pub(crate) async fn signal_process(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         exec: &ExecIdentity,
         signal: i32,
     ) -> Result<()> {
@@ -489,7 +489,7 @@ impl RuntimeAdapter {
     pub(crate) async fn signal_process_with_sequence(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         exec: &ExecIdentity,
         sequence: u64,
         signal: i32,
@@ -509,7 +509,7 @@ impl RuntimeAdapter {
     pub(crate) async fn wait_process(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         exec: &ExecIdentity,
     ) -> Result<ExitStatus> {
         self.client
@@ -526,7 +526,7 @@ impl RuntimeAdapter {
     pub(crate) async fn poll_process_exit(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         exec: &ExecIdentity,
     ) -> Result<Option<ExitStatus>> {
         match self
@@ -549,7 +549,7 @@ impl RuntimeAdapter {
     pub(crate) async fn stats(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
     ) -> Result<ContainerStats> {
         self.client
             .stats(StatsRequest {
@@ -561,7 +561,7 @@ impl RuntimeAdapter {
     pub(crate) async fn processes(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
     ) -> Result<Vec<ProcessRecord>> {
         self.client
             .processes(ProcessesRequest {
@@ -573,7 +573,7 @@ impl RuntimeAdapter {
     pub(crate) async fn process(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         exec: &ExecIdentity,
     ) -> Result<ProcessRecord> {
         let target = self.process_target(task, generation, Some(exec))?;
@@ -596,7 +596,7 @@ impl RuntimeAdapter {
     pub(crate) async fn pause(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         sequence: u64,
     ) -> Result<ContainerRecord> {
         self.client
@@ -610,7 +610,7 @@ impl RuntimeAdapter {
     pub(crate) async fn resume(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         sequence: u64,
     ) -> Result<ContainerRecord> {
         self.client
@@ -624,7 +624,7 @@ impl RuntimeAdapter {
     pub(crate) async fn start_restored(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
     ) -> Result<ContainerRecord> {
         self.client
             .resume(ContainerOperationRequest {
@@ -637,7 +637,7 @@ impl RuntimeAdapter {
     pub(crate) async fn checkpoint(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         artifact_path: CheckpointArtifactPath,
     ) -> Result<CheckpointResponse> {
         // The Host is the authority for the exact durable checkpoint
@@ -667,7 +667,7 @@ impl RuntimeAdapter {
     pub(crate) async fn update(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         sequence: u64,
         resources: LinuxResources,
     ) -> Result<ContainerRecord> {
@@ -683,7 +683,7 @@ impl RuntimeAdapter {
     pub(crate) async fn close_stdin(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         exec: Option<&ExecIdentity>,
     ) -> Result<()> {
         self.client
@@ -697,7 +697,7 @@ impl RuntimeAdapter {
     pub(crate) async fn resize(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         exec: Option<&ExecIdentity>,
         sequence: u64,
         size: TerminalSize,
@@ -717,7 +717,7 @@ impl RuntimeAdapter {
         after_sequence: u64,
         max_bytes: u32,
         wait_timeout_ms: Option<u64>,
-    ) -> Result<Vec<a3s_oci_sdk::OutputChunk>> {
+    ) -> Result<Vec<aster_oci_sdk::OutputChunk>> {
         self.client
             .read_output(ReadOutputRequest {
                 process: target,
@@ -755,7 +755,7 @@ impl RuntimeAdapter {
     pub(crate) fn process_target(
         &self,
         task: &TaskIdentity,
-        generation: a3s_oci_sdk::Generation,
+        generation: aster_oci_sdk::Generation,
         exec: Option<&ExecIdentity>,
     ) -> Result<ProcessTarget> {
         Ok(ProcessTarget {
@@ -821,7 +821,7 @@ fn adapter_error(code: ErrorCode, message: impl Into<String>) -> Error {
     Error::new(code, message).for_operation("containerd-shim")
 }
 
-fn validate_sdk_operations(features: &a3s_oci_sdk::RuntimeInfo) -> Result<()> {
+fn validate_sdk_operations(features: &aster_oci_sdk::RuntimeInfo) -> Result<()> {
     for required in contract::required_sdk_operations() {
         if !features.operations.contains(&required) {
             return Err(adapter_error(
@@ -841,8 +841,8 @@ mod tests {
     use super::*;
     use std::sync::{Arc, Mutex};
 
-    use a3s_oci_sdk::oci_spec::runtime::{ContainerState, Features, StateBuilder};
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::oci_spec::runtime::{ContainerState, Features, StateBuilder};
+    use aster_oci_sdk::{
         async_trait, AttachmentCapabilities, DeleteMode, DriverKind, Generation, IsolationClass,
         OciRuntimeService, RuntimeArtifact, RuntimeDriverCapabilities, RuntimeFeatures,
         RuntimeInfo, RuntimeOperation, RuntimeOperationCapability,
@@ -1014,7 +1014,7 @@ mod tests {
     #[test]
     fn optional_operations_require_the_exact_task_driver() {
         let artifact = RuntimeArtifact::new(
-            "a3s-oci-runtime",
+            "aster-oci-runtime",
             "0.2.0",
             format!("sha256:{}", "a".repeat(64)),
             Some("containerd-exact-driver-test".to_string()),

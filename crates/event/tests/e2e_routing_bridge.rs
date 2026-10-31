@@ -9,9 +9,9 @@
 
 #![cfg(feature = "routing")]
 
-use a3s_event::provider::memory::MemoryProvider;
-use a3s_event::sink::{CollectorSink, TopicSink};
-use a3s_event::{
+use aster_event::provider::memory::MemoryProvider;
+use aster_event::sink::{CollectorSink, TopicSink};
+use aster_event::{
     Broker, Event, EventBus, EventProvider, SubscriptionFilter, Trigger, TriggerFilter,
 };
 use std::sync::Arc;

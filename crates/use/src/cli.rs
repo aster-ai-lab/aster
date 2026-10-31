@@ -1,4 +1,4 @@
-use a3s_use_core::{DomainDiagnostic, Readiness, UseError, UseResult};
+use aster_use_core::{DomainDiagnostic, Readiness, UseError, UseResult};
 
 use crate::capability_registry::{
     snapshot as capability_registry_snapshot, wait_for_change as wait_for_capability_change,
@@ -17,7 +17,7 @@ mod knowledge;
 mod plugin;
 #[cfg(not(feature = "extensions"))]
 mod plugin {
-    use a3s_use_core::{UseError, UseResult};
+    use aster_use_core::{UseError, UseResult};
 
     use super::CommandOutput;
 
@@ -34,7 +34,7 @@ mod registry;
 mod state;
 #[cfg(not(feature = "extensions"))]
 mod registry {
-    use a3s_use_core::{UseError, UseResult};
+    use aster_use_core::{UseError, UseResult};
 
     use super::CommandOutput;
 
@@ -47,7 +47,7 @@ mod registry {
 }
 #[cfg(not(feature = "extensions"))]
 mod state {
-    use a3s_use_core::{UseError, UseResult};
+    use aster_use_core::{UseError, UseResult};
 
     use super::CommandOutput;
 
@@ -104,14 +104,14 @@ pub async fn run(args: Vec<String>) -> UseResult<CommandOutput> {
         "mcp" => mcp(&args[1..]).await,
         route => Err(
             UseError::new("use.route_unknown", format!("Unknown Use route '{route}'."))
-                .with_suggestion("Run 'a3s use capabilities --json'."),
+                .with_suggestion("Run 'aster use capabilities --json'."),
         ),
     }
 }
 
 fn version() -> CommandOutput {
     CommandOutput {
-        human: format!("a3s-use {}", env!("CARGO_PKG_VERSION")),
+        human: format!("aster-use {}", env!("CARGO_PKG_VERSION")),
         json: serde_json::json!({
             "schemaVersion": 1,
             "ok": true,
@@ -128,47 +128,47 @@ fn version() -> CommandOutput {
 fn help() -> CommandOutput {
     CommandOutput::success(
         concat!(
-            "a3s-use — AI Native Package Manager\n\n",
+            "aster-use — AI Native Package Manager\n\n",
             "usage:\n",
-            "  a3s-use capabilities [--json]\n",
-            "  a3s-use capability snapshot [--json]\n",
-            "  a3s-use capability watch [--after-generation <n>] [--after-revision <sha256>] [--timeout-ms <ms>] [--json]\n",
-            "  a3s-use doctor [--json]\n",
-            "  a3s-use install <publisher/name> --scope-id <id> [--scope-kind <user|workspace>] [--registry-name <name>] [--offline] [--json]\n",
-            "  a3s-use upgrade <publisher/name> --scope-id <id> [--scope-kind <user|workspace>] [--registry-name <name>] [--offline] [--json]\n",
-            "  a3s-use uninstall <publisher/name> --scope-id <id> [--scope-kind <user|workspace>] [--json]\n",
-            "  a3s-use component list|status|install|upgrade|uninstall [args] [--json]\n",
-            "  a3s-use plugin search|inspect [args] [--json]\n",
-            "  a3s-use plugin list-installed|status --scope-id <id> [--scope-kind <user|workspace>] [--json]\n",
-            "  a3s-use plugin plan-install|plan-upgrade|plan-uninstall --scope-id <id> [--scope-kind <user|workspace>] [args] [--json]\n",
-            "  a3s-use plugin plan-enable|plan-disable <publisher/name> --scope-id <id> [--scope-kind <user|workspace>] [--json]\n",
-            "  a3s-use plugin apply-plan --operation-id <id> --plan-digest <sha256> --scope-id <id> [--scope-kind <user|workspace>] --yes [--json]\n",
-            "  a3s-use knowledge search <query> [--limit <n>] [--json]\n",
-            "  a3s-use knowledge usage [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
-            "  a3s-use knowledge audit [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
-            "  a3s-use knowledge backup <path> [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
-            "  a3s-use knowledge verify-backup <path> [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
-            "  a3s-use knowledge backup-retention <directory> [--max-backups <n>] [--max-bytes <n>] [--plan-digest <sha256> --yes] [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
-            "  a3s-use knowledge plan-restore <path> [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
-            "  a3s-use knowledge restore <path> --plan-digest <sha256> --yes [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
-            "  a3s-use knowledge restore-status [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
-            "  a3s-use knowledge repair-search-index --yes [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
-            "  a3s-use registry source list [--json]\n",
-            "  a3s-use registry source add <name> (--url <https-url> | --github <owner/repository>) --trust-root <sha256> [source options] [--json]\n",
-            "  a3s-use registry source replace <name> (--url <https-url> | --github <owner/repository>) --trust-root <sha256> --expected-revision <sha256> --yes [source options] [--json]\n",
-            "  a3s-use registry source default|enable|disable|remove <name> --expected-revision <sha256> --yes [--json]\n",
-            "  a3s-use registry cache usage [--registry-name <name>] [--json]\n",
-            "  a3s-use registry cache prune [--registry-name <name>] [cache options] --yes [--json]\n",
-            "  a3s-use state backup <path> [--json]\n",
-            "  a3s-use state verify-backup <path> [--json]\n",
-            "  a3s-use state backup-retention <directory> [--max-backups <n>] [--max-bytes <n>] [--plan-digest <sha256> --yes] [--json]\n",
-            "  a3s-use state plan-restore <backup> [--json]\n",
-            "  a3s-use state restore <backup> --rollback-backup <external-path> --plan-digest <sha256> --yes [--json]\n",
-            "  a3s-use state restore-status [--json]\n",
-            "  a3s-use extension list|inspect|doctor [args] [--json]\n",
-            "  a3s-use extension diagnose <publisher/name> [--history] --scope-id <id> [--scope-kind <user|workspace>] [--json]\n",
-            "  a3s-use extension planning-evidence <publisher/name> [--json]\n",
-            "  a3s-use extension snapshot|watch [--after-generation <n>] [--timeout-ms <ms>] [--json]\n",
+            "  aster-use capabilities [--json]\n",
+            "  aster-use capability snapshot [--json]\n",
+            "  aster-use capability watch [--after-generation <n>] [--after-revision <sha256>] [--timeout-ms <ms>] [--json]\n",
+            "  aster-use doctor [--json]\n",
+            "  aster-use install <publisher/name> --scope-id <id> [--scope-kind <user|workspace>] [--registry-name <name>] [--offline] [--json]\n",
+            "  aster-use upgrade <publisher/name> --scope-id <id> [--scope-kind <user|workspace>] [--registry-name <name>] [--offline] [--json]\n",
+            "  aster-use uninstall <publisher/name> --scope-id <id> [--scope-kind <user|workspace>] [--json]\n",
+            "  aster-use component list|status|install|upgrade|uninstall [args] [--json]\n",
+            "  aster-use plugin search|inspect [args] [--json]\n",
+            "  aster-use plugin list-installed|status --scope-id <id> [--scope-kind <user|workspace>] [--json]\n",
+            "  aster-use plugin plan-install|plan-upgrade|plan-uninstall --scope-id <id> [--scope-kind <user|workspace>] [args] [--json]\n",
+            "  aster-use plugin plan-enable|plan-disable <publisher/name> --scope-id <id> [--scope-kind <user|workspace>] [--json]\n",
+            "  aster-use plugin apply-plan --operation-id <id> --plan-digest <sha256> --scope-id <id> [--scope-kind <user|workspace>] --yes [--json]\n",
+            "  aster-use knowledge search <query> [--limit <n>] [--json]\n",
+            "  aster-use knowledge usage [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
+            "  aster-use knowledge audit [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
+            "  aster-use knowledge backup <path> [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
+            "  aster-use knowledge verify-backup <path> [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
+            "  aster-use knowledge backup-retention <directory> [--max-backups <n>] [--max-bytes <n>] [--plan-digest <sha256> --yes] [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
+            "  aster-use knowledge plan-restore <path> [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
+            "  aster-use knowledge restore <path> --plan-digest <sha256> --yes [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
+            "  aster-use knowledge restore-status [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
+            "  aster-use knowledge repair-search-index --yes [--scope-kind <user|workspace>] [--scope-id <id>] [--json]\n",
+            "  aster-use registry source list [--json]\n",
+            "  aster-use registry source add <name> (--url <https-url> | --github <owner/repository>) --trust-root <sha256> [source options] [--json]\n",
+            "  aster-use registry source replace <name> (--url <https-url> | --github <owner/repository>) --trust-root <sha256> --expected-revision <sha256> --yes [source options] [--json]\n",
+            "  aster-use registry source default|enable|disable|remove <name> --expected-revision <sha256> --yes [--json]\n",
+            "  aster-use registry cache usage [--registry-name <name>] [--json]\n",
+            "  aster-use registry cache prune [--registry-name <name>] [cache options] --yes [--json]\n",
+            "  aster-use state backup <path> [--json]\n",
+            "  aster-use state verify-backup <path> [--json]\n",
+            "  aster-use state backup-retention <directory> [--max-backups <n>] [--max-bytes <n>] [--plan-digest <sha256> --yes] [--json]\n",
+            "  aster-use state plan-restore <backup> [--json]\n",
+            "  aster-use state restore <backup> --rollback-backup <external-path> --plan-digest <sha256> --yes [--json]\n",
+            "  aster-use state restore-status [--json]\n",
+            "  aster-use extension list|inspect|doctor [args] [--json]\n",
+            "  aster-use extension diagnose <publisher/name> [--history] --scope-id <id> [--scope-kind <user|workspace>] [--json]\n",
+            "  aster-use extension planning-evidence <publisher/name> [--json]\n",
+            "  aster-use extension snapshot|watch [--after-generation <n>] [--timeout-ms <ms>] [--json]\n",
         ),
         serde_json::json!({
             "commands": [
@@ -268,7 +268,7 @@ async fn doctor(domain: Option<&str>) -> UseResult<CommandOutput> {
                     format!("Unknown domain '{value}'."),
                 )
                 .with_suggestion(
-                    "Install the external capability or run 'a3s use capabilities --json'.",
+                    "Install the external capability or run 'aster use capabilities --json'.",
                 ))
             }
         },
@@ -362,12 +362,12 @@ fn extension_diagnostic(extension: &crate::extension_cli::ExtensionView) -> Doma
         (
             Readiness::Broken,
             format!(
-                "Extension '{}' {} is incompatible with A3S Use {}.",
+                "Extension '{}' {} is incompatible with Aster Use {}.",
                 extension.package_id,
                 extension.version,
                 env!("CARGO_PKG_VERSION")
             ),
-            vec!["Install a compatible extension version or update A3S Use.".to_string()],
+            vec!["Install a compatible extension version or update Aster Use.".to_string()],
         )
     } else if extension.enabled {
         (
@@ -409,7 +409,7 @@ fn builtin_presence(_id: &str) -> &'static str {
 fn removed_builtin(id: &str) -> UseError {
     UseError::new(
         "use.builtin_removed",
-        format!("Built-in route '{id}' has been removed from a3s-use."),
+        format!("Built-in route '{id}' has been removed from aster-use."),
     )
 }
 
@@ -579,10 +579,10 @@ fn validate_extension_diagnostic_options(args: &[String]) -> UseResult<()> {
     Ok(())
 }
 
-fn managed_scope_argument(args: &[String]) -> UseResult<a3s_use_core::PlanScope> {
+fn managed_scope_argument(args: &[String]) -> UseResult<aster_use_core::PlanScope> {
     let kind = match option_argument(args, "--scope-kind")?.unwrap_or("user") {
-        "user" => a3s_use_core::PlanScopeKind::User,
-        "workspace" => a3s_use_core::PlanScopeKind::Workspace,
+        "user" => aster_use_core::PlanScopeKind::User,
+        "workspace" => aster_use_core::PlanScopeKind::Workspace,
         value => {
             return Err(usage_error(format!(
                 "--scope-kind must be 'user' or 'workspace', received '{value}'"
@@ -591,7 +591,7 @@ fn managed_scope_argument(args: &[String]) -> UseResult<a3s_use_core::PlanScope>
     };
     let scope_id = option_argument(args, "--scope-id")?
         .ok_or_else(|| usage_error("--scope-id is required"))?;
-    Ok(a3s_use_core::PlanScope {
+    Ok(aster_use_core::PlanScope {
         kind,
         id: scope_id.to_owned(),
     })

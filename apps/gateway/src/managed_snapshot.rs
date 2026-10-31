@@ -1,6 +1,6 @@
 //! Gateway-native managed snapshot contract and applied-state tracking.
 //!
-//! This protocol is intentionally separate from the A3S Cloud node-command
+//! This protocol is intentionally separate from the Aster Cloud node-command
 //! acknowledgement. It proves which exact configuration the Gateway process
 //! accepted and currently considers ready.
 
@@ -23,9 +23,9 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 
 /// Managed snapshot request schema.
-pub const MANAGED_SNAPSHOT_SCHEMA: &str = "a3s.gateway.managed-snapshot.v1";
+pub const MANAGED_SNAPSHOT_SCHEMA: &str = "aster.gateway.managed-snapshot.v1";
 /// Managed snapshot status schema.
-pub const MANAGED_SNAPSHOT_STATUS_SCHEMA: &str = "a3s.gateway.managed-snapshot-status.v1";
+pub const MANAGED_SNAPSHOT_STATUS_SCHEMA: &str = "aster.gateway.managed-snapshot-status.v1";
 
 const MAX_ACL_BYTES: usize = 1024 * 1024;
 const MAX_VALIDITY_HOURS: i64 = 24;

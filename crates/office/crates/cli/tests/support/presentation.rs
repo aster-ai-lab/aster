@@ -116,7 +116,7 @@ pub fn presentation_element_order(
     container_id: &str,
 ) -> Vec<String> {
     let document = presentation_document(update);
-    let containers = document.get_or_insert_map(format!("a3s.office.presentation.{collection}"));
+    let containers = document.get_or_insert_map(format!("aster.office.presentation.{collection}"));
     let transaction = document.transact();
     let container = match containers.get(&transaction, container_id) {
         Some(Out::YMap(value)) => value,
@@ -149,7 +149,7 @@ fn element_map(
     container_id: &str,
     element_id: &str,
 ) -> Option<yrs::MapRef> {
-    let containers = document.get_or_insert_map(format!("a3s.office.presentation.{collection}"));
+    let containers = document.get_or_insert_map(format!("aster.office.presentation.{collection}"));
     let transaction = document.transact();
     let container = match containers.get(&transaction, container_id) {
         Some(Out::YMap(value)) => value,

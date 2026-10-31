@@ -2,13 +2,13 @@
 
 set -euo pipefail
 
-runtime_binary="${A3S_OCI_NATIVE_RUNTIME_BINARY:-}"
-agent_binary="${A3S_OCI_NATIVE_AGENT_BINARY:-}"
-criu_binary="${A3S_OCI_CRIU_BINARY:-}"
-source_commit="${A3S_QUALIFICATION_SOURCE_COMMIT:-}"
-report_path="${A3S_OCI_NATIVE_CHECKPOINT_REPORT:-}"
-negative_report_path="${A3S_OCI_NATIVE_CHECKPOINT_PIDNS_REPORT:-}"
-network_report_path="${A3S_OCI_NATIVE_CHECKPOINT_NETNS_REPORT:-}"
+runtime_binary="${ASTER_OCI_NATIVE_RUNTIME_BINARY:-}"
+agent_binary="${ASTER_OCI_NATIVE_AGENT_BINARY:-}"
+criu_binary="${ASTER_OCI_CRIU_BINARY:-}"
+source_commit="${ASTER_QUALIFICATION_SOURCE_COMMIT:-}"
+report_path="${ASTER_OCI_NATIVE_CHECKPOINT_REPORT:-}"
+negative_report_path="${ASTER_OCI_NATIVE_CHECKPOINT_PIDNS_REPORT:-}"
+network_report_path="${ASTER_OCI_NATIVE_CHECKPOINT_NETNS_REPORT:-}"
 qualification_root=""
 owned_cgroups=()
 
@@ -38,7 +38,7 @@ cleanup_cgroup() {
       grep -q '^populated 0$' "$path/cgroup.events" && break
     sleep 0.01
   done
-  for child in a3s-workload a3s-control; do
+  for child in aster-workload aster-control; do
     "${sudo_command[@]}" rmdir -- "$path/$child" 2>/dev/null || true
   done
   "${sudo_command[@]}" rmdir -- "$path" 2>/dev/null || true
@@ -59,7 +59,7 @@ cleanup() {
   done
   if [[ -n "$qualification_root" ]]; then
     case "$qualification_root" in
-      /var/tmp/a3s-oci-native-checkpoint.*)
+      /var/tmp/aster-oci-native-checkpoint.*)
         "${sudo_command[@]}" rm -rf --one-file-system -- "$qualification_root"
         ;;
       *)
@@ -84,13 +84,13 @@ for command in jq realpath sha256sum stat busybox; do
 done
 if [[ ! "$source_commit" =~ ^[0-9a-f]{40}$ ]]; then
   printf '%s\n' \
-    'A3S_QUALIFICATION_SOURCE_COMMIT must be one lowercase 40-character Git commit' >&2
+    'ASTER_QUALIFICATION_SOURCE_COMMIT must be one lowercase 40-character Git commit' >&2
   exit 2
 fi
 if [[ -z "$criu_binary" || "$criu_binary" != /* ]] ||
   [[ ! -f "$criu_binary" || -L "$criu_binary" || ! -x "$criu_binary" ]]; then
   printf '%s\n' \
-    'A3S_OCI_CRIU_BINARY must name one absolute regular nonsymlink executable' >&2
+    'ASTER_OCI_CRIU_BINARY must name one absolute regular nonsymlink executable' >&2
   exit 2
 fi
 criu_binary="$(realpath -e -- "$criu_binary")"
@@ -125,13 +125,13 @@ if [[ -z "$runtime_binary" && -z "$agent_binary" ]]; then
     printf '%s\n' 'Development checkpoint qualification requires cargo' >&2
     exit 2
   }
-  A3S_OCI_GIT_REVISION="$source_commit" \
-    cargo build -p a3s-oci-agent -p a3s-oci-cli
-  runtime_binary="$PWD/target/debug/a3s-oci"
-  agent_binary="$PWD/target/debug/a3s-oci-agent"
+  ASTER_OCI_GIT_REVISION="$source_commit" \
+    cargo build -p aster-oci-agent -p aster-oci-cli
+  runtime_binary="$PWD/target/debug/aster-oci"
+  agent_binary="$PWD/target/debug/aster-oci-agent"
 elif [[ -z "$runtime_binary" || -z "$agent_binary" ]]; then
   printf '%s\n' \
-    'A3S_OCI_NATIVE_RUNTIME_BINARY and A3S_OCI_NATIVE_AGENT_BINARY must be supplied together' >&2
+    'ASTER_OCI_NATIVE_RUNTIME_BINARY and ASTER_OCI_NATIVE_AGENT_BINARY must be supplied together' >&2
   exit 2
 fi
 validate_binaries
@@ -142,7 +142,7 @@ jq --exit-status \
    and (.operations | index("restore")) == null' \
   <<<"$default_features" >/dev/null
 
-qualification_root="$(mktemp -d /var/tmp/a3s-oci-native-checkpoint.XXXXXXXX)"
+qualification_root="$(mktemp -d /var/tmp/aster-oci-native-checkpoint.XXXXXXXX)"
 "${sudo_command[@]}" chown root:root "$qualification_root"
 "${sudo_command[@]}" chmod 0755 "$qualification_root"
 nonce="${qualification_root##*.}"
@@ -158,9 +158,9 @@ for bundle in "$supported_bundle" "$pidns_bundle" "$network_bundle"; do
     "$(command -v busybox)" "$bundle/rootfs/bin/busybox"
 done
 
-supported_cgroup="a3s-oci-checkpoint-${nonce}"
-pidns_cgroup="a3s-oci-checkpoint-pidns-${nonce}"
-network_cgroup="a3s-oci-checkpoint-netns-${nonce}"
+supported_cgroup="aster-oci-checkpoint-${nonce}"
+pidns_cgroup="aster-oci-checkpoint-pidns-${nonce}"
+network_cgroup="aster-oci-checkpoint-netns-${nonce}"
 for cgroup in "$supported_cgroup" "$pidns_cgroup" "$network_cgroup"; do
   cgroup_host_path="/sys/fs/cgroup/$cgroup"
   if [[ -e "$cgroup_host_path" ]]; then
@@ -171,7 +171,7 @@ for cgroup in "$supported_cgroup" "$pidns_cgroup" "$network_cgroup"; do
   owned_cgroups+=("$cgroup_host_path")
 done
 
-checkpoint_command='set -eu; printf 0 >&7; printf checkpoint-ready > /.a3s-oci-native-smoke; exec 0<&- 1>&- 2>&- 6>&- 7>&-; while :; do /bin/busybox sleep 1 || :; done'
+checkpoint_command='set -eu; printf 0 >&7; printf checkpoint-ready > /.aster-oci-native-smoke; exec 0<&- 1>&- 2>&- 6>&- 7>&-; while :; do /bin/busybox sleep 1 || :; done'
 jq \
   --arg cgroup "$supported_cgroup" \
   --arg command "$checkpoint_command" \
@@ -193,10 +193,10 @@ jq \
         options: ["nosuid", "noexec", "nodev", "relatime", "ro"]
       }]
     | .annotations = ((.annotations // {}) + {
-        "dev.a3s.oci.cgroup.layout": "control-workload-v1",
-        "dev.a3s.oci.cgroup.control-memory-headroom-bytes": "67108864",
-        "dev.a3s.oci.cgroup.control-cpu-headroom-micros": "25000",
-        "dev.a3s.oci.cgroup.control-pids-headroom": "16"
+        "dev.aster.oci.cgroup.layout": "control-workload-v1",
+        "dev.aster.oci.cgroup.control-memory-headroom-bytes": "67108864",
+        "dev.aster.oci.cgroup.control-cpu-headroom-micros": "25000",
+        "dev.aster.oci.cgroup.control-pids-headroom": "16"
       })
   ' \
   fixtures/native-linux/config.json |
@@ -241,7 +241,7 @@ jq --exit-status \
   --arg source "$source_commit" \
   --arg criu_digest "sha256:$(sha256sum "$criu_binary" | cut -d ' ' -f 1)" \
   '
-    .schemaVersion == "a3s.oci.native-linux-checkpoint-smoke.v3"
+    .schemaVersion == "aster.oci.native-linux-checkpoint-smoke.v3"
     and .platform == "linux" and .status == "available"
     and .sourceRevision == $source
     and .checkpointAdvertised and .restoreAdvertised
@@ -299,7 +299,7 @@ fi
 jq --exit-status \
   --arg source "$source_commit" \
   '
-    .schemaVersion == "a3s.oci.native-linux-checkpoint-smoke.v3"
+    .schemaVersion == "aster.oci.native-linux-checkpoint-smoke.v3"
     and .status == "unavailable"
     and .checkpointAdvertised and .restoreAdvertised
     and .pausedSourceObserved
@@ -326,7 +326,7 @@ fi
 jq --exit-status \
   --arg source "$source_commit" \
   '
-    .schemaVersion == "a3s.oci.native-linux-checkpoint-smoke.v3"
+    .schemaVersion == "aster.oci.native-linux-checkpoint-smoke.v3"
     and .status == "unavailable"
     and .checkpointAdvertised and .restoreAdvertised
     and .pausedSourceObserved

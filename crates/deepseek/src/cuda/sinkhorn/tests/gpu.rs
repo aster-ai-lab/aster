@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 use candle_core::{DType, Tensor};
 use sha2::{Digest, Sha256};
 use std::time::Instant;

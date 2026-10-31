@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{image_invalid, MAX_IMAGE_BYTES};
 use crate::editor::NativeOfficeImageFormat;

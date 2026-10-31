@@ -115,9 +115,9 @@ impl AppContainerProfile {
     pub(super) fn create() -> Result<Self> {
         let name = appcontainer_profile_name();
         let name = wide_null(OsStr::new(&name));
-        let display = wide_null(OsStr::new("A3S Native Sandbox"));
+        let display = wide_null(OsStr::new("Aster Native Sandbox"));
         let description = wide_null(OsStr::new(
-            "Process-scoped AppContainer for fail-closed A3S command execution",
+            "Process-scoped AppContainer for fail-closed Aster command execution",
         ));
         let mut sid = null_mut();
         let status = unsafe {
@@ -167,7 +167,7 @@ pub(super) fn appcontainer_profile_name() -> String {
         .iter()
         .map(|byte| format!("{byte:02x}"))
         .collect::<String>();
-    format!("A3S.Sandbox.Execution.{suffix}")
+    format!("Aster.Sandbox.Execution.{suffix}")
 }
 
 pub(super) struct ExecutionAcls<'a> {
@@ -1012,7 +1012,7 @@ mod tests {
         use windows_sys::Win32::Storage::FileSystem::{CreateFileW, OPEN_EXISTING};
 
         let profile = AppContainerProfile::create().expect("AppContainer profile");
-        let pipe_name = format!(r"\\.\pipe\a3s-sandbox-acl-{}", std::process::id());
+        let pipe_name = format!(r"\\.\pipe\aster-sandbox-acl-{}", std::process::id());
         let server = create_appcontainer_named_pipe(&pipe_name, &profile.sid)
             .expect("create ACL'd named pipe");
         assert!(!server.as_raw_handle().is_null());

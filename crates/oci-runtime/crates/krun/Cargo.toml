@@ -1,27 +1,27 @@
 [package]
 publish = false
-name = "a3s-oci-krun"
+name = "aster-oci-krun"
 version = "0.3.6"
 edition = "2021"
 license = "MIT"
-description = "Isolated libkrun platform boundary for A3S OCI Runtime"
+description = "Isolated libkrun platform boundary for Aster OCI Runtime"
 build = "build.rs"
 
 [[bin]]
-name = "a3s-oci-krun-shim"
+name = "aster-oci-krun-shim"
 path = "src/main.rs"
 
 [dependencies]
-a3s-oci-agent-protocol = { path = "../agent-protocol" }
-a3s-oci-core = { path = "../core" }
-a3s-oci-sdk = { path = "../sdk" }
+aster-oci-agent-protocol = { path = "../agent-protocol" }
+aster-oci-core = { path = "../core" }
+aster-oci-sdk = { path = "../sdk" }
 clap.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 zeroize.workspace = true
 
 [target.'cfg(all(windows, target_arch = "x86_64"))'.dependencies]
-a3s-libkrun-sys.workspace = true
+aster-libkrun-sys.workspace = true
 sha2.workspace = true
 windows-sys.workspace = true
 

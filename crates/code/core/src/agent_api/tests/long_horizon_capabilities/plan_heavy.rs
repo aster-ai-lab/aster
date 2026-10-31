@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{
+use aster_effect::{
     Fact, ToolExecutionOutcome, ToolExecutionResultV1, ToolObservationCompleteness, ToolPreparedV1,
 };
 
@@ -157,6 +157,7 @@ pub(super) async fn run_plan_heavy_choreography() {
             Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
             &SessionOptions::new()
                 .with_session_id(SESSION_ID)
+                .with_permission_policy(crate::permissions::policy_for_posture("yolo"))
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_manual_delegation_enabled(false)

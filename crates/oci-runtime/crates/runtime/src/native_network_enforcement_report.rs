@@ -1,12 +1,12 @@
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{
     ExitStatus, NetworkCleanupId, NetworkEnforcementAttachment, NetworkInterfaceId, Result,
 };
 use serde::{Deserialize, Serialize};
 
 /// Schema emitted by the Native Linux OAR-01 qualification.
 pub const NATIVE_LINUX_NETWORK_ENFORCEMENT_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.native-linux-network-enforcement-smoke.v1";
+    "aster.oci.native-linux-network-enforcement-smoke.v1";
 
 /// Caller-owned fixture identity used only by the Native Linux OAR-01 gate.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -29,15 +29,15 @@ impl NativeLinuxNetworkEnforcementSmokeConfig {
     ) -> Result<Self> {
         let source_interface = source_interface.into();
         if source_interface.is_empty() {
-            return Err(a3s_oci_sdk::Error::new(
-                a3s_oci_sdk::ErrorCode::InvalidArgument,
+            return Err(aster_oci_sdk::Error::new(
+                aster_oci_sdk::ErrorCode::InvalidArgument,
                 "network-enforcement qualification requires a source interface",
             )
             .for_operation("native-linux-network-enforcement-config"));
         }
         if redirect_port == 0 || rejected_port == 0 || redirect_port == rejected_port {
-            return Err(a3s_oci_sdk::Error::new(
-                a3s_oci_sdk::ErrorCode::InvalidArgument,
+            return Err(aster_oci_sdk::Error::new(
+                aster_oci_sdk::ErrorCode::InvalidArgument,
                 "network-enforcement qualification ports must be positive and distinct",
             )
             .for_operation("native-linux-network-enforcement-config"));
@@ -234,7 +234,7 @@ impl NativeLinuxNetworkEnforcementSmokeReport {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         LocalNetworkRedirectAttachment, NetworkEnforcementId, NetworkMechanismDigest,
         NetworkMechanismGeneration, NetworkNamespaceId, NetworkRedirectId,
     };

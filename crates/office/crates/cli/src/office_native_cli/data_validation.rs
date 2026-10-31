@@ -1,8 +1,8 @@
-use a3s_office::{
+use aster_office::{
     DocumentNode, NativeSpreadsheetDataValidation, NativeSpreadsheetDataValidationErrorStyle,
     NativeSpreadsheetDataValidationOperator, NativeSpreadsheetDataValidationType,
 };
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{usage_error, ParsedArguments};
 

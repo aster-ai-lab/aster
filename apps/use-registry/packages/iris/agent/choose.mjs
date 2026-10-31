@@ -124,7 +124,7 @@ export function decisionFromReply(status, body, keys) {
   return { choice: answer.choice, probabilities: Object.fromEntries(keys.map((key) => [key, probabilities[key]])), confidence, model }
 }
 
-/** This is the declared engine identity, also refused by A3S Test's action gate. */
+/** This is the declared engine identity, also refused by Aster Test's action gate. */
 export function isLexicalReply(body) {
   return typeof body?.model === 'string' && body.model.startsWith('apofasi-lexical-')
 }

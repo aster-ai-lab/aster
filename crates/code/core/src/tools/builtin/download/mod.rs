@@ -475,7 +475,7 @@ async fn create_temp_file(
     let parent = parent.to_path_buf();
     let named = tokio::task::spawn_blocking(move || {
         tempfile::Builder::new()
-            .prefix(".a3s-download-")
+            .prefix(".aster-download-")
             .suffix(".part")
             .tempfile_in(parent)
     })

@@ -5,7 +5,7 @@ use std::os::windows::io::{AsRawHandle, FromRawHandle};
 use std::path::Path;
 use std::ptr::{null, null_mut};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use windows_sys::Win32::Foundation::{
     ERROR_ALREADY_EXISTS, ERROR_FILE_EXISTS, HANDLE, INVALID_HANDLE_VALUE,
 };
@@ -373,7 +373,7 @@ mod tests {
         create_private_directory, create_private_file, ensure_private_directory, open_private_file,
         rename_private_file_noreplace,
     };
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     #[test]
     fn directory_creation_keeps_strict_and_idempotent_contracts_separate() {

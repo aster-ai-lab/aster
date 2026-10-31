@@ -8,7 +8,7 @@ use crate::hooks::{HookEvent, HookExecutor, HookResult};
 use crate::llm::{LlmClient, LlmResponse, Message, StreamEvent, ToolDefinition};
 use crate::store::{FileSessionStore, MemorySessionStore, SessionStore};
 use crate::task_scheduler::{TaskSchedulerConfig, TaskSchedulerHealthSnapshot};
-use a3s_effect::{FileLog, LogStore, NewFact};
+use aster_effect::{FileLog, LogStore, NewFact};
 use std::sync::atomic::AtomicUsize;
 use tokio::sync::{oneshot, Semaphore};
 
@@ -99,7 +99,7 @@ fn options(store: Arc<dyn SessionStore>, model: Arc<NoDispatch>, id: &str) -> Se
     SessionOptions::new()
         .with_session_id(id)
         .with_session_store(store)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_llm_client(model)
 }
 

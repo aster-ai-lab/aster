@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerTarget, DeleteRequest, Error, ErrorCode, ExecRequest, ExitStatus, OperationId,
     ProcessId, ProcessIo, ProcessRecord, ProcessTarget, SignalProcessRequest, StartRequest,
     TerminalSize, WaitProcessRequest,
@@ -52,7 +52,7 @@ pub(in crate::utility_vm_driver::operation_reopen::wait_process) fn waitable_exe
     let process_id = ProcessId::new(format!("wait-worker-{nonce}"))
         .map_err(|error| format!("failed to construct waitable Exec process ID: {error}"))?;
     let command = format!(
-        "set -eu; printf 'a3s-oci-wait-process-{nonce}\\n' > /{EXEC_MARKER_NAME}; exec /bin/busybox sleep 3600"
+        "set -eu; printf 'aster-oci-wait-process-{nonce}\\n' > /{EXEC_MARKER_NAME}; exec /bin/busybox sleep 3600"
     );
     let process: Process = serde_json::from_value(serde_json::json!({
         "terminal": true,
@@ -64,9 +64,9 @@ pub(in crate::utility_vm_driver::operation_reopen::wait_process) fn waitable_exe
     }))
     .map_err(|error| format!("failed to construct waitable terminal Exec process: {error}"))?;
     let io = ProcessIo {
-        stdin: a3s_oci_sdk::IoMode::Terminal,
-        stdout: a3s_oci_sdk::IoMode::Terminal,
-        stderr: a3s_oci_sdk::IoMode::Terminal,
+        stdin: aster_oci_sdk::IoMode::Terminal,
+        stdout: aster_oci_sdk::IoMode::Terminal,
+        stderr: aster_oci_sdk::IoMode::Terminal,
         terminal_size: Some(TerminalSize {
             width: 80,
             height: 24,
@@ -173,7 +173,7 @@ mod tests {
             .pointer("/args/2")
             .and_then(serde_json::Value::as_str)
             .is_some_and(|command| {
-                command.contains("a3s-oci-wait-process-wait-123")
+                command.contains("aster-oci-wait-process-wait-123")
                     && command.contains(EXEC_MARKER_NAME)
                     && command.contains("exec /bin/busybox sleep 3600")
             }));
@@ -181,7 +181,7 @@ mod tests {
         assert_eq!(WAIT_PROCESS_TIMEOUT_MS, 15_000);
         assert_eq!(
             io.terminal_size,
-            Some(a3s_oci_sdk::TerminalSize {
+            Some(aster_oci_sdk::TerminalSize {
                 width: 80,
                 height: 24,
             })

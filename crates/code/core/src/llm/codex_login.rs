@@ -14,7 +14,7 @@ use tokio_util::sync::CancellationToken;
 /// Fixed account endpoint shared by authorized host transports; never read from disk configuration.
 pub const CODEX_BASE: &str = "https://chatgpt.com/backend-api/codex";
 const ORIGINATOR: &str = "codex_cli_rs";
-const USER_AGENT: &str = "codex_cli_rs (a3s-code-core)";
+const USER_AGENT: &str = "codex_cli_rs (aster-core)";
 
 mod account;
 
@@ -136,7 +136,7 @@ impl CodexLoginClient {
     pub fn from_local_login(model: &str, session_id: &str) -> Result<Self> {
         let home = std::env::var_os("HOME").ok_or_else(|| anyhow!("HOME unset"))?;
         let auth_path = PathBuf::from(home).join(".codex/auth.json");
-        let reasoning_effort = std::env::var("A3S_CODEX_REASONING_EFFORT")
+        let reasoning_effort = std::env::var("ASTERX_REASONING_EFFORT")
             .ok()
             .filter(|effort| !effort.trim().is_empty());
         Self::from_auth_file(auth_path, model, session_id, reasoning_effort)

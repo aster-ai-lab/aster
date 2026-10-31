@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_box_core::ExecRequest;
+use aster_box_core::ExecRequest;
 
 use super::SandboxInner;
 use crate::{ClientError, Result};
@@ -190,7 +190,7 @@ impl Commands {
             .await
         {
             Ok(output) => output,
-            Err(ClientError::Execution(a3s_box_core::ExecutionManagerError::Unavailable(
+            Err(ClientError::Execution(aster_box_core::ExecutionManagerError::Unavailable(
                 message,
             ))) => {
                 return Err(ClientError::CommandUnavailable {

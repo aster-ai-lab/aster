@@ -1,16 +1,16 @@
 [package]
-name = "a3s-oci-containerd-shim"
+name = "aster-oci-containerd-shim"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-description = "containerd runtime-v2 shim backed exclusively by the A3S OCI SDK"
+description = "containerd runtime-v2 shim backed exclusively by the Aster OCI SDK"
 
 [[bin]]
-name = "containerd-shim-a3s-oci-v2"
+name = "containerd-shim-aster-oci-v2"
 path = "src/main.rs"
 
 [dependencies]
-a3s-oci-sdk = { path = "../sdk" }
+aster-oci-sdk = { path = "../sdk" }
 async-trait.workspace = true
 getrandom.workspace = true
 log = "0.4"

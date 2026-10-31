@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use regex::Regex;
 
 use super::{

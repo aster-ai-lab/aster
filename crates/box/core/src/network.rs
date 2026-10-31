@@ -14,9 +14,9 @@ use std::path::Path;
 /// Unknown text fails closed. Requires matched root at owner spawn; unset
 /// keeps GA rootless.
 pub const OCI_NATIVE_KEEP_NETWORK_DEVICE_AUTHORITY_ENV: &str =
-    "A3S_BOX_OCI_NATIVE_KEEP_NETWORK_DEVICE_AUTHORITY";
+    "ASTER_BOX_OCI_NATIVE_KEEP_NETWORK_DEVICE_AUTHORITY";
 
-/// Parsed `A3S_BOX_OCI_NATIVE_KEEP_NETWORK_DEVICE_AUTHORITY`.
+/// Parsed `ASTER_BOX_OCI_NATIVE_KEEP_NETWORK_DEVICE_AUTHORITY`.
 ///
 /// Absent or empty is off. Unknown text is an error so a typo cannot select
 /// the Privileged keep-authority owner.

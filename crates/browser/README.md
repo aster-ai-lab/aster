@@ -1,6 +1,6 @@
-# a3s-use-browser
+# aster-use-browser
 
-`a3s-use-browser` is the provider-oriented Browser library for A3S. Its stable
+`aster-use-browser` is the provider-oriented Browser library for Aster. Its stable
 boundary is the object-safe `PageRenderer` trait and typed
 `RenderRequest`/`RenderedPage` contract.
 

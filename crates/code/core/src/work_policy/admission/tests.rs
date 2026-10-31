@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::MemoryLog;
+use aster_effect::MemoryLog;
 
 fn standing() -> NewFact {
     NewFact {
@@ -92,7 +92,7 @@ fn corrupt_future_unknown_duplicate_or_out_of_order_facts_refuse() {
     bad[1].payload["policy"]["provider"] = serde_json::json!("other");
     cases.push(bad);
     let mut bad = base.clone();
-    bad[1].kind = "a3s.work-policy.future".into();
+    bad[1].kind = "aster.work-policy.future".into();
     cases.push(bad);
     let mut bad = base.clone();
     bad[1].key = "other-key".into();
@@ -117,7 +117,7 @@ fn new_policy_cannot_rebind_legacy_history_or_an_existing_goal() {
         "user.message",
         "model.turn",
         "tool.result",
-        "a3s.goal.created",
+        "aster.goal.created",
     ] {
         let log = MemoryLog::new();
         log.append(

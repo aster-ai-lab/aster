@@ -1,30 +1,30 @@
-# a3s-lane
+# aster-lane
 
 Lane-based priority queues for concurrent async tasks. Commands can be organized into named lanes with configurable concurrency and priority, or retained as typed host-owned values until the host is ready to execute them.
 
 Priority controls which pending item is admitted next. It does not interrupt an already-running future; active work still needs an explicit cancellation and settlement contract.
 
-[![crates.io](https://img.shields.io/crates/v/a3s-lane.svg)](https://crates.io/crates/a3s-lane)
+[![crates.io](https://img.shields.io/crates/v/aster-lane.svg)](https://crates.io/crates/aster-lane)
 
 ## Install
 
 ```toml
 [dependencies]
-a3s-lane = "0.5"
+aster-lane = "0.5"
 ```
 
 All four features (`distributed`, `metrics`, `monitoring`, `telemetry`) are on by default. Core queue only:
 
 ```toml
-a3s-lane = { version = "0.5", default-features = false }
+aster-lane = { version = "0.5", default-features = false }
 # or pick selectively:
-a3s-lane = { version = "0.5", default-features = false, features = ["metrics", "distributed"] }
+aster-lane = { version = "0.5", default-features = false, features = ["metrics", "distributed"] }
 ```
 
 Enable the optional Redis generic job backend for multi-process workers:
 
 ```toml
-a3s-lane = { version = "0.5", features = ["redis-backend"] }
+aster-lane = { version = "0.5", features = ["redis-backend"] }
 ```
 
 ## Usage
@@ -42,7 +42,7 @@ pub trait Command: Send + Sync {
 Then build a manager, start the scheduler, and submit:
 
 ```rust
-use a3s_lane::{QueueManagerBuilder, EventEmitter, Command, Result};
+use aster_lane::{QueueManagerBuilder, EventEmitter, Command, Result};
 use async_trait::async_trait;
 use std::time::Duration;
 
@@ -104,7 +104,7 @@ decide when execution starts, as a terminal or web event loop does. Lower
 numeric values run first and equal-priority items remain FIFO:
 
 ```rust
-use a3s_lane::{PriorityItem, PriorityQueue};
+use aster_lane::{PriorityItem, PriorityQueue};
 
 let mut turns = PriorityQueue::new();
 turns.push(1, "automatic continuation");
@@ -301,16 +301,16 @@ just doc        # generate and open rustdoc
 
 Optional: `cargo install cargo-llvm-cov`, `brew install lcov` (HTML coverage).
 
-## In the A3S ecosystem
+## In the Aster ecosystem
 
-a3s-lane is the scheduling layer of the A3S Agent OS. A3S Code uses the typed
+aster-lane is the scheduling layer of the Aster Agent OS. Aster Code uses the typed
 queue for host-owned pending turns and can optionally create a per-session lane
 manager for tool execution. Conversation execution itself remains
 single-flight: cancellation settles the active worker before the next queued
 turn is admitted.
 
 ```
-a3s-gateway → a3s-box (MicroVM) → SafeClaw → a3s-code → a3s-lane
+aster-gateway → aster-box (MicroVM) → SafeClaw → aster → aster-lane
                                                           ↑ here
 ```
 
@@ -318,9 +318,9 @@ Works standalone for any priority-based async scheduling: web servers, backgroun
 
 ## Universal job queue roadmap
 
-A3S Lane is evolving from an in-process lane scheduler into a general
+Aster Lane is evolving from an in-process lane scheduler into a general
 distributed priority job queue. The direction is BullMQ-like, but native to the
-A3S stack and Rust API.
+Aster stack and Rust API.
 
 | Phase | Status | Scope |
 | --- | --- | --- |
@@ -338,10 +338,10 @@ The generic job runtime is exposed through the `JobQueueBackend` trait.
 and reference semantics:
 
 ```rust
-use a3s_lane::{InMemoryJobQueue, JobListOptions, JobOptions, JobQueueBackend, JobState, RetryPolicy};
+use aster_lane::{InMemoryJobQueue, JobListOptions, JobOptions, JobQueueBackend, JobState, RetryPolicy};
 use std::time::Duration;
 
-# async fn example() -> a3s_lane::Result<()> {
+# async fn example() -> aster_lane::Result<()> {
 let queue = InMemoryJobQueue::new("email");
 
 let job = queue
@@ -360,8 +360,8 @@ let job = queue
 let bulk = queue
     .add_jobs(
         vec![
-            a3s_lane::JobSpec::new("index", serde_json::json!({ "id": 1 })),
-            a3s_lane::JobSpec::new("index", serde_json::json!({ "id": 2 })),
+            aster_lane::JobSpec::new("index", serde_json::json!({ "id": 1 })),
+            aster_lane::JobSpec::new("index", serde_json::json!({ "id": 2 })),
         ],
         chrono::Utc::now(),
     )
@@ -498,7 +498,7 @@ than a duration when another job reaches the same terminal state, and `limit`
 bounds each age-cleanup pass.
 
 ```rust
-# use a3s_lane::{JobOptions, JobRetention};
+# use aster_lane::{JobOptions, JobRetention};
 # use std::time::Duration;
 let options = JobOptions::new()
     .with_completion_retention(JobRetention::count(1_000))
@@ -509,8 +509,8 @@ let options = JobOptions::new()
 ```
 
 ```rust
-# use a3s_lane::{InMemoryJobQueue, JobOptions, JobQueueBackend};
-# async fn events_example() -> a3s_lane::Result<()> {
+# use aster_lane::{InMemoryJobQueue, JobOptions, JobQueueBackend};
+# async fn events_example() -> aster_lane::Result<()> {
 let queue = InMemoryJobQueue::new("email");
 let job = queue
     .add_job("send".to_string(), serde_json::json!({ "to": "ops@example.com" }), JobOptions::new())
@@ -581,13 +581,13 @@ completed child return values, mirroring BullMQ's `getChildrenValues()`.
 failures are intentionally omitted.
 
 ```rust
-use a3s_lane::{
+use aster_lane::{
     InMemoryJobQueue, JobFlowDependencyCountOptions, JobFlowDependencyKind,
     JobFlowDependencyPageCursor, JobFlowDependencyPageOptions, JobFlowDependencyPagesOptions,
     JobOptions, JobSpec, JobState,
 };
 
-# async fn flow_example() -> a3s_lane::Result<()> {
+# async fn flow_example() -> aster_lane::Result<()> {
 let queue = InMemoryJobQueue::new("reports");
 
 let flow = queue
@@ -688,10 +688,10 @@ upserts reject repeat options whose `end_at` is earlier than the add timestamp,
 matching BullMQ's `endDate` add-time guard and avoiding partial writes:
 
 ```rust
-use a3s_lane::{InMemoryJobQueue, JobOptions, JobSpec, RepeatOptions};
+use aster_lane::{InMemoryJobQueue, JobOptions, JobSpec, RepeatOptions};
 use std::time::Duration;
 
-# async fn repeat_example() -> a3s_lane::Result<()> {
+# async fn repeat_example() -> aster_lane::Result<()> {
 let queue = InMemoryJobQueue::new("sync");
 
 let job = queue
@@ -776,11 +776,11 @@ job owns its deduplication id. An optional TTL limits how long that owner key
 blocks duplicates, including when the owner has already completed or failed:
 
 ```rust
-use a3s_lane::{DeduplicationOptions, InMemoryJobQueue, JobOptions, JobQueueBackend};
+use aster_lane::{DeduplicationOptions, InMemoryJobQueue, JobOptions, JobQueueBackend};
 use chrono::Utc;
 use std::time::Duration;
 
-# async fn dedup_example() -> a3s_lane::Result<()> {
+# async fn dedup_example() -> aster_lane::Result<()> {
 let queue = InMemoryJobQueue::new("billing");
 
 let first = queue
@@ -945,10 +945,10 @@ so terminal child return values and ignored/fail-parent failure markers survive
 ordinary child cleanup and process restart:
 
 ```rust
-use a3s_lane::{JobOptions, JobQueueBackend, LocalJobQueue};
+use aster_lane::{JobOptions, JobQueueBackend, LocalJobQueue};
 use std::path::PathBuf;
 
-# async fn durable_example() -> a3s_lane::Result<()> {
+# async fn durable_example() -> aster_lane::Result<()> {
 let queue = LocalJobQueue::open("email", PathBuf::from("./lane-jobs/email.json")).await?;
 let job = queue
     .add(
@@ -1000,13 +1000,13 @@ renew/finalize scripts remove the job from that set, and only a later pass whose
 candidate has no TTL lock can requeue or fail the job:
 
 ```rust
-use a3s_lane::{JobOptions, JobQueueBackend, JobRateLimit, RedisJobQueue, RetryPolicy};
+use aster_lane::{JobOptions, JobQueueBackend, JobRateLimit, RedisJobQueue, RetryPolicy};
 use std::time::Duration;
 
-# async fn redis_example() -> a3s_lane::Result<()> {
+# async fn redis_example() -> aster_lane::Result<()> {
 let queue = RedisJobQueue::with_namespace(
     "redis://127.0.0.1/",
-    "a3s:lane",
+    "aster:lane",
     "email",
 )?;
 queue.set_claim_rate_limit(JobRateLimit::new(100, Duration::from_secs(60))).await?;
@@ -1763,7 +1763,7 @@ updates the parent's dependency set and atomically moves the parent from
 Run the Redis integration test against any reachable Redis server:
 
 ```bash
-A3S_LANE_REDIS_URL=redis://127.0.0.1:6379/ \
+ASTER_LANE_REDIS_URL=redis://127.0.0.1:6379/ \
   cargo test --features redis-backend --test redis_job_queue
 ```
 
@@ -1777,13 +1777,13 @@ outer timeout.
 Use `JobWorker` to run async processors against any backend:
 
 ```rust
-use a3s_lane::{
+use aster_lane::{
     job_processor_fn, InMemoryJobQueue, JobOptions, JobProcessor, JobProcessorRouter,
     JobQueueBackend, JobWorker, JobWorkerConfig,
 };
 use std::{sync::Arc, time::Duration};
 
-# async fn worker_example() -> a3s_lane::Result<()> {
+# async fn worker_example() -> aster_lane::Result<()> {
 let backend: Arc<dyn JobQueueBackend> = Arc::new(InMemoryJobQueue::new("email"));
 backend
     .add_job(

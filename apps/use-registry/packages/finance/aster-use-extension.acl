@@ -1,0 +1,34 @@
+extension "aster/finance" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "finance"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  view_container "market" {
+    title    = "金融分析"
+    icon     = "chart-candlestick"
+    order    = 40
+    location = "activitybar"
+  }
+
+  ui "chart" {
+    title            = "金融分析"
+    description      = "在活动栏打开行情页，用 Vela 查看 K 线。"
+    icon             = "chart-candlestick"
+    entry            = "ui/market/index.html"
+    root             = "ui/market"
+    styles           = ["ui/market/app.css"]
+    scripts          = ["ui/market/app.js", "ui/market/vela.global.min.js"]
+    container        = "market"
+    presentation     = "webview"
+    contract_version = 1
+    mode             = "append"
+    optional         = false
+  }
+}

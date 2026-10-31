@@ -65,8 +65,8 @@ fn resumed_guest_owned_rootfs_uses_private_boot_transport_without_host_files() {
         .fs_mounts
         .iter()
         .any(|mount| mount.tag == GUEST_BOOT_CONTROL_TAG));
-    assert!(!layout.rootfs_path.join(".a3s-box-exec.json").exists());
-    assert!(!layout.rootfs_path.join(".a3s-box-env").exists());
+    assert!(!layout.rootfs_path.join(".aster-box-exec.json").exists());
+    assert!(!layout.rootfs_path.join(".aster-box-env").exists());
 }
 
 #[test]
@@ -109,7 +109,7 @@ fn test_build_instance_spec_stages_large_exec_config_off_kernel_cmdline() {
 
     assert_eq!(
         env_value(&spec, "BOX_EXEC_CONFIG_FILE"),
-        Some("/.a3s-box-exec.json")
+        Some("/.aster-box-exec.json")
     );
     assert!(!spec.entrypoint.env.iter().any(|(key, _)| {
         key == "BOX_EXEC_EXEC"
@@ -121,7 +121,7 @@ fn test_build_instance_spec_stages_large_exec_config_off_kernel_cmdline() {
     }));
 
     let staged = staged_exec_config(&layout);
-    assert_eq!(staged.schema, "a3s.box.guest-exec.v1");
+    assert_eq!(staged.schema, "aster.box.guest-exec.v1");
     assert_eq!(staged.executable, "/bin/echo");
     assert_eq!(staged.args[0], long_arg);
 }
@@ -147,8 +147,8 @@ fn test_build_microvm_spec_stages_one_read_only_boot_bundle_off_rootfs() {
     );
     assert_eq!(env_value(&spec, "BOX_EXEC_CONFIG_FILE"), None);
     assert_eq!(env_value(&spec, "BOX_EXEC_ENV_FILE"), None);
-    assert!(!layout.rootfs_path.join(".a3s-box-exec.json").exists());
-    assert!(!layout.rootfs_path.join(".a3s-box-env").exists());
+    assert!(!layout.rootfs_path.join(".aster-box-exec.json").exists());
+    assert!(!layout.rootfs_path.join(".aster-box-env").exists());
 
     let mount = spec
         .fs_mounts
@@ -187,12 +187,12 @@ fn test_build_microvm_spec_stages_one_read_only_boot_bundle_off_rootfs() {
 
 #[test]
 fn test_microvm_boot_bundle_persists_only_the_secret_binding_manifest() {
-    use a3s_box_core::secret::SECRET_ENVIRONMENT_MANIFEST;
+    use aster_box_core::secret::SECRET_ENVIRONMENT_MANIFEST;
     use base64::Engine;
 
     let dir = tempdir().unwrap();
     let layout = test_layout(dir.path(), Some(test_oci_config(None, None)), true);
-    let manifest = r#"[{"variable":"TOKEN","path":"/.a3s-box-secrets/abc/000.secret"}]"#;
+    let manifest = r#"[{"variable":"TOKEN","path":"/.aster-box-secrets/abc/000.secret"}]"#;
     let mut vm = test_vm_manager(BoxConfig {
         extra_env: vec![
             ("TOKEN".to_string(), "super-secret-token-value".to_string()),
@@ -206,7 +206,7 @@ fn test_microvm_boot_bundle_persists_only_the_secret_binding_manifest() {
 
     let spec = vm.build_microvm_instance_spec(&layout).unwrap();
 
-    assert!(!layout.rootfs_path.join(".a3s-box-env").exists());
+    assert!(!layout.rootfs_path.join(".aster-box-env").exists());
     let staged = std::fs::read_to_string(
         vm.home_dir
             .join("boxes")
@@ -281,7 +281,7 @@ fn test_build_instance_spec_rejects_oversized_exec_config() {
 
     assert!(error.contains("guest exec configuration"), "{error}");
     assert!(error.contains("limit"), "{error}");
-    assert!(!layout.rootfs_path.join(".a3s-box-exec.json").exists());
+    assert!(!layout.rootfs_path.join(".aster-box-exec.json").exists());
 }
 
 #[test]
@@ -292,7 +292,7 @@ fn test_build_instance_spec_replaces_exec_config_symlink_without_following_targe
     fs::write(&outside, "unchanged").unwrap();
     if !create_file_symlink(
         Path::new("../outside-exec-config"),
-        &layout.rootfs_path.join(".a3s-box-exec.json"),
+        &layout.rootfs_path.join(".aster-box-exec.json"),
     ) {
         return;
     }
@@ -305,7 +305,7 @@ fn test_build_instance_spec_replaces_exec_config_symlink_without_following_targe
 
     assert_eq!(fs::read_to_string(outside).unwrap(), "unchanged");
     assert!(
-        fs::symlink_metadata(layout.rootfs_path.join(".a3s-box-exec.json"))
+        fs::symlink_metadata(layout.rootfs_path.join(".aster-box-exec.json"))
             .unwrap()
             .file_type()
             .is_file()
@@ -476,7 +476,7 @@ fn test_build_instance_spec_guest_init_prefixes_extra_env() {
         .entrypoint
         .env
         .iter()
-        .any(|(key, value)| key == "BOX_EXEC_ENV_FILE" && value == "/.a3s-box-env"));
+        .any(|(key, value)| key == "BOX_EXEC_ENV_FILE" && value == "/.aster-box-env"));
     // No raw container env keys leak into the inline env block.
     assert!(!spec
         .entrypoint
@@ -486,7 +486,7 @@ fn test_build_instance_spec_guest_init_prefixes_extra_env() {
 
     // The staged file holds one `KEY=base64(value)` line per var, with the
     // CLI extra_env overriding the image's env (FOO/BAZ from cli, BAR from image).
-    let staged = std::fs::read_to_string(layout.rootfs_path.join(".a3s-box-env")).unwrap();
+    let staged = std::fs::read_to_string(layout.rootfs_path.join(".aster-box-env")).unwrap();
     let entries: std::collections::HashMap<&str, String> = staged
         .lines()
         .filter_map(|l| l.split_once('='))
@@ -506,7 +506,7 @@ fn test_build_instance_spec_stages_env_through_internal_guest_symlink() {
     fs::create_dir_all(layout.rootfs_path.join("shared")).unwrap();
     if !create_file_symlink(
         Path::new("shared/env"),
-        &layout.rootfs_path.join(".a3s-box-env"),
+        &layout.rootfs_path.join(".aster-box-env"),
     ) {
         return;
     }
@@ -535,7 +535,7 @@ fn test_build_instance_spec_rejects_env_file_symlink_escape() {
     let outside = rootfs_parent.join("outside-env");
     if !create_file_symlink(
         Path::new("../outside-env"),
-        &layout.rootfs_path.join(".a3s-box-env"),
+        &layout.rootfs_path.join(".aster-box-env"),
     ) {
         return;
     }
@@ -677,7 +677,7 @@ fn sandbox_rejects_anonymous_plan_drift_before_volume_materialization() {
     oci_config.volumes = vec!["/data".to_string()];
     let layout = test_layout(layout_dir.path(), Some(oci_config), true);
     let mut vm = test_vm_manager(BoxConfig {
-        isolation: a3s_box_core::ExecutionIsolation::Sandbox,
+        isolation: aster_box_core::ExecutionIsolation::Sandbox,
         ..Default::default()
     });
     vm.home_dir = home.path().to_path_buf();

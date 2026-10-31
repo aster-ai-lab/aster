@@ -759,8 +759,8 @@ impl Engine {
 
     pub fn missing_driver_message(self) -> String {
         if self == Self::Mysql {
-            return "a3s-orm has no MySQL driver".to_owned();
+            return "aster-orm has no MySQL driver".to_owned();
         }
-        format!("a3s-orm has no {} driver", self.as_str())
+        format!("aster-orm has no {} driver", self.as_str())
     }
 }

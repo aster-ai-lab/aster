@@ -105,8 +105,8 @@ export function markDocxTextChanges(
           moveRole: side.role,
           author: side.author,
           date: side.date,
-          start: `__A3S_WORK_CHANGE_START_${markerIndex}__`,
-          end: `__A3S_WORK_CHANGE_END_${markerIndex}__`,
+          start: `__ASTER_WORK_CHANGE_START_${markerIndex}__`,
+          end: `__ASTER_WORK_CHANGE_END_${markerIndex}__`,
           ...(companion
             ? {
                 moveRangeId: companion.rangeId,
@@ -134,8 +134,8 @@ export function markDocxTextChanges(
       kind,
       author: attribute(revision, 'author')?.trim() || '未知审阅者',
       date: normalizeDate(attribute(revision, 'date')),
-      start: `__A3S_WORK_CHANGE_START_${markerIndex}__`,
-      end: `__A3S_WORK_CHANGE_END_${markerIndex}__`,
+      start: `__ASTER_WORK_CHANGE_START_${markerIndex}__`,
+      end: `__ASTER_WORK_CHANGE_END_${markerIndex}__`,
     };
     unwrapRevision(document, revision, marker.start, marker.end);
     changes.push(marker);

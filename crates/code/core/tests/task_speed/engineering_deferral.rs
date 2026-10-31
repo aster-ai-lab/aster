@@ -36,7 +36,7 @@ async fn scan(id: &str, files: &[(&str, &str)]) -> (String, Vec<String>, usize, 
                     .with_llm_api_timeout(180_000)
                     .with_temperature(0.0)
                     .with_work_policy(
-                        a3s_code_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING).unwrap(),
+                        aster_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING).unwrap(),
                     ),
             ),
         )
@@ -70,7 +70,7 @@ async fn scan(id: &str, files: &[(&str, &str)]) -> (String, Vec<String>, usize, 
         .iter()
         .flat_map(|message| &message.content)
         .filter_map(|block| match block {
-            a3s_code_core::llm::ContentBlock::ToolUse { name, input, .. } => {
+            aster_core::llm::ContentBlock::ToolUse { name, input, .. } => {
                 Some(format!("{name}{input}"))
             }
             _ => None,

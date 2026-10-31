@@ -3,7 +3,7 @@
 **Feature Branch**: 当前工作区；未请求另建分支或提交本轮集成改动。
 **Created**: 2026-10-26
 **Status**: Ready for implementation
-**Input**: 将 Studio 接入最新本地 a3s-code-core / a3s-code-acp 9.1.6，以不占用鼠标的 CUA 模式运行 Aster，完成全部评测并检查效率。用户已将原路径 `../tasts` 明确更正为 `../tasks`。
+**Input**: 将 Studio 接入最新本地 aster-core / aster-acp 9.1.6，以不占用鼠标的 CUA 模式运行 Aster，完成全部评测并检查效率。用户已将原路径 `../tasts` 明确更正为 `../tasks`。
 **Gate context**: Product regime；沿用根 Cargo 工作区、私有 Studio 子模块和现有任务评测工具。此规格直接承接本次明确的集成、规划及执行请求，不承接已延期的 020 业务验收产品功能。
 
 ## User Scenarios & Testing
@@ -81,8 +81,8 @@ Studio 嵌入本地 Core，并启动本轮构建的 ACP 与 Office 配套程序�
 - [ ] 新行为的小型 owning-package hermetic 测试：T002–T005、T008。
 - [ ] 新闭集明确解析与拒绝未知值：T003–T005、T008；不添加推测业务含义的解析器。
 - [ ] 新生产代码无未经证明的 `unwrap/expect`：T008–T009。
-- [ ] 所有内部 A3S 依赖保持本地、单一根工作区：T001–T002、T009。
-- [ ] 产品配置仍由 a3s-acl 解析；测试 JSON 不授予权限：T002–T003、T009。
+- [ ] 所有内部 Aster 依赖保持本地、单一根工作区：T001–T002、T009。
+- [ ] 产品配置仍由 aster-acl 解析；测试 JSON 不授予权限：T002–T003、T009。
 - [ ] 证据目标：`docs/evidence/desktop/2026-10-26-local-916-task-evaluation/OUTCOME.md`：T009。
 
 ## Success Criteria

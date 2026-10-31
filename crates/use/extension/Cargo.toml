@@ -1,18 +1,18 @@
 [package]
-name = "a3s-use-extension"
+name = "aster-use-extension"
 version = "0.3.3"
-description = "ACL manifest and native surface contracts for A3S Use extensions"
+description = "ACL manifest and native surface contracts for Aster Use extensions"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Use"
-authors = ["A3S Lab"]
+repository = "https://github.com/aster-ai-lab/Use"
+authors = ["Aster"]
 rust-version = "1.82"
 publish = false
 
 [dependencies]
 olpc-cjson = "0.1"
-a3s-use-core = {path = "../core"}
-a3s-acl = {path = "../../acl"}
+aster-use-core = {path = "../core"}
+aster-acl = {path = "../../acl"}
 zip = {version = "2", default-features = false, features = ["deflate"]}
 url = {version = "2"}
 tough = {version = "0.24", default-features = false, features = ["http"]}

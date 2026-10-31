@@ -34,25 +34,25 @@ impl HostConfig {
         let api_key = required("BOYUE_API_KEY")?;
         let base_url = required("BOYUE_BASE_URL")?;
         let model =
-            optional("A3S_DM_PROD1_EMBED_MODEL").unwrap_or_else(|| DEFAULT_MODEL.to_string());
-        let usd_per_million_tokens = optional("A3S_DM_PROD1_USD_PER_MTOK")
+            optional("ASTER_DM_PROD1_EMBED_MODEL").unwrap_or_else(|| DEFAULT_MODEL.to_string());
+        let usd_per_million_tokens = optional("ASTER_DM_PROD1_USD_PER_MTOK")
             .and_then(|value| value.parse::<f64>().ok())
             .filter(|value| value.is_finite() && *value >= 0.0)
             .unwrap_or(DEFAULT_USD_PER_MILLION_TOKENS);
         let redis_url =
-            optional("A3S_DM_PROD1_REDIS_URL").unwrap_or_else(|| DEFAULT_REDIS_URL.to_string());
+            optional("ASTER_DM_PROD1_REDIS_URL").unwrap_or_else(|| DEFAULT_REDIS_URL.to_string());
         let redis_database = parse_database(&redis_url);
         if redis_database.unwrap_or(0) == 0
-            && optional("A3S_DM_PROD1_ALLOW_DEFAULT_DB").as_deref() != Some("1")
+            && optional("ASTER_DM_PROD1_ALLOW_DEFAULT_DB").as_deref() != Some("1")
         {
             bail!(
-                "refusing to run against Redis database 0; point A3S_DM_PROD1_REDIS_URL at a \
+                "refusing to run against Redis database 0; point ASTER_DM_PROD1_REDIS_URL at a \
                  scratch database such as {DEFAULT_REDIS_URL}, or set \
-                 A3S_DM_PROD1_ALLOW_DEFAULT_DB=1 to override"
+                 ASTER_DM_PROD1_ALLOW_DEFAULT_DB=1 to override"
             );
         }
-        let revision = optional("A3S_DM_PROD1_REVISION").unwrap_or_else(|| "unpinned".to_string());
-        let pack_directory = optional("A3S_DM_PROD1_PACK_DIR")
+        let revision = optional("ASTER_DM_PROD1_REVISION").unwrap_or_else(|| "unpinned".to_string());
+        let pack_directory = optional("ASTER_DM_PROD1_PACK_DIR")
             .map(PathBuf::from)
             .unwrap_or_else(|| PathBuf::from(format!("/tmp/dm-prod1-host-{revision}")));
         let run_id = uuid::Uuid::new_v4().simple().to_string();
@@ -65,15 +65,15 @@ impl HostConfig {
             api_key,
             redis_url,
             redis_database,
-            key_prefix: format!("a3s:dm-prod1:{}", &run_id[..12]),
+            key_prefix: format!("aster:dm-prod1:{}", &run_id[..12]),
             pack_directory,
             revision,
-            concurrent_writers: optional("A3S_DM_PROD1_WRITERS")
+            concurrent_writers: optional("ASTER_DM_PROD1_WRITERS")
                 .and_then(|value| value.parse::<usize>().ok())
                 .filter(|writers| (2..=64).contains(writers))
                 .unwrap_or(DEFAULT_WRITERS),
             lease_ttl: Duration::from_secs(
-                optional("A3S_DM_PROD1_LEASE_TTL_SECONDS")
+                optional("ASTER_DM_PROD1_LEASE_TTL_SECONDS")
                     .and_then(|value| value.parse::<u64>().ok())
                     .filter(|seconds| (1..=600).contains(seconds))
                     .unwrap_or(DEFAULT_LEASE_TTL_SECONDS),

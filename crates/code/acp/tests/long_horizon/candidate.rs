@@ -19,7 +19,7 @@ impl Member {
         if !self.path.is_absolute()
             || self.bytes == 0
             || self.bytes.checked_add(1).is_none()
-            || a3s_code_core::content_digest::validate_digest(&format!("sha256:{}", self.sha256))
+            || aster_core::content_digest::validate_digest(&format!("sha256:{}", self.sha256))
                 .is_err()
         {
             return Err("candidate_member_identity");
@@ -109,7 +109,7 @@ impl Candidate {
         .map_err(|_| "candidate_manifest_read")?;
         let candidate: Self =
             serde_json::from_slice(&bytes).map_err(|_| "candidate_manifest_schema")?;
-        if candidate.schema != "a3s.code.lh.candidate.v1" || candidate.build_id != expected {
+        if candidate.schema != "aster.code.lh.candidate.v1" || candidate.build_id != expected {
             return Err("candidate_build_identity");
         }
         candidate.aster.verify()?;
@@ -118,7 +118,7 @@ impl Candidate {
     }
 
     pub fn from_environment(expected: &str) -> Result<Option<Self>, &'static str> {
-        std::env::var_os("A3S_LH_CANDIDATE_MANIFEST")
+        std::env::var_os("ASTER_LH_CANDIDATE_MANIFEST")
             .map(|path| Self::load(Path::new(&path), expected))
             .transpose()
     }
@@ -134,7 +134,7 @@ impl Candidate {
 
     pub fn copy_into(&self, directory: &Path) -> Result<(), &'static str> {
         self.aster.copy_to(directory.join("aster"))?;
-        self.acp.copy_to(directory.join("a3s-code-acp"))?;
+        self.acp.copy_to(directory.join("aster-acp"))?;
         Ok(())
     }
 }

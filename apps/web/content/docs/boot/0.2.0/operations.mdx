@@ -13,14 +13,14 @@ Boot 把外部基础设施放在 feature 和适配器边界之后。部署方仍
 
 ```toml
 [dependencies]
-a3s-boot = { version = "0.2.0", default-features = false }
+aster-boot = { version = "0.2.0", default-features = false }
 ```
 
 启用应用实际使用的集成：
 
 ```toml
 [dependencies]
-a3s-boot = { version = "0.2.0", features = ["auth", "security", "openapi-schemas"] }
+aster-boot = { version = "0.2.0", features = ["auth", "security", "openapi-schemas"] }
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
@@ -29,7 +29,7 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 ## PostgreSQL 持久队列
 
-`queue-postgres` 使用 A3S ORM 保存任务。`PostgresQueueBackend` 通过 `SKIP LOCKED` 租赁任务，并处理续租、fencing 和过期恢复。
+`queue-postgres` 使用 Aster ORM 保存任务。`PostgresQueueBackend` 通过 `SKIP LOCKED` 租赁任务，并处理续租、fencing 和过期恢复。
 
 交付语义是 at-least-once。任务处理器必须让业务副作用幂等。
 

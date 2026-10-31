@@ -3,7 +3,7 @@ use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
-use a3s_use_core::{
+use aster_use_core::{
     PackageSurfaceKind, PlanPackageRole, PlannedPackageState, PlannedPackageTransition,
     PluginCatalogRecord, PluginPlanningBundle, PluginSurfaceRef, UseError, UseResult,
     VerifiedPluginCatalogRecord,
@@ -415,7 +415,7 @@ impl ExtensionRegistry {
 
     /// Wait until a newer registry generation is published.
     ///
-    /// Consumers such as A3S Code can keep their process alive and refresh CLI,
+    /// Consumers such as Aster Code can keep their process alive and refresh CLI,
     /// MCP, and Skill surfaces when this returns a snapshot.
     pub async fn wait_for_change(
         &self,
@@ -466,7 +466,7 @@ impl ExtensionRegistry {
             let metadata = fs::symlink_metadata(&publisher_path)
                 .await
                 .map_err(|error| io_error("inspect receipt publisher", &publisher_path, error))?;
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
                 continue;
             }
             let mut entries = fs::read_dir(&publisher_path)
@@ -676,7 +676,7 @@ impl ExtensionRegistry {
         let metadata = fs::symlink_metadata(receipt_path)
             .await
             .map_err(|error| io_error("inspect extension receipt", receipt_path, error))?;
-        if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+        if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
             return Err(UseError::new(
                 "use.extension.receipt_invalid",
                 format!(
@@ -1157,7 +1157,7 @@ pub fn validate_catalog_manifest_binding(
 }
 
 fn validate_surface_catalog_binding(
-    record: &a3s_use_core::PluginCatalogRecord,
+    record: &aster_use_core::PluginCatalogRecord,
     manifest: &ExtensionManifest,
 ) -> UseResult<()> {
     let manifest_surfaces = manifest.plugin_surfaces()?;

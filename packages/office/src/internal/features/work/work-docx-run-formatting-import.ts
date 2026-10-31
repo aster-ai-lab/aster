@@ -170,7 +170,7 @@ export interface ImportedDocxRunFormattingMarkerState {
 const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
-const RUN_FORMATTING_MARKER_PATTERN = /__A3S_WORK_RUN_(?:START|END)_\d+__/g;
+const RUN_FORMATTING_MARKER_PATTERN = /__ASTER_WORK_RUN_(?:START|END)_\d+__/g;
 const SUPPORTED_RUN_PROPERTY_CHANGE_CHILDREN = new Set([
   'b',
   'bCs',
@@ -348,8 +348,8 @@ function nextRunFormattingMarkers(
   while (true) {
     const index = state.nextMarker;
     state.nextMarker += 1;
-    const startMarker = `__A3S_WORK_RUN_START_${index}__`;
-    const endMarker = `__A3S_WORK_RUN_END_${index}__`;
+    const startMarker = `__ASTER_WORK_RUN_START_${index}__`;
+    const endMarker = `__ASTER_WORK_RUN_END_${index}__`;
     if (
       !state.occupiedText.includes(startMarker) &&
       !state.occupiedText.includes(endMarker)

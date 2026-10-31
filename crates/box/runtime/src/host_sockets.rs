@@ -7,7 +7,7 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 /// Host-global parent of per-box runtime socket directories on Unix.
 #[cfg(all(unix, target_os = "macos"))]
@@ -17,16 +17,16 @@ pub fn shared_runtime_socket_root() -> PathBuf {
 
 /// Whether `name` is the shared runtime socket root or a per-user fallback.
 ///
-/// The fallback is `a3s-box-sockets-<uid>` when a root-owned `/tmp/a3s-box-sockets`
+/// The fallback is `aster-box-sockets-<uid>` when a root-owned `/tmp/aster-box-sockets`
 /// is not sticky world-writable and this process cannot repair it.
 pub fn is_shared_runtime_socket_root_name(name: &std::ffi::OsStr) -> bool {
     let Some(name) = name.to_str() else {
         return false;
     };
-    if name == "a3s-box-sockets" {
+    if name == "aster-box-sockets" {
         return true;
     }
-    let Some(uid) = name.strip_prefix("a3s-box-sockets-") else {
+    let Some(uid) = name.strip_prefix("aster-box-sockets-") else {
         return false;
     };
     !uid.is_empty() && uid.bytes().all(|byte| byte.is_ascii_digit())
@@ -98,11 +98,11 @@ pub fn ensure_runtime_socket_dir(home_dir: &Path, box_id: &str) -> Result<PathBu
 /// directory this uid can create under the same temporary parent.
 #[cfg(unix)]
 fn select_shared_runtime_socket_root(temp_parent: PathBuf) -> PathBuf {
-    let preferred = temp_parent.join("a3s-box-sockets");
+    let preferred = temp_parent.join("aster-box-sockets");
     if shared_root_is_usable(&preferred) {
         preferred
     } else {
-        temp_parent.join(format!("a3s-box-sockets-{}", current_unix_uid()))
+        temp_parent.join(format!("aster-box-sockets-{}", current_unix_uid()))
     }
 }
 
@@ -204,23 +204,23 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("clock")
             .as_nanos();
-        std::env::temp_dir().join(format!("a3s-box-socket-root-{label}-{nanos}"))
+        std::env::temp_dir().join(format!("aster-box-socket-root-{label}-{nanos}"))
     }
 
     #[test]
     fn per_user_socket_root_name_is_recognized_and_ubuntu_is_not() {
         use std::ffi::OsStr;
         assert!(is_shared_runtime_socket_root_name(OsStr::new(
-            "a3s-box-sockets"
+            "aster-box-sockets"
         )));
         assert!(is_shared_runtime_socket_root_name(OsStr::new(
-            "a3s-box-sockets-1000"
+            "aster-box-sockets-1000"
         )));
         assert!(!is_shared_runtime_socket_root_name(OsStr::new(
-            "a3s-box-sockets-ubuntu"
+            "aster-box-sockets-ubuntu"
         )));
         assert!(!is_shared_runtime_socket_root_name(OsStr::new(
-            "a3s-box-sockets-"
+            "aster-box-sockets-"
         )));
     }
 

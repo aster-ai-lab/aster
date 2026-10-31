@@ -1,7 +1,7 @@
 //! Terminal entry points for the current memory and background-task contracts.
 
 use super::*;
-use a3s_code_core::durable_memory_vec::management::{
+use aster_core::durable_memory_vec::management::{
     MemoryManagementFailure, MemoryManagementRequest, MemoryManagementResponse,
 };
 
@@ -81,7 +81,7 @@ fn parse_memory(args: &str) -> Result<MemoryManagementRequest, &'static str> {
     Ok(request)
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) async fn handle_inspection_command(
         &self,
         session: &AgentSession,
@@ -94,16 +94,16 @@ impl A3sCodeAgent {
         };
         let (method, params) = match command {
             InspectionCommand::Memory(request) => (
-                "a3s/memory/manage",
+                "aster/memory/manage",
                 serde_json::json!({"workspace_root":session.workspace(),"session_id":session.session_id(),"request":request}),
             ),
             InspectionCommand::Tasks(task) => {
-                let mut params = serde_json::json!({"schema":"a3s.acp.session-background-tasks.v1","sessionId":session.session_id()});
+                let mut params = serde_json::json!({"schema":"aster.acp.session-background-tasks.v1","sessionId":session.session_id()});
                 let method = if let Some(task) = task {
                     params["taskId"] = serde_json::json!(task);
-                    "a3s/session/background-tasks/stop/v1"
+                    "aster/session/background-tasks/stop/v1"
                 } else {
-                    "a3s/session/background-tasks/v1"
+                    "aster/session/background-tasks/v1"
                 };
                 (method, params)
             }
@@ -114,7 +114,7 @@ impl A3sCodeAgent {
             acp::Agent::ext_method(self, acp::ExtRequest::new(method, raw.into())).await?;
         let value: serde_json::Value = serde_json::from_str(response.0.get())
             .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
-        if method == "a3s/memory/manage" {
+        if method == "aster/memory/manage" {
             let outcome: Result<MemoryManagementResponse, MemoryManagementFailure> =
                 serde_json::from_value(value["outcome"].clone())
                     .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
@@ -123,7 +123,7 @@ impl A3sCodeAgent {
                 Err(error) => Err(acp::Error::invalid_params().data(error.to_string())),
             };
         }
-        if method == "a3s/session/background-tasks/stop/v1" {
+        if method == "aster/session/background-tasks/stop/v1" {
             return match value.as_bool() {
                 Some(true) => Ok("Task stopped.".into()),
                 Some(false) => Err(acp::Error::invalid_params().data(

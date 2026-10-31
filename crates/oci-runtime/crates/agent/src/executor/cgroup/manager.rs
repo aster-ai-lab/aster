@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_oci_sdk::{ErrorCode, OciLinuxCgroupPath, Result};
+use aster_oci_sdk::{ErrorCode, OciLinuxCgroupPath, Result};
 
 use super::super::device_policy::DevicePolicyAuthority;
 use super::{
@@ -273,7 +273,7 @@ impl CgroupManager {
                 )
             })?
             .as_nanos();
-        let root = authority_root.join(format!("a3s-oci-{}-{timestamp:032x}", std::process::id()));
+        let root = authority_root.join(format!("aster-oci-{}-{timestamp:032x}", std::process::id()));
         std::fs::create_dir(&root).map_err(|error| {
             cgroup_error(
                 if error.kind() == io::ErrorKind::AlreadyExists {
@@ -807,7 +807,7 @@ mod tests {
     use std::path::{Path, PathBuf};
     use std::sync::Mutex;
 
-    use a3s_oci_sdk::{ErrorCode, OciLinuxCgroupPath};
+    use aster_oci_sdk::{ErrorCode, OciLinuxCgroupPath};
 
     use super::{
         cgroup2_mountpoint, cgroup2_mountpoint_for_path, required_delegated_controllers,
@@ -850,7 +850,7 @@ mod tests {
         let manager = manager_fixture(
             "/sys/fs/cgroup",
             "/sys/fs/cgroup",
-            "/sys/fs/cgroup/a3s-oci-private",
+            "/sys/fs/cgroup/aster-oci-private",
         );
         let absolute = OciLinuxCgroupPath::parse("/tenant/workload").expect("absolute path");
         let relative = OciLinuxCgroupPath::parse("tenant/workload").expect("relative path");
@@ -865,7 +865,7 @@ mod tests {
         assert_eq!(
             manager.resolve_path(&relative).expect("relative location"),
             (
-                PathBuf::from("/sys/fs/cgroup/a3s-oci-private"),
+                PathBuf::from("/sys/fs/cgroup/aster-oci-private"),
                 PathBuf::from("tenant/workload")
             )
         );
@@ -892,7 +892,7 @@ mod tests {
         let manager = manager_fixture(
             "/sys/fs/cgroup",
             "/sys/fs/cgroup/user.slice/delegated",
-            "/sys/fs/cgroup/user.slice/delegated/a3s-oci-private",
+            "/sys/fs/cgroup/user.slice/delegated/aster-oci-private",
         );
         let inside = OciLinuxCgroupPath::parse("/user.slice/delegated/workload")
             .expect("delegated absolute path");

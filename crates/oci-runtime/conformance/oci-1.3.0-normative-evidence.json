@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "a3s.oci.normative-evidence.v1",
+  "schemaVersion": "aster.oci.normative-evidence.v1",
   "ociRuntimeSpec": "1.3.0",
   "upstreamCommit": "92249139eea7161e13745abd4cb6d0ea02a3227a",
   "bindings": [
@@ -1614,7 +1614,7 @@
         ".github/scripts/native-linux-smoke.sh::init-and-exec-capability-readback",
         "executor::capability::tests::bounding_set_mismatch_fails_closed",
         "executor::capability::tests::exec_capabilities_cannot_exceed_the_configured_bounding_set",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::plan_tests::exec_process_planning_enforces_capabilities_and_rejects_unsupported_io"
       ]
     },
@@ -3404,7 +3404,7 @@
         "oci.linux.cgroup.additional-controllers.unrequested"
       ],
       "testIds": [
-        "executor::cgroup::plan::tests::plans_exact_a3s_box_cgroup_v2_settings",
+        "executor::cgroup::plan::tests::plans_exact_aster_box_cgroup_v2_settings",
         "service::tests::reports_only_operations_that_are_currently_implemented"
       ],
       "rationale": "The runtime uses one unified cgroup v2 leaf and attaches the process only where the requested resources and owned lifecycle require it. It does not add unrelated cgroup hierarchies or controller memberships."

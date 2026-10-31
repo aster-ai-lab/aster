@@ -1,4 +1,4 @@
-import { Button, getToastUtilities, ToastViewport } from '@a3s-lab/ui'
+import { Button, getToastUtilities, ToastViewport } from '@aster-ai-lab/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 
 const toast = getToastUtilities()

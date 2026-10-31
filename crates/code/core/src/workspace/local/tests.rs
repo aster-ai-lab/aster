@@ -231,12 +231,12 @@ async fn credential_boundary_denies_source_hardlinks_without_truncating_them() {
 async fn source_egress_boundary_denies_control_paths_and_every_hardlink() {
     let temp = tempfile::tempdir().unwrap();
     std::fs::create_dir_all(temp.path().join("src")).unwrap();
-    std::fs::create_dir_all(temp.path().join(".a3s")).unwrap();
+    std::fs::create_dir_all(temp.path().join(".aster")).unwrap();
     let source = temp.path().join("source.txt");
     let alias = temp.path().join("src/apparently-safe.txt");
     std::fs::write(&source, "linked source\n").unwrap();
     std::fs::hard_link(&source, &alias).unwrap();
-    std::fs::write(temp.path().join(".a3s/config.acl"), "secret = true\n").unwrap();
+    std::fs::write(temp.path().join(".aster/config.acl"), "secret = true\n").unwrap();
     std::fs::write(temp.path().join("src/safe.rs"), "pub fn safe() {}\n").unwrap();
     let backend = LocalWorkspaceBackend::new_with_source_egress_policy(temp.path().to_path_buf());
 
@@ -245,7 +245,7 @@ async fn source_egress_boundary_denies_control_paths_and_every_hardlink() {
         .await
         .expect_err("source egress must reject every multi-link file");
     backend
-        .read_text(&backend.normalize(".a3s/config.acl").unwrap())
+        .read_text(&backend.normalize(".aster/config.acl").unwrap())
         .await
         .expect_err("source egress must reject control paths at read time");
     assert_eq!(
@@ -299,9 +299,9 @@ fn run_test_git(root: &Path, args: &[&str]) -> bool {
         .arg(root)
         .args([
             "-c",
-            "user.name=A3S Test",
+            "user.name=Aster Test",
             "-c",
-            "user.email=test@a3s.local",
+            "user.email=test@aster.local",
         ])
         .args(args);
     let started =
@@ -1080,9 +1080,9 @@ fn init_worktree_repo(root: &Path) {
     assert!(run_test_git(root, &["init", "-b", "main"]));
     assert!(run_test_git(
         root,
-        &["config", "user.email", "a3s@example.com"]
+        &["config", "user.email", "aster@example.com"]
     ));
-    assert!(run_test_git(root, &["config", "user.name", "a3s"]));
+    assert!(run_test_git(root, &["config", "user.name", "aster"]));
     std::fs::write(root.join("README.md"), "v1\n").unwrap();
     assert!(run_test_git(root, &["add", "README.md"]));
     assert!(run_test_git(root, &["commit", "-m", "one"]));

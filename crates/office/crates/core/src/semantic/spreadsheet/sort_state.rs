@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{semantic_error, DocumentNode, OfficeNodeType};
 use crate::spreadsheet_reference::{column_name, CellRange};
@@ -189,7 +189,7 @@ fn boolean_attribute(
     }
 }
 
-fn sort_error(part_name: &str, reason: impl Into<String>) -> a3s_use_core::UseError {
+fn sort_error(part_name: &str, reason: impl Into<String>) -> aster_use_core::UseError {
     semantic_error(
         "use.office.spreadsheet_sort_invalid",
         format!(

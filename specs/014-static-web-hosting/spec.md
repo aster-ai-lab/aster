@@ -97,8 +97,8 @@ ApplicationUiBinding、Edge Route/GatewaySnapshot；分别服从现有所属上�
 - [ ] 每个新行为有所属 package 的 sibling hermetic tests（T001–T006）
 - [ ] 新闭集枚举保持 parse/as_str；未知值拒绝（T001–T005）
 - [ ] 生产 unwrap/expect 需要 construction-level infallibility 说明（T001–T006）
-- [ ] 内部 A3S 依赖保持本仓库 path；三 workspace 不混并（T007）
-- [ ] 产品配置只用 a3s-acl；不将对象凭据写入流量快照（T001/T002/T007）
+- [ ] 内部 Aster 依赖保持本仓库 path；三 workspace 不混并（T007）
+- [ ] 产品配置只用 aster-acl；不将对象凭据写入流量快照（T001/T002/T007）
 - [ ] authority/repository proof 同场景 memory/live PG（T003–T005）
 - [ ] 证据 `docs/evidence/web/2026-10-24-static-web-hosting/OUTCOME.md`（T007）
 

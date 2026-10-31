@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::super::{
     collaboration_error, NativeOfficeCollaborationManifest, NativeOfficeCollaborationMutation,
@@ -87,16 +87,16 @@ pub(super) fn apply_presentation_mutation(
     }
 }
 
-fn invalid_presentation_mutation(message: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_presentation_mutation(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_invalid", message)
 }
 
-fn presentation_match_conflict(message: impl Into<String>) -> a3s_use_core::UseError {
+fn presentation_match_conflict(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_match_conflict", message).with_suggestion(
         "Read the latest collaborative Presentation scene element and z-order, then retry.",
     )
 }
 
-fn invalid_shared_presentation(message: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_shared_presentation(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.content_invalid", message)
 }

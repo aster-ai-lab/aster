@@ -41,7 +41,7 @@ test tools. Acceptance lives only in `docs/evidence/office/2026-10-30-quality`.
 | Office editors | packages/office/src/internal/features/work/editors |
 | Native operations | crates/office/crates/{core,web-kernel,formula-parser,cli} |
 | Host | apps/studio/src/renderer/pages/documents and knowledge/message consumers |
-| Tests | Office Bun/Rstest setup, Studio Vitest/Playwright and existing A3S Test ACL |
+| Tests | Office Bun/Rstest setup, Studio Vitest/Playwright and existing Aster Test ACL |
 
 ## Verification plan
 

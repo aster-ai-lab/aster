@@ -1,21 +1,21 @@
-//! Search-specific adapter for the typed A3S Browser renderer.
+//! Search-specific adapter for the typed Aster Browser renderer.
 //!
 //! Chrome and Lightpanda process ownership, provider installation, tab limits,
-//! rendering, and cleanup live in `a3s-use-browser`. The default Moli adapter
+//! rendering, and cleanup live in `aster-use-browser`. The default Moli adapter
 //! in [`crate::moli`] owns its standalone CLI process boundary. Search owns
 //! URL-to-HTML adaptation, wait-strategy mapping, retries, and search metrics.
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_use_browser::{PageRenderer, RenderRequest, WaitCondition};
+use aster_use_browser::{PageRenderer, RenderRequest, WaitCondition};
 use async_trait::async_trait;
 use tracing::warn;
 use url::Url;
 
 use crate::{retry_budget::RetryBudget, Metrics, PageFetcher, Result, SearchError, WaitStrategy};
 
-pub use a3s_use_browser::{BrowserBackend, BrowserPool, BrowserPoolConfig, BrowserProvider};
+pub use aster_use_browser::{BrowserBackend, BrowserPool, BrowserPoolConfig, BrowserProvider};
 
 /// Adapts a typed Browser renderer to Search's HTML fetcher contract.
 pub struct BrowserFetcher {
@@ -202,7 +202,7 @@ fn map_wait_strategy(wait: &WaitStrategy) -> WaitCondition {
     }
 }
 
-fn map_use_error(error: a3s_use_browser::UseError) -> SearchError {
+fn map_use_error(error: aster_use_browser::UseError) -> SearchError {
     let mut message = format!("{}: {}", error.code, error.message);
     if let Some(suggestion) = error.suggestion {
         message.push_str(" Suggestion: ");
@@ -228,7 +228,7 @@ mod tests {
     use std::sync::atomic::{AtomicUsize, Ordering};
     use std::sync::Mutex;
 
-    use a3s_use_browser::{RenderedPage, UseError, UseResult};
+    use aster_use_browser::{RenderedPage, UseError, UseResult};
 
     use super::*;
 
@@ -321,7 +321,7 @@ mod tests {
                 css: "main".to_string(),
                 timeout_ms: 1_500,
             })
-            .with_user_agent("a3s-search-test")
+            .with_user_agent("aster-search-test")
             .with_timeout(Duration::from_secs(5))
             .with_metrics(Arc::clone(&metrics));
 
@@ -331,7 +331,7 @@ mod tests {
         let requests = renderer.requests.lock().unwrap();
         assert_eq!(requests.len(), 1);
         assert_eq!(requests[0].timeout_ms, 5_000);
-        assert_eq!(requests[0].user_agent.as_deref(), Some("a3s-search-test"));
+        assert_eq!(requests[0].user_agent.as_deref(), Some("aster-search-test"));
         assert!(matches!(
             &requests[0].wait,
             WaitCondition::Selector { css, timeout_ms }

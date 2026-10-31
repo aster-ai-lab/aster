@@ -150,7 +150,7 @@ pub(super) struct SupervisorInner {
 
 /// Cloneable weak handle that can add work to an open capability scope.
 ///
-/// The handle cannot keep the scope or its A3S Use generation lease alive by
+/// The handle cannot keep the scope or its Aster Use generation lease alive by
 /// itself. Successfully registered tasks transfer ownership to the scope's
 /// structured-concurrency supervisor.
 #[derive(Clone)]

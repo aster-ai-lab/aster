@@ -1,5 +1,5 @@
-# Run with A3S_CONFIG pointing at a trusted Cursor import ACL, an isolated
-# A3S_HOME and workspace, and input.txt containing CURSOR-TUI-8P4Z plus newline.
+# Run with ASTER_CONFIG pointing at a trusted Cursor import ACL, an isolated
+# ASTER_HOME and workspace, and input.txt containing CURSOR-TUI-8P4Z plus newline.
 # The caller also asserts output.txt bytes; the prompt never contains the token.
 suite "cursor-tools" {
   version = 1

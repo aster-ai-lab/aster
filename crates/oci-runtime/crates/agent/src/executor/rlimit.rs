@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
 use std::io;
 
-use a3s_oci_sdk::oci_spec::runtime::{PosixRlimit, PosixRlimitType};
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::{PosixRlimit, PosixRlimitType};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use serde::{Deserialize, Serialize};
 
 const MAX_RLIMITS: usize = 16;
@@ -247,11 +247,11 @@ fn rlimit_error(code: ErrorCode, message: impl Into<String>, operation: &'static
 mod tests {
     use std::process::Command;
 
-    use a3s_oci_sdk::oci_spec::runtime::{PosixRlimit, PosixRlimitType};
+    use aster_oci_sdk::oci_spec::runtime::{PosixRlimit, PosixRlimitType};
 
     use super::{RlimitEntry, RlimitPlan, RlimitResource};
 
-    const CHILD_PROBE: &str = "A3S_OCI_RLIMIT_CHILD_PROBE";
+    const CHILD_PROBE: &str = "ASTER_OCI_RLIMIT_CHILD_PROBE";
     const APPLY_TEST: &str = "executor::rlimit::tests::applies_nofile_in_an_isolated_process";
 
     #[test]
@@ -295,7 +295,7 @@ mod tests {
                 },
             )
             .expect_err("mismatched kernel rlimit readback must fail closed");
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::Internal);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::Internal);
         assert!(error.message.contains("read back soft=62 hard=64"));
         assert!(error.message.contains("expected soft=63 hard=64"));
     }

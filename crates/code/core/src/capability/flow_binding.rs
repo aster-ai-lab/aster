@@ -1,13 +1,13 @@
 use std::fmt;
 
-use a3s_flow::{FlowEngine, FlowError, WorkflowSpec};
+use aster_flow::{FlowEngine, FlowError, WorkflowSpec};
 
-/// Immutable A3S Flow definition paired with the exact engine that can replay it.
+/// Immutable Aster Flow definition paired with the exact engine that can replay it.
 ///
 /// [`WorkflowSpec::name`] is the public capability name and remains the single
 /// source of truth for lookup and descriptor validation. The engine retains its
 /// own event store, runtime, observer, and runtime-build compatibility policy;
-/// Code does not duplicate those A3S Flow lifecycles.
+/// Code does not duplicate those Aster Flow lifecycles.
 #[derive(Clone)]
 pub struct FlowBinding {
     spec: WorkflowSpec,
@@ -16,7 +16,7 @@ pub struct FlowBinding {
 
 impl FlowBinding {
     /// Validate and bind one immutable workflow definition to its executor.
-    pub fn new(spec: WorkflowSpec, engine: FlowEngine) -> a3s_flow::Result<Self> {
+    pub fn new(spec: WorkflowSpec, engine: FlowEngine) -> aster_flow::Result<Self> {
         spec.validate()?;
         if !engine.supports_runtime_build(spec.runtime_build_id.as_ref()) {
             let required = spec

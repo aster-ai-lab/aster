@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::time::{Duration, Instant};
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, DeleteMode, DeleteRequest, LocalIpcEndpoint, OperationContext, OperationId,
     OutputStream, ProcessId, ProcessTarget, ReadOutputRequest, RuntimeClient, StartRequest,
     WaitRequest, RUNTIME_BUNDLE_HANDOFF_EXTENSION, RUNTIME_BUNDLE_HANDOFF_EXTERNAL_STORAGE_VERSION,
@@ -62,8 +62,8 @@ impl OciSandboxAssets {
             .canonicalize()
             .context("sandbox companion directory is unavailable")?;
         let assets = Self {
-            host: directory.join("a3s-oci"),
-            shim: directory.join("a3s-oci-krun-shim"),
+            host: directory.join("aster-oci"),
+            shim: directory.join("aster-oci-krun-shim"),
             image: directory.join("system-image.json"),
             bundle: directory.join("bundle"),
             directory,
@@ -135,7 +135,7 @@ mod companion_directory_tests {
     fn companion_directory_uses_the_env_and_otherwise_the_executable_sibling() {
         let root = tempfile::tempdir().unwrap();
         let explicit = root.path().join("explicit");
-        let executable = root.path().join("bin").join("a3s-code-acp");
+        let executable = root.path().join("bin").join("aster-acp");
         std::fs::create_dir_all(executable.parent().unwrap().join("sandbox")).unwrap();
 
         let chosen = companion_directory(Some(&explicit), &executable).unwrap();
@@ -505,7 +505,7 @@ async fn collect(
     }
 }
 
-fn operation(name: &str) -> a3s_oci_sdk::Result<OperationContext> {
+fn operation(name: &str) -> aster_oci_sdk::Result<OperationContext> {
     Ok(OperationContext::new(OperationId::new(name)?))
 }
 

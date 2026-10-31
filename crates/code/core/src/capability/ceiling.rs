@@ -4,7 +4,7 @@ use serde::Serialize;
 
 use super::{CapabilityId, CapabilityScopeError, CapabilitySet, Sha256Digest, MAX_CAPABILITIES};
 
-pub const CAPABILITY_CEILING_SCHEMA: &str = "a3s.code.capability-ceiling.v1";
+pub const CAPABILITY_CEILING_SCHEMA: &str = "aster.code.capability-ceiling.v1";
 
 /// Workspace operations a scope may expose. A child may only turn flags off.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]

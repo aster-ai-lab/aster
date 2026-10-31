@@ -1,4 +1,4 @@
-//! Core event types for the a3s-event system
+//! Core event types for the aster-event system
 //!
 //! All types use camelCase JSON serialization for wire compatibility.
 

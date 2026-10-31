@@ -91,7 +91,7 @@ pub(in crate::controller) struct SerializationSpec {
 
 impl SerializationSpec {
     pub(in crate::controller) fn token(&self) -> proc_macro2::TokenStream {
-        let mut options = quote!(::a3s_boot::SerializationOptions::new());
+        let mut options = quote!(::aster_boot::SerializationOptions::new());
 
         if !self.include_fields.is_empty() {
             let fields = &self.include_fields;

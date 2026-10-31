@@ -14,8 +14,8 @@ use std::sync::{mpsc, Arc, Condvar, Mutex, MutexGuard};
 use std::thread;
 use std::time::{Duration, Instant};
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::exec::{
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::exec::{
     windows_exec_pipe_path, WINDOWS_CONTROL_EXEC_FRAME, WINDOWS_CONTROL_SIGNAL_FRAME,
     WINDOWS_GUEST_CONTROL_READY_FILE,
 };
@@ -100,9 +100,9 @@ pub fn spawn_port_forward_manager(
     stop_request: &Path,
 ) -> Result<PortForwardManager> {
     parse_port_map(port_map)?;
-    let pipe_base_name = format!("a3s-box-portfwd-{}", box_id.replace('-', ""));
+    let pipe_base_name = format!("aster-box-portfwd-{}", box_id.replace('-', ""));
     let ready_file = std::env::temp_dir().join(format!(
-        "a3s-box-portfwd-{}-{}.ready",
+        "aster-box-portfwd-{}-{}.ready",
         box_id.replace('-', ""),
         std::process::id()
     ));
@@ -196,7 +196,7 @@ pub fn run_port_forward_worker(
 
     spawn_parent_watchdog(parent_pid);
 
-    let pipe_base_name = format!("a3s-box-portfwd-{}", box_id.replace('-', ""));
+    let pipe_base_name = format!("aster-box-portfwd-{}", box_id.replace('-', ""));
     let pipe_path = format!(r"\\.\pipe\{}", pipe_base_name);
     let exec_pipe_path = windows_exec_pipe_path(box_id);
     let guest_control_ready_file = stop_request.with_file_name(WINDOWS_GUEST_CONTROL_READY_FILE);
@@ -1278,7 +1278,7 @@ mod tests {
             .unwrap()
             .as_nanos();
         let path = format!(
-            r"\\.\pipe\a3s-box-flush-test-{}-{nonce}",
+            r"\\.\pipe\aster-box-flush-test-{}-{nonce}",
             std::process::id()
         );
         let server = NamedPipeServer::create(&path, true).unwrap();

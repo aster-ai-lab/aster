@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="A3S Search converges browser, HTTP and RSS, and native API sources into one typed Rust metasearch result">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Aster Search converges browser, HTTP and RSS, and native API sources into one typed Rust metasearch result">
 </p>
 
 <p align="center">
@@ -13,9 +13,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/Search/actions/workflows/ci.yml"><img alt="A3S Search CI" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/Search/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
-  <a href="https://crates.io/crates/a3s-search"><img alt="a3s-search on crates.io" src="https://img.shields.io/crates/v/a3s-search?style=flat-square&amp;color=4f8cff"></a>
-  <a href="https://docs.rs/a3s-search"><img alt="a3s-search documentation" src="https://img.shields.io/docsrs/a3s-search?style=flat-square&amp;color=35c98d"></a>
+  <a href="https://github.com/aster-ai-lab/Search/actions/workflows/ci.yml"><img alt="Aster Search CI" src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/Search/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
+  <a href="https://crates.io/crates/aster-search"><img alt="aster-search on crates.io" src="https://img.shields.io/crates/v/aster-search?style=flat-square&amp;color=4f8cff"></a>
+  <a href="https://docs.rs/aster-search"><img alt="aster-search documentation" src="https://img.shields.io/docsrs/aster-search?style=flat-square&amp;color=35c98d"></a>
   <a href="https://www.rust-lang.org/"><img alt="Implemented in Rust" src="https://img.shields.io/badge/Rust-native-9ba7b4?style=flat-square"></a>
   <a href="./LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-171c24?style=flat-square"></a>
 </p>
@@ -31,7 +31,7 @@
 
 ---
 
-A3S Search is a Rust library and CLI that runs one typed query across the
+Aster Search is a Rust library and CLI that runs one typed query across the
 sources you select, then returns one `SearchResults` value. Browser pages,
 HTTP/RSS documents, and native search APIs all cross the same `Engine`
 boundary. The runtime executes concurrently, keeps partial failures, normalizes
@@ -40,7 +40,7 @@ and deduplicates URLs, and fuses source ranks. The default cascade plan
 product policy.
 
 > [!IMPORTANT]
-> A3S Search retrieves. It does not plan queries, judge meaning, verify claims,
+> Aster Search retrieves. It does not plan queries, judge meaning, verify claims,
 > or write reports. Callers such as DeepResearch own those decisions. A cascade
 > receipt records structural execution, not semantic approval.
 
@@ -50,10 +50,10 @@ Install the published command, then search. Moli is the default headless
 fallback; install it only if that tier must run.
 
 ```bash
-cargo install a3s-search
-# or: brew install A3S-Lab/tap/a3s-search
+cargo install aster-search
+# or: brew install aster-ai-lab/tap/aster-search
 
-a3s-search "Rust async runtime guidance" --format json --limit 10
+aster-search "Rust async runtime guidance" --format json --limit 10
 ```
 
 ```bash
@@ -61,13 +61,13 @@ curl --proto '=https' --tlsv1.2 -fsSL \
   https://github.com/lexmount/moli/releases/latest/download/moli-installer.sh | sh
 ```
 
-Set `A3S_MOLI_EXECUTABLE` when the executable is not on `PATH`.
+Set `ASTER_MOLI_EXECUTABLE` when the executable is not on `PATH`.
 
 An explicit `--engines` list is the whole plan. It is never expanded into the
 default cascade, and every selected source receives the same `SearchQuery`.
 
 ```bash
-a3s-search "Rust async runtime guidance" \
+aster-search "Rust async runtime guidance" \
   --engines anysearch,tavily \
   --format json \
   --limit 10
@@ -91,18 +91,18 @@ The default CLI also emits `cascade_receipt` and `cascade_receipt_binding`.
 
 ```toml
 [dependencies]
-a3s-search = "3"
+aster-search = "3"
 tokio = { version = "1", features = ["full"] }
 ```
 
 ```rust
 use std::time::Duration;
 
-use a3s_search::product::{self, HeadlessBrowser};
-use a3s_search::{EngineTierPlan, SearchQuery};
+use aster_search::product::{self, HeadlessBrowser};
+use aster_search::{EngineTierPlan, SearchQuery};
 
 #[tokio::main]
-async fn main() -> a3s_search::Result<()> {
+async fn main() -> aster_search::Result<()> {
     let plan = EngineTierPlan::builtin_default();
     let outcome = product::execute_cascade(
         &plan,
@@ -140,7 +140,7 @@ uses the extension seam in [Extend](#extend), not this entry.
 
 ## Choose sources
 
-A3S Search does not keep a private web index. With no explicit selection and no
+Aster Search does not keep a private web index. With no explicit selection and no
 ACL source selection, the CLI uses this plan and stops when structural
 requirements are met:
 
@@ -202,7 +202,7 @@ export FIRECRAWL_API_KEY="..."
 export DOUBAO_SEARCH_API_KEY="..."
 export DEEPSEEK_API_KEY="..."
 
-a3s-search "query" --engines bocha --format json
+aster-search "query" --engines bocha --format json
 ```
 
 AnySearch and Tavily accept optional bearer authentication and can run without
@@ -212,7 +212,7 @@ stay direct.
 ## Trust the fields you asked for
 
 <p align="center">
-  <img src="./assets/readme/architecture.svg" width="100%" alt="A3S Search passes one exact query through source execution, normalization, URL fusion, and weighted rank fusion while semantic policy stays with the caller">
+  <img src="./assets/readme/architecture.svg" width="100%" alt="Aster Search passes one exact query through source execution, normalization, URL fusion, and weighted rank fusion while semantic policy stays with the caller">
 </p>
 
 Every native API implements `SearchProvider`. `ProviderEngine` is the only
@@ -271,8 +271,8 @@ ACL selects sources, credentials, timeouts, ranking, and provider options.
 `--config` is a parent flag:
 
 ```bash
-a3s-search --config search.acl engines
-a3s-search "query" --config search.acl --format json
+aster-search --config search.acl engines
+aster-search "query" --config search.acl --format json
 ```
 
 ```acl
@@ -321,9 +321,9 @@ attributes unset to keep the default, which requests source text only.
 Unknown wire names such as `count`, `limit`, and `cnt` are rejected.
 
 Typed surfaces:
-[`SearchConfig`](https://docs.rs/a3s-search/latest/a3s_search/struct.SearchConfig.html),
-[`AnySearchConfig`](https://docs.rs/a3s-search/latest/a3s_search/providers/struct.AnySearchConfig.html),
-[`TavilyConfig`](https://docs.rs/a3s-search/latest/a3s_search/providers/struct.TavilyConfig.html),
+[`SearchConfig`](https://docs.rs/aster-search/latest/aster_search/struct.SearchConfig.html),
+[`AnySearchConfig`](https://docs.rs/aster-search/latest/aster_search/providers/struct.AnySearchConfig.html),
+[`TavilyConfig`](https://docs.rs/aster-search/latest/aster_search/providers/struct.TavilyConfig.html),
 `TinyFishConfig`, `BochaConfig`, `AliyunConfig`, `TencentConfig`, and
 `FirecrawlConfig`.
 
@@ -349,15 +349,15 @@ They are not rewritten into synthetic web results.
 
 ```rust
 #[async_trait::async_trait]
-impl a3s_search::Engine for MyEngine {
-    fn config(&self) -> &a3s_search::EngineConfig {
+impl aster_search::Engine for MyEngine {
+    fn config(&self) -> &aster_search::EngineConfig {
         &self.config
     }
 
     async fn search(
         &self,
-        query: &a3s_search::SearchQuery,
-    ) -> a3s_search::Result<Vec<a3s_search::SearchResult>> {
+        query: &aster_search::SearchQuery,
+    ) -> aster_search::Result<Vec<aster_search::SearchResult>> {
         // Call one source and map its response into SearchResult values.
         todo!()
     }
@@ -379,12 +379,12 @@ impl a3s_search::Engine for MyEngine {
 
 Share controls only across compatible tenants, credentials, endpoints, and
 proxies. The CLI persists credential-independent challenge circuits, not
-queries, results, or secrets. Set `A3S_SEARCH_STATE_DIR` to an absolute
+queries, results, or secrets. Set `ASTER_SEARCH_STATE_DIR` to an absolute
 directory for an isolated state scope.
 
 | Build | Browser behavior |
 | --- | --- |
-| default / `headless` / `moli` | Discover Moli from `A3S_MOLI_EXECUTABLE`, PATH, or the official install location |
+| default / `headless` / `moli` | Discover Moli from `ASTER_MOLI_EXECUTABLE`, PATH, or the official install location |
 | `--browser chrome` | Explicit Chrome/Chromium backend |
 | `lightpanda` | Explicit backend only; Windows requires WSL2 |
 | `--no-default-features` | No browser/CDP stack |
@@ -422,7 +422,7 @@ Homebrew can publish. Prerelease tags may publish GitHub CLI archives only.
 
 ## Develop
 
-Run checks from this repository, not from the A3S monorepo root:
+Run checks from this repository, not from the Aster monorepo root:
 
 ```bash
 cargo fmt --all -- --check
@@ -438,16 +438,16 @@ checks, and the pinned Moli fixture. A 300-second reliability soak is opt-in
 and is not part of CI. Missing or mismatched package evidence keeps crates.io,
 GitHub Release, and Homebrew fail-closed.
 
-Platform archives include the CLI and `skills/a3s-search/SKILL.md`. The Skill
+Platform archives include the CLI and `skills/aster-search/SKILL.md`. The Skill
 selects sources and reads structural evidence. It does not evaluate pages.
 
 ## Ecosystem
 
-- [A3S](https://github.com/A3S-Lab/a3s) — platform entry point
-- [A3S Code](https://github.com/A3S-Lab/Code) — coding-agent runtime
+- [Aster](https://github.com/aster-ai-lab/aster) — platform entry point
+- [Aster Code](https://github.com/aster-ai-lab/Code) — coding-agent runtime
 - [Moli](https://github.com/lexmount/moli) — default headless browser runtime
-- [A3S Browser](https://github.com/A3S-Lab/Browser) — rendering contract and Chrome backend
-- [A3S Science](https://github.com/A3S-Lab/Science) — research workflows above this kernel
+- [Aster Browser](https://github.com/aster-ai-lab/Browser) — rendering contract and Chrome backend
+- [Aster Science](https://github.com/aster-ai-lab/Science) — research workflows above this kernel
 
 ## Contributing
 

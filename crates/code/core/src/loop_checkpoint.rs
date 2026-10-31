@@ -421,10 +421,10 @@ mod tests {
         let binding: crate::capability::RunCapabilityBindingV1 =
             serde_json::from_value(serde_json::json!({
                 "schema": "bad.schema",
-                "capabilitySetSchema": "a3s.code.capability-set.v1",
+                "capabilitySetSchema": "aster.code.capability-set.v1",
                 "codeCatalogGeneration": 1,
                 "catalogDigest": digest,
-                "capabilityCeilingSchema": "a3s.code.capability-ceiling.v1",
+                "capabilityCeilingSchema": "aster.code.capability-ceiling.v1",
                 "capabilityCeilingDigest": digest
             }))
             .expect("structurally complete binding with unsupported schema");

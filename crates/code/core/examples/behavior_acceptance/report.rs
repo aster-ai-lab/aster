@@ -1,14 +1,14 @@
 //! Host data carried by generic Evaluation payloads; no verdict/store authority.
 
 use super::manifest::{validate_id, ContractError, DigestV1, CASE_COUNT};
-use a3s_code_core::content_digest::digest_json;
-use a3s_code_core::evaluation::ExecutionTargetV1;
-use a3s_code_core::harness_loop::CompletionTerminal;
+use aster_core::content_digest::digest_json;
+use aster_core::evaluation::ExecutionTargetV1;
+use aster_core::harness_loop::CompletionTerminal;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 
-pub const PAYLOAD_SCHEMA: &str = "a3s.code.behavior-acceptance.v1";
-pub const REQUEST_SCHEMA: &str = "a3s.code.behavior-acceptance-request.v1";
+pub const PAYLOAD_SCHEMA: &str = "aster.code.behavior-acceptance.v1";
+pub const REQUEST_SCHEMA: &str = "aster.code.behavior-acceptance-request.v1";
 pub const MAX_PAYLOAD_BYTES: usize = 256 * 1024;
 
 macro_rules! closed_set {
@@ -113,7 +113,7 @@ impl AcceptanceRequestV1 {
     pub fn identity(&self) -> Result<DigestV1, ContractError> {
         self.validate()?;
         DigestV1::new(
-            digest_json("a3s.code.behavior-acceptance-request.identity.v1", self)
+            digest_json("aster.code.behavior-acceptance-request.identity.v1", self)
                 .map_err(|error| report_error(error.to_string()))?,
         )
     }
@@ -171,7 +171,7 @@ impl AcceptanceCaseReceiptV1 {
     pub fn digest(&self) -> Result<DigestV1, ContractError> {
         self.validate()?;
         DigestV1::new(
-            digest_json("a3s.code.behavior-acceptance-case-receipt.v1", self)
+            digest_json("aster.code.behavior-acceptance-case-receipt.v1", self)
                 .map_err(|error| report_error(error.to_string()))?,
         )
     }
@@ -280,7 +280,7 @@ impl AcceptancePayloadV1 {
     pub fn digest(&self) -> Result<DigestV1, ContractError> {
         self.validate()?;
         DigestV1::new(
-            digest_json("a3s.code.behavior-acceptance-payload.v1", self)
+            digest_json("aster.code.behavior-acceptance-payload.v1", self)
                 .map_err(|error| report_error(error.to_string()))?,
         )
     }
@@ -296,7 +296,7 @@ pub struct AttemptAccountingV1 {
     pub model_revision: Option<String>,
     pub provider_invocation_ids: Vec<String>,
     #[serde(default, deserialize_with = "deserialize_usage")]
-    pub reported_usage: Option<a3s_code_core::llm::TokenUsage>,
+    pub reported_usage: Option<aster_core::llm::TokenUsage>,
     pub estimated_tokens: Option<u64>,
     pub estimated_money_microusd: Option<u64>,
     pub reserved_tokens: Option<u64>,
@@ -394,7 +394,7 @@ where
 
 fn deserialize_usage<'de, D>(
     deserializer: D,
-) -> Result<Option<a3s_code_core::llm::TokenUsage>, D::Error>
+) -> Result<Option<aster_core::llm::TokenUsage>, D::Error>
 where
     D: serde::Deserializer<'de>,
 {
@@ -408,7 +408,7 @@ where
         cache_write_tokens: Option<usize>,
     }
     Ok(
-        Option::<Wire>::deserialize(deserializer)?.map(|wire| a3s_code_core::llm::TokenUsage {
+        Option::<Wire>::deserialize(deserializer)?.map(|wire| aster_core::llm::TokenUsage {
             prompt_tokens: wire.prompt_tokens,
             completion_tokens: wire.completion_tokens,
             total_tokens: wire.total_tokens,

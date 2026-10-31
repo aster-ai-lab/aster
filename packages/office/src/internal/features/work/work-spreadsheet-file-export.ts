@@ -114,7 +114,7 @@ export async function createWorkSpreadsheetBlob(
   });
 }
 
-type SparseXlsxWorksheet = WorkSheet & { '!a3sSparse'?: true };
+type SparseXlsxWorksheet = WorkSheet & { '!asterSparse'?: true };
 
 function createSparseXlsxWorksheet(
   sheet: WorkSpreadsheetContent['sheets'][number],
@@ -122,7 +122,7 @@ function createSparseXlsxWorksheet(
   dateSystem: WorkSpreadsheetDateSystem = '1900',
 ): SparseXlsxWorksheet {
   const data = sheet.data ?? [];
-  const worksheet: SparseXlsxWorksheet = { '!a3sSparse': true };
+  const worksheet: SparseXlsxWorksheet = { '!asterSparse': true };
   let rowCount = Math.max(1, sheet.row ?? 0, data.length);
   let columnCount = Math.max(
     1,

@@ -1,4 +1,4 @@
-use a3s_box_core::{
+use aster_box_core::{
     ExecutionGeneration, ExecutionLease, ExecutionManagerError, ExecutionManagerResult,
     ExecutionState, OperationId, RestartExecutionOptions,
 };
@@ -358,7 +358,7 @@ impl LocalExecutionManager {
 }
 
 fn ensure_restart_generation_available(
-    execution_id: &a3s_box_core::ExecutionId,
+    execution_id: &aster_box_core::ExecutionId,
     generation: ExecutionGeneration,
 ) -> ExecutionManagerResult<()> {
     if generation.get().checked_add(1).is_some() {
@@ -372,7 +372,7 @@ fn ensure_restart_generation_available(
 }
 
 fn ensure_restart_timeout_valid(
-    execution_id: &a3s_box_core::ExecutionId,
+    execution_id: &aster_box_core::ExecutionId,
     timeout_secs: Option<u64>,
 ) -> ExecutionManagerResult<()> {
     if timeout_secs.is_some_and(|timeout| timeout.checked_mul(1_000).is_none()) {

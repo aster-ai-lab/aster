@@ -1,9 +1,9 @@
-//! A3S Box CLI entry point.
+//! Aster Box CLI entry point.
 
 use clap::Parser;
 use tracing_subscriber::EnvFilter;
 
-use a3s_box_cli::commands::{dispatch, Cli};
+use aster_box_cli::commands::{dispatch, Cli};
 
 #[tokio::main]
 async fn main() {

@@ -1,6 +1,6 @@
 //! CRI RuntimeService implementation.
 //!
-//! Maps CRI pod/container lifecycle to A3S Box VmManager instances.
+//! Maps CRI pod/container lifecycle to Aster Box VmManager instances.
 //! - Pod Sandbox → Box instance (one microVM per pod)
 //! - Container → Session within Box
 
@@ -13,11 +13,11 @@ use futures::{future::join_all, Stream};
 use tokio::sync::{broadcast, oneshot, Notify, RwLock};
 use tonic::{Request, Response, Status};
 
-use a3s_box_core::event::EventEmitter;
-use a3s_box_runtime::oci::{ImageStore, OciRootfsBuilder, RegistryAuth};
-use a3s_box_runtime::pool::WarmPool;
-use a3s_box_runtime::vm::VmManager;
-use a3s_box_runtime::NetworkStore;
+use aster_box_core::event::EventEmitter;
+use aster_box_runtime::oci::{ImageStore, OciRootfsBuilder, RegistryAuth};
+use aster_box_runtime::pool::WarmPool;
+use aster_box_runtime::vm::VmManager;
+use aster_box_runtime::NetworkStore;
 
 #[cfg(test)]
 use crate::config_mapper::ANN_NETWORK;
@@ -68,7 +68,7 @@ use stats::{
 use supervisor::{spawn_container_exit_supervisor, ContainerExitSupervisor, SupervisedWorkload};
 
 type CriResponseStream<T> = Pin<Box<dyn Stream<Item = Result<T, Status>> + Send + 'static>>;
-type AttachStreamSender = broadcast::Sender<a3s_box_core::exec::ExecEvent>;
+type AttachStreamSender = broadcast::Sender<aster_box_core::exec::ExecEvent>;
 type AttachStreamMap = Arc<RwLock<HashMap<String, AttachStreamSender>>>;
 type WorkloadStdinSender = StreamingInput;
 type WorkloadStdinMap = Arc<RwLock<HashMap<String, WorkloadStdinSender>>>;
@@ -119,7 +119,7 @@ type LogReopenMap = Arc<RwLock<HashMap<String, LogReopenHandle>>>;
 type ContainerEventSender = broadcast::Sender<ContainerEventResponse>;
 
 const CRI_CONTAINER_ROOTFS_HOST_DIR: &str = "cri-container-rootfs";
-const CRI_CONTAINER_ROOTFS_GUEST_BASE: &str = "/run/a3s/cri/container-rootfs";
+const CRI_CONTAINER_ROOTFS_GUEST_BASE: &str = "/run/aster/cri/container-rootfs";
 const CONTAINER_EVENT_BUFFER: usize = 1024;
 
 /// Capabilities a non-privileged container keeps by default (matches the
@@ -211,9 +211,9 @@ struct OciSeccompSyscall {
 }
 
 /// The node's seccomp profile root — kubelet default, override with
-/// `A3S_BOX_SECCOMP_PROFILE_ROOT`.
+/// `ASTER_BOX_SECCOMP_PROFILE_ROOT`.
 fn seccomp_profile_root() -> PathBuf {
-    std::env::var("A3S_BOX_SECCOMP_PROFILE_ROOT")
+    std::env::var("ASTER_BOX_SECCOMP_PROFILE_ROOT")
         .map(PathBuf::from)
         .unwrap_or_else(|_| PathBuf::from("/var/lib/kubelet/seccomp"))
 }
@@ -352,7 +352,7 @@ impl CriRuntimeOptions {
     }
 }
 
-/// A3S Box implementation of the CRI RuntimeService.
+/// Aster Box implementation of the CRI RuntimeService.
 ///
 /// Cheaply cloneable (all state is `Arc`-shared): the gRPC server takes one
 /// clone while a second handle drives graceful shutdown reaping.
@@ -527,7 +527,7 @@ impl BoxRuntimeService {
                 // but a crash (SIGKILL/OOM) leaves the shim microVM, its overlay
                 // mount, and the rootfs dirs orphaned. Reap them so they do not
                 // leak across restarts. No-op when nothing is left behind.
-                a3s_box_runtime::vm::reap::reap_orphaned_box(&sandbox.id);
+                aster_box_runtime::vm::reap::reap_orphaned_box(&sandbox.id);
                 if let Err(error) = self.cleanup_sandbox_rootfs(&sandbox.id).await {
                     tracing::error!(
                         sandbox_id = %sandbox.id,
@@ -624,8 +624,8 @@ impl RuntimeService for BoxRuntimeService {
         let _req = request.into_inner();
         Ok(Response::new(VersionResponse {
             version: "0.1.0".to_string(),
-            runtime_name: "a3s-box".to_string(),
-            runtime_version: a3s_box_runtime::VERSION.to_string(),
+            runtime_name: "aster-box".to_string(),
+            runtime_version: aster_box_runtime::VERSION.to_string(),
             runtime_api_version: "v1".to_string(),
         }))
     }
@@ -665,7 +665,7 @@ impl RuntimeService for BoxRuntimeService {
         );
 
         // Convert CRI config to BoxConfig. The annotation may override the
-        // runtime default, but ordinary Pods do not need A3S-specific fields.
+        // runtime default, but ordinary Pods do not need Aster-specific fields.
         let agent_image = self.runtime_options.agent_image_for(&req.runtime_handler);
         let mut box_config =
             pod_sandbox_config_to_box_config(&config, agent_image).map_err(box_error_to_status)?;
@@ -777,7 +777,7 @@ impl RuntimeService for BoxRuntimeService {
                                     "Failed to destroy sandbox VM after cancel; attempting orphan reap"
                                 );
                                 #[cfg(target_os = "linux")]
-                                a3s_box_runtime::vm::reap::reap_orphaned_box(&box_id);
+                                aster_box_runtime::vm::reap::reap_orphaned_box(&box_id);
                             }
                         }
                     });
@@ -1248,12 +1248,12 @@ impl RuntimeService for BoxRuntimeService {
             .map(|image| image.env.as_slice())
             .unwrap_or(&[]);
         let mut env = merge_env(image_env, &config.envs);
-        // A3S_SEC_* is the runtime's TRUSTED security envelope. Strip any
-        // image- or pod-supplied A3S_SEC_* entry first: the guest matches these
+        // ASTER_SEC_* is the runtime's TRUSTED security envelope. Strip any
+        // image- or pod-supplied ASTER_SEC_* entry first: the guest matches these
         // keys first-wins, so a caller-controlled value would otherwise
         // override the runtime's (escalating supplemental groups, unmasking
         // paths, or toggling seccomp). Only runtime-derived values may set them.
-        env.retain(|(key, _)| !key.starts_with("A3S_SEC_"));
+        env.retain(|(key, _)| !key.starts_with("ASTER_SEC_"));
         // Carry the container memory limit so guest-init enforces it with a
         // per-container cgroup v2 `memory.max` and reports OOMKilled when the
         // kernel OOM-killer reaps the cgroup. The microVM RAM stays larger than
@@ -1265,7 +1265,7 @@ impl RuntimeService for BoxRuntimeService {
         {
             if resources.memory_limit_in_bytes > 0 {
                 env.push((
-                    "A3S_SEC_MEM_LIMIT".to_string(),
+                    "ASTER_SEC_MEM_LIMIT".to_string(),
                     resources.memory_limit_in_bytes.to_string(),
                 ));
             }
@@ -1273,12 +1273,12 @@ impl RuntimeService for BoxRuntimeService {
             // quota of 0 / -1 means unlimited, so only plumb a positive quota.
             if resources.cpu_quota > 0 {
                 env.push((
-                    "A3S_SEC_CPU_QUOTA".to_string(),
+                    "ASTER_SEC_CPU_QUOTA".to_string(),
                     resources.cpu_quota.to_string(),
                 ));
                 if resources.cpu_period > 0 {
                     env.push((
-                        "A3S_SEC_CPU_PERIOD".to_string(),
+                        "ASTER_SEC_CPU_PERIOD".to_string(),
                         resources.cpu_period.to_string(),
                     ));
                 }
@@ -1287,7 +1287,7 @@ impl RuntimeService for BoxRuntimeService {
             // contention, the kubelet's CPU *request*).
             if resources.cpu_shares > 0 {
                 env.push((
-                    "A3S_SEC_CPU_SHARES".to_string(),
+                    "ASTER_SEC_CPU_SHARES".to_string(),
                     resources.cpu_shares.to_string(),
                 ));
             }
@@ -1323,20 +1323,20 @@ impl RuntimeService for BoxRuntimeService {
                     .map(|gid| gid.to_string())
                     .collect::<Vec<_>>()
                     .join(",");
-                env.push(("A3S_SEC_SUPPLEMENTAL_GROUPS".to_string(), groups));
+                env.push(("ASTER_SEC_SUPPLEMENTAL_GROUPS".to_string(), groups));
             }
             // CRI MaskedPaths/ReadonlyPaths — ':'-separated absolute paths the
             // guest masks (bind /dev/null or ro tmpfs) / remounts read-only
             // inside the container rootfs.
             if !sc.masked_paths.is_empty() {
                 env.push((
-                    "A3S_SEC_MASKED_PATHS".to_string(),
+                    "ASTER_SEC_MASKED_PATHS".to_string(),
                     sc.masked_paths.join(":"),
                 ));
             }
             if !sc.readonly_paths.is_empty() {
                 env.push((
-                    "A3S_SEC_READONLY_PATHS".to_string(),
+                    "ASTER_SEC_READONLY_PATHS".to_string(),
                     sc.readonly_paths.join(":"),
                 ));
             }
@@ -1349,7 +1349,7 @@ impl RuntimeService for BoxRuntimeService {
                 use crate::cri_api::security_profile::ProfileType;
                 match profile.profile_type() {
                     ProfileType::RuntimeDefault => {
-                        env.push(("A3S_SEC_SECCOMP".to_string(), "default".to_string()));
+                        env.push(("ASTER_SEC_SECCOMP".to_string(), "default".to_string()));
                     }
                     ProfileType::Localhost => {
                         // Read + parse the localhost profile (allow-default +
@@ -1360,7 +1360,7 @@ impl RuntimeService for BoxRuntimeService {
                             &seccomp_profile_root(),
                         ) {
                             Ok(deny) => {
-                                env.push(("A3S_SEC_SECCOMP_LOCALHOST".to_string(), deny.join(",")));
+                                env.push(("ASTER_SEC_SECCOMP_LOCALHOST".to_string(), deny.join(",")));
                             }
                             Err(e) => {
                                 // Fall back to RuntimeDefault rather than running
@@ -1371,7 +1371,7 @@ impl RuntimeService for BoxRuntimeService {
                                     error = %e,
                                     "Localhost seccomp profile unsupported; applying RuntimeDefault instead"
                                 );
-                                env.push(("A3S_SEC_SECCOMP".to_string(), "default".to_string()));
+                                env.push(("ASTER_SEC_SECCOMP".to_string(), "default".to_string()));
                             }
                         }
                     }
@@ -1380,26 +1380,26 @@ impl RuntimeService for BoxRuntimeService {
             }
             // CRI capabilities: a privileged container keeps the full set; a
             // non-privileged one is restricted to the runtime default set,
-            // adjusted by add/drop (A3S_SEC_CAP_KEEP — the guest drops every
+            // adjusted by add/drop (ASTER_SEC_CAP_KEEP — the guest drops every
             // capability not listed). This is what stops a non-privileged
             // container from doing privileged operations (e.g. creating a bridge
             // with CAP_NET_ADMIN). An `add` of `ALL` keeps the full set.
             if !sc.privileged {
                 if let Some(kept) = kept_capabilities(sc.capabilities.as_ref()) {
-                    env.push(("A3S_SEC_CAP_KEEP".to_string(), kept.join(",")));
+                    env.push(("ASTER_SEC_CAP_KEEP".to_string(), kept.join(",")));
                 }
             }
             // no_new_privs: the guest sets PR_SET_NO_NEW_PRIVS before exec so a
             // setuid/setgid (or file-capability) binary can no longer raise the
             // process's privileges. Privileged containers opt out.
             if sc.no_new_privs && !sc.privileged {
-                env.push(("A3S_SEC_NO_NEW_PRIVS".to_string(), "1".to_string()));
+                env.push(("ASTER_SEC_NO_NEW_PRIVS".to_string(), "1".to_string()));
             }
             // readonly_rootfs: the guest remounts the container root read-only
             // before exec. This is a deliberate config (not a hardening default),
             // so it applies to privileged containers too.
             if sc.readonly_rootfs {
-                env.push(("A3S_SEC_READONLY_ROOTFS".to_string(), "1".to_string()));
+                env.push(("ASTER_SEC_READONLY_ROOTFS".to_string(), "1".to_string()));
             }
             // AppArmor: a microVM cannot enforce an in-guest LSM profile, but a
             // requested Localhost profile must not be silently ignored. Validate
@@ -1466,7 +1466,7 @@ impl RuntimeService for BoxRuntimeService {
                     .get(sandbox_id)
                     .await
                     .map(|sb| {
-                        a3s_box_core::dns::render_resolv_conf(
+                        aster_box_core::dns::render_resolv_conf(
                             &sb.dns.servers,
                             &sb.dns.searches,
                             &sb.dns.options,
@@ -1694,12 +1694,12 @@ impl RuntimeService for BoxRuntimeService {
                         container.sandbox_id
                     ))
                 })?;
-                let pty_client = a3s_box_runtime::PtyClient::connect(&pty_socket_path)
+                let pty_client = aster_box_runtime::PtyClient::connect(&pty_socket_path)
                     .await
                     .map_err(|e| {
                         Status::internal(format!("Failed to connect to sandbox PTY server: {}", e))
                     })?;
-                let pty_request = a3s_box_core::pty::PtyRequest {
+                let pty_request = aster_box_core::pty::PtyRequest {
                     cmd: exec_request.cmd.clone(),
                     env: exec_request.env.clone(),
                     working_dir: exec_request.working_dir.clone(),
@@ -1718,7 +1718,7 @@ impl RuntimeService for BoxRuntimeService {
                 };
                 (SupervisedWorkload::Pty(stream), stdin_handle)
             } else {
-                let exec_client = a3s_box_runtime::ExecClient::connect(&exec_socket_path)
+                let exec_client = aster_box_runtime::ExecClient::connect(&exec_socket_path)
                     .await
                     .map_err(|e| {
                         Status::internal(format!("Failed to connect to sandbox exec server: {}", e))
@@ -2477,20 +2477,20 @@ impl RuntimeService for BoxRuntimeService {
         // Execute the command via the exec client
         let timeout_ns = exec_sync_timeout_ns(req.timeout)?;
 
-        let exec_request = a3s_box_core::exec::ExecRequest {
+        let exec_request = aster_box_core::exec::ExecRequest {
             // Mint once per ExecSync RPC. Guest journals this before response
             // write; one in-call retry reuses the journal. Do not invent a
             // kubelet-stable CRI wire field (cross-RPC retries mint a new id).
             request_id: Some(crate::exec_request_id::mint_cri_exec_request_id()),
             cmd: req.cmd,
             timeout_ns,
-            // Inherit the container's security envelope (A3S_SEC_*, e.g.
+            // Inherit the container's security envelope (ASTER_SEC_*, e.g.
             // SupplementalGroups) so ExecSync probes (`id`) observe the same
             // privileges the main process runs with.
             env: container
                 .env
                 .iter()
-                .filter(|(key, _)| key.starts_with("A3S_SEC_"))
+                .filter(|(key, _)| key.starts_with("ASTER_SEC_"))
                 .map(|(key, value)| format!("{key}={value}"))
                 .collect(),
             working_dir: None,

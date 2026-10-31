@@ -494,8 +494,8 @@ async fn optional_surface_failure_publishes_degraded_package_evidence() {
         PluginLifecycleIntentSpec {
             operation_id: "install:acme-research:optional".to_string(),
             plan_digest: format!("sha256:{}", "1".repeat(64)),
-            scope: a3s_use_core::PlanScope {
-                kind: a3s_use_core::PlanScopeKind::Workspace,
+            scope: aster_use_core::PlanScope {
+                kind: aster_use_core::PlanScopeKind::Workspace,
                 id: "research".to_string(),
             },
             package_id: "acme/research".to_string(),

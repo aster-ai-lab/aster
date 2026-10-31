@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::{AgentOperation, AgentTransportOperationStage};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentOperation, AgentTransportOperationStage};
+use aster_oci_sdk::{
     ContainerTarget, CreateRequest, FileRequest, FilesystemRequest, OperationId, StartRequest,
 };
 
@@ -121,7 +121,7 @@ pub(super) async fn exercise(
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         ContainerId, ContainerTarget, FileOp, FileRequest, FilesystemOp, FilesystemRequest,
         Generation, OperationContext, OperationId,
     };

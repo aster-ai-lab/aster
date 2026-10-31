@@ -1,6 +1,6 @@
 //! CLI commands for VM snapshot management.
 //!
-//! Provides `a3s-box snapshot create/restore/ls/rm/inspect` commands.
+//! Provides `aster-box snapshot create/restore/ls/rm/inspect` commands.
 
 use clap::{Parser, Subcommand};
 
@@ -108,7 +108,7 @@ pub async fn execute(args: SnapshotArgs) -> Result<(), Box<dyn std::error::Error
 /// `max_total_bytes` were inert and scheduled/per-CI snapshots grew the host
 /// disk unbounded with only manual `snapshot rm` as recourse.
 async fn execute_prune(args: SnapshotPruneArgs) -> Result<(), Box<dyn std::error::Error>> {
-    use a3s_box_runtime::SnapshotStore;
+    use aster_box_runtime::SnapshotStore;
 
     if args.keep == 0 && args.max_bytes == 0 {
         return Err("specify --keep <N> and/or --max-bytes <BYTES> to prune".into());
@@ -130,9 +130,9 @@ async fn execute_prune(args: SnapshotPruneArgs) -> Result<(), Box<dyn std::error
 /// Create a snapshot from a box.
 async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::error::Error>> {
     use crate::state::StateFile;
-    use a3s_box_core::snapshot::SnapshotMetadata;
-    use a3s_box_core::{ExecutionId, ExecutionManager, ExecutionSnapshotId};
-    use a3s_box_runtime::SnapshotStore;
+    use aster_box_core::snapshot::SnapshotMetadata;
+    use aster_box_core::{ExecutionId, ExecutionManager, ExecutionSnapshotId};
+    use aster_box_runtime::SnapshotStore;
 
     // Resolve once to a stable ID, then serialize with every lifecycle command
     // that can start, remove, or mutate this rootfs. Reload after acquiring the
@@ -162,7 +162,7 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
         let snap_id = snapshot_create_id(args.name.as_deref())?;
         let snapshot_id = ExecutionSnapshotId::new(snap_id.clone())?;
         drop(lifecycle_lock);
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         let manager = super::configured_local_execution_manager(&home).await?;
         let created = manager
             .create_filesystem_snapshot(&execution_id, generation, &snapshot_id)
@@ -199,7 +199,7 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
     meta.labels = record.labels.clone();
     meta.health_check = record.health_check.clone();
     meta.healthcheck_disabled = record.healthcheck_disabled;
-    meta.image_config = a3s_box_runtime::load_resolved_image_config(&record.box_dir)?;
+    meta.image_config = aster_box_runtime::load_resolved_image_config(&record.box_dir)?;
     if meta.image_config.is_none() {
         return Err(format!(
             "resolved image configuration is missing for box '{}'; restart it before creating a filesystem snapshot",
@@ -213,7 +213,7 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
 
     let store = SnapshotStore::default_path()?;
     #[cfg(target_os = "macos")]
-    let saved = if a3s_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)? {
+    let saved = if aster_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)? {
         // The raw generation is already the exact guest filesystem state. Clone
         // it as a versioned immutable artifact; never attach it to macOS merely
         // to walk the same bytes through a host directory.
@@ -221,7 +221,7 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
     } else {
         // Compatibility APFS generations still require a bounded attachment
         // while their historical directory snapshot is copied.
-        let _attached_rootfs = a3s_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
+        let _attached_rootfs = aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
         let rootfs_path = super::resolve_box_rootfs(&record.box_dir).ok_or_else(|| {
             format!(
                 "Rootfs not found for box '{}' under {} (looked for merged/ and rootfs/); \
@@ -234,10 +234,10 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
     };
     #[cfg(target_os = "linux")]
     let saved = {
-        let _attached_rootfs = a3s_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
+        let _attached_rootfs = aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
         if stopped_sandbox_uses_managed_metadata(record) {
             let (rootfs_path, rootfs_metadata) =
-                a3s_box_runtime::capture_sandbox_host_rootfs_for_commit(record).map_err(
+                aster_box_runtime::capture_sandbox_host_rootfs_for_commit(record).map_err(
                     |error| {
                         format!(
                             "Cannot capture Sandbox host rootfs for stopped snapshot of '{}': {error}",
@@ -261,7 +261,7 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
     };
     #[cfg(all(not(target_os = "macos"), not(target_os = "linux")))]
     let saved = {
-        let _attached_rootfs = a3s_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
+        let _attached_rootfs = aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
         let rootfs_path = super::resolve_box_rootfs(&record.box_dir).ok_or_else(|| {
             format!(
                 "Rootfs not found for box '{}' under {} (looked for merged/ and rootfs/); \
@@ -283,16 +283,16 @@ async fn execute_create(args: SnapshotCreateArgs) -> Result<(), Box<dyn std::err
     };
     drop(lifecycle_lock);
 
-    // Opt-in auto-prune: when A3S_BOX_MAX_SNAPSHOTS / A3S_BOX_MAX_SNAPSHOT_BYTES are
+    // Opt-in auto-prune: when ASTER_BOX_MAX_SNAPSHOTS / ASTER_BOX_MAX_SNAPSHOT_BYTES are
     // set, evict the oldest snapshots beyond the cap after each create so a
     // scheduled/per-CI snapshot workflow self-bounds the host disk (each snapshot
     // deep-copies the rootfs — hundreds of MB-GB). Unset = no auto-prune (unchanged
     // behaviour); `snapshot prune` remains the explicit operator tool.
-    let max_count = std::env::var("A3S_BOX_MAX_SNAPSHOTS")
+    let max_count = std::env::var("ASTER_BOX_MAX_SNAPSHOTS")
         .ok()
         .and_then(|v| v.parse::<usize>().ok())
         .unwrap_or(0);
-    let max_bytes = std::env::var("A3S_BOX_MAX_SNAPSHOT_BYTES")
+    let max_bytes = std::env::var("ASTER_BOX_MAX_SNAPSHOT_BYTES")
         .ok()
         .and_then(|v| v.parse::<u64>().ok())
         .unwrap_or(0);
@@ -332,7 +332,7 @@ fn stopped_sandbox_uses_managed_metadata(record: &crate::state::BoxRecord) -> bo
 fn snapshot_create_id(requested_name: Option<&str>) -> Result<String, Box<dyn std::error::Error>> {
     if let Some(name) = requested_name {
         // Live managed create uses the product id as ExecutionSnapshotId.
-        a3s_box_core::ExecutionSnapshotId::new(name.to_string()).map_err(|error| {
+        aster_box_core::ExecutionSnapshotId::new(name.to_string()).map_err(|error| {
             Box::<dyn std::error::Error>::from(format!(
                 "Invalid --name '{name}' for a live Sandbox snapshot: {error}"
             ))
@@ -348,7 +348,7 @@ fn snapshot_create_id(requested_name: Option<&str>) -> Result<String, Box<dyn st
 /// Restore a box from a snapshot.
 async fn execute_restore(args: SnapshotRestoreArgs) -> Result<(), Box<dyn std::error::Error>> {
     use crate::state::{generate_name, BoxRecord, StateFile};
-    use a3s_box_runtime::SnapshotStore;
+    use aster_box_runtime::SnapshotStore;
 
     let store = SnapshotStore::default_path()?;
 
@@ -369,7 +369,7 @@ async fn execute_restore(args: SnapshotRestoreArgs) -> Result<(), Box<dyn std::e
     let box_name = args.name.unwrap_or_else(generate_name);
     let short_id = BoxRecord::make_short_id(&box_id);
 
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let box_dir = home.join("boxes").join(&box_id);
     let socket_dir = box_dir.join("sockets");
     let logs_dir = box_dir.join("logs");
@@ -437,13 +437,13 @@ async fn execute_restore(args: SnapshotRestoreArgs) -> Result<(), Box<dyn std::e
         health_status: "none".to_string(),
         health_retries: 0,
         health_last_check: None,
-        network_mode: a3s_box_core::NetworkMode::default(),
+        network_mode: aster_box_core::NetworkMode::default(),
         network_name: None,
         volume_names: vec![],
         tmpfs: vec![],
         anonymous_volumes: vec![],
-        resource_limits: a3s_box_core::config::ResourceLimits::default(),
-        log_config: a3s_box_core::log::LogConfig::default(),
+        resource_limits: aster_box_core::config::ResourceLimits::default(),
+        log_config: aster_box_core::log::LogConfig::default(),
         add_host: vec![],
         platform: None,
         init: false,
@@ -472,7 +472,7 @@ async fn execute_restore(args: SnapshotRestoreArgs) -> Result<(), Box<dyn std::e
 
 /// List all snapshots.
 async fn execute_ls(args: SnapshotLsArgs) -> Result<(), Box<dyn std::error::Error>> {
-    use a3s_box_runtime::SnapshotStore;
+    use aster_box_runtime::SnapshotStore;
 
     let store = SnapshotStore::default_path()?;
     let snapshots = store.list()?;
@@ -521,7 +521,7 @@ async fn execute_ls(args: SnapshotLsArgs) -> Result<(), Box<dyn std::error::Erro
 /// (ESTALE) or stop a restored box from re-starting. Pass `--force` to override.
 async fn execute_rm(args: SnapshotRmArgs) -> Result<(), Box<dyn std::error::Error>> {
     use crate::state::StateFile;
-    use a3s_box_runtime::SnapshotStore;
+    use aster_box_runtime::SnapshotStore;
 
     let store = SnapshotStore::default_path()?;
     let state = StateFile::load_default()?;
@@ -608,7 +608,7 @@ fn box_references_lower(box_dir: &std::path::Path, snap_rootfs: &std::path::Path
 
 /// Inspect a snapshot.
 async fn execute_inspect(args: SnapshotInspectArgs) -> Result<(), Box<dyn std::error::Error>> {
-    use a3s_box_runtime::SnapshotStore;
+    use aster_box_runtime::SnapshotStore;
 
     let store = SnapshotStore::default_path()?;
     let meta = resolve_snapshot(&store, &args.id)?;
@@ -645,9 +645,9 @@ fn resolve_box<'a>(
 
 /// Resolve a snapshot by ID, unique name, or unique ID prefix.
 fn resolve_snapshot(
-    store: &a3s_box_runtime::SnapshotStore,
+    store: &aster_box_runtime::SnapshotStore,
     id_or_name: &str,
-) -> Result<a3s_box_core::snapshot::SnapshotMetadata, Box<dyn std::error::Error>> {
+) -> Result<aster_box_core::snapshot::SnapshotMetadata, Box<dyn std::error::Error>> {
     // Try exact ID
     if let Some(meta) = store.get(id_or_name)? {
         return Ok(meta);
@@ -715,10 +715,10 @@ mod tests {
 
     #[test]
     fn snapshot_source_state_allows_active_managed_sandbox() {
-        use a3s_box_core::{
+        use aster_box_core::{
             BoxConfig, CreateExecutionRequest, ExecutionGeneration, ExecutionIsolation, OperationId,
         };
-        use a3s_box_runtime::ManagedExecutionMetadata;
+        use aster_box_runtime::ManagedExecutionMetadata;
         use std::collections::BTreeMap;
 
         let id = "11111111-1111-4111-8111-111111111111";
@@ -754,10 +754,10 @@ mod tests {
     #[cfg(target_os = "linux")]
     #[test]
     fn stopped_sandbox_selects_managed_metadata_capture() {
-        use a3s_box_core::{
+        use aster_box_core::{
             BoxConfig, CreateExecutionRequest, ExecutionGeneration, ExecutionIsolation, OperationId,
         };
-        use a3s_box_runtime::ManagedExecutionMetadata;
+        use aster_box_runtime::ManagedExecutionMetadata;
         use std::collections::BTreeMap;
 
         let microvm = make_record("id", "vm", "stopped", None);
@@ -793,7 +793,7 @@ mod tests {
     fn test_box_references_lower() {
         let tmp = tempfile::TempDir::new().unwrap();
         let box_dir = tmp.path();
-        let snap = std::path::PathBuf::from("/root/.a3s/snapshots/snap-1/rootfs");
+        let snap = std::path::PathBuf::from("/root/.aster/snapshots/snap-1/rootfs");
         // no marker -> not referencing
         assert!(!box_references_lower(box_dir, &snap));
         // marker points elsewhere -> not referencing
@@ -802,7 +802,7 @@ mod tests {
         // marker points at the snapshot (trailing whitespace tolerated) -> referencing
         std::fs::write(
             box_dir.join(".snapshot-lower"),
-            "/root/.a3s/snapshots/snap-1/rootfs\n",
+            "/root/.aster/snapshots/snap-1/rootfs\n",
         )
         .unwrap();
         assert!(box_references_lower(box_dir, &snap));

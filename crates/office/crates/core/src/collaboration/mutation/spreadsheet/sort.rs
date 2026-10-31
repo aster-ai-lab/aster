@@ -4,7 +4,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::{json, Value as JsonValue};
 use yrs::{Any, GetString, Map, MapRef, Out, ReadTxn, Transact};
 
@@ -539,7 +539,7 @@ fn json_u32(value: &JsonValue) -> UseResult<u32> {
     Ok(number as u32)
 }
 
-fn sort_too_large() -> a3s_use_core::UseError {
+fn sort_too_large() -> aster_use_core::UseError {
     invalid_spreadsheet_mutation("Spreadsheet sort exceeds the supported rectangle.")
 }
 

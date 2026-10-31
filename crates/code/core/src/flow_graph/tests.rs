@@ -1,5 +1,5 @@
 use super::*;
-use a3s_flow::{
+use aster_flow::{
     CancellationRequest, ChildOperationReference, RetryPolicy, WorkflowProgress, WorkflowSpec,
 };
 use chrono::Utc;
@@ -409,7 +409,7 @@ async fn progress_and_child_operations_are_first_class_projection_subjects() {
             progress: WorkflowProgress::new("compile", 2)
                 .with_total(5)
                 .with_message("compiling")
-                .with_details(json!({"crate": "a3s-code-core"})),
+                .with_details(json!({"crate": "aster-core"})),
         },
         FlowEvent::ChildOperationLinked {
             child: ChildOperationReference::new("child-1", "flow", "operation-1")
@@ -433,7 +433,7 @@ async fn progress_and_child_operations_are_first_class_projection_subjects() {
     assert_eq!(progress.data["completed"], 2);
     assert_eq!(progress.data["total"], 5);
     assert_eq!(progress.data["message"], "compiling");
-    assert_eq!(progress.data["details"]["crate"], "a3s-code-core");
+    assert_eq!(progress.data["details"]["crate"], "aster-core");
 
     let child = graph
         .object(&subject_object_id("subjects", "child_operation", "child-1"))

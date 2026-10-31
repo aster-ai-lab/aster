@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_form_core::{canonicalize_value, evaluate_bytes, CanonicalValue};
+use aster_form_core::{canonicalize_value, evaluate_bytes, CanonicalValue};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -32,7 +32,7 @@ fn matches_the_shared_value_evaluation_corpus_byte_for_byte() {
     let fixture = fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-value-evaluation-conformance/v1"
+        "aster.dev/form-value-evaluation-conformance/v1"
     );
     for case in fixture.cases {
         let request = canonicalize_value(&case.request)

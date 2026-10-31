@@ -13,7 +13,7 @@ use super::{
 };
 
 const PACKAGE_LOCK_ERROR: &str = "use.plugin.package_lock_invalid";
-pub const PLUGIN_PACKAGE_LOCK_SCHEMA: &str = "a3s.use.plugin-package-lock.v1";
+pub const PLUGIN_PACKAGE_LOCK_SCHEMA: &str = "aster.use.plugin-package-lock.v1";
 
 /// Concrete host compatibility boundary used while resolving a lock graph.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -69,7 +69,7 @@ impl PluginPackageLockHost {
             || version.to_string() != self.use_version
         {
             return Err(lock_error(
-                "The package-lock host target or A3S Use version is invalid.",
+                "The package-lock host target or Aster Use version is invalid.",
             ));
         }
         Ok(())

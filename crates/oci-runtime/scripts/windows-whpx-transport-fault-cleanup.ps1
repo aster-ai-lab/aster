@@ -55,8 +55,8 @@ $repositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $rootfsArchive = (Resolve-Path -LiteralPath $RootfsArchive -ErrorAction Stop).Path
 $systemImageManifest = (Resolve-Path -LiteralPath $SystemImageManifest -ErrorAction Stop).Path
 $fixtureConfig = Join-Path $repositoryRoot 'fixtures\utility-vm\config.windows.json'
-$cli = Join-Path $repositoryRoot 'target\debug\a3s-oci.exe'
-$shim = Join-Path $repositoryRoot 'target\debug\a3s-oci-krun-shim.exe'
+$cli = Join-Path $repositoryRoot 'target\debug\aster-oci.exe'
+$shim = Join-Path $repositoryRoot 'target\debug\aster-oci-krun-shim.exe'
 $krunDll = Join-Path $repositoryRoot 'target\debug\krun.dll'
 $firmwareDll = Join-Path $repositoryRoot 'target\debug\libkrunfw.dll'
 $tar = (Get-Command tar.exe -ErrorAction Stop).Source
@@ -128,22 +128,22 @@ function Invoke-CapturedProcess {
     $process.Dispose()
 }
 
-function Get-A3sOciProcesses {
+function Get-AsterOciProcesses {
     @(
         Get-Process -ErrorAction SilentlyContinue |
-            Where-Object { $_.ProcessName -in @('a3s-oci', 'a3s-oci-krun-shim') } |
+            Where-Object { $_.ProcessName -in @('aster-oci', 'aster-oci-krun-shim') } |
             Select-Object ProcessName, Id
     )
 }
 
-function Assert-NoA3sOciProcesses {
+function Assert-NoAsterOciProcesses {
     param([string]$Context)
-    $processes = @(Get-A3sOciProcesses)
+    $processes = @(Get-AsterOciProcesses)
     if ($processes.Count -gt 0) {
         $description = ($processes | ForEach-Object {
             '{0}:{1}' -f $_.ProcessName, $_.Id
         }) -join ', '
-        throw "$Context found active A3S OCI processes: $description"
+        throw "$Context found active Aster OCI processes: $description"
     }
 }
 
@@ -242,7 +242,7 @@ function Assert-TransportFaultReport {
         -Name 'guest_evidence_operation_id'
     $qualificationOperationId = Get-OptionalProperty -Object $report `
         -Name 'qualification_operation_id'
-    if ($report.schema_version -ne 'a3s.oci.oci-vm-transport-fault-cleanup.v3' -or
+    if ($report.schema_version -ne 'aster.oci.oci-vm-transport-fault-cleanup.v3' -or
         $report.platform -ne 'windows' -or
         $report.status -ne 'available' -or
         $report.bundle_loaded -ne $true -or
@@ -322,9 +322,9 @@ if ($rootfsSha256 -ne $expectedRootfsSha256) {
 Assert-RegularFile -Path $systemImageManifest -Label 'System-image manifest' | Out-Null
 Assert-RegularFile -Path $fixtureConfig -Label 'Windows OCI fixture' | Out-Null
 $systemImage = Get-Content -LiteralPath $systemImageManifest -Raw | ConvertFrom-Json
-if ($systemImage.schema_version -ne 'a3s.oci.windows-system-image.v1' -or
+if ($systemImage.schema_version -ne 'aster.oci.windows-system-image.v1' -or
     $systemImage.architecture -ne 'x86_64' -or
-    $systemImage.image.name -ne 'a3s-oci-system.ext4') {
+    $systemImage.image.name -ne 'aster-oci-system.ext4') {
     throw "Unexpected Windows system-image manifest: $systemImageManifest"
 }
 $manifestDirectory = (Get-Item -LiteralPath $systemImageManifest).DirectoryName
@@ -363,7 +363,7 @@ New-Item -ItemType Directory -Path (Join-Path $outputRoot 'cases') | Out-Null
 
 if (-not $SkipBuild) {
     & cargo.exe build --manifest-path (Join-Path $repositoryRoot 'Cargo.toml') `
-        -p a3s-oci-cli -p a3s-oci-krun
+        -p aster-oci-cli -p aster-oci-krun
     if ($LASTEXITCODE -ne 0) {
         throw 'Failed to build the Windows WHPX qualification binaries.'
     }
@@ -373,7 +373,7 @@ Assert-RegularFile -Path $shim -Label 'libkrun shim binary' | Out-Null
 Assert-RegularFile -Path $krunDll -Label 'krun.dll' | Out-Null
 Assert-RegularFile -Path $firmwareDll -Label 'libkrunfw.dll' | Out-Null
 
-Assert-NoA3sOciProcesses -Context 'Qualification start'
+Assert-NoAsterOciProcesses -Context 'Qualification start'
 $startedAt = [DateTime]::UtcNow
 $results = @()
 $caseIndex = 0
@@ -386,7 +386,7 @@ foreach ($stage in $Stages) {
     New-Item -ItemType Directory -Path $fixtureRoot | Out-Null
     $fixture = New-TransportFixture `
         -FixtureRoot $fixtureRoot `
-        -CgroupName "a3s-oci-whpx-transport-$caseIndex"
+        -CgroupName "aster-oci-whpx-transport-$caseIndex"
     $stdoutPath = Join-Path $caseRoot 'report.json'
     $stderrPath = Join-Path $caseRoot 'stderr.log'
     $metadataPath = Join-Path $caseRoot 'case.json'
@@ -439,12 +439,12 @@ foreach ($stage in $Stages) {
         injected_point = $report.injected_point
         report = $stdoutPath
     }
-    Assert-NoA3sOciProcesses -Context "$caseName completion"
+    Assert-NoAsterOciProcesses -Context "$caseName completion"
     Write-Output ("PASS {0} ({1} ms)" -f $caseName, $completed.DurationMs)
 }
 
 $summary = [ordered]@{
-    schema_version = 'a3s.oci.whpx-transport-fault-cleanup-run.v1'
+    schema_version = 'aster.oci.whpx-transport-fault-cleanup-run.v1'
     status = 'available'
     started_at_utc = $startedAt.ToString('o')
     completed_at_utc = [DateTime]::UtcNow.ToString('o')
@@ -465,6 +465,6 @@ if ($results.Count -ne $expectedStages.Count) {
 }
 Write-Utf8Text -Path (Join-Path $outputRoot 'summary.json') `
     -Text ($summary | ConvertTo-Json -Depth 16)
-Assert-NoA3sOciProcesses -Context 'Qualification completion'
+Assert-NoAsterOciProcesses -Context 'Qualification completion'
 Write-Output "WHPX transport-fault cleanup qualification passed: $($results.Count) cases"
 Write-Output "Evidence: $outputRoot"

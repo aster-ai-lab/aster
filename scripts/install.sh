@@ -8,7 +8,7 @@
 #   https://github.com/aster-ai-lab/aster/releases/download/aster-cli-stable/latest.json
 # `--version X.Y.Z` installs that exact release. A positional URL may name
 # one official archive directly. macOS downloads a .tar.gz, Linux a .tar.gz,
-# Windows a .zip; each archive contains aster and a3s-code-acp.
+# Windows a .zip; each archive contains aster and aster-acp.
 # The Linux archive uses a single x86_64, glibc 2.31 compatibility baseline.
 # The command does not clone this repository and does not compile.
 set -euo pipefail
@@ -206,11 +206,11 @@ fi
 unpack="${work}/unpack"
 mkdir -p "$unpack"
 sandbox_files=(
-  sandbox/a3s-oci
-  sandbox/a3s-oci-krun-runtime/libkrun.1.17.0.dylib
-  sandbox/a3s-oci-krun-runtime/libkrunfw.5.dylib
-  sandbox/a3s-oci-krun-shim
-  sandbox/a3s-oci-system.ext4
+  sandbox/aster-oci
+  sandbox/aster-oci-krun-runtime/libkrun.1.17.0.dylib
+  sandbox/aster-oci-krun-runtime/libkrunfw.5.dylib
+  sandbox/aster-oci-krun-shim
+  sandbox/aster-oci-system.ext4
   sandbox/bundle/config.json
   sandbox/bundle/rootfs.tar
   sandbox/manifest.json
@@ -223,7 +223,7 @@ case "$asset_name" in
     count=0
     while IFS= read -r name; do
       case "$name" in
-        aster|a3s-code-acp|BUILD_ID|SHA256SUMS) ;;
+        aster|aster-acp|BUILD_ID|SHA256SUMS) ;;
         *)
           allowed=0
           if [[ "$platform" == macos ]]; then
@@ -245,9 +245,9 @@ case "$asset_name" in
     fi
     tar -C "$unpack" -xzf "$archive"
     src_aster="${unpack}/aster"
-    src_acp="${unpack}/a3s-code-acp"
+    src_acp="${unpack}/aster-acp"
     dest_aster="${prefix}/aster"
-    dest_acp="${prefix}/a3s-code-acp"
+    dest_acp="${prefix}/aster-acp"
     ;;
   *.zip)
     if command -v python3 >/dev/null 2>&1; then
@@ -263,9 +263,9 @@ import sys, zipfile
 zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])
 PY
     src_aster="${unpack}/aster.exe"
-    src_acp="${unpack}/a3s-code-acp.exe"
+    src_acp="${unpack}/aster-acp.exe"
     dest_aster="${prefix}/aster.exe"
-    dest_acp="${prefix}/a3s-code-acp.exe"
+    dest_acp="${prefix}/aster-acp.exe"
     ;;
 esac
 
@@ -363,7 +363,7 @@ cp -f "$src_acp" "$stage/new-acp"
 chmod 755 "$stage/new-aster" "$stage/new-acp"
 if [[ "$has_sandbox" == 1 ]]; then
   cp -R "$unpack/sandbox" "$stage/new-sandbox"
-  chmod 755 "$stage/new-sandbox/a3s-oci" "$stage/new-sandbox/a3s-oci-krun-shim"
+  chmod 755 "$stage/new-sandbox/aster-oci" "$stage/new-sandbox/aster-oci-krun-shim"
 fi
 [[ ! -e "$dest_aster" && ! -L "$dest_aster" ]] || cp -Pp "$dest_aster" "$stage/old-aster"
 [[ ! -e "$dest_acp" && ! -L "$dest_acp" ]] || cp -Pp "$dest_acp" "$stage/old-acp"
@@ -392,4 +392,4 @@ else
   echo "installed Aster into ${prefix}"
 fi
 echo "aster=${dest_aster}"
-echo "a3s-code-acp=${dest_acp}"
+echo "aster-acp=${dest_acp}"

@@ -152,31 +152,31 @@ impl VmLocalExecutionBackend {
         let inspection = tokio::task::spawn_blocking(move || {
             let inspection =
                 inspect_recorded_sandbox(&home_dir, &box_dir, &box_id)?.ok_or_else(|| {
-                    a3s_box_core::BoxError::StateError(format!(
+                    aster_box_core::BoxError::StateError(format!(
                         "Sandbox runtime record is missing for {box_id}"
                     ))
                 })?;
             let socket = inspection.runtime.runtime_socket.as_ref().ok_or_else(|| {
-                a3s_box_core::BoxError::StateError(format!(
-                    "A3S OCI runtime socket is missing for {box_id}"
+                aster_box_core::BoxError::StateError(format!(
+                    "Aster OCI runtime socket is missing for {box_id}"
                 ))
             })?;
             let generation = inspection.runtime.generation.ok_or_else(|| {
-                a3s_box_core::BoxError::StateError(format!(
-                    "A3S OCI generation is missing for {box_id}"
+                aster_box_core::BoxError::StateError(format!(
+                    "Aster OCI generation is missing for {box_id}"
                 ))
             })?;
             if pause {
-                crate::sandbox::a3s_oci_handler::A3sOciHandler::pause_at(
+                crate::sandbox::aster_oci_handler::AsterOciHandler::pause_at(
                     socket, &box_id, generation,
                 )?;
             } else {
-                crate::sandbox::a3s_oci_handler::A3sOciHandler::resume_at(
+                crate::sandbox::aster_oci_handler::AsterOciHandler::resume_at(
                     socket, &box_id, generation,
                 )?;
             }
             inspect_recorded_sandbox(&home_dir, &box_dir, &box_id)?.ok_or_else(|| {
-                a3s_box_core::BoxError::StateError(format!(
+                aster_box_core::BoxError::StateError(format!(
                     "Sandbox runtime record disappeared after {operation} for {box_id}"
                 ))
             })
@@ -228,37 +228,37 @@ impl VmLocalExecutionBackend {
         manager.port_forward_socket_path = Some(socket_dir.join("portfwd.sock"));
         let runtime_socket = inspection.runtime.runtime_socket.ok_or_else(|| {
             ExecutionManagerError::Internal(format!(
-                "A3S OCI runtime socket is missing for {}",
+                "Aster OCI runtime socket is missing for {}",
                 record.id
             ))
         })?;
         let generation = inspection.runtime.generation.ok_or_else(|| {
             ExecutionManagerError::Internal(format!(
-                "A3S OCI generation is missing for {}",
+                "Aster OCI generation is missing for {}",
                 record.id
             ))
         })?;
         let owner_pid = inspection.runtime.owner_pid.ok_or_else(|| {
             ExecutionManagerError::Internal(format!(
-                "A3S OCI owner PID is missing for {}",
+                "Aster OCI owner PID is missing for {}",
                 record.id
             ))
         })?;
         let owner_pid_start_time = inspection.runtime.owner_pid_start_time.ok_or_else(|| {
             ExecutionManagerError::Internal(format!(
-                "A3S OCI owner identity is missing for {}",
+                "Aster OCI owner identity is missing for {}",
                 record.id
             ))
         })?;
-        let container_id = a3s_oci_sdk::ContainerId::new(record.id.clone())
+        let container_id = aster_oci_sdk::ContainerId::new(record.id.clone())
             .map_err(|error| ExecutionManagerError::Internal(error.to_string()))?;
-        let handler: Box<dyn a3s_box_core::vmm::VmHandler> = Box::new(
-            crate::sandbox::a3s_oci_handler::A3sOciHandler::from_recorded_runtime(
-                crate::sandbox::a3s_oci_handler::A3sOciHandlerSpec {
+        let handler: Box<dyn aster_box_core::vmm::VmHandler> = Box::new(
+            crate::sandbox::aster_oci_handler::AsterOciHandler::from_recorded_runtime(
+                crate::sandbox::aster_oci_handler::AsterOciHandlerSpec {
                     runtime_socket,
                     runtime_root: inspection.runtime.runtime_root,
                     container_id,
-                    generation: a3s_oci_sdk::Generation(generation),
+                    generation: aster_oci_sdk::Generation(generation),
                     init_pid: inspection.pid,
                     owner_pid,
                     owner_pid_start_time,
@@ -343,22 +343,22 @@ impl VmLocalExecutionBackend {
     ) -> ExecutionManagerResult<i32> {
         let runtime_socket = state.runtime.runtime_socket.clone().ok_or_else(|| {
             ExecutionManagerError::Internal(format!(
-                "A3S OCI runtime socket is missing for {}",
+                "Aster OCI runtime socket is missing for {}",
                 record.id
             ))
         })?;
         let generation = state.runtime.generation.ok_or_else(|| {
             ExecutionManagerError::Internal(format!(
-                "A3S OCI generation is missing for {}",
+                "Aster OCI generation is missing for {}",
                 record.id
             ))
         })?;
         let box_id = record.id.clone();
         let exit_code =
-            tokio::task::spawn_blocking(move || -> a3s_box_core::Result<Option<i32>> {
+            tokio::task::spawn_blocking(move || -> aster_box_core::Result<Option<i32>> {
                 let deadline = std::time::Instant::now() + TERMINAL_EXIT_POLL_TIMEOUT;
                 loop {
-                    if let Some(exit_code) = crate::sandbox::A3sOciHandler::try_wait_at(
+                    if let Some(exit_code) = crate::sandbox::AsterOciHandler::try_wait_at(
                         &runtime_socket,
                         &box_id,
                         generation,
@@ -449,27 +449,27 @@ fn inspect_recorded_sandbox(
     home_dir: &Path,
     box_dir: &Path,
     box_id: &str,
-) -> a3s_box_core::Result<Option<SandboxInspection>> {
+) -> aster_box_core::Result<Option<SandboxInspection>> {
     let Some(runtime) = crate::vm::reap::load_recorded_sandbox_runtime(home_dir, box_dir, box_id)?
     else {
         return Ok(None);
     };
     let socket = runtime.runtime_socket.as_ref().ok_or_else(|| {
-        a3s_box_core::BoxError::StateError(format!(
-            "A3S OCI runtime socket is missing for {box_id}"
+        aster_box_core::BoxError::StateError(format!(
+            "Aster OCI runtime socket is missing for {box_id}"
         ))
     })?;
     let generation = runtime.generation.ok_or_else(|| {
-        a3s_box_core::BoxError::StateError(format!("A3S OCI generation is missing for {box_id}"))
+        aster_box_core::BoxError::StateError(format!("Aster OCI generation is missing for {box_id}"))
     })?;
-    let (status, pid) = match crate::sandbox::a3s_oci_handler::A3sOciHandler::query_state_at(
+    let (status, pid) = match crate::sandbox::aster_oci_handler::AsterOciHandler::query_state_at(
         socket, box_id, generation,
     )? {
         Some(state) => (state.status, state.pid),
         None => ("stopped".to_string(), 0),
     };
     if matches!(status.as_str(), "created" | "running" | "paused") && pid != runtime.init_pid {
-        return Err(a3s_box_core::BoxError::StateError(format!(
+        return Err(aster_box_core::BoxError::StateError(format!(
             "Sandbox runtime PID disagrees with its durable record for {box_id}"
         )));
     }
@@ -491,8 +491,8 @@ fn inspect_recorded_sandbox(
     _home_dir: &Path,
     _box_dir: &Path,
     _box_id: &str,
-) -> a3s_box_core::Result<Option<SandboxInspection>> {
-    Err(a3s_box_core::BoxError::StateError(
+) -> aster_box_core::Result<Option<SandboxInspection>> {
+    Err(aster_box_core::BoxError::StateError(
         "Sandbox execution requires Linux".to_string(),
     ))
 }

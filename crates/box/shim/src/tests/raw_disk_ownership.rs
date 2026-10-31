@@ -46,8 +46,8 @@ fn rejects_reserved_or_repeated_auxiliary_raw_disks() {
 
 #[cfg(unix)]
 #[test]
-fn raw_disk_ownership_lock_rejects_a_second_a3s_owner() {
-    const CHILD_ENV: &str = "A3S_BOX_TEST_RAW_DISK_RELEASE_CHILD";
+fn raw_disk_ownership_lock_rejects_a_second_aster_owner() {
+    const CHILD_ENV: &str = "ASTER_BOX_TEST_RAW_DISK_RELEASE_CHILD";
     if std::env::var_os(CHILD_ENV).is_none() {
         // Concurrent process spawns in other tests can briefly inherit our
         // flock descriptor before exec closes it. Check immediate release in
@@ -56,7 +56,7 @@ fn raw_disk_ownership_lock_rejects_a_second_a3s_owner() {
         let output = std::process::Command::new(std::env::current_exe().unwrap())
             .args([
                 "--exact",
-                "tests::raw_disk_ownership::raw_disk_ownership_lock_rejects_a_second_a3s_owner",
+                "tests::raw_disk_ownership::raw_disk_ownership_lock_rejects_a_second_aster_owner",
                 "--nocapture",
             ])
             .env(CHILD_ENV, "1")
@@ -86,15 +86,15 @@ fn raw_disk_ownership_lock_rejects_a_second_a3s_owner() {
 }
 
 #[cfg(unix)]
-const OWNER_CHILD_ENV: &str = "A3S_BOX_TEST_RAW_DISK_OWNER_CHILD";
+const OWNER_CHILD_ENV: &str = "ASTER_BOX_TEST_RAW_DISK_OWNER_CHILD";
 #[cfg(unix)]
-const OWNER_DISK_ENV: &str = "A3S_BOX_TEST_RAW_DISK_OWNER_DISK";
+const OWNER_DISK_ENV: &str = "ASTER_BOX_TEST_RAW_DISK_OWNER_DISK";
 #[cfg(unix)]
-const OWNER_ROOT_ENV: &str = "A3S_BOX_TEST_RAW_DISK_OWNER_ROOT";
+const OWNER_ROOT_ENV: &str = "ASTER_BOX_TEST_RAW_DISK_OWNER_ROOT";
 #[cfg(unix)]
-const OWNER_READY_ENV: &str = "A3S_BOX_TEST_RAW_DISK_OWNER_READY";
+const OWNER_READY_ENV: &str = "ASTER_BOX_TEST_RAW_DISK_OWNER_READY";
 #[cfg(unix)]
-const OWNER_ROLE_ENV: &str = "A3S_BOX_TEST_RAW_DISK_OWNER_ROLE";
+const OWNER_ROLE_ENV: &str = "ASTER_BOX_TEST_RAW_DISK_OWNER_ROLE";
 #[cfg(unix)]
 const OWNER_CHILD_TEST: &str =
     "tests::raw_disk_ownership::raw_disk_ownership_survives_owner_process_crashes";
@@ -153,7 +153,7 @@ fn raw_disk_ownership_survives_owner_process_crashes() {
 fn maintenance_spec(rootfs: &std::path::Path, disk: &std::path::Path) -> InstanceSpec {
     InstanceSpec {
         rootfs: RootfsSource::directory(rootfs),
-        block_devices: vec![RawBlockDevice::new("a3s-rootfs", disk, true)],
+        block_devices: vec![RawBlockDevice::new("aster-rootfs", disk, true)],
         ..InstanceSpec::default()
     }
 }
@@ -179,7 +179,7 @@ fn assert_owned_elsewhere(spec: &InstanceSpec) {
         .expect_err("a second shim unexpectedly acquired the raw disk")
         .to_string();
     assert!(
-        error.contains("already owned by another A3S VM"),
+        error.contains("already owned by another Aster VM"),
         "unexpected ownership error: {error}"
     );
 }

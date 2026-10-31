@@ -16,7 +16,7 @@ Write-Host "managed-runtime: running $($Filters.Count) real OS-process cases"
 $failed = $false
 foreach ($filter in $Filters) {
   Write-Host "managed-runtime: case $filter"
-  $log = Join-Path ([System.IO.Path]::GetTempPath()) ("a3s-mrt-" + [guid]::NewGuid().ToString() + ".log")
+  $log = Join-Path ([System.IO.Path]::GetTempPath()) ("aster-mrt-" + [guid]::NewGuid().ToString() + ".log")
   try {
     # Serialize threads: Windows exclusive-bind + free_port TOCTOU under parallel tests.
     cmd /c "cargo test --locked --test managed_runtime_real_process $filter -- --nocapture --test-threads=1 > `"$log`" 2>&1"

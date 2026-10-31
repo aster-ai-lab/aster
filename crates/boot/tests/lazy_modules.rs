@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootResponse, ControllerDefinition, LazyModuleLoader, Module,
     ModuleRef, ProviderDefinition, ProviderOnModuleInit, ProviderToken, Result,
 };

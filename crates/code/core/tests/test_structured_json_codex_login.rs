@@ -2,28 +2,28 @@
 //!
 //! This is intentionally test-only. It reads `~/.codex/auth.json`, calls the
 //! ChatGPT/Codex Responses SSE endpoint, adapts it to `LlmClient`, and then
-//! exercises the normal a3s-code structured JSON and `generate_object` paths.
+//! exercises the normal aster structured JSON and `generate_object` paths.
 //!
 //! Run from `crates/code`:
 //!
 //! ```bash
-//! cargo test -p a3s-code-core --test test_structured_json_codex_login \
+//! cargo test -p aster-core --test test_structured_json_codex_login \
 //!   -- --ignored --nocapture --test-threads=1
 //! ```
 //!
-//! Set `A3S_CODEX_MODEL=<model>` to override the first listed local Codex model.
+//! Set `ASTERX_MODEL=<model>` to override the first listed local Codex model.
 
 mod support;
 
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::llm::structured::{
+use aster_core::llm::structured::{
     generate_blocking, generate_streaming, PartialObjectCallback, StructuredMode,
     StructuredRequest, StructuredResult,
 };
-use a3s_code_core::llm::LlmClient;
-use a3s_code_core::tools::{register_generate_object, ToolContext, ToolRegistry, ToolStreamEvent};
+use aster_core::llm::LlmClient;
+use aster_core::tools::{register_generate_object, ToolContext, ToolRegistry, ToolStreamEvent};
 use serde_json::{json, Value};
 use support::codex_login_client::{default_codex_model, CodexLoginClient};
 
@@ -33,7 +33,7 @@ fn codex_client() -> Arc<dyn LlmClient> {
     let model = default_codex_model();
     eprintln!("[codex-login] model = {model}");
     Arc::new(
-        CodexLoginClient::from_local_login(&model, "a3s-code-structured-json-test")
+        CodexLoginClient::from_local_login(&model, "aster-structured-json-test")
             .expect("local Codex login client"),
     )
 }

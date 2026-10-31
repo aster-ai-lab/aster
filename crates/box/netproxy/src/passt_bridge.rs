@@ -3,7 +3,7 @@
 //! passt provides excellent host egress but owns one guest connection and does
 //! not switch Ethernet frames between separate passt instances. This adapter
 //! stays between libkrun and passt: gateway/non-peer traffic keeps flowing to
-//! passt, while frames addressed to another box on the same A3S network use the
+//! passt, while frames addressed to another box on the same Aster network use the
 //! shared Unix-datagram switch already used by the macOS netproxy backend.
 
 use std::io::{self, Read, Write};
@@ -19,7 +19,7 @@ use crate::egress::{
     classify_ethernet_egress, default_untrusted_egress_denied, ethernet_ipv4_destination,
     ipv6_egress_denied, EgressLeg, UntrustedEgressScope,
 };
-use a3s_box_core::EgressMatchRule;
+use aster_box_core::EgressMatchRule;
 use std::net::Ipv4Addr;
 
 const MIN_ETHERNET_FRAME: usize = 14;
@@ -50,9 +50,9 @@ pub fn spawn_inherited_passt_bridge(
     dns: Option<NetworkDnsConfig>,
     scope: UntrustedEgressScope,
     egress_rules: Vec<EgressMatchRule>,
-) -> a3s_box_core::error::Result<()> {
+) -> aster_box_core::error::Result<()> {
     if proxy_fd < 0 {
-        return Err(a3s_box_core::error::BoxError::NetworkError(
+        return Err(aster_box_core::error::BoxError::NetworkError(
             "invalid inherited passt bridge descriptor".to_string(),
         ));
     }
@@ -61,19 +61,19 @@ pub fn spawn_inherited_passt_bridge(
     // to the shim through NetworkInstanceConfig.
     let guest = unsafe { UnixStream::from_raw_fd(proxy_fd) };
     let passt = connect_passt(&passt_socket_path).map_err(|error| {
-        a3s_box_core::error::BoxError::NetworkError(format!(
+        aster_box_core::error::BoxError::NetworkError(format!(
             "failed to connect passt bridge to {}: {error}",
             passt_socket_path.display()
         ))
     })?;
     let bridge = BridgePort::bind(&bridge_socket_dir, own_mac).map_err(|error| {
-        a3s_box_core::error::BoxError::NetworkError(format!(
+        aster_box_core::error::BoxError::NetworkError(format!(
             "failed to join bridge Ethernet switch: {error}"
         ))
     })?;
 
     std::thread::Builder::new()
-        .name("a3s-passt-bridge".to_string())
+        .name("aster-passt-bridge".to_string())
         .spawn(move || {
             let marker = passt_socket_path
                 .parent()
@@ -85,7 +85,7 @@ pub fn spawn_inherited_passt_bridge(
             }
         })
         .map_err(|error| {
-            a3s_box_core::error::BoxError::NetworkError(format!(
+            aster_box_core::error::BoxError::NetworkError(format!(
                 "failed to spawn passt peer bridge: {error}"
             ))
         })?;

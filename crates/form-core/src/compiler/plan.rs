@@ -4,7 +4,7 @@ use crate::{canonical_sha256, canonicalize_value, CanonicalValue, FORM_SCHEMA_PR
 
 use super::{sort_utf16, CompiledNode, RuleAnalysis};
 
-const FORM_PLAN_API_VERSION: &str = "a3s.dev/form-plan/v1alpha1";
+const FORM_PLAN_API_VERSION: &str = "aster.dev/form-plan/v1alpha1";
 
 pub(super) fn normalize_document(mut document: CanonicalValue) -> CanonicalValue {
     if let Some(metadata) = document.get_mut("metadata") {

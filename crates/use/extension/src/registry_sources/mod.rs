@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_use_core::{UseError, UseResult, VerifiedCatalogProvenance};
+use aster_use_core::{UseError, UseResult, VerifiedCatalogProvenance};
 use serde::Serialize;
 
 use crate::remote::{normalize_registry_url, normalize_sha256};
@@ -354,7 +354,7 @@ impl RegistrySourceStore {
                     "No default Registry source is configured.",
                 )
                 .with_suggestion(
-                    "Add a source with 'a3s-use registry source add' or select one with --registry-name.",
+                    "Add a source with 'aster-use registry source add' or select one with --registry-name.",
                 )
             })?,
         };

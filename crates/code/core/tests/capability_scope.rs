@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityCeiling, CapabilityContribution, CapabilityDescriptor, CapabilityEffect,
     CapabilityEffectError, CapabilityExecutionCeiling, CapabilityId, CapabilityKind,
     CapabilityScope, CapabilityScopeError, CapabilityScopeHandle, CapabilitySet, CapabilitySource,
@@ -22,7 +22,7 @@ struct HostCatalog {
 }
 
 fn host_catalog() -> HostCatalog {
-    let source = CapabilitySource::host("a3s-code", digest('a')).unwrap();
+    let source = CapabilitySource::host("aster", digest('a')).unwrap();
     let read = CapabilityDescriptor::new(
         &source,
         CapabilityKind::Tool,

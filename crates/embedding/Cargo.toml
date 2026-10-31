@@ -1,12 +1,12 @@
 [package]
-name = "a3s-embedding"
+name = "aster-embedding"
 version = "0.1.0"
 edition.workspace = true
 publish = false
 
 [dependencies]
 anyhow.workspace = true
-a3s-code-core = { path = "../code/core" }
+aster-core = { path = "../code/core" }
 async-trait.workspace = true
 tokio-util.workspace = true
 model2vec-rs = "0.3.0"

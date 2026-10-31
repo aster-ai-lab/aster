@@ -6,7 +6,7 @@
 
 use std::collections::HashMap;
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use sha2::{Digest, Sha256};
 use tokenizers::normalizers::replace::ReplacePattern;
 use tokenizers::normalizers::{Lowercase, Replace, Sequence, Strip, StripAccents, NFD, NFKC};

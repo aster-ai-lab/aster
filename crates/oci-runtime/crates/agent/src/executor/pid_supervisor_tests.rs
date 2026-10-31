@@ -2,7 +2,7 @@ use std::os::fd::{AsRawFd, FromRawFd, OwnedFd, RawFd};
 use std::sync::atomic::{AtomicI32, AtomicU8, Ordering};
 use std::time::{Duration, Instant};
 
-use a3s_oci_sdk::ErrorCode;
+use aster_oci_sdk::ErrorCode;
 
 use super::pid_supervisor::{
     establish_process_group, signal_process_group, terminate_process_group, wait_for_child,

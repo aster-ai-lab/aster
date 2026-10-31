@@ -1,7 +1,7 @@
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
-use a3s_code_core::store::{MemorySessionStore, SessionStore};
-use a3s_code_core::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
+use aster_core::store::{MemorySessionStore, SessionStore};
+use aster_core::{
     Agent, AgentProtocolChangeSetRequestV1, AgentProtocolChangeSetV1, AgentProtocolCommandV1,
     AgentProtocolEventPageRequestV1, AgentProtocolHarness, AgentProtocolHarnessError,
     AgentProtocolRunIdentityV1, AgentProtocolRunRecoverV1, AgentProtocolRunStartV1,
@@ -47,7 +47,7 @@ impl LlmClient for StaticStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         Ok(response())
     }
@@ -56,7 +56,7 @@ impl LlmClient for StaticStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let (sender, receiver) = mpsc::channel(4);
@@ -74,7 +74,7 @@ impl LlmClient for ScriptedStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         self.next()
     }
@@ -83,7 +83,7 @@ impl LlmClient for ScriptedStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let response = self.next()?;
@@ -164,8 +164,8 @@ fn git(workspace: &std::path::Path, args: &[&str]) {
 
 fn initialize_git_workspace(workspace: &std::path::Path) {
     git(workspace, &["init"]);
-    git(workspace, &["config", "user.name", "A3S Test"]);
-    git(workspace, &["config", "user.email", "test@a3s.invalid"]);
+    git(workspace, &["config", "user.name", "Aster Test"]);
+    git(workspace, &["config", "user.email", "test@aster.invalid"]);
     std::fs::write(workspace.join("seed.txt"), "seed\n").expect("write seed file");
     git(workspace, &["add", "seed.txt"]);
     git(workspace, &["commit", "-m", "seed"]);
@@ -175,6 +175,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/static".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -202,9 +203,9 @@ fn offline_config() -> CodeConfig {
     }
 }
 
-fn manifest() -> a3s_code_core::release::AgentReleaseManifest {
-    a3s_code_core::release::AgentReleaseManifest::parse(include_str!(
-        "../../fixtures/agent-release-contract/.a3s/asset.acl"
+fn manifest() -> aster_core::release::AgentReleaseManifest {
+    aster_core::release::AgentReleaseManifest::parse(include_str!(
+        "../../fixtures/agent-release-contract/.aster/asset.acl"
     ))
     .unwrap()
 }
@@ -230,7 +231,7 @@ fn start(release_identity: &str, session_id: &str, run_id: &str) -> AgentProtoco
 async fn wait_for_terminal(
     harness: &AgentProtocolHarness,
     command: &AgentProtocolCommandV1,
-) -> a3s_code_core::AgentProtocolEventPageV1 {
+) -> aster_core::AgentProtocolEventPageV1 {
     tokio::time::timeout(std::time::Duration::from_secs(2), async {
         loop {
             let page = harness
@@ -252,7 +253,7 @@ async fn wait_for_terminal(
     .expect("detached Harness run must terminate")
 }
 
-fn assert_unverified_mutation(page: &a3s_code_core::AgentProtocolEventPageV1) {
+fn assert_unverified_mutation(page: &aster_core::AgentProtocolEventPageV1) {
     assert_eq!(page.state, AgentProtocolRunStateV1::Failed);
     let message = page
         .events
@@ -281,7 +282,7 @@ async fn wait_for_change_set(
             {
                 Ok(change_set) => break change_set,
                 Err(AgentProtocolHarnessError::Host(
-                    a3s_code_core::AgentProtocolHostError::ChangeSetPending,
+                    aster_core::AgentProtocolHostError::ChangeSetPending,
                 )) => tokio::task::yield_now().await,
                 Err(error) => panic!("unexpected change-set error: {error}"),
             }
@@ -465,7 +466,7 @@ async fn harness_replay_binds_tool_requests_without_argument_plaintext() {
     .with_session_options(
         SessionOptions::new()
             .with_planning_mode(PlanningMode::Disabled)
-            .with_confirmation_manager(Arc::new(a3s_code_core::hitl::AutoApproveConfirmation))
+            .with_confirmation_manager(Arc::new(aster_core::hitl::AutoApproveConfirmation))
             .with_llm_client(Arc::new(client)),
     );
     let command = start(
@@ -551,7 +552,7 @@ async fn harness_isolates_sessions_and_exports_one_digest_bound_run_patch() {
     .with_session_options(
         SessionOptions::new()
             .with_planning_mode(PlanningMode::Disabled)
-            .with_confirmation_manager(Arc::new(a3s_code_core::hitl::AutoApproveConfirmation))
+            .with_confirmation_manager(Arc::new(aster_core::hitl::AutoApproveConfirmation))
             .with_llm_client(Arc::new(client)),
     );
     let command = start(
@@ -614,7 +615,7 @@ async fn harness_resumes_the_code_store_before_replaying_a_start_after_restart()
         SessionOptions::new()
             .with_session_store(store.clone() as Arc<dyn SessionStore>)
             .with_planning_mode(PlanningMode::Disabled)
-            .with_confirmation_manager(Arc::new(a3s_code_core::hitl::AutoApproveConfirmation))
+            .with_confirmation_manager(Arc::new(aster_core::hitl::AutoApproveConfirmation))
             .with_llm_client(Arc::new(first_client)),
     );
     let receipt = first.execute(&command).await.unwrap();
@@ -630,7 +631,7 @@ async fn harness_resumes_the_code_store_before_replaying_a_start_after_restart()
                 .is_some_and(|snapshot| {
                     snapshot.run_records.iter().any(|record| {
                         record.snapshot.id == "durable-execution"
-                            && record.snapshot.status == a3s_code_core::RunStatus::Failed
+                            && record.snapshot.status == aster_core::RunStatus::Failed
                             && record.snapshot.workspace_change_set.is_some()
                     })
                 })
@@ -666,7 +667,7 @@ async fn harness_resumes_the_code_store_before_replaying_a_start_after_restart()
         SessionOptions::new()
             .with_session_store(store as Arc<dyn SessionStore>)
             .with_planning_mode(PlanningMode::Disabled)
-            .with_confirmation_manager(Arc::new(a3s_code_core::hitl::AutoApproveConfirmation))
+            .with_confirmation_manager(Arc::new(aster_core::hitl::AutoApproveConfirmation))
             .with_llm_client(Arc::new(second_client)),
     );
     let replay = second.execute(&command).await.unwrap();
@@ -891,21 +892,21 @@ async fn competing_session_admission_reuses_the_same_host_entry() {
         (Ok(_), Ok(_)) => {}
         (
             Ok(_),
-            Err(AgentProtocolHarnessError::Code(a3s_code_core::CodeError::SessionBusy { .. })),
+            Err(AgentProtocolHarnessError::Code(aster_core::CodeError::SessionBusy { .. })),
         )
         | (
-            Err(AgentProtocolHarnessError::Code(a3s_code_core::CodeError::SessionBusy { .. })),
+            Err(AgentProtocolHarnessError::Code(aster_core::CodeError::SessionBusy { .. })),
             Ok(_),
         )
         | (
             Ok(_),
-            Err(AgentProtocolHarnessError::Host(a3s_code_core::AgentProtocolHostError::Code(
-                a3s_code_core::CodeError::SessionBusy { .. },
+            Err(AgentProtocolHarnessError::Host(aster_core::AgentProtocolHostError::Code(
+                aster_core::CodeError::SessionBusy { .. },
             ))),
         )
         | (
-            Err(AgentProtocolHarnessError::Host(a3s_code_core::AgentProtocolHostError::Code(
-                a3s_code_core::CodeError::SessionBusy { .. },
+            Err(AgentProtocolHarnessError::Host(aster_core::AgentProtocolHostError::Code(
+                aster_core::CodeError::SessionBusy { .. },
             ))),
             Ok(_),
         ) => {}
@@ -938,7 +939,7 @@ async fn harness_rejects_release_mismatch_and_closed_admission() {
         .expect_err("foreign release must fail");
     assert!(matches!(
         mismatch,
-        AgentProtocolHarnessError::Host(a3s_code_core::AgentProtocolHostError::ReleaseMismatch)
+        AgentProtocolHarnessError::Host(aster_core::AgentProtocolHostError::ReleaseMismatch)
     ));
 
     harness.close().await;
@@ -956,9 +957,9 @@ async fn harness_rejects_release_mismatch_and_closed_admission() {
 #[tokio::test]
 async fn harness_rejects_protocol_mismatch_on_construction() {
     let workspace = tempfile::tempdir().unwrap();
-    let source = include_str!("../../fixtures/agent-release-contract/.a3s/asset.acl")
-        .replace(AGENT_PROTOCOL_V1, "a3s.code.agent.v2");
-    let manifest = a3s_code_core::release::AgentReleaseManifest::parse(&source).unwrap();
+    let source = include_str!("../../fixtures/agent-release-contract/.aster/asset.acl")
+        .replace(AGENT_PROTOCOL_V1, "aster.code.agent.v2");
+    let manifest = aster_core::release::AgentReleaseManifest::parse(&source).unwrap();
     let error = AgentProtocolHarness::new(
         manifest,
         Arc::new(Agent::from_config(offline_config()).await.unwrap()),
@@ -969,7 +970,7 @@ async fn harness_rejects_protocol_mismatch_on_construction() {
         matches!(
             error,
             AgentProtocolHarnessError::Host(
-                a3s_code_core::AgentProtocolHostError::ReleaseProtocolMismatch
+                aster_core::AgentProtocolHostError::ReleaseProtocolMismatch
             ) | AgentProtocolHarnessError::Release(_)
         ),
         "unexpected construction error: {error:?} code={}",

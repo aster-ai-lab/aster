@@ -43,7 +43,7 @@ fn append_observation(
         thread_id: "session".into(),
         capability_binding_digest: format!("sha256:{}", "a".repeat(64)),
     });
-    prepared.original_args_digest = a3s_effect::tool_args_digest(&json!({"path":path})).unwrap();
+    prepared.original_args_digest = aster_effect::tool_args_digest(&json!({"path":path})).unwrap();
     prepared.effective_args_digest = prepared.original_args_digest.clone();
     let mut receipt =
         result_without_execution(&prepared, ToolExecutionOutcome::Succeeded, body.into()).unwrap();
@@ -61,7 +61,7 @@ fn original_observations_ignore_run_identity_host_hints_and_tool_supplied_digest
     let mut facts = Vec::new();
     append_observation(&mut facts, "old", "a", "same", None, None);
     let observation = crate::content_digest::digest_json(
-        "a3s.code.tool-observation.v1",
+        "aster.code.tool-observation.v1",
         &crate::fact_control::tool_results::message_from_tool_observation(
             "observation",
             "same",

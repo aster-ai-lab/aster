@@ -1,7 +1,7 @@
 //! Compose adapter for Box's single transient Secret materialization boundary.
 
-use a3s_box_core::compose::{ComposeConfig, ServiceConfig};
-use a3s_box_core::config::BoxConfig;
+use aster_box_core::compose::{ComposeConfig, ServiceConfig};
+use aster_box_core::config::BoxConfig;
 
 #[cfg(target_os = "linux")]
 const SECRET_SCOPE: &str = "compose";
@@ -16,20 +16,20 @@ fn uses_secrets(config: &ComposeConfig) -> bool {
 #[cfg(target_os = "linux")]
 fn material_from_process_environment(
     source: &str,
-) -> Result<a3s_box_runtime::BoxSecretMaterial, Box<dyn std::error::Error>> {
+) -> Result<aster_box_runtime::BoxSecretMaterial, Box<dyn std::error::Error>> {
     let value = std::env::var(source).map_err(|_| {
         format!(
             "Compose Secret source environment variable {source:?} is unset or is not valid UTF-8"
         )
     })?;
-    a3s_box_runtime::BoxSecretMaterial::new(value.into_bytes()).map_err(|error| error.into())
+    aster_box_runtime::BoxSecretMaterial::new(value.into_bytes()).map_err(|error| error.into())
 }
 
 #[cfg(target_os = "linux")]
 async fn scoped_store(
-) -> Result<a3s_box_runtime::BoxTransientSecretStore, Box<dyn std::error::Error>> {
-    let root = a3s_box_core::dirs_home().join("runtime-secrets");
-    Ok(a3s_box_runtime::BoxTransientSecretStore::new(root)
+) -> Result<aster_box_runtime::BoxTransientSecretStore, Box<dyn std::error::Error>> {
+    let root = aster_box_core::dirs_home().join("runtime-secrets");
+    Ok(aster_box_runtime::BoxTransientSecretStore::new(root)
         .private_scope(SECRET_SCOPE)
         .await?)
 }
@@ -63,7 +63,7 @@ pub(super) async fn preflight(config: &ComposeConfig) -> Result<(), Box<dyn std:
 
 #[cfg(target_os = "linux")]
 pub(super) struct ComposeSecretLease {
-    store: a3s_box_runtime::BoxTransientSecretStore,
+    store: aster_box_runtime::BoxTransientSecretStore,
     identity: String,
     armed: bool,
 }
@@ -80,7 +80,7 @@ impl ComposeSecretLease {
 
     pub(super) fn configure_vm(
         &self,
-        manager: &mut a3s_box_runtime::VmManager,
+        manager: &mut aster_box_runtime::VmManager,
     ) -> Result<(), Box<dyn std::error::Error>> {
         self.store.configure_vm(manager)?;
         Ok(())
@@ -121,7 +121,7 @@ impl ComposeSecretLease {
 
     pub(super) fn configure_vm(
         &self,
-        _manager: &mut a3s_box_runtime::VmManager,
+        _manager: &mut aster_box_runtime::VmManager,
     ) -> Result<(), Box<dyn std::error::Error>> {
         unreachable!("Secret preflight rejects non-Linux Compose execution")
     }
@@ -162,7 +162,7 @@ pub(super) async fn project_service(
         let projection = store.materialize_environment(&identity, bindings).await?;
         box_config.volumes.extend(projection.volumes);
         box_config.extra_env.push((
-            a3s_box_core::secret::SECRET_ENVIRONMENT_MANIFEST.to_string(),
+            aster_box_core::secret::SECRET_ENVIRONMENT_MANIFEST.to_string(),
             projection.manifest,
         ));
         Ok(Some(ComposeSecretLease {
@@ -175,10 +175,10 @@ pub(super) async fn project_service(
 
 #[cfg(target_os = "linux")]
 pub(crate) fn cleanup_persisted(identity: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let root = a3s_box_core::dirs_home()
+    let root = aster_box_core::dirs_home()
         .join("runtime-secrets")
         .join(SECRET_SCOPE);
-    a3s_box_runtime::BoxTransientSecretStore::new(root).cleanup_identity_sync(identity)?;
+    aster_box_runtime::BoxTransientSecretStore::new(root).cleanup_identity_sync(identity)?;
     Ok(())
 }
 

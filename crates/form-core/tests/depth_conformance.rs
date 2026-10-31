@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_form_core::{
+use aster_form_core::{
     canonical_sha256, canonicalize_value, compile_bytes, parse_json, CanonicalValue,
     COMPILE_REQUEST_API_VERSION,
 };
@@ -59,8 +59,8 @@ fn depth_document(depth: usize) -> serde_json::Value {
         }
     }
     serde_json::json!({
-        "kind": "a3s.form",
-        "apiVersion": "a3s.dev/form/v1alpha1",
+        "kind": "aster.form",
+        "apiVersion": "aster.dev/form/v1alpha1",
         "revision": 1,
         "metadata": { "title": format!("Depth corpus {depth}"), "locale": "en-US" },
         "schema": {
@@ -81,7 +81,7 @@ fn matches_layout_depth_boundary_cases() {
     let fixture = fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-compiler-depth-conformance/v1"
+        "aster.dev/form-compiler-depth-conformance/v1"
     );
     assert_eq!(fixture.generator, "linear-layout-v1");
     for case in fixture.cases {

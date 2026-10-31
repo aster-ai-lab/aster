@@ -4,7 +4,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_sdk::{Error, ErrorCode, IoMode, OutputChunk, OutputStream, ProcessIo, Result};
+use aster_oci_sdk::{Error, ErrorCode, IoMode, OutputChunk, OutputStream, ProcessIo, Result};
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWriteExt};
 use tokio::process::{Child, ChildStdin, Command};
 use tokio::sync::{watch, Mutex};
@@ -455,7 +455,7 @@ impl ProcessIoHandle {
         Ok(())
     }
 
-    pub(super) fn resize(&self, size: a3s_oci_sdk::TerminalSize) -> Result<()> {
+    pub(super) fn resize(&self, size: aster_oci_sdk::TerminalSize) -> Result<()> {
         self.inner
             .terminal
             .as_ref()
@@ -872,7 +872,7 @@ fn io_error(code: ErrorCode, message: impl Into<String>) -> Error {
 mod tests {
     use std::sync::Arc;
 
-    use a3s_oci_sdk::{ErrorCode, IoMode, OutputStream, ProcessIo};
+    use aster_oci_sdk::{ErrorCode, IoMode, OutputStream, ProcessIo};
     use tokio::io::AsyncReadExt;
     use tokio::time::{timeout, Duration};
 

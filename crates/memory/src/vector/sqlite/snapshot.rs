@@ -16,7 +16,7 @@ pub(super) fn load_snapshot(
     let mut statement = connection
         .prepare(
             "SELECT name, record_count, byte_count, content_digest
-             FROM a3s_vector_partitions ORDER BY name",
+             FROM aster_vector_partitions ORDER BY name",
         )
         .map_err(|_| {
             VectorIndexError::StorageFailed("could not read SQLite vector partitions".to_string())
@@ -81,7 +81,7 @@ fn load_records(
     let mut statement = connection
         .prepare(
             "SELECT position, id, labels_json, embedding
-             FROM a3s_vector_records WHERE partition = ?1 ORDER BY position",
+             FROM aster_vector_records WHERE partition = ?1 ORDER BY position",
         )
         .map_err(|_| {
             VectorIndexError::StorageFailed("could not read SQLite vector records".to_string())

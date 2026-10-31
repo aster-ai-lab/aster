@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     AddColumnOption, AlterColumnOption, Collection, CollectionSchema, DataType, DiskannQueryParams,
     Doc, ErrorCode, FieldSchema, FlatQueryParams, Fts, FtsQueryParams, GroupBySearchQuery,
     HnswQueryParams, IndexParams, IndexType, IvfQueryParams, IvfRabitqQueryParams, MetricType,

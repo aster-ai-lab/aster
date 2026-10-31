@@ -75,7 +75,7 @@ mod tests {
 
     #[test]
     fn apply_to_deny_all_baseline_activates_mediation_for_exactly_that_origin() {
-        let policy = SandboxPolicy::a3s_bash_baseline();
+        let policy = SandboxPolicy::aster_bash_baseline();
         let (widened, changed) =
             apply_network_grant_to_policy(&policy, &grant("api.example.com", Some(443))).unwrap();
         assert!(changed);
@@ -89,7 +89,7 @@ mod tests {
 
     #[test]
     fn apply_appends_to_existing_mediated_policy_without_clobbering() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_network = true;
         policy.network.allow.push(NetworkAllowRule {
             host: "existing.example.com".into(),
@@ -105,7 +105,7 @@ mod tests {
 
     #[test]
     fn apply_is_idempotent_for_identical_subject() {
-        let policy = SandboxPolicy::a3s_bash_baseline();
+        let policy = SandboxPolicy::aster_bash_baseline();
         let (once, changed) =
             apply_network_grant_to_policy(&policy, &grant("api.example.com", Some(443))).unwrap();
         assert!(changed);
@@ -129,7 +129,7 @@ mod tests {
 
     #[test]
     fn grant_cannot_alias_localhost_to_loopback_ip() {
-        let policy = SandboxPolicy::a3s_bash_baseline();
+        let policy = SandboxPolicy::aster_bash_baseline();
         let (widened, _) =
             apply_network_grant_to_policy(&policy, &grant("localhost", Some(8443))).unwrap();
         assert_eq!(
@@ -141,7 +141,7 @@ mod tests {
 
     #[test]
     fn port_pinned_grant_widens_only_that_port() {
-        let policy = SandboxPolicy::a3s_bash_baseline();
+        let policy = SandboxPolicy::aster_bash_baseline();
         let (widened, _) =
             apply_network_grant_to_policy(&policy, &grant("api.example.com", Some(443))).unwrap();
         assert_eq!(

@@ -1,10 +1,10 @@
 use std::io;
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     GuestPath, AGENT_RUNTIME_SHARE_GUEST_ROOT, AGENT_RUNTIME_SHARE_STATE_GUEST_ROOT,
 };
-use a3s_oci_sdk::OciBundle;
+use aster_oci_sdk::OciBundle;
 use serde_json::{json, Value};
 use tokio::io::AsyncWriteExt;
 
@@ -37,8 +37,8 @@ impl IsolationFixture {
         nonce: &str,
     ) -> Result<Self, String> {
         let container_api_bundle = container_api_bundle(base)?;
-        let root = runtime_share.join(format!(".a3s-oci-guest-isolation-{nonce}"));
-        let canary_name = format!(".a3s-oci-guest-isolation-canary-{nonce}");
+        let root = runtime_share.join(format!(".aster-oci-guest-isolation-{nonce}"));
+        let canary_name = format!(".aster-oci-guest-isolation-canary-{nonce}");
         let canary = runtime_share.join("run").join(&canary_name);
         require_absent(&root, "Guest isolation fixture").await?;
         require_absent(&canary, "Guest isolation canary").await?;
@@ -299,7 +299,7 @@ fn config_with_bind(base: &OciBundle, source: &str) -> Result<Value, String> {
     mounts.insert(
         0,
         json!({
-            "destination": "/a3s-guest-isolation-bind",
+            "destination": "/aster-guest-isolation-bind",
             "type": "bind",
             "source": source,
             "options": ["bind"]
@@ -373,7 +373,7 @@ async fn path_exists(path: &Path) -> Result<bool, String> {
 mod tests {
     use std::path::Path;
 
-    use a3s_oci_sdk::OciBundle;
+    use aster_oci_sdk::OciBundle;
     use tempfile::tempdir;
 
     use super::{config_with_bind, container_api_bundle, IsolationFixture};

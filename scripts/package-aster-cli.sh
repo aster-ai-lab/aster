@@ -41,9 +41,9 @@ case "$platform" in
   *) echo "error: unsupported platform: $platform" >&2; exit 1 ;;
 esac
 copy_file "${bin_dir}/aster${suffix}" "${stage}/aster${suffix}"
-copy_file "${bin_dir}/a3s-code-acp${suffix}" "${stage}/a3s-code-acp${suffix}"
-chmod 755 "${stage}/aster${suffix}" "${stage}/a3s-code-acp${suffix}"
-release_files=("aster${suffix}" "a3s-code-acp${suffix}")
+copy_file "${bin_dir}/aster-acp${suffix}" "${stage}/aster-acp${suffix}"
+chmod 755 "${stage}/aster${suffix}" "${stage}/aster-acp${suffix}"
+release_files=("aster${suffix}" "aster-acp${suffix}")
 if [[ "$platform" == macos ]]; then
   members="$(python3 "${script_dir}/aster_sandbox.py" members --directory "${bin_dir}/sandbox")"
   while IFS= read -r name; do
@@ -63,12 +63,12 @@ if [[ -n "$max_glibc" ]]; then
     exit 1
   fi
   "${py[@]}" "${script_dir}/check-glibc-symbols.py" --max "$max_glibc" \
-    "${stage}/aster${suffix}" "${stage}/a3s-code-acp${suffix}"
+    "${stage}/aster${suffix}" "${stage}/aster-acp${suffix}"
 fi
 aster_identity="$("${stage}/aster${suffix}" --build-id)"
-acp_identity="$("${stage}/a3s-code-acp${suffix}" --build-id)"
+acp_identity="$("${stage}/aster-acp${suffix}" --build-id)"
 if [[ "$aster_identity" != aster-cli-pair-v1:* || "$aster_identity" != "$acp_identity" ]]; then
-  echo "error: aster and a3s-code-acp must have the same source build identity" >&2
+  echo "error: aster and aster-acp must have the same source build identity" >&2
   exit 1
 fi
 printf '%s\n' "$aster_identity" > "${stage}/BUILD_ID"
@@ -100,7 +100,7 @@ import sys, zipfile
 from pathlib import Path
 stage, out = Path(sys.argv[1]), Path(sys.argv[2])
 with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-    for name in ("aster.exe", "a3s-code-acp.exe", "BUILD_ID", "SHA256SUMS"):
+    for name in ("aster.exe", "aster-acp.exe", "BUILD_ID", "SHA256SUMS"):
         archive.write(stage / name, name)
 PY
     ;;

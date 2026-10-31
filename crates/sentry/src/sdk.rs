@@ -39,7 +39,7 @@ impl Sentry {
     }
 
     /// Convenience: if `source` is a readable file, load it; otherwise treat it as ACL content.
-    /// (Mirrors a3s-code's `Agent.create`, which takes config content but a path is handier.)
+    /// (Mirrors aster's `Agent.create`, which takes config content but a path is handier.)
     pub fn create(source: &str) -> anyhow::Result<Self> {
         if Path::new(source).is_file() {
             Self::from_path(source)
@@ -55,7 +55,7 @@ impl Sentry {
 
     /// Inline gate for an in-flight LLM/MCP body: run the same tiered judges over the decoded wire
     /// `content` and return the [`InlineDecision`] (block/allow + secret/PII spans to redact). This is
-    /// the pre-execution path a3s-gateway's wire proxy calls; the reactive [`evaluate`](Sentry::evaluate)
+    /// the pre-execution path aster-gateway's wire proxy calls; the reactive [`evaluate`](Sentry::evaluate)
     /// path stays for observer's NDJSON stream. See [`crate::inline`].
     pub fn inspect_wire(&self, content: &str, dir: Direction) -> InlineDecision {
         inline::inspect(&self.pipeline, content, dir)

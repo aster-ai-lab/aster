@@ -77,7 +77,7 @@ The user captures a scrolling area in either direction, pins multiple images, im
 - **FR-010**: Support bidirectional long capture, growing preview, automatic scrolling, repeated-header handling, crop and finish-to-editor.
 - **FR-011**: Use existing light/dark themes, zh/en localization and configurable toolbar/shortcuts; settings remain ACL through the existing preference service.
 - **FR-012**: Bound native decoding/workspace resources, validate external data once, keep drafts on refusal and never export unredacted source after a redaction.
-- **FR-013**: Complete real macOS CUA end-to-end tests using A3S Test; retain actual observations, outputs and cleanup receipts. Hermetic/static checks do not substitute for CUA.
+- **FR-013**: Complete real macOS CUA end-to-end tests using Aster Test; retain actual observations, outputs and cleanup receipts. Hermetic/static checks do not substitute for CUA.
 - **FR-014**: Full-window visual feedback and image previews hide the parent macOS traffic lights while open and foregrounded, restore them on close or tab change, and preserve working titlebar controls.
 - **FR-015 (withdrawn)**: The earlier library-source integration was explicitly rejected in the subsequent user clarification; it is removed from the visual-feedback UI and native command surface. Historical evidence is retained as historical only.
 - **FR-016**: The composer screenshot menu contains screenshot options only. Scissors starts native interactive region capture. After a successful capture, the image editor toolbar exposes Visual Feedback as an advanced action; it opens the current edited PNG without another capture or early attachment. Cancelling capture returns to the composer. No library-selection step is exposed.
@@ -98,7 +98,7 @@ The user captures a scrolling area in either direction, pins multiple images, im
 - [ ] New behavior has a small hermetic test in the owning package
 - [ ] Closed sets: every new Rust enum has `parse()` / `as_str()`
 - [ ] No production `unwrap()` / `expect()` without an infallibility comment
-- [ ] Internal `a3s-*` dependencies stay on a path in this repository
+- [ ] Internal `aster-*` dependencies stay on a path in this repository
 - [ ] Product configuration is ACL through existing preferences
 - [ ] Evidence target: `docs/evidence/desktop/2026-10-29-visual-feedback/OUTCOME.md`
 

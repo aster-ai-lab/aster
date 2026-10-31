@@ -7,7 +7,7 @@
 #[cfg(target_os = "linux")]
 use std::time::Duration;
 
-use a3s_box_core::pty::PTY_VSOCK_PORT;
+use aster_box_core::pty::PTY_VSOCK_PORT;
 use tracing::info;
 #[cfg(target_os = "linux")]
 use tracing::{error, warn};
@@ -144,7 +144,7 @@ fn run_pty_accept_loop(sock_fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std:
 /// 6. On process exit → send PtyExit frame
 #[cfg(target_os = "linux")]
 fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::error::Error>> {
-    use a3s_box_core::pty::{parse_frame, read_frame, write_error, PtyFrame};
+    use aster_box_core::pty::{parse_frame, read_frame, write_error, PtyFrame};
     use nix::pty::openpty;
     use nix::unistd::{dup2, execvp, fork, setsid, ForkResult};
     use std::ffi::CString;
@@ -201,7 +201,7 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
 
     info!(cmd = ?request.cmd, "PTY session starting");
 
-    // Parse the A3S_SEC_* confinement controls from the request env (same keys
+    // Parse the ASTER_SEC_* confinement controls from the request env (same keys
     // and KEY=VALUE format the exec path consumes) and build the seccomp filter
     // BEFORE the fork — building a filter allocates, and the post-fork child must
     // stay async-signal-safe. The TTY workload previously applied NONE of these,
@@ -211,7 +211,7 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
     let mut sec_supplemental_groups: Vec<u32> = request
         .env
         .iter()
-        .find_map(|entry| entry.strip_prefix("A3S_SEC_SUPPLEMENTAL_GROUPS="))
+        .find_map(|entry| entry.strip_prefix("ASTER_SEC_SUPPLEMENTAL_GROUPS="))
         .map(|csv| {
             csv.split(',')
                 .filter_map(|gid| gid.trim().parse::<u32>().ok())
@@ -235,7 +235,7 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
     let sec_cap_drop: Vec<String> = request
         .env
         .iter()
-        .find_map(|entry| entry.strip_prefix("A3S_SEC_CAP_DROP="))
+        .find_map(|entry| entry.strip_prefix("ASTER_SEC_CAP_DROP="))
         .map(|csv| {
             csv.split(',')
                 .map(|name| name.trim().to_string())
@@ -246,7 +246,7 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
     let sec_cap_keep: Option<Vec<String>> = request
         .env
         .iter()
-        .find_map(|entry| entry.strip_prefix("A3S_SEC_CAP_KEEP="))
+        .find_map(|entry| entry.strip_prefix("ASTER_SEC_CAP_KEEP="))
         .map(|csv| {
             csv.split(',')
                 .map(|name| name.trim().to_string())
@@ -254,7 +254,7 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
                 .collect()
         })
         .or_else(|| {
-            (std::env::var("A3S_BOOTSTRAP_MODE").as_deref() == Ok("host-sandbox"))
+            (std::env::var("ASTER_BOOTSTRAP_MODE").as_deref() == Ok("host-sandbox"))
                 .then(crate::namespace::sandbox_workload_capability_keep_from_env)
         })
         .or_else(|| {
@@ -266,13 +266,13 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
     let sec_no_new_privs = request
         .env
         .iter()
-        .any(|entry| entry == "A3S_SEC_NO_NEW_PRIVS=1");
+        .any(|entry| entry == "ASTER_SEC_NO_NEW_PRIVS=1");
     #[cfg(target_os = "linux")]
     let seccomp_filter: Option<Vec<libc::sock_filter>> = {
         let localhost: Vec<u32> = request
             .env
             .iter()
-            .find_map(|entry| entry.strip_prefix("A3S_SEC_SECCOMP_LOCALHOST="))
+            .find_map(|entry| entry.strip_prefix("ASTER_SEC_SECCOMP_LOCALHOST="))
             .map(|csv| {
                 csv.split(',')
                     .filter_map(|name| crate::namespace::syscall_name_to_number(name.trim()))
@@ -282,7 +282,7 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
         let apply_default = request
             .env
             .iter()
-            .any(|entry| entry == "A3S_SEC_SECCOMP=default");
+            .any(|entry| entry == "ASTER_SEC_SECCOMP=default");
         if !localhost.is_empty() {
             Some(crate::namespace::build_seccomp_errno_filter(&localhost))
         } else if apply_default {
@@ -294,7 +294,7 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
     #[cfg(not(target_os = "linux"))]
     let _ = (&sec_cap_drop, &sec_cap_keep, sec_no_new_privs);
 
-    // Prefer a per-session limited cgroup when CRI pushed A3S_SEC_* resource
+    // Prefer a per-session limited cgroup when CRI pushed ASTER_SEC_* resource
     // limits (#606). Fall back to the pod boot cgroup so interactive exec into
     // a CLI container still shares the aggregate budget.
     #[cfg(target_os = "linux")]
@@ -323,9 +323,9 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
         crate::container_devices::ensure_container_dev_nodes(rootfs);
         // CRI MaskedPaths / ReadonlyPaths (best-effort; a path that doesn't exist
         // is skipped) — these need /proc + /sys mounted above.
-        let masked = crate::exec_server::parse_sec_path_list(&request.env, "A3S_SEC_MASKED_PATHS=");
+        let masked = crate::exec_server::parse_sec_path_list(&request.env, "ASTER_SEC_MASKED_PATHS=");
         let readonly =
-            crate::exec_server::parse_sec_path_list(&request.env, "A3S_SEC_READONLY_PATHS=");
+            crate::exec_server::parse_sec_path_list(&request.env, "ASTER_SEC_READONLY_PATHS=");
         if !masked.is_empty() || !readonly.is_empty() {
             crate::exec_server::apply_container_path_restrictions(rootfs, &masked, &readonly);
         }
@@ -333,7 +333,7 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
         if request
             .env
             .iter()
-            .any(|entry| entry == "A3S_SEC_READONLY_ROOTFS=1")
+            .any(|entry| entry == "ASTER_SEC_READONLY_ROOTFS=1")
         {
             crate::exec_server::remount_rootfs_readonly(rootfs);
         }
@@ -382,13 +382,13 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
 
             // Apply environment variables
             for (key, _) in std::env::vars_os() {
-                if key.to_str().is_some_and(|key| key.starts_with("A3S_SEC_")) {
+                if key.to_str().is_some_and(|key| key.starts_with("ASTER_SEC_")) {
                     std::env::remove_var(key);
                 }
             }
             for entry in &request.env {
                 if let Some((key, value)) = entry.split_once('=') {
-                    if !key.starts_with("A3S_SEC_") {
+                    if !key.starts_with("ASTER_SEC_") {
                         std::env::set_var(key, value);
                     }
                 }
@@ -525,7 +525,7 @@ fn handle_pty_connection(fd: std::os::fd::OwnedFd) -> Result<(), Box<dyn std::er
             let oom_killed = false;
 
             // Send exit frame (include OOM so CRI can report OOMKilled for TTY)
-            a3s_box_core::pty::write_exit_ex(&mut stream, exit_code, oom_killed).ok();
+            aster_box_core::pty::write_exit_ex(&mut stream, exit_code, oom_killed).ok();
 
             info!(exit_code, oom_killed, "PTY session ended");
 
@@ -598,7 +598,7 @@ fn relay_pty_data(
     master: &std::os::fd::OwnedFd,
     child: nix::unistd::Pid,
 ) -> i32 {
-    use a3s_box_core::pty::{
+    use aster_box_core::pty::{
         parse_frame, read_frame, write_data, PtyFrame, FRAME_PTY_DATA, FRAME_PTY_ERROR,
         FRAME_PTY_RESIZE,
     };

@@ -2,8 +2,8 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{ContainerId, LocalIpcEndpoint, OciBundle, RuntimeClient};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{ContainerId, LocalIpcEndpoint, OciBundle, RuntimeClient};
 use tokio::time::timeout;
 
 use crate::{
@@ -61,7 +61,7 @@ pub(super) async fn run_checkpoint_restore_owner(
     request_file: &Path,
     ready_file: &Path,
     crash_point: crate::NativeLinuxCheckpointRestoreCrashPoint,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     checkpoint::run_restore_owner(
         init_executable,
         criu_executable,
@@ -124,7 +124,7 @@ pub(super) async fn run_rootless_device_policy(
     init_executable: &Path,
     bundle: &Path,
     work_parent: &Path,
-    bootstrap: a3s_oci_agent::RootlessDevicePolicyBootstrap,
+    bootstrap: aster_oci_agent::RootlessDevicePolicyBootstrap,
 ) -> crate::NativeLinuxRootlessSmokeReport {
     rootless::run_device_policy(init_executable, bundle, work_parent, bootstrap).await
 }
@@ -133,7 +133,7 @@ pub(super) async fn run_rootless_device_bootstrap(
     init_executable: &Path,
     bundle: &Path,
     work_parent: &Path,
-    bootstrap: a3s_oci_agent::RootlessDevicePolicyBootstrap,
+    bootstrap: aster_oci_agent::RootlessDevicePolicyBootstrap,
     ready_file: Option<&Path>,
     continue_file: Option<&Path>,
 ) -> crate::NativeLinuxRootlessSmokeReport {
@@ -459,7 +459,7 @@ pub(super) async fn run(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let session_root = work_parent.join(format!("a3s-oci-native-smoke-{nonce}"));
+    let session_root = work_parent.join(format!("aster-oci-native-smoke-{nonce}"));
     if let Err(reason) = create_private_directory(&session_root).await {
         return failed(report, reason);
     }
@@ -601,7 +601,7 @@ mod tests {
     #[test]
     fn qualification_service_socket_paths_fit_linux_sockaddr_un() {
         const LINUX_SUN_PATH_BYTES: usize = 108;
-        let root = service_smoke_session_root(Path::new("/var/tmp/a3s-oci-native.XXXXXXXX/work"));
+        let root = service_smoke_session_root(Path::new("/var/tmp/aster-oci-native.XXXXXXXX/work"));
         for path in [
             root.join("control/exec.sock"),
             root.join("control/pty.sock"),

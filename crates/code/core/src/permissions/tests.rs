@@ -625,7 +625,7 @@ fn interactive_guardrail_rejects_silent_shell_escape_regressions() {
     for command in [
         "sort -o output.txt input.txt",
         "sort -ooutput.txt input.txt",
-        "sort -o/tmp/a3s-hitl-bypass input.txt",
+        "sort -o/tmp/aster-hitl-bypass input.txt",
         "sort -T/tmp input.txt",
         "sort --temporary-directory=tmp input.txt",
         "sort --compress-program=touch input.txt",
@@ -1647,7 +1647,7 @@ fn test_allow_by_default_with_mcp_wildcard_deny() {
 
 #[test]
 fn functions_prefixed_read_matches_read_allow_under_deny_default() {
-    // Desktop / OpenAI-style tool names (a3s#658): models emit `functions.read`
+    // Desktop / OpenAI-style tool names (aster#658): models emit `functions.read`
     // while closed local-workspace policies allow `Read(*)`.
     let policy = PermissionPolicy::new()
         .deny("Read(/**)")
@@ -1660,12 +1660,12 @@ fn functions_prefixed_read_matches_read_allow_under_deny_default() {
     assert_eq!(
         deny_default.check(
             "functions.read",
-            &json!({"file_path": "Review/.a3s/kb/Sources/11/index.md"})
+            &json!({"file_path": "Review/.aster/kb/Sources/11/index.md"})
         ),
         PermissionDecision::Allow
     );
     assert_eq!(
-        deny_default.check("functions.ls", &json!({"path": "Review/.a3s/kb"})),
+        deny_default.check("functions.ls", &json!({"path": "Review/.aster/kb"})),
         PermissionDecision::Allow
     );
     assert_eq!(

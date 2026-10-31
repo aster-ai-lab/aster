@@ -15,14 +15,14 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::permissions::PermissionPolicy;
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
-use a3s_code_core::workspace::{WorkspacePath, WorkspaceReadOverlay};
-use a3s_code_core::{Agent, PlanningMode, SessionOptions};
+use aster_core::permissions::PermissionPolicy;
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_core::workspace::{WorkspacePath, WorkspaceReadOverlay};
+use aster_core::{Agent, PlanningMode, SessionOptions};
 use anyhow::Result;
 use async_trait::async_trait;
 use tokio::sync::mpsc;
@@ -35,6 +35,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/model".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,

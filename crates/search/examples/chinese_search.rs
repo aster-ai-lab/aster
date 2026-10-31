@@ -1,6 +1,6 @@
 //! Example: Meta search with Chinese search engines.
 
-use a3s_search::{
+use aster_search::{
     engines::{So360, Sogou},
     Search, SearchQuery,
 };

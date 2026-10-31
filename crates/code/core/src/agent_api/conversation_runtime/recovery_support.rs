@@ -34,9 +34,9 @@ pub(super) fn pre_analysis_error(error: anyhow::Error) -> anyhow::Error {
 
 pub(super) async fn settle_confirmations(
     run: &crate::fact_control::FactRun,
-    settled: a3s_effect::Settlement<a3s_effect::CodingView>,
+    settled: aster_effect::Settlement<aster_effect::CodingView>,
     parts: &FactSession,
-) -> anyhow::Result<a3s_effect::Settlement<a3s_effect::CodingView>> {
+) -> anyhow::Result<aster_effect::Settlement<aster_effect::CodingView>> {
     match &parts.surface {
         Some(surface) => settle_host_input(run, settled, surface).await,
         None => Ok(settled),
@@ -46,10 +46,10 @@ pub(super) async fn settle_confirmations(
 /// Answer pending confirmations and questions until the run leaves both phases.
 pub(crate) async fn settle_host_input(
     run: &crate::fact_control::FactRun,
-    mut settled: a3s_effect::Settlement<a3s_effect::CodingView>,
+    mut settled: aster_effect::Settlement<aster_effect::CodingView>,
     surface: &crate::fact_control::SessionSurface,
-) -> anyhow::Result<a3s_effect::Settlement<a3s_effect::CodingView>> {
-    while settled.view.phase == a3s_effect::CodingPhase::Confirm {
+) -> anyhow::Result<aster_effect::Settlement<aster_effect::CodingView>> {
+    while settled.view.phase == aster_effect::CodingPhase::Confirm {
         let Some(pending) = settled.view.pending_confirmation.clone() else {
             break;
         };
@@ -60,7 +60,7 @@ pub(crate) async fn settle_host_input(
         }
         settled = run.confirm(&pending.tool_call_id, approved).await?;
     }
-    while settled.view.phase == a3s_effect::CodingPhase::Question {
+    while settled.view.phase == aster_effect::CodingPhase::Question {
         let Some(pending) = settled.view.pending_question.clone() else {
             break;
         };
@@ -116,7 +116,7 @@ pub(crate) async fn settle_host_input(
 
 pub(super) async fn await_host_confirmation(
     surface: &crate::fact_control::SessionSurface,
-    pending: &a3s_effect::PendingConfirmation,
+    pending: &aster_effect::PendingConfirmation,
 ) -> bool {
     let Some(manager) = &surface.confirmation else {
         return false;

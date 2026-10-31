@@ -2,8 +2,8 @@ use super::{digest, validate_digest_field, validate_id, ResearchContractError};
 use crate::core_identity::CoreEventIdentity;
 use serde::{Deserialize, Serialize};
 
-pub const RESEARCH_EVENT_SCHEMA_V1: &str = "a3s.code.science-event.v1";
-const RESEARCH_EVENT_DIGEST_DOMAIN: &str = "a3s.code.science-event.identity.v1";
+pub const RESEARCH_EVENT_SCHEMA_V1: &str = "aster.code.science-event.v1";
+const RESEARCH_EVENT_DIGEST_DOMAIN: &str = "aster.code.science-event.identity.v1";
 pub const RESEARCH_MAX_EVENT_TYPE_BYTES: usize = 128;
 
 /// Digest-only research event projection for Desktop and other hosts.

@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime, RetryPolicy,
     RuntimeBuildCompatibility, RuntimeBuildId, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowRunStatus,
@@ -37,7 +37,7 @@ impl RetainedHistoryStore {
 
 #[async_trait]
 impl FlowEventStore for RetainedHistoryStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         let mut events = self.events.lock().await;
         if run_id != self.run_id {
             return Err(FlowError::RunNotFound(run_id.to_string()));
@@ -58,7 +58,7 @@ impl FlowEventStore for RetainedHistoryStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let mut events = self.events.lock().await;
         if run_id != self.run_id {
             return Err(FlowError::RunNotFound(run_id.to_string()));
@@ -82,14 +82,14 @@ impl FlowEventStore for RetainedHistoryStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         if run_id != self.run_id {
             return Err(FlowError::RunNotFound(run_id.to_string()));
         }
         Ok(self.events.lock().await.clone())
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         Ok(vec![self.run_id.clone()])
     }
 }
@@ -104,7 +104,7 @@ impl FlowRuntime for RetainedHistoryRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.step_output("durable-effect") {
             Some(output) => Ok(context.complete(output.clone())),
@@ -121,7 +121,7 @@ impl FlowRuntime for RetainedHistoryRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<Value> {
         self.step_invocations.fetch_add(1, Ordering::SeqCst);
         Ok(json!({
             "effectId": invocation.input["effectId"],

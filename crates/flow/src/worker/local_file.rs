@@ -35,7 +35,7 @@ pub struct LocalFileFlowTaskQueue {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 struct LocalFileQueuedTask {
-    #[serde(rename = "a3s_flow_partition_key", alias = "kense_flow_partition_key")]
+    #[serde(rename = "aster_flow_partition_key", alias = "kense_flow_partition_key")]
     partition_key: String,
     task: FlowTask,
 }
@@ -319,7 +319,7 @@ impl LocalFileFlowTaskQueue {
             }
             let stable_id = Uuid::new_v5(
                 &Uuid::NAMESPACE_URL,
-                format!("a3s-flow-redrive:{lease_id}").as_bytes(),
+                format!("aster-flow-redrive:{lease_id}").as_bytes(),
             );
             let pending_path = self.pending_path(&format!("redrive-{stable_id}.json"));
             if tokio::fs::try_exists(&pending_path).await? {

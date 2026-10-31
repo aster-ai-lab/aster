@@ -1,10 +1,10 @@
-//! `a3s-box unpause` command — Unpause one or more paused boxes.
+//! `aster-box unpause` command — Unpause one or more paused boxes.
 //!
 //! Uses the durable execution manager for managed boxes and SIGCONT only for
 //! legacy state records.
 
-use a3s_box_core::{ExecutionGeneration, ExecutionId, ExecutionManager};
-use a3s_box_runtime::ManagedExecutionState;
+use aster_box_core::{ExecutionGeneration, ExecutionId, ExecutionManager};
+use aster_box_runtime::ManagedExecutionState;
 use clap::Args;
 
 use crate::lifecycle;
@@ -63,10 +63,10 @@ async fn unpause_one(state: &StateFile, query: &str) -> Result<(), Box<dyn std::
         generation,
     } = unpause_plan(&record)?
     {
-        // The runtime manager owns both A3S OCI resume and generation fencing for
+        // The runtime manager owns both Aster OCI resume and generation fencing for
         // current records. Keep direct SIGCONT only for legacy state files.
         drop(lifecycle_lock);
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         let manager = super::configured_local_execution_manager(&home).await?;
         manager.resume(&execution_id, generation).await?;
         println!("{}", record.name);
@@ -150,7 +150,7 @@ fn unpause_plan(
             .ok_or_else(|| format!("Box {} lost managed lifecycle metadata", record.name))?;
         if state != ManagedExecutionState::Paused {
             return Err(format!(
-                "Cannot unpause box {} because it is {state}. Use `a3s-box ps -a` to inspect state.",
+                "Cannot unpause box {} because it is {state}. Use `aster-box ps -a` to inspect state.",
                 record.name
             )
             .into());
@@ -163,7 +163,7 @@ fn unpause_plan(
 
     if record.status != "paused" {
         return Err(format!(
-            "Cannot unpause box {} because it is {}. Use `a3s-box ps -a` to inspect state.",
+            "Cannot unpause box {} because it is {}. Use `aster-box ps -a` to inspect state.",
             record.name, record.status
         )
         .into());
@@ -176,8 +176,8 @@ fn unpause_plan(
 mod tests {
     use super::*;
     use crate::test_helpers::fixtures::{make_record, setup_state};
-    use a3s_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
-    use a3s_box_runtime::ManagedExecutionMetadata;
+    use aster_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
+    use aster_box_runtime::ManagedExecutionMetadata;
     use std::collections::BTreeMap;
 
     fn managed_record(state: ManagedExecutionState) -> crate::state::BoxRecord {
@@ -235,7 +235,7 @@ mod tests {
         assert!(result.is_err());
         let error = result.unwrap_err().to_string();
         assert!(error.contains("no recorded PID"));
-        assert!(error.contains("a3s-box ps"));
+        assert!(error.contains("aster-box ps"));
         assert_eq!(
             state.find_by_id("id-1").unwrap().status,
             "paused",

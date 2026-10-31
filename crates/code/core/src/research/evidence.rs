@@ -2,8 +2,8 @@ use super::{digest, validate_digest_field, validate_id, validate_text, ResearchC
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
-pub const RESEARCH_EVIDENCE_FACT_SCHEMA_V1: &str = "a3s.code.evidence-fact.v1";
-const RESEARCH_EVIDENCE_FACT_DIGEST_DOMAIN: &str = "a3s.code.evidence-fact.identity.v1";
+pub const RESEARCH_EVIDENCE_FACT_SCHEMA_V1: &str = "aster.code.evidence-fact.v1";
+const RESEARCH_EVIDENCE_FACT_DIGEST_DOMAIN: &str = "aster.code.evidence-fact.identity.v1";
 const SOURCE_SNAPSHOT_METADATA_KEY: &str = "sourceSnapshotDigest";
 pub const RESEARCH_MAX_FACT_METADATA: usize = 32;
 pub const RESEARCH_MAX_METADATA_VALUE_BYTES: usize = 1024;

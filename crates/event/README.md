@@ -1,9 +1,9 @@
-# A3S Event
+# Aster Event
 
 **Language / 语言:** [English](README.md) · [中文](README.zh-CN.md)
 
 <p align="center">
-  <strong>Pluggable Event System for A3S</strong>
+  <strong>Pluggable Event System for Aster</strong>
 </p>
 
 <p align="center">
@@ -11,9 +11,9 @@
 </p>
 
 <p align="center">
-  <a href="https://crates.io/crates/a3s-event"><img src="https://img.shields.io/crates/v/a3s-event.svg" alt="crates.io"></a>
-  <a href="https://docs.rs/a3s-event"><img src="https://docs.rs/a3s-event/badge.svg" alt="docs.rs"></a>
-  <a href="#license"><img src="https://img.shields.io/crates/l/a3s-event.svg" alt="MIT"></a>
+  <a href="https://crates.io/crates/aster-event"><img src="https://img.shields.io/crates/v/aster-event.svg" alt="crates.io"></a>
+  <a href="https://docs.rs/aster-event"><img src="https://docs.rs/aster-event/badge.svg" alt="docs.rs"></a>
+  <a href="#license"><img src="https://img.shields.io/crates/l/aster-event.svg" alt="MIT"></a>
 </p>
 
 <p align="center">
@@ -30,14 +30,14 @@
 
 ## Overview
 
-**A3S Event** provides a provider-agnostic API for event subscription, dispatch, and persistence. All backends implement the `EventProvider` trait — swap between NATS JetStream, in-memory, or any custom provider without changing application code.
+**Aster Event** provides a provider-agnostic API for event subscription, dispatch, and persistence. All backends implement the `EventProvider` trait — swap between NATS JetStream, in-memory, or any custom provider without changing application code.
 
 ```rust
-use a3s_event::{EventBus, Event};
-use a3s_event::provider::memory::MemoryProvider;
+use aster_event::{EventBus, Event};
+use aster_event::provider::memory::MemoryProvider;
 
 #[tokio::main]
-async fn main() -> a3s_event::Result<()> {
+async fn main() -> aster_event::Result<()> {
     let bus = EventBus::new(MemoryProvider::default());
 
     // Publish
@@ -69,13 +69,13 @@ All optional modules are behind feature gates. The minimal core (types, memory p
 
 ```toml
 # Full (default)
-a3s-event = "0.3"
+aster-event = "0.3"
 
 # Minimal core — no NATS, no encryption, no CloudEvents, no routing
-a3s-event = { version = "0.3", default-features = false }
+aster-event = { version = "0.3", default-features = false }
 
 # Pick what you need
-a3s-event = { version = "0.3", default-features = false, features = ["nats", "encryption"] }
+aster-event = { version = "0.3", default-features = false, features = ["nats", "encryption"] }
 ```
 
 ## Providers
@@ -91,7 +91,7 @@ a3s-event = { version = "0.3", default-features = false, features = ["nats", "en
 Zero-dependency, in-process event bus using `tokio::sync::broadcast`.
 
 ```rust
-use a3s_event::provider::memory::{MemoryProvider, MemoryConfig};
+use aster_event::provider::memory::{MemoryProvider, MemoryConfig};
 
 let provider = MemoryProvider::new(MemoryConfig {
     subject_prefix: "events".to_string(),
@@ -108,11 +108,11 @@ let provider = MemoryProvider::default();
 Requires `nats` feature. Distributed event streaming with persistent storage, durable consumers, and at-least-once delivery.
 
 ```rust
-use a3s_event::provider::nats::{NatsProvider, NatsConfig, StorageType};
+use aster_event::provider::nats::{NatsProvider, NatsConfig, StorageType};
 
 let provider = NatsProvider::connect(NatsConfig {
     url: "nats://127.0.0.1:4222".to_string(),
-    stream_name: "A3S_EVENTS".to_string(),
+    stream_name: "ASTER_EVENTS".to_string(),
     subject_prefix: "events".to_string(),
     storage: StorageType::File,
     max_events: 100_000,
@@ -126,11 +126,11 @@ let provider = NatsProvider::connect(NatsConfig {
 Requires `iggy` feature. Rust-native message streaming (stream → topic → partition). Subjects map onto Iggy with one rule: the stream holds every topic, and each subject **category** becomes a topic; subscription filters narrow client-side via `subject_matches`. Durable subscriptions are consumer groups with explicitly stored offsets (at-least-once); ordering is total within a category.
 
 ```rust
-use a3s_event::provider::iggy::{IggyConfig, IggyProvider};
+use aster_event::provider::iggy::{IggyConfig, IggyProvider};
 
 let provider = IggyProvider::connect(IggyConfig {
     server_address: "127.0.0.1:5102".to_string(),
-    stream_name: "a3s_events".to_string(),
+    stream_name: "aster_events".to_string(),
     subject_prefix: "events".to_string(),
     max_age_secs: 604_800, // 7 days
     ..Default::default()
@@ -141,7 +141,7 @@ Known limitations of the current version (fail-closed, not silently ignored): `e
 
 ## Operations
 
-- **Resilience (verified by opt-in chaos tests)**: an Iggy broker restart mid-stream preserves stream/topic/consumer-offset state; consumers reconnecting under the same name resume from their committed offset without replaying acked events. Dead group members are evicted after the server's `consumer_group.rebalancing_timeout` (default 30s). Run the chaos suite locally with `A3S_EVENT_IGGY_RESTART="docker restart <container>" cargo test --test e2e_chaos_resilience`.
+- **Resilience (verified by opt-in chaos tests)**: an Iggy broker restart mid-stream preserves stream/topic/consumer-offset state; consumers reconnecting under the same name resume from their committed offset without replaying acked events. Dead group members are evicted after the server's `consumer_group.rebalancing_timeout` (default 30s). Run the chaos suite locally with `ASTER_EVENT_IGGY_RESTART="docker restart <container>" cargo test --test e2e_chaos_resilience`.
 - **Timestamp positioning** (`DeliverPolicy::ByStartTime`) compares against the broker's server-side receive stamps; allow for clock skew between publishers and the broker when choosing cutoffs.
 - **Coverage discipline**: unit coverage is measured with `cargo llvm-cov --lib` (~83% lines; broker provider bodies are exercised by the live-server e2e suites instead). `cargo clippy --all-targets -- -D warnings` runs against both the default and the `nats,iggy` feature sets in CI; the minimal core cross-compiles cleanly for Linux x64/arm64 and Windows.
 - **Baseline performance** (memory provider, crate release profile `opt-level=z` + LTO, criterion, Apple Silicon): publish ~203 µs per 100-event batch (~2.0 µs/event) and ~1.70 ms per 1000-event batch (~1.7 µs/event); `history(limit 100)` ~12.4 µs unfiltered / ~20.8 µs subject-filtered. Broker-backed providers are dominated by network round-trips, not this crate's envelope handling; run `cargo bench --bench publish` for your own baseline.
@@ -216,8 +216,8 @@ Optional types (behind feature gates):
 ### EventBus
 
 ```rust
-use a3s_event::{EventBus, SubscriptionFilter};
-use a3s_event::provider::memory::MemoryProvider;
+use aster_event::{EventBus, SubscriptionFilter};
+use aster_event::provider::memory::MemoryProvider;
 
 let bus = EventBus::new(MemoryProvider::default());
 
@@ -248,7 +248,7 @@ let metrics = bus.metrics();
 ### EventProvider Trait
 
 ```rust
-use a3s_event::provider::EventProvider;
+use aster_event::provider::EventProvider;
 
 provider.publish(&event).await?;
 provider.subscribe("events.market.>").await?;
@@ -284,9 +284,9 @@ while let Some(pending) = sub.next_manual_ack().await? {
 Implement `EventProvider` and `Subscription` to add any backend:
 
 ```rust
-use a3s_event::provider::{EventProvider, Subscription, PendingEvent, ProviderInfo};
-use a3s_event::types::{Event, ReceivedEvent};
-use a3s_event::Result;
+use aster_event::provider::{EventProvider, Subscription, PendingEvent, ProviderInfo};
+use aster_event::types::{Event, ReceivedEvent};
+use aster_event::Result;
 use async_trait::async_trait;
 
 pub struct RedisProvider { /* ... */ }
@@ -324,7 +324,7 @@ bus.publish("market", "forex", "Rate change", "source", payload).await?;
 
 ## Responsibility Boundary
 
-A3S Event does NOT re-implement capabilities that providers already offer natively.
+Aster Event does NOT re-implement capabilities that providers already offer natively.
 
 | Capability | Owner | Notes |
 |------------|-------|-------|
@@ -333,12 +333,12 @@ A3S Event does NOT re-implement capabilities that providers already offer native
 | Connection resilience | **Provider** | NATS: async-nats auto-reconnect. |
 | Partitioning / sharding | **Provider** | NATS: subject-based routing. Kafka: partition key. |
 | Transport encryption | **Provider** | NATS/Kafka: TLS configuration. |
-| Event versioning / schema | **A3S Event** | Provider-agnostic, application-level concern. |
-| Payload encryption | **A3S Event** | Application-level encrypt/decrypt before publish. |
-| Dead letter queue | **A3S Event** | Unified DLQ abstraction across providers. |
-| State persistence | **A3S Event** | Subscription filter durability across restarts. |
-| Observability | **A3S Event** | Application-level metrics and tracing. |
-| Provider config passthrough | **A3S Event** | Expose provider-native knobs (`MaxDeliver`, `BackOff`, etc.) |
+| Event versioning / schema | **Aster Event** | Provider-agnostic, application-level concern. |
+| Payload encryption | **Aster Event** | Application-level encrypt/decrypt before publish. |
+| Dead letter queue | **Aster Event** | Unified DLQ abstraction across providers. |
+| State persistence | **Aster Event** | Subscription filter durability across restarts. |
+| Observability | **Aster Event** | Application-level metrics and tracing. |
+| Provider config passthrough | **Aster Event** | Expose provider-native knobs (`MaxDeliver`, `BackOff`, etc.) |
 
 ## Development
 
@@ -373,7 +373,7 @@ nats-server -js
 just test-integration
 ```
 
-`just test-integration` sets `A3S_EVENT_REQUIRE_NATS=1`, so a missing or
+`just test-integration` sets `ASTER_EVENT_REQUIRE_NATS=1`, so a missing or
 misconfigured JetStream server fails instead of silently skipping the suite.
 Every pull request runs the same fail-closed suite against the pinned official
 NATS 2.11.8 image.

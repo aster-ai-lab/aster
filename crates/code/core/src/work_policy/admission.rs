@@ -1,10 +1,10 @@
 //! Policy facts in the original thread; the caller retains original owner/writer admission.
 
 use super::{WorkPolicyError, WorkPolicyV1, WORK_POLICY_SCHEMA};
-use a3s_effect::{Fact, FileLog, FileLogWriterFence, LogStore, NewFact};
+use aster_effect::{Fact, FileLog, FileLogWriterFence, LogStore, NewFact};
 use serde::{Deserialize, Serialize};
 
-pub(crate) const POLICY_KIND: &str = "a3s.work-policy.admitted";
+pub(crate) const POLICY_KIND: &str = "aster.work-policy.admitted";
 const POLICY_KEY: &str = "work-policy";
 
 #[derive(Serialize, Deserialize)]
@@ -35,7 +35,7 @@ pub(crate) fn prepare_policy(
 ) -> Result<PreparedPolicy, WorkPolicyError> {
     let mut admitted = None;
     for (index, fact) in facts.iter().enumerate() {
-        if fact.kind.starts_with("a3s.work-policy.") && fact.kind != POLICY_KIND {
+        if fact.kind.starts_with("aster.work-policy.") && fact.kind != POLICY_KIND {
             return Err(WorkPolicyError::Corrupt("unsupported policy fact kind"));
         }
         if fact.kind != POLICY_KIND {

@@ -12,7 +12,7 @@ use std::os::unix::ffi::OsStrExt;
 #[cfg(unix)]
 use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentVsockEndpoint, AGENT_RECOVERY_REPORT_DIRECTORY_PREFIX, AGENT_RECOVERY_REPORT_FILE_NAME,
     AGENT_RECOVERY_REPORT_PENDING_SUFFIX,
 };

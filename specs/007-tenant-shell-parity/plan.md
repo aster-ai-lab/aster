@@ -14,7 +14,7 @@ reviewed classification: of the fourteen known divergence sites, twelve are
 account-bound keeps (managed identity, org scope, or the specs/004 BYOK
 contract), one is conditional (插件 rail entry — unifies only if the aix
 catalogue proves locally fed), and one is a verification (per-tenant default
-accent via the existing `--a3s-tenant-brand` stamp). New code is small:
+accent via the existing `--aster-tenant-brand` stamp). New code is small:
 conditional gate flip + parity/absence tests + theme-default test + evidence
 captures. Everything else is documentation of the closed set.
 
@@ -82,7 +82,7 @@ specs/007-tenant-shell-parity/
 | 11 | `components/settingsMenu.ts` local-model pages | aster-only additive pages | specs/004 FR-013 BYOK contract | **keep** (product-scoped at the no-accounts boundary) |
 | 12 | native `tenant-aster` / `tenant-toyou` cargo features | mutually exclusive builds | build contract (specs/004 FR-009) | **keep** |
 | 13 | `tenantBrand.ts` | name/mark/company strings | — | **sanctioned mechanism**, not a gate |
-| 14 | `utils/tenantTheme.ts` + `scripts/studioTenantBrand.ts` | `--a3s-tenant-brand` stamp | — | **T3 verify + test**: stamp drives per-tenant default accent; saved preference wins |
+| 14 | `utils/tenantTheme.ts` + `scripts/studioTenantBrand.ts` | `--aster-tenant-brand` stamp | — | **T3 verify + test**: stamp drives per-tenant default accent; saved preference wins |
 
 ### In-repo prior art per decision
 
@@ -92,7 +92,7 @@ specs/007-tenant-shell-parity/
   `withPluginsOnRail` in `utils/sidebar.ts` already place 插件; no new order
   code.
 - Per-tenant brand stamp: `scripts/studioTenantBrand.ts` (injects
-  `style="--a3s-tenant-brand:…"` at build) and `utils/tenantTheme.ts`
+  `style="--aster-tenant-brand:…"` at build) and `utils/tenantTheme.ts`
   (reads it). specs/004 FR-002 is the contract.
 - Skeleton parity testing: `tenantBrand.test.ts` and `AppShell.test.tsx`
   establish the render-both-modes pattern (`vi.stubEnv('PUBLIC_STUDIO_TENANT', …)`).

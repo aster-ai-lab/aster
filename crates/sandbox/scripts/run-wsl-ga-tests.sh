@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run a3s-sandbox Gate 0–7 tests on WSL2 from a native Linux filesystem.
+# Run aster-sandbox Gate 0–7 tests on WSL2 from a native Linux filesystem.
 #
 # Do NOT run against /mnt/<drive>/... — the monorepo workspace scan and
 # bubblewrap bind mounts are pathologically slow (or flaky) on 9p.
@@ -9,8 +9,8 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 if [[ "$ROOT" == /mnt/* ]]; then
   echo "error: refuse WSL GA from '$ROOT' (9p mount)." >&2
   echo "copy the crate to a native path, for example:" >&2
-  echo "  rsync -a --exclude target --exclude .git '$ROOT'/ ~/a3s-sandbox-ga/" >&2
-  echo "  ~/a3s-sandbox-ga/scripts/run-wsl-ga-tests.sh" >&2
+  echo "  rsync -a --exclude target --exclude .git '$ROOT'/ ~/aster-sandbox-ga/" >&2
+  echo "  ~/aster-sandbox-ga/scripts/run-wsl-ga-tests.sh" >&2
   exit 2
 fi
 

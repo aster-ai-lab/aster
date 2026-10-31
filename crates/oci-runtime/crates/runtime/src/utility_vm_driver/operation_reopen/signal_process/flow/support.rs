@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerTarget, DeleteRequest, Error, ErrorCode, ExecRequest, OperationId, ProcessId,
     ProcessIo, ProcessTarget, SignalProcessRequest, StartRequest, TerminalSize,
 };
@@ -15,7 +15,7 @@ use crate::transport_cleanup_report::is_retryable_disconnect_operation;
 use crate::{DriverExecRequest, DriverSignalProcessRequest, OciVmOperationReopenReplacementReport};
 
 pub(in crate::utility_vm_driver::operation_reopen::signal_process) const SIGNAL_MARKER_NAME: &str =
-    ".a3s-oci-signal-process-reopen-smoke";
+    ".aster-oci-signal-process-reopen-smoke";
 pub(in crate::utility_vm_driver::operation_reopen::signal_process) const SIGNAL_PROCESS_SIGNAL:
     i32 = 10;
 
@@ -53,7 +53,7 @@ pub(in crate::utility_vm_driver::operation_reopen::signal_process) fn signalable
     let process_id = ProcessId::new(format!("signal-worker-{nonce}"))
         .map_err(|error| format!("failed to construct signalable Exec process ID: {error}"))?;
     let command = format!(
-        "set -eu; trap \"printf 'a3s-oci-signal-process-{nonce}\\n' > /{SIGNAL_MARKER_NAME}\" USR1; printf 'a3s-oci-exec-process-{nonce}\\n' > /{EXEC_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"
+        "set -eu; trap \"printf 'aster-oci-signal-process-{nonce}\\n' > /{SIGNAL_MARKER_NAME}\" USR1; printf 'aster-oci-exec-process-{nonce}\\n' > /{EXEC_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"
     );
     let process: Process = serde_json::from_value(serde_json::json!({
         "terminal": true,
@@ -65,9 +65,9 @@ pub(in crate::utility_vm_driver::operation_reopen::signal_process) fn signalable
     }))
     .map_err(|error| format!("failed to construct signalable terminal Exec process: {error}"))?;
     let io = ProcessIo {
-        stdin: a3s_oci_sdk::IoMode::Terminal,
-        stdout: a3s_oci_sdk::IoMode::Terminal,
-        stderr: a3s_oci_sdk::IoMode::Terminal,
+        stdin: aster_oci_sdk::IoMode::Terminal,
+        stdout: aster_oci_sdk::IoMode::Terminal,
+        stderr: aster_oci_sdk::IoMode::Terminal,
         terminal_size: Some(TerminalSize {
             width: 80,
             height: 24,
@@ -134,7 +134,7 @@ pub(super) async fn signal_process_journal_status(
 pub(super) async fn durable_exec_process(
     state_root: &Path,
     target: &ProcessTarget,
-) -> Result<a3s_oci_sdk::ProcessRecord, String> {
+) -> Result<aster_oci_sdk::ProcessRecord, String> {
     crate::operation_journal_evidence::durable_process(state_root, target).await
 }
 
@@ -192,7 +192,7 @@ mod tests {
             .pointer("/args/2")
             .and_then(serde_json::Value::as_str)
             .is_some_and(|command| {
-                command.contains("a3s-oci-signal-process-signal-123")
+                command.contains("aster-oci-signal-process-signal-123")
                     && command.contains(SIGNAL_MARKER_NAME)
                     && command.contains(EXEC_MARKER_NAME)
                     && command.contains("USR1")
@@ -201,7 +201,7 @@ mod tests {
         assert_eq!(SIGNAL_PROCESS_SIGNAL, 10);
         assert_eq!(
             io.terminal_size,
-            Some(a3s_oci_sdk::TerminalSize {
+            Some(aster_oci_sdk::TerminalSize {
                 width: 80,
                 height: 24,
             })

@@ -52,7 +52,7 @@ pub fn document_snapshot(update: &[u8]) -> DocumentSnapshot {
         .transact_mut()
         .apply_update(Update::decode_v1(update).unwrap())
         .unwrap();
-    let fragment = document.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = document.get_or_insert_xml_fragment("aster.office.document.content");
     let transaction = document.transact();
     let mut paragraphs = Vec::new();
     let mut rows = Vec::new();

@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_use_core::{
+use aster_use_core::{
     CatalogPlanningTarget, ExecutablePlanningSurface, PackageSurfaceKind, PlanningArtifactRef,
     PlanningSurfaceActivation, PluginCatalogRecord, PluginPlanningBundle, ToolReleaseDescriptor,
     PLUGIN_CATALOG_SCHEMA_V3, PLUGIN_PLANNING_BUNDLE_SCHEMA,
@@ -170,7 +170,7 @@ async fn tuf_catalog_lists_signed_packages_without_downloading_targets() {
     assert_eq!(catalog.metadata.registry_name, "fixture");
     assert_eq!(catalog.metadata.package_targets, 1);
     assert_eq!(catalog.packages.len(), 1);
-    assert_eq!(catalog.packages[0].package_id, "a3s/science");
+    assert_eq!(catalog.packages[0].package_id, "aster/science");
     assert_eq!(catalog.packages[0].version, PACKAGE_VERSION);
     assert_eq!(catalog.packages[0].target, catalog.host_target);
     assert!(server
@@ -186,7 +186,7 @@ async fn catalog_v3_loads_only_the_exact_signed_planning_target() {
     let temp = tempfile::tempdir().unwrap();
     let trusted = trusted_registry(&server, &repository, temp.path().join("tuf"));
 
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     server.clear_requests();
@@ -209,7 +209,7 @@ async fn executable_archive_download_retains_its_verified_planning_bundle() {
     let server = TestServer::start(repository.routes.clone());
     let temp = tempfile::tempdir().unwrap();
     let trusted = trusted_registry(&server, &repository, temp.path().join("tuf"));
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     server.clear_requests();
@@ -236,7 +236,7 @@ async fn verified_targets_are_content_addressed_and_reusable_without_network() {
     let trusted = trusted_registry(&server, &repository, datastore.clone());
 
     refresh_remote_registry(&trusted).await.unwrap();
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let archive_sha256 = prepared.resolved().sha256.clone();
@@ -265,7 +265,7 @@ async fn verified_targets_are_content_addressed_and_reusable_without_network() {
     }
 
     server.clear_requests();
-    let cached = prepare_cached_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let cached = prepare_cached_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let cached = cached.download().await.unwrap();
@@ -285,7 +285,7 @@ async fn cached_target_tampering_and_missing_content_fail_closed_without_network
     let trusted = trusted_registry(&server, &repository, datastore.clone());
 
     refresh_remote_registry(&trusted).await.unwrap();
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let digest = prepared.resolved().sha256.clone();
@@ -297,7 +297,7 @@ async fn cached_target_tampering_and_missing_content_fail_closed_without_network
 
     std::fs::write(&cache_path, b"tampered cache bytes").unwrap();
     server.clear_requests();
-    let prepared = prepare_cached_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_cached_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let error = prepared.download().await.unwrap_err();
@@ -305,7 +305,7 @@ async fn cached_target_tampering_and_missing_content_fail_closed_without_network
     assert!(server.requests().is_empty());
 
     std::fs::remove_file(&cache_path).unwrap();
-    let prepared = prepare_cached_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_cached_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let error = prepared.download().await.unwrap_err();
@@ -324,7 +324,7 @@ async fn verified_target_cache_enforces_entry_retention_during_commit() {
     let trusted =
         trusted_registry(&server, &repository, datastore.clone()).with_target_cache_policy(policy);
     refresh_remote_registry(&trusted).await.unwrap();
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let archive_digest = prepared.resolved().sha256.clone();
@@ -353,7 +353,7 @@ async fn verified_target_cache_enforces_entry_retention_during_commit() {
         .exists());
 
     server.clear_requests();
-    let cached = prepare_cached_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let cached = prepare_cached_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let error = cached.download().await.unwrap_err();
@@ -366,14 +366,14 @@ async fn catalog_v3_static_package_has_no_planning_target_download() {
     let archive = extension_archive(PACKAGE_VERSION);
     let target = host_target().unwrap();
     let archive_target = format!(
-        "extensions/a3s/science/{PACKAGE_VERSION}/stable/{target}/a3s-use-science-{PACKAGE_VERSION}-{target}.tar.gz"
+        "extensions/aster/science/{PACKAGE_VERSION}/stable/{target}/aster-use-science-{PACKAGE_VERSION}-{target}.tar.gz"
     );
     let mut catalog = PluginCatalogRecord::from_json(COMPLETE_CATALOG).unwrap();
     catalog.schema = PLUGIN_CATALOG_SCHEMA_V3.to_owned();
-    catalog.package_id = "a3s/science".to_owned();
-    catalog.display_name = "A3S Science".to_owned();
-    catalog.description = "Static scientific guidance for A3S agents.".to_owned();
-    catalog.publisher = "a3s".to_owned();
+    catalog.package_id = "aster/science".to_owned();
+    catalog.display_name = "Aster Science".to_owned();
+    catalog.description = "Static scientific guidance for Aster agents.".to_owned();
+    catalog.publisher = "aster".to_owned();
     catalog.version = PACKAGE_VERSION.to_owned();
     catalog.requires_use = ">=0.3.0, <0.4.0".to_owned();
     catalog.target = target;
@@ -387,7 +387,7 @@ async fn catalog_v3_static_package_has_no_planning_target_download() {
     catalog.archive.length = archive.len() as u64;
     catalog.archive.sha256 = format!("sha256:{:x}", Sha256::digest(&archive));
     catalog.package.manifest_sha256 = Some(format!("sha256:{}", "c".repeat(64)));
-    catalog.repository = "https://github.com/A3S-Lab/Science".to_owned();
+    catalog.repository = "https://github.com/aster-ai-lab/Science".to_owned();
     catalog.validate().unwrap();
     let repository = TestRepository::with_target_metadata(
         archive,
@@ -400,7 +400,7 @@ async fn catalog_v3_static_package_has_no_planning_target_download() {
     let temp = tempfile::tempdir().unwrap();
     let trusted = trusted_registry(&server, &repository, temp.path().join("tuf"));
 
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     server.clear_requests();
@@ -418,7 +418,7 @@ async fn catalog_v3_rejects_planning_target_metadata_drift_before_download() {
     let temp = tempfile::tempdir().unwrap();
     let trusted = trusted_registry(&server, &repository, temp.path().join("tuf"));
 
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     server.clear_requests();
@@ -440,7 +440,7 @@ async fn reviewed_registry_plan_fails_before_target_download() {
 
     let error = prepare_remote_package(
         &trusted,
-        "a3s/science",
+        "aster/science",
         None,
         "stable",
         Some(&"0".repeat(64)),
@@ -469,7 +469,7 @@ async fn tuf_rejects_wrong_root_and_tampered_target() {
         temp.path().join("wrong-root"),
     )
     .unwrap();
-    let error = prepare_remote_package(&wrong, "a3s/science", None, "stable", None)
+    let error = prepare_remote_package(&wrong, "aster/science", None, "stable", None)
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.extension.registry_root_mismatch");
@@ -485,7 +485,7 @@ async fn tuf_rejects_wrong_root_and_tampered_target() {
         &repository,
         temp.path().join("tampered-target"),
     );
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let error = prepared.download().await.unwrap_err();
@@ -500,7 +500,7 @@ async fn tuf_rejects_metadata_tampering_expiration_and_rollback() {
     let temp = tempfile::tempdir().unwrap();
     let datastore = temp.path().join("rollback-state");
     let trusted_two = trusted_registry(&server_two, &version_two, datastore.clone());
-    prepare_remote_package(&trusted_two, "a3s/science", None, "stable", None)
+    prepare_remote_package(&trusted_two, "aster/science", None, "stable", None)
         .await
         .unwrap();
 
@@ -508,7 +508,7 @@ async fn tuf_rejects_metadata_tampering_expiration_and_rollback() {
     assert_eq!(version_one.root_sha256, version_two.root_sha256);
     let server_one = TestServer::start(version_one.routes.clone());
     let trusted_one = trusted_registry(&server_one, &version_one, datastore);
-    let rollback = prepare_remote_package(&trusted_one, "a3s/science", None, "stable", None)
+    let rollback = prepare_remote_package(&trusted_one, "aster/science", None, "stable", None)
         .await
         .unwrap_err();
     assert_eq!(rollback.code, "use.extension.registry_untrusted");
@@ -517,7 +517,7 @@ async fn tuf_rejects_metadata_tampering_expiration_and_rollback() {
     let expired_server = TestServer::start(expired.routes.clone());
     let expired_registry =
         trusted_registry(&expired_server, &expired, temp.path().join("expired-state"));
-    let error = prepare_remote_package(&expired_registry, "a3s/science", None, "stable", None)
+    let error = prepare_remote_package(&expired_registry, "aster/science", None, "stable", None)
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.extension.registry_untrusted");
@@ -532,7 +532,7 @@ async fn tuf_rejects_metadata_tampering_expiration_and_rollback() {
         &version_one,
         temp.path().join("tampered-metadata"),
     );
-    let error = prepare_remote_package(&tampered_registry, "a3s/science", None, "stable", None)
+    let error = prepare_remote_package(&tampered_registry, "aster/science", None, "stable", None)
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.extension.registry_untrusted");
@@ -559,16 +559,16 @@ fn planning_test_repository(
     let archive = extension_archive(PACKAGE_VERSION);
     let target = host_target().unwrap();
     let archive_target = format!(
-        "extensions/a3s/science/{PACKAGE_VERSION}/stable/{target}/a3s-use-science-{PACKAGE_VERSION}-{target}.tar.gz"
+        "extensions/aster/science/{PACKAGE_VERSION}/stable/{target}/aster-use-science-{PACKAGE_VERSION}-{target}.tar.gz"
     );
     let planning_target =
-        format!("extensions/a3s/science/{PACKAGE_VERSION}/stable/{target}/planning-v1.json");
+        format!("extensions/aster/science/{PACKAGE_VERSION}/stable/{target}/planning-v1.json");
     let mut catalog = PluginCatalogRecord::from_json(COMPLETE_CATALOG).unwrap();
     catalog.schema = PLUGIN_CATALOG_SCHEMA_V3.to_owned();
-    catalog.package_id = "a3s/science".to_owned();
-    catalog.display_name = "A3S Science".to_owned();
-    catalog.description = "Scientific research capabilities for A3S agents.".to_owned();
-    catalog.publisher = "a3s".to_owned();
+    catalog.package_id = "aster/science".to_owned();
+    catalog.display_name = "Aster Science".to_owned();
+    catalog.description = "Scientific research capabilities for Aster agents.".to_owned();
+    catalog.publisher = "aster".to_owned();
     catalog.version = PACKAGE_VERSION.to_owned();
     catalog.requires_use = ">=0.3.0, <0.4.0".to_owned();
     catalog.target = target;
@@ -576,7 +576,7 @@ fn planning_test_repository(
     catalog.archive.length = archive.len() as u64;
     catalog.archive.sha256 = format!("sha256:{:x}", Sha256::digest(&archive));
     catalog.package.manifest_sha256 = Some(format!("sha256:{}", "c".repeat(64)));
-    catalog.repository = "https://github.com/A3S-Lab/Science".to_owned();
+    catalog.repository = "https://github.com/aster-ai-lab/Science".to_owned();
     catalog.surfaces = vec![catalog
         .surfaces
         .iter()
@@ -614,7 +614,7 @@ fn planning_test_repository(
             base_path: "/api".to_owned(),
             artifact: PlanningArtifactRef {
                 uri: format!(
-                    "oci://registry.example/a3s/science-index@{}",
+                    "oci://registry.example/aster/science-index@{}",
                     descriptor.artifact.digest
                 ),
                 digest: descriptor.artifact.digest.clone(),

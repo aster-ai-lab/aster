@@ -1,10 +1,10 @@
 # Windows/WHPX mid-run Live session ownership
 
 Status: **AgentVmSession durable Live path** owns the guest agent named pipe and
-host-control named pipe inside `a3s-oci-krun-shim session-owner` when
-`A3S_OCI_WHPX_SESSION_OWNER=1`. First Host connects as a NamedPipeClient to
+host-control named pipe inside `aster-oci-krun-shim session-owner` when
+`ASTER_OCI_WHPX_SESSION_OWNER=1`. First Host connects as a NamedPipeClient to
 host-control. Host-control EOF closes the guest pipe so the Linux guest can
-Host-EOF reconnect (`A3S_OCI_GUEST_HOST_RECONNECT=1`, KVM parity) before the
+Host-EOF reconnect (`ASTER_OCI_GUEST_HOST_RECONNECT=1`, KVM parity) before the
 replacement Host's Live HostHello. `WhpxRuntimeDriver::recover` calls
 `whpx_live_reattach::try_reattach_live` before inventing `RecoveredStopped`.
 Does **not** claim Box Enterprise GA, tip-prove binder gate 9, or flip
@@ -14,7 +14,7 @@ Does **not** claim Box Enterprise GA, tip-prove binder gate 9, or flip
 
 Box binder gate 9 / Axis A needs mid-run Host death with retained Live stream
 and filesystem reattach under packaged Box-owned WHPX. KVM already has
-`A3S_OCI_KVM_SESSION_OWNER=1` plus a durable session-owner parent so Host
+`ASTER_OCI_KVM_SESSION_OWNER=1` plus a durable session-owner parent so Host
 SIGKILL does not tear down the Guest.
 
 WHPX default remains **Host-bound**: the libkrun shim owner watchdog
@@ -26,28 +26,28 @@ why Created-state Host re-ensure (Box WHPX cutover gate 4) is not mid-run Live.
 
 | Piece | Behavior |
 | --- | --- |
-| Env `A3S_OCI_WHPX_SESSION_OWNER=1` | Request durable session ownership |
+| Env `ASTER_OCI_WHPX_SESSION_OWNER=1` | Request durable session ownership |
 | Default (unset) | Host-bound; Host taskkill → Guest teardown (stopped-only) |
 | Durable mode | Shim owner watchdog watches a **session-owner** process that outlives Host |
-| Binding | `a3s.oci.whpx-live-session-binding.v1` under the runtime share (PID + `GetProcessTimes` creation ticks for session-owner and shim; host-control + service named pipes; session token) |
+| Binding | `aster.oci.whpx-live-session-binding.v1` under the runtime share (PID + `GetProcessTimes` creation ticks for session-owner and shim; host-control + service named pipes; session token) |
 | Reattach | Replacement Host authenticates binding, reconnects host-control pipe, resumes Ready without inventing exit |
 
 ## Landed in this slice
 
 - `whpx_durable_session_owner`: env parse, `spawn_via_session_owner_helper`
-  (breakaway + Job Object via `a3s-oci-krun-shim session-owner`), optional
+  (breakaway + Job Object via `aster-oci-krun-shim session-owner`), optional
   `--host-control`, and `require_durable_spawn_ready` Ok once the helper is
   productized.
 - `whpx_live_session_binding`: schema, publish/load/authenticate/remove, Windows
   process identity via `GetProcessTimes`; stable
   `host_control_pipe_for_service` naming.
-- `a3s-oci-krun-shim session-owner` / `session-owner-probe` /
+- `aster-oci-krun-shim session-owner` / `session-owner-probe` /
   `session-owner-bridge-echo` on Windows (`KILL_ON_JOB_CLOSE` Job Object +
   duplex named-pipe Host↔shim byte bridge when `--host-control` is set;
   Host-control EOF re-accepts guest then Host for Live reopen).
 - AgentVmSession Windows durable path: omits Host `--owner-pid`, does **not**
   bind `WindowsAgentPipeListener` on the product agent pipe, spawns through the
-  helper with host-control + `A3S_OCI_GUEST_HOST_RECONNECT=1`, connects as
+  helper with host-control + `ASTER_OCI_GUEST_HOST_RECONNECT=1`, connects as
   `NamedPipeClient`, publishes binding after hello.
 - `utility_vm_driver/whpx_live_reattach.rs` (pulled via `#[path]` from the
   runtime crate root on Windows): authenticate binding → host-control connect →
@@ -57,7 +57,7 @@ why Created-state Host re-ensure (Box WHPX cutover gate 4) is not mid-run Live.
 
 ## Next slices (ordered)
 
-1. Box tip-prove `a3s.box.windows-whpx-live-session.v1` on real WHPX (binder
+1. Box tip-prove `aster.box.windows-whpx-live-session.v1` on real WHPX (binder
    gate 9); keep `b2_process_session_recovery_closed=false` until multi-driver
    B2 exit criteria.
 

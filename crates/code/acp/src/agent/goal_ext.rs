@@ -2,7 +2,7 @@
 
 use super::*;
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) async fn goal_language(
         &self,
         session_id: &acp::SessionId,
@@ -46,9 +46,9 @@ impl A3sCodeAgent {
             }
         }
         let mode = if active {
-            a3s_code_core::PlanningMode::Enabled
+            aster_core::PlanningMode::Enabled
         } else {
-            a3s_code_core::PlanningMode::Disabled
+            aster_core::PlanningMode::Disabled
         };
         let _ = session.set_planning_mode(mode);
     }
@@ -115,7 +115,7 @@ impl A3sCodeAgent {
                     .await
                     .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?
                 {
-                    a3s_code_core::GoalTickStream::Decided(decision) => {
+                    aster_core::GoalTickStream::Decided(decision) => {
                         drop(permit);
                         self.emit_text(
                             session_id,
@@ -124,7 +124,7 @@ impl A3sCodeAgent {
                         .await;
                         return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
                     }
-                    a3s_code_core::GoalTickStream::Replayed(snapshot) => {
+                    aster_core::GoalTickStream::Replayed(snapshot) => {
                         drop(permit);
                         let report =
                             crate::goal::bound_slice_report(session, Some(&snapshot.id), language)
@@ -133,7 +133,7 @@ impl A3sCodeAgent {
                         self.emit_text(session_id, &format!("\n\n{report}")).await;
                         return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
                     }
-                    a3s_code_core::GoalTickStream::Started(stream) => {
+                    aster_core::GoalTickStream::Started(stream) => {
                         self.emit_text(session_id, "\n\n").await;
                         let run_id = stream.run.as_ref().map(|run| run.id().to_string());
                         let response = self
@@ -219,7 +219,7 @@ impl A3sCodeAgent {
         &self,
         args: &acp::ExtRequest,
     ) -> acp::Result<acp::ExtResponse> {
-        use a3s_code_core::goal_control as goal;
+        use aster_core::goal_control as goal;
         enum Command {
             Definition(goal::GoalDefinitionCommandV1),
             Plan(goal::GoalPlanCommandV1),
@@ -233,19 +233,19 @@ impl A3sCodeAgent {
         }
         let params = args.params.get();
         let (session_id, command) = match args.method.as_ref() {
-            "a3s/goal/definition" => {
+            "aster/goal/definition" => {
                 let command: goal::GoalDefinitionCommandV1 = parse(params)?;
                 (command.session_id.clone(), Command::Definition(command))
             }
-            "a3s/goal/plan" => {
+            "aster/goal/plan" => {
                 let command: goal::GoalPlanCommandV1 = parse(params)?;
                 (command.session_id.clone(), Command::Plan(command))
             }
-            "a3s/goal/control" => {
+            "aster/goal/control" => {
                 let command: goal::GoalControlCommandV1 = parse(params)?;
                 (command.session_id.clone(), Command::Control(command))
             }
-            "a3s/goal/wait" => {
+            "aster/goal/wait" => {
                 let command: goal::GoalWaitCommandV1 = parse(params)?;
                 (command.session_id.clone(), Command::Wait(command))
             }
@@ -265,7 +265,7 @@ impl A3sCodeAgent {
             return Err(acp::Error::resource_not_found(None));
         }
         fn reply<T: serde::Serialize>(
-            result: a3s_code_core::error::Result<T>,
+            result: aster_core::error::Result<T>,
         ) -> acp::Result<Box<serde_json::value::RawValue>> {
             let value =
                 result.map_err(|error| acp::Error::invalid_params().data(error.to_string()))?;

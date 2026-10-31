@@ -5,7 +5,7 @@ use std::os::fd::{AsRawFd, FromRawFd, RawFd};
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::Path;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 #[derive(Debug, Clone, Copy)]
 struct RequiredLink {
@@ -267,7 +267,7 @@ mod tests {
     use std::os::unix::fs::symlink;
     use std::path::Path;
 
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{create_required_dev_symlinks, create_required_dev_symlinks_from_root};
 

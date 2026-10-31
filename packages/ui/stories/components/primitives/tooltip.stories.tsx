@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Info } from 'lucide-react'
 
-import { NormalTooltip, Tooltip, TooltipContent, TooltipProvider, TooltipRoot, TooltipTrigger } from '@a3s-lab/ui'
-import { Button } from '@a3s-lab/ui'
+import { NormalTooltip, Tooltip, TooltipContent, TooltipProvider, TooltipRoot, TooltipTrigger } from '@aster-ai-lab/ui'
+import { Button } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Tooltip> = {
   title: 'Components/Primitives/Tooltip',

@@ -97,7 +97,7 @@ impl McpClient {
             protocol_version: PROTOCOL_VERSION.to_string(),
             capabilities,
             client_info: ClientInfo {
-                name: "a3s-code".to_string(),
+                name: "aster".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_string(),
             },
         };
@@ -444,7 +444,7 @@ mod tests {
             protocol_version: PROTOCOL_VERSION.to_string(),
             capabilities: ClientCapabilities::default(),
             client_info: ClientInfo {
-                name: "a3s-code".to_string(),
+                name: "aster".to_string(),
                 version: "0.1.0".to_string(),
             },
         };

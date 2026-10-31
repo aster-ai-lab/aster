@@ -17,7 +17,7 @@
 //! — new backends must not treat fragments as the primary authority.
 //!
 //! ```ignore
-//! use a3s_code::store::{
+//! use aster::store::{
 //!     SessionData, SessionSnapshotV1, SessionStore, SessionStoreCapabilities,
 //! };
 //!
@@ -80,8 +80,8 @@ pub use session_transcript::{
     LEGACY_STUDIO_MIGRATION_SCHEMA_V1,
 };
 pub use wal::{
-    snapshot_content_digest, FileSessionStoreWal, SessionStoreWalEntryV1, SessionStoreWalPhaseV1,
-    SESSION_STORE_WAL_ENTRY_SCHEMA_V1,
+    snapshot_content_digest, snapshot_content_digest_matches, FileSessionStoreWal,
+    SessionStoreWalEntryV1, SessionStoreWalPhaseV1, SESSION_STORE_WAL_ENTRY_SCHEMA_V1,
 };
 pub use watch::{
     SessionStoreCommitEventV1, SessionStoreCommitWatch, SESSION_STORE_COMMIT_EVENT_SCHEMA_V1,

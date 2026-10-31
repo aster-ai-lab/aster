@@ -230,14 +230,14 @@ pub struct ToolContext {
     /// Optional search configuration for web_search tool
     pub search_config: Option<Arc<crate::config::SearchConfig>>,
     /// Session-scoped search circuit state shared by cloned tool contexts.
-    pub(crate) search_circuit_breaker: a3s_search::CircuitBreaker,
+    pub(crate) search_circuit_breaker: aster_search::CircuitBreaker,
     search_circuit_scope: Option<String>,
     /// Agent-scoped per-engine admission shared by cloned tool contexts.
-    search_bulkhead: a3s_search::Bulkhead,
+    search_bulkhead: aster_search::Bulkhead,
     /// Agent-scoped retry allowance shared across browser requests.
-    search_retry_budget: a3s_search::retry::RetryBudget,
+    search_retry_budget: aster_search::retry::RetryBudget,
     /// Session-scoped identical-request flights shared by cloned tool contexts.
-    search_request_coalescer: a3s_search::SearchCoalescer,
+    search_request_coalescer: aster_search::SearchCoalescer,
     /// Optional sandbox for routing `bash` tool execution through the configured
     /// process-isolation boundary.
     pub sandbox: Option<std::sync::Arc<dyn crate::sandbox::BashSandbox>>,
@@ -255,7 +255,7 @@ pub struct ToolContext {
     /// serializes seq assignment against the actor's own appends. A second
     /// `FileLog` handle over the same directory would race duplicate seqs.
     /// Absent on plain host-direct contexts, which have no Run to own.
-    pub(crate) fact_log: Option<Arc<a3s_effect::FileLog>>,
+    pub(crate) fact_log: Option<Arc<aster_effect::FileLog>>,
     /// Private evidence owned by one prepared invocation, never tool metadata.
     pub(crate) native_artifact_verifications:
         Option<Arc<Mutex<crate::harness_loop::MutationLedger>>>,
@@ -390,14 +390,14 @@ impl std::fmt::Debug for ToolContext {
 
 fn search_circuit_breaker(
     config: Option<&crate::config::SearchConfig>,
-) -> a3s_search::CircuitBreaker {
-    let mut policy = a3s_search::CircuitBreakerConfig::default();
+) -> aster_search::CircuitBreaker {
+    let mut policy = aster_search::CircuitBreakerConfig::default();
     if let Some(health) = config.and_then(|config| config.health.as_ref()) {
         policy.failure_threshold = health.max_failures.max(1);
         policy.empty_threshold = health.max_failures.max(1);
         policy.transient_open_duration = std::time::Duration::from_secs(health.suspend_seconds);
     }
-    a3s_search::CircuitBreaker::new(policy)
+    aster_search::CircuitBreaker::new(policy)
 }
 
 impl ToolContext {
@@ -417,9 +417,9 @@ impl ToolContext {
             search_config: None,
             search_circuit_breaker: search_circuit_breaker(None),
             search_circuit_scope: None,
-            search_bulkhead: a3s_search::Bulkhead::default(),
-            search_retry_budget: a3s_search::retry::RetryBudget::default(),
-            search_request_coalescer: a3s_search::SearchCoalescer::default(),
+            search_bulkhead: aster_search::Bulkhead::default(),
+            search_retry_budget: aster_search::retry::RetryBudget::default(),
+            search_request_coalescer: aster_search::SearchCoalescer::default(),
             sandbox: None,
             command_env: None,
             workspace_services: crate::workspace::WorkspaceServices::local(workspace),
@@ -478,7 +478,7 @@ impl ToolContext {
         let session_id = session_id.into();
         if self.search_circuit_scope.as_deref() != Some(session_id.as_str()) {
             self.search_circuit_breaker = search_circuit_breaker(self.search_config.as_deref());
-            self.search_request_coalescer = a3s_search::SearchCoalescer::default();
+            self.search_request_coalescer = aster_search::SearchCoalescer::default();
             self.search_circuit_scope = Some(session_id.clone());
         }
         self.session_id = Some(session_id);
@@ -527,42 +527,42 @@ impl ToolContext {
     /// Set the search configuration
     pub fn with_search_config(mut self, config: crate::config::SearchConfig) -> Self {
         self.search_circuit_breaker = search_circuit_breaker(Some(&config));
-        self.search_request_coalescer = a3s_search::SearchCoalescer::default();
+        self.search_request_coalescer = aster_search::SearchCoalescer::default();
         self.search_config = Some(Arc::new(config));
         self
     }
 
-    pub(crate) fn search_circuit_breaker(&self) -> a3s_search::CircuitBreaker {
+    pub(crate) fn search_circuit_breaker(&self) -> aster_search::CircuitBreaker {
         self.search_circuit_breaker.clone()
     }
 
-    pub(crate) fn search_bulkhead(&self) -> a3s_search::Bulkhead {
+    pub(crate) fn search_bulkhead(&self) -> aster_search::Bulkhead {
         self.search_bulkhead.clone()
     }
 
     pub(crate) fn with_search_runtime(
         mut self,
-        bulkhead: a3s_search::Bulkhead,
-        retry_budget: a3s_search::retry::RetryBudget,
+        bulkhead: aster_search::Bulkhead,
+        retry_budget: aster_search::retry::RetryBudget,
     ) -> Self {
         self.search_bulkhead = bulkhead;
         self.search_retry_budget = retry_budget;
         self
     }
 
-    pub(crate) fn search_retry_budget(&self) -> a3s_search::retry::RetryBudget {
+    pub(crate) fn search_retry_budget(&self) -> aster_search::retry::RetryBudget {
         self.search_retry_budget.clone()
     }
 
     pub(crate) fn with_search_request_coalescer(
         mut self,
-        coalescer: a3s_search::SearchCoalescer,
+        coalescer: aster_search::SearchCoalescer,
     ) -> Self {
         self.search_request_coalescer = coalescer;
         self
     }
 
-    pub(crate) fn search_request_coalescer(&self) -> a3s_search::SearchCoalescer {
+    pub(crate) fn search_request_coalescer(&self) -> aster_search::SearchCoalescer {
         self.search_request_coalescer.clone()
     }
 
@@ -777,7 +777,7 @@ impl ToolContext {
     }
 
     /// Bind the Run's shared fact-log writer (see [`Self::fact_log`]).
-    pub(crate) fn with_fact_log(mut self, log: Arc<a3s_effect::FileLog>) -> Self {
+    pub(crate) fn with_fact_log(mut self, log: Arc<aster_effect::FileLog>) -> Self {
         self.fact_log = Some(log);
         self
     }
@@ -939,7 +939,7 @@ impl ToolContext {
                 "resolve_path is only valid for local workspaces; this session uses a non-local workspace backend, call resolve_workspace_path() instead"
             );
         }
-        a3s_common::tools::resolve_path(&self.workspace, path).map_err(|e| anyhow::anyhow!("{}", e))
+        aster_common::tools::resolve_path(&self.workspace, path).map_err(|e| anyhow::anyhow!("{}", e))
     }
 
     /// Resolve path for writing (allows non-existent files).
@@ -954,7 +954,7 @@ impl ToolContext {
                 "resolve_path_for_write is only valid for local workspaces; this session uses a non-local workspace backend, call resolve_workspace_path() instead"
             );
         }
-        a3s_common::tools::resolve_path_for_write(&self.workspace, path)
+        aster_common::tools::resolve_path_for_write(&self.workspace, path)
             .map_err(|e| anyhow::anyhow!("{}", e))
     }
 }
@@ -1257,7 +1257,7 @@ mod tests {
             .search_circuit_breaker()
             .acquire("quota-api")
             .unwrap()
-            .record_failure(&a3s_search::EngineFailure::new(
+            .record_failure(&aster_search::EngineFailure::new(
                 "Quota API",
                 "provider_quota",
                 "quota exhausted",

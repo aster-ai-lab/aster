@@ -2,7 +2,7 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::scale::{
+use aster_box_core::scale::{
     ScaleObservation, ScaleOperationConflict, ScaleOperationRequest, ScaleOperationResponse,
 };
 use thiserror::Error;
@@ -105,7 +105,7 @@ fn persist(path: &Path, state: &ScaleAuthorityState) -> Result<(), ScaleAuthorit
         ScaleAuthorityError::State(format!("failed to encode scale authority: {error}"))
     })?;
     let temporary = path.with_extension("tmp");
-    a3s_box_core::fs_atomic::write_durable(&temporary, path, &bytes).map_err(|error| {
+    aster_box_core::fs_atomic::write_durable(&temporary, path, &bytes).map_err(|error| {
         ScaleAuthorityError::State(format!("failed to persist {}: {error}", path.display()))
     })
 }
@@ -113,7 +113,7 @@ fn persist(path: &Path, state: &ScaleAuthorityState) -> Result<(), ScaleAuthorit
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::scale::{ScaleDirection, SCALE_OPERATION_SCHEMA_VERSION};
+    use aster_box_core::scale::{ScaleDirection, SCALE_OPERATION_SCHEMA_VERSION};
 
     fn request(id: &str, revision: &str, current: u32, desired: u32) -> ScaleOperationRequest {
         ScaleOperationRequest {

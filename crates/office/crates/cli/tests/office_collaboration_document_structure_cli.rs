@@ -8,7 +8,7 @@ use base64::Engine as _;
 use support::{complex_document_fixture, document_snapshot, DocumentParagraph, DocumentRow};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn run(args: &[&str]) -> serde_json::Value {

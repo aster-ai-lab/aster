@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerTarget, Generation, OperationContext, ProcessTarget, StateRequest, WaitProcessRequest,
     WriteStdinRequest,
 };
@@ -193,7 +193,7 @@ pub(super) async fn qualify_write_stdin_effect_committed_shim_sigkill(
     let host_pid = super::find_runtime_host_pid(config).await?;
     let shim_pid = find_exact_shim_pid(config, &id).await?;
     let mut suspended_host =
-        SuspendedProcess::stop(host_pid, "committed-stdin A3S OCI host service")?;
+        SuspendedProcess::stop(host_pid, "committed-stdin Aster OCI host service")?;
     stdin
         .write_all(COMMITTED_STDIN)
         .await
@@ -204,7 +204,7 @@ pub(super) async fn qualify_write_stdin_effect_committed_shim_sigkill(
         .map_err(|error| qualification_error(format!("flush committed-stdin FIFO: {error}")))?;
     wait_for_pending_write(&bundle).await?;
     let suspended_shim = SuspendedProcess::stop(shim_pid, "committed-stdin shim")?;
-    suspended_host.resume("committed-stdin A3S OCI host service")?;
+    suspended_host.resume("committed-stdin Aster OCI host service")?;
 
     let process = exact_process_target(config, &id, &identity)?;
     commit_runtime_write(config, &id, &identity, &process).await?;
@@ -263,7 +263,7 @@ pub(super) async fn qualify_write_stdin_effect_committed_shim_sigkill(
 }
 
 async fn wait_for_pending_write(bundle: &Path) -> TestResult<()> {
-    let path = bundle.join("a3s-oci-shim-v1.json");
+    let path = bundle.join("aster-oci-shim-v1.json");
     let deadline = tokio::time::Instant::now() + Duration::from_secs(2);
     loop {
         let document: MetadataDocument = serde_json::from_slice(
@@ -338,7 +338,7 @@ async fn commit_runtime_write(
 async fn wait_runtime_process(
     config: &QualificationConfig,
     process: ProcessTarget,
-) -> TestResult<a3s_oci_sdk::ExitStatus> {
+) -> TestResult<aster_oci_sdk::ExitStatus> {
     let client = runtime_client(config).await?;
     let request = WaitProcessRequest {
         process,

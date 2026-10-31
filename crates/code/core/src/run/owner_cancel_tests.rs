@@ -67,7 +67,7 @@ pub(super) async fn public_fixture() -> PublicFixture {
             max_runs_retained: Some(1),
             ..Default::default()
         })
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()));
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let session = agent
         .session_async(
             workspace.path().display().to_string(),

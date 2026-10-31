@@ -2,7 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_box_core::compose::ComposeConfig;
+use aster_box_core::compose::ComposeConfig;
 use clap::Args;
 
 use super::{LABEL_PROJECT, LABEL_SERVICE};
@@ -79,7 +79,7 @@ pub struct ComposeRmArgs {
     #[arg(short = 's', long)]
     pub stop: bool,
 
-    /// Do not ask for confirmation (A3S Box is non-interactive by default)
+    /// Do not ask for confirmation (Aster Box is non-interactive by default)
     #[arg(short = 'f', long)]
     pub force: bool,
 
@@ -396,7 +396,7 @@ pub async fn execute_port(
     let requested = args.private_port.as_deref().map(normalize_private_port);
     let mut found = false;
     for value in &service_box.record.port_map {
-        let mapping = a3s_box_core::parse_port_mapping(value)?;
+        let mapping = aster_box_core::parse_port_mapping(value)?;
         let private = format!("{}/{}", mapping.guest_port, mapping.protocol.as_str());
         if requested.as_deref().is_some_and(|value| value != private) {
             continue;

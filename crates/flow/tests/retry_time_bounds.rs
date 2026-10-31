@@ -2,7 +2,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowRuntime, RetryPolicy, RuntimeCommand, StepCommand,
     StepInvocation, WorkflowInvocation, WorkflowSpec,
 };
@@ -40,7 +40,7 @@ impl FlowRuntime for InvalidRetryRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let step = StepCommand::new("bounded-retry", "boundedRetry", json!({}))
             .with_retry(self.retry_policy());
         Ok(match self.shape {
@@ -54,7 +54,7 @@ impl FlowRuntime for InvalidRetryRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.step_calls.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::Runtime("step failed".to_string()))
     }

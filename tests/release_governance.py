@@ -128,7 +128,7 @@ esac
         self.assertEqual(mutations, [])
 
     def test_non_desktop_latest_is_refused_before_channel_mutation(self):
-        for tag in ("a3s-code-v9.1.6", "aster-cli-v0.1.4", "aster-cli-stable"):
+        for tag in ("aster-v9.1.6", "aster-cli-v0.1.4", "aster-cli-stable"):
             with self.subTest(tag=tag):
                 result, mutations = self.publish(latest_tag=tag)
                 self.assertNotEqual(result.returncode, 0)
@@ -150,11 +150,11 @@ class ReleaseContracts(unittest.TestCase):
 
     def test_code_release_uses_its_namespace_and_never_takes_latest(self):
         workflow = (ROOT / ".github/workflows/release-code.yml").read_text()
-        self.assertIn('      - "a3s-code-v[0-9]+.[0-9]+.[0-9]+"', workflow)
+        self.assertIn('      - "aster-v[0-9]+.[0-9]+.[0-9]+"', workflow)
         self.assertNotIn('      - "v[0-9]+.[0-9]+.[0-9]+"', workflow)
         self.assertIn("gh release create", workflow)
         self.assertIn("--latest=false", workflow)
-        self.assertIn('version="${GITHUB_REF_NAME#a3s-code-v}"', workflow)
+        self.assertIn('version="${GITHUB_REF_NAME#aster-v}"', workflow)
         self.assertIn('test "$version" = "$acp_version"', workflow)
         self.assertIn('test "$version" = "$core_version"', workflow)
 

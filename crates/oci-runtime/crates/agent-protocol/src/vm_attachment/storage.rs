@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ConfigurationAttachment, Result, StorageAccessMode, StorageAttachmentId, StorageCleanup,
     StorageOwnership,
 };
@@ -8,8 +8,8 @@ use sha2::{Digest, Sha256};
 
 use super::{manifest_error, validate_configuration_attachment, validate_digest};
 
-const TRANSPORT_BLOCK_ID_DOMAIN: &[u8] = b"a3s.oci.agent-vm-storage-block-id.v1\0";
-const TRANSPORT_BLOCK_ID_PREFIX: &str = "a3s-oci-storage-";
+const TRANSPORT_BLOCK_ID_DOMAIN: &[u8] = b"aster.oci.agent-vm-storage-block-id.v1\0";
+const TRANSPORT_BLOCK_ID_PREFIX: &str = "aster-oci-storage-";
 const VIRTIO_BLOCK_ID_BYTES: usize = 20;
 const KVM_STORAGE_FILESYSTEM: &str = "ext4";
 

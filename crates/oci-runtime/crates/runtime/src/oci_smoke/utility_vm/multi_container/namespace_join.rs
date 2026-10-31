@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::{AgentClient, AgentDeleteRequest, AgentWaitRequest, GuestPath};
-use a3s_oci_sdk::{DeleteMode, ErrorCode, ExitStatus, OciBundle};
+use aster_oci_agent_protocol::{AgentClient, AgentDeleteRequest, AgentWaitRequest, GuestPath};
+use aster_oci_sdk::{DeleteMode, ErrorCode, ExitStatus, OciBundle};
 use tokio::time::timeout;
 
 use super::super::remove_marker;
@@ -168,7 +168,7 @@ async fn run_joiner<T: AgentStream>(
     client: &AgentClient<T>,
     nonce: &str,
     label: &str,
-    target: &a3s_oci_sdk::ContainerTarget,
+    target: &aster_oci_sdk::ContainerTarget,
     bundle: &OciBundle,
 ) -> Result<(), String> {
     let started = guest_call(

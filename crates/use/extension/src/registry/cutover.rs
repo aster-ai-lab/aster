@@ -1,11 +1,11 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 use super::{ExtensionRegistrySnapshot, REGISTRY_SCHEMA_VERSION};
 
-pub const EXTENSION_REGISTRY_CUTOVER_SCHEMA: &str = "a3s.use.registry-cutover.v1";
+pub const EXTENSION_REGISTRY_CUTOVER_SCHEMA: &str = "aster.use.registry-cutover.v1";
 pub const MAX_PENDING_REGISTRY_CUTOVERS: usize = 128;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

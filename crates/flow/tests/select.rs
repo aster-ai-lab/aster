@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime,
     InMemoryEventStore, JsonValue, QueryInvocation, RuntimeCommand, SelectArm, WaitStatus,
     WorkflowInvocation, WorkflowSignal, WorkflowSpec,
@@ -16,7 +16,7 @@ impl FlowRuntime for SelectRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(winner) = ctx.select_winner("race") {
             return Ok(RuntimeCommand::Complete {
@@ -35,11 +35,11 @@ impl FlowRuntime for SelectRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
-    async fn run_query(&self, _invocation: QueryInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_query(&self, _invocation: QueryInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("queries unused".into()))
     }
 }
@@ -59,11 +59,11 @@ async fn select_completes_when_the_first_timer_arm_wins() {
     assert!(suspended.select("race").unwrap().is_open());
     assert_eq!(
         suspended.waits.get("fast").unwrap().status,
-        a3s_flow::WaitStatus::Waiting
+        aster_flow::WaitStatus::Waiting
     );
     assert_eq!(
         suspended.waits.get("slow").unwrap().status,
-        a3s_flow::WaitStatus::Waiting
+        aster_flow::WaitStatus::Waiting
     );
 
     let now = Utc::now() + Duration::seconds(2);
@@ -78,7 +78,7 @@ async fn select_completes_when_the_first_timer_arm_wins() {
     );
     assert_eq!(
         completed.waits.get("slow").unwrap().status,
-        a3s_flow::WaitStatus::Cancelled
+        aster_flow::WaitStatus::Cancelled
     );
     let _ = now;
 }
@@ -104,11 +104,11 @@ async fn select_completes_when_a_signal_arm_wins_and_cancels_timers() {
     );
     assert_eq!(
         completed.waits.get("fast").unwrap().status,
-        a3s_flow::WaitStatus::Cancelled
+        aster_flow::WaitStatus::Cancelled
     );
     assert_eq!(
         completed.waits.get("slow").unwrap().status,
-        a3s_flow::WaitStatus::Cancelled
+        aster_flow::WaitStatus::Cancelled
     );
 }
 
@@ -130,7 +130,7 @@ async fn select_command_is_idempotent_while_open() {
     let created = history
         .iter()
         .find_map(|envelope| match &envelope.event {
-            a3s_flow::FlowEvent::SelectCreated {
+            aster_flow::FlowEvent::SelectCreated {
                 select_id, arms, ..
             } if select_id == "race" => Some(arms.clone()),
             _ => None,
@@ -148,7 +148,7 @@ impl FlowRuntime for ArmIdentityDriftRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.select_joined("both") {
             return Ok(RuntimeCommand::Complete {
@@ -168,11 +168,11 @@ impl FlowRuntime for ArmIdentityDriftRuntime {
         Ok(ctx.join("both", arms))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
-    async fn run_query(&self, _invocation: QueryInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_query(&self, _invocation: QueryInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("queries unused".into()))
     }
 }
@@ -220,7 +220,7 @@ impl CrashBeforeSelectCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeSelectCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -229,7 +229,7 @@ impl FlowEventStore for CrashBeforeSelectCompletedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::SelectCompleted {
@@ -248,11 +248,11 @@ impl FlowEventStore for CrashBeforeSelectCompletedStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -322,7 +322,7 @@ impl FlowRuntime for SelectCompletedBesideOpenWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(winner) = ctx.select_winner("race") {
             return Ok(RuntimeCommand::Complete {
@@ -352,14 +352,14 @@ impl FlowRuntime for SelectCompletedBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         unreachable!("select-completed-beside-wait runtime does not schedule steps")
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<JsonValue> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -380,7 +380,7 @@ impl CrashAfterSelectCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterSelectCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -389,7 +389,7 @@ impl FlowEventStore for CrashAfterSelectCompletedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -409,11 +409,11 @@ impl FlowEventStore for CrashAfterSelectCompletedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -439,7 +439,7 @@ async fn select_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open(
     engine
         .apply_update(
             "select-completed-drive",
-            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
         )
         .await
         .unwrap();

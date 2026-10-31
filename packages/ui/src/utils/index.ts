@@ -1,7 +1,7 @@
 /**
  * Public utility functions for external consumers.
  *
- * This module is part of the PUBLIC API and can be imported via `@a3s/ui/utils`.
+ * This module is part of the PUBLIC API and can be imported via `@aster/ui/utils`.
  * For internal-only utilities (e.g., Tailwind class merging), use `lib/` instead.
  *
  * @module utils

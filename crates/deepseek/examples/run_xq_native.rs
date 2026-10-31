@@ -5,7 +5,7 @@
 
 use std::{path::PathBuf, time::Instant};
 
-use a3s_deepseek::{
+use aster_deepseek::{
     execution::{XqNativePipeline, XqPipelinePlan},
     parallel::{XqPlacement, XqReplicaWidth},
     weights::{
@@ -13,7 +13,7 @@ use a3s_deepseek::{
         xq::{gguf::XQ_GGUF_BYTES, storage::XqWeights, XQ_GGUF_SHA256},
     },
 };
-use a3s_power::inference::{
+use aster_power::inference::{
     DevicePreference, InferenceLimits, RuntimeDevice, VerifiedRawWeightFile, WeightFileDescriptor,
 };
 use tokio_util::sync::CancellationToken;
@@ -52,7 +52,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         || maximum == 0
         || maximum > 32
         || prompt.iter().any(|&token| {
-            token as usize >= a3s_deepseek::tokenizer::RAW_VOCABULARY || token == 129264
+            token as usize >= aster_deepseek::tokenizer::RAW_VOCABULARY || token == 129264
         })
     {
         return Err(

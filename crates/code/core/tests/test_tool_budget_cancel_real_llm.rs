@@ -6,15 +6,15 @@
 
 mod support;
 
-use a3s_code_core::budget::{BudgetDecision, BudgetGuard};
-use a3s_code_core::fact_control::{read_workspace_facts, thread_for_session};
-use a3s_code_core::harness_loop::CompletionTerminal;
-use a3s_code_core::llm::{
+use aster_core::budget::{BudgetDecision, BudgetGuard};
+use aster_core::fact_control::{read_workspace_facts, thread_for_session};
+use aster_core::harness_loop::CompletionTerminal;
+use aster_core::llm::{
     LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentEvent, PlanningMode, RunStatus, SessionOptions};
-use a3s_memory::MemoryStore;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentEvent, PlanningMode, RunStatus, SessionOptions};
+use aster_durable_memory::MemoryStore;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -27,12 +27,12 @@ const TIMEOUT: Duration = Duration::from_secs(240);
 #[derive(Default)]
 struct RefuseCommands(AtomicUsize);
 #[async_trait::async_trait]
-impl a3s_code_core::sandbox::BashSandbox for RefuseCommands {
+impl aster_core::sandbox::BashSandbox for RefuseCommands {
     async fn exec_command(
         &self,
         _: &str,
         _: &str,
-    ) -> anyhow::Result<a3s_code_core::sandbox::SandboxOutput> {
+    ) -> anyhow::Result<aster_core::sandbox::SandboxOutput> {
         self.0.fetch_add(1, Ordering::SeqCst);
         anyhow::bail!("compaction fidelity fixture refuses commands")
     }
@@ -118,7 +118,7 @@ struct ObservedProvider {
 fn evidence_digest(domain: &str, value: &impl Serialize) -> String {
     let bytes = serde_json::to_vec(value).unwrap();
     let mut h = Sha256::new();
-    h.update(b"a3s-code-harness-evidence\0");
+    h.update(b"aster-harness-evidence\0");
     h.update((domain.len() as u64).to_be_bytes());
     h.update(domain.as_bytes());
     h.update(&bytes);
@@ -142,9 +142,9 @@ impl ObservedProvider {
         let index = inputs.len();
         inputs.push(InputObservation {
             transport,
-            messages_digest: evidence_digest("a3s.code.model-input-messages.v1", &messages),
+            messages_digest: evidence_digest("aster.code.model-input-messages.v1", &messages),
             message_payload_bytes: bytes.len(),
-            system_digest: system.map(|s| evidence_digest("a3s.code.model-input-system.v1", &s)),
+            system_digest: system.map(|s| evidence_digest("aster.code.model-input-system.v1", &s)),
             messages: messages
                 .iter()
                 .map(|m| (m.role.clone(), m.text()))
@@ -159,7 +159,7 @@ impl ObservedProvider {
                 .iter()
                 .flat_map(|m| &m.content)
                 .filter_map(|block| match block {
-                    a3s_code_core::llm::ContentBlock::ToolResult {
+                    aster_core::llm::ContentBlock::ToolResult {
                         tool_use_id,
                         content,
                         is_error,
@@ -182,10 +182,10 @@ impl ObservedProvider {
 }
 #[async_trait::async_trait]
 impl LlmClient for ObservedProvider {
-    fn model_generation_concurrency(&self) -> a3s_code_core::llm::ModelGenerationConcurrency {
+    fn model_generation_concurrency(&self) -> aster_core::llm::ModelGenerationConcurrency {
         self.inner.model_generation_concurrency()
     }
-    fn model_generation_pool(&self) -> Option<a3s_code_core::llm::ModelGenerationPool> {
+    fn model_generation_pool(&self) -> Option<aster_core::llm::ModelGenerationPool> {
         self.inner.model_generation_pool()
     }
     fn fork_for_session(&self, id: &str) -> Option<Arc<dyn LlmClient>> {
@@ -248,11 +248,11 @@ async fn original_guard_cancel_stops_tool_effects_and_allows_a_new_run() {
     std::fs::write(root.join("note.txt"), original_file).unwrap();
     let configured = support::layer_c_model::load_pinned_layer_c_config();
     let route = configured.default_model.clone().unwrap();
-    let config = a3s_code_core::config::CodeConfig {
+    let config = aster_core::config::CodeConfig {
         providers: configured.providers,
         default_model: Some(route.clone()),
         user_instructions_dir: Some(root.join("personal")),
-        memory: Some(a3s_code_core::memory::MemoryConfig {
+        memory: Some(aster_core::memory::MemoryConfig {
             llm_extraction: false,
             prune_policy: None,
             ..Default::default()
@@ -268,7 +268,7 @@ async fn original_guard_cancel_stops_tool_effects_and_allows_a_new_run() {
     llm.max_tokens = Some(4096);
     llm.api_timeout_ms = Some(120_000);
     llm.temperature = Some(0.0);
-    let raw = a3s_code_core::llm::create_client_with_config(llm);
+    let raw = aster_core::llm::create_client_with_config(llm);
     assert!(!raw.model_generation_is_managed());
     let observer = Arc::new(ObservedProvider {
         inner: raw,
@@ -276,7 +276,7 @@ async fn original_guard_cancel_stops_tool_effects_and_allows_a_new_run() {
     });
     let accounting = Arc::new(Accounting::default());
     let commands = Arc::new(RefuseCommands::default());
-    let memory = Arc::new(a3s_memory::InMemoryStore::new());
+    let memory = Arc::new(aster_durable_memory::InMemoryStore::new());
     let agent = Agent::from_config(config).await.unwrap();
     let session_id = "tool-budget-cancel-live";
     let mut policy = PermissionPolicy::new().allow("read(note.txt)");
@@ -411,7 +411,7 @@ async fn original_guard_cancel_stops_tool_effects_and_allows_a_new_run() {
     }
     let inputs = observer.inputs.lock().unwrap().clone();
     let callbacks = accounting.usage.lock().unwrap().clone();
-    let witness = serde_json::json!({"schema":"a3s.code.tool-budget-cancel.evidence.v1","route":route,"session_id":session_id,
+    let witness = serde_json::json!({"schema":"aster.code.tool-budget-cancel.evidence.v1","route":route,"session_id":session_id,
         "final_snapshot":true,"original_run":first_snapshot,"follow_up":follow_up,"cancel_accepted":accepted,"cooperative_worker_drained":timely,
         "guard_entries":accounting.tool_checks.load(Ordering::SeqCst),"guard_active":accounting.active.load(Ordering::SeqCst),
         "guard_dropped":accounting.dropped.load(Ordering::SeqCst),"guard_completed":accounting.completed.load(Ordering::SeqCst),
@@ -468,16 +468,16 @@ async fn original_guard_cancel_stops_tool_effects_and_allows_a_new_run() {
     let results: Vec<_> = facts.iter().filter(|f| f.kind == "tool.result").collect();
     assert_eq!(prepared.len(), 1);
     assert_eq!(results.len(), 1);
-    let p: a3s_effect::ToolPreparedV1 =
+    let p: aster_effect::ToolPreparedV1 =
         serde_json::from_value(prepared[0].payload["prepared"].clone()).unwrap();
-    let result: a3s_effect::ToolExecutionResultV1 =
+    let result: aster_effect::ToolExecutionResultV1 =
         serde_json::from_value(results[0].payload["receipt"].clone()).unwrap();
     p.validate().unwrap();
     result.ensure_prepared(&p).unwrap();
-    assert_eq!(result.outcome, a3s_effect::ToolExecutionOutcome::Cancelled);
+    assert_eq!(result.outcome, aster_effect::ToolExecutionOutcome::Cancelled);
     assert_eq!(
         result.effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     assert!(result.effects.changes.is_empty());
     assert_eq!(
@@ -486,7 +486,7 @@ async fn original_guard_cancel_stops_tool_effects_and_allows_a_new_run() {
     );
     assert_eq!(
         p.original_args_digest,
-        a3s_effect::tool_args_digest(&original_calls[0]["args"]).unwrap()
+        aster_effect::tool_args_digest(&original_calls[0]["args"]).unwrap()
     );
     assert_eq!(p.identity.admission.as_ref().unwrap().run_id, original_id);
     assert_eq!(

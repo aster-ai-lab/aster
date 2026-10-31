@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_runtime::RuntimeClientRegistry;
-use a3s_use_core::{
+use aster_runtime::RuntimeClientRegistry;
+use aster_use_core::{
     ExecutablePlanningSurface, PackageSurfaceKind, PlanAuthority, PlanPackageChangeKind,
     PlanQualifiedSurfaceRef, PlanScope, PlannedPackageState, PlannedPackageTransition,
     PlannedProviderEvidence, PluginOperationAction, PluginOperationPlan,
@@ -84,7 +84,7 @@ impl PackageProviderPlan {
                 && expected.provider_build_id == selected.provider_build_id
                 && expected.capability_digest == selected.capability_digest
                 && expected.enforcement == selected.enforcement;
-            let native_semantics_match = expected.provider_id != "a3s-use-native-launcher"
+            let native_semantics_match = expected.provider_id != "aster-use-native-launcher"
                 || expected.semantics_profile_digest == selected.semantics_profile_digest;
             if !same_surface_and_provider || !native_semantics_match {
                 return Err(provider_evidence_changed());
@@ -561,12 +561,12 @@ fn provider_evidence_changed() -> UseError {
 mod tests {
     use std::sync::Arc;
 
-    use a3s_runtime::contract::{
+    use aster_runtime::contract::{
         HealthCheckKind, IsolationLevel, MountKind, NetworkMode, ResourceControl,
         RuntimeCapabilities, RuntimeFeature, RuntimeUnitClass,
     };
-    use a3s_runtime::{ProviderId, RuntimeClient, RuntimeProviderFactory, RuntimeResult};
-    use a3s_use_core::{
+    use aster_runtime::{ProviderId, RuntimeClient, RuntimeProviderFactory, RuntimeResult};
+    use aster_use_core::{
         CatalogSurface, PlanActor, PlanPackageChangeKind, PlanPackageRole, PlanPolicyDecision,
         PlanScopeKind, PlannedOperationImpact, PlannedPluginRelease, PlannedStateEvidence,
         PlanningArtifactRef, PlanningSurfaceActivation, PluginCatalogRecord, PluginPackageLockHost,
@@ -639,7 +639,7 @@ mod tests {
         assert_eq!(planned.provider_evidence().len(), 2);
         assert_eq!(
             planned.provider_evidence()[0].provider_id,
-            "a3s-use-native-launcher"
+            "aster-use-native-launcher"
         );
         assert_eq!(planned.provider_evidence()[1].provider_id, "test-runtime");
         assert_eq!(planned.runtime_selection().surfaces().len(), 1);

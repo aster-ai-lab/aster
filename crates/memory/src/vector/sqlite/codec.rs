@@ -3,7 +3,7 @@ use super::super::{VectorIndexError, VectorRecord, VectorResult};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 
-const PARTITION_DIGEST_DOMAIN: &str = "a3s.memory.sqlite-vector-partition.v1";
+const PARTITION_DIGEST_DOMAIN: &str = "aster.memory.sqlite-vector-partition.v1";
 
 pub(super) fn encode_vector(vector: &[f32]) -> Vec<u8> {
     vector

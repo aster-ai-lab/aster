@@ -27,7 +27,7 @@
   },
   "verifiedCatalog": {
     "record": {
-      "schema": "a3s.use.plugin-catalog.v3",
+      "schema": "aster.use.plugin-catalog.v3",
       "packageId": "contra-sense/handbook",
       "displayName": "handbook",
       "description": "Grounded handbook cognition.",
@@ -48,7 +48,7 @@
           "id": "domain-knowledge",
           "optional": false,
           "okfBundle": {
-            "schema": "a3s.use.okf-bundle.v1",
+            "schema": "aster.use.okf-bundle.v1",
             "formatVersion": "0.2",
             "root": "okf/domain-knowledge",
             "contentDigest": "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
@@ -77,7 +77,7 @@
         }
       ],
       "permissionCeiling": {
-        "schema": "a3s.use.plugin-permissions.v1",
+        "schema": "aster.use.plugin-permissions.v1",
         "surfaces": []
       },
       "permissionCeilingDigest": "sha256:c0eafc8598409c9fd30b035350a7b15f6c61086cd6210a40dc88cc355f6747d5",

@@ -7,7 +7,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::device::{DevicePlan, LoadedDeviceProgram, ROOTLESS_DEVICE_MOUNT_COUNT};
 use super::pidfd::PidFd;
@@ -20,7 +20,7 @@ use protocol::{
 mod mount;
 mod protocol;
 
-const DEVICE_POLICY_SCHEMA_VERSION: &str = "a3s.oci.rootless-device-policy.v2";
+const DEVICE_POLICY_SCHEMA_VERSION: &str = "aster.oci.rootless-device-policy.v2";
 const MAX_DEVICE_POLICY_MESSAGE_BYTES: usize = 64 * 1024;
 const MAX_DEVICE_POLICY_KEY_BYTES: usize = 512;
 const MAX_DEVICE_POLICY_PATH_BYTES: usize = 4_096;
@@ -95,7 +95,7 @@ impl DevicePolicyAuthority {
             let exit_code = match result {
                 Ok(()) => 0,
                 Err(error) => {
-                    eprintln!("a3s-oci-agent: rootless device-policy helper: {error}");
+                    eprintln!("aster-oci-agent: rootless device-policy helper: {error}");
                     1
                 }
             };

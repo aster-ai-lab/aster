@@ -30,7 +30,7 @@ const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const PARAGRAPH_ALIGNMENT_MARKER_PATTERN =
-  /__A3S_WORK_PARAGRAPH_ALIGNMENT_\d+__/g;
+  /__ASTER_WORK_PARAGRAPH_ALIGNMENT_\d+__/g;
 
 export function markDocxParagraphAlignments(
   document: Document,
@@ -50,7 +50,7 @@ export function markDocxParagraphAlignments(
     const alignment = resolveDocxParagraphAlignment(sources);
     if (!alignment) continue;
     properties ??= insertParagraphProperties(document, paragraph);
-    const marker = `__A3S_WORK_PARAGRAPH_ALIGNMENT_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_ALIGNMENT_${paragraphs.length + 1}__`;
     insertParagraphMarker(document, paragraph, properties, marker);
     paragraphs.push({ marker, alignment });
   }
@@ -65,7 +65,7 @@ export function applyImportedDocxParagraphAlignmentMarkers(
     markers.paragraphs.map(({ marker, alignment }) => [marker, alignment]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_ALIGNMENT_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_ALIGNMENT_')) continue;
     node.data = node.data.replace(
       PARAGRAPH_ALIGNMENT_MARKER_PATTERN,
       (marker) => {

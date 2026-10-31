@@ -3,7 +3,7 @@ use crate::{
     reference,
     weights::MatrixLayout,
 };
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Device, Tensor};
 
 pub(super) fn device() -> CudaLayerDevice {

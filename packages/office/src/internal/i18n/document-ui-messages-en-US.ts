@@ -351,7 +351,7 @@ export const documentUiMessagesEnUS = {
     'Choose a valid character shading foreground color.',
   'document.font.error.shadingBackground':
     'Choose a valid character shading background color.',
-  'document.font.preview.sample': 'A3S Office character formatting',
+  'document.font.preview.sample': 'Aster Office character formatting',
   'document.picture.title': 'Picture',
   'document.picture.description':
     'Adjust size, wrap, position, and alternative text for the selected picture.',
@@ -1680,7 +1680,7 @@ export const documentUiMessagesEnUS = {
   'document.nav.matchCount': '{count} matches',
   'document.nav.noMatches': 'No matches',
   'document.nav.headingCount': '{count} headings',
-  'document.editor.collabAuthor': 'A3S Work user',
+  'document.editor.collabAuthor': 'Aster Work user',
   'document.editor.loadingCollab': 'Preparing collaborative document',
   'document.editor.loading': 'Preparing text editor',
   'document.editor.saveStatus.autoSaved': 'Autosaved',

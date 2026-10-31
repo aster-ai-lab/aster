@@ -3,8 +3,8 @@
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-pub const EXECUTION_TARGET_SCHEMA_V1: &str = "a3s.code.execution-target.v1";
-pub const EXECUTION_FRAME_SCHEMA_V1: &str = "a3s.code.execution-frame.v1";
+pub const EXECUTION_TARGET_SCHEMA_V1: &str = "aster.code.execution-target.v1";
+pub const EXECUTION_FRAME_SCHEMA_V1: &str = "aster.code.execution-frame.v1";
 pub const EVALUATION_MAX_ID_BYTES: usize = 256;
 const MAX_BRANCH_BYTES: usize = 256;
 
@@ -52,7 +52,7 @@ impl ExecutionTargetV1 {
 
     pub fn digest(&self) -> Result<String, IdentityError> {
         self.validate()?;
-        digest_json("a3s.code.execution-target.identity.v1", self)
+        digest_json("aster.code.execution-target.identity.v1", self)
             .map_err(|error| IdentityError::Serialization(error.to_string()))
     }
 }
@@ -118,7 +118,7 @@ impl ExecutionFrameV1 {
 
     pub fn digest(&self) -> Result<String, IdentityError> {
         self.validate()?;
-        digest_json("a3s.code.execution-frame.identity.v1", self)
+        digest_json("aster.code.execution-frame.identity.v1", self)
             .map_err(|error| IdentityError::Serialization(error.to_string()))
     }
 }
@@ -165,7 +165,7 @@ mod tests {
     fn identity_digest_is_domain_separated_and_canonical() {
         let target = ExecutionTargetV1::new("session-1", "run-1");
         let first = target.digest().unwrap();
-        let second = digest_json("a3s.code.execution-target.identity.v1", &target).unwrap();
+        let second = digest_json("aster.code.execution-target.identity.v1", &target).unwrap();
         assert_eq!(first, second);
         assert_ne!(
             digest_bytes("domain-a", b"same"),

@@ -1,6 +1,6 @@
 //! Collection paths for the crate-owned filter, tokenizer, and quantizer.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionSchema, DataType, Doc, FieldSchema, Fts, IndexParams, MetricType,
     QuantizeType, SearchQuery,
 };

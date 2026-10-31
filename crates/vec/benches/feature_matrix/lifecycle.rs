@@ -239,7 +239,7 @@ fn assert_complete_matrix() {
 
 fn main() {
     let config = Config::from_environment();
-    println!("# a3s-vec feature matrix; scale={config:?}; each row is an asserted operation");
+    println!("# aster-vec feature matrix; scale={config:?}; each row is an asserted operation");
     println!(
         "operation,documents,dimensions,samples,total_work,p50_us,p95_us,p99_us,work_per_second,work_per_sample"
     );

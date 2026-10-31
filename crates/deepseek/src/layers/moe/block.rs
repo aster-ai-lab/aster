@@ -7,7 +7,7 @@
 //! f6aa38fe06cd4a0489e7730365d4e0114970a2f3 with local/scale-up reductions off:
 //! initialize FP32 with the shared bias, then add top-k lanes in order.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

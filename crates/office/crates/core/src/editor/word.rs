@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     editor_error, node_not_found, parse_segments, prefix, preserve_space_attribute, qualified,
@@ -744,7 +744,7 @@ fn validate_dimensions(rows: usize, columns: usize) -> UseResult<()> {
     Ok(())
 }
 
-fn table_limit_error(message: String) -> a3s_use_core::UseError {
+fn table_limit_error(message: String) -> aster_use_core::UseError {
     editor_error("use.office.word_table_limit", message)
 }
 

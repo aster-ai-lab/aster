@@ -2,16 +2,16 @@
 use std::sync::atomic::{AtomicU16, AtomicU32, Ordering};
 
 #[cfg(any(target_os = "linux", test))]
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentTransportFaultInjector, AgentTransportFaultPoint, AgentTransportQualificationEvidence,
     AGENT_TRANSPORT_QUALIFICATION_EVIDENCE_PREFIX, AGENT_TRANSPORT_QUALIFICATION_FAULT_OPERATION,
 };
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentTransportQualificationRequest, AGENT_TRANSPORT_QUALIFICATION_ENV,
 };
 #[cfg(any(target_os = "linux", test))]
-use a3s_oci_sdk::OperationId;
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::OperationId;
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 pub(crate) fn take_request() -> Result<Option<AgentTransportQualificationRequest>> {
     let Some(encoded) = std::env::var_os(AGENT_TRANSPORT_QUALIFICATION_ENV) else {
@@ -158,12 +158,12 @@ pub(crate) fn finish(
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AgentOperation, AgentTransportFaultInjector, AgentTransportFaultPoint,
         AgentTransportOperationStage, AgentTransportQualificationRequest,
         AGENT_PROTOCOL_VERSION_MAX, AGENT_TRANSPORT_QUALIFICATION_FAULT_OPERATION,
     };
-    use a3s_oci_sdk::{Error, ErrorCode, OperationId};
+    use aster_oci_sdk::{Error, ErrorCode, OperationId};
 
     use super::{finish, GuestTransportQualificationFault};
 

@@ -250,7 +250,7 @@ fn test_mcp_tool_preserves_output_schema_annotations_icons_and_meta() {
             "readOnlyHint": true,
             "idempotentHint": true,
             "openWorldHint": true,
-            "x-a3s-risk": "submit"
+            "x-aster-risk": "submit"
         },
         "icons": [{"src": "data:image/png;base64,AA==", "mimeType": "image/png"}],
         "_meta": {"provider": "vision"}
@@ -261,7 +261,7 @@ fn test_mcp_tool_preserves_output_schema_annotations_icons_and_meta() {
     let annotations = tool.annotations.as_ref().unwrap();
     assert_eq!(annotations.read_only_hint, Some(true));
     assert_eq!(annotations.open_world_hint, Some(true));
-    assert_eq!(annotations.additional["x-a3s-risk"], "submit");
+    assert_eq!(annotations.additional["x-aster-risk"], "submit");
     assert_eq!(tool.icons.len(), 1);
     assert_eq!(tool.meta.as_ref().unwrap()["provider"], "vision");
     assert_eq!(serde_json::to_value(tool).unwrap(), json);
@@ -377,9 +377,9 @@ fn test_call_tool_result_default() {
 #[test]
 fn test_call_tool_result_preserves_structured_content_and_meta() {
     let value = serde_json::json!({
-        "content": [{"type": "text", "text": "{\"text\":\"A3S\"}"}],
+        "content": [{"type": "text", "text": "{\"text\":\"Aster\"}"}],
         "structuredContent": {
-            "text": "A3S",
+            "text": "Aster",
             "source": {"sha256": "abc"}
         },
         "isError": false,

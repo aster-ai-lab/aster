@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_form_core::{
+use aster_form_core::{
     canonical_sha256, canonicalize_value, compile_bytes, parse_json, CanonicalValue,
     COMPILE_REQUEST_API_VERSION,
 };
@@ -67,8 +67,8 @@ fn resource_document(node_count: usize) -> serde_json::Value {
         })
     }));
     serde_json::json!({
-        "kind": "a3s.form",
-        "apiVersion": "a3s.dev/form/v1alpha1",
+        "kind": "aster.form",
+        "apiVersion": "aster.dev/form/v1alpha1",
         "revision": 1,
         "metadata": {
             "title": format!("Resource corpus {node_count}"),
@@ -95,7 +95,7 @@ fn matches_resource_boundary_golden_cases() {
     let fixture = fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-compiler-resource-conformance/v1"
+        "aster.dev/form-compiler-resource-conformance/v1"
     );
     assert_eq!(fixture.generator, "flat-string-fields-v1");
     for case in fixture.cases {

@@ -162,7 +162,7 @@ fn gate_refuses_wrong_shapes_dtypes_masks_and_nonfinite_numerics() {
 
 #[test]
 fn public_gate_snapshots_weights_and_rejects_nonfinite_parameters_inputs_and_masks() {
-    use a3s_power::inference::InferenceLimits;
+    use aster_power::inference::InferenceLimits;
     use candle_core::Var;
     let device = CudaLayerDevice::cpu_for_tests(InferenceLimits::default());
     let mutable = Var::ones((4, 2), DType::BF16, &Device::Cpu).unwrap();
@@ -210,7 +210,7 @@ fn public_gate_snapshots_weights_and_rejects_nonfinite_parameters_inputs_and_mas
 
 #[test]
 fn public_gate_refuses_resident_and_live_tensor_budget_overflow() {
-    use a3s_power::inference::InferenceLimits;
+    use aster_power::inference::InferenceLimits;
     let resident = CudaLayerDevice::cpu_for_tests(InferenceLimits {
         max_resident_weight_bytes: 31,
         ..InferenceLimits::default()

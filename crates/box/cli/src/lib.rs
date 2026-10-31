@@ -1,4 +1,4 @@
-//! A3S Box CLI - Docker-like MicroVM runtime.
+//! Aster Box CLI - Docker-like MicroVM runtime.
 
 pub mod audit;
 pub mod boot;

@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, ErrorCode, LocalIpcEndpoint, RuntimeClient, StateRequest,
 };
 use prost_types::Any;
@@ -26,7 +26,7 @@ pub(crate) use shared::{
     load_shim_address, runtime_client,
 };
 
-const CREATE_INTENT_FILE_NAME: &str = "a3s-oci-shim-create-v1.json";
+const CREATE_INTENT_FILE_NAME: &str = "aster-oci-shim-create-v1.json";
 
 #[derive(Deserialize)]
 struct CreateIntentReference {
@@ -275,19 +275,19 @@ async fn qualify_create_in_flight_shim_sigkill(
         });
 
     let container_id = wait_for_create_intent(config, &id).await?;
-    let mut suspended_host = SuspendedProcess::stop(host_pid, "A3S OCI host service")?;
+    let mut suspended_host = SuspendedProcess::stop(host_pid, "Aster OCI host service")?;
     if tokio::time::timeout(Duration::from_millis(100), &mut create)
         .await
         .is_ok()
     {
         return Err(qualification_error(
-            "Create completed while the exact A3S OCI host service was suspended",
+            "Create completed while the exact Aster OCI host service was suspended",
         )
         .into());
     }
     let shim_pid = find_exact_shim_pid(config, &id).await?;
     signal_kill(shim_pid)?;
-    suspended_host.resume("A3S OCI host service")?;
+    suspended_host.resume("Aster OCI host service")?;
 
     match tokio::time::timeout(Duration::from_secs(10), &mut create).await {
         Ok(Ok(_)) => {}
@@ -594,13 +594,13 @@ async fn wait_for_runtime_absence(
     let endpoint =
         LocalIpcEndpoint::unix_socket(config.runtime_endpoint.clone()).map_err(|error| {
             qualification_error(format!(
-                "validate A3S OCI runtime endpoint {}: {error}",
+                "validate Aster OCI runtime endpoint {}: {error}",
                 config.runtime_endpoint.display()
             ))
         })?;
     let client = RuntimeClient::connect(&endpoint).await.map_err(|error| {
         qualification_error(format!(
-            "connect A3S OCI runtime endpoint {}: {error}",
+            "connect Aster OCI runtime endpoint {}: {error}",
             config.runtime_endpoint.display()
         ))
     })?;

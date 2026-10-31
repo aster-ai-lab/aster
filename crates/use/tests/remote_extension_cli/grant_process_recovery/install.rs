@@ -123,7 +123,7 @@ fn killed_managed_install_replays_graph_and_grant_cutover_without_reauthorizatio
             MANAGED_SCOPE_ID,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(diagnostic.status.success(), "{diagnostic:?}");

@@ -1,6 +1,6 @@
 use std::collections::{BTreeSet, HashMap, HashSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::Value as JsonValue;
 use yrs::{Any, Array, Out, ReadTxn, Transact};
 
@@ -455,6 +455,6 @@ fn required_map<T: ReadTxn>(transaction: &T, name: &str) -> UseResult<yrs::MapRe
     }
 }
 
-fn permission_denied(message: impl Into<String>) -> a3s_use_core::UseError {
+fn permission_denied(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.permission_denied", message)
 }

@@ -18,9 +18,9 @@ use tokio_util::sync::CancellationToken;
 use crate::hooks::{HookExecutor, HookOutcome};
 
 /// Schema carried by a run-control request.
-pub const RUN_CONTROL_REQUEST_SCHEMA_V1: &str = "a3s.code.run-control-request.v1";
+pub const RUN_CONTROL_REQUEST_SCHEMA_V1: &str = "aster.code.run-control-request.v1";
 /// Schema carried by a run-control receipt.
-pub const RUN_CONTROL_RECEIPT_SCHEMA_V1: &str = "a3s.code.run-control-receipt.v1";
+pub const RUN_CONTROL_RECEIPT_SCHEMA_V1: &str = "aster.code.run-control-receipt.v1";
 /// Maximum UTF-8 bytes accepted for a single steer message.
 pub const RUN_CONTROL_MAX_INPUT_BYTES: usize = 128 * 1024;
 /// Maximum UTF-8 bytes accepted for an interrupt reason.
@@ -466,7 +466,7 @@ pub(crate) struct PendingRunControl {
 /// Observers run only after both inbox locks have been released.
 pub(crate) struct PersistedRunControls {
     pub(crate) decisions: Vec<PendingRunControl>,
-    pub(crate) failure: Option<a3s_effect::ActorError>,
+    pub(crate) failure: Option<aster_effect::ActorError>,
     pub(crate) pending: OriginalPendingObservation,
 }
 
@@ -740,7 +740,7 @@ impl RunControlInbox {
         &self,
         terminal: bool,
         now_ms: u64,
-        mut append: impl FnMut(&PendingRunControl) -> Result<(), a3s_effect::ActorError>,
+        mut append: impl FnMut(&PendingRunControl) -> Result<(), aster_effect::ActorError>,
     ) -> PersistedRunControls {
         let admission = self.admission.lock().await;
         let mut state = self.state.lock().await;
@@ -767,7 +767,7 @@ impl RunControlInbox {
             // Reconstruct an evicted legacy in-flight receipt before any IO.
             // New admissions retain every still-owned Accepted receipt.
             let fingerprint = request_fingerprint(&item.request)
-                .map_err(|error| a3s_effect::ActorError::Schema(error.to_string()));
+                .map_err(|error| aster_effect::ActorError::Schema(error.to_string()));
             if let Err(error) = &fingerprint {
                 failure.get_or_insert_with(|| error.clone());
             }

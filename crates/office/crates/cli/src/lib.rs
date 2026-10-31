@@ -1,4 +1,4 @@
-//! Standalone command-line and preview surfaces for A3S Office.
+//! Standalone command-line and preview surfaces for Aster Office.
 
 mod office_artifact;
 mod office_collaboration_cli;
@@ -9,7 +9,7 @@ pub mod office_screenshot;
 mod office_skills;
 pub mod office_watch;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 #[derive(Debug, Clone)]
 pub struct CommandOutput {
@@ -79,13 +79,13 @@ pub async fn primary_skill_surface() -> Option<(std::path::PathBuf, std::path::P
     office_skills::primary_skill_surface().await
 }
 
-async fn ensure_office_compatibility_ready() -> UseResult<a3s_office::OfficeRuntimeStatus> {
-    use a3s_office::OfficeInstallSource;
-    use a3s_use_core::{FirstUseInstallPolicy, UseError};
+async fn ensure_office_compatibility_ready() -> UseResult<aster_office::OfficeRuntimeStatus> {
+    use aster_office::OfficeInstallSource;
+    use aster_use_core::{FirstUseInstallPolicy, UseError};
 
-    let status = a3s_office::office_status();
+    let status = aster_office::office_status();
     let explicit_configured =
-        std::env::var_os("A3S_OFFICECLI_EXECUTABLE").is_some_and(|value| !value.is_empty());
+        std::env::var_os("ASTER_OFFICECLI_EXECUTABLE").is_some_and(|value| !value.is_empty());
     if explicit_configured
         && !(status.available && status.source == OfficeInstallSource::Environment)
     {
@@ -93,7 +93,7 @@ async fn ensure_office_compatibility_ready() -> UseResult<a3s_office::OfficeRunt
             "use.office.explicit_provider_invalid",
             "The explicit Office provider is not usable.",
         )
-        .with_suggestion("Fix or unset A3S_OFFICECLI_EXECUTABLE before retrying."));
+        .with_suggestion("Fix or unset ASTER_OFFICECLI_EXECUTABLE before retrying."));
     }
     if status.available {
         return Ok(status);
@@ -111,20 +111,20 @@ async fn ensure_office_compatibility_ready() -> UseResult<a3s_office::OfficeRunt
         )
         .with_detail("reason", block.reason()));
     }
-    a3s_office::install_office_cli(false).await
+    aster_office::install_office_cli(false).await
 }
 
 fn help() -> CommandOutput {
     CommandOutput::success(
         concat!(
-            "a3s-office — native Office document tools\n\n",
+            "aster-office — native Office document tools\n\n",
             "usage:\n",
-            "  a3s-office <command> [args]\n",
-            "  a3s-office native <command> [args]\n",
-            "  a3s-office collab <command> [args]\n",
-            "  a3s-office skills list|get|manifest|path [args]\n",
-            "  a3s-office mcp\n\n",
-            "Run 'a3s-office native --help' for document commands or 'a3s-office collab --help' for collaboration commands."
+            "  aster-office <command> [args]\n",
+            "  aster-office native <command> [args]\n",
+            "  aster-office collab <command> [args]\n",
+            "  aster-office skills list|get|manifest|path [args]\n",
+            "  aster-office mcp\n\n",
+            "Run 'aster-office native --help' for document commands or 'aster-office collab --help' for collaboration commands."
         ),
         serde_json::json!({
             "commands": ["native", "collab", "skills", "mcp"],

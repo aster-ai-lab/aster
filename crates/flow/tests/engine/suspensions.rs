@@ -7,7 +7,7 @@ impl FlowRuntime for WaitHookRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if !completed_wait(&invocation, "review-window") {
             return Ok(RuntimeCommand::WaitUntil {
                 wait_id: "review-window".to_string(),
@@ -28,7 +28,7 @@ impl FlowRuntime for WaitHookRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("wait/hook workflow does not schedule steps")
     }
 }
@@ -149,14 +149,14 @@ async fn local_file_store_start_with_id_is_idempotent_across_engine_instances() 
     assert_eq!(
         events
             .iter()
-            .filter(|event| matches!(event.event, a3s_flow::FlowEvent::RunCreated { .. }))
+            .filter(|event| matches!(event.event, aster_flow::FlowEvent::RunCreated { .. }))
             .count(),
         1
     );
     assert_eq!(
         events
             .iter()
-            .filter(|event| matches!(event.event, a3s_flow::FlowEvent::RunStarted))
+            .filter(|event| matches!(event.event, aster_flow::FlowEvent::RunStarted))
             .count(),
         1
     );
@@ -322,7 +322,7 @@ impl FlowEventStore for DuplicateHookStore {
         &self,
         _run_id: &str,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store("corrupt fixture is read-only".to_string()))
     }
 
@@ -331,11 +331,11 @@ impl FlowEventStore for DuplicateHookStore {
         _run_id: &str,
         _expected_sequence: u64,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store("corrupt fixture is read-only".to_string()))
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.histories
             .iter()
             .find(|(candidate, _)| candidate == run_id)
@@ -343,7 +343,7 @@ impl FlowEventStore for DuplicateHookStore {
             .ok_or_else(|| FlowError::RunNotFound(run_id.to_string()))
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         Ok(self
             .histories
             .iter()

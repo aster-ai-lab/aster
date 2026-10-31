@@ -6,7 +6,7 @@ use super::{
 };
 use crate::{CommandRequest, NativeSandbox};
 
-/// Portable A3S Bash-shaped fixture used on every OS. Absolute host roots are
+/// Portable Aster Bash-shaped fixture used on every OS. Absolute host roots are
 /// intentionally absent so decisions compare identically across platforms.
 fn portable_bash_fixture() -> SandboxPolicy {
     SandboxPolicy {
@@ -25,12 +25,12 @@ fn portable_bash_fixture() -> SandboxPolicy {
             ],
             deny_write: vec![
                 PathRule::Exact("workspace/.git".into()),
-                PathRule::Exact("workspace/.a3s".into()),
+                PathRule::Exact("workspace/.aster".into()),
             ],
-            write_exceptions: vec![PathRule::Exact("workspace/.a3s/loops".into())],
+            write_exceptions: vec![PathRule::Exact("workspace/.aster/loops".into())],
             ..Default::default()
         },
-        ..SandboxPolicy::a3s_bash_baseline()
+        ..SandboxPolicy::aster_bash_baseline()
     }
 }
 
@@ -61,12 +61,12 @@ fn gate1_fixture_decisions_match_expected_table() {
             AccessDecision::Deny,
         ),
         (
-            "workspace/.a3s/policy.acl",
+            "workspace/.aster/policy.acl",
             AccessDecision::Allow,
             AccessDecision::Deny,
         ),
         (
-            "workspace/.a3s/loops/g1/STATE.md",
+            "workspace/.aster/loops/g1/STATE.md",
             AccessDecision::Allow,
             AccessDecision::Allow,
         ),
@@ -93,7 +93,7 @@ fn gate1_fixture_digest_is_replay_stable() {
 fn gate1_compile_requires_sandbox_policy_and_rejects_broadening() {
     let workspace = tempfile::tempdir().unwrap();
     let scratch = tempfile::tempdir().unwrap();
-    let baseline = SandboxPolicy::a3s_bash_baseline();
+    let baseline = SandboxPolicy::aster_bash_baseline();
     let enforced = EnforcedPolicy::compile(
         &baseline,
         workspace.path(),
@@ -141,7 +141,7 @@ fn gate1_compile_applies_exact_deny_overlays_without_globs() {
     let scratch = tempfile::tempdir().unwrap();
     std::fs::write(workspace.path().join("extra.secret"), "x").unwrap();
 
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy
         .filesystem
         .deny_read
@@ -180,7 +180,7 @@ fn gate1_compile_refuses_allow_overlays_outside_workspace_or_scratch() {
     let workspace = tempfile::tempdir().unwrap();
     let scratch = tempfile::tempdir().unwrap();
     let outside = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.allow_write.push(PathRule::Exact(
         outside.path().canonicalize().unwrap().display().to_string(),
     ));
@@ -204,7 +204,7 @@ async fn gate1_native_sandbox_integration_still_executes() {
     let sandbox = NativeSandbox::new(workspace.path()).unwrap();
     assert_eq!(
         policy_digest(&sandbox.policy()),
-        policy_digest(&SandboxPolicy::a3s_bash_baseline())
+        policy_digest(&SandboxPolicy::aster_bash_baseline())
     );
     sandbox
         .probe()
@@ -235,7 +235,7 @@ async fn gate1_native_sandbox_integration_still_executes() {
 fn gate1_native_sandbox_rejects_unenforcible_policy() {
     let workspace = tempfile::tempdir().unwrap();
     let sandbox = NativeSandbox::new(workspace.path()).unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     // Prefer a limit that remains unenforceable on every Gate 2 backend.
     policy.resources.max_call_depth = Some(32);
     let error = sandbox
@@ -244,7 +244,7 @@ fn gate1_native_sandbox_rejects_unenforcible_policy() {
         .to_string();
     assert!(error.contains("max_call_depth"), "{error}");
     sandbox
-        .ensure_policy_enforceable(&SandboxPolicy::a3s_bash_baseline())
+        .ensure_policy_enforceable(&SandboxPolicy::aster_bash_baseline())
         .unwrap();
 
     let error = format!(
@@ -254,7 +254,7 @@ fn gate1_native_sandbox_rejects_unenforcible_policy() {
     assert!(error.contains("max_call_depth"), "{error}");
 
     // Unix cannot claim process-tree quotas without cgroup; Windows Job can.
-    let mut process_policy = SandboxPolicy::a3s_bash_baseline();
+    let mut process_policy = SandboxPolicy::aster_bash_baseline();
     process_policy.resources.max_processes = Some(32);
     if cfg!(windows) {
         sandbox

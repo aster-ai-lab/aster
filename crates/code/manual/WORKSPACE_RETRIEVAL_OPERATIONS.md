@@ -49,11 +49,11 @@ reread once per query and checked against the captured complete-file digest
 and exact chunk bytes. Revision races return an explicit partial/retry reason.
 Do not remove verification or reuse an unchecked source cache for latency.
 
-Lexical generations may persist through the existing a3s-vec projection.
+Lexical generations may persist through the existing aster-vec projection.
 Existing v3 manifests retain their engine primary keys across incremental
 edits and restart. Missing or duplicate keys refuse the projection until the
 catalog rebuilds it; legacy v2 dense-key generations remain readable.
-Semantic vectors remain in A3S Memory's session-local in-memory index. Closing
+Semantic vectors remain in Aster Memory's session-local in-memory index. Closing
 a session cancels its work, refuses later session queries and clears its
 vectors. This release adds no semantic persistence or cross-tenant sharing.
 
@@ -92,21 +92,21 @@ retain the matching neighborhood. Rendered response text has a 24 KiB budget.
 Run from the repository root after Studio is initialized:
 
 ```sh
-cargo test --locked -p a3s-code-core --lib -- tools::builtin::search workspace::retrieval::tests::hybrid_query agent_api::retrieval_tests permissions:: --test-threads=4
-cargo test --locked -p a3s-code-acp --lib -- local_embedding retrieval_seam session_setup execution_capabilities --test-threads=4
-cargo build --locked -p aster -p a3s-code-acp
-cargo test --locked -p a3s-code-acp --test shipped_tui_e2e retrieval::shipped_retrieval_stdio -- --test-threads=1
-cargo run --locked --release -p a3s-code-core --example workspace_retrieval_aster
-cargo run --locked --release -p a3s-code-core --example workspace_retrieval_benchmark
-cargo run --locked --release -p a3s-code-core --example workspace_persistent_index_production
+cargo test --locked -p aster-core --lib -- tools::builtin::search workspace::retrieval::tests::hybrid_query agent_api::retrieval_tests permissions:: --test-threads=4
+cargo test --locked -p aster-acp --lib -- local_embedding retrieval_seam session_setup execution_capabilities --test-threads=4
+cargo build --locked -p aster -p aster-acp
+cargo test --locked -p aster-acp --test shipped_tui_e2e retrieval::shipped_retrieval_stdio -- --test-threads=1
+cargo run --locked --release -p aster-core --example workspace_retrieval_aster
+cargo run --locked --release -p aster-core --example workspace_retrieval_benchmark
+cargo run --locked --release -p aster-core --example workspace_persistent_index_production
 ```
 
-A3S Test terminal qualification uses the paired built binaries and a loopback
+Aster Test terminal qualification uses the paired built binaries and a loopback
 model fixture, without model billing or a Web driver:
 
 ```sh
-a3s-test check tests/e2e/workspace-retrieval.acl --json
-cargo test --locked -p a3s-code-acp --test shipped_tui_e2e retrieval::shipped_retrieval_a3s_test_terminal_round_trip -- --ignored --exact --nocapture
+aster-test check tests/e2e/workspace-retrieval.acl --json
+cargo test --locked -p aster-acp --test shipped_tui_e2e retrieval::shipped_retrieval_aster_test_terminal_round_trip -- --ignored --exact --nocapture
 ```
 
 The fixed Aster matrix uses orthogonal document/query vectors to isolate

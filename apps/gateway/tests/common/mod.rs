@@ -4,7 +4,7 @@
 use reqwest::header::AUTHORIZATION;
 
 pub const TEST_ADMIN_TOKEN: &str = "managed-test-admin-token";
-pub const TEST_ADMIN_TOKEN_ENV: &str = "A3S_GATEWAY_TEST_ADMIN_TOKEN";
+pub const TEST_ADMIN_TOKEN_ENV: &str = "ASTER_GATEWAY_TEST_ADMIN_TOKEN";
 
 pub fn ensure_test_admin_token() {
     std::env::set_var(TEST_ADMIN_TOKEN_ENV, TEST_ADMIN_TOKEN);

@@ -23,7 +23,7 @@ async fn legacy_goal_state_uses_original_owner_writer_and_refuses_bound_or_close
         )
         .unwrap();
     let directory = crate::session_folder::effect_log_dir(workspace.path(), session.session_id());
-    let foreign = a3s_effect::FileLog::open(&directory).unwrap();
+    let foreign = aster_effect::FileLog::open(&directory).unwrap();
     let thread = crate::fact_control::thread_for_session(session.session_id());
     let before = foreign.read(&thread).unwrap();
     session

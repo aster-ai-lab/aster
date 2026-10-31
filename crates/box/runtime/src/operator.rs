@@ -6,7 +6,7 @@
 
 use std::time::Instant;
 
-use a3s_box_core::operator::{
+use aster_box_core::operator::{
     AutoscalerCondition, BoxAutoscalerSpec, BoxAutoscalerStatus, MetricType, MetricValue,
 };
 use chrono::Utc;
@@ -279,7 +279,7 @@ fn compute_desired_replicas(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::operator::{
+    use aster_box_core::operator::{
         BoxAutoscalerSpec, MetricSpec, MetricType, ScalingBehavior, ScalingRules, TargetRef,
     };
 

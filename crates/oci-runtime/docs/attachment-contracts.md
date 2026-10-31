@@ -4,10 +4,10 @@
 
 `CreateAttachments` is the public, versioned description of every resource
 attached to an OCI create or restore request. Schema
-`a3s.oci.attachments.v1` covers the original OCI and extension inventory;
-`a3s.oci.attachments.v2` adds already-authorized storage;
-`a3s.oci.attachments.v3` adds already-authorized Linux network interfaces; and
-`a3s.oci.attachments.v4` adds exact reusable guest-session identity. The schemas
+`aster.oci.attachments.v1` covers the original OCI and extension inventory;
+`aster.oci.attachments.v2` adds already-authorized storage;
+`aster.oci.attachments.v3` adds already-authorized Linux network interfaces; and
+`aster.oci.attachments.v4` adds exact reusable guest-session identity. The schemas
 are cumulative and the exact schema is negotiated through the selected driver's
 `RuntimeInfo::extensions` entry before product preparation begins.
 
@@ -39,16 +39,16 @@ Callers derive the standard inventory rather than assembling paths or digests
 by hand:
 
 ```rust,no_run
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     CreateAttachments, CreateRequest, IsolationRequest, OperationContext,
     ProcessIo,
 };
 
 fn create_request(
     context: OperationContext,
-    id: a3s_oci_sdk::ContainerId,
-    bundle: a3s_oci_sdk::OciBundle,
-) -> a3s_oci_sdk::Result<CreateRequest> {
+    id: aster_oci_sdk::ContainerId,
+    bundle: aster_oci_sdk::OciBundle,
+) -> aster_oci_sdk::Result<CreateRequest> {
     let attachments = CreateAttachments::from_bundle(&bundle, ProcessIo::default())?;
     Ok(CreateRequest {
         context,
@@ -71,12 +71,12 @@ oversized declarations fail request validation.
 A caller upgrades a derived v1 manifest to v2 by binding a prepared OCI mount:
 
 ```rust,no_run
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     CreateAttachments, OciBundle, ProcessIo, StorageAccessMode,
     StorageAttachmentId, StorageCleanup, StorageOwnership,
 };
 
-fn storage_attachments(bundle: &OciBundle) -> a3s_oci_sdk::Result<CreateAttachments> {
+fn storage_attachments(bundle: &OciBundle) -> aster_oci_sdk::Result<CreateAttachments> {
     CreateAttachments::from_bundle(bundle, ProcessIo::default())?
         .attach_storage_mount(
             bundle,
@@ -100,12 +100,12 @@ non-canonical order all fail validation.
 Schema v2 intentionally exposes only `StorageOwnership::Caller` and
 `StorageCleanup::DetachOnly`. Container deletion tears down runtime mount,
 namespace, and guest-transport resources but preserves the backing allocation.
-A3S Box remains responsible for named-volume and snapshot resolution,
+Aster Box remains responsible for named-volume and snapshot resolution,
 authorization, retention, commit, and deletion policy. A future mechanism that
 lets Runtime own or delete backing storage requires a new schema; v2 cannot be
 reinterpreted to grant that authority.
 
-Caller-owned storage cannot be combined with `dev.a3s.bundle-handoff`, because
+Caller-owned storage cannot be combined with `dev.aster.bundle-handoff`, because
 that extension transfers and later deletes the bundle tree. The Native Linux
 driver advertises v2 as part of cumulative v1-v3 because its mount namespace
 cleanup preserves external bind sources. Dedicated Linux KVM now has a
@@ -122,13 +122,13 @@ A caller upgrades a v1 or v2 manifest to v3 by binding a prepared
 it:
 
 ```rust,no_run
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     CreateAttachments, NetworkAttachmentIdentity, NetworkCleanup,
     NetworkCleanupId, NetworkInterfaceId, NetworkNamespaceId, OciBundle,
     ProcessIo,
 };
 
-fn network_attachments(bundle: &OciBundle) -> a3s_oci_sdk::Result<CreateAttachments> {
+fn network_attachments(bundle: &OciBundle) -> aster_oci_sdk::Result<CreateAttachments> {
     CreateAttachments::from_bundle(bundle, ProcessIo::default())?
         .attach_linux_network_interface(
             bundle,
@@ -179,7 +179,7 @@ libkrun block identity without copying or taking cleanup ownership. For the v3
 `ReleaseRuntimeNamespace` form, the Host requires every source name to be a
 live TAP in the runtime network namespace and derives a locally administered
 unicast MAC from the attachment identities and TAP name. It atomically writes
-the canonical `a3s.oci.agent-vm-attachments.v2` manifest when storage is
+the canonical `aster.oci.agent-vm-attachments.v2` manifest when storage is
 present, retaining v1 bytes for network-only handoff, as a mode-`0600` file in
 the exact-generation share. Exact replay retains identical evidence; stale,
 non-private, or drifted evidence conflicts.
@@ -204,7 +204,7 @@ v1 until it has equivalent storage and NIC transports and evidence.
 
 ## Opaque network enforcement and local redirect
 
-OAR-01 uses the required `dev.a3s.network.enforcement` extension version 1 on
+OAR-01 uses the required `dev.aster.network.enforcement` extension version 1 on
 top of attachment schema v3. It does not introduce attachment schema v5 or a
 new SDK transport version. A caller places the canonical JSON returned by
 `NetworkEnforcementAttachment::to_annotation_value` in the OCI annotation
@@ -224,7 +224,7 @@ requires every configured OCI network descriptor to be covered exactly, and
 requires all authorized interfaces to bind that same namespace. The annotation
 rejects unknown fields, so hostname rules, IP ranges, DNS data, endpoints,
 route decisions, credentials, or tenant metadata cannot cross this boundary.
-The caller, currently A3S Box, remains the policy compiler and allocation
+The caller, currently Aster Box, remains the policy compiler and allocation
 authority.
 
 The Host independently negotiates the exact required extension version, passes
@@ -234,7 +234,7 @@ requires that field, the durable manifest, annotation, configuration snapshot,
 and attachment digest to agree exactly. Reusing an operation ID with a changed
 generation or digest fails closed.
 
-Rootful Native Linux advertises `dev.a3s.network.enforcement@1` when its executor
+Rootful Native Linux advertises `dev.aster.network.enforcement@1` when its executor
 has network-device authority. Its real-host qualification joins the exact
 caller namespace, moves one authorized interface, exercises an opaque redirect
 and rejection mechanism, reopens the Host service around the live generation,
@@ -248,7 +248,7 @@ A caller upgrades a derived manifest to v4 only for SharedGuestKernel
 isolation:
 
 ```rust,no_run
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     CreateAttachments, GuestSessionCapacity, GuestSessionGeneration,
     GuestSessionId, GuestSessionReset, IsolationRequest, OciBundle, ProcessIo,
     TrustDomainId,
@@ -256,7 +256,7 @@ use a3s_oci_sdk::{
 
 fn guest_session_attachments(
     bundle: &OciBundle,
-) -> a3s_oci_sdk::Result<(IsolationRequest, CreateAttachments)> {
+) -> aster_oci_sdk::Result<(IsolationRequest, CreateAttachments)> {
     let isolation = IsolationRequest::SharedGuestKernel {
         trust_domain: TrustDomainId::new("tenant-7")?,
     };
@@ -366,9 +366,9 @@ discarding their typed contracts at the future launch boundary.
 ## TEE launch mechanism
 
 A dedicated utility VM may carry exactly one policy-neutral TEE launch
-extension. AMD SEV-SNP uses `dev.a3s.tee.amd-sev-snp@1`; Intel TDX uses
-`dev.a3s.tee.intel-tdx@1`. The matching OCI annotation value is canonical JSON
-for `a3s.oci.tee-launch.v1` and selects an explicit `hardware` or `simulated`
+extension. AMD SEV-SNP uses `dev.aster.tee.amd-sev-snp@1`; Intel TDX uses
+`dev.aster.tee.intel-tdx@1`. The matching OCI annotation value is canonical JSON
+for `aster.oci.tee-launch.v1` and selects an explicit `hardware` or `simulated`
 mode. Simulated mode is mechanically testable evidence and is never a hardware
 security claim.
 
@@ -377,12 +377,12 @@ creates a TEE request, and a driver must use the separately supplied typed
 launch field rather than interpret an undeclared annotation.
 
 ```rust,no_run
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     CreateAttachments, OciBundle, ProcessIo, TeeLaunchRequest, TeeMode,
     TeeTechnology, AMD_SEV_SNP_LAUNCH_EXTENSION,
 };
 
-fn tee_attachments(bundle: &OciBundle) -> a3s_oci_sdk::Result<CreateAttachments> {
+fn tee_attachments(bundle: &OciBundle) -> aster_oci_sdk::Result<CreateAttachments> {
     let expected = TeeLaunchRequest::new(TeeTechnology::AmdSevSnp, TeeMode::Hardware)
         .to_annotation_value()?;
     assert_eq!(
@@ -418,7 +418,7 @@ Local products that prepare a portable bundle for a utility-VM driver may
 transfer ownership without predicting the runtime generation. They place the
 complete bundle at
 `<runtime-root>/bundle-handoffs/<container>/<create-operation>/bundle`, set
-the OCI annotation `dev.a3s.bundle-handoff=move-to-runtime-v1`, and add the
+the OCI annotation `dev.aster.bundle-handoff=move-to-runtime-v1`, and add the
 required version-1 extension with `with_runtime_bundle_handoff`.
 
 The selected driver must advertise that extension. After durable create state
@@ -492,5 +492,5 @@ different request.
 
 Records created before protocol 3 have neither a stored manifest nor an
 attachment digest. The runtime retains that explicit legacy state for old
-lifecycle cleanup, while attachment-aware consumers such as A3S Box must
+lifecycle cleanup, while attachment-aware consumers such as Aster Box must
 reject it for a new unified-backend binding rather than reinterpret it.

@@ -251,11 +251,11 @@ for arg in "$@"; do
       ;;
   esac
 done
-if [ "$moved" = 1 ] && [ -n "$A3S_CODE_GIT_WITNESS" ]; then
-  printf '%s\n' git >> "$A3S_CODE_GIT_WITNESS" 2>/dev/null || true
+if [ "$moved" = 1 ] && [ -n "$ASTER_GIT_WITNESS" ]; then
+  printf '%s\n' git >> "$ASTER_GIT_WITNESS" 2>/dev/null || true
 fi
-if [ -n "$A3S_CODE_GIT_REAL_PATH" ]; then
-  PATH=$A3S_CODE_GIT_REAL_PATH
+if [ -n "$ASTER_GIT_REAL_PATH" ]; then
+  PATH=$ASTER_GIT_REAL_PATH
   export PATH
 fi
 exec git "$@"
@@ -287,9 +287,9 @@ exec git "$@"
             "PATH".to_string(),
             format!("{}:{original}", self.bin.display()),
         );
-        env.insert("A3S_CODE_GIT_REAL_PATH".to_string(), original);
+        env.insert("ASTER_GIT_REAL_PATH".to_string(), original);
         env.insert(
-            "A3S_CODE_GIT_WITNESS".to_string(),
+            "ASTER_GIT_WITNESS".to_string(),
             self.witness.display().to_string(),
         );
     }
@@ -377,7 +377,7 @@ fn spawn_windows_shell(
             .map(|elapsed| elapsed.as_nanos())
             .unwrap_or(0);
         let path =
-            std::env::temp_dir().join(format!("a3s-host-{}-{unique}.ps1", std::process::id()));
+            std::env::temp_dir().join(format!("aster-host-{}-{unique}.ps1", std::process::id()));
         let literal = path.to_string_lossy().replace('\'', "''");
         // -File does not fail the process when a cmdlet fails. Match
         // -EncodedCommand, and delete the script when the engine exits.
@@ -464,7 +464,7 @@ pub(crate) fn bind_windows_process_tree(
     }
     let wait = unsafe { OwnedHandle::from_raw_handle(raw_wait) };
     std::thread::Builder::new()
-        .name("a3s-host-shell-job".to_string())
+        .name("aster-host-shell-job".to_string())
         .spawn(move || {
             if unsafe { WaitForSingleObject(wait.as_raw_handle(), u32::MAX) } == 0 {
                 let _ = unsafe { TerminateJobObject(job.as_raw_handle(), 1) };
@@ -582,7 +582,7 @@ impl Tool for BashTool {
             "required": ["command"],
             "examples": [
                 {
-                    "command": "cargo test -p a3s-code-core skill::"
+                    "command": "cargo test -p aster-core skill::"
                 },
                 {
                     "command": "npm test",
@@ -663,7 +663,10 @@ impl Tool for BashTool {
             }
         };
         let request_network_grant = raw_mode == "request_network_grant"
-            && ctx.sandbox.as_ref().is_none_or(|sandbox| sandbox.is_isolated());
+            && ctx
+                .sandbox
+                .as_ref()
+                .is_none_or(|sandbox| sandbox.is_isolated());
         if let Err(error) = self.validate_execution_available(args, ctx) {
             let message = error.to_string();
             return Ok(
@@ -1004,7 +1007,7 @@ fn resolve_network_grant(
         },
         None => None,
     };
-    let grant = match a3s_sandbox::NetworkGrant::new(host, port) {
+    let grant = match aster_cmd_sandbox::NetworkGrant::new(host, port) {
         Ok(grant) => grant,
         Err(error) => return Err(ToolOutput::error(error.to_string())),
     };

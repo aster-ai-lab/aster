@@ -1,7 +1,7 @@
 {
   "schema": "agentic.ontology.r0-cross-project-contract.v1",
   "candidate": {
-    "handoffSchema": "agentic.ontology.a3s-use-handoff.v1",
+    "handoffSchema": "agentic.ontology.aster-use-handoff.v1",
     "handoffDigest": "sha256:c92f8bfdb4435ceeeeb76f32d89edf054782e9a7f286e1aa9a9647a0513ff779",
     "packageId": "contra-sense/handbook",
     "packageVersion": "0.1.0",
@@ -11,9 +11,9 @@
     "requestedChannel": "stable"
   },
   "generation": {
-    "receiptSchema": "agentic.ontology.a3s-use-generation-receipt.v1",
+    "receiptSchema": "agentic.ontology.aster-use-generation-receipt.v1",
     "receiptDigest": "sha256:c121af75cfff61274980ba78757db9bdcbafedae59efba846f691e3c65167cb1",
-    "issuer": "a3s-use",
+    "issuer": "aster-use",
     "hostTarget": "darwin-arm64",
     "handoffDigest": "sha256:c92f8bfdb4435ceeeeb76f32d89edf054782e9a7f286e1aa9a9647a0513ff779",
     "packageId": "contra-sense/handbook",
@@ -29,16 +29,16 @@
     "surfaceId": "domain-knowledge",
     "formatVersion": "0.2",
     "contentDigest": "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
-    "searchSchema": "a3s.use.okf-knowledge-search-request.v1",
-    "readSchema": "a3s.use.okf-knowledge-read-request.v1",
-    "citationSchema": "a3s.use.okf-knowledge-citation.v1",
+    "searchSchema": "aster.use.okf-knowledge-search-request.v1",
+    "readSchema": "aster.use.okf-knowledge-read-request.v1",
+    "citationSchema": "aster.use.okf-knowledge-citation.v1",
     "lifecycleGeneration": 7,
     "generationDigest": "sha256:aa0beeb62f1b7b21bf70f21e6f0e858a1e4b720d313f0907209b5b9dad2eeb20"
   },
   "code": {
     "schema": "agentic.ontology.r0-code-session-binding.v1",
     "taskProofSchema": "agentic.ontology.r0-code-task-proof.v1",
-    "agentProtocol": "a3s.code.agent.v1",
+    "agentProtocol": "aster.code.agent.v1",
     "agentReleaseIdentity": "sha256:4be0c29b983f7b2fe0caed9c670aff2bd27b904c9ebc461a3de1dc3168289e8a",
     "sessionId": "conversation-018f4f86",
     "runId": "run-execution-018f4f86-attempt-1",

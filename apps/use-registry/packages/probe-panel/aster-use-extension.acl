@@ -1,0 +1,30 @@
+extension "aster/probe-panel" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "probe-panel"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  view_container "dock" {
+    title    = "面板探针"
+    icon     = "terminal"
+    order    = 82
+    location = "panel"
+  }
+
+  ui "view" {
+    title            = "面板探针"
+    description      = "点击窗口底部的面板按钮。"
+    icon             = "terminal"
+    entry            = "ui/view/index.html"
+    presentation     = "webview"
+    container        = "dock"
+    contract_version = 1
+    mode             = "append"
+  }
+}

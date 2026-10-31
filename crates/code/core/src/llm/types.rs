@@ -137,7 +137,8 @@ impl Attachment {
         Self::new(data, "image/webp")
     }
 
-    /// Read an image file and auto-detect media type from extension.
+    /// Read an image file and auto-detect media type from extension
+    /// (case-insensitive) or, when the extension is unknown, from magic bytes.
     pub fn from_file(path: impl AsRef<std::path::Path>) -> std::io::Result<Self> {
         let path = path.as_ref();
         let file = std::fs::File::open(path)?;
@@ -158,13 +159,7 @@ impl Attachment {
                 format!("attachment exceeds the {MAX_ATTACHMENT_BYTES}-byte limit"),
             ));
         }
-        let media_type = match path.extension().and_then(|e| e.to_str()) {
-            Some("jpg" | "jpeg") => "image/jpeg",
-            Some("png") => "image/png",
-            Some("gif") => "image/gif",
-            Some("webp") => "image/webp",
-            _ => "application/octet-stream",
-        };
+        let media_type = media_type_for_attachment(path, &data);
         Ok(Self::new(data, media_type))
     }
 
@@ -183,6 +178,45 @@ impl Attachment {
             },
         }
     }
+}
+
+fn media_type_for_attachment(path: &std::path::Path, data: &[u8]) -> &'static str {
+    if let Some(media_type) = media_type_from_extension(path) {
+        return media_type;
+    }
+    media_type_from_magic(data).unwrap_or("application/octet-stream")
+}
+
+fn media_type_from_extension(path: &std::path::Path) -> Option<&'static str> {
+    match path
+        .extension()
+        .and_then(|ext| ext.to_str())
+        .map(|ext| ext.to_ascii_lowercase())
+        .as_deref()
+    {
+        Some("jpg" | "jpeg") => Some("image/jpeg"),
+        Some("png") => Some("image/png"),
+        Some("gif") => Some("image/gif"),
+        Some("webp") => Some("image/webp"),
+        _ => None,
+    }
+}
+
+fn media_type_from_magic(data: &[u8]) -> Option<&'static str> {
+    const PNG: &[u8] = &[0x89, b'P', b'N', b'G', 0x0D, 0x0A, 0x1A, 0x0A];
+    if data.starts_with(PNG) {
+        return Some("image/png");
+    }
+    if data.starts_with(&[0xFF, 0xD8, 0xFF]) {
+        return Some("image/jpeg");
+    }
+    if data.starts_with(b"GIF87a") || data.starts_with(b"GIF89a") {
+        return Some("image/gif");
+    }
+    if data.len() >= 12 && data.starts_with(b"RIFF") && &data[8..12] == b"WEBP" {
+        return Some("image/webp");
+    }
+    None
 }
 
 /// Image source for the `ContentBlock::Image` variant.
@@ -418,16 +452,18 @@ impl Message {
 
     /// Create a user message with text and image attachments.
     pub fn user_with_attachments(text: &str, attachments: &[Attachment]) -> Self {
+        let image_only = !attachments.is_empty() && text.trim().is_empty();
         let mut content: Vec<ContentBlock> =
             attachments.iter().map(|a| a.to_content_block()).collect();
+        // Image-capable providers can still reject an empty text part.
         content.push(ContentBlock::Text {
-            text: text.to_string(),
+            text: if image_only { "[Image]" } else { text }.to_string(),
         });
         Self {
             role: "user".to_string(),
             content,
             reasoning_content: None,
-            transcript_text: None,
+            transcript_text: image_only.then(|| text.to_string()),
             transcript_visibility: TranscriptVisibility::Product,
         }
     }

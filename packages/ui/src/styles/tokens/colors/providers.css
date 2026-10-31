@@ -13,7 +13,7 @@
 :root {
   /* Chrome ink. Studio DESIGN.md: the filled control is #171717, and the
    * tenant brand stamp does not paint buttons, rows, or the rail. */
-  --a3s-tenant-brand: initial;
+  --aster-tenant-brand: initial;
   --cs-primary: #171717;
   --cs-destructive: var(--cs-red-500);
   --cs-destructive-hover: var(--cs-red-400);

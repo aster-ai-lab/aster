@@ -8,14 +8,14 @@ mod support;
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_search::providers::{
-    A3sConfig, A3sProvider, AliyunConfig, AliyunProvider, BochaConfig, BochaProvider,
+use aster_search::providers::{
+    AsterConfig, AsterProvider, AliyunConfig, AliyunProvider, BochaConfig, BochaProvider,
     CredentialSource, DeepSeekConfig, DeepSeekProvider, DoubaoConfig, DoubaoProvider,
     FirecrawlCategory, FirecrawlConfig, FirecrawlProvider, FirecrawlSource, ProviderEngine,
     ProviderRequest, SearchProvider, TavilyAnswer, TavilyConfig, TavilyProvider, TavilyRawContent,
     TencentConfig, TencentProvider, TinyFishConfig, TinyFishDomainType, TinyFishProvider,
 };
-use a3s_search::{Engine, SearchConfig, SearchQuery, TimeRange};
+use aster_search::{Engine, SearchConfig, SearchQuery, TimeRange};
 use serde_json::{json, Value};
 use support::provider_server::{MockResponse, MockServer};
 use url::Url;
@@ -54,7 +54,7 @@ async fn http_200_application_errors_are_not_empty_success() {
             "",
         ),
         (
-            "a3s",
+            "aster",
             json!({
                 "success": false,
                 "code": "INSUFFICIENT_CREDITS",
@@ -121,7 +121,7 @@ async fn undeclared_success_is_not_an_empty_result() {
         200,
         br#"{"data":{"web":[{"url":"https://example.com/hidden","title":"Hidden"}]}}"#,
     )]);
-    let error = keyed("a3s", server.endpoint.clone())
+    let error = keyed("aster", server.endpoint.clone())
         .search(&ProviderRequest::new("rust"))
         .await
         .expect_err("a body that does not declare success must not return results");
@@ -291,22 +291,22 @@ async fn defaults_omit_billed_extras() {
     let body = json_body(&opted.requests()[0].body);
     assert_eq!(body["scrapeOptions"]["formats"][0]["type"], "markdown");
 
-    let a3s = MockServer::start(vec![ok("a3s")]);
-    let a3s_provider = A3sProvider::new(
-        A3sConfig::new()
+    let aster = MockServer::start(vec![ok("aster")]);
+    let aster_provider = AsterProvider::new(
+        AsterConfig::new()
             .unwrap()
-            .with_endpoint(a3s.endpoint.clone())
+            .with_endpoint(aster.endpoint.clone())
             .unwrap()
             .with_api_key(CredentialSource::value(SECRET)),
     )
     .unwrap();
-    assert!(!a3s_provider.descriptor().capabilities.full_text);
-    assert!(!a3s_provider.descriptor().capabilities.time_range);
-    a3s_provider
+    assert!(!aster_provider.descriptor().capabilities.full_text);
+    assert!(!aster_provider.descriptor().capabilities.time_range);
+    aster_provider
         .search(&ProviderRequest::new("rust"))
         .await
         .unwrap();
-    let body = json_body(&a3s.requests()[0].body);
+    let body = json_body(&aster.requests()[0].body);
     assert_eq!(body["sources"][0], "web");
     assert!(body.get("scrapeOptions").is_none());
     assert!(body.get("categories").is_none());
@@ -435,7 +435,7 @@ async fn empty_queries_fail_before_the_network() {
         "aliyun",
         "tencent",
         "firecrawl",
-        "a3s",
+        "aster",
         "doubao",
         "deepseek",
     ] {
@@ -710,7 +710,7 @@ fn ok(id: &str) -> MockResponse {
         "aliyun" => json!({}),
         "tencent" => json!({"Response": {}}),
         "firecrawl" => json!({"success": true, "data": {}}),
-        "a3s" => json!({"success": true, "data": {}}),
+        "aster" => json!({"success": true, "data": {}}),
         "doubao" => json!({"ResponseMetadata": {}, "Result": {}}),
         "deepseek" => json!({"results": []}),
         _ => unreachable!("{id}"),
@@ -760,9 +760,9 @@ fn keyed(id: &str, endpoint: Url) -> Box<dyn SearchProvider> {
             )
             .unwrap(),
         ),
-        "a3s" => Box::new(
-            A3sProvider::new(
-                A3sConfig::new()
+        "aster" => Box::new(
+            AsterProvider::new(
+                AsterConfig::new()
                     .unwrap()
                     .with_endpoint(endpoint)
                     .unwrap()

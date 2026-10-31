@@ -2,7 +2,7 @@
 
 use super::*;
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn model_free_workspace_index_preparation_keeps_late_attached_projection_current() {
     let _permit = crate::test_support::resource_intensive_test_permit().await;
@@ -26,7 +26,7 @@ async fn model_free_workspace_index_preparation_keeps_late_attached_projection_c
     })
     .await
     .unwrap();
-    assert!(!root.path().join(".a3s-code/index/CURRENT").exists());
+    assert!(!root.path().join(".aster/index/CURRENT").exists());
     assert!(session.prepare_workspace_index().await.unwrap());
     let index = services.persistent_index().unwrap();
     for marker in ["initial_workspace_marker", "updated_workspace_marker"] {
@@ -48,7 +48,7 @@ async fn model_free_workspace_index_preparation_keeps_late_attached_projection_c
             }
         })
         .await
-        .expect("late-attached a3s-vec must follow the original manifest updates");
+        .expect("late-attached aster-vec must follow the original manifest updates");
         tokio::time::timeout(Duration::from_secs(15), async {
             loop {
                 let found = session
@@ -64,7 +64,7 @@ async fn model_free_workspace_index_preparation_keeps_late_attached_projection_c
                 if found
                     .metadata
                     .as_ref()
-                    .is_some_and(|metadata| metadata["index_kind"] == "persistent_a3s_vec_fts")
+                    .is_some_and(|metadata| metadata["index_kind"] == "persistent_aster_vec_fts")
                 {
                     assert!(found.output.contains(marker));
                     break;
@@ -73,9 +73,9 @@ async fn model_free_workspace_index_preparation_keeps_late_attached_projection_c
             }
         })
         .await
-        .expect("hybrid must reuse the already-published a3s-vec generation");
+        .expect("hybrid must reuse the already-published aster-vec generation");
     }
-    assert!(root.path().join(".a3s-code/index/CURRENT").is_file());
+    assert!(root.path().join(".aster/index/CURRENT").is_file());
     assert!(index
         .search(&crate::workspace::LexicalSearchRequest::new(
             "xqzconfidentialsentinel"

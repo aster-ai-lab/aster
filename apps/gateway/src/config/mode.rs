@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use super::GatewayConfig;
 use crate::error::{GatewayError, Result};
 
-/// Process-level operating mode for A3S Gateway.
+/// Process-level operating mode for Aster Gateway.
 ///
 /// The mode selects the desired-state authority and cannot be changed by hot
 /// reload. Restart the process to cross this boundary.
@@ -16,7 +16,7 @@ pub enum OperatingMode {
     /// Operator-owned ACL configuration and optional local providers.
     #[default]
     Standalone,
-    /// A3S Cloud owns desired state; Gateway applies static traffic snapshots.
+    /// Aster Cloud owns desired state; Gateway applies static traffic snapshots.
     CloudManaged,
 }
 
@@ -198,7 +198,7 @@ impl GatewayConfig {
             .find_map(|(name, bundle)| bundle.local_digest_store.is_some().then_some(name))
         {
             return Err(GatewayError::Config(format!(
-                "Operating mode 'cloud-managed' does not allow 'static_bundles.{name}.local_digest_store'; A3S Cloud owns the object authority"
+                "Operating mode 'cloud-managed' does not allow 'static_bundles.{name}.local_digest_store'; Aster Cloud owns the object authority"
             )));
         }
         if let Some(name) = self
@@ -361,7 +361,7 @@ impl GatewayConfig {
         ] {
             if configured {
                 return Err(GatewayError::Config(format!(
-                    "Operating mode 'cloud-managed' does not allow '{}'; A3S Cloud is the desired-state authority",
+                    "Operating mode 'cloud-managed' does not allow '{}'; Aster Cloud is the desired-state authority",
                     path
                 )));
             }
@@ -370,13 +370,13 @@ impl GatewayConfig {
         for (name, service) in &self.services {
             if service.scaling.is_some() {
                 return Err(GatewayError::Config(format!(
-                    "Operating mode 'cloud-managed' does not allow 'services.{}.scaling'; A3S Cloud owns production autoscaling",
+                    "Operating mode 'cloud-managed' does not allow 'services.{}.scaling'; Aster Cloud owns production autoscaling",
                     name
                 )));
             }
             if service.rollout.is_some() {
                 return Err(GatewayError::Config(format!(
-                    "Operating mode 'cloud-managed' does not allow 'services.{}.rollout'; A3S Cloud owns production rollout",
+                    "Operating mode 'cloud-managed' does not allow 'services.{}.rollout'; Aster Cloud owns production rollout",
                     name
                 )));
             }
@@ -466,7 +466,7 @@ mod tests {
 
     fn absolute_managed_path(relative: &str) -> std::path::PathBuf {
         std::env::temp_dir()
-            .join("a3s-gateway-config-tests")
+            .join("aster-gateway-config-tests")
             .join(relative)
     }
 
@@ -609,7 +609,7 @@ mod tests {
               usage_spool {{
                 directory = "{directory}"
                 cloud_ingest_endpoint = "https://cloud.example/v1/inference-control/usage-batches"
-                cloud_ingest_token_env = "A3S_USAGE_INGEST_TOKEN"
+                cloud_ingest_token_env = "ASTER_USAGE_INGEST_TOKEN"
               }}
             }}
             "#
@@ -622,7 +622,7 @@ mod tests {
         );
         assert_eq!(
             spool.cloud_ingest_token_env.as_deref(),
-            Some("A3S_USAGE_INGEST_TOKEN")
+            Some("ASTER_USAGE_INGEST_TOKEN")
         );
         assert!(config.validate().is_ok());
     }
@@ -693,7 +693,7 @@ mod tests {
               usage_spool {{
                 directory = "{directory}"
                 cloud_ingest_endpoint = "https://cloud.example/v1/inference-control/usage-batches"
-                cloud_ingest_token_env = "A3S_USAGE_INGEST_TOKEN"
+                cloud_ingest_token_env = "ASTER_USAGE_INGEST_TOKEN"
                 cloud_ingest_client_identity_file = "{identity}"
                 cloud_ingest_server_ca_file = "{ca}"
               }}
@@ -849,7 +849,7 @@ mod tests {
         let without_identity = GatewayConfig::from_acl(
             r#"
             mode { kind = "cloud-managed" }
-            managed { state_file = "/var/lib/a3s-gateway/snapshot.json" }
+            managed { state_file = "/var/lib/aster-gateway/snapshot.json" }
             "#,
         )
         .unwrap();
@@ -1122,7 +1122,7 @@ mod tests {
             MANAGED_SERVICE_MIDDLEWARE_NAME.to_string(),
             MiddlewareConfig {
                 middleware_type: "strip-prefix".to_string(),
-                prefixes: vec!["/_a3s/runtime/*".to_string()],
+                prefixes: vec!["/_aster/runtime/*".to_string()],
                 ..MiddlewareConfig::default()
             },
         );

@@ -8,16 +8,16 @@ use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
 use std::path::Path;
 
 #[cfg(any(target_os = "linux", test))]
-use a3s_oci_agent_protocol::AgentCreateRequest;
-use a3s_oci_agent_protocol::AgentVmAttachmentManifest;
+use aster_oci_agent_protocol::AgentCreateRequest;
+use aster_oci_agent_protocol::AgentVmAttachmentManifest;
 #[cfg(target_os = "linux")]
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AGENT_RUNTIME_SHARE_GUEST_ROOT, AGENT_VM_ATTACHMENT_MANIFEST_FILE_NAME,
     AGENT_VM_ATTACHMENT_MANIFEST_MAX_BYTES, AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV,
 };
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 #[cfg(target_os = "linux")]
-use a3s_oci_sdk::{OciBundle, CONFIG_FILE_NAME, MAX_CONFIG_BYTES};
+use aster_oci_sdk::{OciBundle, CONFIG_FILE_NAME, MAX_CONFIG_BYTES};
 #[cfg(target_os = "linux")]
 use sha2::{Digest, Sha256};
 
@@ -76,7 +76,7 @@ pub fn take_vm_attachment_manifest(
     runtime_parent: Option<&Path>,
 ) -> Result<Option<UtilityVmAttachmentBinding>> {
     let host_restrictions =
-        std::env::var(a3s_oci_agent_protocol::AGENT_HOST_STORAGE_PATH_RESTRICTIONS_SHA256_ENV)
+        std::env::var(aster_oci_agent_protocol::AGENT_HOST_STORAGE_PATH_RESTRICTIONS_SHA256_ENV)
             .map(Some)
             .or_else(|error| {
                 if error == std::env::VarError::NotPresent {
@@ -87,7 +87,7 @@ pub fn take_vm_attachment_manifest(
                     ))
                 }
             })?;
-    std::env::remove_var(a3s_oci_agent_protocol::AGENT_HOST_STORAGE_PATH_RESTRICTIONS_SHA256_ENV);
+    std::env::remove_var(aster_oci_agent_protocol::AGENT_HOST_STORAGE_PATH_RESTRICTIONS_SHA256_ENV);
     let expected_digest = std::env::var_os(AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV);
     std::env::remove_var(AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV);
     let manifest_path =
@@ -352,11 +352,11 @@ mod tests {
 
     use std::collections::BTreeMap;
 
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AgentBundle, AgentCreateRequest, AgentVmAttachmentManifest, AgentVmMacAddress,
         AgentVmNetworkAttachment, GuestPath,
     };
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         oci_spec::runtime::Spec, ContainerId, ContainerTarget, CreateAttachments, Generation,
         NetworkAttachmentIdentity, NetworkCleanup, NetworkCleanupId, NetworkInterfaceId,
         NetworkNamespaceId, OciBundle, OperationContext, OperationId, ProcessIo,
@@ -401,7 +401,7 @@ mod tests {
                 .collect::<serde_json::Map<_, _>>()
         });
         let bundle = OciBundle::from_json(
-            std::env::temp_dir().join("a3s-agent-rename-plan"),
+            std::env::temp_dir().join("aster-agent-rename-plan"),
             serde_json::to_string(&value).expect("fixture JSON"),
         )
         .expect("bundle");
@@ -448,7 +448,7 @@ mod tests {
             ContainerId::new("networked").expect("container ID"),
             Generation(1),
         );
-        let guest_bundle = GuestPath::new("/run/a3s-oci-runtime/bundle").expect("guest bundle");
+        let guest_bundle = GuestPath::new("/run/aster-oci-runtime/bundle").expect("guest bundle");
         let manifest = AgentVmAttachmentManifest::new(
             target.clone(),
             guest_bundle.clone(),
@@ -477,7 +477,7 @@ mod tests {
         let plan = rename_plan(&manifest, &inventory).expect("rename plan");
         assert_eq!(plan.len(), 4);
         assert_eq!(plan[0].from, "eth1");
-        assert!(plan[0].to.starts_with("a3svm"));
+        assert!(plan[0].to.starts_with("astervm"));
         assert_eq!(plan[1].from, "eth0");
         assert_eq!(plan[2].to, "eth0");
         assert_eq!(plan[3].to, "eth1");
@@ -522,12 +522,12 @@ mod tests {
         let mut wrong_directory = request.clone();
         wrong_directory.bundle = AgentBundle::new(
             &bundle,
-            GuestPath::new("/run/a3s-oci-runtime/other").expect("guest bundle"),
+            GuestPath::new("/run/aster-oci-runtime/other").expect("guest bundle"),
         );
         assert!(binding.validate_create(&wrong_directory).is_err());
 
         let different_bundle = OciBundle::from_json(
-            std::env::temp_dir().join("a3s-agent-binding-drift"),
+            std::env::temp_dir().join("aster-agent-binding-drift"),
             serde_json::to_string(&Spec::default()).expect("fixture JSON"),
         )
         .expect("different bundle");

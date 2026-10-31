@@ -127,7 +127,7 @@ pub struct RuntimeObservation {
 }
 
 impl RuntimeObservation {
-    pub const SCHEMA: &'static str = "a3s.runtime.observation.v4";
+    pub const SCHEMA: &'static str = "aster.runtime.observation.v4";
 
     pub(crate) fn accepted(spec: &RuntimeUnitSpec, observed_at_ms: u64) -> Result<Self, String> {
         Ok(Self {
@@ -419,7 +419,7 @@ pub enum RuntimeInspection {
 }
 
 impl RuntimeInspection {
-    pub const SCHEMA: &'static str = "a3s.runtime.inspection.v1";
+    pub const SCHEMA: &'static str = "aster.runtime.inspection.v1";
 
     pub fn validate(&self) -> Result<(), String> {
         match self {

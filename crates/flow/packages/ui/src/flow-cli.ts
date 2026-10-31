@@ -7,25 +7,25 @@ import {
   type FieldError,
   type JsonObject,
   validateFormValue,
-} from '@a3s-lab/form/core';
+} from '@aster-ai-lab/form/core';
 import {
-  A3S_FLOW_ENGINE_VERSION,
-  A3S_FLOW_TESTED_WORKFLOW_DSL_VERSION,
-  type A3sFlowDslIssue,
-  type A3sFlowWorkflowDsl,
-  compileA3sFlowWorkflowDag,
-  digestA3sFlowWorkflowDag,
-  digestA3sFlowWorkflowDsl,
-  parseA3sFlowWorkflowDslJson,
-} from './integrations/a3s-flow-dsl';
-import { getA3sFlowCoreNode } from './integrations/a3s-flow-core';
+  ASTER_FLOW_ENGINE_VERSION,
+  ASTER_FLOW_TESTED_WORKFLOW_DSL_VERSION,
+  type AsterFlowDslIssue,
+  type AsterFlowWorkflowDsl,
+  compileAsterFlowWorkflowDag,
+  digestAsterFlowWorkflowDag,
+  digestAsterFlowWorkflowDsl,
+  parseAsterFlowWorkflowDslJson,
+} from './integrations/aster-flow-dsl';
+import { getAsterFlowCoreNode } from './integrations/aster-flow-core';
 import {
-  type A3sFlowDagNodeManifest,
-  a3sFlowDagNodeRegistry,
-  createA3sFlowDagNode,
-  selectA3sFlowDagNodeConfiguration,
-} from './integrations/a3s-flow-node-manifest';
-import { validateA3sFlowNodeConfiguration } from './integrations/a3s-flow-validation';
+  type AsterFlowDagNodeManifest,
+  asterFlowDagNodeRegistry,
+  createAsterFlowDagNode,
+  selectAsterFlowDagNodeConfiguration,
+} from './integrations/aster-flow-node-manifest';
+import { validateAsterFlowNodeConfiguration } from './integrations/aster-flow-validation';
 import {
   WORKFLOW_CONFIGURATION_WIDGET_KEYS,
   createWorkflowNodeForm,
@@ -39,7 +39,7 @@ import {
   type FlowCliWorkflowUpdate,
   writeWorkflowFile,
 } from './flow-cli-workflow';
-import { parseA3sFlowStrictJson } from './strict-json';
+import { parseAsterFlowStrictJson } from './strict-json';
 import {
   CliError,
   parseFlowCliOptions,
@@ -106,33 +106,33 @@ function rejectOutputCollision(inputPath: string, options: CliOptions): void {
   }
 }
 
-function publicManifest(manifest: A3sFlowDagNodeManifest): JsonObject {
+function publicManifest(manifest: AsterFlowDagNodeManifest): JsonObject {
   return structuredClone(manifest);
 }
 
-function sampleWorkflow(): A3sFlowWorkflowDsl {
-  const start = createA3sFlowDagNode(
+function sampleWorkflow(): AsterFlowWorkflowDsl {
+  const start = createAsterFlowDagNode(
     'start',
-    a3sFlowDagNodeRegistry.require('flow.start'),
+    asterFlowDagNodeRegistry.require('flow.start'),
     { workflow_name: 'workflow.sample' },
     { position: { x: 80, y: 120 }, title: 'Start' },
   );
-  const step = createA3sFlowDagNode(
+  const step = createAsterFlowDagNode(
     'run-step',
-    a3sFlowDagNodeRegistry.require('flow.step'),
+    asterFlowDagNodeRegistry.require('flow.step'),
     { step_name: 'task.run' },
     { position: { x: 380, y: 120 }, title: 'Run task' },
   );
-  const complete = createA3sFlowDagNode(
+  const complete = createAsterFlowDagNode(
     'complete',
-    a3sFlowDagNodeRegistry.require('flow.complete'),
+    asterFlowDagNodeRegistry.require('flow.complete'),
     {},
     { position: { x: 680, y: 120 }, title: 'Complete' },
   );
   return {
-    version: A3S_FLOW_TESTED_WORKFLOW_DSL_VERSION,
+    version: ASTER_FLOW_TESTED_WORKFLOW_DSL_VERSION,
     kind: 'app',
-    app: { name: 'A3S Flow sample', mode: 'workflow' },
+    app: { name: 'Aster Flow sample', mode: 'workflow' },
     dependencies: [],
     workflow: {
       graph: {
@@ -164,7 +164,7 @@ function issuePath(nodeIndex: number, path: string): string {
   return path ? `${prefix}.${path}` : prefix;
 }
 
-function fieldIssues(nodeIndex: number, errors: readonly FieldError[]): A3sFlowDslIssue[] {
+function fieldIssues(nodeIndex: number, errors: readonly FieldError[]): AsterFlowDslIssue[] {
   return errors.map((error) => ({
     code: error.code,
     path: issuePath(nodeIndex, error.path),
@@ -172,8 +172,8 @@ function fieldIssues(nodeIndex: number, errors: readonly FieldError[]): A3sFlowD
   }));
 }
 
-function validateNodeConfigurations(document: A3sFlowWorkflowDsl): A3sFlowDslIssue[] {
-  const issues: A3sFlowDslIssue[] = [];
+function validateNodeConfigurations(document: AsterFlowWorkflowDsl): AsterFlowDslIssue[] {
+  const issues: AsterFlowDslIssue[] = [];
   const outgoingHandles = new Map<string, string[]>();
   for (const edge of document.workflow.graph.edges) {
     if (typeof edge.sourceHandle !== 'string') continue;
@@ -183,12 +183,12 @@ function validateNodeConfigurations(document: A3sFlowWorkflowDsl): A3sFlowDslIss
   }
 
   for (const [index, node] of document.workflow.graph.nodes.entries()) {
-    const manifest = a3sFlowDagNodeRegistry.get(node.data.type);
+    const manifest = asterFlowDagNodeRegistry.get(node.data.type);
     if (!manifest) {
       issues.push({
         code: 'flow.node.unknown_type',
         path: issuePath(index, 'type'),
-        message: `Unknown A3S Flow node type: ${node.data.type}.`,
+        message: `Unknown Aster Flow node type: ${node.data.type}.`,
       });
       continue;
     }
@@ -200,7 +200,7 @@ function validateNodeConfigurations(document: A3sFlowWorkflowDsl): A3sFlowDslIss
       });
     }
 
-    const configuration = selectA3sFlowDagNodeConfiguration(node, manifest);
+    const configuration = selectAsterFlowDagNodeConfiguration(node, manifest);
     const compiledForm = compileForm(createWorkflowNodeForm(manifest), {
       capabilities: { widgets: WORKFLOW_CONFIGURATION_WIDGET_KEYS },
     });
@@ -214,9 +214,9 @@ function validateNodeConfigurations(document: A3sFlowWorkflowDsl): A3sFlowDslIss
     }
     issues.push(...fieldIssues(index, validateFormValue(compiledForm.plan, configuration)));
 
-    const coreNode = getA3sFlowCoreNode(manifest.type);
+    const coreNode = getAsterFlowCoreNode(manifest.type);
     if (coreNode) {
-      const semantic = validateA3sFlowNodeConfiguration(coreNode, configuration, {
+      const semantic = validateAsterFlowNodeConfiguration(coreNode, configuration, {
         connectedOutputPortIds: outgoingHandles.get(node.id),
       });
       issues.push(...fieldIssues(index, semantic.errors));
@@ -226,11 +226,11 @@ function validateNodeConfigurations(document: A3sFlowWorkflowDsl): A3sFlowDslIss
 }
 
 async function parseWorkflow(path: string): Promise<
-  | { ok: true; document: A3sFlowWorkflowDsl; compatibility: string; source: string }
-  | { ok: false; issues: A3sFlowDslIssue[] }
+  | { ok: true; document: AsterFlowWorkflowDsl; compatibility: string; source: string }
+  | { ok: false; issues: AsterFlowDslIssue[] }
 > {
   const source = await readText(path);
-  const parsed = parseA3sFlowWorkflowDslJson(source);
+  const parsed = parseAsterFlowWorkflowDslJson(source);
   if (!parsed.ok) return parsed;
   return { ok: true, document: parsed.document, compatibility: parsed.compatibility, source };
 }
@@ -244,17 +244,17 @@ async function validateWorkflow(path: string) {
 type WorkflowValidationResult =
   | {
       ok: true;
-      document: A3sFlowWorkflowDsl;
+      document: AsterFlowWorkflowDsl;
       compatibility: string;
       plan: { topLevel: string[]; scopes: Record<string, string[]> };
     }
-  | { ok: false; compatibility: string; issues: A3sFlowDslIssue[] };
+  | { ok: false; compatibility: string; issues: AsterFlowDslIssue[] };
 
 function validateWorkflowDocument(
-  document: A3sFlowWorkflowDsl,
+  document: AsterFlowWorkflowDsl,
   compatibility: string,
 ): WorkflowValidationResult {
-  const dag = compileA3sFlowWorkflowDag(document.workflow.graph);
+  const dag = compileAsterFlowWorkflowDag(document.workflow.graph);
   const issues = [
     ...(dag.ok ? [] : dag.issues),
     ...validateNodeConfigurations(document),
@@ -274,7 +274,7 @@ function parseJsonObject(value: string | undefined, label: string): JsonObject {
   if (!value) throw new CliError('usage', `${label} requires --config <json>.`);
   let parsed: unknown;
   try {
-    parsed = parseA3sFlowStrictJson(value);
+    parsed = parseAsterFlowStrictJson(value);
   } catch (error) {
     throw new CliError(
       'usage',
@@ -299,7 +299,7 @@ function updateOperations(options: CliOptions): FlowCliWorkflowUpdate[] {
     throw new CliError('usage', '--operations cannot be combined with a single update operation.');
   }
   try {
-    return parseFlowCliWorkflowUpdates(parseA3sFlowStrictJson(options.operations));
+    return parseFlowCliWorkflowUpdates(parseAsterFlowStrictJson(options.operations));
   } catch (error) {
     throw new CliError(
       'usage',
@@ -509,13 +509,13 @@ function workflowSummary(
   return {
     ok: true,
     path,
-    engineVersion: A3S_FLOW_ENGINE_VERSION,
-    workflowDslVersion: A3S_FLOW_TESTED_WORKFLOW_DSL_VERSION,
+    engineVersion: ASTER_FLOW_ENGINE_VERSION,
+    workflowDslVersion: ASTER_FLOW_TESTED_WORKFLOW_DSL_VERSION,
     compatibility: validation.compatibility,
     nodes: validation.document.workflow.graph.nodes.length,
     edges: validation.document.workflow.graph.edges.length,
-    documentDigest: digestA3sFlowWorkflowDsl(validation.document),
-    graphDigest: digestA3sFlowWorkflowDag(validation.document.workflow.graph),
+    documentDigest: digestAsterFlowWorkflowDsl(validation.document),
+    graphDigest: digestAsterFlowWorkflowDag(validation.document.workflow.graph),
     plan: validation.plan,
     ...(includeDocument ? { document: validation.document } : {}),
   } as JsonObject;
@@ -602,12 +602,12 @@ function rejectUnexpectedCommandOptions(command: string, options: CliOptions): v
 
 async function handleNodes(argumentsForCommand: string[], options: CliOptions): Promise<number> {
   requireArguments('nodes', argumentsForCommand, 0);
-  const nodes = a3sFlowDagNodeRegistry.list({ includeInternal: options.includeInternal });
+  const nodes = asterFlowDagNodeRegistry.list({ includeInternal: options.includeInternal });
   await emit(
     {
       ok: true,
-      engineVersion: A3S_FLOW_ENGINE_VERSION,
-      workflowDslVersion: A3S_FLOW_TESTED_WORKFLOW_DSL_VERSION,
+      engineVersion: ASTER_FLOW_ENGINE_VERSION,
+      workflowDslVersion: ASTER_FLOW_TESTED_WORKFLOW_DSL_VERSION,
       count: nodes.length,
       nodes: nodes.map(publicManifest),
     },
@@ -619,7 +619,7 @@ async function handleNodes(argumentsForCommand: string[], options: CliOptions): 
 async function handleNode(argumentsForCommand: string[], options: CliOptions): Promise<number> {
   requireArguments('node', argumentsForCommand, 1);
   const type = argumentsForCommand[0];
-  const manifest = a3sFlowDagNodeRegistry.get(type);
+  const manifest = asterFlowDagNodeRegistry.get(type);
   if (!manifest || (manifest.internal && !options.includeInternal)) {
     throw new CliError('unknown_node', `Unknown public node type: ${type}`);
   }
@@ -630,11 +630,11 @@ async function handleNode(argumentsForCommand: string[], options: CliOptions): P
 async function handleNew(argumentsForCommand: string[], options: CliOptions): Promise<number> {
   requireArguments('new', argumentsForCommand, 1);
   if (!options.id?.trim()) throw new CliError('usage', 'new requires --id <id>.');
-  const manifest = a3sFlowDagNodeRegistry.get(argumentsForCommand[0]);
+  const manifest = asterFlowDagNodeRegistry.get(argumentsForCommand[0]);
   if (!manifest || manifest.internal) {
     throw new CliError('unknown_node', `Unknown public node type: ${argumentsForCommand[0]}`);
   }
-  await emit(createA3sFlowDagNode(options.id, manifest), options);
+  await emit(createAsterFlowDagNode(options.id, manifest), options);
   return 0;
 }
 
@@ -655,7 +655,7 @@ async function handleCreate(
   const path = argumentsForCommand[0];
   if (path === '-') throw new CliError('usage', 'create requires a file path, not stdin.');
   rejectOutputCollision(path, options);
-  let document: A3sFlowWorkflowDsl;
+  let document: AsterFlowWorkflowDsl;
   let compatibility = 'compatible';
   if (options.from) {
     const source = await parseWorkflow(options.from);
@@ -718,7 +718,7 @@ async function handleUpdate(
     return 1;
   }
   validateIfDigest(options.ifDigest);
-  const baseDocumentDigest = digestA3sFlowWorkflowDsl(current.document);
+  const baseDocumentDigest = digestAsterFlowWorkflowDsl(current.document);
   if (options.ifDigest !== undefined && options.ifDigest !== baseDocumentDigest) {
     throw new CliError(
       'conflict',
@@ -825,8 +825,8 @@ async function handleWorkflowAnalysis(
     await emit(
       {
         ok: true,
-        engineVersion: A3S_FLOW_ENGINE_VERSION,
-        workflowDslVersion: A3S_FLOW_TESTED_WORKFLOW_DSL_VERSION,
+        engineVersion: ASTER_FLOW_ENGINE_VERSION,
+        workflowDslVersion: ASTER_FLOW_TESTED_WORKFLOW_DSL_VERSION,
         compatibility: validation.compatibility,
         nodes: validation.document.workflow.graph.nodes.length,
         edges: validation.document.workflow.graph.edges.length,
@@ -840,8 +840,8 @@ async function handleWorkflowAnalysis(
       {
         ok: true,
         compatibility: validation.compatibility,
-        documentDigest: digestA3sFlowWorkflowDsl(validation.document),
-        graphDigest: digestA3sFlowWorkflowDag(validation.document.workflow.graph),
+        documentDigest: digestAsterFlowWorkflowDsl(validation.document),
+        graphDigest: digestAsterFlowWorkflowDag(validation.document.workflow.graph),
       },
       options,
     );

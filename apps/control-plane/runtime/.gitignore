@@ -1,0 +1,6 @@
+# Local Function data-plane for aster-gateway `/v1`.
+.data/
+.env
+node_modules/
+target/
+*.log

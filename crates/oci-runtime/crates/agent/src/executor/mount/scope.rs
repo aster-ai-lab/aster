@@ -1,7 +1,7 @@
 use std::io;
 use std::path::{Component, Path};
 
-use a3s_oci_sdk::Result;
+use aster_oci_sdk::Result;
 
 use super::{permission_denied, MountPlan};
 use crate::executor::RootfsScope;
@@ -117,7 +117,7 @@ mod tests {
     use std::fs;
     use std::path::Path;
 
-    use a3s_oci_sdk::{ErrorCode, IoMode, OciBundle, ProcessIo};
+    use aster_oci_sdk::{ErrorCode, IoMode, OciBundle, ProcessIo};
     use serde_json::json;
     use tempfile::tempdir;
 

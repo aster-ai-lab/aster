@@ -87,7 +87,7 @@ mod tests {
     // Integration Tests (require real LLM API)
     // ========================================================================
     // These tests are ignored by default. Run with:
-    //   cargo test -p a3s-code --lib test_real_llm -- --ignored
+    //   cargo test -p aster --lib test_real_llm -- --ignored
     //
     // Requires config.json in workspace root with:
     // {
@@ -145,7 +145,7 @@ mod tests {
     }
 
     #[tokio::test]
-    #[ignore] // Run with: cargo test -p a3s-code --lib test_real_llm_openai_complete -- --ignored
+    #[ignore] // Run with: cargo test -p aster --lib test_real_llm_openai_complete -- --ignored
     async fn test_real_llm_openai_complete() {
         let Some((api_base, api_key, model)) = load_test_config() else {
             eprintln!("Skipping test: config.json not found or invalid");
@@ -172,7 +172,7 @@ mod tests {
     }
 
     #[tokio::test]
-    #[ignore] // Run with: cargo test -p a3s-code --lib test_real_llm_openai_streaming -- --ignored
+    #[ignore] // Run with: cargo test -p aster --lib test_real_llm_openai_streaming -- --ignored
     async fn test_real_llm_openai_streaming() {
         let Some((api_base, api_key, model)) = load_test_config() else {
             eprintln!("Skipping test: config.json not found or invalid");
@@ -3935,6 +3935,48 @@ mod multimodal_tests {
     }
 
     #[test]
+    fn test_attachment_from_file_png_uppercase_extension() {
+        // iOS / camera exports often use .PNG; extension matching must be
+        // case-insensitive so the read-image path does not reject them as
+        // application/octet-stream.
+        const PNG: &[u8] = &[
+            0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48,
+            0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x02, 0x00, 0x00,
+            0x00, 0x90, 0x77, 0x53, 0xDE, 0x00, 0x00, 0x00, 0x0C, 0x49, 0x44, 0x41, 0x54, 0x08,
+            0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x00, 0x03, 0x00, 0x01, 0x00, 0x05, 0xFE,
+            0x02, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
+        ];
+        let dir = tempfile::tempdir().unwrap();
+        for name in ["IMG_3904.PNG", "shot.png"] {
+            let path = dir.path().join(name);
+            std::fs::write(&path, PNG).unwrap();
+            let a = Attachment::from_file(&path).unwrap();
+            assert_eq!(a.media_type, "image/png", "{name}");
+            assert_eq!(a.data, PNG);
+        }
+    }
+
+    #[test]
+    fn test_attachment_from_file_png_magic_overrides_octet_stream_extension() {
+        // Unknown / non-image extensions would previously stay octet-stream.
+        // PNG magic must still classify the payload so callers that load by
+        // path get image/png.
+        const PNG: &[u8] = &[
+            0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48,
+            0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x02, 0x00, 0x00,
+            0x00, 0x90, 0x77, 0x53, 0xDE, 0x00, 0x00, 0x00, 0x0C, 0x49, 0x44, 0x41, 0x54, 0x08,
+            0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x00, 0x03, 0x00, 0x01, 0x00, 0x05, 0xFE,
+            0x02, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
+        ];
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("payload.bin");
+        std::fs::write(&path, PNG).unwrap();
+        let a = Attachment::from_file(&path).unwrap();
+        assert_eq!(a.media_type, "image/png");
+        assert_eq!(a.data, PNG);
+    }
+
+    #[test]
     fn test_attachment_from_file_unknown_ext() {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("test.bin");
@@ -4140,6 +4182,16 @@ mod multimodal_tests {
         let msg = Message::user_with_attachments("No images", &[]);
         assert_eq!(msg.content.len(), 1); // just text
         assert_eq!(msg.text(), "No images");
+    }
+
+    #[test]
+    fn image_only_wire_has_text_without_changing_the_product_transcript() {
+        for text in ["", " \n"] {
+            let message = Message::user_with_attachments(text, &[Attachment::png(vec![1, 2])]);
+            assert_eq!(message.text(), "[Image]");
+            assert_eq!(message.transcript_text.as_deref(), Some(text));
+            assert!(matches!(&message.content[0], ContentBlock::Image { .. }));
+        }
     }
 
     // --- Message::tool_result_with_images ---

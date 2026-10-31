@@ -1,4 +1,4 @@
-//! Client file-system reads through the shipped `a3s-code-acp` binary
+//! Client file-system reads through the shipped `aster-acp` binary
 //! (ACP-CAPS1).
 //!
 //! A client that declares `fs.readTextFile` serves the model's `read` tool
@@ -223,7 +223,7 @@ impl acp::Client for TestClient {
         }
         Ok(
             acp::ReadTextFileResponse::new(UNSAVED).meta(serde_json::Map::from_iter([(
-                "a3sDocument".to_owned(),
+                "asterDocument".to_owned(),
                 observation,
             )])),
         )
@@ -294,15 +294,15 @@ async fn read_turn(
     rich: bool,
     mode: ReadMode,
 ) -> Vec<PathBuf> {
-    let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
+    let bin = PathBuf::from(env!("CARGO_BIN_EXE_aster-acp"));
     let mut child = tokio::process::Command::new(bin)
         .arg("--cwd")
         .arg(&fixture.workspace)
-        .env("A3S_CONFIG", &fixture.config)
-        .env("A3S_STATE_HOME", &fixture.state)
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_CONFIG", &fixture.config)
+        .env("ASTER_STATE_HOME", &fixture.state)
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("XAI_API_KEY", "sk-dummy-not-a-model")
         .env("HOME", &fixture.home)
         .env("GROK_HOME", fixture.home.join("grok"))
@@ -312,7 +312,7 @@ async fn read_turn(
         .stderr(Stdio::null())
         .kill_on_drop(true)
         .spawn()
-        .expect("spawn a3s-code-acp");
+        .expect("spawn aster-acp");
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
     let reads = Rc::new(RefCell::new(Vec::new()));
@@ -337,7 +337,7 @@ async fn read_turn(
     let mut new_session = acp::NewSessionRequest::new(fixture.workspace.clone());
     if studio_documents {
         new_session = new_session.meta(serde_json::Map::from_iter([(
-            "a3sStudioDocuments".to_owned(),
+            "asterStudioDocuments".to_owned(),
             serde_json::Value::Bool(true),
         )]));
     }

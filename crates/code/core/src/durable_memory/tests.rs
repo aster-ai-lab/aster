@@ -1,5 +1,5 @@
 use super::*;
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet, MemoryNodeDraft,
     MemoryOperation, MemoryQuery, MemoryRelation, MemoryRelationKind,
 };
@@ -11,7 +11,7 @@ fn time(offset_seconds: i64) -> DateTime<Utc> {
 
 fn evidence(name: &str, kind: EvidenceKind, offset_seconds: i64) -> EvidenceRef {
     EvidenceRef::try_new(
-        format!("a3s://evidence/{name}"),
+        format!("aster://evidence/{name}"),
         format!("sha256:{name:0>64}"),
         kind,
         time(offset_seconds),
@@ -45,7 +45,7 @@ async fn candidate_write_stays_inactive_until_explicit_activation() {
         .with_metadata("source", "workflow")
         .with_metadata("scope", "workspace")
         .with_metadata("reason", "This prevents invalid root workspace builds")
-        .with_metadata("schema", "a3s.memory.durable.v1");
+        .with_metadata("schema", "aster.memory.durable.v1");
 
     let node = binding
         .store_shadow_candidate(&item, &turn_evidence)
@@ -683,7 +683,7 @@ async fn store_shadow_candidate_accepts_semantic_memory_with_tags() {
         .await
         .unwrap();
     assert_eq!(node.kind, DurableMemoryKind::Semantic);
-    assert!(node.labels.contains_key("a3s.extraction.tags"));
+    assert!(node.labels.contains_key("aster.extraction.tags"));
 }
 
 #[tokio::test]
@@ -736,7 +736,7 @@ fn fuse_lexical_semantic_covers_empty_semantic_lexical_and_hybrid() {
     use super::context::RecallCandidate;
     use super::fusion::fuse_lexical_semantic;
     use super::semantic::SemanticRecallCandidate;
-    use a3s_memory::repository::MemoryRevisionKind;
+    use aster_durable_memory::repository::MemoryRevisionKind;
     use std::collections::BTreeMap;
 
     fn node(id: &str, updated_offset: i64) -> MemoryNode {
@@ -803,7 +803,7 @@ fn fuse_lexical_semantic_covers_empty_semantic_lexical_and_hybrid() {
 
 #[test]
 fn oversized_identifier_is_rejected_for_activation() {
-    let too_long = "a".repeat(a3s_memory::repository::MAX_IDENTIFIER_BYTES + 1);
+    let too_long = "a".repeat(aster_durable_memory::repository::MAX_IDENTIFIER_BYTES + 1);
     let err = DurableMemoryActivation::try_new(
         too_long,
         "node-1",
@@ -916,7 +916,7 @@ fn with_semantic_recall_requires_active_recall_policy() {
         EmbeddingNormalization, EmbeddingProvider, EmbeddingProviderDescriptor,
         EmbeddingProviderError,
     };
-    use a3s_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
+    use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
 
     struct RejectingProvider;
     #[async_trait::async_trait]
@@ -964,12 +964,12 @@ fn with_semantic_recall_requires_active_recall_policy() {
 struct EmptyNodesRepository;
 
 #[async_trait::async_trait]
-impl a3s_memory::repository::MemoryRepository for EmptyNodesRepository {
+impl aster_durable_memory::repository::MemoryRepository for EmptyNodesRepository {
     async fn apply(
         &self,
         change_set: MemoryChangeSet,
-    ) -> Result<a3s_memory::repository::MemoryChangeResult, MemoryRepositoryError> {
-        Ok(a3s_memory::repository::MemoryChangeResult {
+    ) -> Result<aster_durable_memory::repository::MemoryChangeResult, MemoryRepositoryError> {
+        Ok(aster_durable_memory::repository::MemoryChangeResult {
             idempotency_key: change_set.idempotency_key,
             occurred_at: change_set.occurred_at,
             nodes: Vec::new(),
@@ -980,27 +980,27 @@ impl a3s_memory::repository::MemoryRepository for EmptyNodesRepository {
         &self,
         _namespace: &MemoryNamespace,
         _node_id: &str,
-    ) -> Result<Option<a3s_memory::repository::MemoryNode>, MemoryRepositoryError> {
+    ) -> Result<Option<aster_durable_memory::repository::MemoryNode>, MemoryRepositoryError> {
         Ok(None)
     }
 
     async fn query(
         &self,
         _query: MemoryQuery,
-    ) -> Result<a3s_memory::repository::MemoryQueryResult, MemoryRepositoryError> {
-        Ok(a3s_memory::repository::MemoryQueryResult { hits: Vec::new() })
+    ) -> Result<aster_durable_memory::repository::MemoryQueryResult, MemoryRepositoryError> {
+        Ok(aster_durable_memory::repository::MemoryQueryResult { hits: Vec::new() })
     }
 
     async fn record_admission(
         &self,
-        _event: a3s_memory::repository::MemoryAccessEvent,
+        _event: aster_durable_memory::repository::MemoryAccessEvent,
     ) -> Result<(), MemoryRepositoryError> {
         Ok(())
     }
 
     async fn record_use(
         &self,
-        _event: a3s_memory::repository::MemoryAccessEvent,
+        _event: aster_durable_memory::repository::MemoryAccessEvent,
     ) -> Result<(), MemoryRepositoryError> {
         Ok(())
     }
@@ -1009,8 +1009,8 @@ impl a3s_memory::repository::MemoryRepository for EmptyNodesRepository {
         &self,
         _namespace: &MemoryNamespace,
         _node_id: &str,
-    ) -> Result<a3s_memory::repository::MemoryUsageSummary, MemoryRepositoryError> {
-        Ok(a3s_memory::repository::MemoryUsageSummary::default())
+    ) -> Result<aster_durable_memory::repository::MemoryUsageSummary, MemoryRepositoryError> {
+        Ok(aster_durable_memory::repository::MemoryUsageSummary::default())
     }
 }
 

@@ -4,7 +4,7 @@ use std::path::Path;
 use std::process::ExitStatus as ProcessExitStatus;
 use std::time::Duration;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use tokio::net::UnixStream;
 use tokio::process::{Child, Command};
 use tokio::time::timeout;

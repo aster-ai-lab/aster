@@ -3,10 +3,10 @@
 use std::collections::HashSet;
 use std::path::{Component, Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::event::BoxEvent;
-use a3s_box_core::execution::ResolvedExecutionPlan;
-use a3s_box_core::guest_exec::{
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::event::BoxEvent;
+use aster_box_core::execution::ResolvedExecutionPlan;
+use aster_box_core::guest_exec::{
     GuestExecConfig, MAX_RUNTIME_EXEC_CONFIG_BYTES, RUNTIME_EXEC_CONFIG_PATH,
 };
 use base64::Engine;
@@ -20,7 +20,7 @@ use crate::sandbox::rootfs::{
 };
 #[cfg(target_os = "linux")]
 use crate::sandbox::rootfs::{persist_rootfs_id_mappings, recover_interrupted_rootfs_metadata};
-use crate::sandbox::A3sOciController;
+use crate::sandbox::AsterOciController;
 use crate::sandbox::{
     compile_oci_spec, compile_runtime_owned_oci_spec, plan_id_mappings,
     prepare_managed_mount_source, prepare_managed_secret_mount_source, prepare_sandbox_path_access,
@@ -31,7 +31,7 @@ use crate::sandbox::{
 
 use super::VmManager;
 
-/// Product-owned bundle ready to be loaded through the public A3S OCI SDK.
+/// Product-owned bundle ready to be loaded through the public Aster OCI SDK.
 #[derive(Debug, Clone)]
 pub(crate) struct RuntimeOwnedSandboxBundle {
     pub bundle_dir: PathBuf,
@@ -46,9 +46,9 @@ impl VmManager {
         boot_span: &tracing::Span,
         boot_start: std::time::Instant,
     ) -> Result<()> {
-        if execution_plan.backend != a3s_box_core::ExecutionBackend::A3sOci {
+        if execution_plan.backend != aster_box_core::ExecutionBackend::AsterOci {
             return Err(BoxError::BoxBootError {
-                message: "A3S OCI Runtime is the only supported Sandbox backend".to_string(),
+                message: "Aster OCI Runtime is the only supported Sandbox backend".to_string(),
                 hint: None,
             });
         }
@@ -56,7 +56,7 @@ impl VmManager {
         // for SO_PEERCRED. Restore effective root before overlay mounts and
         // capability probes that require CAP_SYS_ADMIN.
         #[cfg(target_os = "linux")]
-        crate::sandbox::a3s_oci_controller::restore_effective_root_if_saved()?;
+        crate::sandbox::aster_oci_controller::restore_effective_root_if_saved()?;
         // This probe is deliberately before image pulls, rootfs mounts, volume
         // creation, or bundle writes. Every mandatory control is fail-closed.
         let capability_start = std::time::Instant::now();
@@ -79,7 +79,7 @@ impl VmManager {
                         .to_string(),
                     hint: None,
                 })?;
-        a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+        aster_box_core::lifecycle_profile::record_lifecycle_phase(
             "sandbox.capability",
             capability_start.elapsed(),
         );
@@ -90,15 +90,15 @@ impl VmManager {
         let runtime_root = super::sandbox_runtime_root(&self.home_dir, &self.box_id);
         let runtime_record = sandbox_dir.join("runtime.json");
         let runtime = capabilities
-            .a3s_oci
+            .aster_oci
             .clone()
             .ok_or_else(|| BoxError::BoxBootError {
-                message: "Sandbox capability probe returned no A3S OCI artifacts".to_string(),
+                message: "Sandbox capability probe returned no Aster OCI artifacts".to_string(),
                 hint: None,
             })?;
         let runtime_digest =
             combined_runtime_digest(&runtime.runtime_sha256, &runtime.agent_sha256);
-        A3sOciController::new(runtime.clone()).require_absent(&runtime_root, &self.box_id)?;
+        AsterOciController::new(runtime.clone()).require_absent(&runtime_root, &self.box_id)?;
 
         tracing::info!(
             parent: boot_span,
@@ -120,7 +120,7 @@ impl VmManager {
                 return Err(error);
             }
         };
-        a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+        aster_box_core::lifecycle_profile::record_lifecycle_phase(
             "sandbox.layout",
             layout_start.elapsed(),
         );
@@ -132,7 +132,7 @@ impl VmManager {
             // Stage through the exact merged root before ownership planning or
             // runtime launch so the terminal completion marker is invalidated in
             // this box's writable upper, never in the shared Snapshot lower.
-            a3s_box_core::rootfs_metadata::stage_terminal_rootfs_metadata_for_boot(
+            aster_box_core::rootfs_metadata::stage_terminal_rootfs_metadata_for_boot(
                 &layout.rootfs_path,
             )?;
             #[cfg(target_os = "linux")]
@@ -146,7 +146,7 @@ impl VmManager {
                 );
             }
             let instance_prepare_start = std::time::Instant::now();
-            let resolv_content = a3s_box_core::dns::generate_resolv_conf(&self.config.dns);
+            let resolv_content = aster_box_core::dns::generate_resolv_conf(&self.config.dns);
             crate::oci::rootfs::write_guest_file(
                 &layout.rootfs_path,
                 "etc/resolv.conf",
@@ -154,7 +154,7 @@ impl VmManager {
             )?;
             self.write_hostname_file(&layout)?;
             match &self.config.network {
-                a3s_box_core::NetworkMode::Bridge { network } => {
+                aster_box_core::NetworkMode::Bridge { network } => {
                     self.write_hosts_file(&layout, network)?;
                 }
                 _ => {
@@ -172,9 +172,9 @@ impl VmManager {
                 key == "BOX_EXEC_CONFIG_FILE" && value == RUNTIME_EXEC_CONFIG_PATH
             }) {
                 return Err(BoxError::BoxBootError {
-                    message: "Sandbox requires the packaged a3s-box guest init as OCI PID 1"
+                    message: "Sandbox requires the packaged aster-box guest init as OCI PID 1"
                         .to_string(),
-                    hint: Some("Install the matching a3s-box-guest-init artifact".to_string()),
+                    hint: Some("Install the matching aster-box-guest-init artifact".to_string()),
                 });
             }
 
@@ -191,14 +191,14 @@ impl VmManager {
             let maximum_uid = rootfs_ids.maximum_uid.max(account_uid).max(process_uid);
             let maximum_gid = rootfs_ids.maximum_gid.max(account_gid).max(process_gid);
             let id_mappings = plan_id_mappings(user_namespace, maximum_uid, maximum_gid)?;
-            a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+            aster_box_core::lifecycle_profile::record_lifecycle_phase(
                 "sandbox.instance_prepare",
                 instance_prepare_start.elapsed(),
             );
 
             let mount_sources_start = std::time::Instant::now();
             self.prepare_sandbox_mount_sources(&layout, &mut mounts, &id_mappings)?;
-            a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+            aster_box_core::lifecycle_profile::record_lifecycle_phase(
                 "sandbox.mount_sources",
                 mount_sources_start.elapsed(),
             );
@@ -210,7 +210,7 @@ impl VmManager {
                 self.config.read_only,
                 layout.prefer_image_rootfs_metadata,
             )?;
-            a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+            aster_box_core::lifecycle_profile::record_lifecycle_phase(
                 "sandbox.rootfs_ownership",
                 rootfs_ownership_start.elapsed(),
             );
@@ -236,7 +236,7 @@ impl VmManager {
                 execution_plan_digest,
                 runtime_digest,
                 host_net_device: None,
-                share_host_network: matches!(self.config.network, a3s_box_core::NetworkMode::Host),
+                share_host_network: matches!(self.config.network, aster_box_core::NetworkMode::Host),
             };
             let oci_spec = compile_oci_spec(&bundle_spec)?;
             write_bundle(&bundle_dir, &oci_spec, &execution_plan, &capabilities)?;
@@ -250,7 +250,7 @@ impl VmManager {
             )?;
             #[cfg(target_os = "linux")]
             persist_rootfs_id_mappings(&box_dir, &bundle_spec.id_mappings)?;
-            a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+            aster_box_core::lifecycle_profile::record_lifecycle_phase(
                 "sandbox.bundle",
                 bundle_start.elapsed(),
             );
@@ -299,7 +299,7 @@ impl VmManager {
             exec_socket_path: layout.exec_socket_path.clone(),
             pty_socket_path: layout.pty_socket_path.clone(),
             stdout_path: console_output.clone(),
-            stderr_path: a3s_box_core::log::stderr_console_path(&console_output),
+            stderr_path: aster_box_core::log::stderr_console_path(&console_output),
             init_log_path: box_dir.join("logs").join("sandbox-init.log"),
             log_config: self.log_config.clone(),
             log_worker_path,
@@ -307,19 +307,19 @@ impl VmManager {
             log_worker_ready_path: sandbox_dir.join("bundle").join("log-worker.ready"),
         };
         let launch_start = std::time::Instant::now();
-        let controller = A3sOciController::new(runtime);
+        let controller = AsterOciController::new(runtime);
         let handler_result = {
             let _phase = self.boot_phase_timer("launch");
             controller.start(launch).await
         };
-        let handler: Box<dyn a3s_box_core::vmm::VmHandler> = match handler_result {
+        let handler: Box<dyn aster_box_core::vmm::VmHandler> = match handler_result {
             Ok(handler) => Box::new(handler),
             Err(error) => {
                 self.cleanup_boot_failure().await;
                 return Err(error);
             }
         };
-        a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+        aster_box_core::lifecycle_profile::record_lifecycle_phase(
             "sandbox.launch",
             launch_start.elapsed(),
         );
@@ -346,7 +346,7 @@ impl VmManager {
             self.cleanup_boot_failure().await;
             return Err(error);
         }
-        a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+        aster_box_core::lifecycle_profile::record_lifecycle_phase(
             "sandbox.readiness",
             readiness_start.elapsed(),
         );
@@ -378,7 +378,7 @@ impl VmManager {
             box_id = %self.box_id,
             "Sandbox ready"
         );
-        a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+        aster_box_core::lifecycle_profile::record_lifecycle_phase(
             "sandbox.start_total",
             boot_start.elapsed(),
         );
@@ -393,18 +393,18 @@ impl VmManager {
         execution_plan: &ResolvedExecutionPlan,
         capabilities: &SandboxCapabilitySnapshot,
     ) -> Result<RuntimeOwnedSandboxBundle> {
-        if execution_plan.backend != a3s_box_core::ExecutionBackend::A3sOci {
+        if execution_plan.backend != aster_box_core::ExecutionBackend::AsterOci {
             return Err(BoxError::BoxBootError {
-                message: "A3S OCI Runtime is the only supported Sandbox backend".to_string(),
+                message: "Aster OCI Runtime is the only supported Sandbox backend".to_string(),
                 hint: None,
             });
         }
         capabilities.require_ready()?;
         let runtime = capabilities
-            .a3s_oci
+            .aster_oci
             .as_ref()
             .ok_or_else(|| BoxError::BoxBootError {
-                message: "Sandbox capability probe returned no A3S OCI artifacts".to_string(),
+                message: "Sandbox capability probe returned no Aster OCI artifacts".to_string(),
                 hint: None,
             })?;
         let user_namespace =
@@ -432,7 +432,7 @@ impl VmManager {
         self.image_config = layout.oci_config.clone();
 
         let prepare = (|| -> Result<RuntimeOwnedSandboxBundle> {
-            a3s_box_core::rootfs_metadata::stage_terminal_rootfs_metadata_for_boot(
+            aster_box_core::rootfs_metadata::stage_terminal_rootfs_metadata_for_boot(
                 &layout.rootfs_path,
             )?;
             #[cfg(target_os = "linux")]
@@ -445,7 +445,7 @@ impl VmManager {
                     "Recovered interrupted Sandbox rootfs metadata"
                 );
             }
-            let resolv_content = a3s_box_core::dns::generate_resolv_conf(&self.config.dns);
+            let resolv_content = aster_box_core::dns::generate_resolv_conf(&self.config.dns);
             crate::oci::rootfs::write_guest_file(
                 &layout.rootfs_path,
                 "etc/resolv.conf",
@@ -453,7 +453,7 @@ impl VmManager {
             )?;
             self.write_hostname_file(&layout)?;
             match &self.config.network {
-                a3s_box_core::NetworkMode::Bridge { network } => {
+                aster_box_core::NetworkMode::Bridge { network } => {
                     self.write_hosts_file(&layout, network)?;
                 }
                 _ => {
@@ -527,7 +527,7 @@ impl VmManager {
                 execution_plan_digest: digest_json(execution_plan)?,
                 runtime_digest,
                 host_net_device,
-                share_host_network: matches!(self.config.network, a3s_box_core::NetworkMode::Host),
+                share_host_network: matches!(self.config.network, aster_box_core::NetworkMode::Host),
             };
             let oci_spec = compile_runtime_owned_oci_spec(&bundle_spec, &runtime_process)?;
             write_bundle(&bundle_dir, &oci_spec, execution_plan, capabilities)?;
@@ -742,7 +742,7 @@ impl VmManager {
 
         // Named volumes are resolved to host paths before VmManager boots, so
         // their names are not present in BoxConfig. Match only mount roots that
-        // are registered in A3S's volume store; arbitrary bind mounts remain
+        // are registered in Aster's volume store; arbitrary bind mounts remain
         // external and are never chowned implicitly.
         for volume in volumes.values() {
             let Ok(source) = PathBuf::from(&volume.mount_point).canonicalize() else {
@@ -773,7 +773,7 @@ fn workspace_mount_is_explicitly_configured(
 fn stage_sandbox_host_net_device(
     home_dir: &Path,
     box_id: &str,
-    network: &a3s_box_core::NetworkMode,
+    network: &aster_box_core::NetworkMode,
     port_map: &[String],
 ) -> Result<Option<String>> {
     #[cfg(all(feature = "vm", target_os = "linux"))]
@@ -789,7 +789,7 @@ fn stage_sandbox_host_net_device(
     #[cfg(not(all(feature = "vm", target_os = "linux")))]
     {
         let _ = (home_dir, box_id, port_map);
-        if matches!(network, a3s_box_core::NetworkMode::Bridge { .. }) {
+        if matches!(network, aster_box_core::NetworkMode::Bridge { .. }) {
             return Err(BoxError::NetworkError(
                 "SandboxViaOci host netdevice staging requires Linux keep-authority".to_string(),
             ));
@@ -820,26 +820,26 @@ fn apply_sandbox_workload_resources(
 ) -> Result<()> {
     set_environment_value(
         environment,
-        "A3S_SEC_MEM_LIMIT",
+        "ASTER_SEC_MEM_LIMIT",
         resources.memory_limit.to_string(),
     );
     set_environment_value(
         environment,
-        "A3S_SEC_CPU_QUOTA",
+        "ASTER_SEC_CPU_QUOTA",
         resources.cpu_quota.to_string(),
     );
     set_environment_value(
         environment,
-        "A3S_SEC_CPU_PERIOD",
+        "ASTER_SEC_CPU_PERIOD",
         resources.cpu_period.to_string(),
     );
     set_environment_value(
         environment,
-        "A3S_SEC_PIDS_LIMIT",
+        "ASTER_SEC_PIDS_LIMIT",
         resources.pids_limit.to_string(),
     );
     if let Some(reservation) = resources.memory_reservation {
-        set_environment_value(environment, "A3S_SEC_MEM_LOW", reservation.to_string());
+        set_environment_value(environment, "ASTER_SEC_MEM_LOW", reservation.to_string());
     }
     if let Some(swap) = resources.memory_swap {
         let swap_only = if swap == -1 {
@@ -849,10 +849,10 @@ fn apply_sandbox_workload_resources(
                 BoxError::ConfigError("Sandbox workload swap limit underflows".to_string())
             })?
         };
-        set_environment_value(environment, "A3S_SEC_MEM_SWAP", swap_only.to_string());
+        set_environment_value(environment, "ASTER_SEC_MEM_SWAP", swap_only.to_string());
     }
     if let Some(shares) = resources.cpu_shares {
-        set_environment_value(environment, "A3S_SEC_CPU_SHARES", shares.to_string());
+        set_environment_value(environment, "ASTER_SEC_CPU_SHARES", shares.to_string());
     }
     Ok(())
 }
@@ -1387,7 +1387,7 @@ fn combined_runtime_digest(runtime_sha256: &str, agent_sha256: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use a3s_box_core::{volume::VolumeConfig, BoxConfig, EventEmitter};
+    use aster_box_core::{volume::VolumeConfig, BoxConfig, EventEmitter};
 
     use super::*;
 
@@ -1497,7 +1497,7 @@ mod tests {
             false,
         );
         std::fs::write(
-            rootfs.path().join(".a3s-box-exec.json"),
+            rootfs.path().join(".aster-box-exec.json"),
             serde_json::to_vec(&config).unwrap(),
         )
         .unwrap();
@@ -1514,7 +1514,7 @@ mod tests {
 
     #[test]
     fn sandbox_workload_environment_keeps_exact_limits_in_one_cgroup() {
-        let mut environment = vec![("A3S_SEC_CPU_QUOTA".to_string(), "stale".to_string())];
+        let mut environment = vec![("ASTER_SEC_CPU_QUOTA".to_string(), "stale".to_string())];
         let resources = SandboxResources {
             memory_limit: 128 * 1024 * 1024,
             memory_reservation: Some(64 * 1024 * 1024),
@@ -1533,17 +1533,17 @@ mod tests {
                 .iter()
                 .find_map(|(name, value)| (name == key).then_some(value.as_str()))
         };
-        assert_eq!(value("A3S_SEC_MEM_LIMIT"), Some("134217728"));
-        assert_eq!(value("A3S_SEC_MEM_LOW"), Some("67108864"));
-        assert_eq!(value("A3S_SEC_MEM_SWAP"), Some("134217728"));
-        assert_eq!(value("A3S_SEC_CPU_QUOTA"), Some("10000"));
-        assert_eq!(value("A3S_SEC_CPU_PERIOD"), Some("100000"));
-        assert_eq!(value("A3S_SEC_CPU_SHARES"), Some("1024"));
-        assert_eq!(value("A3S_SEC_PIDS_LIMIT"), Some("32"));
+        assert_eq!(value("ASTER_SEC_MEM_LIMIT"), Some("134217728"));
+        assert_eq!(value("ASTER_SEC_MEM_LOW"), Some("67108864"));
+        assert_eq!(value("ASTER_SEC_MEM_SWAP"), Some("134217728"));
+        assert_eq!(value("ASTER_SEC_CPU_QUOTA"), Some("10000"));
+        assert_eq!(value("ASTER_SEC_CPU_PERIOD"), Some("100000"));
+        assert_eq!(value("ASTER_SEC_CPU_SHARES"), Some("1024"));
+        assert_eq!(value("ASTER_SEC_PIDS_LIMIT"), Some("32"));
         assert_eq!(
             environment
                 .iter()
-                .filter(|(name, _)| name == "A3S_SEC_CPU_QUOTA")
+                .filter(|(name, _)| name == "ASTER_SEC_CPU_QUOTA")
                 .count(),
             1
         );
@@ -1560,7 +1560,7 @@ mod tests {
     }
 
     #[test]
-    fn named_volume_mounts_are_classified_as_a3s_managed() {
+    fn named_volume_mounts_are_classified_as_aster_managed() {
         let home = tempfile::tempdir().unwrap();
         let external = tempfile::tempdir().unwrap();
         let store = crate::volume::VolumeStore::new(

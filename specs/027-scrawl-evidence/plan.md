@@ -16,7 +16,7 @@ Internalize Scrawl's MIT-licensed evidence engine at `7b184c67767a1aee6c1d44640d
 | II. Evidence retained | PASS | `docs/evidence/desktop/2026-10-30-scrawl-evidence/OUTCOME.md` plus native receipts |
 | III. Hermetic tests | PASS | `scrawl`, Studio Rust, renderer Vitest and Swift package tests; native CUA additional |
 | IV. Closed sets | PASS | Recording states, targets, destinations and errors use Rust `parse()`/`as_str()` and Zod schemas |
-| V. One workspace / published APIs | PASS | Add `crates/capture` to the existing root members and lockfile; `publish = false`; local A3S paths only |
+| V. One workspace / published APIs | PASS | Add `crates/capture` to the existing root members and lockfile; `publish = false`; local Aster paths only |
 | VI. Local schema changes | PASS | `.scrawl` owned by evidence engine; Aster sidecar and preferences owned by Studio; no cloud schema |
 | VII. Shrink-only ratchets | PASS | Add scoped recording permissions without weakening existing facade/native-dropdown ratchets |
 | VIII. Replaceable transports | PASS | Native capture adapters behind the evidence engine; transport selection stays out of renderer and bundle schema |
@@ -56,7 +56,7 @@ See [research.md](research.md) for upstream scope, in-repo prior art and integra
 ## Verification Plan
 
 - `cargo test --locked -p scrawl` for upstream and integration evidence behavior.
-- Focused `cargo test --locked -p a3s-studio --lib scrawl` and visual MCP/session guard tests from the repository root.
+- Focused `cargo test --locked -p aster-studio --lib scrawl` and visual MCP/session guard tests from the repository root.
 - `swift test --package-path crates/capture` for CaptureKit and outbox behavior on macOS.
 - Focused renderer tests for the real record/stop control, target/destination owner, attachment, cancellation, redaction and unsupported states; applicable typecheck, lint, i18n and formatter checks.
 - `cargo fmt --all -- --check`, `tests/workspace_dependencies.py`, existing Tauri permission and workspace guards.

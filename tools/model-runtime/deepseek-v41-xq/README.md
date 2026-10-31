@@ -8,7 +8,7 @@ Build Power from the Aster root with its initialized Studio checkout and pinned
 toolchain:
 
 ```sh
-cargo +1.97.1 build --locked --release -p a3s-power --no-default-features --features server --bin a3s-power
+cargo +1.97.1 build --locked --release -p aster-power --no-default-features --features server --bin aster-power
 python3 -B -m unittest discover -s tools/model-runtime/deepseek-v41-xq -p 'test_*.py' -v
 ```
 

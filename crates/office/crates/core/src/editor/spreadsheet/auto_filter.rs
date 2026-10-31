@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{editor_error, filter_xml, validate_mutation_path};
 use crate::spreadsheet_reference::CellRange;
@@ -296,7 +296,7 @@ fn require_mutable(node: &crate::DocumentNode) -> UseResult<()> {
     }
 }
 
-fn node_not_found(path: &str) -> a3s_use_core::UseError {
+fn node_not_found(path: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.node_not_found",
         format!("Office semantic path '{path}' does not exist."),
@@ -304,7 +304,7 @@ fn node_not_found(path: &str) -> a3s_use_core::UseError {
     .with_detail("path", path)
 }
 
-fn filter_part_error(part: &str, reason: &str) -> a3s_use_core::UseError {
+fn filter_part_error(part: &str, reason: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_filter_invalid",
         format!("Spreadsheet worksheet part '{part}' {reason}."),

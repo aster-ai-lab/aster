@@ -104,7 +104,7 @@ async fn invalid_original_arguments_fail_before_hook_or_tool_execution() {
     .await
     .unwrap();
     let identity = prepared.prepared.clone();
-    let digest = a3s_effect::tool_args_digest(&invalid).unwrap();
+    let digest = aster_effect::tool_args_digest(&invalid).unwrap();
     assert_eq!(identity.original_args_digest, digest);
     assert_eq!(identity.effective_args_digest, digest);
     assert!(identity.baseline.is_none());
@@ -162,7 +162,7 @@ async fn permission_denial_with_invalid_arguments_remains_denied_without_executi
     .await
     .unwrap();
     let identity = prepared.prepared.clone();
-    let digest = a3s_effect::tool_args_digest(&invalid).unwrap();
+    let digest = aster_effect::tool_args_digest(&invalid).unwrap();
     assert_eq!(identity.original_args_digest, digest);
     assert_eq!(identity.effective_args_digest, digest);
     let result = execute_prepared(tools, prepared).await;
@@ -208,11 +208,11 @@ async fn invalid_rewritten_arguments_preserve_both_inputs_and_hook_uncertainty()
     let identity = prepared.prepared.clone();
     assert_eq!(
         identity.original_args_digest,
-        a3s_effect::tool_args_digest(&original).unwrap()
+        aster_effect::tool_args_digest(&original).unwrap()
     );
     assert_eq!(
         identity.effective_args_digest,
-        a3s_effect::tool_args_digest(&invalid).unwrap()
+        aster_effect::tool_args_digest(&invalid).unwrap()
     );
     assert_ne!(
         identity.original_args_digest,
@@ -265,7 +265,7 @@ async fn valid_unchanged_arguments_still_execute_once() {
     let identity = prepared.prepared.clone();
     assert_eq!(
         identity.original_args_digest,
-        a3s_effect::tool_args_digest(&original).unwrap()
+        aster_effect::tool_args_digest(&original).unwrap()
     );
     assert_eq!(
         identity.original_args_digest,

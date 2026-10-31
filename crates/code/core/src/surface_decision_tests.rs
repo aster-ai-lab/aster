@@ -11,7 +11,7 @@ fn protocol_and_plain_text_are_not_documents() {
     assert!(display_document("plain text").is_none());
     assert!(display_document("{\"ok\":true}").is_none());
     assert!(display_document(
-        r#"{"schema":"a3s.code.user-form.v1","status":"parked","permission_grant":false}"#
+        r#"{"schema":"aster.code.user-form.v1","status":"parked","permission_grant":false}"#
     )
     .is_none());
 }

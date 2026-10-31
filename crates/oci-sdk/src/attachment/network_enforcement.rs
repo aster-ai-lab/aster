@@ -11,11 +11,11 @@ use super::{
 use crate::{NetworkEnforcementId, NetworkNamespaceId, NetworkRedirectId, Result};
 
 /// Required extension carrying one opaque, pre-authorized network mechanism.
-pub const NETWORK_ENFORCEMENT_EXTENSION: &str = "dev.a3s.network.enforcement";
+pub const NETWORK_ENFORCEMENT_EXTENSION: &str = "dev.aster.network.enforcement";
 /// First network-enforcement extension contract version.
 pub const NETWORK_ENFORCEMENT_EXTENSION_VERSION: u16 = 1;
 /// Typed annotation schema understood by extension version 1.
-pub const NETWORK_ENFORCEMENT_SCHEMA_V1: &str = "a3s.oci.network-enforcement.v1";
+pub const NETWORK_ENFORCEMENT_SCHEMA_V1: &str = "aster.oci.network-enforcement.v1";
 
 const MAX_NETWORK_ENFORCEMENT_ANNOTATION_BYTES: usize = 16 * 1024;
 

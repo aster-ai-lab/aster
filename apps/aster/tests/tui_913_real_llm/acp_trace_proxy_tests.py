@@ -31,7 +31,7 @@ class RelayTests(unittest.TestCase):
             agent.chmod(0o700)
             path = root / "trace.jsonl"
             env = os.environ.copy()
-            env.update(A3S_CODE_TUI_TEST_ACP_REAL=str(agent), A3S_CODE_TUI_TEST_ACP_TRACE=str(path))
+            env.update(ASTER_TUI_TEST_ACP_REAL=str(agent), ASTER_TUI_TEST_ACP_TRACE=str(path))
             process = subprocess.Popen(
                 [sys.executable, str(Path(__file__).with_name("acp_trace_proxy.py"))],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env,
@@ -80,7 +80,7 @@ class RelayTests(unittest.TestCase):
                 "sessionId":"s1", "_meta":{"promptId":"p2"},
                 "update":{"sessionUpdate":"agent_message_chunk", "content":{
                     "type":"text", "text":"RELAY-SECRET-CANARY"}}}},
-            {"jsonrpc":"2.0", "method":"_a3s/queue/changed", "params":{
+            {"jsonrpc":"2.0", "method":"_aster/queue/changed", "params":{
                 "sessionId":"s1", "runningPromptId":"p2",
                 "runningText":"RELAY-SECRET-CANARY"}},
         ])

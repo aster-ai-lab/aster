@@ -1,9 +1,9 @@
 use std::{io, path::Path};
 
-use a3s_oci_agent::{LinuxExecutor, StaleGenerationRecovery};
-use a3s_oci_agent_protocol::{AgentCreateRequest, AgentState};
-use a3s_oci_core::{DriverKind, HostPlatform, IsolationClass};
-use a3s_oci_sdk::{
+use aster_oci_agent::{LinuxExecutor, StaleGenerationRecovery};
+use aster_oci_agent_protocol::{AgentCreateRequest, AgentState};
+use aster_oci_core::{DriverKind, HostPlatform, IsolationClass};
+use aster_oci_sdk::{
     canonical_json_bytes, CheckpointDigest, CheckpointFormat, CheckpointReference, ContainerId,
     ContainerTarget, ErrorCode, OperationId, Result, RuntimeArtifact,
 };
@@ -22,20 +22,20 @@ use super::{
     NativeCriuCheckpoint,
 };
 
-const RESTORE_JOURNAL_REQUEST_SCHEMA_V1: &str = "a3s.oci.native-restore-request.v1";
+const RESTORE_JOURNAL_REQUEST_SCHEMA_V1: &str = "aster.oci.native-restore-request.v1";
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct RestoreRequestFingerprint<'a> {
     schema_version: &'static str,
-    context: &'a a3s_oci_sdk::OperationContext,
+    context: &'a aster_oci_sdk::OperationContext,
     target: &'a ContainerTarget,
-    bundle: &'a a3s_oci_sdk::OciBundle,
-    artifact_path: &'a a3s_oci_sdk::CheckpointArtifactPath,
-    isolation: &'a a3s_oci_sdk::IsolationRequest,
-    io: &'a a3s_oci_sdk::ProcessIo,
-    attachment_contract: &'a a3s_oci_sdk::CreateAttachments,
-    tee_launch: &'a Option<a3s_oci_sdk::TeeLaunchRequest>,
+    bundle: &'a aster_oci_sdk::OciBundle,
+    artifact_path: &'a aster_oci_sdk::CheckpointArtifactPath,
+    isolation: &'a aster_oci_sdk::IsolationRequest,
+    io: &'a aster_oci_sdk::ProcessIo,
+    attachment_contract: &'a aster_oci_sdk::CreateAttachments,
+    tee_launch: &'a Option<aster_oci_sdk::TeeLaunchRequest>,
     reference: &'a CheckpointReference,
     runtime_artifact: &'a RuntimeArtifact,
     agent_request: &'a AgentCreateRequest,
@@ -191,7 +191,7 @@ impl NativeCriuCheckpoint {
     pub(crate) async fn recover_restore(
         &self,
         executor: &LinuxExecutor,
-        durable: &a3s_oci_sdk::ContainerRecord,
+        durable: &aster_oci_sdk::ContainerRecord,
     ) -> Result<Option<NativeRestoreRecovery>> {
         let target = ContainerTarget::exact(
             ContainerId::new(durable.state.id().to_string())?,
@@ -236,10 +236,10 @@ impl NativeCriuCheckpoint {
         }
 
         match *durable.state.status() {
-            a3s_oci_sdk::oci_spec::runtime::ContainerState::Creating => {
+            aster_oci_sdk::oci_spec::runtime::ContainerState::Creating => {
                 Ok(Some(NativeRestoreRecovery::Pending))
             }
-            a3s_oci_sdk::oci_spec::runtime::ContainerState::Running if durable.is_paused() => {
+            aster_oci_sdk::oci_spec::runtime::ContainerState::Running if durable.is_paused() => {
                 let manifest = record.manifest().cloned().ok_or_else(|| {
                     checkpoint_error(
                         ErrorCode::FailedPrecondition,
@@ -349,7 +349,7 @@ impl NativeCriuCheckpoint {
     fn validate_durable_restore(
         &self,
         record: &RestoreJournalRecord,
-        durable: &a3s_oci_sdk::ContainerRecord,
+        durable: &aster_oci_sdk::ContainerRecord,
     ) -> Result<()> {
         validate_restore_stack(
             record.reference(),
@@ -375,7 +375,7 @@ impl NativeCriuCheckpoint {
 
     async fn open_external_artifact(
         &self,
-        path: &a3s_oci_sdk::CheckpointArtifactPath,
+        path: &aster_oci_sdk::CheckpointArtifactPath,
     ) -> Result<std::fs::File> {
         ArtifactDestination::open(path)
             .await?

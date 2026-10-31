@@ -2,7 +2,7 @@ use std::fs::{self, File, OpenOptions};
 use std::io::{BufReader, BufWriter, Read, Write};
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{
+use aster_use_core::{
     OkfKnowledgeObservedState, PlanQualifiedSurfaceRef, PlanScope, UseError, UseResult,
 };
 use rusqlite::params;
@@ -15,9 +15,9 @@ use super::projection::{database_io, load_projection, observation, selected_gene
 use super::schema;
 use super::storage::OkfKnowledgeStorageUsage;
 
-pub const OKF_KNOWLEDGE_BACKUP_SCHEMA: &str = "a3s.use.okf-knowledge-backup.v1";
+pub const OKF_KNOWLEDGE_BACKUP_SCHEMA: &str = "aster.use.okf-knowledge-backup.v1";
 
-const BACKUP_MAGIC: &[u8] = b"A3S-OKF-BACKUP\n";
+const BACKUP_MAGIC: &[u8] = b"Aster-OKF-BACKUP\n";
 const MANIFEST_DIGEST_BYTES: usize = 32;
 const MAX_BACKUP_MANIFEST_BYTES: usize = 64 * 1024;
 pub(crate) const MAX_BACKUP_DATABASE_BYTES: u64 = 64 * 1024 * 1024 * 1024;
@@ -175,7 +175,7 @@ fn load_verified(
         .map_err(|error| backup_io(format!("Failed to read Knowledge backup header: {error}")))?;
     if magic != BACKUP_MAGIC {
         return Err(backup_invalid(
-            "The file is not an A3S OKF Knowledge backup.",
+            "The file is not an Aster OKF Knowledge backup.",
         ));
     }
     let mut manifest_length = [0_u8; 4];
@@ -446,7 +446,7 @@ fn write_archive(
         .as_file()
         .sync_all()
         .map_err(|error| backup_io(format!("Failed to sync Knowledge backup: {error}")))?;
-    a3s_use_extension::persist_named_temporary_noclobber_blocking(temporary, destination).map_err(
+    aster_use_extension::persist_named_temporary_noclobber_blocking(temporary, destination).map_err(
         |error| {
             if error.kind() == std::io::ErrorKind::AlreadyExists {
                 backup_exists(destination)
@@ -491,7 +491,7 @@ fn validate_new_destination(destination: &Path) -> UseResult<()> {
             parent.display()
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&parent_metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&parent_metadata)
         || !parent_metadata.is_dir()
     {
         return Err(backup_invalid(
@@ -515,7 +515,7 @@ fn validate_regular_backup_file(path: &Path) -> UseResult<()> {
             path.display()
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(backup_invalid(
             "The Knowledge backup path is not a regular file.",
         ));
@@ -550,7 +550,7 @@ pub(super) fn optional_file_evidence(path: &Path) -> UseResult<Option<(u64, Stri
             )));
         }
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() > MAX_BACKUP_DATABASE_BYTES
     {

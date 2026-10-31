@@ -243,7 +243,7 @@ describe('Wave A — P0', () => {
       </div>,
     );
 
-    const slot = container.querySelector('[data-a3s-list-tools]');
+    const slot = container.querySelector('[data-aster-list-tools]');
     expect(slot?.querySelector('[aria-label="Column filters"]')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Column filters' }));
     const score = screen.getByRole('checkbox', { name: 'Score' });

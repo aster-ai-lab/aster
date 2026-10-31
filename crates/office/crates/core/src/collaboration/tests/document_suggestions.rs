@@ -644,7 +644,7 @@ fn suggestion_update(
         .apply_update(Update::decode_v1(&server.synchronize(None).unwrap().update).unwrap())
         .unwrap();
     let before = producer.transact().state_vector();
-    let fragment = producer.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = producer.get_or_insert_xml_fragment("aster.office.document.content");
     let text = fragment
         .successors(&producer.transact())
         .find_map(|node| match node {
@@ -698,7 +698,7 @@ fn document_option_update(server: &NativeOfficeCollaborationStore) -> Vec<u8> {
     let producer = synchronized_producer(server, 818_588);
     let before = producer.transact().state_vector();
     producer
-        .get_or_insert_map("a3s.office.document.options")
+        .get_or_insert_map("aster.office.document.options")
         .insert(&mut producer.transact_mut(), "pageColor", "#ff0000");
     let update = producer.transact().encode_state_as_update_v1(&before);
     update
@@ -753,7 +753,7 @@ fn remove_paragraph_formatting_revision_update(server: &NativeOfficeCollaboratio
     let producer = synchronized_producer(server, 818_592);
     let before = producer.transact().state_vector();
     let paragraph = producer
-        .get_or_insert_xml_fragment("a3s.office.document.content")
+        .get_or_insert_xml_fragment("aster.office.document.content")
         .successors(&producer.transact())
         .find_map(|node| match node {
             XmlOut::Element(element) if element.tag().as_ref() == "paragraph" => Some(element),
@@ -769,7 +769,7 @@ fn remove_numbering_revision_update(server: &NativeOfficeCollaborationStore) -> 
     let producer = synchronized_producer(server, 818_593);
     let before = producer.transact().state_vector();
     let ordered_list = producer
-        .get_or_insert_xml_fragment("a3s.office.document.content")
+        .get_or_insert_xml_fragment("aster.office.document.content")
         .successors(&producer.transact())
         .find_map(|node| match node {
             XmlOut::Element(element) if element.tag().as_ref() == "orderedList" => Some(element),
@@ -792,7 +792,7 @@ fn synchronized_producer(server: &NativeOfficeCollaborationStore, client_id: u64
 
 fn first_document_text(producer: &Doc) -> yrs::XmlTextRef {
     producer
-        .get_or_insert_xml_fragment("a3s.office.document.content")
+        .get_or_insert_xml_fragment("aster.office.document.content")
         .successors(&producer.transact())
         .find_map(|node| match node {
             XmlOut::Text(text) => Some(text),

@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
 use std::sync::{
@@ -66,41 +66,41 @@ async fn live_tool_turn_reads_only_with_read_authority_and_permission() {
     let root = tempfile::tempdir().unwrap();
     workbook(root.path()).await;
     let store = tempfile::tempdir().unwrap();
-    let agent = a3s_code_core::Agent::from_config(
+    let agent = aster_core::Agent::from_config(
         crate::agent::test_launch(Some(store.path().to_path_buf())).config,
     )
     .await
     .unwrap();
     for (read_allowed, permission_allowed) in [(true, true), (false, true), (true, false)] {
-        let base = a3s_code_core::workspace::WorkspaceServices::local(root.path());
+        let base = aster_core::workspace::WorkspaceServices::local(root.path());
         let services = if read_allowed {
             base.clone()
         } else {
-            a3s_code_core::workspace::WorkspaceServicesBuilder::new(
+            aster_core::workspace::WorkspaceServicesBuilder::new(
                 base.workspace_ref().clone(),
                 base.fs(),
             )
-            .capabilities(a3s_code_core::workspace::WorkspaceCapabilities {
+            .capabilities(aster_core::workspace::WorkspaceCapabilities {
                 read: read_allowed,
                 ..base.capabilities()
             })
             .build()
         };
         let policy = if permission_allowed {
-            a3s_code_core::permissions::PermissionPolicy::new().allow("office_read")
+            aster_core::permissions::PermissionPolicy::new().allow("office_read")
         } else {
-            a3s_code_core::permissions::PermissionPolicy::new().deny("office_read")
+            aster_core::permissions::PermissionPolicy::new().deny("office_read")
         };
-        let options = a3s_code_core::SessionOptions::new()
+        let options = aster_core::SessionOptions::new()
             .with_session_id(uuid::Uuid::new_v4().to_string())
             .with_workspace_backend(services)
             .with_permission_policy(policy)
             .with_llm_client(Arc::new(Model {
                 calls: AtomicUsize::new(0),
             }))
-            .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+            .with_planning_mode(aster_core::PlanningMode::Disabled)
             .with_harness(
-                a3s_code_core::HarnessComposeOptions::compose(
+                aster_core::HarnessComposeOptions::compose(
                     ["system", "tools", "budget", "compact", "infer"]
                         .into_iter()
                         .map(str::to_owned)

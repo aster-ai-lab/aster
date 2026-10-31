@@ -5,10 +5,10 @@ use crate::canonical::{
     canonicalize_json_with_limit, canonicalize_value, CanonicalError, CanonicalValue,
 };
 
-pub const COMPILE_REQUEST_API_VERSION: &str = "a3s.dev/form-core/compile-request/v1alpha1";
-pub const COMPILE_RESPONSE_API_VERSION: &str = "a3s.dev/form-core/compile-response/v1alpha1";
-pub const FORM_SCHEMA_PROFILE_1: &str = "a3s.dev/form-schema-profile/1";
-pub const COMPILER_REVISION: &str = concat!("a3s-form-core@", env!("CARGO_PKG_VERSION"));
+pub const COMPILE_REQUEST_API_VERSION: &str = "aster.dev/form-core/compile-request/v1alpha1";
+pub const COMPILE_RESPONSE_API_VERSION: &str = "aster.dev/form-core/compile-response/v1alpha1";
+pub const FORM_SCHEMA_PROFILE_1: &str = "aster.dev/form-schema-profile/1";
+pub const COMPILER_REVISION: &str = concat!("aster-form-core@", env!("CARGO_PKG_VERSION"));
 
 pub const ABSOLUTE_MAX_DOCUMENT_BYTES: u64 = 4 * 1024 * 1024;
 pub const ABSOLUTE_MAX_REQUEST_BYTES: usize = 5 * 1024 * 1024;

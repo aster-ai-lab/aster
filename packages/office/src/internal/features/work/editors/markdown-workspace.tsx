@@ -58,7 +58,7 @@ export function proportionalMarkdownScrollTop(
   return progress * targetRange;
 }
 
-/** Publish scroll-ownership markers for a3s-test / Playwright regression gates. */
+/** Publish scroll-ownership markers for aster-test / Playwright regression gates. */
 export function publishMarkdownSourceScrollOwnership(
   source: HTMLTextAreaElement,
 ): void {

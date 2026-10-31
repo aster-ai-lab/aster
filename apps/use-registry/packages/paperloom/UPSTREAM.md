@@ -1,6 +1,6 @@
 # PaperLoom name
 
-The package id `a3s/paperloom` keeps the historical name. The host does not
+The package id `aster/paperloom` keeps the historical name. The host does not
 run, patch, or call the PaperLoom service.
 
 Repository reviewed earlier: https://github.com/luffysolution-svg/paperloom

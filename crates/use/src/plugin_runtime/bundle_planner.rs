@@ -1,13 +1,13 @@
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
-use a3s_runtime::contract::{ArtifactRef, IsolationLevel, NetworkMode};
-use a3s_use_core::{
+use aster_runtime::contract::{ArtifactRef, IsolationLevel, NetworkMode};
+use aster_use_core::{
     CatalogMcpTransport, CatalogSurface, ExecutablePlanningSurface, PackageSurfaceKind, PlanScope,
     PlannedPackageState, PluginPlanningBundle, PluginWorkspaceGrantProposal,
     SurfacePermissionCeiling, ToolWorkloadClass, ToolWorkloadContract, UseError, UseResult,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     PluginMcpLaunch, PluginMcpSurface, SurfaceActivation, ToolServiceSurface, ToolTaskSource,
     ToolTaskSurface,
 };
@@ -156,7 +156,7 @@ fn plan_surface(
     match surface {
         ExecutablePlanningSurface::ToolTaskNative { .. }
         | ExecutablePlanningSurface::McpStdio { .. } => Err(bundle_plan_error(
-            "Package-native launchers are owned by the static A3S provider, not Runtime.",
+            "Package-native launchers are owned by the static Aster provider, not Runtime.",
         )),
         ExecutablePlanningSurface::ToolTask {
             command,
@@ -208,8 +208,8 @@ fn plan_surface(
             &PluginMcpSurface {
                 id: id.clone(),
                 activation: match activation {
-                    a3s_use_core::PlanningSurfaceActivation::Eager => SurfaceActivation::Eager,
-                    a3s_use_core::PlanningSurfaceActivation::Lazy => SurfaceActivation::Lazy,
+                    aster_use_core::PlanningSurfaceActivation::Eager => SurfaceActivation::Eager,
+                    aster_use_core::PlanningSurfaceActivation::Lazy => SurfaceActivation::Lazy,
                 },
                 optional: false,
                 launch: PluginMcpLaunch::StreamableHttp {
@@ -288,7 +288,7 @@ fn representable_policy(
     })
 }
 
-fn runtime_artifact(artifact: &a3s_use_core::PlanningArtifactRef) -> ArtifactRef {
+fn runtime_artifact(artifact: &aster_use_core::PlanningArtifactRef) -> ArtifactRef {
     ArtifactRef {
         uri: artifact.uri.clone(),
         digest: artifact.digest.clone(),

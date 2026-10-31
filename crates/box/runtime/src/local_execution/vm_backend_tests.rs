@@ -6,7 +6,7 @@ mod stop_ownership;
 use std::collections::BTreeMap;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-use a3s_box_core::{
+use aster_box_core::{
     BoxConfig, CreateExecutionRequest, ExecutionGeneration, ExecutionIsolation, NetworkMode,
     OperationId, VmHandler, VmMetrics,
 };
@@ -17,7 +17,7 @@ use crate::local_execution::record::build_managed_record;
 #[cfg(target_os = "macos")]
 #[tokio::test]
 async fn readonly_mount_refuses_before_managed_reservation_or_source_access() {
-    use a3s_box_core::ExecutionManager;
+    use aster_box_core::ExecutionManager;
     let directory = tempfile::tempdir().unwrap();
     let backend = Arc::new(VmLocalExecutionBackend::new(directory.path()));
     let manager = crate::LocalExecutionManager::new(
@@ -194,7 +194,7 @@ impl DelayedExitStatusHandler {
 }
 
 impl VmHandler for DelayedExitStatusHandler {
-    fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> a3s_box_core::Result<()> {
+    fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> aster_box_core::Result<()> {
         self.stop_calls.fetch_add(1, Ordering::SeqCst);
         Ok(())
     }
@@ -219,7 +219,7 @@ impl VmHandler for DelayedExitStatusHandler {
         (self.exit_polls.load(Ordering::SeqCst) > self.available_after).then_some(0)
     }
 
-    fn try_wait_exit(&mut self) -> a3s_box_core::Result<Option<i32>> {
+    fn try_wait_exit(&mut self) -> aster_box_core::Result<Option<i32>> {
         let poll = self.exit_polls.fetch_add(1, Ordering::SeqCst);
         if poll >= self.available_after {
             self.publish_durable_exit_if_ready();
@@ -516,7 +516,7 @@ async fn terminal_observation_accepts_cached_shim_zero_with_durable_guest_exit()
     let record = record(temporary.path(), ExecutionIsolation::Microvm);
     let rootfs = record.box_dir.join("rootfs");
     std::fs::create_dir_all(&rootfs).unwrap();
-    std::fs::write(rootfs.join(".a3s_exit_code"), "0\n").unwrap();
+    std::fs::write(rootfs.join(".aster_exit_code"), "0\n").unwrap();
     let mut manager = backend.new_manager(&record).unwrap();
     manager.shim_exit_code = Some(0);
     *manager.state.write().await = crate::BoxState::Ready;
@@ -540,7 +540,7 @@ async fn terminal_health_probe_waits_for_delayed_durable_exit_status_before_clea
     let record = record(temporary.path(), ExecutionIsolation::Sandbox);
     let rootfs = record.box_dir.join("rootfs");
     std::fs::create_dir_all(&rootfs).unwrap();
-    let durable_exit_path = rootfs.join(".a3s_exit_code");
+    let durable_exit_path = rootfs.join(".aster_exit_code");
     let exit_polls = Arc::new(AtomicUsize::new(0));
     let stop_calls = Arc::new(AtomicUsize::new(0));
     let manager = Arc::new(Mutex::new(backend.new_manager(&record).unwrap()));
@@ -620,7 +620,7 @@ async fn disappearing_live_handle_waits_for_delayed_terminal_status() {
     let mut record = record(temporary.path(), ExecutionIsolation::Microvm);
     let rootfs = record.box_dir.join("rootfs");
     std::fs::create_dir_all(&rootfs).unwrap();
-    std::fs::write(rootfs.join(".a3s_exit_code"), "0\n").unwrap();
+    std::fs::write(rootfs.join(".aster_exit_code"), "0\n").unwrap();
     record.status = ManagedExecutionState::Running.as_status().to_string();
     let exit_polls = Arc::new(AtomicUsize::new(0));
     let stop_calls = Arc::new(AtomicUsize::new(0));
@@ -792,7 +792,7 @@ fn managed_kill_uses_persisted_stop_signal_and_timeout() {
     record.stop_signal = Some("SIGINT".to_string());
     assert_eq!(
         graceful_stop_options(&record, None).unwrap(),
-        Some((libc::SIGINT, a3s_box_core::DEFAULT_SHUTDOWN_TIMEOUT_MS))
+        Some((libc::SIGINT, aster_box_core::DEFAULT_SHUTDOWN_TIMEOUT_MS))
     );
 
     record.stop_timeout = Some(7);
@@ -1098,7 +1098,7 @@ async fn handle_from_manager_allows_paused_for_pause_lease_bookkeeping() {
     // Override handler pid to current process so identity checks pass.
     struct CurrentProcessHandler;
     impl crate::vmm::VmHandler for CurrentProcessHandler {
-        fn stop(&mut self, _: i32, _: u64) -> a3s_box_core::error::Result<()> {
+        fn stop(&mut self, _: i32, _: u64) -> aster_box_core::error::Result<()> {
             Ok(())
         }
         fn metrics(&self) -> crate::vmm::VmMetrics {

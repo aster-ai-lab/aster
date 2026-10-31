@@ -1,5 +1,5 @@
 use super::fixture::Fixture;
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingNormalization, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };

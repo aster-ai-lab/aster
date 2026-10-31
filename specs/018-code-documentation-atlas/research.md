@@ -10,7 +10,7 @@ Reviewed the specification, plan and task coverage before implementation on 2026
 | Other sessions have uncommitted root edits. | note | all | Work in an isolated detached worktree. |
 | All requirements have producing and verification tasks. | note | FR-001–007 / T001–009 | Ready for implementation; no blockers. |
 
-Primary references: `https://github.com/Aryanutkarsh/SeeCode`, `https://codehike.org/docs/concepts/code`, `https://codehike.org/docs/layouts/scrollycoding`, `https://github.com/A3S-Lab/stc-answer`.
+Primary references: `https://github.com/Aryanutkarsh/SeeCode`, `https://codehike.org/docs/concepts/code`, `https://codehike.org/docs/layouts/scrollycoding`, `https://github.com/aster-ai-lab/stc-answer`.
 
 
 Scope re-audit: the later user goal explicitly authorizes publication and latest

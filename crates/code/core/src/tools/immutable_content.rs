@@ -12,14 +12,14 @@ use std::sync::Arc;
 use thiserror::Error;
 
 pub const IMMUTABLE_CONTENT_ADAPTER_BINDING_SCHEMA_V1: &str =
-    "a3s.code.immutable-content-adapter-binding.v1";
-pub const IMMUTABLE_CONTENT_DESCRIPTOR_SCHEMA_V1: &str = "a3s.code.immutable-content-descriptor.v1";
-pub const IMMUTABLE_CONTENT_REFERENCE_SCHEMA_V1: &str = "a3s.code.immutable-content-reference.v1";
+    "aster.code.immutable-content-adapter-binding.v1";
+pub const IMMUTABLE_CONTENT_DESCRIPTOR_SCHEMA_V1: &str = "aster.code.immutable-content-descriptor.v1";
+pub const IMMUTABLE_CONTENT_REFERENCE_SCHEMA_V1: &str = "aster.code.immutable-content-reference.v1";
 pub const TOOL_RESULT_CONTENT_MEDIA_TYPE: &str = "text/plain; charset=utf-8";
 
-const BINDING_DIGEST_DOMAIN: &str = "a3s.code.immutable-content-adapter-binding.v1";
-const DESCRIPTOR_DIGEST_DOMAIN: &str = "a3s.code.immutable-content-descriptor.v1";
-const REFERENCE_DIGEST_DOMAIN: &str = "a3s.code.immutable-content-reference.v1";
+const BINDING_DIGEST_DOMAIN: &str = "aster.code.immutable-content-adapter-binding.v1";
+const DESCRIPTOR_DIGEST_DOMAIN: &str = "aster.code.immutable-content-descriptor.v1";
+const REFERENCE_DIGEST_DOMAIN: &str = "aster.code.immutable-content-reference.v1";
 const MAX_PROVIDER_NAME_BYTES: usize = 128;
 const MAX_REFERENCE_URI_BYTES: usize = 4 * 1024;
 const MAX_MEDIA_TYPE_BYTES: usize = 255;

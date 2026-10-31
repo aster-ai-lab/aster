@@ -31,7 +31,7 @@ mode {{ kind = "cloud-managed" }}
 managed {{ gateway_id = "{gateway_id}" }}
 entrypoints "web" {{ address = "127.0.0.1:8080" }}
 inference {{
-  tokenizer_revision = "a3s.gateway.tokenizer.v1"
+  tokenizer_revision = "aster.gateway.tokenizer.v1"
   expires_at = "{}"
 }}
 "#,
@@ -100,7 +100,7 @@ inference {{
   credentials "{CREDENTIAL_ID}" {{
     environment_id = "{ENVIRONMENT_ID}"
     audience = "cloud-inference"
-    prefix = "a3s_inf_abc12345"
+    prefix = "aster_inf_abc12345"
     verifier_hash = "{VERIFIER_HASH}"
     generation = {generation}
     expires_at = "{expires}"
@@ -208,12 +208,12 @@ services "fallback-service" {{
   }}
 }}
 inference {{
-  tokenizer_revision = "a3s.gateway.tokenizer.v1"
+  tokenizer_revision = "aster.gateway.tokenizer.v1"
   expires_at = "{expires}"
   credentials "{CREDENTIAL_ID}" {{
     environment_id = "{ENVIRONMENT_ID}"
     audience = "cloud-inference"
-    prefix = "a3s_inf_abc12345"
+    prefix = "aster_inf_abc12345"
     verifier_hash = "{VERIFIER_HASH}"
     generation = 3
     expires_at = "{expires}"
@@ -347,13 +347,13 @@ services "model-service" {{
   }}
 }}
 inference {{
-  tokenizer_revision = "a3s.gateway.tokenizer.v1"
+  tokenizer_revision = "aster.gateway.tokenizer.v1"
   expires_at = "{expires}"
   {workers}
   credentials "{CREDENTIAL_ID}" {{
     environment_id = "{ENVIRONMENT_ID}"
     audience = "cloud-inference"
-    prefix = "a3s_inf_abc12345"
+    prefix = "aster_inf_abc12345"
     verifier_hash = "{VERIFIER_HASH}"
     generation = 3
     expires_at = "{expires}"
@@ -1080,7 +1080,7 @@ async fn credential_successor_snapshot_revokes_prior_key_atomically() {
         3,
         false,
         true,
-        "a3s.gateway.tokenizer.v1",
+        "aster.gateway.tokenizer.v1",
     );
     let first_identity = first.identity();
     let applied = store.apply(first, Some(&callback)).await;
@@ -1095,7 +1095,7 @@ async fn credential_successor_snapshot_revokes_prior_key_atomically() {
         3,
         true,
         false,
-        "a3s.gateway.tokenizer.v1",
+        "aster.gateway.tokenizer.v1",
     );
     let successor_identity = successor.identity();
     let replaced = store.apply(successor, Some(&callback)).await;
@@ -1128,7 +1128,7 @@ async fn expected_revision_cas_rejects_stale_credential_bearing_successor() {
         3,
         false,
         true,
-        "a3s.gateway.tokenizer.v1",
+        "aster.gateway.tokenizer.v1",
     );
     let first_identity = first.identity();
     assert_eq!(
@@ -1148,7 +1148,7 @@ async fn expected_revision_cas_rejects_stale_credential_bearing_successor() {
             3,
             true,
             false,
-            "a3s.gateway.tokenizer.v1",
+            "aster.gateway.tokenizer.v1",
         ),
     );
     let rejected = store.apply(stale, Some(&callback)).await;
@@ -1183,7 +1183,7 @@ async fn unknown_tokenizer_revision_successor_is_rejected_with_prior_runtime_ret
         3,
         false,
         true,
-        "a3s.gateway.tokenizer.v1",
+        "aster.gateway.tokenizer.v1",
     );
     let first_identity = first.identity();
     assert!(store.apply(first, Some(&callback)).await.status.ready);
@@ -1195,7 +1195,7 @@ async fn unknown_tokenizer_revision_successor_is_rejected_with_prior_runtime_ret
         3,
         true,
         false,
-        "a3s.gateway.tokenizer.v0",
+        "aster.gateway.tokenizer.v0",
     );
     let rejected = store.apply(bad, Some(&callback)).await;
     assert_eq!(rejected.status_code, 422);
@@ -1249,7 +1249,7 @@ async fn grant_successor_snapshot_clears_grants_without_revoking_credential() {
         3,
         false,
         true,
-        "a3s.gateway.tokenizer.v1",
+        "aster.gateway.tokenizer.v1",
     );
     let first_identity = first.identity();
     let applied = store.apply(first, Some(&callback)).await;
@@ -1264,7 +1264,7 @@ async fn grant_successor_snapshot_clears_grants_without_revoking_credential() {
         3,
         false,
         false,
-        "a3s.gateway.tokenizer.v1",
+        "aster.gateway.tokenizer.v1",
     );
     let successor_identity = successor.identity();
     let replaced = store.apply(successor, Some(&callback)).await;

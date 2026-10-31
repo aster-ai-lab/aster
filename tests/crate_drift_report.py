@@ -1,4 +1,4 @@
-"""Report shared-crate drift across the three a3s crate lineages.
+"""Report shared-crate drift across the three aster crate lineages.
 
 Lineages compared by default:
   aster   <repo>/crates
@@ -204,14 +204,14 @@ class CrateDriftReportTest(unittest.TestCase):
             tmp = Path(tmp)
             roots = self.make_lineages(tmp)
             for root in roots.values():
-                self.write_crate(root, "a3s-x", "1.0.0")
+                self.write_crate(root, "aster-x", "1.0.0")
             collected = {
                 label: collect_lineage(root)[0] for label, root in roots.items()
             }
             # Guard against a vacuous pass: the crates must be found.
             self.assertEqual(
                 {label: sorted(crates) for label, crates in collected.items()},
-                {"a": ["a3s-x"], "b": ["a3s-x"]},
+                {"a": ["aster-x"], "b": ["aster-x"]},
             )
             drift, unique = classify(collected)
             self.assertEqual(drift, {})
@@ -223,21 +223,21 @@ class CrateDriftReportTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
             roots = self.make_lineages(tmp)
-            self.write_crate(roots["a"], "a3s-same", "1.0.0")
-            self.write_crate(roots["b"], "a3s-same", "1.0.0")
-            self.write_crate(roots["a"], "a3s-content", "2.0.0", marker="a")
-            self.write_crate(roots["b"], "a3s-content", "2.0.0", marker="b")
-            self.write_crate(roots["a"], "a3s-version", "1.0.0")
-            self.write_crate(roots["b"], "a3s-version", "1.1.0")
-            self.write_crate(roots["a"], "a3s-only-a", "0.1.0")
+            self.write_crate(roots["a"], "aster-same", "1.0.0")
+            self.write_crate(roots["b"], "aster-same", "1.0.0")
+            self.write_crate(roots["a"], "aster-content", "2.0.0", marker="a")
+            self.write_crate(roots["b"], "aster-content", "2.0.0", marker="b")
+            self.write_crate(roots["a"], "aster-version", "1.0.0")
+            self.write_crate(roots["b"], "aster-version", "1.1.0")
+            self.write_crate(roots["a"], "aster-only-a", "0.1.0")
             drift, unique = classify(
                 {label: collect_lineage(root)[0] for label, root in roots.items()}
             )
             self.assertEqual(
                 drift,
-                {"a3s-content": "CONTENT-DRIFT", "a3s-version": "VERSION-DRIFT"},
+                {"aster-content": "CONTENT-DRIFT", "aster-version": "VERSION-DRIFT"},
             )
-            self.assertEqual(unique, {"a3s-only-a": "a"})
+            self.assertEqual(unique, {"aster-only-a": "a"})
 
     def test_within_lineage_duplicate_is_a_finding(self):
         import tempfile
@@ -245,14 +245,14 @@ class CrateDriftReportTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
             roots = self.make_lineages(tmp)
-            self.write_crate(roots["a"], "a3s-x", "1.0.0")
-            self.write_crate(roots["a"] / "vendored", "a3s-x", "1.0.0")
-            self.write_crate(roots["b"], "a3s-x", "1.0.0")
+            self.write_crate(roots["a"], "aster-x", "1.0.0")
+            self.write_crate(roots["a"] / "vendored", "aster-x", "1.0.0")
+            self.write_crate(roots["b"], "aster-x", "1.0.0")
             crates, dups = collect_lineage(roots["a"])
-            self.assertEqual(list(crates), ["a3s-x"])
-            self.assertEqual(len(dups["a3s-x"]), 1)
+            self.assertEqual(list(crates), ["aster-x"])
+            self.assertEqual(len(dups["aster-x"]), 1)
             drift, _ = classify({"a": crates, "b": collect_lineage(roots["b"])[0]}, {"a": dups})
-            self.assertEqual(drift, {"a3s-x": "DUPLICATE-a"})
+            self.assertEqual(drift, {"aster-x": "DUPLICATE-a"})
 
     def test_baseline_ratchet_only_shrinks(self):
         import tempfile
@@ -261,14 +261,14 @@ class CrateDriftReportTest(unittest.TestCase):
             tmp = Path(tmp)
             baseline = tmp / "baseline.json"
             baseline.write_text(
-                json.dumps({"drift": {"a3s-old": "CONTENT-DRIFT"}}), encoding="utf-8"
+                json.dumps({"drift": {"aster-old": "CONTENT-DRIFT"}}), encoding="utf-8"
             )
-            report = {"drift": {"a3s-old": "CONTENT-DRIFT"}}
+            report = {"drift": {"aster-old": "CONTENT-DRIFT"}}
             self.assertEqual(check_baseline(report, baseline), 0)
             report = {
                 "drift": {
-                    "a3s-old": "CONTENT-DRIFT",
-                    "a3s-new": "VERSION-DRIFT",
+                    "aster-old": "CONTENT-DRIFT",
+                    "aster-new": "VERSION-DRIFT",
                 }
             }
             self.assertEqual(check_baseline(report, baseline), 1)
@@ -309,7 +309,7 @@ def main(argv=None):
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
         counts = report["counts"]
-        print("a3s crate lineages:", ", ".join(
+        print("aster crate lineages:", ", ".join(
             f"{label}={counts['crates'][label]}" for label in report["lineages"]
         ))
         print(

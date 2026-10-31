@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_form_core::{
+use aster_form_core::{
     analyze_expression, inspect_schema_profile, is_value_path_scope_compatible, parse_json,
     schema_pointer_to_value_path_template,
 };
@@ -77,7 +77,7 @@ fn matches_schema_profile_cases() {
     let fixture = fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-semantic-primitives-conformance/v1"
+        "aster.dev/form-semantic-primitives-conformance/v1"
     );
 
     for case in fixture.schema_cases {

@@ -555,16 +555,16 @@ pub(super) fn resolve_session_llm_client(
 
     let logprobs = opts
         .llm_logprobs
-        .or_else(|| env_bool("A3S_CODE_LLM_LOGPROBS"))
-        .or_else(|| env_bool("A3S_CODE_OPENAI_LOGPROBS"));
+        .or_else(|| env_bool("ASTER_LLM_LOGPROBS"))
+        .or_else(|| env_bool("ASTER_OPENAI_LOGPROBS"));
     if let Some(enabled) = logprobs {
         llm_config = llm_config.with_logprobs(enabled);
     }
 
     let top_logprobs = opts
         .llm_top_logprobs
-        .or_else(|| env_usize("A3S_CODE_LLM_TOP_LOGPROBS"))
-        .or_else(|| env_usize("A3S_CODE_OPENAI_TOP_LOGPROBS"));
+        .or_else(|| env_usize("ASTER_LLM_TOP_LOGPROBS"))
+        .or_else(|| env_usize("ASTER_OPENAI_TOP_LOGPROBS"));
     if let Some(top_logprobs) = top_logprobs {
         llm_config = llm_config.with_top_logprobs(top_logprobs);
     }
@@ -604,13 +604,13 @@ async fn resolve_session_memory(
             .clone()
             .or_else(|| code_config.memory_dir.clone())
             .unwrap_or_else(|| default_memory_dir(workspace));
-        let store = a3s_memory::FileMemoryStore::new(&dir)
+        let store = aster_durable_memory::FileMemoryStore::new(&dir)
             .await
             .map_err(|error| CodeError::SessionInitialization {
                 resource: SessionBuildResource::MemoryStore,
                 message: format!("{}: {error:#}", dir.display()),
             })?;
-        Arc::new(store) as Arc<dyn a3s_memory::MemoryStore>
+        Arc::new(store) as Arc<dyn aster_durable_memory::MemoryStore>
     };
 
     let memory_config = code_config.memory.clone().unwrap_or_default();
@@ -702,7 +702,7 @@ async fn resolve_session_mcp(
 mod tests {
     use super::*;
     use crate::llm::{LlmResponse, Message, StreamEvent, ToolDefinition};
-    use a3s_memory::repository::{InMemoryRepository, MemoryNamespace};
+    use aster_durable_memory::repository::{InMemoryRepository, MemoryNamespace};
     // The LlmClient trait returns anyhow::Result; shadow super's crate::error::Result.
     use anyhow::Result;
     use async_trait::async_trait;
@@ -779,7 +779,7 @@ mod tests {
         .unwrap();
 
         resolved
-            .remember(a3s_memory::MemoryItem::new("default memory is mandatory"))
+            .remember(aster_durable_memory::MemoryItem::new("default memory is mandatory"))
             .await
             .unwrap();
 
@@ -802,7 +802,7 @@ mod tests {
         .unwrap();
 
         resolved
-            .remember(a3s_memory::MemoryItem::new(
+            .remember(aster_durable_memory::MemoryItem::new(
                 "default memory works on current-thread runtimes",
             ))
             .await
@@ -886,7 +886,7 @@ mod tests {
         ));
 
         let mut conflicting_memory = SessionOptions::new().with_session_id("conflicting-memory");
-        conflicting_memory.memory_store = Some(Arc::new(a3s_memory::InMemoryStore::new()));
+        conflicting_memory.memory_store = Some(Arc::new(aster_durable_memory::InMemoryStore::new()));
         conflicting_memory.file_memory_dir = Some(PathBuf::from("memory"));
         let error = validate_session_options(&conflicting_memory).unwrap_err();
         assert!(matches!(
@@ -926,7 +926,7 @@ mod tests {
         ));
 
         let invalid_profile = serde_json::from_value(serde_json::json!({
-            "schema": "a3s.code.tool-presentation-profile.v2",
+            "schema": "aster.code.tool-presentation-profile.v2",
             "mode": "direct"
         }))
         .unwrap();

@@ -26,7 +26,7 @@ export function MobilePanelBar({
     { id: 'settings', label: '设置', icon: 'settings' },
   ];
   return (
-    <nav className="a3s-form-mobile-panel-bar" aria-label="设计器面板">
+    <nav className="aster-form-mobile-panel-bar" aria-label="设计器面板">
       {items.map((item) => (
         <button
           type="button"
@@ -74,19 +74,19 @@ export function DesignerToolbar({
   onToggleRightPanel: () => void;
 }) {
   return (
-    <div className="a3s-form-designer-toolbar toolbar" role="toolbar" aria-label="表单设计器工具栏">
-      <div className="a3s-form-toolbar-title" data-workspace-identity>
-        <span className="a3s-form-toolbar-copy">
+    <div className="aster-form-designer-toolbar toolbar" role="toolbar" aria-label="表单设计器工具栏">
+      <div className="aster-form-toolbar-title" data-workspace-identity>
+        <span className="aster-form-toolbar-copy">
           <strong>表单内容</strong>
           <small>{compiled ? '结构与规则实时生效' : '处理问题后即可预览'}</small>
         </span>
       </div>
-      <div className="a3s-form-toolbar-actions" data-workspace-actions>
+      <div className="aster-form-toolbar-actions" data-workspace-actions>
         {mode === 'design' && (
-          <fieldset className="a3s-form-toolbar-panel-controls" aria-label="桌面面板">
+          <fieldset className="aster-form-toolbar-panel-controls" aria-label="桌面面板">
             <button
               type="button"
-              className={`a3s-form-icon-button btn${leftPanelVisible ? ' is-active' : ''}`}
+              className={`aster-form-icon-button btn${leftPanelVisible ? ' is-active' : ''}`}
               data-size="icon-sm"
               data-variant="ghost"
               aria-label={leftPanelVisible ? '收起组件面板' : '展开组件面板'}
@@ -98,7 +98,7 @@ export function DesignerToolbar({
             </button>
             <button
               type="button"
-              className={`a3s-form-icon-button btn${rightPanelVisible ? ' is-active' : ''}`}
+              className={`aster-form-icon-button btn${rightPanelVisible ? ' is-active' : ''}`}
               data-size="icon-sm"
               data-variant="ghost"
               aria-label={rightPanelVisible ? '收起设置面板' : '展开设置面板'}
@@ -111,12 +111,12 @@ export function DesignerToolbar({
           </fieldset>
         )}
         {mode === 'design' && (
-          <span className="a3s-form-toolbar-divider is-panel-separator" aria-hidden="true" />
+          <span className="aster-form-toolbar-divider is-panel-separator" aria-hidden="true" />
         )}
-        <fieldset className="a3s-form-toolbar-history" aria-label="编辑历史">
+        <fieldset className="aster-form-toolbar-history" aria-label="编辑历史">
           <button
             type="button"
-            className="a3s-form-icon-button btn"
+            className="aster-form-icon-button btn"
             data-size="icon-sm"
             data-variant="ghost"
             onClick={onUndo}
@@ -129,7 +129,7 @@ export function DesignerToolbar({
           </button>
           <button
             type="button"
-            className="a3s-form-icon-button btn"
+            className="aster-form-icon-button btn"
             data-size="icon-sm"
             data-variant="ghost"
             onClick={onRedo}
@@ -141,8 +141,8 @@ export function DesignerToolbar({
             <DesignerIcon name="redo" size={16} />
           </button>
         </fieldset>
-        <span className="a3s-form-toolbar-divider" aria-hidden="true" />
-        <fieldset className="a3s-form-segmented is-viewport" aria-label="画布尺寸">
+        <span className="aster-form-toolbar-divider" aria-hidden="true" />
+        <fieldset className="aster-form-segmented is-viewport" aria-label="画布尺寸">
           <button
             type="button"
             className={`btn${viewport === 'desktop' ? ' is-active' : ''}`}
@@ -166,7 +166,7 @@ export function DesignerToolbar({
             移动
           </button>
         </fieldset>
-        <fieldset className="a3s-form-segmented" aria-label="设计器模式">
+        <fieldset className="aster-form-segmented" aria-label="设计器模式">
           <button
             type="button"
             className={`btn${mode === 'design' ? ' is-active' : ''}`}
@@ -230,13 +230,13 @@ export function PalettePanel({
   }, [catalog, query]);
 
   return (
-    <aside className="a3s-form-palette task-pane tabs" aria-label="组件与表单结构">
-      <div className="a3s-form-panel-tabs" role="tablist" aria-label="左侧面板">
+    <aside className="aster-form-palette task-pane tabs" aria-label="组件与表单结构">
+      <div className="aster-form-panel-tabs" role="tablist" aria-label="左侧面板">
         <button
           type="button"
-          id="a3s-form-palette-tab-components"
+          id="aster-form-palette-tab-components"
           role="tab"
-          aria-controls="a3s-form-palette-components"
+          aria-controls="aster-form-palette-components"
           aria-selected={panel === 'components'}
           tabIndex={panel === 'components' ? 0 : -1}
           className={`btn${panel === 'components' ? ' is-active' : ''}`}
@@ -251,9 +251,9 @@ export function PalettePanel({
         </button>
         <button
           type="button"
-          id="a3s-form-palette-tab-outline"
+          id="aster-form-palette-tab-outline"
           role="tab"
-          aria-controls="a3s-form-palette-outline"
+          aria-controls="aster-form-palette-outline"
           aria-selected={panel === 'outline'}
           tabIndex={panel === 'outline' ? 0 : -1}
           className={`btn${panel === 'outline' ? ' is-active' : ''}`}
@@ -269,12 +269,12 @@ export function PalettePanel({
       </div>
       {panel === 'components' ? (
         <div
-          className="a3s-form-palette-content"
-          id="a3s-form-palette-components"
+          className="aster-form-palette-content"
+          id="aster-form-palette-components"
           role="tabpanel"
-          aria-labelledby="a3s-form-palette-tab-components"
+          aria-labelledby="aster-form-palette-tab-components"
         >
-          <label className="a3s-form-catalog-search">
+          <label className="aster-form-catalog-search">
             <DesignerIcon name="search" size={14} />
             <input
               className="input"
@@ -296,21 +296,21 @@ export function PalettePanel({
               </button>
             )}
           </label>
-          <div className="a3s-form-insertion-guide alert" role="note">
+          <div className="aster-form-insertion-guide alert" role="note">
             <DesignerIcon name="arrow-down" size={14} />
             <span>
               <strong>点击追加</strong>
               <small>拖拽可精确插入</small>
             </span>
           </div>
-          <div className="a3s-form-catalog">
+          <div className="aster-form-catalog">
             {visibleCatalog.map((section) => (
               <section key={section.id}>
                 <h2>
                   {section.label}
                   <span aria-hidden="true">{section.items.length}</span>
                 </h2>
-                <div className="a3s-form-palette-grid">
+                <div className="aster-form-palette-grid">
                   {section.items.map((item) => (
                     <button
                       type="button"
@@ -323,7 +323,7 @@ export function PalettePanel({
                       onDragStart={(event) => event.dataTransfer.setData(catalogDragType, item.id)}
                       onClick={() => onAdd(item)}
                     >
-                      <span className="a3s-form-palette-icon" aria-hidden="true">
+                      <span className="aster-form-palette-icon" aria-hidden="true">
                         <CatalogIcon id={item.id} fallback={item.glyph} />
                       </span>
                       <span>
@@ -336,7 +336,7 @@ export function PalettePanel({
               </section>
             ))}
             {visibleCatalog.length === 0 && (
-              <div className="a3s-form-catalog-empty">
+              <div className="aster-form-catalog-empty">
                 <span aria-hidden="true">
                   <DesignerIcon name="search" size={18} />
                 </span>
@@ -348,16 +348,16 @@ export function PalettePanel({
         </div>
       ) : (
         <div
-          className="a3s-form-outline-panel"
-          id="a3s-form-palette-outline"
+          className="aster-form-outline-panel"
+          id="aster-form-palette-outline"
           role="tabpanel"
-          aria-labelledby="a3s-form-palette-tab-outline"
+          aria-labelledby="aster-form-palette-tab-outline"
         >
-          <div className="a3s-form-outline-summary">
+          <div className="aster-form-outline-summary">
             <span>页面结构</span>
             <strong>{document.ui.nodes.length} 个节点</strong>
           </div>
-          <div className="a3s-form-outline" role="tree">
+          <div className="aster-form-outline" role="tree">
             {document.ui.nodes.map((node) => (
               <button
                 type="button"

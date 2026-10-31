@@ -6,7 +6,7 @@ mod criterion;
 mod lazy;
 mod sum_if;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::spreadsheet_formula::registry::BuiltinFunction;
 use crate::spreadsheet_formula::SpreadsheetFormulaExpression;
@@ -193,7 +193,7 @@ fn argument(arguments: &[EvalValue], index: usize) -> UseResult<EvalValue> {
     arguments.get(index).cloned().ok_or_else(missing_argument)
 }
 
-fn missing_argument() -> a3s_use_core::UseError {
+fn missing_argument() -> aster_use_core::UseError {
     calculation_error(
         "use.office.spreadsheet_formula_calculation_invalid",
         "Native formula function dispatch is missing a validated argument.",

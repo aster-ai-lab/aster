@@ -123,7 +123,7 @@ Create uses two durable stages:
 
 The create request digest excludes retry metadata but includes container ID,
 bundle, isolation request, and the complete versioned attachment manifest,
-including process I/O and any stable inherited-descriptor schema. The A3S Box
+including process I/O and any stable inherited-descriptor schema. The Aster Box
 schema records the exec-listener, PTY-listener, and init-log roles,
 kernel-object types, and targets 3/4/5; it deliberately excludes ephemeral
 source FD numbers and inode identities so an exact retry after host restart may
@@ -163,7 +163,7 @@ record so a second mutation cannot race the driver call. Start revalidates the
 durable configuration snapshot, not the caller's mutable source bundle, before
 recording an intent. Pause and resume preserve the standard OCI `running`
 status and store freezer state in the reserved
-`dev.a3s.oci.runtime.paused=true` state annotation. Checkpoint requires that
+`dev.aster.oci.runtime.paused=true` state annotation. Checkpoint requires that
 paused running state, refuses any active init or exec mutation/I/O, and prevents
 new process I/O until its exact response or terminal error is durable. After a
 driver publishes a checkpoint, the Host independently verifies the
@@ -190,15 +190,15 @@ and `ContainerAttested` event before acknowledging driver replay state.
 Success replay never dispatches the driver. A changed target or report-data
 value under the same operation ID fails closed.
 
-New journals use `a3s.oci.operation.v6` and SHA-256 over canonical JSON with
+New journals use `aster.oci.operation.v6` and SHA-256 over canonical JSON with
 every object key sorted, so unordered OCI resource maps retain the same
 identity after process reconstruction. Version 3 retains the complete
 validated request and typed response for File and Filesystem mutations;
 version 4 adds the exact normalized checkpoint request and immutable typed
 response; version 5 adds the complete restore request, generation, and paused
 typed response; and version 6 adds the exact TEE attestation request and
-immutable evidence response. Existing `a3s.oci.operation.v1` through
-`a3s.oci.operation.v5` journals remain loadable and validate supported retries
+immutable evidence response. Existing `aster.oci.operation.v1` through
+`aster.oci.operation.v5` journals remain loadable and validate supported retries
 with their original schema and digest rules. Restore is accepted in v5 and
 v6; attestation requires v6.
 
@@ -482,11 +482,11 @@ without a second API-driven Create dispatch, then retries acknowledgement.
 Ordinary recovery observations still reject PID drift.
 Both the record rebind and journal repair recover across every durable
 file-commit fault stage.
-Every `a3s.oci.oci-vm-reopen-replacement.v2` path then force-deletes the
+Every `aster.oci.oci-vm-reopen-replacement.v2` path then force-deletes the
 generation and leaves no durable container or transient Host/Guest resource.
 
 Real State recovery now crosses the same nine points under
-`a3s.oci.oci-vm-operation-reopen-replacement.v1`. The first query never changes
+`aster.oci.oci-vm-operation-reopen-replacement.v1`. The first query never changes
 the durable `created` record. Once that VM has closed, the replacement recovery
 hook recreates the pre-start process and commits its exact PID through the
 restricted record-rebind path above. A new State query must equal that recovered
@@ -494,7 +494,7 @@ record and preserve the generation before force delete. The August 10, 2026
 Apple Silicon matrix passed all nine stages in 18 fresh VMs.
 
 Real Start recovery now crosses all nine points under
-`a3s.oci.oci-vm-operation-reopen-replacement.v2`. The first eight interruptions
+`aster.oci.oci-vm-operation-reopen-replacement.v2`. The first eight interruptions
 leave the exact durable record in `created`; recovery rebuilds that process and
 the unchanged Start identity completes once through the replacement owner. A
 fully written response leaves `running`. Recovery then recreates and starts the
@@ -509,7 +509,7 @@ including Running reconstruction and durable replay without another
 API-driven Start dispatch at `guest-after-response-write`.
 
 Real Kill recovery now crosses all nine points under
-`a3s.oci.oci-vm-operation-reopen-replacement.v3`. The first eight interruptions
+`aster.oci.oci-vm-operation-reopen-replacement.v3`. The first eight interruptions
 leave the durable record in `running`. Recovery recreates and starts the
 workload with the original Create and Start identities, rebinds the new PID,
 repairs both completed setup responses, and sends the unchanged signal-9 Kill
@@ -524,7 +524,7 @@ KVM, including Stopped tombstone reconstruction and completed-journal replay
 without another driver dispatch at `guest-after-response-write`.
 
 Real Delete recovery crosses the same nine points under
-`a3s.oci.oci-vm-operation-reopen-replacement.v4`. The first eight interruptions
+`aster.oci.oci-vm-operation-reopen-replacement.v4`. The first eight interruptions
 retain the stopped record and a Prepared Delete journal. Replacement recovery
 recreates, starts, and kills the workload with the original setup identities,
 rebuilds the Guest tombstone, and dispatches the unchanged stopped-only Delete
@@ -537,7 +537,7 @@ Linux KVM, including the distinct empty-owner replay with zero workload
 recovery and zero driver Delete dispatch at `guest-after-response-write`.
 
 Real init Wait recovery crosses the same nine points under
-`a3s.oci.oci-vm-operation-reopen-replacement.v5`. The first eight interruptions
+`aster.oci.oci-vm-operation-reopen-replacement.v5`. The first eight interruptions
 retain the stopped record without cached terminal evidence. Replacement
 recovery rebuilds the Guest tombstone and dispatches the exact Wait target once,
 then durably caches `signal=9, oom_killed=false`. A fully written response
@@ -552,7 +552,7 @@ zero driver dispatch. The retained aggregate has SHA-256
 `9f4c163c2d3116c8b2fae8bb1739b048b43160dd01f32b9163cad4c99c8ada10`.
 
 Real terminal Exec recovery now crosses the same nine points under
-`a3s.oci.oci-vm-operation-reopen-replacement.v6`. Before returning success, the
+`aster.oci.oci-vm-operation-reopen-replacement.v6`. Before returning success, the
 Linux executor waits for the target process to cross `execve`; typed pre-exec
 failures return through the control barrier. The first eight interruptions
 retain a Prepared Exec journal and a prepared process record with no live PID.
@@ -568,7 +568,7 @@ the exact nonce-bound marker before force delete. The August 10, 2026 Apple
 Silicon matrix passed all nine stages in 18 fresh VMs.
 
 Real SignalProcess recovery crosses the same nine points under
-`a3s.oci.oci-vm-operation-reopen-replacement.v7`. Setup first commits one
+`aster.oci.oci-vm-operation-reopen-replacement.v7`. Setup first commits one
 long-running terminal Exec whose SIGUSR1 trap writes a nonce-bound marker. The
 first eight interruptions retain a Prepared SignalProcess journal; replacement
 recovery recreates init and Exec, and the unchanged signal-10 request dispatches
@@ -581,7 +581,7 @@ restores all inventories. The August 11, 2026 Apple Silicon matrix passed all
 nine stages in 18 fresh VMs.
 
 Real non-init WaitProcess recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v8`. Setup commits Create, Start,
+`aster.oci.oci-vm-operation-reopen-replacement.v8`. Setup commits Create, Start,
 a terminal Exec, and signal 10. Replacement recovery recreates init and Exec,
 waits for the Exec readiness marker, and reapplies the committed signal. For
 the first eight transport interruptions the Host has no process-exit cache, so
@@ -599,7 +599,7 @@ zero driver dispatch. The retained aggregate has SHA-256
 `af1f5001f82fdd7f05a1a3f2971f6ea1b8e9a0292aa62465b03dda5df4297ac4`.
 
 Real Pause recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v9`. Setup commits Create and
+`aster.oci.oci-vm-operation-reopen-replacement.v9`. Setup commits Create and
 Start, then waits for the exact nonce-bound init marker before injecting Pause.
 The first eight interruptions retain an unpaused running record and Prepared
 Pause journal. Recovery recreates and starts init, rebinds its PID, repairs the
@@ -620,7 +620,7 @@ API-driven dispatch. The retained aggregate has SHA-256
 `2b76d5fbd0620dee152d97572ab1bcbf0bed42e39a18a87d03415039405cc271`.
 
 Real Resume recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v10`. Setup commits Create,
+`aster.oci.oci-vm-operation-reopen-replacement.v10`. Setup commits Create,
 Start, and Pause before injecting Resume. Every fresh owner recreates and
 starts init, waits for its nonce-bound readiness marker, and replays the setup
 Pause. The first eight interruptions retain paused durable state and a Prepared
@@ -640,7 +640,7 @@ API-driven dispatch. The retained aggregate has SHA-256
 `5a1bc69dd639a09fd6bc04b9250dd90dfd48b5d64b1b85b7762f14fac4647b4a`.
 
 Real Processes recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v11`. Setup commits Create,
+`aster.oci.oci-vm-operation-reopen-replacement.v11`. Setup commits Create,
 Start, and one live terminal Exec. The replacement owner recreates both live
 processes, rebinds the durable init and Exec PIDs, and repairs all completed
 setup responses before the query runs. Processes has no durable response
@@ -658,7 +658,7 @@ delivered a verified two-record inventory. The retained aggregate has SHA-256
 `7b0d940c5aa1f68a9c9bbfab925e9a3385ee4ea4560dd17ff86798a1c18e66de`.
 
 Real Update recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v12`. Setup commits Create and
+`aster.oci.oci-vm-operation-reopen-replacement.v12`. Setup commits Create and
 Start, then waits for the nonce-bound init marker before injecting the exact
 resource request. The first eight interruptions keep the Update journal
 Prepared. Recreated-running recovery preserves that active claim, rebinds the
@@ -680,7 +680,7 @@ and live counters after every replacement. The retained aggregate has SHA-256
 `61e7ccbf5c3181cce6fb0c62d1a36ad576e9860a58bcc54f8cd5bc41a766a052`.
 
 Real Stats recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v13`. Setup commits Create,
+`aster.oci.oci-vm-operation-reopen-replacement.v13`. Setup commits Create,
 Start, and the exact complete Update before the read-only query. Every
 replacement owner recreates the running init, waits for its readiness marker,
 reapplies that Update to the fresh cgroup, and rebinds all three completed
@@ -700,7 +700,7 @@ has SHA-256
 `ad2a1ec2eb72c106c1bf312253d06fcf187590b357661bed211a83ff5e5cf397`.
 
 Real ReadOutput recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v14`. The durable Create, Start,
+`aster.oci.oci-vm-operation-reopen-replacement.v14`. The durable Create, Start,
 and Exec journals remain complete while recovery reconstructs their exact
 requests and rebinds the response PIDs. ReadOutput itself is read-only and is
 therefore dispatched once to every fresh owner with the same cursor, byte
@@ -716,7 +716,7 @@ inventory. The retained aggregate has SHA-256
 `84c75b01feb23f3d29140e61e2a7e3e56843ebaeadbe92a54c62926357b08d08`.
 
 Real WriteStdin recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v15`. The first eight fault
+`aster.oci.oci-vm-operation-reopen-replacement.v15`. The first eight fault
 stages retain a prepared Host journal, so the API retry dispatches the exact
 bytes once after recovery rebuilds the pipe-backed Exec. A fully delivered
 first response leaves `SucceededEmpty`; because that input effect belonged to
@@ -735,7 +735,7 @@ complete cleanup. The retained aggregate has SHA-256
 `a96eeace7f59f164d9fc4e1ef4ce3f48b9efa568f1eeeb2af58e54c05c9fe889`.
 
 Real CloseStdin recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v16`. Recovery rebuilds the same
+`aster.oci.oci-vm-operation-reopen-replacement.v16`. Recovery rebuilds the same
 pipe-backed Exec. Prepared Host journals close the replacement input once on
 API retry. A fully delivered first response leaves `SucceededEmpty`, so driver
 recovery closes the fresh Exec input before Host service open completes and
@@ -752,7 +752,7 @@ effect marker, and complete cleanup. The retained aggregate has SHA-256
 `dc1743b4c6f53360b40dd9ebcb39b05832322555bfb6d6c0e55f750090c6ba33`.
 
 Real Resize recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v17`. Recovery rebuilds the same
+`aster.oci.oci-vm-operation-reopen-replacement.v17`. Recovery rebuilds the same
 terminal-backed Exec. Prepared Host journals resize it once on API retry. A
 fully delivered first response leaves `SucceededEmpty`, so driver recovery
 restores `120x40` before Host service open completes and the retry returns
@@ -761,7 +761,7 @@ stale generations, and fresh-owner PID rebinding fail or pass as required. All
 nine Apple Silicon stages passed in 18 fresh VMs on August 11, 2026.
 
 Real File recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v18`. The Host v3 journal retains
+`aster.oci.oci-vm-operation-reopen-replacement.v18`. The Host v3 journal retains
 the exact upload. Prepared paths dispatch it once through the replacement
 driver. At `guest-after-response-write`, the first Host commits the typed
 response and returns the retryable acknowledgement failure; recovery rebuilds
@@ -771,7 +771,7 @@ changed-content fencing, stale generations, explicit removal, and owner cleanup
 passed all nine Apple Silicon stages in 18 fresh VMs on August 15, 2026.
 
 Real Filesystem recovery uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v19`. The Host v3 journal retains
+`aster.oci.oci-vm-operation-reopen-replacement.v19`. The Host v3 journal retains
 the exact MakeDir request. Prepared paths dispatch it once through the
 replacement driver. At `guest-after-response-write`, the first Host commits
 the typed metadata response and returns the retryable acknowledgement failure;

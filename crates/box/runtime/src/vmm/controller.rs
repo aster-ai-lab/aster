@@ -3,7 +3,7 @@
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use async_trait::async_trait;
 
 use super::handler::ShimHandler;
@@ -136,11 +136,11 @@ fn clear_handle_inherit_flag(
 
 /// Controller for spawning VM subprocesses.
 ///
-/// Spawns the `a3s-box-shim` binary in a subprocess and returns a ShimHandler
+/// Spawns the `aster-box-shim` binary in a subprocess and returns a ShimHandler
 /// for runtime operations. The subprocess isolation ensures that VM process
 /// takeover doesn't affect the host application.
 pub struct VmController {
-    /// Path to the a3s-box-shim binary
+    /// Path to the aster-box-shim binary
     shim_path: PathBuf,
 }
 
@@ -217,7 +217,7 @@ impl VmController {
     /// Create a new VmController.
     ///
     /// # Arguments
-    /// * `shim_path` - Path to the a3s-box-shim binary
+    /// * `shim_path` - Path to the aster-box-shim binary
     ///
     /// # Returns
     /// * `Ok(VmController)` - Successfully created controller
@@ -227,7 +227,7 @@ impl VmController {
         if !shim_path.exists() {
             return Err(BoxError::BoxBootError {
                 message: format!("Shim binary not found: {}", shim_path.display()),
-                hint: Some("Build the shim with: cargo build -p a3s-box-shim".to_string()),
+                hint: Some("Build the shim with: cargo build -p aster-box-shim".to_string()),
             });
         }
 
@@ -256,7 +256,7 @@ impl VmController {
         }
 
         // Acquire exclusive file lock to prevent concurrent codesign
-        let lock_path = std::env::temp_dir().join("a3s-box-shim-codesign.lock");
+        let lock_path = std::env::temp_dir().join("aster-box-shim-codesign.lock");
         let lock_file = File::create(&lock_path).map_err(|e| BoxError::BoxBootError {
             message: format!("Failed to create codesign lock file: {}", e),
             hint: None,
@@ -340,7 +340,7 @@ impl VmController {
         }
 
         // Try the source tree relative to the shim binary
-        // target/debug/a3s-box-shim -> ../../shim/entitlements.plist
+        // target/debug/aster-box-shim -> ../../shim/entitlements.plist
         if let Some(dir) = shim_path.parent() {
             for ancestor in dir.ancestors().take(5) {
                 let plist = ancestor.join("shim").join("entitlements.plist");
@@ -351,7 +351,7 @@ impl VmController {
         }
 
         // Generate a temporary entitlements plist as fallback
-        let tmp_plist = std::env::temp_dir().join("a3s-box-entitlements.plist");
+        let tmp_plist = std::env::temp_dir().join("aster-box-entitlements.plist");
         std::fs::write(
             &tmp_plist,
             r#"<?xml version="1.0" encoding="UTF-8"?>
@@ -376,15 +376,15 @@ impl VmController {
     ///
     /// Searches in order:
     /// 1. Same directory as current executable
-    /// 2. `~/.a3s/bin/` (SDK-extracted shim)
+    /// 2. `~/.aster/bin/` (SDK-extracted shim)
     /// 3. target/debug or target/release (for development)
     /// 4. PATH
     pub fn find_shim() -> Result<PathBuf> {
         // On Windows the binary has a .exe suffix; on other platforms it's empty.
         #[cfg(target_os = "windows")]
-        let shim_name = "a3s-box-shim.exe";
+        let shim_name = "aster-box-shim.exe";
         #[cfg(not(target_os = "windows"))]
-        let shim_name = "a3s-box-shim";
+        let shim_name = "aster-box-shim";
 
         // Try same directory as current executable
         if let Ok(exe_path) = std::env::current_exe() {
@@ -396,9 +396,9 @@ impl VmController {
             }
         }
 
-        // Try ~/.a3s/bin/ (SDK-extracted shim)
+        // Try ~/.aster/bin/ (SDK-extracted shim)
         {
-            let shim_path = a3s_box_core::dirs_home().join("bin").join(shim_name);
+            let shim_path = aster_box_core::dirs_home().join("bin").join(shim_name);
             if shim_path.exists() {
                 return Ok(shim_path);
             }
@@ -434,8 +434,8 @@ impl VmController {
         }
 
         Err(BoxError::BoxBootError {
-            message: "Could not find a3s-box-shim binary".to_string(),
-            hint: Some("Build the shim with: cargo build -p a3s-box-shim".to_string()),
+            message: "Could not find aster-box-shim binary".to_string(),
+            hint: Some("Build the shim with: cargo build -p aster-box-shim".to_string()),
         })
     }
 
@@ -569,9 +569,9 @@ impl VmmProvider for VmController {
         self.configure_shim_stdio(&mut cmd, spec);
 
         // KSM page-merging: the shim opts its (guest) memory in via prctl when this
-        // env is set; driven by InstanceSpec.ksm (BoxConfig.ksm or A3S_BOX_KSM).
+        // env is set; driven by InstanceSpec.ksm (BoxConfig.ksm or ASTER_BOX_KSM).
         if spec.ksm {
-            cmd.env("A3S_BOX_KSM", "1");
+            cmd.env("ASTER_BOX_KSM", "1");
         }
 
         // Snapshot-fork: set the file-backed-RAM / snapshot-trigger / restore paths
@@ -611,7 +611,7 @@ impl VmmProvider for VmController {
             if let Some(path) = bundled_lib_dir.filter(|path| path.exists()) {
                 dylib_paths.push(path);
             }
-            let home_lib_dir = a3s_box_core::dirs_home().join("lib");
+            let home_lib_dir = aster_box_core::dirs_home().join("lib");
             if home_lib_dir.exists() {
                 dylib_paths.push(home_lib_dir);
             }
@@ -631,9 +631,9 @@ impl VmmProvider for VmController {
         }
 
         // Put the VMM shim in its own session/process-group so it survives teardown
-        // of the launcher's session — e.g. a containerd-shim foreground `a3s-box run`
+        // of the launcher's session — e.g. a containerd-shim foreground `aster-box run`
         // whose process group is reaped on container kill. Without this the libkrun
-        // shim (which owns the box's exec.sock) dies with the launcher and `a3s-box
+        // shim (which owns the box's exec.sock) dies with the launcher and `aster-box
         // exec` fails with "exec socket missing".
         #[cfg(unix)]
         {
@@ -703,15 +703,15 @@ mod tests {
     fn make_fake_shim(dir: &std::path::Path) -> PathBuf {
         use std::os::unix::fs::PermissionsExt;
 
-        let shim_path = dir.join("fake-a3s-box-shim");
+        let shim_path = dir.join("fake-aster-box-shim");
         std::fs::write(
             &shim_path,
             r#"#!/bin/sh
-printf '%s\n' "$@" > "$A3S_TEST_ARGS_FILE"
-printf '%s\n' "$A3S_BOX_KSM" > "$A3S_TEST_KSM_FILE"
-printf '%s\n' "$KRUN_SNAPSHOT_MEM_FILE" > "$A3S_TEST_SNAPSHOT_MEM_FILE"
-printf '%s\n' "$KRUN_SNAPSHOT_SOCK" > "$A3S_TEST_SNAPSHOT_SOCK_FILE"
-printf '%s\n' "$KRUN_RESTORE_FROM" > "$A3S_TEST_RESTORE_FILE"
+printf '%s\n' "$@" > "$ASTER_TEST_ARGS_FILE"
+printf '%s\n' "$ASTER_BOX_KSM" > "$ASTER_TEST_KSM_FILE"
+printf '%s\n' "$KRUN_SNAPSHOT_MEM_FILE" > "$ASTER_TEST_SNAPSHOT_MEM_FILE"
+printf '%s\n' "$KRUN_SNAPSHOT_SOCK" > "$ASTER_TEST_SNAPSHOT_SOCK_FILE"
+printf '%s\n' "$KRUN_RESTORE_FROM" > "$ASTER_TEST_RESTORE_FILE"
 printf shim-stdout
 printf shim-stderr >&2
 exec /bin/sleep 30
@@ -741,7 +741,7 @@ exec /bin/sleep 30
         let missing = tempfile::tempdir()
             .unwrap()
             .path()
-            .join("missing-a3s-box-shim");
+            .join("missing-aster-box-shim");
 
         let error = match VmController::new(missing.clone()) {
             Ok(_) => panic!("missing shim should be rejected"),
@@ -751,7 +751,7 @@ exec /bin/sleep 30
 
         assert!(message.contains("Shim binary not found"));
         assert!(message.contains(&missing.display().to_string()));
-        assert!(message.contains("cargo build -p a3s-box-shim"));
+        assert!(message.contains("cargo build -p aster-box-shim"));
     }
 
     #[cfg(unix)]
@@ -859,11 +859,11 @@ exec /bin/sleep 30
         let snapshot_sock_file = temp.path().join("shim.snapshot_sock");
         let restore_file = temp.path().join("shim.restore");
 
-        std::env::set_var("A3S_TEST_ARGS_FILE", &args_file);
-        std::env::set_var("A3S_TEST_KSM_FILE", &ksm_file);
-        std::env::set_var("A3S_TEST_SNAPSHOT_MEM_FILE", &snapshot_mem_file);
-        std::env::set_var("A3S_TEST_SNAPSHOT_SOCK_FILE", &snapshot_sock_file);
-        std::env::set_var("A3S_TEST_RESTORE_FILE", &restore_file);
+        std::env::set_var("ASTER_TEST_ARGS_FILE", &args_file);
+        std::env::set_var("ASTER_TEST_KSM_FILE", &ksm_file);
+        std::env::set_var("ASTER_TEST_SNAPSHOT_MEM_FILE", &snapshot_mem_file);
+        std::env::set_var("ASTER_TEST_SNAPSHOT_SOCK_FILE", &snapshot_sock_file);
+        std::env::set_var("ASTER_TEST_RESTORE_FILE", &restore_file);
 
         let socket_dir = temp.path().join("runtime").join("sockets");
         let spec = InstanceSpec {
@@ -871,9 +871,9 @@ exec /bin/sleep 30
             exec_socket_path: socket_dir.join("exec.sock"),
             console_output: Some(temp.path().join("logs").join("console.log")),
             ksm: true,
-            snapshot_mem_file: Some("/tmp/a3s-mem".to_string()),
-            snapshot_sock: Some("/tmp/a3s-snapshot.sock".to_string()),
-            restore_from: Some("/tmp/a3s-restore".to_string()),
+            snapshot_mem_file: Some("/tmp/aster-mem".to_string()),
+            snapshot_sock: Some("/tmp/aster-snapshot.sock".to_string()),
+            restore_from: Some("/tmp/aster-restore".to_string()),
             ..Default::default()
         };
 
@@ -889,15 +889,15 @@ exec /bin/sleep 30
         assert_eq!(std::fs::read_to_string(&ksm_file).unwrap().trim(), "1");
         assert_eq!(
             std::fs::read_to_string(&snapshot_mem_file).unwrap().trim(),
-            "/tmp/a3s-mem"
+            "/tmp/aster-mem"
         );
         assert_eq!(
             std::fs::read_to_string(&snapshot_sock_file).unwrap().trim(),
-            "/tmp/a3s-snapshot.sock"
+            "/tmp/aster-snapshot.sock"
         );
         assert_eq!(
             std::fs::read_to_string(&restore_file).unwrap().trim(),
-            "/tmp/a3s-restore"
+            "/tmp/aster-restore"
         );
         assert_eq!(
             std::fs::read_to_string(temp.path().join("logs").join("shim.stdout.log")).unwrap(),
@@ -910,11 +910,11 @@ exec /bin/sleep 30
 
         handler.stop(libc::SIGTERM, 1_000).unwrap();
 
-        std::env::remove_var("A3S_TEST_ARGS_FILE");
-        std::env::remove_var("A3S_TEST_KSM_FILE");
-        std::env::remove_var("A3S_TEST_SNAPSHOT_MEM_FILE");
-        std::env::remove_var("A3S_TEST_SNAPSHOT_SOCK_FILE");
-        std::env::remove_var("A3S_TEST_RESTORE_FILE");
+        std::env::remove_var("ASTER_TEST_ARGS_FILE");
+        std::env::remove_var("ASTER_TEST_KSM_FILE");
+        std::env::remove_var("ASTER_TEST_SNAPSHOT_MEM_FILE");
+        std::env::remove_var("ASTER_TEST_SNAPSHOT_SOCK_FILE");
+        std::env::remove_var("ASTER_TEST_RESTORE_FILE");
     }
 
     #[cfg(unix)]

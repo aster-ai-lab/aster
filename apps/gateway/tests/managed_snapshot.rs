@@ -1,5 +1,5 @@
-use a3s_gateway::managed_snapshot::{ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus};
-use a3s_gateway::{config::GatewayConfig, Gateway};
+use aster_gateway::managed_snapshot::{ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus};
+use aster_gateway::{config::GatewayConfig, Gateway};
 use chrono::{Duration, Utc};
 use std::net::SocketAddr;
 use std::sync::Arc;
@@ -115,7 +115,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 "#
@@ -148,7 +148,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 "#

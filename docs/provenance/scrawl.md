@@ -18,12 +18,12 @@ The host has Command Line Tools rather than full Xcode, so the toolchain's Swift
 - Revision: `48d727cc1cf4eda667c858c501495f1018f69d21`
 - License: Apache-2.0 with Runtime Library Exception
 
-This dependency belongs to the CaptureKit test target. It is not an A3S product SDK or a second product configuration system.
+This dependency belongs to the CaptureKit test target. It is not an Aster product SDK or a second product configuration system.
 
 ## Integration adjustments
 
 - Root workspace membership and `publish = false` were added to the vendored crate.
-- Existing `a3s-code-voice` now shares `cpal 0.18.2`, avoiding two ALSA link versions in one dependency graph. Its device-description, sample-rate and stream-config calls were updated to the actual crate API.
+- Existing `aster-voice` now shares `cpal 0.18.2`, avoiding two ALSA link versions in one dependency graph. Its device-description, sample-rate and stream-config calls were updated to the actual crate API.
 - The evidence library and the optional GPUI executable use separate module roots. Studio links the evidence library without GPUI; the vendored app keeps its own UI modules.
 - The upstream `site` sources and feature-map fixtures are retained so the upstream feature-inventory test can run in this workspace.
 - Aster-owned integration is specified separately. Workspace membership alone is not proof of native recording, signing or platform support.

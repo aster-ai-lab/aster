@@ -6,7 +6,7 @@
 //! output capture so tool contracts stay intact. It is never the silent
 //! default: hosts must opt in via
 //! [`crate::SessionOptions::with_allow_process_host_sandbox`] or
-//! `A3S_CODE_ALLOW_PROCESS_HOST_SANDBOX=1` when the native backend cannot
+//! `ASTER_ALLOW_PROCESS_HOST_SANDBOX=1` when the native backend cannot
 //! initialize.
 
 use super::{BashSandbox, SandboxCommandRequest, SandboxExecutionOutput, SandboxOutput};

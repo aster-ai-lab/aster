@@ -21,7 +21,7 @@ test('Gateway registration keeps version and product boundaries', () => {
 test('Gateway pages preserve quickstart, routing, snapshot and security contracts', async (t) => {
   const expectations = [
     ['', 'Aster Gateway 产品概览', 'Gateway 的流量职责与期望状态'],
-    ['quickstart/', 'standalone 快速开始', 'a3s-gateway validate --config gateway.acl'],
+    ['quickstart/', 'standalone 快速开始', 'aster-gateway validate --config gateway.acl'],
     ['model-routing/', '模型路由、P/D 分离与缓存亲和', 'decode/prepare'],
     ['traffic/', '流量与快照', 'drain_managed_service'],
     ['operations/', '部署与安全', 'local_digest_store'],

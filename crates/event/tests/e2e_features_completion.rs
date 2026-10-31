@@ -15,10 +15,10 @@
 
 #![cfg(feature = "routing")]
 
-use a3s_event::sink::CollectorSink;
-use a3s_event::sink::InProcessSink;
-use a3s_event::state::MemoryStateStore;
-use a3s_event::{
+use aster_event::sink::CollectorSink;
+use aster_event::sink::InProcessSink;
+use aster_event::state::MemoryStateStore;
+use aster_event::{
     DeadLetterEvent, DlqHandler, Event, EventBus, EventProvider, MemoryDlqHandler,
     MemorySchemaRegistry, ReceivedEvent, SchemaRegistry, SinkDlqHandler, SubscriptionFilter,
     Trigger, TriggerFilter,
@@ -70,15 +70,15 @@ async fn dlq_capacity_evicts_oldest_and_predicate_gates() {
         stream: "memory".to_string(),
     };
     assert!(
-        !a3s_event::dlq::should_dead_letter(&delivered(2), 3),
+        !aster_event::dlq::should_dead_letter(&delivered(2), 3),
         "below max: retry again"
     );
     assert!(
-        a3s_event::dlq::should_dead_letter(&delivered(3), 3),
+        aster_event::dlq::should_dead_letter(&delivered(3), 3),
         "at max: dead-letter"
     );
     assert!(
-        !a3s_event::dlq::should_dead_letter(&delivered(99), 0),
+        !aster_event::dlq::should_dead_letter(&delivered(99), 0),
         "max 0 disables the gate"
     );
 }
@@ -87,7 +87,7 @@ async fn dlq_capacity_evicts_oldest_and_predicate_gates() {
 async fn sink_dlq_handler_forwards_dead_letters_into_a_sink() {
     // A TopicSink-style pipeline: dead letters land in a collector sink.
     let collector = Arc::new(CollectorSink::new("dlq-archive"));
-    let handler = SinkDlqHandler::new(collector.clone() as Arc<dyn a3s_event::EventSink>, 100);
+    let handler = SinkDlqHandler::new(collector.clone() as Arc<dyn aster_event::EventSink>, 100);
 
     for i in 0..3 {
         handler
@@ -107,7 +107,7 @@ async fn sink_dlq_handler_forwards_dead_letters_into_a_sink() {
     // subject namespaced under events.dlq.*, metadata carries the lineage.
     let archived = collector.events().await;
     let first = &archived[0];
-    assert_eq!(first.event_type, "a3s.dlq.dead_letter");
+    assert_eq!(first.event_type, "aster.dlq.dead_letter");
     assert!(
         first.subject.starts_with("events.dlq."),
         "namespaced: {}",
@@ -131,7 +131,7 @@ async fn sink_dlq_handler_forwards_dead_letters_into_a_sink() {
 async fn schema_compatibility_matrix_gates_evolution() {
     let registry = Arc::new(MemorySchemaRegistry::new());
 
-    let v1 = a3s_event::EventSchema {
+    let v1 = aster_event::EventSchema {
         event_type: "order.placed".to_string(),
         version: 1,
         required_fields: vec!["id".to_string(), "amount".to_string()],
@@ -139,10 +139,10 @@ async fn schema_compatibility_matrix_gates_evolution() {
     };
     registry.register(v1.clone()).unwrap();
 
-    use a3s_event::schema::Compatibility;
+    use aster_event::schema::Compatibility;
 
     // v2 adds a REQUIRED field — backward-incompatible (old consumers break).
-    let v2_add_required = a3s_event::EventSchema {
+    let v2_add_required = aster_event::EventSchema {
         event_type: "order.placed".to_string(),
         version: 2,
         required_fields: vec![
@@ -172,7 +172,7 @@ async fn schema_compatibility_matrix_gates_evolution() {
 
     // v3 REMOVES a v1-required field — forward-incompatible (new consumers
     // can't read old events).
-    let v3_drop_amount = a3s_event::EventSchema {
+    let v3_drop_amount = aster_event::EventSchema {
         event_type: "order.placed".to_string(),
         version: 3,
         required_fields: vec!["id".to_string()],
@@ -186,7 +186,7 @@ async fn schema_compatibility_matrix_gates_evolution() {
 
     // Compatibility is STEPWISE (vN vs vN-1), so v4 identical to v3 —
     // not to v1 — is what "fully compatible evolution" means.
-    let identical_to_v3 = a3s_event::EventSchema {
+    let identical_to_v3 = aster_event::EventSchema {
         event_type: "order.placed".to_string(),
         version: 4,
         required_fields: vec!["id".to_string()],
@@ -210,7 +210,7 @@ async fn schema_compatibility_matrix_gates_evolution() {
 
     // And the publish gate enforces the LATEST version's requirements.
     let mut bus = EventBus::from_provider(
-        Arc::new(a3s_event::MemoryProvider::default()) as Arc<dyn EventProvider>
+        Arc::new(aster_event::MemoryProvider::default()) as Arc<dyn EventProvider>
     );
     bus.set_schema_registry(registry.clone() as Arc<dyn SchemaRegistry>);
 
@@ -240,7 +240,7 @@ async fn in_process_sink_runs_real_handlers_and_log_sink_never_fails() {
         }
     });
 
-    let broker = Arc::new(a3s_event::Broker::new());
+    let broker = Arc::new(aster_event::Broker::new());
     broker
         .add_trigger(Trigger::new(
             "in-process-fanout",
@@ -252,12 +252,12 @@ async fn in_process_sink_runs_real_handlers_and_log_sink_never_fails() {
         .add_trigger(Trigger::new(
             "log-everything",
             TriggerFilter::by_subject("events.side.>"),
-            Arc::new(a3s_event::LogSink::new("audit-log")),
+            Arc::new(aster_event::LogSink::new("audit-log")),
         ))
         .await;
 
     let mut bus = EventBus::from_provider(
-        Arc::new(a3s_event::MemoryProvider::default()) as Arc<dyn EventProvider>
+        Arc::new(aster_event::MemoryProvider::default()) as Arc<dyn EventProvider>
     );
     bus.set_broker(broker);
 
@@ -283,7 +283,7 @@ async fn in_process_sink_runs_real_handlers_and_log_sink_never_fails() {
 
 #[tokio::test]
 async fn memory_state_store_round_trips_the_registry() {
-    let raw = Arc::new(a3s_event::MemoryProvider::default());
+    let raw = Arc::new(aster_event::MemoryProvider::default());
     let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn EventProvider>);
 
     let filter = SubscriptionFilter {
@@ -304,7 +304,7 @@ async fn memory_state_store_round_trips_the_registry() {
         .unwrap();
 
     let store = MemoryStateStore::default();
-    use a3s_event::StateStore as _;
+    use aster_event::StateStore as _;
     // The state-store trait itself round-trips (save → load is lossless).
     let mut map = std::collections::HashMap::new();
     map.insert(filter.subscriber_id.clone(), filter.clone());
@@ -320,12 +320,12 @@ async fn memory_state_store_round_trips_the_registry() {
 
 #[tokio::test]
 async fn state_store_failure_paths_fail_closed() {
-    use a3s_event::state::FileStateStore;
-    use a3s_event::StateStore as _;
+    use aster_event::state::FileStateStore;
+    use aster_event::StateStore as _;
 
     // A path UNDER a regular file can never be created: create_dir_all
     // fails and save must propagate that (never panic, never fake success).
-    let blocker = std::env::temp_dir().join(format!("a3s-state-blocker-{}", std::process::id()));
+    let blocker = std::env::temp_dir().join(format!("aster-state-blocker-{}", std::process::id()));
     std::fs::write(&blocker, b"i am a file").unwrap();
     let store = FileStateStore::new(blocker.join("nested").join("subs.json"));
     let mut map = std::collections::HashMap::new();
@@ -345,7 +345,7 @@ async fn state_store_failure_paths_fail_closed() {
 
     // EventBus wiring propagates the failure instead of swallowing it.
     let mut bus = EventBus::from_provider(
-        Arc::new(a3s_event::MemoryProvider::default()) as Arc<dyn EventProvider>
+        Arc::new(aster_event::MemoryProvider::default()) as Arc<dyn EventProvider>
     );
     assert!(bus.set_state_store(Arc::new(store)).is_ok()); // load on missing file is fine
     let _ = map;
@@ -360,9 +360,9 @@ async fn failing_provider_surfaces_errors_and_metrics() {
     /// failures and counts them instead of masking success.
     struct AlwaysFailingProvider;
     #[async_trait]
-    impl a3s_event::EventProvider for AlwaysFailingProvider {
-        async fn publish(&self, event: &Event) -> a3s_event::Result<u64> {
-            Err(a3s_event::EventError::Publish {
+    impl aster_event::EventProvider for AlwaysFailingProvider {
+        async fn publish(&self, event: &Event) -> aster_event::Result<u64> {
+            Err(aster_event::EventError::Publish {
                 subject: event.subject.clone(),
                 reason: "synthetic outage".to_string(),
             })
@@ -371,8 +371,8 @@ async fn failing_provider_surfaces_errors_and_metrics() {
             &self,
             _name: &str,
             filter: &str,
-        ) -> a3s_event::Result<Box<dyn a3s_event::Subscription>> {
-            Err(a3s_event::EventError::Subscribe {
+        ) -> aster_event::Result<Box<dyn aster_event::Subscription>> {
+            Err(aster_event::EventError::Subscribe {
                 subject: filter.to_string(),
                 reason: "synthetic outage".to_string(),
             })
@@ -380,21 +380,21 @@ async fn failing_provider_surfaces_errors_and_metrics() {
         async fn subscribe(
             &self,
             filter: &str,
-        ) -> a3s_event::Result<Box<dyn a3s_event::Subscription>> {
+        ) -> aster_event::Result<Box<dyn aster_event::Subscription>> {
             self.subscribe_durable("", filter).await
         }
         async fn history(
             &self,
             _filter: Option<&str>,
             _limit: usize,
-        ) -> a3s_event::Result<Vec<Event>> {
-            Err(a3s_event::EventError::Provider("history down".to_string()))
+        ) -> aster_event::Result<Vec<Event>> {
+            Err(aster_event::EventError::Provider("history down".to_string()))
         }
-        async fn unsubscribe(&self, _name: &str) -> a3s_event::Result<()> {
+        async fn unsubscribe(&self, _name: &str) -> aster_event::Result<()> {
             Ok(())
         }
-        async fn info(&self) -> a3s_event::Result<a3s_event::ProviderInfo> {
-            Err(a3s_error_wired())
+        async fn info(&self) -> aster_event::Result<aster_event::ProviderInfo> {
+            Err(aster_error_wired())
         }
         fn subject_prefix(&self) -> &str {
             "events"
@@ -404,12 +404,12 @@ async fn failing_provider_surfaces_errors_and_metrics() {
         }
     }
 
-    fn a3s_error_wired() -> a3s_event::EventError {
-        a3s_event::EventError::Connection("synthetic".to_string())
+    fn aster_error_wired() -> aster_event::EventError {
+        aster_event::EventError::Connection("synthetic".to_string())
     }
 
     let mut bus = EventBus::from_provider(
-        Arc::new(AlwaysFailingProvider) as Arc<dyn a3s_event::EventProvider>
+        Arc::new(AlwaysFailingProvider) as Arc<dyn aster_event::EventProvider>
     );
 
     let e = Event::new("events.down.a", "down", "f", "t", serde_json::json!({}));

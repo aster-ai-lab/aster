@@ -176,24 +176,24 @@ pub(crate) fn expand_message_controller(
         impl #self_ty {
             pub fn message_patterns(
                 self: ::std::sync::Arc<Self>,
-            ) -> ::a3s_boot::Result<::std::vec::Vec<::a3s_boot::MessagePatternDefinition>> {
-                let mut __a3s_boot_patterns = ::std::vec::Vec::new();
+            ) -> ::aster_boot::Result<::std::vec::Vec<::aster_boot::MessagePatternDefinition>> {
+                let mut __aster_boot_patterns = ::std::vec::Vec::new();
                 #(
-                    __a3s_boot_patterns.push(#patterns);
+                    __aster_boot_patterns.push(#patterns);
                 )*
-                Ok(__a3s_boot_patterns)
+                Ok(__aster_boot_patterns)
             }
 
             pub fn provider_message_patterns(
-            ) -> ::a3s_boot::Result<::std::vec::Vec<::a3s_boot::MessagePatternDefinition>>
+            ) -> ::aster_boot::Result<::std::vec::Vec<::aster_boot::MessagePatternDefinition>>
             where
                 Self: ::std::marker::Send + ::std::marker::Sync + 'static,
             {
-                let mut __a3s_boot_patterns = ::std::vec::Vec::new();
+                let mut __aster_boot_patterns = ::std::vec::Vec::new();
                 #(
-                    __a3s_boot_patterns.push(#provider_patterns);
+                    __aster_boot_patterns.push(#provider_patterns);
                 )*
-                Ok(__a3s_boot_patterns)
+                Ok(__aster_boot_patterns)
             }
         }
     })
@@ -267,11 +267,11 @@ fn message_pattern_registration(
             };
             if controller_pattern_kind == MessageControllerPatternKind::Provider {
                 quote! {
-                    ::a3s_boot::MessagePatternDefinition::request_scoped(#pattern, #handler)?
+                    ::aster_boot::MessagePatternDefinition::request_scoped(#pattern, #handler)?
                 }
             } else {
                 quote! {
-                    ::a3s_boot::MessagePatternDefinition::request(#pattern, #handler)?
+                    ::aster_boot::MessagePatternDefinition::request(#pattern, #handler)?
                 }
             }
         }
@@ -286,11 +286,11 @@ fn message_pattern_registration(
             };
             if controller_pattern_kind == MessageControllerPatternKind::Provider {
                 quote! {
-                    ::a3s_boot::MessagePatternDefinition::event_scoped(#pattern, #handler)?
+                    ::aster_boot::MessagePatternDefinition::event_scoped(#pattern, #handler)?
                 }
             } else {
                 quote! {
-                    ::a3s_boot::MessagePatternDefinition::event(#pattern, #handler)?
+                    ::aster_boot::MessagePatternDefinition::event(#pattern, #handler)?
                 }
             }
         }
@@ -330,14 +330,14 @@ fn message_request_handler(
     raw: bool,
     args: MessageHandlerArgs,
 ) -> proc_macro2::TokenStream {
-    let controller_name = format_ident!("__a3s_boot_message_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_message_{}", method_ident);
     let bindings = args.bindings();
     let call_args = args.call_args();
     let call = message_request_call(method_ident, &controller_name, raw, quote!(#(#call_args),*));
     quote! {
         {
             let #controller_name = ::std::sync::Arc::clone(&self);
-            move |__a3s_boot_message: ::a3s_boot::TransportMessage| {
+            move |__aster_boot_message: ::aster_boot::TransportMessage| {
                 let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                 async move {
                     #(#bindings)*
@@ -353,15 +353,15 @@ fn provider_message_request_factory(
     raw: bool,
     args: MessageHandlerArgs,
 ) -> proc_macro2::TokenStream {
-    let controller_name = format_ident!("__a3s_boot_message_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_message_{}", method_ident);
     let bindings = args.bindings();
     let call_args = args.call_args();
     let call = message_request_call(method_ident, &controller_name, raw, quote!(#(#call_args),*));
     quote! {
         {
-            move |__a3s_boot_module_ref: &::a3s_boot::ModuleRef| {
-                let #controller_name = __a3s_boot_module_ref.get::<Self>()?;
-                Ok(move |__a3s_boot_message: ::a3s_boot::TransportMessage| {
+            move |__aster_boot_module_ref: &::aster_boot::ModuleRef| {
+                let #controller_name = __aster_boot_module_ref.get::<Self>()?;
+                Ok(move |__aster_boot_message: ::aster_boot::TransportMessage| {
                     let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                     async move {
                         #(#bindings)*
@@ -386,8 +386,8 @@ fn message_request_call(
     } else {
         quote! {
             {
-                let __a3s_boot_reply = #controller_name.#method_ident(#args).await?;
-                ::a3s_boot::TransportReply::json(&__a3s_boot_reply)
+                let __aster_boot_reply = #controller_name.#method_ident(#args).await?;
+                ::aster_boot::TransportReply::json(&__aster_boot_reply)
             }
         }
     }
@@ -397,13 +397,13 @@ fn message_event_handler(
     method_ident: &Ident,
     args: MessageHandlerArgs,
 ) -> proc_macro2::TokenStream {
-    let controller_name = format_ident!("__a3s_boot_event_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_event_{}", method_ident);
     let bindings = args.bindings();
     let call_args = args.call_args();
     quote! {
         {
             let #controller_name = ::std::sync::Arc::clone(&self);
-            move |__a3s_boot_message: ::a3s_boot::TransportMessage| {
+            move |__aster_boot_message: ::aster_boot::TransportMessage| {
                 let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                 async move {
                     #(#bindings)*
@@ -419,14 +419,14 @@ fn provider_message_event_factory(
     method_ident: &Ident,
     args: MessageHandlerArgs,
 ) -> proc_macro2::TokenStream {
-    let controller_name = format_ident!("__a3s_boot_event_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_event_{}", method_ident);
     let bindings = args.bindings();
     let call_args = args.call_args();
     quote! {
         {
-            move |__a3s_boot_module_ref: &::a3s_boot::ModuleRef| {
-                let #controller_name = __a3s_boot_module_ref.get::<Self>()?;
-                Ok(move |__a3s_boot_message: ::a3s_boot::TransportMessage| {
+            move |__aster_boot_module_ref: &::aster_boot::ModuleRef| {
+                let #controller_name = __aster_boot_module_ref.get::<Self>()?;
+                Ok(move |__aster_boot_message: ::aster_boot::TransportMessage| {
                     let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                     async move {
                         #(#bindings)*
@@ -488,21 +488,21 @@ impl MessageHandlerArgs {
                 let MethodArg { ident, ty, .. } = &arg.arg;
                 match &arg.kind {
                     MessageHandlerArgKind::Message => quote! {
-                        let #ident: #ty = __a3s_boot_message.clone();
+                        let #ident: #ty = __aster_boot_message.clone();
                     },
                     MessageHandlerArgKind::Payload(extractor) => json_payload_binding_tokens(
                         ident.clone(),
                         ty.clone(),
                         extractor.clone(),
-                        |value_ty| quote!(__a3s_boot_message.data_as::<#value_ty>()),
+                        |value_ty| quote!(__aster_boot_message.data_as::<#value_ty>()),
                         |value_ty, name| {
-                            quote!(__a3s_boot_message.data_field_as::<#value_ty>(#name))
+                            quote!(__aster_boot_message.data_field_as::<#value_ty>(#name))
                         },
                         |value_ty, name| {
-                            quote!(__a3s_boot_message.optional_data_field_as::<#value_ty>(#name))
+                            quote!(__aster_boot_message.optional_data_field_as::<#value_ty>(#name))
                         },
-                        |name| quote!(__a3s_boot_message.data_field_string(#name)),
-                        |name| quote!(__a3s_boot_message.optional_data_field_string(#name)),
+                        |name| quote!(__aster_boot_message.data_field_string(#name)),
+                        |name| quote!(__aster_boot_message.optional_data_field_string(#name)),
                     ),
                 }
             })

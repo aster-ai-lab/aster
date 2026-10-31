@@ -1,0 +1,24 @@
+extension "aster/probe-composer" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "probe-composer"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  ui "view" {
+    title            = "输入框探针"
+    description      = "输入框旁出现这个按钮。"
+    icon             = "terminal"
+    entry            = "ui/view/index.html"
+    presentation     = "webview"
+    point            = "studio.composer.actions"
+    scope            = "window"
+    contract_version = 1
+    mode             = "append"
+  }
+}

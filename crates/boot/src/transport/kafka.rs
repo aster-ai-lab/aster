@@ -162,10 +162,10 @@ impl KafkaTransportOptions {
 impl Default for KafkaTransportOptions {
     fn default() -> Self {
         Self {
-            request_topic: "a3s.boot.requests".to_string(),
-            event_topic: "a3s.boot.events".to_string(),
-            reply_topic_prefix: "a3s.boot.replies".to_string(),
-            client_id_prefix: "a3s-boot".to_string(),
+            request_topic: "aster.boot.requests".to_string(),
+            event_topic: "aster.boot.events".to_string(),
+            reply_topic_prefix: "aster.boot.replies".to_string(),
+            client_id_prefix: "aster-boot".to_string(),
             request_timeout: Duration::from_secs(5),
             partition: 0,
             fetch_min_batch_size: 1,

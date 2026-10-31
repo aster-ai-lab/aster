@@ -155,7 +155,7 @@ async fn a_write_past_the_stamp_cap_does_not_freeze_the_ledger() {
     assert_eq!(result.outcome, ToolExecutionOutcome::Succeeded);
     assert_eq!(
         result.effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Incomplete
+        aster_effect::ToolObservationCompleteness::Incomplete
     );
     assert!(result.effects.budget_exceeded);
     assert!(result
@@ -191,7 +191,7 @@ async fn a_shell_that_never_starts_on_a_missed_status_does_not_block_a_later_too
     assert_eq!(refused_result.outcome, ToolExecutionOutcome::Failed);
     assert_eq!(
         refused_result.effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     assert!(refused_result.effects.changes.is_empty());
     assert!(!tools
@@ -264,7 +264,7 @@ async fn missing_execution_evidence_overrides_a_path_budget() {
     assert!(!missed.effects.budget_exceeded);
     assert_eq!(
         missed.effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Incomplete
+        aster_effect::ToolObservationCompleteness::Incomplete
     );
     assert!(missed.effects.changes.is_empty());
     assert!(uncertain);

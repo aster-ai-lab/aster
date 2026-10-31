@@ -1,0 +1,388 @@
+//! Stdio ACP agent binary for Aster desktop hosts.
+
+use std::path::PathBuf;
+use std::rc::Rc;
+
+use aster_acp::unattended::{Unattended, DEFAULT_EXECUTION_BUDGET_MS};
+use aster_acp::{load_launch_config_with_imports, AsterCodeAgent, PluginSelectionHost};
+use aster_core::config::AccountImport;
+use agent_client_protocol as acp;
+use anyhow::{Context, Result};
+use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
+
+#[path = "aster-acp/startup_error.rs"]
+mod startup_error;
+
+struct Args {
+    cwd: PathBuf,
+    config: Option<PathBuf>,
+    model: Option<String>,
+    import_accounts: Vec<AccountImport>,
+    plugin_store: Option<PathBuf>,
+    studio_documents: bool,
+    reasoning_effort: Option<String>,
+    unattended: Option<Unattended>,
+    workspace_mcp: Option<WorkspaceMcpCommand>,
+}
+
+/// Review or trust the repository-declared MCP servers, then exit.
+#[derive(Debug, PartialEq, Eq)]
+enum WorkspaceMcpCommand {
+    List,
+    Trust(String),
+}
+
+fn parse_args() -> Result<Args> {
+    parse_args_from(std::env::args().skip(1))
+}
+
+fn parse_args_from(mut args: impl Iterator<Item = String>) -> Result<Args> {
+    let mut cwd = std::env::current_dir().context("current_dir")?;
+    let mut config: Option<PathBuf> = None;
+    let mut model: Option<String> = None;
+    let mut import_accounts = Vec::new();
+    let mut plugin_store = None;
+    let mut studio_documents = false;
+    let mut unattended = false;
+    let mut max_execution_ms = None;
+    let mut result_file = None;
+    let mut reasoning_effort = None;
+    let mut engineering_policy = None;
+    let mut goal_continuation = None;
+    let mut workspace_mcp = None;
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--unattended" => unattended = true,
+            "--list-workspace-mcp" => workspace_mcp = Some(WorkspaceMcpCommand::List),
+            "--trust-workspace-mcp" => {
+                workspace_mcp = Some(WorkspaceMcpCommand::Trust(
+                    args.next()
+                        .context("--trust-workspace-mcp requires an id prefix or `all`")?,
+                ));
+            }
+            "--goal-continuation" => goal_continuation = Some(true),
+            "--no-goal-continuation" => goal_continuation = Some(false),
+            "--max-execution-ms" => {
+                let value = args.next().context("--max-execution-ms requires a value")?;
+                max_execution_ms = Some(
+                    value
+                        .parse::<u64>()
+                        .context("--max-execution-ms must be an integer")?,
+                );
+            }
+            "--reasoning-effort" => {
+                reasoning_effort =
+                    Some(args.next().context("--reasoning-effort requires a level")?);
+            }
+            "--engineering-policy" => {
+                engineering_policy = Some(
+                    args.next()
+                        .context("--engineering-policy requires a policy name")?,
+                );
+            }
+            "--result-file" => {
+                result_file = Some(PathBuf::from(
+                    args.next().context("--result-file requires a path")?,
+                ));
+            }
+            // A launcher that still passes this does not exit. New Studio
+            // sessions ask in `_meta.asterStudioDocuments` instead.
+            "--studio-documents" => studio_documents = true,
+            "--plugin-store" => {
+                plugin_store = Some(PathBuf::from(
+                    args.next().context("--plugin-store requires a path")?,
+                ));
+            }
+            "--cwd" => {
+                let value = args
+                    .next()
+                    .ok_or_else(|| anyhow::anyhow!("--cwd requires a path"))?;
+                cwd = PathBuf::from(value);
+            }
+            "--config" => {
+                let value = args
+                    .next()
+                    .ok_or_else(|| anyhow::anyhow!("--config requires a path"))?;
+                config = Some(PathBuf::from(value));
+            }
+            "--import-accounts" => {
+                let value = args
+                    .next()
+                    .context("--import-accounts requires a list such as cursor,grok")?;
+                for import in AccountImport::parse_list(&value).map_err(anyhow::Error::msg)? {
+                    if !import_accounts.contains(&import) {
+                        import_accounts.push(import);
+                    }
+                }
+            }
+            "--model" | "-m" => {
+                let value = args
+                    .next()
+                    .ok_or_else(|| anyhow::anyhow!("--model requires a value"))?;
+                model = Some(value);
+            }
+            "--version" | "-V" => {
+                println!("{}", env!("CARGO_PKG_VERSION"));
+                std::process::exit(0);
+            }
+            "--help" | "-h" => {
+                eprintln!(
+                    "Usage: aster-acp [--cwd DIR] [--config FILE] [--model provider/model] [--reasoning-effort LEVEL] [--import-accounts cc-switch,grok,cursor,codex] [--plugin-store DIR]\n\
+                     \x20      aster-acp --list-workspace-mcp | --trust-workspace-mcp <ID|all> [--cwd DIR]\n\
+                     \x20      aster-acp --unattended [--max-execution-ms MS] [--reasoning-effort LEVEL] [--engineering-policy engineering-v1|none] [--goal-continuation|--no-goal-continuation] [--result-file FILE] [--cwd DIR] [--config FILE] [--model provider/model]\n\
+                     New sessions use engineering-v1 by default. Explicit goals use bounded continuation.\n\
+                     Speaks Agent Client Protocol on stdio over aster-core {}.",
+                    env!("CARGO_PKG_VERSION")
+                );
+                std::process::exit(0);
+            }
+            other => {
+                return Err(anyhow::anyhow!("unknown argument: {other}"));
+            }
+        }
+    }
+    // The pager forwards the ACL as `ASTER_CONFIG`. `--config` still wins.
+    if config.is_none() {
+        if let Some(value) = std::env::var_os("ASTER_CONFIG").filter(|value| !value.is_empty()) {
+            config = Some(PathBuf::from(value));
+        }
+    }
+    let unattended = if unattended {
+        if plugin_store.is_some() || studio_documents {
+            anyhow::bail!("--unattended does not combine with Studio host flags");
+        }
+        let profile = Unattended::new(
+            max_execution_ms.unwrap_or(DEFAULT_EXECUTION_BUDGET_MS),
+            result_file,
+        )?;
+        let profile = match reasoning_effort.as_deref() {
+            Some(level) => profile.with_reasoning_effort(level)?,
+            None => profile,
+        };
+        let profile = match engineering_policy {
+            Some(name) => profile.with_engineering_policy(&name)?,
+            None => profile,
+        };
+        Some(match goal_continuation {
+            Some(true) => profile.with_goal_continuation(),
+            Some(false) => profile.without_goal_continuation(),
+            None => profile,
+        })
+    } else {
+        if max_execution_ms.is_some()
+            || result_file.is_some()
+            || engineering_policy.is_some()
+            || goal_continuation.is_some()
+        {
+            anyhow::bail!(
+                "--max-execution-ms, --engineering-policy, --goal-continuation, --no-goal-continuation and --result-file require --unattended"
+            );
+        }
+        None
+    };
+    Ok(Args {
+        cwd,
+        config,
+        model,
+        import_accounts,
+        plugin_store,
+        studio_documents,
+        reasoning_effort,
+        unattended,
+        workspace_mcp,
+    })
+}
+
+fn run_workspace_mcp_command(args: &Args, command: &WorkspaceMcpCommand) -> Result<()> {
+    let config = args.config.as_deref();
+    let declarations = match command {
+        WorkspaceMcpCommand::List => aster_acp::workspace_mcp_declarations(&args.cwd, config)?,
+        WorkspaceMcpCommand::Trust(selector) => {
+            aster_acp::trust_workspace_mcp(&args.cwd, config, selector)?
+        }
+    };
+    if declarations.is_empty() {
+        println!("No workspace MCP servers to review.");
+    }
+    for declaration in declarations {
+        let state = match (command, declaration.trusted) {
+            (WorkspaceMcpCommand::Trust(_), _) => "trusted",
+            (_, true) => "trusted",
+            (_, false) => "pending",
+        };
+        println!(
+            "{}  {:8} {}  {}",
+            declaration.short_id(),
+            state,
+            declaration.name,
+            declaration.summary
+        );
+    }
+    Ok(())
+}
+
+/// Windows gives the process entry thread 1 MB, and Tokio workers default to
+/// 2 MB. `LocalSet::block_on` inlines the session and prompt state machines on
+/// the calling stack; a debug build overflows that stack on the first prompt.
+const RUNTIME_STACK_BYTES: usize = 8 * 1024 * 1024;
+
+fn main() -> Result<()> {
+    if let Some(arg) = std::env::args().nth(1) {
+        if arg == "--build-id" {
+            println!("{}", env!("ASTER_PAIR_BUILD_ID"));
+            return Ok(());
+        }
+        if arg == "--version" || arg == "-V" {
+            println!("{}", env!("CARGO_PKG_VERSION"));
+            return Ok(());
+        }
+    }
+    match std::thread::Builder::new()
+        .name("aster".into())
+        .stack_size(RUNTIME_STACK_BYTES)
+        .spawn(run_runtime)
+        .context("start aster runtime thread")?
+        .join()
+    {
+        Ok(result) => result,
+        Err(_) => Err(anyhow::anyhow!("aster runtime thread panicked")),
+    }
+}
+
+fn run_runtime() -> Result<()> {
+    // ACP requests stay on this LocalSet via spawn_local. The fact worker is
+    // tokio::spawn on the pool. A tool poll that does not yield must not
+    // freeze the task that reads session/cancel. Do not spawn_local from a
+    // pool thread.
+    let rt = tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .thread_stack_size(RUNTIME_STACK_BYTES)
+        .build()
+        .context("tokio runtime")?;
+    let local = tokio::task::LocalSet::new();
+    local.block_on(&rt, async { run().await })
+}
+
+async fn run() -> Result<()> {
+    use tracing_subscriber::layer::{Layer as _, SubscriberExt};
+    use tracing_subscriber::util::SubscriberInitExt;
+    // stderr stays at the quiet default (warn); the daily file layer runs at
+    // info so hangs and failures leave an on-disk trail the terminal's
+    // scrollback cannot keep. A failed file open degrades to stderr-only.
+    let stderr_layer = tracing_subscriber::fmt::layer()
+        .with_writer(std::io::stderr)
+        .with_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("warn")),
+        );
+    let registry = tracing_subscriber::registry().with(stderr_layer);
+    if aster_acp::log_file::file_logging_enabled() {
+        registry
+            .with(
+                tracing_subscriber::fmt::layer()
+                    .with_ansi(false)
+                    .with_writer(aster_acp::log_file::DailyLogWriter::new())
+                    .with_filter(
+                        tracing_subscriber::EnvFilter::try_from_env("ASTER_LOG_FILE")
+                            .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
+                    ),
+            )
+            .init();
+    } else {
+        registry.init();
+    }
+
+    let args = parse_args()?;
+    if let Some(command) = &args.workspace_mcp {
+        return run_workspace_mcp_command(&args, command);
+    }
+    if let Some(model) = args.model {
+        std::env::set_var("ASTER_DEFAULT_MODEL", model);
+    }
+    let load_config = || {
+        load_launch_config_with_imports(
+            args.cwd.clone(),
+            args.config.clone(),
+            &args.import_accounts,
+        )
+    };
+    // Refuse an invalid workspace layer before a first-run template can mask it.
+    let (mut launch, mut admission) = match load_config() {
+        Ok(launch) => launch,
+        Err(error) => return startup_error::report(error.context("load Aster ACL")).await,
+    };
+    let created_user_acl = if args.config.is_none() && args.unattended.is_none() {
+        match aster_acp::ensure_user_acl() {
+            Ok(created) => created,
+            Err(error) => {
+                return startup_error::report(error.context("create ~/.aster/config.acl")).await;
+            }
+        }
+    } else {
+        false
+    };
+    if created_user_acl {
+        (launch, admission) = match load_config() {
+            Ok(launch) => launch,
+            Err(error) => return startup_error::report(error.context("load Aster ACL")).await,
+        };
+    }
+    if launch.model_id.is_empty() && args.unattended.is_some() {
+        return startup_error::report(anyhow::anyhow!(
+            "Aster ACL configuration was not found; pass --config or create ~/.aster/config.acl"
+        ))
+        .await;
+    }
+    if args.plugin_store.is_some() || args.studio_documents {
+        launch.workspace =
+            std::path::absolute(&launch.workspace).context("bind native workspace")?;
+    }
+    // A goal launch fills `goal_control` only when the ACL declares none.
+    if let (Some(unattended), None) = (&args.unattended, &launch.config.goal_control) {
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .context("host clock")?
+            .as_millis();
+        launch.config.goal_control =
+            unattended.goal_control(u64::try_from(now).context("host clock")?)?;
+    }
+    let workspace = launch.workspace.clone();
+    let mut agent = AsterCodeAgent::new(launch).with_workspace_admission(admission);
+    if let Some(effort) = args.reasoning_effort.as_deref() {
+        agent = agent.with_default_reasoning_effort(effort)?;
+    }
+    if created_user_acl {
+        agent = agent.with_first_run_config();
+    }
+    if let Some(unattended) = args.unattended {
+        let root = aster_acp::unattended::install_state_root()?;
+        tracing::info!(state_root = %root.display(), "unattended launch");
+        agent = agent.with_unattended(unattended);
+    }
+    if let Some(root) = args.plugin_store {
+        let store =
+            aster_use_reconcile::ReconcileStore::open(root).context("open native plugin store")?;
+        agent = agent.with_plugin_selection(
+            PluginSelectionHost::current(store, "studio-installed-plugins", &workspace).await?,
+        );
+    }
+    if args.studio_documents {
+        agent = agent.with_studio_documents();
+    }
+    let agent = Rc::new(agent);
+
+    let stdin = tokio::io::stdin().compat();
+    let stdout = tokio::io::stdout().compat_write();
+    let (conn, io_task) = acp::AgentSideConnection::new(agent.clone(), stdout, stdin, |fut| {
+        tokio::task::spawn_local(fut);
+    });
+    agent.set_client(Rc::new(conn));
+    let result = io_task.await;
+    agent.stop_document_bridge();
+    result.context("ACP stdio I/O")?;
+    Ok(())
+}
+
+#[cfg(test)]
+#[path = "aster-acp/tests.rs"]
+mod tests;

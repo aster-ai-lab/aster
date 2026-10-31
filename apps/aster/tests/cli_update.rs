@@ -19,7 +19,7 @@ const FIXTURE_VERSION: &str = "9.9.9";
 const STALE_VERSION: &str = "0.1.0";
 
 fn shipped_aster() -> PathBuf {
-    std::env::var_os("A3S_CODE_TUI_BIN")
+    std::env::var_os("ASTER_TUI_BIN")
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_aster")))
 }
@@ -71,7 +71,7 @@ fn write_pair(dir: &Path, identity: &str, forward_update: bool, pad: bool) {
         "#!/bin/bash\nif [ \"$1\" = \"--build-id\" ]; then\n  printf '%s\\n' '{identity}'\n  exit 0\nfi\nexit 0\n"
     );
     let aster_path = dir.join("aster");
-    let acp_path = dir.join("a3s-code-acp");
+    let acp_path = dir.join("aster-acp");
     fs::write(&aster_path, aster).expect("aster fixture");
     fs::write(&acp_path, acp).expect("acp fixture");
     chmod(&aster_path);
@@ -117,7 +117,7 @@ fn package(bin_dir: &Path, assets: &Path, version: &str) -> PathBuf {
     if cfg!(target_os = "macos") {
         let status = Command::new("python3")
             .arg("-c")
-            .arg("import hashlib,json,sys\nfrom pathlib import Path\nsys.path.insert(0,sys.argv[1])\nfrom sandbox_assets import FILES\nroot=Path(sys.argv[2])\nfor name in FILES:\n p=root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(('synthetic runtime '+name).encode())\nfor name in ['a3s-oci','a3s-oci-krun-shim']: (root/name).chmod(0o755)\n(root/'manifest.json').write_text(json.dumps({'schema':1,'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in FILES}}))")
+            .arg("import hashlib,json,sys\nfrom pathlib import Path\nsys.path.insert(0,sys.argv[1])\nfrom sandbox_assets import FILES\nroot=Path(sys.argv[2])\nfor name in FILES:\n p=root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(('synthetic runtime '+name).encode())\nfor name in ['aster-oci','aster-oci-krun-shim']: (root/name).chmod(0o755)\n(root/'manifest.json').write_text(json.dumps({'schema':1,'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in FILES}}))")
             .arg(repo_root().join("apps/studio/scripts"))
             .arg(bin_dir.join("sandbox"))
             .status()
@@ -163,9 +163,9 @@ fn write_manifest(assets: &Path, archive: &Path, version: &str) {
 
 fn prepare_home(root: &Path) -> PathBuf {
     let home = root.join("home");
-    fs::create_dir_all(home.join(".a3s")).expect("a3s");
+    fs::create_dir_all(home.join(".aster")).expect("aster");
     fs::create_dir_all(home.join(".grok")).expect("grok");
-    fs::write(home.join(".a3s/marker"), b"keep-a3s").expect("marker");
+    fs::write(home.join(".aster/marker"), b"keep-aster").expect("marker");
     fs::write(home.join(".grok/marker"), b"keep-grok").expect("marker");
     home
 }
@@ -437,7 +437,7 @@ fn shipped_update_installs_newer_pair_with_progress_bar() {
         let install = root.join("install");
         write_pair(&install, OLD_ID, true, false);
         let old_aster = fs::read(install.join("aster")).expect("old aster");
-        let old_acp = fs::read(install.join("a3s-code-acp")).expect("old acp");
+        let old_acp = fs::read(install.join("aster-acp")).expect("old acp");
         let (code, text) = capture_terminal(&install.join("aster"), &home, &assets);
         println!("CAPTURE install-{index}\n{text}");
         assert_eq!(code, 0, "{text}");
@@ -445,23 +445,23 @@ fn shipped_update_installs_newer_pair_with_progress_bar() {
         assert_eq!(
             snapshot(&home),
             before_home,
-            "update changed ~/.a3s or ~/.grok"
+            "update changed ~/.aster or ~/.grok"
         );
         assert_eq!(
             fs::read(install.join("aster")).expect("new aster"),
             fs::read(bins.join("aster")).expect("fixture aster")
         );
         assert_eq!(
-            fs::read(install.join("a3s-code-acp")).expect("new acp"),
-            fs::read(bins.join("a3s-code-acp")).expect("fixture acp")
+            fs::read(install.join("aster-acp")).expect("new acp"),
+            fs::read(bins.join("aster-acp")).expect("fixture acp")
         );
         assert_ne!(fs::read(install.join("aster")).expect("new"), old_aster);
         assert_ne!(
-            fs::read(install.join("a3s-code-acp")).expect("new"),
+            fs::read(install.join("aster-acp")).expect("new"),
             old_acp
         );
         assert_eq!(build_id(&install.join("aster")), NEW_ID);
-        assert_eq!(build_id(&install.join("a3s-code-acp")), NEW_ID);
+        assert_eq!(build_id(&install.join("aster-acp")), NEW_ID);
         let names: Vec<_> = fs::read_dir(&install)
             .expect("install dir")
             .map(|entry| {
@@ -499,7 +499,7 @@ fn shipped_update_check_and_current_leave_bytes() {
     let install = root.join("install");
     write_pair(&install, OLD_ID, true, false);
     let aster_before = fs::read(install.join("aster")).expect("aster");
-    let acp_before = fs::read(install.join("a3s-code-acp")).expect("acp");
+    let acp_before = fs::read(install.join("aster-acp")).expect("acp");
 
     let (code, stdout, stderr) = capture_pipe(
         &install.join("aster"),
@@ -518,7 +518,7 @@ fn shipped_update_check_and_current_leave_bytes() {
         aster_before
     );
     assert_eq!(
-        fs::read(install.join("a3s-code-acp")).expect("acp"),
+        fs::read(install.join("aster-acp")).expect("acp"),
         acp_before
     );
 
@@ -541,7 +541,7 @@ fn shipped_update_check_and_current_leave_bytes() {
         aster_before
     );
     assert_eq!(
-        fs::read(install.join("a3s-code-acp")).expect("acp"),
+        fs::read(install.join("aster-acp")).expect("acp"),
         acp_before
     );
     assert_eq!(snapshot(&home), before_home);
@@ -551,14 +551,14 @@ fn shipped_update_check_and_current_leave_bytes() {
     let current = root.join("current");
     fs::create_dir_all(&current).expect("current");
     fs::copy(bins.join("aster"), current.join("aster")).expect("copy aster");
-    fs::copy(bins.join("a3s-code-acp"), current.join("a3s-code-acp")).expect("copy acp");
+    fs::copy(bins.join("aster-acp"), current.join("aster-acp")).expect("copy acp");
     chmod(&current.join("aster"));
-    chmod(&current.join("a3s-code-acp"));
+    chmod(&current.join("aster-acp"));
     if cfg!(target_os = "macos") {
         copy_tree(&bins.join("sandbox"), &current.join("sandbox"));
     }
     let current_aster = fs::read(current.join("aster")).expect("current aster");
-    let current_acp = fs::read(current.join("a3s-code-acp")).expect("current acp");
+    let current_acp = fs::read(current.join("aster-acp")).expect("current acp");
     let (current_code, current_stdout, current_stderr) =
         capture_pipe(&current.join("aster"), &["update"], &current_home, &assets);
     println!("CAPTURE current\n{current_stdout}\n{current_stderr}");
@@ -572,7 +572,7 @@ fn shipped_update_check_and_current_leave_bytes() {
         current_aster
     );
     assert_eq!(
-        fs::read(current.join("a3s-code-acp")).expect("acp"),
+        fs::read(current.join("aster-acp")).expect("acp"),
         current_acp
     );
     assert_eq!(snapshot(&current_home), current_before);
@@ -592,7 +592,7 @@ fn shipped_update_repairs_the_runtime_when_the_binary_pair_is_already_current() 
         package(&bins, &assets, FIXTURE_VERSION);
         let install = root.join("install");
         fs::create_dir(&install).unwrap();
-        for name in ["aster", "a3s-code-acp"] {
+        for name in ["aster", "aster-acp"] {
             fs::copy(bins.join(name), install.join(name)).unwrap();
         }
         if damage != "missing" {
@@ -601,7 +601,7 @@ fn shipped_update_repairs_the_runtime_when_the_binary_pair_is_already_current() 
                 fs::write(install.join("sandbox/bundle/rootfs.tar"), "changed runtime").unwrap();
             } else {
                 fs::set_permissions(
-                    install.join("sandbox/a3s-oci"),
+                    install.join("sandbox/aster-oci"),
                     fs::Permissions::from_mode(0o644),
                 )
                 .unwrap();
@@ -616,7 +616,7 @@ fn shipped_update_repairs_the_runtime_when_the_binary_pair_is_already_current() 
             snapshot(&bins.join("sandbox"))
         );
         assert_eq!(
-            fs::metadata(install.join("sandbox/a3s-oci"))
+            fs::metadata(install.join("sandbox/aster-oci"))
                 .unwrap()
                 .permissions()
                 .mode()
@@ -638,9 +638,9 @@ fn shipped_update_rejects_a_binary_only_macos_release_with_valid_checksums() {
     fs::write(
         bins.join("SHA256SUMS"),
         format!(
-            "{}  aster\n{}  a3s-code-acp\n",
+            "{}  aster\n{}  aster-acp\n",
             sha256_hex(&bins.join("aster")),
-            sha256_hex(&bins.join("a3s-code-acp"))
+            sha256_hex(&bins.join("aster-acp"))
         ),
     )
     .unwrap();
@@ -653,7 +653,7 @@ fn shipped_update_rejects_a_binary_only_macos_release_with_valid_checksums() {
             .current_dir(&bins)
             .arg("-czf")
             .arg(&archive)
-            .args(["aster", "a3s-code-acp", "BUILD_ID", "SHA256SUMS"])
+            .args(["aster", "aster-acp", "BUILD_ID", "SHA256SUMS"])
             .status()
             .unwrap()
             .success()
@@ -755,7 +755,7 @@ fn shipped_update_failure_leaves_the_previous_pair() {
     let truncated_install = root.join("truncated-install");
     write_pair(&truncated_install, OLD_ID, true, false);
     let truncated_aster = fs::read(truncated_install.join("aster")).expect("aster");
-    let truncated_acp = fs::read(truncated_install.join("a3s-code-acp")).expect("acp");
+    let truncated_acp = fs::read(truncated_install.join("aster-acp")).expect("acp");
     let (truncated_code, truncated_stdout, truncated_stderr) = capture_pipe(
         &truncated_install.join("aster"),
         &["update"],
@@ -773,11 +773,11 @@ fn shipped_update_failure_leaves_the_previous_pair() {
         truncated_aster
     );
     assert_eq!(
-        fs::read(truncated_install.join("a3s-code-acp")).expect("acp"),
+        fs::read(truncated_install.join("aster-acp")).expect("acp"),
         truncated_acp
     );
     assert_eq!(build_id(&truncated_install.join("aster")), OLD_ID);
-    assert_eq!(build_id(&truncated_install.join("a3s-code-acp")), OLD_ID);
+    assert_eq!(build_id(&truncated_install.join("aster-acp")), OLD_ID);
 
     let mismatch_assets = root.join("mismatch");
     fs::create_dir_all(&mismatch_assets).expect("mismatch assets");
@@ -798,9 +798,9 @@ fn shipped_update_failure_leaves_the_previous_pair() {
     fs::write(unpack.join("aster"), aster_text).expect("rewrite aster");
     chmod(&unpack.join("aster"));
     let sums = format!(
-        "{}  aster\n{}  a3s-code-acp\n",
+        "{}  aster\n{}  aster-acp\n",
         sha256_hex(&unpack.join("aster")),
-        sha256_hex(&unpack.join("a3s-code-acp"))
+        sha256_hex(&unpack.join("aster-acp"))
     );
     fs::write(unpack.join("SHA256SUMS"), sums).expect("sums");
     let mismatch_archive = mismatch_assets.join(asset_name(FIXTURE_VERSION));
@@ -809,7 +809,7 @@ fn shipped_update_failure_leaves_the_previous_pair() {
         .current_dir(&unpack)
         .args(["-czf"])
         .arg(&mismatch_archive)
-        .args(["aster", "a3s-code-acp", "BUILD_ID", "SHA256SUMS"])
+        .args(["aster", "aster-acp", "BUILD_ID", "SHA256SUMS"])
         .status()
         .expect("repack");
     assert!(packed.success(), "repack");
@@ -817,7 +817,7 @@ fn shipped_update_failure_leaves_the_previous_pair() {
     let mismatch_install = root.join("mismatch-install");
     write_pair(&mismatch_install, OLD_ID, true, false);
     let mismatch_aster = fs::read(mismatch_install.join("aster")).expect("aster");
-    let mismatch_acp = fs::read(mismatch_install.join("a3s-code-acp")).expect("acp");
+    let mismatch_acp = fs::read(mismatch_install.join("aster-acp")).expect("acp");
     let (mismatch_code, mismatch_stdout, mismatch_stderr) = capture_pipe(
         &mismatch_install.join("aster"),
         &["update"],
@@ -832,12 +832,12 @@ fn shipped_update_failure_leaves_the_previous_pair() {
         mismatch_aster
     );
     assert_eq!(
-        fs::read(mismatch_install.join("a3s-code-acp")).expect("acp"),
+        fs::read(mismatch_install.join("aster-acp")).expect("acp"),
         mismatch_acp
     );
     assert_eq!(build_id(&mismatch_install.join("aster")), OLD_ID);
-    assert_eq!(build_id(&mismatch_install.join("a3s-code-acp")), OLD_ID);
-    let acp = Command::new(mismatch_install.join("a3s-code-acp"))
+    assert_eq!(build_id(&mismatch_install.join("aster-acp")), OLD_ID);
+    let acp = Command::new(mismatch_install.join("aster-acp"))
         .stdin(Stdio::null())
         .status()
         .expect("acp");
@@ -845,13 +845,13 @@ fn shipped_update_failure_leaves_the_previous_pair() {
     assert_eq!(
         snapshot(&home),
         before_home,
-        "failed update changed ~/.a3s or ~/.grok"
+        "failed update changed ~/.aster or ~/.grok"
     );
 }
 
 /// The legacy two-file archive contains only the two binaries.
 /// Published aster rejects `--build-id` as an unexpected clap argument.
-/// Published `a3s-code-acp` prints `unknown argument` and exits 1.
+/// Published `aster-acp` prints `unknown argument` and exits 1.
 fn published_style_binary(which: &str) -> String {
     if which == "aster" {
         "#!/bin/bash\nif [ \"$1\" = \"--build-id\" ]; then\n  printf '%s\\n' \"error: unexpected argument '--build-id' found\" >&2\n  exit 2\nfi\nexit 0\n".to_string()
@@ -870,7 +870,7 @@ fn package_two_binaries(bin_dir: &Path, archive: &Path) {
         .arg("-czf")
         .arg(archive)
         .arg("aster")
-        .arg("a3s-code-acp")
+        .arg("aster-acp")
         .status()
         .expect("tar");
     assert!(status.success(), "two-file archive");
@@ -891,7 +891,7 @@ fn package_two_binaries(bin_dir: &Path, archive: &Path) {
     names.sort();
     assert_eq!(
         names,
-        vec!["a3s-code-acp".to_string(), "aster".to_string()],
+        vec!["aster-acp".to_string(), "aster".to_string()],
         "pinned-style archive must be only the two binaries"
     );
 }
@@ -906,9 +906,9 @@ fn shipped_update_handles_legacy_two_file_release() {
     let aster_body = published_style_binary("aster");
     let acp_body = published_style_binary("acp");
     fs::write(bins.join("aster"), &aster_body).expect("aster stub");
-    fs::write(bins.join("a3s-code-acp"), &acp_body).expect("acp stub");
+    fs::write(bins.join("aster-acp"), &acp_body).expect("acp stub");
     chmod(&bins.join("aster"));
-    chmod(&bins.join("a3s-code-acp"));
+    chmod(&bins.join("aster-acp"));
     let assets = root.join("assets");
     let archive = assets.join(asset_name(FIXTURE_VERSION));
     package_two_binaries(&bins, &archive);
@@ -917,7 +917,7 @@ fn shipped_update_handles_legacy_two_file_release() {
     let install = root.join("install");
     write_pair(&install, OLD_ID, true, false);
     let old_aster = fs::read(install.join("aster")).expect("old aster");
-    let old_acp = fs::read(install.join("a3s-code-acp")).expect("old acp");
+    let old_acp = fs::read(install.join("aster-acp")).expect("old acp");
     let (code, stdout, stderr) = capture_pipe(&install.join("aster"), &["update"], &home, &assets);
     println!("CAPTURE two-file\n{stdout}\n{stderr}");
     if cfg!(target_os = "macos") {
@@ -927,7 +927,7 @@ fn shipped_update_handles_legacy_two_file_release() {
             "{stderr}"
         );
         assert_eq!(fs::read(install.join("aster")).unwrap(), old_aster);
-        assert_eq!(fs::read(install.join("a3s-code-acp")).unwrap(), old_acp);
+        assert_eq!(fs::read(install.join("aster-acp")).unwrap(), old_acp);
         assert_eq!(snapshot(&home), before_home);
         return;
     }
@@ -945,7 +945,7 @@ fn shipped_update_handles_legacy_two_file_release() {
         aster_body.as_bytes()
     );
     assert_eq!(
-        fs::read(install.join("a3s-code-acp")).expect("new acp"),
+        fs::read(install.join("aster-acp")).expect("new acp"),
         acp_body.as_bytes()
     );
     assert_ne!(
@@ -953,7 +953,7 @@ fn shipped_update_handles_legacy_two_file_release() {
         old_aster
     );
     assert_ne!(
-        fs::read(install.join("a3s-code-acp")).expect("replaced"),
+        fs::read(install.join("aster-acp")).expect("replaced"),
         old_acp
     );
 
@@ -962,7 +962,7 @@ fn shipped_update_handles_legacy_two_file_release() {
         .status()
         .expect("run replaced aster");
     assert!(replaced_aster.success(), "replaced aster is not runnable");
-    let replaced_acp = Command::new(install.join("a3s-code-acp"))
+    let replaced_acp = Command::new(install.join("aster-acp"))
         .stdin(Stdio::null())
         .status()
         .expect("run replaced acp");
@@ -979,7 +979,7 @@ fn shipped_update_handles_legacy_two_file_release() {
         aster_err.contains("unexpected argument '--build-id'"),
         "{aster_err}"
     );
-    let acp_id = Command::new(install.join("a3s-code-acp"))
+    let acp_id = Command::new(install.join("aster-acp"))
         .arg("--build-id")
         .stdin(Stdio::null())
         .output()
@@ -1005,7 +1005,7 @@ fn shipped_update_reports_current_when_the_manifest_is_not_newer() {
     let install = root.join("install");
     write_pair(&install, OLD_ID, true, false);
     let aster_before = fs::read(install.join("aster")).expect("aster");
-    let acp_before = fs::read(install.join("a3s-code-acp")).expect("acp");
+    let acp_before = fs::read(install.join("aster-acp")).expect("acp");
     let archive_before = fs::read(&archive).expect("archive");
 
     let (check_code, check_stdout, check_stderr) = capture_pipe(
@@ -1042,7 +1042,7 @@ fn shipped_update_reports_current_when_the_manifest_is_not_newer() {
         aster_before
     );
     assert_eq!(
-        fs::read(install.join("a3s-code-acp")).expect("acp"),
+        fs::read(install.join("aster-acp")).expect("acp"),
         acp_before
     );
     assert_eq!(build_id(&install.join("aster")), OLD_ID);
@@ -1066,7 +1066,7 @@ fn shipped_update_rejects_a_channel_checksum_mismatch() {
     let install = root.join("install");
     write_pair(&install, OLD_ID, true, false);
     let aster_before = fs::read(install.join("aster")).expect("aster");
-    let acp_before = fs::read(install.join("a3s-code-acp")).expect("acp");
+    let acp_before = fs::read(install.join("aster-acp")).expect("acp");
     let (code, stdout, stderr) = capture_pipe(&install.join("aster"), &["update"], &home, &assets);
     println!("CAPTURE bad-digest\n{stdout}\n{stderr}");
     assert_ne!(code, 0, "{stdout}\n{stderr}");
@@ -1082,10 +1082,10 @@ fn shipped_update_rejects_a_channel_checksum_mismatch() {
         aster_before
     );
     assert_eq!(
-        fs::read(install.join("a3s-code-acp")).expect("acp"),
+        fs::read(install.join("aster-acp")).expect("acp"),
         acp_before
     );
     assert_eq!(build_id(&install.join("aster")), OLD_ID);
-    assert_eq!(build_id(&install.join("a3s-code-acp")), OLD_ID);
+    assert_eq!(build_id(&install.join("aster-acp")), OLD_ID);
     assert_eq!(snapshot(&home), before_home);
 }

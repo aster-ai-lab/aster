@@ -12,7 +12,7 @@ description: "Task list for task-scoped business acceptance"
 
 ## M0: 基线与依赖（1 task）
 
-- [ ] T001 [US1-US4] 记录当前 Core/ACP/Studio 源码与 dirty 基线；核验 `crates/terminal/crates/codegen/a3s-code-pager/src/app/turn_completion.rs`、`app/acp_handler/session_notification.rs` 的既有消费链；核实 019 的 RuntimeClient/Goal/Review/恢复依赖和合格后端。运行原有最小基线检查并保留结果；未解决 CI 冲突或后端资格不得记作通过，不改他人文件。
+- [ ] T001 [US1-US4] 记录当前 Core/ACP/Studio 源码与 dirty 基线；核验 `crates/terminal/crates/codegen/aster-pager/src/app/turn_completion.rs`、`app/acp_handler/session_notification.rs` 的既有消费链；核实 019 的 RuntimeClient/Goal/Review/恢复依赖和合格后端。运行原有最小基线检查并保留结果；未解决 CI 冲突或后端资格不得记作通过，不改他人文件。
 
 ## M1: Core 条件与证据（3 tasks）
 
@@ -49,5 +49,5 @@ description: "Task list for task-scoped business acceptance"
 - [ ] 第二任务重新取证且隔离/重启正确（T010、T011）
 - [ ] 合格后端、实际 ACP 和原生桌面旅程有当前证据（T011）
 - [ ] Rust 修改通过 `cargo fmt --all -- --check`，受影响 CI 检查完成（T012）
-- [ ] 无新 crates.io `a3s-*` 依赖，无原生 `<select>`，产品配置保持 ACL（T012）
+- [ ] 无新 crates.io `aster-*` 依赖，无原生 `<select>`，产品配置保持 ACL（T012）
 - [ ] CLI/ACP 配对身份与保留失败、未覆盖范围写入 OUTCOME（T013）

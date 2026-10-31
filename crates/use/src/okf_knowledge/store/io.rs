@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{PlanQualifiedSurfaceRef, PlanScope, UseResult};
+use aster_use_core::{PlanQualifiedSurfaceRef, PlanScope, UseResult};
 use fs2::FileExt;
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
@@ -27,7 +27,7 @@ pub(super) async fn acquire_lock(state_root: &Path, root: &Path) -> UseResult<St
     let lock_path = root.join(".store.lock");
     match fs::symlink_metadata(&lock_path).await {
         Ok(metadata)
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                 || !metadata.is_file() =>
         {
             return Err(store_error(
@@ -129,7 +129,7 @@ pub(super) async fn read_optional_binding(path: &Path) -> UseResult<Option<OkfKn
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(path_error("inspect OKF Knowledge binding", path, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > MAX_BINDING_BYTES
@@ -208,7 +208,7 @@ pub(super) async fn remove_binding(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect removable OKF Knowledge binding", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(invalid_path_identity());
     }
     fs::remove_file(path)
@@ -263,7 +263,7 @@ pub(super) async fn validate_existing_directory_chain(
         }
         match fs::symlink_metadata(&current).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(invalid_path_identity()),
             Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(false),
@@ -283,7 +283,7 @@ async fn validate_ignored_temporary(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect temporary OKF Knowledge binding", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() > MAX_BINDING_BYTES
     {
@@ -309,7 +309,7 @@ fn parse_generation_filename(name: &str) -> UseResult<u64> {
 async fn activate_temporary(temporary: PathBuf, target: PathBuf) -> UseResult<()> {
     let error_target = target.clone();
     tokio::task::spawn_blocking(move || {
-        a3s_use_extension::persist_temporary_replace_blocking(temporary, &target)
+        aster_use_extension::persist_temporary_replace_blocking(temporary, &target)
     })
     .await
     .map_err(|error| {
@@ -328,7 +328,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect OKF Knowledge binding directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(invalid_path_identity());
     }
     Ok(())

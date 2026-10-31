@@ -1,4 +1,4 @@
-//! OCI image support for A3S Box.
+//! OCI image support for Aster Box.
 //!
 //! This module provides functionality to parse and extract OCI images
 //! for use as VM rootfs. It supports:

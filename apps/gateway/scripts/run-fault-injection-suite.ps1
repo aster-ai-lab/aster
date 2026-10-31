@@ -212,7 +212,7 @@ Write-Host "fault-injection: running curated suite ($($Filters.Count) cases; fea
 $failed = $false
 foreach ($filter in $Filters) {
   Write-Host "fault-injection: case $filter"
-  $log = Join-Path ([System.IO.Path]::GetTempPath()) ("a3s-fault-" + [guid]::NewGuid().ToString() + ".log")
+  $log = Join-Path ([System.IO.Path]::GetTempPath()) ("aster-fault-" + [guid]::NewGuid().ToString() + ".log")
   try {
     cmd /c "cargo test --lib --features $FeaturesArg $filter -- --nocapture > `"$log`" 2>&1"
     $status = $LASTEXITCODE

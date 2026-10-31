@@ -193,7 +193,7 @@ async fn test_grpc_proxy_streams_bidirectionally_and_preserves_trailers() {
     let shadow = config.services["test-svc"].clone();
     config.services.insert("disabled-shadow".to_string(), shadow);
     config.services.get_mut("test-svc").unwrap().mirror =
-        Some(a3s_gateway::config::MirrorConfig {
+        Some(aster_gateway::config::MirrorConfig {
             service: "disabled-shadow".to_string(),
             percentage: 0,
         });
@@ -325,7 +325,7 @@ async fn test_grpc_proxy_preserves_buffered_body_when_mirroring() {
     shadow.load_balancer.servers[0].url = format!("http://{mirror}");
     config.services.insert("shadow".to_string(), shadow);
     config.services.get_mut("test-svc").unwrap().mirror =
-        Some(a3s_gateway::config::MirrorConfig {
+        Some(aster_gateway::config::MirrorConfig {
             service: "shadow".to_string(),
             percentage: 100,
         });

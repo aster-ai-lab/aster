@@ -16,7 +16,7 @@ CHECK = ROOT / "scripts/check-glibc-symbols.py"
 PACKAGE = ROOT / "scripts/package-aster-cli.sh"
 INSTALL = ROOT / "scripts/install.sh"
 IDENTITY = "aster-cli-pair-v1:fixture-source:fixture-target"
-NAMES = ("aster", "a3s-code-acp")
+NAMES = ("aster", "aster-acp")
 VERSION = "0.1.2"
 
 

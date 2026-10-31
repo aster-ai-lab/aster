@@ -7,7 +7,7 @@ fn an_unfinished_goal_refusal_is_a_failed_result_with_an_explicit_terminal_error
     progress.terminal_event = true;
     progress.remember_error("earlier recoverable tool failure");
     let error: anyhow::Error = crate::goal::GoalContinuationStopped(
-        a3s_code_core::goal_control::GoalTickDecisionV1::NeedsInput,
+        aster_core::goal_control::GoalTickDecisionV1::NeedsInput,
     )
     .into();
     progress.remember_failure(&error);
@@ -82,8 +82,8 @@ fn a_child_tool_http_401_outranks_stream_closed_class() {
     progress.stream_closed_without_terminal_event = true;
     progress.tool_calls = 1;
     note_provider_rejection(&mut progress, "boyue API account has no balance (HTTP 401)");
-    progress.remember_error("A3S Code stream ended without a terminal event");
-    let error = anyhow::anyhow!("A3S Code stream ended without a terminal event");
+    progress.remember_error("Aster Code stream ended without a terminal event");
+    let error = anyhow::anyhow!("Aster Code stream ended without a terminal event");
     let (outcome, reason) = classify_failure(&progress, &error);
     assert!(matches!(outcome, ExecutionResultOutcomeV1::Failed));
     assert!(matches!(reason, TerminalReason::ProviderRejected));
@@ -98,7 +98,7 @@ fn a_historical_boyue_invalid_token_line_is_still_provider_rejected() {
     let mut progress = RunProgress::new();
     progress.stream_closed_without_terminal_event = true;
     note_provider_rejection(&mut progress, "boyue API returned HTTP 401: Invalid token");
-    let error = anyhow::anyhow!("A3S Code stream ended without a terminal event");
+    let error = anyhow::anyhow!("Aster Code stream ended without a terminal event");
     let (_, reason) = classify_failure(&progress, &error);
     assert!(matches!(reason, TerminalReason::ProviderRejected));
 }
@@ -107,7 +107,7 @@ fn a_historical_boyue_invalid_token_line_is_still_provider_rejected() {
 fn a_clean_worker_exit_is_not_the_generic_stream_closed_reason() {
     let mut progress = RunProgress::new();
     progress.mark_worker_exited_without_terminal_event();
-    let error = anyhow::anyhow!("A3S Code worker exited without a terminal event");
+    let error = anyhow::anyhow!("Aster Code worker exited without a terminal event");
     let (outcome, reason) = classify_failure(&progress, &error);
     assert!(matches!(outcome, ExecutionResultOutcomeV1::Failed));
     assert!(matches!(
@@ -122,7 +122,7 @@ fn remembered_http_402_outranks_stream_closed_class() {
     progress.stream_closed_without_terminal_event = true;
     progress
         .remember_error("deepseek API returned HTTP 402: Insufficient Balance (request_id: test)");
-    let error = anyhow::anyhow!("A3S Code stream ended without a terminal event");
+    let error = anyhow::anyhow!("Aster Code stream ended without a terminal event");
     let (outcome, reason) = classify_failure(&progress, &error);
     assert!(matches!(outcome, ExecutionResultOutcomeV1::Failed));
     assert!(matches!(reason, TerminalReason::ProviderRejected));
@@ -142,11 +142,11 @@ fn goal_deadline_keeps_its_terminal_reason_through_adapter_context() {
     let mut progress = RunProgress::new();
     progress.phase = ExecutionPhase::Streaming;
     progress.remember_error("earlier recoverable tool failure");
-    let source = a3s_code_core::goal_control::GoalControlError::Refused {
-        refusal: a3s_code_core::goal_control::GoalRefusal::DeadlineExpired,
+    let source = aster_core::goal_control::GoalControlError::Refused {
+        refusal: aster_core::goal_control::GoalRefusal::DeadlineExpired,
         reason: "automatic continuation deadline has expired",
     };
-    let error = anyhow::Error::new(a3s_code_core::CodeError::Internal(source.into()))
+    let error = anyhow::Error::new(aster_core::CodeError::Internal(source.into()))
         .context("next goal slice");
     progress.remember_failure(&error);
     let (outcome, reason) = classify_failure(&progress, &error);
@@ -189,7 +189,7 @@ fn missing_action_evidence_is_a_terminal_failure() {
 #[test]
 fn typed_provider_response_is_classified_without_text_matching() {
     let progress = RunProgress::new();
-    let error = anyhow::Error::new(a3s_code_core::llm::NonRetryableLlmError::from_status(
+    let error = anyhow::Error::new(aster_core::llm::NonRetryableLlmError::from_status(
         "openai", 402, "quota",
     ));
     let (outcome, reason) = classify_failure(&progress, &error);
@@ -200,7 +200,7 @@ fn typed_provider_response_is_classified_without_text_matching() {
 #[test]
 fn typed_provider_response_wins_over_deadline_words_in_body() {
     let progress = RunProgress::new();
-    let error = anyhow::Error::new(a3s_code_core::llm::NonRetryableLlmError::from_status(
+    let error = anyhow::Error::new(aster_core::llm::NonRetryableLlmError::from_status(
         "openai",
         400,
         "request deadline rejected by provider",
@@ -224,7 +224,7 @@ fn retry_exhaustion_is_classified_as_provider_exhausted() {
 #[test]
 fn typed_retry_exhaustion_is_classified_without_rendered_text() {
     let progress = RunProgress::new();
-    let error = anyhow::Error::new(a3s_code_core::llm::RetryExhaustedError::from_status(
+    let error = anyhow::Error::new(aster_core::llm::RetryExhaustedError::from_status(
         2,
         503,
         "service unavailable",
@@ -237,7 +237,7 @@ fn typed_retry_exhaustion_is_classified_without_rendered_text() {
 #[test]
 fn typed_provider_failure_metadata_is_retained_in_report() {
     let mut progress = RunProgress::new();
-    let error = anyhow::Error::new(a3s_code_core::llm::NonRetryableLlmError::from_status(
+    let error = anyhow::Error::new(aster_core::llm::NonRetryableLlmError::from_status(
         "anthropic",
         401,
         "denied",
@@ -255,7 +255,7 @@ fn typed_provider_failure_metadata_is_retained_in_report() {
 #[test]
 fn typed_retry_failure_status_is_retained_in_report() {
     let mut progress = RunProgress::new();
-    let error = anyhow::Error::new(a3s_code_core::llm::RetryExhaustedError::from_status(
+    let error = anyhow::Error::new(aster_core::llm::RetryExhaustedError::from_status(
         3,
         429,
         "rate limited",
@@ -272,8 +272,8 @@ fn typed_retry_failure_status_is_retained_in_report() {
 #[test]
 fn artifact_evidence_counter_walks_nested_tool_metadata() {
     let metadata = serde_json::json!({
-        "artifact_uri": "a3s://one",
-        "nested": [{"artifact_uri": "a3s://two"}, {"other": true}]
+        "artifact_uri": "aster://one",
+        "nested": [{"artifact_uri": "aster://two"}, {"other": true}]
     });
     assert_eq!(count_artifact_evidence(&metadata), 2);
 }
@@ -281,7 +281,7 @@ fn artifact_evidence_counter_walks_nested_tool_metadata() {
 #[tokio::test]
 async fn result_persistence_is_atomic_and_replaces_previous_report() {
     let directory = tempfile::tempdir().expect("temporary directory");
-    let path = directory.path().join("a3s-code.result.json");
+    let path = directory.path().join("aster.result.json");
     let mut progress = RunProgress::new();
     progress.terminal_event = true;
     let first = progress.report(

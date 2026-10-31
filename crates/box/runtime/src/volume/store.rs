@@ -1,11 +1,11 @@
 //! Persistent storage for volume configurations.
 //!
-//! Volumes are stored as JSON in `~/.a3s/volumes.json` with atomic writes
+//! Volumes are stored as JSON in `~/.aster/volumes.json` with atomic writes
 //! (write to tmp file, then rename) to prevent corruption.
-//! Volume data is stored under `~/.a3s/volumes/<name>/`.
+//! Volume data is stored under `~/.aster/volumes/<name>/`.
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::volume::VolumeConfig;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::volume::VolumeConfig;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
@@ -14,7 +14,7 @@ use std::path::{Path, PathBuf};
 pub struct VolumeStore {
     /// Path to the JSON file.
     path: PathBuf,
-    /// Base directory for volume data (~/.a3s/volumes/).
+    /// Base directory for volume data (~/.aster/volumes/).
     volumes_dir: PathBuf,
 }
 
@@ -25,9 +25,9 @@ struct VolumesFile {
 }
 
 const ANONYMOUS_LABEL: &str = "anonymous";
-const ANONYMOUS_KIND_LABEL: &str = "a3s.box.volume.kind";
+const ANONYMOUS_KIND_LABEL: &str = "aster.box.volume.kind";
 const ANONYMOUS_KIND: &str = "anonymous-v1";
-const ANONYMOUS_OWNER_LABEL: &str = "a3s.box.volume.owner";
+const ANONYMOUS_OWNER_LABEL: &str = "aster.box.volume.owner";
 
 impl VolumeStore {
     /// Create a new store at the given path.
@@ -38,9 +38,9 @@ impl VolumeStore {
         }
     }
 
-    /// Create a store at the default location (`~/.a3s/volumes.json`).
+    /// Create a store at the default location (`~/.aster/volumes.json`).
     pub fn default_path() -> Result<Self> {
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         Ok(Self::new(home.join("volumes.json"), home.join("volumes")))
     }
 
@@ -122,7 +122,7 @@ impl VolumeStore {
     /// re-loading fresh from disk inside the lock and saving the result.
     ///
     /// `create`/`remove`/`update`/`modify`/`get_or_create` all funnel through
-    /// here so concurrent `a3s-box` processes cannot lose each other's writes.
+    /// here so concurrent `aster-box` processes cannot lose each other's writes.
     /// The atomic tmp+rename in `save` only prevents a *torn* read — two
     /// processes that both load, mutate a different entry, and save would still
     /// clobber one update (and, for attach/detach, silently drop a volume's
@@ -153,7 +153,7 @@ impl VolumeStore {
 
     /// Create a new named volume. Returns the host mount point path.
     ///
-    /// Creates the volume data directory under `~/.a3s/volumes/<name>/`.
+    /// Creates the volume data directory under `~/.aster/volumes/<name>/`.
     /// Errors if the name already exists (use [`Self::get_or_create`] for the
     /// idempotent auto-create on the `run -v name:/path` path).
     pub fn create(&self, config: VolumeConfig) -> Result<VolumeConfig> {
@@ -512,7 +512,7 @@ fn remove_managed_volume_path(path: &Path) -> Result<()> {
     }
 }
 
-impl a3s_box_core::traits::VolumeStoreBackend for VolumeStore {
+impl aster_box_core::traits::VolumeStoreBackend for VolumeStore {
     fn get(&self, name: &str) -> Result<Option<VolumeConfig>> {
         self.get(name)
     }
@@ -990,7 +990,7 @@ mod tests {
     #[test]
     fn test_volume_store_backend_trait_dispatch() {
         let (_dir, store) = temp_store();
-        let backend: &dyn a3s_box_core::traits::VolumeStoreBackend = &store;
+        let backend: &dyn aster_box_core::traits::VolumeStoreBackend = &store;
 
         let created = backend.create(VolumeConfig::new("shared", "")).unwrap();
         assert_eq!(created.name, "shared");

@@ -1,6 +1,6 @@
 #![cfg(feature = "cqrs")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, Command, CommandBus, CqrsContext, CqrsModule, EventBus, ProviderDefinition,
     Query, QueryBus,
 };

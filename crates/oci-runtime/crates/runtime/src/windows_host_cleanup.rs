@@ -12,7 +12,7 @@
 use std::io;
 use std::time::Duration;
 
-use a3s_oci_core::CapabilityStatus;
+use aster_oci_core::CapabilityStatus;
 use tokio::time::{sleep, Instant};
 use windows_sys::Win32::Foundation::{
     CloseHandle, GetLastError, ERROR_ACCESS_DENIED, ERROR_INVALID_PARAMETER,

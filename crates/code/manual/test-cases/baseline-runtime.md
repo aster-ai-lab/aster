@@ -58,7 +58,7 @@ Create, bind, resume, replace, and close sessions.
 
 - **Invariant:** default `local-code` tree does not pull Advanced server, S3, headless, or evaluation crates.
 - **Pre:** clean checkout.
-- **Stimulus:** `cargo check -p a3s-code-core` and the tree check in `just harness-convergence-check`.
+- **Stimulus:** `cargo check -p aster-core` and the tree check in `just harness-convergence-check`.
 - **Oracle:** dependency tree has no `evaluation` / `chromiumoxide` / `s3` on the default features.
 - **Fail:** an Advanced crate is in the default tree.
 - **Home:** Layer A1 in [FIRST_PRINCIPLES_E2E.md](../FIRST_PRINCIPLES_E2E.md).

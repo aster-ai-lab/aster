@@ -2,7 +2,7 @@ mod spreadsheet;
 mod text;
 mod word;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::image::{resolve, write_data_url};
 use super::output::BoundedOutput;
@@ -81,9 +81,9 @@ fn render_presentation_units(
         slides.len() as f64 * (LABEL_HEIGHT + canvas_height)
             + slides.len().saturating_sub(1) as f64 * SLIDE_GAP
     };
-    output.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-labelledby=\"a3s-title a3s-desc\" data-renderer=\"a3s-office-semantic-v1\" data-document-kind=\"presentation\" viewBox=\"0 0 ")?;
+    output.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-labelledby=\"aster-title aster-desc\" data-renderer=\"aster-office-semantic-v1\" data-document-kind=\"presentation\" viewBox=\"0 0 ")?;
     output.push_fmt(format_args!("{CANVAS_WIDTH:.4} {total_height:.4}"))?;
-    output.push("\"><title id=\"a3s-title\">A3S Native Office presentation semantic preview</title><desc id=\"a3s-desc\">Deterministic semantic preview; it does not claim Microsoft Office layout fidelity.</desc><style>text{font-family:ui-sans-serif,system-ui,sans-serif;fill:#172033}.slide-label{font-size:22px;font-weight:700}.shape-text{font-size:18px}.table-text{font-size:13px}.placeholder-text{font-size:16px;fill:#526079}.slide-background{fill:#fff;stroke:#8491a5;stroke-width:2}.shape{stroke:#667085;stroke-width:1.5}.placeholder{stroke-dasharray:8 5}.chart{fill:#f3f6fa;stroke:#8491a5;stroke-dasharray:8 5}.connector{stroke:#667085;stroke-width:2}.missing-image{fill:#f8fafc;stroke:#8491a5;stroke-dasharray:8 5}</style>")?;
+    output.push("\"><title id=\"aster-title\">Aster Native Office presentation semantic preview</title><desc id=\"aster-desc\">Deterministic semantic preview; it does not claim Microsoft Office layout fidelity.</desc><style>text{font-family:ui-sans-serif,system-ui,sans-serif;fill:#172033}.slide-label{font-size:22px;font-weight:700}.shape-text{font-size:18px}.table-text{font-size:13px}.placeholder-text{font-size:16px;fill:#526079}.slide-background{fill:#fff;stroke:#8491a5;stroke-width:2}.shape{stroke:#667085;stroke-width:1.5}.placeholder{stroke-dasharray:8 5}.chart{fill:#f3f6fa;stroke:#8491a5;stroke-dasharray:8 5}.connector{stroke:#667085;stroke-width:2}.missing-image{fill:#f8fafc;stroke:#8491a5;stroke-dasharray:8 5}</style>")?;
 
     if slides.is_empty() {
         output.push_fmt(format_args!("<rect class=\"slide-background\" x=\"0\" y=\"0\" width=\"{CANVAS_WIDTH:.4}\" height=\"{canvas_height:.4}\"/><text class=\"placeholder-text\" x=\"40\" y=\"60\">No slides</text>"))?;
@@ -92,7 +92,7 @@ fn render_presentation_units(
     for (offset, &(slide, ordinal)) in slides.iter().enumerate() {
         let top = offset as f64 * (LABEL_HEIGHT + canvas_height + SLIDE_GAP);
         let canvas_top = top + LABEL_HEIGHT;
-        let clip_id = format!("a3s-slide-clip-{ordinal}");
+        let clip_id = format!("aster-slide-clip-{ordinal}");
         output.push_fmt(format_args!("<text class=\"slide-label\" x=\"0\" y=\"{:.4}\">Slide {ordinal}</text><defs><clipPath id=\"{clip_id}\"><rect x=\"0\" y=\"{canvas_top:.4}\" width=\"{CANVAS_WIDTH:.4}\" height=\"{canvas_height:.4}\"/></clipPath></defs><g", top + 25.0))?;
         write_path(&mut output, slide)?;
         output.push_fmt(format_args!(" clip-path=\"url(#{clip_id})\"><rect class=\"slide-background\" x=\"0\" y=\"{canvas_top:.4}\" width=\"{CANVAS_WIDTH:.4}\" height=\"{canvas_height:.4}\"/>"))?;

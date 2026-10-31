@@ -2,7 +2,7 @@
 //! composition keeps raw low-precision matrices and source-only projections;
 //! it neither registers a backend nor substitutes an external model executor.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 #[cfg(test)]
 use candle_core::Tensor;
 use tokio_util::sync::CancellationToken;

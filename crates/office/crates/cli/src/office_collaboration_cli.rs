@@ -5,7 +5,7 @@ mod watch;
 
 use std::path::PathBuf;
 
-use a3s_office::{
+use aster_office::{
     NativeOfficeCollaborationActorKind, NativeOfficeCollaborationApplyRequest,
     NativeOfficeCollaborationArtifactKind, NativeOfficeCollaborationCheckpointRequest,
     NativeOfficeCollaborationCreateRequest, NativeOfficeCollaborationMode,
@@ -14,7 +14,7 @@ use a3s_office::{
     MAX_NATIVE_OFFICE_COLLABORATION_STATE_VECTOR_BYTES,
     MAX_NATIVE_OFFICE_COLLABORATION_UPDATE_BYTES, MAX_NATIVE_OFFICE_TEXT_FIND_LIMIT,
 };
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine as _;
 use serde::Serialize;
@@ -25,26 +25,26 @@ use arguments::{collaboration_cli_error, parse_value, usage_error, ParsedOptions
 use binary_io::{read_binary_input, read_optional_encoded_input, spawn_blocking, write_new_binary};
 
 const HELP: &str = concat!(
-    "a3s-office collab - native Yjs/Yrs collaboration replica\n\n",
+    "aster-office collab - native Yjs/Yrs collaboration replica\n\n",
     /*
-    "a3s-office collab — native Yjs/Yrs collaboration replica\n\n",
+    "aster-office collab — native Yjs/Yrs collaboration replica\n\n",
     */
     "usage:\n",
-    "  a3s-office collab create <store> --artifact-id <id> --kind <kind> --actor-id <id> --operation-id <id> [--actor-kind human|agent|system] [--mode view|comment|suggest|edit] [--namespace <name>] [--client-id <u53>] [--json]\n",
-    "  a3s-office collab join <store> --artifact-id <id> --kind <kind> --actor-id <id> --operation-id <id> --input <update.bin> [create options] [--json]\n",
-    "  a3s-office collab inspect <store> [--json]\n",
-    "  a3s-office collab read <store> [--json]\n",
-    "  a3s-office collab find <store> --find <text> [--limit <1..200>] [--json]\n",
-    "  a3s-office collab diff <store> [--state-vector <base64>|--state-vector-input <file>] [--output <update.bin>] [--json]\n",
-    "  a3s-office collab sync-step1 <store> [--output <message.bin>] [--json]\n",
-    "  a3s-office collab encode-update --input <update.bin> [--output <message.bin>] [--json]\n",
-    "  a3s-office collab handle-message <store> --input <message.bin> [--output <response.bin>|mutation identity options] [--json]\n",
-    "  a3s-office collab session <store> [--poll-ms <50..10000>] [--timeout-ms <u64>] [--actor-name <name> [--actor-color <css>] [--actor-avatar-url <url>]] --json\n",
-    "  a3s-office collab apply <store> --input <update.bin> --actor-id <id> --operation-id <id> --artifact-id <id> --kind <kind> --mode <mode> [--if-state-vector <base64>|--if-state-vector-input <file>] [--json]\n",
-    "  a3s-office collab mutate <store> (--mutation <json>|--mutation-input <file>) --actor-id <id> --operation-id <id> --artifact-id <id> --kind <kind> --mode <mode> [--if-state-vector <base64>|--if-state-vector-input <file>] [--json]\n",
-    "  a3s-office collab watch <store> [--after-sequence <u64>] [--poll-ms <50..10000>] [--timeout-ms <u64>] [--max-events <u64>] [--include-updates] [--json]\n",
-    "  a3s-office collab checkpoint <store> --actor-id <id> --operation-id <id> --artifact-id <id> --kind <kind> --mode <mode> [--if-state-vector <base64>|--if-state-vector-input <file>] [--json]\n",
-    "  a3s-office collab leave <store> --actor-id <id> --operation-id <id> --artifact-id <id> --kind <kind> --mode <mode> [--if-state-vector <base64>|--if-state-vector-input <file>] [--json]\n\n",
+    "  aster-office collab create <store> --artifact-id <id> --kind <kind> --actor-id <id> --operation-id <id> [--actor-kind human|agent|system] [--mode view|comment|suggest|edit] [--namespace <name>] [--client-id <u53>] [--json]\n",
+    "  aster-office collab join <store> --artifact-id <id> --kind <kind> --actor-id <id> --operation-id <id> --input <update.bin> [create options] [--json]\n",
+    "  aster-office collab inspect <store> [--json]\n",
+    "  aster-office collab read <store> [--json]\n",
+    "  aster-office collab find <store> --find <text> [--limit <1..200>] [--json]\n",
+    "  aster-office collab diff <store> [--state-vector <base64>|--state-vector-input <file>] [--output <update.bin>] [--json]\n",
+    "  aster-office collab sync-step1 <store> [--output <message.bin>] [--json]\n",
+    "  aster-office collab encode-update --input <update.bin> [--output <message.bin>] [--json]\n",
+    "  aster-office collab handle-message <store> --input <message.bin> [--output <response.bin>|mutation identity options] [--json]\n",
+    "  aster-office collab session <store> [--poll-ms <50..10000>] [--timeout-ms <u64>] [--actor-name <name> [--actor-color <css>] [--actor-avatar-url <url>]] --json\n",
+    "  aster-office collab apply <store> --input <update.bin> --actor-id <id> --operation-id <id> --artifact-id <id> --kind <kind> --mode <mode> [--if-state-vector <base64>|--if-state-vector-input <file>] [--json]\n",
+    "  aster-office collab mutate <store> (--mutation <json>|--mutation-input <file>) --actor-id <id> --operation-id <id> --artifact-id <id> --kind <kind> --mode <mode> [--if-state-vector <base64>|--if-state-vector-input <file>] [--json]\n",
+    "  aster-office collab watch <store> [--after-sequence <u64>] [--poll-ms <50..10000>] [--timeout-ms <u64>] [--max-events <u64>] [--include-updates] [--json]\n",
+    "  aster-office collab checkpoint <store> --actor-id <id> --operation-id <id> --artifact-id <id> --kind <kind> --mode <mode> [--if-state-vector <base64>|--if-state-vector-input <file>] [--json]\n",
+    "  aster-office collab leave <store> --actor-id <id> --operation-id <id> --artifact-id <id> --kind <kind> --mode <mode> [--if-state-vector <base64>|--if-state-vector-input <file>] [--json]\n\n",
     "Kinds: document, markdown, spreadsheet, presentation, pdf.\n",
     "Typed mutations: markdown-replace/splice/replace-text; document-splice/replace-text/paragraph; document-insert/delete-paragraph; document-comment-create/reply/set-resolved/delete; document-suggestion-create/decide; document-set/clear-page-color; document-set/clear-track-changes; spreadsheet-set/delete-cell/splice; presentation-create/update/move/delete-element/replace-text; pdf-create/update/delete-annotation; pdf-set-form-value/propose-redaction/propose-page-rotation/deletion/reorder/decide-review.\n",
     "Document, Markdown, Spreadsheet, Presentation, and PDF find list 1-based matches. Pass matchCount as expectedMatches and optional occurrence to document-replace-text, markdown-replace-text, or presentation-replace-text. Under concurrent peers, also echo Document paragraphId/textId/indexUtf16, Markdown indexUtf16, or Presentation containerKind/containerId/elementId/indexUtf16 from the hit so a drifted span fails closed. markdown-replace requires expectedMarkdown equal to the current source and writes nothing when that base drifted. markdown-splice requires expectedSlice equal to the UTF-16 range being deleted, or empty when deleteUtf16 is 0, and writes nothing when that slice drifted; prefer markdown-replace-text for locate-then-edit. Spreadsheet hits name the cell for spreadsheet-set-cell; spreadsheet-set-cell requires expectedCell equal to the current leaf, or null/absent when blank, and writes nothing when that base drifted. presentation-update-element requires expectedElement equal to the current element and writes nothing when that base drifted. PDF hits return fieldId for pdf-set-form-value, or annotationId/pageIndex/annotationType for FreeText pdf-update-annotation. pdf-set-form-value requires expectedValue equal to the current field value, or empty when the field is absent, and writes nothing when that base drifted. pdf-update-annotation requires expectedAnnotation equal to the current annotation and writes nothing when that base drifted. PDF form values and FreeText annotations may also pass the hit indexUtf16 and matched search so only that span is replaced.\n",
@@ -726,7 +726,7 @@ async fn checkpoint_request(
 }
 
 fn inspection_json(
-    inspection: &a3s_office::NativeOfficeCollaborationInspection,
+    inspection: &aster_office::NativeOfficeCollaborationInspection,
 ) -> UseResult<Value> {
     value_with_base64(inspection, &inspection.state_vector)
 }

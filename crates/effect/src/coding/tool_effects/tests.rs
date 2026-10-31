@@ -173,7 +173,7 @@ fn typed_paths_refuse_workspace_escape_and_preserve_legal_spelling() {
         assert_eq!(decoded.changes[0].path, path);
     }
     #[cfg(unix)]
-    for path in [r"literal\name", r".a3s\legal-file", r"C:\legal-unix-file"] {
+    for path in [r"literal\name", r".aster\legal-file", r"C:\legal-unix-file"] {
         observation(path).validate().unwrap();
     }
     #[cfg(windows)]

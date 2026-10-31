@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     inspect_okf_bundle_files, OkfBundleContract, OkfBundleFile, OkfBundleLimits, OkfFormatVersion,
     OkfKnowledgeObservation, OkfKnowledgeObservedState, OkfProjectionReceipt,
     OkfSelectedGeneration, PackageSurfaceKind, PlanQualifiedSurfaceRef, PlanScope, PlanScopeKind,

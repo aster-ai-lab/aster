@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# soak.sh — sustained-load soak for a3s-sentry.
+# soak.sh — sustained-load soak for aster-sentry.
 #
 # Feeds a high-rate mixed NDJSON stream (benign / block / escalate / rotating-egress / malformed)
 # through the daemon for a duration, rewrites the policy mid-run (hot-reload under load), samples
@@ -20,7 +20,7 @@ HCL
 echo "soak: $BIN for ${DUR}s"
 
 # generator (batched for rate) → sentry.  In bash, $! of `gen | sentry &` is sentry (last in pipe).
-python3 - "$DUR" <<'PY' | A3S_SENTRY_POLICY="$POL" A3S_SENTRY_EGRESS_DENY="$EGRESS" "$BIN" >/dev/null 2>"$WORK/sentry.err" &
+python3 - "$DUR" <<'PY' | ASTER_SENTRY_POLICY="$POL" ASTER_SENTRY_EGRESS_DENY="$EGRESS" "$BIN" >/dev/null 2>"$WORK/sentry.err" &
 import sys, time
 dur = float(sys.argv[1]); end = time.time() + dur
 ev = [

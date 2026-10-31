@@ -162,7 +162,7 @@ export function useDataGridVirtualRows(options: UseDataGridVirtualRowsOptions) {
     if (!options.enabled || typeof ResizeObserver === 'undefined') return;
     const scrollElement = scrollRef.current;
     if (!scrollElement) return;
-    const renderer = scrollElement.closest<HTMLElement>('.a3s-form-renderer');
+    const renderer = scrollElement.closest<HTMLElement>('.aster-form-renderer');
     const updateEnvironment = () => {
       if (scrollElement.clientHeight > 0) setViewportExtent(scrollElement.clientHeight);
       const width = renderer?.clientWidth || scrollElement.clientWidth;

@@ -61,35 +61,35 @@ impl HostMethod {
     ];
 
     /// The wire method, or `None` outside the closed set. Compaction and
-    /// interjection keep their `a3s/` prefix families.
+    /// interjection keep their `aster/` prefix families.
     pub(super) fn parse(method: &str) -> Option<Self> {
         Some(match method {
-            "a3s/models/list" => Self::ModelsList,
-            "a3s/followup/generate" => Self::FollowUp,
-            "a3s/goal/import" => Self::GoalImport,
-            "a3s/goal/import/preview" => Self::GoalImportPreview,
-            "a3s/goal/definition"
-            | "a3s/goal/plan"
-            | "a3s/goal/control"
-            | "a3s/goal/wait"
-            | "a3s/goal/state" => Self::GoalCommand,
-            "a3s/review/target" | "a3s/review/admit" | "a3s/review/settle" => Self::Review,
-            "a3s/wiki/search" => Self::WikiSearch,
-            "a3s/workspace/search/v1" => Self::WorkspaceSearch,
-            "a3s/memory/manage" => Self::MemoryManage,
-            "a3s/memory/snapshot" => Self::MemorySnapshot,
-            "a3s/session/info" => Self::SessionInfo,
-            "a3s/session/list" => Self::SessionList,
-            "a3s/session/delete" => Self::SessionDelete,
-            "a3s/permission_posture" => Self::PermissionPosture,
-            "a3s/session/transcript/page/v1" => Self::SessionTranscriptPage,
-            "a3s/session/fork/prefix/v1" => Self::SessionPrefixFork,
-            "a3s/session/tooling/v1" => Self::SessionTooling,
-            "a3s/session/background-tasks/v1" => Self::SessionBackgroundTasks,
-            "a3s/session/background-tasks/stop/v1" => Self::SessionBackgroundTaskStop,
-            "a3s/subagent/cancel" => Self::SubagentCancel,
-            _ if method.starts_with("a3s/compact_conversation") => Self::CompactConversation,
-            _ if method.starts_with("a3s/interject") => Self::Interject,
+            "aster/models/list" => Self::ModelsList,
+            "aster/followup/generate" => Self::FollowUp,
+            "aster/goal/import" => Self::GoalImport,
+            "aster/goal/import/preview" => Self::GoalImportPreview,
+            "aster/goal/definition"
+            | "aster/goal/plan"
+            | "aster/goal/control"
+            | "aster/goal/wait"
+            | "aster/goal/state" => Self::GoalCommand,
+            "aster/review/target" | "aster/review/admit" | "aster/review/settle" => Self::Review,
+            "aster/wiki/search" => Self::WikiSearch,
+            "aster/workspace/search/v1" => Self::WorkspaceSearch,
+            "aster/memory/manage" => Self::MemoryManage,
+            "aster/memory/snapshot" => Self::MemorySnapshot,
+            "aster/session/info" => Self::SessionInfo,
+            "aster/session/list" => Self::SessionList,
+            "aster/session/delete" => Self::SessionDelete,
+            "aster/permission_posture" => Self::PermissionPosture,
+            "aster/session/transcript/page/v1" => Self::SessionTranscriptPage,
+            "aster/session/fork/prefix/v1" => Self::SessionPrefixFork,
+            "aster/session/tooling/v1" => Self::SessionTooling,
+            "aster/session/background-tasks/v1" => Self::SessionBackgroundTasks,
+            "aster/session/background-tasks/stop/v1" => Self::SessionBackgroundTaskStop,
+            "aster/subagent/cancel" => Self::SubagentCancel,
+            _ if method.starts_with("aster/compact_conversation") => Self::CompactConversation,
+            _ if method.starts_with("aster/interject") => Self::Interject,
             _ => return None,
         })
     }
@@ -97,45 +97,45 @@ impl HostMethod {
     /// The method name, or the family prefix for a family of methods.
     pub(super) fn as_str(self) -> &'static str {
         match self {
-            Self::ModelsList => "a3s/models/list",
-            Self::FollowUp => "a3s/followup/generate",
-            Self::GoalImport => "a3s/goal/import",
-            Self::GoalImportPreview => "a3s/goal/import/preview",
-            Self::GoalCommand => "a3s/goal/",
-            Self::Review => "a3s/review/",
-            Self::WikiSearch => "a3s/wiki/search",
-            Self::WorkspaceSearch => "a3s/workspace/search/v1",
-            Self::MemoryManage => "a3s/memory/manage",
-            Self::MemorySnapshot => "a3s/memory/snapshot",
-            Self::CompactConversation => "a3s/compact_conversation",
-            Self::Interject => "a3s/interject",
-            Self::SessionInfo => "a3s/session/info",
-            Self::SessionList => "a3s/session/list",
-            Self::SessionDelete => "a3s/session/delete",
-            Self::PermissionPosture => "a3s/permission_posture",
-            Self::SessionTranscriptPage => "a3s/session/transcript/page/v1",
-            Self::SessionPrefixFork => "a3s/session/fork/prefix/v1",
-            Self::SessionTooling => "a3s/session/tooling/v1",
-            Self::SessionBackgroundTasks => "a3s/session/background-tasks/v1",
-            Self::SessionBackgroundTaskStop => "a3s/session/background-tasks/stop/v1",
-            Self::SubagentCancel => "a3s/subagent/cancel",
+            Self::ModelsList => "aster/models/list",
+            Self::FollowUp => "aster/followup/generate",
+            Self::GoalImport => "aster/goal/import",
+            Self::GoalImportPreview => "aster/goal/import/preview",
+            Self::GoalCommand => "aster/goal/",
+            Self::Review => "aster/review/",
+            Self::WikiSearch => "aster/wiki/search",
+            Self::WorkspaceSearch => "aster/workspace/search/v1",
+            Self::MemoryManage => "aster/memory/manage",
+            Self::MemorySnapshot => "aster/memory/snapshot",
+            Self::CompactConversation => "aster/compact_conversation",
+            Self::Interject => "aster/interject",
+            Self::SessionInfo => "aster/session/info",
+            Self::SessionList => "aster/session/list",
+            Self::SessionDelete => "aster/session/delete",
+            Self::PermissionPosture => "aster/permission_posture",
+            Self::SessionTranscriptPage => "aster/session/transcript/page/v1",
+            Self::SessionPrefixFork => "aster/session/fork/prefix/v1",
+            Self::SessionTooling => "aster/session/tooling/v1",
+            Self::SessionBackgroundTasks => "aster/session/background-tasks/v1",
+            Self::SessionBackgroundTaskStop => "aster/session/background-tasks/stop/v1",
+            Self::SubagentCancel => "aster/subagent/cancel",
         }
     }
 }
 
-const TRANSCRIPT_PAGE_SCHEMA: &str = "a3s.acp.session-transcript-page.v1";
-const PREFIX_FORK_SCHEMA: &str = "a3s.acp.session-prefix-fork.v1";
-const TOOLING_SCHEMA: &str = "a3s.acp.session-tooling.v1";
-const TOOLING_UPDATE_METHOD: &str = "a3s/session/tooling/update";
-const WORKSPACE_SEARCH_SCHEMA: &str = "a3s.acp.workspace-search.v1";
-const BACKGROUND_TASKS_SCHEMA: &str = "a3s.acp.session-background-tasks.v1";
+const TRANSCRIPT_PAGE_SCHEMA: &str = "aster.acp.session-transcript-page.v1";
+const PREFIX_FORK_SCHEMA: &str = "aster.acp.session-prefix-fork.v1";
+const TOOLING_SCHEMA: &str = "aster.acp.session-tooling.v1";
+const TOOLING_UPDATE_METHOD: &str = "aster/session/tooling/update";
+const WORKSPACE_SEARCH_SCHEMA: &str = "aster.acp.workspace-search.v1";
+const BACKGROUND_TASKS_SCHEMA: &str = "aster.acp.session-background-tasks.v1";
 
 #[derive(serde::Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct WorkspaceSearchParams {
     schema: String,
     session_id: String,
-    operation_id: a3s_code_core::OperationId,
+    operation_id: aster_core::OperationId,
     cwd: PathBuf,
     query: String,
 }
@@ -145,9 +145,9 @@ struct WorkspaceSearchParams {
 struct TranscriptPageParams {
     schema: String,
     session_id: String,
-    operation_id: a3s_code_core::OperationId,
+    operation_id: aster_core::OperationId,
     cwd: PathBuf,
-    cursor: Option<a3s_code_core::store::TranscriptCursor>,
+    cursor: Option<aster_core::store::TranscriptCursor>,
     limit: Option<usize>,
 }
 
@@ -156,8 +156,8 @@ struct TranscriptPageParams {
 struct PrefixForkParams {
     schema: String,
     session_id: String,
-    operation_id: a3s_code_core::OperationId,
-    request: a3s_code_core::store::PrefixForkRequest,
+    operation_id: aster_core::OperationId,
+    request: aster_core::store::PrefixForkRequest,
 }
 
 #[derive(serde::Deserialize)]
@@ -165,7 +165,7 @@ struct PrefixForkParams {
 struct ToolingParams {
     schema: String,
     session_id: String,
-    operation_id: a3s_code_core::OperationId,
+    operation_id: aster_core::OperationId,
     cwd: PathBuf,
 }
 
@@ -262,8 +262,8 @@ pub(super) async fn session_tooling_projection(session: &AgentSession) -> serde_
     })
 }
 
-fn memory_task_snapshot(task: a3s_code_core::memory::MemoryExtractionTask) -> serde_json::Value {
-    use a3s_code_core::memory::MemoryExtractionStatus;
+fn memory_task_snapshot(task: aster_core::memory::MemoryExtractionTask) -> serde_json::Value {
+    use aster_core::memory::MemoryExtractionStatus;
     let status = match task.status {
         MemoryExtractionStatus::Pending => "pending",
         MemoryExtractionStatus::Running => "in_progress",
@@ -279,9 +279,9 @@ fn memory_task_snapshot(task: a3s_code_core::memory::MemoryExtractionTask) -> se
 }
 
 fn background_task_snapshot(
-    task: a3s_code_core::subagent_task_tracker::SubagentTaskSnapshot,
+    task: aster_core::subagent_task_tracker::SubagentTaskSnapshot,
 ) -> acp::Result<serde_json::Value> {
-    use a3s_code_core::subagent_task_tracker::SubagentStatus;
+    use aster_core::subagent_task_tracker::SubagentStatus;
 
     let status = match task.status {
         SubagentStatus::Running => "in_progress",
@@ -349,7 +349,7 @@ fn background_task_snapshot(
     }))
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) async fn answer_host_method(
         &self,
         method: HostMethod,
@@ -448,7 +448,7 @@ impl A3sCodeAgent {
         };
         workspace_scope::canonical_workspace(&workspace, Some(&request.cwd))?;
         let page = session
-            .transcript_page(a3s_code_core::store::TranscriptPageRequest {
+            .transcript_page(aster_core::store::TranscriptPageRequest {
                 cursor: request.cursor,
                 limit: request.limit.unwrap_or(50),
             })
@@ -542,7 +542,7 @@ impl A3sCodeAgent {
         &self,
         args: &acp::ExtRequest,
     ) -> acp::Result<acp::ExtResponse> {
-        use a3s_code_core::subagent_task_tracker::SubagentStatus;
+        use aster_core::subagent_task_tracker::SubagentStatus;
         let request: SubagentCancelParams = serde_json::from_str(args.params.get())
             .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?;
         require_session_id(&request.session_id)?;
@@ -675,7 +675,7 @@ impl A3sCodeAgent {
             live.set_posture(posture, denies)?;
             let prefix_cut = live
                 .session
-                .transcript_page(a3s_code_core::store::TranscriptPageRequest {
+                .transcript_page(aster_core::store::TranscriptPageRequest {
                     cursor: None,
                     limit: 1,
                 })
@@ -734,7 +734,7 @@ impl A3sCodeAgent {
     }
 
     async fn import_goal(&self, args: &acp::ExtRequest) -> acp::Result<acp::ExtResponse> {
-        let command: a3s_code_core::goal_control::GoalDefinitionCommandV1 =
+        let command: aster_core::goal_control::GoalDefinitionCommandV1 =
             serde_json::from_str(args.params.get())
                 .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?;
         let session_id = command.session_id.clone();

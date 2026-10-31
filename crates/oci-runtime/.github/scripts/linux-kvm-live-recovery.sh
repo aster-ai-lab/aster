@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-: "${A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
+: "${ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
 
 source .github/scripts/lib/linux-kvm-provenance.sh
 
@@ -38,34 +38,34 @@ target_dir="${CARGO_TARGET_DIR:-target}"
 if [[ "$target_dir" != /* ]]; then
   target_dir="$PWD/$target_dir"
 fi
-profile="${A3S_OCI_BUILD_PROFILE:-debug}"
-build_arguments=(build -p a3s-oci-cli -p a3s-oci-krun)
+profile="${ASTER_OCI_BUILD_PROFILE:-debug}"
+build_arguments=(build -p aster-oci-cli -p aster-oci-krun)
 case "$profile" in
   debug) ;;
   release) build_arguments+=(--release) ;;
   *) build_arguments+=(--profile "$profile") ;;
 esac
 binary_dir="$target_dir/$profile"
-cli="$binary_dir/a3s-oci"
-shim="$binary_dir/a3s-oci-krun-shim"
-runtime_dir="$binary_dir/a3s-oci-krun-runtime"
+cli="$binary_dir/aster-oci"
+shim="$binary_dir/aster-oci-krun-shim"
+runtime_dir="$binary_dir/aster-oci-krun-runtime"
 runtime_assets_manifest="crates/krun/runtime/runtime-assets.json"
 
 temporary_root="${RUNNER_TEMP:-/tmp}"
 test -d "$temporary_root"
 # Keep the private work prefix short: SUN_LEN bounds the Host Service socket path.
-work="$(mktemp -d "$temporary_root/a3s-oci-klr.XXXXXX")"
+work="$(mktemp -d "$temporary_root/aster-oci-klr.XXXXXX")"
 runtime_report="$work/runtime-report.json"
 runtime_stderr="$work/runtime.stderr.log"
 cleanup() {
   local status=$?
-  if [[ "$status" -ne 0 && "${A3S_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
+  if [[ "$status" -ne 0 && "${ASTER_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
     printf 'preserving failed Linux KVM Live recovery work directory: %s\n' \
       "$work" >&2
     return 0
   fi
   case "$work" in
-    "$temporary_root"/a3s-oci-klr.*)
+    "$temporary_root"/aster-oci-klr.*)
       rm -rf -- "$work"
       ;;
     *)
@@ -93,14 +93,14 @@ on_error() {
 }
 trap on_error ERR
 
-report_path="${A3S_OCI_LINUX_KVM_LIVE_RECOVERY_REPORT:-$work/report.json}"
+report_path="${ASTER_OCI_LINUX_KVM_LIVE_RECOVERY_REPORT:-$work/report.json}"
 if [[ -e "$report_path" || -L "$report_path" ]]; then
   printf 'refusing to overwrite Linux KVM Live recovery report: %s\n' "$report_path" >&2
   exit 1
 fi
 test -d "$(dirname "$report_path")"
-test -f "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
-test ! -L "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+test -f "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+test ! -L "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
 
 cargo "${build_arguments[@]}"
 test -x "$cli"
@@ -111,7 +111,7 @@ provenance="$(
   linux_kvm_provenance \
     linux-kvm-live-host-reopen-v1 "$profile" \
     "$cli" "$shim" "$runtime_dir" "$runtime_assets_manifest" \
-    "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+    "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
 )"
 source_revision="$(jq --raw-output '.source_revision' <<<"$provenance")"
 
@@ -124,7 +124,7 @@ kvm_driver="$(
 test -n "$kvm_driver"
 kvm_status="$(jq --raw-output '.status' <<<"$kvm_driver")"
 manifest_sha256="$(
-  sha256sum "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1
+  sha256sum "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1
 )"
 
 if [[ "$kvm_status" == "unavailable" ]]; then
@@ -135,7 +135,7 @@ if [[ "$kvm_status" == "unavailable" ]]; then
     --argjson kvm_driver "$kvm_driver" \
     --argjson provenance "$provenance" \
     '{
-      schema_version: "a3s.oci.linux-kvm-live-recovery-matrix.v1",
+      schema_version: "aster.oci.linux-kvm-live-recovery-matrix.v1",
       platform: "linux",
       architecture: $architecture,
       status: "unavailable",
@@ -148,10 +148,10 @@ if [[ "$kvm_status" == "unavailable" ]]; then
       reason: $reason
     }' | tee "$report_path"
   jq --exit-status \
-    '.schema_version == "a3s.oci.linux-kvm-live-recovery-matrix.v1"
+    '.schema_version == "aster.oci.linux-kvm-live-recovery-matrix.v1"
      and .platform == "linux" and .status == "unavailable"
      and .kvm_required and .expected_case_count == 1 and .case_count == 0
-     and .provenance.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+     and .provenance.schema_version == "aster.oci.linux-kvm-provenance.v1"
      and .provenance.platform == .platform
      and .provenance.architecture == .architecture
      and .provenance.qualification_profile
@@ -177,14 +177,14 @@ scripts/prepare-utility-vm-bundle.sh \
   --alpine-archive "$alpine_archive" \
   --config fixtures/utility-vm/config.linux-kvm.json \
   --bundle "$bundle" \
-  --cgroups-path a3s-oci-klr
+  --cgroups-path aster-oci-klr
 evidence_parent="$work/evidence"
 mkdir "$evidence_parent"
 chmod 0700 "$work" "$bundle" "$evidence_parent"
 
 if "$cli" linux-kvm-live-recovery-smoke \
   --shim "$shim" \
-  --system-image-manifest "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
+  --system-image-manifest "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
   --bundle "$bundle" \
   --work-parent "$evidence_parent" \
   --source-revision "$source_revision" \
@@ -200,7 +200,7 @@ jq --exit-status \
   --arg architecture "$architecture" \
   --arg manifest_sha256 "$manifest_sha256" \
   --arg source_revision "$source_revision" \
-  '.schema_version == "a3s.oci.linux-kvm-live-recovery-smoke.v3"
+  '.schema_version == "aster.oci.linux-kvm-live-recovery-smoke.v3"
    and .platform == "linux" and .architecture == $architecture
    and .status == "available" and .kvm_required
    and .expected_case_count == 1 and .case_count == 1
@@ -244,7 +244,7 @@ jq --null-input \
   --argjson provenance "$provenance" \
   --slurpfile report "$runtime_report" \
   '{
-    schema_version: "a3s.oci.linux-kvm-live-recovery-matrix.v1",
+    schema_version: "aster.oci.linux-kvm-live-recovery-matrix.v1",
     platform: "linux",
     architecture: $architecture,
     status: "available",
@@ -259,10 +259,10 @@ jq --null-input \
   }' | tee "$report_path"
 
 jq --exit-status \
-  '.schema_version == "a3s.oci.linux-kvm-live-recovery-matrix.v1"
+  '.schema_version == "aster.oci.linux-kvm-live-recovery-matrix.v1"
    and .platform == "linux" and .status == "available"
    and .kvm_required and .expected_case_count == 1 and .case_count == 1
-   and .provenance.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+   and .provenance.schema_version == "aster.oci.linux-kvm-provenance.v1"
    and .provenance.platform == .platform
    and .provenance.architecture == .architecture
    and .provenance.qualification_profile

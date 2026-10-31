@@ -261,7 +261,7 @@ There are also legitimate internal variables that do not belong in this shared l
 - page layout variables stay in the page or feature stylesheet.
 
 These values are implementation contracts, not product theme semantics. They are not declared by
-`@a3s/ui`, added to `theme-contract.ts`, or mapped through `@theme`. If an app-shell concept becomes a
+`@aster/ui`, added to `theme-contract.ts`, or mapped through `@theme`. If an app-shell concept becomes a
 cross-package product semantic with real consumers, it must go through the normal stable-token review first.
 
 The retired `--app-*` names in `shadcn-v2.json` are different: they duplicated Shadcn or product semantics and
@@ -517,7 +517,7 @@ The generated contract must validate that:
 - renderer runtime code can write only registered shared `--cs-theme-*` inputs; owner-local runtime values use `--app-*`;
 - renderer CSS and TypeScript/TSX-authored style strings cannot consume generated `--color-*` adapter variables.
 
-Run `pnpm --filter @a3s/ui theme:check` to validate the canonical graph, committed generated CSS,
+Run `pnpm --filter @aster/ui theme:check` to validate the canonical graph, committed generated CSS,
 migration registry, and renderer boundary together. `theme:build` is deliberately a pure generator that reads
 only the inputs needed for generated output; governance remains the responsibility of `theme:check`.
 

@@ -24,7 +24,7 @@ const WORD_2010_NAMESPACE =
   'http://schemas.microsoft.com/office/word/2010/wordml';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const PARAGRAPH_IDENTITY_MARKER_PATTERN =
-  /__A3S_WORK_PARAGRAPH_IDENTITY_\d+__/g;
+  /__ASTER_WORK_PARAGRAPH_IDENTITY_\d+__/g;
 const MAX_PARAGRAPH_IDENTITIES = 65_536;
 
 export function markDocxParagraphIdentities(
@@ -44,7 +44,7 @@ export function markDocxParagraphIdentities(
   const paragraphs: ImportedDocxParagraphIdentityMarker[] = [];
   for (const candidate of candidates) {
     if (counts.get(candidate.identity.paragraphId) !== 1) continue;
-    const marker = `__A3S_WORK_PARAGRAPH_IDENTITY_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_IDENTITY_${paragraphs.length + 1}__`;
     insertParagraphMarker(candidate.element, marker);
     paragraphs.push({ marker, ...candidate.identity });
   }
@@ -79,7 +79,7 @@ export function applyImportedDocxParagraphIdentityMarkers(
     ]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_IDENTITY_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_IDENTITY_')) continue;
     node.data = node.data.replace(
       PARAGRAPH_IDENTITY_MARKER_PATTERN,
       (marker) => {

@@ -9,7 +9,7 @@ export const pdfUiMessagesEnUS = {
   'pdf.viewer.aria': 'PDF editor: {fileName}',
   'pdf.viewer.closeNav': 'Close PDF page navigation overlay',
   'pdf.viewer.canvasAria': 'PDF page canvas',
-  'pdf.viewer.defaultAuthor': 'A3S Office User',
+  'pdf.viewer.defaultAuthor': 'Aster Office User',
   'pdf.viewer.opening': 'Opening…',
   'pdf.evidence.unavailable': 'Anchoring unavailable on this page',
   'pdf.evidence.empty': 'No safe anchors on this page',

@@ -43,7 +43,7 @@ pub fn require_active(record: &BoxRecord, action: &str) -> Result<(), String> {
     }
 
     let hint =
-        status_hint(record).unwrap_or_else(|| "Use `a3s-box ps -a` to inspect state.".to_string());
+        status_hint(record).unwrap_or_else(|| "Use `aster-box ps -a` to inspect state.".to_string());
     Err(format!(
         "Cannot {action} box {} because it is {}. {hint}",
         record.name, record.status
@@ -109,23 +109,23 @@ pub fn status_details(record: &BoxRecord) -> StatusDetails {
 fn status_hint(record: &BoxRecord) -> Option<String> {
     match record.status.as_str() {
         "created" => Some(format!(
-            "Use `a3s-box start {}` to start it or `a3s-box rm {}` to remove it.",
+            "Use `aster-box start {}` to start it or `aster-box rm {}` to remove it.",
             record.name, record.name
         )),
         "paused" => Some(format!(
-            "Use `a3s-box unpause {}` to resume it or `a3s-box stop {}` to stop it.",
+            "Use `aster-box unpause {}` to resume it or `aster-box stop {}` to stop it.",
             record.name, record.name
         )),
         "stopped" => Some(format!(
-            "Use `a3s-box start {}` to start it again or `a3s-box rm {}` to remove it.",
+            "Use `aster-box start {}` to start it again or `aster-box rm {}` to remove it.",
             record.name, record.name
         )),
         "dead" if record.exit_code == Some(0) => Some(format!(
-            "The box exited successfully. Run `a3s-box logs {}` to review output, then `a3s-box restart {}` or `a3s-box rm {}`.",
+            "The box exited successfully. Run `aster-box logs {}` to review output, then `aster-box restart {}` or `aster-box rm {}`.",
             record.name, record.name, record.name
         )),
         "dead" => Some(format!(
-            "Run `a3s-box logs {}` to inspect failure output, then `a3s-box restart {}` or `a3s-box rm {}`.",
+            "Run `aster-box logs {}` to inspect failure output, then `aster-box restart {}` or `aster-box rm {}`.",
             record.name, record.name, record.name
         )),
         _ => None,
@@ -222,7 +222,7 @@ mod tests {
 
         assert_eq!(details.summary, "paused");
         assert!(details.active);
-        assert!(details.hint.unwrap().contains("a3s-box unpause box"));
+        assert!(details.hint.unwrap().contains("aster-box unpause box"));
     }
 
     #[test]
@@ -251,6 +251,6 @@ mod tests {
         let error = require_active(&record, "show stats for").unwrap_err();
 
         assert!(error.contains("Cannot show stats for box box because it is stopped"));
-        assert!(error.contains("a3s-box start box"));
+        assert!(error.contains("aster-box start box"));
     }
 }

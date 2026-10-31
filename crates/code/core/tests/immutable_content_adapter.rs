@@ -1,12 +1,12 @@
-use a3s_code_core::llm::{LlmResponse, Message, StreamEvent, ToolDefinition};
-use a3s_code_core::store::{MemorySessionStore, SessionStore};
-use a3s_code_core::tools::{
+use aster_core::llm::{LlmResponse, Message, StreamEvent, ToolDefinition};
+use aster_core::store::{MemorySessionStore, SessionStore};
+use aster_core::tools::{
     ImmutableContentAdapter, ImmutableContentAdapterBindingV1, ImmutableContentAdapterSession,
     ImmutableContentDescriptorV1, ImmutableContentReferenceV1, ImmutableContentResult, Tool,
     ToolContext, ToolOutput, ToolResultEvidenceV1, ToolResultTransformBindingV1,
     ToolResultTransformPolicyV1, MAX_OUTPUT_SIZE, TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY,
 };
-use a3s_code_core::{Agent, CodeConfig, LlmClient, SessionOptions};
+use aster_core::{Agent, CodeConfig, LlmClient, SessionOptions};
 use async_trait::async_trait;
 use std::sync::{Arc, Mutex};
 use tokio::sync::mpsc;
@@ -74,7 +74,7 @@ impl ImmutableContentAdapter for RecordingAdapter {
 
     async fn put(
         &self,
-        request: &a3s_code_core::ImmutableContentWriteRequestV1<'_>,
+        request: &aster_core::ImmutableContentWriteRequestV1<'_>,
     ) -> ImmutableContentResult<ImmutableContentReferenceV1> {
         self.writes
             .lock()
@@ -88,7 +88,7 @@ impl ImmutableContentAdapter for RecordingAdapter {
         ImmutableContentReferenceV1::new(
             request.binding(),
             request.descriptor(),
-            format!("a3s+test://session-content/{digest}"),
+            format!("aster+test://session-content/{digest}"),
         )
     }
 }
@@ -130,7 +130,7 @@ async fn session_wires_and_persists_the_exact_immutable_content_binding() {
         .unwrap();
     let metadata = result.metadata.unwrap();
     let evidence: ToolResultEvidenceV1 =
-        serde_json::from_value(metadata["a3s_tool_result_evidence"].clone()).unwrap();
+        serde_json::from_value(metadata["aster_tool_result_evidence"].clone()).unwrap();
     let transform_binding: ToolResultTransformBindingV1 =
         serde_json::from_value(metadata[TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY].clone())
             .unwrap();
@@ -143,7 +143,7 @@ async fn session_wires_and_persists_the_exact_immutable_content_binding() {
         .unwrap();
     assert_eq!(evidence.content_ref, reference.uri);
     assert!(result.output.contains(&reference.uri));
-    assert!(!result.output.contains("a3s://tool-output/"));
+    assert!(!result.output.contains("aster://tool-output/"));
     assert!(session.get_artifact(&reference.uri).is_none());
 
     session.save().await.unwrap();

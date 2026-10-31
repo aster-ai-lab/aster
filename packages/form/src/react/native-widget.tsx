@@ -197,7 +197,7 @@ export function NativeWidget(props: FormWidgetProps) {
     case 'radio':
       return (
         <div
-          className="a3s-form-choice-group"
+          className="aster-form-choice-group"
           role="radiogroup"
           data-slot="radio-group"
           aria-label={props.labelledBy ? undefined : (node.label ?? node.id)}

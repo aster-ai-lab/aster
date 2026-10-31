@@ -1,4 +1,4 @@
-# A3S Memory Kernel V2
+# Aster Memory Kernel V2
 
 Status: Accepted for implementation
 
@@ -8,13 +8,13 @@ The memory kernel exists to improve future agent decisions without weakening
 correctness, isolation, auditability, or bounded execution. Storing more text is
 not a goal by itself.
 
-The first consumer is `a3s-code`, but the contract is runtime-neutral. The
+The first consumer is `aster`, but the contract is runtime-neutral. The
 kernel must not depend on an LLM, an agent loop, a session implementation, or a
 transport.
 
 ## Ownership
 
-`a3s-memory` owns the policy-free integrity boundary:
+`aster-memory` owns the policy-free integrity boundary:
 
 - namespace validation and isolation;
 - typed memory nodes, evidence references, relations, and lifecycle states;
@@ -35,7 +35,7 @@ The host runtime owns semantic policy:
 - scheduling consolidation and retention work;
 - exposing CLI, HTTP, MCP, or SDK surfaces.
 
-For `a3s-code`, immutable session, run, artifact, trace, and verification data
+For `aster`, immutable session, run, artifact, trace, and verification data
 remain the source evidence. The memory kernel stores typed references to that
 evidence rather than copying the complete session model.
 
@@ -221,7 +221,7 @@ A durable node contains:
 - monotonically increasing revision;
 - caller-supplied creation and update timestamps.
 
-Working and short-term memory remain runtime state in `a3s-code`; they are not
+Working and short-term memory remain runtime state in `aster`; they are not
 durable V2 node kinds.
 
 ### MemoryRelation
@@ -297,7 +297,7 @@ V1 remains source-compatible while V2 is introduced:
 - existing `MemoryItem` serialization remains unchanged;
 - V2 uses new types rather than interpreting V1 string metadata as trusted
   typed fields;
-- `a3s-code` moves to V2 behind an explicit option and initially runs in shadow
+- `aster` moves to V2 behind an explicit option and initially runs in shadow
   mode;
 - a migration tool may convert eligible V1 items into V2 candidates, but no V1
   item becomes active without evidence and namespace assignment.
@@ -312,9 +312,9 @@ compatibility. V2 must not repeat that behavior.
 3. Implement the in-memory reference repository with atomic change sets.
 4. Add a persistent backend only after crash, replay, and concurrency contracts
    are executable.
-5. Integrate `a3s-code` in candidate-only shadow mode with typed evidence.
+5. Integrate `aster` in candidate-only shadow mode with typed evidence.
 6. Enable active recall only after isolation, evidence, and quality gates pass.
-7. Add consolidation through an owned host or `a3s-flow` lifecycle.
+7. Add consolidation through an owned host or `aster-flow` lifecycle.
 8. Evaluate lexical retrieval before adding vector fusion or graph expansion.
 9. Add human projections and proactive behavior last.
 

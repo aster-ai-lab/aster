@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "fixture_id": "sdk-capability-batch-v1",
-  "batch_schema": "a3s.code.sdk_capability_batch.v1",
+  "batch_schema": "aster.code.sdk_capability_batch.v1",
   "required_batch_fields": [
     "schemaVersion",
     "generation",

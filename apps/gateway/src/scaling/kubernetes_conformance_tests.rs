@@ -20,8 +20,8 @@ use std::sync::Arc;
 use std::time::Duration;
 use uuid::Uuid;
 
-const ENABLE_ENV: &str = "A3S_GATEWAY_TEST_KUBERNETES";
-const DEPLOYMENT_NAME: &str = "a3s-scale-conformance";
+const ENABLE_ENV: &str = "ASTER_GATEWAY_TEST_KUBERNETES";
+const DEPLOYMENT_NAME: &str = "aster-scale-conformance";
 const MAX_CONFLICT_ATTEMPTS: usize = 20;
 const CONFLICT_RETRY_DELAY: Duration = Duration::from_millis(100);
 
@@ -43,7 +43,7 @@ async fn real_cluster_enforces_scale_cas_and_recovers_controller_state() {
         .await
         .expect("real-cluster gate requires an active kubeconfig");
     let namespaces: Api<Namespace> = Api::all(client.clone());
-    let namespace = format!("a3s-gateway-scale-{}", Uuid::new_v4().simple());
+    let namespace = format!("aster-gateway-scale-{}", Uuid::new_v4().simple());
     let namespace_resource =
         namespace_fixture(&namespace).expect("namespace fixture must match the Kubernetes schema");
     namespaces

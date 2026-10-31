@@ -7,7 +7,7 @@ impl FlowRuntime for ContinueOnceRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.input()["generation"].as_u64().unwrap() {
             0 => Ok(context.continue_as_new(json!({ "generation": 1 }))),
@@ -16,7 +16,7 @@ impl FlowRuntime for ContinueOnceRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("continue-once runtime does not schedule steps")
     }
 }

@@ -1,6 +1,6 @@
 use std::io;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 pub(super) fn apply(enabled: bool) -> Result<()> {
     if !enabled {
@@ -51,7 +51,7 @@ mod tests {
 
     use super::{apply, read_current};
 
-    const CHILD_ENV: &str = "A3S_OCI_NO_NEW_PRIVILEGES_TEST_CHILD";
+    const CHILD_ENV: &str = "ASTER_OCI_NO_NEW_PRIVILEGES_TEST_CHILD";
 
     #[test]
     fn applies_and_reads_back_in_isolated_process() {

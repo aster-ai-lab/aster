@@ -1,6 +1,6 @@
 # JSON Render 端到端测试
 
-覆盖真实链路：本地模型发出 `ask_user_form` → a3s-code Core 执行工具 → ACP
+覆盖真实链路：本地模型发出 `ask_user_form` → aster Core 执行工具 → ACP
 请求输入 → 桌面渲染 `root/elements/state` → 宿主核对绑定 → 原工具调用恢复。
 普通 `ask_user` 使用另一套 `question` 协议，不能代替 JSON Render 验收。
 
@@ -8,7 +8,7 @@
 
 | 优先级 | 场景 | 必须核对的结果 |
 | --- | --- | --- |
-| P0 | 提交共享 `fixtures/form.json` | Name=Ada、Amount=4（number）、Ready=true（boolean）、Choice=alpha、Notes；同一 tool_call_id 收到 `a3s.code.user-form.v1`，`permission_grant=false` |
+| P0 | 提交共享 `fixtures/form.json` | Name=Ada、Amount=4（number）、Ready=true（boolean）、Choice=alpha、Notes；同一 tool_call_id 收到 `aster.code.user-form.v1`，`permission_grant=false` |
 | P0 | 空值与范围校验 | 空 Name、未勾选必填 Ready、Amount=6 阻止提交；修正后仍可提交；等待期间没有工具答案或权限授权 |
 | P0 | 取消等待 | 点击停止，活动执行结束；绑定不能提交；不能产生成功答案 |
 | P0 | 错误绑定与重放 | 错 requestId、revision、owner 都返回 `ok=false` 且不消费合法请求；成功后重复原绑定也被拒绝 |
@@ -39,18 +39,18 @@ python3 tests/e2e/json_render_model.py --events target/json-render-model/events.
 终端已有 `ask-form.acl`，覆盖必填、范围、提交、取消和拒绝；由真实可执行文件夹具运行：
 
 ```sh
-a3s-test check tests/e2e/ask-form.acl --json
-cargo build -p aster -p a3s-code-acp
-cargo test -p a3s-code-acp --test shipped_tui_e2e shipped_native_form_submit_cancel_and_reject -- --ignored --exact --nocapture
+aster-test check tests/e2e/ask-form.acl --json
+cargo build -p aster -p aster-acp
+cargo test -p aster-acp --test shipped_tui_e2e shipped_native_form_submit_cancel_and_reject -- --ignored --exact --nocapture
 ```
 
-运行前从根目录构建匹配的 `aster` 和 `a3s-code-acp`。不要混用历史安装包。
+运行前从根目录构建匹配的 `aster` 和 `aster-acp`。不要混用历史安装包。
 
 ## 桌面后台 CUA
 
-使用 `a3s-test mcp` 的 GUI agent session；每次观察后执行一个动作，再重新观察。
+使用 `aster-test mcp` 的 GUI agent session；每次观察后执行一个动作，再重新观察。
 由宿主绑定隔离的测试 bundle、PID、窗口和 profile，不操作用户的主实例。
-安装版 A3S Test 与 CUA 的兼容、权限及后台投递必须先核对。
+安装版 Aster Test 与 CUA 的兼容、权限及后台投递必须先核对。
 
 输入采用语义点击字段，再向该窗口已聚焦的编辑上下文输入。
 WebKit 的 AXValue 赋值会被忽略，不能用 `fill` 的成功回执证明字段已修改。
@@ -66,7 +66,7 @@ WebKit 的 AXValue 赋值会被忽略，不能用 `fill` 的成功回执证明�
 使用宿主固定的 GUI 配置运行，禁止为通过而放开前台/坐标动作：
 
 ```sh
-a3s-test check tests/e2e/json-render-desktop.acl --json
+aster-test check tests/e2e/json-render-desktop.acl --json
 ```
 
 `check` 只证明协议有效，不证明桌面执行通过。实际执行命令及后台代理必须随

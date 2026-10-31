@@ -2,11 +2,11 @@
 
 **Created**: 2026-10-23 · **Status**: Draft
 
-**Input**: User directive — build an evaluation mechanism for a3s-code's
+**Input**: User directive — build an evaluation mechanism for aster's
 retrieval capability modeled on MinishLab/semble's `benchmarks/` design.
 
 **Gate context**: Product regime. Root python harness (`tests/retrieval_bench/`)
-driving the built a3s-code Core via the existing `workspace_retrieval_aster`
+driving the built aster Core via the existing `workspace_retrieval_aster`
 example binary (real engine, no model in the loop for retrieval itself).
 
 ## What Semble's design gives us (measured, not copied)
@@ -16,7 +16,7 @@ example binary (real engine, no model in the loop for retrieval itself).
 | ~1,250 queries / 63 repos / 19 languages, pinned by revision | A pinned-repo corpus starting with THIS repository + 2–5 external pinned repos (Rust, TS, Python, Go, CJK-bearing), extensible by `repos.json` |
 | 3 query categories: semantic (behavior), architecture (design), symbol (lookup) | Same taxonomy; generated per-repo from the codebase's own identifiers + docs, frozen as fixtures with labels |
 | NDCG@10 primary; per-language/category cuts | Same metric family; computed offline by the harness over frozen graded labels |
-| Token efficiency: tokens-at-first-hit vs grep+read, recall@budget | Same comparison: a3s-code search_snippet vs ripgrep+read on the same queries, tokenized by chars/4 (no tiktoken dep) |
+| Token efficiency: tokens-at-first-hit vs grep+read, recall@budget | Same comparison: aster search_snippet vs ripgrep+read on the same queries, tokenized by chars/4 (no tiktoken dep) |
 | Speed: cold index time, warm p50 latency | Same, measured against the built binary (the engine is Rust; CPU-only parity) |
 | Baselines: ripgrep, probe, cs, CodeRankEmbed, ablations | Baselines: ripgrep (PATH), pure-BM25 ablation (engine's lexical-only mode), hybrid ablation, hybrid+semantic |
 | Results keyed by commit SHA | Same: `results/<suite>-<sha12>.json`, resume-on-rerun |
@@ -46,7 +46,7 @@ a reversed ranking scores below chance, ties handled).
 
 ### US3 — Token efficiency (P1)
 `token_efficiency.py` replays each query through two workflows —
-(a) a3s-code snippet path, (b) simulated ripgrep+read (grep -n + read
+(a) aster snippet path, (b) simulated ripgrep+read (grep -n + read
 whole matching files) — and reports tokens-at-first-relevant-hit
 (chars/4, 32k miss penalty) and recall at 500/2k/8k/32k budgets.
 

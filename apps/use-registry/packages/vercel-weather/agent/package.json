@@ -1,5 +1,5 @@
 {
-  "name": "a3s-vercel-weather",
+  "name": "aster-vercel-weather",
   "private": true,
   "type": "module",
   "dependencies": {

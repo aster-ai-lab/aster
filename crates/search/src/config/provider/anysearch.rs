@@ -1,6 +1,6 @@
 //! AnySearch ACL provider parsing.
 
-use a3s_acl::ast::Block;
+use aster_acl::ast::Block;
 
 use crate::providers::{AnySearchConfig, AnySearchDomain, AnySearchProvider, AnySearchSubDomain};
 use crate::Result;

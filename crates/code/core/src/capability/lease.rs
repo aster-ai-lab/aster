@@ -8,10 +8,10 @@ use super::{
     CapabilityScopeKind, CodeCatalogGeneration, ScopeKind, Sha256Digest, UseCapabilityGeneration,
 };
 
-/// Host adapter for the exact non-clone lease returned by A3S Use.
+/// Host adapter for the exact non-clone lease returned by Aster Use.
 ///
 /// Implementations retain the real
-/// upstream capability snapshot or `a3s_use_reconcile::SelectionLease`
+/// upstream capability snapshot or `aster_use_reconcile::SelectionLease`
 /// as part of `self`. Code consumes the value at Run admission
 /// and drops it only after every child, task, and effect has settled.
 pub trait RetainedUseGeneration: Send + Sync + 'static {
@@ -32,7 +32,7 @@ where
 /// A lease cannot be returned after its owner is dropped:
 ///
 /// ```compile_fail
-/// use a3s_code_core::capability::{CapabilityLease, CapabilityScope, Run};
+/// use aster_core::capability::{CapabilityLease, CapabilityScope, Run};
 ///
 /// fn escape<'a>(scope: CapabilityScope<Run>) -> CapabilityLease<'a, Run> {
 ///     scope.lease().unwrap()
@@ -43,7 +43,7 @@ where
 /// API:
 ///
 /// ```compile_fail
-/// use a3s_code_core::capability::{CapabilityLease, Run, Turn};
+/// use aster_core::capability::{CapabilityLease, Run, Turn};
 ///
 /// fn needs_run(_lease: CapabilityLease<'_, Run>) {}
 /// fn wrong_scope(lease: CapabilityLease<'_, Turn>) {

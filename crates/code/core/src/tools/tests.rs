@@ -47,7 +47,7 @@ impl ImmutableContentAdapter for RecordingImmutableContentAdapter {
         ImmutableContentReferenceV1::new(
             request.binding(),
             request.descriptor(),
-            format!("a3s+test://authorized-content/{digest}"),
+            format!("aster+test://authorized-content/{digest}"),
         )
     }
 }
@@ -72,7 +72,7 @@ impl ImmutableContentAdapter for DriftedImmutableContentAdapter {
         let mut reference = ImmutableContentReferenceV1::new(
             request.binding(),
             request.descriptor(),
-            format!("a3s+test://authorized-content/{digest}"),
+            format!("aster+test://authorized-content/{digest}"),
         )?;
         reference.size_bytes = reference.size_bytes.saturating_add(1);
         Ok(reference)
@@ -149,7 +149,7 @@ fn immutable_content_binding_and_reference_reject_tampering() {
         &binding,
         &descriptor,
         format!(
-            "a3s+test://authorized-content/{}",
+            "aster+test://authorized-content/{}",
             descriptor.content_digest.strip_prefix("sha256:").unwrap()
         ),
     )
@@ -168,12 +168,12 @@ fn immutable_content_binding_and_reference_reject_tampering() {
 
     let digest = descriptor.content_digest.strip_prefix("sha256:").unwrap();
     for unsafe_uri in [
-        format!("a3s+test://user:password@authorized-content/{digest}"),
-        format!("a3s+test://authorized-content/{digest}?token=secret"),
-        format!("a3s+test://authorized-content/{digest}#secret"),
-        format!("a3s+test://authorized-content/{digest}-copy"),
-        format!("a3s+test://authorized-content/prefix{digest}"),
-        format!("a3s+test://{digest}/object"),
+        format!("aster+test://user:password@authorized-content/{digest}"),
+        format!("aster+test://authorized-content/{digest}?token=secret"),
+        format!("aster+test://authorized-content/{digest}#secret"),
+        format!("aster+test://authorized-content/{digest}-copy"),
+        format!("aster+test://authorized-content/prefix{digest}"),
+        format!("aster+test://{digest}/object"),
     ] {
         assert!(ImmutableContentReferenceV1::new(&binding, &descriptor, unsafe_uri).is_err());
     }
@@ -412,7 +412,6 @@ async fn test_tool_executor_creation() {
         [
             "ask_user",
             "ask_user_form",
-            "background",
             "bash",
             "batch",
             "download",
@@ -556,7 +555,7 @@ async fn test_command_env_is_available_on_default_context() {
     let temp = tempfile::tempdir().unwrap();
     let mut env = HashMap::new();
     env.insert(
-        "A3S_COMMAND_ENV_TEST".to_string(),
+        "ASTER_COMMAND_ENV_TEST".to_string(),
         "registry-env".to_string(),
     );
 
@@ -567,15 +566,15 @@ async fn test_command_env_is_available_on_default_context() {
         context
             .command_env
             .as_ref()
-            .and_then(|env| env.get("A3S_COMMAND_ENV_TEST"))
+            .and_then(|env| env.get("ASTER_COMMAND_ENV_TEST"))
             .map(String::as_str),
         Some("registry-env")
     );
 
     #[cfg(windows)]
-    let command = "Write-Output $env:A3S_COMMAND_ENV_TEST";
+    let command = "Write-Output $env:ASTER_COMMAND_ENV_TEST";
     #[cfg(not(windows))]
-    let command = "printf '%s' \"$A3S_COMMAND_ENV_TEST\"";
+    let command = "printf '%s' \"$ASTER_COMMAND_ENV_TEST\"";
 
     let result = executor
         .execute("bash", &serde_json::json!({ "command": command }))
@@ -692,7 +691,6 @@ fn test_tool_executor_registry() {
         [
             "ask_user",
             "ask_user_form",
-            "background",
             "bash",
             "batch",
             "download",
@@ -746,7 +744,7 @@ async fn context_efficient_policy_is_applied_with_replayable_evidence() {
         .unwrap();
     let metadata = result.metadata.as_ref().unwrap();
     let evidence: ToolResultEvidenceV1 =
-        serde_json::from_value(metadata["a3s_tool_result_evidence"].clone()).unwrap();
+        serde_json::from_value(metadata["aster_tool_result_evidence"].clone()).unwrap();
     let transform_binding: ToolResultTransformBindingV1 =
         serde_json::from_value(metadata[TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY].clone())
             .unwrap();
@@ -761,7 +759,7 @@ async fn context_efficient_policy_is_applied_with_replayable_evidence() {
         evidence.projected_digest
     );
     assert!(evidence.byte_delta.unwrap() < 0);
-    assert!(evidence.content_ref.starts_with("a3s://tool-output/"));
+    assert!(evidence.content_ref.starts_with("aster://tool-output/"));
     transform_binding.validate_for_policy(&policy).unwrap();
     assert!(result.output.contains("omitted"));
 }
@@ -811,7 +809,7 @@ async fn configured_immutable_content_adapter_retains_original_without_local_cop
         .unwrap();
     let metadata = result.metadata.as_ref().unwrap();
     let evidence: ToolResultEvidenceV1 =
-        serde_json::from_value(metadata["a3s_tool_result_evidence"].clone()).unwrap();
+        serde_json::from_value(metadata["aster_tool_result_evidence"].clone()).unwrap();
     let reference: ImmutableContentReferenceV1 =
         serde_json::from_value(metadata["artifact"]["content_reference"].clone()).unwrap();
     let writes = adapter.writes.lock().unwrap();
@@ -850,7 +848,7 @@ async fn configured_immutable_content_adapter_retains_lossless_original() {
         .unwrap();
     let metadata = result.metadata.as_ref().unwrap();
     let evidence: ToolResultEvidenceV1 =
-        serde_json::from_value(metadata["a3s_tool_result_evidence"].clone()).unwrap();
+        serde_json::from_value(metadata["aster_tool_result_evidence"].clone()).unwrap();
     let reference: ImmutableContentReferenceV1 =
         serde_json::from_value(metadata["artifact"]["content_reference"].clone()).unwrap();
     let writes = adapter.writes.lock().unwrap();
@@ -1163,7 +1161,7 @@ fn test_truncate_tool_output_with_artifact_reference() {
     assert!(artifact.artifact_id.starts_with("tool-output:test_tool:"));
     assert!(artifact
         .artifact_uri
-        .starts_with("a3s://tool-output/test_tool/"));
+        .starts_with("aster://tool-output/test_tool/"));
     assert!(artifact
         .artifact_uri
         .ends_with(&format!("{:x}", sha2::Sha256::digest(output.as_bytes()))));
@@ -1173,7 +1171,7 @@ fn test_truncate_tool_output_with_artifact_reference() {
 fn tool_result_evidence_is_versioned_deterministic_and_byte_exact() {
     let metadata =
         attach_tool_result_evidence(None, "éé", "é", ToolResultLossModeV1::BoundedPreview);
-    let value = &metadata["a3s_tool_result_evidence"];
+    let value = &metadata["aster_tool_result_evidence"];
     let evidence: ToolResultEvidenceV1 = serde_json::from_value(value.clone()).unwrap();
 
     assert_eq!(evidence.schema, TOOL_RESULT_EVIDENCE_SCHEMA_V1);
@@ -1216,7 +1214,7 @@ fn tool_result_evidence_reads_pre_transform_v1_without_rewriting_it() {
         "token_estimator": TOOL_RESULT_TOKEN_ESTIMATOR_V1,
         "content_digest": "sha256:source",
         "repeat_key": "sha256:source",
-        "content_ref": "a3s://tool-output/test/source",
+        "content_ref": "aster://tool-output/test/source",
         "loss_mode": "bounded_preview"
     });
     let evidence: ToolResultEvidenceV1 = serde_json::from_value(legacy.clone()).unwrap();
@@ -1235,8 +1233,8 @@ fn tool_result_evidence_reads_pre_transform_v1_without_rewriting_it() {
 #[test]
 fn tool_result_evidence_uses_the_immutable_artifact_reference() {
     let metadata = serde_json::json!({
-        "artifact": {"artifact_uri": "a3s://tool-output/bash/abc"},
-        "a3s_tool_result_evidence": {"untrusted": true},
+        "artifact": {"artifact_uri": "aster://tool-output/bash/abc"},
+        "aster_tool_result_evidence": {"untrusted": true},
     });
     let metadata = attach_tool_result_evidence(
         Some(metadata),
@@ -1245,8 +1243,8 @@ fn tool_result_evidence_uses_the_immutable_artifact_reference() {
         ToolResultLossModeV1::BoundedPreview,
     );
     let evidence: ToolResultEvidenceV1 =
-        serde_json::from_value(metadata["a3s_tool_result_evidence"].clone()).unwrap();
-    assert_eq!(evidence.content_ref, "a3s://tool-output/bash/abc");
+        serde_json::from_value(metadata["aster_tool_result_evidence"].clone()).unwrap();
+    assert_eq!(evidence.content_ref, "aster://tool-output/bash/abc");
     assert_eq!(evidence.original_bytes, 4);
     assert_eq!(evidence.projected_bytes, 7);
     assert_eq!(evidence.loss_mode, ToolResultLossModeV1::BoundedPreview);

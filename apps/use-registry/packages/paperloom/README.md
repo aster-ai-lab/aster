@@ -1,6 +1,6 @@
 # 论文精读
 
-The `a3s/paperloom` AIX package extends Aster's installed `@` agents. Select
+The `aster/paperloom` AIX package extends Aster's installed `@` agents. Select
 one PDF from the current workspace, then invoke `@论文精读` to read or ask
 about that source. With no selection, reuse Aster's workspace file picker or
 provide the exact workspace path. No separate library, collection manager,
@@ -22,4 +22,4 @@ The edge agent is only the `@论文精读` entry. It is not the processor.
 Automatic OS deployment and Secret injection remain separate, unpassed gates.
 Installing this archive does not claim those gates have passed.
 
-The release contract is `docs/plans/desktop-paperloom-release-2026-10-17.md` in A3S.
+The release contract is `docs/plans/desktop-paperloom-release-2026-10-17.md` in Aster.

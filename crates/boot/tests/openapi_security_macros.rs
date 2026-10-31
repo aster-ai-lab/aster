@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use a3s_boot::{
+use aster_boot::{
     controller, BootApplication, BootResponse, ControllerDefinition, Module, ModuleRef,
     OpenApiInfo, OpenApiOAuthFlows, Result, RouteDefinition,
 };
@@ -99,26 +99,26 @@ struct OpenApiSecurityController;
 
 #[controller("/secure")]
 impl OpenApiSecurityController {
-    #[a3s_boot::get("/custom")]
-    #[a3s_boot::api_security("customAuth", scopes = ["read", "write"])]
+    #[aster_boot::get("/custom")]
+    #[aster_boot::api_security("customAuth", scopes = ["read", "write"])]
     async fn custom(&self) -> Result<&'static str> {
         Ok("custom")
     }
 
-    #[a3s_boot::get("/cookie")]
-    #[a3s_boot::api_cookie_auth(name = "sid")]
+    #[aster_boot::get("/cookie")]
+    #[aster_boot::api_cookie_auth(name = "sid")]
     async fn cookie(&self) -> Result<&'static str> {
         Ok("cookie")
     }
 
-    #[a3s_boot::get("/header-key")]
-    #[a3s_boot::api_key_auth(name = "x-api-key")]
+    #[aster_boot::get("/header-key")]
+    #[aster_boot::api_key_auth(name = "x-api-key")]
     async fn header_key(&self) -> Result<&'static str> {
         Ok("header")
     }
 
-    #[a3s_boot::get("/query-key")]
-    #[a3s_boot::api_key_auth(
+    #[aster_boot::get("/query-key")]
+    #[aster_boot::api_key_auth(
         name = "api_key",
         location = "query",
         scheme = "queryKeyAuth",
@@ -128,14 +128,14 @@ impl OpenApiSecurityController {
         Ok("query")
     }
 
-    #[a3s_boot::get("/bearer")]
-    #[a3s_boot::bearer_auth("accessToken")]
+    #[aster_boot::get("/bearer")]
+    #[aster_boot::bearer_auth("accessToken")]
     async fn bearer(&self) -> Result<&'static str> {
         Ok("bearer")
     }
 
-    #[a3s_boot::get("/oauth2")]
-    #[a3s_boot::oauth2_auth(
+    #[aster_boot::get("/oauth2")]
+    #[aster_boot::oauth2_auth(
         name = "oauth2",
         flow = "authorization_code",
         authorization_url = "https://auth.example.com/oauth/authorize",
@@ -148,8 +148,8 @@ impl OpenApiSecurityController {
         Ok("oauth2")
     }
 
-    #[a3s_boot::get("/openid")]
-    #[a3s_boot::open_id_connect_auth(
+    #[aster_boot::get("/openid")]
+    #[aster_boot::open_id_connect_auth(
         name = "openId",
         url = "https://auth.example.com/.well-known/openid-configuration",
         scopes = ["openid", "profile"],

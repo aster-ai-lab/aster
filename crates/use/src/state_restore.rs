@@ -1,4 +1,4 @@
-//! Reviewed, authority-bound recovery for a complete A3S Use installation.
+//! Reviewed, authority-bound recovery for a complete Aster Use installation.
 //!
 //! The coordinated archive is integrity evidence, never its own restore
 //! authority. Planning and apply require the live Registry projection,
@@ -9,8 +9,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{UseError, UseResult};
-use a3s_use_extension::{ExtensionPaths, StateMaintenanceLock};
+use aster_use_core::{UseError, UseResult};
+use aster_use_extension::{ExtensionPaths, StateMaintenanceLock};
 use olpc_cjson::CanonicalFormatter;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -28,12 +28,12 @@ mod journal;
 use authority::{authority_entries, validate_live_authority};
 pub use journal::{
     ActiveStateRestoreDiagnostic, StateRestoreDiagnostic, StateRestoreDiagnosticStatus,
-    StateRestoreOperationDiagnostic, StateRestoreResult, A3S_USE_STATE_RESTORE_DIAGNOSTIC_SCHEMA,
-    A3S_USE_STATE_RESTORE_OPERATION_SCHEMA, A3S_USE_STATE_RESTORE_RESULT_SCHEMA,
+    StateRestoreOperationDiagnostic, StateRestoreResult, ASTER_USE_STATE_RESTORE_DIAGNOSTIC_SCHEMA,
+    ASTER_USE_STATE_RESTORE_OPERATION_SCHEMA, ASTER_USE_STATE_RESTORE_RESULT_SCHEMA,
 };
 use journal::{StateRestoreOperation, StateRestoreOperationStatus, StateRestoreOperationStore};
 
-pub const A3S_USE_STATE_RESTORE_PLAN_SCHEMA: &str = "a3s.use.state-restore-plan.v1";
+pub const ASTER_USE_STATE_RESTORE_PLAN_SCHEMA: &str = "aster.use.state-restore-plan.v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -174,7 +174,7 @@ pub struct StateRestorePlan {
 impl StateRestorePlan {
     pub fn validate(&self) -> UseResult<()> {
         self.backup.validate()?;
-        if self.schema != A3S_USE_STATE_RESTORE_PLAN_SCHEMA
+        if self.schema != ASTER_USE_STATE_RESTORE_PLAN_SCHEMA
             || self.backup.use_version != env!("CARGO_PKG_VERSION")
             || self.backup.os != std::env::consts::OS
             || self.backup.architecture != std::env::consts::ARCH
@@ -439,7 +439,7 @@ impl StateRestoreManager {
         &self,
         mut operation: StateRestoreOperation,
         backup_path: &Path,
-        _maintenance: &a3s_use_extension::StateMaintenanceGuard,
+        _maintenance: &aster_use_extension::StateMaintenanceGuard,
     ) -> UseResult<StateRestoreResult> {
         if operation.status == StateRestoreOperationStatus::Completed {
             self.validate_terminal(&operation).await?;
@@ -558,7 +558,7 @@ fn build_plan(
         StateRestorePlanStatus::Required
     };
     let plan = StateRestorePlan {
-        schema: A3S_USE_STATE_RESTORE_PLAN_SCHEMA.to_owned(),
+        schema: ASTER_USE_STATE_RESTORE_PLAN_SCHEMA.to_owned(),
         status,
         backup_manifest_digest: backup.descriptor_digest()?,
         before_inventory_digest: digest_entries(&live)?,
@@ -795,7 +795,7 @@ fn resolve_external_path(path: &Path, paths: &ExtensionPaths) -> UseResult<PathB
             "A whole-installation restore archive directory cannot be inspected: {error}"
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&parent_metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&parent_metadata)
         || !parent_metadata.is_dir()
     {
         return Err(restore_error(
@@ -867,7 +867,7 @@ fn restore_in_progress(plan_digest: Option<&str>) -> UseError {
 }
 
 #[cfg(test)]
-pub(super) const RESTORE_CRASH_CHECKPOINT_ENV: &str = "A3S_USE_TEST_STATE_RESTORE_CHECKPOINT";
+pub(super) const RESTORE_CRASH_CHECKPOINT_ENV: &str = "ASTER_USE_TEST_STATE_RESTORE_CHECKPOINT";
 
 #[cfg(test)]
 pub(super) fn maybe_test_crash(checkpoint: &str) {

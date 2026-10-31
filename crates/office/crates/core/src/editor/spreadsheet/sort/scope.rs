@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{node_not_found, sort_error, state};
 use crate::semantic::{DocumentNode, NativeOfficeDocument, OfficeNodeType};

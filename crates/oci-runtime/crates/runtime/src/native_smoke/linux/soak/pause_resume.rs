@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, Process};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, Process};
+use aster_oci_sdk::{
     ContainerOperationRequest, ContainerRecord, ContainerTarget, ExecRequest, IoMode, ProcessId,
     ProcessIo, ProcessTarget, RuntimeClient, StateRequest,
 };
@@ -12,11 +12,11 @@ use super::super::filesystem::{path_exists, read_marker};
 use super::wave::{operation, require, run_concurrently, soak_call, verify_live_list, WaveContext};
 use crate::{NativeLinuxSoakPauseResumeEvidence, NativeLinuxSoakReport};
 
-pub(super) const PROGRESS_MARKER_NAME: &str = ".a3s-oci-native-soak-progress";
-pub(super) const PROGRESS_TEMP_MARKER_NAME: &str = ".a3s-oci-native-soak-progress.next";
+pub(super) const PROGRESS_MARKER_NAME: &str = ".aster-oci-native-soak-progress";
+pub(super) const PROGRESS_TEMP_MARKER_NAME: &str = ".aster-oci-native-soak-progress.next";
 
-const PROGRESS_PATH: &str = "/.a3s-oci-native-soak-progress";
-const PROGRESS_TEMP_PATH: &str = "/.a3s-oci-native-soak-progress.next";
+const PROGRESS_PATH: &str = "/.aster-oci-native-soak-progress";
+const PROGRESS_TEMP_PATH: &str = "/.aster-oci-native-soak-progress.next";
 const PROGRESS_POLL_INTERVAL: Duration = Duration::from_millis(25);
 const FREEZE_OBSERVATION_DELAY: Duration = Duration::from_millis(350);
 

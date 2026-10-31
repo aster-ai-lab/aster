@@ -1,6 +1,6 @@
 //! Real-provider acceptance through the built Aster TUI and its sibling ACP.
 //!
-//! A3S_CONFIG_FILE names the operator-owned ACL; it is never copied or edited.
+//! ASTER_CONFIG_FILE names the operator-owned ACL; it is never copied or edited.
 //! Run explicitly with --ignored --test-threads=1 --nocapture.
 
 #![cfg(test)]

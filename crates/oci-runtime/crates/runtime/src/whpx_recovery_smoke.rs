@@ -1,13 +1,13 @@
 use std::path::Path;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{ContainerId, ContainerTarget, ExitStatus, Result};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{ContainerId, ContainerTarget, ExitStatus, Result};
 use serde::{Deserialize, Serialize};
 
 /// Versioned readiness handoff written by the process that owns the live VM.
-pub const WHPX_RECOVERY_OWNER_READY_SCHEMA_VERSION: &str = "a3s.oci.whpx-recovery-owner-ready.v1";
+pub const WHPX_RECOVERY_OWNER_READY_SCHEMA_VERSION: &str = "aster.oci.whpx-recovery-owner-ready.v1";
 /// Versioned evidence emitted after owner death and host-service recovery.
-pub const WHPX_RECOVERY_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.whpx-recovery-smoke.v1";
+pub const WHPX_RECOVERY_SMOKE_SCHEMA_VERSION: &str = "aster.oci.whpx-recovery-smoke.v1";
 
 /// Machine-readable point at which the qualification parent may kill the host.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -166,7 +166,7 @@ pub async fn whpx_recovery_owner(config: WhpxRecoveryOwnerConfig<'_>) -> Result<
     #[cfg(not(all(target_os = "windows", target_arch = "x86_64")))]
     {
         let _ = config;
-        Err(a3s_oci_sdk::Error::unsupported("whpx-recovery-owner"))
+        Err(aster_oci_sdk::Error::unsupported("whpx-recovery-owner"))
     }
 }
 
@@ -219,13 +219,13 @@ mod windows {
     use std::sync::Arc;
     use std::time::Duration;
 
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AGENT_RECOVERY_REPORT_DIRECTORY_PREFIX, AGENT_RECOVERY_REPORT_PENDING_SUFFIX,
         AGENT_SESSION_TOKEN_DIRECTORY_PREFIX,
     };
-    use a3s_oci_core::{CapabilityStatus, DriverReadiness, HostPlatform};
-    use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-    use a3s_oci_sdk::{
+    use aster_oci_core::{CapabilityStatus, DriverReadiness, HostPlatform};
+    use aster_oci_sdk::oci_spec::runtime::ContainerState;
+    use aster_oci_sdk::{
         ContainerTarget, CreateAttachments, CreateRequest, DeleteMode, DeleteRequest, Error,
         ErrorCode, ListRequest, OciBundle, OciRuntimeService, OperationContext, OperationId,
         ProcessIo, Result, Signal, StartRequest, StateRequest, WaitRequest,
@@ -244,8 +244,8 @@ mod windows {
     const OWNER_MAX_LIFETIME: Duration = Duration::from_secs(300);
     const POLL_INTERVAL: Duration = Duration::from_millis(25);
     const LINUX_SIGKILL: i32 = 9;
-    const MARKER_NAME: &str = ".a3s-oci-create-start-smoke";
-    const MARKER_CONTENTS: &[u8] = b"a3s-oci-create-start-user-time-v1\n";
+    const MARKER_NAME: &str = ".aster-oci-create-start-smoke";
+    const MARKER_CONTENTS: &[u8] = b"aster-oci-create-start-user-time-v1\n";
     const MAX_MARKER_BYTES: u64 = 1_024;
 
     pub(super) async fn owner(config: WhpxRecoveryOwnerConfig<'_>) -> Result<()> {
@@ -290,7 +290,7 @@ mod windows {
                 context: operation("whpx-recovery-owner-create")?,
                 id: container_id.clone(),
                 bundle,
-                isolation: a3s_oci_sdk::IsolationRequest::DedicatedVm,
+                isolation: aster_oci_sdk::IsolationRequest::DedicatedVm,
                 attachments,
             })
             .await?;
@@ -334,7 +334,7 @@ mod windows {
 
         sleep(OWNER_MAX_LIFETIME).await;
         let _ = service
-            .kill(a3s_oci_sdk::KillRequest {
+            .kill(aster_oci_sdk::KillRequest {
                 context: operation("whpx-recovery-owner-timeout-kill")?,
                 target: target.clone(),
                 signal: Signal::new(LINUX_SIGKILL)?,
@@ -980,8 +980,8 @@ mod windows {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_core::{CapabilityStatus, HostPlatform};
-    use a3s_oci_sdk::{ContainerId, ContainerTarget, Generation};
+    use aster_oci_core::{CapabilityStatus, HostPlatform};
+    use aster_oci_sdk::{ContainerId, ContainerTarget, Generation};
 
     use super::WhpxRecoverySmokeReport;
 

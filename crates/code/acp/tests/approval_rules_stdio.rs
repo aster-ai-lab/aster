@@ -1,8 +1,8 @@
-//! "Don't ask again" bash rules through the shipped `a3s-code-acp` binary
+//! "Don't ask again" bash rules through the shipped `aster-acp` binary
 //! against a local scripted model (SEC-APPROVAL2).
 //!
 //! - an `allow-once` answer never learns, and a repository-planted
-//!   `.a3s/approvals.acl` is not honoured;
+//!   `.aster/approvals.acl` is not honoured;
 //! - `allow-always` learns the program + subcommand rule in the user state
 //!   root, and a relaunched agent skips the ask for that rule only;
 //! - a chained command or another target still asks;
@@ -342,17 +342,17 @@ async fn spawn_agent(fixture: &Fixture) -> AgentProc {
                 .expect("shim mode");
         }
         command
-            .env("A3S_CODE_GUEST_SYSTEM_IMAGE", image)
-            .env("A3S_CODE_KRUN_SHIM", shim);
+            .env("ASTER_GUEST_SYSTEM_IMAGE", image)
+            .env("ASTER_KRUN_SHIM", shim);
     }
     let mut child = command
         .arg("--cwd")
         .arg(&fixture.workspace)
-        .env("A3S_CONFIG", &fixture.config)
-        .env("A3S_STATE_HOME", &fixture.state)
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_CONFIG", &fixture.config)
+        .env("ASTER_STATE_HOME", &fixture.state)
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("XAI_API_KEY", "sk-dummy-not-a-model")
         .env("HOME", &fixture.home)
         .env("GROK_HOME", fixture.home.join("grok"))
@@ -362,7 +362,7 @@ async fn spawn_agent(fixture: &Fixture) -> AgentProc {
         .stderr(Stdio::null())
         .kill_on_drop(true)
         .spawn()
-        .expect("spawn a3s-code-acp");
+        .expect("spawn aster-acp");
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
     let asks = Rc::new(RefCell::new(Vec::new()));
@@ -424,7 +424,7 @@ async fn allow_always_learns_one_rule_in_user_state_and_nothing_else_skips_the_a
     tokio::task::LocalSet::new()
         .run_until(async {
             let fixture = Fixture::new(spawn_mock());
-            let planted = fixture.workspace.join(".a3s").join("approvals.acl");
+            let planted = fixture.workspace.join(".aster").join("approvals.acl");
             std::fs::create_dir_all(planted.parent().expect("parent")).expect("planted dir");
             let planted_text = "learned_approvals = [\"make\", \"touch\"]\n";
             std::fs::write(&planted, planted_text).expect("planted approvals");
@@ -453,7 +453,7 @@ async fn allow_always_learns_one_rule_in_user_state_and_nothing_else_skips_the_a
             assert_eq!(asks.len(), 1, "allow-once must not have learned");
             let learned = std::fs::read_to_string(store(&fixture)).expect("user-state store");
             assert!(learned.contains("\"make check\""), "{learned}");
-            assert!(a3s_acl::parse_acl(&learned).is_ok(), "{learned}");
+            assert!(aster_acl::parse_acl(&learned).is_ok(), "{learned}");
             assert_eq!(
                 std::fs::read_to_string(&planted).expect("planted"),
                 planted_text,

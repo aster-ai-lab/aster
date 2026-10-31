@@ -2,7 +2,7 @@ use std::error::Error;
 use std::io::{Error as IoError, ErrorKind};
 use std::path::PathBuf;
 
-use a3s_flow::WorkflowDsl;
+use aster_flow::WorkflowDsl;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let path = std::env::args_os()

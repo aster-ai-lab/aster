@@ -1,23 +1,23 @@
 #![cfg(feature = "research")]
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityCeiling, CapabilityContribution, CapabilityDescriptor, CapabilityExecutionCeiling,
     CapabilityKind, CapabilitySet, CapabilitySource, CodeCatalogGeneration,
     GovernanceCapabilityCeiling, RunCapabilityBindingV1, Sha256Digest, UseCapabilityGeneration,
     UsePackageGeneration, WorkspaceCapabilityCeiling,
 };
-use a3s_code_core::evaluation::{
+use aster_core::evaluation::{
     digest_bytes, EvaluationDispatchClaimOutcome, EvaluationDispatchLedger, EvaluationRecordV1,
     EvaluationResultSink, EvaluationResultV1, EvidenceError, EvidenceReadRequestV1,
     ExecutionFactRecorder, ExecutionFrameV1, ExecutionIdentityV1, ExecutionResultOutcomeV1,
     ExecutionResultReceiptV1, ExecutionTargetV1, FileEvaluationDispatchLedger,
     FileEvaluationResultStore, InMemoryExecutionFactJournal, RunEvidenceReader,
 };
-use a3s_code_core::tools::{
+use aster_core::tools::{
     ImmutableContentAdapter, ImmutableContentAdapterBindingV1, ImmutableContentAdapterSession,
     ImmutableContentError, ImmutableContentKindV1, ImmutableContentReferenceV1,
     ImmutableContentResult, ImmutableContentWriteRequestV1, TOOL_RESULT_CONTENT_MEDIA_TYPE,
 };
-use a3s_code_core::{
+use aster_core::{
     AgentEvent, CoreEventIdentity, CoreIdentity, EvidenceCursor, InMemoryRunStore, OperationId,
     ResearchArtifactKindV1, ResearchEventV1, ResearchEvidenceFactKindV1, ResearchEvidenceFactV1,
     ResearchProvenanceReceiptV1, ResearchReproducibilityV1, ResearchReviewBatchV1,
@@ -30,7 +30,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tokio::io::AsyncWriteExt;
 
-use a3s_code_core::execution_identity::EVALUATION_DISPATCH_IDENTITY_DOMAIN_V1;
+use aster_core::execution_identity::EVALUATION_DISPATCH_IDENTITY_DOMAIN_V1;
 
 fn digest(byte: char) -> String {
     format!("sha256:{}", byte.to_string().repeat(64))
@@ -145,7 +145,7 @@ impl ImmutableContentAdapter for FileCreateOnlyAdapter {
             request.binding(),
             request.descriptor(),
             format!(
-                "a3s+qualification://artifact/{}",
+                "aster+qualification://artifact/{}",
                 request
                     .descriptor()
                     .content_digest
@@ -212,7 +212,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     let mut gapped_fact = evidence.clone();
     let mut shifted = records[0].clone();
     shifted.sequence = 2;
-    gapped_fact.facts[0] = a3s_code_core::evaluation::ExecutionFactV1::from_run_event(
+    gapped_fact.facts[0] = aster_core::evaluation::ExecutionFactV1::from_run_event(
         ExecutionFrameV1::root(target.clone()),
         &shifted,
     )
@@ -261,7 +261,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
         .unwrap();
     assert!(matches!(
         research.transition_to(ResearchRunStatusV1::Running),
-        Err(a3s_code_core::ResearchContractError::InvalidTransition { .. })
+        Err(aster_core::ResearchContractError::InvalidTransition { .. })
     ));
 
     let core_event = CoreEventIdentity::from_agent_event(
@@ -488,7 +488,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     .unwrap();
     assert_eq!(
         cross_project_finding.bind_evaluation_record_for_run(&reopened_record, &research),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "researchRun.projectId"
         ))
     );
@@ -523,7 +523,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     .unwrap();
     assert_eq!(
         drifted_evidence_finding.bind_evaluation_record_for_run(&drifted_record, &research),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "evaluationRecord.evidenceDigest"
         ))
     );
@@ -561,7 +561,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     .unwrap();
     assert_eq!(
         drifted_finding.bind_provenance_receipt_for_run(&drifted_receipt, &research),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "provenanceReceipt.projectRevision"
         ))
     );
@@ -599,7 +599,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     .unwrap();
     assert_eq!(
         provider_drift_finding.bind_provenance_receipt_for_run(&provider_drift_receipt, &research),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "provenanceReceipt.providerId"
         ))
     );
@@ -637,7 +637,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     .unwrap();
     assert_eq!(
         seed_drift_finding.bind_provenance_receipt_for_run(&seed_drift_receipt, &research),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "provenanceReceipt.randomSeed"
         ))
     );
@@ -671,7 +671,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     .unwrap();
     assert_eq!(
         unadmitted_finding.bind_evaluation_record_for_run(&reopened_record, &planned_research),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "researchRun.status"
         ))
     );
@@ -699,7 +699,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
             evidence.snapshot_digest.clone(),
             vec![batch.findings[0].clone()],
         ),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "researchRun.status"
         ))
     );
@@ -714,7 +714,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
             evidence.snapshot_digest.clone(),
             vec![preclosed_finding],
         ),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "finding.status"
         ))
     );
@@ -730,7 +730,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
         severity: ResearchReviewSeverityV1,
         status: ResearchReviewStatusV1,
         message: &'a str,
-        location: &'a Option<a3s_code_core::ResearchReviewLocationV1>,
+        location: &'a Option<aster_core::ResearchReviewLocationV1>,
         evidence_digests: &'a [String],
         evaluator_id: &'a str,
         evaluation_record_digest: &'a str,
@@ -740,8 +740,8 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     }
     let mut forged_finding = batch.findings[0].clone();
     forged_finding.evaluator_id = "forged-reviewer".to_owned();
-    forged_finding.finding_digest = a3s_code_core::digest_json(
-        "a3s.code.review-finding.identity.v1",
+    forged_finding.finding_digest = aster_core::digest_json(
+        "aster.code.review-finding.identity.v1",
         &ForgedFindingIdentity {
             schema: &forged_finding.schema,
             finding_id: &forged_finding.finding_id,
@@ -773,7 +773,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     .unwrap();
     assert_eq!(
         forged_batch.validate_for_run(&research, &reopened_record),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "finding.evaluatorId"
         ))
     );
@@ -809,7 +809,7 @@ async fn research_execution_restarts_with_contiguous_evidence_and_exact_bindings
     .unwrap();
     assert_eq!(
         mixed_evidence_batch.validate_for_run(&research, &reopened_record),
-        Err(a3s_code_core::ResearchContractError::InvalidField(
+        Err(aster_core::ResearchContractError::InvalidField(
             "evaluationRecord.evidenceDigest"
         ))
     );
@@ -846,7 +846,7 @@ async fn research_cancellation_is_terminal_and_cannot_resume() {
     assert!(reopened.validate_execution_target(&target).is_ok());
     assert!(matches!(
         research.transition_to(ResearchRunStatusV1::Running),
-        Err(a3s_code_core::ResearchContractError::InvalidTransition { .. })
+        Err(aster_core::ResearchContractError::InvalidTransition { .. })
     ));
 }
 

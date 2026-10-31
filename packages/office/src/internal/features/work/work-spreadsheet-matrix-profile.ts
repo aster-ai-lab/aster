@@ -5,7 +5,7 @@ import { XLSX_GRADIENT_FILL_CELL_KEY } from './work-xlsx-gradient-fill';
 import { XLSX_PATTERN_FILL_CELL_KEY } from './work-xlsx-pattern-fill';
 
 export const SPREADSHEET_SHOWN_COMMENT_CELLS_PROPERTY =
-  '__a3sShownCommentCells';
+  '__asterShownCommentCells';
 
 export interface SpreadsheetMatrixProfile {
   columnCount: number;

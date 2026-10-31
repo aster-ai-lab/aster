@@ -1,8 +1,8 @@
 use std::io;
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
-use a3s_use_extension::{ExtensionPaths, ACTIVE_STATE_RESTORE_MARKER};
+use aster_use_core::{UseError, UseResult};
+use aster_use_extension::{ExtensionPaths, ACTIVE_STATE_RESTORE_MARKER};
 use serde::{Deserialize, Serialize};
 use tokio::fs;
 
@@ -16,9 +16,9 @@ use storage::{
     recover_temporary_json, sync_directory, validate_directory_chain, write_json,
 };
 
-pub const A3S_USE_STATE_RESTORE_OPERATION_SCHEMA: &str = "a3s.use.state-restore-operation.v1";
-pub const A3S_USE_STATE_RESTORE_RESULT_SCHEMA: &str = "a3s.use.state-restore-result.v1";
-const ACTIVE_STATE_RESTORE_SCHEMA: &str = "a3s.use.active-state-restore.v3";
+pub const ASTER_USE_STATE_RESTORE_OPERATION_SCHEMA: &str = "aster.use.state-restore-operation.v1";
+pub const ASTER_USE_STATE_RESTORE_RESULT_SCHEMA: &str = "aster.use.state-restore-result.v1";
+const ACTIVE_STATE_RESTORE_SCHEMA: &str = "aster.use.active-state-restore.v3";
 const MAX_OPERATION_BYTES: u64 = 64 * 1024 * 1024;
 const MAX_MARKER_BYTES: u64 = 4 * 1024;
 pub(super) const MAX_OPERATION_COUNT: usize = 64;
@@ -82,7 +82,7 @@ impl StateRestoreOperation {
         started_at_ms: u64,
     ) -> UseResult<Self> {
         let operation = Self {
-            schema: A3S_USE_STATE_RESTORE_OPERATION_SCHEMA.to_owned(),
+            schema: ASTER_USE_STATE_RESTORE_OPERATION_SCHEMA.to_owned(),
             plan,
             plan_digest,
             rollback_backup_manifest_digest,
@@ -96,7 +96,7 @@ impl StateRestoreOperation {
 
     pub(super) fn validate(&self) -> UseResult<()> {
         self.plan.validate()?;
-        if self.schema != A3S_USE_STATE_RESTORE_OPERATION_SCHEMA
+        if self.schema != ASTER_USE_STATE_RESTORE_OPERATION_SCHEMA
             || self.plan.status != super::StateRestorePlanStatus::Required
             || !valid_sha256(&self.plan_digest)
             || self.plan.descriptor_digest()? != self.plan_digest
@@ -155,7 +155,7 @@ impl StateRestoreOperation {
             ));
         }
         let result = StateRestoreResult {
-            schema: A3S_USE_STATE_RESTORE_RESULT_SCHEMA.to_owned(),
+            schema: ASTER_USE_STATE_RESTORE_RESULT_SCHEMA.to_owned(),
             changed: true,
             plan_digest: self.plan_digest.clone(),
             backup_manifest_digest: self.plan.backup_manifest_digest.clone(),
@@ -190,7 +190,7 @@ impl StateRestoreResult {
     pub(super) fn no_change(plan: &StateRestorePlan, plan_digest: String) -> UseResult<Self> {
         plan.validate()?;
         let result = Self {
-            schema: A3S_USE_STATE_RESTORE_RESULT_SCHEMA.to_owned(),
+            schema: ASTER_USE_STATE_RESTORE_RESULT_SCHEMA.to_owned(),
             changed: false,
             plan_digest,
             backup_manifest_digest: plan.backup_manifest_digest.clone(),
@@ -217,7 +217,7 @@ impl StateRestoreResult {
                 .rollback_backup_manifest_digest
                 .as_deref()
                 .is_none_or(valid_sha256);
-        if self.schema != A3S_USE_STATE_RESTORE_RESULT_SCHEMA || !digests_valid {
+        if self.schema != ASTER_USE_STATE_RESTORE_RESULT_SCHEMA || !digests_valid {
             return Err(operation_invalid(
                 "The whole-installation restore result identity is invalid.",
             ));
@@ -243,7 +243,7 @@ impl StateRestoreResult {
     }
 }
 
-pub const A3S_USE_STATE_RESTORE_DIAGNOSTIC_SCHEMA: &str = "a3s.use.state-restore-diagnostic.v1";
+pub const ASTER_USE_STATE_RESTORE_DIAGNOSTIC_SCHEMA: &str = "aster.use.state-restore-diagnostic.v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -345,7 +345,7 @@ impl StateRestoreDiagnostic {
             valid_sha256(&active.plan_digest)
                 && valid_sha256(&active.rollback_backup_manifest_digest)
         });
-        if self.schema != A3S_USE_STATE_RESTORE_DIAGNOSTIC_SCHEMA
+        if self.schema != ASTER_USE_STATE_RESTORE_DIAGNOSTIC_SCHEMA
             || !counts_valid
             || !operations_valid
             || !active_valid
@@ -499,7 +499,7 @@ impl StateRestoreOperationStore {
             }
         });
         let diagnostic = StateRestoreDiagnostic {
-            schema: A3S_USE_STATE_RESTORE_DIAGNOSTIC_SCHEMA.to_owned(),
+            schema: ASTER_USE_STATE_RESTORE_DIAGNOSTIC_SCHEMA.to_owned(),
             active,
             operations,
             retained_operation_directories,
@@ -519,7 +519,7 @@ impl StateRestoreOperationStore {
             Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
             Err(error) => return Err(operation_io("inspect restore operation", &directory, error)),
         };
-        if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+        if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
             return Err(operation_invalid(
                 "The whole-installation restore operation path is not an owned directory.",
             ));

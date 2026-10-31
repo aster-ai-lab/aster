@@ -3,7 +3,7 @@
   flex: 1;
   padding: 28px max(28px, calc((100% - 850px) / 2)) 70px;
   overflow: auto;
-  background: color-mix(in srgb, var(--a3s-bg) 80%, #dfe3e9);
+  background: color-mix(in srgb, var(--aster-bg) 80%, #dfe3e9);
   scroll-behavior: smooth;
 }
 
@@ -33,12 +33,12 @@
   height: 30px;
   margin: 0 auto 12px;
   padding: 4px 0;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 88%, transparent);
   border-radius: 5px;
-  background: color-mix(in srgb, var(--a3s-panel) 96%, #f4f6f9);
+  background: color-mix(in srgb, var(--aster-panel) 96%, #f4f6f9);
   box-shadow: 0 2px 7px rgb(31 39 55 / 10%);
-  color: var(--a3s-faint);
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
+  color: var(--aster-faint);
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
   font-size: 7px;
   user-select: none;
 }
@@ -59,7 +59,7 @@
   bottom: 0;
   background:
     linear-gradient(rgb(255 255 255 / 18%), transparent),
-    color-mix(in srgb, var(--a3s-line) 68%, #cbd1da);
+    color-mix(in srgb, var(--aster-line) 68%, #cbd1da);
   box-shadow: inset 0 0 0 1px rgb(54 65 84 / 5%);
   pointer-events: none;
 }
@@ -127,7 +127,7 @@
 }
 
 .work-document-ruler-tab-track:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--a3s-blue) 60%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--aster-blue) 60%, transparent);
   outline-offset: -2px;
 }
 
@@ -191,12 +191,12 @@
 }
 
 .work-document-ruler-tab-stop:hover {
-  background: color-mix(in srgb, var(--a3s-blue) 10%, transparent);
-  color: var(--a3s-blue);
+  background: color-mix(in srgb, var(--aster-blue) 10%, transparent);
+  color: var(--aster-blue);
 }
 
 .work-document-ruler-tab-stop:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--a3s-blue) 72%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--aster-blue) 72%, transparent);
   outline-offset: 1px;
 }
 
@@ -250,7 +250,7 @@
 .work-document-ruler-handle.right-indent {
   top: 9px;
   z-index: 4;
-  color: var(--a3s-blue);
+  color: var(--aster-blue);
 }
 
 .work-document-ruler-handle.left-indent > span,
@@ -273,7 +273,7 @@
 .work-document-ruler-handle.first-line-indent {
   top: -2px;
   z-index: 5;
-  color: var(--a3s-blue);
+  color: var(--aster-blue);
 }
 
 .work-document-ruler-handle.first-line-indent > span {
@@ -281,12 +281,12 @@
 }
 
 .work-document-ruler-handle:hover {
-  background: color-mix(in srgb, var(--a3s-blue) 10%, transparent);
-  color: var(--a3s-blue);
+  background: color-mix(in srgb, var(--aster-blue) 10%, transparent);
+  color: var(--aster-blue);
 }
 
 .work-document-ruler-handle:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--a3s-blue) 72%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--aster-blue) 72%, transparent);
   outline-offset: 1px;
 }
 
@@ -299,12 +299,12 @@
   width: 30px;
   padding: 0 4px;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 88%, transparent);
   border-radius: 5px;
-  background: color-mix(in srgb, var(--a3s-panel) 96%, #f4f6f9);
+  background: color-mix(in srgb, var(--aster-panel) 96%, #f4f6f9);
   box-shadow: 0 2px 7px rgb(31 39 55 / 10%);
-  color: var(--a3s-faint);
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
+  color: var(--aster-faint);
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
   font-size: 7px;
   user-select: none;
 }
@@ -325,7 +325,7 @@
   left: 0;
   background:
     linear-gradient(to right, rgb(255 255 255 / 18%), transparent),
-    color-mix(in srgb, var(--a3s-line) 68%, #cbd1da);
+    color-mix(in srgb, var(--aster-line) 68%, #cbd1da);
   box-shadow: inset 0 0 0 1px rgb(54 65 84 / 5%);
   pointer-events: none;
 }
@@ -407,12 +407,12 @@
 }
 
 .work-document-vertical-ruler-handle:hover {
-  background: color-mix(in srgb, var(--a3s-blue) 10%, transparent);
-  color: var(--a3s-blue);
+  background: color-mix(in srgb, var(--aster-blue) 10%, transparent);
+  color: var(--aster-blue);
 }
 
 .work-document-vertical-ruler-handle:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--a3s-blue) 72%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--aster-blue) 72%, transparent);
   outline-offset: 1px;
 }
 
@@ -426,9 +426,9 @@
   margin: 0;
   padding: 7px 12px;
   border: 0;
-  border-bottom: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
-  color: var(--a3s-muted);
+  border-bottom: 1px solid var(--aster-line);
+  background: var(--aster-panel);
+  color: var(--aster-muted);
   font-size: 9px;
 }
 

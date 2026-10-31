@@ -9,7 +9,7 @@
 
 //! Group-by API surface: route validation, null keys, and group-count trimming.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     GroupBySearchQuery, IndexParams, MetricType,
 };

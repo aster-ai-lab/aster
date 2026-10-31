@@ -1,8 +1,8 @@
-# a3s-effect
+# aster-effect
 
 [中文](README.zh-CN.md)
 
-`a3s-effect` is the actor runtime for an A3S Code harness. It is checked out
+`aster-effect` is the actor runtime for an Aster Code harness. It is checked out
 at `packages/effect`. It keeps two
 ideas separate, and the rest of the crate follows from that split.
 

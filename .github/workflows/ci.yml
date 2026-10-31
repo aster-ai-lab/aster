@@ -31,7 +31,7 @@ jobs:
           ref="$(git ls-tree HEAD apps/api | awk '{print $3}')"
           test -n "$ref"
           mkdir -p apps/api/vendor/web/public/cases
-          gh api "repos/kense-labs/api/contents/vendor/web/public/cases/acp-cloud-agent.aix?ref=${ref}" \
+          gh api "repos/aster-ai-lab/api/contents/vendor/web/public/cases/acp-cloud-agent.aix?ref=${ref}" \
             --jq .content \
             | python3 -c 'import base64,sys; sys.stdout.buffer.write(base64.b64decode(sys.stdin.read()))' \
             > apps/api/vendor/web/public/cases/acp-cloud-agent.aix
@@ -52,7 +52,9 @@ jobs:
           shared-key: product-${{ runner.os }}
           save-if: ${{ github.ref == 'refs/heads/main' }}
       - name: Format
-        run: cargo fmt --all -- --check
+        run: |
+          cargo fmt --all -- --check
+          cargo fmt --all --manifest-path apps/control-plane/Cargo.toml -- --check
       - name: Install static guest targets
         run: rustup target add aarch64-unknown-linux-musl x86_64-unknown-linux-musl
       - name: Static guest linker hardening
@@ -65,7 +67,7 @@ jobs:
           for guest_target in aarch64-unknown-linux-musl x86_64-unknown-linux-musl; do
             CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER="$rust_lld" \
             CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER="$rust_lld" \
-              cargo build --locked --release --target "$guest_target" -p a3s-oci-agent --bin a3s-oci-agent
+              cargo build --locked --release --target "$guest_target" -p aster-oci-agent --bin aster-oci-agent
           done
       - name: Internal dependency boundary
         run: python3 tests/workspace_dependencies.py
@@ -100,68 +102,68 @@ jobs:
       - name: Compile workspace and tests
         run: cargo check --locked --workspace --all-targets
       - name: Check optional harness contracts
-        run: cargo check --locked -p a3s-code-core --features advanced-harness,deep-live
+        run: cargo check --locked -p aster-core --features advanced-harness,deep-live
       - name: Build product and companion
         run: |
-          cargo build --locked -p aster -p a3s-code-acp -p a3s-office-cli
+          cargo build --locked -p aster -p aster-acp -p aster-office-cli
       - name: Build and test desktop product identities
         run: |
           for tenant in aster toyou; do
-            export A3S_TENANT_SLUG="$tenant"
+            export ASTER_TENANT_SLUG="$tenant"
             TAURI_CONFIG="$(python3 apps/studio/scripts/studio_product.py "$tenant" tauri-config)"
             export TAURI_CONFIG
             target_dir="$(cargo metadata --locked --offline --no-deps --format-version 1 | python3 -c 'import sys,json;print(json.load(sys.stdin)["target_directory"])')"
             TAURI_CONFIG="$(python3 apps/studio/scripts/studio_product.py "$tenant" tauri-config --target-dir "$target_dir")"
             export TAURI_CONFIG STUDIO_COMPANIONS_STAGED=1
             feature="$(python3 apps/studio/scripts/studio_product.py "$tenant" feature)"
-            build_args=(build --locked -p a3s-studio -p a3s-code-acp -p a3s-office-cli --no-default-features --features "a3s-studio/$feature,a3s-code-acp/default,a3s-code-acp/headless-search,a3s-office-cli/default")
-            cargo "${build_args[@]}" --bin a3s-code-acp --bin a3s-office
+            build_args=(build --locked -p aster-studio -p aster-acp -p aster-office-cli --no-default-features --features "aster-studio/$feature,aster-acp/default,aster-acp/headless-search,aster-office-cli/default")
+            cargo "${build_args[@]}" --bin aster-acp --bin aster-office
             python3 apps/studio/scripts/studio_product.py "$tenant" stage-companions
             cargo "${build_args[@]}" --bin Studio
-            cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" tenant:: -- --test-threads=1
-            cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" providers:: -- --test-threads=1
-            cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" agent_plane::computer_use_tests:: -- --test-threads=1
-            cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" app_updater:: -- --test-threads=1
-            cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" bundled_skills:: -- --test-threads=1
+            cargo test --locked -p aster-studio --lib --no-default-features --features "$feature" tenant:: -- --test-threads=1
+            cargo test --locked -p aster-studio --lib --no-default-features --features "$feature" providers:: -- --test-threads=1
+            cargo test --locked -p aster-studio --lib --no-default-features --features "$feature" agent_plane::computer_use_tests:: -- --test-threads=1
+            cargo test --locked -p aster-studio --lib --no-default-features --features "$feature" app_updater:: -- --test-threads=1
+            cargo test --locked -p aster-studio --lib --no-default-features --features "$feature" bundled_skills:: -- --test-threads=1
           done
       - name: Product and runtime tests
-        run: cargo test --locked -p aster -p a3s-acl -p a3s-effect
+        run: cargo test --locked -p aster -p aster-acl -p aster-effect
       - name: Shell bounded continuation contracts
-        run: env -u GROK_LENGTH_SALVAGE cargo test --locked -p a3s-code-shell --lib length_salvage -- --test-threads=1
+        run: env -u GROK_LENGTH_SALVAGE cargo test --locked -p aster-shell --lib length_salvage -- --test-threads=1
       - name: Studio native contracts
-        run: cargo test --locked -p a3s-studio-data-sqlite -p a3s-studio-desktop-contract
+        run: cargo test --locked -p aster-studio-data-sqlite -p aster-studio-desktop-contract
       - name: ACP integration
-        run: cargo test --locked -p a3s-code-acp --test v912_seam
+        run: cargo test --locked -p aster-acp --test v912_seam
       - name: Local Git queries and Codex account discovery
         run: |
-          cargo test --locked -p a3s-code-core --test git_read_queries
-          cargo test --locked -p a3s-code-acp --test codex_account_stdio
+          cargo test --locked -p aster-core --test git_read_queries
+          cargo test --locked -p aster-acp --test codex_account_stdio
       - name: Core long-task ownership and consent contracts
         run: |
-          cargo test --locked -p a3s-code-core --lib -- agent_api::goal_facade::tests fact_control:: goal_control:: hitl:: tool_confirmation:: --test-threads=4
+          cargo test --locked -p aster-core --lib -- agent_api::goal_facade::tests fact_control:: goal_control:: hitl:: tool_confirmation:: --test-threads=4
       - name: ACP long-task foundation contracts
         run: |
-          cargo test --locked -p a3s-code-acp --test long_horizon_contracts --test long_horizon_preflight --test long_horizon_real_llm --test long_horizon_rust_stdio
-          cargo test --locked -p a3s-code-acp --features headless-search --test long_horizon_contracts --test long_horizon_preflight --test long_horizon_real_llm --test long_horizon_rust_stdio
+          cargo test --locked -p aster-acp --test long_horizon_contracts --test long_horizon_preflight --test long_horizon_real_llm --test long_horizon_rust_stdio
+          cargo test --locked -p aster-acp --features headless-search --test long_horizon_contracts --test long_horizon_preflight --test long_horizon_real_llm --test long_horizon_rust_stdio
       - name: macOS ACP wire conformance
         if: runner.os == 'macOS'
-        run: cargo test --locked -p a3s-code-acp --test acp_conformance_stdio
+        run: cargo test --locked -p aster-acp --test acp_conformance_stdio
       - name: Search feature contracts
         run: |
-          cargo test --locked -p a3s-code-core --lib tools::builtin::web_search::tests
-          cargo test --locked -p a3s-code-core --features headless-search --lib tools::builtin::web_search::tests
+          cargo test --locked -p aster-core --lib tools::builtin::web_search::tests
+          cargo test --locked -p aster-core --features headless-search --lib tools::builtin::web_search::tests
       - name: Workspace retrieval contracts
         run: |
-          cargo test --locked -p a3s-code-core --lib -- tools::builtin::search workspace::retrieval::tests::hybrid_query agent_api::retrieval_tests permissions:: --test-threads=4
-          cargo test --locked -p a3s-code-acp --lib -- local_embedding retrieval_seam session_setup execution_capabilities host_context registration_cleanup --test-threads=4
-          cargo test --locked -p a3s-code-acp --test shipped_tui_e2e retrieval::shipped_retrieval_stdio -- --test-threads=1
+          cargo test --locked -p aster-core --lib -- tools::builtin::search workspace::retrieval::tests::hybrid_query agent_api::retrieval_tests permissions:: --test-threads=4
+          cargo test --locked -p aster-acp --lib -- local_embedding retrieval_seam session_setup execution_capabilities host_context registration_cleanup --test-threads=4
+          cargo test --locked -p aster-acp --test shipped_tui_e2e retrieval::shipped_retrieval_stdio -- --test-threads=1
       - name: Logo cache and rendering
-        run: cargo test --locked -p a3s-code-pager --lib views::welcome
+        run: cargo test --locked -p aster-pager --lib views::welcome
       - name: Current memory-retention contracts
-        run: cargo test --locked -p a3s-code-core --lib memory_retention_tests
+        run: cargo test --locked -p aster-core --lib memory_retention_tests
       - name: macOS native execution boundary
         if: runner.os == 'macOS'
-        run: cargo test --locked -p a3s-code-core --lib sandbox::native::lifetime_tests
+        run: cargo test --locked -p aster-core --lib sandbox::native::lifetime_tests
 
   desktop-frontend:
     strategy:
@@ -183,6 +185,6 @@ jobs:
           node-version: "24.12.0"
       - run: npm install --global pnpm@12.6.0
       - run: pnpm install --frozen-lockfile
-      - run: A3S_TENANT_SLUG=${{ matrix.tenant }} STUDIO_RENDERER_DIST=.studio-package pnpm exec rsbuild build
+      - run: ASTER_TENANT_SLUG=${{ matrix.tenant }} STUDIO_RENDERER_DIST=.studio-package pnpm exec rsbuild build
       - name: Studio launcher contracts
         run: pnpm exec vitest run --project scripts scripts/__tests__/studioDev.test.ts scripts/__tests__/check-dependency-lockstep.test.ts

@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     CancellationRequest, ChildWorkflowCancellationPolicy, FlowEngine, FlowError, FlowEvent,
     FlowEventEnvelope, FlowEventStore, FlowRuntime, InMemoryEventStore, RuntimeBuildCompatibility,
     RuntimeBuildId, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
@@ -38,7 +38,7 @@ impl FlowRuntime for CompletingChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match invocation.spec.name.as_str() {
             "child-workflow.parent" => match context.child_workflow_outcome("import") {
@@ -57,7 +57,7 @@ impl FlowRuntime for CompletingChildRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow tests do not execute steps")
     }
 }
@@ -126,7 +126,7 @@ impl CrashBeforeChildCreationStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeChildCreationStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -135,7 +135,7 @@ impl FlowEventStore for CrashBeforeChildCreationStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id != PARENT_RUN_ID
             && matches!(event, FlowEvent::RunCreated { .. })
             && self.armed.swap(false, Ordering::SeqCst)
@@ -149,11 +149,11 @@ impl FlowEventStore for CrashBeforeChildCreationStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -206,7 +206,7 @@ impl FlowRuntime for CancellableChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match invocation.spec.name.as_str() {
             "child-workflow.parent" => {
@@ -230,7 +230,7 @@ impl FlowRuntime for CancellableChildRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow tests do not execute steps")
     }
 }
@@ -378,7 +378,7 @@ impl FlowRuntime for PinnedAbandonedChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.spec().name.as_str() {
             "child-workflow.parent" if context.cancellation_request().is_some() => {
@@ -397,7 +397,7 @@ impl FlowRuntime for PinnedAbandonedChildRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("pinned abandoned child test does not execute steps")
     }
 }
@@ -487,7 +487,7 @@ impl FlowRuntime for ContinuingChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match invocation.spec.name.as_str() {
             "child-workflow.parent" => match context.child_workflow_outcome("continued") {
@@ -510,7 +510,7 @@ impl FlowRuntime for ContinuingChildRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow tests do not execute steps")
     }
 }
@@ -544,7 +544,7 @@ impl FlowRuntime for CancellationCleanupChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match invocation.spec.name.as_str() {
             "child-workflow.parent" => {
@@ -568,7 +568,7 @@ impl FlowRuntime for CancellationCleanupChildRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow tests do not execute steps")
     }
 }
@@ -607,7 +607,7 @@ impl FlowRuntime for NestedChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let generation = context.input()["generation"].as_u64().unwrap();
         Ok(context.start_child_workflow(
@@ -617,7 +617,7 @@ impl FlowRuntime for NestedChildRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow tests do not execute steps")
     }
 }
@@ -708,7 +708,7 @@ impl FlowRuntime for ChildResolvedBesideOpenTimerRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match invocation.spec.name.as_str() {
             "child-workflow.parent" => {
@@ -751,11 +751,11 @@ impl FlowRuntime for ChildResolvedBesideOpenTimerRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow tests do not execute steps")
     }
 
-    async fn run_update(&self, _invocation: a3s_flow::UpdateInvocation) -> a3s_flow::Result<Value> {
+    async fn run_update(&self, _invocation: aster_flow::UpdateInvocation) -> aster_flow::Result<Value> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -778,7 +778,7 @@ async fn child_resolution_wakes_parent_while_another_timer_is_open() {
     engine
         .apply_update(
             PARENT_RUN_ID,
-            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
         )
         .await
         .unwrap();
@@ -786,7 +786,7 @@ async fn child_resolution_wakes_parent_while_another_timer_is_open() {
     assert_eq!(armed.status, WorkflowRunStatus::Suspended);
     assert_eq!(
         armed.waits["poll"].status,
-        a3s_flow::WaitStatus::Waiting,
+        aster_flow::WaitStatus::Waiting,
         "parent poll wait must stay open beside the child"
     );
 
@@ -828,7 +828,7 @@ impl CrashAfterChildWorkflowResolvedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterChildWorkflowResolvedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -837,7 +837,7 @@ impl FlowEventStore for CrashAfterChildWorkflowResolvedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -857,11 +857,11 @@ impl FlowEventStore for CrashAfterChildWorkflowResolvedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -889,7 +889,7 @@ async fn child_resolved_recovery_wakes_via_drive_while_unscoped_timer_is_open() 
     engine
         .apply_update(
             "child-resolved-drive",
-            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
         )
         .await
         .unwrap();
@@ -915,7 +915,7 @@ async fn child_resolved_recovery_wakes_via_drive_while_unscoped_timer_is_open() 
         mid.child_workflow("worker").unwrap().outcome,
         Some(WorkflowTerminalOutcome::Completed { .. })
     ));
-    assert_eq!(mid.waits["poll"].status, a3s_flow::WaitStatus::Waiting);
+    assert_eq!(mid.waits["poll"].status, aster_flow::WaitStatus::Waiting);
 
     let recovered = engine.drive("child-resolved-drive").await.unwrap();
     assert_eq!(

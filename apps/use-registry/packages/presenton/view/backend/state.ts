@@ -12,8 +12,8 @@ let onOverflow: (() => void) | null = null;
 
 function publishHomeDeckFact() {
   const holdsWork = Boolean(deck && ((deck.outlines?.length ?? 0) > 0 || deck.slides.length > 0));
-  const target = globalThis as typeof globalThis & { __a3sPresentonHomeDeck?: { holdsWork: boolean } };
-  target.__a3sPresentonHomeDeck = { holdsWork };
+  const target = globalThis as typeof globalThis & { __asterPresentonHomeDeck?: { holdsWork: boolean } };
+  target.__asterPresentonHomeDeck = { holdsWork };
   reportHomeDeck(holdsWork);
   reportDeckSnapshot();
 }

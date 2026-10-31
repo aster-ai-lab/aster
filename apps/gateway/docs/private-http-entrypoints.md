@@ -4,7 +4,7 @@ On Unix hosts, an HTTP entrypoint can listen on an operator-owned Unix socket:
 
 ```acl
 entrypoints "os-inference" {
-  address = "unix:/run/a3s-gateway/inference.sock"
+  address = "unix:/run/aster-gateway/inference.sock"
 }
 ```
 

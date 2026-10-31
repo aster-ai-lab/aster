@@ -2,8 +2,8 @@ use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::fmt;
 use std::path::PathBuf;
 
-use a3s_oci_sdk::oci_spec::runtime::LinuxRdma;
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::LinuxRdma;
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::cgroup_error;
 

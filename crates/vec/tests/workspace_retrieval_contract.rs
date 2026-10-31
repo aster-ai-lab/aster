@@ -1,14 +1,14 @@
-//! Engine contract for A3S Code workspace retrieval.
+//! Engine contract for Aster Code workspace retrieval.
 //!
 //! Code's shipped lexical path uses whitespace FTS
 //! and one temporary collection per file partition. Semantic retrieval today
-//! uses `a3s-memory`. The platform target replaces both with `a3s-vec` while
+//! uses `aster-memory`. The platform target replaces both with `aster-vec` while
 //! keeping Code as the catalog and authority for chunk identity. This fixture
 //! locks the engine surface that replacement needs: session-scoped temporary
 //! collections, whitespace FTS, dense HNSW cosine, atomic partition replace,
 //! hybrid RRF, and a clean close.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema, Fts,
     HnswQueryParams, IndexParams, MetricType, MultiQuery, SearchQuery, SubQuery,
 };

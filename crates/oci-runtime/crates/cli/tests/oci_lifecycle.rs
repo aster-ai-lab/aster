@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 use std::sync::Arc;
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, State};
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, State};
 use serde_json::json;
 
 use support::{LifecycleService, TestServer};
@@ -123,19 +123,19 @@ async fn invoke<const N: usize>(
 async fn run_command(mut command: Command) -> Output {
     tokio::task::spawn_blocking(move || command.output())
         .await
-        .expect("a3s-oci task must join")
-        .expect("start a3s-oci")
+        .expect("aster-oci task must join")
+        .expect("start aster-oci")
 }
 
 fn configured_command(server: &TestServer, state_root: &Path) -> Command {
-    let mut command = Command::new(env!("CARGO_BIN_EXE_a3s-oci"));
+    let mut command = Command::new(env!("CARGO_BIN_EXE_aster-oci"));
     command
-        .env("A3S_OCI_RUNTIME_ENDPOINT", server.endpoint())
-        .env("A3S_OCI_CLI_STATE_ROOT", state_root)
-        .env("A3S_OCI_CLI_ISOLATION", "shared-host-kernel")
+        .env("ASTER_OCI_RUNTIME_ENDPOINT", server.endpoint())
+        .env("ASTER_OCI_CLI_STATE_ROOT", state_root)
+        .env("ASTER_OCI_CLI_ISOLATION", "shared-host-kernel")
         .env("LISTEN_FDS", "0")
-        .env_remove("A3S_OCI_RUNTIME_SOCKET")
-        .env_remove("A3S_OCI_CLI_TRUST_DOMAIN");
+        .env_remove("ASTER_OCI_RUNTIME_SOCKET")
+        .env_remove("ASTER_OCI_CLI_TRUST_DOMAIN");
     command
 }
 
@@ -195,6 +195,6 @@ fn create_private_directory(path: &Path) {
 
 #[cfg(windows)]
 fn create_private_directory(path: &Path) {
-    a3s_oci_runtime::windows_security::create_private_directory(path)
+    aster_oci_runtime::windows_security::create_private_directory(path)
         .expect("private Windows state directory");
 }

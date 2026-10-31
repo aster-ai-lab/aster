@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{editor_error, escape_attribute, index_xml, prefix, qualified, validate_mutation_path};
 use crate::semantic::{NativeOfficeDocument, OfficeNodeType};
@@ -403,7 +403,7 @@ fn container_is_removable(
         .all(u8::is_ascii_whitespace)
 }
 
-fn invalid_merge_collection(part_name: &str, reason: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_merge_collection(part_name: &str, reason: impl Into<String>) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_merge_invalid",
         format!("Spreadsheet worksheet merge collection {}.", reason.into()),

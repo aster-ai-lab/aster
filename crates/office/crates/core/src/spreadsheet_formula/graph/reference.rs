@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::spreadsheet_reference::{MAX_COLUMNS, MAX_ROWS};
 
@@ -563,7 +563,7 @@ fn ensure_reference_comparisons(left: usize, right: usize) -> UseResult<()> {
     Ok(())
 }
 
-fn reference_area_limit() -> a3s_use_core::UseError {
+fn reference_area_limit() -> aster_use_core::UseError {
     graph_error(
         "use.office.spreadsheet_formula_reference_area_limit",
         format!(
@@ -572,7 +572,7 @@ fn reference_area_limit() -> a3s_use_core::UseError {
     )
 }
 
-fn reference_visit_limit() -> a3s_use_core::UseError {
+fn reference_visit_limit() -> aster_use_core::UseError {
     graph_error(
         "use.office.spreadsheet_formula_reference_visit_limit",
         format!(

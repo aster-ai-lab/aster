@@ -1,5 +1,5 @@
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     CloseStdinRequest, OperationContext, OperationId, ProcessTarget, ResizeRequest, Result,
     TerminalSize, ValidateRequest, WriteStdinRequest,
 };
@@ -473,8 +473,8 @@ pub(super) async fn migrate_legacy_process_io_claim(
 
 fn validate_legacy_io_operation(
     operation: &StoredOperation,
-    container_id: &a3s_oci_sdk::ContainerId,
-    generation: a3s_oci_sdk::Generation,
+    container_id: &aster_oci_sdk::ContainerId,
+    generation: aster_oci_sdk::Generation,
     init: bool,
 ) -> Result<()> {
     let process_matches = operation

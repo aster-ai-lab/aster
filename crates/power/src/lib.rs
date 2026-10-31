@@ -1,0 +1,35 @@
+pub mod admission;
+#[cfg(test)]
+mod admission_tests;
+#[cfg(feature = "server")]
+pub mod api;
+#[cfg(feature = "artifact-provisioning")]
+pub mod artifact_bundle;
+mod atomic;
+#[cfg(feature = "server")]
+pub mod backend;
+#[cfg(feature = "server")]
+pub mod cli;
+#[cfg(feature = "server")]
+pub mod config;
+#[cfg(feature = "server")]
+pub mod dirs;
+pub mod error;
+#[cfg(feature = "embedded-inference")]
+pub mod inference;
+#[cfg(feature = "server")]
+pub mod model;
+#[cfg(feature = "server")]
+pub mod runtime_service;
+#[cfg(feature = "server")]
+pub mod sae;
+#[cfg(feature = "server")]
+pub mod server;
+#[cfg(feature = "server")]
+pub mod serving;
+pub mod speculative;
+pub mod tee;
+#[cfg(feature = "server")]
+pub mod verify;
+#[cfg(any(feature = "server", feature = "embedded-inference"))]
+mod weight_collection;

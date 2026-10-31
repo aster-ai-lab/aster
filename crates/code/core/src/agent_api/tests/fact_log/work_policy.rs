@@ -62,7 +62,7 @@ async fn prove_policy_session(store: Arc<dyn SessionStore>, reopen: Option<std::
         facts[0].kind,
         crate::standing_context::STANDING_CONTEXT_FACT_KIND
     );
-    assert_eq!(facts[1].kind, "a3s.work-policy.admitted");
+    assert_eq!(facts[1].kind, "aster.work-policy.admitted");
     assert_eq!(facts[1].payload["digest"], policy.digest().unwrap());
     let prior = facts
         .iter()
@@ -72,7 +72,7 @@ async fn prove_policy_session(store: Arc<dyn SessionStore>, reopen: Option<std::
     assert_eq!(
         facts
             .iter()
-            .filter(|fact| fact.kind == "a3s.work-policy.admitted")
+            .filter(|fact| fact.kind == "aster.work-policy.admitted")
             .count(),
         1
     );
@@ -164,7 +164,7 @@ async fn prove_policy_admitted_before_first_run(
         kinds,
         [
             crate::standing_context::STANDING_CONTEXT_FACT_KIND,
-            "a3s.work-policy.admitted"
+            "aster.work-policy.admitted"
         ]
     );
     assert!(systems.lock().unwrap().is_empty());
@@ -278,7 +278,7 @@ async fn corrupt_policy_source_refuses_before_provider_entry() {
     let mut facts = read_workspace_facts(workspace.path(), "corrupt-policy").unwrap();
     facts
         .iter_mut()
-        .find(|fact| fact.kind == "a3s.work-policy.admitted")
+        .find(|fact| fact.kind == "aster.work-policy.admitted")
         .unwrap()
         .payload["schema"] = serde_json::json!("future-policy-schema");
     let path = crate::session_folder::effect_log_dir(workspace.path(), "corrupt-policy")
@@ -426,7 +426,7 @@ async fn two_actual_policy_sessions_share_original_owner_exclusion_and_legacy_re
         read_workspace_facts(workspace.path(), "shared-policy-owner")
             .unwrap()
             .iter()
-            .filter(|fact| fact.kind == "a3s.work-policy.admitted")
+            .filter(|fact| fact.kind == "aster.work-policy.admitted")
             .count(),
         1
     );

@@ -1,5 +1,5 @@
 [package]
-name = "a3s-libkrun-sys"
+name = "aster-libkrun-sys"
 version = "3.2.7"
 edition = "2021"
 rust-version = "1.77.0"
@@ -30,5 +30,5 @@ windows-sys = { version = "0.59", features = [
 
 [[example]]
 name = "start_vm"
-# a3s_box_build_rs.rs is documentation only, not a runnable example.
+# aster_box_build_rs.rs is documentation only, not a runnable example.
 

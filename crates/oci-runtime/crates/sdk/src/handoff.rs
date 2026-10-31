@@ -50,9 +50,9 @@ mod tests {
     #[test]
     fn layout_is_exact_and_uses_only_validated_components() {
         let root = if cfg!(windows) {
-            Path::new(r"C:\a3s-runtime")
+            Path::new(r"C:\aster-runtime")
         } else {
-            Path::new("/var/lib/a3s-oci")
+            Path::new("/var/lib/aster-oci")
         };
         let container = ContainerId::new("box-1").expect("container ID");
         let operation = OperationId::new("create-7").expect("operation ID");

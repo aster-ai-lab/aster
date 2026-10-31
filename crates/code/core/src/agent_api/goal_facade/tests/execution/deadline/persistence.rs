@@ -206,11 +206,11 @@ async fn pending_boundary(stage: Stage, file: bool) {
     assert_eq!(
         facts
             .iter()
-            .filter(|f| f.kind == "a3s.goal.slice.settled")
+            .filter(|f| f.kind == "aster.goal.slice.settled")
             .count(),
         1
     );
-    assert!(!facts.iter().any(|f| f.kind == "a3s.goal.completed"));
+    assert!(!facts.iter().any(|f| f.kind == "aster.goal.completed"));
     assert!(
         notice,
         "deadline expiry must be observable while the original writer still owns cleanup"

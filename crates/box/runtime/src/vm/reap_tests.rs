@@ -11,9 +11,9 @@ fn write_runtime_record(
     let mut record = SandboxRuntimeRecord {
         schema: SANDBOX_RUNTIME_RECORD_SCHEMA.to_string(),
         container_id: box_id.to_string(),
-        runtime_path: Path::new("/definitely/missing/a3s-oci").to_path_buf(),
+        runtime_path: Path::new("/definitely/missing/aster-oci").to_path_buf(),
         runtime_sha256: Some("a".repeat(64)),
-        agent_path: Some(Path::new("/definitely/missing/a3s-oci-agent").to_path_buf()),
+        agent_path: Some(Path::new("/definitely/missing/aster-oci-agent").to_path_buf()),
         agent_sha256: Some("b".repeat(64)),
         runtime_root: runtime_root.clone(),
         runtime_socket: Some(runtime_root.join("runtime.sock")),
@@ -84,7 +84,7 @@ fn test_reap_retains_box_dir_when_file_mount_staging_remove_fails() {
     let box_dir = home.path().join("boxes").join(box_id);
     std::fs::create_dir_all(&box_dir).unwrap();
 
-    let staging = std::env::temp_dir().join(format!("a3s-fs-mount-{box_id}"));
+    let staging = std::env::temp_dir().join(format!("aster-fs-mount-{box_id}"));
     std::fs::write(&staging, b"not-a-directory").unwrap();
     struct StagingGuard(std::path::PathBuf);
     impl Drop for StagingGuard {
@@ -179,7 +179,7 @@ fn recorded_sandbox_runtime_rejects_invalid_paths() {
     let box_id = "recorded-sandbox-invalid-paths";
     let box_dir = home.path().join("boxes").join(box_id);
     write_runtime_record(home.path(), &box_dir, box_id, |record| {
-        record.runtime_root = home.path().join("run/a3s-oci/another-box");
+        record.runtime_root = home.path().join("run/aster-oci/another-box");
     });
 
     let error = load_recorded_sandbox_runtime(home.path(), &box_dir, box_id).unwrap_err();
@@ -193,7 +193,7 @@ fn cleanup_reports_the_exact_runtime_record_failure_and_preserves_the_rootfs() {
     let box_id = "cleanup-recorded-sandbox-invalid-paths";
     let box_dir = home.path().join("boxes").join(box_id);
     write_runtime_record(home.path(), &box_dir, box_id, |record| {
-        record.runtime_root = home.path().join("run/a3s-oci/another-box");
+        record.runtime_root = home.path().join("run/aster-oci/another-box");
     });
 
     let error = cleanup_recorded_sandbox_runtime_in(home.path(), &box_dir, box_id).unwrap_err();
@@ -220,7 +220,7 @@ fn recorded_sandbox_runtime_rejects_an_unknown_schema() {
 #[test]
 fn structurally_valid_runtime_record_loads_before_owner_certification() {
     let home = tempfile::tempdir().unwrap();
-    let box_id = "recorded-sandbox-a3s-oci";
+    let box_id = "recorded-sandbox-aster-oci";
     let box_dir = home.path().join("boxes").join(box_id);
     write_runtime_record(home.path(), &box_dir, box_id, |_| {});
 
@@ -235,7 +235,7 @@ fn structurally_valid_runtime_record_loads_before_owner_certification() {
 #[test]
 fn structurally_valid_legacy_runtime_record_remains_recoverable() {
     let home = tempfile::tempdir().unwrap();
-    let box_id = "recorded-sandbox-legacy-a3s-oci";
+    let box_id = "recorded-sandbox-legacy-aster-oci";
     let box_dir = home.path().join("boxes").join(box_id);
     let legacy_root = crate::vm::legacy_sandbox_runtime_root(home.path(), box_id);
     write_runtime_record(home.path(), &box_dir, box_id, |record| {
@@ -251,10 +251,10 @@ fn structurally_valid_legacy_runtime_record_remains_recoverable() {
 #[test]
 fn runtime_record_rejects_a_socket_outside_its_runtime_root() {
     let home = tempfile::tempdir().unwrap();
-    let box_id = "recorded-sandbox-a3s-oci-wrong-socket";
+    let box_id = "recorded-sandbox-aster-oci-wrong-socket";
     let box_dir = home.path().join("boxes").join(box_id);
     write_runtime_record(home.path(), &box_dir, box_id, |record| {
-        record.runtime_socket = Some(home.path().join("run/a3s-oci/other/runtime.sock"));
+        record.runtime_socket = Some(home.path().join("run/aster-oci/other/runtime.sock"));
     });
 
     let error = load_recorded_sandbox_runtime_identity(home.path(), &box_dir, box_id).unwrap_err();
@@ -265,7 +265,7 @@ fn runtime_record_rejects_a_socket_outside_its_runtime_root() {
 #[test]
 fn runtime_record_rejects_invalid_generation_and_digest_identity() {
     let home = tempfile::tempdir().unwrap();
-    let box_id = "recorded-sandbox-a3s-oci-invalid-identity";
+    let box_id = "recorded-sandbox-aster-oci-invalid-identity";
     let box_dir = home.path().join("boxes").join(box_id);
     write_runtime_record(home.path(), &box_dir, box_id, |record| {
         record.generation = Some(0);
@@ -338,7 +338,7 @@ fn home_fenced_ppid1_shim_orphan_is_reaped() {
     let box_dir = home.path().join("boxes").join(box_id);
     std::fs::create_dir_all(box_dir.join("merged")).unwrap();
 
-    let shim = home.path().join("a3s-box-shim");
+    let shim = home.path().join("aster-box-shim");
     // Stay as the shebang shell so /proc/cmdline keeps the script path and
     // `--config` JSON. `exec sleep` would replace argv and hide the shim fence.
     std::fs::write(&shim, "#!/bin/sh\nsleep 300\n").unwrap();

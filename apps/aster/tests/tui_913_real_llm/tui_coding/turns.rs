@@ -3,7 +3,7 @@
 //! Request-terminal barriers and bounded per-Run evidence for coding turns.
 
 use super::*;
-use a3s_code_core::content_digest::digest_bytes;
+use aster_core::content_digest::digest_bytes;
 use std::collections::BTreeSet;
 
 #[derive(Clone, Copy)]
@@ -100,7 +100,7 @@ pub(crate) fn trace_pair(events: &[Value], prompt: &str) -> Option<(Value, Value
     let request = requests[0];
     let response = responses[0];
     if request["in_flight_before"] != 0
-        || request["prompt_digest"] != digest_bytes("a3s.test.tui-prompt.v1", prompt.as_bytes())
+        || request["prompt_digest"] != digest_bytes("aster.test.tui-prompt.v1", prompt.as_bytes())
         || request["seq"].as_u64()? >= response["seq"].as_u64()?
         || request["prompt_id"].as_str()?.is_empty()
         || request["session_id"].as_str()?.is_empty()
@@ -126,7 +126,7 @@ fn settled_run(facts: &[Value]) -> Option<String> {
     for fact in &preparations {
         let prepared: Preparation =
             serde_json::from_value(fact["payload"]["prepared"].clone()).ok()?;
-        if prepared.schema != "a3s.code.tool-prepared.v1"
+        if prepared.schema != "aster.code.tool-prepared.v1"
             || prepared.identity.admission.run_id.is_empty()
             || prepared.identity.admission.thread_id.is_empty()
             || validate_digest(&prepared.identity.admission.capability_binding_digest).is_err()
@@ -135,7 +135,7 @@ fn settled_run(facts: &[Value]) -> Option<String> {
         }
         runs.insert(prepared.identity.admission.run_id.clone());
         let identity = serde_json::to_value(&prepared.identity).ok()?;
-        let digest = digest_json("a3s.code.tool-prepared-digest.v1", &prepared).ok()?;
+        let digest = digest_json("aster.code.tool-prepared-digest.v1", &prepared).ok()?;
         let matching: Vec<_> = facts
             .iter()
             .filter(|row| {
@@ -148,7 +148,7 @@ fn settled_run(facts: &[Value]) -> Option<String> {
         let row = matching[0];
         let receipt = &row["payload"]["receipt"];
         if row["seq"].as_u64()? <= fact["seq"].as_u64()?
-            || receipt["schema"] != "a3s.code.tool-result.v1"
+            || receipt["schema"] != "aster.code.tool-result.v1"
             || receipt["prepared_digest"] != digest
             || !matches!(
                 receipt["outcome"].as_str()?,
@@ -268,7 +268,7 @@ pub(crate) fn assert_failed_checker(turn: &PromptTurn) {
                         && call["args"]["command"]
                             .as_str()
                             .is_some_and(|s| s.trim() == "python3 gate.py")
-                        && digest_json("a3s.code.tool-arguments.v1", &call["args"])
+                        && digest_json("aster.code.tool-arguments.v1", &call["args"])
                             .ok()
                             .as_deref()
                             == Some(p.original_args_digest.as_str())
@@ -284,7 +284,7 @@ pub(crate) fn assert_failed_checker(turn: &PromptTurn) {
             let wire: Value = serde_json::from_str(receipt["output"].as_str()?).ok()?;
             (receipt["outcome"] == "failed"
                 && wire["metadata"]["exit_code"] == 1
-                && wire["kind"] == "a3s.fact_tool_result"
+                && wire["kind"] == "aster.fact_tool_result"
                 && wire["is_error"] == true
                 && wire["text"]
                     .as_str()?
@@ -344,7 +344,7 @@ pub(crate) fn assert_verified(turn: &PromptTurn) -> GateExec {
 #[test]
 fn request_terminal_requires_the_current_unqueued_identity_and_exact_prompt() {
     let request = serde_json::json!({"seq":1,"kind":"prompt-request","rpc_id":8,"prompt_id":"p1","session_id":"s1",
-        "prompt_digest":digest_bytes("a3s.test.tui-prompt.v1",b"hello"),"in_flight_before":0});
+        "prompt_digest":digest_bytes("aster.test.tui-prompt.v1",b"hello"),"in_flight_before":0});
     let mut response = request.clone();
     response["kind"] = "prompt-response".into();
     response["seq"] = 2.into();
@@ -396,7 +396,7 @@ fn settled_receipts_reject_unknown_incomplete_missing_duplicate_and_cross_run_re
 fn failed_checker_requires_execution_and_a_real_post_result_reply() {
     let mut facts = checker_rows();
     facts[2]["payload"]["receipt"]["outcome"] = "failed".into();
-    let wire = serde_json::json!({"kind":"a3s.fact_tool_result", "is_error":true,
+    let wire = serde_json::json!({"kind":"aster.fact_tool_result", "is_error":true,
         "text":FAIL_LINE,"metadata":{"exit_code":1}});
     facts[2]["payload"]["receipt"]["output"] = wire.to_string().into();
     facts.push(serde_json::json!({"seq":4,"type":"model.turn",

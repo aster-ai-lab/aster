@@ -1,66 +1,66 @@
-@import "@a3s-lab/ui/styles/spec-roles.css";
+@import "@aster-ai-lab/ui/styles/spec-roles.css";
 
 :root,
-.a3s-office {
-  --a3s-bg: var(--spec-canvas);
-  --a3s-panel: var(--spec-page);
-  --a3s-panel-soft: var(--spec-field);
-  --a3s-panel-strong: var(--spec-selected-row);
-  --a3s-ink: var(--spec-ink);
-  --a3s-body: var(--spec-body);
-  --a3s-muted: var(--spec-muted);
-  --a3s-subtle: var(--spec-muted);
-  --a3s-faint: var(--spec-muted);
-  --a3s-line: var(--spec-hairline);
-  --a3s-line-strong: var(--spec-card-border);
-  --a3s-action: var(--spec-ink);
-  --a3s-action-hover: var(--spec-body);
-  --a3s-action-ink: var(--spec-page);
-  --a3s-blue: #2864e8;
-  --a3s-purple: #5420bd;
-  --a3s-green: #14a675;
-  --a3s-red: var(--spec-danger-text);
-  --a3s-warning: #c97816;
-  --a3s-shadow: 0 12px 32px rgb(0 0 0 / 12%);
-  --a3s-shadow-soft: var(--a3s-shadow);
-  --a3s-radius: var(--spec-radius-feature-card);
-  --a3s-radius-sm: var(--spec-radius-row);
-  --a3s-overlay-radius: var(--spec-radius-dialog);
-  --a3s-overlay-border: var(--a3s-line);
-  --a3s-overlay-surface: var(--a3s-panel);
-  --a3s-scrollbar-size: 8px;
-  --a3s-scrollbar-track: transparent;
-  --a3s-scrollbar-thumb: rgb(23 23 23 / 28%);
-  --a3s-scrollbar-thumb-hover: rgb(23 23 23 / 46%);
-  --a3s-ui-font: var(--font-family, "Ubuntu", -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", sans-serif);
+.aster-office {
+  --aster-bg: var(--spec-canvas);
+  --aster-panel: var(--spec-page);
+  --aster-panel-soft: var(--spec-field);
+  --aster-panel-strong: var(--spec-selected-row);
+  --aster-ink: var(--spec-ink);
+  --aster-body: var(--spec-body);
+  --aster-muted: var(--spec-muted);
+  --aster-subtle: var(--spec-muted);
+  --aster-faint: var(--spec-muted);
+  --aster-line: var(--spec-hairline);
+  --aster-line-strong: var(--spec-card-border);
+  --aster-action: var(--spec-ink);
+  --aster-action-hover: var(--spec-body);
+  --aster-action-ink: var(--spec-page);
+  --aster-blue: #2864e8;
+  --aster-purple: #5420bd;
+  --aster-green: #14a675;
+  --aster-red: var(--spec-danger-text);
+  --aster-warning: #c97816;
+  --aster-shadow: 0 12px 32px rgb(0 0 0 / 12%);
+  --aster-shadow-soft: var(--aster-shadow);
+  --aster-radius: var(--spec-radius-feature-card);
+  --aster-radius-sm: var(--spec-radius-row);
+  --aster-overlay-radius: var(--spec-radius-dialog);
+  --aster-overlay-border: var(--aster-line);
+  --aster-overlay-surface: var(--aster-panel);
+  --aster-scrollbar-size: 8px;
+  --aster-scrollbar-track: transparent;
+  --aster-scrollbar-thumb: rgb(23 23 23 / 28%);
+  --aster-scrollbar-thumb-hover: rgb(23 23 23 / 46%);
+  --aster-ui-font: var(--font-family, "Ubuntu", -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", sans-serif);
   --font-mono: var(--code-font-family, "Cascadia Code", ui-monospace, monospace);
-  --work-office-control-accent: var(--a3s-ink);
-  --work-office-accent: var(--a3s-ink);
+  --work-office-control-accent: var(--aster-ink);
+  --work-office-accent: var(--aster-ink);
   --work-spreadsheet-accent: #107c41;
 }
 
-.a3s-office {
-  --color-ink: var(--a3s-ink);
-  --color-ink-muted: var(--a3s-body);
-  --color-ink-faint: var(--a3s-muted);
-  --color-control-fill: var(--a3s-panel-soft);
+.aster-office {
+  --color-ink: var(--aster-ink);
+  --color-ink-muted: var(--aster-body);
+  --color-ink-faint: var(--aster-muted);
+  --color-control-fill: var(--aster-panel-soft);
   --color-control-fill-hover: var(--spec-field-hover);
-  --color-control-fill-active: var(--a3s-panel-soft);
-  --color-bg-elevated: var(--a3s-panel);
-  --color-border: var(--a3s-line);
-  --color-surface: var(--a3s-panel-strong);
+  --color-control-fill-active: var(--aster-panel-soft);
+  --color-bg-elevated: var(--aster-panel);
+  --color-border: var(--aster-line);
+  --color-surface: var(--aster-panel-strong);
   --color-surface-2: var(--spec-hover-row);
-  --color-error: var(--a3s-red);
-  --font-sans: var(--a3s-ui-font);
-  --radius-md: var(--a3s-radius-sm);
-  --radius-xl: var(--a3s-overlay-radius);
+  --color-error: var(--aster-red);
+  --font-sans: var(--aster-ui-font);
+  --radius-md: var(--aster-radius-sm);
+  --radius-xl: var(--aster-overlay-radius);
   --control-h-input: 36px;
   --control-h-sm: 30px;
   --ring-focus: inset 0 0 0 2px rgb(0 0 0 / 10%);
-  --shadow-elevated: var(--a3s-shadow-soft);
+  --shadow-elevated: var(--aster-shadow-soft);
 }
 
-.a3s-office {
+.aster-office {
   color-scheme: light;
   display: flex;
   width: 100%;
@@ -68,93 +68,93 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
-  font-family: var(--a3s-ui-font);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
+  font-family: var(--aster-ui-font);
   font-size: 13px;
   line-height: 1.6;
   text-rendering: optimizeLegibility;
 }
 
-.a3s-office[data-theme="dark"] {
+.aster-office[data-theme="dark"] {
   color-scheme: dark;
-  --a3s-bg: #101118;
-  --a3s-panel: #171820;
-  --a3s-panel-soft: #1e2028;
-  --a3s-panel-strong: #282b35;
-  --a3s-ink: #f2f3f5;
-  --a3s-muted: #a4a8b2;
-  --a3s-body: var(--a3s-muted);
-  --a3s-subtle: #8d929e;
-  --a3s-faint: #727783;
-  --a3s-line: #2a2d35;
-  --a3s-line-strong: #3a3d48;
-  --a3s-action: #f2f3f5;
-  --a3s-action-hover: #ffffff;
-  --a3s-action-ink: #17181a;
-  --a3s-blue: #6ca3ff;
-  --a3s-green: #3ccf91;
-  --a3s-red: #f27777;
-  --a3s-warning: #eda94c;
-  --a3s-shadow: 0 22px 70px rgb(0 0 0 / 35%);
-  --a3s-shadow-soft: 0 9px 30px rgb(0 0 0 / 24%);
+  --aster-bg: #101118;
+  --aster-panel: #171820;
+  --aster-panel-soft: #1e2028;
+  --aster-panel-strong: #282b35;
+  --aster-ink: #f2f3f5;
+  --aster-muted: #a4a8b2;
+  --aster-body: var(--aster-muted);
+  --aster-subtle: #8d929e;
+  --aster-faint: #727783;
+  --aster-line: #2a2d35;
+  --aster-line-strong: #3a3d48;
+  --aster-action: #f2f3f5;
+  --aster-action-hover: #ffffff;
+  --aster-action-ink: #17181a;
+  --aster-blue: #6ca3ff;
+  --aster-green: #3ccf91;
+  --aster-red: #f27777;
+  --aster-warning: #eda94c;
+  --aster-shadow: 0 22px 70px rgb(0 0 0 / 35%);
+  --aster-shadow-soft: 0 9px 30px rgb(0 0 0 / 24%);
 }
 
-.a3s-office *,
-.a3s-office *::before,
-.a3s-office *::after {
+.aster-office *,
+.aster-office *::before,
+.aster-office *::after {
   box-sizing: border-box;
 }
 
-:where(.a3s-office) :where(button, input, textarea, select) {
+:where(.aster-office) :where(button, input, textarea, select) {
   font: inherit;
 }
 
-:where(.a3s-office) button {
+:where(.aster-office) button {
   color: inherit;
 }
 
-:where(.a3s-office, .ds-dialog-backdrop, .ds-popover-portal-anchor),
-:where(.a3s-office, .ds-dialog-backdrop, .ds-popover-portal-anchor) :where(*) {
-  scrollbar-color: var(--a3s-scrollbar-thumb) var(--a3s-scrollbar-track);
+:where(.aster-office, .ds-dialog-backdrop, .ds-popover-portal-anchor),
+:where(.aster-office, .ds-dialog-backdrop, .ds-popover-portal-anchor) :where(*) {
+  scrollbar-color: var(--aster-scrollbar-thumb) var(--aster-scrollbar-track);
   scrollbar-width: thin;
 }
 
-:where(.a3s-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
+:where(.aster-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
   :where(*)::-webkit-scrollbar {
-  width: var(--a3s-scrollbar-size);
-  height: var(--a3s-scrollbar-size);
+  width: var(--aster-scrollbar-size);
+  height: var(--aster-scrollbar-size);
 }
 
-:where(.a3s-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
+:where(.aster-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
   :where(*)::-webkit-scrollbar-track,
-:where(.a3s-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
+:where(.aster-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
   :where(*)::-webkit-scrollbar-corner {
-  background: var(--a3s-scrollbar-track);
+  background: var(--aster-scrollbar-track);
 }
 
-:where(.a3s-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
+:where(.aster-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
   :where(*)::-webkit-scrollbar-thumb {
-  min-width: var(--a3s-scrollbar-size);
-  min-height: var(--a3s-scrollbar-size);
+  min-width: var(--aster-scrollbar-size);
+  min-height: var(--aster-scrollbar-size);
   border: 2px solid transparent;
   border-radius: 999px;
-  background: var(--a3s-scrollbar-thumb);
+  background: var(--aster-scrollbar-thumb);
   background-clip: content-box;
 }
 
-:where(.a3s-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
+:where(.aster-office, .ds-dialog-backdrop, .ds-popover-portal-anchor)
   :where(*)::-webkit-scrollbar-thumb:hover {
-  background: var(--a3s-scrollbar-thumb-hover);
+  background: var(--aster-scrollbar-thumb-hover);
   background-clip: content-box;
 }
 
-.a3s-office :where(button, input, textarea, select, a):focus-visible {
-  outline: 2px solid var(--a3s-ink);
+.aster-office :where(button, input, textarea, select, a):focus-visible {
+  outline: 2px solid var(--aster-ink);
   outline-offset: 2px;
 }
 
-.a3s-office
+.aster-office
   > :where(
     .work-document-editor,
     .work-markdown-editor,
@@ -167,31 +167,31 @@
   flex: 1;
 }
 
-.a3s-office-empty {
+.aster-office-empty {
   min-height: 180px;
   align-items: center;
   justify-content: center;
   padding: 24px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   text-align: center;
 }
 
-.a3s-office-vue-host {
+.aster-office-vue-host {
   display: block;
 }
 
-a3s-document-editor,
-a3s-markdown-editor,
-a3s-spreadsheet-editor,
-a3s-presentation-editor,
-a3s-pdf-viewer {
+aster-document-editor,
+aster-markdown-editor,
+aster-spreadsheet-editor,
+aster-presentation-editor,
+aster-pdf-viewer {
   display: block;
   width: 100%;
   min-width: 0;
   min-height: 480px;
 }
 
-.a3s-office .sr-only {
+.aster-office .sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -202,38 +202,38 @@ a3s-pdf-viewer {
   white-space: nowrap;
 }
 
-.a3s-office .spin {
-  animation: a3s-office-spin 0.9s linear infinite;
+.aster-office .spin {
+  animation: aster-office-spin 0.9s linear infinite;
 }
 
-@keyframes a3s-office-spin {
+@keyframes aster-office-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
 @media (prefers-color-scheme: dark) {
-  .a3s-office[data-theme="system"] {
+  .aster-office[data-theme="system"] {
     color-scheme: dark;
-    --a3s-bg: #101118;
-    --a3s-panel: #171820;
-    --a3s-panel-soft: #1e2028;
-    --a3s-panel-strong: #282b35;
-    --a3s-ink: #f2f3f5;
-    --a3s-muted: #a4a8b2;
-  --a3s-body: var(--a3s-muted);
-    --a3s-subtle: #8d929e;
-    --a3s-faint: #727783;
-    --a3s-line: #2a2d35;
-    --a3s-line-strong: #3a3d48;
-    --a3s-action: #f2f3f5;
-    --a3s-action-hover: #ffffff;
-    --a3s-action-ink: #17181a;
-    --a3s-blue: #6ca3ff;
-    --a3s-green: #3ccf91;
-    --a3s-red: #f27777;
-    --a3s-warning: #eda94c;
-    --a3s-shadow: 0 22px 70px rgb(0 0 0 / 35%);
-    --a3s-shadow-soft: 0 9px 30px rgb(0 0 0 / 24%);
+    --aster-bg: #101118;
+    --aster-panel: #171820;
+    --aster-panel-soft: #1e2028;
+    --aster-panel-strong: #282b35;
+    --aster-ink: #f2f3f5;
+    --aster-muted: #a4a8b2;
+  --aster-body: var(--aster-muted);
+    --aster-subtle: #8d929e;
+    --aster-faint: #727783;
+    --aster-line: #2a2d35;
+    --aster-line-strong: #3a3d48;
+    --aster-action: #f2f3f5;
+    --aster-action-hover: #ffffff;
+    --aster-action-ink: #17181a;
+    --aster-blue: #6ca3ff;
+    --aster-green: #3ccf91;
+    --aster-red: #f27777;
+    --aster-warning: #eda94c;
+    --aster-shadow: 0 22px 70px rgb(0 0 0 / 35%);
+    --aster-shadow-soft: 0 9px 30px rgb(0 0 0 / 24%);
   }
 }

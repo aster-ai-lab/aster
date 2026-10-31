@@ -20,7 +20,7 @@
 //! not compiled in (feature gates) or not running (server down) skip
 //! cleanly.
 
-use a3s_event::{
+use aster_event::{
     DeliverPolicy, Event, EventBus, EventProvider, PublishOptions, SubscribeOptions,
     SubscriptionFilter,
 };
@@ -222,7 +222,7 @@ async fn scenario_fanout_isolation(suite: &Suite) {
 }
 
 async fn recv_summary(
-    sub: &mut Box<dyn a3s_event::Subscription>,
+    sub: &mut Box<dyn aster_event::Subscription>,
     want: &str,
     deadline: Duration,
 ) -> Vec<String> {
@@ -234,8 +234,8 @@ async fn recv_summary(
 }
 
 async fn collect_summaries(
-    a: &mut Box<dyn a3s_event::Subscription>,
-    b: &mut Box<dyn a3s_event::Subscription>,
+    a: &mut Box<dyn aster_event::Subscription>,
+    b: &mut Box<dyn aster_event::Subscription>,
     deadline: Duration,
 ) -> Vec<String> {
     let mut out = Vec::new();
@@ -746,7 +746,7 @@ fn memory_suite() -> Suite {
     Suite {
         create: Box::new(|_tag| {
             Box::pin(async {
-                Some(Arc::new(a3s_event::MemoryProvider::default()) as Arc<dyn EventProvider>)
+                Some(Arc::new(aster_event::MemoryProvider::default()) as Arc<dyn EventProvider>)
             })
         }),
     }
@@ -754,7 +754,7 @@ fn memory_suite() -> Suite {
 
 #[cfg(feature = "nats")]
 fn nats_suite() -> Suite {
-    use a3s_event::provider::nats::{NatsConfig, NatsProvider, StorageType};
+    use aster_event::provider::nats::{NatsConfig, NatsProvider, StorageType};
 
     Suite {
         create: Box::new(|tag| {
@@ -776,8 +776,8 @@ fn nats_suite() -> Suite {
                     Err(e) => {
                         // Per-broker gates: each CI job starts only the
                         // broker it tests; the umbrella var requires all.
-                        if std::env::var_os("A3S_EVENT_REQUIRE_NATS").is_some()
-                            || std::env::var_os("A3S_EVENT_REQUIRE_BROKERS").is_some()
+                        if std::env::var_os("ASTER_EVENT_REQUIRE_NATS").is_some()
+                            || std::env::var_os("ASTER_EVENT_REQUIRE_BROKERS").is_some()
                         {
                             panic!("NATS required but unreachable: {e}");
                         }
@@ -792,7 +792,7 @@ fn nats_suite() -> Suite {
 
 #[cfg(feature = "iggy")]
 fn iggy_suite() -> Suite {
-    use a3s_event::provider::iggy::{IggyConfig, IggyPartitioning, IggyProvider};
+    use aster_event::provider::iggy::{IggyConfig, IggyPartitioning, IggyProvider};
 
     Suite {
         create: Box::new(|tag| {
@@ -811,8 +811,8 @@ fn iggy_suite() -> Suite {
                 match IggyProvider::connect(config).await {
                     Ok(p) => Some(Arc::new(p) as Arc<dyn EventProvider>),
                     Err(e) => {
-                        if std::env::var_os("A3S_EVENT_REQUIRE_IGGY").is_some()
-                            || std::env::var_os("A3S_EVENT_REQUIRE_BROKERS").is_some()
+                        if std::env::var_os("ASTER_EVENT_REQUIRE_IGGY").is_some()
+                            || std::env::var_os("ASTER_EVENT_REQUIRE_BROKERS").is_some()
                         {
                             panic!("Iggy required but unreachable: {e}");
                         }

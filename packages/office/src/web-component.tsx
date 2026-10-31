@@ -38,7 +38,7 @@ const HTMLElementBase =
     ? (class {} as unknown as typeof HTMLElement)
     : HTMLElement;
 
-abstract class A3SOfficeElement extends HTMLElementBase {
+abstract class AsterOfficeElement extends HTMLElementBase {
   #messages: OfficeMessagesOverride | undefined;
   #onDiagnostic: ((diagnostic: OfficeEditorDiagnostic) => void) | undefined;
   #onError: ((error: OfficeEditorHostError) => void) | undefined;
@@ -149,8 +149,8 @@ function missingContent(kind: string, theme: OfficeTheme): ReactNode {
   return createElement(
     'div',
     {
-      className: 'a3s-office a3s-office-empty',
-      'data-a3s-office': '',
+      className: 'aster-office aster-office-empty',
+      'data-aster-office': '',
       'data-theme': theme,
       role: 'status',
     },
@@ -168,13 +168,13 @@ function dispatchDetail<T>(target: EventTarget, type: string, detail: T): void {
   );
 }
 
-abstract class A3SContentEditorElement<
+abstract class AsterContentEditorElement<
   TContent extends
     | DocumentContent
     | MarkdownContent
     | SpreadsheetContent
     | PresentationContent,
-> extends A3SOfficeElement {
+> extends AsterOfficeElement {
   #content: TContent | undefined;
   #fileActions: readonly OfficeFileAction[] | undefined;
 
@@ -232,7 +232,7 @@ abstract class A3SContentEditorElement<
   }
 }
 
-export class A3SDocumentEditorElement extends A3SContentEditorElement<DocumentContent> {
+export class AsterDocumentEditorElement extends AsterContentEditorElement<DocumentContent> {
   #collaboration: OfficeCollaborationSession | undefined;
   #extensions: Extensions | undefined;
   #getSelectionMenuItems: GetDocumentSelectionMenuItems | undefined;
@@ -327,7 +327,7 @@ export class A3SDocumentEditorElement extends A3SContentEditorElement<DocumentCo
   }
 }
 
-export class A3SMarkdownEditorElement extends A3SContentEditorElement<MarkdownContent> {
+export class AsterMarkdownEditorElement extends AsterContentEditorElement<MarkdownContent> {
   #collaboration: OfficeCollaborationSession | undefined;
   #extensions: Extensions | undefined;
   #getSelectionMenuItems: GetMarkdownSelectionMenuItems | undefined;
@@ -381,7 +381,7 @@ export class A3SMarkdownEditorElement extends A3SContentEditorElement<MarkdownCo
   }
 }
 
-export class A3SSpreadsheetEditorElement extends A3SContentEditorElement<SpreadsheetContent> {
+export class AsterSpreadsheetEditorElement extends AsterContentEditorElement<SpreadsheetContent> {
   #collaboration: OfficeCollaborationSession | undefined;
   #sortCustomListStore: SpreadsheetSortCustomListStore | undefined;
 
@@ -435,7 +435,7 @@ export class A3SSpreadsheetEditorElement extends A3SContentEditorElement<Spreads
   }
 }
 
-export class A3SPresentationEditorElement extends A3SContentEditorElement<PresentationContent> {
+export class AsterPresentationEditorElement extends AsterContentEditorElement<PresentationContent> {
   #collaboration: OfficeCollaborationSession | undefined;
 
   static get observedAttributes() {
@@ -480,7 +480,7 @@ export class A3SPresentationEditorElement extends A3SContentEditorElement<Presen
   }
 }
 
-export class A3SPdfViewerElement extends A3SOfficeElement {
+export class AsterPdfViewerElement extends AsterOfficeElement {
   #collaboration: OfficeCollaborationSession | undefined;
   #evidenceOverlay: PdfEvidenceOverlay | undefined;
   #loadSource: (() => Promise<Blob>) | undefined;
@@ -629,15 +629,15 @@ export class A3SPdfViewerElement extends A3SOfficeElement {
   }
 }
 
-export const A3S_OFFICE_ELEMENT_NAMES = {
-  document: 'a3s-document-editor',
-  markdown: 'a3s-markdown-editor',
-  pdf: 'a3s-pdf-viewer',
-  presentation: 'a3s-presentation-editor',
-  spreadsheet: 'a3s-spreadsheet-editor',
+export const ASTER_OFFICE_ELEMENT_NAMES = {
+  document: 'aster-document-editor',
+  markdown: 'aster-markdown-editor',
+  pdf: 'aster-pdf-viewer',
+  presentation: 'aster-presentation-editor',
+  spreadsheet: 'aster-spreadsheet-editor',
 } as const;
 
-export function defineA3SOfficeElements(
+export function defineAsterOfficeElements(
   registry?: CustomElementRegistry,
 ): void {
   const target =
@@ -646,11 +646,11 @@ export function defineA3SOfficeElements(
   if (!target) return;
 
   const elements = [
-    [A3S_OFFICE_ELEMENT_NAMES.document, A3SDocumentEditorElement],
-    [A3S_OFFICE_ELEMENT_NAMES.markdown, A3SMarkdownEditorElement],
-    [A3S_OFFICE_ELEMENT_NAMES.spreadsheet, A3SSpreadsheetEditorElement],
-    [A3S_OFFICE_ELEMENT_NAMES.presentation, A3SPresentationEditorElement],
-    [A3S_OFFICE_ELEMENT_NAMES.pdf, A3SPdfViewerElement],
+    [ASTER_OFFICE_ELEMENT_NAMES.document, AsterDocumentEditorElement],
+    [ASTER_OFFICE_ELEMENT_NAMES.markdown, AsterMarkdownEditorElement],
+    [ASTER_OFFICE_ELEMENT_NAMES.spreadsheet, AsterSpreadsheetEditorElement],
+    [ASTER_OFFICE_ELEMENT_NAMES.presentation, AsterPresentationEditorElement],
+    [ASTER_OFFICE_ELEMENT_NAMES.pdf, AsterPdfViewerElement],
   ] as const;
 
   for (const [name, elementClass] of elements) {
@@ -660,10 +660,10 @@ export function defineA3SOfficeElements(
 
 declare global {
   interface HTMLElementTagNameMap {
-    'a3s-document-editor': A3SDocumentEditorElement;
-    'a3s-markdown-editor': A3SMarkdownEditorElement;
-    'a3s-pdf-viewer': A3SPdfViewerElement;
-    'a3s-presentation-editor': A3SPresentationEditorElement;
-    'a3s-spreadsheet-editor': A3SSpreadsheetEditorElement;
+    'aster-document-editor': AsterDocumentEditorElement;
+    'aster-markdown-editor': AsterMarkdownEditorElement;
+    'aster-pdf-viewer': AsterPdfViewerElement;
+    'aster-presentation-editor': AsterPresentationEditorElement;
+    'aster-spreadsheet-editor': AsterSpreadsheetEditorElement;
   }
 }

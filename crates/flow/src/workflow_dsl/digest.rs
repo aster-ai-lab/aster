@@ -5,8 +5,8 @@ use sha2::{Digest, Sha256};
 
 use super::{WorkflowDag, WorkflowDsl, WorkflowDslError};
 
-const EXECUTION_DIGEST_DOMAIN: &[u8] = b"a3s.flow.workflow_dsl.execution.v2\0";
-const GRAPH_EXECUTION_DIGEST_DOMAIN: &[u8] = b"a3s.flow.workflow_dag.execution.v2\0";
+const EXECUTION_DIGEST_DOMAIN: &[u8] = b"aster.flow.workflow_dsl.execution.v2\0";
+const GRAPH_EXECUTION_DIGEST_DOMAIN: &[u8] = b"aster.flow.workflow_dag.execution.v2\0";
 const MAX_CANONICAL_DEPTH: usize = 256;
 const MAX_SAFE_INTEGER: u64 = 9_007_199_254_740_991;
 const NODE_PRESENTATION_FIELDS: &[&str] = &[

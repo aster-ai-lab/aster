@@ -2,7 +2,7 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::{
+use aster_box_core::{
     ExecutionGeneration, ExecutionId, ExecutionManagerError, ExecutionManagerResult,
 };
 
@@ -95,7 +95,7 @@ fn cleanup_execution_paths(home_dir: &Path, record: &BoxRecord) -> ExecutionMana
     // Sandbox peer-auth may have dropped this process to the real UID. Overlay
     // unmount and mount-alias detach need effective root / CAP_SYS_ADMIN.
     #[cfg(target_os = "linux")]
-    crate::sandbox::a3s_oci_controller::restore_effective_root_if_saved().map_err(|error| {
+    crate::sandbox::aster_oci_controller::restore_effective_root_if_saved().map_err(|error| {
         ExecutionManagerError::Internal(format!(
             "failed to restore effective root before execution cleanup: {error}"
         ))
@@ -209,7 +209,7 @@ fn remove_tree_if_present(path: &Path) -> std::io::Result<()> {
 }
 
 fn remove_host_cgroup(record: &BoxRecord) -> ExecutionManagerResult<()> {
-    // A3S OCI Runtime owns and removes the complete Sandbox hierarchy. This
+    // Aster OCI Runtime owns and removes the complete Sandbox hierarchy. This
     // compatibility cleanup is only for legacy MicroVM shim cgroups.
     if record.isolation.is_sandbox() {
         return Ok(());
@@ -233,7 +233,7 @@ fn cleanup_error(
 mod tests {
     use std::sync::Arc;
 
-    use a3s_box_core::{
+    use aster_box_core::{
         BoxConfig, CreateExecutionRequest, ExecutionIsolation, ExecutionManager,
         ExecutionRecordPolicy, OperationId,
     };
@@ -277,7 +277,7 @@ mod tests {
         async fn kill(
             &self,
             _record: &BoxRecord,
-        ) -> ExecutionManagerResult<a3s_box_core::KillOutcome> {
+        ) -> ExecutionManagerResult<aster_box_core::KillOutcome> {
             unreachable!("removal test never kills a backend")
         }
     }

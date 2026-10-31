@@ -1,11 +1,11 @@
-//! Destructive product-lifecycle qualification for Box over A3S OCI Runtime/KVM.
+//! Destructive product-lifecycle qualification for Box over Aster OCI Runtime/KVM.
 //!
 //! A host operator owns image import and process-leak checks. This executable
 //! exercises the public Box lifecycle boundary, including an optional Host
 //! Service SIGKILL/restart while a MicroVM is running. It always emits a
-//! versioned JSON report when `A3S_BOX_KVM_OCI_REPORT` names an absolute path.
+//! versioned JSON report when `ASTER_BOX_KVM_OCI_REPORT` names an absolute path.
 //!
-//! Schema `a3s.box.linux-kvm-oci-qualification.v2` covers:
+//! Schema `aster.box.linux-kvm-oci-qualification.v2` covers:
 //! 1. create replay + Box-manager reopen + start + exact exit `23` + delete
 //! 2. when service restart inputs are present: a second generation that is
 //!    observed running, interrupted by Host Service SIGKILL/restart, and
@@ -47,35 +47,35 @@ mod qualification {
     use std::process::{Command, Stdio};
     use std::time::Duration;
 
-    use a3s_box_core::{
+    use aster_box_core::{
         BoxConfig, CreateExecutionRequest, ExecutionBackend, ExecutionGeneration, ExecutionId,
         ExecutionIsolation, ExecutionManager, ExecutionManagerError, ExecutionState,
         IsolationClass as BoxIsolationClass, NetworkMode, OperationId, ReconcileOutcome,
         ResourceConfig,
     };
-    use a3s_box_runtime::{
+    use aster_box_runtime::{
         LinuxKvmOciMigrationConfig, LocalExecutionManager, ManagedExecutionStore,
         ManagedRuntimeRoute, OciRuntimeBinding,
     };
-    use a3s_oci_sdk::{DriverKind, IsolationClass as OciIsolationClass};
+    use aster_oci_sdk::{DriverKind, IsolationClass as OciIsolationClass};
     use serde::Serialize;
 
-    const ENABLE_ENV: &str = "A3S_BOX_KVM_OCI_QUALIFICATION";
-    const HOME_ENV: &str = "A3S_HOME";
-    const RUNTIME_ROOT_ENV: &str = "A3S_BOX_OCI_HOST_ROOT";
-    const ENDPOINT_ENV: &str = "A3S_BOX_OCI_KVM_ENDPOINT";
-    const IMAGE_ENV: &str = "A3S_BOX_KVM_OCI_IMAGE";
-    const REPORT_ENV: &str = "A3S_BOX_KVM_OCI_REPORT";
-    const SERVICE_PID_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_PID";
-    const SERVICE_BIN_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_BIN";
-    const SERVICE_ROOT_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_ROOT";
-    const SERVICE_SHIM_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_SHIM";
-    const SERVICE_MANIFEST_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_MANIFEST";
-    const SERVICE_LOG_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_LOG";
-    const BOX_OWNED_ENV: &str = "A3S_BOX_KVM_OCI_BOX_OWNED";
-    const SCHEMA_VERSION: &str = "a3s.box.linux-kvm-oci-qualification.v2";
-    const STDOUT_MARKER: &str = "a3s-box-kvm-oci-stdout";
-    const STDERR_MARKER: &str = "a3s-box-kvm-oci-stderr";
+    const ENABLE_ENV: &str = "ASTER_BOX_KVM_OCI_QUALIFICATION";
+    const HOME_ENV: &str = "ASTER_HOME";
+    const RUNTIME_ROOT_ENV: &str = "ASTER_BOX_OCI_HOST_ROOT";
+    const ENDPOINT_ENV: &str = "ASTER_BOX_OCI_KVM_ENDPOINT";
+    const IMAGE_ENV: &str = "ASTER_BOX_KVM_OCI_IMAGE";
+    const REPORT_ENV: &str = "ASTER_BOX_KVM_OCI_REPORT";
+    const SERVICE_PID_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_PID";
+    const SERVICE_BIN_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_BIN";
+    const SERVICE_ROOT_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_ROOT";
+    const SERVICE_SHIM_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_SHIM";
+    const SERVICE_MANIFEST_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_MANIFEST";
+    const SERVICE_LOG_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_LOG";
+    const BOX_OWNED_ENV: &str = "ASTER_BOX_KVM_OCI_BOX_OWNED";
+    const SCHEMA_VERSION: &str = "aster.box.linux-kvm-oci-qualification.v2";
+    const STDOUT_MARKER: &str = "aster-box-kvm-oci-stdout";
+    const STDERR_MARKER: &str = "aster-box-kvm-oci-stderr";
     const EXPECTED_EXIT_CODE: i32 = 23;
 
     type AnyError = Box<dyn Error + Send + Sync>;
@@ -272,7 +272,7 @@ mod qualification {
                 .file_name()
                 .and_then(|name| name.to_str())
                 .is_some_and(|name| name.contains("kvm-oci-qualification")),
-            "A3S_HOME must name a dedicated kvm-oci-qualification directory",
+            "ASTER_HOME must name a dedicated kvm-oci-qualification directory",
         )?;
         let runtime_root = absolute_environment_path(RUNTIME_ROOT_ENV)?;
         // The qualification Host Service owns the runtime root; it is not
@@ -774,7 +774,7 @@ mod qualification {
             owner_pid_from_box_record(&service.service_root)?
         } else {
             service.pid.ok_or_else(|| {
-                failure("external Host restart requires A3S_BOX_KVM_OCI_SERVICE_PID")
+                failure("external Host restart requires ASTER_BOX_KVM_OCI_SERVICE_PID")
             })?
         };
         // SAFETY: qualification-only SIGKILL of the exact Host owner pid.
@@ -979,7 +979,7 @@ mod qualification {
             && left.timeout == right.timeout
     }
 
-    const KVM_LIVE_BINDING_FILE: &str = ".a3s-oci-kvm-live-session-binding.json";
+    const KVM_LIVE_BINDING_FILE: &str = ".aster-oci-kvm-live-session-binding.json";
 
     fn load_live_session_identities(
         runtime_root: &Path,

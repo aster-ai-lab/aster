@@ -3,11 +3,11 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { Readable } from 'node:stream';
 import { runFlowCli } from '../src/flow-cli';
-import type { A3sFlowWorkflowDsl } from '../src/integrations/a3s-flow-dsl-types';
+import type { AsterFlowWorkflowDsl } from '../src/integrations/aster-flow-dsl-types';
 
 interface WorkflowCliOutput {
   ok: boolean;
-  document: A3sFlowWorkflowDsl;
+  document: AsterFlowWorkflowDsl;
   documentDigest: string;
   plan: { topLevel: string[]; scopes: Record<string, string[]> };
   changed?: string[];
@@ -20,9 +20,9 @@ async function readJson(path: string): Promise<WorkflowCliOutput> {
   return JSON.parse(await readFile(path, 'utf8')) as WorkflowCliOutput;
 }
 
-describe('A3S Flow CLI workflow file CRUD', () => {
+describe('Aster Flow CLI workflow file CRUD', () => {
   it('uses framework parsing for help and unknown-option diagnostics', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'a3s-flow-cli-'));
+    const root = await mkdtemp(join(tmpdir(), 'aster-flow-cli-'));
     const helpOutput = join(root, 'help.json');
     try {
       expect(await runFlowCli(['--help', '--output', helpOutput])).toBe(0);
@@ -42,7 +42,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
   });
 
   it('preserves numeric option values and rejects repeated scalar options', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'a3s-flow-cli-'));
+    const root = await mkdtemp(join(tmpdir(), 'aster-flow-cli-'));
     const workflow = join(root, 'workflow.json');
     const output = join(root, 'result.json');
     try {
@@ -88,14 +88,14 @@ describe('A3S Flow CLI workflow file CRUD', () => {
           'unexpected',
         ]),
       ).rejects.toThrow(/--edge-id is only valid with --add-edge/);
-      expect((JSON.parse(await readFile(workflow, 'utf8')) as A3sFlowWorkflowDsl).app.name).toBe('0003');
+      expect((JSON.parse(await readFile(workflow, 'utf8')) as AsterFlowWorkflowDsl).app.name).toBe('0003');
     } finally {
       await rm(root, { recursive: true, force: true });
     }
   });
 
   it('creates, reads, updates, and deletes a valid DSL file', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'a3s-flow-cli-'));
+    const root = await mkdtemp(join(tmpdir(), 'aster-flow-cli-'));
     const workflow = join(root, 'workflow.json');
     const copiedWorkflow = join(root, 'workflow-copy.json');
     const batchWorkflow = join(root, 'workflow-batch.json');
@@ -233,7 +233,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
         'process',
         'progress',
       ]);
-      const scoped = JSON.parse(await readFile(scopedWorkflow, 'utf8')) as A3sFlowWorkflowDsl;
+      const scoped = JSON.parse(await readFile(scopedWorkflow, 'utf8')) as AsterFlowWorkflowDsl;
       expect(
         scoped.workflow.graph.nodes.find((node) => node.id === 'each-start'),
       ).toMatchObject({ parentId: 'each' });
@@ -250,7 +250,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
           output,
         ]),
       ).toBe(0);
-      const movedTopLevel = JSON.parse(await readFile(scopedWorkflow, 'utf8')) as A3sFlowWorkflowDsl;
+      const movedTopLevel = JSON.parse(await readFile(scopedWorkflow, 'utf8')) as AsterFlowWorkflowDsl;
       expect(movedTopLevel.workflow.graph.nodes.find((node) => node.id === 'progress')).not.toHaveProperty(
         'parentId',
       );
@@ -266,7 +266,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
           output,
         ]),
       ).toBe(0);
-      const movedScoped = JSON.parse(await readFile(scopedWorkflow, 'utf8')) as A3sFlowWorkflowDsl;
+      const movedScoped = JSON.parse(await readFile(scopedWorkflow, 'utf8')) as AsterFlowWorkflowDsl;
       expect(movedScoped.workflow.graph.nodes.find((node) => node.id === 'progress')).toMatchObject({
         parentId: 'each',
       });
@@ -285,7 +285,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
 
       const batchWithEdgeExtension = JSON.parse(
         await readFile(batchWorkflow, 'utf8'),
-      ) as A3sFlowWorkflowDsl;
+      ) as AsterFlowWorkflowDsl;
       const edgeToRedirect = batchWithEdgeExtension.workflow.graph.edges.find(
         (edge) => edge.id === 'run-step-progress',
       );
@@ -376,7 +376,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
       ).rejects.toThrow(/Workflow node not found: missing-node/);
       expect(await readFile(batchWorkflow, 'utf8')).toBe(beforeInvalidEdgeUpdate);
 
-      const imported = JSON.parse(await readFile(workflow, 'utf8')) as A3sFlowWorkflowDsl;
+      const imported = JSON.parse(await readFile(workflow, 'utf8')) as AsterFlowWorkflowDsl;
       imported.workflow.graph.nodes[1].data['x-extension'] = { owner: 'billing' };
       imported.workflow.graph.nodes[1].title = 'Keep this title';
       await writeFile(workflow, `${JSON.stringify(imported)}\n`, 'utf8');
@@ -517,7 +517,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
   });
 
   it('does not overwrite an existing file unless requested', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'a3s-flow-cli-'));
+    const root = await mkdtemp(join(tmpdir(), 'aster-flow-cli-'));
     const workflow = join(root, 'workflow.json');
     const output = join(root, 'result.json');
     try {
@@ -593,7 +593,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
   });
 
   it('accepts an NDJSON operation stream on stdin', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'a3s-flow-cli-'));
+    const root = await mkdtemp(join(tmpdir(), 'aster-flow-cli-'));
     const workflow = join(root, 'workflow.json');
     const output = join(root, 'result.json');
     const originalStdin = process.stdin;
@@ -704,7 +704,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
   });
 
   it('rejects duplicate keys in array operations and node configuration JSON', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'a3s-flow-cli-'));
+    const root = await mkdtemp(join(tmpdir(), 'aster-flow-cli-'));
     const workflow = join(root, 'workflow.json');
     try {
       expect(await runFlowCli(['create', workflow])).toBe(0);
@@ -732,7 +732,7 @@ describe('A3S Flow CLI workflow file CRUD', () => {
   });
 
   it('rejects live writer locks and recovers locks left by dead writers', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'a3s-flow-cli-'));
+    const root = await mkdtemp(join(tmpdir(), 'aster-flow-cli-'));
     const workflow = join(root, 'workflow.json');
     try {
       expect(await runFlowCli(['create', workflow])).toBe(0);

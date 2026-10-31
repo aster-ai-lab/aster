@@ -1,15 +1,15 @@
 //! Host-only ACL declaration. Parsing does not qualify or admit execution.
 
-use a3s_acl::{Block, Token, Value};
-use a3s_code_core::content_digest::{digest_bytes, validate_digest};
-use a3s_code_core::evaluation::EvidenceLimitsV1;
+use aster_acl::{Block, Token, Value};
+use aster_core::content_digest::{digest_bytes, validate_digest};
+use aster_core::evaluation::EvidenceLimitsV1;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 use std::io::Read;
 use std::path::{Component, Path, PathBuf};
 use thiserror::Error;
 
-pub const MANIFEST_SCHEMA: &str = "a3s.code.behavior-acceptance-manifest.v1";
+pub const MANIFEST_SCHEMA: &str = "aster.code.behavior-acceptance-manifest.v1";
 pub const MAX_MANIFEST_BYTES: usize = 1024 * 1024;
 pub const MAX_FILES: u64 = 512;
 pub const MAX_PATH_BYTES: u64 = 4096;
@@ -177,7 +177,7 @@ impl AcceptanceManifestV1 {
             return Err(invalid("manifest exceeds 1 MiB"));
         }
         reject_lossy_tokens(source)?;
-        let document = a3s_acl::parse_acl(source).map_err(|error| invalid(error.to_string()))?;
+        let document = aster_acl::parse_acl(source).map_err(|error| invalid(error.to_string()))?;
         let mut sections = std::collections::BTreeMap::new();
         for block in &document.blocks {
             if ![
@@ -259,7 +259,7 @@ impl AcceptanceManifestV1 {
             schema: MANIFEST_SCHEMA.into(),
             manifest_version: 1,
             manifest_digest: DigestV1::new(digest_bytes(
-                "a3s.code.behavior-acceptance-manifest.bytes.v1",
+                "aster.code.behavior-acceptance-manifest.bytes.v1",
                 source.as_bytes(),
             ))?,
             task_id: string(acceptance, "task_id")?,
@@ -378,7 +378,7 @@ fn parse_limits(block: &Block) -> Result<AcceptanceLimitsV1, ContractError> {
         ],
         false,
     )?;
-    use a3s_code_core::evaluation::*;
+    use aster_core::evaluation::*;
     let evidence = EvidenceLimitsV1 {
         max_events: integer(block, "evidence_max_events", EVIDENCE_MAX_EVENTS as u64)? as usize,
         max_event_bytes: integer(
@@ -695,7 +695,7 @@ fn absolute_path(block: &Block, key: &str) -> Result<PathBuf, ContractError> {
 /// ACL 0.3.0's AST overwrites attributes and represents numbers as f64.
 /// Its own lexer spans allow fail-closed checks without another ACL grammar.
 fn reject_lossy_tokens(source: &str) -> Result<(), ContractError> {
-    let tokens = a3s_acl::Lexer::new(source).tokenize();
+    let tokens = aster_acl::Lexer::new(source).tokenize();
     let mut scopes = vec![BTreeSet::new()];
     for (index, token) in tokens.iter().enumerate() {
         match &token.token {

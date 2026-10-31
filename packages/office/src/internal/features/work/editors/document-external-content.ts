@@ -42,7 +42,7 @@ export function applyExternalDocumentContent(
     );
     try {
       globalThis.performance?.measure(
-        'a3s-office.document.external-content-apply',
+        'aster-office.document.external-content-apply',
         { detail: { result }, end: finishedAt, start: startedAt },
       );
     } catch {

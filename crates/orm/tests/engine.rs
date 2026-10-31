@@ -1,4 +1,4 @@
-use a3s_orm::{Engine, EngineFamily, EngineTransport};
+use aster_orm::{Engine, EngineFamily, EngineTransport};
 
 #[test]
 fn the_catalog_parses_only_its_closed_set() {
@@ -32,15 +32,15 @@ fn only_sqlite_and_postgres_can_open_a_connection() {
     assert!(!Engine::Cockroach.profile().runtime);
     assert_eq!(
         Engine::Mysql.missing_driver_message(),
-        "a3s-orm has no MySQL driver"
+        "aster-orm has no MySQL driver"
     );
     assert_eq!(
         Engine::Redis.missing_driver_message(),
-        "a3s-orm has no redis driver"
+        "aster-orm has no redis driver"
     );
     assert_eq!(
         Engine::Saphana.missing_driver_message(),
-        "a3s-orm has no saphana driver"
+        "aster-orm has no saphana driver"
     );
 }
 

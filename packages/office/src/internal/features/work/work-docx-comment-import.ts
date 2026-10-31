@@ -79,8 +79,8 @@ export async function markDocxComments(
     const index = ranges.length + 1;
     const range = {
       id: workId,
-      start: `__A3S_WORK_COMMENT_START_${index}__`,
-      end: `__A3S_WORK_COMMENT_END_${index}__`,
+      start: `__ASTER_WORK_COMMENT_START_${index}__`,
+      end: `__ASTER_WORK_COMMENT_END_${index}__`,
     };
     start.parentNode.insertBefore(markerRun(document, range.start), start);
     end.parentNode.insertBefore(

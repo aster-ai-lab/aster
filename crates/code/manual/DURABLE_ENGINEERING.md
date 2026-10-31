@@ -19,10 +19,10 @@ Run owner/writer stay in charge. Evidence:
 | --- | --- |
 | Rust | `SessionOptions::with_work_policy(WorkPolicyV1::new(id, version, body)?)` |
 | Rust / ACP | the same field on the original session options |
-| ACP | session `_meta.a3sEngineering = { "policy": "engineering-v1" }` (closed set; the body is `acp/prompts/engineering.md`) |
+| ACP | session `_meta.asterEngineering = { "policy": "engineering-v1" }` (closed set; the body is `acp/prompts/engineering.md`) |
 
 ACP and Code TUI new sessions select `engineering-v1` by default. A client can
-create a plain session with `_meta.a3sEngineering = { "policy": "none" }`.
+create a plain session with `_meta.asterEngineering = { "policy": "none" }`.
 Unknown names or malformed selections refuse instead of falling back. Core
 and SDK session defaults stay optional. Loading an old session does not add
 a policy; an already-bound session keeps its original policy.
@@ -41,10 +41,10 @@ a policy; an already-bound session keeps its original policy.
   delegate review/audit to the original `review` worker (narrowed to read-only
   under a policy), read-only deferral scans.
 - Review drafts are admitted with `admit_session_review_drafts` (ACP
-  `a3s/review/admit`) only for the current policy, recomputed target bytes and,
+  `aster/review/admit`) only for the current policy, recomputed target bytes and,
   optionally, the current goal step and slice Run. Findings never accept a step.
 - A goal-step Finding's subject digests the target and that scope.
-  `a3s/review/settle` (address, accept, waive) recomputes the subject from the
+  `aster/review/settle` (address, accept, waive) recomputes the subject from the
   target digest and scope the host presents and re-checks a goal step is still
   current; another target or scope, or a replanned step, refuses.
 
@@ -68,7 +68,7 @@ after the slice settles and the next slice uses the new revision.
 | `reconcile_goal_slices` | Close slices whose owner is gone, without replay. Needs no host bounds. |
 | `goal_definition`, `work_policy_digest`, `check_goal_step_run` | Read-only views. |
 
-ACP binds `/goal status|pause|resume|clear` and `a3s/goal/{definition,plan,control,wait,state,import,import/preview}`
+ACP binds `/goal status|pause|resume|clear` and `aster/goal/{definition,plan,control,wait,state,import,import/preview}`
 to this facade; `/goal resume` streams successive slices through the turn path
 while the trusted host policy returns Advance. Each tick admits at most one Run.
 The SDKs expose the same methods once.
@@ -81,7 +81,7 @@ import. A cancelled or completed bound goal retains its history; use `/new` for
 a different goal or ordinary work.
 
 - A step is accepted only by the original step judgment over this Run's own
-  evidence; the goal closes (`a3s.goal.completed`) only when every step is
+  evidence; the goal closes (`aster.goal.completed`) only when every step is
   accepted, no wait is open and every slice is settled.
 - Every slice closes once: by its owner (completed with governed usage, else
   interrupted with usage unknown) or by an explicit reconcile.
@@ -135,10 +135,10 @@ are still explicit host calls; no driver runs in the background.
 
 | Layer | Command (from `apps/code`) |
 | --- | --- |
-| Hermetic | `cargo test -p a3s-code-core --lib goal` and `--lib durable_engineering` (four modes and combined counterexamples) |
+| Hermetic | `cargo test -p aster-core --lib goal` and `--lib durable_engineering` (four modes and combined counterexamples) |
 | Real model (mandatory) | Layer C `test_engineering_discipline_real_llm`, `test_durable_goal_real_llm` |
 | Real model (measurement) | Layer C `test_durable_engineering_paired_real_llm` (preregistered; never a release gate) |
-| SDK | `cargo test --locked -p a3s-code-core --lib sdk_capabilities`, Rust/ACP suites |
+| SDK | `cargo test --locked -p aster-core --lib sdk_capabilities`, Rust/ACP suites |
 
 ## Non-goals
 

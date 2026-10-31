@@ -6,24 +6,24 @@
 //! The cache contributes only the model catalog — a cache entry can never
 //! redirect the endpoint the bearer token is sent to (that endpoint is the
 //! provider contract; override it with an explicit provider block and
-//! `A3S_DISABLE_GROK_ACCOUNT=1`).
+//! `ASTER_DISABLE_GROK_ACCOUNT=1`).
 //!
 //! Runs only when the host opts in (`import_accounts = ["grok"]` or
 //! `--import-accounts grok`). Secrets are never logged.
-//! `A3S_DISABLE_GROK_ACCOUNT=1` still turns it off.
+//! `ASTER_DISABLE_GROK_ACCOUNT=1` still turns it off.
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-use a3s_code_core::{ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::{ModelConfig, ModelModalities, ProviderConfig};
 use anyhow::{Context, Result};
 use serde_json::Value;
 
-/// Provider name registered into [`a3s_code_core::CodeConfig`].
+/// Provider name registered into [`aster_core::CodeConfig`].
 pub const PROVIDER_NAME: &str = "grok";
 
 const DEFAULT_BASE_URL: &str = "https://cli-chat-proxy.grok.com/v1";
-const TOKEN_AUTH_HEADER: &str = "a3s-code-cli";
+const TOKEN_AUTH_HEADER: &str = "aster-cli";
 const MIN_CLIENT_VERSION: &str = "0.1.202";
 
 /// Result of reading a logged-in Grok account.
@@ -38,7 +38,7 @@ pub struct GrokAccountImport {
 ///
 /// Returns `Ok(true)` when a provider was merged. Missing auth / disabled
 /// import is not an error.
-pub fn merge_into_config(config: &mut a3s_code_core::CodeConfig) -> Result<bool> {
+pub fn merge_into_config(config: &mut aster_core::CodeConfig) -> Result<bool> {
     if disabled_by_env() {
         return Ok(false);
     }
@@ -73,7 +73,7 @@ pub fn merge_into_config(config: &mut a3s_code_core::CodeConfig) -> Result<bool>
 
 fn disabled_by_env() -> bool {
     matches!(
-        std::env::var("A3S_DISABLE_GROK_ACCOUNT")
+        std::env::var("ASTER_DISABLE_GROK_ACCOUNT")
             .unwrap_or_default()
             .to_ascii_lowercase()
             .as_str(),
@@ -83,7 +83,7 @@ fn disabled_by_env() -> bool {
 
 fn prefer_grok_default() -> bool {
     matches!(
-        std::env::var("A3S_PREFER_GROK")
+        std::env::var("ASTER_PREFER_GROK")
             .unwrap_or_default()
             .to_ascii_lowercase()
             .as_str(),
@@ -104,7 +104,7 @@ pub fn load_logged_in_account() -> Result<Option<GrokAccountImport>> {
 }
 
 fn resolve_grok_home() -> Option<PathBuf> {
-    if let Some(explicit) = std::env::var_os("A3S_GROK_HOME") {
+    if let Some(explicit) = std::env::var_os("ASTER_GROK_HOME") {
         if !explicit.is_empty() {
             return Some(PathBuf::from(explicit));
         }
@@ -119,10 +119,10 @@ fn resolve_grok_home() -> Option<PathBuf> {
     if grok.join("auth.json").is_file() {
         return Some(grok);
     }
-    // Rebranded installs may keep credentials under ~/.a3s.
-    let a3s = user_home.join(".a3s");
-    if a3s.join("auth.json").is_file() {
-        return Some(a3s);
+    // Rebranded installs may keep credentials under ~/.aster.
+    let aster = user_home.join(".aster");
+    if aster.join("auth.json").is_file() {
+        return Some(aster);
     }
     Some(grok)
 }
@@ -325,6 +325,7 @@ fn provider_from_parts(
     }
 
     let provider = ProviderConfig {
+        protocol: None,
         name: PROVIDER_NAME.to_string(),
         api_key: Some(credential.key.clone()),
         base_url: Some(base_url),
@@ -478,7 +479,7 @@ mod tests {
 
     #[test]
     fn merge_into_config_fills_missing_default() {
-        let mut config = a3s_code_core::CodeConfig::default();
+        let mut config = aster_core::CodeConfig::default();
         let cache = json!({
             "models": {
                 "grok-4.7": { "info": { "id": "grok-4.7", "name": "Grok 4.7" } }

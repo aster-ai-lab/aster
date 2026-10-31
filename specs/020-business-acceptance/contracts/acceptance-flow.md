@@ -11,7 +11,7 @@
 
 ## Command and event boundary
 
-- 复用 `a3s/goal/*` 的类型化宿主边界；确有缺失时增加闭集操作和 owning-package 测试，不新增通用 RPC 分派器。
+- 复用 `aster/goal/*` 的类型化宿主边界；确有缺失时增加闭集操作和 owning-package 测试，不新增通用 RPC 分派器。
 - 确认操作带 session/workspace、Goal/Plan 修订、proposal/sequence 和 operation identity；按原 Goal admission 验证。
 - 规则草稿/提案通过既有模型调用和事实记录，不新增 Studio HTTP 模型请求。
 - 执行只能走原 Run admission 与工具路径；读状态不能启动执行或重建丢失的权限。

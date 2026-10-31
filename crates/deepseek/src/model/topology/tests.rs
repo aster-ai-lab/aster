@@ -193,7 +193,7 @@ fn rope_profiles_are_closed_and_keep_distinct_bases() {
 #[test]
 fn index_cache_factories_allocate_only_explicit_source_schedules() {
     let model = architecture();
-    let device = CudaLayerDevice::cpu_for_tests(a3s_power::inference::InferenceLimits::default());
+    let device = CudaLayerDevice::cpu_for_tests(aster_power::inference::InferenceLimits::default());
     let mut owners = Vec::new();
     for layer in model.layers() {
         match layer.new_index_kv_state(&device, 16, 8) {

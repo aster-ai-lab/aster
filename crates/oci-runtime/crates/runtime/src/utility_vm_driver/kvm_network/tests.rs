@@ -1,9 +1,9 @@
 #![cfg(test)]
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentVmAttachmentManifest, GuestPath, AGENT_VM_ATTACHMENT_MANIFEST_FILE_NAME,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     oci_spec::runtime::Spec, ContainerId, ContainerTarget, CreateAttachments, ErrorCode,
     Generation, OciBundle, ProcessIo, StorageAccessMode, StorageAttachmentId, StorageCleanup,
     StorageOwnership,
@@ -52,7 +52,7 @@ async fn prepares_caller_owned_raw_storage_without_absorbing_its_image() {
         ContainerId::new("stored").expect("container ID"),
         Generation(1),
     );
-    let guest_bundle = GuestPath::new("/run/a3s-oci-runtime/bundle").unwrap();
+    let guest_bundle = GuestPath::new("/run/aster-oci-runtime/bundle").unwrap();
     let digest = prepare(&UtilityVmLaunchRequest {
         target: &target,
         runtime_share: &runtime_share,
@@ -121,7 +121,7 @@ async fn rejects_storage_images_inside_the_runtime_owned_share() {
         )
         .unwrap();
     let target = ContainerTarget::exact(ContainerId::new("stored").unwrap(), Generation(1));
-    let guest_bundle = GuestPath::new("/run/a3s-oci-runtime/bundle").unwrap();
+    let guest_bundle = GuestPath::new("/run/aster-oci-runtime/bundle").unwrap();
 
     let error = prepare(&UtilityVmLaunchRequest {
         target: &target,

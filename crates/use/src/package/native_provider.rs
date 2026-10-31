@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::{
+use aster_use_core::{
     CatalogMcpTransport, CatalogSurface, ExecutablePlanningSurface, PackageSurfaceKind,
     PlanEnforcementProfile, PlanQualifiedSurfaceRef, PlannedPackageState, PlannedPackageTransition,
     PlannedProviderEvidence, PluginPlanningBundle, ToolWorkloadClass, UseResult,
@@ -166,14 +166,14 @@ pub(super) fn native_provider_evidence(
     let target = current_host_target()?;
     Ok(PlannedProviderEvidence {
         semantics_profile_digest: digest(&format!(
-            "a3s-use-static-surface-v1\n{}\n{:?}\n{}\n{}",
+            "aster-use-static-surface-v1\n{}\n{:?}\n{}\n{}",
             surface.package_id, surface.surface.kind, surface.surface.id, package_sha256
         )),
         surface,
-        provider_id: "a3s-use-native-launcher".to_owned(),
-        provider_build_id: format!("a3s-use:{}:{target}", env!("CARGO_PKG_VERSION")),
+        provider_id: "aster-use-native-launcher".to_owned(),
+        provider_build_id: format!("aster-use:{}:{target}", env!("CARGO_PKG_VERSION")),
         capability_digest: digest(&format!(
-            "a3s-use-native-launcher-v1\n{}\n{target}",
+            "aster-use-native-launcher-v1\n{}\n{target}",
             env!("CARGO_PKG_VERSION")
         )),
         enforcement: PlanEnforcementProfile::NativeUnconfined,
@@ -201,7 +201,7 @@ fn validate_bundle_state(
     Ok(())
 }
 
-fn native_provider_error(message: impl Into<String>) -> a3s_use_core::UseError {
+fn native_provider_error(message: impl Into<String>) -> aster_use_core::UseError {
     package_manager_error("use.plugin.runtime_provider_required", message)
 }
 
@@ -211,7 +211,7 @@ fn digest(value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use a3s_use_core::{
+    use aster_use_core::{
         CatalogMcpTransport, PlanPackageChangeKind, PlanPackageRole, PlannedPluginRelease,
         PluginCatalogRecord, PLUGIN_PLANNING_BUNDLE_SCHEMA,
     };
@@ -230,7 +230,7 @@ mod tests {
         assert_eq!(providers.len(), 2);
         assert!(providers
             .iter()
-            .all(|provider| provider.provider_id == "a3s-use-native-launcher"));
+            .all(|provider| provider.provider_id == "aster-use-native-launcher"));
         assert!(providers
             .iter()
             .all(|provider| provider.enforcement == PlanEnforcementProfile::NativeUnconfined));
@@ -292,13 +292,13 @@ mod tests {
             surfaces: vec![
                 ExecutablePlanningSurface::McpStdio {
                     id: "library".to_owned(),
-                    activation: a3s_use_core::PlanningSurfaceActivation::Lazy,
+                    activation: aster_use_core::PlanningSurfaceActivation::Lazy,
                     executable: "bin/acme-research".to_owned(),
                     args: vec!["serve".to_owned(), "--mcp".to_owned()],
                 },
                 ExecutablePlanningSurface::ToolTaskNative {
                     id: "convert".to_owned(),
-                    activation: a3s_use_core::PlanningSurfaceActivation::Lazy,
+                    activation: aster_use_core::PlanningSurfaceActivation::Lazy,
                     executable: "bin/acme-research".to_owned(),
                     command: "acme-convert".to_owned(),
                     json_output: true,
@@ -321,17 +321,17 @@ mod tests {
     }
 
     fn planning_release_task() -> ExecutablePlanningSurface {
-        let descriptor = a3s_use_core::ToolReleaseDescriptor::from_json(include_bytes!(
+        let descriptor = aster_use_core::ToolReleaseDescriptor::from_json(include_bytes!(
             "../../core//fixtures/releases/tool-task-release-v1.json"
         ))
         .unwrap();
         ExecutablePlanningSurface::ToolTask {
             id: "convert".to_owned(),
-            activation: a3s_use_core::PlanningSurfaceActivation::Lazy,
+            activation: aster_use_core::PlanningSurfaceActivation::Lazy,
             command: "acme-convert".to_owned(),
             json_output: true,
             timeout_ms: 120_000,
-            artifact: a3s_use_core::PlanningArtifactRef {
+            artifact: aster_use_core::PlanningArtifactRef {
                 uri: format!(
                     "oci://registry.example/acme/convert@{}",
                     descriptor.artifact.digest

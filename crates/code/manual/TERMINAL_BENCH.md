@@ -1,24 +1,24 @@
 # Terminal-Bench evaluation
 
-The native adapter runs A3S Code's existing Core session and workspace tools
+The native adapter runs Aster Code's existing Core session and workspace tools
 inside Harbor's task container. Harbor remains responsible for the task image,
 instruction delivery, time limits, artifacts, and verifier. The adapter does
 not provide MCP tools, alter a task, install a solution, or replace the
 verifier.
 
 Harbor task images typically lack bubblewrap. The runner injects Core's
-`ProcessHostBashSandbox` and sets `A3S_CODE_ALLOW_PROCESS_HOST_SANDBOX=1` so
+`ProcessHostBashSandbox` and sets `ASTER_ALLOW_PROCESS_HOST_SANDBOX=1` so
 default `bash` (`use_default`) executes inside the already-isolated task
 container without a `require_escalated` trial round. Native fail-closed
 behavior on developer machines is unchanged.
 
 The benchmark task instruction is uploaded byte-for-byte to
-`/run/a3s/instruction.md`. The runner explicitly pins the general writable
+`/run/aster/instruction.md`. The runner explicitly pins the general writable
 agent style and disables planning pre-analysis, so the model receives that
 instruction as its single user message. The explicit style takes precedence
 over task vocabulary (for example, `design` or `findall`) and therefore cannot
 silently route the writable session to a read-only style. Search mode remains a
-model decision through the normal A3S Code tool descriptions.
+model decision through the normal Aster Code tool descriptions.
 
 Build the static runner from the Code crate. Match the Harbor task image
 architecture (`uname -m` inside the container). Docker Desktop on Apple
@@ -43,19 +43,19 @@ Run an official Terminal-Bench 4.0 task with the local Codex login:
 
 ```bash
 TB_TARGET=x86_64-unknown-linux-musl   # or aarch64-unknown-linux-musl
-A3S_CODE_TERMINAL_BENCH_BINARY="$PWD/target/${TB_TARGET}/release/examples/terminal_bench_runner" \
-A3S_CODE_CONFIG="$PWD/../../.a3s/config.acl" \
-A3S_CODEX_AUTH_FILE="$HOME/.codex/auth.json" \
-A3S_CODEX_MODEL=gpt-6-astra \
-A3S_CODEX_REASONING_EFFORT=max \
+ASTER_TERMINAL_BENCH_BINARY="$PWD/target/${TB_TARGET}/release/examples/terminal_bench_runner" \
+ASTER_CONFIG="$PWD/../../.aster/config.acl" \
+ASTERX_AUTH_FILE="$HOME/.codex/auth.json" \
+ASTERX_MODEL=gpt-6-astra \
+ASTERX_REASONING_EFFORT=max \
 PYTHONPATH="$PWD/scripts/terminal_bench" \
 harbor run -d terminal-bench/terminal-bench@4.0.0 \
-  -a a3s_code_agent:A3SCodeAgent \
+  -a aster_agent:AsterCodeAgent \
   -t terminal-bench/<task> -n 1 -k 1 -y
 ```
 
 DeepSeek (or other ACL providers) can replace Codex by pointing
-`A3S_CODE_CONFIG` at an ACL that sets `default_model` and `providers` from env
+`ASTER_CONFIG` at an ACL that sets `default_model` and `providers` from env
 (see monorepo `scripts/harbor/native-tb.acl`) and omitting the Codex env vars.
 
 For a leaderboard-compatible run, use the complete tagged dataset, five
@@ -63,27 +63,27 @@ attempts per task, and a GPU-capable sandbox as required by Terminal-Bench:
 
 ```bash
 harbor run -d terminal-bench/terminal-bench@4.0.0 \
-  -a a3s_code_agent:A3SCodeAgent \
+  -a aster_agent:AsterCodeAgent \
   -n 100 -k 5 -y
 ```
 
 ## ACP lane (`TB-ACP1`)
 
 ACP now defaults to engineering discipline and bound-goal continuation. An
-explicit comparison-off arm must use `A3S_CODE_ACP_ENGINEERING_POLICY=none`
-and `A3S_CODE_ACP_GOAL_CONTINUATION=0`; omitted values inherit product defaults.
+explicit comparison-off arm must use `ASTER_ACP_ENGINEERING_POLICY=none`
+and `ASTER_ACP_GOAL_CONTINUATION=0`; omitted values inherit product defaults.
 The adapter forwards those as `--engineering-policy none` and
 `--no-goal-continuation`. This default change does not itself run an evaluation.
 
-`a3s-code-acp --unattended` runs the host admission loop of
-`terminal_bench_runner`, behind Harbor's stock ACP runner, with every A3S Code
-capability on (`TB-ACP2`): `a3s-vec` lexical FTS search, Code Intelligence
+`aster-acp --unattended` runs the host admission loop of
+`terminal_bench_runner`, behind Harbor's stock ACP runner, with every Aster Code
+capability on (`TB-ACP2`): `aster-vec` lexical FTS search, Code Intelligence
 (rust-analyzer, typescript-language-server, basedpyright or pyright, clangd),
 file memory, skills, web tools, and automatic plus manual delegation. Every tool
 call is approved without approval learning, a model question gets a fixed
 "nobody is available" reply, harness state goes to a private temporary root
 instead of the graded workspace, and `--result-file` writes the same
-`a3s.code.terminal-bench-result.v1` record. Without `--unattended` the agent is
+`aster.code.terminal-bench-result.v1` record. Without `--unattended` the agent is
 unchanged.
 
 With no trusted `goal_control` override, bound-goal continuation stops after
@@ -93,21 +93,21 @@ writes `failed` / `execution_failed`, with `goal.continuation_stopped` and the
 next decision in `lastError`. A gate-verified turn is not reported as a completed
 goal. Explicit host ACL bounds and `--no-goal-continuation` remain available.
 
-The ACP lane builds only inside the A3S OS monorepo (`kense-labs/os`), from its
-`apps/code` submodule. `a3s-code-acp` depends on `a3s-okf` and
-`a3s-use-reconcile`, which live in that monorepo's `crates/` and are not on
+The ACP lane builds only inside the Aster OS monorepo (`kense-labs/os`), from its
+`apps/code` submodule. `aster-acp` depends on `aster-okf` and
+`aster-use-reconcile`, which live in that monorepo's `crates/` and are not on
 crates.io, and `run_acp_tb.sh` is the monorepo's `scripts/harbor/`. A
-standalone `A3S-Lab/Code` checkout builds `a3s-code-core` and the TUI after
+standalone `aster-ai-lab/Code` checkout builds `aster-core` and the TUI after
 `.github/setup-workspace.sh`, which drops the `acp` member.
 
 ```bash
 # from <os checkout>/apps/code
-CARGO_TARGET_DIR=$HOME/a3s-tb-target cargo zigbuild --locked \
-  --target x86_64-unknown-linux-musl --release -p a3s-code-acp --bin a3s-code-acp
-../../scripts/harbor/run_acp_tb.sh   # A3S_TB_INCLUDE_TASK=<task> for one task
+CARGO_TARGET_DIR=$HOME/aster-tb-target cargo zigbuild --locked \
+  --target x86_64-unknown-linux-musl --release -p aster-acp --bin aster-acp
+../../scripts/harbor/run_acp_tb.sh   # ASTER_TB_INCLUDE_TASK=<task> for one task
 ```
 
-`a3s_code_acp_agent:A3SCodeAcpAgent` uploads the local binary and ACL instead
+`aster_acp_agent:AsterCodeAcpAgent` uploads the local binary and ACL instead
 of fetching an archive, keeps provider credentials out of the launcher script,
 and reaches the verifier on the same rule as the native adapter. Harbor's ACP
 runner installs Python and `agent-client-protocol` in the task image (`apt-get`
@@ -115,26 +115,26 @@ plus `pip`, 225 s to over 360 s on a slow network). A runner bundle built once
 replaces that step on glibc images:
 
 ```bash
-../../scripts/harbor/prepare_runner_bundle.sh   # ~/.cache/a3s/acp-runner-linux-x86_64.tar.gz, 35 MB
+../../scripts/harbor/prepare_runner_bundle.sh   # ~/.cache/aster/acp-runner-linux-x86_64.tar.gz, 35 MB
 ```
 
-`run_acp_tb.sh` passes it as `A3S_CODE_RUNNER_BUNDLE`; the adapter unpacks it at
+`run_acp_tb.sh` passes it as `ASTER_RUNNER_BUNDLE`; the adapter unpacks it at
 `/opt/harbor-acp-venv` and skips Harbor's install when that Python imports
 `acp` (agent setup then takes about 6 s). Elsewhere Harbor's install runs as
 before. The model is selected through the `model` session config option
 (Python ACP 0.12 has no `models` field). The native runner stays the baseline
 until an A/B on the same tasks shows parity.
 
-Derived indexes (`a3s-vec` FTS, grep trigram stamp) and file memory live in the
+Derived indexes (`aster-vec` FTS, grep trigram stamp) and file memory live in the
 private state root, so the graded workspace holds only what the agent wrote.
 Language servers come from a bundle built once on the host:
 
 ```bash
-../../scripts/harbor/prepare_lsp_bundle.sh   # ~/.cache/a3s/lsp-linux-x86_64.tar.gz, 208 MB
+../../scripts/harbor/prepare_lsp_bundle.sh   # ~/.cache/aster/lsp-linux-x86_64.tar.gz, 208 MB
 ```
 
-`run_acp_tb.sh` passes it as `A3S_CODE_LSP_BUNDLE` on linux-x86_64; each trial
-uploads and unpacks it into `/opt/a3s-lsp` with no network (about 3 s) and
+`run_acp_tb.sh` passes it as `ASTER_LSP_BUNDLE` on linux-x86_64; each trial
+uploads and unpacks it into `/opt/aster-lsp` with no network (about 3 s) and
 links basedpyright, typescript-language-server, clangd and rust-analyzer into
 `/usr/local/bin` unless the image already has them. The bundle needs glibc
 (Node 24: glibc 2.28+); on Alpine the servers do not start.
@@ -142,20 +142,20 @@ links basedpyright, typescript-language-server, clangd and rust-analyzer into
 Without a bundle the adapter falls back to installing missing language
 servers best effort under one deadline inside Harbor's 360 s agent-setup
 limit: basedpyright and
-typescript-language-server through `npm` into `/opt/a3s-lsp`, else basedpyright
+typescript-language-server through `npm` into `/opt/aster-lsp`, else basedpyright
 through a private Python venv, and clangd through `apt-get` (download bounded,
 install from cache) or `apk`. A server that does not arrive leaves that language
 unavailable; the trial continues.
 
 | Variable | Effect |
 | --- | --- |
-| `A3S_CODE_ACP_LANGUAGE_SERVERS=0` | skip the language-server install |
-| `A3S_CODE_LSP_BUNDLE` | prepared bundle to upload; a set but missing file refuses the install |
-| `A3S_CODE_ACP_LANGUAGE_SERVER_BUDGET_SEC` | install deadline, default 150 |
-| `A3S_CODE_ACP_REASONING_EFFORT` | `--reasoning-effort` for the agent: `low`, `medium`, `high`, `xhigh` or `max` (default `max`) |
-| `A3S_CODE_LLM_STREAM_IDLE_TIMEOUT_MS` | forwarded to the agent; a provider stream silent this long is retried. `run_acp_tb.sh` sets 120000 (core default 300000) |
-| `A3S_CODE_RUNNER_BUNDLE` | prepared runner Python to unpack at `/opt/harbor-acp-venv`; a set but missing file refuses the install |
-| `A3S_CODE_SKILLS_DIR` | local skills directory uploaded to `/run/a3s/skills`; list that path in the evaluation ACL's `skill_dirs` |
+| `ASTER_ACP_LANGUAGE_SERVERS=0` | skip the language-server install |
+| `ASTER_LSP_BUNDLE` | prepared bundle to upload; a set but missing file refuses the install |
+| `ASTER_ACP_LANGUAGE_SERVER_BUDGET_SEC` | install deadline, default 150 |
+| `ASTER_ACP_REASONING_EFFORT` | `--reasoning-effort` for the agent: `low`, `medium`, `high`, `xhigh` or `max` (default `max`) |
+| `ASTER_LLM_STREAM_IDLE_TIMEOUT_MS` | forwarded to the agent; a provider stream silent this long is retried. `run_acp_tb.sh` sets 120000 (core default 300000) |
+| `ASTER_RUNNER_BUNDLE` | prepared runner Python to unpack at `/opt/harbor-acp-venv`; a set but missing file refuses the install |
+| `ASTER_SKILLS_DIR` | local skills directory uploaded to `/run/aster/skills`; list that path in the evaluation ACL's `skill_dirs` |
 
 ## TB-QUAL1 qualification gate (`HARNESS-CONV7`)
 
@@ -177,12 +177,12 @@ for every trial on the complete tagged dataset.
 Optional Code live gates (not a TB substitute):
 
 ```bash
-A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-  cargo test -p a3s-code-core --test test_deepseek_adversarial_e2e -- \
+ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+  cargo test -p aster-core --test test_deepseek_adversarial_e2e -- \
   --ignored --test-threads=1 --nocapture
 
-A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-  cargo test -p a3s-code-core --test test_prompt_capability_real_llm -- \
+ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+  cargo test -p aster-core --test test_prompt_capability_real_llm -- \
   --ignored --test-threads=1 --nocapture
 ```
 
@@ -195,13 +195,13 @@ auth file is uploaded only to the ephemeral task container and is never written
 to the workspace or trajectory.
 
 The runner writes an atomic, machine-readable terminal report to
-`/logs/agent/a3s-code.result.json`. It records the outcome (`succeeded`,
+`/logs/agent/aster.result.json`. It records the outcome (`succeeded`,
 `failed`, or `timed_out`), the terminal reason, whether an `agent_end` event was
 observed, turn/tool counters, provider status (when available), and a bounded
 last error. The adapter exposes these fields in Harbor metadata and keeps the
 report beside the stdout, stderr, and trajectory evidence. The default Code
 execution budget is 840 seconds; set
-`A3S_CODE_TERMINAL_BENCH_MAX_EXECUTION_MS` when the outer Harbor task has a
+`ASTER_TERMINAL_BENCH_MAX_EXECUTION_MS` when the outer Harbor task has a
 different deadline, leaving enough margin for result persistence. A benchmark
 run that emits `agent_end` without any successful Tool execution is reported as
 `failed/evidence_missing`; this prevents a text-only response from being

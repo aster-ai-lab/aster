@@ -17,15 +17,15 @@ use std::process::Stdio;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::fact_control::{read_workspace_facts, thread_for_session};
-use a3s_code_core::loop_checkpoint::LoopCheckpoint;
-use a3s_code_core::store::{FileSessionStore, SessionStore};
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
-use a3s_code_core::{Agent, SessionOptions};
-use a3s_effect::{Fact, ToolExecutionOutcome, ToolObservationCompleteness, ToolPreparedV1};
+use aster_core::fact_control::{read_workspace_facts, thread_for_session};
+use aster_core::loop_checkpoint::LoopCheckpoint;
+use aster_core::store::{FileSessionStore, SessionStore};
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_core::{Agent, SessionOptions};
+use aster_effect::{Fact, ToolExecutionOutcome, ToolObservationCompleteness, ToolPreparedV1};
 use serde_json::{json, Value};
 
-const CHILD_WINDOW_ENV: &str = "A3S_TEST_TOOL_EFFECT_CHILD_WINDOW";
+const CHILD_WINDOW_ENV: &str = "ASTER_TEST_TOOL_EFFECT_CHILD_WINDOW";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Window {
@@ -87,7 +87,7 @@ fn announce_barrier(root: &Path, window: Window, phase: &str) {
     );
     assert_eq!(prepared[0].tool_name, window.tool());
     let value = json!({
-        "schema":"a3s.test.tool-effects-process-barrier.v1", "phase":phase,
+        "schema":"aster.test.tool-effects-process-barrier.v1", "phase":phase,
         "process_id":std::process::id(), "session_id":window.session(),
         "identity":prepared[0].identity, "prepared_digest":prepared[0].digest().unwrap(),
         "last_fact_seq":facts.last().map(|fact| fact.seq),
@@ -225,7 +225,7 @@ fn assert_prepared(root: &Path, window: Window, observed: &[Fact]) -> ToolPrepar
     assert_eq!(admission.thread_id, thread_for_session(window.session()));
     assert_eq!(
         prepared.original_args_digest,
-        a3s_effect::tool_args_digest(&json!({})).unwrap()
+        aster_effect::tool_args_digest(&json!({})).unwrap()
     );
     assert_eq!(
         prepared.effective_args_digest,
@@ -322,7 +322,7 @@ async fn run_window(window: Window) {
     // Tool::execute appends execution records after the child is launched.
     sync_write(&root.join("executions.counter"), b"").unwrap();
     sync_write(&root.join("attempt.json"), &serde_json::to_vec_pretty(&json!({
-        "schema":"a3s.test.tool-effects-process-attempt.v1", "test":window.test_name(),
+        "schema":"aster.test.tool-effects-process-attempt.v1", "test":window.test_name(),
         "window":window.name(), "session_id":window.session(), "status":"started",
         "child_timeout_seconds":SCENARIO_TIMEOUT.as_secs(), "resume_timeout_seconds":RESUME_TIMEOUT.as_secs(),
         "tool_round_cap":1, "temperature":0.0, "provider_api_timeout_ms":180_000,
@@ -344,7 +344,7 @@ async fn run_window(window: Window) {
         .env(CHILD_ROOT_ENV, &root)
         .env(CHILD_WINDOW_ENV, window.name())
         .env(
-            "A3S_CONFIG_FILE",
+            "ASTER_CONFIG_FILE",
             super::repo_config_path().canonicalize().unwrap(),
         )
         .stdout(Stdio::from(stdout))
@@ -537,7 +537,7 @@ async fn run_window(window: Window) {
         );
     }
     sync_write(&root.join("oracle.json"), &serde_json::to_vec_pretty(&json!({
-        "schema":"a3s.test.tool-effects-process-oracle.v1", "window":window.name(),
+        "schema":"aster.test.tool-effects-process-oracle.v1", "window":window.name(),
         "model":recovery_model, "original_preparation":prepared, "original_terminal":terminals[0],
         "independent_executions":execution_count(&root), "successful_settlement_markers":0,
         "terminal_committed_at_barrier":!receipts(&before).is_empty(), "recovery_error":error,
@@ -554,7 +554,7 @@ async fn run_window(window: Window) {
 fn assert_known_terminal(
     observed: &[Fact],
     prepared: &ToolPreparedV1,
-) -> a3s_effect::ToolExecutionResultV1 {
+) -> aster_effect::ToolExecutionResultV1 {
     let receipts = receipts(observed);
     assert_eq!(receipts.len(), 1);
     let receipt = receipts.into_iter().next().unwrap();
@@ -572,7 +572,7 @@ fn assert_known_terminal(
     assert!(
         receipt.effects.changes.iter().any(|change| {
             change.path == FILE_NAME
-                && change.after.kind == a3s_effect::ToolFileKind::File
+                && change.after.kind == aster_effect::ToolFileKind::File
                 && change.after.content_digest.as_deref() == Some(expected_digest.as_str())
         }),
         "committed terminal binds the independently read file bytes"
@@ -593,7 +593,7 @@ fn assert_checkpoint(checkpoint: &LoopCheckpoint, prepared: &ToolPreparedV1, win
         .as_ref()
         .expect("actual frozen capability cache binding");
     assert_eq!(
-        a3s_code_core::content_digest::digest_json("a3s.code.tool-admission-binding.v1", binding)
+        aster_core::content_digest::digest_json("aster.code.tool-admission-binding.v1", binding)
             .unwrap(),
         admission.capability_binding_digest,
     );
@@ -615,7 +615,7 @@ fn assert_checkpoint(checkpoint: &LoopCheckpoint, prepared: &ToolPreparedV1, win
             .messages
             .iter()
             .any(|message| message.content.iter().any(|block| {
-                matches!(block, a3s_code_core::llm::ContentBlock::ToolResult { tool_use_id, .. }
+                matches!(block, aster_core::llm::ContentBlock::ToolResult { tool_use_id, .. }
             if tool_use_id == &prepared.identity.tool_call_id)
             })),
         "checkpoint contains the original committed tool result"

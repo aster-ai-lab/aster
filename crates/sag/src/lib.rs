@@ -1,11 +1,11 @@
-//! Native SAG over a3s-vec collections with one source-publication fence. The host supplies model-extracted
+//! Native SAG over aster-vec collections with one source-publication fence. The host supplies model-extracted
 //! events and entities; indexed association records form query-local hyperedges.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 use std::time::Instant;
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionSchema, DataType, Doc, FieldSchema, Fts, IndexParams, MetricType,
     SearchQuery,
 };
@@ -38,7 +38,7 @@ pub enum Error {
     #[error("SAG index exceeds its declared bound")]
     Capacity,
     #[error(transparent)]
-    Vector(#[from] a3s_vec::Error),
+    Vector(#[from] aster_vec::Error),
     #[error(transparent)]
     Json(#[from] serde_json::Error),
     #[error(transparent)]
@@ -570,8 +570,8 @@ impl Index {
     }
     fn owner(&self, doc: &Doc) -> &Collection {
         match doc.field("record_type") {
-            Some(a3s_vec::FieldValue::String(kind)) if kind == "chunk" => &self.chunks,
-            Some(a3s_vec::FieldValue::String(kind)) if kind == "entity" => &self.entities,
+            Some(aster_vec::FieldValue::String(kind)) if kind == "chunk" => &self.chunks,
+            Some(aster_vec::FieldValue::String(kind)) if kind == "entity" => &self.entities,
             _ => &self.collection,
         }
     }

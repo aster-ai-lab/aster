@@ -6,8 +6,8 @@
 //! remote model. Run serially with:
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_workspace_retrieval_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_workspace_retrieval_real_llm \
 //!   -- --ignored --nocapture
 //! ```
 
@@ -18,12 +18,12 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingNormalization, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentEvent, AgentSession, SessionOptions, SystemPromptSlots,
     WorkspaceEmbeddingBatchMetrics, WorkspaceRerankOptions, WorkspaceRetrievalOptions,
     WorkspaceRetrievalPhase, WorkspaceRetrievalStatus,

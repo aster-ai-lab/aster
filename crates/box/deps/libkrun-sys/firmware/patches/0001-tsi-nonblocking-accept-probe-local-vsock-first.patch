@@ -1,4 +1,4 @@
-From: A3S Box maintainers
+From: Aster Box maintainers
 Subject: [PATCH] tsi: probe local vsock before nonblocking host accept
 
 TSI currently sends TSI_ACCEPT to the host before calling the underlying

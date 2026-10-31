@@ -35,8 +35,8 @@ jobs:
 
           version="${GITHUB_REF_NAME#v}"
           manifest_version=$(awk -F'"' '/^version = "/ { print $2; exit }' Cargo.toml)
-          chart_version=$(awk '/^version:/ { print $2; exit }' deploy/helm/a3s-gateway/Chart.yaml | tr -d '"')
-          app_version=$(awk '/^appVersion:/ { print $2; exit }' deploy/helm/a3s-gateway/Chart.yaml | tr -d '"')
+          chart_version=$(awk '/^version:/ { print $2; exit }' deploy/helm/aster-gateway/Chart.yaml | tr -d '"')
+          app_version=$(awk '/^appVersion:/ { print $2; exit }' deploy/helm/aster-gateway/Chart.yaml | tr -d '"')
 
           for pair in \
             "Cargo.toml:$manifest_version" \
@@ -155,17 +155,17 @@ jobs:
             FEATURES=""
           fi
           if [ "${{ matrix.use_cross }}" = "true" ]; then
-            cross build --locked -p a3s-gateway --release --target ${{ matrix.target }} $FEATURES
+            cross build --locked -p aster-gateway --release --target ${{ matrix.target }} $FEATURES
           elif [ "${{ matrix.use_zigbuild }}" = "true" ]; then
-            cargo zigbuild --locked -p a3s-gateway --release --target ${{ matrix.target }} $FEATURES
+            cargo zigbuild --locked -p aster-gateway --release --target ${{ matrix.target }} $FEATURES
           else
-            cargo build --locked -p a3s-gateway --release --target ${{ matrix.target }} $FEATURES
+            cargo build --locked -p aster-gateway --release --target ${{ matrix.target }} $FEATURES
           fi
 
       - name: Strip (Linux gnu)
         if: runner.os == 'Linux' && matrix.use_zigbuild != true
         run: |
-          BIN="target/${{ matrix.target }}/release/a3s-gateway"
+          BIN="target/${{ matrix.target }}/release/aster-gateway"
           if [ "${{ matrix.target }}" = "aarch64-unknown-linux-gnu" ]; then
             sudo apt-get install -y --no-install-recommends binutils-aarch64-linux-gnu
             aarch64-linux-gnu-strip "$BIN"
@@ -177,29 +177,29 @@ jobs:
         if: matrix.use_zigbuild == true
         run: |
           sudo apt-get install -y --no-install-recommends llvm
-          llvm-strip "target/${{ matrix.target }}/release/a3s-gateway"
+          llvm-strip "target/${{ matrix.target }}/release/aster-gateway"
 
       - name: Strip (macOS)
         if: runner.os == 'macOS'
-        run: strip "target/${{ matrix.target }}/release/a3s-gateway"
+        run: strip "target/${{ matrix.target }}/release/aster-gateway"
 
       - name: Package Unix archive
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          BIN="target/${{ matrix.target }}/release/a3s-gateway"
+          BIN="target/${{ matrix.target }}/release/aster-gateway"
           VER="${GITHUB_REF_NAME#v}"
-          ARCHIVE="a3s-gateway-${VER}-${{ matrix.platform }}.tar.gz"
-          tar czf "$ARCHIVE" -C "$(dirname $BIN)" a3s-gateway
+          ARCHIVE="aster-gateway-${VER}-${{ matrix.platform }}.tar.gz"
+          tar czf "$ARCHIVE" -C "$(dirname $BIN)" aster-gateway
           sha256sum "$ARCHIVE" > "${ARCHIVE}.sha256"
 
       - name: Package Windows archive
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $binary = "target/${{ matrix.target }}/release/a3s-gateway.exe"
+          $binary = "target/${{ matrix.target }}/release/aster-gateway.exe"
           $version = $env:GITHUB_REF_NAME.TrimStart('v')
-          $archive = "a3s-gateway-$version-${{ matrix.platform }}.zip"
+          $archive = "aster-gateway-$version-${{ matrix.platform }}.zip"
           Compress-Archive -LiteralPath $binary -DestinationPath $archive
           $sha256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
           Set-Content -LiteralPath "$archive.sha256" -Value "$sha256  $archive" -Encoding ascii
@@ -207,7 +207,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}
-          path: a3s-gateway-*
+          path: aster-gateway-*
 
   # ───────────────────────────────────────────────
   # Create GitHub Release with binaries
@@ -308,10 +308,10 @@ jobs:
           mkdir -p bin/linux-amd64 bin/linux-arm64
 
           tar -xzf bin/x86_64-unknown-linux-musl/*.tar.gz -C bin/linux-amd64
-          mv bin/linux-amd64/a3s-gateway bin/linux-amd64/a3s-gateway-amd64
+          mv bin/linux-amd64/aster-gateway bin/linux-amd64/aster-gateway-amd64
 
           tar -xzf bin/aarch64-unknown-linux-musl/*.tar.gz -C bin/linux-arm64
-          mv bin/linux-arm64/a3s-gateway bin/linux-arm64/a3s-gateway-arm64
+          mv bin/linux-arm64/aster-gateway bin/linux-arm64/aster-gateway-arm64
 
           cp Dockerfile bin/linux-amd64/
           cp Dockerfile bin/linux-arm64/
@@ -340,7 +340,7 @@ jobs:
           context: bin/linux-amd64
           file: bin/linux-amd64/Dockerfile
           platforms: linux/amd64
-          build-args: BINARY_NAME=a3s-gateway-amd64
+          build-args: BINARY_NAME=aster-gateway-amd64
           tags: ${{ steps.version.outputs.REGISTRY }}:${{ steps.version.outputs.VER }}-amd64
           push: true
           provenance: false
@@ -351,7 +351,7 @@ jobs:
           context: bin/linux-arm64
           file: bin/linux-arm64/Dockerfile
           platforms: linux/arm64
-          build-args: BINARY_NAME=a3s-gateway-arm64
+          build-args: BINARY_NAME=aster-gateway-arm64
           tags: ${{ steps.version.outputs.REGISTRY }}:${{ steps.version.outputs.VER }}-arm64
           push: true
           provenance: false
@@ -401,7 +401,7 @@ jobs:
           set -euo pipefail
           VER="${GITHUB_REF_NAME#v}"
           sha() {
-            sha256sum "artifacts/$1/a3s-gateway-${VER}-$2.tar.gz" | awk '{print $1}'
+            sha256sum "artifacts/$1/aster-gateway-${VER}-$2.tar.gz" | awk '{print $1}'
           }
           echo "ver=$VER"                                                    >> "$GITHUB_OUTPUT"
           echo "macos_arm64=$(sha aarch64-apple-darwin darwin-arm64)"        >> "$GITHUB_OUTPUT"
@@ -411,7 +411,7 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          repository: A3S-Lab/homebrew-tap
+          repository: aster-ai-lab/homebrew-tap
           token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           path: homebrew-tap
 
@@ -430,7 +430,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/a3s-gateway.rb
+          git add Formula/aster-gateway.rb
           git diff --cached --quiet && exit 0
-          git commit -m "chore: update a3s-gateway to v${{ steps.sha.outputs.ver }}"
+          git commit -m "chore: update aster-gateway to v${{ steps.sha.outputs.ver }}"
           git push origin main

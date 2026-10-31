@@ -5,7 +5,7 @@ use std::process::{Command, Stdio};
 use std::thread;
 use std::time::Duration;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
 use serde::{Deserialize, Serialize};
 use zeroize::Zeroizing;
 
@@ -20,10 +20,10 @@ use crate::unix_process::{
     wait_for_worker, PinnedCurrentExecutable,
 };
 use crate::{KrunVmSmokeReport, MacosBootAssetsEvidence, VmConfig};
-use a3s_oci_agent_protocol::{SessionToken, AGENT_RUNTIME_SHARE_TAG};
+use aster_oci_agent_protocol::{SessionToken, AGENT_RUNTIME_SHARE_TAG};
 
 const WORKER_COMMAND: &str = "__macos-vm-smoke-worker";
-const WORKER_SCHEMA_VERSION: &str = "a3s.oci.macos-vm-smoke-worker.v1";
+const WORKER_SCHEMA_VERSION: &str = "aster.oci.macos-vm-smoke-worker.v1";
 const WORKER_TIMEOUT: Duration = Duration::from_secs(30);
 const MAX_WORKER_OUTPUT_BYTES: u64 = 64 * 1024;
 
@@ -395,15 +395,15 @@ pub(crate) fn run_worker(
         return fail_worker(&mut evidence, error.to_string());
     }
 
-    let marker_guest_path = format!("/run/a3s-oci-runtime/{marker_name}");
+    let marker_guest_path = format!("/run/aster-oci-runtime/{marker_name}");
     // `marker_name` and `marker_token` have both been reduced to lowercase
     // hexadecimal values above, so embedding them in this single-quoted
     // command cannot introduce a path or shell metacharacter.
     let command = format!(
-        "mount -t virtiofs {AGENT_RUNTIME_SHARE_TAG} /run/a3s-oci-runtime && \
+        "mount -t virtiofs {AGENT_RUNTIME_SHARE_TAG} /run/aster-oci-runtime && \
          umask 077 && set -C && \
          printf '%s\\n' '{marker_token}' > '{marker_guest_path}' && \
-         printf '%s\\n' 'a3s-oci-hvf-vm-smoke-complete-v1'"
+         printf '%s\\n' 'aster-oci-hvf-vm-smoke-complete-v1'"
     );
     let arguments = vec!["-c".to_string(), command];
     if let Err(error) = context.set_exec("/bin/sh", &arguments, &[]) {
@@ -475,7 +475,7 @@ fn emit_worker_evidence(evidence: &WorkerEvidence) -> io::Result<()> {
 fn fail_worker(evidence: &mut WorkerEvidence, reason: String) -> bool {
     evidence.reason = Some(reason);
     if let Err(error) = emit_worker_evidence(evidence) {
-        eprintln!("a3s-oci-krun-shim: failed to emit worker failure evidence: {error}");
+        eprintln!("aster-oci-krun-shim: failed to emit worker failure evidence: {error}");
     }
     false
 }

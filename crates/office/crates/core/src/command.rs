@@ -5,7 +5,7 @@ use std::process::Stdio;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_use_core::{RiskClass, UseResult, UseSessionId};
+use aster_use_core::{RiskClass, UseResult, UseSessionId};
 use async_trait::async_trait;
 use sha2::{Digest, Sha256};
 use tokio::io::AsyncWriteExt;
@@ -32,7 +32,7 @@ impl OfficeCliProvider {
                 "use.office.runtime_missing",
                 "The supported OfficeCLI provider is not installed.",
             )
-            .with_suggestion("Run 'a3s install use/office'.")
+            .with_suggestion("Run 'aster install use/office'.")
         })?;
         Ok(Self::new(executable))
     }
@@ -226,7 +226,7 @@ pub async fn delegate_native(args: &[String]) -> UseResult<u8> {
             "use.office.runtime_missing",
             "The supported OfficeCLI provider is not installed.",
         )
-        .with_suggestion("Run 'a3s install use/office'.")
+        .with_suggestion("Run 'aster install use/office'.")
     })?;
     let status = tokio::process::Command::new(&executable)
         .args(args)

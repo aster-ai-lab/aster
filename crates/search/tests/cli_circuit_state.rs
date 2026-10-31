@@ -8,7 +8,7 @@ use tempfile::tempdir;
 
 fn direct_moli_scope() -> String {
     let mut digest = Sha256::new();
-    digest.update(b"a3s/search-cli-transport-scope/v1\0");
+    digest.update(b"aster/search-cli-transport-scope/v1\0");
     digest.update(b"moli");
     digest.update([0]);
     digest.update(b"direct");
@@ -24,7 +24,7 @@ fn a_later_cli_process_skips_an_open_source_without_network_access() {
         .unwrap_or(Duration::ZERO)
         .as_millis() as u64;
     let state = serde_json::json!({
-        "schema": "a3s/search-cli-circuit-state/v1",
+        "schema": "aster/search-cli-circuit-state/v1",
         "scope_sha256": format!("sha256:{scope}"),
         "entries": {
             "wiki": {
@@ -43,10 +43,10 @@ fn a_later_cli_process_skips_an_open_source_without_network_access() {
     )
     .unwrap();
 
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-search"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-search"))
         .arg("cross process circuit probe")
         .args(["--engines", "wiki", "--format", "json", "--timeout", "2"])
-        .env("A3S_SEARCH_STATE_DIR", state_directory.path())
+        .env("ASTER_SEARCH_STATE_DIR", state_directory.path())
         .output()
         .unwrap();
 

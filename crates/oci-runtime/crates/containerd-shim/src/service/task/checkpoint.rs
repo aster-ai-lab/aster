@@ -1,4 +1,4 @@
-use a3s_oci_sdk::CheckpointResponse;
+use aster_oci_sdk::CheckpointResponse;
 
 use super::*;
 

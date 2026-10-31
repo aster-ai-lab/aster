@@ -3,7 +3,7 @@
 
 use super::is_parallel_safe_read;
 use crate::tools::ToolExecutor;
-use a3s_effect::coding::ToolCall;
+use aster_effect::coding::ToolCall;
 
 /// `call` may run concurrently with `batch_len - 1` other admitted reads.
 pub(super) fn parallel_read(executor: &ToolExecutor, call: &ToolCall, batch_len: usize) -> bool {

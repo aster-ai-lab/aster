@@ -3,8 +3,8 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{OciBundle, RuntimeClient};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{OciBundle, RuntimeClient};
 use tokio::time::{sleep, Instant};
 
 use super::filesystem::{
@@ -67,7 +67,7 @@ pub(super) async fn run(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let session_root = work_parent.join(format!("a3s-oci-native-fault-{nonce}"));
+    let session_root = work_parent.join(format!("aster-oci-native-fault-{nonce}"));
     if let Err(reason) = create_private_directory(&session_root).await {
         return failed(report, reason);
     }

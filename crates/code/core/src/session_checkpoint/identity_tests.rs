@@ -84,7 +84,7 @@ fn canonical_digest_reuses_codec_ordering_and_domain_separation() {
     let left: serde_json::Value = serde_json::from_str(r#"{"z":{"b":2,"a":1},"a":[2,1]}"#).unwrap();
     let right: serde_json::Value =
         serde_json::from_str(r#"{"a":[2,1],"z":{"a":1,"b":2}}"#).unwrap();
-    let domain = "a3s.code.recovery-unproved.identity.v1";
+    let domain = "aster.code.recovery-unproved.identity.v1";
     let digest = canonical_identity_digest(domain, &left).unwrap();
     assert_eq!(digest, canonical_identity_digest(domain, &right).unwrap());
     assert_eq!(digest, codec::domain_digest(domain, &left).unwrap());
@@ -137,9 +137,9 @@ fn canonical_source_digest_binds_content_and_does_not_normalize_exact_ids() {
 #[test]
 fn durable_portable_snapshot_and_loop_must_bind_the_same_original_source() {
     let mut loop_state = checkpoint();
-    let facts = [a3s_effect::Fact {
+    let facts = [aster_effect::Fact {
         seq: 1,
-        kind: "a3s.work-policy.admitted".into(),
+        kind: "aster.work-policy.admitted".into(),
         key: "source".into(),
         cause: None,
         payload: json!({"source":"original"}),

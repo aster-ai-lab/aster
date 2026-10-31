@@ -670,7 +670,7 @@ fn script_source_with_host_entrypoint(source: &str) -> Result<String> {
     Ok(format!(
         r#"{rewritten}
 
-globalThis.__a3sResultJson = (async () => JSON.stringify(await run(globalThis.__a3sCtx, globalThis.__a3sInputs)))();
+globalThis.__asterResultJson = (async () => JSON.stringify(await run(globalThis.__asterCtx, globalThis.__asterInputs)))();
 "#
     ))
 }
@@ -714,7 +714,7 @@ async fn run_embedded_script(
                 execute_host_tool_json(state, tool, args_json).await
             }
         };
-        if let Err(err) = ctx.globals().set("__a3sHostTool", Func::from(Async(host_tool))) {
+        if let Err(err) = ctx.globals().set("__asterHostTool", Func::from(Async(host_tool))) {
             return Err(format!("failed to install program host tool: {err}"));
         }
         // Catch the thrown value. `Error::Exception` alone prints as
@@ -795,23 +795,23 @@ impl Drop for ScriptHostCall {
 fn embedded_script_bootstrap(inputs_json: &str) -> String {
     format!(
         r#"
-const __a3sCallTool = async (tool, args = {{}}) => {{
-  const response = await globalThis.__a3sHostTool(String(tool), JSON.stringify(args ?? {{}}));
+const __asterCallTool = async (tool, args = {{}}) => {{
+  const response = await globalThis.__asterHostTool(String(tool), JSON.stringify(args ?? {{}}));
   return JSON.parse(response);
 }};
 
-const __a3sTools = Object.freeze(new Proxy({{}}, {{
+const __asterTools = Object.freeze(new Proxy({{}}, {{
   get(_target, prop) {{
     if (typeof prop !== "string" || prop === "then") return undefined;
-    return (args = {{}}) => __a3sCallTool(prop, args);
+    return (args = {{}}) => __asterCallTool(prop, args);
   }},
   has(_target, prop) {{
     return typeof prop === "string";
   }},
 }}));
 
-const __a3sReadArgs = (path, options = {{}}) => ({{ ...(options ?? {{}}), file_path: path }});
-const __a3sLegacySearchArgs = (mode, query, options = {{}}) => {{
+const __asterReadArgs = (path, options = {{}}) => ({{ ...(options ?? {{}}), file_path: path }});
+const __asterLegacySearchArgs = (mode, query, options = {{}}) => {{
   const args = {{ ...(options ?? {{}}), mode, query }};
   if (Object.prototype.hasOwnProperty.call(args, "glob")) {{
     args.include = args.glob;
@@ -823,24 +823,24 @@ const __a3sLegacySearchArgs = (mode, query, options = {{}}) => {{
   }}
   return args;
 }};
-const __a3sCtx = Object.freeze({{
-  tool: __a3sCallTool,
-  tools: __a3sTools,
-  readFile: (path, options = {{}}) => __a3sCallTool("read", __a3sReadArgs(path, options)).then((r) => r.text ?? r.output),
-  read: (path, options = {{}}) => __a3sCallTool("read", __a3sReadArgs(path, options)),
-  search: (query, options = {{}}) => __a3sCallTool("search", {{ ...options, query }}).then((r) => r.output),
-  grep: (query, options = {{}}) => __a3sCallTool("search", __a3sLegacySearchArgs("grep", query, options)).then((r) => r.output),
-  bm25: (query, options = {{}}) => __a3sCallTool("search", __a3sLegacySearchArgs("bm25", query, options)).then((r) => r.output),
-  glob: (query, options = {{}}) => __a3sCallTool("search", {{ ...options, mode: "glob", query }}).then((r) => r.output),
-  ls: (path = ".") => __a3sCallTool("ls", {{ path }}).then((r) => r.output),
-  bash: (command) => __a3sCallTool("bash", {{ command }}).then((r) => r.output),
-  git: (args = {{}}) => __a3sCallTool("git", args),
-  webSearch: (params) => __a3sCallTool("web_search", params),
-  verify: (args) => __a3sCallTool("bash", args),
+const __asterCtx = Object.freeze({{
+  tool: __asterCallTool,
+  tools: __asterTools,
+  readFile: (path, options = {{}}) => __asterCallTool("read", __asterReadArgs(path, options)).then((r) => r.text ?? r.output),
+  read: (path, options = {{}}) => __asterCallTool("read", __asterReadArgs(path, options)),
+  search: (query, options = {{}}) => __asterCallTool("search", {{ ...options, query }}).then((r) => r.output),
+  grep: (query, options = {{}}) => __asterCallTool("search", __asterLegacySearchArgs("grep", query, options)).then((r) => r.output),
+  bm25: (query, options = {{}}) => __asterCallTool("search", __asterLegacySearchArgs("bm25", query, options)).then((r) => r.output),
+  glob: (query, options = {{}}) => __asterCallTool("search", {{ ...options, mode: "glob", query }}).then((r) => r.output),
+  ls: (path = ".") => __asterCallTool("ls", {{ path }}).then((r) => r.output),
+  bash: (command) => __asterCallTool("bash", {{ command }}).then((r) => r.output),
+  git: (args = {{}}) => __asterCallTool("git", args),
+  webSearch: (params) => __asterCallTool("web_search", params),
+  verify: (args) => __asterCallTool("bash", args),
 }});
 
-Object.defineProperty(globalThis, "__a3sCtx", {{ value: __a3sCtx, configurable: false }});
-Object.defineProperty(globalThis, "__a3sInputs", {{ value: {inputs_json}, configurable: false }});
+Object.defineProperty(globalThis, "__asterCtx", {{ value: __asterCtx, configurable: false }});
+Object.defineProperty(globalThis, "__asterInputs", {{ value: {inputs_json}, configurable: false }});
 Object.defineProperty(globalThis, "fetch", {{ value: undefined, configurable: false, writable: false }});
 Object.defineProperty(globalThis, "WebSocket", {{ value: undefined, configurable: false, writable: false }});
 Object.defineProperty(globalThis, "Worker", {{ value: undefined, configurable: false, writable: false }});

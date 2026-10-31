@@ -283,7 +283,7 @@ impl StructuralHash {
     }
 
     pub(crate) fn digest(&self, version: u64) -> Result<String, ReplayError> {
-        let mut bytes = b"a3s-state-graph-v2\0".to_vec();
+        let mut bytes = b"aster-state-graph-v2\0".to_vec();
         bytes.extend_from_slice(&version.to_be_bytes());
         bytes.extend_from_slice(&self.0);
         Ok(sha256::digest(bytes))

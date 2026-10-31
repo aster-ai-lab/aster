@@ -11,7 +11,7 @@ use crate::capability::{
 };
 use crate::error::Result;
 
-/// Non-clone host handle retaining one exact Code projection and A3S Use lease.
+/// Non-clone host handle retaining one exact Code projection and Aster Use lease.
 ///
 /// The handle exposes immutable path-free content and the exact dependency
 /// edges selected at admission. It grants no renderer, filesystem, network,
@@ -100,7 +100,7 @@ impl fmt::Debug for ProjectedUiHandle {
 impl AgentSession {
     /// Admit one exact named UI value from the current atomic catalog.
     ///
-    /// Missing names return `None` without acquiring an A3S Use lease. The
+    /// Missing names return `None` without acquiring an Aster Use lease. The
     /// returned handle pins the selected descriptor, bytes, Code generation,
     /// and exact Use generation across later N+1 publication.
     pub async fn projected_ui(&self, public_name: &str) -> Result<Option<ProjectedUiHandle>> {

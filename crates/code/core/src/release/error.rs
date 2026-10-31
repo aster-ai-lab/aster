@@ -1,4 +1,4 @@
-use a3s_acl::{CanonicalError, ParseError, SchemaDiagnosticCode};
+use aster_acl::{CanonicalError, ParseError, SchemaDiagnosticCode};
 use std::fmt;
 
 /// Typed Agent release field used by value-redacting admission errors.
@@ -92,19 +92,19 @@ impl AgentReleaseError {
     /// Stable machine-readable error code.
     pub const fn code(&self) -> &'static str {
         match self {
-            Self::Io(_) => "a3s.code.agent_release.io",
+            Self::Io(_) => "aster.code.agent_release.io",
             Self::InputTooLarge | Self::InvalidEncoding | Self::Parse(_) => {
-                "a3s.code.agent_release.parse"
+                "aster.code.agent_release.parse"
             }
-            Self::Schema { .. } | Self::SchemaBudgetExceeded => "a3s.code.agent_release.schema",
-            Self::Canonical(_) | Self::CanonicalEncoding => "a3s.code.agent_release.canonical",
-            Self::UnsupportedContract => "a3s.code.agent_release.unsupported_contract",
-            Self::InvalidField(_) => "a3s.code.agent_release.invalid_field",
-            Self::DuplicateCapability => "a3s.code.agent_release.duplicate_capability",
-            Self::DuplicateSecret => "a3s.code.agent_release.duplicate_secret",
-            Self::DuplicateProvenance => "a3s.code.agent_release.duplicate_provenance",
-            Self::IncompatibleProtocol => "a3s.code.agent_release.incompatible_protocol",
-            Self::UnsupportedCapability { .. } => "a3s.code.agent_release.unsupported_capability",
+            Self::Schema { .. } | Self::SchemaBudgetExceeded => "aster.code.agent_release.schema",
+            Self::Canonical(_) | Self::CanonicalEncoding => "aster.code.agent_release.canonical",
+            Self::UnsupportedContract => "aster.code.agent_release.unsupported_contract",
+            Self::InvalidField(_) => "aster.code.agent_release.invalid_field",
+            Self::DuplicateCapability => "aster.code.agent_release.duplicate_capability",
+            Self::DuplicateSecret => "aster.code.agent_release.duplicate_secret",
+            Self::DuplicateProvenance => "aster.code.agent_release.duplicate_provenance",
+            Self::IncompatibleProtocol => "aster.code.agent_release.incompatible_protocol",
+            Self::UnsupportedCapability { .. } => "aster.code.agent_release.unsupported_capability",
         }
     }
 

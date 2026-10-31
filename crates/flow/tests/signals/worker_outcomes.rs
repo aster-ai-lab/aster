@@ -10,7 +10,7 @@ fn approval_task(run_id: &str) -> FlowTask {
     }
 }
 
-fn delivered_signals(outcomes: &[a3s_flow::FlowTaskOutcome]) -> Vec<(String, String)> {
+fn delivered_signals(outcomes: &[aster_flow::FlowTaskOutcome]) -> Vec<(String, String)> {
     outcomes
         .iter()
         .filter_map(|outcome| outcome.delivered_signal.clone())
@@ -18,14 +18,14 @@ fn delivered_signals(outcomes: &[a3s_flow::FlowTaskOutcome]) -> Vec<(String, Str
 }
 
 struct CoordinatedSignalStore {
-    inner: a3s_flow::InMemoryEventStore,
+    inner: aster_flow::InMemoryEventStore,
     delivery_barrier: tokio::sync::Barrier,
 }
 
 impl CoordinatedSignalStore {
     fn new() -> Self {
         Self {
-            inner: a3s_flow::InMemoryEventStore::new(),
+            inner: aster_flow::InMemoryEventStore::new(),
             delivery_barrier: tokio::sync::Barrier::new(2),
         }
     }
@@ -37,7 +37,7 @@ impl FlowEventStore for CoordinatedSignalStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -46,7 +46,7 @@ impl FlowEventStore for CoordinatedSignalStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         if matches!(&event, FlowEvent::SignalReceived { .. }) {
             self.delivery_barrier.wait().await;
         }
@@ -55,11 +55,11 @@ impl FlowEventStore for CoordinatedSignalStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -176,7 +176,7 @@ impl FlowRuntime for SignalThenContinueRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.input()["generation"] == 0 {
             if context.signal_payload("approval").is_none() {
@@ -187,20 +187,20 @@ impl FlowRuntime for SignalThenContinueRuntime {
         Ok(context.complete(json!({ "continued": true })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal workflow does not execute steps")
     }
 }
 
 struct CrashBeforeSignalSuccessorStore {
-    inner: a3s_flow::InMemoryEventStore,
+    inner: aster_flow::InMemoryEventStore,
     armed: AtomicBool,
 }
 
 impl CrashBeforeSignalSuccessorStore {
     fn new() -> Self {
         Self {
-            inner: a3s_flow::InMemoryEventStore::new(),
+            inner: aster_flow::InMemoryEventStore::new(),
             armed: AtomicBool::new(true),
         }
     }
@@ -212,7 +212,7 @@ impl FlowEventStore for CrashBeforeSignalSuccessorStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -221,7 +221,7 @@ impl FlowEventStore for CrashBeforeSignalSuccessorStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         if run_id != SIGNAL_CONTINUATION_RUN_ID
             && matches!(&event, FlowEvent::RunCreated { .. })
             && self.armed.swap(false, Ordering::SeqCst)
@@ -235,11 +235,11 @@ impl FlowEventStore for CrashBeforeSignalSuccessorStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -251,7 +251,7 @@ impl FlowRuntime for SignalThenSuspendedContinuationRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.input()["generation"] == 0 {
             if context.signal_payload("approval").is_none() {
@@ -262,7 +262,7 @@ impl FlowRuntime for SignalThenSuspendedContinuationRuntime {
         Ok(context.wait_for_signal("release", RELEASE_SIGNAL))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal continuation runtime does not execute steps")
     }
 }
@@ -319,11 +319,11 @@ async fn signal_redelivery_drives_a_repaired_continuation_successor() {
 #[tokio::test]
 async fn active_leaf_signal_redelivery_requires_runtime_build_admission() {
     let run_id = "signal-worker-active-leaf-build-fence";
-    let store = Arc::new(a3s_flow::InMemoryEventStore::new());
-    let owner_build = a3s_flow::RuntimeBuildId::new("signal-owner-v1").unwrap();
+    let store = Arc::new(aster_flow::InMemoryEventStore::new());
+    let owner_build = aster_flow::RuntimeBuildId::new("signal-owner-v1").unwrap();
     let owner = FlowEngine::builder(Arc::new(SignalThenSuspendedContinuationRuntime))
         .with_store(store.clone())
-        .with_runtime_build_compatibility(a3s_flow::RuntimeBuildCompatibility::new(
+        .with_runtime_build_compatibility(aster_flow::RuntimeBuildCompatibility::new(
             owner_build.clone(),
         ))
         .build();
@@ -341,10 +341,10 @@ async fn active_leaf_signal_redelivery_requires_runtime_build_admission() {
     assert_eq!(leaf.status, WorkflowRunStatus::Suspended);
     let history_before = owner.history(&leaf.run_id).await.unwrap();
 
-    let incompatible_build = a3s_flow::RuntimeBuildId::new("signal-incompatible-v2").unwrap();
+    let incompatible_build = aster_flow::RuntimeBuildId::new("signal-incompatible-v2").unwrap();
     let incompatible = FlowEngine::builder(Arc::new(SignalThenSuspendedContinuationRuntime))
         .with_store(store)
-        .with_runtime_build_compatibility(a3s_flow::RuntimeBuildCompatibility::new(
+        .with_runtime_build_compatibility(aster_flow::RuntimeBuildCompatibility::new(
             incompatible_build.clone(),
         ))
         .build();

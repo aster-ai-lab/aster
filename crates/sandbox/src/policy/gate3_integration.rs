@@ -9,7 +9,7 @@ use std::fs;
 
 #[test]
 fn gate3_ephemeral_session_fails_closed_without_overlay_capability() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.session_write = SessionWriteMode::Ephemeral;
     let caps = BackendCapabilities {
         filesystem_ephemeral_writes: false,
@@ -29,7 +29,7 @@ fn gate3_readonly_mount_outside_workspace_compiles_for_read_not_write() {
     let knowledge = tempfile::tempdir().unwrap();
     fs::write(knowledge.path().join("doc.txt"), "knowledge").unwrap();
 
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.mounts.push(FilesystemMount {
         root: PathRule::Exact(knowledge.path().to_string_lossy().into_owned()),
         mode: MountMode::ReadOnly,
@@ -67,7 +67,7 @@ fn gate3_readwrite_mount_outside_workspace_fails_closed() {
     let scratch = tempfile::tempdir().unwrap();
     let outside = tempfile::tempdir().unwrap();
 
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.mounts.push(FilesystemMount {
         root: PathRule::Exact(outside.path().to_string_lossy().into_owned()),
         mode: MountMode::ReadWrite,
@@ -97,7 +97,7 @@ fn gate3_readonly_mount_under_workspace_denies_writes() {
     fs::create_dir_all(&ro_dir).unwrap();
     fs::write(ro_dir.join("readme.md"), "ro").unwrap();
 
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.mounts.push(FilesystemMount {
         root: PathRule::Exact("vendor-docs".into()),
         mode: MountMode::ReadOnly,
@@ -116,7 +116,7 @@ fn gate3_readonly_mount_under_workspace_denies_writes() {
 
 #[test]
 fn gate3_document_decisions_treat_readonly_mount_as_readable() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.mounts.push(FilesystemMount {
         root: PathRule::Exact("knowledge".into()),
         mode: MountMode::ReadOnly,
@@ -132,7 +132,7 @@ async fn gate3_native_sandbox_reads_readonly_mount_and_blocks_writes() {
     let knowledge = tempfile::tempdir().unwrap();
     fs::write(knowledge.path().join("doc.txt"), "gate3-knowledge").unwrap();
 
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.mounts.push(FilesystemMount {
         root: PathRule::Exact(knowledge.path().to_string_lossy().into_owned()),
         mode: MountMode::ReadOnly,
@@ -195,7 +195,7 @@ async fn gate3_native_sandbox_reads_readonly_mount_and_blocks_writes() {
 #[cfg(target_os = "linux")]
 #[test]
 fn gate3_linux_ephemeral_is_accepted_by_policy() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.session_write = SessionWriteMode::Ephemeral;
     policy
         .validate_for_backend(BackendCapabilities::native_gate2())
@@ -209,7 +209,7 @@ fn gate3_linux_ephemeral_is_accepted_by_policy() {
 fn gate3_linux_ephemeral_compiles_session_write_mode() {
     let workspace = tempfile::tempdir().unwrap();
     let scratch = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.session_write = SessionWriteMode::Ephemeral;
     let enforced = EnforcedPolicy::compile(
         &policy,
@@ -225,7 +225,7 @@ fn gate3_linux_ephemeral_compiles_session_write_mode() {
 #[test]
 fn gate3_ephemeral_rejected_by_native_sandbox_constructor() {
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.filesystem.session_write = SessionWriteMode::Ephemeral;
     let error = format!(
         "{:#}",

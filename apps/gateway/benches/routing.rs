@@ -1,5 +1,5 @@
-use a3s_gateway::config::RouterConfig;
-use a3s_gateway::router::RouterTable;
+use aster_gateway::config::RouterConfig;
+use aster_gateway::router::RouterTable;
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use http::HeaderMap;
 use std::collections::HashMap;

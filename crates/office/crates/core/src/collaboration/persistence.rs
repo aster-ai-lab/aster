@@ -3,7 +3,7 @@ use std::fs::{self, File, OpenOptions};
 use std::io::{ErrorKind, Read, Seek, SeekFrom};
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
 use yrs::updates::decoder::Decode;
@@ -31,7 +31,7 @@ const LOCK_FILE: &str = ".lock";
 const CHECKPOINT_DIRECTORY: &str = "checkpoints";
 const UPDATE_DIRECTORY: &str = "updates";
 const OPERATION_DIRECTORY: &str = "operations";
-const ENTRY_MAGIC: &[u8; 8] = b"A3SOCU1\n";
+const ENTRY_MAGIC: &[u8; 8] = b"ASTROCU\n";
 const MAX_JSON_BYTES: u64 = 64 * 1024;
 const MAX_ENTRY_BYTES: u64 = MAX_NATIVE_OFFICE_COLLABORATION_UPDATE_BYTES as u64
     + MAX_JSON_BYTES
@@ -160,7 +160,7 @@ pub(super) fn create_store(
     let root = normalized_new_root(requested_root)?;
     let parent = root.parent().expect("validated new root has a parent");
     let temporary = tempfile::Builder::new()
-        .prefix(".a3s-office-collaboration-")
+        .prefix(".aster-office-collaboration-")
         .tempdir_in(parent)
         .map_err(|error| io_error("create staged replica", parent, error))?;
     let staged_root = temporary.path();

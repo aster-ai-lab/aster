@@ -390,7 +390,7 @@ async fn wait_for_degraded_files(
 }
 
 fn write_workspace_egress_fixture(root: &std::path::Path) {
-    for directory in ["src", ".a3s", ".git", "target"] {
+    for directory in ["src", ".aster", ".git", "target"] {
         std::fs::create_dir_all(root.join(directory)).unwrap();
     }
     std::fs::write(
@@ -401,7 +401,7 @@ fn write_workspace_egress_fixture(root: &std::path::Path) {
     std::fs::write(root.join(".env"), format!("TOKEN={ENV_SENTINEL}\n")).unwrap();
     std::fs::hard_link(root.join(".env"), root.join("src/apparently-safe.rs")).unwrap();
     std::fs::write(
-        root.join(".a3s/config.acl"),
+        root.join(".aster/config.acl"),
         format!("secret = \"{ACL_SENTINEL}\"\n"),
     )
     .unwrap();

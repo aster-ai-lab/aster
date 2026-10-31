@@ -14,10 +14,10 @@ done
 
 temporary_root="${RUNNER_TEMP:-/tmp}"
 test -d "$temporary_root"
-work="$(mktemp -d "$temporary_root/a3s-oci-kvm-provenance-test.XXXXXX")"
+work="$(mktemp -d "$temporary_root/aster-oci-kvm-provenance-test.XXXXXX")"
 cleanup() {
   case "$work" in
-    "$temporary_root"/a3s-oci-kvm-provenance-test.*)
+    "$temporary_root"/aster-oci-kvm-provenance-test.*)
       rm -rf -- "$work"
       ;;
     *)
@@ -34,12 +34,12 @@ asset_root="$work/assets"
 runtime_directory="$asset_root/runtime"
 runtime_manifest="$asset_root/runtime-assets.json"
 system_image_manifest="$asset_root/system-image.json"
-host_executable="$asset_root/a3s-oci"
-shim_executable="$asset_root/a3s-oci-krun-shim"
+host_executable="$asset_root/aster-oci"
+shim_executable="$asset_root/aster-oci-krun-shim"
 mkdir -p "$source_repository" "$runtime_directory"
 
 git -C "$source_repository" init --quiet
-git -C "$source_repository" config user.name 'A3S Test'
+git -C "$source_repository" config user.name 'Aster Test'
 git -C "$source_repository" config user.email 'test@example.invalid'
 printf 'tracked\n' > "$source_repository/tracked"
 git -C "$source_repository" add tracked
@@ -86,14 +86,14 @@ runtime_bundle="$(
 jq --null-input \
   --argjson runtime_bundle "$runtime_bundle" \
   '{
-    schema_version: "a3s.oci.krun-runtime-assets.v1",
+    schema_version: "aster.oci.krun-runtime-assets.v1",
     bundles: [$runtime_bundle]
   }' > "$runtime_manifest"
 jq --null-input \
   --arg architecture "$architecture" \
   --argjson runtime_bundle "$runtime_bundle" \
   '{
-    schema_version: "a3s.oci.linux-kvm-system-image.v1",
+    schema_version: "aster.oci.linux-kvm-system-image.v1",
     architecture: $architecture,
     runtime: $runtime_bundle
   }' > "$system_image_manifest"
@@ -120,7 +120,7 @@ source_revision="$(git rev-parse HEAD)"
 jq --exit-status \
   --arg architecture "$architecture" \
   --arg source_revision "$source_revision" \
-  '.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+  '.schema_version == "aster.oci.linux-kvm-provenance.v1"
    and .platform == "linux" and .architecture == $architecture
    and .qualification_profile == "linux-kvm-provenance-test-v1"
    and .build_profile == "debug" and .source_object_format == "sha1"
@@ -130,7 +130,7 @@ jq --exit-status \
    and (.shim_executable_sha256 | length) == 64
    and (.runtime_bundle.files | length) == 2' <<<"$report" >/dev/null
 
-A3S_QUALIFICATION_SOURCE_COMMIT=0000000000000000000000000000000000000000 \
+ASTER_QUALIFICATION_SOURCE_COMMIT=0000000000000000000000000000000000000000 \
   expect_rejection forged-source-revision invoke_provenance
 
 printf 'dirty\n' >> tracked
@@ -175,7 +175,7 @@ system_image_manifest="$asset_root/system-image.json"
 
 sha256_repository="$work/source-sha256"
 git init --quiet --object-format=sha256 "$sha256_repository"
-git -C "$sha256_repository" config user.name 'A3S Test'
+git -C "$sha256_repository" config user.name 'Aster Test'
 git -C "$sha256_repository" config user.email 'test@example.invalid'
 printf 'tracked\n' > "$sha256_repository/tracked"
 git -C "$sha256_repository" add tracked

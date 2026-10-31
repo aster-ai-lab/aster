@@ -31,7 +31,7 @@ interface ParsedSpreadsheetRichTextClipboard {
   text: string;
 }
 
-type RichTextRunStyle = Omit<XlsxRichTextRun, 'v' | 'a3sXlsxColorOrigin'>;
+type RichTextRunStyle = Omit<XlsxRichTextRun, 'v' | 'asterXlsxColorOrigin'>;
 
 const pendingPastes = new WeakMap<
   WorkSpreadsheetSheet,

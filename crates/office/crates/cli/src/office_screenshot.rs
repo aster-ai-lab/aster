@@ -5,13 +5,13 @@ use std::io::Write as _;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_office::{
+use aster_office::{
     DocumentKind, NativeOfficeDocument, NativeOfficeImage, NativeOfficeImageFormat,
     NativeOfficeRenderFormat, NativeOfficeUnit, NativeOfficeUnitLocator,
     NativeOfficeUnitRenderOptions, MAX_NATIVE_OFFICE_RENDER_BYTES,
 };
-use a3s_use_browser::{BrowserPool, BrowserPoolConfig, PageRenderer, RenderRequest, WaitCondition};
-use a3s_use_core::{UseError, UseResult};
+use aster_use_browser::{BrowserPool, BrowserPoolConfig, PageRenderer, RenderRequest, WaitCondition};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use url::Url;
@@ -161,7 +161,7 @@ impl NativeOfficeScreenshotRenderer {
                 url: url.clone(),
                 timeout_ms: request.timeout_ms,
                 wait: WaitCondition::Load,
-                user_agent: Some("a3s-office-semantic-preview/1".to_string()),
+                user_agent: Some("aster-office-semantic-preview/1".to_string()),
                 screenshot_path: Some(staging.screenshot_path.clone()),
             })
             .await?;
@@ -182,7 +182,7 @@ impl NativeOfficeScreenshotRenderer {
     }
 }
 
-/// Captures through the same discovered Browser provider used by `a3s use browser`.
+/// Captures through the same discovered Browser provider used by `aster use browser`.
 pub async fn capture_native_office_screenshot(
     document: &NativeOfficeDocument,
     request: NativeOfficeScreenshotRequest,
@@ -269,7 +269,7 @@ impl ScreenshotStaging {
     async fn prepare(html: String) -> UseResult<Self> {
         tokio::task::spawn_blocking(move || {
             let directory = tempfile::Builder::new()
-                .prefix("a3s-office-screenshot-")
+                .prefix("aster-office-screenshot-")
                 .tempdir()
                 .map_err(|error| {
                     screenshot_error(
@@ -334,7 +334,7 @@ struct CapturedScreenshot {
 }
 
 async fn validate_screenshot(
-    rendered: &a3s_use_browser::RenderedPage,
+    rendered: &aster_use_browser::RenderedPage,
     expected_path: &Path,
     expected_url: &Url,
 ) -> UseResult<ValidatedScreenshot> {

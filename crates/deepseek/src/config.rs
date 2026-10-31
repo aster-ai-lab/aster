@@ -3,12 +3,12 @@
 use std::collections::{BTreeSet, HashMap};
 use std::path::{Path, PathBuf};
 
-use a3s_acl::{AttributeSchema, Block, Document, ParseLimits, Schema, Value, ValueSchema};
-use a3s_power::error::{PowerError, Result};
+use aster_acl::{AttributeSchema, Block, Document, ParseLimits, Schema, Value, ValueSchema};
+use aster_power::error::{PowerError, Result};
 
 use crate::model::{DeepSeekModel, NativeExecution, H200_DEVICE_COUNT, MAX_CONTEXT_TOKENS};
 
-pub const CONFIG_SCHEMA: &str = "a3s.deepseek.native.v1";
+pub const CONFIG_SCHEMA: &str = "aster.deepseek.native.v1";
 const ACL_LIMITS: ParseLimits = ParseLimits {
     max_document_bytes: 16 * 1024,
     max_nesting_depth: 4,
@@ -28,7 +28,7 @@ pub struct NativeModelConfig {
 
 impl NativeModelConfig {
     pub fn from_acl(input: &str) -> Result<Self> {
-        let document = a3s_acl::parse_with_limits(input, ACL_LIMITS)
+        let document = aster_acl::parse_with_limits(input, ACL_LIMITS)
             .map_err(|error| PowerError::Acl(error.to_string()))?;
         let mut schema = Schema::new();
         for name in ["schema", "model", "execution", "checkpoint_dir", "revision"] {
@@ -43,7 +43,7 @@ impl NativeModelConfig {
                 "context_tokens",
                 AttributeSchema::required(ValueSchema::number()),
             );
-        let report = a3s_acl::validate_document_with_limits(&document, &schema, ACL_LIMITS);
+        let report = aster_acl::validate_document_with_limits(&document, &schema, ACL_LIMITS);
         if !report.is_empty() {
             return Err(PowerError::Acl(format!(
                 "native model ACL does not satisfy its closed schema: {:?}",
@@ -65,7 +65,7 @@ impl NativeModelConfig {
         };
         if string("schema")? != CONFIG_SCHEMA {
             return Err(config_error(
-                "unsupported native ACL schema; expected a3s.deepseek.native.v1",
+                "unsupported native ACL schema; expected aster.deepseek.native.v1",
             ));
         }
         let model = DeepSeekModel::parse(string("model")?)?;
@@ -137,7 +137,7 @@ impl NativeModelConfig {
                 })
                 .collect(),
         };
-        a3s_acl::generate(&document)
+        aster_acl::generate(&document)
     }
 
     pub fn model(&self) -> DeepSeekModel {

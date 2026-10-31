@@ -3,7 +3,7 @@
 //! The model builds candidate/index plans, registers every state participant,
 //! and stages/commits the projected window rows; this branch never commits KV.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::Tensor;
 use tokio_util::sync::CancellationToken;
 

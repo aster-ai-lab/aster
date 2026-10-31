@@ -21,8 +21,8 @@ import {
 
 function minimalDocument(): FormDocument {
   return {
-    kind: 'a3s.form',
-    apiVersion: 'a3s.dev/form/v1alpha1',
+    kind: 'aster.form',
+    apiVersion: 'aster.dev/form/v1alpha1',
     revision: 0,
     metadata: { title: '操作测试', locale: 'zh-CN', tags: [] },
     schema: {

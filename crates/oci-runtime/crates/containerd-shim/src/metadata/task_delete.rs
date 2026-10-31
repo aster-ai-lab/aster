@@ -3,7 +3,7 @@ use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime};
 
-use a3s_oci_sdk::{ContainerId, Generation, Result};
+use aster_oci_sdk::{ContainerId, Generation, Result};
 use serde::{Deserialize, Serialize};
 
 use crate::adapter::TaskIdentity;
@@ -14,7 +14,7 @@ use super::{
     validate_private_file,
 };
 
-const TASK_DELETE_RECEIPT_FILE_NAME: &str = "a3s-oci-shim-task-delete-v1.json";
+const TASK_DELETE_RECEIPT_FILE_NAME: &str = "aster-oci-shim-task-delete-v1.json";
 const TASK_DELETE_RECEIPT_SCHEMA_VERSION: u32 = 1;
 const MAX_TASK_DELETE_RECEIPT_BYTES: u64 = 64 * 1024;
 
@@ -239,7 +239,7 @@ fn system_time_from_unix_nanos(nanos: u128) -> Option<SystemTime> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     #[test]
     fn receipt_round_trip_is_identity_generation_and_bundle_bound() {

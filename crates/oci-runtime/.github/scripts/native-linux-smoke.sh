@@ -6,17 +6,17 @@ set -euo pipefail
 source .github/scripts/native-linux-hook-owner-death.sh
 
 qualification_root=""
-saved_kvm="/dev/a3s-oci-kvm-$$"
+saved_kvm="/dev/aster-oci-kvm-$$"
 kvm_original_moved=false
 kvm_test_directory_created=false
-rootless_user="a3soci$$"
+rootless_user="asteroci$$"
 rootless_uid=20000
 rootless_gid=20000
 rootless_user_created=false
 rootless_group_created=false
-rootless_cgroup_parent="/sys/fs/cgroup/a3s-oci-rootless-$rootless_uid-$$"
+rootless_cgroup_parent="/sys/fs/cgroup/aster-oci-rootless-$rootless_uid-$$"
 rootless_cgroup_created=false
-rootless_cgroup_host_control="$rootless_cgroup_parent/a3s-host-control"
+rootless_cgroup_host_control="$rootless_cgroup_parent/aster-host-control"
 rootless_cgroup_host_control_created=false
 rootless_cgroup_replacement="$rootless_cgroup_parent-replacement"
 rootless_cgroup_replacement_created=false
@@ -27,18 +27,18 @@ recovery_owner_pid=""
 recovery_runtime_owner_pid=""
 hook_recovery_group_pid=""
 soak_bundles=()
-soak_iterations="${A3S_OCI_NATIVE_SOAK_ITERATIONS:-25}"
-native_focus="${A3S_OCI_NATIVE_FOCUS:-}"
-native_runtime_binary="${A3S_OCI_NATIVE_RUNTIME_BINARY:-}"
-native_agent_binary="${A3S_OCI_NATIVE_AGENT_BINARY:-}"
+soak_iterations="${ASTER_OCI_NATIVE_SOAK_ITERATIONS:-25}"
+native_focus="${ASTER_OCI_NATIVE_FOCUS:-}"
+native_runtime_binary="${ASTER_OCI_NATIVE_RUNTIME_BINARY:-}"
+native_agent_binary="${ASTER_OCI_NATIVE_AGENT_BINARY:-}"
 # Arch-honest OCI fixture: x86_64 keeps LINUX32 + MPOL_BIND; aarch64 uses LINUX
 # without NUMA bind (kernel returns EINVAL/ENOSYS for those controls).
 case "$(uname -m)" in
   aarch64 | arm64)
-    native_linux_fixture="${A3S_OCI_NATIVE_LINUX_FIXTURE:-fixtures/native-linux/config.aarch64.json}"
+    native_linux_fixture="${ASTER_OCI_NATIVE_LINUX_FIXTURE:-fixtures/native-linux/config.aarch64.json}"
     ;;
   *)
-    native_linux_fixture="${A3S_OCI_NATIVE_LINUX_FIXTURE:-fixtures/native-linux/config.json}"
+    native_linux_fixture="${ASTER_OCI_NATIVE_LINUX_FIXTURE:-fixtures/native-linux/config.json}"
     ;;
 esac
 soak_concurrent_containers=4
@@ -47,19 +47,19 @@ unprivileged_userns_original=""
 unprivileged_userns_changed=false
 apparmor_userns_original=""
 apparmor_userns_changed=false
-absolute_cgroup_path="/a3s-oci-absolute-$$"
+absolute_cgroup_path="/aster-oci-absolute-$$"
 absolute_cgroup_host_path="/sys/fs/cgroup${absolute_cgroup_path}"
 network_device_sources=()
-network_device_success_source="a3snd$$"
-network_device_conflict_source="a3snc$$"
-network_device_rollback_first="a3snr0$$"
-network_device_rollback_second="a3snr1$$"
-network_device_rootless_source="a3snl$$"
-network_enforcement_namespace="a3soar$$"
+network_device_success_source="asternd$$"
+network_device_conflict_source="asternc$$"
+network_device_rollback_first="asternr0$$"
+network_device_rollback_second="asternr1$$"
+network_device_rootless_source="asternl$$"
+network_enforcement_namespace="asteroar$$"
 network_enforcement_namespace_path="/var/run/netns/$network_enforcement_namespace"
 network_enforcement_namespace_created=false
-network_enforcement_source="a3so$$"
-network_enforcement_target="a3soar0"
+network_enforcement_source="astero$$"
+network_enforcement_target="asteroar0"
 network_enforcement_interface_id="native-oar01-interface-$$"
 network_enforcement_cleanup_id="native-oar01-cleanup-$$"
 network_enforcement_identity="native-oar01-policy-$$"
@@ -145,7 +145,7 @@ detect_unified_io_device() {
   local candidate
   local candidate_device
   local candidate_name
-  local probe="/sys/fs/cgroup/a3s-oci-unified-io-probe-$$"
+  local probe="/sys/fs/cgroup/aster-oci-unified-io-probe-$$"
   local selected=""
 
   if ! grep -qw io /sys/fs/cgroup/cgroup.controllers; then
@@ -353,7 +353,7 @@ trap restore_host EXIT
 
 if [[ ! "$soak_iterations" =~ ^[0-9]+$ ]] ||
   ((soak_iterations < 1 || soak_iterations > 10000)); then
-  printf 'A3S_OCI_NATIVE_SOAK_ITERATIONS must be an integer from 1 to 10000\n' >&2
+  printf 'ASTER_OCI_NATIVE_SOAK_ITERATIONS must be an integer from 1 to 10000\n' >&2
   exit 2
 fi
 
@@ -377,7 +377,7 @@ if [[ -z "$native_runtime_binary" && -z "$native_agent_binary" ]]; then
   use_development_binaries=true
 elif [[ -z "$native_runtime_binary" || -z "$native_agent_binary" ]]; then
   printf '%s\n' \
-    'A3S_OCI_NATIVE_RUNTIME_BINARY and A3S_OCI_NATIVE_AGENT_BINARY must be supplied together' >&2
+    'ASTER_OCI_NATIVE_RUNTIME_BINARY and ASTER_OCI_NATIVE_AGENT_BINARY must be supplied together' >&2
   exit 2
 else
   use_development_binaries=false
@@ -387,9 +387,9 @@ fi
 sudo apt-get update
 sudo apt-get install --yes busybox-static iproute2 iptables jq uidmap util-linux
 if [[ "$use_development_binaries" == true ]]; then
-  cargo build -p a3s-oci-agent -p a3s-oci-cli
-  native_runtime_binary="$PWD/target/debug/a3s-oci"
-  native_agent_binary="$PWD/target/debug/a3s-oci-agent"
+  cargo build -p aster-oci-agent -p aster-oci-cli
+  native_runtime_binary="$PWD/target/debug/aster-oci"
+  native_agent_binary="$PWD/target/debug/aster-oci-agent"
   validate_native_binaries
 fi
 
@@ -435,7 +435,7 @@ jq --exit-status \
    )' \
   <<<"$features" >/dev/null
 
-qualification_root="$(mktemp -d /var/tmp/a3s-oci-native.XXXXXXXX)"
+qualification_root="$(mktemp -d /var/tmp/aster-oci-native.XXXXXXXX)"
 bundle="$qualification_root/bundle"
 bundle_b="$qualification_root/bundle-b"
 control_bundle="$qualification_root/control-bundle"
@@ -461,7 +461,7 @@ mkdir -p \
   "$control_bundle/rootfs/bin" "$control_bundle/rootfs/dev" "$control_bundle/rootfs/proc" \
   "$control_bundle/rootfs/sys/fs/cgroup" \
   "$terminal_bundle/rootfs/bin" "$terminal_bundle/rootfs/dev" \
-  "$terminal_bundle/rootfs/proc" "$terminal_bundle/rootfs/run/a3s" \
+  "$terminal_bundle/rootfs/proc" "$terminal_bundle/rootfs/run/aster" \
   "$recovery_bundle/rootfs/bin" "$recovery_bundle/rootfs/dev" "$recovery_bundle/rootfs/proc" \
   "$hook_recovery_bundle/rootfs/bin" "$hook_recovery_bundle/rootfs/dev" \
   "$hook_recovery_bundle/rootfs/proc" \
@@ -478,7 +478,7 @@ for candidate in \
   cp "$(command -v busybox)" "$candidate/rootfs/bin/busybox"
   ln -s busybox "$candidate/rootfs/bin/sh"
 done
-jq '.linux.cgroupsPath = "a3s-oci-owner-recovery" | del(.hooks)' \
+jq '.linux.cgroupsPath = "aster-oci-owner-recovery" | del(.hooks)' \
   "$recovery_bundle/config.json" >"$recovery_bundle/config.json.tmp"
 mv "$recovery_bundle/config.json.tmp" "$recovery_bundle/config.json"
 prepare_hook_owner_death_bundle "$hook_recovery_bundle"
@@ -488,7 +488,7 @@ for slot in 0 1 2 3; do
   cp "$native_linux_fixture" "$candidate/config.json"
   cp "$(command -v busybox)" "$candidate/rootfs/bin/busybox"
   ln -s busybox "$candidate/rootfs/bin/sh"
-  jq --arg cgroup "a3s-oci-soak-$slot" \
+  jq --arg cgroup "aster-oci-soak-$slot" \
     '.linux.cgroupsPath = $cgroup' \
     "$candidate/config.json" >"$candidate/config.json.tmp"
   mv "$candidate/config.json.tmp" "$candidate/config.json"
@@ -500,9 +500,9 @@ ln -s busybox "$rootless_bundle/rootfs/bin/sh"
 jq --arg cgroup "$absolute_cgroup_path" '.linux.cgroupsPath = $cgroup' \
   "$bundle_b/config.json" >"$bundle_b/config.json.tmp"
 mv "$bundle_b/config.json.tmp" "$bundle_b/config.json"
-hook_trace="$bundle/rootfs/.a3s-oci-hook-trace"
+hook_trace="$bundle/rootfs/.aster-oci-hook-trace"
 # shellcheck disable=SC2016 # Expanded by the hook process, not this script.
-hook_command='IFS= read -r A3S_HOOK_STATE || :; printf "%s %s\n" "$A3S_HOOK_PHASE" "$A3S_HOOK_STATE" >> "$A3S_HOOK_TRACE"'
+hook_command='IFS= read -r ASTER_HOOK_STATE || :; printf "%s %s\n" "$ASTER_HOOK_PHASE" "$ASTER_HOOK_STATE" >> "$ASTER_HOOK_TRACE"'
 jq \
   --arg command "$hook_command" \
   --arg host_trace "$hook_trace" \
@@ -510,40 +510,40 @@ jq \
     def hook($phase; $trace): {
       path: "/bin/sh",
       args: ["sh", "-c", $command],
-      env: ["A3S_HOOK_PHASE=" + $phase, "A3S_HOOK_TRACE=" + $trace],
+      env: ["ASTER_HOOK_PHASE=" + $phase, "ASTER_HOOK_TRACE=" + $trace],
       timeout: 5
     };
-    .annotations["dev.a3s.oci.hook-smoke"] = "ordered-v1"
+    .annotations["dev.aster.oci.hook-smoke"] = "ordered-v1"
     | .hooks = {
         prestart: [hook("prestart"; $host_trace)],
         createRuntime: [hook("createRuntime"; $host_trace)],
         createContainer: [hook("createContainer"; $host_trace)],
-        startContainer: [hook("startContainer"; "/.a3s-oci-hook-trace")],
+        startContainer: [hook("startContainer"; "/.aster-oci-hook-trace")],
         poststart: [hook("poststart"; $host_trace)],
         poststop: [hook("poststop"; $host_trace)]
       }
   ' \
   "$bundle/config.json" >"$bundle/config.json.tmp"
 mv "$bundle/config.json.tmp" "$bundle/config.json"
-control_hook_trace="$control_bundle/rootfs/.a3s-oci-hook-trace"
+control_hook_trace="$control_bundle/rootfs/.aster-oci-hook-trace"
 # shellcheck disable=SC2016 # Expanded by the trusted configured init.
-control_command_prefix='test "$A3S_CONTROL_CGROUP_PROCS_FD" = 6; test "$A3S_WORKLOAD_CGROUP_PROCS_FD" = 7; test -d /sys/fs/cgroup/a3s-control; test -d /sys/fs/cgroup/a3s-workload; test -z "$(/bin/busybox cat /sys/fs/cgroup/cgroup.procs)"; test "$(/bin/busybox cat /proc/self/cgroup)" = "0::/a3s-control"; printf 0 >&7; test "$(/bin/busybox cat /proc/self/cgroup)" = "0::/a3s-workload"; '
-control_command_prefix+='test "$(/bin/busybox cat /sys/fs/cgroup/a3s-control/memory.high)" = max; test "$(/bin/busybox cat /sys/fs/cgroup/a3s-workload/memory.high)" = 201326592; '
+control_command_prefix='test "$ASTER_CONTROL_CGROUP_PROCS_FD" = 6; test "$ASTER_WORKLOAD_CGROUP_PROCS_FD" = 7; test -d /sys/fs/cgroup/aster-control; test -d /sys/fs/cgroup/aster-workload; test -z "$(/bin/busybox cat /sys/fs/cgroup/cgroup.procs)"; test "$(/bin/busybox cat /proc/self/cgroup)" = "0::/aster-control"; printf 0 >&7; test "$(/bin/busybox cat /proc/self/cgroup)" = "0::/aster-workload"; '
+control_command_prefix+='test "$(/bin/busybox cat /sys/fs/cgroup/aster-control/memory.high)" = max; test "$(/bin/busybox cat /sys/fs/cgroup/aster-workload/memory.high)" = 201326592; '
 if [[ -n "$unified_io_device" ]]; then
-  control_command_prefix+='test -z "$(/bin/busybox cat /sys/fs/cgroup/a3s-control/io.max)"; '
-  control_command_prefix+="/bin/busybox grep -Fxq '${unified_io_device} rbps=${unified_io_rbps} wbps=max riops=max wiops=${unified_io_wiops}' /sys/fs/cgroup/a3s-workload/io.max; "
+  control_command_prefix+='test -z "$(/bin/busybox cat /sys/fs/cgroup/aster-control/io.max)"; '
+  control_command_prefix+="/bin/busybox grep -Fxq '${unified_io_device} rbps=${unified_io_rbps} wbps=max riops=max wiops=${unified_io_wiops}' /sys/fs/cgroup/aster-workload/io.max; "
 fi
 if [[ -n "$hugetlb_page_size" ]]; then
-  control_command_prefix+="test \"\$(/bin/busybox cat /sys/fs/cgroup/a3s-control/hugetlb.${hugetlb_page_size}.max)\" = max; "
-  control_command_prefix+="test \"\$(/bin/busybox cat /sys/fs/cgroup/a3s-workload/hugetlb.${hugetlb_page_size}.max)\" = 0; "
+  control_command_prefix+="test \"\$(/bin/busybox cat /sys/fs/cgroup/aster-control/hugetlb.${hugetlb_page_size}.max)\" = max; "
+  control_command_prefix+="test \"\$(/bin/busybox cat /sys/fs/cgroup/aster-workload/hugetlb.${hugetlb_page_size}.max)\" = 0; "
   if [[ "$hugetlb_reservation_control" == true ]]; then
-    control_command_prefix+="test \"\$(/bin/busybox cat /sys/fs/cgroup/a3s-control/hugetlb.${hugetlb_page_size}.rsvd.max)\" = max; "
-    control_command_prefix+="test \"\$(/bin/busybox cat /sys/fs/cgroup/a3s-workload/hugetlb.${hugetlb_page_size}.rsvd.max)\" = 0; "
+    control_command_prefix+="test \"\$(/bin/busybox cat /sys/fs/cgroup/aster-control/hugetlb.${hugetlb_page_size}.rsvd.max)\" = max; "
+    control_command_prefix+="test \"\$(/bin/busybox cat /sys/fs/cgroup/aster-workload/hugetlb.${hugetlb_page_size}.rsvd.max)\" = 0; "
   fi
 fi
 if [[ -n "$rdma_device" ]]; then
-  control_command_prefix+="/bin/busybox grep -Fxq '${rdma_device} hca_handle=max hca_object=max' /sys/fs/cgroup/a3s-control/rdma.max; "
-  control_command_prefix+="/bin/busybox grep -Fxq '${rdma_device} hca_handle=0 hca_object=0' /sys/fs/cgroup/a3s-workload/rdma.max; "
+  control_command_prefix+="/bin/busybox grep -Fxq '${rdma_device} hca_handle=max hca_object=max' /sys/fs/cgroup/aster-control/rdma.max; "
+  control_command_prefix+="/bin/busybox grep -Fxq '${rdma_device} hca_handle=0 hca_object=0' /sys/fs/cgroup/aster-workload/rdma.max; "
 fi
 control_command_prefix+='exec 6>&- 7>&-; '
 jq \
@@ -562,7 +562,7 @@ jq \
         source: "cgroup2",
         options: ["ro", "nosuid", "noexec", "nodev"]
       }]
-    | .linux.cgroupsPath = "a3s-oci-control-workload-smoke"
+    | .linux.cgroupsPath = "aster-oci-control-workload-smoke"
     | .linux.resources = {
         memory: {
           limit: 268435456,
@@ -593,32 +593,32 @@ jq \
           + " rbps=" + $unified_io_rbps
           + " wiops=" + $unified_io_wiops)
       end
-    | .annotations["dev.a3s.oci.cgroup.layout"] = "control-workload-v1"
-    | .annotations["dev.a3s.oci.cgroup.control-memory-headroom-bytes"] = "67108864"
-    | .annotations["dev.a3s.oci.cgroup.control-cpu-headroom-micros"] = "25000"
-    | .annotations["dev.a3s.oci.cgroup.control-pids-headroom"] = "32"
+    | .annotations["dev.aster.oci.cgroup.layout"] = "control-workload-v1"
+    | .annotations["dev.aster.oci.cgroup.control-memory-headroom-bytes"] = "67108864"
+    | .annotations["dev.aster.oci.cgroup.control-cpu-headroom-micros"] = "25000"
+    | .annotations["dev.aster.oci.cgroup.control-pids-headroom"] = "32"
     | .hooks |= with_entries(
         .value |= map(
           .env |= map(
-            if startswith("A3S_HOOK_TRACE=")
-            then "A3S_HOOK_TRACE=" + $hook_trace
+            if startswith("ASTER_HOOK_TRACE=")
+            then "ASTER_HOOK_TRACE=" + $hook_trace
             else .
             end
           )
         )
       )
     | .hooks.startContainer[].env |= map(
-        if startswith("A3S_HOOK_TRACE=")
-        then "A3S_HOOK_TRACE=/.a3s-oci-hook-trace"
+        if startswith("ASTER_HOOK_TRACE=")
+        then "ASTER_HOOK_TRACE=/.aster-oci-hook-trace"
         else .
         end
       )
   ' \
   "$bundle/config.json" >"$control_bundle/config.json.tmp"
 mv "$control_bundle/config.json.tmp" "$control_bundle/config.json"
-terminal_hook_trace="$terminal_bundle/rootfs/.a3s-oci-hook-trace"
+terminal_hook_trace="$terminal_bundle/rootfs/.aster-oci-hook-trace"
 # shellcheck disable=SC2016 # Expanded by the configured terminal init.
-terminal_command_prefix='test -t 0; test -t 1; test -t 2; test -c /dev/console; test "$(/bin/busybox readlink /dev/ptmx)" = pts/ptmx; test "$(/bin/busybox stty size)" = "40 120"; console_identity=$(/bin/busybox stat -Lc "%d:%i:%t:%T" /dev/console); stdin_identity=$(/bin/busybox stat -Lc "%d:%i:%t:%T" /proc/self/fd/0); test "$console_identity" = "$stdin_identity"; test -p /run/a3s/device-fifo; test "$(/bin/busybox stat -c "%a:%u:%g" /run/a3s/device-fifo)" = "640:1:2"; '
+terminal_command_prefix='test -t 0; test -t 1; test -t 2; test -c /dev/console; test "$(/bin/busybox readlink /dev/ptmx)" = pts/ptmx; test "$(/bin/busybox stty size)" = "40 120"; console_identity=$(/bin/busybox stat -Lc "%d:%i:%t:%T" /dev/console); stdin_identity=$(/bin/busybox stat -Lc "%d:%i:%t:%T" /proc/self/fd/0); test "$console_identity" = "$stdin_identity"; test -p /run/aster/device-fifo; test "$(/bin/busybox stat -c "%a:%u:%g" /run/aster/device-fifo)" = "640:1:2"; '
 jq \
   --arg command_prefix "$terminal_command_prefix" \
   --arg hook_trace "$terminal_hook_trace" \
@@ -627,19 +627,19 @@ jq \
     | .process.consoleSize = {width: 120, height: 40}
     | .process.args[2] = ($command_prefix + .process.args[2])
     | .linux.devices += [{
-        path: "/run/a3s/device-fifo",
+        path: "/run/aster/device-fifo",
         type: "p",
         fileMode: 416,
         uid: 1,
         gid: 2
       }]
-    | .linux.cgroupsPath = "a3s-oci-terminal-init-smoke"
+    | .linux.cgroupsPath = "aster-oci-terminal-init-smoke"
     | .hooks |= with_entries(
         .value |= map(
           .env |= map(
-            if startswith("A3S_HOOK_TRACE=")
-               and . != "A3S_HOOK_TRACE=/.a3s-oci-hook-trace"
-            then "A3S_HOOK_TRACE=" + $hook_trace
+            if startswith("ASTER_HOOK_TRACE=")
+               and . != "ASTER_HOOK_TRACE=/.aster-oci-hook-trace"
+            then "ASTER_HOOK_TRACE=" + $hook_trace
             else .
             end
           )
@@ -650,17 +650,17 @@ jq \
 mv "$terminal_bundle/config.json.tmp" "$terminal_bundle/config.json"
 mkdir "$terminal_existing_bundle"
 cp -a --no-preserve=ownership "$terminal_bundle/." "$terminal_existing_bundle/"
-terminal_existing_hook_trace="$terminal_existing_bundle/rootfs/.a3s-oci-hook-trace"
+terminal_existing_hook_trace="$terminal_existing_bundle/rootfs/.aster-oci-hook-trace"
 jq \
   --arg hook_trace "$terminal_existing_hook_trace" \
   '
-    .linux.cgroupsPath = "a3s-oci-terminal-existing-init-smoke"
+    .linux.cgroupsPath = "aster-oci-terminal-existing-init-smoke"
     | .hooks |= with_entries(
         .value |= map(
           .env |= map(
-            if startswith("A3S_HOOK_TRACE=")
-               and . != "A3S_HOOK_TRACE=/.a3s-oci-hook-trace"
-            then "A3S_HOOK_TRACE=" + $hook_trace
+            if startswith("ASTER_HOOK_TRACE=")
+               and . != "ASTER_HOOK_TRACE=/.aster-oci-hook-trace"
+            then "ASTER_HOOK_TRACE=" + $hook_trace
             else .
             end
           )
@@ -669,11 +669,11 @@ jq \
   ' \
   "$terminal_bundle/config.json" >"$terminal_existing_bundle/config.json.tmp"
 mv "$terminal_existing_bundle/config.json.tmp" "$terminal_existing_bundle/config.json"
-printf '%s\n' 'a3s-preexisting-console-v1' \
+printf '%s\n' 'aster-preexisting-console-v1' \
   >"$terminal_existing_bundle/rootfs/dev/console"
 mkdir "$device_boundary_bundle"
 cp -a --no-preserve=ownership "$bundle/." "$device_boundary_bundle/"
-device_boundary_hook_trace="$device_boundary_bundle/rootfs/.a3s-oci-hook-trace"
+device_boundary_hook_trace="$device_boundary_bundle/rootfs/.aster-oci-hook-trace"
 mkdir "$device_boundary_bundle/late-device-source"
 sudo mknod "$device_boundary_bundle/late-device-source/unknown" c 240 0
 sudo chmod 0666 "$device_boundary_bundle/late-device-source/unknown"
@@ -702,14 +702,14 @@ jq \
         source: "late-device-source",
         options: ["bind", "nodev", "nosuid", "noexec"]
       }]
-    | .annotations["dev.a3s.oci.device-boundary"] =
+    | .annotations["dev.aster.oci.device-boundary"] =
         "inventory-cap-mknod-late-source-v1"
     | .hooks |= with_entries(
         .value |= map(
           .env |= map(
-            if startswith("A3S_HOOK_TRACE=")
-               and . != "A3S_HOOK_TRACE=/.a3s-oci-hook-trace"
-            then "A3S_HOOK_TRACE=" + $hook_trace
+            if startswith("ASTER_HOOK_TRACE=")
+               and . != "ASTER_HOOK_TRACE=/.aster-oci-hook-trace"
+            then "ASTER_HOOK_TRACE=" + $hook_trace
             else .
             end
           )
@@ -727,9 +727,9 @@ for candidate in \
   mkdir "$candidate"
   cp -a --no-preserve=ownership "$bundle/." "$candidate/"
 done
-cgroup_ownership_hook_trace="$cgroup_ownership_bundle/rootfs/.a3s-oci-hook-trace"
-cgroup_ownership_readonly_hook_trace="$cgroup_ownership_readonly_bundle/rootfs/.a3s-oci-hook-trace"
-cgroup_delegate_inventory="$cgroup_ownership_bundle/rootfs/.a3s-oci-cgroup-delegate"
+cgroup_ownership_hook_trace="$cgroup_ownership_bundle/rootfs/.aster-oci-hook-trace"
+cgroup_ownership_readonly_hook_trace="$cgroup_ownership_readonly_bundle/rootfs/.aster-oci-hook-trace"
+cgroup_delegate_inventory="$cgroup_ownership_bundle/rootfs/.aster-oci-cgroup-delegate"
 if [[ -r /sys/kernel/cgroup/delegate ]]; then
   sed '/^$/d' /sys/kernel/cgroup/delegate >"$cgroup_delegate_inventory"
 else
@@ -755,15 +755,15 @@ if [[ -z "$cgroup_unlisted_file" ]]; then
   exit 1
 fi
 printf '%s\n' "$cgroup_unlisted_file" \
-  >"$cgroup_ownership_bundle/rootfs/.a3s-oci-cgroup-unlisted"
+  >"$cgroup_ownership_bundle/rootfs/.aster-oci-cgroup-unlisted"
 # shellcheck disable=SC2016 # Expanded by the delegated cgroup workload.
-cgroup_ownership_command='set -eu; overflow_uid=$(/bin/busybox cat /proc/sys/kernel/overflowuid); overflow_gid=$(/bin/busybox cat /proc/sys/kernel/overflowgid); test "$(/bin/busybox stat -c "%u:%g" /sys/fs/cgroup)" = "0:$overflow_gid"; delegated=0; while IFS= read -r name; do if [ -e "/sys/fs/cgroup/$name" ]; then test "$(/bin/busybox stat -c "%u:%g" "/sys/fs/cgroup/$name")" = "0:$overflow_gid"; delegated=$((delegated + 1)); fi; done < /.a3s-oci-cgroup-delegate; test "$delegated" -gt 0; unlisted=$(/bin/busybox cat /.a3s-oci-cgroup-unlisted); test "$(/bin/busybox stat -c "%u:%g" "/sys/fs/cgroup/$unlisted")" = "$overflow_uid:$overflow_gid"; /bin/busybox mkdir /sys/fs/cgroup/a3s-delegation-write-probe; /bin/busybox rmdir /sys/fs/cgroup/a3s-delegation-write-probe; '
+cgroup_ownership_command='set -eu; overflow_uid=$(/bin/busybox cat /proc/sys/kernel/overflowuid); overflow_gid=$(/bin/busybox cat /proc/sys/kernel/overflowgid); test "$(/bin/busybox stat -c "%u:%g" /sys/fs/cgroup)" = "0:$overflow_gid"; delegated=0; while IFS= read -r name; do if [ -e "/sys/fs/cgroup/$name" ]; then test "$(/bin/busybox stat -c "%u:%g" "/sys/fs/cgroup/$name")" = "0:$overflow_gid"; delegated=$((delegated + 1)); fi; done < /.aster-oci-cgroup-delegate; test "$delegated" -gt 0; unlisted=$(/bin/busybox cat /.aster-oci-cgroup-unlisted); test "$(/bin/busybox stat -c "%u:%g" "/sys/fs/cgroup/$unlisted")" = "$overflow_uid:$overflow_gid"; /bin/busybox mkdir /sys/fs/cgroup/aster-delegation-write-probe; /bin/busybox rmdir /sys/fs/cgroup/aster-delegation-write-probe; '
 jq \
   --arg command_prefix "$cgroup_ownership_command" \
   --arg hook_trace "$cgroup_ownership_hook_trace" \
   '
     del(.linux.personality, .linux.memoryPolicy)
-    | .linux.cgroupsPath = "a3s-oci-cgroup-ownership-smoke"
+    | .linux.cgroupsPath = "aster-oci-cgroup-ownership-smoke"
     | .process.args[2] = (
         $command_prefix
         + (.process.args[2]
@@ -778,13 +778,13 @@ jq \
         source: "cgroup",
         options: ["rw", "nosuid", "noexec", "nodev"]
       }]
-    | .annotations["dev.a3s.oci.cgroup-ownership"] = "delegate-v1"
+    | .annotations["dev.aster.oci.cgroup-ownership"] = "delegate-v1"
     | .hooks |= with_entries(
         .value |= map(
           .env |= map(
-            if startswith("A3S_HOOK_TRACE=")
-               and . != "A3S_HOOK_TRACE=/.a3s-oci-hook-trace"
-            then "A3S_HOOK_TRACE=" + $hook_trace
+            if startswith("ASTER_HOOK_TRACE=")
+               and . != "ASTER_HOOK_TRACE=/.aster-oci-hook-trace"
+            then "ASTER_HOOK_TRACE=" + $hook_trace
             else .
             end
           )
@@ -797,13 +797,13 @@ mv \
   "$cgroup_ownership_bundle/config.json.tmp" \
   "$cgroup_ownership_bundle/config.json"
 # shellcheck disable=SC2016 # Expanded by the read-only cgroup workload.
-cgroup_ownership_readonly_command='set -eu; overflow_uid=$(/bin/busybox cat /proc/sys/kernel/overflowuid); overflow_gid=$(/bin/busybox cat /proc/sys/kernel/overflowgid); test "$(/bin/busybox stat -c "%u:%g" /sys/fs/cgroup)" = "$overflow_uid:$overflow_gid"; if /bin/busybox mkdir /sys/fs/cgroup/a3s-readonly-write-probe 2>/tmp/a3s-cgroup-readonly-error; then /bin/busybox rmdir /sys/fs/cgroup/a3s-readonly-write-probe; exit 91; fi; /bin/busybox rm -f /tmp/a3s-cgroup-readonly-error; '
+cgroup_ownership_readonly_command='set -eu; overflow_uid=$(/bin/busybox cat /proc/sys/kernel/overflowuid); overflow_gid=$(/bin/busybox cat /proc/sys/kernel/overflowgid); test "$(/bin/busybox stat -c "%u:%g" /sys/fs/cgroup)" = "$overflow_uid:$overflow_gid"; if /bin/busybox mkdir /sys/fs/cgroup/aster-readonly-write-probe 2>/tmp/aster-cgroup-readonly-error; then /bin/busybox rmdir /sys/fs/cgroup/aster-readonly-write-probe; exit 91; fi; /bin/busybox rm -f /tmp/aster-cgroup-readonly-error; '
 jq \
   --arg command_prefix "$cgroup_ownership_readonly_command" \
   --arg hook_trace "$cgroup_ownership_readonly_hook_trace" \
   '
     del(.linux.personality, .linux.memoryPolicy)
-    | .linux.cgroupsPath = "a3s-oci-cgroup-ownership-readonly-smoke"
+    | .linux.cgroupsPath = "aster-oci-cgroup-ownership-readonly-smoke"
     | .process.args[2] = (
         $command_prefix
         + (.process.args[2]
@@ -818,13 +818,13 @@ jq \
         source: "cgroup",
         options: ["ro", "nosuid", "noexec", "nodev"]
       }]
-    | .annotations["dev.a3s.oci.cgroup-ownership"] = "preserve-readonly-v1"
+    | .annotations["dev.aster.oci.cgroup-ownership"] = "preserve-readonly-v1"
     | .hooks |= with_entries(
         .value |= map(
           .env |= map(
-            if startswith("A3S_HOOK_TRACE=")
-               and . != "A3S_HOOK_TRACE=/.a3s-oci-hook-trace"
-            then "A3S_HOOK_TRACE=" + $hook_trace
+            if startswith("ASTER_HOOK_TRACE=")
+               and . != "ASTER_HOOK_TRACE=/.aster-oci-hook-trace"
+            then "ASTER_HOOK_TRACE=" + $hook_trace
             else .
             end
           )
@@ -897,21 +897,21 @@ test "$(stat --format '%u:%g' "$recovery_bundle/rootfs")" = '100000:200000'
 test "$(stat --format '%u:%g' "$hook_recovery_bundle/rootfs")" = '100000:200000'
 
 # shellcheck disable=SC2016 # Expanded inside the network-device workload.
-network_device_command_prefix='test -e /sys/class/net/a3seth0; test "$(/bin/busybox cat /sys/class/net/a3seth0/mtu)" = 1450; network_flags=$(/bin/busybox cat /sys/class/net/a3seth0/flags); test "$((network_flags & 1))" = 1; test "$(/bin/busybox cat /sys/class/net/a3seth0/address)" = 02:00:00:00:00:10; /bin/busybox ip -4 address show dev a3seth0 | /bin/busybox grep -q "inet 192.0.2.10/24"; '
+network_device_command_prefix='test -e /sys/class/net/astereth0; test "$(/bin/busybox cat /sys/class/net/astereth0/mtu)" = 1450; network_flags=$(/bin/busybox cat /sys/class/net/astereth0/flags); test "$((network_flags & 1))" = 1; test "$(/bin/busybox cat /sys/class/net/astereth0/address)" = 02:00:00:00:00:10; /bin/busybox ip -4 address show dev astereth0 | /bin/busybox grep -q "inet 192.0.2.10/24"; '
 for candidate in \
   "$network_device_bundle" \
   "$network_device_conflict_bundle" \
   "$network_device_rollback_bundle"; do
   mkdir "$candidate"
   cp -a --no-preserve=ownership "$bundle/." "$candidate/"
-  candidate_trace="$candidate/rootfs/.a3s-oci-hook-trace"
+  candidate_trace="$candidate/rootfs/.aster-oci-hook-trace"
   jq --arg host_trace "$candidate_trace" '
       .hooks |= with_entries(
         .value |= map(
           .env |= map(
-            if startswith("A3S_HOOK_TRACE=")
-               and . != "A3S_HOOK_TRACE=/.a3s-oci-hook-trace"
-            then "A3S_HOOK_TRACE=" + $host_trace
+            if startswith("ASTER_HOOK_TRACE=")
+               and . != "ASTER_HOOK_TRACE=/.aster-oci-hook-trace"
+            then "ASTER_HOOK_TRACE=" + $host_trace
             else .
             end
           )
@@ -926,9 +926,9 @@ jq \
   --arg source "$network_device_success_source" \
   --arg command_prefix "$network_device_command_prefix" \
   '
-    .linux.netDevices = {($source): {name: "a3seth%d"}}
+    .linux.netDevices = {($source): {name: "astereth%d"}}
     | .process.args[2] = ($command_prefix + .process.args[2])
-    | .annotations["dev.a3s.oci.net-devices"] = "move-rename-preserve-up-v1"
+    | .annotations["dev.aster.oci.net-devices"] = "move-rename-preserve-up-v1"
   ' \
   "$network_device_bundle/config.json" >"$network_device_bundle/config.json.tmp"
 mv "$network_device_bundle/config.json.tmp" "$network_device_bundle/config.json"
@@ -936,7 +936,7 @@ jq \
   --arg source "$network_device_conflict_source" \
   '
     .linux.netDevices = {($source): {name: "lo"}}
-    | .annotations["dev.a3s.oci.net-devices"] = "target-conflict-v1"
+    | .annotations["dev.aster.oci.net-devices"] = "target-conflict-v1"
   ' \
   "$network_device_conflict_bundle/config.json" \
   >"$network_device_conflict_bundle/config.json.tmp"
@@ -948,10 +948,10 @@ jq \
   --arg second "$network_device_rollback_second" \
   '
     .linux.netDevices = {
-      ($first): {name: "a3seth%d"},
-      ($second): {name: "a3seth0"}
+      ($first): {name: "astereth%d"},
+      ($second): {name: "astereth0"}
     }
-    | .annotations["dev.a3s.oci.net-devices"] = "partial-failure-rollback-v1"
+    | .annotations["dev.aster.oci.net-devices"] = "partial-failure-rollback-v1"
   ' \
   "$network_device_rollback_bundle/config.json" \
   >"$network_device_rollback_bundle/config.json.tmp"
@@ -1000,8 +1000,8 @@ if [[ -f /proc/sys/kernel/apparmor_restrict_unprivileged_userns ]]; then
 fi
 
 # shellcheck disable=SC2016 # Expanded inside the rootless workload.
-rootless_default_filesystem_command='test "$(/bin/busybox stat -f -c %T /proc)" = proc; test ! -e /sys; test "$(/bin/busybox stat -f -c %T /dev/pts)" = devpts; test "$(/bin/busybox stat -f -c %T /dev/shm)" = tmpfs; printf rootless-default-filesystem > /dev/shm/.a3s-oci-default-filesystem; test "$(/bin/busybox cat /dev/shm/.a3s-oci-default-filesystem)" = rootless-default-filesystem; /bin/busybox rm /dev/shm/.a3s-oci-default-filesystem; '
-rootless_command='set -eu; test "$(/bin/busybox id -u)" = 0; test "$(/bin/busybox id -g)" = 0; test "$(/bin/busybox cat /proc/self/setgroups)" = deny; test "$(/bin/busybox stat -c "%u:%g" /.a3s-oci-rootless-subordinate)" = 1:1; for spec in null:1:3 zero:1:5 full:1:7 random:1:8 urandom:1:9 tty:5:0; do name=${spec%%:*}; rest=${spec#*:}; major=${rest%%:*}; minor=${rest#*:}; test "$(/bin/busybox stat -c %t:%T /dev/$name)" = "$(printf %x $major):$(printf %x $minor)"; test "$(/bin/busybox stat -c %a /dev/$name)" = 666; done; printf probe > /dev/null; /bin/busybox head -c 1 /dev/zero > /dev/null; test "$(/bin/busybox head -c 1 /dev/full | /bin/busybox wc -c)" = 1; /bin/busybox head -c 1 /dev/random > /dev/null; /bin/busybox head -c 1 /dev/urandom > /dev/null; printf "a3s-oci-rootless-mapping-v1\n" > /.a3s-oci-rootless-smoke; progress=0; while :; do progress=$((progress + 1)); printf "%s\n" "$progress" > /.a3s-oci-rootless-progress.next; /bin/busybox mv /.a3s-oci-rootless-progress.next /.a3s-oci-rootless-progress; /bin/busybox sleep 0.05; done'
+rootless_default_filesystem_command='test "$(/bin/busybox stat -f -c %T /proc)" = proc; test ! -e /sys; test "$(/bin/busybox stat -f -c %T /dev/pts)" = devpts; test "$(/bin/busybox stat -f -c %T /dev/shm)" = tmpfs; printf rootless-default-filesystem > /dev/shm/.aster-oci-default-filesystem; test "$(/bin/busybox cat /dev/shm/.aster-oci-default-filesystem)" = rootless-default-filesystem; /bin/busybox rm /dev/shm/.aster-oci-default-filesystem; '
+rootless_command='set -eu; test "$(/bin/busybox id -u)" = 0; test "$(/bin/busybox id -g)" = 0; test "$(/bin/busybox cat /proc/self/setgroups)" = deny; test "$(/bin/busybox stat -c "%u:%g" /.aster-oci-rootless-subordinate)" = 1:1; for spec in null:1:3 zero:1:5 full:1:7 random:1:8 urandom:1:9 tty:5:0; do name=${spec%%:*}; rest=${spec#*:}; major=${rest%%:*}; minor=${rest#*:}; test "$(/bin/busybox stat -c %t:%T /dev/$name)" = "$(printf %x $major):$(printf %x $minor)"; test "$(/bin/busybox stat -c %a /dev/$name)" = 666; done; printf probe > /dev/null; /bin/busybox head -c 1 /dev/zero > /dev/null; test "$(/bin/busybox head -c 1 /dev/full | /bin/busybox wc -c)" = 1; /bin/busybox head -c 1 /dev/random > /dev/null; /bin/busybox head -c 1 /dev/urandom > /dev/null; printf "aster-oci-rootless-mapping-v1\n" > /.aster-oci-rootless-smoke; progress=0; while :; do progress=$((progress + 1)); printf "%s\n" "$progress" > /.aster-oci-rootless-progress.next; /bin/busybox mv /.aster-oci-rootless-progress.next /.aster-oci-rootless-progress; /bin/busybox sleep 0.05; done'
 jq \
   --arg command "${rootless_default_filesystem_command}${rootless_command}" \
   --arg native_focus "$native_focus" \
@@ -1009,7 +1009,7 @@ jq \
   --argjson gid "$rootless_gid" \
   '
     del(.linux.timeOffsets, .linux.sysctl, .hooks)
-    | .linux.cgroupsPath = "a3s-oci-rootless-smoke"
+    | .linux.cgroupsPath = "aster-oci-rootless-smoke"
     | .linux.resources = {
         memory: {limit: 268435456, reservation: 33554432, swap: 536870912},
         cpu: {shares: 512, quota: 50000, period: 100000},
@@ -1069,14 +1069,14 @@ sudo install \
   "$native_runtime_binary" \
   "$native_agent_binary" \
   "$rootless_bin/"
-sudo touch "$rootless_bundle/rootfs/.a3s-oci-rootless-subordinate"
+sudo touch "$rootless_bundle/rootfs/.aster-oci-rootless-subordinate"
 sudo chown 300000:400000 \
-  "$rootless_bundle/rootfs/.a3s-oci-rootless-subordinate"
-sudo chmod 0644 "$rootless_bundle/rootfs/.a3s-oci-rootless-subordinate"
+  "$rootless_bundle/rootfs/.aster-oci-rootless-subordinate"
+sudo chmod 0644 "$rootless_bundle/rootfs/.aster-oci-rootless-subordinate"
 test "$(stat --format '%u:%g' "$rootless_bundle/rootfs")" \
   = "$rootless_uid:$rootless_gid"
 test "$(stat --format '%u:%g' \
-  "$rootless_bundle/rootfs/.a3s-oci-rootless-subordinate")" \
+  "$rootless_bundle/rootfs/.aster-oci-rootless-subordinate")" \
   = '300000:400000'
 
 mkdir "$network_device_rootless_bundle"
@@ -1086,8 +1086,8 @@ jq \
   --arg source "$network_device_rootless_source" \
   '
     .linux.namespaces += [{"type": "network"}]
-    | .linux.netDevices = {($source): {name: "a3sroot%d"}}
-    | .annotations["dev.a3s.oci.net-devices"] = "rootless-rejection-v1"
+    | .linux.netDevices = {($source): {name: "asterroot%d"}}
+    | .annotations["dev.aster.oci.net-devices"] = "rootless-rejection-v1"
   ' \
   "$network_device_rootless_bundle/config.json" \
   >"$network_device_rootless_bundle/config.json.tmp"
@@ -1097,7 +1097,7 @@ mv \
 sudo chown -R \
   "$rootless_uid:$rootless_gid" "$network_device_rootless_bundle"
 sudo chown 300000:400000 \
-  "$network_device_rootless_bundle/rootfs/.a3s-oci-rootless-subordinate"
+  "$network_device_rootless_bundle/rootfs/.aster-oci-rootless-subordinate"
 
 report_native_failure() {
   local rootfs="$1"
@@ -1148,7 +1148,7 @@ verify_single_container_report() {
   local output="$2"
   jq --exit-status \
     --argjson expected "$expected_kvm_present" \
-    '.schema_version == "a3s.oci.native-linux-smoke.v20"
+    '.schema_version == "aster.oci.native-linux-smoke.v20"
      and .platform == "linux" and .status == "available"
      and .kvm_device_present == $expected
      and .bundle_loaded
@@ -1282,13 +1282,13 @@ verify_network_enforcement_mechanism() {
       busybox wget -Y off -T 2 -qO- \
       "http://127.0.0.1:$network_enforcement_redirect_port/"
   )"
-  test "$redirect" = 'a3s-oar01-redirect-v1'
+  test "$redirect" = 'aster-oar01-redirect-v1'
   control="$(
     sudo ip netns exec "$network_enforcement_namespace" \
       busybox wget -Y off -T 2 -qO- \
       "http://127.0.0.2:$network_enforcement_rejected_port/"
   )"
-  test "$control" = 'a3s-oar01-block-control-v1'
+  test "$control" = 'aster-oar01-block-control-v1'
   if sudo ip netns exec "$network_enforcement_namespace" \
     busybox wget -Y off -T 2 -qO- \
     "http://127.0.0.1:$network_enforcement_rejected_port/" \
@@ -1308,8 +1308,8 @@ prepare_network_enforcement_fixture() {
   mkdir "$network_enforcement_bundle"
   cp -a --no-preserve=ownership "$bundle/." "$network_enforcement_bundle/"
   mkdir "$control_root" "$redirect_root"
-  printf 'a3s-oar01-redirect-v1\n' >"$redirect_root/index.html"
-  printf 'a3s-oar01-block-control-v1\n' >"$control_root/index.html"
+  printf 'aster-oar01-redirect-v1\n' >"$redirect_root/index.html"
+  printf 'aster-oar01-block-control-v1\n' >"$control_root/index.html"
 
   sudo ip netns add "$network_enforcement_namespace"
   network_enforcement_namespace_created=true
@@ -1354,7 +1354,7 @@ prepare_network_enforcement_fixture() {
     --arg redirect_identity "$network_enforcement_redirect_id" \
     --arg redirect_digest "$network_enforcement_redirect_digest" \
     '{
-      schemaVersion: "a3s.oci.network-enforcement.v1",
+      schemaVersion: "aster.oci.network-enforcement.v1",
       identity: $identity,
       generation: 1,
       compiledPolicyDigest: $compiled_policy_digest,
@@ -1370,7 +1370,7 @@ prepare_network_enforcement_fixture() {
       }
     }')"
   # shellcheck disable=SC2016 # Expanded inside the OAR-01 workload.
-  workload='redirect=$(/bin/busybox wget -Y off -T 2 -qO- http://127.0.0.1:18080/); test "$redirect" = a3s-oar01-redirect-v1; printf "redirect-v1\n" > /.a3s-oci-oar01-redirect; control=$(/bin/busybox wget -Y off -T 2 -qO- http://127.0.0.2:18082/); test "$control" = a3s-oar01-block-control-v1; if /bin/busybox wget -Y off -T 2 -qO- http://127.0.0.1:18082/ >/dev/null 2>&1; then exit 41; fi; printf "rejection-v1\n" > /.a3s-oci-oar01-rejection; exec /bin/busybox sleep 600'
+  workload='redirect=$(/bin/busybox wget -Y off -T 2 -qO- http://127.0.0.1:18080/); test "$redirect" = aster-oar01-redirect-v1; printf "redirect-v1\n" > /.aster-oci-oar01-redirect; control=$(/bin/busybox wget -Y off -T 2 -qO- http://127.0.0.2:18082/); test "$control" = aster-oar01-block-control-v1; if /bin/busybox wget -Y off -T 2 -qO- http://127.0.0.1:18082/ >/dev/null 2>&1; then exit 41; fi; printf "rejection-v1\n" > /.aster-oci-oar01-rejection; exec /bin/busybox sleep 600'
   jq \
     --arg namespace_path "$network_enforcement_namespace_path" \
     --arg source "$network_enforcement_source" \
@@ -1383,7 +1383,7 @@ prepare_network_enforcement_fixture() {
       )
       | del(.linux.sysctl)
       | .linux.netDevices = {($source): {name: $target}}
-      | .annotations["dev.a3s.network.enforcement"] = $attachment
+      | .annotations["dev.aster.network.enforcement"] = $attachment
       | .process.args[2] = $workload
     ' \
     "$network_enforcement_bundle/config.json" \
@@ -1396,7 +1396,7 @@ prepare_network_enforcement_fixture() {
 
 run_network_enforcement_smoke() {
   local output
-  local report_path="${A3S_OCI_NATIVE_NETWORK_ENFORCEMENT_REPORT:-}"
+  local report_path="${ASTER_OCI_NATIVE_NETWORK_ENFORCEMENT_REPORT:-}"
   local status
 
   if output="$(sudo "$native_runtime_binary" \
@@ -1424,7 +1424,7 @@ run_network_enforcement_smoke() {
     --arg namespace "$network_enforcement_namespace_id" \
     --arg redirect_identity "$network_enforcement_redirect_id" \
     --arg redirect_digest "$network_enforcement_redirect_digest" \
-    '.schema_version == "a3s.oci.native-linux-network-enforcement-smoke.v1"
+    '.schema_version == "aster.oci.native-linux-network-enforcement-smoke.v1"
      and .platform == "linux"
      and .status == "available"
      and .bundle_loaded
@@ -1545,7 +1545,7 @@ run_network_device_negative_smoke() {
   fi
   jq --exit-status \
     --arg reason "$expected_reason" \
-    '.schema_version == "a3s.oci.native-linux-smoke.v20"
+    '.schema_version == "aster.oci.native-linux-smoke.v20"
      and .status != "available"
      and (.reason | contains($reason))
      and ((.reason | contains("rollback also failed")) | not)
@@ -1554,7 +1554,7 @@ run_network_device_negative_smoke() {
      and .session_root_clean
      and .marker_removed' \
     <<<"$output" >/dev/null
-  test ! -e "$smoke_bundle/rootfs/.a3s-oci-native-smoke"
+  test ! -e "$smoke_bundle/rootfs/.aster-oci-native-smoke"
   test -z "$(find "$work_parent" -mindepth 1 -print -quit)"
   printf 'Network-device negative case passed: %s\n' "$case_name"
 }
@@ -1578,7 +1578,7 @@ run_service_smoke() {
     return "$status"
   fi
   verify_single_container_report "$expected_kvm_present" "$output"
-  test ! -e "$bundle/rootfs/.a3s-oci-native-smoke"
+  test ! -e "$bundle/rootfs/.aster-oci-native-smoke"
   test -z "$(find "$work_parent" -mindepth 1 -print -quit)"
 }
 
@@ -1604,7 +1604,7 @@ run_multi_container_smoke() {
   jq --exit-status \
     --argjson expected "$expected_kvm_present" \
     --arg absolute "$absolute_cgroup_path" \
-    '.schema_version == "a3s.oci.native-linux-multi-container-smoke.v20"
+    '.schema_version == "aster.oci.native-linux-multi-container-smoke.v20"
      and .platform == "linux" and .status == "available"
      and .kvm_device_present == $expected
      and .bundles_loaded
@@ -1653,9 +1653,9 @@ run_multi_container_smoke() {
      and .lifecycle.wait_b_replayed
      and .lifecycle.delete_b_replayed
      and .lifecycle.b_missing_after_delete
-     and .cgroup_paths.requested_relative == "a3s-oci-smoke-a"
+     and .cgroup_paths.requested_relative == "aster-oci-smoke-a"
      and .cgroup_paths.requested_absolute == $absolute
-     and (.cgroup_paths.observed_relative_initial | endswith("/a3s-oci-smoke-a"))
+     and (.cgroup_paths.observed_relative_initial | endswith("/aster-oci-smoke-a"))
      and .cgroup_paths.observed_relative_recreated
          == .cgroup_paths.observed_relative_initial
      and .cgroup_paths.observed_absolute == $absolute
@@ -1721,8 +1721,8 @@ run_multi_container_smoke() {
      and .session_root_clean
      and (.reason == null)' \
     <<<"$output" >/dev/null
-  test ! -e "$bundle/rootfs/.a3s-oci-native-smoke"
-  test ! -e "$bundle_b/rootfs/.a3s-oci-native-smoke"
+  test ! -e "$bundle/rootfs/.aster-oci-native-smoke"
+  test ! -e "$bundle_b/rootfs/.aster-oci-native-smoke"
   test -z "$(find "$work_parent" -mindepth 1 -print -quit)"
 }
 
@@ -1747,9 +1747,9 @@ run_soak() {
     status=$?
   fi
   printf '%s\n' "$output"
-  if [[ -n "${A3S_OCI_NATIVE_SOAK_REPORT:-}" ]]; then
-    mkdir -p "$(dirname "$A3S_OCI_NATIVE_SOAK_REPORT")"
-    printf '%s\n' "$output" >"$A3S_OCI_NATIVE_SOAK_REPORT"
+  if [[ -n "${ASTER_OCI_NATIVE_SOAK_REPORT:-}" ]]; then
+    mkdir -p "$(dirname "$ASTER_OCI_NATIVE_SOAK_REPORT")"
+    printf '%s\n' "$output" >"$ASTER_OCI_NATIVE_SOAK_REPORT"
   fi
   if ((status != 0)); then
     report_native_failure "${soak_bundles[0]}/rootfs"
@@ -1762,7 +1762,7 @@ run_soak() {
     --argjson operation_timeout_ms "$soak_operation_timeout_ms" \
     '($iterations * $concurrent) as $lifecycles
      | (($iterations - 1) * $concurrent) as $stale
-     | .schema_version == "a3s.oci.native-linux-soak.v2"
+     | .schema_version == "aster.oci.native-linux-soak.v2"
      and .platform == "linux" and .status == "available"
      and .configuration.iterations == $iterations
      and .configuration.concurrent_containers == $concurrent
@@ -1832,9 +1832,9 @@ run_soak() {
      and (.reason == null)' \
     <<<"$output" >/dev/null
   for candidate in "${soak_bundles[@]}"; do
-    test ! -e "$candidate/rootfs/.a3s-oci-native-smoke"
-    test ! -e "$candidate/rootfs/.a3s-oci-native-soak-progress"
-    test ! -e "$candidate/rootfs/.a3s-oci-native-soak-progress.next"
+    test ! -e "$candidate/rootfs/.aster-oci-native-smoke"
+    test ! -e "$candidate/rootfs/.aster-oci-native-soak-progress"
+    test ! -e "$candidate/rootfs/.aster-oci-native-soak-progress.next"
   done
   test -z "$(find "$work_parent" -mindepth 1 -print -quit)"
 }
@@ -1859,7 +1859,7 @@ run_fault_cleanup() {
       return "$status"
     fi
     jq --exit-status --arg phase "$phase" \
-      '.schema_version == "a3s.oci.native-linux-fault-cleanup.v6"
+      '.schema_version == "aster.oci.native-linux-fault-cleanup.v6"
        and .platform == "linux" and .status == "available"
        and .bundle_loaded
        and .service_operations
@@ -1893,7 +1893,7 @@ run_fault_cleanup() {
        and .session_root_clean
        and (.reason == null)' \
       <<<"$output" >/dev/null
-    test ! -e "$bundle/rootfs/.a3s-oci-native-smoke"
+    test ! -e "$bundle/rootfs/.aster-oci-native-smoke"
     test -z "$(find "$work_parent" -mindepth 1 -print -quit)"
   done
 }
@@ -1915,8 +1915,8 @@ run_rootless_smoke() {
       "$rootless_cgroup_host_control" \
       "$rootless_uid" \
       "$rootless_gid" \
-      "$rootless_bin/a3s-oci" native-linux-rootless-smoke \
-      --agent "$rootless_bin/a3s-oci-agent" \
+      "$rootless_bin/aster-oci" native-linux-rootless-smoke \
+      --agent "$rootless_bin/aster-oci-agent" \
       --bundle "$rootless_bundle" \
       --work-parent "$rootless_work_parent" \
       --delegated-cgroup-root "$rootless_cgroup_parent" \
@@ -1938,7 +1938,7 @@ run_rootless_smoke() {
   jq --exit-status \
     --argjson uid "$rootless_uid" \
     --argjson gid "$rootless_gid" \
-    '.schema_version == "a3s.oci.native-linux-rootless-smoke.v4"
+    '.schema_version == "aster.oci.native-linux-rootless-smoke.v4"
      and .platform == "linux" and .status == "available"
      and .effective_uid == $uid and .effective_gid == $gid
      and .bundle_loaded
@@ -1980,13 +1980,13 @@ run_rootless_smoke() {
      and .marker_removed
      and (.reason == null)' \
     <<<"$output" >/dev/null
-  test ! -e "$rootless_bundle/rootfs/.a3s-oci-rootless-smoke"
-  test ! -e "$rootless_bundle/rootfs/.a3s-oci-rootless-progress"
-  test ! -e "$rootless_bundle/rootfs/.a3s-oci-rootless-progress.next"
+  test ! -e "$rootless_bundle/rootfs/.aster-oci-rootless-smoke"
+  test ! -e "$rootless_bundle/rootfs/.aster-oci-rootless-progress"
+  test ! -e "$rootless_bundle/rootfs/.aster-oci-rootless-progress.next"
   test -z "$(sudo find "$rootless_work_parent" -mindepth 1 -print -quit)"
   test -z "$(sudo cat "$rootless_cgroup_host_control/cgroup.procs")"
   test -z "$(sudo find "$rootless_cgroup_parent" -mindepth 1 -maxdepth 1 \
-    -type d ! -name a3s-host-control -print -quit)"
+    -type d ! -name aster-host-control -print -quit)"
 }
 
 run_rootless_device_policy_smoke() {
@@ -1996,7 +1996,7 @@ run_rootless_device_policy_smoke() {
   mkdir -p "$device_bundle/rootfs/dev"
   cp -a --no-preserve=ownership \
     "$rootless_bundle/rootfs/." "$device_bundle/rootfs/"
-  jq --slurpfile box fixtures/a3s-box/config.json '
+  jq --slurpfile box fixtures/aster-box/config.json '
       .linux.devices = $box[0].linux.devices
       | .linux.resources.devices = $box[0].linux.resources.devices
       | .process.args[2] =
@@ -2013,7 +2013,7 @@ run_rootless_device_policy_smoke() {
     ' "$rootless_bundle/config.json" > "$device_bundle/config.json"
   sudo chown -R "$rootless_uid:$rootless_gid" "$device_bundle"
   sudo chown 300000:400000 \
-    "$device_bundle/rootfs/.a3s-oci-rootless-subordinate"
+    "$device_bundle/rootfs/.aster-oci-rootless-subordinate"
 
   if output="$(sudo sh -c '
       control=$1
@@ -2029,8 +2029,8 @@ run_rootless_device_policy_smoke() {
       "$rootless_cgroup_host_control" \
       "$rootless_uid" \
       "$rootless_gid" \
-      "$rootless_bin/a3s-oci" native-linux-rootless-device-policy-smoke \
-      --agent "$rootless_bin/a3s-oci-agent" \
+      "$rootless_bin/aster-oci" native-linux-rootless-device-policy-smoke \
+      --agent "$rootless_bin/aster-oci-agent" \
       --bundle "$device_bundle" \
       --work-parent "$rootless_work_parent" \
       --delegated-cgroup-root "$rootless_cgroup_parent")"; then
@@ -2039,9 +2039,9 @@ run_rootless_device_policy_smoke() {
     status=$?
   fi
   printf '%s\n' "$output"
-  if [[ -n "${A3S_OCI_NATIVE_ROOTLESS_DEVICE_POLICY_REPORT:-}" ]]; then
-    mkdir -p "$(dirname "$A3S_OCI_NATIVE_ROOTLESS_DEVICE_POLICY_REPORT")"
-    printf '%s\n' "$output" >"$A3S_OCI_NATIVE_ROOTLESS_DEVICE_POLICY_REPORT"
+  if [[ -n "${ASTER_OCI_NATIVE_ROOTLESS_DEVICE_POLICY_REPORT:-}" ]]; then
+    mkdir -p "$(dirname "$ASTER_OCI_NATIVE_ROOTLESS_DEVICE_POLICY_REPORT")"
+    printf '%s\n' "$output" >"$ASTER_OCI_NATIVE_ROOTLESS_DEVICE_POLICY_REPORT"
   fi
   if ((status != 0)); then
     report_native_failure "$device_bundle/rootfs"
@@ -2050,7 +2050,7 @@ run_rootless_device_policy_smoke() {
   jq --exit-status \
     --argjson uid "$rootless_uid" \
     --argjson gid "$rootless_gid" \
-    '.schema_version == "a3s.oci.native-linux-rootless-smoke.v4"
+    '.schema_version == "aster.oci.native-linux-rootless-smoke.v4"
      and .platform == "linux" and .status == "available"
      and .effective_uid == $uid and .effective_gid == $gid
      and .device_policy_helper_verified
@@ -2063,7 +2063,7 @@ run_rootless_device_policy_smoke() {
   test -z "$(sudo find "$rootless_work_parent" -mindepth 1 -print -quit)"
   test -z "$(sudo cat "$rootless_cgroup_host_control/cgroup.procs")"
   test -z "$(sudo find "$rootless_cgroup_parent" -mindepth 1 -maxdepth 1 \
-    -type d ! -name a3s-host-control -print -quit)"
+    -type d ! -name aster-host-control -print -quit)"
   sudo rm -rf --one-file-system -- "$device_bundle"
 }
 
@@ -2081,8 +2081,8 @@ run_rootless_negative_smoke() {
   local before_rootfs
   local after_rootfs
   local -a command=(
-    "$rootless_bin/a3s-oci" native-linux-rootless-smoke
-    --agent "$rootless_bin/a3s-oci-agent"
+    "$rootless_bin/aster-oci" native-linux-rootless-smoke
+    --agent "$rootless_bin/aster-oci-agent"
     --bundle "$smoke_bundle"
     --work-parent "$rootless_work_parent"
   )
@@ -2119,7 +2119,7 @@ run_rootless_negative_smoke() {
   test "$status" -eq 2
   jq --exit-status \
     --arg reason "$expected_reason" \
-    '.schema_version == "a3s.oci.native-linux-rootless-smoke.v4"
+    '.schema_version == "aster.oci.native-linux-rootless-smoke.v4"
      and .status != "available"
      and (.reason | contains($reason))
      and (.created_pid == null)' \
@@ -2135,9 +2135,9 @@ run_rootless_negative_smoke() {
   test "$after_work" = "$before_work"
   test "$after_cgroup" = "$before_cgroup"
   test "$after_rootfs" = "$before_rootfs"
-  test ! -e "$smoke_bundle/rootfs/.a3s-oci-rootless-smoke"
-  test ! -e "$smoke_bundle/rootfs/.a3s-oci-rootless-progress"
-  test ! -e "$smoke_bundle/rootfs/.a3s-oci-rootless-progress.next"
+  test ! -e "$smoke_bundle/rootfs/.aster-oci-rootless-smoke"
+  test ! -e "$smoke_bundle/rootfs/.aster-oci-rootless-progress"
+  test ! -e "$smoke_bundle/rootfs/.aster-oci-rootless-progress.next"
   printf 'Rootless negative case passed: %s\n' "$case_name"
 }
 
@@ -2187,8 +2187,8 @@ run_rootless_post_open_negative_smoke() {
     "$rootless_cgroup_host_control" \
     "$rootless_uid" \
     "$rootless_gid" \
-    "$rootless_bin/a3s-oci" native-linux-rootless-smoke \
-    --agent "$rootless_bin/a3s-oci-agent" \
+    "$rootless_bin/aster-oci" native-linux-rootless-smoke \
+    --agent "$rootless_bin/aster-oci-agent" \
     --bundle "$rootless_bundle" \
     --work-parent "$rootless_work_parent" \
     --delegated-cgroup-root "$rootless_cgroup_parent" \
@@ -2268,7 +2268,7 @@ run_rootless_post_open_negative_smoke() {
   test "$status" -eq 2
   jq --exit-status \
     --arg reason "$expected_reason" \
-    '.schema_version == "a3s.oci.native-linux-rootless-smoke.v4"
+    '.schema_version == "aster.oci.native-linux-rootless-smoke.v4"
      and .status != "available"
      and (.reason | contains($reason))
      and (.created_pid == null)' \
@@ -2284,9 +2284,9 @@ run_rootless_post_open_negative_smoke() {
   test "$after_work" = "$before_work"
   test "$after_cgroup" = "$before_cgroup"
   test "$after_rootfs" = "$before_rootfs"
-  test ! -e "$rootless_bundle/rootfs/.a3s-oci-rootless-smoke"
-  test ! -e "$rootless_bundle/rootfs/.a3s-oci-rootless-progress"
-  test ! -e "$rootless_bundle/rootfs/.a3s-oci-rootless-progress.next"
+  test ! -e "$rootless_bundle/rootfs/.aster-oci-rootless-smoke"
+  test ! -e "$rootless_bundle/rootfs/.aster-oci-rootless-progress"
+  test ! -e "$rootless_bundle/rootfs/.aster-oci-rootless-progress.next"
   printf 'Rootless post-open negative case passed: %s\n' "$case_name"
 }
 
@@ -2302,7 +2302,7 @@ run_owner_death_recovery() {
   local init_pid
   local deadline
 
-  sudo rm -f "$recovery_bundle/rootfs/.a3s-oci-native-smoke"
+  sudo rm -f "$recovery_bundle/rootfs/.aster-oci-native-smoke"
   sudo "$native_runtime_binary" native-linux-recovery-owner \
     --agent "$native_agent_binary" \
     --root "$recovery_root" \
@@ -2330,7 +2330,7 @@ run_owner_death_recovery() {
   test "$(sudo stat --format '%u:%g:%a' "$ready_file")" = '0:0:600'
   ready_json="$(sudo cat -- "$ready_file")"
   jq --exit-status \
-    '.schema_version == "a3s.oci.native-linux-recovery-owner-ready.v3"
+    '.schema_version == "aster.oci.native-linux-recovery-owner-ready.v3"
      and .status == "available" and .platform == "linux"
      and .target.id == "native-owner-recovery"
      and .target.generation == 1
@@ -2363,8 +2363,8 @@ run_owner_death_recovery() {
     return 1
   fi
   sudo grep --fixed-strings --line-regexp \
-    'a3s-oci-native-box-mapping-v1' \
-    "$recovery_bundle/rootfs/.a3s-oci-native-smoke" >/dev/null
+    'aster-oci-native-box-mapping-v1' \
+    "$recovery_bundle/rootfs/.aster-oci-native-smoke" >/dev/null
 
   if output="$(sudo "$native_runtime_binary" \
       native-linux-recovery-resume \
@@ -2378,9 +2378,9 @@ run_owner_death_recovery() {
     status=$?
   fi
   printf '%s\n' "$output"
-  if [[ -n "${A3S_OCI_NATIVE_RECOVERY_REPORT:-}" ]]; then
-    mkdir -p "$(dirname "$A3S_OCI_NATIVE_RECOVERY_REPORT")"
-    printf '%s\n' "$output" >"$A3S_OCI_NATIVE_RECOVERY_REPORT"
+  if [[ -n "${ASTER_OCI_NATIVE_RECOVERY_REPORT:-}" ]]; then
+    mkdir -p "$(dirname "$ASTER_OCI_NATIVE_RECOVERY_REPORT")"
+    printf '%s\n' "$output" >"$ASTER_OCI_NATIVE_RECOVERY_REPORT"
   fi
   if ((status != 0)); then
     cat "$owner_log" >&2
@@ -2389,7 +2389,7 @@ run_owner_death_recovery() {
   fi
   jq --exit-status \
     --argjson killed_owner "$ready_owner_pid" \
-    '.schema_version == "a3s.oci.native-linux-recovery-smoke.v2"
+    '.schema_version == "aster.oci.native-linux-recovery-smoke.v2"
      and .status == "available" and .platform == "linux"
      and .target.id == "native-owner-recovery"
      and .target.generation == 1
@@ -2413,8 +2413,8 @@ run_owner_death_recovery() {
      and (.reason == null)' \
     <<<"$output" >/dev/null
   sudo test ! -e "/proc/$init_pid/stat"
-  sudo rm -f "$recovery_bundle/rootfs/.a3s-oci-native-smoke"
-  sudo test ! -e "$recovery_bundle/rootfs/.a3s-oci-native-smoke"
+  sudo rm -f "$recovery_bundle/rootfs/.aster-oci-native-smoke"
+  sudo test ! -e "$recovery_bundle/rootfs/.aster-oci-native-smoke"
   test -z "$(sudo find "$recovery_root/executor" -mindepth 1 -print -quit)"
 }
 
@@ -2431,9 +2431,9 @@ run_rootless_owner_death_recovery() {
   local deadline
 
   sudo rm -f \
-    "$rootless_bundle/rootfs/.a3s-oci-rootless-smoke" \
-    "$rootless_bundle/rootfs/.a3s-oci-rootless-progress" \
-    "$rootless_bundle/rootfs/.a3s-oci-rootless-progress.next"
+    "$rootless_bundle/rootfs/.aster-oci-rootless-smoke" \
+    "$rootless_bundle/rootfs/.aster-oci-rootless-progress" \
+    "$rootless_bundle/rootfs/.aster-oci-rootless-progress.next"
   sudo sh -c '
       control=$1
       uid=$2
@@ -2448,8 +2448,8 @@ run_rootless_owner_death_recovery() {
       "$rootless_cgroup_host_control" \
       "$rootless_uid" \
       "$rootless_gid" \
-      "$rootless_bin/a3s-oci" native-linux-recovery-owner \
-      --agent "$rootless_bin/a3s-oci-agent" \
+      "$rootless_bin/aster-oci" native-linux-recovery-owner \
+      --agent "$rootless_bin/aster-oci-agent" \
       --root "$recovery_root" \
       --bundle "$rootless_bundle" \
       --container-id native-rootless-owner-recovery \
@@ -2481,7 +2481,7 @@ run_rootless_owner_death_recovery() {
   jq --exit-status \
     --argjson uid "$rootless_uid" \
     --argjson gid "$rootless_gid" \
-    '.schema_version == "a3s.oci.native-linux-recovery-owner-ready.v3"
+    '.schema_version == "aster.oci.native-linux-recovery-owner-ready.v3"
      and .status == "available" and .platform == "linux"
      and .target.id == "native-rootless-owner-recovery"
      and .target.generation == 1
@@ -2501,8 +2501,8 @@ run_rootless_owner_death_recovery() {
 
   deadline=$((SECONDS + 10))
   while ! sudo grep --fixed-strings --line-regexp \
-      'a3s-oci-rootless-mapping-v1' \
-      "$rootless_bundle/rootfs/.a3s-oci-rootless-smoke" >/dev/null 2>&1; do
+      'aster-oci-rootless-mapping-v1' \
+      "$rootless_bundle/rootfs/.aster-oci-rootless-smoke" >/dev/null 2>&1; do
     if ((SECONDS >= deadline)); then
       cat "$owner_log" >&2
       printf '%s\n' 'Rootless recovery workload did not publish its marker' >&2
@@ -2539,8 +2539,8 @@ run_rootless_owner_death_recovery() {
       "$rootless_cgroup_host_control" \
       "$rootless_uid" \
       "$rootless_gid" \
-      "$rootless_bin/a3s-oci" native-linux-recovery-resume \
-      --agent "$rootless_bin/a3s-oci-agent" \
+      "$rootless_bin/aster-oci" native-linux-recovery-resume \
+      --agent "$rootless_bin/aster-oci-agent" \
       --root "$recovery_root" \
       --bundle "$rootless_bundle" \
       --container-id native-rootless-owner-recovery \
@@ -2552,9 +2552,9 @@ run_rootless_owner_death_recovery() {
     status=$?
   fi
   printf '%s\n' "$output"
-  if [[ -n "${A3S_OCI_NATIVE_ROOTLESS_RECOVERY_REPORT:-}" ]]; then
-    mkdir -p "$(dirname "$A3S_OCI_NATIVE_ROOTLESS_RECOVERY_REPORT")"
-    printf '%s\n' "$output" >"$A3S_OCI_NATIVE_ROOTLESS_RECOVERY_REPORT"
+  if [[ -n "${ASTER_OCI_NATIVE_ROOTLESS_RECOVERY_REPORT:-}" ]]; then
+    mkdir -p "$(dirname "$ASTER_OCI_NATIVE_ROOTLESS_RECOVERY_REPORT")"
+    printf '%s\n' "$output" >"$ASTER_OCI_NATIVE_ROOTLESS_RECOVERY_REPORT"
   fi
   if ((status != 0)); then
     cat "$owner_log" >&2
@@ -2565,7 +2565,7 @@ run_rootless_owner_death_recovery() {
     --argjson killed_owner "$ready_owner_pid" \
     --argjson uid "$rootless_uid" \
     --argjson gid "$rootless_gid" \
-    '.schema_version == "a3s.oci.native-linux-recovery-smoke.v2"
+    '.schema_version == "aster.oci.native-linux-recovery-smoke.v2"
      and .status == "available" and .platform == "linux"
      and .target.id == "native-rootless-owner-recovery"
      and .target.generation == 1
@@ -2591,13 +2591,13 @@ run_rootless_owner_death_recovery() {
   sudo test ! -e "/proc/$init_pid/stat"
   sudo test -z "$(sudo cat "$rootless_cgroup_host_control/cgroup.procs")"
   test -z "$(sudo find "$rootless_cgroup_parent" -mindepth 1 -maxdepth 1 \
-    -type d ! -name a3s-host-control -print -quit)"
+    -type d ! -name aster-host-control -print -quit)"
   sudo test -z "$(sudo find "$recovery_root/executor" -mindepth 1 -print -quit)"
   sudo rm -f \
-    "$rootless_bundle/rootfs/.a3s-oci-rootless-smoke" \
-    "$rootless_bundle/rootfs/.a3s-oci-rootless-progress" \
-    "$rootless_bundle/rootfs/.a3s-oci-rootless-progress.next"
-  sudo test ! -e "$rootless_bundle/rootfs/.a3s-oci-rootless-smoke"
+    "$rootless_bundle/rootfs/.aster-oci-rootless-smoke" \
+    "$rootless_bundle/rootfs/.aster-oci-rootless-progress" \
+    "$rootless_bundle/rootfs/.aster-oci-rootless-progress.next"
+  sudo test ! -e "$rootless_bundle/rootfs/.aster-oci-rootless-smoke"
   sudo -u "$rootless_user" rm -f -- "$ready_file"
   sudo -u "$rootless_user" rm -rf --one-file-system -- "$recovery_root"
   sudo test ! -e "$ready_file"
@@ -2606,7 +2606,7 @@ run_rootless_owner_death_recovery() {
 }
 
 run_service_signal_cleanup() {
-  # Match the root-owned A3S Box profile qualified by the transported lifecycle.
+  # Match the root-owned Aster Box profile qualified by the transported lifecycle.
   sudo python3 - \
     "$native_runtime_binary" \
     "$native_agent_binary" \
@@ -2650,7 +2650,7 @@ process = subprocess.Popen(
         agent,
         "--container-id",
         "box-signal-cleanup",
-        "--a3s-box-control-fds",
+        "--aster-box-control-fds",
     ],
     pass_fds=(3, 4, 5),
     stdout=subprocess.PIPE,
@@ -2742,12 +2742,12 @@ if [[ -e /dev/kvm || -L /dev/kvm ]]; then
   sudo mv /dev/kvm "$saved_kvm"
   kvm_original_moved=true
 fi
-if [[ -n "${A3S_OCI_NATIVE_KVM_ABSENCE_EVIDENCE:-}" ]]; then
+if [[ -n "${ASTER_OCI_NATIVE_KVM_ABSENCE_EVIDENCE:-}" ]]; then
   if [[ -e /dev/kvm || -L /dev/kvm ]]; then
     printf '%s\n' 'Native lifecycle KVM-absence boundary was not established' >&2
     exit 1
   fi
-  kvm_evidence="$A3S_OCI_NATIVE_KVM_ABSENCE_EVIDENCE"
+  kvm_evidence="$ASTER_OCI_NATIVE_KVM_ABSENCE_EVIDENCE"
   if [[ -e "$kvm_evidence" || -L "$kvm_evidence" ]]; then
     printf 'Refusing to replace Native KVM-absence evidence: %s\n' \
       "$kvm_evidence" >&2
@@ -2755,7 +2755,7 @@ if [[ -n "${A3S_OCI_NATIVE_KVM_ABSENCE_EVIDENCE:-}" ]]; then
   fi
   mkdir -p "$(dirname "$kvm_evidence")"
   jq --null-input \
-    --arg schema_version 'a3s.oci.native-linux-kvm-absence.v1' \
+    --arg schema_version 'aster.oci.native-linux-kvm-absence.v1' \
     --arg platform 'linux' \
     --arg architecture "$(uname -m)" \
     --argjson device_was_hidden "$kvm_original_moved" \
@@ -2773,12 +2773,12 @@ fi
 if [[ "$native_focus" == terminal-init ]]; then
   run_smoke false "$terminal_bundle" "$terminal_hook_trace"
   test ! -e "$terminal_bundle/rootfs/dev/console"
-  test ! -e "$terminal_bundle/rootfs/run/a3s/device-fifo"
+  test ! -e "$terminal_bundle/rootfs/run/aster/device-fifo"
   run_smoke false "$terminal_existing_bundle" "$terminal_existing_hook_trace"
   test -f "$terminal_existing_bundle/rootfs/dev/console"
   test "$(cat "$terminal_existing_bundle/rootfs/dev/console")" = \
-    'a3s-preexisting-console-v1'
-  test ! -e "$terminal_existing_bundle/rootfs/run/a3s/device-fifo"
+    'aster-preexisting-console-v1'
+  test ! -e "$terminal_existing_bundle/rootfs/run/aster/device-fifo"
   exit 0
 elif [[ "$native_focus" == device-boundary ]]; then
   run_smoke false "$device_boundary_bundle" "$device_boundary_hook_trace"
@@ -2814,7 +2814,7 @@ elif [[ "$native_focus" == network-enforcement ]]; then
   run_network_enforcement_smoke
   exit 0
 elif [[ -n "$native_focus" ]]; then
-  printf 'unsupported A3S_OCI_NATIVE_FOCUS value: %s\n' "$native_focus" >&2
+  printf 'unsupported ASTER_OCI_NATIVE_FOCUS value: %s\n' "$native_focus" >&2
   exit 2
 fi
 
@@ -2942,7 +2942,7 @@ create_dummy_network_device \
 run_smoke \
   false \
   "$network_device_bundle" \
-  "$network_device_bundle/rootfs/.a3s-oci-hook-trace"
+  "$network_device_bundle/rootfs/.aster-oci-hook-trace"
 verify_host_network_device_absent "$network_device_success_source"
 
 prepare_network_enforcement_fixture
@@ -2957,12 +2957,12 @@ run_smoke \
   "$cgroup_ownership_readonly_hook_trace"
 run_smoke false "$terminal_bundle" "$terminal_hook_trace"
 test ! -e "$terminal_bundle/rootfs/dev/console"
-test ! -e "$terminal_bundle/rootfs/run/a3s/device-fifo"
+test ! -e "$terminal_bundle/rootfs/run/aster/device-fifo"
 run_smoke false "$terminal_existing_bundle" "$terminal_existing_hook_trace"
 test -f "$terminal_existing_bundle/rootfs/dev/console"
 test "$(cat "$terminal_existing_bundle/rootfs/dev/console")" = \
-  'a3s-preexisting-console-v1'
-test ! -e "$terminal_existing_bundle/rootfs/run/a3s/device-fifo"
+  'aster-preexisting-console-v1'
+test ! -e "$terminal_existing_bundle/rootfs/run/aster/device-fifo"
 run_smoke false "$control_bundle" "$control_hook_trace"
 run_service_smoke false
 run_service_signal_cleanup

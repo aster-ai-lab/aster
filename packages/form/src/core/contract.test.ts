@@ -14,8 +14,8 @@ import type { FormDocument } from './types';
 
 function minimalDocument(title = '契约测试'): FormDocument {
   return {
-    kind: 'a3s.form',
-    apiVersion: 'a3s.dev/form/v1alpha1',
+    kind: 'aster.form',
+    apiVersion: 'aster.dev/form/v1alpha1',
     revision: 0,
     metadata: { title, locale: 'zh-CN', tags: [] },
     schema: {
@@ -43,13 +43,13 @@ describe('the semantic compiler contract', () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.compilerRevision).toBeTruthy();
-    expect(result.document?.kind).toBe('a3s.form');
+    expect(result.document?.kind).toBe('aster.form');
     expect(result.plan).toBeDefined();
     expect(Array.isArray(result.diagnostics)).toBe(true);
   });
 
   it('refuses non-document input fail-closed with diagnostics', () => {
-    for (const garbage of [null, 42, 'form', {}, { kind: 'a3s.form' }]) {
+    for (const garbage of [null, 42, 'form', {}, { kind: 'aster.form' }]) {
       const result = compileForm(garbage);
       expect(result.ok, `input ${JSON.stringify(garbage)}`).toBe(false);
       expect(result.diagnostics.length).toBeGreaterThan(0);

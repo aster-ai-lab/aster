@@ -1,7 +1,7 @@
 use std::fs::{File, OpenOptions};
 use std::path::Path;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use fs2::FileExt;
 use sha2::{Digest, Sha256};
 use tokio::fs;
@@ -29,7 +29,7 @@ impl RegistrySourcesLock {
             .map_err(|error| io_error("create Registry source state directory", parent, error))?;
         validate_directory_sync(parent)?;
         if let Ok(metadata) = std::fs::symlink_metadata(&path) {
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
                 return Err(source_io_error(
                     "Registry source lock must be a regular owned file.",
                 ));
@@ -77,7 +77,7 @@ pub(super) async fn load(paths: &ExtensionPaths) -> UseResult<RegistrySourcesDoc
             ));
         }
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(source_io_error(
             "Registry source configuration must be a regular owned file.",
         ));
@@ -92,7 +92,7 @@ pub(super) async fn load(paths: &ExtensionPaths) -> UseResult<RegistrySourcesDoc
         .map_err(|error| io_error("read Registry source configuration", &path, error))?;
     let input = std::str::from_utf8(&bytes).map_err(|error| {
         source_io_error(format!(
-            "Registry source configuration must be UTF-8 A3S ACL: {error}"
+            "Registry source configuration must be UTF-8 Aster ACL: {error}"
         ))
     })?;
     decode(input, paths)
@@ -169,7 +169,7 @@ pub(super) async fn import_trusted_root(
     let metadata = fs::symlink_metadata(source)
         .await
         .map_err(|error| io_error("inspect imported Registry trusted root", source, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(source_io_error(
             "An imported Registry trusted root must be a regular file, not a link or reparse point.",
         ));
@@ -256,7 +256,7 @@ pub(super) async fn validate_managed_trusted_root(path: &Path, root_sha256: &str
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| io_error("inspect managed Registry trusted root", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(source_io_error(
             "A managed Registry trusted root must be a regular file, not a link or reparse point.",
         ));
@@ -290,7 +290,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| io_error("inspect Registry source state directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         Err(source_io_error(
             "Registry source state must use a real owned directory.",
         ))
@@ -302,7 +302,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
 fn validate_directory_sync(path: &Path) -> UseResult<()> {
     let metadata = std::fs::symlink_metadata(path)
         .map_err(|error| io_error("inspect Registry source state directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         Err(source_io_error(
             "Registry source state must use a real owned directory.",
         ))

@@ -61,7 +61,7 @@ pub fn denial_diagnostic(assigned_privilege_enabled: bool) -> &'static str {
     if assigned_privilege_enabled {
         "SeCreateSymbolicLinkPrivilege was enabled, but the target directory ACL or endpoint \
          security denied symbolic-link creation; verify the target ACL and allow the approved \
-         A3S Box executable and target directory in endpoint security; ERROR_ACCESS_DENIED (5) \
+         Aster Box executable and target directory in endpoint security; ERROR_ACCESS_DENIED (5) \
          or ERROR_PRIVILEGE_NOT_HELD (1314)"
     } else {
         "enable Windows Developer Mode or grant SeCreateSymbolicLinkPrivilege and allow the \

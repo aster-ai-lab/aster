@@ -1,6 +1,6 @@
 #![cfg(feature = "async")]
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, DiskannQueryParams, Doc,
     FieldSchema, GroupBySearchQuery, IndexParams, MetricType, MultiQuery, SearchQuery, SubQuery,
 };

@@ -1,23 +1,23 @@
 //! Import the current Claude provider from a local CC Switch database.
 //!
 //! CC Switch (`~/.cc-switch/cc-switch.db`) stores Anthropic-compatible upstream
-//! credentials and model aliases used by Claude Code. When present, a3s-code-acp
+//! credentials and model aliases used by Claude Code. When present, aster-acp
 //! merges that catalog as provider `cc-switch` so the TUI model picker can use
-//! the same upstreams without duplicating keys in `~/.a3s/config.acl`.
+//! the same upstreams without duplicating keys in `~/.aster/config.acl`.
 //!
 //! Runs only when the host opts in (`import_accounts = ["cc-switch"]` or
 //! `--import-accounts cc-switch`). Secrets are never logged.
-//! `A3S_DISABLE_CC_SWITCH=1` still turns it off.
+//! `ASTER_DISABLE_CC_SWITCH=1` still turns it off.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
-use a3s_code_core::{ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::{ModelConfig, ModelModalities, ProviderConfig, ProviderProtocol};
 use anyhow::{anyhow, Context, Result};
 use rusqlite::OptionalExtension;
 use serde_json::Value;
 
-/// Provider name registered into [`a3s_code_core::CodeConfig`].
+/// Provider name registered into [`aster_core::CodeConfig`].
 pub const PROVIDER_NAME: &str = "cc-switch";
 
 /// Result of reading the current Claude provider from CC Switch.
@@ -47,7 +47,7 @@ fn is_imported_cc_switch_provider(name: &str) -> bool {
 /// Returns `Ok(true)` when at least one profile was merged. A missing DB or a
 /// disabled import is not an error. A profile that has no token or no base URL
 /// is skipped and logged. It does not drop the other profiles.
-pub fn merge_into_config(config: &mut a3s_code_core::CodeConfig) -> Result<bool> {
+pub fn merge_into_config(config: &mut aster_core::CodeConfig) -> Result<bool> {
     if disabled_by_env() {
         return Ok(false);
     }
@@ -100,7 +100,7 @@ pub fn merge_into_config(config: &mut a3s_code_core::CodeConfig) -> Result<bool>
 
 fn disabled_by_env() -> bool {
     matches!(
-        std::env::var("A3S_DISABLE_CC_SWITCH")
+        std::env::var("ASTER_DISABLE_CC_SWITCH")
             .unwrap_or_default()
             .to_ascii_lowercase()
             .as_str(),
@@ -110,7 +110,7 @@ fn disabled_by_env() -> bool {
 
 fn prefer_cc_switch_default() -> bool {
     matches!(
-        std::env::var("A3S_PREFER_CC_SWITCH")
+        std::env::var("ASTER_PREFER_CC_SWITCH")
             .unwrap_or_default()
             .to_ascii_lowercase()
             .as_str(),
@@ -130,7 +130,7 @@ pub fn load_current_claude() -> Result<Option<CcSwitchCatalog>> {
 }
 
 fn resolve_db_path() -> Option<PathBuf> {
-    if let Some(explicit) = std::env::var_os("A3S_CC_SWITCH_DB") {
+    if let Some(explicit) = std::env::var_os("ASTER_CC_SWITCH_DB") {
         if !explicit.is_empty() {
             return Some(PathBuf::from(explicit));
         }
@@ -401,6 +401,8 @@ fn provider_from_settings_as(
         .unwrap_or_else(|| models[0].id.clone());
 
     let provider = ProviderConfig {
+        // CC Switch stores Anthropic Messages credentials / gateways.
+        protocol: Some(ProviderProtocol::Anthropic),
         name: provider_name.to_string(),
         api_key: Some(api_key),
         base_url: Some(base_url),
@@ -584,7 +586,7 @@ fn model_config(id: &str, name: &str) -> ModelConfig {
         headers: Default::default(),
         session_id_header: None,
         attachment: false,
-        // Claude / Anthropic-compatible models accept thinking budgets via a3s-code.
+        // Claude / Anthropic-compatible models accept thinking budgets via aster.
         reasoning: true,
         tool_call: true,
         temperature: true,
@@ -672,7 +674,7 @@ mod tests {
 
     #[test]
     fn merge_into_config_fills_missing_default() {
-        let mut config = a3s_code_core::CodeConfig::default();
+        let mut config = aster_core::CodeConfig::default();
         let settings = json!({
             "env": {
                 "ANTHROPIC_AUTH_TOKEN": "sk-test",

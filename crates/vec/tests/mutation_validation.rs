@@ -9,7 +9,7 @@
 
 //! Fail-closed mutation validation oracles (schema owns meaning / I2).
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, ErrorCode,
     FieldSchema, IndexParams, MetricType, WriteResult,
 };
@@ -158,7 +158,7 @@ fn delete_and_filter_mutations_and_nullable_fields_fail_closed() {
     // Non-nullable null rejected.
     let mut null_tag = Doc::with_pk("d").expect("pk");
     null_tag
-        .set_field_value("tag", a3s_vec::FieldValue::Null)
+        .set_field_value("tag", aster_vec::FieldValue::Null)
         .expect("set null");
     null_tag
         .add_vector_f32("embedding", &[0.0, 1.0, 0.0, 0.0])
@@ -179,7 +179,7 @@ fn delete_and_filter_mutations_and_nullable_fields_fail_closed() {
     ghost_vec
         .set_vector_value(
             "ghost",
-            a3s_vec::VectorValue::Fp32(vec![1.0, 0.0, 0.0, 0.0]),
+            aster_vec::VectorValue::Fp32(vec![1.0, 0.0, 0.0, 0.0]),
         )
         .expect("ghost");
     let bad_vec = collection.insert(&[&ghost_vec]).expect("ghost vector");

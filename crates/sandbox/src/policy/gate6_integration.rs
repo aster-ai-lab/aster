@@ -29,7 +29,7 @@ fn gate6_capability_report_lists_unavailable_surfaces() {
 fn gate6_replace_policy_refuses_silent_broadening() {
     let workspace = tempfile::tempdir().unwrap();
     let sandbox = NativeSandbox::new(workspace.path()).unwrap();
-    let mut next = SandboxPolicy::a3s_bash_baseline();
+    let mut next = SandboxPolicy::aster_bash_baseline();
     next.features.mediated_network = true;
     next.network.allow.push(NetworkAllowRule {
         host: "api.example.com".into(),
@@ -65,7 +65,7 @@ fn gate6_replace_policy_refuses_silent_broadening() {
 #[test]
 fn gate6_replace_policy_allows_narrowing_without_opt_in() {
     let workspace = tempfile::tempdir().unwrap();
-    let mut baseline = SandboxPolicy::a3s_bash_baseline();
+    let mut baseline = SandboxPolicy::aster_bash_baseline();
     if !BackendCapabilities::native_gate2().mediated_http {
         return;
     }
@@ -78,7 +78,7 @@ fn gate6_replace_policy_allows_narrowing_without_opt_in() {
     let sandbox = NativeSandbox::with_policy(workspace.path(), baseline).unwrap();
     sandbox
         .replace_policy(
-            SandboxPolicy::a3s_bash_baseline(),
+            SandboxPolicy::aster_bash_baseline(),
             PolicyUpdateOptions::default(),
         )
         .expect("narrowing must not require allow_broadening");

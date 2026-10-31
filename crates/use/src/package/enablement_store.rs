@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanPackageChangeKind, PlanScope, PluginOperationAction, PluginOperationPlanEnvelope,
     PluginPackageId, UseError, UseResult,
 };
@@ -19,8 +19,8 @@ use crate::plugin_lifecycle::{PluginLifecycleAction, PluginLifecycleIntent};
 use super::grant::PackageGraphAuthorization;
 use super::{PackageEnablementRequest, PackageEnablementResult};
 
-pub(super) const ENABLEMENT_STATE_SCHEMA: &str = "a3s.use.package-enablement-state.v2";
-const ENABLEMENT_OPERATION_SCHEMA: &str = "a3s.use.package-enablement-operation.v2";
+pub(super) const ENABLEMENT_STATE_SCHEMA: &str = "aster.use.package-enablement-state.v2";
+const ENABLEMENT_OPERATION_SCHEMA: &str = "aster.use.package-enablement-operation.v2";
 const MAX_ENABLEMENT_RECORD_BYTES: u64 = 2 * 1024 * 1024;
 const MAX_ENABLEMENT_STATE_INVENTORY_ENTRIES: usize = 2_048;
 static TEMPORARY_SEQUENCE: AtomicU64 = AtomicU64::new(0);
@@ -353,7 +353,7 @@ impl PackageEnablementStore {
         let scopes_root = self.root.join("scopes");
         match fs::symlink_metadata(&scopes_root).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(path_invalid()),
             Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
@@ -501,7 +501,7 @@ async fn require_inventory_directory(path: &Path, count: &mut usize) -> UseResul
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect enablement inventory directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(path_invalid());
     }
     Ok(())
@@ -510,7 +510,7 @@ async fn require_inventory_directory(path: &Path, count: &mut usize) -> UseResul
 async fn acquire_lock(lock_path: PathBuf) -> UseResult<StdFile> {
     match fs::symlink_metadata(&lock_path).await {
         Ok(metadata)
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                 || !metadata.is_file() =>
         {
             return Err(path_invalid())
@@ -584,7 +584,7 @@ async fn read_optional<T: DeserializeOwned>(
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(path_error("inspect enablement record", path, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > MAX_ENABLEMENT_RECORD_BYTES
@@ -672,7 +672,7 @@ async fn write_record<T: Serialize>(
 async fn activate_replace(temporary: PathBuf, target: PathBuf) -> UseResult<()> {
     let error_target = target.clone();
     tokio::task::spawn_blocking(move || {
-        a3s_use_extension::persist_temporary_replace_blocking(temporary, &target)
+        aster_use_extension::persist_temporary_replace_blocking(temporary, &target)
     })
     .await
     .map_err(|error| {
@@ -687,7 +687,7 @@ async fn activate_replace(temporary: PathBuf, target: PathBuf) -> UseResult<()> 
 async fn activate_new(temporary: PathBuf, target: PathBuf) -> UseResult<()> {
     let error_target = target.clone();
     tokio::task::spawn_blocking(move || {
-        a3s_use_extension::persist_temporary_noclobber_blocking(temporary, &target)
+        aster_use_extension::persist_temporary_noclobber_blocking(temporary, &target)
     })
     .await
     .map_err(|error| {
@@ -739,7 +739,7 @@ async fn validate_existing_directory_chain(root: &Path, directory: &Path) -> Use
         }
         match fs::symlink_metadata(&current).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(path_invalid()),
             Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(false),
@@ -759,7 +759,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect enablement state directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(path_invalid());
     }
     Ok(())

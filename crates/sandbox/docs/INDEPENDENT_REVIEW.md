@@ -6,7 +6,7 @@ tests is necessary but not sufficient.
 
 ## Scope
 
-Review `a3s-sandbox` native OS fences and host-supervised mediators for:
+Review `aster-sandbox` native OS fences and host-supervised mediators for:
 
 - macOS Seatbelt (network deny-all + mediated HTTP/SOCKS + Unix allowlists)
 - Linux namespaces/seccomp (network deny-all + mediated HTTP via Unix bridge)
@@ -18,13 +18,13 @@ Review `a3s-sandbox` native OS fences and host-supervised mediators for:
 1. [`../THREAT_MODEL.md`](../THREAT_MODEL.md)
 2. [`../ROADMAP.md`](../ROADMAP.md) Gate 7 section
 3. [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
-4. Capability matrix from `a3s-sandbox probe` / `capabilities`
+4. Capability matrix from `aster-sandbox probe` / `capabilities`
 
 ## Evidence to verify (do not trust docs alone)
 
 | Claim | How to verify |
 | --- | --- |
-| Default profile fail-closed | Inspect `SandboxPolicy::a3s_bash_baseline` — `mediated_network` / `mediated_socks` off |
+| Default profile fail-closed | Inspect `SandboxPolicy::aster_bash_baseline` — `mediated_network` / `mediated_socks` off |
 | macOS mediated HTTP | Live guest allow/deny + Seatbelt fence tests under `policy::gate4_integration` |
 | Linux mediated HTTP | OrbStack/Linux guest allow/deny/egress under `platform::linux` bridge tests |
 | Windows mediated HTTP | Live AppContainer pipe allow/deny/egress under `platform::windows` + `gate5_windows_bridge` |

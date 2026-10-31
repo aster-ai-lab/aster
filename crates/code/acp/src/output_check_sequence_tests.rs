@@ -90,7 +90,7 @@ async fn sequences_report_every_decrease_and_keep_missing_and_zero_distinct() {
 async fn projected_schema_and_governed_execution_accept_the_same_action_fields() {
     let root = tempfile::tempdir().unwrap();
     let store = tempfile::tempdir().unwrap();
-    let agent = a3s_code_core::Agent::from_config(
+    let agent = aster_core::Agent::from_config(
         crate::agent::test_launch(Some(store.path().to_path_buf())).config,
     )
     .await
@@ -98,8 +98,8 @@ async fn projected_schema_and_governed_execution_accept_the_same_action_fields()
     let session = agent
         .session_async(
             root.path().to_string_lossy().into_owned(),
-            Some(a3s_code_core::SessionOptions::new().with_permission_policy(
-                a3s_code_core::permissions::PermissionPolicy::new().allow("output_check"),
+            Some(aster_core::SessionOptions::new().with_permission_policy(
+                aster_core::permissions::PermissionPolicy::new().allow("output_check"),
             )),
         )
         .await

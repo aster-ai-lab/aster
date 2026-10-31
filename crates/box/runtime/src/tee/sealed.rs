@@ -8,7 +8,7 @@
 //!
 //! The sealing key is derived using HKDF-SHA256:
 //! - IKM (Input Key Material): `measurement || chip_id` from the SNP report
-//! - Salt: "a3s-sealed-storage-v1"
+//! - Salt: "aster-sealed-storage-v1"
 //! - Info: caller-provided context (e.g., "session-keys", "model-weights")
 //!
 //! ## Encryption
@@ -22,13 +22,13 @@
 //! - `MeasurementOnly`: Binds to measurement only (portable across chips)
 //! - `ChipOnly`: Binds to chip only (survives firmware updates)
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use ring::aead::{self, Aad, BoundKey, Nonce, NonceSequence, NONCE_LEN};
 use ring::hkdf;
 use serde::{Deserialize, Serialize};
 
 /// Salt for HKDF key derivation.
-const HKDF_SALT: &[u8] = b"a3s-sealed-storage-v1";
+const HKDF_SALT: &[u8] = b"aster-sealed-storage-v1";
 
 /// Sealing policy determines what TEE identity fields bind the key.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]

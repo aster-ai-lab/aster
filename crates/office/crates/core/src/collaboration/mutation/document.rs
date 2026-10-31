@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{Any, Map, Out, Transact};
 
 use super::super::{
@@ -429,7 +429,7 @@ fn set_track_changes(
     Ok(())
 }
 
-fn invalid_document_option(label: &str) -> a3s_use_core::UseError {
+fn invalid_document_option(label: &str) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.content_invalid",
         format!("The shared Document collaboration {label} is invalid."),

@@ -1,9 +1,9 @@
 #![cfg(feature = "sqlite")]
 
-use a3s_flow::{
+use aster_flow::{
     CancellationRequest, FlowError, FlowEvent, FlowEventStore, SqliteEventStore, WorkflowSpec,
 };
-use a3s_orm::{sql_query, Database, Migration, Migrator, SqliteDialect, SqliteExecutor};
+use aster_orm::{sql_query, Database, Migration, Migrator, SqliteDialect, SqliteExecutor};
 use chrono::Utc;
 use serde_json::{json, Value};
 use uuid::Uuid;
@@ -170,7 +170,7 @@ async fn sqlite_active_hook_migration_backfills_and_triggers_legacy_writes() {
     let executor = SqliteExecutor::open(&database_path).await.unwrap();
     Migrator::new(executor.clone())
         .run([Migration::new(
-            "a3s-flow-0001-events",
+            "aster-flow-0001-events",
             "create Flow event history",
             LEGACY_EVENTS_SQL,
         )])

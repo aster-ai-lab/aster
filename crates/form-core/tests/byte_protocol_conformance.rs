@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_form_core::{compile_bytes, ABSOLUTE_MAX_REQUEST_BYTES};
+use aster_form_core::{compile_bytes, ABSOLUTE_MAX_REQUEST_BYTES};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -41,7 +41,7 @@ fn matches_byte_protocol_failure_responses() {
     let fixture = fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-core-protocol-conformance/v1"
+        "aster.dev/form-core-protocol-conformance/v1"
     );
     for case in fixture.cases {
         let response = compile_bytes(case.request_json.as_bytes())
@@ -56,6 +56,6 @@ fn reports_requests_beyond_the_absolute_boundary() {
     let response = compile_bytes(&request).expect("oversized response should encode");
     assert_eq!(
         response,
-        br#"{"apiVersion":"a3s.dev/form-core/compile-response/v1alpha1","compilerRevision":"a3s-form-core@0.1.0","diagnostics":[{"code":"protocol.request_size","message":"compile request is 5242881 bytes; the hard limit is 5242880 bytes","path":"","severity":"error"}],"ok":false}"#,
+        br#"{"apiVersion":"aster.dev/form-core/compile-response/v1alpha1","compilerRevision":"aster-form-core@0.1.0","diagnostics":[{"code":"protocol.request_size","message":"compile request is 5242881 bytes; the hard limit is 5242880 bytes","path":"","severity":"error"}],"ok":false}"#,
     );
 }

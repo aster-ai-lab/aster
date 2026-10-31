@@ -1,6 +1,6 @@
 //! Reproducible indexed-versus-scan benchmark for Workspace FTS expressions.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema, Fts,
     IndexParams, SearchQuery,
 };
@@ -139,8 +139,8 @@ fn micros_per_query(duration: Duration) -> f64 {
 }
 
 fn main() {
-    let documents = positive_env("A3S_VEC_STRUCTURED_FTS_DOCUMENTS", DEFAULT_DOCUMENTS).max(12);
-    let rounds = positive_env("A3S_VEC_STRUCTURED_FTS_ROUNDS", DEFAULT_ROUNDS);
+    let documents = positive_env("ASTER_VEC_STRUCTURED_FTS_DOCUMENTS", DEFAULT_DOCUMENTS).max(12);
+    let rounds = positive_env("ASTER_VEC_STRUCTURED_FTS_ROUNDS", DEFAULT_ROUNDS);
     let temporary = tempdir().expect("temporary directory must be available");
     let indexed = Collection::create(
         temporary

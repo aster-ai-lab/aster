@@ -4,7 +4,7 @@
 //! KV publication remains the complete BackboneState transaction's job.
 //! Topology follows pinned DeepInfer cross_layer.py/index_attn.py (Apache-2.0).
 
-use a3s_power::{
+use aster_power::{
     error::{PowerError, Result},
     inference::InferenceLimits,
 };

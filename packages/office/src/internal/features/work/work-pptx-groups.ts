@@ -11,7 +11,7 @@ import {
 import { presentationGroupPath } from './work-presentation-groups';
 import type { WorkSlideElement } from './work-types';
 
-const EXPORT_MARKER_PREFIX = '__A3S_OFFICE_EXPORT__';
+const EXPORT_MARKER_PREFIX = '__ASTER_OFFICE_EXPORT__';
 const PRESENTATIONML_NAMESPACE =
   'http://schemas.openxmlformats.org/presentationml/2006/main';
 const DRAWINGML_NAMESPACE =

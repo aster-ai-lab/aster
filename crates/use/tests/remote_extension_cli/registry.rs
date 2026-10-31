@@ -12,12 +12,12 @@ fn github_registry_source_cli_persists_the_canonical_https_identity() {
             "add",
             "official",
             "--github",
-            "A3S-Lab/Use-Registry",
+            "aster-ai-lab/Use-Registry",
             "--trust-root",
             &"a".repeat(64),
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
 
@@ -27,12 +27,12 @@ fn github_registry_source_cli_persists_the_canonical_https_identity() {
     assert_eq!(source["name"], "official");
     assert_eq!(
         source["registryUrl"],
-        "https://raw.githubusercontent.com/A3S-Lab/Use-Registry/main/registry/"
+        "https://raw.githubusercontent.com/aster-ai-lab/Use-Registry/main/registry/"
     );
     assert_eq!(source["rootSha256"], "a".repeat(64));
 
     let acl = std::fs::read_to_string(home.join("state/registries.acl")).unwrap();
-    assert!(acl.contains("https://raw.githubusercontent.com/A3S-Lab/Use-Registry/main/registry/"));
+    assert!(acl.contains("https://raw.githubusercontent.com/aster-ai-lab/Use-Registry/main/registry/"));
     assert!(!acl.contains("github ="));
 }
 
@@ -43,7 +43,7 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
 
     let empty = Command::new(binary())
         .args(["registry", "source", "list", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(empty.status.success(), "{empty:?}");
@@ -60,12 +60,12 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "add",
             "primary",
             "--url",
-            "https://primary.example/a3s",
+            "https://primary.example/aster",
             "--trust-root",
             &"a".repeat(64),
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(primary.status.success(), "{primary:?}");
@@ -86,12 +86,12 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "add",
             "mirror",
             "--url",
-            "https://mirror.example/a3s/",
+            "https://mirror.example/aster/",
             "--trust-root",
             &"b".repeat(64),
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(mirror.status.success(), "{mirror:?}");
@@ -112,7 +112,7 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!stale.status.success(), "{stale:?}");
@@ -132,7 +132,7 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(selected.status.success(), "{selected:?}");
@@ -149,14 +149,14 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "replace",
             "primary",
             "--url",
-            "https://replacement.example/a3s/",
+            "https://replacement.example/aster/",
             "--trust-root",
             &"c".repeat(64),
             "--expected-revision",
             &selected_revision,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!unconfirmed.status.success(), "{unconfirmed:?}");
@@ -173,7 +173,7 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!default_removal.status.success(), "{default_removal:?}");
@@ -193,7 +193,7 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(primary_default.status.success(), "{primary_default:?}");
@@ -215,7 +215,7 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(disabled.status.success(), "{disabled:?}");
@@ -237,7 +237,7 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "mirror",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!rejected.status.success(), "{rejected:?}");
@@ -257,7 +257,7 @@ fn registry_source_cli_requires_reviewed_revisions_for_authority_changes() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(enabled.status.success(), "{enabled:?}");
@@ -282,12 +282,12 @@ fn registry_source_cli_fails_closed_when_another_process_owns_the_source_lock() 
             "add",
             "packages",
             "--url",
-            "https://registry.example/a3s/",
+            "https://registry.example/aster/",
             "--trust-root",
             &"a".repeat(64),
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
 
@@ -312,7 +312,7 @@ async fn signed_registry_install_uses_reviewed_target_and_reports_tuf_provenance
         temp.path().join("review-state"),
     )
     .unwrap();
-    let reviewed = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let reviewed = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let target_plan_digest = reviewed.resolved().plan_digest().unwrap();
@@ -320,7 +320,7 @@ async fn signed_registry_install_uses_reviewed_target_and_reports_tuf_provenance
     let lock = resolve_remote_package_lock(
         &trusted,
         &[],
-        "a3s/science",
+        "aster/science",
         None,
         PluginReleaseChannel::Stable,
         PluginPackageLockHost::new(host_target(), env!("CARGO_PKG_VERSION")).unwrap(),
@@ -364,7 +364,7 @@ async fn signed_registry_install_uses_reviewed_target_and_reports_tuf_provenance
     );
 
     let receipt: serde_json::Value = serde_json::from_slice(
-        &std::fs::read(home.join("state/extensions/a3s/science.json")).unwrap(),
+        &std::fs::read(home.join("state/extensions/aster/science.json")).unwrap(),
     )
     .unwrap();
     assert_eq!(receipt["trust"], "registry-tuf");
@@ -373,8 +373,8 @@ async fn signed_registry_install_uses_reviewed_target_and_reports_tuf_provenance
     assert_eq!(provenance.plan_digest().unwrap(), target_plan_digest);
 
     let inspected = Command::new(binary())
-        .args(["extension", "inspect", "a3s/science", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .args(["extension", "inspect", "aster/science", "--json"])
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(inspected.status.success(), "{inspected:?}");
@@ -387,11 +387,11 @@ async fn signed_registry_install_uses_reviewed_target_and_reports_tuf_provenance
     let lifecycle = &inspected["data"]["lifecycle"];
     assert_eq!(
         lifecycle["schema"],
-        "a3s.use.plugin-lifecycle-diagnostic.v1"
+        "aster.use.plugin-lifecycle-diagnostic.v1"
     );
     assert_eq!(lifecycle["scope"]["kind"], "user");
     assert_eq!(lifecycle["scope"]["id"], "user/current");
-    assert_eq!(lifecycle["packageId"], "a3s/science");
+    assert_eq!(lifecycle["packageId"], "aster/science");
     assert_eq!(lifecycle["latest"]["status"], "completed");
     assert_eq!(
         lifecycle["latest"]["completedCheckpoints"],
@@ -453,7 +453,7 @@ fn registry_install_rejects_unsigned_and_local_source_combinations() {
         .args([
             "component",
             "install",
-            "a3s/science",
+            "aster/science",
             "--from",
             temp.path().to_str().unwrap(),
             "--allow-unsigned",
@@ -461,7 +461,7 @@ fn registry_install_rejects_unsigned_and_local_source_combinations() {
             "fixture",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!local.status.success(), "{local:?}");
@@ -490,7 +490,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
 
     let snapshot = Command::new(binary())
         .args(["capability", "snapshot", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(snapshot.status.success(), "{snapshot:?}");
@@ -514,7 +514,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             "5",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(searched.status.success(), "{searched:?}");
@@ -537,7 +537,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
 
     let audited = Command::new(binary())
         .args(["knowledge", "audit", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(audited.status.success(), "{audited:?}");
@@ -549,7 +549,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
         integrity["indexedDocumentCount"]
     );
 
-    let state_backup_path = temp.path().join("use-state.a3s-use-state-backup");
+    let state_backup_path = temp.path().join("use-state.aster-use-state-backup");
     server.clear_requests();
     let state_backup = Command::new(binary())
         .args([
@@ -558,14 +558,14 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             state_backup_path.to_str().unwrap(),
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(state_backup.status.success(), "{state_backup:?}");
     assert!(server.requests().is_empty());
     let state_backup = json(&state_backup);
     let state_manifest = &state_backup["data"];
-    assert_eq!(state_manifest["schema"], "a3s.use.state-backup.v1");
+    assert_eq!(state_manifest["schema"], "aster.use.state-backup.v1");
     assert_eq!(state_manifest["authority"]["registryGeneration"], 1);
     assert_eq!(
         state_manifest["authority"]["packages"][0]["packageId"],
@@ -600,14 +600,14 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             state_backup_path.to_str().unwrap(),
             "--json",
         ])
-        .env("A3S_USE_HOME", temp.path().join("offline-verifier"))
+        .env("ASTER_USE_HOME", temp.path().join("offline-verifier"))
         .output()
         .unwrap();
     assert!(verified_state.status.success(), "{verified_state:?}");
     assert!(server.requests().is_empty());
     assert_eq!(json(&verified_state)["data"], *state_manifest);
 
-    let backup_path = temp.path().join("knowledge.a3s-okf-backup");
+    let backup_path = temp.path().join("knowledge.aster-okf-backup");
     let backup = Command::new(binary())
         .args([
             "knowledge",
@@ -615,7 +615,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             backup_path.to_str().unwrap(),
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(backup.status.success(), "{backup:?}");
@@ -633,7 +633,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             backup_path.to_str().unwrap(),
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(verified.status.success(), "{verified:?}");
@@ -641,8 +641,8 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
 
     let retention_directory = temp.path().join("knowledge-backups");
     std::fs::create_dir(&retention_directory).unwrap();
-    let first_retained = retention_directory.join("001.a3s-okf-backup");
-    let second_retained = retention_directory.join("002.a3s-okf-backup");
+    let first_retained = retention_directory.join("001.aster-okf-backup");
+    let second_retained = retention_directory.join("002.aster-okf-backup");
     std::fs::copy(&backup_path, &first_retained).unwrap();
     std::fs::copy(&backup_path, &second_retained).unwrap();
     let retention_plan = Command::new(binary())
@@ -656,7 +656,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             "1073741824",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(retention_plan.status.success(), "{retention_plan:?}");
@@ -666,7 +666,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
         .unwrap();
     assert_eq!(
         retention_plan["data"]["knowledge"]["backupRetention"]["plan"]["remove"][0]["fileName"],
-        "001.a3s-okf-backup"
+        "001.aster-okf-backup"
     );
 
     let stale_apply = Command::new(binary())
@@ -683,7 +683,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!stale_apply.status.success(), "{stale_apply:?}");
@@ -708,7 +708,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(applied_retention.status.success(), "{applied_retention:?}");
@@ -722,7 +722,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
 
     let unconfirmed_repair = Command::new(binary())
         .args(["knowledge", "repair-search-index", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!unconfirmed_repair.status.success());
@@ -732,7 +732,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
     );
     let repaired = Command::new(binary())
         .args(["knowledge", "repair-search-index", "--yes", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(repaired.status.success(), "{repaired:?}");
@@ -772,7 +772,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             backup_path.to_str().unwrap(),
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(restore_plan.status.success(), "{restore_plan:?}");
@@ -804,7 +804,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             restore_plan_digest,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!unconfirmed_restore.status.success());
@@ -823,7 +823,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(restored.status.success(), "{restored:?}");
@@ -847,7 +847,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
 
     let restore_status = Command::new(binary())
         .args(["knowledge", "restore-status", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(restore_status.status.success(), "{restore_status:?}");
@@ -855,7 +855,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
     let diagnostic = &restore_status["data"]["knowledge"]["restoreStatus"];
     assert_eq!(
         diagnostic["schema"],
-        "a3s.use.okf-knowledge-restore-diagnostic.v2"
+        "aster.use.okf-knowledge-restore-diagnostic.v2"
     );
     assert!(diagnostic["active"].is_null());
     assert_eq!(diagnostic["retainedOperationDirectories"], 1);
@@ -870,7 +870,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
 
     let audited = Command::new(binary())
         .args(["knowledge", "audit", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(audited.status.success(), "{audited:?}");
@@ -880,7 +880,7 @@ fn signed_okf_package_installs_queries_and_uninstalls_through_production_knowled
     assert_eq!(json(&removed)["data"]["changed"], true);
     let searched = Command::new(binary())
         .args(["knowledge", "search", "package activation", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!searched.status.success(), "{searched:?}");
@@ -959,7 +959,7 @@ fn signed_okf_upgrade_atomically_switches_the_cited_capability_generation() {
 fn knowledge_search(home: &std::path::Path, query: &str) -> Output {
     Command::new(binary())
         .args(["knowledge", "search", query, "--json"])
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap()
 }
@@ -967,7 +967,7 @@ fn knowledge_search(home: &std::path::Path, query: &str) -> Output {
 fn knowledge_usage(home: &std::path::Path) -> Output {
     Command::new(binary())
         .args(["knowledge", "usage", "--json"])
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap()
 }

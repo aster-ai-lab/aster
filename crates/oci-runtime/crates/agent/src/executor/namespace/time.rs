@@ -3,7 +3,7 @@ use std::fs::OpenOptions;
 use std::io::Write;
 use std::path::Path;
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use super::{namespace_error, NamespacePlan, TimeOffset};
 

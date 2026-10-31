@@ -3,7 +3,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 use super::super::dockerignore::DockerIgnore;
 #[cfg(test)]
@@ -48,9 +48,9 @@ pub(super) fn extract_tar_to_dst(archive_path: &Path, dst: &Path) -> Result<()> 
     // Bound decompressed output so a compression-bomb archive (`ADD app.tar.gz`)
     // cannot fill the build host's disk. Mirrors the MAX_ADD_URL_BYTES cap on the
     // ADD-URL path (which the local-archive path previously lacked); tune with
-    // A3S_BOX_MAX_BUILD_EXTRACT_BYTES.
+    // Aster_BOX_MAX_BUILD_EXTRACT_BYTES.
     let max_bytes = crate::oci::limited_reader::cap_from_env(
-        "A3S_BOX_MAX_BUILD_EXTRACT_BYTES",
+        "ASTER_BOX_MAX_BUILD_EXTRACT_BYTES",
         4 * 1024 * 1024 * 1024,
     );
 

@@ -1,7 +1,7 @@
 import { canonicalize } from './canonical';
 import type { FormDiagnostic, JsonSchema, JsonValue } from './types';
 
-export const A3S_FORM_SCHEMA_PROFILE_1_ID = 'a3s.dev/form-schema-profile/1' as const;
+export const ASTER_FORM_SCHEMA_PROFILE_1_ID = 'aster.dev/form-schema-profile/1' as const;
 export const JSON_SCHEMA_2020_12_DIALECT = 'https://json-schema.org/draft/2020-12/schema' as const;
 
 export const SUPPORTED_SCHEMA_FORMATS = Object.freeze([
@@ -53,8 +53,8 @@ const SUPPORTED_SCHEMA_KEYWORDS = Object.freeze([
   'uniqueItems',
 ] as const);
 
-export const A3S_FORM_SCHEMA_PROFILE_1 = Object.freeze({
-  id: A3S_FORM_SCHEMA_PROFILE_1_ID,
+export const ASTER_FORM_SCHEMA_PROFILE_1 = Object.freeze({
+  id: ASTER_FORM_SCHEMA_PROFILE_1_ID,
   dialect: JSON_SCHEMA_2020_12_DIALECT,
   keywords: SUPPORTED_SCHEMA_KEYWORDS,
   formats: SUPPORTED_SCHEMA_FORMATS,
@@ -147,7 +147,7 @@ function inspectSchema(
       diagnostics.push(
         schemaDiagnostic(
           'schema.keyword.unsupported',
-          `Schema keyword ${keyword} is not supported by A3S Form Schema Profile 1.`,
+          `Schema keyword ${keyword} is not supported by Aster Form Schema Profile 1.`,
           `${path}/${pointerToken(keyword)}`,
           `Use one of: ${SUPPORTED_SCHEMA_KEYWORDS.join(', ')}.`,
         ),
@@ -210,7 +210,7 @@ function inspectSchema(
               'schema.property.invalid',
               'Property names must be non-empty and cannot contain dots or the reserved * segment.',
               childPath,
-              'A3S Form uses dot-separated paths and * for repeater rows.',
+              'Aster Form uses dot-separated paths and * for repeater rows.',
             ),
           );
         }
@@ -324,7 +324,7 @@ function inspectSchema(
       diagnostics.push(
         schemaDiagnostic(
           'schema.format.unsupported',
-          `Schema format ${String(schema.format)} is not supported by A3S Form Schema Profile 1.`,
+          `Schema format ${String(schema.format)} is not supported by Aster Form Schema Profile 1.`,
           `${path}/format`,
           `Use one of: ${SUPPORTED_SCHEMA_FORMATS.join(', ')}.`,
         ),

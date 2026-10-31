@@ -2,7 +2,7 @@
 
 use std::time::Duration;
 
-use a3s_orm::{
+use aster_orm::{
     bound, cast, coalesce, count_all, insert_into, least, lock_table, min, orm_table, row_number,
     scalar_subquery, select_from, select_from_as, sql_function, update_table, Database, Executor,
     FromRow, InsertRow, Migration, MigrationError, Migrator, OrderDirection, PostgresDialect,
@@ -11,7 +11,7 @@ use a3s_orm::{
 };
 
 orm_table! {
-    struct Metric => "a3s_orm_metric" {
+    struct Metric => "aster_orm_metric" {
         id: i64 => "id",
         small_value: i16 => "small_value",
         count: i32 => "count",
@@ -27,14 +27,14 @@ orm_table! {
 struct JsonPath;
 
 orm_table! {
-    struct UpsertRecord => "a3s_orm_upsert_record" {
+    struct UpsertRecord => "aster_orm_upsert_record" {
         id: i64 => "id",
         value: String => "value",
     }
 }
 
 orm_table! {
-    struct LockProbe => "a3s_orm_lock_probe" {
+    struct LockProbe => "aster_orm_lock_probe" {
         id: i64 => "id",
         value: String => "value",
         attempt_count: i32 => "attempt_count",
@@ -42,13 +42,13 @@ orm_table! {
 }
 
 orm_table! {
-    struct LockCandidate => "a3s_orm_lock_candidate" {
+    struct LockCandidate => "aster_orm_lock_candidate" {
         id: i64 => "id",
     }
 }
 
 orm_table! {
-    struct ExtendedValue => "a3s_orm_extended_value" {
+    struct ExtendedValue => "aster_orm_extended_value" {
         id: uuid::Uuid => "id",
         metadata: serde_json::Value => "metadata",
         event_date: chrono::NaiveDate => "event_date",
@@ -61,7 +61,7 @@ orm_table! {
     }
 }
 
-fn insert_metric(id: i64, label: &str) -> a3s_orm::CompiledQuery {
+fn insert_metric(id: i64, label: &str) -> aster_orm::CompiledQuery {
     insert_into::<Metric>()
         .value(Metric::id(), id)
         .value(Metric::small_value(), 12)
@@ -77,7 +77,7 @@ fn insert_metric(id: i64, label: &str) -> a3s_orm::CompiledQuery {
 }
 
 orm_table! {
-    struct NarrowMetric => "a3s_orm_metric" {
+    struct NarrowMetric => "aster_orm_metric" {
         small_value: i64 => "small_value",
     }
 }
@@ -97,20 +97,20 @@ orm_table! {
 
 #[tokio::test]
 async fn executes_typed_queries_against_postgres_pool() {
-    let Some(url) = std::env::var("A3S_ORM_POSTGRES_URL").ok() else {
+    let Some(url) = std::env::var("ASTER_ORM_POSTGRES_URL").ok() else {
         return;
     };
     let executor = PostgresExecutor::connect_no_tls(&url, 4).unwrap();
     let client = executor.pool().get().await.unwrap();
     client
         .batch_execute(
-            "drop table if exists a3s_orm_metric;
-             drop table if exists a3s_orm_extended_value;
-             drop table if exists a3s_orm_upsert_record;
-             drop table if exists a3s_orm_migration_probe;
-             drop table if exists a3s_orm_rollback_probe;
-             drop table if exists a3s_orm_migrations;
-             create table a3s_orm_metric (
+            "drop table if exists aster_orm_metric;
+             drop table if exists aster_orm_extended_value;
+             drop table if exists aster_orm_upsert_record;
+             drop table if exists aster_orm_migration_probe;
+             drop table if exists aster_orm_rollback_probe;
+             drop table if exists aster_orm_migrations;
+             create table aster_orm_metric (
                 id bigint primary key,
                 small_value smallint not null,
                 count integer not null,
@@ -121,7 +121,7 @@ async fn executes_typed_queries_against_postgres_pool() {
                 payload bytea not null,
                 note text
              );
-             create table a3s_orm_extended_value (
+             create table aster_orm_extended_value (
                 id uuid primary key,
                 metadata jsonb not null,
                 event_date date not null,
@@ -132,7 +132,7 @@ async fn executes_typed_queries_against_postgres_pool() {
                 tags text[] not null,
                 scores integer[] not null
              );
-             create table a3s_orm_upsert_record (
+             create table aster_orm_upsert_record (
                 id bigint primary key,
                 value text not null
              )",
@@ -146,12 +146,12 @@ async fn executes_typed_queries_against_postgres_pool() {
             Migration::new(
                 "001",
                 "create migration probe",
-                "create table a3s_orm_migration_probe (id bigint primary key)",
+                "create table aster_orm_migration_probe (id bigint primary key)",
             ),
             Migration::new(
                 "002",
                 "seed migration probe",
-                "insert into a3s_orm_migration_probe (id) values (1)",
+                "insert into aster_orm_migration_probe (id) values (1)",
             ),
         ]
     };
@@ -172,7 +172,7 @@ async fn executes_typed_queries_against_postgres_pool() {
         .unwrap_err();
     assert!(matches!(
         drift,
-        a3s_orm::migration::MigrationRunError::Backend(a3s_orm::PostgresMigrationError::Migration(
+        aster_orm::migration::MigrationRunError::Backend(aster_orm::PostgresMigrationError::Migration(
             MigrationError::ChecksumMismatch { .. }
         ))
     ));
@@ -184,7 +184,7 @@ async fn executes_typed_queries_against_postgres_pool() {
             Migration::new(
                 "003",
                 "broken migration",
-                "create table a3s_orm_rollback_probe (id bigint); invalid sql",
+                "create table aster_orm_rollback_probe (id bigint); invalid sql",
             ),
         ])
         .await;
@@ -193,7 +193,7 @@ async fn executes_typed_queries_against_postgres_pool() {
     let client = executor.pool().get().await.unwrap();
     let table: Option<String> = client
         .query_one(
-            "select to_regclass('public.a3s_orm_rollback_probe')::text",
+            "select to_regclass('public.aster_orm_rollback_probe')::text",
             &[],
         )
         .await
@@ -414,7 +414,7 @@ async fn executes_typed_queries_against_postgres_pool() {
         .fetch_all_as(
             select_from::<UpsertRecord>()
                 .select((UpsertRecord::id(), UpsertRecord::value()))
-                .order_by(UpsertRecord::id(), a3s_orm::OrderDirection::Asc),
+                .order_by(UpsertRecord::id(), aster_orm::OrderDirection::Asc),
         )
         .await
         .unwrap()
@@ -468,10 +468,10 @@ async fn executes_typed_queries_against_postgres_pool() {
                 .select((
                     UpsertRecord::value(),
                     row_number()
-                        .order_by(UpsertRecord::id(), a3s_orm::OrderDirection::Asc)
+                        .order_by(UpsertRecord::id(), aster_orm::OrderDirection::Asc)
                         .alias("position"),
                 ))
-                .order_by(UpsertRecord::id(), a3s_orm::OrderDirection::Asc),
+                .order_by(UpsertRecord::id(), aster_orm::OrderDirection::Asc),
         )
         .await
         .unwrap()
@@ -548,20 +548,20 @@ async fn executes_typed_queries_against_postgres_pool() {
 
 #[tokio::test]
 async fn postgres_row_and_advisory_locks_preserve_concurrency() {
-    let Some(url) = std::env::var("A3S_ORM_POSTGRES_URL").ok() else {
+    let Some(url) = std::env::var("ASTER_ORM_POSTGRES_URL").ok() else {
         return;
     };
     let executor = PostgresExecutor::connect_no_tls(&url, 4).unwrap();
     let client = executor.pool().get().await.unwrap();
     client
         .batch_execute(
-            "drop table if exists a3s_orm_lock_probe;
-             create table a3s_orm_lock_probe (
+            "drop table if exists aster_orm_lock_probe;
+             create table aster_orm_lock_probe (
                 id bigint primary key,
                 value text not null,
                 attempt_count integer not null
              );
-             insert into a3s_orm_lock_probe (id, value, attempt_count)
+             insert into aster_orm_lock_probe (id, value, attempt_count)
              values (1, 'first', 0), (2, 'second', 0)",
         )
         .await
@@ -581,7 +581,7 @@ async fn postgres_row_and_advisory_locks_preserve_concurrency() {
     let second = executor.begin().await.unwrap();
     let next_lock = select_from::<LockProbe>()
         .select(LockProbe::id())
-        .order_by(LockProbe::id(), a3s_orm::OrderDirection::Asc)
+        .order_by(LockProbe::id(), aster_orm::OrderDirection::Asc)
         .limit(1)
         .for_update_of::<LockProbe>()
         .skip_locked()
@@ -619,7 +619,7 @@ async fn postgres_row_and_advisory_locks_preserve_concurrency() {
 
     let owner = executor.begin().await.unwrap();
     owner
-        .advisory_xact_lock("a3s.orm.integration", "same-key")
+        .advisory_xact_lock("aster.orm.integration", "same-key")
         .await
         .unwrap();
     let contender = executor.clone();
@@ -629,7 +629,7 @@ async fn postgres_row_and_advisory_locks_preserve_concurrency() {
             .transaction(|transaction| {
                 Box::pin(async move {
                     transaction
-                        .advisory_xact_lock("a3s.orm.integration", "same-key")
+                        .advisory_xact_lock("aster.orm.integration", "same-key")
                         .await?;
                     acquired_tx.send(()).expect("lock acquisition receiver");
                     Ok::<_, PostgresError>(())

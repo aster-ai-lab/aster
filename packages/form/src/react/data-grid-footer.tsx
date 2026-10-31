@@ -14,10 +14,10 @@ export function DataGridFieldFooter(props: {
 }) {
   return (
     <>
-      <div className="a3s-form-repeater-footer">
+      <div className="aster-form-repeater-footer">
         <button
           type="button"
-          className="a3s-form-secondary btn"
+          className="aster-form-secondary btn"
           data-size="sm"
           data-variant="secondary"
           disabled={props.disabled || props.atMaximum}
@@ -28,7 +28,7 @@ export function DataGridFieldFooter(props: {
           <span>{props.messages.dataGridAdd}</span>
         </button>
         {props.atMaximum && (
-          <span className="a3s-form-repeater-limit" role="status">
+          <span className="aster-form-repeater-limit" role="status">
             {props.messages.repeaterMaximumReached}
           </span>
         )}
@@ -37,7 +37,7 @@ export function DataGridFieldFooter(props: {
         .filter((error) => error.path === props.valuePath)
         .map((error, index) => (
           <div
-            className="a3s-form-error"
+            className="aster-form-error"
             id={`${props.id}-error-${index + 1}`}
             role="alert"
             key={`${error.code}-${error.message}`}

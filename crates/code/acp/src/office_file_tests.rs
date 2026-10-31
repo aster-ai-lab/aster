@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
 use std::sync::{
@@ -108,19 +108,19 @@ async fn tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_
     assert!(!ungoverned.success);
     assert!(!root.path().join("plain.xlsx").exists());
     let store = tempfile::tempdir().unwrap();
-    let agent = a3s_code_core::Agent::from_config(
+    let agent = aster_core::Agent::from_config(
         crate::agent::test_launch(Some(store.path().to_path_buf())).config,
     )
     .await
     .unwrap();
     let direct_root = tempfile::tempdir().unwrap();
-    let options = a3s_code_core::SessionOptions::new()
+    let options = aster_core::SessionOptions::new()
         .with_session_id(uuid::Uuid::new_v4().to_string())
-        .with_workspace_backend(a3s_code_core::workspace::WorkspaceServices::local(
+        .with_workspace_backend(aster_core::workspace::WorkspaceServices::local(
             direct_root.path(),
         ))
         .with_permission_policy(
-            a3s_code_core::permissions::PermissionPolicy::new().allow("office_file"),
+            aster_core::permissions::PermissionPolicy::new().allow("office_file"),
         );
     let direct = agent
         .session_async(
@@ -147,38 +147,38 @@ async fn tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_
         (false, true, false),
         (true, false, false),
     ] {
-        let base = a3s_code_core::workspace::WorkspaceServices::local(root.path());
+        let base = aster_core::workspace::WorkspaceServices::local(root.path());
         let services = if write {
             base.clone()
         } else {
-            a3s_code_core::workspace::WorkspaceServicesBuilder::new(
+            aster_core::workspace::WorkspaceServicesBuilder::new(
                 base.workspace_ref().clone(),
                 base.fs(),
             )
-            .capabilities(a3s_code_core::workspace::WorkspaceCapabilities {
+            .capabilities(aster_core::workspace::WorkspaceCapabilities {
                 write,
                 ..base.capabilities()
             })
             .build()
         };
         let policy = if allow {
-            a3s_code_core::permissions::PermissionPolicy::new().allow("office_file")
+            aster_core::permissions::PermissionPolicy::new().allow("office_file")
         } else {
-            a3s_code_core::permissions::PermissionPolicy::new().deny("office_file")
+            aster_core::permissions::PermissionPolicy::new().deny("office_file")
         };
         let path = format!("governed-{write}-{allow}.xlsx");
         let model = Arc::new(Model {
             calls: AtomicUsize::new(0),
             path: path.clone(),
         });
-        let options = a3s_code_core::SessionOptions::new()
+        let options = aster_core::SessionOptions::new()
             .with_session_id(uuid::Uuid::new_v4().to_string())
             .with_workspace_backend(services)
             .with_permission_policy(policy)
             .with_llm_client(model.clone())
-            .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+            .with_planning_mode(aster_core::PlanningMode::Disabled)
             .with_harness(
-                a3s_code_core::HarnessComposeOptions::compose(
+                aster_core::HarnessComposeOptions::compose(
                     ["system", "tools", "budget", "compact", "infer"]
                         .into_iter()
                         .map(str::to_owned)
@@ -229,7 +229,7 @@ async fn tool_entry_requires_a_live_turn_and_respects_real_write_and_permission_
         assert_eq!(
             matches!(
                 result.completion,
-                a3s_code_core::harness_loop::CompletionTerminal::Verified { .. }
+                aster_core::harness_loop::CompletionTerminal::Verified { .. }
             ),
             expected,
             "{result:?}"
@@ -288,7 +288,7 @@ async fn authority_revoked_at_publication_removes_staging_and_releases_the_write
         .to_string()
         .contains("authority revoked"));
     assert_eq!(std::fs::read_dir(root.path()).unwrap().count(), 0);
-    assert!(!a3s_code_core::external_observation::session_owns_write(
+    assert!(!aster_core::external_observation::session_owns_write(
         ctx.session_id.as_deref().unwrap(),
         &ctx.workspace,
         "revoked.xlsx"
@@ -447,9 +447,9 @@ async fn presentation_embeds_a_real_png_chart_below_the_title_inside_the_slide()
     let title = slide
         .children
         .iter()
-        .find(|node| node.node_type == a3s_office::OfficeNodeType::Shape)
+        .find(|node| node.node_type == aster_office::OfficeNodeType::Shape)
         .unwrap();
-    let cm = |node: &a3s_office::DocumentNode, key: &str| {
+    let cm = |node: &aster_office::DocumentNode, key: &str| {
         node.format[key]
             .trim_end_matches("cm")
             .parse::<f64>()
@@ -549,7 +549,7 @@ async fn native_presentation_contains_all_requested_slides_and_saved_text() {
     let mut boxes: Vec<(i64, i64)> = slide
         .children
         .iter()
-        .filter(|node| node.node_type == a3s_office::OfficeNodeType::Shape)
+        .filter(|node| node.node_type == aster_office::OfficeNodeType::Shape)
         .map(|node| {
             let y = (node.format["y"]
                 .trim_end_matches("cm")
@@ -577,12 +577,12 @@ async fn native_presentation_contains_all_requested_slides_and_saved_text() {
 #[tokio::test]
 async fn workspace_write_capability_and_missing_session_are_refused() {
     let root = tempfile::tempdir().unwrap();
-    let base = a3s_code_core::workspace::WorkspaceServices::local(root.path());
-    let services = a3s_code_core::workspace::WorkspaceServicesBuilder::new(
+    let base = aster_core::workspace::WorkspaceServices::local(root.path());
+    let services = aster_core::workspace::WorkspaceServicesBuilder::new(
         base.workspace_ref().clone(),
         base.fs(),
     )
-    .capabilities(a3s_code_core::workspace::WorkspaceCapabilities {
+    .capabilities(aster_core::workspace::WorkspaceCapabilities {
         write: false,
         ..base.capabilities()
     })

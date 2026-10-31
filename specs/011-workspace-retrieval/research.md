@@ -49,7 +49,7 @@ Verdict: ready for remaining qualification; not a completion verdict.
 ## T005 measured persistent-index defect
 
 The unchanged release production example failed twice after a single edit and
-restart: `a3s-vec lexical result returned an unknown primary key`. The v3
+restart: `aster-vec lexical result returned an unknown primary key`. The v3
 manifest already persists sparse engine keys, but `load_current` opens the
 adapter with regenerated dense keys and only restores the manifest keys into
 the separate state afterwards. A second edit can trigger a full rebuild and
@@ -108,7 +108,7 @@ retained generation. Peak process RSS is retained in macOS bytes: 23,379,968
 (matrix), 187,023,360 (v5 retrieval), and 33,980,416 (persistent). These include
 the whole deterministic process, not BGE model weights or a vector-only budget.
 
-The matrix fixes the Portable lexical engine; native a3s-vec is separately
+The matrix fixes the Portable lexical engine; native aster-vec is separately
 covered by the locked v5 resource, persistence, and Core contracts. The matrix
 does not establish representative native-engine or real semantic quality.
 

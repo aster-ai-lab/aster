@@ -39,11 +39,11 @@ pub(super) struct LiveTui {
 impl LiveTui {
     pub fn new(case: &str) -> Self {
         let config = PathBuf::from(
-            std::env::var_os("A3S_CONFIG_FILE")
-                .expect("A3S_CONFIG_FILE is required; no skipped live observations"),
+            std::env::var_os("ASTER_CONFIG_FILE")
+                .expect("ASTER_CONFIG_FILE is required; no skipped live observations"),
         );
         let config = config.canonicalize().expect("explicit host ACL exists");
-        let parsed = a3s_code_core::CodeConfig::from_file(&config)
+        let parsed = aster_core::CodeConfig::from_file(&config)
             .unwrap_or_else(|_| panic!("explicit host ACL could not be parsed"));
         assert_eq!(parsed.default_model.as_deref(), Some("kimi/k3.1-pro"));
         let mut secrets = Vec::new();
@@ -81,10 +81,10 @@ impl LiveTui {
             std::fs::create_dir_all(dir).unwrap();
         }
         let companion = PathBuf::from(
-            std::env::var_os("A3S_CODE_ACP_BIN")
-                .unwrap_or_else(|| env!("CARGO_BIN_EXE_a3s-code-acp").into()),
+            std::env::var_os("ASTER_ACP_BIN")
+                .unwrap_or_else(|| env!("CARGO_BIN_EXE_aster-acp").into()),
         );
-        let binary = std::env::var_os("A3S_CODE_TUI_BIN")
+        let binary = std::env::var_os("ASTER_TUI_BIN")
             .map(PathBuf::from)
             .unwrap_or_else(|| {
                 companion.with_file_name(format!("aster{}", std::env::consts::EXE_SUFFIX))
@@ -130,7 +130,7 @@ impl LiveTui {
             evidence: Vec::new(),
             finished: false,
         };
-        if std::env::var("A3S_TUI_LIVE_PROVIDER_DIRECT").as_deref() == Ok("1") {
+        if std::env::var("ASTER_TUI_LIVE_PROVIDER_DIRECT").as_deref() == Ok("1") {
             value.set_env("NO_PROXY", "*");
         }
         value.record("source-pair", &tui_id);
@@ -206,15 +206,15 @@ impl LiveTui {
         command.env("LOCALAPPDATA", self.home.join("AppData/Local"));
         command.env("GROK_HOME", self.home.join("grok"));
         command.env(
-            "A3S_CONFIG",
+            "ASTER_CONFIG",
             self.editable_config.as_ref().unwrap_or(&self.config),
         );
         for (name, value) in &self.fixture_env {
             command.env(name, value);
         }
-        command.env("A3S_DISABLE_CC_SWITCH", "1");
-        command.env("A3S_DISABLE_GROK_ACCOUNT", "1");
-        command.env("A3S_DISABLE_CURSOR_ACCOUNT", "1");
+        command.env("ASTER_DISABLE_CC_SWITCH", "1");
+        command.env("ASTER_DISABLE_GROK_ACCOUNT", "1");
+        command.env("ASTER_DISABLE_CURSOR_ACCOUNT", "1");
         command.env("TERM", "xterm-256color");
         if let Some(editor) = &self.editor {
             command.env("EDITOR", editor);
@@ -242,8 +242,8 @@ impl LiveTui {
     }
 
     pub fn use_editable_config(&mut self) -> PathBuf {
-        use a3s_acl::{Block, Value as AclValue};
-        let parsed = a3s_code_core::CodeConfig::from_file(&self.config).unwrap();
+        use aster_acl::{Block, Value as AclValue};
+        let parsed = aster_core::CodeConfig::from_file(&self.config).unwrap();
         let (provider, model) = parsed.default_model_config().unwrap();
         let mut provider_json = serde_json::to_value(provider).unwrap();
         let attrs = provider_json.as_object_mut().unwrap();
@@ -259,7 +259,7 @@ impl LiveTui {
                 .map(|(k, v)| (k.clone(), fixture_acl_value(v, &self.secrets)))
                 .collect()
         };
-        let mut document = a3s_acl::parse_acl("default_model = \"kimi/k3.1-pro\"\n").unwrap();
+        let mut document = aster_acl::parse_acl("default_model = \"kimi/k3.1-pro\"\n").unwrap();
         document.blocks.push(Block {
             name: "providers".into(),
             labels: vec![provider.name.clone()],
@@ -277,7 +277,7 @@ impl LiveTui {
             blocks: vec![],
             attributes: [("llm_api_timeout_ms".into(), AclValue::Number(120_000.0))].into(),
         });
-        let text = a3s_acl::generate_acl(&document);
+        let text = aster_acl::generate_acl(&document);
         for secret in self.secrets.iter().filter(|s| !s.is_empty()) {
             assert!(
                 !text.contains(secret),
@@ -623,7 +623,7 @@ impl LiveTui {
 
     pub fn facts(&self) -> Vec<Value> {
         let mut out = Vec::new();
-        for path in self.files(&self.workspace.join(".a3s"), "jsonl") {
+        for path in self.files(&self.workspace.join(".aster"), "jsonl") {
             if self
                 .session
                 .as_deref()
@@ -647,13 +647,13 @@ impl LiveTui {
         std::fs::create_dir(&dir).unwrap();
         let suffix = std::env::consts::EXE_SUFFIX;
         let binary = dir.join(format!("aster{suffix}"));
-        let companion = dir.join(format!("a3s-code-acp{suffix}"));
+        let companion = dir.join(format!("aster-acp{suffix}"));
         std::fs::copy(&self.binary, &binary).unwrap();
         std::fs::copy(proxy, &companion).unwrap();
         let trace = self._root.path().join("acp-traffic.jsonl");
         let target = self.companion.to_string_lossy().into_owned();
-        self.set_env("A3S_CODE_ACP_PROXY_TARGET", &target);
-        self.set_env("A3S_CODE_ACP_TRACE", trace.to_str().unwrap());
+        self.set_env("ASTER_ACP_PROXY_TARGET", &target);
+        self.set_env("ASTER_ACP_TRACE", trace.to_str().unwrap());
         self.binary = binary;
         self.acp_trace = Some(trace);
     }
@@ -871,7 +871,7 @@ impl LiveTui {
                     json!({"identity":r["identity"],"prepared_digest":r["prepared_digest"],"outcome":r["outcome"],"effects":r["effects"],"output":r["output"],"scheduler_output_matches_receipt":p["output"]==r["output"]})
                 }
                 "model.turn" => json!({"prompt_tokens":p["prompt_tokens"],"has_text":p["text"].as_str().is_some_and(|v| !v.is_empty()),"tool":p["call"]["name"],"call":{"id":p["call"]["id"],"name":p["call"]["name"],"args":p["call"]["args"]},"text":p["text"]}),
-                "turn.complete" | "a3s.goal.created" | "a3s.goal.paused" | "a3s.goal.resumed" | "a3s.goal.cancelled" | "compaction.done" => p.clone(),
+                "turn.complete" | "aster.goal.created" | "aster.goal.paused" | "aster.goal.resumed" | "aster.goal.cancelled" | "compaction.done" => p.clone(),
                 _ => return None,
             };
             Some(json!({"seq":fact["seq"],"type":fact["type"],"payload":payload}))
@@ -879,8 +879,8 @@ impl LiveTui {
     }
 }
 
-fn fixture_acl_value(value: &Value, secrets: &[String]) -> a3s_acl::Value {
-    use a3s_acl::Value as A;
+fn fixture_acl_value(value: &Value, secrets: &[String]) -> aster_acl::Value {
+    use aster_acl::Value as A;
     match value {
         Value::Null => A::Null,
         Value::Bool(v) => A::Bool(*v),
@@ -912,7 +912,7 @@ impl Drop for LiveTui {
             let _ = child.kill();
             let _ = child.wait();
         }
-        if let Some(dir) = std::env::var_os("A3S_TUI_LIVE_EVIDENCE_DIR") {
+        if let Some(dir) = std::env::var_os("ASTER_TUI_LIVE_EVIDENCE_DIR") {
             let dir = PathBuf::from(dir);
             std::fs::create_dir_all(&dir).unwrap();
             let facts = self.evidence_facts();

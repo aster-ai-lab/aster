@@ -1,9 +1,9 @@
-use a3s_use_core::{OkfKnowledgeObservation, OkfProjectionReceipt, UseError, UseResult};
+use aster_use_core::{OkfKnowledgeObservation, OkfProjectionReceipt, UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
-pub const OKF_KNOWLEDGE_BINDING_SCHEMA: &str = "a3s.use.okf-knowledge-binding.v2";
+pub const OKF_KNOWLEDGE_BINDING_SCHEMA: &str = "aster.use.okf-knowledge-binding.v2";
 
-/// Durable exact-generation evidence owned by the A3S Knowledge boundary.
+/// Durable exact-generation evidence owned by the Aster Knowledge boundary.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct OkfKnowledgeBinding {

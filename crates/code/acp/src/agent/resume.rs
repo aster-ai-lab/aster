@@ -4,15 +4,15 @@ use std::path::{Path, PathBuf};
 
 use agent_client_protocol as acp;
 
-use super::{workspace_scope::canonical_workspace, A3sCodeAgent};
+use super::{workspace_scope::canonical_workspace, AsterCodeAgent};
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) async fn resume_snapshot_store(
         directory: &Path,
         session_id: &str,
         workspace: &Path,
-    ) -> acp::Result<std::sync::Arc<dyn a3s_code_core::store::SessionStore>> {
-        use a3s_code_core::store::{FileSessionStore, SessionStore};
+    ) -> acp::Result<std::sync::Arc<dyn aster_core::store::SessionStore>> {
+        use aster_core::store::{FileSessionStore, SessionStore};
         let failed = |error: anyhow::Error| {
             acp::Error::internal_error().data(format!("session snapshot recovery: {error}"))
         };
@@ -78,7 +78,7 @@ impl A3sCodeAgent {
                 canonical_workspace(&launch, Some(&cwd))?
             };
             let entry =
-                a3s_code_core::session_folder::resolve_workspace_session(&workspace, &session_id)
+                aster_core::session_folder::resolve_workspace_session(&workspace, &session_id)
                     .map_err(|_| acp::Error::resource_not_found(None))?;
             if entry.is_none() {
                 return Err(acp::Error::resource_not_found(None));

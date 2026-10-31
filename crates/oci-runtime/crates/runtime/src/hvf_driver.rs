@@ -2,9 +2,9 @@ use std::fmt;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::GuestAgentService;
-use a3s_oci_core::{CapabilityStatus, DriverReadiness, IsolationClass};
-use a3s_oci_sdk::{async_trait, Error, ErrorCode, Result};
+use aster_oci_agent_protocol::GuestAgentService;
+use aster_oci_core::{CapabilityStatus, DriverReadiness, IsolationClass};
+use aster_oci_sdk::{async_trait, Error, ErrorCode, Result};
 
 use crate::agent_driver::AgentDriverClient;
 use crate::agent_session::UtilityVmSession;
@@ -103,8 +103,8 @@ impl HvfRuntimeDriver {
         .await?;
         capability.readiness = DriverReadiness::Experimental;
         capability.isolation_classes = vec![IsolationClass::DedicatedVm];
-        const RUNTIME_SHARE: &str = match a3s_oci_core::hardware_vm::virtiofs_share_mode(
-            a3s_oci_core::DriverKind::LibkrunHvf,
+        const RUNTIME_SHARE: &str = match aster_oci_core::hardware_vm::virtiofs_share_mode(
+            aster_oci_core::DriverKind::LibkrunHvf,
         ) {
             Some(mode) => mode,
             None => panic!("libkrun HVF must advertise a hardware-vm virtio-fs share"),
@@ -140,17 +140,17 @@ impl HvfRuntimeDriver {
         Ok(Self {
             inner: UtilityVmRuntimeDriver::new(
                 capability,
-                a3s_oci_sdk::AttachmentCapabilities::base_v2()
+                aster_oci_sdk::AttachmentCapabilities::base_v2()
                     .with_extension(
-                        a3s_oci_sdk::RUNTIME_BUNDLE_HANDOFF_EXTENSION,
+                        aster_oci_sdk::RUNTIME_BUNDLE_HANDOFF_EXTENSION,
                         vec![
-                            a3s_oci_sdk::RUNTIME_BUNDLE_HANDOFF_EXTENSION_VERSION,
-                            a3s_oci_sdk::RUNTIME_BUNDLE_HANDOFF_EXTERNAL_STORAGE_VERSION,
+                            aster_oci_sdk::RUNTIME_BUNDLE_HANDOFF_EXTENSION_VERSION,
+                            aster_oci_sdk::RUNTIME_BUNDLE_HANDOFF_EXTERNAL_STORAGE_VERSION,
                         ],
                     )?
                     .with_extension(
-                        a3s_oci_sdk::STORAGE_PATH_RESTRICTIONS_EXTENSION,
-                        vec![a3s_oci_sdk::STORAGE_PATH_RESTRICTIONS_VERSION],
+                        aster_oci_sdk::STORAGE_PATH_RESTRICTIONS_EXTENSION,
+                        vec![aster_oci_sdk::STORAGE_PATH_RESTRICTIONS_VERSION],
                     )?,
                 "HVF",
                 prepared.runtime_root,

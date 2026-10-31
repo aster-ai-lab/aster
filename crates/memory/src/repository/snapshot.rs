@@ -6,7 +6,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::io::Write;
 
 /// Stable identity of the exact namespace-snapshot algorithm.
-pub const MEMORY_NAMESPACE_SNAPSHOT_PROFILE_V1: &str = "a3s.memory.namespace-snapshot.sha256.v1";
+pub const MEMORY_NAMESPACE_SNAPSHOT_PROFILE_V1: &str = "aster.memory.namespace-snapshot.sha256.v1";
 
 /// Hard upper bound for one exact namespace snapshot.
 pub const MAX_SNAPSHOT_NODES: usize = 100_000;
@@ -14,7 +14,7 @@ pub const MAX_SNAPSHOT_NODES: usize = 100_000;
 /// Hard upper bound for the canonical payload of one exact snapshot.
 pub const MAX_SNAPSHOT_BYTES: usize = 256 * 1024 * 1024;
 
-const SNAPSHOT_DIGEST_DOMAIN: &str = "a3s.memory.namespace-snapshot.v1";
+const SNAPSHOT_DIGEST_DOMAIN: &str = "aster.memory.namespace-snapshot.v1";
 
 /// Caller-selected scope and hard node/byte budgets for one exact repository view.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

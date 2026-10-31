@@ -1,7 +1,7 @@
-# A3S Sandbox
+# Aster Sandbox
 
 <p align="center">
-  <img src="./assets/readme/boundary.svg" width="100%" alt="a3s-sandbox sends an untrusted command through a policy boundary and a native macOS, Linux, or Windows backend before returning bounded output">
+  <img src="./assets/readme/boundary.svg" width="100%" alt="aster-sandbox sends an untrusted command through a policy boundary and a native macOS, Linux, or Windows backend before returning bounded output">
 </p>
 
 
@@ -12,18 +12,18 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/Sandbox/actions/workflows/ci.yml"><img src="https://github.com/A3S-Lab/Sandbox/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
-  <a href="https://github.com/A3S-Lab/Sandbox/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-d6a85f.svg" alt="MIT license"></a>
-  <a href="https://github.com/A3S-Lab/Sandbox/releases"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-7fb6a4.svg" alt="macOS, Linux, and Windows"></a>
+  <a href="https://github.com/aster-ai-lab/Sandbox/actions/workflows/ci.yml"><img src="https://github.com/aster-ai-lab/Sandbox/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="https://github.com/aster-ai-lab/Sandbox/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-d6a85f.svg" alt="MIT license"></a>
+  <a href="https://github.com/aster-ai-lab/Sandbox/releases"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-7fb6a4.svg" alt="macOS, Linux, and Windows"></a>
 </p>
 
-`a3s-sandbox` is a Rust-native, fail-closed command boundary for A3S Bash and
-other A3S products. It turns an untrusted command into a bounded process tree
+`aster-sandbox` is a Rust-native, fail-closed command boundary for Aster Bash and
+other Aster products. It turns an untrusted command into a bounded process tree
 with explicit workspace, credential, environment, network, and lifecycle
 limits enforced by the host operating system.
 
 There is no Node.js runtime, npm package, or SRT process in the execution
-path. The library is deliberately independent of A3S Code so it can be
+path. The library is deliberately independent of Aster Code so it can be
 embedded by a CLI, an agent, or a future SDK.
 
 ## Quick start
@@ -33,13 +33,13 @@ the version intentionally when adopting a newer release:
 
 ```toml
 [dependencies]
-a3s-sandbox = "0.2.0"
+aster-sandbox = "0.2.0"
 ```
 
 Run a command through the native boundary:
 
 ```rust,no_run
-use a3s_sandbox::NativeSandbox;
+use aster_sandbox::NativeSandbox;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -61,12 +61,12 @@ async fn main() -> anyhow::Result<()> {
 
 ## What is enforced now
 
-The default A3S Bash profile is intentionally strict:
+The default Aster Bash profile is intentionally strict:
 
 - network access and host Unix-domain sockets are denied;
 - writes are limited to the canonical workspace and a private scratch
   directory;
-- credentials, secret files, `.git`, `.a3s`, agent metadata, and shell/tool
+- credentials, secret files, `.git`, `.aster`, agent metadata, and shell/tool
   bootstrap files are protected;
 - symbolic-link escapes and source-tree hard-link aliases are rejected;
   package/build-store hardlinks stay usable unless they alias a discovered
@@ -123,7 +123,7 @@ decisions; they do not silently broaden them when a host feature is missing.
 
 ## Scope and roadmap
 
-Gate 0—the complete A3S Bash baseline—is shipped and tested on macOS, Linux,
+Gate 0—the complete Aster Bash baseline—is shipped and tested on macOS, Linux,
 and Windows. Later gates follow a first-principles order: typed policy, then
 structured denials and OS resource quotas, then deeper filesystem mounts,
 then opt-in mediated HTTP(S), then broader IPC/SOCKS, then CLI/adapters, then
@@ -132,7 +132,7 @@ security release. Virtual bash and in-process language VMs are non-goals.
 See [ROADMAP.md](ROADMAP.md) for mission, non-goals, ranked capabilities,
 exit criteria, architecture, and risks.
 
-The goal is OS-enforced security outcomes for A3S products with a Rust-owned
+The goal is OS-enforced security outcomes for Aster products with a Rust-owned
 API—not an SRT TypeScript clone and not a simulated shell.
 
 ## Development
@@ -145,16 +145,16 @@ cargo clippy --all-targets -- -D warnings
 cargo test --all-targets
 ```
 
-`a3s-sandbox-relay` is the guest TCP→Unix CONNECT helper used by the Linux
-netns mediation bridge. It is built alongside `a3s-sandbox`. Place it next to
-the host executable or set `A3S_SANDBOX_RELAY`. macOS, Linux, and Windows claim
+`aster-sandbox-relay` is the guest TCP→Unix CONNECT helper used by the Linux
+netns mediation bridge. It is built alongside `aster-sandbox`. Place it next to
+the host executable or set `ASTER_SANDBOX_RELAY`. macOS, Linux, and Windows claim
 `mediated_http` after live guest proof; SOCKS remains macOS-only.
 
 Release packaging helpers:
 
 ```bash
 ./scripts/generate-sbom.sh
-./scripts/sign-release.sh target/release/a3s-sandbox target/release/a3s-sandbox-relay
+./scripts/sign-release.sh target/release/aster-sandbox target/release/aster-sandbox-relay
 ```
 
 See [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md),

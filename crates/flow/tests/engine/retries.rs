@@ -10,7 +10,7 @@ impl FlowRuntime for FlakyRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if let Some(output) = completed_step(&invocation, "flaky") {
             return Ok(RuntimeCommand::Complete { output });
         }
@@ -23,7 +23,7 @@ impl FlowRuntime for FlakyRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
         if attempt == 0 {
             Err(FlowError::Runtime("first attempt failed".to_string()))
@@ -55,7 +55,7 @@ impl FlowRuntime for ExhaustedStepFailureRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_step_with_retry(
             "primary",
             "primaryStep",
@@ -64,7 +64,7 @@ impl FlowRuntime for ExhaustedStepFailureRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime("primary failed".to_string()))
     }
 }
@@ -106,7 +106,7 @@ impl FlowRuntime for NonRetryableFailureRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_step_with_retry(
             "permanent",
             "permanentStep",
@@ -115,7 +115,7 @@ impl FlowRuntime for NonRetryableFailureRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.attempts.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::NonRetryable("permission denied".to_string()))
     }
@@ -151,7 +151,7 @@ impl FlowRuntime for RecoverableStepFailureRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(fallback) = ctx.step_output("fallback") {
             return Ok(ctx.complete(json!({
@@ -175,7 +175,7 @@ impl FlowRuntime for RecoverableStepFailureRuntime {
         ))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "primaryStep" => Err(FlowError::Runtime("primary system unavailable".to_string())),
             "fallbackStep" => Ok(json!({
@@ -219,7 +219,7 @@ impl FlowRuntime for RepeatedTerminalStepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         self.workflow_invocations.fetch_add(1, Ordering::SeqCst);
         Ok(invocation.context().schedule_step_with_retry(
             "primary",
@@ -229,7 +229,7 @@ impl FlowRuntime for RepeatedTerminalStepRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.step_invocations.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::Runtime("primary failed".to_string()))
     }
@@ -262,7 +262,7 @@ impl FlowRuntime for DelayedFlakyRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if let Some(output) = completed_step(&invocation, "delayed-flaky") {
             return Ok(RuntimeCommand::Complete { output });
         }
@@ -275,7 +275,7 @@ impl FlowRuntime for DelayedFlakyRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
         if attempt == 0 {
             Err(FlowError::Runtime("first attempt failed".to_string()))
@@ -328,7 +328,7 @@ impl FlowRuntime for SlowFailureRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_step_with_retry(
             "slow-failure",
             "slowFailureStep",
@@ -337,7 +337,7 @@ impl FlowRuntime for SlowFailureRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.attempts.fetch_add(1, Ordering::SeqCst);
         tokio::time::sleep(Duration::from_millis(25)).await;
         Err(FlowError::Runtime("slow failure".to_string()))
@@ -374,7 +374,7 @@ impl FlowRuntime for ExponentialFailureRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_step_with_retry(
             "bounded-exponential",
             "boundedExponentialStep",
@@ -383,7 +383,7 @@ impl FlowRuntime for ExponentialFailureRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempt = self.attempts.fetch_add(1, Ordering::SeqCst) + 1;
         Err(FlowError::Runtime(format!("failure {attempt}")))
     }
@@ -572,7 +572,7 @@ impl FlowRuntime for RecordingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         self.workflow_invocations
             .lock()
             .unwrap()
@@ -582,7 +582,7 @@ impl FlowRuntime for RecordingRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("recording runtime does not schedule steps")
     }
 }
@@ -610,7 +610,7 @@ impl FlowRuntime for StepNonRetryableBesideOpenTimerRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if let Some(error) = context.step_failed("primary") {
             return Ok(context.complete(json!({ "failed": error })));
@@ -632,14 +632,14 @@ impl FlowRuntime for StepNonRetryableBesideOpenTimerRuntime {
         Ok(context.wait_until("hold", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::NonRetryable("permission denied".to_string()))
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -660,7 +660,7 @@ impl CrashAfterStepNonRetryableStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterStepNonRetryableStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -669,7 +669,7 @@ impl FlowEventStore for CrashAfterStepNonRetryableStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -686,11 +686,11 @@ impl FlowEventStore for CrashAfterStepNonRetryableStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -716,7 +716,7 @@ async fn step_non_retryable_recovery_wakes_via_drive_while_unscoped_timer_is_ope
     let interrupted = engine
         .apply_update(
             "step-non-retryable-drive",
-            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
         )
         .await
         .expect_err("crash after durable StepNonRetryable must interrupt");

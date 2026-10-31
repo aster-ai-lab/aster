@@ -1,0 +1,38 @@
+[package]
+license = "Apache-2.0"
+name = "aster-mermaid"
+version = "0.1.0"
+description = "Render Mermaid diagram source to a rasterized PNG behind a swappable engine trait"
+edition = "2024"
+publish = false
+
+[dependencies]
+# SVG -> PNG rasterization. `resvg` re-exports the matching `usvg` (0.47) and
+# `tiny_skia`; we deliberately use `resvg::usvg` rather than the workspace
+# `usvg` (0.45.1) so `resvg::render` typechecks against the tree we parse.
+resvg = {version = "0.47", default-features = false, features = ["text"]}
+tiny-skia = {version = "0.12"}
+fontdb = {version = "0.23"}
+thiserror = {workspace = true}
+tracing = {workspace = true}
+which = {workspace = true}
+# Subprocess infra (MmdcEngine + the out-of-process render child): detached
+# spawning + wall-clock timeout + process-group reaping.
+wait-timeout = {version = "0.2"}
+tempfile = {workspace = true}
+# Vendored dagre-based Mermaid -> SVG engine (third_party/mermaid-to-svg, MIT).
+# Always compiled — the default engine, no feature gate.
+mermaid-to-svg = {path = "../../../third_party/mermaid-to-svg"}
+
+# Subprocess process-group reaping (killpg) for the sync subprocess path, since
+# aster-tty-utils' ProcessGroup only wraps tokio children.
+aster-tty-utils = {path = "../aster-tty-utils"}
+
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+
+[dev-dependencies]
+# `png` codec enabled LOCALLY only (workspace pins image with
+# default-features=false; "Do not add features globally"). Used by tests to
+# decode the output PNG and assert its dimensions.
+image = {workspace = true}

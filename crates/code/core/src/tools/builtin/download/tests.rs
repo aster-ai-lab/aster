@@ -66,7 +66,7 @@ fn assert_no_download_temps(path: &Path) {
                 !entry
                     .file_name()
                     .to_string_lossy()
-                    .starts_with(".a3s-download-"),
+                    .starts_with(".aster-download-"),
                 "temporary download leaked at {}",
                 entry.path().display()
             );

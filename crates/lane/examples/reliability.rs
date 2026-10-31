@@ -6,7 +6,7 @@
 //! - Dead letter queue
 //! - Graceful shutdown
 
-use a3s_lane::{Command, EventEmitter, LaneConfig, QueueManagerBuilder, Result, RetryPolicy};
+use aster_lane::{Command, EventEmitter, LaneConfig, QueueManagerBuilder, Result, RetryPolicy};
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Arc;
@@ -32,7 +32,7 @@ impl Command for RetryableCommand {
         if attempt < self.max_failures {
             // Simulate failure
             tokio::time::sleep(Duration::from_millis(50)).await;
-            return Err(a3s_lane::LaneError::Other(format!(
+            return Err(aster_lane::LaneError::Other(format!(
                 "Temporary failure (attempt {})",
                 attempt
             )));
@@ -78,7 +78,7 @@ impl Command for SlowCommand {
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
-    println!("=== A3S Lane: Reliability Features Example ===\n");
+    println!("=== Aster Lane: Reliability Features Example ===\n");
 
     let emitter = EventEmitter::new(100);
 

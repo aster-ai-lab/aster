@@ -9,25 +9,25 @@ use std::path::PathBuf;
 #[test]
 fn strip_windows_verbatim_prefix_removes_extended_length_form() {
     let stripped = strip_windows_verbatim_prefix(PathBuf::from(
-        r"\\?\C:\Users\runneradmin\AppData\Local\Temp\.tmpIndex\.a3s-code\index",
+        r"\\?\C:\Users\runneradmin\AppData\Local\Temp\.tmpIndex\.aster\index",
     ));
     #[cfg(windows)]
     assert_eq!(
         stripped,
-        PathBuf::from(r"C:\Users\runneradmin\AppData\Local\Temp\.tmpIndex\.a3s-code\index")
+        PathBuf::from(r"C:\Users\runneradmin\AppData\Local\Temp\.tmpIndex\.aster\index")
     );
     #[cfg(not(windows))]
     assert_eq!(
         stripped,
-        PathBuf::from(r"\\?\C:\Users\runneradmin\AppData\Local\Temp\.tmpIndex\.a3s-code\index")
+        PathBuf::from(r"\\?\C:\Users\runneradmin\AppData\Local\Temp\.tmpIndex\.aster\index")
     );
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[test]
 fn persistent_index_opens_under_windows_verbatim_prefix() {
     let directory = tempfile::tempdir().expect("temporary index directory");
-    let root = directory.path().join(".a3s-code").join("index");
+    let root = directory.path().join(".aster").join("index");
     std::fs::create_dir_all(&root).expect("index root");
     let open_root = {
         #[cfg(windows)]
@@ -47,7 +47,7 @@ fn persistent_index_opens_under_windows_verbatim_prefix() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     catalog
@@ -58,7 +58,7 @@ fn persistent_index_opens_under_windows_verbatim_prefix() {
             "verbatim path persistent sentinel\n",
         )
         .expect("catalog replacement");
-    let index = WorkspacePersistentIndex::open(open_root, WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(open_root, WorkspaceLexicalEngine::AsterVec)
         .expect("persistent index under verbatim prefix");
     index
         .sync_snapshot(&catalog.snapshot().expect("snapshot"))
@@ -76,7 +76,7 @@ fn persistent_generation_survives_reopen_and_replaces_removed_content() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     catalog
@@ -88,7 +88,7 @@ fn persistent_generation_survives_reopen_and_replaces_removed_content() {
         )
         .expect("catalog replacement");
 
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("persistent index");
     index
         .sync_snapshot(&catalog.snapshot().expect("snapshot"))
@@ -101,7 +101,7 @@ fn persistent_generation_survives_reopen_and_replaces_removed_content() {
     assert_eq!(result.hits[0].chunk.path.as_ref(), "src/lib.rs");
     drop(index);
 
-    let reopened = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let reopened = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("reopen persistent index");
     let result = reopened.search(&request).expect("reopened query");
     assert_eq!(result.hits.len(), 1);
@@ -144,7 +144,7 @@ fn persistent_generation_survives_reopen_and_replaces_removed_content() {
     );
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[test]
 fn cross_epoch_reopen_accepts_fresher_content_below_the_persisted_counters() {
     // Epoch 1 publishes with high per-epoch counters, then exits.
@@ -152,7 +152,7 @@ fn cross_epoch_reopen_accepts_fresher_content_below_the_persisted_counters() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/lib.rs");
@@ -161,7 +161,7 @@ fn cross_epoch_reopen_accepts_fresher_content_below_the_persisted_counters() {
         .expect("epoch one replacement");
     {
         let index =
-            WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+            WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
                 .expect("epoch one persistent index");
         index
             .sync_snapshot(&catalog.snapshot().expect("epoch one snapshot"))
@@ -176,10 +176,10 @@ fn cross_epoch_reopen_accepts_fresher_content_below_the_persisted_counters() {
     let fresh = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("epoch two catalog");
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("epoch two persistent index");
     assert_eq!(index.status().source_revision, 6, "generation must load");
     fresh
@@ -217,7 +217,7 @@ fn cross_epoch_reopen_accepts_fresher_content_below_the_persisted_counters() {
     );
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[test]
 fn cross_epoch_identical_counters_with_different_content_still_publishes() {
     // Restart race: the fresh epoch's manifest scan completes after an
@@ -228,7 +228,7 @@ fn cross_epoch_identical_counters_with_different_content_still_publishes() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/lib.rs");
@@ -237,7 +237,7 @@ fn cross_epoch_identical_counters_with_different_content_still_publishes() {
         .expect("epoch one replacement");
     {
         let index =
-            WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+            WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
                 .expect("epoch one persistent index");
         index
             .sync_snapshot(&catalog.snapshot().expect("epoch one snapshot"))
@@ -247,13 +247,13 @@ fn cross_epoch_identical_counters_with_different_content_still_publishes() {
     let raced = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("raced catalog");
     raced
         .replace_file(&path, Some("rust"), 1, "post-edit beacon payload\n")
         .expect("scanned-after-edit replacement");
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("reopened persistent index");
     assert_eq!(index.status().source_revision, 1);
     index
@@ -267,14 +267,14 @@ fn cross_epoch_identical_counters_with_different_content_still_publishes() {
     assert!(hits[0].chunk.text.contains("post-edit beacon"));
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[test]
 fn incremental_delta_serves_edits_renames_and_reopens() {
     let directory = tempfile::tempdir().expect("temporary index directory");
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     const KEEPMARKERS: [&str; 3] = ["maplefjord", "zebraquill", "harborpine"];
@@ -288,7 +288,7 @@ fn incremental_delta_serves_edits_renames_and_reopens() {
             )
             .expect("initial admission");
     }
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("persistent index");
     index
         .sync_snapshot(&catalog.snapshot().expect("initial snapshot"))
@@ -340,7 +340,7 @@ fn incremental_delta_serves_edits_renames_and_reopens() {
 
     // Reopen the first sparse generation before another update can rebuild it.
     drop(index);
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("reopen the single-edit generation");
     let hits = index
         .search(&LexicalSearchRequest::new("pinotnoir"))
@@ -376,7 +376,7 @@ fn incremental_delta_serves_edits_renames_and_reopens() {
     // Reopen: the sparse v3 primary keys must reconstruct the exact
     // mapping (this is the misalignment class the pk field exists for).
     drop(index);
-    let reopened = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let reopened = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("reopen after delta generations");
     assert_eq!(reopened.status().indexed_chunks, 3);
     let reopened_hits = reopened
@@ -395,14 +395,14 @@ fn incremental_delta_serves_edits_renames_and_reopens() {
     );
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[test]
 fn oversized_delta_and_missing_source_fall_back_to_full_builds() {
     let directory = tempfile::tempdir().expect("temporary index directory");
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     const STALE: [&str; 10] = [
@@ -439,7 +439,7 @@ fn oversized_delta_and_missing_source_fall_back_to_full_builds() {
             )
             .expect("initial admission");
     }
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("persistent index");
     index
         .sync_snapshot(&catalog.snapshot().expect("initial snapshot"))
@@ -510,14 +510,14 @@ fn metadata_only_revision_reuses_the_published_generation() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/lib.rs");
     catalog
         .replace_file(&path, Some("rust"), 1, "stable content sentinel\n")
         .expect("first replacement");
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("persistent index");
     index
         .sync_snapshot(&catalog.snapshot().expect("first snapshot"))
@@ -554,11 +554,11 @@ fn published_replacement_collects_old_generations() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/lib.rs");
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("persistent index");
 
     catalog
@@ -605,7 +605,7 @@ fn persisted_primary_keys_refuse_damage_and_keep_v2_compatibility() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     for (path, text) in [("a.rs", "maplefjord"), ("b.rs", "pinotnoir")] {
@@ -614,7 +614,7 @@ fn persisted_primary_keys_refuse_damage_and_keep_v2_compatibility() {
             .expect("admit fixture");
     }
     let snapshot = catalog.snapshot().expect("snapshot");
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("index");
     index.sync_snapshot(&snapshot).expect("publish");
     let manifest_path = directory
@@ -641,7 +641,7 @@ fn persisted_primary_keys_refuse_damage_and_keep_v2_compatibility() {
         std::fs::write(&manifest_path, serde_json::to_vec(&manifest).expect("JSON"))
             .expect("write manifest variant");
         let reopened =
-            WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+            WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
                 .expect("recoverable open");
         assert_eq!(reopened.is_ready(), ready);
         let query = reopened.search(&LexicalSearchRequest::new("maplefjord"));
@@ -665,7 +665,7 @@ fn corrupted_generation_manifest_is_rejected_before_query() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     catalog
@@ -677,7 +677,7 @@ fn corrupted_generation_manifest_is_rejected_before_query() {
         )
         .expect("catalog replacement");
 
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("persistent index");
     let snapshot = catalog.snapshot().expect("snapshot");
     index.sync_snapshot(&snapshot).expect("generation write");
@@ -694,7 +694,7 @@ fn corrupted_generation_manifest_is_rejected_before_query() {
     )
     .expect("tampered manifest");
 
-    let reopened = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let reopened = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("reopen should remain recoverable");
     assert!(!reopened.is_ready());
     assert_eq!(
@@ -721,7 +721,7 @@ fn status_reports_building_without_hiding_the_last_published_generation() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     catalog
@@ -732,7 +732,7 @@ fn status_reports_building_without_hiding_the_last_published_generation() {
             "published status sentinel\n",
         )
         .expect("catalog replacement");
-    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::A3sVec)
+    let index = WorkspacePersistentIndex::open(directory.path(), WorkspaceLexicalEngine::AsterVec)
         .expect("persistent index");
     index
         .sync_snapshot(&catalog.snapshot().expect("snapshot"))

@@ -1,8 +1,8 @@
-use a3s_use_core::{
+use aster_use_core::{
     PlanActor, PlanPolicyDecision, PluginPermissionCeiling, PluginWorkspaceGrant,
     WorkspaceGrantAuthority, WorkspaceGrantEvidence, PLUGIN_WORKSPACE_GRANT_SCHEMA,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     StoredWorkspaceGrant, WorkspaceGrantReceipt, WorkspaceGrantRevocation, WorkspaceGrantStore,
 };
 use sha2::{Digest, Sha256};

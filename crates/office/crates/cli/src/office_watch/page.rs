@@ -3,7 +3,7 @@ pub(super) const WATCH_PAGE: &str = r#"<!doctype html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>A3S Native Office Watch</title>
+  <title>Aster Native Office Watch</title>
   <style>
     :root{color-scheme:light dark;font-family:ui-sans-serif,system-ui,sans-serif}
     *{box-sizing:border-box}body{margin:0;background:#111827;color:#f8fafc}
@@ -15,7 +15,7 @@ pub(super) const WATCH_PAGE: &str = r#"<!doctype html>
   </style>
 </head>
 <body>
-  <header><span id="dot" class="dot" aria-hidden="true"></span><h1>A3S Native Office semantic preview</h1><span id="status" class="status" role="status" aria-live="polite">Connecting…</span></header>
+  <header><span id="dot" class="dot" aria-hidden="true"></span><h1>Aster Native Office semantic preview</h1><span id="status" class="status" role="status" aria-live="polite">Connecting…</span></header>
   <main><iframe id="preview" title="Native Office semantic preview" sandbox referrerpolicy="no-referrer"></iframe></main>
   <script src="/watch.js" defer></script>
 </body>

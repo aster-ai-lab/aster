@@ -249,12 +249,12 @@ class LiveEightContracts(unittest.TestCase):
         def run(args, **kwargs):
             return subprocess.CompletedProcess(args, 0, json.dumps(results.pop(0)).encode(), b'')
         with mock.patch.object(l.subprocess, 'run', side_effect=run) as command:
-            self.assertEqual(l.systemd_pid('a3s-power@7.service'), 42)
+            self.assertEqual(l.systemd_pid('aster-power@7.service'), 42)
             self.assertIn('org.freedesktop.systemd1.Service', command.call_args_list[1].args[0])
         for bad in ({'type': 'u', 'data': [42]}, {'type': 's', 'data': '42'}, {'type': 'u', 'data': True}):
             results = [{'type': 'o', 'data': ['/unit/fixture']}, bad, {'type': 's', 'data': 'active'}]
             with mock.patch.object(l.subprocess, 'run', side_effect=run), self.assertRaises(l.m.GuardError):
-                l.systemd_pid('a3s-power@7.service')
+                l.systemd_pid('aster-power@7.service')
 
     def test_actual_production_native_receipt_and_power_artifact_are_required(self):
         fixed = {7: {'native': {'pid': 40}}}

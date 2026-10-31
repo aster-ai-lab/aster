@@ -4,23 +4,23 @@
 #[path = "durable_memory_semantic_refresh/support.rs"]
 mod refresh_support;
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingExecutorConfig, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError,
 };
-use a3s_code_core::memory::{
+use aster_core::memory::{
     AgentMemory, MemoryConfig, MemoryMaintenanceOptions, MemoryMaintenanceRuntime,
     ScheduledSemanticRefresh,
 };
-use a3s_code_core::{DurableMemoryRecallPolicy, DurableMemorySession};
-use a3s_memory::repository::{
+use aster_core::{DurableMemoryRecallPolicy, DurableMemorySession};
+use aster_durable_memory::repository::{
     InMemoryRepository, MemoryAccessEvent, MemoryChangeResult, MemoryChangeSet, MemoryNamespace,
     MemoryNamespaceChangeToken, MemoryNamespaceSnapshot, MemoryNode, MemoryOperation, MemoryQuery,
     MemoryQueryResult, MemoryRepository, MemoryRepositoryError, MemorySnapshotRequest,
     MemoryStatus, MemoryUsageSummary, RevisionMode,
 };
-use a3s_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
+use aster_durable_memory::InMemoryStore;
 use async_trait::async_trait;
 use refresh_support::*;
 use std::sync::atomic::{AtomicUsize, Ordering};

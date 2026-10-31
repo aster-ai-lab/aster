@@ -44,7 +44,7 @@ const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const XMLNS_NAMESPACE = 'http://www.w3.org/2000/xmlns/';
-const PARAGRAPH_SHADING_MARKER_PATTERN = /__A3S_WORK_PARAGRAPH_SHADING_\d+__/g;
+const PARAGRAPH_SHADING_MARKER_PATTERN = /__ASTER_WORK_PARAGRAPH_SHADING_\d+__/g;
 const WORD_THEME_COLORS = new Set([
   'dark1',
   'light1',
@@ -100,7 +100,7 @@ export function markDocxParagraphShading(
     invalidCount += resolved.invalidCount;
     spoofedCount += resolved.spoofedCount;
     if (!resolved.shading) continue;
-    const marker = `__A3S_WORK_PARAGRAPH_SHADING_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_SHADING_${paragraphs.length + 1}__`;
     const writableProperties =
       properties ?? insertParagraphProperties(document, paragraph);
     insertParagraphMarker(document, paragraph, writableProperties, marker);
@@ -117,7 +117,7 @@ export function applyImportedDocxParagraphShadingMarkers(
     markers.paragraphs.map(({ marker, shading }) => [marker, shading]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_SHADING_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_SHADING_')) continue;
     node.data = node.data.replace(
       PARAGRAPH_SHADING_MARKER_PATTERN,
       (marker) => {

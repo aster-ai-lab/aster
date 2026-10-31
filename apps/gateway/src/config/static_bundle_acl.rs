@@ -12,7 +12,7 @@ use super::{
 use crate::config::{StaticBundleConfig, StaticBundleManifestConfig};
 use crate::error::Result;
 use crate::static_object::StaticObjectEntry;
-use a3s_acl::{Block, Value};
+use aster_acl::{Block, Value};
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 

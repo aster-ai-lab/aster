@@ -5,8 +5,8 @@ edition = "2024"
 publish = false
 
 [dependencies]
-a3s-code-core = { path = "../../crates/code/core" }
-a3s-memory = { path = "../../crates/memory" }
+aster-core = { path = "../../crates/code/core" }
+aster-durable-memory = { path = "../../crates/memory" }
 anyhow = { workspace = true }
 async-trait = { workspace = true }
 crossterm = { workspace = true }

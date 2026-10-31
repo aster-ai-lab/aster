@@ -3,8 +3,8 @@ use std::os::windows::io::AsRawHandle;
 use std::path::Path;
 use std::ptr;
 
-use a3s_oci_agent_protocol::AgentVsockEndpoint;
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_agent_protocol::AgentVsockEndpoint;
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use tokio::net::windows::named_pipe::{NamedPipeServer, PipeMode, ServerOptions};
 use windows_sys::Win32::Foundation::{ERROR_ACCESS_DENIED, ERROR_PIPE_BUSY, HANDLE};
 use windows_sys::Win32::System::Pipes::GetNamedPipeClientProcessId;
@@ -138,12 +138,12 @@ fn bind_error(pipe_path: &str, error: std::io::Error) -> Error {
 mod tests {
     use std::sync::Arc;
 
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         serve_agent_connection, AgentCapabilities, AgentClient, AgentCreateRequest,
         AgentDeleteRequest, AgentKillRequest, AgentStartRequest, AgentState, AgentStateRequest,
         AgentVsockEndpoint, GuestAgentService, SessionToken, AGENT_PROTOCOL_VERSION_MAX,
     };
-    use a3s_oci_sdk::{async_trait, Error, ErrorCode, Result};
+    use aster_oci_sdk::{async_trait, Error, ErrorCode, Result};
     use tokio::net::windows::named_pipe::ClientOptions;
 
     use super::WindowsAgentPipeListener;

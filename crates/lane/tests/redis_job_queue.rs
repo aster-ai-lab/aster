@@ -1,6 +1,6 @@
 #![cfg(feature = "redis-backend")]
 
-use a3s_lane::{
+use aster_lane::{
     job_processor_fn, DeduplicationOptions, Job, JobContext, JobFinishedResult,
     JobFlowDependencyCountOptions, JobFlowDependencyKind, JobFlowDependencyPageCursor,
     JobFlowDependencyPageItem, JobFlowDependencyPageOptions, JobFlowDependencyPagesOptions,
@@ -26,7 +26,7 @@ async fn redis_test_guard() -> MutexGuard<'static, ()> {
     REDIS_TEST_LOCK.lock().await
 }
 
-fn lock_token(job: &a3s_lane::Job) -> &str {
+fn lock_token(job: &aster_lane::Job) -> &str {
     job.lock_token
         .as_deref()
         .expect("claimed job should carry a lock token")
@@ -39,7 +39,7 @@ fn ts(ms: i64) -> DateTime<Utc> {
 #[test]
 fn redis_backend_runs_job_lifecycle_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
 
@@ -67,7 +67,7 @@ fn redis_backend_runs_job_lifecycle_against_real_server() {
 #[tokio::test]
 async fn redis_backend_discards_configured_retry_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -80,7 +80,7 @@ async fn redis_backend_discards_configured_retry_against_real_server() {
 #[tokio::test]
 async fn redis_backend_preserves_replace_deduplication_ttl_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -156,7 +156,7 @@ async fn redis_backend_preserves_replace_deduplication_ttl_against_real_server()
 #[tokio::test]
 async fn redis_backend_cleans_only_unlocked_active_jobs_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -264,7 +264,7 @@ async fn redis_backend_cleans_only_unlocked_active_jobs_against_real_server() {
 #[tokio::test]
 async fn redis_backend_counts_states_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -277,7 +277,7 @@ async fn redis_backend_counts_states_against_real_server() {
 #[tokio::test]
 async fn redis_backend_reads_job_finished_results_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -293,7 +293,7 @@ async fn redis_backend_reads_job_finished_results_against_real_server() {
 #[tokio::test]
 async fn redis_backend_removes_orphaned_jobs_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -309,7 +309,7 @@ async fn redis_backend_removes_orphaned_jobs_against_real_server() {
 #[tokio::test]
 async fn redis_backend_remove_missing_prunes_orphaned_indexes_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -325,7 +325,7 @@ async fn redis_backend_remove_missing_prunes_orphaned_indexes_against_real_serve
 #[tokio::test]
 async fn redis_backend_saves_stacktrace_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -338,7 +338,7 @@ async fn redis_backend_saves_stacktrace_against_real_server() {
 #[tokio::test]
 async fn redis_backend_records_job_metrics_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -351,7 +351,7 @@ async fn redis_backend_records_job_metrics_against_real_server() {
 #[tokio::test]
 async fn redis_backend_renews_leases_in_bulk_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -364,7 +364,7 @@ async fn redis_backend_renews_leases_in_bulk_against_real_server() {
 #[tokio::test]
 async fn redis_backend_reports_maxed_active_limit_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -377,7 +377,7 @@ async fn redis_backend_reports_maxed_active_limit_against_real_server() {
 #[tokio::test]
 async fn redis_job_worker_uses_bulk_lease_renewal_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -393,7 +393,7 @@ async fn redis_job_worker_uses_bulk_lease_renewal_against_real_server() {
 #[tokio::test]
 async fn redis_backend_matches_bullmq_priority_update_guards_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -409,7 +409,7 @@ async fn redis_backend_matches_bullmq_priority_update_guards_against_real_server
 #[tokio::test]
 async fn redis_backend_allows_terminal_progress_updates_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -425,7 +425,7 @@ async fn redis_backend_allows_terminal_progress_updates_against_real_server() {
 #[tokio::test]
 async fn redis_backend_allows_terminal_data_updates_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -441,7 +441,7 @@ async fn redis_backend_allows_terminal_data_updates_against_real_server() {
 #[tokio::test]
 async fn redis_backend_emits_reschedule_delayed_events_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -457,7 +457,7 @@ async fn redis_backend_emits_reschedule_delayed_events_against_real_server() {
 #[tokio::test]
 async fn redis_backend_emits_delay_active_delayed_events_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -473,7 +473,7 @@ async fn redis_backend_emits_delay_active_delayed_events_against_real_server() {
 #[tokio::test]
 async fn redis_backend_release_active_pushes_back_waiting_jobs_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -489,7 +489,7 @@ async fn redis_backend_release_active_pushes_back_waiting_jobs_against_real_serv
 #[tokio::test]
 async fn redis_backend_guards_manual_active_transitions_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -505,7 +505,7 @@ async fn redis_backend_guards_manual_active_transitions_against_real_server() {
 #[tokio::test]
 async fn redis_backend_auto_removes_terminal_jobs_and_logs_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -521,7 +521,7 @@ async fn redis_backend_auto_removes_terminal_jobs_and_logs_against_real_server()
 #[tokio::test]
 async fn redis_backend_keeps_log_list_and_snapshot_consistent_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -537,7 +537,7 @@ async fn redis_backend_keeps_log_list_and_snapshot_consistent_against_real_serve
 #[tokio::test]
 async fn redis_backend_skips_stale_waiting_indexes_while_claiming_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -553,7 +553,7 @@ async fn redis_backend_skips_stale_waiting_indexes_while_claiming_against_real_s
 #[tokio::test]
 async fn redis_backend_cleans_completed_jobs_by_age_limit_and_millis_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -569,7 +569,7 @@ async fn redis_backend_cleans_completed_jobs_by_age_limit_and_millis_against_rea
 #[tokio::test]
 async fn redis_backend_retries_completed_jobs_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -582,7 +582,7 @@ async fn redis_backend_retries_completed_jobs_against_real_server() {
 #[tokio::test]
 async fn redis_backend_rejects_non_delayed_promote_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -2085,7 +2085,7 @@ async fn run_completed_retry(redis_url: String) -> redis::RedisResult<()> {
             .await
             .expect("flow dependency counts should load")
             .expect("flow dependency counts should exist"),
-        a3s_lane::JobFlowDependencyCounts {
+        aster_lane::JobFlowDependencyCounts {
             processed: 0,
             unprocessed: 1,
             failed: 0,
@@ -3250,7 +3250,7 @@ async fn run_missing_remove_orphan_prune(redis_url: String) -> redis::RedisResul
 #[tokio::test]
 async fn redis_backend_obliterates_queue_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3263,7 +3263,7 @@ async fn redis_backend_obliterates_queue_against_real_server() {
 #[tokio::test]
 async fn redis_backend_keeps_latest_repeat_duplicate_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3276,7 +3276,7 @@ async fn redis_backend_keeps_latest_repeat_duplicate_against_real_server() {
 #[tokio::test]
 async fn redis_backend_adds_repeat_from_scheduler_metadata_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3292,7 +3292,7 @@ async fn redis_backend_adds_repeat_from_scheduler_metadata_against_real_server()
 #[tokio::test]
 async fn redis_backend_rejects_expired_repeat_end_at_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3308,7 +3308,7 @@ async fn redis_backend_rejects_expired_repeat_end_at_against_real_server() {
 #[tokio::test]
 async fn redis_backend_rejects_bullmq_reserved_job_ids_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3324,7 +3324,7 @@ async fn redis_backend_rejects_bullmq_reserved_job_ids_against_real_server() {
 #[tokio::test]
 async fn redis_backend_clears_keep_last_next_on_manual_release_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3340,7 +3340,7 @@ async fn redis_backend_clears_keep_last_next_on_manual_release_against_real_serv
 #[tokio::test]
 async fn redis_backend_clears_keep_last_next_on_owner_removal_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3356,7 +3356,7 @@ async fn redis_backend_clears_keep_last_next_on_owner_removal_against_real_serve
 #[tokio::test]
 async fn redis_backend_clears_keep_last_next_for_stale_dedup_owner_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3372,7 +3372,7 @@ async fn redis_backend_clears_keep_last_next_for_stale_dedup_owner_against_real_
 #[tokio::test]
 async fn redis_backend_keeps_ttl_dedup_owner_after_completion_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3388,7 +3388,7 @@ async fn redis_backend_keeps_ttl_dedup_owner_after_completion_against_real_serve
 #[tokio::test]
 async fn redis_backend_materializes_flow_keep_last_after_parent_completion_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3404,7 +3404,7 @@ async fn redis_backend_materializes_flow_keep_last_after_parent_completion_again
 #[tokio::test]
 async fn redis_backend_materializes_flow_keep_last_after_parent_failure_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3421,7 +3421,7 @@ async fn redis_backend_materializes_flow_keep_last_after_parent_failure_against_
 async fn redis_backend_materializes_flow_keep_last_after_parent_stalled_failure_against_real_server(
 ) {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3437,7 +3437,7 @@ async fn redis_backend_materializes_flow_keep_last_after_parent_stalled_failure_
 #[tokio::test]
 async fn redis_backend_upserts_repeat_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3450,7 +3450,7 @@ async fn redis_backend_upserts_repeat_against_real_server() {
 #[tokio::test]
 async fn redis_backend_upserts_repeat_from_scheduler_metadata_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3466,7 +3466,7 @@ async fn redis_backend_upserts_repeat_from_scheduler_metadata_against_real_serve
 #[tokio::test]
 async fn redis_backend_rejects_repeat_retry_from_scheduler_metadata_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3482,7 +3482,7 @@ async fn redis_backend_rejects_repeat_retry_from_scheduler_metadata_against_real
 #[tokio::test]
 async fn redis_backend_releases_repeat_scheduler_metadata_without_fast_owner_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3498,7 +3498,7 @@ async fn redis_backend_releases_repeat_scheduler_metadata_without_fast_owner_aga
 #[tokio::test]
 async fn redis_backend_recovers_repeat_stalled_from_scheduler_metadata_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3514,7 +3514,7 @@ async fn redis_backend_recovers_repeat_stalled_from_scheduler_metadata_against_r
 #[tokio::test]
 async fn redis_backend_preserves_drained_repeat_from_scheduler_metadata_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3530,7 +3530,7 @@ async fn redis_backend_preserves_drained_repeat_from_scheduler_metadata_against_
 #[tokio::test]
 async fn redis_backend_preserves_cleaned_repeat_from_scheduler_metadata_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3546,7 +3546,7 @@ async fn redis_backend_preserves_cleaned_repeat_from_scheduler_metadata_against_
 #[tokio::test]
 async fn redis_backend_syncs_repeat_scheduler_metadata_on_nonterminal_moves_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3562,7 +3562,7 @@ async fn redis_backend_syncs_repeat_scheduler_metadata_on_nonterminal_moves_agai
 #[tokio::test]
 async fn redis_backend_removes_repeat_from_scheduler_metadata_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3578,7 +3578,7 @@ async fn redis_backend_removes_repeat_from_scheduler_metadata_against_real_serve
 #[tokio::test]
 async fn redis_backend_reads_repeat_from_scheduler_metadata_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3594,7 +3594,7 @@ async fn redis_backend_reads_repeat_from_scheduler_metadata_against_real_server(
 #[tokio::test]
 async fn redis_backend_orders_lifo_waiting_jobs_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3607,7 +3607,7 @@ async fn redis_backend_orders_lifo_waiting_jobs_against_real_server() {
 #[tokio::test]
 async fn redis_backend_records_queue_events_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3620,7 +3620,7 @@ async fn redis_backend_records_queue_events_against_real_server() {
 #[tokio::test]
 async fn redis_backend_trims_queue_events_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3636,7 +3636,7 @@ async fn redis_backend_trims_queue_events_against_real_server() {
 #[tokio::test]
 async fn redis_backend_records_bulk_dedup_events_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3649,7 +3649,7 @@ async fn redis_backend_records_bulk_dedup_events_against_real_server() {
 #[tokio::test]
 async fn redis_backend_emits_flow_parent_transition_events_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3665,7 +3665,7 @@ async fn redis_backend_emits_flow_parent_transition_events_against_real_server()
 #[tokio::test]
 async fn redis_backend_records_flow_dedup_events_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3678,7 +3678,7 @@ async fn redis_backend_records_flow_dedup_events_against_real_server() {
 #[tokio::test]
 async fn redis_backend_reuses_flow_duplicate_job_ids_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3694,7 +3694,7 @@ async fn redis_backend_reuses_flow_duplicate_job_ids_against_real_server() {
 #[tokio::test]
 async fn redis_backend_emits_retries_exhausted_event_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3710,7 +3710,7 @@ async fn redis_backend_emits_retries_exhausted_event_against_real_server() {
 #[tokio::test]
 async fn redis_backend_emits_stalled_recovery_events_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3726,7 +3726,7 @@ async fn redis_backend_emits_stalled_recovery_events_against_real_server() {
 #[tokio::test]
 async fn redis_backend_guards_stalled_recovery_indexes_and_tokens_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3742,7 +3742,7 @@ async fn redis_backend_guards_stalled_recovery_indexes_and_tokens_against_real_s
 #[tokio::test]
 async fn redis_backend_updates_worker_markers_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3755,7 +3755,7 @@ async fn redis_backend_updates_worker_markers_against_real_server() {
 #[tokio::test]
 async fn redis_backend_suppresses_paused_claim_promotion_marker_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3771,7 +3771,7 @@ async fn redis_backend_suppresses_paused_claim_promotion_marker_against_real_ser
 #[tokio::test]
 async fn redis_backend_blocks_on_worker_markers_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3787,7 +3787,7 @@ async fn redis_backend_blocks_on_worker_markers_against_real_server() {
 #[tokio::test]
 async fn redis_backend_job_worker_uses_marker_blocking_claims_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3800,7 +3800,7 @@ async fn redis_backend_job_worker_uses_marker_blocking_claims_against_real_serve
 #[tokio::test]
 async fn redis_backend_applies_finished_retention_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3813,7 +3813,7 @@ async fn redis_backend_applies_finished_retention_against_real_server() {
 #[tokio::test]
 async fn redis_backend_ignores_flow_dependency_failure_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -3990,7 +3990,7 @@ async fn run_ignored_flow_dependency_failure(redis_url: String) -> redis::RedisR
 #[tokio::test]
 async fn redis_backend_defers_flow_parent_failure_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -4136,7 +4136,7 @@ async fn run_deferred_flow_parent_failure(redis_url: String) -> redis::RedisResu
 #[tokio::test]
 async fn redis_backend_paginates_flow_dependencies_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -4474,7 +4474,7 @@ async fn run_paginated_flow_dependencies(redis_url: String) -> redis::RedisResul
 #[tokio::test]
 async fn redis_backend_restores_flow_dependency_on_retry_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -4675,7 +4675,7 @@ async fn run_retry_restores_flow_dependency(redis_url: String) -> redis::RedisRe
 #[tokio::test]
 async fn redis_backend_guards_flow_parent_completion_with_unsuccessful_index_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -4953,7 +4953,7 @@ async fn run_flow_parent_unsuccessful_dependency_index(
 #[tokio::test]
 async fn redis_backend_writes_flow_parent_dependency_side_indexes_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -5121,7 +5121,7 @@ async fn run_flow_parent_dependency_side_indexes(redis_url: String) -> redis::Re
 #[tokio::test]
 async fn redis_backend_merges_flow_side_indexes_with_retained_snapshots_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -5475,7 +5475,7 @@ async fn run_flow_side_index_snapshot_merge(redis_url: String) -> redis::RedisRe
 #[tokio::test]
 async fn redis_backend_indexes_reused_completed_flow_children_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -5744,7 +5744,7 @@ async fn run_reused_completed_flow_child_side_indexes(redis_url: String) -> redi
 #[tokio::test]
 async fn redis_backend_adds_dynamic_flow_children_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -6329,7 +6329,7 @@ async fn run_dynamic_flow_children(redis_url: String) -> redis::RedisResult<()> 
 #[tokio::test]
 async fn redis_backend_continues_flow_dependency_failure_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -6508,7 +6508,7 @@ async fn run_continued_flow_dependency_failure(redis_url: String) -> redis::Redi
 #[tokio::test]
 async fn redis_backend_removes_flow_dependency_failure_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -6524,7 +6524,7 @@ async fn redis_backend_removes_flow_dependency_failure_against_real_server() {
 #[tokio::test]
 async fn redis_backend_removes_stale_terminal_child_dependency_against_real_server() {
     let Some(redis_url) = redis_url() else {
-        eprintln!("skipping Redis integration test; set A3S_LANE_REDIS_URL");
+        eprintln!("skipping Redis integration test; set ASTER_LANE_REDIS_URL");
         return;
     };
     let _guard = redis_test_guard().await;
@@ -18953,7 +18953,7 @@ async fn sleep_until_due(scheduled_at: DateTime<Utc>) {
 fn redis_url() -> Option<String> {
     REDIS_TEST_URL
         .get_or_init(|| {
-            let value = std::env::var("A3S_LANE_REDIS_URL")
+            let value = std::env::var("ASTER_LANE_REDIS_URL")
                 .ok()
                 .filter(|value| !value.trim().is_empty())?;
 
@@ -18961,7 +18961,7 @@ fn redis_url() -> Option<String> {
                 Ok(()) => Some(value),
                 Err(error) => {
                     eprintln!(
-                        "skipping Redis integration test; A3S_LANE_REDIS_URL is not usable: {error}"
+                        "skipping Redis integration test; ASTER_LANE_REDIS_URL is not usable: {error}"
                     );
                     None
                 }
@@ -19021,13 +19021,13 @@ fn unique_namespace() -> String {
         .as_millis();
     let sequence = NAMESPACE_COUNTER.fetch_add(1, Ordering::Relaxed);
     format!(
-        "a3s:lane:test:{}:{timestamp}:{sequence}",
+        "aster:lane:test:{}:{timestamp}:{sequence}",
         std::process::id()
     )
 }
 
 fn trace_stage(stage: &str) {
-    if std::env::var_os("A3S_LANE_REDIS_TRACE").is_some() {
+    if std::env::var_os("ASTER_LANE_REDIS_TRACE").is_some() {
         eprintln!("[redis_job_queue] {stage}");
     }
 }

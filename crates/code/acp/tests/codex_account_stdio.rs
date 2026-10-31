@@ -63,24 +63,24 @@ async fn catalog(
     let config = root.path().join("config.acl");
     std::fs::write(&config, "import_accounts = [\"codex\"]\n").expect("trusted ACL");
 
-    let mut command = tokio::process::Command::new(env!("CARGO_BIN_EXE_a3s-code-acp"));
+    let mut command = tokio::process::Command::new(env!("CARGO_BIN_EXE_aster-acp"));
     command
         .current_dir(&workspace)
         .args([OsStr::new("--config"), config.as_os_str()])
         .env("USERPROFILE", &profile)
-        .env("A3S_HOME", root.path().join("state"))
-        .env("A3S_STATE_HOME", root.path().join("state"))
-        .env("A3S_CODE_LOG_FILE", "0")
-        .env("A3S_DISABLE_CODEX_ACCOUNT", "0")
-        .env_remove("A3S_DEFAULT_MODEL")
-        .env_remove("A3S_CONFIG")
+        .env("ASTER_HOME", root.path().join("state"))
+        .env("ASTER_STATE_HOME", root.path().join("state"))
+        .env("ASTER_LOG_FILE", "0")
+        .env("ASTER_DISABLE_CODEX_ACCOUNT", "0")
+        .env_remove("ASTER_DEFAULT_MODEL")
+        .env_remove("ASTER_CONFIG")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .kill_on_drop(true);
     for (key, value, directory) in [
         ("HOME", home, &user_home),
-        ("A3S_CODEX_HOME", aster_home, &aster),
+        ("ASTERX_HOME", aster_home, &aster),
         ("CODEX_HOME", codex_home, &codex),
     ] {
         match value {

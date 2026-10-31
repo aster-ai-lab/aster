@@ -2,20 +2,20 @@
 //!
 //! Utility-VM Hosts only accept bundles under
 //! `bundle-handoffs/<container>/<create-operation>/bundle` with the
-//! `dev.a3s.bundle-handoff=move-to-runtime-v1` annotation. containerd's task
+//! `dev.aster.bundle-handoff=move-to-runtime-v1` annotation. containerd's task
 //! bundle is caller-owned; this module materializes a private copy at the exact
 //! handoff path before Create is dispatched.
 
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     runtime_bundle_handoff_directory, ContainerId, CreateAttachments, Error, ErrorCode,
     IsolationRequest, OciBundle, OperationContext, ProcessIo, Result,
     RUNTIME_BUNDLE_HANDOFF_EXTENSION, RUNTIME_BUNDLE_HANDOFF_MOVE_V1,
 };
 
-const RUNTIME_ROOT_ENV: &str = "A3S_OCI_RUNTIME_ROOT";
+const RUNTIME_ROOT_ENV: &str = "ASTER_OCI_RUNTIME_ROOT";
 
 pub(crate) fn requires_bundle_handoff(isolation: &IsolationRequest) -> bool {
     matches!(
@@ -341,7 +341,7 @@ fn handoff_error(code: ErrorCode, message: impl Into<String>) -> Error {
 #[cfg(test)]
 mod tests {
     use super::{materialize_for_create, requires_bundle_handoff, RUNTIME_ROOT_ENV};
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         ContainerId, IsolationRequest, OperationContext, OperationId, ProcessIo,
         RUNTIME_BUNDLE_HANDOFF_EXTENSION, RUNTIME_BUNDLE_HANDOFF_MOVE_V1,
     };
@@ -381,7 +381,7 @@ mod tests {
     #[tokio::test]
     async fn dedicated_vm_handoff_requires_root_env_and_materializes_path() {
         // Keep env mutations serialized inside one test so parallel workers cannot
-        // race on process-global A3S_OCI_RUNTIME_ROOT.
+        // race on process-global ASTER_OCI_RUNTIME_ROOT.
         let previous = std::env::var_os(RUNTIME_ROOT_ENV);
         std::env::remove_var(RUNTIME_ROOT_ENV);
         let source = tempfile::tempdir().expect("source");
@@ -395,7 +395,7 @@ mod tests {
         )
         .await
         .expect_err("missing runtime root must fail");
-        assert_eq!(missing.code, a3s_oci_sdk::ErrorCode::FailedPrecondition);
+        assert_eq!(missing.code, aster_oci_sdk::ErrorCode::FailedPrecondition);
 
         let runtime_root = tempfile::tempdir().expect("runtime root");
         std::fs::set_permissions(runtime_root.path(), std::fs::Permissions::from_mode(0o700))

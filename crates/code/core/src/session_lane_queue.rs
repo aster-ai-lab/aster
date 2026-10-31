@@ -1,7 +1,7 @@
-//! Session Lane Queue - a3s-lane backed command queue
+//! Session Lane Queue - aster-lane backed command queue
 //!
 //! Provides per-session command queues with lane-based priority scheduling,
-//! backed by a3s-lane directly (no intermediate wrapper).
+//! backed by aster-lane directly (no intermediate wrapper).
 //!
 //! ## Features
 //!
@@ -18,7 +18,7 @@ use crate::queue::{
     PriorityBoostConfig as SessionPriorityBoostConfig, RateLimitConfig as SessionRateLimitConfig,
     RetryPolicyConfig, SessionCommand, SessionQueueConfig, TaskHandlerMode,
 };
-use a3s_lane::{
+use aster_lane::{
     AlertManager, Command as LaneCommand, DeadLetter, EventEmitter, LaneConfig, LaneError,
     LocalStorage, MetricsSnapshot, PriorityBoostConfig as LanePriorityBoostConfig, QueueManager,
     QueueManagerBuilder, QueueMetrics, RateLimitConfig as LaneRateLimitConfig,
@@ -33,11 +33,11 @@ use std::time::{Duration, Instant};
 use tokio::sync::{broadcast, oneshot, RwLock};
 
 // ============================================================================
-// SessionLane → a3s-lane mapping
+// SessionLane → aster-lane mapping
 // ============================================================================
 
 impl SessionLane {
-    /// Get a3s-lane lane ID string
+    /// Get aster-lane lane ID string
     fn lane_id(self) -> &'static str {
         match self {
             SessionLane::Control => "control",
@@ -62,7 +62,7 @@ struct PendingExternalTask {
 // Session Command Adapter
 // ============================================================================
 
-/// Adapter that wraps SessionCommand for a3s-lane execution
+/// Adapter that wraps SessionCommand for aster-lane execution
 pub struct SessionCommandAdapter {
     inner: Box<dyn SessionCommand>,
     task_id: String,
@@ -209,7 +209,7 @@ impl LaneCommand for SessionCommandAdapter {
     }
 }
 
-/// Per-session command queue backed by a3s-lane with external task handling
+/// Per-session command queue backed by aster-lane with external task handling
 pub struct SessionLaneQueue {
     session_id: String,
     manager: Arc<QueueManager>,
@@ -250,7 +250,7 @@ impl SessionLaneQueue {
         })
     }
 
-    /// Build a3s-lane QueueManager directly from SessionQueueConfig
+    /// Build aster-lane QueueManager directly from SessionQueueConfig
     async fn build_queue_manager(
         config: &SessionQueueConfig,
     ) -> Result<(QueueManager, Option<QueueMetrics>)> {
@@ -298,7 +298,7 @@ impl SessionLaneQueue {
     }
 
     /// Translate the public session queue configuration into the exact
-    /// a3s-lane settings for one lane. Keeping this conversion in one place
+    /// aster-lane settings for one lane. Keeping this conversion in one place
     /// prevents advertised ACL options from silently falling back to unrelated
     /// hard-coded values.
     fn build_lane_config(config: &SessionQueueConfig, lane: SessionLane) -> Result<LaneConfig> {
@@ -951,7 +951,7 @@ mod tests {
     }
 
     #[test]
-    fn advanced_queue_options_are_forwarded_to_a3s_lane() {
+    fn advanced_queue_options_are_forwarded_to_aster_lane() {
         let mut lane_timeouts = HashMap::new();
         lane_timeouts.insert(SessionLane::Execute, 12_000);
         let config = SessionQueueConfig {

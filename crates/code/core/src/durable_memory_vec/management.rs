@@ -217,8 +217,8 @@ impl ManagedMemory {
             ));
         }
         let mut metadata: BTreeMap<_, _> = item.metadata.into_iter().collect();
-        metadata.insert("a3s.session_id".into(), session_id.into());
-        metadata.insert("a3s.memory_id".into(), item.id.clone());
+        metadata.insert("aster.session_id".into(), session_id.into());
+        metadata.insert("aster.memory_id".into(), item.id.clone());
         let memory_type = match item.memory_type {
             MemoryType::Working => StoredMemoryType::Working,
             MemoryType::Episodic => StoredMemoryType::Episodic,
@@ -428,7 +428,7 @@ impl VecMemoryStore {
                     })
                     .collect::<Vec<_>>()
                     .join(" AND ");
-                let mut fts = a3s_vec::Fts::new().map_err(MemoryManagementFailure::failed)?;
+                let mut fts = aster_vec::Fts::new().map_err(MemoryManagementFailure::failed)?;
                 fts.set_query_string(&expression)
                     .map_err(MemoryManagementFailure::failed)?;
                 let mut substring = SearchQuery::fts(CONTENT_FIELD, &fts, limit as i32)
@@ -718,7 +718,7 @@ impl VecMemoryStore {
             .map_err(|_| anyhow!("memory vectors lock is poisoned"))?;
         let result = self.collection.delete(&[id]).map_err(display_error)?;
         if result.error_count != 0 {
-            return Err(anyhow!("a3s-vec memory delete rejected {id}"));
+            return Err(anyhow!("aster-vec memory delete rejected {id}"));
         }
         if let Some(content) = content {
             let hash = <[u8; 32]>::from(Sha256::digest(content.trim().as_bytes()));

@@ -5,7 +5,7 @@ use std::sync::MutexGuard;
 use std::sync::Weak;
 use std::sync::{Arc, Mutex};
 
-use a3s_box_core::{
+use aster_box_core::{
     ExecutionGeneration, ExecutionId, ExecutionIsolation, ExecutionManagerError,
     ExecutionManagerResult, ExecutionResourceUpdate, ExecutionSnapshotId, KillExecutionOptions,
     OperationId, RestartExecutionOptions,
@@ -84,7 +84,7 @@ enum OwnedLifecycleStage {
         store: crate::ManagedExecutionStore,
         home_dir: PathBuf,
         lifecycle: Arc<super::ExecutionLifecycleLock>,
-        physical_budget: a3s_box_core::vmm::OwnedCloseBudget,
+        physical_budget: aster_box_core::vmm::OwnedCloseBudget,
     },
     ReconcileRetainedRemove {
         execution_id: ExecutionId,
@@ -132,7 +132,7 @@ impl OwnedLifecycleRequest {
         store: crate::ManagedExecutionStore,
         home_dir: PathBuf,
         lifecycle: Arc<super::ExecutionLifecycleLock>,
-        physical_budget: a3s_box_core::vmm::OwnedCloseBudget,
+        physical_budget: aster_box_core::vmm::OwnedCloseBudget,
     ) -> Self {
         Self {
             stage: OwnedLifecycleStage::StopSelected {
@@ -353,7 +353,7 @@ impl LocalExecutionManager {
                     .image_config
                     .as_ref()
                     .and_then(|config| config.health_check.as_ref())
-                    .is_some_and(a3s_box_core::SnapshotImageHealthCheck::is_enabled)
+                    .is_some_and(aster_box_core::SnapshotImageHealthCheck::is_enabled)
             {
                 return Err(ExecutionManagerError::InvalidRequest(
                     "container health checks are not supported on Windows; the snapshot image defines an effective health check"
@@ -710,7 +710,7 @@ impl<'a> ValidatedOwnedCall<'a> {
 
     pub(super) fn stage(
         &self,
-        budget: a3s_box_core::vmm::OwnedCleanupBudget,
+        budget: aster_box_core::vmm::OwnedCleanupBudget,
     ) -> ExecutionManagerResult<OwnedStageBinding> {
         self.validate(&self.binding)?;
         if budget.remaining_at(std::time::Instant::now()).is_zero() {

@@ -1,5 +1,5 @@
-use a3s_oci_agent_protocol::AgentInheritedDescriptorSchema;
-use a3s_oci_sdk::{ContainerId, CreateAttachments, CreateRequest, OciBundle, Result};
+use aster_oci_agent_protocol::AgentInheritedDescriptorSchema;
+use aster_oci_sdk::{ContainerId, CreateAttachments, CreateRequest, OciBundle, Result};
 use serde::Serialize;
 
 use super::model::{StoredOperation, StoredOperationKind};
@@ -9,7 +9,7 @@ use super::operation::{request_digest, validate_retry, RequestDigests};
 struct CreateRequestFingerprint<'a> {
     id: &'a ContainerId,
     bundle: &'a OciBundle,
-    isolation: &'a a3s_oci_sdk::IsolationRequest,
+    isolation: &'a aster_oci_sdk::IsolationRequest,
     attachments: &'a CreateAttachments,
     #[serde(skip_serializing_if = "Option::is_none")]
     inherited_descriptors: Option<&'a AgentInheritedDescriptorSchema>,

@@ -4,7 +4,7 @@ This repository applies [github/spec-kit](https://github.com/github/spec-kit)
 in adapted form. The house templates, constitution, and commands live
 in this tree. They do not call spec-kit's installer.
 
-Reference revision at adoption in the sibling A3S OS repository:
+Reference revision at adoption in the sibling Aster OS repository:
 `e1fa857a`. This copy is the Aster adaptation of that integration.
 
 ## What was adopted

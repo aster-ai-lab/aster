@@ -2,7 +2,7 @@
 //! separate independent golden-bit tests; this oracle uses their decoded
 //! values and independent F64 routing, dots, activation and mHC equations.
 use super::*;
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 
 struct HostMatrix {
     raw: Vec<u8>,

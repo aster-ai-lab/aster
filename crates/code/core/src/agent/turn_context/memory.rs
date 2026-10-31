@@ -161,7 +161,7 @@ const MEMORY_USAGE_COUNT_METADATA: &str = "usage_count";
 /// digests) are skipped silently, and a repeated id counts once per call.
 #[cfg(test)]
 pub(super) async fn record_memory_usage(
-    store: &dyn a3s_memory::MemoryStore,
+    store: &dyn aster_durable_memory::MemoryStore,
     recalled: &[(String, String, f32)],
     final_text: &str,
 ) {
@@ -173,7 +173,7 @@ pub(super) async fn record_memory_usage(
 /// lexical arm could not decide (no qualifying token, or a token absent
 /// from the final text) — a paraphrase then still counts as use.
 pub(super) async fn record_memory_usage_with_semantics(
-    store: &dyn a3s_memory::MemoryStore,
+    store: &dyn aster_durable_memory::MemoryStore,
     recalled: &[(String, String, f32)],
     final_text: &str,
     semantic: Option<&crate::memory::SemanticUsageJudge>,
@@ -216,7 +216,7 @@ pub(super) async fn record_memory_usage_with_semantics(
 /// even if a future caller widens it.
 const SEMANTIC_USAGE_JUDGE_BUDGET: usize = 8;
 
-async fn bump_memory_usage(store: &dyn a3s_memory::MemoryStore, memory_id: &str) {
+async fn bump_memory_usage(store: &dyn aster_durable_memory::MemoryStore, memory_id: &str) {
     match store.retrieve(memory_id).await {
         Ok(Some(mut item)) => {
             add_memory_usage_count(&mut item, 1);
@@ -250,7 +250,7 @@ pub(super) fn distinctive_usage_token(content: &str) -> Option<String> {
 }
 
 /// Read a memory item's V1 usage counter (metadata-backed, default 0).
-pub(super) fn memory_usage_count(item: &a3s_memory::MemoryItem) -> u32 {
+pub(super) fn memory_usage_count(item: &aster_durable_memory::MemoryItem) -> u32 {
     item.metadata
         .get(MEMORY_USAGE_COUNT_METADATA)
         .and_then(|raw| raw.trim().parse().ok())
@@ -258,7 +258,7 @@ pub(super) fn memory_usage_count(item: &a3s_memory::MemoryItem) -> u32 {
 }
 
 /// Add `increment` to a memory item's V1 usage counter.
-pub(super) fn add_memory_usage_count(item: &mut a3s_memory::MemoryItem, increment: u32) {
+pub(super) fn add_memory_usage_count(item: &mut aster_durable_memory::MemoryItem, increment: u32) {
     let updated = memory_usage_count(item).saturating_add(increment);
     item.metadata
         .insert(MEMORY_USAGE_COUNT_METADATA.to_string(), updated.to_string());

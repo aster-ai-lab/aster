@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@a3s-lab/ui'
+import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Dropzone> = {
   title: 'Components/Primitives/Dropzone',

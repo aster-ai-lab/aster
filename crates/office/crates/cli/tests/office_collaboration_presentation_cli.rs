@@ -14,7 +14,7 @@ use support::{
 };
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(args: &[&str]) -> Output {

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{preserve_space_attribute, qualified};
 use crate::xml_edit::{apply_patches, escape_text, IndexedXmlElement, XmlPatch};

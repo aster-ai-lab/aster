@@ -2,12 +2,12 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_use_core::{Artifact, DomainDiagnostic, Readiness};
+use aster_use_core::{Artifact, DomainDiagnostic, Readiness};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
-pub use a3s_use_core::{UseError, UseResult};
+pub use aster_use_core::{UseError, UseResult};
 
 /// Source-tree root of the Browser driver and its packaged assets.
 ///
@@ -143,7 +143,7 @@ impl BrowserRuntime {
 }
 
 /// Initial provider used until the proven Chrome implementation is extracted
-/// from A3S Search.
+/// from Aster Search.
 pub struct UnavailableRenderer;
 
 #[async_trait]
@@ -153,7 +153,7 @@ impl PageRenderer for UnavailableRenderer {
             "use.browser.runtime_missing",
             "No compatible browser provider is configured.",
         )
-        .with_suggestion("Run 'a3s install use/browser' or configure a system browser."))
+        .with_suggestion("Run 'aster install use/browser' or configure a system browser."))
     }
 }
 
@@ -179,7 +179,7 @@ pub fn doctor() -> DomainDiagnostic {
             version: None,
             path: None,
             message: "No compatible browser provider was found.".to_string(),
-            suggestions: vec!["Run 'a3s install use/browser'.".to_string()],
+            suggestions: vec!["Run 'aster install use/browser'.".to_string()],
         }
     }
     #[cfg(not(feature = "chrome"))]
@@ -200,7 +200,7 @@ pub fn doctor() -> DomainDiagnostic {
             version: None,
             path: None,
             message: "No compatible system browser was found.".to_string(),
-            suggestions: vec!["Run 'a3s install use/browser'.".to_string()],
+            suggestions: vec!["Run 'aster install use/browser'.".to_string()],
         },
     }
 }
@@ -212,7 +212,7 @@ pub fn discover_system_browser() -> Option<PathBuf> {
     }
     #[cfg(not(feature = "chrome"))]
     {
-        if let Some(path) = std::env::var_os("A3S_BROWSER_EXECUTABLE").map(PathBuf::from) {
+        if let Some(path) = std::env::var_os("ASTER_BROWSER_EXECUTABLE").map(PathBuf::from) {
             if executable(&path) {
                 return Some(path);
             }

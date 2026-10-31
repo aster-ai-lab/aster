@@ -1,9 +1,9 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanScope, PluginOperationAction, PluginReleaseChannel, PluginSurfaceRef, UseResult,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionLifecycleIdentity, ExtensionLifecyclePackage, ExtensionManifest, InstalledExtension,
     TrustedRegistry,
 };
@@ -442,7 +442,7 @@ impl PackageManager {
 
     async fn install_dispositions(
         &self,
-        lock: &a3s_use_core::PluginPackageLock,
+        lock: &aster_use_core::PluginPackageLock,
     ) -> UseResult<(
         BTreeMap<String, InstallDisposition>,
         BTreeMap<String, InstalledExtension>,
@@ -478,7 +478,7 @@ impl PackageManager {
 
     async fn verify_published_closure(
         &self,
-        lock: &a3s_use_core::PluginPackageLock,
+        lock: &aster_use_core::PluginPackageLock,
         installed: &BTreeMap<String, InstalledExtension>,
     ) -> UseResult<()> {
         let snapshot = self.registry.snapshot().await?;
@@ -511,7 +511,7 @@ impl PackageManager {
 
     async fn replay_published_install(
         &self,
-        lock: &a3s_use_core::PluginPackageLock,
+        lock: &aster_use_core::PluginPackageLock,
         pending: &PendingPackageGraphOperation,
         installed: &BTreeMap<String, InstalledExtension>,
     ) -> UseResult<()> {
@@ -628,7 +628,7 @@ impl PackageManager {
 }
 
 fn validate_prepared_closure(
-    lock: &a3s_use_core::PluginPackageLock,
+    lock: &aster_use_core::PluginPackageLock,
     dispositions: &BTreeMap<String, InstallDisposition>,
     manifests: &BTreeMap<String, ExtensionManifest>,
     prepared: &[PreparedInstallPackage],
@@ -658,7 +658,7 @@ fn validate_prepared_closure(
 #[allow(clippy::too_many_arguments)]
 fn validate_replay(
     pending: &PendingPackageGraphOperation,
-    lock: &a3s_use_core::PluginPackageLock,
+    lock: &aster_use_core::PluginPackageLock,
     dispositions: &BTreeMap<String, InstallDisposition>,
     surface_selections: &BTreeMap<String, Vec<PluginSurfaceRef>>,
     admitted_manifests: &BTreeMap<String, ExtensionManifest>,
@@ -691,7 +691,7 @@ fn validate_replay(
 }
 
 fn install_surface_selections(
-    lock: &a3s_use_core::PluginPackageLock,
+    lock: &aster_use_core::PluginPackageLock,
     dispositions: &BTreeMap<String, InstallDisposition>,
     installed: &BTreeMap<String, InstalledExtension>,
     requested_root_surfaces: Option<&[PluginSurfaceRef]>,

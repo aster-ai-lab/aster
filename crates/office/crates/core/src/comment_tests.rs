@@ -477,7 +477,7 @@ async fn comment_updates_preserve_unknown_attributes_and_extension_nodes() {
         .unwrap()
         .replacen(
             "<w:comments ",
-            "<w:comments xmlns:x=\"urn:a3s:unknown\" ",
+            "<w:comments xmlns:x=\"urn:aster:unknown\" ",
             1,
         )
         .replacen("<w:comment ", "<w:comment x:keep=\"word\" ", 1)
@@ -524,7 +524,7 @@ async fn comment_updates_preserve_unknown_attributes_and_extension_nodes() {
     let mut package = sheet.package().clone();
     let sheet_xml = String::from_utf8(package.part(&sheet_part).unwrap().to_vec())
         .unwrap()
-        .replacen("<comments ", "<comments xmlns:x=\"urn:a3s:unknown\" ", 1)
+        .replacen("<comments ", "<comments xmlns:x=\"urn:aster:unknown\" ", 1)
         .replacen("<comment ", "<comment x:keep=\"sheet\" ", 1)
         .replacen(
             "</comment>",
@@ -565,7 +565,7 @@ async fn comment_updates_preserve_unknown_attributes_and_extension_nodes() {
     let mut package = deck.package().clone();
     let deck_xml = String::from_utf8(package.part(&deck_part).unwrap().to_vec())
         .unwrap()
-        .replacen("<p:cmLst ", "<p:cmLst xmlns:x=\"urn:a3s:unknown\" ", 1)
+        .replacen("<p:cmLst ", "<p:cmLst xmlns:x=\"urn:aster:unknown\" ", 1)
         .replacen("<p:cm ", "<p:cm x:keep=\"deck\" ", 1)
         .replacen(
             "</p:cm>",

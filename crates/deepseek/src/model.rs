@@ -5,8 +5,8 @@
 
 use std::collections::BTreeSet;
 
-use a3s_power::error::{PowerError, Result};
-use a3s_power::inference::{RuntimeDevice, RuntimeDeviceIdentity, RuntimeDeviceKind};
+use aster_power::error::{PowerError, Result};
+use aster_power::inference::{RuntimeDevice, RuntimeDeviceIdentity, RuntimeDeviceKind};
 use sha2::{Digest, Sha256};
 
 pub const OFFICIAL_REPOSITORY: &str = "deepseek-ai/DeepSeek-V4.1-Flash-1017";
@@ -307,7 +307,7 @@ fn validate_runtime_requirements_for_model(
 ) -> Result<()> {
     if !cuda_compiled {
         return Err(unavailable(
-            "native DeepSeek requires the a3s-deepseek cuda build feature",
+            "native DeepSeek requires the aster-deepseek cuda build feature",
         ));
     }
     let expected = expected_ordinals.iter().copied().collect::<BTreeSet<_>>();

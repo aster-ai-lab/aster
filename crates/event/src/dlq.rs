@@ -183,7 +183,7 @@ impl SinkDlqHandler {
         let mut event = Event::typed(
             format!("events.dlq.{}", dle.event.event.subject),
             "dlq",
-            "a3s.dlq.dead_letter",
+            "aster.dlq.dead_letter",
             1,
             format!("Dead letter: {}", dle.reason),
             "dlq-handler",
@@ -372,7 +372,7 @@ mod tests {
         // Verify event was forwarded to sink
         let events = collector.events().await;
         assert_eq!(events.len(), 1);
-        assert_eq!(events[0].event_type, "a3s.dlq.dead_letter");
+        assert_eq!(events[0].event_type, "aster.dlq.dead_letter");
         assert_eq!(events[0].category, "dlq");
         assert_eq!(events[0].metadata["dlq_reason"], "processing error");
         assert_eq!(

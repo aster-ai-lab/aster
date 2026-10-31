@@ -1,18 +1,14 @@
 [submodule "cloud"]
 	path = apps/cloud
-	url = git@github.com:kense-labs/cloud.git
+	url = git@github.com:aster-ai-lab/cloud.git
 [submodule "api"]
 	path = apps/api
-	url = git@github.com:kense-labs/api.git
+	url = git@github.com:aster-ai-lab/api.git
 [submodule "studio"]
 	path = apps/studio
-	url = git@github.com:kense-labs/studio.git
+	url = git@github.com:aster-ai-lab/studio.git
 	branch = main
 [submodule "dashboard"]
 	path = apps/dashboard
-	url = git@github.com:kense-labs/dashbaord.git
-	branch = main
-[submodule "crates/power"]
-	path = crates/power
-	url = git@github.com:A3S-Lab/Power.git
+	url = git@github.com:aster-ai-lab/dashboard.git
 	branch = main

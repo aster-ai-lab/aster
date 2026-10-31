@@ -2,8 +2,8 @@ use std::fs::File;
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
-use a3s_use_extension::ExtensionPaths;
+use aster_use_core::{UseError, UseResult};
+use aster_use_extension::ExtensionPaths;
 use sha2::{Digest, Sha256};
 
 use super::journal::StateRestoreOperation;
@@ -233,7 +233,7 @@ fn apply_publication(
         remove_owned_file(target)?;
         maybe_test_crash(&format!("action-{index}-target-removed"));
     }
-    a3s_use_extension::rename_path_with_windows_retry_blocking(candidate, target)
+    aster_use_extension::rename_path_with_windows_retry_blocking(candidate, target)
         .map_err(|error| filesystem_io("publish restore candidate", target, error))?;
     sync_parent(candidate)?;
     if candidate.parent() != target.parent() {
@@ -258,7 +258,7 @@ fn remove_candidates_blocking(
             Err(error) if error.kind() == io::ErrorKind::NotFound => continue,
             Err(error) => return Err(filesystem_io("inspect restore candidate root", root, error)),
             Ok(metadata) => {
-                if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir()
+                if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir()
                 {
                     return Err(filesystem_invalid(
                         "A restore candidate root is not an owned directory.",
@@ -296,7 +296,7 @@ fn validate_empty_tree(root: &Path) -> UseResult<()> {
             let path = entry.path();
             let metadata = std::fs::symlink_metadata(&path)
                 .map_err(|error| filesystem_io("inspect restore candidate entry", &path, error))?;
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) {
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata) {
                 return Err(filesystem_invalid(
                     "A restore candidate tree contains a link or reparse point.",
                 ));
@@ -361,7 +361,7 @@ fn ensure_owned_root(root: &Path) -> UseResult<()> {
         .map_err(|error| filesystem_io("create Use-owned restore root", root, error))?;
     let metadata = std::fs::symlink_metadata(root)
         .map_err(|error| filesystem_io("inspect Use-owned restore root", root, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(filesystem_invalid(
             "A Use-owned restore root is not an owned directory.",
         ));
@@ -380,7 +380,7 @@ fn ensure_directory_chain(root: &Path, directory: &Path) -> UseResult<()> {
         current.push(component.as_os_str());
         match std::fs::symlink_metadata(&current) {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => {
                 return Err(filesystem_invalid(
@@ -413,7 +413,7 @@ fn validate_directory_chain(root: &Path, directory: &Path) -> UseResult<()> {
     }
     let root_metadata = std::fs::symlink_metadata(root)
         .map_err(|error| filesystem_io("inspect restore candidate root", root, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&root_metadata) || !root_metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&root_metadata) || !root_metadata.is_dir() {
         return Err(filesystem_invalid(
             "A restore candidate root is not an owned directory.",
         ));
@@ -424,7 +424,7 @@ fn validate_directory_chain(root: &Path, directory: &Path) -> UseResult<()> {
         let metadata = std::fs::symlink_metadata(&current).map_err(|error| {
             filesystem_io("inspect restore candidate directory", &current, error)
         })?;
-        if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+        if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
             return Err(filesystem_invalid(
                 "A restore candidate directory chain is not owned.",
             ));
@@ -439,7 +439,7 @@ fn optional_evidence(path: &Path) -> UseResult<Option<StateRestoreFileEvidence>>
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(filesystem_io("inspect restore file", path, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&before)
+    if aster_use_core::metadata_is_link_or_reparse_point(&before)
         || !before.is_file()
         || before.len() > MAX_STATE_BACKUP_FILE_BYTES
     {
@@ -477,7 +477,7 @@ fn optional_evidence(path: &Path) -> UseResult<Option<StateRestoreFileEvidence>>
     }
     let after = std::fs::symlink_metadata(path)
         .map_err(|error| filesystem_io("reinspect restore file", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&after)
+    if aster_use_core::metadata_is_link_or_reparse_point(&after)
         || !after.is_file()
         || after.len() != before.len()
         || after.permissions().readonly() != before.permissions().readonly()
@@ -502,7 +502,7 @@ fn same_content(left: &StateRestoreFileEvidence, right: &StateRestoreFileEvidenc
 fn remove_owned_file(path: &Path) -> UseResult<()> {
     let metadata = std::fs::symlink_metadata(path)
         .map_err(|error| filesystem_io("inspect restore removal target", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(filesystem_invalid(
             "A restore removal target is not an owned regular file.",
         ));

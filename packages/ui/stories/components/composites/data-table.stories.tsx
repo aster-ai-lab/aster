@@ -3,8 +3,8 @@ import { Pencil, Trash2 } from 'lucide-react'
 import type { Key } from 'react'
 import { useMemo, useState } from 'react'
 
-import type { ColumnDef } from '@a3s-lab/ui'
-import { Badge, Button, DataTable, Input } from '@a3s-lab/ui'
+import type { ColumnDef } from '@aster-ai-lab/ui'
+import { Badge, Button, DataTable, Input } from '@aster-ai-lab/ui'
 
 type Task = {
   id: string

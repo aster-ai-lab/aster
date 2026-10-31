@@ -1,10 +1,10 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::{Agent, AgentSession, HarnessComposeOptions, SessionOptions};
+use aster_core::{Agent, AgentSession, HarnessComposeOptions, SessionOptions};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::Semaphore;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
@@ -21,7 +21,7 @@ fn acp_errors_use_structured_kinds_and_never_parse_error_text() {
         ("transport", WorkspaceReadOverlayErrorKind::Transport),
     ] {
         let error = agent_client_protocol::Error::invalid_params()
-            .data(json!({"a3sDocument":{"kind":wire}}));
+            .data(json!({"asterDocument":{"kind":wire}}));
         assert_eq!(map_acp_read_error(error).kind(), expected);
     }
     let misleading = agent_client_protocol::Error::internal_error().data("not_found");
@@ -184,7 +184,7 @@ impl agent_client_protocol::Client for Host {
             .remove("text");
         Ok(
             agent_client_protocol::ReadTextFileResponse::new(content).meta(
-                serde_json::Map::from_iter([("a3sDocument".to_owned(), observation)]),
+                serde_json::Map::from_iter([("asterDocument".to_owned(), observation)]),
             ),
         )
     }
@@ -206,7 +206,7 @@ fn connect(bridge: &DocumentBridge, host: Rc<Host>) -> Vec<tokio::task::JoinHand
     let (left, right) = tokio::io::duplex(1024 * 1024);
     let (ar, aw) = tokio::io::split(left);
     let (cr, cw) = tokio::io::split(right);
-    let agent = crate::A3sCodeAgent::new(crate::agent::test_launch(None));
+    let agent = crate::AsterCodeAgent::new(crate::agent::test_launch(None));
     let (connection, agent_io) = agent_client_protocol::AgentSideConnection::new(
         agent,
         aw.compat_write(),
@@ -245,12 +245,12 @@ async fn session(
     let agent = Agent::from_config(crate::agent::test_launch(Some(root.join("sessions"))).config)
         .await
         .unwrap();
-    let base = a3s_code_core::workspace::WorkspaceServices::local(root);
-    let services = a3s_code_core::workspace::WorkspaceServicesBuilder::new(
+    let base = aster_core::workspace::WorkspaceServices::local(root);
+    let services = aster_core::workspace::WorkspaceServicesBuilder::new(
         base.workspace_ref().clone(),
         base.fs(),
     )
-    .capabilities(a3s_code_core::workspace::WorkspaceCapabilities {
+    .capabilities(aster_core::workspace::WorkspaceCapabilities {
         read,
         write: false,
         exec: false,
@@ -263,9 +263,9 @@ async fn session(
         .with_session_id("document-session")
         .with_llm_client(model.clone())
         .with_workspace_backend(services)
-        .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+        .with_planning_mode(aster_core::PlanningMode::Disabled)
         .with_permission_policy(
-            a3s_code_core::permissions::PermissionPolicy::new().allow("studio_document_read"),
+            aster_core::permissions::PermissionPolicy::new().allow("studio_document_read"),
         )
         .with_harness(
             HarnessComposeOptions::compose(
@@ -623,7 +623,7 @@ struct Probe {
 }
 impl Probe {
     fn new() -> Self {
-        let path = std::env::var_os("A3S_STUDIO_DOCUMENT_PROBE").expect("build the native workspace_document_stdio test executable and set A3S_STUDIO_DOCUMENT_PROBE");
+        let path = std::env::var_os("ASTER_STUDIO_DOCUMENT_PROBE").expect("build the native workspace_document_stdio test executable and set ASTER_STUDIO_DOCUMENT_PROBE");
         let mut child = std::process::Command::new(path)
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())

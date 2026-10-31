@@ -23,7 +23,7 @@ def write_state(value):
 def submission_command(name):
     return ['rjob', 'submit', '--namespace', NAMESPACE, '--name', name,
                '--task-type=normal', '--gpu=8', '--cpu=160', '--memory=1802240',
-               '--charged-group=hrprda3s_gpu_pool', '--positive-tags', 'H200', 'feature/gpfs=yes',
+               '--charged-group=hrprdaster_gpu_pool', '--positive-tags', 'H200', 'feature/gpfs=yes',
                '--mount', 'gpfs://gpfs1/yangchao:/mnt/shared-storage-user/yangchao',
                'gpfs://gpfs2/gpfs2-shared-public:/mnt/shared-storage-gpfs2/gpfs2-shared-public',
                '--store-host-nvme=true', '--private-machine=group', '--preemptible=no',
@@ -49,7 +49,7 @@ def launch_if_ready():
     # Staging may have changed during the long download. Refuse GPU reservation
     # until the prepared software and auxiliary files pass again.
     run_preflight()
-    name = 'a3s-power-xq-h200-final-'+uuid.uuid4().hex[:12]
+    name = 'aster-power-xq-h200-final-'+uuid.uuid4().hex[:12]
     record = {'phase': 'submitting', 'showname': name, 'created_unix': time.time()}
     write_state(record)
     command = submission_command(name)

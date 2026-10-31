@@ -27,12 +27,12 @@ pub enum CapabilityScopeError {
     CeilingCatalogMismatch,
     #[error("Child capability scope broadens parent ceiling dimension '{dimension}'")]
     CeilingExpansion { dimension: &'static str },
-    #[error("Catalog requires an exact A3S Use generation lease for Run admission")]
+    #[error("Catalog requires an exact Aster Use generation lease for Run admission")]
     MissingUseGenerationLease,
-    #[error("Catalog has no A3S Use generation but Run admission supplied a Use lease")]
+    #[error("Catalog has no Aster Use generation but Run admission supplied a Use lease")]
     UnexpectedUseGenerationLease,
     #[error(
-        "A3S Use Run lease does not match the catalog cursor (generation {expected_generation} vs {actual_generation}, capability revision mismatch: {revision_mismatch}, Registry revision mismatch: {registry_revision_mismatch}, publication origin mismatch: {origin_mismatch})"
+        "Aster Use Run lease does not match the catalog cursor (generation {expected_generation} vs {actual_generation}, capability revision mismatch: {revision_mismatch}, Registry revision mismatch: {registry_revision_mismatch}, publication origin mismatch: {origin_mismatch})"
     )]
     UseGenerationLeaseMismatch {
         expected_generation: u64,

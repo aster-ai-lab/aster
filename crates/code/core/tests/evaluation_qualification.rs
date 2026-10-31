@@ -1,5 +1,5 @@
 #![cfg(feature = "evaluation")]
-use a3s_code_core::evaluation::{
+use aster_core::evaluation::{
     digest_bytes, AuxiliaryExecutor, AuxiliaryRunContextV1, AuxiliaryRunError,
     EvaluationBoundaryV1, EvaluationDispatchClaimOutcome, EvaluationDispatchLedger,
     EvaluationPlanV1, EvaluationPolicy, EvaluationRecordV1, EvaluationResultSink,
@@ -8,7 +8,7 @@ use a3s_code_core::evaluation::{
     InMemoryAuxiliaryRunService, InMemoryExecutionFactJournal, RunEvidenceReader,
     EVALUATION_RESULT_STORE_SCHEMA_V1,
 };
-use a3s_code_core::{AgentEvent, InMemoryRunStore, RunEventRecord};
+use aster_core::{AgentEvent, InMemoryRunStore, RunEventRecord};
 use async_trait::async_trait;
 use std::sync::Arc;
 
@@ -141,7 +141,7 @@ async fn checked_reads_fail_closed_on_unknown_schema_or_corruption() {
         .is_empty());
 
     let future = serde_json::json!({
-        "schema": "a3s.code.evaluation-result-store.v2",
+        "schema": "aster.code.evaluation-result-store.v2",
         "records": []
     });
     tokio::fs::write(&path, serde_json::to_vec(&future).unwrap())
@@ -209,13 +209,13 @@ async fn dispatch_ledger_survives_reopen_and_enforces_leases() {
 
 #[tokio::test]
 async fn dispatch_leases_fence_stale_workers_and_reject_zero_time() {
-    let ledger = a3s_code_core::evaluation::InMemoryEvaluationDispatchLedger::new();
+    let ledger = aster_core::evaluation::InMemoryEvaluationDispatchLedger::new();
     let request_digest = digest_bytes("dispatch-request", b"fenced");
     assert!(matches!(
         ledger
             .claim("dispatch-fenced", &request_digest, "owner-a", 0, 10)
             .await,
-        Err(a3s_code_core::evaluation::EvaluationDispatchLedgerError::InvalidField("now_ms"))
+        Err(aster_core::evaluation::EvaluationDispatchLedgerError::InvalidField("now_ms"))
     ));
     assert!(matches!(
         ledger
@@ -232,7 +232,7 @@ async fn dispatch_leases_fence_stale_workers_and_reject_zero_time() {
         ledger
             .complete("dispatch-fenced", &request_digest, "owner-a", 110)
             .await,
-        Err(a3s_code_core::evaluation::EvaluationDispatchLedgerError::Conflict)
+        Err(aster_core::evaluation::EvaluationDispatchLedgerError::Conflict)
     ));
     assert!(matches!(
         ledger
@@ -269,7 +269,7 @@ async fn supervisor_uses_durable_claims_across_restart_boundaries() {
     let first_service = Arc::new(InMemoryAuxiliaryRunService::new(Arc::new(
         CancellationBoundExecutor,
     )));
-    let first = a3s_code_core::EvaluationSupervisor::with_dispatch_ledger(
+    let first = aster_core::EvaluationSupervisor::with_dispatch_ledger(
         journal.clone(),
         Arc::new(RunEvidenceReader::new(runs.clone())),
         first_service,
@@ -282,13 +282,13 @@ async fn supervisor_uses_durable_claims_across_restart_boundaries() {
         .unwrap();
     assert!(matches!(
         admitted.outcome,
-        a3s_code_core::EvaluationDispatchOutcome::Dispatched
+        aster_core::EvaluationDispatchOutcome::Dispatched
     ));
 
     let second_service = Arc::new(InMemoryAuxiliaryRunService::new(Arc::new(
         CancellationBoundExecutor,
     )));
-    let second = a3s_code_core::EvaluationSupervisor::with_dispatch_ledger(
+    let second = aster_core::EvaluationSupervisor::with_dispatch_ledger(
         journal.clone(),
         Arc::new(RunEvidenceReader::new(runs)),
         second_service,
@@ -301,7 +301,7 @@ async fn supervisor_uses_durable_claims_across_restart_boundaries() {
         .unwrap();
     assert!(matches!(
         busy.outcome,
-        a3s_code_core::EvaluationDispatchOutcome::Suppressed
+        aster_core::EvaluationDispatchOutcome::Suppressed
     ));
 
     // A graceful supervisor shutdown releases its pending claim.  A new
@@ -313,7 +313,7 @@ async fn supervisor_uses_durable_claims_across_restart_boundaries() {
         .unwrap();
     assert!(matches!(
         retried.outcome,
-        a3s_code_core::EvaluationDispatchOutcome::Dispatched
+        aster_core::EvaluationDispatchOutcome::Dispatched
     ));
     retried.handle.unwrap().cancel().await;
     second.shutdown().await;
@@ -344,7 +344,7 @@ fn default_fact_projection_never_serializes_prompt_injection_canaries() {
 fn store_schema_is_explicit_and_not_a_product_review_contract() {
     assert_eq!(
         EVALUATION_RESULT_STORE_SCHEMA_V1,
-        "a3s.code.evaluation-result-store.v1"
+        "aster.code.evaluation-result-store.v1"
     );
     let result = EvaluationResultV1::new(
         "external-evaluator",

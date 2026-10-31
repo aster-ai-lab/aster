@@ -4,7 +4,7 @@ use super::*;
 use std::collections::{BTreeMap, BTreeSet};
 
 pub(in crate::fact_control) fn novel_information(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     session_id: &str,
     run_id: &str,
 ) -> u64 {
@@ -101,12 +101,12 @@ pub(super) fn information_identity(
                 body,
                 result.outcome == ToolExecutionOutcome::Failed,
             );
-            crate::content_digest::digest_json("a3s.code.tool-observation.v1", &visible)
+            crate::content_digest::digest_json("aster.code.tool-observation.v1", &visible)
                 .map_err(|error| ActorError::Schema(error.to_string()))?
         }
     };
     crate::content_digest::digest_json(
-        "a3s.code.tool-information.v1",
+        "aster.code.tool-information.v1",
         &(tool, args, result.outcome, result.exit_code, observation),
     )
     .map(Some)

@@ -28,12 +28,12 @@ use super::{BashSandbox, SandboxCommandRequest, SandboxExecutionOutput, SandboxO
 use crate::workspace::CommandOutputSummary;
 
 /// Manifest path for the immutable guest system image.
-pub const GUEST_SYSTEM_IMAGE_ENV: &str = "A3S_CODE_GUEST_SYSTEM_IMAGE";
-/// Signed `a3s-oci-krun-shim` that implements `guest-command`.
-pub const GUEST_KRUN_SHIM_ENV: &str = "A3S_CODE_KRUN_SHIM";
+pub const GUEST_SYSTEM_IMAGE_ENV: &str = "ASTER_GUEST_SYSTEM_IMAGE";
+/// Signed `aster-oci-krun-shim` that implements `guest-command`.
+pub const GUEST_KRUN_SHIM_ENV: &str = "ASTER_KRUN_SHIM";
 
-const GUEST_COMMAND_SCHEMA: &str = "a3s.oci.guest-command.v2";
-const GUEST_SCRIPT_NAME: &str = ".a3s-guest-command";
+const GUEST_COMMAND_SCHEMA: &str = "aster.oci.guest-command.v2";
+const GUEST_SCRIPT_NAME: &str = ".aster-guest-command";
 const TIMEOUT_EXIT_CODE: i32 = 124;
 const EXEC_COMMAND_TIMEOUT_MS: u64 = 600_000;
 const MAX_CONSOLE_BYTES: usize = 1024 * 1024;
@@ -276,7 +276,7 @@ impl GuestLifetimeSandbox {
         let thread_stop = Arc::clone(&stop);
         let (sender, receiver) = std::sync::mpsc::channel();
         let thread = std::thread::Builder::new()
-            .name("a3s-guest-wait".into())
+            .name("aster-guest-wait".into())
             .spawn(move || {
                 let result = wait_shim(child, &thread_stop);
                 let _ = sender.send(result);

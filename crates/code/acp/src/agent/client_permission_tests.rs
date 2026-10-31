@@ -2,10 +2,10 @@ use super::*;
 use acp::Agent as _;
 use serde_json::json;
 
-async fn configured(root: &std::path::Path, rules: serde_json::Value) -> A3sCodeAgent {
+async fn configured(root: &std::path::Path, rules: serde_json::Value) -> AsterCodeAgent {
     let mut launch = tests::test_launch(Some(root.join("store")));
     launch.workspace = root.into();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     agent
         .initialize(
             acp::InitializeRequest::new(acp::ProtocolVersion::V1)
@@ -16,7 +16,7 @@ async fn configured(root: &std::path::Path, rules: serde_json::Value) -> A3sCode
     agent
 }
 
-async fn write(agent: &A3sCodeAgent, id: &acp::SessionId, file: &str) -> i32 {
+async fn write(agent: &AsterCodeAgent, id: &acp::SessionId, file: &str) -> i32 {
     let session = agent.sessions.lock().await[id.0.as_ref()].session.clone();
     tokio::time::timeout(
         std::time::Duration::from_secs(5),
@@ -128,7 +128,7 @@ async fn cli_permission_invalid_metadata_is_refused_before_state_changes() {
         json!({"denny":["Write(*)"]}),
         json!({"deny":["  "]}),
     ] {
-        let agent = A3sCodeAgent::new(tests::test_launch(None));
+        let agent = AsterCodeAgent::new(tests::test_launch(None));
         let error = agent
             .initialize(
                 acp::InitializeRequest::new(acp::ProtocolVersion::V1).meta(
@@ -154,7 +154,7 @@ async fn cli_permission_allow_preserves_the_host_source_review_ceiling() {
     let id = agent
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(
-                json!({"a3sHost":{"sourceReview":true}})
+                json!({"asterHost":{"sourceReview":true}})
                     .as_object()
                     .cloned(),
             ),

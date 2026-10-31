@@ -1,5 +1,5 @@
 use crate::{BootError, Module, ProviderDefinition, ProviderToken, Result, Validate};
-use a3s_acl::{Block, Document, Value};
+use aster_acl::{Block, Document, Value};
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Number};
 use std::fmt;
@@ -146,7 +146,7 @@ pub fn parse_acl_config<T>(input: &str) -> Result<T>
 where
     T: DeserializeOwned,
 {
-    let document = a3s_acl::parse(input)
+    let document = aster_acl::parse(input)
         .map_err(|error| BootError::BadRequest(format!("invalid ACL config: {error}")))?;
     config_from_acl_document(&document)
 }

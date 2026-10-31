@@ -8,7 +8,7 @@ use std::collections::{HashMap, VecDeque};
 use std::sync::{Arc, Condvar, Mutex, OnceLock};
 use std::time::Duration;
 
-use a3s_box_core::{FilesystemOp, FilesystemRequest, FilesystemResponse};
+use aster_box_core::{FilesystemOp, FilesystemRequest, FilesystemResponse};
 use sha2::{Digest, Sha256};
 
 const FILESYSTEM_REPLAY_MAX_ENTRIES: usize = 128;

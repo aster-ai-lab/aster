@@ -1,4 +1,4 @@
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, InMemoryRepository, MemoryAccessEvent,
     MemoryChangeSet, MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryQuery,
     MemoryRelation, MemoryRelationKind, MemoryRepository, MemoryRepositoryError, MemoryStatus,
@@ -22,7 +22,7 @@ fn namespace(scope: &str) -> MemoryNamespace {
 
 fn evidence(name: &str, second: u32) -> EvidenceRef {
     EvidenceRef::try_new(
-        format!("a3s://session/run-1/turn/{name}"),
+        format!("aster://session/run-1/turn/{name}"),
         format!("sha256:{name:0>64}"),
         EvidenceKind::SessionTurn,
         time(second),
@@ -190,7 +190,7 @@ async fn active_nodes_require_evidence_and_candidates_need_explicit_activation()
                 node_id: "candidate".into(),
                 expected_revision: 1,
                 evidence: vec![EvidenceRef::try_new(
-                    "a3s://review/activation/candidate",
+                    "aster://review/activation/candidate",
                     format!("sha256:{:0>64}", "activation"),
                     EvidenceKind::Verification,
                     time(3),

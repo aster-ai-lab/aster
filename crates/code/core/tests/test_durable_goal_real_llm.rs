@@ -19,8 +19,8 @@
 //! acceptance needs a qualified native candidate host.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +1.97.1 test -p a3s-code-core --test test_durable_goal_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +1.97.1 test -p aster-core --test test_durable_goal_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -30,17 +30,17 @@
 mod fixtures;
 mod support;
 
-use a3s_code_core::budget::BudgetGuard;
-use a3s_code_core::goal_control::{
+use aster_core::budget::BudgetGuard;
+use aster_core::goal_control::{
     DurableGoalDefinitionV1, GoalCommandKindV1, GoalControlCommandV1, GoalDefinitionCommandV1,
     GoalPlanCommandV1, GoalState, GoalTickDecisionV1,
 };
-use a3s_code_core::llm::TokenUsage;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task};
-use a3s_code_core::store::FileSessionStore;
-use a3s_code_core::workspace::WorkspaceServices;
-use a3s_code_core::{
+use aster_core::llm::TokenUsage;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task};
+use aster_core::store::FileSessionStore;
+use aster_core::workspace::WorkspaceServices;
+use aster_core::{
     Agent, AgentEvent, AgentRunSpawn, AgentSession, CodeConfig, GoalTickAdmission, PlanningMode,
     SessionOptions,
 };
@@ -98,7 +98,7 @@ fn config() -> CodeConfig {
     ))
     .unwrap()
     .goal_control;
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
@@ -106,8 +106,8 @@ fn config() -> CodeConfig {
     config
 }
 
-fn policy() -> a3s_code_core::WorkPolicyV1 {
-    a3s_code_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING_POLICY).unwrap()
+fn policy() -> aster_core::WorkPolicyV1 {
+    aster_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING_POLICY).unwrap()
 }
 
 async fn options(store: &Path, guard: Arc<UsageProbe>) -> SessionOptions {
@@ -138,7 +138,7 @@ async fn options(store: &Path, guard: Arc<UsageProbe>) -> SessionOptions {
         .with_temperature(0.0)
         .with_budget_guard(guard)
         .with_verification_contract(
-            a3s_code_core::verification::VerificationContractV1::new(
+            aster_core::verification::VerificationContractV1::new(
                 "node-suite",
                 "node test.mjs",
                 ["src/**"],
@@ -471,14 +471,14 @@ async fn durable_goal_real_model_continues_one_policy_goal_across_reopen_and_com
     let unsettled = session.reconcile_goal_slices().err().map(|e| e.to_string());
 
     let goal = session.goal_definition().unwrap().unwrap();
-    let facts = a3s_code_core::fact_control::read_workspace_facts(
+    let facts = aster_core::fact_control::read_workspace_facts(
         root,
-        &a3s_code_core::fact_control::thread_for_session(SESSION),
+        &aster_core::fact_control::thread_for_session(SESSION),
     )
     .unwrap();
     let count = |kind: &str| facts.iter().filter(|f| f.kind == kind).count();
-    let admitted = count("a3s.goal.slice.admitted");
-    let settled = count("a3s.goal.slice.settled");
+    let admitted = count("aster.goal.slice.admitted");
+    let settled = count("aster.goal.slice.settled");
     let replay = session
         .tick_goal(&command(&session, GoalCommandKindV1::Tick, "slice-1"))
         .await;

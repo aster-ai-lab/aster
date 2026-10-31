@@ -22,9 +22,9 @@ jobs:
       - run: cargo test --workspace --all-features --locked
       - run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
       - name: Re-run verified installer release gate
-        run: cargo test -p a3s-use --test release_installers --locked
+        run: cargo test -p aster-use --test release_installers --locked
       - name: Re-run release supply-chain gate
-        run: cargo test -p a3s-use --test release_workflow --locked
+        run: cargo test -p aster-use --test release_workflow --locked
       - name: Test digest-pinned MCP release container
         run: |
           sudo apt-get update
@@ -50,7 +50,7 @@ jobs:
       - run: npm run build
         env:
           DOCS_BASE: /Use/
-          DOCS_ORIGIN: https://a3s-lab.github.io
+          DOCS_ORIGIN: https://aster-lab.github.io
       - run: npm run check:site
 
   platform-test:

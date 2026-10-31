@@ -2,8 +2,8 @@ use std::ffi::OsString;
 use std::io::{BufRead, BufReader, Read};
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::log::{LogDriver, LogEntry};
-use a3s_box_core::{
+use aster_box_core::log::{LogDriver, LogEntry};
+use aster_box_core::{
     ExecutionGeneration, ExecutionId, ExecutionManagerError, ExecutionManagerResult,
 };
 use flate2::read::GzDecoder;

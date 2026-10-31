@@ -304,25 +304,25 @@ fn test_build_pool_client_run_plumbs_supported_options() {
 
     let mut args = default_pool_run_args();
     args.common.image = "node:24-bookworm".to_string();
-    args.common.cpus = a3s_box_core::config::DEFAULT_VCPUS;
+    args.common.cpus = aster_box_core::config::DEFAULT_VCPUS;
     args.common.memory = "2g".to_string();
     args.common.volumes = vec![bind.clone()];
     args.common.env = vec!["A=cli".to_string(), "B=cli".to_string()];
     args.common.env_file = vec![env_file.display().to_string()];
     args.common.user = Some("root".to_string());
     args.common.workdir = Some("/workspace".to_string());
-    args.pool_socket = "/tmp/a3s-box-test-pool.sock".to_string();
+    args.pool_socket = "/tmp/aster-box-test-pool.sock".to_string();
     args.pool_exec = true;
     args.timeout = Some(45);
 
     let req = build_pool_client_run(&args, &args.pool_socket).unwrap();
 
-    assert_eq!(req.socket, "/tmp/a3s-box-test-pool.sock");
+    assert_eq!(req.socket, "/tmp/aster-box-test-pool.sock");
     assert_eq!(req.image.as_deref(), Some("node:24-bookworm"));
     assert_eq!(req.user.as_deref(), Some("0"));
     assert_eq!(req.workdir.as_deref(), Some("/workspace"));
     assert_eq!(req.volumes, vec![bind]);
-    assert_eq!(req.vcpus, a3s_box_core::config::DEFAULT_VCPUS);
+    assert_eq!(req.vcpus, aster_box_core::config::DEFAULT_VCPUS);
     assert_eq!(req.memory_mb, 2048);
     assert!(req.exec);
     assert_eq!(req.timeout_ns, Some(45_000_000_000));
@@ -375,7 +375,7 @@ fn test_run_env_defaults_preserve_explicit_corepack_choice_and_interactive_mode(
 fn test_runtime_start_progress_identifies_post_pull_phase() {
     assert_eq!(
         runtime_start_progress_message("cold-node", 30),
-        "a3s-box run: still creating cold-node; image is ready and runtime startup has taken 30s"
+        "aster-box run: still creating cold-node; image is ready and runtime startup has taken 30s"
     );
 }
 

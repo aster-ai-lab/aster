@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtensionPaths {
@@ -10,7 +10,7 @@ pub struct ExtensionPaths {
 
 impl ExtensionPaths {
     pub fn from_env() -> UseResult<Self> {
-        if let Some(root) = std::env::var_os("A3S_USE_HOME") {
+        if let Some(root) = std::env::var_os("ASTER_USE_HOME") {
             let root = absolute(PathBuf::from(root))?;
             return Ok(Self {
                 data_root: root.join("data"),
@@ -20,13 +20,13 @@ impl ExtensionPaths {
 
         let home = std::env::var_os("HOME").map(PathBuf::from);
         let data_root = configured_root(
-            "A3S_DATA_HOME",
+            "ASTER_DATA_HOME",
             "XDG_DATA_HOME",
             home.as_deref().map(|path| path.join(".local/share")),
         )?
         .join("use");
         let state_root = configured_root(
-            "A3S_STATE_HOME",
+            "ASTER_STATE_HOME",
             "XDG_STATE_HOME",
             home.as_deref().map(|path| path.join(".local/state")),
         )?
@@ -168,26 +168,26 @@ fn validate_sha256_path_segment(value: &str, label: &str) -> UseResult<()> {
 }
 
 fn configured_root(
-    a3s_variable: &str,
+    aster_variable: &str,
     xdg_variable: &str,
     fallback_parent: Option<PathBuf>,
 ) -> UseResult<PathBuf> {
-    if let Some(value) = std::env::var_os(a3s_variable) {
+    if let Some(value) = std::env::var_os(aster_variable) {
         return absolute(PathBuf::from(value));
     }
     if let Some(value) = std::env::var_os(xdg_variable) {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster"));
     }
     if let Some(parent) = fallback_parent {
-        return Ok(absolute(parent)?.join("a3s"));
+        return Ok(absolute(parent)?.join("aster"));
     }
     #[cfg(windows)]
     if let Some(value) = std::env::var_os("LOCALAPPDATA") {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster"));
     }
     Err(UseError::new(
         "use.paths.unavailable",
-        format!("{a3s_variable} is not set and no home directory is available."),
+        format!("{aster_variable} is not set and no home directory is available."),
     ))
 }
 
@@ -200,7 +200,7 @@ fn absolute(path: PathBuf) -> UseResult<PathBuf> {
         .map_err(|error| {
             UseError::new(
                 "use.paths.unavailable",
-                format!("Failed to resolve a relative A3S path: {error}"),
+                format!("Failed to resolve a relative Aster path: {error}"),
             )
         })
 }
@@ -247,15 +247,15 @@ mod tests {
             PathBuf::from("/state/use/registry.json")
         );
         assert_eq!(
-            paths.tuf_datastore("a3s").unwrap(),
-            PathBuf::from("/state/use/remote-registries/a3s")
+            paths.tuf_datastore("aster").unwrap(),
+            PathBuf::from("/state/use/remote-registries/aster")
         );
         assert_eq!(
             paths
-                .registry_source_datastore("a3s", &"b".repeat(64))
+                .registry_source_datastore("aster", &"b".repeat(64))
                 .unwrap(),
             PathBuf::from(format!(
-                "/state/use/remote-registries/a3s/sources/{}",
+                "/state/use/remote-registries/aster/sources/{}",
                 "b".repeat(64)
             ))
         );

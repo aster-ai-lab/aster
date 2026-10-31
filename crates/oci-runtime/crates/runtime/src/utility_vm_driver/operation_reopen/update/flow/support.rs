@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::{
     ContainerTarget, DeleteRequest, Error, ErrorCode, OperationId, StartRequest, UpdateRequest,
 };
 
@@ -111,8 +111,8 @@ pub(super) fn capture_recovery(
 }
 
 pub(super) fn changed_resources(
-    original: &a3s_oci_sdk::oci_spec::runtime::LinuxResources,
-) -> Result<a3s_oci_sdk::oci_spec::runtime::LinuxResources, String> {
+    original: &aster_oci_sdk::oci_spec::runtime::LinuxResources,
+) -> Result<aster_oci_sdk::oci_spec::runtime::LinuxResources, String> {
     let mut value = serde_json::to_value(original)
         .map_err(|error| format!("failed to encode changed Update resources: {error}"))?;
     value["memory"]["limit"] = serde_json::json!(256 * 1024 * 1024_u64);

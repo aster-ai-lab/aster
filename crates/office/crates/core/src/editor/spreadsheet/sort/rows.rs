@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::super::{editor_error, indexed_cells_in_row, indexed_rows};
 use crate::spreadsheet_reference::{CellRange, CellReference};
@@ -295,6 +295,6 @@ fn start_tag(qualified_name: &str, attributes: BTreeMap<String, String>, empty: 
     format!("<{qualified_name}{attributes}{terminator}")
 }
 
-fn row_error(message: impl Into<String>) -> a3s_use_core::UseError {
+fn row_error(message: impl Into<String>) -> aster_use_core::UseError {
     editor_error("use.office.spreadsheet_sort_rows_unsupported", message)
 }

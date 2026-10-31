@@ -1,0 +1,1324 @@
+//! Runtime lifecycle projection over Box's durable local execution manager.
+
+use std::collections::BTreeMap;
+use std::time::Duration;
+
+use aster_box_core::{ExecutionManager, KillOutcome, ReconcileOutcome};
+use aster_runtime::contract::{
+    IsolationLevel, RestartPolicy, RuntimeActionRequest, RuntimeEvidence, RuntimeFailure,
+    RuntimeHealthState, RuntimeInspection, RuntimeObservation, RuntimeRemoval, RuntimeUnitClass,
+    RuntimeUnitSpec, RuntimeUnitState,
+};
+use aster_runtime::{RuntimeError, RuntimeResult, RuntimeUnitRecord};
+use sha2::{Digest, Sha256};
+
+use crate::{BoxRecord, ManagedExecutionState};
+
+use super::mapping::{
+    attach_host_services, creation_request_for, operation, validate_creation_spec,
+};
+use super::metadata::{
+    local_identity, map_execution_error, now_ms, provider_identity_matches, timestamp_ms,
+    validate_record_for_spec, SPEC_DIGEST_LABEL,
+};
+use super::BoxRuntimeDriver;
+
+impl BoxRuntimeDriver {
+    pub(super) async fn apply_unit(
+        &self,
+        request: &aster_runtime::contract::RuntimeApplyRequest,
+        current: &RuntimeObservation,
+    ) -> RuntimeResult<RuntimeObservation> {
+        let spec = &request.spec;
+        let host_services = self
+            .bounded(
+                "host service authorization",
+                self.host_services.resolve(spec),
+            )
+            .await?;
+        // Complete the side-effect-free validation pass before storage
+        // preparation can materialize a caller view or create a named Volume.
+        validate_creation_spec(
+            spec,
+            self.execution_isolation,
+            self.sev_snp_config(),
+            &self.config.secret_root,
+        )?;
+        self.secret_materialization.require_configured_for(spec)?;
+        self.artifact_storage.require_configured_for(spec)?;
+        let mut record = self.find_generation(spec).await?;
+
+        if let Some(existing) = record.as_ref() {
+            provider_identity_matches(current, existing)?;
+            if should_replace_confirmed_loss(existing, current)? {
+                self.retire_record(existing.clone(), &spec.unit_id).await?;
+                record = None;
+            }
+        }
+
+        // A legacy Sandbox planner may need authenticated image metadata before
+        // Box allocates an execution ID. Keep the promoted handoff alive until
+        // the create/start path has either claimed it or failed, so an error
+        // before boot cannot leave an in-memory credential behind.
+        let mut _promoted_registry_auth = None;
+        let record = match record {
+            Some(record) => record,
+            None => {
+                let storage = self.artifact_storage.prepare_plan(spec).await?;
+                // ED3 (design A): the successor seeds from the
+                // predecessor's keyed snapshot when the apply carries
+                // the restore reference — inside the canonical builder,
+                // so the persisted intent and every later validation
+                // rebuild the identical request.
+                let rootfs_snapshot = match &request.restore_from_snapshot_operation_id {
+                    Some(operation) => Some(snapshot_key(operation)?),
+                    None => None,
+                };
+                let creation = creation_request_for(
+                    spec,
+                    self.execution_isolation,
+                    self.sev_snp_config(),
+                    &self.config.secret_root,
+                    &storage,
+                    rootfs_snapshot.as_ref(),
+                )?;
+                let mut request = creation;
+                attach_host_services(spec, &mut request, &host_services)?;
+                let operation_id = operation(spec)?;
+                let staged_registry_auth = if request.config.isolation.is_sandbox() {
+                    self.secret_materialization
+                        .prepare_registry_auth_for_create(
+                            spec,
+                            &request,
+                            &operation_id,
+                            &self.config.home_dir,
+                            self.transient_registry_auth.as_ref(),
+                        )
+                        .await?
+                } else {
+                    None
+                };
+                let reservation = self
+                    .bounded("reservation", async {
+                        self.manager
+                            .create(request, &operation_id)
+                            .await
+                            .map_err(|error| map_execution_error(&spec.unit_id, error))
+                    })
+                    .await?;
+                if staged_registry_auth.is_some() {
+                    let broker = self.transient_registry_auth.as_ref().ok_or_else(|| {
+                        RuntimeError::Protocol(
+                            "Box lost the transient registry authorization broker after staging"
+                                .into(),
+                        )
+                    })?;
+                    _promoted_registry_auth = Some(
+                        broker
+                            .promote(operation_id.as_str(), reservation.execution_id.as_str())
+                            .map_err(|error| {
+                                RuntimeError::ProviderUnavailable(format!(
+                                    "Box transient registry credential handoff failed: {error}"
+                                ))
+                            })?,
+                    );
+                }
+                // The source lease only guards the pre-reservation key. The
+                // target lease above owns cleanup for the durable execution
+                // key until boot claims its authorization.
+                drop(staged_registry_auth);
+                let record = self
+                    .manager
+                    .managed_record(&reservation.execution_id)
+                    .await
+                    .map_err(|error| map_execution_error(&spec.unit_id, error))?
+                    .ok_or_else(|| {
+                        RuntimeError::Protocol(
+                            "Box lost a durable execution immediately after reservation".into(),
+                        )
+                    })?;
+                validate_record_for_spec(
+                    &record,
+                    spec,
+                    self.execution_isolation,
+                    self.sev_snp_config(),
+                    &self.config.secret_root,
+                )?;
+                self.artifact_storage.validate_record(spec, &record).await?;
+                record
+            }
+        };
+        self.prepare_secret_material(spec, &record).await?;
+        let record = self.ensure_started(spec, record).await?;
+
+        // Retire older Runtime generations as soon as the current generation
+        // has a durable provider identity. A retry resumes any partial cleanup.
+        self.retire_stale_generations(spec, &record.id).await?;
+
+        // A confidential guest is intentionally booted IDLE. Its first live
+        // observation acquires and persists attestation, then releases the main
+        // process. This must happen before a Task wait or a Service health probe.
+        let attested_running = if spec.isolation == IsolationLevel::Confidential {
+            // Building the raw evidence acquires attestation and releases the
+            // deferred main process. A running Service is not validated or
+            // published until its readiness and liveness evidence is attached.
+            Some(self.build_observation(spec, &record, None, None).await?)
+        } else {
+            None
+        };
+
+        // Observation may fail after ensure_started (for example R17 advertised
+        // URL probe rejection). Returning Err while leaving a Running Service in
+        // inventory orphans work the caller believes never applied. Retire the
+        // generation so apply failure and durable inventory stay aligned.
+        let observation_result = match spec.class {
+            RuntimeUnitClass::Task => self.wait_for_task(spec, record.clone()).await,
+            RuntimeUnitClass::Service if spec.health.is_some() => {
+                self.wait_for_service_health(spec, record.clone()).await
+            }
+            RuntimeUnitClass::Service => match attested_running {
+                Some(observation) => self.finish_observation(spec, &record, observation).await,
+                None => self.observation(spec, &record, None, None).await,
+            },
+        };
+        let observation = match observation_result {
+            Ok(observation) => observation,
+            Err(error) if matches!(spec.class, RuntimeUnitClass::Service) => {
+                if let Err(retire_error) = self.retire_record(record, &spec.unit_id).await {
+                    tracing::warn!(
+                        unit_id = %spec.unit_id,
+                        error = %retire_error,
+                        "failed to retire Service after apply observation failure"
+                    );
+                }
+                return Err(error);
+            }
+            Err(error) => return Err(error),
+        };
+        let observation = self.recover_unhealthy_liveness(spec, observation).await?;
+        super::attestation::validate_continuity(current, &observation)?;
+        Ok(observation)
+    }
+
+    pub(super) async fn inspect_unit(
+        &self,
+        unit: &RuntimeUnitRecord,
+    ) -> RuntimeResult<RuntimeInspection> {
+        unit.validate().map_err(RuntimeError::Protocol)?;
+        let Some(record) = self.find_generation(&unit.spec).await? else {
+            self.service_endpoints
+                .remove_runtime(&unit.spec.unit_id, unit.spec.generation)
+                .await;
+            self.secret_materialization.cleanup_spec(&unit.spec).await?;
+            self.artifact_storage.cleanup_spec(&unit.spec).await?;
+            return Ok(not_found(&unit.spec));
+        };
+        provider_identity_matches(&unit.observation, &record)?;
+        let before = local_identity(&record)?.2;
+        let record = self.refresh_record(&unit.spec, record).await?;
+        if provider_was_lost(before, &record)? {
+            self.service_endpoints
+                .remove_runtime(&unit.spec.unit_id, unit.spec.generation)
+                .await;
+            return Ok(not_found(&unit.spec));
+        }
+
+        self.prepare_secret_material(&unit.spec, &record).await?;
+
+        let record = if should_restart(&unit.spec, &record)? {
+            self.restart_record(&unit.spec, record).await?
+        } else {
+            record
+        };
+        // Same honesty class as apply (#380): a failed Service observation
+        // (including retained advertised-URL re-probe) must not leave a
+        // Running generation whose last-known endpoints are no longer live.
+        let observation_result = self.observe_service_health(&unit.spec, &record).await;
+        let observation = match observation_result {
+            Ok(observation) => observation,
+            Err(error) if matches!(unit.spec.class, RuntimeUnitClass::Service) => {
+                if let Err(retire_error) = self.retire_record(record, &unit.spec.unit_id).await {
+                    tracing::warn!(
+                        unit_id = %unit.spec.unit_id,
+                        error = %retire_error,
+                        "failed to retire Service after inspect observation failure"
+                    );
+                }
+                return Err(error);
+            }
+            Err(error) => return Err(error),
+        };
+        let observation = self
+            .recover_unhealthy_liveness(&unit.spec, observation)
+            .await?;
+        super::attestation::validate_continuity(&unit.observation, &observation)?;
+        Ok(RuntimeInspection::Found {
+            schema: RuntimeInspection::SCHEMA.into(),
+            observation: Box::new(observation),
+        })
+    }
+
+    pub(super) async fn stop_unit(
+        &self,
+        unit: &RuntimeUnitRecord,
+        request: &RuntimeActionRequest,
+    ) -> RuntimeResult<RuntimeObservation> {
+        request.validate().map_err(RuntimeError::InvalidRequest)?;
+        validate_action_identity(unit, request)?;
+        if unit.observation.state.is_terminal() {
+            self.service_endpoints
+                .remove_runtime(&unit.spec.unit_id, unit.spec.generation)
+                .await;
+            return Ok(unit.observation.clone());
+        }
+
+        let Some(record) = self.find_generation(&unit.spec).await? else {
+            self.service_endpoints
+                .remove_runtime(&unit.spec.unit_id, unit.spec.generation)
+                .await;
+            return unknown_observation(&unit.observation);
+        };
+        provider_identity_matches(&unit.observation, &record)?;
+        let before = local_identity(&record)?.2;
+        let mut record = self.refresh_record(&unit.spec, record).await?;
+        if provider_was_lost(before, &record)? {
+            self.service_endpoints
+                .remove_runtime(&unit.spec.unit_id, unit.spec.generation)
+                .await;
+            return unknown_observation(&unit.observation);
+        }
+
+        let (_, generation, state) = local_identity(&record)?;
+        if !state.is_terminal() {
+            let execution_id = aster_box_core::ExecutionId::new(record.id.clone())
+                .map_err(|error| RuntimeError::Protocol(error.to_string()))?;
+            self.manager
+                .kill(&execution_id, generation)
+                .await
+                .map_err(|error| map_execution_error(&unit.spec.unit_id, error))?;
+            record = self.load_record(&unit.spec, &execution_id).await?;
+        }
+
+        self.service_endpoints
+            .remove_runtime(&unit.spec.unit_id, unit.spec.generation)
+            .await;
+
+        let observation = self
+            .observation(&unit.spec, &record, Some(RuntimeUnitState::Stopped), None)
+            .await?;
+        super::attestation::validate_continuity(&unit.observation, &observation)?;
+        Ok(observation)
+    }
+
+    pub(super) async fn remove_unit(
+        &self,
+        unit: &RuntimeUnitRecord,
+        request: &RuntimeActionRequest,
+    ) -> RuntimeResult<RuntimeRemoval> {
+        request.validate().map_err(RuntimeError::InvalidRequest)?;
+        validate_action_identity(unit, request)?;
+        let record = self.find_generation(&unit.spec).await?;
+        let already_absent = record.is_none();
+        if let Some(record) = record {
+            provider_identity_matches(&unit.observation, &record)?;
+            self.retire_record(record, &unit.spec.unit_id).await?;
+        } else {
+            // A previous removal may have crossed the durable Box boundary
+            // before caller-owned Artifact cleanup completed.
+            self.artifact_storage.cleanup_spec(&unit.spec).await?;
+        }
+        self.service_endpoints
+            .remove_runtime(&unit.spec.unit_id, unit.spec.generation)
+            .await;
+        self.secret_materialization.cleanup_spec(&unit.spec).await?;
+        let removal = RuntimeRemoval {
+            schema: RuntimeRemoval::SCHEMA.into(),
+            request_id: request.request_id.clone(),
+            unit_id: request.unit_id.clone(),
+            generation: request.generation,
+            removed_at_ms: now_ms(),
+            already_absent,
+        };
+        removal.validate().map_err(RuntimeError::Protocol)?;
+        Ok(removal)
+    }
+
+    async fn ensure_started(
+        &self,
+        spec: &RuntimeUnitSpec,
+        record: BoxRecord,
+    ) -> RuntimeResult<BoxRecord> {
+        self.bounded(
+            "host service authorization",
+            self.host_services.authorize_start(spec, &record),
+        )
+        .await?;
+        validate_record_for_spec(
+            &record,
+            spec,
+            self.execution_isolation,
+            self.sev_snp_config(),
+            &self.config.secret_root,
+        )?;
+        self.artifact_storage.validate_record(spec, &record).await?;
+        let (execution_id, generation, state) = local_identity(&record)?;
+        match state {
+            ManagedExecutionState::Creating
+            | ManagedExecutionState::Created
+            | ManagedExecutionState::Starting => {
+                let _registry_auth = self
+                    .secret_materialization
+                    .prepare_registry_auth_for_start(
+                        spec,
+                        &record,
+                        &self.config.home_dir,
+                        self.transient_registry_auth.as_ref(),
+                    )
+                    .await?;
+                // A recovered `Starting` record has already crossed the start
+                // boundary, so resetting it would race a live attachment. For
+                // a fresh `Creating`/`Created` record, clear output staging at
+                // the last safe point before Box attaches and starts it.
+                if state != ManagedExecutionState::Starting {
+                    self.artifact_storage.reset_outputs_for_start(spec).await?;
+                }
+                let result = self
+                    .bounded("startup", async {
+                        self.manager
+                            .start(&execution_id, generation)
+                            .await
+                            .map_err(|error| map_execution_error(&spec.unit_id, error))
+                    })
+                    .await;
+                if let Err(error) = result {
+                    return self
+                        .load_terminal_after_control_error(spec, &execution_id, error)
+                        .await;
+                }
+                self.load_record(spec, &execution_id).await
+            }
+            ManagedExecutionState::Running => Ok(record),
+            ManagedExecutionState::Stopped | ManagedExecutionState::Failed => {
+                if should_restart(spec, &record)? {
+                    self.restart_record(spec, record).await
+                } else {
+                    Ok(record)
+                }
+            }
+            ManagedExecutionState::Removing => Err(RuntimeError::ProviderUnavailable(format!(
+                "Box execution {} is still being removed",
+                record.id
+            ))),
+            state => Err(RuntimeError::ProviderUnavailable(format!(
+                "Box execution {} cannot be applied while in state {state}",
+                record.id
+            ))),
+        }
+    }
+
+    async fn prepare_secret_material(
+        &self,
+        spec: &RuntimeUnitSpec,
+        record: &BoxRecord,
+    ) -> RuntimeResult<()> {
+        if spec.secrets.is_empty() {
+            return Ok(());
+        }
+        let state = local_identity(record)?.2;
+        if matches!(
+            state,
+            ManagedExecutionState::Creating | ManagedExecutionState::Created
+        ) {
+            self.secret_materialization
+                .materialize_for_start(spec)
+                .await
+        } else if matches!(
+            state,
+            ManagedExecutionState::Stopped | ManagedExecutionState::Failed
+        ) && should_restart(spec, record)?
+        {
+            Ok(())
+        } else {
+            self.secret_materialization.require_materialized(spec).await
+        }
+    }
+
+    async fn wait_for_task(
+        &self,
+        spec: &RuntimeUnitSpec,
+        mut record: BoxRecord,
+    ) -> RuntimeResult<RuntimeObservation> {
+        let timeout_ms = spec.resources.execution_timeout_ms.ok_or_else(|| {
+            RuntimeError::InvalidRequest("Runtime Task has no execution timeout".into())
+        })?;
+        let timeout = Duration::from_millis(timeout_ms);
+        let deadline = tokio::time::Instant::now() + timeout;
+
+        loop {
+            let before = local_identity(&record)?.2;
+            record = self.refresh_record(spec, record).await?;
+            let state = local_identity(&record)?.2;
+            if state.is_terminal() {
+                if provider_was_lost(before, &record)? {
+                    return self
+                        .observation(
+                            spec,
+                            &record,
+                            Some(RuntimeUnitState::Failed),
+                            Some(RuntimeFailure {
+                                code: "provider_lost".into(),
+                                message: "Box lost the provider resource".into(),
+                                retryable: true,
+                            }),
+                        )
+                        .await;
+                }
+                if should_restart(spec, &record)? {
+                    record = self.restart_record(spec, record).await?;
+                    if spec.isolation == IsolationLevel::Confidential {
+                        self.observation(spec, &record, None, None).await?;
+                    }
+                    continue;
+                }
+                return self.observation(spec, &record, None, None).await;
+            }
+
+            if tokio::time::Instant::now() >= deadline {
+                let (execution_id, generation, _) = local_identity(&record)?;
+                self.bounded("Task timeout cleanup", async {
+                    self.manager
+                        .kill(&execution_id, generation)
+                        .await
+                        .map_err(|error| map_execution_error(&spec.unit_id, error))
+                })
+                .await?;
+                record = self.load_record(spec, &execution_id).await?;
+                return self
+                    .observation(
+                        spec,
+                        &record,
+                        Some(RuntimeUnitState::Failed),
+                        Some(RuntimeFailure {
+                            code: "execution_timeout".into(),
+                            message: format!("Box Task exceeded its {timeout_ms} ms timeout"),
+                            retryable: false,
+                        }),
+                    )
+                    .await;
+            }
+
+            let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());
+            tokio::time::sleep(self.config.task_poll_interval.min(remaining)).await;
+        }
+    }
+
+    pub(super) async fn refresh_record(
+        &self,
+        spec: &RuntimeUnitSpec,
+        record: BoxRecord,
+    ) -> RuntimeResult<BoxRecord> {
+        let (execution_id, _, _) = local_identity(&record)?;
+        self.bounded("inspection", async {
+            self.manager
+                .inspect(&execution_id)
+                .await
+                .map_err(|error| map_execution_error(&spec.unit_id, error))
+        })
+        .await?;
+        self.load_record(spec, &execution_id).await
+    }
+
+    async fn load_record(
+        &self,
+        spec: &RuntimeUnitSpec,
+        execution_id: &aster_box_core::ExecutionId,
+    ) -> RuntimeResult<BoxRecord> {
+        let record = self
+            .manager
+            .managed_record(execution_id)
+            .await
+            .map_err(|error| map_execution_error(&spec.unit_id, error))?
+            .ok_or_else(|| RuntimeError::NotFound {
+                unit_id: spec.unit_id.clone(),
+            })?;
+        validate_record_for_spec(
+            &record,
+            spec,
+            self.execution_isolation,
+            self.sev_snp_config(),
+            &self.config.secret_root,
+        )?;
+        self.artifact_storage.validate_record(spec, &record).await?;
+        Ok(record)
+    }
+
+    async fn load_terminal_after_control_error(
+        &self,
+        spec: &RuntimeUnitSpec,
+        execution_id: &aster_box_core::ExecutionId,
+        control_error: RuntimeError,
+    ) -> RuntimeResult<BoxRecord> {
+        let current = self.load_record(spec, execution_id).await?;
+        if local_identity(&current)?.2.is_terminal() && current.exit_code.is_some() {
+            Ok(current)
+        } else {
+            Err(control_error)
+        }
+    }
+
+    async fn restart_record(
+        &self,
+        spec: &RuntimeUnitSpec,
+        record: BoxRecord,
+    ) -> RuntimeResult<BoxRecord> {
+        self.bounded(
+            "host service authorization",
+            self.host_services.authorize_start(spec, &record),
+        )
+        .await?;
+        self.secret_materialization
+            .materialize_for_start(spec)
+            .await?;
+        let _registry_auth = self
+            .secret_materialization
+            .prepare_registry_auth_for_start(
+                spec,
+                &record,
+                &self.config.home_dir,
+                self.transient_registry_auth.as_ref(),
+            )
+            .await?;
+        self.artifact_storage.reset_outputs_for_start(spec).await?;
+        let (execution_id, generation, _) = local_identity(&record)?;
+        let operation_id = restart_operation(spec, generation)?;
+        let result = self
+            .bounded_lifecycle(spec, "restart", async {
+                self.manager
+                    .restart(&execution_id, generation, &operation_id)
+                    .await
+                    .map_err(|error| map_execution_error(&spec.unit_id, error))
+            })
+            .await;
+        if let Err(error) = result {
+            return self
+                .load_terminal_after_control_error(spec, &execution_id, error)
+                .await;
+        }
+        self.load_record(spec, &execution_id).await
+    }
+
+    /// Applies at most one liveness-driven recovery per public Runtime
+    /// operation. This keeps an `Always` policy from spinning forever inside
+    /// the provider while still ensuring that unhealthy liveness is an active
+    /// recovery signal rather than passive telemetry.
+    pub(super) async fn recover_unhealthy_liveness(
+        &self,
+        spec: &RuntimeUnitSpec,
+        observation: RuntimeObservation,
+    ) -> RuntimeResult<RuntimeObservation> {
+        if spec.class != RuntimeUnitClass::Service
+            || observation.state != RuntimeUnitState::Running
+            || observation.liveness.as_ref().map(|health| health.state)
+                != Some(RuntimeHealthState::Unhealthy)
+        {
+            return Ok(observation);
+        }
+
+        let Some(record) = self.find_generation(spec).await? else {
+            return Err(RuntimeError::ProviderUnavailable(format!(
+                "Box lost Service {:?} before liveness recovery",
+                spec.unit_id
+            )));
+        };
+        provider_identity_matches(&observation, &record)?;
+        let record = self.refresh_record(spec, record).await?;
+        let state = local_identity(&record)?.2;
+        let restart = if state == ManagedExecutionState::Running {
+            should_restart_unhealthy_liveness(spec, &record)?
+        } else if state.is_terminal() {
+            should_restart(spec, &record)?
+        } else {
+            false
+        };
+        if !restart {
+            if state == ManagedExecutionState::Running {
+                return Ok(observation);
+            }
+            return self.observation(spec, &record, None, None).await;
+        }
+
+        let record = self.restart_record(spec, record).await?;
+        if spec.isolation == IsolationLevel::Confidential {
+            self.build_observation(spec, &record, None, None).await?;
+        }
+        self.wait_for_service_health(spec, record).await
+    }
+
+    async fn retire_stale_generations(
+        &self,
+        spec: &RuntimeUnitSpec,
+        current_id: &str,
+    ) -> RuntimeResult<()> {
+        let records = self.unit_records(&spec.unit_id).await?;
+        if !records.iter().any(|record| record.id == current_id) {
+            return Err(RuntimeError::ProviderUnavailable(
+                "Box lost the current execution during generation reconciliation".into(),
+            ));
+        }
+        for record in records {
+            if record.id != current_id {
+                self.retire_record(record, &spec.unit_id).await?;
+            }
+        }
+
+        let remaining = self.unit_records(&spec.unit_id).await?;
+        if remaining.len() != 1 || remaining[0].id != current_id {
+            return Err(RuntimeError::Protocol(format!(
+                "Box generation reconciliation for unit {:?} left {} executions",
+                spec.unit_id,
+                remaining.len()
+            )));
+        }
+        validate_record_for_spec(
+            &remaining[0],
+            spec,
+            self.execution_isolation,
+            self.sev_snp_config(),
+            &self.config.secret_root,
+        )?;
+        self.artifact_storage
+            .validate_record(spec, &remaining[0])
+            .await
+    }
+
+    pub(super) async fn retire_record(
+        &self,
+        mut record: BoxRecord,
+        unit_id: &str,
+    ) -> RuntimeResult<()> {
+        let secret_digest = record
+            .labels
+            .get(SPEC_DIGEST_LABEL)
+            .cloned()
+            .ok_or_else(|| {
+                RuntimeError::Protocol(format!(
+                    "Box execution {} has no Runtime specification digest",
+                    record.id
+                ))
+            })?;
+        let (execution_id, mut generation, mut state) = local_identity(&record)?;
+        if matches!(
+            state,
+            ManagedExecutionState::RestartStopping | ManagedExecutionState::RestartStarting
+        ) {
+            let create_operation = record
+                .managed_execution
+                .as_ref()
+                .ok_or_else(|| RuntimeError::Protocol("Box execution lost metadata".into()))?
+                .operation_id
+                .clone();
+            match self
+                .bounded_record_lifecycle(&record, "restart reconciliation", async {
+                    self.manager
+                        .reconcile(&create_operation)
+                        .await
+                        .map_err(|error| map_execution_error(unit_id, error))
+                })
+                .await
+            {
+                Ok(ReconcileOutcome::Absent) => {
+                    self.service_endpoints.remove_provider(&execution_id).await;
+                    self.secret_materialization
+                        .cleanup_digest(&secret_digest)
+                        .await?;
+                    self.artifact_storage.cleanup_digest(&secret_digest).await?;
+                    return Ok(());
+                }
+                Ok(_) => {}
+                Err(error) => return Err(error),
+            }
+            record = self
+                .manager
+                .managed_record(&execution_id)
+                .await
+                .map_err(|error| map_execution_error(unit_id, error))?
+                .ok_or_else(|| RuntimeError::NotFound {
+                    unit_id: unit_id.into(),
+                })?;
+            (_, generation, state) = local_identity(&record)?;
+        }
+
+        if !matches!(
+            state,
+            ManagedExecutionState::Created
+                | ManagedExecutionState::Stopped
+                | ManagedExecutionState::Failed
+                | ManagedExecutionState::Removing
+        ) {
+            match self
+                .bounded_record_lifecycle(&record, "generation retirement stop", async {
+                    self.manager
+                        .kill(&execution_id, generation)
+                        .await
+                        .map_err(|error| map_execution_error(unit_id, error))
+                })
+                .await
+            {
+                Ok(KillOutcome::Killed | KillOutcome::AlreadyStopped) => {}
+                Err(error) => return Err(error),
+            }
+            record = self
+                .manager
+                .managed_record(&execution_id)
+                .await
+                .map_err(|error| map_execution_error(unit_id, error))?
+                .ok_or_else(|| RuntimeError::NotFound {
+                    unit_id: unit_id.into(),
+                })?;
+            generation = local_identity(&record)?.1;
+        }
+
+        self.service_endpoints.remove_provider(&execution_id).await;
+        self.secret_materialization
+            .cleanup_digest(&secret_digest)
+            .await?;
+
+        self.bounded("generation retirement removal", async {
+            self.manager
+                .remove_execution(&execution_id, generation)
+                .await
+                .map_err(|error| map_execution_error(unit_id, error))
+        })
+        .await?;
+        if self
+            .manager
+            .managed_record(&execution_id)
+            .await
+            .map_err(|error| map_execution_error(unit_id, error))?
+            .is_some()
+        {
+            return Err(RuntimeError::Protocol(format!(
+                "Box removal left execution {} in durable inventory",
+                execution_id
+            )));
+        }
+        self.artifact_storage.cleanup_digest(&secret_digest).await?;
+        Ok(())
+    }
+
+    pub(super) async fn observation(
+        &self,
+        spec: &RuntimeUnitSpec,
+        record: &BoxRecord,
+        state_override: Option<RuntimeUnitState>,
+        failure_override: Option<RuntimeFailure>,
+    ) -> RuntimeResult<RuntimeObservation> {
+        let observation = self
+            .build_observation(spec, record, state_override, failure_override)
+            .await?;
+        self.finish_observation(spec, record, observation).await
+    }
+
+    /// Builds provider evidence without publishing or validating a potentially
+    /// incomplete running Service observation. Health owns the only call path
+    /// that adds readiness and liveness before final endpoint reconciliation.
+    pub(super) async fn build_observation(
+        &self,
+        spec: &RuntimeUnitSpec,
+        record: &BoxRecord,
+        state_override: Option<RuntimeUnitState>,
+        failure_override: Option<RuntimeFailure>,
+    ) -> RuntimeResult<RuntimeObservation> {
+        validate_record_for_spec(
+            record,
+            spec,
+            self.execution_isolation,
+            self.sev_snp_config(),
+            &self.config.secret_root,
+        )?;
+        self.artifact_storage.validate_record(spec, record).await?;
+        let state = state_override.unwrap_or(runtime_state(spec, record)?);
+        let terminal = state.is_terminal();
+        let metadata = record.managed_execution.as_ref().ok_or_else(|| {
+            RuntimeError::Protocol(format!("Box execution {} lost metadata", record.id))
+        })?;
+        let started_at_ms = record.started_at.map(timestamp_ms).transpose()?;
+        let finished_at_ms = if terminal {
+            Some(
+                metadata
+                    .finished_at
+                    .map(timestamp_ms)
+                    .transpose()?
+                    .unwrap_or_else(now_ms),
+            )
+        } else {
+            None
+        };
+        let mut observed_at_ms = now_ms();
+        if let Some(started) = started_at_ms {
+            observed_at_ms = observed_at_ms.max(started);
+        }
+        if let Some(finished) = finished_at_ms {
+            observed_at_ms = observed_at_ms.max(finished);
+        }
+        let failure = if state == RuntimeUnitState::Failed {
+            Some(failure_override.unwrap_or_else(|| exit_failure(record)))
+        } else {
+            None
+        };
+        let outputs = if state == RuntimeUnitState::Succeeded {
+            self.artifact_storage.capture_outputs(spec).await?
+        } else {
+            Vec::new()
+        };
+        let provider_build = self.provider_build().await?;
+        let provider_attestation = self
+            .bounded(
+                "SEV-SNP attestation",
+                self.attestation
+                    .reference_for(spec, record, self.sev_snp_config()),
+            )
+            .await?;
+        let mut claims = BTreeMap::from([
+            (
+                "aster.box.execution-isolation".into(),
+                match self.execution_isolation {
+                    aster_box_core::ExecutionIsolation::Microvm => "microvm".into(),
+                    aster_box_core::ExecutionIsolation::Sandbox => "sandbox".into(),
+                },
+            ),
+            (
+                "aster.box.execution-generation".into(),
+                metadata.generation.get().to_string(),
+            ),
+        ]);
+        if spec.isolation == aster_runtime::contract::IsolationLevel::Confidential {
+            let mode = if self.sev_snp_config().is_some_and(|config| config.simulate) {
+                "sev-snp-simulated"
+            } else {
+                "sev-snp-hardware"
+            };
+            claims.insert("aster.box.tee".into(), mode.into());
+        }
+        let observation = RuntimeObservation {
+            schema: RuntimeObservation::SCHEMA.into(),
+            unit_id: spec.unit_id.clone(),
+            generation: spec.generation,
+            spec_digest: spec.digest().map_err(RuntimeError::Protocol)?,
+            class: spec.class,
+            state,
+            provider_resource_id: Some(record.id.clone()),
+            provider_build: Some(provider_build.clone()),
+            observed_at_ms,
+            started_at_ms,
+            finished_at_ms,
+            health: None,
+            liveness: None,
+            outputs,
+            usage: None,
+            evidence: Some(RuntimeEvidence {
+                provider_build,
+                spec_digest: spec.digest().map_err(RuntimeError::Protocol)?,
+                semantics_profile_digest: spec.semantics_profile_digest.clone(),
+                identity_attachment_digest: spec.identity_attachment_digest.clone(),
+                claims,
+            }),
+            provider_attestation,
+            failure,
+        };
+        Ok(observation)
+    }
+
+    /// Reconciles Service endpoints after all lifecycle evidence has been
+    /// attached, then performs the single externally relevant validation.
+    pub(super) async fn finish_observation(
+        &self,
+        spec: &RuntimeUnitSpec,
+        record: &BoxRecord,
+        observation: RuntimeObservation,
+    ) -> RuntimeResult<RuntimeObservation> {
+        if spec.class == RuntimeUnitClass::Service {
+            let (execution_id, execution_generation, _) = local_identity(record)?;
+            return self
+                .service_endpoints
+                .reconcile(spec, execution_id, execution_generation, observation)
+                .await;
+        }
+        observation
+            .validate_against(spec)
+            .map_err(RuntimeError::Protocol)?;
+        Ok(observation)
+    }
+
+    /// ED3 (design A): capture the unit's filesystem state to a keyed
+    /// snapshot before termination. The managed create path quiesces the
+    /// execution (pause with memory retained) and stores the snapshot
+    /// atomically; the key derives deterministically from the handoff
+    /// operation id, so a replay returns the same snapshot. Memory
+    /// capture is not implemented yet — `include_memory` refuses
+    /// fail-closed rather than overclaiming.
+    pub(super) async fn snapshot_unit(
+        &self,
+        unit: &RuntimeUnitRecord,
+        request: &aster_runtime::contract::RuntimeSnapshotRequest,
+    ) -> RuntimeResult<aster_runtime::contract::RuntimeSnapshot> {
+        request.validate().map_err(RuntimeError::InvalidRequest)?;
+        if request.unit_id != unit.spec.unit_id || request.generation != unit.spec.generation {
+            return Err(RuntimeError::InvalidRequest(
+                "Runtime snapshot request does not address this unit".into(),
+            ));
+        }
+        if !self.config.state_snapshot {
+            return Err(RuntimeError::UnsupportedCapabilities(vec![
+                "feature:StateSnapshot".into(),
+            ]));
+        }
+        if request.include_memory {
+            return Err(RuntimeError::UnsupportedCapabilities(vec![
+                "feature:StateSnapshot:memory".into(),
+            ]));
+        }
+        let record =
+            self.find_generation(&unit.spec)
+                .await?
+                .ok_or_else(|| RuntimeError::NotFound {
+                    unit_id: unit.spec.unit_id.clone(),
+                })?;
+        let metadata = record.managed_execution.as_ref().ok_or_else(|| {
+            RuntimeError::UnsupportedCapabilities(vec![
+                "feature:StateSnapshot: unmanaged execution".into(),
+            ])
+        })?;
+        let execution_id = aster_box_core::ExecutionId::new(record.id.clone())
+            .map_err(|error| RuntimeError::Protocol(error.to_string()))?;
+        let snapshot_id = snapshot_key(&request.operation_id)?;
+        let created = self
+            .manager
+            .create_filesystem_snapshot(&execution_id, metadata.generation, &snapshot_id)
+            .await
+            .map_err(|error| map_execution_error(&unit.spec.unit_id, error))?;
+        let snapshot = aster_runtime::contract::RuntimeSnapshot {
+            schema: aster_runtime::contract::RuntimeSnapshot::SCHEMA.into(),
+            operation_id: request.operation_id.clone(),
+            unit_id: request.unit_id.clone(),
+            generation: request.generation,
+            include_memory: request.include_memory,
+            captured_at_ms: now_ms(),
+        };
+        snapshot.validate().map_err(RuntimeError::Protocol)?;
+        let _ = created;
+        Ok(snapshot)
+    }
+}
+
+fn runtime_state(spec: &RuntimeUnitSpec, record: &BoxRecord) -> RuntimeResult<RuntimeUnitState> {
+    let state = local_identity(record)?.2;
+    match state {
+        ManagedExecutionState::Creating => Ok(RuntimeUnitState::Preparing),
+        ManagedExecutionState::Created
+        | ManagedExecutionState::Starting
+        | ManagedExecutionState::RestartStarting => Ok(RuntimeUnitState::Starting),
+        ManagedExecutionState::Running
+        | ManagedExecutionState::Pausing
+        | ManagedExecutionState::Paused
+        | ManagedExecutionState::Resuming
+        | ManagedExecutionState::UpdatingResources
+        | ManagedExecutionState::Snapshotting
+        | ManagedExecutionState::RestartStopping => Ok(RuntimeUnitState::Running),
+        ManagedExecutionState::Killing | ManagedExecutionState::Removing => {
+            Ok(RuntimeUnitState::Stopping)
+        }
+        ManagedExecutionState::Stopped | ManagedExecutionState::Failed => match spec.class {
+            RuntimeUnitClass::Task if record.exit_code == Some(0) => {
+                Ok(RuntimeUnitState::Succeeded)
+            }
+            RuntimeUnitClass::Task => Ok(RuntimeUnitState::Failed),
+            // Clean Service stop: authenticated exit 0, or durable Stopped with
+            // no exit yet (operator stop / AlreadyStopped). Never invent Stopped
+            // over durable Failed when exit is absent.
+            RuntimeUnitClass::Service if record.exit_code == Some(0) => {
+                Ok(RuntimeUnitState::Stopped)
+            }
+            RuntimeUnitClass::Service
+                if state == ManagedExecutionState::Stopped && record.exit_code.is_none() =>
+            {
+                Ok(RuntimeUnitState::Stopped)
+            }
+            RuntimeUnitClass::Service => Ok(RuntimeUnitState::Failed),
+        },
+    }
+}
+
+fn exit_failure(record: &BoxRecord) -> RuntimeFailure {
+    let message = match record.exit_code {
+        Some(code) => format!("Box execution exited with code {code}"),
+        None => "Box execution exited without a recoverable exit code".into(),
+    };
+    RuntimeFailure {
+        code: "sandbox_exit".into(),
+        message,
+        retryable: false,
+    }
+}
+
+fn should_replace_confirmed_loss(
+    record: &BoxRecord,
+    current: &RuntimeObservation,
+) -> RuntimeResult<bool> {
+    Ok(current.state == RuntimeUnitState::Unknown
+        && local_identity(record)?.2.is_terminal()
+        && record.exit_code.is_none())
+}
+
+fn provider_was_lost(before: ManagedExecutionState, after: &BoxRecord) -> RuntimeResult<bool> {
+    Ok(before.keeps_resources()
+        && local_identity(after)?.2 == ManagedExecutionState::Failed
+        && after.exit_code.is_none())
+}
+
+fn should_restart(spec: &RuntimeUnitSpec, record: &BoxRecord) -> RuntimeResult<bool> {
+    if !local_identity(record)?.2.is_terminal() || record.exit_code.is_none() {
+        return Ok(false);
+    }
+    let attempts = local_identity(record)?.1.get().saturating_sub(1);
+    Ok(match &spec.restart {
+        RestartPolicy::Never => false,
+        RestartPolicy::Always => spec.class == RuntimeUnitClass::Service,
+        RestartPolicy::OnFailure { max_retries } => {
+            record.exit_code != Some(0) && attempts < u64::from(*max_retries)
+        }
+    })
+}
+
+fn should_restart_unhealthy_liveness(
+    spec: &RuntimeUnitSpec,
+    record: &BoxRecord,
+) -> RuntimeResult<bool> {
+    if local_identity(record)?.2 != ManagedExecutionState::Running {
+        return Ok(false);
+    }
+    let attempts = local_identity(record)?.1.get().saturating_sub(1);
+    Ok(match &spec.restart {
+        RestartPolicy::Never => false,
+        RestartPolicy::Always => spec.class == RuntimeUnitClass::Service,
+        RestartPolicy::OnFailure { max_retries } => attempts < u64::from(*max_retries),
+    })
+}
+
+fn restart_operation(
+    spec: &RuntimeUnitSpec,
+    generation: aster_box_core::ExecutionGeneration,
+) -> RuntimeResult<aster_box_core::OperationId> {
+    let mut digest = Sha256::new();
+    digest.update(b"aster-box-runtime-restart-v1\0");
+    digest.update(spec.unit_id.as_bytes());
+    digest.update(spec.generation.to_be_bytes());
+    digest.update(spec.digest().map_err(RuntimeError::Protocol)?.as_bytes());
+    digest.update(generation.get().to_be_bytes());
+    aster_box_core::OperationId::new(format!("aster-runtime-restart-v1:{:x}", digest.finalize()))
+        .map_err(|error| RuntimeError::InvalidRequest(error.to_string()))
+}
+
+fn validate_action_identity(
+    unit: &RuntimeUnitRecord,
+    request: &RuntimeActionRequest,
+) -> RuntimeResult<()> {
+    if request.unit_id != unit.spec.unit_id || request.generation != unit.spec.generation {
+        return Err(RuntimeError::InvalidRequest(
+            "Runtime action identity does not match its unit record".into(),
+        ));
+    }
+    Ok(())
+}
+
+fn unknown_observation(current: &RuntimeObservation) -> RuntimeResult<RuntimeObservation> {
+    let mut unknown = current.clone();
+    unknown.state = RuntimeUnitState::Unknown;
+    unknown.observed_at_ms = unknown.observed_at_ms.max(now_ms());
+    unknown.finished_at_ms = None;
+    unknown.health = None;
+    unknown.liveness = None;
+    unknown.outputs.clear();
+    unknown.failure = None;
+    unknown.clear_service_endpoints();
+    unknown.validate().map_err(RuntimeError::Protocol)?;
+    Ok(unknown)
+}
+
+fn not_found(spec: &RuntimeUnitSpec) -> RuntimeInspection {
+    RuntimeInspection::NotFound {
+        schema: RuntimeInspection::SCHEMA.into(),
+        unit_id: spec.unit_id.clone(),
+        last_generation: Some(spec.generation),
+    }
+}
+
+/// Derives the bounded, deterministic execution-snapshot key from a
+/// handoff operation id. `ExecutionSnapshotId` bounds the charset to
+/// `[A-Za-z0-9_-]{1,128}` while operation ids may carry `:` — the
+/// SHA-256 digest keeps the mapping injective and replay-stable.
+pub(super) fn snapshot_key(operation_id: &str) -> RuntimeResult<aster_box_core::ExecutionSnapshotId> {
+    use sha2::Digest as _;
+    let digest = sha2::Sha256::digest(operation_id.as_bytes());
+    let key = format!("ed3-{:x}", digest);
+    aster_box_core::ExecutionSnapshotId::new(key)
+        .map_err(|error| RuntimeError::InvalidRequest(error.to_string()))
+}
+
+#[cfg(test)]
+mod runtime_state_honesty_tests {
+    use std::collections::{BTreeMap, HashMap};
+    use std::path::PathBuf;
+
+    use aster_box_core::{
+        BoxConfig, CreateExecutionRequest, ExecutionGeneration, ExecutionIsolation, OperationId,
+    };
+    use aster_runtime::contract::{RuntimeUnitClass, RuntimeUnitState};
+
+    use super::super::test_support::runtime_spec;
+    use super::runtime_state;
+    use crate::{BoxRecord, ManagedExecutionMetadata, ManagedExecutionState};
+
+    fn managed_terminal_record(status: &str, exit_code: Option<i32>) -> BoxRecord {
+        let id = "11111111-1111-4111-8111-111111111111";
+        let box_dir = PathBuf::from("/tmp").join(id);
+        let metadata = ManagedExecutionMetadata::new(
+            OperationId::new("op-runtime-state").unwrap(),
+            ExecutionGeneration::INITIAL,
+            CreateExecutionRequest {
+                external_sandbox_id: "ext".into(),
+                config: BoxConfig {
+                    isolation: ExecutionIsolation::Sandbox,
+                    image: "alpine:latest".into(),
+                    ..Default::default()
+                },
+                labels: BTreeMap::new(),
+                policy: Default::default(),
+                rootfs_snapshot_id: None,
+            },
+        )
+        .unwrap();
+        BoxRecord {
+            id: id.into(),
+            short_id: BoxRecord::make_short_id(id),
+            name: "runtime-state".into(),
+            image: "alpine:latest".into(),
+            isolation: ExecutionIsolation::Sandbox,
+            managed_execution: Some(metadata),
+            status: status.into(),
+            pid: None,
+            pid_start_time: None,
+            cpus: 1,
+            memory_mb: 64,
+            volumes: vec![],
+            virtiofs_cache: None,
+            env: HashMap::new(),
+            cmd: vec![],
+            entrypoint: None,
+            box_dir: box_dir.clone(),
+            exec_socket_path: box_dir.join("exec.sock"),
+            console_log: box_dir.join("console.log"),
+            created_at: chrono::Utc::now(),
+            started_at: None,
+            auto_remove: false,
+            hostname: None,
+            user: None,
+            workdir: None,
+            restart_policy: "no".into(),
+            port_map: vec![],
+            labels: HashMap::new(),
+            stopped_by_user: false,
+            restart_count: 0,
+            max_restart_count: 0,
+            exit_code,
+            health_check: None,
+            healthcheck_disabled: false,
+            health_status: "none".into(),
+            health_retries: 0,
+            health_last_check: None,
+            network_mode: Default::default(),
+            network_name: None,
+            volume_names: vec![],
+            tmpfs: vec![],
+            anonymous_volumes: vec![],
+            resource_limits: Default::default(),
+            log_config: Default::default(),
+            add_host: vec![],
+            platform: None,
+            init: false,
+            read_only: false,
+            cap_add: vec![],
+            cap_drop: vec![],
+            security_opt: vec![],
+            privileged: false,
+            devices: vec![],
+            gpus: None,
+            shm_size: None,
+            stop_signal: None,
+            stop_timeout: None,
+            oom_kill_disable: false,
+            oom_score_adj: None,
+        }
+    }
+
+    #[test]
+    fn service_failed_without_exit_does_not_invent_stopped() {
+        let spec = runtime_spec("service-failed-no-exit", 1, RuntimeUnitClass::Service);
+        let record = managed_terminal_record("failed", None);
+        assert_eq!(
+            record.managed_state().unwrap(),
+            Some(ManagedExecutionState::Failed)
+        );
+        assert_eq!(
+            runtime_state(&spec, &record).unwrap(),
+            RuntimeUnitState::Failed,
+            "durable Failed + absent exit must not project Stopped via unwrap_or(0)"
+        );
+    }
+
+    #[test]
+    fn service_dead_without_exit_does_not_invent_stopped() {
+        let spec = runtime_spec("service-dead-no-exit", 1, RuntimeUnitClass::Service);
+        let record = managed_terminal_record("dead", None);
+        assert_eq!(
+            record.managed_state().unwrap(),
+            Some(ManagedExecutionState::Failed)
+        );
+        assert_eq!(
+            runtime_state(&spec, &record).unwrap(),
+            RuntimeUnitState::Failed,
+            "dead maps to Failed; absent exit must not invent clean Stopped"
+        );
+    }
+
+    #[test]
+    fn service_stopped_without_exit_stays_stopped() {
+        let spec = runtime_spec("service-stopped-no-exit", 1, RuntimeUnitClass::Service);
+        let record = managed_terminal_record("stopped", None);
+        assert_eq!(
+            runtime_state(&spec, &record).unwrap(),
+            RuntimeUnitState::Stopped,
+            "operator Stopped without exit must not be reclassified as Failed"
+        );
+    }
+
+    #[test]
+    fn service_failed_with_exit_zero_is_stopped() {
+        let spec = runtime_spec("service-failed-exit-zero", 1, RuntimeUnitClass::Service);
+        let record = managed_terminal_record("failed", Some(0));
+        assert_eq!(
+            runtime_state(&spec, &record).unwrap(),
+            RuntimeUnitState::Stopped
+        );
+    }
+
+    #[test]
+    fn service_failed_with_nonzero_exit_is_failed() {
+        let spec = runtime_spec("service-failed-exit-nonzero", 1, RuntimeUnitClass::Service);
+        let record = managed_terminal_record("failed", Some(1));
+        assert_eq!(
+            runtime_state(&spec, &record).unwrap(),
+            RuntimeUnitState::Failed
+        );
+    }
+}

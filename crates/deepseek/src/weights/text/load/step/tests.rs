@@ -11,7 +11,7 @@ use crate::{
         tests::{checkpoint, tiny_schema},
     },
 };
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::DType;
 
 fn architecture() -> TextArchitecture {

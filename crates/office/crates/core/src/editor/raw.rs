@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use quick_xml::events::Event;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

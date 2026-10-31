@@ -70,7 +70,7 @@ mod tests {
 
     #[test]
     fn reads_the_host_requirement_next_to_the_mismatch_error() {
-        let host = b"a3s-oci 9.9.9\x00prelude 0.3.6guest agent version does not match the host runtime version";
+        let host = b"aster-oci 9.9.9\x00prelude 0.3.6guest agent version does not match the host runtime version";
         assert_eq!(host_runtime_version(host), Some("0.3.6"));
     }
 

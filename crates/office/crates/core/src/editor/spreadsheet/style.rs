@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     editor_error, expanded_element, indexed_cells, indexed_cells_in_row, indexed_rows,
@@ -722,14 +722,14 @@ fn format_points(centipoints: u32) -> String {
     }
 }
 
-fn missing_style(index: usize) -> a3s_use_core::UseError {
+fn missing_style(index: usize) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_style_invalid",
         format!("Spreadsheet style index {index} does not exist."),
     )
 }
 
-fn styles_invalid() -> a3s_use_core::UseError {
+fn styles_invalid() -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_styles_invalid",
         "Spreadsheet styles do not contain a valid fonts and cellXfs model.",

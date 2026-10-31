@@ -74,7 +74,7 @@ async fn completes(after_refusal: bool) {
         .filter(|fact| fact.kind == "tool.result" && fact.payload["receipt"]["outcome"] == "denied")
         .count();
     assert_eq!(denied, if after_refusal { 2 } else { 0 });
-    assert!(!facts.iter().any(|fact| fact.kind == "a3s.goal.completed"));
+    assert!(!facts.iter().any(|fact| fact.kind == "aster.goal.completed"));
 }
 
 #[tokio::test]

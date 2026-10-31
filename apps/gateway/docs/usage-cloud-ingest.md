@@ -1,6 +1,6 @@
 # Gateway → Cloud usage ingest
 
-Gateway delivers managed inference usage events to A3S Cloud using the frozen
+Gateway delivers managed inference usage events to Aster Cloud using the frozen
 batch / receipt schemas owned by Cloud contracts:
 
 - batch: `kense.gateway.usage-batch.v1`
@@ -17,10 +17,10 @@ Prefer node-control mTLS:
 managed {
   gateway_id = "..."
   usage_spool {
-    directory = "/var/lib/a3s-gateway/usage"
+    directory = "/var/lib/aster-gateway/usage"
     cloud_ingest_endpoint = "https://cloud.example/v1/inference-control/usage-batches"
-    cloud_ingest_client_identity_file = "/var/lib/a3s-gateway/node-identity.pem"
-    cloud_ingest_server_ca_file = "/var/lib/a3s-gateway/cloud-server-ca.pem"
+    cloud_ingest_client_identity_file = "/var/lib/aster-gateway/node-identity.pem"
+    cloud_ingest_server_ca_file = "/var/lib/aster-gateway/cloud-server-ca.pem"
   }
 }
 ```
@@ -32,9 +32,9 @@ with the mTLS identity fields:
 managed {
   gateway_id = "..."
   usage_spool {
-    directory = "/var/lib/a3s-gateway/usage"
+    directory = "/var/lib/aster-gateway/usage"
     cloud_ingest_endpoint = "https://cloud.example/v1/inference-control/usage-batches"
-    cloud_ingest_token_env = "A3S_USAGE_INGEST_TOKEN"
+    cloud_ingest_token_env = "ASTER_USAGE_INGEST_TOKEN"
   }
 }
 ```

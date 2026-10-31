@@ -1,4 +1,4 @@
-# A3S Search - Justfile
+# Aster Search - Justfile
 
 default:
     @just --list
@@ -13,23 +13,23 @@ cz:
 
 # Build the project
 build:
-    cargo build -p a3s-search
+    cargo build -p aster-search
 
 # Build with headless browser support
 build-headless:
-    cargo build -p a3s-search --features headless
+    cargo build -p aster-search --features headless
 
 # Build with the default Moli-backed headless renderer
 build-moli:
-    cargo build -p a3s-search --features moli
+    cargo build -p aster-search --features moli
 
 # Build with Lightpanda browser support (Linux/macOS only)
 build-lightpanda:
-    cargo build -p a3s-search --features lightpanda
+    cargo build -p aster-search --features lightpanda
 
 # Build release
 release:
-    cargo build -p a3s-search --release
+    cargo build -p aster-search --release
 
 # ============================================================================
 # Test (unified command with progress display)
@@ -73,12 +73,12 @@ test:
             done
     }
 
-    print_header "🧪 A3S Search Test Suite"
+    print_header "🧪 Aster Search Test Suite"
     echo ""
-    echo -ne "${CYAN}▶${RESET} ${BOLD}a3s-search${RESET} "
+    echo -ne "${CYAN}▶${RESET} ${BOLD}aster-search${RESET} "
 
     # Run tests and capture output
-    if OUTPUT=$(cargo test -p a3s-search --lib 2>&1); then
+    if OUTPUT=$(cargo test -p aster-search --lib 2>&1); then
         TEST_EXIT=0
     else
         TEST_EXIT=1
@@ -134,8 +134,8 @@ test:
 # Run Lightpanda browser integration tests (requires: --features lightpanda, Linux/macOS)
 #
 # Prerequisites:
-#   - Lightpanda binary in PATH, or A3S_LIGHTPANDA_EXECUTABLE=/path/to/binary.
-#   - Managed installation is explicit: `a3s install use/browser`.
+#   - Lightpanda binary in PATH, or ASTER_LIGHTPANDA_EXECUTABLE=/path/to/binary.
+#   - Managed installation is explicit: `aster install use/browser`.
 #
 # Groups (all are --ignored by default, must opt-in):
 #   binary    — detect_lightpanda() discovers an existing binary
@@ -151,7 +151,7 @@ test:
 # Examples:
 #   just test-lightpanda                     # run all groups
 #   just test-lightpanda fetch               # run fetch group only
-#   A3S_LIGHTPANDA_EXECUTABLE=/usr/local/bin/lightpanda just test-lightpanda
+#   ASTER_LIGHTPANDA_EXECUTABLE=/usr/local/bin/lightpanda just test-lightpanda
 test-lightpanda GROUP="":
     #!/usr/bin/env bash
     set -e
@@ -168,10 +168,10 @@ test-lightpanda GROUP="":
     echo -e "${BOLD}  🐼 Lightpanda Browser Integration Tests${RESET}"
     echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 
-    if [ -n "$A3S_LIGHTPANDA_EXECUTABLE" ]; then
-        echo -e "  ${DIM}Binary:   $A3S_LIGHTPANDA_EXECUTABLE (from \$A3S_LIGHTPANDA_EXECUTABLE)${RESET}"
+    if [ -n "$ASTER_LIGHTPANDA_EXECUTABLE" ]; then
+        echo -e "  ${DIM}Binary:   $ASTER_LIGHTPANDA_EXECUTABLE (from \$ASTER_LIGHTPANDA_EXECUTABLE)${RESET}"
     else
-        echo -e "  ${DIM}Binary:   discover installed / A3S-managed provider${RESET}"
+        echo -e "  ${DIM}Binary:   discover installed / Aster-managed provider${RESET}"
     fi
 
     # Build filter from group name
@@ -264,11 +264,11 @@ test-headless:
             done
     }
 
-    print_header "🧪 A3S Search Test Suite (headless)"
+    print_header "🧪 Aster Search Test Suite (headless)"
     echo ""
-    echo -ne "${CYAN}▶${RESET} ${BOLD}a3s-search${RESET} ${DIM}(--features headless)${RESET} "
+    echo -ne "${CYAN}▶${RESET} ${BOLD}aster-search${RESET} ${DIM}(--features headless)${RESET} "
 
-    if OUTPUT=$(cargo test -p a3s-search --features headless --lib 2>&1); then
+    if OUTPUT=$(cargo test -p aster-search --features headless --lib 2>&1); then
         TEST_EXIT=0
     else
         TEST_EXIT=1
@@ -312,28 +312,28 @@ test-headless:
     echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
     echo ""
 
-# Run Moli renderer integration tests. Set A3S_MOLI_EXECUTABLE when `moli` is
+# Run Moli renderer integration tests. Set ASTER_MOLI_EXECUTABLE when `moli` is
 # not discoverable through PATH or the official installer location.
 # The deterministic local fixture runs by default; the upstream smoke is
 # available with `--ignored` when network access is intentional.
 test-moli:
-    cargo test -p a3s-search --features moli --test integration -- moli --nocapture
+    cargo test -p aster-search --features moli --test integration -- moli --nocapture
 
 # Run the opt-in live Moli upstream smoke as well.
 test-moli-live:
-    cargo test -p a3s-search --features moli --test integration -- moli --ignored --nocapture
+    cargo test -p aster-search --features moli --test integration -- moli --ignored --nocapture
 
 # Run tests without progress (raw cargo output)
 test-raw:
-    cargo test -p a3s-search --lib
+    cargo test -p aster-search --lib
 
 # Run tests with verbose output
 test-v:
-    cargo test -p a3s-search --lib -- --nocapture
+    cargo test -p aster-search --lib -- --nocapture
 
 # Run specific test
 test-one TEST:
-    cargo test -p a3s-search {{TEST}} -- --nocapture
+    cargo test -p aster-search {{TEST}} -- --nocapture
 
 # ============================================================================
 # Test Subsets
@@ -341,31 +341,31 @@ test-one TEST:
 
 # Test engine module
 test-engine:
-    cargo test -p a3s-search --lib -- engine::tests
+    cargo test -p aster-search --lib -- engine::tests
 
 # Test query module
 test-query:
-    cargo test -p a3s-search --lib -- query::tests
+    cargo test -p aster-search --lib -- query::tests
 
 # Test result module
 test-result:
-    cargo test -p a3s-search --lib -- result::tests
+    cargo test -p aster-search --lib -- result::tests
 
 # Test search module
 test-search:
-    cargo test -p a3s-search --lib -- search::tests
+    cargo test -p aster-search --lib -- search::tests
 
 # Test aggregator module
 test-aggregator:
-    cargo test -p a3s-search --lib -- aggregator::tests
+    cargo test -p aster-search --lib -- aggregator::tests
 
 # Test proxy module
 test-proxy:
-    cargo test -p a3s-search --lib -- proxy::tests
+    cargo test -p aster-search --lib -- proxy::tests
 
 # Test error module
 test-error:
-    cargo test -p a3s-search --lib -- error::tests
+    cargo test -p aster-search --lib -- error::tests
 
 # ============================================================================
 # Coverage (requires: cargo install cargo-llvm-cov)
@@ -402,9 +402,9 @@ test-cov:
         echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
     }
 
-    print_header "🧪 A3S Search Test Suite with Coverage"
+    print_header "🧪 Aster Search Test Suite with Coverage"
     echo ""
-    echo -e "${CYAN}▶${RESET} ${BOLD}a3s-search${RESET}"
+    echo -e "${CYAN}▶${RESET} ${BOLD}aster-search${RESET}"
     echo ""
 
     # Temp files for tracking
@@ -414,7 +414,7 @@ test-cov:
 
     # Run tests with coverage
     {
-        cargo llvm-cov -p a3s-search --lib 2>&1
+        cargo llvm-cov -p aster-search --lib 2>&1
     } | {
         total_passed=0
         total_failed=0
@@ -545,7 +545,7 @@ test-cov-headless:
     HOST=$(rustc -vV | grep host | cut -d' ' -f2)
     export LLVM_COV="$SYSROOT/lib/rustlib/$HOST/bin/llvm-cov"
     export LLVM_PROFDATA="$SYSROOT/lib/rustlib/$HOST/bin/llvm-profdata"
-    cargo llvm-cov -p a3s-search --features headless --lib --summary-only
+    cargo llvm-cov -p aster-search --features headless --lib --summary-only
 
 # Coverage with pretty terminal output
 cov:
@@ -555,11 +555,11 @@ cov:
     HOST=$(rustc -vV | grep host | cut -d' ' -f2)
     export LLVM_COV="$SYSROOT/lib/rustlib/$HOST/bin/llvm-cov"
     export LLVM_PROFDATA="$SYSROOT/lib/rustlib/$HOST/bin/llvm-profdata"
-    COV_FILE="/tmp/a3s-search-coverage.lcov"
+    COV_FILE="/tmp/aster-search-coverage.lcov"
     echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
     echo "┃                    🧪 Running Tests with Coverage                     ┃"
     echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
-    cargo llvm-cov -p a3s-search --lib --lcov --output-path "$COV_FILE" 2>&1 | grep -E "^test result"
+    cargo llvm-cov -p aster-search --lib --lcov --output-path "$COV_FILE" 2>&1 | grep -E "^test result"
     echo ""
     echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
     echo "┃                         📊 Coverage Report                            ┃"
@@ -574,7 +574,7 @@ cov-module MOD:
     HOST=$(rustc -vV | grep host | cut -d' ' -f2)
     export LLVM_COV="$SYSROOT/lib/rustlib/$HOST/bin/llvm-cov"
     export LLVM_PROFDATA="$SYSROOT/lib/rustlib/$HOST/bin/llvm-profdata"
-    cargo llvm-cov -p a3s-search --lib -- {{MOD}}::
+    cargo llvm-cov -p aster-search --lib -- {{MOD}}::
 
 # Coverage with HTML report (opens in browser)
 cov-html:
@@ -583,7 +583,7 @@ cov-html:
     HOST=$(rustc -vV | grep host | cut -d' ' -f2)
     export LLVM_COV="$SYSROOT/lib/rustlib/$HOST/bin/llvm-cov"
     export LLVM_PROFDATA="$SYSROOT/lib/rustlib/$HOST/bin/llvm-profdata"
-    cargo llvm-cov -p a3s-search --lib --html --open
+    cargo llvm-cov -p aster-search --lib --html --open
 
 # Coverage with detailed file-by-file table
 cov-table:
@@ -592,7 +592,7 @@ cov-table:
     HOST=$(rustc -vV | grep host | cut -d' ' -f2)
     export LLVM_COV="$SYSROOT/lib/rustlib/$HOST/bin/llvm-cov"
     export LLVM_PROFDATA="$SYSROOT/lib/rustlib/$HOST/bin/llvm-profdata"
-    cargo llvm-cov -p a3s-search --lib
+    cargo llvm-cov -p aster-search --lib
 
 # Coverage for CI (generates lcov.info)
 cov-ci:
@@ -601,7 +601,7 @@ cov-ci:
     HOST=$(rustc -vV | grep host | cut -d' ' -f2)
     export LLVM_COV="$SYSROOT/lib/rustlib/$HOST/bin/llvm-cov"
     export LLVM_PROFDATA="$SYSROOT/lib/rustlib/$HOST/bin/llvm-profdata"
-    cargo llvm-cov -p a3s-search --lib --lcov --output-path lcov.info
+    cargo llvm-cov -p aster-search --lib --lcov --output-path lcov.info
 
 # ============================================================================
 # Code Quality
@@ -609,21 +609,21 @@ cov-ci:
 
 # Format code
 fmt:
-    cargo fmt -p a3s-search
+    cargo fmt -p aster-search
 
 # Check formatting
 fmt-check:
-    cargo fmt -p a3s-search -- --check
+    cargo fmt -p aster-search -- --check
 
 # Lint (clippy)
 lint:
-    cargo clippy -p a3s-search --all-targets -- -D warnings
+    cargo clippy -p aster-search --all-targets -- -D warnings
 
 # CI checks (fmt + lint + test)
 ci:
-    cargo fmt -p a3s-search -- --check
-    cargo clippy -p a3s-search --all-targets -- -D warnings
-    cargo test -p a3s-search --lib
+    cargo fmt -p aster-search -- --check
+    cargo clippy -p aster-search --all-targets -- -D warnings
+    cargo test -p aster-search --lib
 
 # ============================================================================
 # Utilities
@@ -635,15 +635,15 @@ clean:
 
 # Check project (fast compile check)
 check:
-    cargo check -p a3s-search
+    cargo check -p aster-search
 
 # Watch and rebuild
 watch:
-    cargo watch -x "build -p a3s-search"
+    cargo watch -x "build -p aster-search"
 
 # Generate docs
 doc:
-    cargo doc -p a3s-search --no-deps --open
+    cargo doc -p aster-search --no-deps --open
 
 # Update dependencies
 update:

@@ -227,11 +227,12 @@ pub(crate) fn settle_goal_slice(
 }
 
 pub(crate) fn evidence_for_goal_step(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     run_sequence: u64,
     session_id: &str,
     run_id: &str,
     attestation: Option<&VerificationReport>,
+    continuation: Option<&crate::goal_control::ContinuationSource>,
 ) -> Option<(Vec<VerificationReport>, String, bool)> {
     let start = facts.iter().position(|fact| fact.seq == run_sequence)?;
     let mut debt = receipts::fold_cache_evidence(&facts[start..]);
@@ -243,6 +244,7 @@ pub(crate) fn evidence_for_goal_step(
         return None;
     }
     let mut ledger = crate::harness_loop::MutationLedger::default();
+    ledger.bind_goal_continuation(continuation);
     let mut reports = Vec::new();
     let mut capability = None;
     for (tool, result) in &debt.results {
@@ -255,7 +257,7 @@ pub(crate) fn evidence_for_goal_step(
         }
         capability = Some(admission.capability_binding_digest.as_str());
         ledger.observe_tool_receipt(tool, result);
-        if result.outcome == a3s_effect::ToolExecutionOutcome::Succeeded {
+        if result.outcome == aster_effect::ToolExecutionOutcome::Succeeded {
             let output = result.output.as_str().and_then(decode_fact_tool_result)?;
             crate::agent::AgentLoop::collect_verification_report(&mut reports, &output.metadata);
         }
@@ -309,7 +311,7 @@ pub(crate) fn evidence_for_goal_step(
 /// step cannot refresh the stall budget, nor can an earlier/foreign Run.
 #[cfg(test)]
 pub(crate) fn goal_slice_made_progress(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     run_sequence: u64,
     session_id: &str,
     run_id: &str,
@@ -318,11 +320,11 @@ pub(crate) fn goal_slice_made_progress(
 }
 
 pub(crate) fn goal_slice_workspace_evidence(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     run_sequence: u64,
     session_id: &str,
     run_id: &str,
-) -> (bool, Option<Vec<a3s_effect::ToolPathChangeV1>>) {
+) -> (bool, Option<Vec<aster_effect::ToolPathChangeV1>>) {
     let Some(start) = facts.iter().position(|fact| fact.seq == run_sequence) else {
         return (false, None);
     };
@@ -375,7 +377,7 @@ pub(crate) fn goal_slice_workspace_evidence(
             return (false, None);
         };
         mutated |= observed_workspace_mutation(effects);
-        complete &= effects.completeness == a3s_effect::ToolObservationCompleteness::Complete;
+        complete &= effects.completeness == aster_effect::ToolObservationCompleteness::Complete;
         changes.extend(
             effects
                 .changes
@@ -387,8 +389,8 @@ pub(crate) fn goal_slice_workspace_evidence(
     (mutated, complete.then_some(changes))
 }
 
-pub(super) fn observed_workspace_mutation(effects: &a3s_effect::ToolEffectObservationV1) -> bool {
-    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
+pub(super) fn observed_workspace_mutation(effects: &aster_effect::ToolEffectObservationV1) -> bool {
+    use aster_effect::{ToolFileKind, ToolObservationCompleteness};
     effects.completeness == ToolObservationCompleteness::Complete
         && effects.changes.iter().any(|change| {
             if crate::porcelain::is_harness_path(&change.path) {

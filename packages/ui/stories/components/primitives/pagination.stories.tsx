@@ -8,7 +8,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious
-} from '@a3s-lab/ui'
+} from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Pagination> = {
   title: 'Components/Primitives/Pagination',

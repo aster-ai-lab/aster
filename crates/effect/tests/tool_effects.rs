@@ -6,7 +6,7 @@ use std::collections::VecDeque;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_effect::*;
+use aster_effect::*;
 use serde_json::{json, Value};
 use tokio_util::sync::CancellationToken;
 
@@ -22,7 +22,7 @@ impl Completion for ScriptModel {
         &self,
         _request: CompletionRequest,
         _cancel: CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         let result = self
             .0
             .lock()
@@ -39,7 +39,7 @@ impl Compactor for NoCompact {
     fn compact(
         &self,
         _messages: &[String],
-    ) -> a3s_effect::coding::BoxFuture<Result<String, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
         Box::pin(async { Ok("summary".into()) })
     }
 }
@@ -53,7 +53,7 @@ impl ToolRunner for HostTools {
         &self,
         _call: ToolCall,
         _cancel: CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<Value, ActorError>> {
         unreachable!("the typed adapter executes only its prepared effect")
     }
 
@@ -61,7 +61,7 @@ impl ToolRunner for HostTools {
         self: Arc<Self>,
         request: ToolPreparationRequest,
         _cancel: CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<PreparedToolExecution, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<PreparedToolExecution, ActorError>> {
         Box::pin(async move {
             let mut identity = request.identity;
             identity.admission = Some(ToolAdmissionIdentityV1 {

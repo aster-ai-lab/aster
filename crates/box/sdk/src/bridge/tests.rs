@@ -17,7 +17,7 @@ fn create_request_defaults_to_a_local_microvm() {
 #[test]
 fn create_request_maps_language_options_to_the_runtime_facade() {
     let home = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(home.path());
+    let client = AsterBoxClient::from_home(home.path());
     let source_snapshot = ExecutionSnapshotId::new("ci-base-source").unwrap();
     let (request, _) = SandboxCreateOptions::new("python:3.12-alpine")
         .timeout_seconds(120)
@@ -49,7 +49,7 @@ fn create_request_maps_language_options_to_the_runtime_facade() {
 #[test]
 fn create_request_maps_explicit_initial_process_configuration() {
     let home = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(home.path());
+    let client = AsterBoxClient::from_home(home.path());
     let (request, _) = SandboxCreateOptions::new("alpine:3.20")
         .entrypoint(["/usr/bin/env", "sh"])
         .command(["-c", "printf ready; sleep 3600"])
@@ -65,7 +65,7 @@ fn create_request_maps_explicit_initial_process_configuration() {
 
 #[test]
 fn create_request_rejects_empty_initial_process_configuration() {
-    let client = A3sBoxClient::new();
+    let client = AsterBoxClient::new();
 
     let empty_command = SandboxCreateOptions::new("alpine:3.20")
         .command(Vec::<String>::new())
@@ -89,7 +89,7 @@ fn create_request_rejects_empty_initial_process_configuration() {
 #[test]
 fn builder_maps_typed_storage_network_and_runtime_options() {
     let home = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(home.path());
+    let client = AsterBoxClient::from_home(home.path());
     client.volume("ci-cache").size_limit(4096).create().unwrap();
     client
         .network("ci-net")
@@ -143,13 +143,13 @@ fn runtime_observation_timestamps_are_exact_decimal_strings() {
         execution_id: ExecutionId::new("box-1").unwrap(),
         generation: ExecutionGeneration::INITIAL,
         timestamp_unix_ns,
-        cpu: a3s_box_core::ExecutionCpuStats {
+        cpu: aster_box_core::ExecutionCpuStats {
             usage_ns: 300,
             user_ns: 200,
             system_ns: 100,
             throttled_ns: 5,
         },
-        memory: a3s_box_core::ExecutionMemoryStats {
+        memory: aster_box_core::ExecutionMemoryStats {
             usage_bytes: 1024,
             limit_bytes: Some(2048),
             peak_bytes: Some(1536),
@@ -167,11 +167,11 @@ fn runtime_observation_timestamps_are_exact_decimal_strings() {
     let batch = ExecutionEventBatch {
         execution_id: ExecutionId::new("box-1").unwrap(),
         generation: ExecutionGeneration::INITIAL,
-        events: vec![a3s_box_core::ExecutionRuntimeEvent {
+        events: vec![aster_box_core::ExecutionRuntimeEvent {
             sequence: 1,
             timestamp_unix_ns,
             process_id: None,
-            kind: a3s_box_core::ExecutionEventKind::ContainerStarted,
+            kind: aster_box_core::ExecutionEventKind::ContainerStarted,
             attributes: BTreeMap::new(),
         }],
         next_sequence: 1,
@@ -187,7 +187,7 @@ fn runtime_observation_timestamps_are_exact_decimal_strings() {
 #[test]
 fn runtime_configuration_errors_are_invalid_requests() {
     let failure = BridgeFailure::from(ClientError::Runtime(
-        a3s_box_core::error::BoxError::ConfigError("invalid CPU count".to_string()),
+        aster_box_core::error::BoxError::ConfigError("invalid CPU count".to_string()),
     ));
 
     assert_eq!(failure.code, "invalid_request");
@@ -197,7 +197,7 @@ fn runtime_configuration_errors_are_invalid_requests() {
 #[test]
 fn unsupported_runtime_capabilities_are_unavailable() {
     let failure = BridgeFailure::from(ClientError::Runtime(
-        a3s_box_core::error::BoxError::TeeNotSupported("no TEE device".to_string()),
+        aster_box_core::error::BoxError::TeeNotSupported("no TEE device".to_string()),
     ));
 
     assert_eq!(failure.code, "unavailable");
@@ -543,7 +543,7 @@ fn lifecycle_observability_and_inspection_shapes_are_typed() {
 #[tokio::test]
 async fn lifecycle_validation_precedes_runtime_lookup_or_mutation() {
     let home = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(home.path());
+    let client = AsterBoxClient::from_home(home.path());
 
     let restart = handle_request(
         &client,
@@ -620,7 +620,7 @@ async fn lifecycle_validation_precedes_runtime_lookup_or_mutation() {
 #[tokio::test]
 async fn management_inspection_bridge_reads_typed_local_state() {
     let home = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(home.path());
+    let client = AsterBoxClient::from_home(home.path());
     let sandbox_id = "11111111-1111-4111-8111-111111111111";
     let box_dir = home.path().join("boxes").join(sandbox_id);
     std::fs::create_dir_all(&box_dir).unwrap();
@@ -652,7 +652,7 @@ async fn management_inspection_bridge_reads_typed_local_state() {
     let rootfs = home.path().join("snapshot-source");
     std::fs::create_dir_all(&rootfs).unwrap();
     std::fs::write(rootfs.join("marker"), b"snapshot").unwrap();
-    let metadata = a3s_box_core::snapshot::SnapshotMetadata::new(
+    let metadata = aster_box_core::snapshot::SnapshotMetadata::new(
         "ci-base".to_string(),
         "CI base".to_string(),
         sandbox_id.to_string(),
@@ -719,7 +719,7 @@ async fn capabilities_publish_a_unique_exhaustive_operation_inventory() {
     sorted.dedup();
     assert_eq!(sorted.len(), BRIDGE_OPERATIONS.len());
 
-    let response = handle_request(&A3sBoxClient::new(), BridgeRequest::SdkCapabilities).await;
+    let response = handle_request(&AsterBoxClient::new(), BridgeRequest::SdkCapabilities).await;
     assert!(response.ok);
     let result = response.result.unwrap();
     assert_eq!(result["protocol_version"], BRIDGE_PROTOCOL_VERSION);
@@ -735,7 +735,7 @@ async fn capabilities_publish_a_unique_exhaustive_operation_inventory() {
 #[test]
 fn sandbox_bridge_identity_preserves_rust_isolation() {
     let sandbox = Sandbox::from_known_state(
-        A3sBoxClient::new(),
+        AsterBoxClient::new(),
         ExecutionId::new("sandbox-isolation").unwrap(),
         ExecutionGeneration::INITIAL,
         ExecutionState::Running,
@@ -750,7 +750,7 @@ fn sandbox_bridge_identity_preserves_rust_isolation() {
 #[tokio::test]
 async fn connected_bridge_sandbox_reads_isolation_and_fences_stale_generation() {
     let home = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(home.path());
+    let client = AsterBoxClient::from_home(home.path());
     let (request, _) = SandboxCreateOptions::new("alpine:3.20")
         .isolation(ExecutionIsolation::Sandbox)
         .into_runtime_request(&client)
@@ -780,7 +780,7 @@ async fn connected_bridge_sandbox_reads_isolation_and_fences_stale_generation() 
 #[tokio::test]
 async fn image_management_bridge_validates_before_registry_or_store_mutation() {
     let home = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(home.path());
+    let client = AsterBoxClient::from_home(home.path());
 
     let get = handle_request(
         &client,
@@ -857,7 +857,7 @@ async fn image_management_bridge_validates_before_registry_or_store_mutation() {
 #[tokio::test]
 async fn resource_bridge_operations_use_typed_runtime_stores() {
     let home = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(home.path());
+    let client = AsterBoxClient::from_home(home.path());
 
     let volume = handle_request(
         &client,
@@ -905,7 +905,7 @@ async fn resource_bridge_operations_use_typed_runtime_stores() {
 #[tokio::test]
 async fn bridge_rejects_human_image_progress_on_machine_stdout() {
     let home = tempfile::tempdir().unwrap();
-    let client = A3sBoxClient::from_home(home.path());
+    let client = AsterBoxClient::from_home(home.path());
     let response = handle_request(
         &client,
         BridgeRequest::ImageBuild {

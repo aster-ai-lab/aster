@@ -4,9 +4,9 @@ use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use a3s_code_core::capability::{WorkspaceOperation, WorkspaceOperationAccess};
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
-use a3s_code_core::workspace::{WorkspaceReadOverlayError, WorkspaceReadOverlayErrorKind};
+use aster_core::capability::{WorkspaceOperation, WorkspaceOperationAccess};
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_core::workspace::{WorkspaceReadOverlayError, WorkspaceReadOverlayErrorKind};
 use agent_client_protocol::{AgentSideConnection, Client, ExtRequest};
 use anyhow::{Context, Result};
 use async_trait::async_trait;
@@ -36,7 +36,7 @@ fn map_acp_read_error(error: agent_client_protocol::Error) -> WorkspaceReadOverl
     let structured = error
         .data
         .as_ref()
-        .and_then(|data| data.pointer("/a3sDocument/kind"))
+        .and_then(|data| data.pointer("/asterDocument/kind"))
         .and_then(Value::as_str)
         .and_then(|kind| kind.parse().ok());
     let kind = structured.unwrap_or(match error.code {
@@ -124,7 +124,7 @@ fn validate_document_observation(
     Ok(())
 }
 
-enum CallKind {
+pub(crate) enum CallKind {
     Read {
         session: agent_client_protocol::SessionId,
         path: PathBuf,
@@ -137,13 +137,13 @@ enum CallKind {
     },
 }
 
-struct Call {
-    access: Option<WorkspaceOperationAccess>,
-    kind: CallKind,
-    reply: oneshot::Sender<Result<HostResponse>>,
+pub(crate) struct Call {
+    pub(crate) access: Option<WorkspaceOperationAccess>,
+    pub(crate) kind: CallKind,
+    pub(crate) reply: oneshot::Sender<Result<HostResponse>>,
 }
 
-enum HostResponse {
+pub(crate) enum HostResponse {
     Read {
         content: String,
         document: Option<Value>,
@@ -157,7 +157,7 @@ pub(crate) struct ClientRead {
 }
 
 pub(crate) struct DocumentBridge {
-    sender: mpsc::Sender<Call>,
+    pub(crate) sender: mpsc::Sender<Call>,
     receiver: Mutex<Option<mpsc::Receiver<Call>>>,
     worker: Mutex<Option<tokio::task::JoinHandle<()>>>,
     runs: Mutex<HashMap<String, document_run::RetainedRun>>,
@@ -199,7 +199,7 @@ impl DocumentBridge {
                                     agent_client_protocol::ReadTextFileRequest::new(session, path);
                                 if let Some(run_id) = run_id {
                                     request = request.meta(serde_json::Map::from_iter([(
-                                        "a3sDocument".to_owned(),
+                                        "asterDocument".to_owned(),
                                         json!({"runId":run_id}),
                                     )]));
                                 }
@@ -225,7 +225,7 @@ impl DocumentBridge {
                                 }
                                 let document = response
                                     .meta
-                                    .and_then(|mut meta| meta.remove("a3sDocument"));
+                                    .and_then(|mut meta| meta.remove("asterDocument"));
                                 if let Some(document) = &document {
                                     let size = serde_json::to_vec(document)
                                         .map_err(|error| invalid_observation(error.to_string()))?
@@ -364,7 +364,7 @@ impl DocumentBridge {
                 .send(Call {
                     access: None,
                     kind: CallKind::Ext {
-                        method: "a3s/document/release_run",
+                        method: "aster/document/release_run",
                         params: json!({"sessionId":session,"runId":run}),
                         timeout: CALL_TIMEOUT,
                     },
@@ -408,7 +408,7 @@ impl DocumentBridge {
         let work = async {
             access.check()?;
             self.sender.send(Call { access: Some(access.clone()), kind: CallKind::Ext {
-                method: "a3s/document/process",
+                method: "aster/document/process",
                 params: json!({"sessionId":session,"path":path,"sourceSha256":digest,"startPage":first,"pageCount":count}),
                 timeout: Duration::from_secs(125),
             }, reply }).await.context("document bridge closed")?;
@@ -445,7 +445,7 @@ impl DocumentBridge {
         cursor: Option<&str>,
     ) -> Result<Value> {
         self.search_saved_workspaces(
-            "a3s/wiki/search-workspaces",
+            "aster/wiki/search-workspaces",
             access,
             session,
             query,
@@ -464,7 +464,7 @@ impl DocumentBridge {
         cursor: Option<&str>,
     ) -> Result<Value> {
         self.search_saved_workspaces(
-            "a3s/memory/search-workspaces",
+            "aster/memory/search-workspaces",
             access,
             session,
             query,

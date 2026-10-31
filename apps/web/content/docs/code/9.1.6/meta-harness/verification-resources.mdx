@@ -41,8 +41,8 @@ fn attest(
 
 ```rust
 use std::sync::Arc;
-use a3s_code_core::completion_attestor::DiskContentAttestor;
-use a3s_code_core::SessionOptions;
+use aster_core::completion_attestor::DiskContentAttestor;
+use aster_core::SessionOptions;
 
 let options = SessionOptions::new().with_completion_attestor(Arc::new(
     DiskContentAttestor::new("/my-project"),

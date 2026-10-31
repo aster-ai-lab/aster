@@ -11,7 +11,7 @@ batch_timeout_seconds="${AI_BENCH_BATCH_TIMEOUT_SECONDS:-300}"
 binary_root="${AI_BENCH_BINARY_ROOT:-$repository_root/target/release}"
 upstream_binary="$binary_root/examples/ai_benchmark_upstream"
 load_binary="$binary_root/examples/ai_benchmark_load"
-gateway_binary="$binary_root/a3s-gateway"
+gateway_binary="$binary_root/aster-gateway"
 
 IFS=',' read -r -a raw_profiles <<<"$profile_csv"
 # Expand meta profile names into concrete measurement points. Do not treat a
@@ -43,13 +43,13 @@ upstream_tls_mode=0
 tls_upstream_cert="$repository_root/tests/fixtures/tls/revision-1.crt"
 tls_upstream_key="$repository_root/tests/fixtures/tls/revision-1.key"
 tls_upstream_ca="$repository_root/tests/fixtures/tls/revision-1-ca.crt"
-a3s_pid=""
+aster_pid=""
 nginx_pid=""
 load_log=""
 benchmark_stage="initialization"
 
 cleanup() {
-  for process_id in "$a3s_pid" "$nginx_pid" "$upstream_pid" "$canary_upstream_pid" "$ipv6_upstream_pid"; do
+  for process_id in "$aster_pid" "$nginx_pid" "$upstream_pid" "$canary_upstream_pid" "$ipv6_upstream_pid"; do
     if [[ -n "$process_id" ]] && kill -0 "$process_id" 2>/dev/null; then
       kill "$process_id" 2>/dev/null || true
     fi
@@ -68,7 +68,7 @@ report_failure() {
     "$line" "$benchmark_stage" "$status"
   for log in \
     "$load_log" \
-    "$output_root/a3s-gateway.log" \
+    "$output_root/aster-gateway.log" \
     "$output_root/nginx.log" \
     "$output_root/upstream.log" \
     "$output_root/upstream-canary.log"; do
@@ -209,7 +209,7 @@ configure_profile() {
   request_buffering_off_fixture=0
   disk_spill_fixture=0
   gateway_restart_fixture=0
-  a3s_only=0
+  aster_only=0
   expect_proxy_error=0
   accept_http_status=""
   api_key=""
@@ -311,7 +311,7 @@ configure_profile() {
       ;;
     disk-spill)
       # Same paced 32 KiB prompt as prompt-32k; NGINX uses a 16 KiB client body
-      # buffer and a dedicated temp volume so the body spills to disk. A3S stays
+      # buffer and a dedicated temp volume so the body spills to disk. Aster stays
       # on in-memory OpenAI validation (gateway.acl).
       concurrency=16
       requests=64
@@ -424,7 +424,7 @@ configure_profile() {
       ;;
     request-buffering-on)
       # Same chunked-upload schedule; NGINX keeps proxy_request_buffering on
-      # (default nginx.conf). A3S OpenAI validation path is unchanged.
+      # (default nginx.conf). Aster OpenAI validation path is unchanged.
       concurrency=16
       requests=64
       warmup_requests=16
@@ -436,7 +436,7 @@ configure_profile() {
       ;;
     request-buffering-off)
       # Same schedule as request-buffering-on; NGINX streams the request body
-      # with proxy_request_buffering off. A3S still uses gateway.acl validation.
+      # with proxy_request_buffering off. Aster still uses gateway.acl validation.
       concurrency=16
       requests=64
       warmup_requests=16
@@ -766,7 +766,7 @@ configure_profile() {
       ;;
     telemetry-on)
       # Same paced C16 schedule as stream-paced-c16, with observability enabled.
-      # NGINX has no pinned equivalent module in this suite (A3S-only absolute).
+      # NGINX has no pinned equivalent module in this suite (Aster-only absolute).
       concurrency=16
       requests=64
       warmup_requests=16
@@ -775,11 +775,11 @@ configure_profile() {
       token_interval_ms=10
       prompt_bytes=1024
       telemetry_fixture=1
-      a3s_only=1
+      aster_only=1
       ;;
     telemetry-off)
       # Matching paced C16 schedule with observability disabled (default fixture).
-      # Pair with telemetry-on for feature-cost deltas; A3S-only absolute.
+      # Pair with telemetry-on for feature-cost deltas; Aster-only absolute.
       concurrency=16
       requests=64
       warmup_requests=16
@@ -787,7 +787,7 @@ configure_profile() {
       first_token_delay_ms=50
       token_interval_ms=10
       prompt_bytes=1024
-      a3s_only=1
+      aster_only=1
       ;;
     fallback)
       # Primary closed port; runner trips passive health / nginx max_fails,
@@ -862,7 +862,7 @@ configure_profile() {
       ;;
     api-key-auth)
       # Authorization Bearer gate; mix valid key with omitted key → 401.
-      # A3S-only until NGINX ships a pinned auth module equivalent.
+      # Aster-only until NGINX ships a pinned auth module equivalent.
       concurrency=16
       requests=64
       warmup_requests=0
@@ -871,7 +871,7 @@ configure_profile() {
       token_interval_ms=0
       prompt_bytes=256
       apikey_fixture=1
-      a3s_only=1
+      aster_only=1
       api_key=bench-secret
       omit_api_key_every=2
       accept_http_status=401
@@ -898,7 +898,7 @@ configure_profile() {
 }
 
 product_port() {
-  if [[ "$1" == "a3s-gateway" ]]; then
+  if [[ "$1" == "aster-gateway" ]]; then
     printf '18101'
   else
     printf '18102'
@@ -908,13 +908,13 @@ product_port() {
 proxy_fixture_mode="normal"
 
 stop_proxies() {
-  for process_id in "$a3s_pid" "$nginx_pid"; do
+  for process_id in "$aster_pid" "$nginx_pid"; do
     if [[ -n "$process_id" ]] && kill -0 "$process_id" 2>/dev/null; then
       kill "$process_id" 2>/dev/null || true
     fi
   done
   wait 2>/dev/null || true
-  a3s_pid=""
+  aster_pid=""
   nginx_pid=""
 }
 
@@ -934,17 +934,17 @@ restart_proxy_product() {
     return 1
   fi
   started=$(now_ms)
-  if [[ "$product" == "a3s-gateway" ]]; then
-    if [[ -n "$a3s_pid" ]]; then
-      kill "$a3s_pid" 2>/dev/null || true
-      wait "$a3s_pid" 2>/dev/null || true
-      a3s_pid=""
+  if [[ "$product" == "aster-gateway" ]]; then
+    if [[ -n "$aster_pid" ]]; then
+      kill "$aster_pid" 2>/dev/null || true
+      wait "$aster_pid" 2>/dev/null || true
+      aster_pid=""
     fi
     benchmark_stage="restart Kense Gateway (normal)"
     "$gateway_binary" --config "$fixture_root/gateway.acl" --log-level warn \
-      >"$output_root/a3s-gateway.log" 2>&1 &
-    a3s_pid=$!
-    assert_process_running "$a3s_pid" "Kense Gateway"
+      >"$output_root/aster-gateway.log" 2>&1 &
+    aster_pid=$!
+    assert_process_running "$aster_pid" "Kense Gateway"
     wait_for_endpoint "http://127.0.0.1:18101/health"
   else
     if [[ -n "$nginx_pid" ]]; then
@@ -971,14 +971,14 @@ restart_proxy_product() {
 # Copy self-signed AI TLS material to the shared /tmp paths referenced by
 # nginx-tls.conf (and optional absolute-path consumers). Idempotent.
 ensure_ai_tls_material() {
-  cp -f "$fixture_root/certs/bench.crt" /tmp/a3s-ai-bench-cert.pem
-  cp -f "$fixture_root/certs/bench.key" /tmp/a3s-ai-bench-key.pem
+  cp -f "$fixture_root/certs/bench.crt" /tmp/aster-ai-bench-cert.pem
+  cp -f "$fixture_root/certs/bench.key" /tmp/aster-ai-bench-key.pem
 }
 
 # Create the NGINX client-body spill volume referenced by nginx-disk-spill.conf
 # and record its absolute path beside trial artifacts for fairness audits.
 ensure_ai_disk_spill_volume() {
-  local volume="${AI_BENCH_DISK_SPILL_VOLUME:-/tmp/a3s-ai-bench-client-body}"
+  local volume="${AI_BENCH_DISK_SPILL_VOLUME:-/tmp/aster-ai-bench-client-body}"
   mkdir -p "$volume"
   # nginx levels 1 2 expect the path to exist and be writable.
   printf '%s\n' "$volume" >"$output_root/disk-spill-volume.txt"
@@ -986,7 +986,7 @@ ensure_ai_disk_spill_volume() {
 
 # Copy private upstream CA material for NGINX proxy_ssl_trusted_certificate.
 ensure_ai_upstream_tls_material() {
-  cp -f "$tls_upstream_ca" /tmp/a3s-ai-upstream-ca.pem
+  cp -f "$tls_upstream_ca" /tmp/aster-ai-upstream-ca.pem
 }
 
 start_stable_upstream() {
@@ -1083,9 +1083,9 @@ start_proxies() {
   fi
   benchmark_stage="start Kense Gateway ($mode)"
   "$gateway_binary" --config "$gateway_config" --log-level warn \
-    >"$output_root/a3s-gateway.log" 2>&1 &
-  a3s_pid=$!
-  assert_process_running "$a3s_pid" "Kense Gateway"
+    >"$output_root/aster-gateway.log" 2>&1 &
+  aster_pid=$!
+  assert_process_running "$aster_pid" "Kense Gateway"
   benchmark_stage="start NGINX ($mode)"
   nginx -c "$nginx_config" -g 'daemon off;' \
     >"$output_root/nginx.log" 2>&1 &
@@ -1387,14 +1387,14 @@ start_proxies normal
 
 for trial in $(seq 1 "$trials"); do
   if (( trial % 2 == 1 )); then
-    order=(a3s-gateway nginx)
+    order=(aster-gateway nginx)
   else
-    order=(nginx a3s-gateway)
+    order=(nginx aster-gateway)
   fi
   for profile in "${profiles[@]}"; do
     configure_profile "$profile"
-    if [[ "$a3s_only" == "1" ]]; then
-      products=(a3s-gateway)
+    if [[ "$aster_only" == "1" ]]; then
+      products=(aster-gateway)
     else
       products=("${order[@]}")
     fi
@@ -1422,7 +1422,7 @@ python3 "$repository_root/scripts/export-ai-gateway-comparison.py" \
   --logical-cpus "${LOGICAL_CPUS:-$(nproc)}" \
   --memory-mib "${MEMORY_MIB:-0}" \
   --kernel "${KERNEL_VERSION:-$(uname -srmo)}" \
-  --a3s-version "$("$gateway_binary" --version)" \
+  --aster-version "$("$gateway_binary" --version)" \
   --nginx-version "$(nginx -v 2>&1)" \
   --upstream-version "$("$upstream_binary" --version)" \
   --load-version "$("$load_binary" --version)"

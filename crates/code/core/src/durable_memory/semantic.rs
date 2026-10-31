@@ -9,8 +9,8 @@ use super::semantic_binding::{
 use crate::embedding::{
     EmbeddingError, EmbeddingExecutor, EmbeddingExecutorConfig, EmbeddingInput, EmbeddingProvider,
 };
-use a3s_memory::repository::{MemoryNamespace, MemoryNode, MemoryRepository, MemoryStatus};
-use a3s_memory::vector::{
+use aster_durable_memory::repository::{MemoryNamespace, MemoryNode, MemoryRepository, MemoryStatus};
+use aster_durable_memory::vector::{
     VectorIndex, VectorIndexObservation, VectorIndexStatus, VectorMutationConsistency,
     VectorSearchRequest,
 };
@@ -20,14 +20,14 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use tokio_util::sync::CancellationToken;
 
-const PARTITION_ID_DOMAIN: &str = "a3s.code.memory.semantic-partition.v1";
-const RECORD_ID_DOMAIN: &str = "a3s.code.memory.semantic-record.v1";
-const RECORD_SCHEMA_V1: &str = "a3s.code.memory.semantic-record.v1";
+const PARTITION_ID_DOMAIN: &str = "aster.code.memory.semantic-partition.v1";
+const RECORD_ID_DOMAIN: &str = "aster.code.memory.semantic-record.v1";
+const RECORD_SCHEMA_V1: &str = "aster.code.memory.semantic-record.v1";
 const QUERY_ID: &str = "durable-memory-semantic-query";
-const LABEL_SCHEMA: &str = "a3s.memory.semantic.schema";
-const LABEL_NODE_ID: &str = "a3s.memory.semantic.node_id";
-const LABEL_NODE_REVISION: &str = "a3s.memory.semantic.node_revision";
-const LABEL_CONTENT_DIGEST: &str = "a3s.memory.semantic.content_digest";
+const LABEL_SCHEMA: &str = "aster.memory.semantic.schema";
+const LABEL_NODE_ID: &str = "aster.memory.semantic.node_id";
+const LABEL_NODE_REVISION: &str = "aster.memory.semantic.node_revision";
+const LABEL_CONTENT_DIGEST: &str = "aster.memory.semantic.content_digest";
 
 /// Explicit host-owned embedding generation plus caller-owned vector index.
 ///
@@ -240,7 +240,7 @@ fn semantic_partition_id(namespace: &MemoryNamespace, serving_generation_digest:
     hasher.update(b"serving-generation");
     hasher.update([0]);
     hasher.update(serving_generation_digest.as_bytes());
-    format!("a3s-memory-semantic-{:x}", hasher.finalize())
+    format!("aster-memory-semantic-{:x}", hasher.finalize())
 }
 
 fn semantic_record_id(
@@ -259,7 +259,7 @@ fn semantic_record_id(
     hasher.update(node_revision.to_le_bytes());
     hasher.update([0]);
     hasher.update(content_digest.as_bytes());
-    format!("a3s-memory-semantic-record-{:x}", hasher.finalize())
+    format!("aster-memory-semantic-record-{:x}", hasher.finalize())
 }
 
 fn digest(content: &str) -> String {

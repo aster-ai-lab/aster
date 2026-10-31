@@ -83,7 +83,7 @@ export class DocxParagraphFormattingChangePatchCollector {
         'Document exceeds the paragraph-formatting revision limit.',
       );
     }
-    const marker = `__A3S_WORK_PARAGRAPH_FORMAT_CHANGE_EXPORT_${this.patches.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_FORMAT_CHANGE_EXPORT_${this.patches.length + 1}__`;
     this.patches.push({ marker, id, author, date, before });
     return marker;
   }

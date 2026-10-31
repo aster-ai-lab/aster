@@ -1,7 +1,7 @@
 // ============================================================================
 // ACL - Agent Configuration Language
 //
-// A3S-native configuration language for defining agent configurations.
+// Aster-native configuration language for defining agent configurations.
 // ============================================================================
 
 pub mod ast;
@@ -34,7 +34,7 @@ pub use schema::{
 /// # Example
 ///
 /// ```
-/// use a3s_acl::parse;
+/// use aster_acl::parse;
 ///
 /// let input = r#"
 ///     default_model = "openai/gpt-4"
@@ -60,7 +60,7 @@ pub fn parse_acl(input: &str) -> Result<Document, ParseError> {
 /// # Example
 ///
 /// ```
-/// use a3s_acl::{generate, Document, Block, Value};
+/// use aster_acl::{generate, Document, Block, Value};
 /// use std::collections::HashMap;
 ///
 /// let mut attrs = HashMap::new();

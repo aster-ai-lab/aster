@@ -3,10 +3,10 @@
 use super::store::{
     FreshOwnerAdmission, OwnedLifecycleOutcome, OwnedLifecycleRequest, OwnerBinding,
 };
-use a3s_box_core::vmm::OwnedCloseBudget;
+use aster_box_core::vmm::OwnedCloseBudget;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::{
+use aster_box_core::{
     pty::PtyRequest, ExecOutput, ExecRequest, ExecutionEventBatch, ExecutionEventsRequest,
     ExecutionId, ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult,
     ExecutionProcess, ExecutionProcessInventory, ExecutionResourceUpdate, ExecutionState,
@@ -78,7 +78,7 @@ pub struct LocalExecutionHandle {
     pub exec_socket_path: PathBuf,
     pub console_log: PathBuf,
     pub anonymous_volumes: Vec<String>,
-    /// Exact A3S OCI identity when lifecycle ownership is delegated through
+    /// Exact Aster OCI identity when lifecycle ownership is delegated through
     /// the public SDK rather than a Box-owned VM process.
     pub oci_runtime: Option<OciRuntimeBinding>,
 }

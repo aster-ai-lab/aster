@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{ensure_styles_part, styles_invalid, STYLES_PART};
 use crate::editor::{NativeOfficeRgbColor, NativeSpreadsheetDifferentialFormat};

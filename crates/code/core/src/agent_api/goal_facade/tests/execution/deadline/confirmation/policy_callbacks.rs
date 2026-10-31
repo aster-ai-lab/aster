@@ -133,11 +133,11 @@ async fn bounded_policy_callback(stage: PolicyStage) {
     assert_eq!(
         facts
             .iter()
-            .filter(|v| v.kind == "a3s.goal.slice.settled")
+            .filter(|v| v.kind == "aster.goal.slice.settled")
             .count(),
         1
     );
-    assert!(!facts.iter().any(|v| v.kind == "a3s.goal.completed"));
+    assert!(!facts.iter().any(|v| v.kind == "aster.goal.completed"));
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]

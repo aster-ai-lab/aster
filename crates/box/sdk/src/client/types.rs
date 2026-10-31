@@ -7,9 +7,9 @@ pub enum ClientError {
     #[error("state error: {0}")]
     State(#[from] std::io::Error),
     #[error("runtime error: {0}")]
-    Runtime(#[from] a3s_box_core::error::BoxError),
+    Runtime(#[from] aster_box_core::error::BoxError),
     #[error("execution lifecycle error: {0}")]
-    Execution(#[from] a3s_box_core::ExecutionManagerError),
+    Execution(#[from] aster_box_core::ExecutionManagerError),
     /// Retryable manager `Unavailable` after a durable guest `request_id` was
     /// claimed (one-shot command, keyed file upload, or keyed filesystem
     /// mutation). Callers must reuse that id on retry.
@@ -25,9 +25,9 @@ pub enum ClientError {
     AmbiguousBoxQuery { query: String, matches: Vec<String> },
 }
 
-/// Filesystem locations used by [`A3sBoxClient`].
+/// Filesystem locations used by [`AsterBoxClient`].
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct A3sBoxPaths {
+pub struct AsterBoxPaths {
     pub home: PathBuf,
     pub boxes_file: PathBuf,
     pub images_dir: PathBuf,
@@ -37,8 +37,8 @@ pub struct A3sBoxPaths {
     pub snapshots_dir: PathBuf,
 }
 
-impl A3sBoxPaths {
-    /// Build paths under an a3s-box home directory.
+impl AsterBoxPaths {
+    /// Build paths under an aster-box home directory.
     pub fn from_home(home: impl Into<PathBuf>) -> Self {
         let home = home.into();
         Self {
@@ -53,9 +53,9 @@ impl A3sBoxPaths {
     }
 }
 
-impl Default for A3sBoxPaths {
+impl Default for AsterBoxPaths {
     fn default() -> Self {
-        Self::from_home(a3s_box_core::dirs_home())
+        Self::from_home(aster_box_core::dirs_home())
     }
 }
 

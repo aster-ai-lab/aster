@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     ChildOperationReference, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore,
     FlowRuntime, InMemoryEventStore, LocalFileEventStore, RuntimeBuildCompatibility,
     RuntimeBuildId, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowProgress,
@@ -33,7 +33,7 @@ impl FlowRuntime for ContinueDuringCancellationRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.cancellation_request().is_some() {
             return Ok(context.continue_as_new(json!({ "generation": 1 })));
@@ -41,7 +41,7 @@ impl FlowRuntime for ContinueDuringCancellationRuntime {
         Ok(context.wait_until("cancel-me", Utc::now() + Duration::hours(1)))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("cancellation continuation test has no steps")
     }
 }
@@ -53,7 +53,7 @@ impl FlowRuntime for CancellableContinuationRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.cancellation_request().is_some() {
             return Ok(context.cancel());
@@ -65,7 +65,7 @@ impl FlowRuntime for CancellableContinuationRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("cross-segment cancellation test has no steps")
     }
 }
@@ -75,7 +75,7 @@ impl FlowRuntime for SegmentedRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let generation = context.input()["generation"].as_u64().unwrap();
         if generation < self.final_generation {
@@ -86,7 +86,7 @@ impl FlowRuntime for SegmentedRuntime {
         Ok(context.complete(json!({ "generation": generation })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("continue-as-new does not execute steps")
     }
 }
@@ -178,7 +178,7 @@ impl CrashBeforeSuccessorStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeSuccessorStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -187,7 +187,7 @@ impl FlowEventStore for CrashBeforeSuccessorStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id != ROOT_RUN_ID
             && matches!(event, FlowEvent::RunCreated { .. })
             && self.armed.swap(false, Ordering::SeqCst)
@@ -201,11 +201,11 @@ impl FlowEventStore for CrashBeforeSuccessorStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -325,7 +325,7 @@ async fn cancelling_run_cannot_abandon_cleanup_by_continuing_as_new() {
     let error = engine
         .request_cancellation(
             ROOT_RUN_ID,
-            a3s_flow::CancellationRequest::new(Some("stop".into())),
+            aster_flow::CancellationRequest::new(Some("stop".into())),
         )
         .await
         .unwrap_err();
@@ -357,7 +357,7 @@ async fn cancellation_by_root_id_targets_the_active_successor() {
     let cancelled = engine
         .request_cancellation(
             ROOT_RUN_ID,
-            a3s_flow::CancellationRequest::new(Some("cancel the execution".into())),
+            aster_flow::CancellationRequest::new(Some("cancel the execution".into())),
         )
         .await
         .unwrap();

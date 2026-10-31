@@ -33,7 +33,7 @@ export class DocxBookmarkPatchCollector {
     if (!id || !name || nativeId === null) return null;
     let marker = '';
     do {
-      marker = `__A3S_DOCX_BOOKMARK_${this.nextMarker}__`;
+      marker = `__ASTER_DOCX_BOOKMARK_${this.nextMarker}__`;
       this.nextMarker += 1;
     } while (this.sourceHtml.includes(marker));
     this.patches.push({ marker, id, name, nativeId, kind });

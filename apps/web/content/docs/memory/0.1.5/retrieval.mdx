@@ -12,7 +12,7 @@ export const meta = {
 `InMemoryVectorIndex` 使用不可变 Partition Snapshot 执行精确有界 Top-K。它不访问 SQLite，不持久化，也不启动后台任务。
 
 ```rust
-use a3s_memory::{
+use aster_memory::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord,
     VectorRevision, VectorSearchRequest,
 };
@@ -51,7 +51,7 @@ let result = index.search(
 启用 `sqlite` 后，`SqliteVectorIndex::open` 把 Descriptor、历史身份、修订、字节记账、Partition 摘要和向量行保存在一个数据库中。
 
 ```toml
-a3s-memory = { version = "0.1", features = ["sqlite"] }
+aster-memory = { version = "0.1", features = ["sqlite"] }
 ```
 
 Mutation 使用 `IMMEDIATE` 事务，让独立进程共享全局修订 CAS 线性化点。重新打开时会校验 Descriptor、记录形状和完整性摘要。

@@ -21,7 +21,7 @@ async fn source_mutations_are_revision_bound_and_preserve_isolated_datastores() 
     let first = store
         .add(input(
             "primary",
-            "https://registry.example/a3s",
+            "https://registry.example/aster",
             &"a".repeat(64),
         ))
         .await
@@ -30,14 +30,14 @@ async fn source_mutations_are_revision_bound_and_preserve_isolated_datastores() 
     assert_eq!(first.snapshot.default_registry.as_deref(), Some("primary"));
     assert_eq!(
         first.snapshot.sources[0].registry_url,
-        "https://registry.example/a3s/"
+        "https://registry.example/aster/"
     );
     assert_ne!(first.previous_revision, first.snapshot.revision);
 
     let repeated = store
         .add(input(
             "primary",
-            "https://registry.example/a3s/",
+            "https://registry.example/aster/",
             &"a".repeat(64),
         ))
         .await
@@ -48,7 +48,7 @@ async fn source_mutations_are_revision_bound_and_preserve_isolated_datastores() 
     let second = store
         .add(input(
             "mirror",
-            "https://mirror.example/a3s/",
+            "https://mirror.example/aster/",
             &"b".repeat(64),
         ))
         .await
@@ -245,7 +245,7 @@ async fn source_replacement_changes_identity_without_rewriting_an_old_datastore(
     let cache = first.root().datastore().join("verified-targets/sha256");
     std::fs::create_dir_all(&cache).unwrap();
     std::fs::write(cache.join(&archive_digest), b"old!").unwrap();
-    let retained_provenance = a3s_use_core::VerifiedCatalogProvenance {
+    let retained_provenance = aster_use_core::VerifiedCatalogProvenance {
         registry_name: "packages".to_owned(),
         registry_url: "https://one.example/".to_owned(),
         root_sha256: format!("sha256:{}", "1".repeat(64)),

@@ -95,7 +95,7 @@ test('page loader uses one spinner for every tenant', () => {
   cleanup();
   document.body.innerHTML = '';
 
-  document.documentElement.dataset.tenant = 'a3s';
+  document.documentElement.dataset.tenant = 'aster';
   const branded = render(<PageLoading variant="contain" minMs={60_000} />);
   expect(spinnerMarkup()).toBe(plain);
   branded.unmount();

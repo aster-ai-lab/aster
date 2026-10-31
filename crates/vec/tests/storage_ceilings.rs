@@ -1,6 +1,6 @@
 //! Explicit storage `DoS` ceilings — typed policy, not host autodetection.
 
-use a3s_vec::{
+use aster_vec::{
     initialize, shutdown, Collection, CollectionOptions, CollectionSchema, ConfigBuilder, DataType,
     Doc, Durability, ErrorCode, FieldSchema, StorageCeilings,
 };

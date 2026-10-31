@@ -1,10 +1,10 @@
 use std::collections::BTreeMap;
 
-use a3s_runtime::{ProviderId, RuntimeClientRegistry};
-use a3s_use_core::{
+use aster_runtime::{ProviderId, RuntimeClientRegistry};
+use aster_use_core::{
     PackageSurfaceKind, PlanQualifiedSurfaceRef, PlanScope, PluginSurfaceRef, UseError, UseResult,
 };
-use a3s_use_extension::{ExtensionManifest, PluginMcpLaunch, ToolTaskSource, ToolWorkload};
+use aster_use_extension::{ExtensionManifest, PluginMcpLaunch, ToolTaskSource, ToolWorkload};
 use serde::Serialize;
 
 use super::client::{runtime_error, PluginRuntimeClient};

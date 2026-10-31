@@ -1,4 +1,4 @@
-//! # A3S Lane
+//! # Aster Lane
 //!
 //! A priority-based command queue for async task scheduling.
 //!
@@ -23,7 +23,7 @@
 //! ## Quick Start
 //!
 //! ```rust,ignore
-//! use a3s_lane::{QueueManagerBuilder, EventEmitter, Command, Result};
+//! use aster_lane::{QueueManagerBuilder, EventEmitter, Command, Result};
 //! use async_trait::async_trait;
 //!
 //! struct MyCommand { data: String }

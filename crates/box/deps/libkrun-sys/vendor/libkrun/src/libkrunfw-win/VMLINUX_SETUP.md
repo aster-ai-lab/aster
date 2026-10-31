@@ -1,12 +1,12 @@
 # Windows `vmlinux` Setup
 
 > **Provenance warning:** this WSL-based procedure is an optional development
-> recipe, not the source recipe for the current A3S Box prebuilt
+> recipe, not the source recipe for the current Aster Box prebuilt
 > `libkrunfw.dll`. The current DLL (SHA-256
 > `44f25540f58155c01258fe123617636fdc6cff27873e38e71dbc75f139602077`)
 > contains the byte-identical libkrunfw v5.5.0 generic x86_64 kernel bundle:
 > Linux 6.12.91, `config-libkrunfw_x86_64`, and the upstream 30-patch series.
-> See `a3s-libkrun-sys/SOURCE-PROVENANCE.md`. A DLL produced with the recipe
+> See `aster-libkrun-sys/SOURCE-PROVENANCE.md`. A DLL produced with the recipe
 > below is a different artifact and must receive its own source mapping,
 > checksums, and WHPX validation before distribution.
 

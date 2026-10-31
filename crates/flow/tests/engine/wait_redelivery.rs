@@ -16,7 +16,7 @@ impl CoordinatedDueStore {
 
 #[async_trait]
 impl FlowEventStore for CoordinatedDueStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -25,21 +25,21 @@ impl FlowEventStore for CoordinatedDueStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 
-    async fn list_due_wakeups(&self, now: DateTime<Utc>) -> a3s_flow::Result<Vec<ScheduledWakeup>> {
+    async fn list_due_wakeups(&self, now: DateTime<Utc>) -> aster_flow::Result<Vec<ScheduledWakeup>> {
         let due = self.inner.list_due_wakeups(now).await?;
         if !due.is_empty() {
             self.scan_barrier.wait().await;

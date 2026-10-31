@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@a3s-lab/ui'
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof ResizablePanelGroup> = {
   title: 'Components/Primitives/Resizable',

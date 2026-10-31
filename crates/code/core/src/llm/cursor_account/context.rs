@@ -1,4 +1,4 @@
-//! Supply no Cursor-native host context; A3S owns context and tool execution.
+//! Supply no Cursor-native host context; Aster owns context and tool execution.
 
 use anyhow::{anyhow, Result};
 use serde_json::{json, Value};

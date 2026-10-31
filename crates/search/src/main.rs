@@ -1,4 +1,4 @@
-//! A3S Search CLI - Meta search engine command line interface.
+//! Aster Search CLI - Meta search engine command line interface.
 
 use std::path::PathBuf;
 use std::time::Duration;
@@ -8,7 +8,7 @@ use clap::{Parser, Subcommand, ValueEnum};
 use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
 
-use a3s_search::{EngineTier, EngineTierPlan, SafeSearch, SearchQuery, TimeRange};
+use aster_search::{EngineTier, EngineTierPlan, SafeSearch, SearchQuery, TimeRange};
 
 mod cli;
 
@@ -24,7 +24,7 @@ use cli::proxy::report_proxy_scope;
 use cli::provider::create_provider_engine;
 
 #[cfg(test)]
-use a3s_search::{
+use aster_search::{
     providers::{BuiltinProvider, ProviderAuthentication, ProviderReadiness},
     Engine, SearchResults,
 };
@@ -35,7 +35,7 @@ use cli::provider::provider_readiness_summary;
 
 /// Embeddable metasearch CLI with browser, HTTP/RSS, and native API sources
 #[derive(Parser)]
-#[command(name = "a3s-search")]
+#[command(name = "aster-search")]
 #[command(author, version, about, long_about = None)]
 struct Cli {
     /// Search query (if no subcommand is provided)
@@ -43,7 +43,7 @@ struct Cli {
 
     /// Exact search engines to use (comma-separated); omit for the default cascade
     /// Available: brave_browser, bing_browser, g, baidu, ddg, brave, bing, wiki,
-    /// sogou, 360, bing_cn, anysearch, tavily, tinyfish, bocha, aliyun, tencent, firecrawl, a3s, doubao, deepseek
+    /// sogou, 360, bing_cn, anysearch, tavily, tinyfish, bocha, aliyun, tencent, firecrawl, aster, doubao, deepseek
     #[arg(short, long, value_delimiter = ',')]
     engines: Option<Vec<String>>,
 
@@ -123,11 +123,11 @@ enum Commands {
     /// Serve native web search on a loopback address
     Serve {
         /// Listen address. Loopback is the default. A public bind requires
-        /// A3S_SEARCH_API_KEY. The unified gateway reaches the host on :8090.
+        /// ASTER_SEARCH_API_KEY. The unified gateway reaches the host on :8090.
         #[arg(long, default_value = "127.0.0.1:8090")]
         listen: String,
     },
-    /// Update a3s-search to the latest version
+    /// Update aster-search to the latest version
     Update,
 }
 
@@ -204,7 +204,7 @@ async fn main() -> Result<()> {
 
     match cli.command {
         Some(Commands::Engines) => list_engines(cli.config.as_deref()),
-        Some(Commands::Serve { listen }) => a3s_search::serve_native(&listen)
+        Some(Commands::Serve { listen }) => aster_search::serve_native(&listen)
             .await
             .map_err(anyhow::Error::from),
         Some(Commands::Update) => {
@@ -231,14 +231,14 @@ async fn main() -> Result<()> {
                 .await
             } else {
                 // No query provided, show help
-                println!("A3S Search - Embeddable metasearch CLI\n");
-                println!("Usage: a3s-search <QUERY> [OPTIONS]");
-                println!("       a3s-search engines\n");
+                println!("Aster Search - Embeddable metasearch CLI\n");
+                println!("Usage: aster-search <QUERY> [OPTIONS]");
+                println!("       aster-search engines\n");
                 println!("Examples:");
-                println!("  a3s-search \"Rust programming\"");
-                println!("  a3s-search \"Rust\" -e ddg,wiki -l 5");
-                println!("  a3s-search \"Rust\" -f json");
-                println!("  a3s-search \"Rust\" -p http://127.0.0.1:8080\n");
+                println!("  aster-search \"Rust programming\"");
+                println!("  aster-search \"Rust\" -e ddg,wiki -l 5");
+                println!("  aster-search \"Rust\" -f json");
+                println!("  aster-search \"Rust\" -p http://127.0.0.1:8080\n");
                 println!("Options:");
                 println!(
                     "  -e, --engines <ENGINES>  Exact engines/providers (omit for API-first cascade)"
@@ -262,7 +262,7 @@ async fn main() -> Result<()> {
                 println!("  -v, --verbose            Enable debug logging");
                 println!("  -h, --help               Show help");
                 println!("  -V, --version            Show version\n");
-                println!("Run 'a3s-search engines' to list all available engines.");
+                println!("Run 'aster-search engines' to list all available engines.");
                 Ok(())
             }
         }
@@ -287,9 +287,9 @@ struct SearchArgs {
 }
 
 #[cfg(test)]
-use a3s_search::product::is_config_enabled;
+use aster_search::product::is_config_enabled;
 #[cfg(test)]
-use a3s_search::SearchConfig;
+use aster_search::SearchConfig;
 
 async fn run_search(args: SearchArgs) -> Result<()> {
     let config = load_search_config(args.config.as_deref())?;
@@ -381,7 +381,7 @@ async fn run_search(args: SearchArgs) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_search::proxy::{ProxyConfig, ProxyProtocol};
+    use aster_search::proxy::{ProxyConfig, ProxyProtocol};
     use clap::CommandFactory;
 
     fn parse_proxy_url(url: &str) -> Result<ProxyConfig> {
@@ -489,7 +489,7 @@ mod tests {
 
     #[test]
     fn test_cli_with_query() {
-        let cli = Cli::parse_from(["a3s-search", "test query"]);
+        let cli = Cli::parse_from(["aster-search", "test query"]);
         assert_eq!(cli.query, Some("test query".to_string()));
         assert!(cli.engines.is_none());
         assert_eq!(cli.limit, 10);
@@ -506,7 +506,7 @@ mod tests {
 
     #[test]
     fn test_cli_with_engines() {
-        let cli = Cli::parse_from(["a3s-search", "query", "-e", "ddg,anysearch,tavily"]);
+        let cli = Cli::parse_from(["aster-search", "query", "-e", "ddg,anysearch,tavily"]);
         assert_eq!(
             cli.engines,
             Some(vec![
@@ -519,20 +519,20 @@ mod tests {
 
     #[test]
     fn test_cli_with_limit() {
-        let cli = Cli::parse_from(["a3s-search", "query", "-l", "5"]);
+        let cli = Cli::parse_from(["aster-search", "query", "-l", "5"]);
         assert_eq!(cli.limit, 5);
     }
 
     #[test]
     fn test_cli_with_timeout() {
-        let cli = Cli::parse_from(["a3s-search", "query", "-t", "30"]);
+        let cli = Cli::parse_from(["aster-search", "query", "-t", "30"]);
         assert_eq!(cli.timeout, Some(30));
     }
 
     #[test]
     fn test_cli_accepts_a_complete_tier_order_and_bounded_browser_retries() {
         let cli = Cli::parse_from([
-            "a3s-search",
+            "aster-search",
             "query",
             "--tier-order",
             "api,http-rss,headless",
@@ -548,25 +548,25 @@ mod tests {
             ])
         );
         assert_eq!(cli.browser_retries, 0);
-        assert!(Cli::try_parse_from(["a3s-search", "query", "--browser-retries", "11"]).is_err());
+        assert!(Cli::try_parse_from(["aster-search", "query", "--browser-retries", "11"]).is_err());
     }
 
     #[test]
     fn test_cli_rejects_zero_limit_and_timeout() {
-        assert!(Cli::try_parse_from(["a3s-search", "query", "--limit", "0"]).is_err());
-        assert!(Cli::try_parse_from(["a3s-search", "query", "--timeout", "0"]).is_err());
+        assert!(Cli::try_parse_from(["aster-search", "query", "--limit", "0"]).is_err());
+        assert!(Cli::try_parse_from(["aster-search", "query", "--timeout", "0"]).is_err());
     }
 
     #[test]
     fn test_cli_with_config() {
-        let cli = Cli::parse_from(["a3s-search", "query", "-c", "search.acl"]);
+        let cli = Cli::parse_from(["aster-search", "query", "-c", "search.acl"]);
         assert_eq!(cli.config, Some(PathBuf::from("search.acl")));
     }
 
     #[test]
     fn test_cli_with_query_filters() {
         let cli = Cli::parse_from([
-            "a3s-search",
+            "aster-search",
             "query",
             "--page",
             "3",
@@ -586,32 +586,32 @@ mod tests {
 
     #[test]
     fn test_cli_with_format_json() {
-        let cli = Cli::parse_from(["a3s-search", "query", "-f", "json"]);
+        let cli = Cli::parse_from(["aster-search", "query", "-f", "json"]);
         assert!(matches!(cli.format, OutputFormat::Json));
     }
 
     #[test]
     fn test_cli_with_format_compact() {
-        let cli = Cli::parse_from(["a3s-search", "query", "-f", "compact"]);
+        let cli = Cli::parse_from(["aster-search", "query", "-f", "compact"]);
         assert!(matches!(cli.format, OutputFormat::Compact));
     }
 
     #[test]
     fn test_cli_with_proxy() {
-        let cli = Cli::parse_from(["a3s-search", "query", "-p", "http://127.0.0.1:8080"]);
+        let cli = Cli::parse_from(["aster-search", "query", "-p", "http://127.0.0.1:8080"]);
         assert_eq!(cli.proxy, Some("http://127.0.0.1:8080".to_string()));
     }
 
     #[test]
     fn test_cli_with_verbose() {
-        let cli = Cli::parse_from(["a3s-search", "query", "-v"]);
+        let cli = Cli::parse_from(["aster-search", "query", "-v"]);
         assert!(cli.verbose);
     }
 
     #[test]
     fn test_cli_all_options() {
         let cli = Cli::parse_from([
-            "a3s-search",
+            "aster-search",
             "rust programming",
             "-e",
             "ddg,wiki,sogou",
@@ -658,58 +658,58 @@ mod tests {
 
     #[test]
     fn test_cli_engines_subcommand() {
-        let cli = Cli::parse_from(["a3s-search", "engines"]);
+        let cli = Cli::parse_from(["aster-search", "engines"]);
         assert!(matches!(cli.command, Some(Commands::Engines)));
     }
 
     #[test]
     fn test_cli_engines_subcommand_accepts_config() {
-        let cli = Cli::parse_from(["a3s-search", "--config", "search.acl", "engines"]);
+        let cli = Cli::parse_from(["aster-search", "--config", "search.acl", "engines"]);
         assert!(matches!(cli.command, Some(Commands::Engines)));
         assert_eq!(cli.config, Some(PathBuf::from("search.acl")));
     }
 
     #[test]
     fn test_cli_no_args() {
-        let cli = Cli::parse_from(["a3s-search"]);
+        let cli = Cli::parse_from(["aster-search"]);
         assert!(cli.query.is_none());
         assert!(cli.command.is_none());
     }
 
     #[test]
     fn test_cli_with_headless() {
-        let cli = Cli::parse_from(["a3s-search", "query", "--headless"]);
+        let cli = Cli::parse_from(["aster-search", "query", "--headless"]);
         assert!(cli.headless);
     }
 
     #[test]
     fn test_cli_headless_default_false() {
-        let cli = Cli::parse_from(["a3s-search", "query"]);
+        let cli = Cli::parse_from(["aster-search", "query"]);
         assert!(!cli.headless);
     }
 
     #[test]
     fn test_cli_headless_with_google_engine() {
-        let cli = Cli::parse_from(["a3s-search", "query", "-e", "g,ddg", "--headless"]);
+        let cli = Cli::parse_from(["aster-search", "query", "-e", "g,ddg", "--headless"]);
         assert!(cli.headless);
         assert_eq!(cli.engines, Some(vec!["g".to_string(), "ddg".to_string()]));
     }
 
     #[test]
     fn test_cli_browser_defaults_to_moli() {
-        let cli = Cli::parse_from(["a3s-search", "query"]);
+        let cli = Cli::parse_from(["aster-search", "query"]);
         assert_eq!(cli.browser, HeadlessBrowser::Moli);
     }
 
     #[test]
     fn test_cli_chrome_requires_explicit_selection() {
-        let cli = Cli::parse_from(["a3s-search", "query", "--browser", "chrome"]);
+        let cli = Cli::parse_from(["aster-search", "query", "--browser", "chrome"]);
         assert_eq!(cli.browser, HeadlessBrowser::Chrome);
     }
 
     #[test]
     fn test_cli_lightpanda_requires_explicit_selection() {
-        let cli = Cli::parse_from(["a3s-search", "query", "--browser", "lightpanda"]);
+        let cli = Cli::parse_from(["aster-search", "query", "--browser", "lightpanda"]);
         assert_eq!(cli.browser, HeadlessBrowser::Lightpanda);
     }
 
@@ -769,7 +769,7 @@ mod tests {
     #[test]
     fn test_json_output_preserves_provider_rich_fields() {
         let mut results = SearchResults::new();
-        results.add_result(a3s_search::SearchResult::new(
+        results.add_result(aster_search::SearchResult::new(
             "https://example.com",
             "Example",
             "Snippet",
@@ -777,14 +777,14 @@ mod tests {
         results.add_answer("Direct answer");
         results.add_suggestion("Related query");
         results.add_image(
-            a3s_search::SearchImage::new("https://example.com/image.png")
+            aster_search::SearchImage::new("https://example.com/image.png")
                 .with_description("Example image"),
         );
         results.add_report(
-            a3s_search::SearchReport::new("Tavily")
+            aster_search::SearchReport::new("Tavily")
                 .with_provider("tavily")
                 .with_request_id("request-1")
-                .with_usage(a3s_search::SearchUsage::new().with_credits(1.0)),
+                .with_usage(aster_search::SearchUsage::new().with_credits(1.0)),
         );
         results.set_duration(42);
 

@@ -1,18 +1,18 @@
 [package]
 publish = false
-name = "a3s-oci-agent"
+name = "aster-oci-agent"
 version = "0.3.6"
 edition = "2021"
 license = "MIT"
-description = "Linux guest agent for A3S OCI Runtime"
+description = "Linux guest agent for Aster OCI Runtime"
 
 [[bin]]
-name = "a3s-oci-agent"
+name = "aster-oci-agent"
 path = "src/main.rs"
 
 [dependencies]
-a3s-oci-agent-protocol = { path = "../agent-protocol" }
-a3s-oci-sdk = { path = "../sdk" }
+aster-oci-agent-protocol = { path = "../agent-protocol" }
+aster-oci-sdk = { path = "../sdk" }
 base64.workspace = true
 zeroize.workspace = true
 

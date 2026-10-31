@@ -1,37 +1,37 @@
-//! Map Kubernetes CRI config to A3S Box config.
+//! Map Kubernetes CRI config to Aster Box config.
 //!
-//! Reads A3S-specific annotations from pod/container configs:
-//! - `a3s.box/agent-image` → optional sandbox VM agent/rootfs image override
-//! - `a3s.box/vcpus`, `a3s.box/memory-mb` → ResourceConfig
-//! - `a3s.box/tee` → TeeConfig
+//! Reads Aster-specific annotations from pod/container configs:
+//! - `aster.box/agent-image` → optional sandbox VM agent/rootfs image override
+//! - `aster.box/vcpus`, `aster.box/memory-mb` → ResourceConfig
+//! - `aster.box/tee` → TeeConfig
 
 use std::collections::HashMap;
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::{
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::{
     config::{BoxConfig, ResourceConfig, TeeConfig},
     NetworkMode,
 };
 
 use crate::cri_api::{port_mapping, PodSandboxConfig};
 
-/// Annotation keys for A3S Box configuration.
-pub const ANN_AGENT_IMAGE: &str = "a3s.box/agent-image";
-pub const ANN_NETWORK: &str = "a3s.box/network";
+/// Annotation keys for Aster Box configuration.
+pub const ANN_AGENT_IMAGE: &str = "aster.box/agent-image";
+pub const ANN_NETWORK: &str = "aster.box/network";
 /// Default sandbox agent/rootfs image when `--agent-image` /
-/// `A3S_BOX_CRI_AGENT_IMAGE` / `a3s.box/agent-image` are unset.
+/// `ASTER_BOX_CRI_AGENT_IMAGE` / `aster.box/agent-image` are unset.
 ///
-/// Must be anonymously pullable. The previous `ghcr.io/a3s-box/code:v0.1.0`
+/// Must be anonymously pullable. The previous `ghcr.io/aster-box/code:v0.1.0`
 /// default returned HTTP 401 for every stock `RunPodSandbox` (#607). Matches
 /// `docs/cri-conformance.md` guidance to use alpine for out-of-box CRI.
 pub const DEFAULT_AGENT_IMAGE: &str = "docker.io/library/alpine:latest";
-const ANN_VCPUS: &str = "a3s.box/vcpus";
-const ANN_MEMORY_MB: &str = "a3s.box/memory-mb";
-const ANN_DISK_MB: &str = "a3s.box/disk-mb";
-const ANN_TEE: &str = "a3s.box/tee";
-const ANN_TEE_WORKLOAD_ID: &str = "a3s.box/tee-workload-id";
+const ANN_VCPUS: &str = "aster.box/vcpus";
+const ANN_MEMORY_MB: &str = "aster.box/memory-mb";
+const ANN_DISK_MB: &str = "aster.box/disk-mb";
+const ANN_TEE: &str = "aster.box/tee";
+const ANN_TEE_WORKLOAD_ID: &str = "aster.box/tee-workload-id";
 
-/// Convert a CRI PodSandboxConfig to an A3S BoxConfig.
+/// Convert a CRI PodSandboxConfig to an Aster BoxConfig.
 pub fn pod_sandbox_config_to_box_config(
     config: &PodSandboxConfig,
     default_agent_image: &str,
@@ -104,7 +104,7 @@ fn parse_hostname(config: &PodSandboxConfig) -> Result<Option<String>> {
     if hostname.is_empty() {
         return Ok(None);
     }
-    a3s_box_core::dns::validate_hostname(hostname)
+    aster_box_core::dns::validate_hostname(hostname)
         .map_err(|e| BoxError::ConfigError(format!("Invalid CRI sandbox hostname: {e}")))?;
     Ok(Some(hostname.to_string()))
 }
@@ -162,7 +162,7 @@ fn parse_positive_resource(
 /// Parse resource configuration from annotations.
 fn parse_resources(annotations: &HashMap<String, String>) -> Result<ResourceConfig> {
     let vcpus = parse_positive_resource(annotations, ANN_VCPUS, 2)?;
-    a3s_box_core::config::validate_vcpu_count(vcpus).map_err(BoxError::ConfigError)?;
+    aster_box_core::config::validate_vcpu_count(vcpus).map_err(BoxError::ConfigError)?;
     let memory_mb = parse_positive_resource(annotations, ANN_MEMORY_MB, 1024)?;
     let disk_mb = parse_positive_resource(annotations, ANN_DISK_MB, 4096)?;
 
@@ -368,12 +368,12 @@ mod tests {
     fn test_annotation_overrides_default_agent_image() {
         let annotations = HashMap::from([(
             ANN_AGENT_IMAGE.to_string(),
-            "ghcr.io/a3s-box/code:v0.1.0".to_string(),
+            "ghcr.io/aster-box/code:v0.1.0".to_string(),
         )]);
         let config = make_config(annotations);
         let box_config =
-            pod_sandbox_config_to_box_config(&config, "ghcr.io/a3s-box/default:v1").unwrap();
-        assert_eq!(box_config.image, "ghcr.io/a3s-box/code:v0.1.0");
+            pod_sandbox_config_to_box_config(&config, "ghcr.io/aster-box/default:v1").unwrap();
+        assert_eq!(box_config.image, "ghcr.io/aster-box/code:v0.1.0");
     }
 
     #[test]

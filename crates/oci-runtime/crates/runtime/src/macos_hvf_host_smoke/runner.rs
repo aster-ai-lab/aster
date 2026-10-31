@@ -3,8 +3,8 @@ use std::os::unix::fs::{DirBuilderExt, MetadataExt, OpenOptionsExt, PermissionsE
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_oci_core::CapabilityStatus;
-use a3s_oci_sdk::{ContainerId, OciBundle};
+use aster_oci_core::CapabilityStatus;
+use aster_oci_sdk::{ContainerId, OciBundle};
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 
@@ -522,8 +522,8 @@ mod tests {
 
     fn incomplete_config(work_parent: PathBuf) -> MacosHvfHostServiceSmokeConfig {
         MacosHvfHostServiceSmokeConfig {
-            host_service_executable: PathBuf::from("/missing/a3s-oci"),
-            shim: PathBuf::from("/missing/a3s-oci-krun-shim"),
+            host_service_executable: PathBuf::from("/missing/aster-oci"),
+            shim: PathBuf::from("/missing/aster-oci-krun-shim"),
             system_image_manifest: PathBuf::from("/missing/system-image.json"),
             bundle: PathBuf::from("/missing/bundle"),
             work_parent,
@@ -551,7 +551,7 @@ mod tests {
     #[test]
     fn documented_work_parent_keeps_every_phase_socket_representable() {
         let root = qualification_evidence_root(
-            PathBuf::from("/private/tmp/a3s-oci-hvf-host.XXXXXX").as_path(),
+            PathBuf::from("/private/tmp/aster-oci-hvf-host.XXXXXX").as_path(),
             "4294967295-9999999999999999999",
         );
         validate_qualification_socket_paths(&root)

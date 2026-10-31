@@ -4,7 +4,7 @@
 
 use std::sync::atomic::{AtomicU64, Ordering};
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 
 use crate::model::MAX_CONTEXT_TOKENS;
 use crate::tokenizer::{CompressedVocabulary, COMPRESSED_PAD, COMPRESSED_VOCABULARY};

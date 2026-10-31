@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::xml::XmlIn;
 use yrs::{
     GetString, ReadTxn, Transact, Xml, XmlElementPrelim, XmlElementRef, XmlFragment, XmlOut,
@@ -437,19 +437,19 @@ fn parent_element(element: &XmlElementRef, message: &str) -> UseResult<XmlElemen
     }
 }
 
-fn match_conflict(message: &str) -> a3s_use_core::UseError {
+fn match_conflict(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_match_conflict", message)
 }
 
-fn invalid_list_item(message: &str) -> a3s_use_core::UseError {
+fn invalid_list_item(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_invalid", message)
 }
 
-fn structure_conflict(message: &str) -> a3s_use_core::UseError {
+fn structure_conflict(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_structure_conflict", message)
 }
 
-fn list_too_large() -> a3s_use_core::UseError {
+fn list_too_large() -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_too_large",
         "The target Document list contains too many items for a structural mutation.",

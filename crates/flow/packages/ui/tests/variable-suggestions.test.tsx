@@ -2,14 +2,14 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import {
-  filterA3sFlowExpressionVariables,
+  filterAsterFlowExpressionVariables,
   suggestionAnchor,
   VariableReferenceInput,
   VariableTemplateTextarea,
-  type A3sFlowExpressionVariable,
-} from '../src/react/a3s-flow-variable-picker';
+  type AsterFlowExpressionVariable,
+} from '../src/react/aster-flow-variable-picker';
 
-const variables: readonly A3sFlowExpressionVariable[] = [
+const variables: readonly AsterFlowExpressionVariable[] = [
   {
     dataType: 'object',
     group: 'input',
@@ -54,9 +54,9 @@ function TemplateHarness() {
 describe('workflow variable suggestions', () => {
   it('anchors a menu to the expression control, including its leading icon', () => {
     const source = document.createElement('div');
-    source.className = 'a3s-form-flow-expression-source';
+    source.className = 'aster-form-flow-expression-source';
     const field = document.createElement('div');
-    field.className = 'a3s-flow-variable-input';
+    field.className = 'aster-flow-variable-input';
     source.append(field);
 
     expect(suggestionAnchor(field)).toBe(source);
@@ -64,9 +64,9 @@ describe('workflow variable suggestions', () => {
   });
 
   it('filters by path, label, type, and node identity', () => {
-    expect(filterA3sFlowExpressionVariables(variables, '$order')).toEqual([variables[0]]);
-    expect(filterA3sFlowExpressionVariables(variables, 'customer string')).toEqual([variables[1]]);
-    expect(filterA3sFlowExpressionVariables(variables, 'lookup-customer')).toEqual([variables[1]]);
+    expect(filterAsterFlowExpressionVariables(variables, '$order')).toEqual([variables[0]]);
+    expect(filterAsterFlowExpressionVariables(variables, 'customer string')).toEqual([variables[1]]);
+    expect(filterAsterFlowExpressionVariables(variables, 'lookup-customer')).toEqual([variables[1]]);
   });
 
   it('portals the menu onto the document and keeps a pointer selection', () => {
@@ -80,7 +80,7 @@ describe('workflow variable suggestions', () => {
     const option = screen.getByRole('option', { name: /\$input\.order/ });
 
     expect(list.parentElement).toBe(document.body);
-    expect(input.closest('.a3s-flow-variable-input')?.contains(list)).toBe(false);
+    expect(input.closest('.aster-flow-variable-input')?.contains(list)).toBe(false);
     expect(option.querySelector('em')?.textContent).toBe('object');
     expect(list.querySelector('header strong')?.textContent).toBe('Reference a variable');
     expect(list.querySelectorAll('header kbd')).toHaveLength(2);

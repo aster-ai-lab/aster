@@ -23,8 +23,8 @@ if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) {
 $repositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $rootfsArchive = (Resolve-Path -LiteralPath $RootfsArchive -ErrorAction Stop).Path
 $systemImageManifest = (Resolve-Path -LiteralPath $SystemImageManifest -ErrorAction Stop).Path
-$cli = Join-Path $repositoryRoot 'target\debug\a3s-oci.exe'
-$shim = Join-Path $repositoryRoot 'target\debug\a3s-oci-krun-shim.exe'
+$cli = Join-Path $repositoryRoot 'target\debug\aster-oci.exe'
+$shim = Join-Path $repositoryRoot 'target\debug\aster-oci-krun-shim.exe'
 $krunDll = Join-Path $repositoryRoot 'target\debug\krun.dll'
 $firmwareDll = Join-Path $repositoryRoot 'target\debug\libkrunfw.dll'
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
@@ -67,22 +67,22 @@ function Get-OptionalProperty {
     return $property.Value
 }
 
-function Get-A3sOciProcesses {
+function Get-AsterOciProcesses {
     @(
         Get-Process -ErrorAction SilentlyContinue |
-            Where-Object { $_.ProcessName -in @('a3s-oci', 'a3s-oci-krun-shim') } |
+            Where-Object { $_.ProcessName -in @('aster-oci', 'aster-oci-krun-shim') } |
             Select-Object ProcessName, Id
     )
 }
 
-function Assert-NoA3sOciProcesses {
+function Assert-NoAsterOciProcesses {
     param([string]$Context)
-    $processes = @(Get-A3sOciProcesses)
+    $processes = @(Get-AsterOciProcesses)
     if ($processes.Count -gt 0) {
         $description = ($processes | ForEach-Object {
             '{0}:{1}' -f $_.ProcessName, $_.Id
         }) -join ', '
-        throw "$Context found active A3S OCI processes: $description"
+        throw "$Context found active Aster OCI processes: $description"
     }
 }
 
@@ -148,7 +148,7 @@ function Invoke-GateScript {
     if ($null -ne $result -and $result -ne 'pass') {
         throw "$Name summary result is $result, expected pass"
     }
-    Assert-NoA3sOciProcesses -Context "$Name completion"
+    Assert-NoAsterOciProcesses -Context "$Name completion"
     $durationMs = [int]([DateTime]::UtcNow - $started).TotalMilliseconds
     Write-Host ("PASS {0} ({1} ms)" -f $Name, $durationMs)
     return [pscustomobject][ordered]@{
@@ -165,9 +165,9 @@ function Invoke-GateScript {
 Assert-RegularFile -Path $rootfsArchive -Label 'Rootfs archive' | Out-Null
 Assert-RegularFile -Path $systemImageManifest -Label 'System-image manifest' | Out-Null
 $systemImage = Get-Content -LiteralPath $systemImageManifest -Raw | ConvertFrom-Json
-if ($systemImage.schema_version -ne 'a3s.oci.windows-system-image.v1' -or
+if ($systemImage.schema_version -ne 'aster.oci.windows-system-image.v1' -or
     $systemImage.architecture -ne 'x86_64' -or
-    $systemImage.image.name -ne 'a3s-oci-system.ext4') {
+    $systemImage.image.name -ne 'aster-oci-system.ext4') {
     throw "Unexpected Windows system-image manifest: $systemImageManifest"
 }
 $manifestDirectory = (Get-Item -LiteralPath $systemImageManifest).DirectoryName
@@ -206,7 +206,7 @@ if ($hasFreshHostAttestation) {
 
 if (-not $SkipBuild) {
     & cargo.exe build --manifest-path (Join-Path $repositoryRoot 'Cargo.toml') `
-        -p a3s-oci-cli -p a3s-oci-krun
+        -p aster-oci-cli -p aster-oci-krun
     if ($LASTEXITCODE -ne 0) {
         throw 'Failed to build the Windows WHPX qualification binaries.'
     }
@@ -222,7 +222,7 @@ if ($systemImage.runtime.krun_dll.sha256 -ne $krunSha256 -or
     throw 'Windows runtime DLLs do not match the immutable system-image manifest.'
 }
 
-Assert-NoA3sOciProcesses -Context 'Release matrix start'
+Assert-NoAsterOciProcesses -Context 'Release matrix start'
 $startedAt = [DateTime]::UtcNow
 $gates = New-Object 'System.Collections.Generic.List[object]'
 
@@ -230,7 +230,7 @@ $gates.Add((Invoke-GateScript `
     -Name 'handle-reclamation' `
     -ScriptPath (Join-Path $PSScriptRoot 'windows-whpx-handle-reclamation.ps1') `
     -GateOutputDirectory (Join-Path $outputRoot 'gates\handle-reclamation') `
-    -ExpectedSummarySchema 'a3s.oci.windows-whpx-handle-reclamation-run.v1' `
+    -ExpectedSummarySchema 'aster.oci.windows-whpx-handle-reclamation-run.v1' `
     -ExtraArguments $(
         if ($HostClass -eq 'fresh') {
             @('-Iterations', "$script:WhpxPromotionHandleReclamationIterations")
@@ -243,19 +243,19 @@ $gates.Add((Invoke-GateScript `
     -Name 'driver-smoke' `
     -ScriptPath (Join-Path $PSScriptRoot 'windows-whpx-driver-smoke.ps1') `
     -GateOutputDirectory (Join-Path $outputRoot 'gates\driver-smoke') `
-    -ExpectedSummarySchema 'a3s.oci.whpx-driver-smoke-run.v1'))
+    -ExpectedSummarySchema 'aster.oci.whpx-driver-smoke-run.v1'))
 
 $gates.Add((Invoke-GateScript `
     -Name 'recovery-smoke' `
     -ScriptPath (Join-Path $PSScriptRoot 'windows-whpx-recovery-smoke.ps1') `
     -GateOutputDirectory (Join-Path $outputRoot 'gates\recovery-smoke') `
-    -ExpectedSummarySchema 'a3s.oci.whpx-recovery-smoke-run.v1'))
+    -ExpectedSummarySchema 'aster.oci.whpx-recovery-smoke-run.v1'))
 
 $gates.Add((Invoke-GateScript `
     -Name 'transport-fault-cleanup' `
     -ScriptPath (Join-Path $PSScriptRoot 'windows-whpx-transport-fault-cleanup.ps1') `
     -GateOutputDirectory (Join-Path $outputRoot 'gates\transport-fault-cleanup') `
-    -ExpectedSummarySchema 'a3s.oci.whpx-transport-fault-cleanup-run.v1'))
+    -ExpectedSummarySchema 'aster.oci.whpx-transport-fault-cleanup-run.v1'))
 
 if (-not $SkipSoak) {
     $soakExtra = @()
@@ -266,7 +266,7 @@ if (-not $SkipSoak) {
         -Name 'soak' `
         -ScriptPath (Join-Path $PSScriptRoot 'windows-whpx-soak.ps1') `
         -GateOutputDirectory (Join-Path $outputRoot 'gates\soak') `
-        -ExpectedSummarySchema 'a3s.oci.windows-whpx-soak.v2' `
+        -ExpectedSummarySchema 'aster.oci.windows-whpx-soak.v2' `
         -SummaryRelativePath 'evidence\summary.json' `
         -ExtraArguments $soakExtra))
 }
@@ -276,7 +276,7 @@ if (-not $SkipOperationReopen) {
         -Name 'operation-reopen' `
         -ScriptPath (Join-Path $PSScriptRoot 'windows-whpx-operation-reopen.ps1') `
         -GateOutputDirectory (Join-Path $outputRoot 'gates\operation-reopen') `
-        -ExpectedSummarySchema 'a3s.oci.whpx-operation-reopen-run.v1'))
+        -ExpectedSummarySchema 'aster.oci.whpx-operation-reopen-run.v1'))
 }
 
 $soakRequestedIterations = 0
@@ -327,7 +327,7 @@ $promotesReadiness = Get-WhpxPromotesReadiness `
     -HandleReclamationIterations $handleReclamationIterations `
     -SoakSummary $soakSummary
 $summary = [ordered]@{
-    schema_version = 'a3s.oci.windows-whpx-release-matrix.v1'
+    schema_version = 'aster.oci.windows-whpx-release-matrix.v1'
     status = 'available'
     host_class = $HostClass
     promotes_readiness = $promotesReadiness
@@ -377,7 +377,7 @@ if ($HostClass -eq 'fresh') {
 }
 Write-Utf8Text -Path (Join-Path $outputRoot 'summary.json') `
     -Text ($summary | ConvertTo-Json -Depth 16)
-Assert-NoA3sOciProcesses -Context 'Release matrix completion'
+Assert-NoAsterOciProcesses -Context 'Release matrix completion'
 
 Write-Output ("WHPX release matrix passed: {0} gates (host_class={1})" -f $gates.Count, $HostClass)
 Write-Output "Evidence: $outputRoot"

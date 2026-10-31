@@ -2,7 +2,7 @@
 
 use super::*;
 use crate::run_control::RunControlCommand;
-use a3s_effect::MemoryLog;
+use aster_effect::MemoryLog;
 
 fn steer(text: &str) -> RunControlCommand {
     RunControlCommand::Steer { input: text.into() }
@@ -13,11 +13,11 @@ fn namespace_campaign(log: &dyn LogStore, old_text: &str) {
     let run = "external:运行";
     let id = "request:输入";
     let digest =
-        crate::content_digest::digest_json("a3s.code.steer-input.identity.v1", &[session, run, id])
+        crate::content_digest::digest_json("aster.code.steer-input.identity.v1", &[session, run, id])
             .unwrap();
     // Every digest-shaped old raw id is still a valid old host request id.
     let old = message_fact(format!("steer:{digest}"), old_text);
-    a3s_effect::append_input(log, session, old).unwrap();
+    aster_effect::append_input(log, session, old).unwrap();
     let old_facts = log.read(session).unwrap();
     let exact = "保留 Unicode\n\t  ";
     append_steer_input(log, session, run, id, &steer(exact)).unwrap();

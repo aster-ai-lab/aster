@@ -1,4 +1,4 @@
-# A3S Code Configuration Example
+# Aster Code Configuration Example
 # This file demonstrates all available configuration options
 
 # Default model in "provider/model" format
@@ -30,7 +30,7 @@ task_scheduler {
   aging_interval_ms = 30000
 }
 
-# Optional per-session tool-lane configuration (a3s-lane v0.5 integration).
+# Optional per-session tool-lane configuration (aster-lane v0.5 integration).
 # This is distinct from the agent-wide task scheduler above.
 queue {
   # Max concurrency per lane
@@ -80,7 +80,7 @@ queue {
   # }
 }
 
-# Search Configuration (a3s-search integration)
+# Search Configuration (aster-search integration)
 search {
   # Default timeout in seconds
   timeout = 30

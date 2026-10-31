@@ -48,9 +48,9 @@ fn durable_memory_session(
     scope: &str,
     max_results: usize,
 ) -> crate::durable_memory::DurableMemorySession {
-    let repository = Arc::new(a3s_memory::repository::InMemoryRepository::new());
+    let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        a3s_memory::repository::MemoryNamespace::try_new("tenant", "principal", scope).unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", scope).unwrap();
     let policy = crate::durable_memory::DurableMemoryRecallPolicy::try_new(max_results, 0.25)
         .unwrap()
         .try_with_related_lookups(2)
@@ -59,9 +59,9 @@ fn durable_memory_session(
 }
 
 fn durable_memory_shadow_session(scope: &str) -> crate::durable_memory::DurableMemorySession {
-    let repository = Arc::new(a3s_memory::repository::InMemoryRepository::new());
+    let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        a3s_memory::repository::MemoryNamespace::try_new("tenant", "principal", scope).unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", scope).unwrap();
     crate::durable_memory::DurableMemorySession::active_recall(
         repository,
         namespace,
@@ -632,10 +632,10 @@ fn legacy_durable_memory_profiles_are_readable_but_cannot_resume_with_new_semant
     encoded.as_object_mut().unwrap().remove("contextIdProfile");
     let legacy: crate::durable_memory::DurableMemoryBindingV1 =
         serde_json::from_value(encoded).unwrap();
-    assert_eq!(legacy.retrieval_profile(), "a3s.memory.lexical.word.v1");
+    assert_eq!(legacy.retrieval_profile(), "aster.memory.lexical.word.v1");
     assert_eq!(
         legacy.context_id_profile(),
-        "a3s.code.memory.context.host-id.v0"
+        "aster.code.memory.context.host-id.v0"
     );
 
     let mut data = persisted_data(Some("openai/gpt-4o"), None);
@@ -664,7 +664,7 @@ fn legacy_durable_memory_profiles_are_readable_but_cannot_resume_with_new_semant
     );
     assert_eq!(
         legacy.context_id_profile(),
-        "a3s.code.memory.context.host-id.v0"
+        "aster.code.memory.context.host-id.v0"
     );
 
     let mut data = persisted_data(Some("openai/gpt-4o"), None);

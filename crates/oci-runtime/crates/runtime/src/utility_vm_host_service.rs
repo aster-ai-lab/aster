@@ -2,7 +2,7 @@ use std::future::Future;
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_oci_sdk::{async_trait, Result};
+use aster_oci_sdk::{async_trait, Result};
 
 use crate::unix_service::{combine_service_and_cleanup, UnixServiceEndpoint, SERVICE_SOCKET_NAME};
 use crate::{HostRuntimeService, RuntimeDriver};

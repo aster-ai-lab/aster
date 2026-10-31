@@ -87,7 +87,7 @@ export function ActivityHeatmap({ days, thresholds, locale, loading = false, cla
                       animationDelay: `${Math.floor(cellIndex / 7) * 8 + (cellIndex % 7) * 12}ms`
                     }
                     if (day.isOutsideRange) {
-                      return <div key={day.date} aria-hidden className="a3s-chart-heatmap-cell rounded-[3px] bg-muted/30" style={cellStyle} />
+                      return <div key={day.date} aria-hidden className="aster-chart-heatmap-cell rounded-[3px] bg-muted/30" style={cellStyle} />
                     }
                     const intensity = getActivityHeatmapIntensity(day.value, thresholds)
                     return (
@@ -95,7 +95,7 @@ export function ActivityHeatmap({ days, thresholds, locale, loading = false, cla
                         <div
                           role="img"
                           aria-label={getAriaLabel(day)}
-                          className={cn('a3s-chart-heatmap-cell cursor-help rounded-[3px]', intensityClassNames[intensity])}
+                          className={cn('aster-chart-heatmap-cell cursor-help rounded-[3px]', intensityClassNames[intensity])}
                           style={cellStyle}
                         />
                       </NormalTooltip>

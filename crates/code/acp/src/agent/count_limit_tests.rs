@@ -12,13 +12,13 @@ fn interactive_options(effort: Option<&str>, configured_limit: Option<usize>) ->
         components: &[],
         mcp_servers: Vec::new(),
     };
-    let options = A3sCodeAgent::core_session_options("count-limit", setup.model_id, setup.effort);
+    let options = AsterCodeAgent::core_session_options("count-limit", setup.model_id, setup.effort);
     let mut slots = options.prompt_slots.clone().unwrap_or_default();
-    A3sCodeAgent::host_session_options_with_hook_roots(
+    AsterCodeAgent::host_session_options_with_hook_roots(
         options,
         &mut slots,
         &setup,
-        &a3s_code_core::CodeConfig {
+        &aster_core::CodeConfig {
             max_tool_rounds: configured_limit,
             ..Default::default()
         },

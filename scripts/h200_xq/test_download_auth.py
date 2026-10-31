@@ -14,10 +14,10 @@ class DownloadCredentialTests(unittest.TestCase):
                 patch.dict(download_auth.os.environ, {'TEST_SCOPE': 'active'}, clear=True):
             root = Path(directory)/'.aster-h200-xq-download'
             root.mkdir(mode=0o700)
-            (root/'auth.json').write_text(json.dumps({'username': 'a3s-download', 'password': 'a'*64}))
+            (root/'auth.json').write_text(json.dumps({'username': 'aster-download', 'password': 'a'*64}))
             (root/'.curlrc').write_text('proxy-user = "test-only"\n')
             for path in root.iterdir():path.chmod(0o600)
-            self.assertEqual(download_auth.socks_authentication(), (b'a3s-download', b'a'*64))
+            self.assertEqual(download_auth.socks_authentication(), (b'aster-download', b'a'*64))
             environment = download_auth.curl_environment('socks5h://127.0.0.1:18095')
             self.assertEqual(environment, {'TEST_SCOPE': 'active', 'CURL_HOME': str(root)})
             self.assertEqual(download_auth.curl_environment('socks5h://other.example:1080'), {'TEST_SCOPE': 'active'})

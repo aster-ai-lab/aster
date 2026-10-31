@@ -1,4 +1,4 @@
-use a3s_code_core::memory::{SemanticRefreshRunMetrics, SemanticRefreshRunOutcome};
+use aster_core::memory::{SemanticRefreshRunMetrics, SemanticRefreshRunOutcome};
 use anyhow::{bail, Context, Result};
 use serde::Serialize;
 use serde_json::json;

@@ -4,7 +4,7 @@
 //! repository and the embedding request so a qualification pack cannot leak
 //! prompt plaintext.
 
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, MemoryChangeSet, MemoryNamespace,
     MemoryNodeDraft, MemoryOperation, MemoryRelation, MemoryRelationKind, MemoryRepository,
     MemoryStatus, RevisionMode, MAX_CHANGE_OPERATIONS,
@@ -159,7 +159,7 @@ pub async fn revise(
                 content,
                 mode: RevisionMode::Correction,
                 evidence: vec![EvidenceRef::try_new(
-                    format!("a3s://dm-prod1/drift/{horizon}"),
+                    format!("aster://dm-prod1/drift/{horizon}"),
                     format!("sha256:{:064x}", horizon as u64 + 1),
                     EvidenceKind::Verification,
                     occurred_at,
@@ -235,10 +235,10 @@ pub async fn active_node_ids(
     namespace: &MemoryNamespace,
     limit: usize,
 ) -> Result<Vec<String>> {
-    let request = a3s_memory::repository::MemorySnapshotRequest::new(
+    let request = aster_durable_memory::repository::MemorySnapshotRequest::new(
         namespace.clone(),
         limit,
-        a3s_memory::repository::MAX_SNAPSHOT_BYTES,
+        aster_durable_memory::repository::MAX_SNAPSHOT_BYTES,
     )
     .with_statuses([MemoryStatus::Active]);
     let snapshot = repository.snapshot_namespace(request).await?;
@@ -262,7 +262,7 @@ pub fn plaintext_corpus() -> Vec<String> {
 pub fn activation_evidence(node_id: &str, horizon: i64) -> Result<EvidenceRef> {
     let occurred_at = timestamp(30_000 + horizon);
     EvidenceRef::try_new(
-        format!("a3s://dm-prod1/activation/{node_id}"),
+        format!("aster://dm-prod1/activation/{node_id}"),
         format!("sha256:{:x}", Sha256::digest(node_id.as_bytes())),
         EvidenceKind::Verification,
         occurred_at,
@@ -293,7 +293,7 @@ fn content(index: usize) -> String {
 
 fn evidence(index: usize, occurred_at: DateTime<Utc>) -> Result<EvidenceRef> {
     EvidenceRef::try_new(
-        format!("a3s://dm-prod1/evidence/{index:05}"),
+        format!("aster://dm-prod1/evidence/{index:05}"),
         format!("sha256:{index:064x}"),
         EvidenceKind::Verification,
         occurred_at,

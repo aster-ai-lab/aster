@@ -21,7 +21,7 @@ describe("cross-language FLOW protocol fixtures", () => {
       heartbeats: boolean;
       bounded_drain: boolean;
     };
-    expect(caps.protocol).toBe("a3s.flow.worker.v1");
+    expect(caps.protocol).toBe("aster.flow.worker.v1");
     expect(caps.lease_fencing).toBe(true);
     expect(caps.heartbeats).toBe(true);
     expect(caps.bounded_drain).toBe(true);

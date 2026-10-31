@@ -3,7 +3,7 @@
 #[path = "support/binaries.rs"]
 mod binaries;
 
-use a3s_code_core::durable_memory_vec::{MemoryRecord, VecMemoryStore};
+use aster_core::durable_memory_vec::{MemoryRecord, VecMemoryStore};
 use serde_json::{json, Value};
 use std::process::Stdio;
 use std::time::Duration;
@@ -39,9 +39,9 @@ async fn real_acp_inspects_and_conditionally_forgets_local_memory_without_model_
             "--config",
             config.to_str().unwrap(),
         ])
-        .env("A3S_CODE_LOG_FILE", "0")
-        .env_remove("A3S_CONFIG")
-        .env_remove("A3S_DEFAULT_MODEL")
+        .env("ASTER_LOG_FILE", "0")
+        .env_remove("ASTER_CONFIG")
+        .env_remove("ASTER_DEFAULT_MODEL")
         .current_dir(&workspace)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -86,7 +86,7 @@ async fn real_acp_inspects_and_conditionally_forgets_local_memory_without_model_
     )
     .await;
     let params = |request: Value| json!({ "workspace_root": workspace, "request": request });
-    let page = request(&mut stdin, &mut lines, 2, "_a3s/memory/manage", params(json!({ "operation": "list", "query": "Rust", "memory_type": "procedural", "cursor": null }))).await;
+    let page = request(&mut stdin, &mut lines, 2, "_aster/memory/manage", params(json!({ "operation": "list", "query": "Rust", "memory_type": "procedural", "cursor": null }))).await;
     assert_eq!(page["memory_directory"], json!(directory));
     assert_eq!(page["outcome"]["Ok"]["total"], 1);
     let item = &page["outcome"]["Ok"]["items"][0];
@@ -95,7 +95,7 @@ async fn real_acp_inspects_and_conditionally_forgets_local_memory_without_model_
         &mut stdin,
         &mut lines,
         3,
-        "_a3s/memory/manage",
+        "_aster/memory/manage",
         params(json!({ "operation": "delete", "id": item["id"], "revision": "0".repeat(64) })),
     )
     .await;
@@ -104,7 +104,7 @@ async fn real_acp_inspects_and_conditionally_forgets_local_memory_without_model_
         &mut stdin,
         &mut lines,
         4,
-        "_a3s/memory/manage",
+        "_aster/memory/manage",
         params(json!({ "operation": "delete", "id": item["id"], "revision": item["revision"] })),
     )
     .await;
@@ -113,7 +113,7 @@ async fn real_acp_inspects_and_conditionally_forgets_local_memory_without_model_
         &mut stdin,
         &mut lines,
         5,
-        "_a3s/memory/manage",
+        "_aster/memory/manage",
         params(json!({ "operation": "list", "query": "", "memory_type": null, "cursor": null })),
     )
     .await;
@@ -123,7 +123,7 @@ async fn real_acp_inspects_and_conditionally_forgets_local_memory_without_model_
             &mut stdin,
             &mut lines,
             id,
-            "_a3s/memory/snapshot",
+            "_aster/memory/snapshot",
             json!({"workspace_root": workspace, "layer": layer}),
         )
         .await;

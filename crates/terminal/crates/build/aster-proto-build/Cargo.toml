@@ -1,0 +1,18 @@
+[package]
+license = "Apache-2.0"
+description = "Build protobuf"
+name = "aster-proto-build"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow = {workspace = true}
+pbjson-build = {version = "0.9"}
+prost-build = {version = "0.14"}
+prost-reflect = {version = "0.16"}
+tempfile = {workspace = true}
+tonic-prost-build = {version = "0.14"}

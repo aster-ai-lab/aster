@@ -1,6 +1,6 @@
-declare module '@a3s-lab/ce/basecoat';
-declare module '@a3s-lab/ce/code-editor';
-declare module '@a3s-lab/ce/select';
+declare module '@aster-ai-lab/ce/basecoat';
+declare module '@aster-ai-lab/ce/code-editor';
+declare module '@aster-ai-lab/ce/select';
 
 interface Window {
   basecoat?: {

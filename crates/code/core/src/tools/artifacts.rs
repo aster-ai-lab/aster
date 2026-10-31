@@ -402,7 +402,7 @@ mod tests {
         let store = ArtifactStore::new();
         let artifact = ToolArtifact {
             artifact_id: "tool-output:test:abc".to_string(),
-            artifact_uri: "a3s://tool-output/test/abc".to_string(),
+            artifact_uri: "aster://tool-output/test/abc".to_string(),
             tool_name: "test".to_string(),
             content: "full output".to_string(),
             original_bytes: 11,
@@ -412,7 +412,7 @@ mod tests {
         store.put(artifact.clone());
 
         assert_eq!(store.len(), 1);
-        assert_eq!(store.get("a3s://tool-output/test/abc"), Some(artifact));
+        assert_eq!(store.get("aster://tool-output/test/abc"), Some(artifact));
     }
 
     #[test]
@@ -420,7 +420,7 @@ mod tests {
         let store = ArtifactStore::new();
         let artifact = ToolArtifact {
             artifact_id: "tool-output:test:immutable".to_string(),
-            artifact_uri: "a3s://tool-output/test/immutable".to_string(),
+            artifact_uri: "aster://tool-output/test/immutable".to_string(),
             tool_name: "test".to_string(),
             content: "immutable output".to_string(),
             original_bytes: 16,
@@ -447,7 +447,7 @@ mod tests {
         let store = ArtifactStore::new();
 
         assert!(store.is_empty());
-        assert!(store.get("a3s://missing").is_none());
+        assert!(store.get("aster://missing").is_none());
     }
 
     #[test]
@@ -460,7 +460,7 @@ mod tests {
         for index in 0..3 {
             store.put(ToolArtifact {
                 artifact_id: format!("tool-output:test:{index}"),
-                artifact_uri: format!("a3s://tool-output/test/{index}"),
+                artifact_uri: format!("aster://tool-output/test/{index}"),
                 tool_name: "test".to_string(),
                 content: format!("artifact {index}"),
                 original_bytes: 10,
@@ -469,9 +469,9 @@ mod tests {
         }
 
         assert_eq!(store.len(), 2);
-        assert!(store.get("a3s://tool-output/test/0").is_none());
-        assert!(store.get("a3s://tool-output/test/1").is_some());
-        assert!(store.get("a3s://tool-output/test/2").is_some());
+        assert!(store.get("aster://tool-output/test/0").is_none());
+        assert!(store.get("aster://tool-output/test/1").is_some());
+        assert!(store.get("aster://tool-output/test/2").is_some());
     }
 
     #[test]
@@ -483,7 +483,7 @@ mod tests {
 
         store.put(ToolArtifact {
             artifact_id: "tool-output:test:a".to_string(),
-            artifact_uri: "a3s://tool-output/test/a".to_string(),
+            artifact_uri: "aster://tool-output/test/a".to_string(),
             tool_name: "test".to_string(),
             content: "aaaa".to_string(),
             original_bytes: 4,
@@ -491,7 +491,7 @@ mod tests {
         });
         store.put(ToolArtifact {
             artifact_id: "tool-output:test:b".to_string(),
-            artifact_uri: "a3s://tool-output/test/b".to_string(),
+            artifact_uri: "aster://tool-output/test/b".to_string(),
             tool_name: "test".to_string(),
             content: "bbbbb".to_string(),
             original_bytes: 5,
@@ -500,8 +500,8 @@ mod tests {
 
         assert_eq!(store.len(), 1);
         assert_eq!(store.total_bytes(), 5);
-        assert!(store.get("a3s://tool-output/test/a").is_none());
-        assert!(store.get("a3s://tool-output/test/b").is_some());
+        assert!(store.get("aster://tool-output/test/a").is_none());
+        assert!(store.get("aster://tool-output/test/b").is_some());
     }
 
     #[test]
@@ -513,7 +513,7 @@ mod tests {
 
         store.put(ToolArtifact {
             artifact_id: "tool-output:test:a".to_string(),
-            artifact_uri: "a3s://tool-output/test/a".to_string(),
+            artifact_uri: "aster://tool-output/test/a".to_string(),
             tool_name: "test".to_string(),
             content: "a".to_string(),
             original_bytes: 1,
@@ -521,7 +521,7 @@ mod tests {
         });
         store.put(ToolArtifact {
             artifact_id: "tool-output:test:b".to_string(),
-            artifact_uri: "a3s://tool-output/test/b".to_string(),
+            artifact_uri: "aster://tool-output/test/b".to_string(),
             tool_name: "test".to_string(),
             content: "bb".to_string(),
             original_bytes: 2,
@@ -529,7 +529,7 @@ mod tests {
         });
         store.put(ToolArtifact {
             artifact_id: "tool-output:test:a".to_string(),
-            artifact_uri: "a3s://tool-output/test/a".to_string(),
+            artifact_uri: "aster://tool-output/test/a".to_string(),
             tool_name: "test".to_string(),
             content: "aaaa".to_string(),
             original_bytes: 4,
@@ -539,7 +539,7 @@ mod tests {
         assert_eq!(store.len(), 2);
         assert_eq!(store.total_bytes(), 6);
         assert_eq!(
-            store.get("a3s://tool-output/test/a").unwrap().content,
+            store.get("aster://tool-output/test/a").unwrap().content,
             "aaaa"
         );
     }
@@ -553,7 +553,7 @@ mod tests {
         });
         store.put(ToolArtifact {
             artifact_id: "tool-output:test:a".to_string(),
-            artifact_uri: "a3s://tool-output/test/a".to_string(),
+            artifact_uri: "aster://tool-output/test/a".to_string(),
             tool_name: "test".to_string(),
             content: "artifact content".to_string(),
             original_bytes: 16,
@@ -573,7 +573,7 @@ mod tests {
         assert_eq!(loaded.len(), 1);
         assert_eq!(
             loaded
-                .get("a3s://tool-output/test/a")
+                .get("aster://tool-output/test/a")
                 .expect("artifact")
                 .content,
             "artifact content"
@@ -610,7 +610,7 @@ mod tests {
         });
         store.put(ToolArtifact {
             artifact_id: "tool-output:test:pinned".to_string(),
-            artifact_uri: "a3s://tool-output/test/pinned".to_string(),
+            artifact_uri: "aster://tool-output/test/pinned".to_string(),
             tool_name: "test".to_string(),
             content: "pinned".to_string(),
             original_bytes: 6,
@@ -618,28 +618,28 @@ mod tests {
         });
         store.put(ToolArtifact {
             artifact_id: "tool-output:test:kept".to_string(),
-            artifact_uri: "a3s://tool-output/test/kept".to_string(),
+            artifact_uri: "aster://tool-output/test/kept".to_string(),
             tool_name: "test".to_string(),
             content: "kept".to_string(),
             original_bytes: 4,
             shown_bytes: 2,
         });
         store.set_retained_uris([
-            "a3s://tool-output/test/pinned",
-            "a3s://tool-output/test/kept",
+            "aster://tool-output/test/pinned",
+            "aster://tool-output/test/kept",
         ]);
         store.put(ToolArtifact {
             artifact_id: "tool-output:test:third".to_string(),
-            artifact_uri: "a3s://tool-output/test/third".to_string(),
+            artifact_uri: "aster://tool-output/test/third".to_string(),
             tool_name: "test".to_string(),
             content: "third".to_string(),
             original_bytes: 5,
             shown_bytes: 2,
         });
-        assert!(store.get("a3s://tool-output/test/pinned").is_some());
-        assert!(store.get("a3s://tool-output/test/kept").is_some());
+        assert!(store.get("aster://tool-output/test/pinned").is_some());
+        assert!(store.get("aster://tool-output/test/kept").is_some());
         assert!(
-            store.get("a3s://tool-output/test/third").is_none(),
+            store.get("aster://tool-output/test/third").is_none(),
             "unpinned overflow should still be evicted"
         );
         assert_eq!(store.len(), 2);
@@ -651,18 +651,18 @@ mod tests {
         for index in 0..3 {
             store.put(ToolArtifact {
                 artifact_id: format!("tool-output:test:{index}"),
-                artifact_uri: format!("a3s://tool-output/test/{index}"),
+                artifact_uri: format!("aster://tool-output/test/{index}"),
                 tool_name: "test".to_string(),
                 content: format!("artifact {index}"),
                 original_bytes: 10,
                 shown_bytes: 4,
             });
         }
-        store.set_retained_uris(["a3s://tool-output/test/1"]);
+        store.set_retained_uris(["aster://tool-output/test/1"]);
         assert_eq!(store.gc_unreferenced(), 2);
-        assert!(store.get("a3s://tool-output/test/0").is_none());
-        assert!(store.get("a3s://tool-output/test/1").is_some());
-        assert!(store.get("a3s://tool-output/test/2").is_none());
+        assert!(store.get("aster://tool-output/test/0").is_none());
+        assert!(store.get("aster://tool-output/test/1").is_some());
+        assert!(store.get("aster://tool-output/test/2").is_none());
         assert_eq!(store.retained_uris().len(), 1);
     }
 }

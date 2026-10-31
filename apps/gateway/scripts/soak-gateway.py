@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Core Gateway HTTP / SSE / OpenAI-shaped soak harness (Enterprise GA capacity gate).
 
-Spins a local upstream, a temporary ACL, and a3s-gateway, then drives load.
+Spins a local upstream, a temporary ACL, and aster-gateway, then drives load.
 Smoke and lab-extended runs prove the harness; they are not published
 dedicated-hardware capacity envelopes. See docs/ops/capacity-and-soak.md.
 
@@ -274,7 +274,7 @@ def gateway_version(bin_path: Path) -> str | None:
 
 
 def git_sha() -> str | None:
-    for key in ("GITHUB_SHA", "A3S_GATEWAY_GIT_SHA"):
+    for key in ("GITHUB_SHA", "ASTER_GATEWAY_GIT_SHA"):
         value = os.environ.get(key)
         if value:
             return value[:40]
@@ -295,41 +295,41 @@ def validate_envelope_status(status: str, duration: float) -> list[str]:
     if status != "published":
         return []
     errors: list[str] = []
-    if os.environ.get("A3S_GATEWAY_DEDICATED_RUNNER") != "1":
+    if os.environ.get("ASTER_GATEWAY_DEDICATED_RUNNER") != "1":
         errors.append(
-            "published requires A3S_GATEWAY_DEDICATED_RUNNER=1 "
+            "published requires ASTER_GATEWAY_DEDICATED_RUNNER=1 "
             "(refuse developer/CI hosts as dedicated)"
         )
     publish_floor = 7200.0
     try:
-        requested = float(os.environ.get("A3S_GATEWAY_PUBLISH_MIN_DURATION", "7200"))
+        requested = float(os.environ.get("ASTER_GATEWAY_PUBLISH_MIN_DURATION", "7200"))
     except ValueError:
-        errors.append("A3S_GATEWAY_PUBLISH_MIN_DURATION must be a number")
+        errors.append("ASTER_GATEWAY_PUBLISH_MIN_DURATION must be a number")
         return errors
     if requested < publish_floor:
         errors.append(
-            "A3S_GATEWAY_PUBLISH_MIN_DURATION cannot be below 7200s "
+            "ASTER_GATEWAY_PUBLISH_MIN_DURATION cannot be below 7200s "
             "(refuse lowering the publish floor)"
         )
     min_duration = max(publish_floor, requested)
     if duration + 1e-9 < min_duration:
         errors.append(
             f"published requires duration>={min_duration:.0f}s "
-            f"(got {duration:.0f}s); A3S_GATEWAY_PUBLISH_MIN_DURATION may only raise the floor"
+            f"(got {duration:.0f}s); ASTER_GATEWAY_PUBLISH_MIN_DURATION may only raise the floor"
         )
-    if not os.environ.get("A3S_GATEWAY_HW_CPU_MODEL", "").strip():
-        errors.append("published requires A3S_GATEWAY_HW_CPU_MODEL")
-    mem = os.environ.get("A3S_GATEWAY_HW_MEMORY_GB", "").strip()
+    if not os.environ.get("ASTER_GATEWAY_HW_CPU_MODEL", "").strip():
+        errors.append("published requires ASTER_GATEWAY_HW_CPU_MODEL")
+    mem = os.environ.get("ASTER_GATEWAY_HW_MEMORY_GB", "").strip()
     if not mem:
-        errors.append("published requires A3S_GATEWAY_HW_MEMORY_GB")
+        errors.append("published requires ASTER_GATEWAY_HW_MEMORY_GB")
     else:
         try:
             if float(mem) <= 0:
-                errors.append("A3S_GATEWAY_HW_MEMORY_GB must be > 0")
+                errors.append("ASTER_GATEWAY_HW_MEMORY_GB must be > 0")
         except ValueError:
-            errors.append("A3S_GATEWAY_HW_MEMORY_GB must be a number")
-    if not os.environ.get("A3S_GATEWAY_HW_HOST", "").strip():
-        errors.append("published requires A3S_GATEWAY_HW_HOST")
+            errors.append("ASTER_GATEWAY_HW_MEMORY_GB must be a number")
+    if not os.environ.get("ASTER_GATEWAY_HW_HOST", "").strip():
+        errors.append("published requires ASTER_GATEWAY_HW_HOST")
     return errors
 
 
@@ -352,7 +352,7 @@ _EMBEDDED_SHA = re.compile(r"(?<![0-9a-f])([0-9a-f]{40})(?![0-9a-f])")
 
 
 def git_sha_from_version(version: str | None) -> str | None:
-    """Return the commit embedded in `a3s-gateway --version`, if it is clean."""
+    """Return the commit embedded in `aster-gateway --version`, if it is clean."""
     if published_version_identity_error(version) is not None:
         return None
     match = _EMBEDDED_SHA.search(str(version or ""))
@@ -402,7 +402,7 @@ def refuse_mismatched_artifact_name(path: Path, envelope_status: str) -> str | N
 
 
 def hardware_pins() -> dict:
-    mem_raw = os.environ.get("A3S_GATEWAY_HW_MEMORY_GB", "").strip()
+    mem_raw = os.environ.get("ASTER_GATEWAY_HW_MEMORY_GB", "").strip()
     memory_gb = None
     if mem_raw:
         try:
@@ -410,20 +410,20 @@ def hardware_pins() -> dict:
         except ValueError:
             memory_gb = None
     return {
-        "host": os.environ.get("A3S_GATEWAY_HW_HOST") or platform.node(),
-        "cpu_model": os.environ.get("A3S_GATEWAY_HW_CPU_MODEL")
+        "host": os.environ.get("ASTER_GATEWAY_HW_HOST") or platform.node(),
+        "cpu_model": os.environ.get("ASTER_GATEWAY_HW_CPU_MODEL")
         or (platform.processor() or None),
         "cpu_cores": os.cpu_count(),
         "memory_gb": memory_gb,
         "os": platform.system().lower(),
         "kernel": platform.release(),
-        "dedicated_runner": os.environ.get("A3S_GATEWAY_DEDICATED_RUNNER") == "1",
+        "dedicated_runner": os.environ.get("ASTER_GATEWAY_DEDICATED_RUNNER") == "1",
     }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--bin", required=True, help="Path to a3s-gateway binary")
+    parser.add_argument("--bin", required=True, help="Path to aster-gateway binary")
     parser.add_argument("--duration", type=float, default=30.0)
     parser.add_argument("--concurrency", type=int, default=16)
     parser.add_argument(
@@ -455,7 +455,7 @@ def main() -> int:
     threading.Thread(target=up.serve_forever, daemon=True).start()
 
     gateway_port = free_port()
-    tmp = Path(tempfile.mkdtemp(prefix="a3s-soak-"))
+    tmp = Path(tempfile.mkdtemp(prefix="aster-soak-"))
     acl = tmp / "soak.acl"
     write_acl(acl, gateway_port, upstream_port)
 

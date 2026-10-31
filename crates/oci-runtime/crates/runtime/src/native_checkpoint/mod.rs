@@ -9,9 +9,9 @@ use std::io;
 use std::path::Path;
 use std::sync::{Arc, Weak};
 
-use a3s_oci_agent::LinuxExecutor;
-use a3s_oci_core::{DriverKind, HostPlatform, IsolationClass};
-use a3s_oci_sdk::{
+use aster_oci_agent::LinuxExecutor;
+use aster_oci_core::{DriverKind, HostPlatform, IsolationClass};
+use aster_oci_sdk::{
     canonical_json_bytes, CheckpointCompatibility, CheckpointDigest, CheckpointFormat, ContainerId,
     ContainerTarget, Error, ErrorCode, OperationId, Result, RuntimeArtifact,
 };
@@ -29,7 +29,7 @@ use tool::CriuTool;
 
 const CHECKPOINT_FORMAT_NAME: &str = "native-linux-criu";
 const CHECKPOINT_FORMAT_VERSION: u16 = 1;
-const DRIVER_BUILD_SCHEMA_V1: &str = "a3s.oci.native-criu-driver-build.v1";
+const DRIVER_BUILD_SCHEMA_V1: &str = "aster.oci.native-criu-driver-build.v1";
 
 /// Explicit CRIU-backed native Linux checkpoint implementation.
 #[derive(Debug)]
@@ -60,9 +60,9 @@ struct DriverBuildIdentity {
 #[serde(rename_all = "camelCase")]
 struct RequestFingerprint<'a> {
     schema_version: &'static str,
-    context: &'a a3s_oci_sdk::OperationContext,
-    source: &'a a3s_oci_sdk::ContainerRecord,
-    artifact_path: &'a a3s_oci_sdk::CheckpointArtifactPath,
+    context: &'a aster_oci_sdk::OperationContext,
+    source: &'a aster_oci_sdk::ContainerRecord,
+    artifact_path: &'a aster_oci_sdk::CheckpointArtifactPath,
     runtime_artifact: &'a RuntimeArtifact,
 }
 
@@ -78,7 +78,7 @@ impl NativeCriuCheckpoint {
         let identity = DriverBuildIdentity {
             schema_version: DRIVER_BUILD_SCHEMA_V1,
             package_version: env!("CARGO_PKG_VERSION"),
-            source_revision: option_env!("A3S_OCI_GIT_REVISION"),
+            source_revision: option_env!("ASTER_OCI_GIT_REVISION"),
             agent_executable_digest: init_digest,
             criu: tool.identity(),
             format_name: CHECKPOINT_FORMAT_NAME,
@@ -493,12 +493,12 @@ fn request_digest(request: &DriverCheckpointRequest) -> Result<CheckpointDigest>
     CheckpointDigest::new(format!("sha256:{:x}", Sha256::digest(encoded)))
 }
 
-const JOURNAL_REQUEST_SCHEMA_V1: &str = "a3s.oci.native-checkpoint-request.v1";
+const JOURNAL_REQUEST_SCHEMA_V1: &str = "aster.oci.native-checkpoint-request.v1";
 
-fn validate_source_record(source: &a3s_oci_sdk::ContainerRecord) -> Result<()> {
+fn validate_source_record(source: &aster_oci_sdk::ContainerRecord) -> Result<()> {
     if source.driver != DriverKind::NativeLinux
         || source.isolation != IsolationClass::SharedHostKernel
-        || *source.state.status() != a3s_oci_sdk::oci_spec::runtime::ContainerState::Running
+        || *source.state.status() != aster_oci_sdk::oci_spec::runtime::ContainerState::Running
         || !source.is_paused()
         || source.generation.0 == 0
         || source.attachments_digest.is_none()
@@ -513,7 +513,7 @@ fn validate_source_record(source: &a3s_oci_sdk::ContainerRecord) -> Result<()> {
     Ok(())
 }
 
-fn source_target(source: &a3s_oci_sdk::ContainerRecord) -> Result<ContainerTarget> {
+fn source_target(source: &aster_oci_sdk::ContainerRecord) -> Result<ContainerTarget> {
     Ok(ContainerTarget::exact(
         ContainerId::new(source.state.id().to_string()).map_err(|error| {
             checkpoint_error(

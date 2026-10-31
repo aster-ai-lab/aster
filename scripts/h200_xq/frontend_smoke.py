@@ -17,10 +17,10 @@ def main():
         raise RuntimeError('frontend smoke must run before an inference profile is active')
     subprocess.run([sys.executable, __file__.replace('frontend_smoke.py', 'service.py'), 'configure'], check=True)
     environment = dict(os.environ)
-    environment['A3S_POWER_HOME'] = str(service.PRIVATE/'data')
+    environment['ASTER_POWER_HOME'] = str(service.PRIVATE/'data')
     with (service.ROOT/'logs/power-frontend-smoke.log').open('ab') as log:
         process = subprocess.Popen(
-            [str(service.ROOT/'bin/a3s-power'), 'serve', '--config', str(service.PRIVATE/'power.acl'),
+            [str(service.ROOT/'bin/aster-power'), 'serve', '--config', str(service.PRIVATE/'power.acl'),
              '--host', '127.0.0.1', '--port', '30003'],
             env=environment, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
         try:

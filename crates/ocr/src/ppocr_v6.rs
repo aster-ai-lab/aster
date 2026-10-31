@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 
-use a3s_use_core::{Readiness, UseError, UseResult};
+use aster_use_core::{Readiness, UseError, UseResult};
 use async_trait::async_trait;
 
 use crate::assets::{ocr_status, resolve_model_assets, OcrInstallSource};
@@ -16,7 +16,7 @@ use crate::provider::{
 pub const PP_OCR_V6_PROVIDER_ID: &str = "pp-ocr-v6";
 const ENGINE_NAME: &str = "onnx-runtime";
 
-/// Local PP-OCRv6 provider shipped as the default A3S Use integration.
+/// Local PP-OCRv6 provider shipped as the default Aster Use integration.
 #[derive(Clone)]
 pub struct PpOcrV6Provider {
     descriptor: OcrProviderDescriptor,
@@ -115,7 +115,7 @@ impl OcrProvider for PpOcrV6Provider {
             (
                 Readiness::Missing,
                 vec![
-                    "Run 'a3s install use/ocr' to install the pinned local model bundle."
+                    "Run 'aster install use/ocr' to install the pinned local model bundle."
                         .to_string(),
                 ],
             )
@@ -123,7 +123,7 @@ impl OcrProvider for PpOcrV6Provider {
             (
                 Readiness::Broken,
                 vec![
-                    "Run 'a3s install use/ocr --force' to restore the pinned local model bundle."
+                    "Run 'aster install use/ocr --force' to restore the pinned local model bundle."
                         .to_string(),
                 ],
             )

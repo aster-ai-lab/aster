@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootRequest, BootResponse, ControllerDefinition, HttpMethod,
     MiddlewareRoute, RouteDefinition,
 };
@@ -558,7 +558,7 @@ async fn application_call_prefers_static_path_before_method_matching() {
             RouteDefinition::post("/items/new", |_| async { Ok(BootResponse::text("static")) })
                 .unwrap()
                 .with_filter(
-                    |context: a3s_boot::ExecutionContext, error: BootError| async move {
+                    |context: aster_boot::ExecutionContext, error: BootError| async move {
                         Ok(Some(
                             BootResponse::text(format!("{}: {error}", context.route_path))
                                 .with_status(405),
@@ -1028,7 +1028,7 @@ async fn application_handle_preserves_filter_responses() {
             })
             .unwrap()
             .with_filter(
-                |context: a3s_boot::ExecutionContext, error: BootError| async move {
+                |context: aster_boot::ExecutionContext, error: BootError| async move {
                     Ok(Some(
                         BootResponse::text(format!("{}: {error}", context.route_path))
                             .with_status(422),
@@ -1203,7 +1203,7 @@ async fn route_handle_preserves_filter_responses() {
     })
     .unwrap()
     .with_filter(
-        |context: a3s_boot::ExecutionContext, error: BootError| async move {
+        |context: aster_boot::ExecutionContext, error: BootError| async move {
             Ok(Some(
                 BootResponse::text(format!("{}: {error}", context.route_path)).with_status(422),
             ))

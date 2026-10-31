@@ -38,7 +38,8 @@ fn cc_switch_picker_label_includes_other_profiles() {
 #[test]
 fn cursor_catalog_uses_the_logged_in_account_label() {
     let mut launch = test_launch(None);
-    launch.config.providers.push(a3s_code_core::ProviderConfig {
+    launch.config.providers.push(aster_core::ProviderConfig {
+        protocol: None,
         name: "cursor".to_string(),
         api_key: Some("not-logged".to_string()),
         base_url: Some("https://api2.cursor.sh".to_string()),
@@ -46,7 +47,7 @@ fn cursor_catalog_uses_the_logged_in_account_label() {
         session_id_header: None,
         models: vec![test_model("composer-2.5", "Composer 2.5", "cursor")],
     });
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let info = agent
         .available_model_infos()
         .into_iter()
@@ -61,7 +62,7 @@ fn cursor_catalog_uses_the_logged_in_account_label() {
 
 #[tokio::test]
 async fn unknown_model_id_is_rejected_before_session_lookup() {
-    let agent = A3sCodeAgent::new(test_launch(None));
+    let agent = AsterCodeAgent::new(test_launch(None));
     let error = acp::Agent::set_session_model(
         &agent,
         acp::SetSessionModelRequest::new(
@@ -103,7 +104,7 @@ fn effort_tokens_adjust_thinking_without_setting_a_tool_ceiling() {
     assert!(low.thinking_budget < high.thinking_budget);
     assert!(high.thinking_budget < max.thinking_budget);
 
-    let claude = A3sCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(high));
+    let claude = AsterCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(high));
     assert_eq!(claude.reasoning_effort.as_deref(), Some("high"));
     assert_eq!(claude.thinking_budget, Some(high.thinking_budget));
     assert_eq!(claude.max_tool_rounds, Some(0));
@@ -117,11 +118,11 @@ fn effort_tokens_adjust_thinking_without_setting_a_tool_ceiling() {
     assert!(claude.auto_compact);
     assert_eq!(
         claude.auto_compact_threshold,
-        Some(a3s_code_core::store::DEFAULT_AUTO_COMPACT_THRESHOLD)
+        Some(aster_core::store::DEFAULT_AUTO_COMPACT_THRESHOLD)
     );
     assert!(claude.max_context_tokens.is_none());
 
-    let local = A3sCodeAgent::core_session_options("sid", "ollama/llama3", Some(high));
+    let local = AsterCodeAgent::core_session_options("sid", "ollama/llama3", Some(high));
     let local_budget = local
         .prompt_slots
         .as_ref()
@@ -135,7 +136,7 @@ fn effort_tokens_adjust_thinking_without_setting_a_tool_ceiling() {
 fn budget_line_states_a_maximum() {
     let high = effort_limits("high").expect("high");
     assert_eq!(high.thinking_budget, 16_384);
-    let options = A3sCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
+    let options = AsterCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
     let text = options
         .prompt_slots
         .and_then(|slots| slots.guidelines)
@@ -159,14 +160,14 @@ fn high_depth_is_about_the_user_outcome() {
 
 #[test]
 fn empty_registry_still_states_the_product_boundary() {
-    let registry = a3s_code_core::skills::SkillRegistry::new();
+    let registry = aster_core::skills::SkillRegistry::new();
     assert!(registry.to_system_prompt().is_empty());
-    registry.register_unchecked(std::sync::Arc::new(a3s_code_core::skills::Skill {
+    registry.register_unchecked(std::sync::Arc::new(aster_core::skills::Skill {
         name: "live-report".to_string(),
         description: "Build a report".to_string(),
         allowed_tools: None,
         disable_model_invocation: false,
-        kind: a3s_code_core::skills::SkillKind::Instruction,
+        kind: aster_core::skills::SkillKind::Instruction,
         content: "Build a report".to_string(),
         tags: Vec::new(),
         version: None,
@@ -177,7 +178,7 @@ fn empty_registry_still_states_the_product_boundary() {
     assert!(!catalog.contains("search_skills"));
     assert!(!catalog.contains("skills add"));
     let high = effort_limits("high").expect("high");
-    let options = A3sCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
+    let options = AsterCodeAgent::core_session_options("sid", "boyue/deepseek-v4-flash", Some(high));
     let text = options
         .prompt_slots
         .and_then(|slots| slots.guidelines)
@@ -209,12 +210,13 @@ fn studio_host_keeps_the_budget_line_in_the_session_options() {
         source_review: false,
         knowledge_compile: None,
         office_tools: false,
+        user_browser_pane: false,
         output_language: Some("zh-CN".to_string()),
         assets: None,
         workspace_wiki_search: false,
         workspace_memory_search: false,
     };
-    let options = A3sCodeAgent::host_session_options(
+    let options = AsterCodeAgent::host_session_options(
         "sid",
         &SessionSetup {
             workspace: PathBuf::from("/tmp"),
@@ -224,11 +226,11 @@ fn studio_host_keeps_the_budget_line_in_the_session_options() {
             components: &[],
             mcp_servers: Vec::new(),
         },
-        &a3s_code_core::CodeConfig {
-            sandbox_network: a3s_code_core::sandbox::SandboxNetworkMode::Deny,
+        &aster_core::CodeConfig {
+            sandbox_network: aster_core::sandbox::SandboxNetworkMode::Deny,
             ..Default::default()
         },
-        std::path::Path::new("/tmp/a3s-session-store"),
+        std::path::Path::new("/tmp/aster-session-store"),
     )
     .expect("host options");
     let slots = options.prompt_slots.expect("slots");
@@ -250,7 +252,7 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
     const SKILL_BODY: &str = "BODY-skill-9f3a-unique";
     const WIKI_BODY: &str = "BODY-wiki-9f3a-unique";
     const SECRET: &str = "do-not-leak-connector-cmd-9f3a";
-    let root = std::env::temp_dir().join(format!("a3s-acp-local-assets-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-local-assets-{}", uuid::Uuid::new_v4()));
     let _ = std::fs::remove_dir_all(&root);
     let capabilities = root.join("capabilities");
     let skills = capabilities.join("skills").join("brief-writer");
@@ -312,12 +314,12 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
 
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let payload = serde_json::json!({
         "cwd": root,
         "mcpServers": [],
         "_meta": {
-            "a3sHost": {
+            "asterHost": {
                 "assets": {
                     "connectors": capabilities,
                     "skills": capabilities.join("skills"),
@@ -337,7 +339,7 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
         let live = sessions.get(&session_id).expect("live session");
         (Arc::clone(&live.session), live.host.clone())
     };
-    let options = A3sCodeAgent::host_session_options(
+    let options = AsterCodeAgent::host_session_options(
         &session_id,
         &SessionSetup {
             workspace: root.clone(),
@@ -347,8 +349,8 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
             components: &[],
             mcp_servers: Vec::new(),
         },
-        &a3s_code_core::CodeConfig {
-            sandbox_network: a3s_code_core::sandbox::SandboxNetworkMode::Deny,
+        &aster_core::CodeConfig {
+            sandbox_network: aster_core::sandbox::SandboxNetworkMode::Deny,
             ..Default::default()
         },
         &root.join("sessions"),
@@ -437,20 +439,20 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
 async fn workspace_wiki_is_searchable_through_the_admitted_acp_session() {
     const SENTENCE: &str = "桂花糖藕只写在本地笔记7c2e";
     const OUTSIDE: &str = "工作区根上的句子不要被检索到9d1f";
-    let root = std::env::temp_dir().join(format!("a3s-acp-local-note-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-local-note-{}", uuid::Uuid::new_v4()));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).unwrap();
     let source = format!("{SENTENCE}\n");
     std::fs::write(root.join("evidence.md"), &source).unwrap();
     std::fs::write(root.join("readme.md"), format!("{OUTSIDE}\n")).unwrap();
-    let input = a3s_okf::WorkspaceKnowledgeInput::new(
+    let input = aster_okf::WorkspaceKnowledgeInput::new(
         &root,
         "acp-saved-workspace",
         &format!("sha256:{}", "a".repeat(64)),
-        vec![a3s_okf::WorkspaceKnowledgeSource::text("evidence.md", source.as_bytes()).unwrap()],
+        vec![aster_okf::WorkspaceKnowledgeSource::text("evidence.md", source.as_bytes()).unwrap()],
     )
     .unwrap();
-    let job = a3s_okf::begin_workspace_knowledge_maintenance(&input)
+    let job = aster_okf::begin_workspace_knowledge_maintenance(&input)
         .unwrap()
         .unwrap();
     let stage = std::path::Path::new(&job.staging);
@@ -463,17 +465,17 @@ async fn workspace_wiki_is_searchable_through_the_admitted_acp_session() {
         "sources":job.sources,"summary":"家常","categories":{},
         "pages":[{"path":"concepts/overview.md","title":"家常","kind":"synthesis","change":"create","reason":"Saved source","requires_review":false,"sources":job.sources}]
     })).unwrap()).unwrap();
-    a3s_okf::finish_workspace_knowledge_maintenance(&input, &job.id).unwrap();
+    aster_okf::finish_workspace_knowledge_maintenance(&input, &job.id).unwrap();
     let wiki = input.output_root().to_path_buf();
 
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let payload = serde_json::json!({
         "cwd": root,
         "mcpServers": [],
         "_meta": {
-            "a3sHost": {
+            "asterHost": {
                 "assets": { "wiki": wiki }
             }
         }
@@ -559,10 +561,10 @@ fn effort_limits_preserve_thinking_and_parallel_resource_settings() {
     assert_eq!(ultra.max_continuation_turns, max.max_continuation_turns);
     assert_eq!(ultra.thinking_budget, max.thinking_budget);
     let ultra_options =
-        A3sCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(ultra));
+        AsterCodeAgent::core_session_options("sid", "anthropic/claude-opus-4-6", Some(ultra));
     assert_eq!(
         ultra_options.planning_mode,
-        a3s_code_core::PlanningMode::Auto
+        aster_core::PlanningMode::Auto
     );
     assert!(effort_limits("not-a-level").is_none());
 }
@@ -689,9 +691,9 @@ fn bash_terminal_events_preserve_the_real_disposition_and_command() {
 
 #[test]
 fn turn_outcome_payload_names_the_wire_shape() {
-    let summary = a3s_code_core::verification::VerificationSummary::from_reports(&[]);
+    let summary = aster_core::verification::VerificationSummary::from_reports(&[]);
     let narrative = turn_outcome_payload(
-        &a3s_code_core::harness_loop::CompletionTerminal::Narrative,
+        &aster_core::harness_loop::CompletionTerminal::Narrative,
         &summary,
         None,
     );
@@ -699,7 +701,7 @@ fn turn_outcome_payload_names_the_wire_shape() {
     assert_eq!(narrative["terminal"], "narrative");
     assert_eq!(narrative["status"], "skipped");
     let verified = turn_outcome_payload(
-        &a3s_code_core::harness_loop::CompletionTerminal::Verified {
+        &aster_core::harness_loop::CompletionTerminal::Verified {
             effect_digest: "d".into(),
         },
         &summary,
@@ -721,7 +723,7 @@ async fn never_answering_client(mut client_end: tokio::io::DuplexStream) {
     let _ = client_end.shutdown().await;
 }
 
-/// A3S_CODE_PERMISSION_ASK_TIMEOUT_SECS is process-global; serialise.
+/// ASTER_PERMISSION_ASK_TIMEOUT_SECS is process-global; serialise.
 /// The env must hold for the WHOLE await: `ask_deadline()` reads it when
 /// the ask future is polled, so a lazy future awaited after a restore
 /// would silently see the default again (this test hung 30 minutes on
@@ -730,12 +732,12 @@ async fn never_answering_client(mut client_end: tokio::io::DuplexStream) {
 async fn ask_env_locked<F: std::future::Future>(test: impl FnOnce() -> F) -> F::Output {
     static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
     let _guard = LOCK.lock().unwrap_or_else(|poison| poison.into_inner());
-    let prior = std::env::var_os("A3S_CODE_PERMISSION_ASK_TIMEOUT_SECS");
-    std::env::set_var("A3S_CODE_PERMISSION_ASK_TIMEOUT_SECS", "1");
+    let prior = std::env::var_os("ASTER_PERMISSION_ASK_TIMEOUT_SECS");
+    std::env::set_var("ASTER_PERMISSION_ASK_TIMEOUT_SECS", "1");
     let outcome = test().await;
     match prior {
-        Some(value) => std::env::set_var("A3S_CODE_PERMISSION_ASK_TIMEOUT_SECS", value),
-        None => std::env::remove_var("A3S_CODE_PERMISSION_ASK_TIMEOUT_SECS"),
+        Some(value) => std::env::set_var("ASTER_PERMISSION_ASK_TIMEOUT_SECS", value),
+        None => std::env::remove_var("ASTER_PERMISSION_ASK_TIMEOUT_SECS"),
     }
     outcome
 }
@@ -749,7 +751,7 @@ async fn unanswered_asks_fail_closed_at_the_deadline() {
         let local = tokio::task::LocalSet::new();
         local
             .run_until(async {
-                let handler_agent = A3sCodeAgent::new(tests::test_launch(None));
+                let handler_agent = AsterCodeAgent::new(tests::test_launch(None));
                 let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
                 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
                 let (agent_read, agent_write) = tokio::io::split(agent_end);
@@ -763,7 +765,7 @@ async fn unanswered_asks_fail_closed_at_the_deadline() {
                 );
                 tokio::task::spawn_local(io);
                 tokio::task::spawn_local(never_answering_client(client_end));
-                let agent = A3sCodeAgent::new(tests::test_launch(None));
+                let agent = AsterCodeAgent::new(tests::test_launch(None));
                 agent.set_client(Rc::new(conn));
 
                 let session_id = acp::SessionId::new("s1");
@@ -1047,8 +1049,8 @@ fn permission_response_maps_allow_and_reject() {
     assert!(!permission_response_approved(&cancelled));
 }
 
-fn test_model(id: &str, name: &str, family: &str) -> a3s_code_core::ModelConfig {
-    a3s_code_core::ModelConfig {
+fn test_model(id: &str, name: &str, family: &str) -> aster_core::ModelConfig {
+    aster_core::ModelConfig {
         id: id.to_string(),
         name: name.to_string(),
         family: family.to_string(),
@@ -1061,17 +1063,18 @@ fn test_model(id: &str, name: &str, family: &str) -> a3s_code_core::ModelConfig 
         tool_call: true,
         temperature: true,
         release_date: None,
-        modalities: a3s_code_core::ModelModalities::default(),
-        cost: a3s_code_core::ModelCost::default(),
-        limit: a3s_code_core::ModelLimit::default(),
+        modalities: aster_core::ModelModalities::default(),
+        cost: aster_core::ModelCost::default(),
+        limit: aster_core::ModelLimit::default(),
     }
 }
 
 pub(crate) fn test_launch(sessions_dir: Option<std::path::PathBuf>) -> crate::config::LaunchConfig {
-    let config = a3s_code_core::CodeConfig {
+    let config = aster_core::CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![
-            a3s_code_core::ProviderConfig {
+            aster_core::ProviderConfig {
+                protocol: None,
                 name: "anthropic".to_string(),
                 api_key: Some("test-key".to_string()),
                 base_url: None,
@@ -1083,7 +1086,8 @@ pub(crate) fn test_launch(sessions_dir: Option<std::path::PathBuf>) -> crate::co
                     "claude-sonnet",
                 )],
             },
-            a3s_code_core::ProviderConfig {
+            aster_core::ProviderConfig {
+                protocol: None,
                 name: "openai".to_string(),
                 api_key: Some("test-openai-key".to_string()),
                 base_url: None,
@@ -1093,7 +1097,7 @@ pub(crate) fn test_launch(sessions_dir: Option<std::path::PathBuf>) -> crate::co
             },
         ],
         sessions_dir,
-        ..a3s_code_core::CodeConfig::default()
+        ..aster_core::CodeConfig::default()
     };
     crate::config::LaunchConfig {
         workspace: std::env::temp_dir(),
@@ -1106,11 +1110,11 @@ pub(crate) fn test_launch(sessions_dir: Option<std::path::PathBuf>) -> crate::co
 /// agent. GitHub and Linear land on the core manager; Slack was not installed.
 #[tokio::test]
 async fn session_new_mcp_servers_land_on_the_core_manager() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-session-mcp-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-session-mcp-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let payload = serde_json::json!({
         "cwd": root,
         "mcpServers": [
@@ -1152,7 +1156,7 @@ async fn session_new_mcp_servers_land_on_the_core_manager() {
         .find(|server| server.name == "github")
         .expect("github is on the core manager");
     match &github.transport {
-        a3s_code_core::mcp::McpTransportConfig::Stdio { command, args } => {
+        aster_core::mcp::McpTransportConfig::Stdio { command, args } => {
             assert_eq!(command, "npx");
             assert_eq!(
                 args,
@@ -1177,7 +1181,7 @@ async fn session_new_mcp_servers_land_on_the_core_manager() {
         .find(|server| server.name == "linear")
         .expect("linear is on the core manager");
     match &linear.transport {
-        a3s_code_core::mcp::McpTransportConfig::StreamableHttp { url, headers } => {
+        aster_core::mcp::McpTransportConfig::StreamableHttp { url, headers } => {
             assert_eq!(url, "https://mcp.linear.app/mcp");
             assert_eq!(
                 headers.get("LINEAR_API_KEY").map(String::as_str),
@@ -1193,12 +1197,12 @@ async fn session_new_mcp_servers_land_on_the_core_manager() {
     assert_eq!(configs.len(), 2);
 }
 
-/// Studio's `session/new` payload keeps plugin tools on `_meta.a3sTools`.
+/// Studio's `session/new` payload keeps plugin tools on `_meta.asterTools`.
 /// A top-level `tools` array does not survive `NewSessionRequest`. The
 /// agent registers the entry, and `AgentSession::tool` is what starts it.
 #[tokio::test]
 async fn session_new_plugin_tool_runs_the_unpacked_executable() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-plugin-tool-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-plugin-tool-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(root.join("tools")).expect("temp workspace");
     let entry = root.join("tools").join("echo");
     std::fs::write(
@@ -1229,20 +1233,20 @@ async fn session_new_plugin_tool_runs_the_unpacked_executable() {
         dropped
             .meta
             .as_ref()
-            .and_then(|meta| meta.get("a3sTools"))
+            .and_then(|meta| meta.get("asterTools"))
             .is_none(),
         "NewSessionRequest drops a top-level tools array"
     );
 
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let payload = serde_json::json!({
         "cwd": root,
         "mcpServers": [],
         "_meta": {
-            "a3sHost": { "role": "You are ToBot" },
-            "a3sTools": [{ "id": "echo", "entry": entry }]
+            "asterHost": { "role": "You are ToBot" },
+            "asterTools": [{ "id": "echo", "entry": entry }]
         }
     });
     let request: acp::NewSessionRequest = serde_json::from_value(payload)
@@ -1250,9 +1254,9 @@ async fn session_new_plugin_tool_runs_the_unpacked_executable() {
     let kept = request
         .meta
         .as_ref()
-        .and_then(|meta| meta.get("a3sTools"))
+        .and_then(|meta| meta.get("asterTools"))
         .and_then(|tools| tools.as_array())
-        .expect("a3sTools survives NewSessionRequest");
+        .expect("asterTools survives NewSessionRequest");
     let entry_text = entry.to_string_lossy().into_owned();
     assert_eq!(kept[0]["id"], "echo");
     assert_eq!(kept[0]["entry"].as_str(), Some(entry_text.as_str()));
@@ -1282,11 +1286,11 @@ async fn session_new_plugin_tool_runs_the_unpacked_executable() {
 
 #[tokio::test]
 async fn seam_admission_acp_permission_and_goal() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-seam-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-seam-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let created = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.clone()))
         .await
         .expect("new session");
@@ -1300,17 +1304,17 @@ async fn seam_admission_acp_permission_and_goal() {
     );
     assert_eq!(
         applied.plan.mode(),
-        Some(a3s_code_core::PlanningMode::Enabled)
+        Some(aster_core::PlanningMode::Enabled)
     );
     assert_eq!(
         applied.next.as_ref().map(|goal| goal.objective.as_str()),
         Some("ship the seam")
     );
     let registered = agent.sessions.lock().await.contains_key(session_id);
-    let home = a3s_code_core::session_folder::find_session_dir(&root, session_id)
+    let home = aster_core::session_folder::find_session_dir(&root, session_id)
         .expect("session folder lookup")
         .expect("session folder");
-    assert!(home.starts_with(root.join(".a3s").join("sessions")));
+    assert!(home.starts_with(root.join(".aster").join("sessions")));
     assert_eq!(
         home.file_name().and_then(|name| name.to_str()),
         Some(session_id)
@@ -1372,19 +1376,19 @@ fn interactive_session_store_dir_from_product_env_joins_session_store() {
 }
 
 #[test]
-fn interactive_session_store_dir_from_os_home_joins_dot_a3s_session_store() {
+fn interactive_session_store_dir_from_os_home_joins_dot_aster_session_store() {
     let dir = interactive_session_store_dir_from(
         None,
         Some(std::ffi::OsStr::new("")),
         Some(std::ffi::OsStr::new("/tmp/os")),
     );
-    assert_eq!(dir, PathBuf::from("/tmp/os/.a3s/session-store"));
+    assert_eq!(dir, PathBuf::from("/tmp/os/.aster/session-store"));
 }
 
 #[test]
 fn interactive_session_store_dir_from_relative_fallback_without_homes() {
     let dir = interactive_session_store_dir_from(None, None, Some(std::ffi::OsStr::new("")));
-    assert_eq!(dir, PathBuf::from(".a3s/session-store"));
+    assert_eq!(dir, PathBuf::from(".aster/session-store"));
 }
 
 #[test]
@@ -1399,7 +1403,7 @@ fn four_homes_when_inputs_differ() {
         vec![
             PathBuf::from("/tmp/a"),
             PathBuf::from("/tmp/b"),
-            PathBuf::from("/tmp/c/.a3s"),
+            PathBuf::from("/tmp/c/.aster"),
             PathBuf::from("/tmp/c/.grok"),
         ]
     );
@@ -1408,7 +1412,7 @@ fn four_homes_when_inputs_differ() {
 #[test]
 fn duplicate_product_home_collapses() {
     let homes = recorded_session_homes(
-        Some(std::ffi::OsStr::new("/tmp/c/.a3s")),
+        Some(std::ffi::OsStr::new("/tmp/c/.aster")),
         Some(std::ffi::OsStr::new("/tmp/b")),
         Some(std::ffi::OsStr::new("/tmp/c")),
     );
@@ -1416,7 +1420,7 @@ fn duplicate_product_home_collapses() {
         homes,
         vec![
             PathBuf::from("/tmp/b"),
-            PathBuf::from("/tmp/c/.a3s"),
+            PathBuf::from("/tmp/c/.aster"),
             PathBuf::from("/tmp/c/.grok"),
         ]
     );
@@ -1425,7 +1429,7 @@ fn duplicate_product_home_collapses() {
 #[test]
 fn delete_removes_only_the_named_id() {
     let root =
-        std::env::temp_dir().join(format!("a3s-acp-session-delete-{}", uuid::Uuid::new_v4()));
+        std::env::temp_dir().join(format!("aster-acp-session-delete-{}", uuid::Uuid::new_v4()));
     let home_a = root.join("home-a");
     let home_b = root.join("home-b");
     let outsider = root.join("outsider");
@@ -1448,12 +1452,12 @@ fn delete_removes_only_the_named_id() {
 
 #[tokio::test]
 async fn new_session_attaches_file_session_store() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-session-store-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-session-store-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let sessions_dir = root.join("sessions");
     let mut launch = test_launch(Some(sessions_dir.clone()));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let attached = async {
         let created =
             acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.clone())).await?;
@@ -1472,12 +1476,12 @@ async fn new_session_attaches_file_session_store() {
 
 #[tokio::test]
 async fn set_session_model_replaces_a_live_session() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-model-switch-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-model-switch-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let sessions_dir = root.join("sessions");
     let mut launch = test_launch(Some(sessions_dir));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let switched = async {
         let created =
             acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.clone())).await?;
@@ -1505,11 +1509,11 @@ async fn set_session_model_replaces_a_live_session() {
 
 #[tokio::test]
 async fn the_model_config_option_selects_the_session_model() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-model-option-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-model-option-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let outcome = async {
         let created =
             acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.clone())).await?;
@@ -1565,7 +1569,7 @@ async fn the_model_config_option_selects_the_session_model() {
 
 #[test]
 fn task_maps_to_acp_plan_entry_status_and_priority() {
-    use a3s_code_core::planning::{Task, TaskPriority, TaskStatus};
+    use aster_core::planning::{Task, TaskPriority, TaskStatus};
 
     let pending = Task::new("t1", "Investigate").with_priority(TaskPriority::High);
     let entry = task_to_plan_entry(&pending);
@@ -1584,7 +1588,7 @@ fn task_maps_to_acp_plan_entry_status_and_priority() {
     assert_eq!(entry.status, acp::PlanEntryStatus::Completed);
     assert_eq!(entry.priority, acp::PlanEntryPriority::Low);
     assert_eq!(
-        entry.meta.as_ref().and_then(|m| m.get("a3sStatus")),
+        entry.meta.as_ref().and_then(|m| m.get("asterStatus")),
         Some(&serde_json::Value::String("failed".into()))
     );
 }
@@ -1650,7 +1654,7 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
     assert!(effort_guideline("max").is_some());
     assert!(effort_limits("ultracode").is_some());
     assert!(effort_guideline("medium").is_none());
-    let registered = a3s_code_core::tools::ToolExecutor::new(".".into())
+    let registered = aster_core::tools::ToolExecutor::new(".".into())
         .definitions()
         .into_iter()
         .map(|definition| definition.name)
@@ -1675,14 +1679,14 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
         let _ = effort_limits(token);
     }
     let ultra = effort_limits("ultracode").expect("ultracode");
-    let _ = A3sCodeAgent::core_session_options("sid", "model", Some(ultra));
+    let _ = AsterCodeAgent::core_session_options("sid", "model", Some(ultra));
     let medium = effort_limits("medium").expect("medium");
-    let _ = A3sCodeAgent::core_session_options("sid", "model", Some(medium));
-    let _ = A3sCodeAgent::core_session_options("sid", "model", None);
+    let _ = AsterCodeAgent::core_session_options("sid", "model", Some(medium));
+    let _ = AsterCodeAgent::core_session_options("sid", "model", None);
     assert!(effort_limits_from_meta(None).is_none());
 
     let (text, attachments) =
-        A3sCodeAgent::prompt_content(&[acp::ContentBlock::Text(acp::TextContent::new(" hello "))])
+        AsterCodeAgent::prompt_content(&[acp::ContentBlock::Text(acp::TextContent::new(" hello "))])
             .expect("text prompt");
     assert_eq!(text, " hello ");
     assert!(attachments.is_empty());
@@ -1741,7 +1745,7 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
     launch.config.providers[0].name = "cc-switch".into();
     launch.config.providers[0].models[0].name = "  ".into();
     launch.config.providers[1].name = "grok".into();
-    let catalog = A3sCodeAgent::new(launch);
+    let catalog = AsterCodeAgent::new(launch);
     let names: Vec<_> = catalog
         .available_model_infos()
         .into_iter()
@@ -1755,12 +1759,12 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
     let empty = crate::config::LaunchConfig {
         workspace: std::env::temp_dir(),
         model_id: "fallback/model".into(),
-        config: a3s_code_core::CodeConfig {
+        config: aster_core::CodeConfig {
             default_model: Some("fallback/model".into()),
-            ..a3s_code_core::CodeConfig::default()
+            ..aster_core::CodeConfig::default()
         },
     };
-    let agent = A3sCodeAgent::new(empty);
+    let agent = AsterCodeAgent::new(empty);
     assert_eq!(agent.available_model_infos().len(), 1);
     assert!(!agent.known_model("missing/model"));
     assert!(agent.known_model("fallback/model"));
@@ -1768,15 +1772,15 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
 
 #[tokio::test]
 async fn tui_turn_renders_every_pager_event() {
-    use a3s_code_core::planning::{Complexity, ExecutionPlan, Task, TaskStatus};
-    use a3s_code_core::verification::VerificationSummary;
-    use a3s_code_core::TokenUsage;
+    use aster_core::planning::{Complexity, ExecutionPlan, Task, TaskStatus};
+    use aster_core::verification::VerificationSummary;
+    use aster_core::TokenUsage;
 
-    let root = std::env::temp_dir().join(format!("a3s-acp-events-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-events-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("workspace");
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let created = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.clone()))
         .await
         .expect("session");
@@ -1787,7 +1791,7 @@ async fn tui_turn_renders_every_pager_event() {
     .await
     .expect("initialize");
     let meta = init.meta.expect("meta");
-    assert_eq!(meta.get("a3sCode"), Some(&serde_json::Value::Bool(true)));
+    assert_eq!(meta.get("asterCode"), Some(&serde_json::Value::Bool(true)));
     acp::Agent::authenticate(&agent, acp::AuthenticateRequest::new("none"))
         .await
         .expect("authenticate");
@@ -2035,7 +2039,7 @@ async fn tui_turn_renders_every_pager_event() {
 
 #[test]
 fn prompt_images_preserve_bytes_and_order() {
-    let (text, attachments) = A3sCodeAgent::prompt_content(&[
+    let (text, attachments) = AsterCodeAgent::prompt_content(&[
         acp::ContentBlock::Text(acp::TextContent::new("first")),
         acp::ContentBlock::Image(acp::ImageContent::new("AQID", "image/png")),
         acp::ContentBlock::Text(acp::TextContent::new("second")),
@@ -2055,7 +2059,7 @@ fn invalid_prompt_images_fail_before_admission() {
     use base64::Engine as _;
     let oversized = base64::engine::general_purpose::STANDARD.encode(vec![
         0;
-        a3s_code_core::llm::MAX_ATTACHMENT_BYTES
+        aster_core::llm::MAX_ATTACHMENT_BYTES
             + 1
     ]);
     for (data, mime) in [
@@ -2064,7 +2068,7 @@ fn invalid_prompt_images_fail_before_admission() {
         ("AQID", "application/pdf"),
         (oversized.as_str(), "image/png"),
     ] {
-        let error = A3sCodeAgent::prompt_content(&[acp::ContentBlock::Image(
+        let error = AsterCodeAgent::prompt_content(&[acp::ContentBlock::Image(
             acp::ImageContent::new(data, mime),
         )])
         .err()
@@ -2075,7 +2079,7 @@ fn invalid_prompt_images_fail_before_admission() {
 
 #[test]
 fn unsupported_prompt_content_fails_closed_before_a_turn() {
-    let (text, attachments) = A3sCodeAgent::prompt_content(&[
+    let (text, attachments) = AsterCodeAgent::prompt_content(&[
         acp::ContentBlock::Text(acp::TextContent::new("first")),
         acp::ContentBlock::Text(acp::TextContent::new("second")),
     ])
@@ -2110,7 +2114,7 @@ fn unsupported_prompt_content_fails_closed_before_a_turn() {
         ),
     ];
     for (kind, block) in blocks {
-        let error = A3sCodeAgent::prompt_content(&[
+        let error = AsterCodeAgent::prompt_content(&[
             acp::ContentBlock::Text(acp::TextContent::new("must not run")),
             block,
         ])
@@ -2279,13 +2283,13 @@ fn confirmation_then_execution_opens_one_tool_row() {
 #[test]
 fn workspace_and_home_skill_roots_are_loaded_when_they_exist() {
     let root =
-        std::env::temp_dir().join(format!("a3s-acp-workspace-skills-{}", uuid::Uuid::new_v4()));
+        std::env::temp_dir().join(format!("aster-acp-workspace-skills-{}", uuid::Uuid::new_v4()));
     let home = root.join("home");
     let outside = root.join("outside");
     for base in [&root, &home, &outside] {
         for rel in [
             "skills",
-            ".a3s/skills",
+            ".aster/skills",
             ".agents/skills",
             ".claude/skills",
             ".codex/skills",
@@ -2297,7 +2301,7 @@ fn workspace_and_home_skill_roots_are_loaded_when_they_exist() {
     for base in [&root, &home] {
         for rel in [
             "skills",
-            ".a3s/skills",
+            ".aster/skills",
             ".agents/skills",
             ".claude/skills",
             ".codex/skills",
@@ -2319,12 +2323,12 @@ fn workspace_and_home_skill_roots_are_loaded_when_they_exist() {
 
 #[test]
 fn configured_skill_directory_that_is_missing_is_named() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-skill-dirs-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-skill-dirs-{}", uuid::Uuid::new_v4()));
     let _ = std::fs::remove_dir_all(&root);
-    std::fs::create_dir_all(root.join(".a3s/skills")).unwrap();
+    std::fs::create_dir_all(root.join(".aster/skills")).unwrap();
     let missing = root.join("missing-skills");
     let (dirs, absent) = interactive_skill_dirs_from(&root, std::slice::from_ref(&missing), None);
-    assert!(dirs.iter().any(|dir| dir.ends_with(".a3s/skills")));
+    assert!(dirs.iter().any(|dir| dir.ends_with(".aster/skills")));
     assert_eq!(absent, vec![missing]);
     let _ = std::fs::remove_dir_all(&root);
 }
@@ -2352,7 +2356,7 @@ fn skill_home_from_prefers_nonempty_home_then_userprofile() {
 
 #[test]
 fn interactive_skill_dirs_load_an_explicit_profile_without_reading_home() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-skill-home-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-skill-home-{}", uuid::Uuid::new_v4()));
     let profile = root.join("profile");
     let workspace = root.join("workspace");
     std::fs::create_dir_all(profile.join(".codex").join("skills")).unwrap();
@@ -2379,7 +2383,7 @@ fn interactive_skill_dirs_load_an_explicit_profile_without_reading_home() {
     );
 
     let watched = watched_skill_dirs_under(&workspace, Some(profile.as_path()));
-    for root_name in [".a3s", ".agents", ".claude", ".codex"] {
+    for root_name in [".aster", ".agents", ".claude", ".codex"] {
         let personal = profile.join(root_name).join("skills");
         assert!(
             watched.iter().any(|dir| dir == &personal),
@@ -2395,11 +2399,11 @@ fn interactive_skill_dirs_load_an_explicit_profile_without_reading_home() {
 
 #[test]
 fn watched_skill_dirs_include_home_agent_roots_before_they_exist() {
-    let workspace = std::path::Path::new("/tmp/a3s-watch-skills-workspace");
+    let workspace = std::path::Path::new("/tmp/aster-watch-skills-workspace");
     let dirs = watched_skill_dirs(workspace);
     for root_name in [
         "skills",
-        ".a3s/skills",
+        ".aster/skills",
         ".agents/skills",
         ".claude/skills",
         ".codex/skills",
@@ -2416,7 +2420,7 @@ fn watched_skill_dirs_include_home_agent_roots_before_they_exist() {
     let home = std::path::PathBuf::from(home);
     for root in [
         "skills",
-        ".a3s/skills",
+        ".aster/skills",
         ".agents/skills",
         ".claude/skills",
         ".codex/skills",
@@ -2436,7 +2440,7 @@ fn watched_skill_dirs_include_home_agent_roots_before_they_exist() {
 #[test]
 fn delete_names_a_sessions_path_that_is_not_a_directory() {
     let root = std::env::temp_dir().join(format!(
-        "a3s-acp-session-delete-file-{}",
+        "aster-acp-session-delete-file-{}",
         uuid::Uuid::new_v4()
     ));
     let home = root.join("home");
@@ -2511,11 +2515,11 @@ async fn cancelled_acquisition_returns_its_waiting_slot() {
 }
 
 /// A `UserQuestion` carrying a form spec must reach the client as a
-/// `_a3s/form/request` ext round trip, and the submitted values object
+/// `_aster/form/request` ext round trip, and the submitted values object
 /// must land in `ask_user` so the parked run resumes with it.
 #[tokio::test]
 async fn user_question_with_form_round_trips_the_submitted_values() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-form-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-form-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).unwrap();
     struct Workspace(std::path::PathBuf);
     impl Drop for Workspace {
@@ -2529,7 +2533,7 @@ async fn user_question_with_form_round_trips_the_submitted_values() {
         .run_until(async {
             let mut launch = tests::test_launch(Some(root.join("sessions")));
             launch.workspace = root.clone();
-            let handler_agent = A3sCodeAgent::new(tests::test_launch(Some(root.join("sessions"))));
+            let handler_agent = AsterCodeAgent::new(tests::test_launch(Some(root.join("sessions"))));
             let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
             use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
             let (agent_read, agent_write) = tokio::io::split(agent_end);
@@ -2542,7 +2546,7 @@ async fn user_question_with_form_round_trips_the_submitted_values() {
                 },
             );
             tokio::task::spawn_local(io);
-            let agent = A3sCodeAgent::new(launch);
+            let agent = AsterCodeAgent::new(launch);
             agent.set_client(Rc::new(conn));
 
             let request: acp::NewSessionRequest = serde_json::from_value(serde_json::json!({
@@ -2596,12 +2600,12 @@ async fn user_question_with_form_round_trips_the_submitted_values() {
             loop {
                 line.clear();
                 reader.read_line(&mut line).await.expect("read ext request");
-                if line.contains("_a3s/form/request") {
+                if line.contains("_aster/form/request") {
                     break;
                 }
             }
             let request_frame: serde_json::Value = serde_json::from_str(line.trim()).unwrap();
-            assert_eq!(request_frame["method"], "_a3s/form/request");
+            assert_eq!(request_frame["method"], "_aster/form/request");
             assert_eq!(
                 request_frame["params"]["formId"], "ask-form-run-1-1",
                 "{request_frame}"
@@ -2622,7 +2626,7 @@ async fn user_question_with_form_round_trips_the_submitted_values() {
             let cancel = tokio_util::sync::CancellationToken::new();
             let answered = tokio::time::timeout(
                 std::time::Duration::from_secs(5),
-                a3s_code_core::ask_user::wait_for_answer("ask-form-run-1-1", &cancel),
+                aster_core::ask_user::wait_for_answer("ask-form-run-1-1", &cancel),
             )
             .await
             .expect("answer arrives")
@@ -2638,7 +2642,7 @@ async fn user_question_with_form_round_trips_the_submitted_values() {
 /// selected choice's own text is the answer.
 #[tokio::test]
 async fn user_question_choices_round_trip_typed_and_selected_answers() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-question-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-question-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).unwrap();
     struct Workspace(std::path::PathBuf);
     impl Drop for Workspace {
@@ -2652,7 +2656,7 @@ async fn user_question_choices_round_trip_typed_and_selected_answers() {
         .run_until(async {
             let mut launch = tests::test_launch(Some(root.join("sessions")));
             launch.workspace = root.clone();
-            let handler_agent = A3sCodeAgent::new(tests::test_launch(Some(root.join("sessions"))));
+            let handler_agent = AsterCodeAgent::new(tests::test_launch(Some(root.join("sessions"))));
             let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
             use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
             let (agent_read, agent_write) = tokio::io::split(agent_end);
@@ -2665,7 +2669,7 @@ async fn user_question_choices_round_trip_typed_and_selected_answers() {
                 },
             );
             tokio::task::spawn_local(io);
-            let agent = A3sCodeAgent::new(launch);
+            let agent = AsterCodeAgent::new(launch);
             agent.set_client(Rc::new(conn));
 
             let request: acp::NewSessionRequest = serde_json::from_value(serde_json::json!({
@@ -2791,7 +2795,7 @@ async fn user_question_choices_round_trip_typed_and_selected_answers() {
                 let cancel = tokio_util::sync::CancellationToken::new();
                 let answered = tokio::time::timeout(
                     std::time::Duration::from_secs(5),
-                    a3s_code_core::ask_user::wait_for_answer(question_id, &cancel),
+                    aster_core::ask_user::wait_for_answer(question_id, &cancel),
                 )
                 .await
                 .expect("answer arrives")
@@ -2804,7 +2808,7 @@ async fn user_question_choices_round_trip_typed_and_selected_answers() {
 
 #[test]
 fn completion_bell_respects_the_configured_floor_and_signal() {
-    use a3s_code_core::config::{NotificationsConfig, RunCompletionSignal};
+    use aster_core::config::{NotificationsConfig, RunCompletionSignal};
     let bell = NotificationsConfig {
         run_completion: RunCompletionSignal::Bell,
         min_seconds: 2,
@@ -2825,11 +2829,11 @@ fn completion_bell_respects_the_configured_floor_and_signal() {
 
 #[tokio::test]
 async fn sampling_consent_resolves_the_owning_session() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-consent-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-consent-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let opened = async {
         let one = serde_json::json!({
             "cwd": root,
@@ -2863,7 +2867,7 @@ async fn sampling_consent_resolves_the_owning_session() {
 
 #[test]
 fn union_mcp_desired_covers_remodel_and_close_shapes() {
-    use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
+    use aster_core::mcp::{McpServerConfig, McpTransportConfig};
     fn server(name: &str, command: &str) -> McpServerConfig {
         McpServerConfig {
             name: name.into(),
@@ -2915,7 +2919,7 @@ fn union_mcp_desired_covers_remodel_and_close_shapes() {
 
 #[test]
 fn union_mcp_desired_refuses_a_cross_session_name_takeover() {
-    use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
+    use aster_core::mcp::{McpServerConfig, McpTransportConfig};
     fn server(name: &str, command: &str) -> McpServerConfig {
         McpServerConfig {
             name: name.into(),
@@ -2954,7 +2958,7 @@ fn union_mcp_desired_refuses_a_cross_session_name_takeover() {
 
 #[test]
 fn union_mcp_desired_dedupes_a_same_definition_shared_name() {
-    use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
+    use aster_core::mcp::{McpServerConfig, McpTransportConfig};
     fn server(name: &str, command: &str) -> McpServerConfig {
         McpServerConfig {
             name: name.into(),
@@ -2982,7 +2986,7 @@ fn union_mcp_desired_dedupes_a_same_definition_shared_name() {
 
 #[test]
 fn union_mcp_desired_keeps_same_session_updates_later_wins() {
-    use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
+    use aster_core::mcp::{McpServerConfig, McpTransportConfig};
     fn server(name: &str, command: &str) -> McpServerConfig {
         McpServerConfig {
             name: name.into(),
@@ -3014,11 +3018,11 @@ fn union_mcp_desired_keeps_same_session_updates_later_wins() {
 
 #[tokio::test]
 async fn set_session_model_keeps_the_sessions_mcp_contribution_alive() {
-    let root = std::env::temp_dir().join(format!("a3s-acp-model-mcp-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-model-mcp-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&root).expect("temp workspace");
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let outcome = async {
         let payload = serde_json::json!({
             "cwd": root,
@@ -3126,7 +3130,7 @@ fn model_catalog_preserves_configured_limits_and_marks_unknown_context() {
     launch.config.providers[0].name = "kimi".into();
     launch.config.providers[0].models =
         vec![kimi.clone(), test_model("unknown", "Unknown", "openai")];
-    let agent = A3sCodeAgent::new(launch.clone());
+    let agent = AsterCodeAgent::new(launch.clone());
     let infos = agent.available_model_infos();
     assert_eq!(
         infos[0].meta.as_ref().unwrap()["totalContextTokens"],
@@ -3140,17 +3144,17 @@ fn model_catalog_preserves_configured_limits_and_marks_unknown_context() {
         .contains_key("totalContextTokens"));
     kimi.limit.context = 65_536;
     launch.config.providers[0].models[0] = kimi;
-    let infos = A3sCodeAgent::new(launch).available_model_infos();
+    let infos = AsterCodeAgent::new(launch).available_model_infos();
     assert_eq!(
         infos[0].meta.as_ref().unwrap()["totalContextTokens"],
         65_536
     );
     assert_eq!(
-        a3s_code_core::context_window_for_model(None, None, "kimi/k3.1-pro", true, 128_000),
+        aster_core::context_window_for_model(None, None, "kimi/k3.1-pro", true, 128_000),
         1_048_576
     );
     assert_eq!(
-        a3s_code_core::context_window_for_model(
+        aster_core::context_window_for_model(
             Some(32_768),
             Some(65_536),
             "kimi/k3.1-pro",

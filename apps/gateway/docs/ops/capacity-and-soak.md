@@ -40,7 +40,7 @@ Committed lab and smoke JSON must keep schema `kense.gateway.soak-result.v1`,
 `round(ok/duration_secs, 2)`.
 Smoke wrappers pin `--envelope-status smoke-only`; lab-extended wrappers pin
 `lab-extended`; published wrappers pin `published` plus dedicated-runner env and
-a 7200s floor that `A3S_GATEWAY_PUBLISH_MIN_DURATION` cannot lower.
+a 7200s floor that `ASTER_GATEWAY_PUBLISH_MIN_DURATION` cannot lower.
 Every wrapper must keep all four profiles
 (`http-json`, `sse-finite`, `openai-json`, `openai-sse`).
 `check-enterprise-ga-status.py` refuses wrapper soft-opens that drop those pins
@@ -64,7 +64,7 @@ A soak **passes** only when the process stays up and budgets hold. Passing a
 Record in every published JSON under `benchmarks/soak/results/`:
 
 - `hardware.host`, `cpu_model`, `cpu_cores`, `memory_gb`, `os`, `kernel`
-- `gateway.version` (from `a3s-gateway --version`) and `git_sha`. The sha is the
+- `gateway.version` (from `aster-gateway --version`) and `git_sha`. The sha is the
   commit embedded in that version string, not `git rev-parse HEAD` and not
   `GITHUB_SHA`. A dirty build (`-dirty`) or a binary with no embedded sha is
   `publish-refused`, not `published`. `features` is recorded as well.
@@ -80,10 +80,10 @@ results `"smoke-only"` or `"lab-extended"` — never `"published"`.
 From the Gateway crate root:
 
 ```bash
-cargo build --bin a3s-gateway
-python3 scripts/soak-gateway.py --bin ./target/debug/a3s-gateway --duration 30 --concurrency 16
+cargo build --bin aster-gateway
+python3 scripts/soak-gateway.py --bin ./target/debug/aster-gateway --duration 30 --concurrency 16
 # Windows
-python scripts/soak-gateway.py --bin .\\target\\debug\\a3s-gateway.exe --duration 30 --concurrency 16
+python scripts/soak-gateway.py --bin .\\target\\debug\\aster-gateway.exe --duration 30 --concurrency 16
 ```
 
 Wrappers: `scripts/run-soak-gateway-smoke.sh`, `scripts/run-soak-gateway-smoke.ps1`.

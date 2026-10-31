@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowRuntime, LocalFileEventStore, RuntimeCommand,
     StepInvocation, WorkflowInvocation, WorkflowRunStatus, WorkflowSignal, WorkflowSpec,
 };
@@ -29,7 +29,7 @@ impl FlowRuntime for RecoveryRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let Some(payload) = context.signal_payload("approval") else {
             return Ok(context.wait_for_signal("approval", SIGNAL_NAME));
@@ -42,7 +42,7 @@ impl FlowRuntime for RecoveryRuntime {
         Ok(context.complete(payload.clone()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("signal recovery workflow does not execute steps")
     }
 }

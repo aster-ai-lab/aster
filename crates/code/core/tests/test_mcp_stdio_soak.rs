@@ -3,9 +3,9 @@
 
 mod support;
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::mcp::{McpServerConfig, McpTransportConfig};
+use aster_core::{Agent, SessionOptions};
 use std::collections::HashMap;
 use std::path::Path;
 use support::python_stdio_command;
@@ -17,6 +17,7 @@ fn offline_config(sessions_dir: &Path) -> CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         sessions_dir: Some(sessions_dir.to_path_buf()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,

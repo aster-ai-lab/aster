@@ -32,14 +32,14 @@ use std::time::Duration;
 #[cfg(unix)]
 use std::{fs::File, fs::OpenOptions};
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentClient, AgentOperation, AgentTransportFaultInjector, AgentTransportQualificationRequest,
     AgentVsockEndpoint, NoAgentTransportFaultInjector, SessionToken, AGENT_PROTOCOL_VERSION_MAX,
     AGENT_SESSION_TOKEN_ENV, AGENT_TRANSPORT_QUALIFICATION_ENV,
 };
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
-use a3s_oci_agent_protocol::{AGENT_SESSION_TOKEN_DIRECTORY_PREFIX, AGENT_SESSION_TOKEN_FILE_NAME};
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_agent_protocol::{AGENT_SESSION_TOKEN_DIRECTORY_PREFIX, AGENT_SESSION_TOKEN_FILE_NAME};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
 use serde_json::Value;
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
 use tokio::io::{AsyncRead, AsyncWrite, ReadBuf};
@@ -64,7 +64,7 @@ use crate::report::AgentVmSmokeReport;
 const BRIDGE_TIMEOUT: Duration = Duration::from_secs(60);
 const NEGOTIATION_TIMEOUT: Duration = Duration::from_secs(15);
 const MAX_DIAGNOSTIC_CHARS: usize = 2_048;
-const SHIM_REPORT_SCHEMA_VERSION: &str = "a3s.oci.krun-agent-vm-smoke.v7";
+const SHIM_REPORT_SCHEMA_VERSION: &str = "aster.oci.krun-agent-vm-smoke.v7";
 const SHIM_TRUE_FIELDS: &[&str] = &[
     "runtime_bundle_loaded",
     "context_created",
@@ -1414,7 +1414,7 @@ impl AgentVmSession {
         report.shim_process_id = Some(shim_process_id);
 
         enum BridgeOutcome {
-            Connected(a3s_oci_sdk::Result<(PlatformAgentStream, u32)>),
+            Connected(aster_oci_sdk::Result<(PlatformAgentStream, u32)>),
             ShimExited(io::Result<ExitStatus>),
         }
         // Durable host-control connect is Linux/KVM-only. Other Unix hosts
@@ -2970,7 +2970,7 @@ fn spawn_durable_linux_agent_vm(
 ) -> io::Result<crate::kvm_durable_session_owner::DurableSessionOwner> {
     use std::ffi::OsString;
 
-    let ready_file = runtime_share.join(".a3s-oci-kvm-session-owner.ready");
+    let ready_file = runtime_share.join(".aster-oci-kvm-session-owner.ready");
     let mut argv = vec![
         OsString::from("agent-vm-smoke"),
         OsString::from("--rootfs"),
@@ -3090,7 +3090,7 @@ fn spawn_durable_windows_agent_vm(
 ) -> io::Result<crate::whpx_durable_session_owner::DurableSessionOwner> {
     use std::ffi::OsString;
 
-    let ready_file = runtime_share.join(".a3s-oci-whpx-session-owner.ready");
+    let ready_file = runtime_share.join(".aster-oci-whpx-session-owner.ready");
     let mut argv = vec![
         OsString::from("agent-vm-smoke"),
         OsString::from("--rootfs"),
@@ -3186,14 +3186,14 @@ fn prepare_durable_guest_socket_path(endpoint: &AgentVsockEndpoint) -> Result<Pa
 async fn connect_durable_host_control(
     host_control: &Path,
     shim_process_id: u32,
-) -> a3s_oci_sdk::Result<(PlatformAgentStream, u32)> {
+) -> aster_oci_sdk::Result<(PlatformAgentStream, u32)> {
     match UnixStream::connect(host_control).await {
         Ok(stream) => Ok((stream, shim_process_id)),
         Err(error) if durable_host_control_connect_error_is_permanent(&error) => Err(
             remap_durable_host_control_connect_error(host_control, error),
         ),
-        Err(error) => Err(a3s_oci_sdk::Error::new(
-            a3s_oci_sdk::ErrorCode::Unavailable,
+        Err(error) => Err(aster_oci_sdk::Error::new(
+            aster_oci_sdk::ErrorCode::Unavailable,
             format!(
                 "failed to connect durable KVM host-control {}: {error}",
                 host_control.display()
@@ -3221,9 +3221,9 @@ fn durable_host_control_connect_error_is_permanent(error: &std::io::Error) -> bo
 fn remap_durable_host_control_connect_error(
     host_control: &Path,
     error: std::io::Error,
-) -> a3s_oci_sdk::Error {
-    a3s_oci_sdk::Error::new(
-        a3s_oci_sdk::ErrorCode::PermissionDenied,
+) -> aster_oci_sdk::Error {
+    aster_oci_sdk::Error::new(
+        aster_oci_sdk::ErrorCode::PermissionDenied,
         format!(
             "permission denied connecting to durable KVM host-control {}: {error}",
             host_control.display()
@@ -3237,7 +3237,7 @@ fn remap_durable_host_control_connect_error(
 async fn connect_durable_host_control(
     host_control: &str,
     shim_process_id: u32,
-) -> a3s_oci_sdk::Result<(PlatformAgentStream, u32)> {
+) -> aster_oci_sdk::Result<(PlatformAgentStream, u32)> {
     use tokio::net::windows::named_pipe::ClientOptions;
 
     match ClientOptions::new().open(host_control) {
@@ -3245,8 +3245,8 @@ async fn connect_durable_host_control(
         Err(error) if durable_host_control_connect_error_is_permanent(&error) => Err(
             remap_durable_host_control_connect_error(host_control, error),
         ),
-        Err(error) => Err(a3s_oci_sdk::Error::new(
-            a3s_oci_sdk::ErrorCode::Unavailable,
+        Err(error) => Err(aster_oci_sdk::Error::new(
+            aster_oci_sdk::ErrorCode::Unavailable,
             format!("failed to connect durable WHPX host-control {host_control}: {error}"),
         )
         .for_operation("connect-durable-whpx-host-control")
@@ -3265,9 +3265,9 @@ fn durable_host_control_connect_error_is_permanent(error: &std::io::Error) -> bo
 fn remap_durable_host_control_connect_error(
     host_control: &str,
     error: std::io::Error,
-) -> a3s_oci_sdk::Error {
-    a3s_oci_sdk::Error::new(
-        a3s_oci_sdk::ErrorCode::PermissionDenied,
+) -> aster_oci_sdk::Error {
+    aster_oci_sdk::Error::new(
+        aster_oci_sdk::ErrorCode::PermissionDenied,
         format!(
             "permission denied connecting to durable WHPX host-control {host_control}: {error}"
         ),
@@ -3280,7 +3280,7 @@ fn remap_durable_host_control_connect_error(
 async fn accept_bridge(
     listener: WindowsAgentPipeListener,
     shim_process_id: u32,
-) -> a3s_oci_sdk::Result<(PlatformAgentStream, u32)> {
+) -> aster_oci_sdk::Result<(PlatformAgentStream, u32)> {
     let stream = listener.accept_from_process(shim_process_id).await?;
     Ok((PlatformAgentStream::HostBound(stream), shim_process_id))
 }
@@ -3289,7 +3289,7 @@ async fn accept_bridge(
 async fn accept_bridge(
     listener: UnixAgentSocketListener,
     shim_process_id: u32,
-) -> a3s_oci_sdk::Result<(PlatformAgentStream, u32)> {
+) -> aster_oci_sdk::Result<(PlatformAgentStream, u32)> {
     listener.accept_from_child(shim_process_id).await
 }
 

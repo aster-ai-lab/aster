@@ -121,7 +121,7 @@ pub type PartialObjectCallback = Box<dyn Fn(&Value) + Send>;
 ///
 /// Function/tool parameters are most reliable when the top-level schema is an
 /// object. Inspired by Vercel AI SDK's `Output.array` / `Output.choice`
-/// wrappers, A3S sends top-level arrays and scalar schemas inside a small object
+/// wrappers, Aster sends top-level arrays and scalar schemas inside a small object
 /// envelope, then unwraps the validated value before returning it to callers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum SchemaEnvelope {

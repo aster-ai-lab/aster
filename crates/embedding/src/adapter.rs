@@ -7,7 +7,7 @@
 
 use std::sync::Arc;
 
-use a3s_code_core::{
+use aster_core::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingNormalization, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
@@ -78,8 +78,8 @@ mod adapter_tests {
     async fn the_adapter_serves_a_batch_through_the_core_trait() {
         let provider = LightTierProvider::load().expect("embedded assets load");
         let inputs = vec![
-            a3s_code_core::EmbeddingInput::new("a", "parse the config"),
-            a3s_code_core::EmbeddingInput::new("b", "hello"),
+            aster_core::EmbeddingInput::new("a", "parse the config"),
+            aster_core::EmbeddingInput::new("b", "hello"),
         ];
         let request = EmbeddingBatchRequest::new(inputs);
         let response = provider

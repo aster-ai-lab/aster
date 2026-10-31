@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_oci_sdk::{ErrorCode, GuestSessionAttachment};
+use aster_oci_sdk::{ErrorCode, GuestSessionAttachment};
 use tempfile::tempdir;
 use tokio::io::AsyncWriteExt;
 
@@ -60,7 +60,7 @@ async fn write_private_file(path: &Path, bytes: &[u8]) {
 
 #[test]
 fn root_identity_returns_verified_cleanup_ancestors() {
-    let root = Path::new("/run/a3s");
+    let root = Path::new("/run/aster");
     let session = root
         .join(REUSABLE_GUEST_SESSION_DIRECTORY)
         .join("marker-session")
@@ -77,7 +77,7 @@ fn root_identity_returns_verified_cleanup_ancestors() {
 
 #[test]
 fn root_identity_rejects_paths_without_verified_ancestors() {
-    let error = validate_root_identity(Path::new("/run/a3s"), Path::new("7"), &attachment())
+    let error = validate_root_identity(Path::new("/run/aster"), Path::new("7"), &attachment())
         .expect_err("malformed root must fail closed");
     assert!(error.message.contains("escaped"));
 }
@@ -136,7 +136,7 @@ async fn partial_pending_marker_is_rejected_without_replacement() {
         .await
         .expect("create session root");
     let pending = session_root.join(PENDING_MARKER_FILE);
-    let retained = br#"{"schemaVersion":"a3s.oci.guest-session.v1""#;
+    let retained = br#"{"schemaVersion":"aster.oci.guest-session.v1""#;
     write_private_file(&pending, retained).await;
 
     let error = ensure(&session_root, &attachment())

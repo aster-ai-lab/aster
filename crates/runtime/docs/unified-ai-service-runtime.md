@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This document defines how A3S Runtime supports Cloud's Agent as a Service
+This document defines how Aster Runtime supports Cloud's Agent as a Service
 (AaaS), Workflow as a Service (WaaS), Function as a Service (FaaS), hosted
 stateless MCP, and Durable Cell deployments without adding a lifecycle model
 for each product.
@@ -11,10 +11,10 @@ The production path is:
 
 ```text
 Client / SDK
-  -> A3S Gateway                    public authentication, policy, routing
-  -> A3S Cloud                      tenant and product semantics
-  -> A3S Runtime                    one Task / Service lifecycle contract
-  -> A3S Box                        production process and sandbox provider
+  -> Aster Gateway                    public authentication, policy, routing
+  -> Aster Cloud                      tenant and product semantics
+  -> Aster Runtime                    one Task / Service lifecycle contract
+  -> Aster Box                        production process and sandbox provider
 ```
 
 Gateway never starts a process. Cloud never controls a Box process directly.
@@ -56,11 +56,11 @@ not additional Runtime classes.
 | Static web build | Sandboxed finite `Task`; the built site is not a running unit | Source/release, immutable object bundle, route, cache and SPA policy |
 
 A Workflow may chain or parallel Agent and Function nodes. A Workflow node does
-not become a Runtime process merely because it is durable; A3S Flow owns that
+not become a Runtime process merely because it is durable; Aster Flow owns that
 durability and Runtime owns only the executable child.
 
 React, Vue, and similar static sites use Runtime only for their untrusted build.
-The immutable output is served through A3S Gateway from the admitted object
+The immutable output is served through Aster Gateway from the admitted object
 bundle. SSR, WebSocket, or server-side application code is an ordinary Service.
 
 ## 4. One composable consumer gate
@@ -89,16 +89,16 @@ classes and fields.
 
 | Concern | Sole owner |
 | --- | --- |
-| Tenant, release, invocation, Workflow, Agent, Function and Cell semantics | A3S Cloud bounded contexts |
-| Durable orchestration, retry order and compensation | A3S Flow as coordinated by the owning Cloud context |
-| Unit identity, generation, request replay, lifecycle and provider evidence | A3S Runtime |
-| Process, sandbox, mount, network and resource mechanics | A3S Box in the production baseline |
+| Tenant, release, invocation, Workflow, Agent, Function and Cell semantics | Aster Cloud bounded contexts |
+| Durable orchestration, retry order and compensation | Aster Flow as coordinated by the owning Cloud context |
+| Unit identity, generation, request replay, lifecycle and provider evidence | Aster Runtime |
+| Process, sandbox, mount, network and resource mechanics | Aster Box in the production baseline |
 | Desired replicas, placement, rollout and autoscaling | Cloud Workloads and Fleet |
-| Public authentication, protocol policy, routing, streaming and drain | A3S Gateway from Cloud Edge snapshots |
+| Public authentication, protocol policy, routing, streaming and drain | Aster Gateway from Cloud Edge snapshots |
 | Secrets and immutable object bytes | Cloud Secrets and the single deployment object authority |
 
 Runtime remains provider-neutral so the lifecycle contract is independently
-testable, but A3S Box is the required production provider. An alternate driver
+testable, but Aster Box is the required production provider. An alternate driver
 does not become supported merely by implementing the trait; it must pass Base,
 Recovery, and every capability-triggered conformance profile it advertises.
 
@@ -130,7 +130,7 @@ contract composition only.
 
 Production availability still requires:
 
-- a real A3S Box driver and passing capability-specific conformance evidence;
+- a real Aster Box driver and passing capability-specific conformance evidence;
 - exact-revision Cloud and Gateway consumer gates;
 - process, provider, node and host recovery evidence;
 - target removal, cleanup and zero-leak evidence; and

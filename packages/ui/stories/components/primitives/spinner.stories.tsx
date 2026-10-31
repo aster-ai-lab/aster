@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { Button, Spinner } from '@a3s-lab/ui'
+import { Button, Spinner } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Spinner> = {
   title: 'Components/Primitives/Spinner',

@@ -1,7 +1,7 @@
 use super::super::ReviewedPackageAuthorizationProvider;
 use super::*;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanActor, PlanPackageRole, PlanScope, PlanScopeKind, PlannedOperationImpact,
     PlannedPackageTransition, PlannedStateEvidence, PluginCatalogRecord, PluginOperationAction,
     PluginOperationConfirmation, PluginOperationPlanBinding, PluginPackageLock,
@@ -243,7 +243,7 @@ async fn permission_free_workspace_plan_still_binds_exact_enablement_impact() {
     after
         .release
         .surfaces
-        .retain(|surface| surface.kind == a3s_use_core::PackageSurfaceKind::Skill);
+        .retain(|surface| surface.kind == aster_use_core::PackageSurfaceKind::Skill);
     after.permissions.surfaces.clear();
     after.release.permission_ceiling_digest = after.permissions.descriptor_digest().unwrap();
     let transition = PlannedPackageTransition::resolved(
@@ -734,7 +734,7 @@ fn verified_catalog(
         record,
         VerifiedCatalogProvenance {
             registry_name: "official".to_string(),
-            registry_url: "https://plugins.a3s.dev/catalog".to_string(),
+            registry_url: "https://plugins.aster.dev/catalog".to_string(),
             root_sha256: digest('f'),
             root_version: 7,
             timestamp_version: targets_version + 3,

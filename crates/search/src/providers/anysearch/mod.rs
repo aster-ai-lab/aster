@@ -104,7 +104,7 @@ impl SearchProvider for AnySearchProvider {
         }
         headers.insert(
             HeaderName::from_static(CLIENT_HEADER),
-            HeaderValue::from_static(concat!("a3s-search/", env!("CARGO_PKG_VERSION"))),
+            HeaderValue::from_static(concat!("aster-search/", env!("CARGO_PKG_VERSION"))),
         );
 
         let request_id = self.next_request_id.fetch_add(1, Ordering::Relaxed);

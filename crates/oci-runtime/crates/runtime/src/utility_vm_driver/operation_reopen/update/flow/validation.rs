@@ -1,5 +1,5 @@
-use a3s_oci_agent_protocol::{AgentStatsRequest, AgentUpdateRequest};
-use a3s_oci_sdk::{ErrorCode, OciRuntimeService, OperationContext, UpdateRequest};
+use aster_oci_agent_protocol::{AgentStatsRequest, AgentUpdateRequest};
+use aster_oci_sdk::{ErrorCode, OciRuntimeService, OperationContext, UpdateRequest};
 use tokio::time::timeout;
 
 use super::super::Qualification;

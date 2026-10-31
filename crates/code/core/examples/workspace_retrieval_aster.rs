@@ -2,7 +2,7 @@
 //! The orthogonal-vector control isolates lexical/ranking behavior; it makes no
 //! claim about real embedding quality or tokenizer-measured token savings.
 
-use a3s_code_core::{
+use aster_core::{
     Agent, ChunkCatalogLimits, ChunkingConfig, CodeConfig, EmbeddingBatchRequest,
     EmbeddingBatchResponse, EmbeddingProvider, EmbeddingProviderDescriptor, EmbeddingProviderError,
     EmbeddingVector, RecursiveChunkingOptions, SessionOptions, WorkspaceChunkCatalog,
@@ -188,7 +188,7 @@ async fn profile(corpus: &Corpus, recursive: bool, rerank: bool) -> Result<serde
         read_nanos: AtomicU64::new(0),
     });
     let services = WorkspaceServices::builder(
-        a3s_code_core::WorkspaceRef::new("fixture", "fixture://aster"),
+        aster_core::WorkspaceRef::new("fixture", "fixture://aster"),
         filesystem.clone(),
     )
     .chunk_catalog(catalog.clone())

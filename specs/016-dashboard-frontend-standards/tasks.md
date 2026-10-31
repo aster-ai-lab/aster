@@ -39,7 +39,7 @@
 - [x] Full standalone dashboard Vitest passes without increased timeouts
 - [x] `npm run typecheck` and `npm run build` pass, including CSS contract
 - [x] `cargo fmt --all -- --check` is N-A because no Rust files are edited
-- [x] No new crates.io `a3s-*` dependency
+- [x] No new crates.io `aster-*` dependency
 - [x] No native `<select>` added on a product surface
 - [x] Product configuration, if added, is ACL (none added)
 - [x] `PlatformPage.tsx` <=400 lines and all authored production modules <=1,000 lines

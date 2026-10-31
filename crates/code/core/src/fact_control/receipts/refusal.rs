@@ -18,7 +18,7 @@ impl ExecutionCycle {
 }
 
 pub(in crate::fact_control) fn execution_cycle(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     session_id: &str,
     run_id: &str,
     binding: &str,
@@ -33,14 +33,14 @@ pub(in crate::fact_control) fn execution_cycle(
 
 /// Only the host-owned, exclusively fenced ChildRun log may use unbound receipts.
 pub(in crate::fact_control) fn child_execution_cycle(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     duplicate_threshold: u32,
 ) -> Option<ExecutionCycle> {
     fold_execution_cycle(facts, None, duplicate_threshold)
 }
 
 fn fold_execution_cycle(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     admission: Option<(&str, &str, &str)>,
     duplicate_threshold: u32,
 ) -> Option<ExecutionCycle> {
@@ -167,7 +167,7 @@ fn fold_execution_cycle(
     cycle
 }
 
-fn prepared_actions(facts: &[a3s_effect::Fact]) -> BTreeMap<String, (String, String)> {
+fn prepared_actions(facts: &[aster_effect::Fact]) -> BTreeMap<String, (String, String)> {
     facts
         .iter()
         .filter(|fact| fact.kind == "tool.prepared")

@@ -2,9 +2,9 @@ use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_core::CapabilityStatus;
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_core::CapabilityStatus;
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, CreateRequest, DeleteMode, DeleteRequest, ErrorCode, ExitStatus,
     Generation, IsolationRequest, KillRequest, ListRequest, OciBundle, RuntimeClient, Signal,
     StartRequest, StateRequest, WaitRequest,
@@ -20,7 +20,7 @@ use super::qualification::{
 use super::soak_report::{validate_iterations, LinuxKvmSoakReport, LinuxKvmSoakWaveEvidence};
 
 const STATE_CALL_TIMEOUT: Duration = Duration::from_secs(20);
-const MARKER_NAME: &str = ".a3s-oci-create-start-smoke";
+const MARKER_NAME: &str = ".aster-oci-create-start-smoke";
 
 /// Exact artifacts, private parent, and bound for one real KVM soak.
 #[derive(Debug, Clone)]

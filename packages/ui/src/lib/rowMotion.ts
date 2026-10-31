@@ -12,8 +12,8 @@ import { cn } from './utils'
 export type RowMotion = 'leaving' | 'pending' | 'updated' | 'restored'
 
 /** Rows rise in when they mount: the first load, a page/filter change, or a rollback that brings a row back. */
-const ENTER = 'a3s-row-enter motion-reduce:animate-none'
-const LEAVE = 'pointer-events-none a3s-row-leave motion-reduce:animate-none motion-reduce:opacity-0'
+const ENTER = 'aster-row-enter motion-reduce:animate-none'
+const LEAVE = 'pointer-events-none aster-row-leave motion-reduce:animate-none motion-reduce:opacity-0'
 const SETTLED: Record<Exclude<RowMotion, 'leaving'>, string> = {
   pending: 'opacity-60',
   updated: 'bg-[#effaf3]',

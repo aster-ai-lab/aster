@@ -1,10 +1,10 @@
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentClient, AgentOperation, AgentTransportFaultPoint, AgentTransportOperationStage,
     AgentWaitProcessRequest,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, ErrorCode, ExitStatus, Generation, OciRuntimeService, OperationContext,
     ProcessTarget, Signal, SignalProcessRequest, StartRequest, WaitProcessRequest,
 };
@@ -39,7 +39,7 @@ async fn exercise_wait_process_reopen(index: usize, stage: AgentTransportOperati
     let guest = Arc::new(JournaledLifecycleGuest::new());
     let metrics = Arc::new(DriverMetrics::default());
     let fault_point = AgentTransportFaultPoint::Operation {
-        protocol_version: a3s_oci_agent_protocol::AGENT_PROTOCOL_VERSION_MAX,
+        protocol_version: aster_oci_agent_protocol::AGENT_PROTOCOL_VERSION_MAX,
         operation: AgentOperation::WaitProcess,
         stage,
     };

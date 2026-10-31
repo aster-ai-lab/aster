@@ -1,6 +1,6 @@
 use super::Fixture;
-use a3s_code_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
-use a3s_memory::repository::MemoryStatus;
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
+use aster_durable_memory::repository::MemoryStatus;
 use async_trait::async_trait;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -116,7 +116,7 @@ impl LlmClient for InspectingClient {
         &self,
         messages: &[Message],
         system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         self.respond(messages, system)
     }
@@ -125,7 +125,7 @@ impl LlmClient for InspectingClient {
         &self,
         messages: &[Message],
         system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let response = self.respond(messages, system)?;

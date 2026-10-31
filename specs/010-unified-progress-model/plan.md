@@ -69,7 +69,7 @@ ALL four deltas are zero for that slice. On the K-th consecutive zero slice:
 emit `TerminateStalled` with the named reason + the last nonzero-delta
 slice id; L2 treats it as terminal-finish (no retry, no restart).
 
-**Field rollback (R5)**: one release behind env `A3S_STALL_POLICY=off`
+**Field rollback (R5)**: one release behind env `ASTER_STALL_POLICY=off`
 (default on), removed after one clean bench cycle.
 
 **Acceptance**: (a) red→green fixture reproducing the freeze scenario

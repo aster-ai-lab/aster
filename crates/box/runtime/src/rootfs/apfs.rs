@@ -2,13 +2,13 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 use super::provider::RootfsProvider;
 
 /// A copy provider backed by a case-sensitive APFS sparse image.
 ///
-/// macOS commonly stores `~/.a3s` on case-insensitive APFS. Passing a normal
+/// macOS commonly stores `~/.aster` on case-insensitive APFS. Passing a normal
 /// host directory to libkrun as the guest root would then make Linux paths such
 /// as `/bin` and `/BIN` aliases. Each box therefore owns a sparse, dynamically
 /// allocated case-sensitive APFS image and exposes its mountpoint via virtiofs.
@@ -21,7 +21,7 @@ impl CaseSensitiveApfsProvider {
     // and can make recursive rootfs walks fail with EACCES.
     const IMAGE_STEM: &'static str = "rootfs-apfs-v2";
     pub(super) const IMAGE_NAME: &'static str = "rootfs-apfs-v2.sparseimage";
-    const DATA_DIR: &'static str = ".a3s-rootfs";
+    const DATA_DIR: &'static str = ".aster-rootfs";
 
     pub(super) fn image_path(box_dir: &Path) -> PathBuf {
         box_dir.join(Self::IMAGE_NAME)
@@ -80,7 +80,7 @@ impl CaseSensitiveApfsProvider {
                     "-fs",
                     "Case-sensitive APFS",
                     "-volname",
-                    "A3SRootfs",
+                    "AsterRootfs",
                 ])
                 .arg(&stem)
                 .output()

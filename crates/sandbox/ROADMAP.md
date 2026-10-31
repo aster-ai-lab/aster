@@ -1,6 +1,6 @@
-# A3S Sandbox Roadmap
+# Aster Sandbox Roadmap
 
-This document is the authoritative development plan for `a3s-sandbox`.
+This document is the authoritative development plan for `aster-sandbox`.
 It is derived from first principles, not from cloning Anthropic Sandbox
 Runtime (SRT) APIs or importing a virtual-shell product such as
 `vercel-labs/just-bash`.
@@ -18,7 +18,7 @@ Before any gate is scheduled, a change must pass this filter:
 2. **Enforcement locus.** Is the guarantee enforced by the OS (or a
    host-supervised mediator the OS can fence), not by an in-process interpreter
    pretending to be bash?
-3. **Real demand.** Is the pain felt by A3S Bash, Code, Box, or Cloud substrate
+3. **Real demand.** Is the pain felt by Aster Bash, Code, Box, or Cloud substrate
    consumers today—not a hypothetical parity checkbox?
 4. **Dependency order.** Does it introduce a single source of truth (policy)
    before platform forks, and observability before expanding blast radius?
@@ -30,7 +30,7 @@ inside this roadmap.
 
 ## Mission
 
-`a3s-sandbox` is the **native Gate 0 command boundary** for A3S products:
+`aster-sandbox` is the **native Gate 0 command boundary** for Aster products:
 
 - take an untrusted command string and its descendants;
 - run them only after a workspace / credential / environment / network /
@@ -54,10 +54,10 @@ These are adjacent products or anti-patterns. They must not land in this crate:
 | --- | --- | --- |
 | Reimplemented bash / builtin catalog | Compatibility and escape complexity explode; OS boundary already wraps real shells | Optional upper layer, never this crate |
 | In-process WASM Python / QuickJS / sql.js as the sandbox | Same-realm or weak WASM memory bounds are not OS isolation | Agent runtime / tool plugins |
-| MicroVM / container orchestration | Different trust and lifecycle model | `a3s-box` and Cloud node |
+| MicroVM / container orchestration | Different trust and lifecycle model | `aster-box` and Cloud node |
 | Desktop UI policy authoring / fleet control | Product surfaces, not boundary library | Host apps consuming the audit protocol |
 | Silent degradation to unsandboxed exec | Violates Cloud substrate and SECURITY.md | Never |
-| Line-for-line SRT TypeScript API or settings clone | Couples A3S to foreign module graph | Capability outcomes only |
+| Line-for-line SRT TypeScript API or settings clone | Couples Aster to foreign module graph | Capability outcomes only |
 | TLS interception as a default path | Private CA, plaintext, pinning exclusions | Later opt-in with separate security review |
 
 SRT and `just-bash` remain **reference inputs**: useful behaviours and agent UX
@@ -67,8 +67,8 @@ shape is not a requirement.
 ## Adjacent product lines (do not collapse)
 
 ```text
-a3s-sandbox   → OS process-tree boundary around real bash/pwsh
-a3s-box       → hardware-isolated microVM execution
+aster-sandbox   → OS process-tree boundary around real bash/pwsh
+aster-box       → hardware-isolated microVM execution
 just-bash-like virtual shell (if ever) → in-memory FS + simulated commands
 ```
 
@@ -76,7 +76,7 @@ Agents may compose them. This roadmap only owns the middle-left box.
 
 ## Gate 0 — Baseline delivered
 
-Current `0.1.x` is the minimum A3S Bash boundary. Evidence lives in
+Current `0.1.x` is the minimum Aster Bash boundary. Evidence lives in
 `src/tests.rs`, platform backends, and three-OS CI.
 
 | Capability | Behaviour |
@@ -127,7 +127,7 @@ Rank = product leverage × architectural necessity ÷ blast-radius cost.
 | 6 | Unix-socket allowlists / Linux mediator bridge | Local IPC without host socket free-for-all | Policy + events | Required before trusting loopback mediators |
 | 7 | SOCKS5 / non-HTTP TCP mediation | SSH and odd protocols | HTTP mediator lessons | Second network slice; do not block HTTP on this |
 | 8 | Dynamic policy snapshots + nested/`weaker` probe | Long sessions, containers | Policy + events | Never implicit degrade |
-| 9 | CLI + Code/CLI adapters | Diagnostics, migration off SRT paths | Stable library | A3S-native first; SRT translation is lossy helper only |
+| 9 | CLI + Code/CLI adapters | Diagnostics, migration off SRT paths | Stable library | Aster-native first; SRT translation is lossy helper only |
 | 10 | Assurance release (fuzz, soak, external review) | Production trust | Gates that expand surface | Especially before defaulting any network mediation |
 
 Deliberately **not** ranked into the trunk: virtual bash, in-process language VMs,
@@ -162,7 +162,7 @@ Do not land optimizations or special cases that only exist to green a local lab 
 - “allow this path because the monorepo scan is slow” without a general rule and residual-risk note;
 - silent weaker isolation so a test host can run without `bwrap` / Seatbelt / AppContainer;
 - golden tests that assert incidental string formatting instead of security decisions;
-- feature flags that broaden the default A3S Bash profile without an explicit policy opt-in.
+- feature flags that broaden the default Aster Bash profile without an explicit policy opt-in.
 
 If a host cannot provide a required capability, **fail closed** or expose an explicit weaker mode via probe—never paper over it in product code.
 
@@ -258,7 +258,7 @@ never silently emulated in-process.
 **Status:** Complete for the claimed macOS CONNECT slice and the Linux netns
 bridge — host-loopback / Unix CONNECT mediator, `decide_mediated_connect`,
 macOS Seatbelt `localhost:<port>` fence, Linux `--unshare-net` + TCP→Unix
-relay (`a3s-sandbox-relay`) with live guest allow/deny evidence
+relay (`aster-sandbox-relay`) with live guest allow/deny evidence
 (`gate4_macos_sandbox_mediator_tunnels_allowed_connect`,
 `gate4_linux_sandbox_mediator_tunnels_allowed_connect`,
 `linux_bridge_wire_*`). `mediated_http` is true on macOS, Linux, and Windows
@@ -323,7 +323,7 @@ Linux; Windows refuses allowlists / `mediated_socks` at compile.
 
 **Status:** In progress — monotonic `replace_policy` refuses silent broadening
 unless `PolicyUpdateOptions::allow_broadening`; `capability_report` lists
-unavailable surfaces explicitly for nested/container negotiation; `a3s-sandbox`
+unavailable surfaces explicitly for nested/container negotiation; `aster-sandbox`
 CLI ships `probe` / `digest` / `capabilities` / `exec`. Evidence:
 `policy::gate6_integration`, `policy::update`, `tests/cli_gate6.rs`.
 
@@ -336,7 +336,7 @@ shipping a lossy clone without demand would couple the API to a non-goal.
 - Nested/container hosts use explicit `weaker` capability negotiation; refuse
   startup when the requested guarantee is unavailable. ✅ (report surfaces;
   constructor still fail-closed on unenforceable policy)
-- Stabilize `NativeSandbox` and ship a small `a3s-sandbox` CLI for probe,
+- Stabilize `NativeSandbox` and ship a small `aster-sandbox` CLI for probe,
   policy digest, and reproduction. ✅
 - Code/CLI adapters consume the Rust contract; optional lossy SRT-settings
   translator is a migration aid, not the API. ✅ (Code adapter consumes Rust
@@ -384,7 +384,7 @@ fail-closed.
   ✅ SBOM + sign-release + collect-release-evidence; attach-to-tag residual
 
 **Release gate:** Mandatory evidence recorded per architecture; unsupported
-capabilities visible to callers; default A3S Bash profile remains fail-closed.
+capabilities visible to callers; default Aster Bash profile remains fail-closed.
 Follow `docs/RELEASE_CHECKLIST.md` and `docs/INDEPENDENT_REVIEW.md`.
 Run `./scripts/collect-release-evidence.sh` before cutting a tag.
 
@@ -392,7 +392,7 @@ Run `./scripts/collect-release-evidence.sh` before cutting a tag.
 
 **Status:** In progress — slice 1 complete: host-held secret environment
 entries via `NativeSandbox::execute_with_secrets`. Secret values never reach
-the child: each entry is delivered as an `a3s:secret:<NAME>` sentinel
+the child: each entry is delivered as an `aster:secret:<NAME>` sentinel
 (`SECRET_ENV_SENTINEL_PREFIX`), and because a sentinel nothing re-injects
 would silently strand the secret, entries refuse before spawn unless
 `features.mediated_network` is on. Reserved names (re-homed, proxy-scrubbed,
@@ -451,7 +451,7 @@ carrying the new policy digest. Evidence: `policy::grant` units,
 scoping) and the macOS live loop `grant_loop_unblocks_a_denied_command_...`
 (denied command → grant → same command flows).
 
-**Residual:** host-side integration — `a3s-code` surfaces structured grant
+**Residual:** host-side integration — `aster` surfaces structured grant
 requests from denials, prompts the user, calls `apply_network_grant`, and
 persists the subject + digest lineage into ACL permissions; unix-socket and
 filesystem grant subjects; Windows path (`mediated_http` capability gates it
@@ -463,7 +463,7 @@ scoped, replayable approvals and is the product-side precondition for ever
 revisiting Claim B (mediated-as-default).
 
 - ~~Typed network grant + digest-pinned application + audit lineage~~ ✅
-- Host approval surface in `a3s-code` (prompting, ACL persistence).
+- Host approval surface in `aster` (prompting, ACL persistence).
   **Exit:** every mediated allow traces to a user grant + digest; no code
   path broadens without host authorization (monotonicity property tests). ✅
   crate-side; host-side pending.
@@ -511,7 +511,7 @@ advertised weaker mode.
   monitoring limit, never permission.
 - **HTTP before SOCKS** is intentional. Do not hold agent fetch behind SSH
   mediation.
-- **No virtual shell in-tree.** If A3S later wants a just-bash-like layer, it is
+- **No virtual shell in-tree.** If Aster later wants a just-bash-like layer, it is
   a separate crate that *calls* sandbox/box—never a substitute for them.
 - **Package-store hardlink residual** remains documented until a cheap complete
   mitigation exists; do not claim it is closed.
@@ -532,7 +532,7 @@ With one experienced cross-platform engineer and shared review:
 
 Total roughly **16–26 engineering weeks**, excluding external audit scheduling
 and Windows signing/privilege surprises. Gate 0 remains the supported deny-all
-baseline for A3S Bash today.
+baseline for Aster Bash today.
 
 ## Acceptance of this roadmap
 

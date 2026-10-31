@@ -4,14 +4,14 @@ use std::fs::{self, File};
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, DeleteMode, Error, ErrorCode, IsolationRequest, OperationId,
     Result,
 };
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
 
-const JOURNAL_SCHEMA: &str = "a3s.oci.cli-lifecycle.v1";
+const JOURNAL_SCHEMA: &str = "aster.oci.cli-lifecycle.v1";
 const LOCK_FILE: &str = "lock";
 const MAX_SNAPSHOT_BYTES: u64 = 64 * 1024;
 const MAX_DIRECTORY_ENTRIES: usize = 256;
@@ -370,7 +370,7 @@ fn create_private_directory(path: &Path) -> Result<()> {
 
 #[cfg(windows)]
 fn create_private_directory(path: &Path) -> Result<()> {
-    a3s_oci_runtime::windows_security::ensure_private_directory(path).map_err(|error| {
+    aster_oci_runtime::windows_security::ensure_private_directory(path).map_err(|error| {
         windows_journal_error(
             format!(
                 "failed to create private container lifecycle journal directory {}",
@@ -436,7 +436,7 @@ fn validate_private_metadata(metadata: &fs::Metadata, path: &Path, label: &str) 
             path.display()
         )));
     }
-    a3s_oci_runtime::windows_security::verify_private_path(path).map_err(|error| {
+    aster_oci_runtime::windows_security::verify_private_path(path).map_err(|error| {
         permission(format!(
             "{label} must have an owner-and-LocalSystem-only protected DACL: {}: {}",
             path.display(),
@@ -470,10 +470,10 @@ fn open_lock_file(path: &Path) -> Result<File> {
 
 #[cfg(windows)]
 fn open_lock_file(path: &Path) -> Result<File> {
-    match a3s_oci_runtime::windows_security::create_private_file(path) {
+    match aster_oci_runtime::windows_security::create_private_file(path) {
         Ok(file) => Ok(file),
         Err(error) if error.code == ErrorCode::AlreadyExists => {
-            a3s_oci_runtime::windows_security::open_private_file(path, true).map_err(|error| {
+            aster_oci_runtime::windows_security::open_private_file(path, true).map_err(|error| {
                 windows_journal_error(
                     format!("failed to open lifecycle journal lock {}", path.display()),
                     error,
@@ -536,7 +536,7 @@ fn validate_lock_file(path: &Path, file: &File) -> Result<()> {
         }
     }
     #[cfg(windows)]
-    a3s_oci_runtime::windows_security::verify_private_file(file, path).map_err(|error| {
+    aster_oci_runtime::windows_security::verify_private_file(file, path).map_err(|error| {
         permission(format!(
             "lifecycle journal lock must retain its exact private file identity and DACL: {}: {}",
             path.display(),
@@ -626,7 +626,7 @@ fn read_snapshot(
     validate_regular_path(path, "lifecycle journal snapshot")?;
     #[cfg(windows)]
     let mut file =
-        a3s_oci_runtime::windows_security::open_private_file(path, false).map_err(|error| {
+        aster_oci_runtime::windows_security::open_private_file(path, false).map_err(|error| {
             windows_journal_error(
                 format!("failed to open lifecycle journal {}", path.display()),
                 error,
@@ -706,7 +706,7 @@ fn validate_private_file_metadata(
     path: &Path,
     label: &str,
 ) -> Result<()> {
-    a3s_oci_runtime::windows_security::verify_private_path(path).map_err(|error| {
+    aster_oci_runtime::windows_security::verify_private_path(path).map_err(|error| {
         permission(format!(
             "{label} must have an owner-and-LocalSystem-only protected DACL: {}: {}",
             path.display(),
@@ -740,7 +740,7 @@ fn create_private_file(path: &Path) -> Result<File> {
 
 #[cfg(windows)]
 fn create_private_file(path: &Path) -> Result<File> {
-    a3s_oci_runtime::windows_security::create_private_file(path).map_err(|error| {
+    aster_oci_runtime::windows_security::create_private_file(path).map_err(|error| {
         windows_journal_error(
             format!("failed to create lifecycle journal {}", path.display()),
             error,
@@ -764,7 +764,7 @@ fn create_private_file(path: &Path) -> Result<File> {
 
 #[cfg(windows)]
 fn publish_snapshot(source: &Path, destination: &Path) -> Result<()> {
-    a3s_oci_runtime::windows_security::rename_private_file_noreplace(source, destination).map_err(
+    aster_oci_runtime::windows_security::rename_private_file_noreplace(source, destination).map_err(
         |error| {
             windows_journal_error(
                 format!(

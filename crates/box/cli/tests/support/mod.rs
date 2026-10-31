@@ -22,12 +22,12 @@ pub const COMMAND_TIMEOUT: Duration = Duration::from_secs(300);
 /// resource-leak assertion report a test-harness artifact instead of a daemon
 /// bug.
 const BACKGROUND_INTERRUPT_TIMEOUT: Duration = Duration::from_secs(90);
-pub const HOST_SMOKE_IMAGE_ENV: &str = "A3S_BOX_HOST_SMOKE_IMAGE";
-pub const HOST_SMOKE_TIMEOUT_SECS_ENV: &str = "A3S_BOX_HOST_SMOKE_TIMEOUT_SECS";
-pub const TEST_ALPINE_TAR_ENV: &str = "A3S_BOX_TEST_ALPINE_TAR";
+pub const HOST_SMOKE_IMAGE_ENV: &str = "ASTER_BOX_HOST_SMOKE_IMAGE";
+pub const HOST_SMOKE_TIMEOUT_SECS_ENV: &str = "ASTER_BOX_HOST_SMOKE_TIMEOUT_SECS";
+pub const TEST_ALPINE_TAR_ENV: &str = "ASTER_BOX_TEST_ALPINE_TAR";
 
 fn find_binary() -> PathBuf {
-    if let Some(path) = option_env!("CARGO_BIN_EXE_a3s-box") {
+    if let Some(path) = option_env!("CARGO_BIN_EXE_aster-box") {
         let bin = PathBuf::from(path);
         if bin.exists() {
             return bin;
@@ -40,13 +40,13 @@ fn find_binary() -> PathBuf {
         .expect("cli crate should be inside workspace");
 
     for profile in ["debug", "release"] {
-        let bin = workspace_root.join("target").join(profile).join("a3s-box");
+        let bin = workspace_root.join("target").join(profile).join("aster-box");
         if bin.exists() {
             return bin;
         }
     }
 
-    PathBuf::from("a3s-box")
+    PathBuf::from("aster-box")
 }
 
 pub struct CliTest {
@@ -93,10 +93,10 @@ impl BackgroundProcessGuard<'_> {
             }
 
             if report_stdout && !stdout.trim().is_empty() {
-                eprintln!("background `a3s-box {}` stdout:\n{}", self.command, stdout);
+                eprintln!("background `aster-box {}` stdout:\n{}", self.command, stdout);
             }
             if !stderr.trim().is_empty() {
-                eprintln!("background `a3s-box {}` stderr:\n{}", self.command, stderr);
+                eprintln!("background `aster-box {}` stderr:\n{}", self.command, stderr);
             }
         }
     }
@@ -112,7 +112,7 @@ impl CliTest {
     pub fn new() -> Self {
         Self {
             bin: find_binary(),
-            home: tempfile::tempdir().expect("temp A3S_HOME"),
+            home: tempfile::tempdir().expect("temp ASTER_HOME"),
         }
     }
 
@@ -122,7 +122,7 @@ impl CliTest {
 
     fn command(&self, args: &[&str]) -> Command {
         let mut cmd = Command::new(&self.bin);
-        cmd.args(args).env("A3S_HOME", self.home_path());
+        cmd.args(args).env("ASTER_HOME", self.home_path());
         cmd
     }
 
@@ -139,20 +139,20 @@ impl CliTest {
     }
 
     pub fn output_with_env(&self, args: &[&str], envs: &[(&str, &str)]) -> (String, String, bool) {
-        eprintln!("    $ a3s-box {}", args.join(" "));
+        eprintln!("    $ aster-box {}", args.join(" "));
 
         let mut command = self.command_with_env(args, envs);
         let mut child = command
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()
-            .unwrap_or_else(|e| panic!("failed to run `a3s-box {}`: {e}", args.join(" ")));
+            .unwrap_or_else(|e| panic!("failed to run `aster-box {}`: {e}", args.join(" ")));
 
         let start = Instant::now();
         loop {
             if child
                 .try_wait()
-                .unwrap_or_else(|e| panic!("failed to poll `a3s-box {}`: {e}", args.join(" ")))
+                .unwrap_or_else(|e| panic!("failed to poll `aster-box {}`: {e}", args.join(" ")))
                 .is_some()
             {
                 break;
@@ -162,12 +162,12 @@ impl CliTest {
                 let _ = child.kill();
                 let output = child.wait_with_output().unwrap_or_else(|e| {
                     panic!(
-                        "timed out and failed to collect `a3s-box {}` output: {e}",
+                        "timed out and failed to collect `aster-box {}` output: {e}",
                         args.join(" ")
                     )
                 });
                 panic!(
-                    "`a3s-box {}` timed out after {:?}\nstdout:\n{}\nstderr:\n{}",
+                    "`aster-box {}` timed out after {:?}\nstdout:\n{}\nstderr:\n{}",
                     args.join(" "),
                     COMMAND_TIMEOUT,
                     String::from_utf8_lossy(&output.stdout),
@@ -179,7 +179,7 @@ impl CliTest {
         }
 
         let output = child.wait_with_output().unwrap_or_else(|e| {
-            panic!("failed to collect `a3s-box {}` output: {e}", args.join(" "))
+            panic!("failed to collect `aster-box {}` output: {e}", args.join(" "))
         });
         (
             String::from_utf8_lossy(&output.stdout).to_string(),
@@ -188,17 +188,17 @@ impl CliTest {
         )
     }
 
-    /// Spawn `a3s-box <args>` as a background process (e.g. a daemon), inheriting
-    /// the test env plus `A3S_HOME`. The caller owns the `Child` and must kill it.
+    /// Spawn `aster-box <args>` as a background process (e.g. a daemon), inheriting
+    /// the test env plus `ASTER_HOME`. The caller owns the `Child` and must kill it.
     pub fn spawn_background(&self, args: &[&str]) -> std::process::Child {
-        eprintln!("    $ a3s-box {} &", args.join(" "));
+        eprintln!("    $ aster-box {} &", args.join(" "));
         self.command(args)
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()
             .unwrap_or_else(|e| {
                 panic!(
-                    "failed to spawn background `a3s-box {}`: {e}",
+                    "failed to spawn background `aster-box {}`: {e}",
                     args.join(" ")
                 )
             })
@@ -236,7 +236,7 @@ impl CliTest {
     }
 
     pub fn output_with_stdin(&self, args: &[&str], stdin: &[u8]) -> (String, String, bool) {
-        eprintln!("    $ printf ... | a3s-box {}", args.join(" "));
+        eprintln!("    $ printf ... | aster-box {}", args.join(" "));
 
         let mut command = self.command(args);
         let mut child = command
@@ -244,7 +244,7 @@ impl CliTest {
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()
-            .unwrap_or_else(|e| panic!("failed to run `a3s-box {}`: {e}", args.join(" ")));
+            .unwrap_or_else(|e| panic!("failed to run `aster-box {}`: {e}", args.join(" ")));
 
         child
             .stdin
@@ -253,7 +253,7 @@ impl CliTest {
             .write_all(stdin)
             .unwrap_or_else(|e| {
                 panic!(
-                    "failed to write stdin for `a3s-box {}`: {e}",
+                    "failed to write stdin for `aster-box {}`: {e}",
                     args.join(" ")
                 )
             });
@@ -262,7 +262,7 @@ impl CliTest {
         loop {
             if child
                 .try_wait()
-                .unwrap_or_else(|e| panic!("failed to poll `a3s-box {}`: {e}", args.join(" ")))
+                .unwrap_or_else(|e| panic!("failed to poll `aster-box {}`: {e}", args.join(" ")))
                 .is_some()
             {
                 break;
@@ -272,12 +272,12 @@ impl CliTest {
                 let _ = child.kill();
                 let output = child.wait_with_output().unwrap_or_else(|e| {
                     panic!(
-                        "timed out and failed to collect `a3s-box {}` output: {e}",
+                        "timed out and failed to collect `aster-box {}` output: {e}",
                         args.join(" ")
                     )
                 });
                 panic!(
-                    "`a3s-box {}` timed out after {:?}\nstdout:\n{}\nstderr:\n{}",
+                    "`aster-box {}` timed out after {:?}\nstdout:\n{}\nstderr:\n{}",
                     args.join(" "),
                     COMMAND_TIMEOUT,
                     String::from_utf8_lossy(&output.stdout),
@@ -289,7 +289,7 @@ impl CliTest {
         }
 
         let output = child.wait_with_output().unwrap_or_else(|e| {
-            panic!("failed to collect `a3s-box {}` output: {e}", args.join(" "))
+            panic!("failed to collect `aster-box {}` output: {e}", args.join(" "))
         });
         (
             String::from_utf8_lossy(&output.stdout).to_string(),
@@ -302,7 +302,7 @@ impl CliTest {
         let (stdout, stderr, success) = self.output(args);
         assert!(
             success,
-            "`a3s-box {}` failed\nstdout:\n{}\nstderr:\n{}",
+            "`aster-box {}` failed\nstdout:\n{}\nstderr:\n{}",
             args.join(" "),
             stdout,
             stderr
@@ -314,7 +314,7 @@ impl CliTest {
         let (stdout, stderr, success) = self.output_with_stdin(args, stdin);
         assert!(
             success,
-            "`a3s-box {}` failed\nstdout:\n{}\nstderr:\n{}",
+            "`aster-box {}` failed\nstdout:\n{}\nstderr:\n{}",
             args.join(" "),
             stdout,
             stderr
@@ -326,7 +326,7 @@ impl CliTest {
         let (stdout, stderr, success) = self.output_with_env(args, envs);
         assert!(
             success,
-            "`a3s-box {}` failed\nstdout:\n{}\nstderr:\n{}",
+            "`aster-box {}` failed\nstdout:\n{}\nstderr:\n{}",
             args.join(" "),
             stdout,
             stderr
@@ -338,7 +338,7 @@ impl CliTest {
         let (stdout, stderr, success) = self.output(args);
         assert!(
             success,
-            "`a3s-box {}` failed\nstdout:\n{}\nstderr:\n{}",
+            "`aster-box {}` failed\nstdout:\n{}\nstderr:\n{}",
             args.join(" "),
             stdout,
             stderr
@@ -353,7 +353,7 @@ impl CliTest {
         let (stdout, stderr, success) = self.output_with_env(args, envs);
         assert!(
             !success,
-            "`a3s-box {}` unexpectedly succeeded\nstdout:\n{}\nstderr:\n{}",
+            "`aster-box {}` unexpectedly succeeded\nstdout:\n{}\nstderr:\n{}",
             args.join(" "),
             stdout,
             stderr
@@ -361,7 +361,7 @@ impl CliTest {
         let combined = format!("{stdout}\n{stderr}");
         assert!(
             combined.contains(expected),
-            "`a3s-box {}` failure did not contain {:?}\nstdout:\n{}\nstderr:\n{}",
+            "`aster-box {}` failure did not contain {:?}\nstdout:\n{}\nstderr:\n{}",
             args.join(" "),
             expected,
             stdout,
@@ -370,26 +370,26 @@ impl CliTest {
     }
 
     pub fn runs_until_timeout(&self, args: &[&str], timeout: Duration) -> (String, String) {
-        eprintln!("    $ a3s-box {}  # expect timeout", args.join(" "));
+        eprintln!("    $ aster-box {}  # expect timeout", args.join(" "));
 
         let mut command = self.command(args);
         let mut child = command
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()
-            .unwrap_or_else(|e| panic!("failed to run `a3s-box {}`: {e}", args.join(" ")));
+            .unwrap_or_else(|e| panic!("failed to run `aster-box {}`: {e}", args.join(" ")));
 
         let start = Instant::now();
         loop {
             if let Some(status) = child
                 .try_wait()
-                .unwrap_or_else(|e| panic!("failed to poll `a3s-box {}`: {e}", args.join(" ")))
+                .unwrap_or_else(|e| panic!("failed to poll `aster-box {}`: {e}", args.join(" ")))
             {
                 let output = child.wait_with_output().unwrap_or_else(|e| {
-                    panic!("failed to collect `a3s-box {}` output: {e}", args.join(" "))
+                    panic!("failed to collect `aster-box {}` output: {e}", args.join(" "))
                 });
                 panic!(
-                    "`a3s-box {}` exited before {:?} with status {}\nstdout:\n{}\nstderr:\n{}",
+                    "`aster-box {}` exited before {:?} with status {}\nstdout:\n{}\nstderr:\n{}",
                     args.join(" "),
                     timeout,
                     status,
@@ -402,7 +402,7 @@ impl CliTest {
                 let _ = child.kill();
                 let output = child.wait_with_output().unwrap_or_else(|e| {
                     panic!(
-                        "timed out and failed to collect `a3s-box {}` output: {e}",
+                        "timed out and failed to collect `aster-box {}` output: {e}",
                         args.join(" ")
                     )
                 });
@@ -423,7 +423,7 @@ impl CliTest {
         timeout: Duration,
     ) -> (String, String) {
         eprintln!(
-            "    $ a3s-box {}  # interrupt after {:?}",
+            "    $ aster-box {}  # interrupt after {:?}",
             args.join(" "),
             timeout
         );
@@ -442,7 +442,7 @@ impl CliTest {
             .stdout(Stdio::from(stdout_file))
             .stderr(Stdio::from(stderr_file))
             .spawn()
-            .unwrap_or_else(|e| panic!("failed to run `a3s-box {}`: {e}", args.join(" ")));
+            .unwrap_or_else(|e| panic!("failed to run `aster-box {}`: {e}", args.join(" ")));
 
         let start = Instant::now();
         let saw_marker = loop {
@@ -455,10 +455,10 @@ impl CliTest {
 
             if let Some(status) = child
                 .try_wait()
-                .unwrap_or_else(|e| panic!("failed to poll `a3s-box {}`: {e}", args.join(" ")))
+                .unwrap_or_else(|e| panic!("failed to poll `aster-box {}`: {e}", args.join(" ")))
             {
                 panic!(
-                    "`a3s-box {}` exited before marker {:?} with status {}\nstdout:\n{}\nstderr:\n{}",
+                    "`aster-box {}` exited before marker {:?} with status {}\nstdout:\n{}\nstderr:\n{}",
                     args.join(" "),
                     marker,
                     status,
@@ -471,7 +471,7 @@ impl CliTest {
                 let _ = child.kill();
                 let _ = child.wait();
                 panic!(
-                    "`a3s-box {}` did not print marker {:?} within {:?}\nstdout:\n{}\nstderr:\n{}",
+                    "`aster-box {}` did not print marker {:?} within {:?}\nstdout:\n{}\nstderr:\n{}",
                     args.join(" "),
                     marker,
                     timeout,
@@ -497,7 +497,7 @@ impl CliTest {
         let status = loop {
             if let Some(status) = child
                 .try_wait()
-                .unwrap_or_else(|e| panic!("failed to poll `a3s-box {}`: {e}", args.join(" ")))
+                .unwrap_or_else(|e| panic!("failed to poll `aster-box {}`: {e}", args.join(" ")))
             {
                 break status;
             }
@@ -505,7 +505,7 @@ impl CliTest {
                 let _ = child.kill();
                 let _ = child.wait();
                 panic!(
-                    "`a3s-box {}` did not exit after interrupt within {:?}",
+                    "`aster-box {}` did not exit after interrupt within {:?}",
                     args.join(" "),
                     COMMAND_TIMEOUT
                 );
@@ -517,7 +517,7 @@ impl CliTest {
         let stderr = std::fs::read_to_string(&stderr_path).unwrap_or_default();
         assert!(
             status.success(),
-            "`a3s-box {}` failed after interrupt with status {}\nstdout:\n{}\nstderr:\n{}",
+            "`aster-box {}` failed after interrupt with status {}\nstdout:\n{}\nstderr:\n{}",
             args.join(" "),
             status,
             stdout,
@@ -742,7 +742,7 @@ pub fn create_minimal_oci_tar(path: &Path, reference: &str) {
             "diff_ids": [format!("sha256:{diff_id}")]
         },
         "history": [
-            {"created_by": "a3s-box test fixture"}
+            {"created_by": "aster-box test fixture"}
         ]
     });
     let config_bytes = serde_json::to_vec(&config).expect("serialize config");
@@ -830,9 +830,9 @@ pub fn host_smoke_timeout(default_secs: u64) -> Duration {
 #[cfg(unix)]
 pub fn host_socket_dirs() -> std::collections::BTreeSet<PathBuf> {
     #[cfg(target_os = "macos")]
-    let socket_root = Path::new("/private/tmp/a3s-box-sockets");
+    let socket_root = Path::new("/private/tmp/aster-box-sockets");
     #[cfg(not(target_os = "macos"))]
-    let socket_root = Path::new("/tmp/a3s-box-sockets");
+    let socket_root = Path::new("/tmp/aster-box-sockets");
     let Ok(entries) = std::fs::read_dir(socket_root) else {
         return std::collections::BTreeSet::new();
     };

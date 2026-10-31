@@ -1,7 +1,7 @@
 #[path = "support/workspace_grant_lifecycle_fixtures.rs"]
 mod fixtures;
 
-use a3s_use_extension::{
+use aster_use_extension::{
     StoredWorkspaceGrant, WorkspaceGrantLifecyclePhase, WorkspaceGrantReceipt,
     WorkspaceGrantRevocation, WorkspaceGrantStore,
 };
@@ -560,8 +560,8 @@ async fn operation_journal_fails_closed_on_unknown_privileged_fields() {
 #[test]
 fn lifecycle_contracts_are_send_and_sync() {
     fn assert_send_sync<T: Send + Sync>() {}
-    assert_send_sync::<a3s_use_extension::WorkspaceGrantOperationJournal>();
-    assert_send_sync::<a3s_use_extension::WorkspaceGrantOperationIntent>();
-    assert_send_sync::<a3s_use_extension::WorkspaceGrantCutoverEvidence>();
-    assert_send_sync::<a3s_use_extension::WorkspaceGrantCandidateCeiling>();
+    assert_send_sync::<aster_use_extension::WorkspaceGrantOperationJournal>();
+    assert_send_sync::<aster_use_extension::WorkspaceGrantOperationIntent>();
+    assert_send_sync::<aster_use_extension::WorkspaceGrantCutoverEvidence>();
+    assert_send_sync::<aster_use_extension::WorkspaceGrantCandidateCeiling>();
 }

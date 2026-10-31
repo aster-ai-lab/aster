@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repository="A3S-Lab/Search"
+repository="aster-ai-lab/Search"
 required_secrets=(
   "CARGO_TOKEN"
   "HOMEBREW_TAP_TOKEN"

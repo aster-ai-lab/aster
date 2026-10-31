@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_oci_sdk::OciBundle;
+use aster_oci_sdk::OciBundle;
 use serde_json::{json, Map, Value};
 
 pub(crate) struct NamespaceJoinBundles {
@@ -189,7 +189,7 @@ fn bundle_from_value(directory: &Path, config: Value) -> Result<OciBundle, Strin
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::OciBundle;
+    use aster_oci_sdk::OciBundle;
     use serde_json::{json, Value};
 
     use super::{build_bundles, build_host_network_bundle};
@@ -266,7 +266,7 @@ mod tests {
             serde_json::to_string(&base_config).expect("encoded base config"),
         )
         .expect("qualified base bundle");
-        let bundle = build_host_network_bundle(&base, "a3s-oci-host-network-test")
+        let bundle = build_host_network_bundle(&base, "aster-oci-host-network-test")
             .expect("host-network bundle");
         let config: Value = serde_json::from_str(bundle.config_json()).expect("host-network JSON");
         let namespaces = config["linux"]["namespaces"]
@@ -280,7 +280,7 @@ mod tests {
             .iter()
             .any(|namespace| namespace["type"] == "mount"));
         assert!(config["linux"].get("sysctl").is_none());
-        assert_eq!(config["linux"]["cgroupsPath"], "a3s-oci-host-network-test");
+        assert_eq!(config["linux"]["cgroupsPath"], "aster-oci-host-network-test");
         assert!(config["process"]["args"][2]
             .as_str()
             .expect("host-network command")

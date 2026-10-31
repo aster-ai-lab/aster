@@ -2,11 +2,11 @@
 
 use super::*;
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) fn prompt_content(
         prompt: &[acp::ContentBlock],
-    ) -> acp::Result<(String, Vec<a3s_code_core::Attachment>)> {
-        use a3s_code_core::llm::MAX_ATTACHMENT_BYTES;
+    ) -> acp::Result<(String, Vec<aster_core::Attachment>)> {
+        use aster_core::llm::MAX_ATTACHMENT_BYTES;
         use base64::Engine as _;
 
         let unsupported = |kind: &str| {
@@ -50,7 +50,7 @@ impl A3sCodeAgent {
                         return Err(acp::Error::invalid_params()
                             .data("image must contain 1 byte to 16 MiB of data"));
                     }
-                    attachments.push(a3s_code_core::Attachment::new(
+                    attachments.push(aster_core::Attachment::new(
                         data,
                         content.mime_type.clone(),
                     ));
@@ -290,11 +290,11 @@ impl A3sCodeAgent {
                     forced_stop.as_ref(),
                 ));
                 state.stop_reason = forced_stop.map(|reason| match reason {
-                    a3s_code_core::harness_loop::ForcedStop::ResponseTruncated => {
+                    aster_core::harness_loop::ForcedStop::ResponseTruncated => {
                         acp::StopReason::MaxTokens
                     }
-                    a3s_code_core::harness_loop::ForcedStop::ToolBudget
-                    | a3s_code_core::harness_loop::ForcedStop::ReadOnlyEvidence => {
+                    aster_core::harness_loop::ForcedStop::ToolBudget
+                    | aster_core::harness_loop::ForcedStop::ReadOnlyEvidence => {
                         acp::StopReason::MaxTurnRequests
                     }
                 });
@@ -379,7 +379,7 @@ impl A3sCodeAgent {
                         Some(_) => serde_json::Value::Null.to_string(),
                         None => crate::unattended::QUESTION_ANSWER.to_string(),
                     };
-                    let _ = a3s_code_core::ask_user::answer(&question_id, &answer);
+                    let _ = aster_core::ask_user::answer(&question_id, &answer);
                     return;
                 }
                 if let Some(form) = form.as_deref() {
@@ -401,11 +401,11 @@ impl A3sCodeAgent {
                     };
                     let answer = values.unwrap_or_else(|message| {
                         serde_json::json!([
-                            a3s_code_core::ask_user::USER_FORM_ERROR_SCHEMA,
+                            aster_core::ask_user::USER_FORM_ERROR_SCHEMA,
                             message
                         ])
                     });
-                    let _ = a3s_code_core::ask_user::answer(&question_id, &answer.to_string());
+                    let _ = aster_core::ask_user::answer(&question_id, &answer.to_string());
                     return;
                 }
                 if !question_has_choices(&options) {
@@ -425,7 +425,7 @@ impl A3sCodeAgent {
                     )
                     .await
                 {
-                    let _ = a3s_code_core::ask_user::answer(&question_id, &text);
+                    let _ = aster_core::ask_user::answer(&question_id, &text);
                 } else {
                     // A dismissed question has no answer to wake the core's
                     // question wait. Cancel its owned turn instead of parking it.
@@ -450,7 +450,7 @@ impl A3sCodeAgent {
         session_id: &acp::SessionId,
         session: &AgentSession,
         prompt: &str,
-        attachments: &[a3s_code_core::Attachment],
+        attachments: &[aster_core::Attachment],
         generation: u64,
         turn_permit: OwnedMutexGuard<()>,
         observation: Option<&crate::run_observation::Binding>,
@@ -510,7 +510,7 @@ impl A3sCodeAgent {
         &self,
         session_id: &acp::SessionId,
         session: &AgentSession,
-        stream: a3s_code_core::AgentRunStream,
+        stream: aster_core::AgentRunStream,
         governing_goal: Option<crate::goal::DurableGoal>,
         generation: u64,
         turn_permit: OwnedMutexGuard<()>,
@@ -535,7 +535,7 @@ impl A3sCodeAgent {
         &self,
         session_id: &acp::SessionId,
         session: &AgentSession,
-        stream: a3s_code_core::AgentRunStream,
+        stream: aster_core::AgentRunStream,
         governing_goal: Option<crate::goal::DurableGoal>,
         generation: u64,
         turn_permit: OwnedMutexGuard<()>,
@@ -803,7 +803,7 @@ pub(super) fn should_emit_end_text(saw_text: bool, text: &str) -> bool {
 /// End-of-turn truth for the transcript. Token counters cover the whole run; measured TPS
 /// belongs only to the final invocation whose response timing produced them.
 pub(super) fn prompt_usage_payload(
-    usage: &a3s_code_core::llm::TokenUsage,
+    usage: &aster_core::llm::TokenUsage,
     model_calls: u64,
 ) -> serde_json::Value {
     // Core reports tokens here; per-model, reasoning and cost ledgers are not on this event.
@@ -821,9 +821,9 @@ pub(super) fn prompt_usage_payload(
 }
 
 fn model_info_payload(
-    usage: &a3s_code_core::llm::TokenUsage,
-    final_turn_usage: &a3s_code_core::llm::TokenUsage,
-    meta: Option<&a3s_code_core::llm::LlmResponseMeta>,
+    usage: &aster_core::llm::TokenUsage,
+    final_turn_usage: &aster_core::llm::TokenUsage,
+    meta: Option<&aster_core::llm::LlmResponseMeta>,
 ) -> serde_json::Value {
     let mut payload = serde_json::json!({
         "sessionUpdate": "model_info",
@@ -848,13 +848,13 @@ fn model_info_payload(
     payload
 }
 
-/// The `a3s/turn/outcome` notification payload carrying how the run closed
+/// The `aster/turn/outcome` notification payload carrying how the run closed
 /// at the completion gate, so the client's terminal marker can say more than
 /// a duration. Fields are additive; clients ignore unknown keys.
 pub(super) fn turn_outcome_payload(
-    terminal: &a3s_code_core::harness_loop::CompletionTerminal,
-    summary: &a3s_code_core::verification::VerificationSummary,
-    forced_stop: Option<&a3s_code_core::harness_loop::ForcedStop>,
+    terminal: &aster_core::harness_loop::CompletionTerminal,
+    summary: &aster_core::verification::VerificationSummary,
+    forced_stop: Option<&aster_core::harness_loop::ForcedStop>,
 ) -> serde_json::Value {
     let mut payload = serde_json::json!({
         "sessionUpdate": "turn_outcome",
@@ -865,19 +865,19 @@ pub(super) fn turn_outcome_payload(
     });
     if let Some(forced) = forced_stop {
         payload["forced"] =
-            serde_json::json!(a3s_code_core::harness_loop::ForcedStop::as_str(*forced));
+            serde_json::json!(aster_core::harness_loop::ForcedStop::as_str(*forced));
     }
     payload
 }
 
 pub(super) fn terminal_kind(
-    terminal: &a3s_code_core::harness_loop::CompletionTerminal,
+    terminal: &aster_core::harness_loop::CompletionTerminal,
 ) -> &'static str {
     match terminal {
-        a3s_code_core::harness_loop::CompletionTerminal::Narrative => "narrative",
-        a3s_code_core::harness_loop::CompletionTerminal::Verified { .. } => "verified",
-        a3s_code_core::harness_loop::CompletionTerminal::Waived { .. } => "waived",
-        a3s_code_core::harness_loop::CompletionTerminal::Distinct => "distinct",
+        aster_core::harness_loop::CompletionTerminal::Narrative => "narrative",
+        aster_core::harness_loop::CompletionTerminal::Verified { .. } => "verified",
+        aster_core::harness_loop::CompletionTerminal::Waived { .. } => "waived",
+        aster_core::harness_loop::CompletionTerminal::Distinct => "distinct",
     }
 }
 
@@ -888,7 +888,7 @@ pub(super) fn agent_failure_error(message: &str) -> acp::Error {
 }
 
 pub(super) fn reconciliation_error(
-    error: &a3s_code_core::harness_loop::ToolEffectUnresolved,
+    error: &aster_core::harness_loop::ToolEffectUnresolved,
 ) -> acp::Error {
     acp::Error::internal_error().data(serde_json::json!({
         "kind": "tool_effect_unresolved",
@@ -915,7 +915,7 @@ pub(super) fn worker_join_failure(join_error: tokio::task::JoinError) -> String 
     format!("turn worker died: {detail}")
 }
 
-fn estimated_user_message_tokens(messages: &[a3s_code_core::Message]) -> usize {
+fn estimated_user_message_tokens(messages: &[aster_core::Message]) -> usize {
     let bytes = messages
         .iter()
         .filter(|message| message.role == "user" && message.transcript_visibility.is_product())
@@ -926,7 +926,7 @@ fn estimated_user_message_tokens(messages: &[a3s_code_core::Message]) -> usize {
                     .content
                     .iter()
                     .map(|block| match block {
-                        a3s_code_core::llm::ContentBlock::Text { text } => text.len(),
+                        aster_core::llm::ContentBlock::Text { text } => text.len(),
                         _ => 0,
                     })
                     .sum::<usize>()
@@ -936,9 +936,9 @@ fn estimated_user_message_tokens(messages: &[a3s_code_core::Message]) -> usize {
 }
 
 fn usage_update(
-    snapshot: &a3s_code_core::harness_evidence::ModelUsageSnapshotV1,
+    snapshot: &aster_core::harness_evidence::ModelUsageSnapshotV1,
     size: u64,
-    transcript: &[a3s_code_core::Message],
+    transcript: &[aster_core::Message],
 ) -> acp::UsageUpdate {
     // The wire struct has no output/cache fields, so the complete accounting
     // rides _meta. Context composition is explicitly an estimate, not billing.
@@ -975,11 +975,9 @@ fn usage_update(
         ),
         (
             "estimatedOtherContextTokens".to_string(),
-            serde_json::json!(
-                snapshot
-                    .estimated_prompt_tokens
-                    .saturating_sub(estimated_user_tokens)
-            ),
+            serde_json::json!(snapshot
+                .estimated_prompt_tokens
+                .saturating_sub(estimated_user_tokens)),
         ),
     ]));
     update
@@ -991,7 +989,7 @@ mod usage_meta_tests {
 
     #[test]
     fn prompt_usage_keeps_reported_buckets_and_marks_missing_ledger_information() {
-        let usage = a3s_code_core::llm::TokenUsage {
+        let usage = aster_core::llm::TokenUsage {
             prompt_tokens: 53,
             completion_tokens: 17,
             total_tokens: 70,
@@ -1011,8 +1009,8 @@ mod usage_meta_tests {
         assert!(projected.get("costUsdTicks").is_none());
     }
 
-    fn snapshot() -> a3s_code_core::harness_evidence::ModelUsageSnapshotV1 {
-        a3s_code_core::harness_evidence::ModelUsageSnapshotV1 {
+    fn snapshot() -> aster_core::harness_evidence::ModelUsageSnapshotV1 {
+        aster_core::harness_evidence::ModelUsageSnapshotV1 {
             schema: "test".into(),
             call_sequence: 7,
             input_snapshot_digest: "input-digest".into(),
@@ -1022,7 +1020,7 @@ mod usage_meta_tests {
             reported_total_tokens: 130,
             reported_cache_read_tokens: Some(10),
             reported_cache_write_tokens: Some(5),
-            tool_results: a3s_code_core::harness_evidence::ToolResultContextUsageV1 {
+            tool_results: aster_core::harness_evidence::ToolResultContextUsageV1 {
                 total_count: 0,
                 unique_count: 0,
                 repeated_count: 0,
@@ -1040,8 +1038,8 @@ mod usage_meta_tests {
     #[test]
     fn the_usage_update_carries_the_full_accounting_in_meta() {
         let transcript = vec![
-            a3s_code_core::Message::user("你好"),
-            a3s_code_core::Message::user_wire("runtime steering is not a user bubble"),
+            aster_core::Message::user("你好"),
+            aster_core::Message::user_wire("runtime steering is not a user bubble"),
         ];
         let wire = serde_json::to_value(usage_update(&snapshot(), 32_768, &transcript)).unwrap();
         assert_eq!(wire["used"], 90);
@@ -1056,8 +1054,8 @@ mod usage_meta_tests {
         assert_eq!(wire["_meta"]["estimatedOtherContextTokens"], 96);
     }
 
-    fn usage(prompt: usize, completion: usize) -> a3s_code_core::llm::TokenUsage {
-        a3s_code_core::llm::TokenUsage {
+    fn usage(prompt: usize, completion: usize) -> aster_core::llm::TokenUsage {
+        aster_core::llm::TokenUsage {
             prompt_tokens: prompt,
             completion_tokens: completion,
             total_tokens: prompt + completion,
@@ -1070,7 +1068,7 @@ mod usage_meta_tests {
     fn model_info_uses_the_real_response_model_and_measured_generation_window() {
         let total = usage(1_000, 200);
         let final_call = usage(300, 80);
-        let meta = a3s_code_core::llm::LlmResponseMeta {
+        let meta = aster_core::llm::LlmResponseMeta {
             request_model: Some("auto".into()),
             response_model: Some("real-upstream-model".into()),
             first_token_ms: Some(250),
@@ -1093,7 +1091,7 @@ mod usage_meta_tests {
         let payload = model_info_payload(
             &usage(10, 0),
             &usage(5, 0),
-            Some(&a3s_code_core::llm::LlmResponseMeta {
+            Some(&aster_core::llm::LlmResponseMeta {
                 request_model: Some("auto".into()),
                 response_model: None,
                 first_token_ms: Some(500),

@@ -21,7 +21,7 @@ description: "Task list for Studio single runtime"
 
 - [x] T005 [US1] Add `agent_plane/runtime_client.rs`; migrate initialize/new/prompt/cancel/model/mode/interject/Goal/wiki/memory commands and add facade/no-state tests.
 - [x] T006 [US1] Remove Studio permission pre-decision and mode mutation during confirmation; add default/plan/auto/yolo, cancel, timeout and deck regression tests.
-- [x] T007 [US3] Replace static A3S execution model/effort/mode/command/capability lists with current ACP catalogs and closed-set UI validation.
+- [x] T007 [US3] Replace static Aster execution model/effort/mode/command/capability lists with current ACP catalogs and closed-set UI validation.
 
 ## Phase 3: Session and execution convergence
 
@@ -46,7 +46,7 @@ description: "Task list for Studio single runtime"
 
 - [ ] Owning-package focused tests pass
 - [ ] `cargo fmt --all -- --check` is clean for Rust edits
-- [ ] No new crates.io `a3s-*` dependency
+- [ ] No new crates.io `aster-*` dependency
 - [ ] No native `<select>` added on a product surface
 - [ ] Product configuration, if added, is ACL
 - [ ] No dual-write, old-store fallback or permanent legacy runtime remains in a completed cutover

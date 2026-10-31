@@ -263,9 +263,9 @@ impl WorkspaceChunkCatalog {
             .validate_for(chunking)
             .map_err(|error| super::chunking_strategy::map_strategy_error("<catalog>", error))?;
         let limits = limits.validate()?;
-        if lexical_engine == WorkspaceLexicalEngine::A3sVec && !cfg!(feature = "a3s-vec-fts") {
+        if lexical_engine == WorkspaceLexicalEngine::AsterVec && !cfg!(feature = "aster-vec-fts") {
             return Err(WorkspaceIndexError::InvalidConfig(
-                "WorkspaceLexicalEngine::A3sVec requires the a3s-vec-fts feature".to_owned(),
+                "WorkspaceLexicalEngine::AsterVec requires the aster-vec-fts feature".to_owned(),
             ));
         }
         let state = Arc::new(CatalogState::default());
@@ -289,7 +289,7 @@ impl WorkspaceChunkCatalog {
     }
 
     /// Construct the automatic catalog with a caller-selected fallback
-    /// engine. The durable workspace projection uses a3s-vec for the
+    /// engine. The durable workspace projection uses aster-vec for the
     /// corpus-wide index; keeping this admission catalog portable avoids
     /// opening one native collection per source file during a cold scan.
     pub(crate) fn default_catalog_with_engine(engine: WorkspaceLexicalEngine) -> Arc<Self> {
@@ -297,7 +297,7 @@ impl WorkspaceChunkCatalog {
     }
 
     /// Construct the automatic catalog with separate reported and admission
-    /// engines. The durable a3s-vec path reports its native engine to callers,
+    /// engines. The durable aster-vec path reports its native engine to callers,
     /// while its cold admission fallback can build portable partitions.
     pub(crate) fn default_catalog_with_engines(
         lexical_engine: WorkspaceLexicalEngine,

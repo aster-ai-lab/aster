@@ -188,8 +188,8 @@ impl Default for MemoryMaintenanceOptions {
 pub trait ConsolidationJudge: Send + Sync {
     async fn same_fact(
         &self,
-        left: &a3s_memory::MemoryItem,
-        right: &a3s_memory::MemoryItem,
+        left: &aster_durable_memory::MemoryItem,
+        right: &aster_durable_memory::MemoryItem,
     ) -> anyhow::Result<bool>;
 }
 
@@ -214,8 +214,8 @@ const CONSOLIDATION_VERDICT_DIFFERENT: &str = "DIFFERENT";
 impl ConsolidationJudge for LlmConsolidationJudge {
     async fn same_fact(
         &self,
-        left: &a3s_memory::MemoryItem,
-        right: &a3s_memory::MemoryItem,
+        left: &aster_durable_memory::MemoryItem,
+        right: &aster_durable_memory::MemoryItem,
     ) -> anyhow::Result<bool> {
         let system = "You compare two memory entries from a long-term agent memory. \
                       Decide whether they state the SAME underlying fact, preference, or \
@@ -712,8 +712,8 @@ impl Drop for MemoryMaintenanceRuntime {
 }
 
 struct PruneMemoryJob {
-    store: Arc<dyn a3s_memory::MemoryStore>,
-    policy: a3s_memory::PrunePolicy,
+    store: Arc<dyn aster_durable_memory::MemoryStore>,
+    policy: aster_durable_memory::PrunePolicy,
 }
 
 #[async_trait]
@@ -744,7 +744,7 @@ const MEMORY_USAGE_COUNT_METADATA: &str = "usage_count";
 /// added to the survivor's. Curation-protected items (pinned, superseded
 /// audit records, relation holders) never participate.
 struct UsageConsolidationJob {
-    store: Arc<dyn a3s_memory::MemoryStore>,
+    store: Arc<dyn aster_durable_memory::MemoryStore>,
     judge: Option<Arc<dyn ConsolidationJudge>>,
 }
 
@@ -851,8 +851,8 @@ impl MemoryMaintenanceJob for UsageConsolidationJob {
 /// importance wins; exact ties keep the older item, and the smaller id breaks
 /// a full tie so the outcome never depends on scan order.
 fn consolidation_keeps_anchor(
-    anchor: &a3s_memory::MemoryItem,
-    other: &a3s_memory::MemoryItem,
+    anchor: &aster_durable_memory::MemoryItem,
+    other: &aster_durable_memory::MemoryItem,
 ) -> bool {
     match other
         .importance
@@ -869,8 +869,8 @@ fn consolidation_keeps_anchor(
 }
 
 fn items_are_near_duplicates(
-    left: &a3s_memory::MemoryItem,
-    right: &a3s_memory::MemoryItem,
+    left: &aster_durable_memory::MemoryItem,
+    right: &aster_durable_memory::MemoryItem,
 ) -> bool {
     let left_tokens = normalized_prefix_tokens(&left.content);
     let right_tokens = normalized_prefix_tokens(&right.content);
@@ -900,7 +900,7 @@ fn normalized_prefix_tokens(content: &str) -> HashSet<String> {
 
 /// Curation, provenance, and audit protection: items a lexical consolidation
 /// must never delete or absorb, mirroring the store's prune-protection set.
-fn consolidation_protected(item: &a3s_memory::MemoryItem) -> bool {
+fn consolidation_protected(item: &aster_durable_memory::MemoryItem) -> bool {
     item.tags.iter().any(|tag| {
         matches!(
             tag.as_str(),
@@ -919,7 +919,7 @@ fn consolidation_protected(item: &a3s_memory::MemoryItem) -> bool {
         )
 }
 
-fn metadata_flag(item: &a3s_memory::MemoryItem, key: &str) -> bool {
+fn metadata_flag(item: &aster_durable_memory::MemoryItem, key: &str) -> bool {
     item.metadata.get(key).is_some_and(|value| {
         matches!(
             value.trim().to_ascii_lowercase().as_str(),
@@ -928,20 +928,20 @@ fn metadata_flag(item: &a3s_memory::MemoryItem, key: &str) -> bool {
     })
 }
 
-fn metadata_nonempty(item: &a3s_memory::MemoryItem, key: &str) -> bool {
+fn metadata_nonempty(item: &aster_durable_memory::MemoryItem, key: &str) -> bool {
     item.metadata
         .get(key)
         .is_some_and(|value| !value.trim().is_empty())
 }
 
-fn memory_usage_count(item: &a3s_memory::MemoryItem) -> u32 {
+fn memory_usage_count(item: &aster_durable_memory::MemoryItem) -> u32 {
     item.metadata
         .get(MEMORY_USAGE_COUNT_METADATA)
         .and_then(|raw| raw.trim().parse().ok())
         .unwrap_or(0)
 }
 
-fn add_memory_usage_count(item: &mut a3s_memory::MemoryItem, increment: u32) {
+fn add_memory_usage_count(item: &mut aster_durable_memory::MemoryItem, increment: u32) {
     let updated = memory_usage_count(item).saturating_add(increment);
     item.metadata
         .insert(MEMORY_USAGE_COUNT_METADATA.to_string(), updated.to_string());

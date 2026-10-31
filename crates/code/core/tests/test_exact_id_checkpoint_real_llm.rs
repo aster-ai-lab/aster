@@ -1,16 +1,16 @@
 //! The exact-id run rail persists a loop checkpoint at every tool round —
 //! the boundary a hard process crash between rounds recovers from.
-//! Requires the repo `.a3s/config.acl` flash provider.
+//! Requires the repo `.aster/config.acl` flash provider.
 
-use a3s_code_core::{Agent, AgentEvent, SessionOptions};
+use aster_core::{Agent, AgentEvent, SessionOptions};
 use std::time::Duration;
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn exact_id_run_persists_loop_checkpoint_mid_run() {
     let config_path =
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../.a3s/config.acl");
-    let config = a3s_code_core::CodeConfig::from_file(&config_path).unwrap();
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../.aster/config.acl");
+    let config = aster_core::CodeConfig::from_file(&config_path).unwrap();
     let agent = Agent::from_config(config).await.unwrap();
     let workspace = tempfile::tempdir().unwrap();
     let store_dir = tempfile::tempdir().unwrap();
@@ -40,8 +40,8 @@ async fn exact_id_run_persists_loop_checkpoint_mid_run() {
         .await
         .unwrap()
     {
-        a3s_code_core::AgentRunSpawn::Started { worker, .. } => worker,
-        a3s_code_core::AgentRunSpawn::Replayed { .. } => panic!("fresh id"),
+        aster_core::AgentRunSpawn::Started { worker, .. } => worker,
+        aster_core::AgentRunSpawn::Replayed { .. } => panic!("fresh id"),
     };
     let saw_tool = tokio::time::timeout(Duration::from_secs(120), async {
         loop {

@@ -26,7 +26,7 @@ retain run 36190947596 失败于私有 `kense-labs` 子模块默认 GITHUB_TOKEN
 
 | 方案 | 内容 | 适用 |
 | --- | --- | --- |
-| a. GHA 环境 + `A3S_LABS_READ_TOKEN` | org secret，fine-grained PAT，contents:read 限 `kense-labs/*` | 最小改动；secret 轮换入月度运维 |
+| a. GHA 环境 + `ASTER_LABS_READ_TOKEN` | org secret，fine-grained PAT，contents:read 限 `kense-labs/*` | 最小改动；secret 轮换入月度运维 |
 | b. 自托管 runner | 常驻机器，天然可配 SSH key 读私有仓 + 后续裸金属/KVM 矩阵（FN0 Verified 的另一残留项） | 一次投入大，但同时解 FN0 宿主矩阵与 W2 保留管道 |
 
 建议：若 D-E（SEV/硬件）倾向采购，b 一并解；否则 a 先行、b 挂 GA-3 前
@@ -41,12 +41,12 @@ pin 即是修复动作的一部分。
 
 ## D-F krun 引导链失败 — Box 仓库 issue 草稿（外发文本）
 
-> 标题：A3S-Lab/libkrun fork boot chain: VM exits before the guest exec
+> 标题：aster-ai-lab/libkrun fork boot chain: VM exits before the guest exec
 > server is ready (macOS/HVF, T0.4.2 stack)
 >
 > 正文要点：定性——这不是上游 libkrun 报障，是**自家 fork** 的引导链
-> （`A3S-Lab/libkrun`，安装版 3.3.0 的运行时可溯源至 fork commit
-> `dc5519f`/`2692169b`，见 `a3s-libkrun-sys` SOURCE-PROVENANCE.md）。
+> （`aster-ai-lab/libkrun`，安装版 3.3.0 的运行时可溯源至 fork commit
+> `dc5519f`/`2692169b`，见 `aster-libkrun-sys` SOURCE-PROVENANCE.md）。
 > 环境（macOS/Darwin，pin 版本）；症状（"VM process exited before the
 > guest exec server became ready"，且失败路径清理了 shim/console 日志，
 > 无留存诊断）；**第一诉求：失败路径保留 shim/console 日志**；第二诉
@@ -55,7 +55,7 @@ pin 即是修复动作的一部分。
 > 最小复现引用 runbook 步骤 1–3；可对照树内 vendored 源
 > （`crates/box/deps/libkrun-sys/vendor/libkrun`）诊断；关联：收敛计划
 > Phase 0 唯一出口项的外部前置（D-F）。
-> 附：同栈已知干扰——旧 `a3s-os-node-agent.service` crash-loop（50,974
+> 附：同栈已知干扰——旧 `aster-os-node-agent.service` crash-loop（50,974
 > 次重启，203/EXEC）需在每次重跑前禁用（fn02 证据 L166-177）。
 
 ## lane payload 三副本对账 — 上游 PR 描述草稿（US-5）
@@ -104,9 +104,9 @@ D-A/D-B：2026-11-07；D-D：2026-11-15。到期未决 → 依赖故事 fail clo
 修正纪律「行为先行、文本随后」，建议在 XIII 的 apps/studio 授权句后补：
 
 > The user-authorized dependency fork boundary is
-> `aster-ai-lab/libkrun` (created from A3S-Lab/libkrun at owner
+> `aster-ai-lab/libkrun` (created from aster-ai-lab/libkrun at owner
 > direction, 2026-10-21). It is consumed through the vendored
-> a3s-libkrun-sys tree; the parent tracks source provenance, never a
+> aster-libkrun-sys tree; the parent tracks source provenance, never a
 > parallel Aster checkout of libkrun source inside this repository's
 > crates.
 
@@ -116,7 +116,7 @@ D-A/D-B：2026-11-07；D-D：2026-11-15。到期未决 → 依赖故事 fail clo
 > 错了一半——`API_PREFIX = /v1/api/admin`，app-release 实际挂在
 > `/v1/api/admin/app-releases`，**在** SessionPlaneGuardInterceptor 的前缀门
 > 之内（含读路径）。真实洞更精确：拦截器只校验令牌**前缀形状**
-> （`a3s_us_`），控制器层零会话验证——任意 `a3s_us_` 形状（无效/吊销/外来）
+> （`aster_us_`），控制器层零会话验证——任意 `aster_us_` 形状（无效/吊销/外来）
 > 令牌即可写。初判的"/current/file 直供下载站"同样修正：读也在前缀门后，
 > 是否公开化是独立产品决定，未代决。
 
@@ -134,7 +134,7 @@ upload/publish/withdraw/delete 控制器层零鉴权（对比 model_hub 的
    禁词表猜测的直接应用）。
 3. e2e（org_hub live 变体模式：真控制器 + 活 PG + 活 RustFS + 一次性
    迁移库 + 脚本会话）：双层准入拒绝（前缀门：无头/成员令牌；服务层：
-   `a3s_us_` 形状未知令牌）+ 上传→发布→current→流式文件字节回环 +
+   `aster_us_` 形状未知令牌）+ 上传→发布→current→流式文件字节回环 +
    重复三元组命名 409 + 撤回后 denied≡missing + 全量删除清理。
    2/2 绿（本地活栈实测）。已知边界（已清偿 2026-10-22）：`plugin/
    packaging/` 两文件的 HEAD 既有 fmt 债（`55a64b3` 引入）——api `079e746`
@@ -152,7 +152,7 @@ upload/publish/withdraw/delete 控制器层零鉴权（对比 model_hub 的
   Rust 重写丢了队列腿（runtime `vault_apply` 的「NATS not wired」同证）。
 
 两案：
-- **A（HTTP 批）**：runtime POST `a3s.gateway.usage-batch.v1` 到 Cloud I0.2c
+- **A（HTTP 批）**：runtime POST `aster.gateway.usage-batch.v1` 到 Cloud I0.2c
   摄取面。小改（runtime 已有 http client + 能力钥），但绕开事件主干。
 - **B（事件式，DP-2 对齐）**：runtime 接 NATS 发布 `events.runtime.usage`
   （DP-2 已裁 NATS 主线；api worker 消费模式为原始设计）。大改：runtime
@@ -168,7 +168,7 @@ runtime 增 NATS 出站 publisher（尽力、断线不阻塞请求路径，宪�
 背景：FN0 residual「Still required for Verified」首行把 production-shaped
 FN0.2 Fleet retain 钉死在 GitHub Actions `ubuntu-24.04` workflow
 （`fn0-fleet-hosted-task-live.yml`），唯一解阻钥匙是 org secret
-`A3S_LABS_READ_TOKEN`（kense-labs 三私仓只读），至今未批。同时 Phase E
+`ASTER_LABS_READ_TOKEN`（kense-labs 三私仓只读），至今未批。同时 Phase E
 自托管 runner（specs/005 T025）以机器侧 deploy key 检出私有子模块，同机
 可跑同一 CI 入口 `run_fn02_fleet_live_ci.sh` 并由保留管道（T018）留存。
 
@@ -198,15 +198,15 @@ FN0.2 Fleet retain 钉死在 GitHub Actions `ubuntu-24.04` workflow
 
 自评（fail-closed 视角）：等价性主张的实质是「production-shaped = 主机
 形态 + 保留能力」，非「GitHub 品牌」。若评审不采纳，回退态 = 等
-`A3S_LABS_READ_TOKEN`，FN0 维持现状，不产生新增债。
+`ASTER_LABS_READ_TOKEN`，FN0 维持现状，不产生新增债。
 
 ## T015 取证修订 — krun 前提更正（2026-10-21，证据见 development/
 2026-10-21-krun-t042-rerun-forensics/OUTCOME.md）
 
 六格实验矩阵定案：10-19 的「krun 引导链内部失败」是 **dyld 加载失败**——
-硬拷贝至 `~/.a3s/bin` 的 shim 其 rpath（`@executable_path/../lib` →
-`~/.a3s/lib`）无 libkrun 可载，立即退出被 CLI 报成 VM boot 失败。补全
-`~/.a3s/lib`（拷安装件 `lib/` 的 `libkrun*.dylib`）后 **stock 3.3.0 链
+硬拷贝至 `~/.aster/bin` 的 shim 其 rpath（`@executable_path/../lib` →
+`~/.aster/lib`）无 libkrun 可载，立即退出被 CLI 报成 VM boot 失败。补全
+`~/.aster/lib`（拷安装件 `lib/` 的 `libkrun*.dylib`）后 **stock 3.3.0 链
 converged**；repo 构建（vendored 或 fork 插桩库）全程绿，插桩未触发。
 
 对决策板的修订：
@@ -214,7 +214,7 @@ converged**；repo 构建（vendored 或 fork 插桩库）全程绿，插桩未�
   digest `742f…2193`；digest 不可解析是 docker.io pull 特有）。Docker
   fallback 的镜像镜像问题独立存在，但 T0.4.2 不再依赖它。
 - **D-A**：成为 T0.4.2 步骤 4–6 的**唯一剩余决策**（Cloud 侧
-  webpki-only trust 对本地 a3s-auth issuer 的私有 CA 准入）。
+  webpki-only trust 对本地 aster-auth issuer 的私有 CA 准入）。
 - **D-F/上游 Box issue 素材补充**：`find_shim` 会选中脱离安装上下文的
   硬拷贝 shim，其 dyld 失败被归类为 VM boot 失败——上游修复方向：错误
   分类区分「shim 未加载」与「VM 退出」，或 find_shim 校验 rpath 可解析。
@@ -230,7 +230,7 @@ development/2026-10-21-t042-step1-subject-link/OUTCOME.md）
 对 D-A 材料的两点补充：
 
 - issuer 标识符在**域层**已强制有界规范 HTTPS URL（loopback HTTP 422），
-  即 D-A 的 a/b 两案之外还有一个既成事实：本地 a3s-auth 对 Cloud 的
+  即 D-A 的 a/b 两案之外还有一个既成事实：本地 aster-auth 对 Cloud 的
   issuer 标识符必须是 `https://…`。D-A 若选 a（受管信任锚），issuer
   标识符与信任链一起落配置；选 b（公共 CA），需可公网解析的测试域名。
 - SubjectLink 的 principalId 须为活跃 human principal（`POST memberships
@@ -252,7 +252,7 @@ aster-ai-lab/libkrun main（`02e1414`+`ad556a3`）**不是同支血统**：
 96 处树差异，vendor 独有 SNAPSHOT_PHASE_B.md / VSOCK_RESTORE_DIAGNOSIS.md
 及产品补丁集（TSI 反向代理 #13、端口发夹 #14、-EPERM #12、allowlist
 host bind、VirtioFS 快照、FUSE resume cookie……，SOURCE-PROVENANCE 详载）；
-fork 是 A3S-Lab 主线 + 插桩 + sysroot 修复。直接重 vendor = 回归产品网络
+fork 是 aster-ai-lab 主线 + 插桩 + sysroot 修复。直接重 vendor = 回归产品网络
 行为（build.rs 的 TSI 警告即此因）。
 
 **结论**：T021 真实前置 = fork 先吸收 f7c69184 补丁集（约 3 个 PR 量级，
@@ -312,10 +312,10 @@ fork，而非从上游拉补丁。
 ## hermetic 矩阵服务依赖修正（2026-10-22，T009/T018 后续）
 
 背景：全量 api 套件（CI 原话 `cargo test --locked --manifest-path
-apps/api/Cargo.toml -p a3s-api -- --test-threads=1`，活 PG/RustFS）
+apps/api/Cargo.toml -p aster-api -- --test-threads=1`，活 PG/RustFS）
 818+17+3 全绿、0 失败——排队三提交（58410bb/f14f605/079e746）整栈无
 回归。并行跑出现 1 例假红：tobot_memory 两 PG 测试共用可丢弃库
-`a3s_tobot_memory_proof`，其注释自书「必须 `--test-threads=1`」，而
+`aster_tobot_memory_proof`，其注释自书「必须 `--test-threads=1`」，而
 backend.yml campaigns 正是串行调用——调用方式错误，非缺陷。
 
 由此暴露 hermetic 矩阵（无服务容器）的存量地雷：api 三处 PG 证明对
@@ -323,13 +323,13 @@ backend.yml campaigns 正是串行调用——调用方式错误，非缺陷。
 死端点 → "could not reset disposable database … error connecting to
 server"）、git_store `postgres_catalog_tests.rs:44`
 （`.expect("live PostgreSQL")`，同实证）；cloud control-plane 同病
-（`panic!("A3S_CLOUD_TEST_POSTGRES_URL is required")` 门 + 后续连接失
+（`panic!("ASTER_CLOUD_TEST_POSTGRES_URL is required")` 门 + 后续连接失
 败）。对照 mail `postgres_tests.rs:64` 是响亮跳过（"not a pass"）。
 workflow 顶层 `env:` 使变量在 hermetic 在而 PG 死 → 首次真实执行必红。
 node-agent/sdk/contracts 零 PG 引用，干净。
 
-修正（aster 仓）：backend.yml hermetic 矩阵移除 a3s-api（
-a3s-cloud-control-plane 本就不在其列），os-retained-run.yml 同步移除
+修正（aster 仓）：backend.yml hermetic 矩阵移除 aster-api（
+aster-cloud-control-plane 本就不在其列），os-retained-run.yml 同步移除
 `run_tests api`（该管道无任何服务，步骤更名「service-free set」）。
 api 的测试覆盖只在 campaigns 活栈串行腿。本地证明：双 YAML 解析、
 hermetic 13 包清单断言、campaigns 三串行命令原样、run 块 `bash -n`。

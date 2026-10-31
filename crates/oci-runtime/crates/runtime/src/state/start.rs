@@ -1,8 +1,8 @@
 use std::collections::BTreeMap;
 
-use a3s_oci_core::{LifecycleEvent, LifecycleState};
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_core::{LifecycleEvent, LifecycleState};
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerTarget, ErrorCode, OciSchemaValidator, OperationId, Result, RuntimeEventKind,
     StartRequest, ValidateRequest,
 };
@@ -190,7 +190,7 @@ impl DurableStateStore {
     async fn reconcile_succeeded_start(
         &self,
         mut operation: StoredOperation,
-        response: a3s_oci_sdk::ContainerRecord,
+        response: aster_oci_sdk::ContainerRecord,
     ) -> Result<RecordOperationPreparation> {
         let stored = match self.load_stored_container(&operation.container_id).await {
             Ok(stored) => stored,
@@ -242,14 +242,14 @@ impl DurableStateStore {
             ContainerState::Running,
             *stored.record.state.pid(),
         )?;
-        let rebound_response = a3s_oci_sdk::ContainerRecord {
+        let rebound_response = aster_oci_sdk::ContainerRecord {
             state: rebound_state.clone(),
             ..response
         };
         if is_paused(&stored.record.state) {
             rebound_state = rebuild_paused_state(&rebound_state, true)?;
         }
-        let expected = a3s_oci_sdk::ContainerRecord {
+        let expected = aster_oci_sdk::ContainerRecord {
             state: rebound_state,
             ..rebound_response.clone()
         };
@@ -280,7 +280,7 @@ impl DurableStateStore {
         operation_id: &OperationId,
         status: ContainerState,
         pid: Option<i32>,
-    ) -> Result<a3s_oci_sdk::ContainerRecord> {
+    ) -> Result<aster_oci_sdk::ContainerRecord> {
         match (status, pid) {
             (ContainerState::Running, Some(pid)) if pid > 0 => {}
             (ContainerState::Stopped, None) => {}
@@ -442,10 +442,10 @@ impl DurableStateStore {
 }
 
 fn pid_conflict(
-    container_id: &a3s_oci_sdk::ContainerId,
+    container_id: &aster_oci_sdk::ContainerId,
     durable: Option<i32>,
     observed: Option<i32>,
-) -> a3s_oci_sdk::Error {
+) -> aster_oci_sdk::Error {
     state_error(
         ErrorCode::Conflict,
         "complete-start",
@@ -457,7 +457,7 @@ fn invalid_state(
     target: &ContainerTarget,
     status: ContainerState,
     operation: &'static str,
-) -> a3s_oci_sdk::Error {
+) -> aster_oci_sdk::Error {
     state_error(
         ErrorCode::FailedPrecondition,
         operation,

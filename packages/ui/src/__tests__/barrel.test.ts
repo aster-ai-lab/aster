@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import * as A3sUI from '../index'
+import * as AsterUI from '../index'
 
 // Golden export list: the merged public API both consumers depend on.
 // Regenerate with `bun -e "import * as ui from './src/index.ts'; console.log(JSON.stringify(Object.keys(ui).sort()))"`
@@ -391,9 +391,9 @@ const GOLDEN_EXPORTS = new Set([
   'withMermaid',
 ])
 
-describe('@a3s/ui public barrel', () => {
+describe('@aster/ui public barrel', () => {
   it('exports exactly the golden API set', () => {
-    const actual = new Set(Object.keys(A3sUI))
+    const actual = new Set(Object.keys(AsterUI))
     const missing = [...GOLDEN_EXPORTS].filter((name) => !actual.has(name))
     const extra = [...actual].filter((name) => !GOLDEN_EXPORTS.has(name))
     expect(missing).toEqual([])
@@ -401,7 +401,7 @@ describe('@a3s/ui public barrel', () => {
   })
   it('keeps the console-kit renames importable', () => {
     for (const name of ['ConsoleDialog', 'ConsoleConfirmDialog', 'ConsoleToastProvider', 'ResourceTable']) {
-      expect(A3sUI).toHaveProperty(name)
+      expect(AsterUI).toHaveProperty(name)
     }
   })
 })

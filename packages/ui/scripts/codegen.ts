@@ -107,12 +107,12 @@ export function generateAvatar(opts: {
   const sf = project.createSourceFile('avatar.tsx', '', { overwrite: true })
 
   sf.addImportDeclaration({
-    moduleSpecifier: '@a3s/ui/components/primitives/avatar',
+    moduleSpecifier: '@aster/ui/components/primitives/avatar',
     namedImports: ['Avatar', 'AvatarFallback']
   })
 
   sf.addImportDeclaration({
-    moduleSpecifier: '@a3s/ui/lib/utils',
+    moduleSpecifier: '@aster/ui/lib/utils',
     namedImports: ['cn']
   })
 

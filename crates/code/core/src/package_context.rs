@@ -1,8 +1,8 @@
 //! Exact-generation package context injected by an embedding host.
 //!
-//! A3S Code deliberately does not install packages, resolve Registry state, or
+//! Aster Code deliberately does not install packages, resolve Registry state, or
 //! choose a "latest" generation. The host supplies a provider and one complete
-//! immutable binding obtained from A3S Use. Every request and response repeats
+//! immutable binding obtained from Aster Use. Every request and response repeats
 //! that binding, and Code validates cited, bounded Markdown before it can enter
 //! the model context.
 
@@ -16,18 +16,18 @@ use std::collections::HashSet;
 use std::sync::Arc;
 use thiserror::Error;
 
-pub const PACKAGE_BINDING_SCHEMA: &str = "a3s.code.package-session-binding.v1";
+pub const PACKAGE_BINDING_SCHEMA: &str = "aster.code.package-session-binding.v1";
 pub const PACKAGE_KNOWLEDGE_BINDING_SCHEMA: &str = "agentic.ontology.r0-knowledge-lease-binding.v1";
-pub const PACKAGE_CONTEXT_REQUEST_SCHEMA: &str = "a3s.code.package-context-request.v1";
-pub const PACKAGE_CONTEXT_RESPONSE_SCHEMA: &str = "a3s.code.package-context-response.v1";
-pub const PACKAGE_CONTEXT_REQUEST_DIGEST_DOMAIN: &str = "a3s.code.package-context-request.v1";
-pub const OKF_KNOWLEDGE_SEARCH_REQUEST_SCHEMA: &str = "a3s.use.okf-knowledge-search-request.v1";
-pub const OKF_KNOWLEDGE_READ_REQUEST_SCHEMA: &str = "a3s.use.okf-knowledge-read-request.v1";
-pub const OKF_KNOWLEDGE_CITATION_SCHEMA: &str = "a3s.use.okf-knowledge-citation.v1";
-pub const PACKAGE_CITATION_METADATA: &str = "a3s.package.citation";
-pub const PACKAGE_BINDING_METADATA: &str = "a3s.package.binding";
+pub const PACKAGE_CONTEXT_REQUEST_SCHEMA: &str = "aster.code.package-context-request.v1";
+pub const PACKAGE_CONTEXT_RESPONSE_SCHEMA: &str = "aster.code.package-context-response.v1";
+pub const PACKAGE_CONTEXT_REQUEST_DIGEST_DOMAIN: &str = "aster.code.package-context-request.v1";
+pub const OKF_KNOWLEDGE_SEARCH_REQUEST_SCHEMA: &str = "aster.use.okf-knowledge-search-request.v1";
+pub const OKF_KNOWLEDGE_READ_REQUEST_SCHEMA: &str = "aster.use.okf-knowledge-read-request.v1";
+pub const OKF_KNOWLEDGE_CITATION_SCHEMA: &str = "aster.use.okf-knowledge-citation.v1";
+pub const PACKAGE_CITATION_METADATA: &str = "aster.package.citation";
+pub const PACKAGE_BINDING_METADATA: &str = "aster.package.binding";
 
-const CAPABILITY_SNAPSHOT_DIGEST_DOMAIN: &str = "a3s.use.capability-snapshot.v1";
+const CAPABILITY_SNAPSHOT_DIGEST_DOMAIN: &str = "aster.use.capability-snapshot.v1";
 const CANONICAL_DIGEST_PREFIX: &[u8] = b"agentic-ontology-canonical-v1\0";
 const MAX_QUERY_BYTES: usize = 4 * 1024;
 const MAX_PROVIDER_NAME_BYTES: usize = 128;
@@ -58,7 +58,7 @@ pub enum PackageContextError {
 
 pub type PackageContextResult<T> = std::result::Result<T, PackageContextError>;
 
-/// Exact A3S Use Knowledge surface visible to this Code session.
+/// Exact Aster Use Knowledge surface visible to this Code session.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PackageKnowledgeBindingV1 {
@@ -180,7 +180,7 @@ impl Default for PackageContextLimits {
     }
 }
 
-/// Durable exact-generation identity attached to one A3S Code session.
+/// Durable exact-generation identity attached to one Aster Code session.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PackageBindingV1 {
@@ -530,7 +530,7 @@ impl PackageContextResponseV1 {
     }
 }
 
-/// Host port. Implementations typically hold an A3S Use exact-generation
+/// Host port. Implementations typically hold an Aster Use exact-generation
 /// Knowledge lease; Code sees only bounded cited reads and never the Registry,
 /// package filesystem, ontology graph, or a personal-memory fallback.
 #[async_trait::async_trait]
@@ -633,7 +633,7 @@ impl ContextProvider for PackageContextSession {
                     rendered,
                 )
                 .with_source(format!(
-                    "a3s-use://citation/{}",
+                    "aster-use://citation/{}",
                     document
                         .citation
                         .citation_digest
@@ -642,8 +642,8 @@ impl ContextProvider for PackageContextSession {
                 ))
                 .with_metadata(PACKAGE_CITATION_METADATA, citation_json)
                 .with_metadata(PACKAGE_BINDING_METADATA, binding_json)
-                .with_metadata("a3s.package.source_digest", source_digest.into())
-                .with_provenance("a3s-use-package")
+                .with_metadata("aster.package.source_digest", source_digest.into())
+                .with_provenance("aster-use-package")
                 .with_priority(1.0)
                 .with_trust(1.0)
                 .with_freshness(1.0)

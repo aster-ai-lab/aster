@@ -1,4 +1,4 @@
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use super::cutover::{
     publication_from_record, recorded_cutover, registry_cutover_capacity,
@@ -90,7 +90,7 @@ impl ExtensionRegistry {
             return Err(UseError::new(
                 "use.extension.host_incompatible",
                 format!(
-                    "package '{}' is not compatible with this A3S Use host.",
+                    "package '{}' is not compatible with this Aster Use host.",
                     identity.package_id
                 ),
             ));

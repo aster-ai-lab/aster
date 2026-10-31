@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
-use a3s_code_core::llm::{StreamEvent, ToolDefinition};
-use a3s_code_core::{Agent, CodeConfig, ContentBlock, LlmClient, LlmResponse, Message, TokenUsage};
+use aster_core::llm::{StreamEvent, ToolDefinition};
+use aster_core::{Agent, CodeConfig, ContentBlock, LlmClient, LlmResponse, Message, TokenUsage};
 use anyhow::{Context, Result};
 use serde_json::Value;
 use std::{
@@ -129,7 +129,7 @@ pub async fn agent() -> Result<Agent> {
         }
     "#,
     )?;
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         ..Default::default()
     });

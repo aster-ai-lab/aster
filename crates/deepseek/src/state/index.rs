@@ -8,8 +8,8 @@ use std::sync::{
     Arc,
 };
 
-use a3s_power::error::Result;
-use a3s_power::inference::InferenceLimits;
+use aster_power::error::Result;
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Device, Tensor};
 use tokio_util::sync::CancellationToken;
 

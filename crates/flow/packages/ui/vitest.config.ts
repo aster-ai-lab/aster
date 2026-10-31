@@ -25,18 +25,18 @@ export default defineConfig({
       { find: /^react-dom\/(.*)$/, replacement: path.join(reactDom, '$1') },
             // Marking-only fakes: initialization-marks without enhancement, so the
       // fallback controllers own interaction (the tests' semantic model).
-      { find: '@a3s-lab/ce/basecoat', replacement: repo('ce/dist/js/basecoat.js') },
-      { find: '@a3s-lab/ce/select', replacement: path.resolve(__dirname, 'tests/__stubs__/ce-module.ts') },
-      { find: '@a3s-lab/ce/code-editor', replacement: repo('ce/dist/js/code-editor.js') },
-      { find: '@a3s-lab/form', replacement: repo('form/src') },
-      { find: '@a3s-lab/ui', replacement: repo('ui/src') },
+      { find: '@aster-ai-lab/ce/basecoat', replacement: repo('ce/dist/js/basecoat.js') },
+      { find: '@aster-ai-lab/ce/select', replacement: path.resolve(__dirname, 'tests/__stubs__/ce-module.ts') },
+      { find: '@aster-ai-lab/ce/code-editor', replacement: repo('ce/dist/js/code-editor.js') },
+      { find: '@aster-ai-lab/form', replacement: repo('form/src') },
+      { find: '@aster-ai-lab/ui', replacement: repo('ui/src') },
     ],
   },
   test: {
     // Inline the store deps that own their own react peer: externoized
     // node_modules resolve react through the store (19.3.0) and bypass
     // the alias — inlining them into the vite pipeline keeps one React.
-    server: { deps: { inline: [/@uiw\//, /@codemirror\//, /@a3s-lab\//, /@replit\//, /@lezer\//] } },
+    server: { deps: { inline: [/@uiw\//, /@codemirror\//, /@aster-lab\//, /@replit\//, /@lezer\//] } },
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./tests/setup.ts'],

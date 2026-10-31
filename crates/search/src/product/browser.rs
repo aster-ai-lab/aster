@@ -9,7 +9,7 @@ use crate::{EngineFailure, EngineOutcomeKind, SearchReport, SearchResults};
 
 use super::run::{CascadeControls, CascadeRequest};
 
-const RETRY_OBSERVATION_SCHEMA: &str = "a3s/search-retry-observation/v1";
+const RETRY_OBSERVATION_SCHEMA: &str = "aster/search-retry-observation/v1";
 
 fn add_retry_observation(
     results: &mut SearchResults,
@@ -30,7 +30,7 @@ fn add_retry_observation(
         })
         .count();
     results.add_report(
-        SearchReport::new("a3s-search/browser-retry")
+        SearchReport::new("aster-search/browser-retry")
             .with_metadata("schema", RETRY_OBSERVATION_SCHEMA)
             .with_metadata("initial_attempts", initial_attempts)
             .with_metadata("retry_attempts", retry_attempts)
@@ -61,7 +61,7 @@ impl HeadlessBrowser {
     }
 }
 
-/// Browser runtime the host already provisioned. A3S Search never downloads
+/// Browser runtime the host already provisioned. Aster Search never downloads
 /// or installs a browser for it.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct HeadlessRuntime {
@@ -84,7 +84,7 @@ use std::{sync::Arc, time::Duration};
 use futures::future::join_all;
 
 #[cfg(feature = "headless")]
-use crate::a3s_use_browser::{BrowserPool, BrowserPoolConfig, BrowserProvider, PageRenderer};
+use crate::aster_use_browser::{BrowserPool, BrowserPoolConfig, BrowserProvider, PageRenderer};
 #[cfg(feature = "headless")]
 use crate::engines::{Baidu, BingBrowser, BraveBrowser, Google};
 #[cfg(feature = "headless")]
@@ -378,7 +378,7 @@ pub(super) async fn execute_headless_tier(
             shortcut,
             "headless_unavailable",
             format!(
-                "the {} backend requires a3s-search to be built with the headless feature",
+                "the {} backend requires aster-search to be built with the headless feature",
                 request.browser.as_str()
             ),
         ));
@@ -429,7 +429,7 @@ fn moli_pool_config(proxy: Option<&str>, runtime: &HeadlessRuntime) -> MoliPoolC
 }
 
 #[cfg(feature = "headless")]
-fn moli_setup_failure(error: crate::a3s_use_browser::UseError) -> EngineFailure {
+fn moli_setup_failure(error: crate::aster_use_browser::UseError) -> EngineFailure {
     let mut message = format!("Moli headless backend is unavailable: {}", error.message);
     if let Some(suggestion) = error.suggestion {
         message.push_str(" Suggestion: ");
@@ -562,7 +562,7 @@ mod tests {
         let metadata = &results.reports()[0].metadata;
         assert_eq!(
             metadata["schema"],
-            serde_json::json!("a3s/search-retry-observation/v1")
+            serde_json::json!("aster/search-retry-observation/v1")
         );
         assert_eq!(metadata["initial_attempts"], serde_json::json!(1));
         assert_eq!(metadata["retry_attempts"], serde_json::json!(1));

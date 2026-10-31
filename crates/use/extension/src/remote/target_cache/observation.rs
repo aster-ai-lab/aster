@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 use tokio::fs;
 
@@ -78,7 +78,7 @@ pub(in crate::remote) async fn observe_target_cache_entry(
         });
     }
     if let Some(metadata) = partial {
-        if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+        if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
             || !metadata.is_file()
             || metadata.len() > expected_length
         {
@@ -117,7 +117,7 @@ async fn optional_real_directory(path: &Path, label: &str) -> UseResult<Option<(
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(observation_io_error(label, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(target_cache_error(
             "use.extension.registry_target_cache_invalid",
             format!("The observed {label} must be a real directory."),

@@ -34,7 +34,7 @@ pub fn rewrite_acl_sections(
     config: &CodeConfig,
     sections: &[ConfigSection],
 ) -> Result<String> {
-    let document = a3s_acl::parse_acl(source)
+    let document = aster_acl::parse_acl(source)
         .map_err(|error| CodeError::Config(format!("Failed to parse ACL: {error}")))?;
     let original = CodeConfig::from_acl(source)?;
     let mut output = source.to_string();
@@ -348,7 +348,7 @@ llm_api_timeout_ms = 45000
 storage_backend = "custom"
 sessions_dir = "./sessions"
 memory_dir = "./memory"
-storage_url = env("A3S_EDITOR_STORAGE_URL")
+storage_url = env("ASTER_EDITOR_STORAGE_URL")
 skill_dirs = ["./skills"]
 agent_dirs = ["./agents"]
 max_tool_rounds = 42
@@ -365,14 +365,14 @@ auto_delegation {
 }
 
 providers "openai" {
-  api_key = env("A3S_EDITOR_PROVIDER_KEY")
+  api_key = env("ASTER_EDITOR_PROVIDER_KEY")
   base_url = "https://llm.example.test/v1"
-  headers = { Authorization = env("A3S_EDITOR_PROVIDER_TOKEN"), X_Tenant = "a3s" }
+  headers = { Authorization = env("ASTER_EDITOR_PROVIDER_TOKEN"), X_Tenant = "aster" }
 
   models "gpt-test" {
     name = "GPT Test"
     family = "gpt"
-    api_key = env("A3S_EDITOR_MODEL_KEY")
+    api_key = env("ASTER_EDITOR_MODEL_KEY")
     attachment = true
     reasoning = true
     tool_call = true
@@ -468,18 +468,18 @@ document_parser {
 mcp_servers "remote" {
   transport = "streamable-http"
   url = "https://mcp.example.test"
-  headers = { Authorization = env("A3S_EDITOR_MCP_HEADER") }
+  headers = { Authorization = env("ASTER_EDITOR_MCP_HEADER") }
   enabled = true
-  env = { MCP_TOKEN = env("A3S_EDITOR_MCP_TOKEN") }
+  env = { MCP_TOKEN = env("ASTER_EDITOR_MCP_TOKEN") }
   tool_timeout_secs = 75
   oauth {
     auth_url = "https://auth.example.test"
     token_url = "https://token.example.test"
     client_id = "client"
-    client_secret = env("A3S_EDITOR_OAUTH_SECRET")
+    client_secret = env("ASTER_EDITOR_OAUTH_SECRET")
     scopes = ["tools.read"]
     redirect_uri = "http://127.0.0.1/callback"
-    access_token = env("A3S_EDITOR_OAUTH_TOKEN")
+    access_token = env("ASTER_EDITOR_OAUTH_TOKEN")
   }
 }
 
@@ -540,14 +540,14 @@ unknown { nested { enabled = true } }
 
         assert!(output.contains("# keep this document comment"));
         for expression in [
-            "env(\"A3S_EDITOR_STORAGE_URL\")",
-            "env(\"A3S_EDITOR_PROVIDER_KEY\")",
-            "env(\"A3S_EDITOR_PROVIDER_TOKEN\")",
-            "env(\"A3S_EDITOR_MODEL_KEY\")",
-            "env(\"A3S_EDITOR_MCP_HEADER\")",
-            "env(\"A3S_EDITOR_MCP_TOKEN\")",
-            "env(\"A3S_EDITOR_OAUTH_SECRET\")",
-            "env(\"A3S_EDITOR_OAUTH_TOKEN\")",
+            "env(\"ASTER_EDITOR_STORAGE_URL\")",
+            "env(\"ASTER_EDITOR_PROVIDER_KEY\")",
+            "env(\"ASTER_EDITOR_PROVIDER_TOKEN\")",
+            "env(\"ASTER_EDITOR_MODEL_KEY\")",
+            "env(\"ASTER_EDITOR_MCP_HEADER\")",
+            "env(\"ASTER_EDITOR_MCP_TOKEN\")",
+            "env(\"ASTER_EDITOR_OAUTH_SECRET\")",
+            "env(\"ASTER_EDITOR_OAUTH_TOKEN\")",
         ] {
             assert!(
                 output.contains(expression),

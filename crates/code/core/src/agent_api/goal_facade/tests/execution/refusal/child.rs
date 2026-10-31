@@ -180,9 +180,9 @@ async fn a_delegated_task_stops_the_child_and_returns_its_original_failure() {
     assert_eq!(
         facts
             .iter()
-            .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+            .filter(|fact| fact.kind == "aster.goal.slice.settled")
             .count(),
         1
     );
-    assert!(!facts.iter().any(|fact| fact.kind == "a3s.goal.completed"));
+    assert!(!facts.iter().any(|fact| fact.kind == "aster.goal.completed"));
 }

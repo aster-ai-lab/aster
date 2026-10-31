@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_use_core::{PluginPlanningBundle, UseError, UseResult, VerifiedPluginCatalogRecord};
+use aster_use_core::{PluginPlanningBundle, UseError, UseResult, VerifiedPluginCatalogRecord};
 use tokio::fs;
 
 use super::staging::{prepare_lifecycle_package_parent, LIFECYCLE_STAGING_PREFIX};
@@ -187,7 +187,7 @@ impl ExtensionLifecyclePackage {
             return Err(UseError::new(
                 "use.extension.host_incompatible",
                 format!(
-                    "package '{}' {} does not support A3S Use {}.",
+                    "package '{}' {} does not support Aster Use {}.",
                     manifest.package_id, manifest.version, host_version
                 ),
             )
@@ -355,7 +355,7 @@ async fn validate_committed_root(
     let metadata = fs::symlink_metadata(root)
         .await
         .map_err(|error| io_error("inspect lifecycle package", root, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(UseError::new(
             "use.extension.ownership_invalid",
             "The lifecycle package root must be an owned directory.",

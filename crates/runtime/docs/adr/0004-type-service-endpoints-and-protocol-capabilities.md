@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-07-29
-- Decision owners: A3S Runtime maintainers
+- Decision owners: Aster Runtime maintainers
 
 ## Context
 
@@ -12,7 +12,7 @@ encoded provider endpoints in product-specific evidence keys. That duplicated
 wire grammar, allowed synthetic endpoint publication outside the provider, and
 made a provider either overstate UDP support or reject useful TCP Services.
 
-A3S Box already has one generation-fenced execution port connector. The Runtime
+Aster Box already has one generation-fenced execution port connector. The Runtime
 contract needs to expose the resulting node-local endpoint without importing a
 Box type, adding another lifecycle store, or making a control-plane consumer
 own a forwarding process.
@@ -23,7 +23,7 @@ own a forwarding process.
 
 `RuntimeFeature::ServiceTcp` and `RuntimeFeature::ServiceUdp` independently
 advertise the transports a provider can publish for `NetworkMode::Service`.
-Capabilities schema `a3s.runtime.capabilities.v4` requires Service mode and at
+Capabilities schema `aster.runtime.capabilities.v4` requires Service mode and at
 least one Service transport feature to appear together. Specification matching
 rejects every declared port whose protocol is not advertised before state
 reservation or provider work.
@@ -36,7 +36,7 @@ requires exact loopback publication and collision behavior.
 
 `RuntimeServiceEndpoint` contains the declared port name, transport protocol,
 literal loopback address, and positive host port. Its canonical evidence key is
-`a3s.runtime.service-endpoint.<port-name>` and its canonical value is a TCP or
+`aster.runtime.service-endpoint.<port-name>` and its canonical value is a TCP or
 UDP socket URI. Constructors, parsing, insertion, and observation lookup live
 in Runtime; providers and consumers must not define another prefix or parser.
 

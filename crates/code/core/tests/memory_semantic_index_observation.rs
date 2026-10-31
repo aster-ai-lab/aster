@@ -2,9 +2,9 @@
 #[path = "durable_memory_semantic_refresh/support.rs"]
 mod refresh_support;
 
-use a3s_code_core::embedding::EmbeddingExecutorConfig;
-use a3s_memory::repository::{InMemoryRepository, MemoryStatus};
-use a3s_memory::vector::{
+use aster_core::embedding::EmbeddingExecutorConfig;
+use aster_durable_memory::repository::{InMemoryRepository, MemoryStatus};
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorIndexObservation,
     VectorIndexStatus, VectorMutationConsistency, VectorRecord, VectorResult, VectorRevision,
     VectorSearchRequest, VectorSearchResult,

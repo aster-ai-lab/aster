@@ -10,8 +10,8 @@ const shared: ProjectConfig = {
   extends: withRslibConfig({ libId: 'library' }),
   resolve: {
     alias: {
-      '@a3s-lab/office/core': resolve(import.meta.dirname, 'src/core.ts'),
-      '@a3s-lab/office/react': resolve(import.meta.dirname, 'src/react.tsx'),
+      '@aster-ai-lab/office/core': resolve(import.meta.dirname, 'src/core.ts'),
+      '@aster-ai-lab/office/react': resolve(import.meta.dirname, 'src/react.tsx'),
     },
   },
   setupFiles: ['./rstest.setup.ts'],

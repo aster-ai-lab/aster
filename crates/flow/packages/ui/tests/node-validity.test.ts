@@ -1,17 +1,17 @@
-import type { JsonObject } from "@a3s-lab/ui/form/core";
+import type { JsonObject } from "@aster-ai-lab/ui/form/core";
 import {
-  A3S_FLOW_RUNTIME_COMMAND_BINDINGS,
-  a3sFlowDagNodeRegistry,
-  createA3sFlowDagNode,
-  createA3sFlowExpression,
-  mergeA3sFlowDagNodeConfiguration,
-  selectA3sFlowDagNodeConfiguration,
-  validateA3sFlowDagNodeConfiguration,
+  ASTER_FLOW_RUNTIME_COMMAND_BINDINGS,
+  asterFlowDagNodeRegistry,
+  createAsterFlowDagNode,
+  createAsterFlowExpression,
+  mergeAsterFlowDagNodeConfiguration,
+  selectAsterFlowDagNodeConfiguration,
+  validateAsterFlowDagNodeConfiguration,
 } from "../src";
 
-type Expression = Parameters<typeof createA3sFlowExpression>[0];
+type Expression = Parameters<typeof createAsterFlowExpression>[0];
 
-const expression = (value: Expression) => createA3sFlowExpression(value);
+const expression = (value: Expression) => createAsterFlowExpression(value);
 const field = (path: string): Expression => ({ op: "field", path });
 const literal = (value: Extract<Expression, { op: "literal" }>['value']): Expression => ({
   op: "literal",
@@ -313,9 +313,9 @@ const INVALID_CONFIGURATIONS: Readonly<Record<string, InvalidCase>> = {
   },
 };
 
-describe("A3S Flow per-node validity", () => {
+describe("Aster Flow per-node validity", () => {
   it("keeps one meaningful, non-default configuration fixture for every public node", () => {
-    const publicManifests = a3sFlowDagNodeRegistry.list({ includeInternal: false });
+    const publicManifests = asterFlowDagNodeRegistry.list({ includeInternal: false });
 
     expect(Object.keys(VALID_CONFIGURATIONS).sort()).toEqual(
       publicManifests.map(({ type }) => type).sort(),
@@ -326,13 +326,13 @@ describe("A3S Flow per-node validity", () => {
         manifest.fields.map(({ name }) => name).sort(),
       );
       expect(
-        validateA3sFlowDagNodeConfiguration(manifest, configuration),
+        validateAsterFlowDagNodeConfiguration(manifest, configuration),
         manifest.type,
       ).toEqual({ ok: true, errors: [] });
 
-      const source = createA3sFlowDagNode(`valid-${manifest.type}`, manifest);
+      const source = createAsterFlowDagNode(`valid-${manifest.type}`, manifest);
       source.data["x-host-policy"] = { queue: "workflow-validation" };
-      const updated = mergeA3sFlowDagNodeConfiguration(
+      const updated = mergeAsterFlowDagNodeConfiguration(
         source,
         manifest,
         configuration,
@@ -340,7 +340,7 @@ describe("A3S Flow per-node validity", () => {
       const restored = JSON.parse(JSON.stringify(updated));
 
       expect(
-        selectA3sFlowDagNodeConfiguration(restored, manifest),
+        selectAsterFlowDagNodeConfiguration(restored, manifest),
         manifest.type,
       ).toEqual(configuration);
       expect(restored.data["x-host-policy"], manifest.type).toEqual({
@@ -350,7 +350,7 @@ describe("A3S Flow per-node validity", () => {
   });
 
   it("rejects a node-specific broken configuration for every configurable public node", () => {
-    const configurable = a3sFlowDagNodeRegistry
+    const configurable = asterFlowDagNodeRegistry
       .list({ includeInternal: false })
       .filter(({ fields }) => fields.length > 0);
 
@@ -361,7 +361,7 @@ describe("A3S Flow per-node validity", () => {
       const testCase = INVALID_CONFIGURATIONS[manifest.type];
       const configuration = structuredClone(VALID_CONFIGURATIONS[manifest.type]);
       testCase.mutate(configuration);
-      const result = validateA3sFlowDagNodeConfiguration(
+      const result = validateAsterFlowDagNodeConfiguration(
         manifest,
         configuration,
       );
@@ -379,13 +379,13 @@ describe("A3S Flow per-node validity", () => {
   });
 
   it("binds every runtime command exactly once and keeps structural nodes unbound", () => {
-    const manifests = a3sFlowDagNodeRegistry.list();
+    const manifests = asterFlowDagNodeRegistry.list();
     const runtimeBindings = manifests
       .filter(({ role }) => role === "runtime-command")
       .map(({ runtimeBinding }) => runtimeBinding);
 
     expect(runtimeBindings.sort()).toEqual(
-      [...A3S_FLOW_RUNTIME_COMMAND_BINDINGS].sort(),
+      [...ASTER_FLOW_RUNTIME_COMMAND_BINDINGS].sort(),
     );
     expect(new Set(runtimeBindings).size).toBe(runtimeBindings.length);
     expect(

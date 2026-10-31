@@ -1,4 +1,4 @@
-//! A3S Code Core Library
+//! Aster Code Core Library
 //!
 //! Harness-driven runtime for coding agents.
 //!
@@ -8,7 +8,7 @@
 //! ## Quick Start
 //!
 //! ```rust,no_run
-//! use a3s_code_core::{Agent, AgentEvent};
+//! use aster_core::{Agent, AgentEvent};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! // From an ACL-compatible config file path (.acl)
@@ -37,7 +37,7 @@
 //! ## Disposable Workers
 //!
 //! ```rust,no_run
-//! use a3s_code_core::{Agent, SessionOptions, WorkerAgentSpec};
+//! use aster_core::{Agent, SessionOptions, WorkerAgentSpec};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let agent = Agent::new("agent.acl").await?;
@@ -110,7 +110,7 @@ mod deep38_support;
 mod deep_e2e_live;
 pub mod directory_projection;
 pub mod durable_memory;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 pub mod durable_memory_vec;
 #[cfg(feature = "dynamic-workflow")]
 pub mod dynamic_workflow;
@@ -264,7 +264,7 @@ pub use completion_attestor::{merge_attested_report, CompletionAttestor, Mutated
 pub use config::OsConfig;
 pub use config::{
     AutoDelegationConfig, CodeConfig, ModelConfig, ModelCost, ModelLimit, ModelModalities,
-    ProviderConfig,
+    ProviderConfig, ProviderProtocol,
 };
 pub use content_digest::{digest_bytes, digest_json, validate_digest};
 pub use core_event_log::CoreEventLog;

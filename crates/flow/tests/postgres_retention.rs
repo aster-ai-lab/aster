@@ -1,6 +1,6 @@
 #![cfg(feature = "postgres")]
 
-use a3s_flow::{
+use aster_flow::{
     ChildOperationReference, FlowEvent, FlowEventStore, FlowHistoryRetentionPolicy,
     PostgresEventStore, WorkflowSpec,
 };
@@ -102,7 +102,7 @@ async fn postgres_retention_preserves_holds_live_runs_and_linked_history() {
         store
             .hold_history(&held_run, "audit-export", "different reason")
             .await,
-        Err(a3s_flow::FlowError::RunConflict { .. })
+        Err(aster_flow::FlowError::RunConflict { .. })
     ));
     assert!(matches!(
         store
@@ -112,7 +112,7 @@ async fn postgres_retention_preserves_holds_live_runs_and_linked_history() {
                 "missing run",
             )
             .await,
-        Err(a3s_flow::FlowError::RunNotFound(_))
+        Err(aster_flow::FlowError::RunNotFound(_))
     ));
 
     let deleted_history = store.list(&delete_run).await.unwrap();
@@ -132,7 +132,7 @@ async fn postgres_retention_preserves_holds_live_runs_and_linked_history() {
     assert!(first.non_terminal_run_ids.contains(&parent_run));
     assert!(matches!(
         store.list(&delete_run).await,
-        Err(a3s_flow::FlowError::RunNotFound(_))
+        Err(aster_flow::FlowError::RunNotFound(_))
     ));
     let tombstone = store
         .history_tombstone(&delete_run)
@@ -145,7 +145,7 @@ async fn postgres_retention_preserves_holds_live_runs_and_linked_history() {
     assert_eq!(tombstone.history_sha256, expected_checksum);
     assert!(matches!(
         store.append(&delete_run, FlowEvent::RunStarted).await,
-        Err(a3s_flow::FlowError::RunConflict { .. })
+        Err(aster_flow::FlowError::RunConflict { .. })
     ));
     assert_eq!(store.history_holds(&held_run).await.unwrap().len(), 1);
     assert!(!store
@@ -184,7 +184,7 @@ async fn postgres_retention_preserves_holds_live_runs_and_linked_history() {
                 },
             )
             .await,
-        Err(a3s_flow::FlowError::RunNotFound(_))
+        Err(aster_flow::FlowError::RunNotFound(_))
     ));
     assert!(matches!(
         store
@@ -200,6 +200,6 @@ async fn postgres_retention_preserves_holds_live_runs_and_linked_history() {
                 },
             )
             .await,
-        Err(a3s_flow::FlowError::RunConflict { .. })
+        Err(aster_flow::FlowError::RunConflict { .. })
     ));
 }

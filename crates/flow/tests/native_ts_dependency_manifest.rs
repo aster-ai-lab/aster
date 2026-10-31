@@ -1,6 +1,6 @@
 #[cfg(all(feature = "native-ts", unix))]
 mod native_ts_dependency_manifest {
-    use a3s_flow::{
+    use aster_flow::{
         FlowError, NativeTsDependencyMode, NativeTsRuntime, NativeTsRuntimeConfig, WorkflowSpec,
     };
     use std::fs;
@@ -8,7 +8,7 @@ mod native_ts_dependency_manifest {
     use std::path::Path;
     use std::time::Duration;
 
-    const BASE_MANIFEST: &str = r#"{"protocol":"a3s.flow.native_ts.dependencies.v1","compilerIdentity":"test-compiler-v1","files":["shared.ts","workflow.ts"]}"#;
+    const BASE_MANIFEST: &str = r#"{"protocol":"aster.flow.native_ts.dependencies.v1","compilerIdentity":"test-compiler-v1","files":["shared.ts","workflow.ts"]}"#;
 
     fn native_spec() -> WorkflowSpec {
         WorkflowSpec::native_ts("native.manifest", "0.1.0", "workflow.ts", "main")
@@ -169,7 +169,7 @@ esac
             "export const extra = 1;\n",
         )
         .unwrap();
-        let manifest = r#"{"protocol":"a3s.flow.native_ts.dependencies.v1","compilerIdentity":"test-compiler-v1","files":["extra.ts","shared.ts","workflow.ts"]}"#;
+        let manifest = r#"{"protocol":"aster.flow.native_ts.dependencies.v1","compilerIdentity":"test-compiler-v1","files":["extra.ts","shared.ts","workflow.ts"]}"#;
         write_manifest_compiler(&compiler, &compile_log, false, manifest);
 
         let error = runtime(directory.path(), &compiler, &cache)
@@ -190,7 +190,7 @@ esac
         let compile_log = directory.path().join("compile.log");
         let cache = directory.path().join("cache");
         write_sources(directory.path());
-        let manifest = r#"{"protocol":"a3s.flow.native_ts.dependencies.v1","compilerIdentity":"test-compiler-v2","files":["shared.ts","workflow.ts"]}"#;
+        let manifest = r#"{"protocol":"aster.flow.native_ts.dependencies.v1","compilerIdentity":"test-compiler-v2","files":["shared.ts","workflow.ts"]}"#;
         write_manifest_compiler(&compiler, &compile_log, false, manifest);
 
         let error = runtime(directory.path(), &compiler, &cache)

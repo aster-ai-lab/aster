@@ -2,7 +2,7 @@
 
 ## 0.1.8
 
-`a3s-vec` `0.1.8` is the Rust 1.75 fix for the published `0.1.7` crate.
+`aster-vec` `0.1.8` is the Rust 1.75 fix for the published `0.1.7` crate.
 Tag `0.1.8` points at the revision that `cargo publish` uploads. The registry
 SHA-256 is filled in the post-publish checklist below once that upload exists.
 
@@ -22,7 +22,7 @@ toward `+∞` with `to_bits`. The library, the public `f64` contract, and the
 
 ## 0.1.7
 
-`a3s-vec` `0.1.7` is published. Tag `0.1.7` @
+`aster-vec` `0.1.7` is published. Tag `0.1.7` @
 `57fc47694befd0f9915df21175a2158918432170`, crates.io SHA-256
 `90254cfdaddbe3848788fd93fc91a301ac39016b60b1e09c6afca799d59efd73`.
 `cargo test` on Rust 1.75 fails in `src/index/vector_query.rs` because that
@@ -65,7 +65,7 @@ zero-norm cosine top-k after the flat index is rebuilt.
 
 ## 0.1.6 historical binding
 
-`a3s-vec` `0.1.6` is published. Tag `0.1.6`, and crates.io SHA-256
+`aster-vec` `0.1.6` is published. Tag `0.1.6`, and crates.io SHA-256
 `67c238a010add5d35d085a87a9183b9d3e08aef6a89b1b5edf19186b31b65062` bind to
 revision `c7b828cfa610bb3e1aca84ae9255f1caf7c938c7`. Hosted CI run
 `35754487571` is green for that revision. The prior `0.1.5` package remains
@@ -92,7 +92,7 @@ sidecar for the current generation still misses and rebuilds.
 
 ## 0.1.5 historical binding
 
-`a3s-vec` `0.1.5` is published. Tag `0.1.5`, and crates.io SHA-256
+`aster-vec` `0.1.5` is published. Tag `0.1.5`, and crates.io SHA-256
 `bc42798f059416957a4e67cefea3b469cb2c08caa1fc2d73997f81e76a362fe1` bind to
 revision `84f8985a669d0e4d33eb0c4884c7ccb90e0de51d`. Hosted CI run
 `35746396350` is green for that revision. The prior `0.1.4` package remains
@@ -129,7 +129,7 @@ and removes physical work that tests can still fail:
 
 ## 0.1.4 historical binding
 
-`a3s-vec` `0.1.4` is published. Tag `0.1.4`, and crates.io SHA-256
+`aster-vec` `0.1.4` is published. Tag `0.1.4`, and crates.io SHA-256
 `15c4220df078de9c350aea98e0f9187890cec066e4d3ee242170a2ab762ed80f` bind to
 revision `9a07e9a33726dd187080b00a44505f9bbd31bd97`. Hosted CI run
 `35510190796` closed that gate. The prior `0.1.3` package remains
@@ -183,7 +183,7 @@ persist derived indexes on workstation hosts:
 - Character-trigram prefilter for FTS wildcard/fuzzy matcher expansion.
 - Packed dense Flat acceleration; parallel Flat Cosine under the default Rayon
   pool; bit-identical `f64` public scores and exact re-ranking retained.
-- First-principles a3s-vec ↔ zvec remeasure protocol and Apple Silicon medians.
+- First-principles aster-vec ↔ zvec remeasure protocol and Apple Silicon medians.
 
 ## Public API review
 
@@ -234,15 +234,15 @@ After every required hosted CI job passes on `main`, the `Versioned release
 candidate` job runs `cargo package --locked`. It uploads these files in one
 revision-bound Actions artifact:
 
-- `a3s-vec-0.1.8.crate`;
-- `a3s-vec-0.1.8.crate.sha256`;
-- `a3s-vec-0.1.8.release.json`, which records the package version, source
+- `aster-vec-0.1.8.crate`;
+- `aster-vec-0.1.8.crate.sha256`;
+- `aster-vec-0.1.8.release.json`, which records the package version, source
   revision, workflow run, and build runner.
 - `feature-matrix.csv`, `concurrent-queries.csv`, `mixed-workload.csv`,
   `scale-compare.csv`, and `lifecycle-matrix.csv`, which record the
   smoke-scale correctness/performance gates, including management-plane
   lifecycle, resource, and maintenance operations.
-- One `a3s-vec-platform-performance-<platform>-<revision>` directory for each
+- One `aster-vec-platform-performance-<platform>-<revision>` directory for each
   hosted platform, containing the same five validated smoke CSVs. These
   artifacts show whether the metrics and recall gate hold across the supported
   OS/architecture matrix.
@@ -256,15 +256,15 @@ cargo audit --deny unsound
 cargo test --locked --all-features
 cargo test --locked --test feature_matrix
 cargo bench --locked --bench feature_matrix --features async
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench feature_matrix --features async
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench feature_matrix --features async
 cargo bench --locked --bench concurrent_queries
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench concurrent_queries
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench concurrent_queries
 cargo bench --locked --bench mixed_workload
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench mixed_workload
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench mixed_workload
 cargo bench --locked --bench scale_compare
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench scale_compare
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench scale_compare
 cargo bench --locked --bench lifecycle_matrix
-A3S_VEC_BENCH_SCALE=smoke cargo bench --locked --bench lifecycle_matrix
+ASTER_VEC_BENCH_SCALE=smoke cargo bench --locked --bench lifecycle_matrix
 cargo doc --locked --no-deps --all-features
 cargo package --locked --allow-dirty
 ```

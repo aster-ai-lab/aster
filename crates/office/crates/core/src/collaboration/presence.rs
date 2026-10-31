@@ -1,6 +1,6 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde::{Deserialize, Serialize};
 use yrs::sync::{Awareness, AwarenessUpdate};
 use yrs::updates::decoder::Decode;
@@ -167,7 +167,7 @@ impl NativeOfficeCollaborationPresenceSession {
                         format!("The Awareness state is not valid Office presence JSON: {error}"),
                     )
                 })?;
-            validate_presence_state(&envelope.a3s_office, &self.manifest)?;
+            validate_presence_state(&envelope.aster_office, &self.manifest)?;
         }
         let changed = self
             .awareness
@@ -246,11 +246,11 @@ impl NativeOfficeCollaborationPresenceSession {
                         format!("An applied Awareness state is not valid Office presence: {error}"),
                     )
                 })?;
-            validate_presence_state(&envelope.a3s_office, &self.manifest)?;
+            validate_presence_state(&envelope.aster_office, &self.manifest)?;
             participants.push(NativeOfficeCollaborationParticipant {
                 client_id: client_id.get(),
                 local: client_id.get() == self.client_id,
-                state: envelope.a3s_office,
+                state: envelope.aster_office,
             });
         }
         participants.sort_by_key(|participant| participant.client_id);
@@ -329,8 +329,8 @@ impl NativeOfficeCollaborationPresenceSession {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct OfficeAwarenessState {
-    #[serde(rename = "a3sOffice")]
-    a3s_office: NativeOfficeCollaborationPresenceState,
+    #[serde(rename = "asterOffice")]
+    aster_office: NativeOfficeCollaborationPresenceState,
 }
 
 fn set_local_state(
@@ -339,7 +339,7 @@ fn set_local_state(
 ) -> UseResult<()> {
     awareness
         .set_local_state(OfficeAwarenessState {
-            a3s_office: state.clone(),
+            aster_office: state.clone(),
         })
         .map_err(|error| {
             collaboration_error(

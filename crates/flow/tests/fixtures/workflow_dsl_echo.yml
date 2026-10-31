@@ -1,7 +1,7 @@
 version: 0.7.0
 kind: app
 app:
-  name: A3S workflow import fixture
+  name: Aster workflow import fixture
   mode: workflow
   icon: robot
   icon_background: '#FFFFFF'
@@ -66,7 +66,7 @@ workflow:
           prompt_template:
             - role: user
               text: '{{#start.query#}}'
-          x-a3s-fixture-extension:
+          x-aster-fixture-extension:
             retained: true
       - id: end
         type: custom
@@ -79,7 +79,7 @@ workflow:
               value_selector: [llm, text]
               value_type: string
     viewport: { x: 0, y: 0, zoom: 1 }
-  x-a3s-workflow-extension:
+  x-aster-workflow-extension:
     retained: true
-x-a3s-document-extension:
+x-aster-document-extension:
   retained: true

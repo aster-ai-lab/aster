@@ -1,6 +1,6 @@
 use super::*;
 use crate::layers::{attention::test_support::*, indexer::projection::IndexQueryProjection};
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 
 fn weights(rows: usize, cols: usize) -> Vec<u8> {
     let mut data = vec![0_u8; rows * cols];

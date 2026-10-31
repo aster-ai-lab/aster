@@ -3,7 +3,7 @@
 **Status:** TD-A through TD-E implemented. Hermetic TD-B/TD-C run under
 `--features apofasi`. TD-D and TD-E are `#[ignore]` and were executed against
 the remapped pin `boyue/bailian/deepseek-v4.1-flash`.  
-**Mechanism:** optional Code substrate `typed_decision` (A3S Apofasi System One)  
+**Mechanism:** optional Code substrate `typed_decision` (Aster Apofasi System One)  
 **Inventory id:** `typed_decisions` (Advanced, host-owned)  
 **Cargo gate:** `apofasi` (lexical). `apofasi-infer` / `apofasi-metal` load the
 published checkpoint for the ignored default-gate Auto test. That test records
@@ -13,7 +13,7 @@ This plan is the end-to-end test contract for the type-safe decision mechanism.
 It composes [FULL_FEATURE_TEST_PLAN.md](FULL_FEATURE_TEST_PLAN.md) and
 [FIRST_PRINCIPLES_E2E.md](FIRST_PRINCIPLES_E2E.md). It does not replace them.
 
-## 0. Model pin (verified against `./.a3s/config.acl`)
+## 0. Model pin (verified against `./.aster/config.acl`)
 
 The requested id `boyue/bailina/deepseek-v4-flash` is **not** declared.
 `bailina` is not a provider or model segment in the ACL.
@@ -30,8 +30,8 @@ Declared boyue Flash routes in that file:
 `core/tests/support/layer_c_model.rs`:
 
 ```bash
-export A3S_CONFIG_FILE="$(git rev-parse --show-toplevel)/.a3s/config.acl"
-export A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash
+export ASTER_CONFIG_FILE="$(git rev-parse --show-toplevel)/.aster/config.acl"
+export ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash
 ```
 
 The loader remaps that unset id to the declared peer
@@ -64,7 +64,7 @@ Consequences for tests:
    host side after Apofasi has already returned.
 5. **Fail closed.** Empty `questions` never reaches the engine. Unparseable
    escalate output never becomes an `Answer`. Missing gate rows escalate.
-6. **Thin default stays thin.** `local-code` must not link `a3s-apofasi`.
+6. **Thin default stays thin.** `local-code` must not link `aster-apofasi`.
    Inventory presence is not linkage: `typed_decisions` is listed even when
    the feature is off.
 7. **Live is not Required CI.** Pin identity and escalate composition are
@@ -99,8 +99,8 @@ checkpoint and does not lower the gate.
 
 | Oracle | Evidence |
 | --- | --- |
-| `cargo tree -p a3s-code-core --features local-code -i a3s-apofasi` fails to resolve the package | Thin build does not link Apofasi |
-| `cargo check -p a3s-code-core --features local-code` succeeds | Default product still builds |
+| `cargo tree -p aster-core --features local-code -i aster-apofasi` fails to resolve the package | Thin build does not link Apofasi |
+| `cargo check -p aster-core --features local-code` succeeds | Default product still builds |
 | `sdk_capabilities()` still contains `typed_decisions` as Advanced | Discovery does not hide an opt-in surface |
 
 ### TD-B — Hermetic substrate (Required CI, `--features apofasi`, no network)
@@ -115,7 +115,7 @@ is incomplete unless these stay green:
 | Empty questions | `TypedDecisionError::EmptyRequest` before the engine |
 | Default gate | Each row is `Auto` or `Escalate` |
 | Impossible thresholds | `min_confidence = 1` and `min_noul_extremity = 1` ⇒ every row `Escalate` |
-| Receipt | Schema `a3s-code/typed-decision-receipt/v1`, digests pass `validate_digest`, request digest matches `digest_json` |
+| Receipt | Schema `aster/typed-decision-receipt/v1`, digests pass `validate_digest`, request digest matches `digest_json` |
 | Route | `route` admits the same non-empty request |
 | Trait | `TypedDecisionEngine` on `TypedDecisionService` |
 | Neural off | `load_neural_engine` is `NeuralFeatureDisabled` without `apofasi-infer` |
@@ -124,7 +124,7 @@ Command:
 
 ```bash
 cd crates/code
-cargo test -p a3s-code-core --features apofasi --lib typed_decision
+cargo test -p aster-core --features apofasi --lib typed_decision
 ```
 
 ### TD-C — Host composition, hermetic (Required CI)
@@ -158,13 +158,13 @@ Does not generate tokens. Proves the operator pin against the real ACL.
 
 | Step | Oracle |
 | --- | --- |
-| `A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash` | Loader stderr says it is using `boyue/bailian/deepseek-v4.1-flash` |
+| `ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash` | Loader stderr says it is using `boyue/bailian/deepseek-v4.1-flash` |
 | `load_pinned_layer_c_config()` | `default_model == boyue/bailian/deepseek-v4.1-flash` |
 | Provider `boyue` | Model id `bailian/deepseek-v4.1-flash` exists |
 | Negative | `boyue/bailina/deepseek-v4-flash` is not a declared route and must not be asserted as success |
 
 Suggested suite: `core/tests/typed_decision_layer_c.rs`, `#[ignore]`,
-one thread, same `A3S_CONFIG_FILE` rule as other Layer C tests.
+one thread, same `ASTER_CONFIG_FILE` rule as other Layer C tests.
 
 ### TD-E — Escalate generation, live (ignored, ACL + network)
 
@@ -191,9 +191,9 @@ Operator command:
 
 ```bash
 cd crates/code
-export A3S_CONFIG_FILE="$(git rev-parse --show-toplevel)/.a3s/config.acl"
-export A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash
-cargo test -p a3s-code-core --features apofasi --test typed_decision_layer_c -- --ignored --test-threads=1
+export ASTER_CONFIG_FILE="$(git rev-parse --show-toplevel)/.aster/config.acl"
+export ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash
+cargo test -p aster-core --features apofasi --test typed_decision_layer_c -- --ignored --test-threads=1
 ```
 
 The default-gate Auto twin needs the published checkpoint and the neural feature.
@@ -208,7 +208,7 @@ Neither test asserts labels or lowers `0.7`.
 ```bash
 cd crates/code
 export APOFASI_CHECKPOINT=/path/to/published/english/checkpoint
-cargo test -p a3s-code-core --features apofasi,apofasi-metal --test typed_decision_layer_c live_neural_auto -- --ignored --test-threads=1
+cargo test -p aster-core --features apofasi,apofasi-metal --test typed_decision_layer_c live_neural_auto -- --ignored --test-threads=1
 ```
 
 ## 4. Explicit non-goals
@@ -232,8 +232,8 @@ cargo test -p a3s-code-core --features apofasi,apofasi-metal --test typed_decisi
 
 | Layer | Done means |
 | --- | --- |
-| TD-A | `local-code` tree has no `a3s-apofasi`; check succeeds |
-| TD-B | `cargo test -p a3s-code-core --features apofasi --lib typed_decision` passes |
+| TD-A | `local-code` tree has no `aster-apofasi`; check succeeds |
+| TD-B | `cargo test -p aster-core --features apofasi --lib typed_decision` passes |
 | TD-C | Hermetic host proves 0 vs 1 fake generations and fail-closed parse |
 | TD-D | Ignored test shows remapped `boyue/bailian/deepseek-v4.1-flash` |
 | TD-E | Ignored live tests show one default-gate escalate generation on the single-question pin, the three-kind payout request, and the structured billing triage. Neural checkpoint tests show zero generations on Auto and a matching count on each complex request |

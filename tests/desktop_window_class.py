@@ -4,7 +4,7 @@ A Kylin dock decides whether a running window is the Aster launcher entry by
 matching `WM_CLASS` against `StartupWMClass`. When the two differ it falls back
 to a generic gear tile. GDK derives the class field of `WM_CLASS` from the glib
 program name inside `gtk_init`, upper-casing its first byte, so the bundle id
-`dev.a3s.studio.aster` reaches the window system as `Dev.a3s.studio.aster`.
+`dev.aster.studio.aster` reaches the window system as `Dev.aster.studio.aster`.
 
 This test holds both sides down: the entry the installer writes, and the class
 the host can actually claim for its window.
@@ -23,7 +23,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PRODUCT = ROOT / "apps/studio/scripts/studio_product.py"
 INSTALLER = ROOT / "apps/studio/scripts/studio-desktop.py"
-BUNDLE_ID = "dev.a3s.studio.aster"
+BUNDLE_ID = "dev.aster.studio.aster"
 
 PROBE = r"""
 #include <gtk/gtk.h>

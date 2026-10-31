@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-A3S Office depends on third-party open-source packages listed in
+Aster Office depends on third-party open-source packages listed in
 `package.json`. Those packages retain their respective copyrights and licenses.
 
 The browser Office WebAssembly kernel includes Rust dependencies recorded in
@@ -30,4 +30,4 @@ license is included as `dist/noto-sans-hebrew.LICENSE.txt`.
 PPTX export redistributes the browser bundle from `pptxgenjs`. Its upstream
 license is included as `dist/pptxgen.LICENSE.txt`.
 
-The A3S Office source code remains licensed under the MIT License in `LICENSE`.
+The Aster Office source code remains licensed under the MIT License in `LICENSE`.

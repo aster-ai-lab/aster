@@ -6,8 +6,8 @@ use std::process::Stdio;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     canonical_json_bytes, CheckpointArtifactPath, CheckpointReference, ContainerId,
     ContainerOperationRequest, ContainerTarget, CreateAttachments, DeleteMode, DeleteRequest,
     Error, ErrorCode, ExitStatus, Generation, IsolationRequest, KillRequest, ListRequest,
@@ -33,7 +33,7 @@ use super::{
 };
 
 const OWNER_EXIT_CODE: i32 = 86;
-const OWNER_EVIDENCE_SCHEMA_V1: &str = "a3s.oci.native-restore-owner-exit.v1";
+const OWNER_EVIDENCE_SCHEMA_V1: &str = "aster.oci.native-restore-owner-exit.v1";
 const MAX_REQUEST_BYTES: u64 = 32 * 1024 * 1024;
 const MAX_EVIDENCE_BYTES: u64 = 64 * 1024;
 

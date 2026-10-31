@@ -439,14 +439,20 @@ async fn active_run_keeps_n_hook_handler_and_use_lease_across_cutover() {
 
     gate.release();
     let old_error = old_run.await.unwrap().unwrap_err();
-    assert!(old_error.to_string().contains("generation-one"));
+    assert!(
+        old_error.to_string().contains("generation-one"),
+        "{old_error:#}"
+    );
     assert_eq!(first_dropped.load(Ordering::SeqCst), 1);
 
     let new_error = session
         .send("execute generation two", None)
         .await
         .unwrap_err();
-    assert!(new_error.to_string().contains("generation-two"));
+    assert!(
+        new_error.to_string().contains("generation-two"),
+        "{new_error:#}"
+    );
     assert_eq!(second_acquired.load(Ordering::SeqCst), 1);
     assert_eq!(second_dropped.load(Ordering::SeqCst), 1);
     assert_eq!(

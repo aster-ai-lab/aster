@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     CatalogAvailability, PlanActor, PlanAuthority, PlanPackageChangeKind, PlanPackageRole,
     PlanPolicyDecision, PlanScope, PlanScopeKind, PlannedOperationImpact, PlannedPackageTransition,
     PlannedStateEvidence, PluginCatalogRecord, PluginOperationAction, PluginOperationPlanBinding,
@@ -62,7 +62,7 @@ fn host() -> PluginPackageLockHost {
     PluginPackageLockHost::new("linux-x86_64", "0.3.0").unwrap()
 }
 
-fn install_plan(lock: &PluginPackageLock) -> a3s_use_core::PluginOperationPlan {
+fn install_plan(lock: &PluginPackageLock) -> aster_use_core::PluginOperationPlan {
     let mut packages = lock
         .packages
         .iter()
@@ -76,7 +76,7 @@ fn install_plan(lock: &PluginPackageLock) -> a3s_use_core::PluginOperationPlan {
                 &[],
             )
         })
-        .collect::<a3s_use_core::UseResult<Vec<_>>>()
+        .collect::<aster_use_core::UseResult<Vec<_>>>()
         .unwrap();
     packages.sort_by(|left, right| left.package_id.cmp(&right.package_id));
     let impact = PlannedOperationImpact {
@@ -162,7 +162,7 @@ fn only_catalog_v3_may_publish_package_dependencies() {
     record.dependencies = vec![dependency("acme/base", "^1.0.0")];
     record.validate().unwrap();
 
-    record.schema = "a3s.use.plugin-catalog.v2".to_string();
+    record.schema = "aster.use.plugin-catalog.v2".to_string();
     assert_eq!(
         record.validate().unwrap_err().code,
         "use.plugin.catalog_invalid"

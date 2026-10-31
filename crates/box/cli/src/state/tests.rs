@@ -62,13 +62,13 @@ fn sample_record(id: &str, name: &str, status: &str) -> BoxRecord {
         health_status: "none".to_string(),
         health_retries: 0,
         health_last_check: None,
-        network_mode: a3s_box_core::NetworkMode::default(),
+        network_mode: aster_box_core::NetworkMode::default(),
         network_name: None,
         volume_names: vec![],
         tmpfs: vec![],
         anonymous_volumes: vec![],
-        resource_limits: a3s_box_core::config::ResourceLimits::default(),
-        log_config: a3s_box_core::log::LogConfig::default(),
+        resource_limits: aster_box_core::config::ResourceLimits::default(),
+        log_config: aster_box_core::log::LogConfig::default(),
         add_host: vec![],
         platform: None,
         init: false,
@@ -531,9 +531,9 @@ fn test_reconcile_reads_exit_code_from_each_rootfs_layout() {
     // rootfs. The host path differs for overlay, copy fallback, and the private
     // data directory inside the macOS APFS-backed rootfs.
     for (relative_path, expected) in [
-        ("upper/.a3s_exit_code", 41),
-        ("rootfs/.a3s_exit_code", 42),
-        ("rootfs/.a3s-rootfs/.a3s_exit_code", 43),
+        ("upper/.aster_exit_code", 41),
+        ("rootfs/.aster_exit_code", 42),
+        ("rootfs/.aster-rootfs/.aster_exit_code", 43),
     ] {
         let tmp = TempDir::new().unwrap();
         let path = test_state_path(&tmp);
@@ -576,7 +576,7 @@ fn test_reconcile_reads_exit_code_from_windows_rootfs() {
 
     let box_dir = tmp.path().join("boxes").join("windows-exitcode-id");
     std::fs::create_dir_all(box_dir.join("rootfs")).unwrap();
-    std::fs::write(box_dir.join("rootfs").join(".a3s_exit_code"), "23").unwrap();
+    std::fs::write(box_dir.join("rootfs").join(".aster_exit_code"), "23").unwrap();
     #[cfg(target_os = "windows")]
     {
         std::fs::write(
@@ -667,8 +667,8 @@ fn test_reconcile_running_without_pid() {
 
 #[test]
 fn test_reconcile_leaves_oci_routed_record_without_host_pid_for_sdk_observation() {
-    use a3s_box_core::config::BoxConfig;
-    use a3s_box_core::{CreateExecutionRequest, ExecutionGeneration, OperationId};
+    use aster_box_core::config::BoxConfig;
+    use aster_box_core::{CreateExecutionRequest, ExecutionGeneration, OperationId};
 
     let tmp = TempDir::new().unwrap();
     let path = test_state_path(&tmp);
@@ -677,7 +677,7 @@ fn test_reconcile_leaves_oci_routed_record_without_host_pid_for_sdk_observation(
         let mut record = sample_record("managed-no-pid-id", "managed_no_pid", "created");
         record.status = "running".to_string();
         record.pid = None;
-        let mut metadata = a3s_box_runtime::ManagedExecutionMetadata::new(
+        let mut metadata = aster_box_runtime::ManagedExecutionMetadata::new(
             OperationId::new("managed-no-pid-create").unwrap(),
             ExecutionGeneration::new(3).unwrap(),
             CreateExecutionRequest {
@@ -692,7 +692,7 @@ fn test_reconcile_leaves_oci_routed_record_without_host_pid_for_sdk_observation(
             },
         )
         .unwrap();
-        metadata.runtime_route = a3s_box_runtime::ManagedRuntimeRoute::OciSdk;
+        metadata.runtime_route = aster_box_runtime::ManagedRuntimeRoute::OciSdk;
         record.managed_execution = Some(metadata);
         sf.records_mut().push(record);
         sf.save().unwrap();
@@ -1191,18 +1191,18 @@ fn test_box_record_backward_compat_no_health() {
     assert_eq!(parsed.restart_count, 0);
     assert_eq!(parsed.max_restart_count, 0);
     assert!(parsed.exit_code.is_none());
-    assert_eq!(parsed.isolation, a3s_box_core::ExecutionIsolation::Microvm);
+    assert_eq!(parsed.isolation, aster_box_core::ExecutionIsolation::Microvm);
 }
 
 #[test]
 fn test_box_record_round_trips_sandbox_isolation() {
     let mut record = sample_record("sandbox-id", "sandbox", "created");
-    record.isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+    record.isolation = aster_box_core::ExecutionIsolation::Sandbox;
 
     let json = serde_json::to_string(&record).unwrap();
     let parsed: BoxRecord = serde_json::from_str(&json).unwrap();
 
-    assert_eq!(parsed.isolation, a3s_box_core::ExecutionIsolation::Sandbox);
+    assert_eq!(parsed.isolation, aster_box_core::ExecutionIsolation::Sandbox);
 }
 
 // --- Restart policy validation tests ---
@@ -1386,15 +1386,15 @@ fn test_find_by_label() {
 
     let mut r1 = sample_record("id-1", "web", "running");
     r1.labels
-        .insert("com.a3s.compose.project".to_string(), "myapp".to_string());
+        .insert("com.aster.compose.project".to_string(), "myapp".to_string());
     r1.labels
-        .insert("com.a3s.compose.service".to_string(), "web".to_string());
+        .insert("com.aster.compose.service".to_string(), "web".to_string());
 
     let mut r2 = sample_record("id-2", "db", "running");
     r2.labels
-        .insert("com.a3s.compose.project".to_string(), "myapp".to_string());
+        .insert("com.aster.compose.project".to_string(), "myapp".to_string());
     r2.labels
-        .insert("com.a3s.compose.service".to_string(), "db".to_string());
+        .insert("com.aster.compose.service".to_string(), "db".to_string());
 
     let r3 = sample_record("id-3", "other", "running");
 
@@ -1402,17 +1402,17 @@ fn test_find_by_label() {
     state.add(r2).unwrap();
     state.add(r3).unwrap();
 
-    let results = state.find_by_label("com.a3s.compose.project", "myapp");
+    let results = state.find_by_label("com.aster.compose.project", "myapp");
     assert_eq!(results.len(), 2);
 
-    let results = state.find_by_label("com.a3s.compose.project", "other");
+    let results = state.find_by_label("com.aster.compose.project", "other");
     assert!(results.is_empty());
 
-    let results = state.find_by_label("com.a3s.compose.service", "web");
+    let results = state.find_by_label("com.aster.compose.service", "web");
     assert_eq!(results.len(), 1);
     assert_eq!(results[0].name, "web");
 
-    let results = state.find_by_label("com.a3s.compose.service", "worker");
+    let results = state.find_by_label("com.aster.compose.service", "worker");
     assert!(results.is_empty());
 
     let results = state.find_by_label("missing", "myapp");

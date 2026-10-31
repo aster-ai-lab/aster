@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Check, X } from 'lucide-react'
 
-import { Badge } from '@a3s-lab/ui'
+import { Badge } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Badge> = {
   title: 'Components/Primitives/Badge',

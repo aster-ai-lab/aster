@@ -20,8 +20,8 @@ const bundle = await build({
   jsx: "automatic",
   define: { "process.env.NODE_ENV": '"production"' },
   alias: {
-    "@a3s-lab/intelligent-ui": resolve(root, "../intelligent-ui/src/IntelligentUI.tsx"),
-    "@a3s-lab/ui": resolve(root, "../ui/src"),
+    "@aster-ai-lab/intelligent-ui": resolve(root, "../intelligent-ui/src/IntelligentUI.tsx"),
+    "@aster-ai-lab/ui": resolve(root, "../ui/src"),
     react: resolve(root, "../intelligent-ui/node_modules/react"),
     "react-dom": resolve(root, "../intelligent-ui/node_modules/react-dom"),
   },
@@ -30,7 +30,7 @@ await mkdir(resolve(root, "stage"), { recursive: true });
 await cp(resolve(root, "../intelligent-ui/skills"), resolve(root, "stage/skills"), {
   recursive: true,
 });
-for (const name of ["a3s-use-extension.acl", "README.md"])
+for (const name of ["aster-use-extension.acl", "README.md"])
   await cp(resolve(root, name), resolve(root, "stage", name));
 const script = bundle.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
 execFileSync(
@@ -51,15 +51,15 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewp
 const ui = resolve(root, "stage/ui/message");
 await mkdir(ui, { recursive: true });
 await writeFile(resolve(ui, "index.html"), html);
-const archive = resolve(dist, "a3s-intelligent-ui-0.1.0.aix");
+const archive = resolve(dist, "aster-intelligent-ui-0.1.0.aix");
 await rm(archive, { force: true });
 execFileSync(
   "zip",
-  ["-X", "-q", "-r", archive, "a3s-use-extension.acl", "README.md", "skills", "ui"],
+  ["-X", "-q", "-r", archive, "aster-use-extension.acl", "README.md", "skills", "ui"],
   { cwd: resolve(root, "stage") },
 );
 const bytes = await readFile(archive);
 await writeFile(
   `${archive}.sha256`,
-  `${createHash("sha256").update(bytes).digest("hex")}  a3s-intelligent-ui-0.1.0.aix\n`,
+  `${createHash("sha256").update(bytes).digest("hex")}  aster-intelligent-ui-0.1.0.aix\n`,
 );

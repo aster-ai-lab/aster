@@ -5,7 +5,7 @@
 //! - Linux: KVM (/dev/kvm)
 //! - Windows: WHPX / Windows Hypervisor Platform
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 /// Information about virtualization support.
 #[derive(Debug, Clone)]
@@ -25,10 +25,10 @@ pub struct VirtualizationSupport {
 /// This is the launch-ready probe: Linux opens `/dev/kvm`, Windows queries WHPX.
 /// Call it from CLI `preflight_isolation` and from `start`, not from durable
 /// create reservation (unit tests and stub CI often lack kvm-group access).
-pub fn admit_requested_isolation(isolation: a3s_box_core::ExecutionIsolation) -> Result<()> {
+pub fn admit_requested_isolation(isolation: aster_box_core::ExecutionIsolation) -> Result<()> {
     match isolation {
-        a3s_box_core::ExecutionIsolation::Microvm => check_virtualization_support().map(|_| ()),
-        a3s_box_core::ExecutionIsolation::Sandbox => {
+        aster_box_core::ExecutionIsolation::Microvm => check_virtualization_support().map(|_| ()),
+        aster_box_core::ExecutionIsolation::Sandbox => {
             crate::sandbox::probe_sandbox_capabilities(None).require_ready()?;
             Ok(())
         }
@@ -40,10 +40,10 @@ pub fn admit_requested_isolation(isolation: a3s_box_core::ExecutionIsolation) ->
 /// Used by durable create reservation so metadata/unit tests can stamp a
 /// MicroVM route when `/dev/kvm` exists but is not group-accessible. Launch
 /// still requires [`admit_requested_isolation`]. Sandbox stays Linux-only.
-pub fn admit_isolation_class(isolation: a3s_box_core::ExecutionIsolation) -> Result<()> {
+pub fn admit_isolation_class(isolation: aster_box_core::ExecutionIsolation) -> Result<()> {
     match isolation {
-        a3s_box_core::ExecutionIsolation::Microvm => admit_microvm_host_class(),
-        a3s_box_core::ExecutionIsolation::Sandbox => {
+        aster_box_core::ExecutionIsolation::Microvm => admit_microvm_host_class(),
+        aster_box_core::ExecutionIsolation::Sandbox => {
             #[cfg(target_os = "linux")]
             {
                 Ok(())
@@ -81,7 +81,7 @@ fn admit_microvm_host_class() -> Result<()> {
         #[cfg(not(target_arch = "aarch64"))]
         {
             Err(BoxError::ConfigError(
-                "A3S Box on macOS requires Apple Silicon (ARM64). Intel Macs are not supported."
+                "Aster Box on macOS requires Apple Silicon (ARM64). Intel Macs are not supported."
                     .to_string(),
             ))
         }
@@ -96,7 +96,7 @@ fn admit_microvm_host_class() -> Result<()> {
         #[cfg(not(target_arch = "x86_64"))]
         {
             Err(BoxError::ConfigError(
-                "A3S Box on Windows currently requires x86_64 for the WHPX backend.".to_string(),
+                "Aster Box on Windows currently requires x86_64 for the WHPX backend.".to_string(),
             ))
         }
     }
@@ -104,7 +104,7 @@ fn admit_microvm_host_class() -> Result<()> {
     #[cfg(not(any(target_os = "macos", target_os = "linux", windows)))]
     {
         Err(BoxError::ConfigError(
-            "Unsupported platform: A3S Box requires macOS (Apple Silicon), Linux with KVM, or Windows with WHPX"
+            "Unsupported platform: Aster Box requires macOS (Apple Silicon), Linux with KVM, or Windows with WHPX"
                 .to_string(),
         ))
     }
@@ -132,7 +132,7 @@ pub fn check_virtualization_support() -> Result<VirtualizationSupport> {
     #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     {
         Err(BoxError::ConfigError(
-            "Unsupported platform: A3S Box requires macOS (Apple Silicon), Linux with KVM, or Windows with WHPX"
+            "Unsupported platform: Aster Box requires macOS (Apple Silicon), Linux with KVM, or Windows with WHPX"
                 .to_string(),
         ))
     }
@@ -176,7 +176,7 @@ fn check_macos_hypervisor() -> Result<VirtualizationSupport> {
     #[cfg(not(target_arch = "aarch64"))]
     {
         Err(BoxError::ConfigError(
-            "A3S Box on macOS requires Apple Silicon (ARM64). Intel Macs are not supported."
+            "Aster Box on macOS requires Apple Silicon (ARM64). Intel Macs are not supported."
                 .to_string(),
         ))
     }
@@ -230,7 +230,7 @@ fn check_windows_whpx() -> Result<VirtualizationSupport> {
     #[cfg(not(target_arch = "x86_64"))]
     {
         return Err(BoxError::ConfigError(
-            "A3S Box on Windows currently requires x86_64 for the WHPX backend.".to_string(),
+            "Aster Box on Windows currently requires x86_64 for the WHPX backend.".to_string(),
         ));
     }
 
@@ -321,9 +321,9 @@ mod tests {
 
     #[test]
     fn sandbox_admission_keeps_the_requested_class() {
-        let isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+        let isolation = aster_box_core::ExecutionIsolation::Sandbox;
         let result = admit_requested_isolation(isolation);
-        assert_eq!(isolation, a3s_box_core::ExecutionIsolation::Sandbox);
+        assert_eq!(isolation, aster_box_core::ExecutionIsolation::Sandbox);
         match result {
             Ok(()) => {
                 #[cfg(not(target_os = "linux"))]
@@ -352,7 +352,7 @@ mod tests {
 
     #[test]
     fn create_class_admission_does_not_require_opening_the_hypervisor() {
-        let isolation = a3s_box_core::ExecutionIsolation::Microvm;
+        let isolation = aster_box_core::ExecutionIsolation::Microvm;
         match admit_isolation_class(isolation) {
             Ok(()) => {}
             Err(error) => {
@@ -368,10 +368,10 @@ mod tests {
                 );
             }
         }
-        assert_eq!(isolation, a3s_box_core::ExecutionIsolation::Microvm);
+        assert_eq!(isolation, aster_box_core::ExecutionIsolation::Microvm);
         #[cfg(not(target_os = "linux"))]
         {
-            let sandbox = a3s_box_core::ExecutionIsolation::Sandbox;
+            let sandbox = aster_box_core::ExecutionIsolation::Sandbox;
             let error = admit_isolation_class(sandbox).expect_err("Sandbox off Linux");
             assert!(error.to_string().contains("only on Linux"));
         }
@@ -379,7 +379,7 @@ mod tests {
 
     #[test]
     fn microvm_admission_does_not_rewrite_to_sandbox() {
-        let isolation = a3s_box_core::ExecutionIsolation::Microvm;
+        let isolation = aster_box_core::ExecutionIsolation::Microvm;
         if let Err(error) = admit_requested_isolation(isolation) {
             let message = error.to_string().to_lowercase();
             assert!(
@@ -388,6 +388,6 @@ mod tests {
             );
             rejects_wsl_wording(&message);
         }
-        assert_eq!(isolation, a3s_box_core::ExecutionIsolation::Microvm);
+        assert_eq!(isolation, aster_box_core::ExecutionIsolation::Microvm);
     }
 }

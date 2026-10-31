@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ActivityInvocation, FlowBlobEncryption, FlowBlobRef, FlowEngine, FlowError, FlowRuntime,
     JsonValue, RetryPolicy, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
     WorkflowSpec, MAX_FLOW_EVENT_BYTES,
@@ -20,7 +20,7 @@ async fn blob_ref_attach_is_durable_and_visible_to_replay() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let ctx = invocation.context();
             if ctx.blob_ref("result").is_none() {
                 return Ok(ctx.attach_blob_ref(
@@ -38,7 +38,7 @@ async fn blob_ref_attach_is_durable_and_visible_to_replay() {
             })))
         }
 
-        async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+        async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
             unreachable!()
         }
     }
@@ -71,7 +71,7 @@ async fn blob_ref_attach_is_idempotent_and_rejects_digest_drift() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let ctx = invocation.context();
             let phase = self.phase.fetch_add(1, Ordering::SeqCst);
             let digest = if phase == 0 {
@@ -82,7 +82,7 @@ async fn blob_ref_attach_is_idempotent_and_rejects_digest_drift() {
             Ok(ctx.attach_blob_ref(FlowBlobRef::new("result", digest)))
         }
 
-        async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+        async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
             unreachable!()
         }
     }
@@ -108,7 +108,7 @@ async fn step_output_blob_ref_marker_persists_under_event_budget() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let ctx = invocation.context();
             if ctx.step_output("load").is_none() {
                 return Ok(ctx.schedule_step("load", "load-blob", json!({})));
@@ -117,7 +117,7 @@ async fn step_output_blob_ref_marker_persists_under_event_budget() {
             Ok(ctx.complete(output))
         }
 
-        async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+        async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
             Ok(FlowBlobRef::new("payload", "sha256:step-out")
                 .with_codec("identity")
                 .with_byte_length(8_000_000)
@@ -152,7 +152,7 @@ async fn activity_output_blob_ref_marker_persists_under_event_budget() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let ctx = invocation.context();
             match ctx.activity_output("load") {
                 Some(output) => Ok(ctx.complete(output.clone())),
@@ -165,14 +165,14 @@ async fn activity_output_blob_ref_marker_persists_under_event_budget() {
             }
         }
 
-        async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+        async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
             unreachable!()
         }
 
         async fn run_activity(
             &self,
             _invocation: ActivityInvocation,
-        ) -> a3s_flow::Result<JsonValue> {
+        ) -> aster_flow::Result<JsonValue> {
             Ok(FlowBlobRef::new("payload", "sha256:activity-out")
                 .with_codec("identity")
                 .with_byte_length(8_000_000)
@@ -207,13 +207,13 @@ async fn oversized_inline_output_still_fails_closed() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             Ok(invocation
                 .context()
                 .complete(json!("x".repeat(MAX_FLOW_EVENT_BYTES))))
         }
 
-        async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+        async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
             unreachable!()
         }
     }

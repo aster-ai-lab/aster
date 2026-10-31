@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde::{Deserialize, Serialize};
 
 use crate::spreadsheet_reference::CellReference;
@@ -104,6 +104,6 @@ fn default_start_cell() -> String {
     "A1".to_string()
 }
 
-fn import_error(code: &str, message: impl Into<String>) -> a3s_use_core::UseError {
+fn import_error(code: &str, message: impl Into<String>) -> aster_use_core::UseError {
     super::super::editor_error(code, message)
 }

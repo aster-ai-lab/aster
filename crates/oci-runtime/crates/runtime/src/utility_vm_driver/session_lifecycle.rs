@@ -343,7 +343,7 @@ impl UtilityVmRuntimeDriver {
             let cleanup_guest = Arc::clone(&guest);
             let mut launch_cleanup = super::DetachedAsyncCleanup::new(move || async move {
                 if let Err(error) = super::shutdown_guest(&cleanup_guest).await {
-                    eprintln!("a3s-oci-runtime: cancelled guest launch cleanup failed: {error}");
+                    eprintln!("aster-oci-runtime: cancelled guest launch cleanup failed: {error}");
                 }
             });
             let container = Arc::new(UtilityVmContainer {
@@ -414,7 +414,7 @@ impl UtilityVmRuntimeDriver {
             let mut rotation_cleanup = super::DetachedAsyncCleanup::new(move || async move {
                 if let Err(error) = super::shutdown_guest(&cleanup_guest).await {
                     eprintln!(
-                        "a3s-oci-runtime: cancelled reusable-session rotation cleanup failed: {error}"
+                        "aster-oci-runtime: cancelled reusable-session rotation cleanup failed: {error}"
                     );
                 }
             });
@@ -451,7 +451,7 @@ impl UtilityVmRuntimeDriver {
         let cleanup_guest = Arc::clone(&guest);
         let mut launch_cleanup = super::DetachedAsyncCleanup::new(move || async move {
             if let Err(error) = super::shutdown_guest(&cleanup_guest).await {
-                eprintln!("a3s-oci-runtime: cancelled guest launch cleanup failed: {error}");
+                eprintln!("aster-oci-runtime: cancelled guest launch cleanup failed: {error}");
             }
         });
         let container = Arc::new(UtilityVmContainer {
@@ -568,7 +568,7 @@ impl UtilityVmRuntimeDriver {
             let cleanup_guest = Arc::clone(&container.guest);
             Some(super::DetachedAsyncCleanup::new(move || async move {
                 if let Err(error) = super::shutdown_guest(&cleanup_guest).await {
-                    eprintln!("a3s-oci-runtime: cancelled terminal-create cleanup failed: {error}");
+                    eprintln!("aster-oci-runtime: cancelled terminal-create cleanup failed: {error}");
                 }
             }))
         } else {

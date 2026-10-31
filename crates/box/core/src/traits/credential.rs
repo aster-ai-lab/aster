@@ -1,7 +1,7 @@
 //! Credential provider abstraction.
 //!
 //! Decouples registry authentication from the file-based credential
-//! store in `a3s-box-runtime`. Implementations can source credentials
+//! store in `aster-box-runtime`. Implementations can source credentials
 //! from any backend: files, Vault, cloud IAM, OS keychain, etc.
 
 use crate::error::Result;

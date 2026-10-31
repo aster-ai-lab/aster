@@ -1,6 +1,6 @@
 use super::runtime_observations::reconcile_with_runtime_and_knowledge;
 use super::*;
-use a3s_use_core::{
+use aster_use_core::{
     OkfKnowledgeObservation, OkfKnowledgeObservedState, OkfProjectionReceipt,
     OkfSelectedGeneration, PlanQualifiedSurfaceRef, PlanScope, PlanScopeKind,
     OKF_KNOWLEDGE_OBSERVATION_SCHEMA, OKF_PROJECTION_RECEIPT_SCHEMA,
@@ -10,7 +10,7 @@ const NAMED_SURFACE_MANIFEST: &str =
     include_str!("../../extension//fixtures/manifests/plugin-v3.acl");
 const OKF_MANIFEST: &str = include_str!("../../extension//fixtures/manifests/plugin-v3-okf.acl");
 const PACKAGE_MANIFEST: &str = include_str!(
-    "../../extension//fixtures/packages/plugin-v3-package/package/a3s-use-extension.acl"
+    "../../extension//fixtures/packages/plugin-v3-package/package/aster-use-extension.acl"
 );
 
 fn manifest() -> ExtensionManifest {
@@ -83,7 +83,7 @@ fn named_surface_graph_has_deterministic_dependency_levels_and_required_closure(
 }
 
 #[test]
-fn a3s_flow_sits_between_base_capabilities_and_skill_ui_consumers() {
+fn aster_flow_sits_between_base_capabilities_and_skill_ui_consumers() {
     let manifest = ExtensionManifest::parse_acl(PACKAGE_MANIFEST).unwrap();
     let mut observations = SurfaceObservations::from([
         (
@@ -453,7 +453,7 @@ fn knowledge_receipt(manifest: &ExtensionManifest) -> OkfProjectionReceipt {
         manifest_digest: format!("sha256:{}", "b".repeat(64)),
         bundle: manifest.okf[0].bundle.clone(),
         projection_id: "knowledge:workspace:research:domain-knowledge:13".to_owned(),
-        index_schema: "a3s.knowledge.okf-index.v1".to_owned(),
+        index_schema: "aster.knowledge.okf-index.v1".to_owned(),
         index_build_id: "knowledge:0.4.0:linux-x86_64".to_owned(),
         staged_at_ms: 1_785_360_100_000,
     }

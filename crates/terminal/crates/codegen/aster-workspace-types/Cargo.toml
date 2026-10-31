@@ -1,0 +1,22 @@
+[package]
+license = "Apache-2.0"
+name = "aster-workspace-types"
+version = "0.1.0"
+description = "Wire types for the Aster workspace API (request/chunk/event enums shared by client and server)"
+edition = "2024"
+publish = false
+
+[dependencies]
+base64 = {workspace = true}
+chrono = {version = "0.4", features = ["serde"]}
+serde = {workspace = true}
+serde_json = {workspace = true}
+strum = {workspace = true}
+thiserror = {workspace = true}
+
+[features]
+default = []
+default-bazel = []
+
+[lints]
+workspace = true

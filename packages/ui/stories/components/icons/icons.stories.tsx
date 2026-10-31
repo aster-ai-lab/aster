@@ -62,7 +62,7 @@ type Story = StoryObj<typeof IconsShowcase>
  * ## 使用示例
  *
  * ```tsx
- * import { CodeAi } from '@a3s-lab/ui/icons'
+ * import { CodeAi } from '@aster-ai-lab/ui/icons'
  *
  * // 通过 fontSize 控制大小
  * <div style={{ fontSize: 24 }}>

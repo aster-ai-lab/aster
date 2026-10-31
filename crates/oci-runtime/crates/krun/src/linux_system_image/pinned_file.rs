@@ -2,7 +2,7 @@ use std::fs::{self, File, Metadata, OpenOptions};
 use std::os::unix::fs::{FileExt, MetadataExt, OpenOptionsExt};
 use std::path::{Component, Path, PathBuf};
 
-use a3s_oci_sdk::Result;
+use aster_oci_sdk::Result;
 use sha2::{Digest, Sha256};
 
 use super::image_error;

@@ -3,7 +3,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_oci_sdk::ContainerRecord;
+use aster_oci_sdk::ContainerRecord;
 
 mod attestation;
 mod checkpoint;
@@ -1227,7 +1227,7 @@ async fn exercise_observation(point: FaultPoint) {
 async fn open_injected(
     root: &Path,
     injector: Arc<RecordingFaultInjector>,
-) -> a3s_oci_sdk::Result<DurableStateStore> {
+) -> aster_oci_sdk::Result<DurableStateStore> {
     let faults: Arc<dyn FaultInjector> = injector;
     DurableStateStore::open_with_fault_injector(root, faults).await
 }
@@ -1243,7 +1243,7 @@ async fn initialize_root(root: &Path) {
 async fn drive_successful_lifecycle(
     store: &DurableStateStore,
     create: &CreateRequest,
-) -> a3s_oci_sdk::Result<Generation> {
+) -> aster_oci_sdk::Result<Generation> {
     let created = drive_create(store, create).await?;
     let target = ContainerTarget::exact(create.id.clone(), created.generation);
     drive_start(
@@ -1279,7 +1279,7 @@ async fn drive_successful_lifecycle(
 async fn drive_create(
     store: &DurableStateStore,
     request: &CreateRequest,
-) -> a3s_oci_sdk::Result<ContainerRecord> {
+) -> aster_oci_sdk::Result<ContainerRecord> {
     match store
         .prepare_create(request, DriverKind::LibkrunWhpx)
         .await?
@@ -1296,7 +1296,7 @@ async fn drive_create(
 async fn drive_start(
     store: &DurableStateStore,
     request: &StartRequest,
-) -> a3s_oci_sdk::Result<ContainerRecord> {
+) -> aster_oci_sdk::Result<ContainerRecord> {
     match store.prepare_start(request).await? {
         RecordOperationPreparation::Prepared(_) | RecordOperationPreparation::Resume(_) => {
             store
@@ -1315,7 +1315,7 @@ async fn drive_freezer_lifecycle(
     store: &DurableStateStore,
     pause: &ContainerOperationRequest,
     resume: &ContainerOperationRequest,
-) -> a3s_oci_sdk::Result<ContainerRecord> {
+) -> aster_oci_sdk::Result<ContainerRecord> {
     let paused = drive_pause(store, pause).await?;
     assert!(paused.is_paused());
     let running = drive_resume(store, resume).await?;
@@ -1326,7 +1326,7 @@ async fn drive_freezer_lifecycle(
 async fn drive_pause(
     store: &DurableStateStore,
     request: &ContainerOperationRequest,
-) -> a3s_oci_sdk::Result<ContainerRecord> {
+) -> aster_oci_sdk::Result<ContainerRecord> {
     match store.prepare_pause(request).await? {
         RecordOperationPreparation::Prepared(_) | RecordOperationPreparation::Resume(_) => {
             store
@@ -1345,7 +1345,7 @@ async fn drive_pause(
 async fn drive_resume(
     store: &DurableStateStore,
     request: &ContainerOperationRequest,
-) -> a3s_oci_sdk::Result<ContainerRecord> {
+) -> aster_oci_sdk::Result<ContainerRecord> {
     match store.prepare_resume(request).await? {
         RecordOperationPreparation::Prepared(_) | RecordOperationPreparation::Resume(_) => {
             store
@@ -1364,7 +1364,7 @@ async fn drive_resume(
 async fn drive_update(
     store: &DurableStateStore,
     request: &UpdateRequest,
-) -> a3s_oci_sdk::Result<ContainerRecord> {
+) -> aster_oci_sdk::Result<ContainerRecord> {
     match store.prepare_update(request).await? {
         RecordOperationPreparation::Prepared(_) | RecordOperationPreparation::Resume(_) => {
             store
@@ -1383,7 +1383,7 @@ async fn drive_update(
 async fn drive_kill(
     store: &DurableStateStore,
     request: &KillRequest,
-) -> a3s_oci_sdk::Result<ContainerRecord> {
+) -> aster_oci_sdk::Result<ContainerRecord> {
     match store.prepare_kill(request).await? {
         RecordOperationPreparation::Prepared(_) | RecordOperationPreparation::Resume(_) => {
             store
@@ -1397,7 +1397,7 @@ async fn drive_kill(
 async fn drive_delete(
     store: &DurableStateStore,
     request: &DeleteRequest,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_delete(request).await? {
         DeletePreparation::Prepared(_) | DeletePreparation::Resume(_) => {
             store.complete_delete(&request.context.operation_id).await
@@ -1410,7 +1410,7 @@ async fn drive_failed_create(
     store: &DurableStateStore,
     request: &CreateRequest,
     failure: &Error,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_create(request, DriverKind::LibkrunWhpx).await {
         Ok(RecordOperationPreparation::Prepared(_)) | Ok(RecordOperationPreparation::Resume(_)) => {
             store
@@ -1433,7 +1433,7 @@ async fn drive_failed_start(
     store: &DurableStateStore,
     request: &StartRequest,
     failure: &Error,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_start(request).await {
         Ok(RecordOperationPreparation::Prepared(_)) | Ok(RecordOperationPreparation::Resume(_)) => {
             store
@@ -1453,7 +1453,7 @@ async fn drive_failed_kill(
     store: &DurableStateStore,
     request: &KillRequest,
     failure: &Error,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_kill(request).await {
         Ok(RecordOperationPreparation::Prepared(_)) | Ok(RecordOperationPreparation::Resume(_)) => {
             store
@@ -1474,7 +1474,7 @@ async fn drive_failed_freezer(
     request: &ContainerOperationRequest,
     failure: &Error,
     pause: bool,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     let prepared = if pause {
         store.prepare_pause(request).await
     } else {
@@ -1504,7 +1504,7 @@ async fn drive_failed_update(
     store: &DurableStateStore,
     request: &UpdateRequest,
     failure: &Error,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_update(request).await {
         Ok(RecordOperationPreparation::Prepared(_)) | Ok(RecordOperationPreparation::Resume(_)) => {
             store
@@ -1524,7 +1524,7 @@ async fn drive_failed_delete(
     store: &DurableStateStore,
     request: &DeleteRequest,
     failure: &Error,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_delete(request).await {
         Ok(DeletePreparation::Prepared(_)) | Ok(DeletePreparation::Resume(_)) => {
             store
@@ -1538,7 +1538,7 @@ async fn drive_failed_delete(
     expect_failure(store.prepare_delete(request).await, failure)
 }
 
-fn expect_failure<T>(result: a3s_oci_sdk::Result<T>, expected: &Error) -> a3s_oci_sdk::Result<()> {
+fn expect_failure<T>(result: aster_oci_sdk::Result<T>, expected: &Error) -> aster_oci_sdk::Result<()> {
     match result {
         Err(error) if error == *expected => Ok(()),
         Err(error) => Err(error),

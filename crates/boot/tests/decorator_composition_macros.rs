@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use a3s_boot::{
+use aster_boot::{
     controller, BootApplication, BootError, BootRequest, BoxFuture, ControllerDefinition,
     ExecutionContext, Guard, HttpMethod, MessagePatternDefinition, Module, ModuleRef, OpenApiInfo,
     Result, TransportContext, TransportExceptionFilter, TransportExceptionResponse,
@@ -83,13 +83,13 @@ impl WebSocketExceptionFilter for ComposedWebSocketFilter {
 struct ComposedController;
 
 #[controller("/composed")]
-#[a3s_boot::apply_decorators(
+#[aster_boot::apply_decorators(
     tag("composed-cats"),
     metadata("resource", "cats"),
     use_guard(ComposedMetadataGuard)
 )]
 impl ComposedController {
-    #[a3s_boot::apply_decorators(
+    #[aster_boot::apply_decorators(
         get("/{id}"),
         http_code(202),
         header("x-composed", "yes"),
@@ -99,7 +99,7 @@ impl ComposedController {
         bearer_auth,
         api_key_auth(name = "x-api-key"),
     )]
-    async fn find_one(&self, #[a3s_boot::param("id")] id: String) -> Result<ComposedCatDto> {
+    async fn find_one(&self, #[aster_boot::param("id")] id: String) -> Result<ComposedCatDto> {
         Ok(ComposedCatDto {
             id,
             name: "Milo".to_string(),
@@ -110,17 +110,17 @@ impl ComposedController {
 #[derive(Debug)]
 struct ComposedMessages;
 
-#[a3s_boot::message_controller]
-#[a3s_boot::apply_decorators(use_filter(ComposedTransportFilter("controller")))]
+#[aster_boot::message_controller]
+#[aster_boot::apply_decorators(use_filter(ComposedTransportFilter("controller")))]
 impl ComposedMessages {
-    #[a3s_boot::apply_decorators(message_pattern("composed.message.controller"))]
+    #[aster_boot::apply_decorators(message_pattern("composed.message.controller"))]
     async fn controller_filter(&self) -> Result<ComposedCatDto> {
         Err(BootError::BadRequest(
             "composed controller filter".to_string(),
         ))
     }
 
-    #[a3s_boot::apply_decorators(
+    #[aster_boot::apply_decorators(
         message_pattern("composed.message.method"),
         use_filter(ComposedTransportFilter("method"))
     )]
@@ -132,15 +132,15 @@ impl ComposedMessages {
 #[derive(Debug)]
 struct ComposedGateway;
 
-#[a3s_boot::websocket_gateway("/composed/ws")]
-#[a3s_boot::apply_decorators(use_filter(ComposedWebSocketFilter("gateway")))]
+#[aster_boot::websocket_gateway("/composed/ws")]
+#[aster_boot::apply_decorators(use_filter(ComposedWebSocketFilter("gateway")))]
 impl ComposedGateway {
-    #[a3s_boot::apply_decorators(subscribe_message("composed.gateway"))]
+    #[aster_boot::apply_decorators(subscribe_message("composed.gateway"))]
     async fn gateway_filter(&self) -> Result<WebSocketMessage> {
         Err(BootError::BadRequest("composed gateway filter".to_string()))
     }
 
-    #[a3s_boot::apply_decorators(
+    #[aster_boot::apply_decorators(
         subscribe_message("composed.method"),
         use_filter(ComposedWebSocketFilter("method"))
     )]

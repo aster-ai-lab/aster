@@ -1,4 +1,4 @@
-//! `a3s-box df` command — Show disk usage.
+//! `aster-box df` command — Show disk usage.
 //!
 //! Displays disk usage for images and boxes, similar to `docker system df`.
 
@@ -154,7 +154,7 @@ mod tests {
 
     #[test]
     fn test_dir_size_nonexistent() {
-        let path = std::path::Path::new("/nonexistent/a3s_test_12345");
+        let path = std::path::Path::new("/nonexistent/aster_test_12345");
         assert_eq!(dir_size(path), 0);
     }
 }

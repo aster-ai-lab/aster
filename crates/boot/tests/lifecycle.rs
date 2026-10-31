@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootFactory, BoxFuture, HttpAdapter, MessageTransport, Module,
     ModuleRef, ProviderBeforeApplicationShutdown, ProviderDefinition,
     ProviderOnApplicationBootstrap, ProviderOnApplicationShutdown, ProviderOnModuleDestroy,

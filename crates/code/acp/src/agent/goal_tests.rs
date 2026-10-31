@@ -1,10 +1,10 @@
 #![cfg(test)]
 
-use super::{test_launch, A3sCodeAgent};
-use a3s_code_core::goal_control::{
+use super::{test_launch, AsterCodeAgent};
+use aster_core::goal_control::{
     GoalCommandKindV1, GoalDefinitionCommandV1, GoalImportSourceV1, GoalState,
 };
-use a3s_code_core::workspace::WorkspaceServices;
+use aster_core::workspace::WorkspaceServices;
 use agent_client_protocol::{self as acp, Agent as _};
 
 #[tokio::test]
@@ -12,7 +12,7 @@ async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts()
     let root = tempfile::tempdir().unwrap();
     let mut launch = test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().into();
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let id = host
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -24,14 +24,14 @@ async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts()
         (live.session.clone(), live.turn_queue.clone())
     };
     crate::goal::bind_task_goal(&session, "Read this synthetic workspace.").unwrap();
-    let thread = a3s_code_core::fact_control::thread_for_session(session.session_id());
-    let before = a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
+    let thread = aster_core::fact_control::thread_for_session(session.session_id());
+    let before = aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
     let permit = queue.acquire_owned().await.unwrap();
     let value = tokio::time::timeout(
         std::time::Duration::from_millis(500),
         ext(
             &host,
-            "a3s/goal/state",
+            "aster/goal/state",
             serde_json::json!({"session_id":id.0}),
         ),
     )
@@ -41,7 +41,7 @@ async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts()
     drop(permit);
     assert_eq!(value["definition"]["state"], "active");
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
+        aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
         before
     );
     assert_eq!(
@@ -57,7 +57,7 @@ async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts()
     .unwrap();
     let paused = ext(
         &host,
-        "a3s/goal/state",
+        "aster/goal/state",
         serde_json::json!({"session_id":id.0}),
     )
     .await
@@ -73,7 +73,7 @@ async fn goal_state_snapshot_previews_tick_without_queueing_or_appending_facts()
     .unwrap();
     let cancelled = ext(
         &host,
-        "a3s/goal/state",
+        "aster/goal/state",
         serde_json::json!({"session_id":id.0}),
     )
     .await
@@ -96,7 +96,7 @@ async fn explicit_new_goals_use_default_bounds_and_trusted_disable_wins() {
             policy.automatic_enabled = false;
             launch.config.goal_control = Some(policy);
         }
-        let host = A3sCodeAgent::new(launch);
+        let host = AsterCodeAgent::new(launch);
         let id = host
             .new_session(acp::NewSessionRequest::new(root.path()))
             .await
@@ -130,13 +130,13 @@ async fn explicit_new_goals_use_default_bounds_and_trusted_disable_wins() {
         match crate::goal::bound_goal_step(&session).await.unwrap() {
             crate::goal::BoundGoalStep::Advance(_) => assert!(!disabled),
             crate::goal::BoundGoalStep::Stopped(
-                a3s_code_core::goal_control::GoalTickDecisionV1::BudgetExhausted,
+                aster_core::goal_control::GoalTickDecisionV1::BudgetExhausted,
             ) => assert!(disabled),
             _ => panic!("unexpected default goal decision"),
         }
-        let thread = a3s_code_core::fact_control::thread_for_session(session.session_id());
+        let thread = aster_core::fact_control::thread_for_session(session.session_id());
         let facts =
-            a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
+            aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
         assert!(!facts.iter().any(|fact| fact.kind == "model.turn"));
         session.close().await;
     }
@@ -147,7 +147,7 @@ async fn chinese_goal_status_is_concise_and_does_not_claim_completion_when_pause
     use crate::goal::{apply_bound_goal, GoalLanguage, GoalOp};
 
     let root = tempfile::tempdir().unwrap();
-    let host = A3sCodeAgent::new(test_launch(Some(root.path().join("store"))));
+    let host = AsterCodeAgent::new(test_launch(Some(root.path().join("store"))));
     let id = host
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -195,7 +195,7 @@ async fn chinese_goal_status_is_concise_and_does_not_claim_completion_when_pause
 }
 
 async fn prompt(
-    agent: &A3sCodeAgent,
+    agent: &AsterCodeAgent,
     id: &acp::SessionId,
     text: &str,
 ) -> acp::Result<acp::PromptResponse> {
@@ -208,7 +208,7 @@ async fn prompt(
 }
 
 async fn preview(
-    agent: &A3sCodeAgent,
+    agent: &AsterCodeAgent,
     id: &acp::SessionId,
     expected_source: serde_json::Value,
 ) -> acp::Result<serde_json::Value> {
@@ -217,24 +217,24 @@ async fn preview(
     }))
     .unwrap();
     let response = agent
-        .ext_method(acp::ExtRequest::new("a3s/goal/import/preview", raw.into()))
+        .ext_method(acp::ExtRequest::new("aster/goal/import/preview", raw.into()))
         .await?;
     Ok(serde_json::from_str(response.0.get()).unwrap())
 }
 
 async fn import(
-    agent: &A3sCodeAgent,
+    agent: &AsterCodeAgent,
     command: &GoalDefinitionCommandV1,
 ) -> acp::Result<serde_json::Value> {
     let raw = serde_json::value::to_raw_value(command).unwrap();
     let response = agent
-        .ext_method(acp::ExtRequest::new("a3s/goal/import", raw.into()))
+        .ext_method(acp::ExtRequest::new("aster/goal/import", raw.into()))
         .await?;
     Ok(serde_json::from_str(response.0.get()).unwrap())
 }
 
 async fn ext(
-    agent: &A3sCodeAgent,
+    agent: &AsterCodeAgent,
     method: &'static str,
     params: serde_json::Value,
 ) -> acp::Result<serde_json::Value> {
@@ -265,11 +265,11 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
         crate::goal::default_continuation_policy(crate::goal::host_clock_ms().unwrap()).unwrap();
     policy.automatic_enabled = false;
     launch.config.goal_control = Some(policy);
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let id = host
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(
-                serde_json::json!({"a3sEngineering":{"policy":"none"}})
+                serde_json::json!({"asterEngineering":{"policy":"none"}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -286,12 +286,12 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
         .unwrap()
         .session
         .clone();
-    let thread = a3s_code_core::fact_control::thread_for_session(session.session_id());
-    let facts = || a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
+    let thread = aster_core::fact_control::thread_for_session(session.session_id());
+    let facts = || aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
     let state = || async {
         ext(
             &host,
-            "a3s/goal/state",
+            "aster/goal/state",
             serde_json::json!({"session_id": id.0}),
         )
         .await
@@ -300,7 +300,7 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
     };
     let unbound = ext(
         &host,
-        "a3s/goal/state",
+        "aster/goal/state",
         serde_json::json!({"session_id": id.0}),
     )
     .await
@@ -311,14 +311,14 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
     );
     assert!(ext(
         &host,
-        "a3s/goal/state",
+        "aster/goal/state",
         serde_json::json!({"session_id": id.0, "x": 1})
     )
     .await
     .is_err());
     assert!(ext(
         &host,
-        "a3s/goal/state",
+        "aster/goal/state",
         serde_json::json!({"session_id": "unknown"})
     )
     .await
@@ -340,7 +340,7 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
     });
     let mut unknown = create.clone();
     unknown["unexpected"] = true.into();
-    let error = ext(&host, "a3s/goal/definition", unknown)
+    let error = ext(&host, "aster/goal/definition", unknown)
         .await
         .unwrap_err();
     assert!(format!("{error:?}").contains("unknown field"), "{error:?}");
@@ -354,7 +354,7 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
             paused: false,
         },
     );
-    let created = ext(&host, "a3s/goal/definition", create).await.unwrap();
+    let created = ext(&host, "aster/goal/definition", create).await.unwrap();
     assert_eq!(created["state"], "active");
     assert_eq!(state().await, created);
     assert!(
@@ -368,18 +368,18 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
         "steps": [{"id": "report", "content": "Report the release code", "status": "pending",
                    "priority": "medium", "success_criteria": "Reported exactly"}],
     });
-    let proposed = ext(&host, "a3s/goal/plan", propose).await.unwrap();
+    let proposed = ext(&host, "aster/goal/plan", propose).await.unwrap();
     let mut accept = goal_ref("accept_plan", "acp-accept", &proposed);
     accept["plan"] = serde_json::Value::Null;
     accept["proposal_sequence"] = proposed["plan_fact_sequence"].clone();
-    let accepted = ext(&host, "a3s/goal/plan", accept).await.unwrap();
+    let accepted = ext(&host, "aster/goal/plan", accept).await.unwrap();
     assert_eq!(accepted["plan_accepted"], true);
 
     // No typed method is a wake: a tick is not a control command.
     let bound = facts();
     assert!(ext(
         &host,
-        "a3s/goal/control",
+        "aster/goal/control",
         goal_ref("tick", "acp-tick", &accepted)
     )
     .await
@@ -401,7 +401,7 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
     assert!(prompt(&host, &id, "/goal pause").await.is_ok());
     assert_eq!(state_of().await, GoalState::Paused);
     let paused = facts();
-    assert_eq!(paused.last().unwrap().kind, "a3s.goal.paused");
+    assert_eq!(paused.last().unwrap().kind, "aster.goal.paused");
     assert!(prompt(&host, &id, "/goal pause").await.is_ok());
     assert_eq!(facts(), paused, "pausing a paused goal records nothing");
 
@@ -410,7 +410,7 @@ async fn bound_goal_verbs_and_typed_commands_share_core_and_respect_host_disable
     assert_eq!(state_of().await, GoalState::Active);
     let resumed = facts();
     assert_eq!(resumed.len(), paused.len() + 1);
-    assert_eq!(resumed.last().unwrap().kind, "a3s.goal.resumed");
+    assert_eq!(resumed.last().unwrap().kind, "aster.goal.resumed");
     assert!(prompt(&host, &id, "/goal resume").await.is_ok());
     assert_eq!(facts(), resumed);
     assert!(session.runs().await.is_empty());
@@ -436,7 +436,7 @@ async fn bound_goal_clear_uses_original_facts_and_keeps_legacy_source_after_acp_
 }
 
 #[tokio::test]
-#[ignore = "requires A3S_CONFIG_FILE and the live boyue/deepseek-v4-flash model"]
+#[ignore = "requires ASTER_CONFIG_FILE and the live boyue/deepseek-v4-flash model"]
 async fn bound_goal_clear_retains_real_model_history_through_acp_reload() {
     prove_bound_clear(true).await;
 }
@@ -444,7 +444,7 @@ async fn bound_goal_clear_retains_real_model_history_through_acp_reload() {
 async fn prove_bound_clear(real_model: bool) {
     let root = tempfile::tempdir().unwrap();
     let mut launch = if real_model {
-        let config = std::env::var_os("A3S_CONFIG_FILE").expect("explicit live ACL path");
+        let config = std::env::var_os("ASTER_CONFIG_FILE").expect("explicit live ACL path");
         let mut launch =
             crate::config::load_launch_config(root.path().to_owned(), Some(config.into())).unwrap();
         assert!(launch
@@ -467,19 +467,19 @@ async fn prove_bound_clear(real_model: bool) {
         // Keep the unrelated live turn from retiring the legacy source.
         paused: real_model,
     };
-    std::fs::create_dir_all(root.path().join(".a3s")).unwrap();
+    std::fs::create_dir_all(root.path().join(".aster")).unwrap();
     std::fs::write(
-        root.path().join(".a3s/durable-goal.json"),
+        root.path().join(".aster/durable-goal.json"),
         serde_json::to_vec(&legacy).unwrap(),
     )
     .unwrap();
-    let path = root.path().join(".a3s/durable-goal.json");
+    let path = root.path().join(".aster/durable-goal.json");
     let original_file = std::fs::read(&path).unwrap();
-    let host = A3sCodeAgent::new(launch.clone());
+    let host = AsterCodeAgent::new(launch.clone());
     let opened = host
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(
-                serde_json::json!({"a3sEngineering":{"policy":"none"}})
+                serde_json::json!({"asterEngineering":{"policy":"none"}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -503,9 +503,9 @@ async fn prove_bound_clear(real_model: bool) {
         "legacy workspace data is not adopted"
     );
     let initial_usage = session.recorded_usage_tokens();
-    let thread = a3s_code_core::fact_control::thread_for_session(session.session_id());
+    let thread = aster_core::fact_control::thread_for_session(session.session_id());
     let initial_facts =
-        a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
+        aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
     let selected = preview(&host, &id, serde_json::Value::Null).await.unwrap();
     assert_eq!(selected["goal"]["objective"], legacy.objective);
     assert_eq!(selected["goal"]["paused"], legacy.paused);
@@ -532,7 +532,7 @@ async fn prove_bound_clear(real_model: bool) {
     assert!(session.goal_definition().unwrap().is_none());
     assert_eq!(session.recorded_usage_tokens(), initial_usage);
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
+        aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
         initial_facts
     );
     if real_model {
@@ -550,7 +550,7 @@ async fn prove_bound_clear(real_model: bool) {
         .await
         .expect("bounded live turn")
         .unwrap_or_else(|error| {
-            let tail = a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).map(
+            let tail = aster_core::fact_control::read_workspace_facts(root.path(), &thread).map(
                 |facts| {
                     facts
                         .into_iter()
@@ -590,7 +590,7 @@ async fn prove_bound_clear(real_model: bool) {
         goal_id: "host-bound".into(),
         session_id: session.session_id().into(),
         workspace: backend.workspace_ref().clone(),
-        goal: a3s_code_core::planning::AgentGoal::new(legacy.objective.clone())
+        goal: aster_core::planning::AgentGoal::new(legacy.objective.clone())
             .with_criteria(vec!["The original history remains available".into()]),
         non_goals: vec![],
         scope_fact_sequences: vec![],
@@ -600,7 +600,7 @@ async fn prove_bound_clear(real_model: bool) {
         expected_goal_sequence: None,
     };
     let unbound_facts =
-        a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
+        aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
     assert!(session.apply_goal_definition(command.clone()).is_err());
     for variant in 0..4 {
         let mut bad = command.clone();
@@ -617,7 +617,7 @@ async fn prove_bound_clear(real_model: bool) {
         assert!(import(&host, &bad).await.is_err(), "variant {variant}");
         assert!(session.goal_definition().unwrap().is_none());
         assert_eq!(
-            a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
+            aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
             unbound_facts
         );
         std::fs::write(&path, &original_file).unwrap();
@@ -670,16 +670,16 @@ async fn prove_bound_clear(real_model: bool) {
         assert_eq!(session.goal_definition().unwrap().unwrap().state, state);
         assert_eq!(std::fs::read(&path).unwrap(), original_file);
     }
-    let before = a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
+    let before = aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
     assert!(prompt(&host, &id, "/goal status").await.is_ok());
     assert!(prompt(&host, &id, "/goal clear").await.is_ok());
     let cancelled = session.goal_definition().unwrap().unwrap();
     assert_eq!(cancelled.state, GoalState::Cancelled);
     assert_eq!(cancelled.binding, definition.binding);
-    let after = a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
+    let after = aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap();
     assert_eq!(&after[..before.len()], before.as_slice());
     assert_eq!(after.len(), before.len() + 1);
-    assert_eq!(after.last().unwrap().kind, "a3s.goal.cancelled");
+    assert_eq!(after.last().unwrap().kind, "aster.goal.cancelled");
     std::fs::write(&path, "changed after admission").unwrap();
     assert_eq!(import(&host, &command).await.unwrap(), imported);
     assert_eq!(
@@ -689,7 +689,7 @@ async fn prove_bound_clear(real_model: bool) {
     std::fs::write(&path, &original_file).unwrap();
     assert!(prompt(&host, &id, "/goal clear").await.is_ok());
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
+        aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
         after
     );
     assert_eq!(std::fs::read(&path).unwrap(), original_file);
@@ -698,7 +698,7 @@ async fn prove_bound_clear(real_model: bool) {
     session.close().await;
     drop(host);
 
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     host.load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
         .await
         .unwrap();
@@ -722,12 +722,12 @@ async fn prove_bound_clear(real_model: bool) {
     );
     assert!(prompt(&host, &id, "/goal clear").await.is_ok());
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
+        aster_core::fact_control::read_workspace_facts(root.path(), &thread).unwrap(),
         after
     );
     assert_eq!(std::fs::read(&path).unwrap(), original_file);
 
-    let source = a3s_code_core::session_folder::effect_log_dir(root.path(), session.session_id())
+    let source = aster_core::session_folder::effect_log_dir(root.path(), session.session_id())
         .join(format!("{thread}.jsonl"));
     let mut corrupted = after;
     corrupted.last_mut().unwrap().payload["schema"] = serde_json::json!("invalid");
@@ -753,18 +753,18 @@ async fn prove_bound_clear(real_model: bool) {
 #[tokio::test]
 async fn unowned_workspace_goal_is_not_automatically_claimed_by_new_sessions() {
     let root = tempfile::tempdir().unwrap();
-    let source = root.path().join(".a3s/durable-goal.json");
+    let source = root.path().join(".aster/durable-goal.json");
     std::fs::create_dir_all(source.parent().unwrap()).unwrap();
     let original = br#"{"objective":"Explicit import only","paused":false}"#;
     std::fs::write(&source, original).unwrap();
     let mut launch = test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_owned();
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     for _ in 0..2 {
         let id = host
             .new_session(
                 acp::NewSessionRequest::new(root.path()).meta(
-                    serde_json::json!({"a3sEngineering":{"policy":"none"}})
+                    serde_json::json!({"asterEngineering":{"policy":"none"}})
                         .as_object()
                         .unwrap()
                         .clone(),
@@ -795,11 +795,11 @@ async fn same_session_other_host_cannot_write_or_retire_legacy_goal_after_import
     let root = tempfile::tempdir().unwrap();
     let mut launch = test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_owned();
-    let first_host = A3sCodeAgent::new(launch.clone());
+    let first_host = AsterCodeAgent::new(launch.clone());
     let id = first_host
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(
-                serde_json::json!({"a3sEngineering":{"policy":"none"}})
+                serde_json::json!({"asterEngineering":{"policy":"none"}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -826,24 +826,24 @@ async fn same_session_other_host_cannot_write_or_retire_legacy_goal_after_import
     .unwrap();
     first.save().await.unwrap();
     assert!(prompt(&first_host, &id, "/goal status").await.is_ok());
-    let folder = a3s_code_core::session_folder::find_session_dir(root.path(), id.0.as_ref())
+    let folder = aster_core::session_folder::find_session_dir(root.path(), id.0.as_ref())
         .unwrap()
         .unwrap();
     let history = serde_json::json!({"seq":1,"type":"user.message","key":"retained-history","payload":{"text":"Retained source history"}});
     std::fs::write(
         folder.join(format!(
             "{}.jsonl",
-            a3s_code_core::fact_control::thread_for_session(id.0.as_ref())
+            aster_core::fact_control::thread_for_session(id.0.as_ref())
         )),
         format!("{history}\n"),
     )
     .unwrap();
     let owned_file = folder.join("durable-goal.json");
     let owned_bytes = std::fs::read(&owned_file).unwrap();
-    let source_file = root.path().join(".a3s/durable-goal.json");
+    let source_file = root.path().join(".aster/durable-goal.json");
     let original = br#"{"objective":"Explicitly selected source","paused":false}"#;
     std::fs::write(&source_file, original).unwrap();
-    let second_host = A3sCodeAgent::new(launch);
+    let second_host = AsterCodeAgent::new(launch);
     second_host
         .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
         .await
@@ -863,7 +863,7 @@ async fn same_session_other_host_cannot_write_or_retire_legacy_goal_after_import
         workspace: WorkspaceServices::local(first.workspace())
             .workspace_ref()
             .clone(),
-        goal: a3s_code_core::planning::AgentGoal::new("Explicitly selected source")
+        goal: aster_core::planning::AgentGoal::new("Explicitly selected source")
             .with_criteria(vec!["Keep both original files unchanged".into()]),
         non_goals: vec![],
         scope_fact_sequences: vec![],
@@ -918,20 +918,20 @@ async fn same_session_other_host_cannot_write_or_retire_legacy_goal_after_import
 }
 
 #[tokio::test]
-#[ignore = "requires A3S_CONFIG_FILE and the live boyue/deepseek-v4-flash model"]
+#[ignore = "requires ASTER_CONFIG_FILE and the live boyue/deepseek-v4-flash model"]
 async fn session_scoped_legacy_goal_reaches_real_model_after_new_host_reopen() {
     let root = tempfile::tempdir().unwrap();
-    let config = std::env::var_os("A3S_CONFIG_FILE").expect("explicit live ACL");
+    let config = std::env::var_os("ASTER_CONFIG_FILE").expect("explicit live ACL");
     let mut launch =
         crate::config::load_launch_config(root.path().to_owned(), Some(config.into())).unwrap();
     launch.model_id = "boyue/deepseek-v4-flash".into();
     launch.config.default_model = Some(launch.model_id.clone());
     launch.config.sessions_dir = Some(root.path().join("sessions"));
-    let first_host = A3sCodeAgent::new(launch.clone());
+    let first_host = AsterCodeAgent::new(launch.clone());
     let id = first_host
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(
-                serde_json::json!({"a3sEngineering":{"policy":"none"}})
+                serde_json::json!({"asterEngineering":{"policy":"none"}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -968,13 +968,13 @@ async fn session_scoped_legacy_goal_reaches_real_model_after_new_host_reopen() {
         "the model has never seen the new marker"
     );
     let before = first.recorded_usage_tokens();
-    let root_source = root.path().join(".a3s/durable-goal.json");
+    let root_source = root.path().join(".aster/durable-goal.json");
     let unowned = br#"{"objective":"UNOWNED-WORKSPACE-MARKER","paused":false}"#;
     std::fs::write(&root_source, unowned).unwrap();
     first.close().await;
     drop(first_host);
 
-    let next_host = A3sCodeAgent::new(launch);
+    let next_host = AsterCodeAgent::new(launch);
     next_host
         .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
         .await
@@ -1023,7 +1023,7 @@ async fn session_scoped_legacy_goal_reaches_real_model_after_new_host_reopen() {
         .text();
     assert!(answer.contains(&marker), "{answer}");
     let facts =
-        a3s_code_core::fact_control::read_workspace_facts(next.workspace(), next.session_id())
+        aster_core::fact_control::read_workspace_facts(next.workspace(), next.session_id())
             .unwrap();
     let input = facts
         .iter()

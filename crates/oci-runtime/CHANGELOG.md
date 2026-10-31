@@ -1,23 +1,23 @@
 # Changelog
 
-All notable changes to A3S OCI Runtime are documented in this file.
+All notable changes to Aster OCI Runtime are documented in this file.
 
 ## [Unreleased]
 
 ### Fixed
 
-- Windows/WHPX durable AgentVmSession sets `A3S_OCI_GUEST_HOST_RECONNECT=1` and
+- Windows/WHPX durable AgentVmSession sets `ASTER_OCI_GUEST_HOST_RECONNECT=1` and
   the Windows agent-vm smoke path forwards it into the Linux guest (KVM parity)
   so Host-control EOF can reset the Guest for Live HostHello reattach. Does
   **not** tip-prove Box binder gate 9 or claim Enterprise GA.
 
 ### Added
 
-- Windows/WHPX mid-run Live scaffolding: `A3S_OCI_WHPX_SESSION_OWNER` fail-closed
-  gate, `a3s.oci.whpx-live-session-binding.v1` publish/authenticate helpers
+- Windows/WHPX mid-run Live scaffolding: `ASTER_OCI_WHPX_SESSION_OWNER` fail-closed
+  gate, `aster.oci.whpx-live-session-binding.v1` publish/authenticate helpers
   (`GetProcessTimes` process identity), and design note
   [`docs/windows-whpx-live-session.md`](docs/windows-whpx-live-session.md).
-- Windows `a3s-oci-krun-shim session-owner` / `session-owner-probe` /
+- Windows `aster-oci-krun-shim session-owner` / `session-owner-probe` /
   `session-owner-bridge-echo` with Job Object `KILL_ON_JOB_CLOSE` and optional
   `--host-control` duplex named-pipe Host↔shim proxy. Tokio-safe
   `spawn_via_session_owner_helper` (breakaway from Host job) passes
@@ -32,7 +32,7 @@ All notable changes to A3S OCI Runtime are documented in this file.
 
 ### Fixed
 
-- Republish `a3s-oci-core` and `a3s-oci-sdk` as `0.3.2` so crates.io matches
+- Republish `aster-oci-core` and `aster-oci-sdk` as `0.3.2` so crates.io matches
   the Box-pinned source revision that exposes Network/Storage attachment
   types (`NetworkAttachmentIdentity`, `attach_linux_network_interface`,
   `attach_storage_mount`, and related APIs). crates.io `0.3.1` was cut from
@@ -44,7 +44,7 @@ All notable changes to A3S OCI Runtime are documented in this file.
 
 ### Added
 
-- Published `a3s-oci-core` and `a3s-oci-sdk` as independently consumable
+- Published `aster-oci-core` and `aster-oci-sdk` as independently consumable
   crates. The 0.3 contract includes generation-fenced lifecycle operations,
   versioned attachment manifests, reconnectable local transport, bounded
   filesystem sessions, portable rootfs metadata, and runtime bundle handoff.
@@ -95,7 +95,7 @@ All notable changes to A3S OCI Runtime are documented in this file.
 - Made the SDK crate self-contained by packaging the exact checked-in OCI
   Runtime and Image specification snapshots consumed by its embedded schemas,
   conformance inventory, and tests. The incomplete 0.3.0 attempt published
-  only `a3s-oci-core`; `a3s-oci-sdk` starts at 0.3.1 together with the matching
+  only `aster-oci-core`; `aster-oci-sdk` starts at 0.3.1 together with the matching
   Core patch release.
 
 ## [Unreleased]
@@ -109,9 +109,9 @@ All notable changes to A3S OCI Runtime are documented in this file.
   `session_is_success` / `is_success`. Does not claim KVM production cutover
   or Enterprise GA.
 
-- Operator setuid `a3s-oci` adopts the rootless device-policy identity before
+- Operator setuid `aster-oci` adopts the rootless device-policy identity before
   bootstrap: effective gid 0, supplementary groups cleared, and self-migration
-  into `A3S_BOX_OWNER_CGROUP` only when that directory is a lexical child of
+  into `ASTER_BOX_OWNER_CGROUP` only when that directory is a lexical child of
   `--delegated-cgroup-root`. The setpriv shape (egid 0, no supplementary
   groups, no owner-cgroup env) is unchanged. Tip-built launcher on Ubuntu Orb
   (mode 4755) returned Sandbox `--rm` exit 0/1/3 for a non-root caller without
@@ -132,7 +132,7 @@ This tag does not promote driver readiness. WHPX and the Linux KVM public
 candidate remain `probe-only`. macOS HVF remains `experimental`. Fresh-host
 promotion, W4 Box cutover, default supervised create, and HostRuntimeService
 KVM registration stay open. The immutable system-image compatibility level
-remains `a3s-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
+remains `aster-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
 stay at 0.3.1; `v0.3.6` is the workspace binary release, not a crates.io SDK
 tag.
 
@@ -152,7 +152,7 @@ This tag does not promote driver readiness. WHPX and the Linux KVM public
 candidate remain `probe-only`. macOS HVF remains `experimental`. Fresh-host
 promotion, W4 Box cutover, default supervised create, and HostRuntimeService
 KVM registration stay open. The immutable system-image compatibility level
-remains `a3s-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
+remains `aster-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
 stay at 0.3.1; `v0.3.5` is the workspace binary release, not a crates.io SDK
 tag.
 
@@ -170,7 +170,7 @@ This tag does not promote driver readiness. WHPX and the Linux KVM public
 candidate remain `probe-only`. macOS HVF remains `experimental`. Fresh-host
 promotion, W4 Box cutover, default supervised create, and HostRuntimeService
 KVM registration stay open. The immutable system-image compatibility level
-remains `a3s-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
+remains `aster-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
 stay at 0.3.1; this tag is not a crates.io SDK tag.
 
 ### Fixed
@@ -186,7 +186,7 @@ This tag does not promote driver readiness. WHPX and the Linux KVM public
 candidate remain `probe-only`. macOS HVF remains `experimental`. Fresh-host
 promotion, W4 Box cutover, default supervised create, and HostRuntimeService
 KVM registration stay open. The immutable system-image compatibility level
-remains `a3s-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
+remains `aster-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
 stay at 0.3.1; this tag is not a crates.io SDK tag.
 
 ### Fixed
@@ -203,7 +203,7 @@ This tag does not promote driver readiness. WHPX and the Linux KVM public
 candidate remain `probe-only`. macOS HVF remains `experimental`. Fresh-host
 promotion, W4 Box cutover, default supervised create, and HostRuntimeService
 KVM registration stay open. The immutable system-image compatibility level
-remains `a3s-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
+remains `aster-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
 stay at 0.3.1; this tag is not a crates.io SDK tag.
 
 ### Fixed
@@ -219,7 +219,7 @@ This tag does not promote driver readiness. WHPX and the Linux KVM public
 candidate remain `probe-only`. macOS HVF remains `experimental`. Fresh-host
 promotion, W4 Box cutover, default supervised create, and HostRuntimeService
 KVM registration stay open. The immutable system-image compatibility level
-remains `a3s-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
+remains `aster-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates
 stay at 0.3.1; this tag is not a crates.io SDK tag.
 
 ### Fixed
@@ -236,7 +236,7 @@ tag does not promote driver readiness. WHPX and the Linux KVM public candidate
 remain `probe-only`. macOS HVF remains `experimental`. Fresh-host promotion,
 W4 Box cutover, default supervised create, and HostRuntimeService KVM
 registration stay open. The immutable system-image compatibility level remains
-`a3s-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates stay at
+`aster-oci-runtime-0.2.0-agent-protocol-v10`. Published Rust SDK crates stay at
 0.3.1; this tag is not a crates.io SDK tag.
 
 ### Added
@@ -245,11 +245,11 @@ registration stay open. The immutable system-image compatibility level remains
   Pipe+Capture exec (`new_exec_io_after_reattach_proven`), matching Native Live
   v3 spawn coverage through the reattached Guest agent (retained exec I/O alone
   does not prove spawn). Schema remains
-  `a3s.oci.linux-kvm-live-recovery-smoke.v3`; wrapper
+  `aster.oci.linux-kvm-live-recovery-smoke.v3`; wrapper
   `.github/scripts/linux-kvm-live-recovery.sh`. Observation-only;
   `promotes_readiness=false`. **Existing-host WSL2 `/dev/kvm` greened** on
   `53ccc419858d987f1f80419ab83d63408ff53b43` (matrix report
-  `/tmp/a3s-oci-obs/kvm-live-recovery-new-exec-20260911174642.json`, SHA-256
+  `/tmp/aster-oci-obs/kvm-live-recovery-new-exec-20260911174642.json`, SHA-256
   `cc118bdcdae8b255b5bdce9863f27d13f1f1ab3582c4575d2aea6152671c852d`,
   `status=available`; continuous init PID 358;
   `new_exec_io_after_reattach_proven` / `retained_filesystem_proven` /
@@ -259,12 +259,12 @@ registration stay open. The immutable system-image compatibility level remains
 - Native Linux Live recovery smoke v3 proves a **new** post-reattach exec with
   Pipe stdin + Capture stdout (in addition to retained exec I/O and filesystem
   continuity). Schema
-  `a3s.oci.linux-native-live-recovery-smoke.v3`; wrapper
+  `aster.oci.linux-native-live-recovery-smoke.v3`; wrapper
   `.github/scripts/linux-native-live-recovery.sh`. Opt-in supervised create
   only; does not flip defaults, B2, cutover, or fresh-host promotion.
   **Existing-host WSL2 greened** on tip
   `6cc7da3c91bb09a6dbb59527b256b7ce95e86adf` (report
-  `/var/tmp/a3s-oci-native-live-v3-20260911121600.json`, SHA-256
+  `/var/tmp/aster-oci-native-live-v3-20260911121600.json`, SHA-256
   `e46c6a5325039fb07c6b7cdddd3e742bae4e185f139a9c28a8686434c809ccdf`,
   `status=available`); `promotes_readiness=false`.
 - Host-reopen live `update` applies supported OCI Linux resource fields to the
@@ -316,17 +316,17 @@ registration stay open. The immutable system-image compatibility level remains
 - Corrected container-exec helper unit tests that still omitted the
   `SURVIVE` argument after Live reopen wiring, so they never reached the
   duplicate descriptor / namespace fail-closed assertions.
-- Opt-in supervised Native create (`A3S_OCI_NATIVE_SESSION_SUPERVISOR=1`) now
+- Opt-in supervised Native create (`ASTER_OCI_NATIVE_SESSION_SUPERVISOR=1`) now
   accepts Host `Inherit` stdio by duplicating Host fds 0/1/2 into the
   session-supervisor install plan (Box Live Null+Inherit+Inherit) and accepts
-  the A3S Box control inherited-descriptor schema
-  (`a3s_box_control_v1`, FDs 3/4/5) via `spawn_launcher_with_inherited`.
+  the Aster Box control inherited-descriptor schema
+  (`aster_box_control_v1`, FDs 3/4/5) via `spawn_launcher_with_inherited`.
   Unknown inherited schemas, Terminal I/O, and default Host-bound create
   remain unchanged.
 - Corrected a typo in the agent recovery reopen unit test (`superviso` →
-  `supervisor`) so `cargo test -p a3s-oci-agent --lib` compiles again.
+  `supervisor`) so `cargo test -p aster-oci-agent --lib` compiles again.
 - Corrected a typo in the CLI stack-bound dispatch unit test (`worke` →
-  `worker`) so `cargo test -p a3s-oci-cli` compiles again.
+  `worker`) so `cargo test -p aster-oci-cli` compiles again.
 
 ### Changed
 
@@ -355,7 +355,7 @@ registration stay open. The immutable system-image compatibility level remains
   `operation_reopen_case_count=180`.
 - Fail-closed Linux KVM and WHPX release matrices so `host_class=fresh` /
   `-HostClass fresh` cannot set `promotes_readiness=true` with a reduced soak
-  depth (`A3S_OCI_LINUX_KVM_SOAK_ITERATIONS!=25` or soak
+  depth (`ASTER_OCI_LINUX_KVM_SOAK_ITERATIONS!=25` or soak
   `requested_iterations`/`completed_iterations` != 25). Fresh runs pin the
   full 25-iteration soak profile; existing hosts may still use shorter soaks
   for observation. Covered by the promotion unit tests.
@@ -383,8 +383,8 @@ registration stay open. The immutable system-image compatibility level remains
 - Re-greened tip-source Native Linux full smoke including soak on clean tip
   `d337aef892e1bffd8a5ef9820112780656041eb2` (Merge #297) via
   `.github/scripts/native-linux-smoke.sh` EXIT=0 on existing-host WSL2.
-  Soak report `/var/tmp/a3s-oci-native-smoke-tip-d337aef/soak-report.json`
-  schema `a3s.oci.native-linux-soak.v2`, status `available`,
+  Soak report `/var/tmp/aster-oci-native-smoke-tip-d337aef/soak-report.json`
+  schema `aster.oci.native-linux-soak.v2`, status `available`,
   `configuration.iterations=25`, `configuration.concurrent_containers=4`,
   `reason=null`, SHA-256
   `2614c462ea4c1dfd7aa40df0d6e9f54332f7c7b517186198fe11530f0a2e6cc1`.
@@ -405,7 +405,7 @@ registration stay open. The immutable system-image compatibility level remains
   `684f54f61bfad188223bf410a45547259fba1ec4cbb580fe996371420b2ff504`
   (agent `23336c3a1999df8b7a3b12a94986260e18e8f19ea5ca41b370715e8dfb17d2dc`)
   and containerd 2.2.1. Report schema remains
-  `a3s.oci.linux-kvm-containerd-lifecycle.v3` with the six dedicated-vm
+  `aster.oci.linux-kvm-containerd-lifecycle.v3` with the six dedicated-vm
   init/exec Created/Running/Stopped restart boundaries; report SHA-256
   `c85ca1490be83b77b03cd0d7b1654c7c56a24e9f7d4509dd3abdce7ee02ade7d`.
   Prior tip `f14c9401f92a5fa97be62c54f58925f5fc1a2a51` report
@@ -476,7 +476,7 @@ registration stay open. The immutable system-image compatibility level remains
   and the same exec process ID → post-reattach write_stdin/read_output
   (`retained_exec_io_proven`) → exact FileOp::Download
   (`retained_filesystem_proven`). Success requires both filesystem and exec
-  I/O. Schema `a3s.oci.linux-native-live-recovery-smoke.v2` / CLI
+  I/O. Schema `aster.oci.linux-native-live-recovery-smoke.v2` / CLI
   `linux-native-live-recovery-smoke` /
   `.github/scripts/linux-native-live-recovery.sh`. Prior v1 filesystem-only
   greening used revision `695bf4f73af986b8131f496de85753e491734836` (report
@@ -484,7 +484,7 @@ registration stay open. The immutable system-image compatibility level remains
   `1b635b199b43b3666773d16a8d9718270f0efd809782326d75d7eec525f3612f`).
   **Existing-host WSL2 v2 greened** on revision
   `f047d862bd0a000392cf9bd013854590c1e4a7c7` with report
-  `/var/tmp/a3s-oci-native-live-io-v2-20260911003055.json` SHA-256
+  `/var/tmp/aster-oci-native-live-io-v2-20260911003055.json` SHA-256
   `88def24f4fb652bdf03a7204c7f087aa18e783f060230535858779d002b17c34`
   (`retained_exec_io_proven` / `exec_io_before_kill` /
   `write_stdin_after_reattach` / `read_output_after_reattach` /
@@ -495,16 +495,16 @@ registration stay open. The immutable system-image compatibility level remains
   from stopped-only `native-linux-recovery`. Does not flip default create /
   B2 / cutover flags.
 
-- Opt-in durable KVM `session-owner` helper on `a3s-oci-krun-shim` plus
+- Opt-in durable KVM `session-owner` helper on `aster-oci-krun-shim` plus
   `session-owner-probe` parentage probe. Host can set
-  `A3S_OCI_KVM_SESSION_OWNER=1` so AgentVmSession spawns through the helper
+  `ASTER_OCI_KVM_SESSION_OWNER=1` so AgentVmSession spawns through the helper
   (Tokio-safe; injects `--owner-pid` as the helper PID). First-principles tests
   cover fork-based Host-death survival and helper parentage. Default remains
   Host-bound stopped-only.
 
 - Opt-in KVM Live Host reattach path (observation-only): session-owner
-  `--host-control` bridge, guest `A3S_OCI_GUEST_HOST_RECONNECT=1` vsock loop,
-  durable Live binding (`a3s.oci.kvm-live-session-binding.v1`) with PID +
+  `--host-control` bridge, guest `ASTER_OCI_GUEST_HOST_RECONNECT=1` vsock loop,
+  durable Live binding (`aster.oci.kvm-live-session-binding.v1`) with PID +
   start-time authentication, and `UtilityVmRuntimeDriver::recover` Live reopen
   through the surviving bridge. Unit coverage for binding auth and Host
   disconnect / second Host connect proxying (fake shim; no `/dev/kvm`). Does
@@ -512,11 +512,11 @@ registration stay open. The immutable system-image compatibility level remains
   close W2/B2 until existing-host WSL2 `/dev/kvm` Live evidence is greened.
 
 - Opt-in Linux KVM Live Host reopen evidence gate (observation-only): schema
-  `a3s.oci.linux-kvm-live-recovery-smoke.v3`, CLI
+  `aster.oci.linux-kvm-live-recovery-smoke.v3`, CLI
   `linux-kvm-live-recovery-smoke`, and
   `.github/scripts/linux-kvm-live-recovery.sh` matrix wrapper
-  (`a3s.oci.linux-kvm-live-recovery-matrix.v1`). Proves
-  `A3S_OCI_KVM_SESSION_OWNER=1` create+start → retained exec I/O (Pipe stdin +
+  (`aster.oci.linux-kvm-live-recovery-matrix.v1`). Proves
+  `ASTER_OCI_KVM_SESSION_OWNER=1` create+start → retained exec I/O (Pipe stdin +
   Capture stdout) → FileOp::Upload → Host SIGKILL → Guest / session-owner
   survival → replacement Host Running reattach with continuous init identity,
   the same exec process ID, post-reattach write_stdin/read_output
@@ -530,7 +530,7 @@ registration stay open. The immutable system-image compatibility level remains
   `888623a38d8399ff65047a5f1e294cbdff2d77b54302172afeab3c081a2ce88c`).
   **v3 Live filesystem greened** on existing-host WSL2 `/dev/kvm` at
   `2decde58…` (matrix report
-  `/var/tmp/a3s-oci-kvm-live-fs-v3-20260910214714.json` SHA-256
+  `/var/tmp/aster-oci-kvm-live-fs-v3-20260910214714.json` SHA-256
   `74d60f3e472ae7380fb702ea416fc4cbad01f28ab95af268dedaa0d0533e316b`;
   system-image manifest
   `805d4afea01b1c3a9ed7343b2406edfc6c7e43912e35134ec72661c29fe56449`;
@@ -564,7 +564,7 @@ registration stay open. The immutable system-image compatibility level remains
   not mapped UID 100000 against a root-owned work tree (EACCES). Report JSON
   uses snake_case like KVM Live (removed `rename_all = "camelCase"`). Download
   evidence omits mutation context (read-only FileOp contract).
-- Guest `A3S_OCI_GUEST_HOST_RECONNECT=1` now reconnects after a clean Host EOF
+- Guest `ASTER_OCI_GUEST_HOST_RECONNECT=1` now reconnects after a clean Host EOF
   (`serve_agent_connection` → `Ok(())` at frame boundary). The previous loop only
   retried retryable Unavailable I/O errors, so Host SIGKILL after idle Start made
   the Guest shut down, reaped the utility VM, and failed Live session-owner survival.
@@ -656,12 +656,12 @@ registration stay open. The immutable system-image compatibility level remains
   Empty and nonempty frames share that path; mounts do not ride
   `spawn_launcher` FD lists. Remaining supervised Unsupported gates
   (Terminal I/O, pinned utility-VM bundles, unknown inherited schemas)
-  stay fail-closed; Host `Inherit` stdio and `a3s_box_control_v1` are
+  stay fail-closed; Host `Inherit` stdio and `aster_box_control_v1` are
   accepted on supervised create. First-principles coverage: supervised create
   preflight allows mounts while keeping other gates; empty and nonempty control
   frames; cross-process SCM_RIGHTS without Host parentage; Host→supervisor-child
   delivery. Default create stays Host-bound
-  (`A3S_OCI_NATIVE_SESSION_SUPERVISOR=1` remains opt-in).
+  (`ASTER_OCI_NATIVE_SESSION_SUPERVISOR=1` remains opt-in).
 - Native Linux Host-reopen **new `exec` spawn-context rebuild** on the Live
   supervised path. Reloads the durable `config.json` snapshot for namespace
   plan / capability ceiling / seccomp, captures authentic namespace and root
@@ -685,7 +685,7 @@ registration stay open. The immutable system-image compatibility level remains
   closed. Default create stays Host-bound.
 - Native Linux Host-reopen **authentic `wait_process`** for durable exec
   identities on the Live supervised path. Recovery schema advances to
-  `a3s.oci.native-linux-recovery.v6` with optional `helper` (supervisor-child
+  `aster.oci.native-linux-recovery.v6` with optional `helper` (supervisor-child
   wait target) on exec records; v5 records normalize with `helper: None` and
   fail closed with `Unavailable`. Supervised exec spawns through the session
   supervisor (`spawn_launcher_with_inherited`, `SURVIVE=1`); Host-bound default
@@ -709,7 +709,7 @@ registration stay open. The immutable system-image compatibility level remains
   inventory omits the signaled-dead exec without invented wait status.
   Default create stays Host-bound.
 - Native Linux Host-reopen **durable exec inventory** on the Live supervised
-  path. Recovery schema advances to `a3s.oci.native-linux-recovery.v5` with
+  path. Recovery schema advances to `aster.oci.native-linux-recovery.v5` with
   authenticated exec entries (process ID, PID + start-time, terminal mode).
   Older v1–v4 records still normalize (v4 without inventing execs). Supervised
   exec persists identities into the recovery record and skips Host-bound
@@ -776,7 +776,7 @@ registration stay open. The immutable system-image compatibility level remains
   remains open.
 - Added Native Linux session-supervisor **control reattach** after Host
   channel EOF. On unexpected EOF the supervisor publishes a deterministic
-  abstract unix endpoint (`a3s.oci.session-supervise.<pid>.<start_time_ticks>`),
+  abstract unix endpoint (`aster.oci.session-supervise.<pid>.<start_time_ticks>`),
   does not reap waitable children, and accepts a replacement Host.
   `HostSessionSupervisor::reattach` authenticates PID + start-time and resumes
   wait/spawn without inventing exit status. Re-exec of a new supervisor remains
@@ -791,7 +791,7 @@ registration stay open. The immutable system-image compatibility level remains
   schemas. This does not wire the supervisor into the production executor or
   close default Sandbox/MicroVM cutover.
 - Extended Native Linux recovery to
-  `a3s.oci.native-linux-recovery.v4` with an optional `sessionSupervisor`
+  `aster.oci.native-linux-recovery.v4` with an optional `sessionSupervisor`
   identity. Older v1–v3 records still normalize. Stale recovery still
   fail-closes when a recorded session supervisor is live until Host reopen
   restores process wait/kill through control reattach (now landed as
@@ -802,14 +802,14 @@ registration stay open. The immutable system-image compatibility level remains
   production spawn path; default create still uses Host-bound PDEATHSIG until
   launcher spawn is moved under the supervisor.
 - Opt-in Native create can spawn the container launcher as a real child of
-  `HostSessionSupervisor` (`A3S_OCI_NATIVE_SESSION_SUPERVISOR=1`). Supervised
+  `HostSessionSupervisor` (`ASTER_OCI_NATIVE_SESSION_SUPERVISOR=1`). Supervised
   create arms `container-init` PDEATHSIG against the supervisor PID, transfers
   cgroup + stdio descriptors via SCM_RIGHTS (up to 6 FDs), and persists the
   authenticated supervisor identity in recovery v4 `sessionSupervisor`. Default
   create remains Host-bound and does not write `sessionSupervisor`.
 - Extended Linux KVM containerd dedicated-vm vertical slice with exec
   Created/Running/Stopped daemon-restart boundaries after the existing init
-  slice. Report schema is now `a3s.oci.linux-kvm-containerd-lifecycle.v3` and
+  slice. Report schema is now `aster.oci.linux-kvm-containerd-lifecycle.v3` and
   records six exact dedicated-vm restart boundary IDs (init and exec
   Created/Running/Stopped). First-principles ledger tests reject Native Linux
   `exec-*` names as a DedicatedVm pass. Existing-host WSL2 x86_64 / containerd
@@ -825,7 +825,7 @@ registration stay open. The immutable system-image compatibility level remains
 - Extended Linux KVM containerd dedicated-vm vertical slice with Created,
   Running, and Stopped daemon-restart boundaries under private
   `KillMode=process` containerd. Report schema is now
-  `a3s.oci.linux-kvm-containerd-lifecycle.v2` and records the exact three
+  `aster.oci.linux-kvm-containerd-lifecycle.v2` and records the exact three
   dedicated-vm restart boundary IDs. Existing-host WSL2 x86_64 / containerd
   2.2.1 observation retained (report SHA-256
   `32b1d316ecaed8ee2d639b6b1bd52dcb58e0ad2d8f94f0be13466ab73d3eff01`);
@@ -839,7 +839,7 @@ registration stay open. The immutable system-image compatibility level remains
   on clean current-main revision
   `95d624f9831b79abf86bc8e369df849054c63eaf` (DedicatedVm containerd restart
   slice merge). All six core gates returned `available` under
-  `a3s.oci.linux-kvm-release-matrix.v1` (agent-entry, compatibility-drift,
+  `aster.oci.linux-kvm-release-matrix.v1` (agent-entry, compatibility-drift,
   lifecycle, owner-death recovery, Create reopen, soak). Aggregate report
   SHA-256
   `5c701cb6116170483b666df966c9304e224640e37f07966079b2f0d7e923cd8b`;
@@ -849,19 +849,19 @@ registration stay open. The immutable system-image compatibility level remains
   (`.github/scripts/linux-kvm-containerd-lifecycle.sh`). A private
   `KillMode=process` containerd plus `box-kvm-qualification-service` Host
   exercises create/start/kill/wait/delete through
-  `containerd-shim-a3s-oci-v2` with CreateOptions annotation
+  `containerd-shim-aster-oci-v2` with CreateOptions annotation
   `isolation=dedicated-vm`, records `libkrun-kvm`, and emits
-  `a3s.oci.linux-kvm-containerd-lifecycle.v1` (observation-only; does not
+  `aster.oci.linux-kvm-containerd-lifecycle.v1` (observation-only; does not
   promote readiness). Existing-host WSL2 x86_64 / containerd 2.2.1 evidence
   retained for revision under test against the pinned system image.
 - containerd DedicatedVm creates now materialize the operation-scoped runtime
-  bundle handoff under `A3S_OCI_RUNTIME_ROOT` (KVM driver root:
+  bundle handoff under `ASTER_OCI_RUNTIME_ROOT` (KVM driver root:
   `<service --root>/runtime`), annotate
-  `dev.a3s.bundle-handoff=move-to-runtime-v1`, and project containerd host
+  `dev.aster.bundle-handoff=move-to-runtime-v1`, and project containerd host
   Spec defaults onto the guest contract (drop `mqueue`/`cgroup`/`cgroup2`
   mounts; rewrite absolute `linux.cgroupsPath` to a relative identity).
   SharedHostKernel creates remain on the caller-owned containerd bundle.
-- Added `a3s-oci box-kvm-qualification-service`, a qualification-only Linux
+- Added `aster-oci box-kvm-qualification-service`, a qualification-only Linux
   KVM Host Service scoped to `box-product-lifecycle-only-v1`. The public
   `libkrun-kvm` probe remains non-registerable; Box product opt-in must use
   this explicit Unix owner, which is distinct from owner-death recovery and
@@ -871,7 +871,7 @@ registration stay open. The immutable system-image compatibility level remains
 
 - CreateOptions resolution is Host-aware: an unspecified isolation no longer
   silently defaults to SharedHostKernel against a DedicatedVm-only Host.
-  Annotation fallback `dev.a3s.oci.runtime.v1.CreateOptions` selects
+  Annotation fallback `dev.aster.oci.runtime.v1.CreateOptions` selects
   dedicated-vm when Runtime.Options cannot be marshaled by `ctr`.
 - Rootless durable owners that already dropped host effective root no longer
   plan detached `open_tree` clones for read-only binds. Those clones need host
@@ -1236,7 +1236,7 @@ registration stay open. The immutable system-image compatibility level remains
   both external tool identities, and thirteen subordinate evidence records.
   CRIU and Runtime Tools remain host-provided and outside the archive. The
   package gate does not promote Native Linux beyond `probe-only` or replace
-  the remaining A3S Box, descriptor-preserving/full upstream lifecycle,
+  the remaining Aster Box, descriptor-preserving/full upstream lifecycle,
   security, or release-host gates.
 - Completed the OCI Runtime Tools Linux execution-compatibility slice. The
   shared Linux executor now accepts the X86 and X32 compatibility ABIs beside
@@ -1249,7 +1249,7 @@ registration stay open. The immutable system-image compatibility level remains
   default devices are covered without weakening the immutable device
   inventory or caller resource narrowing.
 - Qualified the policy-neutral OAR-01 network-enforcement boundary on rootful
-  Native Linux. The driver advertises `dev.a3s.network.enforcement@1` only with
+  Native Linux. The driver advertises `dev.aster.network.enforcement@1` only with
   network-device authority. A real caller-owned namespace fixture proves exact
   interface attachment, redirect and rejection behavior, live Host reopen with
   generation/PID/opaque-evidence replay, and namespace/interface/mechanism
@@ -1298,7 +1298,7 @@ registration stay open. The immutable system-image compatibility level remains
   current-platform driver capabilities. Checkpoint's v4-compatible journal
   retains the exact normalized request and immutable typed response and fences
   the paused source against lifecycle and process-I/O mutations. The new
-  `a3s.oci.operation.v5` restore journal performs read-only artifact and exact
+  `aster.oci.operation.v5` restore journal performs read-only artifact and exact
   runtime/driver compatibility validation before generation allocation,
   retains the complete request, resumes only through an idempotent driver,
   commits one paused running generation, and replays a committed response
@@ -1349,7 +1349,7 @@ registration stay open. The immutable system-image compatibility level remains
   evidence, replay drift, duplicate MACs, and partial bootstrap all fail
   closed. KVM still advertises v1 until the cumulative v2/v3 destructive
   real-host restart, cleanup, replay, and soak gates pass; HVF remains v1.
-- Added `a3s.oci.attachments.v4` as the fail-closed public foundation for
+- Added `aster.oci.attachments.v4` as the fail-closed public foundation for
   reusable utility-VM guest sessions. Each shared-guest request binds a
   path-safe logical session ID, positive incarnation, immutable trust domain,
   bounded capacity, runtime ownership, and explicit empty-session reset mode.
@@ -1368,7 +1368,7 @@ registration stay open. The immutable system-image compatibility level remains
   schemas are now configured independently from isolation classes, rechecked
   at the driver boundary, and passed intact to the VM factory so a future
   platform transport cannot silently lose v2/v3 launch evidence.
-- Added `a3s.oci.attachments.v3` for already-authorized Linux network
+- Added `aster.oci.attachments.v3` for already-authorized Linux network
   interfaces. Each binding carries caller-issued namespace, interface, and
   cleanup incarnation IDs plus exact OCI network-namespace and
   `linux.netDevices` descriptors. New namespaces require runtime-namespace
@@ -1381,7 +1381,7 @@ registration stay open. The immutable system-image compatibility level remains
   has the internal transport described above but still lacks cumulative v2 and
   real-host v3 qualification, while HVF has no independent NIC transport. IPAM, DNS,
   routes, aliases, policy, and backing-network deletion remain outside Runtime.
-- Added `a3s.oci.attachments.v2` for already-authorized storage. Each entry
+- Added `aster.oci.attachments.v2` for already-authorized storage. Each entry
   binds one validated OCI mount to a caller-issued immutable allocation ID,
   exact read-only/read-write mode, caller ownership, and detach-only cleanup.
   The SDK rejects duplicate identities or mounts, access drift, secret/storage
@@ -1394,7 +1394,7 @@ registration stay open. The immutable system-image compatibility level remains
   qualification gate passes; the other utility-VM drivers remain v1 until they
   have equivalent transports and evidence. The legacy aggregate capability
   remains the safe driver intersection.
-- Added `a3s.oci.extensions.v1`, an exact-artifact, per-driver capability
+- Added `aster.oci.extensions.v1`, an exact-artifact, per-driver capability
   catalog returned by `RuntimeInfo`. Every entry binds canonical v1 operation
   contracts and attachment versions to one launch-ready driver and its unique
   isolation classes; the catalog binds the complete response to the SHA-256 of
@@ -1655,11 +1655,11 @@ registration stay open. The immutable system-image compatibility level remains
   bounded stdin, separate stdout/stderr, PTY, EOF, resize, exit-status,
   reconnect, and real-host evidence, this closes the R7 process-I/O gate.
 - A code-owned containerd-to-SDK translation contract. Twenty-three exact
-  Task and FIFO-pump routes collapse to the 18 public `a3s-oci-sdk` operations
+  Task and FIFO-pump routes collapse to the 18 public `aster-oci-sdk` operations
   required by the shim; endpoint admission now derives directly from that
   table and fails before task dispatch when any operation is absent. Shim
   version output and RuntimeInfo expose the same contract, while manifest
-  tests prohibit dependencies on A3S Box, the Host Runtime implementation, the
+  tests prohibit dependencies on Aster Box, the Host Runtime implementation, the
   Agent, or Core internals. This closes the R7 public-SDK translation gate;
   complete I/O, restart-boundary, cross-driver, and published-artifact gates
   remain separate.
@@ -1713,7 +1713,7 @@ registration stay open. The immutable system-image compatibility level remains
   Host Service boundary. This closes schema-suite compatibility only;
   semantic, lifecycle, security, real-host, and packaged-artifact conformance
   gates remain open.
-- A shared fail-closed `a3s.oci.linux-kvm-provenance.v1` contract for every
+- A shared fail-closed `aster.oci.linux-kvm-provenance.v1` contract for every
   retained Linux KVM entry, compatibility, lifecycle, recovery, and soak
   artifact. It requires a clean exact checkout and binds the Git object format,
   commit and tree, platform and architecture, Cargo and qualification profiles,
@@ -1729,7 +1729,7 @@ registration stay open. The immutable system-image compatibility level remains
   Create/Kill/Wait/Delete, Guest marker, unique shim/worker process identities,
   descriptor and endpoint restoration, bundle-handoff/runtime-share/recovery
   cleanup, console retention, and configured Guest `cgroupsPath` lifetime.
-  CI emits `a3s.oci.linux-kvm-soak-matrix.v2` on both architectures; a host
+  CI emits `aster.oci.linux-kvm-soak-matrix.v2` on both architectures; a host
   without usable KVM records zero completed iterations and does not download
   Alpine. Fresh-host `available` reports remain outstanding.
 - A qualification-only Linux KVM owner-death and Host Service restart gate for
@@ -1844,7 +1844,7 @@ registration stay open. The immutable system-image compatibility level remains
   Pinned-schema tests cover every hypervisor, kernel, image, and hardware
   member, all five image formats, optional forms, required relationships, and
   invalid field types. The generic SDK retains valid VM configuration for a
-  future enforcing driver, while every current A3S driver rejects caller-owned
+  future enforcing driver, while every current Aster driver rejects caller-owned
   VM launch configuration before durable generation reservation, bundle
   handoff, hypervisor launch, or mutating driver dispatch. Runtime-pinned
   hypervisor, kernel, image, and hardware policy therefore cannot be silently
@@ -2021,7 +2021,7 @@ registration stay open. The immutable system-image compatibility level remains
   requirements, leaving 292 enforced, 43 validated, two conformant, and 318
   pending entries.
 - Accurate OCI potentially-unsafe configuration annotation discovery. One SDK
-  registry owns the six built-in A3S keys that can change or gate runtime
+  registry owns the six built-in Aster keys that can change or gate runtime
   behavior, and configured host services merge only annotation-backed
   extensions advertised by their active drivers. Probe-only discovery remains
   empty, while every reported list is sorted, deduplicated, and schema-valid.
@@ -2211,7 +2211,7 @@ registration stay open. The immutable system-image compatibility level remains
   disjoint `bin/` and `system-image/` directories. Fresh-host WHPX SDK and
   recovery qualification remains open.
 - Durable Host journals for File upload and Filesystem mkdir, move, and remove.
-  `a3s.oci.operation.v3` retains each complete validated request and typed
+  `aster.oci.operation.v3` retains each complete validated request and typed
   response, keeps prepared work resumable, replays completed results without a
   second driver dispatch, and permanently rejects changed OperationId reuse
   after the Guest record is acknowledged. Host state files now allow 64 MiB so
@@ -2363,11 +2363,11 @@ registration stay open. The immutable system-image compatibility level remains
   disappeared and all recovery evidence revalidates; it exposes idempotent
   kill, empty process inventory, explicit refusal to invent an exit status,
   and stopped-only delete with bounded executor/cgroup cleanup. The new
-  `a3s.oci.native-linux-recovery-smoke.v2` real-process gate kills the owner
+  `aster.oci.native-linux-recovery-smoke.v2` real-process gate kills the owner
   with `SIGKILL`, reopens durable state in a distinct process, verifies those
   semantics, and is retained by x86_64 and aarch64 Linux CI. Live process-I/O
   session reattachment remains a separate promotion gate.
-- Production A3S Box consumer evidence at Box commit `a16772c3` against this
+- Production Aster Box consumer evidence at Box commit `a16772c3` against this
   runtime's `a6cdae7` SDK revision. Box now validates its managed home,
   prepares snapshot, named-volume, network, rootfs, and OCI bundle resources,
   then starts or reuses the identity-fenced `native-linux-host-service` for an
@@ -2380,9 +2380,9 @@ registration stay open. The immutable system-image compatibility level remains
   generation, and restart the next Box and OCI generations. The cancellation
   replay probe uses an explicit post-cancellation release marker instead of a
   host-speed-dependent delay. The retained Box
-  [pull-request CI run](https://github.com/A3S-Lab/Box/actions/runs/30754808084)
+  [pull-request CI run](https://github.com/aster-ai-lab/Box/actions/runs/30754808084)
   and
-  [main-branch CI run](https://github.com/A3S-Lab/Box/actions/runs/30755797650)
+  [main-branch CI run](https://github.com/aster-ai-lab/Box/actions/runs/30755797650)
   both completed successfully. Default routing, transparent live-session
   reattachment, and utility-VM composition remain release gates.
 - A long-lived `native-linux-host-service` command and public
@@ -2412,9 +2412,9 @@ registration stay open. The immutable system-image compatibility level remains
   or reconcile with the original durable operation identity. Caller-supplied
   `from_io` streams remain permanently closed after a protocol or transport
   failure. Real named-pipe and Unix-socket server-restart tests cover both
-  boundaries. A3S Box now uses the transport for production x86_64 owner
+  boundaries. Aster Box now uses the transport for production x86_64 owner
   rebinding; live-session reattachment on real drivers remains open.
-- Public-SDK-only A3S Box consumer evidence at Box commit `09a9e5d3` for exact
+- Public-SDK-only Aster Box consumer evidence at Box commit `09a9e5d3` for exact
   live process inventory, normalized CPU/memory stats, bounded ordered-event
   polling, and replay-safe complete OCI resource updates. Box rechecks read
   targets around every SDK response, persists an `updating_resources` claim
@@ -2425,7 +2425,7 @@ registration stay open. The immutable system-image compatibility level remains
   capabilities, target drift, malformed stats, and event cursor drift fail
   closed. Real-driver live-session reattachment remains an explicit release
   gate.
-- Public-SDK-only A3S Box consumer evidence at Box commit `8ea5f366` for
+- Public-SDK-only Aster Box consumer evidence at Box commit `8ea5f366` for
   exact-generation captured and streaming exec, replay-safe keyed process and
   stdin identities, cursor-checked stdout/stderr, signal/wait, PTY/resize,
   exact terminal status, raw-log separation, and detached timeout cleanup.
@@ -2433,7 +2433,7 @@ registration stay open. The immutable system-image compatibility level remains
   empty commands, and same-key changed content fail before a second runtime
   process can start. Real-driver live-session reattachment and cross-platform
   cutover remain explicit release gates.
-- Public `a3s.oci.attachments.v1` create/restore contracts for rootfs, mounts,
+- Public `aster.oci.attachments.v1` create/restore contracts for rootfs, mounts,
   networking, process I/O, secret classifications, and optional namespaced
   runtime extensions. SDK protocol 3 rejects older peers instead of dropping
   attachment evidence; the host advertises exact schema/extension support,
@@ -2446,8 +2446,8 @@ registration stay open. The immutable system-image compatibility level remains
   system root. The candidate accepts bundles only below
   `shares/<container>/<generation>`, rejects cross-generation and external
   paths before VM launch, exports only that exact directory with the fixed
-  `a3s-oci-runtime` virtio-fs tag, and requires the Linux agent to mount it at
-  `/run/a3s-oci-runtime` before reading bootstrap material. One-time session
+  `aster-oci-runtime` virtio-fs tag, and requires the Linux agent to mount it at
+  `/run/aster-oci-runtime` before reading bootstrap material. One-time session
   tokens and authenticated recovery reports now use that share instead of the
   system root. Shim evidence schema v2 records the device configuration, and
   the host requires that evidence for every driver-owned WHPX session. The
@@ -2568,7 +2568,7 @@ registration stay open. The immutable system-image compatibility level remains
   watchdog bound to exact owner and Hook-leader pidfds before `exec`; owner
   death kills the private group, including signal-resistant descendants, while
   setup failures reject the Hook. The new
-  `a3s.oci.native-linux-hook-owner-death-smoke.v1` real-host gate interrupts a
+  `aster.oci.native-linux-hook-owner-death-smoke.v1` real-host gate interrupts a
   live `startContainer` Hook, binds PID-reuse-safe process evidence, and requires
   the existing stopped-only Native replacement recovery and complete cleanup.
 - Prevent OCI Hooks from inheriting runtime-private file descriptors even when
@@ -2657,7 +2657,7 @@ registration stay open. The immutable system-image compatibility level remains
   helper authentication; the real native fixture covers binary transfer plus
   mkdir/stat/list/move/remove on its container-created `/tmp` tmpfs.
 - Native Linux lifecycle, rootless, multi-container, and soak fixtures now
-  derive `a3s.oci.attachments.v1` from each immutable bundle and requested I/O
+  derive `aster.oci.attachments.v1` from each immutable bundle and requested I/O
   contract. They no longer initialize the removed `CreateRequest::io` field,
   restoring Linux runtime-test compilation after the attachment protocol
   migration.
@@ -2668,7 +2668,7 @@ registration stay open. The immutable system-image compatibility level remains
   remount without falling back to a writable Secret mount. Native Linux
   conformance now proves this boundary with a real private tmpfs source, and
   its multi-container report advances to
-  `a3s.oci.native-linux-multi-container-smoke.v14`.
+  `aster.oci.native-linux-multi-container-smoke.v14`.
 - Root the native init's cgroup namespace at the empty management envelope,
   move trusted bootstrap processes into `control` through the inherited
   descriptor, and only then delegate domain controllers and apply exact
@@ -2697,15 +2697,15 @@ registration stay open. The immutable system-image compatibility level remains
 ### Changed
 
 - Native multi-container report schema advanced to
-  `a3s.oci.native-linux-multi-container-smoke.v13`.
+  `aster.oci.native-linux-multi-container-smoke.v13`.
 - Documentation and conformance evidence now distinguish runtime namespace and
-  mount enforcement from A3S Box product-level network and volume management.
+  mount enforcement from Aster Box product-level network and volume management.
 
-[0.3.6]: https://github.com/A3S-Lab/OCI-Runtime/compare/v0.3.5...v0.3.6
-[0.3.5]: https://github.com/A3S-Lab/OCI-Runtime/compare/v0.3.4...v0.3.5
-[0.3.4]: https://github.com/A3S-Lab/OCI-Runtime/compare/v0.3.3...v0.3.4
-[0.3.3]: https://github.com/A3S-Lab/OCI-Runtime/compare/v0.3.2...v0.3.3
-[0.3.2]: https://github.com/A3S-Lab/OCI-Runtime/compare/v0.3.1...v0.3.2
-[0.3.1]: https://github.com/A3S-Lab/OCI-Runtime/compare/v0.3.0...v0.3.1
-[0.3.0]: https://github.com/A3S-Lab/OCI-Runtime/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/A3S-Lab/OCI-Runtime/releases/tag/v0.2.0
+[0.3.6]: https://github.com/aster-ai-lab/OCI-Runtime/compare/v0.3.5...v0.3.6
+[0.3.5]: https://github.com/aster-ai-lab/OCI-Runtime/compare/v0.3.4...v0.3.5
+[0.3.4]: https://github.com/aster-ai-lab/OCI-Runtime/compare/v0.3.3...v0.3.4
+[0.3.3]: https://github.com/aster-ai-lab/OCI-Runtime/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/aster-ai-lab/OCI-Runtime/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/aster-ai-lab/OCI-Runtime/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/aster-ai-lab/OCI-Runtime/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/aster-ai-lab/OCI-Runtime/releases/tag/v0.2.0

@@ -324,7 +324,7 @@ impl MemoryStore for StoreBoundary {
     async fn count(&self) -> anyhow::Result<usize> {
         self.inner.count().await
     }
-    async fn prune(&self, policy: &a3s_memory::PrunePolicy) -> anyhow::Result<usize> {
+    async fn prune(&self, policy: &aster_durable_memory::PrunePolicy) -> anyhow::Result<usize> {
         self.inner.prune(policy).await
     }
 }
@@ -468,7 +468,7 @@ impl Fixture {
             assert_eq!(item.content, DISTILLED);
             assert_eq!(
                 item.metadata.get("schema").map(String::as_str),
-                Some("a3s.memory.durable.v1")
+                Some("aster.memory.durable.v1")
             );
             assert_eq!(
                 item.metadata.get("session_id").map(String::as_str),

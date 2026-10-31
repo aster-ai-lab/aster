@@ -1,0 +1,82 @@
+[package]
+license = "Apache-2.0"
+name = "aster-mcp"
+version = "0.1.0"
+description = "MCP integration crate. Quarantines rmcp + reqwest 0.13 (rmcp 3.x requires reqwest >= 0.13.2 while the rest of the workspace uses reqwest 0.12) and owns the MCP credential store and OAuth flow orchestrator."
+authors = ["Aster"]
+edition = "2024"
+publish = false
+
+[dependencies]
+rmcp = {version = "3.4", features = [
+    "auth",
+    "client",
+    "transport-async-rw",
+    "transport-streamable-http-client-reqwest",
+    "reqwest",
+]}
+# reqwest 0.13 feature set for MCP transports. Notably:
+# - `blocking` is for build-script style use (not actually used here today, but
+#   kept for future MCP transports that may need it).
+# - `query`/`form` opt-in features stay off; rmcp transports don't use them.
+reqwest = {version = "0.13", default-features = false, features = [
+    "blocking",
+    "json",
+    "rustls",
+    "stream",
+]}
+
+# Deps for credentials.rs + oauth.rs.
+async-trait = {workspace = true}
+axum = {workspace = true}
+oauth2 = {version = "5"}
+parking_lot = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+thiserror = {workspace = true}
+tokio = {workspace = true}
+tokio-util = {workspace = true}
+tracing = {workspace = true}
+url = {workspace = true}
+webbrowser = {workspace = true}
+
+# For mcp_http_client.rs (rmcp trait signatures). Must match rmcp 3.x's own
+# versions or the trait types won't unify.
+http = {workspace = true}
+sse-stream = "0.2"
+
+# Deps for servers.rs.
+agent-client-protocol = {workspace = true}
+futures = {workspace = true}
+which = {workspace = true}
+# Atomic descriptor writes (NamedTempFile + persist) in materialize_descriptors.
+tempfile = {workspace = true}
+# Child-network restriction on stdio server spawns; enforce is feature-unified
+# from the binary crate, matching the other consumers.
+aster-tool-types = {path = "../../common/aster-tool-types"}
+aster-tool-runtime = {path = "../../common/aster-tool-runtime"}
+aster-tool-protocol = {path = "../../common/aster-tool-protocol"}
+aster-workspace-types = {path = "../aster-workspace-types"}
+aster-telemetry = {path = "../aster-telemetry"}
+aster-tools = {path = "../aster-tools"}
+aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-session-events = {path = "../aster-session-events"}
+aster-config = {path = "../aster-config"}
+aster-version = {path = "../aster-version"}
+aster-extra-ca = {path = "../aster-extra-ca"}
+
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+
+[dev-dependencies]
+# Serializes the integration tests that share the process-global $GROK_HOME.
+serial_test = {workspace = true}
+# Used in servers.rs test `test_same_raw_name_different_servers_no_local_registry_collision`
+# to verify MCP tools register into a `LocalRegistry` without collision.
+# `test-util` enables `tokio::time::pause` / `advance`, required by
+# the deterministic timing tests in `liveness.rs`.
+tokio = {version = "1", features = ["full", "test-util"]}
+aster-computer-hub-sdk = {path = "../../common/aster-computer-hub-sdk"}
+
+[lints]
+workspace = true

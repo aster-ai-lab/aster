@@ -1,7 +1,7 @@
 /**
  * Icons 模块统一导出
  *
- * Provider logo icons from `@a3s/ui/icons/providers` are compound components:
+ * Provider logo icons from `@aster/ui/icons/providers` are compound components:
  *   <Anthropic />         — auto light/dark (default, follows the `dark:` Tailwind variant)
  *   <Anthropic variant="light" /> — force light variant
  *   <Anthropic variant="dark" />  — force dark variant
@@ -15,7 +15,7 @@
  */
 
 export * from './general'
-// Provider components live behind the explicit `@a3s/ui/icons/providers`
+// Provider components live behind the explicit `@aster/ui/icons/providers`
 // entry. Re-exporting that barrel here would evaluate every provider icon when
 // ordinary key-based consumers import useIcon.
 // Deliberately minimal async surface: per-icon loading goes through useIcon;

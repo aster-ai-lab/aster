@@ -21,7 +21,7 @@ class CliError extends Error {
   }
 }
 
-const usage = `a3s-form <command> [files] [options]
+const usage = `aster-form <command> [files] [options]
 
 Commands:
   validate <form.json>       Validate and normalize a FormDocument

@@ -9,7 +9,7 @@ pub(crate) struct PlatformSandbox;
 impl PlatformSandbox {
     pub(crate) fn new(_workspace: &Path) -> Result<Self> {
         bail!(
-            "the A3S native sandbox is unsupported on {}",
+            "the Aster native sandbox is unsupported on {}",
             std::env::consts::OS
         )
     }
@@ -20,7 +20,7 @@ impl PlatformSandbox {
         _request: CommandRequest,
     ) -> Result<CommandOutput> {
         bail!(
-            "the A3S native sandbox is unsupported on {}",
+            "the Aster native sandbox is unsupported on {}",
             std::env::consts::OS
         )
     }

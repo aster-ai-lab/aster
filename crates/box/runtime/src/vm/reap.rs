@@ -2,21 +2,21 @@
 //!
 //! A clean shutdown destroys each VM via its in-memory handle (overlay
 //! unmount + box-dir removal). After a crash (`SIGKILL`, OOM, power loss) the
-//! CRI process dies but its `a3s-box-shim` microVMs are reparented to `init`
+//! CRI process dies but its `aster-box-shim` microVMs are reparented to `init`
 //! and keep running, holding their overlay mounts and box directories. On the
 //! next start the CRI has no handle to them, so without this they leak across
 //! restarts. [`reap_orphaned_box`] reclaims one such box by id.
 //!
 //! Warm-pool daemons keep VM ownership in memory only. After a pool daemon
 //! crash the same orphan shims remain; [`reap_orphaned_boxes_for_home`] discovers
-//! init-reparented shims whose `--config` paths are under a given `A3S_HOME`
+//! init-reparented shims whose `--config` paths are under a given `ASTER_HOME`
 //! and reaps them before a new daemon prewarms. It never kills shims still
 //! owned by a live parent (CLI / CRI / another pool).
 
 use std::path::Path;
 
 /// Reap an orphaned sandbox microVM left by a previous (crashed) process:
-/// kill its `a3s-box-shim`, unmount its overlay, and remove its box directory.
+/// kill its `aster-box-shim`, unmount its overlay, and remove its box directory.
 ///
 /// Idempotent. A box with no leftovers (for example after a graceful shutdown)
 /// is a no-op. Overlay/platform-rootfs unmount, legacy host cgroup removal,
@@ -27,7 +27,7 @@ use std::path::Path;
 /// startup.
 #[cfg(target_os = "linux")]
 pub fn reap_orphaned_box(box_id: &str) {
-    reap_orphaned_box_in(&a3s_box_core::dirs_home(), box_id);
+    reap_orphaned_box_in(&aster_box_core::dirs_home(), box_id);
 }
 
 /// Delete a durable Sandbox OCI runtime generation without removing its Box
@@ -36,8 +36,8 @@ pub fn reap_orphaned_box(box_id: &str) {
 /// Callers must run this before unmounting or deleting Box paths: a failed
 /// runtime cleanup may mean a shared-kernel process still uses the rootfs.
 #[cfg(target_os = "linux")]
-pub fn cleanup_recorded_sandbox_runtime(box_dir: &Path, box_id: &str) -> a3s_box_core::Result<()> {
-    cleanup_recorded_sandbox_runtime_in(&a3s_box_core::dirs_home(), box_dir, box_id)
+pub fn cleanup_recorded_sandbox_runtime(box_dir: &Path, box_id: &str) -> aster_box_core::Result<()> {
+    cleanup_recorded_sandbox_runtime_in(&aster_box_core::dirs_home(), box_dir, box_id)
 }
 
 /// Wait for a naturally exited Sandbox generation to finish projecting both
@@ -47,8 +47,8 @@ pub fn wait_for_recorded_sandbox_log_drain(
     box_dir: &Path,
     box_id: &str,
     timeout: std::time::Duration,
-) -> a3s_box_core::Result<bool> {
-    let home_dir = a3s_box_core::dirs_home();
+) -> aster_box_core::Result<bool> {
+    let home_dir = aster_box_core::dirs_home();
     wait_for_recorded_sandbox_log_drain_in(&home_dir, box_dir, box_id, timeout)
 }
 
@@ -58,7 +58,7 @@ fn wait_for_recorded_sandbox_log_drain_in(
     box_dir: &Path,
     box_id: &str,
     timeout: std::time::Duration,
-) -> a3s_box_core::Result<bool> {
+) -> aster_box_core::Result<bool> {
     // Waiting is read-only: it neither executes the recorded runtime nor
     // signals a process. Validate fixed paths and the PID/start-time pair.
     let Some(record) = load_recorded_sandbox_runtime_identity(home_dir, box_dir, box_id)? else {
@@ -72,10 +72,10 @@ pub(crate) fn cleanup_recorded_sandbox_runtime_in(
     home_dir: &Path,
     box_dir: &Path,
     box_id: &str,
-) -> a3s_box_core::Result<()> {
+) -> aster_box_core::Result<()> {
     match reap_recorded_sandbox(home_dir, box_dir, box_id) {
         SandboxReap::NotPresent | SandboxReap::Cleaned => Ok(()),
-        SandboxReap::Failed(reason) => Err(a3s_box_core::BoxError::StateError(format!(
+        SandboxReap::Failed(reason) => Err(aster_box_core::BoxError::StateError(format!(
             "Failed to clean recorded Sandbox runtime for {box_id}: {reason}; refusing to touch its rootfs"
         ))),
     }
@@ -91,7 +91,7 @@ fn reap_orphaned_box_in(home_dir: &Path, box_id: &str) {
 
     // Peer-auth drops leave the process without CAP_SYS_ADMIN; restore before
     // overlay unmount and mount-alias cleanup.
-    let _ = crate::sandbox::a3s_oci_controller::restore_effective_root_if_saved();
+    let _ = crate::sandbox::aster_oci_controller::restore_effective_root_if_saved();
 
     let runtime_owned_cgroup = match reap_recorded_sandbox(home_dir, &box_dir, box_id) {
         SandboxReap::NotPresent => false,
@@ -193,8 +193,8 @@ fn reap_orphaned_box_in(home_dir: &Path, box_id: &str) {
         return;
     }
 
-    // External runtime sockets live under /tmp/a3s-box-sockets/<id> (and the
-    // legacy home/run/a3s-oci/<id> root). Product remove fails closed on those
+    // External runtime sockets live under /tmp/aster-box-sockets/<id> (and the
+    // legacy home/run/aster-oci/<id> root). Product remove fails closed on those
     // host claims; orphan reap must match so a later pass cannot skip them
     // after boxes/{id} is gone.
     let external_sockets = crate::vm::runtime_socket_dir(home_dir, box_id);
@@ -276,17 +276,17 @@ pub(crate) struct RecordedSandboxRuntime {
 /// Load and validate the runtime-owned Sandbox record for one internal box ID.
 ///
 /// Every persisted path is checked against the expected internal layout and
-/// the recorded A3S OCI artifact identities are re-certified before use.
+/// the recorded Aster OCI artifact identities are re-certified before use.
 #[cfg(target_os = "linux")]
 pub(crate) fn load_recorded_sandbox_runtime(
     home_dir: &Path,
     box_dir: &Path,
     box_id: &str,
-) -> a3s_box_core::Result<Option<RecordedSandboxRuntime>> {
+) -> aster_box_core::Result<Option<RecordedSandboxRuntime>> {
     let Some(record) = load_recorded_sandbox_runtime_identity(home_dir, box_dir, box_id)? else {
         return Ok(None);
     };
-    verify_recorded_a3s_oci_owner(&record, box_id)?;
+    verify_recorded_aster_oci_owner(&record, box_id)?;
     Ok(Some(record))
 }
 
@@ -295,10 +295,10 @@ fn load_recorded_sandbox_runtime_identity(
     home_dir: &Path,
     box_dir: &Path,
     box_id: &str,
-) -> a3s_box_core::Result<Option<RecordedSandboxRuntime>> {
+) -> aster_box_core::Result<Option<RecordedSandboxRuntime>> {
     let expected_box_dir = home_dir.join("boxes").join(box_id);
     if box_dir != expected_box_dir {
-        return Err(a3s_box_core::BoxError::StateError(format!(
+        return Err(aster_box_core::BoxError::StateError(format!(
             "Sandbox runtime record has an unexpected host directory for {box_id}"
         )));
     }
@@ -306,11 +306,11 @@ fn load_recorded_sandbox_runtime_identity(
     let bytes = match std::fs::read(&record_path) {
         Ok(bytes) => bytes,
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
-        Err(error) => return Err(a3s_box_core::BoxError::IoError(error)),
+        Err(error) => return Err(aster_box_core::BoxError::IoError(error)),
     };
     let record: crate::sandbox::runtime_record::SandboxRuntimeRecord =
         serde_json::from_slice(&bytes).map_err(|error| {
-            a3s_box_core::BoxError::StateError(format!(
+            aster_box_core::BoxError::StateError(format!(
                 "Invalid Sandbox runtime record at {}: {error}",
                 record_path.display()
             ))
@@ -342,7 +342,7 @@ fn load_recorded_sandbox_runtime_identity(
         || record.init_pid == 0
         || !log_worker_identity_valid
     {
-        return Err(a3s_box_core::BoxError::StateError(format!(
+        return Err(aster_box_core::BoxError::StateError(format!(
             "Sandbox runtime record failed path or identity validation for {box_id}"
         )));
     }
@@ -370,10 +370,10 @@ fn valid_sha256(value: &str) -> bool {
 }
 
 #[cfg(target_os = "linux")]
-fn verify_recorded_a3s_oci_owner(
+fn verify_recorded_aster_oci_owner(
     record: &RecordedSandboxRuntime,
     box_id: &str,
-) -> a3s_box_core::Result<()> {
+) -> aster_box_core::Result<()> {
     use std::os::unix::fs::{FileTypeExt, MetadataExt, PermissionsExt};
 
     let (Some(owner_pid), Some(owner_start_time), Some(runtime_socket)) = (
@@ -381,58 +381,58 @@ fn verify_recorded_a3s_oci_owner(
         record.owner_pid_start_time,
         record.runtime_socket.as_ref(),
     ) else {
-        return Err(a3s_box_core::BoxError::StateError(format!(
-            "A3S OCI owner identity is incomplete for {box_id}"
+        return Err(aster_box_core::BoxError::StateError(format!(
+            "Aster OCI owner identity is incomplete for {box_id}"
         )));
     };
     if !crate::process::is_process_running_with_identity(owner_pid, Some(owner_start_time)) {
-        return Err(a3s_box_core::BoxError::StateError(format!(
-            "A3S OCI owner process is not running for {box_id}"
+        return Err(aster_box_core::BoxError::StateError(format!(
+            "Aster OCI owner process is not running for {box_id}"
         )));
     }
 
     let runtime_path = record.runtime_path.canonicalize().map_err(|error| {
-        a3s_box_core::BoxError::StateError(format!(
-            "Cannot resolve recorded A3S OCI runtime for {box_id}: {error}"
+        aster_box_core::BoxError::StateError(format!(
+            "Cannot resolve recorded Aster OCI runtime for {box_id}: {error}"
         ))
     })?;
     let owner_exe = std::fs::read_link(format!("/proc/{owner_pid}/exe")).map_err(|error| {
-        a3s_box_core::BoxError::StateError(format!(
-            "Cannot resolve A3S OCI owner executable for {box_id}: {error}"
+        aster_box_core::BoxError::StateError(format!(
+            "Cannot resolve Aster OCI owner executable for {box_id}: {error}"
         ))
     })?;
-    // Sandbox CI/production may exec `a3s-box-sandbox-oci-launcher` (same bytes
-    // as a3s-oci) while the record stores the certified runtime path. Accept
+    // Sandbox CI/production may exec `aster-box-sandbox-oci-launcher` (same bytes
+    // as aster-oci) while the record stores the certified runtime path. Accept
     // either exact path match or identical artifact digest.
     if owner_exe != runtime_path
         && (runtime_path != record.runtime_path
             || sha256_file(&owner_exe).as_deref() != record.runtime_sha256.as_deref())
     {
-        return Err(a3s_box_core::BoxError::StateError(format!(
-            "A3S OCI owner executable identity is invalid for {box_id}"
+        return Err(aster_box_core::BoxError::StateError(format!(
+            "Aster OCI owner executable identity is invalid for {box_id}"
         )));
     }
     if sha256_file(&runtime_path).as_deref() != record.runtime_sha256.as_deref() {
-        return Err(a3s_box_core::BoxError::StateError(format!(
-            "A3S OCI runtime digest changed for {box_id}"
+        return Err(aster_box_core::BoxError::StateError(format!(
+            "Aster OCI runtime digest changed for {box_id}"
         )));
     }
     let agent_path = record.agent_path.as_ref().ok_or_else(|| {
-        a3s_box_core::BoxError::StateError(format!(
-            "A3S OCI agent identity is missing for {box_id}"
+        aster_box_core::BoxError::StateError(format!(
+            "Aster OCI agent identity is missing for {box_id}"
         ))
     })?;
     if agent_path.canonicalize().ok().as_deref() != Some(agent_path.as_path())
         || sha256_file(agent_path).as_deref() != record.agent_sha256.as_deref()
     {
-        return Err(a3s_box_core::BoxError::StateError(format!(
-            "A3S OCI agent artifact identity is invalid for {box_id}"
+        return Err(aster_box_core::BoxError::StateError(format!(
+            "Aster OCI agent artifact identity is invalid for {box_id}"
         )));
     }
 
     let metadata = std::fs::symlink_metadata(runtime_socket).map_err(|error| {
-        a3s_box_core::BoxError::StateError(format!(
-            "Cannot inspect A3S OCI endpoint for {box_id}: {error}"
+        aster_box_core::BoxError::StateError(format!(
+            "Cannot inspect Aster OCI endpoint for {box_id}: {error}"
         ))
     })?;
     // After rootless device-policy drop the endpoint is owned by the real UID
@@ -452,8 +452,8 @@ fn verify_recorded_a3s_oci_owner(
         || metadata.permissions().mode() & 0o777 != 0o600
         || !expected_uids.contains(&metadata.uid())
     {
-        return Err(a3s_box_core::BoxError::StateError(format!(
-            "A3S OCI endpoint identity is invalid for {box_id}"
+        return Err(aster_box_core::BoxError::StateError(format!(
+            "Aster OCI endpoint identity is invalid for {box_id}"
         )));
     }
     Ok(())
@@ -504,17 +504,17 @@ fn reap_recorded_sandbox(home_dir: &Path, box_dir: &Path, box_id: &str) -> Sandb
             );
         }
     };
-    reap_orphaned_a3s_oci(record, home_dir, box_dir, box_id)
+    reap_orphaned_aster_oci(record, home_dir, box_dir, box_id)
 }
 
 #[cfg(target_os = "linux")]
-fn reap_orphaned_a3s_oci(
+fn reap_orphaned_aster_oci(
     record: RecordedSandboxRuntime,
     home_dir: &Path,
     box_dir: &Path,
     box_id: &str,
 ) -> SandboxReap {
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         ContainerId, ContainerTarget, DeleteMode, DeleteRequest, Generation, KillRequest,
         OciContainerState, Signal, StateRequest, WaitRequest,
     };
@@ -527,17 +527,17 @@ fn reap_orphaned_a3s_oci(
     ) else {
         return failed_sandbox_reap(
             box_id,
-            "A3S OCI runtime record lost required recovery identity",
+            "Aster OCI runtime record lost required recovery identity",
         );
     };
-    let client = match crate::sandbox::a3s_oci_client::A3sOciClient::connect_blocking(
+    let client = match crate::sandbox::aster_oci_client::AsterOciClient::connect_blocking(
         runtime_socket.clone(),
     ) {
         Ok(client) => client,
         Err(error) => {
             return failed_sandbox_reap(
                 box_id,
-                format!("failed to connect to orphaned A3S OCI owner: {error}"),
+                format!("failed to connect to orphaned Aster OCI owner: {error}"),
             );
         }
     };
@@ -546,7 +546,7 @@ fn reap_orphaned_a3s_oci(
         Err(error) => {
             return failed_sandbox_reap(
                 box_id,
-                format!("invalid A3S OCI container identity during recovery: {error}"),
+                format!("invalid Aster OCI container identity during recovery: {error}"),
             );
         }
     };
@@ -558,7 +558,7 @@ fn reap_orphaned_a3s_oci(
         Err(error) => {
             return failed_sandbox_reap(
                 box_id,
-                format!("failed to query orphaned A3S OCI state: {error}"),
+                format!("failed to query orphaned Aster OCI state: {error}"),
             );
         }
     };
@@ -568,7 +568,7 @@ fn reap_orphaned_a3s_oci(
             Err(error) => {
                 return failed_sandbox_reap(
                     box_id,
-                    format!("failed to construct A3S OCI recovery operation: {error}"),
+                    format!("failed to construct Aster OCI recovery operation: {error}"),
                 );
             }
         };
@@ -577,7 +577,7 @@ fn reap_orphaned_a3s_oci(
             Err(error) => {
                 return failed_sandbox_reap(
                     box_id,
-                    format!("failed to construct A3S OCI recovery signal: {error}"),
+                    format!("failed to construct Aster OCI recovery signal: {error}"),
                 );
             }
         };
@@ -589,16 +589,16 @@ fn reap_orphaned_a3s_oci(
         }) {
             return failed_sandbox_reap(
                 box_id,
-                format!("failed to signal orphaned A3S OCI Sandbox: {error}"),
+                format!("failed to signal orphaned Aster OCI Sandbox: {error}"),
             );
         }
         if let Err(error) = client.wait(WaitRequest {
             target: target.clone(),
-            timeout_ms: Some(crate::sandbox::A3S_OCI_LIFECYCLE_TIMEOUT_MS),
+            timeout_ms: Some(crate::sandbox::ASTER_OCI_LIFECYCLE_TIMEOUT_MS),
         }) {
             return failed_sandbox_reap(
                 box_id,
-                format!("failed to wait for orphaned A3S OCI Sandbox: {error}"),
+                format!("failed to wait for orphaned Aster OCI Sandbox: {error}"),
             );
         }
     }
@@ -608,7 +608,7 @@ fn reap_orphaned_a3s_oci(
         Err(error) => {
             return failed_sandbox_reap(
                 box_id,
-                format!("failed to construct A3S OCI delete operation: {error}"),
+                format!("failed to construct Aster OCI delete operation: {error}"),
             );
         }
     };
@@ -619,15 +619,15 @@ fn reap_orphaned_a3s_oci(
     }) {
         return failed_sandbox_reap(
             box_id,
-            format!("failed to delete orphaned A3S OCI state: {error}"),
+            format!("failed to delete orphaned Aster OCI state: {error}"),
         );
     }
     client.close();
 
-    if let Err(error) = crate::sandbox::a3s_oci_owner::stop(owner_pid, owner_start_time) {
+    if let Err(error) = crate::sandbox::aster_oci_owner::stop(owner_pid, owner_start_time) {
         return failed_sandbox_reap(
             box_id,
-            format!("failed to stop orphaned A3S OCI owner {owner_pid}: {error}"),
+            format!("failed to stop orphaned Aster OCI owner {owner_pid}: {error}"),
         );
     }
 
@@ -666,7 +666,7 @@ fn reap_orphaned_a3s_oci(
     }
     tracing::info!(
         box_id,
-        "Reaped orphaned A3S OCI Sandbox after runtime restart"
+        "Reaped orphaned Aster OCI Sandbox after runtime restart"
     );
     SandboxReap::Cleaned
 }
@@ -675,13 +675,13 @@ fn reap_orphaned_a3s_oci(
 fn recorded_operation_context(
     box_id: &str,
     operation: &str,
-) -> a3s_box_core::Result<a3s_oci_sdk::OperationContext> {
-    a3s_oci_sdk::OperationId::new(format!(
+) -> aster_box_core::Result<aster_oci_sdk::OperationContext> {
+    aster_oci_sdk::OperationId::new(format!(
         "{box_id}-{operation}-{}",
         uuid::Uuid::new_v4().simple()
     ))
-    .map(a3s_oci_sdk::OperationContext::new)
-    .map_err(|error| a3s_box_core::BoxError::StateError(error.to_string()))
+    .map(aster_oci_sdk::OperationContext::new)
+    .map_err(|error| aster_box_core::BoxError::StateError(error.to_string()))
 }
 
 #[cfg(target_os = "linux")]
@@ -783,11 +783,11 @@ fn wait_for_exit(pids: &[i32], timeout: std::time::Duration) {
     }
 }
 
-/// Extract `box_id` from an `a3s-box-shim --config '<json>'` command line.
+/// Extract `box_id` from an `aster-box-shim --config '<json>'` command line.
 ///
 /// Cmdline may use NUL separators (as in `/proc/*/cmdline`) or spaces.
 pub fn extract_box_id_from_shim_cmdline(cmdline: &str) -> Option<String> {
-    if !cmdline.contains("a3s-box-shim") {
+    if !cmdline.contains("aster-box-shim") {
         return None;
     }
     let config = shim_config_json_slice(cmdline)?;
@@ -801,7 +801,7 @@ pub fn extract_box_id_from_shim_cmdline(cmdline: &str) -> Option<String> {
 
 /// True when the shim `--config` JSON clearly binds the instance to `home`
 /// (rootfs / console paths under that directory). Avoids reaping unrelated
-/// homes when multiple `A3S_HOME` trees share a host.
+/// homes when multiple `ASTER_HOME` trees share a host.
 pub fn shim_cmdline_belongs_to_home(cmdline: &str, home: &Path) -> bool {
     let Some(config) = shim_config_json_slice(cmdline) else {
         return false;
@@ -809,7 +809,7 @@ pub fn shim_cmdline_belongs_to_home(cmdline: &str, home: &Path) -> bool {
     let home = std::fs::canonicalize(home).unwrap_or_else(|_| home.to_path_buf());
     let home_str = home.to_string_lossy();
     // Prefer exact path fields when JSON parses; fall back to substring fence
-    // matching the issue evidence (cmdline references A3S_HOME).
+    // matching the issue evidence (cmdline references ASTER_HOME).
     if let Ok(value) = serde_json::from_str::<serde_json::Value>(config) {
         for key in ["console_output", "rootfs_path"] {
             if let Some(path) = value.get(key).and_then(|v| v.as_str()) {
@@ -880,7 +880,7 @@ fn path_is_under_home(path: &Path, home: &Path) -> bool {
     path.starts_with(&home) || path.to_string_lossy().contains(&*home.to_string_lossy())
 }
 
-/// Discover init-reparented `a3s-box-shim` box ids scoped to `home`, then reap
+/// Discover init-reparented `aster-box-shim` box ids scoped to `home`, then reap
 /// each via [`reap_orphaned_box`]. Returns the number of distinct ids reaped.
 ///
 /// Used by `pool start` and `pool stop` crash recovery (#373). Does not invent
@@ -927,7 +927,7 @@ pub fn discover_orphan_shim_box_ids(home: &Path) -> Vec<String> {
             continue;
         };
         let cmdline = String::from_utf8_lossy(&cmdline);
-        if !cmdline.contains("a3s-box-shim") {
+        if !cmdline.contains("aster-box-shim") {
             continue;
         }
         if read_ppid(pid) != Some(1) {
@@ -966,7 +966,7 @@ pub fn reap_orphaned_box(_box_id: &str) {}
 pub fn cleanup_recorded_sandbox_runtime(
     _box_dir: &std::path::Path,
     _box_id: &str,
-) -> a3s_box_core::Result<()> {
+) -> aster_box_core::Result<()> {
     Ok(())
 }
 
@@ -975,7 +975,7 @@ pub fn wait_for_recorded_sandbox_log_drain(
     _box_dir: &std::path::Path,
     _box_id: &str,
     _timeout: std::time::Duration,
-) -> a3s_box_core::Result<bool> {
+) -> aster_box_core::Result<bool> {
     Ok(true)
 }
 
@@ -984,7 +984,7 @@ pub(crate) fn cleanup_recorded_sandbox_runtime_in(
     _home_dir: &std::path::Path,
     _box_dir: &std::path::Path,
     _box_id: &str,
-) -> a3s_box_core::Result<()> {
+) -> aster_box_core::Result<()> {
     Ok(())
 }
 
@@ -995,7 +995,7 @@ mod discover_tests {
 
     #[test]
     fn extract_box_id_from_nul_separated_shim_cmdline() {
-        let cmdline = "a3s-box-shim\0--config\0{\"box_id\":\"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\"rootfs\":{\"path\":\"/var/tmp/a3s-home/boxes/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/merged\"}}\0";
+        let cmdline = "aster-box-shim\0--config\0{\"box_id\":\"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\"rootfs\":{\"path\":\"/var/tmp/aster-home/boxes/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/merged\"}}\0";
         assert_eq!(
             extract_box_id_from_shim_cmdline(cmdline).as_deref(),
             Some("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa")
@@ -1009,9 +1009,9 @@ mod discover_tests {
 
     #[test]
     fn shim_cmdline_home_fence_matches_rootfs_path() {
-        let home = PathBuf::from("/var/tmp/a3s-n4.home");
+        let home = PathBuf::from("/var/tmp/aster-n4.home");
         let cmdline = format!(
-            "a3s-box-shim\0--config\0{{\"box_id\":\"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb\",\"rootfs\":{{\"kind\":\"directory\",\"path\":\"{}/boxes/bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb/merged\"}}}}\0",
+            "aster-box-shim\0--config\0{{\"box_id\":\"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb\",\"rootfs\":{{\"kind\":\"directory\",\"path\":\"{}/boxes/bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb/merged\"}}}}\0",
             home.display()
         );
         assert!(shim_cmdline_belongs_to_home(&cmdline, &home));
@@ -1026,7 +1026,7 @@ mod discover_tests {
         // On Windows this is always 0; on Linux with no matching PPID-1 shims
         // for a synthetic home it is also 0.
         assert_eq!(
-            reap_orphaned_boxes_for_home(Path::new("/var/tmp/a3s-box-no-such-home-for-reap")),
+            reap_orphaned_boxes_for_home(Path::new("/var/tmp/aster-box-no-such-home-for-reap")),
             0
         );
     }
@@ -1042,9 +1042,9 @@ mod tests {
     }
 }
 
-/// SIGKILL any `a3s-box-shim` process whose command line carries `box_id`.
+/// SIGKILL any `aster-box-shim` process whose command line carries `box_id`.
 ///
-/// The shim is launched as `a3s-box-shim --config '{"box_id":"<id>",...}'`, so
+/// The shim is launched as `aster-box-shim --config '{"box_id":"<id>",...}'`, so
 /// matching on both the binary name AND the (UUID) box id scopes the kill to
 /// exactly this sandbox's microVM — it can never hit an unrelated process.
 #[cfg(target_os = "linux")]
@@ -1064,7 +1064,7 @@ fn kill_orphaned_shim(box_id: &str) -> Vec<i32> {
         };
         // cmdline is a NUL-separated argv; a plain substring check is enough.
         let cmdline = String::from_utf8_lossy(&cmdline);
-        if cmdline.contains("a3s-box-shim") && cmdline.contains(box_id) {
+        if cmdline.contains("aster-box-shim") && cmdline.contains(box_id) {
             // SAFETY: kill(2) with a pid we just read from /proc; SIGKILL has no
             // memory effects. The double match (binary + UUID) bounds the target.
             unsafe {

@@ -5,7 +5,7 @@ pub(super) struct RunRecordPolicy {
     pub(super) restart_policy: ExecutionRestartPolicy,
     pub(super) max_restart_count: u32,
     pub(super) health_check: Option<crate::state::HealthCheck>,
-    pub(super) log_config: a3s_box_core::log::LogConfig,
+    pub(super) log_config: aster_box_core::log::LogConfig,
     pub(super) volume_names: Vec<String>,
     pub(super) shm_size: Option<u64>,
     pub(super) stop_signal: Option<String>,
@@ -44,13 +44,13 @@ pub(super) async fn setup_and_boot(
         parse_memory(&args.common.memory).map_err(|e| format!("Invalid --memory: {e}"))?;
     let resource_limits = common::build_resource_limits(&args.common)?;
 
-    let log_driver: a3s_box_core::log::LogDriver = args
+    let log_driver: aster_box_core::log::LogDriver = args
         .log_driver
         .parse()
         .map_err(|e: String| format!("Invalid --log-driver: {e}"))?;
     let log_opts = common::parse_env_vars(&args.log_opts)
         .map_err(|e| e.replace("environment variable", "log option"))?;
-    let log_config = a3s_box_core::log::LogConfig {
+    let log_config = aster_box_core::log::LogConfig {
         driver: log_driver,
         options: log_opts,
     };
@@ -101,13 +101,13 @@ pub(super) async fn setup_and_boot(
         tee,
     )
     .map_err(|e| -> Box<dyn std::error::Error> { e.into() })?;
-    a3s_box_core::resolve_execution(&config)?;
+    aster_box_core::resolve_execution(&config)?;
 
     // Probe the route selected by the active migration policy after complete,
     // side-effect-free configuration validation but before named-volume
     // creation or image-cache access. Record creation repeats mutable checks.
     let pull_progress_fn = pull_progress_callback(args.common.image.clone());
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let manager = LocalExecutionManager::with_configured_backend_and_pull_progress(
         home.join("boxes.json"),
         &home,
@@ -120,13 +120,13 @@ pub(super) async fn setup_and_boot(
     // HEALTHCHECK can be rejected before named-volume creation.
     let image_config_start = std::time::Instant::now();
     let image_config = pull_image_config(args, std::sync::Arc::clone(&pull_progress_fn)).await?;
-    a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+    aster_box_core::lifecycle_profile::record_lifecycle_phase(
         "cli.image_config",
         image_config_start.elapsed(),
     );
     let health_check =
         common::effective_health_check(&args.common, image_config.health_check.as_ref());
-    let volume_store = a3s_box_runtime::VolumeStore::default_path()?;
+    let volume_store = aster_box_runtime::VolumeStore::default_path()?;
     let (resolved_volumes, volume_names) =
         super::super::volume::resolve_volume_specs_after_health_gate(
             &volume_store,
@@ -158,7 +158,7 @@ pub(super) async fn setup_and_boot(
     );
     let reserve_start = std::time::Instant::now();
     let reservation = manager.create(request, &operation_id).await?;
-    a3s_box_core::lifecycle_profile::record_lifecycle_phase("cli.reserve", reserve_start.elapsed());
+    aster_box_core::lifecycle_profile::record_lifecycle_phase("cli.reserve", reserve_start.elapsed());
     let execution_id = reservation.execution_id.clone();
     let box_id = execution_id.to_string();
     println!(
@@ -195,7 +195,7 @@ pub(super) async fn setup_and_boot(
             }
         },
     };
-    a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+    aster_box_core::lifecycle_profile::record_lifecycle_phase(
         "cli.runtime_start",
         runtime_start.elapsed(),
     );
@@ -241,7 +241,7 @@ pub(super) async fn setup_and_boot(
         health_checker: None,
         completed_during_start,
     };
-    a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+    aster_box_core::lifecycle_profile::record_lifecycle_phase(
         "cli.create_start",
         create_start.elapsed(),
     );
@@ -271,7 +271,7 @@ where
 
 pub(super) fn runtime_start_progress_message(name: &str, elapsed_seconds: u64) -> String {
     format!(
-        "a3s-box run: still creating {name}; image is ready and runtime startup has taken {elapsed_seconds}s"
+        "aster-box run: still creating {name}; image is ready and runtime startup has taken {elapsed_seconds}s"
     )
 }
 
@@ -283,7 +283,7 @@ fn completed_start_record(box_id: &str) -> Result<Option<BoxRecord>, Box<dyn std
     Ok(super::is_completed_managed_start(record).then(|| record.clone()))
 }
 
-fn pull_progress_callback(image_name: String) -> a3s_box_runtime::PullProgressFn {
+fn pull_progress_callback(image_name: String) -> aster_box_runtime::PullProgressFn {
     std::sync::Arc::new(move |current, total, digest, size| {
         if current == 1 && size > 0 {
             println!("Pulling {}...", image_name);
@@ -316,13 +316,13 @@ fn pull_progress_callback(image_name: String) -> a3s_box_runtime::PullProgressFn
 
 async fn pull_image_config(
     args: &RunArgs,
-    progress: a3s_box_runtime::PullProgressFn,
-) -> Result<a3s_box_runtime::oci::OciImageConfig, Box<dyn std::error::Error>> {
+    progress: aster_box_runtime::PullProgressFn,
+) -> Result<aster_box_runtime::oci::OciImageConfig, Box<dyn std::error::Error>> {
     let store = std::sync::Arc::new(crate::commands::open_image_store()?);
-    let reference = a3s_box_runtime::ImageReference::parse(&args.common.image)?;
-    let auth = a3s_box_runtime::RegistryAuth::from_credential_store(&reference.registry);
+    let reference = aster_box_runtime::ImageReference::parse(&args.common.image)?;
+    let auth = aster_box_runtime::RegistryAuth::from_credential_store(&reference.registry);
     let puller =
-        a3s_box_runtime::ImagePuller::with_platform(store, auth, args.common.platform.clone())
+        aster_box_runtime::ImagePuller::with_platform(store, auth, args.common.platform.clone())
             .with_progress_fn(progress);
     Ok(puller.pull(&args.common.image).await?.config().clone())
 }
@@ -405,18 +405,18 @@ fn build_tee_config(args: &RunArgs) -> TeeConfig {
 pub(super) fn build_box_config(
     args: &RunArgs,
     memory_mb: u32,
-    resource_limits: a3s_box_core::config::ResourceLimits,
+    resource_limits: aster_box_core::config::ResourceLimits,
     entrypoint_override: Option<Vec<String>>,
     resolved_volumes: Vec<String>,
     extra_env: Vec<(String, String)>,
     port_map: Vec<String>,
-    network: a3s_box_core::NetworkMode,
+    network: aster_box_core::NetworkMode,
     tmpfs: Vec<String>,
     tee: TeeConfig,
 ) -> Result<BoxConfig, String> {
     let (cmd, entrypoint_override) = if args.tty {
         (
-            vec!["a3s-box-pty-keepalive".to_string()],
+            vec!["aster-box-pty-keepalive".to_string()],
             Some(interactive_keepalive_entrypoint()),
         )
     } else {

@@ -1,9 +1,9 @@
-# A3S Vec Roadmap
+# Aster Vec Roadmap
 
 This is the engine-only roadmap. The dependency order for integrating the
-engine into `a3s-code`, exposing `vgrep`, and removing the duplicate SQLite/
+engine into `aster`, exposing `vgrep`, and removing the duplicate SQLite/
 BM25 workspace paths is maintained in the
-[A3S local retrieval platform roadmap](https://github.com/A3S-Lab/a3s/blob/main/docs/retrieval-platform-roadmap.md).
+[Aster local retrieval platform roadmap](https://github.com/aster-ai-lab/aster/blob/main/docs/retrieval-platform-roadmap.md).
 
 The roadmap is ordered by dependency and by the cost of being wrong. Each
 phase has an explicit exit gate; a later approximate or optimized feature does
@@ -27,7 +27,7 @@ six-invariant filter.
 ### VEC-R1 — Cancelled: macOS 12 Intel support dropped
 
 macOS 12 Monterey on Intel x86-64 is unsupported. The former self-hosted
-`a3s-macos-12` qualification workflow and host-fenced script are removed.
+`aster-macos-12` qualification workflow and host-fenced script are removed.
 Hosted macOS Intel CI remains on `macos-15-intel` with deployment target
 `15.0`. Do not reopen a Monterey runtime gate.
 
@@ -57,7 +57,7 @@ The following are refused until that test exists:
 
 Code's Memory-authoritative shadow, `vgrep`, and removal of the old retrieval
 path stay in the
-[A3S local retrieval platform roadmap](https://github.com/A3S-Lab/a3s/blob/main/docs/retrieval-platform-roadmap.md).
+[Aster local retrieval platform roadmap](https://github.com/aster-ai-lab/aster/blob/main/docs/retrieval-platform-roadmap.md).
 This crate does not grow CLI or serving policy to unblock that work.
 
 ### Enterprise GA
@@ -76,14 +76,14 @@ non-goals (Binary ANN, C++ storage ABI, language bindings) stay refused.
 Honest performance superiority means the documented same-host
 `scale_compare` / `scale_compare_zvec.py` harness (one worker, same HNSW
 controls, exact re-rank retained, zvec `is_using_refiner=False`) shows
-a3s-vec better on HNSW index build and HNSW query p50 without lowering `ef`
+aster-vec better on HNSW index build and HNSW query p50 without lowering `ef`
 or disabling re-ranking. A Windows Xeon win does not excuse an Apple Silicon
 regression against the same contract; platform accelerators (prefetch/SIMD)
 must preserve scores. Flat exact `f64` may remain slower than zvec's native
 path by design of the public score contract.
 
 Hosted CI on `main` is green for tip `af22076` including run
-`35486636866`. Tag `0.1.1` points at that revision. crates.io `a3s-vec`
+`35486636866`. Tag `0.1.1` points at that revision. crates.io `aster-vec`
 `0.1.1` is published with SHA-256
 `94b28f42fbc14967cab8368aabd4187bddac11f706e3f8fd11befffc2110cfa3`, matching
 the release-candidate artifact. Local Apple Silicon evidence after ordinal
@@ -209,7 +209,7 @@ and the lifecycle/resource/maintenance matrix. Their CSVs contain finite
 metrics and the five gate validators pass on the
 local Windows x86_64 host (with the Unix validator under WSL where needed).
 Hosted revision-bound artifacts are recorded in
-[CI run 33772179017](https://github.com/A3S-Lab/Vec/actions/runs/33772179017),
+[CI run 33772179017](https://github.com/aster-ai-lab/Vec/actions/runs/33772179017),
 which passed all ten jobs, including the lifecycle matrix and versioned
 release-candidate package. macOS 12 Monterey Intel is unsupported and is not a release gate.
 
@@ -238,7 +238,7 @@ and direct file-backed mmap remain future work.
 
 **Deliverables**
 
-- Freeze the zvec Rust capability matrix and the `a3s_vec` naming policy.
+- Freeze the zvec Rust capability matrix and the `aster_vec` naming policy.
 - Add the crate skeleton, license/attribution, feature flags, and API examples.
 - Define the on-disk format version, error/status mapping, and platform matrix.
 
@@ -706,7 +706,7 @@ execution are implemented.
   mutation, rebuild, and cache-hit tests cover the slice for all four numeric
   metrics. The public matrix checks eight deterministic bounded queries for
   non-L2 graph recall and enforces the candidate budget.
-- Completed: every Vamana and DiskANN base is mirrored in the A3S-native
+- Completed: every Vamana and DiskANN base is mirrored in the Aster-native
   `indexes/diskann-graph.bin` format. Its versioned header and field metadata
   bind the schema digest, revision, and manifest-derived source identity;
   full-vector or PQ-code neighbor records use fixed lengths, pack without
@@ -818,11 +818,11 @@ execution are implemented.
 - Completed: the pinned upstream CRUD, vector-search, and schema-builder
   fixtures from
   `zvec-ai/zvec-rust@0d40cb1aef081bae175061fef35c89269e6a80f4` differ only by
-  the mechanical `zvec_rust` to `a3s_vec` namespace replacement. Wrappers
+  the mechanical `zvec_rust` to `aster_vec` namespace replacement. Wrappers
   apply only upstream-style lint allowances; all three build and run in CI. The
   schema fixture exercises the now-live IVF SOAR parameter. The CRUD fixture's
   two incomplete replacement upserts are retained as an auditable upstream
-  fixture defect; both official zvec and A3S correctly reject the missing
+  fixture defect; both official zvec and Aster correctly reject the missing
   required `id` field.
 - Completed: asserted executable gates cover vector and FTS search, RRF and
   weighted hybrid fusion with normalization, group-by top-k, snapshot-isolated
@@ -856,13 +856,13 @@ execution are implemented.
 
 - zvec-style Rust examples for CRUD, vector/FTS/hybrid search, multi-query,
   group-by, iterator, and schema evolution run unchanged after mechanical
-  namespace replacement (`zvec_rust` → `a3s_vec`).
+  namespace replacement (`zvec_rust` → `aster_vec`).
 
-## Phase 8 — A3S integration and release hardening
+## Phase 8 — Aster integration and release hardening
 
 **Deliverables**
 
-- Integrate the crate behind an explicit A3S Code/Memory adapter; keep the
+- Integrate the crate behind an explicit Aster Code/Memory adapter; keep the
   collection API independent of CLI policy.
 - Add benchmarks, fuzz targets, memory/CPU limits, and observability hooks.
 - Add Linux/macOS arm64/macOS x86_64/Windows CI on current hosted images.
@@ -928,7 +928,7 @@ execution are implemented.
   100,000 x 128 same-host fixture this reduced Flat p50 from 43.42 ms to
   34.58 ms and HNSW p50 from 2.19 ms to 1.73 ms, while retaining Recall@10
   (1.0000 Flat, 0.6000 HNSW). The result remains a directional benchmark
-  because zvec uses a native C++ wheel and a3s-vec uses the portable Rust
+  because zvec uses a native C++ wheel and aster-vec uses the portable Rust
   target by default.
 - Completed HNSW traversal hardening on 2026-09-03: unquantized candidate
   navigation uses the runtime-dispatched `f32` SIMD kernel, dense bounded
@@ -940,7 +940,7 @@ execution are implemented.
   (-46.5%), QPS rose 92.8%, and build time fell 23.6%, while Recall@10 stayed
   at 0.6000. The same fixture still records zvec at 2.71x lower query p50 and
   1.72x shorter build time, so this is not a performance-parity claim.
-- Completed cross-project integration on 2026-09-03: A3S Code candidate commit
+- Completed cross-project integration on 2026-09-03: Aster Code candidate commit
   `708a85e3ac070640ca5fb8173d0b06e6070152e7` pins Vec commit
   `13585ccd3f956f6cb7d669b2ee6acc7096fca03d` behind a Memory-authoritative
   workspace-retrieval shadow. Code admits one embedding batch, mirrors it once
@@ -979,11 +979,11 @@ execution are implemented.
 
 ## Deliberate boundaries
 
-- Python, Node, Go, Dart, and C ABI bindings are not part of `a3s-vec`.
+- Python, Node, Go, Dart, and C ABI bindings are not part of `aster-vec`.
 - Network-backed embedding providers and implicit model downloads are adapters,
   not core database behavior.
 - Binary compatibility with Alibaba's C++ storage is an explicit import/export
-  task, not an assumption of the native A3S format.
+  task, not an assumption of the native Aster format.
 
 ## Immediate implementation order
 

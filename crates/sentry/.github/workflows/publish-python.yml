@@ -2,8 +2,8 @@ name: publish-python
 
 # Publish the native PyO3 Python SDK on a `python-vX.Y.Z` tag (independent of the daemon's `v*` tags).
 # Builds an abi3 wheel per platform with maturin, then ships them BOTH ways:
-#   - PyPI (`pip install a3s-sentry`) — needs a `PYPI_API_TOKEN` secret; skipped gracefully if unset.
-#   - GitHub Release — always, via the built-in GITHUB_TOKEN (a token-free fallback, like a3s-code).
+#   - PyPI (`pip install aster-sentry`) — needs a `PYPI_API_TOKEN` secret; skipped gracefully if unset.
+#   - GitHub Release — always, via the built-in GITHUB_TOKEN (a token-free fallback, like aster).
 on:
   push:
     tags: ["python-v*"]

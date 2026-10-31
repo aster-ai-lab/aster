@@ -1,0 +1,23 @@
+extension "aster/probe-workspace" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "probe-workspace"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  ui "view" {
+    title            = "工作区探针"
+    description      = "在工作区新建标签菜单里选择这一项。"
+    icon             = "files"
+    entry            = "ui/view/index.html"
+    presentation     = "webview"
+    point            = "studio.workspace"
+    contract_version = 1
+    mode             = "append"
+  }
+}

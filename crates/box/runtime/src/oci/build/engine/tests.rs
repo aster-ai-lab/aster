@@ -11,7 +11,7 @@ mod tests {
     };
     use crate::oci::build::dockerfile::{Instruction, RunCommand};
     use crate::oci::{ImageStore, OciImage};
-    use a3s_box_core::platform::Platform;
+    use aster_box_core::platform::Platform;
     use std::collections::HashMap;
     use std::path::PathBuf;
     use std::sync::Arc;
@@ -106,13 +106,13 @@ mod tests {
         let mut config = test_build_config(vec![Platform::linux_amd64()]);
         config.network = BuildNetworkPolicy::None;
         config.run_pool = Some(BuildRunPoolConfig {
-            socket: "/tmp/a3s-box-test-pool.sock".to_string(),
+            socket: "/tmp/aster-box-test-pool.sock".to_string(),
             image: None,
             vcpus: 1,
             memory_mb: 256,
-            guest_rootfs: "/run/a3s/build-rootfs".to_string(),
+            guest_rootfs: "/run/aster/build-rootfs".to_string(),
             timeout_ns: 1_000_000_000,
-            run_cache_dir: PathBuf::from("/tmp/a3s-box-test-run-cache"),
+            run_cache_dir: PathBuf::from("/tmp/aster-box-test-run-cache"),
         });
 
         let error = validate_build_config(&config).unwrap_err().to_string();
@@ -147,8 +147,8 @@ mod tests {
         let isolated = run_instruction_cache_repr(&instruction, BuildNetworkPolicy::None);
 
         assert_ne!(outbound, isolated);
-        assert!(outbound.ends_with("a3s.box.build.network=outbound"));
-        assert!(isolated.ends_with("a3s.box.build.network=none"));
+        assert!(outbound.ends_with("aster.box.build.network=outbound"));
+        assert!(isolated.ends_with("aster.box.build.network=none"));
     }
 
     #[cfg(all(feature = "pool", not(windows)))]
@@ -372,7 +372,7 @@ CMD ["cat", "/app/copied.txt"]
                         assert_eq!(req.volumes.len(), 1);
 
                         let (host, guest, mode) = parse_pool_volume_spec(&req.volumes[0]);
-                        assert_eq!(guest, "/run/a3s/test-rootfs");
+                        assert_eq!(guest, "/run/aster/test-rootfs");
                         assert_eq!(mode, "rw");
                         rootfs_host = Some(host);
                         let lease_id = format!("lease-{lease_count}");
@@ -393,7 +393,7 @@ CMD ["cat", "/app/copied.txt"]
                         exec_count += 1;
                         assert_eq!(active_lease.as_deref(), Some(req.lease_id.as_str()));
                         assert_eq!(req.lease_id, format!("lease-{exec_count}"));
-                        assert_eq!(req.rootfs.as_deref(), Some("/run/a3s/test-rootfs"));
+                        assert_eq!(req.rootfs.as_deref(), Some("/run/aster/test-rootfs"));
                         assert_eq!(req.timeout_ns, Some(12_000_000_000));
                         assert_eq!(req.user.as_deref(), Some("1000:1001"));
                         assert!(req.env.iter().any(|entry| entry == "HELLO=warm"));
@@ -520,7 +520,7 @@ CMD ["cat", "/app/copied.txt"]
                         image: Some("helper:latest".to_string()),
                         vcpus: 3,
                         memory_mb: 768,
-                        guest_rootfs: "/run/a3s/test-rootfs".to_string(),
+                        guest_rootfs: "/run/aster/test-rootfs".to_string(),
                         timeout_ns: 12_000_000_000,
                         run_cache_dir: run_cache_dir.clone(),
                     }),
@@ -592,7 +592,7 @@ RUN --mount=type=bind,source=src,target=. cat input.txt > /out.txt
                 match req {
                     PoolRequest::Lease(req) => {
                         let (host, guest, mode) = parse_pool_volume_spec(&req.volumes[0]);
-                        assert_eq!(guest, "/run/a3s/test-rootfs");
+                        assert_eq!(guest, "/run/aster/test-rootfs");
                         assert_eq!(mode, "rw");
                         rootfs_host = Some(host);
                         write_frame(
@@ -674,7 +674,7 @@ RUN --mount=type=bind,source=src,target=. cat input.txt > /out.txt
                         image: Some("helper:latest".to_string()),
                         vcpus: 2,
                         memory_mb: 512,
-                        guest_rootfs: "/run/a3s/test-rootfs".to_string(),
+                        guest_rootfs: "/run/aster/test-rootfs".to_string(),
                         timeout_ns: 12_000_000_000,
                         run_cache_dir: run_cache_dir.clone(),
                     }),
@@ -747,7 +747,7 @@ RUN --mount=type=bind,from=builder,source=/artifact.txt,target=artifact.txt cat 
                         lease_count += 1;
                         assert_eq!(req.volumes.len(), 1);
                         let (host, guest, mode) = parse_pool_volume_spec(&req.volumes[0]);
-                        assert_eq!(guest, "/run/a3s/test-rootfs");
+                        assert_eq!(guest, "/run/aster/test-rootfs");
                         assert_eq!(mode, "rw");
                         let lease_id = format!("lease-{lease_count}");
                         rootfs_hosts.insert(lease_id.clone(), host);
@@ -858,7 +858,7 @@ RUN --mount=type=bind,from=builder,source=/artifact.txt,target=artifact.txt cat 
                         image: Some("helper:latest".to_string()),
                         vcpus: 2,
                         memory_mb: 512,
-                        guest_rootfs: "/run/a3s/test-rootfs".to_string(),
+                        guest_rootfs: "/run/aster/test-rootfs".to_string(),
                         timeout_ns: 12_000_000_000,
                         run_cache_dir: run_cache_dir.clone(),
                     }),
@@ -952,7 +952,7 @@ RUN --mount=type=bind,from=external-bind-source:latest,source=/artifact.txt,targ
                     PoolRequest::Lease(req) => {
                         assert_eq!(req.volumes.len(), 1);
                         let (host, guest, mode) = parse_pool_volume_spec(&req.volumes[0]);
-                        assert_eq!(guest, "/run/a3s/test-rootfs");
+                        assert_eq!(guest, "/run/aster/test-rootfs");
                         assert_eq!(mode, "rw");
                         rootfs_host = Some(host);
                         write_frame(
@@ -1033,7 +1033,7 @@ RUN --mount=type=bind,from=external-bind-source:latest,source=/artifact.txt,targ
                         image: Some("helper:latest".to_string()),
                         vcpus: 2,
                         memory_mb: 512,
-                        guest_rootfs: "/run/a3s/test-rootfs".to_string(),
+                        guest_rootfs: "/run/aster/test-rootfs".to_string(),
                         timeout_ns: 12_000_000_000,
                         run_cache_dir: run_cache_dir.clone(),
                     }),
@@ -1098,7 +1098,7 @@ RUN --mount=type=tmpfs,target=tmp printf ok > /out.txt
                 match req {
                     PoolRequest::Lease(req) => {
                         let (host, guest, mode) = parse_pool_volume_spec(&req.volumes[0]);
-                        assert_eq!(guest, "/run/a3s/test-rootfs");
+                        assert_eq!(guest, "/run/aster/test-rootfs");
                         assert_eq!(mode, "rw");
                         rootfs_host = Some(host);
                         write_frame(
@@ -1181,7 +1181,7 @@ RUN --mount=type=tmpfs,target=tmp printf ok > /out.txt
                         image: Some("helper:latest".to_string()),
                         vcpus: 2,
                         memory_mb: 512,
-                        guest_rootfs: "/run/a3s/test-rootfs".to_string(),
+                        guest_rootfs: "/run/aster/test-rootfs".to_string(),
                         timeout_ns: 12_000_000_000,
                         run_cache_dir: run_cache_dir.clone(),
                     }),
@@ -1250,7 +1250,7 @@ RUN --mount=type=cache,id=failed,target=/root/.cache echo before-failure > /root
                         lease_count += 1;
                         assert_eq!(req.volumes.len(), 1);
                         let (host, guest, mode) = parse_pool_volume_spec(&req.volumes[0]);
-                        assert_eq!(guest, "/run/a3s/test-rootfs");
+                        assert_eq!(guest, "/run/aster/test-rootfs");
                         assert_eq!(mode, "rw");
                         rootfs_host = Some(host);
                         write_frame(
@@ -1322,7 +1322,7 @@ RUN --mount=type=cache,id=failed,target=/root/.cache echo before-failure > /root
                         image: Some("helper:latest".to_string()),
                         vcpus: 2,
                         memory_mb: 512,
-                        guest_rootfs: "/run/a3s/test-rootfs".to_string(),
+                        guest_rootfs: "/run/aster/test-rootfs".to_string(),
                         timeout_ns: 12_000_000_000,
                         run_cache_dir: run_cache_dir.clone(),
                     }),
@@ -1387,7 +1387,7 @@ RUN --mount=type=cache,id=warm,target=/root/.cache cat /root/.cache/cache-only.t
                 match req {
                     PoolRequest::Lease(req) => {
                         let (host, guest, mode) = parse_pool_volume_spec(&req.volumes[0]);
-                        assert_eq!(guest, "/run/a3s/test-rootfs");
+                        assert_eq!(guest, "/run/aster/test-rootfs");
                         assert_eq!(mode, "rw");
                         rootfs_host = Some(host);
                         write_frame(
@@ -1404,7 +1404,7 @@ RUN --mount=type=cache,id=warm,target=/root/.cache cat /root/.cache/cache-only.t
                     PoolRequest::Exec(req) => {
                         exec_count += 1;
                         assert_eq!(req.lease_id, "lease-cache");
-                        assert_eq!(req.rootfs.as_deref(), Some("/run/a3s/test-rootfs"));
+                        assert_eq!(req.rootfs.as_deref(), Some("/run/aster/test-rootfs"));
                         let rootfs = rootfs_host.as_ref().expect("lease records rootfs host");
 
                         assert!(
@@ -1481,7 +1481,7 @@ RUN --mount=type=cache,id=warm,target=/root/.cache cat /root/.cache/cache-only.t
                         image: Some("helper:latest".to_string()),
                         vcpus: 2,
                         memory_mb: 512,
-                        guest_rootfs: "/run/a3s/test-rootfs".to_string(),
+                        guest_rootfs: "/run/aster/test-rootfs".to_string(),
                         timeout_ns: 60_000_000_000,
                         run_cache_dir,
                     }),
@@ -1550,7 +1550,7 @@ RUN --mount=type=cache,id=seeded,sharing=locked,from=builder,source=/seed-cache,
                     PoolRequest::Lease(req) => {
                         assert_eq!(req.volumes.len(), 1);
                         let (host, guest, mode) = parse_pool_volume_spec(&req.volumes[0]);
-                        assert_eq!(guest, "/run/a3s/test-rootfs");
+                        assert_eq!(guest, "/run/aster/test-rootfs");
                         assert_eq!(mode, "rw");
                         rootfs_host = Some(host);
                         write_frame(
@@ -1633,7 +1633,7 @@ RUN --mount=type=cache,id=seeded,sharing=locked,from=builder,source=/seed-cache,
                         image: Some("helper:latest".to_string()),
                         vcpus: 2,
                         memory_mb: 512,
-                        guest_rootfs: "/run/a3s/test-rootfs".to_string(),
+                        guest_rootfs: "/run/aster/test-rootfs".to_string(),
                         timeout_ns: 60_000_000_000,
                         run_cache_dir: run_cache_dir.clone(),
                     }),

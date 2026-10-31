@@ -2,7 +2,7 @@ use std::future::Future;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_oci_sdk::{async_trait, Error, ErrorCode, Result};
+use aster_oci_sdk::{async_trait, Error, ErrorCode, Result};
 
 use crate::unix_service::{
     prepare_private_directory, validate_absolute_normalized_path, validate_unix_socket_path,
@@ -157,7 +157,7 @@ impl LinuxKvmSoakHostServiceConfig {
     }
 }
 
-/// Exact paths for the qualification-only A3S Box/KVM product lifecycle owner.
+/// Exact paths for the qualification-only Aster Box/KVM product lifecycle owner.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LinuxKvmBoxHostServiceConfig {
     inner: LinuxKvmRecoveryHostServiceConfig,
@@ -210,7 +210,7 @@ pub struct LinuxKvmSoakHostService {
     inner: UtilityVmHostService<KvmRuntimeDriver>,
 }
 
-/// Qualification-only same-UID SDK owner for the A3S Box product lifecycle.
+/// Qualification-only same-UID SDK owner for the Aster Box product lifecycle.
 pub struct LinuxKvmBoxHostService {
     inner: UtilityVmHostService<KvmRuntimeDriver>,
 }
@@ -262,7 +262,7 @@ impl LinuxKvmBoxHostService {
         driver: Arc<KvmRuntimeDriver>,
     ) -> Result<Self> {
         let capability = driver.capability();
-        let scoped = capability.readiness == a3s_oci_core::DriverReadiness::Experimental
+        let scoped = capability.readiness == aster_oci_core::DriverReadiness::Experimental
             && capability
                 .evidence
                 .get("qualification_scope")
@@ -354,10 +354,10 @@ mod tests {
     use std::collections::BTreeMap;
     use std::os::unix::fs::{FileTypeExt, MetadataExt, PermissionsExt};
 
-    use a3s_oci_core::{
+    use aster_oci_core::{
         CapabilityStatus, DriverCapability, DriverKind, DriverReadiness, IsolationClass,
     };
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         async_trait, LocalIpcEndpoint, RuntimeClient, RUNTIME_BUNDLE_HANDOFF_EXTENSION,
         RUNTIME_BUNDLE_HANDOFF_EXTENSION_VERSION,
     };
@@ -418,7 +418,7 @@ mod tests {
         };
         let inner = UtilityVmRuntimeDriver::new(
             capability,
-            a3s_oci_sdk::AttachmentCapabilities::base_v1(),
+            aster_oci_sdk::AttachmentCapabilities::base_v1(),
             "KVM qualification fixture",
             runtime_root.clone(),
             runtime_root.join("shares"),
@@ -520,23 +520,23 @@ mod tests {
     #[test]
     fn config_separates_durable_state_from_driver_runtime() {
         let config = LinuxKvmRecoveryHostServiceConfig::new(
-            "/tmp/a3s-oci-kvm-owner",
-            "/tmp/a3s-oci-kvm-shim",
-            "/tmp/a3s-oci-kvm-system-image.json",
+            "/tmp/aster-oci-kvm-owner",
+            "/tmp/aster-oci-kvm-shim",
+            "/tmp/aster-oci-kvm-system-image.json",
         )
         .expect("valid Linux KVM recovery config");
 
         assert_eq!(
             config.socket_path(),
-            Path::new("/tmp/a3s-oci-kvm-owner/runtime.sock")
+            Path::new("/tmp/aster-oci-kvm-owner/runtime.sock")
         );
         assert_eq!(
             config.state_root(),
-            Path::new("/tmp/a3s-oci-kvm-owner/state")
+            Path::new("/tmp/aster-oci-kvm-owner/state")
         );
         assert_eq!(
             config.driver_runtime_root(),
-            Path::new("/tmp/a3s-oci-kvm-owner/runtime")
+            Path::new("/tmp/aster-oci-kvm-owner/runtime")
         );
         assert_ne!(config.state_root(), config.driver_runtime_root());
     }

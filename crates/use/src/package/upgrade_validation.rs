@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanPackageChangeKind, PlanScope, PluginOperationAction, PluginPackageLock, UseResult,
 };
 

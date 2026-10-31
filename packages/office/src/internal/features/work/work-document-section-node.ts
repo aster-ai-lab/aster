@@ -252,7 +252,7 @@ export const DocumentSection = Node.create({
     const style = [
       `--work-document-column-count:${columns.count}`,
       `--work-document-column-gap:${columns.spacing}mm`,
-      `--work-document-column-rule:${columns.separator ? '1px solid var(--a3s-line-strong)' : 'none'}`,
+      `--work-document-column-rule:${columns.separator ? '1px solid var(--aster-line-strong)' : 'none'}`,
       `--work-document-section-page-width:${page.width}px`,
       `--work-document-section-page-height:${page.height}px`,
       `--work-document-section-body-width:${page.width - page.marginLeft - page.marginRight}px`,

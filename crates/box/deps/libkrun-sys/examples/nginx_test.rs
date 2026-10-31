@@ -2,13 +2,13 @@
 //!
 //! This test demonstrates running a real Linux VM with nginx using libkrun on Windows.
 
-use a3s_libkrun_sys::*;
+use aster_libkrun_sys::*;
 use std::env;
 use std::ffi::CString;
 use std::path::Path;
 
 fn main() {
-    println!("=== a3s-box nginx Container Test (Windows) ===\n");
+    println!("=== aster-box nginx Container Test (Windows) ===\n");
 
     // Get kernel path
     let kernel_path = env::var("TEST_VMLINUX_PATH").unwrap_or_else(|_| {

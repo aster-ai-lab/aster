@@ -139,7 +139,7 @@ struct StableLayoutHasher(u64);
 impl StableLayoutHasher {
     fn new() -> Self {
         let mut hasher = Self(LAYOUT_HASH_OFFSET_BASIS);
-        hasher.write_str("a3s-code-project-layout-v1");
+        hasher.write_str("aster-project-layout-v1");
         hasher
     }
 

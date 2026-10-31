@@ -1,4 +1,4 @@
-import { compileForm, validateFormValue } from "@a3s-lab/form/core";
+import { compileForm, validateFormValue } from "@aster-ai-lab/form/core";
 import {
   cleanup,
   fireEvent,
@@ -8,32 +8,32 @@ import {
 } from "@testing-library/react";
 import { createElement, useState } from "react";
 import {
-  A3S_FLOW_RUNTIME_COMMAND_BINDINGS,
-  a3sFlowDagNodeRegistry,
-  createA3sFlowDagNodeCatalog,
-  createA3sFlowDagNode,
-  createA3sFlowDagNodeRegistry,
-  createA3sFlowNodeBuildConfig,
+  ASTER_FLOW_RUNTIME_COMMAND_BINDINGS,
+  asterFlowDagNodeRegistry,
+  createAsterFlowDagNodeCatalog,
+  createAsterFlowDagNode,
+  createAsterFlowDagNodeRegistry,
+  createAsterFlowNodeBuildConfig,
   createWorkflowNodeDefaultValue,
   createWorkflowNodeForm,
-  defineA3sFlowCustomDagNode,
-  defineA3sFlowDagNodeManifest,
-  mergeA3sFlowDagNodeConfiguration,
-  requireA3sFlowDagNodeManifest,
+  defineAsterFlowCustomDagNode,
+  defineAsterFlowDagNodeManifest,
+  mergeAsterFlowDagNodeConfiguration,
+  requireAsterFlowDagNodeManifest,
   isWorkflowNodeFieldVisible,
   resolveWorkflowNodeFields,
-  selectA3sFlowDagNodeConfiguration,
-  validateA3sFlowDagNodeConfiguration,
+  selectAsterFlowDagNodeConfiguration,
+  validateAsterFlowDagNodeConfiguration,
   WORKFLOW_CONFIGURATION_WIDGET_KEYS,
   WORKFLOW_CONFIGURATION_WIDGETS,
 } from "../src";
-import { A3sFlowDagNodeConfigurationPanel } from "../src/react/a3s-flow-dag-node";
-import { a3sFlowDagNodePreviewSummary } from "../src/react/a3s-flow-node-summary";
-import { A3sFlowDagNodePreview } from "../src/react/a3s-flow-dag-node";
+import { AsterFlowDagNodeConfigurationPanel } from "../src/react/aster-flow-dag-node";
+import { asterFlowDagNodePreviewSummary } from "../src/react/aster-flow-node-summary";
+import { AsterFlowDagNodePreview } from "../src/react/aster-flow-dag-node";
 
-describe("A3S Flow authoring manifests", () => {
+describe("Aster Flow authoring manifests", () => {
   const customRegistration = () =>
-    defineA3sFlowCustomDagNode({
+    defineAsterFlowCustomDagNode({
       manifest: {
         type: "commerce.risk.score",
         display_name: "Score order risk",
@@ -89,11 +89,11 @@ describe("A3S Flow authoring manifests", () => {
 
   it("publishes 18 authoring nodes and keeps container starts internal", () => {
     expect(
-      a3sFlowDagNodeRegistry.list({ includeInternal: false }),
+      asterFlowDagNodeRegistry.list({ includeInternal: false }),
     ).toHaveLength(18);
-    expect(a3sFlowDagNodeRegistry.list()).toHaveLength(20);
+    expect(asterFlowDagNodeRegistry.list()).toHaveLength(20);
     expect(
-      a3sFlowDagNodeRegistry
+      asterFlowDagNodeRegistry
         .list({ includeInternal: false })
         .map(({ type }) => type),
     ).toEqual([
@@ -116,14 +116,14 @@ describe("A3S Flow authoring manifests", () => {
       "iteration",
       "loop",
     ]);
-    expect(requireA3sFlowDagNodeManifest("iteration-start").internal).toBe(
+    expect(requireAsterFlowDagNodeManifest("iteration-start").internal).toBe(
       true,
     );
-    expect(requireA3sFlowDagNodeManifest("loop-start").internal).toBe(true);
+    expect(requireAsterFlowDagNodeManifest("loop-start").internal).toBe(true);
   });
 
   it("covers every runtime command exposed by Flow 1.0", () => {
-    expect(A3S_FLOW_RUNTIME_COMMAND_BINDINGS).toEqual([
+    expect(ASTER_FLOW_RUNTIME_COMMAND_BINDINGS).toEqual([
       "complete",
       "fail",
       "cancel",
@@ -142,8 +142,8 @@ describe("A3S Flow authoring manifests", () => {
   });
 
   it("updates owned settings without dropping semantic extensions or canvas state", () => {
-    const manifest = requireA3sFlowDagNodeManifest("flow.timeout");
-    const source = createA3sFlowDagNode(
+    const manifest = requireAsterFlowDagNodeManifest("flow.timeout");
+    const source = createAsterFlowDagNode(
       "checkout-timeout",
       manifest,
       { reason: "Checkout window elapsed" },
@@ -151,8 +151,8 @@ describe("A3S Flow authoring manifests", () => {
     );
     source.data["x-project"] = { owner: "checkout" };
 
-    const values = selectA3sFlowDagNodeConfiguration(source, manifest);
-    const updated = mergeA3sFlowDagNodeConfiguration(source, manifest, {
+    const values = selectAsterFlowDagNodeConfiguration(source, manifest);
+    const updated = mergeAsterFlowDagNodeConfiguration(source, manifest, {
       ...values,
       reason: "Payment window elapsed",
     });
@@ -166,7 +166,7 @@ describe("A3S Flow authoring manifests", () => {
   });
 
   it("merges partial build-config overrides in manifest order", () => {
-    const manifest = requireA3sFlowDagNodeManifest("flow.step");
+    const manifest = requireAsterFlowDagNodeManifest("flow.step");
     const firstField = manifest.fields[0];
     expect(firstField).toBeDefined();
     if (!firstField) return;
@@ -199,7 +199,7 @@ describe("A3S Flow authoring manifests", () => {
     });
     expect(resolved.at(-1)).toEqual(extension);
 
-    const built = createA3sFlowNodeBuildConfig(manifest, {
+    const built = createAsterFlowNodeBuildConfig(manifest, {
       [firstField.name]: {
         name: firstField.name,
         placeholder: "Core helper override",
@@ -212,7 +212,7 @@ describe("A3S Flow authoring manifests", () => {
   });
 
   it("rejects build-config keys that do not match their field name", () => {
-    const manifest = requireA3sFlowDagNodeManifest("flow.step");
+    const manifest = requireAsterFlowDagNodeManifest("flow.step");
     expect(() =>
       resolveWorkflowNodeFields(manifest, {
         buildConfig: {
@@ -255,7 +255,7 @@ describe("A3S Flow authoring manifests", () => {
   });
 
   it("autosaves task-panel changes without rendering a duplicate apply action", () => {
-    const manifest = requireA3sFlowDagNodeManifest("flow.step");
+    const manifest = requireAsterFlowDagNodeManifest("flow.step");
 
     expect(
       createWorkflowNodeForm(manifest, { presentation: "task" }).actions,
@@ -266,25 +266,25 @@ describe("A3S Flow authoring manifests", () => {
   });
 
   it("keeps every canvas preview summary to one decisive row", () => {
-    for (const manifest of a3sFlowDagNodeRegistry.list({
+    for (const manifest of asterFlowDagNodeRegistry.list({
       includeInternal: false,
     })) {
-      const node = createA3sFlowDagNode(`preview-${manifest.type}`, manifest);
+      const node = createAsterFlowDagNode(`preview-${manifest.type}`, manifest);
       expect(
-        a3sFlowDagNodePreviewSummary(node, "en").length,
+        asterFlowDagNodePreviewSummary(node, "en").length,
       ).toBeLessThanOrEqual(1);
     }
   });
 
   it("exposes the complete manifest contract in task panels and previews", () => {
-    const manifest = requireA3sFlowDagNodeManifest("flow.hook");
-    const dagNode = createA3sFlowDagNode(
+    const manifest = requireAsterFlowDagNodeManifest("flow.hook");
+    const dagNode = createAsterFlowDagNode(
       "contract-hook",
       manifest,
       { kind: "webhook" },
     );
     const panel = render(
-      createElement(A3sFlowDagNodeConfigurationPanel, {
+      createElement(AsterFlowDagNodeConfigurationPanel, {
         dagNode,
         locale: "en",
         onChange: () => undefined,
@@ -315,18 +315,18 @@ describe("A3S Flow authoring manifests", () => {
     ).toBe("true");
     expect(
       panel.container
-        .querySelector(".a3s-form-workflow-node-panel")
+        .querySelector(".aster-form-workflow-node-panel")
         ?.getAttribute("data-node-role"),
     ).toBe("runtime-command");
     expect(
       panel.container.querySelector(
-        ".a3s-form-workflow-node-header-actions a",
+        ".aster-form-workflow-node-header-actions a",
       ),
     ).not.toBeNull();
     panel.unmount();
 
     const compactPanel = render(
-      createElement(A3sFlowDagNodeConfigurationPanel, {
+      createElement(AsterFlowDagNodeConfigurationPanel, {
         dagNode,
         locale: "en",
         onChange: () => undefined,
@@ -335,20 +335,20 @@ describe("A3S Flow authoring manifests", () => {
     );
     expect(
       compactPanel.container.querySelector(
-        ".a3s-form-workflow-node-header-actions a",
+        ".aster-form-workflow-node-header-actions a",
       ),
     ).toBeNull();
     compactPanel.unmount();
 
     const preview = render(
-      createElement(A3sFlowDagNodePreview, {
+      createElement(AsterFlowDagNodePreview, {
         dagNode,
         locale: "en",
         manifest,
       }),
     );
     const previewRoot = preview.container.querySelector(
-      ".a3s-form-workflow-node-preview",
+      ".aster-form-workflow-node-preview",
     );
     expect(previewRoot?.getAttribute("data-property-count")).toBe(
       String(manifest.fields.length),
@@ -360,7 +360,7 @@ describe("A3S Flow authoring manifests", () => {
   });
 
   it("keeps the condition payload behind advanced disclosure", () => {
-    const manifest = requireA3sFlowDagNodeManifest("flow.condition");
+    const manifest = requireAsterFlowDagNodeManifest("flow.condition");
 
     expect(
       manifest.fields.find((field) => field.name === "input"),
@@ -379,8 +379,8 @@ describe("A3S Flow authoring manifests", () => {
     ).toBeUndefined();
   });
 
-  it("routes common fields through the A3S UI workflow form adapter", () => {
-    const manifest = requireA3sFlowDagNodeManifest("flow.condition");
+  it("routes common fields through the Aster UI workflow form adapter", () => {
+    const manifest = requireAsterFlowDagNodeManifest("flow.condition");
     const document = createWorkflowNodeForm(manifest, { presentation: "task" });
     const matchedLabel = document.ui.nodes.find(
       (node) => node.schemaPath === "/properties/matched_label",
@@ -398,27 +398,27 @@ describe("A3S Flow authoring manifests", () => {
       WORKFLOW_CONFIGURATION_WIDGETS.flowExpression,
     );
     expect(root?.children).toContain(branchGroup?.id);
-    expect(document.metadata.owner).toBe("A3S UI");
+    expect(document.metadata.owner).toBe("Aster UI");
   });
 
-  it("keeps every visible configuration control on the A3S UI form contract", () => {
+  it("keeps every visible configuration control on the Aster UI form contract", () => {
     let inputCount = 0;
     let selectControlCount = 0;
     let textareaCount = 0;
 
-    for (const manifest of a3sFlowDagNodeRegistry.list()) {
-      const dagNode = createA3sFlowDagNode(
-        `a3s-ui-contract-${manifest.type}`,
+    for (const manifest of asterFlowDagNodeRegistry.list()) {
+      const dagNode = createAsterFlowDagNode(
+        `aster-ui-contract-${manifest.type}`,
         manifest,
       );
       const view = render(
-        createElement(A3sFlowDagNodeConfigurationPanel, {
+        createElement(AsterFlowDagNodeConfigurationPanel, {
           dagNode,
           locale: "zh-CN",
           onChange: () => undefined,
         }),
       );
-      const renderer = view.container.querySelector(".a3s-form-renderer");
+      const renderer = view.container.querySelector(".aster-form-renderer");
       if (!renderer) {
         cleanup();
         continue;
@@ -427,11 +427,11 @@ describe("A3S Flow authoring manifests", () => {
       for (const input of renderer.querySelectorAll("input")) {
         inputCount += 1;
         const visuallyHidden = input.classList.contains(
-          "a3s-form-visually-hidden",
+          "aster-form-visually-hidden",
         );
         expect(
           visuallyHidden || input.classList.contains("input"),
-          `${manifest.type} rendered an input outside the A3S UI input contract`,
+          `${manifest.type} rendered an input outside the Aster UI input contract`,
         ).toBe(true);
       }
       expect(
@@ -439,7 +439,7 @@ describe("A3S Flow authoring manifests", () => {
         `${manifest.type} must not fall back to a browser-native select`,
       ).toBe(0);
       for (const selectControl of renderer.querySelectorAll(
-        ".a3s-flow-select-control",
+        ".aster-flow-select-control",
       )) {
         selectControlCount += 1;
         expect(selectControl.querySelector('[role="combobox"]')).not.toBeNull();
@@ -450,17 +450,17 @@ describe("A3S Flow authoring manifests", () => {
         const codeEditorOwned = textarea.closest(".code-editor") !== null;
         expect(
           codeEditorOwned || textarea.classList.contains("textarea"),
-          `${manifest.type} rendered a textarea outside the A3S UI textarea contract`,
+          `${manifest.type} rendered a textarea outside the Aster UI textarea contract`,
         ).toBe(true);
       }
 
       expect(
-        view.container.querySelector(".a3s-form-workflow-node-title-input")
+        view.container.querySelector(".aster-form-workflow-node-title-input")
           ?.classList,
       ).toContain("input");
       expect(
         view.container.querySelector(
-          ".a3s-form-workflow-node-description-input",
+          ".aster-form-workflow-node-description-input",
         )?.classList,
       ).toContain("input");
       cleanup();
@@ -473,7 +473,7 @@ describe("A3S Flow authoring manifests", () => {
 
   it("keeps prompt suggestions open and uses graph-scoped variables after node updates", async () => {
     const base = customRegistration().manifest;
-    const registration = defineA3sFlowCustomDagNode({
+    const registration = defineAsterFlowCustomDagNode({
       manifest: {
         ...base,
         type: "commerce.prompt.preview",
@@ -495,8 +495,8 @@ describe("A3S Flow authoring manifests", () => {
         handler: "prompt.preview",
       },
     });
-    const registry = createA3sFlowDagNodeRegistry([registration.manifest]);
-    const initialNode = createA3sFlowDagNode(
+    const registry = createAsterFlowDagNodeRegistry([registration.manifest]);
+    const initialNode = createAsterFlowDagNode(
       "prompt-preview",
       registration.manifest,
     );
@@ -512,7 +512,7 @@ describe("A3S Flow authoring manifests", () => {
 
     function Harness() {
       const [node, setNode] = useState(initialNode);
-      return createElement(A3sFlowDagNodeConfigurationPanel, {
+      return createElement(AsterFlowDagNodeConfigurationPanel, {
         dagNode: node,
         expressionVariables: variables,
         locale: "zh-CN",
@@ -549,7 +549,7 @@ describe("A3S Flow authoring manifests", () => {
   });
 
   it("compiles, validates, renders, edits, and serializes the complete manifest matrix", () => {
-    const catalog = createA3sFlowDagNodeCatalog([customRegistration()]);
+    const catalog = createAsterFlowDagNodeCatalog([customRegistration()]);
 
     for (const manifest of catalog.registry.list()) {
       const defaults = createWorkflowNodeDefaultValue(manifest);
@@ -568,7 +568,7 @@ describe("A3S Flow authoring manifests", () => {
         manifest.type,
       ).toEqual([]);
       expect(
-        validateA3sFlowDagNodeConfiguration(manifest, defaults),
+        validateAsterFlowDagNodeConfiguration(manifest, defaults),
         manifest.type,
       ).toEqual({ ok: true, errors: [] });
 
@@ -587,8 +587,8 @@ describe("A3S Flow authoring manifests", () => {
         manifest.type,
       ).toBe(true);
 
-      const source = createA3sFlowDagNode(`matrix-${manifest.type}`, manifest);
-      const edited = mergeA3sFlowDagNodeConfiguration(
+      const source = createAsterFlowDagNode(`matrix-${manifest.type}`, manifest);
+      const edited = mergeAsterFlowDagNodeConfiguration(
         source,
         manifest,
         structuredClone(defaults),
@@ -596,12 +596,12 @@ describe("A3S Flow authoring manifests", () => {
       const restored = JSON.parse(JSON.stringify(edited));
       expect(restored, manifest.type).toEqual(edited);
       expect(
-        selectA3sFlowDagNodeConfiguration(edited, manifest),
+        selectAsterFlowDagNodeConfiguration(edited, manifest),
         manifest.type,
       ).toEqual(defaults);
 
       const view = render(
-        createElement(A3sFlowDagNodeConfigurationPanel, {
+        createElement(AsterFlowDagNodeConfigurationPanel, {
           dagNode: edited,
           locale: "en",
           onChange: () => undefined,
@@ -609,7 +609,7 @@ describe("A3S Flow authoring manifests", () => {
         }),
       );
       expect(
-        view.container.querySelector(".a3s-form-workflow-node-panel"),
+        view.container.querySelector(".aster-form-workflow-node-panel"),
         manifest.type,
       ).not.toBeNull();
       cleanup();
@@ -618,10 +618,10 @@ describe("A3S Flow authoring manifests", () => {
 
   it("composes immutable custom nodes and capability bindings without mutating built-ins", () => {
     const registration = customRegistration();
-    const catalog = createA3sFlowDagNodeCatalog([registration]);
+    const catalog = createAsterFlowDagNodeCatalog([registration]);
 
     expect(
-      a3sFlowDagNodeRegistry.get(registration.manifest.type),
+      asterFlowDagNodeRegistry.get(registration.manifest.type),
     ).toBeUndefined();
     expect(catalog.registry.require(registration.manifest.type)).toStrictEqual(
       registration.manifest,
@@ -643,13 +643,13 @@ describe("A3S Flow authoring manifests", () => {
 
   it("rejects reserved, internal, duplicate, and unversioned custom registrations", () => {
     const valid = customRegistration();
-    expect(() => createA3sFlowDagNodeCatalog([valid, valid])).toThrow(
-      "Duplicate custom A3S Flow DAG node type",
+    expect(() => createAsterFlowDagNodeCatalog([valid, valid])).toThrow(
+      "Duplicate custom Aster Flow DAG node type",
     );
     expect(() =>
-      defineA3sFlowCustomDagNode({
+      defineAsterFlowCustomDagNode({
         ...valid,
-        manifest: defineA3sFlowDagNodeManifest({
+        manifest: defineAsterFlowDagNodeManifest({
           ...valid.manifest,
           type: "flow.private",
           role: "host",
@@ -657,9 +657,9 @@ describe("A3S Flow authoring manifests", () => {
       }),
     ).toThrow("reserved");
     expect(() =>
-      defineA3sFlowCustomDagNode({
+      defineAsterFlowCustomDagNode({
         ...valid,
-        manifest: defineA3sFlowDagNodeManifest({
+        manifest: defineAsterFlowDagNodeManifest({
           ...valid.manifest,
           type: "commerce.risk.internal",
           role: "host",
@@ -668,18 +668,18 @@ describe("A3S Flow authoring manifests", () => {
       }),
     ).toThrow("must be public");
     expect(() =>
-      defineA3sFlowCustomDagNode({
+      defineAsterFlowCustomDagNode({
         manifest: valid.manifest,
         capability: { ...valid.capability, version: "^1.2.3" },
       }),
     ).toThrow("exact semantic version");
 
-    const collidingRegistry = createA3sFlowDagNodeRegistry([
-      ...a3sFlowDagNodeRegistry.list(),
+    const collidingRegistry = createAsterFlowDagNodeRegistry([
+      ...asterFlowDagNodeRegistry.list(),
       valid.manifest,
     ]);
     expect(() =>
-      createA3sFlowDagNodeCatalog([valid], collidingRegistry),
+      createAsterFlowDagNodeCatalog([valid], collidingRegistry),
     ).toThrow("already registered");
   });
 });

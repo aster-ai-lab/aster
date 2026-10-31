@@ -1,4 +1,4 @@
-use a3s_orm::Migration;
+use aster_orm::Migration;
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 mod scheduled_wakeups;
@@ -279,7 +279,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION a3s_flow_project_active_hook()
+CREATE OR REPLACE FUNCTION aster_flow_project_active_hook()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
@@ -357,7 +357,7 @@ DROP TRIGGER IF EXISTS flow_active_hooks_after_event ON flow_events;
 CREATE TRIGGER flow_active_hooks_after_event
 AFTER INSERT ON flow_events
 FOR EACH ROW
-EXECUTE FUNCTION a3s_flow_project_active_hook();
+EXECUTE FUNCTION aster_flow_project_active_hook();
 "#;
 
 #[cfg(feature = "postgres")]
@@ -459,7 +459,7 @@ WHERE run_id IN (
     WHERE event_json::jsonb ->> 'type' = 'run_continued_as_new'
 );
 
-CREATE OR REPLACE FUNCTION a3s_flow_cleanup_continued_run()
+CREATE OR REPLACE FUNCTION aster_flow_cleanup_continued_run()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
@@ -476,10 +476,10 @@ CREATE TRIGGER flow_continue_as_new_cleanup_after_event
 AFTER INSERT ON flow_events
 FOR EACH ROW
 WHEN ((NEW.event_json::jsonb ->> 'type') = 'run_continued_as_new')
-EXECUTE FUNCTION a3s_flow_cleanup_continued_run();
+EXECUTE FUNCTION aster_flow_cleanup_continued_run();
 "#;
 
-/// Ledger versions recorded before the `a3s-flow-` ids.
+/// Ledger versions recorded before the `aster-flow-` ids.
 const HISTORICAL_FLOW_MIGRATION_PREFIX: &str = "kense-flow-";
 
 pub(crate) fn canonical_flow_migration_version(version: &str) -> Option<String> {
@@ -487,84 +487,84 @@ pub(crate) fn canonical_flow_migration_version(version: &str) -> Option<String> 
     if rest.is_empty() {
         return None;
     }
-    Some(format!("a3s-flow-{rest}"))
+    Some(format!("aster-flow-{rest}"))
 }
 
 #[cfg(feature = "sqlite")]
 pub(crate) fn sqlite_migrations() -> Vec<Migration> {
     vec![
         Migration::new(
-            "a3s-flow-0001-events",
+            "aster-flow-0001-events",
             "create Flow event history",
             EVENTS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0002-retention",
+            "aster-flow-0002-retention",
             "create Flow history retention guards and tombstones",
             RETENTION_SQL,
         ),
         Migration::new(
-            "a3s-flow-0003-active-hooks",
+            "aster-flow-0003-active-hooks",
             "create the indexed active hook projection",
             SQLITE_ACTIVE_HOOKS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0004-scheduled-wakeups",
+            "aster-flow-0004-scheduled-wakeups",
             "create the indexed scheduled wakeup projection",
             SQLITE_SCHEDULED_WAKEUPS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0005-continue-as-new",
+            "aster-flow-0005-continue-as-new",
             "close indexed run resources when history continues as new",
             SQLITE_CONTINUE_AS_NEW_SQL,
         ),
         Migration::new(
-            "a3s-flow-0006-step-cancellation-wakeup",
+            "aster-flow-0006-step-cancellation-wakeup",
             "remove delayed retry wakeups when a batch step is cancelled",
             SQLITE_SCHEDULED_WAKEUPS_CANCELLATION_SQL,
         ),
         Migration::new(
-            "a3s-flow-0007-event-envelope-schema",
+            "aster-flow-0007-event-envelope-schema",
             "persist the Flow event envelope schema version",
             EVENT_ENVELOPE_SCHEMA_SQL,
         ),
         Migration::new(
-            "a3s-flow-0008-projection-checkpoints",
+            "aster-flow-0008-projection-checkpoints",
             "persist disposable Flow projection checkpoints",
             PROJECTION_CHECKPOINTS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0009-projection-checkpoint-digest",
+            "aster-flow-0009-projection-checkpoint-digest",
             "validate projection checkpoint snapshot integrity",
             PROJECTION_CHECKPOINT_DIGEST_SQL,
         ),
         Migration::new(
-            "a3s-flow-0010-history-partitions",
+            "aster-flow-0010-history-partitions",
             "index sealed contiguous Flow history partitions",
             HISTORY_PARTITIONS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0011-activity-retry-wakeup",
+            "aster-flow-0011-activity-retry-wakeup",
             "index delayed activity retries in the scheduled wakeup projection",
             SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_SQL,
         ),
         Migration::new(
-            "a3s-flow-0012-activity-retry-wakeup-kind",
+            "aster-flow-0012-activity-retry-wakeup-kind",
             "give delayed activity retries their own scheduled wakeup kind",
             SQLITE_SCHEDULED_WAKEUPS_ACTIVITY_KIND_SQL,
         ),
         Migration::new(
-            "a3s-flow-0013-select-timer-wakeup",
+            "aster-flow-0013-select-timer-wakeup",
             "index structured select timer arms as scheduled wakeups",
             SQLITE_SCHEDULED_WAKEUPS_SELECT_TIMER_SQL,
         ),
         Migration::new(
-            "a3s-flow-0014-scope-cancel-wakeup",
+            "aster-flow-0014-scope-cancel-wakeup",
             "drop scheduled wakeups owned by a cancelled scope",
             SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_SQL,
         ),
         Migration::new(
-            "a3s-flow-0015-scope-cancel-open-descendant",
+            "aster-flow-0015-scope-cancel-open-descendant",
             "keep wakeups owned by a completed descendant when an ancestor scope is cancelled",
             SQLITE_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_SQL,
         ),
@@ -575,99 +575,99 @@ pub(crate) fn sqlite_migrations() -> Vec<Migration> {
 pub(crate) fn postgres_migrations() -> Vec<Migration> {
     vec![
         Migration::new(
-            "a3s-flow-0001-events",
+            "aster-flow-0001-events",
             "create Flow event history",
             EVENTS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0002-tasks",
+            "aster-flow-0002-tasks",
             "create Flow task dispatch tables",
             POSTGRES_TASKS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0003-retention",
+            "aster-flow-0003-retention",
             "create Flow history retention guards and tombstones",
             RETENTION_SQL,
         ),
         Migration::new(
-            "a3s-flow-0004-active-hooks",
+            "aster-flow-0004-active-hooks",
             "create the indexed active hook projection",
             POSTGRES_ACTIVE_HOOKS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0005-scheduled-wakeups",
+            "aster-flow-0005-scheduled-wakeups",
             "reconcile active hooks and create the scheduled wakeup projection",
             POSTGRES_SCHEDULED_WAKEUPS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0006-continue-as-new",
+            "aster-flow-0006-continue-as-new",
             "close indexed run resources when history continues as new",
             POSTGRES_CONTINUE_AS_NEW_SQL,
         ),
         Migration::new(
-            "a3s-flow-0007-step-cancellation-wakeup",
+            "aster-flow-0007-step-cancellation-wakeup",
             "remove delayed retry wakeups when a batch step is cancelled",
             POSTGRES_SCHEDULED_WAKEUPS_CANCELLATION_SQL,
         ),
         Migration::new(
-            "a3s-flow-0008-event-envelope-schema",
+            "aster-flow-0008-event-envelope-schema",
             "persist the Flow event envelope schema version",
             EVENT_ENVELOPE_SCHEMA_SQL,
         ),
         Migration::new(
-            "a3s-flow-0009-projection-checkpoints",
+            "aster-flow-0009-projection-checkpoints",
             "persist disposable Flow projection checkpoints",
             PROJECTION_CHECKPOINTS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0010-projection-checkpoint-digest",
+            "aster-flow-0010-projection-checkpoint-digest",
             "validate projection checkpoint snapshot integrity",
             PROJECTION_CHECKPOINT_DIGEST_SQL,
         ),
         Migration::new(
-            "a3s-flow-0011-history-partitions",
+            "aster-flow-0011-history-partitions",
             "index sealed contiguous Flow history partitions",
             HISTORY_PARTITIONS_SQL,
         ),
         Migration::new(
-            "a3s-flow-0012-task-partition-key",
+            "aster-flow-0012-task-partition-key",
             "persist opaque processor partition keys for fair task leasing",
             POSTGRES_TASK_PARTITION_KEY_SQL,
         ),
         Migration::new(
-            "a3s-flow-0013-activity-retry-wakeup",
+            "aster-flow-0013-activity-retry-wakeup",
             "index delayed activity retries in the scheduled wakeup projection",
             POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_RETRY_SQL,
         ),
         Migration::new(
-            "a3s-flow-0014-activity-retry-wakeup-kind",
+            "aster-flow-0014-activity-retry-wakeup-kind",
             "give delayed activity retries their own scheduled wakeup kind",
             POSTGRES_SCHEDULED_WAKEUPS_ACTIVITY_KIND_SQL,
         ),
         Migration::new(
-            "a3s-flow-0015-select-timer-wakeup",
+            "aster-flow-0015-select-timer-wakeup",
             "index structured select timer arms as scheduled wakeups",
             POSTGRES_SCHEDULED_WAKEUPS_SELECT_TIMER_SQL,
         ),
         Migration::new(
-            "a3s-flow-0016-scope-cancel-wakeup",
+            "aster-flow-0016-scope-cancel-wakeup",
             "drop scheduled wakeups owned by a cancelled scope",
             POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_SQL,
         ),
         Migration::new(
-            "a3s-flow-0017-scope-cancel-open-descendant",
+            "aster-flow-0017-scope-cancel-open-descendant",
             "keep wakeups owned by a completed descendant when an ancestor scope is cancelled",
             POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_SQL,
         ),
         Migration::new(
-            "a3s-flow-0018-function-names",
+            "aster-flow-0018-function-names",
             "rename historical Flow trigger functions to the current prefix",
             POSTGRES_FUNCTION_NAMES_SQL,
         ),
         Migration::new(
-            "a3s-flow-0019-a3s-function-names",
-            "rename Flow trigger functions onto the a3s_ prefix",
-            POSTGRES_A3S_FUNCTION_NAMES_SQL,
+            "aster-flow-0019-aster-function-names",
+            "rename Flow trigger functions onto the aster_ prefix",
+            POSTGRES_ASTER_FUNCTION_NAMES_SQL,
         ),
     ]
 }
@@ -685,10 +685,10 @@ BEGIN
         FROM pg_proc AS p
         JOIN pg_namespace AS n ON n.oid = p.pronamespace
         WHERE n.nspname = current_schema()
-          AND p.proname LIKE 'a3s\_flow\_%' ESCAPE '\'
+          AND p.proname LIKE 'aster\_flow\_%' ESCAPE '\'
         ORDER BY p.proname
     LOOP
-        def := replace(fn.def, 'a3s_flow_', 'kense_flow_');
+        def := replace(fn.def, 'aster_flow_', 'kense_flow_');
         EXECUTE def;
     END LOOP;
 
@@ -699,10 +699,10 @@ BEGIN
         JOIN pg_namespace AS n ON n.oid = c.relnamespace
         WHERE n.nspname = current_schema()
           AND NOT t.tgisinternal
-          AND pg_get_triggerdef(t.oid) LIKE '%a3s\_flow\_%' ESCAPE '\'
+          AND pg_get_triggerdef(t.oid) LIKE '%aster\_flow\_%' ESCAPE '\'
     LOOP
         EXECUTE format('DROP TRIGGER %I ON %I.%I', trg.tgname, current_schema(), trg.relname);
-        EXECUTE replace(trg.def, 'a3s_flow_', 'kense_flow_');
+        EXECUTE replace(trg.def, 'aster_flow_', 'kense_flow_');
     END LOOP;
 
     FOR fn IN
@@ -710,7 +710,7 @@ BEGIN
         FROM pg_proc AS p
         JOIN pg_namespace AS n ON n.oid = p.pronamespace
         WHERE n.nspname = current_schema()
-          AND p.proname LIKE 'a3s\_flow\_%' ESCAPE '\'
+          AND p.proname LIKE 'aster\_flow\_%' ESCAPE '\'
     LOOP
         EXECUTE format('DROP FUNCTION %s', fn.ident);
     END LOOP;
@@ -718,7 +718,7 @@ END $$;
 "#;
 
 #[cfg(feature = "postgres")]
-const POSTGRES_A3S_FUNCTION_NAMES_SQL: &str = r#"
+const POSTGRES_ASTER_FUNCTION_NAMES_SQL: &str = r#"
 DO $$
 DECLARE
     fn record;
@@ -733,7 +733,7 @@ BEGIN
           AND p.proname LIKE 'kense\_flow\_%' ESCAPE '\'
         ORDER BY p.proname
     LOOP
-        def := replace(fn.def, 'kense_flow_', 'a3s_flow_');
+        def := replace(fn.def, 'kense_flow_', 'aster_flow_');
         EXECUTE def;
     END LOOP;
 
@@ -747,7 +747,7 @@ BEGIN
           AND pg_get_triggerdef(t.oid) LIKE '%kense\_flow\_%' ESCAPE '\'
     LOOP
         EXECUTE format('DROP TRIGGER %I ON %I.%I', trg.tgname, current_schema(), trg.relname);
-        EXECUTE replace(trg.def, 'kense_flow_', 'a3s_flow_');
+        EXECUTE replace(trg.def, 'kense_flow_', 'aster_flow_');
     END LOOP;
 
     FOR fn IN
@@ -764,5 +764,5 @@ END $$;
 
 // NOTE: `kense-flow-` and `kense_flow_` prefixed identifiers are historical
 // names from before the platform rename. The store actively maps them to
-// `a3s_flow_` equivalents — these references are backward-compatibility
+// `aster_flow_` equivalents — these references are backward-compatibility
 // shims, not current naming.

@@ -253,8 +253,8 @@ mod tests {
     #[cfg(windows)]
     #[test]
     fn named_pipe_endpoint_is_local_and_non_empty() {
-        assert!(LocalIpcEndpoint::windows_named_pipe(r"\\.\pipe\a3s-oci").is_ok());
-        assert!(LocalIpcEndpoint::windows_named_pipe(r"\\server\pipe\a3s-oci").is_err());
+        assert!(LocalIpcEndpoint::windows_named_pipe(r"\\.\pipe\aster-oci").is_ok());
+        assert!(LocalIpcEndpoint::windows_named_pipe(r"\\server\pipe\aster-oci").is_err());
         assert!(LocalIpcEndpoint::windows_named_pipe(r"\\.\pipe\").is_err());
     }
 
@@ -267,7 +267,7 @@ mod tests {
 
         static NEXT_PIPE: AtomicU64 = AtomicU64::new(1);
         let pipe_name = format!(
-            r"\\.\pipe\a3s-oci-sdk-test-{}-{}",
+            r"\\.\pipe\aster-oci-sdk-test-{}-{}",
             std::process::id(),
             NEXT_PIPE.fetch_add(1, Ordering::Relaxed)
         );
@@ -314,7 +314,7 @@ mod tests {
 
         static NEXT_PIPE: AtomicU64 = AtomicU64::new(10_000);
         let pipe_name = format!(
-            r"\\.\pipe\a3s-oci-sdk-reconnect-test-{}-{}",
+            r"\\.\pipe\aster-oci-sdk-reconnect-test-{}-{}",
             std::process::id(),
             NEXT_PIPE.fetch_add(1, Ordering::Relaxed)
         );
@@ -350,7 +350,7 @@ mod tests {
     #[cfg(unix)]
     #[test]
     fn unix_endpoint_requires_an_absolute_path() {
-        assert!(LocalIpcEndpoint::unix_socket("/run/a3s/oci.sock").is_ok());
+        assert!(LocalIpcEndpoint::unix_socket("/run/aster/oci.sock").is_ok());
         assert!(LocalIpcEndpoint::unix_socket("oci.sock").is_err());
         let too_long = std::path::Path::new("/private/tmp")
             .join("x".repeat(256))
@@ -365,7 +365,7 @@ mod tests {
     #[tokio::test]
     async fn runtime_client_connects_over_a_real_unix_socket() {
         let temporary = tempfile::tempdir().expect("create temporary directory");
-        let socket_path = temporary.path().join("a3s-oci.sock");
+        let socket_path = temporary.path().join("aster-oci.sock");
         let listener =
             tokio::net::UnixListener::bind(&socket_path).expect("bind temporary Unix socket");
         let server_task = tokio::spawn(async move {
@@ -398,7 +398,7 @@ mod tests {
     #[tokio::test]
     async fn runtime_client_reconnects_after_unix_socket_server_restart() {
         let temporary = tempfile::tempdir().expect("create temporary directory");
-        let socket_path = temporary.path().join("a3s-oci-reconnect.sock");
+        let socket_path = temporary.path().join("aster-oci-reconnect.sock");
         let calls = Arc::new(AtomicUsize::new(0));
         let first_server = spawn_unix_feature_server(&socket_path, calls.clone());
         let endpoint =

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{semantic_error, DocumentNode, OfficeNodeType};
 use crate::editor::NativeSpreadsheetTableStyle;
@@ -396,7 +396,7 @@ fn boolean_attribute(
     }
 }
 
-fn table_error(part_name: &str, reason: impl Into<String>) -> a3s_use_core::UseError {
+fn table_error(part_name: &str, reason: impl Into<String>) -> aster_use_core::UseError {
     semantic_error(
         "use.office.spreadsheet_table_invalid",
         format!("Spreadsheet table part '{part_name}' {}.", reason.into()),

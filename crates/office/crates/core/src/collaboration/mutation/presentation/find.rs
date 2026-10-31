@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::super::super::{
     collaboration_error, NativeOfficeCollaborationDocumentTextFindResult,

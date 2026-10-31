@@ -1,7 +1,7 @@
-//! Typed A3S Runtime binding primitives for schema-v3 plugin surfaces.
+//! Typed Aster Runtime binding primitives for schema-v3 plugin surfaces.
 //!
 //! This module maps immutable Tool and MCP release descriptors to the public
-//! `a3s-runtime` contract. It never selects a provider implicitly and it keeps
+//! `aster-runtime` contract. It never selects a provider implicitly and it keeps
 //! provider endpoint discovery outside the Runtime unit contract.
 
 mod bundle_planner;
@@ -20,7 +20,7 @@ mod task;
 mod task_binding;
 mod task_dispatch;
 
-pub use a3s_runtime as runtime;
+pub use aster_runtime as runtime;
 
 pub use bundle_planner::plan_runtime_bundle;
 pub use client::{runtime_capabilities_digest, PluginRuntimeClient};

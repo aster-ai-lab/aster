@@ -409,7 +409,7 @@ impl crate::agent::TurnEngine {
                 let mut result = ContextResult::new("project_hint");
                 result.add_item(
                     ContextItem::new("project_hint", ContextType::Resource, project_hint)
-                        .with_source("a3s://project-hint")
+                        .with_source("aster://project-hint")
                         .with_provenance("workspace_marker")
                         .with_priority(0.65)
                         .with_trust(0.8)

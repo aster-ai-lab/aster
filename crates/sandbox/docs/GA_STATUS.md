@@ -1,4 +1,4 @@
-# a3s-sandbox enterprise GA status
+# aster-sandbox enterprise GA status
 
 Authoritative status board for the enterprise GA objective. Update only from
 live evidence (CI, local collectors, release artifacts, reviewer attestation).
@@ -13,7 +13,7 @@ empty-array expansion during this cut.
 
 | Claim | Meaning | Status |
 | --- | --- | --- |
-| **A. Deny-all production boundary** | Default A3S Bash profile is fail-closed OS isolation; mediation off | **Shipped: `v0.1.5`, re-cut as `v0.2.0`** — CI green on the release commit, Release page carries provenance |
+| **A. Deny-all production boundary** | Default Aster Bash profile is fail-closed OS isolation; mediation off | **Shipped: `v0.1.5`, re-cut as `v0.2.0`** — CI green on the release commit, Release page carries provenance |
 | **B. Mediated-network-as-default** | Any profile may turn mediation on by default | **Blocked** on independent review sign-off |
 
 Enterprise GA for this crate means **A is shipped and evidenced**, and **B stays
@@ -36,9 +36,9 @@ explicitly refused** until an independent reviewer signs
 
 ### CI runs
 
-- `v0.2.0` release commit `031849a`: https://github.com/A3S-Lab/Sandbox/actions/runs/36152909937 (windows/ubuntu/macos success)
-- `v0.1.5` tag commit `eec5229`: https://github.com/A3S-Lab/Sandbox/actions/runs/36084293634 (windows/ubuntu/macos success)
-- `v0.1.5` tip `5b2e46d`: https://github.com/A3S-Lab/Sandbox/actions/runs/36084473762 (windows/ubuntu/macos success)
+- `v0.2.0` release commit `031849a`: https://github.com/aster-ai-lab/Sandbox/actions/runs/36152909937 (windows/ubuntu/macos success)
+- `v0.1.5` tag commit `eec5229`: https://github.com/aster-ai-lab/Sandbox/actions/runs/36084293634 (windows/ubuntu/macos success)
+- `v0.1.5` tip `5b2e46d`: https://github.com/aster-ai-lab/Sandbox/actions/runs/36084473762 (windows/ubuntu/macos success)
 
 ## Publish path
 

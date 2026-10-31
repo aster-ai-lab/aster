@@ -1,4 +1,4 @@
-use a3s_use_core::{PluginPackageLock, UseResult};
+use aster_use_core::{PluginPackageLock, UseResult};
 
 use super::{ExtensionLifecycleIdentity, ExtensionLifecycleResult};
 use crate::registry::{ExtensionRegistry, ExtensionRouteLease};

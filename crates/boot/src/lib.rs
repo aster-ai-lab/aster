@@ -1,6 +1,6 @@
-//! Progressive Rust web framework primitives for A3S.
+//! Progressive Rust web framework primitives for Aster.
 //!
-//! `a3s-boot` is inspired by Nest.js, but keeps the Rust core explicit:
+//! `aster-boot` is inspired by Nest.js, but keeps the Rust core explicit:
 //! modules organize the graph, providers live in a typed container, controllers
 //! group routes, request pipeline hooks are framework-neutral, and HTTP serving
 //! is delegated to replaceable adapters.
@@ -81,9 +81,9 @@ mod view;
 mod websocket;
 
 #[cfg(all(feature = "macros", feature = "session"))]
-pub use a3s_boot_macros::session;
+pub use aster_boot_macros::session;
 #[cfg(feature = "macros")]
-pub use a3s_boot_macros::{
+pub use aster_boot_macros::{
     all, api_cookie_auth, api_extension, api_extra_model, api_header, api_key_auth, api_param,
     api_query, api_response_header, api_security, apply_decorators, bearer_auth, body, catch,
     controller, cookie, cookies, delete, delete_json, event_pattern, extract, get, get_json, head,
@@ -96,13 +96,13 @@ pub use a3s_boot_macros::{
     websocket_gateway, ValidationSchema,
 };
 #[cfg(all(feature = "macros", feature = "cache"))]
-pub use a3s_boot_macros::{cache_key, cache_ttl};
+pub use aster_boot_macros::{cache_key, cache_ttl};
 #[cfg(all(feature = "macros", feature = "schedule"))]
-pub use a3s_boot_macros::{cron, interval, schedule, timeout};
+pub use aster_boot_macros::{cron, interval, schedule, timeout};
 #[cfg(all(feature = "macros", feature = "events"))]
-pub use a3s_boot_macros::{event_listener, on_event};
+pub use aster_boot_macros::{event_listener, on_event};
 #[cfg(all(feature = "macros", feature = "file-upload"))]
-pub use a3s_boot_macros::{uploaded_file, uploaded_files};
+pub use aster_boot_macros::{uploaded_file, uploaded_files};
 #[cfg(feature = "axum")]
 pub use adapters::AxumAdapter;
 #[cfg(feature = "shutdown-hooks")]
@@ -149,7 +149,7 @@ pub use discovery_backends::{ConsulServiceDiscovery, KubernetesServiceDiscovery}
 pub use error::{BootError, BootErrorKind};
 #[cfg(feature = "events")]
 pub use events::{
-    A3sEvent, A3sEventBus, A3sEventProvider, A3sMemoryEventConfig, A3sMemoryEventProvider,
+    AsterEvent, AsterEventBus, AsterEventProvider, AsterMemoryEventConfig, AsterMemoryEventProvider,
     EventContext, EventEmitter, EventEnvelope, EventListener, EventListenerDefinition, EventModule,
 };
 pub use feature_flags::{FeatureFlagClient, StaticFeatureFlags};
@@ -288,7 +288,7 @@ pub use websocket::{
     WebSocketSubscriptionDefinition,
 };
 
-/// Result type used by A3S Boot.
+/// Result type used by Aster Boot.
 pub type Result<T> = std::result::Result<T, BootError>;
 
 /// Boxed future used by adapter traits.

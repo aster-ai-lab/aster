@@ -1,11 +1,11 @@
 use std::collections::BTreeMap;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
 use serde::{Deserialize, Serialize};
 
 /// Schema emitted by the real native Linux CRIU checkpoint qualification.
 pub const NATIVE_LINUX_CHECKPOINT_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.native-linux-checkpoint-smoke.v3";
+    "aster.oci.native-linux-checkpoint-smoke.v3";
 
 /// Exact restore boundary at which a qualification owner terminates.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -194,7 +194,7 @@ impl NativeLinuxCheckpointSmokeReport {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_core::HostPlatform;
+    use aster_oci_core::HostPlatform;
 
     use super::NativeLinuxCheckpointSmokeReport;
 

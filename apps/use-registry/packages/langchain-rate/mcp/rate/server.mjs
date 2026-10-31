@@ -91,7 +91,7 @@ function ok(id, result) {
   return { jsonrpc: '2.0', id, result }
 }
 
-if (process.env.A3S_AGENT_PROTOCOL === '1') {
+if (process.env.ASTER_AGENT_PROTOCOL === '1') {
   const events = []
   const agent = http.createServer(async (request, response) => {
     const chunks = []

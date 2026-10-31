@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-: "${A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
+: "${ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
 
 source .github/scripts/lib/linux-kvm-provenance.sh
 
@@ -22,34 +22,34 @@ target_dir="${CARGO_TARGET_DIR:-target}"
 if [[ "$target_dir" != /* ]]; then
   target_dir="$PWD/$target_dir"
 fi
-profile="${A3S_OCI_BUILD_PROFILE:-debug}"
-build_arguments=(build -p a3s-oci-cli -p a3s-oci-krun)
+profile="${ASTER_OCI_BUILD_PROFILE:-debug}"
+build_arguments=(build -p aster-oci-cli -p aster-oci-krun)
 case "$profile" in
   debug) ;;
   release) build_arguments+=(--release) ;;
   *) build_arguments+=(--profile "$profile") ;;
 esac
 binary_dir="$target_dir/$profile"
-cli="$binary_dir/a3s-oci"
-shim="$binary_dir/a3s-oci-krun-shim"
-runtime_dir="$binary_dir/a3s-oci-krun-runtime"
+cli="$binary_dir/aster-oci"
+shim="$binary_dir/aster-oci-krun-shim"
+runtime_dir="$binary_dir/aster-oci-krun-runtime"
 runtime_assets_manifest="crates/krun/runtime/runtime-assets.json"
 
 cargo "${build_arguments[@]}"
 test -x "$cli"
 test -x "$shim"
 test -d "$runtime_dir"
-test -f "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
-test ! -L "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+test -f "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+test ! -L "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
 
-system_image_directory="$(dirname "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST")"
+system_image_directory="$(dirname "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST")"
 system_image_name="$(
-  jq --raw-output '.image.name' "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+  jq --raw-output '.image.name' "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
 )"
 source_system_image="$system_image_directory/$system_image_name"
 test -f "$source_system_image"
 test ! -L "$source_system_image"
-test "$(jq --raw-output '.image.sha256' "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST")" = \
+test "$(jq --raw-output '.image.sha256' "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST")" = \
   "$(sha256sum "$source_system_image" | cut -d ' ' -f 1)"
 
 architecture="$(uname -m)"
@@ -66,12 +66,12 @@ provenance="$(
   linux_kvm_provenance \
     linux-kvm-compatibility-drift-14-case-v1 "$profile" \
     "$cli" "$shim" "$runtime_dir" "$runtime_assets_manifest" \
-    "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+    "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
 )"
 
 temporary_root="${RUNNER_TEMP:-/tmp}"
 test -d "$temporary_root"
-work="$(mktemp -d "$temporary_root/a3s-oci-kvm-compatibility-drift.XXXXXX")"
+work="$(mktemp -d "$temporary_root/aster-oci-kvm-compatibility-drift.XXXXXX")"
 active_pid=""
 current_case="setup"
 cleanup() {
@@ -80,7 +80,7 @@ cleanup() {
     wait "$active_pid" 2>/dev/null || true
   fi
   case "$work" in
-    "$temporary_root"/a3s-oci-kvm-compatibility-drift.*)
+    "$temporary_root"/aster-oci-kvm-compatibility-drift.*)
       rm -rf -- "$work"
       ;;
     *)
@@ -107,17 +107,17 @@ on_error() {
 }
 trap on_error ERR
 
-report_path="${A3S_OCI_LINUX_KVM_COMPATIBILITY_DRIFT_REPORT:-$work/report.json}"
+report_path="${ASTER_OCI_LINUX_KVM_COMPATIBILITY_DRIFT_REPORT:-$work/report.json}"
 cases_path="$work/cases.ndjson"
 : > "$cases_path"
 
 endpoint_inventory() {
   find /tmp -maxdepth 1 -type d -uid "$(id -u)" \
-    -name 'a3s-oci-agent-*' -print 2>/dev/null | sort
+    -name 'aster-oci-agent-*' -print 2>/dev/null | sort
 }
 
 shim_process_inventory() {
-  ps -eo pid=,comm= | awk 'index($2, "a3s-oci-krun") == 1 {print $1 " " $2}' | sort
+  ps -eo pid=,comm= | awk 'index($2, "aster-oci-krun") == 1 {print $1 " " $2}' | sort
 }
 
 runtime_share_inventory() {
@@ -138,7 +138,7 @@ prepare_case() {
   case_stderr="$case_root/stderr.log"
   case_manifest="$case_system_image_directory/system-image.json"
   case_system_image="$case_system_image_directory/$system_image_name"
-  case_shim="$case_binary_directory/a3s-oci-krun-shim"
+  case_shim="$case_binary_directory/aster-oci-krun-shim"
 
   mkdir -p \
     "$case_system_image_directory" \
@@ -153,12 +153,12 @@ prepare_case() {
     "$case_runtime_share" \
     "$case_runtime_share/run"
   cp --reflink=auto --sparse=always \
-    "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" "$case_manifest"
+    "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" "$case_manifest"
   cp --reflink=auto --sparse=always "$source_system_image" "$case_system_image"
   cp -p "$shim" "$case_shim"
-  cp -a "$runtime_dir" "$case_binary_directory/a3s-oci-krun-runtime"
+  cp -a "$runtime_dir" "$case_binary_directory/aster-oci-krun-runtime"
   chmod 0600 "$case_manifest" "$case_system_image"
-  chmod -R u+w "$case_binary_directory/a3s-oci-krun-runtime"
+  chmod -R u+w "$case_binary_directory/aster-oci-krun-runtime"
 }
 
 rewrite_manifest() {
@@ -284,13 +284,13 @@ assert_common_report() {
   local report="$1"
   local reason_fragment="$2"
   jq --exit-status --arg reason_fragment "$reason_fragment" \
-    '.schema_version == "a3s.oci.agent-vm-smoke.v10"
+    '.schema_version == "aster.oci.agent-vm-smoke.v10"
      and .platform == "linux" and .status == "unavailable"
      and .endpoint_bound and .shim_spawned
      and (.shim_process_id > 0) and (.bridge_process_id == null)
      and (.shim_client_verified | not) and (.protocol_negotiated | not)
      and (.shim_report_verified | not) and .shim_exit_code == 2
-     and .shim_report.schema_version == "a3s.oci.krun-agent-vm-smoke.v7"
+     and .shim_report.schema_version == "aster.oci.krun-agent-vm-smoke.v7"
      and .shim_report.platform == "linux"
      and .shim_report.status == "unavailable"
      and (.shim_report.kvm_device_opened | not)
@@ -316,9 +316,9 @@ assert_cleanup() {
   test "$runtime_after" = "$runtime_before"
   test -z "$(
     find "$case_runtime_share" -maxdepth 2 \
-      \( -name '.a3s-oci-bootstrap-*' \
-         -o -name '.a3s-oci-recovery-*' \
-         -o -name '.a3s-oci-kvm-compatibility-drift-*' \) \
+      \( -name '.aster-oci-bootstrap-*' \
+         -o -name '.aster-oci-recovery-*' \
+         -o -name '.aster-oci-kvm-compatibility-drift-*' \) \
       -print -quit
   )"
 }
@@ -388,8 +388,8 @@ run_post_configuration_case() {
   endpoint_before="$(endpoint_inventory)"
   process_before="$(shim_process_inventory)"
   runtime_before="$(runtime_share_inventory "$case_runtime_share")"
-  ready="$case_runtime_share/run/.a3s-oci-kvm-compatibility-drift-ready"
-  proceed="$case_runtime_share/run/.a3s-oci-kvm-compatibility-drift-continue"
+  ready="$case_runtime_share/run/.aster-oci-kvm-compatibility-drift-ready"
+  proceed="$case_runtime_share/run/.aster-oci-kvm-compatibility-drift-continue"
   continue_staging="$case_runtime_share/run/compatibility-drift-continue.staging"
 
   "$cli" agent-vm-smoke \
@@ -479,7 +479,7 @@ run_pre_load_case kernel-provenance-drift \
 jq --slurp --arg architecture "$architecture" \
   --argjson provenance "$provenance" \
   '{
-    schema_version: "a3s.oci.linux-kvm-compatibility-drift.v2",
+    schema_version: "aster.oci.linux-kvm-compatibility-drift.v2",
     platform: "linux",
     architecture: $architecture,
     status: "available",
@@ -490,9 +490,9 @@ jq --slurp --arg architecture "$architecture" \
   }' "$cases_path" | tee "$report_path"
 
 jq --exit-status \
-  '.schema_version == "a3s.oci.linux-kvm-compatibility-drift.v2"
+  '.schema_version == "aster.oci.linux-kvm-compatibility-drift.v2"
    and .status == "available" and (.kvm_required | not)
-   and .provenance.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+   and .provenance.schema_version == "aster.oci.linux-kvm-provenance.v1"
    and .provenance.platform == .platform
    and .provenance.architecture == .architecture
    and .provenance.qualification_profile

@@ -10,7 +10,7 @@ struct Fixture(PathBuf);
 impl Fixture {
     fn new(script: &str) -> Self {
         let root =
-            std::env::temp_dir().join(format!("a3s-acp-owned-tool-{}", uuid::Uuid::new_v4()));
+            std::env::temp_dir().join(format!("aster-acp-owned-tool-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&root).unwrap();
         let entry = root.join("entry");
         std::fs::write(&entry, format!("#!/bin/sh\n{script}\n")).unwrap();
@@ -120,7 +120,7 @@ async fn oversized_arguments_cannot_start_a_tool() {
 
 #[tokio::test]
 async fn native_backend_refusal_is_available_before_a_live_turn_or_process() {
-    use a3s_code_core::workspace::{
+    use aster_core::workspace::{
         WorkspaceCapabilities, WorkspaceServices, WorkspaceServicesBuilder,
     };
     let fixture = Fixture::new("touch leaked");

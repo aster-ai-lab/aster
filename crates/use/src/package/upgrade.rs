@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::{PluginOperationAction, PluginReleaseChannel, PluginSurfaceRef, UseResult};
-use a3s_use_extension::{
+use aster_use_core::{PluginOperationAction, PluginReleaseChannel, PluginSurfaceRef, UseResult};
+use aster_use_extension::{
     ExtensionLifecycleIdentity, ExtensionLifecyclePackage, ExtensionManifest,
     ExtensionRegistrySnapshot, InstalledExtension, TrustedRegistry,
 };
@@ -825,7 +825,7 @@ impl PackageManager {
 
     async fn require_published_prior(
         &self,
-        prior_lock: &a3s_use_core::PluginPackageLock,
+        prior_lock: &aster_use_core::PluginPackageLock,
     ) -> UseResult<BTreeMap<String, InstalledExtension>> {
         let snapshot = self.registry.snapshot().await?;
         let mut installed = BTreeMap::new();
@@ -868,8 +868,8 @@ impl PackageManager {
 
     async fn add_published_candidate_retentions(
         &self,
-        prior_lock: &a3s_use_core::PluginPackageLock,
-        candidate_lock: &a3s_use_core::PluginPackageLock,
+        prior_lock: &aster_use_core::PluginPackageLock,
+        candidate_lock: &aster_use_core::PluginPackageLock,
         dispositions: &BTreeMap<String, UpgradeDisposition>,
         installed: &mut BTreeMap<String, InstalledExtension>,
     ) -> UseResult<()> {
@@ -961,8 +961,8 @@ impl PackageManager {
 
 #[allow(clippy::type_complexity)]
 fn upgrade_surface_selections(
-    prior_lock: &a3s_use_core::PluginPackageLock,
-    candidate_lock: &a3s_use_core::PluginPackageLock,
+    prior_lock: &aster_use_core::PluginPackageLock,
+    candidate_lock: &aster_use_core::PluginPackageLock,
     dispositions: &BTreeMap<String, UpgradeDisposition>,
     installed: &BTreeMap<String, InstalledExtension>,
     requested_root_surfaces: Option<&[PluginSurfaceRef]>,
@@ -1087,8 +1087,8 @@ fn extension_is_exact_published(
 }
 
 fn upgrade_dispositions(
-    prior_lock: &a3s_use_core::PluginPackageLock,
-    candidate_lock: &a3s_use_core::PluginPackageLock,
+    prior_lock: &aster_use_core::PluginPackageLock,
+    candidate_lock: &aster_use_core::PluginPackageLock,
     installed_graphs: &[InstalledPackageGraph],
     installed_extensions: &[InstalledExtension],
     snapshot: &ExtensionRegistrySnapshot,

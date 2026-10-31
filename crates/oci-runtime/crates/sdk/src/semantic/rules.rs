@@ -8,7 +8,7 @@ pub enum OciSemanticRuleKind {
     Normative,
     /// The rule rejects an invalid kernel, syscall, or transport input.
     RuntimeConstraint,
-    /// The rule enforces the advertised A3S workload-platform boundary.
+    /// The rule enforces the advertised Aster workload-platform boundary.
     PlatformPolicy,
 }
 

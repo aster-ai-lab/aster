@@ -8,9 +8,9 @@ use super::*;
 use serde_json::{Value, json};
 
 fn reply_is_visible(reply: &str, screen: &str) -> bool {
-    let (rendered, _) = a3s_code_markdown::render_markdown_ratatui_full(
+    let (rendered, _) = aster_markdown::render_markdown_ratatui_full(
         reply,
-        a3s_code_pager::theme::md_style::style(),
+        aster_pager::theme::md_style::style(),
         true,
         None,
     );
@@ -96,12 +96,12 @@ impl Evidence {
 
 impl Drop for Evidence {
     fn drop(&mut self) {
-        let Some(directory) = std::env::var_os("A3S_CODE_TUI_CAPABILITY_EVIDENCE_DIR") else {
+        let Some(directory) = std::env::var_os("ASTER_TUI_CAPABILITY_EVIDENCE_DIR") else {
             return;
         };
         let directory = PathBuf::from(directory);
         let artifact = json!({
-            "schema":"a3s.test.tui-capability-evidence.v1", "case":self.case,
+            "schema":"aster.test.tui-capability-evidence.v1", "case":self.case,
             "test_panicked":std::thread::panicking(),
             "facts":facts(&self.workspace, &self.home), "requests":trace_events(&self.trace),
         });
@@ -193,7 +193,7 @@ fn turn(session: &mut LiveSession, prompt: &str, tool: &str, turns: usize, exit:
 #[test]
 #[ignore = "requires actual macOS pager/ACP and the configured real provider"]
 fn real_llm_tui_program_reads_and_refuses_an_unlisted_write() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required");
     let _evidence = Evidence::new(&session, "tui-program-read-and-denial");
     let marker = uuid::Uuid::new_v4().to_string();
     std::fs::write(session.workspace.join("program-note.txt"), &marker).unwrap();
@@ -226,7 +226,7 @@ fn real_llm_tui_program_reads_and_refuses_an_unlisted_write() {
 #[test]
 #[ignore = "requires actual macOS pager/ACP and the configured real provider"]
 fn real_llm_tui_task_child_reads_the_source() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required");
     let _evidence = Evidence::new(&session, "tui-task-child-read");
     let marker = uuid::Uuid::new_v4().to_string();
     std::fs::write(session.workspace.join("child-note.txt"), &marker).unwrap();
@@ -251,7 +251,7 @@ fn real_llm_tui_task_child_reads_the_source() {
 #[test]
 #[ignore = "requires actual macOS pager/ACP and the configured real provider"]
 fn real_llm_tui_plan_update_reaches_the_current_tool() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required");
     let _evidence = Evidence::new(&session, "tui-plan-update");
     let prompt = r#"Call update_plan exactly once with plan [{"step":"Inspect source","status":"completed"},{"step":"Verify result","status":"in_progress"}]. Do not call other tools. Finish with one short sentence reporting the actual plan state."#;
     let result = turn(&mut session, prompt, "update_plan", 1, 0);
@@ -265,7 +265,7 @@ fn real_llm_tui_plan_update_reaches_the_current_tool() {
 #[test]
 #[ignore = "requires actual macOS pager/ACP and the configured real provider"]
 fn real_llm_tui_skill_returns_its_unprompted_body() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required");
     let _evidence = Evidence::new(&session, "tui-skill-body");
     let marker = uuid::Uuid::new_v4().to_string();
     let skill = session.workspace.join(".agents/skills/capability-kimi");
@@ -280,7 +280,7 @@ fn real_llm_tui_skill_returns_its_unprompted_body() {
 #[test]
 #[ignore = "requires actual macOS pager/ACP, installed TypeScript language service and real provider"]
 fn real_llm_tui_code_symbols_uses_the_language_service() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required");
     let _evidence = Evidence::new(&session, "tui-code-symbols");
     let typescript = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../packages/intelligent-ui/node_modules/typescript");
@@ -323,7 +323,7 @@ fn real_llm_tui_code_symbols_uses_the_language_service() {
 #[test]
 #[ignore = "requires actual macOS pager/ACP, configured real provider and public HTTPS access"]
 fn real_llm_tui_web_fetch_returns_bounded_public_content() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required");
     let _evidence = Evidence::new(&session, "tui-web-fetch");
     let prompt = r#"Call web_fetch exactly once with url https://example.com/ and max_chars 1000. Do not call other tools or retry. Finish with one short sentence naming the title returned by that tool."#;
     let result = turn(&mut session, prompt, "web_fetch", 1, 0);
@@ -352,7 +352,7 @@ fn real_llm_tui_web_fetch_returns_bounded_public_content() {
 #[test]
 #[ignore = "requires actual macOS pager/ACP, configured real provider and baseline search engines"]
 fn real_llm_tui_web_search_returns_actual_candidates() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required");
     let _evidence = Evidence::new(&session, "tui-web-search");
     let prompt = r#"Call web_search exactly once with query Python 3 official documentation, limit 3, timeout 20 and format json. Do not call other tools or retry. Finish with one short sentence naming one candidate actually returned by that tool."#;
     let result = turn(&mut session, prompt, "web_search", 1, 0);

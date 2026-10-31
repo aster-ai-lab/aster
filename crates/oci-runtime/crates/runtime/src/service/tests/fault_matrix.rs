@@ -1,7 +1,7 @@
 use std::fs;
 use std::sync::Arc;
 
-use a3s_oci_sdk::{ContainerTarget, OciRuntimeService, StateRequest};
+use aster_oci_sdk::{ContainerTarget, OciRuntimeService, StateRequest};
 
 use super::*;
 use crate::fault::testing::RecordingFaultInjector;
@@ -651,7 +651,7 @@ async fn invoke_operation(
                     TeeAttestationRequest::new(
                         OperationContext::new(operation_id("boundary-attest")),
                         target.expect("attestation target").clone(),
-                        TeeReportData::new([0x7a; a3s_oci_sdk::TEE_REPORT_DATA_BYTES]),
+                        TeeReportData::new([0x7a; aster_oci_sdk::TEE_REPORT_DATA_BYTES]),
                     )
                     .expect("attestation request"),
                 )

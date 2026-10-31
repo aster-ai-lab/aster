@@ -4,7 +4,7 @@ use std::process::ExitCode;
 async fn main() -> ExitCode {
     let args = std::env::args().skip(1).collect::<Vec<_>>();
     let json = args.iter().any(|argument| argument == "--json");
-    match a3s_office_cli::run(&args).await {
+    match aster_office_cli::run(&args).await {
         Ok(output) => {
             if output.should_print && json {
                 println!(
@@ -28,7 +28,7 @@ async fn main() -> ExitCode {
                     serde_json::to_string_pretty(&output).unwrap_or_default()
                 );
             } else {
-                eprintln!("a3s-office: {error}");
+                eprintln!("aster-office: {error}");
                 if let Some(suggestion) = &error.suggestion {
                     eprintln!("suggestion: {suggestion}");
                 }

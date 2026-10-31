@@ -26,10 +26,10 @@ async fn coordinated_backup_is_path_free_deterministic_and_offline_verifiable() 
     .unwrap();
     std::fs::write(paths.state_root().join(".installation-mutation.lock"), b"").unwrap();
 
-    let first = temporary.path().join("first.a3s-use-state-backup");
+    let first = temporary.path().join("first.aster-use-state-backup");
     let manager = StateBackupManager::new(paths.clone());
     let manifest = manager.backup(&first).await.unwrap();
-    assert_eq!(manifest.schema, A3S_USE_STATE_BACKUP_SCHEMA);
+    assert_eq!(manifest.schema, ASTER_USE_STATE_BACKUP_SCHEMA);
     assert_eq!(manifest.file_count, 2);
     assert_eq!(manifest.entries.len(), 2);
     assert_eq!(manifest.families.len(), 2);
@@ -48,7 +48,7 @@ async fn coordinated_backup_is_path_free_deterministic_and_offline_verifiable() 
     let verified = StateBackupManager::verify_backup(&first).await.unwrap();
     assert_eq!(verified, manifest);
 
-    let second = temporary.path().join("second.a3s-use-state-backup");
+    let second = temporary.path().join("second.aster-use-state-backup");
     let second_manifest = manager.backup(&second).await.unwrap();
     assert_eq!(second_manifest.entries, manifest.entries);
     assert_eq!(second_manifest.families, manifest.families);
@@ -68,7 +68,7 @@ async fn coordinated_backup_accepts_only_terminal_durable_operation_records() {
         .join("operations/plugins/user/scope/acme/tool/active.json");
     std::fs::create_dir_all(lifecycle.parent().unwrap()).unwrap();
     std::fs::write(&lifecycle, br#"{"status":"completed"}"#).unwrap();
-    let completed = temporary.path().join("completed.a3s-use-state-backup");
+    let completed = temporary.path().join("completed.aster-use-state-backup");
     let manifest = StateBackupManager::new(paths.clone())
         .backup(&completed)
         .await
@@ -80,7 +80,7 @@ async fn coordinated_backup_accepts_only_terminal_durable_operation_records() {
 
     std::fs::write(&lifecycle, br#"{"status":"applying"}"#).unwrap();
     let error = StateBackupManager::new(paths)
-        .backup(temporary.path().join("applying.a3s-use-state-backup"))
+        .backup(temporary.path().join("applying.aster-use-state-backup"))
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.state_backup_nonterminal");
@@ -99,7 +99,7 @@ async fn coordinated_backup_rejects_nonterminal_and_unknown_state() {
     )
     .unwrap();
     let error = StateBackupManager::new(paths.clone())
-        .backup(temporary.path().join("partial.a3s-use-state-backup"))
+        .backup(temporary.path().join("partial.aster-use-state-backup"))
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.state_backup_nonterminal");
@@ -112,7 +112,7 @@ async fn coordinated_backup_rejects_nonterminal_and_unknown_state() {
     )
     .unwrap();
     let error = StateBackupManager::new(paths)
-        .backup(temporary.path().join("unknown.a3s-use-state-backup"))
+        .backup(temporary.path().join("unknown.aster-use-state-backup"))
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.state_backup_layout_unsupported");
@@ -126,19 +126,19 @@ async fn coordinated_backup_rejects_an_active_restore_and_links() {
     std::fs::write(
         paths
             .state_root()
-            .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER),
+            .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER),
         b"{}",
     )
     .unwrap();
     let error = StateBackupManager::new(paths.clone())
-        .backup(temporary.path().join("active.a3s-use-state-backup"))
+        .backup(temporary.path().join("active.aster-use-state-backup"))
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.state_backup_nonterminal");
     std::fs::remove_file(
         paths
             .state_root()
-            .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER),
+            .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER),
     )
     .unwrap();
 
@@ -153,7 +153,7 @@ async fn coordinated_backup_rejects_an_active_restore_and_links() {
             &paths.state_root().join("grants/linked"),
         );
         let error = StateBackupManager::new(paths)
-            .backup(temporary.path().join("linked.a3s-use-state-backup"))
+            .backup(temporary.path().join("linked.aster-use-state-backup"))
             .await
             .unwrap_err();
         assert_eq!(error.code, "use.state_backup_path_invalid");
@@ -176,7 +176,7 @@ async fn backup_verification_rejects_tampering_and_creation_never_overwrites() {
         b"root",
     )
     .unwrap();
-    let destination = temporary.path().join("state.a3s-use-state-backup");
+    let destination = temporary.path().join("state.aster-use-state-backup");
     let manager = StateBackupManager::new(paths);
     manager.backup(&destination).await.unwrap();
     let original = std::fs::read(&destination).unwrap();
@@ -186,7 +186,7 @@ async fn backup_verification_rejects_tampering_and_creation_never_overwrites() {
 
     let mut tampered = original;
     *tampered.last_mut().unwrap() ^= 0xff;
-    let tampered_path = temporary.path().join("tampered.a3s-use-state-backup");
+    let tampered_path = temporary.path().join("tampered.aster-use-state-backup");
     std::fs::write(&tampered_path, tampered).unwrap();
     let error = StateBackupManager::verify_backup(&tampered_path)
         .await
@@ -200,7 +200,7 @@ async fn coordinated_backup_rejects_a_destination_inside_owned_state() {
     let paths = fixture_paths(temporary.path());
     std::fs::create_dir_all(paths.state_root()).unwrap();
     let error = StateBackupManager::new(paths.clone())
-        .backup(paths.state_root().join("recursive.a3s-use-state-backup"))
+        .backup(paths.state_root().join("recursive.aster-use-state-backup"))
         .await
         .unwrap_err();
     assert_eq!(error.code, "use.state_backup_path_invalid");
@@ -208,7 +208,7 @@ async fn coordinated_backup_rejects_a_destination_inside_owned_state() {
 
 #[tokio::test]
 async fn backup_verification_rejects_noncanonical_manifest_encoding() {
-    const MAGIC: &[u8] = b"A3S-USE-STATE-BACKUP-V1\n";
+    const MAGIC: &[u8] = b"Aster-USE-STATE-BACKUP-V1\n";
 
     let temporary = tempfile::tempdir().unwrap();
     let paths = fixture_paths(temporary.path());
@@ -220,7 +220,7 @@ async fn backup_verification_rejects_noncanonical_manifest_encoding() {
         b"root",
     )
     .unwrap();
-    let original_path = temporary.path().join("canonical.a3s-use-state-backup");
+    let original_path = temporary.path().join("canonical.aster-use-state-backup");
     StateBackupManager::new(paths)
         .backup(&original_path)
         .await
@@ -241,7 +241,7 @@ async fn backup_verification_rejects_noncanonical_manifest_encoding() {
     rebuilt.extend_from_slice(Sha256::digest(&noncanonical).as_slice());
     rebuilt.extend_from_slice(&noncanonical);
     rebuilt.extend_from_slice(&original[manifest_end..]);
-    let path = temporary.path().join("noncanonical.a3s-use-state-backup");
+    let path = temporary.path().join("noncanonical.aster-use-state-backup");
     std::fs::write(&path, rebuilt).unwrap();
     let error = StateBackupManager::verify_backup(path).await.unwrap_err();
     assert_eq!(error.code, "use.state_backup_invalid");
@@ -256,7 +256,7 @@ async fn coordinated_backup_waits_for_shared_state_users() {
         .await
         .unwrap();
     let manager = StateBackupManager::new(paths);
-    let destination = temporary.path().join("fenced.a3s-use-state-backup");
+    let destination = temporary.path().join("fenced.aster-use-state-backup");
     let mut backup = tokio::spawn(async move { manager.backup(destination).await });
     assert!(
         tokio::time::timeout(std::time::Duration::from_millis(50), &mut backup)
@@ -272,6 +272,6 @@ async fn coordinated_backup_waits_for_shared_state_users() {
     assert_eq!(manifest.file_count, 0);
 }
 
-fn fixture_paths(root: &Path) -> a3s_use_extension::ExtensionPaths {
-    a3s_use_extension::ExtensionPaths::new(root.join("data"), root.join("state"))
+fn fixture_paths(root: &Path) -> aster_use_extension::ExtensionPaths {
+    aster_use_extension::ExtensionPaths::new(root.join("data"), root.join("state"))
 }

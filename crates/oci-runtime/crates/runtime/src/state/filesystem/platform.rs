@@ -2,7 +2,7 @@ use std::ffi::OsStr;
 use std::io;
 use std::path::Path;
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 use cap_std::fs::Dir;
 
 #[cfg(unix)]

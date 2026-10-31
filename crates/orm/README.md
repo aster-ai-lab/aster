@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/A3S-Lab/ORM/main/assets/readme/hero.svg" width="100%" alt="A3S ORM turns typed Rust schemas and predicates into parameterized SQL for async PostgreSQL and SQLite execution">
+  <img src="https://raw.githubusercontent.com/aster-ai-lab/ORM/main/assets/readme/hero.svg" width="100%" alt="Aster ORM turns typed Rust schemas and predicates into parameterized SQL for async PostgreSQL and SQLite execution">
 </p>
 
 
@@ -14,14 +14,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/ORM/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/A3S-Lab/ORM/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="https://github.com/A3S-Lab/ORM/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/A3S-Lab/ORM?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=5b8cff"></a>
+  <a href="https://github.com/aster-ai-lab/ORM/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/aster-ai-lab/ORM/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/aster-ai-lab/ORM/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/aster-ai-lab/ORM?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=5b8cff"></a>
   <img alt="Rust 1.85 or newer" src="https://img.shields.io/badge/rust-1.85%2B-9b7bff?style=flat-square">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-0b1020?style=flat-square"></a>
 </p>
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/ORM/">Documentation</a> ·
+  <a href="https://aster-lab.github.io/ORM/">Documentation</a> ·
   <a href="#the-contract">The contract</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#capability-map">Capabilities</a> ·
@@ -32,7 +32,7 @@
 
 ---
 
-**A3S ORM** is a type-safe, executor-neutral SQL query builder for Rust,
+**Aster ORM** is a type-safe, executor-neutral SQL query builder for Rust,
 inspired by [Kysely](https://kysely.dev/). Table declarations constrain
 columns, values, assignments, and decoded results at compile time. Immutable
 builders compile into SQL plus bound parameters, then execute through an async
@@ -42,7 +42,7 @@ Despite the name, this is not an Active Record framework. Records do not own
 persistence behavior, queries remain visible, and runtime values are never
 interpolated into generated SQL.
 
-The [documentation website](https://a3s-lab.github.io/ORM/) provides complete
+The [documentation website](https://aster-lab.github.io/ORM/) provides complete
 Chinese and English guides for v0.3.1, v0.3.0, and v0.2.0, including same-page
 language and version switching.
 
@@ -52,7 +52,7 @@ Define the schema once, compose with typed columns, and inspect the exact query
 before it reaches a connection:
 
 ```rust
-use a3s_orm::{orm_table, select_from, OrderDirection, PostgresDialect, Query};
+use aster_orm::{orm_table, select_from, OrderDirection, PostgresDialect, Query};
 
 orm_table! {
     pub struct Person => "person" {
@@ -62,7 +62,7 @@ orm_table! {
     }
 }
 
-fn main() -> Result<(), a3s_orm::Error> {
+fn main() -> Result<(), aster_orm::Error> {
     let query = select_from::<Person>()
         .select((Person::id(), Person::name()))
         .filter(Person::age().gte(18))
@@ -94,20 +94,20 @@ SQLite is the default runtime:
 
 ```toml
 [dependencies]
-a3s-orm = "0.3"
+aster-orm = "0.3"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
 Enable the bundled PostgreSQL driver instead:
 
 ```toml
-a3s-orm = { version = "0.3", default-features = false, features = ["postgres"] }
+aster-orm = { version = "0.3", default-features = false, features = ["postgres"] }
 ```
 
 Or use the query builder and dialect compilers without a bundled runtime:
 
 ```toml
-a3s-orm = { version = "0.3", default-features = false }
+aster-orm = { version = "0.3", default-features = false }
 ```
 
 Version `0.2.1` is the maintenance backport for applications constrained to
@@ -121,7 +121,7 @@ The `postgres` feature includes UUID, JSON/JSONB, Chrono date/time types,
 The default feature is enough for a real in-memory database:
 
 ```rust
-use a3s_orm::{
+use aster_orm::{
     insert_into, orm_table, select_from, Database, SqliteDialect, SqliteExecutor,
 };
 
@@ -188,7 +188,7 @@ rather than appended SQL strings. That keeps candidate selection and lease
 acquisition in one parameterized statement:
 
 ```rust
-use a3s_orm::{
+use aster_orm::{
     orm_table, select_from, update_table, OrderDirection, PostgresDialect, Query,
 };
 
@@ -206,7 +206,7 @@ orm_table! {
     }
 }
 
-fn main() -> Result<(), a3s_orm::Error> {
+fn main() -> Result<(), aster_orm::Error> {
     let candidates = select_from::<Job>()
         .select(Job::id())
         .filter(Job::state().eq("ready"))
@@ -268,11 +268,11 @@ the precise deployment scope and limitations.
 ## Migrations
 
 Migrations are sorted by version, checksummed with SHA-256, and recorded in
-`a3s_orm_migrations`. Re-running an unchanged set is a no-op; modifying or
+`aster_orm_migrations`. Re-running an unchanged set is a no-op; modifying or
 removing an applied migration is an error.
 
 ```rust
-use a3s_orm::{Migration, Migrator, SqliteExecutor};
+use aster_orm::{Migration, Migrator, SqliteExecutor};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -298,7 +298,7 @@ admitted so an older binary can participate in an explicitly
 expand-compatible rolling upgrade.
 
 ```rust
-# use a3s_orm::{Migration, Migrator, SqliteExecutor};
+# use aster_orm::{Migration, Migrator, SqliteExecutor};
 # async fn admit(executor: SqliteExecutor) -> Result<(), Box<dyn std::error::Error>> {
 Migrator::new(executor)
     .verify_required([Migration::new(
@@ -369,7 +369,7 @@ RUSTDOCFLAGS="-D warnings" cargo doc --all-features --no-deps
 To run PostgreSQL integration tests locally:
 
 ```bash
-A3S_ORM_POSTGRES_URL=postgres://postgres:postgres@127.0.0.1:5432/a3s_orm \
+ASTER_ORM_POSTGRES_URL=postgres://postgres:postgres@127.0.0.1:5432/aster_orm \
   cargo test --all-features
 ```
 
@@ -385,4 +385,4 @@ npm run check:site
 
 ## License
 
-[MIT License](https://github.com/A3S-Lab/ORM/blob/main/LICENSE)
+[MIT License](https://github.com/aster-ai-lab/ORM/blob/main/LICENSE)

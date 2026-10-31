@@ -1,6 +1,6 @@
 //! Reproducible scalar bitmap pre-filter latency fixture.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     IndexParams, SearchQuery,
 };

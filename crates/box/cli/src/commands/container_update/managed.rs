@@ -1,9 +1,9 @@
 //! Managed OCI live-resource update routing for `container-update`.
 
-use a3s_box_core::{
+use aster_box_core::{
     ExecutionGeneration, ExecutionId, ExecutionManager, ExecutionResourceUpdate, OperationId,
 };
-use a3s_box_runtime::{resize::ResourceUpdate, ManagedExecutionOperation, ManagedExecutionState};
+use aster_box_runtime::{resize::ResourceUpdate, ManagedExecutionOperation, ManagedExecutionState};
 
 /// Exact managed mutation selected from one durable OCI route.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -131,9 +131,9 @@ fn annotate_update_unavailable(message: String, request_id: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::config::{BoxConfig, ResourceLimits};
-    use a3s_box_core::{CreateExecutionRequest, ExecutionLease};
-    use a3s_box_runtime::ManagedExecutionMetadata;
+    use aster_box_core::config::{BoxConfig, ResourceLimits};
+    use aster_box_core::{CreateExecutionRequest, ExecutionLease};
+    use aster_box_runtime::ManagedExecutionMetadata;
 
     fn managed_oci_record(state: ManagedExecutionState) -> crate::state::BoxRecord {
         let mut record = crate::test_helpers::fixtures::make_record(
@@ -157,7 +157,7 @@ mod tests {
             },
         )
         .unwrap();
-        metadata.runtime_route = a3s_box_runtime::ManagedRuntimeRoute::OciSdk;
+        metadata.runtime_route = aster_box_runtime::ManagedRuntimeRoute::OciSdk;
         record.managed_execution = Some(metadata);
         record
     }
@@ -190,8 +190,8 @@ mod tests {
         async fn inspect(
             &self,
             _execution_id: &ExecutionId,
-        ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ExecutionStatus> {
-            Err(a3s_box_core::ExecutionManagerError::Unavailable(
+        ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ExecutionStatus> {
+            Err(aster_box_core::ExecutionManagerError::Unavailable(
                 "inspect is not used by this test".to_string(),
             ))
         }
@@ -202,7 +202,7 @@ mod tests {
             generation: ExecutionGeneration,
             operation_id: &OperationId,
             update: ExecutionResourceUpdate,
-        ) -> a3s_box_core::ExecutionManagerResult<ExecutionLease> {
+        ) -> aster_box_core::ExecutionManagerResult<ExecutionLease> {
             *self.call.lock().unwrap() = Some(RecordedUpdate {
                 execution_id: execution_id.clone(),
                 generation,
@@ -217,8 +217,8 @@ mod tests {
             _execution_id: &ExecutionId,
             _generation: ExecutionGeneration,
             _keep_memory: bool,
-        ) -> a3s_box_core::ExecutionManagerResult<ExecutionLease> {
-            Err(a3s_box_core::ExecutionManagerError::Unavailable(
+        ) -> aster_box_core::ExecutionManagerResult<ExecutionLease> {
+            Err(aster_box_core::ExecutionManagerError::Unavailable(
                 "pause is not used by this test".to_string(),
             ))
         }
@@ -227,8 +227,8 @@ mod tests {
             &self,
             _execution_id: &ExecutionId,
             _generation: ExecutionGeneration,
-        ) -> a3s_box_core::ExecutionManagerResult<ExecutionLease> {
-            Err(a3s_box_core::ExecutionManagerError::Unavailable(
+        ) -> aster_box_core::ExecutionManagerResult<ExecutionLease> {
+            Err(aster_box_core::ExecutionManagerError::Unavailable(
                 "resume is not used by this test".to_string(),
             ))
         }
@@ -237,8 +237,8 @@ mod tests {
             &self,
             _execution_id: &ExecutionId,
             _generation: ExecutionGeneration,
-        ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::KillOutcome> {
-            Err(a3s_box_core::ExecutionManagerError::Unavailable(
+        ) -> aster_box_core::ExecutionManagerResult<aster_box_core::KillOutcome> {
+            Err(aster_box_core::ExecutionManagerError::Unavailable(
                 "kill is not used by this test".to_string(),
             ))
         }
@@ -246,8 +246,8 @@ mod tests {
         async fn reconcile(
             &self,
             _operation_id: &OperationId,
-        ) -> a3s_box_core::ExecutionManagerResult<a3s_box_core::ReconcileOutcome> {
-            Err(a3s_box_core::ExecutionManagerError::Unavailable(
+        ) -> aster_box_core::ExecutionManagerResult<aster_box_core::ReconcileOutcome> {
+            Err(aster_box_core::ExecutionManagerError::Unavailable(
                 "reconcile is not used by this test".to_string(),
             ))
         }
@@ -352,7 +352,7 @@ mod tests {
             .managed_execution
             .as_mut()
             .unwrap()
-            .last_resource_update = Some(a3s_box_runtime::ManagedResourceUpdateCompletion {
+            .last_resource_update = Some(aster_box_runtime::ManagedResourceUpdateCompletion {
             operation_id: completed_id.clone(),
             generation: ExecutionGeneration::new(7).unwrap(),
             update: completed_update,
@@ -373,7 +373,7 @@ mod tests {
             .managed_execution
             .as_mut()
             .unwrap()
-            .last_resource_update = Some(a3s_box_runtime::ManagedResourceUpdateCompletion {
+            .last_resource_update = Some(aster_box_runtime::ManagedResourceUpdateCompletion {
             operation_id: completed_id.clone(),
             generation: ExecutionGeneration::new(6).unwrap(),
             update: to_execution_resource_update(&cpu_share_update(2048)),

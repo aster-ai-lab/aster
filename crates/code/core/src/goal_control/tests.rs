@@ -12,7 +12,7 @@ fn binding() -> DurableGoalBindingV1 {
         non_goals: vec!["Do not change unrelated files.".into()],
         scope_fact_sequences: vec![1],
         authorization_source: ExecutionIdentityV1::derive(
-            "a3s.test.request.v1",
+            "aster.test.request.v1",
             &"explicit request",
         )
         .unwrap(),
@@ -292,5 +292,5 @@ fn fact_keys_are_unambiguous_and_bound_to_goal_operation_and_kind() {
     );
     assert!(goal_fact_key("", "c", GoalFactKindV1::Created).is_err());
     assert!(goal_fact_key("a", "x".repeat(129).as_str(), GoalFactKindV1::Created).is_err());
-    assert!(key.ends_with("/a3s.goal.created"));
+    assert!(key.ends_with("/aster.goal.created"));
 }

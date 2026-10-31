@@ -93,7 +93,7 @@ impl acp::Client for Client {
     }
 
     async fn ext_notification(&self, args: acp::ExtNotification) -> acp::Result<()> {
-        let value = if args.method.as_ref() == "a3s/turn/outcome" {
+        let value = if args.method.as_ref() == "aster/turn/outcome" {
             serde_json::json!({"method":args.method,"params":args})
         } else {
             serde_json::json!({"method":args.method,"paramsOmitted":true})
@@ -239,9 +239,9 @@ impl Driver {
             .env("TMPDIR", home.join("tmp"))
             .env("LANG", "en_US.UTF-8")
             .env(super::config::RELAY_KEY_ENV, relay_key)
-            .env("A3S_DISABLE_CC_SWITCH", "1")
-            .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-            .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+            .env("ASTER_DISABLE_CC_SWITCH", "1")
+            .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+            .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             // No unbounded or potentially credential-bearing diagnostic file.
@@ -389,7 +389,7 @@ fn qualified_assets(
         if assets.starts_with(&workspace) || workspace.starts_with(&assets) {
             return Err("sandbox_assets_overlap_workspace");
         }
-        a3s_code_core::sandbox::oci::OciSandboxAssets::from_directory(&assets)
+        aster_core::sandbox::oci::OciSandboxAssets::from_directory(&assets)
             .map_err(|_| "sandbox_assets_invalid")?;
         Ok(Some(assets))
     }

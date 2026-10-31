@@ -9,7 +9,7 @@ import {
 import { xlsxRgbColor } from './work-xlsx-cell-style-xml';
 import { resolveXlsxColor, type XlsxColorResolver } from './work-xlsx-colors';
 
-export const XLSX_PATTERN_FILL_CELL_KEY = 'a3sXlsxPatternFill' as const;
+export const XLSX_PATTERN_FILL_CELL_KEY = 'asterXlsxPatternFill' as const;
 
 export const xlsxPatternFillTypes = [
   'darkDown',

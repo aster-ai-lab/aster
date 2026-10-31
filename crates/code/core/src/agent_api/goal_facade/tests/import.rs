@@ -35,7 +35,7 @@ async fn prove_import(
     });
     let thread = crate::fact_control::thread_for_session(session.session_id());
     let directory = crate::session_folder::effect_log_dir(workspace.path(), session.session_id());
-    let foreign = a3s_effect::FileLog::open(&directory).unwrap();
+    let foreign = aster_effect::FileLog::open(&directory).unwrap();
     let before = foreign.read(&thread).unwrap();
     assert!(session.apply_goal_definition(cmd.clone()).is_err());
     assert!(session
@@ -65,7 +65,7 @@ async fn prove_import(
     assert_eq!(imported.import_source, cmd.import_source);
     let after = foreign.read(&thread).unwrap();
     assert_eq!(&after[..before.len()], before.as_slice());
-    assert_eq!(after.last().unwrap().kind, "a3s.goal.created");
+    assert_eq!(after.last().unwrap().kind, "aster.goal.created");
     let replay = session
         .apply_goal_import(cmd.clone(), || async {
             panic!("accepted source must not be reread")

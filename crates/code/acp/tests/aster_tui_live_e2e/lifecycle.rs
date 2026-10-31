@@ -98,7 +98,7 @@ fn kimi_continue_selects_latest_per_workspace() {
     tui.workspace = original.clone();
     let older_id = create_history(&mut tui, &older);
     let older_log = tui
-        .files(&tui.workspace.join(".a3s"), "jsonl")
+        .files(&tui.workspace.join(".aster"), "jsonl")
         .into_iter()
         .find(|path| path.file_stem().and_then(|name| name.to_str()) == Some(older_id.as_str()))
         .unwrap();
@@ -121,7 +121,7 @@ fn kimi_continue_selects_latest_per_workspace() {
         "continue-latest-workspace-b",
     );
     let older_log = tui
-        .files(&original.join(".a3s"), "jsonl")
+        .files(&original.join(".aster"), "jsonl")
         .into_iter()
         .find(|path| path.file_stem().and_then(|name| name.to_str()) == Some(older_id.as_str()))
         .unwrap();
@@ -201,7 +201,7 @@ fn kimi_session_picker_filters_selects_and_cancels_by_real_id() {
     let newer_id = create_titled_history(&mut tui, &newer_token);
     assert_ne!(older_id, newer_id);
     let newer_log = tui
-        .files(&tui.workspace.join(".a3s"), "jsonl")
+        .files(&tui.workspace.join(".aster"), "jsonl")
         .into_iter()
         .find(|path| path.file_stem().and_then(|name| name.to_str()) == Some(newer_id.as_str()))
         .unwrap();
@@ -241,7 +241,7 @@ fn kimi_session_picker_filters_selects_and_cancels_by_real_id() {
     );
     tui.bytes(b"\x1b");
     tui.wait_for("New worktree", 8);
-    assert_eq!(tui.files(&tui.workspace.join(".a3s"), "jsonl").len(), 2);
+    assert_eq!(tui.files(&tui.workspace.join(".aster"), "jsonl").len(), 2);
     assert_eq!(std::fs::read(&newer_log).unwrap(), newer_bytes);
     tui.record(
         "picker-cancel-preserves-history",
@@ -272,7 +272,7 @@ fn kimi_session_picker_filters_selects_and_cancels_by_real_id() {
 }
 
 fn session_log(tui: &LiveTui, id: &str) -> std::path::PathBuf {
-    tui.files(&tui.workspace.join(".a3s"), "jsonl")
+    tui.files(&tui.workspace.join(".aster"), "jsonl")
         .into_iter()
         .find(|path| path.file_stem().and_then(|name| name.to_str()) == Some(id))
         .expect("session fact log exists")
@@ -562,8 +562,8 @@ fn kimi_allow_always_survives_restart_and_is_workspace_scoped() {
         .find(|p| p.file_name().and_then(|v| v.to_str()) == Some("approvals.acl"))
         .expect("allow-always must persist an ACL store in the isolated home");
     let saved = std::fs::read_to_string(&store).unwrap();
-    let document = a3s_acl::parse_acl(&saved).unwrap();
-    assert!(document.blocks.iter().any(|b| matches!(b.attributes.get("rules"), Some(a3s_acl::Value::List(rules)) if rules.contains(&a3s_acl::Value::String("cat".into())))));
+    let document = aster_acl::parse_acl(&saved).unwrap();
+    assert!(document.blocks.iter().any(|b| matches!(b.attributes.get("rules"), Some(aster_acl::Value::List(rules)) if rules.contains(&aster_acl::Value::String("cat".into())))));
     tui.record(
         "allow-always",
         "actual permission selection persisted the exact cat rule in ACL",

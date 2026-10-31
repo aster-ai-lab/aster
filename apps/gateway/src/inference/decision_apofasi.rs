@@ -2,8 +2,8 @@ use super::decision::{
     DecisionDefinition, DecisionError, DecisionRequest, DecisionResponse, DecisionResult,
     DecisionService, OrdinalResult,
 };
-use a3s_apofasi::infer::{DeviceRequest, NeuralEngine};
-use a3s_apofasi::{
+use aster_apofasi::infer::{DeviceRequest, NeuralEngine};
+use aster_apofasi::{
     Answer, Criteria, DecisionKind, Question, State, StateTruncation, SystemOneRequest,
     SystemOneResponse,
 };

@@ -66,7 +66,7 @@ pub(super) struct SourceRecord {
     pub entity_counts: BTreeMap<String, usize>,
 }
 impl SourceRecord {
-    pub(super) fn document(&self) -> Result<a3s_vec::Doc> {
+    pub(super) fn document(&self) -> Result<aster_vec::Doc> {
         let mut doc = node(
             &digest(&format!("source\0{}", self.entry.source.path)),
             "source",
@@ -177,7 +177,7 @@ impl Index {
                     old_sources.push(pk(&doc)?);
                     continue;
                 }
-                let mut patch = a3s_vec::Doc::with_pk(&pk(&doc)?)?;
+                let mut patch = aster_vec::Doc::with_pk(&pk(&doc)?)?;
                 patch.add_string("record_type", &super::required(&doc, "record_type")?)?;
                 if let (Some(generation), Some(extractor)) =
                     (doc.get_string("generation")?, doc.get_string("extractor")?)

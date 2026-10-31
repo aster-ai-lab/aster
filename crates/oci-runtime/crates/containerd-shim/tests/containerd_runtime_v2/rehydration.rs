@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, Generation, OperationContext, ProcessTarget, WriteStdinRequest,
 };
 use prost_types::Any;
@@ -121,7 +121,7 @@ pub(crate) async fn qualify_manual_shim_rehydration(
     let old_shim_pid = faults::find_exact_shim_pid(config, &id).await?;
     let pending_data = b"committed-before-rehydrate\n";
     let host_pid = faults::find_runtime_host_pid(config).await?;
-    let mut suspended_host = faults::SuspendedProcess::stop(host_pid, "A3S OCI host service")?;
+    let mut suspended_host = faults::SuspendedProcess::stop(host_pid, "Aster OCI host service")?;
     terminal_exec
         .stdin
         .as_mut()
@@ -151,7 +151,7 @@ pub(crate) async fn qualify_manual_shim_rehydration(
     wait_for_exec_pending_stdin(&bundle, "rehydrated-terminal-exec", 2, 3, pending_data).await?;
     let suspended_shim =
         faults::SuspendedProcess::stop(old_shim_pid, "pending-stdin original shim")?;
-    suspended_host.resume("A3S OCI host service")?;
+    suspended_host.resume("Aster OCI host service")?;
     commit_runtime_exec_stdin(
         config,
         &id,
@@ -357,7 +357,7 @@ async fn start_terminal_exec(
         "args": [
             "/bin/sh",
             "-c",
-            "stty -echo; trap 'exit 31' TERM; trap '' WINCH; printf 'rehydrate-ready\\n'; while IFS= read -r line; do if [ \"$line\" = __a3s_size__ ]; then stty size; else printf 'stdin:%s\\n' \"$line\"; fi; done; printf 'stdin-closed\\n'; while :; do sleep 1; done"
+            "stty -echo; trap 'exit 31' TERM; trap '' WINCH; printf 'rehydrate-ready\\n'; while IFS= read -r line; do if [ \"$line\" = __aster_size__ ]; then stty size; else printf 'stdin:%s\\n' \"$line\"; fi; done; printf 'stdin-closed\\n'; while :; do sleep 1; done"
         ],
         "env": [
             "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -432,7 +432,7 @@ async fn start_terminal_exec(
     .await?;
     terminal::resize(config, channel, id, exec_id, 97, 37).await?;
     stdin_writer
-        .write_all(b"__a3s_size__\n")
+        .write_all(b"__aster_size__\n")
         .await
         .map_err(|error| {
             qualification_error(format!(
@@ -527,7 +527,7 @@ async fn finish_rehydrated_terminal_exec(
         .into());
     }
     terminal::resize(config, channel, id, exec_id, 143, 47).await?;
-    stdin.write_all(b"__a3s_size__\n").await.map_err(|error| {
+    stdin.write_all(b"__aster_size__\n").await.map_err(|error| {
         qualification_error(format!(
             "request terminal size after shim rehydration: {error}"
         ))
@@ -671,7 +671,7 @@ async fn wait_for_exec_pending_stdin(
 }
 
 async fn read_exec_stdin_journal(bundle: &Path, exec_id: &str) -> TestResult<StdinJournalEvidence> {
-    let path = bundle.join("a3s-oci-shim-v1.json");
+    let path = bundle.join("aster-oci-shim-v1.json");
     let document: serde_json::Value = serde_json::from_slice(
         &tokio::fs::read(&path)
             .await

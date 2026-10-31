@@ -9,12 +9,12 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Duration;
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, LlmResponseMeta, Message, StreamEvent, TokenUsage,
     ToolDefinition,
 };
-use a3s_code_core::{Agent, AgentEvent, PlanningMode, SessionOptions};
+use aster_core::{Agent, AgentEvent, PlanningMode, SessionOptions};
 use anyhow::Result;
 use async_trait::async_trait;
 use tokio::sync::mpsc;
@@ -93,6 +93,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/model".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,

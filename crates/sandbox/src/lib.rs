@@ -1,8 +1,8 @@
-//! Cross-platform native command isolation for A3S.
+//! Cross-platform native command isolation for Aster.
 //!
 //! Platform backends are implemented with Seatbelt on macOS, namespaces and
 //! seccomp on Linux, and AppContainer plus Job Objects on Windows. Unsupported
-//! targets fail closed. The crate does not depend on A3S Code or any product
+//! targets fail closed. The crate does not depend on Aster Code or any product
 //! host, so policy and lifecycle semantics remain reusable.
 
 use anyhow::{bail, Context, Result};
@@ -40,7 +40,7 @@ pub use policy::{
 
 const DEFAULT_TIMEOUT_MS: u64 = 120_000;
 const PROBE_TIMEOUT_MS: u64 = 30_000;
-const PROBE_MARKER: &str = "a3s-native-sandbox-ready";
+const PROBE_MARKER: &str = "aster-native-sandbox-ready";
 
 /// Maximum stdout and stderr bytes retained for a command.
 pub const MAX_OUTPUT_SIZE: usize = 100 * 1024;
@@ -49,7 +49,7 @@ pub const MAX_OUTPUT_SIZE: usize = 100 * 1024;
 /// environment entry. Gate 8 slice 1: real secret bytes never enter the child
 /// environment; the host re-injects them only at a mediation point in a later
 /// slice.
-pub const SECRET_ENV_SENTINEL_PREFIX: &str = "a3s:secret:";
+pub const SECRET_ENV_SENTINEL_PREFIX: &str = "aster:secret:";
 
 /// Windows host commands use the same PowerShell 7 executable as the
 /// AppContainer backend. `powershell.exe` is a different binary and is not
@@ -153,9 +153,9 @@ pub struct CapabilityReport {
 
 impl NativeSandbox {
     /// Resolve a workspace and initialize the current platform boundary with
-    /// the A3S Bash baseline policy.
+    /// the Aster Bash baseline policy.
     pub fn new(workspace: impl Into<PathBuf>) -> Result<Self> {
-        Self::with_policy(workspace, SandboxPolicy::a3s_bash_baseline())
+        Self::with_policy(workspace, SandboxPolicy::aster_bash_baseline())
     }
 
     /// Resolve a workspace with an explicit typed policy. Unsupported or
@@ -494,7 +494,7 @@ impl NativeSandbox {
             bail!("native sandbox command contains a NUL byte");
         }
         let scratch = tempfile::Builder::new()
-            .prefix("a3s-sandbox-")
+            .prefix("aster-sandbox-")
             .tempdir()
             .context("failed to create native sandbox scratch directory")?;
         let digest = self.policy_digest();
@@ -540,7 +540,7 @@ impl NativeSandbox {
                 // AppContainer guests cannot name-open host pipes (Access Denied).
                 // Create a connected pair and inherit the client handle into the guest.
                 let pipe_name = format!(
-                    r"\\.\pipe\a3s-sandbox-{}-{}",
+                    r"\\.\pipe\aster-sandbox-{}-{}",
                     std::process::id(),
                     command_id
                 );

@@ -14,7 +14,7 @@ import {
   ItemMedia,
   ItemSeparator,
   ItemTitle
-} from '@a3s-lab/ui'
+} from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Item> = {
   title: 'Components/Primitives/Item',

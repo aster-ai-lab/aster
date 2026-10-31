@@ -2,12 +2,12 @@ use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_runtime::contract::{NetworkMode, RuntimeLogStream};
-use a3s_runtime::{
+use aster_runtime::contract::{NetworkMode, RuntimeLogStream};
+use aster_runtime::{
     ProviderId, RuntimeClient, RuntimeClientRegistry, RuntimeProviderFactory, RuntimeResult,
 };
-use a3s_use_core::{PackageSurfaceKind, PlanScope, PlanScopeKind, PluginSurfaceRef};
-use a3s_use_extension::{
+use aster_use_core::{PackageSurfaceKind, PlanScope, PlanScopeKind, PluginSurfaceRef};
+use aster_use_extension::{
     ExtensionLifecycleIdentity, ExtensionLifecyclePackage, ExtensionPaths, ExtensionRegistry,
     ToolWorkload,
 };
@@ -287,7 +287,7 @@ async fn write_release_task_package(root: &std::path::Path) {
     .await
     .unwrap();
     fs::write(
-        root.join("a3s-use-extension.acl"),
+        root.join("aster-use-extension.acl"),
         r#"extension "acme/research" {
   schema_version = 3
   version        = "2.0.0"

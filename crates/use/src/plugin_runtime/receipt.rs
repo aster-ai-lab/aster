@@ -1,5 +1,5 @@
-use a3s_runtime::ProviderId;
-use a3s_use_core::{PackageSurfaceKind, PlanQualifiedSurfaceRef, PlanScope, UseResult};
+use aster_runtime::ProviderId;
+use aster_use_core::{PackageSurfaceKind, PlanQualifiedSurfaceRef, PlanScope, UseResult};
 use serde::{Deserialize, Serialize};
 
 use super::model::{

@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
+use aster_oci_sdk::{
     ContainerTarget, CreateRequest, ExecRequest, OperationId, OutputChunk, ReadOutputRequest,
     StartRequest,
 };
@@ -10,7 +10,7 @@ use a3s_oci_sdk::{
 use super::QualificationHvfDriver;
 use crate::{DriverExecRequest, DriverReadOutputRequest, OciVmOperationReopenReplacementReport};
 
-const READ_OUTPUT_MARKER_NAME: &str = ".a3s-oci-read-output-reopen-smoke";
+const READ_OUTPUT_MARKER_NAME: &str = ".aster-oci-read-output-reopen-smoke";
 
 struct Qualification {
     shim: PathBuf,

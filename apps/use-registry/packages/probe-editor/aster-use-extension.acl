@@ -1,0 +1,23 @@
+extension "aster/probe-editor" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "probe-editor"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  ui "view" {
+    title            = "编辑器探针"
+    description      = "点击活动栏图标后，主区域打开这个页面。"
+    icon             = "database"
+    entry            = "ui/view/index.html"
+    presentation     = "webview"
+    point            = "studio.editor"
+    contract_version = 1
+    mode             = "append"
+  }
+}

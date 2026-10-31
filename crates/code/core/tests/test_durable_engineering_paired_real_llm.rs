@@ -10,7 +10,7 @@
 //! while HC-ACCEPT1 is open and the host refuses native execution.
 //!
 //! ```text
-//! cargo +1.97.1 test -p a3s-code-core --test test_durable_engineering_paired_real_llm \
+//! cargo +1.97.1 test -p aster-core --test test_durable_engineering_paired_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -20,17 +20,17 @@
 mod fixtures;
 mod support;
 
-use a3s_code_core::budget::BudgetGuard;
-use a3s_code_core::context::RecentWorkspaceFilesContextProvider;
-use a3s_code_core::goal_control::{
+use aster_core::budget::BudgetGuard;
+use aster_core::context::RecentWorkspaceFilesContextProvider;
+use aster_core::goal_control::{
     GoalCommandKindV1, GoalControlCommandV1, GoalDefinitionCommandV1, GoalPlanCommandV1, GoalState,
 };
-use a3s_code_core::harness_loop::CompletionTerminal;
-use a3s_code_core::llm::TokenUsage;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task};
-use a3s_code_core::workspace::{ManifestWorkspaceBackend, WorkspaceServices};
-use a3s_code_core::{
+use aster_core::harness_loop::CompletionTerminal;
+use aster_core::llm::TokenUsage;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task};
+use aster_core::workspace::{ManifestWorkspaceBackend, WorkspaceServices};
+use aster_core::{
     Agent, AgentEvent, AgentSession, CodeConfig, GoalTickStream, PlanningMode, SessionOptions,
     WorkPolicyV1,
 };
@@ -109,7 +109,7 @@ fn config() -> CodeConfig {
     ))
     .unwrap()
     .goal_control;
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
@@ -154,7 +154,7 @@ async fn options(
         .with_temperature(0.0)
         .with_budget_guard(guard)
         .with_verification_contract(
-            a3s_code_core::verification::VerificationContractV1::new(
+            aster_core::verification::VerificationContractV1::new(
                 "node-suite",
                 "node test.mjs",
                 ["src/**"],

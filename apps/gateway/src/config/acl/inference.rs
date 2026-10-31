@@ -9,7 +9,7 @@ use crate::config::{
     InferenceWorkerConfig, ManagedTargetConfig, INFERENCE_TOKENIZER_REVISION,
 };
 use crate::error::Result;
-use a3s_acl::{Block, Value};
+use aster_acl::{Block, Value};
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -509,7 +509,7 @@ fn parse_principal(block: &Block) -> Result<InferencePrincipalConfig> {
     Ok(InferencePrincipalConfig {
         verify_url: required_literal_string_attr(block, "verify_url")?,
         subject_header: optional_literal_string_attr(block, "subject_header")?
-            .unwrap_or_else(|| "x-a3s-subject".to_string()),
+            .unwrap_or_else(|| "x-aster-subject".to_string()),
         org_header: optional_literal_string_attr(block, "org_header")?,
         cache_ttl_secs: u64_attr(block, &["cache_ttl_secs"])?.unwrap_or(60),
         models: optional_literal_string_list_attr(block, "models")?,
@@ -598,10 +598,10 @@ fn parse_routing(block: &Block) -> Result<crate::config::inference::InferenceRou
 fn uuid_list_on(block: &Block, key: &str) -> crate::error::Result<Option<Vec<uuid::Uuid>>> {
     match block.attributes.get(key) {
         None => Ok(None),
-        Some(a3s_acl::Value::List(values)) => values
+        Some(aster_acl::Value::List(values)) => values
             .iter()
             .map(|value| match value {
-                a3s_acl::Value::String(text) => text
+                aster_acl::Value::String(text) => text
                     .parse::<uuid::Uuid>()
                     .map_err(|_| type_error(key, "list of uuids")),
                 _ => Err(type_error(key, "list of uuids")),

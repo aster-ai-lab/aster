@@ -15,7 +15,7 @@
 <p align="center">
   <a href="https://github.com/kense-labs/gateway/actions/workflows/ci.yml"><img alt="CI 状态" src="https://img.shields.io/github/actions/workflow/status/kense-labs/gateway/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
   <a href="https://github.com/kense-labs/gateway/releases/latest"><img alt="最新 Kense Gateway 发布" src="https://img.shields.io/github/v/release/kense-labs/gateway?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=1264ff"></a>
-  <a href="https://crates.io/crates/a3s-gateway"><img alt="crates.io 上的 a3s-gateway" src="https://img.shields.io/crates/v/a3s-gateway?style=flat-square&amp;color=0c8a65"></a>
+  <a href="https://crates.io/crates/aster-gateway"><img alt="crates.io 上的 aster-gateway" src="https://img.shields.io/crates/v/aster-gateway?style=flat-square&amp;color=0c8a65"></a>
   <a href="https://www.rust-lang.org/"><img alt="最低支持的 Rust 版本 1.88" src="https://img.shields.io/badge/MSRV-1.88-56657b?style=flat-square"></a>
   <a href="LICENSE"><img alt="MIT 许可证" src="https://img.shields.io/badge/license-MIT-101827?style=flat-square"></a>
 </p>
@@ -32,7 +32,7 @@
 
 Kense Gateway 位于 OpenAI 兼容客户端与模型后端之间。它认证并准入请求，解析模型别名，选择健康目标，并在无需同步控制平面往返的情况下保持流式响应。同一二进制还路由 HTTP/1.1、HTTP/2、SSE、WebSocket、gRPC、TCP、UDP 与 TLS 流量。
 
-在 `standalone` 模式下使用本地 ACL，或在 `cloud-managed` 模式下应用来自 A3S Cloud 的完整、带修订绑定的期望状态。Gateway 拥有实时流量决策；Cloud 拥有人工运维、发布、放置与长期用量账本。
+在 `standalone` 模式下使用本地 ACL，或在 `cloud-managed` 模式下应用来自 Aster Cloud 的完整、带修订绑定的期望状态。Gateway 拥有实时流量决策；Cloud 拥有人工运维、发布、放置与长期用量账本。
 
 ## AI 流量证据
 
@@ -42,7 +42,7 @@ Kense Gateway 位于 OpenAI 兼容客户端与模型后端之间。它认证并�
 
 已发布的核心对比在同一主机上使用一个确定性的 OpenAI 兼容上游。它对八个配置中的每一个交替运行 Kense Gateway 与 NGINX 五次，并拒绝任何 token 缺失、乱序或终端标记不是恰好一个的试验。共 80 次原始产品试验全部成功，并记录了 TTFT、ITL、TPOT、端到端延迟、流速率与完成 token 有效吞吐。
 
-| 工作负载 | A3S TTFT | NGINX TTFT | TTFT 比率 | ITL 比率 | Token 有效吞吐比率 |
+| 工作负载 | Aster TTFT | NGINX TTFT | TTFT 比率 | ITL 比率 | Token 有效吞吐比率 |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | 零延迟流 · C1 | 0.343 ms | 0.349 ms | 0.983× | 0.992× | 1.000× |
 | 零延迟流 · C64 | 2.438 ms | 1.184 ms | 2.059× | 0.986× | 0.924× |
@@ -53,7 +53,7 @@ Kense Gateway 位于 OpenAI 兼容客户端与模型后端之间。它认证并�
 | 32 KiB 提示 | 51.633 ms | 51.860 ms | 0.996× | 1.013× | 1.001× |
 | 256 KiB 提示 | 52.928 ms | 52.660 ms | 1.005× | 0.994× | 0.998× |
 
-比率大于 1 表示 A3S 更慢，或（取决于列）NGINX 产出更多有效吞吐。零延迟 C64 行暴露了当前真实瓶颈；节拍、长输出、端点与长提示行在此托管 runner 上接近持平。A3S 执行有界的 OpenAI JSON 与模型校验；NGINX 是仅传输对照，因此这衡量的是开启功能路径的代价，而非等价策略能力，也非生产容量。
+比率大于 1 表示 Aster 更慢，或（取决于列）NGINX 产出更多有效吞吐。零延迟 C64 行暴露了当前真实瓶颈；节拍、长输出、端点与长提示行在此托管 runner 上接近持平。Aster 执行有界的 OpenAI JSON 与模型校验；NGINX 是仅传输对照，因此这衡量的是开启功能路径的代价，而非等价策略能力，也非生产容量。
 
 [原始 token 感知 JSON](https://kense-labs.github.io/gateway/assets/ai-gateway-comparison.json) ·
 [确切工作流运行](https://github.com/kense-labs/gateway/actions/runs/31671953391) ·
@@ -89,9 +89,9 @@ curl --proto '=https' --tlsv1.2 -LsSf https://kense-labs.github.io/gateway/insta
 也支持 Cargo 与 Homebrew：
 
 ```bash
-cargo install a3s-gateway
+cargo install aster-gateway
 # or
-brew install a3s-lab/tap/a3s-gateway
+brew install aster-lab/tap/aster-gateway
 ```
 
 在 `127.0.0.1:8000` 有 OpenAI 兼容后端时，将其保存为 `gateway.acl`：
@@ -123,9 +123,9 @@ services "models" {
 启动前校验完整快照：
 
 ```bash
-a3s-gateway validate --config gateway.acl
-a3s-gateway config --config gateway.acl summary
-a3s-gateway --config gateway.acl
+aster-gateway validate --config gateway.acl
+aster-gateway config --config gateway.acl summary
+aster-gateway --config gateway.acl
 curl http://127.0.0.1:8080/v1/models
 ```
 
@@ -138,26 +138,26 @@ curl http://127.0.0.1:8080/v1/models
 | 不均衡或故障的提供方 | 主动/被动健康、熔断状态、加权选择、故障转移，且仅在响应开始前重试 |
 | 安全的策略变更 | 校验并编译完整快照，再原子激活；拒绝时保留先前运行时 |
 | 远程期望状态 | 应用完整 Cloud 快照，同时每个已授权请求决策仍保持本地 |
-| 缩容到零的工作负载 | 消费 A3S Box 的就绪副本端点，仅在工作负载可路由后放行有界请求 |
+| 缩容到零的工作负载 | 消费 Aster Box 的就绪副本端点，仅在工作负载可路由后放行有界请求 |
 
 这刻意窄于 AI 平台。Gateway 不拥有租户、部署、放置、发布、计费、模型服务或人工操作员 UI。
 
 ## 架构
 
 <p align="center">
-  <img src="assets/readme/architecture.svg" width="100%" alt="独立 ACL 或 A3S Cloud 期望状态激活一个本地 Gateway 快照，路由到健康的模型后端">
+  <img src="assets/readme/architecture.svg" width="100%" alt="独立 ACL 或 Aster Cloud 期望状态激活一个本地 Gateway 快照，路由到健康的模型后端">
 </p>
 
 | 模式 | 期望状态所有者 | Gateway 职责 |
 | --- | --- | --- |
 | `standalone` | 本地操作员与 ACL | 校验并执行路由、中间件、提供方、健康、静态修订权重与可选扩缩 |
-| `cloud-managed` | A3S Cloud | 校验并执行一个完整的身份、修订、摘要、CAS 与过期绑定快照 |
+| `cloud-managed` | Aster Cloud | 校验并执行一个完整的身份、修订、摘要、CAS 与过期绑定快照 |
 
 更改权威需要进程重启。Gateway 暴露仅供机器使用的 Node API，用于健康、就绪、指标、版本、托管快照应用、确切快照状态与本地用量假脱机状态。
 
-### Gateway 与 A3S Box
+### Gateway 与 Aster Box
 
-Gateway 与 [A3S Box](https://github.com/A3S-Lab/a3s-box) 解决同一请求生命周期的不同部分。Gateway 拥有准入、路由、健康与流保真。Box 拥有 Sandbox 工作负载状态，并发布就绪的副本槽端点。在 standalone 模式下，可选的 Box 执行器可从零扩容、原子替换实时后端池、放行有界等待请求，并在 Box 排空并终止其工作负载前撤回端点。
+Gateway 与 [Aster Box](https://github.com/aster-ai-lab/aster-box) 解决同一请求生命周期的不同部分。Gateway 拥有准入、路由、健康与流保真。Box 拥有 Sandbox 工作负载状态，并发布就绪的副本槽端点。在 standalone 模式下，可选的 Box 执行器可从零扩容、原子替换实时后端池、放行有界等待请求，并在 Box 排空并终止其工作负载前撤回端点。
 
 该集成已有本地、真实 Gateway、真实 Kubernetes 与确切修订的真实 Linux Box Sandbox 证据。真实 MicroVM 工作负载门仍开放，因此 standalone 自动扩缩仍属实验性。`cloud-managed` 流量不会调用 Box；在那里 Cloud 仍是期望副本权威。
 
@@ -168,10 +168,10 @@ Gateway 与 [A3S Box](https://github.com/A3S-Lab/a3s-box) 解决同一请求生�
 | 协议与流平面 | 可用 | HTTP/1.1、HTTP/2、SSE、WebSocket、原生 gRPC over h2c、TCP、UDP、TLS、trailer、背压、独立流边界与有界排空 |
 | 路由、中间件、健康 | 可用 | HTTP 族入口的 Host/path/method/header 规则；TCP 入口在 ClientHello peek 后匹配纯 `HostSNI(...)` 规则，SNI 表为空时跳过 peek，避免 PathPrefix-only 的 server-first TCP 被卡住。内置策略、类型化 Rust 扩展、四种均衡策略、健康、熔断、粘性会话、故障转移与镜像 |
 | DNS 服务发现 | 已移除 | 未接线的 DNS 辅助模块已删除；ACL `providers` 仅接受 `file`、`discovery`、`kubernetes` 与 `docker` |
-| 传统 WAF | 不可用 | 不在产品范围内。可选 Cargo feature `wire` 通过 `a3s-sentry` 提供 agentfw 风格的 LLM/MCP 正文防火墙（在 `/wire/<agent>/...` 上做密钥/PII 掩码；请求与响应腿均遵循 `blocked()` / `fail_closed`）；它不是 OWASP/ModSecurity WAF，也不属于默认数据平面 |
+| 传统 WAF | 不可用 | 不在产品范围内。可选 Cargo feature `wire` 通过 `aster-sentry` 提供 agentfw 风格的 LLM/MCP 正文防火墙（在 `/wire/<agent>/...` 上做密钥/PII 掩码；请求与响应腿均遵循 `blocked()` / `fail_closed`）；它不是 OWASP/ModSecurity WAF，也不属于默认数据平面 |
 | 快照生命周期 | 可用 | Standalone ACL 与 Cloud 托管模式、失败即关闭校验、监听器对账、原子激活、确切就绪与可选托管状态恢复 |
 | 托管目标投递（`H0.2`） | 联合验证 | 已发布 Gateway 加上固定的 Cloud 干净主机门覆盖确切 apply/ACK、进程丢失、重投递、冲突/过期拒绝、证书与目标代际替换、副本本地就绪与协议兼容 |
-| 托管 Runtime Service 路由 | Gateway 基础 | 嵌入式主机可持久绑定一个确切的 loopback Runtime 代际，通过真实 Gateway 路由验证健康，隐藏准入，排空已接受流，仅移除收据拥有的状态，并在重启后恢复不透明绑定身份。A3S Use/Code 组合与发布资格仍开放。 |
+| 托管 Runtime Service 路由 | Gateway 基础 | 嵌入式主机可持久绑定一个确切的 loopback Runtime 代际，通过真实 Gateway 路由验证健康，隐藏准入，排空已接受流，仅移除收据拥有的状态，并在重启后恢复不透明绑定身份。Aster Use/Code 组合与发布资格仍开放。 |
 | 托管 OpenAI 路径 | Gateway 基础 | Models、chat completions、completions、embeddings、授权、改写、准入、请求/尝试身份、健康感知目标、响应前回退，以及临时 tokenizer `kense.gateway.tokenizer.v1`；Cloud 计费级 tokenizer 与 Power 观测投递仍为 EXIT 开放 |
 | 上游 TLS 信任 | 可用 | 每服务 `load_balancer.tls_ca_file` 为 HTTPS 后端替换 webpki 根（PEM 必须可解析，且至少有一个 `https://` server）。无生产 skip-verify 路径。 |
 | 分布式推理路由 | Gateway/Power 数据平面 | 聚合调度加上独立的 prefill/decode 对选择、经认证的配置文件绑定 Power 编排、不透明状态句柄中继、OpenAI JSON/SSE 翻译、有界清理、对回退与 Gateway 本地滚动版本符合性；Cloud 发布与跨产品资格仍开放 |
@@ -219,7 +219,7 @@ docker run --rm \
 Helm：
 
 ```bash
-helm install gateway deploy/helm/a3s-gateway \
+helm install gateway deploy/helm/aster-gateway \
   --set image.repository=ghcr.io/kense-labs/gateway \
   --set-file config=./gateway.acl
 ```
@@ -227,7 +227,7 @@ helm install gateway deploy/helm/a3s-gateway \
 Rust 库：
 
 ```bash
-cargo add a3s-gateway
+cargo add aster-gateway
 ```
 
 可选 Cargo feature：
@@ -236,11 +236,11 @@ cargo add a3s-gateway
 | --- | --- |
 | `redis` | 基于 Redis 的分布式限流 |
 | `kube` | Kubernetes Ingress 提供方与 Scale 执行器 |
-| `wire` | 通过 `a3s-sentry` 做内联 LLM/MCP 密钥与 PII 检查（请求 + 响应 `blocked()`） |
+| `wire` | 通过 `aster-sentry` 做内联 LLM/MCP 密钥与 PII 检查（请求 + 响应 `blocked()`） |
 
 嵌入式 Rust 部署还可通过 `MiddlewareRegistry` 注册类型化请求/响应中间件；独立二进制不加载动态库或 Wasm 插件。参见[中间件指南](https://kense-labs.github.io/gateway/docs/#middleware)。
 
-嵌入式 A3S 主机还可使用绝对私有的 Managed Service 状态文件构造 Gateway。程序化生命周期仅将 loopback Runtime 上游绑定到明文 loopback HTTP 入口，将操作员或 Cloud ACL 保留为基础期望状态，并在更改实时路由前持久化覆盖层。确切的绑定、健康、排空、移除、重放与恢复契约见 [Managed Runtime Service 生命周期](docs/managed-runtime-services.md)。
+嵌入式 Aster 主机还可使用绝对私有的 Managed Service 状态文件构造 Gateway。程序化生命周期仅将 loopback Runtime 上游绑定到明文 loopback HTTP 入口，将操作员或 Cloud ACL 保留为基础期望状态，并在更改实时路由前持久化覆盖层。确切的绑定、健康、排空、移除、重放与恢复契约见 [Managed Runtime Service 生命周期](docs/managed-runtime-services.md)。
 
 ## 开发
 

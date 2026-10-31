@@ -44,7 +44,7 @@
 
 - [ ] Every owning package's focused tests pass
 - [ ] `cargo fmt --all -- --check` and applicable workspace checks pass
-- [ ] No new crates.io `a3s-*` dependency, second workspace/lockfile, native `<select>`, or non-ACL configuration
+- [ ] No new crates.io `aster-*` dependency, second workspace/lockfile, native `<select>`, or non-ACL configuration
 - [ ] Native recording and agent inspection actually passed on claimed platforms
 - [ ] Bundle and exported-media contents match their source and compatibility contracts
 - [ ] Every capability-matrix row is verified or explicitly incomplete; no silent scope reduction

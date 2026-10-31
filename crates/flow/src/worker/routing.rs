@@ -11,7 +11,7 @@ use super::{FlowTask, FlowTaskDispatcher};
 
 /// Routes pinned Flow tasks to dispatchers serving exact runtime builds.
 ///
-/// A route can point at an A3S Boot manager, a compatibility queue, or another
+/// A route can point at an Aster Boot manager, a compatibility queue, or another
 /// host dispatcher. Register the same dispatcher under every build it can
 /// execute. Unpinned histories require a separate explicit route.
 #[derive(Clone, Default)]

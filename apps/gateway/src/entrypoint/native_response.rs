@@ -96,7 +96,7 @@ pub(super) async fn finish_native_response(
 ) -> hyper::Response<ResponseBody> {
     let latency_ms = request_start.elapsed().as_millis() as u64;
     if let Ok(value) = http::HeaderValue::from_str(&latency_ms.to_string()) {
-        response.headers_mut().insert("x-a3s-latency-ms", value);
+        response.headers_mut().insert("x-aster-latency-ms", value);
     }
     if let Ok(json) = serde_json::from_slice::<serde_json::Value>(response.body().as_ref()) {
         if let Some(tokens) = json
@@ -109,7 +109,7 @@ pub(super) async fn finish_native_response(
             if let Ok(value) = http::HeaderValue::from_str(&format!("{rate:.2}")) {
                 response
                     .headers_mut()
-                    .insert("x-a3s-tokens-per-second", value);
+                    .insert("x-aster-tokens-per-second", value);
             }
         }
     }

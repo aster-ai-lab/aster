@@ -1,12 +1,12 @@
 {
-  "schema": "a3s.code.research-wire.v1",
+  "schema": "aster.code.research-wire.v1",
   "version": 1,
   "valid": {
-    "schema": "a3s.code.research-wire.v1",
+    "schema": "aster.code.research-wire.v1",
     "version": 1,
     "kind": "research_event",
     "payload": {
-      "schema": "a3s.code.science-event.v1",
+      "schema": "aster.code.science-event.v1",
       "projectId": "fixture-project",
       "projectRevision": 1,
       "runId": "fixture-run",
@@ -18,11 +18,11 @@
     }
   },
   "unknown_top_level_field": {
-    "schema": "a3s.code.research-wire.v1",
+    "schema": "aster.code.research-wire.v1",
     "version": 1,
     "kind": "research_event",
     "payload": {
-      "schema": "a3s.code.science-event.v1",
+      "schema": "aster.code.science-event.v1",
       "projectId": "fixture-project",
       "projectRevision": 1,
       "runId": "fixture-run",
@@ -35,11 +35,11 @@
     "future_field": true
   },
   "unknown_payload_field": {
-    "schema": "a3s.code.research-wire.v1",
+    "schema": "aster.code.research-wire.v1",
     "version": 1,
     "kind": "research_event",
     "payload": {
-      "schema": "a3s.code.science-event.v1",
+      "schema": "aster.code.science-event.v1",
       "projectId": "fixture-project",
       "projectRevision": 1,
       "runId": "fixture-run",
@@ -52,11 +52,11 @@
     }
   },
   "unsupported_version": {
-    "schema": "a3s.code.research-wire.v1",
+    "schema": "aster.code.research-wire.v1",
     "version": 2,
     "kind": "research_event",
     "payload": {
-      "schema": "a3s.code.science-event.v1",
+      "schema": "aster.code.science-event.v1",
       "projectId": "fixture-project",
       "projectRevision": 1,
       "runId": "fixture-run",

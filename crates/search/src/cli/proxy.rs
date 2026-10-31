@@ -1,6 +1,6 @@
 //! CLI proxy scope reporting.
 
-use a3s_search::providers::BuiltinProvider;
+use aster_search::providers::BuiltinProvider;
 
 pub(crate) fn report_proxy_scope(
     proxy: Option<&str>,

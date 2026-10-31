@@ -108,7 +108,7 @@ cleanup() {
   fi
   if [[ -n "$validation_root" ]]; then
     case "$validation_root" in
-      /var/tmp/a3s-oci-upstream-lifecycle.????????)
+      /var/tmp/aster-oci-upstream-lifecycle.????????)
         "${sudo_command[@]}" rm -rf --one-file-system -- "$validation_root" || \
           cleanup_status=1
         ;;
@@ -169,7 +169,7 @@ if [[ ! -f "$lock_file" || -L "$lock_file" ]]; then
   exit 2
 fi
 jq --exit-status \
-  '.schema_version == "a3s.oci.upstream-runtime-tools-lock.v2"
+  '.schema_version == "aster.oci.upstream-runtime-tools-lock.v2"
    and (.repository | type == "string" and length > 0)
    and (.commit | test("^[0-9a-f]{40}$"))
    and (.version | test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))
@@ -241,7 +241,7 @@ if [[ "$tool_manifest" != /* ]] ||
 fi
 tool_manifest="$(realpath -e -- "$tool_manifest")"
 tools_directory="$(dirname -- "$tool_manifest")"
-expected_tools_directory="/usr/local/lib/a3s-oci-tools/runtime-tools-$upstream_commit"
+expected_tools_directory="/usr/local/lib/aster-oci-tools/runtime-tools-$upstream_commit"
 if [[ "$tools_directory" != "$expected_tools_directory" ]] ||
   [[ "$tool" != "$tools_directory/oci-runtime-tool" ]]; then
   printf 'Runtime Tools lifecycle inputs must come from %s\n' \
@@ -322,7 +322,7 @@ jq --exit-status \
   --argjson lifecycle_limitations "$lifecycle_limitations" \
   --arg expected_rootfs_path "$expected_rootfs_path" \
   --argjson expected_rootfs_source "$expected_rootfs_source" \
-  '.schema_version == "a3s.oci.upstream-runtime-tools-build.v3"
+  '.schema_version == "aster.oci.upstream-runtime-tools-build.v3"
    and .repository == $repository
    and .commit == $commit
    and .version == $version
@@ -415,7 +415,7 @@ done
 "$repository_root/.github/scripts/verify-static-elf.sh" \
   "${lifecycle_executables[@]}" >/dev/null
 
-validation_root="$(mktemp -d /var/tmp/a3s-oci-upstream-lifecycle.XXXXXXXX)"
+validation_root="$(mktemp -d /var/tmp/aster-oci-upstream-lifecycle.XXXXXXXX)"
 service_root="$validation_root/service"
 adapter_root="$validation_root/adapter"
 service_log="$validation_root/host-service.log"
@@ -432,7 +432,7 @@ entries="$validation_root/entries.jsonl"
   umask 077
   printf "%s\n" "$$" >"$pid_file"
   exec "$@"
-' a3s-oci-upstream-lifecycle "$service_pid_file" \
+' aster-oci-upstream-lifecycle "$service_pid_file" \
   "$runtime_binary" native-linux-host-service \
   --root "$service_root" \
   --agent "$agent_binary" >"$service_log" 2>&1 &
@@ -482,9 +482,9 @@ for lifecycle_test in "${lifecycle_tests[@]}"; do
     cd "$lifecycle_directory"
     "${sudo_command[@]}" env \
       RUNTIME="$runtime_binary" \
-      A3S_OCI_RUNTIME_ENDPOINT="$socket_path" \
-      A3S_OCI_CLI_STATE_ROOT="$adapter_root" \
-      A3S_OCI_CLI_ISOLATION=shared-host-kernel \
+      ASTER_OCI_RUNTIME_ENDPOINT="$socket_path" \
+      ASTER_OCI_CLI_STATE_ROOT="$adapter_root" \
+      ASTER_OCI_CLI_ISOLATION=shared-host-kernel \
       "$lifecycle_binary"
   ) >"$output" 2>&1
   test_status=$?
@@ -639,7 +639,7 @@ for journal_directory in "${journal_directories[@]}"; do
   )"
   if [[ -z "$latest_snapshot" ]] ||
     ! "${sudo_command[@]}" jq --exit-status \
-      '.schema_version == "a3s.oci.cli-lifecycle.v1"
+      '.schema_version == "aster.oci.cli-lifecycle.v1"
        and .lifecycle == null' "$latest_snapshot" >/dev/null; then
     printf 'CLI lifecycle did not retire cleanly: %s\n' "$journal_directory" >&2
     exit 1
@@ -659,7 +659,7 @@ service_log_sha256="$(sha256sum "$service_log" | cut -d ' ' -f 1)"
 rootfs_sha256="$(sha256sum "$rootfs" | cut -d ' ' -f 1)"
 
 jq --null-input \
-  --arg schema_version 'a3s.oci.upstream-lifecycle-validation.v1' \
+  --arg schema_version 'aster.oci.upstream-lifecycle-validation.v1' \
   --arg status 'available' \
   --arg source_commit "$source_commit" \
   --arg architecture "$package_architecture" \
@@ -716,7 +716,7 @@ jq --null-input \
       profile: $lifecycle_profile,
       isolation: "shared-host-kernel",
       endpoint_transport: "unix-socket",
-      cli_state_journal_schema: "a3s.oci.cli-lifecycle.v1",
+      cli_state_journal_schema: "aster.oci.cli-lifecycle.v1",
       selected_tests: $selected_tests,
       results: $results,
       upstream_harness_defects: $upstream_harness_defects,
@@ -743,7 +743,7 @@ jq --exit-status \
   --argjson selected_tests "$lifecycle_test_names" \
   --argjson upstream_harness_defects "$upstream_harness_defects_json" \
   'select(
-     .schema_version == "a3s.oci.upstream-lifecycle-validation.v1"
+     .schema_version == "aster.oci.upstream-lifecycle-validation.v1"
      and .status == "available"
      and .source_commit == $source_commit
      and .architecture == $architecture

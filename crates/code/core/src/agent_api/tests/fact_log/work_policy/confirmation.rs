@@ -62,7 +62,7 @@ async fn missing_or_withdrawn_confirmation_with_bound_policy_is_a_non_execution(
     let before = before.unwrap();
     assert!(before
         .iter()
-        .any(|fact| fact.kind == "a3s.work-policy.admitted"));
+        .any(|fact| fact.kind == "aster.work-policy.admitted"));
     assert!(
         matches!(live, Ok(true)),
         "the bound session's live receiver still owns approval: {live:?}"
@@ -136,7 +136,7 @@ async fn unbound_legacy_fact_confirmation_survives_a_missing_manager_receiver() 
         session.close().await;
         agent.close().await;
 
-        assert_eq!(parked.unwrap().view.phase, a3s_effect::CodingPhase::Confirm);
+        assert_eq!(parked.unwrap().view.phase, aster_effect::CodingPhase::Confirm);
         assert!(
             matches!(exact, Ok(true)),
             "a valid unbound legacy wait must remain answerable: {exact:?}"

@@ -1,23 +1,23 @@
 //! Docker provider — auto-discover services from running container labels
 //!
 //! Polls the Docker daemon (via Unix socket or TCP) for running containers
-//! that have A3S routing labels, then translates their metadata into gateway
+//! that have Aster routing labels, then translates their metadata into gateway
 //! routing configuration.
 //!
 //! ## Label Format
 //!
 //! ```text
-//! a3s.enable=true
-//! a3s.router.rule=PathPrefix(`/api`)
-//! a3s.router.entrypoints=web
-//! a3s.router.middlewares=rate-limit
-//! a3s.router.priority=10
-//! a3s.service.port=8080
-//! a3s.service.strategy=round-robin
-//! a3s.service.weight=1
+//! aster.enable=true
+//! aster.router.rule=PathPrefix(`/api`)
+//! aster.router.entrypoints=web
+//! aster.router.middlewares=rate-limit
+//! aster.router.priority=10
+//! aster.service.port=8080
+//! aster.service.strategy=round-robin
+//! aster.service.weight=1
 //! ```
 //!
-//! The label prefix defaults to `a3s` but is configurable via `DockerProviderConfig::label_prefix`.
+//! The label prefix defaults to `aster` but is configurable via `DockerProviderConfig::label_prefix`.
 
 use crate::config::{
     parse_declared_priority, parse_declared_strategy, DockerProviderConfig, GatewayConfig,
@@ -501,7 +501,7 @@ pub(crate) fn validate_docker_activation(config: &DockerProviderConfig) -> Resul
             tokio::task::block_in_place(|| handle.block_on(provider.probe_activation()))
         }
         Ok(_) | Err(_) => std::thread::Builder::new()
-            .name("a3s-docker-activation-probe".into())
+            .name("aster-docker-activation-probe".into())
             .spawn(move || {
                 let runtime = tokio::runtime::Builder::new_current_thread()
                     .enable_all()
@@ -839,7 +839,7 @@ mod tests {
     fn test_skips_container_without_enable_label() {
         let p = provider();
         let base = GatewayConfig::default();
-        let container = make_container("myapp", "172.17.0.2", &[("a3s.service.port", "8080")]);
+        let container = make_container("myapp", "172.17.0.2", &[("aster.service.port", "8080")]);
         let config = p.generate_config(&[container], &base).unwrap();
         assert!(config.services.is_empty());
     }
@@ -851,7 +851,7 @@ mod tests {
         let container = make_container(
             "myapp",
             "172.17.0.2",
-            &[("a3s.enable", "false"), ("a3s.service.port", "8080")],
+            &[("aster.enable", "false"), ("aster.service.port", "8080")],
         );
         let config = p.generate_config(&[container], &base).unwrap();
         assert!(config.services.is_empty());
@@ -861,7 +861,7 @@ mod tests {
     fn generate_config_fails_closed_on_missing_port_label() {
         let p = provider();
         let base = GatewayConfig::default();
-        let container = make_container("myapp", "172.17.0.2", &[("a3s.enable", "true")]);
+        let container = make_container("myapp", "172.17.0.2", &[("aster.enable", "true")]);
         let err = p
             .generate_config(&[container], &base)
             .expect_err("enable=true without port must fail closed");
@@ -879,7 +879,7 @@ mod tests {
         let zero = make_container(
             "myapp",
             "172.17.0.2",
-            &[("a3s.enable", "true"), ("a3s.service.port", "0")],
+            &[("aster.enable", "true"), ("aster.service.port", "0")],
         );
         let err = p
             .generate_config(&[zero], &base)
@@ -892,7 +892,7 @@ mod tests {
         let invalid = make_container(
             "myapp",
             "172.17.0.2",
-            &[("a3s.enable", "true"), ("a3s.service.port", "abc")],
+            &[("aster.enable", "true"), ("aster.service.port", "abc")],
         );
         let err = p
             .generate_config(&[invalid], &base)
@@ -910,7 +910,7 @@ mod tests {
         let container = make_container(
             "myapp",
             "", // no IP
-            &[("a3s.enable", "true"), ("a3s.service.port", "8080")],
+            &[("aster.enable", "true"), ("aster.service.port", "8080")],
         );
         let err = p
             .generate_config(&[container], &base)
@@ -929,9 +929,9 @@ mod tests {
             "myapp",
             "172.17.0.2",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "8080"),
-                ("a3s.service.weight", "0"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "8080"),
+                ("aster.service.weight", "0"),
             ],
         );
         let err = p
@@ -952,7 +952,7 @@ mod tests {
         let container = make_container(
             "myapp",
             "172.17.0.2",
-            &[("a3s.enable", "true"), ("a3s.service.port", "8080")],
+            &[("aster.enable", "true"), ("aster.service.port", "8080")],
         );
         let config = p.generate_config(&[container], &base).unwrap();
         assert!(config.services.contains_key("myapp"));
@@ -968,10 +968,10 @@ mod tests {
             "api",
             "172.17.0.5",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "9000"),
-                ("a3s.service.strategy", "least-connections"),
-                ("a3s.service.weight", "2"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "9000"),
+                ("aster.service.strategy", "least-connections"),
+                ("aster.service.weight", "2"),
             ],
         );
         let config = p.generate_config(&[container], &base).unwrap();
@@ -988,9 +988,9 @@ mod tests {
             "api",
             "172.17.0.5",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "9000"),
-                ("a3s.service.strategy", "fastest"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "9000"),
+                ("aster.service.strategy", "fastest"),
             ],
         );
         let err = p
@@ -1014,7 +1014,7 @@ mod tests {
         let container = make_container(
             "api",
             "172.17.0.5",
-            &[("a3s.enable", "true"), ("a3s.service.port", "9000")],
+            &[("aster.enable", "true"), ("aster.service.port", "9000")],
         );
         let config = p.generate_config(&[container], &base).unwrap();
         assert_eq!(
@@ -1031,11 +1031,11 @@ mod tests {
             "api",
             "172.17.0.5",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "9000"),
-                ("a3s.router.rule", "PathPrefix(`/api`)"),
-                ("a3s.router.entrypoints", "web"),
-                ("a3s.router.priority", "10"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "9000"),
+                ("aster.router.rule", "PathPrefix(`/api`)"),
+                ("aster.router.entrypoints", "web"),
+                ("aster.router.priority", "10"),
             ],
         );
         let config = p.generate_config(&[container], &base).unwrap();
@@ -1055,10 +1055,10 @@ mod tests {
             "api",
             "172.17.0.5",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "9000"),
-                ("a3s.router.rule", "PathPrefix(`/api`)"),
-                ("a3s.router.priority", "ten"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "9000"),
+                ("aster.router.rule", "PathPrefix(`/api`)"),
+                ("aster.router.priority", "ten"),
             ],
         );
         let err = p
@@ -1079,9 +1079,9 @@ mod tests {
             "api",
             "172.17.0.5",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "9000"),
-                ("a3s.router.rule", "PathPrefix(`/api`)"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "9000"),
+                ("aster.router.rule", "PathPrefix(`/api`)"),
             ],
         );
         let config = p.generate_config(&[container], &base).unwrap();
@@ -1095,7 +1095,7 @@ mod tests {
         let container = make_container(
             "worker",
             "172.17.0.10",
-            &[("a3s.enable", "true"), ("a3s.service.port", "5000")],
+            &[("aster.enable", "true"), ("aster.service.port", "5000")],
         );
         let config = p.generate_config(&[container], &base).unwrap();
         assert!(config.services.contains_key("worker"));
@@ -1110,18 +1110,18 @@ mod tests {
             "api",
             "172.17.0.2",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "8080"),
-                ("a3s.router.rule", "PathPrefix(`/api`)"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "8080"),
+                ("aster.router.rule", "PathPrefix(`/api`)"),
             ],
         );
         let c2 = make_container(
             "web",
             "172.17.0.3",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "3000"),
-                ("a3s.router.rule", "PathPrefix(`/`)"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "3000"),
+                ("aster.router.rule", "PathPrefix(`/`)"),
             ],
         );
         let config = p.generate_config(&[c1, c2], &base).unwrap();
@@ -1162,7 +1162,7 @@ mod tests {
         let container = make_container(
             "docker-api",
             "172.17.0.5",
-            &[("a3s.enable", "true"), ("a3s.service.port", "8080")],
+            &[("aster.enable", "true"), ("aster.service.port", "8080")],
         );
         let config = p.generate_config(&[container], &base).unwrap();
         assert!(config.services.contains_key("static-api"));
@@ -1192,9 +1192,9 @@ mod tests {
             "api",
             "172.17.0.5",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "8080"),
-                ("a3s.router.rule", "Path(`/discovered`)"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "8080"),
+                ("aster.router.rule", "Path(`/discovered`)"),
             ],
         );
         let config = p.generate_config(&[container], &base).unwrap();
@@ -1236,7 +1236,7 @@ mod tests {
         let container = make_container(
             "ipv6",
             "2001:db8::2",
-            &[("a3s.enable", "true"), ("a3s.service.port", "8080")],
+            &[("aster.enable", "true"), ("aster.service.port", "8080")],
         );
         let config = p
             .generate_config(&[container], &GatewayConfig::default())
@@ -1274,10 +1274,10 @@ mod tests {
             "redis",
             "172.17.0.10",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "6379"),
-                ("a3s.protocol", "tcp"),
-                ("a3s.entrypoint.address", "0.0.0.0:6379"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "6379"),
+                ("aster.protocol", "tcp"),
+                ("aster.entrypoint.address", "0.0.0.0:6379"),
             ],
         );
         let config = p.generate_config(&[container], &base).unwrap();
@@ -1303,10 +1303,10 @@ mod tests {
             "dns",
             "172.17.0.11",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "53"),
-                ("a3s.protocol", "udp"),
-                ("a3s.entrypoint.address", "0.0.0.0:5353"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "53"),
+                ("aster.protocol", "udp"),
+                ("aster.entrypoint.address", "0.0.0.0:5353"),
             ],
         );
         let config = p.generate_config(&[container], &base).unwrap();
@@ -1329,10 +1329,10 @@ mod tests {
             "redis",
             "172.17.0.10",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "6379"),
-                ("a3s.protocol", "tcp"),
-                // No a3s.entrypoint.address
+                ("aster.enable", "true"),
+                ("aster.service.port", "6379"),
+                ("aster.protocol", "tcp"),
+                // No aster.entrypoint.address
             ],
         );
         let err = p
@@ -1354,9 +1354,9 @@ mod tests {
             "dns",
             "172.17.0.11",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "53"),
-                ("a3s.protocol", "udp"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "53"),
+                ("aster.protocol", "udp"),
             ],
         );
         let err = p
@@ -1377,9 +1377,9 @@ mod tests {
             "web",
             "172.17.0.5",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "8080"),
-                ("a3s.protocol", "grpc"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "8080"),
+                ("aster.protocol", "grpc"),
             ],
         );
         let err = p
@@ -1400,10 +1400,10 @@ mod tests {
             "web",
             "172.17.0.5",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "8080"),
-                ("a3s.protocol", "http"),
-                ("a3s.router.rule", "Host(`web.local`)"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "8080"),
+                ("aster.protocol", "http"),
+                ("aster.router.rule", "Host(`web.local`)"),
             ],
         );
         let config = p.generate_config(&[container], &base).unwrap();
@@ -1422,19 +1422,19 @@ mod tests {
             "api",
             "172.17.0.2",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "8080"),
-                ("a3s.router.rule", "PathPrefix(`/api`)"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "8080"),
+                ("aster.router.rule", "PathPrefix(`/api`)"),
             ],
         );
         let tcp_container = make_container(
             "redis",
             "172.17.0.3",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "6379"),
-                ("a3s.protocol", "tcp"),
-                ("a3s.entrypoint.address", "0.0.0.0:6379"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "6379"),
+                ("aster.protocol", "tcp"),
+                ("aster.entrypoint.address", "0.0.0.0:6379"),
             ],
         );
         let config = p
@@ -1456,10 +1456,10 @@ mod tests {
             "app",
             "172.17.0.2",
             &[
-                ("a3s.enable", "true"),
-                ("a3s.service.port", "8080"),
-                ("a3s.router.rule", "PathPrefix(`/`)"),
-                ("a3s.router.middlewares", "auth, rate-limit, cors"),
+                ("aster.enable", "true"),
+                ("aster.service.port", "8080"),
+                ("aster.router.rule", "PathPrefix(`/`)"),
+                ("aster.router.middlewares", "auth, rate-limit, cors"),
             ],
         );
         let config = p.generate_config(&[container], &base).unwrap();

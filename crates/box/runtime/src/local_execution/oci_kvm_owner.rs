@@ -10,19 +10,19 @@ use std::path::{Component, Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::time::{Duration, Instant};
 
-use a3s_box_core::{ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult};
+use aster_box_core::{ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 use super::{OciLifecycleAdapter, OciRuntimeEndpoint};
 use crate::file_lock::FileLock;
 
-const OWNER_RECORD_SCHEMA: &str = "a3s.box.linux-kvm-oci-owner.v1";
+const OWNER_RECORD_SCHEMA: &str = "aster.box.linux-kvm-oci-owner.v1";
 const OWNER_RECORD_NAME: &str = "box-owner.json";
 const OWNER_LOCK_TARGET: &str = "box-kvm-owner";
 const OWNER_SOCKET_NAME: &str = "runtime.sock";
-const KVM_SESSION_OWNER_ENV: &str = "A3S_OCI_KVM_SESSION_OWNER";
-const KVM_LIVE_BINDING_FILE: &str = ".a3s-oci-kvm-live-session-binding.json";
+const KVM_SESSION_OWNER_ENV: &str = "ASTER_OCI_KVM_SESSION_OWNER";
+const KVM_LIVE_BINDING_FILE: &str = ".aster-oci-kvm-live-session-binding.json";
 const STARTUP_TIMEOUT: Duration = Duration::from_secs(60);
 const STARTUP_POLL_INTERVAL: Duration = Duration::from_millis(100);
 
@@ -280,7 +280,7 @@ pub(crate) async fn ensure_linux_kvm_oci_owner_with_options(
         }
     };
     std::thread::Builder::new()
-        .name("a3s-kvm-oci-owner-reaper".to_string())
+        .name("aster-kvm-oci-owner-reaper".to_string())
         .spawn(move || {
             let _ = child.wait();
         })
@@ -869,11 +869,11 @@ mod tests {
 
     fn sample_artifacts() -> LinuxKvmOwnerArtifacts {
         LinuxKvmOwnerArtifacts {
-            runtime_path: PathBuf::from("/opt/a3s/a3s-oci"),
+            runtime_path: PathBuf::from("/opt/aster/aster-oci"),
             runtime_sha256: "a".repeat(64),
-            shim_path: PathBuf::from("/opt/a3s/a3s-oci-kvm-shim"),
+            shim_path: PathBuf::from("/opt/aster/aster-oci-kvm-shim"),
             shim_sha256: "b".repeat(64),
-            system_image_manifest: PathBuf::from("/opt/a3s/system-image.json"),
+            system_image_manifest: PathBuf::from("/opt/aster/system-image.json"),
             system_image_manifest_sha256: "c".repeat(64),
         }
     }
@@ -881,7 +881,7 @@ mod tests {
     #[test]
     fn owner_record_fences_endpoint_and_artifacts() {
         let artifacts = sample_artifacts();
-        let socket = PathBuf::from("/tmp/a3s-kvm-owner/runtime.sock");
+        let socket = PathBuf::from("/tmp/aster-kvm-owner/runtime.sock");
         let record = LinuxKvmOwnerRecord::new(42, 7, &artifacts, socket.clone());
         record.validate(&socket).unwrap();
         assert!(record.artifacts_match(&artifacts));
@@ -922,7 +922,7 @@ mod tests {
             pid,
             start_time,
             &artifacts,
-            PathBuf::from("/tmp/a3s-kvm-owner/runtime.sock"),
+            PathBuf::from("/tmp/aster-kvm-owner/runtime.sock"),
         );
         assert!(!record.is_alive(), "a zombie owner must be reclaimed");
         child.wait().expect("reap completed owner fixture");
@@ -930,13 +930,13 @@ mod tests {
 
     #[test]
     fn box_owned_spawn_forces_session_owner_env() {
-        assert_eq!(KVM_SESSION_OWNER_ENV, "A3S_OCI_KVM_SESSION_OWNER");
+        assert_eq!(KVM_SESSION_OWNER_ENV, "ASTER_OCI_KVM_SESSION_OWNER");
     }
 
     #[test]
     fn kvm_live_binding_fields_parse_optional_identities() {
         let with_children = br#"{
-            "schemaVersion": "a3s.oci.kvm-live-session-binding.v1",
+            "schemaVersion": "aster.oci.kvm-live-session-binding.v1",
             "sessionOwner": {"pid": 11, "startTimeTicks": 22},
             "shim": {"pid": 33, "startTimeTicks": 44}
         }"#;
@@ -955,7 +955,7 @@ mod tests {
     #[test]
     fn collect_kvm_live_bindings_walks_nested_shares() {
         let root =
-            std::env::temp_dir().join(format!("a3s-kvm-live-binding-walk-{}", std::process::id()));
+            std::env::temp_dir().join(format!("aster-kvm-live-binding-walk-{}", std::process::id()));
         let nested = root.join("shares").join("a").join("b");
         std::fs::create_dir_all(&nested).expect("create nested shares");
         let binding = nested.join(KVM_LIVE_BINDING_FILE);

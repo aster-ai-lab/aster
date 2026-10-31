@@ -1,11 +1,11 @@
 [package]
-name = "a3s-office"
-description = "Native OOXML document operations for A3S Office"
+name = "aster-office"
+description = "Native OOXML document operations for Aster Office"
 version = "0.45.0"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Office"
-authors = ["A3S Lab"]
+repository = "https://github.com/aster-ai-lab/Office"
+authors = ["Aster"]
 rust-version = "1.85"
 publish = false
 
@@ -32,7 +32,7 @@ libloading = {version = "=0.8.9", optional = true}
 fs2 = {version = "0.4"}
 base64 = {version = "0.22"}
 async-trait = {version = "0.1"}
-a3s-use-core = {path = "../../../use/core"}
-a3s-office-formula-parser = {path = "../formula-parser"}
+aster-use-core = {path = "../../../use/core"}
+aster-office-formula-parser = {path = "../formula-parser"}
 [dev-dependencies]
 png = {version = "0.17"}

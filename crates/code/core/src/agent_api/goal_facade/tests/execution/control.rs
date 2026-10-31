@@ -181,7 +181,7 @@ async fn goal_control_settles_the_running_slice_and_an_old_wake_executes_nothing
         assert!(!unsettled, "{kind:?}: the owner closes its cancelled slice");
         let closeouts = facts
             .iter()
-            .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+            .filter(|fact| fact.kind == "aster.goal.slice.settled")
             .collect::<Vec<_>>();
         assert_eq!(closeouts.len(), recorded, "{kind:?}");
         for closeout in closeouts {
@@ -326,7 +326,7 @@ async fn a_plan_revision_during_a_running_slice_waits_for_the_next_slice() {
         );
         let settled = read()
             .into_iter()
-            .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+            .filter(|fact| fact.kind == "aster.goal.slice.settled")
             .collect::<Vec<_>>();
         assert_eq!(settled.len(), 1);
         assert_eq!(

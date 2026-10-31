@@ -6,9 +6,9 @@
 use std::pin::Pin;
 use std::sync::{Arc, Mutex};
 
-use a3s_code_core::llm::factory::create_client_with_config;
-use a3s_code_core::llm::http::{HttpClient, HttpResponse, StreamingHttpResponse};
-use a3s_code_core::llm::{
+use aster_core::llm::factory::create_client_with_config;
+use aster_core::llm::http::{HttpClient, HttpResponse, StreamingHttpResponse};
+use aster_core::llm::{
     ContentBlock, LlmConfig, LlmResponse, Message, SecretString, ToolDefinition,
 };
 use tokio_util::sync::CancellationToken;

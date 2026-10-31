@@ -1,4 +1,4 @@
-//! Hooks System for A3S Code Agent
+//! Hooks System for Aster Code Agent
 //!
 //! Provides a mechanism to intercept and customize agent behavior at various
 //! lifecycle points. Hooks can validate, transform, or block operations.

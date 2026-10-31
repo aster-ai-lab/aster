@@ -1,6 +1,6 @@
-//! `a3s-box create` command — Create without starting.
+//! `aster-box create` command — Create without starting.
 
-use a3s_box_core::{
+use aster_box_core::{
     BoxConfig, CreateExecutionRequest, ExecutionManager, ExecutionRecordPolicy,
     ExecutionRestartPolicy, OperationId, ResourceConfig,
 };
@@ -44,7 +44,7 @@ pub async fn execute(args: CreateArgs) -> Result<(), Box<dyn std::error::Error>>
         .into_iter()
         .collect();
     let network_mode = common::resolve_network(args.common.network.as_deref());
-    if let a3s_box_core::NetworkMode::Bridge { network } = &network_mode {
+    if let aster_box_core::NetworkMode::Bridge { network } = &network_mode {
         ensure_network_exists(network)?;
     }
 
@@ -101,9 +101,9 @@ pub async fn execute(args: CreateArgs) -> Result<(), Box<dyn std::error::Error>>
         persistent: true,
         ..Default::default()
     };
-    a3s_box_core::resolve_execution(&config)?;
+    aster_box_core::resolve_execution(&config)?;
 
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let manager = super::configured_local_execution_manager(&home).await?;
     manager.preflight_isolation(isolation).await?;
 
@@ -116,7 +116,7 @@ pub async fn execute(args: CreateArgs) -> Result<(), Box<dyn std::error::Error>>
             .as_ref()
             .and_then(|config| config.health_check.as_ref()),
     );
-    let volume_store = a3s_box_runtime::VolumeStore::default_path()?;
+    let volume_store = aster_box_runtime::VolumeStore::default_path()?;
     let (resolved_volumes, volume_names) = super::volume::resolve_volume_specs_after_health_gate(
         &volume_store,
         &args.common.volumes,
@@ -138,7 +138,7 @@ pub async fn execute(args: CreateArgs) -> Result<(), Box<dyn std::error::Error>>
         max_restart_count,
         health_check,
         healthcheck_disabled: args.common.no_healthcheck,
-        log_config: a3s_box_core::log::LogConfig::default(),
+        log_config: aster_box_core::log::LogConfig::default(),
         volume_names: volume_names.clone(),
         platform: args.common.platform.clone(),
         init: args.common.init,
@@ -172,8 +172,8 @@ pub async fn execute(args: CreateArgs) -> Result<(), Box<dyn std::error::Error>>
     }
 
     crate::audit::record(
-        a3s_box_core::audit::AuditAction::BoxCreate,
-        a3s_box_core::audit::AuditOutcome::Success,
+        aster_box_core::audit::AuditAction::BoxCreate,
+        aster_box_core::audit::AuditOutcome::Success,
         &box_id,
         &format!("created box {name}"),
     );
@@ -192,7 +192,7 @@ fn execution_restart_policy(value: &str) -> Result<ExecutionRestartPolicy, Strin
 }
 
 fn ensure_network_exists(network: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let store = a3s_box_runtime::NetworkStore::default_path()?;
+    let store = aster_box_runtime::NetworkStore::default_path()?;
     let config = store
         .get(network)?
         .ok_or_else(|| format!("network '{}' not found", network))?;

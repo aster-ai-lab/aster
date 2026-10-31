@@ -386,7 +386,7 @@ async fn test_gateway_keeps_serving_when_the_management_plane_cannot_start() {
     // starts, reports Running, and the sensitive surface simply never
     // opens. Operators catch the misconfiguration via `gateway validate`
     // and the error-level startup log.
-    let token_env = format!("A3S_GATEWAY_ADMIN_UNSET_{}", uuid::Uuid::new_v4().simple());
+    let token_env = format!("ASTER_GATEWAY_ADMIN_UNSET_{}", uuid::Uuid::new_v4().simple());
     std::env::remove_var(&token_env);
     let mut config = minimal_config();
     config
@@ -735,7 +735,7 @@ async fn gateway_start_launches_cloud_ingest_uploader_when_configured() {
                 .cloned()
                 .unwrap_or(serde_json::Value::Null);
             let ack = serde_json::json!({
-                "schema": "a3s.gateway.usage-batch-receipt.v1",
+                "schema": "aster.gateway.usage-batch-receipt.v1",
                 "gateway_id": gateway_id,
                 "batch_id": batch_id,
                 "acknowledged_through": cursor,
@@ -751,7 +751,7 @@ async fn gateway_start_launches_cloud_ingest_uploader_when_configured() {
         }
     });
 
-    let token_env = format!("A3S_USAGE_INGEST_TOKEN_{}", gateway_id.simple());
+    let token_env = format!("ASTER_USAGE_INGEST_TOKEN_{}", gateway_id.simple());
     std::env::set_var(&token_env, "fixture-token");
     let mut config = managed_usage_config(gateway_id, spool_directory);
     {
@@ -788,7 +788,7 @@ async fn gateway_start_launches_cloud_ingest_uploader_when_configured() {
         "missing bearer auth in request: {request_text}"
     );
     assert!(
-        request_text.contains("a3s.gateway.usage-batch.v1"),
+        request_text.contains("aster.gateway.usage-batch.v1"),
         "missing batch schema in request: {request_text}"
     );
     assert!(
@@ -816,7 +816,7 @@ fn validate_activation_fails_closed_when_usage_cloud_ingest_bearer_env_unset() {
     let directory = tempfile::tempdir().unwrap();
     let spool_directory = directory.path().join("usage");
     let gateway_id = uuid::Uuid::new_v4();
-    let token_env = format!("A3S_USAGE_INGEST_UNSET_{}", gateway_id.simple());
+    let token_env = format!("ASTER_USAGE_INGEST_UNSET_{}", gateway_id.simple());
     std::env::remove_var(&token_env);
 
     let mut config = managed_usage_config(gateway_id, spool_directory);

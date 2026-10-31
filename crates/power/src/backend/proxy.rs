@@ -1,0 +1,2924 @@
+//! Proxy backend — forward inference to an upstream OpenAI-compatible server.
+//!
+//! Lets aster-power act as the verifiable serving front-door for an existing
+//! accelerated engine (vLLM, TGI, SGLang, OpenAI, ...). Clients talk to Power;
+//! Power applies its routing, auth, rate-limiting and log-redaction layers and
+//! proxies the request to the upstream named in
+//! [`PowerConfig::proxy_upstreams`](crate::config::PowerConfig::proxy_upstreams).
+//!
+//! This is how Power *replaces vLLM in the stack* without reimplementing its
+//! CUDA kernels or PagedAttention: it absorbs vLLM as a swappable backend.
+//!
+//! # Trust boundary
+//!
+//! Proxied inference runs on the **upstream**, outside any TEE. This is the
+//! non-confidential fast path — no hardware attestation covers proxied prompts
+//! or responses. Use the in-process backends (mistral.rs / picolm) when content
+//! must stay inside the enclave.
+
+use std::collections::{BTreeMap, BTreeSet};
+use std::pin::Pin;
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use futures::{Stream, StreamExt};
+use tokio::sync::mpsc;
+use tokio_stream::wrappers::ReceiverStream;
+
+use super::types::{
+    ChatRequest, ChatResponseChunk, CompletionRequest, CompletionResponseChunk,
+    EffectivePromptDigest, EmbeddingRequest, EmbeddingResponse, FunctionCall, ToolCall,
+};
+use super::Backend;
+use crate::config::PowerConfig;
+use crate::error::{PowerError, Result};
+use crate::model::manifest::{ModelFormat, ModelManifest};
+
+const MAX_PROXY_EFFECTIVE_PROMPT_DIGEST_RESPONSE_BYTES: usize = 1024 * 1024;
+const MAX_PROXY_EMBEDDINGS_RESPONSE_BYTES: usize = 64 * 1024 * 1024;
+const MAX_PROXY_SSE_BUFFER_BYTES: usize = 8 * 1024 * 1024;
+const MAX_PROXY_STREAM_TOOL_CALLS: usize = 128;
+const MAX_PROXY_STREAM_TOOL_CALL_ARGUMENT_BYTES: usize = 1024 * 1024;
+
+/// Forwards inference to upstream OpenAI-compatible servers.
+pub struct ProxyBackend {
+    config: Arc<PowerConfig>,
+    http: reqwest::Client,
+}
+
+impl ProxyBackend {
+    pub fn new(config: Arc<PowerConfig>) -> Self {
+        Self {
+            config,
+            http: reqwest::Client::new(),
+        }
+    }
+
+    /// Resolve the upstream base URL for a model, trimming any trailing slash.
+    fn upstream(&self, model_name: &str) -> Result<String> {
+        self.config
+            .proxy_upstreams
+            .get(model_name)
+            .map(|u| u.trim_end_matches('/').to_string())
+            .ok_or_else(|| {
+                PowerError::ModelNotFound(format!(
+                    "no proxy upstream configured for '{model_name}'"
+                ))
+            })
+    }
+
+    fn effective_prompt_digest_url(&self, model_name: &str) -> Result<String> {
+        let upstream = self.upstream(model_name)?;
+        let path = self.config.proxy_effective_prompt_digest_path.trim();
+        let segments = configured_proxy_path_segments(path)?;
+        proxy_endpoint_url(&upstream, &segments)
+    }
+}
+
+#[async_trait]
+impl Backend for ProxyBackend {
+    fn name(&self) -> &str {
+        "proxy"
+    }
+
+    fn supports(&self, format: &ModelFormat) -> bool {
+        matches!(format, ModelFormat::Remote)
+    }
+
+    async fn load(&self, _manifest: &ModelManifest) -> Result<()> {
+        // Nothing to load — the upstream owns the weights.
+        Ok(())
+    }
+
+    async fn unload(&self, _model_name: &str) -> Result<()> {
+        Ok(())
+    }
+
+    async fn chat(
+        &self,
+        model_name: &str,
+        request: ChatRequest,
+    ) -> Result<Pin<Box<dyn Stream<Item = Result<ChatResponseChunk>> + Send>>> {
+        super::ensure_non_speculative_mode(&self.config.spec_mode, self.name())?;
+
+        let url = proxy_endpoint_url(&self.upstream(model_name)?, &["v1", "chat", "completions"])?;
+        let body = build_chat_body(model_name, &request);
+        let resp = send_stream(&self.http, &url, body).await?;
+
+        let (tx, rx) = mpsc::channel::<Result<ChatResponseChunk>>(64);
+        tokio::spawn(async move {
+            let mut stream = Box::pin(resp.bytes_stream());
+            let mut buf = Vec::new();
+            let mut done_reason = None;
+            let mut usage = None;
+            let mut tool_calls = ProxyToolCallAssembler::default();
+            while let Some(event) = next_sse_event(&mut stream, &mut buf).await {
+                match event {
+                    Err(e) => {
+                        let _ = tx.send(Err(e)).await;
+                        return;
+                    }
+                    Ok(None) => break, // [DONE]
+                    Ok(Some(json)) => {
+                        match proxy_chat_usage(&json) {
+                            Ok(Some(value)) => usage = Some(value),
+                            Ok(None) => {}
+                            Err(error) => {
+                                let _ = tx.send(Err(error)).await;
+                                return;
+                            }
+                        }
+                        let parsed = match parse_proxy_chat_stream_event(&json) {
+                            Ok(parsed) => parsed,
+                            Err(e) => {
+                                let _ = tx.send(Err(e)).await;
+                                return;
+                            }
+                        };
+                        if done_reason.is_some()
+                            && (parsed.has_text_delta() || parsed.tool_call_deltas.is_some())
+                        {
+                            let _ = tx
+                                .send(Err(PowerError::InferenceFailed(
+                                    "proxy chat stream returned output after finish".into(),
+                                )))
+                                .await;
+                            return;
+                        }
+                        let has_text_delta = parsed.has_text_delta();
+                        if let Some(deltas) = parsed.tool_call_deltas {
+                            if let Err(e) = tool_calls.apply(deltas) {
+                                let _ = tx.send(Err(e)).await;
+                                return;
+                            }
+                        }
+                        if has_text_delta
+                            && tx
+                                .send(Ok(ChatResponseChunk {
+                                    content: parsed.content.unwrap_or_default(),
+                                    thinking_content: parsed.thinking_content,
+                                    done: false,
+                                    prompt_tokens: None,
+                                    done_reason: None,
+                                    prompt_eval_duration_ns: None,
+                                    tool_calls: None,
+                                    upstream_timings: None,
+                                }))
+                                .await
+                                .is_err()
+                        {
+                            return;
+                        }
+                        if let Some(reason) = parsed.done_reason {
+                            done_reason = Some(reason);
+                        }
+                    }
+                }
+            }
+            let done_reason = done_reason.or_else(|| Some("stop".to_string()));
+            let completed_tool_calls = match tool_calls.complete() {
+                Ok(calls) => calls,
+                Err(e) => {
+                    let _ = tx.send(Err(e)).await;
+                    return;
+                }
+            };
+            if let Some(calls) = completed_tool_calls {
+                if tx
+                    .send(Ok(ChatResponseChunk {
+                        content: String::new(),
+                        thinking_content: None,
+                        done: false,
+                        prompt_tokens: None,
+                        done_reason: None,
+                        prompt_eval_duration_ns: None,
+                        tool_calls: Some(calls),
+                        upstream_timings: None,
+                    }))
+                    .await
+                    .is_err()
+                {
+                    return;
+                }
+            }
+            let _ = tx
+                .send(Ok(ChatResponseChunk {
+                    content: String::new(),
+                    thinking_content: None,
+                    done: true,
+                    prompt_tokens: None,
+                    done_reason,
+                    prompt_eval_duration_ns: None,
+                    tool_calls: None,
+                    upstream_timings: usage.map(|usage| {
+                        serde_json::json!({
+                            "source": "upstream-reported", "usage": usage,
+                        })
+                    }),
+                }))
+                .await;
+        });
+
+        Ok(Box::pin(ReceiverStream::new(rx)))
+    }
+
+    async fn effective_chat_prompt_digest(
+        &self,
+        model_name: &str,
+        request: &ChatRequest,
+    ) -> Result<Option<EffectivePromptDigest>> {
+        super::ensure_non_speculative_mode(&self.config.spec_mode, self.name())?;
+
+        if !self.config.proxy_effective_prompt_digest
+            && !self.config.proxy_effective_prompt_digest_required
+        {
+            return Ok(None);
+        }
+
+        if request.has_image_inputs() {
+            if self.config.proxy_effective_prompt_digest_required {
+                return Err(PowerError::InferenceFailed(
+                    "proxy effective prompt digest is required, but image-bearing chat requests must leave effective_prompt absent unless the exact multimodal prompt representation is exposed".to_string(),
+                ));
+            }
+            return Ok(None);
+        }
+
+        let url = self.effective_prompt_digest_url(model_name)?;
+        let mut body = build_chat_body(model_name, request);
+        if let Some(obj) = body.as_object_mut() {
+            obj.insert("stream".to_string(), false.into());
+        }
+
+        request_effective_prompt_digest(
+            &self.http,
+            &url,
+            &body,
+            self.config.proxy_effective_prompt_digest_required,
+            &[crate::backend::types::EffectivePromptClaimKind::ChatRenderedPrompt],
+            crate::backend::types::EffectivePromptClaimKind::ChatRenderedPrompt,
+        )
+        .await
+    }
+
+    async fn complete(
+        &self,
+        model_name: &str,
+        request: CompletionRequest,
+    ) -> Result<Pin<Box<dyn Stream<Item = Result<CompletionResponseChunk>> + Send>>> {
+        super::ensure_non_speculative_mode(&self.config.spec_mode, self.name())?;
+
+        let url = proxy_endpoint_url(&self.upstream(model_name)?, &["v1", "completions"])?;
+        let body = build_completion_body(model_name, &request);
+        let resp = send_stream(&self.http, &url, body).await?;
+
+        let (tx, rx) = mpsc::channel::<Result<CompletionResponseChunk>>(64);
+        tokio::spawn(async move {
+            let mut stream = Box::pin(resp.bytes_stream());
+            let mut buf = Vec::new();
+            let mut done_reason = Some("stop".to_string());
+            while let Some(event) = next_sse_event(&mut stream, &mut buf).await {
+                match event {
+                    Err(e) => {
+                        let _ = tx.send(Err(e)).await;
+                        return;
+                    }
+                    Ok(None) => break,
+                    Ok(Some(json)) => {
+                        let parsed = match parse_proxy_completion_stream_event(&json) {
+                            Ok(parsed) => parsed,
+                            Err(e) => {
+                                let _ = tx.send(Err(e)).await;
+                                return;
+                            }
+                        };
+                        if let Some(text) = parsed.text {
+                            if tx
+                                .send(Ok(CompletionResponseChunk {
+                                    text,
+                                    done: false,
+                                    prompt_tokens: None,
+                                    done_reason: None,
+                                    prompt_eval_duration_ns: None,
+                                    token_id: None,
+                                }))
+                                .await
+                                .is_err()
+                            {
+                                return;
+                            }
+                        }
+                        if let Some(reason) = parsed.done_reason {
+                            done_reason = Some(reason);
+                            break;
+                        }
+                    }
+                }
+            }
+            let _ = tx
+                .send(Ok(CompletionResponseChunk {
+                    text: String::new(),
+                    done: true,
+                    prompt_tokens: None,
+                    done_reason,
+                    prompt_eval_duration_ns: None,
+                    token_id: None,
+                }))
+                .await;
+        });
+
+        Ok(Box::pin(ReceiverStream::new(rx)))
+    }
+
+    async fn effective_completion_prompt_digest(
+        &self,
+        model_name: &str,
+        request: &CompletionRequest,
+    ) -> Result<Option<EffectivePromptDigest>> {
+        super::ensure_non_speculative_mode(&self.config.spec_mode, self.name())?;
+
+        if !self.config.proxy_effective_prompt_digest
+            && !self.config.proxy_effective_prompt_digest_required
+        {
+            return Ok(None);
+        }
+
+        if request
+            .images
+            .as_ref()
+            .is_some_and(|images| !images.is_empty())
+        {
+            if self.config.proxy_effective_prompt_digest_required {
+                return Err(PowerError::InferenceFailed(
+                    "proxy effective prompt digest is required, but image-bearing completion requests must leave effective_prompt absent unless the exact multimodal prompt representation is exposed".to_string(),
+                ));
+            }
+            return Ok(None);
+        }
+
+        let url = self.effective_prompt_digest_url(model_name)?;
+        let mut body = build_completion_body(model_name, request);
+        if let Some(obj) = body.as_object_mut() {
+            obj.insert("stream".to_string(), false.into());
+        }
+
+        request_effective_prompt_digest(
+            &self.http,
+            &url,
+            &body,
+            self.config.proxy_effective_prompt_digest_required,
+            &[crate::backend::types::EffectivePromptClaimKind::TextPrompt],
+            crate::backend::types::EffectivePromptClaimKind::TextPrompt,
+        )
+        .await
+    }
+
+    async fn embed(
+        &self,
+        model_name: &str,
+        request: EmbeddingRequest,
+    ) -> Result<EmbeddingResponse> {
+        let url = proxy_endpoint_url(&self.upstream(model_name)?, &["v1", "embeddings"])?;
+        let expected_embeddings = request.input.len();
+        let body = serde_json::json!({ "model": model_name, "input": request.input });
+        let resp =
+            self.http.post(&url).json(&body).send().await.map_err(|e| {
+                PowerError::InferenceFailed(format!("proxy embed request failed: {e}"))
+            })?;
+        if !resp.status().is_success() {
+            return Err(PowerError::InferenceFailed(format!(
+                "proxy upstream returned {} for embeddings",
+                resp.status()
+            )));
+        }
+        let json = read_proxy_embeddings_response_json(resp).await?;
+        let embeddings = parse_proxy_embeddings_response(&json)?;
+        validate_proxy_embeddings_count(expected_embeddings, embeddings.len())?;
+        validate_proxy_embeddings_dimensions(&embeddings)?;
+        Ok(EmbeddingResponse { embeddings })
+    }
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct ParsedProxyChatStreamEvent {
+    content: Option<String>,
+    thinking_content: Option<String>,
+    tool_call_deltas: Option<Vec<ProxyToolCallDelta>>,
+    done_reason: Option<String>,
+}
+
+fn proxy_chat_usage(event: &serde_json::Value) -> Result<Option<serde_json::Value>> {
+    let Some(value) = event.get("usage").filter(|value| !value.is_null()) else {
+        return Ok(None);
+    };
+    let prompt = value
+        .get("prompt_tokens")
+        .and_then(serde_json::Value::as_u64);
+    let completion = value
+        .get("completion_tokens")
+        .and_then(serde_json::Value::as_u64);
+    let total = value
+        .get("total_tokens")
+        .and_then(serde_json::Value::as_u64);
+    match (prompt, completion, total) {
+        (Some(prompt), Some(completion), Some(total))
+            if prompt.checked_add(completion) == Some(total) =>
+        {
+            Ok(Some(serde_json::json!({
+                "prompt_tokens": prompt, "completion_tokens": completion, "total_tokens": total,
+            })))
+        }
+        _ => Err(PowerError::InferenceFailed(
+            "proxy chat stream returned invalid token usage".into(),
+        )),
+    }
+}
+
+#[cfg(test)]
+#[path = "proxy_usage_tests.rs"]
+mod usage_tests;
+
+impl ParsedProxyChatStreamEvent {
+    fn has_text_delta(&self) -> bool {
+        self.content.is_some() || self.thinking_content.is_some()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize)]
+struct ProxyToolCallDelta {
+    index: u32,
+    #[serde(default)]
+    id: Option<String>,
+    #[serde(rename = "type", default)]
+    tool_type: Option<String>,
+    #[serde(default)]
+    function: Option<ProxyFunctionCallDelta>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize)]
+struct ProxyFunctionCallDelta {
+    #[serde(default)]
+    name: Option<String>,
+    #[serde(default)]
+    arguments: Option<String>,
+}
+
+#[derive(Debug, Default)]
+struct ProxyToolCallAssembler {
+    calls: BTreeMap<u32, PartialProxyToolCall>,
+}
+
+#[derive(Debug, Default)]
+struct PartialProxyToolCall {
+    id: Option<String>,
+    tool_type: Option<String>,
+    name: Option<String>,
+    arguments: String,
+    saw_arguments: bool,
+}
+
+impl ProxyToolCallDelta {
+    fn validate(&self) -> Result<()> {
+        validate_optional_non_blank(&self.id, "proxy chat stream tool call id")?;
+        validate_optional_non_blank(&self.tool_type, "proxy chat stream tool call type")?;
+        if let Some(function) = &self.function {
+            function.validate()?;
+        }
+        if self.id.is_none() && self.tool_type.is_none() && self.function.is_none() {
+            return Err(PowerError::InferenceFailed(
+                "proxy chat stream tool_call delta must include id, type, or function".to_string(),
+            ));
+        }
+        Ok(())
+    }
+}
+
+impl ProxyFunctionCallDelta {
+    fn validate(&self) -> Result<()> {
+        validate_optional_non_blank(&self.name, "proxy chat stream tool call function name")?;
+        if self.name.is_none() && self.arguments.is_none() {
+            return Err(PowerError::InferenceFailed(
+                "proxy chat stream tool_call function delta must include name or arguments"
+                    .to_string(),
+            ));
+        }
+        Ok(())
+    }
+}
+
+impl ProxyToolCallAssembler {
+    fn apply(&mut self, deltas: Vec<ProxyToolCallDelta>) -> Result<()> {
+        let mut indexes = BTreeSet::new();
+        for delta in deltas {
+            if !indexes.insert(delta.index) {
+                return Err(PowerError::InferenceFailed(format!(
+                    "proxy chat stream tool_call delta has duplicate index {} in one chunk",
+                    delta.index
+                )));
+            }
+            if !self.calls.contains_key(&delta.index)
+                && self.calls.len() >= MAX_PROXY_STREAM_TOOL_CALLS
+            {
+                return Err(PowerError::InferenceFailed(format!(
+                    "proxy chat stream tool_calls has too many entries: at most {MAX_PROXY_STREAM_TOOL_CALLS} are allowed"
+                )));
+            }
+            let call = self.calls.entry(delta.index).or_default();
+            set_once(&mut call.id, delta.id, "proxy chat stream tool call id")?;
+            set_once(
+                &mut call.tool_type,
+                delta.tool_type,
+                "proxy chat stream tool call type",
+            )?;
+            if let Some(function) = delta.function {
+                set_once(
+                    &mut call.name,
+                    function.name,
+                    "proxy chat stream tool call function name",
+                )?;
+                if let Some(arguments) = function.arguments {
+                    let new_len = call
+                        .arguments
+                        .len()
+                        .checked_add(arguments.len())
+                        .ok_or_else(|| {
+                            PowerError::InferenceFailed(
+                                "proxy chat stream tool call function.arguments length overflow"
+                                    .to_string(),
+                            )
+                        })?;
+                    if new_len > MAX_PROXY_STREAM_TOOL_CALL_ARGUMENT_BYTES {
+                        return Err(PowerError::InferenceFailed(format!(
+                            "proxy chat stream tool call function.arguments must be at most {MAX_PROXY_STREAM_TOOL_CALL_ARGUMENT_BYTES} bytes"
+                        )));
+                    }
+                    call.arguments.push_str(&arguments);
+                    call.saw_arguments = true;
+                }
+            }
+        }
+        Ok(())
+    }
+
+    fn complete(&self) -> Result<Option<Vec<ToolCall>>> {
+        if self.calls.is_empty() {
+            return Ok(None);
+        }
+
+        let mut calls = Vec::with_capacity(self.calls.len());
+        for (index, call) in &self.calls {
+            let id = required_tool_call_field(
+                call.id.as_deref(),
+                *index,
+                "id",
+                "proxy chat stream tool call missing id",
+            )?;
+            let tool_type = required_tool_call_field(
+                call.tool_type.as_deref(),
+                *index,
+                "type",
+                "proxy chat stream tool call missing type",
+            )?;
+            let name = required_tool_call_field(
+                call.name.as_deref(),
+                *index,
+                "function.name",
+                "proxy chat stream tool call missing function name",
+            )?;
+            if !call.saw_arguments {
+                return Err(PowerError::InferenceFailed(format!(
+                    "proxy chat stream tool call at index {index} missing function.arguments"
+                )));
+            }
+
+            calls.push(ToolCall {
+                id,
+                tool_type,
+                function: FunctionCall {
+                    name,
+                    arguments: call.arguments.clone(),
+                },
+                index: Some(*index),
+            });
+        }
+
+        Ok(Some(calls))
+    }
+}
+
+fn validate_optional_non_blank(value: &Option<String>, field: &str) -> Result<()> {
+    if value.as_ref().is_some_and(|value| value.trim().is_empty()) {
+        return Err(PowerError::InferenceFailed(format!(
+            "{field} must not be blank"
+        )));
+    }
+    Ok(())
+}
+
+fn set_once(existing: &mut Option<String>, value: Option<String>, field: &str) -> Result<()> {
+    let Some(value) = value else {
+        return Ok(());
+    };
+
+    match existing {
+        Some(existing) if existing != &value => Err(PowerError::InferenceFailed(format!(
+            "{field} changed across proxy chat stream tool_call deltas"
+        ))),
+        Some(_) => Ok(()),
+        None => {
+            *existing = Some(value);
+            Ok(())
+        }
+    }
+}
+
+fn required_tool_call_field(
+    value: Option<&str>,
+    index: u32,
+    field: &str,
+    message: &str,
+) -> Result<String> {
+    value
+        .map(str::to_string)
+        .ok_or_else(|| PowerError::InferenceFailed(format!("{message} at index {index}: {field}")))
+}
+
+fn parse_proxy_tool_call_deltas(
+    value: Option<&serde_json::Value>,
+) -> Result<Option<Vec<ProxyToolCallDelta>>> {
+    let Some(value) = value else {
+        return Ok(None);
+    };
+    if value.is_null() {
+        return Ok(None);
+    }
+
+    let calls = value.as_array().ok_or_else(|| {
+        PowerError::InferenceFailed(
+            "proxy chat stream delta tool_calls must be an array".to_string(),
+        )
+    })?;
+    if calls.is_empty() {
+        return Ok(None);
+    }
+    if calls.len() > MAX_PROXY_STREAM_TOOL_CALLS {
+        return Err(PowerError::InferenceFailed(format!(
+            "proxy chat stream delta tool_calls has too many entries: at most {MAX_PROXY_STREAM_TOOL_CALLS} are allowed"
+        )));
+    }
+
+    let mut deltas = Vec::with_capacity(calls.len());
+    for call in calls {
+        let delta: ProxyToolCallDelta = serde_json::from_value(call.clone()).map_err(|e| {
+            PowerError::InferenceFailed(format!(
+                "proxy chat stream delta tool_calls must be valid tool call deltas: {e}"
+            ))
+        })?;
+        delta.validate()?;
+        deltas.push(delta);
+    }
+
+    Ok(Some(deltas))
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct ParsedProxyCompletionStreamEvent {
+    text: Option<String>,
+    done_reason: Option<String>,
+}
+
+fn parse_proxy_chat_stream_event(json: &serde_json::Value) -> Result<ParsedProxyChatStreamEvent> {
+    let Some(choice) = first_proxy_stream_choice(json, "chat")? else {
+        return Ok(ParsedProxyChatStreamEvent {
+            content: None,
+            thinking_content: None,
+            tool_call_deltas: None,
+            done_reason: None,
+        });
+    };
+    let done_reason = proxy_stream_finish_reason(choice, "chat")?;
+    let delta = match choice.get("delta") {
+        Some(delta) if delta.is_object() => Some(delta),
+        Some(delta) if delta.is_null() && done_reason.is_some() => None,
+        Some(_) => {
+            return Err(PowerError::InferenceFailed(
+                "proxy chat stream choice delta must be an object".to_string(),
+            ));
+        }
+        None if done_reason.is_some() => None,
+        None => {
+            return Err(PowerError::InferenceFailed(
+                "proxy chat stream choice missing delta".to_string(),
+            ));
+        }
+    };
+    let content = match delta.and_then(|delta| delta.get("content")) {
+        Some(content) if content.is_null() => None,
+        Some(content) => {
+            let content = content.as_str().ok_or_else(|| {
+                PowerError::InferenceFailed(
+                    "proxy chat stream delta content must be a string".to_string(),
+                )
+            })?;
+            if content.is_empty() {
+                None
+            } else {
+                Some(content.to_string())
+            }
+        }
+        None => None,
+    };
+    let thinking_content = match delta.and_then(|delta| delta.get("reasoning_content")) {
+        Some(thinking) if thinking.is_null() => None,
+        Some(thinking) => {
+            let thinking = thinking.as_str().ok_or_else(|| {
+                PowerError::InferenceFailed(
+                    "proxy chat stream delta reasoning_content must be a string".to_string(),
+                )
+            })?;
+            if thinking.is_empty() {
+                None
+            } else {
+                Some(thinking.to_string())
+            }
+        }
+        None => None,
+    };
+    let tool_call_deltas =
+        parse_proxy_tool_call_deltas(delta.and_then(|delta| delta.get("tool_calls")))?;
+
+    Ok(ParsedProxyChatStreamEvent {
+        content,
+        thinking_content,
+        tool_call_deltas,
+        done_reason,
+    })
+}
+
+fn parse_proxy_completion_stream_event(
+    json: &serde_json::Value,
+) -> Result<ParsedProxyCompletionStreamEvent> {
+    let Some(choice) = first_proxy_stream_choice(json, "completion")? else {
+        return Ok(ParsedProxyCompletionStreamEvent {
+            text: None,
+            done_reason: None,
+        });
+    };
+    let done_reason = proxy_stream_finish_reason(choice, "completion")?;
+    let text = match choice.get("text") {
+        Some(text) if text.is_null() => None,
+        Some(text) => {
+            let text = text.as_str().ok_or_else(|| {
+                PowerError::InferenceFailed(
+                    "proxy completion stream choice text must be a string".to_string(),
+                )
+            })?;
+            if text.is_empty() {
+                None
+            } else {
+                Some(text.to_string())
+            }
+        }
+        None if done_reason.is_some() => None,
+        None => {
+            return Err(PowerError::InferenceFailed(
+                "proxy completion stream choice missing text".to_string(),
+            ));
+        }
+    };
+
+    Ok(ParsedProxyCompletionStreamEvent { text, done_reason })
+}
+
+fn first_proxy_stream_choice<'a>(
+    json: &'a serde_json::Value,
+    stream_kind: &'static str,
+) -> Result<Option<&'a serde_json::Value>> {
+    if let Some(error) = json.get("error") {
+        return Err(PowerError::InferenceFailed(format!(
+            "proxy {stream_kind} stream upstream error: {}",
+            proxy_stream_error_message(error)
+        )));
+    }
+
+    let choices = json
+        .get("choices")
+        .and_then(serde_json::Value::as_array)
+        .ok_or_else(|| {
+            PowerError::InferenceFailed(format!(
+                "proxy {stream_kind} stream event choices must be an array"
+            ))
+        })?;
+    if choices.is_empty() {
+        if json.get("usage").is_some_and(serde_json::Value::is_object) {
+            return Ok(None);
+        }
+        return Err(PowerError::InferenceFailed(format!(
+            "proxy {stream_kind} stream event has empty choices without usage"
+        )));
+    }
+    if choices.len() > 1 {
+        return Err(PowerError::InferenceFailed(format!(
+            "proxy {stream_kind} stream event returned multiple choices; only single-choice proxy streams are supported"
+        )));
+    }
+    Ok(Some(&choices[0]))
+}
+
+fn proxy_stream_finish_reason(
+    choice: &serde_json::Value,
+    stream_kind: &'static str,
+) -> Result<Option<String>> {
+    match choice.get("finish_reason") {
+        Some(reason) if reason.is_null() => Ok(None),
+        Some(reason) => {
+            let reason = reason.as_str().ok_or_else(|| {
+                PowerError::InferenceFailed(format!(
+                    "proxy {stream_kind} stream choice finish_reason must be a string or null"
+                ))
+            })?;
+            if reason.trim().is_empty() {
+                return Err(PowerError::InferenceFailed(format!(
+                    "proxy {stream_kind} stream choice finish_reason must not be blank"
+                )));
+            }
+            Ok(Some(reason.to_string()))
+        }
+        None => Ok(None),
+    }
+}
+
+fn proxy_stream_error_message(error: &serde_json::Value) -> String {
+    error
+        .get("message")
+        .and_then(serde_json::Value::as_str)
+        .or_else(|| error.as_str())
+        .map(str::trim)
+        .filter(|message| !message.is_empty())
+        .map(str::to_string)
+        .unwrap_or_else(|| error.to_string())
+}
+
+async fn read_effective_prompt_digest_response_json(
+    response: reqwest::Response,
+) -> Result<serde_json::Value> {
+    read_bounded_proxy_json_response(
+        response,
+        "proxy effective prompt digest",
+        MAX_PROXY_EFFECTIVE_PROMPT_DIGEST_RESPONSE_BYTES,
+    )
+    .await
+}
+
+async fn request_effective_prompt_digest(
+    http: &reqwest::Client,
+    url: &str,
+    body: &serde_json::Value,
+    required: bool,
+    allowed_kinds: &[crate::backend::types::EffectivePromptClaimKind],
+    default_kind: crate::backend::types::EffectivePromptClaimKind,
+) -> Result<Option<EffectivePromptDigest>> {
+    let resp = http.post(url).json(body).send().await.map_err(|e| {
+        PowerError::InferenceFailed(format!(
+            "proxy effective prompt digest request to {url} failed: {e}"
+        ))
+    })?;
+
+    let status = resp.status();
+    if matches!(
+        status,
+        reqwest::StatusCode::NOT_FOUND
+            | reqwest::StatusCode::METHOD_NOT_ALLOWED
+            | reqwest::StatusCode::NOT_IMPLEMENTED
+    ) && !required
+    {
+        return Ok(None);
+    }
+
+    if !status.is_success() {
+        return Err(PowerError::InferenceFailed(format!(
+            "proxy upstream returned {status} for effective prompt digest"
+        )));
+    }
+
+    let json = read_effective_prompt_digest_response_json(resp).await?;
+    parse_effective_prompt_digest_response(&json, allowed_kinds, default_kind).map(Some)
+}
+
+async fn read_proxy_embeddings_response_json(
+    response: reqwest::Response,
+) -> Result<serde_json::Value> {
+    read_bounded_proxy_json_response(
+        response,
+        "proxy embeddings",
+        MAX_PROXY_EMBEDDINGS_RESPONSE_BYTES,
+    )
+    .await
+}
+
+async fn read_bounded_proxy_json_response(
+    mut response: reqwest::Response,
+    label: &'static str,
+    max_bytes: usize,
+) -> Result<serde_json::Value> {
+    if let Some(content_length) = response.content_length() {
+        let max_bytes_u64 = u64::try_from(max_bytes).unwrap_or(u64::MAX);
+        if content_length > max_bytes_u64 {
+            return Err(PowerError::InferenceFailed(format!(
+                "{label} response body must be at most {max_bytes} bytes, got content-length {content_length}"
+            )));
+        }
+    }
+
+    let mut body = Vec::new();
+    while let Some(chunk) = response.chunk().await.map_err(|e| {
+        PowerError::InferenceFailed(format!("failed to read {label} response body: {e}"))
+    })? {
+        let next_len = body.len().checked_add(chunk.len()).ok_or_else(|| {
+            PowerError::InferenceFailed(format!("{label} response body length overflowed usize"))
+        })?;
+        if next_len > max_bytes {
+            return Err(PowerError::InferenceFailed(format!(
+                "{label} response body must be at most {max_bytes} bytes, got at least {next_len}"
+            )));
+        }
+        body.extend_from_slice(&chunk);
+    }
+
+    serde_json::from_slice(&body)
+        .map_err(|e| PowerError::InferenceFailed(format!("{label} decode failed: {e}")))
+}
+
+fn parse_proxy_embeddings_response(json: &serde_json::Value) -> Result<Vec<Vec<f32>>> {
+    let data = json
+        .get("data")
+        .and_then(serde_json::Value::as_array)
+        .ok_or_else(|| {
+            PowerError::InferenceFailed(
+                "proxy embeddings response data must be an array".to_string(),
+            )
+        })?;
+
+    data.iter()
+        .enumerate()
+        .map(|(item_index, item)| {
+            let embedding = item
+                .get("embedding")
+                .and_then(serde_json::Value::as_array)
+                .ok_or_else(|| {
+                    PowerError::InferenceFailed(format!(
+                        "proxy embeddings response data[{item_index}].embedding must be an array"
+                    ))
+                })?;
+            if embedding.is_empty() {
+                return Err(PowerError::InferenceFailed(format!(
+                    "proxy embeddings response data[{item_index}].embedding must not be empty"
+                )));
+            }
+
+            embedding
+                .iter()
+                .enumerate()
+                .map(|(value_index, value)| {
+                    let value = value.as_f64().ok_or_else(|| {
+                        PowerError::InferenceFailed(format!(
+                            "proxy embeddings response data[{item_index}].embedding[{value_index}] must be a number"
+                        ))
+                    })?;
+                    if !value.is_finite()
+                        || value < f32::MIN as f64
+                        || value > f32::MAX as f64
+                    {
+                        return Err(PowerError::InferenceFailed(format!(
+                            "proxy embeddings response data[{item_index}].embedding[{value_index}] must be a finite f32 value"
+                        )));
+                    }
+                    Ok(value as f32)
+                })
+                .collect()
+        })
+        .collect()
+}
+
+fn validate_proxy_embeddings_count(expected: usize, actual: usize) -> Result<()> {
+    if actual != expected {
+        return Err(PowerError::InferenceFailed(format!(
+            "proxy embeddings response returned {actual} embedding(s), expected {expected}"
+        )));
+    }
+    Ok(())
+}
+
+fn validate_proxy_embeddings_dimensions(embeddings: &[Vec<f32>]) -> Result<()> {
+    let Some(expected_dimension) = embeddings.first().map(Vec::len) else {
+        return Ok(());
+    };
+
+    for (index, embedding) in embeddings.iter().enumerate() {
+        let actual_dimension = embedding.len();
+        if actual_dimension != expected_dimension {
+            return Err(PowerError::InferenceFailed(format!(
+                "proxy embeddings response data[{index}].embedding dimension {actual_dimension} does not match expected dimension {expected_dimension}"
+            )));
+        }
+    }
+
+    Ok(())
+}
+
+fn proxy_endpoint_url(upstream: &str, segments: &[&str]) -> Result<String> {
+    let trimmed = upstream.trim();
+    if trimmed.is_empty() {
+        return Err(PowerError::Config(
+            "proxy upstream URL cannot be empty".to_string(),
+        ));
+    }
+
+    let mut url = reqwest::Url::parse(trimmed)
+        .map_err(|e| PowerError::Config(format!("invalid proxy upstream URL {trimmed:?}: {e}")))?;
+    url.set_query(None);
+    url.set_fragment(None);
+    {
+        let mut path = url.path_segments_mut().map_err(|_| {
+            PowerError::Config(format!(
+                "proxy upstream URL {trimmed:?} cannot be used as a base URL"
+            ))
+        })?;
+        path.pop_if_empty();
+        for segment in segments {
+            path.push(segment);
+        }
+    }
+
+    Ok(url.to_string())
+}
+
+fn configured_proxy_path_segments(path: &str) -> Result<Vec<&str>> {
+    let trimmed = path.trim();
+    if trimmed.is_empty() {
+        return Err(PowerError::Config(
+            "proxy_effective_prompt_digest_path cannot be empty".to_string(),
+        ));
+    }
+    if trimmed.contains('?') || trimmed.contains('#') {
+        return Err(PowerError::Config(
+            "proxy_effective_prompt_digest_path must be a path without query or fragment"
+                .to_string(),
+        ));
+    }
+    if reqwest::Url::parse(trimmed).is_ok() {
+        return Err(PowerError::Config(
+            "proxy_effective_prompt_digest_path must be a path, not an absolute URL".to_string(),
+        ));
+    }
+
+    let segments: Vec<&str> = trimmed
+        .trim_matches('/')
+        .split('/')
+        .filter(|segment| !segment.is_empty())
+        .collect();
+    if segments.is_empty() {
+        return Err(PowerError::Config(
+            "proxy_effective_prompt_digest_path cannot be empty".to_string(),
+        ));
+    }
+    if segments
+        .iter()
+        .any(|segment| matches!(*segment, "." | ".."))
+    {
+        return Err(PowerError::Config(
+            "proxy_effective_prompt_digest_path must not contain dot path segments".to_string(),
+        ));
+    }
+
+    Ok(segments)
+}
+
+fn parse_effective_prompt_digest_response(
+    json: &serde_json::Value,
+    allowed_kinds: &[crate::backend::types::EffectivePromptClaimKind],
+    default_kind: crate::backend::types::EffectivePromptClaimKind,
+) -> Result<EffectivePromptDigest> {
+    let claim = json.get("effective_prompt").unwrap_or(json);
+    let sha256 = claim
+        .get("sha256")
+        .and_then(serde_json::Value::as_str)
+        .map(str::trim)
+        .ok_or_else(|| {
+            PowerError::InferenceFailed(
+                "proxy effective prompt digest response missing sha256".to_string(),
+            )
+        })?;
+    if sha256.len() != 64 || !sha256.chars().all(|c| c.is_ascii_hexdigit()) {
+        return Err(PowerError::InferenceFailed(
+            "proxy effective prompt digest sha256 must be 64 hex characters".to_string(),
+        ));
+    }
+
+    let kind = match claim
+        .get("kind")
+        .and_then(serde_json::Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+    {
+        Some(raw) => {
+            crate::backend::types::EffectivePromptClaimKind::parse(raw).map_err(|err| {
+                PowerError::InferenceFailed(format!("proxy effective prompt digest {err}"))
+            })?
+        }
+        None => default_kind,
+    };
+    if !allowed_kinds.contains(&kind) {
+        return Err(PowerError::InferenceFailed(format!(
+            "proxy effective prompt digest kind must be one of {}, got {kind}",
+            allowed_kinds
+                .iter()
+                .map(|kind| kind.as_str())
+                .collect::<Vec<_>>()
+                .join(", ")
+        )));
+    }
+    if !kind.digest_emitible() {
+        return Err(PowerError::InferenceFailed(format!(
+            "proxy effective prompt digest kind '{kind}' is reserved; leave effective_prompt absent until the exact representation exists"
+        )));
+    }
+
+    let backend = claim
+        .get("backend")
+        .and_then(serde_json::Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .unwrap_or("proxy-upstream");
+
+    EffectivePromptDigest::try_new(backend, kind, sha256.to_ascii_lowercase())
+        .map_err(PowerError::InferenceFailed)
+}
+
+/// POST a streaming request body and return the response, erroring on non-2xx.
+async fn send_stream(
+    http: &reqwest::Client,
+    url: &str,
+    body: serde_json::Value,
+) -> Result<reqwest::Response> {
+    let resp =
+        http.post(url).json(&body).send().await.map_err(|e| {
+            PowerError::InferenceFailed(format!("proxy request to {url} failed: {e}"))
+        })?;
+    if !resp.status().is_success() {
+        let status = resp.status();
+        let message = format!("proxy upstream returned {status}");
+        return Err(if matches!(status.as_u16(), 400 | 422) {
+            PowerError::InvalidRequest(message)
+        } else {
+            PowerError::InferenceFailed(message)
+        });
+    }
+    Ok(resp)
+}
+
+/// Pull the next SSE `data:` event from a byte stream, buffering partial lines.
+///
+/// Returns `Ok(Some(json))` for a data line, `Ok(None)` for the `[DONE]`
+/// sentinel, `None` when the byte stream ends, `Err` on a transport failure.
+/// Generic over the chunk type so the concrete `bytes::Bytes` is never named
+/// (it is not a direct dependency).
+async fn next_sse_event<S, T>(
+    stream: &mut S,
+    buf: &mut Vec<u8>,
+) -> Option<Result<Option<serde_json::Value>>>
+where
+    S: Stream<Item = reqwest::Result<T>> + Unpin,
+    T: AsRef<[u8]>,
+{
+    loop {
+        // Emit any complete `data:` line already buffered.
+        while let Some(nl) = buf.iter().position(|byte| *byte == b'\n') {
+            if nl >= MAX_PROXY_SSE_BUFFER_BYTES {
+                return Some(Err(proxy_sse_buffer_limit_error()));
+            }
+            let line: Vec<u8> = buf.drain(..=nl).collect();
+            let line = match std::str::from_utf8(&line) {
+                Ok(line) => line.trim(),
+                Err(e) => {
+                    return Some(Err(PowerError::InferenceFailed(format!(
+                        "proxy SSE event line is not valid UTF-8: {e}"
+                    ))));
+                }
+            };
+            let Some(data) = line.strip_prefix("data:") else {
+                continue;
+            };
+            let data = data.trim();
+            if data == "[DONE]" {
+                return Some(Ok(None));
+            }
+            if data.is_empty() {
+                continue;
+            }
+            match serde_json::from_str::<serde_json::Value>(data) {
+                Ok(v) => return Some(Ok(Some(v))),
+                Err(e) => {
+                    return Some(Err(PowerError::InferenceFailed(format!(
+                        "proxy SSE data event decode failed: {e}"
+                    ))));
+                }
+            }
+        }
+        if buf.len() > MAX_PROXY_SSE_BUFFER_BYTES {
+            return Some(Err(proxy_sse_buffer_limit_error()));
+        }
+        // Need more bytes.
+        match stream.next().await {
+            Some(Ok(bytes)) => buf.extend_from_slice(bytes.as_ref()),
+            Some(Err(e)) => {
+                return Some(Err(PowerError::InferenceFailed(format!(
+                    "proxy stream error: {e}"
+                ))))
+            }
+            None if buf.is_empty() => return None,
+            None => {
+                return Some(Err(PowerError::InferenceFailed(
+                    "proxy SSE stream ended with an incomplete event line".to_string(),
+                )));
+            }
+        }
+    }
+}
+
+fn proxy_sse_buffer_limit_error() -> PowerError {
+    PowerError::InferenceFailed(format!(
+        "proxy SSE event buffer exceeded {} bytes",
+        MAX_PROXY_SSE_BUFFER_BYTES
+    ))
+}
+
+fn build_chat_body(model_name: &str, request: &ChatRequest) -> serde_json::Value {
+    let messages: Vec<serde_json::Value> = request
+        .messages
+        .iter()
+        .map(|m| {
+            let mut msg = serde_json::json!({
+                "role": m.role,
+                "content": m.content,
+            });
+            let obj = msg.as_object_mut().expect("message is a json object");
+            if let Some(name) = &m.name {
+                obj.insert("name".to_string(), serde_json::json!(name));
+            }
+            if let Some(tool_calls) = &m.tool_calls {
+                obj.insert("tool_calls".to_string(), serde_json::json!(tool_calls));
+            }
+            if let Some(tool_call_id) = &m.tool_call_id {
+                obj.insert("tool_call_id".to_string(), serde_json::json!(tool_call_id));
+            }
+            if let Some(images) = &m.images {
+                if !images.is_empty() {
+                    obj.insert("images".to_string(), serde_json::json!(images));
+                }
+            }
+            msg
+        })
+        .collect();
+    let mut body = serde_json::json!({
+        "model": model_name,
+        "messages": messages,
+        "stream": true,
+    });
+    if let Some(response_format) = &request.response_format {
+        body.as_object_mut()
+            .expect("body is a json object")
+            .insert("response_format".into(), response_format.clone());
+    }
+    if let Some(stream_options) = &request.stream_options {
+        body.as_object_mut()
+            .expect("body is a json object")
+            .insert("stream_options".into(), stream_options.clone());
+    }
+    // The upstream is always streamed, including buffered caller requests.
+    // Collect its actual token counts; caller-facing usage remains opt-in.
+    body["stream_options"] = serde_json::json!({"include_usage": true});
+    if let Some(tools) = &request.tools {
+        body.as_object_mut()
+            .expect("body is a json object")
+            .insert("tools".into(), serde_json::json!(tools));
+    }
+    if let Some(tool_choice) = &request.tool_choice {
+        body.as_object_mut()
+            .expect("body is a json object")
+            .insert("tool_choice".into(), serde_json::json!(tool_choice));
+    }
+    if let Some(parallel_tool_calls) = request.parallel_tool_calls {
+        body.as_object_mut()
+            .expect("body is a json object")
+            .insert("parallel_tool_calls".into(), parallel_tool_calls.into());
+    }
+    if let Some(images) = &request.images {
+        if !images.is_empty() {
+            body.as_object_mut()
+                .expect("body is a json object")
+                .insert("images".into(), serde_json::json!(images));
+        }
+    }
+    set_common(
+        &mut body,
+        request.temperature,
+        request.top_p,
+        request.max_tokens,
+        &request.stop,
+        request.top_k,
+        request.min_p,
+        request.repeat_penalty,
+        request.repeat_last_n,
+        request.penalize_newline,
+        request.num_ctx,
+        request.mirostat,
+        request.mirostat_tau,
+        request.mirostat_eta,
+        request.tfs_z,
+        request.typical_p,
+        request.frequency_penalty,
+        request.presence_penalty,
+        request.seed,
+    );
+    body
+}
+
+fn build_completion_body(model_name: &str, request: &CompletionRequest) -> serde_json::Value {
+    let mut body = serde_json::json!({
+        "model": model_name,
+        "prompt": request.prompt,
+        "stream": true,
+    });
+    if let Some(response_format) = &request.response_format {
+        body.as_object_mut()
+            .expect("body is a json object")
+            .insert("response_format".into(), response_format.clone());
+    }
+    if let Some(stream_options) = &request.stream_options {
+        body.as_object_mut()
+            .expect("body is a json object")
+            .insert("stream_options".into(), stream_options.clone());
+    }
+    set_common(
+        &mut body,
+        request.temperature,
+        request.top_p,
+        request.max_tokens,
+        &request.stop,
+        request.top_k,
+        request.min_p,
+        request.repeat_penalty,
+        request.repeat_last_n,
+        request.penalize_newline,
+        request.num_ctx,
+        request.mirostat,
+        request.mirostat_tau,
+        request.mirostat_eta,
+        request.tfs_z,
+        request.typical_p,
+        request.frequency_penalty,
+        request.presence_penalty,
+        request.seed,
+    );
+    body
+}
+
+/// Copy the common OpenAI sampling params onto a request body when present.
+#[allow(clippy::too_many_arguments)]
+fn set_common(
+    body: &mut serde_json::Value,
+    temperature: Option<f32>,
+    top_p: Option<f32>,
+    max_tokens: Option<u32>,
+    stop: &Option<Vec<String>>,
+    top_k: Option<i32>,
+    min_p: Option<f32>,
+    repeat_penalty: Option<f32>,
+    repeat_last_n: Option<i32>,
+    penalize_newline: Option<bool>,
+    num_ctx: Option<u32>,
+    mirostat: Option<u32>,
+    mirostat_tau: Option<f32>,
+    mirostat_eta: Option<f32>,
+    tfs_z: Option<f32>,
+    typical_p: Option<f32>,
+    frequency_penalty: Option<f32>,
+    presence_penalty: Option<f32>,
+    seed: Option<i64>,
+) {
+    let obj = body.as_object_mut().expect("body is a json object");
+    if let Some(t) = temperature {
+        obj.insert("temperature".into(), t.into());
+    }
+    if let Some(p) = top_p {
+        obj.insert("top_p".into(), p.into());
+    }
+    if let Some(m) = max_tokens {
+        obj.insert("max_tokens".into(), m.into());
+    }
+    if let Some(s) = stop {
+        if !s.is_empty() {
+            obj.insert("stop".into(), serde_json::json!(s));
+        }
+    }
+    if let Some(k) = top_k {
+        obj.insert("top_k".into(), k.into());
+    }
+    if let Some(p) = min_p {
+        obj.insert("min_p".into(), p.into());
+    }
+    if let Some(p) = repeat_penalty {
+        obj.insert("repeat_penalty".into(), p.into());
+    }
+    if let Some(n) = repeat_last_n {
+        obj.insert("repeat_last_n".into(), n.into());
+    }
+    if let Some(p) = penalize_newline {
+        obj.insert("penalize_newline".into(), p.into());
+    }
+    if let Some(n) = num_ctx {
+        obj.insert("num_ctx".into(), n.into());
+    }
+    if let Some(m) = mirostat {
+        obj.insert("mirostat".into(), m.into());
+    }
+    if let Some(t) = mirostat_tau {
+        obj.insert("mirostat_tau".into(), t.into());
+    }
+    if let Some(e) = mirostat_eta {
+        obj.insert("mirostat_eta".into(), e.into());
+    }
+    if let Some(z) = tfs_z {
+        obj.insert("tfs_z".into(), z.into());
+    }
+    if let Some(p) = typical_p {
+        obj.insert("typical_p".into(), p.into());
+    }
+    if let Some(f) = frequency_penalty {
+        obj.insert("frequency_penalty".into(), f.into());
+    }
+    if let Some(p) = presence_penalty {
+        obj.insert("presence_penalty".into(), p.into());
+    }
+    if let Some(s) = seed {
+        obj.insert("seed".into(), s.into());
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::backend::types::{
+        ChatMessage, ContentPart, FunctionDefinition, ImageUrl, MessageContent, Tool, ToolChoice,
+    };
+    use std::collections::HashMap;
+    use std::sync::Mutex;
+
+    fn chat_req() -> ChatRequest {
+        ChatRequest {
+            messages: vec![ChatMessage {
+                role: "user".to_string(),
+                content: MessageContent::Text("hi".to_string()),
+                name: None,
+                tool_calls: None,
+                tool_call_id: None,
+                images: None,
+            }],
+            session_id: None,
+            temperature: Some(0.5),
+            top_p: None,
+            max_tokens: Some(16),
+            stop: Some(vec!["END".to_string()]),
+            stream: true,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: Some(7),
+            num_ctx: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            response_format: None,
+            stream_options: None,
+            tools: None,
+            tool_choice: None,
+            parallel_tool_calls: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_batch: None,
+            num_thread: None,
+            num_thread_batch: None,
+            flash_attention: None,
+            num_gpu: None,
+            main_gpu: None,
+            use_mmap: None,
+            use_mlock: None,
+            num_parallel: None,
+            images: None,
+        }
+    }
+
+    fn image_chat_req() -> ChatRequest {
+        let mut request = chat_req();
+        request.messages[0].images = Some(vec!["aGVsbG8=".to_string()]);
+        request
+    }
+
+    fn completion_req() -> CompletionRequest {
+        CompletionRequest {
+            prompt: "hi".to_string(),
+            session_id: None,
+            temperature: Some(0.5),
+            top_p: None,
+            max_tokens: Some(16),
+            stop: Some(vec!["END".to_string()]),
+            stream: true,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: Some(7),
+            num_ctx: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            response_format: None,
+            stream_options: None,
+            images: None,
+            projector_path: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_batch: None,
+            num_thread: None,
+            num_thread_batch: None,
+            flash_attention: None,
+            num_gpu: None,
+            main_gpu: None,
+            use_mmap: None,
+            use_mlock: None,
+            num_parallel: None,
+            suffix: None,
+            context: None,
+        }
+    }
+
+    #[tokio::test]
+    async fn explicit_speculative_mode_fails_before_proxy_request() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            spec_mode: "dspark".to_string(),
+            ..Default::default()
+        }));
+
+        let error = backend
+            .effective_chat_prompt_digest("no-upstream", &chat_req())
+            .await
+            .unwrap_err();
+
+        assert!(error.to_string().contains("proxy"));
+        assert!(error.to_string().contains("dspark"));
+    }
+
+    #[test]
+    fn build_chat_body_maps_params() {
+        let body = build_chat_body("llama-70b", &chat_req());
+        assert_eq!(body["model"], "llama-70b");
+        assert_eq!(body["stream"], true);
+        assert_eq!(body["messages"][0]["role"], "user");
+        assert_eq!(body["messages"][0]["content"], "hi");
+        assert_eq!(body["temperature"], 0.5);
+        assert_eq!(body["max_tokens"], 16);
+        assert_eq!(body["stop"][0], "END");
+        assert_eq!(body["seed"], 7);
+        // Unset params must be omitted, not null.
+        assert!(body.get("top_p").is_none());
+    }
+
+    #[test]
+    fn build_chat_body_preserves_multimodal_tools_and_extended_sampling() {
+        let mut request = chat_req();
+        request.messages[0].content = MessageContent::Parts(vec![
+            ContentPart::Text {
+                text: "describe this".to_string(),
+                unsupported: Default::default(),
+            },
+            ContentPart::ImageUrl {
+                image_url: ImageUrl {
+                    url: "data:image/png;base64,aGVsbG8=".to_string(),
+                    detail: Some("low".to_string()),
+                    unsupported: Default::default(),
+                },
+                unsupported: Default::default(),
+            },
+        ]);
+        request.messages[0].images = Some(vec!["message-base64-image".to_string()]);
+        request.response_format = Some(serde_json::json!({"type":"json_object"}));
+        request.stream_options = Some(serde_json::json!({"include_usage": true}));
+        request.tools = Some(vec![Tool {
+            tool_type: "function".to_string(),
+            function: FunctionDefinition {
+                name: "lookup".to_string(),
+                description: Some("Look up a value".to_string()),
+                parameters: serde_json::json!({"type":"object"}),
+                strict: Some(true),
+                unsupported: Default::default(),
+            },
+            unsupported: Default::default(),
+        }]);
+        request.tool_choice = Some(ToolChoice::String("auto".to_string()));
+        request.parallel_tool_calls = Some(false);
+        request.images = Some(vec!["request-base64-image".to_string()]);
+        request.top_k = Some(40);
+        request.min_p = Some(0.5);
+        request.repeat_penalty = Some(1.25);
+        request.repeat_last_n = Some(64);
+        request.penalize_newline = Some(true);
+        request.num_ctx = Some(4096);
+        request.mirostat = Some(2);
+        request.mirostat_tau = Some(5.0);
+        request.mirostat_eta = Some(0.25);
+        request.tfs_z = Some(0.75);
+        request.typical_p = Some(0.5);
+
+        let body = build_chat_body("llama-70b", &request);
+
+        assert_eq!(body["messages"][0]["content"][0]["text"], "describe this");
+        assert_eq!(
+            body["messages"][0]["content"][1]["image_url"]["url"],
+            "data:image/png;base64,aGVsbG8="
+        );
+        assert_eq!(body["messages"][0]["images"][0], "message-base64-image");
+        assert_eq!(body["images"][0], "request-base64-image");
+        assert_eq!(body["response_format"]["type"], "json_object");
+        assert_eq!(body["stream_options"]["include_usage"], true);
+        assert_eq!(body["tools"][0]["function"]["name"], "lookup");
+        assert_eq!(body["tools"][0]["function"]["strict"], true);
+        assert_eq!(body["tool_choice"], "auto");
+        assert_eq!(body["parallel_tool_calls"], false);
+        assert_eq!(body["top_k"], 40);
+        assert_eq!(body["min_p"], 0.5);
+        assert_eq!(body["repeat_penalty"], 1.25);
+        assert_eq!(body["repeat_last_n"], 64);
+        assert_eq!(body["penalize_newline"], true);
+        assert_eq!(body["num_ctx"], 4096);
+        assert_eq!(body["mirostat"], 2);
+        assert_eq!(body["mirostat_tau"], 5.0);
+        assert_eq!(body["mirostat_eta"], 0.25);
+        assert_eq!(body["tfs_z"], 0.75);
+        assert_eq!(body["typical_p"], 0.5);
+    }
+
+    #[test]
+    fn build_completion_body_preserves_extended_sampling() {
+        let request = CompletionRequest {
+            prompt: "hello".to_string(),
+            session_id: None,
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            stop: None,
+            stream: true,
+            top_k: Some(40),
+            min_p: Some(0.5),
+            repeat_penalty: Some(1.25),
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            num_ctx: Some(2048),
+            mirostat: Some(1),
+            mirostat_tau: Some(4.0),
+            mirostat_eta: Some(0.25),
+            tfs_z: Some(0.75),
+            typical_p: Some(0.5),
+            response_format: None,
+            stream_options: Some(serde_json::json!({"include_usage": true})),
+            images: None,
+            projector_path: None,
+            repeat_last_n: Some(32),
+            penalize_newline: Some(false),
+            num_batch: None,
+            num_thread: None,
+            num_thread_batch: None,
+            flash_attention: None,
+            num_gpu: None,
+            main_gpu: None,
+            use_mmap: None,
+            use_mlock: None,
+            num_parallel: None,
+            suffix: None,
+            context: None,
+        };
+
+        let body = build_completion_body("llama-70b", &request);
+
+        assert_eq!(body["prompt"], "hello");
+        assert_eq!(body["top_k"], 40);
+        assert_eq!(body["min_p"], 0.5);
+        assert_eq!(body["repeat_penalty"], 1.25);
+        assert_eq!(body["repeat_last_n"], 32);
+        assert_eq!(body["penalize_newline"], false);
+        assert_eq!(body["num_ctx"], 2048);
+        assert_eq!(body["mirostat"], 1);
+        assert_eq!(body["mirostat_tau"], 4.0);
+        assert_eq!(body["mirostat_eta"], 0.25);
+        assert_eq!(body["tfs_z"], 0.75);
+        assert_eq!(body["typical_p"], 0.5);
+        assert_eq!(body["stream_options"]["include_usage"], true);
+    }
+
+    #[test]
+    fn build_completion_body_preserves_response_format() {
+        let request = CompletionRequest {
+            prompt: "hello".to_string(),
+            session_id: None,
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            stop: None,
+            stream: true,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            num_ctx: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            response_format: Some(serde_json::json!({
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "Answer",
+                    "schema": { "type": "object" },
+                    "strict": true
+                }
+            })),
+            stream_options: None,
+            images: None,
+            projector_path: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_batch: None,
+            num_thread: None,
+            num_thread_batch: None,
+            flash_attention: None,
+            num_gpu: None,
+            main_gpu: None,
+            use_mmap: None,
+            use_mlock: None,
+            num_parallel: None,
+            suffix: None,
+            context: None,
+        };
+
+        let body = build_completion_body("llama-70b", &request);
+
+        assert_eq!(body["response_format"]["type"], "json_schema");
+        assert_eq!(body["response_format"]["json_schema"]["name"], "Answer");
+        assert_eq!(body["response_format"]["json_schema"]["strict"], true);
+    }
+
+    #[test]
+    fn supports_only_remote() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig::default()));
+        assert!(backend.supports(&ModelFormat::Remote));
+        assert!(!backend.supports(&ModelFormat::Gguf));
+    }
+
+    #[test]
+    fn upstream_missing_is_model_not_found() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig::default()));
+        let err = backend.upstream("nope").unwrap_err();
+        assert!(matches!(err, PowerError::ModelNotFound(_)));
+    }
+
+    #[test]
+    fn proxy_endpoint_url_preserves_base_path_and_drops_query_fragment() {
+        let url = proxy_endpoint_url(
+            "http://upstream.local/proxy/base?stale=1#section",
+            &["v1", "chat", "completions"],
+        )
+        .unwrap();
+
+        assert_eq!(url, "http://upstream.local/proxy/base/v1/chat/completions");
+    }
+
+    #[test]
+    fn effective_prompt_digest_url_encodes_configured_path_segments() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest_path: "/v1/chat/rendered prompt".to_string(),
+            ..proxy_config("http://upstream.local/proxy?stale=1#section".to_string())
+        }));
+
+        let url = backend.effective_prompt_digest_url("llama-70b").unwrap();
+
+        assert_eq!(url, "http://upstream.local/proxy/v1/chat/rendered%20prompt");
+    }
+
+    #[test]
+    fn effective_prompt_digest_url_rejects_query_in_configured_path() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest_path: "/v1/chat/effective-prompt-digest?debug=1"
+                .to_string(),
+            ..proxy_config("http://upstream.local".to_string())
+        }));
+
+        let err = backend
+            .effective_prompt_digest_url("llama-70b")
+            .unwrap_err();
+        assert!(err.to_string().contains("query or fragment"));
+    }
+
+    fn proxy_config(upstream: String) -> PowerConfig {
+        let mut proxy_upstreams = HashMap::new();
+        proxy_upstreams.insert("llama-70b".to_string(), upstream);
+        PowerConfig {
+            proxy_upstreams,
+            ..Default::default()
+        }
+    }
+
+    async fn spawn_test_server(app: axum::Router) -> (String, tokio::task::JoinHandle<()>) {
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            axum::serve(listener, app).await.unwrap();
+        });
+        (format!("http://{addr}"), server)
+    }
+
+    #[tokio::test]
+    async fn effective_prompt_digest_default_is_absent_without_upstream_lookup() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig::default()));
+        let digest = backend
+            .effective_chat_prompt_digest("llama-70b", &chat_req())
+            .await
+            .unwrap();
+        assert!(digest.is_none());
+    }
+
+    #[tokio::test]
+    async fn effective_completion_prompt_digest_default_is_absent_without_upstream_lookup() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig::default()));
+        let digest = backend
+            .effective_completion_prompt_digest("llama-70b", &completion_req())
+            .await
+            .unwrap();
+        assert!(digest.is_none());
+    }
+
+    #[tokio::test]
+    async fn effective_prompt_digest_optional_image_request_is_absent_without_upstream_lookup() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest: true,
+            ..Default::default()
+        }));
+
+        let digest = backend
+            .effective_chat_prompt_digest("llama-70b", &image_chat_req())
+            .await
+            .unwrap();
+        assert!(digest.is_none());
+    }
+
+    #[tokio::test]
+    async fn effective_prompt_digest_required_image_request_fails_closed() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest_required: true,
+            ..Default::default()
+        }));
+
+        let err = backend
+            .effective_chat_prompt_digest("llama-70b", &image_chat_req())
+            .await
+            .unwrap_err();
+        assert!(err.to_string().contains("image-bearing"));
+    }
+
+    #[tokio::test]
+    async fn effective_prompt_digest_optional_unsupported_endpoint_is_absent() {
+        let (upstream, server) = spawn_test_server(axum::Router::new()).await;
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest: true,
+            ..proxy_config(upstream)
+        }));
+
+        let digest = backend
+            .effective_chat_prompt_digest("llama-70b", &chat_req())
+            .await
+            .unwrap();
+        assert!(digest.is_none());
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn effective_completion_prompt_digest_optional_unsupported_endpoint_is_absent() {
+        let (upstream, server) = spawn_test_server(axum::Router::new()).await;
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest: true,
+            ..proxy_config(upstream)
+        }));
+
+        let digest = backend
+            .effective_completion_prompt_digest("llama-70b", &completion_req())
+            .await
+            .unwrap();
+        assert!(digest.is_none());
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn effective_completion_prompt_digest_required_image_request_fails_closed() {
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest_required: true,
+            ..Default::default()
+        }));
+        let mut request = completion_req();
+        request.images = Some(vec!["aGVsbG8=".to_string()]);
+
+        let err = backend
+            .effective_completion_prompt_digest("llama-70b", &request)
+            .await
+            .unwrap_err();
+        assert!(err.to_string().contains("image-bearing"));
+    }
+
+    #[tokio::test]
+    async fn effective_prompt_digest_required_unsupported_endpoint_fails() {
+        let (upstream, server) = spawn_test_server(axum::Router::new()).await;
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest_required: true,
+            ..proxy_config(upstream)
+        }));
+
+        let err = backend
+            .effective_chat_prompt_digest("llama-70b", &chat_req())
+            .await
+            .unwrap_err();
+        assert!(err.to_string().contains("effective prompt digest"));
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn effective_prompt_digest_success_uses_upstream_claim() {
+        let received = Arc::new(Mutex::new(None::<serde_json::Value>));
+        let handler_received = received.clone();
+        let app = axum::Router::new().route(
+            "/v1/chat/effective-prompt-digest",
+            axum::routing::post(move |axum::Json(body): axum::Json<serde_json::Value>| {
+                let handler_received = handler_received.clone();
+                async move {
+                    {
+                        let mut received = handler_received.lock().unwrap();
+                        *received = Some(body);
+                    }
+                    axum::Json(serde_json::json!({
+                        "effective_prompt": {
+                            "backend": "vllm",
+                            "kind": "chat.rendered-prompt",
+                            "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789ABCDEF"
+                        }
+                    }))
+                }
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest: true,
+            ..proxy_config(upstream)
+        }));
+
+        let digest = backend
+            .effective_chat_prompt_digest("llama-70b", &chat_req())
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(digest.backend, "vllm");
+        assert_eq!(
+            digest.kind,
+            crate::backend::types::EffectivePromptClaimKind::ChatRenderedPrompt
+        );
+        assert_eq!(
+            digest.sha256,
+            "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        );
+        let body = received.lock().unwrap().clone().unwrap();
+        assert_eq!(body["model"], "llama-70b");
+        assert_eq!(body["stream"], false);
+        assert_eq!(body["messages"][0]["content"], "hi");
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn effective_completion_prompt_digest_success_uses_upstream_claim() {
+        let received = Arc::new(Mutex::new(None::<serde_json::Value>));
+        let handler_received = received.clone();
+        let app = axum::Router::new().route(
+            "/v1/chat/effective-prompt-digest",
+            axum::routing::post(move |axum::Json(body): axum::Json<serde_json::Value>| {
+                let handler_received = handler_received.clone();
+                async move {
+                    {
+                        let mut received = handler_received.lock().unwrap();
+                        *received = Some(body);
+                    }
+                    axum::Json(serde_json::json!({
+                        "effective_prompt": {
+                            "backend": "vllm",
+                            "kind": "text.prompt",
+                            "sha256": "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
+                        }
+                    }))
+                }
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest: true,
+            ..proxy_config(upstream)
+        }));
+
+        let digest = backend
+            .effective_completion_prompt_digest("llama-70b", &completion_req())
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(digest.backend, "vllm");
+        assert_eq!(
+            digest.kind,
+            crate::backend::types::EffectivePromptClaimKind::TextPrompt
+        );
+        assert_eq!(
+            digest.sha256,
+            "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
+        );
+        let body = received.lock().unwrap().clone().unwrap();
+        assert_eq!(body["model"], "llama-70b");
+        assert_eq!(body["stream"], false);
+        assert_eq!(body["prompt"], "hi");
+        assert!(body.get("messages").is_none());
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn effective_completion_prompt_digest_rejects_chat_only_kind() {
+        let app = axum::Router::new().route(
+            "/v1/chat/effective-prompt-digest",
+            axum::routing::post(|| async {
+                axum::Json(serde_json::json!({
+                    "effective_prompt": {
+                        "kind": "chat.rendered-prompt",
+                        "sha256": "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
+                    }
+                }))
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest: true,
+            ..proxy_config(upstream)
+        }));
+
+        let err = backend
+            .effective_completion_prompt_digest("llama-70b", &completion_req())
+            .await
+            .unwrap_err();
+        assert!(err.to_string().contains("text.prompt"));
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn effective_prompt_digest_rejects_reserved_multimodal_kind() {
+        let app = axum::Router::new().route(
+            "/v1/chat/effective-prompt-digest",
+            axum::routing::post(|| async {
+                axum::Json(serde_json::json!({
+                    "effective_prompt": {
+                        "backend": "vllm",
+                        "kind": "chat.multimodal-rendered-prompt",
+                        "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+                    }
+                }))
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest: true,
+            ..proxy_config(upstream)
+        }));
+
+        let err = backend
+            .effective_chat_prompt_digest("llama-70b", &chat_req())
+            .await
+            .unwrap_err();
+        assert!(
+            err.to_string().contains("chat.multimodal-rendered-prompt")
+                || err.to_string().contains("reserved")
+                || err.to_string().contains("chat.rendered-prompt"),
+            "unexpected error: {err}"
+        );
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn effective_prompt_digest_malformed_sha_fails() {
+        let app = axum::Router::new().route(
+            "/v1/chat/effective-prompt-digest",
+            axum::routing::post(|| async {
+                axum::Json(serde_json::json!({
+                    "sha256": "not-a-sha"
+                }))
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest: true,
+            ..proxy_config(upstream)
+        }));
+
+        let err = backend
+            .effective_chat_prompt_digest("llama-70b", &chat_req())
+            .await
+            .unwrap_err();
+        assert!(err.to_string().contains("64 hex"));
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn effective_prompt_digest_rejects_oversized_response_body() {
+        let app = axum::Router::new().route(
+            "/v1/chat/effective-prompt-digest",
+            axum::routing::post(|| async {
+                vec![b'{'; MAX_PROXY_EFFECTIVE_PROMPT_DIGEST_RESPONSE_BYTES + 1]
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(PowerConfig {
+            proxy_effective_prompt_digest: true,
+            ..proxy_config(upstream)
+        }));
+
+        let err = backend
+            .effective_chat_prompt_digest("llama-70b", &chat_req())
+            .await
+            .unwrap_err();
+        assert!(err.to_string().contains("at most"));
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn embed_success_parses_embeddings() {
+        let app = axum::Router::new().route(
+            "/v1/embeddings",
+            axum::routing::post(|| async {
+                axum::Json(serde_json::json!({
+                    "data": [
+                        { "embedding": [1.0, 2.5] },
+                        { "embedding": [3.0, 4.0] }
+                    ]
+                }))
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(proxy_config(upstream)));
+
+        let response = backend
+            .embed(
+                "llama-70b",
+                EmbeddingRequest {
+                    input: vec!["hello".to_string(), "world".to_string()],
+                },
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(response.embeddings, vec![vec![1.0, 2.5], vec![3.0, 4.0]]);
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn embed_rejects_malformed_embedding_values() {
+        let app = axum::Router::new().route(
+            "/v1/embeddings",
+            axum::routing::post(|| async {
+                axum::Json(serde_json::json!({
+                    "data": [
+                        { "embedding": [1.0, "not-a-number"] }
+                    ]
+                }))
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(proxy_config(upstream)));
+
+        let err = backend
+            .embed(
+                "llama-70b",
+                EmbeddingRequest {
+                    input: vec!["hello".to_string()],
+                },
+            )
+            .await
+            .unwrap_err();
+
+        let err = err.to_string();
+        assert!(err.contains("embedding"), "error: {err}");
+        assert!(err.contains("number"), "error: {err}");
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn embed_rejects_embedding_count_mismatch() {
+        let app = axum::Router::new().route(
+            "/v1/embeddings",
+            axum::routing::post(|| async {
+                axum::Json(serde_json::json!({
+                    "data": [
+                        { "embedding": [1.0] }
+                    ]
+                }))
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(proxy_config(upstream)));
+
+        let err = backend
+            .embed(
+                "llama-70b",
+                EmbeddingRequest {
+                    input: vec!["hello".to_string(), "world".to_string()],
+                },
+            )
+            .await
+            .unwrap_err();
+
+        let err = err.to_string();
+        assert!(err.contains("returned 1 embedding"), "error: {err}");
+        assert!(err.contains("expected 2"), "error: {err}");
+        server.abort();
+    }
+
+    #[tokio::test]
+    async fn embed_rejects_inconsistent_embedding_dimensions() {
+        let app = axum::Router::new().route(
+            "/v1/embeddings",
+            axum::routing::post(|| async {
+                axum::Json(serde_json::json!({
+                    "data": [
+                        { "embedding": [1.0, 2.0] },
+                        { "embedding": [3.0] }
+                    ]
+                }))
+            }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let backend = ProxyBackend::new(Arc::new(proxy_config(upstream)));
+
+        let err = backend
+            .embed(
+                "llama-70b",
+                EmbeddingRequest {
+                    input: vec!["hello".to_string(), "world".to_string()],
+                },
+            )
+            .await
+            .unwrap_err();
+
+        assert!(err.to_string().contains("dimension"));
+        server.abort();
+    }
+
+    #[test]
+    fn parse_proxy_embeddings_response_rejects_missing_data() {
+        let err = parse_proxy_embeddings_response(&serde_json::json!({}))
+            .expect_err("missing data must fail");
+
+        assert!(err.to_string().contains("data"));
+    }
+
+    #[test]
+    fn parse_proxy_embeddings_response_rejects_empty_vectors() {
+        let err = parse_proxy_embeddings_response(&serde_json::json!({
+            "data": [{ "embedding": [] }]
+        }))
+        .expect_err("empty embedding vectors must fail");
+
+        assert!(err.to_string().contains("empty"));
+    }
+
+    #[test]
+    fn parse_proxy_embeddings_response_rejects_out_of_range_values() {
+        let json: serde_json::Value =
+            serde_json::from_str(r#"{"data":[{"embedding":[1e39]}]}"#).unwrap();
+        let err = parse_proxy_embeddings_response(&json)
+            .expect_err("out-of-range embedding values must fail");
+
+        assert!(err.to_string().contains("finite f32"));
+    }
+
+    #[tokio::test]
+    async fn bounded_proxy_json_response_rejects_oversized_content_length() {
+        let app = axum::Router::new().route(
+            "/v1/embeddings",
+            axum::routing::post(|| async { vec![b'{'; 5] }),
+        );
+        let (upstream, server) = spawn_test_server(app).await;
+        let resp = reqwest::Client::new()
+            .post(format!("{upstream}/v1/embeddings"))
+            .send()
+            .await
+            .unwrap();
+
+        let err = read_bounded_proxy_json_response(resp, "proxy embeddings", 4)
+            .await
+            .unwrap_err();
+
+        let err = err.to_string();
+        assert!(err.contains("proxy embeddings"), "error: {err}");
+        assert!(err.contains("at most"), "error: {err}");
+        assert!(err.contains("content-length"), "error: {err}");
+        server.abort();
+    }
+
+    #[test]
+    fn chat_stream_event_rejects_upstream_error_object() {
+        let err = parse_proxy_chat_stream_event(&serde_json::json!({
+            "error": { "message": "upstream failed" }
+        }))
+        .expect_err("upstream errors must fail closed");
+
+        let err = err.to_string();
+        assert!(err.contains("upstream failed"), "error: {err}");
+    }
+
+    #[test]
+    fn chat_stream_event_rejects_missing_choices() {
+        let err = parse_proxy_chat_stream_event(&serde_json::json!({
+            "id": "chunk"
+        }))
+        .expect_err("missing choices must fail closed");
+
+        assert!(err.to_string().contains("choices"));
+    }
+
+    #[test]
+    fn chat_stream_event_skips_usage_only_empty_choices() {
+        let parsed = parse_proxy_chat_stream_event(&serde_json::json!({
+            "choices": [],
+            "usage": { "prompt_tokens": 1, "completion_tokens": 1, "total_tokens": 2 }
+        }))
+        .unwrap();
+
+        assert_eq!(
+            parsed,
+            ParsedProxyChatStreamEvent {
+                content: None,
+                thinking_content: None,
+                tool_call_deltas: None,
+                done_reason: None
+            }
+        );
+    }
+
+    #[test]
+    fn chat_stream_event_rejects_empty_choices_without_usage() {
+        let err = parse_proxy_chat_stream_event(&serde_json::json!({
+            "choices": []
+        }))
+        .expect_err("empty choices without usage must fail closed");
+
+        let err = err.to_string();
+        assert!(err.contains("empty choices"), "error: {err}");
+    }
+
+    #[test]
+    fn chat_stream_event_rejects_multiple_choices() {
+        let err = parse_proxy_chat_stream_event(&serde_json::json!({
+            "choices": [
+                { "delta": { "content": "first" }, "finish_reason": null },
+                { "delta": { "content": "second" }, "finish_reason": null }
+            ]
+        }))
+        .expect_err("multiple choices must fail closed");
+
+        let err = err.to_string();
+        assert!(err.contains("multiple choices"), "error: {err}");
+    }
+
+    #[test]
+    fn chat_stream_event_parses_reasoning_content() {
+        let parsed = parse_proxy_chat_stream_event(&serde_json::json!({
+            "choices": [
+                { "delta": { "reasoning_content": "thinking" }, "finish_reason": null }
+            ]
+        }))
+        .unwrap();
+
+        assert_eq!(parsed.content, None);
+        assert_eq!(parsed.thinking_content.as_deref(), Some("thinking"));
+        assert!(parsed.tool_call_deltas.is_none());
+    }
+
+    #[test]
+    fn chat_stream_event_parses_complete_tool_call_deltas() {
+        let parsed = parse_proxy_chat_stream_event(&serde_json::json!({
+            "choices": [{
+                "delta": {
+                    "tool_calls": [{
+                        "id": "call_1",
+                        "type": "function",
+                        "function": {
+                            "name": "lookup",
+                            "arguments": "{\"city\":\"Paris\"}"
+                        },
+                        "index": 0
+                    }]
+                },
+                "finish_reason": null
+            }]
+        }))
+        .unwrap();
+
+        let deltas = parsed
+            .tool_call_deltas
+            .expect("tool call deltas should be parsed");
+        assert_eq!(deltas.len(), 1);
+        assert_eq!(deltas[0].id.as_deref(), Some("call_1"));
+        assert_eq!(deltas[0].tool_type.as_deref(), Some("function"));
+        let function = deltas[0].function.as_ref().unwrap();
+        assert_eq!(function.name.as_deref(), Some("lookup"));
+        assert_eq!(function.arguments.as_deref(), Some("{\"city\":\"Paris\"}"));
+        assert!(parsed.content.is_none());
+    }
+
+    #[test]
+    fn chat_stream_event_parses_incremental_tool_call_deltas() {
+        let parsed = parse_proxy_chat_stream_event(&serde_json::json!({
+            "choices": [{
+                "delta": {
+                    "tool_calls": [{
+                        "index": 0,
+                        "function": { "arguments": "\"Paris\"" }
+                    }]
+                },
+                "finish_reason": null
+            }]
+        }))
+        .unwrap();
+
+        let deltas = parsed
+            .tool_call_deltas
+            .expect("incremental tool call delta should be parsed");
+        assert_eq!(deltas.len(), 1);
+        assert_eq!(deltas[0].index, 0);
+        assert!(deltas[0].id.is_none());
+        let function = deltas[0].function.as_ref().unwrap();
+        assert_eq!(function.arguments.as_deref(), Some("\"Paris\""));
+    }
+
+    #[test]
+    fn chat_stream_event_rejects_malformed_tool_call_deltas() {
+        let err = parse_proxy_chat_stream_event(&serde_json::json!({
+            "choices": [{
+                "delta": {
+                    "tool_calls": [{
+                        "id": "call_1",
+                        "type": "function",
+                        "function": { "arguments": "{}" }
+                    }]
+                },
+                "finish_reason": null
+            }]
+        }))
+        .expect_err("malformed tool calls must fail closed");
+
+        let err = err.to_string();
+        assert!(err.contains("tool_calls"), "error: {err}");
+    }
+
+    #[test]
+    fn chat_stream_event_rejects_too_many_tool_call_deltas() {
+        let calls = (0..=MAX_PROXY_STREAM_TOOL_CALLS)
+            .map(|index| {
+                serde_json::json!({
+                    "index": index,
+                    "function": { "arguments": "{}" }
+                })
+            })
+            .collect::<Vec<_>>();
+
+        let err = parse_proxy_chat_stream_event(&serde_json::json!({
+            "choices": [{
+                "delta": { "tool_calls": calls },
+                "finish_reason": null
+            }]
+        }))
+        .expect_err("too many tool call deltas must fail closed");
+
+        let err = err.to_string();
+        assert!(err.contains("too many"), "error: {err}");
+        assert!(err.contains("tool_calls"), "error: {err}");
+    }
+
+    #[test]
+    fn proxy_tool_call_assembler_combines_incremental_deltas() {
+        let mut assembler = ProxyToolCallAssembler::default();
+        assembler
+            .apply(vec![ProxyToolCallDelta {
+                index: 0,
+                id: Some("call_1".to_string()),
+                tool_type: Some("function".to_string()),
+                function: Some(ProxyFunctionCallDelta {
+                    name: Some("lookup".to_string()),
+                    arguments: Some("{\"city\":\"".to_string()),
+                }),
+            }])
+            .unwrap();
+        assembler
+            .apply(vec![ProxyToolCallDelta {
+                index: 0,
+                id: None,
+                tool_type: None,
+                function: Some(ProxyFunctionCallDelta {
+                    name: None,
+                    arguments: Some("Paris\"}".to_string()),
+                }),
+            }])
+            .unwrap();
+
+        let calls = assembler.complete().unwrap().unwrap();
+        assert_eq!(calls.len(), 1);
+        assert_eq!(calls[0].id, "call_1");
+        assert_eq!(calls[0].tool_type, "function");
+        assert_eq!(calls[0].function.name, "lookup");
+        assert_eq!(calls[0].function.arguments, "{\"city\":\"Paris\"}");
+        assert_eq!(calls[0].index, Some(0));
+    }
+
+    #[test]
+    fn proxy_tool_call_assembler_rejects_conflicting_deltas() {
+        let mut assembler = ProxyToolCallAssembler::default();
+        assembler
+            .apply(vec![ProxyToolCallDelta {
+                index: 0,
+                id: Some("call_1".to_string()),
+                tool_type: None,
+                function: None,
+            }])
+            .unwrap();
+
+        let err = assembler
+            .apply(vec![ProxyToolCallDelta {
+                index: 0,
+                id: Some("call_2".to_string()),
+                tool_type: None,
+                function: None,
+            }])
+            .expect_err("conflicting ids must fail closed");
+
+        assert!(err.to_string().contains("changed"), "error: {err}");
+    }
+
+    #[test]
+    fn proxy_tool_call_assembler_rejects_incomplete_deltas() {
+        let mut assembler = ProxyToolCallAssembler::default();
+        assembler
+            .apply(vec![ProxyToolCallDelta {
+                index: 0,
+                id: Some("call_1".to_string()),
+                tool_type: Some("function".to_string()),
+                function: Some(ProxyFunctionCallDelta {
+                    name: Some("lookup".to_string()),
+                    arguments: None,
+                }),
+            }])
+            .unwrap();
+
+        let err = assembler
+            .complete()
+            .expect_err("missing arguments must fail closed");
+
+        assert!(err.to_string().contains("arguments"), "error: {err}");
+    }
+
+    #[test]
+    fn proxy_tool_call_assembler_rejects_too_many_calls() {
+        let mut assembler = ProxyToolCallAssembler::default();
+        for index in 0..MAX_PROXY_STREAM_TOOL_CALLS as u32 {
+            assembler
+                .apply(vec![ProxyToolCallDelta {
+                    index,
+                    id: Some(format!("call_{index}")),
+                    tool_type: Some("function".to_string()),
+                    function: Some(ProxyFunctionCallDelta {
+                        name: Some("lookup".to_string()),
+                        arguments: Some("{}".to_string()),
+                    }),
+                }])
+                .unwrap();
+        }
+
+        let err = assembler
+            .apply(vec![ProxyToolCallDelta {
+                index: MAX_PROXY_STREAM_TOOL_CALLS as u32,
+                id: Some("call_overflow".to_string()),
+                tool_type: Some("function".to_string()),
+                function: Some(ProxyFunctionCallDelta {
+                    name: Some("lookup".to_string()),
+                    arguments: Some("{}".to_string()),
+                }),
+            }])
+            .expect_err("too many tool calls must fail closed");
+
+        assert!(err.to_string().contains("too many"), "error: {err}");
+    }
+
+    #[test]
+    fn proxy_tool_call_assembler_rejects_oversized_arguments() {
+        let mut assembler = ProxyToolCallAssembler::default();
+        assembler
+            .apply(vec![ProxyToolCallDelta {
+                index: 0,
+                id: Some("call_1".to_string()),
+                tool_type: Some("function".to_string()),
+                function: Some(ProxyFunctionCallDelta {
+                    name: Some("lookup".to_string()),
+                    arguments: Some("x".repeat(MAX_PROXY_STREAM_TOOL_CALL_ARGUMENT_BYTES)),
+                }),
+            }])
+            .unwrap();
+
+        let err = assembler
+            .apply(vec![ProxyToolCallDelta {
+                index: 0,
+                id: None,
+                tool_type: None,
+                function: Some(ProxyFunctionCallDelta {
+                    name: None,
+                    arguments: Some("x".to_string()),
+                }),
+            }])
+            .expect_err("oversized tool-call arguments must fail closed");
+
+        assert!(err.to_string().contains("arguments"), "error: {err}");
+        assert!(err.to_string().contains("at most"), "error: {err}");
+    }
+
+    #[test]
+    fn completion_stream_event_rejects_non_string_text() {
+        let err = parse_proxy_completion_stream_event(&serde_json::json!({
+            "choices": [
+                { "text": 42, "finish_reason": null }
+            ]
+        }))
+        .expect_err("non-string completion text must fail closed");
+
+        assert!(err.to_string().contains("text"));
+    }
+
+    #[test]
+    fn completion_stream_event_rejects_multiple_choices() {
+        let err = parse_proxy_completion_stream_event(&serde_json::json!({
+            "choices": [
+                { "text": "first", "finish_reason": null },
+                { "text": "second", "finish_reason": null }
+            ]
+        }))
+        .expect_err("multiple choices must fail closed");
+
+        let err = err.to_string();
+        assert!(err.contains("multiple choices"), "error: {err}");
+    }
+
+    #[test]
+    fn completion_stream_event_parses_finish_reason() {
+        let parsed = parse_proxy_completion_stream_event(&serde_json::json!({
+            "choices": [
+                { "text": "", "finish_reason": "length" }
+            ]
+        }))
+        .unwrap();
+
+        assert_eq!(
+            parsed,
+            ParsedProxyCompletionStreamEvent {
+                text: None,
+                done_reason: Some("length".to_string())
+            }
+        );
+    }
+
+    #[test]
+    fn completion_stream_event_rejects_blank_finish_reason() {
+        let err = parse_proxy_completion_stream_event(&serde_json::json!({
+            "choices": [
+                { "text": "", "finish_reason": "  " }
+            ]
+        }))
+        .expect_err("blank finish_reason must fail closed");
+
+        let err = err.to_string();
+        assert!(err.contains("finish_reason"), "error: {err}");
+        assert!(err.contains("blank"), "error: {err}");
+    }
+
+    // ── SSE parser (`next_sse_event`) ─────────────────────────────────────────
+
+    /// Build a byte stream of `reqwest::Result<&[u8]>` chunks for the parser.
+    fn byte_stream(
+        chunks: Vec<&'static [u8]>,
+    ) -> impl Stream<Item = reqwest::Result<&'static [u8]>> + Unpin {
+        futures::stream::iter(chunks.into_iter().map(Ok::<&[u8], reqwest::Error>))
+    }
+
+    fn byte_stream_owned(
+        chunks: Vec<Vec<u8>>,
+    ) -> impl Stream<Item = reqwest::Result<Vec<u8>>> + Unpin {
+        futures::stream::iter(chunks.into_iter().map(Ok::<Vec<u8>, reqwest::Error>))
+    }
+
+    #[tokio::test]
+    async fn sse_reassembles_line_split_across_chunks() {
+        // A single data line arrives split across three byte chunks.
+        let mut s = byte_stream(vec![
+            b"data: {\"choices\":[{\"delta\":{\"con",
+            b"tent\":\"Hi\"},\"finish_reason\":null}]}\n",
+            b"\ndata: [DONE]\n\n",
+        ]);
+        let mut buf = Vec::new();
+        match next_sse_event(&mut s, &mut buf).await {
+            Some(Ok(Some(json))) => {
+                assert_eq!(json["choices"][0]["delta"]["content"], "Hi");
+            }
+            other => panic!("expected data event, got {other:?}"),
+        }
+        assert!(
+            matches!(next_sse_event(&mut s, &mut buf).await, Some(Ok(None))),
+            "expected [DONE] sentinel"
+        );
+    }
+
+    #[tokio::test]
+    async fn sse_reassembles_utf8_split_across_chunks() {
+        let line = "data: {\"choices\":[{\"delta\":{\"content\":\"é\"}}]}\n\n"
+            .as_bytes()
+            .to_vec();
+        let split = line.iter().position(|byte| *byte == 0xc3).unwrap() + 1;
+        let mut s = byte_stream_owned(vec![line[..split].to_vec(), line[split..].to_vec()]);
+        let mut buf = Vec::new();
+
+        match next_sse_event(&mut s, &mut buf).await {
+            Some(Ok(Some(json))) => assert_eq!(json["choices"][0]["delta"]["content"], "é"),
+            other => panic!("expected UTF-8 data event, got {other:?}"),
+        }
+    }
+
+    #[tokio::test]
+    async fn sse_skips_comments_and_blanks() {
+        // Keep-alive comment and blank lines are not data events.
+        let mut s = byte_stream(vec![
+            b": keep-alive ping\n\n",
+            b"\n",
+            b"data: {\"choices\":[{\"delta\":{\"content\":\"ok\"}}]}\n\n",
+        ]);
+        let mut buf = Vec::new();
+        match next_sse_event(&mut s, &mut buf).await {
+            Some(Ok(Some(json))) => assert_eq!(json["choices"][0]["delta"]["content"], "ok"),
+            other => panic!("expected the valid event, got {other:?}"),
+        }
+    }
+
+    #[tokio::test]
+    async fn sse_rejects_malformed_data_line() {
+        let mut s = byte_stream(vec![b"data: not-json-at-all\n\n"]);
+        let mut buf = Vec::new();
+
+        let err = next_sse_event(&mut s, &mut buf)
+            .await
+            .expect("expected parser result")
+            .unwrap_err();
+
+        let err = err.to_string();
+        assert!(err.contains("decode failed"), "error: {err}");
+    }
+
+    #[tokio::test]
+    async fn sse_handles_crlf_line_endings() {
+        let mut s = byte_stream(vec![
+            b"data: {\"choices\":[{\"delta\":{\"content\":\"x\"}}]}\r\n\r\n",
+        ]);
+        let mut buf = Vec::new();
+        match next_sse_event(&mut s, &mut buf).await {
+            Some(Ok(Some(json))) => assert_eq!(json["choices"][0]["delta"]["content"], "x"),
+            other => panic!("CRLF event not parsed, got {other:?}"),
+        }
+    }
+
+    #[tokio::test]
+    async fn sse_stream_end_without_done_returns_none() {
+        let mut s = byte_stream(vec![
+            b"data: {\"choices\":[{\"delta\":{\"content\":\"a\"}}]}\n\n",
+        ]);
+        let mut buf = Vec::new();
+        assert!(matches!(
+            next_sse_event(&mut s, &mut buf).await,
+            Some(Ok(Some(_)))
+        ));
+        // Underlying byte stream is now exhausted with no [DONE].
+        assert!(
+            next_sse_event(&mut s, &mut buf).await.is_none(),
+            "exhausted stream must yield None"
+        );
+    }
+
+    #[tokio::test]
+    async fn sse_rejects_truncated_data_line_at_stream_end() {
+        let mut s = byte_stream(vec![
+            b"data: {\"choices\":[{\"delta\":{\"content\":\"cut\"}}]",
+        ]);
+        let mut buf = Vec::new();
+
+        let err = next_sse_event(&mut s, &mut buf)
+            .await
+            .expect("expected parser result")
+            .unwrap_err();
+
+        let err = err.to_string();
+        assert!(err.contains("incomplete"), "error: {err}");
+    }
+
+    #[tokio::test]
+    async fn sse_multiple_events_in_one_chunk() {
+        // Two data events delivered in a single byte chunk.
+        let mut s = byte_stream(vec![
+            b"data: {\"choices\":[{\"delta\":{\"content\":\"a\"}}]}\n\ndata: {\"choices\":[{\"delta\":{\"content\":\"b\"}}]}\n\n",
+        ]);
+        let mut buf = Vec::new();
+        let mut got = String::new();
+        while let Some(Ok(Some(json))) = next_sse_event(&mut s, &mut buf).await {
+            got.push_str(
+                json["choices"][0]["delta"]["content"]
+                    .as_str()
+                    .unwrap_or(""),
+            );
+        }
+        assert_eq!(got, "ab");
+    }
+
+    #[tokio::test]
+    async fn sse_rejects_oversized_unterminated_event_buffer() {
+        let mut chunk = b"data: ".to_vec();
+        chunk.extend(std::iter::repeat_n(b'x', MAX_PROXY_SSE_BUFFER_BYTES + 1));
+        let mut s = byte_stream_owned(vec![chunk]);
+        let mut buf = Vec::new();
+
+        let err = next_sse_event(&mut s, &mut buf)
+            .await
+            .expect("expected parser result")
+            .unwrap_err();
+        assert!(err.to_string().contains("exceeded"));
+    }
+
+    #[tokio::test]
+    async fn sse_rejects_oversized_complete_data_line() {
+        let mut chunk = b"data: \"".to_vec();
+        chunk.extend(std::iter::repeat_n(b'x', MAX_PROXY_SSE_BUFFER_BYTES + 1));
+        chunk.extend_from_slice(b"\"\n\n");
+        let mut s = byte_stream_owned(vec![chunk]);
+        let mut buf = Vec::new();
+
+        let err = next_sse_event(&mut s, &mut buf)
+            .await
+            .expect("expected parser result")
+            .unwrap_err();
+        assert!(err.to_string().contains("exceeded"));
+    }
+
+    #[tokio::test]
+    async fn sse_rejects_complete_data_line_when_newline_exceeds_limit() {
+        let mut chunk = b"data: \"".to_vec();
+        chunk.extend(std::iter::repeat_n(
+            b'x',
+            MAX_PROXY_SSE_BUFFER_BYTES - chunk.len() - 1,
+        ));
+        chunk.extend_from_slice(b"\"\n\n");
+        let mut s = byte_stream_owned(vec![chunk]);
+        let mut buf = Vec::new();
+
+        let err = next_sse_event(&mut s, &mut buf)
+            .await
+            .expect("expected parser result")
+            .unwrap_err();
+        assert!(err.to_string().contains("exceeded"));
+    }
+}

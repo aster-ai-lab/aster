@@ -1,11 +1,11 @@
 #![cfg(test)]
 
-use a3s_code_core::memory::{
+use aster_core::memory::{
     AgentMemory, MemoryMaintenanceContext, MemoryMaintenanceJob, MemoryMaintenanceOptions,
     MemoryMaintenanceOutcome, MemoryMaintenancePhase, MemoryMaintenanceRuntime,
     ScheduledMemoryMaintenance,
 };
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::InMemoryStore;
 use async_trait::async_trait;
 use std::sync::Arc;
 use std::time::Duration;
@@ -57,7 +57,7 @@ async fn close_cancels_then_boundedly_aborts_a_non_cooperative_job() {
         "bounded-close-owner",
         Arc::new(AgentMemory::with_config(
             Arc::new(InMemoryStore::new()),
-            a3s_code_core::memory::MemoryConfig {
+            aster_core::memory::MemoryConfig {
                 prune_policy: None,
                 ..Default::default()
             },

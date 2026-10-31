@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources};
+use aster_oci_sdk::{
     ContainerOperationRequest, ContainerRecord, ContainerTarget, Generation, OperationContext,
     StatsRequest, UpdateRequest, PIDS_LIMIT_METRIC,
 };
@@ -185,7 +185,7 @@ async fn qualify_boundary(
     let host_pid = faults::find_runtime_host_pid(config).await?;
     let mut suspended_host = faults::SuspendedProcess::stop(
         host_pid,
-        &format!("committed-{} A3S OCI host service", kind.name()),
+        &format!("committed-{} Aster OCI host service", kind.name()),
     )?;
     let call_address = bootstrap.address.clone();
     let call_id = id.to_string();
@@ -207,7 +207,7 @@ async fn qualify_boundary(
         old_shim_pid,
         &format!("committed-{} original shim", kind.name()),
     )?;
-    suspended_host.resume(&format!("committed-{} A3S OCI host service", kind.name()))?;
+    suspended_host.resume(&format!("committed-{} Aster OCI host service", kind.name()))?;
     commit_runtime_control(config, id, identity, sequence, kind, resources.clone()).await?;
 
     let containerd_pid = containerd_main_pid(config).await?;

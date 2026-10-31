@@ -363,7 +363,7 @@ fn test_builtin_agent_permissions_are_bounded() {
     assert_eq!(
         explore
             .permissions
-            .check("web_search", &serde_json::json!({"query": "a3s"})),
+            .check("web_search", &serde_json::json!({"query": "aster"})),
         PermissionDecision::Allow
     );
     assert_eq!(
@@ -411,7 +411,7 @@ fn test_builtin_agent_permissions_are_bounded() {
         assert_eq!(
             agent
                 .permissions
-                .check("web_search", &serde_json::json!({"query": "a3s"})),
+                .check("web_search", &serde_json::json!({"query": "aster"})),
             PermissionDecision::Allow,
             "{} should allow evidence search",
             agent.name
@@ -751,7 +751,7 @@ fn captured_load(dir: &std::path::Path) -> (Vec<AgentDefinition>, String) {
 #[test]
 fn missing_agent_directory_does_not_warn() {
     let missing = std::env::temp_dir().join(format!(
-        "a3s-missing-agents-{}-{}",
+        "aster-missing-agents-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -770,7 +770,7 @@ fn missing_agent_directory_does_not_warn() {
 #[test]
 fn agent_directory_that_is_a_file_still_warns() {
     let root = std::env::temp_dir().join(format!(
-        "a3s-file-agents-{}-{}",
+        "aster-file-agents-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)

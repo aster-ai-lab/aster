@@ -98,7 +98,7 @@ fn host_services_cannot_be_silently_dropped_by_sandbox_or_snapshot_boot() {
 fn host_service_paths_require_private_owned_socket_and_ancestors() {
     use std::os::unix::fs::{symlink, MetadataExt, PermissionsExt};
     let directory = tempfile::Builder::new()
-        .prefix("a3s-svc-")
+        .prefix("aster-svc-")
         .tempdir_in("/tmp")
         .unwrap();
     let parent = directory.path().canonicalize().unwrap();

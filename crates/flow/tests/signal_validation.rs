@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime,
     InMemoryEventStore, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowSignal,
     WorkflowSpec,
@@ -31,13 +31,13 @@ impl FlowRuntime for SnapshotOnlyRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Err(FlowError::Runtime(
             "signal projection validation must not invoke workflow code".to_string(),
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime(
             "signal projection validation must not invoke steps".to_string(),
         ))
@@ -54,7 +54,7 @@ impl FlowEventStore for StaticHistoryStore {
         &self,
         _run_id: &str,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store(
             "signal projection fixture is read-only".to_string(),
         ))
@@ -65,13 +65,13 @@ impl FlowEventStore for StaticHistoryStore {
         _run_id: &str,
         _expected_sequence: u64,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store(
             "signal projection fixture is read-only".to_string(),
         ))
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         if run_id == RUN_ID {
             Ok(self.events.clone())
         } else {
@@ -79,7 +79,7 @@ impl FlowEventStore for StaticHistoryStore {
         }
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         Ok(vec![RUN_ID.to_string()])
     }
 }

@@ -12,14 +12,14 @@ use crate::network::NetworkMode;
 pub enum ExecutionBackend {
     /// libkrun-backed MicroVM execution.
     Krun,
-    /// Shared-kernel execution through A3S OCI Runtime.
-    A3sOci,
+    /// Shared-kernel execution through Aster OCI Runtime.
+    AsterOci,
 }
 
 impl ExecutionBackend {
     /// Whether this backend provides shared-kernel Sandbox execution.
     pub const fn is_sandbox(self) -> bool {
-        matches!(self, Self::A3sOci)
+        matches!(self, Self::AsterOci)
     }
 }
 
@@ -113,7 +113,7 @@ pub fn resolve_execution(config: &BoxConfig) -> Result<ResolvedExecutionPlan> {
             validate_sandbox_compatibility(config)?;
             Ok(ResolvedExecutionPlan {
                 requested_isolation: ExecutionIsolation::Sandbox,
-                backend: ExecutionBackend::A3sOci,
+                backend: ExecutionBackend::AsterOci,
                 isolation_class: IsolationClass::SharedKernel,
                 required_controls: SANDBOX_REQUIRED_CONTROLS
                     .iter()
@@ -394,9 +394,9 @@ mod tests {
     }
 
     #[test]
-    fn sandbox_resolves_to_a3s_oci_shared_kernel_with_mandatory_controls() {
+    fn sandbox_resolves_to_aster_oci_shared_kernel_with_mandatory_controls() {
         let plan = resolve_execution(&sandbox_config()).unwrap();
-        assert_eq!(plan.backend, ExecutionBackend::A3sOci);
+        assert_eq!(plan.backend, ExecutionBackend::AsterOci);
         assert!(plan.backend.is_sandbox());
         assert_eq!(plan.isolation_class, IsolationClass::SharedKernel);
         for required in SANDBOX_REQUIRED_CONTROLS {

@@ -1,7 +1,7 @@
 //! Exact exported Engram/token-map binding. Header arrays are authenticated
 //! through Power before they may select the existing official sparse tables.
 
-use a3s_power::{error::Result, inference::InferenceLimits};
+use aster_power::{error::Result, inference::InferenceLimits};
 use tokio_util::sync::CancellationToken;
 
 use super::{check_cancel, invalid};

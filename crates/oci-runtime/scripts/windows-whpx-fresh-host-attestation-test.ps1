@@ -6,7 +6,7 @@ Set-StrictMode -Version Latest
 $lib = Join-Path $PSScriptRoot 'lib\windows-whpx-fresh-host-attestation.ps1'
 . $lib
 
-$work = Join-Path ([IO.Path]::GetTempPath()) ("a3s-oci-whpx-attestation-test-{0}" -f [guid]::NewGuid().ToString('N'))
+$work = Join-Path ([IO.Path]::GetTempPath()) ("aster-oci-whpx-attestation-test-{0}" -f [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $work | Out-Null
 try {
     # existing rejects attestation path
@@ -52,7 +52,7 @@ try {
 
     # fresh rejects operator_attests_fresh_provisioning=false
     $falseAttestPath = Join-Path $work 'false-attest.json'
-    Set-Content -LiteralPath $falseAttestPath -Encoding utf8 -Value '{"schema_version":"a3s.oci.windows-whpx-fresh-host-attestation.v1","operator_attests_fresh_provisioning":false,"provisioned_at_utc":"2026-09-07T00:00:00Z"}'
+    Set-Content -LiteralPath $falseAttestPath -Encoding utf8 -Value '{"schema_version":"aster.oci.windows-whpx-fresh-host-attestation.v1","operator_attests_fresh_provisioning":false,"provisioned_at_utc":"2026-09-07T00:00:00Z"}'
     $rejectedFalseAttest = $false
     try {
         Resolve-WhpxFreshHostAttestation -HostClass fresh -AttestationPath $falseAttestPath | Out-Null
@@ -65,7 +65,7 @@ try {
 
     # fresh rejects missing provisioned_at_utc
     $missingUtcPath = Join-Path $work 'missing-utc.json'
-    Set-Content -LiteralPath $missingUtcPath -Encoding utf8 -Value '{"schema_version":"a3s.oci.windows-whpx-fresh-host-attestation.v1","operator_attests_fresh_provisioning":true}'
+    Set-Content -LiteralPath $missingUtcPath -Encoding utf8 -Value '{"schema_version":"aster.oci.windows-whpx-fresh-host-attestation.v1","operator_attests_fresh_provisioning":true}'
     $rejectedMissingUtc = $false
     try {
         Resolve-WhpxFreshHostAttestation -HostClass fresh -AttestationPath $missingUtcPath | Out-Null
@@ -78,7 +78,7 @@ try {
 
     # fresh rejects symlink attestation path when the host can create one
     $linkTarget = Join-Path $work 'link-target.json'
-    Set-Content -LiteralPath $linkTarget -Encoding utf8 -Value '{"schema_version":"a3s.oci.windows-whpx-fresh-host-attestation.v1","operator_attests_fresh_provisioning":true,"provisioned_at_utc":"2026-09-07T00:00:00Z"}'
+    Set-Content -LiteralPath $linkTarget -Encoding utf8 -Value '{"schema_version":"aster.oci.windows-whpx-fresh-host-attestation.v1","operator_attests_fresh_provisioning":true,"provisioned_at_utc":"2026-09-07T00:00:00Z"}'
     $linkPath = Join-Path $work 'link.json'
     $symlinkCreated = $false
     try {
@@ -101,10 +101,10 @@ try {
 
     # fresh with valid attestation succeeds
     $goodPath = Join-Path $work 'good.json'
-    Set-Content -LiteralPath $goodPath -Encoding utf8 -Value '{"schema_version":"a3s.oci.windows-whpx-fresh-host-attestation.v1","operator_attests_fresh_provisioning":true,"provisioned_at_utc":"2026-09-07T00:00:00Z","hostname":"whpx-release-01"}'
+    Set-Content -LiteralPath $goodPath -Encoding utf8 -Value '{"schema_version":"aster.oci.windows-whpx-fresh-host-attestation.v1","operator_attests_fresh_provisioning":true,"provisioned_at_utc":"2026-09-07T00:00:00Z","hostname":"whpx-release-01"}'
     $resolved = Resolve-WhpxFreshHostAttestation -HostClass fresh -AttestationPath $goodPath
     $resolvedPath = [IO.Path]::GetFullPath($goodPath)
-    if ($resolved.schema_version -ne 'a3s.oci.windows-whpx-fresh-host-attestation.v1') {
+    if ($resolved.schema_version -ne 'aster.oci.windows-whpx-fresh-host-attestation.v1') {
         throw 'valid attestation returned unexpected schema_version'
     }
     if ($resolved.operator_attests_fresh_provisioning -ne $true) {

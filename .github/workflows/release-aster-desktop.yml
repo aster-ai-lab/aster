@@ -32,7 +32,7 @@ jobs:
     env:
       CARGO_INCREMENTAL: "0"
       CARGO_TERM_COLOR: always
-      A3S_TENANT_SLUG: aster
+      ASTER_TENANT_SLUG: aster
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Check out pinned desktop sources

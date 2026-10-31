@@ -21,7 +21,7 @@ use std::time::Duration;
 fn degraded_response(fallback: &FallbackResponse) -> HttpClientResponse {
     HttpClientResponse::new(fallback.status, fallback.body.clone())
         .with_header("content-type", &fallback.content_type)
-        .with_header("x-a3s-degraded", "1")
+        .with_header("x-aster-degraded", "1")
 }
 
 /// Policy bundle for [`ServiceClient`] calls.

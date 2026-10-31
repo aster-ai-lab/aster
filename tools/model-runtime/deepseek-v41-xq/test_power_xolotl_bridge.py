@@ -17,7 +17,7 @@ import power_xolotl_bridge as bridge
 def launch():
     return {"schema": bridge.SCHEMA, "nonce": "owned-test-nonce", "parent_pid": 123,
             "server": "/opt/xolotl/tools/v41/serve/serve_ds41.py", "tokenizer": "/models/main/tokenizer",
-            "model_name": "deepseek-v41-1017-xq", "engine_argv": ["/opt/a3s/bin/ds41_generate", "--serve",
+            "model_name": "deepseek-v41-1017-xq", "engine_argv": ["/opt/aster/bin/ds41_generate", "--serve",
             "-m", "/models/joined.gguf", "--engram", "/models/engram", "--rank", "/models/rank-1017-v3.bin",
             "--backend", "cuda", "--experts", "gpu", *bridge.EXACT_ROUTE_ARGS], "engine_env": {"CUDA_VISIBLE_DEVICES": "0"},
             "host": "127.0.0.1", "port": 8150}

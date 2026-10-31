@@ -5,8 +5,8 @@
 //! Explore style remains read-only when the host selects it explicitly.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +stable test -p a3s-code-core --test test_prompt_capability_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +stable test -p aster-core --test test_prompt_capability_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -14,8 +14,8 @@ mod support;
 
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentEvent, AgentStyle, PlanningMode, SessionOptions, SystemPromptSlots,
 };
 use support::layer_c_model::load_pinned_layer_c_config;
@@ -37,7 +37,7 @@ fn general_opts(session_id: &str) -> SessionOptions {
     policy.default_decision = PermissionDecision::Deny;
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning(false)
@@ -59,7 +59,7 @@ fn explore_opts(session_id: &str) -> SessionOptions {
     // Explore specialty hard-deny overlay.
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_default_security()
         .with_planning(false)
         .with_planning_mode(PlanningMode::Disabled)
@@ -75,8 +75,8 @@ fn explore_opts(session_id: &str) -> SessionOptions {
 }
 
 async fn run_events(
-    session: &a3s_code_core::AgentSession,
-) -> Vec<a3s_code_core::run::RunEventRecord> {
+    session: &aster_core::AgentSession,
+) -> Vec<aster_core::run::RunEventRecord> {
     let runs = session.runs().await;
     if let Some(run) = runs.first() {
         session.run_events(&run.id).await
@@ -85,7 +85,7 @@ async fn run_events(
     }
 }
 
-fn tool_names(events: &[a3s_code_core::run::RunEventRecord]) -> Vec<String> {
+fn tool_names(events: &[aster_core::run::RunEventRecord]) -> Vec<String> {
     events
         .iter()
         .filter_map(|record| match &record.event {
@@ -97,7 +97,7 @@ fn tool_names(events: &[a3s_code_core::run::RunEventRecord]) -> Vec<String> {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a live provider configured in .a3s/config.acl"]
+#[ignore = "requires a live provider configured in .aster/config.acl"]
 async fn real_llm_general_purpose_can_still_write_a_file() {
     let agent = real_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -157,7 +157,7 @@ async fn real_llm_general_purpose_can_still_write_a_file() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a live provider configured in .a3s/config.acl"]
+#[ignore = "requires a live provider configured in .aster/config.acl"]
 async fn real_llm_explicit_explore_cannot_write_a_file() {
     let agent = real_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");

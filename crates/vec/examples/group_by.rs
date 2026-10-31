@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     initialize, shutdown, Collection, CollectionSchema, DataType, Doc, FieldSchema,
     GroupBySearchQuery, IndexParams, MetricType,
 };
@@ -26,9 +26,9 @@ impl Drop for ExampleDirectory {
     }
 }
 
-fn main() -> a3s_vec::Result<()> {
+fn main() -> aster_vec::Result<()> {
     initialize(None)?;
-    let directory = ExampleDirectory::new("a3s-vec-group-by");
+    let directory = ExampleDirectory::new("aster-vec-group-by");
     let data_path = directory.path().to_string_lossy();
     let schema = CollectionSchema::builder("group_by")
         .add_field(FieldSchema::new("category", DataType::String, false, 0)?)

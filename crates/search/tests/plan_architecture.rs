@@ -1,19 +1,19 @@
 //! Architecture contract: product cascade plan ownership and admission outcomes.
 
-use a3s_search::{
+use aster_search::{
     providers::BuiltinProvider, EngineOutcomeKind, EngineTier, EngineTierPlan, HealthConfig,
     Search, SearchQuery, SearchResult,
 };
 use async_trait::async_trait;
 
 struct FailingEngine {
-    config: a3s_search::EngineConfig,
+    config: aster_search::EngineConfig,
 }
 
 impl FailingEngine {
     fn new(name: &str) -> Self {
         Self {
-            config: a3s_search::EngineConfig {
+            config: aster_search::EngineConfig {
                 name: name.to_string(),
                 shortcut: name.to_string(),
                 ..Default::default()
@@ -23,30 +23,30 @@ impl FailingEngine {
 }
 
 #[async_trait]
-impl a3s_search::Engine for FailingEngine {
-    fn config(&self) -> &a3s_search::EngineConfig {
+impl aster_search::Engine for FailingEngine {
+    fn config(&self) -> &aster_search::EngineConfig {
         &self.config
     }
 
-    async fn search(&self, _query: &SearchQuery) -> a3s_search::Result<Vec<SearchResult>> {
-        Err(a3s_search::SearchError::Other("forced failure".to_string()))
+    async fn search(&self, _query: &SearchQuery) -> aster_search::Result<Vec<SearchResult>> {
+        Err(aster_search::SearchError::Other("forced failure".to_string()))
     }
 }
 
 struct StableEngine;
 
 #[async_trait]
-impl a3s_search::Engine for StableEngine {
-    fn config(&self) -> &a3s_search::EngineConfig {
-        static CONFIG: std::sync::OnceLock<a3s_search::EngineConfig> = std::sync::OnceLock::new();
-        CONFIG.get_or_init(|| a3s_search::EngineConfig {
+impl aster_search::Engine for StableEngine {
+    fn config(&self) -> &aster_search::EngineConfig {
+        static CONFIG: std::sync::OnceLock<aster_search::EngineConfig> = std::sync::OnceLock::new();
+        CONFIG.get_or_init(|| aster_search::EngineConfig {
             name: "stable".to_string(),
             shortcut: "stable".to_string(),
             ..Default::default()
         })
     }
 
-    async fn search(&self, _query: &SearchQuery) -> a3s_search::Result<Vec<SearchResult>> {
+    async fn search(&self, _query: &SearchQuery) -> aster_search::Result<Vec<SearchResult>> {
         Ok(vec![SearchResult::new(
             "https://stable.example",
             "Stable",
@@ -75,7 +75,7 @@ fn library_owns_default_cascade_plan_and_excludes_billed_apis() {
         "aliyun",
         "tencent",
         "firecrawl",
-        "a3s",
+        "aster",
         "doubao",
         "deepseek",
     ] {
@@ -107,25 +107,25 @@ async fn local_health_suspension_is_not_a_shared_circuit_open() {
 
 #[tokio::test]
 async fn attached_circuit_owns_isolation_over_local_health() {
-    use a3s_search::{CircuitBreaker, CircuitBreakerConfig, EngineFailure};
+    use aster_search::{CircuitBreaker, CircuitBreakerConfig, EngineFailure};
     use std::sync::atomic::{AtomicUsize, Ordering};
     use std::sync::Arc;
     use std::time::Duration;
 
     struct CountingFail {
         calls: Arc<AtomicUsize>,
-        config: a3s_search::EngineConfig,
+        config: aster_search::EngineConfig,
     }
 
     #[async_trait]
-    impl a3s_search::Engine for CountingFail {
-        fn config(&self) -> &a3s_search::EngineConfig {
+    impl aster_search::Engine for CountingFail {
+        fn config(&self) -> &aster_search::EngineConfig {
             &self.config
         }
 
-        async fn search(&self, _query: &SearchQuery) -> a3s_search::Result<Vec<SearchResult>> {
+        async fn search(&self, _query: &SearchQuery) -> aster_search::Result<Vec<SearchResult>> {
             self.calls.fetch_add(1, Ordering::SeqCst);
-            Err(a3s_search::SearchError::Other("fail".into()))
+            Err(aster_search::SearchError::Other("fail".into()))
         }
     }
 
@@ -150,7 +150,7 @@ async fn attached_circuit_owns_isolation_over_local_health() {
     let mut search = Search::with_health_config(health).with_circuit_breaker(breaker);
     search.add_engine(CountingFail {
         calls: Arc::clone(&calls),
-        config: a3s_search::EngineConfig {
+        config: aster_search::EngineConfig {
             name: "flaky".into(),
             shortcut: "flaky".into(),
             ..Default::default()

@@ -4,7 +4,7 @@
 //! descriptor, an error, or a report. Provider response bodies are parsed for
 //! vectors and token usage only; no remote text is retained.
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingNormalization, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
@@ -125,7 +125,7 @@ impl BoyueEmbeddingProvider {
             telemetry: Mutex::new(ProviderTelemetry::default()),
         };
         let response = provider
-            .request(&["a3s dm-prod1 endpoint probe".to_string()])
+            .request(&["aster dm-prod1 endpoint probe".to_string()])
             .await
             .map_err(ProviderSetupError::Probe)?;
         let dimension = response

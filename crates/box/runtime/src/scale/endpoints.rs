@@ -8,7 +8,7 @@ use std::{
     time::Duration,
 };
 
-use a3s_box_core::{
+use aster_box_core::{
     scale::ScaleEndpoint, ExecutionGeneration, ExecutionId, ExecutionPortConnector,
     ExecutionPortStream,
 };
@@ -551,7 +551,7 @@ async fn relay_connection(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::ExecutionManagerResult;
+    use aster_box_core::ExecutionManagerResult;
     use async_trait::async_trait;
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
@@ -602,7 +602,7 @@ mod tests {
             _port: NonZeroU16,
             _timeout: Duration,
         ) -> ExecutionManagerResult<ExecutionPortStream> {
-            Err(a3s_box_core::ExecutionManagerError::Unavailable(
+            Err(aster_box_core::ExecutionManagerError::Unavailable(
                 "MicroVM port 8080 rejected the connection".to_string(),
             ))
         }
@@ -618,7 +618,7 @@ mod tests {
             _timeout: Duration,
         ) -> ExecutionManagerResult<ExecutionPortStream> {
             if execution_id.as_str() == self.reject {
-                return Err(a3s_box_core::ExecutionManagerError::Unavailable(
+                return Err(aster_box_core::ExecutionManagerError::Unavailable(
                     "MicroVM port 8080 rejected the connection".to_string(),
                 ));
             }
@@ -709,7 +709,7 @@ mod tests {
                 _timeout: Duration,
             ) -> ExecutionManagerResult<ExecutionPortStream> {
                 if self.reject.load(std::sync::atomic::Ordering::SeqCst) {
-                    return Err(a3s_box_core::ExecutionManagerError::Unavailable(
+                    return Err(aster_box_core::ExecutionManagerError::Unavailable(
                         "MicroVM port 8080 rejected the connection".to_string(),
                     ));
                 }

@@ -1,24 +1,24 @@
 //! Hermetic OpenTelemetry qualification against a local OTLP collector.
 //!
 //! Run with `--features telemetry` while a collector listens on the endpoint in
-//! `A3S_CODE_OTLP_TEST_ENDPOINT`. The workflow also checks collector-side logs,
+//! `ASTER_OTLP_TEST_ENDPOINT`. The workflow also checks collector-side logs,
 //! so this process report covers bounded initialization and flush/shutdown while
 //! the collector provides independent receipt evidence.
 
 #![cfg(feature = "telemetry")]
 
-use a3s_code_core::telemetry_otel::TelemetryConfig;
+use aster_core::telemetry_otel::TelemetryConfig;
 use serde_json::json;
 use std::sync::mpsc;
 use std::time::{Duration, Instant};
 
 const SHUTDOWN_BUDGET: Duration = Duration::from_secs(10);
-const QUALIFICATION_SERVICE: &str = "a3s-code-hermetic";
-const QUALIFICATION_SPAN: &str = "a3s.telemetry.qualification";
+const QUALIFICATION_SERVICE: &str = "aster-hermetic";
+const QUALIFICATION_SPAN: &str = "aster.telemetry.qualification";
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let endpoint = std::env::var("A3S_CODE_OTLP_TEST_ENDPOINT")
+    let endpoint = std::env::var("ASTER_OTLP_TEST_ENDPOINT")
         .unwrap_or_else(|_| "http://127.0.0.1:4317".to_owned());
     let init_started = Instant::now();
     let guard = TelemetryConfig::new(&endpoint)
@@ -29,7 +29,7 @@ async fn main() -> anyhow::Result<()> {
 
     {
         let span = tracing::info_span!(
-            "a3s.telemetry.qualification",
+            "aster.telemetry.qualification",
             qualification.id = "controlled-local-collector",
             qualification.expected = true,
         );

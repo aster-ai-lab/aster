@@ -8,9 +8,9 @@ mod refresh_support;
 #[path = "durable_memory_semantic_refresh/checkpoint_support.rs"]
 mod checkpoint_support;
 
-use a3s_code_core::memory::ScheduledSemanticRefresh;
-use a3s_memory::repository::{InMemoryRepository, MemoryStatus};
-use a3s_memory::vector::{
+use aster_core::memory::ScheduledSemanticRefresh;
+use aster_durable_memory::repository::{InMemoryRepository, MemoryStatus};
+use aster_durable_memory::vector::{
     SqliteVectorIndex, VectorIndex, VectorIndexDescriptor, VectorMutationConsistency,
 };
 use checkpoint_support::*;

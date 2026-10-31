@@ -3,7 +3,7 @@ use std::os::unix::fs::{FileExt, MetadataExt, OpenOptionsExt};
 use std::os::unix::io::AsRawFd;
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use sha2::{Digest, Sha256};
 
 use crate::runtime_assets::{RuntimeFile, RuntimeFileRole};

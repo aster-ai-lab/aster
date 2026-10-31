@@ -78,18 +78,18 @@ def env_positive(name: str, default: int) -> int:
 
 
 def parse_args() -> Config:
-    smoke = os.environ.get("A3S_VEC_BENCH_SCALE") == "smoke"
+    smoke = os.environ.get("ASTER_VEC_BENCH_SCALE") == "smoke"
     defaults = {
-        "documents": 96 if smoke else env_positive("A3S_VEC_SCALE_DOCUMENTS", 10_000),
-        "dimensions": 8 if smoke else env_positive("A3S_VEC_SCALE_DIMENSIONS", 128),
-        "queries": 8 if smoke else env_positive("A3S_VEC_SCALE_QUERIES", 32),
-        "rounds": 2 if smoke else env_positive("A3S_VEC_SCALE_ROUNDS", 3),
-        "batch_size": 32 if smoke else env_positive("A3S_VEC_SCALE_BATCH_SIZE", 512),
-        "ef_search": 64 if smoke else env_positive("A3S_VEC_SCALE_EF_SEARCH", 64),
-        "hnsw_m": 16 if smoke else env_positive("A3S_VEC_SCALE_HNSW_M", 16),
+        "documents": 96 if smoke else env_positive("ASTER_VEC_SCALE_DOCUMENTS", 10_000),
+        "dimensions": 8 if smoke else env_positive("ASTER_VEC_SCALE_DIMENSIONS", 128),
+        "queries": 8 if smoke else env_positive("ASTER_VEC_SCALE_QUERIES", 32),
+        "rounds": 2 if smoke else env_positive("ASTER_VEC_SCALE_ROUNDS", 3),
+        "batch_size": 32 if smoke else env_positive("ASTER_VEC_SCALE_BATCH_SIZE", 512),
+        "ef_search": 64 if smoke else env_positive("ASTER_VEC_SCALE_EF_SEARCH", 64),
+        "hnsw_m": 16 if smoke else env_positive("ASTER_VEC_SCALE_HNSW_M", 16),
         "ef_construction": 96
         if smoke
-        else env_positive("A3S_VEC_SCALE_EF_CONSTRUCTION", 96),
+        else env_positive("ASTER_VEC_SCALE_EF_CONSTRUCTION", 96),
     }
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("documents", "dimensions", "queries", "rounds", "batch_size"):
@@ -102,7 +102,7 @@ def parse_args() -> Config:
     parser.add_argument(
         "--mode",
         choices=("flat", "hnsw", "both"),
-        default=os.environ.get("A3S_VEC_SCALE_MODE", "both").lower(),
+        default=os.environ.get("ASTER_VEC_SCALE_MODE", "both").lower(),
     )
     parser.add_argument(
         "--post-optimize",
@@ -308,7 +308,7 @@ def run(config: Config, output: TextIO) -> None:
         if "already" not in str(error).lower():
             raise
 
-    root = Path(tempfile.mkdtemp(prefix="a3s-vec-zvec-scale-"))
+    root = Path(tempfile.mkdtemp(prefix="aster-vec-zvec-scale-"))
     collection_path = root / "collection"
     collection: Optional[zvec.Collection] = None
     try:

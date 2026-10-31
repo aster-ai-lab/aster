@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::{
     ContainerTarget, DeleteRequest, Error, ErrorCode, ExitStatus, KillRequest, OperationId, Signal,
     StartRequest, WaitRequest,
 };

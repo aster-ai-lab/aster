@@ -1,4 +1,4 @@
-# A3S Code 9.1.3 test contract
+# Aster Code 9.1.3 test contract
 
 > Historical upstream record. Foreign-language SDK results and external publishing
 > references do not describe this repository's Rust/ACP delivery or qualify its current release.
@@ -63,14 +63,14 @@ evidence refusal. It prints public model identity and Run receipts, never ACL
 contents or credentials. Missing configuration or bridge refuses execution.
 
 ```sh
-rustup run 1.97.1 cargo build --locked -p a3s-code-go-bridge --features advanced-harness,server
-export A3S_CONFIG_FILE=/absolute/path/config.acl
-export A3S_CODE_PYTHON=/absolute/path/to/current-sdk-venv/bin/python
-export A3S_CODE_GO_BRIDGE_TEST_BINARY=/absolute/path/to/current/a3s-code-go-bridge
+rustup run 1.97.1 cargo build --locked -p aster-go-bridge --features advanced-harness,server
+export ASTER_CONFIG_FILE=/absolute/path/config.acl
+export ASTER_PYTHON=/absolute/path/to/current-sdk-venv/bin/python
+export ASTER_GO_BRIDGE_TEST_BINARY=/absolute/path/to/current/aster-go-bridge
 bash scripts/sdk_release_real_llm.sh
 ```
 
-The wrapper reuses `with_acl_env.sh` and the existing `a3s-acl` preparation
+The wrapper reuses `with_acl_env.sh` and the existing `aster-acl` preparation
 utility. All three SDK legs execute even if one fails. The exit status is
 nonzero if any leg fails. This is an additive live gate; existing SDK live,
 retrieval, callback and hermetic coverage still applies.

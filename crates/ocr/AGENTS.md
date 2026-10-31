@@ -2,7 +2,7 @@
 
 ## Repository
 
-This repository owns the provider-oriented `a3s-use-ocr` Rust library,
+This repository owns the provider-oriented `aster-use-ocr` Rust library,
 standalone binary, standard MCP server, packaged Skill, and the default
 PP-OCRv6 provider.
 
@@ -18,9 +18,9 @@ PP-OCRv6 provider.
   local through ONNX Runtime and must not add Python or PaddlePaddle.
 - Every provider descriptor must declare whether it sends source bytes off
   device; SDK and MCP surfaces must preserve that policy.
-- Preserve the `a3s-use-ocr` crate, binary, MCP, and Skill identities.
-- A3S Use owns the built-in `ocr` route and product component policy.
-- `a3s-use-core` owns shared machine contracts; depend on the local workspace crate.
+- Preserve the `aster-use-ocr` crate, binary, MCP, and Skill identities.
+- Aster Use owns the built-in `ocr` route and product component policy.
+- `aster-use-core` owns shared machine contracts; depend on the local workspace crate.
 
 ## Engineering
 

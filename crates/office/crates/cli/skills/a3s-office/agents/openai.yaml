@@ -1,4 +1,0 @@
-interface:
-  display_name: "A3S Office"
-  short_description: "Operate five Office editors and safely automate files"
-  default_prompt: "Use $a3s-office to inspect, edit, and test this Office surface with native CLI and local UI evidence."

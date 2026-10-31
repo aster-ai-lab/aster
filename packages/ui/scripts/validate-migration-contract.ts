@@ -16,7 +16,7 @@ const DEFAULT_REPOSITORY_ROOT = path.resolve(__dirname, '../../..')
 /**
  * The renderer sources live in the studio app. When this package is consumed from
  * inside the studio workspace the workspace root is also the studio root; in the
- * a3s monorepo the studio app sits at <repo>/apps/studio.
+ * aster monorepo the studio app sits at <repo>/apps/studio.
  */
 async function resolveStudioRoot(repositoryRoot: string): Promise<string> {
   const candidates = [repositoryRoot, path.join(repositoryRoot, 'apps', 'studio')]

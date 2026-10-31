@@ -19,8 +19,8 @@ use crate::workspace::{
     LexicalSearchResult, WorkspaceSourceSnapshotError, WorkspaceSourceSnapshotV1,
 };
 
-const SYMBOL_DIGEST_DOMAIN: &str = "a3s.code.source-consumer.symbol.v1";
-const CONTEXT_DIGEST_DOMAIN: &str = "a3s.code.source-consumer.context.v1";
+const SYMBOL_DIGEST_DOMAIN: &str = "aster.code.source-consumer.symbol.v1";
+const CONTEXT_DIGEST_DOMAIN: &str = "aster.code.source-consumer.context.v1";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[cfg_attr(not(feature = "research"), allow(dead_code))]

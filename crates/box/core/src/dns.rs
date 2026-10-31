@@ -211,7 +211,7 @@ pub fn generate_hosts_file_with_entries(
     lines.join("\n") + "\n"
 }
 
-/// Validate a hostname or DNS name accepted by a3s-box runtime options.
+/// Validate a hostname or DNS name accepted by aster-box runtime options.
 pub fn validate_hostname(hostname: &str) -> Result<(), String> {
     if hostname.is_empty() {
         return Err("hostname must not be empty".to_string());

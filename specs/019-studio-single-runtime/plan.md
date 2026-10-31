@@ -72,7 +72,7 @@ Preparatory APIs may land additively, but no production dual-write is permitted.
 
 ## Verification Plan
 
-- Hermetic tests: `cargo test -p a3s-code-acp` focused filters, focused `a3s-code-core` tests, `cargo test -p a3s-studio` focused native tests and existing Studio Vitest projects.
+- Hermetic tests: `cargo test -p aster-acp` focused filters, focused `aster-core` tests, `cargo test -p aster-studio` focused native tests and existing Studio Vitest projects.
 - Ratchet: raw Runtime request call sites, independent attempt loops, Plan rawInput consumers, permission pre-decisions and alternate execution ledgers only shrink.
 - Contract: actual ACP stdio for Plan, prompt/cancel, load and permission conformance.
 - Migration: one writer, no fallback, stable identities and explicit unmapped/conflicting history.

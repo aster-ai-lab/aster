@@ -28,7 +28,7 @@ export interface ImportedDocxParagraphSpacingMarkers {
 const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
-const PARAGRAPH_SPACING_MARKER_PATTERN = /__A3S_WORK_PARAGRAPH_SPACING_\d+__/g;
+const PARAGRAPH_SPACING_MARKER_PATTERN = /__ASTER_WORK_PARAGRAPH_SPACING_\d+__/g;
 
 export function markDocxParagraphSpacing(
   document: Document,
@@ -49,7 +49,7 @@ export function markDocxParagraphSpacing(
     const spacing = resolveDocxParagraphSpacing(sources);
     if (!Object.keys(spacing).length) continue;
     properties ??= insertParagraphProperties(document, paragraph);
-    const marker = `__A3S_WORK_PARAGRAPH_SPACING_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_SPACING_${paragraphs.length + 1}__`;
     insertParagraphMarker(document, paragraph, properties, marker);
     paragraphs.push({ marker, spacing });
   }
@@ -64,7 +64,7 @@ export function applyImportedDocxParagraphSpacingMarkers(
     markers.paragraphs.map(({ marker, spacing }) => [marker, spacing]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_SPACING_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_SPACING_')) continue;
     const block = closestParagraphBlock(node.parentElement);
     node.data = node.data.replace(
       PARAGRAPH_SPACING_MARKER_PATTERN,

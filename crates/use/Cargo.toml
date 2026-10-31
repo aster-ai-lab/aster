@@ -2,27 +2,27 @@
 
 
 [package]
-name = "a3s-use"
+name = "aster-use"
 publish = false
 version = "0.3.3"
 edition = "2021"
 license = "MIT"
 rust-version = "1.85"
-description = "Package install and machine-local tool acquire for A3S"
+description = "Package install and machine-local tool acquire for Aster"
 
 [lib]
-name = "a3s_use"
+name = "aster_use"
 path = "src/lib.rs"
 
 [[bin]]
-name = "a3s-use"
+name = "aster-use"
 path = "src/main.rs"
 
 [features]
 default = ["extensions", "mcp"]
 extensions = [
-    "dep:a3s-use-extension",
-    "dep:a3s-runtime",
+    "dep:aster-use-extension",
+    "dep:aster-runtime",
     "dep:async-trait",
     "dep:fs2",
     "dep:olpc-cjson",
@@ -41,15 +41,15 @@ mcp = [
     "dep:tokio-util",
     "dep:windows-sys",
 ]
-tool-acquire = ["dep:a3s-use-tool-acquire"]
-reconcile = ["dep:a3s-use-reconcile"]
+tool-acquire = ["dep:aster-use-tool-acquire"]
+reconcile = ["dep:aster-use-reconcile"]
 
 [dependencies]
-a3s-use-core = { version = "0.2.4", path = "core" }
-a3s-use-tool-acquire = { version = "0.2.4", path = "tool-acquire", optional = true }
-a3s-use-reconcile = { version = "0.2.4", path = "reconcile", optional = true }
-a3s-use-extension = { version = "0.3.3", path = "extension", optional = true }
-a3s-runtime = { version = "=0.8.0", path = "../runtime", optional = true }
+aster-use-core = { version = "0.2.4", path = "core" }
+aster-use-tool-acquire = { version = "0.2.4", path = "tool-acquire", optional = true }
+aster-use-reconcile = { version = "0.2.4", path = "reconcile", optional = true }
+aster-use-extension = { version = "0.3.3", path = "extension", optional = true }
+aster-runtime = { version = "=0.8.0", path = "../runtime", optional = true }
 async-trait = { workspace = true, optional = true }
 axum = { workspace = true, optional = true }
 base64 = { workspace = true, optional = true }

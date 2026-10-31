@@ -1,19 +1,19 @@
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::embedding::EmbeddingExecutorConfig;
-use a3s_code_core::host_env::{FixedClock, HostEnv, SequentialIdGenerator};
-use a3s_code_core::memory::MemoryConfig;
-use a3s_code_core::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::embedding::EmbeddingExecutorConfig;
+use aster_core::host_env::{FixedClock, HostEnv, SequentialIdGenerator};
+use aster_core::memory::MemoryConfig;
+use aster_core::{
     Agent, DurableMemoryRecallChannel, DurableMemoryRecallPolicy, DurableMemorySemanticRecall,
     DurableMemorySemanticRecallPolicy, DurableMemorySession, PlanningMode, SessionOptions,
     DURABLE_MEMORY_HYBRID_BINDING_SCHEMA_VERSION, DURABLE_MEMORY_SEMANTIC_BINDING_SCHEMA_V1,
     DURABLE_MEMORY_SEMANTIC_FUSION_PROFILE_V1,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet, MemoryNamespace,
     MemoryNodeDraft, MemoryOperation, MemoryRepository, MemoryStatus, RevisionMode,
 };
-use a3s_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
+use aster_durable_memory::InMemoryStore;
 use chrono::{TimeZone, Utc};
 use serde::Serialize;
 use sha2::{Digest, Sha256};
@@ -56,7 +56,7 @@ fn fixture_time(second: u32) -> chrono::DateTime<Utc> {
 
 fn evidence(id: &str, content: &str, kind: EvidenceKind, second: u32) -> EvidenceRef {
     EvidenceRef::try_new(
-        format!("a3s://fixture/durable-memory-semantic-v1/{id}"),
+        format!("aster://fixture/durable-memory-semantic-v1/{id}"),
         format!("sha256:{:x}", Sha256::digest(content.as_bytes())),
         kind,
         fixture_time(second),
@@ -102,6 +102,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,
@@ -416,7 +417,7 @@ async fn real_sessions_meet_versioned_semantic_recall_gate() {
     assert_eq!(leaks, 0);
 
     println!(
-        "A3S_DURABLE_MEMORY_SEMANTIC_EVAL={}",
+        "ASTER_DURABLE_MEMORY_SEMANTIC_EVAL={}",
         serde_json::to_string(&Report {
             schema_version: fixture.schema_version,
             binding_schema_version: binding.schema_version(),

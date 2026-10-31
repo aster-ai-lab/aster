@@ -1,6 +1,6 @@
 #![cfg(feature = "session")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootRequest, BootResponse, HttpMethod, RouteDefinition, SessionManager,
     SessionModule, SessionOptions,
 };
@@ -137,7 +137,7 @@ fn session_module_supports_named_and_global_exports() {
 
     let manager = app.get_named::<SessionManager>("web-session").unwrap();
 
-    assert_eq!(manager.options().cookie_name(), "a3s.sid");
+    assert_eq!(manager.options().cookie_name(), "aster.sid");
 }
 
 fn cookie_pair(set_cookie: &str) -> String {

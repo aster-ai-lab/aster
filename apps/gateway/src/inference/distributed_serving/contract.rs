@@ -5,9 +5,9 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use uuid::Uuid;
 
-pub(crate) const DISTRIBUTED_SERVING_SCHEMA: &str = "a3s.power.distributed-serving.v1";
+pub(crate) const DISTRIBUTED_SERVING_SCHEMA: &str = "aster.power.distributed-serving.v1";
 pub(crate) const DISTRIBUTED_SERVING_STREAM_SCHEMA: &str =
-    "a3s.power.distributed-serving-stream.v1";
+    "aster.power.distributed-serving-stream.v1";
 
 #[derive(Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "endpoint", rename_all = "kebab-case", deny_unknown_fields)]

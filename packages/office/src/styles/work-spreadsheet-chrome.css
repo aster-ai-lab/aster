@@ -6,27 +6,27 @@
   --work-spreadsheet-chrome: color-mix(
     in srgb,
     var(--work-spreadsheet-accent) 2%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
   --work-spreadsheet-chrome-hover: color-mix(
     in srgb,
     var(--work-spreadsheet-accent) 7%,
-    var(--a3s-panel-soft)
+    var(--aster-panel-soft)
   );
   --work-spreadsheet-chrome-active: color-mix(
     in srgb,
     var(--work-spreadsheet-accent) 11%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
   --work-spreadsheet-grid-line: color-mix(
     in srgb,
     var(--work-spreadsheet-accent) 3%,
-    var(--a3s-line-strong)
+    var(--aster-line-strong)
   );
   --work-spreadsheet-header-text: color-mix(
     in srgb,
     var(--work-spreadsheet-accent) 16%,
-    var(--a3s-muted)
+    var(--aster-muted)
   );
 }
 
@@ -42,7 +42,7 @@
   border-color: var(--work-spreadsheet-grid-line);
   border-right: 1px solid var(--work-spreadsheet-grid-line);
   background: var(--work-spreadsheet-chrome);
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
 }
 
@@ -50,8 +50,8 @@
 .work-spreadsheet-editor .fortune-fx-input {
   min-height: 26px;
   background: transparent;
-  color: var(--a3s-ink);
-  font-family: var(--a3s-ui-font);
+  color: var(--aster-ink);
+  font-family: var(--aster-ui-font);
   font-size: 12px;
 }
 
@@ -59,9 +59,9 @@
 .work-spreadsheet-editor .fortune-fx-input:focus-visible {
   border-radius: 3px;
   outline: 1px solid
-    color-mix(in srgb, var(--work-spreadsheet-accent) 62%, var(--a3s-line));
+    color-mix(in srgb, var(--work-spreadsheet-accent) 62%, var(--aster-line));
   outline-offset: -2px;
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
 }
 
 .work-spreadsheet-editor .fortune-fx-input-container {
@@ -80,7 +80,7 @@
      targets. An opaque fill here hides every row number and column letter. */
   background: transparent;
   color: var(--work-spreadsheet-header-text);
-  font-family: var(--a3s-ui-font);
+  font-family: var(--aster-ui-font);
   font-size: 11px;
   font-weight: 520;
 }
@@ -98,7 +98,7 @@
     var(--work-spreadsheet-accent) 16%,
     transparent
   );
-  color: color-mix(in srgb, var(--work-spreadsheet-accent) 82%, var(--a3s-ink));
+  color: color-mix(in srgb, var(--work-spreadsheet-accent) 82%, var(--aster-ink));
   font-weight: 650;
 }
 
@@ -111,7 +111,7 @@
     var(--work-spreadsheet-accent) 16%,
     transparent
   );
-  color: color-mix(in srgb, var(--work-spreadsheet-accent) 82%, var(--a3s-ink));
+  color: color-mix(in srgb, var(--work-spreadsheet-accent) 82%, var(--aster-ink));
   font-weight: 650;
 }
 
@@ -137,7 +137,7 @@
   /* Match canvas defaultFontSize (11) — Fortune’s 13px arial made the caret
      sit optically higher than painted cell glyphs. Cell-level fs still wins
      via Fortune’s inline getStyleByCell. */
-  font-family: var(--a3s-ui-font);
+  font-family: var(--aster-ui-font);
   font-size: 11pt;
 }
 
@@ -197,7 +197,7 @@
 }
 
 .work-spreadsheet-editor .luckysheet-cs-fillhandle {
-  border-color: var(--a3s-panel);
+  border-color: var(--aster-panel);
   background: var(--work-spreadsheet-accent);
 }
 
@@ -238,9 +238,9 @@
   min-height: 20px;
   place-items: center;
   border: 1px solid
-    color-mix(in srgb, var(--work-spreadsheet-accent) 58%, var(--a3s-line));
+    color-mix(in srgb, var(--work-spreadsheet-accent) 58%, var(--aster-line));
   border-radius: 3px;
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
   color: var(--work-spreadsheet-header-text);
   cursor: pointer;
 }
@@ -272,12 +272,12 @@
   overflow: auto;
   overscroll-behavior: contain;
   border: 0;
-  border-radius: var(--a3s-overlay-radius);
-  background: var(--a3s-overlay-surface);
-  box-shadow: var(--a3s-shadow-soft);
-  color: var(--a3s-ink);
-  font: 500 12px / 1.4 var(--a3s-ui-font);
-  scrollbar-color: var(--a3s-line-strong) transparent;
+  border-radius: var(--aster-overlay-radius);
+  background: var(--aster-overlay-surface);
+  box-shadow: var(--aster-shadow-soft);
+  color: var(--aster-ink);
+  font: 500 12px / 1.4 var(--aster-ui-font);
+  scrollbar-color: var(--aster-line-strong) transparent;
   scrollbar-width: thin;
 }
 
@@ -300,18 +300,18 @@
   .fortune-filter-menu
   .filtermenu-input-container
   input {
-  border-color: var(--a3s-line-strong);
+  border-color: var(--aster-line-strong);
   border-radius: 5px;
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
-  font-family: var(--a3s-ui-font);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
+  font-family: var(--aster-ui-font);
 }
 
 .work-spreadsheet-editor
   .fortune-filter-menu
   .filtermenu-input-container
   input::placeholder {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-spreadsheet-editor .fortune-filter-menu input[type="checkbox"] {
@@ -328,9 +328,9 @@
 }
 
 .work-spreadsheet-editor .fortune-filter-menu .button-default {
-  border-color: var(--a3s-line-strong);
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  border-color: var(--aster-line-strong);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
 }
 
 @media (max-width: 640px) {
@@ -348,12 +348,12 @@
 }
 
 .work-spreadsheet-editor .fortune-dialog {
-  border: 1px solid var(--a3s-overlay-border);
-  border-radius: var(--a3s-overlay-radius);
-  background: var(--a3s-overlay-surface);
-  box-shadow: var(--a3s-shadow-soft);
-  color: var(--a3s-ink);
-  font-family: var(--a3s-ui-font);
+  border: 1px solid var(--aster-overlay-border);
+  border-radius: var(--aster-overlay-radius);
+  background: var(--aster-overlay-surface);
+  box-shadow: var(--aster-shadow-soft);
+  color: var(--aster-ink);
+  font-family: var(--aster-ui-font);
 }
 
 .work-spreadsheet-editor .fortune-message-box-button {
@@ -361,13 +361,13 @@
   margin: 0 4px;
   padding: 5px 12px;
   border-radius: 7px;
-  font: 600 11px / 18px var(--a3s-ui-font);
+  font: 600 11px / 18px var(--aster-ui-font);
 }
 
 .work-spreadsheet-editor .fortune-message-box-button.button-default {
-  border-color: var(--a3s-line-strong);
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  border-color: var(--aster-line-strong);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
 }
 
 .work-spreadsheet-editor .fortune-message-box-button.button-primary {
@@ -377,7 +377,7 @@
 
 .work-spreadsheet-editor .fortune-toolbar {
   border-bottom-color: var(--work-spreadsheet-grid-line);
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
 }
 
 .work-spreadsheet-editor .fortune-toolbar-button {
@@ -391,7 +391,7 @@
 }
 
 .work-spreadsheet-editor.preview .fortune-formula-bar {
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
 }
 
 .work-spreadsheet-footer {
@@ -405,7 +405,7 @@
   border-top: 1px solid var(--work-spreadsheet-grid-line);
   background: var(--work-spreadsheet-chrome);
   box-shadow: none;
-  font-family: var(--a3s-ui-font);
+  font-family: var(--aster-ui-font);
 }
 
 .work-spreadsheet-sheet-bar {
@@ -419,7 +419,7 @@
   align-items: stretch;
   overflow: hidden;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-spreadsheet-sheet-tools {
@@ -448,7 +448,7 @@
   border-radius: 4px;
   outline: 0;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   cursor: pointer;
 }
 
@@ -462,9 +462,9 @@
 .work-spreadsheet-sheet-tools .ds-popover > button:focus-visible,
 .work-spreadsheet-sheet-tools .ds-popover.open > button {
   background: var(--work-spreadsheet-chrome-hover);
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   box-shadow: inset 0 0 0 1px
-    color-mix(in srgb, var(--work-spreadsheet-accent) 14%, var(--a3s-line));
+    color-mix(in srgb, var(--work-spreadsheet-accent) 14%, var(--aster-line));
 }
 
 .work-spreadsheet-sheet-tools > button:focus-visible,
@@ -509,7 +509,7 @@
   overflow: hidden;
   border-right: 1px solid var(--work-spreadsheet-grid-line);
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-spreadsheet-sheet-tab::after {
@@ -527,7 +527,7 @@
 
 .work-spreadsheet-sheet-tab:hover {
   background: var(--work-spreadsheet-chrome-hover);
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
 }
 
 .work-spreadsheet-sheet-tab.active {
@@ -535,9 +535,9 @@
   background: color-mix(
     in srgb,
     var(--work-spreadsheet-accent) 4%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   box-shadow: none;
 }
 
@@ -559,7 +559,7 @@
   background: transparent;
   color: inherit;
   cursor: pointer;
-  font: 500 11px / 1 var(--a3s-ui-font);
+  font: 500 11px / 1 var(--aster-ui-font);
   text-align: center;
 }
 
@@ -575,7 +575,7 @@
 }
 
 .work-spreadsheet-sheet-tab.active > button[role="tab"] {
-  color: color-mix(in srgb, var(--work-spreadsheet-accent) 76%, var(--a3s-ink));
+  color: color-mix(in srgb, var(--work-spreadsheet-accent) 76%, var(--aster-ink));
   font-weight: 650;
 }
 
@@ -589,9 +589,9 @@
   border: 1px solid var(--work-spreadsheet-accent);
   border-radius: 3px;
   outline: 0;
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
-  font: 11px var(--a3s-ui-font);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
+  font: 11px var(--aster-ui-font);
   box-shadow: 0 0 0 2px
     color-mix(in srgb, var(--work-spreadsheet-accent) 12%, transparent);
 }
@@ -603,8 +603,8 @@
 }
 
 .work-spreadsheet-sheet-tab > input[aria-invalid="true"] {
-  border-color: var(--a3s-red);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--a3s-red) 12%, transparent);
+  border-color: var(--aster-red);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--aster-red) 12%, transparent);
 }
 
 .work-spreadsheet-sheet-rename-error {
@@ -613,8 +613,8 @@
   align-self: center;
   padding-right: 8px;
   overflow: hidden;
-  color: var(--a3s-red);
-  font: 500 10px / 1.2 var(--a3s-ui-font);
+  color: var(--aster-red);
+  font: 500 10px / 1.2 var(--aster-ui-font);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -633,7 +633,7 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   cursor: pointer;
   opacity: 0;
 }
@@ -652,7 +652,7 @@
     var(--work-spreadsheet-accent) 8%,
     transparent
   );
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
 }
 
 .work-spreadsheet-sheet-options:focus-visible {
@@ -669,7 +669,7 @@
 
 .work-spreadsheet-context-menu,
 .work-spreadsheet-sheet-popover {
-  --work-spreadsheet-menu-accent: var(--a3s-ink);
+  --work-spreadsheet-menu-accent: var(--aster-ink);
   --work-office-menu-accent: var(--work-spreadsheet-menu-accent);
 }
 
@@ -706,7 +706,7 @@
   min-width: 18px;
   height: 51px;
   padding: 0;
-  border-left: 1px solid color-mix(in srgb, var(--a3s-line) 72%, transparent);
+  border-left: 1px solid color-mix(in srgb, var(--aster-line) 72%, transparent);
   border-radius: 0 6px 6px 0;
 }
 
@@ -738,7 +738,7 @@
 }
 
 .work-spreadsheet-ribbon-menu {
-  --work-office-menu-accent: var(--work-office-control-accent, var(--a3s-ink));
+  --work-office-menu-accent: var(--work-office-control-accent, var(--aster-ink));
 
   width: min(264px, calc(100vw - 32px));
 }
@@ -755,7 +755,7 @@
 .work-spreadsheet-orientation-menu > button::after {
   width: 9px;
   height: 9px;
-  border: 1px solid var(--a3s-faint);
+  border: 1px solid var(--aster-faint);
   border-radius: 50%;
   content: "";
 }
@@ -763,7 +763,7 @@
 .work-spreadsheet-orientation-menu > button[aria-checked="true"]::after {
   border-color: var(--work-office-menu-accent);
   background: var(--work-office-menu-accent);
-  box-shadow: inset 0 0 0 2px var(--a3s-overlay-surface);
+  box-shadow: inset 0 0 0 2px var(--aster-overlay-surface);
 }
 
 .work-spreadsheet-orientation-glyph {
@@ -792,7 +792,7 @@
   height: 1px;
   margin: 4px 8px;
   border: 0;
-  background: var(--a3s-line);
+  background: var(--aster-line);
 }
 
 .work-spreadsheet-ribbon-menu > button > span:last-child {
@@ -814,7 +814,7 @@
 }
 
 .work-spreadsheet-ribbon-menu > button.danger {
-  color: color-mix(in srgb, var(--a3s-red) 88%, var(--a3s-ink));
+  color: color-mix(in srgb, var(--aster-red) 88%, var(--aster-ink));
 }
 
 .work-spreadsheet-ribbon-menu
@@ -860,12 +860,12 @@
 
 .work-spreadsheet-cell-style-group + .work-spreadsheet-cell-style-group {
   padding-top: 8px;
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-cell-style-group-label {
   padding-inline: 2px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 11px;
   font-weight: 650;
   line-height: 16px;
@@ -888,7 +888,7 @@
   border-radius: 7px;
   outline: 0;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font: inherit;
   text-align: left;
   cursor: pointer;
@@ -901,7 +901,7 @@
   align-items: center;
   padding-inline: 7px;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, currentcolor 28%, var(--a3s-line));
+  border: 1px solid color-mix(in srgb, currentcolor 28%, var(--aster-line));
   border-radius: 4px;
   line-height: 1;
   text-overflow: ellipsis;
@@ -912,7 +912,7 @@
   display: -webkit-box;
   min-width: 0;
   overflow: hidden;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 10px;
   line-height: 13px;
   -webkit-box-orient: vertical;
@@ -923,17 +923,17 @@
 .work-spreadsheet-cell-style-grid > button:focus-visible {
   border-color: color-mix(
     in srgb,
-    var(--work-office-control-accent, var(--a3s-ink)) 38%,
-    var(--a3s-line)
+    var(--work-office-control-accent, var(--aster-ink)) 38%,
+    var(--aster-line)
   );
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-cell-style-grid > button:focus-visible {
   box-shadow: 0 0 0 2px
     color-mix(
       in srgb,
-      var(--work-office-control-accent, var(--a3s-ink)) 18%,
+      var(--work-office-control-accent, var(--aster-ink)) 18%,
       transparent
     );
 }
@@ -941,13 +941,13 @@
 .work-spreadsheet-cell-style-grid > button[aria-checked="true"] {
   border-color: color-mix(
     in srgb,
-    var(--work-office-control-accent, var(--a3s-ink)) 58%,
-    var(--a3s-line)
+    var(--work-office-control-accent, var(--aster-ink)) 58%,
+    var(--aster-line)
   );
   background: color-mix(
     in srgb,
-    var(--work-office-control-accent, var(--a3s-ink)) 7%,
-    var(--a3s-panel)
+    var(--work-office-control-accent, var(--aster-ink)) 7%,
+    var(--aster-panel)
   );
 }
 
@@ -1010,7 +1010,7 @@
   .work-spreadsheet-underline-disclosure {
   width: 12px;
   min-width: 12px;
-  border-left: 1px solid color-mix(in srgb, var(--a3s-line) 72%, transparent);
+  border-left: 1px solid color-mix(in srgb, var(--aster-line) 72%, transparent);
   border-radius: 0 6px 6px 0;
 }
 
@@ -1133,7 +1133,7 @@
 .work-office-ribbon .work-office-toolbar .work-spreadsheet-border-disclosure {
   width: 16px;
   min-width: 16px;
-  border-left: 1px solid color-mix(in srgb, var(--a3s-line) 72%, transparent);
+  border-left: 1px solid color-mix(in srgb, var(--aster-line) 72%, transparent);
   border-radius: 0 6px 6px 0;
 }
 
@@ -1152,7 +1152,7 @@
 }
 
 .work-spreadsheet-border-panel {
-  --work-office-menu-accent: var(--work-office-control-accent, var(--a3s-ink));
+  --work-office-menu-accent: var(--work-office-control-accent, var(--aster-ink));
 
   width: min(360px, calc(100vw - 32px));
   padding: 8px;
@@ -1160,7 +1160,7 @@
 
 .work-spreadsheet-border-section-label {
   padding: 2px 6px 7px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 10px;
   font-weight: 650;
 }
@@ -1182,7 +1182,7 @@
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font: inherit;
   text-align: left;
   cursor: pointer;
@@ -1195,9 +1195,9 @@
   background: color-mix(
     in srgb,
     var(--work-office-menu-accent) 10%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
 }
 
 .work-spreadsheet-border-targets > button:focus-visible {
@@ -1217,7 +1217,7 @@
 }
 
 .work-spreadsheet-border-targets kbd {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font: inherit;
   font-size: 8px;
   white-space: nowrap;
@@ -1315,14 +1315,14 @@
   gap: 8px;
   margin-top: 8px;
   padding: 9px 6px 2px;
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-border-settings > .work-office-field {
   display: grid;
   min-width: 0;
   gap: 5px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 10px;
 }
 
@@ -1367,12 +1367,12 @@
   background: color-mix(
     in srgb,
     var(--work-spreadsheet-menu-accent) 10%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
   color: color-mix(
     in srgb,
     var(--work-spreadsheet-menu-accent) 78%,
-    var(--a3s-ink)
+    var(--aster-ink)
   );
   font-weight: 650;
 }
@@ -1382,7 +1382,7 @@
   margin: 0;
   padding: 5px 8px 8px;
   border: 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-spreadsheet-sheet-color-row-label {
@@ -1403,7 +1403,7 @@
   width: 17px;
   height: 17px;
   padding: 0;
-  border: 2px solid var(--a3s-panel);
+  border: 2px solid var(--aster-panel);
   border-radius: 50%;
   outline: 1px solid transparent;
   cursor: pointer;
@@ -1419,8 +1419,8 @@
 
 .work-spreadsheet-sheet-color-row > div > button.clear {
   position: relative;
-  border-color: var(--a3s-line-strong);
-  background: var(--a3s-panel);
+  border-color: var(--aster-line-strong);
+  background: var(--aster-panel);
 }
 
 .work-spreadsheet-sheet-color-row > div > button.clear::after {
@@ -1429,7 +1429,7 @@
   right: 1px;
   left: 1px;
   height: 1px;
-  background: var(--a3s-red);
+  background: var(--aster-red);
   content: "";
   transform: rotate(-45deg);
 }

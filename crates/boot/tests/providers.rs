@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootFactory, BootRequest, BootResponse, ControllerDefinition,
     DynamicModule, ExecutionContext, FromModuleRef, HttpMethod, Module, ModuleRef,
     ProviderDefinition, ProviderDependency, ProviderOnModuleInit, ProviderRef, ProviderScope,

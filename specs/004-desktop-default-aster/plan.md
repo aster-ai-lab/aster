@@ -1,6 +1,6 @@
 # Implementation Plan: Default Aster tenant
 
-Use the existing Aster tenant pipeline and shared ACP. Copy only canonical Work brand assets; do not copy its renderer, product alias table, runtime or user state. Keep `toyou` and its current bundle/profile identity. Aster gets `dev.a3s.studio.aster` and a fresh profile namespace.
+Use the existing Aster tenant pipeline and shared ACP. Copy only canonical Work brand assets; do not copy its renderer, product alias table, runtime or user state. Keep `toyou` and its current bundle/profile identity. Aster gets `dev.aster.studio.aster` and a fresh profile namespace.
 
 ## Constitution check
 

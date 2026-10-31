@@ -97,7 +97,7 @@ fn status(session: &AgentSession, step: &str) -> TaskStatus {
         .status
 }
 
-fn facts(root: &std::path::Path) -> Vec<a3s_effect::Fact> {
+fn facts(root: &std::path::Path) -> Vec<aster_effect::Fact> {
     crate::fact_control::read_workspace_facts(root, "goal-run").unwrap()
 }
 

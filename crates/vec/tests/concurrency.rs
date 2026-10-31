@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     HnswQueryParams, IndexParams, IndexType, MetricType, SearchQuery,
 };

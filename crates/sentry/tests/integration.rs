@@ -45,7 +45,7 @@ const CREDS: &str =
 fn blocks_metadata_ssrf_and_writes_egress_deny() {
     let dir = tmp("ssrf");
     let deny = dir.join("egress-deny.txt");
-    let (stdout, _) = run(&[("A3S_SENTRY_EGRESS_DENY", deny.to_str().unwrap())], SSRF);
+    let (stdout, _) = run(&[("ASTER_SENTRY_EGRESS_DENY", deny.to_str().unwrap())], SSRF);
     assert!(
         stdout.contains("\"verdict\":\"block\""),
         "should block: {stdout}"
@@ -76,8 +76,8 @@ fn dry_run_blocks_but_writes_no_deny_file() {
     let deny = dir.join("egress-deny.txt");
     let (stdout, _) = run(
         &[
-            ("A3S_SENTRY_EGRESS_DENY", deny.to_str().unwrap()),
-            ("A3S_SENTRY_DRY_RUN", "1"),
+            ("ASTER_SENTRY_EGRESS_DENY", deny.to_str().unwrap()),
+            ("ASTER_SENTRY_DRY_RUN", "1"),
         ],
         SSRF,
     );
@@ -88,7 +88,7 @@ fn dry_run_blocks_but_writes_no_deny_file() {
 
 #[test]
 fn fail_closed_blocks_but_fail_open_allows_same_escalation() {
-    let (closed, _) = run(&[("A3S_SENTRY_FAIL_CLOSED", "1")], CREDS);
+    let (closed, _) = run(&[("ASTER_SENTRY_FAIL_CLOSED", "1")], CREDS);
     assert!(
         closed.contains("\"verdict\":\"block\""),
         "fail-closed should block: {closed}"
@@ -120,7 +120,7 @@ fn skips_malformed_input_without_crashing() {
     );
 }
 
-/// Write an executable mock script (to stand in for A3S_SENTRY_AGENT_BIN). Unix only.
+/// Write an executable mock script (to stand in for ASTER_SENTRY_AGENT_BIN). Unix only.
 #[cfg(unix)]
 fn write_exec(dir: &std::path::Path, name: &str, body: &str) -> PathBuf {
     use std::os::unix::fs::PermissionsExt;
@@ -144,8 +144,8 @@ fn l3_agent_block_is_enforced() {
     let deny = dir.join("file-deny.txt");
     let (stdout, _) = run(
         &[
-            ("A3S_SENTRY_AGENT_BIN", bin.to_str().unwrap()),
-            ("A3S_SENTRY_FILE_DENY", deny.to_str().unwrap()),
+            ("ASTER_SENTRY_AGENT_BIN", bin.to_str().unwrap()),
+            ("ASTER_SENTRY_FILE_DENY", deny.to_str().unwrap()),
         ],
         CREDS,
     );
@@ -183,9 +183,9 @@ fn overload_degrades_under_slow_l3_and_tiny_queue() {
     let input = CREDS.repeat(10); // 10 escalations vs 1 worker + 1 queue slot → most must degrade
     let (_, stderr) = run(
         &[
-            ("A3S_SENTRY_AGENT_BIN", bin.to_str().unwrap()),
-            ("A3S_SENTRY_WORKERS", "1"),
-            ("A3S_SENTRY_QUEUE", "1"),
+            ("ASTER_SENTRY_AGENT_BIN", bin.to_str().unwrap()),
+            ("ASTER_SENTRY_WORKERS", "1"),
+            ("ASTER_SENTRY_QUEUE", "1"),
         ],
         &input,
     );
@@ -204,7 +204,7 @@ fn overload_degrades_under_slow_l3_and_tiny_queue() {
     std::fs::remove_dir_all(&dir).ok();
 }
 
-/// Observability end to end: with A3S_SENTRY_METRICS_ADDR set, the daemon serves live counters — an
+/// Observability end to end: with ASTER_SENTRY_METRICS_ADDR set, the daemon serves live counters — an
 /// SSRF block shows up as sentry_blocked_total, and /healthz answers 200.
 #[test]
 fn metrics_endpoint_serves_live_counters() {
@@ -219,8 +219,8 @@ fn metrics_endpoint_serves_live_counters() {
     let dir = tmp("metrics");
     let deny = dir.join("egress-deny.txt");
     let mut child = Command::new(BIN)
-        .env("A3S_SENTRY_METRICS_ADDR", &addr)
-        .env("A3S_SENTRY_EGRESS_DENY", deny.to_str().unwrap())
+        .env("ASTER_SENTRY_METRICS_ADDR", &addr)
+        .env("ASTER_SENTRY_EGRESS_DENY", deny.to_str().unwrap())
         .stdin(Stdio::piped())
         .stdout(Stdio::null())
         .stderr(Stdio::null())
@@ -264,7 +264,7 @@ fn metrics_endpoint_serves_live_counters() {
 #[test]
 fn version_flag_prints_version() {
     let out = Command::new(BIN).arg("--version").output().unwrap();
-    assert!(String::from_utf8_lossy(&out.stdout).starts_with("a3s-sentry "));
+    assert!(String::from_utf8_lossy(&out.stdout).starts_with("aster-sentry "));
 }
 
 #[test]
@@ -273,7 +273,7 @@ fn hot_reload_applies_new_policy_live() {
     let pol = dir.join("rules.hcl");
     std::fs::write(&pol, "rules = []\n").unwrap();
     let mut child = Command::new(BIN)
-        .env("A3S_SENTRY_POLICY", pol.to_str().unwrap())
+        .env("ASTER_SENTRY_POLICY", pol.to_str().unwrap())
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
@@ -329,7 +329,7 @@ fn l2_llm_round_trip_via_mock_endpoint() {
     });
 
     let url = format!("http://127.0.0.1:{port}/v1");
-    let (stdout, _) = run(&[("A3S_SENTRY_LLM_URL", &url)], CREDS);
+    let (stdout, _) = run(&[("ASTER_SENTRY_LLM_URL", &url)], CREDS);
     server.join().ok();
 
     assert!(
@@ -343,9 +343,9 @@ fn l2_llm_round_trip_via_mock_endpoint() {
     );
 }
 
-// Replicas of a3s-observer's deny-file parsers — the cross-tool contract sentry must satisfy:
+// Replicas of aster-observer's deny-file parsers — the cross-tool contract sentry must satisfy:
 //   egress: observer src/policy.rs `parse_egress_policy` (trim, skip #/blank, parse Ipv4Addr)
-//   file/exec: observer a3s-observer-collector/src/bin/fileguard.rs `load_policy` (trim, skip #/blank)
+//   file/exec: observer aster-observer-collector/src/bin/fileguard.rs `load_policy` (trim, skip #/blank)
 fn observer_parse_egress_ips(body: &str) -> Vec<std::net::Ipv4Addr> {
     body.lines()
         .map(str::trim)
@@ -377,9 +377,9 @@ fn deny_files_are_consumable_by_observer_guards() {
         {\"event\":{\"FileAccess\":{\"pid\":2,\"path\":\"/home/agent/.ssh/id_rsa\",\"write\":false}}}\n";
     run(
         &[
-            ("A3S_SENTRY_POLICY", pol.to_str().unwrap()),
-            ("A3S_SENTRY_EGRESS_DENY", egress.to_str().unwrap()),
-            ("A3S_SENTRY_FILE_DENY", filed.to_str().unwrap()),
+            ("ASTER_SENTRY_POLICY", pol.to_str().unwrap()),
+            ("ASTER_SENTRY_EGRESS_DENY", egress.to_str().unwrap()),
+            ("ASTER_SENTRY_FILE_DENY", filed.to_str().unwrap()),
         ],
         input,
     );

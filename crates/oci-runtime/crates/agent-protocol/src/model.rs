@@ -1,8 +1,8 @@
 use std::fmt;
 use std::path::PathBuf;
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources, Process};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources, Process};
+use aster_oci_sdk::{
     ContainerStats, ContainerTarget, DeleteMode, Error, ErrorCode, ExitStatus, FileRequest,
     FileResponse, FilesystemRequest, FilesystemResponse, OciBundle, OperationContext, OperationId,
     OutputChunk, ProcessIo, ProcessRecord, ProcessTarget, Result, Signal, TerminalSize,
@@ -27,11 +27,11 @@ pub const AGENT_MAX_ACKNOWLEDGED_OPERATIONS: usize = 4_096;
 /// Required session-token entropy supplied by the host.
 pub const AGENT_SESSION_TOKEN_BYTES: usize = 32;
 /// Environment key used for the protected host-to-shim bootstrap.
-pub const AGENT_SESSION_TOKEN_ENV: &str = "A3S_OCI_AGENT_SESSION_TOKEN";
+pub const AGENT_SESSION_TOKEN_ENV: &str = "ASTER_OCI_AGENT_SESSION_TOKEN";
 /// Guest environment key containing the one-time bootstrap token path.
-pub const AGENT_SESSION_TOKEN_FILE_ENV: &str = "A3S_OCI_AGENT_SESSION_TOKEN_FILE";
+pub const AGENT_SESSION_TOKEN_FILE_ENV: &str = "ASTER_OCI_AGENT_SESSION_TOKEN_FILE";
 /// Runtime-owned guest directory prefix for one-time token handoff.
-pub const AGENT_SESSION_TOKEN_DIRECTORY_PREFIX: &str = ".a3s-oci-bootstrap-";
+pub const AGENT_SESSION_TOKEN_DIRECTORY_PREFIX: &str = ".aster-oci-bootstrap-";
 /// Fixed file name inside a one-time guest bootstrap directory.
 pub const AGENT_SESSION_TOKEN_FILE_NAME: &str = "session-token";
 
@@ -619,7 +619,7 @@ pub struct AgentExecRequest {
     /// Exact container generation plus caller-selected exec process ID.
     pub target: ProcessTarget,
     /// Complete OCI process configuration.
-    #[serde(with = "a3s_oci_sdk::process_serde")]
+    #[serde(with = "aster_oci_sdk::process_serde")]
     pub process: Process,
     /// Requested process standard-I/O disposition.
     pub io: ProcessIo,
@@ -834,7 +834,7 @@ impl AgentRequest {
 
     /// Idempotency identity carried by a mutating request, when present.
     #[must_use]
-    pub fn operation_id(&self) -> Option<&a3s_oci_sdk::OperationId> {
+    pub fn operation_id(&self) -> Option<&aster_oci_sdk::OperationId> {
         match self {
             Self::Create(request) => Some(&request.context.operation_id),
             Self::Start(request) => Some(&request.context.operation_id),

@@ -1,4 +1,4 @@
-use a3s_code_mermaid::{rasterize, RenderParams, Rgba};
+use aster_mermaid::{rasterize, RenderParams, Rgba};
 use anyhow::{ensure, Context, Result};
 use quick_xml::{events::Event, Reader};
 

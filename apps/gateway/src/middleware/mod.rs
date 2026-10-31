@@ -68,7 +68,7 @@ pub struct RequestContext {
 /// Implement this trait and register the value with [`MiddlewareRegistry`] to
 /// embed application-specific policy in a programmatic Gateway deployment.
 /// Registered middleware is compiled into the same immutable route snapshot as
-/// built-in middleware. The standalone `a3s-gateway` binary does not load
+/// built-in middleware. The standalone `aster-gateway` binary does not load
 /// dynamic libraries or Wasm plugins.
 #[async_trait]
 pub trait Middleware: Send + Sync {

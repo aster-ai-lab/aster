@@ -14,7 +14,7 @@ const YJS_MARKDOWN_UPDATE_BASE64: &str = "AQey8hkAKAETYTNzLm9mZmljZS5tZXRhZGF0YQ
 const YJS_DOCUMENT_UPDATE_BASE64: &str = "AQ+y8hkAKAETYTNzLm9mZmljZS5tZXRhZGF0YQhwcm90b2NvbAF3GGEzcy5vZmZpY2UuY29sbGFib3JhdGlvbigBE2Ezcy5vZmZpY2UubWV0YWRhdGEHdmVyc2lvbgF9ASgBE2Ezcy5vZmZpY2UubWV0YWRhdGEKYXJ0aWZhY3RJZAF3EGZpeHR1cmUtZG9jdW1lbnQoARNhM3Mub2ZmaWNlLm1ldGFkYXRhBGtpbmQBdwhkb2N1bWVudCgBE2Ezcy5vZmZpY2UubWV0YWRhdGELaW5pdGlhbGl6ZWQBeAgBIWEzcy5vZmZpY2UuYm9vdHN0cmFwLmluaXRpYWxpemVycwF3FjQyNDI0Mjpicm93c2VyLWZpeHR1cmUHARthM3Mub2ZmaWNlLmRvY3VtZW50LmNvbnRlbnQDD2RvY3VtZW50U2VjdGlvbgcAsvIZBgMJcGFyYWdyYXBoBwCy8hkHBgQAsvIZCBBIZWxsbyDwn5iAIHdvcmxkKACy8hkHC3BhcmFncmFwaElkAXcIMDAwMDAwMDEoALLyGQcGdGV4dElkAXcIMDAwMDAwMDIoALLyGQYCaWQBdxJkb2N1bWVudC1zZWN0aW9uLTEoARthM3Mub2ZmaWNlLmRvY3VtZW50Lm9wdGlvbnMJcGFnZUNvbG9yAXcHI0Y4RkFGQygBG2Ezcy5vZmZpY2UuZG9jdW1lbnQub3B0aW9ucwx0cmFja0NoYW5nZXMBeAA=";
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 #[tokio::test]
@@ -31,7 +31,7 @@ async fn native_standard_mcp_runs_a_resumable_collaboration_event_loop() {
     let comment_replica_text = comment_replica.to_str().unwrap();
     let mut child = tokio::process::Command::new(binary())
         .args(["mcp"])
-        .env("A3S_OFFICECLI_EXECUTABLE", &provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", &provider)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -528,8 +528,8 @@ async fn native_standard_mcp_runs_a_resumable_collaboration_event_loop() {
             .unwrap(),
         )
         .unwrap();
-    let document_fragment = document_peer.get_or_insert_xml_fragment("a3s.office.document.content");
-    let document_options = document_peer.get_or_insert_map("a3s.office.document.options");
+    let document_fragment = document_peer.get_or_insert_xml_fragment("aster.office.document.content");
+    let document_options = document_peer.get_or_insert_map("aster.office.document.options");
     let document_transaction = document_peer.transact();
     let document_paragraphs = document_fragment
         .successors(&document_transaction)
@@ -718,7 +718,7 @@ async fn native_standard_mcp_runs_a_resumable_collaboration_event_loop() {
     let transaction = reset_peer.transact();
     assert_eq!(
         transaction
-            .get_text("a3s.office.markdown.source")
+            .get_text("aster.office.markdown.source")
             .unwrap()
             .get_string(&transaction),
         "# MCP typed 😀"

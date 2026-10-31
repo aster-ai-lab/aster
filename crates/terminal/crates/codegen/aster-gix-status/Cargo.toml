@@ -1,0 +1,20 @@
+[package]
+license = "Apache-2.0"
+name = "aster-gix-status"
+version = "0.1.0"
+description = "Shared gix status helpers: thread budget under RLIMIT_NPROC so produce-worker spawn cannot abort under panic=abort"
+edition = "2024"
+publish = false
+
+[dependencies]
+gix = {version = "0.83", default-features = false, features = ["sha1", "status", "parallel"]}
+
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+
+[dev-dependencies]
+tempfile = {workspace = true}
+aster-test-utils = {path = "../../common/aster-test-utils"}
+
+[lints]
+workspace = true

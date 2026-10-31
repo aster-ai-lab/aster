@@ -1,5 +1,5 @@
 {
-  "schema_version": "a3s.oci.krun-runtime-assets.v1",
+  "schema_version": "aster.oci.krun-runtime-assets.v1",
   "bundles": [
     {
       "target_os": "windows",

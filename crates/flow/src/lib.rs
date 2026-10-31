@@ -1,4 +1,4 @@
-//! Durable workflow engine core for A3S.
+//! Durable workflow engine core for Aster.
 //!
 //! `kense-flow` models the Workflow SDK style of durable execution as a Rust
 //! core: workflow runs are event-sourced, step results are persisted, waits and
@@ -49,12 +49,12 @@ pub use model::{
     FLOW_VISIBILITY_PROJECTION_SCHEMA_VERSION, MAX_CHILD_WORKFLOW_BATCH_SIZE,
     MAX_CHILD_WORKFLOW_MAP_SIZE, MAX_FLOW_EVENT_BYTES, MAX_WORKFLOW_PATCH_MARKERS,
 };
-#[cfg(feature = "a3s-event")]
-pub use observe::A3sEventBusFlowEventSink;
+#[cfg(feature = "aster-event")]
+pub use observe::AsterEventBusFlowEventSink;
 pub use observe::{
-    A3sFlowEvent, A3sFlowEventBridge, A3sFlowEventSink, A3sFlowEventSubject,
-    FanoutFlowEventObserver, FlowEventObserver, FlowWorkflowIdentity, InMemoryA3sFlowEventSink,
-    InMemoryFlowEventObserver, LocalFileA3sFlowEventSink, NoopFlowEventObserver,
+    AsterFlowEvent, AsterFlowEventBridge, AsterFlowEventSink, AsterFlowEventSubject,
+    FanoutFlowEventObserver, FlowEventObserver, FlowWorkflowIdentity, InMemoryAsterFlowEventSink,
+    InMemoryFlowEventObserver, LocalFileAsterFlowEventSink, NoopFlowEventObserver,
 };
 pub use protocol::{
     NativeRuntimeKind, NativeRuntimeRequest, NativeRuntimeResponse, NativeTsCompilerCapabilities,

@@ -187,7 +187,7 @@ Illustrative contracts, finalized with the member/BFF owner before implementatio
 - Default context redirects only to an actually authorized org/project/environment; no hardcoded tenant IDs.
 - Tab and menu sets are typed closed sets. Sensitive search text and secrets never enter URLs.
 - SWR keys, mutation inputs and page URLs carry the same scope. Changing scope clears protected detail/selection/drafts and restores only that scope's safe view state.
-- Migrate `a3s.studio.platform.view:v1` explicitly: authorized legacy menus map to Administration; retired/unknown entries use a named safe fallback.
+- Migrate `aster.studio.platform.view:v1` explicitly: authorized legacy menus map to Administration; retired/unknown entries use a named safe fallback.
 
 ### 4.3 Data and ownership
 
@@ -204,7 +204,7 @@ Use only root `DESIGN.md` and existing UI tokens:
 
 - 24px page title, 18px section, 13px row/control, 12px metadata; Body/Ink replaces muted text when contrast fails.
 - White surfaces and existing gray roles provide the base, but the interface is not intentionally colorless. Navigation selection stays neutral; meaningful feature color communicates state and priority inside content.
-- Use approved semantic colors for success/healthy, warning, error, information and pending states, with text/icon labels so color is never the only signal. Charts follow `apps/dashboard/CHARTS.md` and the shared `@a3s-lab/ui/chart` implementation in `packages/ui`: a small accessible categorical palette, direct labels/legends, typed data-quality semantics, restricted ChartProps and real runtime/accessibility evidence rather than many similar grays, page-local options or project-specific chart runtimes.
+- Use approved semantic colors for success/healthy, warning, error, information and pending states, with text/icon labels so color is never the only signal. Charts follow `apps/dashboard/CHARTS.md` and the shared `@aster-ai-lab/ui/chart` implementation in `packages/ui`: a small accessible categorical palette, direct labels/legends, typed data-quality semantics, restricted ChartProps and real runtime/accessibility evidence rather than many similar grays, page-local options or project-specific chart runtimes.
 - Approved feature/action regions may use subtle tinted surfaces or icon tiles to establish hierarchy. Do not add rainbow navigation, decorative gradients, arbitrary colored buttons or per-page hex values. Missing tokens are reviewed into root `DESIGN.md` with contrast evidence before use.
 - 8px spacing rhythm; data pages use available width, focused forms/settings use the existing centered columns.
 - One primary filled action; quiet secondary actions; 30px toolbar controls and 48px table rows.

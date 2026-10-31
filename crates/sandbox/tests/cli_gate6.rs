@@ -3,7 +3,7 @@
 use std::process::Command;
 
 fn bin() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-sandbox")
+    env!("CARGO_BIN_EXE_aster-sandbox")
 }
 
 #[test]

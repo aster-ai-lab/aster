@@ -381,6 +381,7 @@ async fn test_session_workflow_runs_a_real_child_agent_step() {
 
 #[tokio::test]
 async fn test_session_workflow_scopes_explicit_host_tools_to_its_children() {
+    let workspace = tempfile::tempdir().unwrap();
     let agent = Agent::from_config(test_config()).await.unwrap();
     let calls = Arc::new(std::sync::atomic::AtomicUsize::new(0));
     let tool: Arc<dyn crate::tools::Tool> = Arc::new(CountingScopedWorkflowTool {
@@ -412,7 +413,7 @@ async fn test_session_workflow_scopes_explicit_host_tools_to_its_children() {
             .with_max_steps(2),
         );
     let session = agent
-        .session_async("/tmp/test-workflow-scoped-host-tools", Some(opts))
+        .session_async(workspace.path().to_str().unwrap(), Some(opts))
         .await
         .unwrap();
 

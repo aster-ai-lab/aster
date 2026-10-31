@@ -1,23 +1,23 @@
 export const meta = {
   title: 'Aster Office 产品概览',
-  description: 'a3s-office 的五种编辑器、浏览器与原生执行平面、格式和宿主边界。',
+  description: 'aster-office 的五种编辑器、浏览器与原生执行平面、格式和宿主边界。',
   label: '产品概览',
   updated: '2026-10-29',
 };
 
-Aster Office 提供五种格式原生编辑器，以及独立的原生自动化平面。浏览器包名为 `@a3s-lab/office`，原生 Rust crate 名为 `a3s-office`。
+Aster Office 提供五种格式原生编辑器，以及独立的原生自动化平面。浏览器包名为 `@aster-ai-lab/office`，原生 Rust crate 名为 `aster-office`。
 
-Office 负责格式模型、导入导出、布局、渲染和类型化修改。宿主产品负责持久化、身份、授权、协作传输和 AI 提供方。核心编辑与文件流程不需要 A3S 后端。
+Office 负责格式模型、导入导出、布局、渲染和类型化修改。宿主产品负责持久化、身份、授权、协作传输和 AI 提供方。核心编辑与文件流程不需要 Aster 后端。
 
 <OfficeArchitectureDiagram />
 
 ## 当前源码版本
 
 <DocTable caption="Office 包与版本" headers={['包', '当前版本', '用途']} rows={[
-  ['@a3s-lab/office', '0.312.0', '浏览器编辑器、Core API 和框架适配器'],
-  ['a3s-office', '0.45.0', '原生 Rust 文件操作与协作副本'],
-  ['a3s-office-cli', '0.45.0', 'a3s-office 命令行与 MCP 进程'],
-  ['a3s-office-web-kernel', '0.45.0', '浏览器布局与计算 WASM'],
+  ['@aster-ai-lab/office', '0.312.0', '浏览器编辑器、Core API 和框架适配器'],
+  ['aster-office', '0.45.0', '原生 Rust 文件操作与协作副本'],
+  ['aster-office-cli', '0.45.0', 'aster-office 命令行与 MCP 进程'],
+  ['aster-office-web-kernel', '0.45.0', '浏览器布局与计算 WASM'],
 ]} />
 
 这些包属于 pre-1.0。公开模型和组件属性仍可能在 minor 版本中变化。升级前必须阅读变更记录并重新验证文件往返。

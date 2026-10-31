@@ -14,7 +14,7 @@ const config: StorybookConfig = {
       plugins: [tailwindPlugin()],
       resolve: {
         alias: {
-          '@a3s-lab/ui': resolve('src')
+          '@aster-ai-lab/ui': resolve('src')
         }
       }
     })

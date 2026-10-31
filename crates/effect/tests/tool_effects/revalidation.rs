@@ -30,7 +30,7 @@ impl ToolRunner for FileTools {
         &self,
         _: ToolCall,
         _: CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<Value, ActorError>> {
         unreachable!("the fixture executes only its typed prepared effect")
     }
 
@@ -38,7 +38,7 @@ impl ToolRunner for FileTools {
         self: Arc<Self>,
         request: ToolPreparationRequest,
         _: CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<PreparedToolExecution, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<PreparedToolExecution, ActorError>> {
         Box::pin(async move {
             let digest = tool_args_digest(&request.call.args)?;
             let prepared = ToolPreparedV1 {

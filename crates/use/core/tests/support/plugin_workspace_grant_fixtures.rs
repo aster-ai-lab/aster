@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     CatalogSurface, PackageSurfaceKind, PlanPackageChangeKind, PlanPackageRole,
     PlanQualifiedSurfaceRef, PlannedPackageState, PlannedPackageTransition,
     PlannedProviderEvidence, PlannedSecretChangeKind, PlannedSurfaceChange,
@@ -125,11 +125,11 @@ pub fn confirmations(
         .iter()
         .filter_map(|change| change.after.as_ref())
         .map(|proposal| PluginGrantConfirmation {
-            schema: a3s_use_core::PLUGIN_GRANT_CONFIRMATION_SCHEMA.to_string(),
+            schema: aster_use_core::PLUGIN_GRANT_CONFIRMATION_SCHEMA.to_string(),
             operation_id: proposal.operation_id.clone(),
             plan_digest: plan_digest.to_string(),
             proposal_digest: proposal.descriptor_digest().unwrap(),
-            confirmed_by: a3s_use_core::PlanActor::User,
+            confirmed_by: aster_use_core::PlanActor::User,
             confirmed_at_ms: proposal.created_at_ms + 100,
         })
         .collect()
@@ -140,7 +140,7 @@ pub fn operation_confirmation(plan: &PluginOperationPlan) -> PluginOperationConf
         schema: PLUGIN_OPERATION_CONFIRMATION_SCHEMA.to_string(),
         operation_id: plan.operation_id.clone(),
         plan_digest: plan.descriptor_digest().unwrap(),
-        confirmed_by: a3s_use_core::PlanActor::User,
+        confirmed_by: aster_use_core::PlanActor::User,
         confirmed_at_ms: plan.created_at_ms + 100,
     }
 }
@@ -181,10 +181,10 @@ fn helper_transition(plan: &PluginOperationPlan) -> PlannedPackageTransition {
         requires: Vec::new(),
     };
     let state = PlannedPackageState {
-        release: a3s_use_core::PlannedPluginRelease {
+        release: aster_use_core::PlannedPluginRelease {
             package_id: "acme/helper".to_string(),
             version: "1.0.0".to_string(),
-            channel: a3s_use_core::PluginReleaseChannel::Stable,
+            channel: aster_use_core::PluginReleaseChannel::Stable,
             target: "linux-x86_64".to_string(),
             package_sha256: DIGEST_D.to_string(),
             manifest_sha256: DIGEST_E.to_string(),
@@ -228,7 +228,7 @@ fn helper_provider() -> PlannedProviderEvidence {
         provider_build_id: "runtime:0.3.0:linux-x86_64".to_string(),
         capability_digest: DIGEST_D.to_string(),
         semantics_profile_digest: DIGEST_E.to_string(),
-        enforcement: a3s_use_core::PlanEnforcementProfile::Sandbox,
+        enforcement: aster_use_core::PlanEnforcementProfile::Sandbox,
     }
 }
 

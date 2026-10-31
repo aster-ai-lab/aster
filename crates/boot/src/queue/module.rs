@@ -1,7 +1,7 @@
 use std::fmt;
 use std::sync::Arc;
 
-use a3s_lane::JobQueueBackend as LaneJobQueueBackend;
+use aster_lane::JobQueueBackend as LaneJobQueueBackend;
 
 use crate::{BoxFuture, Module, ModuleRef, ProviderDefinition, ProviderToken, Result};
 

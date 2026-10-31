@@ -1,4 +1,4 @@
-//! Shared types for the A3S ecosystem.
+//! Shared types for the Aster ecosystem.
 //!
 //! This crate provides:
 //! - [`privacy`] — PII classification, regex-based redaction, keyword matching

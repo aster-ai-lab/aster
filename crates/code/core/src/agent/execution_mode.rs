@@ -97,10 +97,10 @@ impl crate::agent::TurnEngine {
         let event_tx = invocation.event_tx().clone();
         let token = invocation.cancellation();
         tracing::info!(
-            a3s.run.id = invocation.run_id(),
-            a3s.session.id = session_id.unwrap_or("none"),
-            a3s.agent.max_turns = agent.config.max_tool_rounds,
-            "a3s.agent.execute started"
+            aster.run.id = invocation.run_id(),
+            aster.session.id = session_id.unwrap_or("none"),
+            aster.agent.max_turns = agent.config.max_tool_rounds,
+            "aster.agent.execute started"
         );
 
         let route = match agent
@@ -330,9 +330,9 @@ impl crate::agent::TurnEngine {
         match result {
             Ok(r) => {
                 tracing::info!(
-                    a3s.agent.tool_calls_count = r.tool_calls_count,
-                    a3s.llm.total_tokens = r.usage.total_tokens,
-                    "a3s.agent.execute completed"
+                    aster.agent.tool_calls_count = r.tool_calls_count,
+                    aster.llm.total_tokens = r.usage.total_tokens,
+                    "aster.agent.execute completed"
                 );
                 self.config.rl_trajectory_recorder.record_execution_end(
                     session_id.unwrap_or(""),
@@ -355,13 +355,13 @@ impl crate::agent::TurnEngine {
                 let failure = e.downcast_ref::<AgentExecutionFailure>();
                 tracing::warn!(
                     error = %e,
-                    a3s.agent.tool_calls_count = failure
+                    aster.agent.tool_calls_count = failure
                         .map(AgentExecutionFailure::tool_calls_count)
                         .unwrap_or_default(),
-                    a3s.llm.total_tokens = failure
+                    aster.llm.total_tokens = failure
                         .map(|failure| failure.usage().total_tokens)
                         .unwrap_or_default(),
-                    "a3s.agent.execute failed"
+                    "aster.agent.execute failed"
                 );
                 self.config.rl_trajectory_recorder.record_execution_end(
                     session_id.unwrap_or(""),

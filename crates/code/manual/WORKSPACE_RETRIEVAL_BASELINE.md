@@ -9,7 +9,7 @@ evidence are recorded separately in the
 This document records the measurement context, quality baseline, release
 budgets, and adversarial trust boundaries for the first Workspace Retrieval
 implementation. The machine-readable fixtures live in
-`core/tests/fixtures/workspace-retrieval-v1/` and the real a3s-vec FTS/BM25 tool
+`core/tests/fixtures/workspace-retrieval-v1/` and the real aster-vec FTS/BM25 tool
 executes them in the core test suite.
 
 ## Quality baseline
@@ -18,7 +18,7 @@ The synthetic v1 corpus has nine judged queries: two exact multi-term queries,
 two identifier queries, two exact CJK queries, and three paraphrase queries.
 The labels are independent of the returned BM25 paths.
 
-| Metric | a3s-vec FTS/BM25 v1 |
+| Metric | aster-vec FTS/BM25 v1 |
 | --- | ---: |
 | Recall@10 | 0.6667 (6/9) |
 | Mean reciprocal rank | 0.6667 |
@@ -136,7 +136,7 @@ estimated lexical-index memory at 64 MiB each, in addition to file and chunk
 limits. A file that would exceed a budget is reported as a failed partition;
 already admitted smaller files remain queryable and publication stays atomic.
 
-a3s-vec FTS/BM25 reuses the catalog's per-file indexes after its first source
+aster-vec FTS/BM25 reuses the catalog's per-file indexes after its first source
 revision. Until then, and for custom providers without a catalog, it builds the
 same bounded temporary lexical projection over the query-time scan. The locked
 nine-query result ordering is equal on both paths, while the incremental path
@@ -147,7 +147,7 @@ rendering; it does not carry a second product BM25 implementation.
 ## CODE-E1 implementation evidence
 
 Code exposes a host-injected `EmbeddingProvider` independently from LLM clients,
-workspace traversal, and A3S Memory. An immutable descriptor binds provider,
+workspace traversal, and Aster Memory. An immutable descriptor binds provider,
 model, optional revision, dimension, and normalization for one generation.
 `EmbeddingExecutor` rejects invalid descriptors and configuration before work,
 then partitions admitted inputs deterministically by input count, text bytes,
@@ -174,7 +174,7 @@ panic containment, and diagnostic redaction.
 
 ## CODE-S1 implementation evidence
 
-Code pins A3S Memory to commit `3293f572` and creates one exact in-memory
+Code pins Aster Memory to commit `3293f572` and creates one exact in-memory
 vector index per enabled session. The typed `WorkspaceRetrievalOptions` accepts
 a provider object, embedding limits, vector record/byte budgets, catalog
 chunking strategy/limits, and a bounded shutdown timeout; it does not expose a
@@ -185,7 +185,7 @@ An enabled local session creates one manifest-backed workspace bundle and
 shares its chunk catalog with lexical and semantic projections. A custom
 workspace is accepted only when its `WorkspaceServices` supplies a catalog;
 Code never bypasses that abstraction to read host files. `session_async`
-returns while embedding is still blocked. Each file is an atomic A3S Memory
+returns while embedding is still blocked. Each file is an atomic Aster Memory
 partition and becomes query-ready independently, so status exposes partial
 coverage without pretending the corpus is complete.
 
@@ -212,7 +212,7 @@ vector cleanup.
 ## Backend consolidation evidence
 
 The lexical and semantic projections now have one implementation each in
-product builds: a3s-vec for FTS/BM25 and A3S Memory for exact semantic
+product builds: aster-vec for FTS/BM25 and Aster Memory for exact semantic
 vectors. There is no duplicate vector projection or authority selector. The
 native lexical lifecycle, platform package contract, fallback build, descriptor
 limits, and rollback boundary are documented in

@@ -240,7 +240,7 @@ async fn default_sandbox_execution_preserves_timeout_env_and_streaming_contract(
     let ctx = ToolContext::new(temp.path().to_path_buf())
         .with_sandbox(sandbox)
         .with_command_env(Arc::new(HashMap::from([(
-            "A3S_TEST_ENV".to_string(),
+            "ASTER_TEST_ENV".to_string(),
             "visible".to_string(),
         )])))
         .with_event_tx(event_tx);
@@ -270,7 +270,7 @@ async fn default_sandbox_execution_preserves_timeout_env_and_streaming_contract(
     assert!(recorded.had_output_observer);
     let env = recorded.env.expect("command env reaches the sandbox");
     assert_eq!(
-        env.get("A3S_TEST_ENV").map(String::as_str),
+        env.get("ASTER_TEST_ENV").map(String::as_str),
         Some("visible"),
         "caller-provided env is forwarded: {env:?}"
     );
@@ -281,11 +281,11 @@ async fn default_sandbox_execution_preserves_timeout_env_and_streaming_contract(
     #[cfg(unix)]
     {
         assert!(
-            env.contains_key("A3S_CODE_GIT_REAL_PATH"),
+            env.contains_key("ASTER_GIT_REAL_PATH"),
             "witness real path missing: {env:?}"
         );
         assert!(
-            env.contains_key("A3S_CODE_GIT_WITNESS"),
+            env.contains_key("ASTER_GIT_WITNESS"),
             "witness marker missing: {env:?}"
         );
         let path = env.get("PATH").expect("witness PATH prepend");
@@ -853,7 +853,7 @@ async fn test_bash_json_normalizer_repairs_unquoted_object_literal() {
 
     let result = tool
             .execute(
-                &escalated_args("Write-Output (__a3s_normalize_json_like '{image:nginx:alpine,name:mock-nginx,port_map:[18080:80],start:true}')"),
+                &escalated_args("Write-Output (__aster_normalize_json_like '{image:nginx:alpine,name:mock-nginx,port_map:[18080:80],start:true}')"),
                 &ctx,
             )
             .await
@@ -876,7 +876,7 @@ async fn test_bash_json_normalizer_preserves_valid_json() {
 
     let result = tool
             .execute(
-                &escalated_args(r#"Write-Output (__a3s_normalize_json_like '{"image":"nginx:alpine","name":"mock-nginx","port_map":["18080:80"],"start":true}')"#),
+                &escalated_args(r#"Write-Output (__aster_normalize_json_like '{"image":"nginx:alpine","name":"mock-nginx","port_map":["18080:80"],"start":true}')"#),
                 &ctx,
             )
             .await
@@ -963,12 +963,12 @@ async fn test_bash_inherits_command_env() {
     let tool = BashTool;
     let temp = tempfile::tempdir().unwrap();
     let ctx = ToolContext::new(temp.path().to_path_buf()).with_command_env(std::sync::Arc::new(
-        HashMap::from([("A3S_TEST_ENV".to_string(), "visible".to_string())]),
+        HashMap::from([("ASTER_TEST_ENV".to_string(), "visible".to_string())]),
     ));
     #[cfg(windows)]
-    let command = "Write-Output $env:A3S_TEST_ENV";
+    let command = "Write-Output $env:ASTER_TEST_ENV";
     #[cfg(not(windows))]
-    let command = "printf '%s' \"$A3S_TEST_ENV\"";
+    let command = "printf '%s' \"$ASTER_TEST_ENV\"";
 
     let result = tool.execute(&escalated_args(command), &ctx).await.unwrap();
 
@@ -1050,7 +1050,7 @@ fn test_bash_schema_is_canonical() {
     let examples = params["examples"].as_array().unwrap();
     assert_eq!(
         examples[0]["command"],
-        "cargo test -p a3s-code-core skill::"
+        "cargo test -p aster-core skill::"
     );
     assert!(examples[0].get("cmd").is_none());
     assert!(!tool.requires_confirmation(&serde_json::json!({
@@ -1525,7 +1525,7 @@ async fn bash_existence_check_metadata_enables_verified_completion() {
 fn bash_tool_name_and_description_are_stable() {
     let tool = BashTool;
     assert_eq!(tool.name(), "bash");
-    assert!(tool.description().contains("shell command"));
+    assert!(tool.description().contains("workspace command"));
     let params = tool.parameters();
     assert_eq!(params["required"], serde_json::json!(["command"]));
     assert!(tool.requires_confirmation(&serde_json::json!({
@@ -2071,7 +2071,7 @@ impl BashSandbox for GrantingSandbox {
 
     fn apply_network_grant(
         &self,
-        grant: a3s_sandbox::NetworkGrant,
+        grant: aster_cmd_sandbox::NetworkGrant,
         expected_base_digest: &str,
     ) -> anyhow::Result<String> {
         if Some(expected_base_digest.to_string()) != self.policy_digest() {

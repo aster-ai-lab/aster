@@ -149,7 +149,7 @@ fn escalation_prompt(request: &SystemOneRequest) -> String {
         .join(", ");
     let mut questions = String::new();
     for (id, question) in &request.questions {
-        let instructions = a3s_apofasi::instructions_text(&question.instructions);
+        let instructions = aster_apofasi::instructions_text(&question.instructions);
         let value = match question.type_ {
             DecisionKind::Choice => "one option key",
             DecisionKind::Score => "a number",

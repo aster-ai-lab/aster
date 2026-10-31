@@ -1,18 +1,18 @@
-//! Bind Box-prepared Linux `netDevices` into `a3s.oci.attachments.v3`.
+//! Bind Box-prepared Linux `netDevices` into `aster.oci.attachments.v3`.
 //!
 //! IPAM, DNS, aliases, publication policy, and backing-network lifetime stay in
 //! Box. The runtime only receives immutable namespace/interface/cleanup
 //! identities plus the exact OCI mechanism already written into the bundle.
 
-use a3s_box_core::{ExecutionManagerError, ExecutionManagerResult};
-use a3s_oci_sdk::{
+use aster_box_core::{ExecutionManagerError, ExecutionManagerResult};
+use aster_oci_sdk::{
     CreateAttachments, NetworkAttachmentIdentity, NetworkCleanup, NetworkCleanupId,
     NetworkInterfaceId, NetworkNamespaceId, OciBundle,
 };
 
 use crate::BoxRecord;
 
-/// Attach every prepared `linux.netDevices` entry into `a3s.oci.attachments.v3`.
+/// Attach every prepared `linux.netDevices` entry into `aster.oci.attachments.v3`.
 ///
 /// Bundles without `netDevices` (today's SandboxViaOci shape) stay at v1/v2.
 /// When devices are present, all of them must classify against the single OCI
@@ -39,11 +39,11 @@ pub(super) fn attach_box_owned_linux_network(
         NetworkCleanup::ReleaseRuntimeNamespace
     };
 
-    let namespace_id = format!("a3s.box.netns.{}", record.id);
-    let cleanup_id = format!("a3s.box.netcleanup.{}", record.id);
+    let namespace_id = format!("aster.box.netns.{}", record.id);
+    let cleanup_id = format!("aster.box.netcleanup.{}", record.id);
     let mut attachments = attachments;
     for host_interface in &inventory.devices {
-        let interface_id = format!("a3s.box.netif.{host_interface}.{}", record.id);
+        let interface_id = format!("aster.box.netif.{host_interface}.{}", record.id);
         let identity = NetworkAttachmentIdentity::new(
             NetworkNamespaceId::new(namespace_id.clone()).map_err(|error| {
                 ExecutionManagerError::InvalidRequest(format!(
@@ -130,7 +130,7 @@ fn network_inventory(bundle: &OciBundle) -> ExecutionManagerResult<NetworkInvent
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_oci_sdk::ProcessIo;
+    use aster_oci_sdk::ProcessIo;
     use serde_json::json;
     use std::path::Path;
 
@@ -187,7 +187,7 @@ mod tests {
         );
         let attachments = CreateAttachments::from_bundle(&bundle, ProcessIo::default()).unwrap();
         let attached = attach_box_owned_linux_network(&bundle, attachments, &record).unwrap();
-        assert_eq!(attached.schema_version(), "a3s.oci.attachments.v1");
+        assert_eq!(attached.schema_version(), "aster.oci.attachments.v1");
         assert!(attached.network_attachments().is_empty());
     }
 
@@ -219,20 +219,20 @@ mod tests {
         );
         let attachments = CreateAttachments::from_bundle(&bundle, ProcessIo::default()).unwrap();
         let attached = attach_box_owned_linux_network(&bundle, attachments, &record).unwrap();
-        assert_eq!(attached.schema_version(), "a3s.oci.attachments.v3");
+        assert_eq!(attached.schema_version(), "aster.oci.attachments.v3");
         assert_eq!(attached.network_attachments().len(), 1);
         let network = &attached.network_attachments()[0];
         assert_eq!(
             network.identity().namespace().as_str(),
-            format!("a3s.box.netns.{id}")
+            format!("aster.box.netns.{id}")
         );
         assert_eq!(
             network.identity().interface().as_str(),
-            format!("a3s.box.netif.veth-box0.{id}")
+            format!("aster.box.netif.veth-box0.{id}")
         );
         assert_eq!(
             network.identity().cleanup().as_str(),
-            format!("a3s.box.netcleanup.{id}")
+            format!("aster.box.netcleanup.{id}")
         );
         assert_eq!(network.cleanup(), NetworkCleanup::ReleaseRuntimeNamespace);
     }
@@ -264,7 +264,7 @@ mod tests {
         );
         let attachments = CreateAttachments::from_bundle(&bundle, ProcessIo::default()).unwrap();
         let attached = attach_box_owned_linux_network(&bundle, attachments, &record).unwrap();
-        assert_eq!(attached.schema_version(), "a3s.oci.attachments.v3");
+        assert_eq!(attached.schema_version(), "aster.oci.attachments.v3");
         assert_eq!(
             attached.network_attachments()[0].cleanup(),
             NetworkCleanup::PreserveCallerNamespace
@@ -299,21 +299,21 @@ mod tests {
         );
         let attachments = CreateAttachments::from_bundle(&bundle, ProcessIo::default()).unwrap();
         let attached = attach_box_owned_linux_network(&bundle, attachments, &record).unwrap();
-        assert_eq!(attached.schema_version(), "a3s.oci.attachments.v3");
+        assert_eq!(attached.schema_version(), "aster.oci.attachments.v3");
         assert_eq!(attached.network_attachments().len(), 2);
         assert_eq!(
             attached.network_attachments()[0]
                 .identity()
                 .interface()
                 .as_str(),
-            format!("a3s.box.netif.veth-a.{id}")
+            format!("aster.box.netif.veth-a.{id}")
         );
         assert_eq!(
             attached.network_attachments()[1]
                 .identity()
                 .interface()
                 .as_str(),
-            format!("a3s.box.netif.veth-b.{id}")
+            format!("aster.box.netif.veth-b.{id}")
         );
         assert_eq!(
             attached.network_attachments()[0]

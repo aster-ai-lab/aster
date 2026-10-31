@@ -6,7 +6,7 @@ version: 1.0.0
 
 # 演示文稿
 
-The `a3s/presenton` workbench builds a slide deck from a topic in three kinds of turns. Each turn is one step. The view sends the step in `parameters.step`; the agent answers with one JSON object.
+The `aster/presenton` workbench builds a slide deck from a topic in three kinds of turns. Each turn is one step. The view sends the step in `parameters.step`; the agent answers with one JSON object.
 
 ## Steps
 
@@ -21,4 +21,4 @@ A step that cannot run returns `{"error":"<reason>"}`.
 1. Write slide content, not instructions about slides. Do not describe charts, layouts, colors, or positions in any text field.
 2. Use the language in `language` for every audience-facing field. Icon names and image prompts stay English.
 3. Do not invent sources, URLs, or citations.
-4. Do not copy API keys, tokens, or authorization headers into a reply. Model calls go through the a3s gateway; the member does not paste a supplier key.
+4. Do not copy API keys, tokens, or authorization headers into a reply. Model calls go through the aster gateway; the member does not paste a supplier key.

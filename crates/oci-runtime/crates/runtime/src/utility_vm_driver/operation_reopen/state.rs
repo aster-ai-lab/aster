@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{CreateRequest, IsolationRequest, OciBundle, OperationContext};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{CreateRequest, IsolationRequest, OciBundle, OperationContext};
 
 use super::{bundle_marker, directory_is_empty, operation_id, unique_nonce};
 use crate::linux_kvm_recovery_smoke::bundle;
@@ -58,7 +58,7 @@ pub async fn linux_kvm_state_reopen_replacement(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let container_id = match a3s_oci_sdk::ContainerId::new(format!("kvm-state-reopen-{nonce}")) {
+    let container_id = match aster_oci_sdk::ContainerId::new(format!("kvm-state-reopen-{nonce}")) {
         Ok(id) => id,
         Err(error) => return failed(report, format!("failed to construct container ID: {error}")),
     };

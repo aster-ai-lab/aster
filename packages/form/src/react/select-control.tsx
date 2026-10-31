@@ -206,10 +206,10 @@ export function SelectControl({
     }
   };
 
-  const classes = ['select', 'a3s-form-select-trigger', className].filter(Boolean).join(' ');
+  const classes = ['select', 'aster-form-select-trigger', className].filter(Boolean).join(' ');
   let lastGroup: string | undefined;
   return (
-    <span ref={rootRef} className="a3s-form-select-control" data-open={open || undefined}>
+    <span ref={rootRef} className="aster-form-select-control" data-open={open || undefined}>
       <button
         ref={setTrigger}
         id={id}
@@ -232,18 +232,18 @@ export function SelectControl({
         onBlur={onBlur}
         onFocus={onFocus}
       >
-        <span className="a3s-form-select-value">{selected?.label ?? ''}</span>
+        <span className="aster-form-select-value">{selected?.label ?? ''}</span>
       </button>
       {name ? <input type="hidden" name={name} value={current} /> : null}
       {open ? (
-        <span id={listId} role="listbox" aria-label={ariaLabel} className="a3s-form-select-panel" style={placement}>
+        <span id={listId} role="listbox" aria-label={ariaLabel} className="aster-form-select-panel" style={placement}>
           {options.map((option, index) => {
             const heading = option.group !== lastGroup && option.group ? option.group : undefined;
             lastGroup = option.group;
             return (
-              <span key={`${option.group ?? ''}\u0000${option.value}`} className="a3s-form-select-row">
+              <span key={`${option.group ?? ''}\u0000${option.value}`} className="aster-form-select-row">
                 {heading ? (
-                  <span className="a3s-form-select-group" aria-hidden="true">
+                  <span className="aster-form-select-group" aria-hidden="true">
                     {heading}
                   </span>
                 ) : null}
@@ -253,13 +253,13 @@ export function SelectControl({
                   aria-selected={option.value === current}
                   aria-disabled={option.disabled || undefined}
                   data-active={index === active || undefined}
-                  className="a3s-form-select-option"
+                  className="aster-form-select-option"
                   onPointerDown={(event) => event.preventDefault()}
                   onPointerEnter={() => !option.disabled && setActive(index)}
                   onClick={() => choose(option)}
                 >
-                  <span className="a3s-form-select-option-label">{option.label}</span>
-                  <svg className="a3s-form-select-check" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+                  <span className="aster-form-select-option-label">{option.label}</span>
+                  <svg className="aster-form-select-check" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
                     <path
                       d="m3 7.5 2.5 2.5L11 4.5"
                       fill="none"

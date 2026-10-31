@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, FlowScheduler, FlowWorker, InMemoryFlowTaskQueue,
     RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowSpec,
 };
@@ -15,7 +15,7 @@ impl FlowRuntime for ReminderRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.wait_completed("reminder-due") {
             return Ok(ctx.complete(json!({
@@ -33,13 +33,13 @@ impl FlowRuntime for ReminderRuntime {
         Ok(ctx.wait_until("reminder-due", resume_at))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("reminder runtime does not schedule steps")
     }
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let now = Utc::now();
     let engine = FlowEngine::in_memory(Arc::new(ReminderRuntime));
     let queue = Arc::new(InMemoryFlowTaskQueue::new());

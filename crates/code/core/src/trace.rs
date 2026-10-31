@@ -8,7 +8,7 @@ use std::collections::VecDeque;
 use std::sync::{Arc, RwLock};
 use std::time::Duration;
 
-pub const TRACE_EVENT_SCHEMA: &str = "a3s.trace_event.v1";
+pub const TRACE_EVENT_SCHEMA: &str = "aster.trace_event.v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -222,7 +222,7 @@ mod tests {
             12,
             Some(&serde_json::json!({
                 "artifact": {
-                    "artifact_uri": "a3s://tool-output/read/abc"
+                    "artifact_uri": "aster://tool-output/read/abc"
                 },
                 "file_path": "src/lib.rs"
             })),
@@ -234,7 +234,7 @@ mod tests {
         assert_eq!(events[0].schema, TRACE_EVENT_SCHEMA);
         assert_eq!(events[0].kind, TraceEventKind::ToolExecution);
         assert_eq!(events[0].metadata_keys, vec!["artifact", "file_path"]);
-        assert_eq!(events[0].artifact_uris, vec!["a3s://tool-output/read/abc"]);
+        assert_eq!(events[0].artifact_uris, vec!["aster://tool-output/read/abc"]);
     }
 
     #[test]

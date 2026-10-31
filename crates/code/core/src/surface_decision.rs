@@ -149,7 +149,7 @@ pub(crate) fn json_render_for(document: &Value, surface: Surface) -> Option<Stri
     let spec =
         serde_json::json!({"root":"root","elements":sink.elements,"state":{"form":sink.state}})
             .to_string();
-    a3s_form_core::parse_json_render(&spec).ok()?;
+    aster_form_core::parse_json_render(&spec).ok()?;
     Some(spec)
 }
 
@@ -1216,7 +1216,7 @@ fn truncate_chars(value: &str, max: usize) -> String {
 }
 
 fn gateway_origin() -> String {
-    for name in ["A3S_GATEWAY_ORIGIN", "A3S_GATEWAY_BASE_URL"] {
+    for name in ["ASTER_GATEWAY_ORIGIN", "ASTER_GATEWAY_BASE_URL"] {
         if let Ok(value) = std::env::var(name) {
             let value = value.trim().trim_end_matches('/').to_owned();
             if value.starts_with("http://") || value.starts_with("https://") {
@@ -1228,7 +1228,7 @@ fn gateway_origin() -> String {
 }
 
 fn gateway_key() -> Option<String> {
-    let key = std::env::var("A3S_GATEWAY_KEY").ok()?;
+    let key = std::env::var("ASTER_GATEWAY_KEY").ok()?;
     let key = key.trim().to_owned();
     if key.is_empty() {
         None

@@ -2,15 +2,15 @@ use super::{DurableMemorySemanticRefreshReceipt, DURABLE_MEMORY_SEMANTIC_REFRESH
 use crate::durable_memory::semantic_binding::{
     invalid, DurableMemorySemanticError, DURABLE_MEMORY_SEMANTIC_BINDING_SCHEMA_V1,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     MAX_SNAPSHOT_BYTES, MAX_SNAPSHOT_NODES, MEMORY_NAMESPACE_SNAPSHOT_PROFILE_V1,
 };
-use a3s_memory::vector::{VectorIndexChangeToken, VectorIndexStatus, VectorMutationConsistency};
+use aster_durable_memory::vector::{VectorIndexChangeToken, VectorIndexStatus, VectorMutationConsistency};
 use serde::{Deserialize, Serialize};
 
 /// Stable schema of a persisted semantic-refresh recovery checkpoint.
 pub const DURABLE_MEMORY_SEMANTIC_REFRESH_CHECKPOINT_SCHEMA_V1: &str =
-    "a3s.code.memory.semantic-refresh-checkpoint.v1";
+    "aster.code.memory.semantic-refresh-checkpoint.v1";
 
 /// Persistable, secret-free evidence used to recover a semantic refresh owner.
 ///

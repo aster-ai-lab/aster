@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ArrowDown, ArrowUp, Check, ChevronRight, Pencil, Pin, PinOff, Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
-import { Button } from '@a3s-lab/ui/components/primitives/button'
-import { Checkbox } from '@a3s-lab/ui/components/primitives/checkbox'
+import { Button } from '@aster-ai-lab/ui/components/primitives/button'
+import { Checkbox } from '@aster-ai-lab/ui/components/primitives/checkbox'
 
 import { EntitySelector } from '../../../src/components/composites/entity-selector'
 

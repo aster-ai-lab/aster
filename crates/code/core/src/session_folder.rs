@@ -1,16 +1,16 @@
 //! Per-session files in the launch workspace.
 //!
 //! A new session is stored at
-//! `<workspace>/.a3s/sessions/YYYY-MM-DD/<session-id>/`. The date is the
+//! `<workspace>/.aster/sessions/YYYY-MM-DD/<session-id>/`. The date is the
 //! local calendar day of creation. The directory is owner-only. Resume
 //! finds that same directory by session id and does not open a second day.
 //! `session.json` names the effect log, and the log itself is
 //! `<session-id>.jsonl` in that directory.
 //!
-//! A legacy `<workspace>/.a3s/effect-log/<session-id>.jsonl` that has no
+//! A legacy `<workspace>/.aster/effect-log/<session-id>.jsonl` that has no
 //! session folder stays where it is.
 //!
-//! A host-set [`crate::state_root`] override replaces `<workspace>/.a3s`.
+//! A host-set [`crate::state_root`] override replaces `<workspace>/.aster`.
 
 use std::path::{Path, PathBuf};
 
@@ -23,7 +23,7 @@ pub use catalog::{
     SessionKind,
 };
 
-pub const SESSION_FOLDER_SCHEMA: &str = "a3s.code.session-folder.v1";
+pub const SESSION_FOLDER_SCHEMA: &str = "aster.code.session-folder.v1";
 
 pub fn sessions_root(workspace: &Path) -> PathBuf {
     crate::state_root::workspace_state_dir(workspace).join("sessions")
@@ -315,7 +315,7 @@ fn set_mode(_path: &Path, _mode: u32) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_effect::LogStore;
+    use aster_effect::LogStore;
 
     const ID: &str = "11111111-1111-4111-8111-111111111111";
 
@@ -384,10 +384,10 @@ mod tests {
     fn the_effect_log_is_stored_in_the_session_folder() {
         let workspace = tempfile::tempdir().unwrap();
         let dir = ensure_session_dir_on(workspace.path(), ID, day(2026, 10, 4)).unwrap();
-        let log = a3s_effect::FileLog::open(effect_log_dir(workspace.path(), ID)).unwrap();
+        let log = aster_effect::FileLog::open(effect_log_dir(workspace.path(), ID)).unwrap();
         log.append(
             ID,
-            &[a3s_effect::NewFact {
+            &[aster_effect::NewFact {
                 kind: "user.message".into(),
                 key: "m".into(),
                 payload: serde_json::json!({ "text": "hello" }),
@@ -431,9 +431,9 @@ mod tests {
     fn a_symlinked_sessions_root_is_refused() {
         let workspace = tempfile::tempdir().unwrap();
         let outside = tempfile::tempdir().unwrap();
-        let a3s = workspace.path().join(".a3s");
-        std::fs::create_dir(&a3s).unwrap();
-        std::os::unix::fs::symlink(outside.path(), a3s.join("sessions")).unwrap();
+        let aster = workspace.path().join(".aster");
+        std::fs::create_dir(&aster).unwrap();
+        std::os::unix::fs::symlink(outside.path(), aster.join("sessions")).unwrap();
         let error = ensure_session_dir(workspace.path(), ID).unwrap_err();
         assert!(error.to_string().contains("symlink"));
         assert!(std::fs::read_dir(outside.path()).unwrap().next().is_none());

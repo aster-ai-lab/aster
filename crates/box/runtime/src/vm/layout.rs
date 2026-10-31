@@ -5,8 +5,8 @@ use std::path::{Path, PathBuf};
 use crate::cache::RootfsCache;
 use crate::oci::OciRootfsBuilder;
 use crate::vmm::TeeInstanceConfig;
-use a3s_box_core::config::TeeConfig;
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::config::TeeConfig;
+use aster_box_core::error::{BoxError, Result};
 
 use super::{BoxLayout, VmManager};
 
@@ -895,7 +895,7 @@ impl VmManager {
                 simulate,
             } => {
                 // In simulation mode, skip hardware check and TEE config
-                // (the guest will generate simulated reports via A3S_TEE_SIMULATE env)
+                // (the guest will generate simulated reports via ASTER_TEE_SIMULATE env)
                 if *simulate {
                     tracing::warn!("TEE simulation mode: skipping hardware check and TEE config");
                     return Ok(None);
@@ -972,15 +972,15 @@ impl VmManager {
     /// Find the guest init binary in common locations.
     ///
     /// Searches in order:
-    /// 1. The installed `A3S_HOME/bin` asset
+    /// 1. The installed `ASTER_HOME/bin` asset
     /// 2. Same directory as current executable
     /// 3. target/debug or target/release (for development)
     /// 4. PATH
     ///
     /// The binary must be a Linux ELF executable since it runs inside the VM.
     pub(crate) fn find_guest_init() -> Result<PathBuf> {
-        let name = "a3s-box-guest-init";
-        let installed = a3s_box_core::dirs_home().join("bin").join(name);
+        let name = "aster-box-guest-init";
+        let installed = aster_box_core::dirs_home().join("bin").join(name);
         let candidates = Self::find_binary_candidates(name);
 
         if let Some(path) = Self::select_guest_init(&installed, candidates) {
@@ -991,7 +991,7 @@ impl VmManager {
             message: "Linux guest init binary not found".to_string(),
             hint: Some(
                 "Cross-compile the static guest init for your guest arch, e.g.: \
-                 cargo build -p a3s-box-guest-init --release --target x86_64-unknown-linux-musl \
+                 cargo build -p aster-box-guest-init --release --target x86_64-unknown-linux-musl \
                  (or aarch64-unknown-linux-musl). A glibc-dynamic host build is rejected because \
                  it cannot run as PID 1 inside a minimal guest rootfs."
                     .to_string(),
@@ -1000,7 +1000,7 @@ impl VmManager {
     }
 
     fn select_guest_init(installed: &Path, mut candidates: Vec<PathBuf>) -> Option<PathBuf> {
-        // An explicitly installed asset belongs to the active A3S_HOME and must
+        // An explicitly installed asset belongs to the active ASTER_HOME and must
         // not be shadowed by a stale development artifact in target/. Release
         // installation already puts the static guest binary at this fixed path.
         if Self::is_linux_elf(installed) {
@@ -1058,7 +1058,7 @@ impl VmManager {
                 }
 
                 // Also search cross-compilation directories relative to the
-                // exe's target root. When the exe is at target/debug/a3s-box,
+                // exe's target root. When the exe is at target/debug/aster-box,
                 // cross-compiled guest binaries live at
                 // target/aarch64-unknown-linux-musl/{debug,release}/.
                 if let Some(target_root) = exe_dir.parent() {

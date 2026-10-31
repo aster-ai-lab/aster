@@ -2,7 +2,7 @@
 //! Tensor names are the schema in pinned tools/v41/v41_gguf.py, not inferred
 //! from catalog spelling. Gate/up share a map; down has independent slots.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use tokio_util::sync::CancellationToken;
 
 use super::gguf::XqGgufHeader;

@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 use super::ext4::{
     validate_ext4_image, validate_ext4_image_for_resume, Ext4Artifact, Ext4ArtifactManifest,
@@ -27,7 +27,7 @@ pub(super) fn open_ext4_artifact(directory: &Path) -> Result<Ext4Artifact> {
 ///
 /// Clean filesystems receive full structural verification. A generation left
 /// mounted by a host crash is accepted only when its primary superblock still
-/// matches the exact A3S artifact contract; the guest kernel then owns journal
+/// matches the exact Aster artifact contract; the guest kernel then owns journal
 /// replay inside the VM.
 #[cfg(target_os = "macos")]
 pub(super) fn open_ext4_artifact_for_resume(

@@ -5,7 +5,7 @@
 //! Apache-2.0 DeepInfer compress.py/attn.py at revision
 //! 9bd9cf243fc53ef9afbf8f04d391d989117d6ab9. Rust owns every transaction.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

@@ -193,7 +193,7 @@ pub(crate) fn chunk_id(
     end_byte: usize,
 ) -> WorkspaceChunkId {
     let mut hasher = Sha256::new();
-    hasher.update(b"a3s.workspace.chunk.v1\0");
+    hasher.update(b"aster.workspace.chunk.v1\0");
     hasher.update(path.as_bytes());
     hasher.update(b"\0");
     hasher.update(content_digest.as_bytes());

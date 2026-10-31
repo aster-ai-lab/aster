@@ -503,7 +503,7 @@ description: Review CI failures
 allowed-tools:
   - Read
   - Grep
-  - Bash(cargo test -p a3s-code-core:*)
+  - Bash(cargo test -p aster-core:*)
 kind: instruction
 ---
 # CI Review
@@ -517,7 +517,7 @@ kind: instruction
     let skill = registry.get("ci-review").unwrap();
     assert_eq!(
         skill.allowed_tools.as_deref(),
-        Some("Read, Grep, Bash(cargo test -p a3s-code-core:*)")
+        Some("Read, Grep, Bash(cargo test -p aster-core:*)")
     );
     let permissions = skill.parse_allowed_tools();
     assert!(permissions
@@ -525,7 +525,7 @@ kind: instruction
         .any(|perm| perm.tool == "Read" && perm.pattern == "*"));
     assert!(permissions
         .iter()
-        .any(|perm| { perm.tool == "Bash" && perm.pattern == "cargo test -p a3s-code-core:*" }));
+        .any(|perm| { perm.tool == "Bash" && perm.pattern == "cargo test -p aster-core:*" }));
     Ok(())
 }
 

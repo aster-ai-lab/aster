@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::part::{
     dialect, ensure_namespace as ensure_part_namespace, relationship_part, relative_target,
@@ -248,6 +248,6 @@ fn ensure_namespace(
     )
 }
 
-fn comment_error(code: &str, message: impl Into<String>) -> a3s_use_core::UseError {
+fn comment_error(code: &str, message: impl Into<String>) -> aster_use_core::UseError {
     editor_error(code, message)
 }

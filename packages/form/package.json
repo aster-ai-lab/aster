@@ -1,8 +1,8 @@
 {
-  "name": "@a3s-lab/form",
+  "name": "@aster-ai-lab/form",
   "version": "0.1.0",
   "private": true,
-  "description": "The A3S schema-form engine (Gleam-compiled core, React/Vue bindings) — extracted from the archived legacy library as its own bounded package; flow-ui and any form consumer depend on this, never on the legacy tree.",
+  "description": "The Aster schema-form engine (Gleam-compiled core, React/Vue bindings) — extracted from the archived legacy library as its own bounded package; flow-ui and any form consumer depend on this, never on the legacy tree.",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",

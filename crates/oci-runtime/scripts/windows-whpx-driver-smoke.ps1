@@ -22,8 +22,8 @@ $systemImageManifest = (
     Resolve-Path -LiteralPath $SystemImageManifest -ErrorAction Stop
 ).Path
 $fixtureConfig = Join-Path $repositoryRoot 'fixtures\utility-vm\config.windows.json'
-$cli = Join-Path $repositoryRoot 'target\debug\a3s-oci.exe'
-$shim = Join-Path $repositoryRoot 'target\debug\a3s-oci-krun-shim.exe'
+$cli = Join-Path $repositoryRoot 'target\debug\aster-oci.exe'
+$shim = Join-Path $repositoryRoot 'target\debug\aster-oci-krun-shim.exe'
 $krunDll = Join-Path $repositoryRoot 'target\debug\krun.dll'
 $firmwareDll = Join-Path $repositoryRoot 'target\debug\libkrunfw.dll'
 $tar = (Get-Command tar.exe -ErrorAction Stop).Source
@@ -53,9 +53,9 @@ if ($manifestItem.PSObject.Properties.Name -contains 'LinkType' -and $manifestIt
     throw "System-image manifest must not be a link: $systemImageManifest"
 }
 $systemImage = Get-Content -LiteralPath $systemImageManifest -Raw | ConvertFrom-Json
-if ($systemImage.schema_version -ne 'a3s.oci.windows-system-image.v1' -or
+if ($systemImage.schema_version -ne 'aster.oci.windows-system-image.v1' -or
     $systemImage.architecture -ne 'x86_64' -or
-    $systemImage.image.name -ne 'a3s-oci-system.ext4') {
+    $systemImage.image.name -ne 'aster-oci-system.ext4') {
     throw "Unexpected Windows system-image manifest: $systemImageManifest"
 }
 $systemImagePath = Join-Path $manifestItem.DirectoryName $systemImage.image.name
@@ -109,40 +109,40 @@ function Write-Utf8Text {
     [IO.File]::WriteAllText($Path, $Text, $script:utf8NoBom)
 }
 
-function Get-A3sOciProcesses {
+function Get-AsterOciProcesses {
     @(
         Get-Process -ErrorAction SilentlyContinue |
             Where-Object {
-                $_.ProcessName -in @('a3s-oci', 'a3s-oci-krun-shim')
+                $_.ProcessName -in @('aster-oci', 'aster-oci-krun-shim')
             } |
             Select-Object ProcessName, Id, StartTime
     )
 }
 
-function Wait-ForA3sOciProcessesToExit {
+function Wait-ForAsterOciProcessesToExit {
     for ($attempt = 0; $attempt -lt 50; $attempt++) {
-        $processes = @(Get-A3sOciProcesses)
+        $processes = @(Get-AsterOciProcesses)
         if ($processes.Count -eq 0) {
             return @()
         }
         Start-Sleep -Milliseconds 100
     }
-    @(Get-A3sOciProcesses)
+    @(Get-AsterOciProcesses)
 }
 
-$preexisting = @(Get-A3sOciProcesses)
+$preexisting = @(Get-AsterOciProcesses)
 if ($preexisting.Count -gt 0) {
     $description = ($preexisting | ForEach-Object {
         '{0}:{1}' -f $_.ProcessName, $_.Id
     }) -join ', '
-    throw "Refusing to start with active A3S OCI processes: $description"
+    throw "Refusing to start with active Aster OCI processes: $description"
 }
 
 New-Item -ItemType Directory -Path $bootstrapRoot, $containerRootfs | Out-Null
 
 if (-not $SkipBuild) {
     & cargo.exe build --manifest-path (Join-Path $repositoryRoot 'Cargo.toml') `
-        -p a3s-oci-cli -p a3s-oci-krun
+        -p aster-oci-cli -p aster-oci-krun
     if ($LASTEXITCODE -ne 0) {
         throw 'Failed to build the Windows qualification binaries.'
     }
@@ -195,11 +195,11 @@ catch {
 if ($exitCode -ne 0 -or $report.status -ne 'available') {
     throw "WHPX driver smoke failed with exit code $exitCode; see $reportPath"
 }
-if ($report.schema_version -ne 'a3s.oci.whpx-driver-smoke.v1') {
+if ($report.schema_version -ne 'aster.oci.whpx-driver-smoke.v1') {
     throw "Unexpected WHPX driver smoke schema: $($report.schema_version)"
 }
 
-$residual = @(Wait-ForA3sOciProcessesToExit)
+$residual = @(Wait-ForAsterOciProcessesToExit)
 if ($residual.Count -gt 0) {
     $description = ($residual | ForEach-Object {
         '{0}:{1}' -f $_.ProcessName, $_.Id
@@ -212,7 +212,7 @@ if ($LASTEXITCODE -ne 0) {
     throw 'Unable to resolve the repository commit.'
 }
 $summary = [ordered]@{
-    schema_version = 'a3s.oci.whpx-driver-smoke-run.v1'
+    schema_version = 'aster.oci.whpx-driver-smoke-run.v1'
     status = 'available'
     started_at_utc = $startedAt.ToString('o')
     completed_at_utc = [DateTime]::UtcNow.ToString('o')

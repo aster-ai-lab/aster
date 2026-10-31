@@ -11,7 +11,7 @@ const root = fileURLToPath(new URL('..', import.meta.url))
 const SOURCE_ONLY = ['brand/', 'tests/', 'tools/']
 const SHIPPED = [
   'README.md',
-  'a3s-use-extension.acl',
+  'aster-use-extension.acl',
   'agent/choose.mjs',
   'agent/run.mjs',
   'agents/g1-arm/INSTRUCTIONS.md',
@@ -69,7 +69,7 @@ test('the package ships exactly the declared files, each under the API file limi
 })
 
 test('the manifest declares schema 3 with an edge agent and a contained view', () => {
-  const manifest = read('a3s-use-extension.acl')
+  const manifest = read('aster-use-extension.acl')
   assert.match(manifest, /^\s*schema_version\s*=\s*3$/m)
   assert.match(manifest, /^\s*harness\s*=\s*"package"$/m)
   assert.match(manifest, /^\s*runtime\s*=\s*"edge"$/m)
@@ -119,5 +119,5 @@ test('the shipped mujoco.js is the recorded patch of upstream and generates no c
     '464aaf6874012368292ee2789de83f1ee4a090b6ebebb68352c6c9d90e374a4c'
   )
   assert.doesNotMatch(script, /new Function|\beval\(/)
-  assert.equal(script.split('// a3s patch:').length - 1, 2)
+  assert.equal(script.split('// aster patch:').length - 1, 2)
 })

@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  createA3sFlowDesignerContext,
-  serializeA3sFlowDesignerContext,
+  createAsterFlowDesignerContext,
+  serializeAsterFlowDesignerContext,
 } from "../src";
-import type { A3sFlowWorkflowDsl } from "../src";
+import type { AsterFlowWorkflowDsl } from "../src";
 
-function documentFixture(): A3sFlowWorkflowDsl {
+function documentFixture(): AsterFlowWorkflowDsl {
   return {
     version: "0.7.0",
     kind: "app",
@@ -43,9 +43,9 @@ function documentFixture(): A3sFlowWorkflowDsl {
   };
 }
 
-describe("A3S Flow designer extension context", () => {
+describe("Aster Flow designer extension context", () => {
   it("exposes a complete immutable DSL and focused node context", () => {
-    const context = createA3sFlowDesignerContext(documentFixture(), {
+    const context = createAsterFlowDesignerContext(documentFixture(), {
       selection: { kind: "node", id: "child-b" },
       annotations: [{ id: "note-1", kind: "note", text: "check" }],
       metadata: { source: "test" },
@@ -69,11 +69,11 @@ describe("A3S Flow designer extension context", () => {
   });
 
   it("projects selected edges and serializes agent-safe context", () => {
-    const context = createA3sFlowDesignerContext(documentFixture(), {
+    const context = createAsterFlowDesignerContext(documentFixture(), {
       selection: { kind: "edge", id: "child-edge" },
       issues: [{ code: "test.issue", path: "nodes.1", message: "Review node" }],
     });
-    const serialized = serializeA3sFlowDesignerContext(context);
+    const serialized = serializeAsterFlowDesignerContext(context);
 
     expect(context.selectedEdge).toMatchObject({
       id: "child-edge",

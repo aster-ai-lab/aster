@@ -3,12 +3,12 @@
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
-use a3s_boot::{
+use aster_boot::{
     controller, injectable, BootApplication, BootError, BootRequest, ControllerDefinition,
     HttpMethod, Module, OpenApiInfo, ParseIntPipe, Result,
 };
 #[allow(unused_imports)]
-use a3s_boot::{cookie, cookies, get};
+use aster_boot::{cookie, cookies, get};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
@@ -76,7 +76,7 @@ impl Module for CookieFeatureModule {
         "cookie-feature"
     }
 
-    fn controllers(&self, _module_ref: &a3s_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
+    fn controllers(&self, _module_ref: &aster_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
         Ok(vec![Arc::new(CookieController).controller()?])
     }
 }

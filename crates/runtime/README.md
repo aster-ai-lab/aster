@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="A3S Runtime: one durable lifecycle for provider-neutral Tasks and Services">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Aster Runtime: one durable lifecycle for provider-neutral Tasks and Services">
 </p>
 
 
@@ -10,10 +10,10 @@
 </p>
 
 <p align="center">
-  <a href="https://crates.io/crates/a3s-runtime"><img alt="Crates.io release" src="https://img.shields.io/crates/v/a3s-runtime?style=flat-square&color=f97316"></a>
-  <a href="https://docs.rs/a3s-runtime/latest/a3s_runtime/"><img alt="docs.rs API documentation" src="https://img.shields.io/docsrs/a3s-runtime?style=flat-square"></a>
-  <a href="https://github.com/A3S-Lab/Runtime/actions/workflows/ci.yml"><img alt="Continuous integration status" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/Runtime/ci.yml?branch=main&style=flat-square&label=CI"></a>
-  <a href="https://github.com/A3S-Lab/Runtime/blob/main/LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-5eead4?style=flat-square"></a>
+  <a href="https://crates.io/crates/aster-runtime"><img alt="Crates.io release" src="https://img.shields.io/crates/v/aster-runtime?style=flat-square&color=f97316"></a>
+  <a href="https://docs.rs/aster-runtime/latest/aster_runtime/"><img alt="docs.rs API documentation" src="https://img.shields.io/docsrs/aster-runtime?style=flat-square"></a>
+  <a href="https://github.com/aster-ai-lab/Runtime/actions/workflows/ci.yml"><img alt="Continuous integration status" src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/Runtime/ci.yml?branch=main&style=flat-square&label=CI"></a>
+  <a href="https://github.com/aster-ai-lab/Runtime/blob/main/LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-5eead4?style=flat-square"></a>
   <img alt="Minimum supported Rust version 1.85" src="https://img.shields.io/badge/MSRV-1.85-8b949e?style=flat-square">
 </p>
 
@@ -26,15 +26,15 @@
   <a href="#deliberate-boundaries">Boundaries</a>
 </p>
 
-**A3S Runtime** is the provider-neutral execution contract for finite Tasks and
+**Aster Runtime** is the provider-neutral execution contract for finite Tasks and
 long-running Services. It gives callers one lifecycle API across local,
 container, sandbox, and remote providers while keeping provider mechanics
 behind a typed driver boundary.
 
-It is the single execution substrate beneath A3S Cloud AaaS, executable WaaS
+It is the single execution substrate beneath Aster Cloud AaaS, executable WaaS
 nodes, FaaS, hosted MCP, and Durable Cell application Services. The supported
-production chain uses A3S Box as the process/sandbox provider; public traffic
-enters through A3S Gateway and never through a Runtime endpoint directly.
+production chain uses Aster Box as the process/sandbox provider; public traffic
+enters through Aster Gateway and never through a Runtime endpoint directly.
 
 Runtime owns validation, immutable generations, capability admission, durable
 request identity, and observed convergence. Scheduling, routing, deployment
@@ -66,24 +66,24 @@ Every unit generation is bound to one immutable identity:
 | `Task` | `succeeded` | Builds, finite Functions, migrations, evaluations, backups |
 | `Service` | `running`, ready and live when configured | Stateful Agents, stateless Functions/MCP, Durable Cell applications |
 
-Workflow orchestration is not a third unit class. A3S Flow owns the durable
+Workflow orchestration is not a third unit class. Aster Flow owns the durable
 Workflow state machine; only its executable Agent or Function children project
 to a Runtime Task or Service.
 
 ## Architecture
 
 <p align="center">
-  <img src="./assets/readme/architecture.svg" width="100%" alt="A3S Runtime architecture from caller policy through ManagedRuntimeClient and RuntimeDriver to an external provider">
+  <img src="./assets/readme/architecture.svg" width="100%" alt="Aster Runtime architecture from caller policy through ManagedRuntimeClient and RuntimeDriver to an external provider">
 </p>
 
 `ManagedRuntimeClient` is the shared lifecycle implementation. It composes three
 replaceable ports:
 
-- [`RuntimeStateStore`](https://docs.rs/a3s-runtime/latest/a3s_runtime/trait.RuntimeStateStore.html)
+- [`RuntimeStateStore`](https://docs.rs/aster-runtime/latest/aster_runtime/trait.RuntimeStateStore.html)
   owns unit records, request receipts, and per-unit operation leases.
-- [`RuntimeDriver`](https://docs.rs/a3s-runtime/latest/a3s_runtime/trait.RuntimeDriver.html)
+- [`RuntimeDriver`](https://docs.rs/aster-runtime/latest/aster_runtime/trait.RuntimeDriver.html)
   owns provider resource mechanics and stable provider identity.
-- [`RuntimeClock`](https://docs.rs/a3s-runtime/latest/a3s_runtime/trait.RuntimeClock.html)
+- [`RuntimeClock`](https://docs.rs/aster-runtime/latest/aster_runtime/trait.RuntimeClock.html)
   supplies deadline and observation time.
 
 The driver never decides generation or request-conflict policy. The registry
@@ -93,7 +93,7 @@ explicit `ProviderId` and connect through `RuntimeClientRegistry`.
 ### Cloud, Runtime, Box, and Gateway
 
 ```text
-Client -> A3S Gateway -> A3S Cloud -> A3S Runtime -> A3S Box
+Client -> Aster Gateway -> Aster Cloud -> Aster Runtime -> Aster Box
           public path    semantics    lifecycle     execution
 ```
 
@@ -103,8 +103,8 @@ features, opaque semantics evidence, Service readiness/liveness, and exact
 endpoints while leaving all product fields in the caller:
 
 ```rust,ignore
-use a3s_runtime::contract::{RuntimeFeature, RuntimeUnitClass};
-use a3s_runtime::RuntimeConsumerRequirements;
+use aster_runtime::contract::{RuntimeFeature, RuntimeUnitClass};
+use aster_runtime::RuntimeConsumerRequirements;
 
 let requirements = RuntimeConsumerRequirements::new(RuntimeUnitClass::Service)
     .require_semantics_profile()
@@ -141,20 +141,20 @@ than create a duplicate.
 Install the latest release:
 
 ```bash
-cargo add a3s-runtime
+cargo add aster-runtime
 ```
 
 After implementing a provider driver, compose it with the managed lifecycle:
 
 ```rust,ignore
-use a3s_runtime::{
+use aster_runtime::{
     FileRuntimeStateStore, ManagedRuntimeClient, RuntimeClient, RuntimeDriver,
 };
 use std::sync::Arc;
 
 let driver: Arc<dyn RuntimeDriver> = Arc::new(provider_driver);
 let client = ManagedRuntimeClient::new(
-    Arc::new(FileRuntimeStateStore::new("/var/lib/a3s/runtime")),
+    Arc::new(FileRuntimeStateStore::new("/var/lib/aster/runtime")),
     driver,
 );
 
@@ -165,7 +165,7 @@ let observation = client.apply(&request).await?;
 Choose the entry point that matches your role:
 
 - **Runtime consumer:** call the
-  [`RuntimeClient`](https://docs.rs/a3s-runtime/latest/a3s_runtime/trait.RuntimeClient.html)
+  [`RuntimeClient`](https://docs.rs/aster-runtime/latest/aster_runtime/trait.RuntimeClient.html)
   lifecycle directly or obtain one from `RuntimeClientRegistry`.
 - **Provider author:** implement `RuntimeDriver`, expose it through a
   `RuntimeProviderFactory`, and make `apply`, `stop`, `remove`, and advertised
@@ -175,10 +175,10 @@ Choose the entry point that matches your role:
   equivalent fenced per-unit lease.
 
 > [!NOTE]
-> `a3s-runtime` 0.5.0 uses capabilities v6 and unit-spec/observation v4. It
+> `aster-runtime` 0.5.0 uses capabilities v6 and unit-spec/observation v4. It
 > separates Service readiness from liveness, carries a bounded graceful-stop
 > policy, and retains typed endpoints plus opaque identity-attestation binding.
-> Production claims still require exact A3S Box certification.
+> Production claims still require exact Aster Box certification.
 
 ## Runtime specification
 
@@ -297,7 +297,7 @@ Production providers implement `RuntimeConformanceFixture` and run the shared
 suite against real, disposable infrastructure:
 
 ```rust,ignore
-use a3s_runtime::{verify_runtime_profiles, RuntimeConformanceFixture};
+use aster_runtime::{verify_runtime_profiles, RuntimeConformanceFixture};
 
 let fixture: &dyn RuntimeConformanceFixture = provider_fixture;
 let report = verify_runtime_profiles(client.as_ref(), fixture).await?;
@@ -316,14 +316,14 @@ cases. A provider must not advertise it from configuration intent alone.
 The lower-level `verify_runtime_provider` helper covers the successful Task and
 Service lifecycle, but it is not production certification by itself.
 
-A3S Box contains the production `RuntimeDriver` and capability-triggered
+Aster Box contains the production `RuntimeDriver` and capability-triggered
 fixtures. A Cloud product may claim support only after the exact Runtime and Box
 revisions pass every advertised profile and restore the pre-test inventory;
 unadvertised capabilities such as outbound networking cannot be inferred.
 
 ## Deliberate boundaries
 
-A3S Runtime intentionally does not own:
+Aster Runtime intentionally does not own:
 
 - scheduling, placement, routing, traffic switching, or deployment workflows;
 - provider-selection policy, login discovery, or default-provider fallback;
@@ -340,7 +340,7 @@ reasoning:
 - [ADR 0003 — Interactive streaming exec stays outside v0.2](docs/adr/0003-keep-interactive-streaming-exec-outside-v0.2-core.md)
 - [ADR 0004 — Typed Service endpoints and protocol capabilities](docs/adr/0004-type-service-endpoints-and-protocol-capabilities.md)
 - [ADR 0005 — Host modern stateless MCP as a Service profile](docs/adr/0005-host-modern-stateless-mcp-as-a-service-profile.md)
-- [ADR 0006 — Unify AI service consumers on Task, Service, and A3S Box](docs/adr/0006-unify-ai-service-consumers-on-task-service-and-box.md)
+- [ADR 0006 — Unify AI service consumers on Task, Service, and Aster Box](docs/adr/0006-unify-ai-service-consumers-on-task-service-and-box.md)
 - [ADR 0007 — Bind opaque identity attachment to provider attestation](docs/adr/0007-bind-opaque-identity-attachment-to-provider-attestation.md)
 - [ADR 0008 — Separate Service readiness, liveness, and graceful stop](docs/adr/0008-separate-service-readiness-liveness-and-graceful-stop.md)
 - [Unified AI Service Runtime](docs/unified-ai-service-runtime.md)
@@ -367,4 +367,4 @@ conformance.
 
 ## License
 
-[MIT](LICENSE) © A3S Lab
+[MIT](LICENSE) © Aster

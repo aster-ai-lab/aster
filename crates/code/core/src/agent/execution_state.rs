@@ -482,11 +482,11 @@ mod tests {
         let mut state = ExecutionLoopState::new(&[]);
         state.bind_run_watch(workspace.path()).await;
         std::fs::write(workspace.path().join("guest.txt"), "hello\n").unwrap();
-        std::fs::create_dir_all(workspace.path().join(".a3s")).unwrap();
-        std::fs::write(workspace.path().join(".a3s/note"), "harness\n").unwrap();
-        std::fs::create_dir_all(workspace.path().join(".a3s-code/grep-trigram")).unwrap();
+        std::fs::create_dir_all(workspace.path().join(".aster")).unwrap();
+        std::fs::write(workspace.path().join(".aster/note"), "harness\n").unwrap();
+        std::fs::create_dir_all(workspace.path().join(".aster/grep-trigram")).unwrap();
         std::fs::write(
-            workspace.path().join(".a3s-code/grep-trigram/stamp.txt"),
+            workspace.path().join(".aster/grep-trigram/stamp.txt"),
             "index\n",
         )
         .unwrap();
@@ -496,7 +496,7 @@ mod tests {
             "baseline missed an unpublished write: {paths:?}"
         );
         assert!(
-            paths.iter().all(|path| !path.contains(".a3s")),
+            paths.iter().all(|path| !path.contains(".aster")),
             "harness metadata was treated as source: {paths:?}"
         );
     }
@@ -540,6 +540,29 @@ mod tests {
             .success());
         for index in 0..=crate::porcelain::FILE_WALK_CAP {
             std::fs::write(root.join(format!("f{index:04}.txt")), "x").unwrap();
+        }
+        for args in [
+            vec!["add", "--all"],
+            vec![
+                "-c",
+                "user.name=Fixture",
+                "-c",
+                "user.email=fixture@example.invalid",
+                "-c",
+                "commit.gpgsign=false",
+                "-c",
+                "core.hooksPath=",
+                "commit",
+                "-qm",
+                "baseline",
+            ],
+        ] {
+            assert!(std::process::Command::new("git")
+                .args(args)
+                .current_dir(root)
+                .status()
+                .unwrap()
+                .success());
         }
         let mut state = ExecutionLoopState::new(&[]);
         state.bind_run_watch(root).await;
@@ -697,8 +720,8 @@ mod tests {
             );
         };
         git(&["init"]);
-        git(&["config", "user.email", "tests@a3s.local"]);
-        git(&["config", "user.name", "A3S Tests"]);
+        git(&["config", "user.email", "tests@aster.local"]);
+        git(&["config", "user.name", "Aster Tests"]);
         std::fs::write(root.join("guest.txt"), "one\n").unwrap();
         git(&["add", "guest.txt"]);
         git(&["commit", "-m", "init"]);
@@ -742,8 +765,8 @@ mod tests {
             );
         };
         git(&["init"]);
-        git(&["config", "user.email", "tests@a3s.local"]);
-        git(&["config", "user.name", "A3S Tests"]);
+        git(&["config", "user.email", "tests@aster.local"]);
+        git(&["config", "user.name", "Aster Tests"]);
         std::fs::write(root.join("skipped.txt"), "one\n").unwrap();
         std::fs::write(root.join("assumed.txt"), "one\n").unwrap();
         git(&["add", "skipped.txt", "assumed.txt"]);

@@ -1,4 +1,4 @@
-# A3S Lane - Justfile
+# Aster Lane - Justfile
 
 default:
     @just --list
@@ -61,9 +61,9 @@ test:
             done
     }
 
-    print_header "🧪 A3S Lane Test Suite"
+    print_header "🧪 Aster Lane Test Suite"
     echo ""
-    echo -ne "${CYAN}▶${RESET} ${BOLD}a3s-lane${RESET} "
+    echo -ne "${CYAN}▶${RESET} ${BOLD}aster-lane${RESET} "
 
     # Run tests and capture output
     if OUTPUT=$(cargo test --lib 2>&1); then
@@ -188,9 +188,9 @@ test-cov:
         echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
     }
 
-    print_header "🧪 A3S Lane Test Suite with Coverage"
+    print_header "🧪 Aster Lane Test Suite with Coverage"
     echo ""
-    echo -e "${CYAN}▶${RESET} ${BOLD}a3s-lane${RESET}"
+    echo -e "${CYAN}▶${RESET} ${BOLD}aster-lane${RESET}"
     echo ""
 
     # Temp files for tracking
@@ -327,7 +327,7 @@ test-cov:
 cov:
     #!/usr/bin/env bash
     set -e
-    COV_FILE="/tmp/a3s-lane-coverage.lcov"
+    COV_FILE="/tmp/aster-lane-coverage.lcov"
     echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
     echo "┃                    🧪 Running Tests with Coverage                     ┃"
     echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
@@ -434,7 +434,7 @@ publish:
 
     echo ""
     echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-    echo -e "${BOLD}  📦 Publishing a3s-lane to crates.io${RESET}"
+    echo -e "${BOLD}  📦 Publishing aster-lane to crates.io${RESET}"
     echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
     echo ""
 
@@ -480,7 +480,7 @@ publish:
     if cargo publish; then
         echo ""
         echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-        echo -e "  ${GREEN}${BOLD}✓ Successfully published a3s-lane v${VERSION}${RESET}"
+        echo -e "  ${GREEN}${BOLD}✓ Successfully published aster-lane v${VERSION}${RESET}"
         echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
     else
         print_error "Publish failed."
@@ -493,7 +493,7 @@ publish-dry:
     set -e
     echo ""
     echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
-    echo "┃                    📦 Publish Dry Run (a3s-lane)                       ┃"
+    echo "┃                    📦 Publish Dry Run (aster-lane)                       ┃"
     echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
     echo ""
     VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')

@@ -1,0 +1,19 @@
+[package]
+license = "Apache-2.0"
+name = "aster-acp-lib"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+agent-client-protocol = {workspace = true}
+async-trait = {workspace = true}
+derive_more = {version = "2", features = ["add", "add_assign", "debug", "deref", "deref_mut", "display", "from", "from_str", "into", "into_iterator", "as_ref", "try_into"]}
+futures = {workspace = true}
+tokio = {workspace = true}
+tracing = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+
+[lints]
+workspace = true

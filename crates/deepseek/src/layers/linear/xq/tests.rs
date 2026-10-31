@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 
 #[test]
 fn expert_row_views_keep_parent_allocation_and_exact_packed_offsets() {

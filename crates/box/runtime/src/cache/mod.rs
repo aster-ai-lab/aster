@@ -6,7 +6,7 @@
 
 use std::path::{Component, Path};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 pub mod layer_cache;
 pub mod rootfs_cache;

@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEvent, FlowEventStore, InMemoryEventStore, LocalFileEventStore, WorkflowProgress,
     WorkflowSpec, MAX_FLOW_HISTORY_PAGE_SIZE,
 };

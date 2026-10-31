@@ -2,7 +2,7 @@ use std::fs::{self, OpenOptions};
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::Result;
+use aster_oci_sdk::Result;
 
 use super::{internal, invalid, permission_denied, MountPlan, MountTargetKind};
 

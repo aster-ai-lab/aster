@@ -1,31 +1,31 @@
 //! Real-provider integration tests for the 2.0 ACL configuration path.
 //!
 //! These tests intentionally require explicit opt-in because they call the
-//! configured provider in `.a3s/config.acl`.
+//! configured provider in `.aster/config.acl`.
 
 use std::path::PathBuf;
 use std::sync::OnceLock;
 
-use a3s_code_core::config::CodeConfig;
-use a3s_code_core::llm::{create_client_with_config, Message};
-use a3s_code_core::{Agent, AgentEvent, PlanningMode, RunStatus, SessionOptions};
+use aster_core::config::CodeConfig;
+use aster_core::llm::{create_client_with_config, Message};
+use aster_core::{Agent, AgentEvent, PlanningMode, RunStatus, SessionOptions};
 
 const REAL_PROVIDER_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(120);
 
 fn repo_config_path() -> PathBuf {
-    std::env::var_os("A3S_CONFIG_FILE")
+    std::env::var_os("ASTER_CONFIG_FILE")
         .map(PathBuf::from)
         .unwrap_or_else(|| {
             PathBuf::from(env!("CARGO_MANIFEST_DIR"))
                 .join("../../..")
-                .join(".a3s/config.acl")
+                .join(".aster/config.acl")
         })
 }
 
 /// Self-contained ACL fixture for the offline resolution tests.
 ///
 /// Hermetic on purpose: the offline tests must NOT read the developer-local,
-/// git-ignored `.a3s/config.acl` — its `default_model` and provider secrets vary
+/// git-ignored `.aster/config.acl` — its `default_model` and provider secrets vary
 /// per machine (which is what previously broke these tests). `env_style_config_file`
 /// rewrites the literal `apiKey`/`baseUrl` below into `env(...)` references so the
 /// env-injection resolution path is exercised against known, stable values.
@@ -65,25 +65,25 @@ fn env_style_config_file() -> tempfile::NamedTempFile {
         }
 
         if in_openai_provider && !replaced_api_key && trimmed.starts_with("apiKey") {
-            output.push_str("  apiKey = env(\"A3S_OPENAI_API_KEY\")\n");
+            output.push_str("  apiKey = env(\"ASTER_OPENAI_API_KEY\")\n");
             replaced_api_key = true;
             continue;
         }
 
         if in_openai_provider && !replaced_api_key && trimmed.starts_with("api_key") {
-            output.push_str("  apiKey = env(\"A3S_OPENAI_API_KEY\")\n");
+            output.push_str("  apiKey = env(\"ASTER_OPENAI_API_KEY\")\n");
             replaced_api_key = true;
             continue;
         }
 
         if in_openai_provider && !replaced_base_url && trimmed.starts_with("baseUrl") {
-            output.push_str("  baseUrl = env(\"A3S_OPENAI_BASE_URL\")\n");
+            output.push_str("  baseUrl = env(\"ASTER_OPENAI_BASE_URL\")\n");
             replaced_base_url = true;
             continue;
         }
 
         if in_openai_provider && !replaced_base_url && trimmed.starts_with("base_url") {
-            output.push_str("  baseUrl = env(\"A3S_OPENAI_BASE_URL\")\n");
+            output.push_str("  baseUrl = env(\"ASTER_OPENAI_BASE_URL\")\n");
             replaced_base_url = true;
             continue;
         }
@@ -102,7 +102,7 @@ fn env_style_config_file() -> tempfile::NamedTempFile {
     );
 
     let mut file = tempfile::Builder::new()
-        .prefix("a3s-code-test-config-")
+        .prefix("aster-test-config-")
         .suffix(".acl")
         .tempfile()
         .expect("temp env-style config");
@@ -119,14 +119,14 @@ fn require_env(name: &str) {
 
 #[allow(dead_code)] // kept for MiniMax/OpenAI-alias live labs that still inject env keys
 fn require_openai_env_aliases() {
-    require_env("A3S_OPENAI_API_KEY");
-    require_env("A3S_OPENAI_BASE_URL");
+    require_env("ASTER_OPENAI_API_KEY");
+    require_env("ASTER_OPENAI_BASE_URL");
 }
 
 /// Live gates that load the developer ACL must accept any configured provider.
 /// Do not hard-require MiniMax/OpenAI env aliases when `default_llm_config`
-/// already resolves from the selected `A3S_CONFIG_FILE` / `.a3s/config.acl`.
-fn require_configured_default_llm(config: &CodeConfig) -> a3s_code_core::llm::LlmConfig {
+/// already resolves from the selected `ASTER_CONFIG_FILE` / `.aster/config.acl`.
+fn require_configured_default_llm(config: &CodeConfig) -> aster_core::llm::LlmConfig {
     config.default_llm_config().unwrap_or_else(|| {
         panic!(
             "default_model must resolve to a usable LLM config in {}",
@@ -141,14 +141,14 @@ fn env_lock() -> &'static tokio::sync::Mutex<()> {
 }
 
 fn inject_minimax_aliases() {
-    if std::env::var_os("A3S_OPENAI_API_KEY").is_none() {
+    if std::env::var_os("ASTER_OPENAI_API_KEY").is_none() {
         if let Some(api_key) = std::env::var_os("MINIMAX_API_KEY") {
-            std::env::set_var("A3S_OPENAI_API_KEY", api_key);
+            std::env::set_var("ASTER_OPENAI_API_KEY", api_key);
         }
     }
-    if std::env::var_os("A3S_OPENAI_BASE_URL").is_none() {
+    if std::env::var_os("ASTER_OPENAI_BASE_URL").is_none() {
         if let Some(base_url) = std::env::var_os("MINIMAX_BASE_URL") {
-            std::env::set_var("A3S_OPENAI_BASE_URL", base_url);
+            std::env::set_var("ASTER_OPENAI_BASE_URL", base_url);
         }
     }
 }
@@ -185,8 +185,8 @@ impl Drop for EnvVarGuard {
 #[test]
 fn test_config_acl_minimax_env_injection_resolves_without_network() {
     let _guard = env_lock().blocking_lock();
-    let _api_key = EnvVarGuard::set("A3S_OPENAI_API_KEY", "test-minimax-key");
-    let _base_url = EnvVarGuard::set("A3S_OPENAI_BASE_URL", "https://minimax.example.test/v1");
+    let _api_key = EnvVarGuard::set("ASTER_OPENAI_API_KEY", "test-minimax-key");
+    let _base_url = EnvVarGuard::set("ASTER_OPENAI_BASE_URL", "https://minimax.example.test/v1");
 
     let config_file = env_style_config_file();
     let config_path = config_file.path();
@@ -208,19 +208,19 @@ fn test_config_acl_minimax_env_injection_resolves_without_network() {
     assert_eq!(llm_config.model, expected_model);
     assert!(
         llm_config.api_key.expose() == "test-minimax-key",
-        "api key did not resolve from A3S_OPENAI_API_KEY"
+        "api key did not resolve from ASTER_OPENAI_API_KEY"
     );
     assert!(
         llm_config.base_url.as_deref() == Some("https://minimax.example.test/v1"),
-        "base URL did not resolve from A3S_OPENAI_BASE_URL"
+        "base URL did not resolve from ASTER_OPENAI_BASE_URL"
     );
 }
 
 #[test]
 fn test_config_acl_minimax_aliases_resolve_without_network() {
     let _guard = env_lock().blocking_lock();
-    let _a3s_api_key = EnvVarGuard::unset("A3S_OPENAI_API_KEY");
-    let _a3s_base_url = EnvVarGuard::unset("A3S_OPENAI_BASE_URL");
+    let _aster_api_key = EnvVarGuard::unset("ASTER_OPENAI_API_KEY");
+    let _aster_base_url = EnvVarGuard::unset("ASTER_OPENAI_BASE_URL");
     let _minimax_api_key = EnvVarGuard::set("MINIMAX_API_KEY", "alias-minimax-key");
     let _minimax_base_url = EnvVarGuard::set("MINIMAX_BASE_URL", "https://alias.example.test/v1");
 
@@ -273,7 +273,7 @@ async fn test_config_acl_env_default_llm_completion() {
         REAL_PROVIDER_TIMEOUT,
         client.complete(
             &[Message::user(
-                "Return exactly this token and nothing else: A3S_ENV_OK",
+                "Return exactly this token and nothing else: ASTER_ENV_OK",
             )],
             None,
             &[],
@@ -285,8 +285,8 @@ async fn test_config_acl_env_default_llm_completion() {
 
     let text = response.text();
     assert!(
-        text.contains("A3S_ENV_OK"),
-        "expected A3S_ENV_OK in model response, got: {text:?}"
+        text.contains("ASTER_ENV_OK"),
+        "expected ASTER_ENV_OK in model response, got: {text:?}"
     );
 }
 
@@ -303,7 +303,7 @@ async fn test_agent_create_uses_config_acl_env_injection() {
 
     let agent = Agent::create(config_path.to_string_lossy().to_string())
         .await
-        .expect("agent should be created from .a3s/config.acl with resolvable credentials");
+        .expect("agent should be created from .aster/config.acl with resolvable credentials");
 
     let workspace = tempfile::tempdir().expect("temp workspace");
     let session = agent
@@ -314,7 +314,7 @@ async fn test_agent_create_uses_config_acl_env_injection() {
     let result = tokio::time::timeout(
         REAL_PROVIDER_TIMEOUT,
         session.send(
-            "Return exactly this token and nothing else: A3S_AGENT_OK",
+            "Return exactly this token and nothing else: ASTER_AGENT_OK",
             None,
         ),
     )
@@ -323,8 +323,8 @@ async fn test_agent_create_uses_config_acl_env_injection() {
     .expect("real agent session should complete");
 
     assert!(
-        result.text.contains("A3S_AGENT_OK"),
-        "expected A3S_AGENT_OK in agent response, got: {:?}",
+        result.text.contains("ASTER_AGENT_OK"),
+        "expected ASTER_AGENT_OK in agent response, got: {:?}",
         result.text
     );
 }
@@ -352,7 +352,7 @@ async fn test_env_config_real_llm_planning_records_run_and_task_events() {
     let opts = SessionOptions::new()
         .with_session_id("real-env-planning-session")
         .with_planning_mode(PlanningMode::Enabled)
-        .with_retention_limits(a3s_code_core::retention::SessionRetentionLimits::unbounded());
+        .with_retention_limits(aster_core::retention::SessionRetentionLimits::unbounded());
     let session = agent
         .session_async(workspace.path().to_string_lossy().to_string(), Some(opts))
         .await
@@ -361,7 +361,7 @@ async fn test_env_config_real_llm_planning_records_run_and_task_events() {
     let result = tokio::time::timeout(
         REAL_PROVIDER_TIMEOUT,
         session.send(
-            "Do not edit files. Use planning mode to answer, then include exactly this token in the final answer: A3S_PLANNING_OK",
+            "Do not edit files. Use planning mode to answer, then include exactly this token in the final answer: ASTER_PLANNING_OK",
             None,
         ),
     )

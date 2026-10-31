@@ -14,7 +14,7 @@ use super::{
 };
 use serde::{Deserialize, Serialize};
 
-pub const SESSION_REVIEW_FINDING_SCHEMA_V1: &str = "a3s.code.session-review-finding.v1";
+pub const SESSION_REVIEW_FINDING_SCHEMA_V1: &str = "aster.code.session-review-finding.v1";
 
 fn default_scenario_id() -> String {
     SCENARIO_REPLY_TRANSCRIPT.to_owned()

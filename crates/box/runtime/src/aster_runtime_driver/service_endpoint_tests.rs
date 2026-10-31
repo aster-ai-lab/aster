@@ -1,0 +1,857 @@
+use std::collections::VecDeque;
+use std::net::SocketAddr;
+use std::num::NonZeroU16;
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
+
+use aster_box_core::{
+    ExecutionGeneration, ExecutionId, ExecutionManagerError, ExecutionManagerResult,
+    ExecutionPortConnector, ExecutionPortStream, ExecutionUdpPort, ExecutionUdpPortIo,
+};
+use aster_runtime::contract::{
+    NetworkMode, RuntimeFeature, RuntimeInspection, RuntimePort, RuntimeServiceEndpoint,
+    RuntimeUnitClass, TransportProtocol,
+};
+use aster_runtime::{RuntimeDriver, RuntimeError};
+use async_trait::async_trait;
+use tokio::io::{AsyncReadExt, AsyncWriteExt, DuplexStream};
+use tokio::net::TcpStream;
+
+use super::test_support::{
+    accepted, action, fake_driver_with_backend_and_connector, runtime_spec, unit, DriverFakeBackend,
+};
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ConnectCall {
+    execution_id: ExecutionId,
+    generation: ExecutionGeneration,
+    port: NonZeroU16,
+    timeout: Duration,
+}
+
+#[derive(Default)]
+struct TestConnector {
+    streams: Mutex<VecDeque<ExecutionPortStream>>,
+    udp_ports: Mutex<VecDeque<ExecutionUdpPort>>,
+    /// Keep auto-created duplex peers alive so advertised-URL probes do not
+    /// see an immediate EOF from a dropped workload half.
+    held_peers: Mutex<Vec<DuplexStream>>,
+    held_udp: Mutex<Vec<tokio::sync::mpsc::Sender<Vec<u8>>>>,
+    calls: Mutex<Vec<ConnectCall>>,
+    udp_calls: Mutex<Vec<ConnectCall>>,
+}
+
+impl TestConnector {
+    fn queue_stream(&self) -> DuplexStream {
+        let (connector_stream, workload_stream) = tokio::io::duplex(1_024);
+        let connector_stream: ExecutionPortStream = Box::pin(connector_stream);
+        self.streams.lock().unwrap().push_back(connector_stream);
+        workload_stream
+    }
+
+    fn queue_udp_pair(
+        &self,
+    ) -> (
+        tokio::sync::mpsc::Receiver<Vec<u8>>,
+        tokio::sync::mpsc::Sender<Vec<u8>>,
+    ) {
+        let (to_workload, from_connector) = tokio::sync::mpsc::channel::<Vec<u8>>(32);
+        let (to_connector, from_workload) = tokio::sync::mpsc::channel::<Vec<u8>>(32);
+        self.udp_ports
+            .lock()
+            .unwrap()
+            .push_back(Box::new(ChannelUdpPort {
+                tx: to_workload,
+                rx: from_workload,
+            }));
+        (from_connector, to_connector)
+    }
+
+    fn calls(&self) -> Vec<ConnectCall> {
+        self.calls.lock().unwrap().clone()
+    }
+
+    fn udp_calls(&self) -> Vec<ConnectCall> {
+        self.udp_calls.lock().unwrap().clone()
+    }
+}
+
+struct ChannelUdpPort {
+    tx: tokio::sync::mpsc::Sender<Vec<u8>>,
+    rx: tokio::sync::mpsc::Receiver<Vec<u8>>,
+}
+
+#[async_trait]
+impl ExecutionUdpPortIo for ChannelUdpPort {
+    async fn send_datagram(&mut self, payload: &[u8]) -> std::io::Result<()> {
+        self.tx.send(payload.to_vec()).await.map_err(|_| {
+            std::io::Error::new(std::io::ErrorKind::BrokenPipe, "UDP workload peer closed")
+        })
+    }
+
+    async fn recv_datagram(&mut self, max_len: usize) -> std::io::Result<Vec<u8>> {
+        let payload = self.rx.recv().await.ok_or_else(|| {
+            std::io::Error::new(
+                std::io::ErrorKind::UnexpectedEof,
+                "UDP workload peer closed",
+            )
+        })?;
+        if payload.len() > max_len {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "UDP datagram exceeds receiver bound",
+            ));
+        }
+        Ok(payload)
+    }
+}
+
+#[async_trait]
+impl ExecutionPortConnector for TestConnector {
+    async fn connect_port(
+        &self,
+        execution_id: &ExecutionId,
+        generation: ExecutionGeneration,
+        port: NonZeroU16,
+        timeout: Duration,
+    ) -> ExecutionManagerResult<ExecutionPortStream> {
+        self.calls.lock().unwrap().push(ConnectCall {
+            execution_id: execution_id.clone(),
+            generation,
+            port,
+            timeout,
+        });
+        if let Some(stream) = self.streams.lock().unwrap().pop_front() {
+            return Ok(stream);
+        }
+        // Advertised-URL probes and unmanaged traffic get an idle duplex so
+        // OPEN succeeds without a controlled peer. Hold the peer half so the
+        // host connection stays open while copy_bidirectional waits.
+        let (connector_stream, workload_stream) = tokio::io::duplex(1_024);
+        self.held_peers.lock().unwrap().push(workload_stream);
+        Ok(Box::pin(connector_stream))
+    }
+
+    async fn connect_udp_port(
+        &self,
+        execution_id: &ExecutionId,
+        generation: ExecutionGeneration,
+        port: NonZeroU16,
+        timeout: Duration,
+    ) -> ExecutionManagerResult<ExecutionUdpPort> {
+        self.udp_calls.lock().unwrap().push(ConnectCall {
+            execution_id: execution_id.clone(),
+            generation,
+            port,
+            timeout,
+        });
+        if let Some(port) = self.udp_ports.lock().unwrap().pop_front() {
+            return Ok(port);
+        }
+        let (to_workload, mut from_connector) = tokio::sync::mpsc::channel::<Vec<u8>>(32);
+        let (to_connector, from_workload) = tokio::sync::mpsc::channel::<Vec<u8>>(32);
+        // Hold the workload send half so probe-driven associations stay open.
+        self.held_udp.lock().unwrap().push(to_connector);
+        // Drain probe-side sends so the channel does not fill.
+        tokio::spawn(async move { while from_connector.recv().await.is_some() {} });
+        Ok(Box::new(ChannelUdpPort {
+            tx: to_workload,
+            rx: from_workload,
+        }))
+    }
+}
+
+fn service_spec(
+    unit_id: &str,
+    generation: u64,
+    ports: &[(&str, u16)],
+) -> aster_runtime::contract::RuntimeUnitSpec {
+    let mut spec = runtime_spec(unit_id, generation, RuntimeUnitClass::Service);
+    spec.network.mode = NetworkMode::Service;
+    spec.network.ports = ports
+        .iter()
+        .map(|(name, port)| RuntimePort {
+            name: (*name).into(),
+            container_port: *port,
+            protocol: TransportProtocol::Tcp,
+        })
+        .collect();
+    spec
+}
+
+fn endpoint(
+    observation: &aster_runtime::contract::RuntimeObservation,
+    name: &str,
+) -> RuntimeServiceEndpoint {
+    RuntimeServiceEndpoint::from_observation(observation, name).unwrap()
+}
+
+async fn assert_socket_closes(address: SocketAddr) {
+    for _ in 0..50 {
+        match tokio::time::timeout(Duration::from_millis(100), TcpStream::connect(address)).await {
+            Ok(Err(_)) => return,
+            Ok(Ok(stream)) => drop(stream),
+            Err(_) => {}
+        }
+        tokio::time::sleep(Duration::from_millis(10)).await;
+    }
+    panic!("Runtime Service endpoint {address} remained open");
+}
+
+async fn connect_endpoint(address: SocketAddr) -> TcpStream {
+    for _ in 0..50 {
+        if let Ok(Ok(stream)) =
+            tokio::time::timeout(Duration::from_millis(100), TcpStream::connect(address)).await
+        {
+            return stream;
+        }
+        tokio::time::sleep(Duration::from_millis(10)).await;
+    }
+    panic!("Runtime Service endpoint {address} never accepted a connection");
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn endpoints_are_exact_stable_unique_and_relay_bidirectional_tcp() {
+    let directory = tempfile::tempdir().unwrap();
+    let backend = Arc::new(DriverFakeBackend::default());
+    let connector = Arc::new(TestConnector::default());
+    let driver =
+        fake_driver_with_backend_and_connector(&directory, backend.clone(), connector.clone());
+    let spec = service_spec(
+        "service-endpoint-relay",
+        1,
+        &[("api", 8_080), ("metrics", 9_090)],
+    );
+
+    let running = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &accepted(&spec),
+        )
+        .await
+        .unwrap();
+    let endpoints = running.service_endpoints().unwrap();
+    assert_eq!(endpoints.len(), 2);
+    assert_ne!(
+        endpoint(&running, "api").socket_addr(),
+        endpoint(&running, "metrics").socket_addr()
+    );
+    assert!(endpoints.iter().all(|endpoint| {
+        endpoint.protocol == TransportProtocol::Tcp && endpoint.address.is_loopback()
+    }));
+    // Apply probed each advertised URL before publishing evidence.
+    assert_eq!(
+        connector
+            .calls()
+            .iter()
+            .map(|call| call.port.get())
+            .collect::<Vec<_>>(),
+        vec![8_080, 9_090]
+    );
+
+    let replayed = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &running,
+        )
+        .await
+        .unwrap();
+    assert_eq!(replayed.service_endpoints().unwrap(), endpoints);
+    let RuntimeInspection::Found { observation, .. } =
+        driver.inspect(&unit(spec.clone(), replayed)).await.unwrap()
+    else {
+        panic!("running Runtime Service disappeared")
+    };
+    assert_eq!(observation.service_endpoints().unwrap(), endpoints);
+
+    let mut workload_stream = connector.queue_stream();
+    let api_address = endpoint(&observation, "api").socket_addr();
+    let mut host_stream = connect_endpoint(api_address).await;
+    host_stream.write_all(b"host-to-workload").await.unwrap();
+    let mut received = [0_u8; 16];
+    tokio::time::timeout(
+        Duration::from_secs(2),
+        workload_stream.read_exact(&mut received),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    assert_eq!(&received, b"host-to-workload");
+    workload_stream
+        .write_all(b"workload-to-host")
+        .await
+        .unwrap();
+    let mut response = [0_u8; 16];
+    tokio::time::timeout(
+        Duration::from_secs(2),
+        host_stream.read_exact(&mut response),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    assert_eq!(&response, b"workload-to-host");
+
+    let record = driver
+        .manager
+        .managed_records()
+        .await
+        .unwrap()
+        .pop()
+        .unwrap();
+    let metadata = record.managed_execution.unwrap();
+    // First apply probes both ports, re-apply and inspect each re-probe both
+    // retained advertised URLs, then traffic uses the api port once.
+    assert_eq!(
+        connector.calls(),
+        vec![
+            ConnectCall {
+                execution_id: ExecutionId::new(record.id.clone()).unwrap(),
+                generation: metadata.generation,
+                port: NonZeroU16::new(8_080).unwrap(),
+                timeout: Duration::from_secs(5),
+            },
+            ConnectCall {
+                execution_id: ExecutionId::new(record.id.clone()).unwrap(),
+                generation: metadata.generation,
+                port: NonZeroU16::new(9_090).unwrap(),
+                timeout: Duration::from_secs(5),
+            },
+            ConnectCall {
+                execution_id: ExecutionId::new(record.id.clone()).unwrap(),
+                generation: metadata.generation,
+                port: NonZeroU16::new(8_080).unwrap(),
+                timeout: Duration::from_secs(5),
+            },
+            ConnectCall {
+                execution_id: ExecutionId::new(record.id.clone()).unwrap(),
+                generation: metadata.generation,
+                port: NonZeroU16::new(9_090).unwrap(),
+                timeout: Duration::from_secs(5),
+            },
+            ConnectCall {
+                execution_id: ExecutionId::new(record.id.clone()).unwrap(),
+                generation: metadata.generation,
+                port: NonZeroU16::new(8_080).unwrap(),
+                timeout: Duration::from_secs(5),
+            },
+            ConnectCall {
+                execution_id: ExecutionId::new(record.id.clone()).unwrap(),
+                generation: metadata.generation,
+                port: NonZeroU16::new(9_090).unwrap(),
+                timeout: Duration::from_secs(5),
+            },
+            ConnectCall {
+                execution_id: ExecutionId::new(record.id).unwrap(),
+                generation: metadata.generation,
+                port: NonZeroU16::new(8_080).unwrap(),
+                timeout: Duration::from_secs(5),
+            },
+        ]
+    );
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn rejecting_guest_relay_does_not_publish_advertised_endpoints() {
+    struct RejectingConnector;
+
+    #[async_trait]
+    impl ExecutionPortConnector for RejectingConnector {
+        async fn connect_port(
+            &self,
+            _execution_id: &ExecutionId,
+            _generation: ExecutionGeneration,
+            _port: NonZeroU16,
+            _timeout: Duration,
+        ) -> ExecutionManagerResult<ExecutionPortStream> {
+            Err(ExecutionManagerError::Unavailable(
+                "MicroVM port 8080 rejected the connection".into(),
+            ))
+        }
+    }
+
+    let directory = tempfile::tempdir().unwrap();
+    let backend = Arc::new(DriverFakeBackend::default());
+    let driver =
+        fake_driver_with_backend_and_connector(&directory, backend, Arc::new(RejectingConnector));
+    let spec = service_spec("service-endpoint-reject", 1, &[("api", 8_080)]);
+    let error = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &accepted(&spec),
+        )
+        .await
+        .unwrap_err();
+    assert!(
+        matches!(
+            &error,
+            RuntimeError::ProviderUnavailable(message)
+                if message.contains("is not reachable through the advertised host URL")
+        ),
+        "unexpected error: {error:?}"
+    );
+    assert!(
+        driver.manager.managed_records().await.unwrap().is_empty(),
+        "failed R17 advertised-URL probe must not leave a Running Service in inventory"
+    );
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn delayed_guest_accept_still_publishes_within_publish_grace() {
+    struct DelayedAcceptConnector {
+        ready_after: std::sync::Mutex<Option<std::time::Instant>>,
+        held_peers: Mutex<Vec<DuplexStream>>,
+    }
+
+    #[async_trait]
+    impl ExecutionPortConnector for DelayedAcceptConnector {
+        async fn connect_port(
+            &self,
+            _execution_id: &ExecutionId,
+            _generation: ExecutionGeneration,
+            _port: NonZeroU16,
+            _timeout: Duration,
+        ) -> ExecutionManagerResult<ExecutionPortStream> {
+            let mut gate = self.ready_after.lock().unwrap();
+            let deadline = *gate.get_or_insert_with(|| {
+                std::time::Instant::now() + std::time::Duration::from_millis(1_200)
+            });
+            if std::time::Instant::now() < deadline {
+                return Err(ExecutionManagerError::Unavailable(
+                    "MicroVM port 8080 rejected the connection".into(),
+                ));
+            }
+            let (connector_stream, workload_stream) = tokio::io::duplex(1_024);
+            self.held_peers.lock().unwrap().push(workload_stream);
+            Ok(Box::pin(connector_stream))
+        }
+    }
+
+    let directory = tempfile::tempdir().unwrap();
+    let backend = Arc::new(DriverFakeBackend::default());
+    let connector = Arc::new(DelayedAcceptConnector {
+        ready_after: std::sync::Mutex::new(None),
+        held_peers: Mutex::new(Vec::new()),
+    });
+    let driver =
+        fake_driver_with_backend_and_connector(&directory, backend, Arc::clone(&connector));
+    let spec = service_spec("service-endpoint-delayed", 1, &[("api", 8_080)]);
+    let running = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &accepted(&spec),
+        )
+        .await
+        .expect("publish probe must retry until the guest starts accepting within grace (#611)");
+    assert!(!running.service_endpoints().unwrap().is_empty());
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn retained_service_lease_is_withdrawn_when_guest_relay_later_rejects() {
+    struct FlipConnector {
+        reject: std::sync::atomic::AtomicBool,
+        held_peers: Mutex<Vec<DuplexStream>>,
+    }
+
+    #[async_trait]
+    impl ExecutionPortConnector for FlipConnector {
+        async fn connect_port(
+            &self,
+            _execution_id: &ExecutionId,
+            _generation: ExecutionGeneration,
+            _port: NonZeroU16,
+            _timeout: Duration,
+        ) -> ExecutionManagerResult<ExecutionPortStream> {
+            if self.reject.load(std::sync::atomic::Ordering::SeqCst) {
+                return Err(ExecutionManagerError::Unavailable(
+                    "MicroVM port 8080 rejected the connection".into(),
+                ));
+            }
+            let (connector_stream, workload_stream) = tokio::io::duplex(1_024);
+            self.held_peers.lock().unwrap().push(workload_stream);
+            Ok(Box::pin(connector_stream))
+        }
+    }
+
+    let directory = tempfile::tempdir().unwrap();
+    let backend = Arc::new(DriverFakeBackend::default());
+    let connector = Arc::new(FlipConnector {
+        reject: std::sync::atomic::AtomicBool::new(false),
+        held_peers: Mutex::new(Vec::new()),
+    });
+    let driver =
+        fake_driver_with_backend_and_connector(&directory, backend, Arc::clone(&connector));
+    let spec = service_spec("service-endpoint-flip", 1, &[("api", 8_080)]);
+    let running = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &accepted(&spec),
+        )
+        .await
+        .unwrap();
+    assert!(!running.service_endpoints().unwrap().is_empty());
+
+    connector
+        .reject
+        .store(true, std::sync::atomic::Ordering::SeqCst);
+    let error = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &running,
+        )
+        .await
+        .unwrap_err();
+    assert!(
+        matches!(
+            &error,
+            RuntimeError::ProviderUnavailable(message)
+                if message.contains("is not reachable through the advertised host URL")
+        ),
+        "unexpected error: {error:?}"
+    );
+    assert!(
+        driver.manager.managed_records().await.unwrap().is_empty(),
+        "re-apply after a dead advertised URL must retire the generation"
+    );
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn inspect_retires_service_when_retained_advertised_url_stops_answering() {
+    struct FlipConnector {
+        reject: std::sync::atomic::AtomicBool,
+        held_peers: Mutex<Vec<DuplexStream>>,
+    }
+
+    #[async_trait]
+    impl ExecutionPortConnector for FlipConnector {
+        async fn connect_port(
+            &self,
+            _execution_id: &ExecutionId,
+            _generation: ExecutionGeneration,
+            _port: NonZeroU16,
+            _timeout: Duration,
+        ) -> ExecutionManagerResult<ExecutionPortStream> {
+            if self.reject.load(std::sync::atomic::Ordering::SeqCst) {
+                return Err(ExecutionManagerError::Unavailable(
+                    "MicroVM port 8080 rejected the connection".into(),
+                ));
+            }
+            let (connector_stream, workload_stream) = tokio::io::duplex(1_024);
+            self.held_peers.lock().unwrap().push(workload_stream);
+            Ok(Box::pin(connector_stream))
+        }
+    }
+
+    let directory = tempfile::tempdir().unwrap();
+    let backend = Arc::new(DriverFakeBackend::default());
+    let connector = Arc::new(FlipConnector {
+        reject: std::sync::atomic::AtomicBool::new(false),
+        held_peers: Mutex::new(Vec::new()),
+    });
+    let driver =
+        fake_driver_with_backend_and_connector(&directory, backend, Arc::clone(&connector));
+    let spec = service_spec("service-endpoint-inspect-flip", 1, &[("api", 8_080)]);
+    let running = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &accepted(&spec),
+        )
+        .await
+        .unwrap();
+    assert!(!running.service_endpoints().unwrap().is_empty());
+
+    connector
+        .reject
+        .store(true, std::sync::atomic::Ordering::SeqCst);
+    let error = driver
+        .inspect(&unit(spec.clone(), running))
+        .await
+        .unwrap_err();
+    assert!(
+        matches!(
+            &error,
+            RuntimeError::ProviderUnavailable(message)
+                if message.contains("is not reachable through the advertised host URL")
+        ),
+        "unexpected error: {error:?}"
+    );
+    assert!(
+        driver.manager.managed_records().await.unwrap().is_empty(),
+        "inspect after a dead advertised URL must retire the generation"
+    );
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn local_generation_replacement_rotates_and_closes_the_endpoint() {
+    let directory = tempfile::tempdir().unwrap();
+    let backend = Arc::new(DriverFakeBackend::default());
+    let connector = Arc::new(TestConnector::default());
+    let driver = fake_driver_with_backend_and_connector(&directory, backend.clone(), connector);
+    let spec = service_spec("service-endpoint-restart", 1, &[("api", 8_080)]);
+    let running = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &accepted(&spec),
+        )
+        .await
+        .unwrap();
+    let first = endpoint(&running, "api").socket_addr();
+    backend.finish(running.provider_resource_id.as_deref().unwrap(), 17);
+
+    let RuntimeInspection::Found { observation, .. } =
+        driver.inspect(&unit(spec.clone(), running)).await.unwrap()
+    else {
+        panic!("restartable Runtime Service disappeared")
+    };
+    let second = endpoint(&observation, "api").socket_addr();
+    assert_ne!(second, first);
+    assert_socket_closes(first).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn driver_restart_reconstructs_only_its_in_memory_endpoint_owner() {
+    let directory = tempfile::tempdir().unwrap();
+    let backend = Arc::new(DriverFakeBackend::default());
+    let first_connector = Arc::new(TestConnector::default());
+    let first_driver =
+        fake_driver_with_backend_and_connector(&directory, backend.clone(), first_connector);
+    let spec = service_spec("service-endpoint-driver-restart", 1, &[("api", 8_080)]);
+    let first_running = first_driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &accepted(&spec),
+        )
+        .await
+        .unwrap();
+    let first_address = endpoint(&first_running, "api").socket_addr();
+
+    let second_connector = Arc::new(TestConnector::default());
+    let second_driver =
+        fake_driver_with_backend_and_connector(&directory, backend, second_connector.clone());
+    let second_running = second_driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &first_running,
+        )
+        .await
+        .unwrap();
+    let second_address = endpoint(&second_running, "api").socket_addr();
+    assert_ne!(second_address, first_address);
+    assert_eq!(
+        second_running.provider_resource_id,
+        first_running.provider_resource_id
+    );
+
+    drop(first_driver);
+    assert_socket_closes(first_address).await;
+    let mut workload_stream = second_connector.queue_stream();
+    let mut host_stream = connect_endpoint(second_address).await;
+    host_stream.write_all(b"reconstructed").await.unwrap();
+    let mut received = [0_u8; 13];
+    tokio::time::timeout(
+        Duration::from_secs(2),
+        workload_stream.read_exact(&mut received),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    assert_eq!(&received, b"reconstructed");
+
+    drop(second_driver);
+    assert_socket_closes(second_address).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn stop_remove_and_provider_loss_close_every_endpoint() {
+    let stop_directory = tempfile::tempdir().unwrap();
+    let stop_backend = Arc::new(DriverFakeBackend::default());
+    let stop_driver = fake_driver_with_backend_and_connector(
+        &stop_directory,
+        stop_backend,
+        Arc::new(TestConnector::default()),
+    );
+    let stop_spec = service_spec("service-endpoint-stop", 1, &[("api", 8_080)]);
+    let stop_running = stop_driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&stop_spec),
+            &accepted(&stop_spec),
+        )
+        .await
+        .unwrap();
+    let stop_address = endpoint(&stop_running, "api").socket_addr();
+    let stopped = stop_driver
+        .stop(
+            &unit(stop_spec.clone(), stop_running),
+            &action("service-endpoint-stop", &stop_spec),
+        )
+        .await
+        .unwrap();
+    assert!(stopped.service_endpoints().unwrap().is_empty());
+    assert_socket_closes(stop_address).await;
+
+    let remove_directory = tempfile::tempdir().unwrap();
+    let remove_backend = Arc::new(DriverFakeBackend::default());
+    let remove_driver = fake_driver_with_backend_and_connector(
+        &remove_directory,
+        remove_backend,
+        Arc::new(TestConnector::default()),
+    );
+    let remove_spec = service_spec("service-endpoint-remove", 1, &[("api", 8_080)]);
+    let remove_running = remove_driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&remove_spec),
+            &accepted(&remove_spec),
+        )
+        .await
+        .unwrap();
+    let remove_address = endpoint(&remove_running, "api").socket_addr();
+    remove_driver
+        .remove(
+            &unit(remove_spec.clone(), remove_running),
+            &action("service-endpoint-remove", &remove_spec),
+        )
+        .await
+        .unwrap();
+    assert_socket_closes(remove_address).await;
+
+    let loss_directory = tempfile::tempdir().unwrap();
+    let loss_backend = Arc::new(DriverFakeBackend::default());
+    let loss_driver = fake_driver_with_backend_and_connector(
+        &loss_directory,
+        loss_backend.clone(),
+        Arc::new(TestConnector::default()),
+    );
+    let loss_spec = service_spec("service-endpoint-loss", 1, &[("api", 8_080)]);
+    let loss_running = loss_driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&loss_spec),
+            &accepted(&loss_spec),
+        )
+        .await
+        .unwrap();
+    let loss_address = endpoint(&loss_running, "api").socket_addr();
+    loss_backend.lose(loss_running.provider_resource_id.as_deref().unwrap());
+    assert!(matches!(
+        loss_driver
+            .inspect(&unit(loss_spec, loss_running))
+            .await
+            .unwrap(),
+        RuntimeInspection::NotFound { .. }
+    ));
+    assert_socket_closes(loss_address).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn capabilities_advertise_service_udp_and_outbound() {
+    let directory = tempfile::tempdir().unwrap();
+    let backend = Arc::new(DriverFakeBackend::default());
+    let driver = fake_driver_with_backend_and_connector(
+        &directory,
+        backend,
+        Arc::new(TestConnector::default()),
+    );
+    let capabilities = driver.capabilities().await.unwrap();
+    assert_eq!(
+        capabilities.network_modes,
+        vec![
+            NetworkMode::None,
+            NetworkMode::Outbound,
+            NetworkMode::Service
+        ]
+    );
+    assert!(capabilities.features.contains(&RuntimeFeature::ServiceTcp));
+    assert!(capabilities.features.contains(&RuntimeFeature::ServiceUdp));
+    assert!(capabilities.network_modes.contains(&NetworkMode::Outbound));
+
+    let mut udp = service_spec("service-endpoint-udp", 1, &[("dns", 5_353)]);
+    udp.network.ports[0].protocol = TransportProtocol::Udp;
+    let running = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&udp),
+            &accepted(&udp),
+        )
+        .await
+        .unwrap();
+    let endpoints = running.service_endpoints().unwrap();
+    assert_eq!(endpoints.len(), 1);
+    assert_eq!(endpoints[0].protocol, TransportProtocol::Udp);
+    assert!(endpoints[0].address.is_loopback());
+
+    let mut outbound = runtime_spec("service-endpoint-outbound", 1, RuntimeUnitClass::Task);
+    outbound.network.mode = NetworkMode::Outbound;
+    assert!(driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&outbound),
+            &accepted(&outbound)
+        )
+        .await
+        .is_ok());
+    let records = driver.manager.managed_records().await.unwrap();
+    let outbound_record = records
+        .iter()
+        .find(|record| {
+            record.id.contains("outbound") || {
+                record.managed_execution.as_ref().is_some_and(|metadata| {
+                    metadata.request.config.network == aster_box_core::NetworkMode::Tsi
+                })
+            }
+        })
+        .expect("outbound task record");
+    assert_eq!(
+        outbound_record
+            .managed_execution
+            .as_ref()
+            .unwrap()
+            .request
+            .config
+            .network,
+        aster_box_core::NetworkMode::Tsi
+    );
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn endpoints_relay_bidirectional_udp_datagrams() {
+    let directory = tempfile::tempdir().unwrap();
+    let backend = Arc::new(DriverFakeBackend::default());
+    let connector = Arc::new(TestConnector::default());
+    let driver =
+        fake_driver_with_backend_and_connector(&directory, backend.clone(), connector.clone());
+    let mut spec = service_spec("service-endpoint-udp-relay", 1, &[("dns", 5_353)]);
+    spec.network.ports[0].protocol = TransportProtocol::Udp;
+
+    let (mut workload_rx, workload_tx) = connector.queue_udp_pair();
+    let running = driver
+        .apply(
+            &crate::aster_runtime_driver::test_support::apply_request(&spec),
+            &accepted(&spec),
+        )
+        .await
+        .unwrap();
+    let address = endpoint(&running, "dns").socket_addr();
+    assert_eq!(endpoint(&running, "dns").protocol, TransportProtocol::Udp);
+
+    let client = tokio::net::UdpSocket::bind(SocketAddr::from(([127, 0, 0, 1], 0)))
+        .await
+        .unwrap();
+    client.send_to(b"udp-request", address).await.unwrap();
+    let request = tokio::time::timeout(Duration::from_secs(2), workload_rx.recv())
+        .await
+        .unwrap()
+        .expect("workload should receive UDP datagram");
+    assert_eq!(request, b"udp-request");
+    workload_tx.send(b"udp-response".to_vec()).await.unwrap();
+
+    let mut buf = [0_u8; 64];
+    let (n, _) = tokio::time::timeout(Duration::from_secs(2), client.recv_from(&mut buf))
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(&buf[..n], b"udp-response");
+    assert_eq!(
+        connector
+            .udp_calls()
+            .iter()
+            .map(|call| call.port.get())
+            .collect::<Vec<_>>(),
+        vec![5_353]
+    );
+}

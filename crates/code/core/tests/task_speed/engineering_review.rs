@@ -3,8 +3,8 @@
 //! audit to the original `review` worker, which stays read-only.
 
 use super::*;
-use a3s_code_core::llm::TokenUsage;
-use a3s_code_core::AgentEvent;
+use aster_core::llm::TokenUsage;
+use aster_core::AgentEvent;
 use std::sync::Arc;
 
 const ENGINEERING: &str = include_str!("../../../acp/prompts/engineering.md");
@@ -74,7 +74,7 @@ async fn run(id: &str, prompt: &str) -> (Turn, Vec<TokenUsage>, f64) {
                     .with_session_id(id)
                     .with_permission_policy(permissions)
                     .with_confirmation_manager(Arc::new(
-                        a3s_code_core::hitl::AutoApproveConfirmation,
+                        aster_core::hitl::AutoApproveConfirmation,
                     ))
                     .with_planning_mode(PlanningMode::Disabled)
                     .with_manual_delegation_enabled(true)
@@ -85,7 +85,7 @@ async fn run(id: &str, prompt: &str) -> (Turn, Vec<TokenUsage>, f64) {
                     .with_llm_api_timeout(180_000)
                     .with_temperature(0.0)
                     .with_work_policy(
-                        a3s_code_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING).unwrap(),
+                        aster_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING).unwrap(),
                     ),
             ),
         )

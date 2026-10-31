@@ -11,8 +11,8 @@ use super::{
 };
 
 pub const PLUGIN_HOST_OBSERVATION_REQUEST_SCHEMA: &str =
-    "a3s.use.plugin-host-observation-request.v1";
-pub const PLUGIN_HOST_OBSERVATION_RESULT_SCHEMA: &str = "a3s.use.plugin-host-observation-result.v1";
+    "aster.use.plugin-host-observation-request.v1";
+pub const PLUGIN_HOST_OBSERVATION_RESULT_SCHEMA: &str = "aster.use.plugin-host-observation-result.v1";
 
 const OBSERVATION_REQUEST_ERROR: &str = "use.plugin.host_observation_request_invalid";
 const OBSERVATION_RESULT_ERROR: &str = "use.plugin.host_observation_result_invalid";

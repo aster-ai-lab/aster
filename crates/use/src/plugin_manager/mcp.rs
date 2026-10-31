@@ -1,7 +1,7 @@
 use std::borrow::Cow;
 use std::sync::Arc;
 
-use a3s_use_core::{
+use aster_use_core::{
     PluginManagerApplyPlanInput, PluginManagerInspectInput, PluginManagerInstallPlanInput,
     PluginManagerListInstalledInput, PluginManagerPackageScopeInput, PluginManagerSearchInput,
     PluginManagerToolDefinition, PluginManagerUpgradePlanInput, UseError, UseResult,
@@ -78,7 +78,7 @@ impl PluginManagerMcpServer {
     }
 
     /// Serve standard MCP framing over stdin/stdout until the peer
-    /// disconnects. No A3S-specific JSON-RPC dialect is introduced.
+    /// disconnects. No Aster-specific JSON-RPC dialect is introduced.
     pub async fn serve_stdio(self) -> UseResult<()> {
         let service = self
             .serve(rmcp::transport::stdio())
@@ -167,11 +167,11 @@ impl ServerHandler for PluginManagerMcpServer {
         ServerInfo {
             capabilities: ServerCapabilities::builder().enable_tools().build(),
             server_info: Implementation {
-                name: "a3s-use-plugin-manager".to_owned(),
-                title: Some("A3S Use Plugin Manager".to_owned()),
+                name: "aster-use-plugin-manager".to_owned(),
+                title: Some("Aster Use Plugin Manager".to_owned()),
                 version: env!("CARGO_PKG_VERSION").to_owned(),
                 icons: None,
-                website_url: Some("https://github.com/A3S-Lab/Use".to_owned()),
+                website_url: Some("https://github.com/aster-ai-lab/Use".to_owned()),
             },
             instructions: Some(
                 "Search and planning tools return verified, digest-bound evidence only. plugin_apply_plan reopens the exact durable plan and asks the embedding host for existing explicit user-confirmation evidence; an MCP request never implies confirmation."
@@ -183,7 +183,7 @@ impl ServerHandler for PluginManagerMcpServer {
 }
 
 fn frozen_tool_router() -> UseResult<ToolRouter<PluginManagerMcpServer>> {
-    let toolset = a3s_use_core::PluginManagerToolset::v4();
+    let toolset = aster_use_core::PluginManagerToolset::v4();
     toolset.validate()?;
     let mut router = ToolRouter::<PluginManagerMcpServer>::new();
     for definition in toolset.tools {
@@ -255,7 +255,7 @@ fn tool_error(error: UseError) -> CallToolResult {
     CallToolResult::structured_error(serde_json::to_value(error).unwrap_or_else(|_| {
         serde_json::json!({
             "code": "use.error_encoding_failed",
-            "message": "Failed to encode A3S Use error."
+            "message": "Failed to encode Aster Use error."
         })
     }))
 }
@@ -268,8 +268,8 @@ fn mcp_error(message: impl Into<String>) -> UseError {
 mod tests {
     use std::sync::Arc;
 
-    use a3s_use_core::{PlanScopeKind, PluginManagedScope, PLUGIN_MANAGED_SCOPE_SCHEMA_V2};
-    use a3s_use_extension::{ExtensionPaths, ExtensionRegistry};
+    use aster_use_core::{PlanScopeKind, PluginManagedScope, PLUGIN_MANAGED_SCOPE_SCHEMA_V2};
+    use aster_use_extension::{ExtensionPaths, ExtensionRegistry};
     use rmcp::model::CallToolRequestParam;
     use rmcp::{ClientHandler, ServiceExt};
 
@@ -290,7 +290,7 @@ mod tests {
     fn dynamic_router_is_the_exact_frozen_toolset() {
         let router = frozen_tool_router().unwrap();
         let tools = router.list_all();
-        let frozen = a3s_use_core::PluginManagerToolset::v4();
+        let frozen = aster_use_core::PluginManagerToolset::v4();
         assert_eq!(tools.len(), frozen.tools.len());
 
         for expected in frozen.tools {

@@ -247,9 +247,9 @@ async fn capability_turn(
 impl ToolRunner for ExecutorTools {
     fn prepare(
         self: Arc<Self>,
-        request: a3s_effect::ToolPreparationRequest,
+        request: aster_effect::ToolPreparationRequest,
         cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<a3s_effect::PreparedToolExecution, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<aster_effect::PreparedToolExecution, ActorError>> {
         Box::pin(receipts::prepare_tools(self, request, cancel))
     }
 
@@ -257,7 +257,7 @@ impl ToolRunner for ExecutorTools {
         &self,
         call: ToolCall,
         host_cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
         record_targeted_path(&call.args, self.targeted_paths.as_ref());
         let executor = Arc::clone(&self.executor);
         let context = self.context.clone();
@@ -374,11 +374,10 @@ impl ToolRunner for ExecutorTools {
                     args = updated;
                 }
             }
-            // Tool-owned escalation: a tool that declares `requires_confirmation`
-            // settles through the confirmation flow even when the permission
-            // checker allows it — the policy view alone cannot waive the
-            // declaration. Sessions without a confirmation authority fail closed.
-            if tools
+            // Preparation binds actor approval to these exact arguments. Only
+            // calls without that approval still need tool-owned confirmation.
+            if !(tools.pre_tool_hook_resolved && call.needs_confirmation)
+                && tools
                 .executor
                 .registry()
                 .requires_confirmation(&call.name, &call.args)
@@ -640,7 +639,7 @@ impl ToolRunner for ExecutorTools {
                     .observe_tool(&call.name, result.exit_code, metadata.as_ref());
             }
             let observation_digest = crate::content_digest::digest_json(
-                "a3s.code.tool-observation.v1",
+                "aster.code.tool-observation.v1",
                 &super::tool_results::message_from_tool_observation("observation", &output, result.exit_code != 0,
                     &result.images, Some(result.exit_code)),
             ).map_err(|error| ActorError::Schema(format!("tool_observation_digest: {error}")))?;
@@ -744,7 +743,7 @@ impl Compactor for NoopCompact {
     fn compact(
         &self,
         messages: &[String],
-    ) -> a3s_effect::coding::BoxFuture<Result<String, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
         let summary = bounded_summary(messages);
         Box::pin(async move { Ok(summary) })
     }

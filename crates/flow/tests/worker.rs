@@ -1,6 +1,6 @@
 #[cfg(feature = "postgres")]
-use a3s_flow::PostgresFlowTaskQueue;
-use a3s_flow::{
+use aster_flow::PostgresFlowTaskQueue;
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, FlowTask, FlowTaskLease, FlowTaskQueue, FlowWorker,
     FlowWorkerCapabilities, HookStatus, InMemoryFlowTaskQueue, LocalFileFlowTaskQueue, RetryPolicy,
     RuntimeCommand, StepInvocation, WaitStatus, WorkflowInvocation, WorkflowRunStatus,
@@ -31,7 +31,7 @@ fn completed_wait(invocation: &WorkflowInvocation, wait_id: &str) -> bool {
     invocation.history.iter().any(|event| {
         matches!(
             &event.event,
-            a3s_flow::FlowEvent::WaitCompleted { wait_id: id } if id == wait_id
+            aster_flow::FlowEvent::WaitCompleted { wait_id: id } if id == wait_id
         )
     })
 }
@@ -41,7 +41,7 @@ fn received_hook(invocation: &WorkflowInvocation, hook_id: &str) -> Option<serde
         .history
         .iter()
         .find_map(|event| match &event.event {
-            a3s_flow::FlowEvent::HookReceived {
+            aster_flow::FlowEvent::HookReceived {
                 hook_id: id,
                 payload,
             } if id == hook_id => Some(payload.clone()),
@@ -53,7 +53,7 @@ fn disposed_hook(invocation: &WorkflowInvocation, hook_id: &str) -> bool {
     invocation.history.iter().any(|event| {
         matches!(
             &event.event,
-            a3s_flow::FlowEvent::HookDisposed { hook_id: id } if id == hook_id
+            aster_flow::FlowEvent::HookDisposed { hook_id: id } if id == hook_id
         )
     })
 }
@@ -65,7 +65,7 @@ impl FlowRuntime for SleepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if completed_wait(&invocation, "sleep") {
             return Ok(RuntimeCommand::Complete {
                 output: json!({ "slept": true }),
@@ -84,7 +84,7 @@ impl FlowRuntime for SleepRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("sleep runtime does not schedule steps")
     }
 }
@@ -96,7 +96,7 @@ impl FlowRuntime for HookRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if let Some(payload) = received_hook(&invocation, "approval") {
             return Ok(RuntimeCommand::Complete {
                 output: json!({ "approved": payload["approved"] }),
@@ -118,7 +118,7 @@ impl FlowRuntime for HookRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("hook runtime does not schedule steps")
     }
 }
@@ -141,7 +141,7 @@ impl FlowRuntime for BlockingAfterWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.wait_completed("blocked") {
             let _drop_counter = DropCounter(self.dropped.clone());
@@ -156,7 +156,7 @@ impl FlowRuntime for BlockingAfterWaitRuntime {
         Ok(ctx.wait_until("blocked", Utc::now() - ChronoDuration::seconds(1)))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("blocking runtime does not schedule steps")
     }
 }
@@ -171,7 +171,7 @@ impl FlowRuntime for DelayedRetryRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(output) = ctx.step_output("flaky") {
             return Ok(ctx.complete(output.clone()));
@@ -185,7 +185,7 @@ impl FlowRuntime for DelayedRetryRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
         if attempt == 0 {
             Err(FlowError::Runtime("first attempt failed".to_string()))

@@ -5,7 +5,7 @@ use std::path::Path;
 use std::ptr;
 use std::sync::Arc;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     serve_transport_connection, Error, ErrorCode, LocalIpcEndpoint, OciRuntimeService, Result,
 };
 use tokio::net::windows::named_pipe::{NamedPipeServer, PipeMode, ServerOptions};
@@ -41,7 +41,7 @@ impl WindowsHostService {
         })
     }
 
-    /// Exact endpoint accepted by [`a3s_oci_sdk::RuntimeClient::connect`].
+    /// Exact endpoint accepted by [`aster_oci_sdk::RuntimeClient::connect`].
     #[must_use]
     pub const fn endpoint(&self) -> &LocalIpcEndpoint {
         &self.endpoint
@@ -158,7 +158,7 @@ fn service_error(code: ErrorCode, operation: &'static str, message: impl Into<St
 mod tests {
     use std::sync::atomic::{AtomicU64, Ordering};
 
-    use a3s_oci_sdk::{LocalIpcEndpoint, RuntimeClient, RuntimeOperation};
+    use aster_oci_sdk::{LocalIpcEndpoint, RuntimeClient, RuntimeOperation};
     use tokio::sync::oneshot;
 
     use super::WindowsHostService;
@@ -168,7 +168,7 @@ mod tests {
 
     fn unique_endpoint() -> LocalIpcEndpoint {
         LocalIpcEndpoint::windows_named_pipe(format!(
-            r"\\.\pipe\a3s-oci-host-test-{}-{}",
+            r"\\.\pipe\aster-oci-host-test-{}-{}",
             std::process::id(),
             NEXT_PIPE.fetch_add(1, Ordering::Relaxed)
         ))
@@ -188,7 +188,7 @@ mod tests {
             .expect("bind first Windows host service");
         let error = WindowsHostService::bind(endpoint, HostRuntimeService::new())
             .expect_err("second Windows host service must be rejected");
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::Conflict);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::Conflict);
     }
 
     #[tokio::test]

@@ -279,10 +279,10 @@ mod tests {
 
     #[test]
     fn test_filter_by_type() {
-        let filter = TriggerFilter::by_type("a3s.gateway.scale.up");
-        assert!(filter.matches(&test_event("a3s.gateway.scale.up", "gw", "events.scale.up")));
+        let filter = TriggerFilter::by_type("aster.gateway.scale.up");
+        assert!(filter.matches(&test_event("aster.gateway.scale.up", "gw", "events.scale.up")));
         assert!(!filter.matches(&test_event(
-            "a3s.gateway.scale.down",
+            "aster.gateway.scale.down",
             "gw",
             "events.scale.down"
         )));
@@ -403,13 +403,13 @@ mod tests {
         broker
             .add_trigger(Trigger::new(
                 "scale-trigger",
-                TriggerFilter::by_type("a3s.gateway.scale.up"),
+                TriggerFilter::by_type("aster.gateway.scale.up"),
                 collector.clone(),
             ))
             .await;
 
         // Matching event
-        let event = test_event("a3s.gateway.scale.up", "gateway", "events.scaling.up");
+        let event = test_event("aster.gateway.scale.up", "gateway", "events.scaling.up");
         let result = broker.route(&event).await;
         assert_eq!(result.matched, 1);
         assert_eq!(result.delivered, 1);
@@ -417,7 +417,7 @@ mod tests {
         assert_eq!(collector.count().await, 1);
 
         // Non-matching event
-        let other = test_event("a3s.box.instance.ready", "box", "events.instance.ready");
+        let other = test_event("aster.box.instance.ready", "box", "events.instance.ready");
         let result = broker.route(&other).await;
         assert_eq!(result.matched, 0);
         assert_eq!(result.delivered, 0);

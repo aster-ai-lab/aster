@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{semantic_error, DocumentNode};
 use crate::xml_tree::XmlElement;
@@ -414,7 +414,7 @@ fn infer_presentation_columns(rows: &[Vec<PresentationCell>]) -> UseResult<usize
                         PRESENTATION_TABLE_GRID_ERROR,
                         "inferred presentation table cell",
                     )?;
-                    Ok::<_, a3s_use_core::UseError>(width.max(end))
+                    Ok::<_, aster_use_core::UseError>(width.max(end))
                 })?
         } else {
             cells.iter().try_fold(0_usize, |width, cell| {
@@ -620,10 +620,10 @@ fn require_column_bound(value: usize, error_code: &str, path: &str) -> UseResult
     Ok(())
 }
 
-fn word_grid_error(message: impl Into<String>) -> a3s_use_core::UseError {
+fn word_grid_error(message: impl Into<String>) -> aster_use_core::UseError {
     semantic_error(WORD_TABLE_GRID_ERROR, message)
 }
 
-fn presentation_grid_error(message: impl Into<String>) -> a3s_use_core::UseError {
+fn presentation_grid_error(message: impl Into<String>) -> aster_use_core::UseError {
     semantic_error(PRESENTATION_TABLE_GRID_ERROR, message)
 }

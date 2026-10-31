@@ -3,7 +3,7 @@
 //! Safe discovery for the long-horizon campaign. Parsing an explicit ACL does
 //! not instantiate an Agent, import account state, or contact a provider.
 
-use a3s_code_core::config::{CodeConfig, StorageBackend};
+use aster_core::config::{CodeConfig, StorageBackend};
 use serde_json::{json, Value};
 use std::path::PathBuf;
 
@@ -68,9 +68,9 @@ fn discovery_flags_state_overrides_without_exporting_their_contents() {
 #[test]
 #[ignore = "reads only the explicitly selected live ACL; never sends a model request"]
 fn inspect_live_acl_without_activating_user_state() {
-    let path = std::env::var_os("A3S_CONFIG_FILE")
+    let path = std::env::var_os("ASTER_CONFIG_FILE")
         .map(PathBuf::from)
-        .expect("A3S_CONFIG_FILE must explicitly select the trusted ACL");
+        .expect("ASTER_CONFIG_FILE must explicitly select the trusted ACL");
     let config = CodeConfig::from_file(&path).unwrap_or_else(|_| {
         panic!("selected ACL could not be parsed; source/credentials withheld")
     });
@@ -80,18 +80,18 @@ fn inspect_live_acl_without_activating_user_state() {
 #[tokio::test]
 #[ignore = "one bounded real-provider health probe; not ACP E2E acceptance"]
 async fn selected_real_provider_health_without_account_or_session_activation() {
-    use a3s_code_core::llm::{create_client_with_config, Message, NonRetryableLlmError};
+    use aster_core::llm::{create_client_with_config, Message, NonRetryableLlmError};
     use std::time::{Duration, Instant};
 
-    let path = std::env::var_os("A3S_CONFIG_FILE")
+    let path = std::env::var_os("ASTER_CONFIG_FILE")
         .map(PathBuf::from)
-        .expect("A3S_CONFIG_FILE must explicitly select the trusted ACL");
-    let selected = std::env::var("A3S_LIVE_MODEL")
-        .expect("A3S_LIVE_MODEL must select one exact declared provider/model");
+        .expect("ASTER_CONFIG_FILE must explicitly select the trusted ACL");
+    let selected = std::env::var("ASTER_LIVE_MODEL")
+        .expect("ASTER_LIVE_MODEL must select one exact declared provider/model");
     let (provider, model) = selected
         .split_once('/')
         .filter(|(provider, model)| !provider.is_empty() && !model.is_empty())
-        .expect("A3S_LIVE_MODEL must be provider/model");
+        .expect("ASTER_LIVE_MODEL must be provider/model");
     let config = CodeConfig::from_file(&path)
         .unwrap_or_else(|_| panic!("selected ACL could not be parsed; credentials withheld"));
     let mut llm = config

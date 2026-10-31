@@ -163,7 +163,7 @@ impl Default for NativeTsRuntimeConfig {
     fn default() -> Self {
         Self {
             compiler_binary: PathBuf::from("kense-flow-native-compiler"),
-            cache_dir: PathBuf::from(".a3s/flow/native-ts"),
+            cache_dir: PathBuf::from(".aster/flow/native-ts"),
             working_dir: PathBuf::from("."),
         }
     }
@@ -621,7 +621,7 @@ impl NativeTsRuntime {
 
         let mut command = Command::new(&artifact.binary);
         command
-            .arg("--a3s-flow-runtime")
+            .arg("--aster-flow-runtime")
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped())
@@ -798,7 +798,7 @@ fn native_artifact_cache_key(
     dependency_compiler_identity: Option<&str>,
 ) -> String {
     let legacy_identity = stable_hash([
-        b"a3s.flow.native_ts.artifact.v3".as_slice(),
+        b"aster.flow.native_ts.artifact.v3".as_slice(),
         source_hash.as_bytes(),
         protocol.as_bytes(),
         compiler_binary.as_os_str().as_encoded_bytes(),
@@ -811,7 +811,7 @@ fn native_artifact_cache_key(
     match dependency_compiler_identity {
         None => legacy_identity,
         Some(identity) => stable_hash([
-            b"a3s.flow.native_ts.artifact.compiler_identity.v1".as_slice(),
+            b"aster.flow.native_ts.artifact.compiler_identity.v1".as_slice(),
             legacy_identity.as_bytes(),
             identity.as_bytes(),
         ]),

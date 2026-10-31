@@ -41,57 +41,57 @@ impl LiveCanaryPolicy {
     pub(super) fn from_env() -> Self {
         let floor = Self::release_floor();
         let policy = Self {
-            minimum_cases: env_value("A3S_SEARCH_LIVE_CANARY_MIN_CASES", floor.minimum_cases),
+            minimum_cases: env_value("ASTER_SEARCH_LIVE_CANARY_MIN_CASES", floor.minimum_cases),
             minimum_nonempty_rate_lcb: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MIN_NONEMPTY_RATE_LCB",
+                "ASTER_SEARCH_LIVE_CANARY_MIN_NONEMPTY_RATE_LCB",
                 floor.minimum_nonempty_rate_lcb,
             ),
             minimum_structural_sufficiency_rate_lcb: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MIN_STRUCTURAL_SUFFICIENCY_RATE_LCB",
+                "ASTER_SEARCH_LIVE_CANARY_MIN_STRUCTURAL_SUFFICIENCY_RATE_LCB",
                 floor.minimum_structural_sufficiency_rate_lcb,
             ),
             maximum_terminal_failure_rate_ucb: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_TERMINAL_FAILURE_RATE_UCB",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_TERMINAL_FAILURE_RATE_UCB",
                 floor.maximum_terminal_failure_rate_ucb,
             ),
             maximum_p95_latency_ms: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_P95_LATENCY_MS",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_P95_LATENCY_MS",
                 floor.maximum_p95_latency_ms,
             ),
             maximum_p99_latency_ms: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_P99_LATENCY_MS",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_P99_LATENCY_MS",
                 floor.maximum_p99_latency_ms,
             ),
             maximum_retry_amplification: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_RETRY_AMPLIFICATION",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_RETRY_AMPLIFICATION",
                 floor.maximum_retry_amplification,
             ),
             maximum_second_tier_escalation_rate_ucb: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_SECOND_TIER_ESCALATION_RATE_UCB",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_SECOND_TIER_ESCALATION_RATE_UCB",
                 floor.maximum_second_tier_escalation_rate_ucb,
             ),
             maximum_final_tier_escalation_rate_ucb: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_FINAL_TIER_ESCALATION_RATE_UCB",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_FINAL_TIER_ESCALATION_RATE_UCB",
                 floor.maximum_final_tier_escalation_rate_ucb,
             ),
             minimum_resource_coverage_ratio: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MIN_RESOURCE_COVERAGE_RATIO",
+                "ASTER_SEARCH_LIVE_CANARY_MIN_RESOURCE_COVERAGE_RATIO",
                 floor.minimum_resource_coverage_ratio,
             ),
             maximum_resource_sample_gap_ms: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_RESOURCE_SAMPLE_GAP_MS",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_RESOURCE_SAMPLE_GAP_MS",
                 floor.maximum_resource_sample_gap_ms,
             ),
             maximum_rss_growth_kib: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_RSS_GROWTH_KIB",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_RSS_GROWTH_KIB",
                 floor.maximum_rss_growth_kib,
             ),
             maximum_tail_rss_slope_kib_per_minute: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_TAIL_RSS_SLOPE_KIB_PER_MINUTE",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_TAIL_RSS_SLOPE_KIB_PER_MINUTE",
                 floor.maximum_tail_rss_slope_kib_per_minute,
             ),
             maximum_fd_growth: env_value(
-                "A3S_SEARCH_LIVE_CANARY_MAX_FD_GROWTH",
+                "ASTER_SEARCH_LIVE_CANARY_MAX_FD_GROWTH",
                 floor.maximum_fd_growth,
             ),
         };

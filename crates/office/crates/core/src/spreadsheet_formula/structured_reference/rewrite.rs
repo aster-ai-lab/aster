@@ -1,12 +1,12 @@
 use std::collections::BTreeMap;
 use std::ops::Range;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use crate::discovery::office_error;
 
 use super::super::parse_error;
-use a3s_office_formula_parser::{tokenize_spreadsheet_formula, SpreadsheetFormulaTokenKind};
+use aster_office_formula_parser::{tokenize_spreadsheet_formula, SpreadsheetFormulaTokenKind};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum LocalStructuredReferenceContext {

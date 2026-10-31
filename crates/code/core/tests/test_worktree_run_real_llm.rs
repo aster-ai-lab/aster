@@ -12,8 +12,8 @@
 //! probe file ever appears on disk.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +1.97.1 test -p a3s-code-core --test test_worktree_run_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +1.97.1 test -p aster-core --test test_worktree_run_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -22,7 +22,7 @@ mod support;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::{Agent, PlanningMode, SessionOptions};
+use aster_core::{Agent, PlanningMode, SessionOptions};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 fn git(path: &std::path::Path, args: &[&str]) {
@@ -38,12 +38,12 @@ fn git(path: &std::path::Path, args: &[&str]) {
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn the_run_that_creates_a_worktree_removes_it_at_settlement() {
     let workspace = tempfile::tempdir().expect("workspace");
     let root = workspace.path().to_path_buf();
     git(&root, &["init", "-q"]);
-    git(&root, &["config", "user.email", "wc@a3s.local"]);
+    git(&root, &["config", "user.email", "wc@aster.local"]);
     git(&root, &["config", "user.name", "WC WTREE1"]);
     std::fs::write(root.join("README.md"), "worktree live\n").unwrap();
     git(&root, &["add", "README.md"]);
@@ -59,7 +59,7 @@ async fn the_run_that_creates_a_worktree_removes_it_at_settlement() {
             Some(
                 SessionOptions::new()
                     .with_session_id("wc-wtree1-live")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_planning(false)
                     .with_planning_mode(PlanningMode::Disabled)
                     .with_auto_delegation_enabled(false)
@@ -88,7 +88,7 @@ async fn the_run_that_creates_a_worktree_removes_it_at_settlement() {
     println!("WTREE1 create reply: {}", create.text.trim());
 
     // Mechanical creation oracle: the fact log records the tool result.
-    let facts = a3s_code_core::fact_control::read_workspace_facts(&root, "wc-wtree1-live")
+    let facts = aster_core::fact_control::read_workspace_facts(&root, "wc-wtree1-live")
         .expect("read facts");
     let created_path = facts
         .iter()

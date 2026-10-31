@@ -266,7 +266,7 @@ test('every layout of every template gets schema-valid content in one request', 
 
 function command(runId, parameters) {
   return {
-    schema: 'a3s.code.agent.start.v1',
+    schema: 'aster.code.agent.start.v1',
     request_id: runId,
     identity: { session_id: 'session', run_id: runId },
     prompt: '生成演示文稿的一步。',

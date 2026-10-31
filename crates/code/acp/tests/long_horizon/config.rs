@@ -1,31 +1,31 @@
 #![cfg(test)]
 
-use a3s_code_core::config::{
+use aster_core::config::{
     rewrite_acl_sections, CodeConfig, ConfigSection, ModelConfig, ProviderConfig,
 };
 use std::collections::HashMap;
 use std::path::Path;
 
-pub const RELAY_KEY_ENV: &str = "A3S_LONG_HORIZON_RELAY_KEY";
+pub const RELAY_KEY_ENV: &str = "ASTER_LONG_HORIZON_RELAY_KEY";
 
 pub fn with_rust_verification(source: &str, workspace: &Path) -> Result<String, String> {
-    let mut document = a3s_acl::parse_acl(source).map_err(|_| "fixture ACL parse")?;
-    document.blocks.push(a3s_acl::Block {
+    let mut document = aster_acl::parse_acl(source).map_err(|_| "fixture ACL parse")?;
+    document.blocks.push(aster_acl::Block {
         name: "verification_contract".into(),
         labels: vec!["rust-local-tests".into()],
         blocks: Vec::new(),
         attributes: [
             (
                 "workspace".into(),
-                a3s_acl::Value::String(workspace.to_str().ok_or("workspace encoding")?.into()),
+                aster_acl::Value::String(workspace.to_str().ok_or("workspace encoding")?.into()),
             ),
             (
                 "command".into(),
-                a3s_acl::Value::String(super::fixture::LOCAL_CHECK.into()),
+                aster_acl::Value::String(super::fixture::LOCAL_CHECK.into()),
             ),
             (
                 "covers".into(),
-                a3s_acl::Value::List(
+                aster_acl::Value::List(
                     [
                         "input.rs",
                         "calc.rs",
@@ -34,7 +34,7 @@ pub fn with_rust_verification(source: &str, workspace: &Path) -> Result<String, 
                         "checks",
                     ]
                     .into_iter()
-                    .map(|name| a3s_acl::Value::String(name.into()))
+                    .map(|name| aster_acl::Value::String(name.into()))
                     .collect(),
                 ),
             ),
@@ -42,7 +42,7 @@ pub fn with_rust_verification(source: &str, workspace: &Path) -> Result<String, 
         .into_iter()
         .collect(),
     });
-    let source = a3s_acl::generate_acl(&document);
+    let source = aster_acl::generate_acl(&document);
     CodeConfig::from_acl(&source).map_err(|_| "fixture verification contract validation")?;
     Ok(source)
 }
@@ -78,6 +78,7 @@ pub fn isolated_acl(
     let config = CodeConfig {
         default_model: Some(format!("{}/{}", provider.name, model.id)),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: provider.name.clone(),
             api_key: Some("fixture-placeholder-replaced-by-env-reference".into()),
             base_url: Some(local_endpoint.into()),
@@ -107,7 +108,7 @@ pub fn isolated_acl(
     // The ACL editor has no personal-instructions section; add its typed
     // assignment through the ACL generator, not Value's unquoted Display.
     let mut document =
-        a3s_acl::parse_acl(&source).map_err(|_| "isolated fixture ACL failed validation")?;
+        aster_acl::parse_acl(&source).map_err(|_| "isolated fixture ACL failed validation")?;
     document
         .blocks
         .iter_mut()
@@ -116,18 +117,18 @@ pub fn isolated_acl(
         .attributes
         .insert(
             "api_key".into(),
-            a3s_acl::Value::Call(
+            aster_acl::Value::Call(
                 "env".into(),
-                vec![a3s_acl::Value::String(RELAY_KEY_ENV.into())],
+                vec![aster_acl::Value::String(RELAY_KEY_ENV.into())],
             ),
         );
-    document.blocks.push(a3s_acl::Block {
+    document.blocks.push(aster_acl::Block {
         name: "user_instructions_dir".into(),
         labels: Vec::new(),
         blocks: Vec::new(),
         attributes: [(
             "user_instructions_dir".into(),
-            a3s_acl::Value::String(
+            aster_acl::Value::String(
                 state
                     .join("instructions")
                     .to_str()
@@ -138,7 +139,7 @@ pub fn isolated_acl(
         .into_iter()
         .collect(),
     });
-    let source = a3s_acl::generate_acl(&document);
+    let source = aster_acl::generate_acl(&document);
     CodeConfig::from_acl(&source).map_err(|_| "isolated fixture ACL failed validation")?;
     Ok(source)
 }

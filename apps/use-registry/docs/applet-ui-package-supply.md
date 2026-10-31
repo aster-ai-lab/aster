@@ -2,7 +2,7 @@
 
 Status: admissions + package source + committed `registry/` republish delivered (P5)
 
-Canonical multi-project plan (a3s monorepo):
+Canonical multi-project plan (aster monorepo):
 [`docs/work-applet-plugin-path.md`](../../docs/work-applet-plugin-path.md).
 
 ## Ownership
@@ -13,7 +13,7 @@ dependencies. They do not project into Code or render pages.
 
 ## Delivered
 
-1. Admitted package source: `packages/applet-demo` (`a3s/applet-demo@0.1.0`)
+1. Admitted package source: `packages/applet-demo` (`aster/applet-demo@0.1.0`)
    with Tool `echo`, MCP `context`, Skill `applet-demo`, UI `panel`.
 2. Admission record in `admissions.acl` (+ `permission-ceiling.json`).
 3. Authoring rules below.
@@ -21,13 +21,13 @@ dependencies. They do not project into Code or render pages.
    (assemble admissions → planning tool/mcp → plan-install catalog ui/panel →
    apply-plan → capability `activity_bar` digest equals signed archive HTML)
    plus Track J6 (committed `registry/` just transport → plan-install
-   `a3s/applet-demo` catalog ui/panel + archive HTML bytes) and Track S1
+   `aster/applet-demo` catalog ui/panel + archive HTML bytes) and Track S1
    (package source ACL bytes == committed archive ACL — fail closed on
    custody lag / `bind_tool` drift).
 
 ## Authoring rules
 
-1. Put package sources under `packages/<name>/` with `a3s-use-extension.acl`.
+1. Put package sources under `packages/<name>/` with `aster-use-extension.acl`.
 2. UI assets are package-relative paths (`entry` / `styles` / `scripts`). Digests
    are computed at assemble time — do not hand-edit digests in the manifest.
 3. Declare `title`, `description`, `icon`, and `order` on `ui` blocks so hosts
@@ -54,16 +54,16 @@ dependencies. They do not project into Code or render pages.
 - [x] Gate proves planning + plan-install catalog surfaces (Track A A1–A3)
 - [x] Gate proves Plugin Manager apply publishes `activity_bar` whose entry
       digest matches signed package HTML bytes (Track A A4) — not host-built UI
-- [x] Committed `registry/` targets include `a3s/applet-demo` (dev-preview
+- [x] Committed `registry/` targets include `aster/applet-demo` (dev-preview
       republish; bootstrap root pin refreshed with metadata expiry resign)
-- [x] Track J6: just-served committed tree plan-installs `a3s/applet-demo`
+- [x] Track J6: just-served committed tree plan-installs `aster/applet-demo`
       with ui/panel surfaces and UI requires Tool `echo` + MCP `context` +
       Skill `applet-demo`; archive manifest `bind_tool=["echo"]`;
       `targets.json` sha256 matches archive bytes; apply-plan `activity_bar`
       entry digest equals committed HTML with the same Tool/MCP/Skill deps
-- [x] Track S0: git HEAD `targets.json` advertises `a3s/applet-demo` archive
+- [x] Track S0: git HEAD `targets.json` advertises `aster/applet-demo` archive
       (clean-clone durable P5 tip)
-- [x] Track S1: `packages/applet-demo/a3s-use-extension.acl` byte-equals the
+- [x] Track S1: `packages/applet-demo/aster-use-extension.acl` byte-equals the
       ACL inside the committed archive (fail closed on source↔signed drift)
 - Monorepo verify: `just test::applet-non-work` (includes Track A/J6/S0/S1
   via `scripts/test_just_registry.sh`)

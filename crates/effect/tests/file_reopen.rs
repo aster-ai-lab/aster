@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_effect::{
+use aster_effect::{
     answer_fact, coding_actor, confirm_fact, ingest_coding, message_fact, resume_coding,
     ActorError, CodingPhase, CodingServices, Compactor, Completion, CompletionRequest, Exit,
     FileLog, HarnessConfig, LogStore, ModelDecision, ToolCall, ToolRunner,
@@ -17,7 +17,7 @@ impl RemovedDir {
     fn new(label: &str) -> Self {
         static N: AtomicUsize = AtomicUsize::new(0);
         let dir = std::env::temp_dir().join(format!(
-            "a3s-effect-{label}-{}-{}",
+            "aster-effect-{label}-{}-{}",
             std::process::id(),
             N.fetch_add(1, Ordering::Relaxed)
         ));
@@ -62,7 +62,7 @@ impl Completion for ScriptModel {
         &self,
         _request: CompletionRequest,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         let decision = self
             .decisions
             .lock()
@@ -84,7 +84,7 @@ impl ToolRunner for CountingTools {
         &self,
         call: ToolCall,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
         let n = self.calls.fetch_add(1, Ordering::SeqCst);
         let name = call.name;
         let fail = self.fail_first.load(Ordering::SeqCst) > 0 && n == 0;
@@ -109,7 +109,7 @@ impl Compactor for CountingCompactor {
     fn compact(
         &self,
         messages: &[String],
-    ) -> a3s_effect::coding::BoxFuture<Result<String, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         let summary = messages.join(" ");
         Box::pin(async move { Ok(format!("summary:{summary}")) })
@@ -122,7 +122,7 @@ struct Session {
     model_calls: Arc<AtomicUsize>,
     tool_calls: Arc<AtomicUsize>,
     compact_calls: Arc<AtomicUsize>,
-    actor: a3s_effect::Actor<CodingServices, a3s_effect::CodingView>,
+    actor: aster_effect::Actor<CodingServices, aster_effect::CodingView>,
 }
 
 impl Session {

@@ -42,7 +42,7 @@ async fn activation_replaces_a_complete_directory_without_partial_visibility() {
 #[tokio::test]
 async fn interrupted_activation_recovers_the_previous_complete_install() {
     let temp = tempfile::tempdir().unwrap();
-    let backup = temp.path().join(".a3s-backup-v1-fixture");
+    let backup = temp.path().join(".aster-backup-v1-fixture");
     tokio::fs::create_dir(&backup).await.unwrap();
     tokio::fs::write(backup.join("runtime"), b"previous")
         .await

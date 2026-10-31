@@ -2,12 +2,12 @@ use std::marker::PhantomData;
 use std::path::Path;
 use std::rc::Rc;
 
-use a3s_libkrun_sys::{
+use aster_libkrun_sys::{
     krun_add_disk, krun_add_virtiofs, krun_add_vsock, krun_add_vsock_port_windows, krun_create_ctx,
     krun_disable_implicit_vsock, krun_free_ctx, krun_set_console_output, krun_set_exec,
     krun_set_root, krun_set_vm_config, krun_set_workdir, krun_start_enter,
 };
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use zeroize::Zeroizing;
 
 use crate::ffi::{path_to_cstring, value_to_cstring, FfiStringArray};
@@ -330,10 +330,10 @@ mod tests {
     fn injects_the_fixed_read_only_block_root_environment() {
         let context = context_with_root_disk(true);
         let environment = context
-            .guest_environment(&[("A3S_TOKEN".to_string(), "value".to_string())])
+            .guest_environment(&[("ASTER_TOKEN".to_string(), "value".to_string())])
             .expect("ordinary guest environment must remain valid");
 
-        assert_eq!(environment[0], "A3S_TOKEN=value");
+        assert_eq!(environment[0], "ASTER_TOKEN=value");
         assert!(environment.contains(&"KRUN_BLOCK_ROOT_DEVICE=/dev/vda".to_string()));
         assert!(environment.contains(&"KRUN_BLOCK_ROOT_FSTYPE=ext4".to_string()));
         assert!(environment.contains(&"KRUN_BLOCK_ROOT_OPTIONS=ro".to_string()));

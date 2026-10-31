@@ -1,4 +1,4 @@
-//! Verification contracts for A3S Code 2.0.
+//! Verification contracts for Aster Code 2.0.
 //!
 //! Verification is represented as structured checks and reports. The first
 //! stage is intentionally conservative: required checks start as
@@ -9,7 +9,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 
-pub const VERIFICATION_REPORT_SCHEMA: &str = "a3s.verification_report.v1";
+pub const VERIFICATION_REPORT_SCHEMA: &str = "aster.verification_report.v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -729,7 +729,7 @@ fn loop_owns_active_acceptance_contract(loop_dir: &Path) -> bool {
     false
 }
 
-/// Parse machine ACCEPTANCE criteria from **active** `.a3s/loops/*/ACCEPTANCE.md`
+/// Parse machine ACCEPTANCE criteria from **active** `.aster/loops/*/ACCEPTANCE.md`
 /// so Core shell evidence and Host ACCEPTANCE re-checks share the same predicates.
 ///
 /// Only loops whose `STATE.md` is `running`, `retrying`, or `paused` contribute.
@@ -741,7 +741,7 @@ fn loop_owns_active_acceptance_contract(loop_dir: &Path) -> bool {
 pub fn acceptance_shell_commands_for_workspace(
     workspace: impl AsRef<Path>,
 ) -> Vec<VerificationCommand> {
-    let loops = workspace.as_ref().join(".a3s").join("loops");
+    let loops = workspace.as_ref().join(".aster").join("loops");
     let Ok(entries) = std::fs::read_dir(&loops) else {
         return Vec::new();
     };

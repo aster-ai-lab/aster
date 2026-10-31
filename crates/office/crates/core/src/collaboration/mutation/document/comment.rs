@@ -5,7 +5,7 @@ mod state;
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::{json, Value as JsonValue};
 use yrs::types::Attrs;
 use yrs::{
@@ -774,23 +774,23 @@ fn parse_digits(value: &[u8]) -> Option<u32> {
     )
 }
 
-pub(super) fn invalid_shared_comments(message: impl Into<String>) -> a3s_use_core::UseError {
+pub(super) fn invalid_shared_comments(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.content_invalid", message)
 }
 
-fn identity_conflict(message: String) -> a3s_use_core::UseError {
+fn identity_conflict(message: String) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_identity_conflict", message).with_suggestion(
         "Read the latest Document comment projection and choose a fresh stable ID before retrying.",
     )
 }
 
-fn match_conflict(message: String) -> a3s_use_core::UseError {
+fn match_conflict(message: String) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_match_conflict", message).with_suggestion(
         "Read the latest Document comment projection and retry against its exact identity and UTF-16 anchor.",
     )
 }
 
-fn range_conflict(start: u32, end: u32, length: u32) -> a3s_use_core::UseError {
+fn range_conflict(start: u32, end: u32, length: u32) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_range_invalid",
         "The Document comment selection is outside the current paragraph or splits a UTF-16 surrogate pair.",

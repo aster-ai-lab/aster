@@ -243,7 +243,7 @@ async fn fact_run_provider_projection_retains_admitted_schema_and_profile_identi
                 }),
                 &crate::SessionOptions::new()
                     .with_session_id(format!("projection-{}", mode.as_str()))
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_planning_mode(crate::PlanningMode::Disabled)
                     .with_permission_policy(
                         crate::permissions::PermissionPolicy::new()
@@ -375,7 +375,7 @@ async fn fact_run_delegated_main_turn_inherits_the_code_profile() {
             client,
             &crate::SessionOptions::new()
                 .with_session_id("nested-profile-inheritance")
-                .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                 .with_planning_mode(crate::PlanningMode::Disabled)
                 .with_continuation(false)
                 .with_auto_delegation_enabled(false)

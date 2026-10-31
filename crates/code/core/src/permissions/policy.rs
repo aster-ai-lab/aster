@@ -9,10 +9,21 @@ use crate::queue::SessionLane;
 /// Normal mode asks before changes; auto allows workspace edits and sandboxed
 /// commands. Only YOLO selects the local host runner without sandboxing.
 pub fn policy_for_posture(posture: &str) -> PermissionPolicy {
-    let reads = || PermissionPolicy::new().allow_all(&[
-        "read", "office_read", "search", "ls", "code_symbols", "code_navigation",
-        "code_diagnostics", "output_check", "update_plan", "ask_user", "ask_user_form",
-    ]);
+    let reads = || {
+        PermissionPolicy::new().allow_all(&[
+            "read",
+            "office_read",
+            "search",
+            "ls",
+            "code_symbols",
+            "code_navigation",
+            "code_diagnostics",
+            "output_check",
+            "update_plan",
+            "ask_user",
+            "ask_user_form",
+        ])
+    };
     match posture.trim().to_ascii_lowercase().as_str() {
         "plan" => super::style_specialty::plan_permissions()
             .allow("ask_user")

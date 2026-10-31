@@ -33,7 +33,7 @@ impl PlatformSandbox {
             .find_map(|candidate| resolve_executable(&candidate, workspace).ok())
             .context(
                 "Linux native sandbox requires bubblewrap: set \
-                 A3S_SANDBOX_BWRAP_PATH, install bwrap at /usr/bin/bwrap, or \
+                 ASTER_SANDBOX_BWRAP_PATH, install bwrap at /usr/bin/bwrap, or \
                  have bwrap on PATH",
             )?;
         let shell = resolve_executable("/bin/bash", workspace)
@@ -111,8 +111,8 @@ impl PlatformSandbox {
 /// `OVERLAID` keeps the read-only content visible underneath the writes.
 /// `REDIRECTED` replaces the content outright; it is the fallback for kernels
 /// that cannot mount overlayfs from an unprivileged user namespace.
-const OVERLAID_WRITABLE_ENV: &str = "A3S_SANDBOX_OVERLAID_WRITABLE";
-const REDIRECTED_WRITABLE_ENV: &str = "A3S_SANDBOX_REDIRECTED_WRITABLE";
+const OVERLAID_WRITABLE_ENV: &str = "ASTER_SANDBOX_OVERLAID_WRITABLE";
+const REDIRECTED_WRITABLE_ENV: &str = "ASTER_SANDBOX_REDIRECTED_WRITABLE";
 
 #[derive(Debug, Default)]
 struct BaseMounts {
@@ -270,7 +270,7 @@ fn configure_base_arguments(
         }
         bind_read_only(command, denied)?;
     }
-    // Re-bind goal-loop carve-outs as writable after the `.a3s` read-only mask.
+    // Re-bind goal-loop carve-outs as writable after the `.aster` read-only mask.
     for exception in &policy.write_exceptions {
         if exception.exists() {
             command.arg("--bind").arg(exception).arg(exception);
@@ -294,7 +294,7 @@ fn configure_base_arguments(
 fn overlay_mounts_supported(bwrap: &Path) -> bool {
     static SUPPORTED: OnceLock<bool> = OnceLock::new();
     *SUPPORTED.get_or_init(|| {
-        let probe = std::env::temp_dir().join(format!("a3s-overlay-probe-{}", std::process::id()));
+        let probe = std::env::temp_dir().join(format!("aster-overlay-probe-{}", std::process::id()));
         if std::fs::create_dir_all(&probe).is_err() {
             return false;
         }
@@ -926,7 +926,7 @@ mod tests {
     fn ephemeral_scratch_is_mounted_as_tmpfs_not_host_bind() {
         let workspace = tempfile::tempdir().unwrap();
         let scratch = tempfile::tempdir().unwrap();
-        let mut document = crate::policy::SandboxPolicy::a3s_bash_baseline();
+        let mut document = crate::policy::SandboxPolicy::aster_bash_baseline();
         document.filesystem.session_write = crate::policy::SessionWriteMode::Ephemeral;
         let policy = EnforcedPolicy::compile(
             &document,
@@ -961,7 +961,7 @@ mod tests {
     fn ephemeral_scratch_with_mediation_keeps_host_bind_for_socket() {
         let workspace = tempfile::tempdir().unwrap();
         let scratch = tempfile::tempdir().unwrap();
-        let mut document = crate::policy::SandboxPolicy::a3s_bash_baseline();
+        let mut document = crate::policy::SandboxPolicy::aster_bash_baseline();
         document.filesystem.session_write = crate::policy::SessionWriteMode::Ephemeral;
         let mut policy = EnforcedPolicy::compile(
             &document,
@@ -1044,7 +1044,7 @@ mod tests {
             stream.write_all(b"pong").await.unwrap();
         });
 
-        let mut document = crate::policy::SandboxPolicy::a3s_bash_baseline();
+        let mut document = crate::policy::SandboxPolicy::aster_bash_baseline();
         document.features.mediated_network = true;
         document.network.allow.push(NetworkAllowRule {
             host: "127.0.0.1".into(),
@@ -1054,7 +1054,7 @@ mod tests {
         // Capability claim is still off; arm the wire fields directly to prove
         // the OS bridge path before flipping BackendCapabilities::mediated_http.
         let mut policy = EnforcedPolicy::compile(
-            &crate::policy::SandboxPolicy::a3s_bash_baseline(),
+            &crate::policy::SandboxPolicy::aster_bash_baseline(),
             workspace.path(),
             scratch.path(),
             crate::policy::BackendCapabilities::native_gate2(),
@@ -1070,14 +1070,14 @@ mod tests {
         let relay_bin = test_exe
             .parent()
             .and_then(|p| p.parent())
-            .map(|debug| debug.join("a3s-sandbox-relay"))
+            .map(|debug| debug.join("aster-sandbox-relay"))
             .expect("resolve target/debug");
         assert!(
             relay_bin.is_file(),
             "expected relay at {} (run cargo test --bins first if missing)",
             relay_bin.display()
         );
-        std::env::set_var("A3S_SANDBOX_RELAY", &relay_bin);
+        std::env::set_var("ASTER_SANDBOX_RELAY", &relay_bin);
 
         let sandbox = PlatformSandbox::new(workspace.path()).unwrap();
         let probe = workspace.path().join("connect_probe.py");
@@ -1113,7 +1113,7 @@ print(s.recv(4).decode())\n",
             )
             .await
             .expect("linux bridge execute");
-        std::env::remove_var("A3S_SANDBOX_RELAY");
+        std::env::remove_var("ASTER_SANDBOX_RELAY");
         assert_eq!(output.exit_code, 0, "stderr={}", output.stderr);
         assert_eq!(output.stdout.trim(), "pong");
         upstream_task.await.unwrap();
@@ -1133,7 +1133,7 @@ print(s.recv(4).decode())\n",
         let scratch = tempfile::tempdir().unwrap();
         let sock = scratch.path().join("mediator.sock");
 
-        let mut document = crate::policy::SandboxPolicy::a3s_bash_baseline();
+        let mut document = crate::policy::SandboxPolicy::aster_bash_baseline();
         document.features.mediated_network = true;
         document.network.allow.push(NetworkAllowRule {
             host: "allowed.example".into(),
@@ -1141,7 +1141,7 @@ print(s.recv(4).decode())\n",
             path_prefix: None,
         });
         let mut policy = EnforcedPolicy::compile(
-            &crate::policy::SandboxPolicy::a3s_bash_baseline(),
+            &crate::policy::SandboxPolicy::aster_bash_baseline(),
             workspace.path(),
             scratch.path(),
             crate::policy::BackendCapabilities::native_gate2(),
@@ -1157,10 +1157,10 @@ print(s.recv(4).decode())\n",
         let relay_bin = test_exe
             .parent()
             .and_then(|p| p.parent())
-            .map(|debug| debug.join("a3s-sandbox-relay"))
+            .map(|debug| debug.join("aster-sandbox-relay"))
             .expect("resolve target/debug");
         assert!(relay_bin.is_file(), "missing {}", relay_bin.display());
-        std::env::set_var("A3S_SANDBOX_RELAY", &relay_bin);
+        std::env::set_var("ASTER_SANDBOX_RELAY", &relay_bin);
 
         let probe = workspace.path().join("deny_probe.py");
         std::fs::write(
@@ -1202,7 +1202,7 @@ print('denied-ok')\n",
             )
             .await
             .expect("linux deny bridge execute");
-        std::env::remove_var("A3S_SANDBOX_RELAY");
+        std::env::remove_var("ASTER_SANDBOX_RELAY");
         assert_eq!(output.exit_code, 0, "stderr={}", output.stderr);
         assert_eq!(output.stdout.trim(), "denied-ok");
         mediator.shutdown().await;
@@ -1235,7 +1235,7 @@ print('denied-ok')\n",
             stream.write_all(b"pong").await.unwrap();
         });
 
-        let mut document = crate::policy::SandboxPolicy::a3s_bash_baseline();
+        let mut document = crate::policy::SandboxPolicy::aster_bash_baseline();
         document.features.mediated_socks = true;
         document.network.allow.push(NetworkAllowRule {
             host: "127.0.0.1".into(),
@@ -1246,7 +1246,7 @@ print('denied-ok')\n",
         // BackendCapabilities::mediated_socks claim rides on, exactly like
         // the HTTP bridge proof.
         let mut policy = EnforcedPolicy::compile(
-            &crate::policy::SandboxPolicy::a3s_bash_baseline(),
+            &crate::policy::SandboxPolicy::aster_bash_baseline(),
             workspace.path(),
             scratch.path(),
             crate::policy::BackendCapabilities::native_gate2(),
@@ -1262,14 +1262,14 @@ print('denied-ok')\n",
         let relay_bin = test_exe
             .parent()
             .and_then(|p| p.parent())
-            .map(|debug| debug.join("a3s-sandbox-relay"))
+            .map(|debug| debug.join("aster-sandbox-relay"))
             .expect("resolve target/debug");
         assert!(
             relay_bin.is_file(),
             "expected relay at {} (run cargo test --bins first if missing)",
             relay_bin.display()
         );
-        std::env::set_var("A3S_SANDBOX_RELAY", &relay_bin);
+        std::env::set_var("ASTER_SANDBOX_RELAY", &relay_bin);
 
         let sandbox = PlatformSandbox::new(workspace.path()).unwrap();
         let probe = workspace.path().join("socks_probe.py");
@@ -1305,7 +1305,7 @@ print(s.recv(4).decode())\n",
             )
             .await
             .expect("linux socks bridge execute");
-        std::env::remove_var("A3S_SANDBOX_RELAY");
+        std::env::remove_var("ASTER_SANDBOX_RELAY");
         assert_eq!(output.exit_code, 0, "stderr={}", output.stderr);
         assert_eq!(output.stdout.trim(), "pong");
         upstream_task.await.unwrap();
@@ -1325,7 +1325,7 @@ print(s.recv(4).decode())\n",
         let scratch = tempfile::tempdir().unwrap();
         let sock = scratch.path().join("socks-deny.sock");
 
-        let mut document = crate::policy::SandboxPolicy::a3s_bash_baseline();
+        let mut document = crate::policy::SandboxPolicy::aster_bash_baseline();
         document.features.mediated_socks = true;
         document.network.allow.push(NetworkAllowRule {
             host: "allowed.example".into(),
@@ -1333,7 +1333,7 @@ print(s.recv(4).decode())\n",
             path_prefix: None,
         });
         let mut policy = EnforcedPolicy::compile(
-            &crate::policy::SandboxPolicy::a3s_bash_baseline(),
+            &crate::policy::SandboxPolicy::aster_bash_baseline(),
             workspace.path(),
             scratch.path(),
             crate::policy::BackendCapabilities::native_gate2(),
@@ -1349,10 +1349,10 @@ print(s.recv(4).decode())\n",
         let relay_bin = test_exe
             .parent()
             .and_then(|p| p.parent())
-            .map(|debug| debug.join("a3s-sandbox-relay"))
+            .map(|debug| debug.join("aster-sandbox-relay"))
             .expect("resolve target/debug");
         assert!(relay_bin.is_file(), "missing {}", relay_bin.display());
-        std::env::set_var("A3S_SANDBOX_RELAY", &relay_bin);
+        std::env::set_var("ASTER_SANDBOX_RELAY", &relay_bin);
 
         let sandbox = PlatformSandbox::new(workspace.path()).unwrap();
         let probe = workspace.path().join("socks_deny_probe.py");
@@ -1384,7 +1384,7 @@ print('socks-denied-ok')\n",
             )
             .await
             .expect("linux socks bridge deny execute");
-        std::env::remove_var("A3S_SANDBOX_RELAY");
+        std::env::remove_var("ASTER_SANDBOX_RELAY");
         assert_eq!(output.exit_code, 0, "stderr={}", output.stderr);
         assert_eq!(output.stdout.trim(), "socks-denied-ok");
         mediator.shutdown().await;
@@ -1416,7 +1416,7 @@ print('socks-denied-ok')\n",
     fn read_only_mount_reports_false_for_unresolvable_paths() {
         // An unresolvable path keeps the plain bind, so a genuinely writable root
         // is never silently redirected because of a transient stat failure.
-        let missing = Path::new("/nonexistent/a3s-readonly-probe");
+        let missing = Path::new("/nonexistent/aster-readonly-probe");
         assert!(!read_only_mount(missing));
         let scratch = tempfile::tempdir().unwrap();
         assert!(!read_only_mount(scratch.path()));

@@ -1,14 +1,14 @@
-# A3S Flow Product Truth
+# Aster Flow Product Truth
 
 ## Product
 
-A3S Flow is an AI Native Workflow Engine for durable Agent, tool, approval,
+Aster Flow is an AI Native Workflow Engine for durable Agent, tool, approval,
 callback, signal, and child-workflow execution. It records workflow decisions
 and results in append-only history so a compatible worker can resume a run
 after process exit, delayed work, or worker replacement.
 
 The repository owns the engine, the versioned workflow DAG contract, the
-`@a3s-lab/flow-ui` authoring package, React and Vue integrations, the CLI, the
+`@aster-ai-lab/flow-ui` authoring package, React and Vue integrations, the CLI, the
 installable coding-agent Skill, and the official multilingual documentation
 site.
 
@@ -28,13 +28,13 @@ site.
   contracts.
 - Every public node has detailed configuration, port, runtime, and example
   documentation.
-- Workflow authoring surfaces belong to the A3S Flow website and package.
+- Workflow authoring surfaces belong to the Aster Flow website and package.
 
 ## Workflow Playground
 
-The Playground is an integrated current-version route in the A3S Flow website,
+The Playground is an integrated current-version route in the Aster Flow website,
 not a separate product or site. It is the hands-on workflow authoring surface
-and must use the real `@a3s-lab/flow-ui` manifest registry, node previews,
+and must use the real `@aster-ai-lab/flow-ui` manifest registry, node previews,
 configuration panels, and DAG compiler.
 
 The Playground supports searching separate built-in and host-owned node

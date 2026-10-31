@@ -600,7 +600,7 @@ function safeCssColor(value: string): boolean {
 function safeAvatarUrl(value: string | undefined): string | undefined {
   if (!value || typeof URL === 'undefined') return undefined;
   try {
-    const url = new URL(value, 'https://a3s.invalid/');
+    const url = new URL(value, 'https://aster.invalid/');
     if (
       url.protocol === 'https:' ||
       url.protocol === 'http:' ||

@@ -8,7 +8,7 @@ mod support;
 
 use std::time::Duration;
 
-use a3s_code_core::{Agent, CodeError, SessionOptions};
+use aster_core::{Agent, CodeError, SessionOptions};
 use support::layer_c_model::{load_pinned_layer_c_config, pinned_layer_c_model};
 
 #[tokio::test]
@@ -19,7 +19,7 @@ async fn agent_runtime_closed_agent_rejects_the_next_session() {
         .await
         .expect("build real-provider agent");
     let workspace =
-        std::env::temp_dir().join(format!("a3s-deep-agent-runtime-{}", std::process::id()));
+        std::env::temp_dir().join(format!("aster-deep-agent-runtime-{}", std::process::id()));
     std::fs::create_dir_all(&workspace).expect("workspace");
     let options = SessionOptions::new()
         .with_session_id("deep-agent-runtime")

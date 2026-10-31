@@ -3,14 +3,14 @@
 //! The benchmark adapter must not buffer arbitrary command output before the
 //! Core tool-output contract can bound it. Process-group kill, deadline, and
 //! bounded capture live in
-//! [`a3s_code_core::sandbox::ProcessHostBashSandbox`].
+//! [`aster_core::sandbox::ProcessHostBashSandbox`].
 
-pub(super) use a3s_code_core::sandbox::ProcessHostBashSandbox;
+pub(super) use aster_core::sandbox::ProcessHostBashSandbox;
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_code_core::sandbox::{BashSandbox, SandboxCommandRequest};
+    use aster_core::sandbox::{BashSandbox, SandboxCommandRequest};
     use std::time::{Duration, Instant};
 
     #[cfg(unix)]

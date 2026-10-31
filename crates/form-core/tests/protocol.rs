@@ -1,4 +1,4 @@
-use a3s_form_core::{
+use aster_form_core::{
     decode_compile_request, encode_compile_response, CanonicalValue, CompileResponse, Diagnostic,
     ProtocolError, COMPILER_REVISION, COMPILE_REQUEST_API_VERSION, COMPILE_RESPONSE_API_VERSION,
 };
@@ -42,7 +42,7 @@ fn encodes_compile_responses_as_canonical_json() {
             ("sourceRevision".to_owned(), CanonicalValue::Number(1.0)),
             (
                 "apiVersion".to_owned(),
-                CanonicalValue::String("a3s.dev/form-plan/v1alpha1".to_owned()),
+                CanonicalValue::String("aster.dev/form-plan/v1alpha1".to_owned()),
             ),
         ]),
         vec![],
@@ -58,7 +58,7 @@ fn encodes_compile_responses_as_canonical_json() {
 
     let failure = CompileResponse::failure(vec![Diagnostic::error(
         "document.kind",
-        "kind must be a3s.form",
+        "kind must be aster.form",
         "/kind",
     )]);
     let failure_text = String::from_utf8(

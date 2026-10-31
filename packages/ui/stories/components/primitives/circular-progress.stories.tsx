@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { CircularProgress, Slider } from '@a3s-lab/ui'
+import { CircularProgress, Slider } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof CircularProgress> = {
   title: 'Components/Primitives/CircularProgress',

@@ -12,21 +12,21 @@ function Require-Env([string]$Name) {
   return $v
 }
 
-$dedicated = Require-Env "A3S_GATEWAY_DEDICATED_RUNNER"
-if ($dedicated -ne "1") { throw "refuse: A3S_GATEWAY_DEDICATED_RUNNER must be 1" }
-Require-Env "A3S_GATEWAY_HW_HOST" | Out-Null
-Require-Env "A3S_GATEWAY_HW_CPU_MODEL" | Out-Null
-Require-Env "A3S_GATEWAY_HW_MEMORY_GB" | Out-Null
+$dedicated = Require-Env "ASTER_GATEWAY_DEDICATED_RUNNER"
+if ($dedicated -ne "1") { throw "refuse: ASTER_GATEWAY_DEDICATED_RUNNER must be 1" }
+Require-Env "ASTER_GATEWAY_HW_HOST" | Out-Null
+Require-Env "ASTER_GATEWAY_HW_CPU_MODEL" | Out-Null
+Require-Env "ASTER_GATEWAY_HW_MEMORY_GB" | Out-Null
 
-$Bin = if ($args.Count -ge 1) { $args[0] } else { ".\target\release\a3s-gateway.exe" }
+$Bin = if ($args.Count -ge 1) { $args[0] } else { ".\target\release\aster-gateway.exe" }
 if (-not (Test-Path $Bin)) {
-  Write-Host "building release a3s-gateway..."
-  cargo build --locked --release --bin a3s-gateway
-  $Bin = ".\target\release\a3s-gateway.exe"
+  Write-Host "building release aster-gateway..."
+  cargo build --locked --release --bin aster-gateway
+  $Bin = ".\target\release\aster-gateway.exe"
 }
 
-$Dur = if ($env:A3S_GATEWAY_SOAK_DURATION) { $env:A3S_GATEWAY_SOAK_DURATION } else { "7200" }
-$C = if ($env:A3S_GATEWAY_SOAK_CONCURRENCY) { $env:A3S_GATEWAY_SOAK_CONCURRENCY } else { "16" }
+$Dur = if ($env:ASTER_GATEWAY_SOAK_DURATION) { $env:ASTER_GATEWAY_SOAK_DURATION } else { "7200" }
+$C = if ($env:ASTER_GATEWAY_SOAK_CONCURRENCY) { $env:ASTER_GATEWAY_SOAK_CONCURRENCY } else { "16" }
 
 function Invoke-Python {
   param([string[]]$PythonArgs)

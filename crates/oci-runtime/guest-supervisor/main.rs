@@ -1,8 +1,8 @@
 //! PID-namespace init for one macOS guest command.
 //!
 //! The system-image builder installs this static binary at
-//! `/usr/bin/a3s-oci-agent`. The guest init execs
-//! `a3s-oci-agent --guest-command ./.a3s-guest-command`. This process becomes
+//! `/usr/bin/aster-oci-agent`. The guest init execs
+//! `aster-oci-agent --guest-command ./.aster-guest-command`. This process becomes
 //! the VM's PID 1, then creates a new PID namespace whose init is the command
 //! script. When that init exits, the kernel kills every remaining process in
 //! the namespace before this parent observes the exit.

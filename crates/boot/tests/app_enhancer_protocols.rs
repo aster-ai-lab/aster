@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootRequest, BoxFuture, CallHandler, FromModuleRef, HttpMethod,
     MessagePatternDefinition, Module, ModuleRef, ProviderDefinition, ProviderDependency, Result,
     TransportContext, TransportExceptionFilter, TransportExceptionResponse, TransportGuard,

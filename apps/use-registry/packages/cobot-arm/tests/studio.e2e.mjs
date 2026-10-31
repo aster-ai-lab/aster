@@ -1,11 +1,11 @@
 // Studio end to end: this driver plays Studio's renderer against a real Studio
 // authority, over the same routes `aixWorkbench.ts` uses:
 //
-//   install   PUT  /api/capabilities/installations/a3s-cobot-arm  (catalog → bundle → store)
+//   install   PUT  /api/capabilities/installations/aster-cobot-arm  (catalog → bundle → store)
 //   list      GET  /api/aix/views
 //   open      POST /api/aix/views/sessions
 //   load      the view in Chromium from /aix-view/<token>/…  (Studio's policy headers)
-//   turns     POST /api/aix/views/sessions/<token>/agents/cobot-arm/turns  (warm a3s-box)
+//   turns     POST /api/aix/views/sessions/<token>/agents/cobot-arm/turns  (warm aster-box)
 //   close     DELETE /api/aix/views/sessions/<token>
 //
 // It is started by the Studio test `cobot_arm_runs_end_to_end_through_studio`
@@ -25,9 +25,9 @@ import { createInterface } from 'node:readline'
 import { CSP, playwright } from './view-host.mjs'
 
 const MODE = process.env.E2E_MODE === 'live' ? 'live' : 'hermetic'
-const SLUG = 'a3s-cobot-arm'
+const SLUG = 'aster-cobot-arm'
 const AGENT = 'cobot-arm'
-const PACKAGE_ID = 'use/a3s/cobot-arm'
+const PACKAGE_ID = 'use/aster/cobot-arm'
 // AIX_VIEW_SESSION_PROTOCOL_VERSION in apps/studio/src/shared/types/aixWorkbench.ts.
 const VIEW_SESSION_PROTOCOL = 3
 const WIDTH = 1440
@@ -160,7 +160,7 @@ async function main() {
   for (const [name, target] of Object.entries({
     foreignToken: `/aix-view/${identity()}/ui/workbench/index.html`,
     agentSource: `/aix-view/${token}/agent/run.mjs`,
-    manifest: `/aix-view/${token}/a3s-use-extension.acl`,
+    manifest: `/aix-view/${token}/aster-use-extension.acl`,
     traversal: `/aix-view/${token}/ui/workbench/%2e%2e/%2e%2e/agent/run.mjs`
   })) {
     refused[name] = (await fetch(`${studio}${target}`)).status

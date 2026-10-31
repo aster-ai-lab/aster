@@ -10,7 +10,7 @@ mod passt;
 mod store;
 
 #[cfg(target_os = "macos")]
-pub use a3s_box_netproxy::NetProxyManager;
+pub use aster_box_netproxy::NetProxyManager;
 #[cfg(any(target_os = "linux", all(test, unix)))]
 pub use passt::{
     passt_backend_lost, passt_backend_lost_for_box, passt_backend_lost_marker, terminate_passt,
@@ -36,7 +36,7 @@ pub fn bridge_socket_dir(home: &std::path::Path, network_name: &str) -> std::pat
         std::path::PathBuf::from("/tmp")
     };
     temporary
-        .join("a3s-box-switches")
+        .join("aster-box-switches")
         .join(uid.to_string())
         .join(&key[..24])
 }

@@ -1,13 +1,13 @@
 mod support;
 
-use a3s_search::providers::{
-    A3sAuth, A3sConfig, A3sProvider, AliyunConfig, AliyunProvider, BochaConfig, BochaProvider,
+use aster_search::providers::{
+    AsterAuth, AsterConfig, AsterProvider, AliyunConfig, AliyunProvider, BochaConfig, BochaProvider,
     CredentialSource, DeepSeekConfig, DeepSeekProvider, DoubaoConfig, DoubaoProvider,
     FirecrawlCategory, FirecrawlConfig, FirecrawlProvider, FirecrawlSource, ProviderRequest,
     SearchProvider, TencentConfig, TencentProvider, TinyFishConfig, TinyFishDomainType,
     TinyFishProvider,
 };
-use a3s_search::TimeRange;
+use aster_search::TimeRange;
 use serde_json::Value;
 use support::provider_server::{MockResponse, MockServer};
 
@@ -321,7 +321,7 @@ async fn firecrawl_posts_web_search_and_maps_usage() {
     assert_eq!(response.results[0].url, "https://www.rust-lang.org/");
     assert_eq!(
         response.results[1].result_type,
-        a3s_search::ResultType::News
+        aster_search::ResultType::News
     );
     assert_eq!(response.report.request_id.as_deref(), Some("fc-1"));
     assert_eq!(
@@ -360,7 +360,7 @@ async fn firecrawl_posts_web_search_and_maps_usage() {
 }
 
 #[tokio::test]
-async fn a3s_posts_web_search_and_redacts_the_key() {
+async fn aster_posts_web_search_and_redacts_the_key() {
     let server = MockServer::start(vec![
         MockResponse::json(
             200,
@@ -371,8 +371,8 @@ async fn a3s_posts_web_search_and_redacts_the_key() {
                         "web": [{
                             "url": "https://www.rust-lang.org/",
                             "title": "Rust",
-                            "description": "A language mentioning a3s-secret",
-                            "markdown": "body a3s-secret"
+                            "description": "A language mentioning aster-secret",
+                            "markdown": "body aster-secret"
                         }]
                     }
                 }
@@ -380,20 +380,20 @@ async fn a3s_posts_web_search_and_redacts_the_key() {
         ),
         MockResponse::json(
             200,
-            br#"{"success":false,"error":"need credits a3s-secret","code":"INSUFFICIENT_CREDITS"}"#,
+            br#"{"success":false,"error":"need credits aster-secret","code":"INSUFFICIENT_CREDITS"}"#,
         ),
         MockResponse::json(
             401,
-            br#"{"success":false,"error":"bad key a3s-secret","code":"UNAUTHORIZED"}"#,
+            br#"{"success":false,"error":"bad key aster-secret","code":"UNAUTHORIZED"}"#,
         ),
     ]);
-    let provider = A3sProvider::new(
-        A3sConfig::new()
+    let provider = AsterProvider::new(
+        AsterConfig::new()
             .unwrap()
             .with_endpoint(server.endpoint.clone())
             .unwrap()
-            .with_api_key(CredentialSource::value("a3s-secret"))
-            .with_auth(A3sAuth::ApiKey)
+            .with_api_key(CredentialSource::value("aster-secret"))
+            .with_auth(AsterAuth::ApiKey)
             .with_max_results(4)
             .unwrap()
             .with_include_markdown(true),
@@ -403,11 +403,11 @@ async fn a3s_posts_web_search_and_redacts_the_key() {
     let response = provider.search(&request("rust")).await.unwrap();
     assert_eq!(response.results.len(), 1);
     assert_eq!(response.results[0].url, "https://www.rust-lang.org/");
-    assert!(!response.results[0].snippet.contains("a3s-secret"));
+    assert!(!response.results[0].snippet.contains("aster-secret"));
     assert!(response.results[0]
         .full_text
         .as_deref()
-        .is_some_and(|text| !text.contains("a3s-secret")));
+        .is_some_and(|text| !text.contains("aster-secret")));
     assert!(response.report.request_id.is_none());
     assert!(response.report.usage.is_none());
     let body: Value = serde_json::from_slice(&server.requests()[0].body).unwrap();
@@ -418,16 +418,16 @@ async fn a3s_posts_web_search_and_redacts_the_key() {
     assert!(body.get("categories").is_none());
     assert!(body.get("country").is_none());
     assert!(body.get("tbs").is_none());
-    assert_eq!(server.requests()[0].header("x-api-key"), Some("a3s-secret"));
+    assert_eq!(server.requests()[0].header("x-api-key"), Some("aster-secret"));
     assert!(server.requests()[0].header("authorization").is_none());
 
     let quota = provider.search(&request("rust")).await.unwrap_err();
     assert_eq!(quota.kind(), "provider_quota");
-    assert!(!quota.to_string().contains("a3s-secret"));
+    assert!(!quota.to_string().contains("aster-secret"));
 
     let error = provider.search(&request("rust")).await.unwrap_err();
     assert_eq!(error.kind(), "provider_authentication");
-    assert!(!error.to_string().contains("a3s-secret"));
+    assert!(!error.to_string().contains("aster-secret"));
 }
 
 #[tokio::test]

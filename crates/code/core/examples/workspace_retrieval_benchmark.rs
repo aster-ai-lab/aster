@@ -2,25 +2,25 @@
 //!
 //! Run from the Code repository root with:
 //!
-//! `cargo run --locked --release -p a3s-code-core --example workspace_retrieval_benchmark`
+//! `cargo run --locked --release -p aster-core --example workspace_retrieval_benchmark`
 //!
-//! The benchmark exercises the production architecture: A3S Memory owns the
+//! The benchmark exercises the production architecture: Aster Memory owns the
 //! exact semantic vectors, the selected lexical engine owns FTS/BM25, hybrid
 //! channels are fused with RRF, and the optional deterministic reranker is
 //! bounded by its public resource contract. The embedding provider is
 //! deterministic so the measurements exclude network variability.
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingProvider, EmbeddingProviderDescriptor,
     EmbeddingProviderError, EmbeddingVector,
 };
-use a3s_code_core::{
+use aster_core::{
     Agent, ChunkCatalogLimits, ChunkingConfig, CodeConfig, SessionOptions,
     WorkspaceHybridSearchRequest, WorkspaceLexicalEngine, WorkspaceRerankMode,
     WorkspaceRerankOptions, WorkspaceRetrievalOptions, WorkspaceRetrievalPhase,
     WorkspaceSemanticIndexLimits,
 };
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord, VectorSearchRequest,
 };
 use anyhow::{bail, Context, Result};
@@ -46,14 +46,14 @@ const MAX_VECTOR_BYTES: usize = 128 * 1024 * 1024;
 const MAX_CATALOG_BYTES: usize = 256 * 1024 * 1024;
 
 // The hybrid fixture is intentionally multi-chunk per file. Four sizeable
-// partitions exercise the a3s-vec path while avoiding an artificial
+// partitions exercise the aster-vec path while avoiding an artificial
 // descriptor storm: many open collections compete for process resources and
 // Code's catalog deliberately keeps that resource bounded.
 const HYBRID_FILE_COUNT: usize = 4;
 const HYBRID_CHUNKS_PER_FILE: usize = 128;
 const HYBRID_LINES_PER_CHUNK: usize = 16;
 const HYBRID_RECORD_COUNT: usize = HYBRID_FILE_COUNT * HYBRID_CHUNKS_PER_FILE;
-const LEXICAL_ENGINE_ENV: &str = "A3S_WORKSPACE_LEXICAL_ENGINE";
+const LEXICAL_ENGINE_ENV: &str = "ASTER_WORKSPACE_LEXICAL_ENGINE";
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -380,7 +380,7 @@ async fn benchmark_hybrid_search(
 }
 
 fn validate_hybrid(
-    result: &a3s_code_core::WorkspaceHybridSearchResult,
+    result: &aster_core::WorkspaceHybridSearchResult,
     requested_mode: WorkspaceRerankMode,
     lexical_engine: WorkspaceLexicalEngine,
 ) -> Result<()> {
@@ -399,7 +399,7 @@ fn validate_hybrid(
     let lexical = result
         .channels
         .iter()
-        .find(|channel| channel.channel == a3s_code_core::WorkspaceRetrievalChannel::Lexical)
+        .find(|channel| channel.channel == aster_core::WorkspaceRetrievalChannel::Lexical)
         .context("hybrid result omitted the lexical channel")?;
     if lexical.candidate_count == 0 {
         bail!("hybrid query did not exercise the lexical channel");
@@ -493,16 +493,16 @@ fn stable_slot(value: &str) -> usize {
 
 fn configured_lexical_engine() -> Result<WorkspaceLexicalEngine> {
     match std::env::var(LEXICAL_ENGINE_ENV).as_deref() {
-        Ok("a3s_vec") => {
-            if !cfg!(feature = "a3s-vec-fts") {
+        Ok("aster_vec") => {
+            if !cfg!(feature = "aster-vec-fts") {
                 bail!(
-                    "{LEXICAL_ENGINE_ENV}=a3s_vec requires the a3s-vec-fts feature; use a native build or select portable"
+                    "{LEXICAL_ENGINE_ENV}=aster_vec requires the aster-vec-fts feature; use a native build or select portable"
                 );
             }
-            Ok(WorkspaceLexicalEngine::A3sVec)
+            Ok(WorkspaceLexicalEngine::AsterVec)
         }
         Ok("portable") => Ok(WorkspaceLexicalEngine::Portable),
-        Ok(value) => bail!("{LEXICAL_ENGINE_ENV} must be 'a3s_vec' or 'portable', got '{value}'"),
+        Ok(value) => bail!("{LEXICAL_ENGINE_ENV} must be 'aster_vec' or 'portable', got '{value}'"),
         Err(std::env::VarError::NotPresent) => Ok(WorkspaceLexicalEngine::default()),
         Err(std::env::VarError::NotUnicode(_)) => {
             bail!("{LEXICAL_ENGINE_ENV} must contain valid UTF-8")
@@ -551,7 +551,7 @@ struct RerankObservation {
 }
 
 impl RerankObservation {
-    fn observe(&self, result: &a3s_code_core::WorkspaceHybridSearchResult) -> Result<()> {
+    fn observe(&self, result: &aster_core::WorkspaceHybridSearchResult) -> Result<()> {
         if result.rerank.fallback.is_some() {
             self.fallbacks.fetch_add(1, Ordering::AcqRel);
         }

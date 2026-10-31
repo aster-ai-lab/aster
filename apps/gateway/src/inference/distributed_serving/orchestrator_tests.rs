@@ -18,7 +18,7 @@ use tokio::net::{TcpListener, TcpStream};
 use tokio::time::{timeout, Duration};
 use uuid::Uuid;
 
-const KEY_ENV: &str = "A3S_POWER_TEST_KEY";
+const KEY_ENV: &str = "ASTER_POWER_TEST_KEY";
 const API_KEY: &str = "power-internal-secret";
 const PREFILL_PROFILE: &str = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 const DECODE_PROFILE: &str = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";

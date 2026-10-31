@@ -122,8 +122,8 @@ def _field(payload, key):  # payload: bytes or str
 
 
 if __name__ == "__main__":
-    user = sys.argv[1] if len(sys.argv) > 1 else "a3s_api"
-    password = sys.argv[2] if len(sys.argv) > 2 else "a3s_api"
+    user = sys.argv[1] if len(sys.argv) > 1 else "aster_api"
+    password = sys.argv[2] if len(sys.argv) > 2 else "aster_api"
     host = sys.argv[3] if len(sys.argv) > 3 else "127.0.0.1"
     port = int(sys.argv[4]) if len(sys.argv) > 4 else 5432
     print(probe(user, password, host=host, port=port))

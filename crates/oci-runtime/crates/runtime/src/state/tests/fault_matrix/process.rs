@@ -1,6 +1,6 @@
 use std::io::Write;
 
-use a3s_oci_sdk::ProcessRecord;
+use aster_oci_sdk::ProcessRecord;
 
 use crate::state::model::StoredProcess;
 
@@ -258,7 +258,7 @@ async fn drive_process_success(
     exec: &ExecRequest,
     signal: &SignalProcessRequest,
     expected_exit: &ExitStatus,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     let process = drive_exec(store, exec).await?;
     drive_signal_process(store, signal).await?;
     let exit = drive_process_wait(
@@ -295,7 +295,7 @@ async fn drive_process_success(
 async fn drive_exec(
     store: &DurableStateStore,
     request: &ExecRequest,
-) -> a3s_oci_sdk::Result<a3s_oci_sdk::ProcessRecord> {
+) -> aster_oci_sdk::Result<aster_oci_sdk::ProcessRecord> {
     match store.prepare_exec(request).await? {
         ProcessOperationPreparation::Prepared(_) | ProcessOperationPreparation::Resume(_) => {
             store
@@ -313,7 +313,7 @@ async fn drive_exec(
 async fn drive_signal_process(
     store: &DurableStateStore,
     request: &SignalProcessRequest,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_signal_process(request).await? {
         SignalProcessPreparation::Prepared(_) | SignalProcessPreparation::Resume(_) => {
             store
@@ -328,7 +328,7 @@ async fn drive_process_wait(
     store: &DurableStateStore,
     request: &WaitProcessRequest,
     observed: ExitStatus,
-) -> a3s_oci_sdk::Result<ExitStatus> {
+) -> aster_oci_sdk::Result<ExitStatus> {
     match store.prepare_wait_process(request).await? {
         ProcessWaitPreparation::Replayed(status) => Ok(status),
         ProcessWaitPreparation::Prepared(target) => {
@@ -341,7 +341,7 @@ async fn drive_failed_exec(
     store: &DurableStateStore,
     request: &ExecRequest,
     failure: &Error,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_exec(request).await {
         Ok(ProcessOperationPreparation::Prepared(_))
         | Ok(ProcessOperationPreparation::Resume(_)) => {
@@ -366,7 +366,7 @@ async fn drive_failed_signal_process(
     store: &DurableStateStore,
     request: &SignalProcessRequest,
     failure: &Error,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_signal_process(request).await {
         Ok(SignalProcessPreparation::Prepared(_)) | Ok(SignalProcessPreparation::Resume(_)) => {
             store

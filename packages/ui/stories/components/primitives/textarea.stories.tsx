@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import * as Textarea from '@a3s-lab/ui/components/primitives/textarea'
+import * as Textarea from '@aster-ai-lab/ui/components/primitives/textarea'
 
 const meta: Meta<typeof Textarea.Input> = {
   title: 'Components/Primitives/Textarea',

@@ -220,7 +220,7 @@ fn load_agent_acl(path: &Path) -> Result<AgentAcl> {
         });
     }
     let text = read_bounded(path, MAX_MARKDOWN_BYTES, "agent.acl")?;
-    let document = a3s_acl::parse_acl(&text).context("agent.acl did not parse")?;
+    let document = aster_acl::parse_acl(&text).context("agent.acl did not parse")?;
     let agent = document
         .blocks
         .iter()
@@ -230,7 +230,7 @@ fn load_agent_acl(path: &Path) -> Result<AgentAcl> {
         .attributes
         .get("model")
         .map(|value| match value {
-            a3s_acl::Value::String(text) if !text.trim().is_empty() => Ok(text.clone()),
+            aster_acl::Value::String(text) if !text.trim().is_empty() => Ok(text.clone()),
             _ => bail!("agent.acl model must be a non-empty string"),
         })
         .transpose()?;
@@ -238,7 +238,7 @@ fn load_agent_acl(path: &Path) -> Result<AgentAcl> {
         .attributes
         .get("tool_budget")
         .map(|value| match value {
-            a3s_acl::Value::Number(number)
+            aster_acl::Value::Number(number)
                 if number.fract() == 0.0 && *number >= 0.0 && *number <= u32::MAX as f64 =>
             {
                 Ok(*number as u32)
@@ -273,9 +273,9 @@ fn load_agent_acl(path: &Path) -> Result<AgentAcl> {
     })
 }
 
-fn acl_string_attr(block: &a3s_acl::Block, key: &str) -> Result<String> {
+fn acl_string_attr(block: &aster_acl::Block, key: &str) -> Result<String> {
     match block.attributes.get(key) {
-        Some(a3s_acl::Value::String(text)) if !text.trim().is_empty() => Ok(text.clone()),
+        Some(aster_acl::Value::String(text)) if !text.trim().is_empty() => Ok(text.clone()),
         _ => bail!(
             "agent.acl {} block requires a non-empty {key} string",
             block.name
@@ -283,13 +283,13 @@ fn acl_string_attr(block: &a3s_acl::Block, key: &str) -> Result<String> {
     }
 }
 
-fn acl_string_list_attr(block: &a3s_acl::Block, key: &str) -> Result<Vec<String>> {
+fn acl_string_list_attr(block: &aster_acl::Block, key: &str) -> Result<Vec<String>> {
     match block.attributes.get(key) {
-        Some(a3s_acl::Value::List(items)) => {
+        Some(aster_acl::Value::List(items)) => {
             let names = items
                 .iter()
                 .map(|item| match item {
-                    a3s_acl::Value::String(text) if !text.trim().is_empty() => Ok(text.clone()),
+                    aster_acl::Value::String(text) if !text.trim().is_empty() => Ok(text.clone()),
                     _ => bail!(
                         "agent.acl {} block {key} entries must be non-empty strings",
                         block.name
@@ -311,7 +311,7 @@ fn acl_string_list_attr(block: &a3s_acl::Block, key: &str) -> Result<Vec<String>
     }
 }
 
-fn acl_block_name(block: &a3s_acl::Block) -> Result<String> {
+fn acl_block_name(block: &aster_acl::Block) -> Result<String> {
     match block.labels.first() {
         Some(label) if !label.trim().is_empty() => Ok(label.clone()),
         _ => bail!("agent.acl {} block requires a name label", block.name),
@@ -320,7 +320,7 @@ fn acl_block_name(block: &a3s_acl::Block) -> Result<String> {
 
 /// `scripts "name" { path, allowed_tools, description? }` — the script
 /// file stays content; its wiring and authority declare in ACL.
-fn acl_script_block(block: &a3s_acl::Block) -> Result<DirectoryScript> {
+fn acl_script_block(block: &aster_acl::Block) -> Result<DirectoryScript> {
     let name = acl_block_name(block)?;
     let relative = acl_string_attr(block, "path")?;
     // Path containment and existence validate against the root in
@@ -331,7 +331,7 @@ fn acl_script_block(block: &a3s_acl::Block) -> Result<DirectoryScript> {
             .attributes
             .get("description")
             .and_then(|value| match value {
-                a3s_acl::Value::String(text) => Some(text.clone()),
+                aster_acl::Value::String(text) => Some(text.clone()),
                 _ => None,
             })
             .unwrap_or_default(),
@@ -343,7 +343,7 @@ fn acl_script_block(block: &a3s_acl::Block) -> Result<DirectoryScript> {
 /// `schedules "name" { cron, prompt }` — cron validates here (fail
 /// closed, the parse error names the field); the prompt file's content
 /// is read bounded at load time.
-fn acl_schedule_block(block: &a3s_acl::Block) -> Result<AclScheduleDeclaration> {
+fn acl_schedule_block(block: &aster_acl::Block) -> Result<AclScheduleDeclaration> {
     let name = acl_block_name(block)?;
     let cron_text = acl_string_attr(block, "cron")?;
     let cron = CronExpr::parse(&cron_text)

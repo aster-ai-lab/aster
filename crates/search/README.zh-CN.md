@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="A3S Search 将浏览器、HTTP 与 RSS 以及原生 API 源收敛为同一类型化的 Rust 元搜索结果">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Aster Search 将浏览器、HTTP 与 RSS 以及原生 API 源收敛为同一类型化的 Rust 元搜索结果">
 </p>
 
 <p align="center">
@@ -13,9 +13,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/Search/actions/workflows/ci.yml"><img alt="A3S Search CI" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/Search/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
-  <a href="https://crates.io/crates/a3s-search"><img alt="crates.io 上的 a3s-search" src="https://img.shields.io/crates/v/a3s-search?style=flat-square&amp;color=4f8cff"></a>
-  <a href="https://docs.rs/a3s-search"><img alt="a3s-search 文档" src="https://img.shields.io/docsrs/a3s-search?style=flat-square&amp;color=35c98d"></a>
+  <a href="https://github.com/aster-ai-lab/Search/actions/workflows/ci.yml"><img alt="Aster Search CI" src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/Search/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
+  <a href="https://crates.io/crates/aster-search"><img alt="crates.io 上的 aster-search" src="https://img.shields.io/crates/v/aster-search?style=flat-square&amp;color=4f8cff"></a>
+  <a href="https://docs.rs/aster-search"><img alt="aster-search 文档" src="https://img.shields.io/docsrs/aster-search?style=flat-square&amp;color=35c98d"></a>
   <a href="https://www.rust-lang.org/"><img alt="以 Rust 实现" src="https://img.shields.io/badge/Rust-native-9ba7b4?style=flat-square"></a>
   <a href="./LICENSE"><img alt="MIT 许可证" src="https://img.shields.io/badge/license-MIT-171c24?style=flat-square"></a>
 </p>
@@ -31,20 +31,20 @@
 
 ---
 
-A3S Search 是一个 Rust 库和 CLI。它对你选择的源执行一次类型化查询，并返回一个 `SearchResults`。浏览器页面、HTTP/RSS 文档和原生搜索 API 都穿越同一 `Engine` 边界。运行时并发执行、保留部分失败、规范化并去重 URL，然后融合源排序。默认级联计划（`EngineTierPlan`）属于库，以便嵌入方与 CLI 共享同一产品策略。
+Aster Search 是一个 Rust 库和 CLI。它对你选择的源执行一次类型化查询，并返回一个 `SearchResults`。浏览器页面、HTTP/RSS 文档和原生搜索 API 都穿越同一 `Engine` 边界。运行时并发执行、保留部分失败、规范化并去重 URL，然后融合源排序。默认级联计划（`EngineTierPlan`）属于库，以便嵌入方与 CLI 共享同一产品策略。
 
 > [!IMPORTANT]
-> A3S Search 只负责检索。它不规划查询、不判断含义、不核实主张、不撰写报告。DeepResearch 等调用方拥有这些决定。级联收据记录的是结构执行，不是语义批准。
+> Aster Search 只负责检索。它不规划查询、不判断含义、不核实主张、不撰写报告。DeepResearch 等调用方拥有这些决定。级联收据记录的是结构执行，不是语义批准。
 
 ## 运行一次搜索
 
 安装已发布命令，然后搜索。Moli 是默认无头回退；只有那一层需要运行时才安装它。
 
 ```bash
-cargo install a3s-search
-# 或：brew install A3S-Lab/tap/a3s-search
+cargo install aster-search
+# 或：brew install aster-ai-lab/tap/aster-search
 
-a3s-search "Rust async runtime guidance" --format json --limit 10
+aster-search "Rust async runtime guidance" --format json --limit 10
 ```
 
 ```bash
@@ -52,12 +52,12 @@ curl --proto '=https' --tlsv1.2 -fsSL \
   https://github.com/lexmount/moli/releases/latest/download/moli-installer.sh | sh
 ```
 
-可执行文件不在 `PATH` 上时，设置 `A3S_MOLI_EXECUTABLE`。
+可执行文件不在 `PATH` 上时，设置 `ASTER_MOLI_EXECUTABLE`。
 
 显式 `--engines` 就是完整计划。它不会被扩展成默认级联，每个被选源收到同一 `SearchQuery`。
 
 ```bash
-a3s-search "Rust async runtime guidance" \
+aster-search "Rust async runtime guidance" \
   --engines anysearch,tavily \
   --format json \
   --limit 10
@@ -81,18 +81,18 @@ SearchResults
 
 ```toml
 [dependencies]
-a3s-search = "3"
+aster-search = "3"
 tokio = { version = "1", features = ["full"] }
 ```
 
 ```rust
 use std::time::Duration;
 
-use a3s_search::product::{self, HeadlessBrowser};
-use a3s_search::{EngineTierPlan, SearchQuery};
+use aster_search::product::{self, HeadlessBrowser};
+use aster_search::{EngineTierPlan, SearchQuery};
 
 #[tokio::main]
-async fn main() -> a3s_search::Result<()> {
+async fn main() -> aster_search::Result<()> {
     let plan = EngineTierPlan::builtin_default();
     let outcome = product::execute_cascade(
         &plan,
@@ -125,7 +125,7 @@ async fn main() -> a3s_search::Result<()> {
 
 ## 选择源
 
-A3S Search 不维护私有网页索引。没有显式选择、也没有 ACL 源选择时，CLI 使用下面的计划，并在结构要求满足后停止：
+Aster Search 不维护私有网页索引。没有显式选择、也没有 ACL 源选择时，CLI 使用下面的计划，并在结构要求满足后停止：
 
 ```text
 1  native API     anysearch + tavily
@@ -175,7 +175,7 @@ export FIRECRAWL_API_KEY="..."
 export DOUBAO_SEARCH_API_KEY="..."
 export DEEPSEEK_API_KEY="..."
 
-a3s-search "query" --engines bocha --format json
+aster-search "query" --engines bocha --format json
 ```
 
 AnySearch 和 Tavily 接受可选 bearer 认证，也可以无 key 运行。`--proxy` 用于抓取传输。原生提供方 API 请求保持直连。
@@ -183,7 +183,7 @@ AnySearch 和 Tavily 接受可选 bearer 认证，也可以无 key 运行。`--p
 ## 只相信你请求过的字段
 
 <p align="center">
-  <img src="./assets/readme/architecture.svg" width="100%" alt="A3S Search 让一次精确查询穿过源执行、规范化、URL 融合和加权秩融合，语义策略留在调用方">
+  <img src="./assets/readme/architecture.svg" width="100%" alt="Aster Search 让一次精确查询穿过源执行、规范化、URL 融合和加权秩融合，语义策略留在调用方">
 </p>
 
 每个原生 API 都实现 `SearchProvider`。`ProviderEngine` 是进入级联、排序和 CLI 的唯一适配器。公开结果上限在 Rust 和 ACL 中都是 `max_results`。厂商线上名称（`count`、`limit`、`Cnt`、`numResults`）不是 ACL 属性。
@@ -222,8 +222,8 @@ engine weight × reciprocal rank × provider-local relevance factor
 ACL 选择源、凭证、超时、排序和提供方选项。`--config` 是父级标志：
 
 ```bash
-a3s-search --config search.acl engines
-a3s-search "query" --config search.acl --format json
+aster-search --config search.acl engines
+aster-search "query" --config search.acl --format json
 ```
 
 ```acl
@@ -262,9 +262,9 @@ provider "firecrawl" {
 上面的 Tavily 块选择了答案、图片和用量。不设置这些属性时保持默认，只请求源文本。`enabled = false` 记录 `engine_disabled`，且不访问网络。`count`、`limit`、`cnt` 等未知线上名称会被拒绝。
 
 类型化表面：
-[`SearchConfig`](https://docs.rs/a3s-search/latest/a3s_search/struct.SearchConfig.html)、
-[`AnySearchConfig`](https://docs.rs/a3s-search/latest/a3s_search/providers/struct.AnySearchConfig.html)、
-[`TavilyConfig`](https://docs.rs/a3s-search/latest/a3s_search/providers/struct.TavilyConfig.html)、
+[`SearchConfig`](https://docs.rs/aster-search/latest/aster_search/struct.SearchConfig.html)、
+[`AnySearchConfig`](https://docs.rs/aster-search/latest/aster_search/providers/struct.AnySearchConfig.html)、
+[`TavilyConfig`](https://docs.rs/aster-search/latest/aster_search/providers/struct.TavilyConfig.html)、
 `TinyFishConfig`、`BochaConfig`、`AliyunConfig`、`TencentConfig` 和
 `FirecrawlConfig`。
 
@@ -286,15 +286,15 @@ search.add_engine(engine);
 
 ```rust
 #[async_trait::async_trait]
-impl a3s_search::Engine for MyEngine {
-    fn config(&self) -> &a3s_search::EngineConfig {
+impl aster_search::Engine for MyEngine {
+    fn config(&self) -> &aster_search::EngineConfig {
         &self.config
     }
 
     async fn search(
         &self,
-        query: &a3s_search::SearchQuery,
-    ) -> a3s_search::Result<Vec<a3s_search::SearchResult>> {
+        query: &aster_search::SearchQuery,
+    ) -> aster_search::Result<Vec<aster_search::SearchResult>> {
         // Call one source and map its response into SearchResult values.
         todo!()
     }
@@ -314,11 +314,11 @@ impl a3s_search::Engine for MyEngine {
 | `Metrics` | 内存中的计数与延迟百分位 |
 | `retry::RetryBudget` | 仅浏览器渲染重试放大（不是 `Search` 对等控件） |
 
-只在兼容的租户、凭证、端点和代理之间共享这些控制。CLI 只持久化与凭证无关的挑战熔断，不保存查询、结果或密钥。需要隔离状态范围时，把 `A3S_SEARCH_STATE_DIR` 设为绝对目录。
+只在兼容的租户、凭证、端点和代理之间共享这些控制。CLI 只持久化与凭证无关的挑战熔断，不保存查询、结果或密钥。需要隔离状态范围时，把 `ASTER_SEARCH_STATE_DIR` 设为绝对目录。
 
 | 构建 | 浏览器行为 |
 | --- | --- |
-| default / `headless` / `moli` | 从 `A3S_MOLI_EXECUTABLE`、PATH 或官方安装位置发现 Moli |
+| default / `headless` / `moli` | 从 `ASTER_MOLI_EXECUTABLE`、PATH 或官方安装位置发现 Moli |
 | `--browser chrome` | 显式 Chrome/Chromium 后端 |
 | `lightpanda` | 仅显式后端；Windows 需要 WSL2 |
 | `--no-default-features` | 无浏览器/CDP 栈 |
@@ -345,7 +345,7 @@ v3.0.9 之前未发布的候选身份已退役，不再复用。从 v3.0.9 起�
 
 ## 开发
 
-从本仓库运行检查，而不是从 A3S monorepo 根目录：
+从本仓库运行检查，而不是从 Aster monorepo 根目录：
 
 ```bash
 cargo fmt --all -- --check
@@ -358,15 +358,15 @@ RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features --locked
 
 发布工作流还会运行两组 clippy feature、包与冻结检查，以及固定的 Moli 夹具。300 秒可靠性 soak 是可选的，不在 CI 中。缺失或不匹配的包证据会使 crates.io、GitHub Release 和 Homebrew 失败即关闭。
 
-平台归档包含 CLI 和 `skills/a3s-search/SKILL.md`。该 Skill 选择源并读取结构证据。它不评估页面。
+平台归档包含 CLI 和 `skills/aster-search/SKILL.md`。该 Skill 选择源并读取结构证据。它不评估页面。
 
 ## 生态
 
-- [A3S](https://github.com/A3S-Lab/a3s) — 平台入口
-- [A3S Code](https://github.com/A3S-Lab/Code) — 编码代理运行时
+- [Aster](https://github.com/aster-ai-lab/aster) — 平台入口
+- [Aster Code](https://github.com/aster-ai-lab/Code) — 编码代理运行时
 - [Moli](https://github.com/lexmount/moli) — 默认无头浏览器运行时
-- [A3S Browser](https://github.com/A3S-Lab/Browser) — 渲染契约与 Chrome 后端
-- [A3S Science](https://github.com/A3S-Lab/Science) — 检索内核之上的研究工作流
+- [Aster Browser](https://github.com/aster-ai-lab/Browser) — 渲染契约与 Chrome 后端
+- [Aster Science](https://github.com/aster-ai-lab/Science) — 检索内核之上的研究工作流
 
 ## 贡献
 

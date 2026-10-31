@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
-  <title id="title">A3S ORM — type-safe SQL for Rust</title>
-  <desc id="desc">A typed Person table and Rust predicate flow through the A3S ORM compiler into PostgreSQL with separate bound parameters.</desc>
+  <title id="title">Aster ORM — type-safe SQL for Rust</title>
+  <desc id="desc">A typed Person table and Rust predicate flow through the Aster ORM compiler into PostgreSQL with separate bound parameters.</desc>
 
   <defs>
     <linearGradient id="brand" x1="60" y1="40" x2="1140" y2="390" gradientUnits="userSpaceOnUse">
@@ -23,7 +23,7 @@
     </g>
     <text x="122" y="70" fill="#94A3B8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" letter-spacing="1.8">RUST / TYPE-SAFE SQL BUILDER</text>
 
-    <text x="60" y="174" fill="#F4F7FB" font-size="76" font-weight="780" letter-spacing="-3.2">A3S ORM</text>
+    <text x="60" y="174" fill="#F4F7FB" font-size="76" font-weight="780" letter-spacing="-3.2">Aster ORM</text>
     <text x="60" y="229" fill="#F4F7FB" font-size="31" font-weight="720" letter-spacing="-0.8">Typed Rust schemas in.</text>
     <text x="60" y="270" fill="url(#brand)" font-size="31" font-weight="720" letter-spacing="-0.8">Parameterized SQL out.</text>
     <text x="60" y="311" fill="#94A3B8" font-size="18">Immutable queries · explicit dialects · async execution</text>

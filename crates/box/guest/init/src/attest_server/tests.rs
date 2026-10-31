@@ -4,7 +4,7 @@ use super::*;
 
 #[test]
 fn test_attest_vsock_port_constant() {
-    assert_eq!(ATTEST_VSOCK_PORT, a3s_transport::ports::TEE_CHANNEL);
+    assert_eq!(ATTEST_VSOCK_PORT, aster_transport::ports::TEE_CHANNEL);
 }
 
 #[test]
@@ -104,7 +104,7 @@ fn test_secrets_dir_constant() {
 
 #[test]
 fn test_hkdf_salt_matches_runtime() {
-    assert_eq!(handlers::HKDF_SALT, b"a3s-sealed-storage-v1");
+    assert_eq!(handlers::HKDF_SALT, b"aster-sealed-storage-v1");
 }
 
 /// Build a fake 1184-byte report with known measurement and chip_id.

@@ -25,7 +25,7 @@ linux_kvm_resolve_fresh_host_attestation() {
 
   if [[ -z "$attestation_path" ]]; then
     printf '%s\n' \
-      'host_class=fresh requires A3S_OCI_LINUX_KVM_FRESH_HOST_ATTESTATION' >&2
+      'host_class=fresh requires ASTER_OCI_LINUX_KVM_FRESH_HOST_ATTESTATION' >&2
     return 2
   fi
   if [[ ! -f "$attestation_path" || -L "$attestation_path" ]]; then
@@ -44,7 +44,7 @@ linux_kvm_resolve_fresh_host_attestation() {
     --arg path "$attestation_path" \
     --arg sha256 "$sha256" \
     '
-    if .schema_version != "a3s.oci.linux-kvm-fresh-host-attestation.v1" then
+    if .schema_version != "aster.oci.linux-kvm-fresh-host-attestation.v1" then
       error("unexpected fresh-host attestation schema")
     elif .operator_attests_fresh_provisioning != true then
       error("operator_attests_fresh_provisioning must be true")

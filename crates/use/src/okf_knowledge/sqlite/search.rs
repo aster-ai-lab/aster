@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{OkfCapabilityProjection, OkfKnowledgeObservedState, UseError, UseResult};
+use aster_use_core::{OkfCapabilityProjection, OkfKnowledgeObservedState, UseError, UseResult};
 use rusqlite::{params, Connection};
 use sha2::{Digest, Sha256};
 
@@ -102,7 +102,7 @@ pub(super) fn validate_active_projection(
     {
         return Err(stale_projection_error());
     }
-    let selected = a3s_use_core::OkfSelectedGeneration {
+    let selected = aster_use_core::OkfSelectedGeneration {
         generation: stored.receipt.generation,
         package_digest: stored.receipt.package_digest.clone(),
         bundle_digest: stored.receipt.bundle.content_digest.clone(),
@@ -111,8 +111,8 @@ pub(super) fn validate_active_projection(
         index_build_id: stored.receipt.index_build_id.clone(),
         index_digest: stored.index_digest.clone(),
     };
-    let observation = a3s_use_core::OkfKnowledgeObservation {
-        schema: a3s_use_core::OKF_KNOWLEDGE_OBSERVATION_SCHEMA.to_owned(),
+    let observation = aster_use_core::OkfKnowledgeObservation {
+        schema: aster_use_core::OKF_KNOWLEDGE_OBSERVATION_SCHEMA.to_owned(),
         scope: stored.receipt.scope.clone(),
         surface: stored.receipt.surface.clone(),
         generation: stored.receipt.generation,

@@ -1,20 +1,20 @@
 {
-  "root": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/diagnostic-candidate-4tzbb4kb",
+  "root": "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/diagnostic-candidate-4tzbb4kb",
   "work": "/private/var/tmp/dw-rufwqtf1",
   "args": [
-    "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/diagnostic-candidate-4tzbb4kb/qualify_hvf_workspace",
-    "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/diagnostic-candidate-4tzbb4kb/a3s-oci",
-    "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/diagnostic-candidate-4tzbb4kb/a3s-oci-krun-shim",
-    "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/system/system-image.json",
-    "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
+    "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/diagnostic-candidate-4tzbb4kb/qualify_hvf_workspace",
+    "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/diagnostic-candidate-4tzbb4kb/aster-oci",
+    "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/diagnostic-candidate-4tzbb4kb/aster-oci-krun-shim",
+    "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/system/system-image.json",
+    "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
     "/private/var/tmp/dw-rufwqtf1"
   ],
   "source_revision": "4638eda92264ec4e792710ba55b7e97c4c2d3c6a",
   "source_dirty": true,
   "sha256": {
     "qualify_hvf_workspace": "d088cc5ef5d5f2618ae531d447501424b2ca486d05b48aa29360ca6c55d375cb",
-    "a3s-oci": "8e3eb4cf86d653055f211aa1963dc4dfeb61e6cbf3787d51c8aa9ce76b4ccfdc",
-    "a3s-oci-krun-shim": "3cd5cc093becc2ce6c8fc2c36f15daced76aa24387c8eb0e4e6b8b1c63a66962"
+    "aster-oci": "8e3eb4cf86d653055f211aa1963dc4dfeb61e6cbf3787d51c8aa9ce76b4ccfdc",
+    "aster-oci-krun-shim": "3cd5cc093becc2ce6c8fc2c36f15daced76aa24387c8eb0e4e6b8b1c63a66962"
   },
   "exit_code": 0
 }

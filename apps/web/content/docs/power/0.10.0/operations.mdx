@@ -19,8 +19,8 @@ prompt_cache_ttl_seconds = 300
 容量范围为 1 至 1024 项。TTL 范围为 1 至 86,400 秒。
 
 <DocTable caption="缓存配置与等效环境变量" headers={['ACL', '环境变量', '作用']} rows={[
-  ['prompt_cache_max_entries', 'A3S_POWER_PROMPT_CACHE_MAX_ENTRIES', '限制每个已加载模型的常驻上下文数'],
-  ['prompt_cache_ttl_seconds', 'A3S_POWER_PROMPT_CACHE_TTL_SECONDS', '限制上下文空闲保留时间'],
+  ['prompt_cache_max_entries', 'ASTER_POWER_PROMPT_CACHE_MAX_ENTRIES', '限制每个已加载模型的常驻上下文数'],
+  ['prompt_cache_ttl_seconds', 'ASTER_POWER_PROMPT_CACHE_TTL_SECONDS', '限制上下文空闲保留时间'],
 ]} />
 
 KV 上下文会占用 CPU 或 GPU 内存。提高容量前，先测量上下文大小，并为权重、批次、图捕获和并发请求保留余量。

@@ -3,10 +3,10 @@
 version = 3
 
 [[package]]
-name = "a3s-use-bge"
+name = "aster-use-bge"
 version = "0.1.0"
 dependencies = [
- "a3s-use-core",
+ "aster-use-core",
  "clap",
  "fs2",
  "ort",
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-use-core"
+name = "aster-use-core"
 version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f87fb53addcfecc5e5110c46f1b531889089cae382359139e31df0f651613d7"

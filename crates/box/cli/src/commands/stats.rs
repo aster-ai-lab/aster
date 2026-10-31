@@ -1,4 +1,4 @@
-//! `a3s-box stats` command — Display live resource usage statistics.
+//! `aster-box stats` command — Display live resource usage statistics.
 //!
 //! Shows CPU, memory, network, and block I/O usage for active boxes, similar to `docker stats`.
 //! By default streams updates every second; use `--no-stream` for a single snapshot.
@@ -10,9 +10,9 @@ use std::sync::Arc;
 use std::time::Duration;
 use sysinfo::{Pid, System};
 
-use a3s_box_core::exec::{ExecRequest, DEFAULT_EXEC_TIMEOUT_NS};
-use a3s_box_runtime::ExecClient;
-use a3s_box_sdk::{A3sBoxClient, A3sBoxPaths, BoxStatsSummary};
+use aster_box_core::exec::{ExecRequest, DEFAULT_EXEC_TIMEOUT_NS};
+use aster_box_runtime::ExecClient;
+use aster_box_sdk::{AsterBoxClient, AsterBoxPaths, BoxStatsSummary};
 
 use crate::output;
 use crate::resolve;
@@ -328,7 +328,7 @@ fn collect_passt_pcap_stats(record: &BoxRecord) -> Option<NetworkStats> {
 
 fn guest_mac_address(record: &BoxRecord) -> Option<[u8; 6]> {
     let network_name = crate::cleanup::record_network_name(record)?;
-    let store = a3s_box_runtime::NetworkStore::default_path().ok()?;
+    let store = aster_box_runtime::NetworkStore::default_path().ok()?;
     let network = store.get(network_name).ok()??;
     let endpoint = network.endpoints.get(&record.id)?;
     parse_mac_address(&endpoint.mac_address)
@@ -436,16 +436,16 @@ pub async fn execute(args: StatsArgs) -> Result<(), Box<dyn std::error::Error>> 
             if record
                 .managed_execution
                 .as_ref()
-                .is_some_and(a3s_box_runtime::ManagedExecutionMetadata::is_oci_routed)
+                .is_some_and(aster_box_runtime::ManagedExecutionMetadata::is_oci_routed)
             {
                 let metadata = record.managed_execution.as_ref().ok_or_else(|| {
                     format!("Box {} lost managed execution metadata", record.name)
                 })?;
                 if runtime_client.is_none() {
-                    let home = a3s_box_core::dirs_home();
+                    let home = aster_box_core::dirs_home();
                     let manager = super::configured_local_execution_manager(&home).await?;
-                    runtime_client = Some(A3sBoxClient::with_execution_manager(
-                        A3sBoxPaths::from_home(home),
+                    runtime_client = Some(AsterBoxClient::with_execution_manager(
+                        AsterBoxPaths::from_home(home),
                         Arc::new(manager),
                     ));
                 }
@@ -454,7 +454,7 @@ pub async fn execute(args: StatsArgs) -> Result<(), Box<dyn std::error::Error>> 
                 })?;
                 if let Some(summary) = client
                     .get_sandbox_stats(
-                        &a3s_box_core::ExecutionId::new(record.id.clone())?,
+                        &aster_box_core::ExecutionId::new(record.id.clone())?,
                         metadata.generation,
                     )
                     .await?
@@ -530,7 +530,7 @@ mod tests {
         let error = select_targets(&state, Some("stopped_box")).unwrap_err();
 
         assert!(error.to_string().contains("Cannot show stats for"));
-        assert!(error.to_string().contains("a3s-box start stopped_box"));
+        assert!(error.to_string().contains("aster-box start stopped_box"));
     }
 
     #[test]
@@ -544,7 +544,7 @@ mod tests {
         let path = tmp.path().join("net.stats.json");
         std::fs::write(
             &path,
-            r#"{"schema":"a3s-box.netproxy.stats.v1","rx_bytes":1024,"tx_bytes":2048,"rx_packets":3,"tx_packets":4}"#,
+            r#"{"schema":"aster-box.netproxy.stats.v1","rx_bytes":1024,"tx_bytes":2048,"rx_packets":3,"tx_packets":4}"#,
         )
         .unwrap();
 

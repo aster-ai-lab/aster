@@ -3,7 +3,7 @@
 # The running OS gateway is apps/api/gateway/gateway.acl.
 #
 # Start the backend with:
-#   A3S_SEARCH_API_KEY=search-upstream-secret a3s-search serve --listen 127.0.0.1:8090
+#   ASTER_SEARCH_API_KEY=search-upstream-secret aster-search serve --listen 127.0.0.1:8090
 # Callers POST /v1/search. The gateway checks the caller key, then replaces
 # Authorization with the deployment key before the request reaches search.
 
@@ -45,7 +45,7 @@ middlewares "search-caller" {
 middlewares "search-upstream-key" {
   type = "headers"
   request_headers = [
-    { name = "Authorization", value = "Bearer ${A3S_SEARCH_API_KEY}" }
+    { name = "Authorization", value = "Bearer ${ASTER_SEARCH_API_KEY}" }
   ]
 }
 

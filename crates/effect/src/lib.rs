@@ -1,4 +1,4 @@
-//! Actor framework for the A3S Code harness.
+//! Actor framework for the Aster Code harness.
 //!
 //! The shape follows an immutable event log: a component folds facts into a
 //! view and the transitions that view enables, and the runtime runs those

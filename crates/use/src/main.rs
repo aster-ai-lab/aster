@@ -19,7 +19,7 @@ fn main() -> ExitCode {
     // Windows gives the process entry thread a smaller stack than Unix. Poll
     // the schema-v3 command graph on an explicitly sized Tokio worker while
     // the entry thread waits only on the small join handle.
-    let command = runtime.spawn(a3s_use::cli::run(args));
+    let command = runtime.spawn(aster_use::cli::run(args));
     match runtime.block_on(command) {
         Ok(result) => render_result(json, result),
         Err(error) => startup_error(json, format!("async command worker failed: {error}")),
@@ -28,7 +28,7 @@ fn main() -> ExitCode {
 
 fn render_result(
     json: bool,
-    result: a3s_use_core::UseResult<a3s_use::cli::CommandOutput>,
+    result: aster_use_core::UseResult<aster_use::cli::CommandOutput>,
 ) -> ExitCode {
     match result {
         Ok(output) => {
@@ -54,7 +54,7 @@ fn render_result(
                     serde_json::to_string_pretty(&output).unwrap_or_default()
                 );
             } else {
-                eprintln!("a3s-use: {error}");
+                eprintln!("aster-use: {error}");
                 if let Some(suggestion) = &error.suggestion {
                     eprintln!("suggestion: {suggestion}");
                 }
@@ -79,7 +79,7 @@ fn startup_error(json: bool, message: String) -> ExitCode {
             serde_json::to_string_pretty(&output).unwrap_or_default()
         );
     } else {
-        eprintln!("a3s-use: {message}");
+        eprintln!("aster-use: {message}");
     }
     ExitCode::from(1)
 }

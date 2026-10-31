@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { SearchInput } from '@a3s-lab/ui'
+import { SearchInput } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof SearchInput> = {
   title: 'Components/Composites/search-input',

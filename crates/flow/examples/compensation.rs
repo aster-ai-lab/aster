@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowRunStatus, WorkflowSpec,
 };
@@ -13,7 +13,7 @@ impl FlowRuntime for CheckoutRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         let reserve = ctx.step_output("reserve-inventory");
         let charge = ctx.step_output("charge-card");
@@ -60,7 +60,7 @@ impl FlowRuntime for CheckoutRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "reserve_inventory" => Ok(json!({
                 "ok": true,
@@ -85,7 +85,7 @@ impl FlowRuntime for CheckoutRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(CheckoutRuntime));
     let spec = WorkflowSpec::rust_embedded("examples.checkout", "0.1.0", "examples", "main");
 
@@ -95,7 +95,7 @@ async fn main() -> a3s_flow::Result<()> {
             spec,
             json!({
                 "orderId": "order-0001",
-                "sku": "a3s-flow-shirt",
+                "sku": "aster-flow-shirt",
                 "quantity": 1,
                 "amount": 4200,
             }),

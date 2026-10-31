@@ -1,4 +1,4 @@
-use a3s_office::{
+use aster_office::{
     NativeOfficeComment, NativeOfficeCommentPosition, NativeOfficeCommentUpdate,
     NativeOfficeHighlightColor, NativeOfficeHorizontalAlignment, NativeOfficeHyperlink,
     NativeOfficeImage, NativeOfficeInsertPosition, NativeOfficeIssueFilter, NativeOfficeMutation,
@@ -8,7 +8,7 @@ use a3s_office::{
     NativeSpreadsheetTable, NativeSpreadsheetTableColumn, NativeSpreadsheetTableStyle,
     SpreadsheetCellValue,
 };
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use base64::Engine as _;
 use serde::{Deserialize, Serialize};
 

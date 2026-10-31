@@ -9,11 +9,11 @@ export const meta = {
 
 ## 在工作区接入
 
-仓库内的 A3S 依赖使用本地路径，不需要从注册表下载另一份 ACL。对于位于 `apps/<宿主>/` 的 crate，可使用：
+仓库内的 Aster 依赖使用本地路径，不需要从注册表下载另一份 ACL。对于位于 `apps/<宿主>/` 的 crate，可使用：
 
 ```toml
 [dependencies]
-a3s-acl = { path = "../../crates/acl" }
+aster-acl = { path = "../../crates/acl" }
 ```
 
 路径相对于宿主的 `Cargo.toml`。保留根工作区和现有锁文件。
@@ -35,7 +35,7 @@ a3s-acl = { path = "../../crates/acl" }
 下面的完整示例只接纳一个必需的字符串 `name`。它使用显式解析限制，并在 Schema 拒绝输入时停止。
 
 ```rust
-use a3s_acl::{
+use aster_acl::{
     canonical_digest, generate, parse_with_limits, validate_document_with_limits,
     AttributeSchema, ParseLimits, Schema, ValueSchema,
 };

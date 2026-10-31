@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use a3s_office::{
+use aster_office::{
     NativeOfficeCollaborationAwarenessMessage, NativeOfficeCollaborationOrigin,
     NativeOfficeCollaborationPresenceActivity, NativeOfficeCollaborationPresenceLocation,
     NativeOfficeCollaborationPresenceProfile, NativeOfficeCollaborationPresenceSession,
@@ -15,7 +15,7 @@ use a3s_office::{
     MAX_NATIVE_OFFICE_COLLABORATION_STATE_VECTOR_BYTES,
     MAX_NATIVE_OFFICE_COLLABORATION_UPDATE_BYTES,
 };
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine as _;
 use serde::Deserialize;
@@ -328,7 +328,7 @@ struct SessionMessageInput {
     protocol: String,
     version: u32,
     artifact_id: String,
-    artifact_kind: a3s_office::NativeOfficeCollaborationArtifactKind,
+    artifact_kind: aster_office::NativeOfficeCollaborationArtifactKind,
     namespace: String,
     sender_client_id: u64,
     #[serde(rename = "type")]
@@ -344,7 +344,7 @@ struct SessionAwarenessMessageInput {
     protocol: String,
     version: u32,
     artifact_id: String,
-    artifact_kind: a3s_office::NativeOfficeCollaborationArtifactKind,
+    artifact_kind: aster_office::NativeOfficeCollaborationArtifactKind,
     namespace: String,
     sender_client_id: u64,
     payload_base64: String,
@@ -840,7 +840,7 @@ mod tests {
             "session",
             "agent.replica",
             "--actor-name",
-            "A3S Agent",
+            "Aster Agent",
             "--actor-color",
             "#2563eb",
             "--json",
@@ -849,7 +849,7 @@ mod tests {
         assert_eq!(
             parsed.presence_profile,
             Some(NativeOfficeCollaborationPresenceProfile {
-                name: "A3S Agent".to_owned(),
+                name: "Aster Agent".to_owned(),
                 color: Some("#2563eb".to_owned()),
                 avatar_url: None,
             })

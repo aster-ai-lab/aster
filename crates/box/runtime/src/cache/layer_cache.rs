@@ -5,8 +5,8 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::traits::{CacheBackend, CacheEntry};
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::traits::{CacheBackend, CacheEntry};
 use serde::{Deserialize, Serialize};
 
 /// Metadata for a cached layer entry.
@@ -27,7 +27,7 @@ pub struct LayerMeta {
 /// Layers are stored by digest under `cache_dir/layers/<digest>/`.
 /// Metadata is stored alongside as `<digest>.meta.json`.
 pub struct LayerCache {
-    /// Root directory for layer cache (e.g., ~/.a3s/cache/layers)
+    /// Root directory for layer cache (e.g., ~/.aster/cache/layers)
     cache_dir: PathBuf,
 }
 
@@ -253,7 +253,7 @@ pub(crate) fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<()> {
         // semantics from this helper: it creates `dst/src.file_name()` instead
         // of copying the source directory's contents directly into `dst`.
         // APFS rootfs mountpoints already exist, so taking that fast path would
-        // restore a snapshot below `.a3s-rootfs/rootfs/`. Fall back to the
+        // restore a snapshot below `.aster-rootfs/rootfs/`. Fall back to the
         // entry-by-entry copy for an existing destination; nested directories
         // can still use APFS clones once their destination does not exist.
         if !dst_preexisted && copy_dir_recursive_cow(src, dst).unwrap_or(false) {

@@ -129,7 +129,7 @@ impl WorkspaceRetrievalOptions {
     /// Select the lexical FTS implementation used by the session-owned
     /// workspace catalog.
     ///
-    /// `A3sVec` is the production default when the native feature is
+    /// `AsterVec` is the production default when the native feature is
     /// enabled. Minimal builds use the explicitly reported portable fallback;
     /// hosts that provide their own workspace services must configure that
     /// catalog directly instead of using this session option.
@@ -141,7 +141,7 @@ impl WorkspaceRetrievalOptions {
     /// Select the deterministic text splitter used by the session-owned
     /// workspace catalog.
     ///
-    /// This option configures the local catalog A3S Code creates for the
+    /// This option configures the local catalog Aster Code creates for the
     /// session. A host that supplies [`crate::workspace::WorkspaceServices`]
     /// owns that catalog and must configure its strategy when constructing it.
     pub fn with_chunking_strategy(mut self, strategy: WorkspaceChunkingStrategy) -> Self {
@@ -300,7 +300,7 @@ pub struct WorkspaceRetrievalStatus {
     /// Lexical implementation serving the catalog for this session.
     ///
     /// This is diagnostic metadata only; semantic vectors are always owned by
-    /// the A3S Memory adapter.
+    /// the Aster Memory adapter.
     #[serde(default)]
     pub lexical_engine: super::WorkspaceLexicalEngine,
     #[serde(default)]

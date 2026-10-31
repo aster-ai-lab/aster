@@ -22,11 +22,11 @@
 ## 使用
 
 ```rust
-use a3s_apofasi::{Client, Criteria, DecisionKind, Question, State, SystemOneRequest};
+use aster_apofasi::{Client, Criteria, DecisionKind, Question, State, SystemOneRequest};
 use indexmap::IndexMap;
 use serde_json::json;
 
-fn main() -> a3s_apofasi::Result<()> {
+fn main() -> aster_apofasi::Result<()> {
     let mut opts = IndexMap::new();
     opts.insert("billing".into(), Some(json!("refunds")));
     opts.insert("other".into(), Some(json!("else")));
@@ -53,7 +53,7 @@ fn main() -> a3s_apofasi::Result<()> {
 
 ```bash
 cargo build --release
-cargo build --release --features cli,metal,mlx --bin a3s-apofasi
+cargo build --release --features cli,metal,mlx --bin aster-apofasi
 ```
 
 ## 相对 Jev
@@ -102,11 +102,11 @@ checkpoint/
 
 | 项 | 值 |
 | --- | --- |
-| 包名 | `a3s-apofasi` |
+| 包名 | `aster-apofasi` |
 | 版本 | 0.1.1 |
-| 仓库 | [A3S-Lab/Apofasi](https://github.com/A3S-Lab/Apofasi) |
+| 仓库 | [aster-ai-lab/Apofasi](https://github.com/aster-ai-lab/Apofasi) |
 | 许可证 | MIT |
 
 ## 许可证
 
-MIT © A3S Lab
+MIT © Aster

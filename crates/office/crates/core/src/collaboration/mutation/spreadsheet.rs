@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::super::{
     collaboration_error, NativeOfficeCollaborationManifest, NativeOfficeCollaborationMutation,
@@ -83,15 +83,15 @@ pub(super) fn apply_spreadsheet_mutation(
     cell::apply_cell_mutation(doc, manifest, mutation)
 }
 
-fn invalid_spreadsheet_mutation(message: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_spreadsheet_mutation(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_invalid", message)
 }
 
-fn spreadsheet_match_conflict(message: impl Into<String>) -> a3s_use_core::UseError {
+fn spreadsheet_match_conflict(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_match_conflict", message)
         .with_suggestion("Read the latest collaborative Spreadsheet cell and retry.")
 }
 
-fn invalid_shared_spreadsheet(message: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_shared_spreadsheet(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.content_invalid", message)
 }

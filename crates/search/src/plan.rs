@@ -277,7 +277,7 @@ mod tests {
             "aliyun",
             "tencent",
             "firecrawl",
-            "a3s",
+            "aster",
             "doubao",
             "deepseek",
         ] {

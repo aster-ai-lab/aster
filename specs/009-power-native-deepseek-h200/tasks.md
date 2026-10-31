@@ -6,7 +6,7 @@
 
 ## Phase 0: 能力、构建与基线（4 项）
 
-- [x] T001 [US1] 审计根 `Cargo.toml`、`crates/power/Cargo.toml` 与本地 A3S 闭包，确定 `crates/deepseek/` 的根 workspace 接入及单向依赖。必要 manifest 修正作为独立完整切片，验证 `publish=false`、无新 workspace/lock、依赖守卫与最小 metadata/build；保留存量差异，不写机器缓存路径。
+- [x] T001 [US1] 审计根 `Cargo.toml`、`crates/power/Cargo.toml` 与本地 Aster 闭包，确定 `crates/deepseek/` 的根 workspace 接入及单向依赖。必要 manifest 修正作为独立完整切片，验证 `publish=false`、无新 workspace/lock、依赖守卫与最小 metadata/build；保留存量差异，不写机器缓存路径。
 - [x] T002 [US1] 在 `docs/evidence/power/<实施日期>-native-deepseek-h200/` 固定源码/实际构建身份、原生算子/格式/collective 缺口矩阵；读取 `src/inference/` 与精确检查点 schema，不运行共享引擎变更。
 - [x] T003 [US2] 在 `crates/deepseek/src/reference.rs` 及 sibling tests 定义微型权重/状态/输入夹具与 CPU 数学参考，在证据中冻结同模型数值/质量预算；不下载大模型即可证明夹具覆盖和坏格式拒绝。
 - [x] T004 [US5] 在 `scripts/h200_xq/{remote_install,service,bootstrap,benchmark,autotune,deferred_launch}.py` 同步已测 Power 精确计数构建与基准/正常模式，测试 pins、取整计数拒绝、失败保留、finally 恢复、现有 launcher 所有权和不重复申请；真实 nonweight preflight 通过后才更新已有等待进程，不重启下载器。
@@ -75,7 +75,7 @@ token/s，同源码关闭缓存的 v30 整模对照仍在加载。下一轮 v33/
 SM90 FP8/FP4 编解码融合仅完成 450 本地控制、严格 NVRTC 编译和暂存，尚无
 GPU 数值或性能结论。上述结果不关闭 T014/T023/T027 或单请求 1000 门槛。
 
-2026-10-22 实施记录：T001 的 locked/offline metadata、最小模型构建、31 项依赖适配测试和 3 项 Runtime 测试通过；依赖守卫中本地 A3S 与 unpublished 规则通过。全仓守卫另有桌面夹具失败、漂移和 Windows fmt 长参数限制，保留在最终门槛，不宣称全绿。T002 已检查官方 48 个 shard 的头部、96,085 个张量与实际 dtype，但没有核验 510 GB payload 散列或执行模型。证据见 `docs/evidence/power/2026-10-22-native-deepseek-h200/analysis.md`、`native-gap-matrix.md` 及各项日志。T003 的数学参考正在实施；模型状态夹具和同模型 GPU 预算仍待完成。
+2026-10-22 实施记录：T001 的 locked/offline metadata、最小模型构建、31 项依赖适配测试和 3 项 Runtime 测试通过；依赖守卫中本地 Aster 与 unpublished 规则通过。全仓守卫另有桌面夹具失败、漂移和 Windows fmt 长参数限制，保留在最终门槛，不宣称全绿。T002 已检查官方 48 个 shard 的头部、96,085 个张量与实际 dtype，但没有核验 510 GB payload 散列或执行模型。证据见 `docs/evidence/power/2026-10-22-native-deepseek-h200/analysis.md`、`native-gap-matrix.md` 及各项日志。T003 的数学参考正在实施；模型状态夹具和同模型 GPU 预算仍待完成。
 
 P0 续记：T003 现有 25 项数学/C1/C2 状态测试通过；六类官方原始输入各采集三次 teacher-forced 概率，固定输入 IDs、113 个评分位置及版本化数值/质量预算。实际原生 GPU/layer 质量仍在 T007–T009 验收。T004 的远程 Linux 68 项测试无跳过全部通过；H200 上真实 server-only Power + 合成上游验证精确计数及正常/异常恢复。新准备包经两次 nonweight preflight 后激活，新等待器 PID 335316 / start_ticks 259373957 已确认处于无 GPU 预留的等待状态；原下载器 PID 217634 / start_ticks 255375652 保持运行。T004 的外部 Xolotl 准备不替代 T005–T010 原生模型实现。详见同证据目录 `qualification-budget-v1.json`、`reference-compression-tests.log`、`xq-prepared-release.json`、`h200-frontend-usage-smoke.json`、`xq-preparation-activation.json`。
 
@@ -109,9 +109,9 @@ T007 norm/RoPE 续记：有效权重 RMSNorm 和显式 FP32 cache 的旋转已�
 
 2026-10-23 T008 CUDA 实施续记：新增原始 FP8/MXFP4 group-32 CUDA 投影、显式原始 FP32 scalar 与既有 tensor control 三种闭集 profile，保留 Power F32 API。CudaLayerDevice 显式携带 profile；架构、几何、比例因子范围、预算或驱动 local/shared 分配不合要求时拒绝，不自动回退。NVRTC、SM90 ptxas 和 CPU/CUDA all-targets check 通过；CPU 305 项、CUDA feature 305 项通过，另 2 项 H200 tests 明确 ignored。ptxas 把 E4M3 MMA 降为寄存器转换及 HMMA 半精度 Tensor Core 指令，不能宣称硬件 FP8 吞吐。实际独立 H200 双 profile 作业 `aster-sm90-probe-1792727645-57460086` 仍 Inqueue/Unschedulable，无 GPU 数值或 Rust adapter 运行结果；T008 保持未勾选，T009 尚未开始。身份、负结果、源码/SASS、调度及验证记录见 `sm90-*.json/log/txt/py` 与 OUTCOME.md。XQ 下载仍独立保留。
 
-2026-10-23 T008 Linux 构建续记：当前根快照的 locked/offline metadata 与 `cargo test -p a3s-deepseek --locked --offline --features cuda --lib --no-run --message-format=json` 已在 Ubuntu 22.04 / Rust 1.97.1 / CUDA 12.6.20 构建成功；实际 Rust 测试二进制 SHA256 为 `9d333f518b87735fd2bb2629e0ef17e65750ad34dac9111eb74f0a7793045f36`。期间工作区的 ORM manifest/lock 变化已单独绑定，原生本地源码与全部 registry/Git 锁定项未变，没有覆盖无关改动。二进制尚未执行；独立 Rust 硬件验收作业 `aster-sm90-rust-1792756991-93148350`（UID `96f7a6f4-1544-4dc8-8351-4eb258ea3c44`）已提交一次，20:06 +08:00 仍 Inqueue/Unschedulable。原 PTX 微测试作业保持独立。T008 不勾选，完整模型/生成与服务接入仍待 T009–T010；编译成功不替代 GPU 或整模验收。见 `linux-build-result-1792757322/`、`sm90-rust-job-1792757190.json` 和 OUTCOME.md。
+2026-10-23 T008 Linux 构建续记：当前根快照的 locked/offline metadata 与 `cargo test -p aster-deepseek --locked --offline --features cuda --lib --no-run --message-format=json` 已在 Ubuntu 22.04 / Rust 1.97.1 / CUDA 12.6.20 构建成功；实际 Rust 测试二进制 SHA256 为 `9d333f518b87735fd2bb2629e0ef17e65750ad34dac9111eb74f0a7793045f36`。期间工作区的 ORM manifest/lock 变化已单独绑定，原生本地源码与全部 registry/Git 锁定项未变，没有覆盖无关改动。二进制尚未执行；独立 Rust 硬件验收作业 `aster-sm90-rust-1792756991-93148350`（UID `96f7a6f4-1544-4dc8-8351-4eb258ea3c44`）已提交一次，20:06 +08:00 仍 Inqueue/Unschedulable。原 PTX 微测试作业保持独立。T008 不勾选，完整模型/生成与服务接入仍待 T009–T010；编译成功不替代 GPU 或整模验收。见 `linux-build-result-1792757322/`、`sm90-rust-job-1792757190.json` 和 OUTCOME.md。
 
-2026-10-23 XQ 下载完成续记：20:15 +08:00 已观察到全部 16 片、总计 162,954,903,552 字节及原下载器的 `MODEL_PARTS_VERIFIED`；下载器逐片完整 SHA256 校验完成，观察器没有重读全部 payload。原等待器因缺少集群环境初始化而提交失败，确认无对应作业后，通过已有 launcher 锁、原 source/hash、真实 nonweight preflight 和已初始化的 RJob 子进程恢复一次申请，旧失败记录保留，未重启下载器。独立 XQ 参考部署作业 `a3s-power-xq-h200-final-6522e5af2fc3-31676386`（UID `6230a46e-8868-4e2c-a803-0321962f98a6`）和两个原生内核作业在 20:27 均仍 Inqueue。下载完成不关闭 T022 的 XQ 原生格式/整模验收，也不关闭 T026 的原生地址/Key 交付。见 `xq-completion-inspection-1792757713.json`、`xq-environment-submission-recovery.json`、`h200-owned-job-states-1792758431.json`。
+2026-10-23 XQ 下载完成续记：20:15 +08:00 已观察到全部 16 片、总计 162,954,903,552 字节及原下载器的 `MODEL_PARTS_VERIFIED`；下载器逐片完整 SHA256 校验完成，观察器没有重读全部 payload。原等待器因缺少集群环境初始化而提交失败，确认无对应作业后，通过已有 launcher 锁、原 source/hash、真实 nonweight preflight 和已初始化的 RJob 子进程恢复一次申请，旧失败记录保留，未重启下载器。独立 XQ 参考部署作业 `aster-power-xq-h200-final-6522e5af2fc3-31676386`（UID `6230a46e-8868-4e2c-a803-0321962f98a6`）和两个原生内核作业在 20:27 均仍 Inqueue。下载完成不关闭 T022 的 XQ 原生格式/整模验收，也不关闭 T026 的原生地址/Key 交付。见 `xq-completion-inspection-1792757713.json`、`xq-environment-submission-recovery.json`、`h200-owned-job-states-1792758431.json`。
 
 2026-10-23 T022 格式切片：已实现 `weights/xq.rs` 的精确混合量化布局、有界行解码及 I32 元数据，`weights/xq/gguf.rs` 的固定头部绑定和范围校验；新增 17 项 tests，完整 CPU 模型套件累计 322 项全部通过。真实 XQ 头部的 1,329 个张量与独立审计的名称、形状、格式、偏移和字节完全一致。此范围没有验证完整 payload、设备投影或模型生成，T022 不勾选。共享根目录发生并发 stash/pull 后，用户明确要求恢复；任务文件从已识别 stash 找回，当前工作位于仓库内 `.wt-h200-native-deploy` 独立 Git worktree，保留已测 native manifest/lock 和私有子模块边界，不覆盖主工作区的并发改动。`xq-format-acceptance.json`、`xq-native-header-comparison.json`、`isolated-worktree.json` 及 OUTCOME.md 保留恢复和验证范围。用户新增的充分优化与压力测试由 FR-014/015、SC-007/008、T027 覆盖，尚未完成。
 
@@ -133,7 +133,7 @@ T007 norm/RoPE 续记：有效权重 RMSNorm 和显式 FP32 cache 的旋转已�
 
 - [ ] Owning package focused tests 全部通过，报告实际 features/命令/数量。
 - [ ] Rust 修改执行 `cargo fmt --all -- --check`；存量失败单独记录，不修改无关源。
-- [ ] 根工作区依赖/漂移守卫通过；无新增 crates.io/git A3S 依赖、独立 workspace 或 lockfile。
+- [ ] 根工作区依赖/漂移守卫通过；无新增 crates.io/git Aster 依赖、独立 workspace 或 lockfile。
 - [ ] 没有 native `<select>` 或其他产品 UI 改动；配置为 ACL。
 - [ ] 原生执行、模型/内核、八卡参与和真实 GPU 取消均有实际证据。
 - [ ] 正确性、质量、峰值内存、延迟与恢复门槛通过；单请求与总吞吐结果分别保留。

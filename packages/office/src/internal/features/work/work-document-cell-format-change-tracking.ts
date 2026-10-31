@@ -69,7 +69,7 @@ export function trackDocumentCellFormattingTransaction(
       propertyRevisionOmml: null,
       cellChangeKind: 'cell-formatting',
       cellChangeId: identity.id,
-      cellChangeAuthor: identity.author || 'A3S Work',
+      cellChangeAuthor: identity.author || 'Aster Work',
       cellChangeDate: identity.date || new Date().toISOString(),
       cellChangeBefore: previous,
     });

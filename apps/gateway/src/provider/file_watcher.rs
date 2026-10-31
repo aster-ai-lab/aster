@@ -40,7 +40,7 @@ pub struct ReloadEvent {
 /// Load the root `.acl` file and merge any `providers.file.directory` fragments.
 ///
 /// This is the single loader for CLI `run`, `validate`, and hot reload so
-/// cold-start activation matches `a3s-gateway validate` (validate ≡ activate).
+/// cold-start activation matches `aster-gateway validate` (validate ≡ activate).
 /// A configured directory that is missing fails closed instead of binding only
 /// the root ACL while operators believe conf.d is active.
 pub fn load_merged_gateway_config(config_path: impl AsRef<Path>) -> Result<GatewayConfig> {
@@ -112,7 +112,7 @@ pub(crate) fn probe_file_watch_notify_activation(watch_directory: Option<&Path>)
 ///
 /// Used by [`crate::validate_activation_at_path`] /
 /// [`crate::Gateway::new_at_path`] / CLI load when `providers.file.watch = true`
-/// so validate cannot pass while `a3s-gateway run` later aborts because the
+/// so validate cannot pass while `aster-gateway run` later aborts because the
 /// watcher cannot start.
 pub(crate) fn probe_file_watch_activation(
     config_path: &Path,
@@ -906,7 +906,7 @@ entrypoints "web" {{
     fn load_merged_gateway_config_fails_closed_when_management_token_env_unset() {
         let dir = tempfile::tempdir().unwrap();
         let config_path = dir.path().join("gateway.acl");
-        let token_env = "A3S_GATEWAY_VALIDATE_ACTIVATION_MISSING_TOKEN";
+        let token_env = "ASTER_GATEWAY_VALIDATE_ACTIVATION_MISSING_TOKEN";
         std::env::remove_var(token_env);
 
         std::fs::write(

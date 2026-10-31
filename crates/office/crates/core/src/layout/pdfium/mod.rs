@@ -3,7 +3,7 @@ mod outline;
 mod renderer;
 mod text;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 use super::{layout_error, validate_revision, validate_unit, NativeOfficeLayoutSourceKind};

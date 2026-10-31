@@ -1,9 +1,9 @@
 import type { FieldError, FormDocument, FormPlan, JsonObject } from '../core/types';
 
-export const FORM_RELEASE_REF_API_VERSION = 'a3s.dev/form-release-ref/v1' as const;
-export const FORM_INTERACTION_REQUEST_API_VERSION = 'a3s.dev/form-interaction-request/v1' as const;
+export const FORM_RELEASE_REF_API_VERSION = 'aster.dev/form-release-ref/v1' as const;
+export const FORM_INTERACTION_REQUEST_API_VERSION = 'aster.dev/form-interaction-request/v1' as const;
 export const FORM_INTERACTION_SUBMISSION_API_VERSION =
-  'a3s.dev/form-interaction-submission/v1' as const;
+  'aster.dev/form-interaction-submission/v1' as const;
 export const DEFAULT_INTERACTION_MAX_VALUE_BYTES = 1_000_000;
 export const ABSOLUTE_INTERACTION_MAX_VALUE_BYTES = 4 * 1024 * 1024;
 export const FORM_INTERACTION_OUTCOMES = ['submit', 'approve', 'reject'] as const;

@@ -5,7 +5,7 @@ Audience: operators and Use client integrators
 
 ## Executive decision
 
-The A3S Use Registry **service** is a **signed static publication** plus an
+The Aster Use Registry **service** is a **signed static publication** plus an
 optional **dumb HTTP(S) transport**. It is not a package manager, not a trust
 root, and not a mutable control plane.
 
@@ -19,7 +19,7 @@ admissions + packages ──assemble/sign──► registry/ (immutable tree)
                     │                         │                         │
                     └─────────────────────────┼─────────────────────────┘
                                               ▼
-                                    a3s-use package manager
+                                    aster-use package manager
                          pin trust-root → TUF verify → plan → receipt
 ```
 
@@ -45,10 +45,10 @@ authority. That separation is intentional and must not be collapsed into a
 | Owner | Owns | Must not own |
 | --- | --- | --- |
 | This repository | Admissions, package sources for admitted releases, signed `registry/` tree, local transport scripts | TUF client, Grants, install lifecycle |
-| A3S Use (`a3s-use` package manager + `a3s-use-registry-tools`) | Source config, TUF refresh, plan/apply, receipts, cache policy; assemble/sign/verify of Registry trees (`crates/registry-tools` on Use main) | Re-implementing a second Registry publisher inside Cloud or Code |
+| Aster Use (`aster-use` package manager + `aster-use-registry-tools`) | Source config, TUF refresh, plan/apply, receipts, cache policy; assemble/sign/verify of Registry trees (`crates/registry-tools` on Use main) | Re-implementing a second Registry publisher inside Cloud or Code |
 | Cloud / product hosts | Selecting sources and trust roots for a deployment | Embedding Docker/OCI registries as Use TUF registries |
 
-`a3s-use` **capability wrappers** (Homebrew `0.1.x` browser/box/office routes)
+`aster-use` **capability wrappers** (Homebrew `0.1.x` browser/box/office routes)
 are not Registry clients. Only the Use package-manager binary (`registry` /
 `plugin` routes, `0.3.x+`) consumes this service.
 

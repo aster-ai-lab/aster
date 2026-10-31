@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     CheckpointRequest, CheckpointResponse, ContainerId, ContainerRecord, CreateAttachments, Error,
     ExitStatus, FileRequest, FileResponse, FilesystemRequest, FilesystemResponse, Generation,
     OperationId, ProcessId, ProcessRecord, RestoreRequest, RestoreResponse, RuntimeEvent,
@@ -8,19 +8,19 @@ use a3s_oci_sdk::{
 };
 use serde::{Deserialize, Serialize};
 
-pub(super) const ROOT_SCHEMA_VERSION: &str = "a3s.oci.runtime-root.v1";
-pub(super) const CONTAINER_SCHEMA_VERSION: &str = "a3s.oci.container-record.v1";
-pub(super) const GENERATION_SCHEMA_VERSION: &str = "a3s.oci.generation.v1";
-pub(super) const OPERATION_SCHEMA_VERSION_V1: &str = "a3s.oci.operation.v1";
-pub(super) const OPERATION_SCHEMA_VERSION_V2: &str = "a3s.oci.operation.v2";
-pub(super) const OPERATION_SCHEMA_VERSION_V3: &str = "a3s.oci.operation.v3";
-pub(super) const OPERATION_SCHEMA_VERSION_V4: &str = "a3s.oci.operation.v4";
-pub(super) const OPERATION_SCHEMA_VERSION_V5: &str = "a3s.oci.operation.v5";
-pub(super) const OPERATION_SCHEMA_VERSION: &str = "a3s.oci.operation.v6";
-pub(super) const PROCESS_SCHEMA_VERSION: &str = "a3s.oci.process-record.v1";
-pub(super) const EVENT_CURSOR_SCHEMA_VERSION: &str = "a3s.oci.event-cursor.v1";
-pub(super) const EVENT_CLAIM_SCHEMA_VERSION: &str = "a3s.oci.event-claim.v1";
-pub(super) const EVENT_RECORD_SCHEMA_VERSION: &str = "a3s.oci.event-record.v1";
+pub(super) const ROOT_SCHEMA_VERSION: &str = "aster.oci.runtime-root.v1";
+pub(super) const CONTAINER_SCHEMA_VERSION: &str = "aster.oci.container-record.v1";
+pub(super) const GENERATION_SCHEMA_VERSION: &str = "aster.oci.generation.v1";
+pub(super) const OPERATION_SCHEMA_VERSION_V1: &str = "aster.oci.operation.v1";
+pub(super) const OPERATION_SCHEMA_VERSION_V2: &str = "aster.oci.operation.v2";
+pub(super) const OPERATION_SCHEMA_VERSION_V3: &str = "aster.oci.operation.v3";
+pub(super) const OPERATION_SCHEMA_VERSION_V4: &str = "aster.oci.operation.v4";
+pub(super) const OPERATION_SCHEMA_VERSION_V5: &str = "aster.oci.operation.v5";
+pub(super) const OPERATION_SCHEMA_VERSION: &str = "aster.oci.operation.v6";
+pub(super) const PROCESS_SCHEMA_VERSION: &str = "aster.oci.process-record.v1";
+pub(super) const EVENT_CURSOR_SCHEMA_VERSION: &str = "aster.oci.event-cursor.v1";
+pub(super) const EVENT_CLAIM_SCHEMA_VERSION: &str = "aster.oci.event-claim.v1";
+pub(super) const EVENT_RECORD_SCHEMA_VERSION: &str = "aster.oci.event-record.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]

@@ -22,7 +22,7 @@ pub use coverage::{
     OciSchemaEvidenceBinding, OciSchemaEvidenceManifest,
 };
 
-const SCHEMA_BASE_URI: &str = "https://schema.a3s.dev/oci/runtime-spec/v1.3.0/";
+const SCHEMA_BASE_URI: &str = "https://schema.aster.dev/oci/runtime-spec/v1.3.0/";
 const MAX_REPORTED_VIOLATIONS: usize = 64;
 
 /// Official OCI JSON document validated by the SDK.
@@ -502,9 +502,9 @@ mod tests {
         for annotations in [
             json!({}),
             json!({
-                "dev.a3s.runtime.empty": "",
-                "dev.a3s.runtime.structured": r#"{"lifecycle":"durable"}"#,
-                "dev.a3s.runtime.unstructured": "probe-only"
+                "dev.aster.runtime.empty": "",
+                "dev.aster.runtime.structured": r#"{"lifecycle":"durable"}"#,
+                "dev.aster.runtime.unstructured": "probe-only"
             }),
         ] {
             let mut features = feature_base();
@@ -513,7 +513,7 @@ mod tests {
                 .validate(OciSchemaDocument::Features, &features)
                 .expect("feature annotations must accept string metadata");
         }
-        for annotations in [json!([]), json!({"dev.a3s.runtime.level": 2})] {
+        for annotations in [json!([]), json!({"dev.aster.runtime.level": 2})] {
             let mut features = feature_base();
             features["annotations"] = annotations;
             validator
@@ -568,11 +568,11 @@ mod tests {
                     "linux": {
                         "devices": [
                             {"type": "c", "path": "/dev/null", "major": 1, "minor": 3},
-                            {"type": "u", "path": "/run/a3s/char", "major": 10, "minor": 229},
+                            {"type": "u", "path": "/run/aster/char", "major": 10, "minor": 229},
                             {"type": "b", "path": "/storage/block", "major": 8, "minor": 0},
                             {
                                 "type": "p",
-                                "path": "/run/a3s/fifo",
+                                "path": "/run/aster/fifo",
                                 "fileMode": 416,
                                 "uid": 1,
                                 "gid": 2
@@ -631,8 +631,8 @@ mod tests {
                     "ociVersion": "1.3.0",
                     "vm": {
                         "hypervisor": {
-                            "path": "/runtime/a3s-vmm",
-                            "parameters": ["--machine", "a3s"]
+                            "path": "/runtime/aster-vmm",
+                            "parameters": ["--machine", "aster"]
                         },
                         "kernel": {
                             "path": "/runtime/vmlinux",
@@ -644,7 +644,7 @@ mod tests {
                             "format": "vmdk"
                         },
                         "hwConfig": {
-                            "deviceTree": "/runtime/a3s.dtb",
+                            "deviceTree": "/runtime/aster.dtb",
                             "vcpus": 2,
                             "memory": 536870912,
                             "dtdevs": ["/soc/virtio@1000"],
@@ -735,7 +735,7 @@ mod tests {
                         "org.opencontainers.image.os.features": "win32k",
                         "org.opencontainers.image.architecture": "arm64",
                         "org.opencontainers.image.variant": "v8",
-                        "org.opencontainers.image.author": "A3S Lab <dev@a3s.dev>",
+                        "org.opencontainers.image.author": "Aster <dev@aster.dev>",
                         "org.opencontainers.image.created": "2026-08-17T10:11:12Z",
                         "org.opencontainers.image.stopSignal": "SIGTERM"
                     }
@@ -812,7 +812,7 @@ mod tests {
         ))
         .expect("decode checked-in coverage manifest");
 
-        assert_eq!(actual.schema_version, "a3s.oci.schema-coverage.v2");
+        assert_eq!(actual.schema_version, "aster.oci.schema-coverage.v2");
         assert_eq!(actual.oci_runtime_spec, "1.3.0");
         assert_eq!(
             actual.upstream_commit,

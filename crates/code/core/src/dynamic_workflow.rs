@@ -1,7 +1,7 @@
-//! A3S Flow-backed dynamic workflow runtime.
+//! Aster Flow-backed dynamic workflow runtime.
 //!
-//! `DynamicWorkflowRuntime` lets hosts run a sandboxed PTC script as an A3S
-//! Flow runtime. Flow owns durable replay and step lifecycle; A3S Code's
+//! `DynamicWorkflowRuntime` lets hosts run a sandboxed PTC script as an Aster
+//! Flow runtime. Flow owns durable replay and step lifecycle; Aster Code's
 //! existing `program` tool remains the sandbox and tool-call boundary.
 
 use crate::execution_identity::{
@@ -24,7 +24,7 @@ use crate::{
     },
     planning::{Complexity, ExecutionPlan, Task, TaskStatus},
 };
-use a3s_flow::{
+use aster_flow::{
     CancellationRequest, FanoutFlowEventObserver, FlowEngine, FlowEvent, FlowEventEnvelope,
     FlowEventObserver, FlowEventStore, FlowRuntime, InMemoryEventStore, LocalFileEventStore,
     RuntimeBuildCompatibility, RuntimeBuildId, RuntimeCommand, StepInvocation, StepStatus,
@@ -125,14 +125,14 @@ fn provider_quota_for_context(
 /// Deployments that need a stronger revision identity can provide an explicit
 /// [`RuntimeBuildCompatibility`] through [`DynamicWorkflowTool::with_runtime_build_compatibility`].
 pub const DYNAMIC_WORKFLOW_RUNTIME_BUILD_ID: &str =
-    concat!("a3s-code-core-", env!("CARGO_PKG_VERSION"));
+    concat!("aster-core-", env!("CARGO_PKG_VERSION"));
 
 /// Legacy marker used only while deriving an identity for an unpinned history
 /// created before dynamic workflow runtime-build fencing was enabled.
 const LEGACY_UNPINNED_RUNTIME_BUILD_ID: &str = "<unpinned>";
 
 /// Project-relative directory used for durable dynamic workflow history.
-pub const DYNAMIC_WORKFLOW_STORE_RELATIVE_PATH: &str = ".a3s/workflow";
+pub const DYNAMIC_WORKFLOW_STORE_RELATIVE_PATH: &str = ".aster/workflow";
 
 /// Limits forwarded to the underlying PTC `program` tool.
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq, Eq)]
@@ -301,7 +301,7 @@ pub struct DynamicWorkflowControlSnapshot {
 ///
 /// The handle keeps the exact source, input, registry, and runtime policy
 /// needed to replay the selected run. Mutating operations first acquire the
-/// same worker lease used by [`DynamicWorkflowTool`], then ask A3S Flow to
+/// same worker lease used by [`DynamicWorkflowTool`], then ask Aster Flow to
 /// append/drive its authoritative events. A live worker therefore remains the
 /// sole executor; a controller retries after the redacted lease state reports
 /// that the claim is busy.
@@ -350,23 +350,23 @@ impl DynamicStepAdmission {
         &self,
         identity: ExecutionIdentityV1,
         cancellation: &tokio_util::sync::CancellationToken,
-    ) -> a3s_flow::Result<DynamicStepLease> {
+    ) -> aster_flow::Result<DynamicStepLease> {
         let permit = tokio::select! {
             biased;
             _ = cancellation.cancelled() => {
-                return Err(a3s_flow::FlowError::Runtime(
+                return Err(aster_flow::FlowError::Runtime(
                     "dynamic workflow step admission cancelled".to_string(),
                 ));
             }
             permit = Arc::clone(&self.semaphore).acquire_owned() => {
-                permit.map_err(|_| a3s_flow::FlowError::Runtime(
+                permit.map_err(|_| aster_flow::FlowError::Runtime(
                     "dynamic workflow step admission is closed".to_string(),
                 ))?
             }
         };
         if cancellation.is_cancelled() {
             drop(permit);
-            return Err(a3s_flow::FlowError::Runtime(
+            return Err(aster_flow::FlowError::Runtime(
                 "dynamic workflow step admission cancelled".to_string(),
             ));
         }
@@ -434,7 +434,7 @@ impl Drop for DynamicStepLease {
     }
 }
 
-/// Runs A3S Flow workflow and step invocations through a sandboxed PTC script.
+/// Runs Aster Flow workflow and step invocations through a sandboxed PTC script.
 #[derive(Clone)]
 pub struct DynamicWorkflowRuntime {
     invoker: Arc<dyn ToolInvoker>,
@@ -580,7 +580,7 @@ impl DynamicWorkflowRuntime {
         }
     }
 
-    async fn admit_step(&self, invocation: &StepInvocation) -> a3s_flow::Result<DynamicStepLease> {
+    async fn admit_step(&self, invocation: &StepInvocation) -> aster_flow::Result<DynamicStepLease> {
         self.ensure_continuation_lease().await?;
         let identity = dynamic_workflow_step_identity(
             &invocation.run_id,
@@ -588,7 +588,7 @@ impl DynamicWorkflowRuntime {
             &invocation.step_name,
             &invocation.input,
         )
-        .map_err(|error| a3s_flow::FlowError::Runtime(error.to_string()))?;
+        .map_err(|error| aster_flow::FlowError::Runtime(error.to_string()))?;
         let mut lease = self
             .step_admission
             .acquire(identity.clone(), &self.context.cancellation_token())
@@ -605,7 +605,7 @@ impl DynamicWorkflowRuntime {
             )
         {
             let Some(scheduler) = self.task_scheduler.as_ref() else {
-                return Err(a3s_flow::FlowError::Runtime(
+                return Err(aster_flow::FlowError::Runtime(
                     "global Flow-step admission requires a configured task scheduler".to_string(),
                 ));
             };
@@ -645,24 +645,24 @@ impl DynamicWorkflowRuntime {
                     )
                     .await
             }
-            .map_err(|error| a3s_flow::FlowError::Runtime(error.to_string()))?;
+            .map_err(|error| aster_flow::FlowError::Runtime(error.to_string()))?;
             lease = lease.with_task_lease(task_lease);
         }
         Ok(lease)
     }
 
-    async fn ensure_continuation_lease(&self) -> a3s_flow::Result<()> {
+    async fn ensure_continuation_lease(&self) -> aster_flow::Result<()> {
         let Some(lease) = self.continuation_lease.as_ref() else {
             return Ok(());
         };
         if lease
             .renew()
             .await
-            .map_err(|error| a3s_flow::FlowError::Runtime(error.to_string()))?
+            .map_err(|error| aster_flow::FlowError::Runtime(error.to_string()))?
         {
             Ok(())
         } else {
-            Err(a3s_flow::FlowError::Runtime(
+            Err(aster_flow::FlowError::Runtime(
                 "dynamic workflow worker lease is no longer owned before admission".to_string(),
             ))
         }
@@ -672,7 +672,7 @@ impl DynamicWorkflowRuntime {
         &self,
         payload: Value,
         context: &ToolContext,
-    ) -> a3s_flow::Result<ToolResult> {
+    ) -> aster_flow::Result<ToolResult> {
         let mut args = json!({
             "type": "script",
             "language": "javascript",
@@ -696,7 +696,7 @@ impl DynamicWorkflowRuntime {
             )
             .await;
         if result.exit_code != 0 {
-            return Err(a3s_flow::FlowError::Runtime(result.output));
+            return Err(aster_flow::FlowError::Runtime(result.output));
         }
         Ok(result)
     }
@@ -706,7 +706,7 @@ impl DynamicWorkflowRuntime {
         run_id: &str,
         step_id: &str,
         step_name: &str,
-    ) -> a3s_flow::Result<ToolContext> {
+    ) -> aster_flow::Result<ToolContext> {
         if step_name != GENERATE_OBJECT_TOOL {
             return Ok(self.context.clone().with_run_id(run_id.to_string()));
         }
@@ -720,7 +720,7 @@ impl DynamicWorkflowRuntime {
                     .acquire(&self.context.cancellation_token())
                     .await
                     .map_err(|error| {
-                        a3s_flow::FlowError::Runtime(format!(
+                        aster_flow::FlowError::Runtime(format!(
                             "parallel model-generation admission failed before workflow step: {error}"
                         ))
                     })?;
@@ -731,7 +731,7 @@ impl DynamicWorkflowRuntime {
                     .with_llm_client(forked_client)
                     .with_model_generation_permit(admission.clone(), Arc::new(permit))
                     .map_err(|error| {
-                        a3s_flow::FlowError::Runtime(format!(
+                        aster_flow::FlowError::Runtime(format!(
                             "bind parallel model-generation admission to workflow step: {error}"
                         ))
                     });
@@ -744,7 +744,7 @@ impl DynamicWorkflowRuntime {
             .acquire(&self.context.cancellation_token())
             .await
             .map_err(|error| {
-                a3s_flow::FlowError::Runtime(format!(
+                aster_flow::FlowError::Runtime(format!(
                     "model-generation admission failed before workflow step: {error}"
                 ))
             })?;
@@ -753,7 +753,7 @@ impl DynamicWorkflowRuntime {
             .with_run_id(run_id.to_string())
             .with_model_generation_permit(admission, Arc::new(permit))
             .map_err(|error| {
-                a3s_flow::FlowError::Runtime(format!(
+                aster_flow::FlowError::Runtime(format!(
                     "bind model-generation admission to workflow step: {error}"
                 ))
             })
@@ -764,7 +764,7 @@ impl DynamicWorkflowRuntime {
         run_id: &str,
         tool_name: &str,
         args: Value,
-    ) -> a3s_flow::Result<Value> {
+    ) -> aster_flow::Result<Value> {
         let context = self.context.clone().with_run_id(run_id.to_string());
         let result = self
             .invoker
@@ -775,7 +775,7 @@ impl DynamicWorkflowRuntime {
             )
             .await;
         if result.exit_code != 0 {
-            return Err(a3s_flow::FlowError::Runtime(result.output));
+            return Err(aster_flow::FlowError::Runtime(result.output));
         }
         Ok(json!({
             "tool": result.name,
@@ -791,7 +791,7 @@ impl FlowRuntime for DynamicWorkflowRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         self.ensure_continuation_lease().await?;
         let payload = invocation_payload("workflow", &invocation.run_id, &invocation.history)
             .with("input", invocation.input);
@@ -800,10 +800,10 @@ impl FlowRuntime for DynamicWorkflowRuntime {
             .clone()
             .with_run_id(invocation.run_id.to_string());
         let result = self.run_script(payload.into_value(), &context).await?;
-        serde_json::from_value(script_result(&result)?).map_err(a3s_flow::FlowError::from)
+        serde_json::from_value(script_result(&result)?).map_err(aster_flow::FlowError::from)
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<Value> {
         let _admission = self.admit_step(&invocation).await?;
         if matches!(
             invocation.step_name.as_str(),
@@ -875,8 +875,8 @@ async fn flow_store_for_context(
     match ctx.workspace_services.local_root() {
         Some(root) => {
             let store = dynamic_workflow_store_path(root);
-            validate_dynamic_workflow_directory(&root.join(".a3s"), ".a3s").await?;
-            validate_dynamic_workflow_directory(&store, ".a3s/workflow").await?;
+            validate_dynamic_workflow_directory(&root.join(".aster"), ".aster").await?;
+            validate_dynamic_workflow_directory(&store, ".aster/workflow").await?;
             if let Some(run_id) = requested_run_id.filter(|run_id| safe_workflow_run_id(run_id)) {
                 validate_dynamic_workflow_log(&store.join(format!("{run_id}.jsonl"))).await?;
             }
@@ -983,14 +983,14 @@ fn failed_step_outputs(history: &[FlowEventEnvelope]) -> Value {
     Value::Object(outputs)
 }
 
-fn script_result(result: &ToolResult) -> a3s_flow::Result<Value> {
+fn script_result(result: &ToolResult) -> aster_flow::Result<Value> {
     result
         .metadata
         .as_ref()
         .and_then(|metadata| metadata.get("script_result"))
         .cloned()
         .ok_or_else(|| {
-            a3s_flow::FlowError::Runtime(
+            aster_flow::FlowError::Runtime(
                 "PTC program result did not include script_result metadata".to_string(),
             )
         })

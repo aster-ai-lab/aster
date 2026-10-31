@@ -15,7 +15,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use a3s_code_core::{
+use aster_core::{
     permissions::{PermissionDecision, PermissionPolicy},
     Agent, AgentEvent, CodeConfig, PlanningMode, RunStatus, SessionOptions, ToolPresentationModeV1,
     ToolPresentationProfileV1,
@@ -136,7 +136,7 @@ struct VmLayer(Arc<VmObservations>);
 
 impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for VmLayer {
     fn on_new_span(&self, attrs: &Attributes<'_>, id: &Id, ctx: Context<'_, S>) {
-        if attrs.metadata().target() != "a3s_code_core::sandbox::oci"
+        if attrs.metadata().target() != "aster_core::sandbox::oci"
             || attrs.metadata().name() != "oci_command"
         {
             return;
@@ -153,7 +153,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for VmLayer {
         }
     }
     fn on_event(&self, event: &Event<'_>, ctx: Context<'_, S>) {
-        if event.metadata().target() != "a3s_code_core::sandbox::oci" {
+        if event.metadata().target() != "aster_core::sandbox::oci" {
             return;
         }
         #[derive(Default)]
@@ -572,7 +572,7 @@ fn reserve_evidence(manifest: &Manifest) -> Check<()> {
 }
 
 fn receipt_evidence(workspace: &Path, session: &str) -> Check<Value> {
-    let path = a3s_code_core::session_folder::effect_log_dir(workspace, session)
+    let path = aster_core::session_folder::effect_log_dir(workspace, session)
         .join(format!("{session}.jsonl"));
     if !path.exists() {
         return Ok(json!({"available":false,"reason":"original_log_missing"}));
@@ -609,7 +609,7 @@ fn receipt_evidence(workspace: &Path, session: &str) -> Check<Value> {
         if receipts.len() >= MAX_RECEIPTS {
             return Err("receipt_count_refused");
         }
-        let typed: a3s_effect::coding::ToolExecutionResultV1 =
+        let typed: aster_effect::coding::ToolExecutionResultV1 =
             serde_json::from_value(receipt.clone()).map_err(|_| "receipt_schema_invalid")?;
         typed.validate().map_err(|_| "receipt_schema_invalid")?;
         let bytes = serde_json::to_vec(receipt).map_err(|_| "receipt_encode_failed")?;
@@ -674,7 +674,7 @@ fn measured_tool_metrics(metrics: &Value, event_window_complete: bool) -> bool {
             })
 }
 
-fn event_metadata(events: &[a3s_code_core::run::RunEventRecord]) -> Value {
+fn event_metadata(events: &[aster_core::run::RunEventRecord]) -> Value {
     let mut presentation = Vec::new();
     let mut inputs = Vec::new();
     let mut terminal = Value::Null;
@@ -745,7 +745,7 @@ async fn observed_run(manifest: &Manifest, config: CodeConfig, prompt: String) -
     if std::env::consts::OS != "macos" || std::env::consts::ARCH != "aarch64" {
         return Err("platform_not_qualified_by_this_fixture");
     }
-    if std::env::var_os("A3S_CODE_ALLOW_PROCESS_HOST_SANDBOX").is_some() {
+    if std::env::var_os("ASTER_ALLOW_PROCESS_HOST_SANDBOX").is_some() {
         return Err("process_host_override_refused");
     }
     let selected = std::env::var_os("ASTER_SANDBOX_DIR").ok_or("sandbox_override_required")?;
@@ -761,15 +761,15 @@ async fn observed_run(manifest: &Manifest, config: CodeConfig, prompt: String) -
         .with(VmLayer(Arc::clone(&observations)))
         .try_init()
         .map_err(|_| "runtime_observer_already_installed")?;
-    use a3s_code_core::sandbox::BashSandbox;
-    let sandbox = a3s_code_core::sandbox::oci::OciBashSandbox::discover(&manifest.workspace)
+    use aster_core::sandbox::BashSandbox;
+    let sandbox = aster_core::sandbox::oci::OciBashSandbox::discover(&manifest.workspace)
         .map_err(|_| "sandbox_preflight_refused")?;
     sandbox
         .validate_execution_available()
         .map_err(|_| "sandbox_preflight_refused")?;
     let preflight = Instant::now();
     let output = sandbox
-        .exec(a3s_code_core::sandbox::SandboxCommandRequest {
+        .exec(aster_core::sandbox::SandboxCommandRequest {
             command: "printf t023-preflight".into(),
             guest_workspace: "/workspace".into(),
             timeout_ms: 5000,
@@ -798,7 +798,7 @@ async fn observed_run(manifest: &Manifest, config: CodeConfig, prompt: String) -
     }
     observations.commands.lock().unwrap().clear();
     observations.incomplete.store(false, Ordering::SeqCst);
-    let token_guard = Arc::new(a3s_code_core::orchestration::WorkflowBudget::new(Some(
+    let token_guard = Arc::new(aster_core::orchestration::WorkflowBudget::new(Some(
         manifest.budget.reported_token_limit,
     )));
     let mut policy = PermissionPolicy::new().allow_all(
@@ -814,7 +814,7 @@ async fn observed_run(manifest: &Manifest, config: CodeConfig, prompt: String) -
         .with_session_id(&manifest.run_id)
         .with_model(ROUTE)
         .with_tool_presentation_profile(ToolPresentationProfileV1::for_mode(manifest.profile))
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning_mode(PlanningMode::Disabled)
@@ -832,7 +832,7 @@ async fn observed_run(manifest: &Manifest, config: CodeConfig, prompt: String) -
         .with_auto_compact(true)
         .with_budget_guard(token_guard.clone());
     options.max_execution_time_ms = Some(budget.max_execution_ms);
-    options.retention_limits = Some(a3s_code_core::retention::SessionRetentionLimits {
+    options.retention_limits = Some(aster_core::retention::SessionRetentionLimits {
         max_runs_retained: Some(4),
         max_events_per_run: Some(262144),
         max_event_bytes_per_run: Some(64 * 1024 * 1024),
@@ -917,7 +917,7 @@ async fn observed_run(manifest: &Manifest, config: CodeConfig, prompt: String) -
         event_window_complete &= run.event_count == events.len();
         for event in &events {
             match &event.event {
-                AgentEvent::ModelPresentationBound{snapshot} if snapshot.application==a3s_code_core::harness_evidence::ModelPresentationApplicationV1::Profiled => {
+                AgentEvent::ModelPresentationBound{snapshot} if snapshot.application==aster_core::harness_evidence::ModelPresentationApplicationV1::Profiled => {
                     profiled_calls+=1;presentation_matches&=snapshot.profile.mode()==manifest.profile;
                 }
                 AgentEvent::End{forced_stop,..}=>ordinary_terminal=forced_stop.is_none(),
@@ -1156,7 +1156,7 @@ fn strict_manifest_and_frozen_paths_refuse_ambiguity() {
 #[test]
 fn failure_metadata_is_written_without_raw_model_or_reasoning_content() {
     let root = tempfile::tempdir().unwrap();
-    let record = a3s_code_core::run::RunEventRecord {
+    let record = aster_core::run::RunEventRecord {
         sequence: 0,
         timestamp_ms: 0,
         event: AgentEvent::ReasoningDelta {
@@ -1216,7 +1216,7 @@ fn vm_observation_requires_complete_closed_spans_and_never_infers_from_tool_coun
     let observations = Arc::new(VmObservations::default());
     let subscriber = tracing_subscriber::registry().with(VmLayer(Arc::clone(&observations)));
     tracing::subscriber::with_default(subscriber, || {
-        let span = tracing::info_span!(target:"a3s_code_core::sandbox::oci","oci_command");
+        let span = tracing::info_span!(target:"aster_core::sandbox::oci","oci_command");
         {
             let _entered = span.enter();
             for phase in [
@@ -1229,7 +1229,7 @@ fn vm_observation_requires_complete_closed_spans_and_never_infers_from_tool_coun
                 "host_shutdown",
                 "scratch_remove",
             ] {
-                tracing::debug!(target:"a3s_code_core::sandbox::oci",phase=phase,elapsed_ms=1.0);
+                tracing::debug!(target:"aster_core::sandbox::oci",phase=phase,elapsed_ms=1.0);
             }
         }
         assert_eq!(
@@ -1239,8 +1239,8 @@ fn vm_observation_requires_complete_closed_spans_and_never_infers_from_tool_coun
         );
         drop(span);
         assert_eq!(observations.summary()["vm_count"], 1);
-        let span = tracing::info_span!(target:"a3s_code_core::sandbox::oci","oci_command");
-        span.in_scope(||tracing::debug!(target:"a3s_code_core::sandbox::oci",phase="vm_create",elapsed_ms=1.0));
+        let span = tracing::info_span!(target:"aster_core::sandbox::oci","oci_command");
+        span.in_scope(||tracing::debug!(target:"aster_core::sandbox::oci",phase="vm_create",elapsed_ms=1.0));
         drop(span);
         assert_eq!(
             observations.summary()["vm_count"],
@@ -1254,10 +1254,10 @@ fn vm_observation_requires_complete_closed_spans_and_never_infers_from_tool_coun
 fn failure_receipts_bind_original_log_without_copying_private_plaintext() {
     let root = tempfile::tempdir().unwrap();
     let session = "failure-receipt";
-    let path = a3s_code_core::session_folder::effect_log_dir(root.path(), session)
+    let path = aster_core::session_folder::effect_log_dir(root.path(), session)
         .join(format!("{session}.jsonl"));
     fs::create_dir_all(path.parent().unwrap()).unwrap();
-    let receipt = json!({"schema":"a3s.code.tool-result.v1","identity":{"turn":1,"cycle":0,"tool_call_id":"call-one","batch_index":0},"prepared_digest":format!("sha256:{}","0".repeat(64)),"outcome":"failed","exit_code":1,"output":"PRIVATE_TOOL_OUTPUT","effects":{"changes":[],"completeness":"complete"}});
+    let receipt = json!({"schema":"aster.code.tool-result.v1","identity":{"turn":1,"cycle":0,"tool_call_id":"call-one","batch_index":0},"prepared_digest":format!("sha256:{}","0".repeat(64)),"outcome":"failed","exit_code":1,"output":"PRIVATE_TOOL_OUTPUT","effects":{"changes":[],"completeness":"complete"}});
     let bytes = format!(
         "{}\n{}\n",
         json!({"seq":0,"type":"model.reasoning","payload":{"text":"PRIVATE_REASONING"}}),
@@ -1294,7 +1294,7 @@ fn exact_original_parent_receipts_recover_metrics_without_guessing_unknown_origi
     let mut evidence = json!({"available":true,"receipts":[{"identity":{"tool_call_id":"parent-call","admission":{"run_id":"expected-run"}}}]});
     let parents = receipt_parent_ids(&evidence, "expected-run").unwrap();
     let events = vec![
-        a3s_code_core::run::RunEventRecord {
+        aster_core::run::RunEventRecord {
             sequence: 0,
             timestamp_ms: 10,
             event: AgentEvent::ToolStart {
@@ -1302,7 +1302,7 @@ fn exact_original_parent_receipts_recover_metrics_without_guessing_unknown_origi
                 name: "read".into(),
             },
         },
-        a3s_code_core::run::RunEventRecord {
+        aster_core::run::RunEventRecord {
             sequence: 1,
             timestamp_ms: 30,
             event: AgentEvent::ToolEnd {
@@ -1368,7 +1368,7 @@ fn exact_original_parent_receipts_recover_metrics_without_guessing_unknown_origi
 #[test]
 fn trimmed_event_windows_cannot_certify_otherwise_complete_metrics() {
     let retained = [
-        a3s_code_core::run::RunEventRecord {
+        aster_core::run::RunEventRecord {
             sequence: 1,
             timestamp_ms: 10,
             event: AgentEvent::ToolStart {
@@ -1376,7 +1376,7 @@ fn trimmed_event_windows_cannot_certify_otherwise_complete_metrics() {
                 name: "read".into(),
             },
         },
-        a3s_code_core::run::RunEventRecord {
+        aster_core::run::RunEventRecord {
             sequence: 2,
             timestamp_ms: 30,
             event: AgentEvent::ToolEnd {

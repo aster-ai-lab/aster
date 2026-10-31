@@ -61,7 +61,7 @@ export class DocxNumberingChangePatchCollector {
     if (this.patches.length >= MAX_NUMBERING_CHANGE_PATCHES) {
       throw new Error('Document exceeds the numbering revision limit.');
     }
-    const marker = `__A3S_WORK_NUMBERING_CHANGE_EXPORT_${this.patches.length + 1}__`;
+    const marker = `__ASTER_WORK_NUMBERING_CHANGE_EXPORT_${this.patches.length + 1}__`;
     const original =
       snapshot.originalLevels.length > 0
         ? rewriteNumberingChangeOriginal(

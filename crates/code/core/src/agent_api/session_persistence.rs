@@ -123,7 +123,7 @@ pub(crate) struct SessionPersistenceContext {
     package_binding: Option<crate::package_context::PackageBindingV1>,
     immutable_content_adapter_binding: Option<crate::tools::ImmutableContentAdapterBindingV1>,
     tool_result_transform_policy: crate::tools::ToolResultTransformPolicyV1,
-    fact_log: Arc<std::sync::Mutex<Option<Arc<a3s_effect::FileLog>>>>,
+    fact_log: Arc<std::sync::Mutex<Option<Arc<aster_effect::FileLog>>>>,
     auto_save: bool,
     session_review: Arc<RwLock<crate::session_review::SessionReviewStoreV1>>,
 }

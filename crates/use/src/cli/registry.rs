@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
-use a3s_use_core::{UseError, UseResult};
-use a3s_use_extension::{
+use aster_use_core::{UseError, UseResult};
+use aster_use_extension::{
     inspect_verified_target_cache, prune_verified_target_cache, GitHubRegistryRepository,
     RegistrySourceInput, RegistrySourceStore, TrustedRegistry, VerifiedTargetCachePolicy,
     DEFAULT_GITHUB_REGISTRY_PATH, DEFAULT_GITHUB_REGISTRY_REF,
@@ -418,7 +418,7 @@ mod tests {
             "add".to_owned(),
             "official".to_owned(),
             "--github".to_owned(),
-            "A3S-Lab/Use-Registry".to_owned(),
+            "aster-ai-lab/Use-Registry".to_owned(),
             "--github-ref".to_owned(),
             "main".to_owned(),
             "--github-path".to_owned(),
@@ -432,7 +432,7 @@ mod tests {
 
         assert_eq!(
             input.registry_url,
-            "https://raw.githubusercontent.com/A3S-Lab/Use-Registry/main/registry/"
+            "https://raw.githubusercontent.com/aster-ai-lab/Use-Registry/main/registry/"
         );
         assert_eq!(input.root_sha256, format!("sha256:{}", "a".repeat(64)));
     }
@@ -446,7 +446,7 @@ mod tests {
             "--url".to_owned(),
             "https://packages.example/".to_owned(),
             "--github".to_owned(),
-            "A3S-Lab/Use-Registry".to_owned(),
+            "aster-ai-lab/Use-Registry".to_owned(),
             "--trust-root".to_owned(),
             "a".repeat(64),
         ];

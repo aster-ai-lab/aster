@@ -37,21 +37,21 @@ struct RunCancellationPending {
 pub enum AgentProtocolHostError {
     #[error(transparent)]
     Protocol(#[from] AgentProtocolError),
-    #[error("A3S Code Agent command targets another release")]
+    #[error("Aster Code Agent command targets another release")]
     ReleaseMismatch,
-    #[error("A3S Code Agent release declares another protocol")]
+    #[error("Aster Code Agent release declares another protocol")]
     ReleaseProtocolMismatch,
-    #[error("A3S Code Agent command targets another session")]
+    #[error("Aster Code Agent command targets another session")]
     SessionMismatch,
-    #[error("A3S Code Agent run was not found")]
+    #[error("Aster Code Agent run was not found")]
     RunNotFound,
-    #[error("A3S Code Agent run is not active; recover it from a durable checkpoint")]
+    #[error("Aster Code Agent run is not active; recover it from a durable checkpoint")]
     RunUnavailable,
-    #[error("A3S Code Agent sequence cannot be represented on this host")]
+    #[error("Aster Code Agent sequence cannot be represented on this host")]
     SequenceOverflow,
-    #[error("A3S Code Agent change set is still being captured")]
+    #[error("Aster Code Agent change set is still being captured")]
     ChangeSetPending,
-    #[error("A3S Code Agent run has no Git-compatible change set")]
+    #[error("Aster Code Agent run has no Git-compatible change set")]
     ChangeSetUnavailable,
     #[error(transparent)]
     Code(#[from] CodeError),
@@ -64,7 +64,7 @@ impl AgentProtocolHostError {
             Self::Code(CodeError::Internal(source))
                 if source.downcast_ref::<RunCancellationPending>().is_some() =>
             {
-                "a3s.code.agent_protocol.run_cancellation_pending"
+                "aster.code.agent_protocol.run_cancellation_pending"
             }
             Self::Code(error) => error.runtime_code(),
             _ => self.code(),
@@ -74,14 +74,14 @@ impl AgentProtocolHostError {
     pub const fn code(&self) -> &'static str {
         match self {
             Self::Protocol(error) => error.code(),
-            Self::ReleaseMismatch => "a3s.code.agent_protocol.release_mismatch",
-            Self::ReleaseProtocolMismatch => "a3s.code.agent_protocol.release_protocol_mismatch",
-            Self::SessionMismatch => "a3s.code.agent_protocol.session_mismatch",
-            Self::RunNotFound => "a3s.code.agent_protocol.run_not_found",
-            Self::RunUnavailable => "a3s.code.agent_protocol.run_unavailable",
-            Self::SequenceOverflow => "a3s.code.agent_protocol.sequence_overflow",
-            Self::ChangeSetPending => "a3s.code.agent_protocol.change_set_pending",
-            Self::ChangeSetUnavailable => "a3s.code.agent_protocol.change_set_unavailable",
+            Self::ReleaseMismatch => "aster.code.agent_protocol.release_mismatch",
+            Self::ReleaseProtocolMismatch => "aster.code.agent_protocol.release_protocol_mismatch",
+            Self::SessionMismatch => "aster.code.agent_protocol.session_mismatch",
+            Self::RunNotFound => "aster.code.agent_protocol.run_not_found",
+            Self::RunUnavailable => "aster.code.agent_protocol.run_unavailable",
+            Self::SequenceOverflow => "aster.code.agent_protocol.sequence_overflow",
+            Self::ChangeSetPending => "aster.code.agent_protocol.change_set_pending",
+            Self::ChangeSetUnavailable => "aster.code.agent_protocol.change_set_unavailable",
             Self::Code(error) => error.code(),
         }
     }
@@ -123,7 +123,7 @@ impl From<ExactRecoveryError> for AgentProtocolExactRecoveryError {
     }
 }
 
-/// One release- and session-bound A3S Code headless protocol host.
+/// One release- and session-bound Aster Code headless protocol host.
 ///
 /// Cloud, Fleet, and other callers may transport commands and receipts, but
 /// this adapter is the sole mapping into Code's run lifecycle and event store.
@@ -624,35 +624,35 @@ mod tests {
         );
         assert_eq!(
             AgentProtocolHostError::ReleaseMismatch.code(),
-            "a3s.code.agent_protocol.release_mismatch"
+            "aster.code.agent_protocol.release_mismatch"
         );
         assert_eq!(
             AgentProtocolHostError::ReleaseProtocolMismatch.code(),
-            "a3s.code.agent_protocol.release_protocol_mismatch"
+            "aster.code.agent_protocol.release_protocol_mismatch"
         );
         assert_eq!(
             AgentProtocolHostError::SessionMismatch.code(),
-            "a3s.code.agent_protocol.session_mismatch"
+            "aster.code.agent_protocol.session_mismatch"
         );
         assert_eq!(
             AgentProtocolHostError::RunNotFound.code(),
-            "a3s.code.agent_protocol.run_not_found"
+            "aster.code.agent_protocol.run_not_found"
         );
         assert_eq!(
             AgentProtocolHostError::RunUnavailable.code(),
-            "a3s.code.agent_protocol.run_unavailable"
+            "aster.code.agent_protocol.run_unavailable"
         );
         assert_eq!(
             AgentProtocolHostError::SequenceOverflow.code(),
-            "a3s.code.agent_protocol.sequence_overflow"
+            "aster.code.agent_protocol.sequence_overflow"
         );
         assert_eq!(
             AgentProtocolHostError::ChangeSetPending.code(),
-            "a3s.code.agent_protocol.change_set_pending"
+            "aster.code.agent_protocol.change_set_pending"
         );
         assert_eq!(
             AgentProtocolHostError::ChangeSetUnavailable.code(),
-            "a3s.code.agent_protocol.change_set_unavailable"
+            "aster.code.agent_protocol.change_set_unavailable"
         );
         assert_eq!(
             AgentProtocolHostError::Code(CodeError::TaskSchedulerClosed).code(),

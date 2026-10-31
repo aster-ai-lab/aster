@@ -2,10 +2,10 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
-pub(crate) const RECEIPT_FILE: &str = ".a3s-bge.json";
+pub(crate) const RECEIPT_FILE: &str = ".aster-bge.json";
 const RECEIPT_SCHEMA_VERSION: u32 = 1;
 const MAX_MODEL_FILE_BYTES: u64 = 3 * 1024 * 1024 * 1024;
 const MAX_TOKENIZER_FILE_BYTES: u64 = 64 * 1024 * 1024;
@@ -40,8 +40,8 @@ impl Family {
 
     fn env_override(self) -> &'static str {
         match self {
-            Self::BgeM3 => "A3S_BGE_M3_MODEL_DIR",
-            Self::BgeRerankerV2M3 => "A3S_BGE_RERANKER_MODEL_DIR",
+            Self::BgeM3 => "ASTER_BGE_M3_MODEL_DIR",
+            Self::BgeRerankerV2M3 => "ASTER_BGE_RERANKER_MODEL_DIR",
         }
     }
 
@@ -265,28 +265,28 @@ pub(crate) fn owned_install(path: &Path, family: Family) -> bool {
 pub(crate) fn managed_root() -> UseResult<PathBuf> {
     // Set-but-empty values are unset: without the filter an empty string
     // resolves to the process working directory and installs land there.
-    if let Some(value) = std::env::var_os("A3S_USE_BGE_HOME").filter(|v| !v.is_empty()) {
+    if let Some(value) = std::env::var_os("ASTER_USE_BGE_HOME").filter(|v| !v.is_empty()) {
         return absolute(PathBuf::from(value));
     }
-    if let Some(value) = std::env::var_os("A3S_DATA_HOME").filter(|v| !v.is_empty()) {
+    if let Some(value) = std::env::var_os("ASTER_DATA_HOME").filter(|v| !v.is_empty()) {
         return Ok(absolute(PathBuf::from(value))?.join("use/bge"));
     }
     if let Some(value) = std::env::var_os("XDG_DATA_HOME").filter(|v| !v.is_empty()) {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s/use/bge"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster/use/bge"));
     }
     if let Some(home) = std::env::var_os("HOME")
         .filter(|v| !v.is_empty())
         .map(PathBuf::from)
     {
-        return Ok(absolute(home)?.join(".local/share/a3s/use/bge"));
+        return Ok(absolute(home)?.join(".local/share/aster/use/bge"));
     }
     #[cfg(windows)]
     if let Some(value) = std::env::var_os("LOCALAPPDATA") {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s/use/bge"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster/use/bge"));
     }
     Err(crate::bge_error(
         "use.bge.data_home_missing",
-        "Cannot determine the A3S Use BGE data directory.",
+        "Cannot determine the Aster Use BGE data directory.",
     ))
 }
 
@@ -373,7 +373,7 @@ fn model_missing(family: Family, managed: &Path) -> UseError {
         ),
     )
     .with_suggestion(
-        "Import the model through the platform model supply, then run 'a3s-use-bge install --help' for the exact install command.",
+        "Import the model through the platform model supply, then run 'aster-use-bge install --help' for the exact install command.",
     )
     .with_detail("source", "missing")
     .with_detail("modelDir", managed.display().to_string())
@@ -387,7 +387,7 @@ fn model_error(
 ) -> UseError {
     UseError::new("use.bge.model_invalid", message)
         .with_suggestion(format!(
-            "Run 'a3s-use-bge install {} --force …' (see 'a3s-use-bge install --help') to restore the model.",
+            "Run 'aster-use-bge install {} --force …' (see 'aster-use-bge install --help') to restore the model.",
             family.as_str()
         ))
         .with_detail("source", source_name(source))

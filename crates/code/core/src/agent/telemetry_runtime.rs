@@ -29,10 +29,10 @@ fn record_tool_result_metadata(tool_name: &str, args: &serde_json::Value, exit_c
     span.record(crate::telemetry::ATTR_TOOL_SUCCESS, exit_code == 0);
 
     tracing::debug!(
-        a3s.tool.name = tool_name,
-        a3s.tool.exit_code = exit_code,
-        a3s.tool.success = exit_code == 0,
-        a3s.tool.args_bytes = args_bytes,
+        aster.tool.name = tool_name,
+        aster.tool.exit_code = exit_code,
+        aster.tool.success = exit_code == 0,
+        aster.tool.args_bytes = args_bytes,
         "Tool execution result recorded"
     );
 }

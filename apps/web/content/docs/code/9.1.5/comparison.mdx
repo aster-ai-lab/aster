@@ -1,13 +1,13 @@
 export const meta = {
   title: 'Harness 实现对比',
-  description: '比较 A3S Code、Codex、Claude Agent SDK、Deep Agents 和 LangGraph 的用途与接入方式。',
+  description: '比较 Aster Code、Codex、Claude Agent SDK、Deep Agents 和 LangGraph 的用途与接入方式。',
   updated: '2026-10-26',
   label: '框架对比',
 };
 
 ## Harness 与编排框架各做什么
 
-A3S Code、Codex、Claude Agent SDK 和 Deep Agents 都提供模型调用、工具执行和上下文管理能力，组织模型使用工具完成多步任务。
+Aster Code、Codex、Claude Agent SDK 和 Deep Agents 都提供模型调用、工具执行和上下文管理能力，组织模型使用工具完成多步任务。
 
 LangGraph 主要负责流程编排：保存状态、安排步骤、暂停和恢复任务。具体使用什么工具、如何组织 agent、怎样验收结果，需要由上层应用决定。Deep Agents 就是在 LangGraph 上构建的一套 harness。
 
@@ -15,11 +15,11 @@ LangGraph 主要负责流程编排：保存状态、安排步骤、暂停和恢�
 
 ## 五种实现的侧重点
 
-这些框架的功能有不少重叠。例如，权限检查、会话恢复和工具扩展并非 A3S Code 独有。实际选型时，更需要看接入方式，以及哪些工作由框架完成、哪些需要应用自己实现。
+这些框架的功能有不少重叠。例如，权限检查、会话恢复和工具扩展并非 Aster Code 独有。实际选型时，更需要看接入方式，以及哪些工作由框架完成、哪些需要应用自己实现。
 
 <FrameworkTable />
 
-## A3S Code 的三个取舍
+## Aster Code 的三个取舍
 
 ### 用日志恢复执行状态
 
@@ -35,7 +35,7 @@ LangGraph 主要负责流程编排：保存状态、安排步骤、暂停和恢�
 
 ## 选型依据
 
-已有 Rust 应用且需要嵌入执行循环时，可以使用 A3S Code 的会话接口。围绕 Codex 或 Claude Code 开发应用时，使用对应 SDK 可以减少会话、工具和上下文管理的开发工作。
+已有 Rust 应用且需要嵌入执行循环时，可以使用 Aster Code 的会话接口。围绕 Codex 或 Claude Code 开发应用时，使用对应 SDK 可以减少会话、工具和上下文管理的开发工作。
 
 需要自行规定固定步骤、模型步骤和人工审批流程时，LangGraph 提供较底层的控制能力。需要文件系统、子代理和记忆组件时，可以选择 Deep Agents。
 
@@ -51,4 +51,4 @@ LangGraph 主要负责流程编排：保存状态、安排步骤、暂停和恢�
 - [Claude Agent SDK 概览](https://code.claude.com/docs/en/agent-sdk/overview)
 - [Deep Agents 概览](https://docs.langchain.com/oss/python/deepagents/overview)
 - [LangGraph 概览](https://docs.langchain.com/oss/python/langgraph/overview)
-- [A3S Code 的核心职责](https://github.com/aster-ai-lab/aster/blob/main/crates/code/docs/architecture/core-authorities.md)
+- [Aster Code 的核心职责](https://github.com/aster-ai-lab/aster/blob/main/crates/code/docs/architecture/core-authorities.md)

@@ -1,4 +1,4 @@
-//! `a3s-box tag` command — create a tag that refers to an existing image.
+//! `aster-box tag` command — create a tag that refers to an existing image.
 
 use clap::Args;
 
@@ -53,7 +53,7 @@ pub async fn execute(args: ImageTagArgs) -> Result<(), Box<dyn std::error::Error
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_runtime::StoredImage;
+    use aster_box_runtime::StoredImage;
     use chrono::Utc;
     use std::path::PathBuf;
 

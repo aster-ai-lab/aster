@@ -13,7 +13,7 @@ export const meta = {
 
 ```toml
 [dependencies]
-a3s-flow = { path = "../../crates/flow", default-features = false }
+aster-flow = { path = "../../crates/flow", default-features = false }
 async-trait = "0.1"
 serde_json = "1"
 tokio = { version = "1", features = ["macros", "rt"] }
@@ -26,7 +26,7 @@ tokio = { version = "1", features = ["macros", "rt"] }
 下面的完整示例使用固定步骤 ID `format`。决策函数先读取已提交结果；只有结果尚不存在时才调度步骤。步骤接收输入并返回 JSON，没有外部服务依赖。
 
 ```rust
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowSpec,
 };
@@ -41,7 +41,7 @@ impl FlowRuntime for GreetingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(output) = ctx.step_output("format") {
             return Ok(ctx.complete(output.clone()));
@@ -49,7 +49,7 @@ impl FlowRuntime for GreetingRuntime {
         Ok(ctx.schedule_step("format", "format", ctx.input().clone()))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<Value> {
         if invocation.step_name != "format" {
             return Err(FlowError::Runtime("unknown step".into()));
         }
@@ -60,7 +60,7 @@ impl FlowRuntime for GreetingRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(GreetingRuntime));
     let spec = WorkflowSpec::rust_embedded("docs.greeting", "0.1.0", "docs", "main");
     let run_id = engine.start_with_id("greeting-1", spec, json!({ "name": "Aster" })).await?;
@@ -90,7 +90,7 @@ async fn main() -> a3s_flow::Result<()> {
 更完整的类型化示例来自仓库现有文件：
 
 ```sh
-cargo run --locked -p a3s-flow --no-default-features --example sequential_steps
+cargo run --locked -p aster-flow --no-default-features --example sequential_steps
 ```
 
 该示例在内存中生成模拟账单和授权结果，不调用真实支付服务。

@@ -36,7 +36,7 @@ pub enum IoBackend {
 /// they have an implemented execution path:
 ///
 /// ```compile_fail
-/// use a3s_vec::{ConfigBuilder, LogLevel, LogType};
+/// use aster_vec::{ConfigBuilder, LogLevel, LogType};
 ///
 /// let _ = (LogLevel::Info, LogType::Console);
 /// let _ = ConfigBuilder::new()
@@ -50,7 +50,7 @@ pub enum IoBackend {
 /// immutable mmap snapshot backend:
 ///
 /// ```
-/// use a3s_vec::{ConfigBuilder, IoBackend};
+/// use aster_vec::{ConfigBuilder, IoBackend};
 ///
 /// let _ = ConfigBuilder::new().io_backend(IoBackend::Mmap).build();
 /// ```

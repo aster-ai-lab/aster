@@ -609,8 +609,8 @@ async fn matrix_join_spawn(spawn: AgentRunSpawn) -> String {
 }
 
 async fn matrix_scenario(mode: MatrixMode, file_session: bool, file_memory: bool) {
-    use a3s_effect::{FileLog, LogStore, NewFact};
-    use a3s_memory::{FileMemoryStore, InMemoryStore, MemoryStore};
+    use aster_effect::{FileLog, LogStore, NewFact};
+    use aster_durable_memory::{FileMemoryStore, InMemoryStore, MemoryStore};
     use std::sync::atomic::Ordering;
     use std::time::Duration;
 
@@ -973,7 +973,7 @@ async fn matrix_scenario(mode: MatrixMode, file_session: bool, file_memory: bool
         );
         assert_eq!(
             item.metadata.get("schema").map(String::as_str),
-            Some("a3s.memory.durable.v1")
+            Some("aster.memory.durable.v1")
         );
     }
     assert!(std::fs::read(log_path).unwrap().starts_with(&prefix));
@@ -984,9 +984,9 @@ async fn matrix_scenario(mode: MatrixMode, file_session: bool, file_memory: bool
         .collect();
     assert_eq!(decisions.len(), 1);
     assert_eq!(
-        serde_json::from_value::<a3s_effect::coding::ModelDecision>(decisions[0].payload.clone())
+        serde_json::from_value::<aster_effect::coding::ModelDecision>(decisions[0].payload.clone())
             .unwrap(),
-        a3s_effect::coding::ModelDecision::Text {
+        aster_effect::coding::ModelDecision::Text {
             text: MATRIX_ANSWER.into()
         }
     );

@@ -1,7 +1,7 @@
 #![cfg(any(windows, target_os = "linux"))]
 
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, ToolDefinition,
 };
 use acp::Agent as _;
@@ -56,7 +56,7 @@ impl LlmClient for NativeCommandThenAnswer {
                 }],
                 reasoning_content: None,
                 transcript_text: None,
-                transcript_visibility: a3s_code_core::llm::TranscriptVisibility::Wire,
+                transcript_visibility: aster_core::llm::TranscriptVisibility::Wire,
             }
         } else {
             Message::assistant("NEXT-OWNED")
@@ -83,26 +83,26 @@ async fn send_now_retires_the_real_native_worker_before_admitting_the_next_turn(
         let mut launch = tests::test_launch(Some(root.path().join("sessions")));
         launch.workspace = workspace.clone();
         let mut config = launch.config.clone();
-        config.memory = Some(a3s_code_core::memory::MemoryConfig { llm_extraction: false, ..Default::default() });
-        let host = A3sCodeAgent::new(launch);
+        config.memory = Some(aster_core::memory::MemoryConfig { llm_extraction: false, ..Default::default() });
+        let host = AsterCodeAgent::new(launch);
         let id = host.new_session(acp::NewSessionRequest::new(&workspace)).await.unwrap().session_id;
         let old = host.sessions.lock().await.get(id.0.as_ref()).unwrap().session.clone();
         old.close().await;
-        let core = a3s_code_core::Agent::from_config(config).await.unwrap();
+        let core = aster_core::Agent::from_config(config).await.unwrap();
         let command = if cfg!(windows) {
             "[IO.File]::WriteAllText('started.txt', 'started'); Start-Sleep -Seconds 8; [IO.File]::WriteAllText('late.txt', 'late')"
         } else {
             "printf started > started.txt; sleep 8; printf late > late.txt"
         };
         let client = Arc::new(NativeCommandThenAnswer::new(command.into()));
-        let session = Arc::new(core.session_async(workspace.display().to_string(), Some(a3s_code_core::SessionOptions::new()
+        let session = Arc::new(core.session_async(workspace.display().to_string(), Some(aster_core::SessionOptions::new()
             .with_llm_client(client.clone())
             .with_session_id(id.0.to_string())
-            .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+            .with_planning_mode(aster_core::PlanningMode::Disabled)
             .with_continuation(false)
             .with_auto_delegation_enabled(false)
-            .with_prompt_slots(a3s_code_core::SystemPromptSlots { extra: Some("HOST-GUIDANCE-KEPT".into()), ..Default::default() })
-            .with_permission_policy(a3s_code_core::permissions::PermissionPolicy { default_decision: a3s_code_core::permissions::PermissionDecision::Allow, ..Default::default() })
+            .with_prompt_slots(aster_core::SystemPromptSlots { extra: Some("HOST-GUIDANCE-KEPT".into()), ..Default::default() })
+            .with_permission_policy(aster_core::permissions::PermissionPolicy { default_decision: aster_core::permissions::PermissionDecision::Allow, ..Default::default() })
         )).await.unwrap());
         host.sessions.lock().await.get_mut(id.0.as_ref()).unwrap().session = session.clone();
         let mut first = Box::pin(host.prompt(acp::PromptRequest::new(id.clone(), vec![acp::ContentBlock::Text(acp::TextContent::new("run original command"))])));
@@ -129,7 +129,7 @@ async fn send_now_retires_the_real_native_worker_before_admitting_the_next_turn(
             assert!(seen[1].1.contains("[owed work]") && seen[1].1.contains("started.txt"));
             assert!(seen[1].1.contains("HOST-GUIDANCE-KEPT"));
         }
-        assert!(session.runs().await.iter().any(|run| run.status == a3s_code_core::run::RunStatus::Failed));
+        assert!(session.runs().await.iter().any(|run| run.status == aster_core::run::RunStatus::Failed));
         assert!(session.cancel_and_settle(Duration::ZERO, Duration::ZERO).await, "the failed turn must release actual admission without clearing its obligations");
         tokio::time::sleep(Duration::from_secs(9)).await;
         assert!(!workspace.join("late.txt").exists());
@@ -151,22 +151,22 @@ async fn native_failed_shell_keeps_both_output_streams_in_the_model_request() {
     std::fs::write(root.path().join(name), &script).unwrap();
     let client = Arc::new(NativeCommandThenAnswer::new(command.into()));
     let mut config = tests::test_launch(None).config;
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         ..Default::default()
     });
-    let core = a3s_code_core::Agent::from_config(config).await.unwrap();
+    let core = aster_core::Agent::from_config(config).await.unwrap();
     let session = core
         .session_async(
             root.path().display().to_string(),
             Some(
-                a3s_code_core::SessionOptions::new()
+                aster_core::SessionOptions::new()
                     .with_llm_client(client.clone())
                     .with_continuation(false)
                     .with_auto_delegation_enabled(false)
-                    .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
-                    .with_permission_policy(a3s_code_core::permissions::PermissionPolicy {
-                        default_decision: a3s_code_core::permissions::PermissionDecision::Allow,
+                    .with_planning_mode(aster_core::PlanningMode::Disabled)
+                    .with_permission_policy(aster_core::permissions::PermissionPolicy {
+                        default_decision: aster_core::permissions::PermissionDecision::Allow,
                         ..Default::default()
                     }),
             ),
@@ -192,7 +192,7 @@ async fn native_failed_shell_keeps_both_output_streams_in_the_model_request() {
         .flat_map(|message| &message.content)
         .filter_map(|block| match block {
             ContentBlock::ToolResult {
-                content: a3s_code_core::llm::ToolResultContentField::Text(text),
+                content: aster_core::llm::ToolResultContentField::Text(text),
                 is_error,
                 ..
             } => Some((text, is_error)),

@@ -1,4 +1,4 @@
-//! Versioned hardware-vm contract shared by A3S Box and the OCI runtime.
+//! Versioned hardware-vm contract shared by Aster Box and the OCI runtime.
 //!
 //! KVM, HVF, and WHPX keep one profile: device roles, lifecycle names,
 //! snapshot tier names, vCPU and memory bounds, and control-channel limits.

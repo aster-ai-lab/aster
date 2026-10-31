@@ -10,7 +10,7 @@
 
 .work-spreadsheet-pivot-manager > aside {
   padding: 8px;
-  border-right: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-pivot-manager .create,
@@ -22,10 +22,10 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 5px;
-  background: var(--a3s-bg);
-  color: var(--a3s-muted);
+  background: var(--aster-bg);
+  color: var(--aster-muted);
   font-size: 9px;
   cursor: pointer;
 }
@@ -55,14 +55,14 @@
   border: 0;
   border-radius: 5px;
   background: transparent;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   text-align: left;
   cursor: pointer;
 }
 
 .work-spreadsheet-pivot-list > button:hover,
 .work-spreadsheet-pivot-list > button.active {
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-pivot-list strong {
@@ -74,7 +74,7 @@
 
 .work-spreadsheet-pivot-list span,
 .work-spreadsheet-pivot-list > p {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -109,7 +109,7 @@
 .work-spreadsheet-pivot-layout {
   min-width: 0;
   padding: 7px 8px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
 }
 
@@ -126,7 +126,7 @@
 .work-spreadsheet-pivot-layout > header span,
 .work-spreadsheet-pivot-layout > p {
   margin: 0;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -152,7 +152,7 @@
 }
 
 .work-spreadsheet-pivot-field-row > span {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -180,7 +180,7 @@
 }
 
 .work-spreadsheet-pivot-manager .filter-hint {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -191,7 +191,7 @@
   gap: 5px;
   min-height: 205px;
   padding: 24px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   text-align: center;
 }
 

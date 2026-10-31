@@ -1,4 +1,4 @@
-# A3S Code Full-Feature Test Plan (First Principles)
+# Aster Code Full-Feature Test Plan (First Principles)
 
 **Status:** planning contract + executed Core hermetic/L5 evidence (2026-09-21,
 Core line `8.6.0`, post HARNESS-CONV5 slim)  
@@ -7,8 +7,8 @@ policy, events, retrieval, evidence, the Rust SDK and ACP — not Desktop
 chrome, not Cloud UI, not Use package markets.
 
 **Live model pin (this plan):**
-`A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash` against monorepo
-`./.a3s/config.acl`. The ACL does **not** declare that exact id; Layer C
+`ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash` against monorepo
+`./.aster/config.acl`. The ACL does **not** declare that exact id; Layer C
 remaps it to declared `boyue/bailian/deepseek-v4.1-flash` via
 `core/tests/support/layer_c_model.rs`. Recipe default without override is
 `boyue/deepseek-v4-flash` (`default_model` in the same ACL). Both Flash peers
@@ -33,7 +33,7 @@ external-owner gap.
 
 ## 0. Why three test kinds (first principles)
 
-A3S Code fails in three different ways. One suite cannot catch all three.
+Aster Code fails in three different ways. One suite cannot catch all three.
 
 | Kind | Question it answers | What it must never become |
 | --- | --- | --- |
@@ -64,7 +64,7 @@ Derivation:
 ### 1.1 What “full feature” means
 
 Full feature = every **product capability** returned by
-`a3s_code_core::sdk_capabilities()` (baseline + advanced), plus the Core
+`aster_core::sdk_capabilities()` (baseline + advanced), plus the Core
 mechanisms that make those capabilities safe:
 
 | Axis | In scope | Out of scope |
@@ -108,22 +108,22 @@ Concurrency · Resources · Performance (separate) · SDK parity · Documentatio
 
 ## 2. Model pin contract (Layer C / L5)
 
-Source of truth: monorepo `./.a3s/config.acl` + `core/tests/support/layer_c_model.rs`.
+Source of truth: monorepo `./.aster/config.acl` + `core/tests/support/layer_c_model.rs`.
 
 | Symbol | Value | Role |
 | --- | --- | --- |
 | ACL `default_model` | `boyue/deepseek-v4-flash` | Declared default; `just layer-c-live-e2e` fallback |
 | Declared bailian Flash | `boyue/bailian/deepseek-v4.1-flash` | Alternate peer for model-switch E2E |
-| **This plan’s L5 pin** | `A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash` | Remaps → `boyue/bailian/deepseek-v4.1-flash` |
+| **This plan’s L5 pin** | `ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash` | Remaps → `boyue/bailian/deepseek-v4.1-flash` |
 | Loader constants | `REQUIRED_DEFAULT_MODEL`, `ALTERNATE_FLASH_MODEL` | Asserted by live suites |
 
 Operator command for this plan’s L5:
 
 ```bash
 cd crates/code
-export A3S_CONFIG_FILE="$(git rev-parse --show-toplevel)/.a3s/config.acl"
-export A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash
-export A3S_LAYER_C_EVIDENCE=/tmp/a3s-layer-c-bailian-flash-plan
+export ASTER_CONFIG_FILE="$(git rev-parse --show-toplevel)/.aster/config.acl"
+export ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash
+export ASTER_LAYER_C_EVIDENCE=/tmp/aster-layer-c-bailian-flash-plan
 just layer-c-live-e2e
 # Expect FINAL.txt: LAYER_C_PASS and logs show remapped
 # boyue/bailian/deepseek-v4.1-flash
@@ -146,7 +146,7 @@ Rules:
 Discover at runtime (do not hand-maintain a second list):
 
 ```bash
-cargo test -p a3s-code-core --lib sdk_capabilities -- --nocapture
+cargo test -p aster-core --lib sdk_capabilities -- --nocapture
 ```
 
 ### 3.1 Baseline (`local-code`) — must ship in default product
@@ -197,7 +197,7 @@ Research wire values remain a compiled contract under `feature = "research"`
 
 | Kernel | Protects | Unit / integ home |
 | --- | --- | --- |
-| Effect isolation / orphan `.a3s-isolate-*` | workspace writes | `effect_isolation.rs` |
+| Effect isolation / orphan `.aster-isolate-*` | workspace writes | `effect_isolation.rs` |
 | Native sandbox + process-host opt-in | `bash` | `sandbox/*`; live native + issue-form |
 | Safe HTTP / Fake-IP / SSRF | fetch/search/download | `safe_http` + live capabilities |
 | Mutation verify gate | harness completion | `verification.rs` + harness_loop live |
@@ -222,8 +222,8 @@ Research wire values remain a compiled contract under `feature = "research"`
 **Command surface:**
 
 ```bash
-cargo test -p a3s-code-core --no-default-features --features local-code --lib
-cargo test -p a3s-code-core --lib   # default local-code
+cargo test -p aster-core --no-default-features --features local-code --lib
+cargo test -p aster-core --lib   # default local-code
 ```
 
 **Catalog:** [test-cases/baseline-*.md](test-cases/), [retrieval.md](test-cases/retrieval.md),
@@ -247,11 +247,11 @@ protocol+harness, SDK↔Core, workspace backend, MCP fixture process).
 
 ```bash
 just harness-convergence-check          # A1–A4 thin + SDK align
-cargo test -p a3s-code-core --test agent_protocol_v1
-cargo test -p a3s-code-core --test session_checkpoint_v1
-cargo test -p a3s-code-core --features advanced-harness --test test_state_graph_integration
-cargo test -p a3s-code-core --features s3 --test test_s3_backend
-cargo test --locked -p a3s-code-core --lib sdk_capabilities
+cargo test -p aster-core --test agent_protocol_v1
+cargo test -p aster-core --test session_checkpoint_v1
+cargo test -p aster-core --features advanced-harness --test test_state_graph_integration
+cargo test -p aster-core --features s3 --test test_s3_backend
+cargo test --locked -p aster-core --lib sdk_capabilities
 # Rust/ACP runtime: owning-package tests in the root workspace
 ```
 
@@ -304,7 +304,7 @@ still gap G7.
 | Layer | Name | Gate | Command / owner |
 | --- | --- | --- | --- |
 | **L0** | Contract discovery | PR | Core capability-contract tests + `sdk_capabilities` golden order |
-| **L1** | Thin hermetic Core | PR (Required CI) | `just harness-convergence-check` + `cargo test -p a3s-code-core --lib` (local-code) |
+| **L1** | Thin hermetic Core | PR (Required CI) | `just harness-convergence-check` + `cargo test -p aster-core --lib` (local-code) |
 | **L2** | F-table kernel coverage | Release / scheduled | llvm-cov F01–F30 kernels ≥95% (`just f-table-cov`) |
 | **L3** | Advanced hermetic | Path / feature CI | `advanced-harness`, `s3`, `telemetry`, `headless-search` suites |
 | **L4** | SDK runtime parity | PR / owning-package CI | Rust/ACP capability, checkpoint and immutable fixtures |
@@ -317,7 +317,7 @@ Orchestration recipes already in-tree:
 
 ```bash
 just harness-convergence-check   # L1 / Layer A1–A4
-just layer-c-live-e2e            # L5 / Layer C (set A3S_TEST_MODEL for bailian)
+just layer-c-live-e2e            # L5 / Layer C (set ASTER_TEST_MODEL for bailian)
 just test                        # broad Core suite
 just test-cov                    # coverage UX
 ```
@@ -331,7 +331,7 @@ L0+L1+L3(default features for the artifact)+L4 without network.
 
 | Surface | Owner | Code-owned evidence | Not Code’s job |
 | --- | --- | --- | --- |
-| `a3s code` TUI | CLI | Core session/tool contracts used by CLI hermetics | Panel chrome, slash UX |
+| `aster code` TUI | CLI | Core session/tool contracts used by CLI hermetics | Panel chrome, slash UX |
 | Desktop workbench | Desktop | SDK host contract + capability digests | Windowing, branding |
 | Cloud harness | Cloud | Agent protocol + CAR fixtures | Multi-tenant policy |
 | Harbor Terminal-Bench | Harbor + Code runner | [TERMINAL_BENCH.md](TERMINAL_BENCH.md) | Cluster fleet |
@@ -348,10 +348,10 @@ These are first-class cases because they broke real providers or builds:
 | Pin | Mechanism | Hermetic evidence | Live |
 | --- | --- | --- | --- |
 | **8.6.0 image `read`** | JPEG/PNG/GIF/WebP tool results stay `image_url` on the OpenAI-compatible path | `tools/builtin/read.rs`, `llm/openai.rs` (#156) | Optional |
-| **8.6.0 orphan isolate** | Empty `.a3s-isolate-*` sibling is cleared before bind | `effect_isolation.rs` `bind_clears_a_stale_empty_isolation_directory` (#155) | — |
+| **8.6.0 orphan isolate** | Empty `.aster-isolate-*` sibling is cleared before bind | `effect_isolation.rs` `bind_clears_a_stale_empty_isolation_directory` (#155) | — |
 | **8.6.0 slim serve removal** | No AgentDir HTTP serve / filesystem-first mode in Core or SDKs | tree/API absence + CHANGELOG; do not revive serve suites | — |
 | **8.5.12 batch schema** | No application `$ref` objects under `batch` parameters `examples` | `tools/builtin/batch.rs` schema asserts (#147) | Optional: GLM Coding turn with `batch` presented |
-| **8.5.11 musl** | `a3s-sandbox` 0.1.4 rlimit typing | Node musl optional native build in Release | Release matrix |
+| **8.5.11 musl** | `aster-sandbox` 0.1.4 rlimit typing | Node musl optional native build in Release | Release matrix |
 | **8.5.10 Gate 7 + Fake-IP** | Native sandbox + DoH fallback | `safe_http` + `test_native_sandbox_live_e2e` | Layer C capabilities |
 | **Leaked tool markup** | WorkBuddy / Claude / DSML recovery | `llm::text_tool_calls` | issue-form / Flash |
 | **Unverified mutation** | Completion gate | verification / harness_loop unit | `test_harness_loop_live_e2e` |
@@ -360,7 +360,7 @@ These are first-class cases because they broke real providers or builds:
 | **9.0.0 park-until-fact** | Confirm/question settle only on answer facts | Effect confirmation/question + file_reopen park suites | — |
 | **9.0.0 resume tool-once** | Missing tool result runs once on resume | Effect failed-tool resume + file_reopen | — |
 | **9.0.0 empty-tool cap** | Tool-round cap is empty tool list on next completion | `packages/effect/tests/tool_round_cap.rs` | — |
-| **9.0.0 a3s-vec FTS** | `a3s_vec_fts_v1`; incompatible `zvec_rust_fts_v1` rebuilds | Workspace FTS generation / retrieval hermetics | — |
+| **9.0.0 aster-vec FTS** | `aster_vec_fts_v1`; incompatible `zvec_rust_fts_v1` rebuilds | Workspace FTS generation / retrieval hermetics | — |
 
 Add new pins to this table on every user-visible fix; do not rely on CHANGELOG
 alone.
@@ -393,8 +393,8 @@ wiring, doc scrub, external owners). They are not a claim that every case in
 2. **L4** SDK runtime on every PR that touches bindings or Core public API.
 3. **L2** F-kernel coverage before a stable tag (or weekly).
 4. **L3** for any feature flag in the release Cargo features set.
-5. **L5** `A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash just layer-c-live-e2e`
-   against monorepo `.a3s/config.acl`; archive evidence dir `FINAL.txt`.
+5. **L5** `ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash just layer-c-live-e2e`
+   against monorepo `.aster/config.acl`; archive evidence dir `FINAL.txt`.
 6. **L6** performance + hermetic-integrations on RC.
 7. **L7** Harbor / host receipts before calling a channel “qualified”.
 8. **L8** confirm version pins for the delta since last tag.
@@ -418,9 +418,9 @@ Pass criteria for “full-feature release qualified”:
 
 | Layer | Evidence location |
 | --- | --- |
-| L1 / A | CI logs; optional `/tmp/a3s-layer-a-*/FINAL.txt` |
-| L2 | `/tmp/a3s-llvm-cov-*/FINAL.txt` (`ALL_F_TABLE_KERNELS_GE_95`) |
-| L5 / C | `$A3S_LAYER_C_EVIDENCE` or `/tmp/a3s-layer-c-live/FINAL.txt` |
+| L1 / A | CI logs; optional `/tmp/aster-layer-a-*/FINAL.txt` |
+| L2 | `/tmp/aster-llvm-cov-*/FINAL.txt` (`ALL_F_TABLE_KERNELS_GE_95`) |
+| L5 / C | `$ASTER_LAYER_C_EVIDENCE` or `/tmp/aster-layer-c-live/FINAL.txt` |
 | L6 | Actions artifacts + PERFORMANCE_QUALIFICATION.md |
 | L7 | Harbor / Cloud / host report paths in HARNESS_CONVERGENCE.md |
 
@@ -473,14 +473,14 @@ re-qualify tip → L7 disposition → multi-channel publish).
 | --- | --- |
 | This plan file | **Rewritten** for post-slim first principles + bailian Flash L5 pin |
 | Deep case catalog | **Specified** in [test-cases/README.md](test-cases/README.md). Rows are cases, not green tests. |
-| F01–F30 + Layer C recipes | **Exist**; Layer C execution PASS 2026-09-21 under bailian Flash (`/tmp/a3s-layer-c-bailian-flash-combined/FINAL.txt`) |
-| L0/L1 hermetic | **PASS** `/tmp/a3s-goal-integ-use/layer-a.FINAL.txt` (re-verify EXIT:0; 3632 + SDK alignment). Prior: `/tmp/a3s-layer-a-bailian-exec/FINAL3.txt` |
-| L3 feature hermetics | **PASS** `/tmp/a3s-l3-hermetic/FINAL.txt` (+ ignored s3/otel green; advanced-integ recheck under `/tmp/a3s-goal-integ-use/`) |
+| F01–F30 + Layer C recipes | **Exist**; Layer C execution PASS 2026-09-21 under bailian Flash (`/tmp/aster-layer-c-bailian-flash-combined/FINAL.txt`) |
+| L0/L1 hermetic | **PASS** `/tmp/aster-goal-integ-use/layer-a.FINAL.txt` (re-verify EXIT:0; 3632 + SDK alignment). Prior: `/tmp/aster-layer-a-bailian-exec/FINAL3.txt` |
+| L3 feature hermetics | **PASS** `/tmp/aster-l3-hermetic/FINAL.txt` (+ ignored s3/otel green; advanced-integ recheck under `/tmp/aster-goal-integ-use/`) |
 | Historical upstream L4 SDK | **PASS** Node/Python/Go discovery 29 caps; alignment ok in Layer A; does not qualify Aster Rust/ACP |
-| L5 Layer C bailian Flash | **PASS** `/tmp/a3s-layer-c-bailian-flash-combined/FINAL.txt` (`LAYER_C_PASS`, 22/22 final) |
+| L5 Layer C bailian Flash | **PASS** `/tmp/aster-layer-c-bailian-flash-combined/FINAL.txt` (`LAYER_C_PASS`, 22/22 final) |
 | 29-cap integrated use | **PASS** [CAPABILITY_INTEGRATED_USE_LEDGER.md](CAPABILITY_INTEGRATED_USE_LEDGER.md) |
 | L2 F-kernel cov | **Prior PASS** (not re-measured this execution) |
-| L6/L7 | L6 **PASS**: `performance.yml` [`35639843682`](https://github.com/A3S-Lab/Code/actions/runs/35639843682) + hermetic-integrations [`35642286881`](https://github.com/A3S-Lab/Code/actions/runs/35642286881). L7 Harbor/CAR **Not claimed**. See [ENTERPRISE_GA_E2E_PLAN.md](ENTERPRISE_GA_E2E_PLAN.md) |
+| L6/L7 | L6 **PASS**: `performance.yml` [`35639843682`](https://github.com/aster-ai-lab/Code/actions/runs/35639843682) + hermetic-integrations [`35642286881`](https://github.com/aster-ai-lab/Code/actions/runs/35642286881). L7 Harbor/CAR **Not claimed**. See [ENTERPRISE_GA_E2E_PLAN.md](ENTERPRISE_GA_E2E_PLAN.md) |
 | `just full-feature-hermetic` | **Gap G1** — not implemented |
 | Baseline ID ↔ F-table CI join | **Gap G2** — manual join in §3 only |
 | Serve-doc scrub | **G8 mostly closed** for active manuals; CHANGELOG history may retain serve notes |
@@ -500,7 +500,7 @@ A formal crates.io / GitHub Release still requires:
 
 | Gate | Owner action | Evidence sink |
 | --- | --- | --- |
-| L2 | Re-run F-kernel coverage before a **stable** tag (or weekly) | `/tmp/a3s-llvm-cov-*/FINAL.txt` → `ALL_F_TABLE_KERNELS_GE_90` |
+| L2 | Re-run F-kernel coverage before a **stable** tag (or weekly) | `/tmp/aster-llvm-cov-*/FINAL.txt` → `ALL_F_TABLE_KERNELS_GE_90` |
 | L6 | RC: `performance.yml` + `hermetic-integrations.yml` | Update [PERFORMANCE_QUALIFICATION.md](PERFORMANCE_QUALIFICATION.md) digests |
 | L7 | Harbor TB-QUAL1, DM-PROD1, CAR-01…05 — or written waiver | Paths in [HARNESS_CONVERGENCE.md](HARNESS_CONVERGENCE.md) |
 | L8 | Confirm version regression pins for the delta since last tag | Named hermetics in §7 |

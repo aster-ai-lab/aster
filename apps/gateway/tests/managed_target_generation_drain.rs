@@ -2,8 +2,8 @@
 //! in-flight work on the retired generation while new requests move to the
 //! successor. This is Gateway-local; multi-replica joint gates remain open.
 
-use a3s_gateway::managed_snapshot::{ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus};
-use a3s_gateway::{config::GatewayConfig, Gateway};
+use aster_gateway::managed_snapshot::{ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus};
+use aster_gateway::{config::GatewayConfig, Gateway};
 use chrono::{Duration, Utc};
 use std::net::SocketAddr;
 use std::sync::Arc;
@@ -14,7 +14,7 @@ use tokio::sync::oneshot;
 use uuid::Uuid;
 
 const TEST_ADMIN_TOKEN: &str = "managed-drain-test-token";
-const TEST_ADMIN_TOKEN_ENV: &str = "A3S_GATEWAY_TEST_ADMIN_TOKEN";
+const TEST_ADMIN_TOKEN_ENV: &str = "ASTER_GATEWAY_TEST_ADMIN_TOKEN";
 
 fn ensure_test_admin_token() {
     std::env::set_var(TEST_ADMIN_TOKEN_ENV, TEST_ADMIN_TOKEN);
@@ -69,7 +69,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 "#
@@ -116,7 +116,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 "#
@@ -737,7 +737,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 "#
@@ -784,7 +784,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 "#
@@ -964,7 +964,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 "#
@@ -1013,7 +1013,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 "#

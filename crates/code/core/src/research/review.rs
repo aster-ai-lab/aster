@@ -4,8 +4,8 @@ use super::{
 };
 use serde::{Deserialize, Serialize};
 
-pub const RESEARCH_REVIEW_FINDING_SCHEMA_V1: &str = "a3s.code.review-finding.v1";
-const RESEARCH_REVIEW_FINDING_DIGEST_DOMAIN: &str = "a3s.code.review-finding.identity.v1";
+pub const RESEARCH_REVIEW_FINDING_SCHEMA_V1: &str = "aster.code.review-finding.v1";
+const RESEARCH_REVIEW_FINDING_DIGEST_DOMAIN: &str = "aster.code.review-finding.identity.v1";
 
 /// Product-neutral classes that let a host render and route a finding.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]

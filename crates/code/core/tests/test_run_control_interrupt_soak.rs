@@ -2,14 +2,14 @@
 //! token must not be applied twice. The tool effect is counted only after
 //! the invocation observes that it was not cancelled.
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::memory::MemoryConfig;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
-use a3s_code_core::{
+use aster_core::memory::MemoryConfig;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::tools::{Tool, ToolContext, ToolOutput};
+use aster_core::{
     Agent, InterruptRequest, PlanningMode, RunStatus, SessionOptions, SteerRequest,
 };
 use async_trait::async_trait;
@@ -60,12 +60,12 @@ impl LlmClient for ToolCallClient {
         _system: Option<&str>,
         _tools: &[ToolDefinition],
         _cancel_token: tokio_util::sync::CancellationToken,
-    ) -> anyhow::Result<tokio::sync::mpsc::Receiver<a3s_code_core::llm::StreamEvent>> {
+    ) -> anyhow::Result<tokio::sync::mpsc::Receiver<aster_core::llm::StreamEvent>> {
         let response = tool_response(self.calls.fetch_add(1, Ordering::SeqCst));
         let (tx, rx) = tokio::sync::mpsc::channel(4);
         tokio::spawn(async move {
             let _ = tx
-                .send(a3s_code_core::llm::StreamEvent::Done(response))
+                .send(aster_core::llm::StreamEvent::Done(response))
                 .await;
         });
         Ok(rx)
@@ -114,6 +114,7 @@ fn offline_config() -> CodeConfig {
             ..MemoryConfig::default()
         }),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,
@@ -181,9 +182,7 @@ async fn soak_interrupt_storm_settles_once_without_late_effects() {
             .await
             .unwrap_or_else(|error| panic!("cycle {cycle} stream: {error}"));
         // Consume the bounded stream while the tool starts and controls settle.
-        let drain = tokio::spawn(async move {
-            while events.recv().await.is_some() {}
-        });
+        let drain = tokio::spawn(async move { while events.recv().await.is_some() {} });
         let deadline = std::time::Instant::now() + Duration::from_secs(5);
         while entered.load(Ordering::SeqCst) == cycle {
             if std::time::Instant::now() > deadline {

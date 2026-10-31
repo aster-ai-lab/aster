@@ -158,7 +158,7 @@ fn test_config_memory_block_allows_explicit_llm_extraction_disable() {
 
 #[test]
 fn test_config_rejects_unlabeled_provider_blocks() {
-    std::env::set_var("A3S_CODE_TEST_API_KEY", "sk-test");
+    std::env::set_var("ASTER_TEST_API_KEY", "sk-test");
     let err = CodeConfig::from_acl(
         r#"
             default_model = "openai/gpt-4.1"
@@ -167,7 +167,7 @@ fn test_config_rejects_unlabeled_provider_blocks() {
 
             providers {
               name     = "openai"
-              api_key  = env("A3S_CODE_TEST_API_KEY")
+              api_key  = env("ASTER_TEST_API_KEY")
               base_url = "https://api.openai.com/v1"
 
               models "gpt-4.1" {
@@ -345,6 +345,7 @@ fn test_find_provider() {
     let config = CodeConfig {
         providers: vec![
             ProviderConfig {
+                protocol: None,
                 name: "anthropic".to_string(),
                 api_key: Some("key1".to_string()),
                 base_url: None,
@@ -353,6 +354,7 @@ fn test_find_provider() {
                 models: vec![],
             },
             ProviderConfig {
+                protocol: None,
                 name: "openai".to_string(),
                 api_key: Some("key2".to_string()),
                 base_url: None,
@@ -375,6 +377,7 @@ fn test_default_llm_config() {
         default_model: Some("anthropic/claude-sonnet-4".to_string()),
         llm_api_timeout_ms: Some(90_000),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("test-api-key".to_string()),
             base_url: Some("https://api.anthropic.com".to_string()),
@@ -415,6 +418,7 @@ fn test_default_llm_config() {
 #[test]
 fn test_model_api_key_override() {
     let provider = ProviderConfig {
+        protocol: None,
         name: "openai".to_string(),
         api_key: Some("provider-key".to_string()),
         base_url: Some("https://api.openai.com".to_string()),
@@ -480,6 +484,7 @@ fn test_list_models() {
     let config = CodeConfig {
         providers: vec![
             ProviderConfig {
+                protocol: None,
                 name: "anthropic".to_string(),
                 api_key: None,
                 base_url: None,
@@ -523,6 +528,7 @@ fn test_list_models() {
                 ],
             },
             ProviderConfig {
+                protocol: None,
                 name: "openai".to_string(),
                 api_key: None,
                 base_url: None,
@@ -579,6 +585,7 @@ fn test_config_has_providers() {
 
     let with_providers = CodeConfig {
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "test".to_string(),
             api_key: None,
             base_url: None,
@@ -762,6 +769,7 @@ fn test_model_config_all_optional_fields() {
 #[test]
 fn test_provider_config_serialization() {
     let provider = ProviderConfig {
+        protocol: None,
         name: "anthropic".to_string(),
         api_key: Some("sk-test".to_string()),
         base_url: Some("https://api.anthropic.com".to_string()),
@@ -787,6 +795,7 @@ fn test_provider_config_deserialization_missing_optional() {
 #[test]
 fn test_provider_config_find_model() {
     let provider = ProviderConfig {
+        protocol: None,
         name: "anthropic".to_string(),
         api_key: None,
         base_url: None,
@@ -822,6 +831,7 @@ fn test_provider_config_find_model() {
 #[test]
 fn test_provider_config_get_api_key() {
     let provider = ProviderConfig {
+        protocol: None,
         name: "anthropic".to_string(),
         api_key: Some("provider-key".to_string()),
         base_url: None,
@@ -884,6 +894,7 @@ fn test_provider_config_get_headers_and_session_id_header() {
     model_headers.insert("X-Shared".to_string(), "model".to_string());
 
     let provider = ProviderConfig {
+        protocol: None,
         name: "openai".to_string(),
         api_key: Some("provider-key".to_string()),
         base_url: None,
@@ -928,6 +939,7 @@ fn test_llm_config_includes_headers_and_runtime_session_header() {
     let config = CodeConfig {
         default_model: Some("openai/gpt-4o".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "openai".to_string(),
             api_key: Some("sk-test".to_string()),
             base_url: Some("https://api.example.com".to_string()),
@@ -970,6 +982,7 @@ fn test_code_config_default_provider_config() {
     let config = CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("sk-test".to_string()),
             base_url: None,
@@ -990,6 +1003,7 @@ fn test_code_config_default_model_config() {
     let config = CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("sk-test".to_string()),
             base_url: None,
@@ -1029,6 +1043,7 @@ fn test_code_config_default_llm_config() {
         default_model: Some("anthropic/claude-sonnet-4".to_string()),
         llm_api_timeout_ms: Some(90_000),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("sk-test".to_string()),
             base_url: Some("https://api.anthropic.com".to_string()),
@@ -1065,6 +1080,7 @@ fn test_code_config_list_models() {
     let config = CodeConfig {
         providers: vec![
             ProviderConfig {
+                protocol: None,
                 name: "anthropic".to_string(),
                 api_key: None,
                 base_url: None,
@@ -1089,6 +1105,7 @@ fn test_code_config_list_models() {
                 }],
             },
             ProviderConfig {
+                protocol: None,
                 name: "openai".to_string(),
                 api_key: None,
                 base_url: None,
@@ -1130,6 +1147,7 @@ fn test_llm_config_specific_provider_model() {
 
     let config = CodeConfig {
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("sk-test".to_string()),
             base_url: None,
@@ -1157,6 +1175,7 @@ fn test_llm_config_missing_provider() {
 fn test_llm_config_missing_model() {
     let config = CodeConfig {
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("sk-test".to_string()),
             base_url: None,

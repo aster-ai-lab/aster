@@ -3,8 +3,8 @@ use std::ops::{Deref, DerefMut};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     async_trait, ContainerStats, Error, ErrorCode, ExitStatus, FileRequest, FileResponse,
     FilesystemRequest, FilesystemResponse, OperationId, OutputChunk, ProcessRecord, Result,
 };
@@ -923,7 +923,7 @@ fn validate_response_for_request(request: &AgentRequest, response: &AgentRespons
 }
 
 fn validate_state_target(
-    expected: &a3s_oci_sdk::ContainerTarget,
+    expected: &aster_oci_sdk::ContainerTarget,
     state: &AgentState,
 ) -> Result<()> {
     if state.target() == expected {
@@ -940,8 +940,8 @@ fn validate_state_target(
 }
 
 fn validate_container_target(
-    expected: &a3s_oci_sdk::ContainerTarget,
-    actual: &a3s_oci_sdk::ContainerTarget,
+    expected: &aster_oci_sdk::ContainerTarget,
+    actual: &aster_oci_sdk::ContainerTarget,
 ) -> Result<()> {
     if actual == expected {
         Ok(())
@@ -954,8 +954,8 @@ fn validate_container_target(
 }
 
 fn validate_process_target(
-    expected: &a3s_oci_sdk::ProcessTarget,
-    actual: &a3s_oci_sdk::ProcessTarget,
+    expected: &aster_oci_sdk::ProcessTarget,
+    actual: &aster_oci_sdk::ProcessTarget,
 ) -> Result<()> {
     if actual == expected {
         Ok(())

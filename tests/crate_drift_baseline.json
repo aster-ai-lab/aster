@@ -10,14 +10,14 @@
     "unique": 125
   },
   "drift": {
-    "a3s-auth": "CONTENT-DRIFT",
-    "a3s-code-core": "CONTENT-DRIFT",
-    "a3s-effect": "CONTENT-DRIFT",
-    "a3s-flow": "CONTENT-DRIFT",
-    "a3s-form-core": "CONTENT-DRIFT",
-    "a3s-libkrun-sys": "DUPLICATE-cloud",
-    "a3s-oci-sdk": "DUPLICATE-aster",
-    "a3s-orm": "CONTENT-DRIFT",
+    "aster-auth": "CONTENT-DRIFT",
+    "aster-core": "CONTENT-DRIFT",
+    "aster-effect": "CONTENT-DRIFT",
+    "aster-flow": "CONTENT-DRIFT",
+    "aster-form-core": "CONTENT-DRIFT",
+    "aster-libkrun-sys": "DUPLICATE-cloud",
+    "aster-oci-sdk": "DUPLICATE-aster",
+    "aster-orm": "CONTENT-DRIFT",
     "devices": "CONTENT-DRIFT",
     "libkrunfw-windows": "DUPLICATE-cloud",
     "vm-memory": "CONTENT-DRIFT"

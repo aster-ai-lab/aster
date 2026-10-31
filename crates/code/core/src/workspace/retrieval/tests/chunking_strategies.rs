@@ -56,7 +56,7 @@ fn config(max_bytes: usize) -> ChunkingConfig {
 #[test]
 fn shared_sdk_fixture_locks_core_ranges_and_invalid_windows() {
     let fixture = sdk_chunking_fixture();
-    assert_eq!(fixture.schema, "a3s.workspace-chunking-sdk.fixture.v1");
+    assert_eq!(fixture.schema, "aster.workspace-chunking-sdk.fixture.v1");
 
     for case in fixture.cases {
         let strategy = match case.name.as_str() {

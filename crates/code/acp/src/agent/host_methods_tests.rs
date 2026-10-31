@@ -1,8 +1,8 @@
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::store::{MemorySessionStore, TranscriptEntryKind};
+use aster_core::store::{MemorySessionStore, TranscriptEntryKind};
 use agent_client_protocol::{self as acp, Agent as _};
 use serde_json::{json, Value};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
@@ -12,8 +12,8 @@ use tokio::sync::{broadcast, mpsc, Notify};
 fn every_host_method_parses_back_from_its_name() {
     for method in HostMethod::ALL {
         let wire = match method {
-            HostMethod::GoalCommand => "a3s/goal/state",
-            HostMethod::Review => "a3s/review/target",
+            HostMethod::GoalCommand => "aster/goal/state",
+            HostMethod::Review => "aster/review/target",
             other => other.as_str(),
         };
         assert_eq!(HostMethod::parse(wire), Some(method), "{wire}");
@@ -24,26 +24,26 @@ fn every_host_method_parses_back_from_its_name() {
 fn protocol_and_unknown_methods_are_outside_the_host_set() {
     for wire in [
         "session/prompt",
-        "a3s/goal",
-        "a3s/goal/unknown",
-        "a3s/review",
-        "a3s/session/transcript/page",
-        "a3s/session/fork/prefix",
-        "a3s/session/tooling",
-        "a3s/session",
-        "a3s/session/infos",
-        "a3s/permission_posture/set",
+        "aster/goal",
+        "aster/goal/unknown",
+        "aster/review",
+        "aster/session/transcript/page",
+        "aster/session/fork/prefix",
+        "aster/session/tooling",
+        "aster/session",
+        "aster/session/infos",
+        "aster/permission_posture/set",
         "_meta/unknown",
         "",
     ] {
         assert_eq!(HostMethod::parse(wire), None, "{wire}");
     }
     assert_eq!(
-        HostMethod::parse("a3s/compact_conversation/start"),
+        HostMethod::parse("aster/compact_conversation/start"),
         Some(HostMethod::CompactConversation)
     );
     assert_eq!(
-        HostMethod::parse("a3s/interject/cancel"),
+        HostMethod::parse("aster/interject/cancel"),
         Some(HostMethod::Interject)
     );
 }
@@ -122,7 +122,7 @@ impl LlmClient for WireModel {
 
 struct WireFixture {
     root: tempfile::TempDir,
-    host: A3sCodeAgent,
+    host: AsterCodeAgent,
     session_id: String,
     source: Arc<AgentSession>,
     model: Arc<WireModel>,
@@ -132,15 +132,15 @@ async fn wire_fixture() -> WireFixture {
     wire_fixture_with_policy(None).await
 }
 
-async fn wire_fixture_with_policy(work_policy: Option<a3s_code_core::WorkPolicyV1>) -> WireFixture {
+async fn wire_fixture_with_policy(work_policy: Option<aster_core::WorkPolicyV1>) -> WireFixture {
     let root = tempfile::tempdir().unwrap();
     let mut launch = test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_path_buf();
-    let host = A3sCodeAgent::new(launch.clone());
+    let host = AsterCodeAgent::new(launch.clone());
     let opened = host
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(
-                json!({"a3sEngineering":{"policy":"none"}})
+                json!({"asterEngineering":{"policy":"none"}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -156,7 +156,7 @@ async fn wire_fixture_with_policy(work_policy: Option<a3s_code_core::WorkPolicyV
         .with_session_store(Arc::new(MemorySessionStore::new()))
         .with_llm_client(model.clone())
         .with_auto_save(true)
-        .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+        .with_planning_mode(aster_core::PlanningMode::Disabled)
         .with_continuation(false);
     if let Some(policy) = work_policy {
         options = options.with_work_policy(policy);
@@ -187,7 +187,7 @@ async fn wire_fixture_with_policy(work_policy: Option<a3s_code_core::WorkPolicyV
     }
 }
 
-async fn ext(host: &A3sCodeAgent, method: &str, params: Value) -> acp::Result<Value> {
+async fn ext(host: &AsterCodeAgent, method: &str, params: Value) -> acp::Result<Value> {
     let raw = serde_json::value::to_raw_value(&params).unwrap();
     let response = host
         .ext_method(acp::ExtRequest::new(method, raw.into()))
@@ -232,7 +232,7 @@ async fn workspace_search_uses_current_session_sources_and_governed_permissions_
     .is_err());
     fixture
         .source
-        .set_permission_policy(a3s_code_core::permissions::PermissionPolicy::new().allow("search"))
+        .set_permission_policy(aster_core::permissions::PermissionPolicy::new().allow("search"))
         .unwrap();
     let result = tokio::time::timeout(std::time::Duration::from_secs(10), async {
         loop {
@@ -309,7 +309,7 @@ async fn workspace_search_uses_current_session_sources_and_governed_permissions_
     }
     fixture
         .source
-        .set_permission_policy(a3s_code_core::permissions::PermissionPolicy::new().deny("search"))
+        .set_permission_policy(aster_core::permissions::PermissionPolicy::new().deny("search"))
         .unwrap();
     assert!(ext(
         &fixture.host,
@@ -455,7 +455,7 @@ async fn prefix_fork_preserves_source_and_returns_only_the_verified_child_prefix
 
     let source_after = fixture
         .source
-        .transcript_page(a3s_code_core::store::TranscriptPageRequest {
+        .transcript_page(aster_core::store::TranscriptPageRequest {
             cursor: None,
             limit: 50,
         })
@@ -604,7 +604,7 @@ async fn prefix_fork_leaves_active_source_admission_to_core_and_refuses() {
     assert_eq!(
         fixture
             .source
-            .transcript_page(a3s_code_core::store::TranscriptPageRequest {
+            .transcript_page(aster_core::store::TranscriptPageRequest {
                 cursor: None,
                 limit: 50,
             })
@@ -725,7 +725,7 @@ async fn background_task_snapshot_and_stop_use_owner_lifecycle() {
 
 #[test]
 fn memory_extraction_snapshots_keep_terminal_outcomes_and_scope_private() {
-    use a3s_code_core::memory::{MemoryExtractionStatus as Status, MemoryExtractionTask};
+    use aster_core::memory::{MemoryExtractionStatus as Status, MemoryExtractionTask};
     for (state, expected) in [
         (Status::Pending, "pending"),
         (Status::Running, "in_progress"),

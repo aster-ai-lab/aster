@@ -2,8 +2,8 @@ use super::{digest, validate_digest_field, validate_id, ResearchContractError};
 use crate::capability::RunCapabilityBindingV1;
 use serde::{Deserialize, Serialize};
 
-pub const RESEARCH_RUN_SCHEMA_V1: &str = "a3s.code.research-run.v1";
-const RESEARCH_RUN_DIGEST_DOMAIN: &str = "a3s.code.research-run.identity.v1";
+pub const RESEARCH_RUN_SCHEMA_V1: &str = "aster.code.research-run.v1";
+const RESEARCH_RUN_DIGEST_DOMAIN: &str = "aster.code.research-run.identity.v1";
 
 /// Reproducibility promise selected by a host for one research run.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]

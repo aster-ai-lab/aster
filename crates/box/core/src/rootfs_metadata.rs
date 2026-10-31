@@ -7,26 +7,26 @@ use serde::{Deserialize, Serialize};
 use crate::guest_exec::RUNTIME_EXEC_CONFIG_PATH;
 
 /// Location written inside a persistent rootfs before guest shutdown.
-pub const ROOTFS_METADATA_PATH: &str = "/.a3s_rootfs_metadata_v1.json";
+pub const ROOTFS_METADATA_PATH: &str = "/.aster_rootfs_metadata_v1.json";
 /// Temporary sibling used while publishing terminal metadata atomically.
-pub const ROOTFS_METADATA_TEMP_PATH: &str = "/.a3s_rootfs_metadata_v1.json.tmp";
+pub const ROOTFS_METADATA_TEMP_PATH: &str = "/.aster_rootfs_metadata_v1.json.tmp";
 /// One-shot replay location used while a new guest generation is booting.
 ///
 /// Before boot, the host atomically renames the last terminal manifest here.
 /// A clean guest exit creates a new [`ROOTFS_METADATA_PATH`]; a crash therefore
 /// leaves that canonical completion marker absent and stopped-box commit fails
 /// closed instead of silently reusing metadata from an older generation.
-pub const PREVIOUS_ROOTFS_METADATA_PATH: &str = "/.a3s_rootfs_metadata_v1.previous.json";
+pub const PREVIOUS_ROOTFS_METADATA_PATH: &str = "/.aster_rootfs_metadata_v1.previous.json";
 /// Location used to carry OCI header ownership across a rootless host extraction.
-pub const IMAGE_ROOTFS_METADATA_PATH: &str = "/.a3s_image_metadata_v1.json";
+pub const IMAGE_ROOTFS_METADATA_PATH: &str = "/.aster_image_metadata_v1.json";
 /// Temporary sibling used while publishing immutable image metadata.
-pub const IMAGE_ROOTFS_METADATA_TEMP_PATH: &str = "/.a3s_image_metadata_v1.json.tmp";
+pub const IMAGE_ROOTFS_METADATA_TEMP_PATH: &str = "/.aster_image_metadata_v1.json.tmp";
 /// Runtime-staged container environment consumed by guest-init before exec.
-pub const RUNTIME_ENV_PATH: &str = "/.a3s-box-env";
+pub const RUNTIME_ENV_PATH: &str = "/.aster-box-env";
 /// Exit status written by guest-init after the container main terminates.
-pub const EXIT_CODE_PATH: &str = "/.a3s_exit_code";
+pub const EXIT_CODE_PATH: &str = "/.aster_exit_code";
 /// Stable manifest schema identifier.
-pub const ROOTFS_METADATA_SCHEMA: &str = "a3s.box.rootfs-metadata.v1";
+pub const ROOTFS_METADATA_SCHEMA: &str = "aster.box.rootfs-metadata.v1";
 
 #[cfg(windows)]
 const MAX_TERMINAL_ROOTFS_METADATA_BYTES: u64 = 64 * 1024 * 1024;
@@ -53,7 +53,7 @@ pub fn is_runtime_internal_rootfs_path(path: &Path) -> bool {
             if runtime_path_name_matches(name, "run")
                 && runtime_dir
                     .to_str()
-                    .is_some_and(|name| runtime_path_name_matches(name, "a3s-box")) =>
+                    .is_some_and(|name| runtime_path_name_matches(name, "aster-box")) =>
         {
             return components.all(|component| matches!(component, Component::Normal(_)));
         }
@@ -66,14 +66,14 @@ pub fn is_runtime_internal_rootfs_path(path: &Path) -> bool {
         return true;
     }
     const INTERNAL: &[&str] = &[
-        ".a3s_rootfs_metadata_v1.json",
-        ".a3s_rootfs_metadata_v1.json.tmp",
-        ".a3s_rootfs_metadata_v1.previous.json",
-        ".a3s_image_metadata_v1.json",
-        ".a3s_image_metadata_v1.json.tmp",
-        ".a3s_exit_code",
-        ".a3s_host_live_logs_drained",
-        ".a3s_host_result_collected",
+        ".aster_rootfs_metadata_v1.json",
+        ".aster_rootfs_metadata_v1.json.tmp",
+        ".aster_rootfs_metadata_v1.previous.json",
+        ".aster_image_metadata_v1.json",
+        ".aster_image_metadata_v1.json.tmp",
+        ".aster_exit_code",
+        ".aster_host_live_logs_drained",
+        ".aster_host_result_collected",
         // Written by libkrun around PID 1 startup and exit. These files can
         // change after guest-init captures terminal metadata.
         "init-rust.log",
@@ -370,7 +370,7 @@ pub fn runtime_managed_rootfs_mode(path: &Path) -> Option<u32> {
     match path.to_str() {
         Some("etc/hostname" | "etc/hosts" | "etc/resolv.conf") => Some(0o644),
         Some("sbin/init" | "usr/sbin/init") => Some(0o755),
-        Some(".a3s-box-env") => Some(0o600),
+        Some(".aster-box-env") => Some(0o600),
         Some(path) if path == RUNTIME_EXEC_CONFIG_PATH.trim_start_matches('/') => Some(0o600),
         _ => None,
     }
@@ -438,11 +438,11 @@ mod tests {
             assert_eq!(runtime_managed_rootfs_mode(Path::new(path)), Some(0o755));
         }
         assert_eq!(
-            runtime_managed_rootfs_mode(Path::new(".a3s-box-env")),
+            runtime_managed_rootfs_mode(Path::new(".aster-box-env")),
             Some(0o600)
         );
         assert_eq!(
-            runtime_managed_rootfs_mode(Path::new(".a3s-box-exec.json")),
+            runtime_managed_rootfs_mode(Path::new(".aster-box-exec.json")),
             Some(0o600)
         );
         assert_eq!(runtime_managed_rootfs_mode(Path::new("etc/passwd")), None);
@@ -451,11 +451,11 @@ mod tests {
     #[test]
     fn runtime_internal_rootfs_paths_include_reserved_runtime_state() {
         for path in [
-            ".a3s_rootfs_metadata_v1.json",
-            ".a3s_rootfs_metadata_v1.json.tmp",
-            ".a3s_exit_code",
-            ".a3s_host_live_logs_drained",
-            ".a3s-box-exec.json",
+            ".aster_rootfs_metadata_v1.json",
+            ".aster_rootfs_metadata_v1.json.tmp",
+            ".aster_exit_code",
+            ".aster_host_live_logs_drained",
+            ".aster-box-exec.json",
             "guest-init.stdout.log",
             "init-rust.log",
             "init.krun.log",
@@ -469,11 +469,11 @@ mod tests {
         assert!(!is_runtime_internal_rootfs_path(Path::new(
             "/init-rust.log"
         )));
-        assert!(is_runtime_internal_rootfs_path(Path::new("run/a3s-box")));
+        assert!(is_runtime_internal_rootfs_path(Path::new("run/aster-box")));
         assert!(is_runtime_internal_rootfs_path(Path::new(
-            "run/a3s-box/terminal/status.json"
+            "run/aster-box/terminal/status.json"
         )));
-        assert!(!is_runtime_internal_rootfs_path(Path::new("run/a3s-code")));
+        assert!(!is_runtime_internal_rootfs_path(Path::new("run/aster")));
 
         #[cfg(windows)]
         assert!(is_runtime_internal_rootfs_path(Path::new("INIT-RUST.LOG")));

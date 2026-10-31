@@ -1,4 +1,4 @@
-use a3s_use_core::{PlanScope, PlanScopeKind, PluginPackageId};
+use aster_use_core::{PlanScope, PlanScopeKind, PluginPackageId};
 use tokio::fs;
 use tokio::time::{timeout, Duration};
 

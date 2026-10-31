@@ -79,7 +79,7 @@ export class DocxParagraphMarkChangePatchCollector {
     if (this.patches.length >= MAX_PARAGRAPH_MARK_CHANGE_PATCHES) {
       throw new Error('Document exceeds the paragraph-mark revision limit.');
     }
-    const marker = `__A3S_WORK_PARAGRAPH_MARK_CHANGE_EXPORT_${this.patches.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_MARK_CHANGE_EXPORT_${this.patches.length + 1}__`;
     this.patches.push({
       marker,
       id,

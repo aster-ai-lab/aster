@@ -34,7 +34,7 @@ pub struct WorkspaceServices {
     chunk_catalog: Option<Arc<WorkspaceChunkCatalog>>,
     persistent_index: Option<Arc<WorkspacePersistentIndex>>,
     /// When set, first [`Self::chunk_catalog`] / [`Self::persistent_index`] call
-    /// attaches the default lexical catalog and best-effort persistent a3s-vec FTS
+    /// attaches the default lexical catalog and best-effort persistent aster-vec FTS
     /// without paying that cost at session construction.
     lazy_lexical_backend: Option<Arc<ManifestWorkspaceBackend>>,
     lazy_lexical: Arc<OnceLock<LazyLexicalHandles>>,
@@ -170,7 +170,7 @@ impl WorkspaceServices {
     }
 
     /// Build local manifest services with an asynchronous catalog and the
-    /// best-effort workspace-owned persistent a3s-vec projection.
+    /// best-effort workspace-owned persistent aster-vec projection.
     pub fn local_with_retrieval(root: impl Into<PathBuf>) -> Arc<Self> {
         let backend = ManifestWorkspaceBackend::new(root);
         Self::local_with_retrieval_backend(backend)
@@ -235,7 +235,7 @@ impl WorkspaceServices {
     /// Enable retrieval on a shared manifest backend.
     ///
     /// Lexical catalog attaches on first [`Self::chunk_catalog`] access (or when
-    /// the host already configured it). Durable a3s-vec FTS opens only on
+    /// the host already configured it). Durable aster-vec FTS opens only on
     /// [`Self::persistent_index`] demand so session construction / Loading
     /// never pays native index open cost. The backend is always retained for
     /// that demand path.
@@ -260,7 +260,7 @@ impl WorkspaceServices {
     }
 
     /// Build local manifest-backed services with the workspace-owned persistent
-    /// a3s-vec FTS projection. This compatibility constructor is equivalent to
+    /// aster-vec FTS projection. This compatibility constructor is equivalent to
     /// the default local retrieval path when the native feature is available.
     pub fn local_with_indexed_retrieval(root: impl Into<PathBuf>) -> Result<Arc<Self>> {
         let backend = ManifestWorkspaceBackend::new(root);
@@ -393,7 +393,7 @@ impl WorkspaceServices {
         None
     }
 
-    /// Open the durable a3s-vec projection without starting the whole-workspace
+    /// Open the durable aster-vec projection without starting the whole-workspace
     /// chunk catalog.
     ///
     /// Hosts that only need mind-wiki / titlebar FTS warmup must use this path.

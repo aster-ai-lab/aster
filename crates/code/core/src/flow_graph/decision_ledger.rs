@@ -1068,16 +1068,16 @@ mod tests {
     use crate::content_digest::digest_bytes;
 
     fn identity(tag: &str) -> ExecutionIdentityV1 {
-        ExecutionIdentityV1::derive("a3s.test.flow-decision", &serde_json::json!({ "tag": tag }))
+        ExecutionIdentityV1::derive("aster.test.flow-decision", &serde_json::json!({ "tag": tag }))
             .unwrap()
     }
 
     fn receipt(identity: ExecutionIdentityV1) -> ExecutionResultReceiptV1 {
         ExecutionResultReceiptV1::new(
             identity,
-            digest_bytes("a3s.test.flow-evidence", b"event"),
+            digest_bytes("aster.test.flow-evidence", b"event"),
             crate::execution_identity::ExecutionResultOutcomeV1::Succeeded,
-            Some(digest_bytes("a3s.test.flow-result", b"result")),
+            Some(digest_bytes("aster.test.flow-result", b"result")),
             6,
         )
         .unwrap()

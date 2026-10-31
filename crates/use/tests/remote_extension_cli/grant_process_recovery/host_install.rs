@@ -1,7 +1,7 @@
 use super::host_support::*;
 use super::*;
 
-use a3s_use_core::{
+use aster_use_core::{
     PluginHostManager, PluginHostOperationObservationRequest, PluginHostOperationPhase,
     PluginHostOperationWatchRequest, PluginOperationAction,
     PLUGIN_HOST_OPERATION_OBSERVATION_REQUEST_SCHEMA, PLUGIN_HOST_OPERATION_WATCH_REQUEST_SCHEMA,
@@ -221,7 +221,7 @@ fn killed_host_protocol_install_apply_replays_offline_without_reauthorization() 
             MANAGED_SCOPE_ID,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(history.status.success(), "{history:?}");

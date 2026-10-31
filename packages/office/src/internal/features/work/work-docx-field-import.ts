@@ -60,8 +60,8 @@ export function markDocxBodyFields(
       : undefined;
     if (kind === 'pageReference' && !target) return [];
     const marker: ImportedDocxFieldMarker = {
-      start: `__A3S_WORK_FIELD_START_${index + 1}__`,
-      end: `__A3S_WORK_FIELD_END_${index + 1}__`,
+      start: `__ASTER_WORK_FIELD_START_${index + 1}__`,
+      end: `__ASTER_WORK_FIELD_END_${index + 1}__`,
       id: `docx-field-${index + 1}`,
       kind,
       instruction: field.instruction,

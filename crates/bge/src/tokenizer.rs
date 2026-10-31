@@ -6,7 +6,7 @@
 
 use std::path::Path;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use tokenizers::tokenizer::{TruncationDirection, TruncationParams, TruncationStrategy};
 
 use crate::bge_error;

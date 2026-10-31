@@ -2,8 +2,8 @@ use super::checkpoint::DurableMemorySemanticRefreshCheckpoint;
 use crate::durable_memory::{
     DurableMemorySemanticRecall, DURABLE_MEMORY_SEMANTIC_BINDING_SCHEMA_V1,
 };
-use a3s_memory::repository::{MemoryNamespaceChangeToken, MemoryNamespaceSnapshot};
-use a3s_memory::vector::{
+use aster_durable_memory::repository::{MemoryNamespaceChangeToken, MemoryNamespaceSnapshot};
+use aster_durable_memory::vector::{
     VectorIndexChangeToken, VectorIndexObservation, VectorIndexStatus, VectorMutationConsistency,
     VectorRevision,
 };
@@ -18,7 +18,7 @@ pub(super) struct RefreshIndexObservation<'a> {
 
 /// Stable identity of the verified full-snapshot refresh algorithm.
 pub const DURABLE_MEMORY_SEMANTIC_REFRESH_PROFILE_V1: &str =
-    "a3s.code.memory.semantic-refresh.full-snapshot.v1";
+    "aster.code.memory.semantic-refresh.full-snapshot.v1";
 
 /// Secret-free evidence that one exact Active snapshot was published.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]

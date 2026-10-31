@@ -5,11 +5,11 @@
 //! provider's *actual* token usage and that a real run's lifecycle clears its
 //! checkpoint.
 //!
-//! All `#[ignore]` — they require a live provider in `.a3s/config.acl`. Run:
+//! All `#[ignore]` — they require a live provider in `.aster/config.acl`. Run:
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_real_llm_cluster_features -- --ignored --nocapture
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_real_llm_cluster_features -- --ignored --nocapture
 //! ```
 
 mod support;
@@ -17,10 +17,10 @@ mod support;
 use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::sync::Arc;
 
-use a3s_code_core::budget::{BudgetDecision, BudgetGuard};
-use a3s_code_core::llm::TokenUsage;
-use a3s_code_core::store::{MemorySessionStore, SessionStore};
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::budget::{BudgetDecision, BudgetGuard};
+use aster_core::llm::TokenUsage;
+use aster_core::store::{MemorySessionStore, SessionStore};
+use aster_core::{Agent, SessionOptions};
 use support::layer_c_model::{alternate_flash_model, load_pinned_layer_c_config};
 
 async fn real_agent() -> Agent {
@@ -178,7 +178,7 @@ async fn real_run_with_store_leaves_no_dangling_checkpoint() {
     let runs = session.runs().await;
     assert_eq!(runs.len(), 1, "one run recorded");
     let run_id = &runs[0].id;
-    assert_eq!(runs[0].status, a3s_code_core::run::RunStatus::Completed);
+    assert_eq!(runs[0].status, aster_core::run::RunStatus::Completed);
 
     // Whether or not the model used a tool (which would have written a
     // checkpoint mid-run), the completed run must leave none behind.
@@ -219,7 +219,7 @@ async fn real_identity_labels_survive_live_run() {
 
     let runs = session.runs().await;
     assert_eq!(runs.len(), 1);
-    assert_eq!(runs[0].status, a3s_code_core::run::RunStatus::Completed);
+    assert_eq!(runs[0].status, aster_core::run::RunStatus::Completed);
     let run_id = &runs[0].id;
     let events = session.run_events(run_id).await;
     assert!(
@@ -247,8 +247,8 @@ async fn real_identity_labels_survive_live_run() {
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires real provider credentials and network access"]
 async fn real_resume_run_carries_checkpoint_metrics_forward() {
-    use a3s_code_core::llm::{ContentBlock, Message};
-    use a3s_code_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
+    use aster_core::llm::{ContentBlock, Message};
+    use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
 
     let store: Arc<dyn SessionStore> = Arc::new(MemorySessionStore::new());
     let seeded_run = "real-resume-old";
@@ -330,7 +330,7 @@ async fn real_session_save_resume_round_trips_history() {
     let opts = SessionOptions::new()
         .with_session_id("real-persist-save")
         .with_session_store(Arc::clone(&store))
-        .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+        .with_planning_mode(aster_core::PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
         .with_manual_delegation_enabled(false)
         .with_max_tool_rounds(1)
@@ -381,7 +381,7 @@ async fn real_session_save_resume_round_trips_history() {
 #[ignore = "requires real provider credentials and network access"]
 async fn real_priority_scheduler_stats_observe_concurrent_live_work() {
     let mut config = load_pinned_layer_c_config();
-    config.task_scheduler = a3s_code_core::task_scheduler::TaskSchedulerConfig {
+    config.task_scheduler = aster_core::task_scheduler::TaskSchedulerConfig {
         max_active: 1,
         aging_interval_ms: 60_000,
     };
@@ -394,12 +394,12 @@ async fn real_priority_scheduler_stats_observe_concurrent_live_work() {
         SessionOptions::new()
             .with_session_id(id)
             .with_task_priority(priority)
-            .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+            .with_planning_mode(aster_core::PlanningMode::Disabled)
             .with_auto_delegation_enabled(false)
             .with_manual_delegation_enabled(false)
             .with_max_tool_rounds(1)
             .with_temperature(0.0)
-            .with_queue_config(a3s_code_core::queue::SessionQueueConfig::default())
+            .with_queue_config(aster_core::queue::SessionQueueConfig::default())
     };
     let foreground = Arc::new(
         agent
@@ -407,7 +407,7 @@ async fn real_priority_scheduler_stats_observe_concurrent_live_work() {
                 workspace.path().to_string_lossy(),
                 Some(make(
                     "sched-fg",
-                    a3s_code_core::task_scheduler::TaskPriority::Foreground,
+                    aster_core::task_scheduler::TaskPriority::Foreground,
                 )),
             )
             .await
@@ -419,7 +419,7 @@ async fn real_priority_scheduler_stats_observe_concurrent_live_work() {
                 workspace.path().to_string_lossy(),
                 Some(make(
                     "sched-bg",
-                    a3s_code_core::task_scheduler::TaskPriority::Background,
+                    aster_core::task_scheduler::TaskPriority::Background,
                 )),
             )
             .await
@@ -499,7 +499,7 @@ async fn real_replace_session_switches_model_and_continues() {
         .with_session_id("real-model-switch")
         .with_session_store(Arc::clone(&store))
         .with_model(&primary)
-        .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+        .with_planning_mode(aster_core::PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
         .with_manual_delegation_enabled(false)
         .with_max_tool_rounds(1)
@@ -530,7 +530,7 @@ async fn real_replace_session_switches_model_and_continues() {
             SessionOptions::new()
                 .with_session_store(Arc::clone(&store))
                 .with_model(&alternate)
-                .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+                .with_planning_mode(aster_core::PlanningMode::Disabled)
                 .with_auto_delegation_enabled(false)
                 .with_manual_delegation_enabled(false)
                 .with_max_tool_rounds(1)

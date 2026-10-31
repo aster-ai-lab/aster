@@ -401,19 +401,19 @@ export interface FormLocaleMessages {
 }
 
 export interface FormLocaleCatalog {
-  apiVersion: 'a3s.dev/form-locale-catalog/v1';
+  apiVersion: 'aster.dev/form-locale-catalog/v1';
   locale: string;
   messages: Readonly<FormLocaleMessages>;
 }
 
 export interface FormLocaleCatalogOverride {
-  apiVersion: 'a3s.dev/form-locale-catalog/v1';
+  apiVersion: 'aster.dev/form-locale-catalog/v1';
   messages: Partial<FormLocaleMessages>;
 }
 
 export interface FormDocument {
-  kind: 'a3s.form';
-  apiVersion: 'a3s.dev/form/v1alpha1';
+  kind: 'aster.form';
+  apiVersion: 'aster.dev/form/v1alpha1';
   schema: JsonSchema;
   ui: FormUi;
   rules?: FormRule[];
@@ -466,8 +466,8 @@ export interface CompiledNode extends UiNode {
 }
 
 export interface FormPlan {
-  apiVersion: 'a3s.dev/form-plan/v1alpha1';
-  schemaProfile: 'a3s.dev/form-schema-profile/1';
+  apiVersion: 'aster.dev/form-plan/v1alpha1';
+  schemaProfile: 'aster.dev/form-schema-profile/1';
   sourceRevision: number;
   sourceDigest: string;
   metadata: FormMetadata;
@@ -506,7 +506,7 @@ export type FormPatchOperation =
   | { op: 'move'; from: string; path: string; index?: number };
 
 export interface FormPatch {
-  apiVersion: 'a3s.dev/form-patch/v1alpha1';
+  apiVersion: 'aster.dev/form-patch/v1alpha1';
   baseRevision: number;
   description?: string;
   preconditions?: PatchPrecondition[];
@@ -546,7 +546,7 @@ export interface FieldError {
 }
 
 export interface FormWizardCheckpoint {
-  apiVersion: 'a3s.dev/form-wizard-checkpoint/v1alpha1';
+  apiVersion: 'aster.dev/form-wizard-checkpoint/v1alpha1';
   sourceDigest: string;
   sourceRevision: number;
   wizardId: string;

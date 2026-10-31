@@ -2,10 +2,10 @@
 
 use std::path::Path;
 
-use a3s_box_core::snapshot::SnapshotMetadata;
+use aster_box_core::snapshot::SnapshotMetadata;
 #[cfg(target_os = "linux")]
-use a3s_box_core::ExecutionIsolation;
-use a3s_box_core::{
+use aster_box_core::ExecutionIsolation;
+use aster_box_core::{
     ExecutionGeneration, ExecutionId, ExecutionLease, ExecutionManagerError,
     ExecutionManagerResult, ExecutionSnapshot, ExecutionSnapshotId, ExecutionState, OperationId,
 };
@@ -700,7 +700,7 @@ pub fn capture_sandbox_host_rootfs_for_commit(
     record: &BoxRecord,
 ) -> ExecutionManagerResult<(
     std::path::PathBuf,
-    a3s_box_core::rootfs_metadata::RootfsMetadataManifest,
+    aster_box_core::rootfs_metadata::RootfsMetadataManifest,
 )> {
     if record.isolation != ExecutionIsolation::Sandbox {
         return Err(ExecutionManagerError::Unavailable(format!(
@@ -729,7 +729,7 @@ pub fn capture_sandbox_host_rootfs_for_commit(
 fn capture_sandbox_rootfs_metadata(
     record: &BoxRecord,
     rootfs: &Path,
-) -> ExecutionManagerResult<a3s_box_core::rootfs_metadata::RootfsMetadataManifest> {
+) -> ExecutionManagerResult<aster_box_core::rootfs_metadata::RootfsMetadataManifest> {
     let plan = if sandbox_bundle_config_present(record)? {
         let plan = sandbox_id_mapping_plan_from_bundle(record, Some(rootfs))?;
         crate::sandbox::rootfs::persist_rootfs_id_mappings(&record.box_dir, &plan).map_err(

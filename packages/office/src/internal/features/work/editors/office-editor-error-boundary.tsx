@@ -96,7 +96,7 @@ export class OfficeEditorErrorBoundary extends Component<
     const phase = isChunkLoadError(error) ? 'chunk-load' : 'render';
     return (
       <div
-        className="a3s-office-editor-error"
+        className="aster-office-editor-error"
         data-office-editor-error={phase}
         data-office-editor-kind={this.props.editor}
         role="alert"

@@ -60,7 +60,7 @@ providers "openai-responses" {{
     assert!(initialized.get("result").is_some(), "{initialized}");
     let opened = agent
         .rpc(json!({"jsonrpc":"2.0","id":2,"method":"session/new",
-            "params":{"cwd":workspace,"mcpServers":[],"_meta":{"a3sStudioDocuments":true}}}))
+            "params":{"cwd":workspace,"mcpServers":[],"_meta":{"asterStudioDocuments":true}}}))
         .await;
     assert_eq!(opened["result"]["models"]["currentModelId"], MODEL);
     assert!(opened["result"]["models"]["availableModels"]
@@ -148,7 +148,7 @@ struct Agent {
 
 impl Agent {
     fn launch(root: &Path, workspace: &Path, config: &Path, file: PathBuf) -> Self {
-        let mut child = tokio::process::Command::new(env!("CARGO_BIN_EXE_a3s-code-acp"))
+        let mut child = tokio::process::Command::new(env!("CARGO_BIN_EXE_aster-acp"))
             .current_dir(workspace)
             .arg("--cwd")
             .arg(workspace)
@@ -156,9 +156,9 @@ impl Agent {
             .arg(config)
             .env_clear()
             .env("PATH", std::env::var_os("PATH").unwrap_or_default())
-            .env("A3S_HOME", root.join("product"))
-            .env("A3S_STATE_HOME", root.join("state"))
-            .env("A3S_CODE_LOG_DIR", root.join("logs"))
+            .env("ASTER_HOME", root.join("product"))
+            .env("ASTER_STATE_HOME", root.join("state"))
+            .env("ASTER_LOG_DIR", root.join("logs"))
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::inherit())

@@ -15,7 +15,7 @@ async fn plan_is_path_free_and_classifies_add_replace_remove_and_retain() {
     std::fs::write(knowledge.join("replace.bin"), b"candidate replacement").unwrap();
     std::fs::write(knowledge.join("retain.bin"), b"retained").unwrap();
 
-    let backup_path = temporary.path().join("candidate.a3s-use-state-backup");
+    let backup_path = temporary.path().join("candidate.aster-use-state-backup");
     let backup = StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -74,7 +74,7 @@ async fn unchanged_installation_produces_a_no_change_plan() {
     let knowledge = paths.state_root().join("knowledge");
     std::fs::create_dir_all(&knowledge).unwrap();
     std::fs::write(knowledge.join("stable.bin"), b"stable").unwrap();
-    let backup_path = temporary.path().join("stable.a3s-use-state-backup");
+    let backup_path = temporary.path().join("stable.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -103,7 +103,7 @@ async fn apply_creates_exact_rollback_publishes_inventory_and_replays_terminally
     std::fs::write(knowledge.join("add.bin"), b"candidate add").unwrap();
     std::fs::write(knowledge.join("replace.bin"), b"candidate replacement").unwrap();
     std::fs::write(knowledge.join("retain.bin"), b"retained").unwrap();
-    let backup_path = temporary.path().join("candidate.a3s-use-state-backup");
+    let backup_path = temporary.path().join("candidate.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -115,7 +115,7 @@ async fn apply_creates_exact_rollback_publishes_inventory_and_replays_terminally
     let manager = StateRestoreManager::new(paths.clone());
     let plan = manager.plan_restore(&backup_path).await.unwrap();
     let plan_digest = plan.descriptor_digest().unwrap();
-    let rollback_path = temporary.path().join("rollback.a3s-use-state-backup");
+    let rollback_path = temporary.path().join("rollback.aster-use-state-backup");
 
     let result = manager
         .apply_restore(&backup_path, &rollback_path, &plan_digest)
@@ -149,7 +149,7 @@ async fn apply_creates_exact_rollback_publishes_inventory_and_replays_terminally
     assert!(!knowledge.join("remove.bin").exists());
     assert!(!paths
         .state_root()
-        .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER)
+        .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER)
         .exists());
     let digest = plan_digest.strip_prefix("sha256:").unwrap();
     assert!(!paths
@@ -180,7 +180,7 @@ async fn apply_creates_exact_rollback_publishes_inventory_and_replays_terminally
     assert_eq!(replay, result);
     assert!(!paths
         .state_root()
-        .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER)
+        .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER)
         .exists());
 }
 
@@ -190,7 +190,7 @@ async fn no_change_apply_does_not_create_a_rollback_or_operation() {
     let paths = fixture_paths(temporary.path());
     std::fs::create_dir_all(paths.state_root().join("knowledge")).unwrap();
     std::fs::write(paths.state_root().join("knowledge/stable.bin"), b"stable").unwrap();
-    let backup_path = temporary.path().join("stable.a3s-use-state-backup");
+    let backup_path = temporary.path().join("stable.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -200,7 +200,7 @@ async fn no_change_apply_does_not_create_a_rollback_or_operation() {
     let plan_digest = plan.descriptor_digest().unwrap();
     let rollback_path = temporary
         .path()
-        .join("unused-rollback.a3s-use-state-backup");
+        .join("unused-rollback.aster-use-state-backup");
 
     let result = manager
         .apply_restore(backup_path, &rollback_path, &plan_digest)
@@ -223,7 +223,7 @@ async fn apply_rejects_stale_live_state_before_rollback_or_marker() {
     let file = paths.state_root().join("knowledge/value.bin");
     std::fs::create_dir_all(file.parent().unwrap()).unwrap();
     std::fs::write(&file, b"candidate").unwrap();
-    let backup_path = temporary.path().join("candidate.a3s-use-state-backup");
+    let backup_path = temporary.path().join("candidate.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -233,7 +233,7 @@ async fn apply_rejects_stale_live_state_before_rollback_or_marker() {
     let plan = manager.plan_restore(&backup_path).await.unwrap();
     let plan_digest = plan.descriptor_digest().unwrap();
     std::fs::write(&file, b"changed after review").unwrap();
-    let rollback_path = temporary.path().join("rollback.a3s-use-state-backup");
+    let rollback_path = temporary.path().join("rollback.aster-use-state-backup");
 
     let error = manager
         .apply_restore(backup_path, &rollback_path, &plan_digest)
@@ -244,7 +244,7 @@ async fn apply_rejects_stale_live_state_before_rollback_or_marker() {
     assert!(!rollback_path.exists());
     assert!(!paths
         .state_root()
-        .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER)
+        .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER)
         .exists());
 }
 
@@ -255,7 +255,7 @@ async fn apply_rejects_archive_tampering_and_rollback_inside_owned_state() {
     let file = paths.state_root().join("knowledge/value.bin");
     std::fs::create_dir_all(file.parent().unwrap()).unwrap();
     std::fs::write(&file, b"candidate").unwrap();
-    let backup_path = temporary.path().join("candidate.a3s-use-state-backup");
+    let backup_path = temporary.path().join("candidate.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -268,7 +268,7 @@ async fn apply_rejects_archive_tampering_and_rollback_inside_owned_state() {
     let mut tampered = original.clone();
     *tampered.last_mut().unwrap() ^= 0xff;
     std::fs::write(&backup_path, tampered).unwrap();
-    let rollback_path = temporary.path().join("rollback.a3s-use-state-backup");
+    let rollback_path = temporary.path().join("rollback.aster-use-state-backup");
 
     let error = manager
         .apply_restore(&backup_path, &rollback_path, &plan_digest)
@@ -283,7 +283,7 @@ async fn apply_rejects_archive_tampering_and_rollback_inside_owned_state() {
             &backup_path,
             paths
                 .state_root()
-                .join("knowledge/rollback.a3s-use-state-backup"),
+                .join("knowledge/rollback.aster-use-state-backup"),
             &plan_digest,
         )
         .await
@@ -291,7 +291,7 @@ async fn apply_rejects_archive_tampering_and_rollback_inside_owned_state() {
     assert_eq!(error.code, "use.state_restore_path_invalid");
     assert!(!paths
         .state_root()
-        .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER)
+        .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER)
         .exists());
 }
 
@@ -302,7 +302,7 @@ async fn marker_only_handoff_blocks_shared_access_and_reconstructs_the_journal()
     let file = paths.state_root().join("knowledge/value.bin");
     std::fs::create_dir_all(file.parent().unwrap()).unwrap();
     std::fs::write(&file, b"candidate").unwrap();
-    let backup_path = temporary.path().join("candidate.a3s-use-state-backup");
+    let backup_path = temporary.path().join("candidate.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -311,7 +311,7 @@ async fn marker_only_handoff_blocks_shared_access_and_reconstructs_the_journal()
     let manager = StateRestoreManager::new(paths.clone());
     let plan = manager.plan_restore(&backup_path).await.unwrap();
     let plan_digest = plan.descriptor_digest().unwrap();
-    let rollback_path = temporary.path().join("rollback.a3s-use-state-backup");
+    let rollback_path = temporary.path().join("rollback.aster-use-state-backup");
     let rollback = StateBackupManager::new(paths.clone())
         .backup(&rollback_path)
         .await
@@ -327,7 +327,7 @@ async fn marker_only_handoff_blocks_shared_access_and_reconstructs_the_journal()
 
     let marker_path = paths
         .state_root()
-        .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER);
+        .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER);
     let marker_before = std::fs::read(&marker_path).unwrap();
     let diagnostic = manager.diagnose_restore().await.unwrap();
     assert_eq!(
@@ -379,7 +379,7 @@ async fn restore_preserves_reviewed_unix_mode_and_read_only_evidence() {
     std::fs::create_dir_all(file.parent().unwrap()).unwrap();
     std::fs::write(&file, b"candidate").unwrap();
     std::fs::set_permissions(&file, std::fs::Permissions::from_mode(0o444)).unwrap();
-    let backup_path = temporary.path().join("mode.a3s-use-state-backup");
+    let backup_path = temporary.path().join("mode.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -393,7 +393,7 @@ async fn restore_preserves_reviewed_unix_mode_and_read_only_evidence() {
     manager
         .apply_restore(
             backup_path,
-            temporary.path().join("rollback.a3s-use-state-backup"),
+            temporary.path().join("rollback.aster-use-state-backup"),
             &plan_digest,
         )
         .await
@@ -416,7 +416,7 @@ async fn planning_rejects_registry_and_grant_authority_drift() {
         let path = paths.state_root().join(authority_path);
         std::fs::create_dir_all(path.parent().unwrap()).unwrap();
         std::fs::write(&path, b"retained authority").unwrap();
-        let backup_path = temporary.path().join("authority.a3s-use-state-backup");
+        let backup_path = temporary.path().join("authority.aster-use-state-backup");
         StateBackupManager::new(paths.clone())
             .backup(&backup_path)
             .await
@@ -436,7 +436,7 @@ async fn planning_rejects_registry_and_grant_authority_drift() {
 async fn planning_rejects_version_os_and_architecture_mismatch() {
     let temporary = tempfile::tempdir().unwrap();
     let paths = fixture_paths(temporary.path());
-    let backup_path = temporary.path().join("platform.a3s-use-state-backup");
+    let backup_path = temporary.path().join("platform.aster-use-state-backup");
     let manifest = StateBackupManager::new(paths)
         .backup(&backup_path)
         .await
@@ -460,7 +460,7 @@ async fn planning_rejects_version_os_and_architecture_mismatch() {
 async fn planning_rejects_active_restore_links_and_unknown_state() {
     let temporary = tempfile::tempdir().unwrap();
     let paths = fixture_paths(temporary.path());
-    let backup_path = temporary.path().join("safe.a3s-use-state-backup");
+    let backup_path = temporary.path().join("safe.aster-use-state-backup");
     StateBackupManager::new(paths.clone())
         .backup(&backup_path)
         .await
@@ -468,7 +468,7 @@ async fn planning_rejects_active_restore_links_and_unknown_state() {
 
     let marker = paths
         .state_root()
-        .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER);
+        .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER);
     std::fs::write(&marker, b"{}").unwrap();
     let error = StateRestoreManager::new(paths.clone())
         .plan_restore(&backup_path)
@@ -508,10 +508,10 @@ fn fixture_paths(root: &Path) -> ExtensionPaths {
     ExtensionPaths::new(root.join("data"), root.join("state"))
 }
 
-const RESTORE_CHILD_ROOT_ENV: &str = "A3S_USE_TEST_STATE_RESTORE_ROOT";
-const RESTORE_CHILD_BACKUP_ENV: &str = "A3S_USE_TEST_STATE_RESTORE_BACKUP";
-const RESTORE_CHILD_ROLLBACK_ENV: &str = "A3S_USE_TEST_STATE_RESTORE_ROLLBACK";
-const RESTORE_CHILD_PLAN_DIGEST_ENV: &str = "A3S_USE_TEST_STATE_RESTORE_PLAN_DIGEST";
+const RESTORE_CHILD_ROOT_ENV: &str = "ASTER_USE_TEST_STATE_RESTORE_ROOT";
+const RESTORE_CHILD_BACKUP_ENV: &str = "ASTER_USE_TEST_STATE_RESTORE_BACKUP";
+const RESTORE_CHILD_ROLLBACK_ENV: &str = "ASTER_USE_TEST_STATE_RESTORE_ROLLBACK";
+const RESTORE_CHILD_PLAN_DIGEST_ENV: &str = "ASTER_USE_TEST_STATE_RESTORE_PLAN_DIGEST";
 const RESTORE_CRASH_EXIT_CODE: i32 = 87;
 
 #[tokio::test]
@@ -542,7 +542,7 @@ async fn every_restore_checkpoint_recovers_after_process_exit() {
         std::fs::write(knowledge.join("retain.bin"), b"retained").unwrap();
         let backup_path = temporary
             .path()
-            .join(format!("candidate-{checkpoint}.a3s-use-state-backup"));
+            .join(format!("candidate-{checkpoint}.aster-use-state-backup"));
         StateBackupManager::new(paths.clone())
             .backup(&backup_path)
             .await
@@ -555,7 +555,7 @@ async fn every_restore_checkpoint_recovers_after_process_exit() {
         let plan_digest = plan.descriptor_digest().unwrap();
         let rollback_path = temporary
             .path()
-            .join(format!("rollback-{checkpoint}.a3s-use-state-backup"));
+            .join(format!("rollback-{checkpoint}.aster-use-state-backup"));
 
         let output = tokio::process::Command::new(std::env::current_exe().unwrap())
             .arg("state_restore_checkpoint_crash_child")
@@ -628,7 +628,7 @@ async fn every_restore_checkpoint_recovers_after_process_exit() {
         assert!(!knowledge.join("remove.bin").exists());
         assert!(!paths
             .state_root()
-            .join(a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER)
+            .join(aster_use_extension::ACTIVE_STATE_RESTORE_MARKER)
             .exists());
         let rollback = StateBackupManager::verify_backup(&rollback_path)
             .await
@@ -668,7 +668,7 @@ fn snapshot_regular_files(root: &Path) -> BTreeMap<PathBuf, Vec<u8>> {
             let entry = entry.unwrap();
             let path = entry.path();
             let metadata = std::fs::symlink_metadata(&path).unwrap();
-            assert!(!a3s_use_core::metadata_is_link_or_reparse_point(&metadata));
+            assert!(!aster_use_core::metadata_is_link_or_reparse_point(&metadata));
             if metadata.is_dir() {
                 stack.push(path);
             } else if metadata.is_file() {

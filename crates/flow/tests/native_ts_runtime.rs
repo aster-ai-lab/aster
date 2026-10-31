@@ -1,6 +1,6 @@
 #[cfg(all(feature = "native-ts", unix))]
 mod native_ts_runtime {
-    use a3s_flow::{
+    use aster_flow::{
         FlowEngine, FlowError, NativeTsRuntime, NativeTsRuntimeConfig, WorkflowRunStatus,
         WorkflowSpec,
     };
@@ -195,13 +195,13 @@ request="$(cat)"
 printf '%s\n' "$request" >> {request_log}
 case "$request" in
   *'"kind":"step"'*)
-    printf '{{"protocol":"a3s.flow.native_ts.v1","kind":"step","ok":true,"output":{{"message":"native step complete"}}}}\n'
+    printf '{{"protocol":"aster.flow.native_ts.v1","kind":"step","ok":true,"output":{{"message":"native step complete"}}}}\n'
     ;;
   *'"type":"step_completed"'*)
-    printf '{{"protocol":"a3s.flow.native_ts.v1","kind":"workflow","ok":true,"output":{{"type":"complete","output":{{"status":"done"}}}}}}\n'
+    printf '{{"protocol":"aster.flow.native_ts.v1","kind":"workflow","ok":true,"output":{{"type":"complete","output":{{"status":"done"}}}}}}\n'
     ;;
   *)
-    printf '{{"protocol":"a3s.flow.native_ts.v1","kind":"workflow","ok":true,"output":{{"type":"schedule_step","step_id":"native-step","step_name":"nativeStep","input":{{"value":42}},"retry":{{"max_attempts":1,"delay_ms":0}}}}}}\n'
+    printf '{{"protocol":"aster.flow.native_ts.v1","kind":"workflow","ok":true,"output":{{"type":"schedule_step","step_id":"native-step","step_name":"nativeStep","input":{{"value":42}},"retry":{{"max_attempts":1,"delay_ms":0}}}}}}\n'
     ;;
 esac
 "#,
@@ -216,7 +216,7 @@ esac
 set -eu
 request="$(cat)"
 printf '%s\n' "$request" >> {request_log}
-printf '{{"protocol":"a3s.flow.native_ts.v1","kind":"step","ok":true,"output":{{"type":"complete","output":{{}}}}}}\n'
+printf '{{"protocol":"aster.flow.native_ts.v1","kind":"step","ok":true,"output":{{"type":"complete","output":{{}}}}}}\n'
 "#,
             request_log = shell_quote(request_log),
         );
@@ -229,7 +229,7 @@ printf '{{"protocol":"a3s.flow.native_ts.v1","kind":"step","ok":true,"output":{{
 set -eu
 request="$(cat)"
 printf '%s\n' "$request" >> {request_log}
-printf '{{"protocol":"a3s.flow.native_ts.v1","kind":"workflow","ok":false,"error":"runtime rejected workflow"}}\n'
+printf '{{"protocol":"aster.flow.native_ts.v1","kind":"workflow","ok":false,"error":"runtime rejected workflow"}}\n'
 "#,
             request_log = shell_quote(request_log),
         );
@@ -378,7 +378,7 @@ exec sleep 30
             &entrypoint,
             &request_log,
             "preflight",
-            "a3s.flow.native_ts.v1",
+            "aster.flow.native_ts.v1",
         );
 
         let runtime = NativeTsRuntime::new(NativeTsRuntimeConfig::new(
@@ -421,7 +421,7 @@ exec sleep 30
             &entrypoint,
             &request_log,
             "relative-paths",
-            "a3s.flow.native_ts.v1",
+            "aster.flow.native_ts.v1",
         );
 
         let runtime = Arc::new(NativeTsRuntime::new(NativeTsRuntimeConfig::new(
@@ -459,7 +459,7 @@ exec sleep 30
             &entrypoint,
             &request_log,
             "atomic-cache",
-            "a3s.flow.native_ts.v1",
+            "aster.flow.native_ts.v1",
         );
 
         let runtime = Arc::new(NativeTsRuntime::new(NativeTsRuntimeConfig::new(
@@ -635,7 +635,7 @@ exec sleep 30
         let cache_dir = dir.path().join("cache");
 
         write_fake_compiler(&compiler, &compile_log);
-        write_runtime_source(&entrypoint, &request_log, "first", "a3s.flow.native_ts.v1");
+        write_runtime_source(&entrypoint, &request_log, "first", "aster.flow.native_ts.v1");
 
         let runtime = Arc::new(NativeTsRuntime::new(NativeTsRuntimeConfig::new(
             &compiler,
@@ -661,13 +661,13 @@ exec sleep 30
         );
 
         let request = last_request(&request_log);
-        assert_eq!(request["protocol"], "a3s.flow.native_ts.v1");
+        assert_eq!(request["protocol"], "aster.flow.native_ts.v1");
         assert_eq!(request["kind"], "workflow");
         assert_eq!(request["exportName"], "main");
         assert_eq!(request["payload"]["run_id"], second_run_id);
         assert_eq!(request["sourceHash"].as_str().unwrap().len(), 64);
 
-        write_runtime_source(&entrypoint, &request_log, "second", "a3s.flow.native_ts.v1");
+        write_runtime_source(&entrypoint, &request_log, "second", "aster.flow.native_ts.v1");
 
         let third_run_id = engine.start(spec, json!({ "n": 3 })).await.unwrap();
         let third = engine.snapshot(&third_run_id).await.unwrap();
@@ -697,7 +697,7 @@ exec sleep 30
             &entrypoint,
             &request_log,
             "native-cache-compiler-marker",
-            "a3s.flow.native_ts.v1",
+            "aster.flow.native_ts.v1",
         );
 
         let first_runtime = Arc::new(NativeTsRuntime::new(NativeTsRuntimeConfig::new(

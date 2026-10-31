@@ -34,7 +34,7 @@ function DataGridVirtualSpacer(props: { height: number; colSpan: number }) {
   if (props.height <= 0) return null;
   return (
     // biome-ignore lint/a11y/noAriaHiddenOnFocusable: Native table rows are not focusable; spacer rows must stay out of the accessibility row model.
-    <tr className="a3s-form-data-grid-spacer" aria-hidden="true">
+    <tr className="aster-form-data-grid-spacer" aria-hidden="true">
       <td colSpan={props.colSpan} style={{ height: props.height }} />
     </tr>
   );
@@ -131,8 +131,8 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
       pendingScrollIndexRef.current = sourceIndex;
       if (view.filterActive) view.clearFilter();
     };
-    fieldset.addEventListener('a3s-form-reveal-path', revealRow);
-    return () => fieldset.removeEventListener('a3s-form-reveal-path', revealRow);
+    fieldset.addEventListener('aster-form-reveal-path', revealRow);
+    return () => fieldset.removeEventListener('aster-form-reveal-path', revealRow);
   }, [
     props.valuePath,
     rows.rows,
@@ -287,21 +287,21 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
     <>
       <fieldset
         ref={fieldsetRef}
-        className={`a3s-form-field a3s-form-repeater fieldset is-object is-data-grid${dialogEditing ? ' is-dialog-edit' : ''}${props.errors.length ? ' is-invalid' : ''}`}
+        className={`aster-form-field aster-form-repeater fieldset is-object is-data-grid${dialogEditing ? ' is-dialog-edit' : ''}${props.errors.length ? ' is-invalid' : ''}`}
         style={props.style}
         data-read-only={props.disabled || undefined}
         aria-describedby={props.describedBy}
         aria-busy={props.validating || undefined}
         data-validating={props.validating || undefined}
-        data-a3s-form-path={props.valuePath}
-        data-a3s-form-virtual-grid={virtual.enabled || undefined}
+        data-aster-form-path={props.valuePath}
+        data-aster-form-virtual-grid={virtual.enabled || undefined}
         onBlur={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) props.onBlur();
         }}
       >
         <legend className={props.required ? 'is-required' : undefined}>{label}</legend>
         {props.node.description && (
-          <div className="a3s-form-help" id={`${props.id}-help`}>
+          <div className="aster-form-help" id={`${props.id}-help`}>
             {props.node.description}
           </div>
         )}
@@ -332,7 +332,7 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
         />
         {virtual.enabled && (
           <span
-            className="a3s-form-data-grid-virtual-description"
+            className="aster-form-data-grid-virtual-description"
             id={`${props.id}-virtual-description`}
           >
             {formatFormMessage(props.messages, 'dataGridVirtualDescription', {
@@ -342,11 +342,11 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
         )}
         <section
           ref={virtual.scrollRef}
-          className={`a3s-form-data-grid-scroll table-container${virtual.enabled ? ' is-virtualized' : ''}`}
+          className={`aster-form-data-grid-scroll table-container${virtual.enabled ? ' is-virtualized' : ''}`}
           style={
             virtual.enabled
               ? ({
-                  '--a3s-form-data-grid-viewport-height': `${virtual.viewportHeight}px`,
+                  '--aster-form-data-grid-viewport-height': `${virtual.viewportHeight}px`,
                 } as CSSProperties)
               : undefined
           }
@@ -361,21 +361,21 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
           onKeyDown={virtual.onKeyDown}
         >
           <table
-            className="a3s-form-data-grid table"
+            className="aster-form-data-grid table"
             aria-label={label}
             aria-rowcount={virtual.enabled ? view.rows.length + 1 : undefined}
             onFocusCapture={view.onFocusCapture}
             onBlurCapture={view.onBlurCapture}
           >
             <colgroup>
-              <col className="a3s-form-data-grid-row-number-column" />
+              <col className="aster-form-data-grid-row-number-column" />
               {props.columns.map((column) => (
                 <col
                   key={column.id}
                   style={{ width: `${(column.width / totalColumnWeight) * 100}%` }}
                 />
               ))}
-              <col className="a3s-form-data-grid-actions-column" />
+              <col className="aster-form-data-grid-actions-column" />
             </colgroup>
             <thead>
               <tr aria-rowindex={virtual.enabled ? 1 : undefined}>
@@ -417,7 +417,7 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
             <tbody>
               {rows.rows.length === 0 ? (
                 <tr>
-                  <td className="a3s-form-data-grid-empty" colSpan={props.columns.length + 2}>
+                  <td className="aster-form-data-grid-empty" colSpan={props.columns.length + 2}>
                     <span role="status">{props.messages.dataGridEmpty}</span>
                   </td>
                 </tr>
@@ -449,7 +449,7 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
                       <tr
                         ref={virtual.enabled ? virtual.getRowRef(row.key) : undefined}
                         data-row-key={row.key}
-                        data-a3s-form-grid-row-path={rowPath}
+                        data-aster-form-grid-row-path={rowPath}
                         data-selected={selectedKeys.has(row.key) || undefined}
                         data-invalid={rowErrors.length > 0 || undefined}
                         aria-label={rowLabel}
@@ -472,24 +472,24 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
                               onChange={() => toggleRow(row.key)}
                             />
                           )}
-                          <span className="a3s-form-data-grid-row-index" aria-hidden="true">
+                          <span className="aster-form-data-grid-row-index" aria-hidden="true">
                             {position + 1}
                           </span>
-                          <span className="a3s-form-data-grid-row-label">{rowLabel}</span>
+                          <span className="aster-form-data-grid-row-label">{rowLabel}</span>
                           {rowErrors.length > 0 && (
-                            <span className="a3s-form-data-grid-row-invalid a3s-form-error">
+                            <span className="aster-form-data-grid-row-invalid aster-form-error">
                               {props.messages.dataGridRowInvalid}
                             </span>
                           )}
                         </th>
                         {props.columns.map((column) => (
                           <td
-                            className="a3s-form-data-grid-cell"
+                            className="aster-form-data-grid-cell"
                             data-label={column.label}
                             key={column.id}
                           >
                             {dialogEditing ? (
-                              <span className="a3s-form-data-grid-summary">
+                              <span className="aster-form-data-grid-summary">
                                 {props.formatCellValue(column.id, row.index)}
                               </span>
                             ) : (
@@ -498,7 +498,7 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
                           </td>
                         ))}
                         <td
-                          className="a3s-form-data-grid-row-actions-cell"
+                          className="aster-form-data-grid-row-actions-cell"
                           data-label={props.messages.dataGridActionsLabel}
                         >
                           <RowActions
@@ -534,7 +534,7 @@ export function DataGridField({ rows, ...props }: DataGridFieldProps) {
           </table>
         </section>
         {virtual.enabled && view.rows.length > 0 && (
-          <div className="a3s-form-data-grid-virtual-range" aria-hidden="true">
+          <div className="aster-form-data-grid-virtual-range" aria-hidden="true">
             {formatFormMessage(props.messages, 'dataGridVirtualRange', {
               start: virtual.range.start + 1,
               end: virtual.range.end,

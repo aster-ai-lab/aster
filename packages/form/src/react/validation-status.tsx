@@ -9,7 +9,7 @@ export function ValidationStatus({
 }) {
   return (
     <span
-      className="a3s-form-validation-status"
+      className="aster-form-validation-status"
       role="status"
       aria-label={formatFormMessage(messages, 'validationPendingLabel', { label })}
     >

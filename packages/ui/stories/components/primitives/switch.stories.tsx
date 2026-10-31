@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Bell, Moon, Shield, Wifi, Zap } from 'lucide-react'
 import { useState } from 'react'
 
-import { DescriptionSwitch, Switch } from '@a3s-lab/ui'
+import { DescriptionSwitch, Switch } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Switch> = {
   title: 'Components/Primitives/Switch',

@@ -198,7 +198,7 @@ async fn prove_findings_reopen(file_store: bool) {
         !crate::fact_control::read_workspace_facts(root.path(), "goal-run")
             .unwrap()
             .iter()
-            .any(|fact| fact.kind == "a3s.goal.step.accepted")
+            .any(|fact| fact.kind == "aster.goal.step.accepted")
     );
     assert_eq!(client.calls.load(Ordering::SeqCst), calls, "no model call");
     restored.close().await;
@@ -209,7 +209,7 @@ fn slice_runs(root: &std::path::Path) -> Vec<String> {
     crate::fact_control::read_workspace_facts(root, "goal-run")
         .unwrap()
         .iter()
-        .filter(|fact| fact.kind == "a3s.goal.slice.admitted")
+        .filter(|fact| fact.kind == "aster.goal.slice.admitted")
         .map(|fact| fact.payload["body"]["run_id"].as_str().unwrap().to_owned())
         .collect()
 }

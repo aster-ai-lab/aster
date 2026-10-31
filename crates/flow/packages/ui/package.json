@@ -1,5 +1,5 @@
 {
-  "name": "@a3s-lab/flow-ui",
+  "name": "@aster-ai-lab/flow-ui",
   "version": "1.0.0",
   "description": "Kense Flow authoring components, React and Vue hooks, and workflow CLI.",
   "type": "module",
@@ -45,8 +45,8 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@a3s-lab/form": "workspace:*",
-    "@a3s-lab/ce": "workspace:*",
+    "@aster-ai-lab/form": "workspace:*",
+    "@aster-ai-lab/ce": "workspace:*",
     "react": ">=18",
     "react-dom": ">=18",
     "vue": ">=3.4"
@@ -57,12 +57,12 @@
     }
   },
   "dependencies": {
-    "@a3s-lab/form": "workspace:*",
+    "@aster-ai-lab/form": "workspace:*",
     "@phosphor-icons/react": "^2.1.10",
-    "@a3s-lab/ui": "workspace:*"
+    "@aster-ai-lab/ui": "workspace:*"
   },
   "devDependencies": {
-    "@a3s-lab/form": "workspace:*",
+    "@aster-ai-lab/form": "workspace:*",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^22.8.1",
     "@types/react": "^19.2.18",

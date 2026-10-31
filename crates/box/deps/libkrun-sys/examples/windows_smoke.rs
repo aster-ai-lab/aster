@@ -1,4 +1,4 @@
-//! Windows smoke test for a3s-libkrun-sys
+//! Windows smoke test for aster-libkrun-sys
 //!
 //! Verifies that krun.dll can be loaded and basic API calls work.
 //!
@@ -6,11 +6,11 @@
 //!   cargo run --target x86_64-pc-windows-msvc --example windows_smoke
 
 #[cfg(windows)]
-use a3s_libkrun_sys::*;
+use aster_libkrun_sys::*;
 
 #[cfg(windows)]
 fn main() {
-    println!("=== a3s-libkrun-sys Windows Smoke Test ===\n");
+    println!("=== aster-libkrun-sys Windows Smoke Test ===\n");
 
     unsafe {
         // Test 1: Set log level

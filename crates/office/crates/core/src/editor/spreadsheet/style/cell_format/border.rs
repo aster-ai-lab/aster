@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::editor::{NativeSpreadsheetBorder, NativeSpreadsheetBorderLine};
 use crate::xml_edit::{apply_patches, XmlPatch};

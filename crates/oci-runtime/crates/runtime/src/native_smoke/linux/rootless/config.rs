@@ -1,9 +1,9 @@
 use std::os::unix::fs::MetadataExt;
 use std::path::Path;
 
-use a3s_oci_sdk::OciBundle;
+use aster_oci_sdk::OciBundle;
 
-const SUBORDINATE_FILE_NAME: &str = ".a3s-oci-rootless-subordinate";
+const SUBORDINATE_FILE_NAME: &str = ".aster-oci-rootless-subordinate";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub(super) struct Mapping {

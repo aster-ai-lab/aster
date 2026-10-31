@@ -2,15 +2,15 @@
 //!
 //! Architecture mirrors microsoft/tgrep (trigrams as a candidate filter only):
 //! exact matches still come from the workspace regex scan. Implemented in-tree
-//! so `a3s-code-core` stays crates.io-publishable (`tgrep-core` is not on the
-//! registry). Does not start a TCP server and does not touch durable a3s-vec FTS.
+//! so `aster-core` stays crates.io-publishable (`tgrep-core` is not on the
+//! registry). Does not start a TCP server and does not touch durable aster-vec FTS.
 
 use super::{GrepCandidateIndex, GrepCandidateSelection};
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
 /// Workspace-relative directory for the durable trigram candidate cache stamp.
-pub const GREP_TRIGRAM_INDEX_RELATIVE_DIR: &str = ".a3s-code/grep-trigram";
+pub const GREP_TRIGRAM_INDEX_RELATIVE_DIR: &str = ".aster/grep-trigram";
 
 /// Skip automatic indexing above this admitted-file count so first-query
 /// latency stays bounded; callers fall open to the exact regex scan.
@@ -64,7 +64,7 @@ pub struct TrigramGrepCandidateIndex {
 }
 
 impl TrigramGrepCandidateIndex {
-    /// Default on-disk stamp location: `<root>/.a3s-code/grep-trigram`, or
+    /// Default on-disk stamp location: `<root>/.aster/grep-trigram`, or
     /// under the process state root when a host set one.
     pub fn default_index_dir(root: &Path) -> PathBuf {
         crate::state_root::workspace_index_dir(root).join("grep-trigram")
@@ -196,7 +196,7 @@ fn write_index_stamp(
     std::fs::create_dir_all(index_dir)?;
     std::fs::write(
         index_dir.join("stamp.txt"),
-        format!("a3s-code trigram grep candidates\nfiles={file_count}\n"),
+        format!("aster trigram grep candidates\nfiles={file_count}\n"),
     )?;
     Ok(())
 }

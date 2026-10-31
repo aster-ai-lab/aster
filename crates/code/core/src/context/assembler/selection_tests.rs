@@ -15,7 +15,7 @@ fn required() -> ContextItem {
         ContextType::Resource,
         "Keep the required instruction.",
     )
-    .with_source("a3s://workspace-instructions")
+    .with_source("aster://workspace-instructions")
     .with_relevance(0.0)
     .with_token_count(8)
     .with_required()
@@ -23,7 +23,7 @@ fn required() -> ContextItem {
 
 fn optional() -> ContextItem {
     ContextItem::new("optional", ContextType::Resource, "Optional search result.")
-        .with_source("a3s://workspace-instructions")
+        .with_source("aster://workspace-instructions")
         .with_relevance(1.0)
         .with_priority(1.0)
         .with_trust(1.0)

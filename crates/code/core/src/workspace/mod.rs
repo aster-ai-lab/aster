@@ -84,7 +84,7 @@ pub use retrieval::{
     WorkspaceSemanticFallbackReason, WorkspaceSemanticIndexLimits, WorkspaceSemanticSearchHit,
     WorkspaceSemanticSearchRequest, WorkspaceSemanticSearchResult,
 };
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 pub use retrieval::{
     WikiIndex, WikiReconcileReport, WikiSearchHit, WikiSearchPhase, WikiSearchResult,
     WIKI_PASSAGE_CHARS,
@@ -282,12 +282,21 @@ pub struct WorkspaceGrepResult {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorkspaceGrepOutcome {
     pub result: WorkspaceGrepResult,
+    /// Rendered matches, including their context, as byte ranges in `result.output`.
+    /// `None` preserves display-only custom backends without parsing their text.
+    pub matches: Option<Vec<WorkspaceGrepMatch>>,
     /// Distinct paths that contributed rendered match lines, in result order.
     /// `None` denotes a legacy/custom backend with display output only.
     pub matched_paths: Option<Vec<WorkspacePath>>,
     /// Files the backend did not search because they exceed its text-file size
     /// bound, in walk order. Empty when none were skipped or not reported.
     pub skipped_oversize: Vec<WorkspacePath>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct WorkspaceGrepMatch {
+    pub path: WorkspacePath,
+    pub output_range: std::ops::Range<usize>,
 }
 
 /// Repository status returned by a workspace Git provider.
@@ -600,6 +609,7 @@ pub trait WorkspaceSearch: Send + Sync {
         let result = self.grep(request).await?;
         Ok(WorkspaceGrepOutcome {
             result,
+            matches: None,
             matched_paths: None,
             skipped_oversize: Vec::new(),
         })

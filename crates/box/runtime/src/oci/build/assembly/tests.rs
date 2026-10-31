@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
-use a3s_box_core::OperationId;
+use aster_box_core::OperationId;
 use serde_json::Value;
 
 use super::*;
@@ -30,7 +30,7 @@ build "oci" {{
   file = "Dockerfile"
   network = "none"
   platform = "{platform}"
-  schema = "a3s.box.build-plan.v1"
+  schema = "aster.box.build-plan.v1"
 }}
 "#
     ))
@@ -149,13 +149,13 @@ fn blob_names(layout: &std::path::Path) -> BTreeSet<String> {
 async fn two_recorded_outputs_produce_one_deterministic_sorted_index() {
     let (_temporary, store, amd64, arm64) = fixture().await;
     let reversed = BuildOutputAssembly::new(
-        "example.test/a3s/app:reversed",
+        "example.test/aster/app:reversed",
         source_digest(),
         vec![arm64.clone(), amd64.clone()],
     )
     .expect("valid reversed assembly");
     let ordered = BuildOutputAssembly::new(
-        "example.test/a3s/app:ordered",
+        "example.test/aster/app:ordered",
         source_digest(),
         vec![amd64, arm64],
     )
@@ -183,7 +183,7 @@ async fn two_recorded_outputs_produce_one_deterministic_sorted_index() {
 #[tokio::test]
 async fn duplicate_platforms_are_rejected_before_publication() {
     let (_temporary, store, amd64, _arm64) = fixture().await;
-    let target = "example.test/a3s/app:duplicate";
+    let target = "example.test/aster/app:duplicate";
     let error = BuildOutputAssembly::new(target, source_digest(), vec![amd64.clone(), amd64])
         .expect_err("duplicate platform must fail");
 
@@ -195,7 +195,7 @@ async fn duplicate_platforms_are_rejected_before_publication() {
 async fn plan_and_receipt_platform_mismatch_is_rejected() {
     let (_temporary, store, amd64, arm64) = fixture().await;
     let mismatched = BuildOutputAssemblyInput::new(arm64.plan().clone(), amd64.receipt().clone());
-    let target = "example.test/a3s/app:mismatch";
+    let target = "example.test/aster/app:mismatch";
     let error = BuildOutputAssembly::new(target, source_digest(), vec![amd64, mismatched])
         .expect_err("plan and receipt mismatch must fail");
 
@@ -210,7 +210,7 @@ async fn non_platform_build_intent_drift_is_rejected() {
         plan_with_cache("linux/arm64", "content-addressed"),
         arm64.receipt().clone(),
     );
-    let target = "example.test/a3s/app:intent-drift";
+    let target = "example.test/aster/app:intent-drift";
     let error = BuildOutputAssembly::new(target, source_digest(), vec![amd64, drifted])
         .expect_err("non-platform intent drift must fail");
 
@@ -224,7 +224,7 @@ async fn receipt_tampering_is_rejected_before_publication() {
     let mut receipt = amd64.receipt().clone();
     receipt.output.descriptor.digest = format!("sha256:{}", "b".repeat(64));
     let tampered = BuildOutputAssemblyInput::new(amd64.plan().clone(), receipt);
-    let target = "example.test/a3s/app:receipt-tamper";
+    let target = "example.test/aster/app:receipt-tamper";
     let assembly = BuildOutputAssembly::new(target, source_digest(), vec![tampered, arm64])
         .expect("path-independent receipt shape remains valid");
     let error = assemble_recorded_build_outputs(&assembly, Arc::clone(&store))
@@ -239,7 +239,7 @@ async fn receipt_tampering_is_rejected_before_publication() {
 async fn input_layout_tampering_leaves_no_target_publication() {
     let (_temporary, store, amd64, arm64) = fixture().await;
     let assembly = BuildOutputAssembly::new(
-        "example.test/a3s/app:layout-tamper",
+        "example.test/aster/app:layout-tamper",
         source_digest(),
         vec![amd64.clone(), arm64],
     )
@@ -276,7 +276,7 @@ async fn shared_blobs_are_copied_once_into_the_assembled_layout() {
         source_blobs.extend(blob_names(&stored.path));
     }
     let assembly = BuildOutputAssembly::new(
-        "example.test/a3s/app:deduplicated",
+        "example.test/aster/app:deduplicated",
         source_digest(),
         vec![amd64, arm64],
     )
@@ -296,7 +296,7 @@ async fn shared_blobs_are_copied_once_into_the_assembled_layout() {
 async fn repeated_publication_is_idempotent_in_the_one_image_store() {
     let (_temporary, store, amd64, arm64) = fixture().await;
     let assembly = BuildOutputAssembly::new(
-        "example.test/a3s/app:idempotent",
+        "example.test/aster/app:idempotent",
         source_digest(),
         vec![amd64, arm64],
     )

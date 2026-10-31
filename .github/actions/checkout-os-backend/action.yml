@@ -5,7 +5,7 @@ inputs:
     description: Submodule path under the repository (apps/api or apps/cloud).
     required: true
   token:
-    description: Read-only token for the kense-labs repositories.
+    description: Read-only token for the aster-ai-lab repositories.
     required: true
 runs:
   using: composite
@@ -16,7 +16,7 @@ runs:
         BACKEND_READ_TOKEN: ${{ inputs.token }}
       run: |
         if [[ -z "$BACKEND_READ_TOKEN" ]]; then
-          echo '::error::Configure STUDIO_READ_TOKEN with read access to the kense-labs repositories.'
+          echo '::error::Configure STUDIO_READ_TOKEN with read access to the aster-ai-lab repositories.'
           exit 1
         fi
     - name: Resolve pinned revision
@@ -27,7 +27,7 @@ runs:
       run: |
         test "$(git ls-tree HEAD "$SUBMODULE_PATH" | cut -d ' ' -f 1)" = 160000
         echo "sha=$(git rev-parse "HEAD:$SUBMODULE_PATH")" >> "$GITHUB_OUTPUT"
-        echo "repo=kense-labs/$(basename "$SUBMODULE_PATH")" >> "$GITHUB_OUTPUT"
+        echo "repo=aster-ai-lab/$(basename "$SUBMODULE_PATH")" >> "$GITHUB_OUTPUT"
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         repository: ${{ steps.revision.outputs.repo }}

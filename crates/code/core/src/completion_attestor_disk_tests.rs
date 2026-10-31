@@ -84,7 +84,7 @@ fn large_file_is_hashed_with_the_shared_streaming_observer() {
 }
 
 fn observed_ledger(root: &std::path::Path, paths: &[&str]) -> crate::harness_loop::MutationLedger {
-    use a3s_effect::{ToolExecutionOutcome, ToolExecutionResultV1, ToolInvocationIdentityV1};
+    use aster_effect::{ToolExecutionOutcome, ToolExecutionResultV1, ToolInvocationIdentityV1};
     let effects = crate::porcelain::observe_path_effects(
         root,
         crate::porcelain::PathDelta {
@@ -95,7 +95,7 @@ fn observed_ledger(root: &std::path::Path, paths: &[&str]) -> crate::harness_loo
         },
     );
     let receipt = ToolExecutionResultV1 {
-        schema: "a3s.code.tool-result.v1".into(),
+        schema: "aster.code.tool-result.v1".into(),
         identity: ToolInvocationIdentityV1 {
             turn: 1,
             cycle: 0,

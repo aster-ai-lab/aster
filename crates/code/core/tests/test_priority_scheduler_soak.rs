@@ -1,9 +1,9 @@
 //! S-PS-01: admission stays inside capacity across a thousand mixed-priority
 //! cycles, and a queued low-priority job is not starved past the aging window.
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::queue::{LaneHandlerConfig, SessionLane, SessionQueueConfig, TaskHandlerMode};
-use a3s_code_core::{Agent, SessionOptions, TaskPriority, TaskScheduler, TaskSchedulerConfig};
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::queue::{LaneHandlerConfig, SessionLane, SessionQueueConfig, TaskHandlerMode};
+use aster_core::{Agent, SessionOptions, TaskPriority, TaskScheduler, TaskSchedulerConfig};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
@@ -21,6 +21,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,

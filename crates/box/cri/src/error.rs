@@ -1,6 +1,6 @@
 //! CRI-specific error conversions.
 
-use a3s_box_core::error::BoxError;
+use aster_box_core::error::BoxError;
 use tonic::Status;
 
 /// Convert a BoxError to a gRPC Status.

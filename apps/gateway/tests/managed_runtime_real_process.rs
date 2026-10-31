@@ -6,11 +6,11 @@
 //! replay must preserve the opaque binding identity. Runs on Windows and Unix
 //! (no `cfg(unix)` gate).
 
-use a3s_gateway::config::{EntrypointConfig, GatewayConfig, ManagedTargetConfig};
-use a3s_gateway::managed_service::{
+use aster_gateway::config::{EntrypointConfig, GatewayConfig, ManagedTargetConfig};
+use aster_gateway::managed_service::{
     ManagedServiceBindingRequest, ManagedServiceHealthCheck, ManagedServicePhase,
 };
-use a3s_gateway::Gateway;
+use aster_gateway::Gateway;
 use sha2::{Digest, Sha256};
 use std::net::SocketAddr;
 use std::process::Stdio;

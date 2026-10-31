@@ -2,15 +2,15 @@
 
 ## Scope
 
-A3S Code chunks only manifest-admitted UTF-8 text. The manifest classifies a
+Aster Code chunks only manifest-admitted UTF-8 text. The manifest classifies a
 file before catalog construction, so PDF, Office, image, audio, video, archive,
 font, database, and other non-text assets never reach a chunking strategy or an
 Embedding Provider. Parsing those assets belongs to the separate knowledge
 compiler and requires an explicit typed artifact handoff.
 
-Chunking is a Code catalog concern, not an A3S Memory concern. The same chunk
+Chunking is a Code catalog concern, not an Aster Memory concern. The same chunk
 snapshot feeds BM25, semantic indexing, hybrid ranking, and final digest/range
-verification. A3S Memory receives stable IDs and vectors only.
+verification. Aster Memory receives stable IDs and vectors only.
 
 ## Strategies
 
@@ -39,7 +39,7 @@ Configure the catalog created by a normal local session through the typed
 retrieval options:
 
 ```rust
-use a3s_code_core::{
+use aster_core::{
     ChunkCatalogLimits, ChunkingConfig, ManifestWorkspaceBackend,
     RecursiveChunkingOptions, SessionOptions, WorkspaceChunkingStrategy,
     WorkspaceRetrievalOptions, WorkspaceServices,
@@ -98,7 +98,7 @@ and checks the built-in byte ranges. Custom splitters use the Rust host contract
 `CustomWorkspaceChunkingStrategy` is a synchronous `Send + Sync` Rust host
 extension. It receives the normalized path, optional language, UTF-8 content,
 and immutable hard limits. It returns zero-based, half-open byte ranges only.
-A3S Code retains authority over chunk IDs, content digests, line anchors,
+Aster Code retains authority over chunk IDs, content digests, line anchors,
 source revisions, and text ownership.
 
 Code rejects a custom result unless all of these invariants hold:
@@ -133,7 +133,7 @@ vector memory.
 
 RRF already fuses exact, BM25, structural, and semantic channel ranks in
 memory. It does not know that two overlapping windows may contain mostly the
-same evidence. A3S Code therefore provides an opt-in bounded second stage:
+same evidence. Aster Code therefore provides an opt-in bounded second stage:
 
 1. preserve the exact-identifier tier;
 2. remove near-duplicate ranges and repeated boilerplate;
@@ -144,7 +144,7 @@ same evidence. A3S Code therefore provides an opt-in bounded second stage:
 Enable it for a Rust-owned session catalog without changing the default:
 
 ```rust
-use a3s_code_core::{WorkspaceRerankOptions, WorkspaceRetrievalOptions};
+use aster_core::{WorkspaceRerankOptions, WorkspaceRetrievalOptions};
 
 let retrieval = WorkspaceRetrievalOptions::new(embedding_provider)
     .with_rerank_options(WorkspaceRerankOptions::deterministic());
@@ -171,7 +171,7 @@ score plus the greedy selection and redundancy scores. These diagnostics do
 not contain queries, source text, vectors, or model inputs.
 
 This stage requires chunk ranges and channel evidence, so it does not belong in
-the generic A3S Memory vector index. A host-injected local cross-encoder may be
+the generic Aster Memory vector index. A host-injected local cross-encoder may be
 evaluated later, default-off, behind explicit time, memory, cancellation, and
 source-egress controls. No neural runtime or model download is required by the
 baseline.

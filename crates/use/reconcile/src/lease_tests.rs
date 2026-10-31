@@ -264,7 +264,7 @@ fn old_receipts_are_refused_and_generation_overflow_does_not_publish() {
     let path = root.path().join("packages/acme%2Fecho/snapshot.json");
     let original = fs::read(&path).unwrap();
     let mut record: Value = serde_json::from_slice(&original).unwrap();
-    record["schema"] = Value::String("a3s.use.package-reconcile.v1".into());
+    record["schema"] = Value::String("aster.use.package-reconcile.v1".into());
     fs::write(&path, serde_json::to_vec(&record).unwrap()).unwrap();
     assert!(store.acquire_current_sync("acme/echo").is_err());
     assert!(store.apply_sync(&spec("new")).is_err());
@@ -310,7 +310,7 @@ impl Drop for ChildGuard {
 #[test]
 #[ignore = "subprocess entry exercised by cross_process_lease_survives_cutover_and_is_recovered_after_exit"]
 fn hold_lease_in_child_process() {
-    let root = std::env::var_os("A3S_USE_TEST_LEASE_ROOT").unwrap();
+    let root = std::env::var_os("ASTER_USE_TEST_LEASE_ROOT").unwrap();
     let store = ReconcileStore::open(std::path::PathBuf::from(root)).unwrap();
     let _lease = store.acquire_current_sync("acme/echo").unwrap().unwrap();
     fs::write(store.root.join("child-leased"), b"ready").unwrap();
@@ -326,7 +326,7 @@ fn cross_process_lease_survives_cutover_and_is_recovered_after_exit() {
             .arg("--exact")
             .arg("lease_tests::hold_lease_in_child_process")
             .arg("--ignored")
-            .env("A3S_USE_TEST_LEASE_ROOT", root.path())
+            .env("ASTER_USE_TEST_LEASE_ROOT", root.path())
             .stdin(Stdio::piped())
             .stdout(Stdio::null())
             .stderr(Stdio::piped())

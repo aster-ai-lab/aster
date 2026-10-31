@@ -17,7 +17,7 @@ pub(super) enum AttemptDrive {
     Cancelled(acp::Result<acp::PromptResponse>),
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     /// Drain and join an already admitted Run. The synchronous event hook is
     /// for attendance-specific accounting; event delivery itself stays shared.
     #[allow(clippy::too_many_arguments)]
@@ -25,7 +25,7 @@ impl A3sCodeAgent {
         &self,
         session_id: &acp::SessionId,
         session: &AgentSession,
-        stream: a3s_code_core::AgentRunStream,
+        stream: aster_core::AgentRunStream,
         generation: u64,
         turn_permit: OwnedMutexGuard<()>,
         observation: Option<&crate::run_observation::Binding>,

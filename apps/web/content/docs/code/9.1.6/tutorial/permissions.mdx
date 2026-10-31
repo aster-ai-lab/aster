@@ -19,8 +19,8 @@ export const meta = {
 
 ```rust
 use std::sync::Arc;
-use a3s_code_core::AgentEvent;
-use a3s_code_core::hitl::{ConfirmationManager, ConfirmationPolicy, TimeoutAction};
+use aster_core::AgentEvent;
+use aster_core::hitl::{ConfirmationManager, ConfirmationPolicy, TimeoutAction};
 use tokio::sync::broadcast;
 
 pub struct Runtime {
@@ -76,12 +76,12 @@ async fn main() -> anyhow::Result<()> {
 
 ## 确认面板保存准确的调用
 
-给 `App` 加入 `pending: Vec<PendingConfirmationInfo>`，类型来自 `a3s_code_core::hitl`。面板至少显示工具名称、准确的 `tool_id`、当前参数和剩余时间。参数可能含凭证或私人内容，正式应用应按工具的结构化规则脱敏，不能只把全部 JSON 写进日志。
+给 `App` 加入 `pending: Vec<PendingConfirmationInfo>`，类型来自 `aster_core::hitl`。面板至少显示工具名称、准确的 `tool_id`、当前参数和剩余时间。参数可能含凭证或私人内容，正式应用应按工具的结构化规则脱敏，不能只把全部 JSON 写进日志。
 
 在 `ui.rs` 添加这个等待函数，再在原 `tokio::select!` 中增加 `pending = confirmation_update(confirmations, confirmation_events)` 分支，把 `app.pending` 更新为 `pending?`：
 
 ```rust
-use a3s_code_core::hitl::{ConfirmationManager, PendingConfirmationInfo};
+use aster_core::hitl::{ConfirmationManager, PendingConfirmationInfo};
 use tokio::sync::broadcast;
 
 async fn confirmation_update(manager: &ConfirmationManager,
@@ -111,7 +111,7 @@ async fn confirmation_update(manager: &ConfirmationManager,
 
 ```rust
 async fn respond(
-    manager: &a3s_code_core::hitl::ConfirmationManager,
+    manager: &aster_core::hitl::ConfirmationManager,
     tool_id: &str,
     approved: bool,
 ) -> anyhow::Result<()> {

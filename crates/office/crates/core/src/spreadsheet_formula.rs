@@ -1,5 +1,5 @@
-use a3s_office_formula_parser::SpreadsheetFormulaParseError;
-use a3s_use_core::{UseError, UseResult};
+use aster_office_formula_parser::SpreadsheetFormulaParseError;
+use aster_use_core::{UseError, UseResult};
 
 use crate::discovery::office_error;
 use crate::spreadsheet_reference::{column_name, MAX_COLUMNS, MAX_ROWS};
@@ -10,7 +10,7 @@ mod registry;
 mod structured_reference;
 mod value;
 
-pub use a3s_office_formula_parser::{
+pub use aster_office_formula_parser::{
     SpreadsheetFormula, SpreadsheetFormulaBinaryOperator, SpreadsheetFormulaErrorLiteral,
     SpreadsheetFormulaExpression, SpreadsheetFormulaExpressionKind, SpreadsheetFormulaLiteral,
     SpreadsheetFormulaPostfixOperator, SpreadsheetFormulaQualifier, SpreadsheetFormulaReference,
@@ -45,12 +45,12 @@ pub use value::{
 /// Callers may provide a formula-bar leading `=`. Spans and parse-error
 /// positions address the normalized formula body after that optional marker.
 pub fn parse_spreadsheet_formula(formula: &str) -> UseResult<SpreadsheetFormula> {
-    a3s_office_formula_parser::parse_spreadsheet_formula(formula).map_err(parse_error)
+    aster_office_formula_parser::parse_spreadsheet_formula(formula).map_err(parse_error)
 }
 
 pub(crate) fn validate_and_normalize_formula(formula: &str) -> UseResult<&str> {
     let normalized = formula.strip_prefix('=').unwrap_or(formula);
-    a3s_office_formula_parser::parse_spreadsheet_formula(formula).map_err(parse_error)?;
+    aster_office_formula_parser::parse_spreadsheet_formula(formula).map_err(parse_error)?;
     Ok(normalized)
 }
 

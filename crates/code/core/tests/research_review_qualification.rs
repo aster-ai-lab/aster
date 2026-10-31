@@ -8,13 +8,13 @@
 //! record and the admitted research Run. Drift across project, Run,
 //! evaluator, evidence, and binding completeness fails closed.
 
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityCeiling, CapabilityContribution, CapabilityDescriptor, CapabilityExecutionCeiling,
     CapabilityKind, CapabilitySet, CapabilitySource, CodeCatalogGeneration,
     GovernanceCapabilityCeiling, RunCapabilityBindingV1, Sha256Digest, UseCapabilityGeneration,
     UsePackageGeneration, WorkspaceCapabilityCeiling,
 };
-use a3s_code_core::evaluation::{
+use aster_core::evaluation::{
     digest_bytes, AuxiliaryCapabilityProfileV1, AuxiliaryExecutor, AuxiliaryModeV1,
     AuxiliaryRunContextV1, AuxiliaryRunError, AuxiliaryRunService, AuxiliaryRunSpecV1,
     EvaluationRecordV1, EvaluationResultSink, EvaluationResultV1, EvidenceContentModeV1,
@@ -22,7 +22,7 @@ use a3s_code_core::evaluation::{
     InMemoryAuxiliaryRunService, InMemoryEvaluationResultStore, InMemoryExecutionFactJournal,
     RunEvidenceReader,
 };
-use a3s_code_core::{
+use aster_core::{
     AgentEvent, InMemoryRunStore, ResearchArtifactKindV1, ResearchProvenanceReceiptV1,
     ResearchReproducibilityV1, ResearchReviewBatchV1, ResearchReviewCategoryV1,
     ResearchReviewFindingV1, ResearchReviewSeverityV1, ResearchRunStatusV1, ResearchRunV1,
@@ -360,7 +360,7 @@ async fn evaluator_run_and_project_drift_fail_closed() {
     .unwrap();
     assert!(matches!(
         smuggled.validate_for_run(&other_run, &fixture.record),
-        Err(a3s_code_core::research::ResearchContractError::InvalidField("researchRun.runId"))
+        Err(aster_core::research::ResearchContractError::InvalidField("researchRun.runId"))
     ));
 
     // An evaluator record for different evidence cannot publish for this run.

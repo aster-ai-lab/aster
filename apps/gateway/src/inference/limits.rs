@@ -655,7 +655,7 @@ mod tests {
                     credential_id,
                     environment_id,
                     audience: "cloud-inference".into(),
-                    prefix: "a3s_inf_abc12345".into(),
+                    prefix: "aster_inf_abc12345".into(),
                     verifier_hash: String::new(),
                     generation: 3,
                     expires_at: Utc::now() + chrono::Duration::hours(1),

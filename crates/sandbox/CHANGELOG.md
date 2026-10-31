@@ -2,7 +2,7 @@
 
 ### Added
 
-- Linux finds bubblewrap through `A3S_SANDBOX_BWRAP_PATH`, then
+- Linux finds bubblewrap through `ASTER_SANDBOX_BWRAP_PATH`, then
   `/usr/bin/bwrap`, then `bwrap` on `PATH` (NixOS, Homebrew on Linux, custom
   prefixes). A set override is authoritative: it does not fall back to
   `PATH`.
@@ -54,7 +54,7 @@
   per-execution secret map (`MediationContext`).
 - Gate 8 slice 1 — host-held secret environment entries via
   `NativeSandbox::execute_with_secrets`. Secret values never reach the child
-  process: each entry is delivered as an `a3s:secret:<NAME>` sentinel, the
+  process: each entry is delivered as an `aster:secret:<NAME>` sentinel, the
   host re-injects real bytes only at a mediation point (later slice).
   Entries fail closed before spawn when `mediated_network` is off, when a
   name is reserved (re-homed, scrubbed, toolchain, or mediator keys), when a
@@ -107,7 +107,7 @@
 - Host-supervised HTTP CONNECT mediation (`mediated_http`) on macOS (Seatbelt
   loopback), Linux (netns Unix-bridge relay staged into guest scratch), and
   Windows (AppContainer inherited connected named-pipe handle
-  `A3S_SANDBOX_MEDIATOR_PIPE_HANDLE`).
+  `ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE`).
 - Gate 7 assurance package: CONNECT protocol fuzz corpus, soak/p50 starters,
   in-command symlink race + overlapping same-workspace isolation tests,
   CycloneDX SBOM generator, sign-release / collect-release-evidence helpers,
@@ -116,7 +116,7 @@
 
 ### Security
 
-- Default A3S Bash profile remains network deny-all; mediation stays opt-in
+- Default Aster Bash profile remains network deny-all; mediation stays opt-in
   until independent review approves any default-profile change.
 - Windows claims `mediated_http` only after live AppContainer pipe allow/deny
   and raw-egress block proof on Windows CI.
@@ -136,7 +136,7 @@
 
 - Native policy construction no longer bulk-enumerates hardlinks under
   `node_modules` / `target`. Those trees routinely exceed the 1M entry scan
-  ceiling and Seatbelt literal limits on monorepos (for example A3S with many
+  ceiling and Seatbelt literal limits on monorepos (for example Aster with many
   `crates/*/target` trees), which previously failed the capability probe and
   denied Bash until restart.
 - Source-tree multi-link files remain denied. Package/build-store paths that

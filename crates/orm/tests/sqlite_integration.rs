@@ -1,6 +1,6 @@
 #![cfg(feature = "sqlite")]
 
-use a3s_orm::{
+use aster_orm::{
     count, delete_from, insert_into, orm_table, row_number, select_from, sql_query, update_table,
     Database, InsertRow, SelectionExt, SqliteDialect, SqliteExecutor, Value,
 };
@@ -212,7 +212,7 @@ async fn executes_cte_and_bound_subquery_parameters() {
                 .select((Person::age(), count(Person::id()).alias("people")))
                 .group_by(Person::age())
                 .having(count(Person::id()).gte(1))
-                .order_by(Person::age(), a3s_orm::OrderDirection::Asc),
+                .order_by(Person::age(), aster_orm::OrderDirection::Asc),
         )
         .await
         .unwrap()
@@ -225,10 +225,10 @@ async fn executes_cte_and_bound_subquery_parameters() {
                 .select((
                     Person::name(),
                     row_number()
-                        .order_by(Person::age(), a3s_orm::OrderDirection::Asc)
+                        .order_by(Person::age(), aster_orm::OrderDirection::Asc)
                         .alias("position"),
                 ))
-                .order_by(Person::age(), a3s_orm::OrderDirection::Asc),
+                .order_by(Person::age(), aster_orm::OrderDirection::Asc),
         )
         .await
         .unwrap()
@@ -314,7 +314,7 @@ async fn executes_multi_row_insert_and_upsert() {
         .fetch_all_as(
             select_from::<Person>()
                 .select((Person::id(), Person::name(), Person::age()))
-                .order_by(Person::id(), a3s_orm::OrderDirection::Asc),
+                .order_by(Person::id(), aster_orm::OrderDirection::Asc),
         )
         .await
         .unwrap()
@@ -368,7 +368,7 @@ async fn applies_safe_sqlite_connection_defaults() {
 #[tokio::test]
 async fn query_statement_returns_the_inserted_rows() {
     let path = std::env::temp_dir().join(format!(
-        "a3s-orm-grid-{}-{}.sqlite",
+        "aster-orm-grid-{}-{}.sqlite",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)

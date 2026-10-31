@@ -136,7 +136,7 @@ impl PlatformSandbox {
             Ok(mut environment) => {
                 if let Some(client) = mediator_client.as_ref() {
                     environment.insert(
-                        OsString::from("A3S_SANDBOX_MEDIATOR_PIPE_HANDLE"),
+                        OsString::from("ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE"),
                         OsString::from(format!("{}", client.as_raw_handle() as usize)),
                     );
                 }
@@ -216,10 +216,10 @@ enum LauncherKind {
 const FILE_ATTRIBUTE_REPARSE_POINT: u32 = 0x400;
 
 pub(crate) fn resolve_powershell(workspace: &Path) -> Result<PathBuf> {
-    resolve_powershell_with(workspace, std::env::var_os("A3S_SANDBOX_PWSH"))
+    resolve_powershell_with(workspace, std::env::var_os("ASTER_SANDBOX_PWSH"))
 }
 
-/// `override_pwsh` is the raw `A3S_SANDBOX_PWSH` value. `Some` is authoritative:
+/// `override_pwsh` is the raw `ASTER_SANDBOX_PWSH` value. `Some` is authoritative:
 /// an empty, relative, missing, or reparse override fails without consulting
 /// the system Program Files copy.
 pub(crate) fn resolve_powershell_with(
@@ -234,15 +234,15 @@ pub(crate) fn resolve_powershell_with(
 
 fn resolve_pwsh_override(workspace: &Path, path: PathBuf) -> Result<PathBuf> {
     if path.as_os_str().is_empty() {
-        bail!("A3S_SANDBOX_PWSH is set but empty");
+        bail!("ASTER_SANDBOX_PWSH is set but empty");
     }
     if !path.is_absolute() {
         bail!(
-            "A3S_SANDBOX_PWSH must be an absolute path outside the workspace, got {}",
+            "ASTER_SANDBOX_PWSH must be an absolute path outside the workspace, got {}",
             path.display()
         );
     }
-    accept_sandbox_pwsh(workspace, &path, "A3S_SANDBOX_PWSH")
+    accept_sandbox_pwsh(workspace, &path, "ASTER_SANDBOX_PWSH")
 }
 
 fn resolve_program_files_pwsh(workspace: &Path) -> Result<PathBuf> {
@@ -557,7 +557,7 @@ fn powershell_arguments(
         .duration_since(std::time::UNIX_EPOCH)
         .map(|elapsed| elapsed.as_nanos())
         .unwrap_or(0);
-    let path = scratch.join(format!("a3s-command-{}-{unique}.ps1", std::process::id()));
+    let path = scratch.join(format!("aster-command-{}-{unique}.ps1", std::process::id()));
     // -File does not turn a failed cmdlet into a non-zero process exit.
     // -EncodedCommand does. Keep that kernel signal for deny checks.
     let file_body = format!("trap {{ exit 1 }}\n{wrapped}\nif (-not $?) {{ exit 1 }}\n");
@@ -1249,7 +1249,7 @@ mod tests {
         let error = resolve_powershell_with(workspace.path(), Some(OsString::from("pwsh.exe")))
             .expect_err("relative override");
         let text = format!("{error:#}");
-        assert!(text.contains("A3S_SANDBOX_PWSH"), "{text}");
+        assert!(text.contains("ASTER_SANDBOX_PWSH"), "{text}");
         assert!(text.contains("absolute"), "{text}");
         assert!(!text.contains("winget"), "{text}");
     }
@@ -1260,7 +1260,7 @@ mod tests {
         let error = resolve_powershell_with(workspace.path(), Some(OsString::from("")))
             .expect_err("empty override");
         let text = format!("{error:#}");
-        assert!(text.contains("A3S_SANDBOX_PWSH is set but empty"), "{text}");
+        assert!(text.contains("ASTER_SANDBOX_PWSH is set but empty"), "{text}");
         assert!(!text.contains("winget"), "{text}");
     }
 
@@ -1311,7 +1311,7 @@ mod tests {
         std::fs::create_dir(&launcher_dir).unwrap();
         let launcher = launcher_dir.join("pwsh.exe");
         std::fs::write(&launcher, b"alias").unwrap();
-        let error = accept_sandbox_pwsh(workspace.path(), &launcher, "A3S_SANDBOX_PWSH")
+        let error = accept_sandbox_pwsh(workspace.path(), &launcher, "ASTER_SANDBOX_PWSH")
             .expect_err("WindowsApps component");
         let text = format!("{error:#}");
         assert!(text.contains("WindowsApps"), "{text}");
@@ -1325,7 +1325,7 @@ mod tests {
         std::fs::write(&target, b"target").unwrap();
         let link = dir.path().join("pwsh.exe");
         std::os::windows::fs::symlink_file(&target, &link).expect("create a file symlink");
-        let error = accept_sandbox_pwsh(workspace.path(), &link, "A3S_SANDBOX_PWSH")
+        let error = accept_sandbox_pwsh(workspace.path(), &link, "ASTER_SANDBOX_PWSH")
             .expect_err("reparse launcher");
         let text = format!("{error:#}");
         assert!(text.contains("reparse point"), "{text}");
@@ -1349,7 +1349,7 @@ mod tests {
         let first = appcontainer_profile_name();
         let same = appcontainer_profile_name();
         assert_eq!(first, same);
-        assert!(first.starts_with("A3S.Sandbox.Execution."));
+        assert!(first.starts_with("Aster.Sandbox.Execution."));
     }
 
     #[test]
@@ -1377,7 +1377,7 @@ mod tests {
     ///
     /// Runs only on Windows. Green on Windows CI is the evidence behind
     /// `BackendCapabilities::mediated_http` on this platform. Guest opens via
-    /// inherited `A3S_SANDBOX_MEDIATOR_PIPE_HANDLE` — name-open remains Access
+    /// inherited `ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE` — name-open remains Access
     /// Denied under AppContainer even with package SID DACLs.
     #[tokio::test]
     async fn windows_appcontainer_named_pipe_connect_allow_deny_and_blocks_raw_egress() {
@@ -1405,7 +1405,7 @@ mod tests {
             let _ = hit_tx.send(());
         });
 
-        let mut document = SandboxPolicy::a3s_bash_baseline();
+        let mut document = SandboxPolicy::aster_bash_baseline();
         document.features.mediated_network = true;
         document.network.allow.push(NetworkAllowRule {
             host: "127.0.0.1".into(),
@@ -1414,7 +1414,7 @@ mod tests {
         });
 
         let pipe_name = format!(
-            r"\\.\pipe\a3s-sandbox-live-{}-{}",
+            r"\\.\pipe\aster-sandbox-live-{}-{}",
             std::process::id(),
             upstream_addr.port()
         );
@@ -1431,7 +1431,7 @@ mod tests {
         .expect("connected CONNECT named-pipe mediator");
 
         let mut policy = EnforcedPolicy::compile(
-            &SandboxPolicy::a3s_bash_baseline(),
+            &SandboxPolicy::aster_bash_baseline(),
             workspace.path(),
             scratch.path(),
             BackendCapabilities::native_gate2(),
@@ -1442,8 +1442,8 @@ mod tests {
         let allow_script = format!(
             r#"
 $ErrorActionPreference = 'Stop'
-$raw = $env:A3S_SANDBOX_MEDIATOR_PIPE_HANDLE
-if ([string]::IsNullOrEmpty($raw)) {{ throw 'missing A3S_SANDBOX_MEDIATOR_PIPE_HANDLE' }}
+$raw = $env:ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE
+if ([string]::IsNullOrEmpty($raw)) {{ throw 'missing ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE' }}
 $safe = New-Object Microsoft.Win32.SafeHandles.SafePipeHandle([IntPtr][int64]$raw, $true)
 $client = New-Object System.IO.Pipes.NamedPipeClientStream([System.IO.Pipes.PipeDirection]::InOut, $false, $true, $safe)
 $req = [Text.Encoding]::ASCII.GetBytes("CONNECT 127.0.0.1:{port} HTTP/1.1`r`nHost: 127.0.0.1`r`n`r`n")
@@ -1502,7 +1502,7 @@ $client.Dispose()
         });
 
         let deny_pipe = format!(
-            r"\\.\pipe\a3s-sandbox-deny-{}-{}",
+            r"\\.\pipe\aster-sandbox-deny-{}-{}",
             std::process::id(),
             deny_port
         );
@@ -1522,7 +1522,7 @@ $client.Dispose()
         let deny_script = format!(
             r#"
 $ErrorActionPreference = 'Stop'
-$raw = $env:A3S_SANDBOX_MEDIATOR_PIPE_HANDLE
+$raw = $env:ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE
 $safe = New-Object Microsoft.Win32.SafeHandles.SafePipeHandle([IntPtr][int64]$raw, $true)
 $client = New-Object System.IO.Pipes.NamedPipeClientStream([System.IO.Pipes.PipeDirection]::InOut, $false, $true, $safe)
 $req = [Text.Encoding]::ASCII.GetBytes("CONNECT 127.0.0.1:{port} HTTP/1.1`r`nHost: 127.0.0.1`r`n`r`n")

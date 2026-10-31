@@ -179,7 +179,7 @@ fn lease_drop_bad_scales_and_cancellation_leave_previous_state_unchanged() {
     cancellation.cancel();
     assert!(matches!(
         actual.commit_prefix(proposal, 2, &cancellation),
-        Err(a3s_power::error::PowerError::InferenceCancelled)
+        Err(aster_power::error::PowerError::InferenceCancelled)
     ));
     assert_eq!(actual.position(), 2);
     assert_eq!(bytes(&actual), before);

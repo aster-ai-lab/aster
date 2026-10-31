@@ -108,10 +108,10 @@ impl RabbitMqTransportOptions {
 impl Default for RabbitMqTransportOptions {
     fn default() -> Self {
         Self {
-            request_queue: "a3s.boot.requests".to_string(),
-            event_queue: "a3s.boot.events".to_string(),
-            reply_queue_prefix: "a3s.boot.replies".to_string(),
-            consumer_tag_prefix: "a3s.boot.consumer".to_string(),
+            request_queue: "aster.boot.requests".to_string(),
+            event_queue: "aster.boot.events".to_string(),
+            reply_queue_prefix: "aster.boot.replies".to_string(),
+            consumer_tag_prefix: "aster.boot.consumer".to_string(),
             request_timeout: Duration::from_secs(5),
             durable: false,
             auto_delete: false,

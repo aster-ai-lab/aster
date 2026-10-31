@@ -1,4 +1,4 @@
-//! `a3s-box unseal` command — Decrypt data inside a TEE.
+//! `aster-box unseal` command — Decrypt data inside a TEE.
 //!
 //! Connects to a running box's RA-TLS attestation server, verifies the TEE,
 //! then decrypts a sealed blob using the TEE-bound key. Only succeeds if the
@@ -12,14 +12,14 @@ use crate::resolve;
 use crate::state::StateFile;
 
 #[cfg(not(windows))]
-use a3s_box_runtime::{tee::AttestationPolicy, SealClient};
+use aster_box_runtime::{tee::AttestationPolicy, SealClient};
 
 #[derive(Args)]
 pub struct UnsealArgs {
     /// Box name or ID
     pub r#box: String,
 
-    /// Sealed blob (base64-encoded, from `a3s-box seal` output)
+    /// Sealed blob (base64-encoded, from `aster-box seal` output)
     #[arg(long)]
     pub blob: String,
 

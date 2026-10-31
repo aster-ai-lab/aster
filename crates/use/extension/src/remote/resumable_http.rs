@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use reqwest::header::{ACCEPT_ENCODING, CONTENT_LENGTH, CONTENT_RANGE, LOCATION, RANGE};
 use reqwest::{Response, StatusCode};
 use tough::TargetName;
@@ -57,7 +57,7 @@ pub(super) async fn download(
     let standard_client = match network_policy {
         RegistryNetworkPolicy::Standard => Some(
             reqwest::Client::builder()
-                .user_agent("a3s-use-extension/0.3")
+                .user_agent("aster-use-extension/0.3")
                 .connect_timeout(Duration::from_secs(15))
                 .timeout(Duration::from_secs(300))
                 .redirect(reqwest::redirect::Policy::none())

@@ -7,8 +7,8 @@ use thiserror::Error;
 
 use super::{CapabilitySetError, Sha256Digest};
 
-pub const UI_DOCUMENT_SCHEMA: &str = "a3s.code.ui-document.v1";
-pub const UI_BINDING_SCHEMA: &str = "a3s.code.ui-binding.v1";
+pub const UI_DOCUMENT_SCHEMA: &str = "aster.code.ui-document.v1";
+pub const UI_BINDING_SCHEMA: &str = "aster.code.ui-binding.v1";
 pub const MAX_UI_ASSET_BYTES: usize = 2 * 1024 * 1024;
 pub const MAX_UI_ASSETS_PER_KIND: usize = 16;
 pub const MAX_UI_DOCUMENT_BYTES: usize = 16 * 1024 * 1024;
@@ -17,7 +17,7 @@ const MAX_UI_PUBLIC_NAME_BYTES: usize = 256;
 const MAX_UI_TITLE_BYTES: usize = 256;
 const MAX_UI_DESCRIPTION_BYTES: usize = 1_024;
 const MAX_UI_ICON_BYTES: usize = 64;
-const UI_DIGEST_PREFIX: &[u8] = b"a3s-code-ui\0";
+const UI_DIGEST_PREFIX: &[u8] = b"aster-ui\0";
 
 /// Closed static asset roles accepted by the renderer-neutral UI contract.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]

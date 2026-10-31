@@ -1,10 +1,10 @@
 #![cfg(test)]
 
-use super::A3sCodeAgent;
+use super::AsterCodeAgent;
 use agent_client_protocol::{self as acp, Agent as _};
 use serde_json::{json, Value};
 
-async fn ext(host: &A3sCodeAgent, method: &str, params: Value) -> acp::Result<Value> {
+async fn ext(host: &AsterCodeAgent, method: &str, params: Value) -> acp::Result<Value> {
     let raw = serde_json::value::to_raw_value(&params).unwrap();
     let response = host
         .ext_method(acp::ExtRequest::new(method, raw.into()))
@@ -13,7 +13,7 @@ async fn ext(host: &A3sCodeAgent, method: &str, params: Value) -> acp::Result<Va
 }
 
 fn engineering_meta() -> acp::Meta {
-    json!({"a3sEngineering":{"policy":"engineering-v1"}})
+    json!({"asterEngineering":{"policy":"engineering-v1"}})
         .as_object()
         .unwrap()
         .clone()
@@ -23,12 +23,12 @@ fn engineering_meta() -> acp::Meta {
 /// as the review Run does in product use; the host then loads the session.
 async fn policy_session(launch: &crate::config::LaunchConfig, id: &str) -> acp::SessionId {
     let mut config = launch.config.clone();
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
     });
-    let store = A3sCodeAgent::interactive_session_store_dir(config.sessions_dir.as_deref());
+    let store = AsterCodeAgent::interactive_session_store_dir(config.sessions_dir.as_deref());
     let meta = engineering_meta();
     let setup = super::SessionSetup {
         workspace: launch.workspace.clone(),
@@ -38,15 +38,15 @@ async fn policy_session(launch: &crate::config::LaunchConfig, id: &str) -> acp::
         components: &[],
         mcp_servers: vec![],
     };
-    let options = A3sCodeAgent::host_session_options(id, &setup, &config, &store)
+    let options = AsterCodeAgent::host_session_options(id, &setup, &config, &store)
         .unwrap()
         .with_llm_client(std::sync::Arc::new(
             super::engineering_tests::CapturingClient::default(),
         ))
-        .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+        .with_planning_mode(aster_core::PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
         .with_continuation(false);
-    let agent = a3s_code_core::Agent::from_config(config).await.unwrap();
+    let agent = aster_core::Agent::from_config(config).await.unwrap();
     let session = agent
         .session_async(launch.workspace.to_string_lossy(), Some(options))
         .await
@@ -66,7 +66,7 @@ fn finding(id: &str, claim: &str, target: &str) -> Value {
 }
 
 #[tokio::test]
-#[ignore = "requires A3S_CONFIG_FILE and the live boyue/deepseek-v4-flash model"]
+#[ignore = "requires ASTER_CONFIG_FILE and the live boyue/deepseek-v4-flash model"]
 async fn review_real_model_findings_are_admitted_for_current_bytes_and_stale_after_an_edit() {
     let root = tempfile::tempdir().unwrap();
     std::fs::create_dir_all(root.path().join("src")).unwrap();
@@ -75,14 +75,14 @@ async fn review_real_model_findings_are_admitted_for_current_bytes_and_stale_aft
         "pub const MAX_LINES: usize = 3;\n\npub fn first_lines(lines: &[&str]) -> Vec<String> {\n    let mut out = Vec::new();\n    for index in 0..=MAX_LINES {\n        out.push(lines[index].to_string());\n    }\n    out\n}\n",
     )
     .unwrap();
-    let config = std::env::var_os("A3S_CONFIG_FILE").expect("explicit live ACL path");
+    let config = std::env::var_os("ASTER_CONFIG_FILE").expect("explicit live ACL path");
     let mut launch =
         crate::config::load_launch_config(root.path().to_owned(), Some(config.into())).unwrap();
     launch.model_id = "boyue/deepseek-v4-flash".into();
     launch.config.default_model = Some(launch.model_id.clone());
     launch.config.sessions_dir = Some(root.path().join("sessions"));
     launch.workspace = root.path().into();
-    let host = A3sCodeAgent::new(launch.clone());
+    let host = AsterCodeAgent::new(launch.clone());
     let id = host
         .new_session(acp::NewSessionRequest::new(root.path()).meta(engineering_meta()))
         .await
@@ -98,7 +98,7 @@ async fn review_real_model_findings_are_admitted_for_current_bytes_and_stale_aft
         .clone();
     ext(
         &host,
-        "a3s/permission_posture",
+        "aster/permission_posture",
         json!({"sessionId":id.0.as_ref(),"posture":"yolo","deny":["write(*)","edit(*)","bash(*)"]}),
     )
     .await
@@ -106,7 +106,7 @@ async fn review_real_model_findings_are_admitted_for_current_bytes_and_stale_aft
     let paths = json!(["src/budget.rs"]);
     let target = ext(
         &host,
-        "a3s/review/target",
+        "aster/review/target",
         json!({"sessionId":id.0.as_ref(),"paths":paths}),
     )
     .await
@@ -159,7 +159,7 @@ async fn review_real_model_findings_are_admitted_for_current_bytes_and_stale_aft
     let admission = json!({"sessionId":id.0.as_ref(),"scenarioId":"engineering.change",
         "sourceReviewId":"live-review-1","workPolicyDigest":session.work_policy_digest().unwrap().unwrap(),
         "target":{"paths":paths,"digest":target},"scope":{"type":"sessionTarget"},"findings":findings});
-    let admitted = ext(&host, "a3s/review/admit", admission.clone())
+    let admitted = ext(&host, "aster/review/admit", admission.clone())
         .await
         .unwrap();
     assert_eq!(admitted["admitted"], findings.len());
@@ -172,7 +172,7 @@ async fn review_real_model_findings_are_admitted_for_current_bytes_and_stale_aft
     .unwrap();
     let mut later = admission;
     later["sourceReviewId"] = json!("live-review-2");
-    assert!(ext(&host, "a3s/review/admit", later).await.is_err());
+    assert!(ext(&host, "aster/review/admit", later).await.is_err());
     assert_eq!(session.session_review_store(), stored);
     assert_eq!(
         session.recorded_usage_tokens(),
@@ -194,7 +194,7 @@ async fn review_real_model_findings_are_admitted_for_current_bytes_and_stale_aft
     );
     session.close().await;
     drop(host);
-    let next = A3sCodeAgent::new(launch);
+    let next = AsterCodeAgent::new(launch);
     next.load_session(
         acp::LoadSessionRequest::new(id.clone(), root.path()).meta(engineering_meta()),
     )
@@ -229,7 +229,7 @@ async fn admitted_findings_are_saved_and_a_new_host_reregisters_explicit_scenari
     launch.workspace = root.path().into();
     let meta = engineering_meta();
     let id = policy_session(&launch, "review-reopen").await;
-    let host = A3sCodeAgent::new(launch.clone());
+    let host = AsterCodeAgent::new(launch.clone());
     host.load_session(acp::LoadSessionRequest::new(id.clone(), root.path()).meta(meta.clone()))
         .await
         .unwrap();
@@ -249,11 +249,11 @@ async fn admitted_findings_are_saved_and_a_new_host_reregisters_explicit_scenari
     assert!(scenarios
         .iter()
         .all(|id| registry.get(id).unwrap().triggers()
-            == a3s_code_core::session_review::ReviewTriggerPolicy::ExplicitRequest));
+            == aster_core::session_review::ReviewTriggerPolicy::ExplicitRequest));
     let paths = json!(["lib.rs"]);
     let target = ext(
         &host,
-        "a3s/review/target",
+        "aster/review/target",
         json!({"sessionId":id.0.as_ref(),"paths":paths}),
     )
     .await
@@ -266,12 +266,12 @@ async fn admitted_findings_are_saved_and_a_new_host_reregisters_explicit_scenari
         "target":{"paths":paths,"digest":target},"scope":{"type":"sessionTarget"},
         "findings":[finding("a-1","Public function lacks a test",&target),finding("a-2","Unused export",&target)]});
     assert_eq!(
-        ext(&host, "a3s/review/admit", admission.clone())
+        ext(&host, "aster/review/admit", admission.clone())
             .await
             .unwrap(),
         json!({"admitted":2})
     );
-    let pending = |session: &a3s_code_core::AgentSession| {
+    let pending = |session: &aster_core::AgentSession| {
         session
             .pending_session_review_findings()
             .into_iter()
@@ -289,7 +289,7 @@ async fn admitted_findings_are_saved_and_a_new_host_reregisters_explicit_scenari
         (false, vec!["a-1".to_string(), "a-2".to_string()]),
         (true, vec!["a-1".to_string(), "a-2".to_string()]),
     ] {
-        let next = A3sCodeAgent::new(launch.clone());
+        let next = AsterCodeAgent::new(launch.clone());
         let request = acp::LoadSessionRequest::new(id.clone(), root.path());
         next.load_session(if with_policy {
             request.meta(meta.clone())
@@ -311,7 +311,7 @@ async fn admitted_findings_are_saved_and_a_new_host_reregisters_explicit_scenari
         assert_eq!(reopened.recorded_usage_tokens(), usage, "no review ran");
         if with_policy {
             assert_eq!(
-                ext(&next, "a3s/review/admit", admission.clone())
+                ext(&next, "aster/review/admit", admission.clone())
                     .await
                     .unwrap(),
                 json!({"admitted":0}),
@@ -336,7 +336,7 @@ async fn review_admission_binds_session_policy_and_current_target_bytes_without_
     let mut launch = super::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
     let id = policy_session(&launch, "review-hermetic").await;
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     host.load_session(
         acp::LoadSessionRequest::new(id.clone(), root.path()).meta(engineering_meta()),
     )
@@ -345,7 +345,7 @@ async fn review_admission_binds_session_policy_and_current_target_bytes_without_
     let plain = host
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(
-                json!({"a3sEngineering":{"policy":"none"}})
+                json!({"asterEngineering":{"policy":"none"}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -370,7 +370,7 @@ async fn review_admission_binds_session_policy_and_current_target_bytes_without_
     let paths = json!(["src/lib.rs", "src/budget.rs"]);
     let target = ext(
         &host,
-        "a3s/review/target",
+        "aster/review/target",
         json!({"sessionId":id.0.as_ref(),"paths":paths}),
     )
     .await
@@ -381,7 +381,7 @@ async fn review_admission_binds_session_policy_and_current_target_bytes_without_
     assert_eq!(
         ext(
             &host,
-            "a3s/review/target",
+            "aster/review/target",
             json!({"sessionId":id.0.as_ref(),"paths":["src/budget.rs","src/lib.rs"]})
         )
         .await
@@ -408,7 +408,7 @@ async fn review_admission_binds_session_policy_and_current_target_bytes_without_
         "target":{"paths":paths,"digest":target},"scope":{"type":"sessionTarget"},
         "findings":[finding("f-1","Off by one: 0..=MAX_LINES runs MAX_LINES+1 times",&target)]});
     let usage = session.recorded_usage_tokens();
-    let admit = |params: Value| ext(&host, "a3s/review/admit", params);
+    let admit = |params: Value| ext(&host, "aster/review/admit", params);
 
     let mut refusals = Vec::new();
     let mut variant = |edit: &dyn Fn(&mut Value)| {
@@ -447,7 +447,7 @@ async fn review_admission_binds_session_policy_and_current_target_bytes_without_
     }
     assert!(ext(
         &host,
-        "a3s/review/admit",
+        "aster/review/admit",
         json!({"sessionId":"unknown-session"})
     )
     .await
@@ -487,7 +487,7 @@ async fn review_admission_binds_session_policy_and_current_target_bytes_without_
     let settle = |finding: &str, digest: &str, scope: &Value, action: Value| {
         ext(
             &host,
-            "a3s/review/settle",
+            "aster/review/settle",
             json!({"sessionId":id.0.as_ref(),"findingId":finding,"targetDigest":digest,
                 "scope":scope,"action":action}),
         )

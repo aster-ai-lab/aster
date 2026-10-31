@@ -194,7 +194,7 @@ impl OciBundle {
 
     /// Resolve the validated OCI image stop-signal annotation for this bundle.
     ///
-    /// The result is a Linux signal number on every host platform because A3S
+    /// The result is a Linux signal number on every host platform because Aster
     /// utility VMs and the native driver execute Linux OCI workloads.
     pub fn configured_stop_signal(&self) -> Result<Option<Signal>> {
         let Some(value) = self
@@ -505,14 +505,14 @@ mod tests {
                     "pids": { "limit": 64 }
                 },
                 "intelRdt": {
-                    "closID": "a3s",
+                    "closID": "aster",
                     "enableMonitoring": true
                 },
                 "maskedPaths": ["/proc/kcore"],
                 "readonlyPaths": ["/proc/sys"]
             },
             "annotations": {
-                "dev.a3s.test": "full-spec-pass-through",
+                "dev.aster.test": "full-spec-pass-through",
                 "com.example.control\u{0}key": "prefix\u{0}\u{1f}suffix",
                 "com.example.empty": "",
                 "com.example.structured": "{\"nested\":true}"
@@ -537,7 +537,7 @@ mod tests {
             json!(true)
         );
         assert_eq!(
-            encoded["annotations"]["dev.a3s.test"],
+            encoded["annotations"]["dev.aster.test"],
             json!("full-spec-pass-through")
         );
         assert_eq!(

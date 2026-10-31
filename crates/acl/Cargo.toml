@@ -1,10 +1,10 @@
 [package]
-name = "a3s-acl"
+name = "aster-acl"
 version = "0.3.0"
 edition = "2021"
-description = "Parser and generator for the A3S Agent Configuration Language"
+description = "Parser and generator for the Aster Agent Configuration Language"
 license = "MIT"
-repository = "https://github.com/A3S-Lab/ACL"
+repository = "https://github.com/aster-ai-lab/ACL"
 publish = false
 
 [dependencies]

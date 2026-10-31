@@ -22,7 +22,7 @@ export async function runPdfPageOrganizationJob(
   try {
     worker = new Worker(
       new URL('./pdf-page-organization.worker.js', import.meta.url),
-      { name: 'a3s-office-pdf-page-organization' },
+      { name: 'aster-office-pdf-page-organization' },
     );
   } catch {
     return runDirectly(job, signal);

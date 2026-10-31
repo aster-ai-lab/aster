@@ -9,7 +9,7 @@ use crate::{
     SearchResult, SearchResults, SearchUsage,
 };
 
-const SEARCH_RESULTS_BINDING_V2_DOMAIN: &[u8] = b"a3s/search-results-binding/v2\0";
+const SEARCH_RESULTS_BINDING_V2_DOMAIN: &[u8] = b"aster/search-results-binding/v2\0";
 const MAX_METADATA_DEPTH: usize = 64;
 
 /// A deterministic identity of every caller-visible field in [`SearchResults`].

@@ -1,10 +1,10 @@
 {
-  "schema": "a3s.runtime.unit-spec.v4",
+  "schema": "aster.runtime.unit-spec.v4",
   "unit_id": "workload:function-http:replica:1",
   "generation": 2,
   "class": "service",
   "artifact": {
-    "uri": "oci://registry.example/a3s/function-http@sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "uri": "oci://registry.example/aster/function-http@sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     "media_type": "application/vnd.oci.image.manifest.v1+json"
   },

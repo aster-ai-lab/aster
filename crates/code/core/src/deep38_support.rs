@@ -18,12 +18,12 @@ const REQUIRED_MODEL_ID: &str = "deepseek-v4-flash";
 const ALTERNATE_FLASH_MODEL: &str = "boyue/bailian/deepseek-v4.1-flash";
 
 fn repo_config_path() -> PathBuf {
-    std::env::var_os("A3S_CONFIG_FILE")
+    std::env::var_os("ASTER_CONFIG_FILE")
         .map(PathBuf::from)
         .unwrap_or_else(|| {
             PathBuf::from(env!("CARGO_MANIFEST_DIR"))
                 .join("../../..")
-                .join(".a3s/config.acl")
+                .join(".aster/config.acl")
         })
 }
 
@@ -61,13 +61,13 @@ pub(crate) fn load_pinned_config() -> CodeConfig {
         path.display()
     );
 
-    let pin = std::env::var("A3S_TEST_MODEL")
+    let pin = std::env::var("ASTER_TEST_MODEL")
         .ok()
         .map(|value| value.trim().to_string())
         .filter(|value| !value.is_empty())
         .and_then(|full| {
             let resolved = if full == "boyue/bailian/deepseek-v4-flash" {
-                eprintln!("A3S_TEST_MODEL={full} is not declared; using {ALTERNATE_FLASH_MODEL}");
+                eprintln!("ASTER_TEST_MODEL={full} is not declared; using {ALTERNATE_FLASH_MODEL}");
                 ALTERNATE_FLASH_MODEL.to_string()
             } else {
                 full
@@ -77,7 +77,7 @@ pub(crate) fn load_pinned_config() -> CodeConfig {
                 Some(resolved)
             } else {
                 eprintln!(
-                    "A3S_TEST_MODEL={resolved} is not declared in {}; falling back to {REQUIRED_DEFAULT_MODEL}",
+                    "ASTER_TEST_MODEL={resolved} is not declared in {}; falling back to {REQUIRED_DEFAULT_MODEL}",
                     path.display()
                 );
                 None

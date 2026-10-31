@@ -4,12 +4,12 @@
 //! aggregate snapshot. It verifies percentile latency, atomic overwrite without
 //! file accumulation, byte fidelity, and delete cleanup.
 
-use a3s_code_core::config::StorageBackend;
-use a3s_code_core::store::{
+use aster_core::config::StorageBackend;
+use aster_core::store::{
     ContextUsage, FileSessionStore, MemorySessionStore, SessionConfig, SessionData,
     SessionSnapshotV1, SessionState, SessionStore,
 };
-use a3s_code_core::{Message, TokenUsage};
+use aster_core::{Message, TokenUsage};
 use serde::Serialize;
 use serde_json::json;
 use std::path::Path;
@@ -146,7 +146,7 @@ async fn main() -> anyhow::Result<()> {
 fn benchmark_snapshot() -> SessionSnapshotV1 {
     let payload = format!(
         "{}\n",
-        "A3S deterministic persisted conversation payload. ".repeat(96)
+        "Aster deterministic persisted conversation payload. ".repeat(96)
     );
     let mut messages = Vec::with_capacity(256);
     for index in 0..256 {

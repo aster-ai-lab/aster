@@ -1,17 +1,16 @@
 //! Studio standing instructions admitted when an ACP session is built.
 //!
 //! User text stays the user's words. Saved instructions, review posture, and
-//! the product language ride in `_meta.a3sHost` and land in [`SystemPromptSlots`].
-//! Per-turn constraints ride in `_meta.a3sTurn` and prefix only that turn's
+//! the product language ride in `_meta.asterHost` and land in [`SystemPromptSlots`].
+//! Per-turn constraints ride in `_meta.asterTurn` and prefix only that turn's
 //! model string. Prompt text never grants a tool.
 
-use a3s_code_core::permissions::PermissionPolicy;
-use a3s_code_core::SystemPromptSlots;
+use aster_core::permissions::PermissionPolicy;
+use aster_core::SystemPromptSlots;
 
-// Keep the host's user allowance, its bounded delivery contract, and their separator.
-const USER_GUIDELINES_LIMIT: usize = 8000;
-const DELIVERY_CONTRACT_LIMIT: usize = 4096;
-const GUIDELINES_LIMIT: usize = USER_GUIDELINES_LIMIT + DELIVERY_CONTRACT_LIMIT + 2;
+// The fixed transport allowance fits 8000 user characters, 4096 delivery characters,
+// and their separator without shrinking the existing Unicode boundary.
+const GUIDELINES_LIMIT: usize = 12 * 1024;
 const ROLE_LIMIT: usize = 500;
 const DIRECTIVE_LIMIT: usize = 500;
 const DIRECTIVE_COUNT_LIMIT: usize = 8;
@@ -20,16 +19,19 @@ const DIRECTIVE_COUNT_LIMIT: usize = 8;
 #[path = "host_context_limits_tests.rs"]
 mod limits_tests;
 
+/// Studio admits `open_workspace_browser` for this pane. Prompt text never grants the tool.
+const USER_BROWSER_PANE: &str = "Aster's built-in workspace browser pane is available through open_workspace_browser when that tool is in your list: call it with an http(s) or file URL to open the pane, then quote its success payload (opened URL) or exact rejection reason. Do not ask the user to open the browser or verify a public page for you. After a failed web_fetch or web_search, prefer open_workspace_browser for a public URL check when the tool is available; otherwise quote that tool's exact domain, error class, and message — never paraphrase it as a generic network security block or 网络安全检查, and never claim a browser check you did not run. open_workspace_browser confirms navigation intent only; it does not read the DOM, click, or screenshot. Computer-use or Browser agent control appear separately when the host admits them (Settings → Browser → Allow AI browser control / computer-use).";
+
 /// Same sentence the Studio chat preface uses for subagent review.
 const REVIEW_SUBAGENT: &str = "代码审查：在独立子会话中审查本次改动，不要把审查过程写进当前会话。";
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct StudioHost {
     /// Explicit experiment input; rendered only by Core's policy path.
-    pub work_policy: Option<a3s_code_core::WorkPolicyV1>,
+    pub work_policy: Option<aster_core::WorkPolicyV1>,
     /// Explicit desktop opt-in; the model cannot install an attestor.
     pub completion_attestation: Option<CompletionAttestation>,
-    /// Replaces the default "You are A3S Code" line when non-empty.
+    /// Replaces the default "You are Aster Code" line when non-empty.
     pub role: String,
     pub guidelines: String,
     pub review_subagent: bool,
@@ -38,6 +40,8 @@ pub struct StudioHost {
     pub knowledge_compile: Option<crate::knowledge_compile::CompileScope>,
     /// Explicit host capability; workspace permissions still apply.
     pub office_tools: bool,
+    /// The host shows a browser pane to the user. It is not a tool; the model is told so.
+    pub user_browser_pane: bool,
     /// Studio resolves the current profile's saved task bindings on every query.
     pub workspace_wiki_search: bool,
     pub workspace_memory_search: bool,
@@ -78,7 +82,7 @@ pub fn studio_host_from_meta(
 ) -> Result<StudioHost, String> {
     let work_policy = crate::engineering::policy_from_meta(meta)?;
     let Some(host) = meta
-        .and_then(|meta| meta.get("a3sHost"))
+        .and_then(|meta| meta.get("asterHost"))
         .and_then(|value| value.as_object())
     else {
         return Ok(StudioHost {
@@ -92,7 +96,7 @@ pub fn studio_host_from_meta(
             value
                 .as_str()
                 .ok_or_else(|| {
-                    "a3sHost.completionAttestation must name a CompletionAttestation".to_owned()
+                    "asterHost.completionAttestation must name a CompletionAttestation".to_owned()
                 })
                 .and_then(CompletionAttestation::parse)
         })
@@ -111,12 +115,17 @@ pub fn studio_host_from_meta(
     let source_review = match host.get("sourceReview") {
         None => false,
         Some(serde_json::Value::Bool(enabled)) => *enabled,
-        Some(_) => return Err("a3sHost.sourceReview must be a boolean".into()),
+        Some(_) => return Err("asterHost.sourceReview must be a boolean".into()),
     };
     let office_tools = match host.get("officeTools") {
         None => false,
         Some(serde_json::Value::Bool(enabled)) => *enabled,
-        Some(_) => return Err("a3sHost.officeTools must be a boolean".into()),
+        Some(_) => return Err("asterHost.officeTools must be a boolean".into()),
+    };
+    let user_browser_pane = match host.get("userBrowserPane") {
+        None => false,
+        Some(serde_json::Value::Bool(enabled)) => *enabled,
+        Some(_) => return Err("asterHost.userBrowserPane must be a boolean".into()),
     };
     let output_language = host
         .get("outputLanguage")
@@ -134,15 +143,16 @@ pub fn studio_host_from_meta(
             .map(|value| serde_json::from_value(value.clone()).map_err(|error| error.to_string()))
             .transpose()?,
         office_tools,
+        user_browser_pane,
         workspace_wiki_search: match host.get("workspaceWikiSearch") {
             None => false,
             Some(serde_json::Value::Bool(value)) => *value,
-            Some(_) => return Err("a3sHost.workspaceWikiSearch must be a boolean".into()),
+            Some(_) => return Err("asterHost.workspaceWikiSearch must be a boolean".into()),
         },
         workspace_memory_search: match host.get("workspaceMemorySearch") {
             None => false,
             Some(serde_json::Value::Bool(value)) => *value,
-            Some(_) => return Err("a3sHost.workspaceMemorySearch must be a boolean".into()),
+            Some(_) => return Err("asterHost.workspaceMemorySearch must be a boolean".into()),
         },
         output_language,
         assets: crate::local_assets::parse_roots(host.get("assets")),
@@ -153,7 +163,7 @@ pub fn turn_context_from_meta(
     meta: Option<&serde_json::Map<String, serde_json::Value>>,
 ) -> TurnContext {
     let Some(turn) = meta
-        .and_then(|meta| meta.get("a3sTurn"))
+        .and_then(|meta| meta.get("asterTurn"))
         .and_then(|value| value.as_object())
     else {
         return TurnContext::default();
@@ -229,6 +239,9 @@ fn host_extra(host: &StudioHost) -> String {
     if host.review_subagent {
         lines.push(REVIEW_SUBAGENT.to_string());
     }
+    if host.user_browser_pane && host.knowledge_compile.is_none() && !host.source_review {
+        lines.push(USER_BROWSER_PANE.to_string());
+    }
     if lines.is_empty() {
         return String::new();
     }
@@ -252,7 +265,7 @@ pub fn apply_turn_directives(user: &str, turn: &TurnContext) -> String {
 /// One research turn keeps the posture decision and refuses workspace writes.
 /// Caller denies still win, including over a yolo execute lane.
 pub fn research_policy(posture: &str, denies: &[String]) -> PermissionPolicy {
-    let mut policy = a3s_code_core::permissions::policy_for_posture(posture);
+    let mut policy = aster_core::permissions::policy_for_posture(posture);
     for rule in denies {
         policy = policy.deny(rule);
     }
@@ -266,6 +279,7 @@ pub fn research_policy(posture: &str, denies: &[String]) -> PermissionPolicy {
             "ls",
             "web_fetch",
             "web_search",
+            "open_workspace_browser",
             "update_plan",
         ])
         .deny_all(&[
@@ -297,7 +311,7 @@ fn normalize_output_language(raw: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_code_core::permissions::PermissionDecision;
+    use aster_core::permissions::PermissionDecision;
 
     fn meta(value: serde_json::Value) -> serde_json::Map<String, serde_json::Value> {
         value.as_object().cloned().unwrap_or_default()
@@ -328,7 +342,7 @@ mod tests {
             .unwrap()
             .completion_attestation
             .is_none());
-        let parsed = meta(serde_json::json!({"a3sHost":{"completionAttestation":"disk_content"}}));
+        let parsed = meta(serde_json::json!({"asterHost":{"completionAttestation":"disk_content"}}));
         assert_eq!(
             studio_host_from_meta(Some(&parsed))
                 .unwrap()
@@ -342,7 +356,7 @@ mod tests {
             serde_json::json!(true),
             serde_json::Value::Null,
         ] {
-            let parsed = meta(serde_json::json!({"a3sHost":{"completionAttestation":invalid}}));
+            let parsed = meta(serde_json::json!({"asterHost":{"completionAttestation":invalid}}));
             assert!(studio_host_from_meta(Some(&parsed)).is_err());
         }
     }
@@ -355,10 +369,10 @@ mod tests {
             serde_json::json!(1),
             serde_json::json!({}),
         ] {
-            let parsed = meta(serde_json::json!({"a3sHost":{"officeTools":invalid}}));
+            let parsed = meta(serde_json::json!({"asterHost":{"officeTools":invalid}}));
             assert_eq!(
                 studio_host_from_meta(Some(&parsed)).unwrap_err(),
-                "a3sHost.officeTools must be a boolean"
+                "asterHost.officeTools must be a boolean"
             );
         }
     }
@@ -366,7 +380,7 @@ mod tests {
     #[test]
     fn source_review_is_an_explicit_boolean_restriction() {
         for enabled in [false, true] {
-            let parsed = meta(serde_json::json!({"a3sHost":{"sourceReview":enabled}}));
+            let parsed = meta(serde_json::json!({"asterHost":{"sourceReview":enabled}}));
             assert_eq!(
                 studio_host_from_meta(Some(&parsed)).unwrap().source_review,
                 enabled
@@ -377,10 +391,10 @@ mod tests {
             serde_json::json!("true"),
             serde_json::json!(1),
         ] {
-            let parsed = meta(serde_json::json!({"a3sHost":{"sourceReview":invalid}}));
+            let parsed = meta(serde_json::json!({"asterHost":{"sourceReview":invalid}}));
             assert_eq!(
                 studio_host_from_meta(Some(&parsed)).unwrap_err(),
-                "a3sHost.sourceReview must be a boolean"
+                "asterHost.sourceReview must be a boolean"
             );
         }
     }
@@ -414,7 +428,7 @@ mod tests {
 
     #[test]
     fn encyclopedia_compilation_has_exact_snapshot_and_output_instructions() {
-        let parsed = meta(serde_json::json!({"a3sHost":{"knowledgeCompile":{
+        let parsed = meta(serde_json::json!({"asterHost":{"knowledgeCompile":{
             "root":"/fixture/wiki/workspace", "jobId":"fixture", "workspaceRevision":"fixture"
         }}}));
         let host = studio_host_from_meta(Some(&parsed)).unwrap();
@@ -437,7 +451,7 @@ mod tests {
                 .trim();
         let caller = format!("每次都带上{}", "字".repeat(7995));
         let parsed = meta(serde_json::json!({
-            "a3sHost": {
+            "asterHost": {
                 "guidelines": format!("{caller}\u{0000}\n\n{delivery_contract}"),
                 "review": "subagent",
                 "outputLanguage": "zh-CN"
@@ -483,21 +497,45 @@ mod tests {
     #[test]
     fn role_replaces_the_default_identity_line() {
         let parsed = meta(serde_json::json!({
-            "a3sHost": { "role": "You are ToBot\u{0000}", "guidelines": "keep" }
+            "asterHost": { "role": "You are ToBot\u{0000}", "guidelines": "keep" }
         }));
         let host = studio_host_from_meta(Some(&parsed)).unwrap();
         assert_eq!(host.role, "You are ToBot");
         let slots = merge_studio_host(SystemPromptSlots::default(), &host);
         let built = slots.build();
         assert!(built.contains("You are ToBot"));
-        assert!(!built.contains("You are A3S Code"));
+        assert!(!built.contains("You are Aster Code"));
         assert!(slots.extra.unwrap().contains("keep"));
+    }
+
+    #[test]
+    fn user_browser_pane_is_an_explicit_boolean_that_adds_the_capability_boundary() {
+        let parsed = meta(serde_json::json!({"asterHost":{"userBrowserPane":true}}));
+        let host = studio_host_from_meta(Some(&parsed)).unwrap();
+        assert!(host.user_browser_pane);
+        let extra = merge_studio_host(SystemPromptSlots::default(), &host)
+            .extra
+            .unwrap();
+        assert!(extra.contains("open_workspace_browser"));
+        assert!(extra.contains("Do not ask the user to open the browser"));
+        assert!(extra.contains("Allow AI browser control"));
+        assert!(extra.contains("exact domain, error class, and message"));
+        assert!(extra.contains("generic network security block"));
+        assert!(extra.contains("网络安全检查"));
+        assert!(!extra.contains("no ACP tool"));
+        assert!(!extra.contains("user pane only"));
+
+        let parsed = meta(serde_json::json!({"asterHost":{"userBrowserPane":"true"}}));
+        assert_eq!(
+            studio_host_from_meta(Some(&parsed)).unwrap_err(),
+            "asterHost.userBrowserPane must be a boolean"
+        );
     }
 
     #[test]
     fn inline_review_and_unknown_language_add_nothing() {
         let parsed = meta(serde_json::json!({
-            "a3sHost": { "guidelines": "  ", "review": "inline", "outputLanguage": "fr-FR" },
+            "asterHost": { "guidelines": "  ", "review": "inline", "outputLanguage": "fr-FR" },
             "other": true
         }));
         let host = studio_host_from_meta(Some(&parsed)).unwrap();
@@ -509,7 +547,7 @@ mod tests {
     #[test]
     fn guidelines_are_bounded_without_truncating_host_delivery_requirements() {
         let long = "测".repeat(GUIDELINES_LIMIT + 1);
-        let parsed = meta(serde_json::json!({ "a3sHost": { "guidelines": long } }));
+        let parsed = meta(serde_json::json!({ "asterHost": { "guidelines": long } }));
         let host = studio_host_from_meta(Some(&parsed)).unwrap();
         assert_eq!(host.guidelines.chars().count(), GUIDELINES_LIMIT);
     }
@@ -517,7 +555,7 @@ mod tests {
     #[test]
     fn turn_directives_prefix_the_model_string_only() {
         let parsed = meta(serde_json::json!({
-            "a3sTurn": {
+            "asterTurn": {
                 "directives": ["自动审查：完成前检查结论、引用和改动，并标出不确定之处。", "", 1],
                 "research": true
             }
@@ -540,13 +578,13 @@ mod tests {
     #[test]
     fn plan_first_is_its_own_flag() {
         let parsed = meta(serde_json::json!({
-            "a3sTurn": { "planFirst": true, "research": false }
+            "asterTurn": { "planFirst": true, "research": false }
         }));
         let turn = turn_context_from_meta(Some(&parsed));
         assert!(turn.plan_first);
         assert!(!turn.research);
         let refused = meta(serde_json::json!({
-            "a3sTurn": { "planFirst": "plan" }
+            "asterTurn": { "planFirst": "plan" }
         }));
         assert!(!turn_context_from_meta(Some(&refused)).plan_first);
     }

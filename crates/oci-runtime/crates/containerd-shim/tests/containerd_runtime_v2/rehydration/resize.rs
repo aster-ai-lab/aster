@@ -1,7 +1,7 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, Generation, OperationContext, ProcessTarget, ResizeRequest, TerminalSize,
 };
 use serde::Deserialize;
@@ -79,7 +79,7 @@ pub(super) async fn qualify(
         .ok_or_else(|| qualification_error("committed-resize shim has no PID"))?;
     let host_pid = faults::find_runtime_host_pid(config).await?;
     let mut suspended_host =
-        faults::SuspendedProcess::stop(host_pid, "committed-resize A3S OCI host service")?;
+        faults::SuspendedProcess::stop(host_pid, "committed-resize Aster OCI host service")?;
     let resize_address = bootstrap.address.clone();
     let resize_id = id.to_string();
     let mut resize_call =
@@ -95,7 +95,7 @@ pub(super) async fn qualify(
     .await?;
     let suspended_shim =
         faults::SuspendedProcess::stop(old_shim_pid, "committed-resize original shim")?;
-    suspended_host.resume("committed-resize A3S OCI host service")?;
+    suspended_host.resume("committed-resize Aster OCI host service")?;
     commit_runtime_exec_resize(config, id, identity, pending_sequence, COMMITTED_SIZE).await?;
 
     let containerd_pid = containerd_main_pid(config).await?;
@@ -301,7 +301,7 @@ async fn read_exec_resize_journal(
     bundle: &Path,
     exec_id: &str,
 ) -> TestResult<ResizeJournalEvidence> {
-    let path = bundle.join("a3s-oci-shim-v1.json");
+    let path = bundle.join("aster-oci-shim-v1.json");
     let document: serde_json::Value = serde_json::from_slice(
         &tokio::fs::read(&path)
             .await
@@ -364,7 +364,7 @@ async fn verify_terminal_size(
     let stdin = exec.stdin.as_mut().ok_or_else(|| {
         qualification_error(format!("terminal stdin disappeared before {context}"))
     })?;
-    stdin.write_all(b"__a3s_size__\n").await.map_err(|error| {
+    stdin.write_all(b"__aster_size__\n").await.map_err(|error| {
         qualification_error(format!(
             "request terminal dimensions for {context}: {error}"
         ))

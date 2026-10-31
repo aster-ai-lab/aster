@@ -1,7 +1,7 @@
 //! Durable local usage spool substrate.
 //!
 //! This module owns the node-local append and replay boundary. It deliberately
-//! does not define the A3S Cloud ingestion payload or acknowledgement wire
+//! does not define the Aster Cloud ingestion payload or acknowledgement wire
 //! contract.
 
 mod acknowledgement;
@@ -131,12 +131,12 @@ pub(crate) fn validate_usage_spool_activation(
 
 pub(crate) const MAX_USAGE_EVENT_BYTES: usize = 64 * 1024;
 
-const MANIFEST_SCHEMA_V1: &str = "a3s.gateway.usage-spool-manifest.v1";
-const MANIFEST_SCHEMA_V2: &str = "a3s.gateway.usage-spool-manifest.v2";
-const MANIFEST_SCHEMA: &str = "a3s.gateway.usage-spool-manifest.v3";
-const LEGACY_SEGMENT_SCHEMA: &str = "a3s.gateway.usage-spool-segment.v1";
-const SEGMENT_SCHEMA: &str = "a3s.gateway.usage-spool-segment.v2";
-const RECORD_SCHEMA: &str = "a3s.gateway.usage-spool-record.v1";
+const MANIFEST_SCHEMA_V1: &str = "aster.gateway.usage-spool-manifest.v1";
+const MANIFEST_SCHEMA_V2: &str = "aster.gateway.usage-spool-manifest.v2";
+const MANIFEST_SCHEMA: &str = "aster.gateway.usage-spool-manifest.v3";
+const LEGACY_SEGMENT_SCHEMA: &str = "aster.gateway.usage-spool-segment.v1";
+const SEGMENT_SCHEMA: &str = "aster.gateway.usage-spool-segment.v2";
+const RECORD_SCHEMA: &str = "aster.gateway.usage-spool-record.v1";
 const MAX_MANIFEST_BYTES: usize = 1024 * 1024;
 const MAX_RECORD_LINE_BYTES: usize = 128 * 1024;
 const MAX_REPLAY_BATCH_RECORDS: usize = 512;
@@ -150,7 +150,7 @@ pub(crate) struct UsageSpoolOptions {
 
 /// Node-local position of one durable usage record.
 ///
-/// This cursor describes Gateway spool ordering only. It is not the A3S Cloud
+/// This cursor describes Gateway spool ordering only. It is not the Aster Cloud
 /// ingestion or acknowledgement wire contract.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct UsageSpoolCursor {

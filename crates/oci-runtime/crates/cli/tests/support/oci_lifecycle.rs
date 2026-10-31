@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::sync::{Arc, Mutex, MutexGuard};
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
+use aster_oci_sdk::{
     serve_transport_connection, ContainerId, ContainerRecord, ContainerTarget, CreateRequest,
     DeleteMode, DeleteRequest, DriverKind, Error, ErrorCode, Generation, IsolationClass,
     KillRequest, OciRuntimeService, Result, RuntimeInfo, StartRequest, StateRequest,
@@ -211,7 +211,7 @@ fn test_endpoint(_root: &Path) -> String {
         .expect("system clock after epoch")
         .as_nanos();
     format!(
-        r"\\.\pipe\a3s-oci-cli-lifecycle-{}-{nonce}",
+        r"\\.\pipe\aster-oci-cli-lifecycle-{}-{nonce}",
         std::process::id()
     )
 }

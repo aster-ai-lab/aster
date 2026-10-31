@@ -24,7 +24,7 @@ export const meta = {
 只需要调整角色和工作要求时，使用 `SystemPromptSlots`，不用重写完整系统提示。
 
 ```rust
-use a3s_code_core::{SessionOptions, SystemPromptSlots};
+use aster_core::{SessionOptions, SystemPromptSlots};
 
 let options = SessionOptions::new().with_prompt_slots(
     SystemPromptSlots::default()
@@ -43,8 +43,8 @@ let options = SessionOptions::new().with_prompt_slots(
 
 ```rust
 use std::sync::Arc;
-use a3s_code_core::context::{ContextItem, ContextType, StaticContextProvider};
-use a3s_code_core::SessionOptions;
+use aster_core::context::{ContextItem, ContextType, StaticContextProvider};
+use aster_core::SessionOptions;
 
 let provider = StaticContextProvider::new("project-notes").with_item(
     ContextItem::new(

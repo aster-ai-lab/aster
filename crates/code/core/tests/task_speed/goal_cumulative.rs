@@ -2,8 +2,8 @@
 
 use super::*;
 
-fn facts(workspace: &std::path::Path, id: &str) -> Vec<a3s_effect::Fact> {
-    a3s_code_core::fact_control::read_workspace_facts(workspace, id).unwrap()
+fn facts(workspace: &std::path::Path, id: &str) -> Vec<aster_effect::Fact> {
+    aster_core::fact_control::read_workspace_facts(workspace, id).unwrap()
 }
 
 fn total(guard: &compaction::UsageProbe) -> usize {
@@ -109,7 +109,7 @@ async fn cumulative_real_lifetime_survives_compaction_restart_and_revision() {
     let all = facts(workspace.path(), id);
     let admitted = all
         .iter()
-        .filter(|fact| fact.kind == "a3s.goal.slice.admitted")
+        .filter(|fact| fact.kind == "aster.goal.slice.admitted")
         .collect::<Vec<_>>();
     assert_eq!(admitted.len(), 3);
     assert_ne!(
@@ -118,7 +118,7 @@ async fn cumulative_real_lifetime_survives_compaction_restart_and_revision() {
     );
     let closed = all
         .iter()
-        .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+        .filter(|fact| fact.kind == "aster.goal.slice.settled")
         .map(|fact| &fact.payload["body"])
         .collect::<Vec<_>>();
     assert_eq!(closed.len(), 3);

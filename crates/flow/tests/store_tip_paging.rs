@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, InMemoryEventStore, WorkflowProgress,
     WorkflowSpec, MAX_FLOW_HISTORY_PAGE_SIZE,
 };
@@ -12,7 +12,7 @@ struct PageOnlyTipStore {
 
 #[async_trait]
 impl FlowEventStore for PageOnlyTipStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -21,13 +21,13 @@ impl FlowEventStore for PageOnlyTipStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, _run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, _run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history read is not allowed for tip identity".into(),
         ))
@@ -37,7 +37,7 @@ impl FlowEventStore for PageOnlyTipStore {
         &self,
         _run_id: &str,
         _sequence: u64,
-    ) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history tail read is not allowed for tip identity".into(),
         ))
@@ -48,7 +48,7 @@ impl FlowEventStore for PageOnlyTipStore {
         run_id: &str,
         after_sequence: u64,
         limit: usize,
-    ) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         let history = self.inner.list(run_id).await?;
         Ok(history
             .into_iter()
@@ -57,7 +57,7 @@ impl FlowEventStore for PageOnlyTipStore {
             .collect())
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }

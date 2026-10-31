@@ -1,7 +1,7 @@
 //! Explicit ACL and private credential lease for the native composition root.
 use crate::{prompt::ThinkingMode, replicas::XqReplicaLayout};
-use a3s_acl::{AttributeSchema, Document, ParseLimits, Schema, Value, ValueSchema};
-use a3s_power::{
+use aster_acl::{AttributeSchema, Document, ParseLimits, Schema, Value, ValueSchema};
+use aster_power::{
     error::{PowerError, Result},
     server::auth::{ApiKeyAuth, AuthProvider},
 };
@@ -58,7 +58,7 @@ impl NativeServingConfig {
             ],
         )?;
         let model = crate::model::DeepSeekModel::V41Flash1017Xq;
-        if string(&doc, "schema")? != "a3s.deepseek.xq.serving.v1"
+        if string(&doc, "schema")? != "aster.deepseek.xq.serving.v1"
             || string(&doc, "model")? != model.as_str()
             || string(&doc, "revision")? != model.revision()
         {
@@ -97,7 +97,7 @@ impl NativeServingConfig {
 }
 
 fn document(input: &str, strings: &[&str], numbers: &[&str]) -> Result<Document> {
-    let document = a3s_acl::parse_with_limits(input, ACL_LIMITS)
+    let document = aster_acl::parse_with_limits(input, ACL_LIMITS)
         .map_err(|error| PowerError::Acl(error.to_string()))?;
     let mut schema = Schema::new();
     for &name in strings {
@@ -106,7 +106,7 @@ fn document(input: &str, strings: &[&str], numbers: &[&str]) -> Result<Document>
     for &name in numbers {
         schema = schema.attribute(name, AttributeSchema::required(ValueSchema::number()));
     }
-    let report = a3s_acl::validate_document_with_limits(&document, &schema, ACL_LIMITS);
+    let report = aster_acl::validate_document_with_limits(&document, &schema, ACL_LIMITS);
     if !report.is_empty() {
         return Err(config_error("hosting ACL violates its closed schema"));
     }
@@ -154,7 +154,7 @@ impl CredentialLease {
         let hash = string(&doc, "api_key_sha256")?;
         let starts = number(&doc, "starts_unix", 1, 9_007_199_254_740_991)?;
         let expires = number(&doc, "expires_unix", 1, 9_007_199_254_740_991)?;
-        if string(&doc, "schema")? != "a3s.deepseek.credential-lease.v1"
+        if string(&doc, "schema")? != "aster.deepseek.credential-lease.v1"
             || hash.len() != 64
             || !hash
                 .bytes()

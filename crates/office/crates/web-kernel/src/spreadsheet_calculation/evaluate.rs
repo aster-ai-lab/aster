@@ -1,4 +1,4 @@
-use a3s_office_formula_parser::{
+use aster_office_formula_parser::{
     SpreadsheetFormulaBinaryOperator, SpreadsheetFormulaExpression,
     SpreadsheetFormulaExpressionKind, SpreadsheetFormulaLiteral, SpreadsheetFormulaPostfixOperator,
     SpreadsheetFormulaReference, SpreadsheetFormulaReferenceKind, SpreadsheetFormulaUnaryOperator,
@@ -162,7 +162,7 @@ impl SpreadsheetEvaluator<'_> {
 
     fn evaluate_structured_reference(
         &mut self,
-        qualifier: Option<&a3s_office_formula_parser::SpreadsheetFormulaQualifier>,
+        qualifier: Option<&aster_office_formula_parser::SpreadsheetFormulaQualifier>,
         reference: &str,
         current: &CellKey,
     ) -> Result<EvaluatedValue, EvaluationFailure> {

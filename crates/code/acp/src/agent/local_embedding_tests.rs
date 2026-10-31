@@ -3,11 +3,11 @@ use std::collections::VecDeque;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 
-use a3s_code_core::EmbeddingInput;
-use a3s_code_core::{
+use aster_core::EmbeddingInput;
+use aster_core::{
     EmbeddingError, EmbeddingExecutor, EmbeddingExecutorConfig, EmbeddingFailureKind,
 };
-use a3s_use_bge::{EmbeddingItem, EmbeddingResponse, Usage};
+use aster_use_bge::{EmbeddingItem, EmbeddingResponse, Usage};
 use tokio::sync::{Notify, Semaphore};
 
 fn revision() -> String {

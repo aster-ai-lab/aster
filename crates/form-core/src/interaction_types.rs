@@ -3,9 +3,9 @@ use thiserror::Error;
 
 use crate::canonical::{CanonicalError, CanonicalValue};
 
-pub const FORM_RELEASE_REF_API_VERSION: &str = "a3s.dev/form-release-ref/v1";
-pub const FORM_INTERACTION_REQUEST_API_VERSION: &str = "a3s.dev/form-interaction-request/v1";
-pub const FORM_INTERACTION_SUBMISSION_API_VERSION: &str = "a3s.dev/form-interaction-submission/v1";
+pub const FORM_RELEASE_REF_API_VERSION: &str = "aster.dev/form-release-ref/v1";
+pub const FORM_INTERACTION_REQUEST_API_VERSION: &str = "aster.dev/form-interaction-request/v1";
+pub const FORM_INTERACTION_SUBMISSION_API_VERSION: &str = "aster.dev/form-interaction-submission/v1";
 pub const DEFAULT_INTERACTION_MAX_VALUE_BYTES: u64 = 1_000_000;
 pub const ABSOLUTE_INTERACTION_MAX_VALUE_BYTES: u64 = 4 * 1024 * 1024;
 

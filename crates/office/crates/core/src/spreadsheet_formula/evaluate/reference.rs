@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::spreadsheet_formula::structured_reference::StructuredReferenceErrorKind;
 use crate::spreadsheet_formula::{
@@ -565,7 +565,7 @@ fn qualifier_label(qualifier: &SpreadsheetFormulaQualifier) -> String {
     format!("{workbook}{worksheet}")
 }
 
-fn reference_limit_error() -> a3s_use_core::UseError {
+fn reference_limit_error() -> aster_use_core::UseError {
     calculation_error(
         "use.office.spreadsheet_formula_reference_limit",
         format!(
@@ -611,7 +611,7 @@ fn ensure_reference_comparisons(left: usize, right: usize) -> UseResult<()> {
     Ok(())
 }
 
-fn reference_area_limit_error() -> a3s_use_core::UseError {
+fn reference_area_limit_error() -> aster_use_core::UseError {
     calculation_error(
         "use.office.spreadsheet_formula_reference_area_limit",
         format!(
@@ -620,7 +620,7 @@ fn reference_area_limit_error() -> a3s_use_core::UseError {
     )
 }
 
-fn reference_visit_limit_error() -> a3s_use_core::UseError {
+fn reference_visit_limit_error() -> aster_use_core::UseError {
     calculation_error(
         "use.office.spreadsheet_formula_reference_visit_limit",
         format!(

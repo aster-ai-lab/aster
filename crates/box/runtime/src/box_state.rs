@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use crate::file_lock::FileLock;
 use crate::store_io::quarantine_label;
 use crate::BoxRecord;
-use a3s_box_core::{ExecutionId, OperationId};
+use aster_box_core::{ExecutionId, OperationId};
 
 /// Durable collection of local box execution records.
 ///
@@ -139,7 +139,7 @@ impl BoxStateStore {
             Err(error) => {
                 let preserved = quarantine_label(path);
                 eprintln!(
-                    "a3s-box: WARNING: state file {} is corrupt ({error}); preserved a \
+                    "aster-box: WARNING: state file {} is corrupt ({error}); preserved a \
                      copy at {preserved} and started from empty state. Running boxes are \
                      no longer tracked; repair and restore the preserved records, then \
                      reconcile state. Otherwise remove leaked executions manually.",
@@ -158,7 +158,7 @@ impl BoxStateStore {
         }
         let data = serde_json::to_vec_pretty(&self.records).map_err(std::io::Error::other)?;
         let temporary_path = self.path.with_extension("json.tmp");
-        a3s_box_core::fs_atomic::write_durable(&temporary_path, &self.path, &data)
+        aster_box_core::fs_atomic::write_durable(&temporary_path, &self.path, &data)
     }
 
     /// Path of the durable state file.
@@ -301,16 +301,16 @@ mod tests {
 
     fn managed_record(id: &str, operation_id: OperationId) -> BoxRecord {
         let mut record = record(id);
-        let config = a3s_box_core::BoxConfig {
+        let config = aster_box_core::BoxConfig {
             image: "alpine:latest".to_string(),
-            isolation: a3s_box_core::ExecutionIsolation::Sandbox,
+            isolation: aster_box_core::ExecutionIsolation::Sandbox,
             ..Default::default()
         };
         record.managed_execution = Some(
             crate::ManagedExecutionMetadata::new(
                 operation_id,
-                a3s_box_core::ExecutionGeneration::INITIAL,
-                a3s_box_core::CreateExecutionRequest {
+                aster_box_core::ExecutionGeneration::INITIAL,
+                aster_box_core::CreateExecutionRequest {
                     external_sandbox_id: format!("sandbox-{id}"),
                     config,
                     labels: Default::default(),
@@ -476,7 +476,7 @@ mod tests {
         let path = directory.path().join("boxes.json");
         let mut record = managed_record("managed", OperationId::new("operation-1").unwrap());
         record.managed_execution.as_mut().unwrap().plan =
-            a3s_box_core::resolve_execution(&a3s_box_core::BoxConfig::default()).unwrap();
+            aster_box_core::resolve_execution(&aster_box_core::BoxConfig::default()).unwrap();
         std::fs::write(&path, serde_json::to_vec(&vec![record]).unwrap()).unwrap();
 
         let error = BoxStateStore::load(&path).unwrap_err();

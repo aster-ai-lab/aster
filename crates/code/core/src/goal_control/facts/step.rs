@@ -36,7 +36,7 @@ pub(crate) fn closes_goal(view: &DurableGoalDefinitionV1) -> bool {
 }
 
 pub(super) fn operation_id(run_id: &str) -> String {
-    crate::content_digest::digest_bytes("a3s.code.goal-step-operation.v1", run_id.as_bytes())
+    crate::content_digest::digest_bytes("aster.code.goal-step-operation.v1", run_id.as_bytes())
 }
 
 fn digest(view: &DurableGoalDefinitionV1, body: &StepBody) -> Result<String, GoalControlError> {
@@ -52,7 +52,7 @@ fn bound_run<'a>(
     facts: &'a [Fact],
     view: &DurableGoalDefinitionV1,
     run_id: &str,
-) -> Result<&'a Fact, GoalControlError> {
+) -> Result<(&'a Fact, run::RunFact), GoalControlError> {
     let fact = facts
         .iter()
         .find(|fact| fact.seq == view.goal_sequence)
@@ -68,7 +68,7 @@ fn bound_run<'a>(
             "step evidence belongs to another Run",
         ));
     }
-    Ok(fact)
+    Ok((fact, stored))
 }
 
 /// The current slice's Run and step, as a reference check for host review binding.
@@ -99,18 +99,19 @@ pub(crate) fn prepare_step(
     let Some(view) = definition_from_facts(facts, session_id, workspace, policy_digest)? else {
         return Ok(None);
     };
-    let run = bound_run(facts, &view, run_id)?;
+    let (run, source) = bound_run(facts, &view, run_id)?;
     let Some((reports, evidence, _)) = crate::fact_control::evidence_for_goal_step(
         facts,
         run.seq,
         session_id,
         run_id,
         attestation,
+        source.body.continuation.as_ref(),
     ) else {
         return Ok(None);
     };
     let step = run::current_step(&view)?;
-    let cut = a3s_effect::cut_log(facts);
+    let cut = aster_effect::cut_log(facts);
     let body = StepBody {
         run_id: run_id.into(),
         step_id: step.id.clone(),
@@ -181,7 +182,7 @@ pub(super) fn fold_step(
         .position(|source| source.seq == stored.body.source_sequence)
         .ok_or_else(|| refused(GoalRefusal::EvidenceStale, "step evidence prefix is absent"))?;
     let prefix = &facts[..=end];
-    let cut = a3s_effect::cut_log(prefix);
+    let cut = aster_effect::cut_log(prefix);
     let terminal = facts.get(end + 1).ok_or_else(|| {
         refused(
             GoalRefusal::ReceiptUnsettled,
@@ -215,13 +216,14 @@ pub(super) fn fold_step(
             "accepted step differs from its current evidence",
         ));
     }
-    bound_run(prefix, current, &stored.body.run_id)?;
+    let (_, source) = bound_run(prefix, current, &stored.body.run_id)?;
     let (reports, _, mutated) = crate::fact_control::evidence_for_goal_step(
         prefix,
         stored.body.run_sequence,
         session_id,
         &stored.body.run_id,
         stored.body.attestation.as_ref(),
+        source.body.continuation.as_ref(),
     )
     .ok_or_else(|| {
         refused(

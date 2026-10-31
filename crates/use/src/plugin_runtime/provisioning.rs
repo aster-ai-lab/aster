@@ -1,8 +1,8 @@
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     RuntimeHealthState, RuntimeObservation, RuntimeUnitClass, RuntimeUnitState,
 };
-use a3s_runtime::ProviderId;
-use a3s_use_core::{
+use aster_runtime::ProviderId;
+use aster_use_core::{
     PackageSurfaceKind, PlanEnforcementProfile, PlanQualifiedSurfaceRef, PlanScope,
     PlannedProviderEvidence, UseError, UseResult,
 };
@@ -15,7 +15,7 @@ use super::model::{
 };
 use super::receipt::RuntimeBindingReceipt;
 
-pub const RUNTIME_SERVICE_PROVISIONING_SCHEMA: &str = "a3s.use.runtime-service-provisioning.v1";
+pub const RUNTIME_SERVICE_PROVISIONING_SCHEMA: &str = "aster.use.runtime-service-provisioning.v1";
 
 /// Durable phase of one exact Runtime Service preparation.
 ///

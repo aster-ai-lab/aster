@@ -160,7 +160,7 @@ Key 仅在私有服务器文件中保存，并在用户明确要求的最终交�
 
 ## 2026-10-23 补充：H200 上优先部署 XQ
 
-本节回应“规划 H200 服务器部署 XQ 三值量化的 DeepSeek V4.1 Flash 模型部署”。延续用户此前的原生要求，最终交付是 **Power → 进程内 a3s-deepseek → SM90 CUDA → XQ 权重**。现有 **Power → HTTP → Xolotl** 作业提供同一 XQ 的参考结果，可以独立验收，但不能关闭原生部署任务。本节只更新规划和观察证据，没有新建、重提、修改或停止远程作业。
+本节回应“规划 H200 服务器部署 XQ 三值量化的 DeepSeek V4.1 Flash 模型部署”。延续用户此前的原生要求，最终交付是 **Power → 进程内 aster-deepseek → SM90 CUDA → XQ 权重**。现有 **Power → HTTP → Xolotl** 作业提供同一 XQ 的参考结果，可以独立验收，但不能关闭原生部署任务。本节只更新规划和观察证据，没有新建、重提、修改或停止远程作业。
 
 ### 现状和模型身份
 
@@ -170,7 +170,7 @@ Key 仅在私有服务器文件中保存，并在用户明确要求的最终交�
 |---|---|---|
 | XQ V3 主权重 | 16 片，共 162,954,903,552 字节；原下载器逐片完成 SHA256，观察器核对大小、固定清单及完成标记 | 在获配节点拼接，重新计算完整 GGUF 的 SHA256；观察器没有独立重读全部 payload |
 | 辅助权重 | 1017 Q2_K MTP/Vision sidecar 已下载，5,661,492,320 字节 | 只在 DSpark 实验时使用；不代表原生 DSpark 或视觉已支持 |
-| 外部 XQ 作业 | `a3s-power-xq-h200-final-6522e5af2fc3-31676386`，UID `6230a46e-8868-4e2c-a803-0321962f98a6`，仍 Inqueue | 尚无节点、整模生成、性能或用户入口验收 |
+| 外部 XQ 作业 | `aster-power-xq-h200-final-6522e5af2fc3-31676386`，UID `6230a46e-8868-4e2c-a803-0321962f98a6`，仍 Inqueue | 尚无节点、整模生成、性能或用户入口验收 |
 | 原生 CUDA | Linux Rust 测试二进制已构建；两个独立 H200 内核作业仍 Inqueue | 真实 H200 数值与 Rust adapter 运行；编译成功不等于 GPU 执行 |
 | 原生 XQ 服务 | 当前 `DeepSeekModel` 只接受官方模型；原生权重加载绑定官方 safetensors | XQ GGUF/混合量化设备分支、生成循环、放置和服务 composition 均需补齐 |
 
@@ -240,7 +240,7 @@ H200 标称每卡 141 GB HBM，八卡标称合计 1,128 GB；这是容量起点�
 | `crates/power/src/backend/mod.rs`、模型 composition、`server/auth.rs` | 现有注入边界、通用 admission 和鉴权所有者 | 禁止 HTTP/CPU fallback；真实流式/工具/usage；限时与撤销 |
 | 拟建 `scripts/h200_native/`、现有 `scripts/h200_xq/` | 现有 deferred launcher 锁、精确 UID、manifest、失败保留及 benchmark 隐私恢复 | 新行为小型 hermetic tests；GPU 实验另保留收据；不对共享参考服务写入或执行实验 |
 
-本节不改变既有 Constitution Check：所有代码仍在本仓库，Rust 接根 workspace 和本地 A3S 依赖，`publish=false`，产品配置只用 ACL。JSON manifest/实验结果仅是数据；不得照搬参考引擎的 JSON 配置作为新的 Power 产品配置。外部引擎源码/内核复用要保留许可证、精确版本和实际进程边界。规划文档检查链接、pins、任务映射和证据即可；实现时再执行 owning package tests、fmt 和根工作区守卫。
+本节不改变既有 Constitution Check：所有代码仍在本仓库，Rust 接根 workspace 和本地 Aster 依赖，`publish=false`，产品配置只用 ACL。JSON manifest/实验结果仅是数据；不得照搬参考引擎的 JSON 配置作为新的 Power 产品配置。外部引擎源码/内核复用要保留许可证、精确版本和实际进程边界。规划文档检查链接、pins、任务映射和证据即可；实现时再执行 owning package tests、fmt 和根工作区守卫。
 
 当前先决条件是已有 H200 作业获得资源，以及原生 XQ 必需实现通过资格验证。排队时间与完整原生研发时间分别记录，当前没有可靠的固定上线时间、H200 吞吐实测或可交付 URL/Key。
 

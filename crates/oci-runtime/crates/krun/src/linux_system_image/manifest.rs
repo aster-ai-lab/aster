@@ -1,4 +1,4 @@
-use a3s_oci_sdk::Result;
+use aster_oci_sdk::Result;
 use serde::Deserialize;
 
 use super::{
@@ -62,7 +62,7 @@ impl Image {
         require_equal(
             "image.archive_name",
             &self.archive_name,
-            "a3s-oci-system.ext4.xz",
+            "aster-oci-system.ext4.xz",
         )?;
         if self.archive_size == 0 {
             return Err(image_error(

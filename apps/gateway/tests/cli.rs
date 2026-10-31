@@ -13,7 +13,7 @@ struct TestConfig {
 }
 
 fn gateway_bin() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-gateway")
+    env!("CARGO_BIN_EXE_aster-gateway")
 }
 
 fn write_config(extension: &str) -> TestConfig {
@@ -85,7 +85,7 @@ management {
   enabled     = true
   address     = "127.0.0.1:19090"
   path_prefix = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips = ["127.0.0.1"]
 }
 "#,
@@ -98,7 +98,7 @@ fn run(args: &[&str]) -> Output {
     Command::new(gateway_bin())
         .args(args)
         .env(common::TEST_ADMIN_TOKEN_ENV, common::TEST_ADMIN_TOKEN)
-        .env("A3S_GATEWAY_ADMIN_TOKEN", common::TEST_ADMIN_TOKEN)
+        .env("ASTER_GATEWAY_ADMIN_TOKEN", common::TEST_ADMIN_TOKEN)
         .output()
         .unwrap()
 }
@@ -320,7 +320,7 @@ fn agent_list_exposes_builtin_coding_agent_profiles_as_json() {
     assert!(output.status.success());
     let profiles: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
     let profiles = profiles.as_array().unwrap();
-    for expected in ["a3s", "claude", "codex", "gemini", "opencode"] {
+    for expected in ["aster", "claude", "codex", "gemini", "opencode"] {
         assert!(
             profiles.iter().any(|profile| profile["id"] == expected),
             "missing {expected} profile: {profiles:?}"

@@ -40,20 +40,20 @@ fn distinctive_usage_token_picks_the_longest_plain_word() {
 
 #[tokio::test]
 async fn recalled_memory_usage_counts_a_distinctive_token_once() {
-    let store = a3s_memory::InMemoryStore::new();
+    let store = aster_durable_memory::InMemoryStore::new();
     let content = "Prefer the Zephyrquotient metric when ranking providers";
-    let item = a3s_memory::MemoryItem::new(content);
+    let item = aster_durable_memory::MemoryItem::new(content);
     let id = item.id.clone();
-    a3s_memory::MemoryStore::store(&store, item).await.unwrap();
+    aster_durable_memory::MemoryStore::store(&store, item).await.unwrap();
     let recalled = vec![(id.clone(), content.to_string(), 1.0)];
 
     record_memory_usage(
-        &store as &dyn a3s_memory::MemoryStore,
+        &store as &dyn aster_durable_memory::MemoryStore,
         &recalled,
         "Ranking done with the zephyrquotient metric as asked.",
     )
     .await;
-    let used = a3s_memory::MemoryStore::retrieve(&store, &id)
+    let used = aster_durable_memory::MemoryStore::retrieve(&store, &id)
         .await
         .unwrap()
         .unwrap();
@@ -66,7 +66,7 @@ async fn recalled_memory_usage_counts_a_distinctive_token_once() {
     // the token adds nothing further.
     let repeated: Vec<(String, String, f32)> = recalled.clone();
     record_memory_usage(&store, &repeated, "No related vocabulary appeared here.").await;
-    let still_once = a3s_memory::MemoryStore::retrieve(&store, &id)
+    let still_once = aster_durable_memory::MemoryStore::retrieve(&store, &id)
         .await
         .unwrap()
         .unwrap();
@@ -78,16 +78,16 @@ async fn recalled_memory_usage_counts_a_distinctive_token_once() {
 
 #[tokio::test]
 async fn recalled_memory_usage_skips_unmatched_and_unresolvable_ids() {
-    let store = a3s_memory::InMemoryStore::new();
+    let store = aster_durable_memory::InMemoryStore::new();
 
     // A token absent from the final text records nothing.
-    let unmatched = a3s_memory::MemoryItem::new("Prefer the Zephyrquotient metric when ranking");
+    let unmatched = aster_durable_memory::MemoryItem::new("Prefer the Zephyrquotient metric when ranking");
     let unmatched_id = unmatched.id.clone();
-    a3s_memory::MemoryStore::store(&store, unmatched)
+    aster_durable_memory::MemoryStore::store(&store, unmatched)
         .await
         .unwrap();
     record_memory_usage(
-        &store as &dyn a3s_memory::MemoryStore,
+        &store as &dyn aster_durable_memory::MemoryStore,
         &[(
             unmatched_id.clone(),
             "Prefer the Zephyrquotient metric".to_string(),
@@ -96,7 +96,7 @@ async fn recalled_memory_usage_skips_unmatched_and_unresolvable_ids() {
         "An unrelated reply about toolchains.",
     )
     .await;
-    let untouched = a3s_memory::MemoryStore::retrieve(&store, &unmatched_id)
+    let untouched = aster_durable_memory::MemoryStore::retrieve(&store, &unmatched_id)
         .await
         .unwrap()
         .unwrap();
@@ -113,7 +113,7 @@ async fn recalled_memory_usage_skips_unmatched_and_unresolvable_ids() {
     // Durable node ids and ledger digests have no V1 store item; they are
     // skipped silently instead of failing the recorder.
     record_memory_usage(
-        &store as &dyn a3s_memory::MemoryStore,
+        &store as &dyn aster_durable_memory::MemoryStore,
         &[(
             "durable-node-42".to_string(),
             "A durable node mentioning Zephyrquotient".to_string(),
@@ -122,7 +122,7 @@ async fn recalled_memory_usage_skips_unmatched_and_unresolvable_ids() {
         "The reply says zephyrquotient out loud.",
     )
     .await;
-    assert_eq!(a3s_memory::MemoryStore::count(&store).await.unwrap(), 1);
+    assert_eq!(aster_durable_memory::MemoryStore::count(&store).await.unwrap(), 1);
 }
 
 /// A deterministic bucketing provider: any text naming the sentinel
@@ -175,13 +175,13 @@ impl crate::embedding::EmbeddingProvider for BucketProvider {
 
 #[tokio::test]
 async fn semantic_usage_judge_counts_a_paraphrase_the_lexical_arm_missed() {
-    let store = a3s_memory::InMemoryStore::new();
+    let store = aster_durable_memory::InMemoryStore::new();
     // No word of eight-plus characters exists here, so the lexical arm
     // cannot decide; the reply paraphrases without reusing any long token.
     let content = "The quokka colony sleeps at noon";
-    let item = a3s_memory::MemoryItem::new(content);
+    let item = aster_durable_memory::MemoryItem::new(content);
     let id = item.id.clone();
-    a3s_memory::MemoryStore::store(&store, item).await.unwrap();
+    aster_durable_memory::MemoryStore::store(&store, item).await.unwrap();
     let judge = crate::memory::SemanticUsageJudge::new(
         std::sync::Arc::new(BucketProvider),
         crate::memory::SEMANTIC_USAGE_DEFAULT_THRESHOLD,
@@ -189,13 +189,13 @@ async fn semantic_usage_judge_counts_a_paraphrase_the_lexical_arm_missed() {
     .unwrap();
 
     super::memory::record_memory_usage_with_semantics(
-        &store as &dyn a3s_memory::MemoryStore,
+        &store as &dyn aster_durable_memory::MemoryStore,
         &[(id.clone(), content.to_string(), 1.0)],
         "The little quokka group rested through the midday heat.",
         Some(&judge),
     )
     .await;
-    let used = a3s_memory::MemoryStore::retrieve(&store, &id)
+    let used = aster_durable_memory::MemoryStore::retrieve(&store, &id)
         .await
         .unwrap()
         .unwrap();
@@ -208,11 +208,11 @@ async fn semantic_usage_judge_counts_a_paraphrase_the_lexical_arm_missed() {
 
 #[tokio::test]
 async fn semantic_usage_judge_skips_different_bucket_and_errors() {
-    let store = a3s_memory::InMemoryStore::new();
+    let store = aster_durable_memory::InMemoryStore::new();
     let off_topic = "toolchain pins rust at the workspace root";
-    let item = a3s_memory::MemoryItem::new(off_topic);
+    let item = aster_durable_memory::MemoryItem::new(off_topic);
     let off_id = item.id.clone();
-    a3s_memory::MemoryStore::store(&store, item).await.unwrap();
+    aster_durable_memory::MemoryStore::store(&store, item).await.unwrap();
     let judge = crate::memory::SemanticUsageJudge::new(
         std::sync::Arc::new(BucketProvider),
         crate::memory::SEMANTIC_USAGE_DEFAULT_THRESHOLD,
@@ -220,13 +220,13 @@ async fn semantic_usage_judge_skips_different_bucket_and_errors() {
     .unwrap();
 
     super::memory::record_memory_usage_with_semantics(
-        &store as &dyn a3s_memory::MemoryStore,
+        &store as &dyn aster_durable_memory::MemoryStore,
         &[(off_id.clone(), off_topic.to_string(), 0.5)],
         "The little quokka group rested through the midday heat.",
         Some(&judge),
     )
     .await;
-    let untouched = a3s_memory::MemoryStore::retrieve(&store, &off_id)
+    let untouched = aster_durable_memory::MemoryStore::retrieve(&store, &off_id)
         .await
         .unwrap()
         .unwrap();
@@ -266,13 +266,13 @@ async fn semantic_usage_judge_skips_different_bucket_and_errors() {
     )
     .unwrap();
     super::memory::record_memory_usage_with_semantics(
-        &store as &dyn a3s_memory::MemoryStore,
+        &store as &dyn aster_durable_memory::MemoryStore,
         &[(off_id.clone(), off_topic.to_string(), 0.5)],
         "nothing matches lexically here",
         Some(&failing),
     )
     .await;
-    let still = a3s_memory::MemoryStore::retrieve(&store, &off_id)
+    let still = aster_durable_memory::MemoryStore::retrieve(&store, &off_id)
         .await
         .unwrap()
         .unwrap();

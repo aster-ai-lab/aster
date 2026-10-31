@@ -1,10 +1,10 @@
 use std::path::PathBuf;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{ContainerTarget, ExitStatus};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{ContainerTarget, ExitStatus};
 use serde::{Deserialize, Serialize};
 
-pub const LINUX_KVM_RECOVERY_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.linux-kvm-recovery-smoke.v1";
+pub const LINUX_KVM_RECOVERY_SMOKE_SCHEMA_VERSION: &str = "aster.oci.linux-kvm-recovery-smoke.v1";
 
 /// Exact Linux process incarnation retained across owner death.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -207,7 +207,7 @@ pub(crate) fn canonical_sha256_digest(value: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{ContainerId, Generation};
+    use aster_oci_sdk::{ContainerId, Generation};
 
     use super::*;
 
@@ -217,7 +217,7 @@ mod tests {
             parent_pid,
             process_group_id: pid,
             start_time_ticks: u64::from(pid) * 10,
-            command: "a3s-oci".to_string(),
+            command: "aster-oci".to_string(),
         }
     }
 
@@ -234,9 +234,9 @@ mod tests {
             case_count: 1,
             evidence_root: PathBuf::from("/tmp/evidence"),
             artifacts: LinuxKvmRecoveryArtifacts {
-                host_service_executable: PathBuf::from("/tmp/a3s-oci"),
+                host_service_executable: PathBuf::from("/tmp/aster-oci"),
                 host_service_executable_sha256: "1".repeat(64),
-                shim: PathBuf::from("/tmp/a3s-oci-krun-shim"),
+                shim: PathBuf::from("/tmp/aster-oci-krun-shim"),
                 shim_sha256: "2".repeat(64),
                 system_image_manifest: PathBuf::from("/tmp/system-image.json"),
                 system_image_manifest_sha256: "3".repeat(64),

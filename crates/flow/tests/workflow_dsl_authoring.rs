@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     apply_workflow_authoring_operation, apply_workflow_authoring_operations,
     canonical_workflow_authoring_operation, canonical_workflow_authoring_snapshot,
     validate_executable_workflow_authoring_snapshot, WorkflowAuthoringSession, WorkflowDslError,
@@ -32,7 +32,7 @@ fn canonical_snapshot_is_stable_and_preserves_extensions() {
     .expect("second snapshot");
     assert_eq!(first, second);
     let value = document(&first);
-    assert_eq!(value["x-a3s-document-extension"]["retained"], true);
+    assert_eq!(value["x-aster-document-extension"]["retained"], true);
     assert_eq!(value["workflow"]["graph"]["viewport"]["zoom"], 1);
 }
 
@@ -99,7 +99,7 @@ fn applies_node_edge_and_app_operations_without_losing_unknown_fields() {
     assert!(edge.get("sourceHandle").is_none());
     assert!(edge.get("targetHandle").is_none());
     assert_eq!(
-        value["workflow"]["graph"]["nodes"][1]["data"]["x-a3s-fixture-extension"]["retained"],
+        value["workflow"]["graph"]["nodes"][1]["data"]["x-aster-fixture-extension"]["retained"],
         true
     );
 }

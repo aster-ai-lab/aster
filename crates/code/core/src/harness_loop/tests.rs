@@ -330,12 +330,12 @@ fn unseen_workspace_path_opens_the_gate_without_a_second_digest() {
     let digest = ledger.digest().to_string();
     ledger.observe_unseen_paths(&[
         "src/lib.rs".to_string(),
-        ".a3s/tui/outcomes/v1/id.json".to_string(),
+        ".aster/tui/outcomes/v1/id.json".to_string(),
         "guest.txt".to_string(),
     ]);
     assert_ne!(ledger.digest(), digest);
     assert!(ledger.paths().any(|path| path == "guest.txt"));
-    assert!(!ledger.paths().any(|path| path.contains(".a3s")));
+    assert!(!ledger.paths().any(|path| path.contains(".aster")));
     assert_eq!(
         ledger.paths().filter(|path| *path == "src/lib.rs").count(),
         1,
@@ -468,7 +468,7 @@ fn retrieval_index_stamp_is_not_a_source_mutation() {
         "search",
         0,
         Some(&serde_json::json!({
-            "changed_paths": [".a3s-code/grep-trigram/stamp.txt"]
+            "changed_paths": [".aster/grep-trigram/stamp.txt"]
         })),
     );
     assert!(

@@ -14,7 +14,7 @@ cleanup() {
   trap - EXIT
   if [[ -n "$build_root" ]]; then
     case "$build_root" in
-      /var/tmp/a3s-oci-criu-build.????????)
+      /var/tmp/aster-oci-criu-build.????????)
         rm -rf --one-file-system -- "$build_root" || cleanup_status=1
         ;;
       *)
@@ -77,7 +77,7 @@ else
   sudo_command=(sudo)
 fi
 
-build_root="$(mktemp -d /var/tmp/a3s-oci-criu-build.XXXXXXXX)"
+build_root="$(mktemp -d /var/tmp/aster-oci-criu-build.XXXXXXXX)"
 source_directory="$build_root/source"
 git init --quiet "$source_directory"
 git -C "$source_directory" remote add origin "$criu_repository"

@@ -1,6 +1,6 @@
 //! Prepare a digest-pinned image for ACP guest qualification without host state.
 
-use a3s_box_runtime::oci::{
+use aster_box_runtime::oci::{
     ImagePuller, ImageReference, ImageStore, OciRootfsBuilder, RegistryAuth, RegistryPullPolicy,
 };
 use oci_spec::image::Sha256Digest;
@@ -49,8 +49,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Err("only an output directory and optional pinned image are accepted".into());
     }
     pinned_image(&image)?;
-    if std::env::var_os("A3S_REGISTRY_MIRRORS").is_some()
-        || std::env::var_os("A3S_REGISTRY_PROTOCOL").is_some()
+    if std::env::var_os("ASTER_REGISTRY_MIRRORS").is_some()
+        || std::env::var_os("ASTER_REGISTRY_PROTOCOL").is_some()
     {
         return Err("this qualification requires the unoverridden HTTPS registry".into());
     }

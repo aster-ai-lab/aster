@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{flag, point_size, safe_color, write_node_attributes, write_optional_attribute};
 use crate::render::image::{resolve, write_data_url};

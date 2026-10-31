@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-  printf 'usage: %s <linux-amd64-a3s-binary> <output-directory>\n' "$0" >&2
+  printf 'usage: %s <linux-amd64-aster-binary> <output-directory>\n' "$0" >&2
   exit 2
 }
 
@@ -23,7 +23,7 @@ done
 
 mkdir -p -- "$output_directory"
 output_directory=$(realpath -- "$output_directory")
-manifest_path=$output_directory/.a3s/asset.acl
+manifest_path=$output_directory/.aster/asset.acl
 publication_path=$output_directory/publication.json
 builder_provenance_path=$output_directory/provenance/builder.json
 evidence_path=$output_directory/local-verification.json
@@ -40,9 +40,9 @@ for output_path in \
 done
 
 run_token=$$-$(date +%s)
-registry_name=a3s-agent-release-registry-$run_token
-service_name=a3s-agent-release-service-$run_token
-temporary_directory=$(mktemp -d "${TMPDIR:-/tmp}/a3s-agent-release-verify.XXXXXX")
+registry_name=aster-agent-release-registry-$run_token
+service_name=aster-agent-release-service-$run_token
+temporary_directory=$(mktemp -d "${TMPDIR:-/tmp}/aster-agent-release-verify.XXXXXX")
 exact_image_reference=
 
 container_exists() {
@@ -60,7 +60,7 @@ cleanup() {
     docker container rm --force "$registry_name" >/dev/null 2>&1 || true
   fi
   case "$temporary_directory" in
-    "${TMPDIR:-/tmp}"/a3s-agent-release-verify.*)
+    "${TMPDIR:-/tmp}"/aster-agent-release-verify.*)
       rm -rf -- "$temporary_directory"
       ;;
   esac
@@ -87,7 +87,7 @@ done
 curl --connect-timeout 1 --max-time 2 --fail --silent --show-error \
   "http://$registry_address/v2/" >/dev/null
 
-image_reference=$registry_address/a3s-code-agent-fixture:$run_token
+image_reference=$registry_address/aster-agent-fixture:$run_token
 bash "$script_directory/publish-release.sh" \
   "$binary_path" \
   "$image_reference" \
@@ -108,7 +108,7 @@ source_uri=$(jq -er '.provenance[] | select(.kind == "source") | .uri' \
   "$publication_path")
 
 jq -e '
-  .schema == "a3s.code.agent-release-publication.v1"
+  .schema == "aster.code.agent-release-publication.v1"
   and (.provenance | type == "array" and length == 2)
   and ([.provenance[].kind] | sort == ["builder", "source"])
   and (all(.provenance[];
@@ -116,13 +116,13 @@ jq -e '
     and (.digest | test("^sha256:[0-9a-f]{64}$"))))
   and (.provenanceArtifacts | type == "array" and length == 1)
   and (.provenanceArtifacts[0].kind == "builder")
-  and (.provenanceArtifacts[0].uri == "urn:a3s:builder:oci-buildkit-v1")
+  and (.provenanceArtifacts[0].uri == "urn:aster:builder:oci-buildkit-v1")
   and (.provenanceArtifacts[0].mediaType
-    == "application/vnd.a3s.code.agent-release-builder-provenance.v1+json")
+    == "application/vnd.aster.code.agent-release-builder-provenance.v1+json")
   and (.provenanceArtifacts[0].path == "provenance/builder.json")
 ' "$publication_path" >/dev/null
-if [ "$builder_uri" != 'urn:a3s:builder:oci-buildkit-v1' ] \
-  || [ "$source_uri" != 'urn:a3s:source:a3s-cli-binary' ] \
+if [ "$builder_uri" != 'urn:aster:builder:oci-buildkit-v1' ] \
+  || [ "$source_uri" != 'urn:aster:source:aster-cli-binary' ] \
   || [ "$(jq -er '.provenanceArtifacts[0].digest' "$publication_path")" \
     != "$builder_digest" ]; then
   printf 'publication provenance references are inconsistent\n' >&2
@@ -146,7 +146,7 @@ if [ "$retained_builder_digest" != "$builder_digest" ]; then
 fi
 binary_source_digest=sha256:$(sha256sum -- "$binary_path" | awk '{print $1}')
 if [ "$binary_source_digest" != "$source_digest" ]; then
-  printf 'source provenance does not match the supplied A3S binary\n' >&2
+  printf 'source provenance does not match the supplied Aster binary\n' >&2
   exit 1
 fi
 jq -e \
@@ -156,13 +156,13 @@ jq -e \
   '
     (keys | sort
       == ["artifact", "buildMetadata", "platform", "recipe", "schema", "source", "tools"])
-    and .schema == "a3s.code.agent-release-builder-provenance.v1"
+    and .schema == "aster.code.agent-release-builder-provenance.v1"
     and .platform == "linux/amd64"
     and (.artifact | keys | sort == ["digest", "mediaType"])
     and .artifact.digest == $artifactDigest
     and .artifact.mediaType == $artifactMediaType
     and (.source | keys | sort == ["digest", "path"])
-    and .source.path == "/usr/bin/a3s"
+    and .source.path == "/usr/bin/aster"
     and .source.digest == $sourceDigest
     and (.recipe | keys | sort == ["digest", "inputs"])
     and (.recipe.digest | test("^sha256:[0-9a-f]{64}$"))
@@ -205,24 +205,24 @@ docker pull "$exact_image_reference" >/dev/null
 image_metadata_path=$temporary_directory/image-metadata.json
 docker image inspect "$exact_image_reference" > "$image_metadata_path"
 entrypoint=$(jq -c '.[0].Config.Entrypoint' "$image_metadata_path")
-if [ "$entrypoint" != '["/usr/bin/a3s","code","harness","--manifest","/app/.a3s/asset.acl"]' ]; then
+if [ "$entrypoint" != '["/usr/bin/aster","code","harness","--manifest","/app/.aster/asset.acl"]' ]; then
   printf 'published image changed the admitted Agent entrypoint\n' >&2
   exit 1
 fi
 docker run --rm --entrypoint /bin/sh "$exact_image_reference" -ec '
-  test -x /usr/bin/a3s
+  test -x /usr/bin/aster
   test -f /app/config.acl
-  test ! -e /app/.a3s/asset.acl
+  test ! -e /app/.aster/asset.acl
 '
 image_source_digest=sha256:$(docker run --rm --entrypoint /usr/bin/sha256sum \
-  "$exact_image_reference" /usr/bin/a3s | awk '{print $1}')
+  "$exact_image_reference" /usr/bin/aster | awk '{print $1}')
 if [ "$image_source_digest" != "$source_digest" ]; then
-  printf 'packaged A3S binary does not match source provenance\n' >&2
+  printf 'packaged Aster binary does not match source provenance\n' >&2
   exit 1
 fi
 
-environment_secret=A3S_ENV_SECRET_$run_token
-file_secret=A3S_FILE_SECRET_$run_token
+environment_secret=ASTER_ENV_SECRET_$run_token
+file_secret=ASTER_FILE_SECRET_$run_token
 secret_path=$temporary_directory/signing-key
 printf '%s\n' "$file_secret" > "$secret_path"
 chmod 0444 "$secret_path"
@@ -231,7 +231,7 @@ docker run \
   --detach \
   --name "$service_name" \
   --env PROVIDER_API_KEY="$environment_secret" \
-  --mount "type=bind,src=$manifest_path,dst=/app/.a3s/asset.acl,readonly" \
+  --mount "type=bind,src=$manifest_path,dst=/app/.aster/asset.acl,readonly" \
   --mount "type=bind,src=$secret_path,dst=/run/secrets/signing-key,readonly" \
   "$exact_image_reference" \
   >/dev/null
@@ -262,9 +262,9 @@ curl --connect-timeout 1 --max-time 2 --fail --silent --show-error \
   "http://$service_address/health/ready" > "$readiness_path"
 curl --connect-timeout 1 --max-time 2 --fail --silent --show-error \
   "http://$service_address/health/live" > "$liveness_path"
-jq -e '.schema == "a3s.code.agent-health.v1" and .status == "ready"' \
+jq -e '.schema == "aster.code.agent-health.v1" and .status == "ready"' \
   "$readiness_path" >/dev/null
-jq -e '.schema == "a3s.code.agent-health.v1" and .status == "live"' \
+jq -e '.schema == "aster.code.agent-health.v1" and .status == "live"' \
   "$liveness_path" >/dev/null
 
 protocol_error_path=$temporary_directory/protocol-error.json
@@ -278,8 +278,8 @@ if [ "$protocol_status" != 400 ]; then
   printf 'malformed Agent protocol request returned HTTP %s\n' "$protocol_status" >&2
   exit 1
 fi
-jq -e '.schema == "a3s.code.agent-error.v1"
-  and .error.code == "a3s.code.agent_protocol.invalid_json"' \
+jq -e '.schema == "aster.code.agent-error.v1"
+  and .error.code == "aster.code.agent_protocol.invalid_json"' \
   "$protocol_error_path" >/dev/null
 
 logs_path=$temporary_directory/service.log
@@ -333,7 +333,7 @@ jq -n \
   --argjson shutdownElapsedMs "$shutdown_elapsed_ms" \
   --argjson exitCode "$exit_code" \
   '{
-    schema: "a3s.code.agent-release-local-verification.v1",
+    schema: "aster.code.agent-release-local-verification.v1",
     runtime: "docker",
     artifactDigest: $artifactDigest,
     manifestIdentity: $manifestIdentity,

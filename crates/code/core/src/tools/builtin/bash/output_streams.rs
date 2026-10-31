@@ -2,7 +2,7 @@
 
 use serde_json::{json, Value};
 
-const SCHEMA: &str = "a3s.code.shell-output-streams.v1";
+const SCHEMA: &str = "aster.code.shell-output-streams.v1";
 
 pub(crate) fn capture(stdout: &str, stderr: &str) -> Value {
     json!({

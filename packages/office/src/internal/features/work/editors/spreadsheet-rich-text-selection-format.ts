@@ -260,7 +260,7 @@ function patchRichTextRun(
 ): XlsxRichTextRun {
   const next = { ...run };
   if (attribute === 'fc') {
-    delete next.a3sXlsxColorOrigin;
+    delete next.asterXlsxColorOrigin;
     if (value === undefined) delete next.fc;
     else next.fc = value as string;
   } else if (attribute === 'ff') {

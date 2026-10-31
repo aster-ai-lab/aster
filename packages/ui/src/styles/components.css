@@ -1,7 +1,7 @@
 /**
  * Console kit component classes (ui-* BEM layer), ported from the legacy
  * packages/ui styles.css. Tokens resolve through the shadcn graph plus the
- * a3s compatibility bridge in theme.css. Dark mode uses the .dark class.
+ * aster compatibility bridge in theme.css. Dark mode uses the .dark class.
  */
 
 @import './dialog-motion.css';

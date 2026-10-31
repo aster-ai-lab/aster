@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::Value as JsonValue;
 
 use super::invalid_shared_comments;

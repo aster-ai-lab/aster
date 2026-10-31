@@ -4,22 +4,22 @@
   "contractSchema": "agentic.ontology.r0-cross-project-contract.v1",
   "components": [
     {
-      "component": "a3s-cloud-contracts",
+      "component": "aster-cloud-contracts",
       "version": "0.1.0",
       "boundary": "agentic.ontology.r0-cloud-audit-link.v1"
     },
     {
-      "component": "a3s-code-core",
+      "component": "aster-core",
       "version": "6.8.0",
-      "boundary": "a3s.code.agent.v1"
+      "boundary": "aster.code.agent.v1"
     },
     {
-      "component": "a3s-use",
+      "component": "aster-use",
       "version": "0.3.0",
-      "boundary": "agentic.ontology.a3s-use-generation-receipt.v1"
+      "boundary": "agentic.ontology.aster-use-generation-receipt.v1"
     },
     {
-      "component": "agentic-ontology-a3s",
+      "component": "agentic-ontology-aster",
       "version": "0.1.0",
       "boundary": "agentic.ontology.r0-cross-project-contract.v1"
     }
@@ -32,17 +32,17 @@
       "sha256": "sha256:85e3d70949fd0d0ffb627f4cfb9b3ab6f1dcb807e5c6d52918680dba7766a524"
     },
     {
-      "path": "fixtures/a3s-use-generation-receipt.json",
+      "path": "fixtures/aster-use-generation-receipt.json",
       "bytes": 2137,
       "sha256": "sha256:58b8177372a817b8c18460e03f861b2deb56523a36ccc4ae01aad805591aecfb"
     },
     {
-      "path": "fixtures/a3s-use-handoff.drift.json",
+      "path": "fixtures/aster-use-handoff.drift.json",
       "bytes": 2045,
       "sha256": "sha256:9cdee5482eb4f8beb4ee0e57bcebe7e5aa5076de3e40334e29f2fac82e36d09b"
     },
     {
-      "path": "fixtures/a3s-use-handoff.valid.json",
+      "path": "fixtures/aster-use-handoff.valid.json",
       "bytes": 2045,
       "sha256": "sha256:7dfa9b3800e135d3c9bce6d11d88935eb1f69482e327100d4d135bef350c3eb7"
     },

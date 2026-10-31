@@ -151,11 +151,11 @@ async fn child_policy_actual_fact_run_restores_before_task_and_skill_delegation(
             assert_eq!(
                 facts
                     .iter()
-                    .filter(|fact| fact.kind == "a3s.work-policy.admitted")
+                    .filter(|fact| fact.kind == "aster.work-policy.admitted")
                     .count(),
                 1
             );
-            assert!(!facts.iter().any(|fact| fact.kind.starts_with("a3s.goal.")));
+            assert!(!facts.iter().any(|fact| fact.kind.starts_with("aster.goal.")));
             resumed.save().await.unwrap();
             resumed.close().await;
             let snapshot = store

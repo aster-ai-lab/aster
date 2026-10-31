@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{editor_error, prefix, qualified, validate_mutation_path};
 use crate::editor::{
@@ -526,7 +526,7 @@ fn reject_overlap(
     Ok(())
 }
 
-fn overlap_error(requested: CellRange, existing: CellRange) -> a3s_use_core::UseError {
+fn overlap_error(requested: CellRange, existing: CellRange) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_validation_overlap",
         format!(
@@ -661,7 +661,7 @@ fn reject_unknown_rule_children(
     Ok(())
 }
 
-fn unknown_rule_content(part_name: &str, child: &str) -> a3s_use_core::UseError {
+fn unknown_rule_content(part_name: &str, child: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_validation_unknown_content",
         "The data validation cannot be replaced without discarding unknown child content.",
@@ -755,7 +755,7 @@ const fn error_style_token(value: NativeSpreadsheetDataValidationErrorStyle) -> 
     }
 }
 
-fn rule_not_found(sheet: &str, index: usize) -> a3s_use_core::UseError {
+fn rule_not_found(sheet: &str, index: usize) -> aster_use_core::UseError {
     let path = format!("{sheet}/dataValidation[{index}]");
     editor_error(
         "use.office.node_not_found",
@@ -764,7 +764,7 @@ fn rule_not_found(sheet: &str, index: usize) -> a3s_use_core::UseError {
     .with_detail("path", path)
 }
 
-fn invalid_collection(part_name: &str, reason: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_collection(part_name: &str, reason: impl Into<String>) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_validation_invalid",
         format!(

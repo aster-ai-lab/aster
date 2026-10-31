@@ -10,11 +10,11 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
-use a3s_code_core::permissions::PermissionPolicy;
-use a3s_code_core::{Agent, AgentEvent, SessionOptions};
-use a3s_memory::{InMemoryStore, MemoryItem, MemoryType};
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
+use aster_core::permissions::PermissionPolicy;
+use aster_core::{Agent, AgentEvent, SessionOptions};
+use aster_durable_memory::{InMemoryStore, MemoryItem, MemoryType};
 use anyhow::Result;
 use async_trait::async_trait;
 use tokio_util::sync::CancellationToken;
@@ -25,6 +25,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/controlled".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -84,7 +85,7 @@ impl LlmClient for PlainResponseClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> Result<LlmResponse> {
         Ok(acknowledged())
     }
@@ -93,7 +94,7 @@ impl LlmClient for PlainResponseClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancellation: CancellationToken,
     ) -> Result<tokio::sync::mpsc::Receiver<StreamEvent>> {
         let (tx, rx) = tokio::sync::mpsc::channel(4);
@@ -106,7 +107,7 @@ impl LlmClient for PlainResponseClient {
 async fn fact_stream_surfaces_memory_recall_events_to_the_host() {
     let workspace = tempfile::tempdir().expect("workspace");
     let store = Arc::new(InMemoryStore::new());
-    a3s_memory::MemoryStore::store(
+    aster_durable_memory::MemoryStore::store(
         store.as_ref(),
         MemoryItem::new("The release verification codename for status reports is TIDELOCK-551.")
             .with_type(MemoryType::Semantic)

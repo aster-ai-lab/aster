@@ -1,4 +1,4 @@
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportFaultPoint, AgentTransportOperationStage,
     AGENT_PROTOCOL_VERSION_MAX,
 };
@@ -6,9 +6,9 @@ use a3s_oci_agent_protocol::{
     all(target_os = "macos", target_arch = "aarch64"),
     all(target_os = "windows", target_arch = "x86_64")
 )))]
-use a3s_oci_core::CapabilityStatus;
-use a3s_oci_core::HostPlatform;
-use a3s_oci_sdk::ProcessRecord;
+use aster_oci_core::CapabilityStatus;
+use aster_oci_core::HostPlatform;
+use aster_oci_sdk::ProcessRecord;
 
 use super::{
     OciVmOperationReopenReplacementReport,
@@ -135,7 +135,7 @@ impl OciVmOperationReopenReplacementReport {
             && self.negotiated_protocol == Some(AGENT_PROTOCOL_VERSION_MAX)
             && self.injected_point.as_deref() == Some(expected_point.as_str())
             && self.fault_crossings == 1
-            && self.first_operation_error_code == Some(a3s_oci_sdk::ErrorCode::Unavailable)
+            && self.first_operation_error_code == Some(aster_oci_sdk::ErrorCode::Unavailable)
             && expected_error_operation
             && self.first_operation_error_retryable
             && self.first_operation_response_received == response_delivered
@@ -270,11 +270,11 @@ impl OciVmOperationReopenReplacementReport {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AgentOperation, AgentTransportOperationStage, AGENT_PROTOCOL_VERSION_MAX,
     };
-    use a3s_oci_core::{CapabilityStatus, HostPlatform};
-    use a3s_oci_sdk::{
+    use aster_oci_core::{CapabilityStatus, HostPlatform};
+    use aster_oci_sdk::{
         ContainerId, ContainerTarget, ErrorCode, Generation, OperationId, ProcessId, ProcessRecord,
         ProcessTarget,
     };
@@ -463,7 +463,7 @@ mod tests {
         let mut report = AgentVmSmokeReport::initial(HostPlatform::Macos);
         report.status = CapabilityStatus::Available;
         report.endpoint_bound = true;
-        report.endpoint_name = Some(format!("a3s-oci-agent-{name}"));
+        report.endpoint_name = Some(format!("aster-oci-agent-{name}"));
         report.shim_spawned = true;
         report.shim_process_id = Some(shim);
         report.bridge_process_id = Some(bridge);
@@ -493,7 +493,7 @@ mod tests {
         let mut report = AgentVmSmokeReport::initial(HostPlatform::Linux);
         report.status = CapabilityStatus::Available;
         report.endpoint_bound = true;
-        report.endpoint_name = Some(format!("a3s-oci-agent-{name}"));
+        report.endpoint_name = Some(format!("aster-oci-agent-{name}"));
         report.shim_spawned = true;
         report.shim_process_id = Some(shim);
         report.bridge_process_id = Some(bridge);

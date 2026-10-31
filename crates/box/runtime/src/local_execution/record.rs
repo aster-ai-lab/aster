@@ -3,7 +3,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use a3s_box_core::{
+use aster_box_core::{
     CreateExecutionRequest, ExecutionGeneration, ExecutionId, ExecutionLease,
     ExecutionManagerError, ExecutionManagerResult, ExecutionReservation, ExecutionState,
     ExecutionStatus, NetworkMode, OperationId,
@@ -106,18 +106,18 @@ pub(crate) fn build_managed_record(
     })
 }
 
-fn validate_execution_config(config: &a3s_box_core::BoxConfig) -> ExecutionManagerResult<()> {
+fn validate_execution_config(config: &aster_box_core::BoxConfig) -> ExecutionManagerResult<()> {
     if !config.host_services.is_empty() {
-        a3s_box_core::resolve_execution(config)
+        aster_box_core::resolve_execution(config)
             .map_err(|error| ExecutionManagerError::InvalidRequest(error.to_string()))?;
     }
-    if config.isolation == a3s_box_core::ExecutionIsolation::Microvm {
-        a3s_box_core::config::validate_vcpu_count(config.resources.vcpus)
+    if config.isolation == aster_box_core::ExecutionIsolation::Microvm {
+        aster_box_core::config::validate_vcpu_count(config.resources.vcpus)
             .map_err(ExecutionManagerError::InvalidRequest)?;
     }
 
     #[cfg(windows)]
-    if config.isolation == a3s_box_core::ExecutionIsolation::Sandbox {
+    if config.isolation == aster_box_core::ExecutionIsolation::Sandbox {
         return Err(ExecutionManagerError::InvalidRequest(
             "Sandbox isolation is supported only on Linux; use MicroVM isolation on Windows"
                 .to_string(),
@@ -125,21 +125,21 @@ fn validate_execution_config(config: &a3s_box_core::BoxConfig) -> ExecutionManag
     }
 
     #[cfg(windows)]
-    if !matches!(config.tee, a3s_box_core::config::TeeConfig::None) {
+    if !matches!(config.tee, aster_box_core::config::TeeConfig::None) {
         return Err(ExecutionManagerError::InvalidRequest(
             "TEE configuration is not supported on Windows".to_string(),
         ));
     }
 
     #[cfg(windows)]
-    if matches!(config.network, a3s_box_core::NetworkMode::Bridge { .. }) {
+    if matches!(config.network, aster_box_core::NetworkMode::Bridge { .. }) {
         return Err(ExecutionManagerError::InvalidRequest(
             "bridge networking is not supported on Windows".to_string(),
         ));
     }
 
     #[cfg(not(any(target_os = "linux", target_os = "macos", windows)))]
-    if matches!(config.network, a3s_box_core::NetworkMode::Bridge { .. }) {
+    if matches!(config.network, aster_box_core::NetworkMode::Bridge { .. }) {
         return Err(ExecutionManagerError::InvalidRequest(
             "bridge networking is not supported on this platform".to_string(),
         ));
@@ -157,7 +157,7 @@ pub(super) fn validate_record_health(record: &BoxRecord) -> ExecutionManagerResu
 }
 
 fn validate_health_policy(
-    policy: &a3s_box_core::ExecutionRecordPolicy,
+    policy: &aster_box_core::ExecutionRecordPolicy,
 ) -> ExecutionManagerResult<()> {
     validate_effective_health_check(policy.health_check.is_some(), policy.healthcheck_disabled)
 }

@@ -8,7 +8,7 @@ use aes_gcm::aead::{Aead, KeyInit, OsRng};
 use aes_gcm::{AeadCore, Aes256Gcm, Nonce};
 use anyhow::{bail, Context, Result};
 
-const ENVELOPE_MAGIC: &[u8; 4] = b"A3SE";
+const ENVELOPE_MAGIC: &[u8; 4] = b"ASTR";
 const ENVELOPE_VERSION: u8 = 1;
 const NONCE_LEN: usize = 12;
 const HEADER_LEN: usize = 4 + 1 + NONCE_LEN;

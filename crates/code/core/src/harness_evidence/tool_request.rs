@@ -1,12 +1,12 @@
 use super::{measure, require_digest, HarnessEvidenceError};
 use serde::{Deserialize, Serialize};
 
-pub const TOOL_REQUEST_SNAPSHOT_V1_SCHEMA: &str = "a3s.code.tool-request-snapshot.v1";
+pub const TOOL_REQUEST_SNAPSHOT_V1_SCHEMA: &str = "aster.code.tool-request-snapshot.v1";
 
-const TOOL_REQUEST_SNAPSHOT_DOMAIN: &str = "a3s.code.tool-request-snapshot.v1";
-const TOOL_REQUEST_ID_DOMAIN: &str = "a3s.code.tool-request-id.v1";
-const TOOL_REQUEST_NAME_DOMAIN: &str = "a3s.code.tool-request-name.v1";
-const TOOL_REQUEST_ARGUMENTS_DOMAIN: &str = "a3s.code.tool-request-arguments.v1";
+const TOOL_REQUEST_SNAPSHOT_DOMAIN: &str = "aster.code.tool-request-snapshot.v1";
+const TOOL_REQUEST_ID_DOMAIN: &str = "aster.code.tool-request-id.v1";
+const TOOL_REQUEST_NAME_DOMAIN: &str = "aster.code.tool-request-name.v1";
+const TOOL_REQUEST_ARGUMENTS_DOMAIN: &str = "aster.code.tool-request-arguments.v1";
 
 /// Runtime path that submitted a governed Tool request.
 ///

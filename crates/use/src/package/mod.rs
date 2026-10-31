@@ -37,12 +37,12 @@ mod uninstall;
 mod upgrade;
 mod upgrade_validation;
 
-use a3s_use_core::{
+use aster_use_core::{
     LockedPluginPackage, PlanScope, PlanScopeKind, PluginOperationAction,
     PluginOperationPlanEnvelope, PluginPackageLock, UseError, UseResult,
     VerifiedPluginCatalogRecord,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionLifecyclePackage, ExtensionManifest, ExtensionRegistry, InstalledExtension,
 };
 use serde::Serialize;
@@ -100,7 +100,7 @@ pub use grant::{
 pub use host_manager::PackageHostManager;
 pub use hosts::{
     ManagedPackageLifecycleFactory, StandalonePackageLifecycleFactory,
-    A3S_FLOW_NATIVE_TS_COMPILER_ENV,
+    ASTER_FLOW_NATIVE_TS_COMPILER_ENV,
 };
 pub(crate) use install::verify_expected_lock;
 pub use native_provider::plan_native_provider_evidence;
@@ -110,7 +110,7 @@ pub use provider_plan::{
 };
 pub use reviewed_authorization::ReviewedPackageAuthorizationProvider;
 
-/// Version of the A3S Use package engine enforcing package host
+/// Version of the Aster Use package engine enforcing package host
 /// compatibility.
 pub const PACKAGE_HOST_VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -119,7 +119,7 @@ pub fn package_host_target() -> UseResult<String> {
     current_host_target()
 }
 
-/// Shared package manager used by the standalone CLI and embedding A3S hosts.
+/// Shared package manager used by the standalone CLI and embedding Aster hosts.
 /// Registry selection remains host configuration and is passed per operation.
 #[derive(Clone)]
 pub struct PackageManager {
@@ -143,7 +143,7 @@ impl std::fmt::Debug for PackageManager {
 
 /// Host composition boundary for one package-owned lifecycle saga.
 ///
-/// A3S Code, A3S OS, or another embedding host injects exact Runtime, Gateway,
+/// Aster Code, Aster OS, or another embedding host injects exact Runtime, Gateway,
 /// Knowledge, Skill, and UI adapters here. The standalone implementation is
 /// deliberately narrower and fails closed for surfaces whose owner is absent.
 pub trait PackageLifecycleFactory: Send + Sync {
@@ -384,7 +384,7 @@ impl PackageManager {
     ///
     /// Embedding hosts use this immutable evidence when creating reviewed
     /// upgrade and uninstall plans. The package graph store remains owned by
-    /// A3S Use; callers cannot replace or remove records through this API.
+    /// Aster Use; callers cannot replace or remove records through this API.
     pub async fn installed_package_lock(
         &self,
         root_package_id: &str,
@@ -396,7 +396,7 @@ impl PackageManager {
             .map(|graph| graph.package_lock))
     }
 
-    /// Snapshot every exact dependency lock currently owned by A3S Use.
+    /// Snapshot every exact dependency lock currently owned by Aster Use.
     ///
     /// Results are sorted by root package ID by the durable graph store. This
     /// lets an embedding host retain shared dependencies during reviewed graph
@@ -427,12 +427,12 @@ impl PackageManager {
         PackageResolutionAttemptStore::new(self.registry.paths().state_root())
     }
 
-    fn grant_store(&self) -> a3s_use_extension::WorkspaceGrantStore {
-        a3s_use_extension::WorkspaceGrantStore::from_extension_paths(self.registry.paths())
+    fn grant_store(&self) -> aster_use_extension::WorkspaceGrantStore {
+        aster_use_extension::WorkspaceGrantStore::from_extension_paths(self.registry.paths())
     }
 
-    fn maintenance_lock(&self) -> a3s_use_extension::StateMaintenanceLock {
-        a3s_use_extension::StateMaintenanceLock::new(self.registry.paths().state_root())
+    fn maintenance_lock(&self) -> aster_use_extension::StateMaintenanceLock {
+        aster_use_extension::StateMaintenanceLock::new(self.registry.paths().state_root())
     }
 
     fn installation_mutation_lock(&self) -> mutation_lock::InstallationMutationLock {
@@ -551,13 +551,13 @@ pub(super) fn current_host_target() -> UseResult<String> {
 
 pub(super) fn all_catalog_surfaces(
     package: &LockedPluginPackage,
-) -> Vec<a3s_use_core::PluginSurfaceRef> {
+) -> Vec<aster_use_core::PluginSurfaceRef> {
     package
         .catalog
         .record
         .surfaces
         .iter()
-        .map(a3s_use_core::CatalogSurface::reference)
+        .map(aster_use_core::CatalogSurface::reference)
         .collect()
 }
 

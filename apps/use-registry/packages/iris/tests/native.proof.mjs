@@ -41,13 +41,13 @@ let browser
 try {
   const catalog = await call('GET', '/api/aix/views')
   assert.equal(catalog.status, 200)
-  const installed = catalog.body.packages.find((entry) => entry.slug === 'a3s-iris')
+  const installed = catalog.body.packages.find((entry) => entry.slug === 'aster-iris')
   assert.ok(installed, 'Iris must already be installed in this Studio session')
   receipt.packageId = installed.packageId
   receipt.generation = installed.generation
   const opened = await call('POST', '/api/aix/views/sessions', {
     protocolVersion: 3, requestId: id(), activationId: id(), instanceId: id(),
-    expiresAt: Date.now() + 30_000, slug: 'a3s-iris', surface: 'workbench', revision: installed.revision
+    expiresAt: Date.now() + 30_000, slug: 'aster-iris', surface: 'workbench', revision: installed.revision
   })
   assert.equal(opened.status, 200)
   view = opened.body

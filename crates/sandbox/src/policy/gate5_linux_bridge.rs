@@ -34,7 +34,7 @@ fn gate5_linux_mediated_http_and_socks_are_claimed_unix_allowlists_are_not() {
 
 #[test]
 fn gate5_linux_mediated_http_policy_compiles_on_linux_capabilities() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "example.com".into(),
@@ -66,7 +66,7 @@ fn gate5_linux_bridge_residual_checklist_is_documented() {
         "mediated_socks requires a SOCKS relay path (not yet claimed)",
         "unix-socket allowlists (if claimed) cannot reach host docker.sock",
         "missing bwrap/userns still fails closed (no host fallback)",
-        "A3S_SANDBOX_RELAY / sibling a3s-sandbox-relay staged into scratch for guest exec",
+        "ASTER_SANDBOX_RELAY / sibling aster-sandbox-relay staged into scratch for guest exec",
     ];
     assert_eq!(residual.len(), 4);
     for item in residual {

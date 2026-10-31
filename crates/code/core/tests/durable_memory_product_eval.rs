@@ -1,16 +1,16 @@
 #![allow(deprecated)]
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::host_env::{FixedClock, HostEnv, SequentialIdGenerator};
-use a3s_code_core::memory::MemoryConfig;
-use a3s_code_core::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::host_env::{FixedClock, HostEnv, SequentialIdGenerator};
+use aster_core::memory::MemoryConfig;
+use aster_core::{
     Agent, DurableMemoryRecallPolicy, DurableMemorySession, PlanningMode, SessionOptions,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet,
     MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryQuery, MemoryRelation,
     MemoryRelationKind, MemoryRepository, MemoryStatus,
 };
-use a3s_memory::{InMemoryStore, MemoryItem, MemoryStore, MemoryType};
+use aster_durable_memory::{InMemoryStore, MemoryItem, MemoryStore, MemoryType};
 use chrono::{TimeZone, Utc};
 use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 use serde::{Deserialize, Serialize};
@@ -193,6 +193,7 @@ fn offline_config(llm_extraction: bool) -> CodeConfig {
     CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,
@@ -251,7 +252,7 @@ fn fixture_evidence(node: &NodeFixture) -> EvidenceRef {
         status => panic!("unsupported product fixture status: {status:?}"),
     };
     EvidenceRef::try_new(
-        format!("a3s://fixture/durable-memory-product-v1/{}", node.id),
+        format!("aster://fixture/durable-memory-product-v1/{}", node.id),
         format!("sha256:{:x}", Sha256::digest(node.content.as_bytes())),
         kind,
         fixture_time(),
@@ -583,7 +584,7 @@ async fn run_capture_evaluation(
     assert!(!extraction_prompt.contains("fixture-secret-value-1234"));
     let (prompt, response, transcript) = extraction_evidence_fields(&extraction_prompt);
     let payload = TurnEvidencePayload {
-        schema: "a3s.code.memory.turn-evidence.v1",
+        schema: "aster.code.memory.turn-evidence.v1",
         session_id: &fixture.session_id,
         prompt: &prompt,
         response: &response,
@@ -736,7 +737,7 @@ async fn durable_memory_product_evaluation_v1() {
         v2,
     };
     println!(
-        "A3S_DURABLE_MEMORY_PRODUCT_EVAL={}",
+        "ASTER_DURABLE_MEMORY_PRODUCT_EVAL={}",
         serde_json::to_string(&report).expect("serialize product report")
     );
 }

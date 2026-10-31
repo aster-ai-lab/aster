@@ -1,10 +1,10 @@
 //! Persistent storage for network configurations.
 //!
-//! Networks are stored as JSON in `~/.a3s/networks.json` with atomic writes
+//! Networks are stored as JSON in `~/.aster/networks.json` with atomic writes
 //! (write to tmp file, then rename) to prevent corruption.
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::network::NetworkConfig;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::network::NetworkConfig;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
@@ -27,9 +27,9 @@ impl NetworkStore {
         Self { path: path.into() }
     }
 
-    /// Create a store at the default location (`~/.a3s/networks.json`).
+    /// Create a store at the default location (`~/.aster/networks.json`).
     pub fn default_path() -> Result<Self> {
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         Ok(Self::new(home.join("networks.json")))
     }
 
@@ -211,7 +211,7 @@ impl NetworkStore {
     }
 }
 
-impl a3s_box_core::traits::NetworkStoreBackend for NetworkStore {
+impl aster_box_core::traits::NetworkStoreBackend for NetworkStore {
     fn get(&self, name: &str) -> Result<Option<NetworkConfig>> {
         self.get(name)
     }

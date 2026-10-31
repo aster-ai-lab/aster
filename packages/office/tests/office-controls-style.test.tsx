@@ -22,7 +22,7 @@ beforeEach(() => {
   style = document.createElement('style');
   style.textContent = [
     readFileSync(new URL('../../ui/src/styles/tokens/spec-roles.css', import.meta.url), 'utf8'),
-    readFileSync(new URL('../src/styles/tokens.css', import.meta.url), 'utf8').replace('@import "@a3s-lab/ui/styles/spec-roles.css";', ''),
+    readFileSync(new URL('../src/styles/tokens.css', import.meta.url), 'utf8').replace('@import "@aster-ai-lab/ui/styles/spec-roles.css";', ''),
     readFileSync(new URL('../../ui/src/styles/search-select.css', import.meta.url), 'utf8'),
     readFileSync(new URL('../src/styles/design-system.css', import.meta.url), 'utf8'),
     readFileSync(new URL('../src/styles/design-system-forms.css', import.meta.url), 'utf8'),
@@ -55,7 +55,7 @@ async function mountControls(content: ReactNode) {
   const host = document.createElement('div');
   document.body.append(host);
   root = createRoot(host);
-  await act(async () => root!.render(<OfficeSurface style={{ '--font-family': 'Workspace UI', '--a3s-ink': '#123456' } as CSSProperties}>
+  await act(async () => root!.render(<OfficeSurface style={{ '--font-family': 'Workspace UI', '--aster-ink': '#123456' } as CSSProperties}>
     {content}
   </OfficeSurface>));
 }
@@ -63,7 +63,7 @@ async function mountControls(content: ReactNode) {
 describe('Office shared design roles', () => {
   it('keeps picker corners when Office styles also apply outside the Office surface', async () => {
     const trigger = await mount();
-    document.querySelector('.a3s-office')!.classList.remove('a3s-office');
+    document.querySelector('.aster-office')!.classList.remove('aster-office');
     expect(getComputedStyle(trigger).borderRadius).toBe('8px');
     await act(async () => trigger.click());
     expect(getComputedStyle(document.querySelector('.ui-search-select__panel')!).borderRadius).toBe('12px');
@@ -168,12 +168,12 @@ describe('Office shared design roles', () => {
     expect(controlStyle.fontFamily).toContain('Workspace UI');
     await act(async () => trigger.click());
     const panel = document.querySelector<HTMLElement>('.ui-search-select__panel')!;
-    expect(panel.closest('.a3s-office-floating-root') !== null).toBe(true);
+    expect(panel.closest('.aster-office-floating-root') !== null).toBe(true);
     expect(getComputedStyle(panel).borderRadius).toBe('12px');
     expect(getComputedStyle(panel).color).toBe('#123456');
     expect(getComputedStyle(panel).fontFamily).toContain('Workspace UI');
     expect(getComputedStyle(panel.querySelector('button')!).minHeight).toBe('32px');
-    expect((panel.closest('.a3s-office-floating-root') as HTMLElement).style.getPropertyValue('--a3s-panel')).toBe('');
+    expect((panel.closest('.aster-office-floating-root') as HTMLElement).style.getPropertyValue('--aster-panel')).toBe('');
   });
 
   it('keeps PDF controls and page selection on the shared roles', async () => {

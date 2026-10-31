@@ -17,13 +17,13 @@ def prompt_digest(prompt):
     ):
         return None
     text = "\n".join(block["text"] for block in prompt)
-    material = b"a3s.test.tui-prompt.v1\0" + text.encode("utf-8")
+    material = b"aster.test.tui-prompt.v1\0" + text.encode("utf-8")
     return "sha256:" + hashlib.sha256(material).hexdigest()
 
 
 def main():
-    binary = os.environ["A3S_CODE_TUI_TEST_ACP_REAL"]
-    path = os.environ["A3S_CODE_TUI_TEST_ACP_TRACE"]
+    binary = os.environ["ASTER_TUI_TEST_ACP_REAL"]
+    path = os.environ["ASTER_TUI_TEST_ACP_TRACE"]
     fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
     trace = os.fdopen(fd, "w", buffering=1)
     sequence = 0
@@ -44,7 +44,7 @@ def main():
             retain({"kind": "session-update", "session_id": params.get("sessionId"),
                     "prompt_id": params.get("_meta", {}).get("promptId"),
                     "update": params.get("update", {}).get("sessionUpdate")})
-        elif source == "agent" and method == "_a3s/queue/changed":
+        elif source == "agent" and method == "_aster/queue/changed":
             params = packet["params"]
             retain({"kind": "queue-changed", "session_id": params.get("sessionId"),
                     "running_prompt_id": params.get("runningPromptId")})

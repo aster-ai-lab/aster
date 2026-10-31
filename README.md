@@ -72,7 +72,7 @@ curl -fsSL https://raw.githubusercontent.com/aster-ai-lab/aster/main/scripts/ins
 Windows 使用 [install.ps1](https://github.com/aster-ai-lab/aster/blob/main/scripts/install.ps1)，并传入 `-Version 0.1.4`。
 
 > [!IMPORTANT]
-> 发布包由 `aster` 与 `a3s-code-acp` 组成，请始终将两个程序放在同一目录并成对更新。Windows 对应两个 `.exe` 文件。CLI 默认启动同目录的 ACP 伴随进程，需要指定其他位置时可设置 `A3S_ACP_AGENT_BIN`。
+> 发布包由 `aster` 与 `aster-acp` 组成，请始终将两个程序放在同一目录并成对更新。Windows 对应两个 `.exe` 文件。CLI 默认启动同目录的 ACP 伴随进程，需要指定其他位置时可设置 `ASTER_ACP_AGENT_BIN`。
 
 Linux 归档分为两个 glibc 世代：
 
@@ -83,7 +83,7 @@ Linux 归档分为两个 glibc 世代：
 
 ### 2. 配置模型
 
-创建或编辑 `~/.a3s/config.acl`。以下示例使用 OpenAI 兼容接口，
+创建或编辑 `~/.aster/config.acl`。以下示例使用 OpenAI 兼容接口，
 请把接口地址和 `your-model` 替换为服务实际提供的值：
 
 ```acl
@@ -97,7 +97,7 @@ providers "openai" {
 ```
 
 密钥通过环境变量提供。更多配置见 [ACL 示例](crates/code/agent.example.acl)。
-`A3S_CONFIG` 可以指定其他配置文件，终端内的 `/config` 用于管理模型配置。
+`ASTER_CONFIG` 可以指定其他配置文件，终端内的 `/config` 用于管理模型配置。
 
 ### 3. 启动项目
 
@@ -114,7 +114,7 @@ Windows PowerShell：
 
 ```powershell
 $env:OPENAI_API_KEY = "你的 API 密钥"
-$env:A3S_CONFIG = Join-Path $HOME '.a3s/config.acl'
+$env:ASTER_CONFIG = Join-Path $HOME '.aster/config.acl'
 .\aster.exe --cwd C:\path\to\project
 ```
 
@@ -128,7 +128,7 @@ $env:A3S_CONFIG = Join-Path $HOME '.a3s/config.acl'
 aster update
 ```
 
-更新通道会从仓库 manifest（`latest.json`）发现版本，校验归档摘要，再原子安装成对的 `aster` 与 `a3s-code-acp`。
+更新通道会从仓库 manifest（`latest.json`）发现版本，校验归档摘要，再原子安装成对的 `aster` 与 `aster-acp`。
 
 - `aster update --check`：只检查可用版本，不修改安装。
 - `aster update --version X.Y.Z`：安装指定版本。
@@ -137,7 +137,7 @@ aster update
 
 ### 卸载
 
-删除 `aster` 与 `a3s-code-acp` 两个程序即可。`~/.a3s` 中的本地配置与数据可保留。
+删除 `aster` 与 `aster-acp` 两个程序即可。`~/.aster` 中的本地配置与数据可保留。
 
 ## 运行机制
 

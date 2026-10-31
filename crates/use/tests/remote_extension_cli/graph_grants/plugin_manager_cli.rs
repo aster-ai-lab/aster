@@ -296,7 +296,7 @@ fn plugin_command(home: &std::path::Path, args: &[&str]) -> Output {
     }
     command
         .arg("--json")
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap()
 }
@@ -331,7 +331,7 @@ fn plan_identity(plan: &serde_json::Value) -> (String, String) {
 fn extension_routes(home: &std::path::Path) -> Vec<String> {
     let snapshot = Command::new(binary())
         .args(["extension", "snapshot", "--json"])
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap();
     assert!(snapshot.status.success(), "{snapshot:?}");

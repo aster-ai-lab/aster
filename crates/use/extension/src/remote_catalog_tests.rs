@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-use a3s_use_core::{
+use aster_use_core::{
     CatalogAvailability, CatalogSurface, PackageSurfaceKind, PluginCatalogRecord,
     PluginPackageLockHost, PluginReleaseChannel,
 };
@@ -187,7 +187,7 @@ async fn signed_presentation_descriptor_and_media_are_verified_and_cached() {
                 "package/presentation-index-v1.json",
                 index,
                 serde_json::json!({
-                    "a3sPackagePresentationIndex": {
+                    "asterPackagePresentationIndex": {
                         "schema": PACKAGE_PRESENTATION_INDEX_SCHEMA
                     }
                 }),
@@ -274,7 +274,7 @@ async fn presentation_index_rejects_a_digest_not_bound_to_the_catalog_record() {
                 "package/presentation-index-v1.json",
                 serde_json::to_vec(&index).unwrap(),
                 serde_json::json!({
-                    "a3sPackagePresentationIndex": {
+                    "asterPackagePresentationIndex": {
                         "schema": PACKAGE_PRESENTATION_INDEX_SCHEMA
                     }
                 }),

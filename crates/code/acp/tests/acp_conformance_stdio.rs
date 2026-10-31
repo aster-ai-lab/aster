@@ -1,12 +1,12 @@
 #![cfg(test)]
 #![cfg(unix)]
 
-//! ACP-CONF1: ACP v1 conformance of the shipped `a3s-code-acp` binary.
+//! ACP-CONF1: ACP v1 conformance of the shipped `aster-acp` binary.
 //!
 //! Each case drives a fresh agent over stdio with raw JSON-RPC lines, not
 //! through the Rust SDK's types, against a scripted local model. The runner
 //! records every case against the ACP v1 requirement it checks, prints a
-//! Markdown report, writes it to `A3S_ACP_CONFORMANCE_REPORT` when that is
+//! Markdown report, writes it to `ASTER_ACP_CONFORMANCE_REPORT` when that is
 //! set, and fails if any case fails.
 //!
 //! On macOS declaration-only OCI companions let rejected Bash calls reach
@@ -276,7 +276,7 @@ impl Fixture {
                 "not an executable backend",
             )
             .expect("declaration-only Bash");
-            for name in ["a3s-oci", "a3s-oci-krun-shim"] {
+            for name in ["aster-oci", "aster-oci-krun-shim"] {
                 let path = assets.join(name);
                 std::fs::write(
                     &path,
@@ -299,7 +299,7 @@ impl Fixture {
     }
 
     fn no_companion_started(&self) -> Outcome {
-        for name in ["a3s-oci", "a3s-oci-krun-shim"] {
+        for name in ["aster-oci", "aster-oci-krun-shim"] {
             if self
                 .tmp
                 .join("permission-assets")
@@ -326,7 +326,7 @@ struct Wire {
 impl Wire {
     fn launch(fixture: &Fixture) -> Self {
         let binary = candidate::Candidate::acp_binary(
-            env!("CARGO_BIN_EXE_a3s-code-acp"),
+            env!("CARGO_BIN_EXE_aster-acp"),
             env!("ASTER_PAIR_BUILD_ID"),
         );
         let mut command = tokio::process::Command::new(binary);
@@ -336,11 +336,11 @@ impl Wire {
         let mut child = command
             .arg("--cwd")
             .arg(&fixture.workspace)
-            .env("A3S_CONFIG", &fixture.config)
-            .env("A3S_STATE_HOME", &fixture.state)
-            .env("A3S_DISABLE_CC_SWITCH", "1")
-            .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-            .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+            .env("ASTER_CONFIG", &fixture.config)
+            .env("ASTER_STATE_HOME", &fixture.state)
+            .env("ASTER_DISABLE_CC_SWITCH", "1")
+            .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+            .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
             .env("XAI_API_KEY", "sk-dummy-not-a-model")
             .env("HOME", &fixture.home)
             .env("GROK_HOME", fixture.home.join("grok"))
@@ -350,7 +350,7 @@ impl Wire {
             .stderr(Stdio::null())
             .kill_on_drop(true)
             .spawn()
-            .expect("spawn a3s-code-acp");
+            .expect("spawn aster-acp");
         let input = child.stdin.take().expect("stdin");
         let output = BufReader::new(child.stdout.take().expect("stdout")).lines();
         Self {
@@ -756,7 +756,7 @@ async fn subagent_cancel(wire: &mut Wire, fixture: &Fixture, model: &Model) -> O
     .map_err(|_| "child did not enter the model".to_string())?;
     let foreign = wire
         .call(
-            "_a3s/subagent/cancel",
+            "_aster/subagent/cancel",
             json!({"sessionId":"foreign","subagentId":child}),
         )
         .await?;
@@ -766,7 +766,7 @@ async fn subagent_cancel(wire: &mut Wire, fixture: &Fixture, model: &Model) -> O
     );
     let stopped = wire
         .call(
-            "_a3s/subagent/cancel",
+            "_aster/subagent/cancel",
             json!({"sessionId":session,"subagentId":child}),
         )
         .await?;
@@ -779,7 +779,7 @@ async fn subagent_cancel(wire: &mut Wire, fixture: &Fixture, model: &Model) -> O
     ensure!(
         wire.seen[start..].iter().any(|v| {
             v["params"]["update"]["sessionUpdate"] == "subagent_finished"
-            && v["params"]["update"]["status"] == "stopped"
+                && v["params"]["update"]["status"] == "stopped"
         }),
         "no observed child cancellation"
     );
@@ -1004,7 +1004,7 @@ async fn load_replays_history(wire: &mut Wire, fixture: &Fixture) -> Outcome {
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn acp_v1_conformance() {
-    let filter = std::env::var("A3S_ACP_CONFORMANCE_CASE").ok();
+    let filter = std::env::var("ASTER_ACP_CONFORMANCE_CASE").ok();
     let cases = selected_cases(filter.as_deref()).expect("known exact conformance case required");
     let model = spawn_model();
     let mut rows = Vec::new();
@@ -1021,14 +1021,14 @@ async fn acp_v1_conformance() {
         rows.push(format!("| `{id}` | {requirement} | {cell} |"));
     }
     let report = format!(
-        "# a3s-code-acp {} ACP v1 conformance\n\n{} of {} cases pass. Client: raw JSON-RPC over stdio (`acp/tests/acp_conformance_stdio.rs`), scripted local model.\n\n| Case | ACP v1 requirement | Result |\n|---|---|---|\n{}\n",
+        "# aster-acp {} ACP v1 conformance\n\n{} of {} cases pass. Client: raw JSON-RPC over stdio (`acp/tests/acp_conformance_stdio.rs`), scripted local model.\n\n| Case | ACP v1 requirement | Result |\n|---|---|---|\n{}\n",
         env!("CARGO_PKG_VERSION"),
         cases.len() - failed.len(),
         cases.len(),
         rows.join("\n")
     );
     println!("{report}");
-    if let Some(path) = std::env::var_os("A3S_ACP_CONFORMANCE_REPORT") {
+    if let Some(path) = std::env::var_os("ASTER_ACP_CONFORMANCE_REPORT") {
         let path = PathBuf::from(path);
         if let Some(parent) = path.parent() {
             std::fs::create_dir_all(parent).expect("report dir");
@@ -1082,6 +1082,6 @@ fn activation_oracle_detects_a_started_companion_without_launching_one() {
     assert!(fixture.no_companion_started().is_ok());
     let assets = fixture.tmp.join("permission-assets");
     std::fs::create_dir_all(&assets).unwrap();
-    std::fs::write(assets.join("a3s-oci.started"), "activation control").unwrap();
+    std::fs::write(assets.join("aster-oci.started"), "activation control").unwrap();
     assert!(fixture.no_companion_started().is_err());
 }

@@ -6,7 +6,7 @@ use std::time::Duration;
 use serde::Deserialize;
 use tracing::{info, warn};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::pool::browser_error;
 

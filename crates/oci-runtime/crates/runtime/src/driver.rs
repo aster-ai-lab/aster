@@ -1,7 +1,7 @@
-use a3s_oci_agent_protocol::AgentInheritedDescriptorSchema;
-use a3s_oci_core::DriverCapability;
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources, Process};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentInheritedDescriptorSchema;
+use aster_oci_core::DriverCapability;
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources, Process};
+use aster_oci_sdk::{
     async_trait, AttachmentCapabilities, CheckpointArtifactPath, CheckpointCompatibility,
     CheckpointDigest, CheckpointReference, ContainerRecord, ContainerStats, ContainerTarget,
     CreateAttachments, DeleteMode, Error, ErrorCode, ExitStatus, FileRequest, FileResponse,
@@ -25,7 +25,7 @@ pub enum DriverCreateAttachments {
     /// Normal SDK or guest-protocol create with no inherited descriptors.
     #[default]
     None,
-    /// A3S Box exec listener, PTY listener, and dedicated init log.
+    /// Aster Box exec listener, PTY listener, and dedicated init log.
     #[cfg(target_os = "linux")]
     NativeControl(crate::NativeControlDescriptors),
 }
@@ -37,7 +37,7 @@ impl DriverCreateAttachments {
         match self {
             Self::None => None,
             #[cfg(target_os = "linux")]
-            Self::NativeControl(_) => Some(AgentInheritedDescriptorSchema::a3s_box_control_v1()),
+            Self::NativeControl(_) => Some(AgentInheritedDescriptorSchema::aster_box_control_v1()),
         }
     }
 

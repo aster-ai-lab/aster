@@ -1,17 +1,17 @@
 use std::collections::BTreeMap;
 
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     IsolationLevel, RuntimeHostService, RuntimeMount, RuntimeObservation, RuntimeServiceLifecycle,
     RuntimeUnitSpec, SecretReference,
 };
-use a3s_use_core::{
+use aster_use_core::{
     PackageSurfaceKind, PlanEnforcementProfile, PlanQualifiedSurfaceRef, PlanScope,
     PlannedProviderEvidence, PluginSurfaceRef, UseError, UseResult,
 };
 use serde::{Deserialize, Serialize};
 
-pub const RUNTIME_SERVICE_BINDING_SCHEMA: &str = "a3s.use.runtime-service-binding.v3";
-pub const RUNTIME_TASK_BINDING_SCHEMA: &str = "a3s.use.runtime-task-binding.v4";
+pub const RUNTIME_SERVICE_BINDING_SCHEMA: &str = "aster.use.runtime-service-binding.v3";
+pub const RUNTIME_TASK_BINDING_SCHEMA: &str = "aster.use.runtime-task-binding.v4";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeSurfaceContext {
@@ -103,7 +103,7 @@ impl RuntimeSurfaceContext {
         ) || !valid_surface_segment(&self.surface.id)
         {
             return Err(runtime_input_error(
-                "Only named Tool and MCP surfaces can be mapped to A3S Runtime.",
+                "Only named Tool and MCP surfaces can be mapped to Aster Runtime.",
             ));
         }
         if self.generation == 0 {

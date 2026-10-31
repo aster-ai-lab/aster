@@ -36,7 +36,7 @@ export const PROVIDER_ICON_LOADERS = {
   bytedance: () => import('./bytedance').then(({ BytedanceIcon }) => BytedanceIcon),
   cephalon: () => import('./cephalon').then(({ CephalonIcon }) => CephalonIcon),
   cerebras: () => import('./cerebras').then(({ CerebrasIcon }) => CerebrasIcon),
-  a3s: () => import('./a3s').then(({ A3sIcon }) => A3sIcon),
+  aster: () => import('./aster').then(({ AsterIcon }) => AsterIcon),
   'claude-code': () => import('./claude-code').then(({ ClaudeCodeIcon }) => ClaudeCodeIcon),
   cloudflare: () => import('./cloudflare').then(({ CloudflareIcon }) => CloudflareIcon),
   cohere: () => import('./cohere').then(({ CohereIcon }) => CohereIcon),

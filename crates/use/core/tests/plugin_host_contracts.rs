@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     PackageSurfaceKind, PlanActor, PlanAuthority, PlanPackageChangeKind, PlanPackageRole,
     PlanPolicyDecision, PlanScope, PlanScopeKind, PlannedOperationImpact, PlannedPackageTransition,
     PlannedStateEvidence, PlannedWorkspaceImpact, PluginCatalogRecord, PluginDesiredState,
@@ -98,7 +98,7 @@ fn candidate() -> VerifiedPluginCatalogRecord {
         record,
         VerifiedCatalogProvenance {
             registry_name: "official".to_owned(),
-            registry_url: "https://plugins.a3s.dev/catalog".to_owned(),
+            registry_url: "https://plugins.aster.dev/catalog".to_owned(),
             root_sha256: DIGEST_D.to_owned(),
             root_version: 7,
             timestamp_version: 42,
@@ -365,7 +365,7 @@ fn capabilities_freeze_the_single_current_host_contract() {
     capabilities.validate().unwrap();
     assert_eq!(capabilities.schema, PLUGIN_HOST_CAPABILITIES_SCHEMA_V6);
     assert_eq!(capabilities.protocol_level, PLUGIN_HOST_PROTOCOL_LEVEL_V6);
-    assert_eq!(capabilities.catalog_schemas, ["a3s.use.plugin-catalog.v3"]);
+    assert_eq!(capabilities.catalog_schemas, ["aster.use.plugin-catalog.v3"]);
     assert_eq!(capabilities.plan_schemas, [PLUGIN_OPERATION_PLAN_SCHEMA_V4]);
     assert!(capabilities.exclusive_managed_scope_mutation);
     assert_eq!(
@@ -402,7 +402,7 @@ fn capabilities_freeze_the_single_current_host_contract() {
         .any(|schema| schema.contains("host-enablement-request")));
 
     let mut retired = serde_json::to_value(&capabilities).unwrap();
-    retired["schema"] = serde_json::json!("a3s.use.plugin-host-capabilities.v3");
+    retired["schema"] = serde_json::json!("aster.use.plugin-host-capabilities.v3");
     retired["protocolLevel"] = serde_json::json!(3);
     assert!(PluginHostCapabilities::from_json(&serde_json::to_vec(&retired).unwrap()).is_err());
     assert!(PluginHostCapabilities::from_json(RETIRED_HOST_CAPABILITIES_V5).is_err());
@@ -411,7 +411,7 @@ fn capabilities_freeze_the_single_current_host_contract() {
     let mut expanded = capabilities;
     expanded
         .contract_schemas
-        .push("a3s.use.plugin-host-universal-action.v1".to_owned());
+        .push("aster.use.plugin-host-universal-action.v1".to_owned());
     assert!(expanded.validate().is_err());
 }
 

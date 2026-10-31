@@ -1,7 +1,7 @@
-use a3s_use_core::{
+use aster_use_core::{
     OkfKnowledgeObservation, OkfKnowledgeObservedState, OkfProjectionReceipt, UseResult,
 };
-use a3s_use_extension::ExtensionManifest;
+use aster_use_extension::ExtensionManifest;
 
 use crate::plugin_runtime::{RuntimeSurfaceObservationSnapshot, RuntimeSurfaceObservedState};
 

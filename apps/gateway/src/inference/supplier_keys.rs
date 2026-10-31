@@ -1,6 +1,6 @@
 //! Supplier secrets the console stores for the data plane.
 //!
-//! a3s-gateway asks a3s-api for enabled supplier keys and matches each keyed
+//! aster-gateway asks aster-api for enabled supplier keys and matches each keyed
 //! inference target to the supplier with the same service name. The process
 //! environment is not a second source for those keys.
 
@@ -38,7 +38,7 @@ pub(crate) async fn load_supplier_credentials(
     }
     let origin = console_api_origin(config)
         .ok_or_else(|| "Required inference supplier console origin is unavailable".to_string())?;
-    let Some(token) = std::env::var("A3S_GATEWAY_ADMIN_TOKEN")
+    let Some(token) = std::env::var("ASTER_GATEWAY_ADMIN_TOKEN")
         .ok()
         .map(|value| value.trim().to_owned())
         .filter(|value| !value.is_empty())
@@ -63,7 +63,7 @@ pub(crate) async fn load_supplier_credentials(
 }
 
 pub(crate) fn console_api_origin(config: &GatewayConfig) -> Option<String> {
-    let service = config.services.get("a3s-api")?;
+    let service = config.services.get("aster-api")?;
     let url = service
         .load_balancer
         .servers
@@ -285,7 +285,7 @@ mod tests {
                                     priority: 0,
                                     weight: 1,
                                     protocol: InferenceProtocol::Openai,
-                                    api_key_env: Some("A3S_BOYUE_API_KEY".into()),
+                                    api_key_env: Some("ASTER_BOYUE_API_KEY".into()),
                                     translate: false,
                                 },
                                 InferenceTargetConfig {
@@ -295,7 +295,7 @@ mod tests {
                                     priority: 0,
                                     weight: 1,
                                     protocol: InferenceProtocol::Anthropic,
-                                    api_key_env: Some("A3S_OTHER_API_KEY".into()),
+                                    api_key_env: Some("ASTER_OTHER_API_KEY".into()),
                                     translate: false,
                                 },
                             ],

@@ -14,7 +14,7 @@ export const meta = {
 | auto | 已知读取可直接执行，修改仍按风险询问 | 风险判断与 deny 不消失 |
 | yolo | 自动批准相应执行请求 | 显式 deny 和底层授权仍保留 |
 
-客户端通过 session/set_mode 或 `a3s/permission_posture` 修改。后者还能传显式 deny。严格使用闭集值；不能根据按钮文案或模型文字猜 modeId。`a3sTurn.planFirst` 只限制本轮计划行为，不改掉存储的权限模式。
+客户端通过 session/set_mode 或 `aster/permission_posture` 修改。后者还能传显式 deny。严格使用闭集值；不能根据按钮文案或模型文字猜 modeId。`asterTurn.planFirst` 只限制本轮计划行为，不改掉存储的权限模式。
 
 ## 工具确认怎样展示
 
@@ -38,7 +38,7 @@ export const meta = {
 
 业务问题也可能借用 permission 通道，但 `_meta.question` 标记了 allowFreeText、hasChoices；这类请求收集答案，不是授予工具执行权。用户输入应绑定原 question_id。
 
-`a3s/form/request` 是代理发给客户端的扩展请求，用于结构化表单。正常响应包含 values 对象；outcome 为 cancel 或 decline 时视为用户取消。未知字段、空值和校验失败按表单合同处理，不用默认答案替用户提交。
+`aster/form/request` 是代理发给客户端的扩展请求，用于结构化表单。正常响应包含 values 对象；outcome 为 cancel 或 decline 时视为用户取消。未知字段、空值和校验失败按表单合同处理，不用默认答案替用户提交。
 
 客户端应区分三种控件：批准工具、回答业务问题、运行中追加指令。不要因为它们都可能弹出面板，就让“同意”走同一段执行逻辑。
 

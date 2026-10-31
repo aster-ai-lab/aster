@@ -1,4 +1,4 @@
-# A3S Box Runtime - Justfile
+# Aster Box Runtime - Justfile
 # Most commands available via root: just test, just fmt, just lint
 
 default:
@@ -6,12 +6,12 @@ default:
 
 # Run tests (single-threaded for gvproxy)
 test:
-    cargo test -p a3s-box-runtime --lib -- --test-threads=1
+    cargo test -p aster-box-runtime --lib -- --test-threads=1
 
 # Run single test
 test-one TEST:
-    cargo test -p a3s-box-runtime --lib -- --test-threads=1 {{TEST}}
+    cargo test -p aster-box-runtime --lib -- --test-threads=1 {{TEST}}
 
 # Run rootfs module tests
 test-rootfs:
-    cargo test -p a3s-box-runtime --lib rootfs:: -- --test-threads=1 --nocapture
+    cargo test -p aster-box-runtime --lib rootfs:: -- --test-threads=1 --nocapture

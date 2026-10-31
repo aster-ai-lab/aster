@@ -1,7 +1,7 @@
-# A3S Code User and Developer Guide
+# Aster Code User and Developer Guide
 
-This repository delivers the local Rust SDK (`a3s-code-core`) and the
-`a3s-code-acp` companion used by Aster hosts. Members are private workspace
+This repository delivers the local Rust SDK (`aster-core`) and the
+`aster-acp` companion used by Aster hosts. Members are private workspace
 packages. Build from the repository root with its pinned toolchain.
 
 ## 1. Integrate the local Rust SDK
@@ -10,7 +10,7 @@ A Rust host inside `apps/<host>` uses a local path dependency:
 
 ```toml
 [dependencies]
-a3s-code-core = { path = "../../crates/code/core" }
+aster-core = { path = "../../crates/code/core" }
 ```
 
 The public implementation and examples in [Core](../core/src/lib.rs) are the
@@ -39,7 +39,7 @@ a discovered workspace configuration can only narrow that authority.
 ## 3. Create, use and close a session
 
 ```rust,no_run
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::{Agent, SessionOptions};
 
 async fn run() -> anyhow::Result<()> {
     let agent = Agent::new("agent.acl").await?;
@@ -106,7 +106,7 @@ Core defaults to `local-code`. Advanced workflows, S3 and telemetry remain
 explicit features; see [Release Profiles](RELEASE_PROFILES.md).
 
 Standalone ACP defaults to API/HTTP search. Build browser search explicitly with
-`cargo build --locked -p aster -p a3s-code-acp --features a3s-code-acp/headless-search`.
+`cargo build --locked -p aster -p aster-acp --features aster-acp/headless-search`.
 Desktop build/development/package recipes select that capability explicitly.
 Browser preparation starts only when the search cascade uses its browser tier.
 
@@ -115,7 +115,7 @@ with the typed request metadata below; this is protocol metadata, not a product
 configuration file:
 
 ```json
-{"_meta":{"a3sHost":{"officeTools":true}}}
+{"_meta":{"asterHost":{"officeTools":true}}}
 ```
 
 Missing or false does not register native Office tools. Malformed values refuse.
@@ -132,7 +132,7 @@ command receipt, current source identity, required checks and mutation-bound
 verification evidence. Record remaining refusals and model failures separately.
 
 Run focused tests from the root workspace. Build and distribute `aster` and
-`a3s-code-acp` together; Studio recipes also build Office. A test result applies
+`aster-acp` together; Studio recipes also build Office. A test result applies
 to its recorded source and binaries, not later working-tree changes.
 
 ## 8. References

@@ -1,6 +1,6 @@
 //! Security Module
 //!
-//! Provides a trait-based security interface for A3S Code sessions.
+//! Provides a trait-based security interface for Aster Code sessions.
 //! External consumers implement `SecurityProvider` to plug in their own
 //! security logic (sanitization, taint tracking, injection detection, etc.).
 

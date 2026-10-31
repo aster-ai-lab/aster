@@ -4,7 +4,7 @@ use std::os::fd::AsRawFd;
 use std::os::unix::fs::{FileTypeExt, OpenOptionsExt};
 use std::path::Path;
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use super::mount_source::{
     attach_device_mount, clone_device_mount, metadata_for_fd, metadata_for_raw_fd, openat2_beneath,

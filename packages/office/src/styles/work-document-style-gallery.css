@@ -28,8 +28,8 @@
   overflow: hidden;
   border: 1px solid transparent;
   border-radius: 6px;
-  background: var(--a3s-panel);
-  color: var(--a3s-muted);
+  background: var(--aster-panel);
+  color: var(--aster-muted);
   text-align: left;
   cursor: pointer;
 }
@@ -58,7 +58,7 @@
 .work-document-ribbon
   .work-document-style-gallery
   > label[data-document-style="h1"] {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 13px;
   font-weight: 730;
   letter-spacing: -0.02em;
@@ -67,7 +67,7 @@
 .work-document-ribbon
   .work-document-style-gallery
   > label[data-document-style="h2"] {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 12px;
   font-weight: 690;
 }
@@ -75,7 +75,7 @@
 .work-document-ribbon
   .work-document-style-gallery
   > label[data-document-style="h3"] {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
   font-weight: 670;
 }
@@ -83,7 +83,7 @@
 .work-document-ribbon
   .work-document-style-gallery
   > label[data-document-style="h4"] {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
   font-weight: 640;
 }
@@ -94,7 +94,7 @@
 .work-document-ribbon
   .work-document-style-gallery
   > label[data-document-style="h6"] {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 10px;
   font-weight: 620;
 }
@@ -103,21 +103,21 @@
   border-color: color-mix(
     in srgb,
     var(--work-office-accent) 22%,
-    var(--a3s-line)
+    var(--aster-line)
   );
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-document-ribbon .work-document-style-gallery > label.active {
   border-color: color-mix(
     in srgb,
     var(--work-office-accent) 54%,
-    var(--a3s-line)
+    var(--aster-line)
   );
   background: color-mix(
     in srgb,
     var(--work-office-accent) 8%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
   color: var(--work-office-accent);
   box-shadow: inset 0 -2px 0 var(--work-office-accent);

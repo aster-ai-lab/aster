@@ -1,9 +1,9 @@
 //! Read-only ACP observations of the Run admitted by Core's streaming entry point.
 
-use a3s_code_core::{run::RunHandle, AgentEvent};
+use aster_core::{run::RunHandle, AgentEvent};
 use serde::Serialize;
 
-pub(crate) const METHOD: &str = "_a3s/execution/observe";
+pub(crate) const METHOD: &str = "_aster/execution/observe";
 
 pub(crate) struct Binding {
     prompt_id: String,
@@ -12,7 +12,7 @@ pub(crate) struct Binding {
 impl Binding {
     pub(crate) fn from_meta(meta: Option<&agent_client_protocol::Meta>) -> Option<Self> {
         let meta = meta?;
-        if meta.get("a3sExecutionObservation")?.as_u64()? != 1 {
+        if meta.get("asterExecutionObservation")?.as_u64()? != 1 {
             return None;
         }
         let id = meta.get("promptId")?.as_str()?;
@@ -50,7 +50,7 @@ pub(crate) struct Observation {
     sequence: u64,
     kind: Kind,
     turn: Option<usize>,
-    status: Option<a3s_code_core::run::RunStatus>,
+    status: Option<aster_core::run::RunStatus>,
 }
 
 pub(crate) struct Observer {
@@ -76,7 +76,7 @@ impl Observer {
         &mut self,
         kind: Kind,
         turn: Option<usize>,
-        status: Option<a3s_code_core::run::RunStatus>,
+        status: Option<aster_core::run::RunStatus>,
     ) -> Option<Observation> {
         self.sequence = self.sequence.checked_add(1)?;
         Some(Observation {

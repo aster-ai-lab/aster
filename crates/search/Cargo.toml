@@ -1,24 +1,24 @@
 [package]
-name = "a3s-search"
+name = "aster-search"
 version = "3.4.0"
-repository = "https://github.com/A3S-Lab/Search"
+repository = "https://github.com/aster-ai-lab/Search"
 description = "Embeddable metasearch library and CLI with browser, HTTP/RSS, and native API sources"
 edition = "2021"
 license = "MIT"
-authors = ["A3S Lab Team"]
+authors = ["Aster Team"]
 publish = false
 
 [[bin]]
-name = "a3s-search"
+name = "aster-search"
 path = "src/main.rs"
 
 [features]
 default = ["headless"]
-headless = ["dep:a3s-use-browser"]
+headless = ["dep:aster-use-browser"]
 # Named alias for hosts that select the default Moli renderer explicitly.
 moli = ["headless"]
 # Optional Lightpanda backend (native Linux/macOS; WSL2 only on Windows).
-lightpanda = ["headless", "a3s-use-browser/lightpanda"]
+lightpanda = ["headless", "aster-use-browser/lightpanda"]
 
 [dependencies]
 # Async runtime
@@ -56,7 +56,7 @@ base64 = {workspace = true}
 # Configuration file parsing
 
 # Shared typed rendering contracts plus the explicit Chrome/Lightpanda backends
-# are supplied by the independent A3S Browser repository. The default Moli
+# are supplied by the independent Aster Browser repository. The default Moli
 # adapter invokes Moli's standalone CLI through the same PageRenderer contract.
 
 # Self-update
@@ -74,8 +74,8 @@ anyhow = {version = "1.0"}
 tracing = {workspace = true}
 async-trait = {workspace = true}
 futures = {workspace = true}
-a3s-use-browser = {optional = true, path = "../browser"}
-a3s-acl = {path = "../acl"}
+aster-use-browser = {optional = true, path = "../browser"}
+aster-acl = {path = "../acl"}
 
 [dev-dependencies]
 tempfile = {workspace = true}
@@ -83,7 +83,7 @@ tempfile = {workspace = true}
 # =============================================================================
 # Release Profile — optimized for binary size
 # =============================================================================
-# a3s-search is a CLI/library with optional A3S Browser rendering.
+# aster-search is a CLI/library with optional Aster Browser rendering.
 # I/O-bound workload — optimize for size over speed.
 #
 tokio-test = {version = "0.4"}

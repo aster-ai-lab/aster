@@ -121,7 +121,7 @@ impl ApiCookieAuthArgs {
             .unwrap_or_else(|| LitStr::new("cookieAuth", proc_macro2::Span::call_site()));
         Ok(api_key_auth_tokens(
             &scheme,
-            quote!(::a3s_boot::OpenApiApiKeyLocation::Cookie),
+            quote!(::aster_boot::OpenApiApiKeyLocation::Cookie),
             &name,
             self.description.as_ref(),
         ))
@@ -180,9 +180,9 @@ impl ApiKeyAuthArgs {
             .clone()
             .unwrap_or_else(|| LitStr::new("apiKeyAuth", proc_macro2::Span::call_site()));
         let location = match self.location.as_ref().map(LitStr::value).as_deref() {
-            None | Some("header") => quote!(::a3s_boot::OpenApiApiKeyLocation::Header),
-            Some("query") => quote!(::a3s_boot::OpenApiApiKeyLocation::Query),
-            Some("cookie") => quote!(::a3s_boot::OpenApiApiKeyLocation::Cookie),
+            None | Some("header") => quote!(::aster_boot::OpenApiApiKeyLocation::Header),
+            Some("query") => quote!(::aster_boot::OpenApiApiKeyLocation::Query),
+            Some("cookie") => quote!(::aster_boot::OpenApiApiKeyLocation::Cookie),
             Some(_) => {
                 return Err(syn::Error::new_spanned(
                     self.location.as_ref().expect("checked above"),
@@ -265,7 +265,7 @@ impl OAuth2AuthArgs {
             self.refresh_url.as_ref(),
             &flow_scopes,
         )?;
-        let mut security_scheme = quote!(::a3s_boot::OpenApiSecurityScheme::oauth2(#flow));
+        let mut security_scheme = quote!(::aster_boot::OpenApiSecurityScheme::oauth2(#flow));
 
         if let Some(description) = &self.description {
             security_scheme = quote!((#security_scheme).with_description(#description));
@@ -413,36 +413,36 @@ impl OAuth2FlowKind {
                 let authorization_url = authorization_url.expect("validated during parsing");
                 let flow = with_refresh_url(
                     quote! {
-                        ::a3s_boot::OpenApiOAuthFlow::implicit(#authorization_url, [#(#scopes),*])
+                        ::aster_boot::OpenApiOAuthFlow::implicit(#authorization_url, [#(#scopes),*])
                     },
                     refresh_url,
                 );
                 quote! {
-                    ::a3s_boot::OpenApiOAuthFlows::new().with_implicit(#flow)
+                    ::aster_boot::OpenApiOAuthFlows::new().with_implicit(#flow)
                 }
             }
             Self::Password => {
                 let token_url = token_url.expect("validated during parsing");
                 let flow = with_refresh_url(
                     quote! {
-                        ::a3s_boot::OpenApiOAuthFlow::password(#token_url, [#(#scopes),*])
+                        ::aster_boot::OpenApiOAuthFlow::password(#token_url, [#(#scopes),*])
                     },
                     refresh_url,
                 );
                 quote! {
-                    ::a3s_boot::OpenApiOAuthFlows::new().with_password(#flow)
+                    ::aster_boot::OpenApiOAuthFlows::new().with_password(#flow)
                 }
             }
             Self::ClientCredentials => {
                 let token_url = token_url.expect("validated during parsing");
                 let flow = with_refresh_url(
                     quote! {
-                        ::a3s_boot::OpenApiOAuthFlow::client_credentials(#token_url, [#(#scopes),*])
+                        ::aster_boot::OpenApiOAuthFlow::client_credentials(#token_url, [#(#scopes),*])
                     },
                     refresh_url,
                 );
                 quote! {
-                    ::a3s_boot::OpenApiOAuthFlows::new().with_client_credentials(#flow)
+                    ::aster_boot::OpenApiOAuthFlows::new().with_client_credentials(#flow)
                 }
             }
             Self::AuthorizationCode => {
@@ -450,7 +450,7 @@ impl OAuth2FlowKind {
                 let token_url = token_url.expect("validated during parsing");
                 let flow = with_refresh_url(
                     quote! {
-                        ::a3s_boot::OpenApiOAuthFlow::authorization_code(
+                        ::aster_boot::OpenApiOAuthFlow::authorization_code(
                             #authorization_url,
                             #token_url,
                             [#(#scopes),*],
@@ -459,7 +459,7 @@ impl OAuth2FlowKind {
                     refresh_url,
                 );
                 quote! {
-                    ::a3s_boot::OpenApiOAuthFlows::new().with_authorization_code(#flow)
+                    ::aster_boot::OpenApiOAuthFlows::new().with_authorization_code(#flow)
                 }
             }
         })
@@ -483,7 +483,7 @@ impl OpenIdConnectAuthArgs {
             .iter()
             .map(|scope| quote!(#scope.to_string()))
             .collect::<Vec<_>>();
-        let mut security_scheme = quote!(::a3s_boot::OpenApiSecurityScheme::open_id_connect(#url));
+        let mut security_scheme = quote!(::aster_boot::OpenApiSecurityScheme::open_id_connect(#url));
 
         if let Some(description) = &self.description {
             security_scheme = quote!((#security_scheme).with_description(#description));
@@ -583,7 +583,7 @@ fn api_key_auth_tokens(
     description: Option<&LitStr>,
 ) -> proc_macro2::TokenStream {
     let mut security_scheme = quote! {
-        ::a3s_boot::OpenApiSecurityScheme::api_key(#location, #name)
+        ::aster_boot::OpenApiSecurityScheme::api_key(#location, #name)
     };
 
     if let Some(description) = description {

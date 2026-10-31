@@ -1,4 +1,4 @@
-import { SearchSelect } from '@a3s-lab/ui/components/console/SearchSelect';
+import { SearchSelect } from '@aster-ai-lab/ui/components/console/SearchSelect';
 import { type CSSProperties, use } from 'react';
 import { OfficeControlSizeContext } from '../../../design-system/primitives/form/control-size';
 import { officeFloatingPortalRoot } from '../../../design-system/primitives/overlay/portal-root';

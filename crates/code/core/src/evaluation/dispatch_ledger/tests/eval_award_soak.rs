@@ -13,7 +13,7 @@ const REQUEST_DIGEST: &str =
 #[ignore = "S-EV-01 soak: 20 dispatch claims restarted before award"]
 async fn soak_restarted_dispatch_awards_once() {
     let root = tempfile::tempdir().unwrap();
-    let canonical = identity("a3s.test.dispatch-soak");
+    let canonical = identity("aster.test.dispatch-soak");
     let awarded = receipt(canonical.clone());
     let mut other = awarded.clone();
     other.result_digest =

@@ -3,8 +3,8 @@ use super::{HarnessEvidenceError, ModelInputSnapshotV1};
 use crate::llm::TokenUsage;
 use serde::{Deserialize, Serialize};
 
-pub const MODEL_USAGE_SNAPSHOT_V1_SCHEMA: &str = "a3s.code.model-usage-snapshot.v1";
-const MODEL_USAGE_SNAPSHOT_DOMAIN: &str = "a3s.code.model-usage-snapshot.v1";
+pub const MODEL_USAGE_SNAPSHOT_V1_SCHEMA: &str = "aster.code.model-usage-snapshot.v1";
+const MODEL_USAGE_SNAPSHOT_DOMAIN: &str = "aster.code.model-usage-snapshot.v1";
 
 #[derive(Clone, Debug)]
 pub(crate) struct ModelUsageBinding {

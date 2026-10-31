@@ -5,11 +5,11 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 use std::time::Duration;
 
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::{Agent, BuiltinHostHarnessRegistry, HarnessComposeOptions, SessionOptions};
-use a3s_use_reconcile::{files_sha256, PackageFile, PackageSpec, Payload, SurfaceSpec};
+use aster_core::{Agent, BuiltinHostHarnessRegistry, HarnessComposeOptions, SessionOptions};
+use aster_use_reconcile::{files_sha256, PackageFile, PackageSpec, Payload, SurfaceSpec};
 use tokio::sync::{mpsc, Semaphore};
 
 use super::*;
@@ -102,7 +102,7 @@ async fn cancelled_native_harness_run_stops_descendants_before_releasing_retired
 fn installed() -> (
     tempfile::TempDir,
     ReconcileStore,
-    a3s_use_reconcile::SelectionSnapshot,
+    aster_use_reconcile::SelectionSnapshot,
 ) {
     let root = tempfile::tempdir().unwrap();
     let store = ReconcileStore::open(root.path().join("generations")).unwrap();
@@ -246,9 +246,9 @@ async fn delegated_session(
                     SessionOptions::new()
                         .with_session_id(uuid::Uuid::new_v4().to_string())
                         .with_llm_client(model)
-                        .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+                        .with_planning_mode(aster_core::PlanningMode::Disabled)
                         .with_permission_policy(
-                            a3s_code_core::permissions::PermissionPolicy::new().allow("*"),
+                            aster_core::permissions::PermissionPolicy::new().allow("*"),
                         )
                         .with_harness(
                             HarnessComposeOptions::compose(
@@ -520,7 +520,7 @@ async fn session(root: &std::path::Path, client: Arc<Model>) -> Arc<AgentSession
 async fn session_with_services(
     root: &std::path::Path,
     client: Arc<Model>,
-    services: Option<Arc<a3s_code_core::workspace::WorkspaceServices>>,
+    services: Option<Arc<aster_core::workspace::WorkspaceServices>>,
 ) -> Arc<AgentSession> {
     let config = crate::agent::test_launch(Some(root.join("sessions"))).config;
     let agent = Agent::from_config(config).await.unwrap();
@@ -538,8 +538,8 @@ async fn session_with_services(
     let mut options = SessionOptions::new()
         .with_session_id(uuid::Uuid::new_v4().to_string())
         .with_llm_client(client)
-        .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
-        .with_permission_policy(a3s_code_core::permissions::PermissionPolicy::new().allow("echo"))
+        .with_planning_mode(aster_core::PlanningMode::Disabled)
+        .with_permission_policy(aster_core::permissions::PermissionPolicy::new().allow("echo"))
         .with_harness(
             HarnessComposeOptions::compose(components, None, None, vec!["recipe_marker".into()])
                 .unwrap(),
@@ -558,7 +558,7 @@ async fn session_with_services(
 
 #[tokio::test]
 async fn native_harness_tool_cannot_spawn_when_backend_denies_execute() {
-    use a3s_code_core::workspace::{
+    use aster_core::workspace::{
         WorkspaceCapabilities, WorkspaceServices, WorkspaceServicesBuilder,
     };
     let root = tempfile::tempdir().unwrap();
@@ -623,7 +623,7 @@ async fn native_tool_refuses_unscoped_correct_workspace_before_process_launch() 
         crate::plugin_workspace::WorkspaceBinding::new(root.path()).unwrap(),
     )
     .unwrap();
-    let ctx = a3s_code_core::tools::ToolContext::new(root.path().to_path_buf());
+    let ctx = aster_core::tools::ToolContext::new(root.path().to_path_buf());
     tool.validate_execution_available(&serde_json::json!({}), &ctx)
         .unwrap();
     let output = tool.execute(&serde_json::json!({}), &ctx).await.unwrap();
@@ -711,24 +711,24 @@ async fn native_acp_binding_rejects_cursor_forgery_and_unbound_executable_metada
     let cursor = host.cursor().clone();
     let mut launch = crate::agent::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_owned();
-    let agent = crate::A3sCodeAgent::new(launch).with_plugin_selection(host);
-    let mut request = serde_json::json!({"cwd": root.path(), "mcpServers": [], "_meta": {"a3sPluginSelection": cursor}});
-    request["_meta"]["a3sPluginSelection"]["generation"] = 99.into();
+    let agent = crate::AsterCodeAgent::new(launch).with_plugin_selection(host);
+    let mut request = serde_json::json!({"cwd": root.path(), "mcpServers": [], "_meta": {"asterPluginSelection": cursor}});
+    request["_meta"]["asterPluginSelection"]["generation"] = 99.into();
     assert!(agent_client_protocol::Agent::new_session(
         &agent,
         serde_json::from_value(request.clone()).unwrap()
     )
     .await
     .is_err());
-    request["_meta"]["a3sPluginSelection"] = serde_json::json!(cursor);
-    request["_meta"]["a3sTools"] = serde_json::json!([{"id":"forged", "entry":"/bin/echo"}]);
+    request["_meta"]["asterPluginSelection"] = serde_json::json!(cursor);
+    request["_meta"]["asterTools"] = serde_json::json!([{"id":"forged", "entry":"/bin/echo"}]);
     assert!(agent_client_protocol::Agent::new_session(
         &agent,
         serde_json::from_value(request.clone()).unwrap()
     )
     .await
     .is_err());
-    request["_meta"].as_object_mut().unwrap().remove("a3sTools");
+    request["_meta"].as_object_mut().unwrap().remove("asterTools");
     let opened =
         agent_client_protocol::Agent::new_session(&agent, serde_json::from_value(request).unwrap())
             .await
@@ -792,8 +792,8 @@ async fn native_acp_refuses_foreign_new_and_loaded_workspaces_before_filesystem_
     let cursor = host.cursor().clone();
     let mut launch = crate::agent::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_owned();
-    let agent = crate::A3sCodeAgent::new(launch).with_plugin_selection(host);
-    let request = serde_json::json!({"cwd":foreign.path(), "mcpServers":[], "_meta":{"a3sPluginSelection":cursor}});
+    let agent = crate::AsterCodeAgent::new(launch).with_plugin_selection(host);
+    let request = serde_json::json!({"cwd":foreign.path(), "mcpServers":[], "_meta":{"asterPluginSelection":cursor}});
     let new_error = agent_client_protocol::Agent::new_session(
         &agent,
         serde_json::from_value(request.clone()).unwrap(),
@@ -817,7 +817,7 @@ async fn native_acp_refuses_foreign_new_and_loaded_workspaces_before_filesystem_
         serde_json::to_value(agent_client_protocol::Error::resource_not_found(None)).unwrap(),
         "foreign recovery must preserve the denied/missing not-found contract"
     );
-    assert!(!foreign.path().join(".a3s").exists());
+    assert!(!foreign.path().join(".aster").exists());
     assert!(!root.path().join("sessions").exists());
 }
 
@@ -894,7 +894,7 @@ async fn native_tool_refuses_a_foreign_invocation_workspace_before_process_launc
     let result = tool
         .execute(
             &serde_json::json!({}),
-            &a3s_code_core::tools::ToolContext::new(foreign.path().to_owned()),
+            &aster_core::tools::ToolContext::new(foreign.path().to_owned()),
         )
         .await
         .unwrap();
@@ -912,7 +912,7 @@ async fn selected_skill_link_does_not_collide_with_its_projection_on_session_adm
     let files = vec![PackageFile { path: "SKILL.md".into(), bytes: b"---\nname: review\ndescription: Review documents\n---\nRead the document before reviewing.".to_vec() }];
     let publication = store
         .apply_sync(&PackageSpec {
-            package_id: "a3s/review".into(),
+            package_id: "aster/review".into(),
             surfaces: vec![SurfaceSpec {
                 kind: SurfaceKind::Skill,
                 id: "review".into(),

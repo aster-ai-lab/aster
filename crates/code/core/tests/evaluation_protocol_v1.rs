@@ -1,5 +1,5 @@
 #![cfg(feature = "evaluation")]
-use a3s_code_core::evaluation::{
+use aster_core::evaluation::{
     digest_bytes, AuxiliaryCapabilityProfileV1, AuxiliaryModeV1, AuxiliaryRunOutputV1,
     AuxiliaryRunSnapshotV1, AuxiliaryRunSpecV1, AuxiliaryRunStateV1, EvaluationProtocolError,
     EvaluationRecordV1, EvaluationResultV1, EvaluationWireEnvelopeV1, EvaluationWireKindV1,
@@ -7,7 +7,7 @@ use a3s_code_core::evaluation::{
     EVALUATION_PROTOCOL_MAX_MESSAGE_BYTES, EVALUATION_PROTOCOL_SCHEMA_V1,
     EVALUATION_PROTOCOL_VERSION_V1, EVALUATION_WIRE_KIND_DESCRIPTORS_V1,
 };
-use a3s_code_core::InMemoryRunStore;
+use aster_core::InMemoryRunStore;
 use serde::Deserialize;
 use serde_json::Value;
 use std::sync::Arc;
@@ -29,7 +29,7 @@ struct ManifestKind {
 }
 
 async fn fixture() -> (
-    a3s_code_core::evaluation::EvidenceSnapshotV1,
+    aster_core::evaluation::EvidenceSnapshotV1,
     ExecutionTargetV1,
     AuxiliaryRunSpecV1,
     AuxiliaryRunOutputV1,
@@ -63,13 +63,13 @@ async fn fixture() -> (
     let value = serde_json::json!({"ok": true});
     let encoded = serde_json::to_vec(&value).expect("output encoding");
     let output = AuxiliaryRunOutputV1 {
-        schema: "a3s.code.auxiliary-output.v1".to_string(),
+        schema: "aster.code.auxiliary-output.v1".to_string(),
         value,
         output_bytes: encoded.len() as u64,
-        output_digest: digest_bytes("a3s.code.auxiliary-output.value.v1", &encoded),
+        output_digest: digest_bytes("aster.code.auxiliary-output.value.v1", &encoded),
     };
     let snapshot = AuxiliaryRunSnapshotV1 {
-        schema: "a3s.code.auxiliary-run-snapshot.v1".to_string(),
+        schema: "aster.code.auxiliary-run-snapshot.v1".to_string(),
         id: spec.id.clone(),
         parent: frame,
         mode: spec.mode,

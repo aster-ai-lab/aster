@@ -21,7 +21,7 @@ Box 构建输出到现有 Artifacts publication，再由现有 Assets/Applicatio
 | VI. Local schema | PASS | 必要 schema 只在 Cloud 连续迁移，同步两个版本常量并双适配器证明 |
 | VII. Shrink-only ratchets | PASS | 不增长 allowlist；缺口通过真实 owner wiring 消除 |
 | VIII. Replaceable transports | PASS | Gateway 只读 port；部署 bootstrap 与快照产品意图分离 |
-| IX. One configuration language | PASS | 只用 a3s-acl；无产品配置兼容解析器 |
+| IX. One configuration language | PASS | 只用 aster-acl；无产品配置兼容解析器 |
 | X. Tests/controllers | PASS | 新测试 sibling；HTTP guard/scopes/#[controller] |
 | XI/XII. Understanding/adversarial review | PASS | 对契约、字节来源、隔离与恢复尝试破坏，不以组件证据完成任务 |
 | XIII. One repository | PASS | 仅本树与现有 Cloud 子模块，不创建仓库/外部 checkout |
@@ -68,10 +68,10 @@ apps/cloud”，并引用已退役 apps/work/apps/desktop。按该 skill 指向�
 ## Verification Plan
 
 1. T001 先固定实际 Cloud fixture，证明旧实现失败，再通过 digest/delivery 消费和
-   非法字段/策略测试；根 `cargo test -p a3s-gateway --lib <focused filter>`。
+   非法字段/策略测试；根 `cargo test -p aster-gateway --lib <focused filter>`。
 2. T002 运行只读 authority / 真实 listener 的隔离、损坏、超限、故障、cache/drain。
 3. T003–T005 运行所属 package hermetic + 同一 memory/PG scenario；PG 采用显式
-   `A3S_CLOUD_TEST_POSTGRES_URL`、单线程。不从环境输出凭据。
+   `ASTER_CLOUD_TEST_POSTGRES_URL`、单线程。不从环境输出凭据。
 4. T006 实际 Box/S3/Cloud/Gateway React/Vue 发布与恢复/升级/清理；保留精确命令、
    revision、状态、计数和负控，完整通关前保持目标 active。
 5. T007 focused/architecture tests、各 workspace fmt、依赖/漂移等适用守卫。

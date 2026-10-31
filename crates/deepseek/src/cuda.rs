@@ -3,7 +3,7 @@
 //! Tensor control is a separately requested profile, not an automatic fallback.
 
 #[cfg(any(feature = "cuda", test))]
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use sha2::{Digest, Sha256};
 
 pub mod activation;

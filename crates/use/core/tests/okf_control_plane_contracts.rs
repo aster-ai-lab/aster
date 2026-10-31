@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     OkfBundleContract, OkfCapabilityProjection, OkfKnowledgeObservation, OkfKnowledgeObservedState,
     OkfProjectionReceipt, OkfSelectedGeneration, PackageSurfaceKind, PlanQualifiedSurfaceRef,
     PlanScope, PlanScopeKind, PluginSurfaceRef, OKF_CAPABILITY_PROJECTION_SCHEMA,
@@ -53,7 +53,7 @@ fn receipt() -> OkfProjectionReceipt {
         manifest_digest: DIGEST_B.to_owned(),
         bundle: bundle(),
         projection_id: "knowledge:workspace:research:domain-knowledge:13".to_owned(),
-        index_schema: "a3s.knowledge.okf-index.v1".to_owned(),
+        index_schema: "aster.knowledge.okf-index.v1".to_owned(),
         index_build_id: "knowledge:0.4.0:linux-x86_64".to_owned(),
         staged_at_ms: 1_785_360_100_000,
     }

@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'a3s.data.catalog.v1'
+const STORAGE_KEY = 'aster.data.catalog.v1'
 const EMPTY = { connections: [], sources: [] }
 
 let catalog = readStored()

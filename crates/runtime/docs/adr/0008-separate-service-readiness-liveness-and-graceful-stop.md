@@ -47,7 +47,7 @@ make the immutable release ineffective.
    `HEALTH-LIVENESS-TRANSITION`, `HEALTH-GRACEFUL-STOP`, and
    `HEALTH-GRACE-DEADLINE-FORCE`.
 8. Version the wire change as capabilities v6, unit-spec v4, and observation
-   v4; release it as `a3s-runtime` 0.5.0.
+   v4; release it as `aster-runtime` 0.5.0.
 
 Runtime remains provider-neutral. It does not define application routes,
 restart-count policy, operating-system signals, or a product-specific Agent

@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 /// Host-side file name in the private lifecycle-control share.
 pub const GUEST_DIFF_BASELINE_FILE_NAME: &str = "baseline.json";
 /// Fixed path opened by guest-init before the lifecycle-control share is detached.
-pub const GUEST_DIFF_BASELINE_PATH: &str = "/run/a3s-box/terminal/baseline.json";
+pub const GUEST_DIFF_BASELINE_PATH: &str = "/run/aster-box/terminal/baseline.json";
 /// Versioned schema emitted by guest-init and validated by the host runtime.
-pub const GUEST_DIFF_BASELINE_SCHEMA: &str = "a3s.box.guest-diff-baseline.v1";
+pub const GUEST_DIFF_BASELINE_SCHEMA: &str = "aster.box.guest-diff-baseline.v1";
 /// Bound host memory and disk consumption for one serialized baseline.
 pub const MAX_GUEST_DIFF_BASELINE_BYTES: usize = 64 * 1024 * 1024;
 /// Bound pathological trees independently of their serialized byte size.
@@ -126,7 +126,7 @@ mod tests {
             "/",
             "/usr//bin",
             "/usr/../etc/passwd",
-            "/run/a3s-box/terminal/status.json",
+            "/run/aster-box/terminal/status.json",
         ] {
             let baseline = GuestDiffBaseline::new(BTreeMap::from([(
                 path.to_string(),

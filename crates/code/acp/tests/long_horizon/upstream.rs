@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use a3s_code_core::llm::{
+use aster_core::llm::{
     HttpClient, HttpResponse, LlmClient, LlmConfig, Message, OpenAiClient, StreamingHttpResponse,
 };
 use async_trait::async_trait;

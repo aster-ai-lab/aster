@@ -54,7 +54,7 @@ def verify_staging(root, software_root=None):
         artifacts.append({'file': name, 'bytes': path.stat().st_size, 'sha256': expected})
     power = hashlib.sha256()
     power_bytes = 0
-    with gzip.open(checked_file(software_root, 'a3s-power-glibc235.gz'), 'rb') as source:
+    with gzip.open(checked_file(software_root, 'aster-power-glibc235.gz'), 'rb') as source:
         for block in iter(lambda: source.read(8*1024**2), b''):
             power_bytes += len(block)
             if power_bytes > 128*1024**2:
@@ -141,8 +141,8 @@ def main():
         raise RuntimeError('Xolotl source archive failed the pinned SHA-256 gate')
     subprocess.run(['tar', '--no-same-owner', '--strip-components=1', '-xzf', str(source),
                     '-C', str(ROOT/'source/xolotl')], check=True)
-    power = ROOT/'bin/a3s-power'
-    with gzip.open(STAGING/'a3s-power-glibc235.gz', 'rb') as compressed, power.open('wb') as output:
+    power = ROOT/'bin/aster-power'
+    with gzip.open(STAGING/'aster-power-glibc235.gz', 'rb') as compressed, power.open('wb') as output:
         shutil.copyfileobj(compressed, output)
     if digest(power) != POWER_SHA256:
         raise RuntimeError('Power binary failed the pinned SHA-256 gate')

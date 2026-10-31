@@ -1,5 +1,5 @@
 // Browser proof: the workbench runs in Chromium under Studio's view policy and
-// drives the real agent/run.mjs through the a3s.code.agent.v1 turn loop.
+// drives the real agent/run.mjs through the aster.code.agent.v1 turn loop.
 //
 //   node tests/browser.proof.mjs
 //
@@ -75,7 +75,7 @@ async function main() {
     const runId = `proof-run-${++runs}`
     const started = performance.now()
     const command = await agent.post('/v1/agent/commands', {
-      schema: 'a3s.code.agent.v1',
+      schema: 'aster.code.agent.v1',
       request_id: `proof-request-${runs}`,
       identity: { session_id: 'proof-session', run_id: runId },
       prompt,

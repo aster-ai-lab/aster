@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, ErrorCode, FieldSchema,
 };
 use tempfile::tempdir;
@@ -125,7 +125,7 @@ fn read_only_open_does_not_recreate_a_missing_lock_file() {
         .close()
         .expect("writable collection must close");
 
-    let lock_path = collection_path.join(".a3s-vec.lock");
+    let lock_path = collection_path.join(".aster-vec.lock");
     std::fs::remove_file(&lock_path).expect("test lock file must be removable");
     let mut options = CollectionOptions::new().expect("default options must be valid");
     options

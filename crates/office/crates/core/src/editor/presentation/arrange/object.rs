@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{container_end, local_name};
 use crate::editor::presentation::{editor_error, node_not_found};
@@ -490,7 +490,7 @@ fn copied_shape_fragment(
     })?;
     let mut attributes = properties.qualified_attributes.clone();
     attributes.insert("id".into(), id.to_string());
-    attributes.insert("name".into(), format!("A3S Copy {id}"));
+    attributes.insert("name".into(), format!("Aster Copy {id}"));
     let attributes = attributes
         .into_iter()
         .map(|(name, value)| format!(" {name}=\"{}\"", quick_xml::escape::escape(&value)))
@@ -524,7 +524,7 @@ fn copied_shape_fragment(
     Ok(copied)
 }
 
-fn fragment_error() -> a3s_use_core::UseError {
+fn fragment_error() -> aster_use_core::UseError {
     editor_error(
         "use.office.presentation_object_copy_unsupported",
         "Presentation shape identity ranges cannot be cloned losslessly.",

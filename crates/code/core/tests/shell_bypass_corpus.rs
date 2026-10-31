@@ -3,12 +3,12 @@
 #[path = "support/shell_bypass_corpus.rs"]
 mod corpus;
 
-use a3s_code_core::permissions::shell::{analyze, ShellRisk};
-use a3s_code_core::permissions::{
+use aster_core::permissions::shell::{analyze, ShellRisk};
+use aster_core::permissions::{
     policy_for_posture, InteractiveToolGuardrail, PermissionChecker, PermissionDecision,
     PermissionEnforcement, PermissionPolicy,
 };
-use a3s_code_core::read_only_verifier;
+use aster_core::read_only_verifier;
 use serde_json::json;
 
 const MODES: &[&str] = &["default", "plan", "auto", "force"];

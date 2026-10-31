@@ -2,7 +2,7 @@ use std::ffi::{c_char, CString};
 use std::path::Path;
 use std::ptr;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use zeroize::Zeroizing;
 
 // The pinned libkrun reads exactly MAX_ARGS pointer slots with

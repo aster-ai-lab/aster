@@ -5,9 +5,9 @@ use std::os::unix::fs::{DirBuilderExt, PermissionsExt};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use a3s_oci_core::CapabilityStatus;
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, Process};
-use a3s_oci_sdk::{
+use aster_oci_core::CapabilityStatus;
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, Process};
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, CreateAttachments, CreateRequest, DeleteMode, DeleteRequest,
     ExecRequest, FileOp, FileRequest, IoMode, IsolationRequest, KillRequest, OciBundle,
     OperationContext, OperationId, OutputStream, ProcessId, ProcessIo, ProcessTarget,
@@ -29,7 +29,7 @@ use super::LinuxNativeLiveRecoverySmokeConfig;
 const CALL_TIMEOUT: Duration = Duration::from_secs(30);
 const LIVE_IO_TIMEOUT: Duration = Duration::from_secs(15);
 const POLL_INTERVAL: Duration = Duration::from_millis(50);
-const SESSION_SUPERVISOR_ENV: &str = "A3S_OCI_NATIVE_SESSION_SUPERVISOR";
+const SESSION_SUPERVISOR_ENV: &str = "ASTER_OCI_NATIVE_SESSION_SUPERVISOR";
 
 struct PreparedRun {
     executable: PathBuf,
@@ -581,11 +581,11 @@ async fn emergency_cleanup(replacement: &mut HostServiceProcess, target: &Contai
 }
 
 fn retained_filesystem_path(nonce: &str) -> String {
-    format!("/tmp/.a3s-oci-native-live-fs-{nonce}.bin")
+    format!("/tmp/.aster-oci-native-live-fs-{nonce}.bin")
 }
 
 fn retained_filesystem_payload(nonce: &str) -> Vec<u8> {
-    format!("a3s-oci-native-live-fs-{nonce}\0binary\n").into_bytes()
+    format!("aster-oci-native-live-fs-{nonce}\0binary\n").into_bytes()
 }
 
 fn retained_echo_process() -> Result<Process, String> {
@@ -649,7 +649,7 @@ fn operation(nonce: &str, suffix: &str) -> Result<OperationContext, String> {
 
 async fn call<T>(
     label: &str,
-    future: impl Future<Output = a3s_oci_sdk::Result<T>>,
+    future: impl Future<Output = aster_oci_sdk::Result<T>>,
 ) -> Result<T, String> {
     match timeout(CALL_TIMEOUT, future).await {
         Ok(Ok(value)) => Ok(value),

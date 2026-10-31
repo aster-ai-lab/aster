@@ -71,9 +71,9 @@ impl RedisTransportOptions {
 impl Default for RedisTransportOptions {
     fn default() -> Self {
         Self {
-            request_channel: "a3s.boot.requests".to_string(),
-            event_channel: "a3s.boot.events".to_string(),
-            reply_channel_prefix: "a3s.boot.replies".to_string(),
+            request_channel: "aster.boot.requests".to_string(),
+            event_channel: "aster.boot.events".to_string(),
+            reply_channel_prefix: "aster.boot.replies".to_string(),
             request_timeout: Duration::from_secs(5),
         }
     }

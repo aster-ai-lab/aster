@@ -76,7 +76,7 @@ fn an_existing_embedding_column_keeps_its_dimension() {
     assert_eq!(hits.len(), 1);
     drop(store);
 
-    let collection = a3s_vec::Collection::open(&collection_path, None).unwrap();
+    let collection = aster_vec::Collection::open(&collection_path, None).unwrap();
     let schema = collection.schema().unwrap();
     assert_eq!(schema.vectors().len(), 1);
     assert_eq!(schema.vectors()[0].name(), "embedding");
@@ -89,7 +89,7 @@ fn a_new_collection_has_no_embedding_column() {
     let memory_dir = root.path().join("memory");
     drop(VecMemoryStore::open(&memory_dir).unwrap());
     let collection_path = memory_dir.join(COLLECTION_NAME);
-    let collection = a3s_vec::Collection::open(collection_path.to_str().unwrap(), None).unwrap();
+    let collection = aster_vec::Collection::open(collection_path.to_str().unwrap(), None).unwrap();
     assert!(collection.schema().unwrap().vectors().is_empty());
 }
 
@@ -144,7 +144,7 @@ async fn lazy_store_writes_and_recalls_an_existing_embedding_column() {
     );
     drop(store);
 
-    let collection = a3s_vec::Collection::open(&collection_path, None).unwrap();
+    let collection = aster_vec::Collection::open(&collection_path, None).unwrap();
     let schema = collection.schema().unwrap();
     assert_eq!(schema.vectors().len(), 1);
     assert_eq!(schema.vectors()[0].name(), "embedding");
@@ -159,7 +159,7 @@ async fn lazy_store_opens_without_an_embedding_column() {
     assert_eq!(MemoryStore::count(&store).await.unwrap(), 0);
     drop(store);
     let collection_path = memory_dir.join(COLLECTION_NAME);
-    let collection = a3s_vec::Collection::open(collection_path.to_str().unwrap(), None).unwrap();
+    let collection = aster_vec::Collection::open(collection_path.to_str().unwrap(), None).unwrap();
     assert!(collection.schema().unwrap().vectors().is_empty());
 }
 
@@ -290,7 +290,7 @@ fn create_named_vector_collection_with(
     dimension: u32,
 ) -> String {
     std::fs::create_dir_all(memory_dir).unwrap();
-    a3s_vec::initialize(None).unwrap();
+    aster_vec::initialize(None).unwrap();
     let collection_path = memory_dir.join(COLLECTION_NAME);
     let path = collection_path.to_str().unwrap().to_owned();
     let mut content = FieldSchema::new("content", DataType::String, false, 0).unwrap();
@@ -308,11 +308,11 @@ fn create_named_vector_collection_with(
             vector_name,
             DataType::VectorFp32,
             dimension,
-            IndexParams::flat(a3s_vec::MetricType::Cosine).unwrap(),
+            IndexParams::flat(aster_vec::MetricType::Cosine).unwrap(),
         )
         .build()
         .unwrap();
-    drop(a3s_vec::Collection::create_and_open(&path, &schema, None).unwrap());
+    drop(aster_vec::Collection::create_and_open(&path, &schema, None).unwrap());
     path
 }
 
@@ -368,7 +368,7 @@ fn reopen_sees_persisted_records() {
 
 #[tokio::test]
 async fn memory_store_trait_roundtrip() {
-    use a3s_memory::MemoryStore as _;
+    use aster_durable_memory::MemoryStore as _;
     let root = tempfile::tempdir().unwrap();
     let store = VecMemoryStore::open(root.path()).unwrap();
     let mut item = MemoryItem::new("the workspace prefers rust-analyzer navigation");
@@ -413,7 +413,7 @@ async fn search_over_many_records_returns_ranked_hits_without_scan_order() {
     // ranking order, with unrelated records absent — across a store
     // large enough that a scan-order bug would surface as ordering
     // drift.
-    use a3s_memory::MemoryStore as _;
+    use aster_durable_memory::MemoryStore as _;
     let root = tempfile::tempdir().unwrap();
     let store = VecMemoryStore::open(root.path()).unwrap();
     for index in 0..200 {

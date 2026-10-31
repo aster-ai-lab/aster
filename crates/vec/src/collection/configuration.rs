@@ -11,7 +11,7 @@ use crate::storage_ceilings::StorageCeilings;
 /// contract:
 ///
 /// ```compile_fail
-/// use a3s_vec::CollectionOptions;
+/// use aster_vec::CollectionOptions;
 ///
 /// let mut options = CollectionOptions::new().unwrap();
 /// options.set_max_buffer_size(1024).unwrap();

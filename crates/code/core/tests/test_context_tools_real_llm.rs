@@ -8,9 +8,9 @@
 //! scripts/context_tools_real_llm.sh
 //! ```
 //!
-//! Set `A3S_CONTEXT_TOOLS_REAL_MODEL=provider/model` to override the config's
+//! Set `ASTER_CONTEXT_TOOLS_REAL_MODEL=provider/model` to override the config's
 //! default model while keeping the same provider registry and credentials.
-//! Set `A3S_CONTEXT_TOOLS_USE_CODEX_LOGIN=1` to use the local Codex login.
+//! Set `ASTER_CONTEXT_TOOLS_USE_CODEX_LOGIN=1` to use the local Codex login.
 
 mod support;
 
@@ -19,8 +19,8 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentEvent, AgentSession, CodeConfig, LlmClient, PlanningMode, SessionOptions,
     SystemPromptSlots,
 };
@@ -70,7 +70,7 @@ async fn real_agent() -> Agent {
 }
 
 fn use_codex_login() -> bool {
-    std::env::var("A3S_CONTEXT_TOOLS_USE_CODEX_LOGIN").as_deref() == Ok("1")
+    std::env::var("ASTER_CONTEXT_TOOLS_USE_CODEX_LOGIN").as_deref() == Ok("1")
 }
 
 fn restricted_options(rules: &[&str], max_tool_rounds: usize, session_id: &str) -> SessionOptions {
@@ -94,7 +94,7 @@ fn restricted_options(rules: &[&str], max_tool_rounds: usize, session_id: &str) 
         );
         return options.with_llm_client(client);
     }
-    match std::env::var("A3S_CONTEXT_TOOLS_REAL_MODEL") {
+    match std::env::var("ASTER_CONTEXT_TOOLS_REAL_MODEL") {
         Ok(model) if !model.trim().is_empty() => options.with_model(model),
         _ => options,
     }

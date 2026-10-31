@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use clap::error::ErrorKind;
 use clap::{Parser, Subcommand};
 use serde::Serialize;
@@ -59,9 +59,9 @@ impl CommandOutput {
 
 #[derive(Debug, Parser)]
 #[command(
-    name = "a3s-use-ocr",
+    name = "aster-use-ocr",
     version,
-    about = "Provider-oriented OCR for A3S (PP-OCRv6 is the default provider)",
+    about = "Provider-oriented OCR for Aster (PP-OCRv6 is the default provider)",
     arg_required_else_help = true
 )]
 struct Cli {
@@ -88,7 +88,7 @@ enum Command {
 }
 
 pub async fn run(args: Vec<String>) -> UseResult<CommandOutput> {
-    let mut argv = vec!["a3s-use-ocr".to_string()];
+    let mut argv = vec!["aster-use-ocr".to_string()];
     argv.extend(args);
     let cli = match Cli::try_parse_from(argv) {
         Ok(cli) => cli,
@@ -135,7 +135,7 @@ fn output_error(error: serde_json::Error) -> UseError {
 }
 
 fn usage_error(message: impl Into<String>) -> UseError {
-    UseError::new("use.ocr.usage_invalid", message).with_suggestion("Run 'a3s use ocr --help'.")
+    UseError::new("use.ocr.usage_invalid", message).with_suggestion("Run 'aster use ocr --help'.")
 }
 
 #[cfg(test)]

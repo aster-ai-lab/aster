@@ -995,8 +995,8 @@ mod tests {
             .tempdir()
             .unwrap();
         run_git(temp.path(), &["init", "-q"]);
-        run_git(temp.path(), &["config", "user.email", "tests@a3s.local"]);
-        run_git(temp.path(), &["config", "user.name", "A3S Tests"]);
+        run_git(temp.path(), &["config", "user.email", "tests@aster.local"]);
+        run_git(temp.path(), &["config", "user.name", "Aster Tests"]);
         for index in 0..count {
             std::fs::write(temp.path().join("history.txt"), format!("{index}\n")).unwrap();
             run_git(temp.path(), &["add", "history.txt"]);

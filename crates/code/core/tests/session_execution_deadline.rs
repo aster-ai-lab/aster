@@ -6,12 +6,12 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::permissions::PermissionPolicy;
-use a3s_code_core::{Agent, AgentEvent, PlanningMode, SessionOptions};
+use aster_core::permissions::PermissionPolicy;
+use aster_core::{Agent, AgentEvent, PlanningMode, SessionOptions};
 use anyhow::Result;
 use async_trait::async_trait;
 use tokio::sync::mpsc;
@@ -24,6 +24,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/endless".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -64,7 +65,7 @@ struct EndlessToolClient {
 struct WaitingTool(Arc<std::sync::atomic::AtomicBool>);
 
 #[async_trait]
-impl a3s_code_core::tools::Tool for WaitingTool {
+impl aster_core::tools::Tool for WaitingTool {
     fn name(&self) -> &str {
         "wait_forever"
     }
@@ -77,12 +78,12 @@ impl a3s_code_core::tools::Tool for WaitingTool {
     async fn execute(
         &self,
         _: &serde_json::Value,
-        ctx: &a3s_code_core::tools::ToolContext,
-    ) -> Result<a3s_code_core::tools::ToolOutput> {
+        ctx: &aster_core::tools::ToolContext,
+    ) -> Result<aster_core::tools::ToolOutput> {
         ctx.cancellation_token().cancelled().await;
         tokio::time::sleep(Duration::from_millis(10)).await;
         self.0.store(true, Ordering::SeqCst);
-        Ok(a3s_code_core::tools::ToolOutput::success("settled"))
+        Ok(aster_core::tools::ToolOutput::success("settled"))
     }
 }
 
@@ -218,7 +219,7 @@ async fn run(options: SessionOptions, hang: bool, slow_tool: bool) -> Outcome {
             if matches!(
                 &event,
                 AgentEvent::ToolEnd {
-                    error_kind: Some(a3s_code_core::tools::ToolErrorKind::Timeout { .. }),
+                    error_kind: Some(aster_core::tools::ToolErrorKind::Timeout { .. }),
                     ..
                 }
             ) {

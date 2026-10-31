@@ -1,8 +1,8 @@
-//! Provider-oriented optical character recognition for A3S.
+//! Provider-oriented optical character recognition for Aster.
 //!
 //! [`OcrClient`] owns bounded source validation and evidence while recognition
 //! is delegated to an injected [`OcrProvider`]. The optional PP-OCRv6 feature
-//! supplies the local default used by A3S Use without making that model the
+//! supplies the local default used by Aster Use without making that model the
 //! library's architectural boundary.
 
 #[cfg(feature = "ppocr-v6")]
@@ -41,7 +41,7 @@ pub use provider::{
     OcrInput, OcrProvider, OcrProviderDescriptor, OcrProviderOutput, OcrProviderStatus,
 };
 
-pub use a3s_use_core::{Artifact, Readiness, UseError, UseResult};
+pub use aster_use_core::{Artifact, Readiness, UseError, UseResult};
 
 /// Read one image with the environment OCR provider.
 /// Blocks keep the provider confidence. Text without a confidence is omitted.
@@ -58,7 +58,7 @@ pub fn recognize_image_bytes(
         .duration_since(std::time::UNIX_EPOCH)
         .map_err(|error| error.to_string())?
         .as_nanos();
-    let path = directory.join(format!("a3s-doc-ocr-{nanos}"));
+    let path = directory.join(format!("aster-doc-ocr-{nanos}"));
     std::fs::write(&path, bytes).map_err(|error| error.to_string())?;
     let read = path.clone();
     let runtime = tokio::runtime::Builder::new_current_thread()
@@ -94,7 +94,7 @@ mod tests {
     #[test]
     fn source_skill_is_owned_by_this_repository() {
         assert!(super::source_skill_root()
-            .join("a3s-use-ocr/SKILL.md")
+            .join("aster-use-ocr/SKILL.md")
             .is_file());
     }
 }

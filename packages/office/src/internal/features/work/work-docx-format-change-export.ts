@@ -82,8 +82,8 @@ export class DocxRunFormattingChangePatchCollector {
       );
     }
     const sequence = this.patches.length + 1;
-    const start = `__A3S_WORK_FORMAT_CHANGE_START_${sequence}__`;
-    const end = `__A3S_WORK_FORMAT_CHANGE_END_${sequence}__`;
+    const start = `__ASTER_WORK_FORMAT_CHANGE_START_${sequence}__`;
+    const end = `__ASTER_WORK_FORMAT_CHANGE_END_${sequence}__`;
     this.patches.push({ start, end, id, author, date, before });
     return { start, end };
   }

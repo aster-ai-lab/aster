@@ -24,7 +24,7 @@ use super::session_sandbox::install_default_local_sandbox;
 pub(super) fn prepare_session_options(agent: &Agent, opts: SessionOptions) -> SessionOptions {
     let mut opts = opts;
     if opts.isolated_context {
-        opts.memory_store = Some(Arc::new(a3s_memory::InMemoryStore::new()));
+        opts.memory_store = Some(Arc::new(aster_durable_memory::InMemoryStore::new()));
         opts.file_memory_dir = None;
         opts.durable_memory = None;
         opts.memory_observers.clear();

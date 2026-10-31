@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Command, Copy, Save, Search } from 'lucide-react'
 
-import { Kbd, KbdGroup } from '@a3s-lab/ui'
-// import { Tooltip, TooltipContent, TooltipTrigger } from '@a3s-lab/ui/components/primitives/tooltip'
+import { Kbd, KbdGroup } from '@aster-ai-lab/ui'
+// import { Tooltip, TooltipContent, TooltipTrigger } from '@aster-ai-lab/ui/components/primitives/tooltip'
 
 const meta: Meta<typeof Kbd> = {
   title: 'Components/Primitives/Kbd',

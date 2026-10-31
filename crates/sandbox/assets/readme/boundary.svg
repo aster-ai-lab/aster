@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      width="1200" height="500" viewBox="0 0 1200 500"
      role="img" aria-labelledby="title desc">
-  <title id="title">a3s-sandbox native command boundary</title>
+  <title id="title">aster-sandbox native command boundary</title>
   <desc id="desc">A command enters one policy boundary and is isolated by a native macOS, Linux, or Windows backend before bounded output returns.</desc>
 
   <rect width="1200" height="500" rx="28" fill="#0b0d0f"/>
@@ -9,8 +9,8 @@
   <path d="M56 370H1144" stroke="#343a40" stroke-width="2"/>
 
   <g id="title-block" transform="translate(58 92)">
-    <text x="0" y="0" fill="#d6a85f" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" letter-spacing="2">A3S / NATIVE SECURITY BOUNDARY</text>
-    <text x="0" y="70" fill="#f4f1ea" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="58" font-weight="700">a3s-sandbox</text>
+    <text x="0" y="0" fill="#d6a85f" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" letter-spacing="2">Aster / NATIVE SECURITY BOUNDARY</text>
+    <text x="0" y="70" fill="#f4f1ea" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="58" font-weight="700">aster-sandbox</text>
     <text x="0" y="116" fill="#c7ccd1" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="26">Untrusted commands, contained by the OS.</text>
     <text x="0" y="164" fill="#c7ccd1" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="22">Rust library · fail-closed · no Node.js runtime</text>
     <g transform="translate(0 214)">
@@ -60,6 +60,6 @@
 
   <g id="footer" transform="translate(58 470)">
     <text x="0" y="0" fill="#8d969e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" letter-spacing="1">PROCESS TREE  /  BOUNDED OUTPUT  /  EXPLICIT FAILURE</text>
-    <text x="1084" y="0" text-anchor="end" fill="#d6a85f" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18">A3S</text>
+    <text x="1084" y="0" text-anchor="end" fill="#d6a85f" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18">Aster</text>
   </g>
 </svg>

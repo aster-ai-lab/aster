@@ -5,7 +5,7 @@ description: Observe an MHS fleet through the host-authorized MCP adapter.
 
 # MHS Operator
 
-Use only the package MCP surface selected by the current A3S Use capability
+Use only the package MCP surface selected by the current Aster Use capability
 snapshot. Treat device identity, safety limits, interlocks, and approvals as
 host-owned evidence.
 

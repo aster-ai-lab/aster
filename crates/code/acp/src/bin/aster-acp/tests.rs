@@ -1,0 +1,156 @@
+use super::*;
+
+fn parse(args: &[&str]) -> Result<Args> {
+    parse_args_from(args.iter().map(|arg| arg.to_string()))
+}
+
+#[test]
+fn a_launch_without_the_flag_stays_interactive() {
+    let args = parse(&["--cwd", "/tmp", "--model", "openai/gpt-5"]).expect("args");
+    assert!(args.unattended.is_none());
+    assert!(parse(&[]).expect("args").unattended.is_none());
+}
+
+#[test]
+fn the_unattended_flag_carries_budget_and_result_file() {
+    let args = parse(&["--unattended"]).expect("args");
+    assert_eq!(
+        args.unattended,
+        Some(Unattended::new(DEFAULT_EXECUTION_BUDGET_MS, None).expect("profile"))
+    );
+    let args = parse(&[
+        "--unattended",
+        "--max-execution-ms",
+        "1000",
+        "--result-file",
+        "/logs/agent/aster.result.json",
+    ])
+    .expect("args");
+    assert_eq!(
+        args.unattended,
+        Some(
+            Unattended::new(1000, Some("/logs/agent/aster.result.json".into()))
+                .expect("profile")
+        )
+    );
+}
+
+#[test]
+fn the_reasoning_effort_defaults_to_max_and_takes_only_host_levels() {
+    let base = || Unattended::new(DEFAULT_EXECUTION_BUDGET_MS, None).expect("profile");
+    let parsed = |args: &[&str]| parse(args).expect("args").unattended;
+    assert_eq!(
+        parsed(&["--unattended"]),
+        Some(base().with_reasoning_effort("max").expect("max"))
+    );
+    assert_eq!(
+        parsed(&["--unattended", "--reasoning-effort", "high"]),
+        Some(base().with_reasoning_effort("high").expect("high"))
+    );
+    assert_ne!(
+        parsed(&["--unattended", "--reasoning-effort", "high"]),
+        Some(base())
+    );
+    assert!(parse(&["--unattended", "--reasoning-effort", "extreme"]).is_err());
+    let interactive = parse(&["--reasoning-effort", "medium"]).expect("interactive budget");
+    assert!(interactive.unattended.is_none());
+    assert_eq!(interactive.reasoning_effort.as_deref(), Some("medium"));
+}
+
+#[test]
+fn the_engineering_policy_is_named_and_unattended_only() {
+    let base = || Unattended::new(DEFAULT_EXECUTION_BUDGET_MS, None).expect("profile");
+    assert_eq!(
+        parse(&["--unattended", "--engineering-policy", "engineering-v1"])
+            .expect("args")
+            .unattended,
+        Some(
+            base()
+                .with_engineering_policy("engineering-v1")
+                .expect("policy")
+        )
+    );
+    assert!(parse(&["--unattended", "--engineering-policy", "engineering-v9"]).is_err());
+    assert!(parse(&["--unattended", "--engineering-policy"]).is_err());
+    assert!(parse(&["--engineering-policy", "engineering-v1"]).is_err());
+}
+
+#[test]
+fn goal_continuation_is_unattended_only() {
+    let base = || Unattended::new(DEFAULT_EXECUTION_BUDGET_MS, None).expect("profile");
+    assert_eq!(
+        parse(&["--unattended", "--goal-continuation"])
+            .expect("args")
+            .unattended,
+        Some(base().with_goal_continuation())
+    );
+    assert!(parse(&["--goal-continuation"]).is_err());
+    let disabled = parse(&[
+        "--unattended",
+        "--no-goal-continuation",
+        "--engineering-policy",
+        "none",
+    ])
+    .expect("disabled")
+    .unattended
+    .unwrap();
+    assert_eq!(
+        disabled,
+        base()
+            .without_goal_continuation()
+            .with_engineering_policy("none")
+            .unwrap()
+    );
+    assert!(parse(&["--no-goal-continuation"]).is_err());
+}
+
+#[test]
+fn unattended_options_are_refused_without_the_flag_or_beside_studio_flags() {
+    assert!(parse(&["--max-execution-ms", "1000"]).is_err());
+    assert!(parse(&["--result-file", "/tmp/r.json"]).is_err());
+    assert!(parse(&["--unattended", "--max-execution-ms", "0"]).is_err());
+    assert!(parse(&["--unattended", "--max-execution-ms", "soon"]).is_err());
+    assert!(parse(&["--unattended", "--studio-documents"]).is_err());
+    assert!(parse(&["--unattended", "--plugin-store", "/tmp/store"]).is_err());
+}
+
+#[test]
+fn workspace_mcp_review_flags_parse_and_trust_requires_a_selector() {
+    assert_eq!(parse(&[]).expect("args").workspace_mcp, None);
+    assert_eq!(
+        parse(&["--list-workspace-mcp"])
+            .expect("args")
+            .workspace_mcp,
+        Some(WorkspaceMcpCommand::List)
+    );
+    assert_eq!(
+        parse(&["--trust-workspace-mcp", "3fa9"])
+            .expect("args")
+            .workspace_mcp,
+        Some(WorkspaceMcpCommand::Trust("3fa9".to_string()))
+    );
+    assert!(parse(&["--trust-workspace-mcp"]).is_err());
+}
+
+#[test]
+fn account_imports_are_off_unless_named_from_the_closed_set() {
+    assert!(parse(&[]).expect("args").import_accounts.is_empty());
+    assert_eq!(
+        parse(&[
+            "--import-accounts",
+            "cursor,grok",
+            "--import-accounts",
+            "codex"
+        ])
+        .expect("args")
+        .import_accounts,
+        vec![
+            AccountImport::Cursor,
+            AccountImport::Grok,
+            AccountImport::Codex
+        ]
+    );
+    assert!(parse(&["--import-accounts"]).is_err());
+    assert!(parse(&["--import-accounts", "keychain"]).is_err());
+    assert!(parse(&["--import-accounts", ""]).is_err());
+}

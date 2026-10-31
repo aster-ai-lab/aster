@@ -1,6 +1,6 @@
 use super::*;
 use crate::{layers::linear::DeviceMatrix, weights::tests::fixture};
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 
 #[test]
 fn multichunk_fp8_upload_preserves_global_scale_rows_and_partial_checkpoint_tail() {

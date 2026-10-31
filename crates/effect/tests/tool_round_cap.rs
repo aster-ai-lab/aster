@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_effect::{
+use aster_effect::{
     coding_actor, ingest_coding, message_fact, ActorError, CodingServices, Compactor, Completion,
     CompletionRequest, HarnessConfig, MemoryLog, ModelDecision, ToolRunner, ToolSpec,
 };
@@ -17,7 +17,7 @@ impl Completion for RecordingModel {
         &self,
         request: CompletionRequest,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         self.tool_counts.lock().unwrap().push(request.tools.len());
         self.messages.lock().unwrap().push(request.messages.clone());
@@ -34,9 +34,9 @@ struct NoTools;
 impl ToolRunner for NoTools {
     fn run(
         &self,
-        _call: a3s_effect::ToolCall,
+        _call: aster_effect::ToolCall,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
         Box::pin(async { Ok(serde_json::json!("unused")) })
     }
 }
@@ -47,7 +47,7 @@ impl Compactor for NoCompact {
     fn compact(
         &self,
         _messages: &[String],
-    ) -> a3s_effect::coding::BoxFuture<Result<String, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
         Box::pin(async { Ok("summary".into()) })
     }
 }

@@ -1,4 +1,4 @@
-# First-principles a3s-vec ↔ zvec comparison protocol
+# First-principles aster-vec ↔ zvec comparison protocol
 
 This protocol defines what a fair product comparison is allowed to claim.
 It deliberately refuses overfitting (lower `ef`, drop exact re-ranking,
@@ -21,16 +21,16 @@ tree—not from the most flattering inherited cell.
 | Corpus | SplitMix64 `f32` generator, same IDs / query schedule / batch size | — |
 | Metric / top-k | Cosine, top-10, Recall@10 vs Flat exact ranking | — |
 | HNSW knobs | `m=16`, `ef_construction=96`, `ef=64` | Graph construction algorithms differ |
-| Build workers | a3s: `RAYON_NUM_THREADS=1`; zvec: `IndexOption(concurrency=1)` + `init(query_threads=1, optimize_threads=1)` | — |
-| HNSW query refinement | a3s always exact-reranks authoritative vectors (`f64` public scores) | zvec harness sets `is_using_refiner=False` (refiner needs a separate flat index; not enabled) |
+| Build workers | aster: `RAYON_NUM_THREADS=1`; zvec: `IndexOption(concurrency=1)` + `init(query_threads=1, optimize_threads=1)` | — |
+| HNSW query refinement | aster always exact-reranks authoritative vectors (`f64` public scores) | zvec harness sets `is_using_refiner=False` (refiner needs a separate flat index; not enabled) |
 | Flat query threads | Fairness harness: one Rayon worker | Product-default harness: unset Rayon (host core count). Report both; do not conflate |
-| ISA / language | Same host | a3s portable Rust crate vs zvec macOS arm64 C++ wheel via Python binding |
+| ISA / language | Same host | aster portable Rust crate vs zvec macOS arm64 C++ wheel via Python binding |
 | Persistence | Manual durability / flush after insert on both | Snapshot / checkpoint semantics still differ |
-| Flat "index build" | zvec Flat has no separate build (CSV `0`) | a3s may spend time in `rebuild_index` before Flat query; report raw CSV and treat Flat comparison as insert + query, not build |
+| Flat "index build" | zvec Flat has no separate build (CSV `0`) | aster may spend time in `rebuild_index` before Flat query; report raw CSV and treat Flat comparison as insert + query, not build |
 
 ## Fixtures (must run both)
 
-1. **Smoke** (`A3S_VEC_BENCH_SCALE=smoke`): 96 × 8 — harness wiring only.
+1. **Smoke** (`ASTER_VEC_BENCH_SCALE=smoke`): 96 × 8 — harness wiring only.
 2. **Small**: 2,000 × 32 — recall should be 1.0 for HNSW at these knobs.
 3. **Scale**: 100,000 × 128 — primary product comparison point.
 
@@ -41,10 +41,10 @@ graph).
 ## Harness commands
 
 ```bash
-# a3s-vec (fairness: one worker)
+# aster-vec (fairness: one worker)
 RAYON_NUM_THREADS=1 \
-A3S_VEC_SCALE_DOCUMENTS=100000 A3S_VEC_SCALE_DIMENSIONS=128 \
-A3S_VEC_SCALE_MODE=both \
+ASTER_VEC_SCALE_DOCUMENTS=100000 ASTER_VEC_SCALE_DIMENSIONS=128 \
+ASTER_VEC_SCALE_MODE=both \
 cargo bench --bench scale_compare
 
 # zvec companion (venv with zvec==0.7.0)
@@ -56,7 +56,7 @@ Optional product-default Flat only (do **not** use for HNSW fairness claims):
 
 ```bash
 # unset RAYON_NUM_THREADS
-A3S_VEC_SCALE_MODE=flat A3S_VEC_SCALE_DOCUMENTS=100000 A3S_VEC_SCALE_DIMENSIONS=128 \
+ASTER_VEC_SCALE_MODE=flat ASTER_VEC_SCALE_DOCUMENTS=100000 ASTER_VEC_SCALE_DIMENSIONS=128 \
 cargo bench --bench scale_compare
 ```
 
@@ -69,7 +69,7 @@ cargo bench --bench scale_compare
 ## Forbidden claims
 
 - Universal engine ranking / SLO.
-- Wins obtained by lowering `ef`, dropping a3s exact re-ranking, or
+- Wins obtained by lowering `ef`, dropping aster exact re-ranking, or
   enabling zvec refiner/optimize on only one side.
 - Treating Python binding overhead as absent, or treating portable Rust vs
   native-wheel SIMD as identical compilers.

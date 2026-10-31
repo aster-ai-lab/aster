@@ -239,7 +239,7 @@ impl SearchTool {
                 copy_if_present(args, &mut adapted, "limit", "limit");
                 if self.persistent_backend_enabled {
                     // Preserve the existing public `bm25` mode while routing
-                    // local manifest workspaces to their durable a3s-vec
+                    // local manifest workspaces to their durable aster-vec
                     // projection automatically. Callers do not need to know
                     // whether the native cache is ready; Bm25Tool falls back
                     // to the catalog path until it is available.
@@ -343,7 +343,7 @@ impl Tool for SearchTool {
                 },
                 "path": {
                     "type": "string",
-                    "description": "Optional. Workspace-relative directory or file to search, or an a3s://tool-output/... artifact URI (grep mode only). Default: workspace root."
+                    "description": "Optional. Workspace-relative directory or file to search, or an aster://tool-output/... artifact URI (grep mode only). Default: workspace root."
                 },
                 "include": {
                     "type": "string",
@@ -361,7 +361,7 @@ impl Tool for SearchTool {
                 "output_mode": {
                     "type": "string",
                     "enum": grep_output_modes,
-                    "description": "Optional for grep. content returns matches (default); files_with_matches and count are paginated; summary returns totals."
+                    "description": "Optional for grep. content returns paginated matches with context (default); files_with_matches and count paginate files; summary returns totals."
                 },
                 "limit": {
                     "type": "integer",
@@ -387,18 +387,11 @@ impl Tool for SearchTool {
     fn capabilities(&self, args: &serde_json::Value) -> ToolCapabilities {
         match SearchMode::parse(args) {
             Ok(SearchMode::Glob) => ToolCapabilities::read_only_paginated(16),
-            Ok(SearchMode::Grep)
-                if matches!(
-                    args.get("output_mode").and_then(serde_json::Value::as_str),
-                    Some("files_with_matches" | "count")
-                ) =>
-            {
-                ToolCapabilities::read_only_paginated(16)
-            }
+            Ok(SearchMode::Grep) => GrepTool.capabilities(args),
             Ok(SearchMode::Bm25 | SearchMode::Semantic | SearchMode::Hybrid) => {
                 ToolCapabilities::parallel_safe_read(2)
             }
-            Ok(SearchMode::Grep) | Err(_) => ToolCapabilities::parallel_safe_read(16),
+            Err(_) => ToolCapabilities::parallel_safe_read(16),
         }
     }
 
@@ -619,11 +612,11 @@ fn limit_schema_description(modes: &[&str]) -> String {
         .filter(|mode| matches!(*mode, "bm25" | "semantic" | "hybrid"))
         .collect::<Vec<_>>();
     if ranked.is_empty() {
-        return "Optional. Page size for glob or paginated grep (default 200, maximum 1000)."
+        return "Optional. Maximum matches with context for grep content, or files for glob/grep files_with_matches/count (default 200, maximum 1000). Not used by grep summary."
             .to_string();
     }
     format!(
-        "Optional. Page size for glob or paginated grep (default 200, maximum 1000), or result count for {} (default 10, maximum 25).",
+        "Optional. Maximum matches with context for grep content, or files for glob/grep files_with_matches/count (default 200, maximum 1000), or result count for {} (default 10, maximum 25). Not used by grep summary.",
         ranked.join("/")
     )
 }

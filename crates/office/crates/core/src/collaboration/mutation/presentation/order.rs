@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{Array, Transact};
 
 use super::json::validate_presentation_identifier;

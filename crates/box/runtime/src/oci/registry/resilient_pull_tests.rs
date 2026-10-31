@@ -20,7 +20,7 @@ use super::{
     RegistryPullPolicy, RegistryPuller,
 };
 
-const REPOSITORY: &str = "a3s/resilient";
+const REPOSITORY: &str = "aster/resilient";
 
 #[derive(Clone, Copy)]
 enum LayerFault {
@@ -184,8 +184,8 @@ async fn registry_handler(
     if path == "/v2/" {
         return empty_response(StatusCode::OK);
     }
-    if path == "/v2/a3s/resilient/manifests/latest"
-        || path == format!("/v2/a3s/resilient/manifests/{}", state.manifest.digest)
+    if path == "/v2/aster/resilient/manifests/latest"
+        || path == format!("/v2/aster/resilient/manifests/{}", state.manifest.digest)
     {
         return complete_response(
             StatusCode::OK,
@@ -378,7 +378,7 @@ async fn seed_blob(store: &ImageStore, blob_digest: &str, bytes: &[u8]) -> PathB
     .unwrap();
     let stored = store
         .put(
-            "seed.example/a3s/base:latest",
+            "seed.example/aster/base:latest",
             &digest(b"seed-image-layout"),
             source.path(),
         )

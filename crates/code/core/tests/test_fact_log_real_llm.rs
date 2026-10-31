@@ -1,8 +1,8 @@
 //! Real-LLM gate for the fact-log control source.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_fact_log_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_fact_log_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -10,16 +10,16 @@ mod support;
 
 use std::time::Duration;
 
-use a3s_code_core::fact_control::read_workspace_facts;
+use aster_core::fact_control::read_workspace_facts;
 use support::layer_c_model::load_pinned_layer_c_config;
 
 const MODEL_TIMEOUT: Duration = Duration::from_secs(420);
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a live provider configured in .a3s/config.acl"]
+#[ignore = "requires a live provider configured in .aster/config.acl"]
 async fn real_llm_fact_log_reaches_a_terminal_phase() {
     let config = load_pinned_layer_c_config();
-    let agent = a3s_code_core::Agent::from_config(config)
+    let agent = aster_core::Agent::from_config(config)
         .await
         .expect("build agent from real config");
     let workspace = tempfile::tempdir().expect("workspace");
@@ -27,7 +27,7 @@ async fn real_llm_fact_log_reaches_a_terminal_phase() {
         .session_async(
             workspace.path().to_string_lossy().to_string(),
             Some(
-                a3s_code_core::SessionOptions::new()
+                aster_core::SessionOptions::new()
                     .with_session_id("fact-log-live")
                     .with_planning(false)
                     .with_auto_delegation_enabled(false)

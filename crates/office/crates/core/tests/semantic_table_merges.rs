@@ -1,7 +1,7 @@
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
-use a3s_office::{NativeOfficeDocument, NativeOfficeReplayArtifact};
+use aster_office::{NativeOfficeDocument, NativeOfficeReplayArtifact};
 use tempfile::TempDir;
 use zip::write::SimpleFileOptions;
 use zip::{CompressionMethod, ZipWriter};
@@ -154,7 +154,7 @@ async fn presentation_semantics_resolve_compact_merged_rows_without_covered_cell
 }
 
 fn assert_grid_cell(
-    cell: &a3s_office::DocumentNode,
+    cell: &aster_office::DocumentNode,
     row: u32,
     column: u32,
     row_span: u32,

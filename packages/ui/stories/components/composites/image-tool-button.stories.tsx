@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Copy, Download, Maximize2, RotateCw, Trash2, ZoomIn, ZoomOut } from 'lucide-react'
 
-import { ImageToolButton } from '@a3s-lab/ui'
+import { ImageToolButton } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof ImageToolButton> = {
   title: 'Components/Composites/image-tool-button',

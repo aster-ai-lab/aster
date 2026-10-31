@@ -1,8 +1,8 @@
-//! CloudEvents v1.0 envelope for A3S events
+//! CloudEvents v1.0 envelope for Aster events
 //!
 //! Provides a `CloudEvent` struct conforming to the CloudEvents v1.0 specification,
-//! with lossless conversion to/from the internal `Event` type. A3S-specific fields
-//! are stored as extension attributes with the `a3s` prefix.
+//! with lossless conversion to/from the internal `Event` type. Aster-specific fields
+//! are stored as extension attributes with the `aster` prefix.
 //!
 //! Manual implementation — no dependency on `cloudevents-sdk`.
 
@@ -14,7 +14,7 @@ use std::collections::HashMap;
 /// CloudEvents specification version
 pub const SPEC_VERSION: &str = "1.0";
 
-/// Default data content type for A3S events
+/// Default data content type for Aster events
 pub const DEFAULT_DATA_CONTENT_TYPE: &str = "application/json";
 
 /// CloudEvents v1.0 envelope
@@ -35,7 +35,7 @@ pub struct CloudEvent {
     /// Event source (maps to Event.source)
     pub source: String,
 
-    /// Event type (maps to Event.event_type, or "a3s.event" for untyped)
+    /// Event type (maps to Event.event_type, or "aster.event" for untyped)
     #[serde(rename = "type")]
     pub event_type: String,
 
@@ -62,7 +62,7 @@ pub struct CloudEvent {
     pub data: Option<serde_json::Value>,
 
     // ── Extension attributes ──
-    /// Extension attributes (includes a3s-prefixed fields)
+    /// Extension attributes (includes aster-prefixed fields)
     #[serde(default, skip_serializing_if = "HashMap::is_empty")]
     pub extensions: HashMap<String, serde_json::Value>,
 }
@@ -118,18 +118,18 @@ impl CloudEvent {
     }
 }
 
-/// Convert an A3S Event to a CloudEvent (lossless)
+/// Convert an Aster Event to a CloudEvent (lossless)
 ///
-/// A3S-specific fields are stored as extension attributes:
-/// - `a3scategory` — Event.category
-/// - `a3sversion` — Event.version
-/// - `a3ssummary` — Event.summary
-/// - `a3stimestamp` — Event.timestamp (Unix ms)
-/// - `a3smeta_<key>` — each metadata entry
+/// Aster-specific fields are stored as extension attributes:
+/// - `astercategory` — Event.category
+/// - `asterversion` — Event.version
+/// - `astersummary` — Event.summary
+/// - `astertimestamp` — Event.timestamp (Unix ms)
+/// - `astermeta_<key>` — each metadata entry
 impl From<Event> for CloudEvent {
     fn from(event: Event) -> Self {
         let event_type = if event.event_type.is_empty() {
-            "a3s.event".to_string()
+            "aster.event".to_string()
         } else {
             event.event_type.clone()
         };
@@ -149,28 +149,28 @@ impl From<Event> for CloudEvent {
             extensions: HashMap::new(),
         };
 
-        // Store A3S-specific fields as extensions
+        // Store Aster-specific fields as extensions
         ce.extensions.insert(
-            "a3scategory".to_string(),
+            "astercategory".to_string(),
             serde_json::Value::String(event.category.clone()),
         );
         ce.extensions.insert(
-            "a3sversion".to_string(),
+            "asterversion".to_string(),
             serde_json::Value::Number(event.version.into()),
         );
         ce.extensions.insert(
-            "a3ssummary".to_string(),
+            "astersummary".to_string(),
             serde_json::Value::String(event.summary.clone()),
         );
         ce.extensions.insert(
-            "a3stimestamp".to_string(),
+            "astertimestamp".to_string(),
             serde_json::Value::Number(event.timestamp.into()),
         );
 
         // Store original event_type if it was set
         if !event.event_type.is_empty() {
             ce.extensions.insert(
-                "a3seventtype".to_string(),
+                "astereventtype".to_string(),
                 serde_json::Value::String(event.event_type),
             );
         }
@@ -178,7 +178,7 @@ impl From<Event> for CloudEvent {
         // Store metadata as prefixed extensions
         for (key, value) in &event.metadata {
             ce.extensions.insert(
-                format!("a3smeta_{}", key),
+                format!("astermeta_{}", key),
                 serde_json::Value::String(value.clone()),
             );
         }
@@ -187,37 +187,37 @@ impl From<Event> for CloudEvent {
     }
 }
 
-/// Convert a CloudEvent back to an A3S Event
+/// Convert a CloudEvent back to an Aster Event
 ///
-/// Extracts A3S-specific fields from extension attributes.
-/// Fails if required A3S extensions are missing.
+/// Extracts Aster-specific fields from extension attributes.
+/// Fails if required Aster extensions are missing.
 impl TryFrom<CloudEvent> for Event {
     type Error = EventError;
 
     fn try_from(ce: CloudEvent) -> Result<Self> {
         let category = ce
             .extensions
-            .get("a3scategory")
+            .get("astercategory")
             .and_then(|v| v.as_str())
             .unwrap_or("")
             .to_string();
 
         let version = ce
             .extensions
-            .get("a3sversion")
+            .get("asterversion")
             .and_then(|v| v.as_u64())
             .unwrap_or(1) as u32;
 
         let summary = ce
             .extensions
-            .get("a3ssummary")
+            .get("astersummary")
             .and_then(|v| v.as_str())
             .unwrap_or("")
             .to_string();
 
         let timestamp = ce
             .extensions
-            .get("a3stimestamp")
+            .get("astertimestamp")
             .and_then(|v| v.as_u64())
             .unwrap_or_else(|| {
                 // Fall back to parsing RFC 3339 time
@@ -227,11 +227,11 @@ impl TryFrom<CloudEvent> for Event {
         // Recover original event_type
         let event_type = ce
             .extensions
-            .get("a3seventtype")
+            .get("astereventtype")
             .and_then(|v| v.as_str())
             .map(|s| s.to_string())
             .unwrap_or_else(|| {
-                if ce.event_type == "a3s.event" {
+                if ce.event_type == "aster.event" {
                     String::new()
                 } else {
                     ce.event_type.clone()
@@ -241,10 +241,10 @@ impl TryFrom<CloudEvent> for Event {
         let subject = ce.subject.unwrap_or_default();
         let payload = ce.data.unwrap_or(serde_json::Value::Null);
 
-        // Recover metadata from a3smeta_ prefixed extensions
+        // Recover metadata from astermeta_ prefixed extensions
         let mut metadata = HashMap::new();
         for (key, value) in &ce.extensions {
-            if let Some(meta_key) = key.strip_prefix("a3smeta_") {
+            if let Some(meta_key) = key.strip_prefix("astermeta_") {
                 if let Some(meta_val) = value.as_str() {
                     metadata.insert(meta_key.to_string(), meta_val.to_string());
                 }
@@ -348,10 +348,10 @@ mod tests {
         assert_eq!(ce.event_type, "forex.rate_change");
         assert_eq!(ce.subject.as_deref(), Some("events.market.forex"));
         assert_eq!(ce.data.as_ref().unwrap()["rate"], 7.35);
-        assert_eq!(ce.extensions["a3scategory"], "market");
-        assert_eq!(ce.extensions["a3sversion"], 2);
-        assert_eq!(ce.extensions["a3ssummary"], "USD/CNY rate change");
-        assert_eq!(ce.extensions["a3smeta_region"], "asia");
+        assert_eq!(ce.extensions["astercategory"], "market");
+        assert_eq!(ce.extensions["asterversion"], 2);
+        assert_eq!(ce.extensions["astersummary"], "USD/CNY rate change");
+        assert_eq!(ce.extensions["astermeta_region"], "asia");
         assert!(ce.time.is_some());
     }
 
@@ -366,9 +366,9 @@ mod tests {
         );
 
         let ce: CloudEvent = event.into();
-        assert_eq!(ce.event_type, "a3s.event");
-        // Untyped events should NOT have a3seventtype extension
-        assert!(!ce.extensions.contains_key("a3seventtype"));
+        assert_eq!(ce.event_type, "aster.event");
+        // Untyped events should NOT have astereventtype extension
+        assert!(!ce.extensions.contains_key("astereventtype"));
     }
 
     #[test]
@@ -419,7 +419,7 @@ mod tests {
 
     #[test]
     fn test_cloudevent_from_external_source() {
-        // Simulate a CloudEvent not created from an A3S Event
+        // Simulate a CloudEvent not created from an Aster Event
         let ce = CloudEvent::new("ext-1", "external-service", "com.example.order.created")
             .with_data(serde_json::json!({"order_id": "ORD-123"}))
             .with_subject("orders")
@@ -431,7 +431,7 @@ mod tests {
         assert_eq!(event.source, "external-service");
         assert_eq!(event.event_type, "com.example.order.created");
         assert_eq!(event.subject, "orders");
-        assert_eq!(event.category, ""); // no a3scategory extension
+        assert_eq!(event.category, ""); // no astercategory extension
         assert_eq!(event.version, 1); // default
         assert_eq!(event.payload["order_id"], "ORD-123");
     }
@@ -487,7 +487,7 @@ mod tests {
 
     #[test]
     fn test_cloudevent_json_wire_format() {
-        let ce = CloudEvent::new("evt-wire", "a3s", "a3s.gateway.scale.up")
+        let ce = CloudEvent::new("evt-wire", "aster", "aster.gateway.scale.up")
             .with_data(serde_json::json!({"replicas": 3}))
             .with_subject("scaling.gateway");
 
@@ -495,8 +495,8 @@ mod tests {
         // Verify CE required fields present at top level
         assert_eq!(json["specversion"], "1.0");
         assert_eq!(json["id"], "evt-wire");
-        assert_eq!(json["source"], "a3s");
-        assert_eq!(json["type"], "a3s.gateway.scale.up");
+        assert_eq!(json["source"], "aster");
+        assert_eq!(json["type"], "aster.gateway.scale.up");
         assert_eq!(json["data"]["replicas"], 3);
     }
 

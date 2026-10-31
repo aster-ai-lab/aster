@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Mail, Search, User } from 'lucide-react'
 import { useState } from 'react'
 
-import { Input } from '@a3s-lab/ui'
+import { Input } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Input> = {
   title: 'Components/Primitives/Input',

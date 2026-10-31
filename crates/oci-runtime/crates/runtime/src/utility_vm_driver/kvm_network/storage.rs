@@ -1,8 +1,8 @@
 use std::os::unix::fs::MetadataExt;
 use std::path::Path;
 
-use a3s_oci_agent_protocol::{AgentVmStorageAttachment, AgentVmStorageSourceIdentity};
-use a3s_oci_sdk::{ErrorCode, Result, StorageAccessMode, StorageAttachment};
+use aster_oci_agent_protocol::{AgentVmStorageAttachment, AgentVmStorageSourceIdentity};
+use aster_oci_sdk::{ErrorCode, Result, StorageAccessMode, StorageAttachment};
 use serde_json::Value;
 
 use super::{attachment_error, UtilityVmLaunchRequest};

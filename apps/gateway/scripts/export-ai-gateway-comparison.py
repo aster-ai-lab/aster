@@ -14,7 +14,7 @@ from typing import Any
 
 TRIAL_SCHEMA = "kense.gateway.ai-comparison.trial.v1"
 OUTPUT_SCHEMA = "kense.gateway.ai-comparison.v1"
-PRODUCTS = ("a3s-gateway", "nginx")
+PRODUCTS = ("aster-gateway", "nginx")
 PROFILE_DETAILS = {
     "stream-overhead-c1": (
         "Streaming overhead, C1",
@@ -54,7 +54,7 @@ PROFILE_DETAILS = {
     ),
     "disk-spill": (
         "Client-body disk spill",
-        "32 KiB prompt with NGINX 16 KiB buffer + recorded temp volume; A3S in-memory validation",
+        "32 KiB prompt with NGINX 16 KiB buffer + recorded temp volume; Aster in-memory validation",
     ),
     "gateway-restart": (
         "Proxy process restart",
@@ -94,11 +94,11 @@ PROFILE_DETAILS = {
     ),
     "request-buffering-on": (
         "Request buffering on",
-        "Chunked OpenAI upload with NGINX proxy_request_buffering on (A3S validation unchanged)",
+        "Chunked OpenAI upload with NGINX proxy_request_buffering on (Aster validation unchanged)",
     ),
     "request-buffering-off": (
         "Request buffering off",
-        "Same chunked schedule with NGINX proxy_request_buffering off (A3S validation unchanged)",
+        "Same chunked schedule with NGINX proxy_request_buffering off (Aster validation unchanged)",
     ),
     "thundering-herd": (
         "Thundering herd release",
@@ -270,7 +270,7 @@ PROFILE_DETAILS = {
     ),
 }
 # Policy lanes without a pinned NGINX-equivalent module in this suite.
-A3S_ONLY_PROFILES = frozenset(
+ASTER_ONLY_PROFILES = frozenset(
     {
         "telemetry-on",
         "telemetry-off",
@@ -834,46 +834,46 @@ def aggregate_trials(trials: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def relative_position(a3s: float, nginx: float, lower_is_preferred: bool) -> str:
-    ratio = a3s / nginx
+def relative_position(aster: float, nginx: float, lower_is_preferred: bool) -> str:
+    ratio = aster / nginx
     if 0.97 < ratio < 1.03:
         return "within_threshold"
     if lower_is_preferred:
-        return "a3s_lower" if ratio < 1 else "nginx_lower"
-    return "a3s_higher" if ratio > 1 else "nginx_higher"
+        return "aster_lower" if ratio < 1 else "nginx_lower"
+    return "aster_higher" if ratio > 1 else "nginx_higher"
 
 
-def compare(a3s: dict[str, Any], nginx: dict[str, Any]) -> dict[str, Any]:
+def compare(aster: dict[str, Any], nginx: dict[str, Any]) -> dict[str, Any]:
     latency_ratios: dict[str, float] = {}
     positions: dict[str, str] = {
         "token_goodput": relative_position(
-            a3s["token_goodput_per_second"],
+            aster["token_goodput_per_second"],
             nginx["token_goodput_per_second"],
             False,
         ),
         "stream_rate": relative_position(
-            a3s["streams_per_second"], nginx["streams_per_second"], False
+            aster["streams_per_second"], nginx["streams_per_second"], False
         ),
     }
     for distribution in DISTRIBUTIONS:
         for percentile in ("p50_us", "p99_us"):
-            if a3s[distribution] is None or nginx[distribution] is None:
+            if aster[distribution] is None or nginx[distribution] is None:
                 continue
             metric = f"{distribution}_{percentile.removesuffix('_us')}"
-            latency_ratios[f"a3s_to_nginx_{metric}_ratio"] = (
-                a3s[distribution][percentile] / nginx[distribution][percentile]
+            latency_ratios[f"aster_to_nginx_{metric}_ratio"] = (
+                aster[distribution][percentile] / nginx[distribution][percentile]
             )
             positions[metric] = relative_position(
-                a3s[distribution][percentile],
+                aster[distribution][percentile],
                 nginx[distribution][percentile],
                 True,
             )
     return {
-        "a3s_to_nginx_token_goodput_ratio": (
-            a3s["token_goodput_per_second"] / nginx["token_goodput_per_second"]
+        "aster_to_nginx_token_goodput_ratio": (
+            aster["token_goodput_per_second"] / nginx["token_goodput_per_second"]
         ),
-        "a3s_to_nginx_stream_rate_ratio": (
-            a3s["streams_per_second"] / nginx["streams_per_second"]
+        "aster_to_nginx_stream_rate_ratio": (
+            aster["streams_per_second"] / nginx["streams_per_second"]
         ),
         **latency_ratios,
         "positions": positions,
@@ -906,7 +906,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--logical-cpus", type=int, required=True)
     parser.add_argument("--memory-mib", type=int, required=True)
     parser.add_argument("--kernel", required=True)
-    parser.add_argument("--a3s-version", required=True)
+    parser.add_argument("--aster-version", required=True)
     parser.add_argument("--nginx-version", required=True)
     parser.add_argument("--upstream-version", required=True)
     parser.add_argument("--load-version", required=True)
@@ -923,8 +923,8 @@ def main() -> int:
         products: dict[str, Any] = {}
         expected_scenario = None
         product_ids = (
-            ("a3s-gateway",)
-            if profile_id in A3S_ONLY_PROFILES
+            ("aster-gateway",)
+            if profile_id in ASTER_ONLY_PROFILES
             else PRODUCTS
         )
         for product in product_ids:
@@ -954,19 +954,19 @@ def main() -> int:
             }
 
         label, workload = PROFILE_DETAILS[profile_id]
-        a3s = products["a3s-gateway"]["median"]
-        if profile_id in A3S_ONLY_PROFILES:
+        aster = products["aster-gateway"]["median"]
+        if profile_id in ASTER_ONLY_PROFILES:
             profiles[profile_id] = {
                 "label": label,
                 "workload": workload,
-                "capability_alignment": "a3s_policy_absolute_nginx_unsupported",
+                "capability_alignment": "aster_policy_absolute_nginx_unsupported",
                 "scenario": expected_scenario,
                 "products": products,
                 "comparison": {
                     "nginx_capability": "unsupported",
                     "reason": (
                         "No pinned NGINX-equivalent observability module is "
-                        "configured in this suite; report A3S absolute medians only."
+                        "configured in this suite; report Aster absolute medians only."
                     ),
                 },
             }
@@ -981,14 +981,14 @@ def main() -> int:
             elif profile_id == "gateway-restart":
                 capability_alignment = "proxy_process_restart_recovery"
             else:
-                capability_alignment = "a3s_openai_validation_vs_nginx_transport"
+                capability_alignment = "aster_openai_validation_vs_nginx_transport"
             profiles[profile_id] = {
                 "label": label,
                 "workload": workload,
                 "capability_alignment": capability_alignment,
                 "scenario": expected_scenario,
                 "products": products,
-                "comparison": compare(a3s, nginx),
+                "comparison": compare(aster, nginx),
             }
 
     payload = {
@@ -1004,7 +1004,7 @@ def main() -> int:
             "kernel": args.kernel,
         },
         "versions": {
-            "a3s_gateway": args.a3s_version,
+            "aster_gateway": args.aster_version,
             "nginx": args.nginx_version,
             "deterministic_upstream": args.upstream_version,
             "streaming_load_client": args.load_version,
@@ -1012,12 +1012,12 @@ def main() -> int:
         "methodology": {
             "scope": (
                 "Same-host OpenAI-compatible streaming comparison against one "
-                "deterministic upstream. A3S performs bounded OpenAI JSON/model "
+                "deterministic upstream. Aster performs bounded OpenAI JSON/model "
                 "validation; NGINX is a transport-only baseline."
             ),
             "trials": args.trials,
             "aggregation": (
-                "Median of repeated trials; A3S and NGINX execution order alternates "
+                "Median of repeated trials; Aster and NGINX execution order alternates "
                 "by trial for every profile. Every raw trial remains embedded."
             ),
             "clock": "Load-generator monotonic clock; stored latency unit is microseconds.",
@@ -1040,9 +1040,9 @@ def main() -> int:
         "limitations": [
             "GitHub-hosted runners are shared regression infrastructure, not a controlled capacity lab.",
             "The synthetic upstream isolates Gateway transport and request-processing behavior; it does not represent model compute time or quality.",
-            "A3S OpenAI validation and NGINX transport-only forwarding are customer-visible product paths but are not policy-capability equivalent.",
-            "Policy lanes such as telemetry-on report A3S absolute medians and mark NGINX unsupported unless a pinned equivalent module is supplied.",
-            "Cold A3S Box/Sandbox lifecycle and dedicated real-model evidence are separate benchmark lanes.",
+            "Aster OpenAI validation and NGINX transport-only forwarding are customer-visible product paths but are not policy-capability equivalent.",
+            "Policy lanes such as telemetry-on report Aster absolute medians and mark NGINX unsupported unless a pinned equivalent module is supplied.",
+            "Cold Aster Box/Sandbox lifecycle and dedicated real-model evidence are separate benchmark lanes.",
         ],
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -1050,7 +1050,7 @@ def main() -> int:
     summary: dict[str, Any] = {}
     for profile_id, profile in profiles.items():
         entry: dict[str, Any] = {
-            "a3s": profile["products"]["a3s-gateway"]["median"],
+            "aster": profile["products"]["aster-gateway"]["median"],
             "comparison": profile["comparison"],
         }
         if "nginx" in profile["products"]:

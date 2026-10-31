@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_use_core::{Artifact, Readiness, UseError, UseResult};
+use aster_use_core::{Artifact, Readiness, UseError, UseResult};
 use async_trait::async_trait;
 
 use crate::OcrBlock;

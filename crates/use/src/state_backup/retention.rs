@@ -3,8 +3,8 @@ use std::fs::{self, File, OpenOptions};
 use std::path::{Component, Path, PathBuf};
 use std::time::UNIX_EPOCH;
 
-use a3s_use_core::{UseError, UseResult};
-use a3s_use_extension::ExtensionPaths;
+use aster_use_core::{UseError, UseResult};
+use aster_use_extension::ExtensionPaths;
 use fs2::FileExt;
 use olpc_cjson::CanonicalFormatter;
 use serde::{Deserialize, Serialize};
@@ -15,18 +15,18 @@ use super::{
     MAX_STATE_BACKUP_FILES, MAX_STATE_BACKUP_MANIFEST_BYTES,
 };
 
-pub const A3S_USE_STATE_BACKUP_RETENTION_PLAN_SCHEMA: &str =
-    "a3s.use.state-backup-retention-plan.v1";
-pub const A3S_USE_STATE_BACKUP_RETENTION_RESULT_SCHEMA: &str =
-    "a3s.use.state-backup-retention-result.v1";
+pub const ASTER_USE_STATE_BACKUP_RETENTION_PLAN_SCHEMA: &str =
+    "aster.use.state-backup-retention-plan.v1";
+pub const ASTER_USE_STATE_BACKUP_RETENTION_RESULT_SCHEMA: &str =
+    "aster.use.state-backup-retention-result.v1";
 pub const DEFAULT_STATE_BACKUP_RETENTION_MAX_BACKUPS: u64 = 32;
 pub const DEFAULT_STATE_BACKUP_RETENTION_MAX_BYTES: u64 = 2 * 1024 * 1024 * 1024 * 1024;
 pub const MIN_STATE_BACKUP_RETENTION_BACKUPS: u64 = 2;
 pub const MAX_STATE_BACKUP_RETENTION_BACKUPS: u64 = 4_096;
 pub const MAX_STATE_BACKUP_RETENTION_BYTES: u64 = 256 * 1024 * 1024 * 1024 * 1024;
 
-const BACKUP_SUFFIX: &str = ".a3s-use-state-backup";
-const DIRECTORY_LOCK_NAME: &str = ".a3s-use-state-backup-retention.lock";
+const BACKUP_SUFFIX: &str = ".aster-use-state-backup";
+const DIRECTORY_LOCK_NAME: &str = ".aster-use-state-backup-retention.lock";
 const MAX_DIRECTORY_ENTRIES: usize = 4_096;
 const MAX_BACKUP_FILE_NAME_BYTES: usize = 255;
 const MAX_ARCHIVE_BYTES: u64 = MAX_STATE_BACKUP_BYTES + MAX_STATE_BACKUP_MANIFEST_BYTES + 1_024;
@@ -136,7 +136,7 @@ impl StateBackupRetentionPlan {
         let before_archive_bytes = total_bytes(&inventory)?;
         let (remove, retain) = partition_inventory(inventory, policy)?;
         let plan = Self {
-            schema: A3S_USE_STATE_BACKUP_RETENTION_PLAN_SCHEMA.to_owned(),
+            schema: ASTER_USE_STATE_BACKUP_RETENTION_PLAN_SCHEMA.to_owned(),
             policy,
             before_backup_count,
             before_archive_bytes,
@@ -151,7 +151,7 @@ impl StateBackupRetentionPlan {
 
     pub fn validate(&self) -> UseResult<()> {
         self.policy.validate()?;
-        if self.schema != A3S_USE_STATE_BACKUP_RETENTION_PLAN_SCHEMA {
+        if self.schema != ASTER_USE_STATE_BACKUP_RETENTION_PLAN_SCHEMA {
             return Err(plan_invalid(
                 "The state backup retention plan schema is invalid.",
             ));
@@ -213,7 +213,7 @@ impl BackupDirectoryLock {
                         "The state backup retention lock cannot be inspected: {error}"
                     ))
                 })?;
-                if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file()
+                if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file()
                 {
                     return Err(directory_invalid(
                         "The state backup retention lock is not an owned regular file.",
@@ -354,7 +354,7 @@ pub(super) fn apply(
         ));
     }
     Ok(StateBackupRetentionResult {
-        schema: A3S_USE_STATE_BACKUP_RETENTION_RESULT_SCHEMA.to_owned(),
+        schema: ASTER_USE_STATE_BACKUP_RETENTION_RESULT_SCHEMA.to_owned(),
         plan_digest: actual_digest,
         changed: !removed.is_empty(),
         removed,
@@ -415,7 +415,7 @@ fn inspect_entry(path: &Path) -> UseResult<StateBackupRetentionEntry> {
             "A managed state backup candidate cannot be inspected: {error}"
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&before) || !before.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&before) || !before.is_file() {
         return Err(directory_invalid(
             "A managed state backup candidate is not an owned regular file.",
         ));
@@ -427,7 +427,7 @@ fn inspect_entry(path: &Path) -> UseResult<StateBackupRetentionEntry> {
             "A verified state backup candidate cannot be reinspected: {error}"
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&after)
+    if aster_use_core::metadata_is_link_or_reparse_point(&after)
         || !after.is_file()
         || after.len() != before.len()
         || modified_at_ns(&after)? != before_modified
@@ -607,7 +607,7 @@ fn validate_directory(directory: &Path) -> UseResult<()> {
             "The state backup retention directory cannot be inspected: {error}"
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(directory_invalid(
             "The state backup retention path is not an owned directory.",
         ));

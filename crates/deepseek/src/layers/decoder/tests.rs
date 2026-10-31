@@ -14,7 +14,7 @@ use crate::{
     model::DeepSeekModel,
     state::kv::{KvCacheKind, KvState},
 };
-use a3s_power::{error::PowerError, inference::InferenceLimits};
+use aster_power::{error::PowerError, inference::InferenceLimits};
 
 fn build(id: usize, limits: InferenceLimits, with_engram: bool) -> Result<TextDecoderLayer> {
     let device = CudaLayerDevice::cpu_for_tests(limits.clone());

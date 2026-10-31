@@ -25,7 +25,7 @@ impl crate::agent::TurnEngine {
     pub(crate) fn validate_durable_source(
         &self,
         session_id: &str,
-        facts: &[a3s_effect::Fact],
+        facts: &[aster_effect::Fact],
     ) -> anyhow::Result<()> {
         if let Some(source) = &self.config.durable_source {
             source.verify(session_id, facts)?;

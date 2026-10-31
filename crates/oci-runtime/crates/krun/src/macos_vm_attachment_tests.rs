@@ -2,8 +2,8 @@
 
 use std::os::unix::fs::PermissionsExt;
 
-use a3s_oci_agent_protocol::{AgentVmDirectorySourceIdentity, GuestPath};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentVmDirectorySourceIdentity, GuestPath};
+use aster_oci_sdk::{
     oci_spec::runtime::Spec, ContainerId, ContainerTarget, CreateAttachments, Generation,
     ProcessIo, StorageAccessMode, StorageAttachmentId, StorageCleanup, StorageOwnership,
 };
@@ -38,8 +38,8 @@ impl Fixture {
         config["root"] = json!({"path":"rootfs", "readonly":true});
         config["mounts"] = json!([{"destination":"/workspace", "type":"none",
             "source":source, "options":["rbind","ro"]}]);
-        let policy = a3s_oci_sdk::StoragePathRestrictions::new(vec![
-            a3s_oci_sdk::StoragePathRestriction::new(
+        let policy = aster_oci_sdk::StoragePathRestrictions::new(vec![
+            aster_oci_sdk::StoragePathRestriction::new(
                 StorageAttachmentId::new("workspace").unwrap(),
                 vec![".env".into()],
                 vec![],
@@ -49,7 +49,7 @@ impl Fixture {
         ])
         .unwrap();
         if restricted {
-            config["annotations"] = json!({a3s_oci_sdk::STORAGE_PATH_RESTRICTIONS_EXTENSION: policy.to_annotation_value().unwrap()});
+            config["annotations"] = json!({aster_oci_sdk::STORAGE_PATH_RESTRICTIONS_EXTENSION: policy.to_annotation_value().unwrap()});
         }
         let encoded = config.to_string();
         fs::write(share.join("bundle/config.json"), &encoded).unwrap();
@@ -83,7 +83,7 @@ impl Fixture {
         .unwrap();
         let mut manifest = AgentVmAttachmentManifest::new_with_directories(
             ContainerTarget::exact(ContainerId::new("workspace").unwrap(), Generation(1)),
-            GuestPath::new("/run/a3s-oci-runtime/bundle").unwrap(),
+            GuestPath::new("/run/aster-oci-runtime/bundle").unwrap(),
             bundle.config_digest(),
             digest,
             Vec::new(),

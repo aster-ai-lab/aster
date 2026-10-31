@@ -1,5 +1,5 @@
 #[cfg(feature = "postgres")]
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, PostgresEventStore, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowSpec,
 };
@@ -21,7 +21,7 @@ impl FlowRuntime for GreetingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(output) = ctx.step_output("greet") {
             return Ok(ctx.complete(output.clone()));
@@ -34,7 +34,7 @@ impl FlowRuntime for GreetingRuntime {
         ))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "greet_user" => Ok(json!({
                 "message": format!("hello {}", invocation.input["name"].as_str().unwrap_or("unknown")),
@@ -46,7 +46,7 @@ impl FlowRuntime for GreetingRuntime {
 
 #[cfg(feature = "postgres")]
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let Some(url) = std::env::var("KENSE_FLOW_POSTGRES_URL")
         .ok()
         .filter(|url| !url.trim().is_empty())

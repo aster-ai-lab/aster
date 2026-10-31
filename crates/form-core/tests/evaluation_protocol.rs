@@ -1,12 +1,12 @@
-use a3s_form_core::{evaluate_bytes, EVALUATE_REQUEST_API_VERSION, EVALUATE_RESPONSE_API_VERSION};
+use aster_form_core::{evaluate_bytes, EVALUATE_REQUEST_API_VERSION, EVALUATE_RESPONSE_API_VERSION};
 
 fn request(api_version: &str) -> Vec<u8> {
     format!(
         r#"{{
           "apiVersion":"{api_version}",
           "formPlan":{{
-            "apiVersion":"a3s.dev/form-plan/v1alpha1",
-            "schemaProfile":"a3s.dev/form-schema-profile/1",
+            "apiVersion":"aster.dev/form-plan/v1alpha1",
+            "schemaProfile":"aster.dev/form-schema-profile/1",
             "metadata":{{"locale":"en-US"}},
             "schema":{{
               "type":"object",
@@ -50,8 +50,8 @@ fn expression_request(expression: &str, operation_limit: u64) -> Vec<u8> {
         r#"{{
           "apiVersion":"{EVALUATE_REQUEST_API_VERSION}",
           "formPlan":{{
-            "apiVersion":"a3s.dev/form-plan/v1alpha1",
-            "schemaProfile":"a3s.dev/form-schema-profile/1",
+            "apiVersion":"aster.dev/form-plan/v1alpha1",
+            "schemaProfile":"aster.dev/form-schema-profile/1",
             "metadata":{{"locale":"en-US"}},
             "schema":{{"type":"object"}},
             "nodes":[{{"id":"result","kind":"field","valuePath":"result","depth":1}}],
@@ -80,7 +80,7 @@ fn evaluates_computed_values_and_schema_errors_as_canonical_bytes() {
     assert_eq!(
         response,
         format!(
-            r#"{{"apiVersion":"{EVALUATE_RESPONSE_API_VERSION}","compilerRevision":"a3s-form-core@0.1.0","errors":[{{"code":"additionalProperties","message":"Additional properties are not allowed.","path":"extra"}}],"ok":false,"trace":[{{"dependencies":["quantity","unitPrice"],"nextValue":8,"path":"total","ruleId":"derive-total","status":"set","target":"total"}}],"value":{{"extra":true,"quantity":2,"total":8,"unitPrice":4}}}}"#,
+            r#"{{"apiVersion":"{EVALUATE_RESPONSE_API_VERSION}","compilerRevision":"aster-form-core@0.1.0","errors":[{{"code":"additionalProperties","message":"Additional properties are not allowed.","path":"extra"}}],"ok":false,"trace":[{{"dependencies":["quantity","unitPrice"],"nextValue":8,"path":"total","ruleId":"derive-total","status":"set","target":"total"}}],"value":{{"extra":true,"quantity":2,"total":8,"unitPrice":4}}}}"#,
         )
         .as_bytes(),
     );
@@ -137,7 +137,7 @@ fn preserves_deterministic_expression_failures() {
 #[test]
 fn rejects_invalid_plans_values_and_oversized_requests_without_trapping() {
     let invalid_plan =
-        br#"{"apiVersion":"a3s.dev/form-core/evaluate-request/v1alpha1","formPlan":[],"value":{}}"#;
+        br#"{"apiVersion":"aster.dev/form-core/evaluate-request/v1alpha1","formPlan":[],"value":{}}"#;
     let response = evaluate_bytes(invalid_plan).expect("invalid plan response should encode");
     let response: serde_json::Value =
         serde_json::from_slice(&response).expect("response should decode");
@@ -154,7 +154,7 @@ fn rejects_invalid_plans_values_and_oversized_requests_without_trapping() {
         serde_json::from_slice(&response).expect("response should decode");
     assert_eq!(response["errors"][0]["code"], "protocol.value");
 
-    let oversized = vec![0; a3s_form_core::ABSOLUTE_MAX_REQUEST_BYTES + 1];
+    let oversized = vec![0; aster_form_core::ABSOLUTE_MAX_REQUEST_BYTES + 1];
     let response = evaluate_bytes(&oversized).expect("oversized response should encode");
     let response: serde_json::Value =
         serde_json::from_slice(&response).expect("response should decode");
@@ -213,8 +213,8 @@ fn returns_a_small_failure_envelope_when_the_evaluated_response_is_too_large() {
     let request = serde_json::json!({
         "apiVersion": EVALUATE_REQUEST_API_VERSION,
         "formPlan": {
-            "apiVersion": "a3s.dev/form-plan/v1alpha1",
-            "schemaProfile": "a3s.dev/form-schema-profile/1",
+            "apiVersion": "aster.dev/form-plan/v1alpha1",
+            "schemaProfile": "aster.dev/form-schema-profile/1",
             "metadata": { "locale": "en-US" },
             "schema": { "type": "object" },
             "nodes": nodes,
@@ -250,7 +250,7 @@ fn returns_a_small_failure_envelope_when_the_evaluated_response_is_too_large() {
         "value": { "source": input }
     });
     let request = serde_json::to_vec(&request).expect("large evaluation request should encode");
-    assert!(request.len() < a3s_form_core::ABSOLUTE_MAX_REQUEST_BYTES);
+    assert!(request.len() < aster_form_core::ABSOLUTE_MAX_REQUEST_BYTES);
 
     let response = evaluate_bytes(&request).expect("fallback response should encode");
     assert!(response.len() < 1024);

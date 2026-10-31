@@ -1,4 +1,4 @@
-use a3s_flow::{WorkflowRunSnapshot, WorkflowRunStatus, WorkflowSpec};
+use aster_flow::{WorkflowRunSnapshot, WorkflowRunStatus, WorkflowSpec};
 use serde_json::json;
 
 #[test]

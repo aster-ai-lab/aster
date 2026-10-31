@@ -7,8 +7,8 @@ use std::io::{Read, Write};
 use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-const LOCK_FILE_NAME: &str = ".a3s-vec.lock";
-const OWNER_FILE_NAME: &str = ".a3s-vec.lock.owner";
+const LOCK_FILE_NAME: &str = ".aster-vec.lock";
+const OWNER_FILE_NAME: &str = ".aster-vec.lock.owner";
 const MAX_OWNER_BYTES: u64 = 4 * 1024;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

@@ -14,7 +14,7 @@
 | 已有设备 mesh 与受限 peer transfer 合同 | `inference/accelerator/mesh_execution.rs` | 不等价于已实现高效 NCCL all-reduce、all-to-all 或 EP 调度 |
 | `picolm` 是另一种纯 Rust 逐层 GGUF 路线 | `backend/picolm.rs`、`backend/gguf_stream/architecture.rs` | 小内存能力不替代 V4.1 低比特 CUDA 实现 |
 | Xolotl 后端是外部执行器适配 | `backend/xolotl/`；`docs/xolotl-h200-xq.md` | XQ 仍需独立原生格式适配；不能将进程外计算算作原生 CUDA |
-| Power 子模块现有独立 manifest 边界、部分 A3S 非 path 声明 | `crates/power/Cargo.toml`、根 `Cargo.toml` | T001 必须验证根工作区接入、本地依赖和构建所有者，不能扩张存量例外 |
+| Power 子模块现有独立 manifest 边界、部分 Aster 非 path 声明 | `crates/power/Cargo.toml`、根 `Cargo.toml` | T001 必须验证根工作区接入、本地依赖和构建所有者，不能扩张存量例外 |
 
 路径表中的 `inference/` 与 `backend/` 均相对 `crates/power/src/`。
 

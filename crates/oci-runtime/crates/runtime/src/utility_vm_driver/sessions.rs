@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, ExitStatus, Generation, GuestSessionAttachment, GuestSessionId,
 };
 

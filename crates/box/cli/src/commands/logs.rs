@@ -1,4 +1,4 @@
-//! `a3s-box logs` command — View box console logs.
+//! `aster-box logs` command — View box console logs.
 
 use std::io::{BufRead, BufReader, Seek, SeekFrom};
 use std::path::{Path, PathBuf};
@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use chrono::{DateTime, Utc};
 use clap::Args;
 
-use a3s_box_core::log::{LogDriver, LogEntry};
+use aster_box_core::log::{LogDriver, LogEntry};
 
 use crate::resolve;
 use crate::state::{BoxRecord, StateFile};
@@ -334,7 +334,7 @@ fn stopped_eof_is_stable(
 
 fn resolve_log_source(record: &BoxRecord) -> Option<LogSource> {
     let log_dir = record.box_dir.join("logs");
-    let json_log = a3s_box_runtime::log::json_log_path(&log_dir);
+    let json_log = aster_box_runtime::log::json_log_path(&log_dir);
     if json_log.exists() {
         return Some(LogSource {
             path: json_log,
@@ -360,7 +360,7 @@ fn resolve_archived_log_source(
 }
 
 fn resolve_archived_log_source_in(log_dir: &Path) -> Option<LogSource> {
-    let json_log = a3s_box_runtime::log::json_log_path(log_dir);
+    let json_log = aster_box_runtime::log::json_log_path(log_dir);
     if json_log.exists() {
         return Some(LogSource {
             path: json_log,
@@ -407,30 +407,30 @@ async fn wait_for_log_source(
 
 #[derive(Clone)]
 struct ManagedLogTarget {
-    manager: a3s_box_runtime::LocalExecutionManager,
-    execution_id: a3s_box_core::ExecutionId,
-    generation: a3s_box_core::ExecutionGeneration,
+    manager: aster_box_runtime::LocalExecutionManager,
+    execution_id: aster_box_core::ExecutionId,
+    generation: aster_box_core::ExecutionGeneration,
 }
 
 fn record_is_oci_routed(record: &BoxRecord) -> bool {
     record
         .managed_execution
         .as_ref()
-        .is_some_and(a3s_box_runtime::ManagedExecutionMetadata::is_oci_routed)
+        .is_some_and(aster_box_runtime::ManagedExecutionMetadata::is_oci_routed)
 }
 
 async fn prepare_managed_log_target(
     record: &BoxRecord,
 ) -> Result<ManagedLogTarget, Box<dyn std::error::Error>> {
-    use a3s_box_core::ExecutionManager;
+    use aster_box_core::ExecutionManager;
 
     let metadata = record
         .managed_execution
         .as_ref()
         .ok_or_else(|| format!("Box {} lost managed execution metadata", record.name))?;
-    let execution_id = a3s_box_core::ExecutionId::new(record.id.clone())?;
+    let execution_id = aster_box_core::ExecutionId::new(record.id.clone())?;
     let generation = metadata.generation;
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let manager = super::configured_local_execution_manager(&home).await?;
     let status = manager.inspect(&execution_id).await?;
     if status.generation != generation {
@@ -450,7 +450,7 @@ async fn prepare_managed_log_target(
 }
 
 async fn managed_log_target_is_live(target: &ManagedLogTarget) -> bool {
-    use a3s_box_core::{ExecutionManager, ExecutionManagerError, ExecutionState};
+    use aster_box_core::{ExecutionManager, ExecutionManagerError, ExecutionState};
 
     match target.manager.inspect(&target.execution_id).await {
         Ok(status) => {
@@ -738,7 +738,7 @@ mod tests {
         std::fs::create_dir_all(&log_dir).unwrap();
         record.console_log = log_dir.join("console.log");
         std::fs::write(&record.console_log, "console\n").unwrap();
-        let json_log = a3s_box_runtime::log::json_log_path(&log_dir);
+        let json_log = aster_box_runtime::log::json_log_path(&log_dir);
         std::fs::write(&json_log, "{}\n").unwrap();
 
         let source = resolve_log_source(&record).unwrap();
@@ -778,7 +778,7 @@ mod tests {
         let tmp = tempfile::tempdir().unwrap();
         let log_dir = tmp.path().join("logs");
         std::fs::create_dir_all(&log_dir).unwrap();
-        let json_log = a3s_box_runtime::log::json_log_path(&log_dir);
+        let json_log = aster_box_runtime::log::json_log_path(&log_dir);
         std::fs::write(&json_log, "{}\n").unwrap();
         std::fs::write(log_dir.join("console.log"), "console\n").unwrap();
 

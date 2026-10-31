@@ -20,7 +20,7 @@ const MAX_ANSWERS: usize = 16;
 const MAX_ANSWER_CHARS: usize = 16 * 1024;
 const MAX_SUGGESTIONS: usize = 32;
 const MAX_SUGGESTION_CHARS: usize = 512;
-const NORMALIZATION_METADATA_KEY: &str = "_a3s_normalization";
+const NORMALIZATION_METADATA_KEY: &str = "_aster_normalization";
 
 #[derive(Debug, Default)]
 struct NormalizationSummary {

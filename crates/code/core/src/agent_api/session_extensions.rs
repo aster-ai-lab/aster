@@ -1,6 +1,6 @@
 //! Live session extension runtime.
 //!
-//! A3S Code sessions can be extended after creation with agent definitions and
+//! Aster Code sessions can be extended after creation with agent definitions and
 //! MCP servers. This module owns those dynamic capability mutations so the
 //! facade does not need to know how registries, managers, and executors stay in
 //! sync.
@@ -576,7 +576,7 @@ mod tests {
 
     #[test]
     fn mcp_ownership_removes_only_exact_still_owned_registrations() {
-        let executor = ToolExecutor::new("/tmp/a3s-mcp-ownership-test".to_string());
+        let executor = ToolExecutor::new("/tmp/aster-mcp-ownership-test".to_string());
         let inherited = tool("mcp__alpha__shared");
         let unrelated_prefix_collision = tool("mcp__alpha__nested__other-server-tool");
         executor.register_dynamic_tool(Arc::clone(&inherited));
@@ -614,7 +614,7 @@ mod tests {
 
     #[test]
     fn removing_shadowed_local_server_splices_it_out_of_owner_chain() {
-        let executor = ToolExecutor::new("/tmp/a3s-mcp-owner-chain-test".to_string());
+        let executor = ToolExecutor::new("/tmp/aster-mcp-owner-chain-test".to_string());
         let full_name = "mcp__alpha__nested__tool";
         let first = tool(full_name);
         let second = tool(full_name);

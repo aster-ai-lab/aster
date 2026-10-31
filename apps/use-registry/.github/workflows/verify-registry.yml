@@ -15,31 +15,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # The registry tooling is versioned by the A3S Use repository. Pin to the
-      # Use main merge that landed crates/registry-tools (A3S-Lab/Use#256).
+      # The registry tooling is versioned by the Aster Use repository. Pin to the
+      # Use main merge that landed crates/registry-tools (aster-ai-lab/Use#256).
       - name: Build the registry tools from a pinned Use revision
         run: |
           USE_PIN="d7f6a6e9e022678e28062a4a7f71a1d5c2c7a41c"
-          git clone --depth 1 https://github.com/A3S-Lab/Use.git /tmp/use
+          git clone --depth 1 https://github.com/aster-ai-lab/Use.git /tmp/use
           git -C /tmp/use fetch --depth 1 origin "$USE_PIN"
           git -C /tmp/use checkout "$USE_PIN"
           cargo build --release --manifest-path /tmp/use/crates/registry-tools/Cargo.toml
           echo /tmp/use/target/release >> "$GITHUB_PATH"
 
       - name: Verify the committed registry tree
-        run: a3s-use-registry-tools verify --registry registry
+        run: aster-use-registry-tools verify --registry registry
 
       - name: First-principles local transport gate
         run: |
           # Transport/lifecycle invariants only. Client consume (I1/I5) stays
-          # local with A3S_USE_BIN; CI does not treat cache or URL as trust.
+          # local with ASTER_USE_BIN; CI does not treat cache or URL as trust.
           ./scripts/test_local_registry.sh
 
       - name: Re-assemble from committed admissions and verify
         run: |
-          a3s-use-registry-tools keygen --keys-dir /tmp/ci-keys
-          a3s-use-registry-tools assemble \
+          aster-use-registry-tools keygen --keys-dir /tmp/ci-keys
+          aster-use-registry-tools assemble \
             --keys-dir /tmp/ci-keys \
             --admissions admissions.acl \
             --out-root /tmp/ci-registry
-          a3s-use-registry-tools verify --registry /tmp/ci-registry
+          aster-use-registry-tools verify --registry /tmp/ci-registry

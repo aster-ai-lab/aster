@@ -29,7 +29,7 @@ async fn returns_recent_files_as_context() {
     assert!(result.items[0].content.contains("src.rs"));
     assert_eq!(
         result.items[0].source.as_deref(),
-        Some("a3s://workspace/recent-files")
+        Some("aster://workspace/recent-files")
     );
 }
 

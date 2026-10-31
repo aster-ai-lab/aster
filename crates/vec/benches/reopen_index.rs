@@ -1,6 +1,6 @@
 //! Reproducible Workspace-shaped indexed collection reopen fixture.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, FieldSchema, IndexParams,
     MetricType,
 };
@@ -278,9 +278,9 @@ fn print_all_index_reopen_measurements(path: &Path, documents: usize, rounds: us
 }
 
 fn main() {
-    let documents = positive_env("A3S_VEC_REOPEN_DOCUMENTS", DEFAULT_DOCUMENTS);
-    let rounds = positive_env("A3S_VEC_REOPEN_ROUNDS", DEFAULT_ROUNDS);
-    let scalar_fts_only = std::env::var_os("A3S_VEC_REOPEN_SCALAR_FTS_ONLY").is_some();
+    let documents = positive_env("ASTER_VEC_REOPEN_DOCUMENTS", DEFAULT_DOCUMENTS);
+    let rounds = positive_env("ASTER_VEC_REOPEN_ROUNDS", DEFAULT_ROUNDS);
+    let scalar_fts_only = std::env::var_os("ASTER_VEC_REOPEN_SCALAR_FTS_ONLY").is_some();
     let temporary = tempdir().expect("temporary directory must be available");
     let docs: Vec<Doc> = (0..documents).map(document).collect();
     let documents_path = temporary.path().join("documents");

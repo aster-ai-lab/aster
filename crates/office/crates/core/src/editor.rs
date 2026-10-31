@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::semantic::NativeOfficeDocument;
 use crate::{

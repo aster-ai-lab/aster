@@ -45,7 +45,7 @@ fn request(
 #[ignore = "requires signed HVF assets; run explicitly on Apple Silicon"]
 async fn real_command_phase_timing() {
     let _ = tracing_subscriber::fmt()
-        .with_env_filter("a3s_code_core::sandbox::oci=debug")
+        .with_env_filter("aster_core::sandbox::oci=debug")
         .with_target(true)
         .json()
         .without_time()
@@ -108,7 +108,7 @@ async fn real_bash_streaming_receipt_workspace_and_credential_contract() {
         "if cat .env >/dev/null 2>&1; then exit 91; fi; ",
         "if cat node_modules/pkg/config >/dev/null 2>&1; then exit 92; fi; ",
         "if printf denied > .git/config 2>/dev/null; then exit 93; fi; ",
-        "printf loop > .a3s/loops/state; exit 7"
+        "printf loop > .aster/loops/state; exit 7"
     );
     let output = sandbox
         .exec(request(command.into(), Some(observer.clone()), 20_000))
@@ -123,7 +123,7 @@ async fn real_bash_streaming_receipt_workspace_and_credential_contract() {
     assert_eq!(std::fs::read(root.join(".env")).unwrap(), b"credential");
     assert_eq!(std::fs::read(root.join(".git/config")).unwrap(), b"control");
     assert_eq!(
-        std::fs::read(root.join(".a3s/loops/state")).unwrap(),
+        std::fs::read(root.join(".aster/loops/state")).unwrap(),
         b"loop"
     );
     assert!(!observer.summary.lock().unwrap().unwrap().timed_out);

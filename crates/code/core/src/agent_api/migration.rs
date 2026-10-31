@@ -5,7 +5,7 @@ use crate::store::{
     LegacyStudioMigrationReceipt, LegacyStudioMigrationRequest, SessionStore,
     TranscriptEntryPayload, TranscriptLegacyHistoryDisplay, LEGACY_STUDIO_MIGRATION_SCHEMA_V1,
 };
-use a3s_effect::{Fact, LogStore, NewFact};
+use aster_effect::{Fact, LogStore, NewFact};
 use std::collections::HashSet;
 
 pub(crate) const LEGACY_STUDIO_ENTRY_FACT_KIND: &str = "legacy.studio.entry";
@@ -46,7 +46,7 @@ pub fn legacy_studio_source_digest(
 ) -> Result<String> {
     let workspace = safe_canonicalize(expected_workspace);
     crate::content_digest::digest_json(
-        "a3s.code.legacy-studio-history-source.v1",
+        "aster.code.legacy-studio-history-source.v1",
         &(source_session_id, workspace, entries),
     )
     .map_err(migration_error)
@@ -65,7 +65,7 @@ impl LegacyStudioMigrationRequest {
 
 fn target_digest(entries: &[LegacyStudioEntry]) -> Result<String> {
     let displays = entries.iter().map(display).collect::<Vec<_>>();
-    crate::content_digest::digest_json("a3s.code.legacy-studio-history-target.v1", &displays)
+    crate::content_digest::digest_json("aster.code.legacy-studio-history-target.v1", &displays)
         .map_err(migration_error)
 }
 
@@ -295,7 +295,7 @@ fn target_already_exists(workspace: &Path, target_session_id: &str) -> Result<bo
     if !directory.try_exists().map_err(migration_error)? {
         return Ok(false);
     }
-    let log = a3s_effect::FileLog::open(directory).map_err(migration_error)?;
+    let log = aster_effect::FileLog::open(directory).map_err(migration_error)?;
     Ok(!log
         .read(&crate::fact_control::thread_for_session(target_session_id))
         .map_err(migration_error)?

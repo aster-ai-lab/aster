@@ -1,9 +1,9 @@
 #![cfg(feature = "postgres")]
 
-use a3s_flow::{
+use aster_flow::{
     migrate_postgres_flow, FlowEventStore, FlowTaskQueue, PostgresEventStore, PostgresFlowTaskQueue,
 };
-use a3s_orm::PostgresExecutor;
+use aster_orm::PostgresExecutor;
 use uuid::Uuid;
 
 fn postgres_url_from_env() -> Option<String> {
@@ -46,7 +46,7 @@ async fn dedicated_migrator_admits_store_and_queue_without_serving_ddl() {
         .connection()
         .await
         .unwrap()
-        .query_one("SELECT to_regclass('a3s_orm_migrations')::text", &[])
+        .query_one("SELECT to_regclass('aster_orm_migrations')::text", &[])
         .await
         .unwrap()
         .get(0);

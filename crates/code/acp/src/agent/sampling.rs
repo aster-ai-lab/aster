@@ -2,7 +2,7 @@
 
 use super::*;
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     /// Build the consent channel (once) and arm the manager's sampling
     /// factory with the composition `Bounded(ApprovalGated(Llm))` — the
     /// consent bridge INSIDE the per-server ceiling, per both types'
@@ -30,8 +30,8 @@ impl A3sCodeAgent {
             // No usable client for the default voice: refused.
             return Ok(());
         };
-        let llm = a3s_code_core::llm::create_client_with_config(llm);
-        let factory: a3s_code_core::mcp::SamplingHandlerFactory =
+        let llm = aster_core::llm::create_client_with_config(llm);
+        let factory: aster_core::mcp::SamplingHandlerFactory =
             std::sync::Arc::new(move |server| sampling_handler_for(server, &llm, &model_ref, &tx));
         agent
             .set_sampling_handler_factory(factory)
@@ -69,11 +69,11 @@ pub(super) fn resolve_consent_session(
 /// per-server ceiling, the model voice capped on generation.
 pub(super) fn sampling_handler_for(
     server: &str,
-    llm: &std::sync::Arc<dyn a3s_code_core::llm::LlmClient>,
+    llm: &std::sync::Arc<dyn aster_core::llm::LlmClient>,
     model: &str,
     consent: &tokio::sync::mpsc::Sender<crate::sampling_consent::SamplingConsentAsk>,
-) -> std::sync::Arc<dyn a3s_code_core::mcp::transport::SamplingHandler> {
-    use a3s_code_core::mcp::client::{
+) -> std::sync::Arc<dyn aster_core::mcp::transport::SamplingHandler> {
+    use aster_core::mcp::client::{
         ApprovalGatedSampling, BoundedSamplingHandler, LlmSamplingHandler,
     };
     let voice = std::sync::Arc::new(LlmSamplingHandler::new(

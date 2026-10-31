@@ -216,7 +216,7 @@ mod tests {
     #[test]
     fn missing_environment_supports_anonymous_readiness() {
         let source =
-            CredentialSource::environment("A3S_SEARCH_TEST_CREDENTIAL_THAT_MUST_NOT_EXIST");
+            CredentialSource::environment("ASTER_SEARCH_TEST_CREDENTIAL_THAT_MUST_NOT_EXIST");
 
         assert_eq!(
             source.readiness("test", true),
@@ -228,7 +228,7 @@ mod tests {
 
     #[test]
     fn missing_required_environment_is_reported_without_a_value() {
-        let variable = "A3S_SEARCH_TEST_REQUIRED_CREDENTIAL_THAT_MUST_NOT_EXIST";
+        let variable = "ASTER_SEARCH_TEST_REQUIRED_CREDENTIAL_THAT_MUST_NOT_EXIST";
         let source = CredentialSource::environment(variable);
 
         assert_eq!(

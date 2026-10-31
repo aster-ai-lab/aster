@@ -2,11 +2,11 @@
 # Opt-in Native Linux Live Host reopen evidence wrapper.
 #
 # Distinct from stopped-only native-linux-recovery. Requires
-# A3S_OCI_NATIVE_SESSION_SUPERVISOR=1. Proves create+start → retained exec I/O
+# ASTER_OCI_NATIVE_SESSION_SUPERVISOR=1. Proves create+start → retained exec I/O
 # (Pipe stdin + Capture stdout) → FileOp upload → Host SIGKILL → init survival
 # → replacement Host Running reattach → same-process write_stdin/read_output →
 # new post-reattach Pipe+Capture exec → FileOp download under schema
-# a3s.oci.linux-native-live-recovery-smoke.v3.
+# aster.oci.linux-native-live-recovery-smoke.v3.
 #
 # Rootful Host Service must observe a reachable cgroup hierarchy (nsdelegate
 # returns ENOENT when source/destination are not in the writer's cgroup
@@ -26,38 +26,38 @@ do
   fi
 done
 
-export A3S_OCI_NATIVE_SESSION_SUPERVISOR="${A3S_OCI_NATIVE_SESSION_SUPERVISOR:-1}"
+export ASTER_OCI_NATIVE_SESSION_SUPERVISOR="${ASTER_OCI_NATIVE_SESSION_SUPERVISOR:-1}"
 
 target_dir="${CARGO_TARGET_DIR:-target}"
 if [[ "$target_dir" != /* ]]; then
   target_dir="$PWD/$target_dir"
 fi
-profile="${A3S_OCI_BUILD_PROFILE:-debug}"
-build_arguments=(build -p a3s-oci-cli -p a3s-oci-agent)
+profile="${ASTER_OCI_BUILD_PROFILE:-debug}"
+build_arguments=(build -p aster-oci-cli -p aster-oci-agent)
 case "$profile" in
   debug) ;;
   release) build_arguments+=(--release) ;;
   *) build_arguments+=(--profile "$profile") ;;
 esac
 binary_dir="$target_dir/$profile"
-cli="$binary_dir/a3s-oci"
-agent="${A3S_OCI_NATIVE_AGENT:-$binary_dir/a3s-oci-agent}"
+cli="$binary_dir/aster-oci"
+agent="${ASTER_OCI_NATIVE_AGENT:-$binary_dir/aster-oci-agent}"
 
 temporary_root="${RUNNER_TEMP:-/tmp}"
 test -d "$temporary_root"
 # Keep the private work prefix short: SUN_LEN bounds the Host Service socket path.
-work="$(mktemp -d "$temporary_root/a3s-oci-nlr.XXXXXX")"
+work="$(mktemp -d "$temporary_root/aster-oci-nlr.XXXXXX")"
 runtime_report="$work/runtime-report.json"
 runtime_stderr="$work/runtime.stderr.log"
 cleanup() {
   local status=$?
-  if [[ "$status" -ne 0 && "${A3S_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
+  if [[ "$status" -ne 0 && "${ASTER_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
     printf 'preserving failed Native Linux Live recovery work directory: %s\n' \
       "$work" >&2
     return 0
   fi
   case "$work" in
-    "$temporary_root"/a3s-oci-nlr.*)
+    "$temporary_root"/aster-oci-nlr.*)
       rm -rf -- "$work"
       ;;
     *)
@@ -85,7 +85,7 @@ on_error() {
 }
 trap on_error ERR
 
-report_path="${A3S_OCI_LINUX_NATIVE_LIVE_RECOVERY_REPORT:-$work/report.json}"
+report_path="${ASTER_OCI_LINUX_NATIVE_LIVE_RECOVERY_REPORT:-$work/report.json}"
 if [[ -e "$report_path" || -L "$report_path" ]]; then
   printf 'refusing to overwrite Native Linux Live recovery report: %s\n' "$report_path" >&2
   exit 1
@@ -96,8 +96,8 @@ cargo "${build_arguments[@]}"
 test -x "$cli"
 test -x "$agent"
 
-if [[ -n "${A3S_OCI_NATIVE_LIVE_BUNDLE:-}" ]]; then
-  bundle="$(realpath -e "$A3S_OCI_NATIVE_LIVE_BUNDLE")"
+if [[ -n "${ASTER_OCI_NATIVE_LIVE_BUNDLE:-}" ]]; then
+  bundle="$(realpath -e "$ASTER_OCI_NATIVE_LIVE_BUNDLE")"
   test -d "$bundle"
   test -f "$bundle/config.json"
 else
@@ -123,7 +123,7 @@ else
      | .linux.namespaces |= map(select(
          .type != "user" and .type != "time" and .type != "network"
        ))
-     | .linux.cgroupsPath = "a3s-oci-native-live"
+     | .linux.cgroupsPath = "aster-oci-native-live"
      | .process.args = ["/bin/sh", "-c", "exec /bin/busybox sleep 3600"]
      | .process.noNewPrivileges = true' \
     "$bundle/config.json" >"$bundle/config.json.tmp"
@@ -135,7 +135,7 @@ mkdir "$evidence_parent"
 # Rootful create needs traversable parents; keep leaves private.
 chmod 0755 "$work"
 chmod 0700 "$evidence_parent"
-if [[ -z "${A3S_OCI_NATIVE_LIVE_BUNDLE:-}" ]]; then
+if [[ -z "${ASTER_OCI_NATIVE_LIVE_BUNDLE:-}" ]]; then
   chmod 0755 "$bundle"
   chmod 0755 "$bundle/rootfs"
 fi
@@ -182,7 +182,7 @@ test -s "$runtime_report"
 jq --exit-status \
   --arg architecture "$architecture" \
   --arg source_revision "$source_revision" \
-  '.schema_version == "a3s.oci.linux-native-live-recovery-smoke.v3"
+  '.schema_version == "aster.oci.linux-native-live-recovery-smoke.v3"
    and .architecture == $architecture
    and .status == "available"
    and .case_count == 1

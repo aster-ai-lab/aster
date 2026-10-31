@@ -1,6 +1,6 @@
 //! Admission of an automatically discovered (untrusted) workspace layer.
 //!
-//! A repository's `.a3s/config.acl` may shape the agent, but it must not
+//! A repository's `.aster/config.acl` may shape the agent, but it must not
 //! start a host process or read host files merely because the user opened
 //! the repository (SEC-WSTRUST1). Two rules apply on top of the
 //! host-authoritative withhold:
@@ -34,7 +34,7 @@ const MAX_TRUST_BYTES: u64 = 1024 * 1024;
 const TRUST_STORE_VERSION: u32 = 1;
 
 /// `<state root>/code/workspace-mcp-trust.json`. The state root must match
-/// the CLI `ComponentPaths` state root: `A3S_STATE_HOME`, else the platform
+/// the CLI `ComponentPaths` state root: `ASTER_STATE_HOME`, else the platform
 /// state directory.
 pub fn workspace_mcp_trust_path(directory: &Path) -> anyhow::Result<PathBuf> {
     Ok(code_state_dir(directory)?.join(WORKSPACE_MCP_TRUST_FILE))
@@ -43,7 +43,7 @@ pub fn workspace_mcp_trust_path(directory: &Path) -> anyhow::Result<PathBuf> {
 /// `<state root>/code`: user-owned Code state that repository content must
 /// never be able to write or pre-seed.
 pub fn code_state_dir(directory: &Path) -> anyhow::Result<PathBuf> {
-    let root = match nonempty_env("A3S_STATE_HOME") {
+    let root = match nonempty_env("ASTER_STATE_HOME") {
         Some(value) if value.is_absolute() => value,
         Some(value) => directory.join(value),
         None => platform_state_root(directory)?,
@@ -53,30 +53,30 @@ pub fn code_state_dir(directory: &Path) -> anyhow::Result<PathBuf> {
 
 #[cfg(target_os = "macos")]
 fn platform_state_root(_directory: &Path) -> anyhow::Result<PathBuf> {
-    Ok(home()?.join("Library/Application Support/A3S/State"))
+    Ok(home()?.join("Library/Application Support/Aster/State"))
 }
 
 #[cfg(all(unix, not(target_os = "macos")))]
 fn platform_state_root(directory: &Path) -> anyhow::Result<PathBuf> {
     match nonempty_env("XDG_STATE_HOME") {
-        Some(value) if value.is_absolute() => Ok(value.join("a3s")),
-        Some(value) => Ok(directory.join(value).join("a3s")),
-        None => Ok(home()?.join(".local/state/a3s")),
+        Some(value) if value.is_absolute() => Ok(value.join("aster")),
+        Some(value) => Ok(directory.join(value).join("aster")),
+        None => Ok(home()?.join(".local/state/aster")),
     }
 }
 
 #[cfg(windows)]
 fn platform_state_root(_directory: &Path) -> anyhow::Result<PathBuf> {
     nonempty_env("LOCALAPPDATA")
-        .map(|local| local.join("A3S/State"))
-        .context("A3S_STATE_HOME is not set and LOCALAPPDATA is not available")
+        .map(|local| local.join("Aster/State"))
+        .context("ASTER_STATE_HOME is not set and LOCALAPPDATA is not available")
 }
 
 #[cfg(unix)]
 fn home() -> anyhow::Result<PathBuf> {
     nonempty_env("HOME")
         .or_else(dirs::home_dir)
-        .context("A3S_STATE_HOME is not set and no home directory is available")
+        .context("ASTER_STATE_HOME is not set and no home directory is available")
 }
 
 fn nonempty_env(name: &str) -> Option<PathBuf> {
@@ -91,7 +91,7 @@ pub fn workspace_mcp_server_id(
     server: &McpServerConfig,
 ) -> anyhow::Result<String> {
     let mut hasher = Sha256::new();
-    hasher.update(b"a3s.code.workspace-mcp-trust.v1\0");
+    hasher.update(b"aster.code.workspace-mcp-trust.v1\0");
     hasher.update(repository_root.to_string_lossy().as_bytes());
     hasher.update(b"\0");
     hasher.update(serde_json::to_vec(&canonical_declaration(server)?)?);
@@ -275,7 +275,7 @@ fn write_atomic(path: &Path, contents: &[u8]) -> anyhow::Result<()> {
 /// Apply every untrusted-layer rule to a merged `config`.
 ///
 /// `repository_root` is the directory that owns the untrusted layer's
-/// `.a3s/`. Trusted layers keep full authority. Fail-closed: an untrusted
+/// `.aster/`. Trusted layers keep full authority. Fail-closed: an untrusted
 /// layer that does not parse on its own contributes no MCP server and no
 /// directory.
 pub fn admit_untrusted_layers(

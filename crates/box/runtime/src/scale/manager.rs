@@ -2,7 +2,7 @@
 
 use std::collections::{HashMap, VecDeque};
 
-use a3s_box_core::scale::{
+use aster_box_core::scale::{
     InstanceEvent, InstanceHealth, InstanceInfo, InstanceState, ScaleDirection, ScaleObservation,
     ScaleOperationConflict, ScaleOperationRequest, ScaleOperationResponse, ScaleRequest,
     ScaleResponse, SCALE_OPERATION_SCHEMA_VERSION,

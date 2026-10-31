@@ -260,7 +260,7 @@ function ensureNamespacePrefix(
   let suffix = 1;
   let prefix = '';
   do {
-    prefix = `a3s${suffix}`;
+    prefix = `aster${suffix}`;
     suffix += 1;
   } while (xmlNamespaceUri(root, prefix));
   root.setAttributeNS(XMLNS_NAMESPACE, `xmlns:${prefix}`, namespace);

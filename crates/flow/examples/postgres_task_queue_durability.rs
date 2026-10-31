@@ -1,5 +1,5 @@
 #[cfg(feature = "postgres")]
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, FlowTask, FlowTaskQueue, FlowWorker, PostgresEventStore,
     PostgresFlowTaskQueue, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowSpec,
 };
@@ -23,7 +23,7 @@ impl FlowRuntime for SleepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.wait_completed("sleep") {
             return Ok(ctx.complete(json!({ "slept": true })));
@@ -38,14 +38,14 @@ impl FlowRuntime for SleepRuntime {
         Ok(ctx.wait_until("sleep", resume_at))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("sleep runtime does not schedule steps")
     }
 }
 
 #[cfg(feature = "postgres")]
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let Some(url) = std::env::var("KENSE_FLOW_POSTGRES_URL")
         .ok()
         .filter(|url| !url.trim().is_empty())

@@ -9,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from '@a3s-lab/ui'
+} from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Breadcrumb> = {
   title: 'Components/Primitives/Breadcrumb',

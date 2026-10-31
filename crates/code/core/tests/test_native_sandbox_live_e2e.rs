@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-//! Native admission and live E2E for Code's resolved a3s-sandbox dependency.
+//! Native admission and live E2E for Code's resolved aster-cmd-sandbox dependency.
 //! The current manifest pins 0.2.2@7e948a36 and the workspace patches it to
 //! the local Sandbox tree. Neither a version label nor a Git declaration
 //! proves execution qualification or public-source parity; retain the actual
@@ -18,13 +18,13 @@
 //! - The mandatory ignored live test remains discoverable on macOS and fails
 //!   its lifetime preflight before configuration/provider calls. Refusal is
 //!   never substituted for a live support pass. Assistant wording is no oracle.
-//! - Model pin comes from monorepo `.a3s/config.acl` Layer C Flash
+//! - Model pin comes from monorepo `.aster/config.acl` Layer C Flash
 //!   (`boyue/deepseek-v4-flash`; alternate route
 //!   `boyue/bailian/deepseek-v4.1-flash` remains for model-switch E2E).
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/to/a3s/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_native_sandbox_live_e2e \
+//! ASTER_CONFIG_FILE=/abs/path/to/aster/.aster/config.acl \
+//!   cargo test -p aster-core --test test_native_sandbox_live_e2e \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -33,10 +33,10 @@ mod support;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::sandbox::native::{NativeBashSandbox, NATIVE_SANDBOX_BACKEND};
-use a3s_code_core::sandbox::{BashSandbox, SandboxCommandRequest};
-use a3s_code_core::{Agent, AgentEvent, SessionOptions};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::sandbox::native::{NativeBashSandbox, NATIVE_SANDBOX_BACKEND};
+use aster_core::sandbox::{BashSandbox, SandboxCommandRequest};
+use aster_core::{Agent, AgentEvent, SessionOptions};
 use support::layer_c_model::{assert_pinned_layer_c_flash, load_pinned_layer_c_config};
 
 const MODEL_TIMEOUT: Duration = Duration::from_secs(420);
@@ -56,7 +56,7 @@ async fn configured_agent() -> Agent {
     assert_pinned_layer_c_flash(&config, "live native-sandbox suite");
     Agent::from_config(config)
         .await
-        .expect("build agent from .a3s/config.acl")
+        .expect("build agent from .aster/config.acl")
 }
 
 fn policy(allows: &[&str]) -> PermissionPolicy {
@@ -74,7 +74,7 @@ fn policy(allows: &[&str]) -> PermissionPolicy {
 fn options(session_id: &str, allows: &[&str]) -> SessionOptions {
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy(allows))
         .with_default_security()
         .with_planning(false)
@@ -92,7 +92,7 @@ struct Observed {
     end_text: String,
 }
 
-async fn observe(session: &a3s_code_core::AgentSession, prompt: &str) -> Observed {
+async fn observe(session: &aster_core::AgentSession, prompt: &str) -> Observed {
     let (mut events, join) = session.stream(prompt, None).await.expect("stream");
     let observed = tokio::time::timeout(MODEL_TIMEOUT, async {
         let mut observed = Observed {
@@ -133,7 +133,7 @@ async fn native_macos_refuses_before_workspace_or_outside_writes() {
     let outside = outside_root.path().join("native-refusal-outside.txt");
     let nonce = format!("native-refusal-{}", uuid::Uuid::new_v4());
     let sandbox = NativeBashSandbox::new(workspace.path())
-        .expect("resolved a3s-sandbox native adapter must construct");
+        .expect("resolved aster-cmd-sandbox native adapter must construct");
     assert_eq!(sandbox.backend(), NATIVE_SANDBOX_BACKEND);
 
     // Do not call the trusted backend probe: user execution must refuse even
@@ -192,7 +192,7 @@ async fn native_macos_refuses_before_workspace_or_outside_writes() {
 async fn resolved_native_sandbox_denies_outside_workspace_write_on_this_host() {
     let workspace = tempfile::tempdir().expect("workspace");
     let sandbox = NativeBashSandbox::new(workspace.path())
-        .expect("resolved a3s-sandbox NativeBashSandbox must initialize on this host");
+        .expect("resolved aster-cmd-sandbox NativeBashSandbox must initialize on this host");
     assert_eq!(sandbox.backend(), NATIVE_SANDBOX_BACKEND);
     sandbox
         .probe()
@@ -200,7 +200,7 @@ async fn resolved_native_sandbox_denies_outside_workspace_write_on_this_host() {
         .expect("native sandbox probe must succeed before claiming integration");
 
     let outside =
-        std::env::temp_dir().join(format!("a3s-sandbox-escape-{}.txt", std::process::id()));
+        std::env::temp_dir().join(format!("aster-cmd-sandbox-escape-{}.txt", std::process::id()));
     let _ = std::fs::remove_file(&outside);
     let command = format!(
         "printf 'escaped\\n' > '{}'",
@@ -235,16 +235,16 @@ async fn resolved_native_sandbox_denies_outside_workspace_write_on_this_host() {
     }
 }
 
-/// Live Flash must drive bash through the attached a3s-sandbox native fence.
+/// Live Flash must drive bash through the attached aster-cmd-sandbox native fence.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires boyue/deepseek-v4-flash from .a3s/config.acl"]
-async fn live_flash_bash_through_a3s_sandbox_writes_workspace_token() {
+#[ignore = "requires boyue/deepseek-v4-flash from .aster/config.acl"]
+async fn live_flash_bash_through_aster_cmd_sandbox_writes_workspace_token() {
     // Keep this test registered and failing explicitly on unsupported macOS.
     // This must precede config loading and every potentially billable call.
     assert_live_native_lifetime_supported();
     let workspace = tempfile::tempdir().expect("workspace");
     let sandbox = Arc::new(
-        NativeBashSandbox::new(workspace.path()).expect("resolved native a3s-sandbox must init"),
+        NativeBashSandbox::new(workspace.path()).expect("resolved native aster-cmd-sandbox must init"),
     );
     assert_eq!(sandbox.backend(), NATIVE_SANDBOX_BACKEND);
     sandbox.probe().await.expect("probe");
@@ -291,7 +291,7 @@ async fn live_flash_bash_through_a3s_sandbox_writes_workspace_token() {
 
     assert!(
         bash_ok && on_disk.contains(NATIVE_TOKEN),
-        "Flash must create {target} via a3s-sandbox bash (sandboxed=true): disk={on_disk:?} tools={:?} errors={:?} end={}",
+        "Flash must create {target} via aster-cmd-sandbox bash (sandboxed=true): disk={on_disk:?} tools={:?} errors={:?} end={}",
         observed
             .tools
             .iter()

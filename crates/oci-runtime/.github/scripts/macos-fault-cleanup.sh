@@ -1,28 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-rootfs_dir="$RUNNER_TEMP/a3s-oci-alpine-aarch64"
-signed_dir="$RUNNER_TEMP/a3s-oci-agent-vm-signed"
-system_image_manifest="${A3S_OCI_MACOS_SYSTEM_IMAGE_MANIFEST:?macOS system-image manifest is required}"
-bundle_dir="$rootfs_dir/var/lib/a3s-oci-smoke/bundle"
-marker="$bundle_dir/rootfs/.a3s-oci-create-start-smoke"
+rootfs_dir="$RUNNER_TEMP/aster-oci-alpine-aarch64"
+signed_dir="$RUNNER_TEMP/aster-oci-agent-vm-signed"
+system_image_manifest="${ASTER_OCI_MACOS_SYSTEM_IMAGE_MANIFEST:?macOS system-image manifest is required}"
+bundle_dir="$rootfs_dir/var/lib/aster-oci-smoke/bundle"
+marker="$bundle_dir/rootfs/.aster-oci-create-start-smoke"
 support="$(sysctl -n kern.hv_support 2>/dev/null || printf unavailable)"
 test -f "$system_image_manifest"
 
 endpoint_baseline="$(
-  find /private/tmp -maxdepth 1 -name 'a3s-oci-agent-*' -print | sort
+  find /private/tmp -maxdepth 1 -name 'aster-oci-agent-*' -print | sort
 )"
 runtime_baseline="$(
-  find "$rootfs_dir/run" -maxdepth 1 -name 'a3s-oci-agent-*' -print | sort
+  find "$rootfs_dir/run" -maxdepth 1 -name 'aster-oci-agent-*' -print | sort
 )"
 
 assert_cleanup_baseline() {
   local endpoint_after runtime_after
   endpoint_after="$(
-    find /private/tmp -maxdepth 1 -name 'a3s-oci-agent-*' -print | sort
+    find /private/tmp -maxdepth 1 -name 'aster-oci-agent-*' -print | sort
   )"
   runtime_after="$(
-    find "$rootfs_dir/run" -maxdepth 1 -name 'a3s-oci-agent-*' -print | sort
+    find "$rootfs_dir/run" -maxdepth 1 -name 'aster-oci-agent-*' -print | sort
   )"
   test "$endpoint_after" = "$endpoint_baseline"
   test "$runtime_after" = "$runtime_baseline"
@@ -31,12 +31,12 @@ assert_cleanup_baseline() {
 
 run_lifecycle_fault() {
   local phase="$1"
-  local console="$RUNNER_TEMP/a3s-oci-fault-$phase.log"
+  local console="$RUNNER_TEMP/aster-oci-fault-$phase.log"
   local output status
   set +e
   output="$(
-    target/debug/a3s-oci oci-vm-fault-cleanup \
-      --shim "$signed_dir/a3s-oci-krun-shim" \
+    target/debug/aster-oci oci-vm-fault-cleanup \
+      --shim "$signed_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs_dir" \
       --system-image-manifest "$system_image_manifest" \
       --bundle "$bundle_dir" \
@@ -50,7 +50,7 @@ run_lifecycle_fault() {
   if [[ "$support" == "1" ]]; then
     test "$status" -eq 0
     jq --exit-status --arg phase "$phase" \
-      '.schema_version == "a3s.oci.oci-vm-fault-cleanup.v4"
+      '.schema_version == "aster.oci.oci-vm-fault-cleanup.v4"
        and .platform == "macos" and .status == "available"
        and .bundle_loaded
        and .lifecycle.requested_fault == $phase
@@ -96,7 +96,7 @@ run_lifecycle_fault() {
   else
     test "$status" -eq 2
     jq --exit-status --arg phase "$phase" \
-      '.schema_version == "a3s.oci.oci-vm-fault-cleanup.v4"
+      '.schema_version == "aster.oci.oci-vm-fault-cleanup.v4"
        and .platform == "macos" and .status == "unavailable"
        and .bundle_loaded
        and .lifecycle.requested_fault == $phase
@@ -118,12 +118,12 @@ run_lifecycle_fault() {
 
 run_transport_fault() {
   local transport_stage="$1"
-  local console="$RUNNER_TEMP/a3s-oci-transport-$transport_stage.log"
+  local console="$RUNNER_TEMP/aster-oci-transport-$transport_stage.log"
   local output status
   set +e
   output="$(
-    target/debug/a3s-oci oci-vm-transport-fault-cleanup \
-      --shim "$signed_dir/a3s-oci-krun-shim" \
+    target/debug/aster-oci oci-vm-transport-fault-cleanup \
+      --shim "$signed_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs_dir" \
       --system-image-manifest "$system_image_manifest" \
       --bundle "$bundle_dir" \
@@ -137,7 +137,7 @@ run_transport_fault() {
   if [[ "$(uname -m)" == "arm64" && "$support" == "1" ]]; then
     test "$status" -eq 0
     jq --exit-status --arg stage "$transport_stage" \
-      '.schema_version == "a3s.oci.oci-vm-transport-fault-cleanup.v3"
+      '.schema_version == "aster.oci.oci-vm-transport-fault-cleanup.v3"
        and .platform == "macos" and .status == "available"
        and .bundle_loaded
        and .requested_operation == "create"
@@ -202,7 +202,7 @@ run_transport_fault() {
   else
     test "$status" -eq 2
     jq --exit-status --arg stage "$transport_stage" \
-      '.schema_version == "a3s.oci.oci-vm-transport-fault-cleanup.v3"
+      '.schema_version == "aster.oci.oci-vm-transport-fault-cleanup.v3"
        and .platform == "macos" and .status != "available"
        and .requested_operation == "create"
        and .requested_stage == $stage

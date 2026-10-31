@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{
     Array, ClientID, Doc, Map, OffsetKind, Options, ReadTxn, StateVector, Transact, Xml,
     XmlElementPrelim, XmlFragment, XmlTextPrelim,
@@ -1169,7 +1169,7 @@ fn bound_store_path(package_path: &Path) -> UseResult<Option<PathBuf>> {
 
 fn binding_path(package_path: &Path) -> PathBuf {
     let mut name = package_path.file_name().unwrap_or_default().to_os_string();
-    name.push(".a3s-replica");
+    name.push(".aster-replica");
     package_path.with_file_name(name)
 }
 
@@ -1701,7 +1701,7 @@ fn escape_pdf_literal(value: &str) -> String {
     escaped
 }
 
-fn text_run_error(paragraph_id: &str) -> a3s_use_core::UseError {
+fn text_run_error(paragraph_id: &str) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.snapshot_invalid",
         format!(

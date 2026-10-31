@@ -18,7 +18,7 @@ use crate::support::{
     TestResult,
 };
 
-const TASK_DELETE_RECEIPT_FILE_NAME: &str = "a3s-oci-shim-task-delete-v1.json";
+const TASK_DELETE_RECEIPT_FILE_NAME: &str = "aster-oci-shim-task-delete-v1.json";
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -127,7 +127,7 @@ pub(super) async fn qualify(config: &QualificationConfig, prefix: &str) -> TestR
         .into());
     }
     require_task_delete_receipt(config, &id, &bundle, &identity, first).await?;
-    if tokio::fs::try_exists(bundle.join("a3s-oci-shim-v1.json"))
+    if tokio::fs::try_exists(bundle.join("aster-oci-shim-v1.json"))
         .await
         .map_err(|error| qualification_error(format!("inspect deleted task metadata: {error}")))?
     {

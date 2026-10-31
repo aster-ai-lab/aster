@@ -20,9 +20,9 @@ use super::{
     WorkspaceGitRemote, WorkspaceGitRemoveWorktreeRequest, WorkspaceGitStash,
     WorkspaceGitStashProvider, WorkspaceGitStashRequest, WorkspaceGitStatus, WorkspaceGitWorktree,
     WorkspaceGitWorktreeMutation, WorkspaceGitWorktreeProvider, WorkspaceGlobRequest,
-    WorkspaceGlobResult, WorkspaceGrepOutcome, WorkspaceGrepRequest, WorkspaceGrepResult,
-    WorkspacePath, WorkspacePathResolver, WorkspaceResult, WorkspaceSearch, WorkspaceTextRange,
-    WorkspaceTextReader, WorkspaceWriteOutcome,
+    WorkspaceGlobResult, WorkspaceGrepMatch, WorkspaceGrepOutcome, WorkspaceGrepRequest,
+    WorkspaceGrepResult, WorkspacePath, WorkspacePathResolver, WorkspaceResult, WorkspaceSearch,
+    WorkspaceTextRange, WorkspaceTextReader, WorkspaceWriteOutcome,
 };
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
@@ -687,7 +687,7 @@ impl ManifestWorkspaceBackend {
     /// First principles: enabling the catalog must not open durable native FTS.
     /// Wire that projection with [`Self::configure_persistent_index`] before
     /// the catalog starts, or open it on BM25 demand via
-    /// [`Self::ensure_persistent_index`]. Grep never opens durable a3s-vec. Missing
+    /// [`Self::ensure_persistent_index`]. Grep never opens durable aster-vec. Missing
     /// durable cache degrades to the portable in-memory catalog without failing
     /// the workspace.
     pub fn chunk_catalog(&self) -> Arc<WorkspaceChunkCatalog> {
@@ -712,7 +712,7 @@ impl ManifestWorkspaceBackend {
         runtime.catalog()
     }
 
-    /// Enable a workspace-owned persistent a3s-vec FTS index before the catalog
+    /// Enable a workspace-owned persistent aster-vec FTS index before the catalog
     /// is initialized. The existing manifest watcher remains the sole source
     /// of updates; this only adds a durable projection of each catalog
     /// snapshot.
@@ -726,7 +726,7 @@ impl ManifestWorkspaceBackend {
                     .to_owned(),
             ));
         }
-        let index = WorkspacePersistentIndex::open(root, WorkspaceLexicalEngine::A3sVec)?;
+        let index = WorkspacePersistentIndex::open(root, WorkspaceLexicalEngine::AsterVec)?;
         self.persistent_index.set(Arc::clone(&index)).map_err(|_| {
             WorkspaceIndexError::InvalidConfig(
                 "persistent workspace index was already configured".to_owned(),
@@ -740,7 +740,7 @@ impl ManifestWorkspaceBackend {
         self.persistent_index.get().cloned()
     }
 
-    /// Open the workspace durable a3s-vec FTS projection on BM25 demand.
+    /// Open the workspace durable aster-vec FTS projection on BM25 demand.
     ///
     /// Grep must not call this — it stays on the filesystem / manifest /
     /// optional trigram plane. Safe after the chunk catalog has already
@@ -799,7 +799,7 @@ impl ManifestWorkspaceBackend {
             limits,
             lexical_engine,
         )?;
-        // Do not open durable a3s-vec here. Catalog enable is independent of the
+        // Do not open durable aster-vec here. Catalog enable is independent of the
         // optional native FTS projection; see [`Self::ensure_persistent_index`].
         let file_system: Arc<dyn WorkspaceFileSystem> = self.catalog_local.clone();
         let runtime = LocalWorkspaceCatalogRuntime::start_with_catalog_and_persistent(
@@ -836,13 +836,13 @@ impl ManifestWorkspaceBackend {
     /// [`Self::configure_persistent_index`], this may run after the catalog
     /// runtime has started and does not fail the workspace when unavailable.
     fn open_default_persistent_index(&self) -> Option<Arc<WorkspacePersistentIndex>> {
-        #[cfg(feature = "a3s-vec-fts")]
+        #[cfg(feature = "aster-vec-fts")]
         {
             if let Some(index) = self.persistent_index.get() {
                 return Some(Arc::clone(index));
             }
             let root = crate::state_root::workspace_index_dir(&self.local.root).join("index");
-            match WorkspacePersistentIndex::open(root, WorkspaceLexicalEngine::A3sVec) {
+            match WorkspacePersistentIndex::open(root, WorkspaceLexicalEngine::AsterVec) {
                 Ok(index) => match self.persistent_index.set(Arc::clone(&index)) {
                     Ok(()) => Some(index),
                     Err(_) => self.persistent_index.get().cloned(),
@@ -850,13 +850,13 @@ impl ManifestWorkspaceBackend {
                 Err(error) => {
                     tracing::debug!(
                         %error,
-                        "workspace persistent a3s-vec index unavailable; using session-local lexical catalog"
+                        "workspace persistent aster-vec index unavailable; using session-local lexical catalog"
                     );
                     None
                 }
             }
         }
-        #[cfg(not(feature = "a3s-vec-fts"))]
+        #[cfg(not(feature = "aster-vec-fts"))]
         {
             None
         }
@@ -895,7 +895,7 @@ impl Drop for ManifestWorkspaceBackend {
         // Direct WorkspaceServices users do not have the AgentSession close
         // boundary. Stop the shared manifest/catalog owner here so automatic
         // persistent indexing cannot outlive a temporary workspace or keep a
-        // a3s-vec operation running during teardown.
+        // aster-vec operation running during teardown.
         if self.owns_manifest {
             self.shutdown();
         } else {
@@ -1053,6 +1053,7 @@ impl WorkspaceSearch for ManifestWorkspaceBackend {
         let mut file_count = 0;
         let mut total_size = 0;
         let mut matched_paths = Vec::new();
+        let mut matches = Vec::new();
         let mut skipped_oversize = Vec::new();
         let metadata_only = request.max_output_size == 0;
 
@@ -1132,6 +1133,7 @@ impl WorkspaceSearch for ManifestWorkspaceBackend {
                             file_count,
                             truncated: true,
                         },
+                        matches: Some(matches),
                         matched_paths: Some(matched_paths),
                         skipped_oversize,
                     });
@@ -1145,6 +1147,7 @@ impl WorkspaceSearch for ManifestWorkspaceBackend {
                 if metadata_only {
                     continue;
                 }
+                let output_start = output.len();
                 let start = match_idx.saturating_sub(request.context_lines);
                 let end = (match_idx + request.context_lines + 1).min(lines.len());
 
@@ -1160,6 +1163,10 @@ impl WorkspaceSearch for ManifestWorkspaceBackend {
                     output.push_str("--\n");
                     total_size += 3;
                 }
+                matches.push(WorkspaceGrepMatch {
+                    path: workspace_path.clone(),
+                    output_range: output_start..output.len(),
+                });
             }
         }
 
@@ -1170,6 +1177,7 @@ impl WorkspaceSearch for ManifestWorkspaceBackend {
                 file_count,
                 truncated: false,
             },
+            matches: Some(matches),
             matched_paths: Some(matched_paths),
             skipped_oversize,
         })

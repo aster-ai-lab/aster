@@ -1,4 +1,4 @@
-//! `a3s-box export` command — Export a box's filesystem to a tar archive.
+//! `aster-box export` command — Export a box's filesystem to a tar archive.
 
 use clap::Args;
 
@@ -45,7 +45,7 @@ pub async fn execute(args: ExportArgs) -> Result<(), Box<dyn std::error::Error>>
         if super::rootfs_capture::stopped_sandbox_uses_managed_host_rootfs(record) {
             drop(lifecycle_lock);
             export_stopped_sandbox_host(record, &args.output).await?;
-        } else if a3s_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)? {
+        } else if aster_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)? {
             let mut file = tokio::fs::File::create(&args.output)
                 .await
                 .map_err(|error| format!("Failed to create {}: {error}", args.output))?;
@@ -158,7 +158,7 @@ async fn export_live_guest(
         )
         .into());
     }
-    let client = a3s_box_runtime::ExecClient::connect(&record.exec_socket_path).await?;
+    let client = aster_box_runtime::ExecClient::connect(&record.exec_socket_path).await?;
     let mut file = tokio::fs::File::create(output)
         .await
         .map_err(|error| format!("Failed to create {output}: {error}"))?;
@@ -208,10 +208,10 @@ mod tests {
 
     #[test]
     fn rootfs_not_found_message_mentions_box_path_and_expected_dirs() {
-        let message = rootfs_not_found_message("web", Path::new("/tmp/a3s/boxes/web"));
+        let message = rootfs_not_found_message("web", Path::new("/tmp/aster/boxes/web"));
 
         assert!(message.contains("Rootfs not found for box 'web'"));
-        assert!(message.contains("/tmp/a3s/boxes/web"));
+        assert!(message.contains("/tmp/aster/boxes/web"));
         assert!(message.contains("merged/ and rootfs/"));
         assert!(message.contains("export a running box"));
     }
@@ -228,14 +228,14 @@ mod tests {
     fn live_sandbox_host_rootfs_accepts_running_and_paused() {
         let mut running =
             crate::test_helpers::fixtures::make_record("id", "box", "running", Some(1));
-        running.isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+        running.isolation = aster_box_core::ExecutionIsolation::Sandbox;
         let mut paused = crate::test_helpers::fixtures::make_record("id", "box", "paused", Some(1));
-        paused.isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+        paused.isolation = aster_box_core::ExecutionIsolation::Sandbox;
         let mut stopped = crate::test_helpers::fixtures::make_record("id", "box", "stopped", None);
-        stopped.isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+        stopped.isolation = aster_box_core::ExecutionIsolation::Sandbox;
         let mut microvm_paused =
             crate::test_helpers::fixtures::make_record("id", "box", "paused", Some(1));
-        microvm_paused.isolation = a3s_box_core::ExecutionIsolation::Microvm;
+        microvm_paused.isolation = aster_box_core::ExecutionIsolation::Microvm;
 
         assert!(uses_live_sandbox_host_rootfs(&running));
         assert!(uses_live_sandbox_host_rootfs(&paused));

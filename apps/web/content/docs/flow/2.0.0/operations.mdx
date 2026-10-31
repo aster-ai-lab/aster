@@ -16,7 +16,7 @@ export const meta = {
   ['PostgresEventStore', '多进程 Worker 共享权威历史', 'postgres'],
 ]} />
 
-所有 Store 遵守相同的事件封装与重放合同。SQL Store 使用 `a3s-orm`；部署时应由明确的迁移所有者执行迁移，再接纳服务 Worker。见 <SourceRef path="crates/flow/src/store/mod.rs" match="pub trait FlowEventStore: Send + Sync">事件 Store 合同</SourceRef>。
+所有 Store 遵守相同的事件封装与重放合同。SQL Store 使用 `aster-orm`；部署时应由明确的迁移所有者执行迁移，再接纳服务 Worker。见 <SourceRef path="crates/flow/src/store/mod.rs" match="pub trait FlowEventStore: Send + Sync">事件 Store 合同</SourceRef>。
 
 `checkpoint` 是可丢弃的投影缓存，不是新的事实来源。`history_page` 使用有界分页和排他序列游标；归档时使用固定历史顶点的导出接口。长历史可通过 `continue_as_new` 连接新流，不应删除历史中间的一段来加快重放。
 
@@ -44,7 +44,7 @@ Worker 接任务前应通过 `ensure_compatible` 核对 `FlowWorkerCapabilities`
   ['native-ts（默认）', '原生 TypeScript 编译与调用适配', '编译器、Bun、依赖与产物接纳'],
   ['sqlite / postgres', 'SQL 历史与相应持久能力', '连接、迁移、备份与租户策略'],
   ['boot', 'Boot 任务管理器接入', '调度准入、处理器生命周期与资源预算'],
-  ['a3s-event', '提交后的事件观测出口', '事件目的地、保留与观测策略'],
+  ['aster-event', '提交后的事件观测出口', '事件目的地、保留与观测策略'],
 ]} />
 
 TypeScript 是 Runtime 适配器，不是第二套工作流历史、调度器或生命周期。只用 Rust 时可关闭默认 feature。
@@ -56,7 +56,7 @@ TypeScript 是 Runtime 适配器，不是第二套工作流历史、调度器或
 从仓库根目录运行既有恢复测试：
 
 ```sh
-cargo test --locked -p a3s-flow --no-default-features --test engine
+cargo test --locked -p aster-flow --no-default-features --test engine
 ```
 
 应用验收至少应覆盖：相同 ID 的创建重试、不同输入的冲突、已完成步骤重放、跨进程持久等待、未明 Activity 的结果核对、过期 Worker 拒绝、取消清理与不兼容 Build 拒绝。内存测试不能替代持久 Store 的重启和并发验收。

@@ -16,7 +16,7 @@
 //! # Example
 //!
 //! ```rust,ignore
-//! use a3s_lane::{QueueManager, LaneError};
+//! use aster_lane::{QueueManager, LaneError};
 //!
 //! match manager.submit("query", cmd).await {
 //!     Ok(rx) => { /* handle success */ },

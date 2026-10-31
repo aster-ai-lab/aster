@@ -15,8 +15,8 @@
 //! acceptance remains Spec 007's and needs a qualified native candidate host.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +1.97.1 test -p a3s-code-core --test test_engineering_discipline_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +1.97.1 test -p aster-core --test test_engineering_discipline_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -30,11 +30,11 @@ mod engineering_review;
 mod fixtures;
 mod support;
 
-use a3s_code_core::budget::BudgetGuard;
-use a3s_code_core::harness_loop::CompletionTerminal;
-use a3s_code_core::llm::TokenUsage;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentEvent, PlanningMode, SessionOptions};
+use aster_core::budget::BudgetGuard;
+use aster_core::harness_loop::CompletionTerminal;
+use aster_core::llm::TokenUsage;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentEvent, PlanningMode, SessionOptions};
 use fixtures::Fixture;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
@@ -108,7 +108,7 @@ fn options(fixture: &Fixture, guard: Arc<UsageProbe>) -> SessionOptions {
         .with_continuation(false)
         .with_budget_guard(guard)
         .with_verification_contract(
-            a3s_code_core::verification::VerificationContractV1::new(
+            aster_core::verification::VerificationContractV1::new(
                 "node-suite",
                 "node test.mjs",
                 ["src/**"],
@@ -116,7 +116,7 @@ fn options(fixture: &Fixture, guard: Arc<UsageProbe>) -> SessionOptions {
             .expect("contract"),
         )
         .with_work_policy(
-            a3s_code_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING_POLICY)
+            aster_core::WorkPolicyV1::new("engineering-v1", 1, ENGINEERING_POLICY)
                 .expect("policy"),
         )
 }

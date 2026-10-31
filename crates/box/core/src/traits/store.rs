@@ -1,7 +1,7 @@
 //! Persistent store abstractions for networks, volumes, snapshots, and images.
 //!
 //! Decouples the runtime from the JSON-file-based storage in
-//! `a3s-box-runtime`. Implementations can use any backend:
+//! `aster-box-runtime`. Implementations can use any backend:
 //! JSON files, etcd, consul, SQLite, etc.
 
 use chrono::{DateTime, Utc};

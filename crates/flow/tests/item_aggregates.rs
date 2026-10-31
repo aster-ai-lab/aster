@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ChildWorkflowCommand, FlowEngine, FlowError, FlowRuntime, ItemAggregateContribution, JsonValue,
     RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus, WorkflowSpec,
     WorkflowTerminalOutcome,
@@ -24,7 +24,7 @@ async fn item_aggregate_records_map_outcomes_in_durable_order() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let ctx = invocation.context();
             if invocation.spec.name == "aggregate.parent" {
                 let children = (0..3)
@@ -68,7 +68,7 @@ async fn item_aggregate_records_map_outcomes_in_durable_order() {
             Ok(ctx.complete(json!({ "ordinal": ctx.input()["ordinal"] })))
         }
 
-        async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+        async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
             unreachable!()
         }
     }
@@ -105,7 +105,7 @@ async fn item_aggregate_is_idempotent_and_rejects_value_drift() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let ctx = invocation.context();
             let phase = self.phase.fetch_add(1, Ordering::SeqCst);
             let value = if phase == 0 {
@@ -117,7 +117,7 @@ async fn item_aggregate_is_idempotent_and_rejects_value_drift() {
                 .record_item_aggregate(ItemAggregateContribution::new("results", "item-0", value)))
         }
 
-        async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+        async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
             unreachable!()
         }
     }

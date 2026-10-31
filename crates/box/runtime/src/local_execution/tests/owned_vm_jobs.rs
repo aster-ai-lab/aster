@@ -3,8 +3,8 @@
 use super::*;
 #[cfg(unix)]
 use crate::vmm::VmHandler;
-use a3s_box_core::vmm::{OwnedCleanupBudget, OwnedCloseBudget};
-use a3s_box_core::{CreateExecutionRequest, ExecutionIsolation, NetworkMode, OperationId};
+use aster_box_core::vmm::{OwnedCleanupBudget, OwnedCloseBudget};
+use aster_box_core::{CreateExecutionRequest, ExecutionIsolation, NetworkMode, OperationId};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Barrier, Mutex as StdMutex};
 use std::time::Instant;
@@ -45,7 +45,7 @@ fn record(home: &Path) -> BoxRecord {
     let id = ExecutionId::new(uuid::Uuid::new_v4().to_string()).unwrap();
     let mut request = CreateExecutionRequest {
         external_sandbox_id: "owned-jobs-component".into(),
-        config: a3s_box_core::BoxConfig {
+        config: aster_box_core::BoxConfig {
             isolation: ExecutionIsolation::Microvm,
             network: NetworkMode::None,
             image: "alpine:latest".into(),
@@ -120,7 +120,7 @@ fn call<'a>(
 fn volumes(home: &Path) -> crate::VolumeStore {
     let store = crate::VolumeStore::new(home.join("volumes.json"), home.join("volumes"));
     store
-        .create(a3s_box_core::volume::VolumeConfig::new("workspace", ""))
+        .create(aster_box_core::volume::VolumeConfig::new("workspace", ""))
         .unwrap();
     store
 }
@@ -154,10 +154,10 @@ struct CleanupSpy {
     fail: bool,
 }
 impl crate::rootfs::RootfsProvider for CleanupSpy {
-    fn prepare(&self, box_dir: &Path, _: &Path) -> a3s_box_core::Result<PathBuf> {
+    fn prepare(&self, box_dir: &Path, _: &Path) -> aster_box_core::Result<PathBuf> {
         Ok(box_dir.into())
     }
-    fn cleanup(&self, _: &Path, _: bool) -> a3s_box_core::Result<()> {
+    fn cleanup(&self, _: &Path, _: bool) -> aster_box_core::Result<()> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         std::fs::write(&self.path, b"actual-finalization-entered")?;
         if self.panic {
@@ -179,17 +179,17 @@ impl crate::rootfs::RootfsProvider for CleanupSpy {
 struct ControlledChild(crate::vmm::ShimHandler);
 #[cfg(unix)]
 impl crate::vmm::VmHandler for ControlledChild {
-    fn stop(&mut self, signal: i32, timeout_ms: u64) -> a3s_box_core::Result<()> {
+    fn stop(&mut self, signal: i32, timeout_ms: u64) -> aster_box_core::Result<()> {
         self.0.stop(signal, timeout_ms)
     }
     fn stop_with_budget(
         &mut self,
         signal: i32,
         budget: OwnedCloseBudget,
-    ) -> a3s_box_core::Result<()> {
+    ) -> aster_box_core::Result<()> {
         self.0.stop_with_budget(signal, budget)
     }
-    fn exit_confirmation(&self) -> Option<a3s_box_core::vmm::VmExitConfirmation> {
+    fn exit_confirmation(&self) -> Option<aster_box_core::vmm::VmExitConfirmation> {
         self.0.exit_confirmation()
     }
     fn metrics(&self) -> crate::vmm::VmMetrics {
@@ -201,7 +201,7 @@ impl crate::vmm::VmHandler for ControlledChild {
     fn pid(&self) -> u32 {
         self.0.pid()
     }
-    fn try_wait_exit(&mut self) -> a3s_box_core::Result<Option<i32>> {
+    fn try_wait_exit(&mut self) -> aster_box_core::Result<Option<i32>> {
         self.0.try_wait_exit()
     }
 }
@@ -295,7 +295,7 @@ async fn all_five_closed_families_keep_actual_handle_before_after_effect_and_lat
                 let store = volumes(temp.path());
                 let (_backend, manager, owner, guard, _socket) =
                     admitted(temp.path(), &record).await;
-                let marker = record.box_dir.join("rootfs/.a3s_exit_code");
+                let marker = record.box_dir.join("rootfs/.aster_exit_code");
                 std::fs::create_dir_all(marker.parent().unwrap()).unwrap();
                 std::fs::write(&marker, b"17\n").unwrap();
                 let final_marker = temp.path().join("finalized");
@@ -730,7 +730,7 @@ async fn ready_storage_and_expired_attempt_keep_actual_result_without_duplicate_
         progress.job,
         OwnedVmJobSlot::Ready { result: Ok(_), .. }
     ));
-    let marker = record.box_dir.join("rootfs/.a3s_exit_code");
+    let marker = record.box_dir.join("rootfs/.aster_exit_code");
     std::fs::create_dir_all(marker.parent().unwrap()).unwrap();
     std::fs::write(&marker, b"must-not-replay").unwrap();
     progress
@@ -812,7 +812,7 @@ async fn stale_original_store_route_registry_and_settings_refuse_before_new_effe
     )
     .is_err());
     let mut changed = record.clone();
-    changed.log_config = a3s_box_core::log::LogConfig::default();
+    changed.log_config = aster_box_core::log::LogConfig::default();
     changed.name.push_str("-unknown-drift");
     let changed_call = call(&changed, &manager, &guard, &owner);
     assert!(backend

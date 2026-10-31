@@ -1,6 +1,6 @@
 #![cfg(feature = "http-client")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BoxFuture, CircuitBreakerOptions, CircuitState, DegradePolicy,
     FallbackResponse, HttpClientBackend, HttpClientRequest, HttpClientResponse, HttpService,
     Result, RetryOptions, ServiceClient, ServiceClientModule, ServiceClientOptions,
@@ -100,16 +100,16 @@ async fn service_client_degrades_when_circuit_is_open() {
 
     let first = client.get("billing", "/invoice").await.unwrap();
     assert_eq!(first.status(), 200);
-    assert_eq!(first.header("x-a3s-degraded"), Some("1"));
+    assert_eq!(first.header("x-aster-degraded"), Some("1"));
     assert_eq!(client.circuit_state(), CircuitState::Open);
 
     let second = client.get("billing", "/invoice").await.unwrap();
-    assert_eq!(second.header("x-a3s-degraded"), Some("1"));
+    assert_eq!(second.header("x-aster-degraded"), Some("1"));
 }
 
 #[tokio::test]
 async fn service_client_propagates_trace_and_request_ids() {
-    use a3s_boot::{BootRequest, HttpMethod, RequestContext};
+    use aster_boot::{BootRequest, HttpMethod, RequestContext};
 
     let discovery = StaticServiceDiscovery::new();
     discovery

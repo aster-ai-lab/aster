@@ -4,7 +4,7 @@ use crate::llm::{ContentBlock, StreamEvent, ToolResultContentField};
 use crate::permissions::PermissionPolicy;
 use crate::prompts::AgentStyle;
 use crate::tools::ToolExecutor;
-use a3s_memory::repository::MemoryRepository;
+use aster_durable_memory::repository::MemoryRepository;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::mpsc;
@@ -500,7 +500,7 @@ fn test_delegated_plan_step_prompt_includes_plan_goal_context() {
 
 #[test]
 fn test_memory_items_become_context_result() {
-    let item = a3s_memory::MemoryItem::new("Use focused regression tests for context changes.")
+    let item = aster_durable_memory::MemoryItem::new("Use focused regression tests for context changes.")
         .with_importance(0.8);
 
     let result = crate::memory::memory_items_to_context_result("memory", vec![item.clone()]);
@@ -531,7 +531,7 @@ fn test_agent_config_default() {
     assert_eq!(config.max_parallel_tasks, DEFAULT_MAX_PARALLEL_TASKS);
     assert!(config.permission_checker.is_none());
     assert!(config.context_providers.is_empty());
-    // A skill registry is present by default, but A3S Code no longer ships
+    // A skill registry is present by default, but Aster Code no longer ships
     // embedded built-in skills.
     let registry = config
         .skill_registry
@@ -3164,10 +3164,10 @@ async fn test_agent_memory_recall_routes_through_context_assembly() {
         "Memory-aware response",
     )]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     memory
         .remember(
-            a3s_memory::MemoryItem::new(
+            aster_durable_memory::MemoryItem::new(
                 "verify focused regression tests caught context regressions.",
             )
             .with_importance(0.9),
@@ -3219,48 +3219,48 @@ async fn active_v2_memory_is_admitted_after_assembly_and_candidates_stay_hidden(
     let active_content = "Run focused durable memory tests after changing admission";
     let time = |offset: i64| chrono::DateTime::from_timestamp(1_777_000_000 + offset, 0).unwrap();
     let evidence = |name: &str, kind, offset| {
-        a3s_memory::repository::EvidenceRef::try_new(
-            format!("a3s://evidence/{name}"),
+        aster_durable_memory::repository::EvidenceRef::try_new(
+            format!("aster://evidence/{name}"),
             format!("sha256:{name:0>64}"),
             kind,
             time(offset),
         )
         .unwrap()
     };
-    let repository = Arc::new(a3s_memory::repository::InMemoryRepository::new());
+    let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        a3s_memory::repository::MemoryNamespace::try_new("tenant", "principal", "repo").unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", "repo").unwrap();
     repository
-        .apply(a3s_memory::repository::MemoryChangeSet::new(
+        .apply(aster_durable_memory::repository::MemoryChangeSet::new(
             "seed-v2-context",
             namespace.clone(),
             time(1),
             vec![
-                a3s_memory::repository::MemoryOperation::Create {
-                    node: a3s_memory::repository::MemoryNodeDraft::new(
+                aster_durable_memory::repository::MemoryOperation::Create {
+                    node: aster_durable_memory::repository::MemoryNodeDraft::new(
                         "active-memory",
                         namespace.clone(),
-                        a3s_memory::repository::DurableMemoryKind::Procedural,
-                        a3s_memory::repository::MemoryStatus::Candidate,
+                        aster_durable_memory::repository::DurableMemoryKind::Procedural,
+                        aster_durable_memory::repository::MemoryStatus::Candidate,
                         active_content,
                         vec![evidence(
                             "active-proposal",
-                            a3s_memory::repository::EvidenceKind::SessionTurn,
+                            aster_durable_memory::repository::EvidenceKind::SessionTurn,
                             1,
                         )],
                         time(1),
                     ),
                 },
-                a3s_memory::repository::MemoryOperation::Create {
-                    node: a3s_memory::repository::MemoryNodeDraft::new(
+                aster_durable_memory::repository::MemoryOperation::Create {
+                    node: aster_durable_memory::repository::MemoryNodeDraft::new(
                         "hidden-candidate",
                         namespace.clone(),
-                        a3s_memory::repository::DurableMemoryKind::Procedural,
-                        a3s_memory::repository::MemoryStatus::Candidate,
+                        aster_durable_memory::repository::DurableMemoryKind::Procedural,
+                        aster_durable_memory::repository::MemoryStatus::Candidate,
                         "Run focused durable memory tests from an unapproved candidate",
                         vec![evidence(
                             "hidden-proposal",
-                            a3s_memory::repository::EvidenceKind::SessionTurn,
+                            aster_durable_memory::repository::EvidenceKind::SessionTurn,
                             1,
                         )],
                         time(1),
@@ -3283,7 +3283,7 @@ async fn active_v2_memory_is_admitted_after_assembly_and_candidates_stay_hidden(
                 1,
                 evidence(
                     "active-approval",
-                    a3s_memory::repository::EvidenceKind::Verification,
+                    aster_durable_memory::repository::EvidenceKind::Verification,
                     2,
                 ),
                 time(2),
@@ -3294,7 +3294,7 @@ async fn active_v2_memory_is_admitted_after_assembly_and_candidates_stay_hidden(
         .unwrap();
 
     let memory = crate::memory::AgentMemory::with_config_observers_and_durable(
-        Arc::new(a3s_memory::InMemoryStore::new()),
+        Arc::new(aster_durable_memory::InMemoryStore::new()),
         crate::memory::MemoryConfig {
             llm_extraction: false,
             ..Default::default()
@@ -3303,7 +3303,7 @@ async fn active_v2_memory_is_admitted_after_assembly_and_candidates_stay_hidden(
         Some(binding),
     );
     memory
-        .remember(a3s_memory::MemoryItem::new(active_content).with_importance(0.9))
+        .remember(aster_durable_memory::MemoryItem::new(active_content).with_importance(0.9))
         .await
         .unwrap();
     let mock_client = Arc::new(MockLlmClient::new(vec![MockLlmClient::text_response(
@@ -3374,7 +3374,7 @@ async fn test_agent_llm_memory_extraction_stores_durable_items() {
         ),
     ]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -3419,9 +3419,9 @@ async fn llm_extraction_shadows_evidence_backed_v2_candidate_without_recall() {
             r#"{"items":[{"memory_type":"procedural","content":"Run focused memory store tests after changing FileMemoryStore behavior.","importance":0.85,"confidence":0.94,"tags":["memory","tests"],"source":"workflow","scope":"workspace","reason":"This repeatable verification catches persistence regressions in future changes."}]}"#,
         ),
     ]));
-    let repository = Arc::new(a3s_memory::repository::InMemoryRepository::new());
+    let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        a3s_memory::repository::MemoryNamespace::try_new("tenant", "principal", "repo").unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", "repo").unwrap();
     #[allow(deprecated)]
     let binding = crate::durable_memory::DurableMemorySession::active_recall(
         repository.clone(),
@@ -3429,7 +3429,7 @@ async fn llm_extraction_shadows_evidence_backed_v2_candidate_without_recall() {
         crate::durable_memory::DurableMemoryRecallPolicy::try_new(8, 0.0).unwrap(),
     );
     let memory = crate::memory::AgentMemory::with_config_observers_and_durable(
-        Arc::new(a3s_memory::InMemoryStore::new()),
+        Arc::new(aster_durable_memory::InMemoryStore::new()),
         crate::memory::MemoryConfig::default(),
         Vec::new(),
         Some(binding),
@@ -3462,15 +3462,15 @@ async fn llm_extraction_shadows_evidence_backed_v2_candidate_without_recall() {
         .unwrap();
 
     assert!(repository
-        .query(a3s_memory::repository::MemoryQuery::new(namespace.clone()))
+        .query(aster_durable_memory::repository::MemoryQuery::new(namespace.clone()))
         .await
         .unwrap()
         .hits
         .is_empty());
     let candidates = repository
         .query(
-            a3s_memory::repository::MemoryQuery::new(namespace)
-                .with_statuses([a3s_memory::repository::MemoryStatus::Candidate]),
+            aster_durable_memory::repository::MemoryQuery::new(namespace)
+                .with_statuses([aster_durable_memory::repository::MemoryStatus::Candidate]),
         )
         .await
         .unwrap();
@@ -3484,7 +3484,7 @@ async fn llm_extraction_shadows_evidence_backed_v2_candidate_without_recall() {
 #[tokio::test]
 async fn completed_tool_results_do_not_become_long_term_memory_history() {
     let memory = Arc::new(crate::memory::AgentMemory::with_config(
-        Arc::new(a3s_memory::InMemoryStore::new()),
+        Arc::new(aster_durable_memory::InMemoryStore::new()),
         crate::memory::MemoryConfig {
             llm_extraction: false,
             ..Default::default()
@@ -3544,7 +3544,7 @@ async fn completed_tool_results_do_not_become_long_term_memory_history() {
 async fn test_streaming_llm_memory_extraction_does_not_block_final_result() {
     let mock_client = Arc::new(BlockingExtractionLlmClient::new());
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -3595,7 +3595,7 @@ async fn test_streaming_llm_memory_extraction_does_not_block_final_result() {
 #[tokio::test]
 async fn scoped_streaming_memory_extraction_survives_turn_cancel() {
     let mock_client = Arc::new(BlockingExtractionLlmClient::new());
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let set = crate::capability::CapabilitySet::empty().unwrap();
     let ceiling = crate::capability::CapabilityCeiling::all(
@@ -4133,7 +4133,7 @@ async fn test_auto_compact_can_repeat_inside_one_tool_driven_task() {
 async fn test_streaming_llm_memory_extraction_queues_every_completed_turn() {
     let mock_client = Arc::new(BlockingExtractionLlmClient::new());
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4231,7 +4231,7 @@ async fn test_streaming_llm_memory_judge_evaluates_trivial_turns_asynchronously(
         MockLlmClient::text_response(r#"{"items":[]}"#),
     ]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4277,7 +4277,7 @@ async fn test_agent_llm_memory_extraction_uses_budget_guard() {
     ]));
     let budget = Arc::new(CountingBudgetGuard::new(0));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4318,13 +4318,13 @@ async fn test_agent_llm_memory_extraction_includes_related_memory_context() {
         MockLlmClient::text_response(r#"{"items":[]}"#),
     ]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     memory
         .remember(
-            a3s_memory::MemoryItem::new(
+            aster_durable_memory::MemoryItem::new(
                 "Run focused memory store tests after changing FileMemoryStore behavior.",
             )
-            .with_type(a3s_memory::MemoryType::Procedural)
+            .with_type(aster_durable_memory::MemoryType::Procedural)
             .with_tag("memory"),
         )
         .await
@@ -4365,12 +4365,12 @@ async fn test_agent_llm_memory_extraction_includes_related_memory_context() {
 #[tokio::test]
 async fn test_agent_llm_memory_extraction_supersedes_related_memory() {
     let memory = Arc::new(crate::memory::AgentMemory::new(Arc::new(
-        a3s_memory::InMemoryStore::new(),
+        aster_durable_memory::InMemoryStore::new(),
     )));
-    let old_item = a3s_memory::MemoryItem::new(
+    let old_item = aster_durable_memory::MemoryItem::new(
         "Run focused memory store tests after changing FileMemoryStore behavior.",
     )
-    .with_type(a3s_memory::MemoryType::Procedural)
+    .with_type(aster_durable_memory::MemoryType::Procedural)
     .with_tag("memory");
     let old_id = old_item.id.clone();
     memory.remember(old_item).await.unwrap();
@@ -4414,7 +4414,7 @@ async fn test_agent_llm_memory_extraction_supersedes_related_memory() {
     assert_eq!(
         archived
             .metadata
-            .get("a3s.memory.status")
+            .get("aster.memory.status")
             .map(String::as_str),
         Some("superseded")
     );
@@ -4431,10 +4431,10 @@ async fn test_agent_llm_memory_extraction_supersedes_related_memory() {
 #[tokio::test]
 async fn test_agent_llm_memory_extraction_marks_conflicting_related_memory() {
     let memory = Arc::new(crate::memory::AgentMemory::new(Arc::new(
-        a3s_memory::InMemoryStore::new(),
+        aster_durable_memory::InMemoryStore::new(),
     )));
-    let old_item = a3s_memory::MemoryItem::new("TUI memory defaults to ~/.a3s/memory.")
-        .with_type(a3s_memory::MemoryType::Semantic)
+    let old_item = aster_durable_memory::MemoryItem::new("TUI memory defaults to ~/.aster/memory.")
+        .with_type(aster_durable_memory::MemoryType::Semantic)
         .with_tag("memory");
     let old_id = old_item.id.clone();
     memory.remember(old_item).await.unwrap();
@@ -4442,7 +4442,7 @@ async fn test_agent_llm_memory_extraction_marks_conflicting_related_memory() {
     let mock_client = Arc::new(MockLlmClient::new(vec![
         MockLlmClient::text_response("SDK sessions use workspace-local memory by default."),
         MockLlmClient::text_response(&format!(
-            r#"{{"items":[{{"memory_type":"semantic","content":"SDK sessions default to workspace-local .a3s/memory stores, while the TUI default is global ~/.a3s/memory.","importance":0.8,"confidence":0.93,"tags":["memory","defaults"],"source":"project_fact","scope":"workspace","reason":"This durable default changes where future sessions look for persisted memory.","conflicts_with":["{old_id}"]}}]}}"#
+            r#"{{"items":[{{"memory_type":"semantic","content":"SDK sessions default to workspace-local .aster/memory stores, while the TUI default is global ~/.aster/memory.","importance":0.8,"confidence":0.93,"tags":["memory","defaults"],"source":"project_fact","scope":"workspace","reason":"This durable default changes where future sessions look for persisted memory.","conflicts_with":["{old_id}"]}}]}}"#
         )),
     ]));
 
@@ -4495,7 +4495,7 @@ async fn test_agent_llm_memory_extraction_skips_when_budget_denies() {
     // Deny the memory extraction call after pre-analysis + the main turn.
     let budget = Arc::new(CountingBudgetGuard::new(3));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4551,9 +4551,9 @@ async fn test_agent_llm_memory_extraction_merges_duplicate_durable_items() {
         )),
     ]));
 
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
-    let existing = a3s_memory::MemoryItem::new(existing_content)
-        .with_type(a3s_memory::MemoryType::Procedural)
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
+    let existing = aster_durable_memory::MemoryItem::new(existing_content)
+        .with_type(aster_durable_memory::MemoryType::Procedural)
         .with_importance(0.4)
         .with_tag("memory");
     let existing_id = existing.id.clone();
@@ -4615,7 +4615,7 @@ async fn test_agent_llm_memory_judge_returns_empty_for_trivial_turns() {
         MockLlmClient::text_response("Hello."),
         MockLlmClient::text_response(r#"{"items":[]}"#),
     ]));
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let temp_dir = tempfile::tempdir().unwrap();
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let config = AgentConfig {
@@ -4658,7 +4658,7 @@ async fn test_agent_llm_memory_judge_returns_empty_for_read_only_tool_turns() {
 
     let temp_dir = tempfile::tempdir().unwrap();
     let readme = temp_dir.path().join("README.md");
-    tokio::fs::write(&readme, "A3S memory notes.\n")
+    tokio::fs::write(&readme, "Aster memory notes.\n")
         .await
         .unwrap();
 
@@ -4668,10 +4668,10 @@ async fn test_agent_llm_memory_judge_returns_empty_for_read_only_tool_turns() {
             "read",
             serde_json::json!({"file_path": "README.md"}),
         ),
-        MockLlmClient::text_response("README says A3S memory notes."),
+        MockLlmClient::text_response("README says Aster memory notes."),
         MockLlmClient::text_response(r#"{"items":[]}"#),
     ]));
-    let memory = crate::memory::AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new()));
+    let memory = crate::memory::AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let tool_executor = Arc::new(ToolExecutor::new(temp_dir.path().display().to_string()));
     let (event_tx, _event_rx) = broadcast::channel(100);
     let mut yolo_lanes = std::collections::HashSet::new();
@@ -4710,7 +4710,7 @@ async fn test_agent_llm_memory_judge_returns_empty_for_read_only_tool_turns() {
         .await
         .unwrap();
 
-    assert_eq!(result.text, "README says A3S memory notes.");
+    assert_eq!(result.text, "README says Aster memory notes.");
     assert_eq!(result.tool_calls_count, 1);
     assert_eq!(mock_client.call_count.load(Ordering::SeqCst), 3);
     assert_eq!(
@@ -5029,7 +5029,7 @@ async fn test_duplicate_tool_guard_reports_tool_end_without_stream_error() {
     let workspace = temp_dir.path().to_string_lossy().to_string();
     let args = serde_json::json!({
         "mode": "grep",
-        "query": "a3s-duplicate-guard-never-matches"
+        "query": "aster-duplicate-guard-never-matches"
     });
     let mock_client = Arc::new(MockLlmClient::new(vec![
         MockLlmClient::tool_call_response("grep-1", "search", args.clone()),
@@ -5581,7 +5581,7 @@ async fn test_explicit_general_style_overrides_task_word_intent() {
         .first()
         .cloned()
         .expect("the model must receive a system prompt");
-    assert!(system.contains("You are A3S Code"));
+    assert!(system.contains("You are Aster Code"));
     assert!(!system.contains("You are a planning agent"));
     assert!(!system.contains("read-only task"));
 }
@@ -5620,7 +5620,7 @@ async fn auto_intent_keeps_general_purpose_system_prompt() {
             .cloned()
             .unwrap_or_else(|| panic!("missing system prompt for {prompt}"));
         assert!(
-            system.contains("You are A3S Code"),
+            system.contains("You are Aster Code"),
             "auto intent for {prompt:?} lost GeneralPurpose identity"
         );
         assert!(

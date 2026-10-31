@@ -2,10 +2,10 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{
+use aster_use_core::{
     OkfKnowledgeObservedState, PlanQualifiedSurfaceRef, PlanScope, UseError, UseResult,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionLifecycleIdentity, ExtensionPaths, ExtensionRegistry, ExtensionRouteLease,
     InstalledExtension, StoredWorkspaceGrant, WorkspaceGrantStore,
 };
@@ -20,7 +20,7 @@ use super::{
 use crate::plugin_lifecycle::{
     PluginLifecycleJournalStore, PluginLifecycleOperationRecord, PluginLifecycleOperationStatus,
 };
-use a3s_use_extension::{StateMaintenanceGuard, StateMaintenanceLock};
+use aster_use_extension::{StateMaintenanceGuard, StateMaintenanceLock};
 
 mod diagnostic;
 mod filesystem;
@@ -36,7 +36,7 @@ pub use journal::{
 };
 use journal::{RestoreOperation, RestoreOperationStatus, RestoreOperationStore};
 
-pub const OKF_KNOWLEDGE_RESTORE_PLAN_SCHEMA: &str = "a3s.use.okf-knowledge-restore-plan.v2";
+pub const OKF_KNOWLEDGE_RESTORE_PLAN_SCHEMA: &str = "aster.use.okf-knowledge-restore-plan.v2";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -884,7 +884,7 @@ fn restore_in_progress_operation(operation: Option<&RestoreOperation>) -> UseErr
 }
 
 #[cfg(test)]
-const RESTORE_CRASH_CHECKPOINT_ENV: &str = "A3S_USE_TEST_OKF_RESTORE_CHECKPOINT";
+const RESTORE_CRASH_CHECKPOINT_ENV: &str = "ASTER_USE_TEST_OKF_RESTORE_CHECKPOINT";
 
 #[cfg(test)]
 fn maybe_test_crash(status: RestoreOperationStatus) {

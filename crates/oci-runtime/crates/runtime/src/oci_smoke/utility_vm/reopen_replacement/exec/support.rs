@@ -1,9 +1,9 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerTarget, Error, ErrorCode, OciBundle, OperationId, ProcessId, ProcessIo, ProcessRecord,
     ProcessTarget, TerminalSize,
 };
@@ -21,7 +21,7 @@ use crate::transport_cleanup_report::is_retryable_disconnect_operation;
 use crate::OciVmOperationReopenReplacementReport;
 
 const ORIGINAL_INIT_MARKER_WRITE: &str =
-    "printf 'a3s-oci-create-start-user-time-v1\\n' > /.a3s-oci-create-start-smoke;";
+    "printf 'aster-oci-create-start-user-time-v1\\n' > /.aster-oci-create-start-smoke;";
 
 pub(in crate::oci_smoke::utility_vm::reopen_replacement) use crate::operation_journal_evidence::ProcessOperationJournalStatus as ExecJournalStatus;
 
@@ -58,7 +58,7 @@ pub(in crate::oci_smoke::utility_vm::reopen_replacement) fn nonce_bound_bundle(
         );
     }
     let replacement =
-        format!("printf 'a3s-oci-exec-init-{nonce}\\n' > /.a3s-oci-create-start-smoke;");
+        format!("printf 'aster-oci-exec-init-{nonce}\\n' > /.aster-oci-create-start-smoke;");
     config["process"]["args"][2] =
         serde_json::Value::String(command.replacen(ORIGINAL_INIT_MARKER_WRITE, &replacement, 1));
     let encoded = serde_json::to_string_pretty(&config)
@@ -73,7 +73,7 @@ pub(in crate::oci_smoke::utility_vm::reopen_replacement) fn exec_process(
     let process_id = ProcessId::new(format!("worker-{nonce}"))
         .map_err(|error| format!("failed to construct Exec process ID: {error}"))?;
     let command = format!(
-        "set -eu; printf 'a3s-oci-exec-process-{nonce}\\n' > /{}; while :; do /bin/busybox sleep 1; done",
+        "set -eu; printf 'aster-oci-exec-process-{nonce}\\n' > /{}; while :; do /bin/busybox sleep 1; done",
         super::EXEC_MARKER_NAME
     );
     let process: Process = serde_json::from_value(serde_json::json!({
@@ -86,9 +86,9 @@ pub(in crate::oci_smoke::utility_vm::reopen_replacement) fn exec_process(
     }))
     .map_err(|error| format!("failed to construct terminal Exec process: {error}"))?;
     let io = ProcessIo {
-        stdin: a3s_oci_sdk::IoMode::Terminal,
-        stdout: a3s_oci_sdk::IoMode::Terminal,
-        stderr: a3s_oci_sdk::IoMode::Terminal,
+        stdin: aster_oci_sdk::IoMode::Terminal,
+        stdout: aster_oci_sdk::IoMode::Terminal,
+        stderr: aster_oci_sdk::IoMode::Terminal,
         terminal_size: Some(TerminalSize {
             width: 80,
             height: 24,
@@ -271,7 +271,7 @@ pub(in crate::oci_smoke::utility_vm::reopen_replacement) fn identity_or_expected
 }
 
 pub(in crate::oci_smoke::utility_vm::reopen_replacement) fn exact_process_target(
-    exec: &a3s_oci_sdk::ExecRequest,
+    exec: &aster_oci_sdk::ExecRequest,
 ) -> ProcessTarget {
     ProcessTarget {
         container: exec.container.clone(),
@@ -291,6 +291,6 @@ pub(in crate::oci_smoke::utility_vm::reopen_replacement) fn stale_target(
         .ok_or_else(|| "Exec qualification generation cannot be incremented".to_string())?;
     Ok(ContainerTarget::exact(
         container.id.clone(),
-        a3s_oci_sdk::Generation(stale),
+        aster_oci_sdk::Generation(stale),
     ))
 }

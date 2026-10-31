@@ -4,7 +4,7 @@
 use super::*;
 use crate::layers::attention::{KvCandidate, KvSource, SparseAttentionPlan, SparseMqaAttention};
 use crate::layers::xq::quant::tests::scalar;
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 
 struct HostMatrix {
     rows: Vec<Vec<f64>>,

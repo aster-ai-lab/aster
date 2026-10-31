@@ -42,7 +42,7 @@ export function MatrixWidget(props: FormWidgetProps) {
   if (!definition || definition.rows.length === 0 || definition.columns.length === 0) {
     return (
       <fieldset
-        className="a3s-form-matrix fieldset is-empty"
+        className="aster-form-matrix fieldset is-empty"
         aria-label={labelledBy ? undefined : (node.label ?? node.id)}
         aria-labelledby={labelledBy}
         aria-describedby={fieldDescription}
@@ -51,7 +51,7 @@ export function MatrixWidget(props: FormWidgetProps) {
         onBlur={handleBlur}
         onFocus={onFocus}
       >
-        <p className="a3s-form-matrix-empty">{messages.matrixEmpty}</p>
+        <p className="aster-form-matrix-empty">{messages.matrixEmpty}</p>
       </fieldset>
     );
   }
@@ -59,7 +59,7 @@ export function MatrixWidget(props: FormWidgetProps) {
   const fieldErrors = errors.filter((error) => error.path === valuePath);
   return (
     <fieldset
-      className={`a3s-form-matrix fieldset is-${multiple ? 'multiple' : 'single'}`}
+      className={`aster-form-matrix fieldset is-${multiple ? 'multiple' : 'single'}`}
       aria-label={labelledBy ? undefined : (node.label ?? node.id)}
       aria-labelledby={labelledBy}
       aria-describedby={fieldDescription}
@@ -68,11 +68,11 @@ export function MatrixWidget(props: FormWidgetProps) {
       onBlur={handleBlur}
       onFocus={onFocus}
     >
-      <div className="a3s-form-matrix-scroll table-container">
+      <div className="aster-form-matrix-scroll table-container">
         <table className="table" aria-label={node.label ?? node.id}>
           <thead>
             <tr>
-              <th className="a3s-form-matrix-corner" scope="col">
+              <th className="aster-form-matrix-corner" scope="col">
                 <span aria-hidden="true">—</span>
               </th>
               {definition.columns.map((column) => (
@@ -106,15 +106,15 @@ export function MatrixWidget(props: FormWidgetProps) {
                   key={row.id}
                   data-disabled={row.disabled || undefined}
                   data-invalid={rowErrors.length > 0 || undefined}
-                  data-a3s-form-path={path}
+                  data-aster-form-path={path}
                 >
                   <th scope="row" id={rowLabelId}>
-                    <span className="a3s-form-matrix-row-label">
+                    <span className="aster-form-matrix-row-label">
                       {row.label}
                       {rowRequired && (
                         <em title={messages.matrixRowRequired}>
                           <span aria-hidden="true">*</span>
-                          <span className="a3s-form-matrix-required-text">
+                          <span className="aster-form-matrix-required-text">
                             {messages.matrixRowRequired}
                           </span>
                         </em>
@@ -122,7 +122,7 @@ export function MatrixWidget(props: FormWidgetProps) {
                     </span>
                     {row.description && <small id={rowDescriptionId}>{row.description}</small>}
                     {multiple && (
-                      <span className="a3s-form-matrix-row-summary" id={rowSummaryId}>
+                      <span className="aster-form-matrix-row-summary" id={rowSummaryId}>
                         {formatFormMessage(messages, 'matrixSelectionSummary', {
                           count: selected.length,
                         })}
@@ -136,7 +136,7 @@ export function MatrixWidget(props: FormWidgetProps) {
                     )}
                     {rowErrors.map((error, errorIndex) => (
                       <span
-                        className="a3s-form-matrix-row-error"
+                        className="aster-form-matrix-row-error"
                         id={rowErrorIds[errorIndex]}
                         role="alert"
                         key={`${error.code}-${error.message}`}
@@ -206,7 +206,7 @@ export function MatrixWidget(props: FormWidgetProps) {
       </div>
       {fieldErrors.map((error) => (
         <div
-          className="a3s-form-matrix-error"
+          className="aster-form-matrix-error"
           role="alert"
           key={`${error.path}-${error.code}-${error.message}`}
         >

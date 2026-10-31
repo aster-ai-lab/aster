@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{
+use aster_use_core::{
     CatalogAvailability, PlanScope, PlanScopeKind, PluginCatalogRecord, PluginOperationAction,
     PluginPackageLock, PluginPackageLockHost, PluginPackageResolver, VerifiedCatalogProvenance,
     VerifiedPluginCatalogRecord, PLUGIN_CATALOG_SCHEMA_V3,
@@ -24,7 +24,7 @@ pub(super) fn package_lock() -> PluginPackageLock {
     record.validate().unwrap();
     let provenance = VerifiedCatalogProvenance {
         registry_name: "packages".to_owned(),
-        registry_url: "https://packages.example.test/a3s/".to_owned(),
+        registry_url: "https://packages.example.test/aster/".to_owned(),
         root_sha256: digest('d'),
         root_version: 1,
         timestamp_version: 2,

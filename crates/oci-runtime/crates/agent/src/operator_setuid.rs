@@ -1,6 +1,6 @@
 //! Operator setuid launcher identity for rootless device-policy bootstrap.
 //!
-//! A mode 4755 `a3s-oci` has effective uid 0 and the caller's real gid and
+//! A mode 4755 `aster-oci` has effective uid 0 and the caller's real gid and
 //! supplementary groups. Bootstrap requires effective root gid and no
 //! supplementary groups, and cgroup v2 migration into a delegated child must
 //! happen as effective root: the unprivileged parent cannot write the common
@@ -10,7 +10,7 @@
 use std::path::{Component, Path};
 
 /// Environment set by Box when the parent cannot migrate the owner itself.
-pub const OWNER_CGROUP_ENV: &str = "A3S_BOX_OWNER_CGROUP";
+pub const OWNER_CGROUP_ENV: &str = "ASTER_BOX_OWNER_CGROUP";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct OperatorSetuidCredentialFix {
@@ -220,7 +220,7 @@ mod tests {
 
     #[test]
     fn owner_cgroup_env_name_matches_box() {
-        assert_eq!(OWNER_CGROUP_ENV, "A3S_BOX_OWNER_CGROUP");
+        assert_eq!(OWNER_CGROUP_ENV, "ASTER_BOX_OWNER_CGROUP");
     }
 
     #[test]
@@ -243,15 +243,15 @@ mod tests {
 
     #[test]
     fn owner_cgroup_must_be_a_child_of_the_delegated_root() {
-        let root = Path::new("/sys/fs/cgroup/a3s-box-sandbox/delegated");
+        let root = Path::new("/sys/fs/cgroup/aster-box-sandbox/delegated");
         assert!(owner_cgroup_within_delegated_root(
             root,
-            Path::new("/sys/fs/cgroup/a3s-box-sandbox/delegated/box-native-owner-7")
+            Path::new("/sys/fs/cgroup/aster-box-sandbox/delegated/box-native-owner-7")
         ));
         assert!(!owner_cgroup_within_delegated_root(root, root));
         assert!(!owner_cgroup_within_delegated_root(
             root,
-            Path::new("/sys/fs/cgroup/a3s-box-sandbox/delegated/../probe")
+            Path::new("/sys/fs/cgroup/aster-box-sandbox/delegated/../probe")
         ));
         assert!(!owner_cgroup_within_delegated_root(
             root,

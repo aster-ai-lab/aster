@@ -9,24 +9,24 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::config::CodeConfig;
-use a3s_code_core::llm::structured::{NativeStructuredSupport, StructuredDirective};
-use a3s_code_core::llm::{
+use aster_core::config::CodeConfig;
+use aster_core::llm::structured::{NativeStructuredSupport, StructuredDirective};
+use aster_core::llm::{
     create_client_with_config, ContentBlock, GatewayDecisionAuth, LlmClient, LlmResponse, Message,
     ModelGenerationAdmission, ModelGenerationConcurrency, ModelGenerationPermit,
     ModelGenerationPool, StreamEvent, ToolDefinition,
 };
-use a3s_code_core::loop_checkpoint::LoopCheckpoint;
-use a3s_code_core::orchestration::WorkflowCheckpoint;
-use a3s_code_core::run::RunRecord;
-use a3s_code_core::store::{
+use aster_core::loop_checkpoint::LoopCheckpoint;
+use aster_core::orchestration::WorkflowCheckpoint;
+use aster_core::run::RunRecord;
+use aster_core::store::{
     FileSessionStore, SessionData, SessionSnapshotV1, SessionStore, SessionStoreCapabilities,
     SessionStoreCommitWatch, SessionStoreWriterLeaseV1,
 };
-use a3s_code_core::subagent_task_tracker::SubagentTaskSnapshot;
-use a3s_code_core::tools::ArtifactStore;
-use a3s_code_core::trace::TraceEvent;
-use a3s_code_core::verification::VerificationReport;
+use aster_core::subagent_task_tracker::SubagentTaskSnapshot;
+use aster_core::tools::ArtifactStore;
+use aster_core::trace::TraceEvent;
+use aster_core::verification::VerificationReport;
 use anyhow::Result;
 use serde_json::json;
 use tokio::sync::mpsc;
@@ -129,7 +129,7 @@ impl ObservedProvider {
                 .root
                 .join(format!("provider-{}.jsonl", self.probe.stage)),
             &json!({
-                "schema":"a3s.test.real-provider-observation.v1", "phase":"started",
+                "schema":"aster.test.real-provider-observation.v1", "phase":"started",
                 "stage":self.probe.stage, "model":self.probe.model,
                 "transport":transport, "call":call,
                 "usage":null, "billing_cost":null,
@@ -150,7 +150,7 @@ impl ObservedProvider {
                 .root
                 .join(format!("provider-{}.jsonl", self.probe.stage)),
             &json!({
-                "schema":"a3s.test.real-provider-observation.v1", "phase":"returned",
+                "schema":"aster.test.real-provider-observation.v1", "phase":"returned",
                 "stage":self.probe.stage, "model":self.probe.model, "call":call,
                 "tool_calls":response.tool_calls(), "usage":observed_usage,
                 "raw_provider_usage_fields":response.usage,

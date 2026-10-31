@@ -149,17 +149,22 @@ pub fn model_sends_native_effort(model_id: &str) -> bool {
         None => ("", id.as_str()),
     };
     match provider {
-        "anthropic" | "claude" | "cc-switch" | "glm" | "zhipu" | "bigmodel" | "deepseek" => true,
+        name if matches!(
+            name,
+            "anthropic" | "claude" | "cc-switch" | "glm" | "zhipu" | "bigmodel" | "deepseek"
+        ) || name.starts_with("cc-switch-") =>
+        {
+            true
+        }
         "openai" | "gpt" | "grok" | "xai" | "codex" => is_openai_reasoning_model(name),
-        // Bare SDK model names retain their catalog behavior. A qualified
-        // custom provider declares no vendor-specific wire capabilities.
-        "" => {
+        // Bare or custom-qualified ids still follow the model catalog: a host
+        // nickname such as `glm-01/glm-5.3-flash` must not lose GLM effort.
+        _ => {
             is_glm_model(name)
                 || is_deepseek_model(name)
                 || name.starts_with("claude")
                 || is_openai_reasoning_model(name)
         }
-        _ => false,
     }
 }
 
@@ -212,6 +217,7 @@ mod tests {
         assert!(model_sends_native_effort("openai/gpt-5.4"));
         assert!(model_sends_native_effort("codex/gpt-5.4"));
         assert!(model_sends_native_effort("zhipu/glm-5.3"));
+        assert!(model_sends_native_effort("glm-01/glm-5.3-flash"));
         assert!(!model_sends_native_effort("ollama/llama3"));
         assert!(!model_sends_native_effort("openai/gpt-4o"));
         assert!(!model_sends_native_effort("cursor/gpt-5.2"));

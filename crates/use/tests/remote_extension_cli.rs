@@ -5,16 +5,16 @@ use std::io::Read;
 use std::process::{Command, Output};
 use std::time::{Duration, Instant};
 
-use a3s_use::package::{
+use aster_use::package::{
     PackageEnablementPlanResult, PackageEnablementPlanStatus, PackageEnablementRequest,
     PackageManager,
 };
-use a3s_use_core::{
+use aster_use_core::{
     CatalogAvailability, CatalogSurface, PackageSurfaceKind, PluginCatalogRecord,
     PluginDesiredState, PluginObservedState, PluginOperationAction, PluginPackageDependency,
     PluginPackageLockHost, PluginReleaseChannel, PLUGIN_CATALOG_SCHEMA_V3,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     prepare_remote_package, resolve_remote_package_lock, ExtensionPaths, ExtensionRegistry,
     ResolvedRemotePackage, TrustedRegistry,
 };
@@ -32,7 +32,7 @@ use tuf_test_support::{
 const OKF_CATALOG_V3: &[u8] = include_bytes!("../core/fixtures/plugins/catalog-record-okf-v3.json");
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-use")
+    env!("CARGO_BIN_EXE_aster-use")
 }
 
 #[cfg(any(unix, windows))]
@@ -83,7 +83,7 @@ fn registry_install(
     command.args([
         "component",
         "install",
-        "a3s/science",
+        "aster/science",
         "--scope-kind",
         "user",
         "--scope-id",
@@ -97,7 +97,7 @@ fn registry_install(
     command
         .args(extra)
         .arg("--json")
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap()
 }
@@ -125,7 +125,7 @@ fn package_registry_install(
         ])
         .args(extra)
         .arg("--json")
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap()
 }
@@ -141,7 +141,7 @@ fn package_uninstall(home: &std::path::Path, package_id: &str) -> Output {
             "user/current",
             "--json",
         ])
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap()
 }
@@ -171,21 +171,21 @@ fn package_okf_target(
     let mut files = Vec::new();
     collect_okf_files(&okf_root, &okf_root, &mut files);
     files.sort_by(|left, right| left.path.cmp(&right.path));
-    let limits = a3s_use_core::OkfBundleLimits {
+    let limits = aster_use_core::OkfBundleLimits {
         max_files: 256,
         max_concepts: 64,
         max_expanded_bytes: 67_108_864,
         max_document_bytes: 1_048_576,
         max_links_per_document: 2_048,
     };
-    let inspection = a3s_use_core::inspect_okf_bundle_files(
-        a3s_use_core::OkfFormatVersion::V0_2,
+    let inspection = aster_use_core::inspect_okf_bundle_files(
+        aster_use_core::OkfFormatVersion::V0_2,
         limits,
         &files,
     )
     .unwrap();
 
-    let manifest_path = package_root.join("a3s-use-extension.acl");
+    let manifest_path = package_root.join("aster-use-extension.acl");
     let manifest = std::fs::read_to_string(&manifest_path)
         .unwrap()
         .replace(
@@ -201,7 +201,7 @@ fn package_okf_target(
             &format!("expanded_bytes         = {}", inspection.expanded_bytes),
         );
     std::fs::write(&manifest_path, &manifest).unwrap();
-    let parsed = a3s_use_extension::ExtensionManifest::parse_acl(&manifest).unwrap();
+    let parsed = aster_use_extension::ExtensionManifest::parse_acl(&manifest).unwrap();
 
     let archive = package_directory_archive(&package_root);
     let fingerprint = package_fingerprint(&package_root);
@@ -245,7 +245,7 @@ fn copy_fixture_tree(source: &std::path::Path, destination: &std::path::Path) {
 fn collect_okf_files(
     root: &std::path::Path,
     directory: &std::path::Path,
-    files: &mut Vec<a3s_use_core::OkfBundleFile>,
+    files: &mut Vec<aster_use_core::OkfBundleFile>,
 ) {
     for entry in std::fs::read_dir(directory).unwrap() {
         let path = entry.unwrap().path();
@@ -257,7 +257,7 @@ fn collect_okf_files(
                 .unwrap()
                 .to_string_lossy()
                 .replace('\\', "/");
-            files.push(a3s_use_core::OkfBundleFile::new(
+            files.push(aster_use_core::OkfBundleFile::new(
                 relative,
                 std::fs::read(path).unwrap(),
             ));
@@ -289,7 +289,7 @@ fn package_registry_upgrade(
         ])
         .args(extra)
         .arg("--json")
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap()
 }
@@ -316,7 +316,7 @@ fn configure_registry(
         ])
         .args(policy)
         .arg("--json")
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap();
     assert!(configured.status.success(), "{configured:?}");
@@ -325,7 +325,7 @@ fn configure_registry(
 fn registry_source_snapshot(home: &std::path::Path) -> serde_json::Value {
     let listed = Command::new(binary())
         .args(["registry", "source", "list", "--json"])
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap();
     assert!(listed.status.success(), "{listed:?}");
@@ -356,7 +356,7 @@ fn replace_registry(
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap()
 }
@@ -405,23 +405,23 @@ fn lifecycle_journal_path(home: &std::path::Path, package_id: &str) -> std::path
 async fn apply_planned_enablement(
     manager: &PackageManager,
     request: &PackageEnablementRequest,
-) -> a3s_use_core::UseResult<a3s_use::package::PackageEnablementResult> {
+) -> aster_use_core::UseResult<aster_use::package::PackageEnablementResult> {
     let mut planned = Box::new(Box::pin(manager.plan_enablement(request)).await?);
     if let Some(result) = planned.result.take() {
         return Ok(result);
     }
     let envelope = planned.plan.take().ok_or_else(|| {
-        a3s_use_core::UseError::new(
+        aster_use_core::UseError::new(
             "test.plugin.enablement_plan_missing",
             "The integration test expected an enablement plan to apply.",
         )
     })?;
-    let confirmation = (envelope.plan.authority.decision == a3s_use_core::PlanPolicyDecision::Ask)
-        .then(|| a3s_use_core::PluginOperationConfirmation {
-            schema: a3s_use_core::PLUGIN_OPERATION_CONFIRMATION_SCHEMA.to_string(),
+    let confirmation = (envelope.plan.authority.decision == aster_use_core::PlanPolicyDecision::Ask)
+        .then(|| aster_use_core::PluginOperationConfirmation {
+            schema: aster_use_core::PLUGIN_OPERATION_CONFIRMATION_SCHEMA.to_string(),
             operation_id: envelope.plan.operation_id.clone(),
             plan_digest: envelope.plan_digest.clone(),
-            confirmed_by: a3s_use_core::PlanActor::User,
+            confirmed_by: aster_use_core::PlanActor::User,
             confirmed_at_ms: envelope.plan.created_at_ms + 1,
         });
     Box::pin(manager.apply_enablement(request, envelope, confirmation)).await
@@ -466,7 +466,7 @@ fn package_skill_target_version(
     let manifest = format!(
         "extension \"{package_id}\" {{\n  schema_version = 3\n  version = \"{version}\"\n  route = \"{route}\"\n  requires_use = \">=0.3.0, <0.4.0\"\n  actions = [\"read\"]\n{dependency_blocks}\n  repository {{\n    url = \"https://github.com/acme/{route}\"\n    revision = \"0123456789abcdef0123456789abcdef01234567\"\n  }}\n\n  skill \"main\" {{\n    path = \"skills/main/SKILL.md\"\n    requires_tool = []\n    requires_mcp = []\n    requires_okf = []\n    optional = false\n  }}\n}}\n"
     );
-    std::fs::write(package_root.join("a3s-use-extension.acl"), &manifest).unwrap();
+    std::fs::write(package_root.join("aster-use-extension.acl"), &manifest).unwrap();
     std::fs::write(
         package_root.join("README.md"),
         format!("# {package_id}\n\npackage integration fixture.\n"),
@@ -571,7 +571,7 @@ fn package_flow_target_version(
   }}
 
   flow "reason" {{
-    engine        = "a3s-flow"
+    engine        = "aster-flow"
     runtime       = "native-ts"
     source        = "flows/reason.ts"
     export        = "run"
@@ -603,7 +603,7 @@ fn package_flow_target_version(
 }}
 "#
     );
-    std::fs::write(package_root.join("a3s-use-extension.acl"), &manifest).unwrap();
+    std::fs::write(package_root.join("aster-use-extension.acl"), &manifest).unwrap();
     std::fs::write(
         package_root.join("README.md"),
         format!("# Flow Suite {version}\n\nStandalone Flow lifecycle fixture.\n"),
@@ -654,13 +654,13 @@ fn package_flow_target_version(
     let archive = package_directory_archive(&package_root);
     let fingerprint = package_fingerprint(&package_root);
     let manifest_sha256 = format!("sha256:{:x}", Sha256::digest(manifest.as_bytes()));
-    let parsed = a3s_use_extension::ExtensionManifest::parse_acl(&manifest).unwrap();
+    let parsed = aster_use_extension::ExtensionManifest::parse_acl(&manifest).unwrap();
     let graph = parsed.plugin_surfaces().unwrap();
     let mut catalog = PluginCatalogRecord::from_json(OKF_CATALOG_V3).unwrap();
     catalog.schema = PLUGIN_CATALOG_SCHEMA_V3.to_string();
     catalog.package_id = package_id.to_string();
     catalog.display_name = format!("Flow Suite {version}");
-    catalog.description = "Standalone A3S Flow lifecycle fixture.".to_string();
+    catalog.description = "Standalone Aster Flow lifecycle fixture.".to_string();
     catalog.publisher = "acme".to_string();
     catalog.keywords = vec!["fixture".to_string(), "flow".to_string()];
     catalog.categories = vec!["workflow".to_string()];
@@ -738,7 +738,7 @@ fn package_fingerprint(root: &std::path::Path) -> (String, u64, u64) {
     collect(root, root, &mut files);
     files.sort_by(|left, right| left.0.cmp(&right.0));
     let mut digest = Sha256::new();
-    digest.update(b"a3s-use-expanded-package-v1\0");
+    digest.update(b"aster-use-expanded-package-v1\0");
     let mut expanded_bytes = 0_u64;
     for (relative, path) in &files {
         let size = std::fs::metadata(path).unwrap().len();

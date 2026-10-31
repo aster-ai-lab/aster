@@ -9,7 +9,7 @@
 
 //! Filtered HNSW/IVF RaBitQ must exact-rerank within the allow-list (I5).
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     HnswQueryParams, IndexParams, IndexType, IvfRabitqQueryParams, MetricType, SearchQuery,
 };
@@ -118,7 +118,7 @@ fn assert_filtered_oracle(ann: &[Doc], exact: &[Doc]) {
             "public scores must match DocumentMap re-rank"
         );
         match ann_doc.field("scope") {
-            Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
+            Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
             other => panic!("expected allowed scope, got {other:?}"),
         }
     }
@@ -206,7 +206,7 @@ fn filtered_hnsw_rabitq_with_bounded_ef_stays_inside_allow_list() {
     );
     for hit in &hits {
         match hit.field("scope") {
-            Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
+            Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
             other => panic!("expected allowed, got {other:?}"),
         }
     }

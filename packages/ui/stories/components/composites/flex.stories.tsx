@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { Box, Center, ColFlex, Flex, RowFlex, SpaceBetweenRowFlex } from '@a3s-lab/ui'
+import { Box, Center, ColFlex, Flex, RowFlex, SpaceBetweenRowFlex } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Flex> = {
   title: 'Components/Composites/flex',

@@ -45,6 +45,6 @@ test in the same task. A task without that test is not done.
 
 - [ ] The owning package's focused test passes
 - [ ] `cargo fmt --all -- --check` is clean for Rust edits
-- [ ] No new crates.io `a3s-*` dependency
+- [ ] No new crates.io `aster-*` dependency
 - [ ] No native `<select>` added on a product surface
 - [ ] Product configuration, if added, is ACL

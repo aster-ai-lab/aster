@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{OciBundle, RuntimeClient};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{OciBundle, RuntimeClient};
 
 use super::filesystem::{
     canonical_directory, create_private_directory, fixed_rootfs, path_exists, remove_marker,
@@ -100,7 +100,7 @@ pub(super) async fn run(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let session_root = work_parent.join(format!("a3s-oci-native-multi-{nonce}"));
+    let session_root = work_parent.join(format!("aster-oci-native-multi-{nonce}"));
     if let Err(reason) = create_private_directory(&session_root).await {
         return failed(report, reason);
     }

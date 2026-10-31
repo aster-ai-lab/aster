@@ -13,9 +13,9 @@ and the wrap-up evidence templates in
 
 | Owner | Responsibility |
 | --- | --- |
-| A3S Code | Session/run loop, tool evidence, transforms, checkpoint export payloads, fail-closed local recovery |
-| A3S Cloud | Execution identity, sequencing, approvals, checkpoint/fork business lineage, audit, placement |
-| A3S Box / Sandbox | Stronger workload isolation; Box-hosted restart/cancel/hostile-tool matrix (`CAR-05`) |
+| Aster Code | Session/run loop, tool evidence, transforms, checkpoint export payloads, fail-closed local recovery |
+| Aster Cloud | Execution identity, sequencing, approvals, checkpoint/fork business lineage, audit, placement |
+| Aster Box / Sandbox | Stronger workload isolation; Box-hosted restart/cancel/hostile-tool matrix (`CAR-05`) |
 
 ## Gate status matrix
 
@@ -42,5 +42,5 @@ substitutes:
 - `test_deepseek_adversarial_e2e`
 - `test_prompt_capability_real_llm`
 
-Point `A3S_CONFIG_FILE` at a monorepo `.a3s/config.acl` and run with
+Point `ASTER_CONFIG_FILE` at a monorepo `.aster/config.acl` and run with
 `--ignored --test-threads=1`.

@@ -1,9 +1,9 @@
-//! `a3s-box start` command — Start one or more eligible boxes.
+//! `aster-box start` command — Start one or more eligible boxes.
 
-use a3s_box_core::{
+use aster_box_core::{
     ExecutionGeneration, ExecutionId, ExecutionManager, OperationId, RestartExecutionOptions,
 };
-use a3s_box_runtime::{ManagedExecutionOperation, ManagedExecutionState};
+use aster_box_runtime::{ManagedExecutionOperation, ManagedExecutionState};
 use clap::Args;
 
 use crate::boot;
@@ -92,7 +92,7 @@ async fn start_one(state: &StateFile, query: &str) -> Result<(), Box<dyn std::er
             // Managed lifecycle APIs acquire the same cross-process lock in the
             // runtime crate, covering CLI, SDK, and reconcile entry points.
             drop(lifecycle_lock.take());
-            let home = a3s_box_core::dirs_home();
+            let home = aster_box_core::dirs_home();
             let manager = super::configured_local_execution_manager(&home).await?;
             let start_result = match managed_plan {
                 StartPlan::Managed {
@@ -258,8 +258,8 @@ fn validate_start_status(name: &str, status: &str) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
-    use a3s_box_runtime::{ManagedExecutionMetadata, ManagedExecutionOperation};
+    use aster_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
+    use aster_box_runtime::{ManagedExecutionMetadata, ManagedExecutionOperation};
     use std::collections::BTreeMap;
 
     use crate::test_helpers::fixtures::make_record;

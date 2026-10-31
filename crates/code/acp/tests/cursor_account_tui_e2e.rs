@@ -290,15 +290,15 @@ import_accounts = ["cursor"]
         path.push(':');
         path.push_str(&parent.to_string_lossy());
     }
-    let acp = env!("CARGO_BIN_EXE_a3s-code-acp");
-    let a3s_home = root.path().join("a3s-home");
-    std::fs::create_dir_all(&a3s_home).unwrap();
+    let acp = env!("CARGO_BIN_EXE_aster-acp");
+    let aster_home = root.path().join("aster-home");
+    std::fs::create_dir_all(&aster_home).unwrap();
     let mut env = vec![
-        ("A3S_ACP_AGENT_BIN".into(), acp.to_string()),
-        ("A3S_HOME".into(), a3s_home.display().to_string()),
-        ("A3S_CONFIG".into(), config.display().to_string()),
-        ("A3S_DISABLE_CC_SWITCH".into(), "1".into()),
-        ("A3S_DISABLE_GROK_ACCOUNT".into(), "1".into()),
+        ("ASTER_ACP_AGENT_BIN".into(), acp.to_string()),
+        ("ASTER_HOME".into(), aster_home.display().to_string()),
+        ("ASTER_CONFIG".into(), config.display().to_string()),
+        ("ASTER_DISABLE_CC_SWITCH".into(), "1".into()),
+        ("ASTER_DISABLE_GROK_ACCOUNT".into(), "1".into()),
         ("HOME".into(), home.display().to_string()),
         ("TMPDIR".into(), std::env::temp_dir().display().to_string()),
         ("TERM".into(), "xterm-256color".into()),
@@ -306,19 +306,19 @@ import_accounts = ["cursor"]
     ];
     match login {
         Login::Present => {
-            env.push(("A3S_CURSOR_HOME".into(), cursor_home.display().to_string()));
-            env.push(("A3S_CURSOR_TOKEN_FILE".into(), token.display().to_string()));
+            env.push(("ASTER_CURSOR_HOME".into(), cursor_home.display().to_string()));
+            env.push(("ASTER_CURSOR_TOKEN_FILE".into(), token.display().to_string()));
             env.push((
-                "A3S_CURSOR_MODELS_FILE".into(),
+                "ASTER_CURSOR_MODELS_FILE".into(),
                 models.display().to_string(),
             ));
         }
         Login::Disabled => {
-            env.push(("A3S_DISABLE_CURSOR_ACCOUNT".into(), "1".into()));
-            env.push(("A3S_CURSOR_HOME".into(), cursor_home.display().to_string()));
-            env.push(("A3S_CURSOR_TOKEN_FILE".into(), token.display().to_string()));
+            env.push(("ASTER_DISABLE_CURSOR_ACCOUNT".into(), "1".into()));
+            env.push(("ASTER_CURSOR_HOME".into(), cursor_home.display().to_string()));
+            env.push(("ASTER_CURSOR_TOKEN_FILE".into(), token.display().to_string()));
             env.push((
-                "A3S_CURSOR_MODELS_FILE".into(),
+                "ASTER_CURSOR_MODELS_FILE".into(),
                 models.display().to_string(),
             ));
         }
@@ -338,7 +338,7 @@ import_accounts = ["cursor"]
 }
 
 fn tui_binary() -> PathBuf {
-    if let Some(path) = std::env::var_os("A3S_CODE_TUI_BIN") {
+    if let Some(path) = std::env::var_os("ASTER_TUI_BIN") {
         return PathBuf::from(path);
     }
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../target/debug/aster")
@@ -511,13 +511,13 @@ fn assert_workspace_untouched(fixture: &Fixture) {
         .map(|entry| entry.unwrap().file_name().to_string_lossy().into_owned())
         .collect();
     names.sort();
-    names.retain(|name| name != ".a3s" && name != ".a3s-code");
+    names.retain(|name| name != ".aster" && name != ".aster");
     assert_eq!(
         names,
         vec!["sentinel.txt".to_string()],
         "the turn wrote a file at the workspace root"
     );
-    let index = fixture.workspace.join(".a3s-code");
+    let index = fixture.workspace.join(".aster");
     if index.is_dir() {
         let names: Vec<_> = std::fs::read_dir(index)
             .unwrap()
@@ -529,7 +529,7 @@ fn assert_workspace_untouched(fixture: &Fixture) {
             "unexpected workspace index namespace"
         );
     }
-    let product = fixture.workspace.join(".a3s");
+    let product = fixture.workspace.join(".aster");
     if product.is_dir() {
         let mut children: Vec<_> = std::fs::read_dir(&product)
             .unwrap()
@@ -539,7 +539,7 @@ fn assert_workspace_untouched(fixture: &Fixture) {
         for name in &children {
             assert!(
                 name == "sessions" || name == "effect-log" || name == "memory",
-                "unexpected workspace path .a3s/{name}"
+                "unexpected workspace path .aster/{name}"
             );
         }
     }
@@ -592,11 +592,11 @@ fn tree_contains_secret(root: &Path) -> bool {
 fn workspace_guard_accepts_the_index_and_rejects_artifacts_and_credentials() {
     for (path, contents) in [
         ("unexpected.txt", "unexpected"),
-        (".a3s-code/unexpected.txt", "unexpected"),
-        (".a3s-code/index/credential.txt", BEARER),
+        (".aster/unexpected.txt", "unexpected"),
+        (".aster/index/credential.txt", BEARER),
     ] {
         let fixture = prepare(Login::Absent, None);
-        std::fs::create_dir_all(fixture.workspace.join(".a3s-code/index")).unwrap();
+        std::fs::create_dir_all(fixture.workspace.join(".aster/index")).unwrap();
         assert_workspace_untouched(&fixture);
         std::fs::write(fixture.workspace.join(path), contents).unwrap();
         assert!(
@@ -766,7 +766,7 @@ fn disable_leaves_cursor_out_and_launch_still_works() {
     let mut pty = open_ready(&fixture);
     pty.clear_line();
     pty.type_text("/model ");
-    let picker = pty.wait_for("From A3S ACL provider mock", Duration::from_secs(8));
+    let picker = pty.wait_for("From Aster ACL provider mock", Duration::from_secs(8));
     assert_screen_has_no_secret(&picker);
     assert!(
         !picker.contains("cursor ·") && !picker.contains("Logged-in Cursor account"),
@@ -785,7 +785,7 @@ fn missing_login_leaves_cursor_out_and_launch_still_works() {
     let mut pty = open_ready(&fixture);
     pty.clear_line();
     pty.type_text("/model ");
-    let picker = pty.wait_for("From A3S ACL provider mock", Duration::from_secs(8));
+    let picker = pty.wait_for("From Aster ACL provider mock", Duration::from_secs(8));
     assert!(
         !picker.contains("cursor ·") && !picker.contains("Logged-in Cursor account"),
         "missing login still offered Cursor\n{}",
@@ -845,15 +845,15 @@ fn live_tui_turn_returns_assistant_text() {
     )
     .unwrap();
     let path = std::env::var("PATH").unwrap_or_default();
-    let acp = env!("CARGO_BIN_EXE_a3s-code-acp");
-    let a3s_home = root.path().join("a3s-home");
-    std::fs::create_dir_all(&a3s_home).unwrap();
+    let acp = env!("CARGO_BIN_EXE_aster-acp");
+    let aster_home = root.path().join("aster-home");
+    std::fs::create_dir_all(&aster_home).unwrap();
     let env = vec![
-        ("A3S_ACP_AGENT_BIN".into(), acp.to_string()),
-        ("A3S_HOME".into(), a3s_home.display().to_string()),
-        ("A3S_CONFIG".into(), config.display().to_string()),
-        ("A3S_DISABLE_CC_SWITCH".into(), "1".into()),
-        ("A3S_DISABLE_GROK_ACCOUNT".into(), "1".into()),
+        ("ASTER_ACP_AGENT_BIN".into(), acp.to_string()),
+        ("ASTER_HOME".into(), aster_home.display().to_string()),
+        ("ASTER_CONFIG".into(), config.display().to_string()),
+        ("ASTER_DISABLE_CC_SWITCH".into(), "1".into()),
+        ("ASTER_DISABLE_GROK_ACCOUNT".into(), "1".into()),
         ("HOME".into(), home),
         ("TMPDIR".into(), std::env::temp_dir().display().to_string()),
         ("TERM".into(), "xterm-256color".into()),
@@ -881,9 +881,9 @@ fn live_tui_turn_returns_assistant_text() {
 #[tokio::test]
 #[ignore = "real Cursor account read/write round trip; spends account quota"]
 async fn live_cursor_tools_read_write_and_verify_actual_workspace_bytes() {
-    use a3s_code_core::config::AccountImport;
-    use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-    use a3s_code_core::{Agent, AgentEvent, PlanningMode, SessionOptions};
+    use aster_core::config::AccountImport;
+    use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+    use aster_core::{Agent, AgentEvent, PlanningMode, SessionOptions};
 
     let root = tempfile::tempdir().unwrap();
     let workspace = root.path().join("workspace");
@@ -892,7 +892,7 @@ async fn live_cursor_tools_read_write_and_verify_actual_workspace_bytes() {
     std::fs::write(workspace.join("input.txt"), &marker).unwrap();
     let config = root.path().join("cursor.acl");
     std::fs::write(&config, "import_accounts = [\"cursor\"]\n").unwrap();
-    let (launch, _) = a3s_code_acp::load_launch_config_with_imports(
+    let (launch, _) = aster_acp::load_launch_config_with_imports(
         workspace.clone(),
         Some(config),
         &[AccountImport::Cursor],
@@ -911,7 +911,7 @@ async fn live_cursor_tools_read_write_and_verify_actual_workspace_bytes() {
         .with_manual_delegation_enabled(false)
         .with_max_tool_rounds(8)
         .with_completion_attestor(Arc::new(
-            a3s_code_core::completion_attestor::DiskContentAttestor::new(&workspace),
+            aster_core::completion_attestor::DiskContentAttestor::new(&workspace),
         ));
     let session = agent
         .session_async(workspace.display().to_string(), Some(options))

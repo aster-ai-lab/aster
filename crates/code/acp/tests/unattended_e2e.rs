@@ -1,4 +1,4 @@
-//! `a3s-code-acp --unattended` through the shipped binary against a local
+//! `aster-acp --unattended` through the shipped binary against a local
 //! OpenAI-compatible model. The same task in an interactive launch is the pin:
 //! no host bind, and harness state stays where it always was.
 
@@ -49,7 +49,7 @@ struct Script {
 }
 
 /// Searches the unattended model makes before writing: the bm25 query rides
-/// the persistent `a3s-vec` index, the grep one the trigram candidates.
+/// the persistent `aster-vec` index, the grep one the trigram candidates.
 const SEARCHES: [(&str, &str); 2] = [("bm25", "answer notes"), ("grep", "UNIVERSE")];
 
 /// A SLOW-TASK parent request answers with text after this long, so every
@@ -73,7 +73,7 @@ impl Drop for AgentProc {
 
 fn isolate(label: &str) -> PathBuf {
     let path = std::env::temp_dir().join(format!(
-        "a3s-unattended-{label}-{}-{}",
+        "aster-unattended-{label}-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -497,17 +497,17 @@ async fn spawn_agent(
     extra: &[&str],
 ) -> AgentProc {
     let bin = candidate::Candidate::acp_binary(
-        env!("CARGO_BIN_EXE_a3s-code-acp"),
+        env!("CARGO_BIN_EXE_aster-acp"),
         env!("ASTER_PAIR_BUILD_ID"),
     );
     let mut child = tokio::process::Command::new(bin)
         .args(extra)
         .arg("--cwd")
         .arg(workspace)
-        .env("A3S_CONFIG", config)
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_CONFIG", config)
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("XAI_API_KEY", "sk-dummy-not-a-model")
         .env("HOME", home)
         .env("GROK_HOME", home.join("grok"))
@@ -516,7 +516,7 @@ async fn spawn_agent(
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .spawn()
-        .expect("spawn a3s-code-acp");
+        .expect("spawn aster-acp");
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
     let permission_asks = Rc::new(Cell::new(0));
@@ -642,14 +642,14 @@ async fn default_goal_stagnation_writes_a_terminal_result_before_the_deadline() 
         assert!(facts.iter().any(|fact| fact["seq"].as_u64() > Some(verified) && fact["type"] == "tool.result"
             && fact["payload"]["receipt"]["outcome"] == "succeeded"
             && fact["payload"]["receipt"]["effects"]["changes"].as_array().is_some_and(Vec::is_empty)));
-        assert!(!facts.iter().any(|fact| matches!(fact["type"].as_str(), Some("a3s.goal.step.accepted" | "a3s.goal.completed"))));
+        assert!(!facts.iter().any(|fact| matches!(fact["type"].as_str(), Some("aster.goal.step.accepted" | "aster.goal.completed"))));
         assert_eq!(std::fs::read_to_string(workspace.join("answer.txt")).unwrap(), "42\n");
         let script = script.lock().unwrap();
         eprintln!("STALLED_GOAL_OBSERVATION {}", serde_json::json!({
             "workspace": workspace, "privateState": tmp,
             "written": script.written, "verificationAttempts": script.verification_attempts,
             "modelCalls": script.bodies.len(), "verifiedSequence": verified,
-            "slices": facts.iter().filter(|fact| fact["type"] == "a3s.goal.slice.admitted").count(),
+            "slices": facts.iter().filter(|fact| fact["type"] == "aster.goal.slice.admitted").count(),
             "resultExists": result_file.is_file(), "timedOut": response.is_err(),
         }));
         assert!(script.verification_attempts > 0);
@@ -777,7 +777,7 @@ async fn actual_write_cycle(external: bool, reused: bool) {
         assert_eq!(receipts.len(), expected);
         assert!(receipts.iter().all(|f| f["payload"]["receipt"]["outcome"] == "succeeded" && f["payload"]["receipt"]["identity"]["admission"].is_object()));
         assert_eq!(std::fs::read_to_string(workspace.join("source.txt")).unwrap(), if external { "B" } else { "A" });
-        assert!(!facts.iter().any(|f| f["type"] == "a3s.goal.completed"));
+        assert!(!facts.iter().any(|f| f["type"] == "aster.goal.completed"));
         if reused {
             let ids = agent.permission_ids.borrow();
             let unique: std::collections::BTreeSet<_> = ids.iter().collect();
@@ -814,7 +814,7 @@ async fn unattended_prompt_binds_proves_and_records_without_touching_the_workspa
             let tmp = isolate("tmp");
             let (addr, script) = spawn_mock();
             let config = write_acl(&outside, &format!("http://{addr}/v1"));
-            let result_file = outside.join("logs").join("a3s-code.result.json");
+            let result_file = outside.join("logs").join("aster.result.json");
             let result_arg = result_file.display().to_string();
             let agent = spawn_agent(
                 &workspace,
@@ -906,7 +906,7 @@ async fn unattended_prompt_binds_proves_and_records_without_touching_the_workspa
             let record: serde_json::Value =
                 serde_json::from_slice(&std::fs::read(&result_file).expect("result record"))
                     .expect("result json");
-            assert_eq!(record["schema"], "a3s.code.terminal-bench-result.v1");
+            assert_eq!(record["schema"], "aster.code.terminal-bench-result.v1");
             assert_eq!(record["outcome"], "succeeded", "{record}");
             assert_eq!(record["reason"], "agent_end");
             assert_eq!(record["terminalEvent"], true);
@@ -922,7 +922,7 @@ async fn unattended_prompt_binds_proves_and_records_without_touching_the_workspa
             );
             let roots: Vec<String> = entries(&tmp)
                 .into_iter()
-                .filter(|name| name.starts_with("a3s-code-acp-"))
+                .filter(|name| name.starts_with("aster-acp-"))
                 .collect();
             assert_eq!(roots.len(), 1, "one private state root: {roots:?}");
             let state = tmp.join(&roots[0]);
@@ -938,7 +938,7 @@ async fn unattended_prompt_binds_proves_and_records_without_touching_the_workspa
                     .join(&indexes[0])
                     .join("index")
                     .is_dir(),
-                "the a3s-vec index did not move to the state root"
+                "the aster-vec index did not move to the state root"
             );
         })
         .await;
@@ -1011,7 +1011,7 @@ async fn a_continuation_attempt_never_outlives_the_run_deadline() {
             let tmp = isolate("tmp-deadline");
             let (addr, _script) = spawn_mock();
             let config = write_acl(&outside, &format!("http://{addr}/v1"));
-            let result_file = outside.join("a3s-code.result.json");
+            let result_file = outside.join("aster.result.json");
             let result_arg = result_file.display().to_string();
             let agent = spawn_agent(
                 &workspace,
@@ -1068,7 +1068,7 @@ async fn bash_in_a_large_non_git_workspace_does_not_end_the_run() {
             let tmp = isolate("tmp-large");
             let (addr, script) = spawn_mock();
             let config = write_acl(&outside, &format!("http://{addr}/v1"));
-            let result_file = outside.join("a3s-code.result.json");
+            let result_file = outside.join("aster.result.json");
             let result_arg = result_file.display().to_string();
             let agent = spawn_agent(
                 &workspace,
@@ -1122,7 +1122,7 @@ async fn a_missing_skill_call_does_not_block_later_writes() {
             let tmp = isolate("tmp-skill");
             let (addr, script) = spawn_mock();
             let config = write_acl(&outside, &format!("http://{addr}/v1"));
-            let result_file = outside.join("a3s-code.result.json");
+            let result_file = outside.join("aster.result.json");
             let result_arg = result_file.display().to_string();
             let agent = spawn_agent(
                 &workspace,
@@ -1176,7 +1176,7 @@ async fn a_goal_launch_runs_the_first_attempt_as_the_bound_task_slice() {
             let tmp = isolate("tmp-goal");
             let (addr, script) = spawn_mock();
             let config = write_acl(&outside, &format!("http://{addr}/v1"));
-            let result_file = outside.join("a3s-code.result.json");
+            let result_file = outside.join("aster.result.json");
             let result_arg = result_file.display().to_string();
             let agent = spawn_agent(
                 &workspace,
@@ -1248,11 +1248,11 @@ async fn an_interactive_launch_never_binds_the_gate_and_keeps_state_in_the_works
                         || body.contains("Host note: A host admission bind")),
                 "an interactive turn received unattended host text"
             );
-            assert!(workspace.join(".a3s").is_dir(), "default state root moved");
+            assert!(workspace.join(".aster").is_dir(), "default state root moved");
             assert!(
                 !entries(&tmp)
                     .iter()
-                    .any(|name| name.starts_with("a3s-code-acp-")),
+                    .any(|name| name.starts_with("aster-acp-")),
                 "an interactive launch created an unattended state root"
             );
         })

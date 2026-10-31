@@ -1,7 +1,7 @@
 //! Image registry abstraction.
 //!
 //! Decouples the VM boot path from any specific OCI registry client.
-//! The default implementation in `a3s-box-runtime` uses `oci-distribution`,
+//! The default implementation in `aster-box-runtime` uses `oci-distribution`,
 //! but this trait allows swapping in a local-only store, a P2P distribution
 //! layer, or a custom registry protocol.
 

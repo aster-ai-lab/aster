@@ -1,8 +1,8 @@
 use super::*;
-use a3s_oci_sdk::oci_spec::runtime::{
+use aster_oci_sdk::oci_spec::runtime::{
     ContainerState, LinuxSchedulerFlag, LinuxSchedulerPolicy, Process, StateBuilder,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     async_trait, CreateRequest, DeleteMode, DeleteRequest as RuntimeDeleteRequest, DriverKind,
     ExecRequest, Generation, IsolationClass, KillRequest as RuntimeKillRequest, OciRuntimeService,
     OutputChunk, OutputStream, ProcessesRequest, ReadOutputRequest, StateRequest,
@@ -56,15 +56,15 @@ struct DeletedRuntimeService {
 
 #[async_trait]
 impl OciRuntimeService for DeletedRuntimeService {
-    async fn features(&self) -> a3s_oci_sdk::Result<a3s_oci_sdk::RuntimeInfo> {
+    async fn features(&self) -> aster_oci_sdk::Result<aster_oci_sdk::RuntimeInfo> {
         Err(RuntimeError::unsupported("test-features"))
     }
 
-    async fn create(&self, _request: CreateRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn create(&self, _request: CreateRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(RuntimeError::unsupported("test-create"))
     }
 
-    async fn state(&self, request: StateRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn state(&self, request: StateRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         self.calls
             .lock()
             .expect("deleted-runtime calls")
@@ -79,12 +79,12 @@ impl OciRuntimeService for DeletedRuntimeService {
 
     async fn start(
         &self,
-        _request: a3s_oci_sdk::StartRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::StartRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(RuntimeError::unsupported("test-start"))
     }
 
-    async fn kill(&self, _request: RuntimeKillRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn kill(&self, _request: RuntimeKillRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         self.calls.lock().expect("deleted-runtime calls").kills += 1;
         Err(RuntimeError::new(
             ErrorCode::NotFound,
@@ -93,7 +93,7 @@ impl OciRuntimeService for DeletedRuntimeService {
         .for_operation("test-kill"))
     }
 
-    async fn delete(&self, request: RuntimeDeleteRequest) -> a3s_oci_sdk::Result<()> {
+    async fn delete(&self, request: RuntimeDeleteRequest) -> aster_oci_sdk::Result<()> {
         let mode = request.mode;
         self.calls
             .lock()
@@ -114,11 +114,11 @@ impl OciRuntimeService for DeletedRuntimeService {
 
 #[async_trait]
 impl OciRuntimeService for CreateIntentCleanupService {
-    async fn features(&self) -> a3s_oci_sdk::Result<a3s_oci_sdk::RuntimeInfo> {
+    async fn features(&self) -> aster_oci_sdk::Result<aster_oci_sdk::RuntimeInfo> {
         Err(RuntimeError::unsupported("test-features"))
     }
 
-    async fn create(&self, request: CreateRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn create(&self, request: CreateRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         self.calls
             .lock()
             .expect("create-intent cleanup calls")
@@ -143,18 +143,18 @@ impl OciRuntimeService for CreateIntentCleanupService {
         Ok(self.record.clone())
     }
 
-    async fn state(&self, _request: StateRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn state(&self, _request: StateRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         Ok(self.record.clone())
     }
 
     async fn start(
         &self,
-        _request: a3s_oci_sdk::StartRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::StartRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(RuntimeError::unsupported("test-start"))
     }
 
-    async fn kill(&self, request: RuntimeKillRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn kill(&self, request: RuntimeKillRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         self.calls
             .lock()
             .expect("create-intent cleanup calls")
@@ -163,7 +163,7 @@ impl OciRuntimeService for CreateIntentCleanupService {
         Ok(self.record.clone())
     }
 
-    async fn delete(&self, request: RuntimeDeleteRequest) -> a3s_oci_sdk::Result<()> {
+    async fn delete(&self, request: RuntimeDeleteRequest) -> aster_oci_sdk::Result<()> {
         self.calls
             .lock()
             .expect("create-intent cleanup calls")
@@ -172,25 +172,25 @@ impl OciRuntimeService for CreateIntentCleanupService {
         Ok(())
     }
 
-    async fn wait(&self, _request: WaitRequest) -> a3s_oci_sdk::Result<ExitStatus> {
+    async fn wait(&self, _request: WaitRequest) -> aster_oci_sdk::Result<ExitStatus> {
         ExitStatus::signaled(9, false)
     }
 }
 
 #[async_trait]
 impl OciRuntimeService for RecoveryService {
-    async fn features(&self) -> a3s_oci_sdk::Result<a3s_oci_sdk::RuntimeInfo> {
+    async fn features(&self) -> aster_oci_sdk::Result<aster_oci_sdk::RuntimeInfo> {
         Err(RuntimeError::unsupported("test-features"))
     }
 
     async fn create(
         &self,
-        _request: a3s_oci_sdk::CreateRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::CreateRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(RuntimeError::unsupported("test-create"))
     }
 
-    async fn state(&self, request: StateRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn state(&self, request: StateRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         if request.target.generation.is_none() {
             return Err(RuntimeError::new(
                 ErrorCode::InvalidArgument,
@@ -208,27 +208,27 @@ impl OciRuntimeService for RecoveryService {
 
     async fn start(
         &self,
-        _request: a3s_oci_sdk::StartRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::StartRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(RuntimeError::unsupported("test-start"))
     }
 
     async fn kill(
         &self,
-        _request: a3s_oci_sdk::KillRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::KillRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(RuntimeError::unsupported("test-kill"))
     }
 
-    async fn delete(&self, _request: a3s_oci_sdk::DeleteRequest) -> a3s_oci_sdk::Result<()> {
+    async fn delete(&self, _request: aster_oci_sdk::DeleteRequest) -> aster_oci_sdk::Result<()> {
         Err(RuntimeError::unsupported("test-delete"))
     }
 
-    async fn exec(&self, request: ExecRequest) -> a3s_oci_sdk::Result<ProcessRecord> {
+    async fn exec(&self, request: ExecRequest) -> aster_oci_sdk::Result<ProcessRecord> {
         self.exec_calls
             .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         let record = ProcessRecord {
-            target: a3s_oci_sdk::ProcessTarget {
+            target: aster_oci_sdk::ProcessTarget {
                 container: request.container,
                 process_id: request.process_id,
             },
@@ -242,14 +242,14 @@ impl OciRuntimeService for RecoveryService {
         Ok(record)
     }
 
-    async fn wait(&self, _request: WaitRequest) -> a3s_oci_sdk::Result<ExitStatus> {
+    async fn wait(&self, _request: WaitRequest) -> aster_oci_sdk::Result<ExitStatus> {
         std::future::pending().await
     }
 
     async fn processes(
         &self,
         _request: ProcessesRequest,
-    ) -> a3s_oci_sdk::Result<Vec<ProcessRecord>> {
+    ) -> aster_oci_sdk::Result<Vec<ProcessRecord>> {
         Ok(self
             .processes
             .lock()
@@ -257,14 +257,14 @@ impl OciRuntimeService for RecoveryService {
             .clone())
     }
 
-    async fn wait_process(&self, _request: WaitProcessRequest) -> a3s_oci_sdk::Result<ExitStatus> {
+    async fn wait_process(&self, _request: WaitProcessRequest) -> aster_oci_sdk::Result<ExitStatus> {
         std::future::pending().await
     }
 
     async fn read_output(
         &self,
         request: ReadOutputRequest,
-    ) -> a3s_oci_sdk::Result<Vec<OutputChunk>> {
+    ) -> aster_oci_sdk::Result<Vec<OutputChunk>> {
         let Some(output) = &self.output else {
             return std::future::pending().await;
         };
@@ -363,7 +363,7 @@ fn recovery_service(
     };
     (
         RuntimeAdapter::from_client(
-            a3s_oci_sdk::RuntimeClient::new(service),
+            aster_oci_sdk::RuntimeClient::new(service),
             IsolationRequest::SharedHostKernel,
         ),
         exec_calls,
@@ -637,7 +637,7 @@ async fn delete_shim_replays_an_in_flight_create_intent_before_exact_cleanup() {
     .expect("store create intent");
     let calls = Arc::new(std::sync::Mutex::new(CreateIntentCleanupCalls::default()));
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(CreateIntentCleanupService {
+        aster_oci_sdk::RuntimeClient::new(CreateIntentCleanupService {
             record,
             calls: calls.clone(),
             retryable_create_failures: Arc::new(std::sync::atomic::AtomicUsize::new(2)),
@@ -685,7 +685,7 @@ async fn delete_shim_finishes_local_cleanup_after_runtime_delete_committed() {
     };
     let calls = runtime.calls.clone();
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::RuntimeClient::new(runtime),
         IsolationRequest::SharedHostKernel,
     );
     let mut service = recovery_service_instance(directory.path(), adapter);
@@ -723,7 +723,7 @@ async fn delete_shim_retains_metadata_when_runtime_absence_is_unconfirmed() {
     };
     let calls = runtime.calls.clone();
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::RuntimeClient::new(runtime),
         IsolationRequest::SharedHostKernel,
     );
     let mut service = recovery_service_instance(directory.path(), adapter);

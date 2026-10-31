@@ -1,4 +1,4 @@
-use a3s_use_extension::ExtensionManifest;
+use aster_use_extension::ExtensionManifest;
 
 use super::{PluginLifecycleAction, PluginLifecycleIntent, PluginLifecycleIntentSpec};
 
@@ -45,7 +45,7 @@ extension "acme/research" {
   }
 
   flow "review" {
-    engine        = "a3s-flow"
+    engine        = "aster-flow"
     runtime       = "native-ts"
     source        = "flows/review.ts"
     export        = "run"
@@ -87,8 +87,8 @@ pub(super) fn intent(action: PluginLifecycleAction) -> PluginLifecycleIntent {
         PluginLifecycleIntentSpec {
             operation_id: format!("{action:?}:acme-research:1").to_lowercase(),
             plan_digest: format!("sha256:{}", "1".repeat(64)),
-            scope: a3s_use_core::PlanScope {
-                kind: a3s_use_core::PlanScopeKind::Workspace,
+            scope: aster_use_core::PlanScope {
+                kind: aster_use_core::PlanScopeKind::Workspace,
                 id: "research".to_string(),
             },
             package_id: "acme/research".to_string(),

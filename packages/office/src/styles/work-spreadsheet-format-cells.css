@@ -9,7 +9,7 @@
 .work-spreadsheet-format-cells-tabs.ds-tabs {
   gap: 0;
   overflow-x: auto;
-  border-bottom: 1px solid var(--a3s-line);
+  border-bottom: 1px solid var(--aster-line);
   scrollbar-width: thin;
 }
 
@@ -43,7 +43,7 @@
   display: grid;
   min-width: 0;
   gap: 6px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-weight: 600;
 }
@@ -76,7 +76,7 @@
 .work-spreadsheet-format-cells-grid > [role="alert"] {
   grid-column: 1 / -1;
   margin: -8px 0 0;
-  color: var(--a3s-red);
+  color: var(--aster-red);
   font-size: 11px;
 }
 
@@ -88,21 +88,21 @@
   align-content: center;
   gap: 7px 16px;
   padding: 16px 18px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 10px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-format-cells-sample > span {
   grid-column: 1 / -1;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   font-weight: 650;
 }
 
 .work-spreadsheet-format-cells-sample > output {
   overflow: hidden;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 22px;
   font-weight: 650;
   text-overflow: ellipsis;
@@ -111,7 +111,7 @@
 
 .work-spreadsheet-format-cells-sample > small {
   align-self: center;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-family: var(--font-mono);
   font-size: 10px;
 }
@@ -122,13 +122,13 @@
   gap: 4px;
   margin: 0;
   padding: 9px 12px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
 }
 
 .work-spreadsheet-format-cells-options > legend {
   padding: 0 4px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   font-weight: 650;
 }
@@ -145,9 +145,9 @@
   place-items: center;
   overflow: hidden;
   padding: 12px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 9px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
   text-align: center;
 }
 
@@ -227,23 +227,23 @@
   height: 34px;
   padding: 7px;
   place-items: center;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 7px;
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
   cursor: pointer;
 }
 
 .work-spreadsheet-border-edge:hover,
 .work-spreadsheet-border-edge[aria-pressed="true"] {
-  border-color: color-mix(in srgb, var(--a3s-green) 48%, var(--a3s-line));
-  background: color-mix(in srgb, var(--a3s-green) 9%, var(--a3s-panel));
+  border-color: color-mix(in srgb, var(--aster-green) 48%, var(--aster-line));
+  background: color-mix(in srgb, var(--aster-green) 9%, var(--aster-panel));
 }
 
 .work-spreadsheet-border-edge > span {
   position: relative;
   width: 18px;
   height: 18px;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
 }
 
 .work-spreadsheet-border-edge.top > span {
@@ -287,8 +287,8 @@
   height: 126px;
   place-items: center;
   justify-self: center;
-  border: 1px dashed var(--a3s-line-strong);
-  background: var(--a3s-panel-soft);
+  border: 1px dashed var(--aster-line-strong);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-format-cells-border-preview > span {
@@ -451,7 +451,7 @@
 }
 
 .work-spreadsheet-format-cells-border-preview > strong {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
   font-weight: 600;
 }
@@ -491,14 +491,14 @@
 
 .work-spreadsheet-format-cells-fill-empty-copy {
   margin: 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
   line-height: 1.65;
 }
 
 .work-spreadsheet-format-cells-fill-controls > [role="alert"] {
   margin: 0;
-  color: var(--a3s-red);
+  color: var(--aster-red);
   font-size: 11px;
   line-height: 1.55;
 }
@@ -534,13 +534,13 @@
 }
 
 .work-spreadsheet-format-cells-gradient-stops-heading strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
   font-weight: 650;
 }
 
 .work-spreadsheet-format-cells-gradient-stops-heading span {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
 }
 
@@ -555,7 +555,7 @@
   margin: 0;
   overflow: auto;
   padding: 0;
-  border-block: 1px solid var(--a3s-line);
+  border-block: 1px solid var(--aster-line);
   list-style: none;
   scrollbar-width: thin;
 }
@@ -571,11 +571,11 @@
 
 .work-spreadsheet-format-cells-gradient-stop
   + .work-spreadsheet-format-cells-gradient-stop {
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-format-cells-gradient-stop-index {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   font-variant-numeric: tabular-nums;
   text-align: center;
@@ -592,7 +592,7 @@
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 4px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
 }
 
@@ -602,7 +602,7 @@
 }
 
 .work-spreadsheet-format-cells-gradient-help {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   line-height: 1.55;
 }
@@ -612,9 +612,9 @@
   min-width: 0;
   margin: 0;
   overflow: hidden;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 9px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-format-cells-fill-preview > canvas {
@@ -625,21 +625,21 @@
 
 .work-spreadsheet-format-cells-fill-preview.none > canvas {
   background:
-    linear-gradient(45deg, var(--a3s-line) 25%, transparent 25%) 0 0 / 16px 16px,
-    linear-gradient(-45deg, var(--a3s-line) 25%, transparent 25%) 0 8px / 16px
+    linear-gradient(45deg, var(--aster-line) 25%, transparent 25%) 0 0 / 16px 16px,
+    linear-gradient(-45deg, var(--aster-line) 25%, transparent 25%) 0 8px / 16px
     16px,
-    linear-gradient(45deg, transparent 75%, var(--a3s-line) 75%) 8px -8px / 16px
+    linear-gradient(45deg, transparent 75%, var(--aster-line) 75%) 8px -8px / 16px
     16px,
-    linear-gradient(-45deg, transparent 75%, var(--a3s-line) 75%) -8px 0 / 16px
+    linear-gradient(-45deg, transparent 75%, var(--aster-line) 75%) -8px 0 / 16px
     16px;
 }
 
 .work-spreadsheet-format-cells-fill-preview > figcaption {
   overflow: hidden;
   padding: 9px 11px;
-  border-top: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  border-top: 1px solid var(--aster-line);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
   font-size: 10px;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -655,7 +655,7 @@
 .work-spreadsheet-format-cells-protection > p,
 .work-spreadsheet-format-cells-mixed {
   margin: 8px 0 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   line-height: 1.6;
 }

@@ -218,7 +218,7 @@ export function useFormDataSource({
       .catch(() => {
         if (generationRef.current !== generation) return;
         setStatus('error');
-        console.warn('A3S Form data source failed.');
+        console.warn('Aster Form data source failed.');
       });
     return () => {
       if (generationRef.current === generation) generationRef.current += 1;
@@ -287,7 +287,7 @@ export function useFormDataSource({
       .catch(() => {
         if (generationRef.current !== generation || pageLeaseRef.current !== lease) return;
         setPageError(true);
-        console.warn('A3S Form data-source page failed.');
+        console.warn('Aster Form data-source page failed.');
       })
       .finally(() => {
         if (pageLeaseRef.current !== lease) return;
@@ -340,7 +340,7 @@ export function DataSourceSearch({
 }) {
   if (!state.searchable) return null;
   return (
-    <label className="a3s-form-data-source-search">
+    <label className="aster-form-data-source-search">
       <span>{messages.dataSourceSearchLabel}</span>
       <input
         type="search"
@@ -369,7 +369,7 @@ export function DataSourceStatus({
     if (!state.hasMore && !state.pageError) return null;
   }
   return (
-    <div className="a3s-form-data-source-status" data-status={state.status}>
+    <div className="aster-form-data-source-status" data-status={state.status}>
       {state.status === 'idle' && <span>{messages.dataSourceFocusPrompt}</span>}
       {state.status === 'blocked' && (
         <span role="status">{messages.dataSourceDependencyPrompt}</span>
@@ -418,7 +418,7 @@ export function DataSourceStatus({
       {state.hasMore && !state.pageError && (
         <button
           type="button"
-          className="a3s-form-data-source-more btn"
+          className="aster-form-data-source-more btn"
           data-size="sm"
           data-variant="secondary"
           disabled={state.loadingMore}

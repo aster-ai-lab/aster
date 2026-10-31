@@ -3,7 +3,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanScope, PlanScopeKind, PluginOperationAction, PluginPackageId, PluginPackageLock, UseError,
     UseResult, MAX_PLUGIN_PLAN_ITEMS,
 };
@@ -21,8 +21,8 @@ pub(super) use pending::{
     PackageGraphOperationPhase, PendingPackageGraphOperation, PendingPackageGraphStore,
 };
 
-const INSTALLED_GRAPH_SCHEMA: &str = "a3s.use.installed-package-graph.v1";
-const INSTALLATION_SNAPSHOT_SCHEMA: &str = "a3s.use.installation-snapshot.v1";
+const INSTALLED_GRAPH_SCHEMA: &str = "aster.use.installed-package-graph.v1";
+const INSTALLATION_SNAPSHOT_SCHEMA: &str = "aster.use.installation-snapshot.v1";
 const MAX_GRAPH_RECORD_BYTES: u64 = 2 * 1024 * 1024;
 const MAX_INSTALLATION_SNAPSHOT_BYTES: u64 = MAX_GRAPH_RECORD_BYTES * MAX_PLUGIN_PLAN_ITEMS as u64;
 
@@ -395,7 +395,7 @@ where
 {
     match fs::symlink_metadata(path).await {
         Ok(metadata)
-            if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                 && metadata.is_file()
                 && metadata.len() <= max_bytes => {}
         Ok(_) => return Err(store_error("A package graph record path is invalid.")),
@@ -412,7 +412,7 @@ where
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect package graph record", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > max_bytes
@@ -488,7 +488,7 @@ async fn write_bounded<T: Serialize>(
 async fn activate_temporary_file(temporary: PathBuf, target: PathBuf) -> UseResult<()> {
     let error_target = target.clone();
     tokio::task::spawn_blocking(move || {
-        a3s_use_extension::persist_temporary_replace_blocking(temporary, &target)
+        aster_use_extension::persist_temporary_replace_blocking(temporary, &target)
     })
     .await
     .map_err(|error| {
@@ -508,7 +508,7 @@ async fn acquire_lock(state_root: &Path) -> UseResult<StdFile> {
     let path = state_root.join(".package-graph.lock");
     match fs::symlink_metadata(&path).await {
         Ok(metadata)
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                 || !metadata.is_file() =>
         {
             return Err(path_identity_error())
@@ -581,7 +581,7 @@ async fn validate_existing_directory_chain(state_root: &Path, directory: &Path) 
         }
         match fs::symlink_metadata(&current).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(path_identity_error()),
             Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(false),
@@ -601,7 +601,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect package graph directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(path_identity_error());
     }
     Ok(())
@@ -646,13 +646,13 @@ mod tests {
         grant::PackageGraphAuthorization, InstallDisposition, UninstallDisposition,
         UpgradeDisposition,
     };
-    use a3s_use_core::{
+    use aster_use_core::{
         CatalogAvailability, PlanScope, PlanScopeKind, PluginCatalogRecord, PluginPackageLockHost,
         PluginPackageResolver, PluginWorkspaceGrantSnapshot, SurfaceChangeKind,
         VerifiedCatalogProvenance, VerifiedPluginCatalogRecord, PLUGIN_CATALOG_SCHEMA_V3,
         PLUGIN_WORKSPACE_GRANT_SNAPSHOT_SCHEMA,
     };
-    use a3s_use_extension::ExtensionManifest;
+    use aster_use_extension::ExtensionManifest;
 
     const CATALOG: &[u8] =
         include_bytes!("../../core//fixtures/plugins/catalog-record-okf-v3.json");
@@ -702,7 +702,7 @@ mod tests {
         record.validate().unwrap();
         let provenance = VerifiedCatalogProvenance {
             registry_name: "packages".to_string(),
-            registry_url: "https://packages.example.test/a3s/".to_string(),
+            registry_url: "https://packages.example.test/aster/".to_string(),
             root_sha256: digest('f'),
             root_version: 1,
             timestamp_version: 1,

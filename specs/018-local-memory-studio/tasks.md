@@ -59,7 +59,7 @@ current-layout gates and cleanup pass. This is planning, not a new GUI result.
 
 - [x] Owning packages' focused tests pass (T005)
 - [ ] cargo fmt --all -- --check passes (T005)
-- [x] No new crates.io a3s dependency (T005)
+- [x] No new crates.io aster dependency (T005)
 - [x] No native select added on product surfaces (T005)
 - [x] Product storage configuration is ACL (T003/T005)
 - [x] Evidence distinguishes hermetic/real ACP/GUI results (T005)

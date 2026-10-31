@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::{PluginSurfaceRef, UseResult};
-use a3s_use_extension::{ExtensionManifest, ManifestPluginSurface};
+use aster_use_core::{PluginSurfaceRef, UseResult};
+use aster_use_extension::{ExtensionManifest, ManifestPluginSurface};
 
 use super::model::{
     checkpoint_key, lifecycle_error, PluginLifecycleAction, PluginLifecycleCheckpoint,

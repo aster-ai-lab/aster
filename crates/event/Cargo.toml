@@ -1,19 +1,19 @@
 [package]
-name = "a3s-event"
+name = "aster-event"
 version = "0.4.0"
 edition = "2021"
-authors = ["A3S Lab"]
+authors = ["Aster"]
 license = "MIT"
-description = "Pluggable event subscription, dispatch, and persistence for the A3S ecosystem"
-repository = "https://github.com/A3S-Lab/Event"
-documentation = "https://docs.rs/a3s-event"
+description = "Pluggable event subscription, dispatch, and persistence for the Aster ecosystem"
+repository = "https://github.com/aster-ai-lab/Event"
+documentation = "https://docs.rs/aster-event"
 readme = "README.md"
 keywords = ["event", "pubsub", "provider", "persistence", "async"]
 categories = ["asynchronous", "network-programming"]
 publish = false
 
 [lib]
-name = "a3s_event"
+name = "aster_event"
 path = "src/lib.rs"
 
 [features]

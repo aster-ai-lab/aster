@@ -11,7 +11,7 @@ use std::collections::{HashMap, VecDeque};
 use std::sync::{Arc, RwLock};
 use thiserror::Error;
 
-pub const EXECUTION_FACT_SCHEMA_V1: &str = "a3s.code.execution-fact.v1";
+pub const EXECUTION_FACT_SCHEMA_V1: &str = "aster.code.execution-fact.v1";
 const MAX_EVENT_TYPE_BYTES: usize = 256;
 const MAX_ARTIFACT_REFS: usize = 128;
 const MAX_ARTIFACT_URI_BYTES: usize = 1024;
@@ -103,7 +103,7 @@ impl ExecutionFactInputV1 {
             sequence,
             observed_at_ms,
             event_type: canonical.event_type,
-            payload_digest: digest_bytes("a3s.code.execution-fact.payload.v1", &canonical.wire),
+            payload_digest: digest_bytes("aster.code.execution-fact.payload.v1", &canonical.wire),
             payload_bytes: u64::try_from(canonical.wire.len())
                 .map_err(|_| JournalError::InvalidField("payload_bytes"))?,
             artifact_refs: collect_artifact_refs(&value),
@@ -187,7 +187,7 @@ impl ExecutionFactV1 {
             artifact_refs: &'a [String],
         }
         digest_json(
-            "a3s.code.execution-fact.identity.v1",
+            "aster.code.execution-fact.identity.v1",
             &Identity {
                 schema: &self.schema,
                 frame: &self.frame,
@@ -586,14 +586,14 @@ mod tests {
             output: "secret output".to_string(),
             exit_code: 0,
             metadata: Some(serde_json::json!({
-                "artifact": {"artifact_uri": "a3s://artifact/1"}
+                "artifact": {"artifact_uri": "aster://artifact/1"}
             })),
             error_kind: None,
         };
         let input = ExecutionFactInputV1::from_event(frame(), 0, 10, &event).unwrap();
         assert_eq!(input.event_type, "tool_end");
         assert!(input.payload_digest.starts_with("sha256:"));
-        assert_eq!(input.artifact_refs, vec!["a3s://artifact/1"]);
+        assert_eq!(input.artifact_refs, vec!["aster://artifact/1"]);
         let fact = ExecutionFactV1::from_input(input).unwrap();
         let encoded = serde_json::to_string(&fact).unwrap();
         assert!(!encoded.contains("secret output"));

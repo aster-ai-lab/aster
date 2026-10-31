@@ -14,7 +14,7 @@
 | 审查与复验 | `session_review/finding.rs`、`agent_api/session_review_facade.rs`、`acp/src/engineering.rs` | 复用 Finding 生命周期；只有可信复验能产生当前证据 |
 | 卡循环 | `fact_control/receipts/refusal.rs`、`goal_control/continuation.rs` | 沿用重复/无进展限制；不增加自主修复后台进程 |
 | 状态传输 | `acp/src/agent/goal_ext.rs`、`host_methods.rs`、`turn.rs` | 扩展原 Goal 类型化边界，不从模型文字推断状态 |
-| CLI 结果 | `crates/terminal/crates/codegen/a3s-code-pager/src/app/turn_completion.rs`、`app/acp_handler/session_notification.rs` | 扩展原 turn outcome 解析与呈现；不另加 CLI 执行或判定 |
+| CLI 结果 | `crates/terminal/crates/codegen/aster-pager/src/app/turn_completion.rs`、`app/acp_handler/session_notification.rs` | 扩展原 turn outcome 解析与呈现；不另加 CLI 执行或判定 |
 | 桌面运行 | `apps/studio/src-tauri/src/agent_plane/runtime_client.rs`、`goal_snapshot.rs` | 遵循 019 的单运行时边界；不直接调用模型或 Shell |
 | 桌面位置 | `renderer/pages/agents/WorkbenchProjectTray.tsx`、`WorkbenchHomeComposerExtras.tsx`、`hooks/useStudioGoal.ts` | 在现有 Goal 区域增加业务验收分组；不挂载退休详情面板、不添加右侧第八页签 |
 | 重启与后续任务 | `session_checkpoint.rs`、`agent_api/session_persistence.rs`、`acp/src/goal/import.rs` | 原事实恢复；后续任务显式导入规则、重新绑定，不导入通过 |

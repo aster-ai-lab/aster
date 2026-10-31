@@ -1,4 +1,4 @@
-use a3s_search::{
+use aster_search::{
     Aggregator, RetrievalRequirements, SearchCascade, SearchCascadeOutcomeV2,
     SearchCascadeReceiptBindingV2, SearchQuery, SearchQueryBindingV1, SearchResult,
     SearchTierDecision, SearchTierDecisionSource, SEARCH_CASCADE_RECEIPT_V2_SCHEMA,

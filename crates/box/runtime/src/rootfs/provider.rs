@@ -10,8 +10,8 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::vmm::RootfsSource;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::vmm::RootfsSource;
 
 #[cfg(target_os = "macos")]
 pub(crate) use super::apfs::CaseSensitiveApfsProvider;
@@ -57,7 +57,7 @@ pub struct ResumedRootfs {
 ///
 /// This deliberately excludes the mutable image reference: the resolved OCI
 /// manifest digest is the content authority. The guest-init digest is separate
-/// because A3S installs that runtime binary after OCI extraction.
+/// because Aster installs that runtime binary after OCI extraction.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RootfsArtifactCacheOptions {
     pub directory: PathBuf,
@@ -490,7 +490,7 @@ fn ensure_empty_rootfs_directory(rootfs: &Path) -> Result<()> {
 }
 
 #[cfg(target_os = "macos")]
-const LEGACY_APFS_ROOTFS_ENV: &str = "A3S_BOX_MACOS_LEGACY_APFS_ROOTFS";
+const LEGACY_APFS_ROOTFS_ENV: &str = "ASTER_BOX_MACOS_LEGACY_APFS_ROOTFS";
 
 #[cfg(target_os = "macos")]
 fn environment_flag(name: &str) -> bool {
@@ -663,7 +663,7 @@ mod tests {
     #[cfg(target_os = "macos")]
     #[test]
     fn directory_provider_rejects_translated_guest_names() {
-        use a3s_box_core::rootfs_metadata::{
+        use aster_box_core::rootfs_metadata::{
             RootfsEntryKind, RootfsMetadataEntry, RootfsMetadataManifest,
             IMAGE_ROOTFS_METADATA_PATH, ROOTFS_METADATA_SCHEMA,
         };

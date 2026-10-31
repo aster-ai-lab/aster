@@ -1,8 +1,8 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-use a3s_office::NativeOfficeEditor;
-use a3s_use_browser::RenderedPage;
-use a3s_use_core::Artifact;
+use aster_office::NativeOfficeEditor;
+use aster_use_browser::RenderedPage;
+use aster_use_core::Artifact;
 use async_trait::async_trait;
 
 use super::*;
@@ -256,9 +256,9 @@ fn public_screenshot_contracts_are_send_and_sync() {
 #[cfg(not(windows))]
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn discovered_chrome_captures_office_semantic_html_when_available() {
-    use a3s_use_browser::{BrowserPool, BrowserPoolConfig, BrowserProvider};
+    use aster_use_browser::{BrowserPool, BrowserPoolConfig, BrowserProvider};
 
-    let Some(executable) = a3s_use_browser::detect_chrome() else {
+    let Some(executable) = aster_use_browser::detect_chrome() else {
         return;
     };
     let temp = tempfile::tempdir().unwrap();

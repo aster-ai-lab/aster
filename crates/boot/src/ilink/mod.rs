@@ -108,7 +108,7 @@ impl IlinkClient {
     }
 }
 
-/// A3S Boot module that exports one validated [`IlinkClient`] provider.
+/// Aster Boot module that exports one validated [`IlinkClient`] provider.
 #[derive(Clone, Debug)]
 pub struct IlinkModule {
     options: IlinkClientOptions,
@@ -126,7 +126,7 @@ impl IlinkModule {
 
 impl Module for IlinkModule {
     fn name(&self) -> &'static str {
-        "a3s-boot-ilink"
+        "aster-boot-ilink"
     }
 
     fn providers(&self) -> BootResult<Vec<ProviderDefinition>> {

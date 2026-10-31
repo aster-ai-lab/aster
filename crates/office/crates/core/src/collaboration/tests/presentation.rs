@@ -1003,7 +1003,7 @@ fn presentation_element_field(
     field: &str,
 ) -> Option<Any> {
     let peer = presentation_peer(store);
-    let containers = peer.get_or_insert_map(format!("a3s.office.presentation.{collection}"));
+    let containers = peer.get_or_insert_map(format!("aster.office.presentation.{collection}"));
     let transaction = peer.transact();
     let container = match containers.get(&transaction, container_id) {
         Some(Out::YMap(value)) => value,
@@ -1070,7 +1070,7 @@ fn presentation_element_order(
     container_id: &str,
 ) -> Vec<String> {
     let peer = presentation_peer(store);
-    let containers = peer.get_or_insert_map(format!("a3s.office.presentation.{collection}"));
+    let containers = peer.get_or_insert_map(format!("aster.office.presentation.{collection}"));
     let transaction = peer.transact();
     let container = match containers.get(&transaction, container_id) {
         Some(Out::YMap(value)) => value,
@@ -1090,7 +1090,7 @@ fn presentation_element_order(
 
 fn presentation_claim_count(store: &NativeOfficeCollaborationStore) -> u32 {
     let peer = presentation_peer(store);
-    let claims = peer.get_or_insert_array("a3s.office.presentation.record-claims");
+    let claims = peer.get_or_insert_array("aster.office.presentation.record-claims");
     let count = claims.len(&peer.transact());
     count
 }

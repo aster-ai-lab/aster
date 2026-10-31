@@ -2,7 +2,7 @@ use super::{
     invalid, DurableMemoryMode, DurableMemoryRecallPolicy, DurableMemorySemanticBindingV1,
     DURABLE_MEMORY_CONTEXT_ID_PROFILE_V1, DURABLE_MEMORY_CONTEXT_ID_PROFILE_V2,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     MemoryNamespace, MemoryRepositoryError, MEMORY_LEXICAL_QUERY_PROFILE_V1,
 };
 use serde::{Deserialize, Serialize};
@@ -14,11 +14,11 @@ pub const DURABLE_MEMORY_BINDING_SCHEMA_VERSION: u32 = 4;
 /// Schema version for sessions that bind an exact semantic serving generation.
 pub const DURABLE_MEMORY_HYBRID_BINDING_SCHEMA_VERSION: u32 = 5;
 
-/// Current A3S Memory query algorithm bound into new durable-memory sessions.
+/// Current Aster Memory query algorithm bound into new durable-memory sessions.
 pub const DURABLE_MEMORY_RETRIEVAL_PROFILE_V1: &str = MEMORY_LEXICAL_QUERY_PROFILE_V1;
 
-const LEGACY_WORD_RETRIEVAL_PROFILE_V1: &str = "a3s.memory.lexical.word.v1";
-const LEGACY_HOST_CONTEXT_ID_PROFILE_V0: &str = "a3s.code.memory.context.host-id.v0";
+const LEGACY_WORD_RETRIEVAL_PROFILE_V1: &str = "aster.memory.lexical.word.v1";
+const LEGACY_HOST_CONTEXT_ID_PROFILE_V0: &str = "aster.code.memory.context.host-id.v0";
 const LEGACY_SESSION_RUN_CONTEXT_BINDING_SCHEMA_VERSION: u32 = 3;
 const LEGACY_RETRIEVAL_BINDING_SCHEMA_VERSION: u32 = 2;
 const LEGACY_BASE_BINDING_SCHEMA_VERSION: u32 = 1;
@@ -248,8 +248,8 @@ mod tests {
         EmbeddingNormalization, EmbeddingProvider, EmbeddingProviderDescriptor,
         EmbeddingProviderError,
     };
-    use a3s_memory::repository::InMemoryRepository;
-    use a3s_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
+    use aster_durable_memory::repository::InMemoryRepository;
+    use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
     use std::sync::Arc;
     use tokio_util::sync::CancellationToken;
 
@@ -326,7 +326,7 @@ mod tests {
 
         let mut unsupported_fusion = encoded;
         unsupported_fusion["semanticRecall"]["fusionProfile"] =
-            serde_json::json!("a3s.code.memory.hybrid.unknown.v1");
+            serde_json::json!("aster.code.memory.hybrid.unknown.v1");
         let unsupported_fusion: DurableMemoryBindingV1 =
             serde_json::from_value(unsupported_fusion).unwrap();
         assert!(unsupported_fusion.validate().is_err());

@@ -3,7 +3,7 @@
 
 #![cfg(feature = "encryption")]
 
-use a3s_event::crypto::{Aes256GcmEncryptor, EncryptedPayload, EventEncryptor};
+use aster_event::crypto::{Aes256GcmEncryptor, EncryptedPayload, EventEncryptor};
 
 #[tokio::test]
 async fn multi_key_lifecycle_and_rotation() {
@@ -96,15 +96,15 @@ async fn multi_key_lifecycle_and_rotation() {
 
 #[tokio::test]
 async fn encryptor_round_trips_through_event_bus_storage() {
-    use a3s_event::provider::memory::MemoryProvider;
-    use a3s_event::{Event, EventBus, EventProvider};
+    use aster_event::provider::memory::MemoryProvider;
+    use aster_event::{Event, EventBus, EventProvider};
     use std::sync::Arc;
 
     let key: [u8; 32] = [5u8; 32];
     let encryptor = Arc::new(Aes256GcmEncryptor::new("ops-key", &key));
     let raw = Arc::new(MemoryProvider::default());
     let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn EventProvider>);
-    bus.set_encryptor(encryptor.clone() as Arc<dyn a3s_event::EventEncryptor>);
+    bus.set_encryptor(encryptor.clone() as Arc<dyn aster_event::EventEncryptor>);
 
     let original = serde_json::json!({"employee": "E-77", "salary": 120_000});
     let event = Event::new(

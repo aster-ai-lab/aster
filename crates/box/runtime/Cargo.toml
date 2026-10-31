@@ -1,5 +1,5 @@
 [package]
-name = "a3s-box-runtime"
+name = "aster-box-runtime"
 publish = false
 version = "3.2.7"
 edition = "2021"
@@ -7,7 +7,7 @@ license = "MIT"
 description = "MicroVM runtime engine — VM lifecycle, OCI images, attestation, networking"
 
 [lib]
-name = "a3s_box_runtime"
+name = "aster_box_runtime"
 path = "src/lib.rs"
 
 [[example]]
@@ -42,14 +42,14 @@ pool = ["vm"]
 scale = ["dep:axum", "compose"]
 compose = ["vm"]
 operator = []
-build = ["dep:a3s-acl"]
+build = ["dep:aster-acl"]
 # Downstream product qualification may inject a real-process execution backend
 # and generation-fenced connector without enabling that seam in release builds.
 runtime-provider-qualification = ["vm"]
 
 [dependencies]
-a3s-box-core = { version = "3.2", path = "../core" }
-a3s-transport = { workspace = true }
+aster-box-core = { version = "3.2", path = "../core" }
+aster-transport = { workspace = true }
 
 # Async runtime
 tokio = { workspace = true }
@@ -100,8 +100,8 @@ dirs = { workspace = true }
 
 # OCI image and bundle support
 oci-spec = "0.10"
-a3s-oci-sdk = { workspace = true }
-a3s-oci-core = { path = "../../oci-runtime/crates/core" }
+aster-oci-sdk = { workspace = true }
+aster-oci-core = { path = "../../oci-runtime/crates/core" }
 oci-distribution = { workspace = true }
 tar = "0.4"
 flate2 = "1.0"
@@ -109,7 +109,7 @@ zstd = "0.13"
 
 # Build support
 tempfile = { workspace = true }
-a3s-acl = { workspace = true, optional = true }
+aster-acl = { workspace = true, optional = true }
 
 # Metrics
 prometheus = { workspace = true }
@@ -126,18 +126,18 @@ windows-sys = { version = "0.48", features = [
 [target.'cfg(unix)'.dependencies]
 # Unix userspace network proxy and peer switch. macOS uses it as the full
 # network backend; Linux multiplexes peer Ethernet frames alongside passt.
-a3s-box-netproxy = { version = "3.2", path = "../netproxy" }
+aster-box-netproxy = { version = "3.2", path = "../netproxy" }
 
 # Filesystem Snapshot fidelity
 filetime = "0.2"
 xattr = "1.6"
 
-# Guest-native rootfs artifact writer. The explicit package name makes the A3S
+# Guest-native rootfs artifact writer. The explicit package name makes the Aster
 # fork available to crates.io consumers, while the direct path keeps Git and
 # workspace consumers on the same audited source. Keep the exact version
 # because a writer bump is a cache-schema migration rather than a routine
-# dependency update. See third_party/mkext4/A3S_PATCHES.md.
-mkext4 = { package = "a3s-box-mkext4", version = "=3.2.7", path = "../third_party/mkext4" }
+# dependency update. See third_party/mkext4/ASTER_PATCHES.md.
+mkext4 = { package = "aster-box-mkext4", version = "=3.2.7", path = "../third_party/mkext4" }
 
 # TEE attestation verification
 p384 = { workspace = true }
@@ -152,8 +152,8 @@ rustls-pki-types = { workspace = true }
 # Sealed storage
 ring = { workspace = true }
 
-# Typed OCI model and the versioned A3S control/workload cgroup contract.
-a3s-oci-sdk = { workspace = true }
+# Typed OCI model and the versioned Aster control/workload cgroup contract.
+aster-oci-sdk = { workspace = true }
 
 # Extra Dockerfile ADD archive formats. These crates build C libraries, so they
 # stay off Windows where .tar/.tar.gz remain supported without a C toolchain.
@@ -161,11 +161,11 @@ bzip2 = "0.5"
 xz2 = "0.1"
 
 [target.'cfg(any(target_os = "linux", target_os = "macos"))'.dependencies]
-a3s-runtime = { workspace = true }
+aster-runtime = { workspace = true }
 
 [dev-dependencies]
 rand-legacy = { package = "rand", version = "0.8" }
-a3s-use = { path = "../../use", default-features = false, features = ["extensions"] }
+aster-use = { path = "../../use", default-features = false, features = ["extensions"] }
 rand = { workspace = true }
 bytes = { workspace = true }
 tokio-stream = { workspace = true }

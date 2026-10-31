@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "a3s-acl"
+name = "aster-acl"
 version = "0.3.0"
 dependencies = [
  "ryu-js",
@@ -11,10 +11,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "a3s-sms"
+name = "aster-sms"
 version = "0.1.0"
 dependencies = [
- "a3s-acl",
+ "aster-acl",
  "async-trait",
  "md-5",
  "reqwest",

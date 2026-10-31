@@ -67,7 +67,7 @@ function scrollerOffsetForContent(
 }
 
 /**
- * A3S-owned spreadsheet viewport: canvas paint for the visible sparse window
+ * Aster-owned spreadsheet viewport: canvas paint for the visible sparse window
  * plus a real `role="grid"` focus surface. Fortune remains optional underneath
  * for command-port continuity during migration.
  */
@@ -207,7 +207,7 @@ export function SpreadsheetVirtualGrid({
     }
 
     context.fillStyle = '#222222';
-    context.font = '12px var(--a3s-ui-font, system-ui, sans-serif)';
+    context.font = '12px var(--aster-ui-font, system-ui, sans-serif)';
     context.textBaseline = 'middle';
     for (const cell of spreadsheetVirtualGridPaintCells({
       data,

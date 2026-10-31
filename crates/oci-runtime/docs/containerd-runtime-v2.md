@@ -12,7 +12,7 @@ qualification remains open.
 | 2.2.2 | Ubuntu arm64 | Native Linux, `shared-host-kernel` | Development-qualified | Three consecutive same-Host real lifecycle matrices with guest-journal reclamation, exec, deleted exec-ID reuse, exact `DeleteProcess` response replay, FIFO/PTY I/O, repeated controls and signals, daemon restart, live shim replacement with exact input and output continuation, in-flight Create, committed init-Start, exec-Start, live init-Kill, terminal init-Kill and exec-SignalProcess exit adoption, Pause, Resume, Update, WriteStdin, CloseStdin, SignalProcess, and ResizePty rehydration, post-commit Create/Start/Kill/Delete/Exec/SignalProcess/control cleanup, four-state shim `SIGKILL`, identity replacement, and four-task parallel cleanup |
 | 2.0, 2.1, other 2.2 releases | Linux | Any | Not yet qualified | 2.2.1 and 2.2.3 observations retained; range qualification pending |
 | 1.7 and earlier | Linux | Any | Not qualified | No compatibility claim |
-| Any | Utility-VM profile | `dedicated-vm` | Observation-only vertical slice + init/exec Created/Running/Stopped daemon restart (WSL2 x86_64 / containerd 2.2.1 + `box-kvm-qualification-service`) | `.github/scripts/linux-kvm-containerd-lifecycle.sh` (`a3s.oci.linux-kvm-containerd-lifecycle.v3`); does not promote readiness, close the Native Linux 23-boundary matrix, or extend Native Linux development claims |
+| Any | Utility-VM profile | `dedicated-vm` | Observation-only vertical slice + init/exec Created/Running/Stopped daemon restart (WSL2 x86_64 / containerd 2.2.1 + `box-kvm-qualification-service`) | `.github/scripts/linux-kvm-containerd-lifecycle.sh` (`aster.oci.linux-kvm-containerd-lifecycle.v3`); does not promote readiness, close the Native Linux 23-boundary matrix, or extend Native Linux development claims |
 
 The implementation may interoperate with an unlisted release because the
 runtime-v2 contract is stable. That is not a support claim. Add a release to
@@ -42,7 +42,7 @@ Restore remain per-driver optional operations: a request returns Unimplemented
 when its selected isolation driver does not advertise the exact v1 operation,
 without preventing ordinary tasks from using the endpoint. The contract also
 freezes the OCI Features, Process, LinuxResources, containerd runc checkpoint,
-and versioned A3S CreateOptions type URLs consumed by those methods.
+and versioned Aster CreateOptions type URLs consumed by those methods.
 
 The latest August 24, 2026 x86_64 regression qualification used source
 revision `9726719e5a66156cd61f8be36ca00998bbcfc871`, containerd 2.2.3,
@@ -116,10 +116,10 @@ driver or signed release package.
 The current packaged-runtime follow-up at source revision
 `af8c5f97ac1f4eb506b32e8d57b3d1c0d5fb3645` repeated the same isolated
 containerd 2.2.1 WSL2 x86_64 qualification with the staged static-musl
-package `a3s-oci-runtime-v0.2.0-linux-x86_64`. Three consecutive matrices
+package `aster-oci-runtime-v0.2.0-linux-x86_64`. Three consecutive matrices
 completed in 95.09, 95.25, and 114.44 seconds and crossed all 23 restart,
 shim-rehydration, and forced-cleanup boundaries. The package qualification
-report is schema `a3s.oci.native-linux-package-qualification.v7`; its CLI,
+report is schema `aster.oci.native-linux-package-qualification.v7`; its CLI,
 Agent, and shim digests are retained in the compatibility record alongside
 the qualification-report digest
 `d87aa3ff3cd58843d57f51b75b91ca6d05c880f043d24477789105dfc065ba86`. The
@@ -177,28 +177,28 @@ and the Runtime root, 1.2 GiB release target, checkout, and logs were removed.
 The containerd runtime type is:
 
 ```text
-io.containerd.a3s-oci.v2
+io.containerd.aster-oci.v2
 ```
 
 containerd resolves that type to this executable name:
 
 ```text
-containerd-shim-a3s-oci-v2
+containerd-shim-aster-oci-v2
 ```
 
 The binary must be root-owned, executable, and visible in the containerd
 daemon's `PATH`. The qualified development host currently uses
-`/usr/local/bin/containerd-shim-a3s-oci-v2`. No containerd plugin block is
+`/usr/local/bin/containerd-shim-aster-oci-v2`. No containerd plugin block is
 required when standard runtime-v2 binary discovery is available; callers can
-select it with `--runtime io.containerd.a3s-oci.v2`.
+select it with `--runtime io.containerd.aster-oci.v2`.
 
 Tagged Linux host archives have this contract-v1 layout:
 
 ```text
-a3s-oci-runtime-v<version>-linux-<architecture>/
-├── a3s-oci
-├── a3s-oci-agent
-├── containerd-shim-a3s-oci-v2
+aster-oci-runtime-v<version>-linux-<architecture>/
+├── aster-oci
+├── aster-oci-agent
+├── containerd-shim-aster-oci-v2
 ├── README.md
 ├── CHANGELOG.md
 ├── LICENSE
@@ -209,7 +209,7 @@ a3s-oci-runtime-v<version>-linux-<architecture>/
 ```
 
 The archive entry is installed at
-`/usr/local/bin/containerd-shim-a3s-oci-v2`; it is not renamed or wrapped.
+`/usr/local/bin/containerd-shim-aster-oci-v2`; it is not renamed or wrapped.
 Linux x86_64 and arm64 archives build the CLI, agent, and shim for the exact
 musl target with Rust's bundled linker. Packaging rejects an executable with
 an ELF interpreter or `NEEDED` dependency, so these entries do not inherit a
@@ -219,14 +219,14 @@ archive in `SHA256SUMS` and the signed provenance described in
 [release verification](release-verification.md).
 
 The shim does not execute a driver directly. It connects to the long-lived
-A3S OCI host service through the SDK endpoint. The default Unix socket is:
+Aster OCI host service through the SDK endpoint. The default Unix socket is:
 
 ```text
-/run/a3s-oci/runtime.sock
+/run/aster-oci/runtime.sock
 ```
 
-`A3S_OCI_RUNTIME_ENDPOINT` overrides that path. The legacy
-`A3S_OCI_RUNTIME_SOCKET` name is accepted only as a fallback. The host service,
+`ASTER_OCI_RUNTIME_ENDPOINT` overrides that path. The legacy
+`ASTER_OCI_RUNTIME_SOCKET` name is accepted only as a fallback. The host service,
 static agent, and their immutable assets are separate package entries; the
 runtime socket and containerd task bundles are runtime state and must not be
 shipped in a package.
@@ -266,7 +266,7 @@ the workload mutation.
 
 containerd and the SDK keep separate identity domains:
 
-| Input | A3S identity |
+| Input | Aster identity |
 | --- | --- |
 | containerd namespace + task ID | `ctrd-` plus a length-framed SHA-256 digest; stable and bounded |
 | New containerd task incarnation | Random 32-byte value stored as 64 lowercase hexadecimal characters in the shim bundle |
@@ -304,7 +304,7 @@ containerd restart.
 
 DeleteProcess response durability is separate from schema-v10 task metadata.
 Before removing a stopped exec from that metadata, the shim atomically writes
-`a3s-oci-shim-exec-delete-v1.json` with the task identity, Runtime generation,
+`aster-oci-shim-exec-delete-v1.json` with the task identity, Runtime generation,
 bundle, exec incarnation, PID, exit status, and nanosecond exit time. Presence
 of the exec in main metadata means the receipt is only a pre-commit intent and
 rehydration discards it. Absence of the exec is the commit marker, so a
@@ -313,7 +313,7 @@ commits its fresh incarnation to main metadata and then consumes the old
 receipt; task Delete and DeleteShim remove the entire journal.
 
 Task Delete response durability uses a separate
-`a3s-oci-shim-task-delete-v1.json` receipt. Before dispatching Runtime delete,
+`aster-oci-shim-task-delete-v1.json` receipt. Before dispatching Runtime delete,
 the shim records the namespace, task ID and incarnation, derived container
 identity, exact Runtime generation, bundle, PID, exit status, and nanosecond
 exit time. Retained main metadata plus a live exact generation proves the
@@ -371,15 +371,15 @@ current generation from the stable container ID.
 
 ## API mapping
 
-The adapter uses the public `a3s-oci-sdk`; it does not call A3S Box or import a
+The adapter uses the public `aster-oci-sdk`; it does not call Aster Box or import a
 driver implementation.
 
 A code-owned translation table freezes 24 exact Task and FIFO-pump routes.
 The 18-operation required union gates endpoint admission, while Checkpoint and
 Restore form a separate two-operation optional union negotiated against the
 driver owning the selected isolation class. RuntimeInfo publishes the required union under
-`dev.a3s.oci.containerd-sdk-operations`, and `--version` prints every route.
-Manifest contract tests prohibit dependencies on A3S Box, the Host Runtime
+`dev.aster.oci.containerd-sdk-operations`, and `--version` prints every route.
+Manifest contract tests prohibit dependencies on Aster Box, the Host Runtime
 implementation, the Agent, or Core internals.
 
 Four implemented routes remain local to the shim. `Exec(stage)` validates and
@@ -394,7 +394,7 @@ SDK-operation union.
 
 | containerd Tasks operation | SDK/runtime action |
 | --- | --- |
-| Create | Validate the OCI bundle and typed create options, mount the supplied rootfs, then `create`; when `checkpoint` names a committed A3S package, call `restore` and persist a pending Start barrier |
+| Create | Validate the OCI bundle and typed create options, mount the supplied rootfs, then `create`; when `checkpoint` names a committed Aster package, call `restore` and persist a pending Start barrier |
 | Start | `start` for a normal init; resume a restored paused generation exactly once before advancing its durable barrier; for exec, inspect `processes` and dispatch `exec` for the exact staged incarnation |
 | State | Exact-generation `state` or process inventory plus durable exit evidence |
 | Wait | `wait` or `wait_process` |
@@ -408,7 +408,7 @@ SDK-operation union.
 | Pids | Exact-generation `processes` |
 | Stats | `stats`, encoded as containerd cgroup-v2 metrics |
 | Connect / Shutdown | Shim process coordination; no second lifecycle state |
-| Checkpoint | Require a paused live task, negotiate the selected driver's `checkpoint@1`, write `a3s-oci-checkpoint-v1.bin`, and atomically commit `a3s-oci-checkpoint-v1.json` |
+| Checkpoint | Require a paused live task, negotiate the selected driver's `checkpoint@1`, write `aster-oci-checkpoint-v1.bin`, and atomically commit `aster-oci-checkpoint-v1.json` |
 
 The checkpoint request path is a caller-owned directory, matching containerd's
 runtime-v2 packaging contract. The manifest binds the fixed artifact filename
@@ -436,19 +436,19 @@ recorded driver contract. This preserves idempotent retries across a capability
 change between shim connections while still rejecting a new request that the
 selected driver does not support.
 
-Create without A3S options asks the Host for a default create class: when the
+Create without Aster options asks the Host for a default create class: when the
 endpoint advertises SharedHostKernel create it uses that class; otherwise it
 uses the sole advertised create class (for example DedicatedVm-only KVM Hosts).
 Conflicting silent SharedHostKernel defaults against a DedicatedVm-only Host
-fail closed. The versioned `dev.a3s.oci.runtime.v1.CreateOptions` payload can
+fail closed. The versioned `dev.aster.oci.runtime.v1.CreateOptions` payload can
 request `shared-host-kernel` or `dedicated-vm` via Runtime.Options or the OCI
 annotation fallback of the same JSON schema. `shared-guest-kernel`, unknown
 fields, unknown versions, and foreign option types fail closed.
 
-DedicatedVm creates require `A3S_OCI_RUNTIME_ROOT` to match the Host driver
+DedicatedVm creates require `ASTER_OCI_RUNTIME_ROOT` to match the Host driver
 runtime root (KVM: `<service --root>/runtime`). The shim copies the
 containerd task bundle into the exact operation-scoped handoff directory,
-annotates `dev.a3s.bundle-handoff=move-to-runtime-v1`, and projects containerd
+annotates `dev.aster.bundle-handoff=move-to-runtime-v1`, and projects containerd
 host Spec defaults onto the guest contract before Create. SharedHostKernel
 creates keep the caller-owned containerd bundle without handoff.
 
@@ -457,12 +457,12 @@ create/start/exec/kill/wait/delete against `box-kvm-qualification-service`
 through a private `KillMode=process` containerd:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
-  A3S_OCI_LINUX_KVM_CONTAINERD_REPORT=/absolute/path/to/report.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+  ASTER_OCI_LINUX_KVM_CONTAINERD_REPORT=/absolute/path/to/report.json \
   bash .github/scripts/linux-kvm-containerd-lifecycle.sh
 ```
 
-Existing-host passes emit `a3s.oci.linux-kvm-containerd-lifecycle.v3` with
+Existing-host passes emit `aster.oci.linux-kvm-containerd-lifecycle.v3` with
 init and exec Created/Running/Stopped restart boundary IDs,
 `promotes_readiness=false`, and do not close packaged or fresh-host containerd
 promotion. Clean tip `97e830343ff2915f7d5e4630d6c2045af9660937` (after #295)
@@ -828,17 +828,17 @@ a replacement can never be mistaken for the deleted task.
 
 The test is ignored because it is destructive: it requires root, restarts
 containerd repeatedly, sends `SIGKILL`, and creates temporary tasks and
-containers with an `a3s-r9-` prefix.
+containers with an `aster-r9-` prefix.
 
 ```bash
-cargo test -p a3s-oci-containerd-shim \
+cargo test -p aster-oci-containerd-shim \
   --test containerd_runtime_v2 \
   --no-run
 
 sudo env \
-  A3S_OCI_CONTAINERD_QUALIFY=1 \
-  A3S_OCI_CONTAINERD_ALLOW_RESTART=1 \
-  A3S_OCI_CONTAINERD_SOCKET=/run/containerd/containerd.sock \
+  ASTER_OCI_CONTAINERD_QUALIFY=1 \
+  ASTER_OCI_CONTAINERD_ALLOW_RESTART=1 \
+  ASTER_OCI_CONTAINERD_SOCKET=/run/containerd/containerd.sock \
   CONTAINERD_ADDRESS=/run/containerd/containerd.sock \
   ./target/debug/deps/containerd_runtime_v2-<hash> \
   --ignored --exact real_containerd_runtime_v2_qualification --nocapture
@@ -847,13 +847,13 @@ sudo env \
 The host service must already be running and the selected shim binary must be
 installed where containerd can resolve it. Cleanup is prefix-scoped and the
 test fails if any matching task or container remains. For an isolated daemon,
-set both `A3S_OCI_CONTAINERD_SOCKET` and `CONTAINERD_ADDRESS` to its socket:
+set both `ASTER_OCI_CONTAINERD_SOCKET` and `CONTAINERD_ADDRESS` to its socket:
 the gRPC/ttrpc clients consume the former, while spawned `ctr` commands inherit
-the latter. Set `A3S_OCI_CONTAINERD_TTRPC_ADDRESS` to that daemon's ttrpc
-socket, `A3S_OCI_CONTAINERD_STATE_ROOT` to its private
+the latter. Set `ASTER_OCI_CONTAINERD_TTRPC_ADDRESS` to that daemon's ttrpc
+socket, `ASTER_OCI_CONTAINERD_STATE_ROOT` to its private
 `io.containerd.runtime.v2.task` state directory,
-`A3S_OCI_RUNTIME_ENDPOINT` to the selected Host service socket, and
-`A3S_OCI_CONTAINERD_SERVICE` to the isolated systemd unit before allowing the
+`ASTER_OCI_RUNTIME_ENDPOINT` to the selected Host service socket, and
+`ASTER_OCI_CONTAINERD_SERVICE` to the isolated systemd unit before allowing the
 suite to restart containerd.
 
 When the selected service is an isolated systemd unit, set

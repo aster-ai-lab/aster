@@ -4,7 +4,7 @@ use serde::{Deserialize, Deserializer, Serialize};
 use std::fmt;
 use thiserror::Error;
 
-pub(crate) const WORK_POLICY_SCHEMA: &str = "a3s.code.work-policy.v1";
+pub(crate) const WORK_POLICY_SCHEMA: &str = "aster.code.work-policy.v1";
 const MAX_ID_BYTES: usize = 128;
 const MAX_INSTRUCTION_BYTES: usize = 4096;
 
@@ -151,7 +151,7 @@ pub enum WorkPolicyError {
     #[error("work_policy.legacy_rebind: execution history cannot gain a new policy")]
     LegacyRebind,
     #[error("work_policy.corrupt: original log failed: {0}")]
-    Log(#[source] a3s_effect::ActorError),
+    Log(#[source] aster_effect::ActorError),
 }
 
 impl WorkPolicyError {

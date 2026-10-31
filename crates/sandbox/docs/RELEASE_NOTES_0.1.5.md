@@ -1,4 +1,4 @@
-# a3s-sandbox 0.1.5
+# aster-sandbox 0.1.5
 
 ## Highlights
 

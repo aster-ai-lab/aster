@@ -1,12 +1,12 @@
-# A3S Code Rust SDK capability matrix
+# Aster Code Rust SDK capability matrix
 
 The Rust Core function `sdk_capabilities()` is the source of truth for the
 ordered capability contract inventory. This repository delivers the local Rust
 SDK and ACP; there are no foreign-language SDK artifacts or publishing jobs.
 
 ```rust
-let contracts = a3s_code_core::sdk_capabilities();
-let baseline = a3s_code_core::sdk_baseline_capabilities();
+let contracts = aster_core::sdk_capabilities();
+let baseline = aster_core::sdk_baseline_capabilities();
 ```
 
 An inventory entry declares a contract. It does not assert that this build,
@@ -64,7 +64,7 @@ SDK's method spelling. Public methods and types remain defined by
   cannot authorize source egress or widen inherited capabilities.
 - Browser search is an explicit ACP `headless-search` feature. Ordinary API/HTTP
   search remains available without it.
-- Native Office tools require explicit ACP `a3sHost.officeTools` metadata and
+- Native Office tools require explicit ACP `asterHost.officeTools` metadata and
   remain subject to workspace permissions. Source-review restrictions dominate.
 - Rust hosts can inject native `LlmClient`, `ContextProvider`, `MemoryStore`,
   `BashSandbox` and `Tool` implementations. Their owners retain credentials,

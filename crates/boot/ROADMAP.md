@@ -1,21 +1,21 @@
-# A3S Boot Nest Parity Roadmap
+# Aster Boot Nest Parity Roadmap
 
 **Status as of 2026-09-10.**
 
-## A3S Cloud substrate obligations
+## Aster Cloud substrate obligations
 
 Boot composes Cloud process roles (`api`, `worker`, `relay`, Node Agent). It
 owns aspect mechanics, not authz/tenancy policy. Cloud registers those policies
 explicitly (`F0`). See
-[foundations-and-execution.md](https://github.com/A3S-Lab/Cloud/blob/main/docs/project-roadmaps/foundations-and-execution.md)
+[foundations-and-execution.md](https://github.com/aster-ai-lab/Cloud/blob/main/docs/project-roadmaps/foundations-and-execution.md)
 and
-[cloud-substrate-dependency-roadmap.md](https://github.com/A3S-Lab/a3s/blob/main/docs/cloud-substrate-dependency-roadmap.md).
+[cloud-substrate-dependency-roadmap.md](https://github.com/aster-ai-lab/aster/blob/main/docs/cloud-substrate-dependency-roadmap.md).
 
-This roadmap tracks the work needed to move `a3s-boot` from a Nest-inspired
+This roadmap tracks the work needed to move `aster-boot` from a Nest-inspired
 HTTP framework slice toward a fuller Rust equivalent of the high-value Nest.js
 developer experience.
 
-The goal is not to copy TypeScript runtime reflection. A3S Boot should keep
+The goal is not to copy TypeScript runtime reflection. Aster Boot should keep
 Rust's explicit types, compile-time macros, adapter-neutral core, and small
 runtime surface. Nest parity means preserving the workflows users expect:
 module boundaries, injectable services, declarative controllers, request
@@ -263,13 +263,13 @@ Implemented today:
   in-process timeout/interval/cron jobs, named/global provider exports,
   Nest-style `#[schedule]` / `#[cron]` / `#[interval]` / `#[timeout]` macros,
   and lifecycle-managed shutdown.
-- Provider-backed queues with `QueueModule`, `Queue`, `a3s-lane` backed
-  in-process workers, and an optional A3S ORM-backed PostgreSQL backend with
+- Provider-backed queues with `QueueModule`, `Queue`, `aster-lane` backed
+  in-process workers, and an optional Aster ORM-backed PostgreSQL backend with
   shared leasing, fencing, process-death recovery, retry, timeout, retention,
   idempotency, and deduplication. Queues retain typed serde JSON payloads,
   named/global provider exports, and lifecycle-managed processors.
 - Provider-backed application events with `EventModule`, Nest-style
-  `EventEmitter`, injectable `a3s-event` `EventBus`, listener macros, and
+  `EventEmitter`, injectable `aster-event` `EventBus`, listener macros, and
   pluggable providers.
 - Provider-backed structured logging with `LoggingModule`, `Logger`, pluggable
   sinks, in-memory test capture, request middleware/interceptor helpers, and
@@ -310,7 +310,7 @@ transport integrations.
 
 ## Out Of Scope
 
-GraphQL is intentionally out of scope for this roadmap. A3S Boot should focus
+GraphQL is intentionally out of scope for this roadmap. Aster Boot should focus
 on HTTP, SSE, WebSocket gateways, message transports, and the Nest-style module
 and controller experience. If GraphQL is ever needed, it should be evaluated as
 a separate companion crate rather than part of the core parity plan.
@@ -328,7 +328,7 @@ Nest equivalent:
 - `@Ip()`
 - `@Req()`
 
-Proposed A3S Boot shape:
+Proposed Aster Boot shape:
 
 ```rust
 #[controller("/cats")]
@@ -362,7 +362,7 @@ impl CatsController {
 
 Completed tasks:
 
-- Extend `a3s-boot-macros` to parse attributes on route method arguments.
+- Extend `aster-boot-macros` to parse attributes on route method arguments.
 - Support `#[body]`, `#[request]`, `#[param("name")]`, `#[params]`,
   `#[query]`, `#[query("name")]`, `#[header("name")]`, `#[headers]`,
   `#[host_param("name")]`, and `#[ip]`.
@@ -398,7 +398,7 @@ Nest equivalent:
 - `@ApiQuery`
 - `@ApiBearerAuth`
 
-Proposed A3S Boot shape:
+Proposed Aster Boot shape:
 
 ```rust
 #[controller("/cats")]
@@ -478,7 +478,7 @@ Nest equivalent:
 - transform and whitelist options
 - DTO-level validation
 
-Proposed A3S Boot shape:
+Proposed Aster Boot shape:
 
 ```rust
 #[derive(Debug, Deserialize)]
@@ -566,7 +566,7 @@ Nest equivalent:
 
 Current gap:
 
-`a3s-boot` previously registered providers into one resolved application
+`aster-boot` previously registered providers into one resolved application
 container. Boot now creates module-scoped provider registries. A module can see
 its own providers plus exported providers from imports and global modules.
 Dynamic modules can produce imports, providers, exports, controllers, and routes
@@ -1023,16 +1023,16 @@ Acceptance:
   lifecycle-managed in-process tasks, expose Nest-style schedule macros, and
   participate in module imports/exports. (Covered)
 - Queue can register typed providers, enqueue serde JSON jobs through
-  `a3s-lane`, run named processors through lifecycle-managed workers, and
+  `aster-lane`, run named processors through lifecycle-managed workers, and
   participate in module imports/exports. Its optional PostgreSQL backend uses
-  A3S ORM migrations and parameterized SQL, shares work across independent
+  Aster ORM migrations and parameterized SQL, shares work across independent
   workers, fences stale leases, recovers process death, and preserves typed
   retry, timeout, retention, job-id idempotency, and deduplication semantics.
   (Covered against PostgreSQL 17)
-- Application events can register an `a3s-event` backed `EventEmitter`
+- Application events can register an `aster-event` backed `EventEmitter`
   provider, dispatch typed JSON payloads to exact or wildcard listeners, expose
   Nest-style listener macros, retain events through the underlying `EventBus`,
-  accept custom `a3s-event` providers, and participate in module
+  accept custom `aster-event` providers, and participate in module
   imports/exports. (Covered)
 - Health checks can register provider-backed async indicators, expose a typed
   `HealthCheckService`, return JSON readiness reports, and map unhealthy

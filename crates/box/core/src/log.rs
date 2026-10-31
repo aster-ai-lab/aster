@@ -119,12 +119,12 @@ pub struct LogEntry {
 }
 
 /// Schema used to hand one Sandbox log worker its immutable generation data.
-pub const SANDBOX_LOG_WORKER_SCHEMA: &str = "a3s.box.sandbox-log-worker.v1";
+pub const SANDBOX_LOG_WORKER_SCHEMA: &str = "aster.box.sandbox-log-worker.v1";
 
 /// Configuration for the host process that projects Sandbox stdout/stderr into
 /// the configured logging driver after the launching client has detached.
 ///
-/// The worker watches the exact A3S OCI owner PID identity. Once that process
+/// The worker watches the exact Aster OCI owner PID identity. Once that process
 /// exits, both inherited output descriptors are closed and EOF is authoritative,
 /// so the worker can drain the final bytes without a fixed late-write delay.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -139,7 +139,7 @@ pub struct SandboxLogWorkerSpec {
 }
 
 /// Schema used to hand one managed OCI init-log projector its exact route.
-pub const MANAGED_OCI_LOG_WORKER_SCHEMA: &str = "a3s.box.managed-oci-log-worker.v1";
+pub const MANAGED_OCI_LOG_WORKER_SCHEMA: &str = "aster.box.managed-oci-log-worker.v1";
 
 /// Platform-local OCI Runtime endpoint consumed by the detached log worker.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -234,7 +234,7 @@ type ConsoleFileIdentity = ();
 /// Whether the producer may still publish bytes after its apparent exit.
 ///
 /// libkrun can return before its console backend's final host write becomes
-/// visible, whereas a reaped A3S OCI owner has already closed stdout and
+/// visible, whereas a reaped Aster OCI owner has already closed stdout and
 /// stderr. Keeping the distinction explicit avoids imposing the MicroVM's
 /// half-second settle window on every short Sandbox execution.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -574,7 +574,7 @@ pub fn run_log_processor_with_ready(
 /// Run the log processor with an explicit final-EOF policy.
 ///
 /// Sandbox workers use [`ConsoleEofPolicy::WriterClosed`] only after the exact
-/// A3S OCI owner has exited. Other callers should retain the conservative
+/// Aster OCI owner has exited. Other callers should retain the conservative
 /// default exposed by [`run_log_processor_with_ready`].
 pub fn run_log_processor_with_ready_and_eof_policy(
     console_log: &Path,
@@ -947,7 +947,7 @@ fn run_syslog_processor(
 
     let address = config.syslog_address();
     let _facility = config.syslog_facility();
-    let tag = config.tag().unwrap_or("a3s-box");
+    let tag = config.tag().unwrap_or("aster-box");
     let cap = Some(console_cap(config.max_size(), config.max_file()));
     let runtime_filter = RuntimeConsoleFilter::new();
     let (proto, addr) = if let Some(rest) = address.strip_prefix("udp://") {

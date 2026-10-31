@@ -7,12 +7,12 @@
 //! provider that does not report cached tokens prints `NOT-REPORTED`.
 //!
 //! Provider matrix: the pinned flash route by default; a second provider
-//! through the existing `A3S_TEST_MODEL` override
-//! (e.g. `A3S_TEST_MODEL=deepseek/deepseek-flash`).
+//! through the existing `ASTER_TEST_MODEL` override
+//! (e.g. `ASTER_TEST_MODEL=deepseek/deepseek-flash`).
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +1.97.1 test -p a3s-code-core --test test_cache_hit_rate_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +1.97.1 test -p aster-core --test test_cache_hit_rate_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -21,7 +21,7 @@ mod support;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::{Agent, PlanningMode, SessionOptions};
+use aster_core::{Agent, PlanningMode, SessionOptions};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 const TURNS: [&str; 6] = [
@@ -34,9 +34,9 @@ const TURNS: [&str; 6] = [
 ];
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn six_turn_workload_records_per_turn_cache_usage() {
-    // The loader applies the `A3S_TEST_MODEL` remap; this rail measures the
+    // The loader applies the `ASTER_TEST_MODEL` remap; this rail measures the
     // provider matrix, so it runs whatever route the loader resolved
     // instead of asserting the Layer C flash pin.
     let config = load_pinned_layer_c_config();
@@ -53,7 +53,7 @@ async fn six_turn_workload_records_per_turn_cache_usage() {
             Some(
                 SessionOptions::new()
                     .with_session_id("wc-meas1")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_planning(false)
                     .with_planning_mode(PlanningMode::Disabled)
                     .with_auto_delegation_enabled(false)

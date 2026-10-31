@@ -15,7 +15,7 @@ use crate::durable_memory::{
     DurableMemorySemanticRefreshCheckpoint, DurableMemorySemanticRefreshReceipt,
     DurableMemorySemanticRefreshRun, SemanticRefreshEmbeddingCache,
 };
-use a3s_memory::vector::VectorMutationConsistency;
+use aster_durable_memory::vector::VectorMutationConsistency;
 use async_trait::async_trait;
 use metrics::SemanticRefreshRunObservation;
 use std::sync::atomic::{AtomicBool, Ordering};

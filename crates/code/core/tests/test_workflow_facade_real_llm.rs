@@ -3,24 +3,24 @@
 //! mock-backed unit tests can't fully exercise (real child-agent loops, real
 //! token accounting feeding the shared ledger).
 //!
-//! `#[ignore]` — requires a live provider in `.a3s/config.acl`. Run:
+//! `#[ignore]` — requires a live provider in `.aster/config.acl`. Run:
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_workflow_facade_real_llm -- --ignored --nocapture
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_workflow_facade_real_llm -- --ignored --nocapture
 //! ```
 
 mod support;
 
 use std::sync::Arc;
 
-use a3s_code_core::llm::create_client_with_config;
-use a3s_code_core::orchestration::{
+use aster_core::llm::create_client_with_config;
+use aster_core::orchestration::{
     execute_loop, AgentExecutor, AgentStepSpec, LoopDecision, Workflow, WorkflowEvent,
 };
-use a3s_code_core::subagent::AgentRegistry;
-use a3s_code_core::tools::TaskExecutor;
-use a3s_code_core::{Agent, AgentSession};
+use aster_core::subagent::AgentRegistry;
+use aster_core::tools::TaskExecutor;
+use aster_core::{Agent, AgentSession};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 /// A bare real-LLM executor over a throwaway workspace. Keep the returned guard

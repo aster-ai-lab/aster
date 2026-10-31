@@ -1,6 +1,6 @@
 //! Doubled fullwidth bars and a space before the tag name are still DSML.
 
-use a3s_code_core::llm::recover_leaked_tool_calls;
+use aster_core::llm::recover_leaked_tool_calls;
 
 #[test]
 fn doubled_bar_dsml_with_a_space_is_a_bash_call() {

@@ -30,7 +30,7 @@ import type {
 import { defineFormNodeRegistry } from './node-registry';
 import { SelectControl } from './select-control';
 
-export const FILE_UPLOAD_WIDGET = 'a3s.file-upload';
+export const FILE_UPLOAD_WIDGET = 'aster.file-upload';
 
 export {
   createFormFileUploadSchema,
@@ -307,21 +307,21 @@ function ActionIcon({ name }: { name: 'close' | 'retry' | 'open' | 'remove' }) {
 function FileUploadDesign({ node, schema, required }: FormNodeDesignProps) {
   const settings = fileUploadSettings({ ...node, schema } as CompiledNode);
   return (
-    <div className="a3s-form-file-design">
-      <div className="a3s-form-file-design-heading">
+    <div className="aster-form-file-design">
+      <div className="aster-form-file-design-heading">
         <span>
-          <strong className="a3s-form-file-design-title">{node.label ?? '文件上传'}</strong>
+          <strong className="aster-form-file-design-title">{node.label ?? '文件上传'}</strong>
           {required && <em>必填</em>}
         </span>
         <small>{node.description ?? '由宿主服务接收并保存文件'}</small>
       </div>
-      <div className="a3s-form-file-design-drop">
-        <span className="a3s-form-file-design-icon">
+      <div className="aster-form-file-design-drop">
+        <span className="aster-form-file-design-icon">
           <UploadIcon size={18} />
         </span>
         <span>
-          <strong className="a3s-form-file-design-prompt">拖放文件到这里</strong>
-          <small className="a3s-form-file-design-constraints">
+          <strong className="aster-form-file-design-prompt">拖放文件到这里</strong>
+          <small className="aster-form-file-design-constraints">
             {settings.accept || '不限格式'} · {formatFormFileSize(settings.maxFileSize)} · 最多{' '}
             {settings.maxFiles} 个
           </small>
@@ -354,7 +354,7 @@ function FileUploadInspector({ node, onUpdate }: FormNodeInspectorProps) {
     onUpdate({ node: { customProps } });
   };
   return (
-    <section className="a3s-form-file-inspector" aria-label="文件上传设置">
+    <section className="aster-form-file-inspector" aria-label="文件上传设置">
       <Control label="允许的文件类型" hint="扩展名或 MIME，逗号分隔">
         <input
           aria-label="允许的文件类型"
@@ -365,7 +365,7 @@ function FileUploadInspector({ node, onUpdate }: FormNodeInspectorProps) {
           }
         />
       </Control>
-      <div className="a3s-form-inline-controls">
+      <div className="aster-form-inline-controls">
         <Control label="单个文件上限" hint="MB">
           <input
             aria-label="单个文件上限（MB）"
@@ -401,7 +401,7 @@ function FileUploadInspector({ node, onUpdate }: FormNodeInspectorProps) {
           </SelectControl>
         </Control>
       </div>
-      <p className="a3s-form-file-inspector-note">
+      <p className="aster-form-file-inspector-note">
         文件数量在“校验”中设置。文件内容、授权和存储位置不写入表单文档。
       </p>
     </section>
@@ -703,16 +703,16 @@ function FileUploadNode({
 
   return (
     <section
-      className="a3s-form-file-upload"
+      className="aster-form-file-upload"
       data-disabled={props.disabled || undefined}
       data-invalid={props.invalid || undefined}
     >
-      <div className="a3s-form-file-upload-heading">
+      <div className="aster-form-file-upload-heading">
         <div>
           <label id={`${props.id}-label`} htmlFor={props.id}>
             {props.node.label ?? messages.fallbackLabel}
           </label>
-          {props.required && <span className="a3s-form-file-required">{messages.required}</span>}
+          {props.required && <span className="aster-form-file-required">{messages.required}</span>}
         </div>
         <span>
           {formatFileUploadMessage(messages.fileCount, {
@@ -722,12 +722,12 @@ function FileUploadNode({
         </span>
       </div>
       {props.node.description && (
-        <p className="a3s-form-file-help" id={descriptionId}>
+        <p className="aster-form-file-help" id={descriptionId}>
           {props.node.description}
         </p>
       )}
       <fieldset
-        className="a3s-form-file-dropzone"
+        className="aster-form-file-dropzone"
         aria-labelledby={`${props.id}-label`}
         data-testid="file-upload-dropzone"
         data-dragging={dragging || undefined}
@@ -757,16 +757,16 @@ function FileUploadNode({
           addFiles(Array.from(event.dataTransfer.files ?? []));
         }}
       >
-        <span className="a3s-form-file-drop-icon">
+        <span className="aster-form-file-drop-icon">
           <UploadIcon />
         </span>
-        <div className="a3s-form-file-drop-copy">
-          <strong className="a3s-form-file-drop-title">{messages.dropPrompt}</strong>
-          <span className="a3s-form-file-drop-hint">{messages.dropHint}</span>
+        <div className="aster-form-file-drop-copy">
+          <strong className="aster-form-file-drop-title">{messages.dropPrompt}</strong>
+          <span className="aster-form-file-drop-hint">{messages.dropHint}</span>
         </div>
         <input
           ref={inputRef}
-          className="a3s-form-file-input"
+          className="aster-form-file-input"
           id={props.id}
           type="file"
           accept={settings.accept || undefined}
@@ -792,39 +792,39 @@ function FileUploadNode({
           {messages.chooseFiles}
         </button>
       </fieldset>
-      <p className="a3s-form-file-constraints" id={constraintId}>
+      <p className="aster-form-file-constraints" id={constraintId}>
         {constraintText}
       </p>
       {rawValue.length === 0 && tasks.length === 0 ? (
-        <p className="a3s-form-file-empty">{messages.empty}</p>
+        <p className="aster-form-file-empty">{messages.empty}</p>
       ) : (
-        <ul className="a3s-form-file-list" aria-labelledby={`${props.id}-label`}>
+        <ul className="aster-form-file-list" aria-labelledby={`${props.id}-label`}>
           {valueEntries.map(({ candidate, index, key }) => {
             const file = normalizeFormFileReference(candidate);
             if (!file) {
               return (
-                <li className="a3s-form-file-row is-error" key={key}>
-                  <span className="a3s-form-file-type">
+                <li className="aster-form-file-row is-error" key={key}>
+                  <span className="aster-form-file-type">
                     <FileIcon />
                   </span>
-                  <span className="a3s-form-file-details">
-                    <strong className="a3s-form-file-name">{messages.invalidReference}</strong>
-                    <small className="a3s-form-file-meta">#{index + 1}</small>
+                  <span className="aster-form-file-details">
+                    <strong className="aster-form-file-name">{messages.invalidReference}</strong>
+                    <small className="aster-form-file-meta">#{index + 1}</small>
                   </span>
                 </li>
               );
             }
             const action = referenceActions[file.id];
             return (
-              <li className={`a3s-form-file-row${action?.error ? ' is-error' : ''}`} key={key}>
-                <span className="a3s-form-file-type">
+              <li className={`aster-form-file-row${action?.error ? ' is-error' : ''}`} key={key}>
+                <span className="aster-form-file-type">
                   <FileIcon />
                 </span>
-                <span className="a3s-form-file-details">
-                  <strong className="a3s-form-file-name" title={file.name}>
+                <span className="aster-form-file-details">
+                  <strong className="aster-form-file-name" title={file.name}>
                     {file.name}
                   </strong>
-                  <small className="a3s-form-file-meta">
+                  <small className="aster-form-file-meta">
                     {formatFormFileSize(file.size)} ·{' '}
                     {action?.pending
                       ? action.operation === 'remove'
@@ -833,12 +833,12 @@ function FileUploadNode({
                       : messages.uploaded}
                   </small>
                   {action?.error && (
-                    <em className="a3s-form-file-error" role="alert">
+                    <em className="aster-form-file-error" role="alert">
                       {action.error}
                     </em>
                   )}
                 </span>
-                <span className="a3s-form-file-actions">
+                <span className="aster-form-file-actions">
                   {service.open && (
                     <button
                       type="button"
@@ -879,15 +879,15 @@ function FileUploadNode({
             );
           })}
           {tasks.map((task) => (
-            <li className={`a3s-form-file-row is-${task.status}`} key={task.id}>
-              <span className="a3s-form-file-type">
+            <li className={`aster-form-file-row is-${task.status}`} key={task.id}>
+              <span className="aster-form-file-type">
                 <FileIcon />
               </span>
-              <span className="a3s-form-file-details">
-                <strong className="a3s-form-file-name" title={task.file.name}>
+              <span className="aster-form-file-details">
+                <strong className="aster-form-file-name" title={task.file.name}>
                   {task.file.name}
                 </strong>
-                <small className="a3s-form-file-meta">
+                <small className="aster-form-file-meta">
                   {formatFormFileSize(task.file.size)} ·{' '}
                   {task.status === 'queued'
                     ? messages.queued
@@ -906,12 +906,12 @@ function FileUploadNode({
                   />
                 )}
                 {task.status === 'error' && (
-                  <em className="a3s-form-file-error" role="alert">
+                  <em className="aster-form-file-error" role="alert">
                     {task.error}
                   </em>
                 )}
               </span>
-              <span className="a3s-form-file-actions">
+              <span className="aster-form-file-actions">
                 {task.status === 'error' && task.retryable && (
                   <button
                     type="button"
@@ -946,7 +946,7 @@ function FileUploadNode({
           ))}
         </ul>
       )}
-      <span className="a3s-form-file-announcement" aria-live="polite" role="status">
+      <span className="aster-form-file-announcement" aria-live="polite" role="status">
         {announcement}
       </span>
     </section>

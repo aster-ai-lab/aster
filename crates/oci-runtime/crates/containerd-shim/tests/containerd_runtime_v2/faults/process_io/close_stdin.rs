@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     CloseStdinRequest, ContainerTarget, Generation, OperationContext, ProcessTarget, StateRequest,
     WaitProcessRequest,
 };
@@ -128,11 +128,11 @@ pub(in super::super) async fn qualify_close_stdin_effect_committed_shim_sigkill(
     let host_pid = super::super::find_runtime_host_pid(config).await?;
     let shim_pid = find_exact_shim_pid(config, &id).await?;
     let mut suspended_host =
-        SuspendedProcess::stop(host_pid, "committed-close A3S OCI host service")?;
+        SuspendedProcess::stop(host_pid, "committed-close Aster OCI host service")?;
     let mut close_call = spawn_close_io(&shim_address, &id);
     wait_for_closing_stdin(&bundle, &mut close_call).await?;
     let suspended_shim = SuspendedProcess::stop(shim_pid, "committed-close shim")?;
-    suspended_host.resume("committed-close A3S OCI host service")?;
+    suspended_host.resume("committed-close Aster OCI host service")?;
 
     let process = exact_process_target(config, &id, &identity)?;
     commit_runtime_close(config, &id, &identity, &process).await?;
@@ -227,7 +227,7 @@ async fn wait_for_closing_stdin(
     bundle: &Path,
     close_call: &mut tokio::task::JoinHandle<TestResult<()>>,
 ) -> TestResult<()> {
-    let path = bundle.join("a3s-oci-shim-v1.json");
+    let path = bundle.join("aster-oci-shim-v1.json");
     let deadline = tokio::time::Instant::now() + Duration::from_secs(2);
     loop {
         let document: MetadataDocument = serde_json::from_slice(
@@ -314,7 +314,7 @@ async fn commit_runtime_close(
 async fn wait_runtime_process(
     config: &QualificationConfig,
     process: ProcessTarget,
-) -> TestResult<a3s_oci_sdk::ExitStatus> {
+) -> TestResult<aster_oci_sdk::ExitStatus> {
     let client = runtime_client(config).await?;
     let request = WaitProcessRequest {
         process,

@@ -19,7 +19,7 @@ use thiserror::Error;
 pub const RESEARCH_PROTOCOL_VERSION_V1: u16 = 1;
 
 /// Stable schema identifier for the cross-process research envelope.
-pub const RESEARCH_PROTOCOL_SCHEMA_V1: &str = "a3s.code.research-wire.v1";
+pub const RESEARCH_PROTOCOL_SCHEMA_V1: &str = "aster.code.research-wire.v1";
 
 /// Maximum encoded envelope size accepted at a process boundary.
 pub const RESEARCH_PROTOCOL_MAX_MESSAGE_BYTES: usize = 32 * 1024 * 1024;
@@ -130,13 +130,13 @@ impl ResearchProtocolError {
     /// Stable machine-readable error code for SDK and host boundaries.
     pub const fn code(&self) -> &'static str {
         match self {
-            Self::UnsupportedSchema => "a3s.code.research_protocol.unsupported_schema",
-            Self::UnsupportedVersion(_) => "a3s.code.research_protocol.unsupported_version",
-            Self::UnknownKind => "a3s.code.research_protocol.unknown_kind",
-            Self::InvalidField(_) => "a3s.code.research_protocol.invalid_field",
-            Self::Payload(_) => "a3s.code.research_protocol.payload",
-            Self::Encoding => "a3s.code.research_protocol.encoding",
-            Self::Serialization(_) => "a3s.code.research_protocol.serialization",
+            Self::UnsupportedSchema => "aster.code.research_protocol.unsupported_schema",
+            Self::UnsupportedVersion(_) => "aster.code.research_protocol.unsupported_version",
+            Self::UnknownKind => "aster.code.research_protocol.unknown_kind",
+            Self::InvalidField(_) => "aster.code.research_protocol.invalid_field",
+            Self::Payload(_) => "aster.code.research_protocol.payload",
+            Self::Encoding => "aster.code.research_protocol.encoding",
+            Self::Serialization(_) => "aster.code.research_protocol.serialization",
         }
     }
 }

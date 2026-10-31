@@ -155,7 +155,7 @@ Focus on Phase 1-2 first (read-only filesystem):
 ### Full Implementation
 Complete all phases for production use:
 - Required for container workloads
-- Needed for a3s box
+- Needed for aster box
 - 2-4 weeks total
 
 ## Decision Point
@@ -172,7 +172,7 @@ Complete all phases for production use:
 - Production-ready from start
 - Higher upfront investment
 
-**Recommendation**: Start with Option A (MVP), then evaluate based on a3s box requirements.
+**Recommendation**: Start with Option A (MVP), then evaluate based on aster box requirements.
 
 ## Next Steps
 

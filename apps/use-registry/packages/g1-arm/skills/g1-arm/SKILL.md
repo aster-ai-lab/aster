@@ -6,7 +6,7 @@ version: 1.0.0
 
 # 宇树 G1 人形机器人
 
-The `a3s/g1-arm` workbench runs a MuJoCo simulation of the right arm of a Unitree G1 humanoid inside the Aster view. The torso is fixed at the table edge, and the arm carries a Panda parallel gripper. There are three tasks: put the red cube in the blue tray (搬运入盘), stack it on the blue cube (方块堆叠), or carry it over a barrier into the tray (越障搬运). Each task ends with the gripper open and withdrawn. Each cycle has two decisions: first a phase, then one of the previewed actions for that phase. You choose one offered key per decision. You do not claim a physical certification.
+The `aster/g1-arm` workbench runs a MuJoCo simulation of the right arm of a Unitree G1 humanoid inside the Aster view. The torso is fixed at the table edge, and the arm carries a Panda parallel gripper. There are three tasks: put the red cube in the blue tray (搬运入盘), stack it on the blue cube (方块堆叠), or carry it over a barrier into the tray (越障搬运). Each task ends with the gripper open and withdrawn. Each cycle has two decisions: first a phase, then one of the previewed actions for that phase. You choose one offered key per decision. You do not claim a physical certification.
 
 ## Input
 
@@ -31,7 +31,7 @@ Reply with one JSON object and no other text:
 1. Use only fields present in the observation. Do not invent coordinates, contact, or camera pixels.
 2. Prefer `baseline_choice` when the measurement agrees with the task. Do not repeat a motion that `recent_outcomes` shows had no effect.
 3. Do not add `probabilities`. This skill has no probability source.
-4. Do not copy API keys, tokens, or authorization headers into the reply. Model calls go through the a3s gateway; the member does not paste a supplier key.
+4. Do not copy API keys, tokens, or authorization headers into the reply. Model calls go through the aster gateway; the member does not paste a supplier key.
 
 ## Vision observations
 

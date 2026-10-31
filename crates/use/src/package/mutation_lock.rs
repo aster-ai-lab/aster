@@ -2,7 +2,7 @@ use std::fs::{File as StdFile, OpenOptions as StdOpenOptions};
 use std::io;
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use fs2::FileExt;
 use tokio::fs;
 
@@ -42,7 +42,7 @@ impl InstallationMutationLock {
         let lock_path = self.state_root.join(INSTALLATION_MUTATION_LOCK_FILE);
         match fs::symlink_metadata(&lock_path).await {
             Ok(metadata)
-                if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     || !metadata.is_file() =>
             {
                 return Err(mutation_path_invalid())
@@ -85,7 +85,7 @@ impl InstallationMutationLock {
         let metadata = fs::symlink_metadata(&error_path).await.map_err(|error| {
             mutation_io("reinspect installation mutation lock", &error_path, error)
         })?;
-        if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+        if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
             return Err(mutation_path_invalid());
         }
         Ok(InstallationMutationGuard { _file: file })
@@ -96,7 +96,7 @@ async fn require_owned_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| mutation_io("inspect installation state root", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(mutation_path_invalid());
     }
     Ok(())
@@ -123,7 +123,7 @@ mod tests {
 
     use super::*;
 
-    const CHILD_ROOT_ENV: &str = "A3S_USE_TEST_INSTALLATION_MUTATION_LOCK_ROOT";
+    const CHILD_ROOT_ENV: &str = "ASTER_USE_TEST_INSTALLATION_MUTATION_LOCK_ROOT";
 
     fn assert_send_sync<T: Send + Sync>() {}
 

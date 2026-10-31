@@ -1,7 +1,7 @@
 use std::io::Write as _;
 use std::path::Path;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use sha2::{Digest, Sha256};
 use tokio::io::AsyncReadExt as _;
 
@@ -35,7 +35,7 @@ pub(in crate::layout) async fn stage_output(
         .to_path_buf();
     tokio::task::spawn_blocking(move || {
         let mut temporary = tempfile::Builder::new()
-            .prefix(".a3s-office-layout-")
+            .prefix(".aster-office-layout-")
             .tempfile_in(parent)
             .map_err(|_| layout_output_invalid())?;
         temporary
@@ -170,14 +170,14 @@ pub(in crate::layout) async fn hash_regular_file(
     Ok(format!("{:x}", digest.finalize()))
 }
 
-pub(in crate::layout) fn source_mutated() -> a3s_use_core::UseError {
+pub(in crate::layout) fn source_mutated() -> aster_use_core::UseError {
     layout_error(
         "use.office.layout_source_mutated",
         "The Office layout source no longer matches its immutable byte length and SHA-256.",
     )
 }
 
-fn layout_output_invalid() -> a3s_use_core::UseError {
+fn layout_output_invalid() -> aster_use_core::UseError {
     layout_error(
         "use.office.layout_output_invalid",
         "Office layout output is missing, invalid, or does not match the published receipt.",

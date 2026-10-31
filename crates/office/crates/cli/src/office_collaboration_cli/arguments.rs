@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 use std::str::FromStr;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 pub(super) fn parse_value<T: FromStr<Err = UseError>>(value: &str, option: &str) -> UseResult<T> {
     value.parse::<T>().map_err(|error| {
@@ -83,7 +83,7 @@ impl ParsedOptions {
 
 pub(super) fn usage_error(message: impl Into<String>) -> UseError {
     collaboration_cli_error("office.collaboration.usage", message)
-        .with_suggestion("Run 'a3s-office collab --help'.")
+        .with_suggestion("Run 'aster-office collab --help'.")
 }
 
 pub(super) fn collaboration_cli_error(code: &'static str, message: impl Into<String>) -> UseError {

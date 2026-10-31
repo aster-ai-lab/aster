@@ -142,21 +142,21 @@ mod tests {
 
     #[test]
     fn narrowing_mediation_is_allowed() {
-        let mut current = SandboxPolicy::a3s_bash_baseline();
+        let mut current = SandboxPolicy::aster_bash_baseline();
         current.features.mediated_network = true;
         current.network.allow.push(NetworkAllowRule {
             host: "api.example.com".into(),
             port: Some(443),
             path_prefix: None,
         });
-        let next = SandboxPolicy::a3s_bash_baseline();
+        let next = SandboxPolicy::aster_bash_baseline();
         ensure_policy_not_broader(&current, &next).unwrap();
     }
 
     #[test]
     fn enabling_socks_is_broadening() {
-        let current = SandboxPolicy::a3s_bash_baseline();
-        let mut next = SandboxPolicy::a3s_bash_baseline();
+        let current = SandboxPolicy::aster_bash_baseline();
+        let mut next = SandboxPolicy::aster_bash_baseline();
         next.features.mediated_socks = true;
         next.network.allow.push(NetworkAllowRule {
             host: "api.example.com".into(),
@@ -171,8 +171,8 @@ mod tests {
 
     #[test]
     fn adding_unix_socket_allow_is_broadening() {
-        let current = SandboxPolicy::a3s_bash_baseline();
-        let mut next = SandboxPolicy::a3s_bash_baseline();
+        let current = SandboxPolicy::aster_bash_baseline();
+        let mut next = SandboxPolicy::aster_bash_baseline();
         next.sockets
             .allow_unix
             .push(PathRule::Exact("/tmp/x.sock".into()));
@@ -184,7 +184,7 @@ mod tests {
 
     #[test]
     fn raising_timeout_is_broadening() {
-        let mut current = SandboxPolicy::a3s_bash_baseline();
+        let mut current = SandboxPolicy::aster_bash_baseline();
         current.resources.timeout_ms = 1_000;
         let mut next = current.clone();
         next.resources.timeout_ms = 2_000;
@@ -196,7 +196,7 @@ mod tests {
 
     #[test]
     fn removing_process_quota_is_broadening() {
-        let mut current = SandboxPolicy::a3s_bash_baseline();
+        let mut current = SandboxPolicy::aster_bash_baseline();
         current.resources.max_processes = Some(4);
         let mut next = current.clone();
         next.resources.max_processes = None;

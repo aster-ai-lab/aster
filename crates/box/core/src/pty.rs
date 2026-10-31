@@ -4,13 +4,13 @@
 //! between the host CLI and the guest PTY server over vsock port 4090.
 //!
 //! Wire format: `[type: u8] [length: u32 BE] [payload: length bytes]`
-//! (same as `a3s-transport::Frame`)
+//! (same as `aster-transport::Frame`)
 
 use serde::{Deserialize, Serialize};
 use std::io;
 
 /// Vsock port for the PTY server.
-pub const PTY_VSOCK_PORT: u32 = a3s_transport::ports::PTY_SERVER;
+pub const PTY_VSOCK_PORT: u32 = aster_transport::ports::PTY_SERVER;
 
 /// Maximum frame payload size: 64 KiB.
 pub const MAX_FRAME_PAYLOAD: usize = 64 * 1024;
@@ -26,9 +26,9 @@ pub const FRAME_PTY_EXIT: u8 = 0x04;
 /// Frame type: error message (guest → host).
 pub const FRAME_PTY_ERROR: u8 = 0x05;
 
-// Re-export low-level frame I/O from a3s-transport (identical wire format).
+// Re-export low-level frame I/O from aster-transport (identical wire format).
 // The exec_server already uses its own copy; PTY server and core share these.
-pub use a3s_transport::frame::Frame as TransportFrame;
+pub use aster_transport::frame::Frame as TransportFrame;
 
 /// Request to open an interactive PTY session in the guest.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -238,7 +238,7 @@ mod tests {
             cmd: vec!["/bin/sh".to_string()],
             env: vec!["TERM=xterm".to_string()],
             working_dir: Some("/home".to_string()),
-            rootfs: Some("/run/a3s/cri/container-rootfs/sb/c/rootfs".to_string()),
+            rootfs: Some("/run/aster/cri/container-rootfs/sb/c/rootfs".to_string()),
             user: None,
             cols: 80,
             rows: 24,
@@ -258,7 +258,7 @@ mod tests {
         assert_eq!(parsed.cmd, vec!["/bin/sh"]);
         assert_eq!(
             parsed.rootfs,
-            Some("/run/a3s/cri/container-rootfs/sb/c/rootfs".to_string())
+            Some("/run/aster/cri/container-rootfs/sb/c/rootfs".to_string())
         );
         assert_eq!(parsed.cols, 80);
         assert_eq!(parsed.rows, 24);

@@ -680,7 +680,7 @@ fn job_directory(root: &Path, id: &str) -> io::Result<PathBuf> {
     }
     Ok(std::env::temp_dir()
         .canonicalize()?
-        .join("a3s-wiki-maintenance")
+        .join("aster-wiki-maintenance")
         .join(content_generation(root.to_string_lossy().as_bytes()))
         .join(id))
 }
@@ -1012,14 +1012,14 @@ fn project_index(root: &Path, replacement: Option<(&str, &[u8])>) -> io::Result<
     let mut bundle = files
         .iter()
         .filter(|(path, _)| page_path(path))
-        .map(|(path, bytes)| a3s_use_core::OkfBundleFile::new(path.clone(), bytes.clone()))
+        .map(|(path, bytes)| aster_use_core::OkfBundleFile::new(path.clone(), bytes.clone()))
         .collect::<Vec<_>>();
-    bundle.push(a3s_use_core::OkfBundleFile::new(
+    bundle.push(aster_use_core::OkfBundleFile::new(
         "index.md",
         index.as_bytes().to_vec(),
     ));
-    a3s_use_core::inspect_okf_bundle(
-        a3s_use_core::OkfFormatVersion::V0_2,
+    aster_use_core::inspect_okf_bundle(
+        aster_use_core::OkfFormatVersion::V0_2,
         bundle_limits(),
         bundle,
     )
@@ -1348,12 +1348,12 @@ fn finish(
                 "index.md".into(),
                 render_index(&listed, &[], &[]).into_bytes(),
             );
-            a3s_use_core::inspect_okf_bundle(
-                a3s_use_core::OkfFormatVersion::V0_2,
+            aster_use_core::inspect_okf_bundle(
+                aster_use_core::OkfFormatVersion::V0_2,
                 bundle_limits(),
                 bundle
                     .into_iter()
-                    .map(|(path, bytes)| a3s_use_core::OkfBundleFile::new(path, bytes)),
+                    .map(|(path, bytes)| aster_use_core::OkfBundleFile::new(path, bytes)),
             )
             .map_err(io::Error::other)?;
             for change in &job.changes {

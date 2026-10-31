@@ -12,7 +12,7 @@
 
 use std::net::Ipv4Addr;
 
-use a3s_box_core::{EgressMatchRule, PolicyAction};
+use aster_box_core::{EgressMatchRule, PolicyAction};
 
 /// Attached CIDR for the default untrusted profile.
 ///
@@ -65,7 +65,7 @@ fn default_profile_denied(dest: Ipv4Addr, attached_cidr: Option<(Ipv4Addr, u8)>)
         return true;
     }
     if let Some((network_addr, prefix_len)) = attached_cidr {
-        if a3s_box_core::ipv4_in_prefix(network_addr, prefix_len, dest) {
+        if aster_box_core::ipv4_in_prefix(network_addr, prefix_len, dest) {
             return false;
         }
     }
@@ -173,7 +173,7 @@ pub(crate) fn load_egress_rules(
     let (Some(path), Some(name)) = (networks_json, network_name) else {
         return Vec::new();
     };
-    match a3s_box_core::load_network_egress_rules(path, name) {
+    match aster_box_core::load_network_egress_rules(path, name) {
         Ok(rules) => rules,
         Err(error) => {
             tracing::error!(
@@ -195,7 +195,7 @@ pub(crate) fn load_egress_allowed_names(
     let (Some(path), Some(name)) = (networks_json, network_name) else {
         return Vec::new();
     };
-    match a3s_box_core::load_network_egress_allowed_names(path, name) {
+    match aster_box_core::load_network_egress_allowed_names(path, name) {
         Ok(names) => names,
         Err(error) => {
             tracing::warn!(

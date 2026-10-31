@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::super::editor_error;
 use crate::editor::{
@@ -284,7 +284,7 @@ fn validate_xml_text(value: &str, field: &str) -> UseResult<()> {
     Ok(())
 }
 
-fn threshold_error(field: &str, reason: &str) -> a3s_use_core::UseError {
+fn threshold_error(field: &str, reason: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_conditional_format_threshold_invalid",
         format!("Conditional-format {field} threshold is invalid: {reason}."),

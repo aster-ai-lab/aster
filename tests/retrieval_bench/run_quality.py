@@ -71,7 +71,7 @@ def run_suite(name: str, rank_fn, corpus_dir: Path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--engine", help="path to the built engine binary (JSON hits on stdout)")
-    parser.add_argument("--corpus", default="/tmp/a3s-bench-corpus")
+    parser.add_argument("--corpus", default="/tmp/aster-bench-corpus")
     parser.add_argument("--output", help="results json path (resume-friendly)")
     args = parser.parse_args()
 

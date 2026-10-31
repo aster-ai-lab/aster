@@ -11,7 +11,7 @@ use std::net::Ipv4Addr;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use a3s_box_core::{
+use aster_box_core::{
     parse_port_mapping, ExecutionManagerError, ExecutionManagerResult, NetworkEndpoint,
     NetworkMode, PortProtocol, OCI_NATIVE_KEEP_NETWORK_DEVICE_AUTHORITY_ENV,
 };
@@ -20,7 +20,7 @@ use sha2::{Digest, Sha256};
 
 use crate::NetworkStore;
 
-const LEASE_SCHEMA: &str = "a3s.box.sandbox-host-netdevice.v5";
+const LEASE_SCHEMA: &str = "aster.box.sandbox-host-netdevice.v5";
 const GUEST_IFACE_NAME: &str = "eth0";
 
 /// One static TCP host→container publication persisted on the lease.
@@ -135,7 +135,7 @@ pub(crate) fn bridge_iface_name(network_name: &str) -> String {
     let mut hasher = Sha256::new();
     hasher.update(network_name.as_bytes());
     let digest = format!("{:x}", hasher.finalize());
-    format!("a3sb{}", &digest[..8])
+    format!("asterb{}", &digest[..8])
 }
 
 /// Stage one veth pair for Bridge+keep-authority; return lease when staged.
@@ -879,7 +879,7 @@ mod tests {
         let a = bridge_iface_name("dev");
         let b = bridge_iface_name("dev");
         assert_eq!(a, b);
-        assert!(a.starts_with("a3sb"));
+        assert!(a.starts_with("asterb"));
         assert_eq!(a.len(), 12);
         assert_ne!(bridge_iface_name("dev"), bridge_iface_name("prod"));
     }
@@ -978,7 +978,7 @@ mod tests {
 
     #[test]
     fn v4_lease_without_udp_field_still_loads() {
-        let raw = r#"{"schema":"a3s.box.sandbox-host-netdevice.v4","network":"dev","subnet":"10.88.0.0/24","bridge_iface":"a3sb","container_iface":"bv22222222c","peer_iface":"bv22222222p","guest_name":"eth0","container_ip":"10.88.0.2","published_tcp":[]}"#;
+        let raw = r#"{"schema":"aster.box.sandbox-host-netdevice.v4","network":"dev","subnet":"10.88.0.0/24","bridge_iface":"asterb","container_iface":"bv22222222c","peer_iface":"bv22222222p","guest_name":"eth0","container_ip":"10.88.0.2","published_tcp":[]}"#;
         let loaded: HostNetDeviceLease = serde_json::from_str(raw).unwrap();
         assert!(loaded.published_udp.is_empty());
     }

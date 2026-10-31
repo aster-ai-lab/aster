@@ -31,7 +31,7 @@ export type ImportedDocxBulletListStyle = 'disc' | 'circle' | 'square';
 const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
-const LIST_START_MARKER_PATTERN = /__A3S_WORK_LIST_START_\d+__/g;
+const LIST_START_MARKER_PATTERN = /__ASTER_WORK_LIST_START_\d+__/g;
 
 export function markDocxLists(
   document: Document,
@@ -113,7 +113,7 @@ export function markDocxLists(
     );
     const type = effectiveOrderedListType(concrete, abstract, level);
     const bulletStyle = effectiveBulletListStyle(concrete, abstract, level);
-    const marker = `__A3S_WORK_LIST_START_${lists.length + 1}__`;
+    const marker = `__ASTER_WORK_LIST_START_${lists.length + 1}__`;
     insertParagraphMarker(document, paragraph, marker);
     lists.push({
       marker,
@@ -147,7 +147,7 @@ export function applyImportedDocxListMarkers(
     markers.lists.map((list) => [list.marker, list]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_LIST_START_')) continue;
+    if (!node.data.includes('__ASTER_WORK_LIST_START_')) continue;
     const item = node.parentElement?.closest('li');
     const list = item?.parentElement;
     node.data = node.data.replace(LIST_START_MARKER_PATTERN, (marker) => {

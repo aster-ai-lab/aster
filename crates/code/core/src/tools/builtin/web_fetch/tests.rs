@@ -130,6 +130,44 @@ async fn real_system_proxy_fetches_official_https_source() {
     assert!(result.content.to_ascii_lowercase().contains("tokio"));
 }
 
+#[tokio::test]
+#[ignore = "requires external network"]
+async fn real_safe_http_fetches_public_github_issues_list() {
+    let tool = WebFetchTool;
+    let ctx = ToolContext::new(std::path::PathBuf::from("/tmp"));
+    let result = tool
+        .execute(
+            &serde_json::json!({
+                "url": "https://github.com/aster-ai-lab/aster/issues",
+                "format": "text",
+                "timeout": 30
+            }),
+            &ctx,
+        )
+        .await
+        .unwrap();
+    assert!(
+        result.success,
+        "safe_http must reach public GitHub Issues; tool error was: {}",
+        result.content.chars().take(500).collect::<String>()
+    );
+    let lower = result.content.to_ascii_lowercase();
+    assert!(
+        lower.contains("issue") && lower.contains("aster"),
+        "unexpected GitHub Issues body: {}",
+        result.content.chars().take(400).collect::<String>()
+    );
+    // Page copy may mention Security nav or quote old issue titles; the tool
+    // path itself must not fail-closed with a false security-check paraphrase.
+    assert!(
+        !lower.contains("network unavailable")
+            && !lower.contains("ssrf guard")
+            && !lower.contains("dns-over-https fallback failed"),
+        "tool treated a reachable GitHub page as a network/SSRF failure: {}",
+        result.content.chars().take(500).collect::<String>()
+    );
+}
+
 #[test]
 fn test_web_fetch_schema_is_canonical() {
     let tool = WebFetchTool;
@@ -455,7 +493,7 @@ async fn a_multi_page_fetch_retains_the_full_text_for_read_and_grep() {
     let budget = crate::tools::ToolResultTransformPolicyV1::default().max_output_bytes;
     let range = content_range(&page, 0, DEFAULT_MAX_CHARS, page_byte_budget(budget)).unwrap();
     let uri = retain_full_text(&ctx, &page, &range, 0).expect("multi-page fetch retains");
-    assert!(uri.starts_with("a3s://tool-output/web_fetch/"));
+    assert!(uri.starts_with("aster://tool-output/web_fetch/"));
     assert!(full_text_note(&uri).len() <= FULL_TEXT_NOTE_RESERVE_BYTES);
     assert!(
         range.content.len() + full_text_note(&uri).len() <= budget,

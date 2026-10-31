@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "a3s.oci.schema-evidence.v1",
+  "schemaVersion": "aster.oci.schema-evidence.v1",
   "ociRuntimeSpec": "1.3.0",
   "upstreamCommit": "92249139eea7161e13745abd4cb6d0ea02a3227a",
   "bindings": [
@@ -128,7 +128,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "description": "Caller-provided OCI VM executable paths",
@@ -151,7 +151,7 @@
         "semantic::tests::validates_vm_paths_without_inventing_hardware_minima",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "description": "Caller-provided OCI VM command parameters",
@@ -170,7 +170,7 @@
         "semantic::tests::rejects_nul_in_vm_runtime_paths_and_parameters",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "description": "Configuration annotation map preservation",
@@ -398,7 +398,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",

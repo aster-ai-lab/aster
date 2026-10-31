@@ -1,5 +1,5 @@
 use super::*;
-use a3s_search::{EngineOutcome, SearchResult, SearchResults};
+use aster_search::{EngineOutcome, SearchResult, SearchResults};
 
 use super::super::driver::TierReceipt;
 

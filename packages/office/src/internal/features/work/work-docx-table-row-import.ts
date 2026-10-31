@@ -55,7 +55,7 @@ const WORD_NAMESPACE =
 const WORD_2010_NAMESPACE =
   'http://schemas.microsoft.com/office/word/2010/wordml';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
-const TABLE_ROW_MARKER_PATTERN = /__A3S_WORK_TABLE_ROW_\d+__/g;
+const TABLE_ROW_MARKER_PATTERN = /__ASTER_WORK_TABLE_ROW_\d+__/g;
 const PIXELS_PER_TWIP = 96 / 1440;
 
 export function markDocxTableRows(
@@ -177,7 +177,7 @@ export function markDocxTableRows(
     }
     const paragraph = firstTableRowParagraph(document, row);
     if (!paragraph) continue;
-    const marker = `__A3S_WORK_TABLE_ROW_${rows.length + 1}__`;
+    const marker = `__ASTER_WORK_TABLE_ROW_${rows.length + 1}__`;
     insertRowMarker(document, paragraph, marker);
     rows.push({
       marker,
@@ -225,7 +225,7 @@ export function applyImportedDocxTableRowMarkers(
 ): void {
   const rowByMarker = new Map(markers.rows.map((row) => [row.marker, row]));
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_TABLE_ROW_')) continue;
+    if (!node.data.includes('__ASTER_WORK_TABLE_ROW_')) continue;
     const row = node.parentElement?.closest('tr');
     node.data = node.data.replace(TABLE_ROW_MARKER_PATTERN, (marker) => {
       const properties = rowByMarker.get(marker);

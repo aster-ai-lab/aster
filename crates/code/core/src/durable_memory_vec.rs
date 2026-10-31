@@ -1,18 +1,18 @@
-//! a3s-vec backed durable memory store — the convergence target for A3S
+//! aster-vec backed durable memory store — the convergence target for Aster
 //! memory.
 //!
-//! One system, A3S's own engine: memory items live in an in-process a3s-vec
+//! One system, Aster's own engine: memory items live in an in-process aster-vec
 //! collection with a full-text index over their content, so recall is a real
 //! relevance query instead of loading every item. Importance and type ride
 //! alongside as typed fields; vector (semantic) retrieval slots into the same
 //! collection once an embedding source is wired.
 //!
-//! This module intentionally depends only on `a3s-vec` (already optional in
-//! core behind `a3s-vec-fts`) so the memory layer and the workspace lexical
+//! This module intentionally depends only on `aster-vec` (already optional in
+//! core behind `aster-vec-fts`) so the memory layer and the workspace lexical
 //! index share one engine and one operational model.
 
-use a3s_memory::{MemoryItem, MemoryStore, MemoryType};
-use a3s_vec::{Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexParams, SearchQuery};
+use aster_durable_memory::{MemoryItem, MemoryStore, MemoryType};
+use aster_vec::{Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexParams, SearchQuery};
 use anyhow::{anyhow, Result};
 use chrono::{DateTime, Utc};
 use std::path::{Path, PathBuf};
@@ -23,10 +23,10 @@ pub mod management;
 static ENGINE_INIT: OnceLock<Result<(), String>> = OnceLock::new();
 
 fn ensure_initialized() -> Result<(), String> {
-    // `a3s_vec::initialize` is idempotent; always call it so the cold path
+    // `aster_vec::initialize` is idempotent; always call it so the cold path
     // stays reachable under the process-wide OnceLock.
     ENGINE_INIT
-        .get_or_init(|| a3s_vec::initialize(None).map_err(|error| error.to_string()))
+        .get_or_init(|| aster_vec::initialize(None).map_err(|error| error.to_string()))
         .clone()
 }
 
@@ -36,7 +36,7 @@ fn display_error(error: impl std::fmt::Display) -> anyhow::Error {
 
 /// True when the engine error is the cross-process exclusive lock holding
 /// the collection (the multi-session recall stall of #17).
-fn is_collection_lock_held(error: &a3s_vec::Error) -> bool {
+fn is_collection_lock_held(error: &aster_vec::Error) -> bool {
     let text = error.to_string();
     text.contains("collection is locked by another process")
 }
@@ -45,7 +45,7 @@ fn is_collection_lock_held(error: &a3s_vec::Error) -> bool {
 /// Uses the engine's own lock file directly so the check precedes the
 /// engine initialization entirely.
 fn probe_collection_lock(root: &Path) -> Result<()> {
-    let lock_path = root.join(COLLECTION_NAME).join(".a3s-vec.lock");
+    let lock_path = root.join(COLLECTION_NAME).join(".aster-vec.lock");
     let Ok(file) = std::fs::OpenOptions::new()
         .read(true)
         .write(true)
@@ -69,12 +69,12 @@ fn probe_collection_lock(root: &Path) -> Result<()> {
 
 /// Open with a shared (read-only) lock so concurrent readers coexist./// Open with a shared (read-only) lock so concurrent readers coexist.
 fn open_read_only(collection_path: &str) -> Result<Collection> {
-    let mut options = a3s_vec::CollectionOptions::new().map_err(display_error)?;
+    let mut options = aster_vec::CollectionOptions::new().map_err(display_error)?;
     options.set_read_only(true).map_err(display_error)?;
     Collection::open(collection_path, Some(&options)).map_err(display_error)
 }
 
-/// One durable memory record as stored in the a3s-vec collection.
+/// One durable memory record as stored in the aster-vec collection.
 #[derive(Debug, Clone, PartialEq)]
 pub struct MemoryRecord {
     pub id: String,
@@ -118,7 +118,7 @@ pub trait SemanticEmbed: Send + Sync {
     fn embed(&self, text: &str) -> Option<Vec<f32>>;
 }
 
-/// An a3s-vec collection holding durable memory items, opened at a fixed path.
+/// An aster-vec collection holding durable memory items, opened at a fixed path.
 pub struct VecMemoryStore {
     collection: Collection,
     path: PathBuf,
@@ -247,7 +247,7 @@ fn memory_id(document: &Doc) -> Result<String> {
     document
         .get_pk()
         .map(str::to_owned)
-        .ok_or_else(|| anyhow!("a3s-vec memory result omitted its primary key"))
+        .ok_or_else(|| anyhow!("aster-vec memory result omitted its primary key"))
 }
 
 impl VecMemoryStore {
@@ -260,7 +260,7 @@ impl VecMemoryStore {
         // cost seconds on a cold cache. On a locked collection (#17) the
         // probe names the peer immediately instead of stalling the init.
         probe_collection_lock(root)?;
-        ensure_initialized().map_err(|error| anyhow!("a3s-vec engine init failed: {error}"))?;
+        ensure_initialized().map_err(|error| anyhow!("aster-vec engine init failed: {error}"))?;
         fs_err_create_dir_all(root)?;
         let canonical = root
             .canonicalize()
@@ -360,7 +360,7 @@ impl VecMemoryStore {
         let result = self.collection.insert(&references).map_err(display_error)?;
         if result.error_count != 0 {
             return Err(anyhow!(
-                "a3s-vec memory insert rejected {} document(s)",
+                "aster-vec memory insert rejected {} document(s)",
                 result.error_count
             ));
         }
@@ -374,7 +374,7 @@ impl VecMemoryStore {
         if query.trim().is_empty() || limit == 0 {
             return Ok(Vec::new());
         }
-        let mut fts = a3s_vec::Fts::new().map_err(display_error)?;
+        let mut fts = aster_vec::Fts::new().map_err(display_error)?;
         fts.set_match_string(query).map_err(display_error)?;
         let topk = i32::try_from(limit).map_err(|_| anyhow!("memory recall limit exceeds i32"))?;
         let mut search = SearchQuery::fts(CONTENT_FIELD, &fts, topk).map_err(display_error)?;
@@ -499,7 +499,7 @@ impl VecMemoryStore {
     }
 }
 
-/// Opens the durable a3s-vec collection on the first memory operation.
+/// Opens the durable aster-vec collection on the first memory operation.
 pub struct LazyFileMemoryStore {
     directory: PathBuf,
     store: tokio::sync::OnceCell<Arc<VecMemoryStore>>,
@@ -528,7 +528,7 @@ impl LazyFileMemoryStore {
             .map(Arc::as_ref)
             .map_err(|error| {
                 anyhow!(
-                    "failed to initialize a3s-vec Memory store at {}: {error:#}",
+                    "failed to initialize aster-vec Memory store at {}: {error:#}",
                     self.directory.display()
                 )
             })
@@ -564,7 +564,7 @@ impl LazyFileMemoryStore {
                     tracing::info!(
                         imported,
                         dir = %directory.display(),
-                        "imported legacy JSON memories into a3s-vec"
+                        "imported legacy JSON memories into aster-vec"
                     );
                 }
                 Ok(_) => {}
@@ -647,7 +647,7 @@ impl MemoryStore for LazyFileMemoryStore {
         MemoryStore::count(self.inner().await?).await
     }
 
-    async fn prune(&self, policy: &a3s_memory::PrunePolicy) -> Result<usize> {
+    async fn prune(&self, policy: &aster_durable_memory::PrunePolicy) -> Result<usize> {
         MemoryStore::prune(self.inner().await?, policy).await
     }
 }
@@ -872,7 +872,7 @@ impl MemoryStore for VecMemoryStore {
         let result = self.collection.delete(&refs).map_err(display_error)?;
         if result.error_count != 0 {
             return Err(anyhow!(
-                "a3s-vec memory clear rejected {} document(s)",
+                "aster-vec memory clear rejected {} document(s)",
                 result.error_count
             ));
         }
@@ -936,13 +936,13 @@ mod multi_session_lock_tests {
 
     #[test]
     fn is_collection_lock_held_matches_the_engine_text() {
-        let error = a3s_vec::Error::new(
-            a3s_vec::ErrorCode::AlreadyExists,
+        let error = aster_vec::Error::new(
+            aster_vec::ErrorCode::AlreadyExists,
             "collection is locked by another process (recorded exclusive owner pid=1): x",
         );
         assert!(is_collection_lock_held(&error));
-        let other = a3s_vec::Error::new(
-            a3s_vec::ErrorCode::InternalError,
+        let other = aster_vec::Error::new(
+            aster_vec::ErrorCode::InternalError,
             "unrelated engine failure",
         );
         assert!(!is_collection_lock_held(&other));

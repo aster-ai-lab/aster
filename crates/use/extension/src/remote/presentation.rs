@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_use_core::{UseError, UseResult, VerifiedPluginCatalogRecord};
+use aster_use_core::{UseError, UseResult, VerifiedPluginCatalogRecord};
 use serde::{Deserialize, Serialize};
 use tempfile::TempDir;
 use tokio::fs;
@@ -13,14 +13,14 @@ use super::{
     hex_lower, load_repository, verified_registry_metadata, RemoteRegistryAccess, TrustedRegistry,
 };
 
-pub const PACKAGE_PRESENTATION_INDEX_SCHEMA: &str = "a3s.use.package-presentation-index.v1";
-pub const PACKAGE_PRESENTATION_SCHEMA: &str = "a3s.use.package-presentation.v1";
+pub const PACKAGE_PRESENTATION_INDEX_SCHEMA: &str = "aster.use.package-presentation-index.v1";
+pub const PACKAGE_PRESENTATION_SCHEMA: &str = "aster.use.package-presentation.v1";
 pub const MAX_PACKAGE_PRESENTATION_MEDIA: usize = 8;
 pub const MAX_PACKAGE_PRESENTATION_BYTES: u64 = 256 * 1024;
 pub const MAX_PACKAGE_MEDIA_BYTES: u64 = 16 * 1024 * 1024;
 const MAX_PRESENTATION_INDEX_BYTES: u64 = 2 * 1024 * 1024;
 const PRESENTATION_INDEX_TARGET: &str = "package/presentation-index-v1.json";
-const PRESENTATION_INDEX_CUSTOM_KEY: &str = "a3sPackagePresentationIndex";
+const PRESENTATION_INDEX_CUSTOM_KEY: &str = "asterPackagePresentationIndex";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]

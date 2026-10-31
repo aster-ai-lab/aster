@@ -8,7 +8,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_memory::repository::MemoryRepository;
+use aster_durable_memory::repository::MemoryRepository;
 use async_trait::async_trait;
 use serde_json::json;
 use tokio::sync::broadcast;
@@ -28,7 +28,7 @@ use crate::{
     SessionOptions, StepOutcome, ToolErrorKind, WorkflowBuilder, WorkflowCheckpoint,
 };
 
-const ISOLATION_ID: &str = "Effect isolation / orphan `.a3s-isolate-*`";
+const ISOLATION_ID: &str = "Effect isolation / orphan `.aster-isolate-*`";
 const BATCH_ID: &str = "`batch` schema pin (no application `$ref` in `examples`)";
 const IMAGE_ID: &str = "Image `read` attachments";
 
@@ -683,67 +683,67 @@ async fn deep38_run_observability() {
 #[tokio::test]
 async fn deep38_context_memory() {
     let model = complete().await;
-    let repository = Arc::new(a3s_memory::repository::InMemoryRepository::new());
+    let repository = Arc::new(aster_durable_memory::repository::InMemoryRepository::new());
     let namespace =
-        a3s_memory::repository::MemoryNamespace::try_new("tenant", "principal", "scope").unwrap();
+        aster_durable_memory::repository::MemoryNamespace::try_new("tenant", "principal", "scope").unwrap();
     repository
-        .apply(a3s_memory::repository::MemoryChangeSet::new(
+        .apply(aster_durable_memory::repository::MemoryChangeSet::new(
             "seed-deep38",
             namespace.clone(),
             memory_time(1),
             vec![
-                a3s_memory::repository::MemoryOperation::Create {
-                    node: a3s_memory::repository::MemoryNodeDraft::new(
+                aster_durable_memory::repository::MemoryOperation::Create {
+                    node: aster_durable_memory::repository::MemoryNodeDraft::new(
                         "rollback-index",
                         namespace.clone(),
-                        a3s_memory::repository::DurableMemoryKind::Semantic,
-                        a3s_memory::repository::MemoryStatus::Active,
+                        aster_durable_memory::repository::DurableMemoryKind::Semantic,
+                        aster_durable_memory::repository::MemoryStatus::Active,
                         "Deployment rollback playbook index",
                         vec![memory_evidence(
                             "index-verification",
-                            a3s_memory::repository::EvidenceKind::Verification,
+                            aster_durable_memory::repository::EvidenceKind::Verification,
                             1,
                         )],
                         memory_time(1),
                     )
                     .with_relation(
-                        a3s_memory::repository::MemoryRelation::new(
-                            a3s_memory::repository::MemoryRelationKind::RelatedTo,
+                        aster_durable_memory::repository::MemoryRelation::new(
+                            aster_durable_memory::repository::MemoryRelationKind::RelatedTo,
                             "canary-procedure",
                         ),
                     ),
                 },
-                a3s_memory::repository::MemoryOperation::Create {
-                    node: a3s_memory::repository::MemoryNodeDraft::new(
+                aster_durable_memory::repository::MemoryOperation::Create {
+                    node: aster_durable_memory::repository::MemoryNodeDraft::new(
                         "canary-procedure",
                         namespace.clone(),
-                        a3s_memory::repository::DurableMemoryKind::Procedural,
-                        a3s_memory::repository::MemoryStatus::Active,
+                        aster_durable_memory::repository::DurableMemoryKind::Procedural,
+                        aster_durable_memory::repository::MemoryStatus::Active,
                         "Drain the first ring before shifting production traffic",
                         vec![memory_evidence(
                             "canary-verification",
-                            a3s_memory::repository::EvidenceKind::Verification,
+                            aster_durable_memory::repository::EvidenceKind::Verification,
                             1,
                         )],
                         memory_time(1),
                     )
                     .with_relation(
-                        a3s_memory::repository::MemoryRelation::new(
-                            a3s_memory::repository::MemoryRelationKind::RelatedTo,
+                        aster_durable_memory::repository::MemoryRelation::new(
+                            aster_durable_memory::repository::MemoryRelationKind::RelatedTo,
                             "rollback-index",
                         ),
                     ),
                 },
-                a3s_memory::repository::MemoryOperation::Create {
-                    node: a3s_memory::repository::MemoryNodeDraft::new(
+                aster_durable_memory::repository::MemoryOperation::Create {
+                    node: aster_durable_memory::repository::MemoryNodeDraft::new(
                         "candidate-related",
                         namespace.clone(),
-                        a3s_memory::repository::DurableMemoryKind::Procedural,
-                        a3s_memory::repository::MemoryStatus::Candidate,
+                        aster_durable_memory::repository::DurableMemoryKind::Procedural,
+                        aster_durable_memory::repository::MemoryStatus::Candidate,
                         "Unverified recovery shortcut",
                         vec![memory_evidence(
                             "candidate-proposal",
-                            a3s_memory::repository::EvidenceKind::SessionTurn,
+                            aster_durable_memory::repository::EvidenceKind::SessionTurn,
                             1,
                         )],
                         memory_time(1),
@@ -754,24 +754,24 @@ async fn deep38_context_memory() {
         .await
         .unwrap();
     repository
-        .apply(a3s_memory::repository::MemoryChangeSet::new(
+        .apply(aster_durable_memory::repository::MemoryChangeSet::new(
             "attach-candidate",
             namespace.clone(),
             memory_time(2),
             vec![
-                a3s_memory::repository::MemoryOperation::AddRelation {
+                aster_durable_memory::repository::MemoryOperation::AddRelation {
                     node_id: "rollback-index".into(),
                     expected_revision: 1,
-                    relation: a3s_memory::repository::MemoryRelation::new(
-                        a3s_memory::repository::MemoryRelationKind::RelatedTo,
+                    relation: aster_durable_memory::repository::MemoryRelation::new(
+                        aster_durable_memory::repository::MemoryRelationKind::RelatedTo,
                         "candidate-related",
                     ),
                 },
-                a3s_memory::repository::MemoryOperation::AddRelation {
+                aster_durable_memory::repository::MemoryOperation::AddRelation {
                     node_id: "candidate-related".into(),
                     expected_revision: 1,
-                    relation: a3s_memory::repository::MemoryRelation::new(
-                        a3s_memory::repository::MemoryRelationKind::RelatedTo,
+                    relation: aster_durable_memory::repository::MemoryRelation::new(
+                        aster_durable_memory::repository::MemoryRelationKind::RelatedTo,
                         "rollback-index",
                     ),
                 },
@@ -1110,7 +1110,7 @@ async fn deep38_state_graph() {
 #[tokio::test]
 async fn deep38_agent_release_contract() {
     let model = complete().await;
-    let raw = include_str!("../../fixtures/agent-release-contract/.a3s/asset.acl");
+    let raw = include_str!("../../fixtures/agent-release-contract/.aster/asset.acl");
     let manifest = crate::release::AgentReleaseManifest::parse(&raw.replace("\r\n", "\n")).unwrap();
     let declared = manifest.artifact().digest().to_string();
     assert_eq!(
@@ -1118,7 +1118,7 @@ async fn deep38_agent_release_contract() {
         "sha256:1111111111111111111111111111111111111111111111111111111111111111"
     );
     let wrong = crate::release::AgentReleaseCompatibility::new(
-        "a3s.code.agent.v2",
+        "aster.code.agent.v2",
         [
             crate::release::AgentReleaseCapability::new("runtime.service", 1).unwrap(),
             crate::release::AgentReleaseCapability::new("secrets.external", 1).unwrap(),
@@ -1133,7 +1133,7 @@ async fn deep38_agent_release_contract() {
         error,
         crate::release::AgentReleaseError::IncompatibleProtocol
     ));
-    assert_eq!(error.code(), "a3s.code.agent_release.incompatible_protocol");
+    assert_eq!(error.code(), "aster.code.agent_release.incompatible_protocol");
     assert_eq!(
         manifest.artifact().digest(),
         declared,
@@ -1252,8 +1252,8 @@ async fn deep38_s3_workspace() {
     .expect("read timed out")
     .expect("stored object");
     assert_eq!(
-        crate::digest_bytes("a3s.code.deep38.s3-object.v1", stored.as_bytes()),
-        crate::digest_bytes("a3s.code.deep38.s3-object.v1", first.as_bytes()),
+        crate::digest_bytes("aster.code.deep38.s3-object.v1", stored.as_bytes()),
+        crate::digest_bytes("aster.code.deep38.s3-object.v1", first.as_bytes()),
         "stored body is {stored:?}"
     );
     let model = complete().await;
@@ -1266,8 +1266,8 @@ async fn deep38_effect_isolation() {
     let source = root.path().join("source");
     std::fs::create_dir_all(&source).unwrap();
     git(&source, &["init", "-b", "main"]);
-    git(&source, &["config", "user.email", "a3s@example.com"]);
-    git(&source, &["config", "user.name", "a3s"]);
+    git(&source, &["config", "user.email", "aster@example.com"]);
+    git(&source, &["config", "user.name", "aster"]);
     std::fs::write(source.join("README.md"), "source\n").unwrap();
     git(&source, &["add", "README.md"]);
     git(&source, &["commit", "-m", "init"]);
@@ -1279,7 +1279,7 @@ async fn deep38_effect_isolation() {
         .worktree_path
         .file_name()
         .and_then(|name| name.to_str())
-        .is_some_and(|name| name.starts_with(".a3s-isolate-")));
+        .is_some_and(|name| name.starts_with(".aster-isolate-")));
     std::fs::write(binding.worktree_path.join("note.txt"), "isolated\n").unwrap();
     let first = crate::effect_isolation::promote_current(&session);
     std::fs::write(source.join("README.md"), "moved\n").unwrap();
@@ -1314,11 +1314,11 @@ async fn deep38_effect_isolation() {
             entry
                 .ok()
                 .and_then(|entry| entry.file_name().into_string().ok())
-                .is_some_and(|name| name.starts_with(".a3s-isolate-"))
+                .is_some_and(|name| name.starts_with(".aster-isolate-"))
         });
     assert!(
         !orphan,
-        "discarded isolate left an orphan .a3s-isolate-* directory"
+        "discarded isolate left an orphan .aster-isolate-* directory"
     );
     let model = complete().await;
     pass(ISOLATION_ID, &model, "PromoteOutcome");
@@ -1525,7 +1525,7 @@ fn artifact_digests(snapshot: &crate::store::SessionSnapshotV1) -> Vec<String> {
         .artifacts
         .iter()
         .map(|artifact| {
-            crate::digest_bytes("a3s.code.deep38.artifact.v1", artifact.content.as_bytes())
+            crate::digest_bytes("aster.code.deep38.artifact.v1", artifact.content.as_bytes())
         })
         .collect()
 }
@@ -1611,11 +1611,11 @@ fn memory_time(offset_seconds: i64) -> chrono::DateTime<chrono::Utc> {
 
 fn memory_evidence(
     name: &str,
-    kind: a3s_memory::repository::EvidenceKind,
+    kind: aster_durable_memory::repository::EvidenceKind,
     offset_seconds: i64,
-) -> a3s_memory::repository::EvidenceRef {
-    a3s_memory::repository::EvidenceRef::try_new(
-        format!("a3s://evidence/{name}"),
+) -> aster_durable_memory::repository::EvidenceRef {
+    aster_durable_memory::repository::EvidenceRef::try_new(
+        format!("aster://evidence/{name}"),
         format!("sha256:{name:0>64}"),
         kind,
         memory_time(offset_seconds),

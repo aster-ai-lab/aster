@@ -10,7 +10,7 @@
 //! - macOS x86_64
 //! - macOS aarch64
 //!
-//! Downloaded binaries are stored under the A3S Use Browser data root.
+//! Downloaded binaries are stored under the Aster Use Browser data root.
 
 use std::path::{Path, PathBuf};
 use std::time::Duration;
@@ -18,7 +18,7 @@ use std::time::Duration;
 use serde::Deserialize;
 use tracing::{debug, info};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use crate::pool::browser_error;
 
@@ -79,15 +79,15 @@ pub(crate) fn managed_cache_dir() -> UseResult<PathBuf> {
 /// Detect an existing Lightpanda installation.
 ///
 /// Checks:
-/// 1. `A3S_LIGHTPANDA_EXECUTABLE` or `LIGHTPANDA` environment variable
+/// 1. `ASTER_LIGHTPANDA_EXECUTABLE` or `LIGHTPANDA` environment variable
 /// 2. `lightpanda` command in PATH
-/// 3. The read-only cache layout used by A3S Search before Browser owned
+/// 3. The read-only cache layout used by Aster Search before Browser owned
 ///    runtime installation
 ///
 /// Returns `Some(path)` if found, `None` otherwise.
 pub fn detect_lightpanda() -> Option<PathBuf> {
     // 1. Check explicit environment overrides.
-    for name in ["A3S_LIGHTPANDA_EXECUTABLE", "LIGHTPANDA"] {
+    for name in ["ASTER_LIGHTPANDA_EXECUTABLE", "LIGHTPANDA"] {
         if let Some(path) = std::env::var_os(name).map(PathBuf::from) {
             if path.is_file() {
                 debug!("Lightpanda found via {name}: {}", path.display());
@@ -102,14 +102,14 @@ pub fn detect_lightpanda() -> Option<PathBuf> {
         return Some(path);
     }
 
-    // 3. Preserve discovery of runtimes installed by A3S Search releases that
+    // 3. Preserve discovery of runtimes installed by Aster Search releases that
     // predate the Browser repository. This path is treated as an external
     // system installation: Browser never updates or removes it, and new
     // managed installs continue to require a verified receipt in the current
     // data root.
     if let Some(path) = legacy_cache_dir().and_then(|base| find_legacy_lightpanda(&base)) {
         debug!(
-            "Lightpanda found in the legacy A3S Search cache: {}",
+            "Lightpanda found in the legacy Aster Search cache: {}",
             path.display()
         );
         return Some(path);
@@ -122,7 +122,7 @@ fn legacy_cache_dir() -> Option<PathBuf> {
     let home = std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE"))?;
     let home = PathBuf::from(home);
     home.is_absolute()
-        .then(|| home.join(".a3s").join("lightpanda"))
+        .then(|| home.join(".aster").join("lightpanda"))
 }
 
 fn find_legacy_lightpanda(base: &Path) -> Option<PathBuf> {
@@ -195,7 +195,7 @@ pub(crate) fn find_managed_lightpanda() -> UseResult<PathBuf> {
 /// Ensure Lightpanda is available, downloading it if necessary.
 ///
 /// 1. If Lightpanda is found via `LIGHTPANDA` env var or PATH, returns that path.
-/// 2. If a cached download exists in `the A3S Use Browser data root/`, returns that path.
+/// 2. If a cached download exists in `the Aster Use Browser data root/`, returns that path.
 /// 3. Otherwise, downloads the latest release from GitHub and caches it.
 pub async fn ensure_lightpanda() -> UseResult<PathBuf> {
     if let Some(path) = detect_lightpanda() {
@@ -221,7 +221,7 @@ pub(crate) fn resolve_lightpanda() -> UseResult<PathBuf> {
                 "No compatible Lightpanda executable is installed.",
             )
             .with_suggestion(
-                "Run 'a3s install use/browser' or select BrowserProvider::ManagedLightpanda.",
+                "Run 'aster install use/browser' or select BrowserProvider::ManagedLightpanda.",
             )
         })
 }
@@ -235,7 +235,7 @@ pub async fn download_latest_lightpanda() -> UseResult<PathBuf> {
     let releases_url =
         crate::install::trusted_https_url(LIGHTPANDA_RELEASES_API, &["api.github.com"])?;
     let client = reqwest::Client::builder()
-        .user_agent("a3s-use")
+        .user_agent("aster-use")
         .connect_timeout(Duration::from_secs(15))
         .timeout(Duration::from_secs(10 * 60))
         .redirect(crate::install::approved_redirect_policy(&[
@@ -353,7 +353,7 @@ mod tests {
     #[test]
     fn legacy_search_cache_discovery_is_bounded_and_read_only() {
         let temp = tempfile::tempdir().unwrap();
-        let cache = temp.path().join(".a3s/lightpanda");
+        let cache = temp.path().join(".aster/lightpanda");
         let older = cache.join("nightly-2026-01").join("lightpanda");
         let newer = cache.join("nightly-2026-02").join("lightpanda");
         let hidden = cache.join(".stage").join("lightpanda");
@@ -370,7 +370,7 @@ mod tests {
     #[test]
     fn legacy_search_cache_rejects_flat_and_non_executable_entries() {
         let temp = tempfile::tempdir().unwrap();
-        let cache = temp.path().join(".a3s/lightpanda");
+        let cache = temp.path().join(".aster/lightpanda");
         std::fs::create_dir_all(&cache).unwrap();
         std::fs::write(cache.join("lightpanda"), b"flat fixture").unwrap();
         let candidate = cache.join("nightly").join("lightpanda");

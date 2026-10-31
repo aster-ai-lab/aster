@@ -1,13 +1,13 @@
 //! Live E2E coverage for first-principles issue fixes #139 / #137 / #138 / #140.
 //!
-//! Pins `boyue/deepseek-v4-flash` from monorepo `.a3s/config.acl`.
+//! Pins `boyue/deepseek-v4-flash` from monorepo `.aster/config.acl`.
 //! Passes require kernel effects (tool names, MCP progress delivery, event-page
 //! projection, process-host bash under live tool use). Assistant wording is
 //! never a pass criterion.
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_issue_fix_live_e2e \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_issue_fix_live_e2e \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -17,12 +17,12 @@ use support::python_stdio_command;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::mcp::manager::McpManager;
-use a3s_code_core::mcp::protocol::{McpNotification, McpServerConfig, McpTransportConfig};
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::sandbox::ProcessHostBashSandbox;
-use a3s_code_core::tools::{ToolResultTransformPolicyV1, MAX_OUTPUT_SIZE};
-use a3s_code_core::{
+use aster_core::mcp::manager::McpManager;
+use aster_core::mcp::protocol::{McpNotification, McpServerConfig, McpTransportConfig};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::sandbox::ProcessHostBashSandbox;
+use aster_core::tools::{ToolResultTransformPolicyV1, MAX_OUTPUT_SIZE};
+use aster_core::{
     Agent, AgentEvent, AgentProtocolEventPageV1, AgentProtocolRunIdentityV1, RunStatus,
     SessionOptions, AGENT_PROTOCOL_MAX_EVENT_PAYLOAD_BYTES, AGENT_PROTOCOL_V1,
 };
@@ -40,7 +40,7 @@ async fn configured_agent() -> Agent {
     assert_pinned_layer_c_flash(&config, "live issue-fix suite");
     Agent::from_config(config)
         .await
-        .expect("build agent from .a3s/config.acl")
+        .expect("build agent from .aster/config.acl")
 }
 
 fn policy(allows: &[&str]) -> PermissionPolicy {
@@ -58,7 +58,7 @@ fn policy(allows: &[&str]) -> PermissionPolicy {
 fn options(session_id: &str, allows: &[&str]) -> SessionOptions {
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy(allows))
         .with_planning(false)
         .with_auto_delegation_enabled(false)
@@ -76,7 +76,7 @@ struct Observed {
     end_text: String,
 }
 
-async fn observe(session: &a3s_code_core::AgentSession, prompt: &str) -> Observed {
+async fn observe(session: &aster_core::AgentSession, prompt: &str) -> Observed {
     let (mut events, join) = session.stream(prompt, None).await.expect("stream");
     let observed = tokio::time::timeout(MODEL_TIMEOUT, async {
         let mut observed = Observed {
@@ -137,7 +137,7 @@ fn protocol_identity(session_id: &str, run_id: &str) -> AgentProtocolRunIdentity
 /// The second turn reads a host-written secret that never appears in prompts,
 /// so the model cannot pass by echoing first-turn text without calling `read`.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires boyue/deepseek-v4-flash from .a3s/config.acl"]
+#[ignore = "requires boyue/deepseek-v4-flash from .aster/config.acl"]
 async fn live_streaming_tool_names_survive_multi_step_rounds() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -250,7 +250,7 @@ fn looks_like_empty_tool_name_poison(message: &str) -> bool {
 /// #137: stdio MCP progress notifications must reach the client while a live
 /// model-driven tools/call is outstanding.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires boyue/deepseek-v4-flash from .a3s/config.acl"]
+#[ignore = "requires boyue/deepseek-v4-flash from .aster/config.acl"]
 async fn live_mcp_stdio_progress_notifications_arrive_during_tool_call() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -341,7 +341,7 @@ async fn live_mcp_stdio_progress_notifications_arrive_during_tool_call() {
 /// #138: a live large tool_end must still project through agent_protocol event
 /// pages instead of permanently 400-ing the cursor.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires boyue/deepseek-v4-flash from .a3s/config.acl"]
+#[ignore = "requires boyue/deepseek-v4-flash from .aster/config.acl"]
 async fn live_oversized_tool_end_still_projects_event_page() {
     const _: () = assert!(
         AGENT_PROTOCOL_MAX_EVENT_PAYLOAD_BYTES < MAX_OUTPUT_SIZE,
@@ -465,7 +465,7 @@ async fn live_oversized_tool_end_still_projects_event_page() {
 /// explicit process-host sandbox (outer isolation already present). Native
 /// Seatbelt/bwrap success must not mask this path; inject the Harbor runner.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires boyue/deepseek-v4-flash from .a3s/config.acl"]
+#[ignore = "requires boyue/deepseek-v4-flash from .aster/config.acl"]
 async fn live_process_host_bash_runs_under_flash_tool_use() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");

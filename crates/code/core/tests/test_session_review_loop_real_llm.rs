@@ -1,4 +1,4 @@
-//! Live session-review lifecycle against `.a3s/config.acl`.
+//! Live session-review lifecycle against `.aster/config.acl`.
 //!
 //! The durable sticky-review loop, driven exactly the way a product host
 //! drives it (Desktop owns the rubric; Core only stores and injects):
@@ -21,8 +21,8 @@
 //! disk- and store-side (house pattern from the issue-fix live suite).
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_session_review_loop_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_session_review_loop_real_llm \
 //!   -- --ignored --nocapture --test-threads=1
 //! ```
 
@@ -31,14 +31,14 @@ mod support;
 use std::sync::Arc;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
-use a3s_code_core::llm::create_client_with_config;
-use a3s_code_core::llm::structured::{generate_blocking, StructuredMode, StructuredRequest};
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::session_review::{
+use aster_core::llm::create_client_with_config;
+use aster_core::llm::structured::{generate_blocking, StructuredMode, StructuredRequest};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::session_review::{
     ReviewScenario, ReviewSubjectV1, ReviewTriggerPolicy, SessionReviewFindingV1,
     SessionReviewSeverityV1,
 };
-use a3s_code_core::{Agent, AgentEvent, SessionOptions};
+use aster_core::{Agent, AgentEvent, SessionOptions};
 use support::layer_c_model::{load_pinned_layer_c_config, pinned_layer_c_model};
 
 const TURN_TIMEOUT: Duration = Duration::from_secs(600);
@@ -79,7 +79,7 @@ struct TurnOutcome {
 
 /// Run one turn; a completion-gate error ends the stream but the tool
 /// effects have already landed, so it is recorded rather than fatal.
-async fn run_turn(session: &a3s_code_core::AgentSession, prompt: &str) -> TurnOutcome {
+async fn run_turn(session: &aster_core::AgentSession, prompt: &str) -> TurnOutcome {
     let (mut events, worker) = session
         .stream(prompt, None)
         .await
@@ -171,7 +171,7 @@ fn review_request(config_text: &str, summary_text: &str) -> StructuredRequest {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_reviewer_finding_survives_injection_and_the_lifecycle_closes() {
     let started = Instant::now();
     let mut config = load_pinned_layer_c_config();

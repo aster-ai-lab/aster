@@ -28,7 +28,7 @@ export class DocxImageWrapPatchCollector {
     contour: WorkDocumentImageWrapContour | null,
   ): string {
     if (!isContourImageLayout(options.layout)) return '';
-    const marker = `__A3S_IMAGE_WRAP_${this.nextMarker}__`;
+    const marker = `__ASTER_IMAGE_WRAP_${this.nextMarker}__`;
     this.nextMarker += 1;
     this.patches.push({
       marker,

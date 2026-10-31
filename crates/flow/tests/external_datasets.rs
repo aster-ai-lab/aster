@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ExternalDatasetRef, FlowEngine, FlowError, FlowRuntime, JsonValue, RuntimeCommand,
     StepInvocation, WorkflowInvocation, WorkflowRunStatus, WorkflowSpec,
 };
@@ -19,7 +19,7 @@ async fn external_dataset_attach_is_durable_and_visible_to_replay() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let ctx = invocation.context();
             if ctx.external_dataset("orders").is_none() {
                 return Ok(ctx.attach_external_dataset(ExternalDatasetRef::new(
@@ -36,7 +36,7 @@ async fn external_dataset_attach_is_durable_and_visible_to_replay() {
             })))
         }
 
-        async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+        async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
             unreachable!()
         }
     }
@@ -72,7 +72,7 @@ async fn external_dataset_attach_is_idempotent_and_rejects_digest_drift() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let ctx = invocation.context();
             let phase = self.phase.fetch_add(1, Ordering::SeqCst);
             let digest = if phase == 0 {
@@ -83,7 +83,7 @@ async fn external_dataset_attach_is_idempotent_and_rejects_digest_drift() {
             Ok(ctx.attach_external_dataset(ExternalDatasetRef::new("orders", digest, 10)))
         }
 
-        async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+        async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
             unreachable!()
         }
     }

@@ -128,7 +128,7 @@ mod tests {
     fn policy_with_fs(filesystem: FilesystemRules) -> SandboxPolicy {
         SandboxPolicy {
             filesystem,
-            ..SandboxPolicy::a3s_bash_baseline()
+            ..SandboxPolicy::aster_bash_baseline()
         }
     }
 
@@ -149,12 +149,12 @@ mod tests {
     fn write_exception_carves_out_denied_ancestor() {
         let policy = policy_with_fs(FilesystemRules {
             allow_write: vec![PathRule::Exact("workspace".into())],
-            deny_write: vec![PathRule::Exact("workspace/.a3s".into())],
-            write_exceptions: vec![PathRule::Exact("workspace/.a3s/loops".into())],
+            deny_write: vec![PathRule::Exact("workspace/.aster".into())],
+            write_exceptions: vec![PathRule::Exact("workspace/.aster/loops".into())],
             ..FilesystemRules::default()
         });
-        let loops = normalize_policy_path("workspace/.a3s/loops/goal/STATE.md").unwrap();
-        let other = normalize_policy_path("workspace/.a3s/policy.acl").unwrap();
+        let loops = normalize_policy_path("workspace/.aster/loops/goal/STATE.md").unwrap();
+        let other = normalize_policy_path("workspace/.aster/policy.acl").unwrap();
         let src = normalize_policy_path("workspace/src/lib.rs").unwrap();
         assert_eq!(decide_write(&policy, &loops), AccessDecision::Allow);
         assert_eq!(decide_write(&policy, &other), AccessDecision::Deny);
@@ -163,7 +163,7 @@ mod tests {
 
     #[test]
     fn unmatched_paths_fail_closed() {
-        let policy = SandboxPolicy::a3s_bash_baseline();
+        let policy = SandboxPolicy::aster_bash_baseline();
         let path = normalize_policy_path("anywhere/file").unwrap();
         assert_eq!(decide_read(&policy, &path), AccessDecision::Deny);
         assert_eq!(decide_write(&policy, &path), AccessDecision::Deny);
@@ -171,7 +171,7 @@ mod tests {
 
     #[test]
     fn network_default_is_deny_all() {
-        let policy = SandboxPolicy::a3s_bash_baseline();
+        let policy = SandboxPolicy::aster_bash_baseline();
         assert_eq!(decide_network(&policy), AccessDecision::Deny);
     }
 

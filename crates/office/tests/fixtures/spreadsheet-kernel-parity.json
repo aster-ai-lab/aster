@@ -157,7 +157,7 @@
           {
             "row": 0,
             "column": 0,
-            "formula": "=A3S_UNKNOWN(1)",
+            "formula": "=ASTER_UNKNOWN(1)",
             "value": { "kind": "number", "value": 41 }
           }
         ]
@@ -273,7 +273,7 @@
           {
             "row": 0,
             "column": 0,
-            "formula": "=A3S_UNKNOWN(1)",
+            "formula": "=ASTER_UNKNOWN(1)",
             "value": { "kind": "number", "value": 41 }
           },
           {
@@ -309,7 +309,7 @@
           {
             "row": 0,
             "column": 0,
-            "formula": "=A3S_UNKNOWN(1)",
+            "formula": "=ASTER_UNKNOWN(1)",
             "value": { "kind": "number", "value": 41 }
           },
           {

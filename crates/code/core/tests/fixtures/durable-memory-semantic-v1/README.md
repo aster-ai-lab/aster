@@ -1,6 +1,6 @@
 # Durable Memory Semantic Evaluation V1
 
-This fixture locks the first deterministic semantic-recall gate for A3S Code.
+This fixture locks the first deterministic semantic-recall gate for Aster Code.
 The active memory content is English while the four positive queries are
 Chinese, Japanese, Korean, and Arabic and intentionally share no lexical term
 with their targets.
@@ -18,5 +18,5 @@ not a model-quality benchmark. It verifies Code's serving architecture:
 Run it from the Code crate workspace:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_semantic_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_semantic_eval -- --nocapture
 ```

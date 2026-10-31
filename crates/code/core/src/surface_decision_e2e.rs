@@ -536,7 +536,7 @@ async fn ordinary_text_and_protocol_json_do_not_call_the_gateway() {
         .await
         .is_none());
     assert!(decide_tool_surface(
-        r#"{"schema":"a3s.code.user-form.v1","status":"parked","permission_grant":false}"#,
+        r#"{"schema":"aster.code.user-form.v1","status":"parked","permission_grant":false}"#,
         session,
     )
     .await

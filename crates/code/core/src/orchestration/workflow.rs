@@ -19,7 +19,7 @@
 //!
 //! ```no_run
 //! # use std::sync::Arc;
-//! # use a3s_code_core::orchestration::{Workflow, AgentExecutor, AgentStepSpec};
+//! # use aster_core::orchestration::{Workflow, AgentExecutor, AgentStepSpec};
 //! # async fn run(executor: Arc<dyn AgentExecutor>) {
 //! let wf = Workflow::builder(executor).build();
 //!

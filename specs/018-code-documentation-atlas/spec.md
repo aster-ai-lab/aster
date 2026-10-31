@@ -6,7 +6,7 @@
 
 **Status**: Complete
 
-**Input**: Deepen a3s-code-core and a3s-code-acp documentation under the repository engineering standards and A3S-Lab/stc-answer. Use SeeCode for README and documentation diagrams, including animation and exploded views. Use Code Hike for interactive source walkthroughs. Explain internal prompts, long-running tasks, recovery and completion to both beginners and engineers.
+**Input**: Deepen aster-core and aster-acp documentation under the repository engineering standards and aster-ai-lab/stc-answer. Use SeeCode for README and documentation diagrams, including animation and exploded views. Use Code Hike for interactive source walkthroughs. Explain internal prompts, long-running tasks, recovery and completion to both beginners and engineers.
 
 **Gate context**: Existing `apps/web` static MDX site and root README. This user-requested documentation epic adds no Rust runtime capability and makes no measured quality claim.
 
@@ -76,7 +76,7 @@ An author changes diagram specifications and MDX, then regenerates all assets wi
 - [x] New web behavior has hermetic DOM and builder tests planned.
 - [x] New authoring names are closed sets or validated mechanical identifiers.
 - [x] No Rust `unwrap()` or `expect()` added.
-- [x] Internal A3S dependencies unchanged.
+- [x] Internal Aster dependencies unchanged.
 - [x] No product configuration added; diagram JSON is build-time authoring data.
 - [x] Evidence target named above.
 

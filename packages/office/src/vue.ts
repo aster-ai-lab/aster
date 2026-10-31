@@ -61,7 +61,7 @@ function createReactRenderer(renderNode: () => ReactNode) {
 
   return () =>
     h('div', {
-      class: 'a3s-office-vue-host',
+      class: 'aster-office-vue-host',
       ref: host,
       style: { height: '100%', minHeight: 0, minWidth: 0, width: '100%' },
     });
@@ -114,7 +114,7 @@ function officeObservabilityBindings(
 }
 
 export const DocumentEditor = defineComponent({
-  name: 'A3SDocumentEditor',
+  name: 'AsterDocumentEditor',
   props: {
     artifactId: String,
     collaboration: Object as PropType<OfficeCollaborationSession>,
@@ -180,7 +180,7 @@ export const DocumentEditor = defineComponent({
 });
 
 export const MarkdownEditor = defineComponent({
-  name: 'A3SMarkdownEditor',
+  name: 'AsterMarkdownEditor',
   props: {
     collaboration: Object as PropType<OfficeCollaborationSession>,
     presence: Object as PropType<OfficeCollaborationPresence>,
@@ -233,7 +233,7 @@ export const MarkdownEditor = defineComponent({
 });
 
 export const SpreadsheetEditor = defineComponent({
-  name: 'A3SSpreadsheetEditor',
+  name: 'AsterSpreadsheetEditor',
   props: {
     collaboration: Object as PropType<OfficeCollaborationSession>,
     presence: Object as PropType<OfficeCollaborationPresence>,
@@ -285,7 +285,7 @@ export const SpreadsheetEditor = defineComponent({
 });
 
 export const PresentationEditor = defineComponent({
-  name: 'A3SPresentationEditor',
+  name: 'AsterPresentationEditor',
   props: {
     collaboration: Object as PropType<OfficeCollaborationSession>,
     presence: Object as PropType<OfficeCollaborationPresence>,
@@ -337,7 +337,7 @@ export const PresentationEditor = defineComponent({
 });
 
 export const PdfViewer = defineComponent({
-  name: 'A3SPdfViewer',
+  name: 'AsterPdfViewer',
   props: {
     collaboration: Object as PropType<OfficeCollaborationSession>,
     evidenceOverlay: Object as PropType<PdfEvidenceOverlay>,
@@ -401,9 +401,9 @@ export const PdfViewer = defineComponent({
 });
 
 export {
-  DocumentEditor as A3SDocumentEditor,
-  MarkdownEditor as A3SMarkdownEditor,
-  PdfViewer as A3SPdfViewer,
-  PresentationEditor as A3SPresentationEditor,
-  SpreadsheetEditor as A3SSpreadsheetEditor,
+  DocumentEditor as AsterDocumentEditor,
+  MarkdownEditor as AsterMarkdownEditor,
+  PdfViewer as AsterPdfViewer,
+  PresentationEditor as AsterPresentationEditor,
+  SpreadsheetEditor as AsterSpreadsheetEditor,
 };

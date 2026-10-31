@@ -3,11 +3,11 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-REGISTRY_DIR="${A3S_USE_REGISTRY_DIR:-${ROOT_DIR}/registry}"
-EXPECTED_ROOT="${A3S_USE_REGISTRY_EXPECTED_ROOT:-sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172}"
+REGISTRY_DIR="${ASTER_USE_REGISTRY_DIR:-${ROOT_DIR}/registry}"
+EXPECTED_ROOT="${ASTER_USE_REGISTRY_EXPECTED_ROOT:-sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172}"
 # Relative to registry URL root. Override when smoking a mock multi-package tree.
-TARGET_REL="${A3S_USE_REGISTRY_SMOKE_TARGET:-targets/extensions/a3s/registry-selftest/0.1.0/stable/any/a3s-registry-selftest-0.1.0-any.tar.gz}"
-BASE_URL="${1:-${A3S_USE_REGISTRY_URL:-}}"
+TARGET_REL="${ASTER_USE_REGISTRY_SMOKE_TARGET:-targets/extensions/aster/registry-selftest/0.1.0/stable/any/aster-registry-selftest-0.1.0-any.tar.gz}"
+BASE_URL="${1:-${ASTER_USE_REGISTRY_URL:-}}"
 
 if [[ -z "${BASE_URL}" ]]; then
   if [[ -x "${ROOT_DIR}/scripts/serve_local.sh" ]]; then

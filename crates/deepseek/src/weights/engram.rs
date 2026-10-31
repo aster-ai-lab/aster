@@ -4,7 +4,7 @@
 
 use std::collections::BTreeMap;
 
-use a3s_power::{
+use aster_power::{
     error::Result,
     inference::{RawWeightRangeRead, VerifiedRawWeightFile},
 };

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde::{Deserialize, Serialize};
 
 use crate::editor::editor_error;

@@ -10,8 +10,8 @@ warmup_seconds="${PROXY_BENCH_WARMUP_SECONDS:-2}"
 connections="${PROXY_BENCH_CONNECTIONS:-64}"
 http2_connections="${PROXY_BENCH_HTTP2_CONNECTIONS:-4}"
 http2_parallel="${PROXY_BENCH_HTTP2_PARALLEL:-16}"
-certificate=/tmp/a3s-benchmark-cert.pem
-private_key=/tmp/a3s-benchmark-key.pem
+certificate=/tmp/aster-benchmark-cert.pem
+private_key=/tmp/aster-benchmark-key.pem
 grpc_request="$output_root/grpc-request.bin"
 profiles=(
   http1-small
@@ -29,12 +29,12 @@ mkdir -p "$output_root"
 
 upstream_pid=""
 protocol_upstream_pid=""
-a3s_pid=""
+aster_pid=""
 nginx_pid=""
 benchmark_stage="initialization"
 
 cleanup() {
-  for process_id in "$a3s_pid" "$nginx_pid" "$protocol_upstream_pid" "$upstream_pid"; do
+  for process_id in "$aster_pid" "$nginx_pid" "$protocol_upstream_pid" "$upstream_pid"; do
     if [[ -n "$process_id" ]] && kill -0 "$process_id" 2>/dev/null; then
       kill "$process_id" 2>/dev/null || true
     fi
@@ -51,7 +51,7 @@ report_failure() {
   printf '::error file=scripts/run-proxy-comparison.sh,line=%s,title=Protocol benchmark failed::stage=%s; exit=%s\n' \
     "$line" "$benchmark_stage" "$status"
   for log in \
-    "$output_root/a3s-gateway.log" \
+    "$output_root/aster-gateway.log" \
     "$output_root/nginx.log" \
     "$output_root/protocol-upstream.log" \
     "$output_root/upstream.log"; do
@@ -90,10 +90,10 @@ wait_for_tcp() {
 
 proxy_port() {
   local proxy="$1"
-  local a3s_port="$2"
+  local aster_port="$2"
   local nginx_port="$3"
-  if [[ "$proxy" == "a3s-gateway" ]]; then
-    printf '%s' "$a3s_port"
+  if [[ "$proxy" == "aster-gateway" ]]; then
+    printf '%s' "$aster_port"
   else
     printf '%s' "$nginx_port"
   fi
@@ -254,7 +254,7 @@ openssl req -x509 -newkey rsa:2048 -nodes -days 1 \
 printf '\x00\x00\x00\x00\x00' >"$grpc_request"
 
 benchmark_stage="validate Kense Gateway configuration"
-"$repository_root/target/release/a3s-gateway" validate \
+"$repository_root/target/release/aster-gateway" validate \
   --config "$fixture_root/gateway.acl"
 benchmark_stage="validate NGINX upstream configuration"
 nginx -t -c "$fixture_root/nginx-upstream.conf"
@@ -279,9 +279,9 @@ benchmark_stage="start Kense Gateway and NGINX"
 nginx -c "$fixture_root/nginx-gateway.conf" -g 'daemon off;' \
   >"$output_root/nginx.log" 2>&1 &
 nginx_pid=$!
-"$repository_root/target/release/a3s-gateway" --config "$fixture_root/gateway.acl" \
-  >"$output_root/a3s-gateway.log" 2>&1 &
-a3s_pid=$!
+"$repository_root/target/release/aster-gateway" --config "$fixture_root/gateway.acl" \
+  >"$output_root/aster-gateway.log" 2>&1 &
+aster_pid=$!
 
 benchmark_stage="wait for Kense Gateway and NGINX"
 wait_for_endpoint "http://127.0.0.1:18081/benchmark"
@@ -293,8 +293,8 @@ wait_for_tcp 19083
 
 for profile in "${profiles[@]}"; do
   benchmark_stage="warm up ${profile} through Kense Gateway"
-  run_profile "$profile" a3s-gateway \
-    "$output_root/warmup-${profile}-a3s-gateway.json" "$warmup_seconds"
+  run_profile "$profile" aster-gateway \
+    "$output_root/warmup-${profile}-aster-gateway.json" "$warmup_seconds"
   benchmark_stage="warm up ${profile} through NGINX"
   run_profile "$profile" nginx \
     "$output_root/warmup-${profile}-nginx.json" "$warmup_seconds"
@@ -302,9 +302,9 @@ done
 
 for trial in $(seq 1 "$trials"); do
   if (( trial % 2 == 1 )); then
-    order=(a3s-gateway nginx)
+    order=(aster-gateway nginx)
   else
-    order=(nginx a3s-gateway)
+    order=(nginx aster-gateway)
   fi
   for profile in "${profiles[@]}"; do
     for proxy in "${order[@]}"; do
@@ -329,7 +329,7 @@ python3 "$repository_root/scripts/export-proxy-comparison.py" \
   --logical-cpus "${LOGICAL_CPUS:-$(nproc)}" \
   --memory-mib "${MEMORY_MIB:-0}" \
   --kernel "${KERNEL_VERSION:-$(uname -srmo)}" \
-  --a3s-version "$("$repository_root/target/release/a3s-gateway" --version)" \
+  --aster-version "$("$repository_root/target/release/aster-gateway" --version)" \
   --nginx-version "$(nginx -v 2>&1)" \
   --oha-version "$(oha --version)" \
   --trials "$trials" \

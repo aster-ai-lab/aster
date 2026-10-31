@@ -1,6 +1,6 @@
 #![cfg(feature = "sqlite")]
 
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, SqliteVectorIndex, VectorIndex, VectorIndexDescriptor, VectorIndexError,
     VectorMutationConsistency, VectorRecord, VectorRevision, VectorSearchRequest,
 };
@@ -165,7 +165,7 @@ async fn corrupted_metadata_fails_closed_on_reopen() {
     let connection = Connection::open(&path).unwrap();
     connection
         .execute(
-            "UPDATE a3s_vector_index_metadata SET record_count = ?1 WHERE singleton = 1",
+            "UPDATE aster_vector_index_metadata SET record_count = ?1 WHERE singleton = 1",
             params![99_i64],
         )
         .unwrap();
@@ -197,7 +197,7 @@ async fn corrupted_vector_content_fails_closed_even_when_accounting_still_matche
         .collect::<Vec<_>>();
     connection
         .execute(
-            "UPDATE a3s_vector_records SET embedding = ?1
+            "UPDATE aster_vector_records SET embedding = ?1
              WHERE partition = 'semantic' AND position = 0",
             params![replacement],
         )

@@ -1,15 +1,15 @@
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
-use a3s_box_core::config::ResourceConfig;
-use a3s_box_core::dns::{parse_add_host_entries, parse_dns_server, parse_ipv4_dns_servers};
-use a3s_box_core::network::NetworkMode;
-use a3s_box_core::{
+use aster_box_core::config::ResourceConfig;
+use aster_box_core::dns::{parse_add_host_entries, parse_dns_server, parse_ipv4_dns_servers};
+use aster_box_core::network::NetworkMode;
+use aster_box_core::{
     resolve_execution, BoxConfig, CreateExecutionRequest, ExecutionIsolation,
     ExecutionRecordPolicy, ExecutionSnapshotId, OperationId, PortMapping,
 };
 
-use crate::{A3sBoxClient, ClientError, Result};
+use crate::{AsterBoxClient, ClientError, Result};
 
 /// Default OCI image used by all native local SDKs.
 pub const DEFAULT_SANDBOX_IMAGE: &str = "alpine:3.20";
@@ -24,7 +24,7 @@ const KEEPALIVE_COMMAND: &[&str] = &["/bin/sh", "-c", "while :; do sleep 3600; d
 pub enum VolumeSource {
     /// A host path mounted directly into the box.
     Bind(PathBuf),
-    /// An A3S-managed named volume resolved by the runtime client.
+    /// An Aster-managed named volume resolved by the runtime client.
     Named(String),
 }
 
@@ -116,7 +116,7 @@ pub enum SandboxNetwork {
     Tsi,
     /// Disable networking entirely.
     Disabled,
-    /// Join an existing A3S-managed bridge network.
+    /// Join an existing Aster-managed bridge network.
     Bridge { name: String },
 }
 
@@ -125,7 +125,7 @@ impl SandboxNetwork {
         Self::Bridge { name: name.into() }
     }
 
-    fn runtime_mode(&self, client: &A3sBoxClient) -> Result<NetworkMode> {
+    fn runtime_mode(&self, client: &AsterBoxClient) -> Result<NetworkMode> {
         match self {
             Self::Tsi => Ok(NetworkMode::Tsi),
             Self::Disabled => Ok(NetworkMode::None),
@@ -323,7 +323,7 @@ impl SandboxCreateOptions {
 
     pub(crate) fn into_runtime_request(
         self,
-        client: &A3sBoxClient,
+        client: &AsterBoxClient,
     ) -> Result<(CreateExecutionRequest, OperationId)> {
         self.validate()?;
         let network = self.network.runtime_mode(client)?;
@@ -334,7 +334,7 @@ impl SandboxCreateOptions {
                 .into_iter()
                 .map(|port| port.runtime_entry())
                 .collect::<Vec<_>>();
-            a3s_box_core::normalize_and_resolve_port_maps(&entries)
+            aster_box_core::normalize_and_resolve_port_maps(&entries)
                 .map_err(ClientError::Validation)?
         };
         let tmpfs = self
@@ -491,7 +491,7 @@ fn validate_initial_argv(label: &str, argv: Option<&[String]>) -> Result<()> {
 }
 
 fn resolve_mounts(
-    client: &A3sBoxClient,
+    client: &AsterBoxClient,
     mounts: Vec<VolumeMount>,
 ) -> Result<(Vec<String>, Vec<String>)> {
     let mut runtime_mounts = Vec::with_capacity(mounts.len());

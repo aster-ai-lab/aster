@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::io;
 use std::path::Path;
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use super::{operation_error, RdmaDevice, RdmaLimit, RdmaLimits, MAX_FILE};
 

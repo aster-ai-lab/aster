@@ -1,8 +1,8 @@
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
 use serde::{Deserialize, Serialize};
 
 /// Schema emitted by the macOS HVF utility-VM soak diagnostic.
-pub const MACOS_HVF_SOAK_SCHEMA_VERSION: &str = "a3s.oci.macos-hvf-soak.v1";
+pub const MACOS_HVF_SOAK_SCHEMA_VERSION: &str = "aster.oci.macos-hvf-soak.v1";
 
 /// Fixed number of primary containers kept live inside every soak VM.
 pub const MACOS_HVF_SOAK_CONCURRENT_CONTAINERS: u32 = 2;
@@ -181,7 +181,7 @@ impl MacosHvfSoakReport {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_core::{CapabilityStatus, HostPlatform};
+    use aster_oci_core::{CapabilityStatus, HostPlatform};
 
     use super::{MacosHvfSoakConfig, MacosHvfSoakReport, MAX_MACOS_HVF_SOAK_ITERATIONS};
 

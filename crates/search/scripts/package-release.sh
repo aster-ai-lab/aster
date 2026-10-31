@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-  echo "Usage: $0 <a3s-search-binary> <output.tar.gz>" >&2
+  echo "Usage: $0 <aster-search-binary> <output.tar.gz>" >&2
 }
 
 if [[ $# -ne 2 ]]; then
@@ -13,7 +13,7 @@ fi
 binary=$1
 archive=$2
 repository_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-skill_root="${repository_root}/skills/a3s-search"
+skill_root="${repository_root}/skills/aster-search"
 
 if [[ ! -f "${binary}" || ! -x "${binary}" ]]; then
   echo "Release binary must be an executable file: ${binary}" >&2
@@ -35,7 +35,7 @@ if [[ ! -d "${archive_parent}" ]]; then
   exit 1
 fi
 
-staging=$(mktemp -d "${TMPDIR:-/tmp}/a3s-search-package.XXXXXX")
+staging=$(mktemp -d "${TMPDIR:-/tmp}/aster-search-package.XXXXXX")
 archive_tmp="${archive}.tmp.$$"
 
 cleanup() {
@@ -48,20 +48,20 @@ cleanup() {
 }
 trap cleanup EXIT
 
-install -m 0755 "${binary}" "${staging}/a3s-search"
-install -d "${staging}/skills/a3s-search/agents"
+install -m 0755 "${binary}" "${staging}/aster-search"
+install -d "${staging}/skills/aster-search/agents"
 install -m 0644 "${skill_root}/SKILL.md" \
-  "${staging}/skills/a3s-search/SKILL.md"
+  "${staging}/skills/aster-search/SKILL.md"
 install -m 0644 "${skill_root}/agents/openai.yaml" \
-  "${staging}/skills/a3s-search/agents/openai.yaml"
+  "${staging}/skills/aster-search/agents/openai.yaml"
 
 tar -czf "${archive_tmp}" \
   -C "${staging}" \
-  a3s-search \
-  skills/a3s-search/SKILL.md \
-  skills/a3s-search/agents/openai.yaml
+  aster-search \
+  skills/aster-search/SKILL.md \
+  skills/aster-search/agents/openai.yaml
 
-expected_listing=$'a3s-search\nskills/a3s-search/SKILL.md\nskills/a3s-search/agents/openai.yaml'
+expected_listing=$'aster-search\nskills/aster-search/SKILL.md\nskills/aster-search/agents/openai.yaml'
 actual_listing=$(tar -tzf "${archive_tmp}")
 if [[ "${actual_listing}" != "${expected_listing}" ]]; then
   echo "Release archive contains unexpected paths:" >&2

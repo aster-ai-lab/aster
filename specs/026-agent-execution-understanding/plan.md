@@ -56,13 +56,13 @@ specs/026-agent-execution-understanding/
 | M1 deferred 证据 | `useToolResult.ts`、`AgentRightPane.tsx`、`shared/ai/transport/deferredToolResult.ts` | 将 `findDeferredToolResult` 提取到 `renderer/utils/message/find.ts`；更新 AgentRightPane 与分析检查器，保留原测试 |
 | M1 导出 | `pages/agents/planExport.ts` 的 desktop save + browser fallback | 提取通用 `renderer/utils/saveFile.ts` 并接回 planExport；新增 AgentPlay adapter 测试 |
 | M1 Schema 验证 | 现有 Zod；`json-schema@0.4.0` 不支持 AgentPlay 的 2020-12 Schema | 生产继续使用 Zod；仅在 devDependencies 增加 `ajv`／`ajv-formats` 供官方 Schema 合同测试，更新 `package.json` 与 `pnpm-lock.yaml` |
-| M2 执行 UI 与放射图 | `WorkspaceAnalysisPage.tsx`、现有 `@a3s-lab/ui`、`@xyflow/react` | 页面保持组合入口；新增 `workspaceAnalysisResourceGraph.ts`、`WorkspaceAnalysisMap.tsx`、`WorkspaceAnalysisTimeline.tsx`、`WorkspaceAnalysisInspector.tsx`、`WorkspaceAnalysisPlaybackControls.tsx` 及布局／组件测试 |
+| M2 执行 UI 与放射图 | `WorkspaceAnalysisPage.tsx`、现有 `@aster-ai-lab/ui`、`@xyflow/react` | 页面保持组合入口；新增 `workspaceAnalysisResourceGraph.ts`、`WorkspaceAnalysisMap.tsx`、`WorkspaceAnalysisTimeline.tsx`、`WorkspaceAnalysisInspector.tsx`、`WorkspaceAnalysisPlaybackControls.tsx` 及布局／组件测试 |
 | M3 状态与 Story | 纯投影先例、已有 xyflow 依赖 | 新增 `workspaceAnalysisStateGraph.ts`、`workspaceAnalysisTrajectory.ts`、`WorkspaceAnalysisStory.tsx`、`WorkspaceAnalysisStateMap.tsx` 与正反例 |
 | M4 无工具单次语义注释 | `knowledgeCompileAgent.ts`、`KnowledgeCompileTurn.tsx`、ACP `sourceReview` | 新增 `sessionAnalysisAgent.ts`、`WorkspaceAnalysisTurn.tsx`、`workspaceAnalysisAnnotation.ts`；不新增聊天组件、ACP 工具或 Rust 权限模块 |
 | M4 内部会话标识 | `shared/types/knowledgeNote.ts` 的内部 compile 过滤先例 | 新增 `shared/types/agentSessionAnalysis.ts`；在 AgentPage、sessionWorkspace、WorkbenchProject*、WorkspaceWikiCatalog、WorkspaceBoard 和当前分析页的既有内部会话过滤点排除分析助手 |
 | Arc 微动效 | `packages/ui` 的 SegmentedControl、Button、CopyButton、EmptyState、rowMotion；根 `DESIGN.md` §6；Motion／CSS | 新增 `pages/knowledge/useWorkspaceAnalysisClock.ts` 共享 playhead；在现有分析组件中接入真实状态交换、相机、Context、导出和 reduced-motion，不新增 motion token 或 Arc 依赖 |
 | 全阶段 UI 文案 | `src/renderer/i18n/locales/en-us.json` 与其他 locales | 只新增分析页 key；先同步再翻译全部占位，运行现有 i18n 检查 |
-| M5 验收 | 当前 Studio／A3S Test 原生流程 | 仅写 `docs/evidence/desktop/<date>-agent-execution-understanding/`；不改 specs 充当验收 |
+| M5 验收 | 当前 Studio／Aster Test 原生流程 | 仅写 `docs/evidence/desktop/<date>-agent-execution-understanding/`；不改 specs 充当验收 |
 
 新增文件只在对应职责出现时创建；不得一次性 scaffold 全部组件。若 M1 可以用现有文件保持简单，不提前拆 M2／M3 文件。
 

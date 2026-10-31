@@ -7,8 +7,8 @@
 //! Run serially with a provider ACL, for example:
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=../../scripts/harbor/native-tb.acl \
-//!   cargo test -p a3s-code-core --test test_context_harness_real_llm -- --ignored --nocapture --test-threads=1
+//! ASTER_CONFIG_FILE=../../scripts/harbor/native-tb.acl \
+//!   cargo test -p aster-core --test test_context_harness_real_llm -- --ignored --nocapture --test-threads=1
 //! ```
 
 mod support;
@@ -18,9 +18,9 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
-use a3s_code_core::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::tools::{Tool, ToolContext, ToolOutput};
+use aster_core::{
     Agent, AgentEvent, AgentSession, PlanningMode, SessionOptions, SystemPromptSlots,
 };
 use serde_json::Value;
@@ -204,9 +204,9 @@ async fn real_llm_recovers_an_omitted_middle_from_the_artifact_and_reports_conte
     assert_eq!(dump.len(), 1, "{trace:#?}");
     assert_eq!(dump[0].exit_code, 0);
     assert!(dump[0].output.contains("[tool output bounded by"));
-    assert!(dump[0].output.contains("a3s://tool-output/dump_rows/"));
+    assert!(dump[0].output.contains("aster://tool-output/dump_rows/"));
     assert!(!dump[0].output.contains("NEEDLE_VALUE"));
-    assert!(trace.mentions("a3s://tool-output/dump_rows/"), "{trace:#?}");
+    assert!(trace.mentions("aster://tool-output/dump_rows/"), "{trace:#?}");
     assert!(trace.text.contains("K7Q2-PLUM"), "{}", trace.text);
 
     let report = session.context_report().expect("context report");
@@ -236,7 +236,7 @@ async fn real_llm_sees_the_repeat_note_on_identical_polls() {
 
     let polls = trace.named("poll_status");
     assert_eq!(polls.len(), 3, "{trace:#?}");
-    assert!(!polls[0].output.contains("a3s host"));
+    assert!(!polls[0].output.contains("aster host"));
     assert!(polls[1]
         .output
         .contains("identical arguments 2 times in a row"));
@@ -268,14 +268,14 @@ async fn real_llm_searches_a_long_fetched_page_without_fetching_again() {
     assert_eq!(fetch.len(), 1, "{trace:#?}");
     assert!(fetch[0]
         .output
-        .contains("Full fetched text: a3s://tool-output/web_fetch/"));
+        .contains("Full fetched text: aster://tool-output/web_fetch/"));
     assert!(!fetch[0].output.contains("Version 1.12.0"));
     assert!(
         !fetch[0].output.contains("Full output artifact"),
         "the page result was bounded a second time: {}",
         fetch[0].output
     );
-    assert!(trace.mentions("a3s://tool-output/web_fetch/"), "{trace:#?}");
+    assert!(trace.mentions("aster://tool-output/web_fetch/"), "{trace:#?}");
     assert!(trace.text.contains("34096"), "{}", trace.text);
     assert_eq!(trace.gate, None);
 }

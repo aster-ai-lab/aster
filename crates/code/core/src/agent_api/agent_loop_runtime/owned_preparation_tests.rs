@@ -427,6 +427,40 @@ async fn captured_overrides_keep_clearing_and_original_permission_facets() {
     );
 }
 
+#[tokio::test]
+async fn captured_sdk_checker_keeps_its_policy_when_no_session_policy_is_configured() {
+    let mut options = super::super::SessionOptions::new();
+    options.permission_checker = Some(Arc::new(
+        crate::permissions::PermissionPolicy::new()
+            .allow_all(&["owned_probe", "write"])
+            .deny("bash"),
+    ));
+    let (_agent, session, _root, _) = fixture("owned-sdk-checker", options).await;
+    assert!(session.runtime_permission_policy().is_none());
+    assert!(session.config.permission_policy.is_none());
+    let owned = capture(&session, false);
+    let checker = owned
+        .construction
+        .inputs
+        .config
+        .permission_checker
+        .as_ref()
+        .unwrap();
+    let args = serde_json::json!({});
+    assert_eq!(
+        checker.check("owned_probe", &args),
+        crate::permissions::PermissionDecision::Allow
+    );
+    assert_eq!(
+        checker.check("bash", &args),
+        crate::permissions::PermissionDecision::Deny
+    );
+    assert_eq!(
+        checker.check("write", &args),
+        crate::permissions::PermissionDecision::Ask
+    );
+}
+
 struct LockedCommand {
     session: Weak<AgentSession>,
     active: AtomicBool,

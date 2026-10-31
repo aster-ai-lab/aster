@@ -1,4 +1,4 @@
-//! Standalone machine-facing scale authority for A3S Gateway.
+//! Standalone machine-facing scale authority for Aster Gateway.
 
 use std::{
     net::{IpAddr, Ipv4Addr, SocketAddr},
@@ -6,7 +6,7 @@ use std::{
     time::Duration,
 };
 
-use a3s_box_runtime::{
+use aster_box_runtime::{
     serve_scale_api, DurableScaleAuthority, LocalScaleReconciler, ScaleApiState,
     ScaleEndpointConfig, ScaleServiceCatalog,
 };
@@ -60,7 +60,7 @@ pub struct ScaleApiArgs {
 pub async fn execute(args: ScaleApiArgs) -> Result<(), Box<dyn std::error::Error>> {
     let state = args
         .state
-        .unwrap_or_else(|| a3s_box_core::dirs_home().join("scale-authority.json"));
+        .unwrap_or_else(|| aster_box_core::dirs_home().join("scale-authority.json"));
     let authority = DurableScaleAuthority::open(state, args.max_instances)?;
     let authority = if let Some(services) = args.services {
         let catalog = ScaleServiceCatalog::from_acl_file(
@@ -68,7 +68,7 @@ pub async fn execute(args: ScaleApiArgs) -> Result<(), Box<dyn std::error::Error
             "gateway-scale",
             resolve_isolation(args.isolation),
         )?;
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         let manager = super::configured_local_execution_manager(&home).await?;
         let advertise_host =
             match args.endpoint_advertise_host {
@@ -107,7 +107,7 @@ mod tests {
     #[test]
     fn scale_api_command_has_safe_loopback_defaults() {
         let cli =
-            super::super::Cli::try_parse_from(["a3s-box", "scale-api", "--desired-state-only"])
+            super::super::Cli::try_parse_from(["aster-box", "scale-api", "--desired-state-only"])
                 .unwrap();
         let super::super::Command::ScaleApi(args) = cli.command else {
             panic!("expected scale-api command");
@@ -124,7 +124,7 @@ mod tests {
 
     #[test]
     fn scale_api_requires_templates_unless_authority_only_is_explicit() {
-        let error = super::super::Cli::try_parse_from(["a3s-box", "scale-api"])
+        let error = super::super::Cli::try_parse_from(["aster-box", "scale-api"])
             .err()
             .expect("missing service catalog must be rejected");
         assert!(error.to_string().contains("--services"));
@@ -133,7 +133,7 @@ mod tests {
     #[test]
     fn scale_api_parses_private_endpoint_publication_policy() {
         let cli = super::super::Cli::try_parse_from([
-            "a3s-box",
+            "aster-box",
             "scale-api",
             "--services",
             "services.acl",

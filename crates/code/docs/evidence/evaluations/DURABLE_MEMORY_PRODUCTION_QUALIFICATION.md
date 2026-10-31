@@ -35,23 +35,23 @@ module depends on Redis.
 ```
 
 The script sources credentials from `scripts/harbor/.env` (materializing it from
-`.a3s/config.acl` when absent), preflights Redis, builds `--release`, runs the
+`.aster/config.acl` when absent), preflights Redis, builds `--release`, runs the
 harness, and prints the pack path.
 
 | Input | Default | Notes |
 | --- | --- | --- |
 | `BOYUE_API_KEY`, `BOYUE_BASE_URL` | required | Read from the environment; never written to the pack |
-| `A3S_DM_PROD1_EMBED_MODEL` | `text-embedding-3-small` | Served dimension is probed, not assumed |
-| `A3S_DM_PROD1_REDIS_URL` | `redis://127.0.0.1:6379/15` | Database 0 is refused unless `A3S_DM_PROD1_ALLOW_DEFAULT_DB=1` |
-| `A3S_DM_PROD1_WRITERS` | `8` | Independent sockets racing one shared index prefix |
-| `A3S_DM_PROD1_LEASE_TTL_SECONDS` | `600` | Not renewed, so it must outlive the run |
-| `A3S_DM_PROD1_PACK_DIR` | `/tmp/dm-prod1-host-<code sha>` | Contains `report.json`, `MANIFEST.json`, `HYGIENE_OK` |
+| `ASTER_DM_PROD1_EMBED_MODEL` | `text-embedding-3-small` | Served dimension is probed, not assumed |
+| `ASTER_DM_PROD1_REDIS_URL` | `redis://127.0.0.1:6379/15` | Database 0 is refused unless `ASTER_DM_PROD1_ALLOW_DEFAULT_DB=1` |
+| `ASTER_DM_PROD1_WRITERS` | `8` | Independent sockets racing one shared index prefix |
+| `ASTER_DM_PROD1_LEASE_TTL_SECONDS` | `600` | Not renewed, so it must outlive the run |
+| `ASTER_DM_PROD1_PACK_DIR` | `/tmp/dm-prod1-host-<code sha>` | Contains `report.json`, `MANIFEST.json`, `HYGIENE_OK` |
 
 Every Redis key the harness creates lives under a per-run prefix
-(`a3s:dm-prod1:<random>`) and is removed by scoped `DEL` on exit. The harness
+(`aster:dm-prod1:<random>`) and is removed by scoped `DEL` on exit. The harness
 never issues `FLUSHDB`.
 
-What the harness injects, rather than what ships in `a3s-memory`:
+What the harness injects, rather than what ships in `aster-memory`:
 
 - `RedisVectorIndex`: a `VectorIndex` whose `mutation_consistency` is
   `IndexRevisionCas`, implemented with `WATCH` / `MULTI` / `EXEC` on a revision

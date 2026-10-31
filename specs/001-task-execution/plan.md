@@ -129,9 +129,9 @@ as-built 快照之后的测试源码变更，复核生产 binary 哈希，不重
 从仓库根目录使用 pinned toolchain，按串行队列执行：
 
 ```sh
-cargo test --locked --offline -p a3s-code-core --lib tools::program_tool:: -- --nocapture
-cargo test --locked --offline -p a3s-code-core --features advanced-harness --test test_extensibility_real_llm metrics:: -- --nocapture
-cargo build --locked --offline -p aster -p a3s-code-acp -p a3s-office-cli
+cargo test --locked --offline -p aster-core --lib tools::program_tool:: -- --nocapture
+cargo test --locked --offline -p aster-core --features advanced-harness --test test_extensibility_real_llm metrics:: -- --nocapture
+cargo build --locked --offline -p aster -p aster-acp -p aster-office-cli
 just build-work
 cargo fmt --all -- --check
 ```

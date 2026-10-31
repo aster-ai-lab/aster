@@ -168,7 +168,7 @@ async fn host_operation_observation_and_pre_admission_cancellation_are_exact() {
             "workspace:cancel",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(history.status.success(), "{history:?}");
@@ -341,8 +341,8 @@ async fn host_cancel_is_too_late_after_exact_durable_admission_and_watch_times_o
     };
     let first = host.observe_operation(observation.clone()).await.unwrap();
     let watched = host
-        .watch_operation(a3s_use_core::PluginHostOperationWatchRequest {
-            schema: a3s_use_core::PLUGIN_HOST_OPERATION_WATCH_REQUEST_SCHEMA.to_owned(),
+        .watch_operation(aster_use_core::PluginHostOperationWatchRequest {
+            schema: aster_use_core::PLUGIN_HOST_OPERATION_WATCH_REQUEST_SCHEMA.to_owned(),
             observation,
             after_revision: Some(first.revision.clone()),
             timeout_ms: 0,
@@ -444,7 +444,7 @@ async fn production_host_manager_persists_plan_apply_replay_and_exact_fence() {
             .release
             .surfaces
             .iter()
-            .map(a3s_use_core::CatalogSurface::reference)
+            .map(aster_use_core::CatalogSurface::reference)
             .collect::<Vec<_>>(),
         selected_surfaces
     );
@@ -584,7 +584,7 @@ async fn production_host_manager_persists_plan_apply_replay_and_exact_fence() {
             MANAGED_SCOPE_ID,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(
@@ -600,7 +600,7 @@ async fn production_host_manager_persists_plan_apply_replay_and_exact_fence() {
     let cancelled_diagnostic = &cancelled_diagnostic["data"]["diagnostic"];
     assert_eq!(
         cancelled_diagnostic["schema"],
-        "a3s.use.plugin-operation-diagnostic.v1"
+        "aster.use.plugin-operation-diagnostic.v1"
     );
     assert_eq!(cancelled_diagnostic["scope"]["kind"], "workspace");
     assert_eq!(cancelled_diagnostic["scope"]["id"], MANAGED_SCOPE_ID);
@@ -718,7 +718,7 @@ async fn production_host_manager_persists_plan_apply_replay_and_exact_fence() {
             MANAGED_SCOPE_ID,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(
@@ -734,7 +734,7 @@ async fn production_host_manager_persists_plan_apply_replay_and_exact_fence() {
     let planned_diagnostic = &planned_diagnostic["data"]["diagnostic"];
     assert_eq!(
         planned_diagnostic["schema"],
-        "a3s.use.plugin-operation-diagnostic.v1"
+        "aster.use.plugin-operation-diagnostic.v1"
     );
     assert_eq!(
         planned_diagnostic["operation"]["operationId"],
@@ -864,7 +864,7 @@ async fn production_host_manager_persists_plan_apply_replay_and_exact_fence() {
             MANAGED_SCOPE_ID,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(
@@ -928,7 +928,7 @@ async fn production_host_manager_persists_plan_apply_replay_and_exact_fence() {
             MANAGED_SCOPE_ID,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(enable_diagnostic.status.success(), "{enable_diagnostic:?}");
@@ -1030,7 +1030,7 @@ async fn apply_enablement_through_observed_windows(
     home: &std::path::Path,
     apply_request: PluginHostApplyRequest,
     observation: PluginHostOperationObservationRequest,
-) -> a3s_use_core::PluginHostApplyResult {
+) -> aster_use_core::PluginHostApplyResult {
     assert_eq!(observation.scope, apply_request.scope);
     assert_eq!(observation.package_id, apply_request.package_id);
     assert_eq!(observation.operation_id, apply_request.operation_id);
@@ -1220,7 +1220,7 @@ async fn apply_enablement_through_observed_windows(
             &apply_request.scope.scope_id,
             "--json",
         ])
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap();
     assert!(

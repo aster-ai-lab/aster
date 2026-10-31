@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{FileLog, LogStore, MemoryLog};
+use aster_effect::{FileLog, LogStore, MemoryLog};
 use serde_json::{json, Value};
 
 fn checkpoint(session_id: &str) -> LoopCheckpoint {
@@ -85,7 +85,7 @@ fn exact_payload_round_trips_without_execution_or_verification_claims() {
     assert_eq!(
         new.payload,
         json!({
-            "schema":"a3s.code.recovery-unproved.v1",
+            "schema":"aster.code.recovery-unproved.v1",
             "session_id":"source-session",
             "thread_id":"source-session",
             "source_run_id":"original-source-run",
@@ -166,7 +166,7 @@ fn unsupported_schema_and_closed_reason_have_named_refusals() {
         .unwrap()
         .payload;
     let mut future = payload.clone();
-    future["schema"] = json!("a3s.code.recovery-unproved.v99");
+    future["schema"] = json!("aster.code.recovery-unproved.v99");
     assert_eq!(
         invalid_fact(future).code(),
         "tool_effect_recovery_unproved_schema_unsupported"

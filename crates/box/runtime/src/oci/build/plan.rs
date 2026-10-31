@@ -1,4 +1,4 @@
-//! Closed A3S ACL contract for OCI image builds owned by A3S Box.
+//! Closed Aster ACL contract for OCI image builds owned by Aster Box.
 //!
 //! A build plan contains immutable product intent. Invocation-only values such
 //! as the destination tag and output verbosity stay outside the canonical ACL
@@ -7,12 +7,12 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-use a3s_acl::{
+use aster_acl::{
     canonical_bytes_with_schema, canonical_digest_with_schema, parse_with_limits,
     validate_document, AttributeSchema, Block, BlockSchema, CanonicalError, Cardinality, Document,
     ParseLimits, Schema, SchemaDiagnosticCode, Value, ValueSchema,
 };
-use a3s_box_core::platform::Platform;
+use aster_box_core::platform::Platform;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -82,9 +82,9 @@ pub struct BoxBuildPlan {
 
 impl BoxBuildPlan {
     /// Current closed ACL schema identity.
-    pub const SCHEMA: &'static str = "a3s.box.build-plan.v1";
+    pub const SCHEMA: &'static str = "aster.box.build-plan.v1";
 
-    /// Parse and validate one bounded A3S ACL build plan.
+    /// Parse and validate one bounded Aster ACL build plan.
     pub fn parse_acl(source: &str) -> Result<Self, BoxBuildPlanError> {
         let document = parse_with_limits(source, BUILD_PLAN_LIMITS).map_err(|error| {
             BoxBuildPlanError::AclParse {
@@ -150,7 +150,7 @@ impl BoxBuildPlan {
         })
     }
 
-    /// Canonical A3S ACL bytes represented as UTF-8 text with one final LF.
+    /// Canonical Aster ACL bytes represented as UTF-8 text with one final LF.
     pub fn canonical_acl(&self) -> Result<String, BoxBuildPlanError> {
         let bytes = canonical_bytes_with_schema(&self.document(), &build_plan_schema())?;
         String::from_utf8(bytes).map_err(|_| BoxBuildPlanError::CanonicalEncoding)

@@ -10,13 +10,13 @@
 - **Stable risk taxonomy** — non-allow and unresolved-escalation decisions can carry a structured
   `risk` (`category`, `name`, and `risk_type`) so downstream systems do not need to parse
   human-readable reasons.
-- **Rust crate distribution** — tagged releases now publish `a3s-sentry` to crates.io for direct
-  embedding by Rust consumers such as A3S Gateway.
+- **Rust crate distribution** — tagged releases now publish `aster-sentry` to crates.io for direct
+  embedding by Rust consumers such as Aster Gateway.
 
 ## [0.6.0] — embeddable judge + native in-process SDKs
 
 The SDKs are now **native in-process bindings** (PyO3 / napi-rs), not subprocess wrappers — the Rust
-L1/L2/L3 judge embedded in your process, matching [`@a3s-lab/code`](https://github.com/A3S-Lab/Code)'s
+L1/L2/L3 judge embedded in your process, matching [`@aster-ai-lab/code`](https://github.com/aster-ai-lab/Code)'s
 architecture. Build the judge from one ACL config and judge events in-process; no daemon, no subprocess.
 
 ### Added
@@ -26,10 +26,10 @@ architecture. Build the judge from one ACL config and judge events in-process; n
   (L3) backends + `deny {}` sinks + fail mode (example: [`policy/sentry.acl`](policy/sentry.acl)).
   Plus `LiveRules::from_engine` to build L1 from in-memory rules.
 - **Native SDKs** (replacing the subprocess wrappers):
-  - **Python** ([`sdk/python`](sdk/python), `a3s-sentry`) — PyO3 + maturin, abi3-py39 wheels.
+  - **Python** ([`sdk/python`](sdk/python), `aster-sentry`) — PyO3 + maturin, abi3-py39 wheels.
     `Sentry.create` / `evaluate` / `evaluate_and_enforce`, event builders, `Decision`/`EnforceAction`.
     8 tests.
-  - **TypeScript** ([`sdk/typescript`](sdk/typescript), `@a3s-lab/sentry`) — napi-rs, generated
+  - **TypeScript** ([`sdk/typescript`](sdk/typescript), `@aster-ai-lab/sentry`) — napi-rs, generated
     `.d.ts`, prebuilt per-platform binaries. Same surface. 4 tests.
   - Both judge in-process and are verified against the embedded engine (a cloud-metadata SSRF →
     `block`/`DenyEgress`; an SDK-authored ACL rule firing at `tier=Rules`). The PyPI/npm publish
@@ -38,16 +38,16 @@ architecture. Build the judge from one ACL config and judge events in-process; n
 ## [0.5.2] — Python + TypeScript SDKs; the policy language is ACL
 
 ### Added
-- **Python SDK** ([`sdk/python`](sdk/python), `a3s-sentry`) and **TypeScript SDK**
-  ([`sdk/typescript`](sdk/typescript), `@a3s-lab/sentry`) — dependency-free clients that author ACL
+- **Python SDK** ([`sdk/python`](sdk/python), `aster-sentry`) and **TypeScript SDK**
+  ([`sdk/typescript`](sdk/typescript), `@aster-ai-lab/sentry`) — dependency-free clients that author ACL
   policy in code, supervise the daemon, submit events, stream typed decisions, and read `/metrics` +
   `/healthz`. Both mirror the same model and are **contract-tested against the real binary**: an SSRF
   event round-trips to a `block`, and an SDK-authored ACL rule fires through the daemon's own parser.
   Python: 13 tests (3 integration); TypeScript: 14 tests (1 integration).
 
 ### Changed
-- **The policy language is now ACL** (the a3s config language), extension `.acl` —
-  `policy/rules.acl`, `A3S_SENTRY_POLICY=…/rules.acl`. Naming + extension only: the syntax is
+- **The policy language is now ACL** (the aster config language), extension `.acl` —
+  `policy/rules.acl`, `ASTER_SENTRY_POLICY=…/rules.acl`. Naming + extension only: the syntax is
   unchanged (the ordered `rules = [ … ]` list, parsed by the same grammar, preserving first-match-wins
   order), so existing policies keep working — just point the daemon at a `.acl` file.
 
@@ -59,9 +59,9 @@ infrastructure + docs. Tag `v0.5.1` to cut the first published artifacts.
 ### Added
 - **Release pipeline** (`.github/workflows/release.yml`) — on a `vX.Y.Z` tag: builds a static
   `x86_64-unknown-linux-musl` binary (attached to the GitHub Release) and builds + pushes a container
-  image to `ghcr.io/a3s-lab/sentry`.
+  image to `ghcr.io/aster-lab/sentry`.
 - **Container image** (`Dockerfile`) — slim, non-root (L1+L2 out of the box; L3 needs Node +
-  `@a3s-lab/code` layered into a derived image). The reference DaemonSet's combined `observer-sentry`
+  `@aster-ai-lab/code` layered into a derived image). The reference DaemonSet's combined `observer-sentry`
   image is now documented as observer's image with this binary layered on.
 - **Operator runbook** ([`docs/RUNBOOK.md`](docs/RUNBOOK.md)) — rollout (dry-run → enforce), fail-open
   vs fail-closed, the two alarm metrics (`overload_degraded` / `enforce_failed`), tuning under load,
@@ -71,7 +71,7 @@ infrastructure + docs. Tag `v0.5.1` to cut the first published artifacts.
 
 GA item (i): a *fail-open* security control has to be alertable — otherwise a silent enforcement
 bypass under load looks identical to a quiet day. Added a std-only metrics/health endpoint (opt-in
-`A3S_SENTRY_METRICS_ADDR`, e.g. `0.0.0.0:9100`; off by default) — **no new dependency**, one accept
+`ASTER_SENTRY_METRICS_ADDR`, e.g. `0.0.0.0:9100`; off by default) — **no new dependency**, one accept
 thread:
 
 - **`GET /metrics`** — Prometheus counters: `sentry_events_total`, `sentry_blocked_total`,
@@ -98,7 +98,7 @@ subprocess lifecycle. The worker pool and the overload/fail-mode paths were foun
   a runaway or compromised agent binary could OOM the daemon. Now `.take(1 MiB)` (a verdict JSON is
   tiny), symmetric with the daemon's 256 KiB stdin cap.
 - **Timeout now SIGKILLs the agent's whole process group, not just the direct child** (`agent.rs`).
-  The agent bin (a Node a3s-code) spawns helpers; a bare `child.kill()` orphaned them, and an orphan
+  The agent bin (a Node aster) spawns helpers; a bare `child.kill()` orphaned them, and an orphan
   holding the inherited stdout pipe kept the reader thread blocked forever — leaking a thread + FD per
   timeout. The child now runs in its own process group (`process_group(0)`) and cleanup kills the group
   (`-pid`), so every pipe end closes and the reader exits. (Adds a unix-only `libc` dependency.)
@@ -164,8 +164,8 @@ Closes the last of the four GA gaps (#1 chain/EPERM, #2 accuracy, #3 worker-pool
 - **L2/L3 now run in a bounded worker pool** off the ingest thread. L1 runs inline (µs) on every
   event; only escalations dispatch to the workers, so a slow L2/L3 occupies a worker — not the event
   stream. Under an escalation flood the queue degrades gracefully to the fail-mode (audited as
-  `overload-degraded`) instead of blocking ingest. `A3S_SENTRY_WORKERS` (default 4) +
-  `A3S_SENTRY_QUEUE` (default 256). New `Pipeline::classify_l1` / `resolve_overload`.
+  `overload-degraded`) instead of blocking ingest. `ASTER_SENTRY_WORKERS` (default 4) +
+  `ASTER_SENTRY_QUEUE` (default 256). New `Pipeline::classify_l1` / `resolve_overload`.
 - Validated on Linux (`scripts/soak-l2.sh`): **~1.15M events/s with a 0.5s L2 in the mix** (vs the old
   synchronous design's ~8 ev/s ceiling), RSS flat at 6.5 MB, 0 panics, graceful overload degradation.
 
@@ -192,7 +192,7 @@ Closes the last of the four GA gaps (#1 chain/EPERM, #2 accuracy, #3 worker-pool
   IPv6 egress literals instead of writing a dead line. (IPv4 + hostnames unchanged.)
 
 ### Added
-- **Cross-tool contract test** (`deny_files_are_consumable_by_observer_guards`): runs a3s-observer's
+- **Cross-tool contract test** (`deny_files_are_consumable_by_observer_guards`): runs aster-observer's
   *exact* deny-file parsers (`parse_egress_policy` + fileguard `load_policy`) on sentry's output and
   asserts the blocked IP / path are extracted correctly — verifying the format contract that the
   whole enforcement chain depends on, in CI.
@@ -200,16 +200,16 @@ Closes the last of the four GA gaps (#1 chain/EPERM, #2 accuracy, #3 worker-pool
 ## [0.3.0] — real L3 deep agent investigation
 
 ### Added
-- **L3 is now a real a3s-code agent**, not a stub. `scripts/l3-agent.mjs` bridges to the
-  `@a3s-lab/code` SDK: it runs an a3s-code agent with the `skills/` security playbooks, deeply
+- **L3 is now a real aster agent**, not a stub. `scripts/l3-agent.mjs` bridges to the
+  `@aster-ai-lab/code` SDK: it runs an aster agent with the `skills/` security playbooks, deeply
   investigates a flagged event (actor identity, attack chain, blast radius) and returns a
-  `{verdict,severity,reason}` JSON. Validated end-to-end against a live a3s-code + GLM: an
+  `{verdict,severity,reason}` JSON. Validated end-to-end against a live aster + GLM: an
   SSH-private-key read → an attack-chain-aware `block` ("a generic Python interpreter, not a known SSH
   client… key material can be transmitted outbound after being loaded into memory").
 - L3 is reachable three ways: when **L2 escalates** (the LLM can now answer `"escalate"` when it
   genuinely can't tell → L3), **directly from L1** when no L2 is configured, or **speculatively**
   alongside L2 on high-risk events.
-- `A3S_SENTRY_L3_URL` / `_KEY` / `_MODEL` — L3's LLM config (falls back to `A3S_SENTRY_LLM_*`), so L3
+- `ASTER_SENTRY_L3_URL` / `_KEY` / `_MODEL` — L3's LLM config (falls back to `ASTER_SENTRY_LLM_*`), so L3
   can use a stronger/different model than L2, or run without L2.
 
 ### Changed
@@ -222,7 +222,7 @@ Closes the last of the four GA gaps (#1 chain/EPERM, #2 accuracy, #3 worker-pool
 - **L2 timeout was too short for reasoning models.** Tested against a live `glm5.1-w4a8`, a real
   classification takes ~16s; the hardcoded 10s timeout would expire → escalate → fail-open →
   **allow the threat** even though the model judged it correctly. The timeout is now configurable
-  (`A3S_SENTRY_LLM_TIMEOUT`, default **30s**; `A3S_SENTRY_AGENT_TIMEOUT` for L3, default 120s). This
+  (`ASTER_SENTRY_LLM_TIMEOUT`, default **30s**; `ASTER_SENTRY_AGENT_TIMEOUT` for L3, default 120s). This
   bug was invisible to mock tests (which respond instantly) — only a real LLM surfaced it.
 
 ### Added
@@ -254,7 +254,7 @@ Closes the last of the four GA gaps (#1 chain/EPERM, #2 accuracy, #3 worker-pool
   (~2s poll), no restart — any program that rewrites the file updates the rules. A parse error keeps
   the current rules (a bad edit never disarms the engine). `LiveRules::reload()` force-applies now
   (for a signal handler or an embedder's admin API).
-- **Speculative parallelism**: when L1 escalates at or above `A3S_SENTRY_SPECULATE` severity (and both
+- **Speculative parallelism**: when L1 escalates at or above `ASTER_SENTRY_SPECULATE` severity (and both
   L2+L3 are configured), L2 and L3 run concurrently instead of serially. A fast L2 `Block`
   short-circuits for response time; otherwise L3's deeper verdict — already running — is authoritative.
   Also `Pipeline::speculate_above`.
@@ -267,6 +267,6 @@ Closes the last of the four GA gaps (#1 chain/EPERM, #2 accuracy, #3 worker-pool
 
 ## [0.1.0] — initial release
 
-Tiered (L1 rules / L2 LLM / L3 a3s-code agent) runtime security control built on a3s-observer:
+Tiered (L1 rules / L2 LLM / L3 aster agent) runtime security control built on aster-observer:
 observer NDJSON events → 3-tier judge → observer deny-files → kernel EPERM. Adversarially reviewed
 (rule bypass, enforce blast-radius, judge-injection, robustness) before release.

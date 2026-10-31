@@ -104,7 +104,7 @@ impl GoalContinuationPolicyV1 {
 }
 
 pub(crate) fn preview_tick(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     session_id: &str,
     workspace: &WorkspaceRef,
     policy_digest: Option<&str>,
@@ -136,7 +136,7 @@ pub(crate) fn preview_tick(
         return Ok(GoalTickDecisionV1::Reconcile);
     }
     if facts.iter().any(|fact| {
-        fact.kind.starts_with("a3s.goal.")
+        fact.kind.starts_with("aster.goal.")
             && fact.payload["operation_id"].as_str() == Some(command.operation_id.as_str())
     }) {
         return Err(refuse(

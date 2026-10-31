@@ -1,4 +1,4 @@
-//! `a3s-box pull` command.
+//! `aster-box pull` command.
 
 use std::sync::Arc;
 
@@ -34,13 +34,13 @@ pub async fn execute(args: PullArgs) -> Result<(), Box<dyn std::error::Error>> {
     let store = Arc::new(super::open_image_store()?);
 
     // Parse reference to determine registry for credential lookup
-    let reference = a3s_box_runtime::ImageReference::parse(&args.image)?;
-    let auth = a3s_box_runtime::RegistryAuth::from_credential_store(&reference.registry);
+    let reference = aster_box_runtime::ImageReference::parse(&args.image)?;
+    let auth = aster_box_runtime::RegistryAuth::from_credential_store(&reference.registry);
 
     // Honor `--platform` (e.g. "linux/arm64") so multi-arch image indexes
     // resolve to the requested architecture instead of the host's.
     let mut puller =
-        a3s_box_runtime::ImagePuller::with_platform(store, auth, args.platform.clone());
+        aster_box_runtime::ImagePuller::with_platform(store, auth, args.platform.clone());
 
     puller = puller.with_signature_policy(signature_policy_from_args(&args));
 
@@ -52,8 +52,8 @@ pub async fn execute(args: PullArgs) -> Result<(), Box<dyn std::error::Error>> {
     }
     let image = puller.pull(&args.image).await?;
     crate::audit::record(
-        a3s_box_core::audit::AuditAction::ImagePull,
-        a3s_box_core::audit::AuditOutcome::Success,
+        aster_box_core::audit::AuditAction::ImagePull,
+        aster_box_core::audit::AuditOutcome::Success,
         &args.image,
         &format!("pulled image {}", args.image),
     );
@@ -67,25 +67,25 @@ pub async fn execute(args: PullArgs) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn signature_policy_from_args(args: &PullArgs) -> a3s_box_runtime::SignaturePolicy {
+fn signature_policy_from_args(args: &PullArgs) -> aster_box_runtime::SignaturePolicy {
     if let Some(ref key_path) = args.verify_key {
-        a3s_box_runtime::SignaturePolicy::CosignKey {
+        aster_box_runtime::SignaturePolicy::CosignKey {
             public_key: key_path.clone(),
         }
     } else if let (Some(ref issuer), Some(ref identity)) =
         (&args.verify_issuer, &args.verify_identity)
     {
-        a3s_box_runtime::SignaturePolicy::CosignKeyless {
+        aster_box_runtime::SignaturePolicy::CosignKeyless {
             issuer: issuer.clone(),
             identity: identity.clone(),
         }
     } else {
-        a3s_box_runtime::SignaturePolicy::Skip
+        aster_box_runtime::SignaturePolicy::Skip
     }
 }
 
-fn format_pull_progress_line(progress: &a3s_box_runtime::PullProgress) -> String {
-    use a3s_box_runtime::PullProgressState;
+fn format_pull_progress_line(progress: &aster_box_runtime::PullProgress) -> String {
+    use aster_box_runtime::PullProgressState;
 
     let digest = &progress.digest;
     let short = &digest[digest.len().saturating_sub(12)..];
@@ -150,7 +150,7 @@ mod tests {
     fn signature_policy_defaults_to_skip() {
         assert_eq!(
             signature_policy_from_args(&args()),
-            a3s_box_runtime::SignaturePolicy::Skip
+            aster_box_runtime::SignaturePolicy::Skip
         );
     }
 
@@ -163,7 +163,7 @@ mod tests {
 
         assert_eq!(
             signature_policy_from_args(&args),
-            a3s_box_runtime::SignaturePolicy::CosignKey {
+            aster_box_runtime::SignaturePolicy::CosignKey {
                 public_key: "/tmp/cosign.pub".to_string()
             }
         );
@@ -177,7 +177,7 @@ mod tests {
 
         assert_eq!(
             signature_policy_from_args(&args),
-            a3s_box_runtime::SignaturePolicy::CosignKeyless {
+            aster_box_runtime::SignaturePolicy::CosignKeyless {
                 issuer: "https://issuer.example".to_string(),
                 identity: "builder@example.com".to_string(),
             }
@@ -191,7 +191,7 @@ mod tests {
 
         assert_eq!(
             signature_policy_from_args(&args),
-            a3s_box_runtime::SignaturePolicy::Skip
+            aster_box_runtime::SignaturePolicy::Skip
         );
     }
 
@@ -205,7 +205,7 @@ mod tests {
     #[test]
     fn format_pull_progress_line_truncates_digest_and_marks_completion() {
         assert_eq!(
-            format_pull_progress_line(&a3s_box_runtime::PullProgress {
+            format_pull_progress_line(&aster_box_runtime::PullProgress {
                 current_layer: 2,
                 total_layers: 5,
                 digest: "sha256:0123456789abcdef".to_string(),
@@ -214,12 +214,12 @@ mod tests {
                 attempt: 1,
                 max_attempts: 4,
                 retry_delay_ms: None,
-                state: a3s_box_runtime::PullProgressState::Downloading,
+                state: aster_box_runtime::PullProgressState::Downloading,
             }),
             "  [2/5] 456789abcdef: 2.0 KB / 4.0 KB downloaded"
         );
         assert_eq!(
-            format_pull_progress_line(&a3s_box_runtime::PullProgress {
+            format_pull_progress_line(&aster_box_runtime::PullProgress {
                 current_layer: 2,
                 total_layers: 5,
                 digest: "abc".to_string(),
@@ -228,7 +228,7 @@ mod tests {
                 attempt: 2,
                 max_attempts: 4,
                 retry_delay_ms: None,
-                state: a3s_box_runtime::PullProgressState::Complete,
+                state: aster_box_runtime::PullProgressState::Complete,
             }),
             "  [2/5] abc: 512 B / 512 B downloaded ✓"
         );

@@ -2,8 +2,8 @@ mod r0_cross_project_support;
 
 use std::path::Path;
 
-use a3s_use_core::{PluginPackageLock, PluginReleaseChannel};
-use a3s_use_extension::ExtensionRegistrySnapshot;
+use aster_use_core::{PluginPackageLock, PluginReleaseChannel};
+use aster_use_extension::ExtensionRegistrySnapshot;
 use olpc_cjson::CanonicalFormatter;
 use r0_cross_project_support::{
     canonical_digest, read_fixture, verify_fixture_package, Contract, ContractError,
@@ -99,7 +99,7 @@ struct HandoffIdentity<'a> {
 impl HandoffFixture {
     fn digest(&self) -> String {
         canonical_digest(
-            "agentic.ontology.a3s-use-handoff.v1",
+            "agentic.ontology.aster-use-handoff.v1",
             &HandoffIdentity {
                 schema: &self.schema,
                 project: &self.project,
@@ -244,8 +244,8 @@ fn use_recomputes_candidate_lock_registry_and_generation_evidence() {
     let root = Path::new(FIXTURE_ROOT);
     let contract =
         Contract::parse(&read_fixture(root, "fixtures/r0-cross-project.valid.json")).unwrap();
-    let handoff: HandoffFixture = read_json(root, "fixtures/a3s-use-handoff.valid.json");
-    assert_eq!(handoff.schema, "agentic.ontology.a3s-use-handoff.v1");
+    let handoff: HandoffFixture = read_json(root, "fixtures/aster-use-handoff.valid.json");
+    assert_eq!(handoff.schema, "agentic.ontology.aster-use-handoff.v1");
     assert_eq!(handoff.digest(), handoff.handoff_digest);
     assert_eq!(handoff.handoff_digest, contract.candidate.handoff_digest);
     assert_eq!(handoff.package_id(), contract.candidate.package_id);
@@ -255,7 +255,7 @@ fn use_recomputes_candidate_lock_registry_and_generation_evidence() {
         contract.candidate.package_digest
     );
     assert_eq!(handoff.manifest_digest, contract.candidate.manifest_digest);
-    let drift: HandoffFixture = read_json(root, "fixtures/a3s-use-handoff.drift.json");
+    let drift: HandoffFixture = read_json(root, "fixtures/aster-use-handoff.drift.json");
     assert_ne!(drift.digest(), drift.handoff_digest);
 
     let package_lock: PluginPackageLock = read_json(root, "fixtures/plugin-package-lock.json");
@@ -270,7 +270,7 @@ fn use_recomputes_candidate_lock_registry_and_generation_evidence() {
         contract.generation.registry_snapshot_digest
     );
     assert_eq!(snapshot.generation, contract.generation.registry_generation);
-    // This frozen cross-project fixture is pinned to A3S Use 0.3.0 and its
+    // This frozen cross-project fixture is pinned to Aster Use 0.3.0 and its
     // historical receipt v3. Production decoding accepts only the current
     // receipt contract; the fixture digest remains independently verifiable
     // without reopening v3 in the runtime loader.
@@ -279,7 +279,7 @@ fn use_recomputes_candidate_lock_registry_and_generation_evidence() {
     assert!(extension_receipt.get("selectedSurfaces").is_none());
     let extension_receipt_digest = use_descriptor_digest(&extension_receipt);
     let generation: GenerationReceiptFixture =
-        read_json(root, "fixtures/a3s-use-generation-receipt.json");
+        read_json(root, "fixtures/aster-use-generation-receipt.json");
 
     assert_eq!(generation.schema, contract.generation.receipt_schema);
     assert_eq!(generation.issuer, contract.generation.issuer);
@@ -313,7 +313,7 @@ fn use_recomputes_candidate_lock_registry_and_generation_evidence() {
     );
 
     let generation_digest = canonical_digest(
-        "agentic.ontology.a3s-use-generation.v1",
+        "agentic.ontology.aster-use-generation.v1",
         &(
             &generation.issuer,
             &generation.host_target,
@@ -332,7 +332,7 @@ fn use_recomputes_candidate_lock_registry_and_generation_evidence() {
     assert_eq!(
         generation.receipt_digest,
         canonical_digest(
-            "agentic.ontology.a3s-use-generation-receipt.v1",
+            "agentic.ontology.aster-use-generation-receipt.v1",
             &(
                 &generation_digest,
                 generation.registry_generation,
@@ -355,7 +355,7 @@ fn use_projects_only_exact_generation_knowledge_and_citations() {
     assert_eq!(knowledge, contract.knowledge);
     let capability: CapabilitySnapshotFixture =
         read_json(root, "fixtures/capability-snapshot.json");
-    assert_eq!(capability.schema, "a3s.use.capability-snapshot.v1");
+    assert_eq!(capability.schema, "aster.use.capability-snapshot.v1");
     assert_eq!(capability.package_id, contract.candidate.package_id);
     assert_eq!(
         capability.package_version,
@@ -378,7 +378,7 @@ fn use_projects_only_exact_generation_knowledge_and_citations() {
     assert_eq!(
         capability.snapshot_digest,
         canonical_digest(
-            "a3s.use.capability-snapshot.v1",
+            "aster.use.capability-snapshot.v1",
             &(
                 capability.package_id.as_str(),
                 capability.package_version.as_str(),
@@ -413,7 +413,7 @@ fn use_projects_only_exact_generation_knowledge_and_citations() {
     assert_eq!(
         citation.citation_digest,
         canonical_digest(
-            "a3s.use.okf-knowledge-citation.v1",
+            "aster.use.okf-knowledge-citation.v1",
             &(
                 citation.package_id.as_str(),
                 citation.package_version.as_str(),

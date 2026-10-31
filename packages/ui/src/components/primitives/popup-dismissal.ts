@@ -27,8 +27,12 @@ export function usePopupState({
   return { open: open ?? internalOpen, onOpenChange: change }
 }
 
-export function usePopupDismissal(forwardedRef: React.Ref<HTMLDivElement> | undefined) {
-  const state = React.use(PopupDismissContext)
+export function usePopupDismissal(
+  forwardedRef: React.Ref<HTMLDivElement> | undefined,
+  popupState?: PopupState
+) {
+  const context = React.use(PopupDismissContext)
+  const state = popupState ?? context
   const content = React.useRef<HTMLDivElement | null>(null)
   const insideReactTree = React.useRef(false)
   const pointerDismissed = React.useRef(false)

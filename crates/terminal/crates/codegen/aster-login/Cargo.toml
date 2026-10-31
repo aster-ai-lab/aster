@@ -1,0 +1,86 @@
+[package]
+license = "Apache-2.0"
+name = "aster-login"
+version = "0.1.0"
+description = "Authentication subsystem for the grok shell crate family: login flows, token refresh, credential providers, and auth storage."
+edition = "2024"
+publish = false
+
+[features]
+# Loom model-checking for src/manager/lock/flock_wait.rs; test-only
+# (compile_error!-guarded). Run in release (debug overflows loom's stacks):
+#   cargo test --release --features loom -p aster-login --lib flock_wait::loom -- --test-threads=1
+loom = ["dep:loom"]
+# Exposes `#[cfg(test)]`-only helpers to downstream crates' test targets.
+test-support = []
+default-bazel = ["test-support"]
+
+[dependencies]
+anyhow = {workspace = true}
+arc-swap = {workspace = true}
+async-trait = {workspace = true}
+axum = {workspace = true}
+backon = {workspace = true}
+base64 = {workspace = true}
+chrono = {workspace = true}
+fs2 = {workspace = true}
+jsonwebtoken = {version = "10", features = ["rust_crypto"]}
+obfstr = {workspace = true}
+parking_lot = {workspace = true}
+rand = {workspace = true}
+reqwest = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+sha2 = {version = "0.10", features = ["force-soft"]}
+strum = {workspace = true}
+thiserror = {workspace = true}
+tokio = {version = "1", features = ["full", "io-std", "process", "rt", "macros", "rt-multi-thread", "net", "sync", "time"]}
+tokio-util = {workspace = true}
+toml = {workspace = true}
+tower-http = {version = "0.6", features = ["cors"]}
+tracing = {workspace = true}
+url = {workspace = true}
+urlencoding = {workspace = true}
+uuid = {version = "1", features = ["serde", "v4", "v5", "v7"]}
+webbrowser = {workspace = true}
+
+# gRPC stack for the gated login path; compiled out unless the feature is on.
+tonic = {workspace = true, optional = true}
+tonic-prost = {version = "0.14", optional = true}
+prost = {workspace = true, optional = true}
+# Loom model-checking harness; test-only, gated by the `loom` feature.
+loom = {version = "0.7", optional = true}
+aster-system-power = {path = "../aster-system-power"}
+aster-version = {path = "../aster-version"}
+aster-tools = {path = "../aster-tools"}
+aster-telemetry = {path = "../aster-telemetry"}
+aster-shell-base = {path = "../aster-shell-base"}
+aster-sampler = {path = "../aster-sampler"}
+aster-memory = {path = "../aster-memory"}
+aster-http = {path = "../aster-http"}
+aster-env = {path = "../aster-env"}
+aster-config-types = {path = "../aster-config-types"}
+aster-config = {path = "../aster-config"}
+aster-auth = {features = ["middleware"], path = "../aster-auth"}
+aster-file-utils = {path = "../aster-file-utils"}
+
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+
+[dev-dependencies]
+tempfile = {workspace = true}
+serial_test = {workspace = true}
+filetime = {workspace = true}
+rsa = {version = "0.9"}
+tracing-subscriber = {version = "0.3.23", default-features = false, features = ["env-filter", "smallvec", "tracing-log", "std", "ansi", "fmt", "json", "time"]}
+tokio = {version = "1", features = ["full", "test-util"]}
+wiremock = {workspace = true}
+pretty_assertions = {workspace = true}
+indexmap = {workspace = true}
+# Test-only builds expose `env::EnvVarGuard` to this crate's test targets.
+aster-shell-base = {features = ["test-support"], path = "../aster-shell-base"}
+aster-extra-ca = {path = "../aster-extra-ca"}
+aster-test-support = {path = "../aster-test-support"}
+
+[lints]
+workspace = true

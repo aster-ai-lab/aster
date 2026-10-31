@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerRecord, ContainerTarget, ExitStatus, Generation, WaitRequest as RuntimeWaitRequest,
 };
 use serde::Deserialize;
@@ -92,7 +92,7 @@ pub(super) async fn qualify_committed_terminal_init_kill(
 
     let host_pid = faults::find_runtime_host_pid(config).await?;
     let mut suspended_host =
-        faults::SuspendedProcess::stop(host_pid, "committed terminal-Kill A3S OCI host service")?;
+        faults::SuspendedProcess::stop(host_pid, "committed terminal-Kill Aster OCI host service")?;
     let kill_address = bootstrap.address.clone();
     let kill_id = id.clone();
     let mut kill_call =
@@ -103,7 +103,7 @@ pub(super) async fn qualify_committed_terminal_init_kill(
     let old_shim_pid = faults::find_exact_shim_pid(config, &id).await?;
     let suspended_shim =
         faults::SuspendedProcess::stop(old_shim_pid, "committed terminal-Kill original shim")?;
-    suspended_host.resume("committed terminal-Kill A3S OCI host service")?;
+    suspended_host.resume("committed terminal-Kill Aster OCI host service")?;
     let committed =
         kill::commit_runtime_kill(config, &id, &identity, 1, libc::SIGTERM, true).await?;
     validate_stable_record(&running, &committed, &identity)?;
@@ -340,7 +340,7 @@ async fn wait_for_settled_terminal_kill(
     bundle: &Path,
     expected_exit: &ExitStatus,
 ) -> TestResult<()> {
-    let path = bundle.join("a3s-oci-shim-v1.json");
+    let path = bundle.join("aster-oci-shim-v1.json");
     let deadline = tokio::time::Instant::now() + Duration::from_secs(2);
     loop {
         let evidence: TerminalKillEvidence = serde_json::from_slice(

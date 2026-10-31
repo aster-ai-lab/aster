@@ -473,7 +473,7 @@ mod tests {
             .chars()
             .all(|character| !character.is_control()));
         assert_eq!(
-            output.reports[0].metadata["_a3s_normalization"]["changed"],
+            output.reports[0].metadata["_aster_normalization"]["changed"],
             Value::Bool(true)
         );
     }

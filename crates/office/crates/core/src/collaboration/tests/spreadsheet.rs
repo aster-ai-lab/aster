@@ -1729,7 +1729,7 @@ enum SortBlocker {
 fn seed_distant_merge(store: &NativeOfficeCollaborationStore) {
     let document = replica_document(store);
     let before = document.transact().state_vector();
-    let sheets = document.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = document.get_or_insert_map("aster.office.spreadsheet.sheets");
     let record = {
         let transaction = document.transact();
         match sheets.get(&transaction, "sheet-data") {
@@ -1749,7 +1749,7 @@ fn seed_distant_merge(store: &NativeOfficeCollaborationStore) {
 fn seed_sort_blocker(store: &NativeOfficeCollaborationStore, blocker: SortBlocker) {
     let document = replica_document(store);
     let before = document.transact().state_vector();
-    let sheets = document.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = document.get_or_insert_map("aster.office.spreadsheet.sheets");
     let record = {
         let transaction = document.transact();
         match sheets.get(&transaction, "sheet-data") {
@@ -2390,7 +2390,7 @@ fn border_values(store: &NativeOfficeCollaborationStore) -> Vec<Any> {
 fn set_unscoped_local_name(store: &NativeOfficeCollaborationStore, present: bool) {
     let document = replica_document(store);
     let before = document.transact().state_vector();
-    let named = document.get_or_insert_map("a3s.office.spreadsheet.named-ranges");
+    let named = document.get_or_insert_map("aster.office.spreadsheet.named-ranges");
     if present {
         let record = ensure_map(&document, &named, "range-local");
         put_flat(
@@ -2458,7 +2458,7 @@ fn sales_table_with_id(id: &str, name: &str, row: (u32, u32), column: (u32, u32)
 
 fn table_order(store: &NativeOfficeCollaborationStore) -> Vec<String> {
     let peer = replica_document(store);
-    let sheets = peer.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = peer.get_or_insert_map("aster.office.spreadsheet.sheets");
     let transaction = peer.transact();
     let Some(Out::YMap(record)) = sheets.get(&transaction, "sheet-data") else {
         return Vec::new();
@@ -2476,7 +2476,7 @@ fn table_order(store: &NativeOfficeCollaborationStore) -> Vec<String> {
 
 fn table_claims(store: &NativeOfficeCollaborationStore) -> Vec<String> {
     let peer = replica_document(store);
-    let claims = peer.get_or_insert_array("a3s.office.spreadsheet.record-claims");
+    let claims = peer.get_or_insert_array("aster.office.spreadsheet.record-claims");
     let transaction = peer.transact();
     (0..claims.len(&transaction))
         .filter_map(|index| match claims.get(&transaction, index) {
@@ -2577,7 +2577,7 @@ fn cell_field(
     path: &[&str],
 ) -> Option<Any> {
     let peer = replica_document(store);
-    let sheets = peer.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = peer.get_or_insert_map("aster.office.spreadsheet.sheets");
     let transaction = peer.transact();
     let record = match sheets.get(&transaction, sheet_id) {
         Some(Out::YMap(record)) => record,
@@ -2633,7 +2633,7 @@ fn spreadsheet_cell_present(
     column: u32,
 ) -> bool {
     let peer = replica_document(store);
-    let sheets = peer.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = peer.get_or_insert_map("aster.office.spreadsheet.sheets");
     let transaction = peer.transact();
     let Some(Out::YMap(record)) = sheets.get(&transaction, sheet_id) else {
         return false;
@@ -2649,7 +2649,7 @@ fn spreadsheet_cell_present(
 
 fn spreadsheet_mode(store: &NativeOfficeCollaborationStore, sheet_id: &str) -> Option<String> {
     let peer = replica_document(store);
-    let sheets = peer.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = peer.get_or_insert_map("aster.office.spreadsheet.sheets");
     let transaction = peer.transact();
     let Some(Out::YMap(record)) = sheets.get(&transaction, sheet_id) else {
         return None;
@@ -2663,7 +2663,7 @@ fn spreadsheet_mode(store: &NativeOfficeCollaborationStore, sheet_id: &str) -> O
 
 fn spreadsheet_row_lengths(store: &NativeOfficeCollaborationStore, sheet_id: &str) -> Vec<u32> {
     let peer = replica_document(store);
-    let sheets = peer.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = peer.get_or_insert_map("aster.office.spreadsheet.sheets");
     let transaction = peer.transact();
     let Some(Out::YMap(record)) = sheets.get(&transaction, sheet_id) else {
         return Vec::new();
@@ -2703,7 +2703,7 @@ fn malformed_cell_mode_update() -> Vec<u8> {
         )
         .unwrap();
     let before = document.transact().state_vector();
-    let sheets = document.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = document.get_or_insert_map("aster.office.spreadsheet.sheets");
     let transaction = document.transact();
     let record = match sheets.get(&transaction, "sheet-data") {
         Some(Out::YMap(record)) => record,
@@ -2718,7 +2718,7 @@ fn malformed_cell_mode_update() -> Vec<u8> {
 fn seed_region_addresses(store: &NativeOfficeCollaborationStore, three_dimensional: bool) {
     let document = replica_document(store);
     let before = document.transact().state_vector();
-    let sheets = document.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = document.get_or_insert_map("aster.office.spreadsheet.sheets");
     let record = {
         let transaction = document.transact();
         match sheets.get(&transaction, "sheet-data") {
@@ -2811,7 +2811,7 @@ fn seed_region_addresses(store: &NativeOfficeCollaborationStore, three_dimension
 fn set_chart_title_reference(store: &NativeOfficeCollaborationStore, title: &str) {
     let document = replica_document(store);
     let before = document.transact().state_vector();
-    let sheets = document.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = document.get_or_insert_map("aster.office.spreadsheet.sheets");
     let chart = {
         let transaction = document.transact();
         let record = match sheets.get(&transaction, "sheet-data") {
@@ -3000,7 +3000,7 @@ fn region_any(
     path: &[&str],
 ) -> Option<Any> {
     let peer = replica_document(store);
-    let sheets = peer.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = peer.get_or_insert_map("aster.office.spreadsheet.sheets");
     let transaction = peer.transact();
     let mut current = match sheets.get(&transaction, "sheet-data") {
         Some(Out::YMap(record)) => record,
@@ -3062,7 +3062,7 @@ fn column_count(store: &NativeOfficeCollaborationStore) -> Option<usize> {
 
 fn table_ids(store: &NativeOfficeCollaborationStore) -> Vec<String> {
     let peer = replica_document(store);
-    let sheets = peer.get_or_insert_map("a3s.office.spreadsheet.sheets");
+    let sheets = peer.get_or_insert_map("aster.office.spreadsheet.sheets");
     let transaction = peer.transact();
     let record = match sheets.get(&transaction, "sheet-data") {
         Some(Out::YMap(record)) => record,

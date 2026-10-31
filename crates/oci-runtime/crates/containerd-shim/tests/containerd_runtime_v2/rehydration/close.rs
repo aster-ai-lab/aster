@@ -1,7 +1,7 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     CloseStdinRequest, ContainerTarget, Generation, OperationContext, ProcessTarget,
 };
 use tokio::process::Child;
@@ -36,7 +36,7 @@ pub(super) async fn qualify(
         .ok_or_else(|| qualification_error("committed-close shim has no PID"))?;
     let host_pid = faults::find_runtime_host_pid(config).await?;
     let mut suspended_host =
-        faults::SuspendedProcess::stop(host_pid, "committed-close A3S OCI host service")?;
+        faults::SuspendedProcess::stop(host_pid, "committed-close Aster OCI host service")?;
 
     let close_address = bootstrap.address.clone();
     let close_id = id.to_string();
@@ -46,7 +46,7 @@ pub(super) async fn qualify(
     wait_for_close_request(bundle, stdin_sequence, &mut close_call).await?;
     let suspended_shim =
         faults::SuspendedProcess::stop(old_shim_pid, "committed-close original shim")?;
-    suspended_host.resume("committed-close A3S OCI host service")?;
+    suspended_host.resume("committed-close Aster OCI host service")?;
     commit_runtime_exec_close(config, id, identity).await?;
 
     let containerd_pid = containerd_main_pid(config).await?;

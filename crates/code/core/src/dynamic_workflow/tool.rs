@@ -1,6 +1,6 @@
 use super::*;
 
-/// Model-visible tool that executes a dynamic workflow through A3S Flow.
+/// Model-visible tool that executes a dynamic workflow through Aster Flow.
 pub struct DynamicWorkflowTool {
     pub(super) registry: DynamicWorkflowRegistry,
     pub(super) flow_event_store: Option<Arc<dyn FlowEventStore>>,
@@ -66,7 +66,7 @@ impl DynamicWorkflowTool {
     }
 
     /// Project committed Flow events into an optional reactive state graph.
-    /// A3S Flow remains the workflow execution source of truth.
+    /// Aster Flow remains the workflow execution source of truth.
     pub fn with_graph_observer(mut self, observer: FlowGraphObserver) -> Self {
         self.graph_observer = Some(observer);
         self
@@ -112,7 +112,7 @@ impl DynamicWorkflowTool {
 
     /// Use a caller-owned durable lease ledger for worker admission.
     ///
-    /// The ledger stores only claim metadata and digests; A3S Flow's event
+    /// The ledger stores only claim metadata and digests; Aster Flow's event
     /// store remains the workflow source of truth. Hosts that run multiple
     /// workers should provide a shared ledger (for example a
     /// [`FileFlowDecisionLedger`]) and choose a lease long enough for one
@@ -212,10 +212,10 @@ pub(super) async fn dynamic_workflow_lease_ledger_for_context(
         return Ok(ledger);
     };
     let workflow_root = dynamic_workflow_store_path(root);
-    validate_dynamic_workflow_directory(&root.join(".a3s"), ".a3s").await?;
-    validate_dynamic_workflow_directory(&workflow_root, ".a3s/workflow").await?;
+    validate_dynamic_workflow_directory(&root.join(".aster"), ".aster").await?;
+    validate_dynamic_workflow_directory(&workflow_root, ".aster/workflow").await?;
     let lease_root = workflow_root.join(DYNAMIC_WORKFLOW_LEASE_RELATIVE_PATH);
-    validate_dynamic_workflow_directory(&lease_root, ".a3s/workflow/leases").await?;
+    validate_dynamic_workflow_directory(&lease_root, ".aster/workflow/leases").await?;
     Ok(Arc::new(FileFlowDecisionLedger::new(lease_root)))
 }
 
@@ -226,7 +226,7 @@ impl Tool for DynamicWorkflowTool {
     }
 
     fn description(&self) -> &str {
-        "Run a local dynamic workflow with A3S Flow. The workflow source is a sandboxed JavaScript PTC script that may call allowed ctx tools; A3S Flow records workflow and step history."
+        "Run a local dynamic workflow with Aster Flow. The workflow source is a sandboxed JavaScript PTC script that may call allowed ctx tools; Aster Flow records workflow and step history."
     }
 
     fn parameters(&self) -> Value {
@@ -314,7 +314,7 @@ impl Tool for DynamicWorkflowTool {
             };
         let source_hash = source_hash(source);
         let base_spec = WorkflowSpec::rust_embedded(
-            "a3s-code.dynamic-workflow",
+            "aster.dynamic-workflow",
             source_hash.as_str(),
             "ptc",
             "run",
@@ -344,7 +344,7 @@ impl Tool for DynamicWorkflowTool {
         };
         let prior_history = match store.list(&run_id).await {
             Ok(history) => history,
-            Err(a3s_flow::FlowError::RunNotFound(_)) => Vec::new(),
+            Err(aster_flow::FlowError::RunNotFound(_)) => Vec::new(),
             Err(error) => return Ok(ToolOutput::error(error.to_string())),
         };
         // Preserve the immutable build pin already persisted in a resumed

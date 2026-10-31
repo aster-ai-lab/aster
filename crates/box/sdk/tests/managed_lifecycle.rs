@@ -3,18 +3,18 @@
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
-use a3s_box_sdk::{
-    A3sBoxClient, BoxConfig, CreateExecutionRequest, ExecutionIsolation, ExecutionRecordPolicy,
+use aster_box_sdk::{
+    AsterBoxClient, BoxConfig, CreateExecutionRequest, ExecutionIsolation, ExecutionRecordPolicy,
     ExecutionState, KillOutcome, OperationId,
 };
 
 #[tokio::test]
-#[ignore = "requires a dedicated A3S OS home and A3S OCI Runtime artifacts"]
+#[ignore = "requires a dedicated Aster OS home and Aster OCI Runtime artifacts"]
 async fn sdk_create_start_run_and_kill_use_the_canonical_manager() {
     let home = validated_home();
-    let client = A3sBoxClient::from_home(&home);
+    let client = AsterBoxClient::from_home(&home);
     let image =
-        std::env::var("A3S_BOX_SDK_SMOKE_IMAGE").unwrap_or_else(|_| "alpine:3.20".to_string());
+        std::env::var("ASTER_BOX_SDK_SMOKE_IMAGE").unwrap_or_else(|_| "alpine:3.20".to_string());
 
     let create_operation = operation("create");
     let reservation = client
@@ -72,19 +72,19 @@ async fn sdk_create_start_run_and_kill_use_the_canonical_manager() {
 
 fn validated_home() -> PathBuf {
     assert_eq!(
-        std::env::var("A3S_BOX_SDK_MANAGED_SMOKE").as_deref(),
+        std::env::var("ASTER_BOX_SDK_MANAGED_SMOKE").as_deref(),
         Ok("1"),
-        "set A3S_BOX_SDK_MANAGED_SMOKE=1 to acknowledge the destructive smoke test"
+        "set ASTER_BOX_SDK_MANAGED_SMOKE=1 to acknowledge the destructive smoke test"
     );
-    let home = PathBuf::from(std::env::var_os("A3S_HOME").expect("A3S_HOME is required"));
+    let home = PathBuf::from(std::env::var_os("ASTER_HOME").expect("ASTER_HOME is required"));
     assert!(home.is_absolute());
     assert!(home
         .file_name()
         .and_then(|name| name.to_str())
         .is_some_and(|name| name.contains("sdk-managed-smoke")));
     for (variable, binary) in [
-        ("A3S_BOX_OCI_RUNTIME_PATH", "a3s-oci"),
-        ("A3S_BOX_OCI_AGENT_PATH", "a3s-oci-agent"),
+        ("ASTER_BOX_OCI_RUNTIME_PATH", "aster-oci"),
+        ("ASTER_BOX_OCI_AGENT_PATH", "aster-oci-agent"),
     ] {
         let configured =
             PathBuf::from(std::env::var_os(variable).expect("runtime path is required"));
@@ -94,10 +94,10 @@ fn validated_home() -> PathBuf {
         );
     }
     for binary in [
-        "a3s-oci",
-        "a3s-oci-agent",
-        "a3s-box-shim",
-        "a3s-box-guest-init",
+        "aster-oci",
+        "aster-oci-agent",
+        "aster-box-shim",
+        "aster-box-guest-init",
     ] {
         assert!(home.join("bin").join(binary).is_file());
     }
@@ -136,8 +136,8 @@ fn operation(suffix: &str) -> OperationId {
 
 fn assert_runtime_removed(home: &Path, execution_id: &str) {
     assert!(!home.join("boxes").join(execution_id).exists());
-    assert!(!home.join("run/a3s-oci").join(execution_id).exists());
-    assert!(!Path::new("/tmp/a3s-box-sockets")
+    assert!(!home.join("run/aster-oci").join(execution_id).exists());
+    assert!(!Path::new("/tmp/aster-box-sockets")
         .join(execution_id)
         .exists());
 }

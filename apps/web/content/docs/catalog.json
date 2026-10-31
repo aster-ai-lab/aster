@@ -728,7 +728,7 @@
       "id": "acl",
       "title": "Aster ACL",
       "label": "配置语言",
-      "description": "使用 a3s-acl 解析、校验和生成配置，并核对规范摘要与宿主接纳边界。",
+      "description": "使用 aster-acl 解析、校验和生成配置，并核对规范摘要与宿主接纳边界。",
       "defaultVersion": "0.3.0",
       "versions": [
         {
@@ -766,7 +766,7 @@
       "id": "flow",
       "title": "Aster Flow",
       "label": "持久工作流",
-      "description": "使用 a3s-flow 保存工作流历史，组织步骤、等待、恢复和宿主副作用。",
+      "description": "使用 aster-flow 保存工作流历史，组织步骤、等待、恢复和宿主副作用。",
       "defaultVersion": "2.0.0",
       "versions": [
         {
@@ -804,7 +804,7 @@
       "id": "effect",
       "title": "Aster Effect",
       "label": "事实日志 Actor",
-      "description": "使用 a3s-effect 描述程序值，并从不可变事实日志恢复 Harness 状态转换。",
+      "description": "使用 aster-effect 描述程序值，并从不可变事实日志恢复 Harness 状态转换。",
       "defaultVersion": "0.2.1",
       "versions": [
         {
@@ -842,7 +842,7 @@
       "id": "lane",
       "title": "Aster Lane",
       "label": "优先级任务调度",
-      "description": "使用 a3s-lane 管理优先级 Lane、类型化队列、持久 Job Backend 和 Worker 租约。",
+      "description": "使用 aster-lane 管理优先级 Lane、类型化队列、持久 Job Backend 和 Worker 租约。",
       "defaultVersion": "0.5.1",
       "versions": [
         {
@@ -880,7 +880,7 @@
       "id": "event",
       "title": "Aster Event",
       "label": "事件发布订阅",
-      "description": "使用 a3s-event 通过统一 EventBus 接入 Memory、NATS、Iggy 或自定义 Provider。",
+      "description": "使用 aster-event 通过统一 EventBus 接入 Memory、NATS、Iggy 或自定义 Provider。",
       "defaultVersion": "0.4.0",
       "versions": [
         {
@@ -918,7 +918,7 @@
       "id": "memory",
       "title": "Aster Memory",
       "label": "记忆与向量索引",
-      "description": "使用 a3s-memory 保存 MemoryItem、证据化记忆节点和调用方向量索引。",
+      "description": "使用 aster-memory 保存 MemoryItem、证据化记忆节点和调用方向量索引。",
       "defaultVersion": "0.1.5",
       "versions": [
         {
@@ -956,7 +956,7 @@
       "id": "search",
       "title": "Aster Search",
       "label": "多源检索",
-      "description": "使用 a3s-search 统一访问原生 API、HTTP/RSS 和浏览器来源，并保留结构化执行证据。",
+      "description": "使用 aster-search 统一访问原生 API、HTTP/RSS 和浏览器来源，并保留结构化执行证据。",
       "defaultVersion": "3.4.0",
       "versions": [
         {
@@ -1070,7 +1070,7 @@
       "id": "use",
       "title": "Aster Use",
       "label": "扩展包与能力宿主",
-      "description": "使用 a3s-use 和 .aix 管理 Tool、MCP、Skill、OKF 与 UI 扩展，并通过审查计划应用变更。",
+      "description": "使用 aster-use 和 .aix 管理 Tool、MCP、Skill、OKF 与 UI 扩展，并通过审查计划应用变更。",
       "defaultVersion": "0.3.3",
       "versions": [
         {
@@ -1108,7 +1108,7 @@
       "id": "office",
       "title": "Aster Office",
       "label": "文档编辑与自动化",
-      "description": "使用 a3s-office 编辑 Document、Spreadsheet、Presentation、Markdown 和 PDF，并通过 CLI、MCP 或 Rust API 自动化文件流程。",
+      "description": "使用 aster-office 编辑 Document、Spreadsheet、Presentation、Markdown 和 PDF，并通过 CLI、MCP 或 Rust API 自动化文件流程。",
       "defaultVersion": "current",
       "versions": [
         {
@@ -1146,7 +1146,7 @@
       "id": "sandbox",
       "title": "Aster Sandbox",
       "label": "隔离与执行",
-      "description": "使用 a3s-sandbox 限制命令进程树，或使用 a3s-box 管理 OCI Sandbox 的完整生命周期。",
+      "description": "使用 aster-sandbox 限制命令进程树，或使用 aster-box 管理 OCI Sandbox 的完整生命周期。",
       "defaultVersion": "current",
       "versions": [
         {
@@ -1159,20 +1159,20 @@
               "file": "index",
               "label": "产品概览",
               "title": "Aster Sandbox 产品概览",
-              "description": "a3s-sandbox 与 a3s-box 的职责和选择"
+              "description": "aster-sandbox 与 aster-box 的职责和选择"
             },
             {
               "slug": "native/",
               "file": "native",
-              "label": "a3s-sandbox",
-              "title": "a3s-sandbox 命令边界",
+              "label": "aster-sandbox",
+              "title": "aster-sandbox 命令边界",
               "description": "原生后端、默认策略、能力探测和 Rust 接口"
             },
             {
               "slug": "box/",
               "file": "box",
-              "label": "a3s-box",
-              "title": "a3s-box 生命周期与隔离",
+              "label": "aster-box",
+              "title": "aster-box 生命周期与隔离",
               "description": "OCI 镜像、隔离方式、生命周期和 CLI"
             },
             {
@@ -1191,7 +1191,7 @@
       "id": "boot",
       "title": "Aster Boot",
       "label": "模块化服务框架",
-      "description": "使用 a3s-boot 组合模块、类型化 Provider、协议中立管线和可替换适配器。",
+      "description": "使用 aster-boot 组合模块、类型化 Provider、协议中立管线和可替换适配器。",
       "defaultVersion": "0.2.0",
       "versions": [
         {
@@ -1229,7 +1229,7 @@
       "id": "orm",
       "title": "Aster ORM",
       "label": "类型化 SQL",
-      "description": "使用 a3s-orm 构建参数化 SQL，并通过异步 PostgreSQL、SQLite 或自定义 Executor 执行。",
+      "description": "使用 aster-orm 构建参数化 SQL，并通过异步 PostgreSQL、SQLite 或自定义 Executor 执行。",
       "defaultVersion": "0.3.1",
       "versions": [
         {
@@ -1267,7 +1267,7 @@
       "id": "gateway",
       "title": "Aster Gateway",
       "label": "流量数据平面",
-      "description": "使用 a3s-gateway 处理请求准入、模型路由、健康选择、流式响应和快照生命周期。",
+      "description": "使用 aster-gateway 处理请求准入、模型路由、健康选择、流式响应和快照生命周期。",
       "defaultVersion": "1.1.1",
       "versions": [
         {
@@ -1319,7 +1319,7 @@
       "id": "power",
       "title": "Aster Power",
       "label": "模型推理执行",
-      "description": "使用 a3s-power 管理模型制品、设备、准入、取消、分布式执行和执行回执。",
+      "description": "使用 aster-power 管理模型制品、设备、准入、取消、分布式执行和执行回执。",
       "defaultVersion": "0.10.0",
       "versions": [
         {

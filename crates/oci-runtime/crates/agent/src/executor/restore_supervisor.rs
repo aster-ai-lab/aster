@@ -7,7 +7,7 @@ use std::os::unix::net::{SocketAddr, UnixStream as StdUnixStream};
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::UnixStream;
 

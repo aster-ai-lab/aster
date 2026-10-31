@@ -47,7 +47,7 @@ export function DataGridDialog(props: {
     if (props.editor.errors.length === 0 && !props.editor.conflict) return;
     queueMicrotask(() => {
       const target = dialogRef.current?.querySelector<HTMLElement>(
-        '[data-invalid="true"] input, [data-invalid="true"] textarea, [data-invalid="true"] select, .a3s-form-data-grid-dialog-alert',
+        '[data-invalid="true"] input, [data-invalid="true"] textarea, [data-invalid="true"] select, .aster-form-data-grid-dialog-alert',
       );
       target?.focus();
     });
@@ -56,7 +56,7 @@ export function DataGridDialog(props: {
   return (
     <dialog
       ref={dialogRef}
-      className="a3s-form-data-grid-dialog"
+      className="aster-form-data-grid-dialog"
       aria-labelledby={`${props.id}-editor-title`}
       aria-describedby={`${props.id}-editor-description`}
       onCancel={(event) => {
@@ -65,14 +65,14 @@ export function DataGridDialog(props: {
       }}
       onClose={props.onRequestClose}
     >
-      <div className="a3s-form-data-grid-dialog-shell">
+      <div className="aster-form-data-grid-dialog-shell">
         <header>
           <span>
-            <h3 className="a3s-form-data-grid-dialog-title" id={`${props.id}-editor-title`}>
+            <h3 className="aster-form-data-grid-dialog-title" id={`${props.id}-editor-title`}>
               {props.title}
             </h3>
             <p
-              className="a3s-form-data-grid-dialog-description"
+              className="aster-form-data-grid-dialog-description"
               id={`${props.id}-editor-description`}
             >
               {props.messages.dataGridEditorDescription}
@@ -88,8 +88,8 @@ export function DataGridDialog(props: {
           </button>
         </header>
         <div
-          className="a3s-form-data-grid-dialog-fields a3s-form-grid"
-          style={{ '--a3s-form-columns': 12, '--a3s-form-gap': '14px' } as CSSProperties}
+          className="aster-form-data-grid-dialog-fields aster-form-grid"
+          style={{ '--aster-form-columns': 12, '--aster-form-gap': '14px' } as CSSProperties}
         >
           {props.columns.map((column) =>
             props.renderCell(
@@ -104,7 +104,7 @@ export function DataGridDialog(props: {
         </div>
         {(props.editor.errors.length > 0 || props.editor.conflict) && (
           <div
-            className="a3s-form-data-grid-dialog-alert a3s-form-error"
+            className="aster-form-data-grid-dialog-alert aster-form-error"
             role="alert"
             tabIndex={-1}
           >
@@ -114,14 +114,14 @@ export function DataGridDialog(props: {
           </div>
         )}
         {props.editor.mode === 'add' && props.atMaximum && (
-          <div className="a3s-form-data-grid-dialog-alert a3s-form-error" role="alert">
+          <div className="aster-form-data-grid-dialog-alert aster-form-error" role="alert">
             {props.messages.repeaterMaximumReached}
           </div>
         )}
         <footer>
           <button
             type="button"
-            className="btn a3s-form-secondary"
+            className="btn aster-form-secondary"
             data-variant="secondary"
             onClick={props.onRequestClose}
           >
@@ -129,7 +129,7 @@ export function DataGridDialog(props: {
           </button>
           <button
             type="button"
-            className="btn a3s-form-primary"
+            className="btn aster-form-primary"
             data-variant="primary"
             disabled={props.disabled || (props.editor.mode === 'add' && props.atMaximum)}
             onClick={props.onSave}

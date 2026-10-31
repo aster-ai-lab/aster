@@ -110,7 +110,7 @@ export function buildSpecRolesCss(design: string): string {
   ].filter(Boolean)
   return `/**
  * GENERATED from DESIGN.md — DO NOT EDIT.
- * Change DESIGN.md, then run \`pnpm --filter @a3s-lab/ui theme:build\`.
+ * Change DESIGN.md, then run \`pnpm --filter @aster-ai-lab/ui theme:build\`.
  * The spec-role variables are the machine-readable projection of the
  * canonical design spec; semantic layers and the compatibility bridge
  * consume them instead of repeating literal values. Dark values live in

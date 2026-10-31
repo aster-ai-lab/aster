@@ -942,7 +942,7 @@ mod tests {
 
         config.services.get_mut("api").unwrap().load_balancer.sticky =
             Some(crate::config::StickyConfig {
-                cookie: "a3s_session".to_string(),
+                cookie: "aster_session".to_string(),
             });
         let plans = build_route_plans(
             &config,

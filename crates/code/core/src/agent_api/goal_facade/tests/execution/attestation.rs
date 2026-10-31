@@ -182,7 +182,7 @@ async fn legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_p
             let _writer = log.try_writer_fence().unwrap();
             let mut old = log.read("goal-run").unwrap();
             let closeout = old.pop().unwrap();
-            assert_eq!(closeout.kind, "a3s.goal.slice.settled");
+            assert_eq!(closeout.kind, "aster.goal.slice.settled");
             let usage: Option<TokenUsage> =
                 serde_json::from_value(closeout.payload["body"]["usage"].clone()).unwrap();
             log.truncate_after("goal-run", closeout.seq - 1).unwrap();
@@ -203,7 +203,7 @@ async fn legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_p
         let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
         assert!(facts
             .iter()
-            .any(|fact| fact.kind == "a3s.goal.step.accepted"));
+            .any(|fact| fact.kind == "aster.goal.step.accepted"));
         assert!(facts.iter().any(|fact| {
             fact.kind == "tool.result"
                 && fact.payload["receipt"]["effects"]["changes"]
@@ -316,7 +316,7 @@ async fn settled_workspace_mutation_is_progress_even_when_goal_judgment_is_not_a
     let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
     let run_sequence = facts
         .iter()
-        .find(|fact| fact.kind == "a3s.goal.slice.admitted")
+        .find(|fact| fact.kind == "aster.goal.slice.admitted")
         .unwrap()
         .seq;
     assert!(crate::fact_control::goal_slice_made_progress(
@@ -339,7 +339,7 @@ async fn settled_workspace_mutation_is_progress_even_when_goal_judgment_is_not_a
     ));
     assert!(!facts
         .iter()
-        .any(|fact| fact.kind == "a3s.goal.step.accepted"));
+        .any(|fact| fact.kind == "aster.goal.step.accepted"));
     assert!(facts.iter().any(
         |fact| fact.kind == crate::fact_control::TURN_COMPLETE_FACT_KIND
             && fact.payload["terminal"] == "verified"
@@ -370,7 +370,7 @@ async fn settled_workspace_mutation_is_progress_even_when_goal_judgment_is_not_a
     let run_sequence = facts
         .iter()
         .rev()
-        .find(|fact| fact.kind == "a3s.goal.slice.admitted")
+        .find(|fact| fact.kind == "aster.goal.slice.admitted")
         .unwrap()
         .seq;
     assert!(!crate::fact_control::goal_slice_made_progress(
@@ -458,11 +458,11 @@ async fn goal_step_fresh_host_attestation_accepts_write_and_preserves_original_p
             assert_eq!(
                 facts
                     .iter()
-                    .filter(|f| f.kind == "a3s.goal.step.accepted")
+                    .filter(|f| f.kind == "aster.goal.step.accepted")
                     .count(),
                 1
             );
-            assert!(!facts.iter().any(|f| f.kind == "a3s.goal.completed"));
+            assert!(!facts.iter().any(|f| f.kind == "aster.goal.completed"));
             session.save().await.unwrap();
             session.close().await;
             agent.close().await;
@@ -542,7 +542,7 @@ async fn goal_step_denied_attempt_preserves_verified_current_write() {
     ));
     assert!(!root.path().join("forbidden.txt").exists());
     let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
-    let denied: a3s_effect::ToolExecutionResultV1 = serde_json::from_value(
+    let denied: aster_effect::ToolExecutionResultV1 = serde_json::from_value(
         facts
             .iter()
             .find(|f| f.kind == "tool.result")
@@ -551,7 +551,7 @@ async fn goal_step_denied_attempt_preserves_verified_current_write() {
             .clone(),
     )
     .unwrap();
-    assert_eq!(denied.outcome, a3s_effect::ToolExecutionOutcome::Denied);
+    assert_eq!(denied.outcome, aster_effect::ToolExecutionOutcome::Denied);
     assert!(denied.effects.changes.is_empty());
     assert!(denied.identity.admission.is_some());
     assert_eq!(
@@ -626,7 +626,7 @@ async fn goal_step_late_artifact_drift_refuses_original_completion_and_progress(
         let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
         assert!(!facts
             .iter()
-            .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "turn.complete"));
+            .any(|f| f.kind == "aster.goal.step.accepted" || f.kind == "turn.complete"));
         assert!(crate::fact_control::has_unsettled_effects(&facts));
         session.close().await;
         agent.close().await;
@@ -668,7 +668,7 @@ async fn goal_step_fresh_host_report_with_wrong_effect_digest_is_not_authority()
     let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
     assert!(!facts
         .iter()
-        .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "turn.complete"));
+        .any(|f| f.kind == "aster.goal.step.accepted" || f.kind == "turn.complete"));
     assert!(crate::fact_control::has_unsettled_effects(&facts));
     session.close().await;
     agent.close().await;
@@ -815,7 +815,7 @@ async fn goal_step_replan_revalidates_retained_bytes_without_replaying_the_write
                 .skip(source.len())
                 .filter(|f| f.kind == "tool.result")
             {
-                let receipt: a3s_effect::ToolExecutionResultV1 =
+                let receipt: aster_effect::ToolExecutionResultV1 =
                     serde_json::from_value(fact.payload["receipt"].clone()).unwrap();
                 assert!(
                     receipt.effects.changes.is_empty(),
@@ -826,7 +826,7 @@ async fn goal_step_replan_revalidates_retained_bytes_without_replaying_the_write
                 facts
                     .iter()
                     .filter(
-                        |f| f.kind == "a3s.goal.step.accepted" && f.payload["plan_revision"] == 2
+                        |f| f.kind == "aster.goal.step.accepted" && f.payload["plan_revision"] == 2
                     )
                     .count(),
                 usize::from(!changed_criterion)

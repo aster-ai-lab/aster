@@ -18,7 +18,7 @@ use tokio::io::AsyncWriteExt;
 use tokio::net::TcpListener;
 use uuid::Uuid;
 
-const SESSION: &str = "a3s_us_session-token";
+const SESSION: &str = "aster_us_session-token";
 
 #[path = "paperloom_gateway_tests.rs"]
 mod paperloom_gateway_tests;
@@ -37,7 +37,7 @@ async fn spawn_auth_verifier() -> SocketAddr {
                     .to_ascii_lowercase()
                     .contains(&format!("authorization: bearer {SESSION}"));
                 let response = if accepted {
-                    "HTTP/1.1 200 OK\r\nx-a3s-subject: user-1\r\nx-a3s-org: org-1\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}"
+                    "HTTP/1.1 200 OK\r\nx-aster-subject: user-1\r\nx-aster-org: org-1\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}"
                 } else {
                     "HTTP/1.1 401 Unauthorized\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}"
                 };
@@ -211,8 +211,8 @@ fn platform_config(route: PlatformRoute) -> GatewayConfig {
                 wire: InferenceWire::Openai,
                 principal: Some(InferencePrincipalConfig {
                     verify_url: format!("http://{}/auth/verify", route.verifier),
-                    subject_header: "x-a3s-subject".into(),
-                    org_header: Some("x-a3s-org".into()),
+                    subject_header: "x-aster-subject".into(),
+                    org_header: Some("x-aster-org".into()),
                     cache_ttl_secs: 60,
                     models: vec!["*".into()],
                     endpoints: vec![
@@ -281,8 +281,8 @@ fn decision_body() -> serde_json::Value {
 /// The expected text is the string passed to the font rasterizer. A blocky
 /// bitmap of the same letters is not an independent source: PP-OCRv6 read
 /// that S as a 5.
-fn draw_a3s_png() -> Vec<u8> {
-    const TEXT: &str = "A3S";
+fn draw_aster_png() -> Vec<u8> {
+    const TEXT: &str = "Aster";
     let font_bytes = fixture_font_bytes();
     let font = ab_glyph::FontRef::try_from_slice(&font_bytes).expect("fixture font");
     let scale = ab_glyph::PxScale::from(128.0);
@@ -324,7 +324,7 @@ fn fixture_font_bytes() -> Vec<u8> {
 }
 
 fn save_evidence(name: &str, body: &str) {
-    let Some(dir) = std::env::var_os("A3S_PLATFORM_MODEL_EVIDENCE") else {
+    let Some(dir) = std::env::var_os("ASTER_PLATFORM_MODEL_EVIDENCE") else {
         return;
     };
     let dir = std::path::PathBuf::from(dir);
@@ -333,10 +333,10 @@ fn save_evidence(name: &str, body: &str) {
 }
 
 async fn ensure_ocr_runtime() {
-    if a3s_use_ocr::ocr_status().available {
+    if aster_use_ocr::ocr_status().available {
         return;
     }
-    if let Err(error) = a3s_use_ocr::install_ppocr_v6(false).await {
+    if let Err(error) = aster_use_ocr::install_ppocr_v6(false).await {
         let text = format!("{error:#}");
         save_evidence("ocr-runtime.txt", &text);
         panic!("PP-OCRv6 runtime is not available: {text}");
@@ -388,7 +388,7 @@ fn assert_platform_ocr(body: &serde_json::Value) {
         .filter(|character| !character.is_whitespace())
         .collect();
     assert!(
-        normalized.to_ascii_uppercase().contains("A3S"),
+        normalized.to_ascii_uppercase().contains("Aster"),
         "recognized text {text:?} does not contain the fixture string"
     );
     let blocks = body["blocks"].as_array().unwrap();
@@ -475,7 +475,7 @@ async fn signed_in_callers_use_platform_ocr_and_apofasi() {
     config.validate().expect("platform route validates");
     let (address, shutdown_tx, handle) = start_test_entrypoint(gateway_state(&config)).await;
     let client = reqwest::Client::new();
-    let png = draw_a3s_png();
+    let png = draw_aster_png();
 
     let denied = client
         .post(format!("http://{address}/v1/ocr"))
@@ -490,7 +490,7 @@ async fn signed_in_callers_use_platform_ocr_and_apofasi() {
 
     let denied = client
         .post(format!("http://{address}/v1/systemone"))
-        .bearer_auth("a3s_us_forged")
+        .bearer_auth("aster_us_forged")
         .json(&decision_body())
         .send()
         .await
@@ -574,7 +574,7 @@ async fn supplier_binding_replaces_the_platform_model_until_removed() {
     let ocr_supplier = spawn_supplier("supplier-ocr-model").await;
     let decision_supplier = spawn_supplier("supplier-apofasi-model").await;
     let client = reqwest::Client::new();
-    let png = draw_a3s_png();
+    let png = draw_aster_png();
 
     let unreachable = platform_config(PlatformRoute {
         verifier,
@@ -648,14 +648,14 @@ async fn supplier_binding_replaces_the_platform_model_until_removed() {
 async fn platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_route() {
     // Isolate the missing-install contract from host-installed model weights
     // and process-global lazy engine clients. No shared environment is mutated.
-    const CHILD: &str = "A3S_GATEWAY_MISSING_BGE_TEST_CHILD";
+    const CHILD: &str = "ASTER_GATEWAY_MISSING_BGE_TEST_CHILD";
     if std::env::var_os(CHILD).is_none() {
         let directory = tempfile::tempdir().unwrap();
         let output = std::process::Command::new(std::env::current_exe().unwrap())
             .args(["entrypoint::platform_model_tests::platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_route", "--exact", "--test-threads=1"])
             .env(CHILD, "1")
-            .env("A3S_BGE_M3_MODEL_DIR", directory.path())
-            .env("A3S_BGE_RERANKER_MODEL_DIR", directory.path())
+            .env("ASTER_BGE_M3_MODEL_DIR", directory.path())
+            .env("ASTER_BGE_RERANKER_MODEL_DIR", directory.path())
             .output().unwrap();
         assert!(
             output.status.success(),
@@ -707,7 +707,7 @@ async fn platform_aliases_fail_closed_without_weights_but_proxy_aliases_still_ro
         .unwrap();
     assert_eq!(refused.status(), 503);
     let body = refused.text().await.unwrap();
-    assert!(body.contains("a3s-use-bge install"), "{body}");
+    assert!(body.contains("aster-use-bge install"), "{body}");
 
     let refused = client
         .post(format!("http://{address}/v1/rerank"))

@@ -4,7 +4,7 @@ use std::future::{pending, Future};
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::Duration;
 
-use a3s_orm::{MigrationReport, PostgresExecutor};
+use aster_orm::{MigrationReport, PostgresExecutor};
 use serde_json::Value;
 use tokio::runtime::{Builder as TokioRuntimeBuilder, Handle};
 use tokio::sync::{watch, Notify};
@@ -26,7 +26,7 @@ use store::{ClaimedJob, PostgresQueueStore};
 
 const RECOVERY_BATCH_SIZE: usize = 100;
 
-/// A3S ORM-backed shared PostgreSQL queue backend.
+/// Aster ORM-backed shared PostgreSQL queue backend.
 ///
 /// The database URL should select a schema dedicated to Boot migrations. Boot,
 /// Flow, and host applications keep separate ORM migration ledgers so one
@@ -62,7 +62,7 @@ impl fmt::Debug for PostgresQueueBackend {
 }
 
 impl PostgresQueueBackend {
-    /// Connect with an A3S ORM PostgreSQL executor and apply Boot migrations.
+    /// Connect with an Aster ORM PostgreSQL executor and apply Boot migrations.
     pub async fn connect(
         database_url: impl AsRef<str>,
         queue_name: impl AsRef<str>,
@@ -85,7 +85,7 @@ impl PostgresQueueBackend {
         Ok(Self::from_store(store, options))
     }
 
-    /// Use a configured A3S ORM executor and apply Boot migrations.
+    /// Use a configured Aster ORM executor and apply Boot migrations.
     pub async fn from_executor(
         executor: PostgresExecutor,
         queue_name: impl AsRef<str>,

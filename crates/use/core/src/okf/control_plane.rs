@@ -7,9 +7,9 @@ use crate::{PackageSurfaceKind, PlanQualifiedSurfaceRef, PlanScope, UseError, Us
 
 use super::OkfBundleContract;
 
-pub const OKF_PROJECTION_RECEIPT_SCHEMA: &str = "a3s.use.okf-projection-receipt.v2";
-pub const OKF_KNOWLEDGE_OBSERVATION_SCHEMA: &str = "a3s.use.okf-knowledge-observation.v2";
-pub const OKF_CAPABILITY_PROJECTION_SCHEMA: &str = "a3s.use.okf-capability-projection.v2";
+pub const OKF_PROJECTION_RECEIPT_SCHEMA: &str = "aster.use.okf-projection-receipt.v2";
+pub const OKF_KNOWLEDGE_OBSERVATION_SCHEMA: &str = "aster.use.okf-knowledge-observation.v2";
+pub const OKF_CAPABILITY_PROJECTION_SCHEMA: &str = "aster.use.okf-capability-projection.v2";
 
 const MAX_CONTROL_PLANE_CONTRACT_BYTES: usize = 128 * 1024;
 const RECEIPT_ERROR: &str = "use.okf.projection_receipt_invalid";
@@ -59,7 +59,7 @@ pub struct OkfSelectedGeneration {
     pub index_digest: String,
 }
 
-/// Non-secret A3S Knowledge observation for one candidate generation.
+/// Non-secret Aster Knowledge observation for one candidate generation.
 ///
 /// `selected` records the promoted generation that remains searchable. A
 /// failed or merely staged candidate may name an older last-good generation,

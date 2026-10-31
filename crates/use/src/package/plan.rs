@@ -1,14 +1,14 @@
 use std::collections::BTreeMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{
+use aster_use_core::{
     LockedPluginPackage, PackageSurfaceKind, PlanPackageChangeKind, PlanPackageRole,
     PlanQualifiedSurfaceRef, PlanScope, PlannedOperationImpact, PlannedPackageState,
     PlannedPackageTransition, PlannedProviderEvidence, PlannedStateEvidence, PluginOperationAction,
     PluginOperationPlanBinding, PluginOperationPlanDraft, PluginOperationPlanEnvelope,
     PluginPackageLock, PluginSurfaceRef, PluginWorkspaceGrantSnapshot, UseResult,
 };
-use a3s_use_extension::{ExtensionManifest, PluginMcpLaunch, ToolTaskSource, ToolWorkload};
+use aster_use_extension::{ExtensionManifest, PluginMcpLaunch, ToolTaskSource, ToolWorkload};
 use sha2::{Digest, Sha256};
 
 use super::{
@@ -26,7 +26,7 @@ pub(super) fn state_surface_refs(state: &PlannedPackageState) -> Vec<PluginSurfa
         .release
         .surfaces
         .iter()
-        .map(a3s_use_core::CatalogSurface::reference)
+        .map(aster_use_core::CatalogSurface::reference)
         .collect()
 }
 
@@ -623,7 +623,7 @@ pub(super) fn upgrade_operation(
     let state_revision = package_state_revision(registry_generation)?;
     let lock_digest = candidate_lock.descriptor_digest()?;
     let upgrade_identity_digest = digest(&format!(
-        "a3s-use-package-graph-upgrade-v1\n{}\n{}",
+        "aster-use-package-graph-upgrade-v1\n{}\n{}",
         prior_lock.descriptor_digest()?,
         lock_digest
     ));
@@ -921,7 +921,7 @@ pub(super) fn operation_provider_evidence<'a>(
                     "A package-local launcher does not match the built-in native provider evidence.",
                 ));
             }
-        } else if provider.provider_id == "a3s-use-native-launcher" {
+        } else if provider.provider_id == "aster-use-native-launcher" {
             return Err(package_manager_error(
                 "use.plugin.runtime_provider_required",
                 "A release-backed executable surface cannot use the package-local native provider.",
@@ -983,7 +983,7 @@ fn digest(value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use a3s_use_core::{
+    use aster_use_core::{
         PlanActor, PlanAuthority, PlanEnforcementProfile, PlanPolicyDecision, PlanScopeKind,
         PluginCatalogRecord, PluginPackageLockHost, PluginPackageResolver,
         VerifiedCatalogProvenance, VerifiedPluginCatalogRecord,
@@ -1007,7 +1007,7 @@ mod tests {
         let omitted = optional.reference();
         let provenance = VerifiedCatalogProvenance {
             registry_name: "official".to_string(),
-            registry_url: "https://packages.example.test/a3s/".to_string(),
+            registry_url: "https://packages.example.test/aster/".to_string(),
             root_sha256: test_digest('f'),
             root_version: 1,
             timestamp_version: 4,
@@ -1041,7 +1041,7 @@ mod tests {
         assert_eq!(
             planned
                 .iter()
-                .map(a3s_use_core::CatalogSurface::reference)
+                .map(aster_use_core::CatalogSurface::reference)
                 .collect::<Vec<_>>(),
             selected
         );
@@ -1068,7 +1068,7 @@ mod tests {
         assert_eq!(
             actual
                 .iter()
-                .filter(|provider| provider.provider_id == "a3s-use-native-launcher")
+                .filter(|provider| provider.provider_id == "aster-use-native-launcher")
                 .count(),
             1
         );
@@ -1082,7 +1082,7 @@ mod tests {
         let mut providers = reviewed_providers(&transitions, &manifests);
         let native = providers
             .iter_mut()
-            .find(|provider| provider.provider_id == "a3s-use-native-launcher")
+            .find(|provider| provider.provider_id == "aster-use-native-launcher")
             .unwrap();
         native.provider_id = "unreviewed-native".to_string();
         native.provider_build_id = "build-1".to_string();
@@ -1106,7 +1106,7 @@ mod tests {
         .unwrap();
         let provenance = VerifiedCatalogProvenance {
             registry_name: "official".to_string(),
-            registry_url: "https://packages.example.test/a3s/".to_string(),
+            registry_url: "https://packages.example.test/aster/".to_string(),
             root_sha256: test_digest('f'),
             root_version: 1,
             timestamp_version: 4,

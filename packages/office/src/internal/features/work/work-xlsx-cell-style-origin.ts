@@ -62,7 +62,7 @@ export interface PreparedXlsxSemanticPalette {
 }
 
 type CellWithXlsxStyleOrigin = Cell & {
-  a3sXlsxStyleOrigin?: unknown;
+  asterXlsxStyleOrigin?: unknown;
 };
 
 const THEME_COLOR_NAMES = [
@@ -132,7 +132,7 @@ export function withXlsxCellStyleOrigin(
   origin: XlsxCellStyleOrigin | undefined,
 ): Cell {
   return origin && xlsxCellStyleOriginHasValues(origin)
-    ? ({ ...cell, a3sXlsxStyleOrigin: origin } as CellWithXlsxStyleOrigin)
+    ? ({ ...cell, asterXlsxStyleOrigin: origin } as CellWithXlsxStyleOrigin)
     : cell;
 }
 
@@ -140,7 +140,7 @@ export function xlsxCellStyleOrigin(
   cell: Cell | null | undefined,
 ): XlsxCellStyleOrigin | undefined {
   const candidate = (cell as CellWithXlsxStyleOrigin | null | undefined)
-    ?.a3sXlsxStyleOrigin;
+    ?.asterXlsxStyleOrigin;
   if (!isRecord(candidate)) return undefined;
   const fontColor = normalizeXlsxSemanticColorOrigin(candidate.fontColor);
   const fillColor = normalizeXlsxSemanticColorOrigin(candidate.fillColor);

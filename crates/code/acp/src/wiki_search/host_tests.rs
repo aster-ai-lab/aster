@@ -1,5 +1,5 @@
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
 use std::rc::Rc;
@@ -112,7 +112,7 @@ impl agent_client_protocol::Client for Host {
         &self,
         request: agent_client_protocol::ExtRequest,
     ) -> agent_client_protocol::Result<agent_client_protocol::ExtResponse> {
-        assert_eq!(request.method.as_ref(), "a3s/wiki/search-workspaces");
+        assert_eq!(request.method.as_ref(), "aster/wiki/search-workspaces");
         let params: Value = serde_json::from_str(request.params.get()).unwrap();
         assert_eq!(params["sessionId"], "origin-session");
         assert_eq!(params["scope"], "all");
@@ -179,7 +179,7 @@ async fn search_wiki_cross_workspace_round_trip_uses_the_original_acp_transport_
             let (ar, aw) = tokio::io::split(left);
             let (cr, cw) = tokio::io::split(right);
             let (connection, agent_io) = agent_client_protocol::AgentSideConnection::new(
-                crate::A3sCodeAgent::new(crate::agent::test_launch(None)),
+                crate::AsterCodeAgent::new(crate::agent::test_launch(None)),
                 aw.compat_write(),
                 ar.compat(),
                 |future| {
@@ -209,20 +209,20 @@ async fn search_wiki_cross_workspace_round_trip_uses_the_original_acp_transport_
                     .unwrap(),
             );
             let model = Arc::new(Model::default());
-            let agent = a3s_code_core::Agent::from_config(
+            let agent = aster_core::Agent::from_config(
                 crate::agent::test_launch(Some(origin.path().join("sessions"))).config,
             )
             .await
             .unwrap();
-            let options = a3s_code_core::SessionOptions::new()
+            let options = aster_core::SessionOptions::new()
                 .with_session_id("origin-session")
                 .with_llm_client(model.clone())
-                .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+                .with_planning_mode(aster_core::PlanningMode::Disabled)
                 .with_permission_policy(
-                    a3s_code_core::permissions::PermissionPolicy::new().allow(TOOL_NAME),
+                    aster_core::permissions::PermissionPolicy::new().allow(TOOL_NAME),
                 )
                 .with_harness(
-                    a3s_code_core::HarnessComposeOptions::compose(
+                    aster_core::HarnessComposeOptions::compose(
                         ["system", "tools", "budget", "compact", "infer"]
                             .into_iter()
                             .map(str::to_owned)

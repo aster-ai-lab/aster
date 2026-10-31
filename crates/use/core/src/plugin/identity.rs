@@ -11,7 +11,7 @@ use super::validation::valid_segment;
 
 const PACKAGE_ID_ERROR: &str = "use.plugin.package_id_invalid";
 
-/// Canonical A3S Use package identity in `<publisher>/<name>` form.
+/// Canonical Aster Use package identity in `<publisher>/<name>` form.
 ///
 /// Host and control-plane contracts use this value object instead of
 /// restating package-ID validation at every boundary.

@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_office::{
+use aster_office::{
     NativeOfficeCollaborationActorKind, NativeOfficeCollaborationApplyRequest,
     NativeOfficeCollaborationArtifactKind, NativeOfficeCollaborationCheckpointRequest,
     NativeOfficeCollaborationCreateRequest, NativeOfficeCollaborationEventBatch,
@@ -10,7 +10,7 @@ use a3s_office::{
     DEFAULT_NATIVE_OFFICE_TEXT_FIND_LIMIT, MAX_NATIVE_OFFICE_COLLABORATION_EVENT_BATCH,
     MAX_NATIVE_OFFICE_COLLABORATION_STATE_VECTOR_BYTES, MAX_NATIVE_OFFICE_TEXT_FIND_LIMIT,
 };
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine as _;
 use schemars::JsonSchema;
@@ -956,13 +956,13 @@ mod tests {
             "replacement": "collaborative",
             "insertionId": "mcp-insertion",
             "deletionId": "mcp-deletion",
-            "author": "A3S Agent",
+            "author": "Aster Agent",
             "createdAt": "2026-08-17T10:00:00.000Z"
         }))
         .unwrap();
         assert!(matches!(
-            a3s_office::NativeOfficeCollaborationMutation::from(create),
-            a3s_office::NativeOfficeCollaborationMutation::DocumentSuggestionCreate {
+            aster_office::NativeOfficeCollaborationMutation::from(create),
+            aster_office::NativeOfficeCollaborationMutation::DocumentSuggestionCreate {
                 insertion_id: Some(id),
                 deletion_id: Some(deletion_id),
                 ..
@@ -975,7 +975,7 @@ mod tests {
                 "id": "mcp-insertion",
                 "kind": "insertion",
                 "expectedActorId": "agent-1",
-                "expectedAuthor": "A3S Agent",
+                "expectedAuthor": "Aster Agent",
                 "expectedCreatedAt": "2026-08-17T10:00:00.000Z",
                 "expectedText": "collaborative"
             }],
@@ -985,10 +985,10 @@ mod tests {
         }))
         .unwrap();
         assert!(matches!(
-            a3s_office::NativeOfficeCollaborationMutation::from(decide),
-            a3s_office::NativeOfficeCollaborationMutation::DocumentSuggestionDecide {
+            aster_office::NativeOfficeCollaborationMutation::from(decide),
+            aster_office::NativeOfficeCollaborationMutation::DocumentSuggestionDecide {
                 suggestions,
-                decision: a3s_office::NativeOfficeCollaborationDocumentSuggestionDecision::Accept,
+                decision: aster_office::NativeOfficeCollaborationDocumentSuggestionDecision::Accept,
                 ..
             } if suggestions.len() == 1
                 && suggestions[0].expected_actor_id.as_deref() == Some("agent-1")
@@ -1005,7 +1005,7 @@ mod tests {
                 "replacement": "text",
                 "insertionId": "mcp-insertion",
                 "deletionId": null,
-                "author": "A3S Agent",
+                "author": "Aster Agent",
                 "createdAt": "2026-08-17T10:00:00.000Z",
                 "actorId": "caller-cannot-inject-this"
             }))

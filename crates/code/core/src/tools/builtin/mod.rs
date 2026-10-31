@@ -1,6 +1,6 @@
 //! Native Rust implementations of all built-in tools
 //!
-//! These replace the previous `a3s-tools` binary backend with direct Rust
+//! These replace the previous `aster-tools` binary backend with direct Rust
 //! implementations that execute in-process. Each tool implements the `Tool` trait.
 
 pub mod ask_user;
@@ -39,8 +39,8 @@ pub(crate) use batch::MAX_BATCH_INVOCATIONS;
 pub(crate) use read::read_image_file;
 #[cfg(test)]
 pub(crate) use safe_http::{
-    RedirectQueryPolicy, ResolutionScript, SafeHttpError, get_with_redirects_observed,
-    set_resolution_script,
+    get_with_redirects_observed, set_resolution_script, RedirectQueryPolicy, ResolutionScript,
+    SafeHttpError,
 };
 #[cfg(test)]
 pub(crate) use web_fetch::WebFetchTool;
@@ -391,7 +391,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn register_builtins_does_not_open_durable_a3s_vec() {
+    async fn register_builtins_does_not_open_durable_aster_vec() {
         let temp = tempfile::tempdir().unwrap();
         let backend = ManifestWorkspaceBackend::new(temp.path());
         backend
@@ -409,7 +409,7 @@ mod tests {
             "tool registration must not attach durable FTS"
         );
         assert!(
-            !temp.path().join(".a3s-code").join("index").exists(),
+            !temp.path().join(".aster").join("index").exists(),
             "tool registration must not create the durable index directory"
         );
         assert!(
@@ -503,12 +503,10 @@ mod tests {
 
         registry.set_sandbox(Arc::new(Backend(false)));
         assert!(!registry.contains("background"));
-        assert!(
-            !registry
-                .definitions()
-                .iter()
-                .any(|definition| definition.name == "background")
-        );
+        assert!(!registry
+            .definitions()
+            .iter()
+            .any(|definition| definition.name == "background"));
 
         registry.set_sandbox(Arc::new(Backend(true)));
         assert!(registry.contains("background"));

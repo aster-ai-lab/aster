@@ -35,8 +35,8 @@ pub struct SessionOptions {
 impl Default for SessionOptions {
     fn default() -> Self {
         Self {
-            cookie_name: "a3s.sid".to_string(),
-            request_header_name: "x-a3s-session-id".to_string(),
+            cookie_name: "aster.sid".to_string(),
+            request_header_name: "x-aster-session-id".to_string(),
             ttl: Some(Duration::from_secs(60 * 60 * 24)),
             cookie_path: "/".to_string(),
             cookie_domain: None,

@@ -17,8 +17,8 @@
 //!    the fault legs poisoned nothing (process, workspace, fact store).
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   rustup run 1.97.1 cargo test -p a3s-code-core --test test_fault_recovery_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   rustup run 1.97.1 cargo test -p aster-core --test test_fault_recovery_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -27,7 +27,7 @@ mod support;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::{Agent, CodeError, PlanningMode, SessionOptions};
+use aster_core::{Agent, CodeError, PlanningMode, SessionOptions};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 const FAULT_TIMEOUT_MS: u64 = 2_000;
@@ -35,7 +35,7 @@ const FAULT_TIMEOUT_MS: u64 = 2_000;
 /// each attempt re-pays the timeout. The pin is "bounded", not "fast".
 const FAULT_WALL_LIMIT: Duration = Duration::from_secs(90);
 
-fn fault_config(endpoint: &str) -> a3s_code_core::CodeConfig {
+fn fault_config(endpoint: &str) -> aster_core::CodeConfig {
     let mut config = load_pinned_layer_c_config();
     let model = config
         .default_model
@@ -54,7 +54,7 @@ fn fault_config(endpoint: &str) -> a3s_code_core::CodeConfig {
 fn fault_opts(session_id: &str) -> SessionOptions {
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_planning(false)
         .with_planning_mode(PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
@@ -104,7 +104,7 @@ async fn stalling_server() -> StallingServer {
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn fault_legs_fail_bounded_and_the_real_model_recovers() {
     let workspace = tempfile::tempdir().expect("workspace");
 
@@ -173,7 +173,7 @@ async fn fault_legs_fail_bounded_and_the_real_model_recovers() {
             Some(
                 SessionOptions::new()
                     .with_session_id("fault-real-recovery")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_planning_mode(PlanningMode::Disabled)
                     .with_llm_api_timeout(180_000),
             ),
@@ -203,7 +203,7 @@ async fn fault_legs_fail_bounded_and_the_real_model_recovers() {
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn consecutive_faults_keep_the_session_usable_and_the_real_model_recovers() {
     let workspace = tempfile::tempdir().expect("workspace");
     let stall = stalling_server().await;
@@ -253,7 +253,7 @@ async fn consecutive_faults_keep_the_session_usable_and_the_real_model_recovers(
             Some(
                 SessionOptions::new()
                     .with_session_id("fault2-real-recovery")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_planning_mode(PlanningMode::Disabled)
                     .with_llm_api_timeout(180_000),
             ),
@@ -275,7 +275,7 @@ async fn consecutive_faults_keep_the_session_usable_and_the_real_model_recovers(
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn concurrent_send_under_fault_hits_the_busy_contract_not_a_hang() {
     let workspace = tempfile::tempdir().expect("workspace");
     let stall = stalling_server().await;
@@ -342,7 +342,7 @@ async fn concurrent_send_under_fault_hits_the_busy_contract_not_a_hang() {
             Some(
                 SessionOptions::new()
                     .with_session_id("fault3-real-recovery")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_planning_mode(PlanningMode::Disabled)
                     .with_llm_api_timeout(180_000),
             ),

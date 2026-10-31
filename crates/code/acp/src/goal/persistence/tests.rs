@@ -2,7 +2,7 @@
 
 use super::*;
 use crate::goal::{standing_goal_prompt, GoalOp};
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::{Agent, SessionOptions};
 
 async fn agent() -> Agent {
     Agent::from_config(crate::agent::test_launch(None).config)
@@ -26,7 +26,7 @@ async fn session_goals_isolate_siblings_preserve_workspace_source_and_reopen() {
     let agent = agent().await;
     let first = session(&agent, root.path(), "first").await;
     let second = session(&agent, root.path(), "second").await;
-    let unowned = root.path().join(".a3s/durable-goal.json");
+    let unowned = root.path().join(".aster/durable-goal.json");
     let original = r#"{"objective":"explicit import only","paused":false}"#;
     std::fs::write(&unowned, original).unwrap();
     assert!(load_goal(root.path(), "first").await.unwrap().is_none());
@@ -173,7 +173,7 @@ async fn malformed_session_goal_is_not_silently_replaced_or_executed() {
 #[tokio::test]
 async fn legacy_log_session_keeps_its_original_fact_directory() {
     let root = tempfile::tempdir().unwrap();
-    let original = a3s_code_core::session_folder::legacy_effect_log_dir(root.path());
+    let original = aster_core::session_folder::legacy_effect_log_dir(root.path());
     std::fs::create_dir_all(&original).unwrap();
     std::fs::write(original.join("legacy-owner.jsonl"), "").unwrap();
     let agent = agent().await;
@@ -182,19 +182,19 @@ async fn legacy_log_session_keeps_its_original_fact_directory() {
         .await
         .unwrap();
     assert!(
-        a3s_code_core::session_folder::find_session_dir(root.path(), "legacy-owner")
+        aster_core::session_folder::find_session_dir(root.path(), "legacy-owner")
             .unwrap()
             .is_none()
     );
     assert_eq!(
-        a3s_code_core::session_folder::effect_log_dir(root.path(), "legacy-owner"),
+        aster_core::session_folder::effect_log_dir(root.path(), "legacy-owner"),
         original
     );
     assert!(original.join("legacy-owner.durable-goal.json").is_file());
     assert!(std::fs::read(original.join("legacy-owner.jsonl"))
         .unwrap()
         .is_empty());
-    assert!(!root.path().join(".a3s/durable-goal.json").exists());
+    assert!(!root.path().join(".aster/durable-goal.json").exists());
     session.close().await;
     agent.close().await;
 }

@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowSpec,
 };
@@ -50,7 +50,7 @@ impl FlowRuntime for InvoiceRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         let input = ctx.input_as::<InvoiceWorkflowInput>()?;
         let invoice = ctx.step_output_as::<Invoice>("load-invoice")?;
@@ -76,7 +76,7 @@ impl FlowRuntime for InvoiceRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "load_invoice" => {
                 let input = invocation.input_as::<LoadInvoiceInput>()?;
@@ -99,7 +99,7 @@ impl FlowRuntime for InvoiceRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(InvoiceRuntime));
     let spec = WorkflowSpec::rust_embedded("examples.invoice", "0.1.0", "examples", "main");
 

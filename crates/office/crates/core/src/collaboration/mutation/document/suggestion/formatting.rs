@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::Value as JsonValue;
 use yrs::Any;
 
@@ -186,6 +186,6 @@ fn validate_identifier(value: &str, label: &str) -> UseResult<()> {
     )))
 }
 
-fn invalid_formatting(message: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_formatting(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.permission_denied", message)
 }

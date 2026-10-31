@@ -4,8 +4,8 @@ use std::path::Path;
 #[cfg(unix)]
 use std::path::PathBuf;
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::rootfs_metadata::{
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::rootfs_metadata::{
     RootfsMetadataManifest, IMAGE_ROOTFS_METADATA_PATH, PREVIOUS_ROOTFS_METADATA_PATH,
     ROOTFS_METADATA_PATH,
 };

@@ -61,7 +61,7 @@ async fn spawn_mock_server(app: Router) -> MockServer {
 }
 
 fn test_transport(origin: &str) -> IlinkClient {
-    let identity = IlinkClientIdentity::new("a3s-test-app", "a3s", "1.0.11", "A3S/0.9.7")
+    let identity = IlinkClientIdentity::new("aster-test-app", "aster", "1.0.11", "Aster/0.9.7")
         .expect("valid test identity");
     let policy = IlinkHostPolicy::for_test_origin(origin).expect("loopback test origin");
     IlinkClient::new(identity, policy, origin).expect("test transport")
@@ -88,7 +88,7 @@ fn assert_application_headers(headers: &HeaderMap) {
         headers
             .get("ilink-app-id")
             .and_then(|value| value.to_str().ok()),
-        Some("a3s-test-app")
+        Some("aster-test-app")
     );
     assert_eq!(
         headers
@@ -246,7 +246,7 @@ fn weixin_ilink_contract_packs_client_versions() {
 
 #[test]
 fn weixin_ilink_defaults_match_tencent_sdk_v2_4_6() {
-    let client = IlinkClient::weixin("A3S/0.10.1").expect("Tencent-compatible client");
+    let client = IlinkClient::weixin("Aster/0.10.1").expect("Tencent-compatible client");
     let headers = client
         .identity
         .application_headers()
@@ -258,7 +258,7 @@ fn weixin_ilink_defaults_match_tencent_sdk_v2_4_6() {
     assert_eq!(WEIXIN_ILINK_BASE_URL, "https://ilinkai.weixin.qq.com");
     assert_eq!(client.identity.bot_type, "3");
     assert_eq!(client.identity.channel_version, "2.4.6");
-    assert_eq!(client.identity.bot_agent, "A3S/0.10.1");
+    assert_eq!(client.identity.bot_agent, "Aster/0.10.1");
     assert_eq!(
         headers
             .get("ilink-app-id")
@@ -276,7 +276,7 @@ fn weixin_ilink_defaults_match_tencent_sdk_v2_4_6() {
 #[test]
 fn weixin_ilink_module_exports_the_boot_protocol_client() {
     let module = crate::TestingModule::builder()
-        .import(super::IlinkModule::weixin("A3S/0.10.1"))
+        .import(super::IlinkModule::weixin("Aster/0.10.1"))
         .compile()
         .expect("compile iLink module");
     let client = module.get::<IlinkClient>().expect("resolve iLink client");
@@ -386,7 +386,7 @@ fn weixin_ilink_contract_enforces_production_base_url_policy() {
 
 #[test]
 fn weixin_ilink_defaults_allow_tencent_idc_hosts_without_suffix_confusion() {
-    let client = IlinkClient::weixin("A3S/0.10.1").expect("Tencent-compatible client");
+    let client = IlinkClient::weixin("Aster/0.10.1").expect("Tencent-compatible client");
 
     assert!(client
         .validate_account_base_url("https://shard.weixin.qq.com/account/")
@@ -542,7 +542,7 @@ async fn weixin_ilink_contract_sends_qr_update_and_text_requests() {
     assert_post_headers(&create.headers, false);
     assert_eq!(
         create.query.get("bot_type").map(String::as_str),
-        Some("a3s")
+        Some("aster")
     );
     assert_eq!(
         create.body,
@@ -579,7 +579,7 @@ async fn weixin_ilink_contract_sends_qr_update_and_text_requests() {
             "get_updates_buf": "cursor-canary",
             "base_info": {
                 "channel_version": "1.0.11",
-                "bot_agent": "A3S/0.9.7"
+                "bot_agent": "Aster/0.9.7"
             }
         }))
     );
@@ -605,7 +605,7 @@ async fn weixin_ilink_contract_sends_qr_update_and_text_requests() {
             },
             "base_info": {
                 "channel_version": "1.0.11",
-                "bot_agent": "A3S/0.9.7"
+                "bot_agent": "Aster/0.9.7"
             }
         }))
     );
@@ -618,7 +618,7 @@ async fn weixin_ilink_contract_sends_qr_update_and_text_requests() {
         Some(json!({
             "base_info": {
                 "channel_version": "1.0.11",
-                "bot_agent": "A3S/0.9.7"
+                "bot_agent": "Aster/0.9.7"
             },
             "ilink_user_id": "owner-canary",
             "context_token": "context-canary"
@@ -636,7 +636,7 @@ async fn weixin_ilink_contract_sends_qr_update_and_text_requests() {
             "status": 1,
             "base_info": {
                 "channel_version": "1.0.11",
-                "bot_agent": "A3S/0.9.7"
+                "bot_agent": "Aster/0.9.7"
             }
         }))
     );
@@ -650,7 +650,7 @@ async fn weixin_ilink_contract_sends_qr_update_and_text_requests() {
             Some(json!({
                 "base_info": {
                     "channel_version": "1.0.11",
-                    "bot_agent": "A3S/0.9.7"
+                    "bot_agent": "Aster/0.9.7"
                 }
             }))
         );

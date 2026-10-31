@@ -3,8 +3,8 @@
 use std::error::Error;
 use std::path::PathBuf;
 
-use a3s_box_sdk::{
-    A3sBoxClient, A3sBoxPaths, ClientError, ExecutionEventKind, ExecutionEventsRequest,
+use aster_box_sdk::{
+    AsterBoxClient, AsterBoxPaths, ClientError, ExecutionEventKind, ExecutionEventsRequest,
     ExecutionIsolation, ExecutionResourceUpdate, ExecutionSnapshotId, ListBoxesOptions,
     OperationId, Sandbox, SandboxCreateOptions, SandboxEventStreamOptions, SandboxLogOptions,
     SandboxNetwork, SandboxRestartOptions, TagImage,
@@ -13,25 +13,25 @@ use futures::StreamExt;
 
 type AnyError = Box<dyn Error + Send + Sync>;
 
-const INIT_STDOUT_MARKER: &str = "a3s-sdk-init-stdout\n";
-const INIT_STDERR_MARKER: &str = "a3s-sdk-init-stderr\n";
-const INIT_COMMAND: &str = "printf 'a3s-sdk-init-stdout\\n'; printf 'a3s-sdk-init-stderr\\n' >&2; while :; do sleep 3600; done";
+const INIT_STDOUT_MARKER: &str = "aster-sdk-init-stdout\n";
+const INIT_STDERR_MARKER: &str = "aster-sdk-init-stderr\n";
+const INIT_COMMAND: &str = "printf 'aster-sdk-init-stdout\\n'; printf 'aster-sdk-init-stderr\\n' >&2; while :; do sleep 3600; done";
 
 #[tokio::test]
-#[ignore = "requires a real local A3S Box runtime and runnable OCI image"]
+#[ignore = "requires a real local Aster Box runtime and runnable OCI image"]
 async fn local_sandbox_exercises_real_runtime() -> Result<(), AnyError> {
     require(
-        std::env::var("A3S_BOX_SDK_LOCAL_SMOKE").as_deref() == Ok("1"),
-        "set A3S_BOX_SDK_LOCAL_SMOKE=1 to acknowledge the destructive smoke test",
+        std::env::var("ASTER_BOX_SDK_LOCAL_SMOKE").as_deref() == Ok("1"),
+        "set ASTER_BOX_SDK_LOCAL_SMOKE=1 to acknowledge the destructive smoke test",
     )?;
     let home = validated_home()?;
     let isolation = requested_isolation()?;
     let base_image =
-        std::env::var("A3S_BOX_SDK_SMOKE_IMAGE").unwrap_or_else(|_| "alpine:3.20".to_string());
+        std::env::var("ASTER_BOX_SDK_SMOKE_IMAGE").unwrap_or_else(|_| "alpine:3.20".to_string());
     // This async constructor is deliberately exercised with the Sandbox GA
-    // default: an absent A3S_BOX_OCI_MIGRATION selects SandboxViaOci on Linux.
+    // default: an absent ASTER_BOX_OCI_MIGRATION selects SandboxViaOci on Linux.
     // CI proves the production OCI composition without exporting the env.
-    let client = A3sBoxClient::with_configured_paths(A3sBoxPaths::from_home(&home)).await?;
+    let client = AsterBoxClient::with_configured_paths(AsterBoxPaths::from_home(&home)).await?;
     let diagnostics = client.runtime_diagnostics();
     require(
         diagnostics.home == home,
@@ -46,11 +46,11 @@ async fn local_sandbox_exercises_real_runtime() -> Result<(), AnyError> {
     std::fs::create_dir_all(&context)?;
     std::fs::write(
         context.join("Dockerfile"),
-        format!("FROM {base_image}\nENV A3S_SDK_BASE=ready\nWORKDIR /workspace\n"),
+        format!("FROM {base_image}\nENV ASTER_SDK_BASE=ready\nWORKDIR /workspace\n"),
     )?;
     let image = client
         .image(&context)
-        .tag("local/a3s-sdk-smoke-rust:latest")
+        .tag("local/aster-sdk-smoke-rust:latest")
         .build()
         .await?;
     exercise_image_management(&client, &image.reference).await?;
@@ -138,7 +138,7 @@ async fn local_sandbox_exercises_real_runtime() -> Result<(), AnyError> {
         "Sandbox runtime directory remained after kill",
     )?;
     require(
-        Sandbox::connect_with_client(A3sBoxClient::from_home(&home), sandbox_id)
+        Sandbox::connect_with_client(AsterBoxClient::from_home(&home), sandbox_id)
             .await
             .is_err(),
         "Sandbox execution record remained connectable after kill",
@@ -148,7 +148,7 @@ async fn local_sandbox_exercises_real_runtime() -> Result<(), AnyError> {
 
 async fn exercise(
     sandbox: &Sandbox,
-    client: &A3sBoxClient,
+    client: &AsterBoxClient,
     expected_isolation: ExecutionIsolation,
     image: &str,
 ) -> Result<(), AnyError> {
@@ -181,7 +181,7 @@ async fn exercise(
         "named volume mount did not preserve written content",
     )?;
 
-    let directory = "/tmp/a3s-local-sdk-smoke";
+    let directory = "/tmp/aster-local-sdk-smoke";
     let source = format!("{directory}/source.txt");
     let destination = format!("{directory}/moved.txt");
     sandbox.files.make_dir(directory).await?;
@@ -373,10 +373,10 @@ async fn exercise(
 }
 
 async fn cleanup_programmable_resources(
-    client: &A3sBoxClient,
+    client: &AsterBoxClient,
     image: &str,
     volume: &str,
-    network: Option<a3s_box_sdk::NetworkSummary>,
+    network: Option<aster_box_sdk::NetworkSummary>,
 ) -> Result<(), AnyError> {
     client.remove_volume(volume, false)?;
     if let Some(network) = network {
@@ -387,7 +387,7 @@ async fn cleanup_programmable_resources(
     Ok(())
 }
 
-async fn exercise_image_management(client: &A3sBoxClient, reference: &str) -> Result<(), AnyError> {
+async fn exercise_image_management(client: &AsterBoxClient, reference: &str) -> Result<(), AnyError> {
     require(
         client.get_image(reference).await?.is_some(),
         "built image was not gettable through the SDK",
@@ -401,10 +401,10 @@ async fn exercise_image_management(client: &A3sBoxClient, reference: &str) -> Re
         "built image history was not available through the SDK",
     )?;
     let tagged = client
-        .tag_image(TagImage::new(reference, "local/a3s-sdk-smoke-rust:tested"))
+        .tag_image(TagImage::new(reference, "local/aster-sdk-smoke-rust:tested"))
         .await?;
     require(
-        tagged.reference == "local/a3s-sdk-smoke-rust:tested",
+        tagged.reference == "local/aster-sdk-smoke-rust:tested",
         "image tag returned the wrong reference",
     )?;
     client.remove_image(&tagged.reference).await?;
@@ -413,12 +413,12 @@ async fn exercise_image_management(client: &A3sBoxClient, reference: &str) -> Re
 
 async fn exercise_filesystem_snapshot(
     sandbox: &Sandbox,
-    client: &A3sBoxClient,
+    client: &AsterBoxClient,
     image: &str,
 ) -> Result<(), AnyError> {
     // `/tmp` is an intentionally ephemeral tmpfs in Sandbox isolation and is
     // therefore outside a filesystem snapshot. Keep the marker in the rootfs.
-    let marker = "/a3s-sdk-snapshot-marker.txt";
+    let marker = "/aster-sdk-snapshot-marker.txt";
     sandbox.files.write(marker, "snapshot-ok").await?;
     let snapshot_id =
         ExecutionSnapshotId::new(format!("sdk-smoke-{}", sandbox.id().replace('-', "_")))?;
@@ -488,28 +488,28 @@ async fn exercise_filesystem_snapshot(
 }
 
 fn requested_isolation() -> Result<ExecutionIsolation, AnyError> {
-    match std::env::var("A3S_BOX_SDK_SMOKE_ISOLATION")
+    match std::env::var("ASTER_BOX_SDK_SMOKE_ISOLATION")
         .unwrap_or_else(|_| "microvm".to_string())
         .as_str()
     {
         "microvm" => Ok(ExecutionIsolation::Microvm),
         "sandbox" => Ok(ExecutionIsolation::Sandbox),
         value => Err(failure(format!(
-            "A3S_BOX_SDK_SMOKE_ISOLATION must be microvm or sandbox, got {value:?}"
+            "ASTER_BOX_SDK_SMOKE_ISOLATION must be microvm or sandbox, got {value:?}"
         ))),
     }
 }
 
 fn validated_home() -> Result<PathBuf, AnyError> {
-    let home = std::env::var_os("A3S_HOME")
+    let home = std::env::var_os("ASTER_HOME")
         .map(PathBuf::from)
-        .ok_or_else(|| failure("A3S_HOME must point to a dedicated local-sdk-smoke directory"))?;
-    require(home.is_absolute(), "A3S_HOME must be absolute")?;
+        .ok_or_else(|| failure("ASTER_HOME must point to a dedicated local-sdk-smoke directory"))?;
+    require(home.is_absolute(), "ASTER_HOME must be absolute")?;
     require(
         home.file_name()
             .and_then(|name| name.to_str())
             .is_some_and(|name| name.contains("local-sdk-smoke")),
-        "A3S_HOME must name a dedicated local-sdk-smoke directory",
+        "ASTER_HOME must name a dedicated local-sdk-smoke directory",
     )?;
     Ok(home)
 }

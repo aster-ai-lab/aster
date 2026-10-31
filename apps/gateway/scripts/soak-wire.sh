@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
-# soak-wire.sh — sustained-load soak for the inline wire firewall (a3s-gateway `wire` + a3s-sentry).
+# soak-wire.sh — sustained-load soak for the inline wire firewall (aster-gateway `wire` + aster-sentry).
 #
 # Drives the proxy with many concurrent secret-bearing requests and asserts the security + stability
 # contract under load: the secret NEVER reaches the upstream (masked), the response is restored, the
 # proxy's RSS stays flat (no leak), and it never crashes. Pure userspace — runs anywhere the wire build
 # does. Exercises both the inline gate (`inspect_wire` on every request) and the hyper transport.
 #
-#   ./scripts/soak-wire.sh [path/to/a3s-gateway] [duration_seconds] [concurrency]
+#   ./scripts/soak-wire.sh [path/to/aster-gateway] [duration_seconds] [concurrency]
 #
-# Build the binary first:  cargo build --features wire --bin a3s-gateway
+# Build the binary first:  cargo build --features wire --bin aster-gateway
 set -u
-BIN="${1:-./target/debug/a3s-gateway}"
+BIN="${1:-./target/debug/aster-gateway}"
 DUR="${2:-30}"
 CONC="${3:-32}"
 
 if [ ! -x "$BIN" ]; then
-  echo "soak-wire: binary not found: $BIN (build: cargo build --features wire --bin a3s-gateway)" >&2
+  echo "soak-wire: binary not found: $BIN (build: cargo build --features wire --bin aster-gateway)" >&2
   exit 2
 fi
 

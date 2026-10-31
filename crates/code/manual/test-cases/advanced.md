@@ -370,7 +370,7 @@ Feature: `s3`.
 - **Stimulus:** search and a denied get.
 - **Oracle:** error text has no access key; hits are prefix-local.
 - **Fail:** access key in the error string.
-- **Home:** `denied_get_error_omits_credentials` in `core/src/workspace/s3/tests.rs` (`--features s3`). A local listener returns a mixed `ListObjectsV2` page and a 403 `GetObject`. Glob keeps `visible.txt` and drops `outside/secret.txt`. The classified get error contains `Failed to read S3 object` and neither the access key nor the secret. Live `A3S_S3_TEST_ENDPOINT` remains the ignored round-trip in `core/tests/test_s3_backend.rs`.
+- **Home:** `denied_get_error_omits_credentials` in `core/src/workspace/s3/tests.rs` (`--features s3`). A local listener returns a mixed `ListObjectsV2` page and a 403 `GetObject`. Glob keeps `visible.txt` and drops `outside/secret.txt`. The classified get error contains `Failed to read S3 object` and neither the access key nor the secret. Live `ASTER_S3_TEST_ENDPOINT` remains the ignored round-trip in `core/tests/test_s3_backend.rs`.
 
 
 ## opentelemetry (OT)
@@ -393,7 +393,7 @@ Feature: `telemetry`.
 - **Stimulus:** `telemetry.init` and one tool turn.
 - **Oracle:** span received; secret string absent; trace id matches `session.trace_events`.
 - **Fail:** secret in the collector payload.
-- **Home:** `exported_span_omits_tool_argument_secrets` in `core/tests/test_telemetry_span_redaction.rs` (`--features telemetry`). A loopback HTTP collector receives the OTLP protobuf. The tool argument is the file `OTLP-SECRET-91.txt`. The payload contains `a3s.tool.execute` and `read`, and does not contain that secret. `TraceEvent` has no trace id; the in-memory trace is matched on the tool name. Default export stays gRPC. The HTTP transport exists so the test can read the same `ExportTraceServiceRequest` bytes.
+- **Home:** `exported_span_omits_tool_argument_secrets` in `core/tests/test_telemetry_span_redaction.rs` (`--features telemetry`). A loopback HTTP collector receives the OTLP protobuf. The tool argument is the file `OTLP-SECRET-91.txt`. The payload contains `aster.tool.execute` and `read`, and does not contain that secret. `TraceEvent` has no trace id; the in-memory trace is matched on the tool name. Default export stays gRPC. The HTTP transport exists so the test can read the same `ExportTraceServiceRequest` bytes.
 
 ### I-OT-01
 
@@ -441,7 +441,7 @@ review decisions. See [RESEARCH_CONTRACTS.md](../RESEARCH_CONTRACTS.md).
 
 - **Invariant:** the research module is absent unless Cargo feature `research` is on.
 - **Pre:** check without that feature.
-- **Stimulus:** resolve `a3s_code_core::research`.
+- **Stimulus:** resolve `aster_core::research`.
 - **Oracle:** the module is not in the build. `lib.rs` gates it with `#[cfg(feature = "research")]`.
 - **Fail:** the module is compiled into the default feature set.
 - **Home:** `research_module_is_absent_from_the_default_build` in `core/tests/research_feature_absence.rs`. Default features only (`#![cfg(not(feature = "research"))]`). Asserts `cfg!(feature = "research")` is false and `CARGO_FEATURE_RESEARCH` is unset. `lib.rs` keeps `pub mod research` behind that feature.

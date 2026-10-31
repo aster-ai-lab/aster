@@ -19,11 +19,11 @@ class AcpQualification(unittest.TestCase):
     def test_acl_keeps_environment_expression_and_child_has_no_inherited_home_or_proxies(self):
         root = Path('/fresh-isolated')
         config = a.acl(root, 'http://127.0.0.1:9/v1')
-        self.assertIn('api_key = env("A3S_GATEWAY_KEY")', config)
+        self.assertIn('api_key = env("ASTER_GATEWAY_KEY")', config)
         self.assertNotIn(KEY, config)
         env = a.child_environment(root, KEY)
-        self.assertEqual(env['A3S_GATEWAY_KEY'], KEY)
-        self.assertEqual(env['A3S_CODE_LOG_FILE'], '0')
+        self.assertEqual(env['ASTER_GATEWAY_KEY'], KEY)
+        self.assertEqual(env['ASTER_LOG_FILE'], '0')
         self.assertEqual(env['RUST_LOG'], 'off')
         for name in ('HOME', 'HOMEDRIVE', 'HOMEPATH', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY'):
             self.assertNotIn(name, env)

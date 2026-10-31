@@ -136,7 +136,7 @@
 
 **角色/价值**：用户从实际终端能理解和控制长任务。**优先级** P0。**层/档** U，先 H1 fixture 后 R1。
 **Cases**：A02 B09 E02 H02 H03 H08 I01 I10 K06 K07 K09 L07 L10。
-**夹具**：a3s-test 持有实际配对 `aster` 的 PTY/ConPTY；当前观察证据与 wire trace 可关联；隔离 HOME。
+**夹具**：aster-test 持有实际配对 `aster` 的 PTY/ConPTY；当前观察证据与 wire trace 可关联；隔离 HOME。
 **步骤**：
 1. 从真实启动/新会话输入完整任务，观察 plan/工具/进度和当前会话身份。
 2. 通过真实授权控件执行 allow/reject/cancel 变体；证明一次调用一张工具卡。

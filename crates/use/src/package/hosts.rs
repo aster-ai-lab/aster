@@ -1,12 +1,12 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_runtime::contract::{RuntimeObservation, RuntimeServiceEndpoint};
-use a3s_runtime::RuntimeClientRegistry;
-use a3s_use_core::{
+use aster_runtime::contract::{RuntimeObservation, RuntimeServiceEndpoint};
+use aster_runtime::RuntimeClientRegistry;
+use aster_use_core::{
     PackageSurfaceKind, PlanQualifiedSurfaceRef, PluginSurfaceRef, UseError, UseResult,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionLifecyclePackage, ExtensionManifest, ExtensionRegistry, PluginFlowSurface,
     PluginMcpLaunch, PluginMcpSurface, ToolSurface, ToolTaskSource, ToolWorkload,
 };
@@ -68,8 +68,8 @@ impl std::fmt::Debug for ManagedPackageLifecycleFactory {
 }
 
 /// Cross-host environment variable selecting the reviewed native TypeScript
-/// compiler used by standalone A3S Flow package lifecycle operations.
-pub const A3S_FLOW_NATIVE_TS_COMPILER_ENV: &str = "A3S_FLOW_NATIVE_TS_COMPILER";
+/// compiler used by standalone Aster Flow package lifecycle operations.
+pub const ASTER_FLOW_NATIVE_TS_COMPILER_ENV: &str = "ASTER_FLOW_NATIVE_TS_COMPILER";
 
 #[derive(Clone)]
 struct RuntimeLifecycleComposition {
@@ -84,7 +84,7 @@ impl StandalonePackageLifecycleFactory {
         Self::default()
     }
 
-    /// Refuse a Flow compiler. The Flow runtime is no longer built into a3s-use.
+    /// Refuse a Flow compiler. The Flow runtime is no longer built into aster-use.
     pub fn with_flow_compiler(_compiler_binary: impl Into<PathBuf>) -> UseResult<Self> {
         Err(flow_runtime_removed())
     }
@@ -301,7 +301,7 @@ pub(super) fn validate_available_hosts(
         .with_detail("toolSurfaces", serde_json::json!(runtime_tools))
         .with_detail("mcpSurfaces", serde_json::json!(runtime_mcp))
         .with_suggestion(
-            "Install through an A3S host that injects exact Runtime provider selections and service readiness evidence.",
+            "Install through an Aster host that injects exact Runtime provider selections and service readiness evidence.",
         ));
     }
     Ok(())
@@ -525,7 +525,7 @@ fn coordinator(
     registry: ExtensionRegistry,
     package: Arc<dyn crate::plugin_lifecycle::PluginPackageLifecycleHost>,
     package_root: impl Into<std::path::PathBuf>,
-    paths: &a3s_use_extension::ExtensionPaths,
+    paths: &aster_use_extension::ExtensionPaths,
     runtime: RuntimeLifecycleComposition,
     ui_factory: Arc<dyn PluginUiLifecycleHostFactory>,
     flow_compiler_binary: Option<&Path>,
@@ -668,7 +668,7 @@ fn flow_unavailable() -> UseError {
 fn flow_runtime_removed() -> UseError {
     provider_error(
         "use.flow_runtime_removed",
-        "The Flow runtime is no longer built into a3s-use.",
+        "The Flow runtime is no longer built into aster-use.",
     )
 }
 
@@ -801,7 +801,7 @@ mod tests {
             Arc::new(UnavailableRuntimeServiceReadinessHost),
         )
         .with_ui_lifecycle_factory(Arc::new(RecordingUiFactory(created.clone())));
-        let registry = ExtensionRegistry::new(a3s_use_extension::ExtensionPaths::new(
+        let registry = ExtensionRegistry::new(aster_use_extension::ExtensionPaths::new(
             temp.path().join("data"),
             temp.path().join("state"),
         ));
@@ -814,7 +814,7 @@ mod tests {
     }
 
     #[test]
-    fn flow_surfaces_fail_before_lifecycle_composition_without_a3s_flow() {
+    fn flow_surfaces_fail_before_lifecycle_composition_without_aster_flow() {
         let manifest = flow_manifest();
         let factory = StandalonePackageLifecycleFactory::default();
         let error = factory.validate_manifest(&manifest).unwrap_err();
@@ -825,16 +825,16 @@ mod tests {
     fn explicit_flow_compiler_is_refused() {
         let temp = tempfile::tempdir().unwrap();
         let error = StandalonePackageLifecycleFactory::with_flow_compiler(
-            temp.path().join("a3s-flow-native-compiler"),
+            temp.path().join("aster-flow-native-compiler"),
         )
         .unwrap_err();
         assert_eq!(error.code, "use.flow_runtime_removed");
     }
 
     #[test]
-    fn relative_a3s_flow_compiler_is_rejected_before_composition() {
+    fn relative_aster_flow_compiler_is_rejected_before_composition() {
         let error =
-            StandalonePackageLifecycleFactory::with_flow_compiler("bin/a3s-flow-native-compiler")
+            StandalonePackageLifecycleFactory::with_flow_compiler("bin/aster-flow-native-compiler")
                 .unwrap_err();
 
         assert_eq!(error.code, "use.flow_runtime_removed");
@@ -856,7 +856,7 @@ extension "acme/flow" {
   }
 
   flow "review" {
-    engine        = "a3s-flow"
+    engine        = "aster-flow"
     runtime       = "native-ts"
     source        = "flows/review.ts"
     export        = "run"
@@ -874,7 +874,7 @@ extension "acme/flow" {
     #[test]
     fn embedding_hosts_can_replace_the_standalone_lifecycle_factory() {
         let temp = tempfile::tempdir().unwrap();
-        let registry = ExtensionRegistry::new(a3s_use_extension::ExtensionPaths::new(
+        let registry = ExtensionRegistry::new(aster_use_extension::ExtensionPaths::new(
             temp.path().join("data"),
             temp.path().join("state"),
         ));

@@ -1,18 +1,18 @@
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::host_env::{FixedClock, HostEnv, SequentialIdGenerator};
-use a3s_code_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
-use a3s_code_core::memory::MemoryConfig;
-use a3s_code_core::store::{FileSessionStore, SessionStore};
-use a3s_code_core::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::host_env::{FixedClock, HostEnv, SequentialIdGenerator};
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
+use aster_core::memory::MemoryConfig;
+use aster_core::store::{FileSessionStore, SessionStore};
+use aster_core::{
     Agent, CodeError, DurableMemoryActivation, DurableMemoryRecallPolicy, DurableMemorySession,
     DurableMemoryUse, PlanningMode, SessionOptions,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, FileMemoryRepository, InMemoryRepository,
     MemoryChangeSet, MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRepository,
     MemoryStatus,
 };
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::InMemoryStore;
 use async_trait::async_trait;
 use chrono::{TimeZone, Utc};
 use std::collections::HashMap;
@@ -49,6 +49,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,
@@ -134,7 +135,7 @@ impl LlmClient for InspectingClient {
         &self,
         _messages: &[Message],
         system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         Ok(self.respond(system))
     }
@@ -143,7 +144,7 @@ impl LlmClient for InspectingClient {
         &self,
         _messages: &[Message],
         system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let response = self.respond(system);
@@ -207,7 +208,7 @@ async fn file_repository_restart_requires_exact_binding_and_preserves_access_his
                     MemoryStatus::Candidate,
                     MEMORY_CONTENT,
                     vec![evidence(
-                        "a3s://session/restart/source",
+                        "aster://session/restart/source",
                         EvidenceKind::SessionTurn,
                         18,
                     )],
@@ -273,7 +274,7 @@ async fn file_repository_restart_requires_exact_binding_and_preserves_access_his
                 NODE_ID,
                 1,
                 evidence(
-                    "a3s://verification/restart-procedure",
+                    "aster://verification/restart-procedure",
                     EvidenceKind::Verification,
                     20,
                 ),

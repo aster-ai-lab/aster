@@ -6,7 +6,7 @@
 //! - Queue depth alerts
 //! - Latency alerts
 
-use a3s_lane::{
+use aster_lane::{
     AlertLevel, AlertManager, Command, EventEmitter, LaneConfig, QueueManagerBuilder, QueueMetrics,
     Result,
 };
@@ -42,7 +42,7 @@ impl Command for WorkCommand {
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
-    println!("=== A3S Lane: Observability Features Example ===\n");
+    println!("=== Aster Lane: Observability Features Example ===\n");
 
     // Create metrics collector
     let metrics = QueueMetrics::local();
@@ -55,7 +55,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Add latency alerts
     alerts
-        .set_latency_config(a3s_lane::LatencyAlertConfig::new(100.0, 500.0))
+        .set_latency_config(aster_lane::LatencyAlertConfig::new(100.0, 500.0))
         .await;
 
     // Add alert callback

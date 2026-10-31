@@ -1,7 +1,7 @@
 use std::io::{Read, Seek, SeekFrom, Write};
 use std::sync::Arc;
 
-use a3s_use_core::PlanScopeKind;
+use aster_use_core::PlanScopeKind;
 use tempfile::TempDir;
 
 use super::tests::{knowledge_files, scope, stage_and_promote, stage_spec};
@@ -24,9 +24,9 @@ async fn removes_oldest_only_after_exact_plan_confirmation() {
     let backup_directory = temporary.path().join("backups");
     std::fs::create_dir(&backup_directory).unwrap();
     for name in [
-        "001.a3s-okf-backup",
-        "002.a3s-okf-backup",
-        "003.a3s-okf-backup",
+        "001.aster-okf-backup",
+        "002.aster-okf-backup",
+        "003.aster-okf-backup",
     ] {
         adapter
             .backup(&workspace_scope, backup_directory.join(name))
@@ -47,14 +47,14 @@ async fn removes_oldest_only_after_exact_plan_confirmation() {
         OKF_KNOWLEDGE_BACKUP_RETENTION_PLAN_SCHEMA
     );
     assert_eq!(stale_plan.remove.len(), 1);
-    assert_eq!(stale_plan.remove[0].file_name, "001.a3s-okf-backup");
+    assert_eq!(stale_plan.remove[0].file_name, "001.aster-okf-backup");
     assert_eq!(stale_plan.retain.len(), 2);
     let stale_digest = stale_plan.descriptor_digest().unwrap();
 
     adapter
         .backup(
             &workspace_scope,
-            backup_directory.join("004.a3s-okf-backup"),
+            backup_directory.join("004.aster-okf-backup"),
         )
         .await
         .unwrap();
@@ -70,7 +70,7 @@ async fn removes_oldest_only_after_exact_plan_confirmation() {
         error.code,
         "use.okf.knowledge_backup_retention_plan_mismatch"
     );
-    assert!(backup_directory.join("001.a3s-okf-backup").is_file());
+    assert!(backup_directory.join("001.aster-okf-backup").is_file());
 
     let plan = SqliteOkfKnowledgeAdapter::plan_backup_retention(
         &backup_directory,
@@ -84,7 +84,7 @@ async fn removes_oldest_only_after_exact_plan_confirmation() {
             .iter()
             .map(|backup| backup.file_name.as_str())
             .collect::<Vec<_>>(),
-        vec!["001.a3s-okf-backup", "002.a3s-okf-backup"]
+        vec!["001.aster-okf-backup", "002.aster-okf-backup"]
     );
     let result = SqliteOkfKnowledgeAdapter::apply_backup_retention(
         &backup_directory,
@@ -98,10 +98,10 @@ async fn removes_oldest_only_after_exact_plan_confirmation() {
     assert!(result.changed);
     assert_eq!(result.removed, plan.remove);
     assert_eq!(result.retained_backup_count, 2);
-    assert!(!backup_directory.join("001.a3s-okf-backup").exists());
-    assert!(!backup_directory.join("002.a3s-okf-backup").exists());
-    assert!(backup_directory.join("003.a3s-okf-backup").is_file());
-    assert!(backup_directory.join("004.a3s-okf-backup").is_file());
+    assert!(!backup_directory.join("001.aster-okf-backup").exists());
+    assert!(!backup_directory.join("002.aster-okf-backup").exists());
+    assert!(backup_directory.join("003.aster-okf-backup").is_file());
+    assert!(backup_directory.join("004.aster-okf-backup").is_file());
 
     let replay = SqliteOkfKnowledgeAdapter::plan_backup_retention(
         &backup_directory,
@@ -152,7 +152,7 @@ async fn is_scope_isolated_and_fails_closed_on_invalid_candidates() {
     .await;
     let backup_directory = temporary.path().join("isolated-backups");
     std::fs::create_dir(&backup_directory).unwrap();
-    let backup_path = backup_directory.join("workspace.a3s-okf-backup");
+    let backup_path = backup_directory.join("workspace.aster-okf-backup");
     adapter
         .backup(&workspace_scope, &backup_path)
         .await
@@ -181,7 +181,7 @@ async fn is_scope_isolated_and_fails_closed_on_invalid_candidates() {
     );
     assert!(backup_path.is_file());
 
-    let tampered = backup_directory.join("tampered.a3s-okf-backup");
+    let tampered = backup_directory.join("tampered.aster-okf-backup");
     std::fs::copy(&backup_path, &tampered).unwrap();
     let mut file = std::fs::OpenOptions::new()
         .read(true)
@@ -233,7 +233,7 @@ async fn rejects_linked_directories_and_candidates() {
     std::fs::write(target.join("sentinel"), b"not a backup").unwrap();
     crate::test_filesystem::create_directory_link(
         &target,
-        &directory.join("linked.a3s-okf-backup"),
+        &directory.join("linked.aster-okf-backup"),
     );
     let error =
         SqliteOkfKnowledgeAdapter::plan_backup_retention(&directory, &workspace_scope, policy)

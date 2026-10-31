@@ -139,7 +139,7 @@ impl Logger {
     pub fn from_sink_arc(sink: Arc<dyn LogSink>) -> Self {
         Self {
             sink,
-            target: "a3s.boot".to_string(),
+            target: "aster.boot".to_string(),
             fields: LogFields::new(),
         }
     }

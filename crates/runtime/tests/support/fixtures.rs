@@ -1,5 +1,5 @@
 use super::fault_driver::IMAGE_MEDIA_TYPE;
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     ArtifactRef, IsolationLevel, NetworkMode, ResourceLimits, RestartPolicy, RuntimeActionRequest,
     RuntimeApplyRequest, RuntimeExecRequest, RuntimeNetworkSpec, RuntimeProcessSpec,
     RuntimeUnitClass, RuntimeUnitSpec,
@@ -13,7 +13,7 @@ pub fn service_spec(unit_id: &str) -> RuntimeUnitSpec {
         generation: 1,
         class: RuntimeUnitClass::Service,
         artifact: ArtifactRef {
-            uri: format!("oci://registry.example/a3s/fault@sha256:{}", "a".repeat(64)),
+            uri: format!("oci://registry.example/aster/fault@sha256:{}", "a".repeat(64)),
             digest: format!("sha256:{}", "a".repeat(64)),
             media_type: IMAGE_MEDIA_TYPE.into(),
         },

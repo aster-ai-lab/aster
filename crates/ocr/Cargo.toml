@@ -1,24 +1,24 @@
 [package]
-name = "a3s-use-ocr"
+name = "aster-use-ocr"
 version = "0.3.2"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/A3S-Lab/OCR"
-homepage = "https://github.com/A3S-Lab/OCR"
-authors = ["A3S Lab"]
+repository = "https://github.com/aster-ai-lab/OCR"
+homepage = "https://github.com/aster-ai-lab/OCR"
+authors = ["Aster"]
 rust-version = "1.82"
-description = "Provider-oriented optical character recognition interfaces for A3S"
+description = "Provider-oriented optical character recognition interfaces for Aster"
 readme = "README.md"
-keywords = ["ocr", "onnx", "pp-ocrv6", "a3s"]
+keywords = ["ocr", "onnx", "pp-ocrv6", "aster"]
 categories = ["computer-vision", "multimedia::images"]
 publish = false
 
 [lib]
-name = "a3s_use_ocr"
+name = "aster_use_ocr"
 path = "src/lib.rs"
 
 [[bin]]
-name = "a3s-use-ocr"
+name = "aster-use-ocr"
 path = "src/main.rs"
 required-features = ["cli"]
 
@@ -62,7 +62,7 @@ serde_yaml = {version = "0.9", optional = true}
 sha2 = "0.10"
 tar = {version = "0.4", optional = true}
 tokio = {version = "1", features = ["fs", "io-util", "macros", "rt-multi-thread", "sync"]}
-a3s-use-core = {path = "../use/core"}
+aster-use-core = {path = "../use/core"}
 
 [dev-dependencies]
 tempfile = "3"

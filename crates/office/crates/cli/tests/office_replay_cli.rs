@@ -2,13 +2,13 @@ use std::path::Path;
 use std::process::{Command, Output};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(provider: &Path, args: &[&str]) -> Output {
     Command::new(binary())
         .args(args)
-        .env("A3S_OFFICECLI_EXECUTABLE", provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", provider)
         .output()
         .unwrap()
 }
@@ -74,7 +74,7 @@ fn native_dump_artifacts_replay_through_atomic_batch_without_officecli() {
             "--json",
         ],
     );
-    assert_eq!(dumped["data"]["format"], "a3s.office.native-replay");
+    assert_eq!(dumped["data"]["format"], "aster.office.native-replay");
     assert_eq!(dumped["data"]["artifactSchemaVersion"], 1);
     assert_eq!(dumped["data"]["documentKind"], "word");
     let source_result = dumped["data"]["resultSha256"].clone();
@@ -149,7 +149,7 @@ fn native_dump_stdout_is_a_batch_artifact_and_subtrees_fail_closed() {
     let output = execute(&provider, &["dump", document.to_str().unwrap()]);
     assert!(output.status.success(), "{output:?}");
     let artifact: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(artifact["format"], "a3s.office.native-replay");
+    assert_eq!(artifact["format"], "aster.office.native-replay");
     assert_eq!(artifact["mutations"], serde_json::json!([]));
 
     let unsupported = run_failure(

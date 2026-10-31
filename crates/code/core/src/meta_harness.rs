@@ -9,12 +9,12 @@
 //! [`admit_component_tree`]. SDKs pass the declarative recipe; host Moore
 //! factories stay Rust-side (no second imperative loop, no Effect-TS embed).
 
-use a3s_effect::{
+use aster_effect::{
     coding_scheduler, compact, component, compose_coding_actor, optional_budget, system, tools,
     CodingServices, ErasedComponent, HarnessGraph, HarnessView, MetaHarnessSpec, ToolSpec,
 };
 
-pub use a3s_effect::{HarnessConfig, HarnessPartId};
+pub use aster_effect::{HarnessConfig, HarnessPartId};
 
 /// One entry in an ordered `components: [...]` assemble list.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -52,7 +52,7 @@ impl HarnessComposeOptions {
     /// so absent ceilings remain distinct from explicit zero allowances.
     pub fn to_spec(&self, tools: Vec<ToolSpec>, defaults: &HarnessConfig) -> MetaHarnessSpec {
         MetaHarnessSpec {
-            name: "a3s-code",
+            name: "aster",
             budget: self.tool_budget.unwrap_or_else(|| defaults.budget()),
             compact_after_chars: self
                 .compact_after_chars
@@ -248,13 +248,13 @@ pub trait HostHarnessAssembler: Send + Sync {
 pub struct BuiltinHostHarnessRegistry;
 
 /// Stable marker injected by [`BuiltinHostHarnessRegistry`] `intent_stamp`.
-pub const INTENT_STAMP_MARKER: &str = "a3s.meta_harness.intent_stamp.v1";
+pub const INTENT_STAMP_MARKER: &str = "aster.meta_harness.intent_stamp.v1";
 
 /// Moore output for the builtin `intent_stamp` host mount.
-fn intent_stamp_view() -> a3s_effect::CodingView {
-    a3s_effect::CodingView {
+fn intent_stamp_view() -> aster_effect::CodingView {
+    aster_effect::CodingView {
         system: vec![INTENT_STAMP_MARKER.into()],
-        ..a3s_effect::CodingView::empty()
+        ..aster_effect::CodingView::empty()
     }
 }
 
@@ -406,13 +406,13 @@ fn admit_mixed_tree(
             }
         }
     }
-    Ok(admit_component_tree("a3s-code", components))
+    Ok(admit_component_tree("aster", components))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_effect::budget;
+    use aster_effect::budget;
 
     #[test]
     fn kernel_policy_cannot_disable_governance() {
@@ -429,7 +429,7 @@ mod tests {
     fn default_admission_builds_stock_graph() {
         let config = HarnessConfig::new(4, 1_000, 8, 1, vec!["s".into()], vec![]).expect("config");
         let (graph, policy) = admit_default_graph(config);
-        assert_eq!(graph.actor().name, "a3s-code");
+        assert_eq!(graph.actor().name, "aster");
         assert!(policy.permission_overlay);
         assert!(policy.completion_gate);
     }
@@ -559,7 +559,7 @@ mod tests {
             config,
         )
         .expect("admit");
-        assert_eq!(graph.actor().name, "a3s-code");
+        assert_eq!(graph.actor().name, "aster");
         assert!(policy.permission_overlay && policy.completion_gate);
     }
 
@@ -624,7 +624,7 @@ mod tests {
             .any(|entry| matches!(entry, HarnessComponentRef::Stock(HarnessPartId::Compact))));
         let (graph, _) =
             admit_from_compose_with_registry(Some(&options), None, config).expect("admit");
-        assert_eq!(graph.actor().name, "a3s-code");
+        assert_eq!(graph.actor().name, "aster");
     }
 
     #[test]
@@ -674,7 +674,7 @@ mod tests {
     fn admit_from_compose_wrapper_defaults_and_admits_stock() {
         let config = HarnessConfig::new(2, 100, 8, 1, vec![], vec![]).expect("config");
         let (default_graph, policy) = admit_from_compose(None, config.clone()).expect("default");
-        assert_eq!(default_graph.actor().name, "a3s-code");
+        assert_eq!(default_graph.actor().name, "aster");
         assert!(policy.permission_overlay && policy.completion_gate);
 
         let options = HarnessComposeOptions {
@@ -687,7 +687,7 @@ mod tests {
             ..HarnessComposeOptions::default()
         };
         let (graph, _) = admit_from_compose(Some(&options), config).expect("stock");
-        assert_eq!(graph.actor().name, "a3s-code");
+        assert_eq!(graph.actor().name, "aster");
     }
 
     #[test]
@@ -714,7 +714,7 @@ mod tests {
             config,
         )
         .expect("admit mixed with compact");
-        assert_eq!(graph.actor().name, "a3s-code");
+        assert_eq!(graph.actor().name, "aster");
         assert!(policy.permission_overlay && policy.completion_gate);
     }
 

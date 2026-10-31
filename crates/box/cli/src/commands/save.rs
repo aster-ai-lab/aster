@@ -1,7 +1,7 @@
-//! `a3s-box save` command — Save an image to a tar archive.
+//! `aster-box save` command — Save an image to a tar archive.
 //!
 //! Creates a tar archive of the OCI image layout directory, suitable for
-//! transferring to another machine and loading with `a3s-box load`.
+//! transferring to another machine and loading with `aster-box load`.
 
 use clap::Args;
 
@@ -123,7 +123,7 @@ fn create_tar_archive(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_runtime::StoredImage;
+    use aster_box_runtime::StoredImage;
     use chrono::Utc;
     use std::fs;
     use std::path::PathBuf;

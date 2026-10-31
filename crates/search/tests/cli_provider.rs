@@ -20,10 +20,10 @@ fn run_search(query: &str, provider: &str, config: &NamedTempFile) -> Output {
 }
 
 fn run_cli(args: &[&str]) -> Output {
-    Command::new(env!("CARGO_BIN_EXE_a3s-search"))
+    Command::new(env!("CARGO_BIN_EXE_aster-search"))
         .args(args)
         .output()
-        .expect("run a3s-search")
+        .expect("run aster-search")
 }
 
 fn run_search_with_args(
@@ -32,7 +32,7 @@ fn run_search_with_args(
     config: &NamedTempFile,
     extra_args: &[&str],
 ) -> Output {
-    let mut command = Command::new(env!("CARGO_BIN_EXE_a3s-search"));
+    let mut command = Command::new(env!("CARGO_BIN_EXE_aster-search"));
     command.args([
         query,
         "--engines",
@@ -43,7 +43,7 @@ fn run_search_with_args(
         "json",
     ]);
     command.args(extra_args);
-    command.output().expect("run a3s-search")
+    command.output().expect("run aster-search")
 }
 
 #[test]
@@ -441,7 +441,7 @@ fn help_lists_billed_providers_as_explicit_engines() {
         "aliyun",
         "tencent",
         "firecrawl",
-        "a3s",
+        "aster",
         "doubao",
         "deepseek",
     ] {
@@ -460,7 +460,7 @@ fn engines_command_lists_native_readiness_without_printing_secrets() {
         provider "aliyun" { api_key = null }
         provider "tencent" { api_key = null }
         provider "firecrawl" { api_key = null }
-        provider "a3s" { api_key = null }
+        provider "aster" { api_key = null }
         provider "doubao" { api_key = null }
         provider "deepseek" { api_key = null }
         "#,
@@ -485,7 +485,7 @@ fn engines_command_lists_native_readiness_without_printing_secrets() {
         "aliyun",
         "tencent",
         "firecrawl",
-        "a3s",
+        "aster",
         "doubao",
         "deepseek",
     ] {

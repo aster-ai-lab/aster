@@ -1,4 +1,4 @@
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use crate::discovery::office_error;
 use crate::{

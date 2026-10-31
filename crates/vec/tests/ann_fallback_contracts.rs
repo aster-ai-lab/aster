@@ -9,7 +9,7 @@
 
 //! Wave B P0 cases: stale ANN fallback and ef=n ≡ Flat (TESTING.md F-P0-5/7).
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionSchema, DataType, Doc, FieldSchema, HnswQueryParams, IndexParams,
     MetricType, SearchQuery,
 };

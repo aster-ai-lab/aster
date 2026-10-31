@@ -1,7 +1,7 @@
 use std::fmt;
 use std::sync::Arc;
 
-use a3s_orm::{
+use aster_orm::{
     sql_query, Executor, FromRow, PostgresDialect, PostgresError, PostgresExecutor, PostgresRow,
     PostgresTransactionError, Query, SqlQuery,
 };
@@ -18,7 +18,7 @@ use super::fairness::{
 pub use super::task::PostgresDeadLetteredTask;
 use super::{timestamp_nanos_saturating, FlowTask, FlowTaskLease, FlowTaskQueue};
 
-/// A3S ORM-backed PostgreSQL task queue for shared workers.
+/// Aster ORM-backed PostgreSQL task queue for shared workers.
 ///
 /// Pending and inflight tasks live in one table and are scoped by `queue_name`.
 /// Leasing uses an atomic `FOR UPDATE SKIP LOCKED` CTE, so multiple workers can
@@ -140,7 +140,7 @@ impl PostgresFlowTaskQueue {
         self
     }
 
-    /// Returns the configured A3S ORM executor.
+    /// Returns the configured Aster ORM executor.
     pub fn executor(&self) -> &PostgresExecutor {
         &self.executor
     }
@@ -699,7 +699,7 @@ fn nanos_to_datetime(nanos: i64) -> Result<DateTime<Utc>> {
         .ok_or_else(|| FlowError::Store(format!("invalid PostgreSQL Flow task timestamp {nanos}")))
 }
 
-fn postgres_queue_query_error(error: a3s_orm::Error) -> FlowError {
+fn postgres_queue_query_error(error: aster_orm::Error) -> FlowError {
     FlowError::Store(format!("PostgreSQL Flow task query build failed: {error}"))
 }
 
@@ -707,6 +707,6 @@ fn postgres_queue_driver_error(error: PostgresError) -> FlowError {
     FlowError::Store(format!("PostgreSQL Flow task storage failed: {error}"))
 }
 
-fn postgres_queue_decode_error(error: a3s_orm::DecodeError) -> FlowError {
+fn postgres_queue_decode_error(error: aster_orm::DecodeError) -> FlowError {
     FlowError::Store(format!("PostgreSQL Flow task row decoding failed: {error}"))
 }

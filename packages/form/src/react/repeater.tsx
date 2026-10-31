@@ -32,33 +32,33 @@ export function RepeaterField(props: RepeaterFieldProps) {
 
   return (
     <fieldset
-      className={`a3s-form-field a3s-form-repeater fieldset${objectRows ? ' is-object' : ''}${props.errors.length ? ' is-invalid' : ''}`}
+      className={`aster-form-field aster-form-repeater fieldset${objectRows ? ' is-object' : ''}${props.errors.length ? ' is-invalid' : ''}`}
       style={props.style}
       disabled={props.disabled}
       aria-describedby={props.describedBy}
       aria-busy={props.validating || undefined}
       data-validating={props.validating || undefined}
-      data-a3s-form-path={props.valuePath}
+      data-aster-form-path={props.valuePath}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) props.onBlur();
       }}
     >
       <legend className={props.required ? 'is-required' : undefined}>{label}</legend>
       {props.node.description && (
-        <div className="a3s-form-help" id={`${props.id}-help`}>
+        <div className="aster-form-help" id={`${props.id}-help`}>
           {props.node.description}
         </div>
       )}
       {props.headerActions}
       {props.items.length === 0 && (
-        <p className="a3s-form-repeater-empty" role="status">
+        <p className="aster-form-repeater-empty" role="status">
           {emptyLabel}
         </p>
       )}
       {objectRows ? (
-        <div className="a3s-form-repeater-rows">
+        <div className="aster-form-repeater-rows">
           {rows.rows.map((row) => (
-            <fieldset className="a3s-form-repeater-row" data-row-key={row.key} key={row.key}>
+            <fieldset className="aster-form-repeater-row" data-row-key={row.key} key={row.key}>
               <legend>
                 <span>
                   {formatFormMessage(props.messages, 'repeaterItemLabel', {
@@ -77,7 +77,7 @@ export function RepeaterField(props: RepeaterFieldProps) {
                   onRemove={() => props.onChange(rows.remove(row.index))}
                 />
               </legend>
-              <div className="a3s-form-repeater-row-grid">
+              <div className="aster-form-repeater-row-grid">
                 {props.columns.length > 0
                   ? props.columns.map((column) => props.renderCell(column.id, row.index, row.key))
                   : props.messages.repeaterTemplateEmpty}
@@ -86,9 +86,9 @@ export function RepeaterField(props: RepeaterFieldProps) {
           ))}
         </div>
       ) : (
-        <div className="a3s-form-repeat-list">
+        <div className="aster-form-repeat-list">
           {rows.rows.map((row) => (
-            <div className="a3s-form-repeat-row" key={row.key}>
+            <div className="aster-form-repeat-row" key={row.key}>
               <input
                 className="input"
                 aria-label={`${props.node.label ?? props.node.id} ${row.index + 1}`}
@@ -112,10 +112,10 @@ export function RepeaterField(props: RepeaterFieldProps) {
           ))}
         </div>
       )}
-      <div className="a3s-form-repeater-footer">
+      <div className="aster-form-repeater-footer">
         <button
           type="button"
-          className="a3s-form-secondary btn"
+          className="aster-form-secondary btn"
           data-size="sm"
           data-variant="secondary"
           disabled={props.disabled || atMaximum}
@@ -126,14 +126,14 @@ export function RepeaterField(props: RepeaterFieldProps) {
           <span>{addLabel}</span>
         </button>
         {atMaximum && (
-          <span className="a3s-form-repeater-limit" role="status">
+          <span className="aster-form-repeater-limit" role="status">
             {props.messages.repeaterMaximumReached}
           </span>
         )}
       </div>
       {props.errors.map((error, index) => (
         <div
-          className="a3s-form-error"
+          className="aster-form-error"
           id={`${props.id}-error-${index + 1}`}
           role="alert"
           key={`${error.code}-${error.message}`}

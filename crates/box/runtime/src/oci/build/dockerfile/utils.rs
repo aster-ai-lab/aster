@@ -1,6 +1,6 @@
 //! Helper utilities for Dockerfile parsing.
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 /// Parse a JSON array string like `["a", "b", "c"]` into a Vec<String>.
 pub(super) fn parse_json_array(s: &str, line_num: usize) -> Result<Vec<String>> {

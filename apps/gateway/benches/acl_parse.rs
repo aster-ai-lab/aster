@@ -1,4 +1,4 @@
-use a3s_gateway::config::GatewayConfig;
+use aster_gateway::config::GatewayConfig;
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use std::time::Duration;
 

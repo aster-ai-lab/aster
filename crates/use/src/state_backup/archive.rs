@@ -3,8 +3,8 @@ use std::fs::File;
 use std::io::{self, BufReader, BufWriter, Read, Write};
 use std::path::Path;
 
-use a3s_use_core::UseResult;
-use a3s_use_extension::ExtensionPaths;
+use aster_use_core::UseResult;
+use aster_use_extension::ExtensionPaths;
 use sha2::{Digest, Sha256};
 
 use super::inventory::{
@@ -14,7 +14,7 @@ use super::inventory::{
 use super::{
     canonical_json, sha256_digest, state_backup_exists, state_backup_invalid, state_backup_io,
     state_backup_limit, valid_digest, StateBackupAuthority, StateBackupEntry, StateBackupManifest,
-    StateBackupRoot, A3S_USE_STATE_BACKUP_SCHEMA, MAX_STATE_BACKUP_FILES,
+    StateBackupRoot, ASTER_USE_STATE_BACKUP_SCHEMA, MAX_STATE_BACKUP_FILES,
     MAX_STATE_BACKUP_MANIFEST_BYTES,
 };
 
@@ -25,7 +25,7 @@ use staging::{
     validate_candidate_tree,
 };
 
-const ARCHIVE_MAGIC: &[u8] = b"A3S-USE-STATE-BACKUP-V1\n";
+const ARCHIVE_MAGIC: &[u8] = b"Aster-USE-STATE-BACKUP-V1\n";
 const MANIFEST_LENGTH_BYTES: usize = 8;
 const MANIFEST_DIGEST_BYTES: usize = 32;
 const COPY_BUFFER_BYTES: usize = 128 * 1024;
@@ -47,7 +47,7 @@ pub(super) fn create_backup(
     let inventory_digest = sha256_digest(&canonical_json(&entries)?);
     let families = summarize_families(&entries)?;
     let manifest = StateBackupManifest {
-        schema: A3S_USE_STATE_BACKUP_SCHEMA.to_owned(),
+        schema: ASTER_USE_STATE_BACKUP_SCHEMA.to_owned(),
         use_version: env!("CARGO_PKG_VERSION").to_owned(),
         os: std::env::consts::OS.to_owned(),
         architecture: std::env::consts::ARCH.to_owned(),
@@ -67,7 +67,7 @@ pub(super) fn create_backup(
     }
 
     let mut temporary = tempfile::Builder::new()
-        .prefix(".a3s-use-state-backup-")
+        .prefix(".aster-use-state-backup-")
         .suffix(".tmp")
         .tempfile_in(parent)
         .map_err(|error| {
@@ -106,7 +106,7 @@ pub(super) fn create_backup(
             "Use-owned state changed between the initial and final backup inventories.",
         ));
     }
-    a3s_use_extension::persist_named_temporary_noclobber_blocking(temporary, destination).map_err(
+    aster_use_extension::persist_named_temporary_noclobber_blocking(temporary, destination).map_err(
         |error| {
             if error.kind() == io::ErrorKind::AlreadyExists {
                 state_backup_exists()
@@ -126,7 +126,7 @@ pub(super) fn verify_backup(path: &Path) -> UseResult<StateBackupManifest> {
     let metadata = std::fs::symlink_metadata(path).map_err(|error| {
         state_backup_io(format!("The state backup cannot be inspected: {error}"))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(state_backup_invalid(
             "The state backup is not an owned regular file.",
         ));
@@ -225,7 +225,7 @@ pub(super) fn verify_backup(path: &Path) -> UseResult<StateBackupManifest> {
     let after = std::fs::symlink_metadata(path).map_err(|error| {
         state_backup_io(format!("The state backup cannot be reinspected: {error}"))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&after)
+    if aster_use_core::metadata_is_link_or_reparse_point(&after)
         || !after.is_file()
         || after.len() != opened_metadata.len()
         || opened_modified.is_some_and(|modified| after.modified().ok() != Some(modified))
@@ -272,7 +272,7 @@ pub(super) fn stage_restore_entries(
             "The state restore archive cannot be inspected: {error}"
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(state_backup_invalid(
             "The state restore archive is not an owned regular file.",
         ));
@@ -374,7 +374,7 @@ pub(super) fn stage_restore_entries(
                     "A staged restore candidate differs from its reviewed evidence.",
                 ));
             }
-            a3s_use_extension::rename_path_with_windows_retry_blocking(
+            aster_use_extension::rename_path_with_windows_retry_blocking(
                 &candidate.partial,
                 &candidate.destination,
             )
@@ -406,7 +406,7 @@ pub(super) fn stage_restore_entries(
             "The state restore archive cannot be reinspected: {error}"
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&after)
+    if aster_use_core::metadata_is_link_or_reparse_point(&after)
         || !after.is_file()
         || after.len() != opened.len()
         || opened_modified.is_some_and(|modified| after.modified().ok() != Some(modified))
@@ -458,7 +458,7 @@ fn selected_restore_entries(
 }
 
 pub(super) fn validate_manifest(manifest: &StateBackupManifest) -> UseResult<()> {
-    if manifest.schema != A3S_USE_STATE_BACKUP_SCHEMA
+    if manifest.schema != ASTER_USE_STATE_BACKUP_SCHEMA
         || !valid_identity(&manifest.use_version)
         || !valid_identity(&manifest.os)
         || !valid_identity(&manifest.architecture)
@@ -481,7 +481,7 @@ pub(super) fn validate_manifest(manifest: &StateBackupManifest) -> UseResult<()>
     }
     let mut prior_package = None;
     for package in &manifest.authority.packages {
-        if a3s_use_core::PluginPackageId::parse(package.package_id.clone()).is_err()
+        if aster_use_core::PluginPackageId::parse(package.package_id.clone()).is_err()
             || !valid_digest(&package.receipt_digest)
             || prior_package.is_some_and(|prior| prior >= package.package_id.as_str())
         {
@@ -554,7 +554,7 @@ fn copy_verified_file(
             "A Use-owned backup payload cannot be inspected: {error}"
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() != entry.length
     {

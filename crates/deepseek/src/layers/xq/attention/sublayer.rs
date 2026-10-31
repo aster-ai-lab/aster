@@ -2,7 +2,7 @@
 //! selected packed KV with the explicit F16 boundary and grouped output.
 //! State preparation/publication remains the model transaction's job.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;

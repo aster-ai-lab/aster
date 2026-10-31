@@ -7,7 +7,7 @@ use crate::layers::{
     xq::{check_cancel, invalid, same_device},
     CudaLayerDevice,
 };
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

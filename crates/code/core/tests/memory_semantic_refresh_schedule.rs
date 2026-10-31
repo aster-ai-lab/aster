@@ -4,23 +4,23 @@
 #[path = "durable_memory_semantic_refresh/support.rs"]
 mod refresh_support;
 
-use a3s_code_core::llm::{LlmResponse, Message, StreamEvent, ToolDefinition};
-use a3s_code_core::memory::{
+use aster_core::llm::{LlmResponse, Message, StreamEvent, ToolDefinition};
+use aster_core::memory::{
     MemoryMaintenanceOptions, MemoryMaintenancePhase, ScheduledSemanticRefresh,
     SEMANTIC_REFRESH_JOB_NAME,
 };
-use a3s_code_core::{
+use aster_core::{
     Agent, AgentSession, CodeError, LlmClient, SessionBuildResource, SessionOptions,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     InMemoryRepository, MemoryChangeSet, MemoryOperation, MemoryRepository, MemoryStatus,
     RevisionMode,
 };
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorIndexStatus,
     VectorMutationConsistency, VectorRecord, VectorResult, VectorSearchRequest, VectorSearchResult,
 };
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::InMemoryStore;
 use async_trait::async_trait;
 use refresh_support::*;
 use std::sync::Arc;
@@ -87,7 +87,7 @@ impl VectorIndex for PostPublicationGateIndex {
     async fn replace_partition_if_revision(
         &self,
         partition: &str,
-        expected_revision: a3s_memory::vector::VectorRevision,
+        expected_revision: aster_durable_memory::vector::VectorRevision,
         records: Vec<VectorRecord>,
     ) -> VectorResult<VectorIndexStatus> {
         let status = self
@@ -106,7 +106,7 @@ impl VectorIndex for PostPublicationGateIndex {
     async fn remove_partition_if_revision(
         &self,
         partition: &str,
-        expected_revision: a3s_memory::vector::VectorRevision,
+        expected_revision: aster_durable_memory::vector::VectorRevision,
     ) -> VectorResult<VectorIndexStatus> {
         self.inner
             .remove_partition_if_revision(partition, expected_revision)
@@ -155,7 +155,7 @@ impl VectorIndex for PartitionAtomicOnlyIndex {
 
 fn session_options(
     session_id: &str,
-    durable_memory: a3s_code_core::DurableMemorySession,
+    durable_memory: aster_core::DurableMemorySession,
     schedule: ScheduledSemanticRefresh,
 ) -> SessionOptions {
     let llm: Arc<dyn LlmClient> = Arc::new(UnusedLlmClient);
@@ -488,9 +488,9 @@ async fn scheduled_semantic_refresh_rejects_missing_or_weak_bindings_before_star
 }
 
 // This fixture owns only the explicitly scheduled V2 refresh job.
-fn semantic_only_code_config() -> a3s_code_core::CodeConfig {
-    a3s_code_core::CodeConfig {
-        memory: Some(a3s_code_core::memory::MemoryConfig {
+fn semantic_only_code_config() -> aster_core::CodeConfig {
+    aster_core::CodeConfig {
+        memory: Some(aster_core::memory::MemoryConfig {
             prune_policy: None,
             ..Default::default()
         }),

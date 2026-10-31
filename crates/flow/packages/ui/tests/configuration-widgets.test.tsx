@@ -1,7 +1,7 @@
 import { createElement, useState } from 'react';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { resolveFormLocaleCatalog, type JsonObject, type JsonValue } from '@a3s-lab/form/core';
-import type { FormWidgetProps } from '@a3s-lab/form/react';
+import { resolveFormLocaleCatalog, type JsonObject, type JsonValue } from '@aster-ai-lab/form/core';
+import type { FormWidgetProps } from '@aster-ai-lab/form/react';
 import {
   WORKFLOW_CONFIGURATION_WIDGETS,
   WORKFLOW_SELECT_WIDGET_ALIASES,
@@ -24,18 +24,18 @@ import {
   WorkflowSliderWidget,
 } from '../src/react/workflow-configuration-editors';
 import { SelectControl } from '../src/react/select-control';
-import { FlowExpressionEditor } from '../src/react/a3s-flow-expression-widget';
-import { A3sFlowDagNodeConfigurationPanel } from '../src/react/a3s-flow-dag-node';
-import { A3sFlowSchemaWidget } from '../src/react/a3s-flow-schema-widget';
-import { A3sFlowBatchWidget } from '../src/react/a3s-flow-batch-widget';
+import { FlowExpressionEditor } from '../src/react/aster-flow-expression-widget';
+import { AsterFlowDagNodeConfigurationPanel } from '../src/react/aster-flow-dag-node';
+import { AsterFlowSchemaWidget } from '../src/react/aster-flow-schema-widget';
+import { AsterFlowBatchWidget } from '../src/react/aster-flow-batch-widget';
 import {
-  A3sFlowChildrenWidget,
-  A3sFlowWorkflowSpecWidget,
-} from '../src/react/a3s-flow-child-widgets';
+  AsterFlowChildrenWidget,
+  AsterFlowWorkflowSpecWidget,
+} from '../src/react/aster-flow-child-widgets';
 import {
-  a3sFlowDagNodeRegistry,
-  createA3sFlowDagNode,
-} from '../src/integrations/a3s-flow-node-manifest';
+  asterFlowDagNodeRegistry,
+  createAsterFlowDagNode,
+} from '../src/integrations/aster-flow-node-manifest';
 
 const conditionField = {
   id: 'condition-input',
@@ -69,7 +69,7 @@ describe('workflow configuration widgets', () => {
         <option value="local">Local</option>
       </SelectControl>,
     );
-    const root = view.container.querySelector<HTMLElement>('.a3s-flow-select-control');
+    const root = view.container.querySelector<HTMLElement>('.aster-flow-select-control');
     const trigger = screen.getByRole('combobox', { name: 'Immediate mode' });
 
     fireEvent.click(trigger);
@@ -85,7 +85,7 @@ describe('workflow configuration widgets', () => {
   it('keeps every value-source mode and expression envelope in sync', async () => {
     function Harness() {
       const [value, setValue] = useState<JsonObject>({
-        apiVersion: 'a3s.dev/flow-expression/v1',
+        apiVersion: 'aster.dev/flow-expression/v1',
         expression: {
           op: 'concat',
           values: [
@@ -111,7 +111,7 @@ describe('workflow configuration widgets', () => {
     }
 
     const view = render(<Harness />);
-    const root = view.container.querySelector<HTMLElement>('.a3s-flow-select-control');
+    const root = view.container.querySelector<HTMLElement>('.aster-flow-select-control');
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
     const trigger = screen.getByRole('combobox', { name: 'Value source' });
 
@@ -121,7 +121,7 @@ describe('workflow configuration widgets', () => {
       await waitFor(() => {
         expect(trigger.textContent).toContain(label);
         expect(
-          view.container.querySelector('.a3s-form-flow-expression')?.getAttribute('data-mode'),
+          view.container.querySelector('.aster-form-flow-expression')?.getAttribute('data-mode'),
           ).toBe(mode);
       });
       expect(screen.getByTestId('expression-op').textContent).toBe(op);
@@ -136,12 +136,12 @@ describe('workflow configuration widgets', () => {
   });
 
   it('keeps value-source changes working through the DAG configuration panel', async () => {
-    const manifest = a3sFlowDagNodeRegistry.require('flow.fail');
-    const initial = createA3sFlowDagNode('fail_1', manifest);
+    const manifest = asterFlowDagNodeRegistry.require('flow.fail');
+    const initial = createAsterFlowDagNode('fail_1', manifest);
     function Harness() {
       const [node, setNode] = useState(initial);
       return (
-        <A3sFlowDagNodeConfigurationPanel
+        <AsterFlowDagNodeConfigurationPanel
           dagNode={node}
           locale="en"
           onChange={setNode}
@@ -160,12 +160,12 @@ describe('workflow configuration widgets', () => {
   });
 
   it('resets panel-local scroll state when the DAG node instance changes', () => {
-    const manifest = a3sFlowDagNodeRegistry.require('flow.fail');
-    const first = createA3sFlowDagNode('fail_first', manifest);
-    const second = createA3sFlowDagNode('fail_second', manifest);
+    const manifest = asterFlowDagNodeRegistry.require('flow.fail');
+    const first = createAsterFlowDagNode('fail_first', manifest);
+    const second = createAsterFlowDagNode('fail_second', manifest);
     const onChange = vi.fn();
     const view = render(
-      <A3sFlowDagNodeConfigurationPanel
+      <AsterFlowDagNodeConfigurationPanel
         dagNode={first}
         locale="en"
         onChange={onChange}
@@ -173,14 +173,14 @@ describe('workflow configuration widgets', () => {
       />,
     );
     const firstSettings = view.container.querySelector<HTMLElement>(
-      '.a3s-form-workflow-node-settings',
+      '.aster-form-workflow-node-settings',
     );
     expect(firstSettings).not.toBeNull();
     if (!firstSettings) return;
     firstSettings.scrollTop = 180;
 
     view.rerender(
-      <A3sFlowDagNodeConfigurationPanel
+      <AsterFlowDagNodeConfigurationPanel
         dagNode={second}
         locale="en"
         onChange={onChange}
@@ -189,7 +189,7 @@ describe('workflow configuration widgets', () => {
     );
 
     const secondSettings = view.container.querySelector<HTMLElement>(
-      '.a3s-form-workflow-node-settings',
+      '.aster-form-workflow-node-settings',
     );
     expect(secondSettings).not.toBe(firstSettings);
     expect(secondSettings?.scrollTop).toBe(0);
@@ -203,7 +203,7 @@ describe('workflow configuration widgets', () => {
         step_key: 'first',
         step_name: 'task.first',
         input_mapping: {
-          apiVersion: 'a3s.dev/flow-expression/v1',
+          apiVersion: 'aster.dev/flow-expression/v1',
           expression: { op: 'field', path: 'input.first' },
         },
         max_attempts: 3,
@@ -214,7 +214,7 @@ describe('workflow configuration widgets', () => {
         step_key: 'second',
         step_name: 'task.second',
         input_mapping: {
-          apiVersion: 'a3s.dev/flow-expression/v1',
+          apiVersion: 'aster.dev/flow-expression/v1',
           expression: { op: 'field', path: 'input.second' },
         },
         max_attempts: 4,
@@ -223,7 +223,7 @@ describe('workflow configuration widgets', () => {
       },
     ] satisfies JsonObject[];
     const view = render(
-      <A3sFlowBatchWidget
+      <AsterFlowBatchWidget
         {...widgetProps({
           id: 'batch-members',
           node: { ...conditionField, label: '批量任务' },
@@ -258,7 +258,7 @@ describe('workflow configuration widgets', () => {
 
     const sourceSelect = screen.getAllByRole('combobox', { name: '取值方式' })[0];
     await waitFor(() =>
-      expect(sourceSelect.closest('.a3s-flow-select-control')).not.toBeNull(),
+      expect(sourceSelect.closest('.aster-flow-select-control')).not.toBeNull(),
     );
     fireEvent.click(sourceSelect);
     fireEvent.click(screen.getByRole('option', { name: '固定值' }));
@@ -294,7 +294,7 @@ describe('workflow configuration widgets', () => {
     });
     fireEvent.click(retrySelect);
     fireEvent.click(
-      within(retrySelect.closest('.a3s-flow-select-control') as HTMLElement).getByRole(
+      within(retrySelect.closest('.aster-flow-select-control') as HTMLElement).getByRole(
         'option',
         { name: '进入失败分支' },
       ),
@@ -339,7 +339,7 @@ describe('workflow configuration widgets', () => {
       },
     ] satisfies JsonObject[];
     const view = render(
-      <A3sFlowChildrenWidget
+      <AsterFlowChildrenWidget
         {...widgetProps({
           id: 'child-members',
           node: { ...conditionField, label: '子工作流' },
@@ -395,7 +395,7 @@ describe('workflow configuration widgets', () => {
     const secondPolicy = screen.getAllByRole('combobox', { name: '取消策略' })[1];
     fireEvent.click(secondPolicy);
     fireEvent.click(
-      within(secondPolicy.closest('.a3s-flow-select-control') as HTMLElement).getByRole(
+      within(secondPolicy.closest('.aster-flow-select-control') as HTMLElement).getByRole(
         'option',
         { name: '保留运行' },
       ),
@@ -406,7 +406,7 @@ describe('workflow configuration widgets', () => {
     ]);
     view.unmount();
   });
-  it('uses the A3S UI Select runtime for composite controls', async () => {
+  it('uses the Aster UI Select runtime for composite controls', async () => {
     const onChange = vi.fn();
     const view = render(
       <SelectControl aria-label="Run mode" onChange={onChange} value="durable">
@@ -414,11 +414,11 @@ describe('workflow configuration widgets', () => {
         <option value="local">Local</option>
       </SelectControl>,
     );
-    const root = view.container.querySelector('.a3s-flow-select-control');
+    const root = view.container.querySelector('.aster-flow-select-control');
     const trigger = screen.getByRole('combobox', { name: 'Run mode' });
 
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
-    expect(root?.getAttribute('data-a3s-components')).toContain('select');
+    expect(root?.getAttribute('data-aster-components')).toContain('select');
     expect(root?.querySelector('select')).toBeNull();
     fireEvent.click(trigger);
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
@@ -437,7 +437,7 @@ describe('workflow configuration widgets', () => {
         <option value="local">Local</option>
       </SelectControl>,
     );
-    const root = view.container.querySelector<HTMLElement>('.a3s-flow-select-control');
+    const root = view.container.querySelector<HTMLElement>('.aster-flow-select-control');
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
 
     const trigger = screen.getByRole('combobox', { name: 'Pointer mode' });
@@ -459,7 +459,7 @@ describe('workflow configuration widgets', () => {
     const view = render(
       <SelectControl
         aria-label="Execution mode"
-        data-a3s-form-path="settings.mode"
+        data-aster-form-path="settings.mode"
         data-testid="execution-select"
         name="settings.mode"
         onChange={vi.fn()}
@@ -483,7 +483,7 @@ describe('workflow configuration widgets', () => {
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
 
     expect(root?.querySelector('select')).toBeNull();
-    expect(root?.getAttribute('data-a3s-form-path')).toBe('settings.mode');
+    expect(root?.getAttribute('data-aster-form-path')).toBe('settings.mode');
     expect(root?.querySelector("[data-value='safe']")?.textContent).toBe('Safe mode');
     expect(root?.querySelector("[data-value='legacy']")?.getAttribute('aria-disabled')).toBe(
       'true',
@@ -507,7 +507,7 @@ describe('workflow configuration widgets', () => {
         <button type="button">Outside</button>
       </div>,
     );
-    const root = view.container.querySelector<HTMLElement>('.a3s-flow-select-control');
+    const root = view.container.querySelector<HTMLElement>('.aster-flow-select-control');
     const trigger = screen.getByRole('combobox', { name: 'Mode' });
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
 
@@ -542,7 +542,7 @@ describe('workflow configuration widgets', () => {
         <option value="fast">Fast</option>
       </SelectControl>,
     );
-    const root = view.container.querySelector<HTMLElement>('.a3s-flow-select-control');
+    const root = view.container.querySelector<HTMLElement>('.aster-flow-select-control');
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
     expect(screen.getByRole('combobox', { name: 'Policy' }).textContent).toContain('Safe');
     expect((root?.querySelector("input[type='hidden']") as HTMLInputElement)?.value).toBe('safe');
@@ -557,7 +557,7 @@ describe('workflow configuration widgets', () => {
       </SelectControl>,
     );
     const placeholderRoot = placeholderView.container.querySelector<HTMLElement>(
-      '.a3s-flow-select-control',
+      '.aster-flow-select-control',
     );
     await waitFor(() =>
       expect(placeholderRoot?.getAttribute('data-select-initialized')).toBe('true'),
@@ -573,7 +573,7 @@ describe('workflow configuration widgets', () => {
       </SelectControl>,
     );
     const emptyValueRoot = emptyValueView.container.querySelector<HTMLElement>(
-      '.a3s-flow-select-control',
+      '.aster-flow-select-control',
     );
     await waitFor(() =>
       expect(emptyValueRoot?.getAttribute('data-select-initialized')).toBe('true'),
@@ -600,7 +600,7 @@ describe('workflow configuration widgets', () => {
         </SelectControl>
       </label>,
     );
-    const root = view.container.querySelector<HTMLElement>('.a3s-flow-select-control');
+    const root = view.container.querySelector<HTMLElement>('.aster-flow-select-control');
     const trigger = screen.getByRole('combobox', { name: 'Mode' });
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
     expect(root?.id).toBe('field-mode-root');
@@ -637,7 +637,7 @@ describe('workflow configuration widgets', () => {
     expect(disabledTrigger.getAttribute('aria-disabled')).toBe('true');
 
     const keyboardRoot = view.container.querySelectorAll<HTMLElement>(
-      '.a3s-flow-select-control',
+      '.aster-flow-select-control',
     )[1];
     const keyboardTrigger = screen.getByRole('combobox', {
       name: 'Keyboard mode',
@@ -673,7 +673,7 @@ describe('workflow configuration widgets', () => {
         }),
       ),
     );
-    const root = view.container.querySelector<HTMLElement>('.a3s-flow-select-control');
+    const root = view.container.querySelector<HTMLElement>('.aster-flow-select-control');
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
     expect(
       within(view.container).getByRole('combobox', { name: 'Schema mode' }).textContent,
@@ -711,7 +711,7 @@ describe('workflow configuration widgets', () => {
         }),
       ),
     );
-    const root = view.container.querySelector<HTMLElement>('.a3s-flow-select-control');
+    const root = view.container.querySelector<HTMLElement>('.aster-flow-select-control');
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
     expect(root?.hasAttribute('data-placeholder')).toBe(false);
     expect(
@@ -754,7 +754,7 @@ describe('workflow configuration widgets', () => {
       ),
     );
     await waitFor(() =>
-      expect(view.container.querySelector('.a3s-flow-select-control')).not.toBeNull(),
+      expect(view.container.querySelector('.aster-flow-select-control')).not.toBeNull(),
     );
     expect(view.container.querySelector('select')).toBeNull();
     view.unmount();
@@ -776,7 +776,7 @@ describe('workflow configuration widgets', () => {
     }
 
     const view = render(<StatefulSelect />);
-    const root = view.container.querySelector('.a3s-flow-select-control');
+    const root = view.container.querySelector('.aster-flow-select-control');
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
     const trigger = screen.getByRole('combobox', { name: 'Run mode' });
     fireEvent.click(trigger);
@@ -789,7 +789,7 @@ describe('workflow configuration widgets', () => {
     view.unmount();
   });
 
-  it('uses the A3S UI Select runtime for ordinary enum fields', async () => {
+  it('uses the Aster UI Select runtime for ordinary enum fields', async () => {
     const onChange = vi.fn();
     const registry = createWorkflowConfigurationWidgetRegistry();
     const view = render(
@@ -813,7 +813,7 @@ describe('workflow configuration widgets', () => {
     );
 
     expect(view.container.querySelector('select')).toBeNull();
-    const root = view.container.querySelector('.a3s-flow-select-control');
+    const root = view.container.querySelector('.aster-flow-select-control');
     expect(root).not.toBeNull();
     await waitFor(() => expect(root?.getAttribute('data-select-initialized')).toBe('true'));
 
@@ -879,7 +879,7 @@ describe('workflow configuration widgets', () => {
 
     await waitFor(() => expect(editor?.dataset.codeEditorInitialized).toBe('true'));
     expect(editor?.getAttribute('role')).toBe('group');
-    expect(editor?.getAttribute('data-a3s-components')).toContain('code-editor');
+    expect(editor?.getAttribute('data-aster-components')).toContain('code-editor');
     expect(editor?.dataset.indentSize).toBe('2');
     expect(editor?.dataset.validation).toBe('json');
     expect(editor?.querySelector('textarea')?.id).toBe('localized-code-editor');
@@ -933,7 +933,7 @@ describe('workflow configuration widgets', () => {
       const [resetCount, setResetCount] = useState(0);
       return (
         <>
-          <A3sFlowSchemaWidget
+          <AsterFlowSchemaWidget
             {...widgetProps({
               id: 'schema-editor',
               node: { ...conditionField, label: 'Input schema' },
@@ -1010,7 +1010,7 @@ describe('workflow configuration widgets', () => {
       required: ['email'],
     };
     const view = render(
-      <A3sFlowSchemaWidget
+      <AsterFlowSchemaWidget
         {...widgetProps({
           id: 'schema-fields',
           node: { ...conditionField, label: 'Input schema' },
@@ -1034,7 +1034,7 @@ describe('workflow configuration widgets', () => {
       }),
     );
     expect(onChange.mock.calls.at(-1)?.[0]).not.toEqual(
-      expect.arrayContaining([expect.objectContaining({ __a3s_form_invalid_schema_draft__: expect.anything() })]),
+      expect.arrayContaining([expect.objectContaining({ __aster_form_invalid_schema_draft__: expect.anything() })]),
     );
     view.unmount();
   });
@@ -1308,7 +1308,7 @@ describe('workflow configuration widgets', () => {
         }),
       ),
     );
-    expect(view.container.querySelectorAll('.a3s-form-workflow-empty-control')).toHaveLength(2);
+    expect(view.container.querySelectorAll('.aster-form-workflow-empty-control')).toHaveLength(2);
     view.rerender(
       createElement(
         Widget,
@@ -1412,18 +1412,18 @@ describe('workflow configuration widgets', () => {
         id="focused-expression"
         locale="zh-CN"
         value={{
-          apiVersion: 'a3s.dev/flow-expression/v1',
+          apiVersion: 'aster.dev/flow-expression/v1',
           expression: { op: 'field', path: 'input.configured' },
         }}
         onChange={vi.fn()}
       />,
     );
     const source = focused.container.querySelector(
-      '.a3s-form-flow-expression-source input',
+      '.aster-form-flow-expression-source input',
     ) as HTMLInputElement;
     source.focus();
-    expect(document.activeElement?.closest('.a3s-form-flow-expression-source')).not.toBeNull();
-    expect(focused.container.querySelector('.a3s-form-flow-expression')?.getAttribute('data-mode')).toBe(
+    expect(document.activeElement?.closest('.aster-form-flow-expression-source')).not.toBeNull();
+    expect(focused.container.querySelector('.aster-form-flow-expression')?.getAttribute('data-mode')).toBe(
       'source',
     );
     focused.unmount();
@@ -1463,7 +1463,7 @@ describe('workflow configuration widgets', () => {
       />,
     );
     await waitFor(() =>
-      expect(dropdown.container.querySelector('.a3s-flow-select-control')?.getAttribute('data-select-initialized')).toBe(
+      expect(dropdown.container.querySelector('.aster-flow-select-control')?.getAttribute('data-select-initialized')).toBe(
         'true',
       ),
     );
@@ -1501,7 +1501,7 @@ describe('workflow configuration widgets', () => {
     const selected = tabs.getByRole('radio', { name: 'Native TypeScript' }) as HTMLInputElement;
     expect(selected.checked).toBe(true);
     selected.focus();
-    expect(document.activeElement?.closest('.a3s-form-workflow-segments')).not.toBeNull();
+    expect(document.activeElement?.closest('.aster-form-workflow-segments')).not.toBeNull();
     tabs.unmount();
     const badTabs = render(
       createElement(
@@ -1529,7 +1529,7 @@ describe('workflow configuration widgets', () => {
       />,
     );
     slider.getByRole('slider', { name: label('人工复核阈值', 'Review threshold') }).focus();
-    expect(document.activeElement?.closest('.a3s-form-workflow-slider')).not.toBeNull();
+    expect(document.activeElement?.closest('.aster-form-workflow-slider')).not.toBeNull();
     expect(slider.getByRole('alert').textContent).toContain('取值超出范围');
     slider.unmount();
 
@@ -1609,7 +1609,7 @@ describe('workflow configuration widgets', () => {
         }),
       ),
     );
-    const chips = choices.container.querySelector('.a3s-form-workflow-multiselect-chips') as HTMLElement;
+    const chips = choices.container.querySelector('.aster-form-workflow-multiselect-chips') as HTMLElement;
     chips.focus();
     expect(document.activeElement).toBe(chips);
     expect(choices.getByRole('alert').textContent).toContain('此项为必填');
@@ -1691,7 +1691,7 @@ describe('workflow configuration widgets', () => {
     );
     expect(code.getByRole('alert').textContent).toContain('请填写代码');
     code.getByRole('textbox', { name: label('预处理代码', 'Preprocessing code') }).focus();
-    expect(document.activeElement?.closest('.a3s-form-workflow-source-editor.is-code')).not.toBeNull();
+    expect(document.activeElement?.closest('.aster-form-workflow-source-editor.is-code')).not.toBeNull();
     code.unmount();
 
     const prompt = render(
@@ -1731,7 +1731,7 @@ describe('workflow configuration widgets', () => {
     badMcp.unmount();
 
     const batch = render(
-      <A3sFlowBatchWidget
+      <AsterFlowBatchWidget
         {...widgetProps({
           node: { ...conditionField, label: label('任务列表', 'Steps to run') },
           required: true,
@@ -1742,7 +1742,7 @@ describe('workflow configuration widgets', () => {
     expect(batch.getByRole('alert').textContent).toContain('还没有任务');
     batch.unmount();
     const filledBatch = render(
-      <A3sFlowBatchWidget
+      <AsterFlowBatchWidget
         {...widgetProps({
           node: { ...conditionField, label: label('任务列表', 'Steps to run') },
           value: [
@@ -1750,7 +1750,7 @@ describe('workflow configuration widgets', () => {
               step_key: 'review',
               step_name: 'task.review',
               input_mapping: {
-                apiVersion: 'a3s.dev/flow-expression/v1',
+                apiVersion: 'aster.dev/flow-expression/v1',
                 expression: { op: 'field', path: 'input' },
               },
               max_attempts: 1,
@@ -1761,12 +1761,12 @@ describe('workflow configuration widgets', () => {
         })}
       />,
     );
-    const batchList = filledBatch.container.querySelector('.a3s-form-flow-batch-list');
+    const batchList = filledBatch.container.querySelector('.aster-form-flow-batch-list');
     expect(batchList?.textContent).toContain('task.review');
     filledBatch.unmount();
 
     const children = render(
-      <A3sFlowChildrenWidget
+      <AsterFlowChildrenWidget
         {...widgetProps({
           node: { ...conditionField, label: label('子工作流列表', 'Child workflows') },
           required: true,
@@ -1777,19 +1777,19 @@ describe('workflow configuration widgets', () => {
     expect(children.getByRole('alert').textContent).toContain('还没有子工作流');
     children.unmount();
     const filledChildren = render(
-      <A3sFlowChildrenWidget
+      <AsterFlowChildrenWidget
         {...widgetProps({
           node: { ...conditionField, label: label('子工作流列表', 'Child workflows') },
           value: [{ child_id: 'child.review' }],
         })}
       />,
     );
-    const childList = filledChildren.container.querySelector('.a3s-form-flow-children-list');
+    const childList = filledChildren.container.querySelector('.aster-form-flow-children-list');
     expect(childList?.textContent).toContain('child.review');
     filledChildren.unmount();
 
     const spec = render(
-      <A3sFlowWorkflowSpecWidget
+      <AsterFlowWorkflowSpecWidget
         {...widgetProps({
           node: { ...conditionField, label: label('子工作流定义', 'Workflow spec') },
           required: true,
@@ -1798,9 +1798,9 @@ describe('workflow configuration widgets', () => {
       />,
     );
     expect(spec.getByRole('alert').textContent).toContain('需要一个对象');
-    const name = spec.container.querySelector('.a3s-form-flow-spec input') as HTMLInputElement;
+    const name = spec.container.querySelector('.aster-form-flow-spec input') as HTMLInputElement;
     name.focus();
-    expect(document.activeElement?.closest('.a3s-form-flow-spec')).not.toBeNull();
+    expect(document.activeElement?.closest('.aster-form-flow-spec')).not.toBeNull();
     spec.unmount();
 
     const handle = render(
@@ -1829,7 +1829,7 @@ describe('workflow configuration widgets', () => {
         }),
       ),
     );
-    expect(duration.container.querySelector('.a3s-form-workflow-duration')).not.toBeNull();
+    expect(duration.container.querySelector('.aster-form-workflow-duration')).not.toBeNull();
     expect(duration.getByRole('alert').textContent).toContain('单位不在声明列表内');
     duration.unmount();
 
@@ -1855,7 +1855,7 @@ describe('workflow configuration widgets', () => {
         })}
       />,
     );
-    expect(missingQuantity.container.querySelector('.a3s-form-workflow-required-marker')?.textContent).toBe('*');
+    expect(missingQuantity.container.querySelector('.aster-form-workflow-required-marker')?.textContent).toBe('*');
     expect(missingQuantity.getByRole('alert')).toBeTruthy();
     missingQuantity.unmount();
 
@@ -1895,7 +1895,7 @@ describe('schema editor empty state', () => {
   it('makes the empty state itself the add-field action', () => {
     const onChange = vi.fn();
     const view = render(
-      <A3sFlowSchemaWidget
+      <AsterFlowSchemaWidget
         {...widgetProps({
           id: 'schema-empty-action',
           value: {},
@@ -1918,7 +1918,7 @@ describe('schema editor empty state', () => {
 
   it('offers exactly one add affordance while the list is empty', () => {
     const view = render(
-      <A3sFlowSchemaWidget
+      <AsterFlowSchemaWidget
         {...widgetProps({
           id: 'schema-empty-single',
           value: {},
@@ -1934,7 +1934,7 @@ describe('schema editor empty state', () => {
 
   it('moves the add action to the footer once a field exists', () => {
     const view = render(
-      <A3sFlowSchemaWidget
+      <AsterFlowSchemaWidget
         {...widgetProps({
           id: 'schema-filled-footer',
           value: {
@@ -1955,7 +1955,7 @@ describe('schema editor empty state', () => {
 
   it('disables the empty-state action while the form is disabled', () => {
     const view = render(
-      <A3sFlowSchemaWidget
+      <AsterFlowSchemaWidget
         {...widgetProps({
           id: 'schema-empty-disabled',
           value: {},

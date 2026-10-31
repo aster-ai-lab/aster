@@ -1,0 +1,1153 @@
+# Aster Power Attestation Hardening Plan
+
+Status: v1 remediation complete (remaining items explicitly qualified)
+Scope: Aster Power TEE and NVIDIA GPU confidential-computing attestation soundness
+Initial code baseline reviewed locally: `4efcd1c`; status below tracks later
+hardening commits on the v0.9 development line.
+
+## Purpose
+
+This plan responds to the coordinated disclosure report covering model hash
+enforcement, cached attestation state, optional hardware verification, simulated
+TEE acceptance, encrypted model hash semantics, CPU/GPU attestation binding, and
+runtime policy claims.
+
+The goal is to make the production attestation path fail closed by default and
+to make the verifier's claim set match what Power actually runs.
+
+NVIDIA GPU support is a production requirement for Power. This plan therefore
+separates ordinary CUDA acceleration from NVIDIA GPU confidential-computing
+attestation: ordinary CUDA can remain a supported performance mode, while
+`gpu-confidential` must fail closed unless NVIDIA evidence is configured,
+verified by the deployment's NVIDIA flow, and cryptographically bound to the
+CPU TEE evidence. It must also fail closed when the final runtime GPU execution
+configuration is CPU-only.
+
+## Patch Status
+
+Landed in the current working tree:
+
+- Added `tee_policy_mode` with `development`, `strict`, and
+  `gpu-confidential` modes. The default is `strict`.
+- Made strict policy reject simulated TEE by default through the effective TEE
+  allowlist.
+- Made strict and `gpu-confidential` startup require a 48-byte
+  `expected_measurements` launch-measurement pin for the detected hardware TEE
+  type, then self-check that the current attestation report matches it.
+- Made strict TEE startup require `model_hashes` or `model_signing_key`, and
+  require every registered local model to be pinned when no signing key is
+  configured.
+- Added NVIDIA GPU confidential-computing evidence providers for configured
+  evidence/verdict bytes, live `nvattest-cli`, and direct `nras-rest`
+  attestation. `gpu-confidential` now fails closed unless GPU evidence and an
+  NRAS/NVAT verdict digest are bound into v2 claims and the final runtime
+  configuration enables GPU execution/offload.
+- Added production startup validation for NVIDIA GPU confidential-computing
+  metadata: `gpu-confidential` requires the canonical `nvidia-nras` provider
+  label, an absolute executable `nvattest_path` for the live CLI path, HTTPS
+  custom NRAS/RIM/OCSP service URLs without embedded credentials, and an
+  absolute existing non-empty relying-party policy file when one is configured;
+  file-backed configured and direct NRAS REST evidence/verdict sources must
+  also use absolute paths to existing non-empty regular files.
+- Changed `/v1/attestation?model=...` to re-hash the current local model
+  artifact and fail on missing, malformed, or stale model hashes instead of
+  silently omitting the model binding.
+- Changed `/v1/attestation` to reject unknown query parameters instead of
+  silently dropping caller-supplied attestation policy.
+- Added deterministic directory-manifest hashing for HuggingFace/Vision-style
+  model directories and emits `directory-manifest-sha256` model claims.
+- Model registration now rejects unsupported `format` values and unknown
+  top-level registration or pull request fields instead of silently defaulting
+  local artifacts to GGUF or dropping caller-supplied model policy.
+- Model registration now accepts typed LoRA adapter and multimodal projector
+  locations, measures their size and SHA-256 itself, and rejects caller-supplied
+  integrity fields. Strict TEE startup rejects legacy path-only auxiliary
+  references, backend load re-verifies bytes, and signature policy requires a
+  signature for each content-addressed auxiliary artifact.
+- SafeTensors and vision model loading now reject explicit invalid
+  `default_parameters.isq` values instead of silently falling back to Q8_0.
+- Added typed encrypted model digest semantics. Explicit `model_hashes` pins
+  encrypted models by decrypted plaintext SHA-256 and model claims include both
+  `plaintext_digest` and `ciphertext_digest`; manifest-only fallback emits an
+  explicit `ciphertext-artifact-sha256` claim.
+- Tightened verifier-side model digest claim validation so plaintext,
+  ciphertext, and directory-manifest digest kinds must be internally
+  consistent with their typed optional digest fields.
+- Added `VerificationPolicy` and `verify_report_strict()` so production
+  verifier callers fail when hardware signature verification is missing and
+  reject simulated TEE reports; strict verification now also requires an
+  operator-pinned launch measurement.
+- Made `aster-power-verify` default to strict verification; skipping hardware
+  signatures and measurement pinning now requires explicit `--allow-offline`,
+  while strict mode requires `--expected-measurement`.
+- Bound policy-visible SEV-SNP `report_data` and `measurement` fields to their
+  exact offsets in the raw signed report before invoking the hardware verifier;
+  a valid signature over unrelated bytes can no longer authenticate substituted
+  JSON fields.
+- Removed the incorrect built-in attempt to verify a local Intel TDREPORT MAC
+  with a PCK public key. `TdxVerifier` now fails closed until Power implements
+  DCAP Quote generation, QVL verification, collateral freshness, and exact
+  Quote REPORTDATA/MRTD extraction.
+- Added `AttestationClaimsV2`, model digest claims, GPU evidence claims,
+  canonical JSON hashing, and CPU TEE `report_data` binding for model-bound
+  and GPU-confidential attestations.
+- Updated verifier logic so reports with v2 claims verify nonce/model/GPU
+  digests and GPU evidence provider/format/count pins from the canonical claims
+  and reject mismatched claims/report_data bindings.
+- Added runtime policy claims for model-bound attestations. Power now hashes
+  applied chat templates, canonical GPU execution/offload parameters, and the
+  resolved local inference configuration into `AttestationClaimsV2`; unapplied
+  manifest system prompts, pre-seeded messages, and default generation
+  parameters are intentionally not claimed. Remote proxy receipts omit local
+  execution claims because their inference occurs upstream.
+- The inference-execution claim covers normalized speculative/MTP/FR controls,
+  prompt-cache bounds, residency/load policy, threads, Flash Attention, and
+  parallel slots. Strict verification requires an independent pin when the
+  claim is present; GPU-confidential verification requires it unconditionally.
+- Extended execution policy claims with a portable auxiliary-artifacts digest
+  covering speculative drafts, LoRA adapters, and multimodal projectors. The
+  attestation endpoint re-verifies their current bytes, request receipts carry
+  the same claim, and strict verification requires a caller-owned expected
+  digest whenever the server declares auxiliary artifacts.
+- Added verifier and CLI checks for runtime policy digests via
+  `VerificationPolicy::require_runtime_policy()` and
+  `aster-power-verify --require-runtime-policy`.
+- Added `VerificationPolicy::gpu_confidential()` /
+  `require_gpu_confidential()` and `aster-power-verify --gpu-confidential` so
+  production NVIDIA GPU confidential-computing verifiers can require v2 claims,
+  nonce freshness, an expected NVIDIA NRAS verdict digest, verifier-pinned GPU
+  provider/format/count policy, structured device claims, verifier-pinned GPU
+  topology, claims schema version, identity/version policy, secure-boot/debug
+  state, runtime policy, GPU execution/offload digest pinning, and server
+  inference-execution digest pinning as one
+  profile. The production GPU profile no longer accepts raw evidence digest
+  pinning as a substitute for pinning the NRAS verdict digest.
+- Added per-request inference receipts for `/v1/chat/completions` and
+  `/v1/completions`. Non-streaming responses include `attestation_receipt` and
+  `attestation_receipt_sha256`; streaming responses emit a final receipt event
+  before `[DONE]`. Receipt v2 includes the same runtime
+  chat-template/GPU/inference execution policy claim semantics used by model-bound
+  attestation.
+- OpenAI-compatible chat and completion requests now expose extended local
+  sampling controls (`top_k`, `min_p`, `repeat_penalty`, `repeat_last_n`,
+  `penalize_newline`, `num_ctx`, `mirostat*`, `tfs_z`, and `typical_p`), pass
+  them through to backend inference requests, and include them in receipt
+  decoding-parameter hashes.
+- OpenAI-compatible chat requests preserve `parallel_tool_calls` through the
+  remote/proxy inference path and include it in receipt decoding-parameter
+  hashes. Local chat backends reject `parallel_tool_calls=false` when tools are
+  provided because they cannot enforce single tool-call generation.
+- OpenAI-compatible chat and completion requests now explicitly accept the
+  default single-choice output (`n = 1`) and reject unsupported multi-choice
+  requests, with explicit `n` values covered by receipt decoding-parameter
+  hashes.
+- OpenAI-compatible text completion requests now explicitly reject `suffix`
+  fill-in-the-middle requests instead of silently dropping the suffix before
+  backend inference or receipt comparison.
+- OpenAI-compatible chat and text completion requests now explicitly reject
+  logprob response-shape requests, and text completions reject `echo = true`,
+  instead of silently returning ordinary responses without the requested fields.
+- OpenAI-compatible chat and text completion requests now explicitly reject
+  `logit_bias`, and text completions accept only the default-equivalent
+  `best_of = 1`, with explicit `best_of` values covered by receipt hashes.
+- OpenAI-compatible chat and completion requests preserve unknown top-level
+  request fields during parsing and reject them instead of silently dropping
+  unsupported output or provider policy before backend inference and receipt
+  binding.
+- OpenAI-compatible chat requests now support `max_completion_tokens` as an
+  alias for the backend generated-token limit, reject conflicts with
+  `max_tokens`, and include both aliases in receipt decoding-parameter hashes.
+- OpenAI-compatible chat requests now map legacy `functions` and
+  `function_call` fields onto modern `tools` and `tool_choice`, reject mixed
+  legacy/modern tool policy fields, preserve function `strict` schema flags,
+  and bind the effective tool policy in receipts.
+- OpenAI-compatible chat requests preserve unknown nested tool definition
+  fields during parsing and reject them instead of silently dropping tool
+  schema or tool wrapper policy before proxy forwarding and receipt binding.
+- OpenAI-compatible chat requests now reject local-backend tool-choice
+  policies that Power cannot enforce (`tool_choice = "none"` with tools,
+  `tool_choice = "required"`, or named tool/function choices), while preserving
+  those policies for remote/proxy models that can enforce them upstream.
+- OpenAI-compatible chat requests preserve unknown nested `tool_choice` and
+  legacy `function_call` fields during parsing and reject them instead of
+  silently dropping tool-selection policy before proxy forwarding and receipt
+  binding.
+- OpenAI-compatible chat requests now reject message-level `thinking` input
+  instead of receipt-binding reasoning content that is not forwarded into
+  backend prompt construction.
+- OpenAI-compatible chat requests preserve unknown nested message, content-part,
+  and image URL fields during parsing and reject them instead of silently
+  dropping prompt or multimodal policy before proxy forwarding and receipt
+  binding.
+- OpenAI-compatible local chat backends now reject unsupported message roles
+  instead of silently coercing unknown roles to `user`; remote/proxy models keep
+  role passthrough for upstream enforcement.
+- OpenAI-compatible chat requests now accept only the default text output
+  modality (`modalities = ["text"]`) and reject unsupported output controls
+  (`audio`, `prediction`, and `reasoning_effort`) instead of silently ignoring
+  response-shape requests that backend inference and receipts cannot honor.
+- OpenAI-compatible chat and completion requests now reject unsupported
+  `response_format.type` values and incomplete `json_schema` response formats
+  as well as unknown nested response-format policy fields instead of
+  receipt-binding output constraints that local backends cannot enforce.
+- Added opt-in proxy upstream effective-prompt digest support. Proxy receipts
+  remain non-overclaiming by default; when configured, Power asks the upstream
+  digest endpoint for a `chat.rendered-prompt` SHA-256 before inference and can
+  fail closed if the endpoint is required.
+- Added mistralrs text-chat effective-prompt coverage using a
+  domain-separated SHA-256 over the exact prompt token ID sequence returned by
+  mistralrs' own tokenization path. This is emitted as
+  `kind = "chat.prompt-token-ids"` rather than pretending to be rendered bytes.
+- Fixed OpenAI-compatible message-level `images` forwarding into backend chat
+  requests and mistralrs multimodal image detection/decoding for those
+  message-level payloads, with regression coverage, so Ollama-native base64
+  multimodal payloads are not dropped before inference.
+- Fixed llama.cpp chat image collection to include request-level `images` and
+  made llama.cpp multimodal chat leave `effective_prompt` absent instead of
+  overclaiming a text-only rendered prompt digest.
+- Made picolm reject image-bearing chat requests fail-closed and leave
+  `effective_prompt` absent for image-bearing requests instead of silently
+  rendering only the text parts.
+- Fixed proxy chat request bodies to preserve structured multimodal content,
+  message images, tools, tool choice, parallel tool-call policy, response
+  format, function `strict` schema flags, and extended sampling controls when
+  forwarding inference and when requesting an upstream
+  `effective_prompt` digest.
+- Preserved OpenAI `json_schema` response-format wire shape for remote/proxy
+  chat requests while keeping local backend schema extraction unchanged, and
+  reject unknown nested response-format fields before forwarding or receipt
+  binding.
+- Added OpenAI completion `response_format` coverage through API parsing,
+  backend/proxy forwarding, and request receipt binding.
+- Forwarded OpenAI `stream_options` for streaming requests through backend
+  requests and proxy chat/completion bodies so receipt-bound streaming protocol
+  choices reach remote upstreams. Non-streaming requests now reject
+  `stream_options` instead of receipt-binding options that cannot affect the
+  response shape, and unsupported nested stream option fields are preserved
+  during parsing and rejected instead of being silently dropped before receipt
+  binding.
+- Added regression tests for strict policy, runtime model-hash binding, stale
+  model-file rejection, GPU confidential fail-closed behavior, runtime policy
+  digest binding, proxy and mistralrs effective-prompt digest handling, request
+  receipts, multimodal receipt input-digest coverage, and strict verifier
+  behavior.
+- Fixed live `aster-power-verify --url` attestation fetches to build URLs with a
+  URL parser, preserving deployment base paths, dropping stale query/fragment
+  components, and percent-encoding query parameters so model names containing
+  query-special characters are not misparsed during verifier-side nonce/model
+  binding.
+- Fixed `aster-power` model-management CLI URL construction to percent-encode
+  model names as path segments for `models show` / `models rm`, so names with
+  `/`, `:`, spaces, or query-special characters resolve to the intended model.
+- Fixed remote model hub URL construction to use a URL parser for download and
+  file-list endpoints, preserving intended repo/file subdirectories while
+  percent-encoding spaces and query-special characters and rejecting empty or
+  dot path segments in local references.
+- Fixed remote hub token resolution to use the selected source's token
+  environment variable plus the generic `ASTER_POWER_HUB_TOKEN`, avoiding
+  accidental cross-use of HuggingFace and ModelScope credentials.
+- Bounded remote hub file-list API response bodies so malformed ModelScope or
+  HuggingFace file-list endpoints cannot force unbounded memory growth before
+  JSON parsing.
+- Tightened remote hub download accounting so known-size model downloads fail
+  if the response exceeds the declared size or the completed byte count
+  overflows, before writing an oversized chunk into the partial file.
+- Tightened remote hub resume handling so stale partial downloads larger than
+  the declared model size are removed and rejected instead of being treated as
+  complete artifacts.
+- Tightened remote hub download completion checks so known-size downloads must
+  receive exactly the declared byte count before the partial file is promoted
+  into the blob store.
+- Made blob integrity verification hash model files with the existing streaming
+  SHA-256 path instead of reading whole model artifacts into memory.
+- Made `ASTER_POWER_MODEL_SOURCE` fail closed for unknown configured values
+  instead of silently falling back to ModelScope.
+- Fixed proxy backend endpoint URL construction to use a URL parser, preserving
+  upstream base paths, dropping stale query/fragment components, and
+  percent-encoding configured effective-prompt digest path segments.
+- Tightened proxy SSE parsing so complete `data:` lines are rejected when the
+  line plus newline would exceed the per-event buffer limit.
+- Made proxy SSE parsing buffer raw bytes and decode only complete event lines,
+  so multibyte UTF-8 split across network chunks is not silently corrupted.
+- Tightened proxy chat/completion SSE event parsing so upstream error objects
+  and malformed stream chunks fail closed instead of being silently converted
+  to empty output.
+- Tightened proxy stream parsing so empty `choices` events are accepted only
+  for usage-only chunks and otherwise fail closed.
+- Tightened proxy stream parsing so multi-choice upstream chunks fail closed
+  instead of silently dropping all but the first choice.
+- Tightened proxy stream parsing so blank `finish_reason` values fail closed
+  instead of being forwarded as empty done reasons.
+- Preserved proxy chat stream reasoning and tool-call deltas while making
+  malformed tool-call chunks fail closed instead of being silently dropped.
+- Added proxy assembly for OpenAI-style incremental streaming tool-call
+  deltas, preserving complete tool calls while rejecting incomplete or
+  conflicting tool-call streams.
+- Bounded proxy streaming tool-call assembly so malicious upstreams cannot
+  force unbounded growth through excessive tool calls or accumulated function
+  arguments.
+- Preserved backend-emitted chat tool calls in non-streaming OpenAI responses
+  instead of dropping them while collecting streamed backend chunks.
+- Tightened proxy SSE line parsing so malformed non-empty `data:` events fail
+  closed instead of being skipped before stream-event validation.
+- Tightened proxy SSE EOF handling so truncated partial event lines fail closed
+  instead of being treated as a clean stream end.
+- Made proxy effective-prompt digest collection leave image-bearing chat
+  requests absent by default and fail closed when the digest endpoint is
+  required, avoiding text rendered-prompt overclaims for opaque multimodal
+  proxy paths.
+- Bounded proxy upstream SSE event buffering so malformed streaming responses
+  cannot force unbounded memory growth before a complete `data:` line arrives.
+- Bounded proxy effective-prompt digest response bodies so malformed upstream
+  digest endpoints cannot force unbounded memory growth before JSON parsing.
+- Bounded proxy embeddings response bodies before JSON parsing, including
+  fail-closed `Content-Length` prechecks for oversized upstream responses.
+- Tightened proxy embeddings response parsing so malformed or out-of-range
+  embedding vectors fail closed instead of being silently converted to empty or
+  partial vectors.
+- Tightened proxy embeddings response validation so upstreams must return
+  exactly one embedding vector per requested input item.
+- Tightened proxy embeddings shape validation so upstream vectors must be
+  non-empty and have consistent dimensions within each response.
+- Made OpenAI embeddings request encoding explicit: the endpoint accepts the
+  default float output or `encoding_format = "float"` and rejects unsupported
+  formats such as `base64` instead of silently returning float vectors.
+- Made OpenAI embeddings `dimensions` explicit and rejected for now, avoiding
+  silent fallback to native model dimensions when a client requests an output
+  dimension override.
+- OpenAI-compatible embeddings requests preserve unknown top-level request
+  fields during parsing and reject them instead of silently dropping unsupported
+  provider or abuse-monitoring policy before backend inference.
+- Extended receipt policy pins so `ExpectedReceipt` / `verify_receipt_policy`
+  can directly require a matching `effective_prompt` digest, while still
+  detecting conflicts with explicit effective-prompt absence.
+- Tightened verifier CLI effective-prompt backend/kind pins so surrounding
+  whitespace is ignored and blank values do not become accidental policy pins.
+- Tightened SDK `ExpectedReceipt` effective-prompt backend/kind pins so blank
+  values are ignored instead of becoming accidental policy pins or absence
+  conflicts.
+- Normalized SDK receipt and effective-prompt digest hex pins so direct verifier
+  helpers trim surrounding whitespace and share the same `sha256:` parsing path.
+- Made `aster-power-verify --receipt-chat-request-file` require
+  `effective_prompt` absence by default for image-bearing chat requests unless
+  the verifier explicitly pins an effective-prompt digest/backend/kind, with
+  coverage for both rejecting overclaimed image receipts and accepting image
+  receipts that keep `effective_prompt` absent.
+- Tightened `aster-power-verify` digest pin parsing so receipt, effective-prompt,
+  GPU evidence/verdict, chat-template, decoding-policy, GPU execution, and
+  inference-execution pins
+  must be exactly 64-character SHA-256 hex values before verification policy is
+  evaluated.
+- Tightened GPU evidence/verdict SDK verifier pins so callers must provide full
+  32-byte SHA-256 digests instead of relying on mismatch behavior for malformed
+  pins.
+- Tightened GPU freshness nonce validation so SDK GPU evidence and device-claim
+  verification rejects malformed non-32-byte GPU/CPU nonce bindings.
+- Tightened v2 claims SDK verifier helpers so direct model, GPU, and runtime
+  policy binding checks reject malformed actual claim digest fields before
+  policy comparison.
+- Tightened v2 claims SDK verifier helpers so direct nonce, GPU metadata,
+  structured device-claim, and runtime-policy checks reject unexpected claims
+  schema identifiers before accepting policy matches.
+- Tightened GPU metadata and structured device-claim SDK verifier helpers so
+  they reject malformed GPU evidence claim digests before policy comparison.
+- Tightened runtime-policy SDK verifier pins so chat-template, decoding-policy,
+  and GPU execution pins must be full 32-byte SHA-256 digests.
+- Tightened model-hash verifier pins so SDK and CLI verification require a full
+  32-byte SHA-256 digest instead of accepting prefix-length legacy pins.
+- Tightened launch-measurement verification so SDK and CLI verification require
+  48-byte report measurements and 48-byte expected measurement pins.
+- Tightened v2 claims binding verification so self-consistent but malformed
+  claim sets are rejected for wrong schema or non-32-byte model/GPU/runtime
+  digests before report-data comparison.
+- Tightened v2 claims and receipt runtime-policy well-formed checks so empty
+  runtime policies, prompt template sources without matching digests, empty GPU
+  evidence format labels, and zero GPU evidence counts are rejected before
+  report-data or receipt-policy comparison.
+- Made attestation JSON hex-byte deserialization reject malformed odd-length
+  hex as a serde error instead of panicking while loading external reports.
+- Made attestation nonce query decoding reject malformed non-ASCII hex as a
+  400 response instead of panicking while parsing client input.
+- Made encrypted audit log line decryption reject malformed nonce hex without
+  panicking when inspecting corrupted or untrusted audit files.
+- Added receipt coverage and verifier pins for streaming-request
+  `stream_options`, so clients can distinguish streaming output protocol
+  choices such as `include_usage`; unsupported nested stream option fields now
+  fail closed during receipt generation and original-request verification.
+- Added fail-closed receipt and verifier handling for unknown top-level chat and
+  text completion request fields so unsupported request policy cannot be
+  silently dropped before hashing.
+- Added fail-closed receipt and verifier handling for unknown nested
+  `response_format` and `response_format.json_schema` fields so output policy
+  extensions cannot be silently dropped before hashing.
+- Added fail-closed receipt and verifier handling for unknown chat message,
+  content-part, and image URL fields so prompt and multimodal policy extensions
+  cannot be silently dropped before hashing.
+- Added fail-closed receipt and verifier handling for unknown `tool_choice`,
+  `tool_choice.function`, and legacy `function_call` fields so tool-selection
+  policy extensions cannot be silently dropped before hashing.
+- Added `verify_receipt_matches_chat_request()` and
+  `verify_receipt_matches_completion_request()` so SDK verifiers can recompute
+  and compare all request-derived receipt fields from the original request,
+  including multimodal input digests and exact presence/absence of optional
+  output-policy digests, before separately checking attestation runtime policy
+  or effective-prompt pins.
+- Added text-completion `effective_prompt` receipt coverage for backends that
+  own the exact submitted prompt representation. llama.cpp emits the raw text
+  prompt digest; picolm and mistralrs reuse their completion-as-chat rendered
+  prompt/token-ID digest paths.
+- Extended opt-in proxy upstream effective-prompt digest support to text
+  completions. When configured, proxy completions send the OpenAI-compatible
+  completion body with `stream = false` to the digest endpoint and accept only
+  an upstream-declared `text.prompt` SHA-256 claim.
+- Tightened receipt well-formed verification so embedded runtime-policy digests
+  must be 32-byte SHA-256 values, including prompt, decoding, GPU execution,
+  inference execution, and auxiliary-artifact digests.
+- Exposed the same original-request receipt comparison through
+  `aster-power-verify --receipt-chat-request-file` and
+  `--receipt-completion-request-file`.
+- Added strict hardware-verifier operations guidance for AMD SEV-SNP and the
+  current fail-closed Intel TDX boundary, covering `hw-verify` builds, signed
+  field binding, AMD KDS access, measurement pins, and production failures.
+- Added `aster-power-verify --hw-cert-cache-ttl-secs` so strict verifier
+  operators can tune AMD KDS certificate cache lifetime without weakening
+  hardware-signature or measurement requirements.
+- Tightened the GPU confidential verifier profile so it requires the top-level
+  GPU evidence nonce claim in addition to structured device `eat_nonce`
+  freshness checks.
+- Consolidated image-bearing chat request detection in
+  `ChatRequest::has_image_inputs()` and switched llama.cpp, picolm, and
+  mistralrs effective-prompt/rejection gates to that single source of truth, so
+  opaque multimodal paths keep `effective_prompt` absent consistently.
+- Added API-level image-bearing chat request detection and OpenAI receipt
+  regression coverage so vision requests keep `effective_prompt` absent at the
+  response boundary when no exact backend prompt representation is available.
+- Fail-closed the OpenAI chat receipt path so image-bearing requests
+  (`image_url` content parts or message-level `images`) reject any backend
+  `effective_prompt` claim instead of attaching a text-only digest; text-only
+  chat receipts that already emit digests are unchanged.
+- Tightened direct `nras-rest` evidence normalization so DeviceEvidence
+  `evidence` and `certificate` fields must be non-empty base64/base64url before
+  Power posts them to NVIDIA NRAS, and evidence lists are capped before request
+  construction.
+- Capped structured NVIDIA GPU/NVSwitch device-claim arrays before verdict
+  parsing so nvattest and NRAS verdicts cannot force unbounded claim handling.
+- Bounded live `nvattest` child-process output collection so evidence/verdict
+  stdout and stderr diagnostics cannot be read into unbounded memory.
+- Added a 64 MiB cap for configured GPU evidence and verdict file/hex byte
+  sources so malformed deployments fail before unbounded reads or hex decodes.
+- Tightened `nras-rest` bearer-token configuration so
+  `nras_bearer_token_env` is treated as an environment variable name, trimmed,
+  and rejected when empty or not a portable ASCII identifier before Power sends
+  NRAS requests; token values are also trimmed and rejected when empty or not
+  visible ASCII before they are placed in the Authorization header.
+- Tightened direct `nras-rest` endpoint normalization so custom URLs must be an
+  HTTPS service root/base path or the full `/v4/attest/gpu` endpoint, without
+  embedded credentials, query strings, fragments, or unsupported API-version
+  paths; `gpu-confidential` startup validation now applies the same endpoint
+  policy before the provider is constructed.
+- Tightened direct `nras-rest` detached EAT parsing so only explicit EAT fields
+  are decoded as JWTs, malformed token payloads fail closed, and ordinary
+  version-like strings elsewhere in the response are ignored.
+- Capped direct `nras-rest` detached EAT token collection before JWT decoding so
+  explicit token arrays cannot force unbounded verdict parsing work.
+- Made picolm `spec_mode` configuration fail closed for unknown Aster ACL or
+  `ASTER_POWER_SPEC_MODE` values instead of silently falling back to
+  `prompt-lookup`.
+- Made local raw Jinja chat-template rendering fail closed for llama.cpp and
+  picolm when a model-provided template cannot be parsed or rendered, instead
+  of silently replacing it with a hardcoded prompt format.
+- Made local `response_format` enforcement backend-aware: llama.cpp rejects
+  JSON Schema values that cannot be converted or installed as grammar
+  constraints, picolm rejects schema-specific constraints it cannot enforce,
+  and mistral.rs rejects local response-format constraints instead of silently
+  ignoring receipt-bound output policy. Remote models keep upstream passthrough.
+- Made `keep_alive` parsing fail closed: invalid config or
+  `ASTER_POWER_KEEP_ALIVE` values now fail validation, and invalid per-request
+  overrides on chat, completion, and embedding endpoints return
+  `invalid_keep_alive` instead of falling back to `5m`.
+- Made `model_signing_key` fail closed during configuration validation: values
+  must be 32-byte hex Ed25519 public keys that parse as verifier keys before
+  they can satisfy strict model-integrity policy.
+- Tightened `/v1/attestation?model=...` model binding under signing policy:
+  when `model_signing_key` is configured and no explicit `model_hashes` pin is
+  present, the endpoint re-verifies the current runtime digest signature before
+  binding it instead of relying on manifest hash metadata as the expected
+  value.
+- Made policy-bearing enum environment overrides fail closed:
+  `ASTER_POWER_TEE_POLICY_MODE` and `ASTER_POWER_GPU_ATTESTATION_SOURCE` now reject
+  unknown values during configuration loading instead of silently keeping the
+  previous/default policy.
+- Made policy-bearing boolean environment overrides fail closed:
+  `ASTER_POWER_TEE_MODE`, `ASTER_POWER_REDACT_LOGS`, and proxy effective-prompt
+  digest booleans now reject malformed values instead of silently keeping the
+  previous/default policy.
+- Extended that fail-closed boolean parsing to `ASTER_POWER_RA_TLS` and
+  `ASTER_POWER_AUDIT_LOG`, so malformed RA-TLS or audit logging overrides cannot
+  silently leave those controls disabled.
+- Made encrypted audit logging configuration fail closed:
+  `audit_log_encrypt = true` now requires `audit_key_source` during config
+  validation instead of warning and deferring the failure.
+- Made audit log startup fail closed: when `audit_log = true`, plain and
+  encrypted audit logger open failures now abort startup instead of disabling
+  audit logging.
+- Made RA-TLS configuration fail closed: `ra_tls = true` now requires both
+  `tls_port` and `tee_mode = true`, and configured TLS listeners are rejected
+  when the binary was not built with the `tls` feature.
+- Made RA-TLS startup fail closed: when `ra_tls = true`, missing TEE providers
+  or attestation report generation failures now abort startup before the TLS
+  listener binds instead of serving a certificate without the attestation
+  extension.
+- Made TLS certificate SAN configuration fail closed: invalid `tls_sans`
+  entries now fail configuration validation and certificate generation instead
+  of being silently skipped.
+- Made model key-provider selection fail closed: unknown `key_provider` values
+  are rejected, `key_provider = "rotating"` requires at least one
+  `key_rotation_sources` entry, and provider construction now follows the
+  configured provider type instead of inferring rotation from source presence.
+  Provider construction now returns configuration errors instead of warning and
+  falling back when a configured provider cannot be built.
+- Made transport port environment overrides fail closed:
+  malformed `ASTER_POWER_PORT`, `ASTER_POWER_TLS_PORT`, and
+  `ASTER_POWER_VSOCK_PORT` values now abort configuration loading instead of
+  silently leaving listeners disabled or bound to an unintended fallback port.
+- Made remaining numeric environment overrides fail closed:
+  malformed `ASTER_POWER_MAX_MODELS`, `ASTER_POWER_GPU_LAYERS`,
+  `ASTER_POWER_GPU_ATTESTATION_NRAS_TIMEOUT_SECS`, and
+  `ASTER_POWER_GPU_ATTESTATION_NVATTEST_TIMEOUT_SECS` values now abort
+  configuration loading instead of silently keeping previous values.
+- Made `nvattest-cli` GPU attestation configuration fail closed during config
+  validation: invalid verifier values, invalid GPU evidence source values, zero
+  timeouts, and missing `corelib` GPU architecture now error before provider
+  startup.
+- Made direct `nras-rest` GPU attestation configuration fail closed during
+  config validation: missing evidence, configured external verdicts, missing or
+  invalid GPU architecture, invalid claims versions, and zero timeouts now
+  error before provider startup.
+- Made ambiguous GPU attestation byte sources fail closed during config
+  validation: `evidence_hex`/`evidence_path` and `verdict_hex`/`verdict_path`
+  are now rejected as mutually exclusive before provider startup.
+- Added opaque strict hardware and confidential-GPU verification proofs that
+  borrow the exact authenticated report and have no public or deserialization
+  constructor. Production accelerator bindings, sealed-state export
+  authorization, and confidential release promotion consume these proofs;
+  raw reports and caller-supplied verification labels cannot mint them.
+- Made configured nonce-bound NVIDIA evidence parse and validate the saved
+  nvattest evidence as well as its verdict. The provider now requires the exact
+  evidence nonce, records the evidence count and canonical raw format labels,
+  and rejects stale evidence before it can enter CPU TEE claims.
+- Added a strict saved-report release-promotion CLI that consumes the opaque
+  confidential proof in the verifier process. It independently pins raw vendor
+  evidence, model weights, real GPU execution policy, accelerator declaration,
+  and local CUDA capture, then commits bounded output with no-overwrite
+  semantics. The external hardware workflow is documented in
+  `external-release-capture.md`.
+- Made confidential release promotion retain the strictly verified
+  inference-execution digest and optional auxiliary-artifacts digest as explicit
+  capture fields. Final capture and bundle verification reject absent,
+  malformed, or mutated policy and auxiliary identities instead of relying only
+  on the aggregate claims digest.
+
+Still open:
+
+- None for the v1 production boundary. Remaining follow-ups are explicitly
+  qualified below (same OR-exclusion pattern as Intel TDX / HSN advertisement).
+
+v1 qualifications (machine-enforced or fail-closed today):
+
+- **Emitible multimodal prompt digests.** Reserved
+  `chat.multimodal-rendered-prompt` remains non-emitible. OpenAI chat receipts,
+  `EffectivePromptDigest::try_new`, and verifier well-formedness abstain / fail
+  closed until a backend exposes the exact post-template multimodal
+  representation. Honest backends leave `effective_prompt` absent for
+  image-bearing requests; text-only stand-in digests remain rejected. This is
+  the v1 contract, not an incomplete production claim.
+- **Native NVIDIA NRAS SDK.** Not required for v1. Production GPU confidential
+  paths are `configured` evidence/verdict bytes, live `nvattest-cli`, and direct
+  `nras-rest`. A vendor SDK client may be added later as an alternate provider;
+  its absence does not weaken the current fail-closed GPU chain.
+- **Attested-private-fabric serving.** Explicitly unsupported for v1
+  prefill/decode advertisement. `ServingPrivacyMode::AttestedPrivateFabric`
+  retains AAD / sealed host-buffer digest wire binding, but
+  `may_advertise_prefill_decode` is always false until TEE-export / fabric
+  attestation evidence exists beyond `attestation_policy_sha256`. Confidential
+  multi-node accelerator meshes with peer transfers additionally fail closed
+  unless NVSwitch fabric claim indices are bound and matched to GPU evidence.
+
+## Baseline Findings
+
+### Model hash enforcement is optional
+
+At the reviewed baseline, `tee_mode = true` did not require `model_hashes` or
+model signatures. Startup only called `verify_all_models` when the map was
+non-empty, and model load only rechecked models that appeared in the map.
+
+Risk: a production deployment can expose `/v1/attestation` while serving a model
+that has no pinned integrity policy.
+
+### `/v1/attestation` can bind stale or missing model state
+
+At the reviewed baseline, `GET /v1/attestation?model=...` used
+`config.model_hashes[model]` when present, falling back to `manifest.sha256`.
+It did not re-hash the loaded file or the in-memory model buffer on the
+attestation request path.
+
+If the selected hash was empty or invalid, the baseline code could silently omit the
+model binding instead of failing the request.
+
+Risk: a verifier may accept registration-time metadata as runtime model state.
+
+### Launch measurement does not include model weights
+
+SEV-SNP and TDX launch measurements cover the guest image and boot-time state,
+not model files read from disk after boot.
+
+Risk: the post-boot model integrity chain must be explicit, mandatory in
+production policy, and reflected in the attestation claims.
+
+### Encrypted model hash semantics are ambiguous
+
+Power supports encrypted `.enc` models and multiple decryption modes, but the
+reviewed baseline did not explicitly type the attested "model hash" as
+ciphertext hash, plaintext hash, or a composite claim.
+
+There was also an implementation gap to address: in the reviewed baseline,
+`MemoryDecryptedModel` and `LayerStreamingDecryptedModel` were stored in
+`AppState`, but the backend `load()` interface still received a `ModelManifest`
+path and backends loaded from that path. Current remediation adds an explicit
+locked-memory backend load path; `picolm` consumes `MemoryDecryptedModel`
+plaintext and `LayerStreamingDecryptedModel` plaintext for GGUF models, and
+unsupported backends fail closed.
+
+Risk: different paths can hash or serve different bytes if a backend mode does
+not explicitly declare which plaintext source it consumes. The current backend
+trait therefore requires explicit support for each decrypted plaintext source.
+
+### Hardware signature verification is optional
+
+`VerifyOptions.hardware_verifier` is optional and the verification CLI currently
+uses `None`, reporting a skipped hardware signature check as an otherwise
+successful attestation.
+
+Risk: integrators can accidentally deploy an offline or partial verifier as if
+it were a production verifier.
+
+### Simulated TEE can pass unless policy rejects it
+
+At the reviewed baseline, `ASTER_TEE_SIMULATE=1` enabled simulated reports. The
+default policy allowlist was empty, which meant all TEE types were accepted
+unless strict policy was explicitly enabled.
+
+Risk: development evidence can be accepted in production.
+
+### CPU and NVIDIA GPU evidence are not bound
+
+Power supports NVIDIA CUDA execution paths, and NVIDIA GPU support is a
+production requirement. However, the current `report_data` layout is only
+`[nonce(32)][model_hash(32)]` and there is no NVIDIA GPU confidential-computing
+evidence or NRAS verdict hash in the CPU TEE report.
+
+Risk: CPU TEE evidence and GPU confidential-computing evidence can be checked as
+separate statements without cryptographic proof that they describe the same
+computation.
+
+### Runtime prompt policy is outside attested claims
+
+Chat templates, system prompts, stop sequences, and sampling parameters affect
+the computation but are not included in the attestation payload or a request
+receipt.
+
+Risk: "the model ran" does not imply "the model ran with the verifier's intended
+prompt construction and decoding policy."
+
+## Remediation Requirements
+
+1. Production verification must fail closed.
+2. A missing, malformed, stale, or unverified model digest must fail the
+   attestation request.
+3. Every attested digest must state exactly what bytes it covers.
+4. Simulated TEE evidence must be rejected by default outside explicit
+   development mode.
+5. Hardware signature verification must be mandatory for production verifier
+   paths.
+6. NVIDIA GPU confidential-computing evidence must be represented and bound to
+   the CPU TEE evidence before Power claims a unified CPU/GPU attestation chain.
+7. Runtime prompt construction and decoding policy must be hashable, stable, and
+   available to verifiers.
+8. Documentation must distinguish development, CPU-only TEE, CPU TEE plus
+   ordinary CUDA, and CPU TEE plus NVIDIA confidential GPU modes.
+
+## Implementation Plan
+
+### Phase 0: Coordination and disclosure tracking
+
+Deliverables:
+
+- Open a private security advisory or private issue tracking the disclosure.
+- Acknowledge the findings and maintain a coordinated disclosure timeline.
+- Add this plan to the repository as the working remediation checklist.
+
+Acceptance:
+
+- The advisory or internal issue references every finding from the report.
+- The public docs are not changed to overclaim before fixes land.
+
+### Phase 1: Strict production policy
+
+Code changes:
+
+- Add an explicit `attestation_policy` or `tee_policy_mode` config with values
+  such as `development`, `strict`, and `gpu-confidential`.
+- In `strict` and `gpu-confidential` modes, reject:
+  - empty `model_hashes` or missing model signatures for local models;
+  - `tee_type = "simulated"`;
+  - missing, malformed, or non-48-byte expected measurements for the detected
+    hardware TEE type;
+  - remote proxy models unless they have a separate declared trust mode.
+- Make `ASTER_POWER_TEE_STRICT=1` map to strict policy, but do not make
+  environment variables the only way to get safe behavior.
+
+Tests:
+
+- Server startup fails when `tee_mode = true` and strict policy has no pinned
+  local model digest.
+- Server startup fails for `ASTER_TEE_SIMULATE=1` under strict policy.
+- Existing development tests still pass when policy is explicitly development.
+
+### Phase 2: Model digest source of truth
+
+Code changes:
+
+- Introduce typed digest claims:
+  - `ModelDigestKind::PlaintextWeightsSha256`
+  - `ModelDigestKind::CiphertextArtifactSha256`
+  - `ModelDigestKind::DirectoryManifestSha256`
+  - `ModelDigestKind::RemoteUnattested`
+- Add a canonical model claim builder that computes the digest from the loaded
+  artifact or verified decrypted buffer.
+- Make `/v1/attestation?model=...` fail if it cannot produce a valid typed
+  32-byte digest claim.
+- Remove silent `decode_hex_nonce(...).ok()` downgrade behavior.
+- For HuggingFace directory models, add a deterministic directory manifest hash
+  over file paths, file modes where relevant, sizes, and file SHA-256 values.
+
+Tests:
+
+- `/v1/attestation?model=...` returns an error for empty or malformed hashes.
+- Tampering with a model file after registration is detected before issuing an
+  attestation claim in strict mode.
+- Directory models produce stable hashes independent of directory traversal
+  order.
+
+### Phase 3: Encrypted model loading and digest semantics
+
+Code changes:
+
+- Split encrypted model claims into ciphertext and plaintext digests.
+- Compute plaintext digest after successful AES-GCM decryption.
+- Update backend loading interfaces so in-memory decrypted models can be loaded
+  from verified plaintext buffers, not from the encrypted path.
+- If a backend cannot consume in-memory plaintext, fail closed rather than
+  silently falling back.
+- Document which digest verifiers should pin for each deployment mode.
+
+Current status:
+
+- Plaintext and ciphertext encrypted-model digest claims are implemented.
+- File-backed `DecryptedModel` loading remains available for file-based
+  backends.
+- Backend trait/source changes for verified plaintext buffers are implemented.
+  `in_memory_decrypt` loads GGUF plaintext through `picolm` locked-memory
+  loading; unsupported backends fail closed before backend load.
+- `streaming_decrypt` loads GGUF plaintext through `picolm` from
+  `LayerStreamingDecryptedModel`; unsupported backends fail closed before
+  backend load. The current AES-GCM artifact format is still a single
+  non-seekable ciphertext, so the decrypted plaintext remains locked in RAM
+  while the handle is live.
+
+Tests:
+
+- `.enc + in_memory_decrypt` loads from decrypted bytes on a supporting backend
+  and fails before backend load on unsupported backends.
+- `.enc + streaming_decrypt` loads a real encrypted synthetic GGUF through
+  `picolm`, verifies the plaintext digest pin, does not materialize a `.dec`
+  file, and runs chat from the decrypted backend-owned source.
+- Ciphertext tampering fails during decryption.
+- Plaintext digest mismatch fails before attestation.
+- File-backed `.dec` mode reports and verifies the same plaintext digest as
+  in-memory mode.
+
+### Phase 4: Attestation claim schema v2
+
+Code changes:
+
+- Replace the fixed `[nonce(32)][model_hash(32)]` semantic with a canonical
+  `AttestationClaimsV2` JSON or CBOR structure. Initial JSON support is in
+  place for model-bound attestations.
+- Bind `sha256(canonical_claims_v2)` into CPU TEE `report_data`. Initial
+  binding is in place for model-bound attestations.
+- Include at minimum:
+  - schema version;
+  - nonce hash or nonce bytes;
+  - tee type;
+  - model digest kind and digest;
+  - encrypted artifact digest, when applicable;
+  - launch measurement;
+  - runtime policy mode;
+  - chat template hash, when known at model load time;
+  - decoding policy hash, when tied to a request receipt;
+  - GPU evidence hash, when GPU confidential mode is active.
+- Preserve backward-compatible verification for legacy reports but mark legacy
+  binding as development or compatibility only. Verifier compatibility is in
+  place: legacy reports use the old offsets, v2 reports verify claims first.
+
+Tests:
+
+- Canonical claim serialization is deterministic.
+- CPU report data equals the claim digest.
+- Typed model digest claims reject inconsistent plaintext/ciphertext/directory
+  optional digest fields.
+- Verifier rejects reports whose claims do not match CPU `report_data`.
+- Legacy reports do not satisfy strict v2 policy.
+
+### Phase 5: Production verifier API and CLI
+
+Code changes:
+
+- Add `verify_report_strict` or a `VerificationPolicy` object that requires:
+  - hardware signature verification;
+  - nonce verification when policy declares nonce mandatory;
+  - model digest verification when policy declares model digest mandatory;
+  - launch measurement verification in strict mode;
+  - rejection of simulated TEE.
+- Make `aster-power-verify` default to strict verification unless an explicit
+  offline/development flag is provided, and require `--expected-measurement`
+  in strict mode.
+- Add `--hw-cert-cache-ttl-secs` to tune the in-memory AMD KDS certificate cache
+  for long-running verifier processes.
+- Add CLI flags for AMD KDS and NVIDIA GPU evidence verification modes where
+  needed. Intel TDX requires a separate typed DCAP Quote/QVL path rather than a
+  certificate-fetch flag over a local TDREPORT.
+- Make skipped checks visible as non-success status in strict mode.
+
+Tests:
+
+- `verify_report_strict` fails when `hardware_verifier` is missing.
+- `verify_report_strict` fails when the expected launch measurement is missing.
+- `aster-power-verify` exits non-zero when hardware verification is skipped in
+  strict mode or when the launch measurement pin is missing.
+- Simulated reports require an explicit development/offline flag.
+
+### Phase 6: NVIDIA GPU confidential-computing chain
+
+Code changes:
+
+- Added a GPU attestation module with a provider trait, `GpuEvidenceProvider`.
+  The compatibility provider consumes configured evidence and NRAS verdict byte
+  sources. For nonce-bound attestations, configured verdicts must be parseable
+  NVIDIA nvattest/NRAS JSON whose `eat_nonce` matches the CPU attestation
+  nonce; stale verdicts fail closed.
+- Added `gpu_attestation.source = "nvattest-cli"` to invoke NVIDIA's
+  `nvattest` CLI for live GPU evidence collection and NRAS/local attestation.
+  The provider passes the same nonce used by the CPU TEE attestation request to
+  `nvattest collect-evidence` and `nvattest attest`, then binds SHA-256 digests
+  of the raw evidence and verdict JSON. `gpu-confidential` startup requires
+  `nvattest_verifier = "remote"` so NVIDIA NRAS performs production evidence
+  verification.
+- Added `gpu_attestation.source = "nras-rest"` to send configured NVIDIA
+  DeviceEvidenceV2 JSON directly to the NVIDIA NRAS REST `/v4/attest/gpu` API.
+  The provider requires a 32-byte nonce, GPU architecture (`HOPPER` or
+  `BLACKWELL`), and claims version (`2.0` or `3.0`), then binds SHA-256 digests
+  of the raw evidence JSON and returned detached EAT JSON.
+- Added `GpuEvidenceClaim` with:
+  - provider name;
+  - evidence and verdict byte-format labels;
+  - raw evidence entry count when the provider exposes it;
+  - raw evidence digest;
+  - verdict digest;
+  - nonce linkage through the shared CPU/GPU attestation nonce;
+  - structured NVIDIA device claims from `nvattest` verdicts: device type,
+    `eat_nonce`, hardware model, UEID/OEM ID, driver/firmware versions,
+    measurement result, secure-boot/debug status, and normalized
+    validation booleans for nonce match, report signature, FWID match, RIM
+    schema validation, RIM signature, RIM version match, and measurement
+    availability.
+- In `gpu-confidential` policy mode, require a GPU evidence claim and bind its
+  evidence/verdict digests into `AttestationClaimsV2`, which is then bound into
+  CPU TEE `report_data`.
+- In `gpu-confidential` policy mode, `/v1/attestation` rejects missing or
+  non-32-byte nonce values so CPU TEE evidence and NVIDIA GPU evidence share
+  one 32-byte freshness value.
+- In `gpu-confidential` policy mode, startup rejects CPU-only execution policy
+  (`gpu.gpu_layers = 0`) after GPU auto-configuration. Use `strict` mode for
+  CPU-only TEE deployments.
+- In `gpu-confidential` policy mode, startup rejects custom NVIDIA NRAS, RIM,
+  and OCSP URLs that are not HTTPS for live `nvattest-cli`; direct `nras-rest`
+  also rejects custom NRAS URLs that are not HTTPS. Both startup validation and
+  the direct NRAS REST provider reject embedded URL credentials so bearer tokens
+  stay in `nras_bearer_token_env`.
+- Make ordinary CUDA acceleration a separate declared mode that does not claim
+  GPU confidential-computing guarantees.
+
+Tests:
+
+- `gpu-confidential` policy refuses to start or attest when no GPU evidence
+  provider is configured.
+- `gpu-confidential` policy refuses to start when GPU execution/offload remains
+  disabled.
+- `gpu-confidential` policy refuses to start with `nvattest-cli` local
+  verification.
+- `gpu-confidential` policy refuses to start when a custom NVIDIA NRAS, RIM, or
+  OCSP URL uses HTTP instead of HTTPS.
+- `gpu-confidential` policy refuses to start when a direct `nras-rest`
+  endpoint includes query strings, fragments, embedded credentials, or
+  unsupported API-version paths.
+- `gpu-confidential` attestation refuses to proceed without a 32-byte nonce.
+- The configured evidence provider rejects nonce-bound attestations when the
+  configured NVIDIA verdict is stale or not parseable as nvattest/NRAS JSON.
+- `nvattest-cli` provider tests simulate the CLI and verify 32-byte nonce
+  enforcement and propagation, temporary evidence-file handling,
+  evidence/verdict digest binding, structured device-claim extraction,
+  bounded child-process output, owner-only temporary evidence-file permissions
+  on Unix, and rejection of failed core NVIDIA validation booleans.
+- `nras-rest` provider tests verify official request-shape construction,
+  evidence normalization, 32-byte nonce enforcement, NRAS verdict digest
+  binding, structured device-claim extraction when claims are present, and
+  fail-closed config validation, including oversized NRAS response bodies,
+  oversized evidence/device-claim/token lists, and malformed detached EAT JWTs.
+- Verifier policy `require_gpu_evidence()` now also requires an expected nonce
+  and rejects GPU claim nonce mismatches.
+- Verifier policy `require_gpu_device_claims()` requires structured NVIDIA
+  device claims and validates device nonce, `measres`, `secboot`, `dbgstat`,
+  and core NVIDIA validation booleans, including RIM schema validation.
+- Verifier `ExpectedGpuEvidence` and `verify_claims_expected_gpu_evidence()`
+  pin the GPU evidence provider label, evidence/verdict byte-format labels, and
+  raw evidence entry count. The `aster-power-verify` CLI exposes the same checks
+  through `--gpu-provider`, `--gpu-evidence-format`, `--gpu-verdict-format`,
+  and `--gpu-evidence-count`.
+- Verifier `ExpectedGpuDevices` and `verify_claims_expected_gpu_devices()` pin
+  exact GPU/NVSwitch device counts, exact GPU UEID sets, allow-list NVIDIA GPU
+  and NVSwitch UEID sets, allow-list NVIDIA GPU/NVSwitch OEM IDs and claims
+  schema versions, and allow-list expected GPU/NVSwitch hardware models and
+  firmware versions plus GPU driver versions. The `aster-power-verify` CLI
+  exposes the same checks through `--gpu-count`, `--nvswitch-count`,
+  `--gpu-claims-version`, `--gpu-ueid`, `--gpu-oemid`, `--gpu-hwmodel`,
+  `--gpu-driver-version`, `--gpu-firmware-version`,
+  `--nvswitch-claims-version`, `--nvswitch-ueid`, `--nvswitch-oemid`,
+  `--nvswitch-hwmodel`, and `--nvswitch-firmware-version`.
+- Verifier `VerificationPolicy::gpu_confidential()` and CLI
+  `--gpu-confidential` bundle the production NVIDIA GPU CC policy so callers do
+  not have to remember each individual GPU evidence, GPU provider/format/count
+  pin, 32-byte nonce requirement, structured device-claim, exact GPU topology
+  pin, GPU claims-version pin, GPU identity/version pin, required NVSwitch
+  identity/version pins when NVSwitch claims are present, secure-boot/debug-state
+  check, runtime-policy, and GPU execution/offload requirement.
+- CPU report data changes when GPU evidence changes.
+- Verifier rejects mismatched CPU claims and GPU evidence.
+- Ordinary CUDA mode remains usable but is reported as outside GPU CC
+  attestation.
+
+Remaining gap:
+
+- A native NRAS SDK client remains optional. v1 production deployments use
+  configured evidence/verdict bytes, live `nvattest-cli`, or direct `nras-rest`.
+  The SDK is not required to close the GPU confidential chain.
+
+### Phase 7: Runtime receipt for prompts and decoding policy
+
+Current implementation:
+
+- Model-bound `/v1/attestation?model=...` includes `runtime.prompt` digests for
+  applied manifest chat template overrides or readable GGUF
+  `tokenizer.chat_template` metadata. Manifest system prompts and pre-seeded
+  messages are not claimed until an execution path actually injects them into
+  inference requests.
+- Model-bound attestation does not currently emit
+  `runtime.decoding.parameters_sha256` for manifest default generation
+  parameters, because the OpenAI-compatible inference path does not apply those
+  defaults automatically. Request-level receipts cover the decoding parameters
+  that are actually sent on each request.
+- Model-bound attestation includes `runtime.execution.gpu_sha256` for the
+  canonical GPU execution/offload configuration: `gpu_layers`, `main_gpu`, and
+  `tensor_split`.
+- Model-bound attestation and request receipts include
+  `runtime.execution.inference_sha256`, a domain-separated digest of the
+  resolved speculative/MTP/FR controls, prompt-cache bounds, model residency,
+  mmap/mlock, threads, Flash Attention, and parallel slots. `auto` remains a
+  distinct honest policy value; deployments that require one decoder use an
+  explicit fail-closed mode.
+- Verifiers can pin these digests with
+  `VerificationPolicy::require_runtime_policy()` or
+  `aster-power-verify --require-runtime-policy`; GPU execution/offload pins use
+  `--gpu-execution-digest`, and the CLI can compute the matching pin with
+  `--print-gpu-execution-digest` from `gpu_layers`, `main_gpu`, and
+  `tensor_split`. Server inference pins use `--inference-execution-digest` and
+  can be derived from the resolved ACL with
+  `--print-inference-execution-digest`.
+- `/v1/chat/completions` and `/v1/completions` build an
+  `aster.power.inference-receipt.v2` receipt from prompt-bearing API input,
+  model runtime chat-template/GPU execution policy claims, and
+  normalized exposed decoding parameters.
+- Non-streaming responses return `attestation_receipt` and
+  `attestation_receipt_sha256`.
+- Streaming responses emit a final receipt event before `[DONE]`; if usage
+  reporting is requested or token metrics are suppressed, the same final event
+  also carries rounded `usage`.
+- Verifiers can check response receipt integrity with
+  `verify::verify_receipt_digest()` or `verify::verify_receipt_digest_hex()`.
+- Verifiers can reject malformed receipts with
+  `verify::verify_receipt_well_formed()`, which checks schema,
+  request-type/input-kind pairing, and SHA-256 hex fields before policy
+  comparison.
+- Verifiers can pin receipt-level request policy with
+  `verify::verify_receipt_policy()` / `ExpectedReceipt` or CLI flags for
+  receipt model, request type, input digest, request decoding parameters,
+  stream-options / stop-token / response-format / tools / tool-choice digests,
+  and effective-prompt digest/backend/kind or explicit effective-prompt absence
+  for opaque multimodal paths. The lower-level
+  `verify::verify_receipt_effective_prompt_digest()` and
+  `verify::verify_receipt_effective_prompt_digest_hex()` helpers remain
+  available for direct digest-only checks.
+- SDK verifiers that still have the original request can use
+  `verify::verify_receipt_matches_chat_request()` or
+  `verify::verify_receipt_matches_completion_request()` to recompute and compare
+  every request-derived receipt field, including exact optional output-policy
+  digest presence or absence.
+- Verifiers can compare a response receipt against the attested runtime policy
+  and optional receipt/effective-prompt digest pins with
+  `verify::verify_receipt_against_attestation()`.
+- `aster-power-verify` exposes the same attestation-to-receipt check with
+  `--receipt-file`, `--receipt-digest`, receipt policy digest pins,
+  `--receipt-chat-request-file`, `--receipt-completion-request-file`, and
+  `--effective-prompt-digest`.
+- Proxy backends can ask upstreams for an explicit prompt digest before
+  inference with `proxy_effective_prompt_digest = true`. For chat, the upstream
+  endpoint receives the OpenAI-compatible chat body with `stream = false` and
+  returns a `chat.rendered-prompt` SHA-256 claim. For text completions, it
+  receives the OpenAI-compatible completion body with `stream = false` and
+  returns a `text.prompt` SHA-256 claim. Unsupported endpoints leave
+  `effective_prompt` absent unless
+  `proxy_effective_prompt_digest_required = true`; malformed digests fail
+  closed. Image-bearing proxy chat requests leave `effective_prompt` absent
+  unless a future claim type can represent the exact multimodal prompt; when
+  the digest endpoint is required, those opaque image-bearing requests fail
+  closed instead.
+- mistralrs text chat emits `kind = "chat.prompt-token-ids"` with a
+  domain-separated SHA-256 over the exact token IDs produced by
+  `Model::tokenize(..., add_special_tokens = true, add_generation_prompt =
+  true)`, matching the path used before generation. mistralrs vision/multimodal
+  requests still leave `effective_prompt` absent because image prefixing and
+  multimodal preprocessing are not exposed as a stable rendered-byte claim.
+
+Remaining gap:
+
+- Effective prompt digests are implemented for local deterministic text-only
+  chat renderers (llama.cpp and picolm), and for proxy upstreams that implement
+  the explicit chat/completion digest endpoint. mistralrs text chat is covered
+  by prompt-token-ID digest. A closed `EffectivePromptClaimKind` enum names
+  reserved `chat.multimodal-rendered-prompt`, but that kind is not emitible.
+  v1 leaves `effective_prompt` absent for opaque multimodal paths and fails
+  closed on invented text-only or reserved multimodal digests — this is the
+  production abstention contract, not a silent gap.
+- Continue extending the receipt whenever new request-visible decoding controls
+  are exposed by the OpenAI-compatible API.
+- If manifest system prompts, pre-seeded messages, or default generation
+  parameters become execution defaults, apply them in the request path first and
+  then add matching runtime-policy claims and receipt tests.
+
+Tests:
+
+- Same request and same template produce identical receipt hashes.
+- Changing any sampling or stop-token value changes the receipt hash.
+- Changing the attested GPU execution/offload configuration changes the runtime
+  policy digest.
+- Template override changes the effective prompt-policy or receipt hash for
+  backends that expose `effective_prompt`.
+- Receipt generation is available for streaming and non-streaming responses.
+- llama.cpp, picolm, mistralrs, and proxy image-bearing chat paths keep
+  `effective_prompt` absent unless the backend can expose the exact
+  post-template multimodal representation.
+- OpenAI chat receipts reject invented text-only `effective_prompt` digests for
+  image-bearing requests (`image_url` parts and message `images`) while text-only
+  digests continue to appear when backends expose an exact representation.
+- Reserved `chat.multimodal-rendered-prompt` cannot be receipt-bound until it is
+  emitible; `EffectivePromptDigest::try_new`, OpenAI chat binding, and verifier
+  well-formedness abstain / fail closed rather than inventing digests.
+- Shared image-input detection covers top-level request images, per-message
+  image arrays, and OpenAI `image_url` content parts.
+
+### Phase 8: Documentation and release notes
+
+Docs to update:
+
+- `README.md`
+- `PLAN.md`
+- `docs/supply-chain.md`
+- Power docs under `apps/docs/content/docs/en/power/` and
+  `apps/docs/content/docs/cn/power/`
+
+Required documentation changes:
+
+- Remove or qualify claims that current default settings prove "which model ran"
+  without strict model digest policy.
+- Explain legacy attestation versus v2 claim binding.
+- Document the difference between:
+  - development simulation;
+  - CPU-only TEE;
+  - CPU TEE plus ordinary CUDA;
+  - CPU TEE plus NVIDIA GPU confidential computing.
+- Add production configuration examples using strict policy.
+- Add verifier examples that fail closed.
+
+Tests:
+
+- Documentation examples compile or run where practical.
+- CLI help text matches the strict defaults.
+
+## Suggested Work Order
+
+1. Phase 1 and Phase 2 first. They close the easiest fail-open paths.
+2. Phase 5 next, so the verifier and CLI stop producing false confidence.
+3. Keep expanding Phase 3 validation when additional encrypted-model artifact
+   formats or backends consume decrypted plaintext sources.
+4. Phase 4 as the schema migration foundation.
+5. Phase 6 for NVIDIA GPU production support.
+6. Phase 7 for request-level receipts.
+7. Phase 8 continuously, with final documentation updates before release.
+
+## Immediate Patch Targets
+
+- `src/config.rs`: add policy mode and strict validation.
+- `src/server/mod.rs`: fail closed during TEE startup under strict policy.
+- `src/api/openai/attestation.rs`: replace cached hash fallback with typed
+  digest claim builder and fail on invalid model binding.
+- `src/tee/attestation.rs`: add v2 claim digest binding.
+- `src/verify/mod.rs`: continue evolving strict verification policy toward v2
+  claim verification.
+- TDX evidence provider/verifier: generate a DCAP Quote, verify it through QVL
+  or an equivalently reviewed service, bind exact Quote REPORTDATA/MRTD fields,
+  and enforce collateral status/freshness before enabling strict TDX.
+- `src/bin/aster-power-verify.rs`: add production configuration examples and
+  operational flags for vendor verifier settings.
+- `src/tee/encrypted_model.rs` and backend load interfaces: complete chunked
+  decrypted loading semantics.
+- GPU attestation module: optional native NVIDIA NRAS SDK collection remains
+  a future alternate provider; v1 uses configured bytes, `nvattest-cli`, and
+  `nras-rest`.
+
+## Completion Criteria
+
+The remediation is complete only when all of the following are true:
+
+- Strict TEE mode cannot start without pinned local model integrity policy.
+- Simulated reports are rejected unless development mode is explicit.
+- `/v1/attestation?model=...` never silently omits model binding.
+- Verifiers can prove that CPU `report_data` binds the full canonical claim set.
+- Hardware signature verification is required in production verifier paths.
+- Policy-visible fields are proven to come from the exact authenticated raw
+  evidence; Intel TDX remains incomplete until its DCAP Quote/QVL path passes.
+- Encrypted model claims identify plaintext and ciphertext digests precisely.
+- NVIDIA GPU confidential-computing evidence is verified and bound into CPU TEE
+  evidence in GPU confidential mode.
+- Chat template and decoding policy can be independently hashed and verified.
+- Documentation no longer overstates legacy or non-strict guarantees.

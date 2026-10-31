@@ -5,7 +5,7 @@ pub struct BoxSummary {
     pub short_id: String,
     pub name: String,
     pub image: String,
-    pub isolation: a3s_box_core::ExecutionIsolation,
+    pub isolation: aster_box_core::ExecutionIsolation,
     pub status: String,
     pub status_summary: String,
     pub active: bool,
@@ -88,10 +88,10 @@ pub struct RuntimeDiagnostics {
 }
 
 impl RuntimeDiagnostics {
-    fn collect(paths: &A3sBoxPaths) -> Self {
+    fn collect(paths: &AsterBoxPaths) -> Self {
         Self {
-            core_version: a3s_box_core::VERSION.to_string(),
-            runtime_version: a3s_box_runtime::VERSION.to_string(),
+            core_version: aster_box_core::VERSION.to_string(),
+            runtime_version: aster_box_runtime::VERSION.to_string(),
             sdk_version: env!("CARGO_PKG_VERSION").to_string(),
             home: paths.home.clone(),
             virtualization: RuntimeVirtualizationSummary::collect(),
@@ -113,7 +113,7 @@ pub struct RuntimeDiskUsage {
 }
 
 impl RuntimeDiskUsage {
-    fn collect(paths: &A3sBoxPaths) -> Result<Self> {
+    fn collect(paths: &AsterBoxPaths) -> Result<Self> {
         let boxes_dir = paths.home.join("boxes");
         let boxes_bytes = disk_usage_path(&boxes_dir)?;
         let images_bytes = disk_usage_path(&paths.images_dir)?;
@@ -178,7 +178,7 @@ pub struct RuntimeVirtualizationSummary {
 
 impl RuntimeVirtualizationSummary {
     fn collect() -> Self {
-        match a3s_box_runtime::check_virtualization_support() {
+        match aster_box_runtime::check_virtualization_support() {
             Ok(support) => Self {
                 available: true,
                 backend: Some(support.backend),
@@ -282,8 +282,8 @@ pub struct ImageHealthCheckSummary {
     pub start_period: Option<u64>,
 }
 
-impl From<a3s_box_runtime::oci::OciHealthCheck> for ImageHealthCheckSummary {
-    fn from(health_check: a3s_box_runtime::oci::OciHealthCheck) -> Self {
+impl From<aster_box_runtime::oci::OciHealthCheck> for ImageHealthCheckSummary {
+    fn from(health_check: aster_box_runtime::oci::OciHealthCheck) -> Self {
         Self {
             test: health_check.test,
             interval: health_check.interval,

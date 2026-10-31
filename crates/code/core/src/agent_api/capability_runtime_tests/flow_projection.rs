@@ -1,6 +1,6 @@
 use super::*;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowRuntime, RuntimeBuildCompatibility, RuntimeBuildId, RuntimeCommand,
     StepInvocation, WorkflowInvocation, WorkflowSpec,
 };
@@ -31,7 +31,7 @@ impl FlowRuntime for VersionedFlowRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         self.executions.lock().unwrap().push(self.version);
         Ok(invocation.context().complete(json!({
             "version": self.version,
@@ -39,8 +39,8 @@ impl FlowRuntime for VersionedFlowRuntime {
         })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
-        Err(a3s_flow::FlowError::Runtime(
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
+        Err(aster_flow::FlowError::Runtime(
             "the versioned Flow fixture does not schedule steps".to_owned(),
         ))
     }
@@ -51,14 +51,14 @@ impl FlowRuntime for BlockingFlowRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let _probe = CancellationProbe(Arc::clone(&self.cancelled));
         self.started.add_permits(1);
         std::future::pending().await
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
-        Err(a3s_flow::FlowError::Runtime(
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
+        Err(aster_flow::FlowError::Runtime(
             "the blocking Flow fixture does not schedule steps".to_owned(),
         ))
     }
@@ -104,7 +104,7 @@ fn flow_binding_rejects_a_spec_the_engine_cannot_replay() {
     let error = FlowBinding::new(spec, engine)
         .expect_err("a projected Flow must be executable by its exact engine");
 
-    assert!(matches!(error, a3s_flow::FlowError::InvalidWorkflow(_)));
+    assert!(matches!(error, aster_flow::FlowError::InvalidWorkflow(_)));
 }
 
 #[test]

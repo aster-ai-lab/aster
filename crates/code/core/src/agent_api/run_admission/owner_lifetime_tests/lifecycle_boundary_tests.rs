@@ -31,7 +31,7 @@ async fn goal_run_proof_requires_actual_created_run_log_worker_and_unsealed_owne
         assert!(!port.admits_original_run(&actual_log, "original-t002", "foreign-run"));
         assert!(!port.admits_original_run(&actual_log, "foreign-session", run.id()));
         let foreign = tempfile::tempdir().unwrap();
-        let foreign_log = Arc::new(a3s_effect::FileLog::open(foreign.path()).unwrap());
+        let foreign_log = Arc::new(aster_effect::FileLog::open(foreign.path()).unwrap());
         assert!(!port.admits_original_run(&foreign_log, "original-t002", run.id()));
         context.seal_original_controls().await.unwrap();
         let _sealed = context.seal_publication().unwrap();
@@ -560,7 +560,7 @@ async fn retry_reservation_joins_same_child_and_survives_dropped_waiter() {
         let child = tokio::spawn(async move {
             started_child.await.unwrap();
             released.await.unwrap();
-            Err(a3s_effect::ActorError::Handler {
+            Err(aster_effect::ActorError::Handler {
                 key: "infer".into(),
                 message: "same actual child settled".into(),
             })
@@ -596,7 +596,7 @@ async fn retry_reservation_joins_same_child_and_survives_dropped_waiter() {
         drop(reservation);
         let state = context.model_call.state.lock().await;
         assert!(matches!(&*state, OriginalModelState::Ready(ModelReady {
-            actual: Ok(Err(a3s_effect::ActorError::Handler { message, .. })),
+            actual: Ok(Err(aster_effect::ActorError::Handler { message, .. })),
             observed: true, attempt_cancelled: true, ..
         }) if message == "same actual child settled"));
     });

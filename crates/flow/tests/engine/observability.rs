@@ -20,8 +20,8 @@ impl FlowEventObserver for BarrierObserver {
     }
 }
 
-fn audit_event(run_id: &str, sequence: u64) -> A3sFlowEvent {
-    A3sFlowEvent::from_envelope(
+fn audit_event(run_id: &str, sequence: u64) -> AsterFlowEvent {
+    AsterFlowEvent::from_envelope(
         &FlowEventEnvelope::new(
             run_id,
             sequence,
@@ -35,7 +35,7 @@ fn audit_event(run_id: &str, sequence: u64) -> A3sFlowEvent {
 
 #[test]
 fn bridged_events_preserve_attempt_correlation_without_metric_cardinality() {
-    let bridged = A3sFlowEvent::from_envelope(
+    let bridged = AsterFlowEvent::from_envelope(
         &envelope(
             "attempt-run",
             4,
@@ -104,8 +104,8 @@ async fn observer_receives_committed_events_in_store_order() {
 #[tokio::test]
 async fn fanout_observer_forwards_committed_events_to_each_observer() {
     let raw_observer = Arc::new(InMemoryFlowEventObserver::new());
-    let a3s_sink = Arc::new(InMemoryA3sFlowEventSink::new());
-    let bridge = Arc::new(A3sFlowEventBridge::new(a3s_sink.clone()));
+    let aster_sink = Arc::new(InMemoryAsterFlowEventSink::new());
+    let bridge = Arc::new(AsterFlowEventBridge::new(aster_sink.clone()));
     let fanout = Arc::new(
         FanoutFlowEventObserver::new()
             .with_observer(raw_observer.clone())
@@ -123,13 +123,13 @@ async fn fanout_observer_forwards_committed_events_to_each_observer() {
 
     let stored = engine.store().list(&run_id).await.unwrap();
     let raw_events = raw_observer.events().await;
-    let a3s_events = a3s_sink.events().await;
+    let aster_events = aster_sink.events().await;
 
     assert_eq!(raw_events, stored);
-    assert_eq!(a3s_events.len(), stored.len());
-    assert_eq!(a3s_events.first().unwrap().key, "flow.run.created");
-    assert_eq!(a3s_events.last().unwrap().key, "flow.run.completed");
-    assert!(a3s_events.iter().all(|event| event.run_id == "fanout-run"));
+    assert_eq!(aster_events.len(), stored.len());
+    assert_eq!(aster_events.first().unwrap().key, "flow.run.created");
+    assert_eq!(aster_events.last().unwrap().key, "flow.run.completed");
+    assert!(aster_events.iter().all(|event| event.run_id == "fanout-run"));
 }
 
 #[tokio::test]
@@ -213,9 +213,9 @@ async fn observer_panics_are_isolated_from_durable_transition() {
 }
 
 #[tokio::test]
-async fn a3s_event_bridge_maps_committed_events_to_safe_labels() {
-    let sink = Arc::new(InMemoryA3sFlowEventSink::new());
-    let observer = Arc::new(A3sFlowEventBridge::new(sink.clone()));
+async fn aster_event_bridge_maps_committed_events_to_safe_labels() {
+    let sink = Arc::new(InMemoryAsterFlowEventSink::new());
+    let observer = Arc::new(AsterFlowEventBridge::new(sink.clone()));
     let engine = FlowEngine::builder(Arc::new(SequentialRuntime))
         .with_observer(observer.clone())
         .build();
@@ -266,20 +266,20 @@ async fn a3s_event_bridge_maps_committed_events_to_safe_labels() {
     assert_eq!(observer.cached_workflow_count().await, 0);
 }
 
-#[cfg(feature = "a3s-event")]
+#[cfg(feature = "aster-event")]
 #[tokio::test]
-async fn a3s_event_bus_sink_publishes_committed_events() {
-    let bus = Arc::new(a3s_event::EventBus::new(
-        a3s_event::MemoryProvider::default(),
+async fn aster_event_bus_sink_publishes_committed_events() {
+    let bus = Arc::new(aster_event::EventBus::new(
+        aster_event::MemoryProvider::default(),
     ));
-    let sink = Arc::new(A3sEventBusFlowEventSink::new(bus.clone()));
-    let observer = Arc::new(A3sFlowEventBridge::new(sink.clone()));
+    let sink = Arc::new(AsterEventBusFlowEventSink::new(bus.clone()));
+    let observer = Arc::new(AsterFlowEventBridge::new(sink.clone()));
     let engine = FlowEngine::builder(Arc::new(SequentialRuntime))
         .with_observer(observer)
         .build();
 
     engine
-        .start_with_id("a3s-event-run", spec(), json!({ "userId": "u1" }))
+        .start_with_id("aster-event-run", spec(), json!({ "userId": "u1" }))
         .await
         .unwrap();
 
@@ -293,8 +293,8 @@ async fn a3s_event_bus_sink_publishes_committed_events() {
         .unwrap();
     assert_eq!(run_created.subject, "events.flow.run.created");
     assert_eq!(run_created.category, "flow");
-    assert_eq!(run_created.source, "a3s-flow");
-    assert_eq!(run_created.metadata["flow.run_id"], "a3s-event-run");
+    assert_eq!(run_created.source, "aster-flow");
+    assert_eq!(run_created.metadata["flow.run_id"], "aster-event-run");
     assert_eq!(run_created.metadata["flow.workflow_name"], "test.workflow");
     assert_eq!(run_created.metadata["flow.workflow_version"], "0.1.0");
 
@@ -312,16 +312,16 @@ async fn a3s_event_bus_sink_publishes_committed_events() {
     assert_eq!(step_completed.metadata["flow.status"], "completed");
     assert_eq!(step_completed.metadata["flow.subject_kind"], "step");
     assert_eq!(step_completed.metadata["flow.subject_id"], "load-user");
-    assert_eq!(step_completed.payload["run_id"], "a3s-event-run");
+    assert_eq!(step_completed.payload["run_id"], "aster-event-run");
     assert_eq!(step_completed.payload["key"], "flow.step.completed");
 }
 
 #[tokio::test]
-async fn local_file_a3s_event_sink_persists_jsonl_audit_events() {
+async fn local_file_aster_event_sink_persists_jsonl_audit_events() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("audit/flow-events.jsonl");
-    let sink = Arc::new(LocalFileA3sFlowEventSink::new(&path));
-    let observer = Arc::new(A3sFlowEventBridge::new(sink.clone()));
+    let sink = Arc::new(LocalFileAsterFlowEventSink::new(&path));
+    let observer = Arc::new(AsterFlowEventBridge::new(sink.clone()));
     let engine = FlowEngine::builder(Arc::new(SequentialRuntime))
         .with_observer(observer)
         .build();
@@ -355,7 +355,7 @@ async fn local_file_a3s_event_sink_persists_jsonl_audit_events() {
 }
 
 #[tokio::test]
-async fn local_file_a3s_event_sink_preserves_an_unterminated_complete_record() {
+async fn local_file_aster_event_sink_preserves_an_unterminated_complete_record() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("flow-events.jsonl");
     let first = audit_event("audit-first", 1);
@@ -364,7 +364,7 @@ async fn local_file_a3s_event_sink_preserves_an_unterminated_complete_record() {
         .await
         .unwrap();
 
-    let sink = LocalFileA3sFlowEventSink::new(&path);
+    let sink = LocalFileAsterFlowEventSink::new(&path);
     sink.emit(second.clone()).await;
 
     assert!(sink.last_error().await.is_none());
@@ -375,7 +375,7 @@ async fn local_file_a3s_event_sink_preserves_an_unterminated_complete_record() {
 }
 
 #[tokio::test]
-async fn local_file_a3s_event_sink_discards_only_an_unterminated_torn_tail() {
+async fn local_file_aster_event_sink_discards_only_an_unterminated_torn_tail() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("flow-events.jsonl");
     let first = audit_event("audit-first", 1);
@@ -385,7 +385,7 @@ async fn local_file_a3s_event_sink_discards_only_an_unterminated_torn_tail() {
     bytes.extend_from_slice(br#"{"torn":"never-complete"#);
     tokio::fs::write(&path, bytes).await.unwrap();
 
-    let sink = LocalFileA3sFlowEventSink::new(&path);
+    let sink = LocalFileAsterFlowEventSink::new(&path);
     assert_eq!(sink.events().await.unwrap(), vec![first.clone()]);
     sink.emit(second.clone()).await;
 
@@ -397,7 +397,7 @@ async fn local_file_a3s_event_sink_discards_only_an_unterminated_torn_tail() {
 }
 
 #[tokio::test]
-async fn local_file_a3s_event_sink_rejects_terminated_corruption() {
+async fn local_file_aster_event_sink_rejects_terminated_corruption() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("flow-events.jsonl");
     let first = audit_event("audit-first", 1);
@@ -406,7 +406,7 @@ async fn local_file_a3s_event_sink_rejects_terminated_corruption() {
     bytes.extend_from_slice(b"\nnot-json\n");
     tokio::fs::write(&path, &bytes).await.unwrap();
 
-    let sink = LocalFileA3sFlowEventSink::new(&path);
+    let sink = LocalFileAsterFlowEventSink::new(&path);
     let error = sink.events().await.unwrap_err();
     assert!(error
         .to_string()
@@ -422,7 +422,7 @@ async fn local_file_a3s_event_sink_rejects_terminated_corruption() {
 }
 
 #[tokio::test]
-async fn local_file_a3s_event_sink_rejects_interior_corruption() {
+async fn local_file_aster_event_sink_rejects_interior_corruption() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("flow-events.jsonl");
     let first = audit_event("audit-first", 1);
@@ -434,7 +434,7 @@ async fn local_file_a3s_event_sink_rejects_interior_corruption() {
     bytes.push(b'\n');
     tokio::fs::write(&path, &bytes).await.unwrap();
 
-    let sink = LocalFileA3sFlowEventSink::new(&path);
+    let sink = LocalFileAsterFlowEventSink::new(&path);
     let error = sink.events().await.unwrap_err();
     assert!(error
         .to_string()

@@ -4,7 +4,7 @@ use std::path::Path;
 
 const MAX_LOG_BYTES: u64 = 64 * 1024;
 const MAX_MERGED_CONSOLE_BYTES: usize = 1024 * 1024;
-const EVIDENCE_PREFIX: &[u8] = b"A3S_OCI_AGENT_TRANSPORT_QUALIFICATION_EVIDENCE ";
+const EVIDENCE_PREFIX: &[u8] = b"ASTER_OCI_AGENT_TRANSPORT_QUALIFICATION_EVIDENCE ";
 const LOG_NAMES: &[&str] = &[
     "guest-init.stderr.log",
     "guest-init.stdout.log",

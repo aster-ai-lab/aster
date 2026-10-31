@@ -6,10 +6,10 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-REGISTRY_DIR="${A3S_USE_REGISTRY_DIR:-${ROOT_DIR}/registry}"
-STATE_DIR="${A3S_USE_REGISTRY_STATE_DIR:-${ROOT_DIR}/.local/serve}"
-HOST="${A3S_USE_REGISTRY_HOST:-127.0.0.1}"
-PORT="${A3S_USE_REGISTRY_PORT:-4873}"
+REGISTRY_DIR="${ASTER_USE_REGISTRY_DIR:-${ROOT_DIR}/registry}"
+STATE_DIR="${ASTER_USE_REGISTRY_STATE_DIR:-${ROOT_DIR}/.local/serve}"
+HOST="${ASTER_USE_REGISTRY_HOST:-127.0.0.1}"
+PORT="${ASTER_USE_REGISTRY_PORT:-4873}"
 PID_FILE="${STATE_DIR}/httpd.pid"
 LOG_FILE="${STATE_DIR}/httpd.log"
 URL_FILE="${STATE_DIR}/base.url"
@@ -19,10 +19,10 @@ usage() {
 Usage: scripts/serve_local.sh <start|stop|status|url|restart>
 
 Environment:
-  A3S_USE_REGISTRY_HOST       Bind address (default: 127.0.0.1)
-  A3S_USE_REGISTRY_PORT       Listen port (default: 4873)
-  A3S_USE_REGISTRY_STATE_DIR  PID/log directory (default: .local/serve)
-  A3S_USE_REGISTRY_DIR        Directory to serve (default: <repo>/registry)
+  ASTER_USE_REGISTRY_HOST       Bind address (default: 127.0.0.1)
+  ASTER_USE_REGISTRY_PORT       Listen port (default: 4873)
+  ASTER_USE_REGISTRY_STATE_DIR  PID/log directory (default: .local/serve)
+  ASTER_USE_REGISTRY_DIR        Directory to serve (default: <repo>/registry)
                               Must contain metadata/root.json. Used by mock-
                               package gates; production consumers pin the
                               committed tree + bootstrap digest, not this path.

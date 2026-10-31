@@ -32,7 +32,7 @@ export function parseLargeSimpleDocxInWorker(
   try {
     worker = new Worker(
       new URL('./work-document-import.worker.js', import.meta.url),
-      { name: 'a3s-office-document-import' },
+      { name: 'aster-office-document-import' },
     );
   } catch {
     return Promise.resolve(null);
@@ -81,7 +81,7 @@ export function parseLargeSimpleDocxInWorker(
       }
       if (response.kind === 'ineligible') {
         recordDocumentImportMeasure(
-          'a3s-office.document.large-simple-worker-total',
+          'aster-office.document.large-simple-worker-total',
           startedAt,
           documentImportNow(),
           { accepted: false, paragraphBatchCount, rowBatchCount },
@@ -174,7 +174,7 @@ export function parseLargeSimpleDocxInWorker(
       }
       const finishedAt = documentImportNow();
       recordDocumentImportDuration(
-        'a3s-office.document.large-simple-worker-parse',
+        'aster-office.document.large-simple-worker-parse',
         response.timings.parseMs,
         {
           contentMs: response.timings.contentMs,
@@ -184,13 +184,13 @@ export function parseLargeSimpleDocxInWorker(
         },
       );
       recordDocumentImportMeasure(
-        'a3s-office.document.large-simple-worker-finalize',
+        'aster-office.document.large-simple-worker-finalize',
         finalizationStartedAt,
         finishedAt,
         { paragraphBatchCount, rowBatchCount, streamedAssemblyMs },
       );
       recordDocumentImportMeasure(
-        'a3s-office.document.large-simple-worker-total',
+        'aster-office.document.large-simple-worker-total',
         startedAt,
         finishedAt,
         {

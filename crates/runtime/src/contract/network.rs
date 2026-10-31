@@ -4,7 +4,7 @@ use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 use super::observation::RuntimeObservation;
 
-const SERVICE_ENDPOINT_CLAIM_PREFIX: &str = "a3s.runtime.service-endpoint.";
+const SERVICE_ENDPOINT_CLAIM_PREFIX: &str = "aster.runtime.service-endpoint.";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

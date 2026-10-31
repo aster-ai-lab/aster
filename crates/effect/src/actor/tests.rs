@@ -105,7 +105,7 @@ fn recovery_input() -> NewFact {
         kind: "recovery.unproved".into(),
         key: format!("recovery-unproved:sha256:{}", "1".repeat(64)),
         payload: json!({
-            "schema": "a3s.code.recovery-unproved.v1",
+            "schema": "aster.code.recovery-unproved.v1",
             "session_id": "original-thread",
             "thread_id": "original-thread",
             "source_run_id": "original-run",

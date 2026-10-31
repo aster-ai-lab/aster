@@ -12,13 +12,13 @@ import type {
 } from './types';
 
 export const PORTABLE_COMPILE_REQUEST_API_VERSION =
-  'a3s.dev/form-core/compile-request/v1alpha1' as const;
+  'aster.dev/form-core/compile-request/v1alpha1' as const;
 export const PORTABLE_COMPILE_RESPONSE_API_VERSION =
-  'a3s.dev/form-core/compile-response/v1alpha1' as const;
+  'aster.dev/form-core/compile-response/v1alpha1' as const;
 export const PORTABLE_EVALUATE_REQUEST_API_VERSION =
-  'a3s.dev/form-core/evaluate-request/v1alpha1' as const;
+  'aster.dev/form-core/evaluate-request/v1alpha1' as const;
 export const PORTABLE_EVALUATE_RESPONSE_API_VERSION =
-  'a3s.dev/form-core/evaluate-response/v1alpha1' as const;
+  'aster.dev/form-core/evaluate-response/v1alpha1' as const;
 
 export interface PortableCompilerCapabilities {
   widgets?: string[];
@@ -209,7 +209,7 @@ export function createWasmFormCore(
     const outputCapacity = exports.output_capacity();
     const inputPointer = exports.input_ptr();
     const outputPointer = exports.output_ptr();
-    const compilerRevision = `a3s-form-core@${formatVersion(exports.compiler_version())}`;
+    const compilerRevision = `aster-form-core@${formatVersion(exports.compiler_version())}`;
     return {
       version: formatVersion(exports.engine_version()),
       compilerRevision,

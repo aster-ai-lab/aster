@@ -12,9 +12,9 @@ use thiserror::Error;
 use tokio::sync::{Mutex, Notify, RwLock};
 use tokio_util::sync::CancellationToken;
 
-pub const AUXILIARY_RUN_SCHEMA_V1: &str = "a3s.code.auxiliary-run.v1";
-pub const AUXILIARY_OUTPUT_SCHEMA_V1: &str = "a3s.code.auxiliary-output.v1";
-pub const AUXILIARY_SNAPSHOT_SCHEMA_V1: &str = "a3s.code.auxiliary-run-snapshot.v1";
+pub const AUXILIARY_RUN_SCHEMA_V1: &str = "aster.code.auxiliary-run.v1";
+pub const AUXILIARY_OUTPUT_SCHEMA_V1: &str = "aster.code.auxiliary-output.v1";
+pub const AUXILIARY_SNAPSHOT_SCHEMA_V1: &str = "aster.code.auxiliary-run-snapshot.v1";
 pub const AUXILIARY_MAX_OUTPUT_BYTES: usize = 16 * 1024 * 1024;
 pub const AUXILIARY_MAX_STEPS: u32 = 1_000_000;
 const MAX_PURPOSE_BYTES: usize = 256;
@@ -223,7 +223,7 @@ impl AuxiliaryRunSpecV1 {
 
     pub fn digest(&self) -> Result<String, AuxiliaryRunError> {
         self.validate(&self.evidence_digest)?;
-        digest_json("a3s.code.auxiliary-run.identity.v1", self)
+        digest_json("aster.code.auxiliary-run.identity.v1", self)
             .map_err(|error| AuxiliaryRunError::Serialization(error.to_string()))
     }
 }
@@ -348,7 +348,7 @@ impl AuxiliaryRunOutputV1 {
             schema: AUXILIARY_OUTPUT_SCHEMA_V1.to_string(),
             output_bytes: u64::try_from(encoded.len())
                 .map_err(|_| AuxiliaryRunError::NumericOverflow)?,
-            output_digest: digest_bytes("a3s.code.auxiliary-output.value.v1", &encoded),
+            output_digest: digest_bytes("aster.code.auxiliary-output.value.v1", &encoded),
             value,
         })
     }
@@ -371,7 +371,7 @@ impl AuxiliaryRunOutputV1 {
         }
         validate_digest(&self.output_digest)
             .map_err(|_| AuxiliaryRunError::InvalidField("output_digest"))?;
-        if self.output_digest != digest_bytes("a3s.code.auxiliary-output.value.v1", &encoded) {
+        if self.output_digest != digest_bytes("aster.code.auxiliary-output.value.v1", &encoded) {
             return Err(AuxiliaryRunError::DigestMismatch("output_digest"));
         }
         if let Some(schema) = schema {

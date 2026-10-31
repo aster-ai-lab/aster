@@ -38,7 +38,7 @@ impl Completion for ScriptModel {
         &self,
         request: CompletionRequest,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         self.tool_counts.lock().unwrap().push(request.tools.len());
         self.messages.lock().unwrap().push(request.messages.clone());
@@ -65,7 +65,7 @@ impl Completion for ReportingModel {
         &self,
         request: CompletionRequest,
         cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         let reported = self.reports.lock().unwrap().pop().flatten().unwrap_or(0);
         self.last.store(reported, Ordering::SeqCst);
         self.inner.complete(request, cancel)
@@ -89,7 +89,7 @@ impl ToolRunner for IdTools {
         &self,
         call: ToolCall,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
         let id = call.id;
         Box::pin(async move { Ok(serde_json::json!(format!("output-{id}"))) })
     }
@@ -100,7 +100,7 @@ impl ToolRunner for ScriptTools {
         &self,
         call: ToolCall,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
         let n = self.calls.fetch_add(1, Ordering::SeqCst);
         let fail = self.fail_first.load(Ordering::SeqCst) > 0 && n == 0;
         let name = call.name;
@@ -422,9 +422,9 @@ async fn fact_log_runner_failure_is_unknown_and_never_reexecuted() {
         .iter()
         .find(|fact| fact.kind == "tool.result")
         .unwrap();
-    let receipt: a3s_effect::ToolExecutionResultV1 =
+    let receipt: aster_effect::ToolExecutionResultV1 =
         serde_json::from_value(terminal.payload["receipt"].clone()).unwrap();
-    assert_eq!(receipt.outcome, a3s_effect::ToolExecutionOutcome::Unknown);
+    assert_eq!(receipt.outcome, aster_effect::ToolExecutionOutcome::Unknown);
     assert!(!super::receipts::fold_debt(&settled.log)
         .unresolved
         .is_empty());
@@ -967,7 +967,7 @@ async fn repeated_tool_call_is_a_nudge_and_the_turn_continues() {
 #[tokio::test]
 async fn configured_duplicate_guard_refuses_the_second_identical_call() {
     let dir = tempfile::tempdir().unwrap();
-    let same = serde_json::json!({"command": "command -v a3s"});
+    let same = serde_json::json!({"command": "command -v aster"});
     let other = serde_json::json!({"command": "pwd"});
     let model = Arc::new(ScriptModel {
         decisions: Mutex::new(
@@ -2164,7 +2164,7 @@ async fn one_generation_keeps_tool_names_and_the_next_admission_sees_the_grant()
     let digest = format!("{:x}", sha2::Sha256::digest(skill_body.as_bytes()));
     let snapshot = serde_json::json!({
             "data": { "registry": { "capabilities": [{
-                "id": "use/a3s/review",
+                "id": "use/aster/review",
                 "enabled": true,
                 "readiness": "ready",
                 "skills": [{ "id": "review", "path": skill_path.display().to_string(), "sha256": digest }],
@@ -2211,14 +2211,14 @@ async fn one_generation_keeps_tool_names_and_the_next_admission_sees_the_grant()
     assert!(seen[0].iter().any(|name| name == "use_review_task"));
     assert!(!seen[0].iter().any(|name| {
         name == "bash"
-            || name == "a3s-use"
+            || name == "aster-use"
             || name.contains("picker")
             || name.contains("flow")
             || name.contains("knowledge")
     }));
 
     let request =
-        crate::use_harness::PackageInstallRequest::parse("a3s/review", &["tool"]).unwrap();
+        crate::use_harness::PackageInstallRequest::parse("aster/review", &["tool"]).unwrap();
     let denied = crate::use_harness::cutover(
         &current,
         &request,
@@ -2253,7 +2253,7 @@ async fn one_generation_keeps_tool_names_and_the_next_admission_sees_the_grant()
     let next_tools = next_client.tools.lock().unwrap().clone();
     assert!(next_tools[0].iter().any(|name| name == "read"));
     assert!(next_tools[0].iter().any(|name| name == "bash"));
-    assert!(!next_tools[0].iter().any(|name| name == "a3s-use"));
+    assert!(!next_tools[0].iter().any(|name| name == "aster-use"));
     assert_eq!(fact.admitted_tool_catalog(), seen[0].as_slice());
 }
 
@@ -2447,11 +2447,11 @@ async fn fact_log_follow_up_sends_the_recorded_tool_call() {
 
 #[test]
 fn fact_log_recorded_tool_calls_start_after_the_latest_compaction() {
-    use a3s_effect::LogStore;
+    use aster_effect::LogStore;
     let workspace = tempfile::tempdir().unwrap();
     let dir = log_dir(workspace.path());
     std::fs::create_dir_all(&dir).unwrap();
-    let log = a3s_effect::FileLog::open(&dir).unwrap();
+    let log = aster_effect::FileLog::open(&dir).unwrap();
     let tool = |id: &str, name: &str| {
         serde_json::json!({
             "kind": "tool",
@@ -2466,7 +2466,7 @@ fn fact_log_recorded_tool_calls_start_after_the_latest_compaction() {
     let append = |key: &str, kind: &str, payload: serde_json::Value| {
         log.append(
             THREAD,
-            &[a3s_effect::NewFact {
+            &[aster_effect::NewFact {
                 kind: kind.into(),
                 key: key.into(),
                 payload,
@@ -2500,16 +2500,16 @@ fn fact_log_recorded_tool_calls_start_after_the_latest_compaction() {
 
 #[test]
 fn user_attachment_plan_restores_png_bytes_after_compaction() {
-    use a3s_effect::LogStore;
+    use aster_effect::LogStore;
     let workspace = tempfile::tempdir().unwrap();
     let dir = log_dir(workspace.path());
     std::fs::create_dir_all(&dir).unwrap();
-    let log = a3s_effect::FileLog::open(&dir).unwrap();
+    let log = aster_effect::FileLog::open(&dir).unwrap();
     let png = vec![0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
     let append = |key: &str, kind: &str, payload: serde_json::Value| {
         log.append(
             THREAD,
-            &[a3s_effect::NewFact {
+            &[aster_effect::NewFact {
                 kind: kind.into(),
                 key: key.into(),
                 payload,
@@ -2581,7 +2581,7 @@ fn user_attachment_plan_restores_png_bytes_after_compaction() {
 #[test]
 fn compaction_transcript_replays_user_and_assistant() {
     let workspace = std::env::temp_dir().join(format!(
-        "a3s-transcript-{}-{}",
+        "aster-transcript-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -2638,7 +2638,7 @@ impl ToolRunner for HangTools {
         &self,
         _call: ToolCall,
         cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
         let started = std::sync::Arc::clone(&self.started);
         let dropped = std::sync::Arc::clone(&self.dropped);
         Box::pin(async move {
@@ -2754,7 +2754,7 @@ async fn automatic_fallback_reseals_typed_source_twice_without_trusting_summary(
     let source = crate::store::SessionFactSourceV1 {
         sequence: 7,
         identity: crate::execution_identity::ExecutionIdentityV1::derive(
-            "a3s.code.session-fact-source.v1",
+            "aster.code.session-fact-source.v1",
             &"original facts",
         )
         .unwrap(),
@@ -2929,7 +2929,7 @@ impl Completion for IdleModel {
         &self,
         _: CompletionRequest,
         _: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         Box::pin(async { Err(ActorError::Defect("idle".into())) })
     }
 }
@@ -2937,14 +2937,14 @@ impl Completion for IdleModel {
 struct IdleCompactor;
 
 impl Compactor for IdleCompactor {
-    fn compact(&self, _: &[String]) -> a3s_effect::coding::BoxFuture<Result<String, ActorError>> {
+    fn compact(&self, _: &[String]) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
         Box::pin(async { Err(ActorError::Defect("idle".into())) })
     }
 }
 
-fn preparation_request(call: ToolCall) -> a3s_effect::ToolPreparationRequest {
-    a3s_effect::ToolPreparationRequest {
-        identity: a3s_effect::ToolInvocationIdentityV1 {
+fn preparation_request(call: ToolCall) -> aster_effect::ToolPreparationRequest {
+    aster_effect::ToolPreparationRequest {
+        identity: aster_effect::ToolInvocationIdentityV1 {
             turn: 1,
             cycle: 0,
             tool_call_id: call.id.clone(),
@@ -2988,7 +2988,7 @@ fn tools_for_surface(
 async fn prepared_output(
     tools: Arc<super::executor_tools::ExecutorTools>,
     call: ToolCall,
-) -> a3s_effect::ToolExecutionResultV1 {
+) -> aster_effect::ToolExecutionResultV1 {
     let prepared = super::receipts::prepare_tools(
         Arc::clone(&tools),
         preparation_request(call),
@@ -3061,7 +3061,7 @@ async fn parked_skill_ask_is_not_rewritten_as_unapproved() {
     .await;
     assert_ne!(
         form_result.outcome,
-        a3s_effect::ToolExecutionOutcome::Denied
+        aster_effect::ToolExecutionOutcome::Denied
     );
     assert!(!form_result
         .output

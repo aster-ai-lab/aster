@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise real fullscreen terminal resizing and conversation with A3S Test."""
+"""Exercise real fullscreen terminal resizing and conversation with Aster Test."""
 import hashlib
 from http.server import ThreadingHTTPServer
 import json
@@ -22,7 +22,7 @@ def main():
     evidence = Path(sys.argv[2]).resolve()
     evidence.mkdir(parents=True, exist_ok=False)
     hashes = {name: hashlib.sha256((stage / name).read_bytes()).hexdigest()
-              for name in ['aster', 'a3s-code-acp']}
+              for name in ['aster', 'aster-acp']}
     replies = {name: name.upper() + '-' + uuid.uuid4().hex[:12]
                for name in ['narrow', 'wide']}
 
@@ -86,23 +86,23 @@ def main():
             relay.write_bytes((repo / 'apps/aster/tests/tui_913_real_llm/acp_trace_proxy.py').read_bytes())
             relay.chmod(0o700)
             env = dict(os.environ, HOME=str(home), GROK_HOME=str(home / 'grok'),
-                       A3S_CONFIG=str(config), A3S_ACP_AGENT_BIN=str(relay),
-                       A3S_CODE_TUI_TEST_ACP_REAL=str(stage / 'a3s-code-acp'),
-                       A3S_CODE_TUI_TEST_ACP_TRACE=str(evidence / 'acp.jsonl'),
-                       A3S_DISABLE_CC_SWITCH='1', A3S_DISABLE_GROK_ACCOUNT='1',
-                       A3S_DISABLE_CURSOR_ACCOUNT='1', TERM='xterm-256color')
-            env.pop('A3S_LH_CANDIDATE_MANIFEST', None)
-            checked = subprocess.run(['a3s-test', 'check', str(suite), '--json'],
+                       ASTER_CONFIG=str(config), ASTER_ACP_AGENT_BIN=str(relay),
+                       ASTER_TUI_TEST_ACP_REAL=str(stage / 'aster-acp'),
+                       ASTER_TUI_TEST_ACP_TRACE=str(evidence / 'acp.jsonl'),
+                       ASTER_DISABLE_CC_SWITCH='1', ASTER_DISABLE_GROK_ACCOUNT='1',
+                       ASTER_DISABLE_CURSOR_ACCOUNT='1', TERM='xterm-256color')
+            env.pop('ASTER_LH_CANDIDATE_MANIFEST', None)
+            checked = subprocess.run(['aster-test', 'check', str(suite), '--json'],
                                      cwd=repo, capture_output=True, text=True)
             (evidence / 'check.json').write_text(checked.stdout)
             assert checked.returncode == 0, checked.stderr
-            command = ['a3s-test', 'run', str(suite), '--tui-executable', str(stage / 'aster'),
+            command = ['aster-test', 'run', str(suite), '--tui-executable', str(stage / 'aster'),
                        '--tui-arg=--no-plan', '--tui-working-directory', str(workspace),
                        '--tui-columns', '120', '--tui-rows', '40', '--json']
             result = subprocess.run(command, cwd=repo, env=env, capture_output=True, text=True)
-            (evidence / 'a3s-test.json').write_text(result.stdout)
+            (evidence / 'aster-test.json').write_text(result.stdout)
             (evidence / 'stderr.log').write_text(result.stderr)
-            report = json.loads((evidence / 'a3s-test.json').read_text())
+            report = json.loads((evidence / 'aster-test.json').read_text())
             scenario = report['scenarios'][0]
             frames = {step['id']: step['output']['data']['viewport']
                       for step in scenario['steps']

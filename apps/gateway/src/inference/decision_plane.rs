@@ -109,15 +109,15 @@ impl DecisionPlane {
 
     #[cfg(feature = "neural")]
     pub(crate) fn from_environment(required: bool) -> Result<Self, super::DecisionError> {
-        let checkpoint = std::env::var_os("A3S_APOFASI_CHECKPOINT");
+        let checkpoint = std::env::var_os("ASTER_APOFASI_CHECKPOINT");
         if required && checkpoint.is_none() {
             return Err(super::DecisionError::Invalid(
-                "apofasi routing requires A3S_APOFASI_CHECKPOINT".into(),
+                "apofasi routing requires ASTER_APOFASI_CHECKPOINT".into(),
             ));
         }
         let mut plane = Self::dormant();
         if let Some(checkpoint) = checkpoint {
-            let concurrency = std::env::var("A3S_APOFASI_DECISION_CONCURRENCY")
+            let concurrency = std::env::var("ASTER_APOFASI_DECISION_CONCURRENCY")
                 .ok()
                 .and_then(|value| value.parse::<usize>().ok())
                 .unwrap_or(2);

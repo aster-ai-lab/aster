@@ -1,0 +1,1270 @@
+# Changelog
+
+All notable changes to Aster Power will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.11.0] - 2026-10-30
+
+This pre-v1 release adds the scoped Magnitude native GGUF Chat production
+profile. It is not the complete Power v1 or TEE release.
+
+### Added
+
+- Optional `magnitude` backend using the vendored Magnitude / Seismic engine for
+  in-process GGUF Chat, streaming, exact usage, native tool calls and argument
+  deltas, multi-turn tool results, JSON Object, and JSON Schema output.
+- `magnitude_device` selection with `auto`, `cpu`, `metal`, `cuda`, `vulkan`,
+  and exact Seismic selectors. Cold Prepare uses a short-lived worker; warm
+  loads reuse the model/device kernel cache. Cancellation, unload, and reload
+  are supported within the documented profile.
+- Production configuration, rollout guidance, and retained CPU / Metal
+  acceptance evidence in `docs/magnitude-backend.md`.
+
+### Changed
+
+- Release binaries now compile the `magnitude` feature and release CI runs its
+  full library test profile from an independent Power checkout.
+- The vendored source is part of the Power repository, with workspace
+  inheritance expanded so both Aster and standalone Power builds resolve it.
+- This unpublishable package no longer runs a crates.io publish job. GitHub
+  Release archives and the Homebrew formula remain the distribution path.
+
+### Boundaries
+
+- CPU and Metal were qualified with the documented model and context limits.
+  CUDA and Vulkan selectors have not passed hardware qualification.
+- Completion, embeddings, SystemOne, keyed prompt caching, images, LoRA,
+  manifest prompt overrides, confidential in-memory loading, and the strict TEE
+  profile remain unsupported by this backend.
+
+## [0.10.0] - 2026-09-21
+
+This is the current `main` release. It is not the production `v1.0.0` tag.
+That tag still requires an evidence-only child of
+`514031dc74edd72da7c3bfee40144a38d2d91434` with CPU, CUDA, Metal, and
+SEV-SNP confidential-GPU captures.
+
+### Added
+
+- Prism backend for PrismML / Bonsai GGUF packs. Power admits only Prism-required
+  manifests, forwards chat and native tool calls to a Prism `llama-server`
+  (`prism_upstream`, `prism_profile` `baseline`|`dspark`|`kv4`), and leaves
+  Power `spec_mode` fail-closed. See `docs/prism-backend-plan.md` and
+  `docs/prism-acceleration-runbook.md`.
+- Jev-compatible `POST /v1/systemone` decision scoring on the llama.cpp
+  backend: one forward pass, option-label logits, subset softmax, and
+  `choice` / `noul` / `score` answers. Probabilities are conditional over
+  declared labels only and are not TypeSafe Jev calibration. The local
+  Qwen3.5-4B demo defaults to **Q8_0** for RTX 4090-class GPUs. See
+  `docs/systemone.md` and `docs/examples/systemone-qwen35-4b/`.
+
+### Fixed
+
+- Windows CUDA capture helpers now set `NVCC_CCBIN` through a space-free
+  `C:\vsbt` junction (`ensure-nvcc-ccbin.ps1`) and put that host-compiler
+  directory on `PATH`, so VS 2022 Build Tools can host-compile without a
+  nested `VsDevCmd` / too-long `vcvars` environment.
+- Force LF for `*.sh` via `.gitattributes` so Windows `core.autocrlf` checkouts
+  cannot break Phase R bash capture/assemble scripts with CR line endings.
+- Satisfy Rust 1.98 `cargo fmt --check` and Clippy `-D warnings` for the
+  tee-minimal and release-promotion profiles (`manual_contains`, `manual_clamp`,
+  `useless_format`, `field_reassign_with_default`) so open release and hosting
+  PRs are not blocked by toolchain drift on `main`.
+- HuggingFace embedding loads through mistral.rs now address local directories by
+  filesystem path (plus `from_hf_cache_path` and optional `tokenizer.json`) so
+  air-gapped / `network: none` Box guests do not resolve the OpenAI registry
+  alias on Hugging Face. The registry alias remains the runtime map key.
+
+### Changed
+
+- `PLAN.md` now states the production scale ladder: one evidence-backed
+  revision, one Box-hosted service, then replica width through Cloud. Kernel
+  fusion, high-speed networking, and Intel TDX stay off the ladder until a
+  named deployment is blocked and the replacement has the same evidence bar.
+- `PowerRuntimeServiceProfile` now compiles `aster.runtime.unit-spec.v4` against
+  the Cloud stack Runtime pin (`aster-runtime` 0.5.0,
+  `4c5fbd56bedd84d1007a7d9cd046a9f7083bbdcd`). The previous 0.2.0 pin could not
+  satisfy PW0.1. This does not add a `power` component to
+  `compat/cloud-stack.acl` and does not move the v1.0.0 freeze parent.
+- Documented freeze-parent vs post-freeze helper-script checkout for Phase R
+  CUDA/confidential-source captures in `tools/release-capture/README.md`.
+- Capture helpers now say how to invoke them from a `main` checkout against a
+  clean freeze-parent worktree, including exporting the policy blob that is
+  not on `514031dc…`.
+- `PLAN.md` no longer tells Phase R to run those helpers inside the freeze
+  parent, and it records that the [#56](https://github.com/aster-ai-lab/Power/issues/56)
+  CUDA source already exists and must not be recaptured.
+- Updated `PLAN.md` issue/PR triage after landing #58/#59/#60 and closing #57;
+  open queue is Metal (#55) and SEV-SNP (#56) hardware evidence only.
+- Default `worker_observation_ttl_seconds` is now 120 (still capped at 300) so
+  Cloud/Gateway managed-snapshot apply plus a real dataplane request can finish
+  inside the observation freshness bound.
+- Documented the post-software-exit development plan (Phase R evidence publish,
+  then Phase A Box hosting) and rejected overfitting / out-of-order work in
+  `PLAN.md`.
+- Release-capture and assemble scripts now default-fail unless `HEAD` is the
+  v1.0.0 freeze parent `514031dc74edd72da7c3bfee40144a38d2d91434` (override
+  only when intentionally recutting a new evidence parent).
+
+## [1.0.0] - 2026-09-10
+
+### Fixed
+
+- Cross-process product-pair fixture fail-closes on
+  `ServingCompositionTransport::DirectDeviceMemoryPull` instead of leaving a
+  non-exhaustive match after the HSN transport variant landed (loopback
+  conformance only; never installs the Unavailable HSN port).
+
+### Added
+
+- Checked in exact-parent Windows CPU/CUDA complete-contract captures for
+  frozen source parent `514031dc74edd72da7c3bfee40144a38d2d91434` under
+  `docs/benchmarks/release-contract-windows-20260910/`, plus
+  `tools/release-capture/` helpers for Windows CPU/CUDA, macOS Metal,
+  confidential-GPU source (not promoted), and fail-closed evidence-child
+  assembly. These are operator tooling and partial evidence only; Metal and
+  SEV-SNP confidential-GPU captures remain required for a production tag.
+
+- Honest v1 production exclusion for attested-private-fabric readiness
+  (TDX/HSN OR-pattern): `ServingPrivacyMode::AttestedPrivateFabric` never
+  sets `may_advertise_prefill_decode` / worker `ready_phases` /
+  `accepts_work`, even when `attestation_policy_sha256` is present for AAD /
+  sealed host-buffer digest wire binding. Confidential multi-node GPU meshes
+  with peer transfers fail closed unless NVSwitch fabric claim indices are
+  declared and matched to GPU evidence. Documents the matrix exclusion and
+  qualifies attestation-hardening Still-open items (multimodal abstention,
+  optional NRAS SDK, attested-fabric exclusion) so v1 remediation is complete
+  without claiming fabric attestation, emitible multimodal digests, or a
+  native NRAS SDK.
+
+- Honest v1 production exclusion for DirectDeviceMemoryPull / HSN
+  advertisement (TDX OR-pattern): `DirectDeviceMemoryPullV1` never sets
+  `may_advertise_prefill_decode` / worker `ready_phases` / `accepts_work`,
+  including builder-injected Ready fixtures; the named Unavailable product
+  port refuses every data-path call and documents the matrix exclusion.
+  Closes the last P6 HSN checkbox without claiming HSN works.
+
+- Live P/D reuse evidence under shared session-pool + weight-hierarchy ports
+  (`llamacpp` + `embedded-inference`, `ASTER_POWER_LLAMACPP_PHASE_STATE_MODEL`):
+  `tests/llamacpp_phase_state_live.rs` pins `session_pool_policy_sha256` /
+  `residency_policy_sha256`, binds them through
+  `DistributedServingRuntime::validate_session_pool` /
+  `validate_weight_hierarchy`, exercises `ModelSessionPool::get_or_load`,
+  reclaims `BoundedStateTransferService` leases after live consume, and binds
+  digest-only `DistributedOperationEvidence` via
+  `ImportedModelState::consume_with_receipt_at`. Closes ROADMAP reuse /
+  opaque-state / typed-outcome checkboxes. Does **not** claim HSN
+  DirectDeviceMemoryPull works (v1-excluded) or that attested fabric works
+  (also v1-excluded; see attestation claim qualification).
+- Env-gated live authenticated HTTP typed-outcome / opaque-state evidence
+  (`ASTER_POWER_LLAMACPP_PHASE_STATE_MODEL`, `llamacpp` feature):
+  `tests/llamacpp_phase_state_live.rs` →
+  `live_llamacpp_authenticated_http_ready_prefill_and_ndjson_decode_after_restore`
+  composes BackendOwned + buffered-host + llamacpp ownership/execution +
+  `LlamaCppLiveDecodeTokenPort` over `/internal/v1/distributed-serving/*`
+  (Ready prefill JSON after live capture; Ready NDJSON decode after
+  consume+restore+live greedy sample). Together with the reuse brick above,
+  this closes ROADMAP opaque-state / typed-outcome (HSN DirectDeviceMemoryPull
+  and attested-fabric are closed by v1 exclusion, not by claiming they work).
+- Honest `may_advertise_prefill_decode` / worker `ready_phases` for
+  BackendOwned + buffered-host + llamacpp ownership/execution: profile ACL
+  admits advertise only for that full pair; runtime `accepts_work` still
+  requires Injected+REQUIRED+Ready (`execution_admissible`) and
+  `ServingPhaseExecutor::may_advertise_ready_phases` (decode needs a bound
+  `LlamaCppDecodeTokenPort`; Pending/Empty hollow Ready stay false;
+  DirectDeviceMemoryPull never advertises without HSN). First-principles
+  true/false tests cover profile gates, runtime advertise with/without
+  decode-token, and worker observation. Does **not** close ROADMAP
+  opaque-state / typed-outcome / HSN checkboxes (reuse / HSN / attestation
+  remain open).
+- Authenticated HTTP typed-outcome evidence for product buffered-host +
+  `BackendOwnedPhaseExecutor` + llamacpp ownership/execution (fixture ports,
+  no GGUF): `api::distributed_serving_llamacpp_http_tests` proves Ready
+  prefill after capture, Ready NDJSON decode only after
+  consume+restore+`ControlledLlamaCppDecodeTokenPort`, and unbound
+  decode-token fail-closed as JSON without NDJSON success.
+  `DistributedServingRuntime::execution_admissible` separates phase-work
+  admission from worker `ready_phases` advertisement so unbound decode can
+  exercise typed-outcome HTTP while `accepts_work` stays false; bound
+  decode-token flips honest advertise. Does **not** close ROADMAP
+  typed-outcome / opaque-state checkboxes (reuse / HSN / attestation remain
+  open).
+- Live llama.cpp opaque-state phase evidence (`llamacpp` feature,
+  `ASTER_POWER_LLAMACPP_PHASE_STATE_MODEL`): `SharedLlamaCppContextStateApi`
+  boxes a real `LlamaContext` through `LlamaCppContextStateApi` get/copy/set.
+  Env-gated `tests/llamacpp_phase_state_live.rs` fails closed if the env var
+  is set but the GGUF is missing, then proves capture → buffered-host
+  publish/consume → restore on live contexts. Ready decode uses
+  `LlamaCppLiveDecodeTokenPort` + a post-restore llama.cpp decode at the
+  next M-RoPE position (this pin's snapshot leaves `n_outputs=0`) then
+  greedy sample (token id from llama.cpp, never from transfer bytes). Live
+  HTTP boundary evidence is listed above. Does **not** close ROADMAP
+  opaque-state / typed-outcome checkboxes.
+- Decode Ready path for `LlamaCppBackendPhaseExecution` after opaque restore:
+  bind a distinct `LlamaCppDecodeTokenPort` (production:
+  `LlamaCppLiveDecodeTokenPort` under `llamacpp` wrapping existing completion /
+  decode on the restored context; tests: `ControlledLlamaCppDecodeTokenPort`
+  with explicit chunks). Restore via `set_state_data` remains required first —
+  transfer bytes and decode-adapter binding alone never invent Ready tokens.
+  Fixture composition evidence
+  (`backend_owned_llamacpp_buffered_host_restores_then_ready_decode_with_adapter`)
+  proves capture → buffered-host publish/consume → restore → Ready decode
+  stream. Env-gated live state API round-trip:
+  `ASTER_POWER_LLAMACPP_PHASE_STATE_MODEL` (`tests/llamacpp_phase_state_live.rs`,
+  `llamacpp` feature). Does **not** close ROADMAP opaque-state / typed-outcome
+  checkboxes until live GGUF P/D evidence drives the full path.
+- Composed `BackendOwnedPhaseExecutor` product pair for llama.cpp opaque
+  state: ACL `state_ownership = "llamacpp"` + `phase_execution = "llamacpp"`
+  + `transport = "buffered-host-loopback"` now wires the shared
+  `LlamaCppBackendPhaseStateOwnership` Arc and buffered-host transfer into
+  `LlamaCppBackendPhaseExecution`. Fixture-proven integration evidence
+  (`backend_owned_llamacpp_buffered_host_captures_publishes_restores_then_fail_closes`
+  via `SharedFixtureLlamaCppContextStatePort`) shows prefill ownership
+  capture -> buffered-host publish/consume -> decode `set_state_data`
+  restore -> fail-closed tokens when no decode-token port is bound.
+  Does **not** close ROADMAP opaque-state / typed-outcome
+  checkboxes until live GGUF P/D evidence exists.
+- Product-surface `LlamaCppBackendPhaseExecution` for backend-owned
+  prepare/execute: ACL/composition opt-in `phase_execution = "llamacpp"`
+  (requires `phase_executor = backend-owned`) unlocks Ready health after
+  Eligible ownership. Honest subset: `prepare` returns Ready reservations;
+  prefill `execute` returns Ready via the pinned llama.cpp state snapshot
+  APIs (or `FixtureLlamaCppContextStatePort` without a GGUF) paired with
+  `LlamaCppBackendPhaseStateOwnership`; decode `execute` may restore via
+  `llama_set_state_data` then fail-closes — transfer completion alone never
+  yields Ready decode tokens. Backend-owned composition still suppresses
+  `may_advertise_prefill_decode` / runtime `accepts_work` / worker
+  `ready_phases`. Does **not** invent KV layout, claim live P/D evidence, or
+  close ROADMAP typed-outcome / opaque-state exit checkboxes.
+- Product-surface `LlamaCppBackendPhaseStateOwnership` for backend-owned
+  phase composition: layout identity from `LlamaCppLayoutFacts` (or matching
+  profile digests) and opaque snapshot import/export via a
+  `LlamaCppContextStatePort` that mirrors the pinned llama.cpp APIs
+  `llama_get_state_size` / `llama_copy_state_data` / `llama_set_state_data`
+  (production wraps `LlamaContext` under the `llamacpp` feature; unit tests
+  use `FixtureLlamaCppContextStatePort` without a GGUF). ACL/composition
+  opt-in `state_ownership = "llamacpp"` (requires
+  `phase_executor = backend-owned`) wires Eligible ownership; empty snapshots
+  and unknown handles fail closed. `probe_llamacpp_state_transfer_api`
+  documents the required symbols on pin
+  `dfd12e4d334846367e4284a2a7763fe92c1bf676`. Does **not** invent KV layout,
+  claim Ready execute, advertise P/D, or close ROADMAP opaque-state exit
+  criteria (live P/D still needs transfer evidence under a concrete execute
+  path).
+- P6 open-checkbox exit criteria in `ROADMAP.md`: each remaining reuse /
+  opaque-state / typed-outcome / HSN / attestation checkbox names the
+  concrete evidence that closes it; interim `profile-bound` /
+  `phase_execution = pending` / Unavailable HSN / AAD digest binding alone
+  do not close checkboxes. Composition fail-closed rule: pending +
+  profile-bound may reach executor Ready health but never advertises P/D
+  without `DistributedServingRuntime::accepts_work`.
+- Worker-observation composition test:
+  `pending_profile_bound_ready_health_never_advertises_without_accepts_work`
+  proves `phase_execution = pending` + `state_ownership = profile-bound`
+  under backend-owned reaches executor Ready / `accepts_work`, yet
+  `may_advertise_prefill_decode` stays false, runtime `accepts_work` stays
+  false, and worker `ready_phases` stay empty.
+- Product-surface `BackendPhaseExecution` for backend-owned prepare/execute:
+  default `EmptyBackendPhaseExecution` keeps Eligible ownership from becoming
+  Ready. Binding a Ready-capable adapter (`can_produce_ready`) advances
+  Eligible to `PhaseExecutorHealth::Ready` and delegates prepare/execute.
+  Interim ACL/composition opt-in `phase_execution = "pending"` (requires
+  `phase_executor = backend-owned`) installs `PendingBackendPhaseExecution`:
+  unlocks Ready health after Eligible ownership, but prepare/execute/abort
+  fail closed until a concrete backend implementor exists. Pending alone
+  cannot skip Empty ownership (stays Unavailable). Does not invent llama.cpp
+  KV semantics; backend-owned composition still suppresses worker
+  `ready_phases` via `may_advertise_prefill_decode`.
+- Fail-closed state-layout binding for `BackendOwnedPhaseExecutor`: trait
+  `BackendPhaseStateOwnership` (opaque `state_layout_sha256` + optional related
+  model/backend/execution digests + opaque import/export hooks) with default
+  `EmptyBackendPhaseStateOwnership` staying Unavailable. Matching registration
+  advances health to `PhaseExecutorHealth::Eligible` only after profile
+  `layout_sha256` validation; mismatched digests fail closed at bind time.
+  Eligible still refuses Ready prepare/execute without a Ready-capable
+  `BackendPhaseExecution` and never advertises P/D—layout registration alone
+  is not decode success and does not invent llama.cpp KV semantics.
+- Interim product-surface `ProfileBoundBackendPhaseStateOwnership`: mirrors
+  exact closed serving-profile digests (`layout_sha256`, `model_sha256`,
+  closed `backend_sha256` artifact, `execution_sha256`) so
+  `BackendOwnedPhaseExecutor` can bind to Eligible without a real backend.
+  Opaque import/export fail closed; this is **not** llama.cpp / picolm KV
+  ownership and does not claim model-semantic P/D or Ready execute.
+  ACL/composition opt-in: `phase_executor = "backend-owned"` with
+  `state_ownership = "profile-bound"` (requires buffered-host-loopback
+  transport). Absent `state_ownership` keeps Empty → Unavailable. Digest
+  mismatch with the immutable profile fails closed at bind time. Eligible
+  still has `accepts_work == false`; worker `ready_phases` never list
+  prefill/decode while only Eligible.
+- Product-surface `BackendOwnedPhaseExecutor` for concrete backend phase work:
+  reports `AdapterProvisionState::Injected` under
+  `ProductionAdapterContract::REQUIRED`, pairs only with
+  `BufferedHostLoopbackStateTransfer` (refuses DirectDeviceMemoryPull / wrong
+  protocol), stays Unavailable, and refuse Ready prepare/execute until a real
+  state-layout + KV ownership adapter is bound. Transfer completion alone never
+  yields cache-hit or decode success; this does not invent model-semantic P/D.
+  ACL opt-in: `serving_execution.transport = "buffered-host-loopback"` with
+  `phase_executor = "backend-owned"` (programmatic equivalent:
+  `PowerServerBuilder::with_backend_owned_phase_on_buffered_host_loopback`).
+  `accepts_work` / worker `ready_phases` never advertise P/D for this
+  composition. Advances the P6 backend phase-executor product port only; llama.cpp
+  / picolm layout binding and HSN remain open.
+- Product-surface DirectDeviceMemoryPull port for `DirectDeviceMemoryPullV1`:
+  `DirectDeviceMemoryPullStateTransfer` + `DirectDeviceMemoryPullPhaseExecutor`
+  (`paired_for_profile`). ACL
+  `serving_execution.transport = "direct-device-memory-pull"` (programmatic
+  equivalent: `PowerServerBuilder::with_direct_device_memory_pull_transport`)
+  installs the pair as Injected + `ProductionAdapterContract::REQUIRED`, but
+  health stays Unavailable and every data-path method refuses work until a real
+  high-speed adapter is bound. `DistributedServingRuntime::accepts_work` and
+  worker `ready_phases` refuse to advertise P/D for this composition transport.
+  This is the named HSN product port, not HSN evidence, llama.cpp P/D, or
+  model-semantic readiness. Empty placeholders still fail composition; protocol
+  alone never auto-wires.
+- Buffered-host loopback transfer AAD v2 binds the immutable profile privacy
+  mode, `privacy_policy_sha256`, and optional `attestation_policy_sha256` into
+  every publish/consume authentication tag. Peers with matching model /
+  execution / layout bindings but mismatched privacy or attestation policies
+  fail closed on consume (AES-GCM authentication). This closes the product-pair
+  privacy/attestation wire binding only and does not claim HSN, attested
+  fabric readiness, or production adapters.
+- Transfer host-buffer sealed identity v2 binds the same privacy mode,
+  `privacy_policy_sha256`, and optional `attestation_policy_sha256` into the
+  `SealedStateEnvelope` state-id digest (domain `transfer-host-buffer.v2`).
+  Open fails closed on privacy/attestation drift even when model / execution /
+  layout / generation still match. This closes sealed host-buffer privacy
+  binding only and does not claim HSN, attested fabric, or TEE-export readiness.
+- Documented and expanded the intentional wire-ticket fail-closed property:
+  tickets remain opaque adapter connection metadata and are **not**
+  force-sealed with `SealedStateEnvelope` (host buffers seal; tickets do not).
+  Descriptor validation now also rejects hex-encoded sealed-model-state MAGIC
+  alongside schema / ASCII / Base64 markers, control characters, and oversized
+  tickets. First-principles property tests cover forbidden embeddings, corrupt
+  shapes, honest opaque tickets, and committed host-buffer persistence bytes
+  that must never validate as tickets. This closes the ticket-opacity contract
+  only and does not claim HSN or production adapters.
+- Cross-process distributed-serving conformance now uses the product-surface
+  `BufferedHostLoopback` pair via ACL
+  `serving_execution.transport = "buffered-host-loopback"` instead of a
+  test-only fixture adapter: independent prefill/decode workers load that ACL
+  opt-in, install `BufferedHostLoopbackStateTransfer` +
+  `BufferedHostLoopbackPhaseExecutor`, and prove success
+  (`loopback-conformance-token`), peer-loss, restart epoch invalidation, and
+  stale Cloud deployment generation / foreign peer-set rejection over the
+  product authenticated loopback path. Claims remain loopback conformance only
+  and do not claim HSN, llama.cpp P/D, or model-semantic readiness.
+- Honest ACL composition opt-in for the product buffered-host loopback pair:
+  `serving_execution.transport = "buffered-host-loopback"` installs
+  `BufferedHostLoopbackStateTransfer` + `BufferedHostLoopbackPhaseExecutor`
+  at startup when protocol/privacy match. Protocol alone never auto-wires;
+  incomplete pairs and mixing with builder-injected adapters fail closed.
+  Aggregated defaults still advertise no P/D. This is composition wiring only
+  and does not claim high-speed transport, llama.cpp P/D, or HSN readiness.
+  Programmatic equivalent: `PowerServerBuilder::with_buffered_host_loopback_transport`.
+- Injectable product-surface buffered-host / loopback phase executor:
+  `BufferedHostLoopbackPhaseExecutor` pairs with
+  `BufferedHostLoopbackStateTransfer` via `paired_for_profile` / `pair_with`,
+  reports `AdapterProvisionState::Injected` under
+  `ProductionAdapterContract::REQUIRED`, owns opaque conformance fixture
+  handles (not model-semantic KV), and fail-closes decode to
+  `Recompute(StateMissing|StateCorrupt)` unless adapter-owned bytes verify
+  after consume. Transfer receipt alone never yields Ready/NDJSON.
+  Composition accepts the complete pair; Empty phase or transfer-only
+  injection still fails closed. The cross-process suite now exercises this
+  product pair via ACL transport opt-in. Advances the P6 injectable adapter
+  path only and does not claim high-speed transport, llama.cpp P/D, sealed
+  wire tickets, or HSN readiness.
+- Injectable product-surface buffered-host / loopback state-transfer adapter:
+  `BufferedHostLoopbackStateTransfer` binds prefill/decode profiles that pin
+  `BufferedHostMemoryPullV1` and `AuthenticatedEncryptedTransport`, reports
+  `AdapterProvisionState::Injected` under `ProductionAdapterContract::REQUIRED`,
+  moves opaque adapter-owned host buffers over authenticated AES-GCM loopback
+  TCP, and confirms abort reclaim of destination reservations. Composition and
+  bounded-transfer wrap accept it as a concrete injection (Empty placeholders
+  still fail closed); aggregated defaults still refuse transfer injection.
+  The cross-process suite now exercises this product adapter via ACL transport
+  opt-in. This advances the P6 injectable adapter path only and does not claim
+  high-speed transport, sealed wire tickets, production phase executors, or
+  HSN readiness.
+- Hardened distributed readiness against Empty / non-required adapter contracts:
+  `DistributedServingRuntime::accepts_work` now requires both ports to report
+  `AdapterProvisionState::Injected` and `ProductionAdapterContract::REQUIRED`
+  before worker observation can list `prefill`/`decode` in `ready_phases`.
+  Construction already refused Empty placeholders at composition, bounded
+  transfer wrap, and runtime assembly; tests now pin those refusals and prove
+  proxy upstream digests cannot bind reserved `chat.multimodal-rendered-prompt`.
+  This strengthens P6 observation honesty only and does not claim production
+  adapters, high-speed transport, or emitible multimodal digests.
+- Cross-process distributed-serving conformance now covers stale Cloud
+  deployment generation and foreign peer-set rejection end-to-end: independent
+  prefill/decode HTTP workers fail closed with typed `InvalidRequest` when the
+  orchestrator tampers with `ServingDeploymentIdentity` on the prepared target
+  (before publish) or published source (before decode consume), without opening
+  Ready/NDJSON success. This strengthens P6 stale-generation peer binding over
+  the process boundary only and does not claim high-speed transport, production
+  adapters, sealed wire tickets, or live replica lifecycle reuse.
+- Closed `EffectivePromptClaimKind` enum for receipt `effective_prompt` claims:
+  emitible text kinds (`chat.rendered-prompt`, `chat.prompt-token-ids`,
+  `text.prompt`) plus reserved `chat.multimodal-rendered-prompt`. Digests of the
+  reserved multimodal kind cannot be constructed (`try_new` / receipt
+  well-formedness / OpenAI chat binding fail closed); image-bearing chat still
+  abstains with typed absence instead of inventing text-only digests. This does
+  not claim multimodal post-template renderer coverage or Phase completion.
+- Production ServingPhaseExecutor / StateTransferService capability contract:
+  closed `ProductionAdapterContract::REQUIRED` documents adapter-owned memory
+  registration, adapter-owned transport integrity, and confirmed-reclaim
+  cleanup. Trait defaults mark concrete injections as
+  `AdapterProvisionState::Injected`. `EmptyStateTransferService` /
+  `EmptyServingPhaseExecutor` bind the immutable profile capability shape but
+  stay Unavailable, refuse every data-path / phase call, and fail composition
+  plus bounded-transfer / distributed-runtime construction until a concrete
+  adapter is injected. Temporarily Unavailable injected adapters still start.
+  This strengthens the P6 adapter ownership boundary only and does not claim
+  high-speed transport, sealed wire tickets, live replica lifecycle reuse, or
+  production readiness.
+- Bound Cloud deployment generation and peer set into state-transfer wire
+  descriptors beyond process epoch: `ServingDeploymentIdentity` stamps
+  `generation` and `peer_set_sha256` onto `StateTransferTarget` /
+  `StateTransferSource` / `StateTransferReceipt` (schemas bumped to
+  `aster.power.state-transfer-*.v2`). Prefill and decode roles keep distinct full
+  profile digests, but publish/consume fail closed when a peer descriptor
+  carries a stale generation or foreign peer set before the adapter data path
+  runs. Legacy `*.v1` schemas fail closed. Distributed operation evidence folds
+  the deployment identity into its domain-separated digest. This strengthens P6
+  stale-generation peer binding only and does not claim high-speed transport,
+  production adapters, sealed wire tickets, or live replica lifecycle reuse.
+- Consolidated P/D telemetry onto existing Service surfaces without folding
+  transfer receipts into microbatch receipt-v4: matching
+  `DistributedServingRuntime` compositions now project content-free transfer
+  and fail-fast phase-admission counters through `GET /metrics` as label-free
+  Prometheus series (no transfer/execution/tenant/model label cardinality).
+  Aggregated profiles omit those series. Optional digest-only
+  `DistributedOperationEvidence` (`aster.power.distributed-operation.v1`) hashes
+  a validated `StateTransferReceipt` with domain separation so callers can bind
+  transfer-consume evidence without inventing a second receipt-v4 shape.
+  Sealed wire tickets, high-speed transport, production adapters, and full live
+  P/D replica lifecycle reuse remain open.
+- Prefill/decode serving now binds a closed `session_pool =
+  shared-session-pool` mode (and optional `session_pool_policy_sha256`) into
+  the immutable execution profile and `PhaseExecutorCapabilities`. Unknown
+  session-pool identities fail closed at deserialization; mismatched pool-policy
+  digests fail composition. When `embedded-inference` is enabled,
+  `DistributedServingRuntime::validate_session_pool` requires a pinned policy
+  digest that matches `ModelSessionPoolPolicy::sha256` so P/D cannot mint a
+  second process-local session-replica pool as valid. Sealed wire tickets,
+  high-speed transport, production adapters, and full live P/D replica
+  lifecycle reuse remain open.
+- Prefill/decode serving now binds a closed `weight_cache =
+  shared-weight-hierarchy` mode (and optional `residency_policy_sha256`) into
+  the immutable execution profile and `PhaseExecutorCapabilities`. Unknown
+  weight-cache identities fail closed at deserialization; mismatched residency
+  digests fail composition. When `embedded-inference` is enabled,
+  `DistributedServingRuntime::validate_weight_hierarchy` requires a pinned
+  policy digest that matches `ResidencyPolicy::sha256` so P/D cannot treat a
+  second process-local weight cache as valid. Sealed wire tickets, high-speed
+  transport, and production adapters remain open.
+- Worker observation for a matching `DistributedServingRuntime` now reuses the
+  shared fail-fast P/D `AdmissionController` snapshot (`max_inflight_transfers`,
+  `waiting_limit == 0`) instead of projecting the HTTP
+  `max_concurrent_requests` limiter as a second capacity surface. Held phase
+  leases appear in `admission.active`; after cleanup taint, observation
+  generation stays monotonic within the worker epoch while `ready_phases`
+  clears. Aggregated profiles still project the HTTP limiter. This advances P6
+  admission-observation honesty only and does not claim session replicas,
+  weight-hierarchy reuse, high-speed transport, or production adapters.
+- Reused `SealedStateEnvelope` / `SealedStateStore` for host-buffered transfer
+  payloads through `seal_transfer_host_buffer` and `open_transfer_host_buffer`
+  (requires the `embedded-inference` feature). The helper domain-separates
+  transfer id, worker epochs, binding digests, and serving-profile generation
+  into the existing sealed-model-state format (`TeeLocal`) so buffered-host
+  adapters do not invent a second ciphertext schema. Wire tickets remain opaque
+  adapter metadata and always fail closed if they embed sealed-model-state
+  schema or envelope magic. This advances P6 sealed-state reuse only and does
+  not claim sealed wire tickets, session replicas, high-speed transport, or
+  production adapters.
+- Reused Power's shared `AdmissionController` for distributed phase and
+  state-transfer inflight leases in fail-fast mode (`waiting_limit == 0`).
+  Construction refuses a waiting queue or mismatched active limit as a second
+  admission policy; capacity rejections come from
+  `AdmissionSnapshot::queue_rejections`. Phase and transfer remain separate
+  lease domains but bind one ACL `max_inflight_transfers` policy source. This
+  is a P6 admission-reuse brick only and does not claim session replicas,
+  high-speed transport, or production adapters.
+- Fail-closed OpenAI chat attestation receipts for opaque multimodal inputs:
+  image-bearing requests (`image_url` content parts or message-level `images`)
+  reject any backend-invented text-only `effective_prompt` digest instead of
+  attaching it. Honest backends that leave the field absent still succeed;
+  text-only chat paths that already emit digests are unchanged. This does not
+  claim a multimodal post-template prompt claim kind or Phase completion.
+- Applied the distributed runtime's caller-cancel and deadline abort contract to
+  in-flight state-transfer destination prepare, source publish, and consume
+  steps (same `wait_operation` boundary already used for phase prepare/execute).
+  Fixture evidence covers mid-consume and mid-prepare abort, deadline abort
+  during blocked consume, and mid-stream abort before any success token chunk:
+  no Ready/NDJSON success after cancel, compensating phase/transfer cleanup,
+  and reclaimed lease capacity. This strengthens P6 cancellation evidence only
+  and does not claim high-speed-network transport or production adapters.
+- Added first-principles fail-closed evidence for corrupt authenticated
+  state-transfer tickets/receipts and for resource-pressure outcomes on the
+  distributed serving / bounded transfer path. Corrupt ticket or receipt bytes
+  never decode as success (`InvalidRequest` / protocol `InvalidRequest`) and
+  reclaim leases; in-flight capacity exhaustion, ACL byte-limit rejection,
+  admission pressure, and `ResourcePressure` decisions surface typed
+  retryable/unavailable outcomes with compensating cleanup. Controllable
+  fixtures drive the path; this does not claim high-speed-network transport or
+  production adapters.
+- Added process-local adapter memory-registration accounting on
+  `BoundedStateTransferService`: each active lease registers declared
+  `state_bytes` as adapter-owned, pins one opaque handle, rejects a second
+  lease for the same handle, and reclaims that registration on consume, abort,
+  timeout, or compensating cleanup. The runtime snapshot exposes content-free
+  `registeredAdapterBytes`. Power still never copies KV payloads; this does not
+  claim a production backend or high-speed transport.
+- Added first-principles distributed-serving evidence that a successful
+  transfer consume/receipt never upgrades into an NDJSON decode success stream
+  when phase `execute` returns `Recompute`, `RetryableUnavailable`, or
+  `TerminalFailure`. Controllable test-only phase fixtures drive the post-
+  consume path; authenticated HTTP tests assert typed JSON decision status
+  mapping, binding fields, absence of token frames, and compensating cleanup.
+  This is contract/cleanup coverage only and does not claim production backends
+  or high-speed transport.
+- Added the authenticated `aster.power.distributed-serving.v1` internal HTTP
+  boundary for decode preparation, prefill execution, decode execution, and
+  idempotent abort. Every call binds the process epoch and immutable execution
+  profile; decode output uses a versioned backpressure-preserving NDJSON stream,
+  and dropping that stream retains the runtime's compensating cleanup behavior.
+  Distributed profiles now require configured service API keys at startup.
+- Added a bounded `DistributedServingRuntime` that composes injected phase and
+  state-transfer ports under one execution identity. It enforces decode
+  prepare/consume/execute ordering, prefill execute/publish ordering, exact
+  reservation lifetimes, stream cancellation, expiry and compensating cleanup;
+  unconfirmed cleanup suppresses readiness for the process epoch. Server
+  composition and worker observation now retain this runtime as the single
+  distributed-serving readiness source.
+- Added a deterministic cross-process distributed-serving conformance suite.
+  Separate prefill and decode Power HTTP processes move backend-owned fixture
+  state over an authenticated AES-GCM loopback channel, stream decode output,
+  clean up explicitly, fail closed after peer loss, and reject a stale process
+  epoch after restart. The adapter remains test-only, so this does not claim a
+  production backend or high-speed transport.
+- Added a typed native DFlash2 external-draft backend for the pinned
+  llama-cpp-rs/llama.cpp source. Registration and load reject DFlash v1/DFlash2
+  mismatches and malformed selector/convolution metadata; the patch installer
+  now applies the complete stack idempotently, invalidates stale dependency
+  builds, and is exercised twice by Windows CI. A clean unchanged-Q6_K RTX
+  4090 capture records 144.453 token/s median decode versus 33.075 target-only
+  (4.367x), 63.182 versus 25.744 token/s median end-to-end, five exact paired
+  outputs, 98.230% proposal acceptance, and zero replay. The representative
+  quality gate remains opt-in because complete-output parity is 7/12.
+- Added a bounded cross-host release-handoff manifest builder and verifier. It
+  binds the exact regular-file inventory under one dedicated staging root to
+  portable relative paths, lengths, SHA-256 digests, platform, version, and
+  source revision. Verification rejects mutation, omission, additions,
+  traversal, non-portable names, symlinks/reparse points, and relabeling while
+  explicitly retaining the external-authentication and strict-bundle
+  requirements. Linux, macOS, and Windows release CI exercise the contract.
+- Added a centralized pre-tag production-candidate verifier. It requires a
+  clean evidence-child checkout, locked non-`0.x` package identity, a dated
+  matching changelog entry with no pending Unreleased content, exact
+  source-parent/evidence-child layout, caller-selected main containment, and a
+  successful strict four-platform bundle replay. Release CI now calls the same
+  command, with deterministic isolated-Git tests covering rejection paths.
+- Published the clean RTX 4090 `pure-q6` quality capture: 600 error-free
+  requests over three cyclic repetitions, with the unchanged Q6_K target in
+  both autoregressive and full-vocabulary MTP modes and zero continuous-GPU
+  monitor violations. The path-free verifier recomputes 23.642 versus 41.035
+  request-wide token/s, equal 67/100 lenient scores, the 60/100 to 58/100
+  strict-score change, and 50/100 exact-output parity; its lossless gate remains
+  closed.
+- Made the repeated Qwen3.8 quality runner default to a machine-described
+  `pure-q6` profile. Its autoregressive control and full-vocabulary MTP
+  candidate both resolve to the same untouched Q6_K artifact, require neither
+  TBQ4 target weights nor an external proposer, and retain the older mixed and
+  external-draft profiles only as explicitly named research replays. A Windows
+  contract test locks that boundary in CI.
+- Added opt-in, fail-closed continuous NVIDIA process monitoring to long
+  quality captures. The runner records a pre-run process baseline, samples
+  per-process SM utilization once per second with `nvidia-smi pmon`, permits
+  only the baseline and its own server, and invalidates evidence when a newly
+  started process exceeds the configured foreign-GPU threshold.
+- Preserved the verifier-accepted 48-byte launch measurement and the SHA-256
+  identity of the exact raw signed CPU TEE report as explicit fields in every
+  proof-promoted confidential GPU capture. Final capture and bundle replay now
+  reject missing, malformed, or mutated report identities instead of retaining
+  only an aggregate canonical-claims digest.
+- Preserved the verifier-accepted inference-execution digest and optional
+  auxiliary-artifacts digest as explicit fields in proof-promoted confidential
+  GPU captures. Final release-bundle replay now validates those pins directly,
+  so an attested speculative/MTP/FR, prompt-cache, residency, threading, Flash
+  Attention, or auxiliary-proposer identity cannot disappear behind the
+  aggregate claims digest during promotion.
+- Bound the resolved server inference configuration into model attestation and
+  every request receipt. A domain-separated digest now covers speculative mode
+  and MTP/FR controls, prompt-cache bounds, residency/load policy, threading,
+  Flash Attention, and parallel slots. Strict verification requires a
+  caller-owned pin when the claim is present, GPU-confidential verification
+  requires it unconditionally, and `aster-power-verify` can derive the pin from
+  an ACL file. Proxy receipts no longer claim local GPU or inference execution
+  policy for work performed by an upstream service.
+- Bound every local inference artifact, not only the primary weights. Model
+  registration now captures Power-measured size and SHA-256 identities for
+  LoRA adapters and multimodal projectors; strict TEE startup rejects legacy
+  path-only references, model loading re-verifies bytes, signature policy
+  requires an adjacent signature for each auxiliary artifact, and attestation
+  plus receipts carry one portable auxiliary-artifacts digest. The strict
+  verifier requires a caller-owned digest pin whenever that claim is present.
+- Exposed explicit `prompt_cache_key` prefix reuse for llama.cpp text chat and
+  completions. Keys are validated and SHA-256 scoped by authentication,
+  endpoint, and model; unsupported backends fail closed. Resident KV contexts
+  now use configurable bounded LRU/TTL storage, receipts bind a key digest,
+  and health plus Prometheus report support, hits, misses, token reuse,
+  evaluation, evictions, and entries. Final opted-in SSE usage events expose
+  backend prompt-evaluation time, and a hash-bound cold/warm benchmark client
+  turns those timings and cache counters into reproducible evidence.
+- Published a clean five-pair RTX 4090 Qwen3.8-27B Q6_K prompt-cache capture.
+  With Flash Attention enabled and speculation disabled, median backend
+  prefill improved 23.5299x, median TTFT improved 13.1593x, and evaluated
+  prompt tokens fell 99.3843%; the report binds the server commit, exact model
+  digest, health policy, metrics, and request receipts.
+
+- Added deterministic persistent release-fixture weights and a
+  `release-confidential-fixture` command. The latter pins the fixture on the
+  selected CUDA device and writes the distinct local source capture plus its
+  confidential accelerator declaration as a validated create-new pair with
+  rollback on ordinary failure.
+- Added a model-neutral `build-release-bundle` command and
+  `ReleaseEvidenceBundle::build_strict_v1` API. They derive the strict policy
+  from typed CPU, CUDA, Metal, and proof-promoted confidential-GPU captures,
+  reject identity or platform drift, and create the canonical JSON plus digest
+  pin as a no-overwrite pair. Non-`0.x` GitHub releases now attach that pair as
+  release assets.
+- Added a configurable NVIDIA quiet-window preflight, standalone
+  `-PreflightOnly` admission, and input-bound failure receipts to the generic
+  GGUF benchmark runner. A deterministic Windows CI test covers rejection,
+  create-new evidence, clock-lock cleanup, and the no-model-start boundary.
+- Added an independent all-sample throughput gate to speculative benchmark
+  reports and comparisons, plus a model-neutral Windows GGUF capture runner
+  that records clean-source identity, binary and input hashes, CPU affinity,
+  power policy, and optional per-device NVIDIA idle/clock evidence. The
+  published Qwen runner is now a compatibility wrapper over that generic
+  path, and failed performance gates retain their reports as negative
+  evidence.
+- Added a machine-enforced production release-bundle verifier and release CI
+  gate. Non-`0.x` tags must provide a bounded four-platform bundle, an external
+  SHA-256 pin, and exact crate-version/source-revision bindings before any
+  artifact can be published.
+- Split adaptive speculation control, llama.cpp sampling, and bounded
+  stop-sequence tracking into focused modules. Greedy llama.cpp MTP requests
+  can consume device-selected tokens without copying full vocabulary rows,
+  adaptive proposals retain an exact replay path when they exceed resident
+  rollback snapshots, and stop matching no longer retains or clones the full
+  generated response.
+- Scoped the experimental llama.cpp reduced-vocabulary MTP adapter to GGUF
+  architectures it explicitly implements. Unsupported and unknown
+  architectures fail closed while model-neutral full-vocabulary MTP remains
+  available.
+- Added a model-, format-, and backend-neutral production release evidence gate.
+  Canonical policies require exact platform coverage and bind clean source,
+  runtime artifact, weights, graph and shape declarations, typed devices, memory
+  reservations, TEE policy, and confidential-GPU claims. Captures replay raw
+  scalar/batch parity plus bounded peak memory, cancellation cleanup, queue
+  expiry, replica retirement/reconstruction, and explicit exact fallback;
+  missing, duplicate, relabeled, or mutated evidence fails closed.
+- Added isolated `release-fixture` and `release-run` capture paths to the tensor
+  benchmark runner. Both collect live host allocation peaks, sampled accelerator
+  pool use, active cancellation cleanup, real queue expiry, replica
+  retirement/reconstruction, and independent exact fallback parity. The
+  caller-owned path accepts any reviewed graph and never serializes its paths,
+  tensor values, family, or role.
+- Revised the unreleased release policy to schema v2 so common Power, weight,
+  and graph identities remain revision-wide while every platform binds its own
+  shape-profile declaration and TEE policy. This removes an impossible
+  cross-device invariant and also requires confidential accelerator execution
+  policy to match the capture's TEE binding.
+- Published complete model-neutral CPU and CUDA runtime-contract captures from
+  one clean immutable revision, including byte-stable policy input, raw JSON,
+  exact artifact pins, negative CPU batching evidence, and a replay test that
+  constructs their verified two-platform partial bundle.
+- Added the model-neutral external Metal/confidential-GPU capture workflow and
+  a strict `aster-power-verify` release-promotion path. Promotion consumes a saved
+  local CUDA capture, model-owned accelerator declaration, and opaque
+  exact-report proof in one process; inputs are bounded and replayed, all
+  weights/device/execution identities are pinned, and synchronized
+  same-directory output refuses to replace an existing artifact.
+- Unified SafeTensors collection identity across `WeightStore`, model startup
+  integrity, `/v1/attestation`, release capture, and accelerator declarations.
+  The digest binds portable relative names, lengths, and complete bytes, and
+  hashing now rejects files that change between metadata inspection and read.
+- Split accelerator execution-policy identity from the accelerator declaration
+  digest in declaration schemas v3/v4. Model integrations now bind the
+  canonical server GPU execution/offload digest explicitly while declaration
+  hashing independently covers weights, residency, kernels, fallback, device,
+  and optional mesh.
+- Added model-neutral, device-resident chaining for adjacent reviewed static
+  graphs. `ResidentGraphTensor` is non-cloneable, retains the exact request
+  permit, enforces F32/fixed-or-symbolic-shape/device identity, and consumes a
+  shared runtime byte reservation. Final materialization performs one owned
+  copy and returns canonical initial/final tensor digests plus boundary
+  measurements; explicit owned fallback preserves the intermediate digest
+  without an implicit cross-runtime copy.
+- Added policy-bounded, lazily initialized exclusive session replicas for any
+  model-owned backend state. Replicas for one exact model identity remain
+  independently mutable while sharing one resolved runtime, physical-device
+  gate, and worst-case resident-byte reservation. Cancellation and dropped
+  loaders release queue, lease, and empty-entry capacity; declarations and
+  aggregate snapshots expose no replica ordinal or model-specific semantics.
+- Added monotonic admission deadlines to the shared controller, embedded
+  model/device admission, and exclusive replica acquisition. One absolute
+  deadline covers sequential model and physical-device waits; typed expiry
+  releases every prior permit and increments only content-free aggregate
+  counters, including a pool-lifetime replica-expiry count.
+- Added explicit health retirement for exclusive session replicas. Consuming
+  `ModelSessionReplica::retire` replaces the anonymous state generation before
+  its lease returns, preserves the entry reservation, and rebuilds lazily on a
+  later acquisition. Failed or cancelled rebuilds remain retryable, while
+  pool-lifetime retirement and reconstruction counters expose no model or slot
+  identity.
+- Added model-owned finite shape-profile declarations for the embedded runtime.
+  Opaque class digests bind exact implementations to aggregate execution and
+  scratch bounds under the current weights, graph, device topology, memory
+  reservations, and TEE policy. Explicit dynamic fallback records a typed
+  reason and implementation digest; receipt v5 exposes no dimensions, class
+  data, filesystem paths, or tensor values.
+
+### Fixed
+
+- Accepted the documented `sha256:<digest>` model-integrity pins during strict
+  TEE startup, including SafeTensors collection identities and decrypted
+  plaintext verification, while retaining compatibility with bare digests.
+- Fixed `serve --config` so omitted `--host` and `--port` flags preserve the
+  ACL values instead of silently replacing them with CLI defaults. `/health`
+  now reports effective token-metric suppression, including the privacy policy
+  automatically activated by `redact_logs`, so benchmark preflight cannot
+  mistake rounded counters for exact evidence.
+- Made `ReleaseEvidenceBundle::build_strict_v1` enforce the production
+  confidential-TEE and Metal-host constraints immediately. Strict verification
+  now requires native Apple Silicon/macOS identities and rejects virtual,
+  emulated, translated, fallback, software-rendered, or unnamed Metal devices,
+  so a hosted `Apple Paravirtual device` capture cannot enter a v1 bundle.
+- Pinned the `cross` installer to one reviewed Git revision with its lockfile,
+  made the tag workflow's package cache restore-only, reduced its default
+  repository permission to read-only, and confined release creation rights to
+  the job that needs them. Release metadata now describes Power as a
+  model-neutral runtime, and documentation calls the external hardware
+  procedure a runbook rather than implying an unshipped hosted workflow.
+- Corrected the encrypted-model supply-chain guide: `picolm` already consumes
+  the bounded GGUF range interface, but the current non-seekable AES-GCM
+  container still requires one full locked plaintext allocation.
+- Upgraded GitHub-hosted workflows to the Node 24 generations of checkout and
+  artifact actions. Package verification now restores Cargo home without target
+  caching or a post-job scan of Cargo's transient `target/package` tree.
+- Made the Windows GGUF preflight regression portable across Windows PowerShell
+  and PowerShell 7 by replacing its unsupported generated console executable
+  with a scoped command double, and made NVIDIA CLI arguments explicit. Also
+  gated a release-promotion-only test helper with the feature that owns its
+  caller so the standalone `embedded-inference` Clippy profile stays warning
+  free.
+- Replaced the self-referential v1 release layout with a machine-checked
+  two-commit protocol. Hardware captures bind a frozen source parent; the signed
+  tag points to its direct child, whose complete diff is exactly the release
+  bundle and digest pin. Release binaries and crates are produced from the
+  source parent, while the tagged child carries the authenticated evidence.
+- Added exact published version requirements to the revision-pinned
+  `llama-cpp-2` and `llama-cpp-sys-2` dependencies so Cargo can transform the
+  Git pins into resolvable registry dependencies during package verification
+  and publication. CI and release validation now run `cargo package --locked`
+  before a tag can reach the publish job.
+
+### Security
+
+- Non-`0.x` release CI now requires the evidence commit to be reachable from
+  `main` and the annotated release tag to have a GitHub-verified signature.
+  Lightweight, unverified, indirect, or detached production tags fail before
+  any binary or crate publication.
+- Added opaque, non-serializable strict hardware and confidential-GPU
+  attestation proof types tied to the exact authenticated report lifetime.
+  Production accelerator bindings, sealed-state export authorization, and
+  local-CUDA-to-confidential release promotion now consume those proofs; raw
+  reports, mutable verification results, and caller-supplied security labels
+  cannot mint the protected classes through the Rust construction API.
+- Configured NVIDIA evidence now validates nonce-bound nvattest evidence as
+  well as the verdict, records the exact evidence count and byte-format labels,
+  extracts structured device claims, and rejects stale evidence before a CPU
+  TEE report can authenticate it. This preserves externally collected raw
+  evidence/verdict files for reproducible release promotion.
+- Strict hardware verification now requires the policy-visible SEV-SNP
+  `report_data` and launch `measurement` to exactly match their fields in the
+  raw signed report before a hardware verifier is called. This prevents a valid
+  signature over unrelated bytes from authenticating substituted JSON claims.
+- Intel TDX verification now fails closed. The previous implementation treated
+  a local TDREPORT MAC as if it were a remotely verifiable PCK signature; that
+  path was removed. Production TDX support remains unavailable until Power has
+  typed DCAP Quote generation, QVL verification, collateral freshness checks,
+  and exact Quote REPORTDATA/MRTD binding.
+- Bound the CPU TEE type into confidential-GPU release evidence. The strict v1
+  matrix accepts AMD SEV-SNP only and rejects TDX even if a caller supplies a
+  custom verifier, making the documented v1 exclusion executable policy.
+- Corrected local TDREPORT collection to read REPORTDATA from architectural
+  offset 128 rather than 64. Collection and strict binding now share one typed,
+  length-checked TDREPORT parser with a regression fixture that poisons the old
+  offset.
+
+## [0.9.0] - 2026-08-19
+
+### Added
+
+- Added an independent `artifact-provisioning` feature for consumer-owned,
+  revision-locked model bundles. It provides bounded HTTPS downloads,
+  per-file and whole-bundle size admission, SHA-256 verification,
+  cross-process locking, atomic commits, deterministic URL-free receipts,
+  tamper detection, and strict offline reuse without enabling a Power server
+  or inference backend.
+- Added model-neutral speculative-decoding strategy and capability negotiation,
+  shared exact block-verification metrics, configurable draft bounds, and
+  fail-closed backend selection. picolm preserves its zero-weight lookup modes,
+  while llama.cpp 0.1.154 adds native MTP execution for compatible GGUF models
+  with target/draft cache rollback and optional CUDA compilation.
+- Added `aster-power-speculative-bench` for controlled baseline/candidate runs
+  through Power's streaming completion API. Reports verify the registered GGUF
+  SHA-256 and inference receipt, bind non-secret runtime and hardware settings,
+  omit request paths/content, require deterministic output parity, and enforce
+  an explicit median decode-throughput threshold.
+- Added a seekable AES-256-GCM weight representation for embedded inference.
+  Each SafeTensors file is split into independently authenticated chunks under
+  a digest-pinned collection manifest; opening verifies the complete logical
+  plaintext identity with bounded zeroizing buffers, while demand, prefetch,
+  and staged reads decrypt only the chunks covering an indexed tensor.
+- Added manifest-aware backend capability matching. Backends may override
+  `supports_manifest` to select an exact model family while format-only
+  implementations retain their existing behavior. Request, unload, reaper,
+  and TEE routing paths now preserve that exact selection.
+- Added the typed `PowerServerBuilder` composition root. Downstream model crates
+  can inject backend objects ahead of Power's built-ins or explicitly run with
+  only their supplied registry without configuring raw backend names.
+- Added process-local model manifest injection to `PowerServerBuilder`, so a
+  downstream backend and its exact manifest can be composed without mutating
+  Power's global model registry on disk.
+- Added exact positional-staging coverage for model-owned packed `U8` weight
+  records, demonstrating that one atomic record can carry adjacent expert
+  matrices and scales through the existing hierarchy without a second cache.
+
+## [0.8.0] - 2026-08-04
+
+### Added
+
+- Added Colibri-inspired N-drive capacity aggregation to the existing
+  `WeightStore`. Canonical and lossless logical sources can span explicit,
+  disjoint, non-empty physical roots while retaining the same relative-file
+  collection digest, integrity/signature identity, source router, residency
+  cache, partial-mirror staging, TEE binding, and receipt path.
+- Added fail-closed duplicate, nested, overlapping, empty-root, duplicate-file,
+  and cross-source checks; the storage benchmark now accepts repeated
+  `--primary-shard` arguments and binds only the path-free physical root count
+  into source-profile and hardware evidence.
+- Added finite, cancellation-aware embedded inference queues with explicit
+  active/waiting bounds, fail-fast overflow, RAII cleanup, and content-free
+  admission snapshots. Existing fail-fast admission remains available.
+- Added a device-bound, model-neutral `ModelSessionPool<T>` with hard session
+  count, declared resident-byte, device concurrency, and device queue bounds.
+  Exact model/execution/resource declarations share one lazily initialized
+  value and one resolved device; abandoned initialization releases its slot.
+- Added deterministic memory-aware microbatch plans with caller-declared
+  per-slot input, state, host-peak, and device-peak resources. Plans preserve
+  contiguous order, account for unified memory once, and revalidate current
+  memory pressure before bounded admission.
+- Added embedded receipt v4 for admitted microbatches. It binds the exact pool
+  session (when present), plan digest, batch position, slot count, and whether
+  model or device admission queued without adding model input, slot identity,
+  or raw memory snapshots to receipt evidence.
+- Added model-neutral leading-axis tensor assembly and exact ordered output
+  partitioning with finite-value, shape, resource-limit, and full-partition
+  validation for OCR and other model-owned batched graphs.
+- Added a Colibri-inspired macOS `PositionalCacheBypass` weight strategy using
+  `F_NOCACHE` for both integrity hashing and exact tensor-range handles. It
+  reuses the existing `WeightStore` index, replica routing, fallback,
+  cancellation, zeroizing buffers, telemetry policy, and benchmark evidence;
+  unsupported platforms fail explicitly and it is never mislabeled direct or
+  verified-cold I/O.
+- Added canonical, self-verifying hardware evidence bundles that compose the
+  existing path-free storage reports/comparison, raw lossless tuning evidence,
+  replayed tuning decision, and model-owned exact-parity artifact pins under
+  one model/runtime/device/environment binding.
+- Added deterministic ordering, a 32 MiB canonical envelope bound, pinned
+  bundle verification, exact re-derivation of storage and tuning summaries,
+  and preservation of reviewed negative results when the baseline remains
+  selected.
+- Added Colibri-inspired, model-neutral continuous and ragged execution-batch
+  lifecycles. Every member holds a distinct permit from the existing runtime
+  admission controller, every step covers the complete boundary roster in
+  canonical admission order, and members admitted during arithmetic join only
+  the next step.
+- Added atomic batch-step commits with row-local cancellation, bounded ragged
+  shape/input/context/generation/state accounting, non-aliasing model-owned
+  state identities, exact retry after invalid outcomes, and aggregate-only
+  step/lifecycle evidence with canonical transcript digests.
+- Added Colibri-inspired heterogeneous accelerator meshes with at most 16
+  unique resolved devices, a canonical primary/home device, strongly connected
+  directed transfer edges, per-edge count/byte bounds, and one aggregate byte
+  budget. Model crates retain graph partitioning and kernels; Power performs
+  explicit Candle copies through `AcceleratorMeshExecution` and reuses the
+  active residency plan, device cache, execution permit, cancellation, and
+  exact fallback path.
+- Added mesh execution evidence and embedded receipt v3. Receipts expose only
+  the mesh digest, canonical actual-device identities, and a digest of the
+  bounded transfer trace.
+- Added model-neutral host/device fixed-state and peak-scratch reservations to
+  the existing hardware residency budget policy. Cache budgets now account for
+  these bytes after applying caller-owned available-memory fractions, while
+  unified host/device memory remains one physical pool.
+- Added current-pressure revalidation for serialized residency plans and an
+  `EmbeddedRuntime::apply_residency_budget` path that refreshes native memory
+  availability before applying cache bytes.
+- Added Colibri-inspired event-driven current-layer staging through
+  `StagedWeightBatch::next_ready_group`, allowing model-owned compute to consume
+  newly complete atomic groups without polling while preserving canonical final
+  order.
+- Added one shared background load window for prefetch and staging. It bounds
+  active workers and their canonical in-flight bytes, reports peak flight and
+  event/final wait evidence, and looks past a temporarily blocked large item to
+  use safe spare capacity.
+
+- Added privacy-gated, Colibri-inspired cross-layer route coupling for
+  value-preserving prefetch hints. Exact aligned route batches produce bounded
+  co-occurrence history, deterministic per-position predictions and a batch
+  union for the existing prefetch path, plus exact recall evaluation against
+  actual router output.
+
+### Changed
+
+- Kept mmap as the default after two forward/reverse PP-OCRv6 storage-only runs
+  on Apple M2 Pro showed exact output-byte parity but cache-bypass p50 latency
+  regressions of 6.6% for detection and 10.1% for recognition weights.
+
+### Security
+
+- Model-session keys and declarations bind exact model, execution, resolved
+  device, limits, and resident bytes. Microbatch plans fail closed on duplicate
+  slot digests, overflow, wrong session/device/limits, tampering, stale memory
+  headroom, and malformed topology. Pool and receipt debug output is
+  content-free; raw memory snapshots remain caller-owned plan data.
+- Hardware evidence construction rejects mixed revisions, models, named
+  hardware, runtime devices, tuning bindings, selected configurations, and
+  parity artifacts. Bundle SHA-256 is mutation evidence rather than a
+  signature; callers must pin it in an attestation, signed release, or another
+  trust root. Construction never logs, persists, uploads, or opens a listener.
+- Bound execution batches to exact weight, model-owned state-layout, scheduler,
+  runtime-device, and limit digests. Member/state identities and row data remain
+  out of public evidence and debug output; Power retains no model state bytes
+  and adds no scheduler, persistence path, listener, or second admission queue.
+- Confidential meshes bind every CUDA node to an explicit NVIDIA claim-array
+  index and require exact GPU/NVSwitch claim-index sets from the existing
+  verified NRAS evidence. CUDA ordinals are not treated as claim indices or
+  UEIDs, NVSwitch presence is not treated as proof of edge connectivity, and
+  backend copy failure enters only the declared exact fallback. Mesh node/edge
+  names and transfer details are not logged, persisted, or placed in receipts.
+- Runtime reservations, memory snapshots, and pressure decisions remain
+  caller-owned and are never logged, persisted, placed in telemetry, bound into
+  receipts, or exported from a TEE automatically. Overflow, unavailable pools,
+  changed topology, and stale headroom fail closed before cache policy changes.
+- Kept the new scheduling path inside existing admission, cancellation,
+  per-key serialization, cache, source routing, telemetry, and TEE boundaries.
+  Background byte limits fail before I/O, and telemetry-off mode exposes no
+  timing or peak-flight counters.
+
+- Bound route coupling by lookahead, position, entry, and hint limits; require
+  detailed telemetry; bind restored history to exact weight SHA-256 and layer
+  geometry; and keep histories, predictions, expert IDs, and evaluations out
+  of automatic logs, persistence, attestation claims, and receipts.
+
+## [0.7.0] - 2026-08-03
+
+### Added
+
+- Added exact verified SafeTensors range indexes and opt-in buffered positional
+  reads without retaining a collection-wide mmap. Demand and prefetch reuse the
+  existing coverage-aware weighted source route and primary fallback.
+- Added aligned direct reads through Linux `O_DIRECT` and Windows
+  `FILE_FLAG_NO_BUFFERING`, with explicit unsupported results instead of a
+  buffered fallback.
+- Added `aster-power-storage-bench`, a standalone path-redacted benchmark that
+  separates integrity-open, output validation, and demand-read timing; compares
+  cold/warm and single/multi-source reports; and verifies output digest parity.
+
+### Changed
+
+- Kept mmap as the default after official PP-OCRv6 warm-storage measurements on
+  Apple M2 Pro showed positional buffered p50 latency regressions of 9.6% for
+  detection weights and 10.6% for recognition weights. macOS direct reads and
+  verified cold-cache labels remain explicitly unsupported.
+
+### Security
+
+- Zeroized positional tensor buffers and aligned direct-I/O scratch memory,
+  preserved cancellation and TEE behavior, and kept paths, tensor names,
+  ranges, source choices, benchmark reports, and hardware labels out of
+  automatic logs, telemetry, persistence, attestation claims, and execution
+  receipts.
+
+## [0.6.0] - 2026-08-02
+
+### Added
+
+- Added model-neutral, usage-ranked partial SafeTensors mirror planning and
+  staging on the existing `WeightStore` integrity path. Selection is
+  deterministic and budget-bound, native filesystem capacity honors an
+  explicit reserve, exact completed files resume without copying, and every
+  new file is SHA-256 verified, synced, and atomically published without
+  replacement.
+
+### Security
+
+- Plaintext mirror staging is denied by default and requires the typed
+  `CallerManagedPlaintext` authority. Staging is cancellable, never overwrites
+  a conflicting destination, refuses symlink/path escape, detects source
+  mutation after store admission, and does not automatically persist routing
+  history, plans, paths, telemetry, or execution receipts.
+
+## [0.5.1] - 2026-08-02
+
+### Added
+
+- Added opt-in hardware-aware residency budgets with bounded native
+  Linux/macOS/Windows host-memory discovery, selected CUDA/Metal device-memory
+  discovery, explicit reserves/fractions/caps, deterministic allocation order,
+  runtime-limit enforcement, and single-count Metal unified-memory planning.
+
+### Security
+
+- Kept automatic cache planning disabled by default, failed closed on incomplete
+  hardware discovery, spawned no probe process, and excluded capacity snapshots
+  from automatic logs, placement telemetry, persistence, and execution receipts.
+
+## [0.5.0] - 2026-08-02
+
+### Added
+
+- Added Colibri-inspired partial SafeTensors replicas with exact per-file and
+  per-tensor validation, coverage-aware deterministic source selection, and
+  primary fallback for tensors outside the mirrored subset.
+- Added opt-in validation-throughput source weighting that reuses the mandatory
+  integrity hash pass instead of reading multi-gigabyte weight sources twice.
+
+### Security
+
+- Kept complete and partial replica admission fail-closed, bounded by the
+  existing source/file/model limits, with measured storage throughput available
+  only through an explicit descriptor and excluded from automatic telemetry.
+
+## [0.4.5] - 2026-08-02
+
+### Added
+
+- Deepened the shared Colibri-inspired weight hierarchy with frequency-first LFRU eviction and decay, transactional hot-plan replacement with separate manual/plan pin ownership, useful-versus-unused prefetch accounting, and exact bandwidth-weighted SafeTensors replicas with deterministic source selection, per-source aggregate telemetry, and primary fallback.
+
+### Security
+
+- Kept detailed route heat private-by-default while fully hashing every configured weight replica against the primary and bounding source count through the existing embedded inference limits.
+
+## [0.4.4] - 2026-08-02
+
+### Added
+
+- Added `PowerRuntimeServiceProfile`, which compiles a digest-pinned Power deployment into the shared `aster-runtime` Service contract for execution by Aster Box.
+- Added a model-neutral embedded Rust inference substrate with reviewed static graphs, typed CPU/Metal/CUDA devices, bounded admission and cancellation, exact SafeTensors inventories, canonical execution receipts, and strict isolation from the HTTP server feature.
+- Added Colibri-inspired storage/host/device weight residency, layer-local LRU, explicit hot pins, deterministic heat-based planning, batched expert unions, bounded layer-ahead prefetch, and privacy-gated placement/routing telemetry.
+- Added embedded tensor operators and integrity hooks without embedding PP-OCR, Unlimited-OCR, tokenizers, model assets, or model revision policy in Power.
+
+### Changed
+
+- Replaced the previous product configuration codec with closed, typed Aster ACL parsed and generated by `aster-acl`; the default configuration path is now `~/.aster/power/config.acl`.
+- Kept TEE encrypted-model, signature, attestation, zeroization, privacy, and request-receipt controls intact across the new embedded execution path.
+
+### Fixed
+
+- Materialized valid strided MatMul operands before Candle execution so reviewed graphs can consume transposed and batched transposed views without `MatMulUnexpectedStriding`.
+
+## [0.4.3] - 2026-07-19
+
+### Added
+
+- **Proxy backend — front any OpenAI-compatible upstream (vLLM / TGI / SGLang / OpenAI).** Configure `proxy_upstreams` (model name → base URL) and Power registers each as a `ModelFormat::Remote` model, forwarding chat (streamed), completions and embeddings to the upstream while applying its own routing, auth, rate-limiting and log-redaction. This lets Power *replace vLLM in the stack* without reimplementing CUDA kernels — it absorbs the accelerated engine as a swappable backend. Trust boundary: proxied inference runs on the upstream, outside any TEE (non-confidential fast path; no hardware attestation over proxied content).
+
+- **vLLM-style admission control for `max_concurrent_requests`.** Concurrency limiting moved out of the rate-limit middleware into a `ConcurrencyLimiter` (Tokio semaphore) inside the inference handlers. Excess requests now **queue** for a permit (backpressure, like vLLM's `max_num_seqs`) instead of being rejected with `429`, and the permit is held across the whole streamed response body — released on completion *or* early client disconnect. New `power_requests_waiting` and `power_requests_running` Prometheus gauges (vLLM-style `num_requests_waiting` / `num_requests_running` observability). The per-second `rate_limit_rps` token bucket still returns `429`.
+
+### Fixed
+
+- Fixed `max_concurrent_requests` not actually bounding streaming generation: the old rate-limit middleware released the concurrency slot when the handler returned the response, which for streaming (SSE) happens *before* the body is generated — so concurrent streamed completions were effectively uncapped. The new handler-level permit spans the full stream.
+
+- **Selectable speculative-decoding modes for picolm** via `spec_mode` config (env `ASTER_POWER_SPEC_MODE`): `off` (plain autoregressive), `prompt-lookup` (default, suffix n-gram matched against the prompt), and `ngram-context` (DSpark-like self-speculation — an online n-gram model over the full running sequence, so free-form generation is accelerated too, not just input-overlapping output). A new `Drafter` trait is the seam where a trained draft head can drop in later.
+- **Batched layer-streaming speculative verify.** Draft blocks are now verified in a single layer-outer/token-inner pass (each layer's weights loaded once for the whole block) instead of re-streaming every layer per draft token — turning K drafts into ~one weight-streaming pass on the memory-bandwidth-bound path. Acceptance uses lossless rejection sampling (respecting temperature/top-p/penalties), so output matches plain decoding for the same seed.
+- **Adaptive draft length** (DSpark's load-aware-scheduler analogue): an EMA of the per-round acceptance ratio grows the draft block when speculation pays off and shrinks it on a bad streak, bounding wasted verify work.
+
+### Fixed
+
+- Fixed a picolm speculative-decoding correctness bug: on *partial* draft acceptance the carried-forward hidden state desynced from the truncated KV cache (it was left as the last draft's output regardless of how many drafts were accepted). The new verify forwards the accepted prefix plus a lossless correction token, keeping hidden state and KV cache consistent.
+- Made mistral.rs backend capability tests respect the active feature set, so picolm-only TEE builds no longer expect HuggingFace/Vision support from the disabled mistralrs backend.
+- Cleaned up test-only warnings in lean feature profiles.
+- Updated the llama.cpp multimodal bitmap path for the current `llama-cpp-2` MTMD API.
+- Removed the obsolete `box_integration` example and unused `aster-box-sdk` dev-dependency after the Box SDK dropped the legacy Sandbox API.
+- Expanded CI clippy coverage to all targets for default, HuggingFace, llama.cpp, picolm, and tee-minimal feature profiles.
+- Fixed the Linux `vsock` server path to avoid pulling `tokio-vsock`'s Axum 0.8 adapter into Power's Axum 0.7 server stack.
+- Tightened the release gate to run all-target clippy plus tee-minimal clippy/tests before publishing.
+- Added route-level coverage for pull-status lookups with URL-encoded HuggingFace model names.
+- Fixed the all-features backend registry test to account for the optional picolm backend, and added all-features lib tests to CI/release gates.
+- Corrected tee-minimal documentation and CI setup to distinguish the pure-Rust inference path from native TLS/crypto build dependencies.
+- Replaced server startup signal-handler panics with logged fallbacks for graceful shutdown and key rotation.
+- Removed production `unwrap()` paths from attestation/pull-status JSON responses and recovered poisoned server mutexes instead of cascading panics.
+- Hardened hardware-verifier certificate cache locking so poisoned locks return contextual verification errors instead of panicking.
+- Hardened picolm session KV cache handoff so poisoned locks surface as inference errors or warnings instead of blocking-task panics.
+- Hardened llama.cpp session, LoRA, and MTMD mutex handling so poisoned locks no longer panic inference workers.
+- Replaced llama.cpp context-size unwrap fallbacks with explicit zero handling and a safe default.
+- Removed tool-call parser argument unwraps by centralizing OpenAI-compatible argument serialization.
+- Replaced TEE model signature array-conversion unwraps with contextual verification errors.
+- Removed model-pull SSE JSON unwraps and added duplicate-pull response coverage.
+- Replaced picolm tensor-cache and JSON grammar invariant unwraps with inference errors or invalid-character rejection.
+- Centralized OpenAI SSE JSON encoding so serialization failures produce structured error events instead of empty data frames.
+- Closed the model-pull in-flight race by making `start_pull` the authoritative duplicate guard and recovering its mutex after poison.
+- Hardened audit loggers so poisoned file locks recover and write, flush, enqueue, serialization, and encryption failures are logged instead of silently dropping audit evidence.
+- Preserved loaded-model state when request-scoped `keep_alive=0` unloads fail, and logged the backend unload error instead of marking the model unloaded prematurely.
+- Prevented loaded model deletion from removing registry/state entries when backend unload fails.
+- Added logging around model-pull temporary file cleanup and closed progress streams so download cleanup failures are observable.
+- Improved CLI HTTP error reporting so failed response body reads are surfaced instead of being shown as empty errors.
+- Preserved keep-alive reaper loaded-model state when no backend is available or backend unload fails.
+- Logged request cleanup failures instead of silently ignoring backend `cleanup_request` errors.
+- Logged pull-state deletion failures instead of silently ignoring cleanup errors.
+- Recovered llama.cpp streaming tool-call text locks after poison instead of silently dropping accumulated tool-call output.
+- Logged model-pull state persistence failures and marked pulls failed when manifest registration fails after download.
+- Logged unreadable or invalid pull-state files instead of treating every load failure as a missing state.
+- Preserved shutdown loaded-model state when no backend is available or backend unload fails.
+- Logged decrypted-model secure wipe and delete failures during TEE file cleanup.
+- Allowed boolean `ASTER_POWER_*` environment overrides to disable enabled config values and logged invalid override values.
+- Kept TEE in-memory plaintext in the same allocation that is passed to `mlock`, and logged `munlock` failures instead of silently ignoring cleanup errors.
+- Rejected malformed mistral.rs multimodal image inputs with contextual errors instead of silently falling back to text-only requests.
+- Reported malformed hub file-list API responses during model pulls instead of misclassifying them as missing GGUF quantization matches.
+- Rejected unreadable HuggingFace model directories during local registration instead of silently recording a zero-byte manifest size.
+- Reported model-pull partial-download and stored-blob metadata errors instead of silently treating unreadable files as zero bytes.
+- Reported blob metadata errors during unused-blob pruning instead of silently counting unreadable blobs as zero bytes freed.
+- Reported invalid model-pull `Content-Length` headers instead of silently treating malformed sizes as unknown.
+- Rejected non-file local model paths during GGUF/SafeTensors registration instead of failing later as hash errors, and preserved exact file sizes in manifests.
+- Logged `/v1/logs` live-stream lag events instead of silently dropping lagged broadcast entries.
+- Rejected unsupported remote image URLs in llama.cpp chat requests instead of silently dropping those image parts.
+- Logged closed llama.cpp completion receivers and stopped worker inference instead of silently discarding channel send failures.
+- Rejected llama.cpp image requests when no multimodal projector is loaded instead of falling back to text-only inference.
+- Reported llama.cpp generation batch/decode failures to completion streams instead of silently ending worker inference.
+- Logged closed picolm chat receivers and stopped inference instead of silently discarding channel send failures.
+- Logged picolm layer page-release and `madvise(MADV_DONTNEED)` failures instead of silently ignoring memory-pressure cleanup errors.
+- Reported unrepresentable model keep-alive expiry timestamps as absent instead of silently showing an immediate expiry time.
+- Logged closed mistral.rs chat receivers and stopped stream forwarding instead of silently discarding channel send failures.
+- Treated overflowing `keep_alive` minute/hour values as invalid instead of panicking in debug builds or wrapping in release builds.
+- Rejected GGUF files with missing, empty, or malformed tokenizer token metadata instead of silently constructing an empty picolm vocabulary.
+- Rejected GGUF headers with invalid alignment, overflowing tensor dimensions, tensor byte ranges, or derived feed-forward sizes instead of panicking in debug builds or wrapping offsets in release builds.
+- Hardened GGUF binary readers so malformed string, array, and cursor lengths return format errors instead of overflowing reader bounds.
+- Hardened GGUF model metadata registration and memory estimation against oversized counts, dimensions, strings, arrays, and overflowing KV-cache estimates.
+- Hardened picolm GGUF streaming metadata parsing against oversized counts, strings, arrays, tensor dimensions, and wrapping numeric metadata conversions.
+- Rejected GGUF model metadata with overflowing tensor element counts during registration instead of surfacing saturated tensor sizes in model details.
+- Rejected GGUF model metadata with overflowing tensor byte sizes or tensor offset ranges during registration.
+- Rejected malformed GGUF quantized tensor descriptors whose first dimension or element count is not aligned to the type's block size.
+- Rejected malformed picolm GGUF tokenizer score/type arrays instead of silently replacing invalid numeric values with zeroes.
+- Rejected out-of-range picolm GGUF BOS/EOS token IDs during metadata parsing instead of allowing integer wrapping.
+- Rejected non-finite or non-f32-compatible picolm GGUF scalar float metadata during parsing.
+- Rejected malformed picolm GGUF scalar integer metadata instead of silently falling back to default model dimensions or alignment.
+- Rejected malformed picolm GGUF scalar string metadata instead of silently falling back to default architecture or dropping chat templates.
+- Rejected invalid picolm GGUF model shapes during load, including zero or non-divisible attention heads, invalid RoPE dimensions, non-finite numeric metadata, negative token IDs, and overflowing derived allocation estimates.
+
+### Documentation
+
+- Updated this changelog to reflect the completed picolm production-readiness, performance, hardening, and ecosystem work through `0.4.2`.
+- Fixed a corrupted box-drawing line in the README verification diagram.
+- Documented URL encoding for pull-status model names that contain `/` or `:`.
+
+## [0.4.2] - 2026-02-23
+
+### Fixed
+
+- Resolved clippy warnings in the current feature set.
+- Applied formatting cleanup in `main.rs`.
+
+## [0.4.1] - 2026-02-23
+
+### Added
+
+- Added the full CLI surface with `serve`, `models`, `chat`, and `ps` subcommands.
+
+### Changed
+
+- Optimized release binary size with size-focused release profile settings, reducing the release binary from roughly 29 MB to 15 MB.
+- Refreshed README documentation for the v0.4.0 picolm optimization status.
+
+## [0.4.0] - 2026-02-22
+
+### Added
+
+- Completed picolm production-readiness work: multi-turn session KV cache, GGUF chat-template loading, configurable context length, stop sequences, and integration tests.
+- Added picolm TEE hardening: timing padding on streaming/non-streaming paths, memory zeroization for forward/KV buffers, and startup self-tests for core math kernels.
+- Added SIMD-accelerated picolm kernels: AVX2/FMA paths for F32, Q8_0, Q4_K, and Q6_K, plus NEON paths for Apple Silicon.
+- Added batch prefill for lower time-to-first-token in layer-streaming inference.
+- Added prompt-lookup speculative decoding with KV rollback.
+- Added picolm tool/function calling support.
+- Added grammar-constrained JSON structured output for picolm.
+- Added repeat, frequency, and presence penalties for picolm generation.
+
+### Changed
+
+- Removed the unused `candle-core` dependency from the `picolm` feature; picolm now depends only on `memmap2`, `half`, and `rayon`.
+- Improved picolm hot-path performance with fused f16 KV attention, zero-allocation sampling, pre-dequantized layer norms, and dual gate/up matvec.
+- Updated planning and README documentation to mark phases 4 through 7 complete.
+
+## [0.3.0] - 2026-02-22
+
+### Added
+
+- Implemented the pure-Rust picolm GGUF inference backend with real transformer operations.
+- Added true layer-streaming inference with memory-mapped GGUF reads and page release after each layer, enabling O(layer_size) peak RAM instead of O(model_size).
+- Added synthetic-GGUF end-to-end integration tests for picolm.
+- Added Qwen GPT-style tokenizer support and attention-bias handling.
+- Added a README technical deep dive for picolm layer streaming.
+
+### Fixed
+
+- Corrected Q4_K, Q5_K, and Q6_K dequantization.
+- Fixed a test race condition in README/CI documentation work.
+
+## [0.2.0] - 2026-02-21
+
+### Added
+
+- **3 inference backends**: mistralrs (pure Rust, default), llamacpp (C++ bindings), picolm (experimental, layer-streaming for TEE)
+- **OpenAI-compatible API**: `/v1/chat/completions`, `/v1/completions`, `/v1/embeddings`, `/v1/models`, `/v1/attestation`
+- **TEE security stack**: AMD SEV-SNP / Intel TDX attestation (ioctl), AES-256-GCM model encryption (3 modes: file/RAM/streaming), Ed25519 model signatures, log redaction, timing padding, EPC-aware backend routing
+- **Model management**: content-addressed blob store (SHA-256), HuggingFace Hub pull with Range resume, GGUF metadata reader with memory estimation
+- **Server infrastructure**: Axum HTTP server, TLS (RA-TLS with attestation X.509 extension), Vsock transport, API key auth (constant-time SHA-256), rate limiting, Prometheus metrics (16 groups), structured audit logging (plaintext/encrypted/async)
+- **Client-side verification SDK**: nonce binding, model hash binding,
+  measurement checks, AMD KDS verification, and experimental Intel PCS
+  plumbing. The local-TDREPORT Intel path was later found unsuitable for remote
+  verification and removed before v1.
+- **Key management**: static and rotating key providers, SIGHUP-triggered key rotation
+- **Privacy**: 10 sensitive JSON keys redacted, error sanitization, SensitiveString (auto-zeroize), token count rounding
+- **Configuration**: file-first with `ASTER_POWER_*` environment overrides
+- **CLI**: `aster-power` server binary with `--version`/`--help`, `aster-power-verify` for offline attestation verification
+- **GPU**: Metal + CUDA auto-detection, automatic gpu_layers configuration, VRAM metrics
+- **Chat templates**: Jinja2 rendering (ChatML/Llama/Phi/Generic) with fuel-limited execution
+- **Tool calling**: streaming parser for XML/Hermes, Mistral, and raw JSON formats
+- **Reasoning**: streaming `<think>` block extraction for DeepSeek-R1/QwQ models
+- **Structured output**: JSON Schema → GBNF grammar conversion for constrained generation
+- **787+ unit tests** covering all modules
+
+### Known Limitations
+
+- **picolm backend is experimental**: forward pass uses stub arithmetic (not real transformer ops), tokenizer uses byte-fallback (not BPE). Infrastructure is production-ready but inference output is placeholder.
+- **llamacpp vision**: URL-based images not supported (base64 data URIs work)
+- **GPU utilization metric**: reports detected VRAM at startup but no real-time utilization polling (requires NVML/ROCm)
+
+## [0.1.0] - 2025-12-01
+
+### Added
+
+- Initial release with mistralrs backend and basic model management.

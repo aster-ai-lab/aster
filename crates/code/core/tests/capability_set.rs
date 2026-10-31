@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityContribution, CapabilityDescriptor, CapabilityId, CapabilityKind, CapabilitySet,
     CapabilitySetError, CapabilitySource, CodeCatalogGeneration, Sha256Digest,
     UseCapabilityGeneration, UsePackageGeneration, MAX_CAPABILITY_DEPENDENCIES,
@@ -12,7 +12,7 @@ fn digest(byte: char) -> Sha256Digest {
 }
 
 fn host_source() -> CapabilitySource {
-    let source = CapabilitySource::host("a3s-code", digest('a')).unwrap();
+    let source = CapabilitySource::host("aster", digest('a')).unwrap();
     assert_eq!(source.revision(), Some(&digest('a')));
     source
 }
@@ -60,7 +60,7 @@ fn typed_identities_reject_ambiguous_or_unbounded_input() {
         Err(CapabilitySetError::InvalidDigest { .. })
     ));
     assert!(matches!(
-        CapabilitySource::host("A3S Code", digest('a')),
+        CapabilitySource::host("Aster Code", digest('a')),
         Err(CapabilitySetError::InvalidIdentifier { .. })
     ));
     assert!(matches!(
@@ -232,7 +232,7 @@ fn immutable_sets_are_send_sync_and_pinned_by_arc() {
     let reader = Arc::clone(&set);
     assert!(Arc::ptr_eq(&set, &reader));
     assert!(reader.is_empty());
-    assert_eq!(reader.schema(), "a3s.code.capability-set.v1");
+    assert_eq!(reader.schema(), "aster.code.capability-set.v1");
     assert_eq!(reader.generation(), CodeCatalogGeneration::INITIAL);
     assert!(reader.digest().as_str().starts_with("sha256:"));
 }

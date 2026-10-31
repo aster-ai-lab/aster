@@ -1,6 +1,6 @@
 use std::os::fd::{AsRawFd, FromRawFd, OwnedFd};
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use crate::OCI_LINUX_DEFAULT_DEVICE_NODES;
 

@@ -19,6 +19,6 @@ fn gateway_and_cloud_share_the_same_inference_tokenizer_revision() {
     assert_eq!(
         crate::config::INFERENCE_TOKENIZER_REVISION,
         cloud_revision,
-        "Gateway and Cloud must agree on a3s.gateway.tokenizer.v1"
+        "Gateway and Cloud must agree on aster.gateway.tokenizer.v1"
     );
 }

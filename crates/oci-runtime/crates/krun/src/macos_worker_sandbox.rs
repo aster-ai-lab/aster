@@ -3,7 +3,7 @@ use std::ffi::{c_char, CStr};
 use std::path::{Component, Path, PathBuf};
 use std::ptr;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use crate::ffi::{value_to_cstring, FfiStringArray};
 use crate::unix_process::PreparedConsoleOutput;
@@ -38,7 +38,7 @@ pub(crate) fn confine(
     agent_socket: Option<&Path>,
     read_only_directories: &[&Path],
     read_write_directories: &[&Path],
-    path_restrictions: &[(PathBuf, a3s_oci_sdk::StoragePathRestriction)],
+    path_restrictions: &[(PathBuf, aster_oci_sdk::StoragePathRestriction)],
 ) -> Result<()> {
     let directories: Vec<_> = read_only_directories
         .iter()
@@ -179,7 +179,7 @@ fn apply_path_restrictions(
     profile: &mut String,
     parameters: &mut Vec<String>,
     source: &Path,
-    restrictions: &a3s_oci_sdk::StoragePathRestriction,
+    restrictions: &aster_oci_sdk::StoragePathRestriction,
 ) -> Result<()> {
     for (paths, operations) in [
         (restrictions.deny_read(), "file-read*"),

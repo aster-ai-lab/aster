@@ -45,7 +45,7 @@ const WORDPROCESSING_SHAPE_URI =
   'http://schemas.microsoft.com/office/word/2010/wordprocessingShape';
 const EMUS_PER_MILLIMETER = 36_000;
 const MAX_IMPORTED_TEXT_BOXES = 1_024;
-const TEXT_BOX_MARKER_PATTERN = /__A3S_WORK_TEXT_BOX_\d+__/g;
+const TEXT_BOX_MARKER_PATTERN = /__ASTER_WORK_TEXT_BOX_\d+__/g;
 const TEXT_BOX_RUN_CONTENT_NAMES = new Set([
   'br',
   'cr',
@@ -144,7 +144,7 @@ export function applyImportedDocxTextBoxMarkers(
   );
   const nodes = textNodes(document.body);
   for (const node of nodes) {
-    if (!node.data.includes('__A3S_WORK_TEXT_BOX_')) continue;
+    if (!node.data.includes('__ASTER_WORK_TEXT_BOX_')) continue;
     const match = node.data
       .match(TEXT_BOX_MARKER_PATTERN)
       ?.find((value) => byMarker.has(value));
@@ -412,8 +412,8 @@ function textBoxProperties(
   const docProperties = directChild(drawing, 'docPr');
   const docPropertiesId = integerAttribute(docProperties, 'id');
   const sourceName = attributeOptional(docProperties, 'name')?.trim() ?? '';
-  const id = sourceName.startsWith('A3S Text Box ')
-    ? sourceName.slice('A3S Text Box '.length).trim()
+  const id = sourceName.startsWith('Aster Text Box ')
+    ? sourceName.slice('Aster Text Box '.length).trim()
     : docPropertiesId === null
       ? `docx-text-box-${index}`
       : `docx-text-box-${docPropertiesId}`;
@@ -552,12 +552,12 @@ function nextTextBoxMarker(document: Document, start: number): string {
   let index = start;
   while (
     document.documentElement.textContent?.includes(
-      `__A3S_WORK_TEXT_BOX_${index}__`,
+      `__ASTER_WORK_TEXT_BOX_${index}__`,
     )
   ) {
     index += 1;
   }
-  return `__A3S_WORK_TEXT_BOX_${index}__`;
+  return `__ASTER_WORK_TEXT_BOX_${index}__`;
 }
 
 function closestAncestor(element: Element, localName: string): Element | null {

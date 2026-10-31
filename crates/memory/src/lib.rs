@@ -1,4 +1,4 @@
-//! A3S Memory — pluggable memory storage for AI agents.
+//! Aster Memory — pluggable memory storage for AI agents.
 //!
 //! Provides the `MemoryStore` trait, `MemoryItem`, `MemoryType`,
 //! configuration types, and the following backend implementations:
@@ -860,7 +860,7 @@ fn file_memory_index_lock() -> &'static tokio::sync::Mutex<()> {
 
 /// Tighten a memory state directory to 0700 when it leaks group/other bits.
 /// A symlink path is left untouched — a linked directory is another tool's
-/// surface. Mirrors the a3s-code `secure_state` pattern so the crate stays
+/// surface. Mirrors the aster `secure_state` pattern so the crate stays
 /// dependency-free.
 fn restrict_memory_dir(path: &std::path::Path) -> std::io::Result<()> {
     #[cfg(unix)]

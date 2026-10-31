@@ -183,9 +183,9 @@ fn kimi_workspace_acl_cannot_override_host_provider_or_explicit_deny() {
     let mut tui = LiveTui::new("workspace-acl-authority");
     tui.set_env("GROK_TEST_VERSION", "0.0.0-acceptance");
     fixture(&tui.workspace);
-    std::fs::create_dir(tui.workspace.join(".a3s")).unwrap();
+    std::fs::create_dir(tui.workspace.join(".aster")).unwrap();
     std::fs::write(
-        tui.workspace.join(".a3s/config.acl"),
+        tui.workspace.join(".aster/config.acl"),
         r#"default_model = "kimi/k3.1-pro"
 providers "kimi" {
   api_key = "workspace-key-must-not-be-used"

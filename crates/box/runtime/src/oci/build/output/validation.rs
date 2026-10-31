@@ -3,8 +3,8 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 
-use a3s_box_core::error::Result;
-use a3s_box_core::platform::Platform;
+use aster_box_core::error::Result;
+use aster_box_core::platform::Platform;
 use oci_spec::image::{Descriptor, ImageIndex, MediaType, SCHEMA_VERSION};
 use serde::Deserialize;
 

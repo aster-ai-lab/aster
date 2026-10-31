@@ -5,7 +5,7 @@ export const meta = {
   updated: '2026-10-29',
 };
 
-`.aix` 使用 ZIP 容器。包根目录必须包含 `a3s-use-extension.acl`，Manifest Schema Version 必须为 `3`。
+`.aix` 使用 ZIP 容器。包根目录必须包含 `aster-use-extension.acl`，Manifest Schema Version 必须为 `3`。
 
 Use 也接受包目录和旧版 `.tar.gz`、`.tgz`、`.zip` 来源。旧版格式不会获得 AIX 的原生 Manifest 语义。
 
@@ -64,22 +64,22 @@ Registry Source 使用显式信任根。新增来源时提供 `--trust-root <sha
 ## 构建 CLI 并审查计划
 
 ```bash
-cargo build --locked -p a3s-use
-./target/debug/a3s-use capabilities --json
-./target/debug/a3s-use doctor --json
+cargo build --locked -p aster-use
+./target/debug/aster-use capabilities --json
+./target/debug/aster-use doctor --json
 ```
 
 生成安装计划：
 
 ```bash
-./target/debug/a3s-use plugin plan-install acme/research \
+./target/debug/aster-use plugin plan-install acme/research \
   --scope-id current --json
 ```
 
 核对计划中的包、版本、摘要、动作和表面后，使用计划返回的 Operation ID 与 Digest：
 
 ```bash
-./target/debug/a3s-use plugin apply-plan \
+./target/debug/aster-use plugin apply-plan \
   --operation-id <plan-operation-id> \
   --plan-digest <plan-sha256> \
   --scope-id current --yes --json

@@ -1,9 +1,9 @@
-//! Direct runtime-backed management API for a3s-box.
+//! Direct runtime-backed management API for aster-box.
 //!
 //! This module intentionally returns typed Rust data instead of parsing CLI
 //! tables or JSON text. Container metadata is read from the shared `boxes.json`
 //! state model, while image, volume, network, and snapshot operations call
-//! `a3s-box-runtime` stores directly.
+//! `aster-box-runtime` stores directly.
 
 use std::collections::{HashMap, HashSet};
 use std::io::BufRead;
@@ -12,14 +12,14 @@ use std::sync::Arc;
 #[cfg(unix)]
 use std::time::Instant;
 
-use a3s_box_core::log::{json_log_path, LogDriver, LogEntry, RuntimeConsoleFilter};
-use a3s_box_core::network::{IsolationMode, NetworkConfig, NetworkEndpoint, NetworkMode};
-use a3s_box_core::platform::Platform;
-use a3s_box_core::snapshot::SnapshotMetadata;
+use aster_box_core::log::{json_log_path, LogDriver, LogEntry, RuntimeConsoleFilter};
+use aster_box_core::network::{IsolationMode, NetworkConfig, NetworkEndpoint, NetworkMode};
+use aster_box_core::platform::Platform;
+use aster_box_core::snapshot::SnapshotMetadata;
 #[cfg(unix)]
-use a3s_box_core::vmm::parse_signal_name;
-use a3s_box_core::volume::VolumeConfig;
-use a3s_box_core::{
+use aster_box_core::vmm::parse_signal_name;
+use aster_box_core::volume::VolumeConfig;
+use aster_box_core::{
     CreateExecutionRequest, ExecOutput, ExecRequest, ExecutionEventBatch, ExecutionEventsRequest,
     ExecutionGeneration, ExecutionId, ExecutionLease, ExecutionManager, ExecutionProcessInventory,
     ExecutionReservation, ExecutionResourceUpdate, ExecutionSessionManager, ExecutionSnapshot,
@@ -28,9 +28,9 @@ use a3s_box_core::{
     ReconcileOutcome, RestartExecutionOptions, StoredImage,
 };
 #[cfg(unix)]
-use a3s_box_runtime::is_process_alive;
-use a3s_box_runtime::oci::BuildResult as RuntimeBuildResult;
-use a3s_box_runtime::{
+use aster_box_runtime::is_process_alive;
+use aster_box_runtime::oci::BuildResult as RuntimeBuildResult;
+use aster_box_runtime::{
     is_process_alive_with_identity, load_resolved_image_config, BuildConfig as RuntimeBuildConfig,
     BuildNetworkPolicy, ImagePuller, ImageReference, ImageStore, ManagedExecutionState,
     NetworkStore, OciImage, PushResult, RegistryAuth, RegistryProtocol, RegistryPusher,
@@ -40,9 +40,9 @@ use serde::{Deserialize, Serialize};
 use sysinfo::{Pid, System};
 
 #[cfg(all(test, unix))]
-use a3s_box_runtime::pid_start_time;
+use aster_box_runtime::pid_start_time;
 #[cfg(unix)]
-use a3s_box_runtime::{AttestationReport, AttestationRequest, ExecClient, PtyClient};
+use aster_box_runtime::{AttestationReport, AttestationRequest, ExecClient, PtyClient};
 
 use crate::box_state::{BoxRecord, StateFile};
 

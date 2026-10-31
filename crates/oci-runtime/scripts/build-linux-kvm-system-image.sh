@@ -33,24 +33,24 @@ if [[ -z "$architecture" ]]; then
   exit 2
 fi
 
-export A3S_SYSTEM_IMAGE_SCHEMA_VERSION='a3s.oci.linux-kvm-system-image.v1'
-export A3S_SYSTEM_IMAGE_ARCHITECTURE="$architecture"
+export ASTER_SYSTEM_IMAGE_SCHEMA_VERSION='aster.oci.linux-kvm-system-image.v1'
+export ASTER_SYSTEM_IMAGE_ARCHITECTURE="$architecture"
 case "$architecture" in
   x86_64)
-    export A3S_SYSTEM_IMAGE_ELF_PATTERN='ELF 64-bit.*x86-64.*(static-pie|statically) linked'
-    export A3S_SYSTEM_IMAGE_ALPINE_URL='https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-minirootfs-3.22.5-x86_64.tar.gz'
-    export A3S_SYSTEM_IMAGE_ALPINE_SHA256='4b4daa9fe2fc696c4919c4412a4c3d3e770d8fb70292a004a2c72f5096175282'
-    export A3S_SYSTEM_IMAGE_ALPINE_SIZE=3638276
-    export A3S_SYSTEM_IMAGE_FILESYSTEM_UUID='a3a30c1a-2026-4000-8000-000000000021'
-    export A3S_SYSTEM_IMAGE_DIRECTORY_HASH_SEED='a3a30c1a-2026-4000-8000-000000000022'
+    export ASTER_SYSTEM_IMAGE_ELF_PATTERN='ELF 64-bit.*x86-64.*(static-pie|statically) linked'
+    export ASTER_SYSTEM_IMAGE_ALPINE_URL='https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-minirootfs-3.22.5-x86_64.tar.gz'
+    export ASTER_SYSTEM_IMAGE_ALPINE_SHA256='4b4daa9fe2fc696c4919c4412a4c3d3e770d8fb70292a004a2c72f5096175282'
+    export ASTER_SYSTEM_IMAGE_ALPINE_SIZE=3638276
+    export ASTER_SYSTEM_IMAGE_FILESYSTEM_UUID='a3a30c1a-2026-4000-8000-000000000021'
+    export ASTER_SYSTEM_IMAGE_DIRECTORY_HASH_SEED='a3a30c1a-2026-4000-8000-000000000022'
     ;;
   aarch64)
-    export A3S_SYSTEM_IMAGE_ELF_PATTERN='ELF 64-bit.*ARM aarch64.*statically linked'
-    export A3S_SYSTEM_IMAGE_ALPINE_URL='https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/aarch64/alpine-minirootfs-3.22.5-aarch64.tar.gz'
-    export A3S_SYSTEM_IMAGE_ALPINE_SHA256='3fbc6285032ed46821b511292633d7b2a6306a2e254f590e92bdafff56cf2f70'
-    export A3S_SYSTEM_IMAGE_ALPINE_SIZE=3966256
-    export A3S_SYSTEM_IMAGE_FILESYSTEM_UUID='a3a30c1a-2026-4000-8000-000000000031'
-    export A3S_SYSTEM_IMAGE_DIRECTORY_HASH_SEED='a3a30c1a-2026-4000-8000-000000000032'
+    export ASTER_SYSTEM_IMAGE_ELF_PATTERN='ELF 64-bit.*ARM aarch64.*statically linked'
+    export ASTER_SYSTEM_IMAGE_ALPINE_URL='https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/aarch64/alpine-minirootfs-3.22.5-aarch64.tar.gz'
+    export ASTER_SYSTEM_IMAGE_ALPINE_SHA256='3fbc6285032ed46821b511292633d7b2a6306a2e254f590e92bdafff56cf2f70'
+    export ASTER_SYSTEM_IMAGE_ALPINE_SIZE=3966256
+    export ASTER_SYSTEM_IMAGE_FILESYSTEM_UUID='a3a30c1a-2026-4000-8000-000000000031'
+    export ASTER_SYSTEM_IMAGE_DIRECTORY_HASH_SEED='a3a30c1a-2026-4000-8000-000000000032'
     ;;
   *)
     usage
@@ -63,9 +63,9 @@ if [[ ! -f "$runtime_assets" || -L "$runtime_assets" ]]; then
   echo "checked-in runtime asset manifest must be a real regular file: $runtime_assets" >&2
   exit 1
 fi
-export A3S_SYSTEM_IMAGE_RUNTIME_JSON="$(
+export ASTER_SYSTEM_IMAGE_RUNTIME_JSON="$(
   jq --compact-output --exit-status --arg architecture "$architecture" '
-    if .schema_version != "a3s.oci.krun-runtime-assets.v1" then
+    if .schema_version != "aster.oci.krun-runtime-assets.v1" then
       error("unexpected runtime asset schema")
     else
       [.bundles[] | select(
@@ -80,4 +80,4 @@ export A3S_SYSTEM_IMAGE_RUNTIME_JSON="$(
   ' "$runtime_assets"
 )"
 
-a3s_build_system_image "${builder_arguments[@]}"
+aster_build_system_image "${builder_arguments[@]}"

@@ -416,7 +416,7 @@ fn malformed_and_conflicting_originals_are_integrity_errors_not_honest_unknown()
     mismatched.prepared_digest = format!("sha256:{}", "f".repeat(64));
     let mut conflicting_prepared = prepared.clone();
     conflicting_prepared.original_args_digest =
-        a3s_effect::tool_args_digest(&json!({"other":1})).unwrap();
+        aster_effect::tool_args_digest(&json!({"other":1})).unwrap();
     let mut conflicting_terminal = terminal.clone();
     conflicting_terminal.outcome = ToolExecutionOutcome::Failed;
     for facts in [

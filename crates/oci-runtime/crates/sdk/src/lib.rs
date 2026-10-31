@@ -1,4 +1,4 @@
-//! Async, strongly typed API used by A3S Box and other runtime callers.
+//! Async, strongly typed API used by Aster Box and other runtime callers.
 //!
 //! The SDK owns the public contract. Runtime drivers, WHPX, libkrun, and
 //! durable-state implementation details remain behind [`OciRuntimeService`].
@@ -35,7 +35,7 @@ mod transport;
 mod validation;
 mod workspace_path;
 
-pub use a3s_oci_core::{
+pub use aster_oci_core::{
     hardware_vm, DriverCapability, DriverKind, DriverReadiness, HostPlatform, IsolationClass,
     RuntimeFeatures,
 };

@@ -1,5 +1,5 @@
 .work-pdf-viewer {
-  --work-pdf-accent: var(--a3s-ink);
+  --work-pdf-accent: var(--aster-ink);
   --work-office-control-accent: var(--work-pdf-accent);
 
   display: flex;
@@ -8,12 +8,12 @@
   flex: 1;
   flex-direction: column;
   overflow: hidden;
-  background: var(--a3s-bg);
+  background: var(--aster-bg);
 }
 
 .work-pdf-annotation-style-panel,
 .work-pdf-overflow-panel {
-  --work-pdf-accent: var(--a3s-ink);
+  --work-pdf-accent: var(--aster-ink);
 }
 
 .work-pdf-toolbar {
@@ -60,7 +60,7 @@
 
 .work-pdf-history {
   padding-right: 5px;
-  border-right: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
 }
 
 .work-pdf-annotation {
@@ -68,7 +68,7 @@
   padding-right: 5px;
   padding-left: 0;
   border: 0;
-  border-right: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
 }
 
 .work-pdf-annotation-color {
@@ -95,10 +95,10 @@
 .work-pdf-annotation-style-panel {
   width: 238px;
   padding: 10px;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 12px;
-  background: var(--a3s-panel);
-  box-shadow: var(--a3s-shadow);
+  background: var(--aster-panel);
+  box-shadow: var(--aster-shadow);
 }
 
 .work-pdf-annotation-style-content,
@@ -121,7 +121,7 @@
 .work-pdf-annotation-style-row > legend {
   margin: 0;
   padding: 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
   font-weight: 400;
 }
@@ -140,10 +140,10 @@
   height: 30px;
   place-items: center;
   padding: 0 5px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
-  background: var(--a3s-panel);
-  color: var(--a3s-muted);
+  background: var(--aster-panel);
+  color: var(--aster-muted);
   font: inherit;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
@@ -164,8 +164,8 @@
 .work-pdf-annotation-style-options > label:hover:not(:has(input:disabled)),
 .work-pdf-annotation-style-options > label:has(input:focus-visible) {
   border-color: var(--work-pdf-accent);
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
 }
 
 .work-pdf-annotation-style-options > label:has(input:focus-visible) {
@@ -174,7 +174,7 @@
 }
 
 .work-pdf-annotation-style-options > label:has(input:checked) {
-  border-color: var(--a3s-line-strong);
+  border-color: var(--aster-line-strong);
   background: var(--spec-selected-row);
   color: var(--work-pdf-accent);
   font-weight: 500;
@@ -209,7 +209,7 @@
 
 .work-pdf-search > form > svg {
   flex: 0 0 auto;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
 }
 
 .work-pdf-search .work-office-text-field {
@@ -237,7 +237,7 @@
   min-width: 34px;
   align-items: center;
   justify-content: center;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -258,18 +258,18 @@
 .work-pdf-page-total {
   min-width: 28px;
   margin-right: 2px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   white-space: nowrap;
 }
 
 .work-pdf-zoom-controls {
   padding-left: 6px;
-  border-left: 1px solid var(--a3s-line);
+  border-left: 1px solid var(--aster-line);
 }
 
 .work-pdf-zoom-controls > output {
   width: 38px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
@@ -280,7 +280,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font: inherit;
   cursor: pointer;
 }
@@ -288,7 +288,7 @@
 .work-pdf-fit-button:hover:not(:disabled),
 .work-pdf-fit-button[aria-pressed="true"] {
   background: var(--spec-selected-row);
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
 }
 
 .work-pdf-fit-button[aria-pressed="true"] {
@@ -299,7 +299,7 @@
   min-height: 30px;
   margin-right: 3px;
   padding-right: 8px;
-  border-right: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
 }
 
 .work-pdf-save > output {
@@ -338,7 +338,7 @@
 .work-pdf-overflow-group + .work-pdf-overflow-group {
   margin-top: 5px;
   padding-top: 5px;
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .work-pdf-overflow-panel button {
@@ -392,7 +392,7 @@
 .work-pdf-overflow-panel button > span:first-child {
   display: grid;
   place-items: center;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-pdf-overflow-narrow {
@@ -422,9 +422,9 @@
   flex: 0 0 184px;
   flex-direction: column;
   overflow: hidden;
-  border-right: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  border-right: 1px solid var(--aster-line);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
 }
 
 .work-pdf-thumbnail-viewport {
@@ -468,20 +468,20 @@
 }
 
 .work-pdf-thumbnail-list > button:focus-visible {
-  outline: 2px solid var(--a3s-ink);
+  outline: 2px solid var(--aster-ink);
   outline-offset: -2px;
   box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
 }
 
 .work-pdf-thumbnail-list > button.active {
-  border-color: var(--a3s-ink);
+  border-color: var(--aster-ink);
   background: var(--spec-selected-row);
 }
 
 .work-pdf-thumbnail-number {
   width: 18px;
   padding-top: 2px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -504,7 +504,7 @@
   justify-self: start;
   place-items: center;
   overflow: hidden;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 3px;
   background: #ffffff;
 }
@@ -518,13 +518,13 @@
       transparent 56%
     )
     100% 0 / 220% 100%,
-    color-mix(in srgb, var(--a3s-panel-strong) 72%, #ffffff);
+    color-mix(in srgb, var(--aster-panel-strong) 72%, #ffffff);
   animation: work-pdf-thumbnail-loading 1.2s ease-in-out infinite;
 }
 
 .work-pdf-thumbnail-preview[data-pdf-thumbnail-state="error"] {
   border-style: dashed;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 74%, #ffffff);
+  background: color-mix(in srgb, var(--aster-panel-soft) 74%, #ffffff);
 }
 
 .work-pdf-thumbnail-preview > img {
@@ -562,7 +562,7 @@
 }
 
 .work-pdf-embed:focus-visible {
-  outline: 2px solid var(--a3s-ink);
+  outline: 2px solid var(--aster-ink);
   outline-offset: -2px;
 }
 
@@ -586,10 +586,10 @@
   align-items: center;
   gap: 7px;
   padding: 5px 8px 5px 5px;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 82%, transparent);
   border-radius: 7px;
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
 }
 
 .work-pdf-remote-participant > span:last-child {
@@ -606,16 +606,16 @@
 }
 
 .work-pdf-remote-participant strong {
-  font: 500 13px / 1.2 var(--a3s-ui-font);
+  font: 500 13px / 1.2 var(--aster-ui-font);
 }
 
 .work-pdf-remote-participant small {
   color: color-mix(
     in srgb,
     var(--work-office-presence-color) 72%,
-    var(--a3s-ink)
+    var(--aster-ink)
   );
-  font: 400 12px / 1.2 var(--a3s-ui-font);
+  font: 400 12px / 1.2 var(--aster-ui-font);
 }
 
 .work-pdf-remote-participant[data-activity="idle"] {
@@ -688,8 +688,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: color-mix(in srgb, var(--a3s-bg) 88%, transparent);
-  color: var(--a3s-muted);
+  background: color-mix(in srgb, var(--aster-bg) 88%, transparent);
+  color: var(--aster-muted);
   font-size: 12px;
 }
 
@@ -712,7 +712,7 @@
   min-height: 0;
   flex: 1;
   padding: 24px;
-  background: var(--a3s-bg);
+  background: var(--aster-bg);
 }
 
 .work-pdf-state.ds-state-view h2 {
@@ -838,7 +838,7 @@
     width: min(82vw, 280px);
     flex-basis: auto;
     visibility: hidden;
-    border-right: 1px solid var(--a3s-line-strong);
+    border-right: 1px solid var(--aster-line-strong);
     box-shadow: 16px 0 38px rgb(23 28 42 / 18%);
     opacity: 0;
     pointer-events: none;
@@ -865,8 +865,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 8px 0 12px;
-    border-bottom: 1px solid var(--a3s-line);
-    background: var(--a3s-panel);
+    border-bottom: 1px solid var(--aster-line);
+    background: var(--aster-panel);
   }
 
   .work-pdf-thumbnail-header > strong {
@@ -883,15 +883,15 @@
     border: 0;
     border-radius: 6px;
     background: transparent;
-    color: var(--a3s-muted);
+    color: var(--aster-muted);
     cursor: pointer;
   }
 
   .work-pdf-thumbnail-header > button:hover,
   .work-pdf-thumbnail-header > button:focus-visible {
     outline: 0;
-    background: var(--a3s-panel-soft);
-    color: var(--a3s-ink);
+    background: var(--aster-panel-soft);
+    color: var(--aster-ink);
   }
 
   .work-pdf-thumbnail-viewport {

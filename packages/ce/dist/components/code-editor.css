@@ -190,11 +190,11 @@
   }
 
   .code-editor[data-dirty="true"] [data-code-editor-dirty-indicator] {
-    background: var(--warning, var(--a3s-orange, #a86412));
+    background: var(--warning, var(--aster-orange, #a86412));
   }
 
   .code-editor[data-dirty="false"] [data-code-editor-dirty-indicator] {
-    background: var(--success, var(--a3s-green, #16845b));
+    background: var(--success, var(--aster-green, #16845b));
   }
 
   .code-editor[data-validation-state="invalid"]
@@ -203,7 +203,7 @@
   }
 
   .code-editor[data-validation-state="valid"] [data-code-editor-message] {
-    color: var(--success, var(--a3s-green, #16845b));
+    color: var(--success, var(--aster-green, #16845b));
   }
 
   .code-editor[data-validation-state="invalid"] [data-code-editor-message] {

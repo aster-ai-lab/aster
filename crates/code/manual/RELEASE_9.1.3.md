@@ -36,7 +36,7 @@ qualification and its exact limits are retained in
   backpressure, and stop idle refresh when the exact client closes or drops.
   Custom transports retain their legacy notification contract unless they
   implement the additive independent tools-list change subscription.
-- Parse and generate release-smoke configuration only through `a3s-acl`.
+- Parse and generate release-smoke configuration only through `aster-acl`.
   Pass credentials through the child environment, use a private temporary ACL
   file, propagate child failure and remove the file when the child exits.
 - Retain the existing research fact wire schema while binding a validated
@@ -47,7 +47,7 @@ qualification and its exact limits are retained in
   Cancel waits up to five seconds for the original Run store; pending
   publication returns an existing `AgentProtocolHostError::Code` carrier
   without a v1 receipt. Its additive `runtime_code()` query returns
-  `a3s.code.agent_protocol.run_cancellation_pending`. Preserve the published
+  `aster.code.agent_protocol.run_cancellation_pending`. Preserve the published
   exhaustive variants and const `code()` API; its const category remains
   `INTERNAL_ERROR` for this typed runtime source.
 - Preserve the typed admission error when original cleanup remains unproved.
@@ -87,7 +87,7 @@ current full inventory. Selected local passes do not satisfy the release gates.
 | --- | --- |
 | Regression qualification | Repair and requalify original execution cleanup, cancellation continuation, exact/portable checkpoint recovery and unresolved tool receipts. Retain initial failures and SOLO results; then execute the complete unchanged Layer C inventory. Selected SDK/TUI passes do not discharge these failures. |
 | Dependency delivery | Deliver and pin the exact Effect, Memory, Search, Use core/reconcile and OKF implementations used by the qualified local build; verify the local Rust and ACP dependency graphs. The public Effect pin does not contain the local fact-log changes. Registry existence alone does not prove source parity; the current OKF and Use reconcile versions are absent from crates.io. |
-| Standalone build | Resolve `a3s-okf`'s unversioned sibling paths (Core dev dependency and ACP dependency) and verify the ACP reconcile dependency. Run setup, relock, strict checks and packaging from the actual standalone Code checkout. A manifest transformation is not a build certificate. |
+| Standalone build | Resolve `aster-okf`'s unversioned sibling paths (Core dev dependency and ACP dependency) and verify the ACP reconcile dependency. Run setup, relock, strict checks and packaging from the actual standalone Code checkout. A manifest transformation is not a build certificate. |
 | Shared source closure | Review a content-filtered candidate patch, retain evidence and a ROADMAP row in the same landing, and make whole-workspace formatting pass. The shared worktree currently contains unrelated unfinished edits. |
 | Hosted qualification | Run the complete release chain at the committed candidate revision, including platform builds, memory/retrieval soaks, hermetic integrations, performance, SDK runtimes and the shipped pager checks. Local macOS debug artifacts do not certify other targets. |
 
@@ -95,10 +95,10 @@ current full inventory. Selected local passes do not satisfy the release gates.
 
 | Issue | Candidate disposition |
 | --- | --- |
-| [#187](https://github.com/A3S-Lab/Code/issues/187) | The rebuilt local 9.1.3 pager passes non-TTY startup qualification. Keep the issue open until the released/downloaded artifact passes the same check. |
-| [#189](https://github.com/A3S-Lab/Code/issues/189) | Session catalog, recovery admission and pinned fact storage have retained local evidence. Successful recovery needs the admission-to-writer capability handoff. Picker, fork and dashboard activation remain gated. |
-| [#176](https://github.com/A3S-Lab/Code/issues/176) | Trusted Publisher workflow preparation is local; external package bindings and actual npm delivery remain unproven. Office delivery is not certified by this Code candidate. |
-| [#162](https://github.com/A3S-Lab/Code/issues/162) | The private Search cascade replacement remains open. A dependency version change alone cannot prove execution through `EngineTierPlan`. |
+| [#187](https://github.com/aster-ai-lab/Code/issues/187) | The rebuilt local 9.1.3 pager passes non-TTY startup qualification. Keep the issue open until the released/downloaded artifact passes the same check. |
+| [#189](https://github.com/aster-ai-lab/Code/issues/189) | Session catalog, recovery admission and pinned fact storage have retained local evidence. Successful recovery needs the admission-to-writer capability handoff. Picker, fork and dashboard activation remain gated. |
+| [#176](https://github.com/aster-ai-lab/Code/issues/176) | Trusted Publisher workflow preparation is local; external package bindings and actual npm delivery remain unproven. Office delivery is not certified by this Code candidate. |
+| [#162](https://github.com/aster-ai-lab/Code/issues/162) | The private Search cascade replacement remains open. A dependency version change alone cannot prove execution through `EngineTierPlan`. |
 
 ## Host callback limits
 

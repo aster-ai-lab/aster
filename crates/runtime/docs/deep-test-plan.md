@@ -1,15 +1,15 @@
-# A3S Runtime Deep Test Plan
+# Aster Runtime Deep Test Plan
 
 ## 1. Purpose
 
-This document defines the verification architecture for `A3S-Lab/Runtime`.
+This document defines the verification architecture for `aster-ai-lab/Runtime`.
 The target is not merely a green crate test suite. The target is evidence that
 the provider-neutral contract, durable lifecycle coordinator, state store, real
 providers, and consuming control paths preserve the same semantics through
 retries, crashes, contention, scale, and provider loss.
 
 All build and runtime execution described here must run on Linux CI runners or
-an A3S OS test runner. Developer laptops are not part of the execution matrix.
+an Aster OS test runner. Developer laptops are not part of the execution matrix.
 Servers must obtain source through Git at an exact commit; source archives must
 not be copied from a workstation.
 
@@ -21,14 +21,14 @@ The plan covers five boundaries:
 2. `ManagedRuntimeClient`, `FileRuntimeStateStore`, provider registration, and
    the exported conformance suite.
 3. Every concrete `RuntimeDriver` against its real provider.
-4. The A3S Cloud projection, node command journal, reconciliation, and
+4. The Aster Cloud projection, node command journal, reconciliation, and
    observation path that consume this crate.
 5. Performance, fault recovery, security, resource cleanup, and production
    canary evidence.
 
-The A3S OS product runtime APIs that happen to use the word "runtime" are not
+The Aster OS product runtime APIs that happen to use the word "runtime" are not
 automatically in scope. They enter this plan only when they construct or carry
-the Rust `a3s-runtime` protocol.
+the Rust `aster-runtime` protocol.
 
 ## 3. Evidence-Based Baseline
 
@@ -40,9 +40,9 @@ at the start of an implementation or release campaign.
 | Runtime repository CI | Linux CI, publish workflow, MSRV/stable checks, and repository test suites are present | A release still needs retained exact-commit evidence |
 | Core integration tests | General lifecycle, deterministic fault, cross-process race, protocol golden, endpoint, registry, consumer, and conformance suites are present | Performance, soak, and every real-provider combination remain release gates |
 | Shared conformance | Base, Recovery, Networking, Mounts, Health, Resources, Logs, Exec, Security, Outputs, and Evidence profiles are implemented | Each provider must execute every capability-triggered profile without a skip |
-| Real provider | A3S Cloud retains Docker integration and A3S Box implements `BoxRuntimeDriver` | Exact-revision consumer compatibility and all production-required capability profiles remain gate-driven |
-| Real Docker tests | Three tests cover common conformance, create-before-state-update recovery, and external provider loss | They return success without running unless `A3S_CLOUD_TEST_DOCKER=1` |
-| A3S Box | Driver plus Base/Recovery and capability-triggered conformance fixtures exist in the Box repository | Re-certify against this Runtime revision; `Outbound` is not currently advertised and cannot be inferred |
+| Real provider | Aster Cloud retains Docker integration and Aster Box implements `BoxRuntimeDriver` | Exact-revision consumer compatibility and all production-required capability profiles remain gate-driven |
+| Real Docker tests | Three tests cover common conformance, create-before-state-update recovery, and external provider loss | They return success without running unless `ASTER_CLOUD_TEST_DOCKER=1` |
+| Aster Box | Driver plus Base/Recovery and capability-triggered conformance fixtures exist in the Box repository | Re-certify against this Runtime revision; `Outbound` is not currently advertised and cannot be inferred |
 | Non-functional testing | Deterministic fault and multi-process race harnesses exist | Benchmark, fuzz, mutation, long soak, and complete production evidence remain open |
 
 Existing tests are useful regression assets, but their presence is not proof
@@ -143,7 +143,7 @@ while destructive checks run only in isolated environments.
 | L0 | Format, lint, docs, unit, golden protocol, property checks | Ephemeral Linux CI | Every pull request | 10 minutes |
 | L1 | Managed lifecycle, file state, multi-process contention, deterministic fault driver | Ephemeral Linux CI | Every pull request | 20 minutes |
 | L2 | Real provider capability and conformance profiles | Dedicated Linux provider runner | Merge and nightly | 30 minutes per provider |
-| L3 | Crash, reboot, disk fault, scale, resource enforcement, and leak tests | Disposable A3S OS worker or VM | Nightly or weekly | 2 hours |
+| L3 | Crash, reboot, disk fault, scale, resource enforcement, and leak tests | Disposable Aster OS worker or VM | Nightly or weekly | 2 hours |
 | L4 | Long soak and safe production canary | Dedicated soak worker; shared production only for non-destructive canary | Release candidate | 24 to 72 hours |
 
 No layer may silently convert an unavailable prerequisite into a passing test.
@@ -160,10 +160,10 @@ cargo clippy --all-targets -- -D warnings
 RUSTDOCFLAGS="-D warnings" cargo doc --no-deps
 ```
 
-The real Docker gate runs from the A3S Cloud repository root:
+The real Docker gate runs from the Aster Cloud repository root:
 
 ```text
-A3S_CLOUD_TEST_DOCKER=1 cargo test -p a3s-cloud-node-agent \
+ASTER_CLOUD_TEST_DOCKER=1 cargo test -p aster-cloud-node-agent \
   --test docker_conformance real_docker_passes_all_advertised_runtime_profiles \
   -- --ignored --exact --nocapture --test-threads=1
 ```
@@ -346,7 +346,7 @@ no fixture or passing probe.
 
 This table describes source claims, not release certification.
 
-| Capability | Docker driver in A3S Cloud | A3S Box driver |
+| Capability | Docker driver in Aster Cloud | Aster Box driver |
 | --- | --- | --- |
 | Task and Service | Advertised | Advertised |
 | OCI/Docker manifest | Advertised with digest-pinned URI | OCI image manifest and index advertised |
@@ -358,7 +358,7 @@ This table describes source claims, not release certification.
 | Features | durable identity, stop, remove, logs | durable identity, stop, remove, TCP Service, logs, exec; Secrets, outputs, and attestation when configured |
 | Not advertised | exec, usage, attestation, secrets, artifact mounts, ephemeral quota | usage, UDP Service, outbound, and ephemeral quota; optional capabilities must never be inferred |
 
-The A3S Box row becomes release evidence only when the exact Box and Runtime
+The Aster Box row becomes release evidence only when the exact Box and Runtime
 revisions execute every profile activated by source-reported capabilities and
 restore the provider inventory. The presence of its driver or fixture is not a
 passing result.
@@ -381,13 +381,13 @@ passing result.
 - Count labeled containers and test volumes before and after every case; both
   deltas must be zero after cleanup.
 
-The Docker job must set `A3S_CLOUD_TEST_DOCKER=1` explicitly and verify the
+The Docker job must set `ASTER_CLOUD_TEST_DOCKER=1` explicitly and verify the
 daemon before the test binary starts. A missing socket is a failed provider job,
 not a passed test with early returns.
 
 ## 11. Consumer End-to-End Matrix
 
-The first real consumer is A3S Cloud. Its release suite must prove:
+The first real consumer is Aster Cloud. Its release suite must prove:
 
 - an immutable `WorkloadRevision` projects to the expected Service spec and
   digest;
@@ -421,8 +421,8 @@ admission/readiness abstraction:
 The release matrix must also prove the sole production and traffic paths:
 
 ```text
-public request -> A3S Gateway -> Cloud-admitted target
-hosted execution -> A3S Cloud -> A3S Runtime -> A3S Box
+public request -> Aster Gateway -> Cloud-admitted target
+hosted execution -> Aster Cloud -> Aster Runtime -> Aster Box
 ```
 
 Direct public Runtime/Box endpoints, direct Cloud-to-Box lifecycle calls, and a
@@ -472,7 +472,7 @@ The Runtime test must not parse an MCP product profile, synthesize a
 
 Daemon restart, host reboot, disk faults, and broad network faults must never be
 run on a shared production node. They require a disposable worker or nested VM
-in the A3S OS environment.
+in the Aster OS environment.
 
 ## 13. Security and Adversarial Testing
 
@@ -532,7 +532,7 @@ disk bytes, network bytes, and resource cleanup latency.
   state-temporary-file, or provider-resource growth after workload count
   returns to baseline.
 
-## 15. A3S OS Execution Safety
+## 15. Aster OS Execution Safety
 
 ### 15.1 Git-only deployment
 
@@ -540,7 +540,7 @@ The runner checks out exact commits without uploading source:
 
 ```text
 git fetch --prune origin
-git worktree add --detach /var/tmp/a3s-runtime-tests/<run-id> <runtime-sha>
+git worktree add --detach /var/tmp/aster-runtime-tests/<run-id> <runtime-sha>
 ```
 
 Provider and consumer repositories use their own exact SHAs. The evidence
@@ -563,7 +563,7 @@ Service, inspect, logs when supported, stop, and remove. They never restart a
 daemon, reboot the host, corrupt state, fill disk, alter firewall policy, use
 production secrets, or mount production data.
 
-L3 and destructive L4 work runs on a disposable A3S OS worker that matches the
+L3 and destructive L4 work runs on a disposable Aster OS worker that matches the
 production kernel, architecture, provider version, filesystem, and security
 policy.
 
@@ -638,7 +638,7 @@ untracked provider mutation in the deterministic provider model.
 - Run the mandatory Docker job on a dedicated Linux runner with the gate
   explicitly enabled.
 - Add Docker fault, resource, log, namespace, and leak cases.
-- Run A3S Cloud consumer restart and reconciliation flows.
+- Run Aster Cloud consumer restart and reconciliation flows.
 
 Exit: every advertised Docker capability has passing real-provider evidence;
 Base and Recovery pass; pre/post resource deltas are zero.
@@ -655,7 +655,7 @@ Exit: all correctness, regression, leak, and soak gates in Section 14 pass.
 
 - For each new driver, supply fixtures for every advertised conformance
   profile.
-- Add A3S Box only after its `RuntimeDriver` exists and verify the `sandbox`
+- Add Aster Box only after its `RuntimeDriver` exists and verify the `sandbox`
   isolation mapping on production-equivalent Linux.
 - Run the bounded L4 canary and verify cleanup.
 
@@ -667,7 +667,7 @@ production canary bundle proves zero leaked resources and no safety stop.
 - Accept or supersede ADR 0005 before implementation.
 - Pin one modern MCP fixture, its immutable image digest, profile digest, and
   expected discovery identity.
-- Run the Section 11.1 matrix on real A3S Box infrastructure.
+- Run the Section 11.1 matrix on real Aster Box infrastructure.
 - Run the joint Cloud `MCP0.5` route, failure, recovery, and cleanup gate at
   exact repository revisions; retain its Runtime evidence for the later
   multi-node `MCP0.6` gate.
@@ -684,7 +684,7 @@ protocol handling and product desired state remain outside Runtime core.
   snapshots; Runtime endpoints remain internal.
 - Exercise process, provider, node, and host loss plus generation replacement,
   route drain, cancellation, object/volume cleanup, and tenant isolation.
-- Run every A3S Box capability profile required by the selected consumers;
+- Run every Aster Box capability profile required by the selected consumers;
   fail before dispatch when a required capability such as `Outbound` is not
   advertised.
 

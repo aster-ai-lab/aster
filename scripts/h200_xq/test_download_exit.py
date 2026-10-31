@@ -17,7 +17,7 @@ class AuthProxyTests(unittest.TestCase):
         cls.process = subprocess.Popen(['node', str(Path(__file__).with_name('download_exit.cjs'))],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
             creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
-        cls.process.stdin.write(json.dumps({'username': 'a3s-download', 'password': cls.password.decode(), 'port': cls.port}).encode())
+        cls.process.stdin.write(json.dumps({'username': 'aster-download', 'password': cls.password.decode(), 'port': cls.port}).encode())
         cls.process.stdin.close()
         if not json.loads(cls.process.stdout.readline())['ready']:
             raise RuntimeError('test proxy did not start')
@@ -41,7 +41,7 @@ class AuthProxyTests(unittest.TestCase):
         connection = socket.create_connection(('127.0.0.1', self.port), timeout=5)
         connection.sendall(b'\x05\x01\x02')
         self.assertEqual(self.receive(connection, 2), b'\x05\x02')
-        user = b'a3s-download'
+        user = b'aster-download'
         for byte in b'\x01'+bytes([len(user)])+user+bytes([len(password)])+password:
             connection.sendall(bytes([byte]))
         return connection

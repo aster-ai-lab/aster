@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     AttachmentCapabilities, CreateAttachments, CreateRequest, ErrorCode, IsolationRequest,
     LocalNetworkRedirectAttachment, NetworkAttachmentIdentity, NetworkCleanup, NetworkCleanupId,
     NetworkEnforcementAttachment, NetworkEnforcementId, NetworkInterfaceId, NetworkMechanismDigest,
@@ -73,7 +73,7 @@ fn enforcement_bundle(
         "linux": {
             "namespaces": [{
                 "type": "network",
-                "path": "/run/a3s/network/authorized-network-namespace-31"
+                "path": "/run/aster/network/authorized-network-namespace-31"
             }],
             "netDevices": {"tap0": {"name": "eth0"}}
         },

@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     collect_descendants, decoded_text, edit_start, editor_error, escape_attribute, index_xml,

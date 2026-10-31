@@ -1,7 +1,7 @@
 use std::io;
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{PlanScope, UseError, UseResult};
+use aster_use_core::{PlanScope, UseError, UseResult};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tokio::fs;
@@ -9,15 +9,15 @@ use tokio::fs;
 use super::{
     valid_sha256, OkfKnowledgeDatabaseEvidence, OkfKnowledgeFileEvidence, OkfKnowledgeRestorePlan,
 };
-use a3s_use_extension::ACTIVE_STATE_RESTORE_MARKER;
+use aster_use_extension::ACTIVE_STATE_RESTORE_MARKER;
 
 mod inventory;
 
 pub const OKF_KNOWLEDGE_RESTORE_OPERATION_SCHEMA: &str =
-    "a3s.use.okf-knowledge-restore-operation.v2";
-pub const OKF_KNOWLEDGE_RESTORE_RESULT_SCHEMA: &str = "a3s.use.okf-knowledge-restore-result.v2";
+    "aster.use.okf-knowledge-restore-operation.v2";
+pub const OKF_KNOWLEDGE_RESTORE_RESULT_SCHEMA: &str = "aster.use.okf-knowledge-restore-result.v2";
 
-const ACTIVE_RESTORE_SCHEMA: &str = "a3s.use.active-state-restore.v2";
+const ACTIVE_RESTORE_SCHEMA: &str = "aster.use.active-state-restore.v2";
 const MAX_RESTORE_OPERATION_BYTES: u64 = 512 * 1024;
 const MAX_ACTIVE_RESTORE_BYTES: u64 = 640 * 1024;
 pub(super) const MAX_RESTORE_OPERATIONS_PER_SCOPE: usize = 32;
@@ -428,7 +428,7 @@ impl RestoreOperationStore {
                 ));
             }
         };
-        if a3s_use_core::metadata_is_link_or_reparse_point(&directory_metadata)
+        if aster_use_core::metadata_is_link_or_reparse_point(&directory_metadata)
             || !directory_metadata.is_dir()
         {
             return Err(operation_invalid(
@@ -608,7 +608,7 @@ async fn enforce_operation_bound(
             operation_io("inspect Knowledge restore operation", &entry.path(), error)
         })?;
         if !valid_digest_segment(&name)
-            || a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            || aster_use_core::metadata_is_link_or_reparse_point(&metadata)
             || !metadata.is_dir()
         {
             return Err(operation_invalid(
@@ -664,7 +664,7 @@ async fn read_optional_json<T: serde::de::DeserializeOwned>(
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(operation_io(&format!("inspect {label}"), path, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > maximum
@@ -737,7 +737,7 @@ async fn write_json<T: Serialize>(path: &Path, value: &T, maximum: u64) -> UseRe
     let target = path.to_path_buf();
     let error_target = target.clone();
     let activation = tokio::task::spawn_blocking(move || {
-        a3s_use_extension::persist_temporary_replace_blocking(temporary, &target)
+        aster_use_extension::persist_temporary_replace_blocking(temporary, &target)
     })
     .await
     .map_err(|error| {
@@ -777,7 +777,7 @@ async fn remove_temporary_json(path: &Path, maximum: u64) -> UseResult<()> {
             ));
         }
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() > maximum
     {
@@ -847,7 +847,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| operation_io("inspect Knowledge restore directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(operation_invalid(
             "A Knowledge restore directory is not an owned directory.",
         ));

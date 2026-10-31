@@ -12,7 +12,7 @@ use crate::unattended::{
     Unattended, BEFORE_ANY_GATE_CONTINUATION, FRESH_REVIEW_FOCUS, IDLE_AFTER_BIND_CONTINUATION,
     UNPROVEN_STOP_CONTINUATION,
 };
-use a3s_code_core::execution_identity::ExecutionResultOutcomeV1;
+use aster_core::execution_identity::ExecutionResultOutcomeV1;
 use anyhow::{bail, Context};
 
 pub(super) enum Attempt {
@@ -24,7 +24,7 @@ pub(super) enum Attempt {
     Cancelled(acp::Result<acp::PromptResponse>),
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     /// Run `task` to a terminal host decision, then write the result record.
     /// The turn permit is held across attempts, so no other prompt interleaves.
     pub(super) async fn unattended_prompt(
@@ -59,7 +59,7 @@ impl A3sCodeAgent {
         if failure.is_none() && !progress.has_action_evidence() {
             progress.mark_evidence_missing();
             failure = Some(anyhow::anyhow!(
-                "A3S Code agent ended without a successful tool execution"
+                "Aster Code agent ended without a successful tool execution"
             ));
         }
         let (outcome, reason) = match &failure {
@@ -138,18 +138,18 @@ impl A3sCodeAgent {
                     .await
                     .context("start the goal slice")?
                 {
-                    a3s_code_core::GoalTickStream::Started(stream) => stream,
-                    a3s_code_core::GoalTickStream::Decided(decision) => {
+                    aster_core::GoalTickStream::Started(stream) => stream,
+                    aster_core::GoalTickStream::Decided(decision) => {
                         return Err(crate::goal::GoalContinuationStopped(decision).into());
                     }
-                    a3s_code_core::GoalTickStream::Replayed(snapshot) => {
+                    aster_core::GoalTickStream::Replayed(snapshot) => {
                         bail!("the goal slice replayed Run {}", snapshot.id)
                     }
                 },
                 None => session
                     .stream_with_run(&prompt, None)
                     .await
-                    .context("start A3S Code stream")?,
+                    .context("start Aster Code stream")?,
             };
             let attempt = self
                 .unattended_attempt(
@@ -188,7 +188,7 @@ impl A3sCodeAgent {
                     bail!("{detail}");
                 }
                 if let Some(failure) = join_failure {
-                    bail!("join A3S Code stream: {failure}");
+                    bail!("join Aster Code stream: {failure}");
                 }
                 // The next slice is another original Run. A freeform prompt
                 // here would leave the goal unfinished and settle it as
@@ -269,7 +269,7 @@ impl A3sCodeAgent {
                     // overwrites the record with the generic stream-closed text.
                     if join_failure.is_none() && no_concrete {
                         progress.mark_worker_exited_without_terminal_event();
-                        bail!("A3S Code worker exited without a terminal event");
+                        bail!("Aster Code worker exited without a terminal event");
                     }
                     let detail = join_failure
                         .or(facts.last_error)
@@ -286,15 +286,15 @@ impl A3sCodeAgent {
                         bail!("{failure}");
                     }
                     progress.stream_closed_without_terminal_event = true;
-                    bail!("A3S Code stream ended without a terminal event");
+                    bail!("Aster Code stream ended without a terminal event");
                 }
                 HostAdmissionStep::Finish => {
                     if !progress.terminal_event {
                         if let Some(failure) = join_failure {
-                            bail!("join A3S Code stream: {failure}");
+                            bail!("join Aster Code stream: {failure}");
                         }
                         progress.stream_closed_without_terminal_event = true;
-                        bail!("A3S Code stream ended without a terminal event");
+                        bail!("Aster Code stream ended without a terminal event");
                     }
                     if let Some(failure) = join_failure {
                         tracing::warn!("worker ended after terminal event: {failure}");
@@ -314,7 +314,7 @@ impl A3sCodeAgent {
         &self,
         session_id: &acp::SessionId,
         session: &AgentSession,
-        stream: a3s_code_core::AgentRunStream,
+        stream: aster_core::AgentRunStream,
         generation: u64,
         turn_permit: OwnedMutexGuard<()>,
         progress: &mut RunProgress,

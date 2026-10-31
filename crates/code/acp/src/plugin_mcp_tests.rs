@@ -6,11 +6,11 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::{Agent, AgentSession, PlanningMode, SessionOptions};
-use a3s_use_reconcile::{
+use aster_core::{Agent, AgentSession, PlanningMode, SessionOptions};
+use aster_use_reconcile::{
     files_sha256, PackageFile, PackageSpec, Payload, ReconcileStore, SurfaceKind, SurfaceSpec,
 };
 use anyhow::{Context, Result};
@@ -65,7 +65,7 @@ async fn external_stdio_mcp_does_not_block_the_rest_of_the_selection() {
         .unwrap();
     assert!(host.contains_mcp_server("github"));
     let _batch = host
-        .batch(a3s_code_core::capability::CodeCatalogGeneration::new(1))
+        .batch(aster_core::capability::CodeCatalogGeneration::new(1))
         .await
         .expect("an unadmitted external MCP must not fail the session");
 }
@@ -391,8 +391,8 @@ async fn native_session_refuses_client_mcp_override_before_any_process_effect() 
     let cursor = host.cursor().clone();
     let mut launch = crate::agent::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_owned();
-    let agent = crate::A3sCodeAgent::new(launch).with_plugin_selection(host);
-    let request = serde_json::json!({"cwd":root.path(),"mcpServers":[{"name":"catalog","command":"/bin/sh","args":["-c","exit 0"],"env":[]}],"_meta":{"a3sPluginSelection":cursor}});
+    let agent = crate::AsterCodeAgent::new(launch).with_plugin_selection(host);
+    let request = serde_json::json!({"cwd":root.path(),"mcpServers":[{"name":"catalog","command":"/bin/sh","args":["-c","exit 0"],"env":[]}],"_meta":{"asterPluginSelection":cursor}});
     assert!(agent_client_protocol::Agent::new_session(
         &agent,
         serde_json::from_value(request).unwrap()
@@ -400,13 +400,13 @@ async fn native_session_refuses_client_mcp_override_before_any_process_effect() 
     .await
     .is_err());
     assert!(!root.path().join("native-one.log").exists());
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
 }
 
 fn spec(root: &Path, marker: &str) -> PackageSpec {
     let mcp = vec![
         PackageFile { path: "server".into(), bytes: server_binary(root, marker) },
-        PackageFile { path: "server.json".into(), bytes: serde_json::to_vec(&serde_json::json!({"type":"stdio", "command":"server", "tool_timeout_secs":if marker == "native-one-timeout" {1} else {60}, "env":{"A3S_TEST_MCP_LOG":root.join(format!("{marker}.log"))}})).unwrap() },
+        PackageFile { path: "server.json".into(), bytes: serde_json::to_vec(&serde_json::json!({"type":"stdio", "command":"server", "tool_timeout_secs":if marker == "native-one-timeout" {1} else {60}, "env":{"ASTER_TEST_MCP_LOG":root.join(format!("{marker}.log"))}})).unwrap() },
     ];
     let skill = vec![PackageFile {
         path: "SKILL.md".into(),
@@ -590,7 +590,7 @@ async fn session(root: &Path, model: Arc<Model>) -> Arc<AgentSession> {
         .with_llm_client(model)
         .with_planning_mode(PlanningMode::Disabled)
         .with_permission_policy(
-            a3s_code_core::permissions::PermissionPolicy::new()
+            aster_core::permissions::PermissionPolicy::new()
                 .allow("Skill")
                 .allow("mcp__catalog__lookup"),
         );

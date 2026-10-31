@@ -90,8 +90,8 @@ pub(super) fn extracted_arguments(input: RouteMethodInput) -> Result<ExtractedAr
     let response_passthrough = response_arg.is_some();
     let setup = if response_passthrough {
         quote! {
-            let __a3s_boot_response_passthrough =
-                ::a3s_boot::ResponsePassthrough::new();
+            let __aster_boot_response_passthrough =
+                ::aster_boot::ResponsePassthrough::new();
         }
     } else {
         quote! {}
@@ -101,7 +101,7 @@ pub(super) fn extracted_arguments(input: RouteMethodInput) -> Result<ExtractedAr
         extractors.insert(
             0,
             quote! {
-                let __a3s_boot_multipart_form = __a3s_boot_request.multipart_form().await?;
+                let __aster_boot_multipart_form = __aster_boot_request.multipart_form().await?;
             },
         );
     }
@@ -118,17 +118,17 @@ fn extractor_tokens(arg: MethodArg, extractor: Extractor) -> proc_macro2::TokenS
     let MethodArg { ident, ty, .. } = arg;
     match extractor {
         Extractor::Body(BodyExtractor::Whole) => quote! {
-            __a3s_boot_request.require_json_content_type()?;
-            let #ident: #ty = __a3s_boot_request.json::<#ty>()?;
+            __aster_boot_request.require_json_content_type()?;
+            let #ident: #ty = __aster_boot_request.json::<#ty>()?;
         },
         Extractor::Body(BodyExtractor::Field(spec)) => {
             body_field_extractor_tokens(ident, ty, *spec)
         }
         Extractor::Request => quote! {
-            let #ident: #ty = __a3s_boot_request.clone();
+            let #ident: #ty = __aster_boot_request.clone();
         },
         Extractor::Params => quote! {
-            let #ident: #ty = __a3s_boot_request.params::<#ty>()?;
+            let #ident: #ty = __aster_boot_request.params::<#ty>()?;
         },
         Extractor::Param(spec) => {
             let SingleValueExtractor {
@@ -141,8 +141,8 @@ fn extractor_tokens(arg: MethodArg, extractor: Extractor) -> proc_macro2::TokenS
                 ty,
                 pipe,
                 default,
-                |value_ty| quote!(__a3s_boot_request.param_as::<#value_ty>(#name)),
-                |value_ty| quote!(__a3s_boot_request.optional_param_as::<#value_ty>(#name)),
+                |value_ty| quote!(__aster_boot_request.param_as::<#value_ty>(#name)),
+                |value_ty| quote!(__aster_boot_request.optional_param_as::<#value_ty>(#name)),
             )
         }
         Extractor::Query(spec) => {
@@ -152,12 +152,12 @@ fn extractor_tokens(arg: MethodArg, extractor: Extractor) -> proc_macro2::TokenS
                     ty,
                     spec.pipe,
                     spec.default,
-                    |value_ty| quote!(__a3s_boot_request.query_value_as::<#value_ty>(#name)),
-                    |value_ty| quote!(__a3s_boot_request.optional_query_value_as::<#value_ty>(#name)),
+                    |value_ty| quote!(__aster_boot_request.query_value_as::<#value_ty>(#name)),
+                    |value_ty| quote!(__aster_boot_request.optional_query_value_as::<#value_ty>(#name)),
                 )
             } else {
                 quote! {
-                    let #ident: #ty = __a3s_boot_request.query::<#ty>()?;
+                    let #ident: #ty = __aster_boot_request.query::<#ty>()?;
                 }
             }
         }
@@ -172,12 +172,12 @@ fn extractor_tokens(arg: MethodArg, extractor: Extractor) -> proc_macro2::TokenS
                 ty,
                 pipe,
                 default,
-                |value_ty| quote!(__a3s_boot_request.header_as::<#value_ty>(#name)),
-                |value_ty| quote!(__a3s_boot_request.optional_header_as::<#value_ty>(#name)),
+                |value_ty| quote!(__aster_boot_request.header_as::<#value_ty>(#name)),
+                |value_ty| quote!(__aster_boot_request.optional_header_as::<#value_ty>(#name)),
             )
         }
         Extractor::Headers => quote! {
-            let #ident: #ty = __a3s_boot_request.headers.clone();
+            let #ident: #ty = __aster_boot_request.headers.clone();
         },
         Extractor::Cookie(spec) => {
             let SingleValueExtractor {
@@ -190,12 +190,12 @@ fn extractor_tokens(arg: MethodArg, extractor: Extractor) -> proc_macro2::TokenS
                 ty,
                 pipe,
                 default,
-                |value_ty| quote!(__a3s_boot_request.cookie_as::<#value_ty>(#name)),
-                |value_ty| quote!(__a3s_boot_request.optional_cookie_as::<#value_ty>(#name)),
+                |value_ty| quote!(__aster_boot_request.cookie_as::<#value_ty>(#name)),
+                |value_ty| quote!(__aster_boot_request.optional_cookie_as::<#value_ty>(#name)),
             )
         }
         Extractor::Cookies => quote! {
-            let #ident: #ty = __a3s_boot_request.cookies()?;
+            let #ident: #ty = __aster_boot_request.cookies()?;
         },
         Extractor::HostParam(spec) => {
             let SingleValueExtractor {
@@ -208,8 +208,8 @@ fn extractor_tokens(arg: MethodArg, extractor: Extractor) -> proc_macro2::TokenS
                 ty,
                 pipe,
                 default,
-                |value_ty| quote!(__a3s_boot_request.host_param_as::<#value_ty>(#name)),
-                |value_ty| quote!(__a3s_boot_request.optional_host_param_as::<#value_ty>(#name)),
+                |value_ty| quote!(__aster_boot_request.host_param_as::<#value_ty>(#name)),
+                |value_ty| quote!(__aster_boot_request.optional_host_param_as::<#value_ty>(#name)),
             )
         }
         Extractor::Ip(pipe) => single_value_extractor_tokens(
@@ -217,20 +217,20 @@ fn extractor_tokens(arg: MethodArg, extractor: Extractor) -> proc_macro2::TokenS
             ty,
             pipe,
             None,
-            |value_ty| quote!(__a3s_boot_request.ip_as::<#value_ty>()),
-            |value_ty| quote!(__a3s_boot_request.optional_ip_as::<#value_ty>()),
+            |value_ty| quote!(__aster_boot_request.ip_as::<#value_ty>()),
+            |value_ty| quote!(__aster_boot_request.optional_ip_as::<#value_ty>()),
         ),
         Extractor::Response => quote! {
-            let #ident: #ty = __a3s_boot_response_passthrough.clone();
+            let #ident: #ty = __aster_boot_response_passthrough.clone();
         },
         Extractor::Session => {
             if option_inner_type(&ty).is_some() {
                 quote! {
-                    let #ident: #ty = __a3s_boot_request.optional_session()?;
+                    let #ident: #ty = __aster_boot_request.optional_session()?;
                 }
             } else {
                 quote! {
-                    let #ident: #ty = __a3s_boot_request.session()?;
+                    let #ident: #ty = __aster_boot_request.session()?;
                 }
             }
         }
@@ -244,7 +244,7 @@ fn extractor_tokens(arg: MethodArg, extractor: Extractor) -> proc_macro2::TokenS
             file_upload::uploaded_files_extractor_tokens(ident, ty, spec)
         }
         Extractor::Custom(extractor) => quote! {
-            let #ident: #ty = ::a3s_boot::extract_request_value::<#ty, _>(&__a3s_boot_request, #extractor)?;
+            let #ident: #ty = ::aster_boot::extract_request_value::<#ty, _>(&__aster_boot_request, #extractor)?;
         },
     }
 }
@@ -267,16 +267,16 @@ fn body_field_extractor_tokens(
         default,
         |value_ty| {
             if uses_pipe {
-                quote!(__a3s_boot_request.body_field_string(#name))
+                quote!(__aster_boot_request.body_field_string(#name))
             } else {
-                quote!(__a3s_boot_request.body_field_as::<#value_ty>(#name))
+                quote!(__aster_boot_request.body_field_as::<#value_ty>(#name))
             }
         },
         |value_ty| {
             if uses_pipe {
-                quote!(__a3s_boot_request.optional_body_field_string(#name))
+                quote!(__aster_boot_request.optional_body_field_string(#name))
             } else {
-                quote!(__a3s_boot_request.optional_body_field_as::<#value_ty>(#name))
+                quote!(__aster_boot_request.optional_body_field_as::<#value_ty>(#name))
             }
         },
     )
@@ -300,14 +300,14 @@ where
             if let Some(default) = default {
                 quote! {
                     let #ident: #ty = match #value? {
-                        Some(__a3s_boot_value) => {
-                            Some(::a3s_boot::transform_request_value::<String, #inner, _>(
-                                __a3s_boot_value,
+                        Some(__aster_boot_value) => {
+                            Some(::aster_boot::transform_request_value::<String, #inner, _>(
+                                __aster_boot_value,
                                 #pipe,
                             )?)
                         }
                         None => {
-                            Some(::a3s_boot::transform_request_value::<String, #inner, _>(
+                            Some(::aster_boot::transform_request_value::<String, #inner, _>(
                                 ::std::string::ToString::to_string(&(#default)),
                                 #pipe,
                             )?)
@@ -317,9 +317,9 @@ where
             } else {
                 quote! {
                     let #ident: #ty = match #value? {
-                        Some(__a3s_boot_value) => {
-                            Some(::a3s_boot::transform_request_value::<String, #inner, _>(
-                                __a3s_boot_value,
+                        Some(__aster_boot_value) => {
+                            Some(::aster_boot::transform_request_value::<String, #inner, _>(
+                                __aster_boot_value,
                                 #pipe,
                             )?)
                         }
@@ -330,21 +330,21 @@ where
         } else if let Some(default) = default {
             let value = optional(&parse_string_type());
             quote! {
-                let __a3s_boot_value = match #value? {
-                    Some(__a3s_boot_value) => {
-                        __a3s_boot_value
+                let __aster_boot_value = match #value? {
+                    Some(__aster_boot_value) => {
+                        __aster_boot_value
                     }
                     None => ::std::string::ToString::to_string(&(#default)),
                 };
-                let #ident: #ty = ::a3s_boot::transform_request_value::<String, #ty, _>(
-                    __a3s_boot_value,
+                let #ident: #ty = ::aster_boot::transform_request_value::<String, #ty, _>(
+                    __aster_boot_value,
                     #pipe,
                 )?;
             }
         } else {
             let value = required(&parse_string_type());
             quote! {
-                let #ident: #ty = ::a3s_boot::transform_request_value::<String, #ty, _>(
+                let #ident: #ty = ::aster_boot::transform_request_value::<String, #ty, _>(
                     #value?,
                     #pipe,
                 )?;
@@ -355,7 +355,7 @@ where
         if let Some(default) = default {
             quote! {
                 let #ident: #ty = match #value? {
-                    Some(__a3s_boot_value) => Some(__a3s_boot_value),
+                    Some(__aster_boot_value) => Some(__aster_boot_value),
                     None => Some(#default),
                 };
             }
@@ -368,7 +368,7 @@ where
         let value = optional(&ty);
         quote! {
             let #ident: #ty = match #value? {
-                Some(__a3s_boot_value) => __a3s_boot_value,
+                Some(__aster_boot_value) => __aster_boot_value,
                 None => #default,
             };
         }
@@ -387,11 +387,11 @@ fn parse_string_type() -> Type {
 pub(super) fn response_passthrough_apply(enabled: bool) -> proc_macro2::TokenStream {
     if enabled {
         quote! {
-            __a3s_boot_response_passthrough.apply(__a3s_boot_response)
+            __aster_boot_response_passthrough.apply(__aster_boot_response)
         }
     } else {
         quote! {
-            Ok(__a3s_boot_response)
+            Ok(__aster_boot_response)
         }
     }
 }

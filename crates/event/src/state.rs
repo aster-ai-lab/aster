@@ -208,7 +208,7 @@ mod tests {
 
     #[test]
     fn test_file_store_save_load() {
-        let dir = std::env::temp_dir().join(format!("a3s-event-test-{}", uuid::Uuid::new_v4()));
+        let dir = std::env::temp_dir().join(format!("aster-event-test-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("state.json");
 
@@ -231,7 +231,7 @@ mod tests {
 
     #[test]
     fn test_file_store_load_nonexistent() {
-        let store = FileStateStore::new("/tmp/nonexistent-a3s-state.json");
+        let store = FileStateStore::new("/tmp/nonexistent-aster-state.json");
         let loaded = store.load().unwrap();
         assert!(loaded.is_empty());
     }
@@ -239,7 +239,7 @@ mod tests {
     #[test]
     fn test_file_store_creates_parent_dirs() {
         let dir = std::env::temp_dir().join(format!(
-            "a3s-event-test-{}/nested/deep",
+            "aster-event-test-{}/nested/deep",
             uuid::Uuid::new_v4()
         ));
         let path = dir.join("state.json");
@@ -253,7 +253,7 @@ mod tests {
 
     #[test]
     fn test_file_store_atomic_write() {
-        let dir = std::env::temp_dir().join(format!("a3s-event-test-{}", uuid::Uuid::new_v4()));
+        let dir = std::env::temp_dir().join(format!("aster-event-test-{}", uuid::Uuid::new_v4()));
         let path = dir.join("state.json");
         let store = FileStateStore::new(&path);
 

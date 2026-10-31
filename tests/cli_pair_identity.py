@@ -28,7 +28,7 @@ class PairIdentity(unittest.TestCase):
             ["cargo", "metadata", "--locked", "--offline", "--no-deps", "--format-version", "1"], cwd=ROOT, timeout=60
         ))
         packages = {str(Path(p["manifest_path"]).parent.resolve()): p for p in metadata["packages"]}
-        pending = [p for p in metadata["packages"] if p["name"] in {"aster", "a3s-code-acp"}]
+        pending = [p for p in metadata["packages"] if p["name"] in {"aster", "aster-acp"}]
         sources = set()
         seen = set()
         while pending:

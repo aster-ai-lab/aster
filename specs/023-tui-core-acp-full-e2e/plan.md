@@ -31,7 +31,7 @@ On 2026-10-28 the user confirmed default and already configured capabilities mus
 | Layer | Existing source / pattern | Planned work |
 | --- | --- | --- |
 | Composition and delivery | `apps/aster/src/main.rs`, `scripts/cli_pair_build.rs`, `tests/cli_pair_delivery.py` | Current source pair and identity checks; fix only proven defects. |
-| Pager ACP bridge | `crates/terminal/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs` | Current metadata, methods, lifecycle and state projections. |
+| Pager ACP bridge | `crates/terminal/crates/codegen/aster-pager/src/acp/aster_spawn.rs` | Current metadata, methods, lifecycle and state projections. |
 | Terminal features | Pager `src/slash`, `src/app/effects`, `src/app/dispatch`, `src/views` | Connect declared features to current contracts with reducer and PTY cases. |
 | ACP | `crates/code/acp/src/agent/{commands,host_methods,session_open,turn}.rs` | Fix protocol gaps once in the adapter; actual stdio regression. |
 | Core | `crates/code/core/src/sdk_capabilities.rs` and public facades | Inventory and upstream fixes only where evidence proves the defect belongs here. |
@@ -42,8 +42,8 @@ On 2026-10-28 the user confirmed default and already configured capabilities mus
 
 - Existing one-agent PTY test proves startup, ACL model selection and no hidden in-process fallback; it does not submit full coding workflows.
 - Core declares 30 capability groups, including advanced/host-owned surfaces. All must be accounted for in the matrix.
-- Pager memory operations use legacy `a3s/memory/*` DTOs; current ACP exposes `a3s/memory/manage` and `a3s/memory/snapshot`. Investigate reachability and semantics before adapting; renaming methods alone is not a fix.
-- Reuse A3S Test TUI ACL lifecycle and existing Rust PTY helpers; browser-adapter capability failure is not assumed to block TUI execution without testing it.
+- Pager memory operations use legacy `aster/memory/*` DTOs; current ACP exposes `aster/memory/manage` and `aster/memory/snapshot`. Investigate reachability and semantics before adapting; renaming methods alone is not a fix.
+- Reuse Aster Test TUI ACL lifecycle and existing Rust PTY helpers; browser-adapter capability failure is not assumed to block TUI execution without testing it.
 - Preserve the extensive staged and unstaged source work. Build input snapshots, not a clean-HEAD assumption, identify results.
 
 ## Verification Plan

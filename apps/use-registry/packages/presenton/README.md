@@ -1,6 +1,6 @@
 # 演示文稿
 
-Package `a3s/presenton@1.0.0`. The member surface is the homepage composer mode `slides`, titled 演示文稿. The package does not declare a mini app and does not open a window.
+Package `aster/presenton@1.0.0`. The member surface is the homepage composer mode `slides`, titled 演示文稿. The package does not declare a mini app and does not open a window.
 
 | Surface | Id | Role |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Package `a3s/presenton@1.0.0`. The member surface is the homepage composer mode 
 
 Nothing runs on the host outside Aster. There is no FastAPI or Next.js server, no port, no Python, and no Docker.
 
-The package runs [Presenton](https://github.com/presenton/presenton) (Apache-2.0) in the same form as `a3s/g1-arm`: the view is Presenton's own frontend, the package agent calls the model through the a3s gateway turn by turn, and everything renders locally under the Aster view policy.
+The package runs [Presenton](https://github.com/presenton/presenton) (Apache-2.0) in the same form as `aster/g1-arm`: the view is Presenton's own frontend, the package agent calls the model through the aster gateway turn by turn, and everything renders locally under the Aster view policy.
 
 ## Workbench
 
@@ -93,6 +93,6 @@ The unit tests cover the package shape and the view's Aster policy, the agent's 
 
 ## Supply
 
-This directory is package source. The admission is `a3s/presenton` in `admissions.acl`. Operators publish it with `a3s-use-registry-tools assemble`. The API seeds the same files as the catalog plugin `a3s-presenton` (`workbench_seed.rs` builds the archive).
+This directory is package source. The admission is `aster/presenton` in `admissions.acl`. Operators publish it with `aster-use-registry-tools assemble`. The API seeds the same files as the catalog plugin `aster-presenton` (`workbench_seed.rs` builds the archive).
 
 Third-party notices: `ui/workbench/THIRD_PARTY_NOTICES.md`.

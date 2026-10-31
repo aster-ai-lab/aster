@@ -27,7 +27,7 @@ impl BoxLifecycleLock {
                 "box ID is not safe for a lifecycle lock filename",
             ));
         }
-        Self::acquire_in(&a3s_box_core::dirs_home().join("locks"), box_id)
+        Self::acquire_in(&aster_box_core::dirs_home().join("locks"), box_id)
     }
 
     #[cfg(unix)]
@@ -103,7 +103,7 @@ pub async fn acquire_box_lifecycle_lock(box_id: &str) -> std::io::Result<BoxLife
 pub fn stage_box_terminal_rootfs_metadata(
     box_dir: &Path,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    a3s_box_runtime::rootfs::stage_box_terminal_rootfs_metadata(box_dir)?;
+    aster_box_runtime::rootfs::stage_box_terminal_rootfs_metadata(box_dir)?;
     Ok(())
 }
 
@@ -112,11 +112,11 @@ pub fn require_live_pid(record: &BoxRecord, action: &str) -> Result<u32, String>
     match record.pid {
         Some(pid) if process::is_process_alive_with_identity(pid, record.pid_start_time) => Ok(pid),
         Some(pid) => Err(format!(
-            "Cannot {action} box {} because its recorded PID {pid} is not running. The box state may be stale; run `a3s-box ps` to reconcile state, then `a3s-box restart {}` if it should still be running.",
+            "Cannot {action} box {} because its recorded PID {pid} is not running. The box state may be stale; run `aster-box ps` to reconcile state, then `aster-box restart {}` if it should still be running.",
             record.name, record.name
         )),
         None => Err(format!(
-            "Cannot {action} box {} because it has no recorded PID. The box state may be stale; run `a3s-box ps` to reconcile state, then `a3s-box restart {}` if it should still be running.",
+            "Cannot {action} box {} because it has no recorded PID. The box state may be stale; run `aster-box ps` to reconcile state, then `aster-box restart {}` if it should still be running.",
             record.name, record.name
         )),
     }
@@ -180,8 +180,8 @@ mod tests {
         let error = require_live_pid(&record, "pause").unwrap_err();
 
         assert!(error.contains("no recorded PID"));
-        assert!(error.contains("a3s-box ps"));
-        assert!(error.contains("a3s-box restart box"));
+        assert!(error.contains("aster-box ps"));
+        assert!(error.contains("aster-box restart box"));
     }
 
     #[test]

@@ -164,7 +164,7 @@ fn test_connect_sandbox_to_network_store_allocates_pod_ip() {
     let dir = tempfile::tempdir().unwrap();
     let store = NetworkStore::new(dir.path().join("networks.json"));
     store
-        .create(a3s_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
+        .create(aster_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
         .unwrap();
 
     let allocation =
@@ -184,7 +184,7 @@ fn test_disconnect_sandbox_from_network_store_is_idempotent() {
     let dir = tempfile::tempdir().unwrap();
     let store = NetworkStore::new(dir.path().join("networks.json"));
     store
-        .create(a3s_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
+        .create(aster_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
         .unwrap();
     connect_sandbox_to_network_store(&store, "cri-net", "sb-1", "pod-sb-1").unwrap();
 
@@ -205,7 +205,7 @@ async fn test_load_state_reclaims_stale_network_endpoint() {
     let network_dir = tempfile::tempdir().unwrap();
     let network_store = NetworkStore::new(network_dir.path().join("networks.json"));
     network_store
-        .create(a3s_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
+        .create(aster_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
         .unwrap();
 
     let mut sandbox = test_networked_sandbox("stale-restart-sandbox");
@@ -300,7 +300,7 @@ async fn test_load_state_refuses_inventing_exit_255_for_created() {
 async fn test_run_pod_sandbox_cleans_network_endpoint_on_pod_ip_mismatch() {
     let svc = make_test_service();
     svc.network_store
-        .create(a3s_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
+        .create(aster_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
         .unwrap();
 
     let result = svc
@@ -319,7 +319,7 @@ async fn test_run_pod_sandbox_cleans_network_endpoint_on_pod_ip_mismatch() {
                 ]),
                 ..Default::default()
             }),
-            runtime_handler: "a3s".to_string(),
+            runtime_handler: "aster".to_string(),
         }))
         .await;
 
@@ -340,7 +340,7 @@ async fn test_run_pod_sandbox_cleans_network_endpoint_on_vm_acquire_failure() {
     let mut svc = make_test_service();
     svc.test_vm_acquire_error = Some("forced VM acquire failure".to_string());
     svc.network_store
-        .create(a3s_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
+        .create(aster_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
         .unwrap();
 
     let result = svc
@@ -356,7 +356,7 @@ async fn test_run_pod_sandbox_cleans_network_endpoint_on_vm_acquire_failure() {
                 annotations: HashMap::from([(ANN_NETWORK.to_string(), "cri-net".to_string())]),
                 ..Default::default()
             }),
-            runtime_handler: "a3s".to_string(),
+            runtime_handler: "aster".to_string(),
         }))
         .await;
 
@@ -374,7 +374,7 @@ async fn test_run_pod_sandbox_cleans_network_endpoint_on_vm_acquire_failure() {
 async fn test_cri_one_container_pod_smoke_flow() {
     let mut svc = make_test_service();
     svc.network_store
-        .create(a3s_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
+        .create(aster_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
         .unwrap();
     let _image_digest = put_test_oci_image(&svc.image_store, "example.com/app:latest").await;
 
@@ -418,7 +418,7 @@ async fn test_cri_one_container_pod_smoke_flow() {
                 annotations: HashMap::from([(ANN_NETWORK.to_string(), "cri-net".to_string())]),
                 ..Default::default()
             }),
-            runtime_handler: "a3s".to_string(),
+            runtime_handler: "aster".to_string(),
         }))
         .await
         .unwrap()
@@ -574,9 +574,9 @@ async fn spawn_exec_stream_server_with_assert<F>(
     assert_request: F,
 ) -> Option<TestExecServer>
 where
-    F: FnOnce(&a3s_box_core::exec::ExecRequest) + Send + 'static,
+    F: FnOnce(&aster_box_core::exec::ExecRequest) + Send + 'static,
 {
-    let tmp = tempdir_for_unix_socket("a3s-cri-exec-test");
+    let tmp = tempdir_for_unix_socket("aster-cri-exec-test");
     let socket_path = tmp.path().join("exec.sock");
     let listener = bind_test_exec_listener(&socket_path)?;
     // Shared once-callback: health re-proof may heartbeat while a Data stream
@@ -591,18 +591,18 @@ where
             let assert_request = assert_request.clone();
             tokio::spawn(async move {
                 let (r, w) = tokio::io::split(stream);
-                let mut reader = a3s_transport::FrameReader::new(r);
-                let mut writer = a3s_transport::FrameWriter::new(w);
+                let mut reader = aster_transport::FrameReader::new(r);
+                let mut writer = aster_transport::FrameWriter::new(w);
 
                 match reader.read_frame().await.unwrap() {
                     None => {}
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Heartbeat => {
-                        let heartbeat = a3s_transport::Frame::heartbeat();
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Heartbeat => {
+                        let heartbeat = aster_transport::Frame::heartbeat();
                         let encoded = heartbeat.encode().unwrap();
                         let _ = writer.into_inner().write_all(&encoded).await;
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Data => {
-                        let request: a3s_box_core::exec::ExecRequest =
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Data => {
+                        let request: aster_box_core::exec::ExecRequest =
                             serde_json::from_slice(&frame.payload).unwrap();
                         assert!(request.streaming);
                         let Some(assert_request) = assert_request.lock().await.take() else {
@@ -611,8 +611,8 @@ where
                         assert_request(&request);
 
                         if !stdout.is_empty() {
-                            let chunk = a3s_box_core::exec::ExecChunk {
-                                stream: a3s_box_core::exec::StreamType::Stdout,
+                            let chunk = aster_box_core::exec::ExecChunk {
+                                stream: aster_box_core::exec::StreamType::Stdout,
                                 data: stdout.to_vec(),
                             };
                             writer
@@ -622,8 +622,8 @@ where
                         }
 
                         if !stderr.is_empty() {
-                            let chunk = a3s_box_core::exec::ExecChunk {
-                                stream: a3s_box_core::exec::StreamType::Stderr,
+                            let chunk = aster_box_core::exec::ExecChunk {
+                                stream: aster_box_core::exec::StreamType::Stderr,
                                 data: stderr.to_vec(),
                             };
                             writer
@@ -634,7 +634,7 @@ where
 
                         sleep(exit_delay).await;
 
-                        let exit = a3s_box_core::exec::ExecExit {
+                        let exit = aster_box_core::exec::ExecExit {
                             exit_code,
                             oom_killed: false,
                         };
@@ -643,7 +643,7 @@ where
                             .await
                             .unwrap();
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Control => {
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Control => {
                         // Destroy may deliver signal-main over this socket. Drop
                         // without ACK so teardown fails closed to InstantStop /
                         // handler.stop instead of waiting provider grace (#445 CI).
@@ -668,7 +668,7 @@ where
 /// helpers previously used a 3600s exit delay that could freeze CI if any RPC
 /// opened an exec stream against the fixture socket).
 async fn spawn_keepalive_exec_server() -> Option<TestExecServer> {
-    let tmp = tempdir_for_unix_socket("a3s-cri-keepalive-exec");
+    let tmp = tempdir_for_unix_socket("aster-cri-keepalive-exec");
     let socket_path = tmp.path().join("exec.sock");
     let listener = bind_test_exec_listener(&socket_path)?;
 
@@ -681,23 +681,23 @@ async fn spawn_keepalive_exec_server() -> Option<TestExecServer> {
             // subsequent heartbeats / signal-main (#445 CI).
             tokio::spawn(async move {
                 let (r, w) = tokio::io::split(stream);
-                let mut reader = a3s_transport::FrameReader::new(r);
-                let mut writer = a3s_transport::FrameWriter::new(w);
+                let mut reader = aster_transport::FrameReader::new(r);
+                let mut writer = aster_transport::FrameWriter::new(w);
 
                 match reader.read_frame().await.unwrap() {
                     None => {}
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Heartbeat => {
-                        let heartbeat = a3s_transport::Frame::heartbeat();
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Heartbeat => {
+                        let heartbeat = aster_transport::Frame::heartbeat();
                         let encoded = heartbeat.encode().unwrap();
                         let _ = writer.into_inner().write_all(&encoded).await;
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Control => {
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Control => {
                         // Fail closed on signal-main -- drop without ACK.
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Data => {
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Data => {
                         // Never sleep: invent-refusal fixtures must not open a long
                         // exec stream on the keepalive socket.
-                        let exit = a3s_box_core::exec::ExecExit {
+                        let exit = aster_box_core::exec::ExecExit {
                             exit_code: 255,
                             oom_killed: false,
                         };
@@ -728,7 +728,7 @@ async fn spawn_exec_stream_server(
     spawn_exec_stream_server_with_assert(stdout, stderr, exit_code, exit_delay, |request| {
         assert_eq!(
             request.rootfs.as_deref(),
-            Some("/run/a3s/cri/container-rootfs/sb-1/c-1/rootfs")
+            Some("/run/aster/cri/container-rootfs/sb-1/c-1/rootfs")
         );
     })
     .await
@@ -737,7 +737,7 @@ async fn spawn_exec_stream_server(
 async fn spawn_multi_exec_stream_server(
     expected: Vec<(&'static str, &'static [u8], i32, Duration)>,
 ) -> Option<TestExecServer> {
-    let tmp = tempdir_for_unix_socket("a3s-cri-multi-exec-test");
+    let tmp = tempdir_for_unix_socket("aster-cri-multi-exec-test");
     let socket_path = tmp.path().join("exec.sock");
     let listener = bind_test_exec_listener(&socket_path)?;
 
@@ -750,18 +750,18 @@ async fn spawn_multi_exec_stream_server(
             let expected = expected.clone();
             tokio::spawn(async move {
                 let (r, w) = tokio::io::split(stream);
-                let mut reader = a3s_transport::FrameReader::new(r);
-                let mut writer = a3s_transport::FrameWriter::new(w);
+                let mut reader = aster_transport::FrameReader::new(r);
+                let mut writer = aster_transport::FrameWriter::new(w);
 
                 match reader.read_frame().await.unwrap() {
                     None => {}
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Heartbeat => {
-                        let heartbeat = a3s_transport::Frame::heartbeat();
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Heartbeat => {
+                        let heartbeat = aster_transport::Frame::heartbeat();
                         let encoded = heartbeat.encode().unwrap();
                         writer.into_inner().write_all(&encoded).await.unwrap();
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Data => {
-                        let request: a3s_box_core::exec::ExecRequest =
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Data => {
+                        let request: aster_box_core::exec::ExecRequest =
                             serde_json::from_slice(&frame.payload).unwrap();
                         assert!(request.streaming);
                         let Some((expected_cmd, stdout, exit_code, exit_delay)) =
@@ -772,8 +772,8 @@ async fn spawn_multi_exec_stream_server(
                         assert_eq!(request.cmd.first().map(String::as_str), Some(expected_cmd));
 
                         if !stdout.is_empty() {
-                            let chunk = a3s_box_core::exec::ExecChunk {
-                                stream: a3s_box_core::exec::StreamType::Stdout,
+                            let chunk = aster_box_core::exec::ExecChunk {
+                                stream: aster_box_core::exec::StreamType::Stdout,
                                 data: stdout.to_vec(),
                             };
                             writer
@@ -784,7 +784,7 @@ async fn spawn_multi_exec_stream_server(
 
                         sleep(exit_delay).await;
 
-                        let exit = a3s_box_core::exec::ExecExit {
+                        let exit = aster_box_core::exec::ExecExit {
                             exit_code,
                             oom_killed: false,
                         };
@@ -793,7 +793,7 @@ async fn spawn_multi_exec_stream_server(
                             .await
                             .unwrap();
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Control => {
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Control => {
                         // signal-main during destroy: fail closed (no ACK).
                     }
                     Some(frame) => panic!("unexpected frame type: {:?}", frame.frame_type),
@@ -817,7 +817,7 @@ async fn spawn_multi_exec_stream_server(
 async fn spawn_counting_exec_server(
     exec_request_count: Arc<std::sync::atomic::AtomicUsize>,
 ) -> Option<TestExecServer> {
-    let tmp = tempdir_for_unix_socket("a3s-cri-count-exec-test");
+    let tmp = tempdir_for_unix_socket("aster-cri-count-exec-test");
     let socket_path = tmp.path().join("exec.sock");
     let listener = bind_test_exec_listener(&socket_path)?;
 
@@ -827,23 +827,23 @@ async fn spawn_counting_exec_server(
             let exec_request_count = exec_request_count.clone();
             tokio::spawn(async move {
                 let (r, w) = tokio::io::split(stream);
-                let mut reader = a3s_transport::FrameReader::new(r);
-                let mut writer = a3s_transport::FrameWriter::new(w);
+                let mut reader = aster_transport::FrameReader::new(r);
+                let mut writer = aster_transport::FrameWriter::new(w);
 
                 match reader.read_frame().await.unwrap() {
                     None => {}
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Heartbeat => {
-                        let heartbeat = a3s_transport::Frame::heartbeat();
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Heartbeat => {
+                        let heartbeat = aster_transport::Frame::heartbeat();
                         let encoded = heartbeat.encode().unwrap();
                         writer.into_inner().write_all(&encoded).await.unwrap();
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Data => {
-                        let _request: a3s_box_core::exec::ExecRequest =
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Data => {
+                        let _request: aster_box_core::exec::ExecRequest =
                             serde_json::from_slice(&frame.payload).unwrap();
                         exec_request_count.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
 
-                        let chunk = a3s_box_core::exec::ExecChunk {
-                            stream: a3s_box_core::exec::StreamType::Stdout,
+                        let chunk = aster_box_core::exec::ExecChunk {
+                            stream: aster_box_core::exec::StreamType::Stdout,
                             data: b"booted\n".to_vec(),
                         };
                         writer
@@ -853,7 +853,7 @@ async fn spawn_counting_exec_server(
 
                         sleep(Duration::from_millis(200)).await;
 
-                        let exit = a3s_box_core::exec::ExecExit {
+                        let exit = aster_box_core::exec::ExecExit {
                             exit_code: 0,
                             oom_killed: false,
                         };
@@ -862,7 +862,7 @@ async fn spawn_counting_exec_server(
                             .await
                             .unwrap();
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Control => {
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Control => {
                         // signal-main during destroy: fail closed (no ACK).
                     }
                     Some(frame) => panic!("unexpected frame type: {:?}", frame.frame_type),
@@ -884,9 +884,9 @@ async fn spawn_pty_stream_server_with_assert<F>(
     assert_request: F,
 ) -> Option<TestPtyServer>
 where
-    F: FnOnce(&a3s_box_core::pty::PtyRequest) + Send + 'static,
+    F: FnOnce(&aster_box_core::pty::PtyRequest) + Send + 'static,
 {
-    let tmp = tempdir_for_unix_socket("a3s-cri-pty-test");
+    let tmp = tempdir_for_unix_socket("aster-cri-pty-test");
     let exec_socket_path = tmp.path().join("exec.sock");
     let pty_socket_path = tmp.path().join("pty.sock");
     let exec_listener = bind_test_exec_listener(&exec_socket_path)?;
@@ -900,11 +900,11 @@ where
             };
             tokio::spawn(async move {
                 let (r, w) = tokio::io::split(stream);
-                let mut reader = a3s_transport::FrameReader::new(r);
-                let writer = a3s_transport::FrameWriter::new(w);
+                let mut reader = aster_transport::FrameReader::new(r);
+                let writer = aster_transport::FrameWriter::new(w);
                 if let Ok(Some(frame)) = reader.read_frame().await {
-                    if frame.frame_type == a3s_transport::FrameType::Heartbeat {
-                        let heartbeat = a3s_transport::Frame::heartbeat();
+                    if frame.frame_type == aster_transport::FrameType::Heartbeat {
+                        let heartbeat = aster_transport::Frame::heartbeat();
                         if let Ok(encoded) = heartbeat.encode() {
                             let _ = writer.into_inner().write_all(&encoded).await;
                         }
@@ -918,12 +918,12 @@ where
         let mut assert_request = Some(assert_request);
         let (stream, _) = listener.accept().await.unwrap();
         let (r, w) = tokio::io::split(stream);
-        let mut reader = a3s_transport::FrameReader::new(r);
-        let mut writer = a3s_transport::FrameWriter::new(w);
+        let mut reader = aster_transport::FrameReader::new(r);
+        let mut writer = aster_transport::FrameWriter::new(w);
 
         let frame = reader.read_frame().await.unwrap().unwrap();
-        assert_eq!(frame.frame_type as u8, a3s_box_core::pty::FRAME_PTY_REQUEST);
-        let request: a3s_box_core::pty::PtyRequest =
+        assert_eq!(frame.frame_type as u8, aster_box_core::pty::FRAME_PTY_REQUEST);
+        let request: aster_box_core::pty::PtyRequest =
             serde_json::from_slice(&frame.payload).unwrap();
         let Some(assert_request) = assert_request.take() else {
             panic!("PTY stream server received more than one request");
@@ -932,8 +932,8 @@ where
 
         if !stdout.is_empty() {
             writer
-                .write_frame(&a3s_transport::Frame {
-                    frame_type: a3s_transport::FrameType::Control,
+                .write_frame(&aster_transport::Frame {
+                    frame_type: aster_transport::FrameType::Control,
                     payload: stdout.to_vec(),
                 })
                 .await
@@ -942,13 +942,13 @@ where
 
         sleep(exit_delay).await;
 
-        let exit = a3s_box_core::pty::PtyExit {
+        let exit = aster_box_core::pty::PtyExit {
             exit_code,
             oom_killed: false,
         };
         writer
-            .write_frame(&a3s_transport::Frame {
-                frame_type: a3s_transport::FrameType::Error,
+            .write_frame(&aster_transport::Frame {
+                frame_type: aster_transport::FrameType::Error,
                 payload: serde_json::to_vec(&exit).unwrap(),
             })
             .await
@@ -963,7 +963,7 @@ where
 }
 
 async fn spawn_cancelable_exec_stream_server() -> Option<TestExecServer> {
-    let tmp = tempdir_for_unix_socket("a3s-cri-exec-cancel-test");
+    let tmp = tempdir_for_unix_socket("aster-cri-exec-cancel-test");
     let socket_path = tmp.path().join("exec.sock");
     let listener = bind_test_exec_listener(&socket_path)?;
 
@@ -976,26 +976,26 @@ async fn spawn_cancelable_exec_stream_server() -> Option<TestExecServer> {
             // while the workload Data stream waits for cancel (#445 CI).
             tokio::spawn(async move {
                 let (r, w) = tokio::io::split(stream);
-                let mut reader = a3s_transport::FrameReader::new(r);
-                let mut writer = a3s_transport::FrameWriter::new(w);
+                let mut reader = aster_transport::FrameReader::new(r);
+                let mut writer = aster_transport::FrameWriter::new(w);
 
                 match reader.read_frame().await.unwrap() {
                     None => {}
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Heartbeat => {
-                        let heartbeat = a3s_transport::Frame::heartbeat();
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Heartbeat => {
+                        let heartbeat = aster_transport::Frame::heartbeat();
                         let encoded = heartbeat.encode().unwrap();
                         let _ = writer.into_inner().write_all(&encoded).await;
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Data => {
-                        let request: a3s_box_core::exec::ExecRequest =
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Data => {
+                        let request: aster_box_core::exec::ExecRequest =
                             serde_json::from_slice(&frame.payload).unwrap();
                         assert!(request.streaming);
 
                         let cancel = reader.read_frame().await.unwrap().unwrap();
-                        assert_eq!(cancel.frame_type, a3s_transport::FrameType::Control);
+                        assert_eq!(cancel.frame_type, aster_transport::FrameType::Control);
                         assert_eq!(cancel.payload, b"cancel");
 
-                        let exit = a3s_box_core::exec::ExecExit {
+                        let exit = aster_box_core::exec::ExecExit {
                             exit_code: 137,
                             oom_killed: false,
                         };
@@ -1004,7 +1004,7 @@ async fn spawn_cancelable_exec_stream_server() -> Option<TestExecServer> {
                             .await
                             .unwrap();
                     }
-                    Some(frame) if frame.frame_type == a3s_transport::FrameType::Control => {
+                    Some(frame) if frame.frame_type == aster_transport::FrameType::Control => {
                         // signal-main during destroy: fail closed (no ACK).
                     }
                     Some(frame) => {
@@ -1023,7 +1023,7 @@ async fn spawn_cancelable_exec_stream_server() -> Option<TestExecServer> {
 
 async fn attach_ready_test_vm(box_id: &str, exec_socket_path: &Path) -> VmManager {
     let mut vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         box_id.to_string(),
     );
@@ -1040,7 +1040,7 @@ async fn attach_ready_test_vm(box_id: &str, exec_socket_path: &Path) -> VmManage
     vm.install_instant_stop_test_handler().await;
     assert_eq!(
         vm.state().await,
-        a3s_box_runtime::BoxState::Ready,
+        aster_box_runtime::BoxState::Ready,
         "attach_ready_test_vm requires an authenticated exec heartbeat at {}",
         exec_socket_path.display()
     );
@@ -1144,7 +1144,7 @@ fn test_sandbox(id: &str) -> PodSandbox {
         labels: HashMap::from([("app".to_string(), "test".to_string())]),
         annotations: HashMap::new(),
         log_directory: "/var/log/pods".to_string(),
-        runtime_handler: "a3s".to_string(),
+        runtime_handler: "aster".to_string(),
         network_ip: String::new(),
         additional_ips: vec![],
         dns: crate::sandbox::SandboxDns::default(),
@@ -1163,7 +1163,7 @@ fn test_networked_sandbox(id: &str) -> PodSandbox {
 fn add_test_network_endpoint(svc: &BoxRuntimeService, sandbox: &mut PodSandbox) {
     if svc.network_store.get("cri-net").unwrap().is_none() {
         svc.network_store
-            .create(a3s_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
+            .create(aster_box_core::NetworkConfig::new("cri-net", "10.244.0.0/24").unwrap())
             .unwrap();
     }
 
@@ -1201,7 +1201,7 @@ fn test_container(id: &str, sandbox_id: &str) -> Container {
         annotations: HashMap::new(),
         log_path: String::new(),
         rootfs_path: "/".to_string(),
-        rootfs_guest_path: format!("/run/a3s/cri/container-rootfs/{sandbox_id}/{id}/rootfs"),
+        rootfs_guest_path: format!("/run/aster/cri/container-rootfs/{sandbox_id}/{id}/rootfs"),
     }
 }
 
@@ -1213,15 +1213,15 @@ async fn test_cri_log_writer_flushes_partial_lines() {
     let mut writer = CriLogWriter::open(&log_path_string).await.unwrap().unwrap();
 
     writer
-        .write_chunk(a3s_box_core::exec::StreamType::Stdout, b"hello ")
+        .write_chunk(aster_box_core::exec::StreamType::Stdout, b"hello ")
         .await
         .unwrap();
     writer
-        .write_chunk(a3s_box_core::exec::StreamType::Stdout, b"world")
+        .write_chunk(aster_box_core::exec::StreamType::Stdout, b"world")
         .await
         .unwrap();
     writer
-        .write_chunk(a3s_box_core::exec::StreamType::Stderr, b"warn\n")
+        .write_chunk(aster_box_core::exec::StreamType::Stderr, b"warn\n")
         .await
         .unwrap();
     writer.flush_partials().await.unwrap();
@@ -1234,51 +1234,51 @@ async fn test_cri_log_writer_flushes_partial_lines() {
 #[test]
 fn test_runtime_options_resolve_runtime_handler_agent_image() {
     let options = CriRuntimeOptions {
-        default_agent_image: "ghcr.io/a3s-box/default:v1".to_string(),
+        default_agent_image: "ghcr.io/aster-box/default:v1".to_string(),
         runtime_handler_agent_images: HashMap::from([(
-            "a3s-secure".to_string(),
-            "ghcr.io/a3s-box/secure:v1".to_string(),
+            "aster-secure".to_string(),
+            "ghcr.io/aster-box/secure:v1".to_string(),
         )]),
     };
 
     assert_eq!(
-        options.agent_image_for("a3s-secure"),
-        "ghcr.io/a3s-box/secure:v1"
+        options.agent_image_for("aster-secure"),
+        "ghcr.io/aster-box/secure:v1"
     );
-    assert_eq!(options.agent_image_for("a3s"), "ghcr.io/a3s-box/default:v1");
+    assert_eq!(options.agent_image_for("aster"), "ghcr.io/aster-box/default:v1");
 }
 
 #[test]
 fn test_runtime_options_ignore_blank_runtime_handler_override() {
     let options = CriRuntimeOptions {
-        default_agent_image: "ghcr.io/a3s-box/default:v1".to_string(),
+        default_agent_image: "ghcr.io/aster-box/default:v1".to_string(),
         runtime_handler_agent_images: HashMap::from([
             ("blank".to_string(), "   ".to_string()),
             (
                 "explicit".to_string(),
-                "ghcr.io/a3s-box/explicit:v1".to_string(),
+                "ghcr.io/aster-box/explicit:v1".to_string(),
             ),
         ]),
     };
 
     assert_eq!(
         options.agent_image_for("explicit"),
-        "ghcr.io/a3s-box/explicit:v1"
+        "ghcr.io/aster-box/explicit:v1"
     );
     assert_eq!(
         options.agent_image_for("blank"),
-        "ghcr.io/a3s-box/default:v1"
+        "ghcr.io/aster-box/default:v1"
     );
     assert_eq!(
         options.agent_image_for("missing"),
-        "ghcr.io/a3s-box/default:v1"
+        "ghcr.io/aster-box/default:v1"
     );
 }
 
 #[test]
 fn test_apparmor_profile_loaded_returns_false_for_unknown_profile() {
     assert!(!apparmor_profile_loaded(
-        "a3s-box-test-profile-that-should-not-exist"
+        "aster-box-test-profile-that-should-not-exist"
     ));
 }
 
@@ -1434,7 +1434,7 @@ async fn pod_sandbox_stats_refuses_inventing_usage_from_pid_without_vm_health() 
     // (#450 / #419/#443).
     svc.store.sandboxes.add(test_sandbox("sb-pid")).await;
     let mut vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-pid".to_string(),
     );
@@ -1448,7 +1448,7 @@ async fn pod_sandbox_stats_refuses_inventing_usage_from_pid_without_vm_health() 
     .unwrap();
     assert_eq!(
         vm.state().await,
-        a3s_box_runtime::BoxState::Created,
+        aster_box_runtime::BoxState::Created,
         "fixture requires soft-Created (no inventable Ready)"
     );
     assert!(
@@ -1619,9 +1619,9 @@ async fn test_list_metric_descriptors_reports_pod_sandbox_metrics() {
         .iter()
         .map(|descriptor| descriptor.name.as_str())
         .collect();
-    assert!(names.contains(&"a3s_box_pod_sandbox_ready"));
-    assert!(names.contains(&"a3s_box_pod_sandbox_vm_manager_present"));
-    assert!(names.contains(&"a3s_box_pod_sandbox_containers_running"));
+    assert!(names.contains(&"aster_box_pod_sandbox_ready"));
+    assert!(names.contains(&"aster_box_pod_sandbox_vm_manager_present"));
+    assert!(names.contains(&"aster_box_pod_sandbox_containers_running"));
 }
 
 #[tokio::test]
@@ -1638,7 +1638,7 @@ async fn test_list_pod_sandbox_metrics_returns_lifecycle_snapshot() {
     svc.store.containers.add(exited).await;
     svc.store.containers.add(created).await;
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -1660,21 +1660,21 @@ async fn test_list_pod_sandbox_metrics_returns_lifecycle_snapshot() {
     assert_eq!(metrics.pod_sandbox_id, "sb-1");
     // VmManager present without authenticated exec heartbeat must not invent
     // Ready/Running metric gauges (#436 / #435/#419).
-    assert_eq!(pod_metric_value(metrics, "a3s_box_pod_sandbox_ready"), 0.0);
+    assert_eq!(pod_metric_value(metrics, "aster_box_pod_sandbox_ready"), 0.0);
     assert_eq!(
-        pod_metric_value(metrics, "a3s_box_pod_sandbox_vm_manager_present"),
+        pod_metric_value(metrics, "aster_box_pod_sandbox_vm_manager_present"),
         1.0
     );
     assert_eq!(
-        pod_metric_value(metrics, "a3s_box_pod_sandbox_containers_total"),
+        pod_metric_value(metrics, "aster_box_pod_sandbox_containers_total"),
         3.0
     );
     assert_eq!(
-        pod_metric_value(metrics, "a3s_box_pod_sandbox_containers_running"),
+        pod_metric_value(metrics, "aster_box_pod_sandbox_containers_running"),
         0.0
     );
     assert_eq!(
-        pod_metric_value(metrics, "a3s_box_pod_sandbox_containers_exited"),
+        pod_metric_value(metrics, "aster_box_pod_sandbox_containers_exited"),
         2.0
     );
     let first_metric = metrics.metrics.first().unwrap();
@@ -1711,21 +1711,21 @@ async fn test_list_pod_sandbox_metrics_refuses_ready_without_vm_health() {
     assert_eq!(resp.pod_sandbox_metrics.len(), 1);
     let metrics = &resp.pod_sandbox_metrics[0];
     assert_eq!(
-        pod_metric_value(metrics, "a3s_box_pod_sandbox_ready"),
+        pod_metric_value(metrics, "aster_box_pod_sandbox_ready"),
         0.0,
         "durable Ready without VM health must not invent ready metric"
     );
     assert_eq!(
-        pod_metric_value(metrics, "a3s_box_pod_sandbox_vm_manager_present"),
+        pod_metric_value(metrics, "aster_box_pod_sandbox_vm_manager_present"),
         0.0
     );
     assert_eq!(
-        pod_metric_value(metrics, "a3s_box_pod_sandbox_containers_running"),
+        pod_metric_value(metrics, "aster_box_pod_sandbox_containers_running"),
         0.0,
         "durable Running without sandbox VM health must not invent running metric"
     );
     assert_eq!(
-        pod_metric_value(metrics, "a3s_box_pod_sandbox_containers_exited"),
+        pod_metric_value(metrics, "aster_box_pod_sandbox_containers_exited"),
         1.0
     );
 }
@@ -1749,7 +1749,7 @@ async fn test_stream_pod_sandbox_metrics_returns_snapshot() {
     assert_eq!(
         pod_metric_value(
             &response.pod_sandbox_metrics[0],
-            "a3s_box_pod_sandbox_ready"
+            "aster_box_pod_sandbox_ready"
         ),
         0.0,
         "stream metrics must not invent Ready without VM health (#436)"
@@ -1885,7 +1885,7 @@ async fn test_version() {
         .unwrap()
         .into_inner();
 
-    assert_eq!(resp.runtime_name, "a3s-box");
+    assert_eq!(resp.runtime_name, "aster-box");
     assert_eq!(resp.runtime_api_version, "v1");
     assert!(!resp.runtime_version.is_empty());
 }
@@ -2532,7 +2532,7 @@ async fn test_create_container_success() {
             ("ENV".to_string(), "prod".to_string()),
             // Non-privileged container: restricted to the default capability set.
             (
-                "A3S_SEC_CAP_KEEP".to_string(),
+                "ASTER_SEC_CAP_KEEP".to_string(),
                 "AUDIT_WRITE,CHOWN,DAC_OVERRIDE,FOWNER,FSETID,KILL,MKNOD,\
                  NET_BIND_SERVICE,NET_RAW,SETFCAP,SETGID,SETPCAP,SETUID,SYS_CHROOT"
                     .to_string()
@@ -2574,7 +2574,7 @@ async fn test_create_container_materializes_readonly_mount() {
                 }),
                 command: vec!["nginx".to_string()],
                 mounts: vec![Mount {
-                    container_path: "/etc/a3s-config".to_string(),
+                    container_path: "/etc/aster-config".to_string(),
                     host_path: source.path().to_string_lossy().to_string(),
                     readonly: true,
                     selinux_relabel: false,
@@ -2592,11 +2592,11 @@ async fn test_create_container_materializes_readonly_mount() {
     assert_eq!(container.mounts.len(), 1);
     let mounted_file = PathBuf::from(&container.rootfs_path)
         .join("etc")
-        .join("a3s-config")
+        .join("aster-config")
         .join("config.txt");
     let mounted_nested = PathBuf::from(&container.rootfs_path)
         .join("etc")
-        .join("a3s-config")
+        .join("aster-config")
         .join("nested")
         .join("extra.txt");
     assert_eq!(
@@ -2615,7 +2615,7 @@ async fn test_create_container_materializes_readonly_mount() {
         .into_inner();
     let status = status.status.unwrap();
     assert_eq!(status.mounts.len(), 1);
-    assert_eq!(status.mounts[0].container_path, "/etc/a3s-config");
+    assert_eq!(status.mounts[0].container_path, "/etc/aster-config");
 }
 
 #[tokio::test]
@@ -2976,7 +2976,7 @@ async fn test_start_container_supports_tty_workload() {
             assert_eq!(request.cmd, vec!["/bin/sh".to_string()]);
             assert_eq!(
                 request.rootfs.as_deref(),
-                Some("/run/a3s/cri/container-rootfs/sb-1/c-1/rootfs")
+                Some("/run/aster/cri/container-rootfs/sb-1/c-1/rootfs")
             );
         })
         .await
@@ -3252,7 +3252,7 @@ async fn test_start_container_requires_ready_sandbox_vm() {
         .await;
 
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -3649,7 +3649,7 @@ async fn test_stop_container_created_does_not_stop_sandbox() {
         .add(test_container("c-1", "sb-1"))
         .await;
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -4119,7 +4119,7 @@ async fn test_container_status_verbose_info() {
     assert_eq!(resp.info.get("rootfs_path"), Some(&"/".to_string()));
     assert_eq!(
         resp.info.get("rootfs_guest_path"),
-        Some(&"/run/a3s/cri/container-rootfs/sb-1/c-1/rootfs".to_string())
+        Some(&"/run/aster/cri/container-rootfs/sb-1/c-1/rootfs".to_string())
     );
     assert_eq!(resp.info.get("vm_present"), Some(&"false".to_string()));
     assert_eq!(resp.info.get("command_count"), Some(&"1".to_string()));
@@ -4420,7 +4420,7 @@ async fn test_update_container_resources_refuses_running_with_unhealthy_vm() {
         .mark_started("c-1", 2_000_000_000)
         .await;
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -4846,7 +4846,7 @@ async fn test_stop_pod_sandbox_removes_vm_manager() {
     // Unauthenticated manager present — inventable Ready demotes, but host
     // cleanup must still drop the manager (#444).
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -4948,7 +4948,7 @@ async fn test_remove_pod_sandbox_removes_lingering_vm_manager() {
     sandbox.state = SandboxState::NotReady;
     svc.store.sandboxes.add(sandbox).await;
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -5132,7 +5132,7 @@ async fn test_exec_sync_refuses_running_with_unhealthy_vm() {
         .mark_started("c-1", 2_000_000_000)
         .await;
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -5233,7 +5233,7 @@ async fn test_exec_refuses_running_with_unhealthy_vm() {
         .mark_started("c-1", 2_000_000_000)
         .await;
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -5399,7 +5399,7 @@ async fn test_attach_refuses_running_with_unhealthy_vm() {
         .mark_started("c-1", 2_000_000_000)
         .await;
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -5659,7 +5659,7 @@ async fn test_port_forward_requires_ready_vm() {
     let svc = make_test_service();
     svc.store.sandboxes.add(test_sandbox("sb-1")).await;
     let vm = VmManager::with_box_id(
-        a3s_box_core::config::BoxConfig::default(),
+        aster_box_core::config::BoxConfig::default(),
         EventEmitter::new(16),
         "sb-1".to_string(),
     );
@@ -5728,9 +5728,9 @@ fn test_service_without_warm_pool_has_none() {
 
 #[tokio::test]
 async fn test_with_warm_pool_attaches_pool() {
-    use a3s_box_core::config::{BoxConfig, PoolConfig};
-    use a3s_box_core::event::EventEmitter;
-    use a3s_box_runtime::pool::WarmPool;
+    use aster_box_core::config::{BoxConfig, PoolConfig};
+    use aster_box_core::event::EventEmitter;
+    use aster_box_runtime::pool::WarmPool;
 
     let pool_config = PoolConfig {
         enabled: true,
@@ -5759,7 +5759,7 @@ async fn test_with_warm_pool_attaches_pool() {
 async fn test_acquire_vm_without_pool_fails_without_shim() {
     // Without a warm pool, CRI sandbox acquisition cold-boots and fails in unit test env.
     let svc = make_test_service();
-    let config = a3s_box_core::config::BoxConfig::default();
+    let config = aster_box_core::config::BoxConfig::default();
     let result = svc
         .acquire_vm_with_box_id(config, "test-acquire".to_string())
         .await;
@@ -5776,7 +5776,7 @@ async fn acquire_vm_refuses_ready_sandbox_without_exec_heartbeat() {
     svc.test_vm_exec_socket_path = Some(tmp.path().join("missing-exec.sock"));
     let result = svc
         .acquire_vm_with_box_id(
-            a3s_box_core::config::BoxConfig::default(),
+            aster_box_core::config::BoxConfig::default(),
             "test-acquire-no-hb".to_string(),
         )
         .await;

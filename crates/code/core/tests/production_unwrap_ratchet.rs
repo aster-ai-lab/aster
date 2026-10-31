@@ -9,7 +9,7 @@
 //! expressions (`format!`, `vec!`, `assert!`, ...) are counted too.
 //!
 //! Print a fresh baseline with
-//! `A3S_UNWRAP_RATCHET_PRINT=1 cargo test -p a3s-code-core --test production_unwrap_ratchet -- --nocapture`.
+//! `ASTER_UNWRAP_RATCHET_PRINT=1 cargo test -p aster-core --test production_unwrap_ratchet -- --nocapture`.
 
 use std::collections::BTreeMap;
 
@@ -88,7 +88,7 @@ fn production_counts() -> BTreeMap<String, usize> {
 #[test]
 fn production_unwrap_and_expect_only_shrink() {
     let counts = production_counts();
-    if std::env::var_os("A3S_UNWRAP_RATCHET_PRINT").is_some() {
+    if std::env::var_os("ASTER_UNWRAP_RATCHET_PRINT").is_some() {
         println!("pub const BASELINE: &[(&str, usize)] = &[");
         for (path, count) in counts.iter().filter(|(_, count)| **count > 0) {
             println!("    (\"{path}\", {count}),");

@@ -2,7 +2,7 @@ use super::*;
 use crate::layers::kv::MainKvFormat;
 use crate::model::DeepSeekModel;
 use crate::weights::xq::{storage::tests::fixture_with_metadata, XqTensorType};
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 
 pub(crate) fn architecture() -> TextArchitecture {
     DeepSeekModel::V41Flash1017Xq

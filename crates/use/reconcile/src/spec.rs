@@ -3,7 +3,7 @@ use sha2::{Digest, Sha256};
 use crate::error::ReconcileError;
 
 /// Disk record written only after every declared surface verifies.
-pub const SCHEMA: &str = "a3s.use.package-reconcile.v2";
+pub const SCHEMA: &str = "aster.use.package-reconcile.v2";
 
 /// Surfaces one package generation may declare.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

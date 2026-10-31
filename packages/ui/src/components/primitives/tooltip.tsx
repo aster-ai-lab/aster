@@ -48,16 +48,20 @@ function parsePlacement(placement?: string): { side: Side; align: Align } {
  * 导致 content 永久残留，这里把卸载交给确定性 timer，动画只是视觉表现。 */
 export const TOOLTIP_EXIT_ANIMATION_MS = 150
 
-function useTooltipUnmountDelay(open: boolean): boolean {
+function useTooltipUnmountDelay(open: boolean, exitDelayMs = TOOLTIP_EXIT_ANIMATION_MS): boolean {
   const [visible, setVisible] = React.useState(open)
   React.useEffect(() => {
     if (open) {
       setVisible(true)
       return
     }
-    const timer = window.setTimeout(() => setVisible(false), TOOLTIP_EXIT_ANIMATION_MS)
+    if (exitDelayMs <= 0) {
+      setVisible(false)
+      return
+    }
+    const timer = window.setTimeout(() => setVisible(false), exitDelayMs)
     return () => window.clearTimeout(timer)
-  }, [open])
+  }, [exitDelayMs, open])
   return visible
 }
 
@@ -76,7 +80,9 @@ function useTooltipController(
   controlledOpen: boolean | undefined,
   onOpenChange?: (open: boolean) => void,
   defaultOpen = false,
-  disabled = false
+  disabled = false,
+  /** Shared toolbar providers skip the exit window so the previous tip cannot linger beside the next. */
+  exitDelayMs = TOOLTIP_EXIT_ANIMATION_MS
 ) {
   const [innerOpen, setInnerOpen] = React.useState(controlledOpen ?? defaultOpen)
   const [wasControlled, setWasControlled] = React.useState(controlledOpen != null)
@@ -86,7 +92,7 @@ function useTooltipController(
     if (controlledOpen == null) setInnerOpen(false)
   }
   const effectiveOpen = controlledOpen != null ? controlledOpen : disabled ? false : innerOpen
-  const contentVisible = useTooltipUnmountDelay(effectiveOpen)
+  const contentVisible = useTooltipUnmountDelay(effectiveOpen, exitDelayMs)
   // disabled 早退后组件仍挂载，内部打开态必须复位，否则重新启用时会不经 hover 直接打开；
   // 复位必须发生在渲染期且禁用/恢复两端都做——<Activity> 隐藏期间效果不运行，其子树的
   // 渲染期更新还可能被推迟到恢复可见时才提交，单端复位会被整段吞掉
@@ -271,7 +277,10 @@ export type TooltipContentProps = React.ComponentProps<typeof RadixContent> & {
 
 const TOOLTIP_HOVER_DELAY_MS = 500
 
-function TooltipProvider({
+/** True under an explicit `TooltipProvider`: its tooltips share one open/skip-delay state. */
+const SharedTooltipProviderContext = React.createContext(false)
+
+function TooltipProviderBase({
   delayDuration = TOOLTIP_HOVER_DELAY_MS,
   skipDelayDuration = 0,
   ...props
@@ -286,6 +295,21 @@ function TooltipProvider({
   )
 }
 
+/** Group tooltips so moving between triggers opens the next one at once and the previous one closes. */
+function TooltipProvider(props: TooltipProviderProps) {
+  return (
+    <SharedTooltipProviderContext value>
+      <TooltipProviderBase {...props} />
+    </SharedTooltipProviderContext>
+  )
+}
+
+/** A tooltip inside a shared `TooltipProvider` joins it; otherwise it owns a private provider. */
+function TooltipOwnProvider({ delayDuration, children }: { delayDuration: number; children: React.ReactNode }) {
+  if (React.use(SharedTooltipProviderContext)) return children
+  return <TooltipProviderBase delayDuration={delayDuration}>{children}</TooltipProviderBase>
+}
+
 function TooltipRoot({
   delayDuration = TOOLTIP_HOVER_DELAY_MS,
   open: openProp,
@@ -294,18 +318,25 @@ function TooltipRoot({
   ...props
 }: TooltipRootProps) {
   const surfaceActive = React.use(TooltipSurfaceContext)
+  const sharedProvider = React.use(SharedTooltipProviderContext)
   const {
     contentVisible: controllerContentVisible,
     effectiveOpen: controllerEffectiveOpen,
     handleOpenChange
-  } = useTooltipController(openProp, onOpenChange, defaultOpen, !surfaceActive)
+  } = useTooltipController(
+    openProp,
+    onOpenChange,
+    defaultOpen,
+    !surfaceActive,
+    sharedProvider ? 0 : TOOLTIP_EXIT_ANIMATION_MS
+  )
   // 非活跃 surface 强制关闭并跳过退出窗口：anchor 被 display:none 藏起时看不到任何离开事件，
   // portal content 不得比 anchor 活得更久；关闭同时复位内部 open 态，surface 恢复后不会无 hover 复活
   const contentVisible = surfaceActive && controllerContentVisible
   const effectiveOpen = surfaceActive && controllerEffectiveOpen
   return (
     <TooltipOverlayContext value={contentVisible}>
-      <TooltipProvider delayDuration={delayDuration}>
+      <TooltipOwnProvider delayDuration={delayDuration}>
         <RadixRoot
           data-slot="tooltip"
           delayDuration={delayDuration}
@@ -313,7 +344,7 @@ function TooltipRoot({
           onOpenChange={handleOpenChange}
           {...props}
         />
-      </TooltipProvider>
+      </TooltipOwnProvider>
     </TooltipOverlayContext>
   )
 }
@@ -438,12 +469,14 @@ export const Tooltip = ({
   // An inactive surface drops the tooltip exactly like a disabled one; the disabled pass also
   // resets the open state so nothing resurfaces unhovered when the surface comes back.
   const surfaceActive = React.use(TooltipSurfaceContext)
+  const sharedProvider = React.use(SharedTooltipProviderContext)
   const disabled = !tooltipContent || isDisabled || !surfaceActive
   const { contentVisible, effectiveOpen, handleOpenChange } = useTooltipController(
     isOpen,
     onOpenChange,
     false,
-    disabled
+    disabled,
+    sharedProvider ? 0 : TOOLTIP_EXIT_ANIMATION_MS
   )
   const triggerWrapperClassName = cn(
     'relative z-10',
@@ -464,7 +497,7 @@ export const Tooltip = ({
   const { side, align } = parsePlacement(placement)
 
   return (
-    <TooltipProvider delayDuration={delay}>
+    <TooltipOwnProvider delayDuration={delay}>
       <RadixRoot delayDuration={delay} open={effectiveOpen} onOpenChange={handleOpenChange}>
         <TooltipTrigger asChild>
           {asChild ? (
@@ -491,7 +524,7 @@ export const Tooltip = ({
           </RadixPortal>
         )}
       </RadixRoot>
-    </TooltipProvider>
+    </TooltipOwnProvider>
   )
 }
 

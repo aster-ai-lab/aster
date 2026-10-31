@@ -24,7 +24,7 @@ futures-util = { workspace = true }
 创建 `src/ui.rs`，先放下面这些定义。显示缓冲区设置 128 KiB 上限，工具记录只保留最近 64 条；这些是界面显示限制，不会修改 Core 的事实日志。
 
 ```rust
-use a3s_code_core::AgentEvent;
+use aster_core::AgentEvent;
 use ratatui::{layout::{Constraint, Layout}, widgets::{Block, Paragraph, Wrap}};
 use std::collections::VecDeque;
 
@@ -96,7 +96,7 @@ impl App {
 继续在 `ui.rs` 添加运行函数。它接收上一章已经创建好的会话。
 
 ```rust
-use a3s_code_core::{AgentSession, AgentRunStream};
+use aster_core::{AgentSession, AgentRunStream};
 use crossterm::event::{Event, EventStream, KeyCode, KeyEventKind, KeyModifiers};
 use futures_util::StreamExt;
 

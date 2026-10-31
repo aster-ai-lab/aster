@@ -83,7 +83,7 @@ export function trackDocumentFormattingTransaction(
           kind: 'formatting',
           id: identity.id,
           actorId: identity.actorId ?? '',
-          author: identity.author || 'A3S Work',
+          author: identity.author || 'Aster Work',
           date: identity.date || new Date().toISOString(),
           before,
         }),

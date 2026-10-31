@@ -188,7 +188,7 @@ fn reordered_comment_and_suggestion_updates_converge() {
             replacement: "!".to_owned(),
             insertion_id: Some("suggestion-offline-bang".to_owned()),
             deletion_id: None,
-            author: "A3S Agent".to_owned(),
+            author: "Aster Agent".to_owned(),
             created_at: "2026-08-17T10:00:00.000Z".to_owned(),
         },
     );
@@ -488,7 +488,7 @@ fn detached_foreign_comments_remain_reviewable_but_not_deletable() {
         .apply_update(Update::decode_v1(&store.synchronize(None).unwrap().update).unwrap())
         .unwrap();
     let before_anchor_delete = browser.transact().state_vector();
-    let fragment = browser.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = browser.get_or_insert_xml_fragment("aster.office.document.content");
     let (text, attribute) = {
         let transaction = browser.transact();
         fragment
@@ -532,7 +532,7 @@ fn detached_foreign_comments_remain_reviewable_but_not_deletable() {
     assert!(comments[0].anchors.is_empty());
 
     let before_actor_change = browser.transact().state_vector();
-    let comments = browser.get_or_insert_map("a3s.office.document.comments");
+    let comments = browser.get_or_insert_map("aster.office.document.comments");
     let comment = match comments.get(&browser.transact(), COMMENT_ID) {
         Some(Out::YMap(comment)) => comment,
         value => panic!("unexpected comment record: {value:?}"),
@@ -721,7 +721,7 @@ fn authenticated_transport_accepts_review_updates_and_rejects_forged_content() {
         .apply_update(Update::decode_v1(&server.synchronize(None).unwrap().update).unwrap())
         .unwrap();
     let before_attack = attacker.transact().state_vector();
-    let fragment = attacker.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = attacker.get_or_insert_xml_fragment("aster.office.document.content");
     let text = fragment
         .successors(&attacker.transact())
         .find_map(|node| match node {
@@ -900,10 +900,10 @@ fn assert_browser_comment_state(
         .transact_mut()
         .apply_update(Update::decode_v1(&exported.update).unwrap())
         .unwrap();
-    let comments = browser.get_or_insert_map("a3s.office.document.comments");
-    let order = browser.get_or_insert_array("a3s.office.document.comment-order");
-    let claims = browser.get_or_insert_array("a3s.office.document.record-claims");
-    let fragment = browser.get_or_insert_xml_fragment("a3s.office.document.content");
+    let comments = browser.get_or_insert_map("aster.office.document.comments");
+    let order = browser.get_or_insert_array("aster.office.document.comment-order");
+    let claims = browser.get_or_insert_array("aster.office.document.record-claims");
+    let fragment = browser.get_or_insert_xml_fragment("aster.office.document.content");
     let transaction = browser.transact();
 
     if !comment_present {

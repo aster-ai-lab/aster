@@ -1,0 +1,60 @@
+[package]
+license = "Apache-2.0"
+name = "aster-computer-hub-sdk"
+version = "0.1.0"
+description = "SDK for the Aster Computer Hub: connection pool, transparent reconnect, tool harness, and tool-server runtime."
+edition = "2024"
+publish = false
+
+[features]
+metrics = ["dep:prometheus", "dep:prometheus-parse"]
+
+[dependencies]
+tokio = {version = "1", features = ["full", "rt", "sync", "time", "macros"]}
+tokio-tungstenite = {version = "0.28", features = ["rustls-tls-native-roots"]}
+tokio-util = {workspace = true}
+futures = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+dashmap = {workspace = true}
+indexmap = {workspace = true}
+arc-swap = {workspace = true}
+async-trait = {workspace = true}
+thiserror = {workspace = true}
+tracing = {workspace = true}
+tracing-subscriber = {workspace = true}
+url = {workspace = true}
+uuid = {workspace = true}
+http = {workspace = true}
+prometheus = {workspace = true, optional = true}
+prometheus-parse = {version = "0.2.5", optional = true}
+reqwest = {workspace = true}
+chrono = {workspace = true}
+parking_lot = {workspace = true}
+
+fastrace = {version = "0.7"}
+# Trace donation: spans convert via the stock fastrace -> OTel reporter
+# and ship as standard OTLP payloads.
+fastrace-opentelemetry = {version = "0.18"}
+opentelemetry = {workspace = true}
+opentelemetry_sdk = {version = "0.32.1", features = ["spec_unstable_metrics_views"]}
+opentelemetry-proto = {version = "0.32", features = ["gen-tonic"]}
+prost = {workspace = true}
+base64 = {workspace = true}
+
+
+# Integration tests that need heavier backend deps live in a separate sibling crate to keep this dev-dep set minimal.
+aster-tracing = {path = "../aster-tracing"}
+aster-computer-hub-core = {path = "../aster-computer-hub-core"}
+aster-tool-types = {path = "../aster-tool-types"}
+aster-tool-runtime = {path = "../aster-tool-runtime"}
+aster-tool-protocol = {path = "../aster-tool-protocol"}
+[dev-dependencies]
+tokio = {version = "1", features = ["full", "test-util"]}
+axum = {workspace = true}
+chrono = {workspace = true}
+base64 = {workspace = true}
+schemars = {workspace = true}
+
+[lints]
+workspace = true

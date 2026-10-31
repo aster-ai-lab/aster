@@ -1,10 +1,10 @@
 {
-  "schema": "a3s.runtime.unit-spec.v4",
+  "schema": "aster.runtime.unit-spec.v4",
   "unit_id": "workload:agent-harness:replica:1",
   "generation": 7,
   "class": "service",
   "artifact": {
-    "uri": "oci://registry.example/a3s/agent-harness@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "uri": "oci://registry.example/aster/agent-harness@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "media_type": "application/vnd.oci.image.manifest.v1+json"
   },

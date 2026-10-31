@@ -2,7 +2,7 @@
 
 use super::*;
 use crate::store::SessionSnapshotV1;
-use a3s_effect::LogStore;
+use aster_effect::LogStore;
 
 fn fork_error(error: impl std::fmt::Display) -> CodeError {
     CodeError::Session(format!("session fork: {error}"))
@@ -101,7 +101,7 @@ async fn fork_session_async_inner(
     {
         return Err(fork_error("durable source is missing"));
     }
-    let source = Arc::new(a3s_effect::FileLog::open(&source_directory).map_err(fork_error)?);
+    let source = Arc::new(aster_effect::FileLog::open(&source_directory).map_err(fork_error)?);
     let source_thread = crate::fact_control::thread_for_session(&snapshot.session.id);
     let _source_owner = source.try_run_owner(&source_thread).map_err(fork_error)?;
     let _source_writer = source.try_writer_fence().map_err(fork_error)?;
@@ -117,7 +117,7 @@ async fn fork_session_async_inner(
         return Err(fork_error("snapshot omits the current durable source"));
     }
     if let Some(request) = &prefix_request {
-        let actual = crate::store::TranscriptSourceCut::from(a3s_effect::cut_log(&facts));
+        let actual = crate::store::TranscriptSourceCut::from(aster_effect::cut_log(&facts));
         if actual != request.expected_cut {
             return Err(fork_error("source changed before prefix fork"));
         }
@@ -136,7 +136,7 @@ async fn fork_session_async_inner(
         None => (snapshot, facts.clone(), None),
     };
     if boundary_cut.as_ref().is_some_and(|expected| {
-        crate::store::TranscriptSourceCut::from(a3s_effect::cut_log(&admission_facts)) != *expected
+        crate::store::TranscriptSourceCut::from(aster_effect::cut_log(&admission_facts)) != *expected
     }) {
         return Err(fork_error("verified prefix boundary changed"));
     }

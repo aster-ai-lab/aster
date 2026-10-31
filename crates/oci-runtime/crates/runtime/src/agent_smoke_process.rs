@@ -430,7 +430,7 @@ mod tests {
 
     use super::RunningShim;
 
-    const CHILD_PID_FILE_ENV: &str = "A3S_OCI_TEST_PROCESS_GROUP_PID_FILE";
+    const CHILD_PID_FILE_ENV: &str = "ASTER_OCI_TEST_PROCESS_GROUP_PID_FILE";
     const CHILD_TEST_NAME: &str = "agent_smoke_process::tests::process_group_child";
 
     #[tokio::test]

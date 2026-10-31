@@ -3,11 +3,11 @@ use serde::{Deserialize, Serialize};
 use crate::model::JsonValue;
 
 /// Wire protocol implemented by native TypeScript workflow executables.
-pub const NATIVE_RUNTIME_PROTOCOL: &str = "a3s.flow.native_ts.v1";
+pub const NATIVE_RUNTIME_PROTOCOL: &str = "aster.flow.native_ts.v1";
 /// Command protocol implemented by the installable native TypeScript compiler.
-pub const NATIVE_COMPILER_PROTOCOL: &str = "a3s.flow.native_ts.compiler.v1";
+pub const NATIVE_COMPILER_PROTOCOL: &str = "aster.flow.native_ts.compiler.v1";
 /// Dependency-manifest protocol emitted by the native TypeScript compiler.
-pub const NATIVE_DEPENDENCY_MANIFEST_PROTOCOL: &str = "a3s.flow.native_ts.dependencies.v1";
+pub const NATIVE_DEPENDENCY_MANIFEST_PROTOCOL: &str = "aster.flow.native_ts.dependencies.v1";
 
 /// Capabilities reported by the installable native TypeScript compiler.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

@@ -18,7 +18,7 @@ fn workspace_wiki_source_discovery_refuses_an_unreadable_subtree() {
         &denied.join("evidence.md"),
         b"Must not silently disappear\n",
     );
-    std::fs::set_permissions(&denied, std::fs::Permissions::from_mode(0)).unwrap();
+    std::fs::set_permissions(&denied, std::fs::Permissions::from_mode(0o0)).unwrap();
     let enforced = std::fs::read_dir(&denied).is_err();
     let result = scan_workspace_source_files(
         root.path(),
@@ -513,7 +513,7 @@ async fn deferred_manifest_keeps_fallback_search_ready_until_one_way_activation(
     assert!(ready.files.iter().any(|file| file.path == "src/main.rs"));
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[tokio::test]
 async fn automatic_persistent_retrieval_uses_portable_cold_admission() {
     let temp = tempfile::tempdir().unwrap();
@@ -524,10 +524,10 @@ async fn automatic_persistent_retrieval_uses_portable_cold_admission() {
 
     let backend = ManifestWorkspaceBackend::new_deferred(temp.path());
     backend
-        .configure_persistent_index(temp.path().join(".a3s-code/index"))
+        .configure_persistent_index(temp.path().join(".aster/index"))
         .unwrap();
     let catalog = backend.chunk_catalog();
-    assert_eq!(catalog.lexical_engine(), WorkspaceLexicalEngine::A3sVec);
+    assert_eq!(catalog.lexical_engine(), WorkspaceLexicalEngine::AsterVec);
     assert!(backend.persistent_index().is_some());
 
     backend.manifest().activate();
@@ -707,7 +707,7 @@ async fn host_can_configure_the_manifest_catalog_exactly_once_before_services_at
 }
 
 #[tokio::test]
-async fn configuring_chunk_catalog_does_not_open_durable_a3s_vec() {
+async fn configuring_chunk_catalog_does_not_open_durable_aster_vec() {
     let temp = tempfile::tempdir().unwrap();
     let backend = ManifestWorkspaceBackend::new(temp.path());
     backend
@@ -723,7 +723,7 @@ async fn configuring_chunk_catalog_does_not_open_durable_a3s_vec() {
         "catalog enable must not attach durable FTS"
     );
     assert!(
-        !temp.path().join(".a3s-code").join("index").exists(),
+        !temp.path().join(".aster").join("index").exists(),
         "catalog enable must not create the durable index directory"
     );
 }
@@ -852,9 +852,9 @@ async fn manifest_grep_prioritizes_a_cold_dirty_file_when_truncated() {
         temp.path(),
         &[
             "-c",
-            "user.email=a3s@example.com",
+            "user.email=aster@example.com",
             "-c",
-            "user.name=a3s",
+            "user.name=aster",
             "-c",
             "commit.gpgsign=false",
             "commit",
@@ -1024,7 +1024,7 @@ fn file_change_batch_ignores_external_and_invalid_paths() {
     let outside = root.parent().unwrap().join("outside.rs");
     let invalid = root.join("../escape.rs");
     let ignored = root.join("node_modules/package/index.js");
-    let control_plane = root.join(".a3s-code/index/CURRENT");
+    let control_plane = root.join(".aster/index/CURRENT");
     let events = vec![
         Event::new(EventKind::Modify(ModifyKind::Any)).add_path(outside),
         Event::new(EventKind::Modify(ModifyKind::Any)).add_path(invalid),

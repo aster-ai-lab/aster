@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-//! Live Memory gates against `.a3s/config.acl`.
+//! Live Memory gates against `.aster/config.acl`.
 //!
 //! - Durability: store → reopen → `AgentMemory.recall_similar` (always assert).
 //! - Extract: real-model stream → observed store acknowledgement → close →
@@ -8,8 +8,8 @@
 //!   The original immediate-close failures remain retained evidence.
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_memory_store_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_memory_store_real_llm \
 //!   -- --ignored --nocapture --test-threads=1
 //! ```
 
@@ -18,10 +18,10 @@ mod support;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::memory::{AgentMemory, MemoryObservation, MemoryObserver};
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentEvent, PlanningMode, SessionOptions, SystemPromptSlots};
-use a3s_memory::{FileMemoryStore, MemoryItem, MemoryStore, MemoryType};
+use aster_core::memory::{AgentMemory, MemoryObservation, MemoryObserver};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentEvent, PlanningMode, SessionOptions, SystemPromptSlots};
+use aster_durable_memory::{FileMemoryStore, MemoryItem, MemoryStore, MemoryType};
 use support::layer_c_model::{load_pinned_layer_c_config, pinned_layer_c_model};
 
 const TURN_TIMEOUT: Duration = Duration::from_secs(420);
@@ -77,7 +77,7 @@ async fn wait_for_stored_memory(
     .map_err(|_| "no expected memory store acknowledgement within 60s".to_string())?
 }
 
-fn configured_model(config: &a3s_code_core::CodeConfig) -> String {
+fn configured_model(config: &aster_core::CodeConfig) -> String {
     pinned_layer_c_model(config)
 }
 
@@ -86,8 +86,8 @@ fn install_memory_retention_diagnostics() {
     INIT.call_once(|| {
         tracing_subscriber::fmt()
             .with_env_filter(
-                "memory_retention=info,a3s_code_core::agent_api::session_close=warn,\
-                 a3s_code_core::agent::memory_extraction_runtime=warn",
+                "memory_retention=info,aster_core::agent_api::session_close=warn,\
+                 aster_core::agent::memory_extraction_runtime=warn",
             )
             .with_ansi(false)
             .with_test_writer()
@@ -97,7 +97,7 @@ fn install_memory_retention_diagnostics() {
 }
 
 async fn run_text_turn(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     prompt: &str,
 ) -> Result<(String, usize), String> {
     let (mut events, worker) = session
@@ -130,7 +130,7 @@ async fn run_text_turn(
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_config_memory_store_survives_reopen_and_agent_recall() {
     let started = Instant::now();
     let mut config = load_pinned_layer_c_config();
@@ -211,7 +211,7 @@ async fn real_config_memory_store_survives_reopen_and_agent_recall() {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_model_recalls_memory_in_a_new_session_from_a_paraphrased_question() {
     let started = Instant::now();
     let mut config = load_pinned_layer_c_config();
@@ -220,7 +220,7 @@ async fn real_model_recalls_memory_in_a_new_session_from_a_paraphrased_question(
     // The model-driven memory extraction runtime is only armed when
     // the config block exists; without it nothing would ever be stored and
     // the recall oracle below would be vacuous.
-    config.memory = Some(a3s_code_core::memory::MemoryConfig::default());
+    config.memory = Some(aster_core::memory::MemoryConfig::default());
     let agent = Agent::from_config(config)
         .await
         .expect("create agent from configured model");
@@ -376,7 +376,7 @@ async fn real_model_recalls_memory_in_a_new_session_from_a_paraphrased_question(
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_model_credential_shaped_memory_is_refused_not_stored() {
     let started = Instant::now();
     let mut config = load_pinned_layer_c_config();
@@ -384,7 +384,7 @@ async fn real_model_credential_shaped_memory_is_refused_not_stored() {
     config.default_model = Some(selected_model.clone());
     // Arm the memory runtime: without it the guard oracle would pass vacuously
     // because nothing would ever be stored at all.
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: true,
         ..Default::default()
     });
@@ -457,7 +457,7 @@ async fn real_model_credential_shaped_memory_is_refused_not_stored() {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from the repo .a3s/config.acl"]
+#[ignore = "requires the model and credentials from the repo .aster/config.acl"]
 async fn real_model_explicit_remember_in_chinese_persists_and_recalls() {
     // Issue Code#188's Chinese request now requires validated model extraction.
     // This leg proves acknowledged persistence and reopened store search;
@@ -466,7 +466,7 @@ async fn real_model_explicit_remember_in_chinese_persists_and_recalls() {
     let mut config = load_pinned_layer_c_config();
     let selected_model = configured_model(&config);
     config.default_model = Some(selected_model.clone());
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: true,
         ..Default::default()
     });
@@ -539,7 +539,7 @@ async fn real_model_explicit_remember_in_chinese_persists_and_recalls() {
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from the repo .a3s/config.acl"]
+#[ignore = "requires the model and credentials from the repo .aster/config.acl"]
 async fn real_model_recalls_a_chinese_memory_from_a_chinese_paraphrase_question() {
     install_memory_retention_diagnostics();
     // The recall side of the i18n bridge: memory stored through a Chinese
@@ -552,7 +552,7 @@ async fn real_model_recalls_a_chinese_memory_from_a_chinese_paraphrase_question(
     let mut config = load_pinned_layer_c_config();
     let selected_model = configured_model(&config);
     config.default_model = Some(selected_model.clone());
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: true,
         ..Default::default()
     });
@@ -660,7 +660,7 @@ async fn real_model_recalls_a_chinese_memory_from_a_chinese_paraphrase_question(
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from the repo .a3s/config.acl"]
+#[ignore = "requires the model and credentials from the repo .aster/config.acl"]
 async fn real_model_memory_extract_survives_reopen() {
     install_memory_retention_diagnostics();
     let started = Instant::now();
@@ -668,7 +668,7 @@ async fn real_model_memory_extract_survives_reopen() {
     let selected_model = configured_model(&config);
     config.default_model = Some(selected_model.clone());
     // Layer C requires extract effect, not a soft narrative acknowledgement.
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: true,
         ..Default::default()
     });
@@ -765,9 +765,9 @@ async fn real_model_memory_extract_survives_reopen() {
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_model_consolidation_judge_separates_paraphrase_from_topic() {
-    use a3s_code_core::memory::{ConsolidationJudge, LlmConsolidationJudge};
+    use aster_core::memory::{ConsolidationJudge, LlmConsolidationJudge};
     use std::sync::Arc;
 
     let config = load_pinned_layer_c_config();
@@ -776,7 +776,7 @@ async fn real_model_consolidation_judge_separates_paraphrase_from_topic() {
     let provider = config
         .find_provider(provider_name)
         .unwrap_or_else(|| panic!("provider {provider_name} missing"));
-    let mut llm = a3s_code_core::llm::LlmConfig::new(
+    let mut llm = aster_core::llm::LlmConfig::new(
         provider_name,
         model_id,
         provider.api_key.clone().expect("provider api key"),
@@ -784,9 +784,9 @@ async fn real_model_consolidation_judge_separates_paraphrase_from_topic() {
     if let Some(base_url) = provider.base_url.as_deref() {
         llm = llm.with_base_url(base_url);
     }
-    let client = a3s_code_core::llm::create_client_with_config(llm);
+    let client = aster_core::llm::create_client_with_config(llm);
     let judge =
-        LlmConsolidationJudge::new(Arc::clone(&client) as Arc<dyn a3s_code_core::llm::LlmClient>);
+        LlmConsolidationJudge::new(Arc::clone(&client) as Arc<dyn aster_core::llm::LlmClient>);
 
     // Paraphrases of one instruction: the judge must agree.
     let left = MemoryItem::new(

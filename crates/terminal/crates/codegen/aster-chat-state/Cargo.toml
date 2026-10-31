@@ -1,0 +1,30 @@
+[package]
+license = "Apache-2.0"
+name = "aster-chat-state"
+version = "0.1.0"
+description = "Actor-based chat state management for Aster agents"
+edition = "2024"
+publish = false
+
+[features]
+default-bazel = []
+
+[dependencies]
+indexmap = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+strum = {workspace = true}
+tokio = {version = "1", features = ["full", "sync", "rt", "macros"]}
+tokio-util = {workspace = true}
+tracing = {workspace = true}
+# `CompactionDetail`, embedded in `CompactionMode::Segments`.
+aster-token-estimation = {path = "../aster-token-estimation"}
+aster-sampling-types = {path = "../aster-sampling-types"}
+aster-compaction = {path = "../../common/aster-compaction"}
+aster-compaction-transcript = {path = "../aster-compaction-transcript"}
+
+[dev-dependencies]
+tokio = {workspace = true}
+
+[lints]
+workspace = true

@@ -1,15 +1,15 @@
 [package]
-name = "a3s-form-core"
+name = "aster-form-core"
 publish = false
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.85"
 license = "MIT"
-description = "Portable semantic core for A3S Form"
-repository = "https://github.com/A3S-Lab/UI"
+description = "Portable semantic core for Aster Form"
+repository = "https://github.com/aster-ai-lab/UI"
 
 [dependencies]
-a3s-acl = { workspace = true }
+aster-acl = { workspace = true }
 ryu-js = "1.0.3"
 regress = "0.10.4"
 serde = { version = "1.0.228", features = ["derive"] }
@@ -19,8 +19,8 @@ thiserror = "2.0.18"
 url = "2.5.7"
 
 [[bin]]
-name = "a3s-form-core"
-path = "src/bin/a3s-form-core.rs"
+name = "aster-form-core"
+path = "src/bin/aster-form-core.rs"
 
 [lints.rust]
 unsafe_code = "forbid"

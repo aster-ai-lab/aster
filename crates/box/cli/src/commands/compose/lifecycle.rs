@@ -3,8 +3,8 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use a3s_box_core::compose::ComposeConfig;
-use a3s_box_runtime::NetworkStore;
+use aster_box_core::compose::ComposeConfig;
+use aster_box_runtime::NetworkStore;
 
 use super::{ComposeDownArgs, LABEL_PROJECT, LABEL_SERVICE};
 use crate::state::{BoxRecord, StateFile};
@@ -105,8 +105,8 @@ pub(super) fn cleanup_partial_service_box(
     }
     // Keep-authority host-netdevice lease may exist after a partial prepare.
     // Tear down before wiping boxes/{id}; retain the dir when teardown fails.
-    let home = a3s_box_core::dirs_home();
-    if let Err(error) = a3s_box_runtime::teardown_sandbox_host_netdevice_lease(&home, box_id) {
+    let home = aster_box_core::dirs_home();
+    if let Err(error) = aster_box_runtime::teardown_sandbox_host_netdevice_lease(&home, box_id) {
         tracing::error!(
             box_id,
             %error,
@@ -118,7 +118,7 @@ pub(super) fn cleanup_partial_service_box(
             format!("host netdevice lease teardown failed for Compose service {box_id}: {error}"),
         ));
     }
-    if let Err(error) = a3s_box_runtime::cleanup_microvm_virtiofs_ro_shares(box_dir) {
+    if let Err(error) = aster_box_runtime::cleanup_microvm_virtiofs_ro_shares(box_dir) {
         tracing::error!(
             box_id,
             %error,
@@ -137,9 +137,9 @@ pub(super) fn cleanup_partial_service_box(
     // use APFS; guest-native ext4 has no host mount. Resource cleanup above
     // only detaches volumes and networking. Fail closed on overlay so wipe
     // cannot invent success while merged remains mounted.
-    a3s_box_runtime::rootfs::unmount_box_overlay_for_reuse(&box_dir.join("merged"))
+    aster_box_runtime::rootfs::unmount_box_overlay_for_reuse(&box_dir.join("merged"))
         .map_err(|error| format!("Overlay unmount failed for Compose service {box_id}: {error}"))?;
-    a3s_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&box_dir.join("rootfs"))
+    aster_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&box_dir.join("rootfs"))
         .map_err(|error| format!("Rootfs unmount failed for Compose service {box_id}: {error}"))?;
     match std::fs::remove_dir_all(box_dir) {
         Ok(()) => {}
@@ -298,7 +298,7 @@ pub(super) async fn stop_service_process(svc: &ServiceBox) {
     let stop_signal = svc
         .stop_signal
         .as_deref()
-        .map(a3s_box_core::vmm::parse_signal_name)
+        .map(aster_box_core::vmm::parse_signal_name)
         .unwrap_or(libc::SIGTERM);
     let stop_timeout = svc.stop_timeout.unwrap_or(10);
     let exec_socket = if svc.exec_socket_path.as_os_str().is_empty() {
@@ -472,7 +472,7 @@ pub(super) async fn execute_down(
 
     // Optionally remove named volumes — fail closed on remove errors.
     if down_args.volumes {
-        let vol_store = a3s_box_runtime::volume::VolumeStore::default_path()?;
+        let vol_store = aster_box_runtime::volume::VolumeStore::default_path()?;
         let mut removed = 0u32;
         for volume_name in volume_names {
             vol_store.remove(&volume_name, true)?;
@@ -614,7 +614,7 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let store = NetworkStore::new(dir.path().join("networks.json"));
         let net =
-            a3s_box_core::network::NetworkConfig::new("project_default", "10.88.0.0/24").unwrap();
+            aster_box_core::network::NetworkConfig::new("project_default", "10.88.0.0/24").unwrap();
         store.create(net).unwrap();
 
         // Atomic rename ignores the target file mode; deny writes on the parent.

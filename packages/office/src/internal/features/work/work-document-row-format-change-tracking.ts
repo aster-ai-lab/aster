@@ -54,7 +54,7 @@ export function trackDocumentRowFormattingTransaction(
       propertyRevisionOmml: null,
       rowChangeKind: 'row-formatting',
       rowChangeId: identity.id,
-      rowChangeAuthor: identity.author || 'A3S Work',
+      rowChangeAuthor: identity.author || 'Aster Work',
       rowChangeDate: identity.date || new Date().toISOString(),
       rowChangeBefore: previous,
     });

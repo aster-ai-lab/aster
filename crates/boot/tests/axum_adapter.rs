@@ -1,6 +1,6 @@
 #![cfg(feature = "axum")]
 
-use a3s_boot::{
+use aster_boot::{
     ApiVersioning, AxumAdapter, BootApplication, BootError, BootRequest, BootResponse,
     ExecutionContext, HttpMethod, MiddlewareOutcome, RouteDefinition, SseEvent, StreamableFile,
     WebSocketGatewayDefinition, WebSocketMessage,
@@ -1148,7 +1148,7 @@ async fn axum_adapter_error_responses_are_json() {
     let app = BootApplication::builder()
         .route(
             RouteDefinition::get("/bad", |_| async {
-                Err(a3s_boot::BootError::BadRequest("invalid input".to_string()))
+                Err(aster_boot::BootError::BadRequest("invalid input".to_string()))
             })
             .unwrap(),
         )

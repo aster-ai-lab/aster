@@ -6,13 +6,13 @@ use std::time::Duration;
 use tokio::io::{AsyncReadExt, AsyncWriteExt, BufReader};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(provider: &Path, args: &[&str]) -> Output {
     Command::new(binary())
         .args(args)
-        .env("A3S_OFFICECLI_EXECUTABLE", provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", provider)
         .output()
         .unwrap()
 }
@@ -64,7 +64,7 @@ fn native_cli_manages_typed_hyperlinks_in_all_formats_without_officecli() {
             "--display",
             "Open report",
             "--tooltip",
-            "A3S report",
+            "Aster report",
             "--json",
         ],
     );
@@ -360,7 +360,7 @@ async fn native_standard_mcp_applies_and_reads_unsaved_typed_hyperlinks() {
     let document = temp.path().join("mcp-links.docx");
     let mut child = tokio::process::Command::new(binary())
         .args(["mcp"])
-        .env("A3S_OFFICECLI_EXECUTABLE", &provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", &provider)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())

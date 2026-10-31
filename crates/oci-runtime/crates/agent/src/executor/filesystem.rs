@@ -6,8 +6,8 @@ use std::os::unix::ffi::{OsStrExt, OsStringExt};
 use std::os::unix::fs::{FileTypeExt, MetadataExt};
 use std::path::{Component, Path, PathBuf};
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     Error, ErrorCode, FileOp, FileRequest, FileResponse, FilesystemEntry, FilesystemEntryKind,
     FilesystemOp, FilesystemRequest, FilesystemResponse, Result, ValidateRequest,
     MAX_FILESYSTEM_DEPTH, MAX_FILE_TRANSFER_BYTES,
@@ -208,7 +208,7 @@ async fn filesystem_mutation_new(
 
 fn complete_file_operation(
     state: &mut ExecutorState,
-    operation_id: a3s_oci_sdk::OperationId,
+    operation_id: aster_oci_sdk::OperationId,
     operation: RecordedRequest,
     result: Result<FileResponse>,
 ) {
@@ -241,7 +241,7 @@ async fn wait_for_file_operation(
 
 fn complete_filesystem_operation(
     state: &mut ExecutorState,
-    operation_id: a3s_oci_sdk::OperationId,
+    operation_id: aster_oci_sdk::OperationId,
     operation: RecordedRequest,
     result: Result<FilesystemResponse>,
 ) {
@@ -277,7 +277,7 @@ async fn wait_for_filesystem_operation(
 
 fn container_record<'a>(
     state: &'a mut super::state::ExecutorState,
-    target: &a3s_oci_sdk::ContainerTarget,
+    target: &aster_oci_sdk::ContainerTarget,
 ) -> Result<&'a mut ContainerRecord> {
     let key = ContainerKey::from_target(target)?;
     let record = state.containers.get_mut(&key).ok_or_else(|| {

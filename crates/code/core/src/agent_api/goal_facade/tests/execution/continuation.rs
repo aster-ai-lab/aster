@@ -87,7 +87,7 @@ async fn read_only_step_acceptance_does_not_reset_continuation_stall_across_reop
             assert_eq!(
                 after
                     .iter()
-                    .filter(|f| f.kind == "a3s.goal.step.accepted")
+                    .filter(|f| f.kind == "aster.goal.step.accepted")
                     .count(),
                 1
             );

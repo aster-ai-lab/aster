@@ -1,11 +1,11 @@
 [package]
-name = "a3s-box-mkext4"
+name = "aster-box-mkext4"
 publish = false
 version = "3.2.7"
 edition = "2021"
 rust-version = "1.75"
 license = "Apache-2.0"
-description = "A3S Box deterministic ext4 image builder with raw Linux path byte support"
+description = "Aster Box deterministic ext4 image builder with raw Linux path byte support"
 readme = "README.md"
 keywords = ["ext4", "filesystem", "mkfs", "deterministic", "reproducible"]
 categories = ["filesystem"]
@@ -16,7 +16,7 @@ exclude = ["/build", "/.github"]
 
 [lib]
 # Keep the audited upstream import surface while publishing the fork under an
-# explicit A3S-owned package name.
+# explicit Aster-owned package name.
 name = "mkext4"
 
 [dependencies]

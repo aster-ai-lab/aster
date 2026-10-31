@@ -180,7 +180,7 @@ async fn native_editor_sets_text_in_all_formats_and_preserves_untouched_bytes() 
     let (presentation_temp, presentation_path) = presentation_fixture();
     let mut presentation = NativeOfficeEditor::open(&presentation_path).await.unwrap();
     presentation
-        .set_text("/slide[1]/shape[1]", "A3S & Office")
+        .set_text("/slide[1]/shape[1]", "Aster & Office")
         .unwrap();
     assert_eq!(
         presentation
@@ -189,7 +189,7 @@ async fn native_editor_sets_text_in_all_formats_and_preserves_untouched_bytes() 
             .get("/slide[1]/shape[1]", 0)
             .unwrap()
             .text,
-        "A3S & Office"
+        "Aster & Office"
     );
 
     drop((word_temp, spreadsheet_temp, presentation_temp));

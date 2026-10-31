@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     runtime_bundle_handoff_directory, ContainerId, CreateAttachments, CreateRequest,
     IsolationRequest, OciBundle, ProcessIo, StorageAccessMode, StorageAttachmentId, StorageCleanup,
     StorageOwnership, StoragePathRestriction, StoragePathRestrictions,
@@ -55,8 +55,8 @@ pub(super) async fn prepare(
     let policy_workspace = workspace.to_path_buf();
     let scratch = root.to_path_buf();
     let boundary = tokio::task::spawn_blocking(move || {
-        a3s_sandbox::WorkspaceFilesystemBoundary::compile(
-            &a3s_sandbox::SandboxPolicy::a3s_bash_baseline(),
+        aster_cmd_sandbox::WorkspaceFilesystemBoundary::compile(
+            &aster_cmd_sandbox::SandboxPolicy::aster_bash_baseline(),
             &policy_workspace,
             &scratch,
         )
@@ -173,7 +173,7 @@ pub(super) async fn prepare(
     }
 
     let mut environment =
-        a3s_sandbox::sandboxed_command_environment(Path::new("/tmp"), request.env.as_deref())?;
+        aster_cmd_sandbox::sandboxed_command_environment(Path::new("/tmp"), request.env.as_deref())?;
     let requested_path = request
         .env
         .as_deref()

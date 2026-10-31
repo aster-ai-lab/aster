@@ -1,5 +1,5 @@
 use super::*;
-use a3s_flow::{CancellationRequest, FlowEvent, FlowEventEnvelope};
+use aster_flow::{CancellationRequest, FlowEvent, FlowEventEnvelope};
 use std::sync::atomic::{AtomicBool, Ordering};
 
 const CANCELLATION_ROOT_RUN_ID: &str = "cancellation-continuation-root";
@@ -11,7 +11,7 @@ impl FlowRuntime for CancellationContinuationRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let complete = context.input()["complete"].as_bool().unwrap_or(false);
         if context.input()["generation"] == 0 {
@@ -29,7 +29,7 @@ impl FlowRuntime for CancellationContinuationRuntime {
         Ok(context.wait_until("hold", timestamp("2099-01-01T00:00:00Z")))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("cancellation continuation runtime does not execute steps")
     }
 }
@@ -65,7 +65,7 @@ impl CrashBeforeCancellationSuccessorStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeCancellationSuccessorStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -74,7 +74,7 @@ impl FlowEventStore for CrashBeforeCancellationSuccessorStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id != CANCELLATION_ROOT_RUN_ID
             && matches!(&event, FlowEvent::RunCreated { .. })
             && self.armed.swap(false, Ordering::SeqCst)
@@ -88,11 +88,11 @@ impl FlowEventStore for CrashBeforeCancellationSuccessorStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }

@@ -12,9 +12,9 @@ use super::frame::{read_frame, send_data_response, send_error_response};
 pub(super) const SECRETS_DIR: &str = "/run/secrets";
 
 /// HKDF salt — must match runtime/src/tee/sealed.rs.
-pub(super) const HKDF_SALT: &[u8] = b"a3s-sealed-storage-v1";
+pub(super) const HKDF_SALT: &[u8] = b"aster-sealed-storage-v1";
 
-/// Simulated SNP report version marker (0xA3 = "A3S").
+/// Simulated SNP report version marker (0xA3 = "Aster").
 const SIMULATED_REPORT_VERSION: u32 = 0xA3;
 
 // ============================================================================
@@ -36,7 +36,7 @@ pub(super) fn handle_tls_connection(
     config: std::sync::Arc<rustls::ServerConfig>,
     snp_report: std::sync::Arc<Vec<u8>>,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    use a3s_box_core::tee::{AttestRequest, AttestRoute};
+    use aster_box_core::tee::{AttestRequest, AttestRoute};
 
     let tcp_stream = std::net::TcpStream::from(fd);
 
@@ -647,7 +647,7 @@ pub(super) fn derive_guest_sealing_key(
 
 /// Check if TEE simulation mode is enabled via environment variable.
 pub(super) fn is_simulate_mode() -> bool {
-    std::env::var("A3S_TEE_SIMULATE")
+    std::env::var("ASTER_TEE_SIMULATE")
         .map(|v| v == "1" || v.eq_ignore_ascii_case("true"))
         .unwrap_or(false)
 }

@@ -2,8 +2,8 @@ use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use a3s_code_core::llm::{StreamEvent, ToolDefinition, ToolResultContent, ToolResultContentField};
-use a3s_code_core::{
+use aster_core::llm::{StreamEvent, ToolDefinition, ToolResultContent, ToolResultContentField};
+use aster_core::{
     Agent, CodeConfig, ContentBlock, LlmClient, LlmResponse, LocalWorkspaceManifest,
     ManifestWorkspaceBackend, Message, PlanningMode, SessionOptions, TokenUsage, WorkspaceServices,
 };
@@ -211,7 +211,7 @@ async fn run_glob_agent_task(
                     .with_llm_client(client.clone())
                     .with_workspace_backend(services)
                     .with_confirmation_manager(Arc::new(
-                        a3s_code_core::hitl::AutoApproveConfirmation,
+                        aster_core::hitl::AutoApproveConfirmation,
                     ))
                     .with_planning_mode(PlanningMode::Disabled)
                     .with_continuation(false)
@@ -309,11 +309,11 @@ async fn agent_glob_task_sees_recent_file_first() {
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "prints filesystem-sensitive agent task latency metrics"]
 async fn agent_glob_task_perf_manifest_vs_local_workspace() {
-    let file_count = std::env::var("A3S_WORKSPACE_MANIFEST_PERF_FILES")
+    let file_count = std::env::var("ASTER_WORKSPACE_MANIFEST_PERF_FILES")
         .ok()
         .and_then(|value| value.parse::<usize>().ok())
         .unwrap_or(8_000);
-    let runs = std::env::var("A3S_WORKSPACE_MANIFEST_PERF_RUNS")
+    let runs = std::env::var("ASTER_WORKSPACE_MANIFEST_PERF_RUNS")
         .ok()
         .and_then(|value| value.parse::<usize>().ok())
         .unwrap_or(7)

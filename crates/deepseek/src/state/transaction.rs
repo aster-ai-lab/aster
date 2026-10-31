@@ -5,7 +5,7 @@
 
 use crate::engram::{EngramCommit, EngramHistory, PreparedNgrams};
 use crate::layers::tensor_error;
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::Device;
 use tokio_util::sync::CancellationToken;
 

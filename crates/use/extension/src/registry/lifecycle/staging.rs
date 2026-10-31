@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use tokio::fs;
 
 use crate::package::{
@@ -58,7 +58,7 @@ async fn validate_owned_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| io_error("inspect lifecycle package directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(package_ownership_error(
             path,
             "A lifecycle package directory is not an owned physical directory.",
@@ -111,7 +111,7 @@ async fn validate_abandoned_staging_tree(root: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(root)
         .await
         .map_err(|error| io_error("inspect abandoned lifecycle package staging", root, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(package_ownership_error(
             root,
             "An abandoned lifecycle staging path is not an owned physical directory.",
@@ -145,7 +145,7 @@ async fn validate_abandoned_staging_tree(root: &Path) -> UseResult<()> {
             let metadata = fs::symlink_metadata(&path).await.map_err(|error| {
                 io_error("inspect abandoned lifecycle package entry", &path, error)
             })?;
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) {
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata) {
                 return Err(package_ownership_error(
                     &path,
                     "An abandoned lifecycle staging tree contains a link or reparse point.",

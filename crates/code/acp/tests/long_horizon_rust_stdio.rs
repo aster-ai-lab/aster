@@ -23,7 +23,7 @@ mod scripted;
 #[path = "long_horizon/upstream.rs"]
 mod upstream;
 
-use a3s_code_core::config::CodeConfig;
+use aster_core::config::CodeConfig;
 use serde_json::json;
 use std::path::PathBuf;
 
@@ -42,7 +42,7 @@ async fn masked_verification_is_repaired_with_the_admitted_exact_command() {
 async fn rust_workflow(repair_masked_check: bool) {
     tokio::task::LocalSet::new().run_until(async {
         let assets = PathBuf::from(std::env::var_os("ASTER_TEST_OCI_ASSETS").expect("explicit qualified assets"));
-        let evidence = PathBuf::from(std::env::var_os("A3S_LH_EVIDENCE_DIR").expect("explicit evidence directory"));
+        let evidence = PathBuf::from(std::env::var_os("ASTER_LH_EVIDENCE_DIR").expect("explicit evidence directory"));
         assert!(assets.is_absolute() && evidence.is_absolute());
         let runtime_before = runtime::identity(&assets).unwrap();
         let root = tempfile::tempdir().unwrap();

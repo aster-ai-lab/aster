@@ -2,8 +2,8 @@ use std::collections::BTreeSet;
 use std::io;
 use std::mem::{size_of, zeroed};
 
-use a3s_oci_sdk::oci_spec::runtime::ExecCPUAffinity;
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::ExecCPUAffinity;
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use serde::{Deserialize, Serialize};
 
 const MAX_AFFINITY_STRING_BYTES: usize = 16 * 1024;
@@ -246,17 +246,17 @@ fn affinity_error(code: ErrorCode, message: impl Into<String>, operation: &'stat
 mod tests {
     use std::process::Command;
 
-    use a3s_oci_sdk::oci_spec::runtime::ExecCPUAffinity;
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::oci_spec::runtime::ExecCPUAffinity;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{apply_final, apply_initial, current_cpu_ids, CpuAffinityPlan, CpuSetPlan};
 
-    const CHILD_PROBE: &str = "A3S_OCI_CPU_AFFINITY_CHILD_PROBE";
+    const CHILD_PROBE: &str = "ASTER_OCI_CPU_AFFINITY_CHILD_PROBE";
     const APPLY_TEST: &str =
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process";
 
     fn affinity(value: serde_json::Value) -> ExecCPUAffinity {
-        let process = a3s_oci_sdk::process_serde::decode(serde_json::json!({
+        let process = aster_oci_sdk::process_serde::decode(serde_json::json!({
             "terminal": false,
             "user": {"uid": 0, "gid": 0},
             "args": ["/bin/true"],

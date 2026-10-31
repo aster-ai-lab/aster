@@ -31,7 +31,7 @@ stream = []
 # depends on this feature.
 unstable = []
 
-# Vendored into the A3S Box monorepo as a patched dependency (see the repo
+# Vendored into the Aster Box monorepo as a patched dependency (see the repo
 # workspace `[patch.crates-io]`). Kept as its own workspace root so the parent
 # workspace does not absorb it; the upstream tests/util members were pruned.
 [workspace]

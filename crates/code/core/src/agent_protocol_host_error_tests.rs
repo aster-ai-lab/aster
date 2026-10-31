@@ -10,7 +10,7 @@ fn cancellation_runtime_code_requires_the_typed_source() {
     assert_eq!(typed.code(), "INTERNAL_ERROR");
     assert_eq!(
         typed.runtime_code(),
-        "a3s.code.agent_protocol.run_cancellation_pending"
+        "aster.code.agent_protocol.run_cancellation_pending"
     );
     let prose = AgentProtocolHostError::Code(CodeError::Internal(anyhow::anyhow!(
         "Run 'pending-run' cancellation is pending original worker retirement"

@@ -1,14 +1,14 @@
 export const OFFICE_DOCUMENT_LAYOUT_FONT_ID = 'noto-sans-hans-regular';
-export const OFFICE_DOCUMENT_LAYOUT_FONT_FAMILY = 'A3S Office Noto Sans Hans';
+export const OFFICE_DOCUMENT_LAYOUT_FONT_FAMILY = 'Aster Office Noto Sans Hans';
 export const OFFICE_DOCUMENT_LAYOUT_LATIN_FONT_ID = 'noto-sans-regular';
-export const OFFICE_DOCUMENT_LAYOUT_LATIN_FONT_FAMILY = 'A3S Office Noto Sans';
+export const OFFICE_DOCUMENT_LAYOUT_LATIN_FONT_FAMILY = 'Aster Office Noto Sans';
 export const OFFICE_DOCUMENT_LAYOUT_ARABIC_FONT_ID =
   'noto-naskh-arabic-regular';
 export const OFFICE_DOCUMENT_LAYOUT_ARABIC_FONT_FAMILY =
-  'A3S Office Noto Naskh Arabic';
+  'Aster Office Noto Naskh Arabic';
 export const OFFICE_DOCUMENT_LAYOUT_HEBREW_FONT_ID = 'noto-sans-hebrew-regular';
 export const OFFICE_DOCUMENT_LAYOUT_HEBREW_FONT_FAMILY =
-  'A3S Office Noto Sans Hebrew';
+  'Aster Office Noto Sans Hebrew';
 
 export interface WorkDocumentLayoutFont {
   id: string;

@@ -1,6 +1,6 @@
 # Production Readiness
 
-This document defines the production-supported scope of `a3s-orm`. It does not claim complete Kysely feature parity.
+This document defines the production-supported scope of `aster-orm`. It does not claim complete Kysely feature parity.
 
 ## Supported deployments
 

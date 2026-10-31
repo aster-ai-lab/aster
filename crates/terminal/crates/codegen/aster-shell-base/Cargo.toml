@@ -1,0 +1,53 @@
+[package]
+license = "Apache-2.0"
+name = "aster-shell-base"
+version = "0.1.0"
+description = "Foundation modules for the grok shell crate family: environment presets, CPU profiling, and process/filesystem utilities."
+edition = "2024"
+publish = false
+
+[features]
+# Forwarded from shell; empty here (no local-ws code in this crate).
+local-workspace = []
+# Exposes `#[cfg(test)]`-only helpers (`env::EnvVarGuard`,
+# `cpu_profile` test seams) to downstream crates' test targets. Enabled by
+test-support = ["aster-env/test-support"]
+default-bazel = ["test-support"]
+
+[dependencies]
+anyhow = {workspace = true}
+chrono = {workspace = true}
+reqwest = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+thiserror = {workspace = true}
+tokio = {version = "1", features = ["full", "sync"]}
+tracing = {workspace = true}
+url = {workspace = true}
+aster-tty-utils = {path = "../aster-tty-utils"}
+aster-version = {path = "../aster-version"}
+aster-shared = {path = "../aster-shared"}
+aster-env = {path = "../aster-env"}
+aster-config = {path = "../aster-config"}
+aster-dirs = {path = "../aster-dirs"}
+aster-extra-ca = {path = "../aster-extra-ca"}
+
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+nix = {workspace = true}
+# No `flamegraph` feature: that pulls in inferno (CDDL-1.0), which we keep out
+# of shipped binaries. stop() emits folded stacks via pprof's public Report
+# API instead; render externally with speedscope or inferno-flamegraph.
+pprof = {version = "0.15"}
+
+[target.'cfg(windows)'.dependencies]
+windows = {workspace = true}
+
+[dev-dependencies]
+tempfile = {workspace = true}
+# `cfg(test)` in this crate does not enable features on dependencies, so the
+# tests' `EnvVarGuard` re-export needs the feature turned on explicitly.
+aster-env = {features = ["test-support"], path = "../aster-env"}
+
+[lints]
+workspace = true

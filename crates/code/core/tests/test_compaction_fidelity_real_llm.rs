@@ -6,15 +6,15 @@
 
 mod support;
 
-use a3s_code_core::budget::{BudgetDecision, BudgetGuard};
-use a3s_code_core::fact_control::{read_workspace_facts, thread_for_session};
-use a3s_code_core::harness_loop::CompletionTerminal;
-use a3s_code_core::llm::{
+use aster_core::budget::{BudgetDecision, BudgetGuard};
+use aster_core::fact_control::{read_workspace_facts, thread_for_session};
+use aster_core::harness_loop::CompletionTerminal;
+use aster_core::llm::{
     LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentEvent, PlanningMode, RunStatus, SessionOptions};
-use a3s_memory::MemoryStore;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentEvent, PlanningMode, RunStatus, SessionOptions};
+use aster_durable_memory::MemoryStore;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -32,12 +32,12 @@ const FILLER_B: &str = "A lighthouse keeper counted forty-one ships, miscounted 
 #[derive(Default)]
 struct RefuseCommands(AtomicUsize);
 #[async_trait::async_trait]
-impl a3s_code_core::sandbox::BashSandbox for RefuseCommands {
+impl aster_core::sandbox::BashSandbox for RefuseCommands {
     async fn exec_command(
         &self,
         _: &str,
         _: &str,
-    ) -> anyhow::Result<a3s_code_core::sandbox::SandboxOutput> {
+    ) -> anyhow::Result<aster_core::sandbox::SandboxOutput> {
         self.0.fetch_add(1, Ordering::SeqCst);
         anyhow::bail!("compaction fidelity fixture refuses commands")
     }
@@ -99,7 +99,7 @@ struct ObservedProvider {
 fn evidence_digest(domain: &str, value: &impl Serialize) -> String {
     let bytes = serde_json::to_vec(value).unwrap();
     let mut h = Sha256::new();
-    h.update(b"a3s-code-harness-evidence\0");
+    h.update(b"aster-harness-evidence\0");
     h.update((domain.len() as u64).to_be_bytes());
     h.update(domain.as_bytes());
     h.update(&bytes);
@@ -123,9 +123,9 @@ impl ObservedProvider {
         let index = inputs.len();
         inputs.push(InputObservation {
             transport,
-            messages_digest: evidence_digest("a3s.code.model-input-messages.v1", &messages),
+            messages_digest: evidence_digest("aster.code.model-input-messages.v1", &messages),
             message_payload_bytes: bytes.len(),
-            system_digest: system.map(|s| evidence_digest("a3s.code.model-input-system.v1", &s)),
+            system_digest: system.map(|s| evidence_digest("aster.code.model-input-system.v1", &s)),
             messages: messages
                 .iter()
                 .map(|m| (m.role.clone(), m.text()))
@@ -143,10 +143,10 @@ impl ObservedProvider {
 }
 #[async_trait::async_trait]
 impl LlmClient for ObservedProvider {
-    fn model_generation_concurrency(&self) -> a3s_code_core::llm::ModelGenerationConcurrency {
+    fn model_generation_concurrency(&self) -> aster_core::llm::ModelGenerationConcurrency {
         self.inner.model_generation_concurrency()
     }
-    fn model_generation_pool(&self) -> Option<a3s_code_core::llm::ModelGenerationPool> {
+    fn model_generation_pool(&self) -> Option<aster_core::llm::ModelGenerationPool> {
         self.inner.model_generation_pool()
     }
     fn fork_for_session(&self, id: &str) -> Option<Arc<dyn LlmClient>> {
@@ -198,11 +198,11 @@ async fn scenario(corrected: bool) {
     }
     let configured = support::layer_c_model::load_pinned_layer_c_config();
     let route = configured.default_model.clone().unwrap();
-    let config = a3s_code_core::config::CodeConfig {
+    let config = aster_core::config::CodeConfig {
         providers: configured.providers,
         default_model: Some(route.clone()),
         user_instructions_dir: Some(root.join("personal")),
-        memory: Some(a3s_code_core::memory::MemoryConfig {
+        memory: Some(aster_core::memory::MemoryConfig {
             llm_extraction: false,
             prune_policy: None,
             ..Default::default()
@@ -218,7 +218,7 @@ async fn scenario(corrected: bool) {
     llm.max_tokens = Some(4096);
     llm.api_timeout_ms = Some(120_000);
     llm.temperature = Some(0.0);
-    let raw_provider = a3s_code_core::llm::create_client_with_config(llm);
+    let raw_provider = aster_core::llm::create_client_with_config(llm);
     assert!(
         !raw_provider.model_generation_is_managed(),
         "observation wraps only the raw configured provider"
@@ -229,7 +229,7 @@ async fn scenario(corrected: bool) {
     });
     let accounting = Arc::new(Accounting::default());
     let commands = Arc::new(RefuseCommands::default());
-    let memory = Arc::new(a3s_memory::InMemoryStore::new());
+    let memory = Arc::new(aster_durable_memory::InMemoryStore::new());
     let agent = Agent::from_config(config).await.unwrap();
     let session_id = format!("compact-fidelity-{corrected}");
     let mut policy = PermissionPolicy::new();
@@ -257,7 +257,7 @@ async fn scenario(corrected: bool) {
                     .with_auto_compact_threshold(0.05)
                     .with_max_context_tokens(1024)
                     .with_retention_limits(
-                        a3s_code_core::retention::SessionRetentionLimits::default()
+                        aster_core::retention::SessionRetentionLimits::default()
                             .with_max_runs(16)
                             .with_max_events_per_run(65_536)
                             .with_max_event_bytes_per_run(16 * 1024 * 1024),
@@ -327,7 +327,7 @@ async fn scenario(corrected: bool) {
         );
         let facts = read_workspace_facts(&root, &thread_for_session(&session_id)).unwrap();
         let evidence_facts: Vec<_> = facts.iter().filter(|f| f.kind != "model.turn").collect();
-        let observed = serde_json::json!({"schema":"a3s.code.compaction-fidelity.evidence.v2","route":route,"corrected":corrected,
+        let observed = serde_json::json!({"schema":"aster.code.compaction-fidelity.evidence.v2","route":route,"corrected":corrected,
             "session_id":session_id,"last_turn":index,"final_snapshot":index+1==prompts.len(),"turns":turns,
             "provider_inputs":observer.inputs.lock().unwrap().clone(),"successful_governed_callbacks":accounting.usage.lock().unwrap().clone(),
             "governed_entries":accounting.entries.load(Ordering::SeqCst),"memory_item_count":memory.count().await.unwrap(),

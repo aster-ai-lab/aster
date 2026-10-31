@@ -2038,12 +2038,12 @@ fn test_project_hint_is_assembled_as_context_item() {
     assert_eq!(assembly.items.len(), 1);
     assert_eq!(
         assembly.items[0].source.as_deref(),
-        Some("a3s://project-hint")
+        Some("aster://project-hint")
     );
     assert!(assembly.items[0].content.contains("Rust"));
 
     let text = agent.build_augmented_system_prompt(&[]).unwrap();
-    assert!(text.contains("<context source=\"a3s://project-hint\" type=\"Resource\">"));
+    assert!(text.contains("<context source=\"aster://project-hint\" type=\"Resource\">"));
 }
 
 #[test]
@@ -2372,7 +2372,7 @@ async fn test_queued_tool_result_preserves_metadata() {
     let metadata = result.metadata.expect("tool metadata");
     assert_eq!(metadata["source"], "queue");
     assert_eq!(
-        metadata["a3s_tool_result_evidence"]["schema"],
+        metadata["aster_tool_result_evidence"]["schema"],
         crate::tools::TOOL_RESULT_EVIDENCE_SCHEMA_V1
     );
     assert_eq!(result.images.len(), 1);
@@ -2680,7 +2680,7 @@ async fn test_execute_plan_keeps_human_goal_product_and_plan_chrome_wire() {
 
     let human = "规划如何开发一个游戏引擎？";
     let composed = format!(
-        "A3S Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n{human}"
+        "Aster Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n{human}"
     );
     let mut plan = ExecutionPlan::new(&composed, Complexity::Simple);
     plan.add_step(Task::new("s1", "Survey engines"));

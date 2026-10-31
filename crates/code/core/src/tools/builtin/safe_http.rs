@@ -5,8 +5,9 @@
 //! in Fake-IP environments; in that mode the trusted proxy resolves hostnames.
 //! When the system resolver returns only Clash/Surge-style Fake-IP addresses
 //! (`198.18.0.0/15`) and no proxy is configured, resolution falls back to
-//! DNS-over-HTTPS against `1.1.1.1`. DoH answers are still subject to the same
-//! public-address SSRF checks before any connection is opened.
+//! DNS-over-HTTPS against literal-IP public resolvers (Cloudflare, Google,
+//! AliDNS). DoH answers are still subject to the same public-address SSRF
+//! checks before any connection is opened.
 
 use reqwest::header::{HeaderMap, ACCEPT, ACCEPT_ENCODING, LOCATION, RANGE};
 use reqwest::{redirect::Policy, Url};
@@ -25,9 +26,14 @@ pub(super) const SYSTEM_PROXY_LOOKUP_TIMEOUT: Duration = Duration::from_millis(7
 /// Bound DoH fallback so Fake-IP recovery cannot stall a fetch indefinitely.
 const DOH_LOOKUP_TIMEOUT: Duration = Duration::from_secs(3);
 
-/// Cloudflare DNS-over-HTTPS JSON endpoint addressed by literal IP so the
-/// lookup itself cannot be poisoned by Fake-IP answers for a hostname.
-const DOH_ENDPOINT: &str = "https://1.1.1.1/dns-query";
+/// Literal-IP DoH JSON endpoints, tried in order. A region that blocks one
+/// public resolver can still recover Fake-IP answers from another. Hostnames
+/// are never used here so the lookup itself cannot be Fake-IP poisoned.
+const DOH_ENDPOINTS: &[&str] = &[
+    "https://1.1.1.1/dns-query", // Cloudflare
+    "https://8.8.8.8/resolve",   // Google
+    "https://223.5.5.5/resolve", // AliDNS
+];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum RedirectQueryPolicy {
@@ -42,10 +48,20 @@ pub(crate) enum ResolutionScript {
     FakeIpDohFail = 1,
     FakeIpPrivateDoh = 2,
     PrivateOnly = 3,
+    /// Local Fake-IP, then a public DoH answer — Fake-IP recovery must connect.
+    FakeIpDohSuccess = 4,
 }
 
 #[cfg(test)]
 static RESOLUTION_SCRIPT: std::sync::atomic::AtomicU8 = std::sync::atomic::AtomicU8::new(0);
+
+#[cfg(test)]
+static DOH_ENDPOINT_OVERRIDE: std::sync::Mutex<Option<Vec<String>>> = std::sync::Mutex::new(None);
+
+/// Resolution scripts and DoH overrides are process-global; tests that touch
+/// them must hold this lock for the whole case so parallel suites cannot race.
+#[cfg(test)]
+static RESOLUTION_TEST_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
 
 #[cfg(test)]
 pub(crate) fn set_resolution_script(script: Option<ResolutionScript>) {
@@ -54,13 +70,39 @@ pub(crate) fn set_resolution_script(script: Option<ResolutionScript>) {
 }
 
 #[cfg(test)]
+pub(crate) fn set_doh_endpoint_override(endpoints: Option<Vec<String>>) {
+    *DOH_ENDPOINT_OVERRIDE.lock().expect("DoH override lock") = endpoints;
+}
+
+#[cfg(test)]
 fn resolution_script() -> Option<ResolutionScript> {
     match RESOLUTION_SCRIPT.load(std::sync::atomic::Ordering::SeqCst) {
         1 => Some(ResolutionScript::FakeIpDohFail),
         2 => Some(ResolutionScript::FakeIpPrivateDoh),
         3 => Some(ResolutionScript::PrivateOnly),
+        4 => Some(ResolutionScript::FakeIpDohSuccess),
         _ => None,
     }
+}
+
+#[cfg(test)]
+fn doh_endpoints() -> Vec<String> {
+    if let Some(override_endpoints) = DOH_ENDPOINT_OVERRIDE
+        .lock()
+        .expect("DoH override lock")
+        .clone()
+    {
+        return override_endpoints;
+    }
+    DOH_ENDPOINTS
+        .iter()
+        .map(|endpoint| (*endpoint).to_string())
+        .collect()
+}
+
+#[cfg(not(test))]
+fn doh_endpoints() -> Vec<&'static str> {
+    DOH_ENDPOINTS.to_vec()
 }
 
 pub(super) struct SafeHttpResponse {
@@ -313,7 +355,9 @@ fn lookup_system(host: &str, port: u16) -> HostLookup {
     Box::pin(async move {
         let addresses = tokio::net::lookup_host((host.as_str(), port))
             .await
-            .map_err(|error| format!("Failed to resolve URL host {host}: {error}"))?;
+            .map_err(|error| {
+                format!("DNS lookup failed for URL host {host}: {error}. Check the network, DNS, VPN or proxy settings")
+            })?;
         Ok(addresses.collect())
     })
 }
@@ -330,10 +374,10 @@ async fn resolve_public_target(url: &Url) -> Result<ResolvedTarget, SafeHttpErro
         let lookup = move |_host: &str, port: u16| -> HostLookup {
             let address = match script {
                 ResolutionScript::PrivateOnly => Ipv4Addr::new(127, 0, 0, 1),
-                ResolutionScript::FakeIpDohFail | ResolutionScript::FakeIpPrivateDoh => {
-                    Ipv4Addr::new(198, 18, 0, 1)
-                }
-                ResolutionScript::Unset => Ipv4Addr::new(198, 18, 0, 1),
+                ResolutionScript::FakeIpDohFail
+                | ResolutionScript::FakeIpPrivateDoh
+                | ResolutionScript::FakeIpDohSuccess
+                | ResolutionScript::Unset => Ipv4Addr::new(198, 18, 0, 1),
             };
             Box::pin(async move { Ok(vec![SocketAddr::new(IpAddr::V4(address), port)]) })
         };
@@ -412,63 +456,95 @@ fn is_fake_ipv4(address: Ipv4Addr) -> bool {
     a == 198 && (b == 18 || b == 19)
 }
 
-/// Resolve `host` through Cloudflare DoH JSON. Answers are not trusted until
-/// [`validate_resolved_addresses`] runs on the returned sockets.
+/// Resolve `host` through public DoH JSON endpoints. Answers are not trusted
+/// until [`validate_resolved_addresses`] runs on the returned sockets.
 async fn resolve_via_dns_over_https(host: &str, port: u16) -> Result<Vec<SocketAddr>, String> {
     #[cfg(test)]
     if let Some(script) = resolution_script() {
-        return match script {
+        // FakeIpDohSuccess with an endpoint override falls through so wiremock
+        // can exercise the multi-endpoint loop. Without an override it returns
+        // a fixed public answer so recovery stays hermetic.
+        let has_override = DOH_ENDPOINT_OVERRIDE
+            .lock()
+            .expect("DoH override lock")
+            .is_some();
+        match script {
             ResolutionScript::FakeIpDohFail | ResolutionScript::Unset => {
-                Err("scripted DNS-over-HTTPS failure".to_string())
+                return Err("scripted DNS-over-HTTPS failure".to_string());
             }
-            ResolutionScript::FakeIpPrivateDoh => Ok(vec![SocketAddr::new(
-                IpAddr::V4(Ipv4Addr::new(10, 0, 0, 8)),
-                port,
-            )]),
+            ResolutionScript::FakeIpPrivateDoh => {
+                return Ok(vec![SocketAddr::new(
+                    IpAddr::V4(Ipv4Addr::new(10, 0, 0, 8)),
+                    port,
+                )]);
+            }
             ResolutionScript::PrivateOnly => {
-                Err("private resolution must not reach DNS-over-HTTPS".to_string())
+                return Err("private resolution must not reach DNS-over-HTTPS".to_string());
             }
-        };
+            ResolutionScript::FakeIpDohSuccess if !has_override => {
+                return Ok(vec![SocketAddr::new(
+                    IpAddr::V4(Ipv4Addr::new(93, 184, 216, 34)),
+                    port,
+                )]);
+            }
+            ResolutionScript::FakeIpDohSuccess => {}
+        }
     }
     let client = reqwest::Client::builder()
         .redirect(Policy::none())
         .no_proxy()
         .timeout(DOH_LOOKUP_TIMEOUT)
-        .user_agent(concat!("a3s-code/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("aster/", env!("CARGO_PKG_VERSION")))
         .build()
         .map_err(|error| format!("Failed to initialize DoH client: {error}"))?;
 
+    let mut failures = Vec::new();
+    for endpoint in doh_endpoints() {
+        match query_doh_endpoint(&client, endpoint.as_ref(), host, port).await {
+            Ok(addresses) if !addresses.is_empty() => return Ok(addresses),
+            Ok(_) => failures.push(format!("{endpoint}: no addresses")),
+            Err(error) => failures.push(format!("{endpoint}: {error}")),
+        }
+    }
+    Err(format!(
+        "DoH returned no addresses for host {host} ({})",
+        failures.join("; ")
+    ))
+}
+
+async fn query_doh_endpoint(
+    client: &reqwest::Client,
+    endpoint: &str,
+    host: &str,
+    port: u16,
+) -> Result<Vec<SocketAddr>, String> {
     let mut addresses = Vec::new();
     for record_type in ["A", "AAAA"] {
-        let mut endpoint =
-            Url::parse(DOH_ENDPOINT).map_err(|error| format!("Invalid DoH endpoint: {error}"))?;
-        endpoint
-            .query_pairs_mut()
+        let mut url =
+            Url::parse(endpoint).map_err(|error| format!("Invalid DoH endpoint: {error}"))?;
+        url.query_pairs_mut()
             .append_pair("name", host)
             .append_pair("type", record_type);
         let response = client
-            .get(endpoint)
+            .get(url)
             .header(ACCEPT, "application/dns-json")
             .send()
             .await
-            .map_err(|error| format!("DoH {record_type} query failed: {}", error.without_url()))?;
+            .map_err(|error| format!("{record_type} query failed: {}", error.without_url()))?;
         if !response.status().is_success() {
             return Err(format!(
-                "DoH {record_type} query returned HTTP {}",
+                "{record_type} query returned HTTP {}",
                 response.status()
             ));
         }
         let body = response
             .text()
             .await
-            .map_err(|error| format!("DoH {record_type} body read failed: {error}"))?;
+            .map_err(|error| format!("{record_type} body read failed: {error}"))?;
         addresses.extend(parse_doh_answer_ips(&body, port)?);
     }
     addresses.sort_unstable();
     addresses.dedup();
-    if addresses.is_empty() {
-        return Err(format!("DoH returned no addresses for host {host}"));
-    }
     Ok(addresses)
 }
 
@@ -520,7 +596,7 @@ fn build_pinned_client(
     let mut builder = reqwest::Client::builder()
         .redirect(Policy::none())
         .no_proxy()
-        .user_agent(concat!("a3s-code/", env!("CARGO_PKG_VERSION")));
+        .user_agent(concat!("aster/", env!("CARGO_PKG_VERSION")));
 
     if let Some(fallback) = fallback {
         builder = builder.dns_resolver2(fallback);
@@ -544,7 +620,7 @@ pub(super) fn build_proxy_client(proxy_url: &str) -> Result<reqwest::Client, Str
         .redirect(Policy::none())
         .no_proxy()
         .proxy(proxy)
-        .user_agent(concat!("a3s-code/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("aster/", env!("CARGO_PKG_VERSION")))
         .build()
         .map_err(|error| format!("Failed to initialize HTTP proxy client: {error}"))
 }
@@ -658,8 +734,13 @@ pub(super) fn validate_resolved_addresses(
         .map(SocketAddr::ip)
         .find(|address| is_forbidden_ip(*address))
     {
+        let hint = if host.parse::<IpAddr>().is_ok() {
+            ""
+        } else {
+            ". This is the SSRF guard, not a site outage: the local DNS, hosts file, VPN or proxy maps this public host to a private address. Fix DNS or configure a web proxy, then retry"
+        };
         return Err(format!(
-            "URL host {host} resolves to a non-public address and was blocked: {address}"
+            "URL host {host} resolves to a non-public address and was blocked: {address}{hint}"
         ));
     }
     Ok(())
@@ -730,17 +811,30 @@ mod tests {
         assert!(!addresses_are_exclusively_fake_ip(&[]));
     }
 
+    struct ResetResolutionHooks {
+        _guard: std::sync::MutexGuard<'static, ()>,
+    }
+    impl ResetResolutionHooks {
+        fn acquire() -> Self {
+            let guard = RESOLUTION_TEST_LOCK
+                .lock()
+                .unwrap_or_else(|poison| poison.into_inner());
+            set_resolution_script(None);
+            set_doh_endpoint_override(None);
+            Self { _guard: guard }
+        }
+    }
+    impl Drop for ResetResolutionHooks {
+        fn drop(&mut self) {
+            set_resolution_script(None);
+            set_doh_endpoint_override(None);
+        }
+    }
+
     #[tokio::test]
     async fn fake_ip_doh_failure_reports_network_unavailable() {
-        struct ResetResolutionScript;
-        impl Drop for ResetResolutionScript {
-            fn drop(&mut self) {
-                set_resolution_script(None);
-            }
-        }
-
+        let _reset = ResetResolutionHooks::acquire();
         set_resolution_script(Some(ResolutionScript::FakeIpDohFail));
-        let _reset = ResetResolutionScript;
         let url = Url::parse("https://example.com").unwrap();
         let error = match resolve_public_target(&url).await {
             Ok(_) => panic!("Fake-IP without a DoH fallback must not connect"),
@@ -756,6 +850,137 @@ mod tests {
             "{message}"
         );
         assert!(!message.contains("non-public address"), "{message}");
+        assert!(
+            !message.to_ascii_lowercase().contains("security check"),
+            "{message}"
+        );
+        assert!(!message.contains("网络安全"), "{message}");
+    }
+
+    #[tokio::test]
+    async fn fake_ip_doh_success_recovers_to_a_public_address() {
+        let _reset = ResetResolutionHooks::acquire();
+        set_resolution_script(Some(ResolutionScript::FakeIpDohSuccess));
+        let url = Url::parse("https://example.com").unwrap();
+        let target = resolve_public_target(&url)
+            .await
+            .expect("Fake-IP must recover through DoH");
+        assert_eq!(
+            target.addresses,
+            vec![SocketAddr::from(([93, 184, 216, 34], 443))]
+        );
+        assert!(!addresses_are_exclusively_fake_ip(&target.addresses));
+    }
+
+    #[tokio::test]
+    async fn fake_ip_private_doh_reports_ssrf_guard_not_a_security_check() {
+        let _reset = ResetResolutionHooks::acquire();
+        set_resolution_script(Some(ResolutionScript::FakeIpPrivateDoh));
+        let url = Url::parse("https://github.com/aster-ai-lab/aster/issues").unwrap();
+        let error = match resolve_public_target(&url).await {
+            Ok(_) => panic!("private DoH answer must fail closed"),
+            Err(error) => error,
+        };
+        let message = error.to_string();
+        assert!(!error.is_transport(), "{message}");
+        assert!(message.contains("github.com"), "{message}");
+        assert!(message.contains("10.0.0.8"), "{message}");
+        assert!(message.contains("SSRF guard"), "{message}");
+        assert!(
+            !message.to_ascii_lowercase().contains("security check"),
+            "{message}"
+        );
+        assert!(!message.contains("网络安全"), "{message}");
+    }
+
+    #[tokio::test]
+    async fn doh_fallback_tries_each_endpoint_and_lists_exact_failures() {
+        use wiremock::matchers::{method, path};
+        use wiremock::{Mock, MockServer, ResponseTemplate};
+
+        let failing = MockServer::start().await;
+        Mock::given(method("GET"))
+            .and(path("/dns-query"))
+            .respond_with(ResponseTemplate::new(503))
+            .mount(&failing)
+            .await;
+        let empty = MockServer::start().await;
+        Mock::given(method("GET"))
+            .and(path("/resolve"))
+            .respond_with(ResponseTemplate::new(200).set_body_string(r#"{"Status":0}"#))
+            .mount(&empty)
+            .await;
+
+        let _reset = ResetResolutionHooks::acquire();
+        set_resolution_script(Some(ResolutionScript::FakeIpDohSuccess));
+        set_doh_endpoint_override(Some(vec![
+            format!("{}/dns-query", failing.uri()),
+            format!("{}/resolve", empty.uri()),
+        ]));
+
+        let error = resolve_via_dns_over_https("github.com", 443)
+            .await
+            .expect_err("all DoH endpoints must fail");
+        assert!(error.contains("github.com"), "{error}");
+        assert!(error.contains(&failing.uri()), "{error}");
+        assert!(error.contains("HTTP 503"), "{error}");
+        assert!(error.contains(&empty.uri()), "{error}");
+        assert!(error.contains("no addresses"), "{error}");
+        assert!(
+            !error.to_ascii_lowercase().contains("security check"),
+            "{error}"
+        );
+    }
+
+    #[tokio::test]
+    async fn doh_fallback_uses_the_first_endpoint_that_returns_addresses() {
+        use wiremock::matchers::{method, path};
+        use wiremock::{Mock, MockServer, ResponseTemplate};
+
+        let failing = MockServer::start().await;
+        Mock::given(method("GET"))
+            .and(path("/dns-query"))
+            .respond_with(ResponseTemplate::new(500))
+            .mount(&failing)
+            .await;
+        let succeeding = MockServer::start().await;
+        Mock::given(method("GET"))
+            .and(path("/resolve"))
+            .respond_with(ResponseTemplate::new(200).set_body_string(
+                r#"{"Status":0,"Answer":[{"name":"github.com.","type":1,"TTL":60,"data":"140.82.112.4"}]}"#,
+            ))
+            .mount(&succeeding)
+            .await;
+
+        let _reset = ResetResolutionHooks::acquire();
+        set_resolution_script(Some(ResolutionScript::FakeIpDohSuccess));
+        set_doh_endpoint_override(Some(vec![
+            format!("{}/dns-query", failing.uri()),
+            format!("{}/resolve", succeeding.uri()),
+        ]));
+
+        let url = Url::parse("https://github.com/aster-ai-lab/aster/issues").unwrap();
+        let target = resolve_public_target(&url)
+            .await
+            .expect("second DoH endpoint must recover Fake-IP");
+        assert_eq!(
+            target.addresses,
+            vec![SocketAddr::from(([140, 82, 112, 4], 443))]
+        );
+    }
+
+    #[test]
+    fn blocked_hostname_names_the_guard_and_the_dns_cause() {
+        let private = [SocketAddr::new(IpAddr::V4(Ipv4Addr::new(10, 0, 0, 8)), 443)];
+        let hostname = validate_resolved_addresses("github.com", &private).unwrap_err();
+        assert!(hostname.contains("github.com"), "{hostname}");
+        assert!(hostname.contains("10.0.0.8"), "{hostname}");
+        assert!(hostname.contains("SSRF guard"), "{hostname}");
+        assert!(hostname.contains("web proxy"), "{hostname}");
+
+        let literal = [SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 80)];
+        let literal = validate_resolved_addresses("127.0.0.1", &literal).unwrap_err();
+        assert!(!literal.contains("SSRF guard"), "{literal}");
     }
 
     #[test]

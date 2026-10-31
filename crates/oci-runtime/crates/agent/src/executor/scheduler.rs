@@ -2,8 +2,8 @@ use std::collections::BTreeSet;
 use std::io;
 use std::mem::size_of;
 
-use a3s_oci_sdk::oci_spec::runtime::{LinuxSchedulerFlag, LinuxSchedulerPolicy, Scheduler};
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::{LinuxSchedulerFlag, LinuxSchedulerPolicy, Scheduler};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use serde::{Deserialize, Serialize};
 
 const SCHED_ISO: u32 = 4;
@@ -514,17 +514,17 @@ mod tests {
     use std::io;
     use std::process::Command;
 
-    use a3s_oci_sdk::oci_spec::runtime::Scheduler;
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::oci_spec::runtime::Scheduler;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{apply, current_attributes, error_code_for_io, SchedulerPlan};
 
-    const CHILD_PROBE: &str = "A3S_OCI_SCHEDULER_CHILD_PROBE";
+    const CHILD_PROBE: &str = "ASTER_OCI_SCHEDULER_CHILD_PROBE";
     const APPLY_TEST: &str =
         "executor::scheduler::tests::applies_batch_policy_in_an_isolated_process";
 
     fn scheduler(value: serde_json::Value) -> Scheduler {
-        let process = a3s_oci_sdk::process_serde::decode(serde_json::json!({
+        let process = aster_oci_sdk::process_serde::decode(serde_json::json!({
             "terminal": false,
             "user": {"uid": 0, "gid": 0},
             "args": ["/bin/true"],

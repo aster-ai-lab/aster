@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     CatalogArchive, CatalogAvailability, CatalogPackage, CatalogSurface, PackageSurfaceKind,
     PluginCatalogRecord, PluginPermissionCeiling, PluginReleaseChannel, PluginSurfaceRef,
     VerifiedCatalogProvenance, VerifiedPluginCatalogRecord, PLUGIN_CATALOG_SCHEMA_V3,
@@ -38,7 +38,7 @@ async fn plan_ready_projection_binds_receipt_and_named_surface_evidence() {
         .await
         .unwrap();
     tokio::fs::write(&path, b"# Guide\n").await.unwrap();
-    let manifest = a3s_use_extension::ExtensionManifest::parse_acl(SKILL_ONLY_PLUGIN).unwrap();
+    let manifest = aster_use_extension::ExtensionManifest::parse_acl(SKILL_ONLY_PLUGIN).unwrap();
     let manifest_sha256 = format!("{:x}", Sha256::digest(SKILL_ONLY_PLUGIN.as_bytes()));
     let package_sha256 = "b".repeat(64);
     let permissions = PluginPermissionCeiling {
@@ -101,8 +101,8 @@ async fn plan_ready_projection_binds_receipt_and_named_surface_evidence() {
     )
     .unwrap();
     let registry =
-        a3s_use_extension::ResolvedRemotePackage::from_verified_catalog(&verified).unwrap();
-    let receipt = a3s_use_extension::ExtensionReceipt {
+        aster_use_extension::ResolvedRemotePackage::from_verified_catalog(&verified).unwrap();
+    let receipt = aster_use_extension::ExtensionReceipt {
         schema_version: 4,
         package_id: manifest.package_id.clone(),
         component_id: "use/acme/guide".to_owned(),
@@ -111,7 +111,7 @@ async fn plan_ready_projection_binds_receipt_and_named_surface_evidence() {
         package_root: temp.path().to_path_buf(),
         manifest_sha256,
         package_sha256: Some(package_sha256),
-        trust: a3s_use_extension::ExtensionTrust::RegistryTuf,
+        trust: aster_use_extension::ExtensionTrust::RegistryTuf,
         registry: Some(registry),
         verified_catalog: Some(verified),
         planning_bundle: None,
@@ -123,7 +123,7 @@ async fn plan_ready_projection_binds_receipt_and_named_surface_evidence() {
         enabled: true,
         lifecycle_generation: None,
     };
-    let extension = a3s_use_extension::InstalledExtension { receipt, manifest };
+    let extension = aster_use_extension::InstalledExtension { receipt, manifest };
     let surfaces = extension
         .surfaces()
         .into_iter()
@@ -178,7 +178,7 @@ async fn plan_ready_projection_binds_receipt_and_named_surface_evidence() {
     catalog.record.surfaces[0].id = "other".to_owned();
     catalog.provenance.catalog_record_digest = catalog.record.descriptor_digest().unwrap();
     mismatched.receipt.registry =
-        Some(a3s_use_extension::ResolvedRemotePackage::from_verified_catalog(catalog).unwrap());
+        Some(aster_use_extension::ResolvedRemotePackage::from_verified_catalog(catalog).unwrap());
     let surfaces = mismatched
         .surfaces()
         .into_iter()

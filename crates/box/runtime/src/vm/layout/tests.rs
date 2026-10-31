@@ -1,8 +1,8 @@
 use super::super::BoxState;
 use super::*;
 use crate::cache::RootfsCache;
-use a3s_box_core::config::BoxConfig;
-use a3s_box_core::{SnapshotImageConfig, SnapshotMetadata};
+use aster_box_core::config::BoxConfig;
+use aster_box_core::{SnapshotImageConfig, SnapshotMetadata};
 use std::sync::Arc;
 use tempfile::TempDir;
 use tokio::sync::RwLock;
@@ -24,18 +24,18 @@ impl crate::rootfs::RootfsProvider for ResumeOnlyProvider {
         &self,
         _box_dir: &Path,
         options: crate::rootfs::RootfsResumeOptions,
-    ) -> a3s_box_core::Result<Option<crate::rootfs::ResumedRootfs>> {
+    ) -> aster_box_core::Result<Option<crate::rootfs::ResumedRootfs>> {
         assert!(options.persistent);
         Ok(Some(self.resumed.clone()))
     }
 
-    fn prepare(&self, _box_dir: &Path, _cache_dir: &Path) -> a3s_box_core::Result<PathBuf> {
-        Err(a3s_box_core::error::BoxError::StateError(
+    fn prepare(&self, _box_dir: &Path, _cache_dir: &Path) -> aster_box_core::Result<PathBuf> {
+        Err(aster_box_core::error::BoxError::StateError(
             "resume-only provider must not prepare a host tree".to_string(),
         ))
     }
 
-    fn cleanup(&self, _box_dir: &Path, _persistent: bool) -> a3s_box_core::Result<()> {
+    fn cleanup(&self, _box_dir: &Path, _persistent: bool) -> aster_box_core::Result<()> {
         Ok(())
     }
 
@@ -45,7 +45,7 @@ impl crate::rootfs::RootfsProvider for ResumeOnlyProvider {
 }
 
 fn make_vm_manager_with_home(home_dir: &Path) -> VmManager {
-    use a3s_box_core::event::EventEmitter;
+    use aster_box_core::event::EventEmitter;
     let config = BoxConfig::default();
     let emitter = EventEmitter::new(10);
     VmManager {
@@ -77,7 +77,7 @@ fn make_vm_manager_with_home(home_dir: &Path) -> VmManager {
         prom: None,
         shim_exit_code: None,
         pull_progress_fn: None,
-        log_config: a3s_box_core::log::LogConfig::default(),
+        log_config: aster_box_core::log::LogConfig::default(),
         resolved_execution_plan: None,
         managed_secret_root: None,
         transient_registry_auth: None,
@@ -136,10 +136,10 @@ async fn image_resource_planning_reads_metadata_without_preparing_runtime_artifa
 #[test]
 fn installed_guest_init_cannot_be_shadowed_by_a_stale_development_build() {
     let temporary = TempDir::new().unwrap();
-    let installed = temporary.path().join("home/bin/a3s-box-guest-init");
+    let installed = temporary.path().join("home/bin/aster-box-guest-init");
     let development = temporary
         .path()
-        .join("target/x86_64-unknown-linux-musl/debug/a3s-box-guest-init");
+        .join("target/x86_64-unknown-linux-musl/debug/aster-box-guest-init");
     write_static_test_elf(&installed);
     write_static_test_elf(&development);
 
@@ -152,10 +152,10 @@ fn installed_guest_init_cannot_be_shadowed_by_a_stale_development_build() {
 #[test]
 fn invalid_installed_guest_init_falls_back_to_a_static_development_build() {
     let temporary = TempDir::new().unwrap();
-    let installed = temporary.path().join("home/bin/a3s-box-guest-init");
+    let installed = temporary.path().join("home/bin/aster-box-guest-init");
     let development = temporary
         .path()
-        .join("target/x86_64-unknown-linux-musl/release/a3s-box-guest-init");
+        .join("target/x86_64-unknown-linux-musl/release/aster-box-guest-init");
     std::fs::create_dir_all(installed.parent().unwrap()).unwrap();
     std::fs::write(&installed, b"not an ELF executable").unwrap();
     write_static_test_elf(&development);
@@ -169,13 +169,13 @@ fn invalid_installed_guest_init_falls_back_to_a_static_development_build() {
 #[test]
 fn release_guest_init_wins_over_a_stale_debug_artifact() {
     let temporary = TempDir::new().unwrap();
-    let installed = temporary.path().join("home/bin/a3s-box-guest-init");
+    let installed = temporary.path().join("home/bin/aster-box-guest-init");
     let debug = temporary
         .path()
-        .join("target/aarch64-unknown-linux-musl/debug/a3s-box-guest-init");
+        .join("target/aarch64-unknown-linux-musl/debug/aster-box-guest-init");
     let release = temporary
         .path()
-        .join("target/aarch64-unknown-linux-musl/release/a3s-box-guest-init");
+        .join("target/aarch64-unknown-linux-musl/release/aster-box-guest-init");
     write_static_test_elf(&debug);
     write_static_test_elf(&release);
 
@@ -188,7 +188,7 @@ fn release_guest_init_wins_over_a_stale_debug_artifact() {
 #[test]
 fn guest_init_for_a_different_machine_is_rejected() {
     let temporary = TempDir::new().unwrap();
-    let path = temporary.path().join("a3s-box-guest-init");
+    let path = temporary.path().join("aster-box-guest-init");
     write_static_test_elf(&path);
     let mut bytes = std::fs::read(&path).unwrap();
     let other_machine = if std::env::consts::ARCH == "aarch64" {
@@ -206,7 +206,7 @@ fn guest_init_for_a_different_machine_is_rejected() {
 #[test]
 fn sandbox_runtime_socket_stays_below_the_unix_path_limit_for_long_homes() {
     let long_home = PathBuf::from("/var/lib")
-        .join("a3s-home-component".repeat(16))
+        .join("aster-home-component".repeat(16))
         .join("nested-provider-namespace");
     let box_id = "01234567-89ab-cdef-0123-456789abcdef";
     let runtime_root = sandbox_runtime_root(&long_home, box_id);
@@ -275,7 +275,7 @@ async fn persistent_guest_owned_layout_skips_image_pull_and_host_staging() {
     let disk = box_dir.join("rootfs-ext4-v1/rootfs.ext4");
     vm.rootfs_provider = Arc::new(ResumeOnlyProvider {
         resumed: crate::rootfs::ResumedRootfs {
-            source: a3s_box_core::vmm::RootfsSource::ext4_disk(&disk, false),
+            source: aster_box_core::vmm::RootfsSource::ext4_disk(&disk, false),
             guest_init_exec: "/sbin/init".to_string(),
         },
     });
@@ -285,7 +285,7 @@ async fn persistent_guest_owned_layout_skips_image_pull_and_host_staging() {
 
     assert_eq!(
         layout.resumed_rootfs.as_ref().unwrap().source,
-        a3s_box_core::vmm::RootfsSource::ext4_disk(disk, false)
+        aster_box_core::vmm::RootfsSource::ext4_disk(disk, false)
     );
     assert_eq!(
         layout.oci_config.as_ref().unwrap().cmd,
@@ -309,7 +309,7 @@ fn vm_image_auth_uses_the_managers_explicit_home() {
 
     let auth = registry_auth_for_image(
         home.path(),
-        "manager-layout.invalid:5443/a3s/private:latest",
+        "manager-layout.invalid:5443/aster/private:latest",
         None,
     )
     .unwrap();
@@ -334,7 +334,7 @@ fn transient_image_auth_overrides_the_persistent_store() {
 
     let auth = registry_auth_for_image(
         home.path(),
-        "manager-layout.invalid:5443/a3s/private:latest",
+        "manager-layout.invalid:5443/aster/private:latest",
         Some(crate::RegistryAuth::basic(
             "transient-user",
             "transient-secret",
@@ -362,7 +362,7 @@ fn explicit_anonymous_image_auth_disables_the_persistent_store() {
 
     let auth = registry_auth_for_image(
         home.path(),
-        "manager-layout.invalid:5443/a3s/private:latest",
+        "manager-layout.invalid:5443/aster/private:latest",
         Some(crate::RegistryAuth::anonymous()),
     )
     .unwrap();
@@ -382,12 +382,12 @@ fn test_snapshot_lower_dir_marker() {
     // populated marker -> trimmed path
     std::fs::write(
         box_dir.join(".snapshot-lower"),
-        "/root/.a3s/snapshots/snap-1/rootfs\n",
+        "/root/.aster/snapshots/snap-1/rootfs\n",
     )
     .unwrap();
     assert_eq!(
         snapshot_lower_dir(box_dir),
-        Some(PathBuf::from("/root/.a3s/snapshots/snap-1/rootfs"))
+        Some(PathBuf::from("/root/.aster/snapshots/snap-1/rootfs"))
     );
 }
 
@@ -429,7 +429,7 @@ fn persistent_rootfs_generation_detection_ignores_empty_directories() {
     std::fs::create_dir(box_dir.join("upper")).unwrap();
     assert!(!persistent_rootfs_generation_exists(box_dir).unwrap());
 
-    std::fs::write(box_dir.join("upper/.a3s_rootfs_metadata_v1.json"), b"{}").unwrap();
+    std::fs::write(box_dir.join("upper/.aster_rootfs_metadata_v1.json"), b"{}").unwrap();
     assert!(persistent_rootfs_generation_exists(box_dir).unwrap());
 }
 
@@ -451,7 +451,7 @@ async fn snapshot_lower_layout_restores_the_resolved_image_entrypoint() {
     metadata.image_config = Some(SnapshotImageConfig {
         entrypoint: Some(vec!["/usr/local/bin/envd".to_string()]),
         cmd: Some(vec!["--port".to_string(), "49983".to_string()]),
-        env: vec![("RUNTIME".to_string(), "a3s".to_string())],
+        env: vec![("RUNTIME".to_string(), "aster".to_string())],
         working_dir: Some("/home/user".to_string()),
         user: Some("1000:1000".to_string()),
         ..Default::default()
@@ -499,7 +499,7 @@ async fn snapshot_lower_layout_restores_the_resolved_image_entrypoint() {
         .entrypoint
         .env
         .iter()
-        .any(|(key, value)| key == "RUNTIME" && value == "a3s"));
+        .any(|(key, value)| key == "RUNTIME" && value == "aster"));
     assert_eq!(spec.workdir, "/home/user");
 }
 
@@ -741,7 +741,7 @@ async fn test_exec_request_rejects_empty_command() {
     let vm = make_vm_manager_with_home(tmp.path());
     *vm.state.write().await = BoxState::Ready;
 
-    let request = a3s_box_core::exec::ExecRequest {
+    let request = aster_box_core::exec::ExecRequest {
         request_id: None,
         cmd: vec![],
         timeout_ns: 0,
@@ -766,13 +766,13 @@ async fn test_exec_request_no_client_preserves_request_fields() {
     let vm = make_vm_manager_with_home(tmp.path());
     *vm.state.write().await = BoxState::Ready;
 
-    let request = a3s_box_core::exec::ExecRequest {
+    let request = aster_box_core::exec::ExecRequest {
         request_id: None,
         cmd: vec!["printenv".to_string()],
         timeout_ns: 123,
         env: vec!["ENV=test".to_string()],
         working_dir: Some("/app".to_string()),
-        rootfs: Some("/run/a3s/cri/container-rootfs/sb/c/rootfs".to_string()),
+        rootfs: Some("/run/aster/cri/container-rootfs/sb/c/rootfs".to_string()),
         stdin: Some(b"input".to_vec()),
         stdin_streaming: false,
         user: Some("1000:1000".to_string()),

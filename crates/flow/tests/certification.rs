@@ -1,7 +1,7 @@
 //! FLOW-R6 certification harness: frozen protocol fixtures, chaos boundaries,
 //! and bounded load correctness for the durable execution kernel.
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime, FlowTask,
     FlowTaskQueue, FlowWorkerCapabilities, InMemoryEventStore, InMemoryFlowTaskQueue,
     LocalFileFlowTaskQueue, RetryPolicy, RuntimeCommand, WorkflowInvocation, WorkflowSpec,
@@ -20,7 +20,7 @@ impl FlowRuntime for CertRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Err(FlowError::Runtime(
             "certification runtime is not executable".to_string(),
         ))
@@ -28,8 +28,8 @@ impl FlowRuntime for CertRuntime {
 
     async fn run_step(
         &self,
-        _invocation: a3s_flow::StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime(
             "certification runtime is not executable".to_string(),
         ))
@@ -116,12 +116,12 @@ fn protocol_fixtures_preserve_blob_ref_attached_wire_shape() {
 
 #[test]
 fn protocol_fixtures_preserve_visibility_projection_wire_shape() {
-    let projection: a3s_flow::FlowVisibilityProjection =
+    let projection: aster_flow::FlowVisibilityProjection =
         serde_json::from_value(read_fixture("visibility_projection.v1.json")).unwrap();
     projection.validate().unwrap();
     assert_eq!(
         projection.schema_version,
-        a3s_flow::FLOW_VISIBILITY_PROJECTION_SCHEMA_VERSION
+        aster_flow::FLOW_VISIBILITY_PROJECTION_SCHEMA_VERSION
     );
     assert_eq!(projection.run_id, "cert-vis");
     assert_eq!(projection.workflow_name, "cert.visibility");
@@ -214,9 +214,9 @@ async fn load_tip_pinned_archive_export_stays_correct_for_ten_thousand_events() 
 #[tokio::test]
 async fn chaos_mixed_worker_protocol_negotiation_fails_closed() {
     let engine = FlowEngine::in_memory(Arc::new(CertRuntime));
-    let worker = a3s_flow::FlowWorker::in_memory(engine);
+    let worker = aster_flow::FlowWorker::in_memory(engine);
     let mut required = worker.capabilities();
-    required.protocol = "a3s.flow.worker.v0".to_string();
+    required.protocol = "aster.flow.worker.v0".to_string();
     let error = worker.ensure_compatible(&required).unwrap_err();
     assert!(matches!(error, FlowError::UnsupportedWorkerProtocol { .. }));
 }

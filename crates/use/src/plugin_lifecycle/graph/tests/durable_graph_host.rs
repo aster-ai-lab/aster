@@ -1,7 +1,7 @@
 use std::io;
 use std::path::PathBuf;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use sha2::{Digest, Sha256};
 use tokio::io::AsyncWriteExt;
 

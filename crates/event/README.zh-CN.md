@@ -1,4 +1,4 @@
-# A3S Event
+# Aster Event
 
 <p align="center">
   <strong>语言 / Language:</strong>
@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <strong>A3S 的可插拔事件系统</strong>
+  <strong>Aster 的可插拔事件系统</strong>
 </p>
 
 <p align="center">
@@ -15,9 +15,9 @@
 </p>
 
 <p align="center">
-  <a href="https://crates.io/crates/a3s-event"><img src="https://img.shields.io/crates/v/a3s-event.svg" alt="crates.io"></a>
-  <a href="https://docs.rs/a3s-event"><img src="https://docs.rs/a3s-event/badge.svg" alt="docs.rs"></a>
-  <a href="#license"><img src="https://img.shields.io/crates/l/a3s-event.svg" alt="MIT"></a>
+  <a href="https://crates.io/crates/aster-event"><img src="https://img.shields.io/crates/v/aster-event.svg" alt="crates.io"></a>
+  <a href="https://docs.rs/aster-event"><img src="https://docs.rs/aster-event/badge.svg" alt="docs.rs"></a>
+  <a href="#license"><img src="https://img.shields.io/crates/l/aster-event.svg" alt="MIT"></a>
 </p>
 
 <p align="center">
@@ -34,14 +34,14 @@
 
 ## 概述
 
-**A3S Event** 提供与 provider 无关的 API，用于事件订阅、分派和持久化。所有后端均实现 `EventProvider` 特性 — 在 NATS JetStream、内存中或任何自定义provider之间交换，而无需更改应用程序代码。
+**Aster Event** 提供与 provider 无关的 API，用于事件订阅、分派和持久化。所有后端均实现 `EventProvider` 特性 — 在 NATS JetStream、内存中或任何自定义provider之间交换，而无需更改应用程序代码。
 
 ```rust
-use a3s_event::{EventBus, Event};
-use a3s_event::provider::memory::MemoryProvider;
+use aster_event::{EventBus, Event};
+use aster_event::provider::memory::MemoryProvider;
 
 #[tokio::main]
-async fn main() -> a3s_event::Result<()> {
+async fn main() -> aster_event::Result<()> {
     let bus = EventBus::new(MemoryProvider::default());
 
     // Publish
@@ -72,13 +72,13 @@ async fn main() -> a3s_event::Result<()> {
 
 ```toml
 # Full (default)
-a3s-event = "0.3"
+aster-event = "0.3"
 
 # Minimal core — no NATS, no encryption, no CloudEvents, no routing
-a3s-event = { version = "0.3", default-features = false }
+aster-event = { version = "0.3", default-features = false }
 
 # Pick what you need
-a3s-event = { version = "0.3", default-features = false, features = ["nats", "encryption"] }
+aster-event = { version = "0.3", default-features = false, features = ["nats", "encryption"] }
 ```
 
 ## 提供商
@@ -93,7 +93,7 @@ a3s-event = { version = "0.3", default-features = false, features = ["nats", "en
 使用 `tokio::sync::broadcast` 的零依赖、进程内事件总线。
 
 ```rust
-use a3s_event::provider::memory::{MemoryProvider, MemoryConfig};
+use aster_event::provider::memory::{MemoryProvider, MemoryConfig};
 
 let provider = MemoryProvider::new(MemoryConfig {
     subject_prefix: "events".to_string(),
@@ -110,11 +110,11 @@ let provider = MemoryProvider::default();
 需要`nats`功能。具有持久存储、持久消费者和至少一次传递的分布式事件流。
 
 ```rust
-use a3s_event::provider::nats::{NatsProvider, NatsConfig, StorageType};
+use aster_event::provider::nats::{NatsProvider, NatsConfig, StorageType};
 
 let provider = NatsProvider::connect(NatsConfig {
     url: "nats://127.0.0.1:4222".to_string(),
-    stream_name: "A3S_EVENTS".to_string(),
+    stream_name: "ASTER_EVENTS".to_string(),
     subject_prefix: "events".to_string(),
     storage: StorageType::File,
     max_events: 100_000,
@@ -192,8 +192,8 @@ Examples:
 ### 事件总线
 
 ```rust
-use a3s_event::{EventBus, SubscriptionFilter};
-use a3s_event::provider::memory::MemoryProvider;
+use aster_event::{EventBus, SubscriptionFilter};
+use aster_event::provider::memory::MemoryProvider;
 
 let bus = EventBus::new(MemoryProvider::default());
 
@@ -224,7 +224,7 @@ let metrics = bus.metrics();
 ### 事件提供者特征
 
 ```rust
-use a3s_event::provider::EventProvider;
+use aster_event::provider::EventProvider;
 
 provider.publish(&event).await?;
 provider.subscribe("events.market.>").await?;
@@ -260,9 +260,9 @@ while let Some(pending) = sub.next_manual_ack().await? {
 实现 `EventProvider` 和 `Subscription` 添加任何后端：
 
 ```rust
-use a3s_event::provider::{EventProvider, Subscription, PendingEvent, ProviderInfo};
-use a3s_event::types::{Event, ReceivedEvent};
-use a3s_event::Result;
+use aster_event::provider::{EventProvider, Subscription, PendingEvent, ProviderInfo};
+use aster_event::types::{Event, ReceivedEvent};
+use aster_event::Result;
 use async_trait::async_trait;
 
 pub struct RedisProvider { /* ... */ }
@@ -300,7 +300,7 @@ bus.publish("market", "forex", "Rate change", "source", payload).await?;
 
 ## 责任边界
 
-A3S Event 不会重新实现提供商已原生提供的功能。
+Aster Event 不会重新实现提供商已原生提供的功能。
 
 |能力|业主|笔记|
 |------------|---------|--------|
@@ -309,12 +309,12 @@ A3S Event 不会重新实现提供商已原生提供的功能。
 |连接弹性 | **提供商** | NATS：async-nats 自动重新连接。 |
 |分区/分片| **提供商** | NATS：基于主题的路由。卡夫卡：分区键。 |
 |传输加密| **提供商** | NATS/Kafka：TLS 配置。 |
-|事件版本控制/架构 | **A3S Event** |与 provider 无关的应用程序级别的关注点。 |
-|有效负载加密 | **A3S Event** |发布前应用程序级加密/解密。 |
-|死信队列 | **A3S Event** |跨提供商的统一 DLQ 抽象。 |
-|状态持久化| **A3S Event** |订阅过滤器在重新启动后的持久性。 |
-|可观察性| **A3S Event** |应用程序级指标和跟踪。 |
-|提供者配置直通 | **A3S Event** |公开提供者本机旋钮（`MaxDeliver`、`BackOff` 等）|
+|事件版本控制/架构 | **Aster Event** |与 provider 无关的应用程序级别的关注点。 |
+|有效负载加密 | **Aster Event** |发布前应用程序级加密/解密。 |
+|死信队列 | **Aster Event** |跨提供商的统一 DLQ 抽象。 |
+|状态持久化| **Aster Event** |订阅过滤器在重新启动后的持久性。 |
+|可观察性| **Aster Event** |应用程序级指标和跟踪。 |
+|提供者配置直通 | **Aster Event** |公开提供者本机旋钮（`MaxDeliver`、`BackOff` 等）|
 
 ## 开发
 
@@ -349,7 +349,7 @@ nats-server -js
 just test-integration
 ```
 
-`just test-integration` 设置 `A3S_EVENT_REQUIRE_NATS=1`，因此缺失或
+`just test-integration` 设置 `ASTER_EVENT_REQUIRE_NATS=1`，因此缺失或
 配置错误的 JetStream 服务器会失败，而不是默默地跳过套件。
 每个拉取请求都会针对固定的官方运行相同的失败闭合（fail-closed）套件
 NATS 2.11.8 图像。

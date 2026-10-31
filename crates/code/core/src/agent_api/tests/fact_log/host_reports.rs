@@ -150,7 +150,7 @@ async fn an_ignored_nested_workspace_write_cannot_finish_as_narrative() {
     );
     let error = result.expect_err("a real ignored-workspace write requires bound verification");
     assert_eq!(mutation_digest(&error.to_string()).len(), 64);
-    let receipt: a3s_effect::ToolExecutionResultV1 = facts
+    let receipt: aster_effect::ToolExecutionResultV1 = facts
         .iter()
         .find(|fact| {
             fact.kind == "tool.result"
@@ -158,16 +158,16 @@ async fn an_ignored_nested_workspace_write_cannot_finish_as_narrative() {
         })
         .map(|fact| serde_json::from_value(fact.payload["receipt"].clone()).unwrap())
         .unwrap();
-    assert_eq!(receipt.outcome, a3s_effect::ToolExecutionOutcome::Succeeded);
+    assert_eq!(receipt.outcome, aster_effect::ToolExecutionOutcome::Succeeded);
     assert_eq!(
         receipt.effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     assert_eq!(receipt.effects.changes.len(), 1);
     assert_eq!(receipt.effects.changes[0].path, "noted.txt");
     assert_eq!(
         receipt.effects.changes[0].before.as_ref().unwrap().kind,
-        a3s_effect::ToolFileKind::Missing
+        aster_effect::ToolFileKind::Missing
     );
     assert!(receipt.effects.changes[0].after.content_digest.is_some());
 }

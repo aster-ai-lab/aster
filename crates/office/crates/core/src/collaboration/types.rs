@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::str::FromStr;
 
-use a3s_use_core::UseError;
+use aster_use_core::UseError;
 use serde::{Deserialize, Serialize};
 
 use super::collaboration_error;
@@ -14,10 +14,10 @@ pub use mutation::*;
 pub use presence::*;
 pub use projection::*;
 
-pub const NATIVE_OFFICE_COLLABORATION_PROTOCOL: &str = "a3s.office.collaboration";
+pub const NATIVE_OFFICE_COLLABORATION_PROTOCOL: &str = "aster.office.collaboration";
 pub const NATIVE_OFFICE_COLLABORATION_PROTOCOL_VERSION: u32 = 1;
-pub const NATIVE_OFFICE_COLLABORATION_NAMESPACE: &str = "a3s.office";
-pub const NATIVE_OFFICE_COLLABORATION_STORE_FORMAT: &str = "a3s.office.collaboration-replica";
+pub const NATIVE_OFFICE_COLLABORATION_NAMESPACE: &str = "aster.office";
+pub const NATIVE_OFFICE_COLLABORATION_STORE_FORMAT: &str = "aster.office.collaboration-replica";
 pub const NATIVE_OFFICE_COLLABORATION_STORE_SCHEMA_VERSION: u32 = 1;
 pub const MAX_NATIVE_OFFICE_COLLABORATION_UPDATE_BYTES: usize = 64 * 1024 * 1024;
 pub const MAX_NATIVE_OFFICE_COLLABORATION_STATE_VECTOR_BYTES: usize = 1024 * 1024;

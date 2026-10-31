@@ -1,9 +1,9 @@
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::oci_spec::runtime::LinuxResources;
-use a3s_oci_sdk::{CreateRequest, IsolationRequest, OciBundle, OperationContext};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::oci_spec::runtime::LinuxResources;
+use aster_oci_sdk::{CreateRequest, IsolationRequest, OciBundle, OperationContext};
 
 use super::exec::nonce_bound_bundle;
 use super::{bundle_marker, directory_is_empty, operation_id, unique_nonce};
@@ -28,11 +28,11 @@ pub struct LinuxKvmUpdateReopenConfig {
 
 pub(super) struct Qualification {
     create: CreateRequest,
-    start_operation_id: a3s_oci_sdk::OperationId,
-    update_operation_id: a3s_oci_sdk::OperationId,
-    delete_operation_id: a3s_oci_sdk::OperationId,
-    stale_guest_operation_id: a3s_oci_sdk::OperationId,
-    stale_host_operation_id: a3s_oci_sdk::OperationId,
+    start_operation_id: aster_oci_sdk::OperationId,
+    update_operation_id: aster_oci_sdk::OperationId,
+    delete_operation_id: aster_oci_sdk::OperationId,
+    stale_guest_operation_id: aster_oci_sdk::OperationId,
+    stale_host_operation_id: aster_oci_sdk::OperationId,
     resources: LinuxResources,
     init_marker_contents: Vec<u8>,
     stage: AgentTransportOperationStage,
@@ -74,7 +74,7 @@ pub async fn linux_kvm_update_reopen_replacement(
         Ok(nonce) => nonce,
         Err(reason) => return failed(report, reason),
     };
-    let container_id = match a3s_oci_sdk::ContainerId::new(format!("kvm-update-reopen-{nonce}")) {
+    let container_id = match aster_oci_sdk::ContainerId::new(format!("kvm-update-reopen-{nonce}")) {
         Ok(id) => id,
         Err(error) => return failed(report, format!("failed to construct container ID: {error}")),
     };
@@ -166,7 +166,7 @@ pub async fn linux_kvm_update_reopen_replacement(
         stale_guest_operation_id,
         stale_host_operation_id,
         resources,
-        init_marker_contents: format!("a3s-oci-exec-init-{nonce}\n").into_bytes(),
+        init_marker_contents: format!("aster-oci-exec-init-{nonce}\n").into_bytes(),
         stage: config.stage,
     };
     let state_root = prepared.runtime_root.join("operation-reopen-state");

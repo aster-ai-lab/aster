@@ -15,9 +15,9 @@
 //! ## Implementation
 //!
 //! The actual queue implementation is in `SessionLaneQueue` which is backed
-//! by a3s-lane with features like DLQ, metrics, retry policies, and rate limiting.
+//! by aster-lane with features like DLQ, metrics, retry policies, and rate limiting.
 
-pub use a3s_lane::MetricsSnapshot;
+pub use aster_lane::MetricsSnapshot;
 use anyhow::Result;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
@@ -178,7 +178,7 @@ pub struct SessionQueueConfig {
     pub lane_handlers: HashMap<SessionLane, LaneHandlerConfig>,
 
     // ========================================================================
-    // a3s-lane v0.5 integration features
+    // aster-lane v0.5 integration features
     // ========================================================================
     /// Enable dead letter queue for failed commands
     #[serde(default)]
@@ -200,7 +200,7 @@ pub struct SessionQueueConfig {
     pub storage_path: Option<std::path::PathBuf>,
 
     // ========================================================================
-    // a3s-lane v0.5 advanced features
+    // aster-lane v0.5 advanced features
     // ========================================================================
     /// Retry policy configuration
     #[serde(default)]
@@ -352,7 +352,7 @@ impl SessionQueueConfig {
         self
     }
 
-    /// Enable all a3s-lane features with sensible defaults
+    /// Enable all aster-lane features with sensible defaults
     pub fn with_lane_features(mut self) -> Self {
         self.enable_dlq = true;
         self.dlq_max_size = Some(1000);

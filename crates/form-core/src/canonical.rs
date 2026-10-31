@@ -398,7 +398,7 @@ pub fn canonical_sha256(canonical: &[u8]) -> String {
 }
 
 /// Canonicalizes a form document after excluding only its top-level `digest`
-/// field, matching the published A3S Form digest contract.
+/// field, matching the published Aster Form digest contract.
 pub fn canonicalize_document_for_digest(input: &[u8]) -> Result<Vec<u8>, CanonicalError> {
     let mut value = parse_json(input)?;
     if value.as_object().is_none() {

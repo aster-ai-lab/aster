@@ -1,4 +1,4 @@
-# @a3s/ui
+# @aster/ui
 
 Aster UI component library for React applications.
 
@@ -18,19 +18,19 @@ Aster UI component library for React applications.
 ### Install
 
 ```bash
-npm install @a3s/ui
+npm install @aster/ui
 # peer dependencies
 npm install motion react react-dom tailwindcss
 ```
 
 > The recommended integration style in this repository is to use the package export entry points:
-> `@a3s-lab/ui`
-> `@a3s-lab/ui/components`
-> `@a3s-lab/ui/icons`
-> `@a3s-lab/ui/utils`
-> `@a3s-lab/ui/styles/tokens.css`
-> `@a3s-lab/ui/styles/theme.css`
-> `@a3s-lab/ui/chart`（共享 Chart/ChartProps、Sparkline、ActivityHeatmap 与 heatmap 工具；按需注册、主题、ARIA、减少动效和实例生命周期）
+> `@aster-ai-lab/ui`
+> `@aster-ai-lab/ui/components`
+> `@aster-ai-lab/ui/icons`
+> `@aster-ai-lab/ui/utils`
+> `@aster-ai-lab/ui/styles/tokens.css`
+> `@aster-ai-lab/ui/styles/theme.css`
+> `@aster-ai-lab/ui/chart`（共享 Chart/ChartProps、Sparkline、ActivityHeatmap 与 heatmap 工具；按需注册、主题、ARIA、减少动效和实例生命周期）
 >
 ### Two Integration Modes
 
@@ -40,7 +40,7 @@ Use the full Aster design system so Tailwind theme tokens resolve to Aster value
 
 ```css
 /* app.css */
-@import '@a3s-lab/ui/styles/theme.css';
+@import '@aster-ai-lab/ui/styles/theme.css';
 ```
 
 **Characteristics:**
@@ -75,7 +75,7 @@ Import only primitives and existing foundation providers, then decide which valu
 ```css
 /* app.css */
 @import 'tailwindcss';
-@import '@a3s-lab/ui/styles/tokens.css';
+@import '@aster-ai-lab/ui/styles/tokens.css';
 
 /* Re-export only the parts you need */
 @theme inline {
@@ -137,9 +137,9 @@ To avoid mixing value sources, semantic variables, theme mappings, and runtime o
 
 Default consumption rules:
 
-1. Regular application packages should depend on `@a3s-lab/ui/styles/theme.css` by default
+1. Regular application packages should depend on `@aster-ai-lab/ui/styles/theme.css` by default
 2. Components should prefer semantic utilities such as `bg-background`, `text-muted-foreground`, and `bg-success`; custom CSS may use the matching official or product variable
-3. Only design-system-adjacent packages that explicitly need foundation-level access should depend on `@a3s-lab/ui/styles/tokens.css`
+3. Only design-system-adjacent packages that explicitly need foundation-level access should depend on `@aster-ai-lab/ui/styles/tokens.css`
 4. Runtime theme logic should write shared theme values only through registered `--cs-theme-*` inputs, not directly to official semantics or derived `--color-*` variables; renderer-only runtime values stay owner-local under `--app-*`
 
 ### Shadcn CLI Ownership
@@ -160,7 +160,7 @@ theme layers and generator own the shared CSS contract, even though `components.
 ### Basic Components
 
 ```tsx
-import { Button, Input } from '@a3s-lab/ui'
+import { Button, Input } from '@aster-ai-lab/ui'
 
 function App() {
   return (
@@ -180,10 +180,10 @@ function App() {
 
 ```tsx
 // Components only
-import { Button } from '@a3s-lab/ui/components'
+import { Button } from '@aster-ai-lab/ui/components'
 
 // Utilities only
-import { DIALOG_CLOSE_DURATION_MS, DIALOG_UNMOUNT_DELAY_MS, toUndefinedIfNull } from '@a3s-lab/ui/utils'
+import { DIALOG_CLOSE_DURATION_MS, DIALOG_UNMOUNT_DELAY_MS, toUndefinedIfNull } from '@aster-ai-lab/ui/utils'
 ```
 
 ## Development
@@ -234,9 +234,9 @@ pnpm icons:generate --type=models
 | `providers` | `icons/providers/{light,dark}/*.svg` | Provider light/dark components, metadata, Avatars, barrels, catalogs, and loaders |
 | `models`    | `icons/models/{light,dark}/*.svg`    | Model light/dark components, metadata, Avatars, barrels, and loaders              |
 
-Import key-based lookup APIs from `@a3s-lab/ui/icons`. Static provider components intentionally use the
-separate `@a3s-lab/ui/icons/providers` entry so the ordinary lookup path does not evaluate the full provider barrel.
-Provider components are intentionally no longer re-exported from `@a3s-lab/ui/icons`; static consumers must use
+Import key-based lookup APIs from `@aster-ai-lab/ui/icons`. Static provider components intentionally use the
+separate `@aster-ai-lab/ui/icons/providers` entry so the ordinary lookup path does not evaluate the full provider barrel.
+Provider components are intentionally no longer re-exported from `@aster-ai-lab/ui/icons`; static consumers must use
 the provider entry explicitly.
 
 Generation uses a hash cache and skips unchanged SVG files. Use the optional arguments when a narrower or clean regeneration is needed:

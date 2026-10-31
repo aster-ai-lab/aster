@@ -1,6 +1,6 @@
 #![cfg(feature = "cache")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootRequest, BootResponse, Cache, CacheInterceptor, CacheModule, CacheOptions,
     ControllerDefinition, HttpMethod, Module, ModuleRef, ProviderDefinition, Result,
     RouteDefinition,
@@ -195,12 +195,12 @@ struct MacroCachedController {
     ttl_calls: Arc<AtomicUsize>,
 }
 
-#[a3s_boot::controller("/macro-cache")]
-#[a3s_boot::cache_ttl(milliseconds = 10)]
+#[aster_boot::controller("/macro-cache")]
+#[aster_boot::cache_ttl(milliseconds = 10)]
 impl MacroCachedController {
-    #[a3s_boot::get("/shared", raw)]
-    #[a3s_boot::cache_key("macro-shared")]
-    async fn shared(&self, #[a3s_boot::request] request: BootRequest) -> Result<BootResponse> {
+    #[aster_boot::get("/shared", raw)]
+    #[aster_boot::cache_key("macro-shared")]
+    async fn shared(&self, #[aster_boot::request] request: BootRequest) -> Result<BootResponse> {
         let call = self.shared_calls.fetch_add(1, Ordering::SeqCst) + 1;
         Ok(BootResponse::text(format!(
             "{call}:{}",
@@ -208,7 +208,7 @@ impl MacroCachedController {
         )))
     }
 
-    #[a3s_boot::get("/ttl", raw)]
+    #[aster_boot::get("/ttl", raw)]
     async fn ttl(&self) -> Result<BootResponse> {
         let call = self.ttl_calls.fetch_add(1, Ordering::SeqCst) + 1;
         Ok(BootResponse::text(call.to_string()))

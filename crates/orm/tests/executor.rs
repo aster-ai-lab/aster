@@ -1,6 +1,6 @@
 use std::sync::Mutex;
 
-use a3s_orm::{
+use aster_orm::{
     orm_table, select_from, CompiledQuery, Database, ExecuteResult, Executor, PostgresDialect,
     QueryResult,
 };

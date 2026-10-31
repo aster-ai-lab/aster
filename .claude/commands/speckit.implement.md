@@ -15,7 +15,7 @@ $ARGUMENTS
    session. Blockers stop implementation.
 3. Execute the tasks in order. A task that changes behavior includes
    its hermetic test.
-4. Follow `Agents.md`: one workspace, path dependencies for `a3s-*`
+4. Follow `Agents.md`: one workspace, path dependencies for `aster-*`
    crates, no production `unwrap()` without an infallibility comment,
    closed sets with `parse` / `as_str`, ACL for product configuration.
 5. After the last task, run the Final Verification Gate in `tasks.md`.

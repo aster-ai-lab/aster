@@ -32,7 +32,7 @@ abstract class ReactFormElement extends HTMLElement {
   protected abstract renderReact(): void;
 }
 
-export class A3SFormRendererElement extends ReactFormElement {
+export class AsterFormRendererElement extends ReactFormElement {
   private currentErrors?: FieldError[];
   private currentHostAdapter?: FormHostAdapter;
   private currentLocale?: string;
@@ -182,7 +182,7 @@ export class A3SFormRendererElement extends ReactFormElement {
   }
 }
 
-export class A3SFormDesignerElement extends ReactFormElement {
+export class AsterFormDesignerElement extends ReactFormElement {
   private currentCompileOptions?: CompileOptions;
   private currentDocument?: FormDocument;
   private currentErrors?: FieldError[];
@@ -350,9 +350,9 @@ export class A3SFormDesignerElement extends ReactFormElement {
   }
 }
 
-export function defineA3SFormElements(registry: CustomElementRegistry = customElements): void {
-  if (!registry.get('a3s-form-renderer'))
-    registry.define('a3s-form-renderer', A3SFormRendererElement);
-  if (!registry.get('a3s-form-designer'))
-    registry.define('a3s-form-designer', A3SFormDesignerElement);
+export function defineAsterFormElements(registry: CustomElementRegistry = customElements): void {
+  if (!registry.get('aster-form-renderer'))
+    registry.define('aster-form-renderer', AsterFormRendererElement);
+  if (!registry.get('aster-form-designer'))
+    registry.define('aster-form-designer', AsterFormDesignerElement);
 }

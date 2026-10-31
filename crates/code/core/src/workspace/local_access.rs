@@ -84,7 +84,7 @@ impl LocalWorkspaceAccessBoundary {
             .collect();
 
         // Package/build stores often use legitimate multi-link artifacts.
-        // Current a3s-sandbox skips those trees for bulk hardlink denial and
+        // Current aster-cmd-sandbox skips those trees for bulk hardlink denial and
         // recovers only credential-inode aliases. Keep package-store paths out
         // of the eager deny set so the multi-link policy below can allow
         // ordinary package hardlinks while still denying credential aliases.
@@ -229,7 +229,7 @@ fn is_sensitive_workspace_path(path: &Path) -> bool {
         &[".npmrc"],
         &[".pypirc"],
         &[".git-credentials"],
-        &[".a3s", "os-auth.json"],
+        &[".aster", "os-auth.json"],
         &[".codex", "auth.json"],
         &[".claude", ".credentials.json"],
         &[".claude.json"],
@@ -349,7 +349,7 @@ mod tests {
             "apps/api/.ENV.production",
             ".env-secrets/value",
             ".npmrc",
-            ".a3s/os-auth.json",
+            ".aster/os-auth.json",
             ".codex/auth.json",
         ] {
             assert!(

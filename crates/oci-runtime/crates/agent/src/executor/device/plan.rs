@@ -5,8 +5,8 @@ use std::os::unix::fs::{DirBuilderExt, FileTypeExt};
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
-use a3s_oci_sdk::oci_spec::runtime::{Linux, LinuxResources};
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::{Linux, LinuxResources};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use crate::executor::mount::MountPlan;
 use crate::executor::namespace::NamespacePlan;
@@ -31,7 +31,7 @@ use super::{device_error, invalid, unsupported};
 
 const MAX_DEVICES: usize = 256;
 const MAX_SCANNED_ROOTFS_ENTRIES: usize = 1_000_000;
-const CHECKPOINT_DEVICE_COOKIE_PREFIX: &str = "a3s-oci-device";
+const CHECKPOINT_DEVICE_COOKIE_PREFIX: &str = "aster-oci-device";
 impl DevicePlan {
     pub(in crate::executor) fn from_linux(
         linux: Option<&Linux>,
@@ -601,7 +601,7 @@ impl DevicePlan {
         if !self.has_rootless_safe_access_policy() {
             Err(device_error(
                 ErrorCode::Unsupported,
-                "rootless device policy requires the exact six-node A3S Box safe-device profile",
+                "rootless device policy requires the exact six-node Aster Box safe-device profile",
             ))
         } else {
             Ok(())
@@ -615,7 +615,7 @@ impl DevicePlan {
         {
             Err(device_error(
                 ErrorCode::Unsupported,
-                "rootless device support requires the exact six-node A3S Box safe-device profile",
+                "rootless device support requires the exact six-node Aster Box safe-device profile",
             ))
         } else {
             Ok(())

@@ -17,8 +17,8 @@ export const meta = {
 
 ```rust
 use std::sync::Arc;
-use a3s_code_core::SessionOptions;
-use a3s_code_core::context::{ContextItem, ContextType, StaticContextProvider};
+use aster_core::SessionOptions;
+use aster_core::context::{ContextItem, ContextType, StaticContextProvider};
 
 fn add_project_notes(options: SessionOptions) -> SessionOptions {
     let provider = StaticContextProvider::new("tutorial-project").with_item(
@@ -49,7 +49,7 @@ Skill 目录会与全局来源合并。若要做完全由宿主控制的上下�
 MCP 声明可以由可信配置或 Agent 目录加载。运行层拿到准确的 `McpServerConfig` 后再连接：
 
 ```rust
-use a3s_code_core::{AgentSession, mcp::McpServerConfig};
+use aster_core::{AgentSession, mcp::McpServerConfig};
 
 async fn connect_server(session: &AgentSession, server: McpServerConfig)
     -> anyhow::Result<usize>

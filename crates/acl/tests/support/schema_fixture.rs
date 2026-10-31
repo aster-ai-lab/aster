@@ -1,4 +1,4 @@
-use a3s_acl::{
+use aster_acl::{
     AttributeSchema, BlockSchema, CallSchema, Cardinality, ObjectSchema, Schema, ValueSchema,
 };
 use serde::Deserialize;

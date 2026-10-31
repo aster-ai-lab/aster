@@ -18,7 +18,7 @@ if (Test-Path Alias:wget) {
     Remove-Item Alias:wget -Force -ErrorAction SilentlyContinue
 }
 
-function __a3s_json_escape {
+function __aster_json_escape {
     param([string]$Value)
     if ($null -eq $Value) {
         return ''
@@ -29,12 +29,12 @@ function __a3s_json_escape {
     return $escaped
 }
 
-function __a3s_json_string {
+function __aster_json_string {
     param([string]$Value)
-    return '"' + (__a3s_json_escape $Value) + '"'
+    return '"' + (__aster_json_escape $Value) + '"'
 }
 
-function __a3s_split_top_level {
+function __aster_split_top_level {
     param([string]$Text)
 
     $parts = @()
@@ -96,7 +96,7 @@ function __a3s_split_top_level {
     return ,$parts
 }
 
-function __a3s_split_first_colon {
+function __aster_split_first_colon {
     param([string]$Text)
 
     $braceDepth = 0
@@ -142,7 +142,7 @@ function __a3s_split_first_colon {
     return $null
 }
 
-function __a3s_normalize_json_like {
+function __aster_normalize_json_like {
     param([string]$Value)
 
     if ($null -eq $Value) {
@@ -161,7 +161,7 @@ function __a3s_normalize_json_like {
     }
 
     if (($trimmed.StartsWith('"') -and $trimmed.EndsWith('"')) -or ($trimmed.StartsWith("'") -and $trimmed.EndsWith("'"))) {
-        return __a3s_json_string $trimmed.Substring(1, $trimmed.Length - 2)
+        return __aster_json_string $trimmed.Substring(1, $trimmed.Length - 2)
     }
 
     if ($trimmed -match '^(?i:true|false|null)$') {
@@ -179,13 +179,13 @@ function __a3s_normalize_json_like {
         }
 
         $normalizedParts = @()
-        foreach ($pair in (__a3s_split_top_level $inner)) {
+        foreach ($pair in (__aster_split_top_level $inner)) {
             $candidate = $pair.Trim()
             if ($candidate.Length -eq 0) {
                 continue
             }
 
-            $kv = __a3s_split_first_colon $candidate
+            $kv = __aster_split_first_colon $candidate
             if ($null -eq $kv -or $kv.Count -ne 2) {
                 return $trimmed
             }
@@ -195,8 +195,8 @@ function __a3s_normalize_json_like {
                 $key = $key.Substring(1, $key.Length - 2)
             }
 
-            $normalizedValue = __a3s_normalize_json_like $kv[1]
-            $normalizedParts += ((__a3s_json_string $key) + ':' + $normalizedValue)
+            $normalizedValue = __aster_normalize_json_like $kv[1]
+            $normalizedParts += ((__aster_json_string $key) + ':' + $normalizedValue)
         }
 
         return '{' + ($normalizedParts -join ',') + '}'
@@ -209,21 +209,21 @@ function __a3s_normalize_json_like {
         }
 
         $normalizedItems = @()
-        foreach ($item in (__a3s_split_top_level $inner)) {
+        foreach ($item in (__aster_split_top_level $inner)) {
             $candidate = $item.Trim()
             if ($candidate.Length -eq 0) {
                 continue
             }
-            $normalizedItems += (__a3s_normalize_json_like $candidate)
+            $normalizedItems += (__aster_normalize_json_like $candidate)
         }
 
         return '[' + ($normalizedItems -join ',') + ']'
     }
 
-    return __a3s_json_string $trimmed
+    return __aster_json_string $trimmed
 }
 
-function __a3s_prepare_curl_args {
+function __aster_prepare_curl_args {
     param([object[]]$Args)
 
     $rewritten = @()
@@ -237,7 +237,7 @@ function __a3s_prepare_curl_args {
             $prefix = $flag + '='
             if ($arg.StartsWith($prefix)) {
                 $value = $arg.Substring($prefix.Length)
-                $rewritten += ($flag + '=' + (__a3s_normalize_json_like $value))
+                $rewritten += ($flag + '=' + (__aster_normalize_json_like $value))
                 $handled = $true
                 break
             }
@@ -250,36 +250,36 @@ function __a3s_prepare_curl_args {
         $rewritten += $Args[$i]
         if ($jsonFlags -contains $arg -and $i + 1 -lt $Args.Count) {
             $i += 1
-            $rewritten += (__a3s_normalize_json_like ([string]$Args[$i]))
+            $rewritten += (__aster_normalize_json_like ([string]$Args[$i]))
         }
     }
 
     return ,$rewritten
 }
 
-function __a3s_curl {
+function __aster_curl {
     param([Parameter(ValueFromRemainingArguments = $true)][object[]]$Args)
-    $PreparedArgs = __a3s_prepare_curl_args $Args
+    $PreparedArgs = __aster_prepare_curl_args $Args
     & curl.exe @PreparedArgs
 }
 
 function curl {
     param([Parameter(ValueFromRemainingArguments = $true)][object[]]$Args)
-    __a3s_curl @Args
+    __aster_curl @Args
 }
 
 function wget {
     param([Parameter(ValueFromRemainingArguments = $true)][object[]]$Args)
-    __a3s_curl @Args
+    __aster_curl @Args
 }
 
-function __a3s_http {
+function __aster_http {
     param(
         [Parameter(Mandatory = $true)][string]$Method,
         [Parameter(Mandatory = $true)][string]$Uri,
         [Parameter(ValueFromRemainingArguments = $true)][object[]]$Args
     )
-    __a3s_curl -sS -X $Method $Uri @Args
+    __aster_curl -sS -X $Method $Uri @Args
 }
 
 function GET {
@@ -287,7 +287,7 @@ function GET {
         [Parameter(Position = 0, Mandatory = $true)][string]$Uri,
         [Parameter(ValueFromRemainingArguments = $true)][object[]]$Args
     )
-    __a3s_http GET $Uri @Args
+    __aster_http GET $Uri @Args
 }
 
 function POST {
@@ -295,7 +295,7 @@ function POST {
         [Parameter(Position = 0, Mandatory = $true)][string]$Uri,
         [Parameter(ValueFromRemainingArguments = $true)][object[]]$Args
     )
-    __a3s_http POST $Uri @Args
+    __aster_http POST $Uri @Args
 }
 
 function PUT {
@@ -303,7 +303,7 @@ function PUT {
         [Parameter(Position = 0, Mandatory = $true)][string]$Uri,
         [Parameter(ValueFromRemainingArguments = $true)][object[]]$Args
     )
-    __a3s_http PUT $Uri @Args
+    __aster_http PUT $Uri @Args
 }
 
 function PATCH {
@@ -311,7 +311,7 @@ function PATCH {
         [Parameter(Position = 0, Mandatory = $true)][string]$Uri,
         [Parameter(ValueFromRemainingArguments = $true)][object[]]$Args
     )
-    __a3s_http PATCH $Uri @Args
+    __aster_http PATCH $Uri @Args
 }
 
 function DELETE {
@@ -319,7 +319,7 @@ function DELETE {
         [Parameter(Position = 0, Mandatory = $true)][string]$Uri,
         [Parameter(ValueFromRemainingArguments = $true)][object[]]$Args
     )
-    __a3s_http DELETE $Uri @Args
+    __aster_http DELETE $Uri @Args
 }
 
 function OPTIONS {
@@ -327,7 +327,7 @@ function OPTIONS {
         [Parameter(Position = 0, Mandatory = $true)][string]$Uri,
         [Parameter(ValueFromRemainingArguments = $true)][object[]]$Args
     )
-    __a3s_http OPTIONS $Uri @Args
+    __aster_http OPTIONS $Uri @Args
 }
 
 function head {

@@ -165,7 +165,7 @@ async function main() {
     if (observation.state.robot.step === 0 && !firstImages.has(task)) firstImages.set(task, images)
     const runId = `libero-run-${++runs}`
     const command = await agent.post('/v1/agent/commands', {
-      schema: 'a3s.code.agent.v1',
+      schema: 'aster.code.agent.v1',
       request_id: `libero-request-${runs}`,
       identity: { session_id: 'libero-proof', run_id: runId },
       prompt,

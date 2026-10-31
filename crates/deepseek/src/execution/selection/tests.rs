@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 
 fn tied_view(device: &CudaLayerDevice) -> Tensor {
     let mut raw = vec![-20_f32; 2 * 2600];

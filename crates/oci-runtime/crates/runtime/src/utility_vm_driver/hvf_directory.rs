@@ -1,11 +1,11 @@
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentVmAttachmentManifest, AgentVmDirectoryAttachment, AgentVmDirectorySourceIdentity,
     AGENT_VM_ATTACHMENT_MANIFEST_FILE_NAME,
 };
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::layout::canonical_plain_directory;
 use super::vm_attachment_transport::{
@@ -27,7 +27,7 @@ pub(crate) async fn prepare(request: &UtilityVmLaunchRequest<'_>) -> Result<Opti
         .attachment_contract
         .storage_path_restrictions(request.bundle)?;
     if restrictions.is_none()
-        && a3s_oci_sdk::StoragePathRestrictions::from_bundle(request.bundle)?.is_some()
+        && aster_oci_sdk::StoragePathRestrictions::from_bundle(request.bundle)?.is_some()
     {
         return Err(directory_error(
             ErrorCode::InvalidArgument,

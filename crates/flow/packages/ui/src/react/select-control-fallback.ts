@@ -54,7 +54,7 @@ type SelectFallbackController = {
 };
 
 /**
- * Provides a small progressive-enhancement fallback while the A3S UI Select
+ * Provides a small progressive-enhancement fallback while the Aster UI Select
  * runtime is loading. The runtime remains authoritative once its methods are
  * attached; this controller only mirrors the same ARIA and value state while
  * that asynchronous boundary is in flight.

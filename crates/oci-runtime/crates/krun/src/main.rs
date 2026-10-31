@@ -46,7 +46,7 @@ mod recovery_report;
 mod windows_session_owner;
 
 #[derive(Debug, Parser)]
-#[command(name = "a3s-oci-krun-shim", version, about)]
+#[command(name = "aster-oci-krun-shim", version, about)]
 struct Cli {
     #[command(subcommand)]
     command: Command,
@@ -188,7 +188,7 @@ enum Command {
         #[arg(long, value_name = "FILE")]
         ready_file: PathBuf,
         /// Optional Host-facing control named pipe for Live reattach proxying
-        /// (for example `\\.\pipe\a3s-oci-whpx-live-control-...`).
+        /// (for example `\\.\pipe\aster-oci-whpx-live-control-...`).
         #[arg(long, value_name = "PIPE")]
         host_control: Option<String>,
         /// Shim argv (for example `agent-vm-smoke ...`). Must not include
@@ -219,7 +219,7 @@ enum Command {
     },
     /// Boot the Linux agent at its fixed guest path and bridge its control vsock.
     AgentVmSmoke {
-        /// Extracted Linux root filesystem containing /usr/bin/a3s-oci-agent.
+        /// Extracted Linux root filesystem containing /usr/bin/aster-oci-agent.
         #[arg(long, value_name = "DIR")]
         rootfs: PathBuf,
         /// Exact immutable system-image manifest required by the utility VM.
@@ -442,10 +442,10 @@ enum Command {
 fn main() -> ExitCode {
     match Cli::parse().command {
         Command::ContextSmoke => {
-            let report = a3s_oci_krun::context_smoke();
+            let report = aster_oci_krun::context_smoke();
             let succeeded = report.is_success();
             if let Err(error) = write_json(&report) {
-                eprintln!("a3s-oci-krun-shim: failed to serialize report: {error}");
+                eprintln!("aster-oci-krun-shim: failed to serialize report: {error}");
                 return ExitCode::FAILURE;
             }
             if succeeded {
@@ -462,7 +462,7 @@ fn main() -> ExitCode {
             console_directory,
             iterations,
         } => {
-            let report = a3s_oci_krun::whpx_handle_reclamation_smoke(
+            let report = aster_oci_krun::whpx_handle_reclamation_smoke(
                 &rootfs,
                 &system_image_manifest,
                 &runtime_share,
@@ -471,7 +471,7 @@ fn main() -> ExitCode {
             );
             let succeeded = report.is_success();
             if let Err(error) = write_json(&report) {
-                eprintln!("a3s-oci-krun-shim: failed to serialize report: {error}");
+                eprintln!("aster-oci-krun-shim: failed to serialize report: {error}");
                 return ExitCode::FAILURE;
             }
             if succeeded {
@@ -487,10 +487,10 @@ fn main() -> ExitCode {
         Command::SystemImageContextSmoke {
             system_image_manifest,
         } => {
-            let report = a3s_oci_krun::system_image_context_smoke(&system_image_manifest);
+            let report = aster_oci_krun::system_image_context_smoke(&system_image_manifest);
             let succeeded = report.is_success();
             if let Err(error) = write_json(&report) {
-                eprintln!("a3s-oci-krun-shim: failed to serialize report: {error}");
+                eprintln!("aster-oci-krun-shim: failed to serialize report: {error}");
                 return ExitCode::FAILURE;
             }
             if succeeded {
@@ -510,7 +510,7 @@ fn main() -> ExitCode {
         } => match run_session_owner(ready_file, host_control, shim_argv) {
             Ok(code) => code,
             Err(error) => {
-                eprintln!("a3s-oci-krun-shim: session-owner failed: {error}");
+                eprintln!("aster-oci-krun-shim: session-owner failed: {error}");
                 ExitCode::FAILURE
             }
         },
@@ -524,7 +524,7 @@ fn main() -> ExitCode {
         } => match run_session_owner_probe(owner_pid, sleep_ms) {
             Ok(code) => code,
             Err(error) => {
-                eprintln!("a3s-oci-krun-shim: session-owner-probe failed: {error}");
+                eprintln!("aster-oci-krun-shim: session-owner-probe failed: {error}");
                 ExitCode::FAILURE
             }
         },
@@ -538,7 +538,7 @@ fn main() -> ExitCode {
         } => match run_session_owner_bridge_echo(owner_pid, socket_path) {
             Ok(code) => code,
             Err(error) => {
-                eprintln!("a3s-oci-krun-shim: session-owner-bridge-echo failed: {error}");
+                eprintln!("aster-oci-krun-shim: session-owner-bridge-echo failed: {error}");
                 ExitCode::FAILURE
             }
         },
@@ -550,7 +550,7 @@ fn main() -> ExitCode {
         } => match windows_session_owner::run_session_owner(ready_file, host_control, shim_argv) {
             Ok(code) => code,
             Err(error) => {
-                eprintln!("a3s-oci-krun-shim: session-owner failed: {error}");
+                eprintln!("aster-oci-krun-shim: session-owner failed: {error}");
                 ExitCode::FAILURE
             }
         },
@@ -561,7 +561,7 @@ fn main() -> ExitCode {
         } => match windows_session_owner::run_session_owner_probe(owner_pid, sleep_ms) {
             Ok(code) => code,
             Err(error) => {
-                eprintln!("a3s-oci-krun-shim: session-owner-probe failed: {error}");
+                eprintln!("aster-oci-krun-shim: session-owner-probe failed: {error}");
                 ExitCode::FAILURE
             }
         },
@@ -572,7 +572,7 @@ fn main() -> ExitCode {
         } => match windows_session_owner::run_session_owner_bridge_echo(owner_pid, pipe_name) {
             Ok(code) => code,
             Err(error) => {
-                eprintln!("a3s-oci-krun-shim: session-owner-bridge-echo failed: {error}");
+                eprintln!("aster-oci-krun-shim: session-owner-bridge-echo failed: {error}");
                 ExitCode::FAILURE
             }
         },
@@ -592,10 +592,10 @@ fn main() -> ExitCode {
             #[cfg(not(all(target_os = "macos", target_arch = "aarch64")))]
             let (system_image_manifest, runtime_share) = (None, None);
             let report =
-                a3s_oci_krun::vm_smoke(&rootfs, system_image_manifest, runtime_share, &console);
+                aster_oci_krun::vm_smoke(&rootfs, system_image_manifest, runtime_share, &console);
             let succeeded = report.is_success();
             if let Err(error) = write_json(&report) {
-                eprintln!("a3s-oci-krun-shim: failed to serialize report: {error}");
+                eprintln!("aster-oci-krun-shim: failed to serialize report: {error}");
                 return ExitCode::FAILURE;
             }
             if succeeded {
@@ -613,17 +613,17 @@ fn main() -> ExitCode {
             timeout_secs,
         } => {
             if let Err(error) = owner_process::start_guest_command(owner_pid) {
-                eprintln!("a3s-oci-krun-shim: guest owner unavailable: {error}");
+                eprintln!("aster-oci-krun-shim: guest owner unavailable: {error}");
                 return ExitCode::FAILURE;
             }
-            let report = a3s_oci_krun::guest_command(
+            let report = aster_oci_krun::guest_command(
                 &system_image_manifest,
                 &runtime_share,
                 &console,
                 std::time::Duration::from_secs(timeout_secs),
             );
             if let Err(error) = write_json(&report) {
-                eprintln!("a3s-oci-krun-shim: failed to serialize guest-command report: {error}");
+                eprintln!("aster-oci-krun-shim: failed to serialize guest-command report: {error}");
                 return ExitCode::FAILURE;
             }
             ExitCode::SUCCESS
@@ -706,24 +706,24 @@ fn main() -> ExitCode {
             #[cfg(unix)]
             vm_attachment_manifest_sha256,
         } => {
-            let endpoint = match a3s_oci_krun::AgentVsockEndpoint::new(pipe_name) {
+            let endpoint = match aster_oci_krun::AgentVsockEndpoint::new(pipe_name) {
                 Ok(endpoint) => endpoint,
                 Err(error) => {
-                    eprintln!("a3s-oci-krun-shim: invalid agent endpoint: {error}");
+                    eprintln!("aster-oci-krun-shim: invalid agent endpoint: {error}");
                     return ExitCode::FAILURE;
                 }
             };
             let token = match take_session_token() {
                 Ok(token) => token,
                 Err(error) => {
-                    eprintln!("a3s-oci-krun-shim: {error}");
+                    eprintln!("aster-oci-krun-shim: {error}");
                     return ExitCode::FAILURE;
                 }
             };
             let transport_qualification = match take_transport_qualification() {
                 Ok(request) => request,
                 Err(error) => {
-                    eprintln!("a3s-oci-krun-shim: {error}");
+                    eprintln!("aster-oci-krun-shim: {error}");
                     return ExitCode::FAILURE;
                 }
             };
@@ -737,7 +737,7 @@ fn main() -> ExitCode {
             let console_identity = match parse_console_identity(console_device, console_inode) {
                 Ok(identity) => identity,
                 Err(error) => {
-                    eprintln!("a3s-oci-krun-shim: {error}");
+                    eprintln!("aster-oci-krun-shim: {error}");
                     return ExitCode::FAILURE;
                 }
             };
@@ -761,14 +761,14 @@ fn main() -> ExitCode {
             let report = {
                 let bootstrap = match bootstrap_token::BootstrapTokenFile::create(
                     &runtime_share,
-                    a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
+                    aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
                     &endpoint,
                     &token,
                 ) {
                     Ok(bootstrap) => bootstrap,
                     Err(error) => {
                         eprintln!(
-                            "a3s-oci-krun-shim: failed to stage guest bootstrap token: {error}"
+                            "aster-oci-krun-shim: failed to stage guest bootstrap token: {error}"
                         );
                         return ExitCode::FAILURE;
                     }
@@ -776,14 +776,14 @@ fn main() -> ExitCode {
                 let recovery = match recovery_report {
                     Some(destination) => match recovery_report::RecoveryReportHandoff::create(
                         &runtime_share,
-                        a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
+                        aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
                         &endpoint,
                         &destination,
                     ) {
                         Ok(recovery) => Some(recovery),
                         Err(error) => {
                             eprintln!(
-                                "a3s-oci-krun-shim: failed to stage guest recovery report: {error}"
+                                "aster-oci-krun-shim: failed to stage guest recovery report: {error}"
                             );
                             return ExitCode::FAILURE;
                         }
@@ -797,13 +797,13 @@ fn main() -> ExitCode {
                 ) {
                     Ok(owner_monitor) => owner_monitor,
                     Err(error) => {
-                        eprintln!("a3s-oci-krun-shim: failed to monitor runtime owner: {error}");
+                        eprintln!("aster-oci-krun-shim: failed to monitor runtime owner: {error}");
                         return ExitCode::FAILURE;
                     }
                 };
                 if let Err(error) = bootstrap.reverify() {
                     eprintln!(
-                        "a3s-oci-krun-shim: refusing VM entry because the guest bootstrap token changed: {error}"
+                        "aster-oci-krun-shim: refusing VM entry because the guest bootstrap token changed: {error}"
                     );
                     owner_monitor.mark_vm_finished();
                     return ExitCode::FAILURE;
@@ -811,20 +811,20 @@ fn main() -> ExitCode {
                 if let Some(recovery) = recovery.as_ref() {
                     if let Err(error) = recovery.reverify() {
                         eprintln!(
-                            "a3s-oci-krun-shim: refusing VM entry because the guest recovery handoff changed: {error}"
+                            "aster-oci-krun-shim: refusing VM entry because the guest recovery handoff changed: {error}"
                         );
                         owner_monitor.mark_vm_finished();
                         return ExitCode::FAILURE;
                     }
                 }
-                let mut report = a3s_oci_krun::agent_vm_smoke(
+                let mut report = aster_oci_krun::agent_vm_smoke(
                     &rootfs,
                     Some(&system_image_manifest),
                     &console,
                     &endpoint,
                     socket_path,
                     &token,
-                    a3s_oci_krun::AgentVmHandoff::new(
+                    aster_oci_krun::AgentVmHandoff::new(
                         Some(&runtime_share),
                         Some(bootstrap.guest_path()),
                         recovery.as_ref().map(|recovery| recovery.guest_path()),
@@ -833,13 +833,13 @@ fn main() -> ExitCode {
                 );
                 let recovery_result = recovery.map(|recovery| recovery.persist(&token));
                 if let Err(error) = bootstrap.cleanup() {
-                    report.status = a3s_oci_core::CapabilityStatus::Unavailable;
+                    report.status = aster_oci_core::CapabilityStatus::Unavailable;
                     report.reason.get_or_insert_with(|| {
                         format!("failed to clean one-time guest bootstrap token: {error}")
                     });
                 }
                 if let Some(Err(error)) = recovery_result {
-                    report.status = a3s_oci_core::CapabilityStatus::Unavailable;
+                    report.status = aster_oci_core::CapabilityStatus::Unavailable;
                     report.reason.get_or_insert_with(|| {
                         format!("failed to retain authenticated guest recovery report: {error}")
                     });
@@ -857,14 +857,14 @@ fn main() -> ExitCode {
             let report = {
                 let bootstrap = match bootstrap_token::BootstrapTokenFile::create(
                     &runtime_share,
-                    a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
+                    aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
                     &endpoint,
                     &token,
                 ) {
                     Ok(bootstrap) => bootstrap,
                     Err(error) => {
                         eprintln!(
-                            "a3s-oci-krun-shim: failed to stage guest bootstrap token: {error}"
+                            "aster-oci-krun-shim: failed to stage guest bootstrap token: {error}"
                         );
                         return ExitCode::FAILURE;
                     }
@@ -872,14 +872,14 @@ fn main() -> ExitCode {
                 let recovery = match recovery_report {
                     Some(destination) => match recovery_report::RecoveryReportHandoff::create(
                         &runtime_share,
-                        a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
+                        aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
                         &endpoint,
                         &destination,
                     ) {
                         Ok(recovery) => Some(recovery),
                         Err(error) => {
                             eprintln!(
-                                "a3s-oci-krun-shim: failed to stage guest recovery report: {error}"
+                                "aster-oci-krun-shim: failed to stage guest recovery report: {error}"
                             );
                             return ExitCode::FAILURE;
                         }
@@ -893,11 +893,11 @@ fn main() -> ExitCode {
                 ) {
                     Ok(owner_monitor) => owner_monitor,
                     Err(error) => {
-                        eprintln!("a3s-oci-krun-shim: failed to monitor runtime owner: {error}");
+                        eprintln!("aster-oci-krun-shim: failed to monitor runtime owner: {error}");
                         return ExitCode::FAILURE;
                     }
                 };
-                let handoff = a3s_oci_krun::AgentVmHandoff::new(
+                let handoff = aster_oci_krun::AgentVmHandoff::new(
                     Some(&runtime_share),
                     Some(bootstrap.guest_path()),
                     recovery.as_ref().map(|recovery| recovery.guest_path()),
@@ -931,7 +931,7 @@ fn main() -> ExitCode {
                     .with_vm_attachment_manifest_sha256(vm_attachment_manifest_sha256.as_deref());
                 if let Err(error) = bootstrap.reverify() {
                     eprintln!(
-                        "a3s-oci-krun-shim: refusing VM entry because the guest bootstrap token changed: {error}"
+                        "aster-oci-krun-shim: refusing VM entry because the guest bootstrap token changed: {error}"
                     );
                     owner_monitor.mark_vm_finished();
                     return ExitCode::FAILURE;
@@ -939,13 +939,13 @@ fn main() -> ExitCode {
                 if let Some(recovery) = recovery.as_ref() {
                     if let Err(error) = recovery.reverify() {
                         eprintln!(
-                            "a3s-oci-krun-shim: refusing VM entry because the guest recovery handoff changed: {error}"
+                            "aster-oci-krun-shim: refusing VM entry because the guest recovery handoff changed: {error}"
                         );
                         owner_monitor.mark_vm_finished();
                         return ExitCode::FAILURE;
                     }
                 }
-                let mut report = a3s_oci_krun::agent_vm_smoke(
+                let mut report = aster_oci_krun::agent_vm_smoke(
                     &rootfs,
                     Some(&system_image_manifest),
                     &console,
@@ -955,13 +955,13 @@ fn main() -> ExitCode {
                     handoff,
                 );
                 if let Err(error) = bootstrap.cleanup() {
-                    report.status = a3s_oci_core::CapabilityStatus::Unavailable;
+                    report.status = aster_oci_core::CapabilityStatus::Unavailable;
                     report.reason.get_or_insert_with(|| {
                         format!("failed to clean one-time guest bootstrap token: {error}")
                     });
                 }
                 if let Some(Err(error)) = recovery.map(|recovery| recovery.persist(&token)) {
-                    report.status = a3s_oci_core::CapabilityStatus::Unavailable;
+                    report.status = aster_oci_core::CapabilityStatus::Unavailable;
                     report.reason.get_or_insert_with(|| {
                         format!("failed to retain authenticated guest recovery report: {error}")
                     });
@@ -977,19 +977,19 @@ fn main() -> ExitCode {
                     any(target_arch = "x86_64", target_arch = "aarch64")
                 )
             )))]
-            let report = a3s_oci_krun::agent_vm_smoke(
+            let report = aster_oci_krun::agent_vm_smoke(
                 &rootfs,
                 None,
                 &console,
                 &endpoint,
                 socket_path,
                 &token,
-                a3s_oci_krun::AgentVmHandoff::default()
+                aster_oci_krun::AgentVmHandoff::default()
                     .with_transport_qualification(transport_qualification.as_ref()),
             );
             let succeeded = report.is_success();
             if let Err(error) = write_json(&report) {
-                eprintln!("a3s-oci-krun-shim: failed to serialize report: {error}");
+                eprintln!("aster-oci-krun-shim: failed to serialize report: {error}");
                 return ExitCode::FAILURE;
             }
             if succeeded {
@@ -1011,11 +1011,11 @@ fn main() -> ExitCode {
                 match parse_runtime_share_identity(runtime_share_device, runtime_share_inode) {
                     Ok(identity) => identity,
                     Err(error) => {
-                        eprintln!("a3s-oci-krun-shim: {error}");
+                        eprintln!("aster-oci-krun-shim: {error}");
                         return ExitCode::FAILURE;
                     }
                 };
-            if a3s_oci_krun::run_macos_vm_smoke_worker_with_runtime_share_identity_from_stdin(
+            if aster_oci_krun::run_macos_vm_smoke_worker_with_runtime_share_identity_from_stdin(
                 &system_image_manifest,
                 &runtime_share,
                 &console,
@@ -1037,18 +1037,18 @@ fn main() -> ExitCode {
             console,
         } => {
             if let Err(error) = owner_process::start_guest_worker(owner_pid) {
-                eprintln!("a3s-oci-krun-shim: guest worker owner unavailable: {error}");
+                eprintln!("aster-oci-krun-shim: guest worker owner unavailable: {error}");
                 return ExitCode::FAILURE;
             }
             let runtime_share_identity =
                 match parse_runtime_share_identity(runtime_share_device, runtime_share_inode) {
                     Ok(identity) => identity,
                     Err(error) => {
-                        eprintln!("a3s-oci-krun-shim: {error}");
+                        eprintln!("aster-oci-krun-shim: {error}");
                         return ExitCode::FAILURE;
                     }
                 };
-            if a3s_oci_krun::run_macos_guest_command_worker(
+            if aster_oci_krun::run_macos_guest_command_worker(
                 &system_image_manifest,
                 &runtime_share,
                 &console,
@@ -1084,25 +1084,25 @@ fn main() -> ExitCode {
                 ) {
                     Ok(identities) => identities,
                     Err(error) => {
-                        eprintln!("a3s-oci-krun-shim: {error}");
+                        eprintln!("aster-oci-krun-shim: {error}");
                         return ExitCode::FAILURE;
                     }
                 };
             let transport_qualification = match take_transport_qualification() {
                 Ok(request) => request,
                 Err(error) => {
-                    eprintln!("a3s-oci-krun-shim: {error}");
+                    eprintln!("aster-oci-krun-shim: {error}");
                     return ExitCode::FAILURE;
                 }
             };
             let console_identity = match parse_console_identity(console_device, console_inode) {
                 Ok(identity) => identity,
                 Err(error) => {
-                    eprintln!("a3s-oci-krun-shim: {error}");
+                    eprintln!("aster-oci-krun-shim: {error}");
                     return ExitCode::FAILURE;
                 }
             };
-            let handoff = a3s_oci_krun::MacosAgentVmWorkerHandoff::new(
+            let handoff = aster_oci_krun::MacosAgentVmWorkerHandoff::new(
                 &system_image_manifest,
                 &runtime_share,
                 &guest_token_file,
@@ -1119,7 +1119,7 @@ fn main() -> ExitCode {
             .with_guest_recovery_report(guest_recovery_report.as_deref())
             .with_vm_attachment_manifest_sha256(vm_attachment_manifest_sha256.as_deref())
             .with_transport_qualification(transport_qualification.as_ref());
-            if a3s_oci_krun::run_macos_agent_vm_worker_handoff(handoff) {
+            if aster_oci_krun::run_macos_agent_vm_worker_handoff(handoff) {
                 ExitCode::SUCCESS
             } else {
                 ExitCode::from(2)
@@ -1155,25 +1155,25 @@ fn main() -> ExitCode {
                 ) {
                     Ok(identities) => identities,
                     Err(error) => {
-                        eprintln!("a3s-oci-krun-shim: {error}");
+                        eprintln!("aster-oci-krun-shim: {error}");
                         return ExitCode::FAILURE;
                     }
                 };
             let transport_qualification = match take_transport_qualification() {
                 Ok(request) => request,
                 Err(error) => {
-                    eprintln!("a3s-oci-krun-shim: {error}");
+                    eprintln!("aster-oci-krun-shim: {error}");
                     return ExitCode::FAILURE;
                 }
             };
             let console_identity = match parse_console_identity(console_device, console_inode) {
                 Ok(identity) => identity,
                 Err(error) => {
-                    eprintln!("a3s-oci-krun-shim: {error}");
+                    eprintln!("aster-oci-krun-shim: {error}");
                     return ExitCode::FAILURE;
                 }
             };
-            let handoff = a3s_oci_krun::LinuxAgentVmWorkerHandoff::new(
+            let handoff = aster_oci_krun::LinuxAgentVmWorkerHandoff::new(
                 &system_image_manifest,
                 &runtime_share,
                 &guest_token_file,
@@ -1197,7 +1197,7 @@ fn main() -> ExitCode {
             } else {
                 handoff
             };
-            let succeeded = a3s_oci_krun::run_linux_agent_vm_worker_handoff(handoff);
+            let succeeded = aster_oci_krun::run_linux_agent_vm_worker_handoff(handoff);
             if succeeded {
                 ExitCode::SUCCESS
             } else {
@@ -1207,27 +1207,27 @@ fn main() -> ExitCode {
     }
 }
 
-fn take_session_token() -> Result<a3s_oci_agent_protocol::SessionToken, String> {
+fn take_session_token() -> Result<aster_oci_agent_protocol::SessionToken, String> {
     let encoded = Zeroizing::new(
-        std::env::var(a3s_oci_agent_protocol::AGENT_SESSION_TOKEN_ENV)
+        std::env::var(aster_oci_agent_protocol::AGENT_SESSION_TOKEN_ENV)
             .map_err(|error| format!("guest bootstrap token is unavailable: {error}"))?,
     );
-    std::env::remove_var(a3s_oci_agent_protocol::AGENT_SESSION_TOKEN_ENV);
-    a3s_oci_agent_protocol::SessionToken::from_hex(encoded.as_str())
+    std::env::remove_var(aster_oci_agent_protocol::AGENT_SESSION_TOKEN_ENV);
+    aster_oci_agent_protocol::SessionToken::from_hex(encoded.as_str())
         .map_err(|error| format!("guest bootstrap token is invalid: {error}"))
 }
 
 fn take_transport_qualification(
-) -> Result<Option<a3s_oci_agent_protocol::AgentTransportQualificationRequest>, String> {
-    let Some(encoded) = std::env::var_os(a3s_oci_agent_protocol::AGENT_TRANSPORT_QUALIFICATION_ENV)
+) -> Result<Option<aster_oci_agent_protocol::AgentTransportQualificationRequest>, String> {
+    let Some(encoded) = std::env::var_os(aster_oci_agent_protocol::AGENT_TRANSPORT_QUALIFICATION_ENV)
     else {
         return Ok(None);
     };
-    std::env::remove_var(a3s_oci_agent_protocol::AGENT_TRANSPORT_QUALIFICATION_ENV);
+    std::env::remove_var(aster_oci_agent_protocol::AGENT_TRANSPORT_QUALIFICATION_ENV);
     let encoded = encoded
         .into_string()
         .map_err(|_| "guest transport qualification handoff is not valid UTF-8".to_string())?;
-    a3s_oci_agent_protocol::AgentTransportQualificationRequest::from_json(&encoded)
+    aster_oci_agent_protocol::AgentTransportQualificationRequest::from_json(&encoded)
         .map(Some)
         .map_err(|error| error.to_string())
 }
@@ -1470,7 +1470,7 @@ fn run_session_owner(
                 Ok(Some(stream)) => {
                     if let Err(error) = require_same_uid_peer(&stream) {
                         eprintln!(
-                            "a3s-oci-krun-shim: session-owner rejected host-control peer: {error}"
+                            "aster-oci-krun-shim: session-owner rejected host-control peer: {error}"
                         );
                         continue;
                     }

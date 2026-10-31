@@ -59,7 +59,7 @@ fn killed_graph_publication_replays_exact_cutover_offline_without_generation_inf
             "1.0.0",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .spawn()
         .unwrap();
 
@@ -154,7 +154,7 @@ fn killed_graph_publication_replays_exact_cutover_offline_without_generation_inf
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(diagnostic.status.success(), "{diagnostic:?}");

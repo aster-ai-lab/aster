@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowSpec, WorkflowTerminalOutcome,
 };
@@ -40,7 +40,7 @@ impl FlowRuntime for BatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.spec().name.as_str() {
             "examples.child-workflow-batch.parent" => {
@@ -95,7 +95,7 @@ impl FlowRuntime for BatchRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<Value> {
         Err(FlowError::Runtime(format!(
             "child workflow batch example does not define step {}",
             invocation.step_name
@@ -104,7 +104,7 @@ impl FlowRuntime for BatchRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(BatchRuntime));
     let parent_spec = WorkflowSpec::rust_embedded(
         "examples.child-workflow-batch.parent",

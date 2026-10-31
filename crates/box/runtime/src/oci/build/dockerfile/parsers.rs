@@ -1,6 +1,6 @@
 //! Individual instruction parsers for Dockerfile instructions.
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 use super::utils::{parse_duration_secs, parse_json_array, shell_split, unquote};
 use super::{

@@ -1,5 +1,5 @@
-use a3s_gateway::config::MiddlewareConfig;
-use a3s_gateway::middleware::{Pipeline, RequestContext};
+use aster_gateway::config::MiddlewareConfig;
+use aster_gateway::middleware::{Pipeline, RequestContext};
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use http::Request;
 use std::collections::HashMap;

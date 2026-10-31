@@ -15,21 +15,21 @@ digests, revision fencing, path filters, result projection, and current-source
 verification. The backend only indexes the admitted chunk text and returns
 bounded ranked ordinals.
 
-The product default is the pure-Rust `a3s-vec` FTS engine, identified in
-result metadata as `a3s_vec_fts_v1`. Every partition, including a
+The product default is the pure-Rust `aster-vec` FTS engine, identified in
+result metadata as `aster_vec_fts_v1`. Every partition, including a
 single-document partition, goes through that engine so production behavior is
 the same at every workspace size. A deliberately minimal build can select the
 dependency-free scorer, identified as `portable_bm25_v1`; that is an explicit
 build-time fallback and does not silently change the configured engine.
 
-Semantic retrieval uses the exact `a3s-memory` in-memory adapter. Embeddings
+Semantic retrieval uses the exact `aster-memory` in-memory adapter. Embeddings
 are validated once, grouped into bounded provider requests, and published as
 immutable per-file partitions. There is no second semantic index, migration
 shadow, or runtime authority selector.
 
 ## Lexical lifecycle
 
-For each admitted catalog partition, the a3s-vec adapter:
+For each admitted catalog partition, the aster-vec adapter:
 
 1. Reuses Code's canonical tokenizer and normalizes the tokens into one FTS
    field. This keeps identifier splitting and CJK bigrams identical across
@@ -52,7 +52,7 @@ semantics.
 ## Query and rerank flow
 
 The indexed lexical path first uses term metadata to select candidate files,
-then asks a3s-vec for bounded top-k FTS results per selected partition. Exact
+then asks aster-vec for bounded top-k FTS results per selected partition. Exact
 literal, optional Code Intelligence symbols, lexical, and semantic channels
 are fused with deterministic reciprocal-rank fusion (`k=60`). The optional
 CPU reranker examines a bounded candidate pool, protects exact identifiers,
@@ -66,7 +66,7 @@ must match its recorded digest and byte range before it reaches the model.
 
 ## Packaging and runtime admission
 
-`a3s-vec` is a pure-Rust crate. Product builds enable the `a3s-vec-fts`
+`aster-vec` is a pure-Rust crate. Product builds enable the `aster-vec-fts`
 feature; no native sidecar library, `ZVEC_LIB_DIR`, or platform packaging
 script is required. Unsupported or minimal embeds can compile with
 `--no-default-features` and use the portable scorer.
@@ -75,7 +75,7 @@ Persistent generations use an atomic `CURRENT` pointer and a schema-v3
 manifest. On reopen, Code verifies every retained chunk's text digest, stable
 chunk identity, byte/line range, canonical source digest, and duplicate-ID
 constraint before exposing the collection. A damaged or incompatible
-generation (including prior `a3s_vec_fts_v1` generations) is treated as
+generation (including prior `aster_vec_fts_v1` generations) is treated as
 absent and is rebuilt from the current catalog; it is never served as a
 partially trusted index.
 
@@ -86,7 +86,7 @@ partially trusted index.
   stale-source filtering, and cleanup are atomic and deterministic.
 - Concurrent replacement and query tests pass without resource exhaustion.
 - Default and `--no-default-features` builds compile and run their respective
-  lexical suites; explicit a3s-vec selection fails with a typed configuration
+  lexical suites; explicit aster-vec selection fails with a typed configuration
   error when the feature is absent.
 - Rust hosts expose the same lexical enum, status/result shape,
   typed chunking/reranking options, cancellation, and close semantics.

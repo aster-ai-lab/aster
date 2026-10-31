@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     ChildWorkflowCancellationPolicy, ChildWorkflowCommand, FlowEngine, FlowError, FlowEvent,
     FlowEventStore, FlowRuntime, InMemoryEventStore, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowSpec, WorkflowTerminalOutcome,
@@ -119,13 +119,13 @@ impl FlowRuntime for DriftedReplayRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation
             .context()
             .start_child_workflow("child", spec(), json!({ "value": 99 })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("validation tests do not execute steps")
     }
 }

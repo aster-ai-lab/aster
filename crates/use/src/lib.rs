@@ -1,4 +1,4 @@
-//! Typed facade for A3S application capabilities.
+//! Typed facade for Aster application capabilities.
 
 /// Stable user-level scope shared by standalone and embedded package hosts.
 pub const PACKAGE_DEFAULT_SCOPE: &str = "user/current";
@@ -32,13 +32,13 @@ mod extension_host;
 #[cfg(feature = "extensions")]
 pub mod okf_knowledge;
 
-pub use a3s_use_core as core;
+pub use aster_use_core as core;
 
 #[cfg(feature = "extensions")]
-pub use a3s_use_extension as extension;
+pub use aster_use_extension as extension;
 
 #[cfg(feature = "tool-acquire")]
-pub use a3s_use_tool_acquire as tool_acquire;
+pub use aster_use_tool_acquire as tool_acquire;
 
 #[cfg(feature = "reconcile")]
-pub use a3s_use_reconcile as reconcile;
+pub use aster_use_reconcile as reconcile;

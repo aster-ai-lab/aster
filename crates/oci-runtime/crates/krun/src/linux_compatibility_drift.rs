@@ -5,8 +5,8 @@ use std::path::{Path, PathBuf};
 use std::thread;
 use std::time::{Duration, Instant};
 
-const READY_FILE: &str = ".a3s-oci-kvm-compatibility-drift-ready";
-const CONTINUE_FILE: &str = ".a3s-oci-kvm-compatibility-drift-continue";
+const READY_FILE: &str = ".aster-oci-kvm-compatibility-drift-ready";
+const CONTINUE_FILE: &str = ".aster-oci-kvm-compatibility-drift-continue";
 const CONTROL_TIMEOUT: Duration = Duration::from_secs(60);
 const POLL_INTERVAL: Duration = Duration::from_millis(10);
 const MAX_CASE_BYTES: u64 = 128;

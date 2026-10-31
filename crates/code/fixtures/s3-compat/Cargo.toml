@@ -1,14 +1,14 @@
 [workspace]
 
 [package]
-name = "a3s-code-s3-compat"
+name = "aster-s3-compat"
 version = "0.0.0"
 edition = "2021"
 publish = false
 description = "Local S3-compatible server for hermetic workspace qualification"
 
 [[bin]]
-name = "a3s-code-s3-compat"
+name = "aster-s3-compat"
 path = "src/main.rs"
 
 [dependencies]

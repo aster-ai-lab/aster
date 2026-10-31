@@ -1,5 +1,5 @@
 use super::*;
-use a3s_effect::LogStore;
+use aster_effect::LogStore;
 
 #[tokio::test]
 async fn durable_transcript_uses_the_owned_log_while_its_writer_is_fenced() {
@@ -30,7 +30,7 @@ async fn durable_transcript_uses_the_owned_log_while_its_writer_is_fenced() {
         .clone()
         .unwrap();
     let writer = log.try_writer_fence().unwrap();
-    let foreign = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+    let foreign = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
         workspace.path(),
         "durable-read-owner",
     ))
@@ -38,7 +38,7 @@ async fn durable_transcript_uses_the_owned_log_while_its_writer_is_fenced() {
     let thread = crate::fact_control::thread_for_session("durable-read-owner");
     assert!(matches!(
         foreign.read(&thread),
-        Err(a3s_effect::ActorError::LogBusy)
+        Err(aster_effect::ActorError::LogBusy)
     ));
     assert_eq!(
         serde_json::to_value(session.durable_transcript()).unwrap(),

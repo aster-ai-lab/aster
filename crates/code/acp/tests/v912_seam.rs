@@ -1,6 +1,6 @@
-//! v9.1.2 mechanisms through the shipped `a3s-code-acp` binary and core log.
+//! v9.1.2 mechanisms through the shipped `aster-acp` binary and core log.
 //!
-//! The agent process is `CARGO_BIN_EXE_a3s-code-acp`. The model is a local
+//! The agent process is `CARGO_BIN_EXE_aster-acp`. The model is a local
 //! OpenAI-compatible server. Nothing here reimplements the agent.
 
 use std::io::{Read, Write};
@@ -55,7 +55,7 @@ impl Drop for AgentProc {
 
 fn isolate(label: &str) -> PathBuf {
     let path = std::env::temp_dir().join(format!(
-        "a3s-v912-{label}-{}-{}",
+        "aster-v912-{label}-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -67,7 +67,7 @@ fn isolate(label: &str) -> PathBuf {
 }
 
 fn write_acl(workspace: &Path, base_url: &str) -> PathBuf {
-    let dir = workspace.join(".a3s");
+    let dir = workspace.join(".aster");
     std::fs::create_dir_all(&dir).expect("acl dir");
     let path = dir.join("config.acl");
     std::fs::write(
@@ -375,14 +375,14 @@ impl acp::Client for TestClient {
 }
 
 async fn spawn_agent(workspace: &Path, config: &Path, home: &Path) -> AgentProc {
-    let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
+    let bin = PathBuf::from(env!("CARGO_BIN_EXE_aster-acp"));
     let mut child = tokio::process::Command::new(bin)
         .arg("--cwd")
         .arg(workspace)
-        .env("A3S_CONFIG", config)
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_CONFIG", config)
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("XAI_API_KEY", "sk-dummy-not-a-model")
         .env("HOME", home)
         .env("GROK_HOME", home.join("grok"))
@@ -390,7 +390,7 @@ async fn spawn_agent(workspace: &Path, config: &Path, home: &Path) -> AgentProc 
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .spawn()
-        .expect("spawn a3s-code-acp");
+        .expect("spawn aster-acp");
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
     let client = TestClient::default();
@@ -512,8 +512,8 @@ fn effect_log(workspace: &Path) -> String {
             }
         }
     };
-    append_dir(&workspace.join(".a3s").join("effect-log"));
-    if let Ok(dates) = std::fs::read_dir(workspace.join(".a3s").join("sessions")) {
+    append_dir(&workspace.join(".aster").join("effect-log"));
+    if let Ok(dates) = std::fs::read_dir(workspace.join(".aster").join("sessions")) {
         for date in dates.flatten() {
             let Ok(homes) = std::fs::read_dir(date.path()) else {
                 continue;
@@ -548,7 +548,7 @@ async fn v912_session_posture_and_deny() {
 
             let fresh = ext(
                 &agent,
-                "a3s/session/info",
+                "aster/session/info",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -568,7 +568,7 @@ async fn v912_session_posture_and_deny() {
             }
             let still_default = ext(
                 &agent,
-                "a3s/session/info",
+                "aster/session/info",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -580,7 +580,7 @@ async fn v912_session_posture_and_deny() {
             for retired in ["always-approve", "force"] {
                 let detail = ext_err(
                     &agent,
-                    "a3s/permission_posture",
+                    "aster/permission_posture",
                     serde_json::json!({
                         "sessionId": session.0.as_ref(),
                         "posture": retired
@@ -599,7 +599,7 @@ async fn v912_session_posture_and_deny() {
             }
             let after_reject = ext(
                 &agent,
-                "a3s/session/info",
+                "aster/session/info",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -617,7 +617,7 @@ async fn v912_session_posture_and_deny() {
                 set_mode(&agent, &session, mode).await;
                 let info = ext(
                     &agent,
-                    "a3s/session/info",
+                    "aster/session/info",
                     serde_json::json!({ "sessionId": session.0.as_ref() }),
                 )
                 .await;
@@ -633,7 +633,7 @@ async fn v912_session_posture_and_deny() {
 
             let admitted = ext(
                 &agent,
-                "a3s/permission_posture",
+                "aster/permission_posture",
                 serde_json::json!({
                     "sessionId": session.0.as_ref(),
                     "posture": "yolo",
@@ -672,7 +672,7 @@ async fn v912_standing_context_before_model() {
             assert!(!bodies.is_empty(), "the model was never called");
             let log = effect_log(&workspace);
             assert!(
-                log.contains("a3s.standing-context"),
+                log.contains("aster.standing-context"),
                 "standing context was not admitted before the model call: {log}"
             );
             let mut standing_seq: Option<u64> = None;
@@ -692,7 +692,7 @@ async fn v912_standing_context_before_model() {
                         None => seq,
                     });
                 }
-                if kind != Some("a3s.standing-context") {
+                if kind != Some("aster.standing-context") {
                     continue;
                 }
                 let payload = &fact["payload"];
@@ -755,7 +755,7 @@ async fn v912_compact_keeps_obligations() {
             }
             let compacted = ext(
                 &agent,
-                "a3s/compact_conversation",
+                "aster/compact_conversation",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -845,7 +845,7 @@ async fn v912_remember_before_stream_close() {
             )
             .await
             .expect("remember prompt");
-            let memory_dir = workspace.join(".a3s").join("memory");
+            let memory_dir = workspace.join(".aster").join("memory");
             assert!(
                 explicit_preference_stored(&memory_dir, TOKEN),
                 "explicit preference was not durable under {} at End; effect log has the token: {}",
@@ -869,7 +869,7 @@ fn explicit_preference_stored(memory_dir: &Path, token: &str) -> bool {
 
 #[test]
 fn v912_cursor_replays_before_new_chain_digest() {
-    use a3s_code_core::{
+    use aster_core::{
         AgentEvent, CapabilityStamp, CoreEventLog, OperationId, RunEventRecord, SourceRevision,
     };
 
@@ -929,7 +929,7 @@ async fn v912_completion_gate_keeps_path() {
             set_mode(&agent, &session, "yolo").await;
             let info = ext(
                 &agent,
-                "a3s/session/info",
+                "aster/session/info",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -989,7 +989,7 @@ async fn v912_disk_attested_html_edit_needs_no_bash_or_permission() {
                 "<!doctype html><html><head><title>Before</title></head><body><h1>Landing</h1></body></html>",
             )
             .expect("initial html");
-            let meta = serde_json::json!({"a3sHost":{"completionAttestation":"disk_content"}})
+            let meta = serde_json::json!({"asterHost":{"completionAttestation":"disk_content"}})
                 .as_object()
                 .unwrap()
                 .clone();
@@ -1024,7 +1024,7 @@ async fn v912_disk_attested_html_edit_needs_no_bash_or_permission() {
             let outcomes: Vec<_> = capture
                 .events
                 .iter()
-                .filter(|event| event["method"] == "a3s/turn/outcome")
+                .filter(|event| event["method"] == "aster/turn/outcome")
                 .map(|event| event["params"]["outcome"].clone())
                 .collect();
             assert_eq!(outcomes.len(), 1, "missing or duplicate turn outcome");

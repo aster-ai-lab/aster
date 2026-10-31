@@ -710,7 +710,7 @@ mod tests {
     use tokio::net::TcpListener;
 
     fn origin_policy(host: &str, port: u16) -> SandboxPolicy {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_network = true;
         policy.network.allow.push(NetworkAllowRule {
             host: host.into(),
@@ -798,7 +798,7 @@ mod tests {
 
     #[tokio::test]
     async fn path_prefixed_rule_does_not_authorize_connect() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_network = true;
         policy.network.allow.push(NetworkAllowRule {
             host: "127.0.0.1".into(),
@@ -906,7 +906,7 @@ mod tests {
     async fn named_pipe_connect_allow_tunnels_bytes_to_upstream() {
         use tokio::net::windows::named_pipe::ClientOptions;
 
-        let pipe_name = format!(r"\\.\pipe\a3s-sandbox-connect-{}", std::process::id());
+        let pipe_name = format!(r"\\.\pipe\aster-sandbox-connect-{}", std::process::id());
 
         let upstream = TcpListener::bind(SocketAddr::from(([127, 0, 0, 1], 0)))
             .await
@@ -972,7 +972,7 @@ mod tests {
         with_allow: bool,
         with_injection: bool,
     ) -> SandboxPolicy {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_network = true;
         if with_allow {
             policy.network.allow.push(NetworkAllowRule {
@@ -1071,7 +1071,7 @@ mod tests {
             "upstream must observe the injected secret header, got: {head:?}"
         );
         assert!(
-            !head.contains("a3s:secret:"),
+            !head.contains("aster:secret:"),
             "sentinels must never be forwarded upstream: {head:?}"
         );
     }
@@ -1218,7 +1218,7 @@ mod tests {
             Some(gate8_secrets().await),
             addr.port(),
             &format!(
-                "GET http://127.0.0.1:{}/v1/token HTTP/1.1\r\nAuthorization: Bearer a3s:secret:GATE8_TOKEN\r\n",
+                "GET http://127.0.0.1:{}/v1/token HTTP/1.1\r\nAuthorization: Bearer aster:secret:GATE8_TOKEN\r\n",
                 addr.port()
             ),
         )
@@ -1237,7 +1237,7 @@ mod tests {
             "exactly one Authorization header may reach upstream: {head:?}"
         );
         assert!(
-            !head.contains("a3s:secret:"),
+            !head.contains("aster:secret:"),
             "sentinel must be swallowed, not forwarded: {head:?}"
         );
         assert!(

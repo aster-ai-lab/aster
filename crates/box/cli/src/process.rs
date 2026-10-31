@@ -1,6 +1,6 @@
 //! Shared process management utilities for CLI commands.
 
-pub use a3s_box_runtime::{
+pub use aster_box_runtime::{
     is_process_alive, is_process_alive_with_identity, is_process_running_with_identity,
     pid_start_time,
 };
@@ -189,7 +189,7 @@ pub async fn graceful_stop_via_guest(
         return StopOutcome::AlreadyExited;
     }
 
-    let delivered = match a3s_box_runtime::ExecClient::connect(exec_socket).await {
+    let delivered = match aster_box_runtime::ExecClient::connect(exec_socket).await {
         Ok(client) => client.signal_main(signal).await.unwrap_or(false),
         Err(_) => false,
     };
@@ -233,7 +233,7 @@ pub async fn graceful_stop_via_guest(
     // already stages stop.signal. Legacy Windows stop must do the same: a host
     // TerminateProcess on the shim skips guest persist and leaves export fail-
     // closed (#638).
-    let request = match a3s_box_runtime::stage_windows_guest_stop_request(socket_dir, signal) {
+    let request = match aster_box_runtime::stage_windows_guest_stop_request(socket_dir, signal) {
         Ok(path) => path,
         Err(error) => {
             tracing::warn!(
@@ -246,10 +246,10 @@ pub async fn graceful_stop_via_guest(
 
     let timeout_ms = timeout.saturating_mul(1000);
     let delivery_timeout = std::time::Duration::from_millis(
-        timeout_ms.min(a3s_box_runtime::WINDOWS_STOP_DELIVERY_TIMEOUT_MS),
+        timeout_ms.min(aster_box_runtime::WINDOWS_STOP_DELIVERY_TIMEOUT_MS),
     );
     let delivery_started = std::time::Instant::now();
-    let delivered = match a3s_box_runtime::wait_windows_guest_stop_delivered(
+    let delivered = match aster_box_runtime::wait_windows_guest_stop_delivered(
         &request,
         delivery_timeout,
     )
@@ -268,7 +268,7 @@ pub async fn graceful_stop_via_guest(
         u64::try_from(delivery_started.elapsed().as_millis()).unwrap_or(u64::MAX);
     let remaining_timeout_ms = timeout_ms.saturating_sub(delivery_elapsed_ms);
     let wait_ms = if delivered {
-        remaining_timeout_ms.saturating_add(a3s_box_runtime::WINDOWS_GUEST_FINALIZATION_TIMEOUT_MS)
+        remaining_timeout_ms.saturating_add(aster_box_runtime::WINDOWS_GUEST_FINALIZATION_TIMEOUT_MS)
     } else {
         remaining_timeout_ms
     };
@@ -287,9 +287,9 @@ pub async fn graceful_stop_via_guest(
     };
 
     if let Some(box_dir) = socket_dir.parent() {
-        let _ = a3s_box_runtime::finalize_box_terminal_rootfs_metadata(box_dir);
+        let _ = aster_box_runtime::finalize_box_terminal_rootfs_metadata(box_dir);
     }
-    if let Err(error) = a3s_box_runtime::clear_windows_guest_stop_request(socket_dir) {
+    if let Err(error) = aster_box_runtime::clear_windows_guest_stop_request(socket_dir) {
         tracing::warn!(
             error = %error,
             "Failed to clear Windows guest stop request after shim stop"
@@ -307,7 +307,7 @@ pub async fn graceful_stop_via_guest(
 /// host signal only when no guest exec server is reachable (older box).
 #[cfg(unix)]
 pub async fn deliver_signal_via_guest(exec_socket: &std::path::Path, signal: i32) -> bool {
-    match a3s_box_runtime::ExecClient::connect(exec_socket).await {
+    match aster_box_runtime::ExecClient::connect(exec_socket).await {
         Ok(client) => client.signal_main(signal).await.unwrap_or(false),
         Err(_) => false,
     }

@@ -10,7 +10,7 @@ Vec 以 `Collection` 为工作单元。Schema 决定字段类型、向量维度�
 ## 创建 Collection 并查询向量
 
 ```rust
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexParams,
     MetricType, Result, SearchQuery,
 };
@@ -50,7 +50,7 @@ fn main() -> Result<()> {
 ## 全文查询
 
 ```rust
-use a3s_vec::{Fts, SearchQuery};
+use aster_vec::{Fts, SearchQuery};
 
 let mut expression = Fts::new()?;
 expression.set_query_string("rust AND \"vector database\"")?;

@@ -5,7 +5,7 @@
  * This file is in @layer components so a utility such as animate-none wins.
  */
 
-@keyframes a3s-dialog-in {
+@keyframes aster-dialog-in {
   from {
     opacity: 0;
     scale: 0.98;
@@ -17,7 +17,7 @@
   }
 }
 
-@keyframes a3s-dialog-out {
+@keyframes aster-dialog-out {
   from {
     opacity: 1;
     scale: 1;
@@ -29,7 +29,7 @@
   }
 }
 
-@keyframes a3s-dialog-scrim-in {
+@keyframes aster-dialog-scrim-in {
   from {
     opacity: 0;
   }
@@ -39,7 +39,7 @@
   }
 }
 
-@keyframes a3s-dialog-scrim-out {
+@keyframes aster-dialog-scrim-out {
   from {
     opacity: 1;
   }
@@ -51,44 +51,44 @@
 
 @layer components {
   [data-slot='dialog-overlay'][data-state='open'] {
-    animation: a3s-dialog-scrim-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-dialog-scrim-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   [data-slot='dialog-overlay'][data-state='closed'] {
-    animation: a3s-dialog-scrim-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    animation: aster-dialog-scrim-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   [data-slot='dialog-content'][data-state='open'] {
-    animation: a3s-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   [data-slot='dialog-content'][data-state='closed'] {
-    animation: a3s-dialog-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    animation: aster-dialog-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   .ui-dialog-backdrop {
-    animation: a3s-dialog-scrim-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-dialog-scrim-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .ui-dialog-panel {
-    animation: a3s-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   /* Hand-drawn dialogs opt in with these classes. data-state=closed plays the leave. */
-  .a3s-dialog-scrim:not([data-state='closed']) {
-    animation: a3s-dialog-scrim-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  .aster-dialog-scrim:not([data-state='closed']) {
+    animation: aster-dialog-scrim-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  .a3s-dialog-scrim[data-state='closed'] {
-    animation: a3s-dialog-scrim-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  .aster-dialog-scrim[data-state='closed'] {
+    animation: aster-dialog-scrim-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
-  .a3s-dialog-surface:not([data-state='closed']) {
-    animation: a3s-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  .aster-dialog-surface:not([data-state='closed']) {
+    animation: aster-dialog-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  .a3s-dialog-surface[data-state='closed'] {
-    animation: a3s-dialog-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  .aster-dialog-surface[data-state='closed'] {
+    animation: aster-dialog-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   /* WebKit can suspend background animations before Radix receives animationend. */
@@ -104,10 +104,10 @@
     [data-slot='dialog-content'][data-state='closed'],
     .ui-dialog-backdrop,
     .ui-dialog-panel,
-    .a3s-dialog-scrim:not([data-state='closed']),
-    .a3s-dialog-scrim[data-state='closed'],
-    .a3s-dialog-surface:not([data-state='closed']),
-    .a3s-dialog-surface[data-state='closed'] {
+    .aster-dialog-scrim:not([data-state='closed']),
+    .aster-dialog-scrim[data-state='closed'],
+    .aster-dialog-surface:not([data-state='closed']),
+    .aster-dialog-surface[data-state='closed'] {
       animation: none;
     }
   }

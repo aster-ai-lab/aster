@@ -1,15 +1,15 @@
 [package]
-name = "a3s-memory"
+name = "aster-durable-memory"
 version = "0.1.5"
 edition = "2021"
-authors = ["A3S Lab Team"]
+authors = ["Aster Team"]
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Memory"
-description = "A3S Memory - Pluggable memory storage for AI agents"
+repository = "https://github.com/aster-ai-lab/Memory"
+description = "Aster Memory - Pluggable memory storage for AI agents"
 publish = false
 
 [lib]
-name = "a3s_memory"
+name = "aster_durable_memory"
 path = "src/lib.rs"
 
 [features]

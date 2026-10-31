@@ -1,0 +1,30 @@
+image:
+  repository: aster-gateway
+  tag: "0.2.1"
+  pullPolicy: Never  # use local image (OrbStack shares Docker daemon with k8s)
+
+replicaCount: 1
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30080
+
+config: |
+  entrypoints "web" {
+    address = "0.0.0.0:8080"
+  }
+
+  routers "nginx" {
+    rule    = "PathPrefix(`/`)"
+    service = "nginx-backend"
+  }
+
+  services "nginx-backend" {
+    load_balancer {
+      strategy = "round-robin"
+      servers = [
+        { url = "http://nginx:80" }
+      ]
+    }
+  }

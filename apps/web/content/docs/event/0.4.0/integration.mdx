@@ -10,11 +10,11 @@ EventBus 提供发布、历史、订阅管理和指标接口。Provider 负责�
 ## 发布与查询
 
 ```rust
-use a3s_event::{EventBus, Event};
-use a3s_event::provider::memory::MemoryProvider;
+use aster_event::{EventBus, Event};
+use aster_event::provider::memory::MemoryProvider;
 
 #[tokio::main]
-async fn main() -> a3s_event::Result<()> {
+async fn main() -> aster_event::Result<()> {
     let bus = EventBus::new(MemoryProvider::default());
     let event = bus.publish(
         "market",
@@ -37,19 +37,19 @@ async fn main() -> a3s_event::Result<()> {
 默认依赖：
 
 ```toml
-a3s-event = "0.4"
+aster-event = "0.4"
 ```
 
 最小核心：
 
 ```toml
-a3s-event = { version = "0.4", default-features = false }
+aster-event = { version = "0.4", default-features = false }
 ```
 
 只选择 NATS 与加密：
 
 ```toml
-a3s-event = { version = "0.4", default-features = false, features = ["nats", "encryption"] }
+aster-event = { version = "0.4", default-features = false, features = ["nats", "encryption"] }
 ```
 
 NATS 需要可用的 JetStream。Iggy 使用 Stream、Topic、Partition 模型，Subject Category 映射为 Topic，订阅过滤在客户端继续执行。

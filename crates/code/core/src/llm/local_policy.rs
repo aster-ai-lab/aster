@@ -2,7 +2,7 @@
 
 use std::collections::{BTreeSet, HashMap};
 
-use a3s_acl::{
+use aster_acl::{
     AttributeSchema, Block, BlockSchema, Cardinality, Document, Schema, Value, ValueSchema,
 };
 use anyhow::{bail, ensure, Context, Result};
@@ -176,8 +176,8 @@ impl LocalModelPolicy {
             text.len() <= MAX_POLICY_BYTES,
             "local model policy exceeds byte limit"
         );
-        let document = a3s_acl::parse(text).context("invalid local model policy ACL")?;
-        let report = a3s_acl::validate_document(&document, &policy_schema());
+        let document = aster_acl::parse(text).context("invalid local model policy ACL")?;
+        let report = aster_acl::validate_document(&document, &policy_schema());
         ensure!(
             report.is_empty(),
             "invalid local model policy fields: {report:?}"
@@ -264,7 +264,7 @@ impl LocalModelPolicy {
         }
         let mut root = policy_block("local_models", None, &[]);
         root.blocks = children;
-        let text = a3s_acl::generate(&Document { blocks: vec![root] });
+        let text = aster_acl::generate(&Document { blocks: vec![root] });
         ensure!(
             text.len() <= MAX_POLICY_BYTES,
             "local model policy exceeds byte limit"

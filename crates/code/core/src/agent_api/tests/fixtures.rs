@@ -418,7 +418,7 @@ impl crate::context::ContextProvider for CapturingContextProvider {
 #[async_trait::async_trait]
 impl crate::package_context::PackageContextProvider for TestPackageProvider {
     fn name(&self) -> &str {
-        "test-a3s-use-package"
+        "test-aster-use-package"
     }
 
     async fn query(
@@ -850,6 +850,7 @@ pub(crate) fn test_config() -> CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![
             ProviderConfig {
+                protocol: None,
                 name: "anthropic".to_string(),
                 api_key: Some("test-key".to_string()),
                 base_url: None,
@@ -874,6 +875,7 @@ pub(crate) fn test_config() -> CodeConfig {
                 }],
             },
             ProviderConfig {
+                protocol: None,
                 name: "openai".to_string(),
                 api_key: Some("test-openai-key".to_string()),
                 base_url: None,

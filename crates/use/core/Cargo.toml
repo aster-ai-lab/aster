@@ -1,11 +1,11 @@
 [package]
-name = "a3s-use-core"
-description = "Shared typed contracts for A3S Use domains"
+name = "aster-use-core"
+description = "Shared typed contracts for Aster Use domains"
 version = "0.2.4"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Use"
-authors = ["A3S Lab"]
+repository = "https://github.com/aster-ai-lab/Use"
+authors = ["Aster"]
 rust-version = "1.82"
 publish = false
 

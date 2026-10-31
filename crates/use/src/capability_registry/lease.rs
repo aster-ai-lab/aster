@@ -1,14 +1,14 @@
 use std::fmt;
 use std::sync::Arc;
 
-use a3s_use_core::{UseError, UseResult, MAX_PLUGIN_PLAN_ITEMS};
+use aster_use_core::{UseError, UseResult, MAX_PLUGIN_PLAN_ITEMS};
 use serde::{Deserialize, Serialize};
 #[cfg(not(feature = "extensions"))]
 use sha2::{Digest, Sha256};
 
 use super::CapabilityRegistrySnapshot;
 
-pub const CAPABILITY_SNAPSHOT_CURSOR_SCHEMA: &str = "a3s.use.capability-snapshot-cursor.v1";
+pub const CAPABILITY_SNAPSHOT_CURSOR_SCHEMA: &str = "aster.use.capability-snapshot-cursor.v1";
 
 /// Exact Use-owned package generation projected into a capability snapshot.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -99,7 +99,7 @@ impl CapabilitySnapshotCursor {
     #[cfg(feature = "extensions")]
     fn matches_extension_cursor(
         &self,
-        extension: &a3s_use_extension::ExtensionSnapshotCursor,
+        extension: &aster_use_extension::ExtensionSnapshotCursor,
     ) -> bool {
         self.generation == extension.generation
             && self.registry_revision == extension.revision
@@ -117,7 +117,7 @@ impl CapabilitySnapshotCursor {
 pub struct CapabilitySnapshotLease {
     snapshot: Arc<CapabilityRegistrySnapshot>,
     #[cfg(feature = "extensions")]
-    extension: a3s_use_extension::ExtensionSnapshotLease,
+    extension: aster_use_extension::ExtensionSnapshotLease,
 }
 
 impl CapabilitySnapshotLease {
@@ -141,7 +141,7 @@ impl CapabilitySnapshotLease {
     }
 
     #[cfg(feature = "extensions")]
-    pub fn extension_lease(&self) -> &a3s_use_extension::ExtensionSnapshotLease {
+    pub fn extension_lease(&self) -> &aster_use_extension::ExtensionSnapshotLease {
         &self.extension
     }
 }
@@ -216,7 +216,7 @@ pub(super) struct ExtensionCursorEvidence {
 impl ExtensionCursorEvidence {
     #[cfg(feature = "extensions")]
     pub(super) fn from_snapshot(
-        snapshot: &a3s_use_extension::ExtensionRegistrySnapshot,
+        snapshot: &aster_use_extension::ExtensionRegistrySnapshot,
     ) -> UseResult<Self> {
         let cursor = snapshot.cursor()?;
         Ok(Self {
@@ -237,7 +237,7 @@ impl ExtensionCursorEvidence {
             generation: 0,
             registry_revision: format!(
                 "sha256:{:x}",
-                Sha256::digest(b"a3s.use.extension-snapshot.empty.v1\0")
+                Sha256::digest(b"aster.use.extension-snapshot.empty.v1\0")
             ),
             packages: Vec::new(),
             unleasable_routes: Vec::new(),
@@ -246,8 +246,8 @@ impl ExtensionCursorEvidence {
 }
 
 #[cfg(feature = "extensions")]
-impl From<&a3s_use_extension::ExtensionSnapshotPackage> for CapabilityPackageGeneration {
-    fn from(package: &a3s_use_extension::ExtensionSnapshotPackage) -> Self {
+impl From<&aster_use_extension::ExtensionSnapshotPackage> for CapabilityPackageGeneration {
+    fn from(package: &aster_use_extension::ExtensionSnapshotPackage) -> Self {
         Self {
             package_id: package.package_id.clone(),
             component_id: package.component_id.clone(),
@@ -388,7 +388,7 @@ mod tests {
     async fn injected_registry_snapshot_lease() {
         let temporary = tempfile::tempdir().unwrap();
         let extension_registry =
-            a3s_use_extension::ExtensionRegistry::new(a3s_use_extension::ExtensionPaths::new(
+            aster_use_extension::ExtensionRegistry::new(aster_use_extension::ExtensionPaths::new(
                 temporary.path().join("data"),
                 temporary.path().join("state"),
             ));
@@ -406,7 +406,7 @@ mod tests {
         .await
         .unwrap();
         tokio::fs::write(
-            fixture.join("a3s-use-extension.acl"),
+            fixture.join("aster-use-extension.acl"),
             br#"extension "acme/guide" {
   schema_version = 3
   version        = "1.0.0"
@@ -430,14 +430,14 @@ mod tests {
         )
         .await
         .unwrap();
-        let package = a3s_use_extension::ExtensionLifecyclePackage::prepare_local(
+        let package = aster_use_extension::ExtensionLifecyclePackage::prepare_local(
             "acme/guide",
             &fixture,
             true,
         )
         .await
         .unwrap();
-        let identity = a3s_use_extension::ExtensionLifecycleIdentity::new(
+        let identity = aster_use_extension::ExtensionLifecycleIdentity::new(
             package.package_id(),
             package.package_digest(),
             package.manifest_digest(),

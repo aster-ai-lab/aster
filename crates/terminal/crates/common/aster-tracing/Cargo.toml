@@ -1,0 +1,38 @@
+[package]
+license = "Apache-2.0"
+name = "aster-tracing"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+async-trait = {workspace = true}
+http = {workspace = true}
+log = {workspace = true}
+fastrace = {version = "0.7"}
+fastrace-tonic = {version = "0.1"}
+fastrace-opentelemetry = {version = "0.18"}
+fastrace-reqwest = {version = "0.2"}
+opentelemetry = {workspace = true}
+opentelemetry-http = {version = "0.32", features = ["reqwest-blocking"]}
+opentelemetry-otlp = {version = "0.32", features = ["grpc-tonic", "reqwest-blocking-client", "tls-roots"]}
+opentelemetry_sdk = {workspace = true}
+reqwest = {workspace = true}
+reqwest-middleware = {workspace = true}
+tokio = {workspace = true}
+tonic = {workspace = true}
+tower = {version = "0.5", features = ["full"]}
+tower-http = {version = "0.6", features = ["trace"]}
+tracing = {workspace = true}
+tracing-opentelemetry = {version = "0.33"}
+uuid = {workspace = true}
+
+[dev-dependencies]
+bytes = {workspace = true}
+http-body-util = {version = "0.1"}
+tokio = {version = "1", features = ["full", "macros", "rt-multi-thread"]}
+tracing-subscriber = {workspace = true}
+wiremock = {workspace = true}
+
+[lints]
+workspace = true

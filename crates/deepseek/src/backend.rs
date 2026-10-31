@@ -6,7 +6,7 @@ use crate::{
     replicas::{NativeGeneration, NativeGenerationEvent, XqReplicaPool},
     weights::xq::{gguf::XQ_GGUF_BYTES, XQ_GGUF_SHA256},
 };
-use a3s_power::{
+use aster_power::{
     backend::{
         think_parser::ThinkBlockParser,
         types::{

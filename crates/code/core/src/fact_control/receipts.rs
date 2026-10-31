@@ -9,7 +9,7 @@ pub(super) use novelty::novel_information;
 mod refusal;
 pub(super) use refusal::{child_execution_cycle, execution_cycle, ExecutionCycle};
 
-use a3s_effect::{
+use aster_effect::{
     Effect, PreparedToolExecution, ToolAdmissionIdentityV1, ToolEffectObservationV1,
     ToolExecutionOutcome, ToolExecutionResultV1, ToolObservationCompleteness,
     ToolPreparationRequest, ToolPreparedV1, ToolRecoveryPolicy, TOOL_PREPARED_SCHEMA,
@@ -70,7 +70,7 @@ pub(super) async fn prepare_tools(
     mut request: ToolPreparationRequest,
     cancel: tokio_util::sync::CancellationToken,
 ) -> Result<PreparedToolExecution, ActorError> {
-    let original_digest = a3s_effect::tool_args_digest(&request.call.args)?;
+    let original_digest = aster_effect::tool_args_digest(&request.call.args)?;
     // Use the same declared-schema gateway as ordinary agent invocations,
     // against this Run's executor registry. Invalid original input must not
     // reach an input hook, which may itself have effects.
@@ -199,7 +199,9 @@ pub(super) async fn prepare_tools(
             }
         }
     }
-    let effective_digest = a3s_effect::tool_args_digest(&request.call.args)?;
+    let effective_digest = aster_effect::tool_args_digest(&request.call.args)?;
+    // Actor approval covers only the original invocation, never rewritten input.
+    request.call.needs_confirmation &= effective_digest == original_digest;
     if argument_error.is_none() && denial.is_none() {
         argument_error = tools
             .executor
@@ -306,7 +308,7 @@ pub(super) async fn prepare_tools(
             .validate()
             .map_err(|error| ActorError::Schema(error.to_string()))?;
         let digest =
-            crate::content_digest::digest_json("a3s.code.tool-admission-binding.v1", &binding)
+            crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", &binding)
                 .map_err(|error| ActorError::Schema(error.to_string()))?;
         request.identity.admission = Some(ToolAdmissionIdentityV1 {
             run_id: run_id.clone(),
@@ -898,18 +900,18 @@ pub(super) enum ReceiptProjection {
 
 /// A turn marker bounds verified local changes. It cannot erase uncertainty
 /// about an invocation that never acquired an identity-bound terminal result.
-pub(super) fn fold_debt(facts: &[a3s_effect::Fact]) -> ReceiptDebt {
+pub(super) fn fold_debt(facts: &[aster_effect::Fact]) -> ReceiptDebt {
     fold_receipts(facts, false)
 }
 
 /// The cache proof needs the same validation as recovery, including exact
 /// typed terminals already covered by a turn marker. It never changes the
 /// marker's ordinary unsettled-debt projection.
-pub(super) fn fold_cache_evidence(facts: &[a3s_effect::Fact]) -> ReceiptDebt {
+pub(super) fn fold_cache_evidence(facts: &[aster_effect::Fact]) -> ReceiptDebt {
     fold_receipts(facts, true)
 }
 
-fn fold_receipts(facts: &[a3s_effect::Fact], include_covered: bool) -> ReceiptDebt {
+fn fold_receipts(facts: &[aster_effect::Fact], include_covered: bool) -> ReceiptDebt {
     use std::collections::{BTreeMap, BTreeSet, VecDeque};
     let start = facts
         .iter()

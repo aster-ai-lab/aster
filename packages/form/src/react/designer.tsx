@@ -913,7 +913,7 @@ export function FormDesigner(props: FormDesignerProps) {
   return (
     <div
       className={[
-        'a3s-form-designer',
+        'aster-form-designer',
         `is-${mode}`,
         `is-mobile-panel-${mobilePanel}`,
         leftPanelVisible ? '' : 'is-left-panel-collapsed',
@@ -941,7 +941,7 @@ export function FormDesigner(props: FormDesignerProps) {
         onToggleRightPanel={() => setRightPanelVisible((visible) => !visible)}
       />
       {mode === 'design' && <MobilePanelBar panel={mobilePanel} onPanelChange={setMobilePanel} />}
-      <div className={`a3s-form-designer-main is-${mode}`}>
+      <div className={`aster-form-designer-main is-${mode}`}>
         {mode === 'design' && (
           <PalettePanel
             document={document}
@@ -960,23 +960,23 @@ export function FormDesigner(props: FormDesignerProps) {
             }}
           />
         )}
-        <main className="a3s-form-canvas" data-testid="designer-canvas">
-          <div className="a3s-form-canvas-meta">
-            <span className="a3s-form-canvas-context">
+        <main className="aster-form-canvas" data-testid="designer-canvas">
+          <div className="aster-form-canvas-meta">
+            <span className="aster-form-canvas-context">
               <strong>{mode === 'design' ? '表单画布' : '交互预览'}</strong>
               <small>
                 {mode === 'design' ? '点击组件编辑，拖拽调整位置' : '正在使用真实交互与校验规则'}
               </small>
             </span>
             <span
-              className={`a3s-form-status-badge ${compiled.ok ? 'success is-ok' : 'danger is-error'}`}
+              className={`aster-form-status-badge ${compiled.ok ? 'success is-ok' : 'danger is-error'}`}
               aria-live="polite"
             >
               {compiled.ok ? '● 编译通过' : `● ${compiled.diagnostics.length} 个问题`}
             </span>
           </div>
           {mode === 'preview' && compiled.plan ? (
-            <div className={`a3s-form-preview-stage is-${viewport}`}>
+            <div className={`aster-form-preview-stage is-${viewport}`}>
               <FormRenderer
                 plan={compiled.plan}
                 value={activeValue}
@@ -1015,7 +1015,7 @@ export function FormDesigner(props: FormDesignerProps) {
             />
           )}
           {!compiled.ok && (
-            <div className="a3s-form-diagnostics" role="alert">
+            <div className="aster-form-diagnostics" role="alert">
               <strong>编译诊断</strong>
               {compiled.diagnostics.map((item) => (
                 <p key={`${item.code}-${item.path}-${item.message}`}>
@@ -1071,7 +1071,7 @@ export function FormDesigner(props: FormDesignerProps) {
       </div>
       {notice && (
         <div
-          className={`a3s-form-designer-notice is-${notice.tone}`}
+          className={`aster-form-designer-notice is-${notice.tone}`}
           role={notice.tone === 'error' ? 'alert' : 'status'}
           aria-live="polite"
         >

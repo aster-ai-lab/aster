@@ -90,16 +90,16 @@ export function Inspector(props: {
     : ['properties', 'agent'];
   return (
     <aside
-      className="a3s-form-inspector task-pane tabs"
+      className="aster-form-inspector task-pane tabs"
       aria-label="属性面板"
       data-editor={selectedProfile?.editor}
     >
-      <div className="a3s-form-panel-tabs is-inspector" role="tablist" aria-label="属性面板标签">
+      <div className="aster-form-panel-tabs is-inspector" role="tablist" aria-label="属性面板标签">
         <button
           type="button"
-          id="a3s-form-inspector-tab-properties"
+          id="aster-form-inspector-tab-properties"
           role="tab"
-          aria-controls="a3s-form-inspector-panel"
+          aria-controls="aster-form-inspector-panel"
           aria-selected={props.panel === 'properties'}
           tabIndex={props.panel === 'properties' ? 0 : -1}
           className={`btn${props.panel === 'properties' ? ' is-active' : ''}`}
@@ -112,9 +112,9 @@ export function Inspector(props: {
         </button>
         <button
           type="button"
-          id="a3s-form-inspector-tab-validation"
+          id="aster-form-inspector-tab-validation"
           role="tab"
-          aria-controls="a3s-form-inspector-panel"
+          aria-controls="aster-form-inspector-panel"
           aria-selected={props.panel === 'validation'}
           tabIndex={props.panel === 'validation' ? 0 : -1}
           className={`btn${props.panel === 'validation' ? ' is-active' : ''}`}
@@ -130,9 +130,9 @@ export function Inspector(props: {
         </button>
         <button
           type="button"
-          id="a3s-form-inspector-tab-agent"
+          id="aster-form-inspector-tab-agent"
           role="tab"
-          aria-controls="a3s-form-inspector-panel"
+          aria-controls="aster-form-inspector-panel"
           aria-selected={props.panel === 'agent'}
           tabIndex={props.panel === 'agent' ? 0 : -1}
           className={`btn${props.panel === 'agent' ? ' is-active' : ''}`}
@@ -145,10 +145,10 @@ export function Inspector(props: {
         </button>
       </div>
       <div
-        className="a3s-form-inspector-body"
-        id="a3s-form-inspector-panel"
+        className="aster-form-inspector-body"
+        id="aster-form-inspector-panel"
         role="tabpanel"
-        aria-labelledby={`a3s-form-inspector-tab-${props.panel}`}
+        aria-labelledby={`aster-form-inspector-tab-${props.panel}`}
       >
         {props.panel === 'agent' ? (
           <PatchPanel
@@ -175,7 +175,7 @@ export function Inspector(props: {
             )}
           </>
         ) : (
-          <p className="a3s-form-empty">选择一个节点以编辑属性。</p>
+          <p className="aster-form-empty">选择一个节点以编辑属性。</p>
         )}
       </div>
     </aside>
@@ -337,7 +337,7 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
   const currentRatio = columnChildren.map((item) => item.width ?? 12).join(',');
   if (selected.kind === 'root') {
     return (
-      <div className="a3s-form-inspector-fields">
+      <div className="aster-form-inspector-fields">
         <InspectorSection title="表单内容" description="填写页顶部展示的名称和说明。">
           <Control label="表单标题">
             <input
@@ -395,7 +395,7 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
     );
   }
   return (
-    <div className="a3s-form-inspector-fields">
+    <div className="aster-form-inspector-fields">
       {selected.widget === 'hidden' ? (
         <InspectorSection
           title="隐藏值"
@@ -502,18 +502,18 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
                 </SelectControl>
               </Control>
               <SettingGroup title="行模板">
-                <section className="a3s-form-collection-list item-group" aria-label="行模板字段">
+                <section className="aster-form-collection-list item-group" aria-label="行模板字段">
                   {(selected.children ?? []).map((childId) => {
                     const child = props.document.ui.nodes.find((node) => node.id === childId);
                     if (!child) return null;
                     return (
                       <button
                         type="button"
-                        className="a3s-form-collection-item item"
+                        className="aster-form-collection-item item"
                         key={child.id}
                         onClick={() => props.onSelectNode(child.id)}
                       >
-                        <span className="a3s-form-collection-content">
+                        <span className="aster-form-collection-content">
                           <strong>{child.label ?? child.id}</strong>
                           <small>{child.widget ?? child.kind}</small>
                         </span>
@@ -536,7 +536,7 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
                   }
                 />
               </Control>
-              <div className="a3s-form-inline-controls">
+              <div className="aster-form-inline-controls">
                 <Control label="添加按钮文案">
                   <input
                     aria-label="重复项添加按钮文案"
@@ -736,7 +736,7 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
                   }
                 />
               </SettingGroup>
-              <p className="a3s-form-component-note">
+              <p className="aster-form-component-note">
                 排序、筛选和选择不改写原始行顺序；粘贴和填充通过整表校验后一次写入。
               </p>
             </>
@@ -752,7 +752,7 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
             />
           )}
           {selected.widget === 'currency' && (
-            <div className="a3s-form-inline-controls">
+            <div className="aster-form-inline-controls">
               <Control label="货币代码" hint="ISO 4217">
                 <input
                   aria-label="货币代码"
@@ -780,7 +780,7 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
             </div>
           )}
           {selected.widget === 'rating' && (
-            <div className="a3s-form-inline-controls">
+            <div className="aster-form-inline-controls">
               <Control label="最低评分">
                 <input
                   aria-label="最低评分"
@@ -811,7 +811,7 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
           )}
           {selected.widget === 'slider' && (
             <>
-              <div className="a3s-form-inline-controls">
+              <div className="aster-form-inline-controls">
                 <Control label="最小值">
                   <input
                     aria-label="滑块最小值"
@@ -876,7 +876,7 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
             />
           )}
           {CustomInspector && (
-            <section className="a3s-form-custom-inspector" aria-label="扩展组件设置">
+            <section className="aster-form-custom-inspector" aria-label="扩展组件设置">
               <CustomInspector
                 node={selected}
                 schema={props.selectedSchema}
@@ -910,7 +910,7 @@ function PropertiesPanel(props: Parameters<typeof Inspector>[0] & { selected: Ui
                 <FieldWidgetOptions widgets={props.availableFieldWidgets} />
               </SelectControl>
             </Control>
-            <p className="a3s-form-component-note">
+            <p className="aster-form-component-note">
               切换后会按新组件重建 Schema；不适用的选项、默认值和专属设置将被移除。
             </p>
             {selected.widget !== 'hidden' && (
@@ -1116,7 +1116,7 @@ function PatchPanel({
   const preflight = useMemo(() => inspectPatchText(patchText), [patchText]);
   const template = JSON.stringify(
     {
-      apiVersion: 'a3s.dev/form-patch/v1alpha1',
+      apiVersion: 'aster.dev/form-patch/v1alpha1',
       baseRevision: document.revision,
       operations: [],
     },
@@ -1124,15 +1124,15 @@ function PatchPanel({
     2,
   );
   return (
-    <section className="a3s-form-patch-review">
-      <div className="a3s-form-inspector-heading">
+    <section className="aster-form-patch-review">
+      <div className="aster-form-inspector-heading">
         <span>受控变更通道</span>
         <strong>Agent 补丁</strong>
       </div>
       <p>
         Agent 提交 FormPatch，编辑器负责版本校验、冲突检查和完整编译。这里不会直接执行模型输出。
       </p>
-      <fieldset className="a3s-form-patch-contract" aria-label="FormPatch 当前状态">
+      <fieldset className="aster-form-patch-contract" aria-label="FormPatch 当前状态">
         <span>
           当前 revision
           <strong>{document.revision}</strong>
@@ -1142,8 +1142,8 @@ function PatchPanel({
           <strong>v1alpha1</strong>
         </span>
       </fieldset>
-      <div className="a3s-form-patch-editor-heading">
-        <label htmlFor="a3s-form-patch-editor">FormPatch JSON</label>
+      <div className="aster-form-patch-editor-heading">
+        <label htmlFor="aster-form-patch-editor">FormPatch JSON</label>
         <button
           type="button"
           className="btn"
@@ -1155,7 +1155,7 @@ function PatchPanel({
         </button>
       </div>
       <textarea
-        id="a3s-form-patch-editor"
+        id="aster-form-patch-editor"
         className="textarea"
         value={patchText}
         onChange={(event) => onTextChange(event.target.value)}
@@ -1163,7 +1163,7 @@ function PatchPanel({
         spellCheck={false}
       />
       <div
-        className={`a3s-form-patch-preflight is-${preflight.tone}`}
+        className={`aster-form-patch-preflight is-${preflight.tone}`}
         role="status"
         aria-live="polite"
       >
@@ -1172,7 +1172,7 @@ function PatchPanel({
       </div>
       <button
         type="button"
-        className="a3s-form-primary-action btn"
+        className="aster-form-primary-action btn"
         data-variant="primary"
         disabled={!patchText.trim()}
         onClick={onReview}
@@ -1181,7 +1181,7 @@ function PatchPanel({
       </button>
       {patchFeedback && (
         <div
-          className={`a3s-form-patch-message is-${patchFeedback.tone}`}
+          className={`aster-form-patch-message is-${patchFeedback.tone}`}
           role={patchFeedback.tone === 'error' ? 'alert' : 'status'}
         >
           <DesignerIcon

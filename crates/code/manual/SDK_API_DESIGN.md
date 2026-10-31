@@ -1,6 +1,6 @@
 # SDK API Design Contract
 
-This document defines the long-lived SDK API shape for A3S Code. The goal is to
+This document defines the long-lived SDK API shape for Aster Code. The goal is to
 keep the public SDK stable while the runtime, host integrations, and tool
 implementations continue to evolve.
 
@@ -309,7 +309,7 @@ Use typed Rust options for growing contracts and preserve existing public
 signatures. Ordinary conversation remains prompt-first:
 
 ```rust,no_run
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::{Agent, SessionOptions};
 
 async fn example() -> anyhow::Result<()> {
     let agent = Agent::new("agent.acl").await?;

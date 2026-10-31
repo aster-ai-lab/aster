@@ -6,8 +6,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use a3s_oci_core::DriverKind;
-use a3s_oci_sdk::ErrorCode;
+use aster_oci_core::DriverKind;
+use aster_oci_sdk::ErrorCode;
 use windows_sys::Win32::Storage::FileSystem::FILE_ATTRIBUTE_REPARSE_POINT;
 
 use crate::fault::{DurableMutation, FaultInjector, FaultPoint, FileCommitStage, NoFaultInjector};
@@ -45,7 +45,7 @@ impl fmt::Debug for CallbackFaultInjector {
 }
 
 impl FaultInjector for CallbackFaultInjector {
-    fn check(&self, point: FaultPoint) -> a3s_oci_sdk::Result<()> {
+    fn check(&self, point: FaultPoint) -> aster_oci_sdk::Result<()> {
         if point == self.target && !self.fired.swap(true, Ordering::SeqCst) {
             let callback = self
                 .callback

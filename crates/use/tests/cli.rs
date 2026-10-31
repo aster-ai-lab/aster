@@ -1,7 +1,7 @@
 use std::process::Command;
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-use")
+    env!("CARGO_BIN_EXE_aster-use")
 }
 
 #[test]
@@ -30,7 +30,7 @@ fn unified_capability_snapshot_projects_builtin_skills() {
     let temp = tempfile::tempdir().unwrap();
     let output = Command::new(binary())
         .args(["capability", "snapshot", "--json"])
-        .env("A3S_USE_HOME", temp.path())
+        .env("ASTER_USE_HOME", temp.path())
         .output()
         .unwrap();
     assert!(output.status.success(), "{output:?}");
@@ -53,7 +53,7 @@ fn capability_watch_uses_revision_to_report_an_unchanged_snapshot() {
     let temp = tempfile::tempdir().unwrap();
     let snapshot = Command::new(binary())
         .args(["capability", "snapshot", "--json"])
-        .env("A3S_USE_HOME", temp.path())
+        .env("ASTER_USE_HOME", temp.path())
         .output()
         .unwrap();
     assert!(snapshot.status.success(), "{snapshot:?}");
@@ -74,7 +74,7 @@ fn capability_watch_uses_revision_to_report_an_unchanged_snapshot() {
             "1",
             "--json",
         ])
-        .env("A3S_USE_HOME", temp.path())
+        .env("ASTER_USE_HOME", temp.path())
         .output()
         .unwrap();
     assert!(watched.status.success(), "{watched:?}");
@@ -86,7 +86,7 @@ fn capability_watch_uses_revision_to_report_an_unchanged_snapshot() {
 fn box_route_is_removed() {
     let output = Command::new(binary())
         .args(["box", "compose", "up", "--detach", "--json"])
-        .env("A3S_USE_BOX_EXECUTABLE", "/tmp/a3s-box-must-not-launch")
+        .env("ASTER_USE_BOX_EXECUTABLE", "/tmp/aster-box-must-not-launch")
         .output()
         .unwrap();
 
@@ -100,7 +100,7 @@ fn box_route_is_removed() {
 fn box_route_fails_closed_without_an_explicit_component_path() {
     let output = Command::new(binary())
         .args(["box", "ps", "--json"])
-        .env_remove("A3S_USE_BOX_EXECUTABLE")
+        .env_remove("ASTER_USE_BOX_EXECUTABLE")
         .output()
         .unwrap();
     assert!(!output.status.success());
@@ -138,7 +138,7 @@ fn knowledge_search_fails_closed_without_an_active_projection() {
     let temporary = tempfile::tempdir().unwrap();
     let output = Command::new(binary())
         .args(["knowledge", "search", "package activation", "--json"])
-        .env("A3S_USE_HOME", temporary.path())
+        .env("ASTER_USE_HOME", temporary.path())
         .output()
         .unwrap();
     assert!(!output.status.success());
@@ -155,17 +155,17 @@ fn coordinated_state_backup_cli_creates_and_verifies_offline() {
     let package_file = home.join("data/extensions/acme/tool/package/bin/tool");
     std::fs::create_dir_all(package_file.parent().unwrap()).unwrap();
     std::fs::write(&package_file, b"portable CLI backup fixture").unwrap();
-    let backup_path = temporary.path().join("state.a3s-use-state-backup");
+    let backup_path = temporary.path().join("state.aster-use-state-backup");
 
     let backup = Command::new(binary())
         .args(["state", "backup", backup_path.to_str().unwrap(), "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(backup.status.success(), "{backup:?}");
     assert!(backup.stderr.is_empty());
     let backup_json: serde_json::Value = serde_json::from_slice(&backup.stdout).unwrap();
-    assert_eq!(backup_json["data"]["schema"], "a3s.use.state-backup.v1");
+    assert_eq!(backup_json["data"]["schema"], "aster.use.state-backup.v1");
     assert_eq!(backup_json["data"]["fileCount"], 1);
     assert_eq!(backup_json["data"]["entries"][0]["root"], "data");
     assert_eq!(
@@ -182,7 +182,7 @@ fn coordinated_state_backup_cli_creates_and_verifies_offline() {
             backup_path.to_str().unwrap(),
             "--json",
         ])
-        .env("A3S_USE_HOME", offline_home)
+        .env("ASTER_USE_HOME", offline_home)
         .output()
         .unwrap();
     assert!(verified.status.success(), "{verified:?}");
@@ -202,9 +202,9 @@ fn coordinated_state_backup_retention_cli_requires_exact_review() {
     std::fs::create_dir(&backup_directory).unwrap();
 
     for (name, bytes) in [
-        ("001.a3s-use-state-backup", b"one".as_slice()),
-        ("002.a3s-use-state-backup", b"two".as_slice()),
-        ("003.a3s-use-state-backup", b"three".as_slice()),
+        ("001.aster-use-state-backup", b"one".as_slice()),
+        ("002.aster-use-state-backup", b"two".as_slice()),
+        ("003.aster-use-state-backup", b"three".as_slice()),
     ] {
         std::fs::write(&state_file, bytes).unwrap();
         let output = Command::new(binary())
@@ -214,7 +214,7 @@ fn coordinated_state_backup_retention_cli_requires_exact_review() {
                 backup_directory.join(name).to_str().unwrap(),
                 "--json",
             ])
-            .env("A3S_USE_HOME", &home)
+            .env("ASTER_USE_HOME", &home)
             .output()
             .unwrap();
         assert!(output.status.success(), "{output:?}");
@@ -231,7 +231,7 @@ fn coordinated_state_backup_retention_cli_requires_exact_review() {
             "1073741824",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(plan.status.success(), "{plan:?}");
@@ -240,7 +240,7 @@ fn coordinated_state_backup_retention_cli_requires_exact_review() {
     let retention = &plan["data"]["state"]["backupRetention"];
     assert_eq!(
         retention["plan"]["remove"][0]["fileName"],
-        "001.a3s-use-state-backup"
+        "001.aster-use-state-backup"
     );
     assert_eq!(retention["plan"]["retainedBackupCount"], 2);
     let plan_digest = retention["planDigest"].as_str().unwrap();
@@ -259,19 +259,19 @@ fn coordinated_state_backup_retention_cli_requires_exact_review() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(applied.status.success(), "{applied:?}");
     assert!(applied.stderr.is_empty());
     let applied: serde_json::Value = serde_json::from_slice(&applied.stdout).unwrap();
     let result = &applied["data"]["state"]["backupRetention"]["result"];
-    assert_eq!(result["schema"], "a3s.use.state-backup-retention-result.v1");
+    assert_eq!(result["schema"], "aster.use.state-backup-retention-result.v1");
     assert_eq!(result["removed"].as_array().unwrap().len(), 1);
     assert_eq!(result["retainedBackupCount"], 2);
-    assert!(!backup_directory.join("001.a3s-use-state-backup").exists());
-    assert!(backup_directory.join("002.a3s-use-state-backup").is_file());
-    assert!(backup_directory.join("003.a3s-use-state-backup").is_file());
+    assert!(!backup_directory.join("001.aster-use-state-backup").exists());
+    assert!(backup_directory.join("002.aster-use-state-backup").is_file());
+    assert!(backup_directory.join("003.aster-use-state-backup").is_file());
 }
 
 #[cfg(feature = "extensions")]
@@ -282,10 +282,10 @@ fn coordinated_state_restore_cli_requires_review_rollback_and_confirmation() {
     let state_file = home.join("state/knowledge/value.bin");
     std::fs::create_dir_all(state_file.parent().unwrap()).unwrap();
     std::fs::write(&state_file, b"candidate").unwrap();
-    let backup_path = temporary.path().join("candidate.a3s-use-state-backup");
+    let backup_path = temporary.path().join("candidate.aster-use-state-backup");
     let backup = Command::new(binary())
         .args(["state", "backup", backup_path.to_str().unwrap(), "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(backup.status.success(), "{backup:?}");
@@ -298,16 +298,16 @@ fn coordinated_state_restore_cli_requires_review_rollback_and_confirmation() {
             backup_path.to_str().unwrap(),
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(plan.status.success(), "{plan:?}");
     let plan: serde_json::Value = serde_json::from_slice(&plan.stdout).unwrap();
     let restore = &plan["data"]["state"]["restore"];
-    assert_eq!(restore["plan"]["schema"], "a3s.use.state-restore-plan.v1");
+    assert_eq!(restore["plan"]["schema"], "aster.use.state-restore-plan.v1");
     assert_eq!(restore["plan"]["summary"]["replaceFiles"], 1);
     let plan_digest = restore["planDigest"].as_str().unwrap();
-    let rollback_path = temporary.path().join("rollback.a3s-use-state-backup");
+    let rollback_path = temporary.path().join("rollback.aster-use-state-backup");
 
     let unconfirmed = Command::new(binary())
         .args([
@@ -320,7 +320,7 @@ fn coordinated_state_restore_cli_requires_review_rollback_and_confirmation() {
             plan_digest,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!unconfirmed.status.success());
@@ -340,13 +340,13 @@ fn coordinated_state_restore_cli_requires_review_rollback_and_confirmation() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(applied.status.success(), "{applied:?}");
     let applied: serde_json::Value = serde_json::from_slice(&applied.stdout).unwrap();
     let result = &applied["data"]["state"]["restore"]["result"];
-    assert_eq!(result["schema"], "a3s.use.state-restore-result.v1");
+    assert_eq!(result["schema"], "aster.use.state-restore-result.v1");
     assert_eq!(result["changed"], true);
     assert_eq!(result["planDigest"], plan_digest);
     assert_eq!(std::fs::read(&state_file).unwrap(), b"candidate");
@@ -354,13 +354,13 @@ fn coordinated_state_restore_cli_requires_review_rollback_and_confirmation() {
 
     let status = Command::new(binary())
         .args(["state", "restore-status", "--json"])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(status.status.success(), "{status:?}");
     let status: serde_json::Value = serde_json::from_slice(&status.stdout).unwrap();
     let diagnostic = &status["data"]["state"]["restore"]["diagnostic"];
-    assert_eq!(diagnostic["schema"], "a3s.use.state-restore-diagnostic.v1");
+    assert_eq!(diagnostic["schema"], "aster.use.state-restore-diagnostic.v1");
     assert!(diagnostic["active"].is_null());
     assert_eq!(diagnostic["operations"][0]["status"], "completed");
     assert_eq!(diagnostic["operations"][0]["planDigest"], plan_digest);
@@ -372,7 +372,7 @@ fn knowledge_usage_reports_an_empty_exact_default_scope() {
     let temporary = tempfile::tempdir().unwrap();
     let output = Command::new(binary())
         .args(["knowledge", "usage", "--json"])
-        .env("A3S_USE_HOME", temporary.path())
+        .env("ASTER_USE_HOME", temporary.path())
         .output()
         .unwrap();
     assert!(output.status.success(), "{output:?}");
@@ -405,7 +405,7 @@ fn knowledge_usage_reports_an_empty_exact_workspace_scope() {
             "workspace/acme-project",
             "--json",
         ])
-        .env("A3S_USE_HOME", temporary.path())
+        .env("ASTER_USE_HOME", temporary.path())
         .output()
         .unwrap();
     assert!(output.status.success(), "{output:?}");
@@ -431,7 +431,7 @@ fn knowledge_usage_rejects_an_unknown_scope_kind() {
             "organization",
             "--json",
         ])
-        .env("A3S_USE_HOME", temporary.path())
+        .env("ASTER_USE_HOME", temporary.path())
         .output()
         .unwrap();
     assert!(!output.status.success());
@@ -446,7 +446,7 @@ fn knowledge_usage_requires_an_exact_workspace_scope_id() {
     let temporary = tempfile::tempdir().unwrap();
     let output = Command::new(binary())
         .args(["knowledge", "usage", "--scope-kind", "workspace", "--json"])
-        .env("A3S_USE_HOME", temporary.path())
+        .env("ASTER_USE_HOME", temporary.path())
         .output()
         .unwrap();
     assert!(!output.status.success());
@@ -460,7 +460,7 @@ fn mcp_stop_is_safe_when_no_service_is_running() {
     let temp = tempfile::tempdir().unwrap();
     let output = Command::new(binary())
         .args(["mcp", "stop", "--json"])
-        .env("A3S_USE_RUNTIME_DIR", temp.path())
+        .env("ASTER_USE_RUNTIME_DIR", temp.path())
         .output()
         .unwrap();
     assert!(!output.status.success());

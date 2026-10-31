@@ -532,7 +532,7 @@ def main():
     run.add_argument("--corpus", type=Path, required=True)
     run.add_argument("--provenance", type=Path, required=True)
     run.add_argument("--output", type=Path, required=True)
-    run.add_argument("--api-key-env", default="A3S_BENCH_KEY")
+    run.add_argument("--api-key-env", default="ASTER_BENCH_KEY")
     run.add_argument("--seconds", type=float, default=60)
     run.add_argument("--request-timeout", type=float, default=120)
     run.add_argument("--concurrency", type=int, default=1)

@@ -2,8 +2,8 @@ use std::future::Future;
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerId, ContainerRecord, ContainerTarget, CreateAttachments, CreateRequest, DeleteMode,
     DeleteRequest, Error, ErrorCode, ExitStatus, IsolationRequest, KillRequest, OciBundle,
     OperationContext, OperationId, ProcessIo, RuntimeClient, Signal, StartRequest, StateRequest,
@@ -685,7 +685,7 @@ async fn state_is_stale(client: &RuntimeClient, target: &ContainerTarget) -> Res
 }
 
 async fn operation_conflicts<T>(
-    future: impl Future<Output = a3s_oci_sdk::Result<T>>,
+    future: impl Future<Output = aster_oci_sdk::Result<T>>,
 ) -> Result<bool, String> {
     match timeout(CALL_TIMEOUT, future).await {
         Ok(Err(error))
@@ -704,7 +704,7 @@ async fn operation_conflicts<T>(
 
 pub(super) async fn native_call<T>(
     operation_name: &str,
-    future: impl Future<Output = a3s_oci_sdk::Result<T>>,
+    future: impl Future<Output = aster_oci_sdk::Result<T>>,
 ) -> Result<T, String> {
     match timeout(CALL_TIMEOUT, future).await {
         Ok(Ok(value)) => Ok(value),
@@ -761,9 +761,9 @@ pub(super) fn operation(nonce: &str, name: &str) -> Result<OperationContext, Str
 
 pub(super) fn null_io() -> ProcessIo {
     ProcessIo {
-        stdin: a3s_oci_sdk::IoMode::Null,
-        stdout: a3s_oci_sdk::IoMode::Null,
-        stderr: a3s_oci_sdk::IoMode::Null,
+        stdin: aster_oci_sdk::IoMode::Null,
+        stdout: aster_oci_sdk::IoMode::Null,
+        stderr: aster_oci_sdk::IoMode::Null,
         terminal_size: None,
     }
 }

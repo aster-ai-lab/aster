@@ -16,9 +16,23 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use tokio::fs::{self, File, OpenOptions};
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 
-pub const SESSION_STORE_WAL_ENTRY_SCHEMA_V1: &str = "a3s.code.session-store-wal-entry.v1";
-const SESSION_STORE_WAL_DIGEST_DOMAIN: &str = "a3s.code.session-store-wal-entry.identity.v1";
-const SESSION_STORE_SNAPSHOT_DIGEST_DOMAIN: &str = "a3s.code.session-store-snapshot.identity.v1";
+pub const SESSION_STORE_WAL_ENTRY_SCHEMA_V1: &str = "aster.code.session-store-wal-entry.v1";
+const SESSION_STORE_WAL_DIGEST_DOMAIN: &str = "aster.code.session-store-wal-entry.identity.v1";
+const SESSION_STORE_SNAPSHOT_DIGEST_DOMAIN: &str = "aster.code.session-store-snapshot.identity.v1";
+/// Pre-rename schema retained so 0.1.8 session stores copied into 0.1.9+ still open.
+const LEGACY_SESSION_STORE_WAL_ENTRY_SCHEMA_V1: &str = "a3s.code.session-store-wal-entry.v1";
+const LEGACY_SESSION_STORE_WAL_DIGEST_DOMAIN: &str =
+    "a3s.code.session-store-wal-entry.identity.v1";
+const LEGACY_SESSION_STORE_SNAPSHOT_DIGEST_DOMAIN: &str =
+    "a3s.code.session-store-snapshot.identity.v1";
+
+fn wal_digest_domain(schema: &str) -> Result<&'static str> {
+    match schema {
+        SESSION_STORE_WAL_ENTRY_SCHEMA_V1 => Ok(SESSION_STORE_WAL_DIGEST_DOMAIN),
+        LEGACY_SESSION_STORE_WAL_ENTRY_SCHEMA_V1 => Ok(LEGACY_SESSION_STORE_WAL_DIGEST_DOMAIN),
+        _ => bail!("session store WAL schema is unsupported"),
+    }
+}
 
 /// Lifecycle phase of one WAL record for a session snapshot commit.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -74,9 +88,7 @@ impl SessionStoreWalEntryV1 {
     }
 
     fn validate_without_digest(&self) -> Result<()> {
-        if self.schema != SESSION_STORE_WAL_ENTRY_SCHEMA_V1 {
-            bail!("session store WAL schema is unsupported");
-        }
+        let _ = wal_digest_domain(&self.schema)?;
         if self.sequence == 0 {
             bail!("session store WAL sequence must be one-based");
         }
@@ -102,7 +114,7 @@ impl SessionStoreWalEntryV1 {
             recorded_at_ms: u64,
         }
         digest_json(
-            SESSION_STORE_WAL_DIGEST_DOMAIN,
+            wal_digest_domain(&self.schema)?,
             &Identity {
                 schema: &self.schema,
                 sequence: self.sequence,
@@ -122,6 +134,16 @@ pub fn snapshot_content_digest<T: Serialize>(snapshot: &T) -> Result<String> {
         .context("failed to digest session snapshot for WAL")
 }
 
+/// True when `expected` matches the current or legacy snapshot digest domain.
+pub fn snapshot_content_digest_matches<T: Serialize>(
+    snapshot: &T,
+    expected: &str,
+) -> Result<bool> {
+    if snapshot_content_digest(snapshot)? == expected {
+        return Ok(true);
+    }
+    Ok(digest_json(LEGACY_SESSION_STORE_SNAPSHOT_DIGEST_DOMAIN, snapshot)? == expected)
+}
 /// Durable append-only JSONL WAL under a FileSessionStore root.
 pub struct FileSessionStoreWal {
     root: PathBuf,
@@ -360,5 +382,23 @@ mod tests {
             10,
         )
         .is_err());
+    }
+
+    #[test]
+    fn legacy_a3s_wal_schema_validates_with_legacy_digest_domain() {
+        let mut entry = SessionStoreWalEntryV1 {
+            schema: LEGACY_SESSION_STORE_WAL_ENTRY_SCHEMA_V1.to_owned(),
+            sequence: 1,
+            session_id: "session-1".into(),
+            snapshot_digest: digest('a'),
+            phase: SessionStoreWalPhaseV1::Committed,
+            recorded_at_ms: 10,
+            entry_digest: String::new(),
+        };
+        entry.entry_digest = entry.expected_digest().unwrap();
+        entry.validate().unwrap();
+
+        entry.schema = "foreign.code.session-store-wal-entry.v1".into();
+        assert!(entry.validate().unwrap_err().to_string().contains("unsupported"));
     }
 }

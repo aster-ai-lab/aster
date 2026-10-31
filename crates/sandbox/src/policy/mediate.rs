@@ -133,7 +133,7 @@ mod tests {
     use crate::policy::SandboxPolicy;
 
     fn mediated_policy(rules: Vec<NetworkAllowRule>) -> SandboxPolicy {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_network = true;
         policy.network.allow = rules;
         policy
@@ -141,7 +141,7 @@ mod tests {
 
     #[test]
     fn deny_when_mediation_flag_off() {
-        let policy = SandboxPolicy::a3s_bash_baseline();
+        let policy = SandboxPolicy::aster_bash_baseline();
         let decision = decide_mediated_http(
             &policy,
             &MediatedHttpRequest {
@@ -255,7 +255,7 @@ mod tests {
 
     #[test]
     fn socks_requires_mediated_socks_flag_and_pathless_rule() {
-        let mut origin = SandboxPolicy::a3s_bash_baseline();
+        let mut origin = SandboxPolicy::aster_bash_baseline();
         origin.features.mediated_network = true;
         origin.network.allow.push(NetworkAllowRule {
             host: "api.example.com".into(),

@@ -2,11 +2,11 @@
 
 use super::test_support::*;
 use super::*;
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     HealthProbe, RuntimeFeature, RuntimeHealthCheck, RuntimeHostService, RuntimeServiceLifecycle,
     SecretReference, SecretTarget,
 };
-use a3s_use_core::{PackageSurfaceKind, ToolReleaseDescriptor, UseResult};
+use aster_use_core::{PackageSurfaceKind, ToolReleaseDescriptor, UseResult};
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
@@ -31,7 +31,7 @@ fn authorized_policy() -> RuntimeWorkloadPolicy {
         name: "gateway-ocr".into(),
         reference: "secret://fixture/gateway-ocr".into(),
         target: SecretTarget::Environment {
-            variable: "A3S_GATEWAY_KEY".into(),
+            variable: "ASTER_GATEWAY_KEY".into(),
         },
     }];
     policy.service_lifecycle = Some(RuntimeServiceLifecycle {
@@ -56,7 +56,7 @@ fn authorized_policy() -> RuntimeWorkloadPolicy {
 async fn runtime_v4_forwards_explicit_transport_and_distinct_liveness_through_capability_admission()
 {
     let plan = plan(authorized_policy()).unwrap();
-    assert_eq!(plan.spec().schema, "a3s.runtime.unit-spec.v4");
+    assert_eq!(plan.spec().schema, "aster.runtime.unit-spec.v4");
     assert_eq!(plan.spec().network.host_services[0].reference, "os.gateway");
     assert_eq!(plan.spec().network.host_services[0].vsock_port, 61000);
     assert_eq!(
@@ -145,7 +145,7 @@ fn runtime_v4_policy_changes_invalidate_plan_identity_and_reject_mismatched_shut
     let mut unrequested = policy();
     unrequested
         .non_secret_environment
-        .insert("A3S_GATEWAY_ORIGIN".into(), "vsock://2:61000".into());
+        .insert("ASTER_GATEWAY_ORIGIN".into(), "vsock://2:61000".into());
     let default = plan(unrequested).unwrap();
     assert!(default.spec().network.host_services.is_empty());
     assert!(default.spec().service_lifecycle.is_none());
@@ -166,12 +166,12 @@ fn runtime_v4_refuses_incompatible_release_metadata_before_runtime_selection() {
     )
     .unwrap_err();
     assert_eq!(error.code, "use.release.incompatible");
-    assert_eq!(error.details["component"], "a3s-runtime");
+    assert_eq!(error.details["component"], "aster-runtime");
     assert_eq!(error.details["actual"], "0.8.0");
     let mut unresolved = service_descriptor();
     unresolved
         .compatibility
-        .push(a3s_use_core::ReleaseCompatibility {
+        .push(aster_use_core::ReleaseCompatibility {
             component: "unconfigured-service".into(),
             version_requirement: ">=1.0.0".into(),
         });
@@ -187,9 +187,9 @@ fn runtime_v4_refuses_incompatible_release_metadata_before_runtime_selection() {
     let mut unresolved = service_descriptor();
     unresolved
         .dependencies
-        .push(a3s_use_core::ReleaseDependency {
-            kind: a3s_use_core::ReleaseKind::Skill,
-            name: "a3s/unresolved".into(),
+        .push(aster_use_core::ReleaseDependency {
+            kind: aster_use_core::ReleaseKind::Skill,
+            name: "aster/unresolved".into(),
             version: "1.0.0".into(),
             descriptor_digest: format!("sha256:{}", "a".repeat(64)),
         });
@@ -206,7 +206,7 @@ fn runtime_v4_refuses_incompatible_release_metadata_before_runtime_selection() {
 
 #[tokio::test]
 async fn runtime_v4_rejects_service_only_task_policy_and_old_runtime_task_templates() {
-    let package = a3s_use_extension::inspect_release_bundle(
+    let package = aster_use_extension::inspect_release_bundle(
         &std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/runtime-v4/package"),
     )
     .await
@@ -224,7 +224,7 @@ async fn runtime_v4_rejects_service_only_task_policy_and_old_runtime_task_templa
             artifact(&descriptor.artifact.digest, &descriptor.artifact.media_type),
             RuntimeTaskInvocation::new("invoke-01", Vec::new()).unwrap(),
             policy,
-            a3s_runtime::contract::NetworkMode::None,
+            aster_runtime::contract::NetworkMode::None,
         )
     };
     assert!(create(authorized_policy()).is_err());
@@ -235,7 +235,7 @@ async fn runtime_v4_rejects_service_only_task_policy_and_old_runtime_task_templa
         .prepare_task(&plan, &provider)
         .await
         .unwrap();
-    binding.template_spec.schema = "a3s.runtime.unit-spec.v2".into();
+    binding.template_spec.schema = "aster.runtime.unit-spec.v2".into();
     assert!(binding.validate().is_err());
     let mut invalid = authorized_policy();
     invalid.host_services[0].vsock_port = 1023;

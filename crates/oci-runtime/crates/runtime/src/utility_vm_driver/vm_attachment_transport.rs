@@ -2,18 +2,18 @@ use std::io;
 use std::os::unix::fs::MetadataExt;
 use std::path::Path;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentVmAttachmentManifest, AGENT_RUNTIME_SHARE_GUEST_ROOT,
     AGENT_VM_ATTACHMENT_MANIFEST_FILE_NAME, AGENT_VM_ATTACHMENT_MANIFEST_MAX_BYTES,
 };
-use a3s_oci_sdk::{Error, ErrorCode, Result, RUNTIME_BUNDLE_HANDOFF_BUNDLE_DIRECTORY};
+use aster_oci_sdk::{Error, ErrorCode, Result, RUNTIME_BUNDLE_HANDOFF_BUNDLE_DIRECTORY};
 use tokio::io::AsyncReadExt;
 
 use super::atomic_publication;
 use super::layout::{is_private_file, path_metadata};
 
-pub(super) const PENDING_MANIFEST_FILE_NAME: &str = ".a3s-oci-agent-vm-attachments.pending";
-const STAGING_MANIFEST_PREFIX: &str = ".a3s-oci-agent-vm-attachments.pending.";
+pub(super) const PENDING_MANIFEST_FILE_NAME: &str = ".aster-oci-agent-vm-attachments.pending";
+const STAGING_MANIFEST_PREFIX: &str = ".aster-oci-agent-vm-attachments.pending.";
 const PUBLISH_ATTEMPTS: usize = atomic_publication::PUBLISH_ATTEMPTS;
 
 pub(super) fn ensure_dedicated_bundle_path(manifest: &AgentVmAttachmentManifest) -> Result<()> {

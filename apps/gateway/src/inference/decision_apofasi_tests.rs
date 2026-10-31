@@ -2,7 +2,7 @@ use super::*;
 use crate::inference::decision::{
     DecisionContentPart, DecisionLevel, DecisionTurnStatus, DecisionVisibleTurn,
 };
-use a3s_apofasi::State;
+use aster_apofasi::State;
 
 fn ordinal_request() -> DecisionRequest {
     DecisionRequest {
@@ -83,8 +83,8 @@ fn invalid_neural_shape_is_rejected() {
 
 #[tokio::test]
 async fn real_checkpoint_classifies_auto_turns() {
-    let Some(checkpoint) = std::env::var_os("A3S_APOFASI_CHECKPOINT") else {
-        eprintln!("skip: set A3S_APOFASI_CHECKPOINT");
+    let Some(checkpoint) = std::env::var_os("ASTER_APOFASI_CHECKPOINT") else {
+        eprintln!("skip: set ASTER_APOFASI_CHECKPOINT");
         return;
     };
     let service = ApofasiDecisionService::load_with_timeout(
@@ -164,8 +164,8 @@ async fn real_checkpoint_classifies_auto_turns() {
 
 #[tokio::test]
 async fn real_checkpoint_rejects_oversized_latest_user() {
-    let Some(checkpoint) = std::env::var_os("A3S_APOFASI_CHECKPOINT") else {
-        eprintln!("skip: set A3S_APOFASI_CHECKPOINT");
+    let Some(checkpoint) = std::env::var_os("ASTER_APOFASI_CHECKPOINT") else {
+        eprintln!("skip: set ASTER_APOFASI_CHECKPOINT");
         return;
     };
     let service = ApofasiDecisionService::load(checkpoint, 1).expect("load real checkpoint");
@@ -181,8 +181,8 @@ async fn real_checkpoint_rejects_oversized_latest_user() {
 
 #[tokio::test]
 async fn real_checkpoint_preserves_latest_user_when_history_is_truncated() {
-    let Some(checkpoint) = std::env::var_os("A3S_APOFASI_CHECKPOINT") else {
-        eprintln!("skip: set A3S_APOFASI_CHECKPOINT");
+    let Some(checkpoint) = std::env::var_os("ASTER_APOFASI_CHECKPOINT") else {
+        eprintln!("skip: set ASTER_APOFASI_CHECKPOINT");
         return;
     };
     let service = ApofasiDecisionService::load_with_timeout(

@@ -75,14 +75,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `validate_activation`, so a private CA cannot be skipped and an unusable PEM
   cannot wait until the first handshake. Covered by
   `validate_activation_probes_service_tls_ca_websocket_clients`.
-- Published soak gate refuses `A3S_GATEWAY_PUBLISH_MIN_DURATION` below 7200s.
+- Published soak gate refuses `ASTER_GATEWAY_PUBLISH_MIN_DURATION` below 7200s.
   The env may only raise the 2h floor; a short run can no longer be marked
   `envelope_status=published` by lowering it. A failed published run is written
   as `publish-refused-*.json` (`envelope_status=publish-refused`), not
   `published-*.json`. `--out` cannot place a non-published result under a
   `published-*` filename. Published wrappers build with `cargo build --locked`
   so an unlocked dependency set cannot become the capacity envelope. A passing
-  published run without `a3s-gateway --version` or a 40-character lowercase git
+  published run without `aster-gateway --version` or a 40-character lowercase git
   sha embedded in that version string is `publish-refused`, not `published`.
   The recorded sha is the binary's commit, not the working tree. A dirty build
   cannot be published. Landing the published-envelopes gate requires a passing
@@ -122,7 +122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   CI smoke cannot inherit a changed soak-gateway.py default. Enterprise GA
   status verifier refuses soak wrapper soft-opens that drop pinned statuses
   (`smoke-only` / `lab-extended` / `published`) or published wrappers that drop
-  `A3S_GATEWAY_DEDICATED_RUNNER` / the 7200s floor. Covered by
+  `ASTER_GATEWAY_DEDICATED_RUNNER` / the 7200s floor. Covered by
   `test_enterprise_ga_status.py`.
 - Enterprise GA status verifier refuses capacity-envelope-draft soft-opens while
   published-envelopes is Open (`**Status: published.**` / missing not-published
@@ -462,7 +462,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   interval / relative ACME storage / unusable health-check TLS CA activation
   cases, forward-auth deny without upstream contact, usage-spool identity
   mismatch at `Gateway::new`, Power `api_key_env` unset credential activation,
-  and usage Cloud-ingest activation cases (no `A3S_GATEWAY_FAULT_REDIS`
+  and usage Cloud-ingest activation cases (no `ASTER_GATEWAY_FAULT_REDIS`
   opt-in). Curated suite now includes every in-tree
   `validate_activation_fails_closed_*` regression. File-watch notify activation
   and missing conf.d directory fail closed at `validate_activation` (not only
@@ -628,7 +628,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CLI `validate` / `load_merged_gateway_config` now probe the same notify
   `Watcher::new` + path attach surface as `FileWatcher::watch` when
   `providers.file.watch = true`, so validate cannot pass while
-  `a3s-gateway run` later aborts because the watcher cannot start. Covered by
+  `aster-gateway run` later aborts because the watcher cannot start. Covered by
   `load_merged_gateway_config_probes_file_watch_when_enabled`,
   `probe_file_watch_activation_rejects_missing_directory`, and
   `probe_file_watch_activation_accepts_existing_paths`.
@@ -680,7 +680,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   resolved).   Covered by `ingress_to_config_fails_closed_on_zero_backend_port`,
   `ingress_to_config_fails_closed_on_named_backend_port_without_number`, and
   `ingress_to_config_uses_explicit_backend_port`.
-- Declared Ingress `a3s-gateway.io/request-timeout` no longer soft-defaults
+- Declared Ingress `aster-gateway.io/request-timeout` no longer soft-defaults
   present empty/whitespace (or unparseable) values to `30s`: conversion fails
   closed. Absent annotation still defaults to `30s`. Covered by
   `parse_declared_request_timeout_rejects_empty`,
@@ -933,7 +933,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   construction failure also fails closed at Gateway start instead of polling
   with a missing client (`discovery_provider_new_requires_buildable_http_client`).
 - CLI run no longer soft-opens on a missing `--config` path: missing ACL fails
-  closed with the same posture as `a3s-gateway validate` instead of binding a
+  closed with the same posture as `aster-gateway validate` instead of binding a
   default empty `0.0.0.0:80` listener.
 - `providers.file.directory` no longer soft-skips a missing conf.d path during
   load or watch start, and `providers.file.watch = true` no longer continues
@@ -1274,7 +1274,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added an embedded-host Managed Runtime Service lifecycle with durable
   exact-generation loopback bindings, Gateway-path health verification,
   admission closure, accepted-stream draining, receipt-owned removal, and
-  restart replay. This is the Gateway foundation; A3S Use/Code composition and
+  restart replay. This is the Gateway foundation; Aster Use/Code composition and
   production qualification remain open.
 
 ### Fixed
@@ -1295,7 +1295,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   usage, and TTFT-accounting requirements, and adds image, document, audio,
   video, protocol, load, recovery, security, and quality benchmark lanes. No
   multimodal adapter is enabled in v1.1.0.
-- Added the exact A3S Cloud E0/H0.2 conformance record, including released
+- Added the exact Aster Cloud E0/H0.2 conformance record, including released
   Gateway and pinned Cloud revisions, clean-host workflow runs, process-loss
   and redelivery behavior, certificate and target-generation replacement,
   independent replica readiness, and the remaining H0.3/H0.4 boundary.
@@ -1304,7 +1304,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Redesigned the GitHub README with project-native SVG evidence and an
   AI-first information path: value, the eight-profile/80-trial token-aware
-  A3S-versus-NGINX matrix, first use, architecture, maturity boundaries, and
+  Aster-versus-NGINX matrix, first use, architecture, maturity boundaries, and
   delivery options. The zero-delay C64 TTFT and goodput constraint remains
   visible instead of being hidden behind aggregate protocol throughput.
 - Updated the product website to make exact-token TTFT, ITL, and token-goodput
@@ -1315,7 +1315,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   aligned package and Helm metadata at 1.1.0, and documented that the website
   and documentation are hand-authored static HTML/CSS/JavaScript rather than
   Rspress.
-- Synchronized the managed-target roadmap with the completed A3S Cloud E0/H0.2
+- Synchronized the managed-target roadmap with the completed Aster Cloud E0/H0.2
   conformance. The repository now records the exact released Gateway revision,
   pinned Cloud revision, successful clean-host gates, local real-process
   regressions, certificate-lifecycle ownership, and the remaining H0.3/H0.4
@@ -1342,7 +1342,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The product site, stable documentation, development documentation, 404 page,
   favicon, web manifest, and social card now use the Gateway-specific route
   mark and explicit `Kense Gateway` labels instead of presenting the product as
-  A3S OS. Site validation rejects the obsolete documentation branding.
+  Aster OS. Site validation rejects the obsolete documentation branding.
 - Release tags now require a successful main-branch Performance Baseline for
   the exact release commit in addition to the reusable full CI, synchronized
   Cargo/Helm metadata, and a dated changelog section. The benchmark and Pages
@@ -1409,7 +1409,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   current published workload records 40,887 req/s and 3.86 ms P99 for Gateway
   and 55,913 req/s and 3.60 ms P99 for NGINX. The result is scoped to this
   small-response HTTP case.
-- Added a typed coding-agent profile registry for A3S Code, Claude Code,
+- Added a typed coding-agent profile registry for Aster Code, Claude Code,
   OpenAI Codex, Gemini CLI, and OpenCode, plus explicit custom executables.
 - Added shell-free native CLI passthrough and standard `SKILL.md`
   `list`, `show`, `path`, and `run` operations with deterministic root
@@ -1473,7 +1473,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The historical `management` ACL block now configures a bounded, machine-only
   Node API. Its dedicated listener, bearer authentication, IP allowlist, and
   TLS/mTLS controls remain compatible for Cloud bootstrap and node integration.
-  Human-facing operations are owned by A3S Cloud.
+  Human-facing operations are owned by Aster Cloud.
 - WebSocket upgrades now validate the required HTTP/1.1 opening-handshake
   fields and establish the upstream connection under the selected service's
   `request_timeout` before returning `101`. Upstream requests preserve
@@ -1733,7 +1733,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   concurrency state across snapshot refresh. Concurrency remains held through
   buffered dispatch and until an SSE stream completes or disconnects.
 - Managed inference now replaces client `x-request-id` and
-  `x-a3s-attempt-id` values after authorization. Local model catalogs and
+  `x-aster-attempt-id` values after authorization. Local model catalogs and
   pre-dispatch rejections receive a request ID without claiming an upstream
   attempt, and SSE retains its request/attempt context through termination.
 - SSE now applies each service's request timeout only while waiting for
@@ -1749,8 +1749,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   service, backend, security-event, ACL validation, and raw ACL reload
   endpoints now return `404`. The in-memory management audit ring and exported
   `dashboard` Rust module were removed with that surface.
-- Removed the `a3s-gateway management` CLI and its event, validation, and reload
-  commands. These human-facing operations belong to A3S Cloud.
+- Removed the `aster-gateway management` CLI and its event, validation, and reload
+  commands. These human-facing operations belong to Aster Cloud.
 - Removed the unused internal `proxy::ws_mux` named-channel state machine and
   private control-message grammar, which had no configuration or runtime entry
   point.
@@ -1891,15 +1891,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Route-bearing Cloud snapshots with object-list service backends now validate
-  without recursive parser failure by upgrading to `a3s-acl` 0.2.2.
+  without recursive parser failure by upgrading to `aster-acl` 0.2.2.
 - The self-updater dependency now resolves the published 0.3.0 API instead of
   requiring a stale monorepo-local 0.2.x source tree.
 
 ### Testing
 
-- Added a real `a3s-gateway validate` regression fixture for the complete
+- Added a real `aster-gateway validate` regression fixture for the complete
   hostname, path, service, management-listener, and upstream shape emitted by
-  A3S Cloud.
+  Aster Cloud.
 
 ### Release Engineering
 
@@ -1933,7 +1933,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Host rule matching now strips the port from the request authority before comparing, so a request that reaches the gateway on a non-default port (e.g. `Host: app.example.com:49164`) still matches a port-less Ingress host instead of falling through to a host-less catch-all.
-- Router selection now prefers the most-specific / highest-priority route. Effective priority is the explicit `a3s-gateway.io/priority` annotation when set (higher wins, Traefik-style), otherwise the rule length — so a host-less catch-all PathPrefix(/) no longer swallows more-specific (host-qualified or longer-path) routers.
+- Router selection now prefers the most-specific / highest-priority route. Effective priority is the explicit `aster-gateway.io/priority` annotation when set (higher wins, Traefik-style), otherwise the rule length — so a host-less catch-all PathPrefix(/) no longer swallows more-specific (host-qualified or longer-path) routers.
 - The Kubernetes Ingress (and IngressRoute CRD) watcher now rebuilds its API client and backs off after a poll failure instead of spinning forever on a poisoned connection, so a transient API-server disconnect no longer freezes the router table until pod restart.
 
 ## [1.0.2] - 2026-05-16

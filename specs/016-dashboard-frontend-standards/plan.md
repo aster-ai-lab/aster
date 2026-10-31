@@ -65,7 +65,7 @@ docs/evidence/dashboard/2026-10-27-frontend-standards/
 
 For each decision, name the in-repo prior art: the file that already does this, and why a new pattern is required if one is.
 
-- **Canonical alias**: Existing `tsconfig.json`, `vitest.config.ts`, and all authored imports currently split `@renderer/` and `@shared/`. Select `@/` as the single application alias; keep `@a3s-lab/ui` as the external design-system contract. Do not retain compatibility aliases.
+- **Canonical alias**: Existing `tsconfig.json`, `vitest.config.ts`, and all authored imports currently split `@renderer/` and `@shared/`. Select `@/` as the single application alias; keep `@aster-ai-lab/ui` as the external design-system contract. Do not retain compatibility aliases.
 - **Composition root**: Existing `src/App.tsx` already demonstrates a small provider/gate composition root. Apply the same pattern to `PlatformPage.tsx`.
 - **Collection primitives**: Existing `src/components/collection/` already owns reusable controls and hooks. Platform record/table components remain platform-specific under `pages/platform/components/` rather than being promoted prematurely to app-global primitives.
 - **Data boundary**: Existing `src/data/platformOperations.ts` demonstrates transport plus strict closed-set decoding without React. Preserve it as the model for data adapters.

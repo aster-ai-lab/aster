@@ -19,7 +19,7 @@ use futures_util::stream::{self, Stream, StreamExt};
 use super::page::{WATCH_PAGE, WATCH_SCRIPT};
 use super::{NativeOfficeWatchStatus, WatchState};
 
-const COOKIE_NAME: &str = "a3s-office-watch";
+const COOKIE_NAME: &str = "aster-office-watch";
 
 pub(super) fn router(state: Arc<WatchState>) -> Router {
     Router::new()

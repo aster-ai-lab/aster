@@ -3,7 +3,7 @@ import { cloneSparseMatrix } from '../spreadsheet-sparse';
 import type { WorkSpreadsheetContent } from '../work-types';
 
 /**
- * Immutable sparse cell write for the A3S virtual grid edit path.
+ * Immutable sparse cell write for the Aster virtual grid edit path.
  * Avoids Fortune `setCellValue` so fortuneReady sheets can commit without the
  * vendor remount/edit surface.
  */

@@ -16,7 +16,7 @@
 //! ## Usage
 //!
 //! ```rust,ignore
-//! use a3s_code::retry::RetryConfig;
+//! use aster::retry::RetryConfig;
 //!
 //! let config = RetryConfig::default(); // 10 retries, 1s base, 30s max
 //! ```

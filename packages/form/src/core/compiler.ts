@@ -76,12 +76,12 @@ export function compileFormWithCore(
   input: unknown,
   options: CompileOptions = {},
 ): CompileResult {
-  const compilerRevision = core?.compilerRevision ?? 'a3s-form-core@unavailable';
+  const compilerRevision = core?.compilerRevision ?? 'aster-form-core@unavailable';
   if (!core) {
     return failure(
       compilerRevision,
       'compiler.unavailable',
-      'The portable A3S Form semantic core is unavailable.',
+      'The portable Aster Form semantic core is unavailable.',
       '',
     );
   }
@@ -95,7 +95,7 @@ export function compileFormWithCore(
 
   try {
     const response = core.compile({
-      apiVersion: 'a3s.dev/form-core/compile-request/v1alpha1',
+      apiVersion: 'aster.dev/form-core/compile-request/v1alpha1',
       document: input as FormDocument,
       options: {
         capabilities: capabilitiesToArrays(options.capabilities),
@@ -107,7 +107,7 @@ export function compileFormWithCore(
       return failure(
         compilerRevision,
         'compiler.response',
-        'The portable A3S Form semantic core did not return a response.',
+        'The portable Aster Form semantic core did not return a response.',
         '',
       );
     }
@@ -134,7 +134,7 @@ export function compileFormWithCore(
       return failure(
         response.compilerRevision,
         'compiler.response',
-        'The portable A3S Form semantic core returned an incomplete success response.',
+        'The portable Aster Form semantic core returned an incomplete success response.',
         '',
       );
     }
@@ -151,7 +151,7 @@ export function compileFormWithCore(
     return failure(
       compilerRevision,
       'compiler.response',
-      'The portable A3S Form semantic core response could not be decoded.',
+      'The portable Aster Form semantic core response could not be decoded.',
       '',
     );
   }

@@ -7,8 +7,8 @@
 | 产品或用途 | 标签 | 发布内容 |
 | --- | --- | --- |
 | Aster 桌面版 | `vX.Y.Z` | 桌面安装包；通用 `v*` 命名空间只属于 Aster 应用 |
-| Aster CLI | `aster-cli-vX.Y.Z` | 同源码构建的 `aster` 与 `a3s-code-acp` 成对归档及 `latest.json` |
-| Core／ACP | `a3s-code-vX.Y.Z` | Core／ACP 源码版本与 ACP 平台归档 |
+| Aster CLI | `aster-cli-vX.Y.Z` | 同源码构建的 `aster` 与 `aster-acp` 成对归档及 `latest.json` |
+| Core／ACP | `aster-vX.Y.Z` | Core／ACP 源码版本与 ACP 平台归档 |
 | 桌面滚动通道 | `desktop-stable` | `desktop-latest.json` 与桌面更新归档 |
 | CLI 滚动通道 | `aster-cli-stable` | 指向当前版本化 CLI Release 的 `latest.json` |
 
@@ -19,9 +19,9 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 ## 构建边界
 
 - 从仓库根目录使用固定 Rust 工具链和锁文件构建。
-- CLI 的 `aster` 与 `a3s-code-acp` 必须从同一干净提交构建、验证并成对发布；归档同时携带共享 `BUILD_ID` 和 `SHA256SUMS`。
+- CLI 的 `aster` 与 `aster-acp` 必须从同一干净提交构建、验证并成对发布；归档同时携带共享 `BUILD_ID` 和 `SHA256SUMS`。
 - 桌面版通过 `release-aster-desktop.yml` 构建并更新 `desktop-stable`；安装包版本与 Core／ACP 版本相互独立。
-- Core／ACP 通过 `release-code.yml` 构建。只有 `a3s-code-vX.Y.Z` tag 可以触发该流程，tag 版本必须与两个 Cargo 包版本一致，并存在对应的 `crates/code/manual/RELEASE_X.Y.Z.md`。
+- Core／ACP 通过 `release-code.yml` 构建。只有 `aster-vX.Y.Z` tag 可以触发该流程，tag 版本必须与两个 Cargo 包版本一致，并存在对应的 `crates/code/manual/RELEASE_X.Y.Z.md`。
 - 不得从有未提交修改或未完成指定平台验证的工作树发布。发布记录必须能定位到准确源码提交。
 
 ## 发布顺序
@@ -29,12 +29,14 @@ GitHub Latest 上的 `latest.json` 是旧版 CLI 安装器和更新器的兼容�
 ### Core／ACP
 
 1. 在干净提交上完成 Core／ACP 验证并更新版本与发布说明。
-2. 推送 `a3s-code-vX.Y.Z`，不要推送裸 `vX.Y.Z`。
+2. 推送 `aster-vX.Y.Z`，不要推送裸 `vX.Y.Z`。
 3. 由 `release-code.yml` 完成平台构建和 Release 创建；该流程固定 `--latest=false`。
 
 ### Aster CLI
 
-1. 用 `release-aster-cli.yml` 构建三个平台归档并生成版本化草稿 Release。
+1. 用 `release-aster-cli.yml` 构建三个平台归档。macOS ARM64 GitHub 托管 runner [不支持嵌套虚拟化](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)，不能承担最终沙箱执行验收。指定已具备该能力的 `qualified_runner`；未指定时，流程只构建归档。
+   也可以在具备该能力的 Mac 上下载同一构建 run 的三个归档到 `dist/`，设置 `GH_REPO`、`BUILD_SHA`、`ARTIFACT_RUN_ID`，从干净的对应提交运行 `bash scripts/publish-aster-cli.sh`。
+   两条入口共用此发布脚本：先核对归档来源提交的分支资格，再安装并验证同一归档的自动模式 Linux 执行和 YOLO 本机 Darwin 执行，最后生成草稿。任一失败均禁止创建或上传 Release。
 2. 检查草稿的提交、归档成员、版本和 SHA-256 后，发布 `aster-cli-vX.Y.Z`。
 3. 运行 `release-aster-cli-channel.yml`，输入相同的 `X.Y.Z`。该流程拒绝草稿或预发布版本，验证清单后更新 `aster-cli-stable` 和 Aster Latest 上的旧客户端兼容清单。
 

@@ -22,8 +22,8 @@ $systemImageManifest = (
     Resolve-Path -LiteralPath $SystemImageManifest -ErrorAction Stop
 ).Path
 $fixtureConfig = Join-Path $repositoryRoot 'fixtures\utility-vm\config.windows.json'
-$cli = Join-Path $repositoryRoot 'target\debug\a3s-oci.exe'
-$shim = Join-Path $repositoryRoot 'target\debug\a3s-oci-krun-shim.exe'
+$cli = Join-Path $repositoryRoot 'target\debug\aster-oci.exe'
+$shim = Join-Path $repositoryRoot 'target\debug\aster-oci-krun-shim.exe'
 $krunDll = Join-Path $repositoryRoot 'target\debug\krun.dll'
 $firmwareDll = Join-Path $repositoryRoot 'target\debug\libkrunfw.dll'
 $tar = (Get-Command tar.exe -ErrorAction Stop).Source
@@ -53,9 +53,9 @@ if ($manifestItem.PSObject.Properties.Name -contains 'LinkType' -and $manifestIt
     throw "System-image manifest must not be a link: $systemImageManifest"
 }
 $systemImage = Get-Content -LiteralPath $systemImageManifest -Raw | ConvertFrom-Json
-if ($systemImage.schema_version -ne 'a3s.oci.windows-system-image.v1' -or
+if ($systemImage.schema_version -ne 'aster.oci.windows-system-image.v1' -or
     $systemImage.architecture -ne 'x86_64' -or
-    $systemImage.image.name -ne 'a3s-oci-system.ext4') {
+    $systemImage.image.name -ne 'aster-oci-system.ext4') {
     throw "Unexpected Windows system-image manifest: $systemImageManifest"
 }
 $systemImagePath = Join-Path $manifestItem.DirectoryName $systemImage.image.name
@@ -128,11 +128,11 @@ function Join-QuotedNativeArguments {
     }) -join ' '
 }
 
-function Get-A3sOciProcesses {
+function Get-AsterOciProcesses {
     @(
         Get-Process -ErrorAction SilentlyContinue |
             Where-Object {
-                $_.ProcessName -in @('a3s-oci', 'a3s-oci-krun-shim')
+                $_.ProcessName -in @('aster-oci', 'aster-oci-krun-shim')
             } |
             Select-Object ProcessName, Id, StartTime
     )
@@ -154,12 +154,12 @@ function Wait-ForProcessExit {
     return $false
 }
 
-$preexisting = @(Get-A3sOciProcesses)
+$preexisting = @(Get-AsterOciProcesses)
 if ($preexisting.Count -gt 0) {
     $description = ($preexisting | ForEach-Object {
         '{0}:{1}' -f $_.ProcessName, $_.Id
     }) -join ', '
-    throw "Refusing to start with active A3S OCI processes: $description"
+    throw "Refusing to start with active Aster OCI processes: $description"
 }
 
 New-Item -ItemType Directory -Path `
@@ -167,7 +167,7 @@ New-Item -ItemType Directory -Path `
 
 if (-not $SkipBuild) {
     & cargo.exe build --manifest-path (Join-Path $repositoryRoot 'Cargo.toml') `
-        -p a3s-oci-cli -p a3s-oci-krun --jobs 1
+        -p aster-oci-cli -p aster-oci-krun --jobs 1
     if ($LASTEXITCODE -ne 0) {
         throw 'Failed to build the Windows recovery qualification binaries.'
     }
@@ -233,7 +233,7 @@ try {
     if ($null -eq $ready) {
         throw "Timed out waiting for WHPX recovery owner readiness: $readyPath"
     }
-    if ($ready.schema_version -ne 'a3s.oci.whpx-recovery-owner-ready.v1' -or
+    if ($ready.schema_version -ne 'aster.oci.whpx-recovery-owner-ready.v1' -or
         $ready.status -ne 'available' -or
         $ready.target.id -ne $containerId -or
         [uint64]$ready.target.generation -ne $expectedGeneration -or
@@ -245,7 +245,7 @@ try {
     }
 
     $shimProcesses = @(
-        Get-Process -Name 'a3s-oci-krun-shim' -ErrorAction SilentlyContinue
+        Get-Process -Name 'aster-oci-krun-shim' -ErrorAction SilentlyContinue
     )
     if ($shimProcesses.Count -ne 1) {
         throw "Expected exactly one owner-bound WHPX shim, found $($shimProcesses.Count)"
@@ -293,7 +293,7 @@ try {
     if ($resumeExitCode -ne 0 -or $report.status -ne 'available') {
         throw "WHPX recovery resume failed with exit code $resumeExitCode; see $reportPath"
     }
-    if ($report.schema_version -ne 'a3s.oci.whpx-recovery-smoke.v1') {
+    if ($report.schema_version -ne 'aster.oci.whpx-recovery-smoke.v1') {
         throw "Unexpected WHPX recovery smoke schema: $($report.schema_version)"
     }
     if (-not (Wait-ForProcessExit -ProcessId $ownerShimProcessId)) {
@@ -308,13 +308,13 @@ finally {
     if ($null -ne $ownerShimProcessId) {
         $remainingShim = Get-Process -Id $ownerShimProcessId -ErrorAction SilentlyContinue
         if ($null -ne $remainingShim -and
-            $remainingShim.ProcessName -eq 'a3s-oci-krun-shim') {
+            $remainingShim.ProcessName -eq 'aster-oci-krun-shim') {
             Stop-Process -Id $ownerShimProcessId -Force -ErrorAction SilentlyContinue
         }
     }
 }
 
-$residual = @(Get-A3sOciProcesses)
+$residual = @(Get-AsterOciProcesses)
 if ($residual.Count -gt 0) {
     $description = ($residual | ForEach-Object {
         '{0}:{1}' -f $_.ProcessName, $_.Id
@@ -327,7 +327,7 @@ if ($LASTEXITCODE -ne 0) {
     throw 'Unable to resolve the repository commit.'
 }
 $summary = [ordered]@{
-    schema_version = 'a3s.oci.whpx-recovery-smoke-run.v1'
+    schema_version = 'aster.oci.whpx-recovery-smoke-run.v1'
     status = 'available'
     started_at_utc = $startedAt.ToString('o')
     owner_killed_at_utc = $ownerKilledAt.ToString('o')

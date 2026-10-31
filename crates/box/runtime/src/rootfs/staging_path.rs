@@ -11,14 +11,14 @@ use std::ffi::OsStr;
 use std::io::Read;
 use std::path::{Component, Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 #[cfg(target_os = "macos")]
-use a3s_box_core::rootfs_metadata::{RootfsMetadataManifest, IMAGE_ROOTFS_METADATA_PATH};
+use aster_box_core::rootfs_metadata::{RootfsMetadataManifest, IMAGE_ROOTFS_METADATA_PATH};
 #[cfg(target_os = "macos")]
 use base64::Engine as _;
 
 #[cfg(target_os = "macos")]
-const ESCAPE_PREFIX: &str = ".a3s-rp1-";
+const ESCAPE_PREFIX: &str = ".aster-rp1-";
 #[cfg(target_os = "macos")]
 const MAX_METADATA_BYTES: u64 = 64 * 1024 * 1024;
 

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{editor_error, table};
 use crate::editor::{NativeOfficeInsertPosition, NativeOfficeSwapResult};

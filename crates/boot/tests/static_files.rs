@@ -1,6 +1,6 @@
 #![cfg(feature = "static")]
 
-use a3s_boot::{BootApplication, BootError, BootRequest, HttpMethod, StaticModule};
+use aster_boot::{BootApplication, BootError, BootRequest, HttpMethod, StaticModule};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -9,7 +9,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 async fn static_module_serves_files_under_serve_root() {
     let temp = TempDir::new("static-module-serves-files");
     temp.write("public/app.css", "body { color: #222; }");
-    temp.write("public/index.html", "<main>A3S</main>");
+    temp.write("public/index.html", "<main>Aster</main>");
 
     let app = BootApplication::builder()
         .import(StaticModule::new("static", temp.path().join("public")).with_serve_root("/assets"))
@@ -28,7 +28,7 @@ async fn static_module_serves_files_under_serve_root() {
     assert_eq!(response.status(), 200);
     assert_eq!(response.content_type(), Some("text/css; charset=utf-8"));
     assert_eq!(response.body_text().unwrap(), "body { color: #222; }");
-    assert_eq!(index.body_text().unwrap(), "<main>A3S</main>");
+    assert_eq!(index.body_text().unwrap(), "<main>Aster</main>");
 }
 
 #[tokio::test]
@@ -118,7 +118,7 @@ impl TempDir {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_nanos();
-        let path = std::env::temp_dir().join(format!("a3s-boot-{name}-{timestamp}"));
+        let path = std::env::temp_dir().join(format!("aster-boot-{name}-{timestamp}"));
         fs::create_dir_all(&path).unwrap();
         Self { path }
     }

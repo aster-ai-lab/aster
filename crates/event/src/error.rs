@@ -1,4 +1,4 @@
-//! Error types for a3s-event
+//! Error types for aster-event
 
 use thiserror::Error;
 

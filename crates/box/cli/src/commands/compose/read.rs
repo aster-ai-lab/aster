@@ -2,8 +2,8 @@
 
 use std::collections::HashMap;
 
-use a3s_box_core::compose::ComposeConfig;
-use a3s_box_runtime::ComposeRuntimePlan;
+use aster_box_core::compose::ComposeConfig;
+use aster_box_runtime::ComposeRuntimePlan;
 
 use super::{
     validate_compose_restart_policies, ComposeLogsArgs, ProjectServicesArgs, LABEL_PROJECT,
@@ -20,7 +20,7 @@ pub(super) async fn execute_ps(
     config: &ComposeConfig,
     args: ProjectServicesArgs,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    // Present-tense service rows: same home-scoped observe/resume as `a3s-box ps`.
+    // Present-tense service rows: same home-scoped observe/resume as `aster-box ps`.
     let state =
         super::super::observe_inventory::refresh_default_home_after_inventory_observation().await?;
     let boxes = state
@@ -136,7 +136,7 @@ pub(super) async fn execute_logs(
         super::operations::selected_service_names(config, &logs_args.services)?;
     }
     // Refresh before selecting project boxes so abandoned transitional claims
-    // converge (same path as compose wait / a3s-box ps).
+    // converge (same path as compose wait / aster-box ps).
     let state =
         super::super::observe_inventory::refresh_default_home_after_inventory_observation().await?;
     let boxes = state.find_by_label(LABEL_PROJECT, project_name);

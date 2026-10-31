@@ -26,7 +26,7 @@ import {
 } from './signature-contract';
 import { SignaturePad } from './signature-pad';
 
-export const SIGNATURE_WIDGET = 'a3s.signature';
+export const SIGNATURE_WIDGET = 'aster.signature';
 
 export type {
   CreateFormSignatureSchemaOptions,
@@ -309,20 +309,20 @@ function ActionIcon({ name }: { name: 'open' | 'replace' | 'remove' | 'undo' | '
 function SignatureDesign({ node, required }: FormNodeDesignProps) {
   const settings = signatureSettings(node);
   return (
-    <div className="a3s-form-signature-design">
-      <div className="a3s-form-signature-design-heading">
-        <span className="a3s-form-signature-design-label">
+    <div className="aster-form-signature-design">
+      <div className="aster-form-signature-design-heading">
+        <span className="aster-form-signature-design-label">
           <strong>{node.label ?? '签名'}</strong>
           {required && <em>必填</em>}
         </span>
         <small>{node.description ?? '由宿主保存签署记录'}</small>
       </div>
-      <div className="a3s-form-signature-design-pad" data-pen-color={settings.penColor}>
+      <div className="aster-form-signature-design-pad" data-pen-color={settings.penColor}>
         <SignatureIcon />
         <svg aria-hidden="true" viewBox="0 0 280 70" preserveAspectRatio="none">
           <path d="M12 48c23-31 35 18 52-5 15-20 20-36 29-25 8 10-3 31 5 35 14 7 27-35 35-30 9 6-11 27 2 30 12 3 23-18 31-15 8 4 1 16 17 17 19 1 39-4 84-1" />
         </svg>
-        <span className="a3s-form-signature-design-action">
+        <span className="aster-form-signature-design-action">
           {settings.captureMode === 'typed' ? '键入姓名' : '在此签名'}
         </span>
       </div>
@@ -335,7 +335,7 @@ function SignatureInspector({ node, onUpdate }: FormNodeInspectorProps) {
   const update = (changes: Record<string, string>) =>
     onUpdate({ node: { customProps: { ...node.customProps, ...changes } } });
   return (
-    <section className="a3s-form-signature-inspector" aria-label="签名设置">
+    <section className="aster-form-signature-inspector" aria-label="签名设置">
       <Control label="签名方式">
         <SelectControl
           aria-label="签名方式"
@@ -554,17 +554,17 @@ function SignatureNode({
 
   return (
     <section
-      className={`a3s-form-signature${props.invalid || invalidReference ? ' is-invalid' : ''}`}
+      className={`aster-form-signature${props.invalid || invalidReference ? ' is-invalid' : ''}`}
       aria-labelledby={labelId}
       data-disabled={props.disabled || undefined}
     >
-      <header className="a3s-form-signature-heading">
+      <header className="aster-form-signature-heading">
         <div>
-          <span className="a3s-form-signature-label" id={labelId}>
+          <span className="aster-form-signature-label" id={labelId}>
             {props.node.label ?? messages.fallbackLabel}
           </span>
           {props.required && (
-            <span className="a3s-form-signature-required">{messages.required}</span>
+            <span className="aster-form-signature-required">{messages.required}</span>
           )}
         </div>
         {reference && !editing && (
@@ -574,19 +574,19 @@ function SignatureNode({
         )}
       </header>
       {props.node.description && (
-        <p className="a3s-form-signature-help">{props.node.description}</p>
+        <p className="aster-form-signature-help">{props.node.description}</p>
       )}
 
       {invalidReference ? (
-        <div className="a3s-form-signature-error" role="alert">
+        <div className="aster-form-signature-error" role="alert">
           {messages.invalidReference}
         </div>
       ) : reference && !editing ? (
-        <div className="a3s-form-signature-saved">
-          <span className="a3s-form-signature-saved-icon">
+        <div className="aster-form-signature-saved">
+          <span className="aster-form-signature-saved-icon">
             <SignatureIcon state="saved" />
           </span>
-          <span className="a3s-form-signature-saved-copy">
+          <span className="aster-form-signature-saved-copy">
             <strong>{messages.saved}</strong>
             <small>
               {formatMessage(messages.savedMeta, {
@@ -595,7 +595,7 @@ function SignatureNode({
               })}
             </small>
           </span>
-          <span className="a3s-form-signature-actions">
+          <span className="aster-form-signature-actions">
             {service.open && (
               <button
                 type="button"
@@ -641,15 +641,15 @@ function SignatureNode({
           </span>
         </div>
       ) : props.disabled ? (
-        <div className="a3s-form-signature-empty">
+        <div className="aster-form-signature-empty">
           <SignatureIcon />
           <span>{messages.readOnlyEmpty}</span>
         </div>
       ) : (
-        <div className="a3s-form-signature-editor">
+        <div className="aster-form-signature-editor">
           {modeOptions && (
             <div
-              className="a3s-form-signature-methods"
+              className="aster-form-signature-methods"
               role="tablist"
               aria-label={messages.methodLabel}
             >
@@ -675,7 +675,7 @@ function SignatureNode({
           )}
 
           {method === 'drawn' ? (
-            <div className="a3s-form-signature-draw">
+            <div className="aster-form-signature-draw">
               <SignaturePad
                 strokes={strokes}
                 onChange={(next) => {
@@ -691,14 +691,14 @@ function SignatureNode({
                 describedBy={hintId}
                 penColor={settings.penColor}
               />
-              <div className="a3s-form-signature-draw-meta">
+              <div className="aster-form-signature-draw-meta">
                 <p id={hintId}>
                   {messages.drawHint}{' '}
-                  <span className="a3s-form-signature-keyboard-hint">
+                  <span className="aster-form-signature-keyboard-hint">
                     {messages.drawKeyboardHint}
                   </span>
                 </p>
-                <span className="a3s-form-signature-draw-actions">
+                <span className="aster-form-signature-draw-actions">
                   <button
                     type="button"
                     className="btn"
@@ -727,7 +727,7 @@ function SignatureNode({
               </div>
             </div>
           ) : (
-            <div className="a3s-form-signature-typed">
+            <div className="aster-form-signature-typed">
               <label htmlFor={`${props.id}-typed`}>{messages.typedLabel}</label>
               <input
                 id={`${props.id}-typed`}
@@ -744,11 +744,11 @@ function SignatureNode({
                 }}
               />
               <div
-                className="a3s-form-signature-typed-preview"
+                className="aster-form-signature-typed-preview"
                 role="img"
                 aria-label={messages.typedPreview}
               >
-                <span className="a3s-form-signature-typed-preview-text">
+                <span className="aster-form-signature-typed-preview-text">
                   {boundedTypedSignature(typedName) || messages.typedPlaceholder}
                 </span>
               </div>
@@ -756,11 +756,11 @@ function SignatureNode({
           )}
 
           {operationError?.kind === 'save' && (
-            <div className="a3s-form-signature-error" role="alert">
+            <div className="aster-form-signature-error" role="alert">
               {operationError.message}
             </div>
           )}
-          <div className="a3s-form-signature-editor-actions">
+          <div className="aster-form-signature-editor-actions">
             {reference && (
               <button
                 type="button"
@@ -778,7 +778,7 @@ function SignatureNode({
             )}
             {isSaving ? (
               <>
-                <span className="a3s-form-signature-saving" role="status">
+                <span className="aster-form-signature-saving" role="status">
                   {messages.saving}
                 </span>
                 <button
@@ -810,11 +810,11 @@ function SignatureNode({
       )}
 
       {operationError && (!editing || operationError.kind !== 'save') && (
-        <div className="a3s-form-signature-error" role="alert">
+        <div className="aster-form-signature-error" role="alert">
           {operationError.message}
         </div>
       )}
-      <span className="a3s-form-signature-announcement" aria-live="polite" role="status">
+      <span className="aster-form-signature-announcement" aria-live="polite" role="status">
         {announcement}
       </span>
     </section>

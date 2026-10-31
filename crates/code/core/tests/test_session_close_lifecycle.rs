@@ -8,12 +8,12 @@
 //! Run with:
 //!   cargo test --test test_session_close_lifecycle -- --nocapture
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::Message;
-use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
-use a3s_code_core::queue::{LaneHandlerConfig, SessionLane, SessionQueueConfig, TaskHandlerMode};
-use a3s_code_core::subagent_task_tracker::SubagentStatus;
-use a3s_code_core::{Agent, AgentEvent, SessionOptions};
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::Message;
+use aster_core::mcp::{McpServerConfig, McpTransportConfig};
+use aster_core::queue::{LaneHandlerConfig, SessionLane, SessionQueueConfig, TaskHandlerMode};
+use aster_core::subagent_task_tracker::SubagentStatus;
+use aster_core::{Agent, AgentEvent, SessionOptions};
 use tokio_util::sync::CancellationToken;
 
 /// IT-0: close establishes a queue admission boundary, resolves SDK-owned
@@ -76,6 +76,7 @@ fn offline_test_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,
@@ -391,9 +392,9 @@ async fn session_drop_prunes_registry_under_concurrency() {
 /// the async `SessionStore` calls.
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn subagent_tasks_persist_across_save_and_resume() {
-    use a3s_code_core::store::MemorySessionStore;
+    use aster_core::store::MemorySessionStore;
 
-    let store: std::sync::Arc<dyn a3s_code_core::store::SessionStore> =
+    let store: std::sync::Arc<dyn aster_core::store::SessionStore> =
         std::sync::Arc::new(MemorySessionStore::new());
 
     // ----- Phase A: write -----
@@ -508,9 +509,9 @@ async fn subagent_tasks_persist_across_save_and_resume() {
 /// them on migration breaks audit trails.
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn identity_labels_persist_across_save_and_resume() {
-    use a3s_code_core::store::MemorySessionStore;
+    use aster_core::store::MemorySessionStore;
 
-    let store: std::sync::Arc<dyn a3s_code_core::store::SessionStore> =
+    let store: std::sync::Arc<dyn aster_core::store::SessionStore> =
         std::sync::Arc::new(MemorySessionStore::new());
 
     // Phase A: write
@@ -586,11 +587,11 @@ async fn identity_labels_persist_across_save_and_resume() {
 /// audit, and memory safety in a long-lived fleet.
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn cluster_ops_consolidated_session_lifecycle() {
-    use a3s_code_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
-    use a3s_code_core::retention::SessionRetentionLimits;
-    use a3s_code_core::store::MemorySessionStore;
+    use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
+    use aster_core::retention::SessionRetentionLimits;
+    use aster_core::store::MemorySessionStore;
 
-    let store: std::sync::Arc<dyn a3s_code_core::store::SessionStore> =
+    let store: std::sync::Arc<dyn aster_core::store::SessionStore> =
         std::sync::Arc::new(MemorySessionStore::new());
 
     // -------------------------------------------------------------------
@@ -654,7 +655,7 @@ async fn cluster_ops_consolidated_session_lifecycle() {
             Message::user("refactor the auth module"),
             Message {
                 role: "assistant".to_string(),
-                content: vec![a3s_code_core::llm::ContentBlock::Text {
+                content: vec![aster_core::llm::ContentBlock::Text {
                     text: "scanned callsites, planning edits".to_string(),
                 }],
                 reasoning_content: None,
@@ -662,7 +663,7 @@ async fn cluster_ops_consolidated_session_lifecycle() {
                 transcript_visibility: Default::default(),
             },
         ],
-        total_usage: a3s_code_core::llm::TokenUsage {
+        total_usage: aster_core::llm::TokenUsage {
             prompt_tokens: 800,
             completion_tokens: 200,
             total_tokens: 1000,
@@ -705,7 +706,7 @@ async fn cluster_ops_consolidated_session_lifecycle() {
     assert_eq!(restored_tasks[0].task_id, "explore-1");
     assert_eq!(
         restored_tasks[0].status,
-        a3s_code_core::subagent_task_tracker::SubagentStatus::Completed
+        aster_core::subagent_task_tracker::SubagentStatus::Completed
     );
 
     // Crashed run can be resumed from the persisted checkpoint via the
@@ -716,7 +717,7 @@ async fn cluster_ops_consolidated_session_lifecycle() {
     // *checkpoint contract* — what the run-resumption code reads —
     // is intact across the migration.)
     let cp_after = {
-        let s: std::sync::Arc<dyn a3s_code_core::store::SessionStore> =
+        let s: std::sync::Arc<dyn aster_core::store::SessionStore> =
             std::sync::Arc::clone(&store);
         s.load_loop_checkpoint(seeded_run_id)
             .await
@@ -741,7 +742,7 @@ async fn cluster_ops_consolidated_session_lifecycle() {
 /// surface the host would inspect / drive externally.
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn retention_limits_are_plumbed_into_subagent_tracker() {
-    use a3s_code_core::retention::SessionRetentionLimits;
+    use aster_core::retention::SessionRetentionLimits;
 
     let agent = Agent::from_config(offline_test_config()).await.unwrap();
     let limits = SessionRetentionLimits::new().with_max_terminal_subagent_tasks(2);
@@ -804,9 +805,9 @@ async fn retention_limits_are_plumbed_into_subagent_tracker() {
 /// integration coverage alongside the resume API.
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn loop_checkpoint_round_trips_through_session_store() {
-    use a3s_code_core::llm::TokenUsage;
-    use a3s_code_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
-    use a3s_code_core::store::{MemorySessionStore, SessionStore};
+    use aster_core::llm::TokenUsage;
+    use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
+    use aster_core::store::{MemorySessionStore, SessionStore};
 
     let store: std::sync::Arc<dyn SessionStore> = std::sync::Arc::new(MemorySessionStore::new());
 
@@ -820,10 +821,10 @@ async fn loop_checkpoint_round_trips_through_session_store() {
         durable_source: None,
         turn: 4,
         messages: vec![
-            a3s_code_core::llm::Message::user("seed prompt"),
-            a3s_code_core::llm::Message {
+            aster_core::llm::Message::user("seed prompt"),
+            aster_core::llm::Message {
                 role: "assistant".to_string(),
-                content: vec![a3s_code_core::llm::ContentBlock::Text {
+                content: vec![aster_core::llm::ContentBlock::Text {
                     text: "ack".to_string(),
                 }],
                 reasoning_content: None,
@@ -895,7 +896,7 @@ async fn loop_checkpoint_round_trips_through_session_store() {
 /// turns.
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn send_without_tool_calls_does_not_emit_loop_checkpoint() {
-    use a3s_code_core::store::{MemorySessionStore, SessionStore};
+    use aster_core::store::{MemorySessionStore, SessionStore};
 
     let store_arc: std::sync::Arc<MemorySessionStore> =
         std::sync::Arc::new(MemorySessionStore::new());
@@ -937,7 +938,7 @@ async fn send_without_tool_calls_does_not_emit_loop_checkpoint() {
 /// fresh session".
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn resume_run_error_paths_are_distinguishable() {
-    use a3s_code_core::store::MemorySessionStore;
+    use aster_core::store::MemorySessionStore;
 
     // Flavor A: no store on the session — resume_run must reject up
     // front with a message that names the missing capability.
@@ -958,7 +959,7 @@ async fn resume_run_error_paths_are_distinguishable() {
     // Flavor B: store present but checkpoint absent — resume_run must
     // reject with a message that names the missing run id.
     {
-        let store: std::sync::Arc<dyn a3s_code_core::store::SessionStore> =
+        let store: std::sync::Arc<dyn aster_core::store::SessionStore> =
             std::sync::Arc::new(MemorySessionStore::new());
         let agent = Agent::from_config(offline_test_config()).await.unwrap();
         let opts = SessionOptions::new()

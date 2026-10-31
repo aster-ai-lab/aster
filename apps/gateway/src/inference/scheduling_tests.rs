@@ -57,7 +57,7 @@ fn distributed_scheduling() -> InferenceSchedulingConfig {
         queue_timeout_ms: 1_000,
         prompt_cache_affinity: true,
         distributed_serving: Some(InferenceDistributedServingConfig {
-            api_key_env: "A3S_POWER_API_KEY".to_string(),
+            api_key_env: "ASTER_POWER_API_KEY".to_string(),
             execution_timeout_ms: 30_000,
         }),
     }
@@ -228,7 +228,7 @@ fn distributed_selection_returns_distinct_prefill_and_decode_bindings() {
         &candidates,
         Utc::now(),
         b"request",
-        Some("a3s-gw-pcache-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+        Some("aster-gw-pcache-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
     )
     .unwrap();
 

@@ -53,7 +53,7 @@ function Resolve-WhpxFreshHostAttestation {
     $resolved = (Resolve-Path -LiteralPath $AttestationPath -ErrorAction Stop).Path
     Assert-WhpxFreshHostRegularFile -Path $resolved -Label 'Fresh-host attestation' | Out-Null
     $attestation = Get-Content -LiteralPath $resolved -Raw | ConvertFrom-Json
-    if ($attestation.schema_version -ne 'a3s.oci.windows-whpx-fresh-host-attestation.v1') {
+    if ($attestation.schema_version -ne 'aster.oci.windows-whpx-fresh-host-attestation.v1') {
         throw "Unexpected fresh-host attestation schema: $($attestation.schema_version)"
     }
     if ($attestation.operator_attests_fresh_provisioning -ne $true) {

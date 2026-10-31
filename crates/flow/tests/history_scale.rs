@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventStore, FlowRuntime, InMemoryEventStore,
     LocalFileEventStore, RuntimeCommand, WorkflowInvocation, WorkflowProgress, WorkflowSpec,
     MAX_FLOW_HISTORY_PAGE_SIZE,
@@ -14,7 +14,7 @@ impl FlowRuntime for TestRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Err(FlowError::Runtime(
             "test runtime is not executable".to_string(),
         ))
@@ -22,8 +22,8 @@ impl FlowRuntime for TestRuntime {
 
     async fn run_step(
         &self,
-        _invocation: a3s_flow::StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime(
             "test runtime is not executable".to_string(),
         ))
@@ -198,7 +198,7 @@ impl FlowEventStore for PrefixOnlyPageStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -207,17 +207,17 @@ impl FlowEventStore for PrefixOnlyPageStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 
@@ -225,7 +225,7 @@ impl FlowEventStore for PrefixOnlyPageStore {
         &self,
         _run_id: &str,
         _sequence: u64,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store("unbounded history tail read".to_string()))
     }
 
@@ -234,7 +234,7 @@ impl FlowEventStore for PrefixOnlyPageStore {
         run_id: &str,
         after_sequence: u64,
         limit: usize,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         let history = self.inner.list(run_id).await?;
         Ok(history
             .into_iter()
@@ -246,14 +246,14 @@ impl FlowEventStore for PrefixOnlyPageStore {
     async fn list_history_partitions(
         &self,
         run_id: &str,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowHistoryPartition>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowHistoryPartition>> {
         self.inner.list_history_partitions(run_id).await
     }
 
     async fn save_history_partition(
         &self,
-        partition: &a3s_flow::FlowHistoryPartition,
-    ) -> a3s_flow::Result<()> {
+        partition: &aster_flow::FlowHistoryPartition,
+    ) -> aster_flow::Result<()> {
         self.inner.save_history_partition(partition).await
     }
 }
@@ -332,7 +332,7 @@ impl FlowEventStore for PageOnlyHistoryStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -341,7 +341,7 @@ impl FlowEventStore for PageOnlyHistoryStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
@@ -352,13 +352,13 @@ impl FlowEventStore for PageOnlyHistoryStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner
             .append_validated_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, _run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, _run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history read is not allowed".to_string(),
         ))
@@ -368,7 +368,7 @@ impl FlowEventStore for PageOnlyHistoryStore {
         &self,
         _run_id: &str,
         _sequence: u64,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history tail read is not allowed".to_string(),
         ))
@@ -379,7 +379,7 @@ impl FlowEventStore for PageOnlyHistoryStore {
         run_id: &str,
         after_sequence: u64,
         limit: usize,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         let history = self.inner.list(run_id).await?;
         Ok(history
             .into_iter()
@@ -388,7 +388,7 @@ impl FlowEventStore for PageOnlyHistoryStore {
             .collect())
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -431,7 +431,7 @@ impl FlowRuntime for CompleteRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(RuntimeCommand::Complete {
             output: json!({
                 "history_len": invocation.history.len(),
@@ -441,8 +441,8 @@ impl FlowRuntime for CompleteRuntime {
 
     async fn run_step(
         &self,
-        _invocation: a3s_flow::StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime(
             "complete runtime does not execute steps".to_string(),
         ))
@@ -474,6 +474,6 @@ async fn drive_reads_history_in_pages_instead_of_unbounded_list() {
         .drive(run_id)
         .await
         .expect("drive must page history instead of calling list");
-    assert_eq!(snapshot.status, a3s_flow::WorkflowRunStatus::Completed);
+    assert_eq!(snapshot.status, aster_flow::WorkflowRunStatus::Completed);
     assert_eq!(snapshot.output, Some(json!({ "history_len": 2 + extra })));
 }

@@ -1,9 +1,9 @@
 import { defineConfig } from '@playwright/test';
 
-const externalBaseUrl = process.env.A3S_OFFICE_TESTKIT_BASE_URL;
+const externalBaseUrl = process.env.ASTER_OFFICE_TESTKIT_BASE_URL;
 const baseURL = externalBaseUrl ?? 'http://127.0.0.1:3000';
 const chromiumExecutablePath =
-  process.env.A3S_OFFICE_TESTKIT_CHROMIUM_EXECUTABLE;
+  process.env.ASTER_OFFICE_TESTKIT_CHROMIUM_EXECUTABLE;
 
 export default defineConfig({
   testDir: './visual-tests',

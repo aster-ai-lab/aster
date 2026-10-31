@@ -1,6 +1,6 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 
-use a3s_use_core::{
+use aster_use_core::{
     CatalogAvailability, PlanActor, PlanAuthority, PlanPackageChangeKind, PlanPackageRole,
     PlanPolicyDecision, PlanScope, PlanScopeKind, PlannedOperationImpact, PlannedPackageTransition,
     PlannedStateEvidence, PluginCatalogRecord, PluginOperationAction, PluginOperationPlanBinding,
@@ -8,7 +8,7 @@ use a3s_use_core::{
     PluginPackageLockHost, PluginPackageResolver, VerifiedCatalogProvenance,
     VerifiedPluginCatalogRecord,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionManifest, PluginFlowSurface, PluginMcpSurface, PluginOkfSurface, PluginSkillSurface,
     PluginUiSurface, ToolSurface,
 };
@@ -337,7 +337,7 @@ impl PluginUiLifecycleHost for RecordingHost {
 impl PluginGraphCapabilityLifecycleHost for RecordingHost {
     async fn publish_capabilities_with_cutover(
         &self,
-        _package_lock: &a3s_use_core::PluginPackageLock,
+        _package_lock: &aster_use_core::PluginPackageLock,
         intents: &[PluginLifecycleIntent],
         _expected_capability_generation: u64,
         key: &str,
@@ -396,7 +396,7 @@ impl PluginGraphCapabilityLifecycleHost for RecordingHost {
 
     async fn publish_upgrade_capabilities_with_cutover(
         &self,
-        package_lock: &a3s_use_core::PluginPackageLock,
+        package_lock: &aster_use_core::PluginPackageLock,
         candidate_intents: &[PluginLifecycleIntent],
         removed_intents: &[PluginLifecycleIntent],
         expected_capability_generation: u64,
@@ -419,7 +419,7 @@ impl PluginGraphCapabilityLifecycleHost for RecordingHost {
 
     async fn hide_capabilities_with_cutover(
         &self,
-        _package_lock: &a3s_use_core::PluginPackageLock,
+        _package_lock: &aster_use_core::PluginPackageLock,
         intents: &[PluginLifecycleIntent],
         _expected_capability_generation: u64,
         key: &str,
@@ -468,7 +468,7 @@ impl PluginGraphCapabilityLifecycleHost for RecordingHost {
 
     async fn rollback_candidates(
         &self,
-        candidate_lock: &a3s_use_core::PluginPackageLock,
+        candidate_lock: &aster_use_core::PluginPackageLock,
         intents: &[PluginLifecycleIntent],
         _prior_intents: &[PluginLifecycleIntent],
         key: &str,
@@ -750,7 +750,7 @@ fn install_graph_fixture(retain_base: bool) -> InstallGraphFixture {
 struct UpgradeGraphFixture {
     _temp: tempfile::TempDir,
     envelope: PluginOperationPlanEnvelope,
-    prior_lock: a3s_use_core::PluginPackageLock,
+    prior_lock: aster_use_core::PluginPackageLock,
     candidates: Vec<PluginPackageLifecycleUnit>,
     retirements: Vec<PluginPackageLifecycleUnit>,
     host: Arc<RecordingHost>,

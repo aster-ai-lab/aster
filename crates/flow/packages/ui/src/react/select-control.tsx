@@ -12,7 +12,7 @@ import {
   type ReactNode,
   type SelectHTMLAttributes,
 } from 'react';
-import { loadA3SUIRuntime } from './a3s-ui-runtime';
+import { loadAsterUIRuntime } from './aster-ui-runtime';
 import { DesignerIcon } from './designer-icons';
 import { useFloatingPanelPosition } from './floating-panel';
 import {
@@ -24,7 +24,7 @@ import {
 } from './select-control-fallback';
 
 function loadSelectRuntime(): Promise<void> {
-  return loadA3SUIRuntime('select', () => import('@a3s-lab/ce/select'));
+  return loadAsterUIRuntime('select', () => import('@aster-ai-lab/ce/select'));
 }
 
 type SelectRuntimeStatus = 'idle' | 'loading' | 'ready' | 'failed';
@@ -138,7 +138,7 @@ function splitAdditionalAttributes(attributes: Record<string, unknown>): {
 }
 
 /**
- * Controlled A3S UI Select adapter used by Flow composite widgets.
+ * Controlled Aster UI Select adapter used by Flow composite widgets.
  * It preserves the familiar `event.target.value` callback without falling
  * back to the browser-native select surface.
  */
@@ -167,7 +167,7 @@ export function SelectControl({
   ...additionalAttributes
 }: SelectControlProps) {
   const generatedId = useId();
-  const generatedRootId = `a3s-flow-select-${generatedId.replaceAll(':', '')}`;
+  const generatedRootId = `aster-flow-select-${generatedId.replaceAll(':', '')}`;
   const suppliedRootId = suppliedId?.trim() || undefined;
   const suppliedTriggerId = triggerIdProp?.trim() || undefined;
   // FormRenderer labels target their field id. When a caller asks for that
@@ -311,7 +311,7 @@ export function SelectControl({
         runtimeStatusRef.current = 'failed';
         if (mountedRef.current && typeof window !== 'undefined') {
           console.error(
-            '[A3S Flow] Failed to initialize the select control.',
+            '[Aster Flow] Failed to initialize the select control.',
             error,
           );
         }
@@ -576,11 +576,11 @@ export function SelectControl({
   return (
     <div
       {...rootAttributes}
-      className={['select', 'a3s-flow-select-control', className]
+      className={['select', 'aster-flow-select-control', className]
         .filter(Boolean)
         .join(' ')}
-      data-a3s-components="select"
-      data-a3s-select="flow"
+      data-aster-components="select"
+      data-aster-select="flow"
       data-disabled={disabledState || undefined}
       data-placeholder={hasPlaceholder ? placeholder || '' : undefined}
       data-value-empty={effectiveValue === '' ? 'true' : 'false'}
@@ -621,7 +621,7 @@ export function SelectControl({
           aria-orientation="vertical"
           id={`${id}-listbox`}
           onPointerDown={(event) => {
-            // The A3S UI runtime closes a select when its trigger loses focus.
+            // The Aster UI runtime closes a select when its trigger loses focus.
             // A pointer press on an option would otherwise move focus away
             // before the runtime's delegated click handler can publish the
             // new value, leaving the pointer-up on the underlying panel.
@@ -653,7 +653,7 @@ export function SelectControl({
         </div>
       </div>
       <input
-        className="a3s-form-visually-hidden"
+        className="aster-form-visually-hidden"
         disabled={disabledState}
         id={`${id}-value`}
         name={name ?? `${id}-value`}

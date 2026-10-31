@@ -3,7 +3,7 @@ use std::fs::File;
 use std::os::fd::{AsRawFd, RawFd};
 use std::os::unix::fs::MetadataExt;
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use super::{IdMapping, NamespaceAction, NamespacePlan};
 use crate::executor::executor_error;
@@ -322,7 +322,7 @@ fn namespace_actions(
     ]
 }
 
-fn retained_error(code: ErrorCode, message: impl Into<String>) -> a3s_oci_sdk::Error {
+fn retained_error(code: ErrorCode, message: impl Into<String>) -> aster_oci_sdk::Error {
     executor_error(code, message)
 }
 
@@ -345,7 +345,7 @@ mod tests {
     use std::fs::File;
     use std::os::fd::AsRawFd;
 
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
     use tempfile::tempdir;
 
     use super::{FileIdentity, RetainedExecutionContext};

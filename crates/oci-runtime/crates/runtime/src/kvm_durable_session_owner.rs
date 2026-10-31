@@ -25,7 +25,7 @@ use std::time::Duration;
 /// When unset/false, Host remains the shim parent (stopped-only on Host death).
 /// When true, callers must spawn through [`spawn_via_session_owner_helper`] so
 /// the session owner — not Host — is the shim's direct parent.
-pub const KVM_SESSION_OWNER_ENV: &str = "A3S_OCI_KVM_SESSION_OWNER";
+pub const KVM_SESSION_OWNER_ENV: &str = "ASTER_OCI_KVM_SESSION_OWNER";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum KvmOwnerMode {
@@ -126,7 +126,7 @@ impl DurableSessionOwner {
     }
 }
 
-/// Spawn `a3s-oci-krun-shim session-owner` as a Host child (Tokio-safe).
+/// Spawn `aster-oci-krun-shim session-owner` as a Host child (Tokio-safe).
 ///
 /// `shim_argv` is the trailing shim argv (for example `agent-vm-smoke ...`) and
 /// must not include `--owner-pid`. The helper injects its own PID.
@@ -471,8 +471,8 @@ mod tests {
     use std::thread;
     use std::time::{Duration, Instant};
 
-    const HOST_REPORT_ENV: &str = "A3S_OCI_TEST_KVM_OWNER_REPORT";
-    const HOST_GATE_ENV: &str = "A3S_OCI_TEST_KVM_OWNER_GATE";
+    const HOST_REPORT_ENV: &str = "ASTER_OCI_TEST_KVM_OWNER_REPORT";
+    const HOST_GATE_ENV: &str = "ASTER_OCI_TEST_KVM_OWNER_GATE";
     const HOST_WORKER: &str = "kvm_durable_session_owner::tests::host_analogue_worker";
 
     #[test]
@@ -581,7 +581,7 @@ mod tests {
 
     #[test]
     fn session_owner_helper_parents_probe_and_survives_host_detach() {
-        let shim = env::var("A3S_OCI_KRUN_SHIM")
+        let shim = env::var("ASTER_OCI_KRUN_SHIM")
             .ok()
             .filter(|value| !value.is_empty())
             .map(PathBuf::from)
@@ -589,11 +589,11 @@ mod tests {
                 let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
                 path.pop(); // crates/runtime -> crates
                 path.pop(); // crates -> repo root
-                let candidate = path.join("target/debug/a3s-oci-krun-shim");
+                let candidate = path.join("target/debug/aster-oci-krun-shim");
                 candidate.is_file().then_some(candidate)
             });
         let Some(shim) = shim else {
-            eprintln!("skipping: build a3s-oci-krun-shim or set A3S_OCI_KRUN_SHIM");
+            eprintln!("skipping: build aster-oci-krun-shim or set ASTER_OCI_KRUN_SHIM");
             return;
         };
         assert!(shim.is_file(), "krun shim must be a file: {shim:?}");
@@ -633,7 +633,7 @@ mod tests {
         use std::io::{Read, Write};
         use std::os::unix::net::UnixStream;
 
-        let shim = env::var("A3S_OCI_KRUN_SHIM")
+        let shim = env::var("ASTER_OCI_KRUN_SHIM")
             .ok()
             .filter(|value| !value.is_empty())
             .map(PathBuf::from)
@@ -641,11 +641,11 @@ mod tests {
                 let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
                 path.pop();
                 path.pop();
-                let candidate = path.join("target/debug/a3s-oci-krun-shim");
+                let candidate = path.join("target/debug/aster-oci-krun-shim");
                 candidate.is_file().then_some(candidate)
             });
         let Some(shim) = shim else {
-            eprintln!("skipping: build a3s-oci-krun-shim or set A3S_OCI_KRUN_SHIM");
+            eprintln!("skipping: build aster-oci-krun-shim or set ASTER_OCI_KRUN_SHIM");
             return;
         };
 

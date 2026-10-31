@@ -130,8 +130,8 @@ export function applyWorkPdfDocumentStructure(
   if (title) {
     pdf.setProperties({
       title,
-      author: 'A3S Work',
-      creator: 'A3S Work',
+      author: 'Aster Work',
+      creator: 'Aster Work',
     });
   }
   const language = normalizePdfLanguage(structure.language);

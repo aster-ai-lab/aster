@@ -1,4 +1,4 @@
-use a3s_vec::{DataType, Doc, ErrorCode, FieldValue, VectorValue};
+use aster_vec::{DataType, Doc, ErrorCode, FieldValue, VectorValue};
 use std::collections::BTreeMap;
 
 #[test]

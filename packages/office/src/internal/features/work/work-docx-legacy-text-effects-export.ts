@@ -53,7 +53,7 @@ export class DocxLegacyTextEffectsPatchCollector {
     if (existing) return existing;
     let marker = '';
     do {
-      marker = `A3SOfficeLegacyTextEffects${String(this.nextMarker).padStart(
+      marker = `AsterOfficeLegacyTextEffects${String(this.nextMarker).padStart(
         8,
         '0',
       )}`;

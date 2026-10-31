@@ -205,7 +205,7 @@ pub enum HarnessPartId {
 impl Default for MetaHarnessSpec {
     fn default() -> Self {
         Self {
-            name: "a3s-code",
+            name: "aster",
             budget: 8,
             compact_after_chars: 1_000_000,
             step_limit: 32,

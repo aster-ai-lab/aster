@@ -1,7 +1,7 @@
 //! XQ model ranges over Power's verified, format-neutral storage owner.
 
-use a3s_power::error::Result;
-use a3s_power::inference::{RawWeightRangeRead, VerifiedRawWeightFile};
+use aster_power::error::Result;
+use aster_power::inference::{RawWeightRangeRead, VerifiedRawWeightFile};
 use tokio_util::sync::CancellationToken;
 
 use super::gguf::{XqGgufHeader, XqGgufTensor, XqMetadataValue, XQ_GGUF_BYTES, XQ_HEADER_BYTES};

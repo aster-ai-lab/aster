@@ -1,4 +1,4 @@
-use a3s_office::{
+use aster_office::{
     NativeSpreadsheetDataValidation, NativeSpreadsheetDataValidationErrorStyle,
     NativeSpreadsheetDataValidationOperator, NativeSpreadsheetDataValidationType,
 };
@@ -91,7 +91,7 @@ pub(in crate::office_mcp) struct OfficeDataValidation {
     formula1: String,
     /// Second bound for between and not-between rules.
     formula2: Option<String>,
-    /// Whether empty cells are valid. Defaults to true for new A3S rules.
+    /// Whether empty cells are valid. Defaults to true for new Aster rules.
     #[serde(default = "default_true")]
     allow_blank: bool,
     /// Whether selecting a target cell shows its input prompt. Defaults to true.

@@ -1,21 +1,21 @@
-# a3s-sentry — operator runbook
+# aster-sentry — operator runbook
 
-Sentry is **reactive** and **fail-open by default**: it judges a3s-observer's event stream and pushes
+Sentry is **reactive** and **fail-open by default**: it judges aster-observer's event stream and pushes
 blocks down to observer's deny-files, which the kernel guards enforce. Two consequences shape every
 operational decision below: a block takes effect on the *next* matching action (not the one that
 produced the event), and when sentry can't decide it **allows** unless you tell it otherwise.
 
 ## 1. Rollout — always shadow first
 
-1. Deploy with `A3S_SENTRY_DRY_RUN=1` (the reference DaemonSet ships this on). Sentry judges and
+1. Deploy with `ASTER_SENTRY_DRY_RUN=1` (the reference DaemonSet ships this on). Sentry judges and
    audits but writes **no** deny-file — zero risk to live traffic.
 2. Watch the decision stream (stdout NDJSON) and `/metrics`. Confirm the blocks are the ones you
    expect and the false-positive rate is acceptable.
-3. Remove `A3S_SENTRY_DRY_RUN` to begin enforcing. Roll node-by-node; the deny-files are node-local.
+3. Remove `ASTER_SENTRY_DRY_RUN` to begin enforcing. Roll node-by-node; the deny-files are node-local.
 
 ## 2. Fail mode — open vs closed
 
-| | `A3S_SENTRY_FAIL_CLOSED` unset (default) | `A3S_SENTRY_FAIL_CLOSED=1` |
+| | `ASTER_SENTRY_FAIL_CLOSED` unset (default) | `ASTER_SENTRY_FAIL_CLOSED=1` |
 |---|---|---|
 | Unresolved escalation (no deeper tier, or a tier errored) | **allow** | **block** |
 | Overload (worker queue full) | **allow** | **block** |
@@ -31,11 +31,11 @@ Fix it by configuring L2/L3 or setting fail-closed.
 
 ## 3. Alarms — the two metrics that mean "a block didn't land"
 
-Scrape `A3S_SENTRY_METRICS_ADDR` (`/metrics`). Page on either of these rising:
+Scrape `ASTER_SENTRY_METRICS_ADDR` (`/metrics`). Page on either of these rising:
 
 - **`sentry_overload_degraded_total`** — escalations that fell through to the fail mode because the
   worker queue was full. Under fail-open, each one is a **silent enforcement bypass**. Response:
-  raise `A3S_SENTRY_WORKERS` / `A3S_SENTRY_QUEUE`, speed up or disable the slow tier, or accept
+  raise `ASTER_SENTRY_WORKERS` / `ASTER_SENTRY_QUEUE`, speed up or disable the slow tier, or accept
   fail-closed for the overflow. A non-zero rate means you are under-provisioned for your event rate.
 - **`sentry_enforce_failed_total`** — a block whose deny-file write errored (disk full, read-only FS,
   bad path). The block did **not** take effect. Response: check the deny-file volume (space, mount,
@@ -50,8 +50,8 @@ Scrape `A3S_SENTRY_METRICS_ADDR` (`/metrics`). Page on either of these rising:
 L1 runs inline (µs) on every event and never blocks the stream. Only escalations hit the worker pool.
 If `overload_degraded` climbs:
 
-- **More workers** (`A3S_SENTRY_WORKERS`, default 4) — concurrent L2/L3 investigations.
-- **Deeper queue** (`A3S_SENTRY_QUEUE`, default 256) — absorbs bursts before degrading.
+- **More workers** (`ASTER_SENTRY_WORKERS`, default 4) — concurrent L2/L3 investigations.
+- **Deeper queue** (`ASTER_SENTRY_QUEUE`, default 256) — absorbs bursts before degrading.
 - **Faster L2** — a reasoning model at ~16 s/call caps throughput hard; a smaller/faster classifier or
   tighter L1 rules (so fewer events escalate) helps more than raw worker count.
 - L3 (agent) concurrency is additionally capped (speculative fan-out at `l3_spec_cap`, default 8).
@@ -67,9 +67,9 @@ needed; if a long-lived node accumulates a very large set, recreate the pod (the
 ## 6. LLM / L3 outage
 
 - **L2 endpoint down/slow** → L2 returns escalate; the event flows to L3 if configured, else resolves
-  per fail mode. Tune `A3S_SENTRY_LLM_TIMEOUT` (default 30 s) to the model's real latency — too short
+  per fail mode. Tune `ASTER_SENTRY_LLM_TIMEOUT` (default 30 s) to the model's real latency — too short
   fails *open* on real threats.
-- **L3 agent missing/hung** → the investigation times out (`A3S_SENTRY_AGENT_TIMEOUT`, default 120 s),
+- **L3 agent missing/hung** → the investigation times out (`ASTER_SENTRY_AGENT_TIMEOUT`, default 120 s),
   the whole agent process group is killed, and the event resolves per fail mode.
 - Watch `overload_degraded` during an outage: a slow tier pins workers, so the queue fills and
   surplus escalations degrade.
@@ -90,4 +90,4 @@ sentry restart even before sentry is back up.
 | `enforce_failed` rising | deny-file volume space/perms/mount | fix the volume; transient self-heals |
 | legitimate traffic blocked | the audit stream (which rule/tier) | tune the rule; the deny is coarse + node-global |
 | L2/L3 never deciding | endpoint reachability, timeouts | fix the backend; tune `*_TIMEOUT` |
-| nothing being enforced | `A3S_SENTRY_DRY_RUN` still set? fail-open + rules-only? | drop dry-run; configure L2/L3 or fail-closed |
+| nothing being enforced | `ASTER_SENTRY_DRY_RUN` still set? fail-open + rules-only? | drop dry-run; configure L2/L3 or fail-closed |

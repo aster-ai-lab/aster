@@ -8,7 +8,7 @@ use crate::mcp::McpServerConfig;
 use crate::memory::MemoryConfig;
 use crate::queue::SessionQueueConfig;
 use crate::task_scheduler::TaskSchedulerConfig;
-use a3s_memory::{PrunePolicy, RelevanceConfig};
+use aster_durable_memory::{PrunePolicy, RelevanceConfig};
 use serde_json::{Map as JsonMap, Value as JsonValue};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -17,14 +17,14 @@ use std::path::{Path, PathBuf};
 // ACL Parsing Helpers
 // ============================================================================
 
-fn acl_attr<'a>(block: &'a a3s_acl::Block, keys: &[&str]) -> Option<&'a a3s_acl::Value> {
+fn acl_attr<'a>(block: &'a aster_acl::Block, keys: &[&str]) -> Option<&'a aster_acl::Value> {
     keys.iter().find_map(|key| block.attributes.get(*key))
 }
 
-fn acl_string(value: &a3s_acl::Value) -> Option<String> {
+fn acl_string(value: &aster_acl::Value) -> Option<String> {
     match value {
-        a3s_acl::Value::String(s) => Some(s.clone()),
-        a3s_acl::Value::Call(name, args) if name == "env" => {
+        aster_acl::Value::String(s) => Some(s.clone()),
+        aster_acl::Value::Call(name, args) if name == "env" => {
             let var_name = args.first().and_then(acl_string)?;
             match std::env::var(&var_name) {
                 Ok(resolved) => Some(resolved),
@@ -45,11 +45,11 @@ fn acl_string(value: &a3s_acl::Value) -> Option<String> {
     }
 }
 
-fn acl_string_attr(block: &a3s_acl::Block, keys: &[&str]) -> Option<String> {
+fn acl_string_attr(block: &aster_acl::Block, keys: &[&str]) -> Option<String> {
     acl_attr(block, keys).and_then(acl_string)
 }
 
-fn acl_label_or_attr(block: &a3s_acl::Block, keys: &[&str]) -> Option<String> {
+fn acl_label_or_attr(block: &aster_acl::Block, keys: &[&str]) -> Option<String> {
     block
         .labels
         .first()
@@ -57,29 +57,29 @@ fn acl_label_or_attr(block: &a3s_acl::Block, keys: &[&str]) -> Option<String> {
         .or_else(|| acl_string_attr(block, keys))
 }
 
-fn acl_bool_attr(block: &a3s_acl::Block, keys: &[&str]) -> Option<bool> {
+fn acl_bool_attr(block: &aster_acl::Block, keys: &[&str]) -> Option<bool> {
     match acl_attr(block, keys) {
-        Some(a3s_acl::Value::Bool(value)) => Some(*value),
+        Some(aster_acl::Value::Bool(value)) => Some(*value),
         _ => None,
     }
 }
 
-fn acl_usize_attr(block: &a3s_acl::Block, keys: &[&str]) -> Option<usize> {
+fn acl_usize_attr(block: &aster_acl::Block, keys: &[&str]) -> Option<usize> {
     match acl_attr(block, keys) {
-        Some(a3s_acl::Value::Number(value)) if *value >= 0.0 => Some(*value as usize),
+        Some(aster_acl::Value::Number(value)) if *value >= 0.0 => Some(*value as usize),
         _ => None,
     }
 }
 
-fn acl_f32_attr(block: &a3s_acl::Block, keys: &[&str]) -> Option<f32> {
+fn acl_f32_attr(block: &aster_acl::Block, keys: &[&str]) -> Option<f32> {
     match acl_attr(block, keys) {
-        Some(a3s_acl::Value::Number(value)) => Some(*value as f32),
+        Some(aster_acl::Value::Number(value)) => Some(*value as f32),
         _ => None,
     }
 }
 
 fn parse_auto_delegation_block(
-    block: &a3s_acl::Block,
+    block: &aster_acl::Block,
     base: &AutoDelegationConfig,
 ) -> AutoDelegationConfig {
     let mut config = base.clone();
@@ -112,7 +112,7 @@ fn parse_auto_delegation_block(
 }
 
 fn parse_memory_block(
-    block: &a3s_acl::Block,
+    block: &aster_acl::Block,
     base: Option<&MemoryConfig>,
 ) -> std::result::Result<MemoryConfig, CodeError> {
     let mut config = base.cloned().unwrap_or_default();
@@ -152,7 +152,7 @@ fn parse_memory_block(
     }
 
     if let Some(prune_policy) = acl_attr(block, &["prune", "prune_policy", "prunePolicy"]) {
-        if let a3s_acl::Value::String(word) = prune_policy {
+        if let aster_acl::Value::String(word) = prune_policy {
             config.prune_policy = match word.trim().to_ascii_lowercase().as_str() {
                 "off" | "none" | "disabled" => None,
                 other => {
@@ -171,7 +171,7 @@ fn parse_memory_block(
     }
 
     for child in &block.blocks {
-        let value = a3s_acl::Value::Object(
+        let value = aster_acl::Value::Object(
             child
                 .attributes
                 .iter()
@@ -195,7 +195,7 @@ fn parse_memory_block(
     Ok(config)
 }
 
-fn parse_relevance_value(value: &a3s_acl::Value, base: &RelevanceConfig) -> RelevanceConfig {
+fn parse_relevance_value(value: &aster_acl::Value, base: &RelevanceConfig) -> RelevanceConfig {
     let mut config = base.clone();
     if let Some(decay_days) = acl_object_f32_attr(value, &["decay_days", "decayDays"]) {
         config.decay_days = decay_days.max(0.1);
@@ -211,7 +211,7 @@ fn parse_relevance_value(value: &a3s_acl::Value, base: &RelevanceConfig) -> Rele
     config
 }
 
-fn parse_prune_policy_value(value: &a3s_acl::Value, base: Option<&PrunePolicy>) -> PrunePolicy {
+fn parse_prune_policy_value(value: &aster_acl::Value, base: Option<&PrunePolicy>) -> PrunePolicy {
     let mut policy = base.cloned().unwrap_or_default();
     if let Some(max_age_days) = acl_object_u32_attr(value, &["max_age_days", "maxAgeDays"]) {
         policy.max_age_days = max_age_days;
@@ -227,9 +227,9 @@ fn parse_prune_policy_value(value: &a3s_acl::Value, base: Option<&PrunePolicy>) 
     policy
 }
 
-fn acl_object_attr<'a>(value: &'a a3s_acl::Value, keys: &[&str]) -> Option<&'a a3s_acl::Value> {
+fn acl_object_attr<'a>(value: &'a aster_acl::Value, keys: &[&str]) -> Option<&'a aster_acl::Value> {
     match value {
-        a3s_acl::Value::Object(pairs) => keys.iter().find_map(|key| {
+        aster_acl::Value::Object(pairs) => keys.iter().find_map(|key| {
             pairs
                 .iter()
                 .find_map(|(candidate, value)| (candidate == key).then_some(value))
@@ -238,45 +238,45 @@ fn acl_object_attr<'a>(value: &'a a3s_acl::Value, keys: &[&str]) -> Option<&'a a
     }
 }
 
-fn acl_f32(value: &a3s_acl::Value) -> Option<f32> {
+fn acl_f32(value: &aster_acl::Value) -> Option<f32> {
     match value {
-        a3s_acl::Value::Number(value) => Some(*value as f32),
+        aster_acl::Value::Number(value) => Some(*value as f32),
         _ => None,
     }
 }
 
-fn acl_usize(value: &a3s_acl::Value) -> Option<usize> {
+fn acl_usize(value: &aster_acl::Value) -> Option<usize> {
     match value {
-        a3s_acl::Value::Number(value) if *value >= 0.0 => Some(*value as usize),
+        aster_acl::Value::Number(value) if *value >= 0.0 => Some(*value as usize),
         _ => None,
     }
 }
 
-fn acl_u32(value: &a3s_acl::Value) -> Option<u32> {
+fn acl_u32(value: &aster_acl::Value) -> Option<u32> {
     match value {
-        a3s_acl::Value::Number(value) if *value >= 0.0 => {
+        aster_acl::Value::Number(value) if *value >= 0.0 => {
             Some((*value as usize).min(u32::MAX as usize) as u32)
         }
         _ => None,
     }
 }
 
-fn acl_object_f32_attr(value: &a3s_acl::Value, keys: &[&str]) -> Option<f32> {
+fn acl_object_f32_attr(value: &aster_acl::Value, keys: &[&str]) -> Option<f32> {
     acl_object_attr(value, keys).and_then(acl_f32)
 }
 
-fn acl_object_usize_attr(value: &a3s_acl::Value, keys: &[&str]) -> Option<usize> {
+fn acl_object_usize_attr(value: &aster_acl::Value, keys: &[&str]) -> Option<usize> {
     acl_object_attr(value, keys).and_then(acl_usize)
 }
 
-fn acl_object_u32_attr(value: &a3s_acl::Value, keys: &[&str]) -> Option<u32> {
+fn acl_object_u32_attr(value: &aster_acl::Value, keys: &[&str]) -> Option<u32> {
     acl_object_attr(value, keys).and_then(acl_u32)
 }
 
-fn acl_path_list_attr(block: &a3s_acl::Block, keys: &[&str]) -> Option<Vec<PathBuf>> {
+fn acl_path_list_attr(block: &aster_acl::Block, keys: &[&str]) -> Option<Vec<PathBuf>> {
     let value = acl_attr(block, keys)?;
     match value {
-        a3s_acl::Value::List(items) => Some(
+        aster_acl::Value::List(items) => Some(
             items
                 .iter()
                 .filter_map(acl_string)
@@ -287,27 +287,27 @@ fn acl_path_list_attr(block: &a3s_acl::Block, keys: &[&str]) -> Option<Vec<PathB
     }
 }
 
-fn acl_string_list_attr(block: &a3s_acl::Block, keys: &[&str]) -> Option<Vec<String>> {
+fn acl_string_list_attr(block: &aster_acl::Block, keys: &[&str]) -> Option<Vec<String>> {
     let value = acl_attr(block, keys)?;
     match value {
-        a3s_acl::Value::List(items) => Some(items.iter().filter_map(acl_string).collect()),
+        aster_acl::Value::List(items) => Some(items.iter().filter_map(acl_string).collect()),
         _ => acl_string(value).map(|value| vec![value]),
     }
 }
 
-fn parse_import_accounts(block: &a3s_acl::Block) -> Result<Vec<super::AccountImport>> {
+fn parse_import_accounts(block: &aster_acl::Block) -> Result<Vec<super::AccountImport>> {
     let refuse = |detail: String| {
         CodeError::Config(format!(
             "import_accounts must be a list of source names: {detail}"
         ))
     };
-    let Some(a3s_acl::Value::List(items)) = acl_attr(block, &["import_accounts"]) else {
+    let Some(aster_acl::Value::List(items)) = acl_attr(block, &["import_accounts"]) else {
         return Err(refuse("expected [\"cursor\", ...]".into()));
     };
     items
         .iter()
         .map(|item| match item {
-            a3s_acl::Value::String(name) => super::AccountImport::parse(name).map_err(refuse),
+            aster_acl::Value::String(name) => super::AccountImport::parse(name).map_err(refuse),
             other => Err(refuse(format!("{other:?} is not a string literal"))),
         })
         .collect()
@@ -329,23 +329,23 @@ fn snake_to_camel(value: &str) -> String {
     output
 }
 
-fn acl_value_to_json(value: &a3s_acl::Value) -> Option<JsonValue> {
+fn acl_value_to_json(value: &aster_acl::Value) -> Option<JsonValue> {
     match value {
-        a3s_acl::Value::String(value) => Some(JsonValue::String(value.clone())),
-        a3s_acl::Value::Number(value) if value.fract() == 0.0 && *value >= 0.0 => {
+        aster_acl::Value::String(value) => Some(JsonValue::String(value.clone())),
+        aster_acl::Value::Number(value) if value.fract() == 0.0 && *value >= 0.0 => {
             Some(JsonValue::Number(serde_json::Number::from(*value as u64)))
         }
-        a3s_acl::Value::Number(value) if value.fract() == 0.0 => {
+        aster_acl::Value::Number(value) if value.fract() == 0.0 => {
             Some(JsonValue::Number(serde_json::Number::from(*value as i64)))
         }
-        a3s_acl::Value::Number(value) => {
+        aster_acl::Value::Number(value) => {
             serde_json::Number::from_f64(*value).map(JsonValue::Number)
         }
-        a3s_acl::Value::Bool(value) => Some(JsonValue::Bool(*value)),
-        a3s_acl::Value::List(items) => Some(JsonValue::Array(
+        aster_acl::Value::Bool(value) => Some(JsonValue::Bool(*value)),
+        aster_acl::Value::List(items) => Some(JsonValue::Array(
             items.iter().filter_map(acl_value_to_json).collect(),
         )),
-        a3s_acl::Value::Object(pairs) => {
+        aster_acl::Value::Object(pairs) => {
             let mut object = JsonMap::new();
             for (key, value) in pairs {
                 if let Some(value) = acl_value_to_json(value) {
@@ -354,9 +354,9 @@ fn acl_value_to_json(value: &a3s_acl::Value) -> Option<JsonValue> {
             }
             Some(JsonValue::Object(object))
         }
-        a3s_acl::Value::Null => Some(JsonValue::Null),
-        a3s_acl::Value::Call(name, _) if name == "env" => acl_string(value).map(JsonValue::String),
-        a3s_acl::Value::Call(_, _) => None,
+        aster_acl::Value::Null => Some(JsonValue::Null),
+        aster_acl::Value::Call(name, _) if name == "env" => acl_string(value).map(JsonValue::String),
+        aster_acl::Value::Call(_, _) => None,
     }
 }
 
@@ -375,7 +375,7 @@ fn insert_nested_json(object: &mut JsonMap<String, JsonValue>, key: String, valu
     }
 }
 
-fn acl_block_to_json(block: &a3s_acl::Block) -> JsonValue {
+fn acl_block_to_json(block: &aster_acl::Block) -> JsonValue {
     let mut object = JsonMap::new();
     for (key, value) in &block.attributes {
         if let Some(value) = acl_value_to_json(value) {
@@ -445,7 +445,7 @@ fn normalize_lane_map(value: &mut JsonValue, normalize_handler_mode: bool) -> Re
     Ok(())
 }
 
-fn parse_queue_block(block: &a3s_acl::Block) -> Result<SessionQueueConfig> {
+fn parse_queue_block(block: &aster_acl::Block) -> Result<SessionQueueConfig> {
     let mut value = acl_block_to_json(block);
     if let Some(lane_handlers) = value.get_mut("laneHandlers") {
         normalize_lane_map(lane_handlers, true)?;
@@ -457,7 +457,7 @@ fn parse_queue_block(block: &a3s_acl::Block) -> Result<SessionQueueConfig> {
         .map_err(|error| CodeError::Config(format!("Invalid queue configuration: {error}")))
 }
 
-fn parse_task_scheduler_block(block: &a3s_acl::Block) -> Result<TaskSchedulerConfig> {
+fn parse_task_scheduler_block(block: &aster_acl::Block) -> Result<TaskSchedulerConfig> {
     let config: TaskSchedulerConfig =
         serde_json::from_value(acl_block_to_json(block)).map_err(|error| {
             CodeError::Config(format!("Invalid task scheduler configuration: {error}"))
@@ -468,12 +468,12 @@ fn parse_task_scheduler_block(block: &a3s_acl::Block) -> Result<TaskSchedulerCon
     Ok(config)
 }
 
-fn parse_search_block(block: &a3s_acl::Block) -> Result<super::SearchConfig> {
+fn parse_search_block(block: &aster_acl::Block) -> Result<super::SearchConfig> {
     serde_json::from_value(acl_block_to_json(block))
         .map_err(|error| CodeError::Config(format!("Invalid search configuration: {error}")))
 }
 
-fn parse_document_parser_block(block: &a3s_acl::Block) -> Result<super::DocumentParserConfig> {
+fn parse_document_parser_block(block: &aster_acl::Block) -> Result<super::DocumentParserConfig> {
     serde_json::from_value(acl_block_to_json(block)).map_err(|error| {
         CodeError::Config(format!("Invalid document parser configuration: {error}"))
     })
@@ -485,7 +485,7 @@ fn rename_json_key(object: &mut JsonMap<String, JsonValue>, from: &str, to: &str
     }
 }
 
-pub(crate) fn parse_mcp_server_block(block: &a3s_acl::Block) -> Result<McpServerConfig> {
+pub(crate) fn parse_mcp_server_block(block: &aster_acl::Block) -> Result<McpServerConfig> {
     let mut value = acl_block_to_json(block);
     let object = value.as_object_mut().ok_or_else(|| {
         CodeError::Config("Invalid MCP server configuration: expected an object".to_string())
@@ -505,9 +505,9 @@ pub(crate) fn parse_mcp_server_block(block: &a3s_acl::Block) -> Result<McpServer
         .map_err(|error| CodeError::Config(format!("Invalid MCP server configuration: {error}")))
 }
 
-fn acl_string_map(value: &a3s_acl::Value) -> HashMap<String, String> {
+fn acl_string_map(value: &aster_acl::Value) -> HashMap<String, String> {
     match value {
-        a3s_acl::Value::Object(pairs) => pairs
+        aster_acl::Value::Object(pairs) => pairs
             .iter()
             .filter_map(|(key, value)| acl_string(value).map(|value| (key.clone(), value)))
             .collect(),
@@ -515,16 +515,16 @@ fn acl_string_map(value: &a3s_acl::Value) -> HashMap<String, String> {
     }
 }
 
-fn acl_string_list(value: &a3s_acl::Value) -> Vec<String> {
+fn acl_string_list(value: &aster_acl::Value) -> Vec<String> {
     match value {
-        a3s_acl::Value::List(items) => items.iter().filter_map(acl_string).collect(),
+        aster_acl::Value::List(items) => items.iter().filter_map(acl_string).collect(),
         _ => Vec::new(),
     }
 }
 
-fn acl_object_f64_attr(value: &a3s_acl::Value, keys: &[&str]) -> Option<f64> {
+fn acl_object_f64_attr(value: &aster_acl::Value, keys: &[&str]) -> Option<f64> {
     match acl_object_attr(value, keys) {
-        Some(a3s_acl::Value::Number(value)) => Some(*value),
+        Some(aster_acl::Value::Number(value)) => Some(*value),
         _ => None,
     }
 }
@@ -575,8 +575,8 @@ const KNOWN_CONFIG_BLOCKS: &[&str] = &[
 ];
 
 /// Top-level ACL blocks that carry host-authoritative posture: only a
-/// configuration layer the host consented to (`--config`/`A3S_CONFIG` or
-/// `~/.a3s/config.acl`) may set them. An automatically discovered workspace
+/// configuration layer the host consented to (`--config`/`ASTER_CONFIG` or
+/// `~/.aster/config.acl`) may set them. An automatically discovered workspace
 /// layer is untrusted repository content; it may configure the agent but
 /// must not arm or reroute host surfaces: the `sandbox` block arms or
 /// narrows egress, and the `providers` block routes the host's model
@@ -626,7 +626,7 @@ pub fn host_authoritative_block(acl: &str) -> Option<&'static str> {
 /// Every host-authoritative top-level block an ACL document declares, in
 /// [`HOST_AUTHORITATIVE_BLOCKS`] order.
 fn host_authoritative_blocks(acl: &str) -> Vec<&'static str> {
-    let Ok(document) = a3s_acl::parse_acl(acl) else {
+    let Ok(document) = aster_acl::parse_acl(acl) else {
         return Vec::new();
     };
     HOST_AUTHORITATIVE_BLOCKS
@@ -645,7 +645,7 @@ fn host_authoritative_blocks(acl: &str) -> Vec<&'static str> {
 #[derive(Clone, Debug)]
 pub struct LayerAcl {
     /// Whether the host consented to this layer (explicit `--config` /
-    /// `A3S_CONFIG`, or `~/.a3s/config.acl`) — only trusted layers may
+    /// `ASTER_CONFIG`, or `~/.aster/config.acl`) — only trusted layers may
     /// set [`HOST_AUTHORITATIVE_BLOCKS`].
     pub trusted: bool,
     /// The layer's ACL document text.
@@ -747,9 +747,9 @@ impl CodeConfig {
     /// This merges values only; launchers must still withhold untrusted host fields.
     pub fn from_acl_layers(layers: &[&str]) -> Result<Self> {
         let mut config = Self::default();
-        let mut doc = a3s_acl::Document::default();
+        let mut doc = aster_acl::Document::default();
         for content in layers {
-            let parsed = a3s_acl::parse_acl(content)
+            let parsed = aster_acl::parse_acl(content)
                 .map_err(|error| CodeError::Config(format!("Failed to parse ACL: {error}")))?;
             super::execution_capabilities::apply_layer(content, &parsed, &mut config)?;
             if let Some(policy) = super::goal_control::parse_layer(content, &parsed)? {
@@ -863,7 +863,7 @@ impl CodeConfig {
                     for (name, value) in &block.attributes {
                         match name.as_str() {
                             "run_completion" => match value {
-                                a3s_acl::Value::String(text) => {
+                                aster_acl::Value::String(text) => {
                                     run_completion =
                                         Some(super::RunCompletionSignal::parse(text).map_err(
                                             |error| {
@@ -880,7 +880,7 @@ impl CodeConfig {
                                 }
                             },
                             "min_seconds" => match value {
-                                a3s_acl::Value::Number(number)
+                                aster_acl::Value::Number(number)
                                     if number.fract() == 0.0
                                         && *number >= 1.0
                                         && *number <= 86_400.0 =>
@@ -1038,6 +1038,7 @@ impl CodeConfig {
 
                     let mut provider = ProviderConfig {
                         name: provider_name.clone(),
+                        protocol: None,
                         api_key: None,
                         base_url: None,
                         headers: HashMap::new(),
@@ -1057,6 +1058,17 @@ impl CodeConfig {
                                     provider.base_url = Some(base_url);
                                 }
                             }
+                            "protocol" => {
+                                let Some(raw) = acl_string(value) else {
+                                    return Err(CodeError::Config(
+                                        "providers protocol must be a string".into(),
+                                    ));
+                                };
+                                provider.protocol = Some(
+                                    super::ProviderProtocol::parse(&raw)
+                                        .map_err(CodeError::Config)?,
+                                );
+                            }
                             "sessionIdHeader" | "session_id_header" => {
                                 if let Some(header) = acl_string(value) {
                                     provider.session_id_header = Some(header);
@@ -1067,7 +1079,7 @@ impl CodeConfig {
                             }
                             other => {
                                 return Err(CodeError::Config(format!(
-                                    "providers attribute `{other}` is not in the closed set api_key, base_url, session_id_header, headers"
+                                    "providers attribute `{other}` is not in the closed set protocol, api_key, base_url, session_id_header, headers"
                                 )));
                             }
                         }
@@ -1288,7 +1300,8 @@ impl CodeConfig {
         let headers = provider.get_headers(model);
         let session_id_header = provider.get_session_id_header(model);
 
-        let mut config = LlmConfig::new(&provider.name, &model.id, api_key);
+        let mut config = LlmConfig::new(&provider.name, &model.id, api_key)
+            .with_protocol(provider.resolved_protocol());
         if let Some(url) = base_url {
             config = config.with_base_url(url);
         }
@@ -1316,7 +1329,8 @@ impl CodeConfig {
         let headers = provider.get_headers(model);
         let session_id_header = provider.get_session_id_header(model);
 
-        let mut config = LlmConfig::new(&provider.name, &model.id, api_key);
+        let mut config = LlmConfig::new(&provider.name, &model.id, api_key)
+            .with_protocol(provider.resolved_protocol());
         if let Some(url) = base_url {
             config = config.with_base_url(url);
         }
@@ -1348,6 +1362,9 @@ impl CodeConfig {
                 .iter_mut()
                 .find(|candidate| candidate.name == provider.name)
             {
+                if provider.protocol.is_some() {
+                    existing.protocol = provider.protocol;
+                }
                 if provider.api_key.is_some() {
                     existing.api_key = provider.api_key;
                 }

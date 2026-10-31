@@ -4,11 +4,11 @@ use std::process::Stdio;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 
-use a3s_use::package::{
+use aster_use::package::{
     PackageAuthorizationEvidence, PackageAuthorizationProvider,
     ReviewedPackageAuthorizationProvider, StandalonePackageAuthorizationProvider,
 };
-use a3s_use_core::{
+use aster_use_core::{
     PlanAuthority, PlanPolicyDecision, PluginOperationConfirmation, PluginOperationPlan,
     PluginOperationPlanBinding, PluginOperationPlanDraft, PluginOperationPlanEnvelope,
     PluginWorkspaceGrantChangeSet, UseError, UseResult, PLUGIN_OPERATION_CONFIRMATION_SCHEMA,
@@ -279,7 +279,7 @@ async fn separate_cli_processes_leave_a_linearizable_shared_dependency_graph() {
             "1.0.0",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .kill_on_drop(true)
@@ -296,7 +296,7 @@ async fn separate_cli_processes_leave_a_linearizable_shared_dependency_graph() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .kill_on_drop(true)

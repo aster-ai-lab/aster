@@ -22,8 +22,8 @@
 //! observe Running boxes on every list.
 
 #[cfg(target_os = "linux")]
-use a3s_box_core::NetworkMode;
-use a3s_box_core::{
+use aster_box_core::NetworkMode;
+use aster_box_core::{
     ExecutionGeneration, ExecutionId, ExecutionManager, ExecutionState, OperationId,
 };
 
@@ -50,7 +50,7 @@ pub(crate) fn observe_bridge_passt_backend_loss(
             if record.health_status == "unhealthy" {
                 continue;
             }
-            if a3s_box_runtime::network::passt_backend_lost_for_box(home, &record.id) {
+            if aster_box_runtime::network::passt_backend_lost_for_box(home, &record.id) {
                 touched.push(record.id.clone());
             }
         }
@@ -64,7 +64,7 @@ pub(crate) fn observe_bridge_passt_backend_loss(
             if let Some(record) = state.find_by_id_mut(id) {
                 if matches!(record.status.as_str(), "running")
                     && matches!(record.network_mode, NetworkMode::Bridge { .. })
-                    && a3s_box_runtime::network::passt_backend_lost_for_box(home, id)
+                    && aster_box_runtime::network::passt_backend_lost_for_box(home, id)
                 {
                     record.health_status = "unhealthy".to_string();
                 }
@@ -196,7 +196,7 @@ pub(crate) async fn observe_managed_inventory_claims(
 /// claims. Passt backend-loss observation errors also fail closed.
 pub(crate) async fn refresh_default_home_after_inventory_observation(
 ) -> Result<StateFile, Box<dyn std::error::Error>> {
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     observe_bridge_passt_backend_loss(&home)?;
     let state = StateFile::load_default()?;
     let needs_work = state.list(true).into_iter().any(|record| {
@@ -259,7 +259,7 @@ pub(crate) async fn refresh_managed_inventory_record(
         return Ok(Some(record));
     }
 
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let manager = super::configured_local_execution_manager(&home).await?;
     if needs_observe {
         observe_managed_inventory_claims(&manager, std::slice::from_ref(&record)).await?;
@@ -281,12 +281,12 @@ mod tests {
     use std::collections::BTreeMap;
     use std::sync::Arc;
 
-    use a3s_box_core::{
+    use aster_box_core::{
         BoxConfig, CreateExecutionRequest, ExecutionGeneration, ExecutionIsolation,
         ExecutionManagerError, ExecutionManagerResult, ExecutionResourceUpdate,
         ExecutionSnapshotId, KillOutcome, OperationId,
     };
-    use a3s_box_runtime::{
+    use aster_box_runtime::{
         LocalExecutionBackend, LocalExecutionHandle, LocalExecutionManager,
         LocalExecutionObservation, ManagedExecutionMetadata, ManagedExecutionOperation,
         ManagedExecutionState,

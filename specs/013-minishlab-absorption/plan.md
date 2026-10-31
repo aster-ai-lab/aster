@@ -1,8 +1,8 @@
-# Architecture Plan: MinishLab absorption into A3S Code
+# Architecture Plan: MinishLab absorption into Aster Code
 
 **Created**: 2026-10-23 · **Status**: Draft for review
 **Directive**: One executable program absorbing Semble, Model2Vec, SemHash,
-and Vicinity concepts into a3s-code. **Pure-Rust first**: no Python, no
+and Vicinity concepts into aster. **Pure-Rust first**: no Python, no
 torch, no model-server process anywhere in the product path. **Amended
 2026-10-23 (owner directive): the product ships NO embedding model and NO
 ONNX dependency.** The only in-tree engine is the pure-Rust light tier;
@@ -41,7 +41,7 @@ The trait is the only contract. The light tier is embeddable (~30MB,
 it). A host wanting bge-m3-class quality implements the same trait and
 registers its factory through `register_embedding_provider` (acp) before
 the first session; without a registration the trusted `local_cpu` opt-in
-refuses with the named `unregistered` reason. The `a3s-use-bge` edge is
+refuses with the named `unregistered` reason. The `aster-use-bge` edge is
 REMOVED from acp; `crates/bge` remains a standalone user-side crate for
 hosts that choose it.
 
@@ -65,7 +65,7 @@ hosts that choose it.
   assets compiled in via `include_bytes!` from a pinned, sha-recorded
   download checked into `crates/embedding/assets/` (the same
   manifest-sha256 discipline as bge, minus the runtime installer).
-- `HeavyTier`: wraps the existing `a3s-bge` executor behind the same trait.
+- `HeavyTier`: wraps the existing `aster-bge` executor behind the same trait.
 - Selection is **host policy** (trusted opt-in, same trust boundary as
   `local-bge` today); the workspace can never pick a tier for itself.
 

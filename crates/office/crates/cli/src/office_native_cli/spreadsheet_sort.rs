@@ -1,8 +1,8 @@
-use a3s_office::{
+use aster_office::{
     NativeOfficeEditor, NativeSpreadsheetSort, NativeSpreadsheetSortDirection,
     NativeSpreadsheetSortKey,
 };
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{save_editor, usage_error};
 use crate::CommandOutput;
@@ -158,7 +158,7 @@ fn option_value<'a>(args: &'a [String], index: usize, option: &str) -> UseResult
         .ok_or_else(|| usage_error(format!("{option} requires a value")))
 }
 
-fn key_error(value: &str) -> a3s_use_core::UseError {
+fn key_error(value: &str) -> aster_use_core::UseError {
     usage_error(format!(
         "Spreadsheet sort key '{value}' must be <A:XFD[:asc|desc]>"
     ))

@@ -24,7 +24,7 @@ const ROUTE_ID: &str = "44444444-4444-4444-8444-444444444444";
 const MODEL_ID: &str = "55555555-5555-4555-8555-555555555555";
 const VERIFIER_HASH: &str = "$argon2id$v=19$m=19456,t=2,p=1$c29tZXNhbHQxMjM0NTY3OA$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-/// Nested Power observation wire shape (mirrors `a3s-power` serving observation).
+/// Nested Power observation wire shape (mirrors `aster-power` serving observation).
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct PowerWorkerObservation {
@@ -68,7 +68,7 @@ struct PowerPromptCacheObservation {
 fn power_contract_observation_json() -> &'static str {
     // Matches Power `contract_is_closed_and_contains_no_request_identity` values.
     r#"{
-  "schema": "a3s.power.worker-observation.v1",
+  "schema": "aster.power.worker-observation.v1",
   "worker_epoch": "00000000-0000-0000-0000-000000000000",
   "observation_generation": 1,
   "observed_at": "2026-08-28T00:00:00Z",
@@ -187,13 +187,13 @@ services "model-service" {{
 }}
 
 inference {{
-  tokenizer_revision = "a3s.gateway.tokenizer.v1"
+  tokenizer_revision = "aster.gateway.tokenizer.v1"
   expires_at = "2099-01-01T00:00:00Z"
 
   credentials "{CREDENTIAL_ID}" {{
     environment_id = "{ENVIRONMENT_ID}"
     audience = "cloud-inference"
-    prefix = "a3s_inf_abc12345"
+    prefix = "aster_inf_abc12345"
     verifier_hash = "{VERIFIER_HASH}"
     generation = 7
     expires_at = "2098-12-31T23:00:00Z"

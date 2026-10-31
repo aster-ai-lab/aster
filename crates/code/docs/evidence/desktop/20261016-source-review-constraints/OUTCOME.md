@@ -3,7 +3,7 @@
 Date: 2026-10-16. State: in progress; no full product acceptance.
 
 Desktop's fixed-source review workers admit the explicit boolean
-`_meta.a3sHost.sourceReview`. ACP installs the existing deny-all policy as the
+`_meta.asterHost.sourceReview`. ACP installs the existing deny-all policy as the
 fixed model/execution checker, including unattended option assembly. This is a
 restriction only. No new harness recipe or tool is introduced. A session-mode
 change cannot restore visibility or authorize governed reads; ordinary sessions

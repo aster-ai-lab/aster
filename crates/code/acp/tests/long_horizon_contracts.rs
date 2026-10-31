@@ -223,7 +223,7 @@ fn outcome_vocabularies_round_trip_and_refuse_unknown_values() {
 
 #[test]
 fn isolated_child_acl_preserves_capabilities_without_upstream_or_user_state() {
-    use a3s_code_core::config::CodeConfig;
+    use aster_core::config::CodeConfig;
     let original = CodeConfig::from_acl(
         r#"
 default_model = "fixture/model"
@@ -282,7 +282,7 @@ providers "fixture" {
 
 #[test]
 fn child_configuration_cannot_select_an_external_or_ambiguous_relay() {
-    use a3s_code_core::config::CodeConfig;
+    use aster_core::config::CodeConfig;
     let original = CodeConfig::from_acl("providers \"fixture\" { models \"model\" {} }").unwrap();
     let provider = &original.providers[0];
     let root = tempfile::tempdir().unwrap();
@@ -310,7 +310,7 @@ fn child_configuration_cannot_select_an_external_or_ambiguous_relay() {
 
 #[test]
 fn isolated_paths_are_acl_data_and_cannot_inject_an_account_import() {
-    use a3s_code_core::config::CodeConfig;
+    use aster_core::config::CodeConfig;
     let original = CodeConfig::from_acl("providers \"fixture\" { models \"model\" {} }").unwrap();
     let provider = &original.providers[0];
     let root = tempfile::tempdir().unwrap();
@@ -334,7 +334,7 @@ fn isolated_paths_are_acl_data_and_cannot_inject_an_account_import() {
 
 #[test]
 fn rust_verification_is_exact_and_scoped_to_the_declared_workspace() {
-    use a3s_code_core::config::CodeConfig;
+    use aster_core::config::CodeConfig;
     let root = tempfile::tempdir().unwrap();
     let workspace = root.path().join("quoted \" workspace");
     let other = root.path().join("other");
@@ -367,7 +367,7 @@ fn rust_verification_is_exact_and_scoped_to_the_declared_workspace() {
 
 #[tokio::test]
 async fn upstream_route_uses_the_existing_adapter_without_sending_a_request() {
-    use a3s_code_core::llm::LlmConfig;
+    use aster_core::llm::LlmConfig;
     let route = upstream::openai_route(
         LlmConfig::new("deepseek", "fixture-model", "host-memory-sentinel")
             .with_base_url("http://127.0.0.1:1/api/paas/v4")
@@ -396,7 +396,7 @@ async fn upstream_route_uses_the_existing_adapter_without_sending_a_request() {
 
 #[tokio::test]
 async fn an_unsupported_provider_is_not_silently_reinterpreted_by_the_relay() {
-    use a3s_code_core::llm::LlmConfig;
+    use aster_core::llm::LlmConfig;
     assert!(
         upstream::openai_route(LlmConfig::new("anthropic", "fixture-model", "fixture"))
             .await

@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     PackageSurfaceKind, PlanActor, PlanAuthority, PlanEnforcementProfile, PlanPackageChangeKind,
     PlanPackageRole, PlanPolicyDecision, PlanQualifiedSurfaceRef, PlanScope, PlanScopeKind,
     PlannedOperationImpact, PlannedPackageState, PlannedPackageTransition, PlannedPluginRelease,
@@ -105,7 +105,7 @@ fn install_plan() -> PluginOperationPlan {
             source: Some(PluginPlanSource::Registry {
                 provenance: VerifiedCatalogProvenance {
                     registry_name: "official".to_owned(),
-                    registry_url: "https://plugins.a3s.dev/catalog".to_owned(),
+                    registry_url: "https://plugins.aster.dev/catalog".to_owned(),
                     root_sha256: DIGEST_F.to_owned(),
                     root_version: 7,
                     timestamp_version: 42,

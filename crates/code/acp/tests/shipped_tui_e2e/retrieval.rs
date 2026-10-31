@@ -70,15 +70,15 @@ async fn stdio_case(local_opt_in: bool) {
     let root = tempfile::tempdir().unwrap();
     let (workspace, home, config, state) = fixture(root.path(), local_opt_in);
     let missing_model = root.path().join("absent-model");
-    let product_home = home.join(".a3s");
+    let product_home = home.join(".aster");
     let agent = spawn_agent_with_env(
         &workspace,
         &config,
         &home,
         &[
-            ("A3S_HOME", product_home.as_path()),
-            ("A3S_BGE_M3_MODEL_DIR", Path::new("")),
-            ("A3S_USE_BGE_HOME", missing_model.as_path()),
+            ("ASTER_HOME", product_home.as_path()),
+            ("ASTER_BGE_M3_MODEL_DIR", Path::new("")),
+            ("ASTER_USE_BGE_HOME", missing_model.as_path()),
         ],
     )
     .await;
@@ -153,8 +153,8 @@ async fn shipped_retrieval_stdio_missing_local_assets_keeps_hybrid() {
 }
 
 #[test]
-#[ignore = "requires a3s-test and paired built Aster/ACP executables"]
-fn shipped_retrieval_a3s_test_terminal_round_trip() {
+#[ignore = "requires aster-test and paired built Aster/ACP executables"]
+fn shipped_retrieval_aster_test_terminal_round_trip() {
     let root = tempfile::tempdir().unwrap();
     let (workspace, home, config, state) = fixture(root.path(), false);
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -162,7 +162,7 @@ fn shipped_retrieval_a3s_test_terminal_round_trip() {
     let evidence = std::env::var_os("ASTER_RETRIEVAL_EVIDENCE_DIR").map(PathBuf::from);
     let artifact_root = evidence.as_deref().unwrap_or(root.path());
     std::fs::create_dir_all(artifact_root).unwrap();
-    let output = std::process::Command::new("a3s-test")
+    let output = std::process::Command::new("aster-test")
         .arg("run")
         .arg(&manifest)
         .arg("--tui-executable")
@@ -172,13 +172,13 @@ fn shipped_retrieval_a3s_test_terminal_round_trip() {
         .args(["--tui-columns", "120", "--tui-rows", "40", "--json"])
         .current_dir(artifact_root)
         .envs(child_env(
-            env!("CARGO_BIN_EXE_a3s-code-acp"),
+            env!("CARGO_BIN_EXE_aster-acp"),
             &config,
             &home,
         ))
-        .env("A3S_HOME", home.join(".a3s"))
+        .env("ASTER_HOME", home.join(".aster"))
         .output()
-        .expect("A3S Test TUI driver");
+        .expect("Aster Test TUI driver");
     if let Some(evidence) = evidence {
         std::fs::write(evidence.join("terminal-report.json"), &output.stdout).unwrap();
         std::fs::write(evidence.join("terminal-driver.stderr"), &output.stderr).unwrap();
@@ -201,7 +201,7 @@ fn shipped_retrieval_a3s_test_terminal_round_trip() {
         "the actual tool evidence never reached the model"
     );
     oracle(
-        "shipped_retrieval_a3s_test_terminal_round_trip",
+        "shipped_retrieval_aster_test_terminal_round_trip",
         "visible-result",
         COMPLETE,
     );

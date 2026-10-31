@@ -12,9 +12,9 @@
 [package]
 edition = "2021"
 rust-version = "1.75"
-name = "a3s-vec"
+name = "aster-vec"
 version = "0.1.8"
-authors = ["A3S Lab Team"]
+authors = ["Aster Team"]
 build = false
 autolib = false
 autobins = false
@@ -22,10 +22,10 @@ autoexamples = false
 autotests = false
 autobenches = false
 description = "Native Rust in-process vector database with zvec-compatible capabilities"
-documentation = "https://docs.rs/a3s-vec"
+documentation = "https://docs.rs/aster-vec"
 readme = "README.md"
 keywords = [
-    "a3s",
+    "aster",
     "vector-database",
     "ann",
     "hnsw",
@@ -36,7 +36,7 @@ categories = [
     "algorithms",
 ]
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Vec"
+repository = "https://github.com/aster-ai-lab/Vec"
 publish = false
 
 [package.metadata.docs.rs]
@@ -48,7 +48,7 @@ default = []
 jieba = ["dep:jieba-rs"]
 
 [lib]
-name = "a3s_vec"
+name = "aster_vec"
 path = "src/lib.rs"
 
 [[example]]

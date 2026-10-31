@@ -24,7 +24,7 @@ fn manifest(kind: NativeOfficeCollaborationArtifactKind) -> NativeOfficeCollabor
 
 fn profile() -> NativeOfficeCollaborationPresenceProfile {
     NativeOfficeCollaborationPresenceProfile {
-        name: "A3S Agent".to_owned(),
+        name: "Aster Agent".to_owned(),
         color: Some("#2563eb".to_owned()),
         avatar_url: Some("https://example.test/agent.png".to_owned()),
     }
@@ -57,7 +57,7 @@ fn remote_state(
     location: serde_json::Value,
 ) -> serde_json::Value {
     json!({
-        "a3sOffice": {
+        "asterOffice": {
             "protocol": NATIVE_OFFICE_COLLABORATION_PROTOCOL,
             "version": NATIVE_OFFICE_COLLABORATION_PROTOCOL_VERSION,
             "artifactId": manifest.artifact_id,
@@ -111,9 +111,9 @@ fn native_presence_publishes_browser_compatible_awareness_without_persistence() 
         .get(&ClientID::new(presence_client_id))
         .unwrap();
     let value: serde_json::Value = serde_json::from_str(&entry.json).unwrap();
-    assert_eq!(value["a3sOffice"]["actor"]["name"], "A3S Agent");
-    assert_eq!(value["a3sOffice"]["activity"], "active");
-    assert!(value["a3sOffice"].get("location").is_none());
+    assert_eq!(value["asterOffice"]["actor"]["name"], "Aster Agent");
+    assert_eq!(value["asterOffice"]["activity"], "active");
+    assert!(value["asterOffice"].get("location").is_none());
 
     let updated = presence
         .update(NativeOfficeCollaborationPresenceUpdate {
@@ -289,7 +289,7 @@ fn native_presence_rejects_forged_or_kind_mismatched_state_atomically() {
         sender,
         1,
         json!({
-            "a3sOffice": {
+            "asterOffice": {
                 "protocol": NATIVE_OFFICE_COLLABORATION_PROTOCOL,
                 "version": NATIVE_OFFICE_COLLABORATION_PROTOCOL_VERSION,
                 "artifactId": "another-artifact",

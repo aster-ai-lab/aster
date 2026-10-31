@@ -8,7 +8,7 @@
 //! ## Example
 //!
 //! ```rust
-//! use a3s_search::metrics::Metrics;
+//! use aster_search::metrics::Metrics;
 //! use std::sync::Arc;
 //!
 //! let metrics = Arc::new(Metrics::new());

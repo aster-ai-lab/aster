@@ -1,6 +1,6 @@
 #[cfg(all(feature = "native-ts", unix))]
 mod native_ts_timeouts {
-    use a3s_flow::{FlowEngine, FlowError, NativeTsRuntime, NativeTsRuntimeConfig, WorkflowSpec};
+    use aster_flow::{FlowEngine, FlowError, NativeTsRuntime, NativeTsRuntimeConfig, WorkflowSpec};
     use serde_json::json;
     use std::fs;
     use std::os::unix::fs::PermissionsExt;
@@ -69,7 +69,7 @@ exec sleep 30
             r#"#!/bin/sh
 set -eu
 cat >/dev/null
-printf '{"protocol":"a3s.flow.native_ts.v1","kind":"workflow","ok":true,"output":{"type":"complete","output":{"marker":"within-timeout"}}}\n'
+printf '{"protocol":"aster.flow.native_ts.v1","kind":"workflow","ok":true,"output":{"type":"complete","output":{"marker":"within-timeout"}}}\n'
 "#,
         );
     }

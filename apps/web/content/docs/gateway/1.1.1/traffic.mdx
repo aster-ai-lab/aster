@@ -54,7 +54,7 @@ Box 排空并终止工作负载前，Gateway 先撤回对应端点。该自动�
 
 ## 托管 Runtime Service
 
-嵌入式 A3S 宿主可以使用 `Gateway::with_managed_service_state` 或 `Gateway::with_middlewares_and_managed_service_state` 绑定私有 Runtime 路由。
+嵌入式 Aster 宿主可以使用 `Gateway::with_managed_service_state` 或 `Gateway::with_middlewares_and_managed_service_state` 绑定私有 Runtime 路由。
 
 该路由只支持明文 loopback HTTP 入口和 loopback Runtime 上游。宿主负责 Runtime 配置与包授权，Gateway 负责私有路由、健康检查、准入关闭、排空和删除。
 

@@ -135,7 +135,7 @@ END;
 /// an ancestor is cancelled.
 #[cfg(feature = "postgres")]
 pub(super) const POSTGRES_SCHEDULED_WAKEUPS_SCOPE_CANCEL_OPEN_SQL: &str = r#"
-CREATE OR REPLACE FUNCTION a3s_flow_drop_scoped_wakeups()
+CREATE OR REPLACE FUNCTION aster_flow_drop_scoped_wakeups()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$

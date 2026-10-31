@@ -7,14 +7,14 @@ use http::header::CONTENT_TYPE;
 use http::StatusCode;
 use std::collections::HashMap;
 
-const PREFIX: &str = "a3s_inf_abc12345";
+const PREFIX: &str = "aster_inf_abc12345";
 
 fn key(character: char) -> String {
     format!("{PREFIX}{}", character.to_string().repeat(64))
 }
 
 fn verifier(secret: &str) -> String {
-    let salt = SaltString::encode_b64(b"a3s-gateway-test").unwrap();
+    let salt = SaltString::encode_b64(b"aster-gateway-test").unwrap();
     Argon2::default()
         .hash_password(secret.as_bytes(), &salt)
         .unwrap()
@@ -298,7 +298,7 @@ async fn rejects_missing_malformed_unknown_and_wrong_credentials() {
         HeaderMap::from_iter([(AUTHORIZATION, "Basic abc".parse().unwrap())]),
         HeaderMap::from_iter([(
             AUTHORIZATION,
-            format!("Bearer a3s_inf_unknown{}", "x".repeat(64))
+            format!("Bearer aster_inf_unknown{}", "x".repeat(64))
                 .parse()
                 .unwrap(),
         )]),

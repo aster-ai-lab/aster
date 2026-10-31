@@ -28,7 +28,7 @@ impl crate::tools::Tool for ControlledFailedCheck {
     }
 }
 
-async fn failed_program_receipt(source: &str, writes: bool) -> a3s_effect::ToolExecutionResultV1 {
+async fn failed_program_receipt(source: &str, writes: bool) -> aster_effect::ToolExecutionResultV1 {
     let workspace = tempfile::tempdir().unwrap();
     std::fs::write(workspace.path().join("input.txt"), "controlled input\n").unwrap();
     let agent = crate::Agent::from_config(test_config()).await.unwrap();
@@ -67,7 +67,7 @@ async fn failed_program_receipt(source: &str, writes: bool) -> a3s_effect::ToolE
         .into_iter()
         .filter(|fact| fact.kind == "tool.result")
         .map(|fact| {
-            serde_json::from_value::<a3s_effect::ToolExecutionResultV1>(
+            serde_json::from_value::<aster_effect::ToolExecutionResultV1>(
                 fact.payload["receipt"].clone(),
             )
             .unwrap()
@@ -84,7 +84,7 @@ async fn failed_program_receipt(source: &str, writes: bool) -> a3s_effect::ToolE
     }
     let receipt = receipts.into_iter().next().unwrap();
     receipt.validate().unwrap();
-    assert_eq!(receipt.outcome, a3s_effect::ToolExecutionOutcome::Failed);
+    assert_eq!(receipt.outcome, aster_effect::ToolExecutionOutcome::Failed);
     assert_eq!(receipt.exit_code, Some(1));
     let output: Value = serde_json::from_str(receipt.output.as_str().unwrap()).unwrap();
     assert_eq!(output["is_error"], true);
@@ -94,7 +94,7 @@ async fn failed_program_receipt(source: &str, writes: bool) -> a3s_effect::ToolE
     receipt
 }
 
-fn calls(receipt: &a3s_effect::ToolExecutionResultV1) -> Vec<Value> {
+fn calls(receipt: &aster_effect::ToolExecutionResultV1) -> Vec<Value> {
     let output: Value = serde_json::from_str(receipt.output.as_str().unwrap()).unwrap();
     output["metadata"]["program"]["tool_calls"]
         .as_array()

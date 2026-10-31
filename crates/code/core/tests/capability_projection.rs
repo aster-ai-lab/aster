@@ -3,7 +3,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityAdapterError, CapabilityCatalog, CapabilityContribution, CapabilityDescriptor,
     CapabilityEffect, CapabilityEffectError, CapabilityKind, CapabilityProjection,
     CapabilityProjectionAdapter, CapabilityProjectionError, CapabilitySet, CapabilitySource,
@@ -12,8 +12,8 @@ use a3s_code_core::capability::{
     UiBindingSpec, UiDocument, UseCapabilityGeneration, UsePackageGeneration,
     MAX_CAPABILITY_TRANSACTION_EFFECTS,
 };
-use a3s_code_core::subagent::AgentDefinition;
-use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
+use aster_core::subagent::AgentDefinition;
+use aster_core::tools::{Tool, ToolContext, ToolOutput};
 use async_trait::async_trait;
 use tokio_util::sync::CancellationToken;
 
@@ -62,7 +62,7 @@ fn tool_set(
     names: &[(&str, char)],
 ) -> (
     Arc<CapabilitySet>,
-    BTreeMap<String, a3s_code_core::capability::CapabilityId>,
+    BTreeMap<String, aster_core::capability::CapabilityId>,
 ) {
     let source = CapabilitySource::host("projection-tests", digest('a')).unwrap();
     let mut ids = BTreeMap::new();
@@ -757,7 +757,7 @@ fn projection_catalog_and_pinned_values_are_send_and_sync() {
     fn assert_send_sync<T: Send + Sync>() {}
     assert_send_sync::<CapabilityCatalog>();
     assert_send_sync::<CapabilityProjection>();
-    assert_send_sync::<a3s_code_core::capability::CapabilityProjectionLease>();
+    assert_send_sync::<aster_core::capability::CapabilityProjectionLease>();
 }
 
 #[tokio::test]

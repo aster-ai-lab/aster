@@ -1,5 +1,5 @@
 {
-  "schema": "a3s.use.plugin-permissions.v1",
+  "schema": "aster.use.plugin-permissions.v1",
   "surfaces": [
     {
       "surface": {"kind": "mcp", "id": "context"},

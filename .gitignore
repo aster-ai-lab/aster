@@ -3,18 +3,23 @@
 **/target/
 /crates/capture/.build/
 .DS_Store
+**/.DS_Store
 
 .env
 .env.*
 !.env.example
-.a3s/
-.a3s-code/
-.a3s-test/
-!crates/**/fixtures/**/.a3s/
-!crates/**/fixtures/**/.a3s/**
+.aster/
+.aster/
+.aster-test/
+.aster-agent-retrievals
+.aster-vec.lock
+.aster-vec.lock.owner
+!crates/**/fixtures/**/.aster/
+!crates/**/fixtures/**/.aster/**
 *.profraw
 *.profdata
 __pycache__/
+.pytest_cache/
 
 # Local snapshots taken before refreshing Cargo.lock
 *.lock.bak
@@ -23,17 +28,30 @@ __pycache__/
 # Local frontend installations.
 **/node_modules/
 
-# Local test fixtures and reversible migration snapshots.
+# Local test fixtures, archives, and reversible migration snapshots.
 /.tmp/
 /.local-archive/
+/.codex-worktrees/
 /target-e2e/
+
+# Scratch agent worktrees and local experiment checkouts. Never a product path.
+/work/
+
+# Local CUA / GUI / release scratch outputs (never product evidence).
+/artifacts/
+/segments/
 
 # Generated artifacts: the WorkBuddy desktop agent's repo-local memory and
 # the T01 harness output directory.
 /.workbuddy/
 /tests/T01/output/
-/crates/code/core/.a3s-vec.lock
-/crates/code/core/.a3s-vec.lock.owner
+/crates/code/core/.aster-vec.lock
+/crates/code/core/.aster-vec.lock.owner
 
 # Swift Package Manager products for the internal Capture engine.
 /crates/capture/.build/
+
+# Local web build outputs.
+/apps/web/dist/
+/apps/web/.astro/
+

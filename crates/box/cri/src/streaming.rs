@@ -5,7 +5,7 @@
 //! 2. Kubelet connects to the URL via HTTP/WebSocket for bidirectional I/O
 //!
 //! This module implements the HTTP streaming server that bridges kubelet
-//! connections to A3S Box's existing exec/PTY infrastructure over vsock.
+//! connections to Aster Box's existing exec/PTY infrastructure over vsock.
 
 use std::collections::HashMap;
 use std::net::SocketAddr;
@@ -35,8 +35,8 @@ const DEFAULT_STREAMING_SESSION_TTL: Duration = Duration::from_secs(60);
 /// Cloneable stdin sink for a running workload exposed through CRI streaming.
 #[derive(Debug, Clone)]
 pub enum StreamingInput {
-    Exec(a3s_box_runtime::StreamingExecInput),
-    Pty(a3s_box_runtime::StreamingPtyInput),
+    Exec(aster_box_runtime::StreamingExecInput),
+    Pty(aster_box_runtime::StreamingPtyInput),
 }
 
 impl StreamingInput {
@@ -84,7 +84,7 @@ pub struct StreamingSession {
     /// Ports to forward (port-forward only).
     pub ports: Vec<i32>,
     /// Running container output source for attach sessions.
-    pub attach_stream: Option<broadcast::Sender<a3s_box_core::exec::ExecEvent>>,
+    pub attach_stream: Option<broadcast::Sender<aster_box_core::exec::ExecEvent>>,
     /// Running container stdin sink for attach sessions.
     pub attach_stdin: Option<StreamingInput>,
     /// Path to the exec Unix socket for this sandbox's VM.
@@ -362,12 +362,12 @@ async fn handle_exec_oneshot(
         return handle_exec_stdin_stream(stream, session).await;
     }
 
-    let exec_req = a3s_box_core::exec::ExecRequest {
+    let exec_req = aster_box_core::exec::ExecRequest {
         // Non-interactive oneshot keeps the sandbox VM; key the guest replay
         // cache. Stdin/streaming paths stay unkeyed (guest rejects request_id).
         request_id: Some(crate::exec_request_id::mint_cri_exec_request_id()),
         cmd: session.cmd.clone(),
-        timeout_ns: a3s_box_core::exec::DEFAULT_EXEC_TIMEOUT_NS,
+        timeout_ns: aster_box_core::exec::DEFAULT_EXEC_TIMEOUT_NS,
         env: vec![],
         working_dir: None,
         rootfs: session.rootfs.clone(),
@@ -377,7 +377,7 @@ async fn handle_exec_oneshot(
         streaming: false,
     };
 
-    let client = a3s_box_runtime::ExecClient::connect(Path::new(&session.exec_socket_path)).await?;
+    let client = aster_box_runtime::ExecClient::connect(Path::new(&session.exec_socket_path)).await?;
     let output = match client.exec_command(&exec_req).await {
         Ok(output) => output,
         Err(error) if crate::exec_request_id::is_ambiguous_exec_transport(&error) => {
@@ -409,10 +409,10 @@ async fn handle_exec_stdin_stream(
     stream: &mut tokio::net::TcpStream,
     session: &StreamingSession,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let exec_req = a3s_box_core::exec::ExecRequest {
+    let exec_req = aster_box_core::exec::ExecRequest {
         request_id: None,
         cmd: session.cmd.clone(),
-        timeout_ns: a3s_box_core::exec::DEFAULT_EXEC_TIMEOUT_NS,
+        timeout_ns: aster_box_core::exec::DEFAULT_EXEC_TIMEOUT_NS,
         env: vec![],
         working_dir: None,
         rootfs: session.rootfs.clone(),
@@ -422,7 +422,7 @@ async fn handle_exec_stdin_stream(
         streaming: false,
     };
 
-    let client = a3s_box_runtime::ExecClient::connect(Path::new(&session.exec_socket_path)).await?;
+    let client = aster_box_runtime::ExecClient::connect(Path::new(&session.exec_socket_path)).await?;
     let mut exec = client.exec_stream(&exec_req).await?;
     let stdin = exec.input();
 
@@ -460,14 +460,14 @@ async fn handle_exec_stdin_stream(
                     }
                 };
                 match event {
-                    Some(a3s_box_core::exec::ExecEvent::Chunk(chunk)) => match chunk.stream {
-                        a3s_box_core::exec::StreamType::Stdout if session.stdout => {
+                    Some(aster_box_core::exec::ExecEvent::Chunk(chunk)) => match chunk.stream {
+                        aster_box_core::exec::StreamType::Stdout if session.stdout => {
                             if let Err(error) = tcp_write.write_all(&chunk.data).await {
                                 let _ = stdin.cancel().await;
                                 return Err(Box::new(error));
                             }
                         }
-                        a3s_box_core::exec::StreamType::Stderr if session.stderr => {
+                        aster_box_core::exec::StreamType::Stderr if session.stderr => {
                             if let Err(error) = tcp_write.write_all(&chunk.data).await {
                                 let _ = stdin.cancel().await;
                                 return Err(Box::new(error));
@@ -475,8 +475,8 @@ async fn handle_exec_stdin_stream(
                         }
                         _ => {}
                     },
-                    Some(a3s_box_core::exec::ExecEvent::FlushAck) => {}
-                    Some(a3s_box_core::exec::ExecEvent::Exit(_)) | None => break,
+                    Some(aster_box_core::exec::ExecEvent::FlushAck) => {}
+                    Some(aster_box_core::exec::ExecEvent::Exit(_)) | None => break,
                 }
             }
         }
@@ -503,7 +503,7 @@ async fn handle_pty_stream(
     let mut pty_stream = UnixStream::connect(&session.pty_socket_path).await?;
 
     // Send PTY request
-    let pty_req = a3s_box_core::pty::PtyRequest {
+    let pty_req = aster_box_core::pty::PtyRequest {
         cmd: session.cmd.clone(),
         env: vec![],
         working_dir: None,
@@ -515,7 +515,7 @@ async fn handle_pty_stream(
     let payload = serde_json::to_vec(&pty_req)?;
     write_pty_frame(
         &mut pty_stream,
-        a3s_box_core::pty::FRAME_PTY_REQUEST,
+        aster_box_core::pty::FRAME_PTY_REQUEST,
         &payload,
     )
     .await?;
@@ -534,7 +534,7 @@ async fn handle_pty_stream(
             // Wrap as PTY data frame
             let len = n as u32;
             pty_write
-                .write_all(&[a3s_box_core::pty::FRAME_PTY_DATA])
+                .write_all(&[aster_box_core::pty::FRAME_PTY_DATA])
                 .await?;
             pty_write.write_all(&len.to_be_bytes()).await?;
             pty_write.write_all(&buf[..n]).await?;
@@ -552,7 +552,7 @@ async fn handle_pty_stream(
             }
             let frame_type = header[0];
             let len = u32::from_be_bytes([header[1], header[2], header[3], header[4]]) as usize;
-            if len > a3s_box_core::pty::MAX_FRAME_PAYLOAD {
+            if len > aster_box_core::pty::MAX_FRAME_PAYLOAD {
                 break;
             }
             let mut payload = vec![0u8; len];
@@ -560,7 +560,7 @@ async fn handle_pty_stream(
                 pty_read.read_exact(&mut payload).await?;
             }
             // Forward PTY data to TCP
-            if frame_type == a3s_box_core::pty::FRAME_PTY_DATA {
+            if frame_type == aster_box_core::pty::FRAME_PTY_DATA {
                 tcp_write.write_all(&payload).await?;
             }
         }
@@ -648,14 +648,14 @@ async fn handle_attach_stream(
             }
             event = receiver.recv() => {
                 match event {
-                    Ok(a3s_box_core::exec::ExecEvent::Chunk(chunk)) => match chunk.stream {
-                        a3s_box_core::exec::StreamType::Stdout if session.stdout => {
+                    Ok(aster_box_core::exec::ExecEvent::Chunk(chunk)) => match chunk.stream {
+                        aster_box_core::exec::StreamType::Stdout if session.stdout => {
                             if let Err(e) = tcp_write.write_all(&chunk.data).await {
                                 loop_result = Err(Box::new(e));
                                 break;
                             }
                         }
-                        a3s_box_core::exec::StreamType::Stderr if session.stderr => {
+                        aster_box_core::exec::StreamType::Stderr if session.stderr => {
                             if let Err(e) = tcp_write.write_all(&chunk.data).await {
                                 loop_result = Err(Box::new(e));
                                 break;
@@ -663,8 +663,8 @@ async fn handle_attach_stream(
                         }
                         _ => {}
                     },
-                    Ok(a3s_box_core::exec::ExecEvent::FlushAck) => {}
-                    Ok(a3s_box_core::exec::ExecEvent::Exit(_)) => break,
+                    Ok(aster_box_core::exec::ExecEvent::FlushAck) => {}
+                    Ok(aster_box_core::exec::ExecEvent::Exit(_)) => break,
                     Err(broadcast::error::RecvError::Lagged(skipped)) => {
                         tracing::warn!(
                             sandbox_id = %session.sandbox_id,
@@ -1285,20 +1285,20 @@ mod tests {
 
             let (stream, _) = listener.accept().await.unwrap();
             let (r, w) = tokio::io::split(stream);
-            let mut reader = a3s_transport::FrameReader::new(r);
-            let mut writer = a3s_transport::FrameWriter::new(w);
+            let mut reader = aster_transport::FrameReader::new(r);
+            let mut writer = aster_transport::FrameWriter::new(w);
 
             let frame = reader.read_frame().await.unwrap().unwrap();
-            let request: a3s_box_core::exec::ExecRequest =
+            let request: aster_box_core::exec::ExecRequest =
                 serde_json::from_slice(&frame.payload).unwrap();
             assert_eq!(request.cmd, vec!["echo".to_string(), "hello".to_string()]);
             assert_eq!(
                 request.rootfs,
-                Some("/run/a3s/cri/container-rootfs/sb-1/c-1/rootfs".to_string())
+                Some("/run/aster/cri/container-rootfs/sb-1/c-1/rootfs".to_string())
             );
             assert!(!request.streaming);
 
-            let output = a3s_box_core::exec::ExecOutput {
+            let output = aster_box_core::exec::ExecOutput {
                 stdout: b"hello\n".to_vec(),
                 stderr: b"warn\n".to_vec(),
                 exit_code: 23,
@@ -1324,7 +1324,7 @@ mod tests {
             kind: SessionKind::Exec,
             sandbox_id: "sb-1".to_string(),
             cmd: vec!["echo".to_string(), "hello".to_string()],
-            rootfs: Some("/run/a3s/cri/container-rootfs/sb-1/c-1/rootfs".to_string()),
+            rootfs: Some("/run/aster/cri/container-rootfs/sb-1/c-1/rootfs".to_string()),
             tty: false,
             stdin: false,
             stdin_once: false,
@@ -1364,33 +1364,33 @@ mod tests {
 
             let (stream, _) = listener.accept().await.unwrap();
             let (r, w) = tokio::io::split(stream);
-            let mut reader = a3s_transport::FrameReader::new(r);
-            let mut writer = a3s_transport::FrameWriter::new(w);
+            let mut reader = aster_transport::FrameReader::new(r);
+            let mut writer = aster_transport::FrameWriter::new(w);
 
             let frame = reader.read_frame().await.unwrap().unwrap();
-            let request: a3s_box_core::exec::ExecRequest =
+            let request: aster_box_core::exec::ExecRequest =
                 serde_json::from_slice(&frame.payload).unwrap();
             assert_eq!(request.cmd, vec!["cat".to_string()]);
             assert!(request.streaming);
             assert!(request.stdin_streaming);
 
             let stdin = reader.read_frame().await.unwrap().unwrap();
-            assert_eq!(stdin.frame_type, a3s_transport::FrameType::Data);
+            assert_eq!(stdin.frame_type, aster_transport::FrameType::Data);
             assert_eq!(stdin.payload, b"stdin from exec");
 
             let close = reader.read_frame().await.unwrap().unwrap();
-            assert_eq!(close.frame_type, a3s_transport::FrameType::Control);
+            assert_eq!(close.frame_type, aster_transport::FrameType::Control);
             assert_eq!(close.payload, b"stdin-close");
 
-            let stdout = a3s_box_core::exec::ExecChunk {
-                stream: a3s_box_core::exec::StreamType::Stdout,
+            let stdout = aster_box_core::exec::ExecChunk {
+                stream: aster_box_core::exec::StreamType::Stdout,
                 data: b"echoed stdin\n".to_vec(),
             };
             writer
                 .write_data(&serde_json::to_vec(&stdout).unwrap())
                 .await
                 .unwrap();
-            let exit = a3s_box_core::exec::ExecExit {
+            let exit = aster_box_core::exec::ExecExit {
                 exit_code: 0,
                 oom_killed: false,
             };
@@ -1422,7 +1422,7 @@ mod tests {
             kind: SessionKind::Exec,
             sandbox_id: "sb-1".to_string(),
             cmd: vec!["cat".to_string()],
-            rootfs: Some("/run/a3s/cri/container-rootfs/sb-1/c-1/rootfs".to_string()),
+            rootfs: Some("/run/aster/cri/container-rootfs/sb-1/c-1/rootfs".to_string()),
             tty: false,
             stdin: true,
             stdin_once: false,
@@ -1458,17 +1458,17 @@ mod tests {
             let (mut pty_stream, _) = listener.accept().await.unwrap();
             let mut header = [0u8; 5];
             pty_stream.read_exact(&mut header).await.unwrap();
-            assert_eq!(header[0], a3s_box_core::pty::FRAME_PTY_REQUEST);
+            assert_eq!(header[0], aster_box_core::pty::FRAME_PTY_REQUEST);
 
             let len = u32::from_be_bytes([header[1], header[2], header[3], header[4]]) as usize;
             let mut payload = vec![0u8; len];
             pty_stream.read_exact(&mut payload).await.unwrap();
-            let request: a3s_box_core::pty::PtyRequest = serde_json::from_slice(&payload).unwrap();
+            let request: aster_box_core::pty::PtyRequest = serde_json::from_slice(&payload).unwrap();
 
             assert_eq!(request.cmd, vec!["/bin/sh".to_string()]);
             assert_eq!(
                 request.rootfs,
-                Some("/run/a3s/cri/container-rootfs/sb-1/c-1/rootfs".to_string())
+                Some("/run/aster/cri/container-rootfs/sb-1/c-1/rootfs".to_string())
             );
         });
 
@@ -1486,7 +1486,7 @@ mod tests {
             kind: SessionKind::Exec,
             sandbox_id: "sb-1".to_string(),
             cmd: vec!["/bin/sh".to_string()],
-            rootfs: Some("/run/a3s/cri/container-rootfs/sb-1/c-1/rootfs".to_string()),
+            rootfs: Some("/run/aster/cri/container-rootfs/sb-1/c-1/rootfs".to_string()),
             tty: true,
             stdin: true,
             stdin_once: false,
@@ -1560,24 +1560,24 @@ mod tests {
 
         ready_rx.await.unwrap();
         attach_tx
-            .send(a3s_box_core::exec::ExecEvent::Chunk(
-                a3s_box_core::exec::ExecChunk {
-                    stream: a3s_box_core::exec::StreamType::Stdout,
+            .send(aster_box_core::exec::ExecEvent::Chunk(
+                aster_box_core::exec::ExecChunk {
+                    stream: aster_box_core::exec::StreamType::Stdout,
                     data: b"hello attach\n".to_vec(),
                 },
             ))
             .unwrap();
         attach_tx
-            .send(a3s_box_core::exec::ExecEvent::Chunk(
-                a3s_box_core::exec::ExecChunk {
-                    stream: a3s_box_core::exec::StreamType::Stderr,
+            .send(aster_box_core::exec::ExecEvent::Chunk(
+                aster_box_core::exec::ExecChunk {
+                    stream: aster_box_core::exec::StreamType::Stderr,
                     data: b"filtered stderr\n".to_vec(),
                 },
             ))
             .unwrap();
         attach_tx
-            .send(a3s_box_core::exec::ExecEvent::Exit(
-                a3s_box_core::exec::ExecExit {
+            .send(aster_box_core::exec::ExecEvent::Exit(
+                aster_box_core::exec::ExecExit {
                     exit_code: 0,
                     oom_killed: false,
                 },
@@ -1606,22 +1606,22 @@ mod tests {
 
             let (stream, _) = exec_listener.accept().await.unwrap();
             let (r, w) = tokio::io::split(stream);
-            let mut reader = a3s_transport::FrameReader::new(r);
-            let mut writer = a3s_transport::FrameWriter::new(w);
+            let mut reader = aster_transport::FrameReader::new(r);
+            let mut writer = aster_transport::FrameWriter::new(w);
 
             let frame = reader.read_frame().await.unwrap().unwrap();
-            let request: a3s_box_core::exec::ExecRequest =
+            let request: aster_box_core::exec::ExecRequest =
                 serde_json::from_slice(&frame.payload).unwrap();
             assert!(request.streaming);
             assert!(request.stdin_streaming);
 
             let stdin = reader.read_frame().await.unwrap().unwrap();
-            assert_eq!(stdin.frame_type, a3s_transport::FrameType::Data);
+            assert_eq!(stdin.frame_type, aster_transport::FrameType::Data);
             let close = reader.read_frame().await.unwrap().unwrap();
-            assert_eq!(close.frame_type, a3s_transport::FrameType::Control);
+            assert_eq!(close.frame_type, aster_transport::FrameType::Control);
             stdin_seen_tx.send((stdin.payload, close.payload)).unwrap();
 
-            let exit = a3s_box_core::exec::ExecExit {
+            let exit = aster_box_core::exec::ExecExit {
                 exit_code: 0,
                 oom_killed: false,
             };
@@ -1631,13 +1631,13 @@ mod tests {
                 .unwrap();
         });
 
-        let exec_client = a3s_box_runtime::ExecClient::connect(&sock_path)
+        let exec_client = aster_box_runtime::ExecClient::connect(&sock_path)
             .await
             .unwrap();
-        let exec_req = a3s_box_core::exec::ExecRequest {
+        let exec_req = aster_box_core::exec::ExecRequest {
             request_id: None,
             cmd: vec!["cat".to_string()],
-            timeout_ns: a3s_box_core::exec::DEFAULT_EXEC_TIMEOUT_NS,
+            timeout_ns: aster_box_core::exec::DEFAULT_EXEC_TIMEOUT_NS,
             env: vec![],
             working_dir: None,
             rootfs: None,
@@ -1698,8 +1698,8 @@ mod tests {
         assert_eq!(stdin_payload, b"stdin from attach");
         assert_eq!(close_payload, b"stdin-close");
         attach_tx
-            .send(a3s_box_core::exec::ExecEvent::Exit(
-                a3s_box_core::exec::ExecExit {
+            .send(aster_box_core::exec::ExecEvent::Exit(
+                aster_box_core::exec::ExecExit {
                     exit_code: 0,
                     oom_killed: false,
                 },

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{ReadTxn, Xml, XmlElementRef, XmlFragment, XmlOut};
 
 use super::super::super::collaboration_error;
@@ -288,11 +288,11 @@ fn child_index<T: ReadTxn>(
         })
 }
 
-fn structure_conflict(message: &str) -> a3s_use_core::UseError {
+fn structure_conflict(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_structure_conflict", message)
 }
 
-fn container_too_large() -> a3s_use_core::UseError {
+fn container_too_large() -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_too_large",
         "The target Document container contains too many blocks for a structural mutation.",

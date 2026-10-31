@@ -81,7 +81,7 @@ impl<'a> WorkflowContext<'a> {
     /// UUID version five.
     pub fn deterministic_id(&self, name: &str) -> Uuid {
         let value = format!(
-            "a3s.flow.workflow.v1/{}/{}{}",
+            "aster.flow.workflow.v1/{}/{}{}",
             self.run_id().len(),
             self.run_id(),
             name.len(),

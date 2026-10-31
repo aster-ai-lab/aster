@@ -7,10 +7,10 @@ use super::{
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
-pub const RESEARCH_EVIDENCE_GRAPH_SCHEMA_V1: &str = "a3s.code.evidence-graph.v1";
+pub const RESEARCH_EVIDENCE_GRAPH_SCHEMA_V1: &str = "aster.code.evidence-graph.v1";
 pub const RESEARCH_MAX_EVIDENCE_GRAPH_CLAIMS: usize = 512;
 pub const RESEARCH_MAX_EVIDENCE_GRAPH_CITATIONS: usize = 2048;
-const RESEARCH_EVIDENCE_GRAPH_DIGEST_DOMAIN: &str = "a3s.code.evidence-graph.identity.v1";
+const RESEARCH_EVIDENCE_GRAPH_DIGEST_DOMAIN: &str = "aster.code.evidence-graph.identity.v1";
 
 /// One immutable projection of claims and citations for a research Run.
 ///

@@ -1,5 +1,5 @@
 use super::*;
-use a3s_search::EngineFailure;
+use aster_search::EngineFailure;
 use tempfile::tempdir;
 
 const TEST_STATE_FILE: &str = "circuit-state-v1.json";

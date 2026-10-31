@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_oci_sdk::{NetworkEnforcementAttachment, OciBundle, NETWORK_ENFORCEMENT_EXTENSION};
+use aster_oci_sdk::{NetworkEnforcementAttachment, OciBundle, NETWORK_ENFORCEMENT_EXTENSION};
 use serde_json::Value;
 
 use crate::NativeLinuxNetworkEnforcementSmokeConfig;

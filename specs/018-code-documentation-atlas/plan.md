@@ -51,7 +51,7 @@ Extend the current build-time React/MDX renderer with vendored SeeCode 0.6.2 and
 - `navigation.js` already supplies a single progressive script. Keep this delivery model for stepping and scrolling.
 - SeeCode has zero runtime package dependencies. Vendor its unchanged skill source with MIT license and archive hash, keeping regeneration available offline.
 - Code Hike explicitly supports build-time highlighting and manual token rendering without React Server Components. Use that API with existing static React rendering.
-- `A3S-Lab/stc-answer` 1.2.0 matches the bundled skill. Apply its STC prose rules while honoring the user's existing documentation destination.
+- `aster-ai-lab/stc-answer` 1.2.0 matches the bundled skill. Apply its STC prose rules while honoring the user's existing documentation destination.
 
 ## Verification Plan
 

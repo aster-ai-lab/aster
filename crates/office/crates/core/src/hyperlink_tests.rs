@@ -29,7 +29,7 @@ fn hyperlink_mutation_has_a_typed_stable_json_contract() {
         path: "/body/p[1]".into(),
         hyperlink: external("https://example.com/report")
             .with_display("Open report")
-            .with_tooltip("A3S report"),
+            .with_tooltip("Aster report"),
     };
     assert_eq!(
         serde_json::to_value(&mutation).unwrap(),
@@ -42,7 +42,7 @@ fn hyperlink_mutation_has_a_typed_stable_json_contract() {
                     "uri": "https://example.com/report"
                 },
                 "display": "Open report",
-                "tooltip": "A3S report"
+                "tooltip": "Aster report"
             }
         })
     );
@@ -76,7 +76,7 @@ async fn native_word_adds_updates_reads_queries_and_removes_hyperlinks() {
             "/body/p[1]",
             external("https://example.com/report")
                 .with_display("Open report")
-                .with_tooltip("A3S report"),
+                .with_tooltip("Aster report"),
         )
         .unwrap();
     assert_eq!(link_path, "/body/p[1]/hyperlink[1]");
@@ -86,7 +86,7 @@ async fn native_word_adds_updates_reads_queries_and_removes_hyperlinks() {
     assert_eq!(link.text, "Open report");
     assert_eq!(link.format["targetKind"], "external");
     assert_eq!(link.format["target"], "https://example.com/report");
-    assert_eq!(link.format["tooltip"], "A3S report");
+    assert_eq!(link.format["tooltip"], "Aster report");
     assert_eq!(
         editor.snapshot().unwrap().query("hyperlink").unwrap().len(),
         1

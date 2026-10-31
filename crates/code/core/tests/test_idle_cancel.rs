@@ -1,8 +1,8 @@
 //! U-CV-01: cancelling a session that has not started a turn is an idle
 //! receipt. It must not append a synthetic transcript entry.
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::{Agent, SessionOptions};
 use std::path::Path;
 
 fn offline_config(sessions: &Path) -> CodeConfig {
@@ -10,6 +10,7 @@ fn offline_config(sessions: &Path) -> CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         sessions_dir: Some(sessions.to_path_buf()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,

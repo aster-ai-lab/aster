@@ -8,8 +8,8 @@ use crate::tools::types::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use anyhow::Result;
 use async_trait::async_trait;
 
-pub const USER_FORM_SCHEMA: &str = "a3s.code.user-form.v1";
-const MAX_FORM_BYTES: usize = a3s_form_core::MAX_JSON_RENDER_BYTES;
+pub const USER_FORM_SCHEMA: &str = "aster.code.user-form.v1";
+const MAX_FORM_BYTES: usize = aster_form_core::MAX_JSON_RENDER_BYTES;
 
 pub struct AskUserFormTool;
 
@@ -22,7 +22,7 @@ impl Tool for AskUserFormTool {
     fn description(&self) -> &str {
         static DESCRIPTION: std::sync::LazyLock<String> = std::sync::LazyLock::new(|| {
             let mut description = "Pause for structured user input. Supply one JSON Render document as the form string, without a Markdown fence. The document has root, elements and optional state.form. Each element has type, props and optional children containing element IDs. Bind input value (or Checkbox checked) with {\"$bindState\":\"/form/name\"}; initial scalar values live in state.form. Use Button with action submit. Write titles, labels and placeholders in the user's language. Submitted named scalar values return as this tool's result and the same turn continues. Unknown components, properties, actions, cycles and unbound state are refused. Component catalog: ".to_owned();
-            description.push_str(&a3s_form_core::json_render_component_catalog().to_string());
+            description.push_str(&aster_form_core::json_render_component_catalog().to_string());
             description
         });
         DESCRIPTION.as_str()
@@ -149,7 +149,7 @@ fn submitted_values(answer: &str) -> Result<serde_json::Value, String> {
 /// terminal renderer returns, so one unsupported call ends the form instead of
 /// being offered again.
 fn check_form_shape(form: &str) -> Result<(), String> {
-    a3s_form_core::parse_json_render(form)
+    aster_form_core::parse_json_render(form)
         .map(|_| ())
         .map_err(|error| error.to_string())
 }

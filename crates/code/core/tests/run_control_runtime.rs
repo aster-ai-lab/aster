@@ -3,12 +3,12 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::permissions::PermissionPolicy;
-use a3s_code_core::{
+use aster_core::permissions::PermissionPolicy;
+use aster_core::{
     Agent, AgentEvent, CodeError, InterruptRequest, PlanningMode, RunControlError,
     RunControlOperation, RunControlReceiptState, RunStatus, SessionOptions, SteerRequest,
 };
@@ -24,6 +24,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/controlled".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -201,7 +202,7 @@ async fn session_with_client(
     workspace: &std::path::Path,
     client: Arc<dyn LlmClient>,
     session_id: &str,
-) -> a3s_code_core::AgentSession {
+) -> aster_core::AgentSession {
     let agent = Agent::from_config(offline_config()).await.unwrap();
     agent
         .session_async(
@@ -223,8 +224,8 @@ async fn session_with_client(
 }
 
 async fn active_snapshot(
-    session: &a3s_code_core::AgentSession,
-) -> a3s_code_core::RunControlSnapshot {
+    session: &aster_core::AgentSession,
+) -> aster_core::RunControlSnapshot {
     tokio::time::timeout(TEST_TIMEOUT, async {
         loop {
             if let Some(snapshot) = session.run_control_snapshot().await {
@@ -452,8 +453,8 @@ async fn a_queued_steer_lands_on_the_log_when_interrupt_ends_the_run() {
     }
     let mut log_text = String::new();
     collect_jsonl(workspace.path(), &mut log_text);
-    let steer_key = a3s_code_core::content_digest::digest_json(
-        "a3s.code.steer-input.identity.v1",
+    let steer_key = aster_core::content_digest::digest_json(
+        "aster.code.steer-input.identity.v1",
         &[
             "steer-then-interrupt",
             snapshot.run_id.as_str(),

@@ -1,0 +1,256 @@
+//! RA-TLS certificate management: self-signed TLS certificate with optional
+//! TEE attestation report embedded as a custom X.509 extension.
+//!
+//! Each server instance generates a fresh ECDSA P-256 self-signed certificate
+//! at startup. When RA-TLS is enabled (`ra_tls = true` + `tee_mode = true`),
+//! the JSON-encoded attestation report is embedded in the certificate as a
+//! custom extension (OID 1.3.6.1.4.1.56560.1.1), allowing clients to perform
+//! remote attestation during the TLS handshake.
+
+use rcgen::{
+    CertificateParams, CustomExtension, DistinguishedName, DnType, Ia5String, KeyPair, SanType,
+};
+use std::net::IpAddr;
+use time::OffsetDateTime;
+
+use crate::error::{PowerError, Result};
+use crate::tee::attestation::AttestationReport;
+
+/// OID for the Aster Power attestation X.509 extension.
+///
+/// Arc: 1.3.6.1.4.1.56560.1.1
+/// - 1.3.6.1.4.1 = Private Enterprise Numbers (PEN) arc
+/// - 56560       = Aster PEN (development; replace with IANA-assigned PEN for production)
+/// - 1.1         = Power / attestation extension
+const ATTESTATION_EXT_OID: &[u64] = &[1, 3, 6, 1, 4, 1, 56560, 1, 1];
+
+pub(crate) fn validate_tls_san(san: &str) -> Result<()> {
+    parse_tls_san(san).map(|_| ())
+}
+
+fn parse_tls_san(san: &str) -> Result<SanType> {
+    if let Ok(ip) = san.parse::<IpAddr>() {
+        return Ok(SanType::IpAddress(ip));
+    }
+
+    validate_dns_san(san)?;
+    let dns = Ia5String::try_from(san.to_string()).map_err(|e| {
+        PowerError::Config(format!(
+            "invalid tls_sans entry {san:?}; expected an IP address or DNS name: {e}"
+        ))
+    })?;
+    Ok(SanType::DnsName(dns))
+}
+
+fn validate_dns_san(san: &str) -> Result<()> {
+    let dns = san.strip_prefix("*.").unwrap_or(san);
+    if dns.is_empty() || dns.len() > 253 || dns.ends_with('.') {
+        return Err(PowerError::Config(format!(
+            "invalid tls_sans entry {san:?}; expected an IP address or DNS name"
+        )));
+    }
+
+    for label in dns.split('.') {
+        let valid_label = !label.is_empty()
+            && label.len() <= 63
+            && label
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b == b'-')
+            && label
+                .as_bytes()
+                .first()
+                .is_some_and(|b| b.is_ascii_alphanumeric())
+            && label
+                .as_bytes()
+                .last()
+                .is_some_and(|b| b.is_ascii_alphanumeric());
+        if !valid_label {
+            return Err(PowerError::Config(format!(
+                "invalid tls_sans entry {san:?}; expected an IP address or DNS name"
+            )));
+        }
+    }
+
+    Ok(())
+}
+
+/// Manages the TLS certificate and private key for a single Power server instance.
+///
+/// A new certificate is generated at each server startup. The certificate is
+/// self-signed and is valid for 365 days. Clients are expected to verify the
+/// embedded attestation report rather than the CA chain.
+pub struct CertManager {
+    cert_pem: String,
+    key_pem: String,
+}
+
+impl CertManager {
+    /// Generate a fresh self-signed ECDSA P-256 TLS certificate.
+    ///
+    /// When `attestation` is `Some`, the JSON-encoded report is embedded in the
+    /// certificate as extension OID 1.3.6.1.4.1.56560.1.1. Clients can parse
+    /// this extension to verify the server is running inside a genuine TEE
+    /// before trusting inference results.
+    ///
+    /// `extra_sans` adds additional DNS names or IP addresses to the certificate's
+    /// Subject Alternative Names beyond the always-included localhost entries.
+    pub fn generate(
+        attestation: Option<&AttestationReport>,
+        extra_sans: &[String],
+    ) -> Result<Self> {
+        let key_pair = KeyPair::generate()
+            .map_err(|e| PowerError::Config(format!("TLS key pair generation failed: {e}")))?;
+
+        let mut params = CertificateParams::default();
+
+        let mut dn = DistinguishedName::new();
+        dn.push(DnType::CommonName, "aster-power");
+        params.distinguished_name = dn;
+
+        params.not_before = OffsetDateTime::now_utc();
+        params.not_after = OffsetDateTime::now_utc() + time::Duration::days(365);
+
+        let localhost_dns = Ia5String::try_from("localhost".to_string())
+            .map_err(|e| PowerError::Config(format!("Invalid SAN DNS name: {e}")))?;
+        let mut sans = vec![
+            SanType::DnsName(localhost_dns),
+            SanType::IpAddress(std::net::IpAddr::V4(std::net::Ipv4Addr::LOCALHOST)),
+            SanType::IpAddress(std::net::IpAddr::V6(std::net::Ipv6Addr::LOCALHOST)),
+        ];
+        for san in extra_sans {
+            sans.push(parse_tls_san(san)?);
+        }
+        params.subject_alt_names = sans;
+
+        if let Some(report) = attestation {
+            let json_bytes = serde_json::to_vec(report).map_err(|e| {
+                PowerError::Config(format!(
+                    "Failed to serialize attestation report for RA-TLS: {e}"
+                ))
+            })?;
+            params.custom_extensions = vec![CustomExtension::from_oid_content(
+                ATTESTATION_EXT_OID,
+                json_bytes,
+            )];
+            tracing::info!(
+                tee_type = %report.tee_type,
+                "Embedding attestation report in TLS certificate (RA-TLS)"
+            );
+        }
+
+        let cert = params
+            .self_signed(&key_pair)
+            .map_err(|e| PowerError::Config(format!("TLS certificate generation failed: {e}")))?;
+
+        Ok(Self {
+            cert_pem: cert.pem(),
+            key_pem: key_pair.serialize_pem(),
+        })
+    }
+
+    /// PEM-encoded certificate.
+    pub fn cert_pem(&self) -> &str {
+        &self.cert_pem
+    }
+
+    /// PEM-encoded private key.
+    pub fn key_pem(&self) -> &str {
+        &self.key_pem
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::tee::attestation::{AttestationReport, TeeType};
+
+    fn make_simulated_report() -> AttestationReport {
+        AttestationReport {
+            version: "1.0".to_string(),
+            tee_type: TeeType::Simulated,
+            report_data: vec![0xAA; 64],
+            measurement: vec![0xBB; 48],
+            raw_report: None,
+            timestamp: chrono::Utc::now(),
+            nonce: None,
+            claims: None,
+        }
+    }
+
+    #[test]
+    fn test_cert_generates_without_attestation() {
+        let mgr = CertManager::generate(None, &[]).unwrap();
+        assert!(mgr.cert_pem().starts_with("-----BEGIN CERTIFICATE-----"));
+        assert!(mgr.cert_pem().contains("-----END CERTIFICATE-----"));
+    }
+
+    #[test]
+    fn test_key_pem_is_valid_pem() {
+        let mgr = CertManager::generate(None, &[]).unwrap();
+        assert!(mgr.key_pem().contains("PRIVATE KEY"));
+        assert!(!mgr.key_pem().is_empty());
+    }
+
+    #[test]
+    fn test_each_cert_has_unique_key() {
+        let mgr1 = CertManager::generate(None, &[]).unwrap();
+        let mgr2 = CertManager::generate(None, &[]).unwrap();
+        // Fresh ECDSA key per call — keys must differ
+        assert_ne!(mgr1.key_pem(), mgr2.key_pem());
+    }
+
+    #[test]
+    fn test_cert_with_attestation_embeds_report() {
+        let report = make_simulated_report();
+        let mgr = CertManager::generate(Some(&report), &[]).unwrap();
+        // Certificate is still valid PEM
+        assert!(mgr.cert_pem().starts_with("-----BEGIN CERTIFICATE-----"));
+        // Key is present
+        assert!(mgr.key_pem().contains("PRIVATE KEY"));
+    }
+
+    #[test]
+    fn test_cert_with_nonce_in_attestation() {
+        let mut report = make_simulated_report();
+        report.nonce = Some(vec![0x01, 0x02, 0x03]);
+        let mgr = CertManager::generate(Some(&report), &[]).unwrap();
+        assert!(mgr.cert_pem().starts_with("-----BEGIN CERTIFICATE-----"));
+    }
+
+    #[test]
+    fn test_cert_pem_and_key_pem_are_different() {
+        let mgr = CertManager::generate(None, &[]).unwrap();
+        assert_ne!(mgr.cert_pem(), mgr.key_pem());
+    }
+
+    #[test]
+    fn test_cert_with_extra_dns_san() {
+        let sans = vec!["myserver.internal".to_string()];
+        let mgr = CertManager::generate(None, &sans).unwrap();
+        assert!(mgr.cert_pem().starts_with("-----BEGIN CERTIFICATE-----"));
+    }
+
+    #[test]
+    fn test_cert_with_extra_ip_san() {
+        let sans = vec!["10.0.0.1".to_string()];
+        let mgr = CertManager::generate(None, &sans).unwrap();
+        assert!(mgr.cert_pem().starts_with("-----BEGIN CERTIFICATE-----"));
+    }
+
+    #[test]
+    fn test_cert_with_invalid_san_is_rejected() {
+        let sans = vec!["not a valid san !!!".to_string()];
+        let err = match CertManager::generate(None, &sans) {
+            Ok(_) => panic!("invalid TLS SAN should fail certificate generation"),
+            Err(err) => err,
+        };
+        assert!(err.to_string().contains("tls_sans"));
+    }
+
+    #[test]
+    fn test_cert_with_wildcard_dns_san() {
+        let sans = vec!["*.example.com".to_string()];
+        let mgr = CertManager::generate(None, &sans).unwrap();
+        assert!(mgr.cert_pem().starts_with("-----BEGIN CERTIFICATE-----"));
+    }
+}

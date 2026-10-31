@@ -67,12 +67,12 @@ impl CriLogWriter {
 
     pub(super) async fn write_chunk(
         &mut self,
-        stream: a3s_box_core::exec::StreamType,
+        stream: aster_box_core::exec::StreamType,
         data: &[u8],
     ) -> std::io::Result<()> {
         let partial = match stream {
-            a3s_box_core::exec::StreamType::Stdout => &mut self.stdout_partial,
-            a3s_box_core::exec::StreamType::Stderr => &mut self.stderr_partial,
+            aster_box_core::exec::StreamType::Stdout => &mut self.stdout_partial,
+            aster_box_core::exec::StreamType::Stderr => &mut self.stderr_partial,
         };
 
         partial.extend_from_slice(data);
@@ -108,12 +108,12 @@ impl CriLogWriter {
     pub(super) async fn flush_partials(&mut self) -> std::io::Result<()> {
         if !self.stdout_partial.is_empty() {
             let line = std::mem::take(&mut self.stdout_partial);
-            self.write_record(a3s_box_core::exec::StreamType::Stdout, &line, true)
+            self.write_record(aster_box_core::exec::StreamType::Stdout, &line, true)
                 .await?;
         }
         if !self.stderr_partial.is_empty() {
             let line = std::mem::take(&mut self.stderr_partial);
-            self.write_record(a3s_box_core::exec::StreamType::Stderr, &line, true)
+            self.write_record(aster_box_core::exec::StreamType::Stderr, &line, true)
                 .await?;
         }
 
@@ -124,14 +124,14 @@ impl CriLogWriter {
     /// (partial line, e.g. a forced flush of an over-cap newline-less buffer) tag.
     async fn write_record(
         &mut self,
-        stream: a3s_box_core::exec::StreamType,
+        stream: aster_box_core::exec::StreamType,
         line: &[u8],
         full: bool,
     ) -> std::io::Result<()> {
         let timestamp = chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Nanos, true);
         let stream = match stream {
-            a3s_box_core::exec::StreamType::Stdout => "stdout",
-            a3s_box_core::exec::StreamType::Stderr => "stderr",
+            aster_box_core::exec::StreamType::Stdout => "stdout",
+            aster_box_core::exec::StreamType::Stderr => "stderr",
         };
 
         self.file.write_all(timestamp.as_bytes()).await?;
@@ -148,7 +148,7 @@ impl CriLogWriter {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::exec::StreamType;
+    use aster_box_core::exec::StreamType;
 
     #[tokio::test]
     async fn open_empty_path_disables_log_writer() {

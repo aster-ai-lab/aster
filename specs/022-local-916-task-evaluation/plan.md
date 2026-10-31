@@ -19,7 +19,7 @@
 | VI. Local schema changes | N-A | 不计划数据库迁移；若实测需要则在 owning context 另行证明 |
 | VII. Shrink-only ratchets | PASS | 不放宽现有权限、输入白名单或评分门槛 |
 | VIII. Replaceable transports | PASS | 原 ACP/RuntimeClient 与已有 CUA 驱动，不新增执行循环 |
-| IX. One configuration language | PASS | 宿主 ACL 由 a3s-acl 解析；不用旧测试代理的手工 ACL parser |
+| IX. One configuration language | PASS | 宿主 ACL 由 aster-acl 解析；不用旧测试代理的手工 ACL parser |
 | XIII. One repository | PASS | 测试夹具仅在本仓库 target 下；不在同级 tasks 目录建仓库或写结果 |
 | XIV. Names are not guessed | PASS | 显式目录、catalog ID、模型元数据与精确二进制来源 |
 | XV. Meaning is not matched | PASS | 不以关键词列表推断成功；检查实体/行关联、数值和原始证据 |

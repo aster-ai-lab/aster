@@ -1,5 +1,5 @@
 /**
- * Viewport window for the A3S-owned spreadsheet virtual grid.
+ * Viewport window for the Aster-owned spreadsheet virtual grid.
  * Computes the sparse row/column range that must paint for the current scroll
  * without materializing empty sheet cells.
  */

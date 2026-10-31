@@ -1,14 +1,14 @@
 //! Real-LLM turns through the shipped Aster TUI and current ACP.
 //!
-//! Runs when `A3S_CONFIG_FILE` points at the pinned layer-c ACL. The child
-//! receives that path as `A3S_CONFIG` and does not rewrite the file.
+//! Runs when `ASTER_CONFIG_FILE` points at the pinned layer-c ACL. The child
+//! receives that path as `ASTER_CONFIG` and does not rewrite the file.
 //! `real_llm_tui_turn_shows_assistant_text` is one prose turn and is not
 //! the 轮次 gate. Every live test refuses missing configuration; an unset
 //! variable is never a passing live observation. The 轮次 and 长程任务 tests
 //! use two independent defects.
 //!
 //! ```text
-//! target/debug/examples/acl_env_config run /abs/path/.a3s/config.acl \
+//! target/debug/examples/acl_env_config run /abs/path/.aster/config.acl \
 //!   cargo test -p aster --test tui_913_real_llm -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -41,16 +41,16 @@ mod tui_capabilities;
 const PROMPT: &str = "Reply with one short sentence and do not call any tools.";
 
 fn tui_binary() -> PathBuf {
-    if let Some(path) = std::env::var_os("A3S_CODE_TUI_BIN") {
+    if let Some(path) = std::env::var_os("ASTER_TUI_BIN") {
         return PathBuf::from(path);
     }
     PathBuf::from(env!("CARGO_BIN_EXE_aster"))
 }
 
 fn acp_binary() -> PathBuf {
-    std::env::var_os("A3S_CODE_ACP_BIN")
+    std::env::var_os("ASTER_ACP_BIN")
         .map(PathBuf::from)
-        .unwrap_or_else(|| tui_binary().with_file_name("a3s-code-acp"))
+        .unwrap_or_else(|| tui_binary().with_file_name("aster-acp"))
 }
 
 struct PtySession {
@@ -80,9 +80,9 @@ fn open_pty(binary: &Path, cwd: &Path, env: &[(&str, &str)], secrets: Vec<String
     let mut command = CommandBuilder::new(binary);
     command.env_clear();
     // Preserve only the helper's explicit env handoff across the isolated home.
-    if std::env::var("A3S_CODE_ACL_ENV_PREPARED").as_deref() == Ok("1") {
+    if std::env::var("ASTER_ACL_ENV_PREPARED").as_deref() == Ok("1") {
         let names: Vec<String> = serde_json::from_str(
-            &std::env::var("A3S_CODE_ACL_ENV_NAMES").expect("prepared environment names"),
+            &std::env::var("ASTER_ACL_ENV_NAMES").expect("prepared environment names"),
         )
         .expect("prepared environment list");
         for key in names {
@@ -97,7 +97,7 @@ fn open_pty(binary: &Path, cwd: &Path, env: &[(&str, &str)], secrets: Vec<String
     // turns have to read, write, and run the checker, so start the execution
     // profile. `--no-plan` is the existing pager flag.
     command.arg("--no-plan");
-    if let Some(model) = std::env::var_os("A3S_PINNED_MODEL") {
+    if let Some(model) = std::env::var_os("ASTER_PINNED_MODEL") {
         command.arg("--model");
         command.arg(model);
     }
@@ -132,7 +132,7 @@ fn open_pty(binary: &Path, cwd: &Path, env: &[(&str, &str)], secrets: Vec<String
         secrets,
         permission_trace: env
             .iter()
-            .find(|(key, _)| *key == "A3S_CODE_TUI_TEST_ACP_TRACE")
+            .find(|(key, _)| *key == "ASTER_TUI_TEST_ACP_TRACE")
             .map(|(_, path)| PathBuf::from(path)),
         answered_permission_seq: 0,
     }
@@ -337,7 +337,7 @@ fn is_chrome(line: &str) -> bool {
         "shortcuts",
         "Connecting",
         "Esc to",
-        "A3S Code",
+        "Aster Code",
         "Thanks for trying",
         "New worktree",
         "Resume session",
@@ -451,7 +451,7 @@ fn assert_screen_clean(pty: &PtySession, screen: &str) {
 fn real_llm_tui_turn_shows_assistant_text() {
     use tui_coding::turns::{selected_model, trace_events, trace_pair};
 
-    let mut session = open_live().expect("A3S_CONFIG_FILE is unset; refusing to pass");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is unset; refusing to pass");
     let trace = session.prompt_trace.clone().expect("request relay");
     submit_prompt(&mut session.pty, PROMPT);
     let deadline = Instant::now() + Duration::from_secs(420);
@@ -533,16 +533,16 @@ fn open_live() -> Option<LiveSession> {
 }
 
 fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
-    let config_value = std::env::var_os("A3S_CONFIG_FILE").filter(|value| !value.is_empty())?;
+    let config_value = std::env::var_os("ASTER_CONFIG_FILE").filter(|value| !value.is_empty())?;
     let config = PathBuf::from(config_value);
-    assert!(config.is_file(), "A3S_CONFIG_FILE is not a file");
-    let parsed = a3s_code_core::CodeConfig::from_file(&config)
+    assert!(config.is_file(), "ASTER_CONFIG_FILE is not a file");
+    let parsed = aster_core::CodeConfig::from_file(&config)
         .unwrap_or_else(|_| panic!("credentialed ACL could not be loaded"));
     assert!(
         parsed.default_model.is_some(),
         "pinned ACL must name a default model"
     );
-    let model_id = std::env::var("A3S_PINNED_MODEL")
+    let model_id = std::env::var("ASTER_PINNED_MODEL")
         .ok()
         .or_else(|| parsed.default_model.clone())
         .expect("configured model");
@@ -569,10 +569,10 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
     // Exercise the public host ACL entry through the actual ACP process.
     // This is not SessionOptions injection or a workspace-owned declaration.
     let launch_acl = coding.then(|| {
-        assert_eq!(std::env::var("A3S_CODE_ACL_ENV_PREPARED").as_deref(), Ok("1"), "coding tests require acl_env_config run; refusing to copy the original credentialed ACL");
-        use a3s_acl::{Block, Value};
+        assert_eq!(std::env::var("ASTER_ACL_ENV_PREPARED").as_deref(), Ok("1"), "coding tests require acl_env_config run; refusing to copy the original credentialed ACL");
+        use aster_acl::{Block, Value};
         let source = std::str::from_utf8(&before_acl).expect("ACL UTF-8");
-        let mut document = a3s_acl::parse_acl(source).expect("host ACL document");
+        let mut document = aster_acl::parse_acl(source).expect("host ACL document");
         document.blocks.push(Block {
             name: "verification_contract".into(),
             labels: vec!["dual-defect".into()],
@@ -594,7 +594,7 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
                 ),
             ]),
         });
-        let text = a3s_acl::generate_acl(&document);
+        let text = aster_acl::generate_acl(&document);
         let path = root.path().join("host-config.acl");
         let mut options = std::fs::OpenOptions::new();
         options.create_new(true).write(true);
@@ -638,14 +638,14 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
         path
     };
     let mut env = vec![
-        ("A3S_ACP_AGENT_BIN".to_string(), proxy.display().to_string()),
+        ("ASTER_ACP_AGENT_BIN".to_string(), proxy.display().to_string()),
         (
-            "A3S_CONFIG".to_string(),
+            "ASTER_CONFIG".to_string(),
             launch_config.display().to_string(),
         ),
-        ("A3S_DISABLE_CC_SWITCH".to_string(), "1".into()),
-        ("A3S_DISABLE_GROK_ACCOUNT".to_string(), "1".into()),
-        ("A3S_DISABLE_CURSOR_ACCOUNT".to_string(), "1".into()),
+        ("ASTER_DISABLE_CC_SWITCH".to_string(), "1".into()),
+        ("ASTER_DISABLE_GROK_ACCOUNT".to_string(), "1".into()),
+        ("ASTER_DISABLE_CURSOR_ACCOUNT".to_string(), "1".into()),
         ("HOME".to_string(), home.display().to_string()),
         (
             "GROK_HOME".to_string(),
@@ -679,11 +679,11 @@ fn open_live_with_verification(coding: bool) -> Option<LiveSession> {
     }
     if let Some(trace) = &prompt_trace {
         env.push((
-            "A3S_CODE_TUI_TEST_ACP_REAL".into(),
+            "ASTER_TUI_TEST_ACP_REAL".into(),
             acp.display().to_string(),
         ));
         env.push((
-            "A3S_CODE_TUI_TEST_ACP_TRACE".into(),
+            "ASTER_TUI_TEST_ACP_TRACE".into(),
             trace.display().to_string(),
         ));
     }
@@ -1013,8 +1013,8 @@ fn quote_turn_done(
 
 fn session_tool_trace(workspace: &Path, home: &Path) -> String {
     let mut chunks = Vec::new();
-    collect_trace_files(&workspace.join(".a3s"), &mut chunks);
-    collect_trace_files(&home.join(".a3s").join("logs"), &mut chunks);
+    collect_trace_files(&workspace.join(".aster"), &mut chunks);
+    collect_trace_files(&home.join(".aster").join("logs"), &mut chunks);
     chunks.join("\n")
 }
 
@@ -1546,7 +1546,7 @@ fn real_llm_tui_turns_fix_the_diagnosed_bug() {
     };
     prompts_omit_secrets_and_defects();
     let mut session =
-        open_live_with_verification(true).expect("A3S_CONFIG_FILE is unset; refusing to pass");
+        open_live_with_verification(true).expect("ASTER_CONFIG_FILE is unset; refusing to pass");
     let mut retained = tui_coding::RetainCodingTrace::new(&session, "tui-coding-multiturn");
     write_shop_fixture(&session.workspace);
     let workspace = session.workspace.clone();
@@ -1622,7 +1622,7 @@ fn real_llm_tui_turns_fix_the_diagnosed_bug() {
 fn real_llm_tui_long_task_repairs_and_quotes_the_check() {
     prompts_omit_secrets_and_defects();
     let mut session =
-        open_live_with_verification(true).expect("A3S_CONFIG_FILE is unset; refusing to pass");
+        open_live_with_verification(true).expect("ASTER_CONFIG_FILE is unset; refusing to pass");
     let mut retained = tui_coding::RetainCodingTrace::new(&session, "tui-coding-long-task");
     write_shop_fixture(&session.workspace);
     let workspace = session.workspace.clone();

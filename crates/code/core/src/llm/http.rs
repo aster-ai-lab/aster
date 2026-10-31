@@ -329,11 +329,11 @@ pub struct ReqwestHttpClient {
 /// The idle bound is what turns a silently stalled provider connection into a
 /// retryable failure: streaming responses have no total deadline (a legitimate
 /// generation may run for minutes), but a connection that delivers no bytes at
-/// all is dead. `A3S_CODE_LLM_STREAM_IDLE_TIMEOUT_MS` overrides the default;
+/// all is dead. `ASTER_LLM_STREAM_IDLE_TIMEOUT_MS` overrides the default;
 /// `0` disables the bound entirely.
 pub(crate) fn stream_idle_timeout() -> Duration {
     const DEFAULT_IDLE_TIMEOUT_MS: u64 = 300_000;
-    let configured = env::var("A3S_CODE_LLM_STREAM_IDLE_TIMEOUT_MS")
+    let configured = env::var("ASTER_LLM_STREAM_IDLE_TIMEOUT_MS")
         .ok()
         .and_then(|value| value.trim().parse::<u64>().ok());
     let milliseconds = configured.unwrap_or(DEFAULT_IDLE_TIMEOUT_MS);
@@ -352,11 +352,11 @@ pub(crate) fn stream_idle_timeout() -> Duration {
 /// failure instead of parking the model call (and the session) forever.
 /// The non-streaming `post` deliberately has no such bound — its headers
 /// only arrive after the full generation, which may legitimately take
-/// minutes. `A3S_CODE_LLM_STREAM_HEADERS_TIMEOUT_MS` overrides the default;
+/// minutes. `ASTER_LLM_STREAM_HEADERS_TIMEOUT_MS` overrides the default;
 /// `0` disables the bound entirely.
 pub(crate) fn stream_headers_timeout() -> Duration {
     const DEFAULT_HEADERS_TIMEOUT_MS: u64 = 120_000;
-    let configured = env::var("A3S_CODE_LLM_STREAM_HEADERS_TIMEOUT_MS")
+    let configured = env::var("ASTER_LLM_STREAM_HEADERS_TIMEOUT_MS")
         .ok()
         .and_then(|value| value.trim().parse::<u64>().ok());
     let milliseconds = configured.unwrap_or(DEFAULT_HEADERS_TIMEOUT_MS);
@@ -1359,7 +1359,7 @@ mod tests {
         let _guard = proxy_env_lock().lock().unwrap();
         clear_proxy_env();
         unsafe {
-            env::set_var("A3S_CODE_LLM_STREAM_IDLE_TIMEOUT_MS", "150");
+            env::set_var("ASTER_LLM_STREAM_IDLE_TIMEOUT_MS", "150");
         }
 
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
@@ -1411,7 +1411,7 @@ mod tests {
 
         server.abort();
         unsafe {
-            env::remove_var("A3S_CODE_LLM_STREAM_IDLE_TIMEOUT_MS");
+            env::remove_var("ASTER_LLM_STREAM_IDLE_TIMEOUT_MS");
         }
     }
 
@@ -1425,7 +1425,7 @@ mod tests {
         let _guard = proxy_env_lock().lock().unwrap();
         clear_proxy_env();
         unsafe {
-            env::set_var("A3S_CODE_LLM_STREAM_HEADERS_TIMEOUT_MS", "150");
+            env::set_var("ASTER_LLM_STREAM_HEADERS_TIMEOUT_MS", "150");
         }
 
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
@@ -1460,7 +1460,7 @@ mod tests {
 
         server.abort();
         unsafe {
-            env::remove_var("A3S_CODE_LLM_STREAM_HEADERS_TIMEOUT_MS");
+            env::remove_var("ASTER_LLM_STREAM_HEADERS_TIMEOUT_MS");
         }
     }
 

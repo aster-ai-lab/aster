@@ -1,5 +1,5 @@
-use a3s_office::{DocumentNode, NativeSpreadsheetNamedRange, NativeSpreadsheetNamedRangeScope};
-use a3s_use_core::UseResult;
+use aster_office::{DocumentNode, NativeSpreadsheetNamedRange, NativeSpreadsheetNamedRangeScope};
+use aster_use_core::UseResult;
 
 use super::arguments::{parse_boolean_option, ParsedArguments};
 use super::usage_error;

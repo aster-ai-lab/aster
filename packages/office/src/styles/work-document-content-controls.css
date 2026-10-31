@@ -1,5 +1,5 @@
 .work-document-content-control {
-  --work-document-content-control-color: var(--a3s-accent);
+  --work-document-content-control-color: var(--aster-accent);
   --work-document-content-control-appearance: boundingBox;
   position: relative;
   display: inline-block;
@@ -116,7 +116,7 @@
 .work-document-content-control-color {
   display: grid;
   gap: 5px;
-  color: var(--a3s-text-muted);
+  color: var(--aster-text-muted);
   font-size: 12px;
 }
 
@@ -135,7 +135,7 @@
   width: 28px;
   height: 28px;
   padding: 2px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 5px;
   background: transparent;
 }
@@ -144,7 +144,7 @@
   justify-self: start;
   border: 0;
   background: transparent;
-  color: var(--a3s-accent);
+  color: var(--aster-accent);
   cursor: pointer;
   font: inherit;
   font-size: 11px;

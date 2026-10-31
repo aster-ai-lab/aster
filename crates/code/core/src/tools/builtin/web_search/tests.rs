@@ -1,6 +1,6 @@
 use super::*;
 use crate::config::{BrowserBackend, CodeConfig, SearchConfig, SearchEngineConfig};
-use a3s_search::{EngineFailure, RetrievalHealth, RetrievalRequirements, Search};
+use aster_search::{EngineFailure, RetrievalHealth, RetrievalRequirements, Search};
 use async_trait::async_trait;
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -112,7 +112,7 @@ fn latest_search_metrics_are_exposed_as_stable_metadata() {
 
 #[test]
 fn latest_request_coalescing_state_is_exposed_as_stable_metadata() {
-    let mut snapshot = a3s_search::SearchCoalescerSnapshot::default();
+    let mut snapshot = aster_search::SearchCoalescerSnapshot::default();
     snapshot.max_in_flight = 128;
     snapshot.in_flight = 2;
     snapshot.leader_requests = 7;
@@ -131,23 +131,23 @@ fn latest_request_coalescing_state_is_exposed_as_stable_metadata() {
 }
 
 struct CoalescingProbeEngine {
-    config: a3s_search::EngineConfig,
+    config: aster_search::EngineConfig,
     calls: Arc<std::sync::atomic::AtomicUsize>,
 }
 
 #[async_trait::async_trait]
-impl a3s_search::Engine for CoalescingProbeEngine {
-    fn config(&self) -> &a3s_search::EngineConfig {
+impl aster_search::Engine for CoalescingProbeEngine {
+    fn config(&self) -> &aster_search::EngineConfig {
         &self.config
     }
 
     async fn search(
         &self,
-        query: &a3s_search::SearchQuery,
-    ) -> a3s_search::Result<Vec<a3s_search::SearchResult>> {
+        query: &aster_search::SearchQuery,
+    ) -> aster_search::Result<Vec<aster_search::SearchResult>> {
         self.calls.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         tokio::time::sleep(std::time::Duration::from_millis(25)).await;
-        Ok(vec![a3s_search::SearchResult::new(
+        Ok(vec![aster_search::SearchResult::new(
             "https://example.test/coalesced",
             query.query.clone(),
             "shared result",
@@ -166,10 +166,10 @@ async fn tier_searches_share_the_session_request_coalescer() {
     .map(|controls| Search::new().with_request_coalescer(controls.coalescer));
     for search in [&mut first, &mut second] {
         search.add_engine(CoalescingProbeEngine {
-            config: a3s_search::EngineConfig {
+            config: aster_search::EngineConfig {
                 name: "Coalescing Probe".to_string(),
                 shortcut: "coalescing_probe".to_string(),
-                ..a3s_search::EngineConfig::default()
+                ..aster_search::EngineConfig::default()
             },
             calls: Arc::clone(&calls),
         });
@@ -258,9 +258,9 @@ fn search_config(engines: HashMap<String, SearchEngineConfig>) -> SearchConfig {
 fn builtin_default_plan_is_api_first_and_leaves_billed_providers_out() {
     let plan = EngineTierPlan::new(None, None, None).unwrap();
 
-    assert_eq!(plan.tiers()[0].0, a3s_search::EngineTier::Api);
+    assert_eq!(plan.tiers()[0].0, aster_search::EngineTier::Api);
     assert_eq!(plan.api(), ["anysearch", "tavily"]);
-    assert!(!plan.shortcuts().iter().any(|shortcut| shortcut == "a3s"));
+    assert!(!plan.shortcuts().iter().any(|shortcut| shortcut == "aster"));
 }
 
 #[test]
@@ -301,7 +301,7 @@ search {
 #[test]
 fn cascade_order_lists_tiers_first_and_keeps_the_rest_in_default_order() {
     use crate::config::SearchCascadeTier;
-    use a3s_search::EngineTier;
+    use aster_search::EngineTier;
 
     assert_eq!(super::engines::tier_order(&[]), EngineTier::default_order());
     assert_eq!(
@@ -409,9 +409,9 @@ async fn a_provider_with_a_rejected_endpoint_never_runs_with_its_defaults() {
 
 #[test]
 fn provider_setup_failures_remain_typed_for_the_cascade() {
-    let error = a3s_search::SearchError::Other("provider setup failed".to_string());
+    let error = aster_search::SearchError::Other("provider setup failed".to_string());
     let failure = super::engines::provider_setup_failure(
-        a3s_search::providers::BuiltinProvider::AnySearch,
+        aster_search::providers::BuiltinProvider::AnySearch,
         &error,
     );
 
@@ -506,8 +506,8 @@ async fn configured_engine_selection_is_identified_in_failure_metadata() {
 #[tokio::test]
 #[ignore = "requires external network"]
 async fn real_builtin_default_search_uses_external_probe_query() {
-    let query = std::env::var("A3S_WEB_SEARCH_PROBE_QUERY")
-        .expect("set A3S_WEB_SEARCH_PROBE_QUERY for an external diagnostic query");
+    let query = std::env::var("ASTER_WEB_SEARCH_PROBE_QUERY")
+        .expect("set ASTER_WEB_SEARCH_PROBE_QUERY for an external diagnostic query");
     let tool = WebSearchTool::new();
     let ctx = ToolContext::new(PathBuf::from("/tmp"));
     let result = tool
@@ -919,7 +919,7 @@ fn every_named_provider_bridges_from_code_config() {
         "aliyun",
         "tencent",
         "firecrawl",
-        "a3s",
+        "aster",
     ];
     let config = search_config(
         providers
@@ -1231,9 +1231,9 @@ fn search_query_urls_drop_credentials_query_and_fragment() {
 }
 
 #[test]
-fn unconfigured_search_leaves_a3s_out_of_the_default_cascade() {
+fn unconfigured_search_leaves_aster_out_of_the_default_cascade() {
     let plan = EngineTierPlan::builtin_default();
-    assert!(!plan.shortcuts().iter().any(|shortcut| shortcut == "a3s"));
+    assert!(!plan.shortcuts().iter().any(|shortcut| shortcut == "aster"));
 }
 
 #[tokio::test]
@@ -1274,7 +1274,7 @@ async fn configured_agent_search_posts_to_the_gateway_route() {
         cascade_order: None,
         health: None,
         engines: HashMap::from([(
-            "a3s".to_string(),
+            "aster".to_string(),
             SearchEngineConfig {
                 enabled: true,
                 weight: 1.0,
@@ -1291,18 +1291,18 @@ async fn configured_agent_search_posts_to_the_gateway_route() {
     let (bridged, failures) = bridge_search_config(&config);
     assert!(failures.is_empty(), "{failures:?}");
     let engine = bridged
-        .create_provider_engine("a3s")
-        .expect("a3s setup")
-        .expect("named a3s must register against the gateway endpoint");
+        .create_provider_engine("aster")
+        .expect("aster setup")
+        .expect("named aster must register against the gateway endpoint");
     let mut search = Search::new();
     search.add_engine(engine);
     let results = search
-        .search(a3s_search::SearchQuery::new("rust"))
+        .search(aster_search::SearchQuery::new("rust"))
         .await
-        .expect("a3s search");
+        .expect("aster search");
     assert!(
         results.failures().is_empty(),
-        "a3s search failed: {:?}",
+        "aster search failed: {:?}",
         results.failures()
     );
     assert_eq!(results.items().len(), 1);
@@ -1370,7 +1370,7 @@ fn configured_deepseek_engine_bridges_to_a_provider() {
     let engine = entry.create_engine().expect("deepseek engine");
     assert!(matches!(
         engine.readiness(),
-        a3s_search::providers::ProviderReadiness::Ready { .. }
+        aster_search::providers::ProviderReadiness::Ready { .. }
     ));
 }
 
@@ -1417,7 +1417,7 @@ fn doubao_without_a_configured_key_does_not_read_the_process_environment() {
     let engine = entry.create_engine().expect("doubao engine");
     assert!(matches!(
         engine.readiness(),
-        a3s_search::providers::ProviderReadiness::MissingCredential {
+        aster_search::providers::ProviderReadiness::MissingCredential {
             environment_variable: None,
         }
     ));

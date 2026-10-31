@@ -1,13 +1,13 @@
-//! Inline LLM/MCP wire firewall — the agentfw-style local proxy, built on a3s-sentry.
+//! Inline LLM/MCP wire firewall — the agentfw-style local proxy, built on aster-sentry.
 //!
 //! This is the inline counterpart to observer's kernel backstop. An agent points its provider base
 //! URL at `http://localhost:<port>/wire/<agent>/...`; this proxy decodes each request body, runs
-//! [`a3s_sentry::Sentry::inspect_wire`] over it, **masks secrets/PII before they reach the upstream**
+//! [`aster_sentry::Sentry::inspect_wire`] over it, **masks secrets/PII before they reach the upstream**
 //! (restoring them on the response), and blocks an injection/jailbreak request outright — then
 //! forwards the (masked) call to the real provider. Sentry is the brain; this module is only the
 //! transport that holds the body long enough to gate it.
 //!
-//! Layering: this catches traffic that *goes through the proxy*; a3s-observer + sentry stay the
+//! Layering: this catches traffic that *goes through the proxy*; aster-observer + sentry stay the
 //! kernel backstop for anything that bypasses it (raw sockets, an agent ignoring the base URL). The
 //! two together cover both — an inline proxy alone is bypassable.
 //!
@@ -25,7 +25,7 @@
 //! - **Auth header passes through.** The provider API key in `Authorization` is forwarded as-is (the
 //!   upstream needs it); masking targets secrets in the *prompt/body*, not the call's own credential.
 
-use a3s_sentry::{Direction, Sentry};
+use aster_sentry::{Direction, Sentry};
 use serde::Serialize;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -115,7 +115,7 @@ impl WireGate {
         }
     }
 
-    /// Audit line for a response body. `blocked` mirrors [`a3s_sentry::Sentry::inspect_wire`]
+    /// Audit line for a response body. `blocked` mirrors [`aster_sentry::Sentry::inspect_wire`]
     /// — enforcement is [`Self::gate_response`].
     pub fn scan_response<'a>(&self, agent: &'a str, path: &'a str, body: &str) -> WireTrace<'a> {
         let d = self.sentry.inspect_wire(body, Direction::Response);
@@ -220,7 +220,7 @@ mod serve {
 
     /// Run the wire proxy: gate every request, forward the masked call to `upstream_base`, un-mask the
     /// response. `upstream_base` is a single provider origin (e.g. `https://api.anthropic.com`); per-
-    /// provider routing is a3s-gateway's existing routing concern, intentionally not duplicated here.
+    /// provider routing is aster-gateway's existing routing concern, intentionally not duplicated here.
     pub async fn serve(
         addr: SocketAddr,
         gate: Arc<WireGate>,
@@ -330,7 +330,7 @@ mod serve {
                 }
                 match gated {
                     Gated::Block { status, reason } => {
-                        let msg = serde_json::json!({ "error": "blocked by a3s wire firewall", "reason": reason });
+                        let msg = serde_json::json!({ "error": "blocked by aster wire firewall", "reason": reason });
                         return Ok(json(status, msg.to_string()));
                     }
                     Gated::Forward { body, restores, .. } => (body.into_bytes(), restores),
@@ -393,7 +393,7 @@ mod serve {
                 match gate.gate_response(&restored) {
                     Gated::Block { status, reason } => {
                         let msg = serde_json::json!({
-                            "error": "blocked by a3s wire firewall",
+                            "error": "blocked by aster wire firewall",
                             "reason": reason
                         });
                         return Ok(json(status, msg.to_string()));
@@ -475,7 +475,7 @@ mod serve {
                 "upstream must not receive the secret; saw: {upstream_saw}"
             );
             assert!(
-                upstream_saw.contains("A3S_REDACTED"),
+                upstream_saw.contains("ASTER_REDACTED"),
                 "upstream sees a placeholder"
             );
             // 2) the response handed back to the agent has the real secret restored.
@@ -523,7 +523,7 @@ mod serve {
             );
             let text = resp.text().await.unwrap();
             assert!(
-                text.contains("blocked by a3s wire firewall"),
+                text.contains("blocked by aster wire firewall"),
                 "agent sees the block reason; got: {text}"
             );
             assert!(

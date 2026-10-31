@@ -1,5 +1,5 @@
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::{ContainerTarget, Error, ErrorCode, ProcessRecord};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::{ContainerTarget, Error, ErrorCode, ProcessRecord};
 
 use super::super::{QualificationHvfDriver, FAULT_OPERATION};
 use crate::transport_cleanup_report::is_retryable_disconnect_operation;

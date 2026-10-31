@@ -24,7 +24,7 @@ if [[ "$pkg_version" != "0.1.2" ]]; then
   exit 1
 fi
 if [[ -z "$acp_version" ]]; then
-  echo "error: a3s-code-acp package version is empty" >&2
+  echo "error: aster-acp package version is empty" >&2
   exit 1
 fi
 
@@ -42,7 +42,7 @@ grep -q 'macos-latest' "$workflow"
 grep -q 'ubuntu-latest' "$workflow"
 grep -q 'windows-latest' "$workflow"
 grep -q 'contents: write' "$workflow"
-grep -q 'cargo build --locked --release -p aster -p a3s-code-acp' "$workflow"
+grep -q 'cargo build --locked --release -p aster -p aster-acp' "$workflow"
 grep -q "aster-cli-v${pkg_version}-macos.tar.gz" "$workflow"
 grep -q "aster-cli-v${pkg_version}-linux.tar.gz" "$workflow"
 grep -q "aster-cli-v${pkg_version}-windows.zip" "$workflow"
@@ -112,7 +112,7 @@ if [[ "\$1" == "update" ]]; then
 fi
 exit 2
 EOF
-cat >"$work/macos-bin/a3s-code-acp" <<EOF
+cat >"$work/macos-bin/aster-acp" <<EOF
 #!/bin/sh
 if [[ "\$1" == "--build-id" ]]; then
   printf '%s\n' 'aster-cli-pair-v1:install-check:local'
@@ -121,15 +121,15 @@ fi
 printf '%s\n' '${acp_version}'
 exit 0
 EOF
-chmod 755 "$work/macos-bin/aster" "$work/macos-bin/a3s-code-acp"
+chmod 755 "$work/macos-bin/aster" "$work/macos-bin/aster-acp"
 pair_stub() {
   printf '%s\n' '#!/bin/sh' 'if [ "$1" = "--build-id" ]; then' "  printf '%s\\n' 'aster-cli-pair-v1:install-check:local'" '  exit 0' 'fi' 'exit 0' >"$1"
   chmod 755 "$1"
 }
 pair_stub "$work/linux-bin/aster"
-pair_stub "$work/linux-bin/a3s-code-acp"
+pair_stub "$work/linux-bin/aster-acp"
 pair_stub "$work/windows-bin/aster.exe"
-pair_stub "$work/windows-bin/a3s-code-acp.exe"
+pair_stub "$work/windows-bin/aster-acp.exe"
 
 "$package" macos "$work/macos-bin" "$work/dist/aster-cli-v${pkg_version}-macos.tar.gz"
 "$package" linux "$work/linux-bin" "$work/dist/aster-cli-v${pkg_version}-linux.tar.gz"
@@ -140,11 +140,11 @@ python3 - "$work/dist/aster-cli-v${pkg_version}-windows.zip" >"$work/windows-mem
 import sys, zipfile
 print("\n".join(sorted(zipfile.ZipFile(sys.argv[1]).namelist())))
 PY
-grep -qx 'a3s-code-acp' "$work/macos-members.txt"
+grep -qx 'aster-acp' "$work/macos-members.txt"
 grep -qx 'aster' "$work/macos-members.txt"
-grep -qx 'a3s-code-acp' "$work/linux-members.txt"
+grep -qx 'aster-acp' "$work/linux-members.txt"
 grep -qx 'aster' "$work/linux-members.txt"
-grep -qx 'a3s-code-acp.exe' "$work/windows-members.txt"
+grep -qx 'aster-acp.exe' "$work/windows-members.txt"
 grep -qx 'aster.exe' "$work/windows-members.txt"
 
 hash_of() {
@@ -212,7 +212,7 @@ if [[ -s "$work/tool.log" ]]; then
   exit 1
 fi
 [[ -x "${prefix_a}/aster" ]]
-[[ -x "${prefix_a}/a3s-code-acp" ]]
+[[ -x "${prefix_a}/aster-acp" ]]
 grep -q "release=aster-cli-v${pkg_version}" "$work/prefix-a-run1.out"
 grep -q "asset=${work}/dist/aster-cli-v${pkg_version}-macos.tar.gz" "$work/prefix-a-run1.out"
 if grep -E 'Cloning|Compiling' "$work/prefix-a-run1.out" "$work/prefix-a-run1.err"; then
@@ -220,7 +220,7 @@ if grep -E 'Cloning|Compiling' "$work/prefix-a-run1.out" "$work/prefix-a-run1.er
   exit 1
 fi
 "${prefix_a}/aster" version --json >"$work/prefix-a-run1-version.json"
-"${prefix_a}/a3s-code-acp" --version >"$work/prefix-a-acp-version.txt"
+"${prefix_a}/aster-acp" --version >"$work/prefix-a-acp-version.txt"
 got_acp="$(tr -d '[:space:]' <"$work/prefix-a-acp-version.txt")"
 if [[ "$got_acp" != "$acp_version" ]]; then
   echo "error: acp version ${got_acp} != package ${acp_version}" >&2

@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use std::fmt;
 
-use a3s_oci_sdk::oci_spec::runtime::{Features, FeaturesBuilder};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{Features, FeaturesBuilder};
+use aster_oci_sdk::{
     AttachmentCapabilities, Error, ErrorCode, OciLinuxSupport, OciSchemaValidator, Result,
     BUILTIN_POTENTIALLY_UNSAFE_CONFIG_ANNOTATIONS, OCI_RUNTIME_SPEC_VERSION_MAX,
     OCI_RUNTIME_SPEC_VERSION_MIN,
@@ -18,11 +18,11 @@ pub(super) fn build(
 ) -> Result<Features> {
     let annotations = HashMap::from([
         (
-            "dev.a3s.oci.runtime.version".to_string(),
+            "dev.aster.oci.runtime.version".to_string(),
             env!("CARGO_PKG_VERSION").to_string(),
         ),
         (
-            "dev.a3s.oci.runtime.lifecycle".to_string(),
+            "dev.aster.oci.runtime.lifecycle".to_string(),
             if has_lifecycle {
                 "durable-core"
             } else {

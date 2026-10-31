@@ -7,10 +7,10 @@ use std::path::{Component, Path, PathBuf};
 use std::sync::Arc;
 
 #[cfg(target_os = "linux")]
-use a3s_oci_agent_protocol::AgentTransportFaultInjector;
+use aster_oci_agent_protocol::AgentTransportFaultInjector;
 #[cfg(target_os = "linux")]
-use a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_TAG;
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_TAG;
+use aster_oci_agent_protocol::{
     AgentCapabilities, AgentCreateRequest, AgentDeleteRequest, AgentKillRequest, AgentStartRequest,
     AgentState, AgentStateRequest, AgentTransportQualificationRequest, GuestAgentService,
     SessionToken, AGENT_RUNTIME_SHARE_ENV, AGENT_RUNTIME_SHARE_GUEST_ROOT,
@@ -19,15 +19,15 @@ use a3s_oci_agent_protocol::{
     AGENT_SESSION_TOKEN_FILE_NAME,
 };
 #[cfg(target_os = "linux")]
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentRecoveryRecord, AgentRecoveryReport, AGENT_RECOVERY_REPORT_ENV,
     AGENT_RUNTIME_SHARE_STATE_GUEST_ROOT,
 };
 #[cfg(any(target_os = "linux", test))]
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AGENT_RECOVERY_REPORT_DIRECTORY_PREFIX, AGENT_RECOVERY_REPORT_FILE_NAME,
 };
-use a3s_oci_sdk::{async_trait, Error, ErrorCode, Result};
+use aster_oci_sdk::{async_trait, Error, ErrorCode, Result};
 use zeroize::Zeroizing;
 
 #[cfg(target_os = "linux")]
@@ -77,10 +77,10 @@ pub struct UtilityVmAttachmentBinding;
 pub fn take_vm_attachment_manifest(
     _runtime_parent: Option<&Path>,
 ) -> Result<Option<UtilityVmAttachmentBinding>> {
-    match std::env::var_os(a3s_oci_agent_protocol::AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV) {
+    match std::env::var_os(aster_oci_agent_protocol::AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV) {
         None => Ok(None),
         Some(_) => {
-            std::env::remove_var(a3s_oci_agent_protocol::AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV);
+            std::env::remove_var(aster_oci_agent_protocol::AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV);
             Err(Error::new(
                 ErrorCode::Unsupported,
                 "VM attachment bootstrap requires a Linux Guest",
@@ -502,7 +502,7 @@ pub fn run_transport_qualification_with_security(
 /// Opt-in utility-VM Host reopen: after a clean Host EOF, reconnect vsock and
 /// serve again with the same executor so Live containers survive Host death.
 #[cfg(target_os = "linux")]
-const GUEST_HOST_RECONNECT_ENV: &str = "A3S_OCI_GUEST_HOST_RECONNECT";
+const GUEST_HOST_RECONNECT_ENV: &str = "ASTER_OCI_GUEST_HOST_RECONNECT";
 
 #[cfg(target_os = "linux")]
 fn guest_host_reconnect_enabled() -> bool {
@@ -552,7 +552,7 @@ fn run_linux(
             let fault =
                 Arc::new(transport_qualification::GuestTransportQualificationFault::new(request));
             let protocol_fault: Arc<dyn AgentTransportFaultInjector> = fault.clone();
-            let result = a3s_oci_agent_protocol::serve_agent_connection_with_fault_injector(
+            let result = aster_oci_agent_protocol::serve_agent_connection_with_fault_injector(
                 stream,
                 token,
                 protocol_service,
@@ -568,7 +568,7 @@ fn run_linux(
             // reconnect the same way. Only non-retryable failures end the loop.
             loop {
                 let stream = connect_guest_vsock_stream().await?;
-                let result = a3s_oci_agent_protocol::serve_agent_connection(
+                let result = aster_oci_agent_protocol::serve_agent_connection(
                     stream,
                     token.clone(),
                     protocol_service.clone(),
@@ -582,7 +582,7 @@ fn run_linux(
         } else {
             let stream = connect_guest_vsock_stream().await?;
             (
-                a3s_oci_agent_protocol::serve_agent_connection(stream, token, protocol_service)
+                aster_oci_agent_protocol::serve_agent_connection(stream, token, protocol_service)
                     .await,
                 None,
             )
@@ -658,7 +658,7 @@ fn should_reconnect_after_host_session(result: &Result<()>) -> bool {
 #[cfg(test)]
 mod guest_host_reconnect_tests {
     use super::{is_clean_host_disconnect, should_reconnect_after_host_session};
-    use a3s_oci_sdk::{Error, ErrorCode};
+    use aster_oci_sdk::{Error, ErrorCode};
 
     #[test]
     fn clean_eof_reconnects_under_live_host_reopen() {
@@ -779,7 +779,7 @@ pub fn run_with_vm_attachments(
 ) -> Result<()> {
     Err(Error::new(
         ErrorCode::Unsupported,
-        "the A3S OCI guest agent supports VM attachments only on Linux",
+        "the Aster OCI guest agent supports VM attachments only on Linux",
     )
     .for_operation("run-guest-agent"))
 }
@@ -828,10 +828,10 @@ pub fn run_transport_qualification_with_security(
 mod tests {
     use std::path::Path;
 
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         GuestAgentService, AGENT_RUNTIME_SHARE_SECURITY_WINDOWS_VIRTIOFS,
     };
-    use a3s_oci_sdk::{Error, ErrorCode};
+    use aster_oci_sdk::{Error, ErrorCode};
 
     use super::{
         finish_guest_session, parse_guest_handoff_security, validate_recovery_report_path,
@@ -848,19 +848,19 @@ mod tests {
     #[test]
     fn accepts_only_the_runtime_owned_token_file_shape() {
         for path in [
-            "/.a3s-oci-bootstrap-a3s-oci-agent-test/session-token",
-            "/run/a3s-oci-runtime/.a3s-oci-bootstrap-a3s-oci-agent-test/session-token",
+            "/.aster-oci-bootstrap-aster-oci-agent-test/session-token",
+            "/run/aster-oci-runtime/.aster-oci-bootstrap-aster-oci-agent-test/session-token",
         ] {
             assert!(validate_token_path(Path::new(path)).is_ok(), "{path}");
         }
         for path in [
             "relative/session-token",
             "/session-token",
-            "/.a3s-oci-bootstrap-/session-token",
-            "/.a3s-oci-bootstrap-test/other",
-            "/.a3s-oci-bootstrap-test/nested/session-token",
-            "/run/other/.a3s-oci-bootstrap-test/session-token",
-            "/run/a3s-oci-runtime/nested/.a3s-oci-bootstrap-test/session-token",
+            "/.aster-oci-bootstrap-/session-token",
+            "/.aster-oci-bootstrap-test/other",
+            "/.aster-oci-bootstrap-test/nested/session-token",
+            "/run/other/.aster-oci-bootstrap-test/session-token",
+            "/run/aster-oci-runtime/nested/.aster-oci-bootstrap-test/session-token",
         ] {
             assert!(validate_token_path(Path::new(path)).is_err(), "{path}");
         }
@@ -868,7 +868,7 @@ mod tests {
 
     #[test]
     fn windows_handoff_contract_is_exact_and_path_bound() {
-        let runtime_path = Path::new("/run/a3s-oci-runtime/.a3s-oci-bootstrap-test/session-token");
+        let runtime_path = Path::new("/run/aster-oci-runtime/.aster-oci-bootstrap-test/session-token");
         assert_eq!(
             parse_guest_handoff_security(
                 Some(std::ffi::OsStr::new(
@@ -907,8 +907,8 @@ mod tests {
     #[test]
     fn accepts_only_the_runtime_owned_recovery_file_shape() {
         for path in [
-            "/.a3s-oci-recovery-a3s-oci-agent-test/report.json",
-            "/run/a3s-oci-runtime/.a3s-oci-recovery-a3s-oci-agent-test/report.json",
+            "/.aster-oci-recovery-aster-oci-agent-test/report.json",
+            "/run/aster-oci-runtime/.aster-oci-recovery-aster-oci-agent-test/report.json",
         ] {
             assert!(
                 validate_recovery_report_path(Path::new(path)).is_ok(),
@@ -918,11 +918,11 @@ mod tests {
         for path in [
             "relative/report.json",
             "/report.json",
-            "/.a3s-oci-recovery-/report.json",
-            "/.a3s-oci-recovery-test/other",
-            "/.a3s-oci-recovery-test/nested/report.json",
-            "/run/other/.a3s-oci-recovery-test/report.json",
-            "/run/a3s-oci-runtime/nested/.a3s-oci-recovery-test/report.json",
+            "/.aster-oci-recovery-/report.json",
+            "/.aster-oci-recovery-test/other",
+            "/.aster-oci-recovery-test/nested/report.json",
+            "/run/other/.aster-oci-recovery-test/report.json",
+            "/run/aster-oci-runtime/nested/.aster-oci-recovery-test/report.json",
         ] {
             assert!(
                 validate_recovery_report_path(Path::new(path)).is_err(),

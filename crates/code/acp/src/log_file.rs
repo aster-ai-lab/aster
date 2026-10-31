@@ -2,8 +2,8 @@
 //!
 //! The agent's stderr is inherited by the launching terminal and scrolls
 //! away; every hang/failure investigation so far had no on-disk trail. This
-//! module adds a date-stamped file under the a3s state directory (default
-//! `~/.a3s/logs/a3s-code-acp.YYYY-MM-DD.log`, keeping the newest seven).
+//! module adds a date-stamped file under the aster state directory (default
+//! `~/.aster/logs/aster-acp.YYYY-MM-DD.log`, keeping the newest seven).
 //! Opening or writing failures degrade to stderr-only logging — diagnostics
 //! must never block or kill the agent.
 
@@ -14,24 +14,24 @@ use std::sync::Mutex;
 
 const KEEP_DAYS: usize = 7;
 
-/// `A3S_CODE_LOG_FILE=0` disables the file layer entirely.
+/// `ASTER_LOG_FILE=0` disables the file layer entirely.
 pub fn file_logging_enabled() -> bool {
     !matches!(
-        std::env::var("A3S_CODE_LOG_FILE").as_deref(),
+        std::env::var("ASTER_LOG_FILE").as_deref(),
         Ok("0") | Ok("off") | Ok("false")
     )
 }
 
-/// Directory holding the log files; `A3S_CODE_LOG_DIR` overrides the
-/// default `<home>/.a3s/logs`.
+/// Directory holding the log files; `ASTER_LOG_DIR` overrides the
+/// default `<home>/.aster/logs`.
 pub fn log_dir() -> PathBuf {
-    if let Some(dir) = std::env::var_os("A3S_CODE_LOG_DIR") {
+    if let Some(dir) = std::env::var_os("ASTER_LOG_DIR") {
         return PathBuf::from(dir);
     }
     let home = std::env::var_os("HOME")
         .map(PathBuf::from)
         .unwrap_or_else(std::env::temp_dir);
-    home.join(".a3s").join("logs")
+    home.join(".aster").join("logs")
 }
 
 fn today() -> String {
@@ -77,7 +77,7 @@ impl DailyLog {
 
     #[cfg(test)]
     fn path_for(&self, day: &str) -> PathBuf {
-        self.dir.join(format!("a3s-code-acp.{day}.log"))
+        self.dir.join(format!("aster-acp.{day}.log"))
     }
 
     /// Roll to today's file when the day changed; prune old files.
@@ -136,7 +136,7 @@ impl DailyLog {
 
 fn open_today(dir: &std::path::Path, day: &str) -> Option<File> {
     let _ = std::fs::create_dir_all(dir);
-    let path = dir.join(format!("a3s-code-acp.{day}.log"));
+    let path = dir.join(format!("aster-acp.{day}.log"));
     OpenOptions::new().create(true).append(true).open(path).ok()
 }
 
@@ -149,7 +149,7 @@ fn prune_old_logs(dir: &std::path::Path) {
         .flatten()
         .filter_map(|entry| {
             let name = entry.file_name().into_string().ok()?;
-            let stem = name.strip_prefix("a3s-code-acp.")?.strip_suffix(".log")?;
+            let stem = name.strip_prefix("aster-acp.")?.strip_suffix(".log")?;
             Some((stem.to_string(), entry.path()))
         })
         .collect();
@@ -223,16 +223,16 @@ impl std::io::Write for DailyLogWriter {
 mod tests {
     use super::*;
 
-    /// HOME/A3S_CODE_LOG_DIR are process-global; serialise and restore.
+    /// HOME/ASTER_LOG_DIR are process-global; serialise and restore.
     fn env_locked<T>(test: impl FnOnce() -> T) -> T {
         static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
         let _guard = LOCK.lock().unwrap_or_else(|poison| poison.into_inner());
-        let log_dir = std::env::var_os("A3S_CODE_LOG_DIR");
-        std::env::set_var("A3S_CODE_LOG_DIR", "/nonexistent-logs");
+        let log_dir = std::env::var_os("ASTER_LOG_DIR");
+        std::env::set_var("ASTER_LOG_DIR", "/nonexistent-logs");
         let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(test));
         match log_dir {
-            Some(value) => std::env::set_var("A3S_CODE_LOG_DIR", value),
-            None => std::env::remove_var("A3S_CODE_LOG_DIR"),
+            Some(value) => std::env::set_var("ASTER_LOG_DIR", value),
+            None => std::env::remove_var("ASTER_LOG_DIR"),
         }
         match outcome {
             Ok(value) => value,
@@ -244,7 +244,7 @@ mod tests {
     fn daily_log_writes_and_prunes() {
         env_locked(|| {
             let dir = tempfile::tempdir().unwrap();
-            std::env::set_var("A3S_CODE_LOG_DIR", dir.path());
+            std::env::set_var("ASTER_LOG_DIR", dir.path());
             let mut log = DailyLog::create(log_dir());
             let day = today();
             log.write_line("first line");
@@ -254,7 +254,7 @@ mod tests {
             assert_eq!(body, "first line\nsecond line\n");
             // Rotation pruning keeps the bound.
             for stale in ["1", "2", "3", "4", "5", "6", "7", "8", "9"] {
-                let _ = std::fs::write(dir.path().join(format!("a3s-code-acp.{stale}.log")), "x");
+                let _ = std::fs::write(dir.path().join(format!("aster-acp.{stale}.log")), "x");
             }
             prune_old_logs(&log_dir());
             let remaining = std::fs::read_dir(dir.path()).unwrap().count();
@@ -266,13 +266,13 @@ mod tests {
     fn daily_log_writer_routes_to_the_env_dir() {
         env_locked(|| {
             let dir = tempfile::tempdir().unwrap();
-            std::env::set_var("A3S_CODE_LOG_DIR", dir.path());
+            std::env::set_var("ASTER_LOG_DIR", dir.path());
             let mut writer = DailyLogWriter::new();
             use std::io::Write as _;
             writer.write_all(b"routed line\n").unwrap();
             writer.flush().unwrap();
             let day = today();
-            let body = std::fs::read_to_string(dir.path().join(format!("a3s-code-acp.{day}.log")))
+            let body = std::fs::read_to_string(dir.path().join(format!("aster-acp.{day}.log")))
                 .unwrap_or_default();
             assert!(body.contains("routed line"), "got {body:?}");
         })
@@ -306,7 +306,7 @@ mod tests {
             }
             handle.join().expect("log writer thread");
             let body =
-                std::fs::read_to_string(dir.path().join(format!("a3s-code-acp.{}.log", today())))
+                std::fs::read_to_string(dir.path().join(format!("aster-acp.{}.log", today())))
                     .unwrap_or_default();
             assert!(
                 body.contains("-- log size cap reached; stopping for today --"),

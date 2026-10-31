@@ -107,7 +107,7 @@ fn test_output_requires_the_original_cases_and_allows_extra_tests() {
 #[ignore = "regrade retained delivery bytes with current hidden oracle; no model request or original-result overwrite"]
 async fn retained_rust_delivery_passes_the_strengthened_guest_oracle() {
     let retained = PathBuf::from(
-        std::env::var_os("A3S_LH_RECHECK_DIR").expect("explicit retained Rust case directory"),
+        std::env::var_os("ASTER_LH_RECHECK_DIR").expect("explicit retained Rust case directory"),
     );
     let assets = PathBuf::from(
         std::env::var_os("ASTER_TEST_OCI_ASSETS").expect("explicit qualified guest assets"),

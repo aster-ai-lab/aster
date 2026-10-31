@@ -1,5 +1,5 @@
-use a3s_code_core::tools::{ArtifactStoreLimits, ToolExecutor};
-use a3s_code_core::{
+use aster_core::tools::{ArtifactStoreLimits, ToolExecutor};
+use aster_core::{
     CommandOutput, CommandRequest, WorkspaceCommandRunner, WorkspaceDirEntry, WorkspaceError,
     WorkspaceFileSystem, WorkspaceFileType, WorkspaceGit, WorkspaceGitBranch,
     WorkspaceGitCheckoutOutput, WorkspaceGitCheckoutRequest, WorkspaceGitCommit,
@@ -241,7 +241,7 @@ impl WorkspaceGit for RecordingGit {
         Ok(vec![WorkspaceGitCommit {
             id: "abcdef1234567890".to_string(),
             message: "Initial commit".to_string(),
-            author: "A3S".to_string(),
+            author: "Aster".to_string(),
             date: "2026-05-18 10:00".to_string(),
         }])
     }
@@ -508,7 +508,7 @@ async fn custom_workspace_file_tools_do_not_touch_local_filesystem() {
     assert_eq!(listing.exit_code, 0, "{}", listing.output);
     assert!(listing.output.contains("main.rs"));
     assert!(listing.output.contains("generated.rs"));
-    a3s_code_core::external_observation::release_session("virtual-file-tools");
+    aster_core::external_observation::release_session("virtual-file-tools");
 }
 
 #[tokio::test]
@@ -712,5 +712,5 @@ async fn custom_workspace_git_provider_drives_git_tool() {
             "create_worktree:feature-y:branches/feature-y:false",
         ]
     );
-    a3s_code_core::external_observation::release_session("virtual-git");
+    aster_core::external_observation::release_session("virtual-git");
 }

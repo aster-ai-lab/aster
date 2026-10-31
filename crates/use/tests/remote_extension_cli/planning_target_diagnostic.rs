@@ -53,7 +53,7 @@ fn killed_planning_target_download_is_diagnostic_and_hands_off_without_a_gap() {
             "1.0.0",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .spawn()
         .unwrap();
     let reached_partial = wait_until(Duration::from_secs(15), || {
@@ -87,7 +87,7 @@ fn killed_planning_target_download_is_diagnostic_and_hands_off_without_a_gap() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(active.status.success(), "{active:?}");
@@ -95,7 +95,7 @@ fn killed_planning_target_download_is_diagnostic_and_hands_off_without_a_gap() {
     let diagnostic = &active["data"]["diagnostic"];
     assert_eq!(
         diagnostic["schema"],
-        "a3s.use.plugin-download-attempt-diagnostic.v1"
+        "aster.use.plugin-download-attempt-diagnostic.v1"
     );
     assert_eq!(diagnostic["attempt"]["download"], "missing");
     assert_eq!(diagnostic["attempt"]["planningBytes"], planning_bytes);
@@ -144,7 +144,7 @@ fn killed_planning_target_download_is_diagnostic_and_hands_off_without_a_gap() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(retained.status.success(), "{retained:?}");
@@ -185,7 +185,7 @@ fn killed_planning_target_download_is_diagnostic_and_hands_off_without_a_gap() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(handed_off.status.success(), "{handed_off:?}");

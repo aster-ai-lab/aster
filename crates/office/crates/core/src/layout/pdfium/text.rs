@@ -1,6 +1,6 @@
 use std::ops::Range;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use pdfium_render::prelude::{PdfPage, PdfRect};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

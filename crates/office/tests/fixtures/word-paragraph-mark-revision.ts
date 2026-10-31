@@ -16,9 +16,9 @@ export const PARAGRAPH_MARK_STABLE_TEXT =
 /** Builds the exact text-only paragraph-mark shape emitted by local WPS. */
 export async function createWordParagraphMarkRevisionFixture(): Promise<Buffer> {
   const document = new Document({
-    creator: 'A3S Lab',
+    creator: 'Aster',
     description: 'Deterministic WPS paragraph-mark revision fixture',
-    title: 'A3S Office WPS paragraph-mark revision fixture',
+    title: 'Aster Office WPS paragraph-mark revision fixture',
     sections: [
       {
         children: [

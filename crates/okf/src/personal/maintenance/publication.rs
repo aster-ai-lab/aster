@@ -253,13 +253,13 @@ pub(super) fn publish_with(
         .collect::<io::Result<Vec<_>>>()?;
     let index = render_index(&listed, &[], &[]).into_bytes();
     projected.insert("index.md".into(), index.clone());
-    a3s_use_core::inspect_okf_bundle(
-        a3s_use_core::OkfFormatVersion::V0_2,
+    aster_use_core::inspect_okf_bundle(
+        aster_use_core::OkfFormatVersion::V0_2,
         bundle_limits(),
         projected
             .into_iter()
             .filter(|(path, _)| page_path(path) || path == "index.md")
-            .map(|(path, bytes)| a3s_use_core::OkfBundleFile::new(path, bytes)),
+            .map(|(path, bytes)| aster_use_core::OkfBundleFile::new(path, bytes)),
     )
     .map_err(io::Error::other)?;
     outputs.insert("index.md".into(), index);

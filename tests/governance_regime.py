@@ -76,10 +76,13 @@ def section(text, heading):
     if start < 0:
         raise RegimeError(f"missing section {heading}")
     rest = text[start + len(marker) :]
-    nxt = rest.find("\n### ")
-    if nxt < 0:
-        nxt = rest.find("\n## ")
-    return rest if nxt < 0 else rest[:nxt]
+    # Stop at the nearest following heading, whether `##` or `###`.
+    # Preferring only `###` would swallow a following `##` section and
+    # any later `###` tokens inside it.
+    bounds = [index for index in (rest.find("\n### "), rest.find("\n## ")) if index >= 0]
+    if not bounds:
+        return rest
+    return rest[: min(bounds)]
 
 
 def check_regimes(text):
@@ -96,17 +99,37 @@ def check_regimes(text):
         raise RegimeError("control-plane regime missing " + ", ".join(missing))
 
 
-def check_workspace_split(root_text, api_text, cloud_text):
-    """api and cloud stay out of the root workspace and keep their own."""
+EDGE_ROOT_FORBIDDEN = (
+    "apps/auth",
+    "apps/billing",
+    "apps/config",
+    "apps/runtime",
+    "apps/runner",
+    "apps/control-plane",
+    "apps/control-plane/auth",
+    "apps/control-plane/billing",
+    "apps/control-plane/config",
+    "apps/control-plane/runtime",
+    "apps/control-plane/runner",
+)
+
+
+def check_workspace_split(root_text, api_text, cloud_text, control_plane_text):
+    """api, cloud, and control-plane stay out of root and keep their own."""
     members = workspace_members(root_text)
     if "apps/api" in members:
         raise RegimeError("apps/api is a root workspace member")
     if any(member == "apps/cloud" or member.startswith("apps/cloud/") for member in members):
         raise RegimeError("apps/cloud is a root workspace member")
+    for edge in EDGE_ROOT_FORBIDDEN:
+        if edge in members:
+            raise RegimeError(f"{edge} is a root workspace member")
     if not has_workspace_table(api_text):
         raise RegimeError("apps/api has no workspace table")
     if not has_workspace_table(cloud_text):
         raise RegimeError("apps/cloud has no workspace table")
+    if not has_workspace_table(control_plane_text):
+        raise RegimeError("apps/control-plane has no workspace table")
 
 
 class GovernanceRegimeTest(unittest.TestCase):
@@ -141,16 +164,18 @@ class GovernanceRegimeTest(unittest.TestCase):
                     check_regimes(stripped)
                 self.assertIn(token, str(caught.exception))
 
-    def test_api_and_cloud_keep_separate_workspaces(self):
+    def test_api_cloud_and_control_plane_keep_separate_workspaces(self):
         root = (ROOT / "Cargo.toml").read_text(encoding="utf-8")
         api = (ROOT / "apps/api/Cargo.toml").read_text(encoding="utf-8")
         cloud = (ROOT / "apps/cloud/Cargo.toml").read_text(encoding="utf-8")
-        check_workspace_split(root, api, cloud)
+        control_plane = (ROOT / "apps/control-plane/Cargo.toml").read_text(encoding="utf-8")
+        check_workspace_split(root, api, cloud, control_plane)
         with self.assertRaises(RegimeError):
             check_workspace_split(
                 root.replace('"apps/aster",', '"apps/api",', 1),
                 api,
                 cloud,
+                control_plane,
             )
         with self.assertRaises(RegimeError):
             check_workspace_split(
@@ -161,15 +186,28 @@ class GovernanceRegimeTest(unittest.TestCase):
                 ),
                 api,
                 cloud,
+                control_plane,
+            )
+        with self.assertRaises(RegimeError):
+            check_workspace_split(
+                root.replace('"apps/aster",', '"apps/aster",\n    "apps/auth",', 1),
+                api,
+                cloud,
+                control_plane,
             )
         dropped = "\n".join(line for line in api.splitlines() if line.strip() != "[workspace]")
         with self.assertRaises(RegimeError):
-            check_workspace_split(root, dropped, cloud)
+            check_workspace_split(root, dropped, cloud, control_plane)
         dropped_cloud = "\n".join(
             line for line in cloud.splitlines() if line.strip() != "[workspace]"
         )
         with self.assertRaises(RegimeError):
-            check_workspace_split(root, api, dropped_cloud)
+            check_workspace_split(root, api, dropped_cloud, control_plane)
+        dropped_edge = "\n".join(
+            line for line in control_plane.splitlines() if line.strip() != "[workspace]"
+        )
+        with self.assertRaises(RegimeError):
+            check_workspace_split(root, api, cloud, dropped_edge)
 
 
 if __name__ == "__main__":

@@ -11,8 +11,8 @@
 //! particular tied-index subset; this control chooses the lowest row on ties
 //! and sorts the selected IDs. GPU/model qualification remains mandatory.
 
-use a3s_power::error::{PowerError, Result};
-use a3s_power::inference::InferenceLimits;
+use aster_power::error::{PowerError, Result};
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

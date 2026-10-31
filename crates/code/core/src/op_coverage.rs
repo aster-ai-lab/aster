@@ -49,7 +49,7 @@ async fn open_session(root: &Path, options: SessionOptions) -> (Agent, AgentSess
 }
 
 fn repo_config_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../.a3s/config.acl")
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../.aster/config.acl")
 }
 
 fn assert_session_closed<T>(label: &str, result: Result<T, CodeError>) {
@@ -452,14 +452,14 @@ async fn opcov_workspace_projection() {
         (Err(error), None) => {
             let text = error.to_string();
             assert!(
-                text.contains("the default A3S native sandbox is unavailable"),
+                text.contains("the default Aster native sandbox is unavailable"),
                 "{text}"
             );
             "sandbox-unavailable"
         }
         (Ok(output), None) => {
             assert!(
-                output.contains("the default A3S native sandbox is unavailable"),
+                output.contains("the default Aster native sandbox is unavailable"),
                 "{output}"
             );
             "sandbox-unavailable"
@@ -763,7 +763,7 @@ async fn opcov_artifact() {
     assert_eq!(artifact.artifact_uri, uri);
     assert!(uri.contains(&sha256_hex(artifact.content.as_bytes())));
     assert!(session
-        .get_artifact("a3s://tool-output/read/missing")
+        .get_artifact("aster://tool-output/read/missing")
         .is_none());
     session.close().await;
     agent.close().await;
@@ -934,17 +934,17 @@ async fn opcov_budget() {
 async fn opcov_memory() {
     let workspace = tempfile::tempdir().expect("workspace");
     let options =
-        base_options(&session_id("memory")).with_memory(Arc::new(a3s_memory::InMemoryStore::new()));
+        base_options(&session_id("memory")).with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let (agent, session) = open_session(workspace.path(), options).await;
     let memory = Arc::clone(session.memory().expect("session.memory"));
     memory
-        .remember(a3s_memory::MemoryItem::new("opcov-active-canary-zeta"))
+        .remember(aster_durable_memory::MemoryItem::new("opcov-active-canary-zeta"))
         .await
         .expect("remember active");
     memory
         .remember(
-            a3s_memory::MemoryItem::new("opcov-superseded-canary-quota")
-                .with_metadata("a3s.memory.status", "superseded"),
+            aster_durable_memory::MemoryItem::new("opcov-superseded-canary-quota")
+                .with_metadata("aster.memory.status", "superseded"),
         )
         .await
         .expect("remember superseded");
@@ -1132,6 +1132,7 @@ fn offline_protocol_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/static".into()),
         providers: vec![crate::config::ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -1406,7 +1407,7 @@ fn opcov_state_graph() {
 
 #[test]
 fn opcov_release_bind() {
-    let raw = include_str!("../../fixtures/agent-release-contract/.a3s/asset.acl");
+    let raw = include_str!("../../fixtures/agent-release-contract/.aster/asset.acl");
     let manifest =
         crate::release::AgentReleaseManifest::parse(&raw.replace("\r\n", "\n")).expect("fixture");
     let original = manifest.identity().to_string();
@@ -1417,13 +1418,13 @@ fn opcov_release_bind() {
             [
                 crate::release::AgentReleaseProvenance::new(
                     "source",
-                    "https://github.com/A3S-Lab/Code",
+                    "https://github.com/aster-ai-lab/Code",
                     "sha256:2222222222222222222222222222222222222222222222222222222222222222",
                 )
                 .expect("source"),
                 crate::release::AgentReleaseProvenance::new(
                     "builder",
-                    "urn:a3s:builder:github-actions",
+                    "urn:aster:builder:github-actions",
                     "sha256:4444444444444444444444444444444444444444444444444444444444444444",
                 )
                 .expect("builder"),
@@ -1436,7 +1437,7 @@ fn opcov_release_bind() {
         submitted,
         [crate::release::AgentReleaseProvenance::new(
             "publisher",
-            "https://github.com/A3S-Lab/Code",
+            "https://github.com/aster-ai-lab/Code",
             "sha256:2222222222222222222222222222222222222222222222222222222222222222",
         )
         .expect("publisher")],
@@ -1620,7 +1621,7 @@ fn opcov_typed_decision() {
     assert_eq!(gated.model, receipt.model);
     assert_eq!(receipt.request_digest, again.request_digest);
     let expected =
-        crate::digest_json("a3s.code.typed_decision.request.v1", &request).expect("request digest");
+        crate::digest_json("aster.code.typed_decision.request.v1", &request).expect("request digest");
     assert_eq!(receipt.request_digest, expected);
     let mut rejected = request.clone();
     rejected.questions.clear();

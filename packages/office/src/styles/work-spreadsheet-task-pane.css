@@ -26,7 +26,7 @@
   > aside {
   padding: 10px 12px;
   border-right: 0;
-  border-bottom: 1px solid var(--a3s-line);
+  border-bottom: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-workbook-panel
@@ -143,7 +143,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: end;
   padding: 7px 0;
-  border-bottom: 1px solid var(--a3s-line);
+  border-bottom: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-workbook-panel .work-spreadsheet-pivot-field-row:last-child {
@@ -152,7 +152,7 @@
 
 .work-spreadsheet-workbook-panel .work-spreadsheet-formula-manager > aside {
   border-right: 0;
-  border-bottom: 1px solid var(--a3s-line);
+  border-bottom: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-workbook-panel

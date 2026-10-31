@@ -638,7 +638,7 @@ mod tests {
             set.generation().get()
         );
 
-        let source = CapabilitySource::builtin("a3s-code", digest('a')).unwrap();
+        let source = CapabilitySource::builtin("aster", digest('a')).unwrap();
         let missing = CapabilityId::new(&source, CapabilityKind::Skill, "missing").unwrap();
         assert!(!projection.contains(&missing));
         assert!(projection.tool(&missing).is_none());
@@ -656,7 +656,7 @@ mod tests {
     #[test]
     fn projection_rejects_duplicate_and_unexpected_values() {
         let set = CapabilitySet::empty().unwrap();
-        let source = CapabilitySource::builtin("a3s-code", digest('b')).unwrap();
+        let source = CapabilitySource::builtin("aster", digest('b')).unwrap();
         let id = CapabilityId::new(&source, CapabilityKind::Skill, "orphan").unwrap();
         let value = sample_skill_value("orphan");
 
@@ -694,7 +694,7 @@ mod tests {
 
     #[test]
     fn projection_with_skill_covers_typed_lookups() {
-        let source = CapabilitySource::builtin("a3s-code", digest('c')).unwrap();
+        let source = CapabilitySource::builtin("aster", digest('c')).unwrap();
         let descriptor = crate::capability::CapabilityDescriptor::new(
             &source,
             CapabilityKind::Skill,
@@ -870,7 +870,7 @@ mod tests {
 
     #[tokio::test]
     async fn projection_typed_some_accessors_hit_each_capability_arm() {
-        let source = CapabilitySource::builtin("a3s-code", digest('e')).unwrap();
+        let source = CapabilitySource::builtin("aster", digest('e')).unwrap();
         let kinds = [
             (CapabilityKind::Agent, "coverage-agent", "coverage-agent"),
             (CapabilityKind::Command, "coverage-cmd", "coverage-cmd"),
@@ -1023,7 +1023,7 @@ mod tests {
 
     #[test]
     fn projection_rejects_ui_surface_digest_and_dependency_mismatches() {
-        let source = CapabilitySource::builtin("a3s-code", digest('9')).unwrap();
+        let source = CapabilitySource::builtin("aster", digest('9')).unwrap();
         let document = crate::capability::UiDocument::new(
             crate::capability::UiAsset::new(
                 crate::capability::UiAssetKind::Html,
@@ -1122,7 +1122,7 @@ mod tests {
 
     #[test]
     fn projection_rejects_public_name_mismatch() {
-        let source = CapabilitySource::builtin("a3s-code", digest('7')).unwrap();
+        let source = CapabilitySource::builtin("aster", digest('7')).unwrap();
         let descriptor = crate::capability::CapabilityDescriptor::new(
             &source,
             CapabilityKind::Skill,

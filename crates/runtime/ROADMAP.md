@@ -1,19 +1,19 @@
-# A3S Runtime Roadmap
+# Aster Runtime Roadmap
 
 ## 1. Scope and authority
 
 **Status as of 2026-09-10.**
 
-This roadmap describes work owned by the A3S Runtime repository. The
+This roadmap describes work owned by the Aster Runtime repository. The
 [implementation plan](docs/implementation-plan.md) owns task order, and the
 [deep test plan](docs/deep-test-plan.md) owns release evidence. Cross-product
 ordering and the public state of AaaS, WaaS, FaaS, Durable Cells, and `MCP0`
 are owned by the
-[A3S Cloud product roadmap](https://github.com/A3S-Lab/Cloud/blob/main/ROADMAP.md).
+[Aster Cloud product roadmap](https://github.com/aster-ai-lab/Cloud/blob/main/ROADMAP.md).
 Cloud execution waves and dual-track `I0` live in the
-[architecture optimization roadmap](https://github.com/A3S-Lab/Cloud/blob/main/docs/architecture-optimization-roadmap.md).
+[architecture optimization roadmap](https://github.com/aster-ai-lab/Cloud/blob/main/docs/architecture-optimization-roadmap.md).
 Per-crate obligations are indexed in
-[cloud-substrate-dependency-roadmap.md](https://github.com/A3S-Lab/a3s/blob/main/docs/cloud-substrate-dependency-roadmap.md).
+[cloud-substrate-dependency-roadmap.md](https://github.com/aster-ai-lab/aster/blob/main/docs/cloud-substrate-dependency-roadmap.md).
 
 ### Cloud substrate obligations
 
@@ -48,7 +48,7 @@ release compatibility through the linked library version. Its explicit
 transport/lifecycle policy and CLI regression are recorded in the
 [consumer evidence](../../docs/evidence/desktop/20261017-paperloom-use-runtime/OUTCOME.md).
 
-**A3S Runtime is the provider-neutral, durable lifecycle boundary for one Task
+**Aster Runtime is the provider-neutral, durable lifecycle boundary for one Task
 or Service unit.**
 
 Runtime owns:
@@ -65,7 +65,7 @@ Runtime owns:
   evidence and attestation without parsing product policy;
 - one composable `RuntimeConsumerRequirements` admission/readiness boundary;
   and
-- the certified Runtime-to-A3S-Box provider boundary for the production path.
+- the certified Runtime-to-Aster-Box provider boundary for the production path.
 
 Runtime does not own:
 
@@ -80,11 +80,11 @@ Runtime does not own:
 
 Those boundaries produce this ownership map:
 
-| Concern | A3S Cloud | A3S Runtime | A3S Box | A3S Gateway |
+| Concern | Aster Cloud | Aster Runtime | Aster Box | Aster Gateway |
 | --- | --- | --- | --- | --- |
 | Product service | Own AaaS/WaaS/FaaS and Durable Cell semantics | Bind only an opaque profile digest | No product semantics | Consume the admitted route/policy projection |
 | One process or sandbox | Declare and reconcile desired Unit | Own lifecycle and provider evidence | Create, fence, observe, and remove the provider resource | Never create or stop it |
-| Workflow | Own WorkflowRun and coordinate A3S Flow | Run only executable child Tasks/Services | Execute those child units | Route only published service endpoints |
+| Workflow | Own WorkflowRun and coordinate Aster Flow | Run only executable child Tasks/Services | Execute those child units | Route only published service endpoints |
 | Replica set | Own count, placement, rollout, and fencing | Give every replica a distinct Unit identity | Enforce each exact unit generation | Balance only across the published healthy set |
 | Public request | Compile target and policy snapshots; stay off request bytes | No request-path role | Expose node-local endpoint evidence only | Authenticate, authorize, route, stream, and drain |
 
@@ -99,7 +99,7 @@ Those boundaries produce this ownership map:
 | Service lifecycle separation | Component complete (2026-08-31): readiness, liveness, bounded graceful stop, capability dependencies, observation binding, and capability-triggered case IDs are explicit | Box must implement and certify all four lifecycle cases before advertising `ServiceLifecycle`; Cloud must require it for Code Agent releases |
 | Unified consumer requirements | Implemented component foundation: class, generic feature, semantics evidence, readiness, liveness, and endpoint requirements compose through one API | Cloud consumers must adopt this API instead of duplicating generic admission checks |
 | AaaS/FaaS/MCP/Durable Cell fixtures | Component fixtures pass for Agent Service, Function Task, stateless Function/MCP Service, and Durable Cell Service without new Runtime classes | Fixtures prove composition, not product availability |
-| A3S Box provider certification | The Box repository implements `BoxRuntimeDriver` and capability-triggered conformance fixtures; exact-revision re-certification and profile gaps such as `Outbound` remain open | No Cloud product may bypass Box certification or infer an unadvertised capability |
+| Aster Box provider certification | The Box repository implements `BoxRuntimeDriver` and capability-triggered conformance fixtures; exact-revision re-certification and profile gaps such as `Outbound` remain open | No Cloud product may bypass Box certification or infer an unadvertised capability |
 | Hosted MCP Service substrate | Consumer-profile foundation implemented: ADR boundary, canonical Runtime Unit fixture, semantics-profile digest equality, typed endpoint/generation acceptance, and stale evidence rejection pass focused tests. Real Box/Linux workload and recovery certification remain open | Keep MCP a black-box Service consumer and proceed to `RMCP-03`; do not claim `MCP0.2` before real provider evidence |
 | Native MCP protocol handling | Not implemented by design | Belongs to Gateway and the hosted server |
 
@@ -124,7 +124,7 @@ Runtime supports Cloud product profiles through composition, not inheritance:
 | `RWI-02` | In progress | Re-certify Box and pin Cloud to the exact attachment-aware Runtime revision | Box repeats the digest in generation-bound evidence; Cloud composes only the typed Runtime binding with owner ports |
 | `RSL-01` | Component complete (2026-08-31) | Separate Service readiness, liveness, and bounded graceful stop in the provider-neutral contract | v4/v6 golden schemas and fail-closed capability, specification, observation, consumer, and conformance tests pass |
 | `RSL-02` | In progress | Implement the lifecycle contract in Box and consume it from Cloud Agent release projection | Exact Runtime/Box/Cloud revisions pass separation, transition, graceful-stop, force-stop, and cleanup gates |
-| `RBOX-01` | Driver and conformance harness implemented; exact-revision evidence pending | Certify the A3S Box Runtime driver and close each required capability gap | Base, Recovery, and every advertised profile pass with baseline inventory restored |
+| `RBOX-01` | Driver and conformance harness implemented; exact-revision evidence pending | Certify the Aster Box Runtime driver and close each required capability gap | Base, Recovery, and every advertised profile pass with baseline inventory restored |
 | `RBOX-02` | Planned | Run exact-revision Gateway/Cloud/Runtime/Box compatibility gates for each service profile | Requests enter through Gateway, targets bind exact observations, failures recover, cleanup is complete |
 
 See [Unified AI Service Runtime](docs/unified-ai-service-runtime.md) and
@@ -197,7 +197,7 @@ Runtime may claim a **Cloud AI service substrate** only when:
 
 - every product executable maps to `Task` or `Service` through one consumer
   admission/readiness abstraction;
-- A3S Box passes Base, Recovery, and every advertised capability profile on a
+- Aster Box passes Base, Recovery, and every advertised capability profile on a
   production-equivalent Linux host;
 - Cloud never controls a Box process directly and Gateway never starts a Unit;
 - exact profile, generation, spec, provider, health, and endpoint evidence is
@@ -230,9 +230,9 @@ Runtime may claim an **MCP-ready Service substrate** only when:
 - Adding `Agent`, `Workflow`, `Function`, `Mcp`, `Cell`, or model unit classes
   or product fields to the Runtime wire schema.
 - Running an MCP router, authorization server, or protocol proxy in Runtime.
-- Implementing A3S Flow, a Function scheduler, a Durable Cell state engine, or
+- Implementing Aster Flow, a Function scheduler, a Durable Cell state engine, or
   public routing inside Runtime.
-- Allowing Cloud to invoke A3S Box outside the Runtime driver boundary.
+- Allowing Cloud to invoke Aster Box outside the Runtime driver boundary.
 - Treating stateless requests as idempotent or retryable.
 - Sharing one Runtime Unit ID across replicas.
 - Letting Runtime discover assets, choose releases, schedule replicas, or

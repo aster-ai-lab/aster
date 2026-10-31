@@ -1,6 +1,6 @@
 use std::fmt;
 
-use a3s_use_core::{UseError, UseResult, MAX_PLUGIN_PLAN_ITEMS};
+use aster_use_core::{UseError, UseResult, MAX_PLUGIN_PLAN_ITEMS};
 use serde::{Deserialize, Serialize};
 
 use super::{
@@ -8,7 +8,7 @@ use super::{
     InstalledExtension,
 };
 
-pub const EXTENSION_SNAPSHOT_CURSOR_SCHEMA: &str = "a3s.use.extension-snapshot-cursor.v1";
+pub const EXTENSION_SNAPSHOT_CURSOR_SCHEMA: &str = "aster.use.extension-snapshot-cursor.v1";
 
 /// Exact immutable package generation selected by one Registry publication.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]

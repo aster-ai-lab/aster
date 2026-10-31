@@ -7,10 +7,10 @@ use super::{invalid_attachment, CreateAttachments, StorageAccessMode};
 use crate::{OciBundle, Result, StorageAttachmentId};
 
 /// Required Host-enforced restrictions beneath caller-owned directory grants.
-pub const STORAGE_PATH_RESTRICTIONS_EXTENSION: &str = "dev.a3s.storage-path-restrictions";
+pub const STORAGE_PATH_RESTRICTIONS_EXTENSION: &str = "dev.aster.storage-path-restrictions";
 /// First exact-path restriction contract.
 pub const STORAGE_PATH_RESTRICTIONS_VERSION: u16 = 1;
-const SCHEMA: &str = "a3s.oci.storage-path-restrictions.v1";
+const SCHEMA: &str = "aster.oci.storage-path-restrictions.v1";
 const MAX_BYTES: usize = 2 * 1024 * 1024;
 const MAX_PATHS: usize = 16_384;
 

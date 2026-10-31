@@ -145,7 +145,7 @@ fn markdown_source(store: &NativeOfficeCollaborationStore) -> String {
         .unwrap();
     let transaction = peer.transact();
     transaction
-        .get_text("a3s.office.markdown.source")
+        .get_text("aster.office.markdown.source")
         .unwrap()
         .get_string(&transaction)
 }
@@ -170,8 +170,8 @@ fn document_state(store: &NativeOfficeCollaborationStore) -> DocumentState {
     peer.transact_mut()
         .apply_update(Update::decode_v1(&exported.update).unwrap())
         .unwrap();
-    let fragment = peer.get_or_insert_xml_fragment("a3s.office.document.content");
-    let options = peer.get_or_insert_map("a3s.office.document.options");
+    let fragment = peer.get_or_insert_xml_fragment("aster.office.document.content");
+    let options = peer.get_or_insert_map("aster.office.document.options");
     let transaction = peer.transact();
     let paragraphs = fragment
         .successors(&transaction)
@@ -295,7 +295,7 @@ fn yjs_fixture_round_trips_through_yrs_state_vectors() {
         .unwrap();
     let source = browser_peer
         .transact()
-        .get_text("a3s.office.markdown.source")
+        .get_text("aster.office.markdown.source")
         .unwrap();
     assert_eq!(
         source.get_string(&browser_peer.transact()),
@@ -1395,7 +1395,7 @@ fn reordered_yjs_updates_survive_restart_and_converge() {
         .apply_update(Update::decode_v1(&exported.update).unwrap())
         .unwrap();
     let transaction = peer.transact();
-    let source = transaction.get_text("a3s.office.markdown.source").unwrap();
+    let source = transaction.get_text("aster.office.markdown.source").unwrap();
     assert_eq!(source.get_string(&transaction), "AB");
 }
 
@@ -1592,7 +1592,7 @@ fn compacted_event_history_returns_a_complete_reset_update() {
         .apply_update(Update::decode_v1(&reset.update).unwrap())
         .unwrap();
     let transaction = peer.transact();
-    let source = transaction.get_text("a3s.office.markdown.source").unwrap();
+    let source = transaction.get_text("aster.office.markdown.source").unwrap();
     assert_eq!(source.get_string(&transaction), "# Shared\n\nYjs to Yrs.");
 }
 
@@ -1655,7 +1655,7 @@ fn initialized_metadata_with_no_initializer_is_rejected() {
     let root = temp.path().join("replica");
     let store = NativeOfficeCollaborationStore::create(create_request(&root)).unwrap();
     let peer = Doc::with_client_id(51);
-    let metadata = peer.get_or_insert_map("a3s.office.metadata");
+    let metadata = peer.get_or_insert_map("aster.office.metadata");
     let mut transaction = peer.transact_mut();
     metadata.insert(
         &mut transaction,

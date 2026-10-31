@@ -13,7 +13,7 @@ Boot 应用由模块和类型化 Provider 组成。Controller 只声明协议中
 
 ```toml
 [dependencies]
-a3s-boot = "0.2.0"
+aster-boot = "0.2.0"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
@@ -21,7 +21,7 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 ```rust
 use std::sync::Arc;
-use a3s_boot::{
+use aster_boot::{
     controller, get, injectable, module, param, AxumAdapter, BootFactory, Result,
 };
 

@@ -1,8 +1,8 @@
 //! Model-owned native tensor layers. Public construction requires an actual
 //! CUDA device; CPU math used by sibling tests is never a serving fallback.
 
-use a3s_power::error::{PowerError, Result};
-use a3s_power::inference::{InferenceLimits, RuntimeDevice, RuntimeDeviceKind};
+use aster_power::error::{PowerError, Result};
+use aster_power::inference::{InferenceLimits, RuntimeDevice, RuntimeDeviceKind};
 
 pub mod attention;
 pub mod compressor;
@@ -32,7 +32,7 @@ impl CudaLayerDevice {
         // The helper is absent from production builds. Public admission still
         // requires actual CUDA; CPU fixtures exercise only arithmetic/state.
         Self {
-            runtime: RuntimeDevice::resolve(a3s_power::inference::DevicePreference::Cpu).unwrap(),
+            runtime: RuntimeDevice::resolve(aster_power::inference::DevicePreference::Cpu).unwrap(),
             limits,
             projection_profile: crate::cuda::ProjectionProfile::TensorControlV1,
         }

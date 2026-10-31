@@ -1,11 +1,11 @@
-use a3s_office::{
+use aster_office::{
     DocumentNode, NativeOfficeRgbColor, NativeSpreadsheetConditionalFormat,
     NativeSpreadsheetConditionalFormatIconSet, NativeSpreadsheetConditionalFormatOperator,
     NativeSpreadsheetConditionalFormatRule, NativeSpreadsheetConditionalFormatThreshold,
     NativeSpreadsheetConditionalFormatThresholdKind, NativeSpreadsheetConditionalFormatTimePeriod,
     NativeSpreadsheetDifferentialFormat,
 };
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::format::{parse_format_boolean, parse_rgb_color};
 use super::{usage_error, ParsedArguments};

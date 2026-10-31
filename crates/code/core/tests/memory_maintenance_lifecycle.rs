@@ -1,21 +1,21 @@
 #![cfg(test)]
 #![allow(deprecated)]
-use a3s_code_core::memory::{
+use aster_core::memory::{
     AgentMemory, MemoryConfig, MemoryMaintenanceContext, MemoryMaintenanceError,
     MemoryMaintenanceJob, MemoryMaintenanceOptions, MemoryMaintenanceOutcome,
     MemoryMaintenancePhase, MemoryMaintenanceRuntime, ScheduledMemoryMaintenance,
 };
-use a3s_code_core::{
+use aster_core::{
     Agent, CodeConfig, CodeError, DurableMemoryActivation, DurableMemoryRecallPolicy,
     DurableMemorySession, ModelConfig, ModelModalities, ProviderConfig, SessionBuildResource,
     SessionOptions,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet,
     MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRelation, MemoryRelationKind,
     MemoryRepository, MemoryStatus,
 };
-use a3s_memory::{InMemoryStore, MemoryItem, MemoryStore, PrunePolicy};
+use aster_durable_memory::{InMemoryStore, MemoryItem, MemoryStore, PrunePolicy};
 use anyhow::Context as _;
 use async_trait::async_trait;
 use chrono::{TimeZone, Utc};
@@ -48,7 +48,7 @@ fn fixed_time(second: u32) -> chrono::DateTime<Utc> {
 
 fn evidence(name: &str, kind: EvidenceKind, second: u32) -> EvidenceRef {
     EvidenceRef::try_new(
-        format!("a3s://memory-maintenance/{name}"),
+        format!("aster://memory-maintenance/{name}"),
         format!("sha256:{:x}", Sha256::digest(name.as_bytes())),
         kind,
         fixed_time(second),
@@ -102,7 +102,7 @@ impl MemoryMaintenanceJob for VerifiedSupersessionConsolidator {
             namespace.clone(),
             DurableMemoryKind::Semantic,
             MemoryStatus::Candidate,
-            "Workspace sessions persist memory under the repository-local .a3s directory",
+            "Workspace sessions persist memory under the repository-local .aster directory",
             vec![evidence(
                 "replacement-proposal",
                 EvidenceKind::SessionTurn,
@@ -161,6 +161,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,

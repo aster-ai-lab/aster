@@ -267,7 +267,7 @@ fn network_enforcement_create_request() -> CreateRequest {
         "linux": {
             "namespaces": [{
                 "type": "network",
-                "path": "/run/a3s/network/protocol-enforcement-namespace-1"
+                "path": "/run/aster/network/protocol-enforcement-namespace-1"
             }],
             "netDevices": {"tap0": {"name": "eth0"}}
         },
@@ -411,7 +411,7 @@ fn attestation_fixture() -> (TeeAttestationRequest, TeeAttestationResponse) {
         TeeSha256Digest::new(format!("sha256:{}", "2".repeat(64))).unwrap(),
         DriverKind::LibkrunKvm,
         RuntimeArtifact::new(
-            "a3s-oci-runtime",
+            "aster-oci-runtime",
             "0.3.1",
             format!("sha256:{}", "3".repeat(64)),
             None,
@@ -471,7 +471,7 @@ fn checkpoint_reference(create: &CreateRequest) -> (ContainerRecord, CheckpointR
         HostPlatform::Linux,
         "x86_64",
         RuntimeArtifact::new(
-            "a3s-oci-runtime",
+            "aster-oci-runtime",
             "0.3.1",
             format!("sha256:{}", "a".repeat(64)),
             Some("sdk-transport-test".to_string()),

@@ -7,8 +7,8 @@ use std::collections::{HashMap, VecDeque};
 use std::sync::{Arc, RwLock};
 use thiserror::Error;
 
-pub const EVALUATION_RESULT_SCHEMA_V1: &str = "a3s.code.evaluation-result.v1";
-pub const EVALUATION_RECORD_SCHEMA_V1: &str = "a3s.code.evaluation-record.v1";
+pub const EVALUATION_RESULT_SCHEMA_V1: &str = "aster.code.evaluation-result.v1";
+pub const EVALUATION_RECORD_SCHEMA_V1: &str = "aster.code.evaluation-record.v1";
 const MAX_EVALUATOR_ID_BYTES: usize = 256;
 const MAX_DECISION_BYTES: usize = 128;
 const MAX_SUMMARY_BYTES: usize = 16 * 1024;
@@ -104,7 +104,7 @@ impl EvaluationResultV1 {
             evidence_digest: &'a str,
         }
         digest_json(
-            "a3s.code.evaluation-result.identity.v1",
+            "aster.code.evaluation-result.identity.v1",
             &Identity {
                 schema: &self.schema,
                 evaluator_id: &self.evaluator_id,
@@ -208,7 +208,7 @@ impl EvaluationRecordV1 {
             observed_at_ms: u64,
         }
         digest_json(
-            "a3s.code.evaluation-record.identity.v1",
+            "aster.code.evaluation-record.identity.v1",
             &Identity {
                 schema: &self.schema,
                 result: &self.result,

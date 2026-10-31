@@ -56,7 +56,7 @@ async fn navigation_explicit_mount_shares_tool_manifest_and_reaches_actual_model
         let captured = systems.lock().unwrap();
         assert_eq!(captured.len(), 1);
         assert_eq!(
-            captured[0].matches("a3s://workspace/recent-files").count(),
+            captured[0].matches("aster://workspace/recent-files").count(),
             1
         );
         assert!(captured[0].contains("Recent: 资料/最新.rs"));

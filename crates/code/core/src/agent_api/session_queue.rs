@@ -7,7 +7,7 @@ use super::AgentSession;
 use crate::queue::{
     ExternalTask, ExternalTaskResult, LaneHandlerConfig, SessionLane, SessionQueueStats,
 };
-use a3s_lane::{DeadLetter, MetricsSnapshot};
+use aster_lane::{DeadLetter, MetricsSnapshot};
 
 pub(super) struct QueueControl<'a> {
     session: &'a AgentSession,

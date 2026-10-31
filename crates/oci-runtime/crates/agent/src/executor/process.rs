@@ -12,8 +12,8 @@ use std::process::ExitStatus as ProcessExitStatus;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::LinuxResources;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::LinuxResources;
+use aster_oci_sdk::{
     ContainerStats, ContainerTarget, Error, ErrorCode, ExitStatus, IoMode, ProcessIo, Result,
     CONTROL_CGROUP_PROCS_FD, WORKLOAD_CGROUP_PROCS_FD,
 };
@@ -747,7 +747,7 @@ impl PreparedProcess {
                         }
                     }
                     let creating = match hook_state.encode(
-                        a3s_oci_sdk::oci_spec::runtime::ContainerState::Creating,
+                        aster_oci_sdk::oci_spec::runtime::ContainerState::Creating,
                         Some(runtime_pid),
                     ) {
                         Ok(state) => state,
@@ -1101,7 +1101,7 @@ impl PreparedProcess {
         };
         report_capability_warnings(&warnings);
         let state = self.hook_state.encode(
-            a3s_oci_sdk::oci_spec::runtime::ContainerState::Running,
+            aster_oci_sdk::oci_spec::runtime::ContainerState::Running,
             Some(self.pid),
         )?;
         if let Err(error) = self.hooks.run(HookPhase::Poststart, &state).await {
@@ -1113,7 +1113,7 @@ impl PreparedProcess {
 
     pub(super) fn poststop_plan(&self) -> Result<(HookSet, Vec<u8>)> {
         let state = self.hook_state.encode(
-            a3s_oci_sdk::oci_spec::runtime::ContainerState::Stopped,
+            aster_oci_sdk::oci_spec::runtime::ContainerState::Stopped,
             None,
         )?;
         Ok((self.hooks.clone(), state))
@@ -1292,7 +1292,7 @@ async fn cleanup_failed_create(
 ) -> Error {
     let mut primary = cleanup_uncommitted_create(child, cgroup, primary).await;
     match hook_state.encode(
-        a3s_oci_sdk::oci_spec::runtime::ContainerState::Stopped,
+        aster_oci_sdk::oci_spec::runtime::ContainerState::Stopped,
         None,
     ) {
         Ok(state) => hooks.run_poststop(&state).await,

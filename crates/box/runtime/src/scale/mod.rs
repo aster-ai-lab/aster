@@ -3,7 +3,7 @@
 //! Manages the mapping between services and their running instances,
 //! handles scale-up/scale-down decisions, and emits instance state events.
 
-use a3s_box_core::scale::{InstanceHealth, InstanceState};
+use aster_box_core::scale::{InstanceHealth, InstanceState};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 

@@ -1,12 +1,12 @@
 use std::path::Path;
 
-use a3s_office::{
+use aster_office::{
     NativeOfficeAnnotatedOptions, NativeOfficeDocument, NativeOfficeIssueFilter,
     NativeOfficeIssueOptions, NativeOfficeIssueReport, NativeOfficeIssueSeverity,
     NativeOfficeRenderedView, DEFAULT_NATIVE_OFFICE_ANNOTATED_LIMIT,
     DEFAULT_NATIVE_OFFICE_ISSUE_LIMIT,
 };
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::office_artifact::{self, OfficeArtifactKind};
 
@@ -241,9 +241,9 @@ async fn screenshot(
     _output: Option<&str>,
     _timeout_ms: Option<u64>,
 ) -> UseResult<CommandOutput> {
-    Err(a3s_use_core::UseError::new(
+    Err(aster_use_core::UseError::new(
         "use.browser.disabled",
-        "Native Office screenshots require the A3S Use Browser feature.",
+        "Native Office screenshots require the Aster Use Browser feature.",
     )
-    .with_suggestion("Use an A3S Use build with Browser support, or request html or svg instead."))
+    .with_suggestion("Use an Aster Use build with Browser support, or request html or svg instead."))
 }

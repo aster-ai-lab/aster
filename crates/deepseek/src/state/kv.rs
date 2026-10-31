@@ -7,8 +7,8 @@
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 
-use a3s_power::error::{PowerError, Result};
-use a3s_power::inference::InferenceLimits;
+use aster_power::error::{PowerError, Result};
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Device, Tensor};
 use tokio_util::sync::CancellationToken;
 

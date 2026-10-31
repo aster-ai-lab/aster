@@ -1,8 +1,8 @@
-    fn client_for(dir: &tempfile::TempDir) -> A3sBoxClient {
-        A3sBoxClient::from_home(dir.path()).with_image_cache_size(1024 * 1024 * 1024)
+    fn client_for(dir: &tempfile::TempDir) -> AsterBoxClient {
+        AsterBoxClient::from_home(dir.path()).with_image_cache_size(1024 * 1024 * 1024)
     }
 
-    fn write_boxes(client: &A3sBoxClient, records: &[BoxRecord]) {
+    fn write_boxes(client: &AsterBoxClient, records: &[BoxRecord]) {
         std::fs::create_dir_all(&client.paths().home).unwrap();
         std::fs::write(
             &client.paths().boxes_file,
@@ -12,7 +12,7 @@
     }
 
     fn write_resolved_image_config(record: &BoxRecord) {
-        let config = a3s_box_core::SnapshotImageConfig {
+        let config = aster_box_core::SnapshotImageConfig {
             entrypoint: Some(vec!["/usr/local/bin/envd".to_string()]),
             cmd: Some(vec!["--port".to_string(), "49983".to_string()]),
             env: vec![("IMAGE_ENV".to_string(), "preserved".to_string())],
@@ -24,7 +24,7 @@
         std::fs::write(
             record
                 .box_dir
-                .join(a3s_box_runtime::RESOLVED_IMAGE_CONFIG_FILE),
+                .join(aster_box_runtime::RESOLVED_IMAGE_CONFIG_FILE),
             serde_json::to_vec_pretty(&config).unwrap(),
         )
         .unwrap();
@@ -163,8 +163,8 @@
             volume_names: vec![],
             tmpfs: vec![],
             anonymous_volumes: vec![],
-            resource_limits: a3s_box_core::config::ResourceLimits::default(),
-            log_config: a3s_box_core::log::LogConfig::default(),
+            resource_limits: aster_box_core::config::ResourceLimits::default(),
+            log_config: aster_box_core::log::LogConfig::default(),
             add_host: vec![],
             platform: None,
             init: false,

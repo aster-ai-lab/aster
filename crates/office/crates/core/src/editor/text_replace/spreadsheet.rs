@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use super::{transform_text_elements, CompiledTextReplacement, ReplacementAccumulator};
 use crate::editor::{editor_error, node_not_found, MAX_NATIVE_OFFICE_TEXT_SCOPE_CELLS};

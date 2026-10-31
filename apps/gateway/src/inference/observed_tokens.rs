@@ -10,7 +10,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 const UNKNOWN_TOKENS: u64 = u64::MAX;
 
-/// Token split carried by `a3s.gateway.usage-lifecycle.v2` terminal events.
+/// Token split carried by `aster.gateway.usage-lifecycle.v2` terminal events.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, serde::Serialize)]
 pub(crate) struct LifecycleTokenBreakdown {
     #[serde(skip_serializing_if = "Option::is_none")]

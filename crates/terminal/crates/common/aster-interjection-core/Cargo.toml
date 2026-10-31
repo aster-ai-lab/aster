@@ -1,0 +1,13 @@
+[package]
+license = "Apache-2.0"
+name = "aster-interjection-core"
+version = "0.1.0"
+description = "Shared mid-turn interjection buffer and formatting for the client and server agent loops"
+edition = "2024"
+publish = false
+
+[dependencies]
+serde = {workspace = true}
+
+[lints]
+workspace = true

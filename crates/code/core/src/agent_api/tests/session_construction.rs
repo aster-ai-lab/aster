@@ -7,7 +7,7 @@ async fn test_local_session_installs_native_sandbox_by_default() {
     let session = agent
         .session_async(
             workspace.path().display().to_string(),
-            Some(SessionOptions::new().with_memory(Arc::new(a3s_memory::InMemoryStore::new()))),
+            Some(SessionOptions::new().with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))),
         )
         .await
         .unwrap();
@@ -67,7 +67,7 @@ async fn test_session_uses_workspace_backend_for_direct_tools() {
             Some(
                 SessionOptions::new()
                     .with_workspace_backend(services)
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new())),
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new())),
             ),
         )
         .await
@@ -177,7 +177,7 @@ async fn test_session_routes_agents_md_through_context_provider() {
 
 #[tokio::test]
 async fn isolated_session_omits_discovered_context_and_prior_memory() {
-    use a3s_memory::{InMemoryStore, MemoryItem, MemoryStore};
+    use aster_durable_memory::{InMemoryStore, MemoryItem, MemoryStore};
     let root = tempfile::tempdir().unwrap();
     std::fs::write(
         root.path().join("AGENTS.md"),
@@ -672,6 +672,7 @@ fn test_from_config_defers_default_model_validation_to_session() {
     let rt = tokio::runtime::Runtime::new().unwrap();
     let config = CodeConfig {
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("test-key".to_string()),
             base_url: None,

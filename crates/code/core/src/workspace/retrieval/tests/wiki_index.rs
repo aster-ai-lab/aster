@@ -20,14 +20,14 @@ async fn workspace_wiki_search_excludes_history_and_returns_one_passage_per_page
     let root = tempfile::tempdir().unwrap();
     let source = b"Source evidence.\n";
     std::fs::write(root.path().join("source.md"), source).unwrap();
-    let input = a3s_okf::WorkspaceKnowledgeInput::new(
+    let input = aster_okf::WorkspaceKnowledgeInput::new(
         root.path(),
         "dedup-scope",
         &format!("sha256:{}", "a".repeat(64)),
-        vec![a3s_okf::WorkspaceKnowledgeSource::text("source.md", source).unwrap()],
+        vec![aster_okf::WorkspaceKnowledgeSource::text("source.md", source).unwrap()],
     )
     .unwrap();
-    a3s_okf::begin_workspace_knowledge_maintenance(&input).unwrap();
+    aster_okf::begin_workspace_knowledge_maintenance(&input).unwrap();
     let wiki = input.output_root();
     std::fs::create_dir_all(wiki.join("concepts")).unwrap();
     let body = (0..800)
@@ -102,14 +102,14 @@ async fn workspace_wiki_index_waits_for_the_original_publication_lock_and_refuse
     let root = tempfile::tempdir().unwrap();
     let source = b"pub fn example() {}\n";
     std::fs::write(root.path().join("source.rs"), source).unwrap();
-    let input = a3s_okf::WorkspaceKnowledgeInput::new(
+    let input = aster_okf::WorkspaceKnowledgeInput::new(
         root.path(),
         "index-publication",
         &format!("sha256:{}", "a".repeat(64)),
-        vec![a3s_okf::WorkspaceKnowledgeSource::text("source.rs", source).unwrap()],
+        vec![aster_okf::WorkspaceKnowledgeSource::text("source.rs", source).unwrap()],
     )
     .unwrap();
-    let job = a3s_okf::begin_workspace_knowledge_maintenance(&input)
+    let job = aster_okf::begin_workspace_knowledge_maintenance(&input)
         .unwrap()
         .unwrap();
     let wiki = input.output_root();
@@ -172,7 +172,7 @@ async fn workspace_wiki_index_waits_for_the_original_publication_lock_and_refuse
     );
     std::fs::rename(&relocated, wiki).unwrap();
     drop(index);
-    a3s_okf::cancel_workspace_knowledge_job(wiki, input.binding_revision(), &job.id).unwrap();
+    aster_okf::cancel_workspace_knowledge_job(wiki, input.binding_revision(), &job.id).unwrap();
 }
 
 async fn wait_for(index: &WikiIndex, query: &str, needle: &str) -> bool {
@@ -180,7 +180,7 @@ async fn wait_for(index: &WikiIndex, query: &str, needle: &str) -> bool {
     while tokio::time::Instant::now() < deadline {
         let found = index.search(query).expect("poll");
         if found.phase == WikiSearchPhase::Published
-            && found.lexical_engine == "a3s_vec_fts_v1"
+            && found.lexical_engine == "aster_vec_fts_v1"
             && found
                 .hits
                 .iter()
@@ -201,7 +201,7 @@ fn jia_body() -> String {
 }
 
 #[tokio::test]
-async fn wiki_index_serves_published_a3s_vec_snapshots() {
+async fn wiki_index_serves_published_aster_vec_snapshots() {
     let root = tempfile::tempdir().expect("wiki root");
     let wiki = root.path();
     std::fs::create_dir_all(wiki.join(".ssh")).unwrap();
@@ -266,7 +266,7 @@ async fn wiki_index_serves_published_a3s_vec_snapshots() {
     );
     let found = index.search("北城豆沙").expect("published search");
     assert_eq!(found.phase, WikiSearchPhase::Published);
-    assert_eq!(found.lexical_engine, "a3s_vec_fts_v1");
+    assert_eq!(found.lexical_engine, "aster_vec_fts_v1");
     assert!(!found.hits.is_empty());
     assert!(found
         .hits
@@ -284,7 +284,7 @@ async fn wiki_index_serves_published_a3s_vec_snapshots() {
     let missed = index.search("火星殖民地供水").expect("miss");
     assert_eq!(missed.phase, WikiSearchPhase::Published);
     assert!(missed.hits.is_empty());
-    assert_eq!(missed.lexical_engine, "a3s_vec_fts_v1");
+    assert_eq!(missed.lexical_engine, "aster_vec_fts_v1");
 
     index.hold_publication(true);
     std::fs::write(wiki.join(JIA), page("产品手册甲", "甲页短说明", NEW_TEXT)).unwrap();
@@ -315,7 +315,7 @@ async fn wiki_index_serves_published_a3s_vec_snapshots() {
     index.hold_publication(false);
     assert!(index.wait_published(edited.source_revision).await);
     let updated = index.search(NEW_TEXT).expect("new generation");
-    assert_eq!(updated.lexical_engine, "a3s_vec_fts_v1");
+    assert_eq!(updated.lexical_engine, "aster_vec_fts_v1");
     assert_eq!(updated.hits[0].name, "产品手册甲");
     assert!(updated.hits[0].passage.contains(NEW_TEXT));
     assert!(updated
@@ -394,7 +394,7 @@ async fn wiki_index_serves_published_a3s_vec_snapshots() {
     let none = index.search("北城豆沙").expect("empty index");
     assert_eq!(none.phase, WikiSearchPhase::Published);
     assert!(none.hits.is_empty());
-    assert_eq!(none.lexical_engine, "a3s_vec_fts_v1");
+    assert_eq!(none.lexical_engine, "aster_vec_fts_v1");
     let _ = Duration::from_millis(1);
 }
 
@@ -475,15 +475,15 @@ async fn wiki_index_finds_a_nested_studio_note_without_waiting_on_the_caller() {
     );
     let found = index.search("红烧排骨").expect("published");
     assert_eq!(found.hits[0].path, "local/食谱.md");
-    assert_eq!(found.lexical_engine, "a3s_vec_fts_v1");
+    assert_eq!(found.lexical_engine, "aster_vec_fts_v1");
 }
 
 #[tokio::test]
 async fn wiki_index_hits_the_compiled_sentence_and_misses_the_dropped_tail() {
     let root = tempfile::tempdir().expect("wiki root");
     let wiki = root.path();
-    // a3s-okf's compile_concept output for 33 passages "句子 N 在这一段": it
-    // keeps 32 and marks the tail absent. a3s-okf tests that truncation itself.
+    // aster-okf's compile_concept output for 33 passages "句子 N 在这一段": it
+    // keeps 32 and marks the tail absent. aster-okf tests that truncation itself.
     let compiled = include_str!("wiki_index_okf_page.md");
     assert!(compiled.contains("句子 0 在这一段"));
     assert!(!compiled.contains("句子 32 在这一段"));

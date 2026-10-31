@@ -86,7 +86,7 @@ specs/021-workspace-wiki/
 
 ## Verification Plan
 
-- Owning-package：`cargo test --locked -p a3s-okf workspace_wiki`、`cargo test --locked -p a3s-code-core --lib workspace_wiki`、`cargo test --locked -p a3s-code-acp workspace_wiki`、`cargo test --locked -p a3s-studio workspace_wiki`；新测试按该前缀组织，并补跑受影响 personal/retrieval/compile 既有测试。这些是计划命令，尚未执行。
+- Owning-package：`cargo test --locked -p aster-okf workspace_wiki`、`cargo test --locked -p aster-core --lib workspace_wiki`、`cargo test --locked -p aster-acp workspace_wiki`、`cargo test --locked -p aster-studio workspace_wiki`；新测试按该前缀组织，并补跑受影响 personal/retrieval/compile 既有测试。这些是计划命令，尚未执行。
 - Renderer/shared：在 Studio 子模块执行现有 Vitest 对本期精确路径的聚焦测试；覆盖分组更多常显、全内容区覆盖、搜索/分页/卡片/空态、同层详情与返回、来源预览、焦点、后台快捷键隔离、窄窗口及中英文。保留原对象选择/管理操作可达。
 - 独立夹具：小代码项目验证入口和跨文件关系；纯资料目录验证资料到产物关系；混合工作区验证双类引用；不同目录/同目录异权限验证隔离。
 - 增量：改、删、重命名、源变化中发布、无变化重开、输出回灌、取消、模型失败、项目归档／恢复、合法目录变化及重启；记录真实生成请求，证明不重复触发。

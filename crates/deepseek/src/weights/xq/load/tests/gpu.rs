@@ -10,7 +10,7 @@ use crate::{
     },
     state::backbone::tests::stage_synthetic_rest,
 };
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 
 fn values(t: &Tensor) -> Vec<f32> {
     t.flatten_all().unwrap().to_vec1().unwrap()

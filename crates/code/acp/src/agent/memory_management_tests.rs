@@ -1,5 +1,5 @@
 use super::*;
-use a3s_code_core::durable_memory_vec::management::MemoryManagementResponse;
+use aster_core::durable_memory_vec::management::MemoryManagementResponse;
 use std::path::Path;
 
 #[tokio::test]
@@ -10,7 +10,7 @@ async fn live_snapshot_reads_actual_working_and_session_memory_and_refuses_forei
     let mut launch = test_launch(Some(root.path().join("sessions")));
     launch.workspace = workspace.clone();
     launch.config.memory_dir = Some(root.path().join("memory"));
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let id = host
         .new_session(acp::NewSessionRequest::new(&workspace))
         .await
@@ -30,7 +30,7 @@ async fn live_snapshot_reads_actual_working_and_session_memory_and_refuses_forei
     memory.add_to_working(working).await.unwrap();
     let request = |workspace: &Path, layer| {
         acp::ExtRequest::new(
-            "a3s/memory/snapshot",
+            "aster/memory/snapshot",
             serde_json::value::to_raw_value(
                 &serde_json::json!({"workspace_root": workspace, "layer": layer}),
             )
@@ -51,7 +51,7 @@ async fn live_snapshot_reads_actual_working_and_session_memory_and_refuses_forei
         assert_eq!(body["items"].as_array().unwrap().len(), 1);
         assert_eq!(body["items"][0]["content"], expected);
         let count_request = acp::ExtRequest::new(
-            "a3s/memory/snapshot",
+            "aster/memory/snapshot",
             serde_json::value::to_raw_value(
                 &serde_json::json!({"workspace_root":workspace,"layer":layer,"count_only":true}),
             )
@@ -67,7 +67,7 @@ async fn live_snapshot_reads_actual_working_and_session_memory_and_refuses_forei
         );
         assert_eq!(count["workspace_root"], serde_json::json!(workspace));
         assert_eq!(
-            body["items"][0]["metadata"]["a3s.session_id"],
+            body["items"][0]["metadata"]["aster.session_id"],
             id.0.to_string()
         );
     }
@@ -107,12 +107,12 @@ async fn management_works_without_model_or_session_and_refuses_another_workspace
     launch.model_id.clear();
     launch.config = Default::default();
     launch.config.memory_dir = Some(root.path().join("private-memory"));
-    let store = a3s_code_core::durable_memory_vec::VecMemoryStore::open(
+    let store = aster_core::durable_memory_vec::VecMemoryStore::open(
         launch.config.memory_dir.as_ref().unwrap(),
     )
     .unwrap();
     store
-        .put(&a3s_code_core::durable_memory_vec::MemoryRecord {
+        .put(&aster_core::durable_memory_vec::MemoryRecord {
             id: "fixture".into(),
             content: "provider-free inspection".into(),
             tags: vec![],
@@ -123,10 +123,10 @@ async fn management_works_without_model_or_session_and_refuses_another_workspace
         })
         .unwrap();
     drop(store);
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let request = |workspace: &std::path::Path, body: serde_json::Value| {
         acp::ExtRequest::new(
-            "a3s/memory/manage",
+            "aster/memory/manage",
             serde_json::value::to_raw_value(
                 &serde_json::json!({ "workspace_root": workspace, "request": body }),
             )

@@ -1,11 +1,11 @@
 //! Where per-workspace harness state lives.
 //!
 //! By default session folders, effect logs, and the bash git witness sit
-//! under `<workspace>/.a3s`. A host whose workspace tree is itself the
+//! under `<workspace>/.aster`. A host whose workspace tree is itself the
 //! graded output (an unattended evaluation) sets one process-wide root
 //! before it opens any session, so the harness leaves no state in that
 //! tree. The override is set at most once. Interactive hosts never set it,
-//! and their paths stay exactly `<workspace>/.a3s`.
+//! and their paths stay exactly `<workspace>/.aster`.
 
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
@@ -59,13 +59,13 @@ pub fn workspace_state_dir(workspace: &Path) -> PathBuf {
 fn state_dir_for(workspace: &Path, root: Option<&Path>) -> PathBuf {
     match root {
         Some(root) => root.to_path_buf(),
-        None => workspace.join(".a3s"),
+        None => workspace.join(".aster"),
     }
 }
 
-/// The directory that holds derived workspace indexes: the `a3s-vec` FTS
+/// The directory that holds derived workspace indexes: the `aster-vec` FTS
 /// projection and the grep trigram stamp. Without an override it is
-/// `<workspace>/.a3s-code`.
+/// `<workspace>/.aster`.
 pub fn workspace_index_dir(workspace: &Path) -> PathBuf {
     index_dir_for(workspace, state_root_override())
 }
@@ -79,7 +79,7 @@ fn index_dir_for(workspace: &Path, root: Option<&Path>) -> PathBuf {
             let key: String = digest[..8].iter().map(|b| format!("{b:02x}")).collect();
             root.join("indexes").join(key)
         }
-        None => workspace.join(".a3s-code"),
+        None => workspace.join(".aster"),
     }
 }
 
@@ -92,7 +92,7 @@ mod tests {
         let workspace = Path::new("/work/project");
         assert_eq!(
             state_dir_for(workspace, None),
-            PathBuf::from("/work/project/.a3s")
+            PathBuf::from("/work/project/.aster")
         );
     }
 
@@ -109,7 +109,7 @@ mod tests {
     fn indexes_stay_in_the_workspace_without_an_override() {
         assert_eq!(
             index_dir_for(Path::new("/work/project"), None),
-            PathBuf::from("/work/project/.a3s-code")
+            PathBuf::from("/work/project/.aster")
         );
     }
 

@@ -1,13 +1,13 @@
 //! Sandbox integration for bash tool execution.
 //!
-//! Local A3S Code sessions install a [`BashSandbox`] automatically, and the
+//! Local Aster Code sessions install a [`BashSandbox`] automatically, and the
 //! `bash` built-in tool routes commands through it instead of
-//! `std::process::Command`. The A3S native backend keeps the canonical host
+//! `std::process::Command`. The Aster native backend keeps the canonical host
 //! workspace path while enforcing the platform isolation boundary around the
 //! child process.
 //!
-//! [`native::NativeBashSandbox`] is the A3S-owned fail-closed implementation
-//! used by default throughout A3S Code. Hosts can still supply another
+//! [`native::NativeBashSandbox`] is the Aster-owned fail-closed implementation
+//! used by default throughout Aster Code. Hosts can still supply another
 //! implementation through the trait contract when they own an equivalent
 //! isolation boundary. Non-local workspace backends retain their explicit
 //! command-runner contract.
@@ -25,7 +25,7 @@ pub mod native;
 pub mod oci;
 pub mod process_host;
 
-pub use a3s_sandbox::{
+pub use aster_cmd_sandbox::{
     is_protected_workspace_path, PROTECTED_WORKSPACE_DIRECTORIES, PROTECTED_WORKSPACE_FILES,
 };
 pub use process_host::ProcessHostBashSandbox;
@@ -220,7 +220,7 @@ pub trait BashSandbox: Send + Sync {
     ///
     /// * `command` — the shell command string (passed as `bash -c <command>`).
     /// * `guest_workspace` — the workspace path expected by a custom guest
-    ///   backend (for example, `"/workspace"`). The A3S native backend uses its
+    ///   backend (for example, `"/workspace"`). The Aster native backend uses its
     ///   canonical host workspace instead.
     async fn exec_command(
         &self,
@@ -273,7 +273,7 @@ pub trait BashSandbox: Send + Sync {
     /// explicitly.
     fn apply_network_grant(
         &self,
-        _grant: a3s_sandbox::NetworkGrant,
+        _grant: aster_cmd_sandbox::NetworkGrant,
         _expected_base_digest: &str,
     ) -> anyhow::Result<String> {
         anyhow::bail!("this sandbox backend does not support policy grants")
@@ -354,7 +354,7 @@ mod tests {
     fn protected_workspace_paths_cover_control_metadata_cross_platform() {
         for path in [
             ".git/config",
-            "./.a3s/permissions.acl",
+            "./.aster/permissions.acl",
             ".AGENTS/worker.acl",
             ".codex\\config",
             ".Claude/settings.json",

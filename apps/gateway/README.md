@@ -15,7 +15,7 @@
 <p align="center">
   <a href="https://github.com/kense-labs/gateway/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/kense-labs/gateway/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
   <a href="https://github.com/kense-labs/gateway/releases/latest"><img alt="Latest Kense Gateway release" src="https://img.shields.io/github/v/release/kense-labs/gateway?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=1264ff"></a>
-  <a href="https://crates.io/crates/a3s-gateway"><img alt="a3s-gateway on crates.io" src="https://img.shields.io/crates/v/a3s-gateway?style=flat-square&amp;color=0c8a65"></a>
+  <a href="https://crates.io/crates/aster-gateway"><img alt="aster-gateway on crates.io" src="https://img.shields.io/crates/v/aster-gateway?style=flat-square&amp;color=0c8a65"></a>
   <a href="https://www.rust-lang.org/"><img alt="Minimum supported Rust version 1.88" src="https://img.shields.io/badge/MSRV-1.88-56657b?style=flat-square"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-101827?style=flat-square"></a>
 </p>
@@ -37,7 +37,7 @@ hop. The same binary also routes HTTP/1.1, HTTP/2, SSE, WebSocket, gRPC, TCP,
 UDP, and TLS traffic.
 
 Use a local ACL in `standalone` mode or apply complete, revision-bound desired
-state from A3S Cloud in `cloud-managed` mode. Gateway owns the live traffic
+state from Aster Cloud in `cloud-managed` mode. Gateway owns the live traffic
 decision; Cloud owns human operations, rollout, placement, and the long-term
 usage ledger.
 
@@ -54,7 +54,7 @@ order, with exactly one terminal marker. That is 80 raw product trials, all
 successful, with TTFT, ITL, TPOT, end-to-end latency, stream rate, and
 completed-token goodput recorded.
 
-| Workload | A3S TTFT | NGINX TTFT | TTFT ratio | ITL ratio | Token goodput ratio |
+| Workload | Aster TTFT | NGINX TTFT | TTFT ratio | ITL ratio | Token goodput ratio |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Zero-delay stream · C1 | 0.343 ms | 0.349 ms | 0.983× | 0.992× | 1.000× |
 | Zero-delay stream · C64 | 2.438 ms | 1.184 ms | 2.059× | 0.986× | 0.924× |
@@ -65,10 +65,10 @@ completed-token goodput recorded.
 | 32 KiB prompt | 51.633 ms | 51.860 ms | 0.996× | 1.013× | 1.001× |
 | 256 KiB prompt | 52.928 ms | 52.660 ms | 1.005× | 0.994× | 0.998× |
 
-A ratio above 1 means A3S took longer or NGINX produced more goodput,
+A ratio above 1 means Aster took longer or NGINX produced more goodput,
 depending on the column. The zero-delay C64 row exposes a real current
 bottleneck; paced, long-output, endpoint, and long-prompt rows are near parity
-on this hosted runner. A3S performs bounded OpenAI JSON and model validation;
+on this hosted runner. Aster performs bounded OpenAI JSON and model validation;
 NGINX is the transport-only control, so this measures feature-on path cost, not
 equivalent policy capability and not production capacity.
 
@@ -110,9 +110,9 @@ Install on Windows PowerShell:
 Cargo and Homebrew are also supported:
 
 ```bash
-cargo install a3s-gateway
+cargo install aster-gateway
 # or
-brew install a3s-lab/tap/a3s-gateway
+brew install aster-lab/tap/aster-gateway
 ```
 
 With an OpenAI-compatible backend on `127.0.0.1:8000`, save this as
@@ -145,9 +145,9 @@ services "models" {
 Validate the complete snapshot before starting it:
 
 ```bash
-a3s-gateway validate --config gateway.acl
-a3s-gateway config --config gateway.acl summary
-a3s-gateway --config gateway.acl
+aster-gateway validate --config gateway.acl
+aster-gateway config --config gateway.acl summary
+aster-gateway --config gateway.acl
 curl http://127.0.0.1:8080/v1/models
 ```
 
@@ -160,7 +160,7 @@ curl http://127.0.0.1:8080/v1/models
 | Uneven or failing providers | Active/passive health, circuit state, weighted selection, failover, and retry only before a response starts |
 | Safe policy changes | Validate and compile a complete snapshot, then atomically activate it; rejection keeps the previous runtime alive |
 | Remote desired state | Apply complete Cloud snapshots while every authorized request decision stays local |
-| Scale-to-zero workloads | Consume ready replica endpoints from A3S Box and release bounded requests only after the workload is routable |
+| Scale-to-zero workloads | Consume ready replica endpoints from Aster Box and release bounded requests only after the workload is routable |
 
 This is intentionally narrower than an AI platform. Gateway does not own
 tenants, deployment, placement, rollout, billing, model serving, or a human
@@ -169,21 +169,21 @@ operator UI.
 ## Architecture
 
 <p align="center">
-  <img src="assets/readme/architecture.svg" width="100%" alt="Standalone ACL or A3S Cloud desired state activates one local Gateway snapshot that routes to healthy model backends">
+  <img src="assets/readme/architecture.svg" width="100%" alt="Standalone ACL or Aster Cloud desired state activates one local Gateway snapshot that routes to healthy model backends">
 </p>
 
 | Mode | Desired-state owner | Gateway responsibility |
 | --- | --- | --- |
 | `standalone` | Local operator and ACL | Validate and execute routes, middleware, providers, health, static revision weights, and opt-in scaling |
-| `cloud-managed` | A3S Cloud | Validate and execute one complete identity-, revision-, digest-, CAS-, and expiry-bound snapshot |
+| `cloud-managed` | Aster Cloud | Validate and execute one complete identity-, revision-, digest-, CAS-, and expiry-bound snapshot |
 
 Changing authority requires a process restart. Gateway exposes a machine-only
 Node API for health, readiness, metrics, version, managed snapshot application,
 exact snapshot status, and local usage-spool state.
 
-### Gateway and A3S Box
+### Gateway and Aster Box
 
-Gateway and [A3S Box](https://github.com/A3S-Lab/a3s-box) solve different parts
+Gateway and [Aster Box](https://github.com/aster-ai-lab/aster-box) solve different parts
 of one request lifecycle. Gateway owns admission, routing, health, and stream
 fidelity. Box owns Sandbox workload state and publishes ready replica-slot
 endpoints. In standalone mode, an opt-in Box executor can scale from zero,
@@ -202,10 +202,10 @@ standalone autoscaling is still experimental. Box is not called by
 | Protocol and stream plane | Available | HTTP/1.1, HTTP/2, SSE, WebSocket, native gRPC over h2c, TCP, UDP, TLS, trailers, backpressure, independent stream bounds, and bounded drain |
 | Routing, middleware, health | Available | Host/path/method/header rules for HTTP-family entrypoints; TCP entrypoints match pure `HostSNI(...)` rules after ClientHello peek, and skip that peek when the SNI table is empty so PathPrefix-only server-first TCP is not stalled. Built-in policies, typed Rust extensions, four balancing strategies, health, circuits, sticky sessions, failover, and mirroring |
 | DNS service discovery | Removed | Unwired DNS helper deleted; ACL `providers` accepts only `file`, `discovery`, `kubernetes`, and `docker` |
-| Traditional WAF | Unavailable | Not in product scope. Optional Cargo feature `wire` offers an agentfw-style LLM/MCP body firewall via `a3s-sentry` (secret/PII masking on `/wire/<agent>/...`; request and response legs both honor `blocked()` / `fail_closed`); it is not an OWASP/ModSecurity WAF and is not part of the default data plane |
+| Traditional WAF | Unavailable | Not in product scope. Optional Cargo feature `wire` offers an agentfw-style LLM/MCP body firewall via `aster-sentry` (secret/PII masking on `/wire/<agent>/...`; request and response legs both honor `blocked()` / `fail_closed`); it is not an OWASP/ModSecurity WAF and is not part of the default data plane |
 | Snapshot lifecycle | Available | Standalone ACL and Cloud-managed modes, fail-closed validation, listener reconciliation, atomic activation, exact readiness, and optional managed-state recovery |
 | Managed target delivery (`H0.2`) | Verified jointly | Released Gateway plus pinned Cloud clean-host gates cover exact apply/ACK, process loss, redelivery, conflict/expiry rejection, certificate and target-generation replacement, replica-local readiness, and protocol compatibility |
-| Managed Runtime Service routes | Gateway foundation + cross-platform real-process qualification | Embedded hosts can durably bind one exact loopback Runtime generation, verify health through the real Gateway route, hide admission, drain accepted streams (HTTP body, SSE, WebSocket, gRPC), remove only receipt-owned state, and recover the opaque binding identity after restart. Real OS-process evidence: lifecycle, restart/replay, plus SSE/WebSocket/gRPC drain-wait (`real_os_process_upstream_*` in `tests/managed_runtime_real_process.rs`). Host A3S Use/Code provider composition remains open outside this crate. |
+| Managed Runtime Service routes | Gateway foundation + cross-platform real-process qualification | Embedded hosts can durably bind one exact loopback Runtime generation, verify health through the real Gateway route, hide admission, drain accepted streams (HTTP body, SSE, WebSocket, gRPC), remove only receipt-owned state, and recover the opaque binding identity after restart. Real OS-process evidence: lifecycle, restart/replay, plus SSE/WebSocket/gRPC drain-wait (`real_os_process_upstream_*` in `tests/managed_runtime_real_process.rs`). Host Aster Use/Code provider composition remains open outside this crate. |
 | Managed OpenAI paths | Gateway foundation | Models, chat completions, completions, embeddings, grants, rewriting, admission, request/attempt identity, health-aware targets, pre-response fallback, and provisional tokenizer `kense.gateway.tokenizer.v1`; Cloud billing tokenizer and Power observation delivery remain EXIT-open |
 | Upstream TLS trust | Available | Per-service `load_balancer.tls_ca_file` replaces webpki roots for HTTPS backends (PEM must parse; at least one `https://` server required). No production skip-verify path. |
 | Distributed inference routing | Gateway/Power data plane | Aggregated dispatch plus distinct prefill/decode pair selection, authenticated profile-bound Power orchestration, opaque state-handle relay, OpenAI JSON/SSE translation, bounded cleanup, pair fallback, and Gateway-local rolling-version conformance; Cloud publication and cross-product qualification remain open |
@@ -266,7 +266,7 @@ docker run --rm \
 Helm:
 
 ```bash
-helm install gateway deploy/helm/a3s-gateway \
+helm install gateway deploy/helm/aster-gateway \
   --set image.repository=ghcr.io/kense-labs/gateway \
   --set-file config=./gateway.acl
 ```
@@ -274,7 +274,7 @@ helm install gateway deploy/helm/a3s-gateway \
 Rust library:
 
 ```bash
-cargo add a3s-gateway
+cargo add aster-gateway
 ```
 
 Optional Cargo features:
@@ -283,14 +283,14 @@ Optional Cargo features:
 | --- | --- |
 | `redis` | Redis-backed distributed rate limiting |
 | `kube` | Kubernetes Ingress provider and Scale executor |
-| `wire` | Inline LLM/MCP secret and PII inspection through `a3s-sentry` (request + response `blocked()`) |
+| `wire` | Inline LLM/MCP secret and PII inspection through `aster-sentry` (request + response `blocked()`) |
 
 Embedded Rust deployments can also register typed request/response middleware
 through `MiddlewareRegistry`; the standalone binary does not load dynamic
 libraries or Wasm plugins. See the
 [middleware guide](https://kense-labs.github.io/gateway/docs/#middleware).
 
-Embedded A3S hosts can additionally construct Gateway with an absolute private
+Embedded Aster hosts can additionally construct Gateway with an absolute private
 Managed Service state file. The programmatic lifecycle binds only loopback
 Runtime upstreams to a cleartext loopback HTTP entrypoint, keeps the operator or
 Cloud ACL as the base desired state, and persists the overlay before changing

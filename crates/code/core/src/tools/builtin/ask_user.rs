@@ -85,24 +85,24 @@ impl Tool for AskUserTool {
             });
         }
         let thread = crate::fact_control::thread_for_session(run_id);
-        let payload = serde_json::to_value(a3s_effect::ModelDecision::Question {
+        let payload = serde_json::to_value(aster_effect::ModelDecision::Question {
             question_id: event.question_id.clone(),
             question: event.question.clone(),
             allow_free_text: event.allow_free_text,
             options: event.options.clone(),
         })
         .unwrap_or_else(|error| serde_json::json!({ "kind": "text", "text": error.to_string() }));
-        let log = match a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+        let log = match aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
             &ctx.workspace,
             run_id,
         )) {
             Ok(log) => log,
             Err(error) => return Ok(ToolOutput::error(error.to_string())),
         };
-        if let Err(error) = a3s_effect::LogStore::append(
+        if let Err(error) = aster_effect::LogStore::append(
             &log,
             &thread,
-            &[a3s_effect::NewFact {
+            &[aster_effect::NewFact {
                 kind: "model.turn".into(),
                 key: format!("ask:{}", event.question_id),
                 payload,

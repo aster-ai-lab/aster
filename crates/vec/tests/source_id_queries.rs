@@ -1,4 +1,4 @@
-use a3s_vec::{Collection, CollectionSchema, DataType, Doc, ErrorCode, FieldSchema, SearchQuery};
+use aster_vec::{Collection, CollectionSchema, DataType, Doc, ErrorCode, FieldSchema, SearchQuery};
 use serde_json::json;
 use tempfile::tempdir;
 

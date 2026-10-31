@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Bell, Check, Moon, Palette, Sun } from 'lucide-react'
 import { useState } from 'react'
 
-import { RadioGroup, RadioGroupItem } from '@a3s-lab/ui'
+import { RadioGroup, RadioGroupItem } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof RadioGroup> = {
   title: 'Components/Primitives/RadioGroup',

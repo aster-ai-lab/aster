@@ -1,5 +1,5 @@
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{ExitStatus, RuntimeOperation};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{ExitStatus, RuntimeOperation};
 use serde::{Deserialize, Serialize};
 
 use crate::AgentVmSmokeReport;
@@ -10,12 +10,12 @@ pub use cgroup_path::CgroupPathEvidence;
 
 /// Schema emitted by the native Linux multi-container lifecycle diagnostic.
 pub const NATIVE_LINUX_MULTI_CONTAINER_SCHEMA_VERSION: &str =
-    "a3s.oci.native-linux-multi-container-smoke.v20";
+    "aster.oci.native-linux-multi-container-smoke.v20";
 /// Schema emitted by the utility-VM multi-container lifecycle diagnostic.
-pub const OCI_VM_MULTI_CONTAINER_SCHEMA_VERSION: &str = "a3s.oci.oci-vm-multi-container-smoke.v11";
+pub const OCI_VM_MULTI_CONTAINER_SCHEMA_VERSION: &str = "aster.oci.oci-vm-multi-container-smoke.v11";
 /// Schema emitted by the Windows bootstrap-profile multi-container diagnostic.
 pub const WINDOWS_OCI_VM_MULTI_CONTAINER_SCHEMA_VERSION: &str =
-    "a3s.oci.windows-oci-vm-multi-container-smoke.v1";
+    "aster.oci.windows-oci-vm-multi-container-smoke.v1";
 
 /// Rootfs and mount enforcement evidence shared by native and utility-VM paths.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -737,9 +737,9 @@ impl OciVmMultiContainerSmokeReport {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_agent_protocol::{AgentOperation, AGENT_PROTOCOL_VERSION_MAX};
-    use a3s_oci_core::{CapabilityStatus, HostPlatform};
-    use a3s_oci_sdk::ExitStatus;
+    use aster_oci_agent_protocol::{AgentOperation, AGENT_PROTOCOL_VERSION_MAX};
+    use aster_oci_core::{CapabilityStatus, HostPlatform};
+    use aster_oci_sdk::ExitStatus;
     use serde_json::json;
 
     use super::{
@@ -763,10 +763,10 @@ mod tests {
     fn cgroup_path_success_requires_exact_absolute_relative_repeat_and_cleanup_evidence() {
         let mut evidence = CgroupPathEvidence {
             requested_relative: Some("tenant/workload".into()),
-            requested_absolute: Some("/a3s-oci-absolute".into()),
-            observed_relative_initial: Some("/a3s-oci-private/tenant/workload".into()),
-            observed_relative_recreated: Some("/a3s-oci-private/tenant/workload".into()),
-            observed_absolute: Some("/a3s-oci-absolute".into()),
+            requested_absolute: Some("/aster-oci-absolute".into()),
+            observed_relative_initial: Some("/aster-oci-private/tenant/workload".into()),
+            observed_relative_recreated: Some("/aster-oci-private/tenant/workload".into()),
+            observed_absolute: Some("/aster-oci-absolute".into()),
             absolute_mountpoint_resolution_verified: true,
             relative_recreate_resolution_verified: true,
             distinct_locations: true,
@@ -970,7 +970,7 @@ mod tests {
         let mut report = AgentVmSmokeReport::initial(HostPlatform::Windows);
         report.status = CapabilityStatus::Available;
         report.endpoint_bound = true;
-        report.endpoint_name = Some("a3s-oci-agent-00000000000000000000000000000000".into());
+        report.endpoint_name = Some("aster-oci-agent-00000000000000000000000000000000".into());
         report.shim_spawned = true;
         report.shim_process_id = Some(41);
         report.bridge_process_id = Some(41);

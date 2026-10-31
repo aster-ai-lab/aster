@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootRequest, BootResponse, ControllerDefinition, HttpMethod,
     Result, RouteDefinition, Validate, ValidationOptions, ValidationSchema,
 };

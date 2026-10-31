@@ -10,7 +10,7 @@
 {"text":"帮我看一下","parameters":{"city":"上海"}}
 ```
 
-`parameters.schema.json` 要求 `city`。进程用 Vercel AI SDK 的 `tool` 向 Open-Meteo 查当前气温。设置了 `A3S_MODEL_BASE_URL` 时，再用 `streamText` 把工具结果流到标准输出。没有这个地址时，直接把气温写到标准输出，然后退出。
+`parameters.schema.json` 要求 `city`。进程用 Vercel AI SDK 的 `tool` 向 Open-Meteo 查当前气温。设置了 `ASTER_MODEL_BASE_URL` 时，再用 `streamText` 把工具结果流到标准输出。没有这个地址时，直接把气温写到标准输出，然后退出。
 
 客机里安装依赖：
 

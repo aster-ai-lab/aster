@@ -5,8 +5,8 @@ use std::os::unix::net::UnixStream;
 use std::thread;
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::AGENT_VSOCK_PORT;
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_agent_protocol::AGENT_VSOCK_PORT;
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 const CONNECT_ATTEMPTS: usize = 100;
 const CONNECT_RETRY_DELAY: Duration = Duration::from_millis(50);
@@ -136,7 +136,7 @@ fn host_address() -> io::Result<libc::sockaddr_vm> {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_agent_protocol::AGENT_VSOCK_PORT;
+    use aster_oci_agent_protocol::AGENT_VSOCK_PORT;
 
     use super::host_address;
 

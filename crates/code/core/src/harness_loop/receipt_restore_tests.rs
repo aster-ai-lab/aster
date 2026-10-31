@@ -36,8 +36,8 @@ fn later_log_uncertainty_and_current_state_survive_a_stale_checkpoint() {
     cached.observe_unseen_paths(&["changed.txt".into()]);
     cached.set_unresolved_tool_effects(keys(&["old-unknown"]));
     let mut live = MutationLedger::default();
-    let after = a3s_effect::ToolFileIdentityV1 {
-        kind: a3s_effect::ToolFileKind::File,
+    let after = aster_effect::ToolFileIdentityV1 {
+        kind: aster_effect::ToolFileKind::File,
         content_digest: Some(format!("sha256:{}", sha256::digest(b"later bytes"))),
         mode: Some(0o644),
     };
@@ -148,10 +148,10 @@ fn an_empty_cache_does_not_invent_debt_or_change_default_projection() {
     assert_eq!(ledger, MutationLedger::default());
 }
 
-fn coverage_receipt(id: &str, path: &str, bytes: &[u8]) -> a3s_effect::ToolExecutionResultV1 {
-    a3s_effect::ToolExecutionResultV1 {
-        schema: a3s_effect::TOOL_RESULT_SCHEMA.into(),
-        identity: a3s_effect::ToolInvocationIdentityV1 {
+fn coverage_receipt(id: &str, path: &str, bytes: &[u8]) -> aster_effect::ToolExecutionResultV1 {
+    aster_effect::ToolExecutionResultV1 {
+        schema: aster_effect::TOOL_RESULT_SCHEMA.into(),
+        identity: aster_effect::ToolInvocationIdentityV1 {
             turn: 1,
             cycle: 0,
             tool_call_id: id.into(),
@@ -159,15 +159,15 @@ fn coverage_receipt(id: &str, path: &str, bytes: &[u8]) -> a3s_effect::ToolExecu
             admission: None,
         },
         prepared_digest: format!("sha256:{}", "a".repeat(64)),
-        outcome: a3s_effect::ToolExecutionOutcome::Succeeded,
+        outcome: aster_effect::ToolExecutionOutcome::Succeeded,
         exit_code: Some(0),
         output: serde_json::json!("observed"),
-        effects: a3s_effect::ToolEffectObservationV1::complete(vec![
-            a3s_effect::ToolPathChangeV1 {
+        effects: aster_effect::ToolEffectObservationV1::complete(vec![
+            aster_effect::ToolPathChangeV1 {
                 path: path.into(),
                 before: None,
-                after: a3s_effect::ToolFileIdentityV1 {
-                    kind: a3s_effect::ToolFileKind::File,
+                after: aster_effect::ToolFileIdentityV1 {
+                    kind: aster_effect::ToolFileKind::File,
                     content_digest: Some(format!("sha256:{}", sha256::digest(bytes))),
                     mode: Some(0o644),
                 },
@@ -191,7 +191,7 @@ fn cache_coverage_requires_every_receipt_and_exact_observed_state() {
     partial.observe_tool_receipt("write", &second);
     assert!(!cached.checkpoint_cache_covered_by(&partial));
     let mut read = coverage_receipt("unrelated-read", "unused", b"");
-    read.effects = a3s_effect::ToolEffectObservationV1::complete(Vec::new());
+    read.effects = aster_effect::ToolEffectObservationV1::complete(Vec::new());
     let mut unrelated = MutationLedger::default();
     unrelated.observe_tool_receipt("read", &read);
     assert!(!cached.checkpoint_cache_covered_by(&unrelated));
@@ -212,7 +212,7 @@ fn cache_coverage_requires_every_receipt_and_exact_observed_state() {
     original.observe_tool_receipt("write", &second);
     assert!(!cached.checkpoint_cache_covered_by(&original));
     let mut different_kind = first.clone();
-    different_kind.effects.changes[0].after.kind = a3s_effect::ToolFileKind::Symlink;
+    different_kind.effects.changes[0].after.kind = aster_effect::ToolFileKind::Symlink;
     let mut original = MutationLedger::default();
     original.observe_tool_receipt("write", &different_kind);
     original.observe_tool_receipt("write", &second);
@@ -241,8 +241,8 @@ fn cache_coverage_binds_background_fact_identity_and_rejects_legacy_or_bad_diges
 #[test]
 fn exact_original_unknown_covers_cached_debt_without_claiming_completion() {
     let mut unknown = coverage_receipt("original-unknown", "changed.txt", b"partial actual bytes");
-    unknown.outcome = a3s_effect::ToolExecutionOutcome::Unknown;
-    unknown.effects.completeness = a3s_effect::ToolObservationCompleteness::Incomplete;
+    unknown.outcome = aster_effect::ToolExecutionOutcome::Unknown;
+    unknown.effects.completeness = aster_effect::ToolObservationCompleteness::Incomplete;
     unknown.effects.reason = Some("original observation was incomplete".into());
     unknown.effects.unresolved_external_operations = vec!["opaque exact external operation".into()];
     let mut cached = MutationLedger::default();

@@ -1,6 +1,6 @@
 //! Fact-log control for a coding session.
 //!
-//! The next transition comes from [`a3s_effect::resume_coding`]. This module
+//! The next transition comes from [`aster_effect::resume_coding`]. This module
 //! does not keep a message loop, a confirmation timer, or a question wait
 //! table. Steer is another `user.message` fact.
 
@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_effect::{
+use aster_effect::{
     answer_fact, confirm_fact, ingest_coding_with_optional_limit, message_fact,
     resume_coding_with_cancel, resume_coding_with_optional_limit, ActorError, CodingPhase,
     CodingServices, CodingView, Compactor, Completion, CompletionRequest, Exit, FileLog,
@@ -132,7 +132,7 @@ pub struct FactRun {
     /// handle over the same directory races duplicate seqs).
     log: Arc<FileLog>,
     thread: String,
-    actor: a3s_effect::Actor<CodingServices, CodingView>,
+    actor: aster_effect::Actor<CodingServices, CodingView>,
     services: Arc<CodingServices>,
     limit: Option<u32>,
     /// Tool names exposed when this run was admitted. A later posture does not rewrite them.
@@ -177,7 +177,7 @@ impl Completion for CappedCompletion {
         &self,
         request: CompletionRequest,
         cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         let inner = Arc::clone(&self.inner);
         let run_id = self.run_id.clone();
         Box::pin(async move {
@@ -379,7 +379,7 @@ impl Completion for LiveCompletion {
         &self,
         request: CompletionRequest,
         cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         let client = Arc::clone(&self.client);
         let policy = self.policy.clone();
@@ -1325,6 +1325,11 @@ impl FactRun {
                 "goal.host_driver_conflict: goal execution requires the actual original Run and log"
             );
         }
+        surface
+            .ledger
+            .lock()
+            .map_err(|_| anyhow::anyhow!("goal receipt ledger lock poisoned"))?
+            .bind_goal_continuation(continuation);
         if policy.policy.is_some()
             && !child
             && !original_model
@@ -1508,12 +1513,12 @@ impl FactRun {
             &self.thread,
         )?;
         let fact = input.into_fact()?;
-        a3s_effect::append_input(self.log.as_ref(), &self.thread, fact).map_err(|error| {
+        aster_effect::append_input(self.log.as_ref(), &self.thread, fact).map_err(|error| {
             anyhow::anyhow!("tool_effect_recovery_unproved_append_failed: {error}")
         })
     }
 
-    pub fn read_facts(&self) -> Result<Vec<a3s_effect::Fact>> {
+    pub fn read_facts(&self) -> Result<Vec<aster_effect::Fact>> {
         let log = self.open_log()?;
         log.read(&self.thread)
             .map_err(|error| anyhow::anyhow!(error))
@@ -1576,7 +1581,7 @@ impl FactRun {
         seed_history(self.open_log()?.as_ref(), &self.thread, history)
     }
 
-    pub async fn user_text(&self, text: &str) -> Result<a3s_effect::Settlement<CodingView>> {
+    pub async fn user_text(&self, text: &str) -> Result<aster_effect::Settlement<CodingView>> {
         self.user_text_with_attachments(text, &[]).await
     }
 
@@ -1589,7 +1594,7 @@ impl FactRun {
         &self,
         text: &str,
         attachments: &[Attachment],
-    ) -> Result<a3s_effect::Settlement<CodingView>> {
+    ) -> Result<aster_effect::Settlement<CodingView>> {
         let log = self.open_log()?;
         let key = format!("m-{}", log.read(&self.thread).unwrap_or_default().len());
         ingest_coding_with_optional_limit(
@@ -1605,12 +1610,12 @@ impl FactRun {
         .map_err(exit_to_error)
     }
 
-    pub async fn steer(&self, text: &str) -> Result<a3s_effect::Settlement<CodingView>> {
+    pub async fn steer(&self, text: &str) -> Result<aster_effect::Settlement<CodingView>> {
         self.user_text(text).await
     }
 
     /// Resume using the transition ceiling captured at admission.
-    pub async fn resume(&self) -> Result<a3s_effect::Settlement<CodingView>> {
+    pub async fn resume(&self) -> Result<aster_effect::Settlement<CodingView>> {
         let log = self.open_log()?;
         resume_coding_with_optional_limit(
             &self.actor,
@@ -1624,7 +1629,7 @@ impl FactRun {
         .map_err(exit_to_error)
     }
 
-    pub async fn resume_limit(&self, limit: u32) -> Result<a3s_effect::Settlement<CodingView>> {
+    pub async fn resume_limit(&self, limit: u32) -> Result<aster_effect::Settlement<CodingView>> {
         let log = self.open_log()?;
         resume_coding_with_cancel(
             &self.actor,
@@ -1642,7 +1647,7 @@ impl FactRun {
         &self,
         tool_call_id: &str,
         approved: bool,
-    ) -> Result<a3s_effect::Settlement<CodingView>> {
+    ) -> Result<aster_effect::Settlement<CodingView>> {
         let log = self.open_log()?;
         let key = format!("c-{}", log.read(&self.thread).unwrap_or_default().len());
         ingest_coding_with_optional_limit(
@@ -1686,7 +1691,7 @@ impl FactRun {
         Ok(settled.log.len() > before)
     }
 
-    pub async fn answer(&self, text: &str) -> Result<a3s_effect::Settlement<CodingView>> {
+    pub async fn answer(&self, text: &str) -> Result<aster_effect::Settlement<CodingView>> {
         let log = self.open_log()?;
         let key = format!("a-{}", log.read(&self.thread).unwrap_or_default().len());
         ingest_coding_with_optional_limit(
@@ -1725,7 +1730,7 @@ mod tests;
 #[cfg(test)]
 mod unsettled_debt_tests {
     use super::unsettled_mutation_paths;
-    use a3s_effect::Fact;
+    use aster_effect::Fact;
 
     fn fact(kind: &str, payload: serde_json::Value) -> Fact {
         Fact {

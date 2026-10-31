@@ -8,7 +8,7 @@ use crate::layers::{
     linear::DeviceMatrix,
     mhc::{MhcBlock, MhcNumerics, MhcParameters},
 };
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::Tensor;
 
 fn device(limits: InferenceLimits) -> CudaLayerDevice {

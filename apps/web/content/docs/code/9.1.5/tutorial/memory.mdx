@@ -19,12 +19,12 @@ export const meta = {
 
 ## 建立一个 V2 文件仓库
 
-在练习包增加本地依赖 `a3s-memory = { path = "../../crates/memory" }`。在 `runtime.rs` 增加：
+在练习包增加本地依赖 `aster-memory = { path = "../../crates/memory" }`。在 `runtime.rs` 增加：
 
 ```rust
 use std::sync::Arc;
-use a3s_memory::repository::{FileMemoryRepository, MemoryNamespace};
-use a3s_code_core::durable_memory::{DurableMemorySession, DurableMemoryRecallPolicy};
+use aster_memory::repository::{FileMemoryRepository, MemoryNamespace};
+use aster_core::durable_memory::{DurableMemorySession, DurableMemoryRecallPolicy};
 
 async fn project_memory(state_dir: &std::path::Path)
     -> anyhow::Result<DurableMemorySession>

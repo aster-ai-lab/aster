@@ -1,4 +1,4 @@
-use a3s_code_core::{Agent, CodeConfig, SessionOptions};
+use aster_core::{Agent, CodeConfig, SessionOptions};
 use serde_json::json;
 
 fn test_config() -> CodeConfig {

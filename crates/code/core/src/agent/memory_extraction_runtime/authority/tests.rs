@@ -4,7 +4,7 @@ use super::*;
 use crate::agent::memory_extraction_runtime::{
     parse_extracted_memories, ExtractedMemory, MAX_MEMORY_CONTENT_CHARS, MAX_MEMORY_REASON_CHARS,
 };
-use a3s_memory::{MemoryItem, MemoryType};
+use aster_durable_memory::{MemoryItem, MemoryType};
 use serde_json::json;
 use std::collections::HashSet;
 

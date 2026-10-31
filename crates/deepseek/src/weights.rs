@@ -6,8 +6,8 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_power::error::{PowerError, Result};
-use a3s_power::inference::{
+use aster_power::error::{PowerError, Result};
+use aster_power::inference::{
     TensorRangeRead, TensorStorageDescriptor, WeightFileDescriptor, WeightStore,
 };
 use serde::Deserialize;

@@ -73,7 +73,7 @@ if [[ ! -d "${output_parent}" ]]; then
   exit 1
 fi
 
-staging=$(mktemp -d "${output_parent}/.a3s-search-frozen.XXXXXX")
+staging=$(mktemp -d "${output_parent}/.aster-search-frozen.XXXXXX")
 published=false
 cleanup() {
   if [[ "${published}" != true && -d "${staging}" ]]; then
@@ -116,7 +116,7 @@ def identity(path: pathlib.Path) -> str:
 
 
 payload = {
-    "schema": "a3s/search-frozen-crate/v1",
+    "schema": "aster/search-frozen-crate/v1",
     "repository": repository_url,
     "git_commit": git_commit,
     "git_ref": git_ref,

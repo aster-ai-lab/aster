@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{
     CreateRequest, IsolationRequest, OciBundle, OperationContext, ProcessId, ProcessIo,
 };
 
@@ -30,15 +30,15 @@ pub struct LinuxKvmCloseStdinReopenConfig {
 
 pub(super) struct Qualification {
     create: CreateRequest,
-    start_operation_id: a3s_oci_sdk::OperationId,
-    exec_operation_id: a3s_oci_sdk::OperationId,
-    close_operation_id: a3s_oci_sdk::OperationId,
-    delete_operation_id: a3s_oci_sdk::OperationId,
-    stale_guest_operation_id: a3s_oci_sdk::OperationId,
-    stale_host_operation_id: a3s_oci_sdk::OperationId,
+    start_operation_id: aster_oci_sdk::OperationId,
+    exec_operation_id: aster_oci_sdk::OperationId,
+    close_operation_id: aster_oci_sdk::OperationId,
+    delete_operation_id: aster_oci_sdk::OperationId,
+    stale_guest_operation_id: aster_oci_sdk::OperationId,
+    stale_host_operation_id: aster_oci_sdk::OperationId,
     changed_process_id: ProcessId,
     process_id: ProcessId,
-    process: a3s_oci_sdk::oci_spec::runtime::Process,
+    process: aster_oci_sdk::oci_spec::runtime::Process,
     io: ProcessIo,
     init_marker_contents: Vec<u8>,
     exec_marker_contents: Vec<u8>,
@@ -82,7 +82,7 @@ pub async fn linux_kvm_close_stdin_reopen_replacement(
         Err(reason) => return failed(report, reason),
     };
     let container_id =
-        match a3s_oci_sdk::ContainerId::new(format!("kvm-close-stdin-reopen-{nonce}")) {
+        match aster_oci_sdk::ContainerId::new(format!("kvm-close-stdin-reopen-{nonce}")) {
             Ok(id) => id,
             Err(error) => {
                 return failed(report, format!("failed to construct container ID: {error}"));
@@ -209,9 +209,9 @@ pub async fn linux_kvm_close_stdin_reopen_replacement(
         process_id,
         process,
         io,
-        init_marker_contents: format!("a3s-oci-exec-init-{nonce}\n").into_bytes(),
-        exec_marker_contents: format!("a3s-oci-exec-process-{nonce}\n").into_bytes(),
-        close_marker_contents: format!("a3s-oci-close-stdin-{nonce}\n").into_bytes(),
+        init_marker_contents: format!("aster-oci-exec-init-{nonce}\n").into_bytes(),
+        exec_marker_contents: format!("aster-oci-exec-process-{nonce}\n").into_bytes(),
+        close_marker_contents: format!("aster-oci-close-stdin-{nonce}\n").into_bytes(),
         stage: config.stage,
     };
     let state_root = prepared.runtime_root.join("operation-reopen-state");

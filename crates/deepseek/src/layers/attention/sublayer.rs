@@ -4,7 +4,7 @@
 //! Rust adaptation of DeepInfer hc.py/hc_blocks.py (Apache-2.0), revision
 //! 9bd9cf243fc53ef9afbf8f04d391d989117d6ab9.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::Tensor;
 use tokio_util::sync::CancellationToken;
 

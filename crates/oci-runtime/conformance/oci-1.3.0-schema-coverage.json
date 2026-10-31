@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "a3s.oci.schema-coverage.v2",
+  "schemaVersion": "aster.oci.schema-coverage.v2",
   "ociRuntimeSpec": "1.3.0",
   "upstreamCommit": "92249139eea7161e13745abd4cb6d0ea02a3227a",
   "items": [
@@ -17,7 +17,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:4f4db6557faa4aaa3ff7041dcebe411fded7972c9d31d74d9ab23e73ef488303",
@@ -33,7 +33,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:9231472895bbef8bec374ef46c62c82fbb64ede5dabb7b64cdb936b3dd3e1afa",
@@ -49,7 +49,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:ebda00eb3071d3b7ffecc73b32ff25f4a1b47eadfd9cc4fa6bbc8d99a36cf822",
@@ -65,7 +65,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:0531b906791c011fbd87a15c2859473a1549392f4007f7c7c2ce0e4a3f12524a",
@@ -81,7 +81,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:5291c57f67fb57c55dae2e6f618081468d55fc130f73b8a467fb45fd716ae94b",
@@ -97,7 +97,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:02bb9dabf93be35b68824458ad0115ace22aa4d93b40babaa55d254b7fbb6fc2",
@@ -113,7 +113,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:386855dc1b95f444be8a90a13908d83465e7d3a12872a1894c4fb4774ffb1243",
@@ -129,7 +129,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:de8cf9b6a0b21e53003b9fbec8184687e89abd982d95cfef1a315bec529615b4",
@@ -145,7 +145,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:59d6d6194d7aeaa03995f210194bea33b1654e5660a3154e234997d2c80924fa",
@@ -161,7 +161,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:f2cfface9f449823c36b478d3c77600fe8c54f8cfb99cb3818a5d094018fb224",
@@ -177,7 +177,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:4637b8956621fcce11038af8d101c1c2eaba74ab6827e2fff8bb57a8d220f50e",
@@ -193,7 +193,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:727ffff031d12827fcf3b467bed0fb63d96d89713decd9be9649ce84d16af905",
@@ -209,7 +209,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:a30670459216794debe0571d86d37c428bc5c517e40446558d8dd1ce85aaa4b6",
@@ -225,7 +225,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:950de64053caed88c39cf5761ee51eaf7d181d48c3fb5b7b9bde0885e12fda00",
@@ -241,7 +241,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:0b8848d7551f3e2e0d33de85169a520ce7be5cf4b89328b26a3139004095b552",
@@ -257,7 +257,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:e2c19be1b2d62d6cb58fb0c41794aa6fd3c4fda21280141f57f3069327e30ad7",
@@ -273,7 +273,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:dd627af933fc66c7b845e405aff433627a02e7a2bfbacb85d50d8f5f28752899",
@@ -289,7 +289,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:71c928f73b29b129eafc47846c53e610f03e9f7e8be0cb06089a7ed0c0784d4c",
@@ -305,7 +305,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:b7f51704b26027744e7380bc7145adb8a4f3ac950be093a1d5160cd73d7a5307",
@@ -321,7 +321,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:d23fa9ca39b9f10a1723144b5f0d5e2ce7f0d78ae732dc1f49ed1a0966feff2b",
@@ -337,7 +337,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:695ab165f983ba8e9b4abfc10aa7e50521e7fc1bb5b1c9f98185b2e114022600",
@@ -353,7 +353,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:a2e7e05350c81dc0469198edc40a7fd7c8b6899cbbbbc5c963c988f4bb52b149",
@@ -369,7 +369,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:f7a119b3dbfd9efc1dab7a9c3a0e600438d778a7ddd99d0adf9573cf0e337156",
@@ -385,7 +385,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:6be9db7e0d4414e148d27b9c56fcc52d9d118997e77b357f579b28353b4f18ff",
@@ -401,7 +401,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:d6e32b14521b5ec63fa7bf8c5748e97cac8317440c8f51c49c8f1d17b3f75a11",
@@ -2152,7 +2152,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:8598da57d359ce18538692aa4f73cf090cc86b279cee977784699fb9e4b17e64",
@@ -2433,7 +2433,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2500,7 +2500,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2546,7 +2546,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2592,7 +2592,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2638,7 +2638,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2684,7 +2684,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2730,7 +2730,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2776,7 +2776,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2843,7 +2843,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2889,7 +2889,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2935,7 +2935,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -2981,7 +2981,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3027,7 +3027,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3073,7 +3073,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3119,7 +3119,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3165,7 +3165,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3211,7 +3211,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3257,7 +3257,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3303,7 +3303,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3349,7 +3349,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3395,7 +3395,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3441,7 +3441,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3487,7 +3487,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3533,7 +3533,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3579,7 +3579,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3625,7 +3625,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3671,7 +3671,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3717,7 +3717,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3763,7 +3763,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3809,7 +3809,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3855,7 +3855,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3901,7 +3901,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3947,7 +3947,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -3993,7 +3993,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -4039,7 +4039,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -4085,7 +4085,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -4152,7 +4152,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -4198,7 +4198,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -4244,7 +4244,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -4290,7 +4290,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -4336,7 +4336,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -4382,7 +4382,7 @@
       ],
       "testIds": [
         "executor::plan_tests::plans_exact_common_process_fields_for_init_and_exec",
-        "executor::capability::tests::plans_the_exact_a3s_box_capability_profile",
+        "executor::capability::tests::plans_the_exact_aster_box_capability_profile",
         "executor::cpu_affinity::tests::applies_exact_affinity_in_an_isolated_process",
         "executor::io_priority::tests::plans_every_kernel_class_without_silent_normalization",
         "executor::no_new_privileges::tests::applies_and_reads_back_in_isolated_process",
@@ -4484,7 +4484,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:06f4b057fbe4e6b509fa4f52b7b88bf239f7ad9939351e7487115ecff733139b",
@@ -4501,7 +4501,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:86b55c5141ec1c627a40d058a4cc4e62daa48b3fc203f2733fd235cb670494c9",
@@ -4517,7 +4517,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:fec8f8b70f7209acba84981cb540d78eabb44caa4e0199214bcbaf5401f23045",
@@ -4533,7 +4533,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:4063459b01c5eb5e109a99580cafb63ee01dca6ffd35c1244acbc375ce377f4e",
@@ -4549,7 +4549,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:60186bd3acd8c0452a258c7ef972ccce7e31f51b9eb62b0c5daef4e85cd60e5e",
@@ -4565,7 +4565,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:0ae60f607608401d6acf0f378eaa8887043de5222edfadbd99420d209cc0414d",
@@ -4581,7 +4581,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:9ec11b918c3bec7c075f4e238d4b2329129bca036277b4a7dc601177e7d56952",
@@ -4597,7 +4597,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:e6873fedeb6e8f9c758aa5f26517f393c3a44af702d661af776b0ae93a66db2b",
@@ -4613,7 +4613,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:6c4c09fd45910b585097b2c7f55e9a33c11062bc0df33e33f7c1f1896c9bce3b",
@@ -4629,7 +4629,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:23bccbf9ef2c104e9c4b7839315b408c36f2bd471b83518caf560ea8675cb662",
@@ -4645,7 +4645,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:81f19b4416a4450051920cd153bf0547e5e56fa281e49094775f349f70502694",
@@ -4661,7 +4661,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:aa30491726249a9c96a6b1d577bc2580bfd15d265afb3de4d9d35209286915bc",
@@ -4677,7 +4677,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:0fe403cdab9508db667dd13bb07e3475a41a9a8e10920c01c869fff5a166e5c3",
@@ -4693,7 +4693,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:c9b0730eb418a74143181fd22a524e8760dfec347fdd6b81cae4bcec4cb2e7f3",
@@ -4709,7 +4709,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:719792956241be50fc358e1afaca2008e6dbcd5466ec08adc430b48d8c47bcf7",
@@ -4725,7 +4725,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:200b32eca4b65532194f8ed09f8c3a2bf9dae07b687a08f88ebd82f0e12404e1",
@@ -4741,7 +4741,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:aafa814cef06adb2e49d8ac3cf65e9d500fc9d9a8113fac84bb9e8785356e390",
@@ -4757,7 +4757,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:737c949f01701e86dce9c2ecb1b7346361e13c46fceed3e55e2b70973c0e1713",
@@ -4773,7 +4773,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:21fdb13f51f9695206427c0aaa3aabb33eeafb2bd129ae238f9d7c5da5cb2502",
@@ -4789,7 +4789,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:5a064c9185c04f26dff9909f496b0037ca45f588aebdc4ff8956a65956b53d85",
@@ -4806,7 +4806,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:bff5aff53a3ffd2c61c8f35e55ab1128ef132a01aa3e0e062b8d4862438e2946",
@@ -4823,7 +4823,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:6a29179bb3c457bab8dfa66284e9efd7f2eef2721e94c43b8fce9bd6942d4557",
@@ -4840,7 +4840,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:5d86cb2a39f91750f8a059cd90c6c17c740a50cf95e48887a4582d1a911243bf",
@@ -4857,7 +4857,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:8b982e762f5b561c98cf0a9575f7347cde919269979244f89bc7586bb53c4452",
@@ -4874,7 +4874,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:295af9f53ffe36ada2f3d1deedcc93e31be9fe26c0896806bc736027f89de15d",
@@ -4891,7 +4891,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:1272c02f8bf27df0306c1203980aa9640d0fd877fe5d3f671412186d00341376",
@@ -4908,7 +4908,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:24bcf85429384947b44862a306bad473abba6c99bb91b08d7710d8b82d6c2bdb",
@@ -4925,7 +4925,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:b24567880e9b2bc46ec76f51da76322615af723718aa6b1607b907648d5bf236",
@@ -4944,7 +4944,7 @@
         "semantic::tests::rejects_nul_in_vm_runtime_paths_and_parameters",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:89e7eaca4692bcf9f31e2d53b7587c1de8dde528909851a752913ca9c0b19943",
@@ -4965,7 +4965,7 @@
         "semantic::tests::validates_vm_paths_without_inventing_hardware_minima",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:0a131e708fa148cc452495a60a075e61ddb4a3e035c99d0bf8cb5d42af45c125",
@@ -4982,7 +4982,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:759f6a6cd2816f258e78e5ce9a528c1cd5225033a0d8ef0820c7ed6ef5635c63",
@@ -4999,7 +4999,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:d41518cb1fb318d99a3a2c3dbc967f452d9330f009e3ca6760d6afd48288ee82",
@@ -5020,7 +5020,7 @@
         "semantic::tests::validates_vm_paths_without_inventing_hardware_minima",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:eb6a6c1c5a4285ab970c607accc4df1b85e56ed5b791089a088f609a993f8542",
@@ -5037,7 +5037,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:5a8fc82c98256b601c9b3c832e50500c1450e6c5ed14b215cbc7b5230495726a",
@@ -5058,7 +5058,7 @@
         "semantic::tests::validates_vm_paths_without_inventing_hardware_minima",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:35d748d6c08361bff52d72f4a5e5051822969f2ee010cd476e30415a63c0f6f9",
@@ -5077,7 +5077,7 @@
         "semantic::tests::rejects_nul_in_vm_runtime_paths_and_parameters",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:d9f2a5e99260a2dd6abe368e5acf071eeb227688a9eabc8b519b6d867dd7e155",
@@ -5098,7 +5098,7 @@
         "semantic::tests::validates_vm_paths_without_inventing_hardware_minima",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:bcce487a3fddde7698ad91a8a8ba910d004108b1b4d0b2b65b90f4c0ab3d2dee",
@@ -5114,7 +5114,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:28ee075d093986599e05c283fc7151d4a26abdd4a516bd3d98b98daec3d1c59b",
@@ -5130,7 +5130,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:92b52b3e91ac7585eaba0e2474d48fc20420f491aafa9de87b047a87884305fd",
@@ -5146,7 +5146,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:226e68a829d61ecf2d5cb1528f6f653a6a3f89da5fbeaa1da15a185196df61d3",
@@ -5162,7 +5162,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:ad494efa3cc6450011e64bdd58f00bdd3b669080bc5b7b3c463b1a788dd7c919",
@@ -5178,7 +5178,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:6743e854663afde8404f698794a1092d33a214e9da8b57249ef7b1364034dc8c",
@@ -5194,7 +5194,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:cf68a0486c1aa8ac9fbb9a08539e564230753ab75a98af60a811c1274509b7c8",
@@ -5210,7 +5210,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:d454ccaeba7456587feff5fee30f2d5060a57c76ab3297056914a7e10188684d",
@@ -5226,7 +5226,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:541a92c3768252170eca8386f8639a5d3b8e31509daeb4d952d6dcf7dccdb1af",
@@ -5242,7 +5242,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:62684867d7958faad539f45db802d381a79164f9819a6753b2c914ad505f65a1",
@@ -5258,7 +5258,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:9ad391962d5dbeaa9d899f578d9338f2542d3145243893475d1936d3fb764e46",
@@ -5274,7 +5274,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:be0c42265fa741b7a93753fbc307edeacff895c59b349641ad44a0f0af84b6af",
@@ -5290,7 +5290,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:d1d0e32a3d0f37ff5cfa7ae421f0df3c2acb25c8741e11d941dd0dc9415bbe69",
@@ -5306,7 +5306,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:8ab71439aa85430da55e088095223eb40b683e44329dd9bcb883577f84d66dd2",
@@ -5322,7 +5322,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:4ec72c86ae5b70f4bc9ca51ae99cc17411976308bc547f1352260bb337fc05cd",
@@ -5338,7 +5338,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:5daa5cdc9c1378f4afd517c42701b6c0725ada23378bde903cbedbe64a74af59",
@@ -5354,7 +5354,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:c6cc9cb104f90643349db1e5f1ff6b3ebd8274a4339210f287269362700adc82",
@@ -5370,7 +5370,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:1d3f474f011f3a1bb57126ee6ed2dfd83d9b17a6027194917a81b89a692e7d99",
@@ -5386,7 +5386,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:f9b2aff6988a87762541be202f7685d893acc7615509cf0dcc4cfde967c2008e",
@@ -5402,7 +5402,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:93125b69b450bb37c4057b0ddb702c54693bed7f6b66628b2a5959469d4e2b4f",
@@ -5418,7 +5418,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:5d3718b4e1e09261183977d6aade521def1875daaf1e81c739364e09272f0d6d",
@@ -5434,7 +5434,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:907be9e7e7a8cd9b01160855993010457c13a1fc4b30cebe3102220f7777f57d",
@@ -5450,7 +5450,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:0ea1628fb46c9337e2ca45116c02bda86dc729f62cc26b94c1034e883433edae",
@@ -5466,7 +5466,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:ba93a01ce0034308d55f531121eb1fcbe6de461340b6742128b39811f297797d",
@@ -5482,7 +5482,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:db62fc082a8bd39223f7aa1e6cee4bdc92e8d560cd61d6a6e186c7251f3ff8cd",
@@ -5498,7 +5498,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:d8c0e61639e8bfd788935adf19fb9351bac456571d36fc29e531418963532159",
@@ -5514,7 +5514,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:b4ddbcc012fd8892a2df2074e4c8d0124164bec80df3f0bc50409741b9704c73",
@@ -5530,7 +5530,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:f6ba04863082e316f5b7474ddc810beabc20d742375600895b85c3e7786524b0",
@@ -5546,7 +5546,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:a46d2f242ece1a4f400a311969842da6538e8dcf27beaa0cac6ad9ac6396ae0e",
@@ -5562,7 +5562,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:7f0fbeff76a8324bb7e78ed76db304c7ed1db59a186c5802ae4264f060eb3dd1",
@@ -5578,7 +5578,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:6942cef56331f12ea11a207b848ad9adad447f427a7a7f53212035cd5459684d",
@@ -5594,7 +5594,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:aecb488983266468a85e2cfd7b89441311f151ee14c41660318fc64fa55c790c",
@@ -5610,7 +5610,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:dcaa1c6d05b2dba88264ea959462ad309c342488d6b8bc1f319d0595b1e012f7",
@@ -5626,7 +5626,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:7c07226051c8357b532941be36ad11f3440854b76787d955e3520938ad98203e",
@@ -5642,7 +5642,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:c1e7057e44f3e3efb493bb89e03b659bbf9aa4de9e46db5d87e59a1ccd9c5c2a",
@@ -5658,7 +5658,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:52dd3c38c46c696e35c95ffd66e66eda11299904f1f85a2d2062aa424395ca45",
@@ -8680,7 +8680,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:7149448828ce25eb59076d833312988cd69564ecea0f87e57d0d8f5cd5b9dcef",
@@ -8697,7 +8697,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:97db5be5c5842634a7afa166441b20f12b46139d670128410866933dfb77e0f6",
@@ -8714,7 +8714,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:156997482ebe380675c77fdcee556984d7a7aa3b90b45925b0f750a3364610c7",
@@ -8731,7 +8731,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:bf63c59ba0c81d865621a8ba7ceedc55aba03a2af3d673669aeb2952db9d74e7",
@@ -8748,7 +8748,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:8ab77202e3fade1e03383e3c2be7fbe13d27bfb2e4888f780f55608a46cbcded",
@@ -8765,7 +8765,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:f14b467e74050326d17459e4a46245071197ff4f1ddab3ec213a2d5782c60f62",
@@ -8782,7 +8782,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:7a96c7f43605ea1f627805b4509658ebfc4340defaa59cfdea1c4f22cd7fbaf1",
@@ -8799,7 +8799,7 @@
         "schema::tests::validates_complete_vm_schema_shapes",
         "service::tests::rejects_caller_vm_configuration_before_durable_reservation_and_create_dispatch"
       ],
-      "rationale": "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
+      "rationale": "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation."
     },
     {
       "id": "sha256:c05588c78ef08443328f1297160a5969906641a632f4d85433a1de6afff46d89",
@@ -8815,7 +8815,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:8a5e409c15cae7bbadd0e404312419e3f9b85753a60bc177f2fa7b5cb3455cce",
@@ -8831,7 +8831,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:a98f6aa83cadfed0562b501c735d5afdb775c40b05b31786e367850b910761ac",
@@ -8847,7 +8847,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:d476105aa204cce2517854b5090e0e1a05ed24d7aa9f3f783eed54e7def79476",
@@ -8863,7 +8863,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:e037b8f34359dd7c2841f598f653fe07c837a8a41c2bce02c72d502bb88f577c",
@@ -8879,7 +8879,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:8e6a9a86a585cfc28e90e42aaaba3bf68cc6f86b93afcd5707c57a962bd04197",
@@ -8895,7 +8895,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:311ec68b1bd6e03370b9ae4b99330c371801905275eb8b317f01f5fe6a3fb58a",
@@ -8911,7 +8911,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:dbce5d2b37c4fc3ea04101d0d7abe65f3f447df854e51d5dfe5d3aa10ea8a6ab",
@@ -8927,7 +8927,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:dcb46e8119401ba3cdbabb55a15e2db73eed15f5d1b63cfaff2f06528692878f",
@@ -8943,7 +8943,7 @@
       "testIds": [
         "semantic::tests::rejects_native_non_linux_workload_sections_as_unsupported"
       ],
-      "rationale": "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+      "rationale": "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
     },
     {
       "id": "sha256:1afdec727ab393f9bdecd6ff335a26f8d38fd5781715214c4a8b8afd148f0aa9",

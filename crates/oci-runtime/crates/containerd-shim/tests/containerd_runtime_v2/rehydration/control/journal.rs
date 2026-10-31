@@ -1,8 +1,8 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::canonical_json_bytes;
-use a3s_oci_sdk::oci_spec::runtime::LinuxResources;
+use aster_oci_sdk::canonical_json_bytes;
+use aster_oci_sdk::oci_spec::runtime::LinuxResources;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 
@@ -101,7 +101,7 @@ pub(super) async fn assert_completed(
 }
 
 pub(super) async fn read_control_journal(bundle: &Path) -> TestResult<ControlJournalEvidence> {
-    let path = bundle.join("a3s-oci-shim-v1.json");
+    let path = bundle.join("aster-oci-shim-v1.json");
     let document: serde_json::Value = serde_json::from_slice(
         &tokio::fs::read(&path)
             .await

@@ -1,11 +1,11 @@
 use async_trait::async_trait;
 
-use a3s_search::providers::{
+use aster_search::providers::{
     ProviderAuthentication, ProviderCapabilities, ProviderDescriptor, ProviderEngine,
     ProviderReadiness, ProviderReport, ProviderRequest, ProviderResponse, ProviderResult,
     SearchProvider,
 };
-use a3s_search::{Engine, Result, ResultType, SearchImage, SearchQuery, SearchUsage};
+use aster_search::{Engine, Result, ResultType, SearchImage, SearchQuery, SearchUsage};
 
 struct CustomProvider;
 

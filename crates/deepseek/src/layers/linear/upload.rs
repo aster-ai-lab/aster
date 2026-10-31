@@ -3,7 +3,7 @@
 //! checkpoint tail. Host tensor-list metadata has its own checked byte bound.
 
 use super::{check_cancel, invalid, tensor_error, CudaLayerDevice, MatrixLayout, MatrixWeights};
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

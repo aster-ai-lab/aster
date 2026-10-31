@@ -29,11 +29,11 @@ use super::*;
 mod model;
 use model::{DurableFixtureProcess, DurableFixtureService, DurableFixtureState};
 
-const CHILD_ENV: &str = "A3S_BOX_TEST_RUNTIME_OWNER_CHILD";
-const STATE_ENV: &str = "A3S_BOX_TEST_RUNTIME_OWNER_STATE";
-const ENDPOINT_ENV: &str = "A3S_BOX_TEST_RUNTIME_OWNER_ENDPOINT";
-const READY_ENV: &str = "A3S_BOX_TEST_RUNTIME_OWNER_READY";
-const CALL_LOG_ENV: &str = "A3S_BOX_TEST_RUNTIME_OWNER_CALL_LOG";
+const CHILD_ENV: &str = "ASTER_BOX_TEST_RUNTIME_OWNER_CHILD";
+const STATE_ENV: &str = "ASTER_BOX_TEST_RUNTIME_OWNER_STATE";
+const ENDPOINT_ENV: &str = "ASTER_BOX_TEST_RUNTIME_OWNER_ENDPOINT";
+const READY_ENV: &str = "ASTER_BOX_TEST_RUNTIME_OWNER_READY";
+const CALL_LOG_ENV: &str = "ASTER_BOX_TEST_RUNTIME_OWNER_CALL_LOG";
 const PROCESS_CHILD_TEST_NAME: &str = concat!(
     "local_execution::oci_backend::tests::process_restart::",
     "retained_backend_recovers_after_runtime_owner_process_restart"
@@ -1146,7 +1146,7 @@ async fn run_child() {
             .connect()
             .await
             .expect("accept Box named-pipe client");
-        a3s_oci_sdk::serve_transport_connection(service, server)
+        aster_oci_sdk::serve_transport_connection(service, server)
             .await
             .expect("serve Box named-pipe connection");
     }
@@ -1161,7 +1161,7 @@ async fn run_child() {
             tokio::net::UnixListener::bind(&socket_path).expect("bind runtime-owner Unix socket");
         std::fs::write(&ready_path, b"ready").expect("publish runtime-owner readiness");
         let (stream, _) = listener.accept().await.expect("accept Box Unix client");
-        a3s_oci_sdk::serve_transport_connection(service, stream)
+        aster_oci_sdk::serve_transport_connection(service, stream)
             .await
             .expect("serve Box Unix connection");
     }
@@ -1172,7 +1172,7 @@ fn process_endpoint(_directory: &tempfile::TempDir) -> (OsString, OciRuntimeEndp
     use std::sync::atomic::{AtomicU64, Ordering};
     static NEXT_PIPE: AtomicU64 = AtomicU64::new(40_000);
     let name = format!(
-        r"\\.\pipe\a3s-box-owner-restart-test-{}-{}",
+        r"\\.\pipe\aster-box-owner-restart-test-{}-{}",
         std::process::id(),
         NEXT_PIPE.fetch_add(1, Ordering::Relaxed)
     );

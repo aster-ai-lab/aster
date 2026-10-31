@@ -24,7 +24,7 @@ pub(crate) fn expand_validation_schema(
 
     let (impl_generics, ty_generics, where_clause) = item_struct.generics.split_for_impl();
     Ok(quote! {
-        impl #impl_generics ::a3s_boot::ValidationSchema for #struct_ident #ty_generics #where_clause {
+        impl #impl_generics ::aster_boot::ValidationSchema for #struct_ident #ty_generics #where_clause {
             fn allowed_fields() -> &'static [&'static str] {
                 &[#(#field_names),*]
             }
@@ -116,7 +116,7 @@ impl AttrOptions {
             proc_macro2::TokenStream::new()
         };
         quote! {
-            ::a3s_boot::ValidationOptions::new() #transform #whitelist #forbid_non_whitelisted
+            ::aster_boot::ValidationOptions::new() #transform #whitelist #forbid_non_whitelisted
         }
     }
 }

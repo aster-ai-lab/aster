@@ -7,7 +7,7 @@ use std::os::fd::{AsRawFd, FromRawFd, OwnedFd};
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::net::UnixStream;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::attributes::{
     MountAttr, MOUNT_ATTR_ATIME, MOUNT_ATTR_NOATIME, MOUNT_ATTR_NODEV, MOUNT_ATTR_NODIRATIME,
@@ -852,7 +852,7 @@ mod tests {
     use std::os::unix::fs::OpenOptionsExt;
     use std::path::PathBuf;
 
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{
         apply_ordered_idmap_from_parent, bind_mount_attributes, classify_errno,

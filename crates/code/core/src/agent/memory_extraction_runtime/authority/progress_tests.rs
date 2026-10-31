@@ -4,7 +4,7 @@ use super::*;
 use crate::agent::{AgentConfig, AgentLoop};
 use crate::llm::{LlmClient, LlmResponse, Message, StreamEvent, ToolDefinition};
 use crate::memory::{AgentMemory, MemoryConfig, MemoryObservation, MemoryObserver};
-use a3s_memory::{FileMemoryStore, InMemoryStore, MemoryItem, MemoryStore};
+use aster_durable_memory::{FileMemoryStore, InMemoryStore, MemoryItem, MemoryStore};
 use async_trait::async_trait;
 use serde_json::json;
 use std::collections::{BTreeMap, VecDeque};
@@ -721,7 +721,7 @@ async fn archives_recheck_after_read_and_keep_exact_unit_ack_or_unknown_in_both_
             if archive_entered {
                 let old = items.iter().find(|item| item.id == old_id).unwrap();
                 assert_eq!(
-                    old.metadata.get("a3s.memory.status").map(String::as_str),
+                    old.metadata.get("aster.memory.status").map(String::as_str),
                     Some("superseded")
                 );
                 assert_eq!(old.metadata.get("superseded_by"), canonical_ids.first());
@@ -806,7 +806,7 @@ async fn progress_refusal_cannot_enter_either_original_store_call_in_both_stores
         assert_eq!(fixture.store.entries(), 0);
         let items = fixture.read_back().await;
         assert_eq!(items.len(), 1);
-        assert!(!items[0].metadata.contains_key("a3s.memory.status"));
+        assert!(!items[0].metadata.contains_key("aster.memory.status"));
         let mut progress =
             MemoryRetentionProgress::new(MemoryRetentionOriginV1::ValidatedModel, 1, 0).unwrap();
         assert!(PrimaryProgress::new(&mut progress, 1).is_none());
@@ -863,7 +863,7 @@ async fn ten_primary_fifty_archive_calls_keep_sixty_entries_and_exact_ids_in_bot
             assert_eq!(
                 archived
                     .metadata
-                    .get("a3s.memory.status")
+                    .get("aster.memory.status")
                     .map(String::as_str),
                 Some("superseded")
             );

@@ -1,7 +1,7 @@
 use std::io;
 use std::os::fd::{AsRawFd, FromRawFd, OwnedFd, RawFd};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(super) enum SignalOutcome {
@@ -140,7 +140,7 @@ mod tests {
     use std::os::unix::process::ExitStatusExt;
     use std::process::{Child, Command};
 
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{PidFd, SignalOutcome};
 

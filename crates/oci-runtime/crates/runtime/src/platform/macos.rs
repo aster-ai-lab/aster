@@ -4,7 +4,7 @@ use std::ffi::c_void;
 use std::mem;
 use std::ptr;
 
-use a3s_oci_core::{
+use aster_oci_core::{
     CapabilityStatus, DriverCapability, DriverKind, DriverReadiness, HostPlatform, IsolationClass,
     RuntimeFeatures,
 };
@@ -157,7 +157,7 @@ fn observe_hvf() -> HvfObservation {
             apple_silicon: false,
             hypervisor_supported: None,
             reason: Some(
-                "A3S OCI Runtime supports Hypervisor.framework only on Apple Silicon".into(),
+                "Aster OCI Runtime supports Hypervisor.framework only on Apple Silicon".into(),
             ),
         };
     }
@@ -248,7 +248,7 @@ pub(crate) fn hvf_driver_capability() -> DriverCapability {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_core::{CapabilityStatus, DriverKind, DriverReadiness};
+    use aster_oci_core::{CapabilityStatus, DriverKind, DriverReadiness};
 
     use super::{capability_from_observation, features, HvfObservation};
     #[cfg(target_arch = "aarch64")]
@@ -267,7 +267,7 @@ mod tests {
         assert_eq!(capability.readiness, DriverReadiness::Experimental);
         assert_eq!(
             capability.isolation_classes,
-            vec![a3s_oci_core::IsolationClass::DedicatedVm]
+            vec![aster_oci_core::IsolationClass::DedicatedVm]
         );
         assert!(capability.can_launch());
     }

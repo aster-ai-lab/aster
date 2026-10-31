@@ -52,7 +52,7 @@ impl AgentSession {
 
     /// Execute a bash command in the workspace.
     ///
-    /// Local sessions route the command through the built-in A3S native
+    /// Local sessions route the command through the built-in Aster native
     /// sandbox. A host can replace it via
     /// [`SessionOptions::with_sandbox_handle()`].
     pub async fn bash(&self, command: &str) -> Result<String> {

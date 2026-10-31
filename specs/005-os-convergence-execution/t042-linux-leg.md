@@ -54,15 +54,15 @@ FN0 的裸金属残留从等待项变成顺路项。
 ## 裸进程变体（2026-10-21 补，krun 前提修正后）
 
 krun 前提修正（见 OUTCOME 终段）后更强的一档：runbook 六步本质是身份
-链验证，只需 **Cloud api 角色进程 + a3s-auth + a3s-api + 已迁移 PG**，
+链验证，只需 **Cloud api 角色进程 + aster-auth + aster-api + 已迁移 PG**，
 不内在需要 VM。先例：2026-10-18 导入验证曾将 api/auth/billing/config
 四服务以裸进程对 live 中间件启动（docs/migration.md backend_import
-verification）。本地 `a3s-postgres` 容器已健康运行 23h+。
+verification）。本地 `aster-postgres` 容器已健康运行 23h+。
 
 执行序（无 VM、无 docker digest 依赖）：
-1. 裸进程拉起 Cloud api 角色（对 `a3s-postgres`），完成 C0.3 OIDC
+1. 裸进程拉起 Cloud api 角色（对 `aster-postgres`），完成 C0.3 OIDC
    issuer 配置（前置 1，经其管理面）。
-2. a3s-auth + a3s-api 按 runbook 前置 2/3 起进程（10-20 已证 compose +
+2. aster-auth + aster-api 按 runbook 前置 2/3 起进程（10-20 已证 compose +
    ensure 可清五服务墙）。
 3. SubjectLink 管理（前置 4，admin + identity:write）。
 4. 步骤 1-6 照 runbook 执行；唯一剩余阻塞 = **D-A**（webpki-only 信任）。

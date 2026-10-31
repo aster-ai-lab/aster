@@ -1,7 +1,7 @@
 use super::*;
 use crate::layers::xq::indexer::XqIndexKeyProjection;
 use crate::layers::xq::quant::tests::scalar;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::Device;
 
 fn device() -> CudaLayerDevice {
@@ -210,7 +210,7 @@ fn source_profile_empty_pair_and_late_cancel_fail_without_committed_changes() {
             &Tensor::ones((1, 4), DType::F32, &Device::Cpu).unwrap(),
             &cancel
         ),
-        Err(a3s_power::error::PowerError::InvalidRequest(_))
+        Err(aster_power::error::PowerError::InvalidRequest(_))
     ));
 }
 

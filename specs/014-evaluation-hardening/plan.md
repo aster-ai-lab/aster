@@ -33,7 +33,7 @@ Fix shared spreadsheet display, attachment transport identity and current artifa
 | Shared Office UI | packages/office/src/internal/features/work/work-spreadsheet-file-import.ts and owning regression test | Preserve typed values and generate valid numeric display. Trace alternate fast importer too. |
 | Studio attachments | apps/studio/src/renderer/pages/agents/AgentComposer.tsx; shared file identity helper/tests; src-tauri/src/agent_plane/turns.rs | Full supplied filename throughout staging; safe long-name behavior. |
 | Studio products | taskConversation/turn.ts, TaskConversationMessage.tsx, TaskProductDownload.tsx, owning tests | Explicit candidates plus capability-scoped current availability and open validation. |
-| Native source adapter | crates/code/acp/src/document_read.rs, plugin_tools.rs, new source read module/test if required | Reuse a3s_office NativeOfficeEditor; bounded DOCX/XLSX/PDF access. |
+| Native source adapter | crates/code/acp/src/document_read.rs, plugin_tools.rs, new source read module/test if required | Reuse aster_office NativeOfficeEditor; bounded DOCX/XLSX/PDF access. |
 | Execution facts | crates/code/core/src/sandbox/oci.rs, agent/turn_context.rs, existing execution-target tests; Studio acp.rs | Actual backend/lifetime availability facts and qualified companion validation. |
 | Tool contract | core tools/builtin/patch.rs, fact_control/receipts.rs and sibling tests; ACP registration | Reproduce schema/approval issues; fix only proven mismatches. |
 | Output verification | crates/code/acp/src/output_check.rs, output_check_metrics.rs, tests and session policy | Date/sequence calculation and source-grounded final review guidance. |
@@ -55,7 +55,7 @@ Fix shared spreadsheet display, attachment transport identity and current artifa
 2. Run each new focused hermetic test, then its connected caller tests. Regression assertions must include refusals, typed-value preservation and actual output contents.
 3. Run applicable repository CI checks, cargo fmt --all -- --check, workspace dependency and native-control ratchets. Isolate distinct failures before attribution.
 4. Build terminal plus ACP together and Studio plus Office from the root with the pinned toolchain; freeze source/submodule/diff, executable, renderer, sandbox and model identities.
-5. Use A3S Test if its admitted driver is compatible. Otherwise retain the exact infrastructure failure and drive background native CUA with semantic AX and app-bound keys, never raising the app or taking the pointer.
+5. Use Aster Test if its admitted driver is compatible. Otherwise retain the exact infrastructure failure and drive background native CUA with semantic AX and app-bound keys, never raising the app or taking the pointer.
 6. Follow SC-002/003/004. Never feed model answers, evaluators or earlier submissions. Keep measured regressions and semantic failures visible.
 7. Write OUTCOME.md with Result, What landed, commands/counts and Explicitly not claimed. No commit or push.
 

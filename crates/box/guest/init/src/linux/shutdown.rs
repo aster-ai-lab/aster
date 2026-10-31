@@ -1,5 +1,5 @@
 use super::{mount_rootfs_maintenance_device, unmount_rootfs_maintenance_device, BootstrapMode};
-use a3s_box_guest_init::exec_server;
+use aster_box_guest_init::exec_server;
 use std::sync::atomic::{AtomicI32, Ordering};
 use tracing::{error, info, warn};
 

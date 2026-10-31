@@ -8,34 +8,34 @@ import type {
   JsonValue,
 } from '../core/types';
 
-export interface A3SCloudFormContext {
+export interface AsterCloudFormContext {
   organizationId: string;
   projectId: string;
   environmentId: string;
   locale?: string;
 }
 
-export interface A3SCloudFormBindings {
-  context: A3SCloudFormContext;
+export interface AsterCloudFormBindings {
+  context: AsterCloudFormContext;
   resolveDataSource?: (
-    context: A3SCloudFormContext,
+    context: AsterCloudFormContext,
     request: DataSourceRequest,
     signal: AbortSignal,
   ) => Promise<DataSourceResponse>;
   invokeAction?: (
-    context: A3SCloudFormContext,
+    context: AsterCloudFormContext,
     request: ActionRequest,
     signal: AbortSignal,
     // biome-ignore lint/suspicious/noConfusingVoidType: Host actions may intentionally return no payload.
   ) => Promise<JsonValue | void>;
   validateValue?: (
-    context: A3SCloudFormContext,
+    context: AsterCloudFormContext,
     request: AsyncValidationRequest,
     signal: AbortSignal,
   ) => Promise<AsyncValidationResponse>;
 }
 
-export function createA3SCloudFormAdapter(bindings: A3SCloudFormBindings): FormHostAdapter {
+export function createAsterCloudFormAdapter(bindings: AsterCloudFormBindings): FormHostAdapter {
   return {
     resolveDataSource: bindings.resolveDataSource
       ? (request, signal) =>

@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootRequest, BootResponse, ControllerDefinition, HttpMethod, Module,
     ModuleRef, Result, RouteDefinition, StringTemplateViewEngine, ViewModule, ViewRenderer,
 };
@@ -147,7 +147,7 @@ async fn view_routes_report_missing_renderers() {
         .await
         .unwrap_err();
 
-    assert!(error.to_string().contains("a3s_boot::view::ViewRenderer"));
+    assert!(error.to_string().contains("aster_boot::view::ViewRenderer"));
 }
 
 #[test]

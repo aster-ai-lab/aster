@@ -2,11 +2,11 @@ use super::{
     DurableMemorySemanticError, DurableMemorySemanticRecall, DurableMemorySession,
     SemanticRefreshEmbeddingCache, DURABLE_MEMORY_SEMANTIC_BINDING_SCHEMA_V1,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     MemoryNamespace, MemoryNamespaceChangeToken, MemoryNamespaceSnapshot, MemoryRepository,
     MemorySnapshotRequest, MemoryStatus, MAX_SNAPSHOT_BYTES, MAX_SNAPSHOT_NODES,
 };
-use a3s_memory::vector::{VectorIndexObservation, VectorMutationConsistency};
+use aster_durable_memory::vector::{VectorIndexObservation, VectorMutationConsistency};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio_util::sync::CancellationToken;

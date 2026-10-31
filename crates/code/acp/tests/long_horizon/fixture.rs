@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use a3s_code_core::tools::{execute_owned_process, OwnedProcessTermination};
+use aster_core::tools::{execute_owned_process, OwnedProcessTermination};
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
@@ -227,8 +227,8 @@ impl Fixture {
     /// Called only after the ACP owner is reaped, or before it is started.
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     pub async fn check_in_guest(&self, assets: &Path) -> Result<Oracle, String> {
-        use a3s_code_core::sandbox::oci::{OciBashSandbox, OciSandboxAssets};
-        use a3s_code_core::sandbox::{BashSandbox, SandboxCommandRequest};
+        use aster_core::sandbox::oci::{OciBashSandbox, OciSandboxAssets};
+        use aster_core::sandbox::{BashSandbox, SandboxCommandRequest};
         let snapshot = tempfile::tempdir_in(&self.state).map_err(|_| "oracle_snapshot")?;
         let mut current_files = BTreeMap::new();
         for name in ARTIFACTS {
@@ -255,7 +255,7 @@ impl Fixture {
         )
         .map_err(|_| "oracle_sandbox")?;
         let output = sandbox.exec(SandboxCommandRequest {
-            command: "rustc --edition=2021 --test acceptance.rs -o /tmp/acceptance && printf 'A3S_ORACLE_COMPILE_OK\\n' && /tmp/acceptance --test-threads=1".into(),
+            command: "rustc --edition=2021 --test acceptance.rs -o /tmp/acceptance && printf 'ASTER_ORACLE_COMPILE_OK\\n' && /tmp/acceptance --test-threads=1".into(),
             guest_workspace: "/workspace".into(), timeout_ms: 30_000, output_observer: None, env: None,
         }).await;
         sandbox.shutdown().await;
@@ -289,7 +289,7 @@ impl Fixture {
             && output
                 .stdout
                 .lines()
-                .any(|line| line == "A3S_ORACLE_COMPILE_OK");
+                .any(|line| line == "ASTER_ORACLE_COMPILE_OK");
         let tests_ok = compile_ok
             && output.exit_code == 0
             && tests_passed(

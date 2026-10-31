@@ -3,7 +3,7 @@
 //! Current typed-fact checker binding for the coding acceptance tests.
 
 use super::*;
-use a3s_code_core::content_digest::{digest_json, validate_digest};
+use aster_core::content_digest::{digest_json, validate_digest};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -62,7 +62,7 @@ impl RetainCodingTrace {
 
 impl Drop for RetainCodingTrace {
     fn drop(&mut self) {
-        let Some(dir) = std::env::var_os("A3S_CODE_TUI_CODING_EVIDENCE_DIR") else {
+        let Some(dir) = std::env::var_os("ASTER_TUI_CODING_EVIDENCE_DIR") else {
             return;
         };
         let rows: Vec<Value> = fact_evidence::facts(&self.workspace, &self.home).into_iter().filter_map(|fact| {
@@ -84,7 +84,7 @@ impl Drop for RetainCodingTrace {
                     "quotes_checker_output":p["text"].as_str().is_some_and(|text| text.contains(PASS_LINE)),
                     "calls":p.get("call").into_iter().chain(p["also"].as_array().into_iter().flatten()).map(|call| {
                         serde_json::json!({"id":call["id"],"name":call["name"],
-                            "args_digest":digest_json("a3s.code.tool-arguments.v1",&call["args"]).ok(),
+                            "args_digest":digest_json("aster.code.tool-arguments.v1",&call["args"]).ok(),
                             "exact_checker_command":call["name"]=="bash" && call["args"]["command"].as_str().is_some_and(|command| command.trim()=="python3 gate.py")})
                     }).collect::<Vec<_>>() }),
                 _ => return None,
@@ -93,7 +93,7 @@ impl Drop for RetainCodingTrace {
         }).collect();
         let digest = |path: &Path| {
             std::fs::read(path).ok().map(|bytes| {
-                a3s_code_core::content_digest::digest_bytes("a3s.test.coding-fixture.v1", &bytes)
+                aster_core::content_digest::digest_bytes("aster.test.coding-fixture.v1", &bytes)
             })
         };
         let dir = PathBuf::from(dir);
@@ -103,7 +103,7 @@ impl Drop for RetainCodingTrace {
                 |name| serde_json::json!({"name":name,"digest":digest(&self.workspace.join(name))}),
             )
             .collect();
-        let artifact = serde_json::json!({"schema":"a3s.test.tui-coding-evidence.v1","case":self.case,
+        let artifact = serde_json::json!({"schema":"aster.test.tui-coding-evidence.v1","case":self.case,
             "assertions_finished":self.finished,"test_panicked":std::thread::panicking(),"facts":rows,
             "prompt_events":self.prompt_trace.as_deref().map(turns::trace_events).unwrap_or_default(),
             "settled_prompts":self.phases,
@@ -169,7 +169,7 @@ pub(super) fn typed_checker_exec(rows: &[Value]) -> Option<GateExec> {
         else {
             continue;
         };
-        if prepared.schema != "a3s.code.tool-prepared.v1"
+        if prepared.schema != "aster.code.tool-prepared.v1"
             || prepared.tool_name != "bash"
             || prepared.identity.turn == 0
             || prepared.identity.tool_call_id.is_empty()
@@ -203,7 +203,7 @@ pub(super) fn typed_checker_exec(rows: &[Value]) -> Option<GateExec> {
         let Some(call) = calls.into_iter().rev().find(|call| {
             call["name"] == "bash"
                 && call["id"] == prepared.identity.tool_call_id
-                && digest_json("a3s.code.tool-arguments.v1", &call["args"])
+                && digest_json("aster.code.tool-arguments.v1", &call["args"])
                     .ok()
                     .as_deref()
                     == Some(prepared.original_args_digest.as_str())
@@ -219,7 +219,7 @@ pub(super) fn typed_checker_exec(rows: &[Value]) -> Option<GateExec> {
             continue;
         };
         let identity = serde_json::to_value(&prepared.identity).ok()?;
-        let preparation_digest = digest_json("a3s.code.tool-prepared-digest.v1", &prepared).ok()?;
+        let preparation_digest = digest_json("aster.code.tool-prepared-digest.v1", &prepared).ok()?;
         for result in rows.iter().filter(|result| {
             result["type"] == "tool.result"
                 && result["seq"]
@@ -227,7 +227,7 @@ pub(super) fn typed_checker_exec(rows: &[Value]) -> Option<GateExec> {
                     .is_some_and(|seq| seq > preparation_seq)
         }) {
             let receipt = &result["payload"]["receipt"];
-            if receipt["schema"] != "a3s.code.tool-result.v1"
+            if receipt["schema"] != "aster.code.tool-result.v1"
                 || receipt["identity"] != identity
                 || receipt["prepared_digest"] != preparation_digest
                 || receipt["outcome"] != "succeeded"
@@ -244,7 +244,7 @@ pub(super) fn typed_checker_exec(rows: &[Value]) -> Option<GateExec> {
             else {
                 continue;
             };
-            if wire["kind"] != "a3s.fact_tool_result"
+            if wire["kind"] != "aster.fact_tool_result"
                 || wire["is_error"] != false
                 || wire["metadata"]["exit_code"] != 0
             {
@@ -278,7 +278,7 @@ pub(super) fn typed_checker_exec(rows: &[Value]) -> Option<GateExec> {
                 command: command.to_string(),
                 stdout_line,
                 receipt_key: Some(
-                    digest_json("a3s.code.tool-invocation.v1", &prepared.identity).ok()?,
+                    digest_json("aster.code.tool-invocation.v1", &prepared.identity).ok()?,
                 ),
                 verification_effect_digest: Some(effect_digest.to_owned()),
             });
@@ -289,15 +289,15 @@ pub(super) fn typed_checker_exec(rows: &[Value]) -> Option<GateExec> {
 
 fn checker_rows() -> Vec<Value> {
     let args = serde_json::json!({"command":"python3 gate.py"});
-    let digest = digest_json("a3s.code.tool-arguments.v1", &args).unwrap();
+    let digest = digest_json("aster.code.tool-arguments.v1", &args).unwrap();
     let preparation = serde_json::json!({
-        "schema":"a3s.code.tool-prepared.v1", "tool_name":"bash",
+        "schema":"aster.code.tool-prepared.v1", "tool_name":"bash",
         "identity":{"turn":1,"cycle":1,"tool_call_id":"checker-call","batch_index":0,
             "admission":{"run_id":"actual-run-fixture","thread_id":"fixture-thread",
                 "capability_binding_digest":format!("sha256:{}","0".repeat(64))}},
         "original_args_digest":digest,"effective_args_digest":digest,"recovery":"never_replay"});
     let typed: Preparation = serde_json::from_value(preparation.clone()).unwrap();
-    let wire = serde_json::json!({"kind":"a3s.fact_tool_result","is_error":false,
+    let wire = serde_json::json!({"kind":"aster.fact_tool_result","is_error":false,
         "text":format!("{PASS_LINE}\n"),"metadata":{"exit_code":0,
             "verification_report":{"subject":"shell:contract:dual-defect","status":"passed",
                 "effect_digest":"a".repeat(64)}}})
@@ -307,8 +307,8 @@ fn checker_rows() -> Vec<Value> {
             "call":{"id":"checker-call","name":"bash","args":args}}}),
         serde_json::json!({"seq":2,"type":"tool.prepared","payload":{"prepared":preparation}}),
         serde_json::json!({"seq":3,"type":"tool.result","payload":{"receipt":{
-            "schema":"a3s.code.tool-result.v1","identity":preparation["identity"],
-            "prepared_digest":digest_json("a3s.code.tool-prepared-digest.v1",&typed).unwrap(),
+            "schema":"aster.code.tool-result.v1","identity":preparation["identity"],
+            "prepared_digest":digest_json("aster.code.tool-prepared-digest.v1",&typed).unwrap(),
             "outcome":"succeeded","output":wire,"effects":{"completeness":"complete",
                 "changes":[],"unresolved_external_operations":[]}}}}),
     ]
@@ -369,7 +369,7 @@ fn typed_checker_requires_preparation_arguments_result_and_exit_binding() {
     compound[0]["payload"]["call"]["args"]["command"] =
         "python3 gate.py; printf DUAL-GATE-7K".into();
     let changed = digest_json(
-        "a3s.code.tool-arguments.v1",
+        "aster.code.tool-arguments.v1",
         &compound[0]["payload"]["call"]["args"],
     )
     .unwrap();
@@ -378,7 +378,7 @@ fn typed_checker_requires_preparation_arguments_result_and_exit_binding() {
     let changed: Preparation =
         serde_json::from_value(compound[1]["payload"]["prepared"].clone()).unwrap();
     compound[2]["payload"]["receipt"]["prepared_digest"] =
-        digest_json("a3s.code.tool-prepared-digest.v1", &changed)
+        digest_json("aster.code.tool-prepared-digest.v1", &changed)
             .unwrap()
             .into();
     assert!(
@@ -450,7 +450,7 @@ fn final_quote_for_checker<'a>(
         fact["type"] == "tool.result"
             && serde_json::from_value::<Identity>(fact["payload"]["receipt"]["identity"].clone())
                 .ok()
-                .and_then(|identity| digest_json("a3s.code.tool-invocation.v1", &identity).ok())
+                .and_then(|identity| digest_json("aster.code.tool-invocation.v1", &identity).ok())
                 .as_deref()
                 == Some(receipt_key)
     })?["seq"]

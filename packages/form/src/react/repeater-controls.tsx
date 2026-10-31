@@ -8,7 +8,7 @@ export function RepeaterIcon({
 }) {
   return (
     <svg
-      className="a3s-form-repeater-icon"
+      className="aster-form-repeater-icon"
       aria-hidden="true"
       viewBox="0 0 16 16"
       width="14"
@@ -98,7 +98,7 @@ export function RowActions({
 }) {
   const itemNumber = position + 1;
   return (
-    <span className="a3s-form-repeater-row-actions">
+    <span className="aster-form-repeater-row-actions">
       {onEdit && (
         <button
           type="button"
@@ -106,7 +106,7 @@ export function RowActions({
           data-size="sm"
           data-variant="ghost"
           disabled={disabled}
-          data-a3s-form-grid-edit={editPath}
+          data-aster-form-grid-edit={editPath}
           aria-label={formatFormMessage(messages, 'dataGridEditRowLabel', {
             index: itemNumber,
             label,

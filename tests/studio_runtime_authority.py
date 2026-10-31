@@ -102,17 +102,17 @@ class StudioRuntimeAuthorityTest(unittest.TestCase):
 
     def test_dynamic_catalog_replaces_static_execution_lists(self):
         capabilities = (STUDIO / "src/shared/ai/agentRuntimeCapabilities.ts").read_text(encoding="utf-8")
-        a3s = capabilities.split("'a3s-code':", 1)[1]
-        self.assertIn("permissionModes: []", a3s)
-        self.assertIn("slashCommands: []", a3s)
-        self.assertIn("builtinTools: () => []", a3s)
-        self.assertIn("current session's ACP catalog", a3s)
+        aster = capabilities.split("'aster':", 1)[1]
+        self.assertIn("permissionModes: []", aster)
+        self.assertIn("slashCommands: []", aster)
+        self.assertIn("builtinTools: () => []", aster)
+        self.assertIn("current session's ACP catalog", aster)
         for path in files(STUDIO / "src/renderer/pages/agents", {".ts", ".tsx"}):
             if production(path):
-                self.assertNotIn("A3S_CODE_COMMANDS", path.read_text(encoding="utf-8"), relative(path))
+                self.assertNotIn("ASTER_COMMANDS", path.read_text(encoding="utf-8"), relative(path))
         eligibility = (STUDIO / "src/renderer/pages/agents/agentModelEligibility.ts").read_text(encoding="utf-8")
-        self.assertIn("isA3sModelInRuntimeCatalog", eligibility)
-        self.assertIn("if (context.agentType === 'a3s-code') return undefined", eligibility)
+        self.assertIn("isAsterModelInRuntimeCatalog", eligibility)
+        self.assertIn("if (context.agentType === 'aster') return undefined", eligibility)
         client = (STUDIO / "src-tauri/src/agent_plane/runtime_client.rs").read_text(encoding="utf-8")
         self.assertIn("model_bindings", client)
         self.assertIn("session/tooling/v1", client)

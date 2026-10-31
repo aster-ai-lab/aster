@@ -14,10 +14,10 @@
 //!   argument-level execution (`rg --pre`, `git grep -O`, `cargo --config`);
 //! - rules live in the user state root (`<state root>/code/approvals.acl`),
 //!   keyed by the canonical workspace path. A repository cannot ship or
-//!   pre-seed approvals; the old `<workspace>/.a3s/approvals.acl` is
+//!   pre-seed approvals; the old `<workspace>/.aster/approvals.acl` is
 //!   ignored;
 //! - the per-workspace list is capped and oldest-first evicted, and the
-//!   document is A3S ACL parsed with `a3s-acl`.
+//!   document is Aster ACL parsed with `aster-acl`.
 
 use std::collections::BTreeMap;
 use std::io::{Read as _, Write as _};
@@ -166,7 +166,7 @@ fn split_words(command: &str) -> Option<Vec<String>> {
 /// The shared shell classifier sees exactly one top-level command: no
 /// nesting, opaque construct, wrapper, assignment, redirect, or hard denial.
 fn parses_as_one_simple_command(command: &str) -> bool {
-    let analysis = a3s_code_core::permissions::shell::analyze(command);
+    let analysis = aster_core::permissions::shell::analyze(command);
     !analysis.is_opaque()
         && !analysis.risk().is_hard_denial()
         && matches!(analysis.commands(), [parsed]
@@ -236,13 +236,13 @@ pub fn learnable_rule(command: &str) -> Option<String> {
 
 /// `<state root>/code/approvals.acl`.
 pub fn approvals_store_path(workspace: &Path) -> anyhow::Result<PathBuf> {
-    Ok(a3s_code_core::config::code_state_dir(workspace)?.join(APPROVALS_FILE))
+    Ok(aster_core::config::code_state_dir(workspace)?.join(APPROVALS_FILE))
 }
 
 /// The repository-controlled location earlier releases read. It is never
 /// consulted now.
 fn legacy_workspace_store(workspace: &Path) -> PathBuf {
-    workspace.join(".a3s").join(APPROVALS_FILE)
+    workspace.join(".aster").join(APPROVALS_FILE)
 }
 
 fn workspace_key(workspace: &Path) -> String {
@@ -255,28 +255,28 @@ fn workspace_key(workspace: &Path) -> String {
 type Store = BTreeMap<String, Vec<String>>;
 
 fn render_store(store: &Store) -> String {
-    let document = a3s_acl::Document {
+    let document = aster_acl::Document {
         blocks: store
             .iter()
-            .map(|(workspace, rules)| a3s_acl::Block {
+            .map(|(workspace, rules)| aster_acl::Block {
                 name: "workspace".into(),
                 labels: vec![workspace.clone()],
                 blocks: vec![],
                 attributes: [(
                     "rules".into(),
-                    a3s_acl::Value::List(
-                        rules.iter().cloned().map(a3s_acl::Value::String).collect(),
+                    aster_acl::Value::List(
+                        rules.iter().cloned().map(aster_acl::Value::String).collect(),
                     ),
                 )]
                 .into(),
             })
             .collect(),
     };
-    a3s_acl::generate_acl(&document)
+    aster_acl::generate_acl(&document)
 }
 
 fn parse_store(text: &str) -> anyhow::Result<Store> {
-    let document = a3s_acl::parse_acl(text)
+    let document = aster_acl::parse_acl(text)
         .map_err(|error| anyhow::anyhow!("approvals store is not valid ACL: {error}"))?;
     let mut store = Store::new();
     for block in &document.blocks {
@@ -286,13 +286,13 @@ fn parse_store(text: &str) -> anyhow::Result<Store> {
         let [workspace] = block.labels.as_slice() else {
             anyhow::bail!("approvals store workspace block needs exactly one label");
         };
-        let Some(a3s_acl::ast::Value::List(items)) = block.attributes.get("rules") else {
+        let Some(aster_acl::ast::Value::List(items)) = block.attributes.get("rules") else {
             anyhow::bail!("approvals store workspace block needs a `rules` list");
         };
         let rules = items
             .iter()
             .map(|item| match item {
-                a3s_acl::ast::Value::String(rule)
+                aster_acl::ast::Value::String(rule)
                     if learnable_rule(rule).as_ref() == Some(rule) =>
                 {
                     Ok(rule.clone())
@@ -408,7 +408,7 @@ fn record_in(path: &Path, workspace: &Path, command: &str) -> anyhow::Result<Opt
     let overflow = rules.len().saturating_sub(MAX_RULES_PER_WORKSPACE);
     rules.drain(..overflow);
     let document = render_store(&store);
-    // A workspace path a3s-acl cannot round-trip is refused instead of
+    // A workspace path aster-acl cannot round-trip is refused instead of
     // written as a store that would later fail to load.
     if parse_store(&document)? != store {
         anyhow::bail!("approvals store would not round-trip for this workspace path");

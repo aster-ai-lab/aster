@@ -375,7 +375,7 @@ impl Backend {
 
 fn scoped_metric_id(scope: &str, index: usize) -> String {
     let mut identity = Sha256::new();
-    identity.update(b"a3s-gateway-backend-slot-v1");
+    identity.update(b"aster-gateway-backend-slot-v1");
     identity.update([0]);
     identity.update(scope.as_bytes());
     identity.update([0]);
@@ -385,7 +385,7 @@ fn scoped_metric_id(scope: &str, index: usize) -> String {
 
 fn managed_target_metric_id(target: &ManagedTargetConfig) -> String {
     let mut identity = Sha256::new();
-    identity.update(b"a3s-gateway-managed-target-v1");
+    identity.update(b"aster-gateway-managed-target-v1");
     identity.update([0]);
     identity.update(target.target_id.as_bytes());
     identity.update([0]);
@@ -397,7 +397,7 @@ fn managed_target_metric_id(target: &ManagedTargetConfig) -> String {
 
 fn dynamic_metric_prefix(service: &str) -> String {
     let mut identity = Sha256::new();
-    identity.update(b"a3s-gateway-box-backend-v1");
+    identity.update(b"aster-gateway-box-backend-v1");
     identity.update([0]);
     identity.update(service.as_bytes());
     format!("b_{:x}_s", identity.finalize())

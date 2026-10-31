@@ -48,9 +48,9 @@ jobs:
               '.packages[] | select(.name == $package) | .version' \
               <<<"$metadata"
           }
-          core_version="$(package_version a3s-use-core)"
-          extension_version="$(package_version a3s-use-extension)"
-          actual_facade_version="$(package_version a3s-use)"
+          core_version="$(package_version aster-use-core)"
+          extension_version="$(package_version aster-use-extension)"
+          actual_facade_version="$(package_version aster-use)"
           if [ "$actual_facade_version" != "$facade_version" ]; then
             echo "operation tag requests $facade_version but source contains $actual_facade_version" >&2
             exit 1
@@ -87,13 +87,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          user_agent="A3S-Lab-Use-crate-publisher/$FACADE_VERSION (https://github.com/A3S-Lab/Use)"
+          user_agent="aster-ai-lab-Use-crate-publisher/$FACADE_VERSION (https://github.com/aster-ai-lab/Use)"
 
           package_version() {
             case "$1" in
-              a3s-use-core) printf '%s\n' "$CORE_VERSION" ;;
-              a3s-use-extension) printf '%s\n' "$EXTENSION_VERSION" ;;
-              a3s-use) printf '%s\n' "$FACADE_VERSION" ;;
+              aster-use-core) printf '%s\n' "$CORE_VERSION" ;;
+              aster-use-extension) printf '%s\n' "$EXTENSION_VERSION" ;;
+              aster-use) printf '%s\n' "$FACADE_VERSION" ;;
               *) return 1 ;;
             esac
           }
@@ -132,7 +132,7 @@ jobs:
             return 1
           }
 
-          for package in a3s-use-core a3s-use-extension a3s-use; do
+          for package in aster-use-core aster-use-extension aster-use; do
             version="$(package_version "$package")"
             status="$(crate_status "$package" "$version")"
             case "$status" in

@@ -21,10 +21,10 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 use uuid::Uuid;
 
-pub(super) const KEY_ENV: &str = "A3S_POWER_ENTRYPOINT_TEST_KEY";
+pub(super) const KEY_ENV: &str = "ASTER_POWER_ENTRYPOINT_TEST_KEY";
 pub(super) const API_KEY: &str = "power-entrypoint-secret";
-const POWER_SCHEMA: &str = "a3s.power.distributed-serving.v1";
-const POWER_STREAM_SCHEMA: &str = "a3s.power.distributed-serving-stream.v1";
+const POWER_SCHEMA: &str = "aster.power.distributed-serving.v1";
+const POWER_STREAM_SCHEMA: &str = "aster.power.distributed-serving-stream.v1";
 const PREFILL_PROFILE: &str = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 const DECODE_PROFILE: &str = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
 

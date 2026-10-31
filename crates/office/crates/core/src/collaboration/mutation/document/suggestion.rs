@@ -1,6 +1,6 @@
 use std::collections::{BTreeSet, HashMap};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::Attrs;
 use yrs::{Any, Out, ReadTxn, Text, Transact, Xml, XmlFragment, XmlOut};
 
@@ -450,6 +450,6 @@ fn validate_identifier(value: &str, label: &str) -> UseResult<()> {
     )))
 }
 
-fn permission_denied(message: impl Into<String>) -> a3s_use_core::UseError {
+fn permission_denied(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.permission_denied", message)
 }

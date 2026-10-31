@@ -1,5 +1,5 @@
-use a3s_code_core::{DurableMemoryRecallPolicy, DurableMemorySession};
-use a3s_memory::repository::{
+use aster_core::{DurableMemoryRecallPolicy, DurableMemorySession};
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet,
     MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRelation, MemoryRelationKind,
     MemoryRepository, MemoryStatus,
@@ -90,7 +90,7 @@ fn evidence(node: &NodeFixture) -> EvidenceRef {
         status => panic!("fixture does not support {status:?} nodes"),
     };
     EvidenceRef::try_new(
-        format!("a3s://fixture/durable-memory-retrieval-v1/{}", node.id),
+        format!("aster://fixture/durable-memory-retrieval-v1/{}", node.id),
         format!("sha256:{:x}", Sha256::digest(node.content.as_bytes())),
         kind,
         fixture_time(),
@@ -321,7 +321,7 @@ async fn locked_retrieval_quality_and_safety_gate() {
     }
 
     println!(
-        "A3S_DURABLE_MEMORY_RETRIEVAL_EVAL={}",
+        "ASTER_DURABLE_MEMORY_RETRIEVAL_EVAL={}",
         serde_json::json!({
             "fixtureVersion": fixture.schema_version,
             "noMemory": no_memory_metrics,

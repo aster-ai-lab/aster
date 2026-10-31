@@ -4,7 +4,7 @@ use crate::layers::{
     norm::EffectiveRmsNorm,
 };
 use crate::state::kv::{KvCacheKind, KvState};
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::Device;
 
 fn identity_weights(rows: usize, cols: usize) -> Vec<u8> {

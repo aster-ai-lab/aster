@@ -1,4 +1,4 @@
-//! `a3s-box port` command — List port mappings for a box.
+//! `aster-box port` command — List port mappings for a box.
 
 use clap::Args;
 
@@ -33,7 +33,7 @@ pub async fn execute(args: PortArgs) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn format_persisted_port_mapping(mapping: &str) -> Result<String, String> {
-    let mapping = a3s_box_core::parse_port_mapping(mapping)
+    let mapping = aster_box_core::parse_port_mapping(mapping)
         .map_err(|e| format!("Invalid persisted port mapping: {e}"))?;
     Ok(format!(
         "{}/{} -> 0.0.0.0:{}",

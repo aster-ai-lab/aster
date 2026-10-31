@@ -1,4 +1,4 @@
-//! Live `update_plan` checklist e2e against the model in `.a3s/config.acl`.
+//! Live `update_plan` checklist e2e against the model in `.aster/config.acl`.
 //!
 //! Verifies the Default-mode agent can actively drive the host-pinned task
 //! list (Cursor TodoWrite parity): the model calls `update_plan`, Core emits
@@ -7,15 +7,15 @@
 //! Opt-in (provider quota + network):
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_update_plan_live_e2e \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_update_plan_live_e2e \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentEvent, RunStatus, SessionOptions};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentEvent, RunStatus, SessionOptions};
 
 mod support;
 use support::layer_c_model::load_pinned_layer_c_config;
@@ -25,7 +25,7 @@ const MODEL_TIMEOUT: Duration = Duration::from_secs(420);
 async fn configured_agent() -> Agent {
     Agent::from_config(load_pinned_layer_c_config())
         .await
-        .expect("build agent from .a3s/config.acl")
+        .expect("build agent from .aster/config.acl")
 }
 
 fn checklist_options(session_id: &str) -> SessionOptions {
@@ -38,7 +38,7 @@ fn checklist_options(session_id: &str) -> SessionOptions {
 
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning(false)
@@ -51,7 +51,7 @@ fn checklist_options(session_id: &str) -> SessionOptions {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the live provider configured in .a3s/config.acl"]
+#[ignore = "requires the live provider configured in .aster/config.acl"]
 async fn configured_model_drives_update_plan_checklist() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("temporary checklist workspace");
@@ -117,7 +117,7 @@ async fn configured_model_drives_update_plan_checklist() {
     assert!(
         tasks
             .iter()
-            .any(|task| { matches!(task.status, a3s_code_core::planning::TaskStatus::InProgress) }),
+            .any(|task| { matches!(task.status, aster_core::planning::TaskStatus::InProgress) }),
         "exactly one step should be in progress: {tasks:?}"
     );
 }

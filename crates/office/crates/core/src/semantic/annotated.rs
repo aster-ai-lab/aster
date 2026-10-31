@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 use super::{DocumentNode, NativeOfficeDocument, OfficeNodeType};

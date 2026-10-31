@@ -1,6 +1,6 @@
 //! Opt-in Linux KVM Live Host reopen evidence gate.
 //!
-//! Proves `A3S_OCI_KVM_SESSION_OWNER=1` create+start → retained exec I/O
+//! Proves `ASTER_OCI_KVM_SESSION_OWNER=1` create+start → retained exec I/O
 //! (Pipe stdin + Capture stdout) → FileOp upload → Host SIGKILL → Guest /
 //! session-owner survive → replacement Host reattaches Running with continuous
 //! init identity, the same exec process ID, post-reattach

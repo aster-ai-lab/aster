@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, DeleteMode, DeleteRequest, ExitStatus, RuntimeClient, StartRequest,
 };
 

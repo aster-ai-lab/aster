@@ -3,7 +3,7 @@
 use std::collections::BTreeMap;
 use std::time::Duration;
 
-use a3s_acl::ast::{Block, Value};
+use aster_acl::ast::{Block, Value};
 use serde_json::{Map as JsonMap, Number as JsonNumber, Value as JsonValue};
 use url::Url;
 

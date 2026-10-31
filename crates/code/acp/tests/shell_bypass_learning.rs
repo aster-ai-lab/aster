@@ -4,7 +4,7 @@
 #[path = "../../core/tests/support/shell_bypass_corpus.rs"]
 mod corpus;
 
-use a3s_code_acp::approval_learning::learnable_rule;
+use aster_acp::approval_learning::learnable_rule;
 
 #[test]
 fn no_bypass_in_the_corpus_is_learnable() {

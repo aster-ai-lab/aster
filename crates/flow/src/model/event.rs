@@ -461,7 +461,7 @@ pub enum FlowEvent {
 }
 
 impl FlowEvent {
-    /// Dot-separated event key for A3S-wide event routing.
+    /// Dot-separated event key for Aster-wide event routing.
     pub fn event_key(&self) -> &'static str {
         match self {
             Self::RunCreated { .. } => "flow.run.created",

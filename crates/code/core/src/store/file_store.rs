@@ -1,8 +1,8 @@
 use super::{
-    snapshot_content_digest, FileSessionStoreWal, SessionData, SessionSnapshotV1, SessionStore,
-    SessionStoreAtRestCipher, SessionStoreCapabilities, SessionStoreCommitEventV1,
-    SessionStoreCommitWatch, SessionStoreWalEntryV1, SessionStoreWalPhaseV1,
-    SessionStoreWriterLeaseV1,
+    snapshot_content_digest, snapshot_content_digest_matches, FileSessionStoreWal, SessionData,
+    SessionSnapshotV1, SessionStore, SessionStoreAtRestCipher, SessionStoreCapabilities,
+    SessionStoreCommitEventV1, SessionStoreCommitWatch, SessionStoreWalEntryV1,
+    SessionStoreWalPhaseV1, SessionStoreWriterLeaseV1,
 };
 use crate::loop_checkpoint::LoopCheckpoint;
 use crate::orchestration::WorkflowCheckpoint;
@@ -203,8 +203,7 @@ impl FileSessionStore {
             let Some(snapshot) = self.load_snapshot_without_wal(&intent.session_id).await? else {
                 continue;
             };
-            let current = snapshot_content_digest(&snapshot)?;
-            if current != intent.snapshot_digest {
+            if !snapshot_content_digest_matches(&snapshot, &intent.snapshot_digest)? {
                 continue;
             }
             let committed = SessionStoreWalEntryV1::new(

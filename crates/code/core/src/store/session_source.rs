@@ -1,11 +1,11 @@
 //! Immutable references to the original policy/Goal source, never another content store.
 
 use crate::execution_identity::ExecutionIdentityV1;
-use a3s_effect::Fact;
+use aster_effect::Fact;
 use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
 
-const SOURCE_DOMAIN: &str = "a3s.code.session-fact-source.v1";
+const SOURCE_DOMAIN: &str = "aster.code.session-fact-source.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -26,8 +26,8 @@ impl SessionFactSourceV1 {
     pub(crate) fn from_facts(session_id: &str, facts: &[Fact]) -> Result<Option<Self>> {
         // A slice closeout is not definition authority; old checkpoints stay current.
         let Some(index) = facts.iter().rposition(|fact| {
-            fact.kind.starts_with("a3s.work-policy.")
-                || (fact.kind.starts_with("a3s.goal.")
+            fact.kind.starts_with("aster.work-policy.")
+                || (fact.kind.starts_with("aster.goal.")
                     && fact.kind != crate::goal_control::GoalFactKindV1::SliceSettled.as_str())
         }) else {
             return Ok(None);

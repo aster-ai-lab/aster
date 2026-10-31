@@ -59,7 +59,7 @@ mod tests {
 
     #[test]
     fn memory_limit_without_backend_support_fails_closed() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.resources.max_memory_bytes = Some(64 * 1024 * 1024);
         let restricted = BackendCapabilities {
             resource_memory_limit: false,
@@ -81,7 +81,7 @@ mod tests {
         );
         assert_eq!(caps.resource_process_limit, cfg!(windows));
 
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.resources.max_memory_bytes = Some(32 * 1024 * 1024);
         if caps.resource_memory_limit {
             policy.validate_for_backend(caps).unwrap();
@@ -112,7 +112,7 @@ mod tests {
 
     #[test]
     fn policy_exceeding_backend_capabilities_fails_closed() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_socks = true;
         policy.network.allow.push(crate::policy::NetworkAllowRule {
             host: "api.example.com".into(),

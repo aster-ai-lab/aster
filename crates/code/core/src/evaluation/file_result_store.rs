@@ -17,7 +17,7 @@ use std::sync::Arc;
 use tokio::io::AsyncWriteExt;
 use tokio::sync::Mutex;
 
-pub const EVALUATION_RESULT_STORE_SCHEMA_V1: &str = "a3s.code.evaluation-result-store.v1";
+pub const EVALUATION_RESULT_STORE_SCHEMA_V1: &str = "aster.code.evaluation-result-store.v1";
 pub const EVALUATION_RESULT_STORE_DEFAULT_MAX_RECORDS: usize = 4096;
 pub const EVALUATION_RESULT_STORE_MAX_BYTES: usize = 64 * 1024 * 1024;
 

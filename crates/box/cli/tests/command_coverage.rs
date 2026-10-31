@@ -1,4 +1,4 @@
-//! Pure integration coverage for the a3s-box command surface.
+//! Pure integration coverage for the aster-box command surface.
 //!
 //! These tests cover parser entrypoints and commands that operate only on local
 //! state. VM, registry, and host-network smoke tests live in `host_smoke.rs` so
@@ -93,12 +93,12 @@ fn test_all_top_level_command_help() {
         let (stdout, stderr, success) = cli.output(&args);
         assert!(
             success,
-            "`a3s-box {}` help failed\nstdout:\n{}\nstderr:\n{}",
+            "`aster-box {}` help failed\nstdout:\n{}\nstderr:\n{}",
             command, stdout, stderr
         );
         assert!(
             stdout.contains("Usage:") || stdout.contains("Usage"),
-            "`a3s-box {}` help did not contain usage\n{}",
+            "`aster-box {}` help did not contain usage\n{}",
             command,
             stdout
         );
@@ -193,7 +193,7 @@ fn test_nested_subcommand_help() {
         let (stdout, stderr, success) = cli.output(&args);
         assert!(
             success,
-            "`a3s-box {}` help failed\nstdout:\n{}\nstderr:\n{}",
+            "`aster-box {}` help failed\nstdout:\n{}\nstderr:\n{}",
             command.join(" "),
             stdout,
             stderr
@@ -357,7 +357,7 @@ fn test_build_from_scratch_copy_metadata_cli_smoke() {
         build_dir.join("Dockerfile"),
         r#"FROM scratch
 COPY message.txt /opt/message.txt
-ENV A3S_BUILD_SMOKE=1
+ENV ASTER_BUILD_SMOKE=1
 WORKDIR /opt
 USER 1000:1000
 EXPOSE 8080/tcp
@@ -385,7 +385,7 @@ CMD ["cat", "/opt/message.txt"]
         inspect["Config"]["Cmd"],
         serde_json::json!(["cat", "/opt/message.txt"])
     );
-    assert_eq!(inspect["Config"]["Env"]["A3S_BUILD_SMOKE"], "1");
+    assert_eq!(inspect["Config"]["Env"]["ASTER_BUILD_SMOKE"], "1");
     assert_eq!(inspect["Config"]["WorkingDir"], "/opt");
     assert_eq!(inspect["Config"]["User"], "1000:1000");
     assert_eq!(inspect["Config"]["StopSignal"], "SIGTERM");
@@ -954,7 +954,7 @@ fn test_stopped_managed_update_rewrites_the_next_start_request() {
         record["managed_execution"]["request"]["policy"]["max_restart_count"],
         4
     );
-    let metadata: a3s_box_runtime::ManagedExecutionMetadata =
+    let metadata: aster_box_runtime::ManagedExecutionMetadata =
         serde_json::from_value(record["managed_execution"].clone())
             .expect("deserialize managed start intent");
     metadata
@@ -1079,7 +1079,7 @@ fn test_noninteractive_boundary_command_smoke() {
     let cli = CliTest::new();
 
     cli.fails(
-        &["push", "example.invalid/a3s/missing:latest", "--quiet"],
+        &["push", "example.invalid/aster/missing:latest", "--quiet"],
         "not found locally",
     );
     cli.fails(&["attach", "missing-box"], "No such box");
@@ -1174,7 +1174,7 @@ fn test_noninteractive_boundary_command_smoke() {
         cli.runs_until_timeout(&["monitor", "--interval", "1"], Duration::from_millis(1200));
     let combined = format!("{stdout}\n{stderr}");
     assert!(
-        combined.contains("a3s-box monitor started"),
+        combined.contains("aster-box monitor started"),
         "monitor did not announce startup\nstdout:\n{stdout}\nstderr:\n{stderr}"
     );
 }
@@ -1191,25 +1191,25 @@ fn test_compose_config_interpolates_shell_over_project_dotenv() {
   redis:
     image: redis:7-alpine
     ports:
-      - "${A3S_COMPOSE_TEST_PORT:-6379}:6379"
+      - "${ASTER_COMPOSE_TEST_PORT:-6379}:6379"
     environment:
-      FROM_DOTENV: ${A3S_COMPOSE_TEST_DOTENV-default}
-      EMPTY_DEFAULT: ${A3S_COMPOSE_TEST_EMPTY:-default}
-      EMPTY_SET: ${A3S_COMPOSE_TEST_EMPTY+replacement}
-      EMPTY_NONEMPTY: ${A3S_COMPOSE_TEST_EMPTY:+replacement}
+      FROM_DOTENV: ${ASTER_COMPOSE_TEST_DOTENV-default}
+      EMPTY_DEFAULT: ${ASTER_COMPOSE_TEST_EMPTY:-default}
+      EMPTY_SET: ${ASTER_COMPOSE_TEST_EMPTY+replacement}
+      EMPTY_NONEMPTY: ${ASTER_COMPOSE_TEST_EMPTY:+replacement}
 "#,
     )
     .expect("write Compose file");
     std::fs::write(
         project.join(".env"),
-        "A3S_COMPOSE_TEST_PORT=6379\nA3S_COMPOSE_TEST_DOTENV=dotenv\nA3S_COMPOSE_TEST_EMPTY=\n",
+        "ASTER_COMPOSE_TEST_PORT=6379\nASTER_COMPOSE_TEST_DOTENV=dotenv\nASTER_COMPOSE_TEST_EMPTY=\n",
     )
     .expect("write project .env");
     let compose_arg = compose.to_string_lossy().to_string();
 
     let output = cli.ok_with_env(
         &["compose", "--file", &compose_arg, "config"],
-        &[("A3S_COMPOSE_TEST_PORT", "16379")],
+        &[("ASTER_COMPOSE_TEST_PORT", "16379")],
     );
 
     assert!(output.contains("ports: 16379:6379"));
@@ -1221,7 +1221,7 @@ fn test_compose_config_interpolates_shell_over_project_dotenv() {
 }
 
 #[test]
-fn test_compose_config_accepts_a3s_acl() {
+fn test_compose_config_accepts_aster_acl() {
     let cli = CliTest::new();
     let project = cli.home_path().join("compose-acl");
     std::fs::create_dir_all(&project).expect("create Compose ACL project directory");
@@ -1229,8 +1229,8 @@ fn test_compose_config_accepts_a3s_acl() {
     std::fs::write(
         &compose,
         r#"service "api" {
-  image = "ghcr.io/a3s-lab/api:${A3S_COMPOSE_TEST_TAG:-latest}"
-  environment = { TOKEN = env("A3S_COMPOSE_TEST_TOKEN") }
+  image = "ghcr.io/aster-lab/api:${ASTER_COMPOSE_TEST_TAG:-latest}"
+  environment = { TOKEN = env("ASTER_COMPOSE_TEST_TOKEN") }
   labels = { description = "服务" }
   ports = ["8080:8080"]
 
@@ -1245,10 +1245,10 @@ fn test_compose_config_accepts_a3s_acl() {
 
     let output = cli.ok_with_env(
         &["compose", "--file", &compose_arg, "config"],
-        &[("A3S_COMPOSE_TEST_TOKEN", "secret")],
+        &[("ASTER_COMPOSE_TEST_TOKEN", "secret")],
     );
 
-    assert!(output.contains("ghcr.io/a3s-lab/api:latest"));
+    assert!(output.contains("ghcr.io/aster-lab/api:latest"));
     assert!(output.contains("TOKEN=secret"));
     assert!(output.contains("ports: 8080:8080"));
     assert!(output.contains("Configuration is valid."));
@@ -1264,7 +1264,7 @@ fn test_compose_local_project_views_do_not_require_a_runtime() {
         &compose,
         r#"services:
   api:
-    image: ghcr.io/a3s-lab/api:latest
+    image: ghcr.io/aster-lab/api:latest
     depends_on: [db]
   db:
     image: postgres:17
@@ -1279,7 +1279,7 @@ volumes:
 
     let images = cli.ok(&["compose", "--file", &compose_arg, "images"]);
     assert!(images.contains("api"));
-    assert!(images.contains("ghcr.io/a3s-lab/api:latest"));
+    assert!(images.contains("ghcr.io/aster-lab/api:latest"));
     assert!(images.contains("postgres:17"));
 
     let volumes = cli.ok(&["compose", "--file", &compose_arg, "volumes"]);
@@ -1372,7 +1372,7 @@ fn test_info_reports_warm_pool_daemon_status() {
     let socket_arg = socket.to_string_lossy().to_string();
     let stdout = cli.ok_with_env(
         &["info"],
-        &[("A3S_BOX_RUN_POOL_SOCKET", socket_arg.as_str())],
+        &[("ASTER_BOX_RUN_POOL_SOCKET", socket_arg.as_str())],
     );
     server.join().expect("fake pool server should finish");
 

@@ -145,6 +145,7 @@ async fn soak_http_retries_do_not_multiply_tool_execution() {
             ..MemoryConfig::default()
         }),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,

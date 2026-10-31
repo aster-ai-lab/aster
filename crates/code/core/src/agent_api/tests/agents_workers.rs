@@ -86,7 +86,7 @@ async fn test_live_worker_catalog_is_model_visible_and_tracks_registry_changes()
     session
         .register_worker_agent(crate::subagent::WorkerAgentSpec::custom(
             "use",
-            "Operate Browser and Office through A3S Use",
+            "Operate Browser and Office through Aster Use",
         ))
         .unwrap();
     session
@@ -116,10 +116,10 @@ async fn test_live_worker_catalog_is_model_visible_and_tracks_registry_changes()
     assert!(agent_schema["description"]
         .as_str()
         .unwrap()
-        .contains("use: Operate Browser and Office through A3S Use"));
+        .contains("use: Operate Browser and Office through Aster Use"));
     assert!(definition
         .description
-        .contains("use: Operate Browser and Office through A3S Use"));
+        .contains("use: Operate Browser and Office through Aster Use"));
     assert!(!definition.description.contains("hidden-use-helper"));
 
     assert!(session.agent_registry.unregister("use"));
@@ -130,7 +130,7 @@ async fn test_live_worker_catalog_is_model_visible_and_tracks_registry_changes()
     {
         assert!(!definition
             .description
-            .contains("Operate Browser and Office through A3S Use"));
+            .contains("Operate Browser and Office through Aster Use"));
     }
 }
 
@@ -147,9 +147,9 @@ async fn test_session_options_worker_agents_register_for_task_delegation() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-async fn test_session_loads_workspace_a3s_agents() {
+async fn test_session_loads_workspace_aster_agents() {
     let workspace = tempfile::tempdir().unwrap();
-    let agents_dir = workspace.path().join(".a3s").join("agents").join("quality");
+    let agents_dir = workspace.path().join(".aster").join("agents").join("quality");
     std::fs::create_dir_all(&agents_dir).unwrap();
     std::fs::write(
         agents_dir.join("code-reviewer.md"),
@@ -172,7 +172,7 @@ Review the changed code and return prioritized findings.
     let loaded = session
         .agent_registry
         .get("code-reviewer")
-        .expect("workspace .a3s/agents agent should load");
+        .expect("workspace .aster/agents agent should load");
     assert!(loaded
         .permissions
         .allow
@@ -213,12 +213,12 @@ Review in compatibility mode.
 }
 
 #[tokio::test(flavor = "multi_thread")]
-async fn test_workspace_a3s_agents_override_claude_compat_agents() {
+async fn test_workspace_aster_agents_override_claude_compat_agents() {
     let workspace = tempfile::tempdir().unwrap();
     let claude_dir = workspace.path().join(".claude").join("agents");
-    let a3s_dir = workspace.path().join(".a3s").join("agents");
+    let aster_dir = workspace.path().join(".aster").join("agents");
     std::fs::create_dir_all(&claude_dir).unwrap();
-    std::fs::create_dir_all(&a3s_dir).unwrap();
+    std::fs::create_dir_all(&aster_dir).unwrap();
     std::fs::write(
         claude_dir.join("same-agent.md"),
         r#"---
@@ -231,13 +231,13 @@ Compat prompt.
     )
     .unwrap();
     std::fs::write(
-        a3s_dir.join("same-agent.md"),
+        aster_dir.join("same-agent.md"),
         r#"---
 name: same-agent
-description: A3S native version
+description: Aster native version
 tools: Read
 ---
-A3S prompt.
+Aster prompt.
 "#,
     )
     .unwrap();
@@ -249,7 +249,7 @@ A3S prompt.
         .unwrap();
 
     let loaded = session.agent_registry.get("same-agent").unwrap();
-    assert_eq!(loaded.description, "A3S native version");
+    assert_eq!(loaded.description, "Aster native version");
 }
 
 #[tokio::test(flavor = "multi_thread")]

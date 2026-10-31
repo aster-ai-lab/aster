@@ -1,4 +1,4 @@
-use a3s_oci_core::{DriverKind, IsolationClass};
+use aster_oci_core::{DriverKind, IsolationClass};
 
 use super::{
     RuntimeArtifact, RuntimeDriverCapabilities, RuntimeExtensions, RuntimeNegotiationRequest,
@@ -9,11 +9,11 @@ use crate::{
     ATTACHMENT_SCHEMA_V1,
 };
 
-const NETWORK_EXTENSION: &str = "dev.a3s.network.tsi";
+const NETWORK_EXTENSION: &str = "dev.aster.network.tsi";
 
 fn artifact() -> RuntimeArtifact {
     RuntimeArtifact::new(
-        "a3s-oci-runtime",
+        "aster-oci-runtime",
         "0.2.0",
         format!("sha256:{}", "a".repeat(64)),
         Some("0123456789abcdef".to_string()),
@@ -110,7 +110,7 @@ fn catalog_round_trip_retains_canonical_artifact_and_driver_contracts() {
 
 #[test]
 fn rejects_invalid_artifacts_ambiguous_isolation_and_legacy_negotiation() {
-    let invalid = RuntimeArtifact::new("a3s-oci-runtime", "0.2.0", "sha256:ABCDEF", None)
+    let invalid = RuntimeArtifact::new("aster-oci-runtime", "0.2.0", "sha256:ABCDEF", None)
         .expect_err("non-canonical digest must fail");
     assert_eq!(invalid.code, ErrorCode::InvalidArgument);
 

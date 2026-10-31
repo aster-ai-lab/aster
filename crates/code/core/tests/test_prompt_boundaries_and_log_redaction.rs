@@ -14,8 +14,8 @@
 use std::io::Write;
 use std::sync::{Arc, Mutex};
 
-use a3s_code_core::tools::ToolExecutor;
-use a3s_code_core::{AgentStyle, SystemPromptSlots};
+use aster_core::tools::ToolExecutor;
+use aster_core::{AgentStyle, SystemPromptSlots};
 
 /// A `tracing` writer that appends all output to a shared buffer for assertions.
 #[derive(Clone)]

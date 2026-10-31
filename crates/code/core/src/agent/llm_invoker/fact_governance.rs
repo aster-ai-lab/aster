@@ -5,7 +5,7 @@ use crate::agent::invocation_context::FactInvocationView;
 use crate::harness_evidence::{
     ModelInputSnapshotV1, ModelPresentationSnapshotV1, RunCapabilitySnapshotV1,
 };
-use a3s_effect::ActorError;
+use aster_effect::ActorError;
 
 /// Opaque framework request. Hosts may forward it, but cannot mint authority.
 pub struct FactModelBindingRequest {

@@ -1,15 +1,15 @@
-admission "a3s/registry-selftest" {
+admission "aster/registry-selftest" {
   package_directory = "packages/registry-selftest"
   channel           = "stable"
   target            = "any"
-  display_name      = "A3S Registry Selftest"
-  description       = "Registry-consumption guidance skill that doubles as the bootstrap verification case for the official A3S Use Registry."
+  display_name      = "Aster Registry Selftest"
+  description       = "Registry-consumption guidance skill that doubles as the bootstrap verification case for the official Aster Use Registry."
   license           = "Apache-2.0"
   keywords          = ["registry", "selftest"]
   categories        = ["registry"]
 }
 
-admission "a3s/finance" {
+admission "aster/finance" {
   package_directory = "packages/finance"
   channel           = "stable"
   target            = "any"
@@ -20,7 +20,7 @@ admission "a3s/finance" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-activitybar" {
+admission "aster/probe-activitybar" {
   package_directory = "packages/probe-activitybar"
   channel           = "stable"
   target            = "any"
@@ -31,7 +31,7 @@ admission "a3s/probe-activitybar" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-sidebar" {
+admission "aster/probe-sidebar" {
   package_directory = "packages/probe-sidebar"
   channel           = "stable"
   target            = "any"
@@ -42,7 +42,7 @@ admission "a3s/probe-sidebar" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-panel" {
+admission "aster/probe-panel" {
   package_directory = "packages/probe-panel"
   channel           = "stable"
   target            = "any"
@@ -53,7 +53,7 @@ admission "a3s/probe-panel" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-editor" {
+admission "aster/probe-editor" {
   package_directory = "packages/probe-editor"
   channel           = "stable"
   target            = "any"
@@ -64,7 +64,7 @@ admission "a3s/probe-editor" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-workspace" {
+admission "aster/probe-workspace" {
   package_directory = "packages/probe-workspace"
   channel           = "stable"
   target            = "any"
@@ -75,7 +75,7 @@ admission "a3s/probe-workspace" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-applets" {
+admission "aster/probe-applets" {
   package_directory = "packages/probe-applets"
   channel           = "stable"
   target            = "any"
@@ -86,7 +86,7 @@ admission "a3s/probe-applets" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-composer" {
+admission "aster/probe-composer" {
   package_directory = "packages/probe-composer"
   channel           = "stable"
   target            = "any"
@@ -97,7 +97,7 @@ admission "a3s/probe-composer" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-harness" {
+admission "aster/probe-harness" {
   package_directory = "packages/probe-harness"
   channel           = "stable"
   target            = "any"
@@ -108,7 +108,7 @@ admission "a3s/probe-harness" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-commands" {
+admission "aster/probe-commands" {
   package_directory = "packages/probe-commands"
   channel           = "stable"
   target            = "any"
@@ -119,7 +119,7 @@ admission "a3s/probe-commands" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-menus" {
+admission "aster/probe-menus" {
   package_directory = "packages/probe-menus"
   channel           = "stable"
   target            = "any"
@@ -130,7 +130,7 @@ admission "a3s/probe-menus" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-keybindings" {
+admission "aster/probe-keybindings" {
   package_directory = "packages/probe-keybindings"
   channel           = "stable"
   target            = "any"
@@ -141,7 +141,7 @@ admission "a3s/probe-keybindings" {
   categories        = ["work"]
 }
 
-admission "a3s/probe-custom-editor" {
+admission "aster/probe-custom-editor" {
   package_directory = "packages/probe-custom-editor"
   channel           = "stable"
   target            = "any"
@@ -152,7 +152,7 @@ admission "a3s/probe-custom-editor" {
   categories        = ["work"]
 }
 
-admission "a3s/home-writing" {
+admission "aster/home-writing" {
   package_directory = "packages/home-writing"
   channel           = "stable"
   target            = "any"
@@ -163,7 +163,7 @@ admission "a3s/home-writing" {
   categories        = ["work"]
 }
 
-admission "a3s/home-create" {
+admission "aster/home-create" {
   package_directory = "packages/home-create"
   channel           = "stable"
   target            = "any"
@@ -174,7 +174,7 @@ admission "a3s/home-create" {
   categories        = ["work"]
 }
 
-admission "a3s/home-process" {
+admission "aster/home-process" {
   package_directory = "packages/home-process"
   channel           = "stable"
   target            = "any"
@@ -185,7 +185,7 @@ admission "a3s/home-process" {
   categories        = ["work"]
 }
 
-admission "a3s/vercel-weather" {
+admission "aster/vercel-weather" {
   package_directory = "packages/vercel-weather"
   channel           = "stable"
   target            = "any"
@@ -196,22 +196,22 @@ admission "a3s/vercel-weather" {
   categories        = ["examples"]
 }
 
-admission "a3s/review" {
+admission "aster/review" {
   package_directory = "packages/review"
   channel           = "stable"
   target            = "any"
-  display_name      = "A3S Review"
+  display_name      = "Aster Review"
   description       = "Word document review. The skill writes finding fences; the UI is the Word file picker."
   license           = "Apache-2.0"
   keywords          = ["review", "word", "applet"]
   categories        = ["work"]
 }
 
-admission "a3s/applet-demo" {
+admission "aster/applet-demo" {
   package_directory  = "packages/applet-demo"
   channel            = "stable"
   target             = "any"
-  display_name       = "A3S Applet Demo"
+  display_name       = "Aster Applet Demo"
   description        = "Signed example Applet UI package with activity_bar metadata and declared Tool/MCP dependencies for host projection supply."
   license            = "Apache-2.0"
   keywords           = ["applet", "ui", "demo"]
@@ -219,51 +219,51 @@ admission "a3s/applet-demo" {
   permission_ceiling = "packages/applet-demo/permission-ceiling.json"
 }
 
-admission "a3s/cobot-arm" {
+admission "aster/cobot-arm" {
   package_directory = "packages/cobot-arm"
   channel           = "stable"
   target            = "any"
   display_name      = "七轴轻量化协作机器人"
-  description       = "MuJoCo WASM 七轴协作机器人仿真。每个决策点由本包 edge agent 经 a3s 网关选择动作。"
+  description       = "MuJoCo WASM 七轴协作机器人仿真。每个决策点由本包 edge agent 经 aster 网关选择动作。"
   license           = "Apache-2.0"
   keywords          = ["cobot", "robot", "embodied", "workbench"]
   categories        = ["work"]
 }
 
-admission "a3s/g1-arm" {
+admission "aster/g1-arm" {
   package_directory = "packages/g1-arm"
   channel           = "stable"
   target            = "any"
   display_name      = "宇树 G1 人形机器人"
-  description       = "MuJoCo WASM 宇树 G1 右臂 + 平行夹爪仿真。每个决策点由本包 edge agent 经 a3s 网关选择动作。"
+  description       = "MuJoCo WASM 宇树 G1 右臂 + 平行夹爪仿真。每个决策点由本包 edge agent 经 aster 网关选择动作。"
   license           = "Apache-2.0"
   keywords          = ["unitree", "g1", "humanoid", "robot", "embodied", "workbench"]
   categories        = ["work"]
 }
 
-admission "a3s/iris" {
+admission "aster/iris" {
   package_directory = "packages/iris"
   channel           = "stable"
   target            = "any"
   display_name      = "3DR iris 四旋翼"
-  description       = "MuJoCo WASM 3DR iris 四旋翼仿真。每个决策点由本包 edge agent 经 a3s 网关选择动作。"
+  description       = "MuJoCo WASM 3DR iris 四旋翼仿真。每个决策点由本包 edge agent 经 aster 网关选择动作。"
   license           = "Apache-2.0"
   keywords          = ["iris", "quadrotor", "px4", "robot", "embodied", "workbench"]
   categories        = ["work"]
 }
 
-admission "a3s/presenton" {
+admission "aster/presenton" {
   package_directory = "packages/presenton"
   channel           = "stable"
   target            = "any"
   display_name      = "演示文稿"
-  description       = "生成并编辑整套幻灯片：大纲、版式、每页内容由本包 edge agent 经 a3s 网关逐步生成。"
+  description       = "生成并编辑整套幻灯片：大纲、版式、每页内容由本包 edge agent 经 aster 网关逐步生成。"
   license           = "Apache-2.0"
   keywords          = ["presentation", "slides", "ppt", "deck", "workbench"]
   categories        = ["work"]
 }
 
-admission "a3s/digital-twin" {
+admission "aster/digital-twin" {
   package_directory = "packages/digital-twin"
   channel           = "preview"
   target            = "any"
@@ -274,7 +274,7 @@ admission "a3s/digital-twin" {
   categories        = ["work"]
 }
 
-admission "a3s/data" {
+admission "aster/data" {
   package_directory = "packages/data"
   channel           = "stable"
   target            = "any"
@@ -285,7 +285,7 @@ admission "a3s/data" {
   categories        = ["work"]
 }
 
-admission "a3s/paperloom" {
+admission "aster/paperloom" {
   package_directory = "packages/paperloom"
   channel           = "preview"
   target            = "any"

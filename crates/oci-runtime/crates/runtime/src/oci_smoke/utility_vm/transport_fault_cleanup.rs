@@ -3,15 +3,15 @@ use std::sync::atomic::{AtomicU16, AtomicU32, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentBundle, AgentCreateRequest, AgentOperation, AgentStateRequest,
     AgentTransportFaultInjector, AgentTransportFaultPoint, AgentTransportFaultStage,
     AgentTransportOperationStage, AgentTransportQualificationEvidence,
     AgentTransportQualificationRequest, AGENT_PROTOCOL_VERSION_MAX,
     AGENT_TRANSPORT_QUALIFICATION_EVIDENCE_PREFIX,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{Error, ErrorCode, IoMode, OciBundle, OperationContext, OperationId, ProcessIo};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{Error, ErrorCode, IoMode, OciBundle, OperationContext, OperationId, ProcessIo};
 use tokio::time::timeout;
 
 use super::{
@@ -81,7 +81,7 @@ impl HostTransportFault {
 }
 
 impl AgentTransportFaultInjector for HostTransportFault {
-    fn check(&self, point: AgentTransportFaultPoint) -> a3s_oci_sdk::Result<()> {
+    fn check(&self, point: AgentTransportFaultPoint) -> aster_oci_sdk::Result<()> {
         let protocol_version = match (self.stage, point) {
             (
                 AgentTransportFaultStage::Operation(selected),
@@ -586,13 +586,13 @@ fn failed(
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AgentOperation, AgentTransportFaultInjector, AgentTransportFaultPoint,
         AgentTransportOperationStage, AgentTransportQualificationEvidence,
         AgentTransportQualificationRequest, AgentTransportShutdownStage,
         AGENT_PROTOCOL_VERSION_MAX, AGENT_TRANSPORT_QUALIFICATION_EVIDENCE_PREFIX,
     };
-    use a3s_oci_sdk::{ErrorCode, OperationId};
+    use aster_oci_sdk::{ErrorCode, OperationId};
 
     use super::{read_guest_qualification_evidence, HostTransportFault};
 

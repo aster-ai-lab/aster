@@ -1,6 +1,6 @@
 # Architecture
 
-`a3s-orm` is organized around a one-way dependency flow from typed query construction to execution.
+`aster-orm` is organized around a one-way dependency flow from typed query construction to execution.
 
 ## Module ownership
 

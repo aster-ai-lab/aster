@@ -3,8 +3,8 @@
 **Feature Branch**: Current shared worktree; no branch requested.
 **Created**: 2026-10-27
 **Status**: Implementation authorized by the active user goal.
-**Input**: 基于源码最新 a3s code 和 a3s code acp 集成到 aster tui，并完成全功能端到端测试。审查代码不可过拟合优化。
-**Pinned live campaign (2026-10-28)**: 用户明确要求使用 `./.a3s/config.acl` 中的 Kimi K3.1 Pro，模型 ID 已从实际 ACP 初始化确认是 `kimi/k3.1-pro`，也是当前默认值。最终真实 TUI 活动固定此型号；不以其他型号或重建前二进制的结果替代。原始 ACL 保持不变，凭据仅通过现有环境交接工具传给隔离进程。
+**Input**: 基于源码最新 aster code 和 aster code acp 集成到 aster tui，并完成全功能端到端测试。审查代码不可过拟合优化。
+**Pinned live campaign (2026-10-28)**: 用户明确要求使用 `./.aster/config.acl` 中的 Kimi K3.1 Pro，模型 ID 已从实际 ACP 初始化确认是 `kimi/k3.1-pro`，也是当前默认值。最终真实 TUI 活动固定此型号；不以其他型号或重建前二进制的结果替代。原始 ACL 保持不变，凭据仅通过现有环境交接工具传给隔离进程。
 **Gate context**: Product regime. `apps/aster`, `crates/terminal`, `crates/code/core`, and `crates/code/acp`. This extends the shared-agent integration beyond the earlier connection-only acceptance. The current local Core and ACP manifests both declare 9.1.6; uncommitted source changes are part of the integration input.
 
 **Discovered shared cause**: The credential handoff regression found quoted-key loss in the ACL parser/generator. The fix includes `crates/acl` and its identical API/Cloud submodule copies, with their owning tests and the unchanged drift ratchet. It does not add control-plane behavior or migrations.
@@ -66,7 +66,7 @@ The integration has evidence from the actual terminal and ACP processes. A mock 
 
 ### Functional Requirements
 
-- **FR-001**: Build and deliver `aster` and `a3s-code-acp` together from current local sources and preserve paired identity enforcement.
+- **FR-001**: Build and deliver `aster` and `aster-acp` together from current local sources and preserve paired identity enforcement.
 - **FR-002**: Inventory the complete current Core capability, ACP protocol and terminal surface, including optional and host-owned contracts. Required enabled gaps stay incomplete; disabled capabilities need actual refusal evidence.
 - **FR-003**: Fix integration mismatches at their owning shared boundary with hermetic tests; do not substitute legacy semantics or weaken gates.
 - **FR-004**: Verify every terminal feature family through real terminal/ACP execution, including stateful outcomes, errors, cancellation and restart where relevant.
@@ -86,8 +86,8 @@ The integration has evidence from the actual terminal and ACP processes. A mock 
 - [x] New behavior is paired with an owning-package hermetic test in the plan.
 - [x] Protocol and capability decisions use declared closed sets, not name or intent guessing.
 - [x] New production panic paths are prohibited without an infallibility argument.
-- [x] All internal A3S dependencies stay local in the root workspace.
-- [x] Product configuration remains ACL parsed by `a3s-acl`.
+- [x] All internal Aster dependencies stay local in the root workspace.
+- [x] Product configuration remains ACL parsed by `aster-acl`.
 - [x] Evidence target: `docs/evidence/code/2026-10-27-tui-core-acp/OUTCOME.md`.
 
 ## Success Criteria

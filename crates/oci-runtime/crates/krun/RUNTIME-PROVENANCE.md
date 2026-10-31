@@ -22,12 +22,12 @@ The inner file identities are:
 | `linux-aarch64` | `libkrunfw.so.5` | 23,004,041 | `b440b30751cefb2e9325d39853c64cc397acc9d72cdedc5a07a5e56daf553e46` |
 
 All four files come without modification from the checksum-verified
-[`A3S-Lab/Box v3.1.0`](https://github.com/A3S-Lab/Box/releases/tag/v3.1.0)
+[`aster-ai-lab/Box v3.1.0`](https://github.com/aster-ai-lab/Box/releases/tag/v3.1.0)
 Linux packages at commit
-[`5328dea`](https://github.com/A3S-Lab/Box/commit/5328dea976d07643945fa7d42b9ed5256e9afc58).
+[`5328dea`](https://github.com/aster-ai-lab/Box/commit/5328dea976d07643945fa7d42b9ed5256e9afc58).
 That revision pins its libkrun source gitlink to
-[`A3S-Lab/libkrun@e506839`](https://github.com/A3S-Lab/libkrun/commit/e50683984386611f9a06d7a66d87976d8aa4bbcb),
-and the matching release publishes `a3s-libkrun-source.tar` with SHA-256
+[`aster-ai-lab/libkrun@e506839`](https://github.com/aster-ai-lab/libkrun/commit/e50683984386611f9a06d7a66d87976d8aa4bbcb),
+and the matching release publishes `aster-libkrun-source.tar` with SHA-256
 `05f6d3137d424e131aafc9cd0fdef6cde019b4ede15b19cacf6435280748588e`.
 
 The Box build obtains its Linux firmware inputs from
@@ -68,10 +68,10 @@ duplicate, undeclared, or nested entries and verify every extracted byte.
 
 `scripts/build-linux-kvm-system-image.sh` selects the exact Linux target bundle
 from the shared runtime manifest instead of copying its values into shell. For
-both x86_64 and AArch64, CI supplies the matching static `a3s-oci-agent`, builds
+both x86_64 and AArch64, CI supplies the matching static `aster-oci-agent`, builds
 the ext4 image twice, requires byte equality, extracts the installed agent back
 out of the image, and requires it to equal the supplied executable. The output
-manifest uses schema `a3s.oci.linux-kvm-system-image.v1` and binds the image,
+manifest uses schema `aster.oci.linux-kvm-system-image.v1` and binds the image,
 compressed archive, Alpine input, exact agent, native runtime, firmware-exported
 kernel, filesystem UUID, and compatibility level.
 
@@ -150,22 +150,22 @@ Repacking the prior archive with this command reproduced its SHA-256 exactly;
 two independent staging directories produced the new hash above.
 
 `krun.dll` and `krun.lib` were built by the repository Windows release job from
-[`A3S-Lab/libkrun@de07dd8`](https://github.com/A3S-Lab/libkrun/commit/de07dd8a4f94b1e5f70ce2d8e3f99359b3a02eb9),
+[`aster-ai-lab/libkrun@de07dd8`](https://github.com/aster-ai-lab/libkrun/commit/de07dd8a4f94b1e5f70ce2d8e3f99359b3a02eb9),
 merged as
-[`d1f53d7`](https://github.com/A3S-Lab/libkrun/commit/d1f53d78708bac269fa04aaefa404ead401d6002).
+[`d1f53d7`](https://github.com/aster-ai-lab/libkrun/commit/d1f53d78708bac269fa04aaefa404ead401d6002).
 That revision retains the segmented Windows stream and writable virtio-fs
 fixes, restores virtio queue notifications and used lengths, and replaces the
 PIT sleep thread with an owned, interruptible worker that is joined during
 shutdown. License notices and corresponding source for those native-library
 inputs are recorded by
-[`A3S-Lab/Box@93fc281`](https://github.com/A3S-Lab/Box/commit/93fc281a798cdfd8ee463f69add3f6989d561ee3)
+[`aster-ai-lab/Box@93fc281`](https://github.com/aster-ai-lab/Box/commit/93fc281a798cdfd8ee463f69add3f6989d561ee3)
 under `src/deps/libkrun-sys`.
 
 `libkrunfw.dll` was built twice with byte-identical output by the strict
 `libkrunfw-windows` wrapper from
-[`A3S-Lab/libkrun@10dca31`](https://github.com/A3S-Lab/libkrun/commit/10dca312c63080916dbb456c3a019dba3e8b4da0),
+[`aster-ai-lab/libkrun@10dca31`](https://github.com/aster-ai-lab/libkrun/commit/10dca312c63080916dbb456c3a019dba3e8b4da0),
 merged as
-[`414b2d3`](https://github.com/A3S-Lab/libkrun/commit/414b2d3c1724580f1100da2eda140ecc9be5e8f5).
+[`414b2d3`](https://github.com/aster-ai-lab/libkrun/commit/414b2d3c1724580f1100da2eda140ecc9be5e8f5).
 The wrapper validates executable ELF load segments, accepts the physical entry
 encoding used by the official x86_64 kernel, and requires embedded proof of
 NUMA, virtio-mmio command-line discovery, and x86 MP-table support.
@@ -186,7 +186,7 @@ The DLL exports a 23,158,784-byte guest bundle with SHA-256
 load address `0x0000000001000000`, and entry address
 `0x0000000001000123`.
 
-The Rust FFI declarations remain pinned to `a3s-libkrun-sys 3.1.0`. The import
+The Rust FFI declarations remain pinned to `aster-libkrun-sys 3.1.0`. The import
 library ABI is unchanged from that release; the runtime-owned archive prevents
 a clean OCI Runtime checkout from loading the older WHPX DLL while the fixed
 crate release is prepared.
@@ -198,7 +198,7 @@ file entries with synthetic POSIX modes (`0755` and `0644`); those modes are
 not the Windows access-control boundary. The WHPX shim therefore sets the
 versioned `windows-virtiofs-acl-v1` handoff selector together with the
 one-time token-file path. The Linux Guest accepts that selector only for a
-runtime-share path below `/run/a3s-oci-runtime`, opens the parent and entry
+runtime-share path below `/run/aster-oci-runtime`, opens the parent and entry
 without following links, and tightens only those two known synthetic modes to
 `0700` and `0600` through the retained descriptors. It rechecks type, length,
 identity, and final mode before consuming or publishing anything. The
@@ -221,17 +221,17 @@ It contains exactly:
 | `libkrunfw.5.dylib` | 22,952,096 | `841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4` |
 
 Both files were copied without modification from
-[`A3S-Lab/Box v3.1.0`](https://github.com/A3S-Lab/Box/releases/tag/v3.1.0),
+[`aster-ai-lab/Box v3.1.0`](https://github.com/aster-ai-lab/Box/releases/tag/v3.1.0),
 commit
-[`5328dea`](https://github.com/A3S-Lab/Box/commit/5328dea976d07643945fa7d42b9ed5256e9afc58).
+[`5328dea`](https://github.com/aster-ai-lab/Box/commit/5328dea976d07643945fa7d42b9ed5256e9afc58).
 The source release asset
-`a3s-box-v3.1.0-macos-arm64.tar.gz` has SHA-256
+`aster-box-v3.1.0-macos-arm64.tar.gz` has SHA-256
 `4f1c248e785be55b8ccab8acca19ad089b38b1d5b115eeaed144a5437fb200b9`.
 
 That Box release builds libkrun from
-[`A3S-Lab/libkrun@e506839`](https://github.com/A3S-Lab/libkrun/commit/e50683984386611f9a06d7a66d87976d8aa4bbcb)
+[`aster-ai-lab/libkrun@e506839`](https://github.com/aster-ai-lab/libkrun/commit/e50683984386611f9a06d7a66d87976d8aa4bbcb)
 and pins its macOS firmware input. The matching release also publishes
-`a3s-libkrun-source.tar` with SHA-256
+`aster-libkrun-source.tar` with SHA-256
 `05f6d3137d424e131aafc9cd0fdef6cde019b4ede15b19cacf6435280748588e`,
 plus the applicable native license and corresponding-source notices.
 

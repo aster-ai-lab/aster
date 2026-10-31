@@ -1,12 +1,12 @@
 //! Priority Scheduling Example
 //!
-//! This example demonstrates A3S Lane's multi-queue priority scheduling:
+//! This example demonstrates Aster Lane's multi-queue priority scheduling:
 //! 1. Multiple queues with different priorities
 //! 2. Higher priority lanes execute first
 //! 3. Lower priority lanes only execute when higher priority lanes are empty or at capacity
 //! 4. Deterministic response for critical paths
 
-use a3s_lane::{Command, EventEmitter, LaneConfig, QueueManagerBuilder, Result};
+use aster_lane::{Command, EventEmitter, LaneConfig, QueueManagerBuilder, Result};
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Arc;
@@ -58,7 +58,7 @@ impl Command for TrackedCommand {
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
-    println!("=== A3S Lane: Priority Scheduling Test ===\n");
+    println!("=== Aster Lane: Priority Scheduling Test ===\n");
 
     // Test 1: Basic priority ordering
     test_basic_priority_ordering().await?;

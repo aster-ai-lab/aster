@@ -2,7 +2,7 @@ use std::fmt;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_boot::{BootError, Queue, QueueJob, QueueJobOptions, QueueJobReceipt, QueueRetryPolicy};
+use aster_boot::{BootError, Queue, QueueJob, QueueJobOptions, QueueJobReceipt, QueueRetryPolicy};
 use async_trait::async_trait;
 use sha2::{Digest, Sha256};
 
@@ -12,7 +12,7 @@ use crate::error::{FlowError, Result};
 use super::runner::handle_flow_task;
 use super::{FlowTask, FlowTaskDispatcher};
 
-const DEFAULT_FLOW_JOB_NAME: &str = "a3s.flow.task";
+const DEFAULT_FLOW_JOB_NAME: &str = "aster.flow.task";
 
 /// How a Boot queue coalesces duplicate Flow task targets.
 ///
@@ -171,7 +171,7 @@ impl BootFlowTaskPolicy {
     }
 }
 
-/// A3S Boot-backed task manager for Flow scheduler and callback dispatch.
+/// Aster Boot-backed task manager for Flow scheduler and callback dispatch.
 ///
 /// Boot owns queue processors, worker lifecycle, leasing, job state, and
 /// shutdown. Flow owns only task serialization and engine handling semantics.
@@ -278,7 +278,7 @@ impl BootFlowTaskManager {
         self.enqueue_with_options(task, options).await
     }
 
-    /// Enqueue one task with explicit typed A3S Boot job options.
+    /// Enqueue one task with explicit typed Aster Boot job options.
     ///
     /// This per-submission entrypoint supports caller-assigned job IDs and the
     /// complete `QueueJobOptions` surface. Scheduler dispatch through
@@ -307,7 +307,7 @@ impl FlowTaskDispatcher for BootFlowTaskManager {
 }
 
 fn boot_error(error: BootError) -> FlowError {
-    FlowError::TaskManagement(format!("A3S Boot queue error: {error}"))
+    FlowError::TaskManagement(format!("Aster Boot queue error: {error}"))
 }
 
 fn flow_task_deduplication_id(job_name: &str, task: &FlowTask) -> String {

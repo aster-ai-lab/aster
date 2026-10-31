@@ -3,7 +3,7 @@
 //! These fixtures lock the sequence contract without needing a neural
 //! checkpoint. HF tokenizer parity lives in `pack_hf_parity` (opt-in).
 
-use a3s_apofasi::{
+use aster_apofasi::{
     pack_question, pack_question_with_truncation, ByteTokenizer, Criteria, DecisionKind, Question,
     SequenceConfig, SpecialTokens, State, StateTruncation,
 };
@@ -158,7 +158,7 @@ fn reject_reports_state_overflow() {
     .unwrap_err();
     assert!(matches!(
         error,
-        a3s_apofasi::Error::StateOverflow { max_len: 96, .. }
+        aster_apofasi::Error::StateOverflow { max_len: 96, .. }
     ));
 }
 

@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerTarget, DeleteRequest, Error, ErrorCode, ExecRequest, IoMode, OperationId, ProcessId,
     ProcessIo, ProcessTarget, ResizeRequest, StartRequest, TerminalSize,
 };
@@ -16,7 +16,7 @@ use crate::transport_cleanup_report::is_retryable_disconnect_operation;
 use crate::{DriverExecRequest, DriverResizeRequest, OciVmOperationReopenReplacementReport};
 
 pub(in crate::utility_vm_driver::operation_reopen::resize) const RESIZE_MARKER_NAME: &str =
-    ".a3s-oci-resize-reopen-smoke";
+    ".aster-oci-resize-reopen-smoke";
 
 pub(super) type CreateIdentity = (OperationId, ContainerTarget);
 
@@ -50,7 +50,7 @@ pub(in crate::utility_vm_driver::operation_reopen::resize) fn terminal_exec_proc
     let process_id = ProcessId::new(format!("resize-worker-{nonce}"))
         .map_err(|error| format!("failed to construct terminal Exec process ID: {error}"))?;
     let command = format!(
-        r#"set -eu; trap 'size=$(/bin/busybox stty size); printf "a3s-oci-resize-{nonce}:%s\n" "$size" > /{RESIZE_MARKER_NAME}' WINCH; printf 'a3s-oci-exec-process-{nonce}\n' > /{EXEC_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"#,
+        r#"set -eu; trap 'size=$(/bin/busybox stty size); printf "aster-oci-resize-{nonce}:%s\n" "$size" > /{RESIZE_MARKER_NAME}' WINCH; printf 'aster-oci-exec-process-{nonce}\n' > /{EXEC_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"#,
     );
     let process: Process = serde_json::from_value(serde_json::json!({
         "terminal": true,
@@ -130,7 +130,7 @@ pub(super) async fn resize_journal_status(
 pub(super) async fn durable_exec_process(
     state_root: &Path,
     target: &ProcessTarget,
-) -> Result<a3s_oci_sdk::ProcessRecord, String> {
+) -> Result<aster_oci_sdk::ProcessRecord, String> {
     crate::operation_journal_evidence::durable_process(state_root, target).await
 }
 
@@ -193,12 +193,12 @@ mod tests {
                     && command.contains(RESIZE_MARKER_NAME)
                     && command.contains(EXEC_MARKER_NAME)
             }));
-        assert_eq!(io.stdin, a3s_oci_sdk::IoMode::Terminal);
-        assert_eq!(io.stdout, a3s_oci_sdk::IoMode::Terminal);
-        assert_eq!(io.stderr, a3s_oci_sdk::IoMode::Terminal);
+        assert_eq!(io.stdin, aster_oci_sdk::IoMode::Terminal);
+        assert_eq!(io.stdout, aster_oci_sdk::IoMode::Terminal);
+        assert_eq!(io.stderr, aster_oci_sdk::IoMode::Terminal);
         assert_eq!(
             io.terminal_size,
-            Some(a3s_oci_sdk::TerminalSize {
+            Some(aster_oci_sdk::TerminalSize {
                 width: 80,
                 height: 24,
             })

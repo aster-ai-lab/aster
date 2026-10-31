@@ -8,7 +8,7 @@
     clippy::too_many_lines
 )]
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     HnswQueryParams, IndexParams, IvfQueryParams, MetricType, SearchQuery,
 };
@@ -401,7 +401,7 @@ fn filtered_vamana_matches_exact_on_large_allow_list() {
     query.set_filter("scope == \"allowed\"").expect("filter");
     let mut approx_query = query.clone();
     approx_query
-        .set_diskann_params(a3s_vec::DiskannQueryParams::new(64))
+        .set_diskann_params(aster_vec::DiskannQueryParams::new(64))
         .expect("list_size");
     let approximate = indexed.query(&approx_query).expect("filtered Vamana");
     let truth = exact.query(&query).expect("filtered exact");
@@ -504,7 +504,7 @@ fn filtered_diskann_matches_exact_on_large_allow_list() {
     query.set_filter("scope == \"allowed\"").expect("filter");
     let mut approx_query = query.clone();
     approx_query
-        .set_diskann_params(a3s_vec::DiskannQueryParams::new(64))
+        .set_diskann_params(aster_vec::DiskannQueryParams::new(64))
         .expect("list_size");
     let approximate = indexed.query(&approx_query).expect("filtered DiskANN");
     let truth = exact.query(&query).expect("filtered exact");
@@ -559,13 +559,13 @@ fn filtered_diskann_with_large_list_size_exercises_ann_candidate_path() {
     // Large list_size keeps traversal below the full allow-list so DiskANN
     // filtered candidate planning runs instead of exact fallback.
     query
-        .set_diskann_params(a3s_vec::DiskannQueryParams::new(512))
+        .set_diskann_params(aster_vec::DiskannQueryParams::new(512))
         .expect("list_size");
     let hits = indexed.query(&query).expect("filtered DiskANN wide");
     assert_eq!(hits.len(), TOPK);
     for hit in &hits {
         match hit.field("scope") {
-            Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
+            Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
             other => panic!("expected allowed scope, got {other:?}"),
         }
     }
@@ -609,11 +609,11 @@ fn large_scalar_and_conjunction_intersects_two_nonselective_bitmaps() {
     assert_eq!(actual.len(), TOPK);
     for hit in &actual {
         match hit.field("scope") {
-            Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
+            Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
             other => panic!("expected allowed scope, got {other:?}"),
         }
         match hit.field("shard") {
-            Some(a3s_vec::FieldValue::Int32(0)) => {}
+            Some(aster_vec::FieldValue::Int32(0)) => {}
             other => panic!("expected shard 0, got {other:?}"),
         }
     }
@@ -668,7 +668,7 @@ fn empty_scalar_and_branch_short_circuits_without_evaluating_right() {
     assert!(!hits.is_empty());
     for hit in &hits {
         match hit.field("scope") {
-            Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
+            Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
             other => panic!("expected allowed scope, got {other:?}"),
         }
     }

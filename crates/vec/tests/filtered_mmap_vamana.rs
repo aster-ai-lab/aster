@@ -9,7 +9,7 @@
 
 //! Filtered Vamana over mmap DiskANN sidecars must keep allow-list + exact re-rank (I5/I6).
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, DiskannQueryParams, Doc, Durability,
     FieldSchema, IndexParams, IoBackend, MetricType, SearchQuery,
 };
@@ -95,7 +95,7 @@ fn filtered_mmap_vamana_stays_inside_allow_list() {
     assert_eq!(hits.len(), TOPK);
     for hit in &hits {
         match hit.field("scope") {
-            Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
+            Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
             other => panic!("expected allowed, got {other:?}"),
         }
     }
@@ -158,7 +158,7 @@ fn filtered_diskann_large_list_size_falls_back_to_exact_allow_list() {
     assert_eq!(hits.len(), TOPK);
     for hit in &hits {
         match hit.field("scope") {
-            Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
+            Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "allowed"),
             other => panic!("expected allowed, got {other:?}"),
         }
     }

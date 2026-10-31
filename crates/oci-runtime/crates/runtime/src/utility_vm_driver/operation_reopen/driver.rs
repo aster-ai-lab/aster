@@ -3,11 +3,11 @@ use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, AtomicI32, AtomicU32};
 use std::sync::{Arc, Mutex as StdMutex};
 
-use a3s_oci_agent_protocol::GuestAgentService;
-use a3s_oci_core::{
+use aster_oci_agent_protocol::GuestAgentService;
+use aster_oci_core::{
     CapabilityStatus, DriverCapability, DriverKind, DriverReadiness, HostPlatform, IsolationClass,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     async_trait, AttachmentCapabilities, CloseStdinRequest, ContainerOperationRequest,
     ContainerRecord, ContainerStats, ContainerTarget, CreateRequest, DeleteMode, Error, ErrorCode,
     ExecRequest, ExitStatus, FileRequest, FileResponse, FilesystemRequest, FilesystemResponse,
@@ -704,8 +704,8 @@ impl RuntimeDriver for QualificationKvmOperationDriver {
         }
     }
 
-    fn linux_support(&self) -> Result<a3s_oci_sdk::OciLinuxSupport> {
-        a3s_oci_sdk::OciLinuxSupport::shared_executor()
+    fn linux_support(&self) -> Result<aster_oci_sdk::OciLinuxSupport> {
+        aster_oci_sdk::OciLinuxSupport::shared_executor()
     }
 
     fn operations(&self) -> &[RuntimeOperation] {

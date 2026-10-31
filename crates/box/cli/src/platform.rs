@@ -1,7 +1,7 @@
 //! CLI helpers for host-platform capability checks.
 
 #[cfg(windows)]
-use a3s_box_core::PlatformCapabilities;
+use aster_box_core::PlatformCapabilities;
 
 #[cfg(windows)]
 pub(crate) fn unsupported_command(command: &str, required: &str) -> Box<dyn std::error::Error> {

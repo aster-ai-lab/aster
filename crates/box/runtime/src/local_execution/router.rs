@@ -1,10 +1,10 @@
-//! Durable dispatch between the retained Box backend and the A3S OCI SDK.
+//! Durable dispatch between the retained Box backend and the Aster OCI SDK.
 
 use std::sync::Arc;
 
 use super::store::{FreshOwnerAdmission, OwnedLifecycleOutcome, OwnedLifecycleRequest};
-use a3s_box_core::vmm::OwnedCloseBudget;
-use a3s_box_core::{
+use aster_box_core::vmm::OwnedCloseBudget;
+use aster_box_core::{
     pty::PtyRequest, ExecOutput, ExecRequest, ExecutionEventBatch, ExecutionEventsRequest,
     ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult, ExecutionProcess,
     ExecutionProcessInventory, ExecutionResourceUpdate, ExecutionStats, FileRequest, FileResponse,

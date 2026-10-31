@@ -31,7 +31,7 @@ impl ChildRun {
         let workspace = agent.tool_context_handle().workspace.clone();
         let effect_dir = crate::session_folder::child_effect_log_dir(&workspace, &child_id)?;
         let log = Arc::new(
-            a3s_effect::FileLog::open(&effect_dir).map_err(|error| anyhow::anyhow!(error))?,
+            aster_effect::FileLog::open(&effect_dir).map_err(|error| anyhow::anyhow!(error))?,
         );
         let client = agent.scoped_llm_client_for_parts(budget_session.as_deref(), &events, &cancel);
         let executor = agent.tool_executor_handle();
@@ -104,7 +104,7 @@ impl ChildRun {
 async fn continue_incomplete(
     run: &crate::fact_control::FactRun,
     surface: &crate::fact_control::SessionSurface,
-    settled: &mut a3s_effect::Settlement<a3s_effect::CodingView>,
+    settled: &mut aster_effect::Settlement<aster_effect::CodingView>,
 ) -> anyhow::Result<bool> {
     let (enabled, max_continuations, max_rounds) = surface.agent.continuation_policy();
     if !enabled {
@@ -142,7 +142,7 @@ fn incomplete_fingerprint(text: &str) -> String {
 }
 
 fn budget_denied_since_last_user_message(
-    log: &[a3s_effect::Fact],
+    log: &[aster_effect::Fact],
 ) -> Option<crate::harness_loop::ForcedStop> {
     let start = log
         .iter()

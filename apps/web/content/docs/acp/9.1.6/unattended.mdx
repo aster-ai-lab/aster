@@ -10,7 +10,7 @@ export const meta = {
 `--unattended` 适用于明确没有用户在端的测试或批量任务。它仍然提供 ACP stdio 服务，需要客户端提交任务；启动参数不是直接运行自然语言任务的命令。
 
 ```sh
-./target/debug/a3s-code-acp --unattended   --cwd /absolute/disposable-workspace   --config /absolute/host.acl   --max-execution-ms 840000   --result-file /absolute/evidence/result.json
+./target/debug/aster-acp --unattended   --cwd /absolute/disposable-workspace   --config /absolute/host.acl   --max-execution-ms 840000   --result-file /absolute/evidence/result.json
 ```
 
 使用独立练习工作区，证据文件放在受测工作区之外。不要把交互模式的权限面板当作无人值守时仍会有人处理。
@@ -25,7 +25,7 @@ export const meta = {
 
 ## 读取结果记录
 
-结果 schema 为 `a3s.code.terminal-bench-result.v1`，记录以下字段：outcome、reason、terminalEvent、exitCode、durationMs、turns、toolCalls、successfulToolCalls、artifactEvidenceCount、errorCount。
+结果 schema 为 `aster.code.terminal-bench-result.v1`，记录以下字段：outcome、reason、terminalEvent、exitCode、durationMs、turns、toolCalls、successfulToolCalls、artifactEvidenceCount、errorCount。
 
 reason 区分 agent_end、stream_closed_without_terminal_event、worker_exited_without_terminal_event、worker_join_failed、startup_failed、execution_failed、evidence_missing、provider_rejected、provider_exhausted、deadline_exceeded。
 

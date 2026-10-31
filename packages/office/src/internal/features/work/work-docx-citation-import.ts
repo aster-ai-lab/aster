@@ -42,8 +42,8 @@ export function markDocxCitationFields(
     if (tags.length) {
       const index = citations.length + 1;
       const marker: ImportedDocxCitationMarker = {
-        start: `__A3S_WORK_CITATION_START_${index}__`,
-        end: `__A3S_WORK_CITATION_END_${index}__`,
+        start: `__ASTER_WORK_CITATION_START_${index}__`,
+        end: `__ASTER_WORK_CITATION_END_${index}__`,
         id: `docx-citation-${index}`,
         instruction: field.instruction,
         tags,
@@ -56,8 +56,8 @@ export function markDocxCitationFields(
     if (/^\s*BIBLIOGRAPHY\b/i.test(field.instruction)) {
       const index = bibliographies.length + 1;
       const marker: ImportedDocxBibliographyMarker = {
-        start: `__A3S_WORK_BIBLIOGRAPHY_START_${index}__`,
-        end: `__A3S_WORK_BIBLIOGRAPHY_END_${index}__`,
+        start: `__ASTER_WORK_BIBLIOGRAPHY_START_${index}__`,
+        end: `__ASTER_WORK_BIBLIOGRAPHY_END_${index}__`,
         id: `docx-bibliography-${index}`,
         instruction: field.instruction,
         display: docxFieldResultText(field),

@@ -27,7 +27,7 @@ fn push(facts: &mut Vec<Fact>, run: &str, path: &str, outcome: ToolExecutionOutc
         thread_id: "session".into(),
         capability_binding_digest: binding(),
     });
-    prepared.original_args_digest = a3s_effect::tool_args_digest(&json!({"path":path})).unwrap();
+    prepared.original_args_digest = aster_effect::tool_args_digest(&json!({"path":path})).unwrap();
     prepared.effective_args_digest = prepared.original_args_digest.clone();
     let mut receipt = result_without_execution(&prepared, outcome, text.into()).unwrap();
     if outcome == ToolExecutionOutcome::Succeeded {
@@ -256,7 +256,7 @@ fn unsupported_or_unprepared_receipts_cannot_manufacture_a_cycle() {
 
 fn push_child(facts: &mut Vec<Fact>, path: &str, outcome: ToolExecutionOutcome) {
     let mut prepared = preparation(&format!("child-{}", facts.len()));
-    prepared.original_args_digest = a3s_effect::tool_args_digest(&json!({"path":path})).unwrap();
+    prepared.original_args_digest = aster_effect::tool_args_digest(&json!({"path":path})).unwrap();
     prepared.effective_args_digest = prepared.original_args_digest.clone();
     let receipt =
         result_without_execution(&prepared, outcome, "original observation".into()).unwrap();
@@ -402,7 +402,7 @@ fn harness_files_do_not_reset_a_detected_workspace_cycle() {
     let mut facts = state_facts();
     push_state(&mut facts, "A", "B", "A");
     let receipt = &mut facts.last_mut().unwrap().payload["receipt"];
-    receipt["effects"]["changes"][0]["path"] = json!(".a3s/internal-journal");
+    receipt["effects"]["changes"][0]["path"] = json!(".aster/internal-journal");
     assert!(matches!(
         state_cycle(&facts, 3),
         Some(super::super::ExecutionCycle::ObservedState(_))

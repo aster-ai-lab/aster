@@ -3,13 +3,13 @@ use std::path::Path;
 use std::process::{Command, Output, Stdio};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(provider: &Path, args: &[&str]) -> Output {
     Command::new(binary())
         .args(args)
-        .env("A3S_OFFICECLI_EXECUTABLE", provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", provider)
         .output()
         .unwrap()
 }
@@ -17,7 +17,7 @@ fn execute(provider: &Path, args: &[&str]) -> Output {
 fn execute_stdin(provider: &Path, args: &[&str], input: &[u8]) -> Output {
     let mut child = Command::new(binary())
         .args(args)
-        .env("A3S_OFFICECLI_EXECUTABLE", provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", provider)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())

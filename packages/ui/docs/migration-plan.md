@@ -30,8 +30,8 @@ This document outlines the detailed plan for migrating Aster from antd + styled-
 ## Usage Example
 
 ```typescript
-// Import components from @a3s/ui
-import { Spinner, DividerWithText, InfoTooltip } from '@a3s-lab/ui'
+// Import components from @aster/ui
+import { Spinner, DividerWithText, InfoTooltip } from '@aster-ai-lab/ui'
 
 // Use in components
 function MyComponent() {

@@ -13,13 +13,13 @@ fn test_build_box_config_selects_requested_sandbox_isolation() {
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )
     .unwrap();
 
-    assert_eq!(config.isolation, a3s_box_core::ExecutionIsolation::Sandbox);
+    assert_eq!(config.isolation, aster_box_core::ExecutionIsolation::Sandbox);
 }
 
 #[test]
@@ -71,7 +71,7 @@ fn test_managed_run_request_preserves_complete_caller_intent() {
         vec!["/host/workspace:/workspace:rw".to_string()],
         vec![("MODE".to_string(), "test".to_string())],
         vec!["8080:80".to_string()],
-        a3s_box_core::NetworkMode::Bridge {
+        aster_box_core::NetworkMode::Bridge {
             network: "dev".to_string(),
         },
         args.common.tmpfs.clone(),
@@ -85,8 +85,8 @@ fn test_managed_run_request_preserves_complete_caller_intent() {
         retries: 7,
         start_period_secs: 5,
     };
-    let log_config = a3s_box_core::log::LogConfig {
-        driver: a3s_box_core::log::LogDriver::None,
+    let log_config = aster_box_core::log::LogConfig {
+        driver: aster_box_core::log::LogDriver::None,
         options: std::collections::HashMap::from([("tag".to_string(), "worker".to_string())]),
     };
     let operation_id = OperationId::new("cli-run-request-test").unwrap();

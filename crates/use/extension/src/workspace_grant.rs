@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{
+use aster_use_core::{
     PluginPermissionCeiling, PluginWorkspaceGrant, UseError, UseResult, WorkspaceGrantAuthority,
 };
 use serde::{Deserialize, Serialize};
@@ -12,8 +12,8 @@ use super::workspace_grant_io::{
 };
 use super::ExtensionPaths;
 
-pub const WORKSPACE_GRANT_RECEIPT_SCHEMA: &str = "a3s.use.plugin-workspace-grant-receipt.v1";
-pub const WORKSPACE_GRANT_REVOCATION_SCHEMA: &str = "a3s.use.plugin-workspace-grant-revocation.v1";
+pub const WORKSPACE_GRANT_RECEIPT_SCHEMA: &str = "aster.use.plugin-workspace-grant-receipt.v1";
+pub const WORKSPACE_GRANT_REVOCATION_SCHEMA: &str = "aster.use.plugin-workspace-grant-revocation.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(

@@ -1,7 +1,7 @@
 use std::path::Path;
 
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ErrorCode, IoMode, OciBundle, ProcessIo, TerminalSize, CONTROL_CGROUP_CPU_HEADROOM_ANNOTATION,
     CONTROL_CGROUP_MEMORY_HEADROOM_ANNOTATION, CONTROL_CGROUP_PIDS_HEADROOM_ANNOTATION,
     CONTROL_CGROUP_PROCS_FD, CONTROL_CGROUP_PROCS_FD_ENV,
@@ -34,11 +34,11 @@ const UTS_CONFIG: &str = r#"{
     "cwd": "/",
     "noNewPrivileges": true
   },
-  "hostname": "a3s-smoke",
+  "hostname": "aster-smoke",
   "domainname": "runtime.test",
   "linux": {"namespaces": [{"type": "uts"}]}
 }"#;
-const A3S_BOX_CONFIG: &str = include_str!("../../../../fixtures/a3s-box/config.json");
+const ASTER_BOX_CONFIG: &str = include_str!("../../../../fixtures/aster-box/config.json");
 
 fn bundle(config: &str) -> OciBundle {
     OciBundle::from_json(
@@ -171,7 +171,7 @@ fn plans_exact_common_process_fields_for_init_and_exec() {
     );
     process.insert(
         "env".to_string(),
-        serde_json::json!(["A3S_EXACT=environment", "EMPTY="]),
+        serde_json::json!(["ASTER_EXACT=environment", "EMPTY="]),
     );
     process.insert("cwd".to_string(), serde_json::json!("/workspace/task"));
     let encoded = serde_json::to_string(&config).expect("encode exact process configuration");
@@ -193,7 +193,7 @@ fn plans_exact_common_process_fields_for_init_and_exec() {
     for environment in [&init.environment, &exec.environment] {
         assert_eq!(
             environment,
-            &["A3S_EXACT=environment", "EMPTY="],
+            &["ASTER_EXACT=environment", "EMPTY="],
             "the configured environment must not inherit or lose entries"
         );
     }
@@ -361,18 +361,18 @@ fn plans_all_oci_hook_phases_instead_of_rejecting_the_configuration() {
 }
 
 #[test]
-fn plans_the_exact_a3s_box_compiler_output() {
+fn plans_the_exact_aster_box_compiler_output() {
     let bundle = OciBundle::from_json(
-        std::path::PathBuf::from("/var/lib/a3s/boxes/box-123"),
-        A3S_BOX_CONFIG,
+        std::path::PathBuf::from("/var/lib/aster/boxes/box-123"),
+        ASTER_BOX_CONFIG,
     )
-    .expect("schema-valid A3S Box bundle");
+    .expect("schema-valid Aster Box bundle");
     let plan = InitPlan::from_bundle(&bundle, &null_io())
-        .expect("A3S Box compiler output must be executable without translation");
+        .expect("Aster Box compiler output must be executable without translation");
 
     assert_eq!(
         plan.rootfs,
-        std::path::PathBuf::from("/var/lib/a3s/boxes/box-123/rootfs")
+        std::path::PathBuf::from("/var/lib/aster/boxes/box-123/rootfs")
     );
     assert_eq!(plan.args, ["/sbin/init"]);
     assert_eq!(plan.mounts.len(), 10);
@@ -409,7 +409,7 @@ fn resolves_current_directory_rootfs_to_the_bundle() {
 #[test]
 fn plans_versioned_control_workload_cgroups_with_reserved_descriptors() {
     let mut config: serde_json::Value =
-        serde_json::from_str(A3S_BOX_CONFIG).expect("decode A3S Box config");
+        serde_json::from_str(ASTER_BOX_CONFIG).expect("decode Aster Box config");
     config["annotations"][CONTROL_WORKLOAD_CGROUP_LAYOUT_ANNOTATION] =
         serde_json::json!(CONTROL_WORKLOAD_CGROUP_LAYOUT_V1);
     config["annotations"][CONTROL_CGROUP_MEMORY_HEADROOM_ANNOTATION] =
@@ -433,7 +433,7 @@ fn plans_versioned_control_workload_cgroups_with_reserved_descriptors() {
 #[test]
 fn rejects_control_workload_layout_without_new_namespace_or_with_spoofed_environment() {
     let mut config: serde_json::Value =
-        serde_json::from_str(A3S_BOX_CONFIG).expect("decode A3S Box config");
+        serde_json::from_str(ASTER_BOX_CONFIG).expect("decode Aster Box config");
     config["annotations"][CONTROL_WORKLOAD_CGROUP_LAYOUT_ANNOTATION] =
         serde_json::json!(CONTROL_WORKLOAD_CGROUP_LAYOUT_V1);
     config["annotations"][CONTROL_CGROUP_MEMORY_HEADROOM_ANNOTATION] =
@@ -719,7 +719,7 @@ fn rejects_every_unimplemented_property_instead_of_ignoring_it() {
     let config = FIXED_CONFIG.replace(
         r#""noNewPrivileges": true"#,
         r#""noNewPrivileges": true,
-           "apparmorProfile": "a3s-test""#,
+           "apparmorProfile": "aster-test""#,
     );
     let error = InitPlan::from_bundle(&bundle(&config), &null_io())
         .expect_err("AppArmor profile remains unsupported");
@@ -1125,12 +1125,12 @@ fn accepts_a_new_uts_namespace_and_bounded_uts_names() {
         InitPlan::from_bundle(&bundle(UTS_CONFIG), &null_io()).expect("UTS namespace profile");
     assert!(plan.namespaces.new_uts());
     assert!(!plan.namespaces.new_mount());
-    assert_eq!(plan.hostname.as_deref(), Some("a3s-smoke"));
+    assert_eq!(plan.hostname.as_deref(), Some("aster-smoke"));
     assert_eq!(plan.domainname.as_deref(), Some("runtime.test"));
 
     let maximum = "h".repeat(64);
     let config = UTS_CONFIG
-        .replace("a3s-smoke", &maximum)
+        .replace("aster-smoke", &maximum)
         .replace("runtime.test", &maximum);
     let plan = InitPlan::from_bundle(&bundle(&config), &null_io()).expect("64-byte UTS names");
     assert_eq!(plan.hostname.as_deref(), Some(maximum.as_str()));
@@ -1481,7 +1481,7 @@ fn bounds_user_namespace_mapping_count() {
 
 #[test]
 fn rejects_uts_names_outside_the_supported_profile() {
-    let too_long = UTS_CONFIG.replace("a3s-smoke", &"h".repeat(65));
+    let too_long = UTS_CONFIG.replace("aster-smoke", &"h".repeat(65));
     let error =
         InitPlan::from_bundle(&bundle(&too_long), &null_io()).expect_err("65-byte hostname");
     assert_eq!(error.code, ErrorCode::InvalidArgument);

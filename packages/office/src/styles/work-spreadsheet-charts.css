@@ -10,7 +10,7 @@
 
 .work-spreadsheet-chart-manager > aside {
   padding: 8px;
-  border-right: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-chart-manager .create {
@@ -21,10 +21,10 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 5px;
-  background: var(--a3s-bg);
-  color: var(--a3s-muted);
+  background: var(--aster-bg);
+  color: var(--aster-muted);
   font-size: 9px;
   cursor: pointer;
 }
@@ -44,14 +44,14 @@
   border: 0;
   border-radius: 5px;
   background: transparent;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   text-align: left;
   cursor: pointer;
 }
 
 .work-spreadsheet-chart-list > button:hover,
 .work-spreadsheet-chart-list > button.active {
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-chart-list strong {
@@ -63,7 +63,7 @@
 
 .work-spreadsheet-chart-list span,
 .work-spreadsheet-chart-list > p {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -97,9 +97,9 @@
   grid-column: 1 / -1;
   gap: 5px;
   padding: 6px;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 82%, transparent);
   border-radius: 5px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 58%, transparent);
+  background: color-mix(in srgb, var(--aster-panel-soft) 58%, transparent);
 }
 
 .work-spreadsheet-chart-layout > header {
@@ -117,7 +117,7 @@
 
 .work-spreadsheet-chart-layout > header span,
 .work-spreadsheet-chart-layout > p {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
 }
 
 .work-spreadsheet-chart-layout > div {
@@ -136,9 +136,9 @@
   grid-column: 1 / -1;
   gap: 5px;
   padding: 6px;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 82%, transparent);
   border-radius: 5px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 58%, transparent);
+  background: color-mix(in srgb, var(--aster-panel-soft) 58%, transparent);
 }
 
 .work-spreadsheet-chart-axes > header {
@@ -156,7 +156,7 @@
 
 .work-spreadsheet-chart-axes > header span,
 .work-spreadsheet-chart-axes legend {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
 }
 
 .work-spreadsheet-chart-axes > div {
@@ -171,9 +171,9 @@
   gap: 5px;
   margin: 0;
   padding: 5px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 4px;
-  background: var(--a3s-bg);
+  background: var(--aster-bg);
 }
 
 .work-spreadsheet-chart-axes .work-office-checkbox.axis-check {
@@ -198,7 +198,7 @@
 .work-spreadsheet-chart-series {
   min-width: 0;
   padding: 7px 8px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
 }
 
@@ -220,17 +220,17 @@
   align-items: center;
   gap: 4px;
   padding: 0 7px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 4px;
-  background: var(--a3s-bg);
-  color: var(--a3s-muted);
+  background: var(--aster-bg);
+  color: var(--aster-muted);
   font-size: 8px;
   cursor: pointer;
 }
 
 .work-spreadsheet-chart-series .xy-note {
   margin: 0 0 5px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
   line-height: 1.4;
 }
@@ -306,10 +306,10 @@
   width: 26px;
   height: 27px;
   place-items: center;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 5px;
-  background: var(--a3s-bg);
-  color: var(--a3s-red);
+  background: var(--aster-bg);
+  color: var(--aster-red);
   cursor: pointer;
 }
 
@@ -323,9 +323,9 @@
   grid-column: 1 / -1;
   gap: 5px;
   padding: 6px;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 82%, transparent);
   border-radius: 5px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 58%, transparent);
+  background: color-mix(in srgb, var(--aster-panel-soft) 58%, transparent);
 }
 
 .work-spreadsheet-chart-series-style > .enable-series-style {
@@ -340,7 +340,7 @@
   align-items: end;
   gap: 5px;
   padding-top: 5px;
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-data-labels {
@@ -348,9 +348,9 @@
   grid-column: 1 / -1;
   gap: 5px;
   padding: 6px;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 82%, transparent);
   border-radius: 5px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 58%, transparent);
+  background: color-mix(in srgb, var(--aster-panel-soft) 58%, transparent);
 }
 
 .work-spreadsheet-data-labels > .enable-data-labels {
@@ -365,7 +365,7 @@
   align-items: end;
   gap: 5px;
   padding-top: 5px;
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-trendlines {
@@ -373,9 +373,9 @@
   grid-column: 1 / -1;
   gap: 5px;
   padding: 6px;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 82%, transparent);
   border-radius: 5px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 58%, transparent);
+  background: color-mix(in srgb, var(--aster-panel-soft) 58%, transparent);
 }
 
 .work-spreadsheet-trendlines > header {
@@ -395,17 +395,17 @@
   align-items: center;
   gap: 3px;
   padding: 0 6px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 4px;
-  background: var(--a3s-bg);
-  color: var(--a3s-muted);
+  background: var(--aster-bg);
+  color: var(--aster-muted);
   font-size: 8px;
   cursor: pointer;
 }
 
 .work-spreadsheet-trendlines > p {
   margin: 0;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
   line-height: 1.4;
 }
@@ -418,14 +418,14 @@
   gap: 5px;
   margin: 0;
   padding: 7px 31px 7px 7px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 5px;
-  background: var(--a3s-bg);
+  background: var(--aster-bg);
 }
 
 .work-spreadsheet-trendlines legend {
   padding: 0 3px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -437,10 +437,10 @@
   width: 22px;
   height: 22px;
   place-items: center;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 4px;
-  background: var(--a3s-bg);
-  color: var(--a3s-red);
+  background: var(--aster-bg);
+  color: var(--aster-red);
   cursor: pointer;
 }
 
@@ -449,9 +449,9 @@
   grid-column: 1 / -1;
   gap: 5px;
   padding: 6px;
-  border: 1px solid color-mix(in srgb, var(--a3s-line) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--aster-line) 82%, transparent);
   border-radius: 5px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 58%, transparent);
+  background: color-mix(in srgb, var(--aster-panel-soft) 58%, transparent);
 }
 
 .work-spreadsheet-error-bars > header {
@@ -476,10 +476,10 @@
   align-items: center;
   gap: 3px;
   padding: 0 6px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 4px;
-  background: var(--a3s-bg);
-  color: var(--a3s-muted);
+  background: var(--aster-bg);
+  color: var(--aster-muted);
   font-size: 8px;
   cursor: pointer;
 }
@@ -505,14 +505,14 @@
   gap: 5px;
   margin: 0;
   padding: 7px 31px 7px 7px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 5px;
-  background: var(--a3s-bg);
+  background: var(--aster-bg);
 }
 
 .work-spreadsheet-error-bars legend {
   padding: 0 3px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -528,10 +528,10 @@
   width: 22px;
   height: 22px;
   place-items: center;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 4px;
-  background: var(--a3s-bg);
-  color: var(--a3s-red);
+  background: var(--aster-bg);
+  color: var(--aster-red);
   cursor: pointer;
 }
 
@@ -546,7 +546,7 @@
   gap: 5px;
   min-height: 190px;
   padding: 24px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   text-align: center;
 }
 

@@ -2,7 +2,7 @@
 //! projection and normalize-first F32 signed-root gate. Xolotl adaptation,
 //! ds41_dense.cpp at b3452666e07a6374d06bb8c2185dffa271e8f65f (MIT).
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

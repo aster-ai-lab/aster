@@ -659,7 +659,7 @@ mod tests {
         assert_eq!(plan.steps[0].content, "Complete the requested task");
 
         let composed =
-            "A3S Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n规划引擎";
+            "Aster Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n规划引擎";
         let plan = LlmPlanner::fallback_plan(composed);
         assert_eq!(plan.goal, "规划引擎");
         assert_eq!(plan.execution_context.as_deref(), Some(composed));

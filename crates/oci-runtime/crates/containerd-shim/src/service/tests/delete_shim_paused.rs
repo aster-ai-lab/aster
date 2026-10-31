@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex};
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
+use aster_oci_sdk::{
     async_trait, ContainerOperationRequest, ContainerRecord, DeleteMode, DeleteRequest,
     Error as RuntimeError, ErrorCode, ExitStatus, Generation, IsolationRequest, KillRequest,
     OciRuntimeService, StateRequest, WaitRequest, PAUSED_STATE_ANNOTATION,
@@ -32,18 +32,18 @@ struct PausedCleanupService {
 
 #[async_trait]
 impl OciRuntimeService for PausedCleanupService {
-    async fn features(&self) -> a3s_oci_sdk::Result<a3s_oci_sdk::RuntimeInfo> {
+    async fn features(&self) -> aster_oci_sdk::Result<aster_oci_sdk::RuntimeInfo> {
         Err(RuntimeError::unsupported("test-features"))
     }
 
     async fn create(
         &self,
-        _request: a3s_oci_sdk::CreateRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::CreateRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(RuntimeError::unsupported("test-create"))
     }
 
-    async fn state(&self, request: StateRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn state(&self, request: StateRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         let mut calls = self.calls.lock().expect("paused cleanup calls");
         calls.order.push("state");
         calls.states.push(request);
@@ -52,15 +52,15 @@ impl OciRuntimeService for PausedCleanupService {
 
     async fn start(
         &self,
-        _request: a3s_oci_sdk::StartRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::StartRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(RuntimeError::unsupported("test-start"))
     }
 
     async fn resume(
         &self,
         request: ContainerOperationRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         {
             let mut calls = self.calls.lock().expect("paused cleanup calls");
             calls.order.push("resume");
@@ -69,21 +69,21 @@ impl OciRuntimeService for PausedCleanupService {
         Ok(self.resumed.clone())
     }
 
-    async fn kill(&self, request: KillRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn kill(&self, request: KillRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         let mut calls = self.calls.lock().expect("paused cleanup calls");
         calls.order.push("kill");
         calls.kills.push(request);
         Ok(self.resumed.clone())
     }
 
-    async fn wait(&self, request: WaitRequest) -> a3s_oci_sdk::Result<ExitStatus> {
+    async fn wait(&self, request: WaitRequest) -> aster_oci_sdk::Result<ExitStatus> {
         let mut calls = self.calls.lock().expect("paused cleanup calls");
         calls.order.push("wait");
         calls.waits.push(request);
         ExitStatus::signaled(9, false)
     }
 
-    async fn delete(&self, request: DeleteRequest) -> a3s_oci_sdk::Result<()> {
+    async fn delete(&self, request: DeleteRequest) -> aster_oci_sdk::Result<()> {
         let mut calls = self.calls.lock().expect("paused cleanup calls");
         calls.order.push("delete");
         calls.deletes.push(request);
@@ -109,7 +109,7 @@ async fn delete_shim_force_deletes_a_paused_generation_without_blocking_kill() {
 
     let calls = Arc::new(Mutex::new(PausedCleanupCalls::default()));
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(PausedCleanupService {
+        aster_oci_sdk::RuntimeClient::new(PausedCleanupService {
             paused: task.record.clone(),
             resumed,
             calls: calls.clone(),
@@ -154,7 +154,7 @@ async fn delete_shim_retains_metadata_when_paused_force_delete_fails() {
 
     let calls = Arc::new(Mutex::new(PausedCleanupCalls::default()));
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(PausedCleanupService {
+        aster_oci_sdk::RuntimeClient::new(PausedCleanupService {
             paused: task.record,
             resumed,
             calls: calls.clone(),
@@ -204,7 +204,7 @@ async fn delete_shim_rejects_a_drifted_paused_generation_before_cleanup() {
     drifted.generation = Generation(8);
     let calls = Arc::new(Mutex::new(PausedCleanupCalls::default()));
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(PausedCleanupService {
+        aster_oci_sdk::RuntimeClient::new(PausedCleanupService {
             paused: drifted,
             resumed,
             calls: calls.clone(),

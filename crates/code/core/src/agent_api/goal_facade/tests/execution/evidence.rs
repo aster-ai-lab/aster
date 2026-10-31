@@ -88,12 +88,12 @@ async fn prove_source(file_store: bool, tool: Option<&str>, reconcile_old: bool)
     let mut facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
     let admission = facts
         .iter()
-        .find(|f| f.kind == "a3s.goal.slice.admitted")
+        .find(|f| f.kind == "aster.goal.slice.admitted")
         .unwrap();
     let run_id = admission.payload["body"]["run_id"].as_str().unwrap();
     let run = session.run_snapshot(run_id).await.unwrap();
     let capability = crate::digest_json(
-        "a3s.code.tool-admission-binding.v1",
+        "aster.code.tool-admission-binding.v1",
         run.capability_binding.as_ref().unwrap(),
     )
     .unwrap();
@@ -102,7 +102,7 @@ async fn prove_source(file_store: bool, tool: Option<&str>, reconcile_old: bool)
     for fact in &facts {
         if fact.kind == "tool.prepared" {
             assert!(fact.seq > admission.seq);
-            let value: a3s_effect::ToolPreparedV1 =
+            let value: aster_effect::ToolPreparedV1 =
                 serde_json::from_value(fact.payload["prepared"].clone()).unwrap();
             value.validate().unwrap();
             let binding = value.identity.admission.as_ref().unwrap();
@@ -113,15 +113,15 @@ async fn prove_source(file_store: bool, tool: Option<&str>, reconcile_old: bool)
                 .insert(value.identity.key().unwrap(), value)
                 .is_none());
         } else if fact.kind == "tool.result" {
-            let value: a3s_effect::ToolExecutionResultV1 =
+            let value: aster_effect::ToolExecutionResultV1 =
                 serde_json::from_value(fact.payload["receipt"].clone()).unwrap();
             value
                 .ensure_prepared(prepared.get(&value.identity.key().unwrap()).unwrap())
                 .unwrap();
-            assert_eq!(value.outcome, a3s_effect::ToolExecutionOutcome::Succeeded);
+            assert_eq!(value.outcome, aster_effect::ToolExecutionOutcome::Succeeded);
             assert_eq!(
                 value.effects.completeness,
-                a3s_effect::ToolObservationCompleteness::Complete
+                aster_effect::ToolObservationCompleteness::Complete
             );
             if tool == Some("read") {
                 assert!(value.effects.changes.is_empty());
@@ -174,7 +174,7 @@ async fn prove_source(file_store: bool, tool: Option<&str>, reconcile_old: bool)
         .all(|s| s.status == crate::planning::TaskStatus::Pending));
     assert!(!facts
         .iter()
-        .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "a3s.goal.completed"));
+        .any(|f| f.kind == "aster.goal.step.accepted" || f.kind == "aster.goal.completed"));
     if tool == Some("write") {
         assert!(crate::fact_control::has_unsettled_effects(&facts));
         assert!(!facts
@@ -182,7 +182,7 @@ async fn prove_source(file_store: bool, tool: Option<&str>, reconcile_old: bool)
             .any(|f| f.kind == crate::fact_control::TURN_COMPLETE_FACT_KIND));
     }
     if reconcile_old {
-        let result: a3s_effect::ToolExecutionResultV1 = serde_json::from_value(
+        let result: aster_effect::ToolExecutionResultV1 = serde_json::from_value(
             facts
                 .iter()
                 .find(|f| f.kind == "tool.result")
@@ -210,13 +210,13 @@ async fn prove_source(file_store: bool, tool: Option<&str>, reconcile_old: bool)
             .any(|f| f.kind == "tool.prepared" || f.kind == "tool.result"));
         let next = new
             .iter()
-            .find(|f| f.kind == "a3s.goal.slice.admitted")
+            .find(|f| f.kind == "aster.goal.slice.admitted")
             .unwrap();
         assert_ne!(next.payload["body"]["run_id"].as_str().unwrap(), run_id);
         assert!(!crate::fact_control::has_unsettled_effects(&after));
         assert!(!after
             .iter()
-            .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "a3s.goal.completed"));
+            .any(|f| f.kind == "aster.goal.step.accepted" || f.kind == "aster.goal.completed"));
         assert!(session
             .goal_definition()
             .unwrap()

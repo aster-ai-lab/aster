@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@a3s-lab/ui'
+} from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Dialog> = {
   title: 'Components/Primitives/Dialog',

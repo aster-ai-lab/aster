@@ -1,6 +1,6 @@
-# A3S Registry Selftest
+# Aster Registry Selftest
 
-The first admitted package of the official A3S Use Registry. It contributes
+The first admitted package of the official Aster Use Registry. It contributes
 one Skill that documents how agents consume packages from this Registry, and
 its own admission doubles as the bootstrap verification case for the signed
 TUF publication pipeline.

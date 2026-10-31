@@ -5,12 +5,12 @@
 //! `session/prompt`, and the turn must end with `end_turn`.
 //!
 //! Ignored by default because it spends a real completion. Run it with
-//! `just release-smoke` (or `cargo test -p a3s-code-acp --test
+//! `just release-smoke` (or `cargo test -p aster-acp --test
 //! release_smoke -- --ignored`) and:
 //!
-//! - `A3S_RELEASE_SMOKE_CONFIG`: required ACL file with the provider;
-//! - `A3S_RELEASE_SMOKE_MODEL`: optional `provider/model`;
-//! - `A3S_RELEASE_SMOKE_BIN`: optional binary, for example a clean
+//! - `ASTER_RELEASE_SMOKE_CONFIG`: required ACL file with the provider;
+//! - `ASTER_RELEASE_SMOKE_MODEL`: optional `provider/model`;
+//! - `ASTER_RELEASE_SMOKE_BIN`: optional binary, for example a clean
 //!   `cargo install` of the candidate. Defaults to the test build.
 
 use std::process::Stdio;
@@ -66,14 +66,14 @@ async fn answer(
 #[tokio::test]
 #[ignore = "spends one real model completion; run through `just release-smoke`"]
 async fn one_real_acp_turn_ends_with_end_turn() {
-    let config = std::env::var_os("A3S_RELEASE_SMOKE_CONFIG")
-        .expect("A3S_RELEASE_SMOKE_CONFIG must name the ACL file with a real provider");
-    let bin = std::env::var_os("A3S_RELEASE_SMOKE_BIN")
-        .unwrap_or_else(|| env!("CARGO_BIN_EXE_a3s-code-acp").into());
+    let config = std::env::var_os("ASTER_RELEASE_SMOKE_CONFIG")
+        .expect("ASTER_RELEASE_SMOKE_CONFIG must name the ACL file with a real provider");
+    let bin = std::env::var_os("ASTER_RELEASE_SMOKE_BIN")
+        .unwrap_or_else(|| env!("CARGO_BIN_EXE_aster-acp").into());
     let workspace = tempfile::tempdir().unwrap();
     let mut command = tokio::process::Command::new(&bin);
     command
-        .env_remove("A3S_CONFIG")
+        .env_remove("ASTER_CONFIG")
         .arg("--cwd")
         .arg(workspace.path())
         .arg("--config")
@@ -82,7 +82,7 @@ async fn one_real_acp_turn_ends_with_end_turn() {
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .kill_on_drop(true);
-    if let Some(model) = std::env::var_os("A3S_RELEASE_SMOKE_MODEL") {
+    if let Some(model) = std::env::var_os("ASTER_RELEASE_SMOKE_MODEL") {
         command.arg("--model").arg(model);
     }
     let mut child = command.spawn().unwrap();

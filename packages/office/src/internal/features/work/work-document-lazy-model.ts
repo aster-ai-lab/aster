@@ -76,7 +76,7 @@ export function prepareLazyDocumentEditorSource(
     root: prepared.root,
   };
   recordLazyDocumentMeasure(
-    'a3s-office.document.lazy-editor-source',
+    'aster-office.document.lazy-editor-source',
     startedAt,
     lazyDocumentNow(),
     { cacheHit },

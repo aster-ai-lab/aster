@@ -1,8 +1,8 @@
 {
-  "schema_version": "a3s.oci.containerd-runtime-v2-compatibility.v1",
+  "schema_version": "aster.oci.containerd-runtime-v2-compatibility.v1",
   "contract": {
     "version": 1,
-    "runtime_type": "io.containerd.a3s-oci.v2",
+    "runtime_type": "io.containerd.aster-oci.v2",
     "task_api": "containerd.task.v2.Task",
     "identity_encoding": "sha256-length-framed-u64be-v1"
   },
@@ -68,17 +68,17 @@
         "files": [
           {
             "role": "cli",
-            "name": "a3s-oci",
+            "name": "aster-oci",
             "sha256": "53bf14d72adb347b35d19f936bf91d15adcc3cce65aa88f63886746f07f5ddb2"
           },
           {
             "role": "agent",
-            "name": "a3s-oci-agent",
+            "name": "aster-oci-agent",
             "sha256": "28dad74972b28b400a9e5e9f9b38ba59aeaf6662532dfefc7dd5527ff17d6b48"
           },
           {
             "role": "shim",
-            "name": "containerd-shim-a3s-oci-v2",
+            "name": "containerd-shim-aster-oci-v2",
             "sha256": "801c6ebd6bb6a41f1049dbd64d6ae60165a0914254edb953b2eaf633c6c368f2"
           },
           {
@@ -140,17 +140,17 @@
         "files": [
           {
             "role": "cli",
-            "name": "a3s-oci",
+            "name": "aster-oci",
             "sha256": "80d0b69686c73516fc3a507f2545af77b405918584176bdb0a96ab3bcf067102"
           },
           {
             "role": "agent",
-            "name": "a3s-oci-agent",
+            "name": "aster-oci-agent",
             "sha256": "68219e592a061b9dba7f491d54716354195cd8f8005fa792ab367681dda5352e"
           },
           {
             "role": "shim",
-            "name": "containerd-shim-a3s-oci-v2",
+            "name": "containerd-shim-aster-oci-v2",
             "sha256": "99bacac7a308e4830ca55101ef8148a511526722cf9006d8a37ef9cba89dbf50"
           },
           {
@@ -213,21 +213,21 @@
         "files": [
           {
             "role": "cli",
-            "name": "a3s-oci",
+            "name": "aster-oci",
             "sha256": "e22a08d884ad59187fce39e170f6ca21d367a77c2d3a1a297cb8650adf6f7561",
             "size_bytes": 30336760,
             "format": "elf-static-pie"
           },
           {
             "role": "agent",
-            "name": "a3s-oci-agent",
+            "name": "aster-oci-agent",
             "sha256": "c73cc2356552de6f2def62598a44fb370df7300a56af5c7be33e63d148b865e2",
             "size_bytes": 14771880,
             "format": "elf-static-pie"
           },
           {
             "role": "shim",
-            "name": "containerd-shim-a3s-oci-v2",
+            "name": "containerd-shim-aster-oci-v2",
             "sha256": "c4c8ce162cdb0c031eac6e792e2bbdf9c99c30e7ef971ca8791b123f2b4ce00c",
             "size_bytes": 20350960,
             "format": "elf-static-pie"
@@ -295,21 +295,21 @@
         "files": [
           {
             "role": "cli",
-            "name": "a3s-oci",
+            "name": "aster-oci",
             "sha256": "e60c09518d885d63befeabf282ccf00c4fcc4607f7254e7d1faf34abfd4e9710",
             "size_bytes": 369786176,
             "format": "elf-dynamic-glibc-debug"
           },
           {
             "role": "agent",
-            "name": "a3s-oci-agent",
+            "name": "aster-oci-agent",
             "sha256": "f829742fde11cbda2369cd2558f53809f582c842a3988421d27c760d0e3c2747",
             "size_bytes": 179814872,
             "format": "elf-dynamic-glibc-debug"
           },
           {
             "role": "shim",
-            "name": "containerd-shim-a3s-oci-v2",
+            "name": "containerd-shim-aster-oci-v2",
             "sha256": "f6863cedd8f12a9f140a0bee06996cba67a6a709768cbd07a0d4446004a8c8c4",
             "size_bytes": 244093584,
             "format": "elf-dynamic-glibc-debug"
@@ -377,21 +377,21 @@
         "files": [
           {
             "role": "cli",
-            "name": "a3s-oci",
+            "name": "aster-oci",
             "sha256": "b32d4bf5f50283141dcae0b8a19f2b42f8992ab900414deb9ca5084f92f5b63b",
             "size_bytes": 37489928,
             "format": "elf-static-pie-musl"
           },
           {
             "role": "agent",
-            "name": "a3s-oci-agent",
+            "name": "aster-oci-agent",
             "sha256": "596e214d85eae2df132ae12e708bcd8e1c640167186ca83247985bac36d7758a",
             "size_bytes": 15299104,
             "format": "elf-static-pie-musl"
           },
           {
             "role": "shim",
-            "name": "containerd-shim-a3s-oci-v2",
+            "name": "containerd-shim-aster-oci-v2",
             "sha256": "c76ed0190a574e0dc23e729f9c58302e890e54d09d647d014bc2d236fdd36903",
             "size_bytes": 19774520,
             "format": "elf-static-pie-musl"
@@ -459,21 +459,21 @@
         "files": [
           {
             "role": "cli",
-            "name": "a3s-oci",
+            "name": "aster-oci",
             "sha256": "2327ce8bb7c46bea263a2436cd8f76c8280bc66dbe24a71a4a7490175c2fbb53",
             "size_bytes": 37860240,
             "format": "elf-static-pie-musl"
           },
           {
             "role": "agent",
-            "name": "a3s-oci-agent",
+            "name": "aster-oci-agent",
             "sha256": "5875910e1efc7969bb6626a6e9ad861389e923a094673a3bef8af016b849b7fb",
             "size_bytes": 15300944,
             "format": "elf-static-pie-musl"
           },
           {
             "role": "shim",
-            "name": "containerd-shim-a3s-oci-v2",
+            "name": "containerd-shim-aster-oci-v2",
             "sha256": "d389ca4f323c17b9455ec6d33b8b6f7e4dc824e8655dd5e654fd43afa42147fd",
             "size_bytes": 19778832,
             "format": "elf-static-pie-musl"
@@ -539,29 +539,29 @@
       "artifacts": {
         "cargo_lock_sha256": "ad0ed1879f28fbdefae3ecb66eccc04454f974c3effe449f1416a3aba642e081",
         "package": {
-          "name": "a3s-oci-runtime-v0.2.0-linux-x86_64",
-          "qualification_schema": "a3s.oci.native-linux-package-qualification.v7",
+          "name": "aster-oci-runtime-v0.2.0-linux-x86_64",
+          "qualification_schema": "aster.oci.native-linux-package-qualification.v7",
           "qualification_report_sha256": "d87aa3ff3cd58843d57f51b75b91ca6d05c880f043d24477789105dfc065ba86",
           "qualification_report_size_bytes": 5889
         },
         "files": [
           {
             "role": "cli",
-            "name": "a3s-oci",
+            "name": "aster-oci",
             "sha256": "2be45cdd357a39c6ecc4b4a21d29d3027b3c5f24b65b634c7aa6e6cb0a90fca3",
             "size_bytes": 37712048,
             "format": "elf-static-pie-musl"
           },
           {
             "role": "agent",
-            "name": "a3s-oci-agent",
+            "name": "aster-oci-agent",
             "sha256": "a005f540fad31255cf69fd32a0cca24fb962828371ca9919e63b7ea790700e7d",
             "size_bytes": 14964576,
             "format": "elf-static-pie-musl"
           },
           {
             "role": "shim",
-            "name": "containerd-shim-a3s-oci-v2",
+            "name": "containerd-shim-aster-oci-v2",
             "sha256": "56a90ffdd9425983ac336a490411efef6d490d3f2bced3d93310b7f4ca764e54",
             "size_bytes": 20352208,
             "format": "elf-static-pie-musl"
@@ -629,21 +629,21 @@
         "files": [
           {
             "role": "cli",
-            "name": "a3s-oci",
+            "name": "aster-oci",
             "sha256": "4f3f680dfab99d5502cdbb316d19d6cace7a057792c9ce4ce323db2e9dc7e715",
             "size_bytes": 39641168,
             "format": "elf-static-pie-musl"
           },
           {
             "role": "agent",
-            "name": "a3s-oci-agent",
+            "name": "aster-oci-agent",
             "sha256": "90c08558aa97b9caea19a4a84ff64446104a87bff499db18c90857b27fe4d3a7",
             "size_bytes": 15875680,
             "format": "elf-static-pie-musl"
           },
           {
             "role": "shim",
-            "name": "containerd-shim-a3s-oci-v2",
+            "name": "containerd-shim-aster-oci-v2",
             "sha256": "00b59d5e3c3e4efeb1c9cda8473f46bda20b31555e67a5a582c0eca03708a7c0",
             "size_bytes": 19772312,
             "format": "elf-static-pie-musl"

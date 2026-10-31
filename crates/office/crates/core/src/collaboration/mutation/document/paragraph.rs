@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::xml::XmlIn;
 use yrs::types::Attrs;
 use yrs::{
@@ -355,7 +355,7 @@ fn editable_paragraph_text<T: ReadTxn>(
 fn paragraph_match_conflict(
     message: &str,
     text_ids: Option<(&str, &str)>,
-) -> a3s_use_core::UseError {
+) -> aster_use_core::UseError {
     let mut error = collaboration_error("office.collaboration.mutation_match_conflict", message)
         .with_suggestion(
         "Read the latest native collaboration projection before retrying the paragraph mutation.",
@@ -393,11 +393,11 @@ fn is_review_attribute(value: &str) -> bool {
     )
 }
 
-fn document_structure_conflict(message: &str) -> a3s_use_core::UseError {
+fn document_structure_conflict(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_structure_conflict", message)
 }
 
-fn document_structure_too_large() -> a3s_use_core::UseError {
+fn document_structure_too_large() -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_too_large",
         "The Document container contains too many blocks for a structural mutation.",

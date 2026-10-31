@@ -321,7 +321,7 @@ fn test_prune_marker_text() {
 
 #[test]
 fn a_pruned_result_with_a_retained_artifact_points_at_it() {
-    let uri = "a3s://tool-output/bash/abc123";
+    let uri = "aster://tool-output/bash/abc123";
     let old = format!(
         "{}\n\n{}{uri} — page it with read]",
         "a".repeat(400_000),
@@ -372,7 +372,7 @@ async fn compact_summary_input_preserves_tool_calls_and_results() {
         content: vec![ContentBlock::ToolUse {
             id: "tool-1".to_string(),
             name: "bash".to_string(),
-            input: serde_json::json!({"command": "cargo test -p a3s-code-core"}),
+            input: serde_json::json!({"command": "cargo test -p aster-core"}),
         }],
         reasoning_content: None,
         transcript_text: None,
@@ -419,7 +419,7 @@ async fn compact_summary_input_preserves_tool_calls_and_results() {
         "compaction summary is model-wire context, not a product user bubble"
     );
     let prompts = client.prompts.lock().unwrap();
-    assert!(prompts[0].contains("cargo test -p a3s-code-core"));
+    assert!(prompts[0].contains("cargo test -p aster-core"));
     assert!(prompts[0].contains("all 42 tests passed"));
     assert!(prompts[0].contains("latest verified state must survive"));
     assert!(
@@ -690,19 +690,19 @@ async fn compaction_carries_revision_constraint_and_open_step() {
         ]
     });
     let live_workspace = tempfile::tempdir().expect("workspace");
-    let live_dir = live_workspace.path().join(".a3s").join("effect-log");
+    let live_dir = live_workspace.path().join(".aster").join("effect-log");
     std::fs::create_dir_all(&live_dir).expect("log dir");
-    let live_log = a3s_effect::FileLog::open(&live_dir).expect("log");
+    let live_log = aster_effect::FileLog::open(&live_dir).expect("log");
     let live_thread = crate::fact_control::thread_for_session("carry-live");
-    let append = |log: &a3s_effect::FileLog,
+    let append = |log: &aster_effect::FileLog,
                   thread: &str,
                   key: &str,
                   kind: &str,
                   payload: serde_json::Value| {
-        use a3s_effect::LogStore;
+        use aster_effect::LogStore;
         log.append(
             thread,
-            &[a3s_effect::NewFact {
+            &[aster_effect::NewFact {
                 kind: kind.into(),
                 key: key.into(),
                 payload,
@@ -799,9 +799,9 @@ async fn compaction_carries_revision_constraint_and_open_step() {
     assert!(live.summary.contains("The task is finished"));
 
     let kept_workspace = tempfile::tempdir().expect("workspace");
-    let kept_dir = kept_workspace.path().join(".a3s").join("effect-log");
+    let kept_dir = kept_workspace.path().join(".aster").join("effect-log");
     std::fs::create_dir_all(&kept_dir).expect("log dir");
-    let kept_log = a3s_effect::FileLog::open(&kept_dir).expect("log");
+    let kept_log = aster_effect::FileLog::open(&kept_dir).expect("log");
     let kept_thread = crate::fact_control::thread_for_session("carry-kept");
     append(
         &kept_log,
@@ -956,7 +956,7 @@ async fn compacted_history_keeps_an_unresolved_tool_call() {
         content: vec![ContentBlock::ToolUse {
             id: "pending-tool".to_string(),
             name: "bash".to_string(),
-            input: serde_json::json!({"command": "cargo test -p a3s-code-core"}),
+            input: serde_json::json!({"command": "cargo test -p aster-core"}),
         }],
         reasoning_content: None,
         transcript_text: None,

@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 
-use a3s_effect::{
+use aster_effect::{
     component, cut_log, parse_fact_json, resume, Actor, ActorError, Effect, Exit, Fact,
     HarnessConfig, LogStore, MemoryLog, NewFact, Transition,
 };
@@ -13,7 +13,7 @@ impl RemovedDir {
     fn new(label: &str) -> Self {
         static N: AtomicUsize = AtomicUsize::new(0);
         let dir = std::env::temp_dir().join(format!(
-            "a3s-effect-{label}-{}-{}",
+            "aster-effect-{label}-{}-{}",
             std::process::id(),
             N.fetch_add(1, Ordering::Relaxed)
         ));
@@ -140,11 +140,11 @@ fn identical_append_is_a_noop_and_changed_payload_is_duplicate() {
     assert_bad_thread_ids(&MemoryLog::new(), None);
 
     let dir = RemovedDir::new("append");
-    let file = a3s_effect::FileLog::open(&dir.0).unwrap();
+    let file = aster_effect::FileLog::open(&dir.0).unwrap();
     assert_append_rules(&file, Some(&dir.0.join("thread-1.jsonl")));
 
     let bad_dir = RemovedDir::new("bad-thread");
-    let bad = a3s_effect::FileLog::open(&bad_dir.0).unwrap();
+    let bad = aster_effect::FileLog::open(&bad_dir.0).unwrap();
     assert_bad_thread_ids(&bad, Some(&bad_dir.0));
 }
 

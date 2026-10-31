@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     CancellationRequest, ChildWorkflowCommand, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope,
     FlowEventStore, FlowRuntime, InMemoryEventStore, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowRunStatus, WorkflowSpec, WorkflowTerminalOutcome,
@@ -54,7 +54,7 @@ impl FlowRuntime for ConcurrentBatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "child-batch.parent" {
             let outcomes = ["child-0000", "child-0001"]
@@ -70,7 +70,7 @@ impl FlowRuntime for ConcurrentBatchRuntime {
                             "batch child failed: {outcome:?}"
                         ))),
                     })
-                    .collect::<a3s_flow::Result<Vec<_>>>()?;
+                    .collect::<aster_flow::Result<Vec<_>>>()?;
                 return Ok(context.complete(json!(output)));
             }
             return Ok(context.start_child_workflows(children(2)));
@@ -90,7 +90,7 @@ impl FlowRuntime for ConcurrentBatchRuntime {
         Ok(context.complete(json!({ "ordinal": context.input()["ordinal"] })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow batch tests do not execute steps")
     }
 }
@@ -151,7 +151,7 @@ impl FlowRuntime for SuspendedBatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "child-batch.parent" {
             if context.cancellation_request().is_some() {
@@ -165,7 +165,7 @@ impl FlowRuntime for SuspendedBatchRuntime {
         Ok(context.wait_until("hold", Utc::now() + Duration::hours(1)))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow batch tests do not execute steps")
     }
 }
@@ -217,11 +217,11 @@ impl FlowRuntime for FixedCommandRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(self.command.clone())
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow batch validation does not execute steps")
     }
 }
@@ -374,7 +374,7 @@ impl CrashDuringBatchRequestStore {
 
 #[async_trait]
 impl FlowEventStore for CrashDuringBatchRequestStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -383,7 +383,7 @@ impl FlowEventStore for CrashDuringBatchRequestStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id == PARENT_RUN_ID && matches!(event, FlowEvent::ChildWorkflowRequested { .. }) {
             let request_index = self.request_count.fetch_add(1, Ordering::SeqCst);
             if request_index == 1 && self.armed.swap(false, Ordering::SeqCst) {
@@ -397,11 +397,11 @@ impl FlowEventStore for CrashDuringBatchRequestStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -413,7 +413,7 @@ impl FlowRuntime for CompletingBatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "child-batch.parent" {
             if ["child-0000", "child-0001"]
@@ -427,7 +427,7 @@ impl FlowRuntime for CompletingBatchRuntime {
         Ok(context.complete(context.input().clone()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow batch recovery does not execute steps")
     }
 }

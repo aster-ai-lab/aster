@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowRuntime, HookCallbackRoute,
     HookMetadata, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
     WorkflowSpec,
@@ -80,7 +80,7 @@ impl FlowRuntime for ContextRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         let input = ctx.input_as::<ContextInput>()?;
 
@@ -110,7 +110,7 @@ impl FlowRuntime for ContextRuntime {
         })))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "loadUser" => {
                 let input = invocation.input_as::<LoadUserInput>()?;

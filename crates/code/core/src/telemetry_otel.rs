@@ -5,7 +5,7 @@
 //! ## Usage
 //!
 //! ```rust,ignore
-//! use a3s_code_core::telemetry_otel::TelemetryConfig;
+//! use aster_core::telemetry_otel::TelemetryConfig;
 //!
 //! // Initialize with OTLP endpoint
 //! let guard = TelemetryConfig::new("http://localhost:4317")
@@ -35,7 +35,7 @@ const COLLECTOR_EXPORT_BOUND: Duration = Duration::from_secs(1);
 pub struct TelemetryConfig {
     /// OTLP endpoint (e.g., "http://localhost:4317")
     endpoint: String,
-    /// Service name (default: "a3s-code")
+    /// Service name (default: "aster")
     service_name: String,
     /// Enable trace export
     traces: bool,
@@ -74,7 +74,7 @@ impl TelemetryConfig {
         self
     }
 
-    /// Set the log level filter (e.g., "info", "debug", "a3s_code=debug,info").
+    /// Set the log level filter (e.g., "info", "debug", "aster=debug,info").
     pub fn with_log_filter(mut self, filter: impl Into<String>) -> Self {
         self.log_filter = filter.into();
         self
@@ -253,7 +253,7 @@ mod tests {
     fn test_telemetry_config_defaults() {
         let config = TelemetryConfig::new("http://localhost:4317");
         assert_eq!(config.endpoint, "http://localhost:4317");
-        assert_eq!(config.service_name, "a3s-code");
+        assert_eq!(config.service_name, "aster");
         assert!(config.traces);
         assert_eq!(config.log_filter, "info");
     }

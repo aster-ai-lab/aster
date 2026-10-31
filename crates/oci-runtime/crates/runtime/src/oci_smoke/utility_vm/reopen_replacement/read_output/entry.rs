@@ -1,10 +1,10 @@
 use std::path::Path;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportOperationStage, AgentTransportQualificationRequest,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{
     ContainerTarget, CreateAttachments, CreateRequest, ExecRequest, IoMode, IsolationRequest,
     OciBundle, OperationContext, ProcessIo, ProcessTarget, ReadOutputRequest, StartRequest,
 };
@@ -211,7 +211,7 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
     report.read_output_wait_timeout_ms = read_output.wait_timeout_ms;
     report.expected_output_chunks = Some(expected_output.clone());
 
-    let state_root = console_directory.join(format!("a3s-oci-read-output-reopen-{nonce}-state"));
+    let state_root = console_directory.join(format!("aster-oci-read-output-reopen-{nonce}-state"));
     if let Err(reason) = super::super::create_qualification_state_root(&state_root).await {
         return failed(report, reason);
     }
@@ -221,14 +221,14 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
         system_image_manifest: system_image_manifest.to_path_buf(),
         state_root: state_root.clone(),
         first_console: console_directory
-            .join(format!("a3s-oci-read-output-reopen-{nonce}-first.log")),
+            .join(format!("aster-oci-read-output-reopen-{nonce}-first.log")),
         replacement_console: console_directory.join(format!(
-            "a3s-oci-read-output-reopen-{nonce}-replacement.log"
+            "aster-oci-read-output-reopen-{nonce}-replacement.log"
         )),
         init_marker,
         exec_marker,
-        init_marker_contents: format!("a3s-oci-exec-init-{nonce}\n").into_bytes(),
-        exec_marker_contents: format!("a3s-oci-read-output-ready-{nonce}\n").into_bytes(),
+        init_marker_contents: format!("aster-oci-exec-init-{nonce}\n").into_bytes(),
+        exec_marker_contents: format!("aster-oci-read-output-ready-{nonce}\n").into_bytes(),
         create,
         start,
         exec,

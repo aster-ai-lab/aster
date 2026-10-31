@@ -4,20 +4,20 @@
 #[path = "durable_memory_semantic_refresh/support.rs"]
 mod refresh_support;
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingExecutorConfig, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError,
 };
-use a3s_code_core::memory::{
+use aster_core::memory::{
     AgentMemory, MemoryConfig, MemoryMaintenanceOptions, MemoryMaintenanceRuntime,
     ScheduledSemanticRefresh, SemanticRefreshRunMetrics, SemanticRefreshRunOutcome,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     InMemoryRepository, MemoryChangeSet, MemoryOperation, MemoryRepository, MemoryStatus,
     RevisionMode,
 };
-use a3s_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord};
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord};
+use aster_durable_memory::InMemoryStore;
 use async_trait::async_trait;
 use refresh_support::*;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
@@ -86,7 +86,7 @@ impl EmbeddingProvider for ObservedProvider {
 
 fn start_runtime(
     owner_id: &str,
-    durable: a3s_code_core::DurableMemorySession,
+    durable: aster_core::DurableMemorySession,
     schedule: ScheduledSemanticRefresh,
 ) -> Arc<MemoryMaintenanceRuntime> {
     let memory = Arc::new(AgentMemory::with_config_observers_and_durable(
@@ -124,7 +124,7 @@ fn assert_send_sync<T: Send + Sync>() {}
 
 #[tokio::test(start_paused = true)]
 async fn metrics_quantify_snapshot_cache_provider_and_publication_work_per_epoch() {
-    assert_send_sync::<a3s_code_core::memory::SemanticRefreshMetrics>();
+    assert_send_sync::<aster_core::memory::SemanticRefreshMetrics>();
     assert_send_sync::<SemanticRefreshRunMetrics>();
     assert_send_sync::<SemanticRefreshRunOutcome>();
 

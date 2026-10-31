@@ -1,6 +1,6 @@
-//! The a3s-observer event a tier judges.
+//! The aster-observer event a tier judges.
 //!
-//! Sentry consumes a3s-observer's NDJSON stream (one `EnrichedEvent` per line). We deserialize only
+//! Sentry consumes aster-observer's NDJSON stream (one `EnrichedEvent` per line). We deserialize only
 //! the fields the tiers act on, and keep the original line for L2/L3 context + the audit log. The
 //! event enum mirrors observer's `AgentEvent` external tagging (`{"ToolExec": {...}}`); a variant
 //! sentry doesn't model fails to deserialize, so parsing returns `None` and the daemon skips it.
@@ -26,7 +26,7 @@ pub struct ObservedEvent {
 }
 
 impl ObservedEvent {
-    /// Parse one NDJSON line from a3s-observer. Returns `None` for blank lines, observer's own
+    /// Parse one NDJSON line from aster-observer. Returns `None` for blank lines, observer's own
     /// stderr logs that leaked into the stream, or anything that isn't a JSON event.
     pub fn parse(line: &str) -> Option<Self> {
         let line = line.trim();
@@ -52,7 +52,7 @@ struct Line {
     event: Event,
 }
 
-/// The observer signals sentry acts on. Mirrors `a3s_observer::AgentEvent`'s JSON shape; only the
+/// The observer signals sentry acts on. Mirrors `aster_observer::AgentEvent`'s JSON shape; only the
 /// judged fields are declared (serde ignores the rest). Variants sentry doesn't model (e.g. metrics)
 /// simply fail to deserialize, so [`ObservedEvent::parse`] returns `None` and the daemon skips them.
 #[derive(Debug, Clone, Deserialize)]
@@ -91,7 +91,7 @@ pub enum Event {
         #[serde(default)]
         write: bool,
     },
-    /// Sparse SAE feature activations from a3s-power's in-enclave interpretability tap — the model's
+    /// Sparse SAE feature activations from aster-power's in-enclave interpretability tap — the model's
     /// residual stream at one layer, encoded by a Sparse Autoencoder. Only `(feature_id, activation)`
     /// pairs leave the TEE (never the prompt/completion plaintext), so the SAE tier scores the model's
     /// internal concepts confidentially.

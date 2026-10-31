@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootRequest, BootResponse, ContextId, ContextIdFactory,
     FromModuleRef, HttpMethod, Module, ModuleRef, ProviderDefinition, ProviderDependency,
     ProviderRef, ProviderToken, Result, RouteDefinition,

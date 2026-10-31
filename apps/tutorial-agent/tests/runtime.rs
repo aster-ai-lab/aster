@@ -1,8 +1,8 @@
 #[path = "../examples/support/mod.rs"]
 mod support;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     AgentEvent, SessionOptions,
     run::RunStatus,
     store::{FileSessionStore, SessionStore},

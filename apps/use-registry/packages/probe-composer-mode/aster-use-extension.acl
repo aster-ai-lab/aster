@@ -1,0 +1,56 @@
+extension "aster/probe-composer-mode" {
+  schema_version = 3
+  version = "1.0.0"
+  route = "probe-composer-mode"
+  requires_use = ">=0.3.0, <0.4.0"
+  actions = ["read"]
+
+  repository {
+    url = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  agent "builder" {
+    harness = "builtin"
+    runtime = "edge"
+    instructions = "agents/builder/INSTRUCTIONS.md"
+    optional = false
+    resources {
+      cpu_millis = 500
+      memory_bytes = 268435456
+    }
+  }
+
+  ui "editor" {
+    title = "Mode contract editor"
+    entry = "ui/editor/index.html"
+    root = "ui/editor"
+    point = "studio.applets"
+    presentation = "webview"
+    contract_version = 1
+    mode = "append"
+    optional = false
+  }
+
+  composer_mode "build" {
+    contract_version = 1
+    title = "Build workcell"
+    description = "Construct a scene in the selected project"
+    icon = "boxes"
+    agent = "builder"
+    editor = "editor"
+    scope = "workspace"
+    context = ["workspace", "document"]
+    order = 20
+  }
+
+  composer_mode "inspect" {
+    contract_version = 1
+    title = "Inspect workcell"
+    icon = "scan"
+    agent = "builder"
+    scope = "session"
+    context = ["conversation"]
+    order = 30
+  }
+}

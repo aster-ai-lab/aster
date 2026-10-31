@@ -1,12 +1,12 @@
-//! Durable filesystem baseline used by `a3s-box diff`.
+//! Durable filesystem baseline used by `aster-box diff`.
 
 use std::collections::HashMap;
 use std::io::Read;
 use std::path::{Component, Path};
 
-use a3s_box_core::error::{BoxError, Result};
-pub use a3s_box_core::rootfs_baseline::RootfsFileInfo;
-use a3s_box_core::rootfs_baseline::{
+use aster_box_core::error::{BoxError, Result};
+pub use aster_box_core::rootfs_baseline::RootfsFileInfo;
+use aster_box_core::rootfs_baseline::{
     GuestDiffBaseline, GUEST_DIFF_BASELINE_FILE_NAME, MAX_GUEST_DIFF_BASELINE_BYTES,
 };
 
@@ -48,16 +48,16 @@ pub fn create_diff_baseline_if_absent(box_dir: &Path, rootfs: &Path) -> Result<(
     install_baseline_bytes_if_absent(box_dir, &encoded)
 }
 
-/// Convert OCI rootfs metadata into the `HashMap` shape consumed by `a3s-box diff`.
+/// Convert OCI rootfs metadata into the `HashMap` shape consumed by `aster-box diff`.
 ///
 /// Mode bits match `walk_tar_archive`: POSIX type flags OR permission bits from
 /// the manifest (`mode & 0o7777`). Skips the synthetic root (`.`) entry and
 /// runtime-internal paths.
 #[cfg(unix)]
 pub fn rootfs_file_info_map_from_metadata(
-    manifest: &a3s_box_core::rootfs_metadata::RootfsMetadataManifest,
+    manifest: &aster_box_core::rootfs_metadata::RootfsMetadataManifest,
 ) -> Result<HashMap<String, RootfsFileInfo>> {
-    use a3s_box_core::rootfs_metadata::RootfsEntryKind;
+    use aster_box_core::rootfs_metadata::RootfsEntryKind;
     use base64::Engine;
     use std::ffi::OsStr;
     use std::os::unix::ffi::OsStrExt;
@@ -84,7 +84,7 @@ pub fn rootfs_file_info_map_from_metadata(
         {
             continue;
         }
-        if a3s_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(relative) {
+        if aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(relative) {
             continue;
         }
         let key = rootfs_path_string(relative);
@@ -114,12 +114,12 @@ pub fn rootfs_file_info_map_from_metadata(
 /// Install a diff baseline from OCI-mapped rootfs metadata (SandboxViaOci).
 ///
 /// Converts the manifest with the same mode/size contract as
-/// `a3s-box diff`'s tar walk of commit/snapshot capture, so baseline and
+/// `aster-box diff`'s tar walk of commit/snapshot capture, so baseline and
 /// current sides compare the same semantics. First-writer-wins; never replaces.
 #[cfg(unix)]
 pub fn create_diff_baseline_from_metadata_if_absent(
     box_dir: &Path,
-    manifest: &a3s_box_core::rootfs_metadata::RootfsMetadataManifest,
+    manifest: &aster_box_core::rootfs_metadata::RootfsMetadataManifest,
 ) -> Result<()> {
     if existing_baseline_is_regular(&box_dir.join(DIFF_BASELINE_FILE))? {
         return Ok(());
@@ -136,7 +136,7 @@ pub fn create_diff_baseline_from_metadata_if_absent(
 ///
 /// The guest writes only to a private pre-opened control file. The host treats
 /// that payload as untrusted, enforces its schema and bounds, then atomically
-/// installs the legacy map representation consumed by `a3s-box diff`.
+/// installs the legacy map representation consumed by `aster-box diff`.
 pub fn publish_guest_diff_baseline(box_dir: &Path) -> Result<()> {
     let destination = box_dir.join(DIFF_BASELINE_FILE);
     if existing_baseline_is_regular(&destination)? {
@@ -300,7 +300,7 @@ fn walk_recursive(
             Ok(relative) => relative,
             Err(_) => continue,
         };
-        if a3s_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(relative) {
+        if aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(relative) {
             continue;
         }
 
@@ -358,7 +358,7 @@ mod tests {
         let rootfs = box_dir.join("rootfs");
         std::fs::create_dir_all(rootfs.join("root")).unwrap();
         std::fs::write(rootfs.join("root/original.txt"), b"original").unwrap();
-        std::fs::write(rootfs.join(".a3s-box-exec.json"), b"runtime").unwrap();
+        std::fs::write(rootfs.join(".aster-box-exec.json"), b"runtime").unwrap();
 
         create_diff_baseline_if_absent(&box_dir, &rootfs).unwrap();
         std::fs::write(rootfs.join("root/later.txt"), b"later").unwrap();
@@ -368,13 +368,13 @@ mod tests {
         let baseline: HashMap<String, RootfsFileInfo> = serde_json::from_slice(&encoded).unwrap();
         assert!(baseline.contains_key("/root/original.txt"));
         assert!(!baseline.contains_key("/root/later.txt"));
-        assert!(!baseline.contains_key("/.a3s-box-exec.json"));
+        assert!(!baseline.contains_key("/.aster-box-exec.json"));
     }
 
     #[cfg(unix)]
     #[test]
     fn metadata_baseline_matches_tar_walk_mode_contract() {
-        use a3s_box_core::rootfs_metadata::{
+        use aster_box_core::rootfs_metadata::{
             RootfsEntryKind, RootfsMetadataEntry, RootfsMetadataManifest,
         };
         use base64::Engine;
@@ -528,7 +528,7 @@ mod tests {
         std::fs::create_dir_all(&control_dir).unwrap();
         std::fs::write(
             control_dir.join(GUEST_DIFF_BASELINE_FILE_NAME),
-            br#"{"schema":"a3s.box.guest-diff-baseline.v2","entries":{}}"#,
+            br#"{"schema":"aster.box.guest-diff-baseline.v2","entries":{}}"#,
         )
         .unwrap();
 

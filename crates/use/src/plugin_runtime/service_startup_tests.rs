@@ -2,9 +2,9 @@
 
 use super::test_support::*;
 use super::*;
-use a3s_runtime::contract::{RuntimeInspection, RuntimeUnitState};
-use a3s_runtime::{RuntimeClock, SystemRuntimeClock};
-use a3s_use_core::{PackageSurfaceKind, ToolWorkloadContract};
+use aster_runtime::contract::{RuntimeInspection, RuntimeUnitState};
+use aster_runtime::{RuntimeClock, SystemRuntimeClock};
+use aster_use_core::{PackageSurfaceKind, ToolWorkloadContract};
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 

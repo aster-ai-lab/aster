@@ -1,6 +1,6 @@
 //! Host-bound durable-memory integration.
 //!
-//! Code owns extraction and admission policy. `a3s-memory` owns the exact
+//! Code owns extraction and admission policy. `aster-memory` owns the exact
 //! namespace and repository integrity boundary. V2 recall is explicit and
 //! admits only the current active node revision selected by final assembly.
 
@@ -36,13 +36,13 @@ pub use semantic_refresh::{
     DURABLE_MEMORY_SEMANTIC_REFRESH_PROFILE_V1,
 };
 
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, MemoryAccessEvent, MemoryChangeSet,
     MemoryNamespace, MemoryNode, MemoryNodeDraft, MemoryOperation, MemoryRepository,
     MemoryRepositoryError, MemoryStatus, MAX_IDENTIFIER_BYTES,
 };
-use a3s_memory::vector::VectorMutationConsistency;
-use a3s_memory::{MemoryItem, MemoryType};
+use aster_durable_memory::vector::VectorMutationConsistency;
+use aster_durable_memory::{MemoryItem, MemoryType};
 use chrono::{DateTime, Utc};
 use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 use serde::Serialize;
@@ -331,12 +331,12 @@ impl DurableMemorySession {
         )
         .with_confidence(confidence)
         .with_importance(item.importance)
-        .with_label("a3s.origin", "code.llm_extraction");
+        .with_label("aster.origin", "code.llm_extraction");
         for (source, label) in [
-            ("source", "a3s.extraction.source"),
-            ("scope", "a3s.extraction.scope"),
-            ("reason", "a3s.extraction.reason"),
-            ("schema", "a3s.extraction.schema"),
+            ("source", "aster.extraction.source"),
+            ("scope", "aster.extraction.scope"),
+            ("reason", "aster.extraction.reason"),
+            ("schema", "aster.extraction.schema"),
         ] {
             if let Some(value) = item.metadata.get(source) {
                 draft = draft.with_label(label, value);
@@ -349,7 +349,7 @@ impl DurableMemorySession {
                     message: error.to_string(),
                 }
             })?;
-            draft = draft.with_label("a3s.extraction.tags", tags);
+            draft = draft.with_label("aster.extraction.tags", tags);
         }
         draft.id = candidate_id(&draft)?;
 
@@ -436,7 +436,7 @@ impl DurableTurnEvidence {
         occurred_at: DateTime<Utc>,
     ) -> Result<Self, MemoryRepositoryError> {
         let payload = TurnEvidencePayload {
-            schema: "a3s.code.memory.turn-evidence.v1",
+            schema: "aster.code.memory.turn-evidence.v1",
             session_id,
             prompt,
             response,
@@ -451,7 +451,7 @@ impl DurableTurnEvidence {
         let session = utf8_percent_encode(session_id, NON_ALPHANUMERIC);
         let turn = utf8_percent_encode(turn_id, NON_ALPHANUMERIC);
         let reference = EvidenceRef::try_new(
-            format!("a3s://session/{session}/turn/{turn}"),
+            format!("aster://session/{session}/turn/{turn}"),
             digest,
             EvidenceKind::SessionTurn,
             occurred_at,
@@ -472,9 +472,9 @@ fn candidate_id(draft: &MemoryNodeDraft) -> Result<String, MemoryRepositoryError
             message: error.to_string(),
         })?;
     let mut hasher = Sha256::new();
-    hasher.update(b"a3s.code.memory.candidate.v1\0");
+    hasher.update(b"aster.code.memory.candidate.v1\0");
     hasher.update(encoded);
-    Ok(format!("a3s-code-candidate-{:x}", hasher.finalize()))
+    Ok(format!("aster-candidate-{:x}", hasher.finalize()))
 }
 
 #[cfg(test)]

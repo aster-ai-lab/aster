@@ -1,0 +1,296 @@
+[package]
+name = "aster-power"
+version = "0.11.0"
+edition = "2021"
+publish = false
+authors = ["Aster"]
+license = "MIT"
+repository = "https://github.com/aster-ai-lab/Power"
+description = "Aster Power — Model-neutral, bounded, verifiable inference for confidential systems"
+readme = "README.md"
+keywords = ["inference", "runtime", "tee", "privacy", "gpu"]
+categories = ["web-programming::http-server"]
+exclude = ["/release"]
+
+[lib]
+name = "aster_power"
+path = "src/lib.rs"
+
+[[bin]]
+name = "aster-power"
+path = "src/main.rs"
+required-features = ["server"]
+
+[[bin]]
+name = "aster-power-verify"
+path = "src/bin/aster-power-verify.rs"
+required-features = ["server"]
+
+[[bin]]
+name = "aster-power-storage-bench"
+path = "src/bin/aster-power-storage-bench.rs"
+required-features = ["embedded-inference"]
+
+[[bin]]
+name = "aster-power-tensor-batch-bench"
+path = "src/bin/aster-power-tensor-batch-bench.rs"
+required-features = ["embedded-inference"]
+
+[[bin]]
+name = "aster-power-cuda-fusion-bench"
+path = "src/bin/aster-power-cuda-fusion-bench.rs"
+required-features = ["embedded-cuda"]
+
+[[bin]]
+name = "aster-power-cuda-resident-bench"
+path = "src/bin/aster-power-cuda-resident-bench.rs"
+required-features = ["embedded-cuda"]
+
+[[bin]]
+name = "aster-power-speculative-bench"
+path = "src/bin/aster-power-speculative-bench.rs"
+required-features = ["server"]
+
+[features]
+default = ["server", "mistralrs"]
+server = [
+    "artifact-provisioning",
+    "dep:aster-acl",
+    "dep:aster-runtime",
+    "dep:anyhow",
+    "dep:axum",
+    "dep:axum-extra",
+    "dep:base64",
+    "dep:clap",
+    "dep:dirs",
+    "dep:either",
+    "dep:futures",
+    "dep:image",
+    "dep:minijinja",
+    "dep:tokio-stream",
+    "dep:tower",
+    "dep:tower-http",
+    "dep:tracing-subscriber",
+    "dep:ureq",
+    "dep:uuid",
+    "tokio/full",
+]
+artifact-provisioning = ["dep:fs2", "dep:reqwest", "tokio/fs", "tokio/io-util"]
+llamacpp = [
+    "server",
+    "dep:llama-cpp-2",
+    "dep:llama-cpp-sys-2",
+    "dep:encoding_rs",
+    "llama-cpp-2?/mtmd",
+]
+# Verified external DFlash, DFlash2, and DSpark execution. The pinned
+# llama-cpp-rs source must first receive the reviewed external-draft and
+# DFlash2 patch set through tools/apply-llamacpp-power-patches.ps1.
+llamacpp-external-draft = ["llamacpp"]
+# Experimental reduced-vocabulary MTP projection. The patch installer applies
+# the complete reviewed speculative patch set, so this profile also exposes the
+# external-draft binding while preserving the existing build command.
+llamacpp-mtp-fr = ["llamacpp-external-draft"]
+# CUDA execution for the llama.cpp backend. Kept separate so CPU-only and TEE
+# builds do not require a CUDA toolchain.
+llamacpp-cuda = ["llamacpp", "llama-cpp-2/cuda", "llama-cpp-sys-2/cuda"]
+mistralrs = ["server", "dep:mistralrs"]
+magnitude = [
+    "server",
+    "dep:magnitude-engine",
+    "dep:magnitude-chat",
+    "dep:magnitude-executor",
+]
+embedded-inference = [
+    "dep:candle-core",
+    "dep:candle-nn",
+    "dep:safetensors",
+    "dep:windows-sys",
+]
+embedded-cuda = ["embedded-inference", "candle-core/cuda", "candle-nn/cuda"]
+embedded-metal = ["embedded-inference", "candle-core/metal", "candle-nn/metal"]
+tls = ["server", "dep:axum-server", "dep:rcgen", "dep:time"]
+# vsock = Linux-only; requires AF_VSOCK kernel support (aster-box MicroVMs)
+vsock = ["server", "dep:tokio-vsock", "dep:hyper-util"]
+# hf = HuggingFace Hub model pull support (async HTTP download)
+hf = ["server"]
+# hw-verify = AMD SEV-SNP hardware verification; TDX fails closed until a
+# reviewed DCAP quote-generation and QVL path is implemented.
+hw-verify = ["server", "dep:x509-cert", "dep:p384"]
+# picolm = pure-Rust layer-streaming GGUF inference for TEE memory-constrained environments.
+# Streams transformer layers one at a time; peak RAM = O(layer_size) not O(model_size).
+# Ideal for 7B+ models inside 512MB EPC. No C/C++ inference backend.
+picolm = ["server", "dep:memmap2", "dep:half", "dep:rayon"]
+# tee-minimal = smallest auditable TEE build: picolm + full TEE stack, no large dep trees.
+tee-minimal = ["picolm", "tls", "vsock"]
+
+[dependencies]
+# Async runtime. Embedded inference needs tasks, cancellation, admission, and
+# timers; socket/process/signal support belongs to the `server` feature.
+tokio = { version = "1", default-features = false, features = ["macros", "rt", "sync", "time"] }
+tokio-stream = { version = "0.1", features = ["sync"], optional = true }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+aster-acl = { version = "=0.3.0", path = "../acl", optional = true }
+aster-runtime = { version = "=0.8.0", path = "../runtime", optional = true }
+
+# CLI
+clap = { version = "4", features = ["derive"], optional = true }
+
+# Error handling
+thiserror = "1"
+anyhow = { version = "1", optional = true }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"], optional = true }
+
+# Async utilities
+async-trait = "0.1"
+futures = { version = "0.3", optional = true }
+fs2 = { version = "0.4", optional = true }
+
+# HTTP server
+axum = { version = "0.7", features = ["macros"], optional = true }
+axum-extra = { version = "0.9", features = ["typed-header"], optional = true }
+hyper-util = { version = "0.1", features = ["server-auto", "service", "tokio"], optional = true }
+tower = { version = "0.4", features = ["util"], optional = true }
+tower-http = { version = "0.5", features = ["cors", "trace"], optional = true }
+
+# Cooperative cancellation for embedded and service inference.
+tokio-util = { version = "0.7", default-features = false, features = ["rt"] }
+
+# UUID for request IDs
+uuid = { version = "1", features = ["serde", "v4"], optional = true }
+
+# Ed25519 signatures for model integrity verification
+ed25519-dalek = { version = "2", features = ["std", "rand_core"] }
+
+# Hex encoding/decoding
+hex = "0.4"
+
+# Either type used by mistralrs tokenization APIs
+either = { version = "1", optional = true }
+
+# Blocking HTTP client for aster-power-verify CLI
+ureq = { version = "2", optional = true }
+
+# Async HTTP client — used by CLI commands and optionally by hf/hw-verify features
+reqwest = { version = "0.12", default-features = false, features = ["stream", "json", "rustls-tls"], optional = true }
+
+# X.509 certificate parsing for hardware attestation verification (hw-verify feature)
+x509-cert = { version = "0.2", optional = true }
+
+# ECDSA P-384 for AMD SEV-SNP VCEK signature verification (hw-verify feature)
+p384 = { version = "0.13", features = ["ecdsa"], optional = true }
+
+# Image decoding for vision/multimodal model inputs
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp"], optional = true }
+
+# Base64 encoding/decoding for image inputs
+base64 = { version = "0.22", optional = true }
+
+# libc for mlock/munlock (in-memory model decryption)
+libc = "0.2"
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Directories
+dirs = { version = "5", optional = true }
+
+# SHA256 for model integrity
+sha2 = "0.10"
+bytemuck = "1"
+
+# Memory zeroing for TEE privacy
+zeroize = { version = "1", features = ["derive"] }
+
+# Encrypted model loading (AES-256-GCM)
+aes-gcm = "0.10"
+rand = "0.8"
+tempfile = "3"
+
+# Chat template rendering (Jinja2-compatible)
+minijinja = { version = "=2.21.0", features = ["fuel"], optional = true }
+
+# ioctl for TEE attestation (SEV-SNP /dev/sev-guest)
+nix = { version = "0.29", features = ["ioctl"] }
+
+# llama.cpp backend (optional, requires C++ toolchain)
+# Pin the reviewed b10405 compatibility update and its matching published
+# package version. Cargo uses the registry version when packaging Power.
+llama-cpp-2 = { version = "=0.1.154", git = "https://github.com/bogdanr/llama-cpp-rs.git", rev = "dfd12e4d334846367e4284a2a7763fe92c1bf676", optional = true, features = ["mtmd"] }
+# The safe wrapper does not yet expose llama_model_params.load_mtp or the
+# speculative context output limits. Power uses the matching raw package from
+# the same reviewed revision for those fields and keeps the bridges local.
+llama-cpp-sys-2 = { version = "=0.1.154", git = "https://github.com/bogdanr/llama-cpp-rs.git", rev = "dfd12e4d334846367e4284a2a7763fe92c1bf676", optional = true, features = ["mtmd"] }
+
+# UTF-8 decoding for llama.cpp token_to_piece (re-exported by llama-cpp-2)
+encoding_rs = { version = "0.8", optional = true }
+
+# mistral.rs backend — pure Rust LLM inference (optional, default)
+mistralrs = { version = "0.7", optional = true }
+
+# Magnitude native engine. Pin the reviewed CLI 0.2.13 source snapshot.
+magnitude-engine = { path = "third-party/magnitude/inference/engine", optional = true }
+magnitude-chat = { path = "third-party/magnitude/inference/engine/chat", optional = true }
+magnitude-executor = { path = "third-party/magnitude/inference/engine/executor", optional = true }
+
+# Embedded model execution. Power supplies model-neutral scheduling, graph,
+# residency, integrity, and tensor primitives; model crates own architectures.
+candle-core = { version = "0.10.2", default-features = false, optional = true }
+candle-nn = { version = "0.10.2", default-features = false, optional = true }
+safetensors = { version = "0.7", optional = true }
+
+# picolm backend — pure Rust layer-streaming GGUF inference (optional, picolm feature)
+# Memory-mapped file access for layer-streaming (zero-copy GGUF reads)
+memmap2 = { version = "0.9", optional = true }
+# FP16 weight dequantization
+half = { version = "2", optional = true }
+# Parallel matmul for picolm inference
+rayon = { version = "1", optional = true }
+
+# TLS transport (optional, requires `tls` feature)
+axum-server = { version = "0.7", features = ["tls-rustls"], optional = true }
+rcgen = { version = "0.13", optional = true }
+time = { version = "0.3", optional = true }
+
+# Vsock transport (optional, requires `vsock` feature; Linux only)
+tokio-vsock = { version = "0.7", optional = true }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_Storage_FileSystem", "Win32_System_SystemInformation"], optional = true }
+
+[build-dependencies]
+cudaforge = "0.1.6"
+
+[dev-dependencies]
+tokio-test = "0.4"
+serial_test = "3"
+safetensors = "0.7"
+# Benchmarking
+criterion = { version = "0.5", features = ["async_tokio"] }
+
+[[bench]]
+name = "tee_memory"
+harness = false
+required-features = ["picolm"]
+
+[[bench]]
+name = "layer_stream"
+harness = false
+required-features = ["picolm"]
+
+[[test]]
+name = "llamacpp_phase_state_live"
+required-features = ["llamacpp", "embedded-inference"]
+
+[profile.release]
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"

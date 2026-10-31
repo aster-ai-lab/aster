@@ -9,13 +9,13 @@ mod tests;
 
 use std::path::Path;
 
-use a3s_office::{
+use aster_office::{
     NativeOfficeAnnotatedOptions, NativeOfficeDocument, NativeOfficeIssueOptions,
     NativeOfficeRenderFormat, NativeOfficeTextReplacement, DEFAULT_NATIVE_OFFICE_ANNOTATED_LIMIT,
     DEFAULT_NATIVE_OFFICE_ISSUE_LIMIT, DEFAULT_NATIVE_OFFICE_TEXT_FIND_LIMIT,
     MAX_NATIVE_OFFICE_TEXT_FIND_LIMIT,
 };
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use input::{
     OfficeBatchInput, OfficeCloseInput, OfficeCreateInput, OfficeFileInput, OfficeFindInput,
     OfficeGetInput, OfficeMergeTemplateInput, OfficeOpenInput, OfficeQueryInput, OfficeRawXmlInput,
@@ -64,9 +64,9 @@ async fn screenshot_view(
 ) -> UseResult<serde_json::Value> {
     Err(UseError::new(
         "use.browser.disabled",
-        "Native Office screenshots require the A3S Use Browser feature.",
+        "Native Office screenshots require the Aster Use Browser feature.",
     )
-    .with_suggestion("Use an A3S Use build with Browser support, or request html instead."))
+    .with_suggestion("Use an Aster Use build with Browser support, or request html instead."))
 }
 
 #[derive(Clone)]
@@ -88,7 +88,7 @@ impl NativeOfficeMcpServer {
 impl NativeOfficeMcpServer {
     #[tool(
         name = "office_install_compat",
-        description = "Install or repair the optional pinned OfficeCLI compatibility provider through the bounded A3S component lifecycle",
+        description = "Install or repair the optional pinned OfficeCLI compatibility provider through the bounded Aster component lifecycle",
         annotations(
             read_only_hint = false,
             destructive_hint = false,
@@ -583,7 +583,7 @@ impl NativeOfficeMcpServer {
                         part.part, part.byte_length
                     ),
                 )
-                .with_suggestion("Use 'a3s use office native raw ... --output <file>' for a larger local part."));
+                .with_suggestion("Use 'aster use office native raw ... --output <file>' for a larger local part."));
             }
             Ok(serde_json::json!({ "session": session, "result": part }))
         }
@@ -742,11 +742,11 @@ impl ServerHandler for NativeOfficeMcpServer {
         ServerInfo {
             capabilities: ServerCapabilities::builder().enable_tools().build(),
             server_info: Implementation {
-                name: "a3s-office-native".to_string(),
-                title: Some("A3S Office".to_string()),
+                name: "aster-office-native".to_string(),
+                title: Some("Aster Office".to_string()),
                 version: env!("CARGO_PKG_VERSION").to_string(),
                 icons: None,
-                website_url: Some("https://github.com/A3S-Lab/Office".to_string()),
+                website_url: Some("https://github.com/aster-ai-lab/Office".to_string()),
             },
             instructions: Some(
                 "Use the built-in native Office tools first; they never require OfficeCLI, Microsoft Office, or LibreOffice. Local OOXML editing requires an office_create or office_open session; mutations remain in memory until office_save, and office_close refuses unsaved changes unless discard=true. Durable Yjs/Yrs collaboration replicas are separate from OOXML sessions: use office_collaboration_create, read current agent-visible content and stable identities with office_collaboration_read, locate Document or Markdown text with office_collaboration_find before document-replace-text or markdown-replace-text, locate Spreadsheet display text the same way before spreadsheet-set-cell, locate Presentation text the same way before presentation-replace-text, and locate PDF form values or FreeText contents the same way before pdf-set-form-value or pdf-update-annotation. markdown-replace requires expectedMarkdown equal to the current Markdown source and writes nothing when that base drifted. markdown-splice requires expectedSlice equal to the deleted UTF-16 range, or empty when deleteUtf16 is 0, and writes nothing when that slice drifted. spreadsheet-set-cell requires expectedCell equal to the current leaf, or null/absent when blank, and writes nothing when that base drifted. presentation-update-element requires expectedElement equal to the current element and writes nothing when that base drifted. pdf-set-form-value requires expectedValue equal to the current field value, or empty when the field is absent, and writes nothing when that base drifted. pdf-update-annotation requires expectedAnnotation equal to the current annotation and writes nothing when that base drifted. Under concurrent peers, echo Document paragraphId/textId/indexUtf16, Markdown indexUtf16, or Presentation containerKind/containerId/elementId/indexUtf16 from the find hit into replace-text, and pass a PDF hit's indexUtf16 and matched search to pdf-set-form-value or pdf-update-annotation to replace only that span. Poll office_collaboration_events with a persisted cursorSequence, prefer office_collaboration_mutate for typed local Markdown, Document, Spreadsheet cell, Presentation scene-element/z-order, or PDF changes, and apply externally delivered updates with stable operation identity. If a requested operation is outside the native surface, request office_install_compat through the host confirmation path and use the separately projected Office compatibility route after it becomes ready."

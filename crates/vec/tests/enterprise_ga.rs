@@ -1,6 +1,6 @@
 //! Checkpoint byte budget and published snapshot compatibility.
 
-use a3s_vec::{Collection, CollectionSchema, DataType, Doc, FieldSchema, FieldValue};
+use aster_vec::{Collection, CollectionSchema, DataType, Doc, FieldSchema, FieldValue};
 use std::fs;
 use std::path::Path;
 use tempfile::tempdir;

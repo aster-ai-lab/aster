@@ -57,7 +57,7 @@ The initial rule set covers:
   empty flags, and Linux device/path safety;
 - absolute OCI VM runtime paths and NUL rejection;
 - explicit rejection of native Windows, FreeBSD, Solaris, and z/OS workload
-  sections because A3S runs Linux workloads on every host.
+  sections because Aster runs Linux workloads on every host.
 
 All 95 rule identifiers come from one typed registry. Thirty-two are
 classified as direct OCI normative validators and are currently bound to 59

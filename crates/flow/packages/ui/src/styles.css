@@ -1,6 +1,6 @@
-@import '@a3s-lab/form/styles.css';
-@import '@a3s-lab/ce/components/code-editor.css';
+@import '@aster-ai-lab/form/styles.css';
+@import '@aster-ai-lab/ce/components/code-editor.css';
 @import './styles/workflow-node.css';
-@import './styles/a3s-flow-node.css';
+@import './styles/aster-flow-node.css';
 @import './styles/workflow-code-editor.css';
-@import './styles/a3s-flow-designer-extensions.css';
+@import './styles/aster-flow-designer-extensions.css';

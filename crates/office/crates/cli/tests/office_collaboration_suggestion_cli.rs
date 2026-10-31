@@ -10,7 +10,7 @@ use yrs::{Any, Array, Doc, Map, Out, Transact, Update};
 const YJS_DOCUMENT_UPDATE_BASE64: &str = "AQ+y8hkAKAETYTNzLm9mZmljZS5tZXRhZGF0YQhwcm90b2NvbAF3GGEzcy5vZmZpY2UuY29sbGFib3JhdGlvbigBE2Ezcy5vZmZpY2UubWV0YWRhdGEHdmVyc2lvbgF9ASgBE2Ezcy5vZmZpY2UubWV0YWRhdGEKYXJ0aWZhY3RJZAF3EGZpeHR1cmUtZG9jdW1lbnQoARNhM3Mub2ZmaWNlLm1ldGFkYXRhBGtpbmQBdwhkb2N1bWVudCgBE2Ezcy5vZmZpY2UubWV0YWRhdGELaW5pdGlhbGl6ZWQBeAgBIWEzcy5vZmZpY2UuYm9vdHN0cmFwLmluaXRpYWxpemVycwF3FjQyNDI0Mjpicm93c2VyLWZpeHR1cmUHARthM3Mub2ZmaWNlLmRvY3VtZW50LmNvbnRlbnQDD2RvY3VtZW50U2VjdGlvbgcAsvIZBgMJcGFyYWdyYXBoBwCy8hkHBgQAsvIZCBBIZWxsbyDwn5iAIHdvcmxkKACy8hkHC3BhcmFncmFwaElkAXcIMDAwMDAwMDEoALLyGQcGdGV4dElkAXcIMDAwMDAwMDIoALLyGQYCaWQBdxJkb2N1bWVudC1zZWN0aW9uLTEoARthM3Mub2ZmaWNlLmRvY3VtZW50Lm9wdGlvbnMJcGFnZUNvbG9yAXcHI0Y4RkFGQygBG2Ezcy5vZmZpY2UuZG9jdW1lbnQub3B0aW9ucwx0cmFja0NoYW5nZXMBeAA=";
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(args: &[&str]) -> Output {
@@ -66,7 +66,7 @@ fn cli_creates_syncs_and_finalizes_native_document_suggestions() {
         "mutate",
         suggester.to_str().unwrap(),
         "--mutation",
-        r#"{"type":"document-suggestion-create","paragraphId":"00000001","expectedTextId":"00000002","startUtf16":6,"endUtf16":8,"expectedText":"😀","replacement":"collaborative","insertionId":"cli-insertion","deletionId":"cli-deletion","author":"A3S Agent","createdAt":"2026-08-17T10:00:00.000Z"}"#,
+        r#"{"type":"document-suggestion-create","paragraphId":"00000001","expectedTextId":"00000002","startUtf16":6,"endUtf16":8,"expectedText":"😀","replacement":"collaborative","insertionId":"cli-insertion","deletionId":"cli-deletion","author":"Aster Agent","createdAt":"2026-08-17T10:00:00.000Z"}"#,
         "--actor-id",
         "agent-suggester",
         "--operation-id",
@@ -130,7 +130,7 @@ fn cli_creates_syncs_and_finalizes_native_document_suggestions() {
         "mutate",
         editor.to_str().unwrap(),
         "--mutation",
-        r#"{"type":"document-suggestion-decide","suggestions":[{"id":"cli-deletion","kind":"deletion","expectedActorId":"agent-suggester","expectedAuthor":"A3S Agent","expectedCreatedAt":"2026-08-17T10:00:00.000Z","expectedText":"😀"},{"id":"cli-insertion","kind":"insertion","expectedActorId":"agent-suggester","expectedAuthor":"A3S Agent","expectedCreatedAt":"2026-08-17T10:00:00.000Z","expectedText":"collaborative"}],"decision":"accept","decidedBy":"Grace Editor","decidedAt":"2026-08-17T10:01:00.000Z"}"#,
+        r#"{"type":"document-suggestion-decide","suggestions":[{"id":"cli-deletion","kind":"deletion","expectedActorId":"agent-suggester","expectedAuthor":"Aster Agent","expectedCreatedAt":"2026-08-17T10:00:00.000Z","expectedText":"😀"},{"id":"cli-insertion","kind":"insertion","expectedActorId":"agent-suggester","expectedAuthor":"Aster Agent","expectedCreatedAt":"2026-08-17T10:00:00.000Z","expectedText":"collaborative"}],"decision":"accept","decidedBy":"Grace Editor","decidedAt":"2026-08-17T10:01:00.000Z"}"#,
         "--actor-id",
         "human-editor",
         "--operation-id",
@@ -175,15 +175,15 @@ fn cli_creates_syncs_and_finalizes_native_document_suggestions() {
 
 fn assert_browser_sidecar_roots(update: &[u8]) {
     let document = Doc::new();
-    document.get_or_insert_map("a3s.office.metadata");
-    document.get_or_insert_array("a3s.office.bootstrap.initializers");
-    document.get_or_insert_xml_fragment("a3s.office.document.content");
-    document.get_or_insert_map("a3s.office.document.options");
-    document.get_or_insert_map("a3s.office.document.comments");
-    document.get_or_insert_array("a3s.office.document.comment-order");
-    let decisions = document.get_or_insert_map("a3s.office.document.change-decisions");
-    let order = document.get_or_insert_array("a3s.office.document.change-decision-order");
-    let claims = document.get_or_insert_array("a3s.office.document.record-claims");
+    document.get_or_insert_map("aster.office.metadata");
+    document.get_or_insert_array("aster.office.bootstrap.initializers");
+    document.get_or_insert_xml_fragment("aster.office.document.content");
+    document.get_or_insert_map("aster.office.document.options");
+    document.get_or_insert_map("aster.office.document.comments");
+    document.get_or_insert_array("aster.office.document.comment-order");
+    let decisions = document.get_or_insert_map("aster.office.document.change-decisions");
+    let order = document.get_or_insert_array("aster.office.document.change-decision-order");
+    let claims = document.get_or_insert_array("aster.office.document.record-claims");
     document
         .transact_mut()
         .apply_update(Update::decode_v1(update).unwrap())

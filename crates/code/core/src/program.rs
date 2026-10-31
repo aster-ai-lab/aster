@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::sync::Arc;
 
-pub const PROGRAM_TRACE_SCHEMA: &str = "a3s.program_trace.v1";
+pub const PROGRAM_TRACE_SCHEMA: &str = "aster.program_trace.v1";
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Program {

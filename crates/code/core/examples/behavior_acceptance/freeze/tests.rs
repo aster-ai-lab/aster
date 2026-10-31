@@ -3,7 +3,7 @@
 
 use super::*;
 use crate::behavior_acceptance::manifest::*;
-use a3s_code_core::evaluation::EvidenceLimitsV1;
+use aster_core::evaluation::EvidenceLimitsV1;
 use std::cell::Cell;
 use std::fs::{File, FileTimes, Permissions};
 use std::os::unix::fs::{symlink, PermissionsExt};
@@ -400,8 +400,8 @@ fn malformed_reserved_and_aliased_paths_refuse_before_observation() {
         "x//entry.py",
         "x/../entry.py",
         ".git/config",
-        ".a3s-code/log",
-        ".a3s/config.acl",
+        ".aster/log",
+        ".aster/config.acl",
         "docs/evidence/private",
         "nul\0.py",
     ] {

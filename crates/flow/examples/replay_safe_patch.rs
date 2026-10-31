@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowRuntime, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowPatchId,
     WorkflowSpec,
 };
@@ -16,7 +16,7 @@ impl FlowRuntime for CheckoutRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let implementation = if context.has_patch_marker(PATCH_ID) {
             "v2"
@@ -26,13 +26,13 @@ impl FlowRuntime for CheckoutRuntime {
         Ok(context.complete(json!({ "implementation": implementation })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("this workflow has no side-effecting steps")
     }
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(CheckoutRuntime));
     let base = WorkflowSpec::rust_embedded(
         "checkout.calculate",

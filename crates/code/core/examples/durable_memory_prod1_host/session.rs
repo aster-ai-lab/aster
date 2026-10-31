@@ -1,17 +1,17 @@
 //! `DurableMemorySession` construction over the injected Redis backend.
 
-use a3s_code_core::embedding::{EmbeddingExecutorConfig, EmbeddingProvider};
-use a3s_code_core::memory::{
+use aster_core::embedding::{EmbeddingExecutorConfig, EmbeddingProvider};
+use aster_core::memory::{
     AgentMemory, MemoryConfig, MemoryMaintenanceOptions, MemoryMaintenanceRuntime,
     ScheduledSemanticRefresh, SemanticRefreshRunMetrics, SemanticRefreshRunOutcome,
 };
-use a3s_code_core::{
+use aster_core::{
     DurableMemoryRecallPolicy, DurableMemorySemanticRecall, DurableMemorySemanticRecallPolicy,
     DurableMemorySession,
 };
-use a3s_memory::repository::{MemoryNamespace, MemoryRepository};
-use a3s_memory::vector::VectorIndex;
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::repository::{MemoryNamespace, MemoryRepository};
+use aster_durable_memory::vector::VectorIndex;
+use aster_durable_memory::InMemoryStore;
 use anyhow::{bail, Context, Result};
 use sha2::{Digest, Sha256};
 use std::sync::Arc;
@@ -28,7 +28,7 @@ const RUN_TIMEOUT: Duration = Duration::from_secs(180);
 pub fn authority_digest(revision: &str) -> String {
     format!(
         "sha256:{:x}",
-        Sha256::digest(format!("a3s.code.dm-prod1-host:{revision}").as_bytes())
+        Sha256::digest(format!("aster.code.dm-prod1-host:{revision}").as_bytes())
     )
 }
 

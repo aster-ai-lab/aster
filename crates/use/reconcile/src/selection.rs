@@ -16,7 +16,7 @@ use crate::{
 };
 
 /// Machine-owned selection receipt. This is not a product manifest or a scope grant.
-pub const SELECTION_SCHEMA: &str = "a3s.use.selection-snapshot.v1";
+pub const SELECTION_SCHEMA: &str = "aster.use.selection-snapshot.v1";
 const MAX_PACKAGES: usize = 128;
 const MAX_SURFACES: usize = 4096;
 const MAX_RECEIPT: u64 = 64 * 1024;

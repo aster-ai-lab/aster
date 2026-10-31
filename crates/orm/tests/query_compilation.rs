@@ -1,5 +1,5 @@
-use a3s_orm::expression::Selection;
-use a3s_orm::{
+use aster_orm::expression::Selection;
+use aster_orm::{
     bound, cast, coalesce, count, delete_from, dense_rank, exists, insert_into, least, lock_table,
     max, min, not, orm_table, rank, row_number, scalar_subquery, select_from, select_from_as,
     sql_function, sql_query, update_table, Dialect, InsertRow, OrderDirection, PostgresDialect,
@@ -35,7 +35,7 @@ struct InvalidScalarSelection;
 impl Selection for InvalidScalarSelection {
     type Output = i64;
 
-    fn expressions(self) -> Vec<a3s_orm::Expression> {
+    fn expressions(self) -> Vec<aster_orm::Expression> {
         vec![Person::id().expression(), Person::manager_id().expression()]
     }
 }
@@ -404,7 +404,7 @@ fn rejects_invalid_insert_rows_and_unsupported_conflicts() {
         .value(Person::id(), 1)
         .on_conflict(Person::id())
         .do_nothing()
-        .compile(&a3s_orm::MysqlDialect)
+        .compile(&aster_orm::MysqlDialect)
         .unwrap_err();
     assert!(mysql.to_string().contains("does not support on conflict"));
 }
@@ -540,7 +540,7 @@ fn rejects_incomplete_queries_and_unsupported_returning() {
     let error = insert_into::<Person>()
         .value(Person::name(), "Ada")
         .returning(Person::id())
-        .compile(&a3s_orm::MysqlDialect)
+        .compile(&aster_orm::MysqlDialect)
         .unwrap_err();
     assert!(error.to_string().contains("does not support returning"));
 }
@@ -684,7 +684,7 @@ fn compiles_locking_cte_update_from_with_expression_assignment() {
         .set(Person::name(), "leased")
         .from::<UpdateCandidate>()
         .filter(Person::id().eq_column(UpdateCandidate::id()))
-        .compile(&a3s_orm::MysqlDialect)
+        .compile(&aster_orm::MysqlDialect)
         .unwrap_err();
     assert!(unsupported
         .to_string()
@@ -765,8 +765,8 @@ fn exposes_schema_and_dialect_metadata_and_select_all() {
     let column = Person::name();
     assert_eq!(column.table_name(), "person");
     assert_eq!(column.name(), "name");
-    assert_eq!(a3s_orm::TableRef::<Person>::new().name(), "person");
-    assert_eq!(a3s_orm::TableRef::<Person>::default().name(), "person");
+    assert_eq!(aster_orm::TableRef::<Person>::new().name(), "person");
+    assert_eq!(aster_orm::TableRef::<Person>::default().name(), "person");
 
     assert_eq!(PostgresDialect.name(), "PostgreSQL");
     assert_eq!(PostgresDialect.identifier_quote(), '"');
@@ -777,11 +777,11 @@ fn exposes_schema_and_dialect_metadata_and_select_all() {
     assert_eq!(SqliteDialect.name(), "SQLite");
     assert_eq!(SqliteDialect.placeholder(3), "?");
     assert!(SqliteDialect.supports_update_from());
-    assert_eq!(a3s_orm::MysqlDialect.name(), "MySQL");
-    assert_eq!(a3s_orm::MysqlDialect.identifier_quote(), '`');
-    assert!(!a3s_orm::MysqlDialect.supports_returning());
-    assert!(!a3s_orm::MysqlDialect.supports_on_conflict());
-    assert!(!a3s_orm::MysqlDialect.supports_update_from());
+    assert_eq!(aster_orm::MysqlDialect.name(), "MySQL");
+    assert_eq!(aster_orm::MysqlDialect.identifier_quote(), '`');
+    assert!(!aster_orm::MysqlDialect.supports_returning());
+    assert!(!aster_orm::MysqlDialect.supports_on_conflict());
+    assert!(!aster_orm::MysqlDialect.supports_update_from());
 
     assert_eq!(
         select_from::<Person>()

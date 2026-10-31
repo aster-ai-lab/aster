@@ -9,7 +9,7 @@ use super::options::postgres_timeout_value;
 use super::{PostgresError, PostgresExecutor, PostgresMigrationError, PostgresOptionsError};
 
 const CREATE_TABLE: &str = "
-    create table if not exists a3s_orm_migrations (
+    create table if not exists aster_orm_migrations (
         version text primary key,
         name text not null,
         checksum text not null,
@@ -24,7 +24,7 @@ impl MigrationLedger for PostgresExecutor {
         let client = self.acquire().await?;
         client
             .query(
-                "select version, checksum from a3s_orm_migrations order by version",
+                "select version, checksum from aster_orm_migrations order by version",
                 &[],
             )
             .await
@@ -118,7 +118,7 @@ impl MigrationBackend for PostgresExecutor {
             .map_err(|source| self.migration_database_error(source))?;
         let rows = transaction
             .query(
-                "select version, checksum from a3s_orm_migrations order by version",
+                "select version, checksum from aster_orm_migrations order by version",
                 &[],
             )
             .await
@@ -140,7 +140,7 @@ impl MigrationBackend for PostgresExecutor {
                 .map_err(|source| self.migration_apply_error(migration.version(), source))?;
             transaction
                 .execute(
-                    "insert into a3s_orm_migrations (version, name, checksum) values ($1, $2, $3)",
+                    "insert into aster_orm_migrations (version, name, checksum) values ($1, $2, $3)",
                     &[
                         &migration.version(),
                         &migration.name(),

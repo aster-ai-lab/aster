@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::{
     DocumentNode, NativeSpreadsheetAutoFilter, NativeSpreadsheetTable,
@@ -131,7 +131,7 @@ fn style_number(node: &DocumentNode) -> UseResult<u8> {
         .map_err(|error| semantic_table_error(node, format!("has invalid style number: {error}")))
 }
 
-fn semantic_table_error(node: &DocumentNode, reason: impl Into<String>) -> a3s_use_core::UseError {
+fn semantic_table_error(node: &DocumentNode, reason: impl Into<String>) -> aster_use_core::UseError {
     crate::discovery::office_error(
         "use.office.spreadsheet_table_semantic_invalid",
         format!("Spreadsheet table node '{}' {}.", node.path, reason.into()),

@@ -55,6 +55,7 @@ import {
   drawSpreadsheetDiagonalDownBorder,
   drawSpreadsheetDiagonalUpBorder,
 } from '../work-spreadsheet-diagonal-border-canvas';
+import { spreadsheetCellAddress } from '../work-spreadsheet-formulas';
 import { spreadsheetMatrixProfile } from '../work-spreadsheet-matrix-profile';
 import {
   beginSpreadsheetNativeFillRender,
@@ -153,6 +154,7 @@ import {
 } from './spreadsheet-go-to';
 import { synchronizeSpreadsheetWorkbookInPlace } from './spreadsheet-in-place-workbook-sync';
 import { spreadsheetActiveCellAnnouncement } from './spreadsheet-active-cell-announcement';
+import { bindSpreadsheetNameBox } from './spreadsheet-name-box-sync';
 import { spreadsheetSelectionContainsFocus } from './spreadsheet-keyboard-navigation';
 import { SpreadsheetVirtualGrid } from './spreadsheet-virtual-grid';
 import { spreadsheetVirtualGridCommitCell } from './spreadsheet-virtual-grid-commit';
@@ -224,7 +226,7 @@ export interface SpreadsheetEditorProps {
   onDerivedChange?: (content: WorkSpreadsheetContent) => void;
   onAgentRequest?: (request: WorkEditorAgentRequest) => void | Promise<void>;
 /**
- * Opt-in A3S virtual grid for Spreadsheet (`virtualGrid` / playground
+ * Opt-in Aster virtual grid for Spreadsheet (`virtualGrid` / playground
  * `?virtualGrid=1`). Owns viewport paint, `role="grid"`, and literal cell
  * edits. Fortune remains mounted underneath for the command port during
  * migration.
@@ -1379,6 +1381,18 @@ function SpreadsheetEditorSurface({
   const selectionSummary = multipleCellsSelected
     ? spreadsheetSelectionSummary(toolbarSheet, toolbarSelection)
     : null;
+  // A range keeps Fortune's own range text; a single cell must name the active cell.
+  const nameBoxAddress =
+    preview || multipleCellsSelected
+      ? null
+      : spreadsheetCellAddress(toolbarRow, toolbarColumn);
+  useEffect(() => {
+    // Formula bar lives under the editor root; binding only the canvas misses remounts
+    // that keep the same workbook key.
+    const root = spreadsheetRootRef.current;
+    if (!root || !nameBoxAddress) return;
+    return bindSpreadsheetNameBox(root, nameBoxAddress);
+  }, [nameBoxAddress, workbookMountKey]);
   const { commandPort: formatPainter, mode: formatPainterMode } =
     useSpreadsheetFormatPainter({
       content: materializedContent,
@@ -2248,7 +2262,7 @@ function SpreadsheetEditorSurface({
         <div
           ref={spreadsheetCanvasRef}
           className="work-spreadsheet-canvas"
-          data-virtual-grid={virtualGrid ? 'a3s' : undefined}
+          data-virtual-grid={virtualGrid ? 'aster' : undefined}
           onFocusCapture={(event) =>
             preserveSpreadsheetGridFocus(
               spreadsheetCanvasRef.current,
@@ -2338,7 +2352,7 @@ function SpreadsheetEditorSurface({
                     { id: sheetId },
                   );
                 } catch {
-                  // Selection state remains authoritative for the A3S grid.
+                  // Selection state remains authoritative for the Aster grid.
                 }
               }}
               onCommitCell={(row, column, raw) => {

@@ -10,7 +10,7 @@ pub(super) fn raw_or_json_request_handler(
     input: RouteMethodInput,
     receiver: &proc_macro2::TokenStream,
 ) -> Result<proc_macro2::TokenStream> {
-    let controller_name = format_ident!("__a3s_boot_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_{}", method_ident);
     Ok(match input.into_legacy_arg()? {
         Some(MethodArg { ident, ty, .. }) => quote! {
             {
@@ -24,7 +24,7 @@ pub(super) fn raw_or_json_request_handler(
         None => quote! {
             {
                 let #controller_name = ::std::sync::Arc::clone(#receiver);
-                move |_request: ::a3s_boot::BootRequest| {
+                move |_request: ::aster_boot::BootRequest| {
                     let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                     async move { #controller_name.#method_ident().await }
                 }
@@ -38,7 +38,7 @@ pub(super) fn json_body_handler(
     input: MethodArg,
     receiver: &proc_macro2::TokenStream,
 ) -> proc_macro2::TokenStream {
-    let controller_name = format_ident!("__a3s_boot_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_{}", method_ident);
     let MethodArg { ident, ty, .. } = input;
     quote! {
         {
@@ -56,7 +56,7 @@ pub(super) fn extracted_raw_handler(
     input: RouteMethodInput,
     receiver: &proc_macro2::TokenStream,
 ) -> Result<proc_macro2::TokenStream> {
-    let controller_name = format_ident!("__a3s_boot_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_{}", method_ident);
     let ExtractedArguments {
         setup,
         extractors,
@@ -68,12 +68,12 @@ pub(super) fn extracted_raw_handler(
     Ok(quote! {
         {
             let #controller_name = ::std::sync::Arc::clone(#receiver);
-            move |__a3s_boot_request: ::a3s_boot::BootRequest| {
+            move |__aster_boot_request: ::aster_boot::BootRequest| {
                 let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                 async move {
                     #setup
                     #(#extractors)*
-                    let __a3s_boot_response =
+                    let __aster_boot_response =
                         #controller_name.#method_ident(#(#args),*).await?;
                     #apply_response
                 }
@@ -88,7 +88,7 @@ pub(super) fn extracted_json_response_handler(
     status: proc_macro2::TokenStream,
     receiver: &proc_macro2::TokenStream,
 ) -> Result<proc_macro2::TokenStream> {
-    let controller_name = format_ident!("__a3s_boot_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_{}", method_ident);
     let ExtractedArguments {
         setup,
         extractors,
@@ -100,15 +100,15 @@ pub(super) fn extracted_json_response_handler(
     Ok(quote! {
         {
             let #controller_name = ::std::sync::Arc::clone(#receiver);
-            move |__a3s_boot_request: ::a3s_boot::BootRequest| {
+            move |__aster_boot_request: ::aster_boot::BootRequest| {
                 let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                 async move {
                     #setup
-                    __a3s_boot_request.require_accepts_json()?;
+                    __aster_boot_request.require_accepts_json()?;
                     #(#extractors)*
-                    let __a3s_boot_body = #controller_name.#method_ident(#(#args),*).await?;
-                    let __a3s_boot_response =
-                        ::a3s_boot::BootResponse::json_with_status(#status, &__a3s_boot_body)?;
+                    let __aster_boot_body = #controller_name.#method_ident(#(#args),*).await?;
+                    let __aster_boot_response =
+                        ::aster_boot::BootResponse::json_with_status(#status, &__aster_boot_body)?;
                     #apply_response
                 }
             }
@@ -123,7 +123,7 @@ pub(super) fn rendered_view_handler(
     status: proc_macro2::TokenStream,
     receiver: &proc_macro2::TokenStream,
 ) -> Result<proc_macro2::TokenStream> {
-    let controller_name = format_ident!("__a3s_boot_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_{}", method_ident);
 
     if input.has_extractors() {
         let ExtractedArguments {
@@ -136,17 +136,17 @@ pub(super) fn rendered_view_handler(
         return Ok(quote! {
             {
                 let #controller_name = ::std::sync::Arc::clone(#receiver);
-                move |__a3s_boot_request: ::a3s_boot::BootRequest| {
+                move |__aster_boot_request: ::aster_boot::BootRequest| {
                     let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                     async move {
                         #setup
-                        let __a3s_boot_renderer = __a3s_boot_request
-                            .get::<::a3s_boot::ViewRenderer>()?;
+                        let __aster_boot_renderer = __aster_boot_request
+                            .get::<::aster_boot::ViewRenderer>()?;
                         #(#extractors)*
-                        let __a3s_boot_context =
+                        let __aster_boot_context =
                             #controller_name.#method_ident(#(#args),*).await?;
-                        let __a3s_boot_response = __a3s_boot_renderer
-                            .render_response_with_status(#status, #view, &__a3s_boot_context)
+                        let __aster_boot_response = __aster_boot_renderer
+                            .render_response_with_status(#status, #view, &__aster_boot_context)
                             .await?;
                         #apply_response
                     }
@@ -159,15 +159,15 @@ pub(super) fn rendered_view_handler(
         Some(MethodArg { ident, ty, .. }) => quote! {
             {
                 let #controller_name = ::std::sync::Arc::clone(#receiver);
-                move |__a3s_boot_request: ::a3s_boot::BootRequest| {
+                move |__aster_boot_request: ::aster_boot::BootRequest| {
                     let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                     async move {
-                        let __a3s_boot_renderer = __a3s_boot_request
-                            .get::<::a3s_boot::ViewRenderer>()?;
-                        let #ident: #ty = __a3s_boot_request.clone();
-                        let __a3s_boot_context = #controller_name.#method_ident(#ident).await?;
-                        __a3s_boot_renderer
-                            .render_response_with_status(#status, #view, &__a3s_boot_context)
+                        let __aster_boot_renderer = __aster_boot_request
+                            .get::<::aster_boot::ViewRenderer>()?;
+                        let #ident: #ty = __aster_boot_request.clone();
+                        let __aster_boot_context = #controller_name.#method_ident(#ident).await?;
+                        __aster_boot_renderer
+                            .render_response_with_status(#status, #view, &__aster_boot_context)
                             .await
                     }
                 }
@@ -176,14 +176,14 @@ pub(super) fn rendered_view_handler(
         None => quote! {
             {
                 let #controller_name = ::std::sync::Arc::clone(#receiver);
-                move |__a3s_boot_request: ::a3s_boot::BootRequest| {
+                move |__aster_boot_request: ::aster_boot::BootRequest| {
                     let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                     async move {
-                        let __a3s_boot_renderer = __a3s_boot_request
-                            .get::<::a3s_boot::ViewRenderer>()?;
-                        let __a3s_boot_context = #controller_name.#method_ident().await?;
-                        __a3s_boot_renderer
-                            .render_response_with_status(#status, #view, &__a3s_boot_context)
+                        let __aster_boot_renderer = __aster_boot_request
+                            .get::<::aster_boot::ViewRenderer>()?;
+                        let __aster_boot_context = #controller_name.#method_ident().await?;
+                        __aster_boot_renderer
+                            .render_response_with_status(#status, #view, &__aster_boot_context)
                             .await
                     }
                 }
@@ -197,7 +197,7 @@ pub(super) fn extracted_sse_handler(
     input: RouteMethodInput,
     receiver: &proc_macro2::TokenStream,
 ) -> Result<proc_macro2::TokenStream> {
-    let controller_name = format_ident!("__a3s_boot_{}", method_ident);
+    let controller_name = format_ident!("__aster_boot_{}", method_ident);
     let ExtractedArguments {
         setup,
         extractors,
@@ -214,7 +214,7 @@ pub(super) fn extracted_sse_handler(
     Ok(quote! {
         {
             let #controller_name = ::std::sync::Arc::clone(#receiver);
-            move |__a3s_boot_request: ::a3s_boot::BootRequest| {
+            move |__aster_boot_request: ::aster_boot::BootRequest| {
                 let #controller_name = ::std::sync::Arc::clone(&#controller_name);
                 async move {
                     #setup

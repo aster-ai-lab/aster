@@ -2,13 +2,13 @@ use std::path::Path;
 use std::process::{Command, Output};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(provider: &Path, args: &[&str]) -> Output {
     Command::new(binary())
         .args(args)
-        .env("A3S_OFFICECLI_EXECUTABLE", provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", provider)
         .output()
         .unwrap()
 }
@@ -201,7 +201,7 @@ async fn native_mcp_renders_all_html_and_svg_formats_without_officecli() {
     let mut child = tokio::process::Command::new(binary())
         .args(["mcp"])
         .env(
-            "A3S_OFFICECLI_EXECUTABLE",
+            "ASTER_OFFICECLI_EXECUTABLE",
             temp.path().join("must-not-be-invoked"),
         )
         .stdin(Stdio::piped())

@@ -7,16 +7,16 @@ use std::collections::{BTreeMap, HashMap};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_box_core::{
+use aster_box_core::{
     BoxConfig, CreateExecutionRequest, ExecutionGeneration, ExecutionHealthCheck, ExecutionId,
     ExecutionIsolation, ExecutionManager, ExecutionManagerError, ExecutionManagerResult,
     ExecutionSnapshotId, ExecutionState, KillExecutionOptions, KillOutcome, NetworkMode,
     OperationId, ReconcileOutcome, RestartExecutionOptions, SnapshotImageConfig,
 };
 #[cfg(unix)]
-use a3s_box_core::{ExecEvent, ExecRequest, ExecutionSessionManager};
+use aster_box_core::{ExecEvent, ExecRequest, ExecutionSessionManager};
 #[cfg(not(windows))]
-use a3s_box_core::{ExecutionRecordPolicy, ExecutionRestartPolicy};
+use aster_box_core::{ExecutionRecordPolicy, ExecutionRestartPolicy};
 use async_trait::async_trait;
 use chrono::{TimeZone, Utc};
 
@@ -249,7 +249,7 @@ impl LocalExecutionBackend for FakeBackend {
             record
                 .stop_signal
                 .as_deref()
-                .map(a3s_box_core::vmm::parse_signal_name),
+                .map(aster_box_core::vmm::parse_signal_name),
         );
         *self.last_kill_timeout.lock().unwrap() = Some(record.stop_timeout);
         if self.fail_kill.load(Ordering::Relaxed) {
@@ -283,7 +283,7 @@ impl LocalExecutionBackend for FakeBackend {
                 record
                     .stop_signal
                     .as_deref()
-                    .map(a3s_box_core::vmm::parse_signal_name),
+                    .map(aster_box_core::vmm::parse_signal_name),
             );
             *self.last_kill_timeout.lock().unwrap() = Some(record.stop_timeout);
             let mut executions = self.executions.lock().unwrap();
@@ -309,7 +309,7 @@ impl LocalExecutionBackend for FakeBackend {
             KillOutcome::Killed => record
                 .stop_signal
                 .as_deref()
-                .map(a3s_box_core::vmm::parse_signal_name)
+                .map(aster_box_core::vmm::parse_signal_name)
                 .map(|signal| 128 + signal),
         };
         Ok(LocalExecutionTermination { outcome, exit_code })
@@ -406,7 +406,7 @@ fn request(external_id: &str) -> CreateExecutionRequest {
             // the same honesty/recovery assertions instead of failing create.
             isolation: ExecutionIsolation::Microvm,
             network: NetworkMode::None,
-            resources: a3s_box_core::ResourceConfig {
+            resources: aster_box_core::ResourceConfig {
                 vcpus: 1,
                 memory_mb: 128,
                 disk_mb: 512,
@@ -538,7 +538,7 @@ fn managed_record_rejects_tee_on_windows() {
     let execution_id = ExecutionId::new("invalid-windows-tee").unwrap();
     let mut request = request("invalid-windows-tee");
     request.config.isolation = ExecutionIsolation::Microvm;
-    request.config.tee = a3s_box_core::config::TeeConfig::SevSnp {
+    request.config.tee = aster_box_core::config::TeeConfig::SevSnp {
         workload_id: "demo".to_string(),
         generation: Default::default(),
         simulate: true,
@@ -776,7 +776,7 @@ async fn process_session_inherits_environment_and_enforces_persisted_security() 
     // Keep the Unix-domain socket path well below macOS's short SUN_LEN even
     // when the execution harness lives under a long per-user temp path.
     let socket_directory = tempfile::Builder::new()
-        .prefix("a3s-exec-")
+        .prefix("aster-exec-")
         .tempdir_in("/tmp")
         .unwrap();
     let socket_path = socket_directory.path().join("exec.sock");
@@ -811,15 +811,15 @@ async fn process_session_inherits_environment_and_enforces_persisted_security() 
     let server = tokio::spawn(async move {
         let (stream, _) = listener.accept().await.unwrap();
         let (read, write) = tokio::io::split(stream);
-        let mut reader = a3s_transport::FrameReader::new(read);
-        let mut writer = a3s_transport::FrameWriter::new(write);
+        let mut reader = aster_transport::FrameReader::new(read);
+        let mut writer = aster_transport::FrameWriter::new(write);
         let frame = reader.read_frame().await.unwrap().unwrap();
-        assert_eq!(frame.frame_type, a3s_transport::FrameType::Data);
+        assert_eq!(frame.frame_type, aster_transport::FrameType::Data);
         let request: ExecRequest = serde_json::from_slice(&frame.payload).unwrap();
         request_sender.send(request).unwrap();
         writer
             .write_control(
-                &serde_json::to_vec(&a3s_box_core::exec::ExecExit {
+                &serde_json::to_vec(&aster_box_core::exec::ExecExit {
                     exit_code: 0,
                     oom_killed: false,
                 })
@@ -839,7 +839,7 @@ async fn process_session_inherits_environment_and_enforces_persisted_security() 
                 timeout_ns: 1_000_000_000,
                 env: vec![
                     "OVERRIDE=request".to_string(),
-                    "A3S_SEC_NO_NEW_PRIVS=0".to_string(),
+                    "ASTER_SEC_NO_NEW_PRIVS=0".to_string(),
                 ],
                 working_dir: None,
                 rootfs: None,
@@ -855,9 +855,9 @@ async fn process_session_inherits_environment_and_enforces_persisted_security() 
     assert_eq!(
         forwarded.env,
         [
-            "A3S_SEC_CAP_DROP=ALL",
-            "A3S_SEC_NO_NEW_PRIVS=1",
-            "A3S_SEC_SECCOMP=default",
+            "ASTER_SEC_CAP_DROP=ALL",
+            "ASTER_SEC_NO_NEW_PRIVS=1",
+            "ASTER_SEC_SECCOMP=default",
             "OFFICIAL_CLIENT=python-sync",
             "OVERRIDE=request",
         ]
@@ -942,8 +942,8 @@ async fn create_preserves_complete_caller_record_policy() {
             start_period_secs: 5,
         }),
         healthcheck_disabled: false,
-        log_config: a3s_box_core::log::LogConfig {
-            driver: a3s_box_core::log::LogDriver::None,
+        log_config: aster_box_core::log::LogConfig {
+            driver: aster_box_core::log::LogDriver::None,
             options: HashMap::from([("tag".to_string(), "worker".to_string())]),
         },
         volume_names: vec!["workspace".to_string()],
@@ -2522,7 +2522,7 @@ async fn inspection_persists_an_external_terminal_observation() {
 
 #[tokio::test]
 async fn inspection_releases_resources_after_an_external_terminal_observation() {
-    use a3s_box_core::{network::NetworkConfig, volume::VolumeConfig};
+    use aster_box_core::{network::NetworkConfig, volume::VolumeConfig};
 
     let (_directory, manager, backend) = harness();
     let volumes = crate::VolumeStore::new(
@@ -2557,12 +2557,12 @@ async fn inspection_releases_resources_after_an_external_terminal_observation() 
     #[cfg(not(windows))]
     {
         networks
-            .with_write_lock(|entries| -> Result<(), a3s_box_core::BoxError> {
+            .with_write_lock(|entries| -> Result<(), aster_box_core::BoxError> {
                 entries
                     .get_mut("dev")
                     .unwrap()
                     .connect(running.execution_id.as_str(), "terminal-resources")
-                    .map_err(a3s_box_core::BoxError::NetworkError)?;
+                    .map_err(aster_box_core::BoxError::NetworkError)?;
                 Ok(())
             })
             .unwrap();
@@ -3819,7 +3819,7 @@ async fn legacy_snapshot_without_image_config_is_rejected_before_reservation() {
     crate::SnapshotStore::new(&directory.path().join("home/snapshots"))
         .unwrap()
         .save(
-            a3s_box_core::SnapshotMetadata::new(
+            aster_box_core::SnapshotMetadata::new(
                 snapshot_id.to_string(),
                 snapshot_id.to_string(),
                 "source-execution".to_string(),

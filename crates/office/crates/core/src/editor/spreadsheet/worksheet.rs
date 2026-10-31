@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     editor_error, escape_attribute, index_xml, node_not_found, validate_mutation_path,

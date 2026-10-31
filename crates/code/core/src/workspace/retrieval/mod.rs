@@ -4,8 +4,8 @@
 //! providers. It is the single source of chunk boundaries for lexical and
 //! future semantic retrieval.
 
-#[cfg(feature = "a3s-vec-fts")]
-mod a3s_vec;
+#[cfg(feature = "aster-vec-fts")]
+mod aster_vec;
 mod catalog;
 mod chunk;
 mod chunking_strategy;
@@ -30,7 +30,7 @@ mod semantic_types;
 mod types;
 mod vector_contract;
 mod verification;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 mod wiki;
 mod wiki_sources;
 
@@ -71,7 +71,7 @@ pub use types::{
     WorkspaceLexicalEngine,
 };
 pub(crate) use verification::retain_verified;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 pub use wiki::{
     WikiIndex, WikiReconcileReport, WikiSearchHit, WikiSearchPhase, WikiSearchResult,
     WIKI_PASSAGE_CHARS,

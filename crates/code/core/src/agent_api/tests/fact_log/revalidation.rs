@@ -2,7 +2,7 @@
 
 use super::*;
 use crate::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
-use a3s_effect::{ToolExecutionOutcome, ToolExecutionResultV1, ToolObservationCompleteness};
+use aster_effect::{ToolExecutionOutcome, ToolExecutionResultV1, ToolObservationCompleteness};
 use serde_json::{json, Value};
 
 struct VerifyBytes(Arc<AtomicUsize>);

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{direct_text, semantic_error, DocumentNode, OfficeNodeType, XmlElement};
 use crate::spreadsheet_reference::{
@@ -248,7 +248,7 @@ fn unqualified_attribute<'a>(element: &'a XmlElement, local_name: &str) -> Optio
         .map(|attribute| attribute.value.as_str())
 }
 
-fn invalid(part_name: &str, reason: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid(part_name: &str, reason: impl Into<String>) -> aster_use_core::UseError {
     semantic_error(
         "use.office.spreadsheet_validation_invalid",
         format!(

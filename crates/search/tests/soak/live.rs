@@ -35,14 +35,14 @@ use super::gate::LiveCanaryMeasurements;
 use super::policy::LiveCanaryPolicy;
 use super::resources::{resource_snapshot, sample_resources, summarize_resources};
 
-const EVALUATED_COMMIT_ENV: &str = "A3S_SEARCH_EVALUATED_COMMIT";
-const DRIVER_ENV: &str = "A3S_SEARCH_LIVE_CANARY_DRIVER";
-const DRIVER_SHA256_ENV: &str = "A3S_SEARCH_LIVE_CANARY_DRIVER_SHA256";
-const CANDIDATE_BIN_ENV: &str = "A3S_SEARCH_LIVE_CANARY_CANDIDATE_BIN";
-const CANDIDATE_SHA256_ENV: &str = "A3S_SEARCH_LIVE_CANARY_CANDIDATE_SHA256";
-const FROZEN_CRATE_ENV: &str = "A3S_SEARCH_LIVE_CANARY_FROZEN_CRATE";
-const FROZEN_CRATE_SHA256_ENV: &str = "A3S_SEARCH_LIVE_CANARY_FROZEN_CRATE_SHA256";
-const RECEIPT_LOG_ENV: &str = "A3S_SEARCH_LIVE_CANARY_RECEIPT_LOG";
+const EVALUATED_COMMIT_ENV: &str = "ASTER_SEARCH_EVALUATED_COMMIT";
+const DRIVER_ENV: &str = "ASTER_SEARCH_LIVE_CANARY_DRIVER";
+const DRIVER_SHA256_ENV: &str = "ASTER_SEARCH_LIVE_CANARY_DRIVER_SHA256";
+const CANDIDATE_BIN_ENV: &str = "ASTER_SEARCH_LIVE_CANARY_CANDIDATE_BIN";
+const CANDIDATE_SHA256_ENV: &str = "ASTER_SEARCH_LIVE_CANARY_CANDIDATE_SHA256";
+const FROZEN_CRATE_ENV: &str = "ASTER_SEARCH_LIVE_CANARY_FROZEN_CRATE";
+const FROZEN_CRATE_SHA256_ENV: &str = "ASTER_SEARCH_LIVE_CANARY_FROZEN_CRATE_SHA256";
+const RECEIPT_LOG_ENV: &str = "ASTER_SEARCH_LIVE_CANARY_RECEIPT_LOG";
 const REQUEST_TIMEOUT_CEILING: Duration = Duration::from_secs(60);
 
 #[derive(Debug, Clone, Copy, Serialize)]
@@ -56,11 +56,11 @@ impl LiveCanaryConfig {
     fn from_env(minimum_provider_interval: Duration) -> Self {
         let config = Self {
             interval_seconds: env_u64(
-                "A3S_SEARCH_LIVE_CANARY_INTERVAL_SECONDS",
+                "ASTER_SEARCH_LIVE_CANARY_INTERVAL_SECONDS",
                 minimum_provider_interval.as_secs(),
             ),
             request_timeout_seconds: env_u64(
-                "A3S_SEARCH_LIVE_CANARY_REQUEST_TIMEOUT_SECONDS",
+                "ASTER_SEARCH_LIVE_CANARY_REQUEST_TIMEOUT_SECONDS",
                 REQUEST_TIMEOUT_CEILING.as_secs(),
             ),
             minimum_provider_interval_seconds: minimum_provider_interval.as_secs(),

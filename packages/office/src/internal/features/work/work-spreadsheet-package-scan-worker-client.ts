@@ -175,7 +175,7 @@ export function scanSpreadsheetPackageInWorker(
   try {
     worker = new Worker(
       new URL('./work-spreadsheet-package-scan.worker.js', import.meta.url),
-      { name: 'a3s-office-spreadsheet-package-scan' },
+      { name: 'aster-office-spreadsheet-package-scan' },
     );
   } catch {
     return Promise.resolve(null);
@@ -352,7 +352,7 @@ export function scanSpreadsheetPackageInWorker(
           : null;
       const workbook = plainWorksheets ? fastWorkbook : null;
       recordSpreadsheetImportMeasure(
-        'a3s-office.spreadsheet.package-scan-worker',
+        'aster-office.spreadsheet.package-scan-worker',
         startedAt,
         spreadsheetImportNow(),
         {

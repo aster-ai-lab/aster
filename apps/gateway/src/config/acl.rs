@@ -1,4 +1,4 @@
-//! ACL configuration parser for A3S Gateway.
+//! ACL configuration parser for Aster Gateway.
 
 mod inference;
 #[path = "static_bundle_acl.rs"]
@@ -18,7 +18,7 @@ use super::{
     UsageSpoolConfig,
 };
 use crate::error::{GatewayError, Result};
-use a3s_acl::{parse_acl, Block, Value};
+use aster_acl::{parse_acl, Block, Value};
 use std::collections::HashMap;
 use std::path::Path;
 
@@ -842,7 +842,7 @@ fn parse_management_block(block: &Block) -> Result<ManagementConfig> {
     let auth_token_env = match string_attr(block, &["auth_token_env"])? {
         Some(value) if value.is_empty() => None,
         Some(value) => Some(value),
-        None => Some("A3S_GATEWAY_ADMIN_TOKEN".to_string()),
+        None => Some("ASTER_GATEWAY_ADMIN_TOKEN".to_string()),
     };
 
     Ok(ManagementConfig {
@@ -930,7 +930,7 @@ fn parse_kubernetes_block(block: &Block) -> Result<KubernetesProviderConfig> {
 fn parse_docker_block(block: &Block) -> Result<DockerProviderConfig> {
     Ok(DockerProviderConfig {
         host: string_attr(block, &["host"])?.unwrap_or_else(|| "/var/run/docker.sock".to_string()),
-        label_prefix: string_attr(block, &["label_prefix"])?.unwrap_or_else(|| "a3s".to_string()),
+        label_prefix: string_attr(block, &["label_prefix"])?.unwrap_or_else(|| "aster".to_string()),
         poll_interval_secs: u64_attr(block, &["poll_interval_secs"])?.unwrap_or(10),
     })
 }

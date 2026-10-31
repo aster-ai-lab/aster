@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     initialize, shutdown, AddColumnOption, AlterColumnOption, Collection, CollectionSchema,
     DataType, Doc, FieldSchema, IndexParams, MetricType,
 };
@@ -26,7 +26,7 @@ impl Drop for ExampleDirectory {
     }
 }
 
-fn document(id: &str, title: &str, embedding: [f32; 2]) -> a3s_vec::Result<Doc> {
+fn document(id: &str, title: &str, embedding: [f32; 2]) -> aster_vec::Result<Doc> {
     let mut doc = Doc::with_pk(id)?;
     doc.add_string("id", id)?;
     doc.add_string("title", title)?;
@@ -34,9 +34,9 @@ fn document(id: &str, title: &str, embedding: [f32; 2]) -> a3s_vec::Result<Doc> 
     Ok(doc)
 }
 
-fn main() -> a3s_vec::Result<()> {
+fn main() -> aster_vec::Result<()> {
     initialize(None)?;
-    let directory = ExampleDirectory::new("a3s-vec-schema-iteration");
+    let directory = ExampleDirectory::new("aster-vec-schema-iteration");
     let data_path = directory.path().to_string_lossy();
     let schema = CollectionSchema::builder("schema_iteration")
         .add_field(FieldSchema::new("id", DataType::String, false, 0)?)
@@ -62,7 +62,7 @@ fn main() -> a3s_vec::Result<()> {
     let iterator_revision = iterator.revision();
     let late = document("doc-4", "Four", [0.5, 0.5])?;
     assert_eq!(collection.insert(&[&late])?.success_count, 1);
-    let snapshot_docs = iterator.collect::<a3s_vec::Result<Vec<_>>>()?;
+    let snapshot_docs = iterator.collect::<aster_vec::Result<Vec<_>>>()?;
     assert_eq!(snapshot_docs.len(), 3);
     assert!(snapshot_docs
         .iter()

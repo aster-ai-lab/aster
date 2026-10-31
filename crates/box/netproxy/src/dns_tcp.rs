@@ -75,7 +75,7 @@ pub(crate) struct DnsTcpOwner {
     guest_ip: Ipv4Addr,
     gateway_ip: Ipv4Addr,
     config: NetworkDnsConfig,
-    egress_rules: Vec<a3s_box_core::EgressMatchRule>,
+    egress_rules: Vec<aster_box_core::EgressMatchRule>,
     dns_tcp: Vec<DnsTcpSession>,
     pending: Vec<PendingUpstream>,
     active: Vec<ActiveUpstream>,
@@ -84,7 +84,7 @@ pub(crate) struct DnsTcpOwner {
 }
 
 impl DnsTcpOwner {
-    pub(crate) fn set_egress_rules(&mut self, rules: Vec<a3s_box_core::EgressMatchRule>) {
+    pub(crate) fn set_egress_rules(&mut self, rules: Vec<aster_box_core::EgressMatchRule>) {
         self.egress_rules = rules;
     }
 
@@ -495,7 +495,7 @@ fn spawn_outbound_connect(
     connector_count.fetch_add(1, Ordering::Relaxed);
     let thread_count = Arc::clone(&connector_count);
     let spawn = std::thread::Builder::new()
-        .name("a3s-dns-tcp-connect".to_string())
+        .name("aster-dns-tcp-connect".to_string())
         .spawn(move || {
             let address = SocketAddr::V4(SocketAddrV4::new(flow.remote_ip, flow.remote_port));
             let result =
@@ -628,7 +628,7 @@ fn proxy_one(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::network::NetworkConfig;
+    use aster_box_core::network::NetworkConfig;
     use smoltcp::wire::EthernetAddress;
 
     const GUEST_IP: Ipv4Addr = Ipv4Addr::new(10, 88, 0, 2);

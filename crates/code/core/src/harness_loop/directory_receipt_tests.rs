@@ -1,5 +1,5 @@
 use super::*;
-use a3s_effect::{ToolFileIdentityV1, ToolFileKind};
+use aster_effect::{ToolFileIdentityV1, ToolFileKind};
 
 fn directory(mode: u32) -> ToolFileIdentityV1 {
     ToolFileIdentityV1 {

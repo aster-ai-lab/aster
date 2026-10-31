@@ -1,18 +1,18 @@
 [package]
-name = "a3s-box-shim"
+name = "aster-box-shim"
 version = "3.2.7"
 edition = "2021"
 license = "MIT"
-description = "MicroVM shim process for A3S Box"
+description = "MicroVM shim process for Aster Box"
 
 [[bin]]
-name = "a3s-box-shim"
+name = "aster-box-shim"
 path = "src/main.rs"
 
 [dependencies]
-a3s-box-core = { path = "../core" }
-a3s-oci-sdk = { workspace = true }
-libkrun-sys = { version = "3.0", path = "../deps/libkrun-sys", package = "a3s-libkrun-sys" }
+aster-box-core = { path = "../core" }
+aster-oci-sdk = { workspace = true }
+libkrun-sys = { version = "3.0", path = "../deps/libkrun-sys", package = "aster-libkrun-sys" }
 
 # Async runtime used by the detached managed-OCI init log projector.
 tokio = { workspace = true }
@@ -29,7 +29,7 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 
 [target.'cfg(unix)'.dependencies]
-a3s-box-netproxy = { path = "../netproxy" }
+aster-box-netproxy = { path = "../netproxy" }
 libc = { workspace = true }
 
 [target.'cfg(windows)'.dependencies]

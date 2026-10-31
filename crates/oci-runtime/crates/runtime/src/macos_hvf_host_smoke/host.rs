@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::time::Duration;
 
-use a3s_oci_sdk::{LocalIpcEndpoint, RuntimeClient};
+use aster_oci_sdk::{LocalIpcEndpoint, RuntimeClient};
 use tokio::process::{Child, Command};
 use tokio::time::{sleep, timeout, Instant};
 
@@ -339,7 +339,7 @@ pub(super) fn endpoint_inventory() -> Result<BTreeSet<PathBuf>, String> {
         let entry =
             entry.map_err(|error| format!("failed to inspect /private/tmp entry: {error}"))?;
         let name = entry.file_name();
-        if name.to_string_lossy().starts_with("a3s-oci-agent-") {
+        if name.to_string_lossy().starts_with("aster-oci-agent-") {
             endpoints.insert(entry.path());
         }
     }

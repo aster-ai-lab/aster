@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 use tokio::fs;
 
@@ -9,11 +9,11 @@ use super::package::{io_error, read_manifest, validate_surface_files};
 
 pub const RELEASE_BUNDLE_SCHEMA_VERSION: u32 = 1;
 
-/// One optional extension package shipped inside a verified A3S Use release.
+/// One optional extension package shipped inside a verified Aster Use release.
 ///
 /// The release bundle remains uninstallable and disabled until the user asks
-/// to install it. Its expanded-package digest is included in the outer A3S
-/// review plan and rechecked by A3S Use immediately before activation.
+/// to install it. Its expanded-package digest is included in the outer Aster
+/// review plan and rechecked by Aster Use immediately before activation.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ReleaseBundlePackage {
@@ -63,7 +63,7 @@ pub async fn inspect_release_bundle(package_root: &Path) -> UseResult<ReleaseBun
     let metadata = fs::symlink_metadata(package_root)
         .await
         .map_err(|error| io_error("inspect release bundle", package_root, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(UseError::new(
             "use.extension.release_bundle_invalid",
             format!(

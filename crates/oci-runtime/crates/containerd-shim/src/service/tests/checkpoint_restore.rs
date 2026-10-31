@@ -3,8 +3,8 @@ use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex as StdMutex};
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
+use aster_oci_sdk::{
     async_trait, AttachmentCapabilities, CheckpointCompatibility, CheckpointDigest,
     CheckpointFormat, CheckpointReference, CheckpointRequest, CheckpointResponse,
     ContainerOperationRequest, ContainerRecord, DriverKind, Error, ErrorCode, ExitStatus,
@@ -49,28 +49,28 @@ impl BridgeRuntime {
 
 #[async_trait]
 impl OciRuntimeService for BridgeRuntime {
-    async fn features(&self) -> a3s_oci_sdk::Result<a3s_oci_sdk::RuntimeInfo> {
+    async fn features(&self) -> aster_oci_sdk::Result<aster_oci_sdk::RuntimeInfo> {
         Err(Error::unsupported("test-features"))
     }
 
     async fn create(
         &self,
-        _request: a3s_oci_sdk::CreateRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::CreateRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(Error::unsupported("test-create"))
     }
 
     async fn start(
         &self,
-        _request: a3s_oci_sdk::StartRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::StartRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         Err(Error::unsupported("test-start"))
     }
 
     async fn kill(
         &self,
-        _request: a3s_oci_sdk::KillRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+        _request: aster_oci_sdk::KillRequest,
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         self.calls.lock().expect("restore bridge calls").kills += 1;
         self.killed.store(true, Ordering::SeqCst);
         self.record
@@ -80,7 +80,7 @@ impl OciRuntimeService for BridgeRuntime {
             .ok_or_else(|| Error::new(ErrorCode::NotFound, "missing restored record"))
     }
 
-    async fn delete(&self, _request: a3s_oci_sdk::DeleteRequest) -> a3s_oci_sdk::Result<()> {
+    async fn delete(&self, _request: aster_oci_sdk::DeleteRequest) -> aster_oci_sdk::Result<()> {
         self.calls.lock().expect("restore bridge calls").deletes += 1;
         *self.record.lock().expect("restore bridge record") = None;
         Ok(())
@@ -89,7 +89,7 @@ impl OciRuntimeService for BridgeRuntime {
     async fn checkpoint(
         &self,
         request: CheckpointRequest,
-    ) -> a3s_oci_sdk::Result<CheckpointResponse> {
+    ) -> aster_oci_sdk::Result<CheckpointResponse> {
         self.calls
             .lock()
             .expect("checkpoint bridge calls")
@@ -101,7 +101,7 @@ impl OciRuntimeService for BridgeRuntime {
             .expect("checkpoint bridge record")
             .clone()
             .ok_or_else(|| Error::new(ErrorCode::NotFound, "missing checkpoint source"))?;
-        let bytes = b"a3s-containerd-checkpoint";
+        let bytes = b"aster-containerd-checkpoint";
         let mut options = tokio::fs::OpenOptions::new();
         options.write(true).create_new(true);
         let mut file = options
@@ -124,7 +124,7 @@ impl OciRuntimeService for BridgeRuntime {
         CheckpointResponse::new(source, reference)
     }
 
-    async fn restore(&self, request: RestoreRequest) -> a3s_oci_sdk::Result<RestoreResponse> {
+    async fn restore(&self, request: RestoreRequest) -> aster_oci_sdk::Result<RestoreResponse> {
         self.calls
             .lock()
             .expect("restore bridge calls")
@@ -141,7 +141,7 @@ impl OciRuntimeService for BridgeRuntime {
         RestoreResponse::new(restored, reference)
     }
 
-    async fn state(&self, request: StateRequest) -> a3s_oci_sdk::Result<ContainerRecord> {
+    async fn state(&self, request: StateRequest) -> aster_oci_sdk::Result<ContainerRecord> {
         self.calls.lock().expect("restore bridge calls").state_calls += 1;
         let record = self
             .record
@@ -163,7 +163,7 @@ impl OciRuntimeService for BridgeRuntime {
     async fn resume(
         &self,
         request: ContainerOperationRequest,
-    ) -> a3s_oci_sdk::Result<ContainerRecord> {
+    ) -> aster_oci_sdk::Result<ContainerRecord> {
         self.calls
             .lock()
             .expect("restore bridge calls")
@@ -186,7 +186,7 @@ impl OciRuntimeService for BridgeRuntime {
         Ok(resumed)
     }
 
-    async fn wait(&self, _request: WaitRequest) -> a3s_oci_sdk::Result<ExitStatus> {
+    async fn wait(&self, _request: WaitRequest) -> aster_oci_sdk::Result<ExitStatus> {
         if self.killed.load(Ordering::SeqCst) {
             ExitStatus::signaled(9, false)
         } else {
@@ -199,7 +199,7 @@ impl OciRuntimeService for BridgeRuntime {
 async fn checkpoint_commits_one_replayable_containerd_package_and_detects_tampering() {
     let temporary = tempfile::tempdir().expect("temporary directory");
     let source = paused_record(
-        "a3s-k8s.io-task-a",
+        "aster-k8s.io-task-a",
         temporary.path(),
         &format!("sha256:{}", "a".repeat(64)),
         &format!("sha256:{}", "b".repeat(64)),
@@ -208,13 +208,13 @@ async fn checkpoint_commits_one_replayable_containerd_package_and_detects_tamper
     let runtime = BridgeRuntime::new(artifact.clone(), Some(source.clone()));
     let calls = Arc::clone(&runtime.calls);
     let adapter = RuntimeAdapter::from_client_with_extensions(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::RuntimeClient::new(runtime),
         IsolationRequest::SharedHostKernel,
         extensions(artifact, &[RuntimeOperation::Checkpoint]),
     );
     let service = recovery_service_instance(temporary.path(), adapter);
     let mut task = task_state(temporary.path());
-    task.identity.container_id = a3s_oci_sdk::ContainerId::new(source.state.id().to_string())
+    task.identity.container_id = aster_oci_sdk::ContainerId::new(source.state.id().to_string())
         .expect("checkpoint task identity");
     task.record = source;
     task.exit = None;
@@ -291,7 +291,7 @@ async fn checkpoint_dispatches_after_cached_capability_catalog_drift() {
     // The shim's catalog is deliberately stale and no longer advertises
     // Checkpoint.  Host-side durable operation lookup remains authoritative.
     let adapter = RuntimeAdapter::from_client_with_extensions(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::RuntimeClient::new(runtime),
         IsolationRequest::SharedHostKernel,
         extensions(
             artifact,
@@ -338,7 +338,7 @@ async fn restore_create_exposes_created_until_one_durable_start_resume_barrier()
     let bundle = OciBundle::load(&bundle_path)
         .await
         .expect("load OCI bundle");
-    let attachments = a3s_oci_sdk::CreateAttachments::from_bundle(
+    let attachments = aster_oci_sdk::CreateAttachments::from_bundle(
         &bundle,
         adapter::process_io(false, false, false, false),
     )
@@ -371,7 +371,7 @@ async fn restore_create_exposes_created_until_one_durable_start_resume_barrier()
     let runtime = BridgeRuntime::new(artifact.clone(), None);
     let calls = Arc::clone(&runtime.calls);
     let adapter = RuntimeAdapter::from_client_with_extensions(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::RuntimeClient::new(runtime),
         IsolationRequest::SharedHostKernel,
         extensions(
             artifact,
@@ -471,7 +471,7 @@ async fn rehydration_adopts_a_restore_resume_committed_before_metadata_advance()
     let artifact = runtime_artifact();
     let runtime = BridgeRuntime::new(artifact.clone(), Some(committed_resume));
     let adapter = RuntimeAdapter::from_client_with_extensions(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::RuntimeClient::new(runtime),
         IsolationRequest::SharedHostKernel,
         extensions(
             artifact,
@@ -512,7 +512,7 @@ async fn delete_shim_replays_a_durable_restore_intent_after_capability_drift() {
     let bundle = OciBundle::load(&bundle_path)
         .await
         .expect("load OCI bundle");
-    let attachments = a3s_oci_sdk::CreateAttachments::from_bundle(
+    let attachments = aster_oci_sdk::CreateAttachments::from_bundle(
         &bundle,
         adapter::process_io(false, false, false, false),
     )
@@ -564,7 +564,7 @@ async fn delete_shim_replays_a_durable_restore_intent_after_capability_drift() {
     let runtime = BridgeRuntime::new(artifact.clone(), None);
     let calls = Arc::clone(&runtime.calls);
     let adapter = RuntimeAdapter::from_client_with_extensions(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::RuntimeClient::new(runtime),
         IsolationRequest::SharedHostKernel,
         extensions(artifact, &[RuntimeOperation::Checkpoint]),
     );
@@ -688,7 +688,7 @@ fn reference(
 
 fn runtime_artifact() -> RuntimeArtifact {
     RuntimeArtifact::new(
-        "a3s-oci-runtime",
+        "aster-oci-runtime",
         "0.2.0",
         format!("sha256:{}", "c".repeat(64)),
         Some("containerd-checkpoint-bridge-test".to_string()),

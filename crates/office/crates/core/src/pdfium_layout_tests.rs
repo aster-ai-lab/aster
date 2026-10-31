@@ -254,7 +254,7 @@ fn pdf_outline_preserves_hierarchy_and_exact_page_targets() {
 
 #[tokio::test]
 async fn explicit_pdfium_library_inventories_and_renders_exact_pages() {
-    let Some(library) = std::env::var_os("A3S_OFFICE_TEST_PDFIUM_LIBRARY") else {
+    let Some(library) = std::env::var_os("ASTER_OFFICE_TEST_PDFIUM_LIBRARY") else {
         return;
     };
     let directory = tempfile::tempdir().unwrap();
@@ -264,7 +264,7 @@ async fn explicit_pdfium_library_inventories_and_renders_exact_pages() {
         library,
         format!(
             "{:x}",
-            sha2::Sha256::digest(b"a3s-office-test-font-manifest-v1")
+            sha2::Sha256::digest(b"aster-office-test-font-manifest-v1")
         ),
     )
     .await
@@ -660,7 +660,7 @@ async fn explicit_pdfium_library_inventories_and_renders_exact_pages() {
 
 #[tokio::test]
 async fn pdfium_resolves_media_boxes_inherited_from_the_page_tree() {
-    let Some(library) = std::env::var_os("A3S_OFFICE_TEST_PDFIUM_LIBRARY") else {
+    let Some(library) = std::env::var_os("ASTER_OFFICE_TEST_PDFIUM_LIBRARY") else {
         return;
     };
     let directory = tempfile::tempdir().unwrap();
@@ -670,7 +670,7 @@ async fn pdfium_resolves_media_boxes_inherited_from_the_page_tree() {
         library,
         format!(
             "{:x}",
-            sha2::Sha256::digest(b"a3s-office-test-font-manifest-v1")
+            sha2::Sha256::digest(b"aster-office-test-font-manifest-v1")
         ),
     )
     .await

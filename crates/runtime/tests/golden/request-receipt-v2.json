@@ -1,5 +1,5 @@
 {
-  "schema": "a3s.runtime.request-receipt.v2",
+  "schema": "aster.runtime.request-receipt.v2",
   "request_id": "golden-exec",
   "unit_id": "golden-service",
   "generation": 3,
@@ -10,10 +10,10 @@
   "observation": null,
   "removal": null,
   "exec_result": {
-    "schema": "a3s.runtime.exec-result.v1",
+    "schema": "aster.runtime.exec-result.v1",
     "request_id": "golden-exec",
     "observation": {
-      "schema": "a3s.runtime.observation.v4",
+      "schema": "aster.runtime.observation.v4",
       "unit_id": "golden-service",
       "generation": 3,
       "spec_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",

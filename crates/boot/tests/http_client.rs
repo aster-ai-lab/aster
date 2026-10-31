@@ -1,6 +1,6 @@
 #![cfg(feature = "http-client")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BoxFuture, HttpClientBackend, HttpClientOptions, HttpClientRequest,
     HttpClientResponse, HttpMethod, HttpModule, HttpService, Result,
 };

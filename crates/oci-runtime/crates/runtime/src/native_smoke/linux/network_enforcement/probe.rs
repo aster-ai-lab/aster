@@ -6,8 +6,8 @@ use std::os::linux::fs::MetadataExt;
 use std::path::Path;
 use std::time::Duration;
 
-const REDIRECT_BODY: &str = "a3s-oar01-redirect-v1";
-const BLOCK_CONTROL_BODY: &str = "a3s-oar01-block-control-v1";
+const REDIRECT_BODY: &str = "aster-oar01-redirect-v1";
+const BLOCK_CONTROL_BODY: &str = "aster-oar01-block-control-v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(super) struct NamespaceIdentity {
@@ -22,7 +22,7 @@ pub(super) fn probe_mechanism(
 ) -> Result<(), String> {
     let namespace_path = namespace_path.to_path_buf();
     std::thread::Builder::new()
-        .name("a3s-oci-oar01-probe".into())
+        .name("aster-oci-oar01-probe".into())
         .spawn(move || {
             enter_network_namespace(&namespace_path)?;
             require_http_body(
@@ -54,7 +54,7 @@ pub(super) fn interface_exists(namespace_path: &Path, interface: &str) -> Result
     let namespace_path = namespace_path.to_path_buf();
     let interface = interface.to_string();
     std::thread::Builder::new()
-        .name("a3s-oci-oar01-interface".into())
+        .name("aster-oci-oar01-interface".into())
         .spawn(move || {
             enter_network_namespace(&namespace_path)?;
             let interface = CString::new(interface)

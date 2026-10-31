@@ -166,9 +166,9 @@ fn probe(directory: &std::path::Path, kind: &str, busy: bool) {
             "--ignored",
             "--nocapture",
         ])
-        .env("A3S_EFFECT_FENCE_TEST_DIR", directory)
-        .env("A3S_EFFECT_FENCE_TEST_KIND", kind)
-        .env("A3S_EFFECT_FENCE_TEST_BUSY", busy.to_string())
+        .env("ASTER_EFFECT_FENCE_TEST_DIR", directory)
+        .env("ASTER_EFFECT_FENCE_TEST_KIND", kind)
+        .env("ASTER_EFFECT_FENCE_TEST_BUSY", busy.to_string())
         .output()
         .unwrap();
     assert!(
@@ -195,9 +195,9 @@ fn real_child_process_observes_writer_owner_and_release_boundaries() {
 #[test]
 #[ignore = "invoked by the bounded parent process test with an explicit temporary log"]
 fn child_process_probe() {
-    let directory = std::env::var_os("A3S_EFFECT_FENCE_TEST_DIR").unwrap();
-    let kind = std::env::var("A3S_EFFECT_FENCE_TEST_KIND").unwrap();
-    let busy: bool = std::env::var("A3S_EFFECT_FENCE_TEST_BUSY")
+    let directory = std::env::var_os("ASTER_EFFECT_FENCE_TEST_DIR").unwrap();
+    let kind = std::env::var("ASTER_EFFECT_FENCE_TEST_KIND").unwrap();
+    let busy: bool = std::env::var("ASTER_EFFECT_FENCE_TEST_BUSY")
         .unwrap()
         .parse()
         .unwrap();

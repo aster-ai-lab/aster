@@ -21,7 +21,7 @@ pub use receipt_binding::SearchCascadeReceiptBindingV2;
 pub use result_binding::SearchResultsBindingV2;
 
 /// Stable schema identifier for [`SearchCascadeReceiptV2`].
-pub const SEARCH_CASCADE_RECEIPT_V2_SCHEMA: &str = "a3s/search-cascade-receipt/v2";
+pub const SEARCH_CASCADE_RECEIPT_V2_SCHEMA: &str = "aster/search-cascade-receipt/v2";
 
 /// Counts that bind a cascade receipt to its returned result container.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -68,7 +68,7 @@ impl SearchCascadeReceiptV2 {
     ///
     /// This proves structural self-consistency only. In particular, an
     /// external-policy decision is recorded but never semantically re-evaluated
-    /// by A3S Search.
+    /// by Aster Search.
     pub fn validate(&self, results: &SearchResults) -> Result<(), SearchCascadeReceiptError> {
         self.validate_internal()?;
         validate_result_counts(&self.counts, results)?;

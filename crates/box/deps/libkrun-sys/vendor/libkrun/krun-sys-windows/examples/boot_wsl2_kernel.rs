@@ -13,7 +13,7 @@ fn main() {
 
 #[cfg(windows)]
 unsafe fn run() {
-    use a3s_libkrun_sys::*;
+    use aster_libkrun_sys::*;
     use std::ffi::CString;
     use std::path::PathBuf;
 

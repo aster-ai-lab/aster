@@ -1,4 +1,4 @@
-# a3s-memory
+# aster-memory
 
 <p align="center">
   <strong>语言 / Language:</strong>
@@ -6,7 +6,7 @@
   <a href="README.zh-CN.md">中文</a>
 </p>
 
-面向 A3S 的可插拔记忆存储。
+面向 Aster 的可插拔记忆存储。
 
 提供 `MemoryStore` trait 与两种默认实现。需要跨会话持久化并召回知识的 Agent 直接依赖本 crate——无需其他依赖。
 
@@ -28,7 +28,7 @@
 - `InMemoryStore` — 默认、临时（测试与非持久场景）
 - `FileMemoryStore` — 持久、原子写入、内存索引
 
-三层会话记忆（`AgentMemory`）与上下文注入（`MemoryContextProvider`）位于 `a3s-code`，不在此处。本 crate 仅拥有存储层。
+三层会话记忆（`AgentMemory`）与上下文注入（`MemoryContextProvider`）位于 `aster`，不在此处。本 crate 仅拥有存储层。
 
 ### 持久仓储 V2
 
@@ -46,13 +46,13 @@
 
 ```toml
 [dependencies]
-a3s-memory = { version = "0.1", path = "../memory" }
+aster-memory = { version = "0.1", path = "../memory" }
 ```
 
 ### 存储与检索
 
 ```rust
-use a3s_memory::{InMemoryStore, MemoryItem, MemoryStore, MemoryType};
+use aster_durable_memory::{InMemoryStore, MemoryItem, MemoryStore, MemoryType};
 use std::sync::Arc;
 
 let store = Arc::new(InMemoryStore::new());
@@ -70,7 +70,7 @@ let results = store.search("file I/O", 5).await?;
 ### 持久存储
 
 ```rust
-use a3s_memory::{FileMemoryStore, MemoryStore};
+use aster_durable_memory::{FileMemoryStore, MemoryStore};
 
 let store = FileMemoryStore::new("/var/lib/agent/memory").await?;
 // Directory layout:
@@ -84,7 +84,7 @@ let store = FileMemoryStore::new("/var/lib/agent/memory").await?;
 实现 `MemoryStore` 以使用任意存储系统（SQLite、向量数据库等）：
 
 ```rust
-use a3s_memory::{MemoryItem, MemoryStore};
+use aster_durable_memory::{MemoryItem, MemoryStore};
 
 struct MyStore { /* ... */ }
 
@@ -102,7 +102,7 @@ impl MemoryStore for MyStore {
 `InMemoryVectorIndex` 将调用方提供的向量存储在不可变分区快照中，并执行精确有界 top-k 搜索。它不使用 SQLite、不持久化数据、不调用嵌入模型，也不生成后台任务。最终所有者丢弃时释放索引。
 
 ```rust
-use a3s_memory::{
+use aster_durable_memory::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord,
     VectorRevision, VectorSearchRequest,
 };
@@ -139,7 +139,7 @@ let result = index
 启用 `sqlite` feature 时，`SqliteVectorIndex::open(path, descriptor)` 加入本地持久的精确搜索后端。它在一个 SQLite 数据库中存储描述符、不透明历史身份、修订、稳定逻辑字节核算、分区完整性摘要与向量行。变更使用 `IMMEDIATE` 事务，因此独立进程共享一个全局修订-CAS 线性化点。重新打开会在提供服务前校验描述符、核算、记录形状与完整性摘要；不匹配与损坏失败闭合。在 Unix 与 Windows 上，历史身份还绑定到数据库文件身份：复制或原子替换文件会在下次打开时分叉 token，而不改变其内容修订。备份恢复必须替换已关闭的数据库文件；不支持原地覆盖与并发带外文件操作。其他目标在无法获得稳定文件身份时，每次打开会保守地分叉 token。阻塞的 SQLite 工作在 Tokio 的 blocking 池上运行。这是本地持久性与围栏，不是分布式租约或远程复制存储。
 
 ```rust
-use a3s_memory::{SqliteVectorIndex, VectorIndex, VectorIndexDescriptor};
+use aster_durable_memory::{SqliteVectorIndex, VectorIndex, VectorIndexDescriptor};
 
 let index = SqliteVectorIndex::open(
     "/var/lib/agent/semantic.sqlite3",
@@ -163,7 +163,7 @@ decay = exp(−age_days / decay_days)
 默认：`importance_weight = 0.7`，`recency_weight = 0.3`，`decay_days = 30`。
 
 ```rust
-use a3s_memory::{MemoryItem, RelevanceConfig};
+use aster_durable_memory::{MemoryItem, RelevanceConfig};
 
 let config = RelevanceConfig {
     decay_days: 7.0,        // faster decay
@@ -186,11 +186,11 @@ let score = item.relevance_score_at(now, &config);
 
 | 关注点 | 所在位置 |
 |---------|----------|
-| 三层会话记忆（working / short-term / long-term） | `a3s-code` |
-| `MemoryConfig`（max_short_term, max_working） | `a3s-code` |
-| `MemoryStats` | `a3s-code` |
-| 向 Agent 提示注入上下文 | `a3s-code` |
-| 工作区扫描、代码分块、嵌入与混合排序 | `a3s-code` |
+| 三层会话记忆（working / short-term / long-term） | `aster` |
+| `MemoryConfig`（max_short_term, max_working） | `aster` |
+| `MemoryStats` | `aster` |
+| 向 Agent 提示注入上下文 | `aster` |
+| 工作区扫描、代码分块、嵌入与混合排序 | `aster` |
 
 ## 测试
 

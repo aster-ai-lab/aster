@@ -97,7 +97,7 @@ export function applyFormPatch(
   options?: CompileOptions,
 ): ApplyPatchResult {
   const conflicts: PatchConflict[] = [];
-  if (patch.apiVersion !== 'a3s.dev/form-patch/v1alpha1') {
+  if (patch.apiVersion !== 'aster.dev/form-patch/v1alpha1') {
     conflicts.push({
       code: 'invalid_operation',
       path: '/apiVersion',
@@ -206,9 +206,9 @@ export function diffFormDocuments(before: FormDocument, after: FormDocument): Fo
     }
   }
   return {
-    apiVersion: 'a3s.dev/form-patch/v1alpha1',
+    apiVersion: 'aster.dev/form-patch/v1alpha1',
     baseRevision: before.revision,
-    description: '由 a3s-form diff 生成',
+    description: '由 aster-form diff 生成',
     operations,
   };
 }

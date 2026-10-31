@@ -80,7 +80,7 @@ Existing sessions and schedules migrate without dual writes, silent fallback or 
 
 - **FR-001**: Core MUST be the only authority for execution sessions, transcripts, Runs, Goals, Plans, permissions, Reviews and execution catalogs.
 - **FR-002**: ACP MUST be the only Studio-facing agent protocol and runtime composition boundary; it MUST NOT grow a second business ledger.
-- **FR-003**: Studio MUST expose one typed RuntimeClient for A3S runtime commands; business modules MUST NOT call raw transport directly.
+- **FR-003**: Studio MUST expose one typed RuntimeClient for Aster runtime commands; business modules MUST NOT call raw transport directly.
 - **FR-004**: Interactive and background attendance MUST use the same admitted-Run driver, cancellation, event and terminal settlement implementation.
 - **FR-005**: Studio MUST NOT pre-decide Core confirmation requests or persist an independent permission authority.
 - **FR-006**: Studio MUST render Plan only from the Core/ACP typed Plan projection; new events MUST NOT use TodoWrite rawInput as a second channel.
@@ -93,7 +93,7 @@ Existing sessions and schedules migrate without dual writes, silent fallback or 
 - **FR-013**: New behavior MUST have small owning-package hermetic tests and retained evidence with an Explicitly not claimed section.
 - **FR-014**: Unknown enums, events, operations and catalog values MUST use typed closed-set refusal; intent MUST NOT be inferred from prompt text or tool names.
 - **FR-015**: Studio source MUST remain only in its private submodule; the parent tracks only its gitlink and shared evidence/plans.
-- **FR-016**: Product configuration MUST remain ACL parsed by `a3s-acl`; protocol and test-evidence JSON are not product configuration.
+- **FR-016**: Product configuration MUST remain ACL parsed by `aster-acl`; protocol and test-evidence JSON are not product configuration.
 
 ### Key Entities
 
@@ -110,8 +110,8 @@ Existing sessions and schedules migrate without dual writes, silent fallback or 
 - [ ] New behavior has a small hermetic test in the owning package
 - [ ] Closed sets: every new enum has `parse()` / `as_str()`
 - [ ] No production `unwrap()` / `expect()` without an infallibility comment
-- [ ] Internal `a3s-*` dependencies stay on a path in this repository
-- [ ] Product configuration, if any, is ACL parsed by `a3s-acl`
+- [ ] Internal `aster-*` dependencies stay on a path in this repository
+- [ ] Product configuration, if any, is ACL parsed by `aster-acl`
 - [ ] Evidence target: `docs/evidence/code/2026-10-25-studio-single-runtime/OUTCOME.md`
 
 ## Success Criteria

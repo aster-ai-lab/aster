@@ -1,47 +1,47 @@
 //! Workspace-owned persistent lexical index.
 //!
 //! The session catalog remains the source of truth for admission and source
-//! verification. This module adds an optional durable a3s-vec generation that can
+//! verification. This module adds an optional durable aster-vec generation that can
 //! be reopened after a process restart. The generation is replaced atomically
 //! after a catalog snapshot has been fully built.
 
 use super::catalog::ChunkCatalogSnapshot;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 use super::chunk::{chunk_id, digest_content};
 use super::lexical::LexicalSearchRequest;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 use super::lexical::{path_matches, query_terms};
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 use super::types::WorkspaceChunk;
 use super::types::{WorkspaceIndexError, WorkspaceIndexResult, WorkspaceLexicalEngine};
 use serde::{Deserialize, Serialize};
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 use std::collections::HashSet;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 use std::fs;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 use std::io::Read;
 use std::path::{Path, PathBuf};
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 use std::sync::{Condvar, Mutex, RwLock};
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 /// v2 manifests carry no engine primary keys (dense ordinals are derived);
 /// v3 persists the key per chunk so incrementally built generations with
 /// sparse ordinals reopen with the exact mapping.
 const MANIFEST_SCHEMA_VERSION: u32 = 3;
 const LEGACY_MANIFEST_SCHEMA_VERSION: u32 = 2;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 const CURRENT_FILE: &str = "CURRENT";
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 const MANIFEST_FILE: &str = "manifest.json";
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 const STORAGE_LOCK_FILE: &str = ".index.lock";
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct PersistedChunk {
@@ -66,7 +66,7 @@ struct PersistedChunk {
     text: String,
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 impl PersistedChunk {
     fn from_chunk(chunk: &WorkspaceChunk) -> Self {
         Self {
@@ -101,7 +101,7 @@ impl PersistedChunk {
     }
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct GenerationManifest {
@@ -112,7 +112,7 @@ struct GenerationManifest {
     chunks: Vec<PersistedChunk>,
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 struct PersistentState {
     generation: String,
     catalog_revision: u64,
@@ -122,7 +122,7 @@ struct PersistentState {
     /// Engine primary key per indexed position. Dense for full builds and
     /// legacy generations; sparse (with appended ordinals) for delta builds.
     pks: Arc<[String]>,
-    index: super::a3s_vec::A3sVecLexicalIndex,
+    index: super::aster_vec::AsterVecLexicalIndex,
     /// Whether this generation was loaded from disk by another process
     /// epoch. Revision counters are per-epoch: a loaded generation's big
     /// counters must not veto a fresh epoch's smaller ones, or every
@@ -132,12 +132,12 @@ struct PersistentState {
     from_disk: bool,
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 struct PersistentOperationGuard {
     active: Arc<(Mutex<usize>, Condvar)>,
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 impl Drop for PersistentOperationGuard {
     fn drop(&mut self) {
         let (lock, wake) = &*self.active;
@@ -177,26 +177,26 @@ pub struct WorkspacePersistentIndex {
     /// epoch's `generation-1`, and two live processes at equal revisions
     /// would write the same directory). The nonce keeps names globally
     /// unique; old-epoch directories are collected by the generation GC.
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     epoch: String,
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     writer: Mutex<()>,
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     active_operations: Arc<(Mutex<usize>, Condvar)>,
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     building: AtomicBool,
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     state: RwLock<Option<PersistentState>>,
     /// One-shot sync failure owned by this index. A process-global switch is
     /// stolen by whichever durable worker runs first under parallel tests.
-    #[cfg(all(test, feature = "a3s-vec-fts"))]
+    #[cfg(all(test, feature = "aster-vec-fts"))]
     fail_next_sync: AtomicBool,
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 struct BuildActivityGuard<'a>(&'a AtomicBool);
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 impl Drop for BuildActivityGuard<'_> {
     fn drop(&mut self) {
         self.0.store(false, Ordering::Release);
@@ -223,7 +223,7 @@ impl WorkspacePersistentIndex {
 
     /// Open with a pinned epoch nonce so tests can predict generation
     /// directory names (`generation-<revision>-<epoch>`).
-    #[cfg(all(test, feature = "a3s-vec-fts"))]
+    #[cfg(all(test, feature = "aster-vec-fts"))]
     pub(crate) fn open_with_pinned_epoch(
         root: impl Into<PathBuf>,
         engine: WorkspaceLexicalEngine,
@@ -237,23 +237,23 @@ impl WorkspacePersistentIndex {
         engine: WorkspaceLexicalEngine,
         pinned_epoch: Option<String>,
     ) -> WorkspaceIndexResult<Arc<Self>> {
-        // a3s-vec rejects Windows verbatim (`\\?\`) paths from `canonicalize()`.
+        // aster-vec rejects Windows verbatim (`\\?\`) paths from `canonicalize()`.
         // Workspace roots are commonly canonicalized before the index is
         // configured, so strip the prefix at the durable-index boundary.
         let root = strip_windows_verbatim_prefix(root.into());
-        #[cfg(not(feature = "a3s-vec-fts"))]
+        #[cfg(not(feature = "aster-vec-fts"))]
         {
             let _ = (&root, engine);
             Err(WorkspaceIndexError::InvalidConfig(
-                "persistent workspace indexing requires the a3s-vec-fts feature".to_owned(),
+                "persistent workspace indexing requires the aster-vec-fts feature".to_owned(),
             ))
         }
 
-        #[cfg(feature = "a3s-vec-fts")]
+        #[cfg(feature = "aster-vec-fts")]
         {
-            if engine != WorkspaceLexicalEngine::A3sVec {
+            if engine != WorkspaceLexicalEngine::AsterVec {
                 return Err(WorkspaceIndexError::InvalidConfig(
-                    "persistent workspace indexing currently requires the a3s-vec lexical engine"
+                    "persistent workspace indexing currently requires the aster-vec lexical engine"
                         .to_owned(),
                 ));
             }
@@ -298,33 +298,33 @@ impl WorkspacePersistentIndex {
     }
 
     /// Fail the next `sync_snapshot` once with a non-retryable query error.
-    #[cfg(all(test, feature = "a3s-vec-fts"))]
+    #[cfg(all(test, feature = "aster-vec-fts"))]
     pub(crate) fn fail_next_sync_for_test(&self) {
         self.fail_next_sync.store(true, Ordering::SeqCst);
     }
 
     /// Whether [`Self::fail_next_sync_for_test`] is still waiting to fire.
-    #[cfg(all(test, feature = "a3s-vec-fts"))]
+    #[cfg(all(test, feature = "aster-vec-fts"))]
     pub(crate) fn non_retryable_sync_failure_is_armed(&self) -> bool {
         self.fail_next_sync.load(Ordering::SeqCst)
     }
 
     pub fn is_ready(&self) -> bool {
-        #[cfg(feature = "a3s-vec-fts")]
+        #[cfg(feature = "aster-vec-fts")]
         {
             self.state
                 .read()
                 .map(|state| state.is_some())
                 .unwrap_or(false)
         }
-        #[cfg(not(feature = "a3s-vec-fts"))]
+        #[cfg(not(feature = "aster-vec-fts"))]
         {
             false
         }
     }
 
     pub fn status(&self) -> WorkspacePersistentIndexStatus {
-        #[cfg(feature = "a3s-vec-fts")]
+        #[cfg(feature = "aster-vec-fts")]
         {
             let building = self.building.load(Ordering::Acquire);
             self.state
@@ -355,7 +355,7 @@ impl WorkspacePersistentIndex {
                     indexed_chunks: 0,
                 })
         }
-        #[cfg(not(feature = "a3s-vec-fts"))]
+        #[cfg(not(feature = "aster-vec-fts"))]
         {
             WorkspacePersistentIndexStatus {
                 phase: WorkspacePersistentIndexPhase::Absent,
@@ -372,14 +372,14 @@ impl WorkspacePersistentIndex {
     }
 
     pub fn drop_index(&self) -> WorkspaceIndexResult<()> {
-        #[cfg(not(feature = "a3s-vec-fts"))]
+        #[cfg(not(feature = "aster-vec-fts"))]
         {
             Err(WorkspaceIndexError::InvalidConfig(
-                "persistent workspace indexing requires the a3s-vec-fts feature".to_owned(),
+                "persistent workspace indexing requires the aster-vec-fts feature".to_owned(),
             ))
         }
 
-        #[cfg(feature = "a3s-vec-fts")]
+        #[cfg(feature = "aster-vec-fts")]
         {
             let _storage_guard = self.acquire_storage_lock()?;
             let _write_guard = self
@@ -427,15 +427,15 @@ impl WorkspacePersistentIndex {
     }
 
     pub fn sync_snapshot(&self, snapshot: &ChunkCatalogSnapshot) -> WorkspaceIndexResult<()> {
-        #[cfg(not(feature = "a3s-vec-fts"))]
+        #[cfg(not(feature = "aster-vec-fts"))]
         {
             let _ = snapshot;
             Err(WorkspaceIndexError::InvalidConfig(
-                "persistent workspace indexing requires the a3s-vec-fts feature".to_owned(),
+                "persistent workspace indexing requires the aster-vec-fts feature".to_owned(),
             ))
         }
 
-        #[cfg(feature = "a3s-vec-fts")]
+        #[cfg(feature = "aster-vec-fts")]
         {
             #[cfg(test)]
             if self.fail_next_sync.swap(false, Ordering::SeqCst) {
@@ -590,7 +590,7 @@ impl WorkspacePersistentIndex {
             // The incremental arm's outcome: the built index, the engine keys
             // aligned to the reordered chunk list, and that reordered list.
             struct IncrementalGeneration {
-                index: super::a3s_vec::A3sVecLexicalIndex,
+                index: super::aster_vec::AsterVecLexicalIndex,
                 pks: Arc<[String]>,
                 chunks: Arc<[Arc<WorkspaceChunk>]>,
             }
@@ -600,7 +600,7 @@ impl WorkspacePersistentIndex {
                     plan_generation_delta(previous_chunks, previous_pks, &indexed_chunks)
                 {
                     let source = self.root.join(previous_generation).join("collection");
-                    match super::a3s_vec::A3sVecLexicalIndex::apply_delta_at_path(
+                    match super::aster_vec::AsterVecLexicalIndex::apply_delta_at_path(
                         &collection_path,
                         &source,
                         delta.kept,
@@ -613,7 +613,7 @@ impl WorkspacePersistentIndex {
                                 generation = %generation,
                                 removed = delta.removed_pks.len(),
                                 appended = delta.appended_count,
-                                "persistent a3s-vec generation built incrementally"
+                                "persistent aster-vec generation built incrementally"
                             );
                             incremental = Some(IncrementalGeneration {
                                 index: built,
@@ -627,7 +627,7 @@ impl WorkspacePersistentIndex {
                             tracing::warn!(
                                 %error,
                                 generation = %generation,
-                                "incremental a3s-vec generation build failed; rebuilding fully"
+                                "incremental aster-vec generation build failed; rebuilding fully"
                             );
                             remove_path_if_exists(&staging)?;
                             fs::create_dir_all(&staging).map_err(|error| {
@@ -651,7 +651,7 @@ impl WorkspacePersistentIndex {
                             .map(|ordinal| String::from("d") + &ordinal.to_string())
                             .collect::<Vec<_>>(),
                     );
-                    let built = super::a3s_vec::A3sVecLexicalIndex::build_at_path(
+                    let built = super::aster_vec::AsterVecLexicalIndex::build_at_path(
                         &collection_path,
                         indexed_chunks
                             .iter()
@@ -726,7 +726,7 @@ impl WorkspacePersistentIndex {
         request: &LexicalSearchRequest,
         snapshot: &ChunkCatalogSnapshot,
     ) -> WorkspaceIndexResult<Option<super::lexical::LexicalSearchResult>> {
-        #[cfg(feature = "a3s-vec-fts")]
+        #[cfg(feature = "aster-vec-fts")]
         {
             let current = self
                 .state
@@ -746,7 +746,7 @@ impl WorkspacePersistentIndex {
                 && result.source_revision == snapshot.source_revision())
             .then_some(result))
         }
-        #[cfg(not(feature = "a3s-vec-fts"))]
+        #[cfg(not(feature = "aster-vec-fts"))]
         {
             let _ = (request, snapshot);
             Ok(None)
@@ -757,15 +757,15 @@ impl WorkspacePersistentIndex {
         &self,
         request: &LexicalSearchRequest,
     ) -> WorkspaceIndexResult<super::lexical::LexicalSearchResult> {
-        #[cfg(not(feature = "a3s-vec-fts"))]
+        #[cfg(not(feature = "aster-vec-fts"))]
         {
             let _ = request;
             Err(WorkspaceIndexError::InvalidConfig(
-                "persistent workspace indexing requires the a3s-vec-fts feature".to_owned(),
+                "persistent workspace indexing requires the aster-vec-fts feature".to_owned(),
             ))
         }
 
-        #[cfg(feature = "a3s-vec-fts")]
+        #[cfg(feature = "aster-vec-fts")]
         {
             let _operation = self.begin_operation()?;
             super::lexical::validate_request(request)?;
@@ -821,7 +821,7 @@ impl WorkspacePersistentIndex {
                 .saturating_mul(request.max_candidate_files.max(1))
                 .min(state.index.document_count().max(request.limit));
             let ranked = state.index.search(&terms, query_limit).map_err(|error| {
-                WorkspaceIndexError::InvalidQuery(format!("a3s-vec FTS search failed: {error}"))
+                WorkspaceIndexError::InvalidQuery(format!("aster-vec FTS search failed: {error}"))
             })?;
             let mut selected_files = HashSet::new();
             let mut hits = Vec::new();
@@ -870,7 +870,7 @@ impl WorkspacePersistentIndex {
     /// teardown uses this boundary before allowing a temporary workspace or
     /// caller-owned root to disappear underneath an open collection.
     pub(crate) fn wait_for_idle(&self) {
-        #[cfg(feature = "a3s-vec-fts")]
+        #[cfg(feature = "aster-vec-fts")]
         {
             let (lock, wake) = &*self.active_operations;
             let Ok(mut count) = lock.lock() else {
@@ -885,7 +885,7 @@ impl WorkspacePersistentIndex {
         }
     }
 
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     fn begin_operation(&self) -> WorkspaceIndexResult<PersistentOperationGuard> {
         let (lock, _) = &*self.active_operations;
         let mut count = lock.lock().map_err(|_| WorkspaceIndexError::LockPoisoned)?;
@@ -897,7 +897,7 @@ impl WorkspacePersistentIndex {
         })
     }
 
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     fn acquire_storage_lock(&self) -> WorkspaceIndexResult<std::fs::File> {
         use fs2::FileExt;
 
@@ -911,7 +911,7 @@ impl WorkspacePersistentIndex {
         Ok(file)
     }
 
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     fn acquire_storage_read_lock(&self) -> WorkspaceIndexResult<std::fs::File> {
         let file = self.open_storage_lock_file()?;
         let path = self.root.join(STORAGE_LOCK_FILE);
@@ -922,7 +922,7 @@ impl WorkspacePersistentIndex {
         Ok(file)
     }
 
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     fn open_storage_lock_file(&self) -> WorkspaceIndexResult<std::fs::File> {
         let path = self.root.join(STORAGE_LOCK_FILE);
         let file = fs::OpenOptions::new()
@@ -938,7 +938,7 @@ impl WorkspacePersistentIndex {
         Ok(file)
     }
 
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     fn load_current(&self) -> WorkspaceIndexResult<()> {
         let Some((generation, manifest)) = self.read_current_manifest()? else {
             return Ok(());
@@ -976,13 +976,13 @@ impl WorkspacePersistentIndex {
                     .cloned()
                     .ok_or_else(|| {
                         WorkspaceIndexError::InvalidConfig(
-                            "persistent a3s-vec v3 chunk omitted its primary key".to_owned(),
+                            "persistent aster-vec v3 chunk omitted its primary key".to_owned(),
                         )
                     })?
             };
             pks.push(pk);
         }
-        let index = super::a3s_vec::A3sVecLexicalIndex::open_persistent(
+        let index = super::aster_vec::AsterVecLexicalIndex::open_persistent(
             generation_root.join("collection"),
             pks.iter()
                 .zip(indexed_chunks.iter())
@@ -991,7 +991,7 @@ impl WorkspacePersistentIndex {
         )
         .map_err(|error| {
             WorkspaceIndexError::InvalidConfig(format!(
-                "persistent a3s-vec index failed to open: {error}"
+                "persistent aster-vec index failed to open: {error}"
             ))
         })?;
         *self
@@ -1010,7 +1010,7 @@ impl WorkspacePersistentIndex {
         Ok(())
     }
 
-    #[cfg(feature = "a3s-vec-fts")]
+    #[cfg(feature = "aster-vec-fts")]
     fn read_current_manifest(&self) -> WorkspaceIndexResult<Option<(String, GenerationManifest)>> {
         let current = self.root.join(CURRENT_FILE);
         let generation = match fs::read_to_string(&current) {
@@ -1025,7 +1025,7 @@ impl WorkspacePersistentIndex {
         };
         if generation.is_empty() || !safe_generation_name(&generation) {
             return Err(WorkspaceIndexError::InvalidConfig(
-                "persistent a3s-vec CURRENT contains an invalid generation name".to_owned(),
+                "persistent aster-vec CURRENT contains an invalid generation name".to_owned(),
             ));
         }
         let generation_root = self.root.join(&generation);
@@ -1035,7 +1035,7 @@ impl WorkspacePersistentIndex {
             || manifest.lexical_engine != self.engine.stable_id()
         {
             return Err(WorkspaceIndexError::InvalidConfig(
-                "persistent a3s-vec index schema or lexical engine is incompatible".to_owned(),
+                "persistent aster-vec index schema or lexical engine is incompatible".to_owned(),
             ));
         }
         validate_persisted_chunks(&manifest.chunks)?;
@@ -1043,7 +1043,7 @@ impl WorkspacePersistentIndex {
     }
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn safe_generation_name(value: &str) -> bool {
     !value.is_empty()
         && value.chars().all(|character| {
@@ -1051,11 +1051,11 @@ fn safe_generation_name(value: &str) -> bool {
         })
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn gc_generations(root: &Path, current_generation: &str) -> WorkspaceIndexResult<()> {
     if !safe_generation_name(current_generation) {
         return Err(WorkspaceIndexError::InvalidConfig(
-            "persistent a3s-vec cleanup received an invalid current generation".to_owned(),
+            "persistent aster-vec cleanup received an invalid current generation".to_owned(),
         ));
     }
     for entry in fs::read_dir(root).map_err(|error| WorkspaceIndexError::ReadFailed {
@@ -1082,7 +1082,7 @@ fn gc_generations(root: &Path, current_generation: &str) -> WorkspaceIndexResult
     Ok(())
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn remove_path_if_exists(path: &Path) -> WorkspaceIndexResult<()> {
     match fs::remove_dir_all(path) {
         Ok(()) => Ok(()),
@@ -1096,7 +1096,7 @@ fn remove_path_if_exists(path: &Path) -> WorkspaceIndexResult<()> {
 
 /// Strip Windows extended-length prefixes that `canonicalize()` adds.
 ///
-/// Native a3s-vec rejects `\\?\C:\...` paths as invalid. Persistent index roots
+/// Native aster-vec rejects `\\?\C:\...` paths as invalid. Persistent index roots
 /// often inherit a canonicalized workspace path, so normalize at this boundary.
 fn strip_windows_verbatim_prefix(path: PathBuf) -> PathBuf {
     #[cfg(windows)]
@@ -1112,7 +1112,7 @@ fn strip_windows_verbatim_prefix(path: PathBuf) -> PathBuf {
     path
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn write_current(root: &Path, generation: &str) -> WorkspaceIndexResult<()> {
     let temporary = root.join(".CURRENT.tmp");
     fs::write(&temporary, format!("{generation}\n")).map_err(|error| {
@@ -1131,12 +1131,12 @@ fn write_current(root: &Path, generation: &str) -> WorkspaceIndexResult<()> {
     })
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn write_json_atomic<T: Serialize>(path: &Path, value: &T) -> WorkspaceIndexResult<()> {
     let temporary = path.with_extension("json.tmp");
     let bytes = serde_json::to_vec(value).map_err(|error| {
         WorkspaceIndexError::InvalidConfig(format!(
-            "persistent a3s-vec manifest serialization failed: {error}"
+            "persistent aster-vec manifest serialization failed: {error}"
         ))
     })?;
     fs::write(&temporary, bytes).map_err(|error| WorkspaceIndexError::ReadFailed {
@@ -1149,7 +1149,7 @@ fn write_json_atomic<T: Serialize>(path: &Path, value: &T) -> WorkspaceIndexResu
     })
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> WorkspaceIndexResult<T> {
     const MAX_MANIFEST_BYTES: u64 = 256 * 1024 * 1024;
     let file = fs::File::open(path).map_err(|error| WorkspaceIndexError::ReadFailed {
@@ -1165,7 +1165,7 @@ fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> WorkspaceIndexResult<
         .len();
     if declared_len > MAX_MANIFEST_BYTES {
         return Err(WorkspaceIndexError::InvalidConfig(format!(
-            "persistent a3s-vec manifest exceeds the {MAX_MANIFEST_BYTES} byte limit"
+            "persistent aster-vec manifest exceeds the {MAX_MANIFEST_BYTES} byte limit"
         )));
     }
     let mut reader = file.take(MAX_MANIFEST_BYTES + 1);
@@ -1182,44 +1182,44 @@ fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> WorkspaceIndexResult<
         })?;
     if bytes.len() as u64 > MAX_MANIFEST_BYTES {
         return Err(WorkspaceIndexError::InvalidConfig(format!(
-            "persistent a3s-vec manifest exceeds the {MAX_MANIFEST_BYTES} byte limit"
+            "persistent aster-vec manifest exceeds the {MAX_MANIFEST_BYTES} byte limit"
         )));
     }
     serde_json::from_slice(&bytes).map_err(|error| {
         WorkspaceIndexError::InvalidConfig(format!(
-            "persistent a3s-vec manifest is invalid: {error}"
+            "persistent aster-vec manifest is invalid: {error}"
         ))
     })
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn validate_persisted_chunks(chunks: &[PersistedChunk]) -> WorkspaceIndexResult<()> {
     let mut ids = HashSet::with_capacity(chunks.len());
     for (index, chunk) in chunks.iter().enumerate() {
         if chunk.path.is_empty() {
             return Err(WorkspaceIndexError::InvalidConfig(format!(
-                "persistent a3s-vec manifest chunk {index} has an empty path"
+                "persistent aster-vec manifest chunk {index} has an empty path"
             )));
         }
         if chunk.start_byte >= chunk.end_byte {
             return Err(WorkspaceIndexError::InvalidConfig(format!(
-                "persistent a3s-vec manifest chunk {index} has an invalid byte range"
+                "persistent aster-vec manifest chunk {index} has an invalid byte range"
             )));
         }
         if chunk.start_line == 0 || chunk.start_line > chunk.end_line {
             return Err(WorkspaceIndexError::InvalidConfig(format!(
-                "persistent a3s-vec manifest chunk {index} has an invalid line range"
+                "persistent aster-vec manifest chunk {index} has an invalid line range"
             )));
         }
         if !valid_sha256_digest(&chunk.content_digest) || !valid_sha256_digest(&chunk.text_digest) {
             return Err(WorkspaceIndexError::InvalidConfig(format!(
-                "persistent a3s-vec manifest chunk {index} has a non-canonical digest"
+                "persistent aster-vec manifest chunk {index} has a non-canonical digest"
             )));
         }
         let expected_text_digest = digest_content(&chunk.text);
         if chunk.text.is_empty() || expected_text_digest.as_ref() != chunk.text_digest {
             return Err(WorkspaceIndexError::InvalidConfig(format!(
-                "persistent a3s-vec manifest chunk {index} text digest does not match its payload"
+                "persistent aster-vec manifest chunk {index} text digest does not match its payload"
             )));
         }
         let expected_id = chunk_id(
@@ -1230,19 +1230,19 @@ fn validate_persisted_chunks(chunks: &[PersistedChunk]) -> WorkspaceIndexResult<
         );
         if chunk.id != expected_id.as_str() {
             return Err(WorkspaceIndexError::InvalidConfig(format!(
-                "persistent a3s-vec manifest chunk {index} id does not bind its metadata"
+                "persistent aster-vec manifest chunk {index} id does not bind its metadata"
             )));
         }
         if !ids.insert(chunk.id.as_str()) {
             return Err(WorkspaceIndexError::InvalidConfig(format!(
-                "persistent a3s-vec manifest contains duplicate chunk id at index {index}"
+                "persistent aster-vec manifest contains duplicate chunk id at index {index}"
             )));
         }
     }
     Ok(())
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn valid_sha256_digest(value: &str) -> bool {
     value.strip_prefix("sha256:").is_some_and(|hex| {
         hex.len() == 64
@@ -1252,7 +1252,7 @@ fn valid_sha256_digest(value: &str) -> bool {
     })
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 /// A bounded chunk delta between two catalog generations.
 struct GenerationDelta {
     /// (engine primary key, text) of the chunks carried over, in the new
@@ -1273,12 +1273,12 @@ struct GenerationDelta {
 
 /// Below this share of the corpus (and always for tiny deltas) a generation
 /// is built incrementally; larger churn amortizes worse than a full build.
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 const DELTA_MAX_SHARE: usize = 3;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 const DELTA_FLOOR: usize = 64;
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn plan_generation_delta(
     previous_chunks: &[Arc<WorkspaceChunk>],
     previous_pks: &[String],
@@ -1335,7 +1335,7 @@ fn plan_generation_delta(
     })
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn indexed_chunks_match(left: &[Arc<WorkspaceChunk>], right: &[Arc<WorkspaceChunk>]) -> bool {
     left.len() == right.len()
         && left.iter().zip(right).all(|(left, right)| {
@@ -1350,7 +1350,7 @@ fn indexed_chunks_match(left: &[Arc<WorkspaceChunk>], right: &[Arc<WorkspaceChun
         })
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 fn distinct_path_count(chunks: &[Arc<WorkspaceChunk>]) -> usize {
     chunks
         .iter()
@@ -1359,5 +1359,5 @@ fn distinct_path_count(chunks: &[Arc<WorkspaceChunk>]) -> usize {
         .len()
 }
 
-#[cfg(all(test, feature = "a3s-vec-fts"))]
+#[cfg(all(test, feature = "aster-vec-fts"))]
 mod tests;

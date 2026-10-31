@@ -7,20 +7,20 @@
 
 use super::corpus;
 use super::session::{wait_for_published_run, wait_for_unchanged_run, CANDIDATE_LIMIT};
-use a3s_code_core::memory::{
+use aster_core::memory::{
     ScheduledSemanticRefresh, SemanticRefreshRunMetrics, SemanticRefreshRunOutcome,
 };
-use a3s_code_core::{DurableMemoryRecallChannel, DurableMemorySession};
-use a3s_memory::repository::MemoryRepository;
-use a3s_memory::vector::{VectorIndex, VectorSearchRequest};
+use aster_core::{DurableMemoryRecallChannel, DurableMemorySession};
+use aster_durable_memory::repository::MemoryRepository;
+use aster_durable_memory::vector::{VectorIndex, VectorSearchRequest};
 use anyhow::{Context, Result};
 use serde::Serialize;
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
-const LABEL_NODE_ID: &str = "a3s.memory.semantic.node_id";
-const LABEL_SCHEMA: &str = "a3s.memory.semantic.schema";
-const RECORD_SCHEMA_V1: &str = "a3s.code.memory.semantic-record.v1";
+const LABEL_NODE_ID: &str = "aster.memory.semantic.node_id";
+const LABEL_SCHEMA: &str = "aster.memory.semantic.schema";
+const RECORD_SCHEMA_V1: &str = "aster.code.memory.semantic-record.v1";
 
 /// One published (or unchanged) horizon plus its invariant checks.
 #[derive(Clone, Debug, Serialize)]
@@ -175,7 +175,7 @@ pub async fn activate_candidates(
             .await?
             .with_context(|| format!("candidate {node_id} is absent"))?;
         session
-            .activate_candidate(a3s_code_core::DurableMemoryActivation::try_new(
+            .activate_candidate(aster_core::DurableMemoryActivation::try_new(
                 format!("dm-prod1-activate-{node_id}"),
                 node_id.clone(),
                 node.revision,

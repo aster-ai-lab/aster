@@ -69,7 +69,7 @@ async fn worker_bounded_drain_preserves_fairness_budget() {
     }
     let worker = FlowWorker::new(engine, queue.clone());
     let mut incompatible = worker.capabilities();
-    incompatible.protocol = "a3s.flow.worker.v0".to_string();
+    incompatible.protocol = "aster.flow.worker.v0".to_string();
     assert!(matches!(
         worker.ensure_compatible(&incompatible),
         Err(FlowError::UnsupportedWorkerProtocol { .. })

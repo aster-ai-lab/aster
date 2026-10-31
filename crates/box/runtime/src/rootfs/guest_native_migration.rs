@@ -4,16 +4,16 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use serde::{Deserialize, Serialize};
 
 use super::guest_native_ext4::GuestNativeExt4Provider;
 use super::provider::{CaseSensitiveApfsProvider, RootfsProvider};
 
-const MIGRATION_SCHEMA: &str = "a3s.box.rootfs-migration.v1";
+const MIGRATION_SCHEMA: &str = "aster.box.rootfs-migration.v1";
 const MIGRATION_FILE_NAME: &str = "rootfs-migration-v1.json";
 const MIGRATION_SOURCE_FORMAT: &str = "case-sensitive-apfs-sparseimage-v2";
-pub(super) const MIGRATION_STAGING_PREFIX: &str = ".a3s-rootfs-migration-";
+pub(super) const MIGRATION_STAGING_PREFIX: &str = ".aster-rootfs-migration-";
 const MAX_MIGRATION_MANIFEST_BYTES: u64 = 64 * 1024;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

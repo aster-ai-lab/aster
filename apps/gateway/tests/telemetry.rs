@@ -1,10 +1,10 @@
 //! Management-endpoint evidence for topology-bounded service telemetry.
 
-use a3s_gateway::config::{
+use aster_gateway::config::{
     EntrypointConfig, GatewayConfig, LoadBalancerConfig, ObservabilityConfig, RouterConfig,
     ServerConfig, ServiceConfig, Strategy,
 };
-use a3s_gateway::Gateway;
+use aster_gateway::Gateway;
 use futures_util::StreamExt;
 use std::collections::HashMap;
 use std::net::SocketAddr;
@@ -65,11 +65,11 @@ fn config(
     backend_address: SocketAddr,
 ) -> GatewayConfig {
     common::ensure_test_admin_token();
-    let management = a3s_gateway::config::ManagementConfig {
+    let management = aster_gateway::config::ManagementConfig {
         enabled: true,
         address: management_address.to_string(),
         auth_token_env: Some(common::TEST_ADMIN_TOKEN_ENV.into()),
-        ..a3s_gateway::config::ManagementConfig::default()
+        ..aster_gateway::config::ManagementConfig::default()
     };
 
     GatewayConfig {

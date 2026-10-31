@@ -26,7 +26,7 @@ async fn exact_background_terminals_reconcile_legacy_observation_only_cache_keys
             outcome: ToolExecutionOutcome::Succeeded,
             exit_code: Some(0),
             output: json!(json!({
-                "kind":"a3s.fact_tool_result", "text":"accepted", "is_error":false,
+                "kind":"aster.fact_tool_result", "text":"accepted", "is_error":false,
                 "exit_code":0, "outcome":"succeeded", "workspace_child":child,
                 "metadata":{"workspace_child":child,"source_run":"cached-run","run":"cache-effect"}
             })
@@ -131,12 +131,12 @@ impl CacheCoverageFixture {
             .cloned();
         let thread = crate::fact_control::thread_for_session(session.session_id());
         let binding = crate::content_digest::digest_json(
-            "a3s.code.tool-admission-binding.v1",
+            "aster.code.tool-admission-binding.v1",
             checkpoint.capability_binding.as_ref().unwrap(),
         )
         .unwrap();
         let mut write = prepared("cached-write-A");
-        write.identity.admission = Some(a3s_effect::ToolAdmissionIdentityV1 {
+        write.identity.admission = Some(aster_effect::ToolAdmissionIdentityV1 {
             run_id: checkpoint.run_id.clone(),
             thread_id: thread.clone(),
             capability_binding_digest: binding,
@@ -187,7 +187,7 @@ impl CacheCoverageFixture {
             outcome: ToolExecutionOutcome::Succeeded,
             exit_code: Some(0),
             output: json!(json!({
-                "kind":"a3s.fact_tool_result", "text":"actual byte check passed",
+                "kind":"aster.fact_tool_result", "text":"actual byte check passed",
                 "is_error":false, "exit_code":0, "outcome":"succeeded",
                 "metadata":{"verification_report":report,"verification_author":"host"}
             })

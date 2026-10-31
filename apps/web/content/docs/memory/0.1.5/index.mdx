@@ -1,11 +1,11 @@
 export const meta = {
   title: 'Aster Memory 产品概览',
-  description: 'a3s-memory 的存储、证据化 Repository、向量索引和宿主边界。',
+  description: 'aster-memory 的存储、证据化 Repository、向量索引和宿主边界。',
   label: '产品概览',
   updated: '2026-10-29',
 };
 
-`a3s-memory` 是可插拔的 Agent 记忆存储库。当前版本为 `0.1.5`。它提供 `MemoryStore`、证据化 `repository` 和独立的 `VectorIndex` 三类接口。
+`aster-memory` 是可插拔的 Agent 记忆存储库。当前版本为 `0.1.5`。它提供 `MemoryStore`、证据化 `repository` 和独立的 `VectorIndex` 三类接口。
 
 Memory 只拥有存储与完整性边界。提取、总结、Embedding、上下文准入、结果融合和调度仍由宿主运行时负责。
 
@@ -19,7 +19,7 @@ Memory 只拥有存储与完整性边界。提取、总结、Embedding、上下�
   ['VectorIndex', '保存调用方向量并执行精确 Top-K', '不生成 Embedding，不作为 MemoryStore'],
 ]} />
 
-三层会话记忆和 `MemoryContextProvider` 位于 `a3s-code`。工作记忆与短期记忆不是 V2 的持久节点类型。
+三层会话记忆和 `MemoryContextProvider` 位于 `aster`。工作记忆与短期记忆不是 V2 的持久节点类型。
 
 ## 证据与激活
 

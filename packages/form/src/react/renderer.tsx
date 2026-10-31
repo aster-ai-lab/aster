@@ -85,7 +85,7 @@ export interface FormNodeAccessoryContext {
 
 function formItemStyle(width: number | undefined, extra?: React.CSSProperties) {
   return {
-    '--a3s-form-item-column': `span ${width ?? 12}`,
+    '--aster-form-item-column': `span ${width ?? 12}`,
     ...extra,
   } as React.CSSProperties;
 }
@@ -232,7 +232,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
     const inputId = nodeInputId(prefix, node.id, props.rowKeys);
     const locale = props.locale ?? plan.metadata.locale ?? 'zh-CN';
     const children = (node.children ?? []).length ? (
-      <div className="a3s-form-custom-children">
+      <div className="aster-form-custom-children">
         {(node.children ?? []).map((child) => (
           <NodeView key={child} {...props} nodeId={child} />
         ))}
@@ -240,9 +240,9 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
     ) : undefined;
     return (
       <div
-        className={`a3s-form-custom-node field${errors.length ? ' is-invalid' : ''}`}
+        className={`aster-form-custom-node field${errors.length ? ' is-invalid' : ''}`}
         data-node-type={node.widget}
-        data-a3s-form-path={valuePath}
+        data-aster-form-path={valuePath}
         data-invalid={errors.length > 0 || undefined}
         data-validating={validating || undefined}
         aria-busy={
@@ -293,7 +293,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
           state={dataSource}
         />
         {errors.map((error) => (
-          <div className="a3s-form-error" role="alert" key={`${error.code}-${error.message}`}>
+          <div className="aster-form-error" role="alert" key={`${error.code}-${error.message}`}>
             {error.message}
           </div>
         ))}
@@ -305,7 +305,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
     if (node.presentation === 'divider')
       return (
         <div
-          className="a3s-form-content a3s-form-divider field-separator"
+          className="aster-form-content aster-form-divider field-separator"
           style={formItemStyle(node.width)}
         >
           <hr />
@@ -315,13 +315,13 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
     if (node.presentation === 'spacer')
       return (
         <div
-          className="a3s-form-content a3s-form-spacer"
+          className="aster-form-content aster-form-spacer"
           style={formItemStyle(node.width, { height: node.gap ?? 24 })}
           aria-hidden="true"
         />
       );
     return (
-      <div className="a3s-form-content" style={formItemStyle(node.width)}>
+      <div className="aster-form-content" style={formItemStyle(node.width)}>
         {node.content}
       </div>
     );
@@ -329,8 +329,8 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
   if (node.kind !== 'field' && node.kind !== 'repeater') {
     const Tag = node.kind === 'section' ? 'section' : 'div';
     const layoutStyle = {
-      '--a3s-form-gap': `${node.gap ?? 16}px`,
-      '--a3s-form-item-column': `span ${node.width ?? 12}`,
+      '--aster-form-gap': `${node.gap ?? 16}px`,
+      '--aster-form-item-column': `span ${node.width ?? 12}`,
     } as React.CSSProperties;
     if (node.layout === 'wizard') {
       const runtime = props.wizardController.states[node.id];
@@ -364,7 +364,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
         : tabs[0]?.id;
       return (
         <section
-          className="a3s-form-layout a3s-form-tabs tabs"
+          className="aster-form-layout aster-form-tabs tabs"
           aria-labelledby={node.label ? `${prefix}-${node.id}-title` : undefined}
           style={layoutStyle}
         >
@@ -375,7 +375,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
             </header>
           )}
           <div
-            className="a3s-form-tablist"
+            className="aster-form-tablist"
             role="tablist"
             aria-label={node.label}
             aria-orientation="horizontal"
@@ -398,7 +398,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
           </div>
           {active && (
             <div
-              className="a3s-form-tabpanel"
+              className="aster-form-tabpanel"
               id={`${prefix}-${node.id}-panel`}
               role="tabpanel"
               aria-labelledby={`${prefix}-${node.id}-tab-${active}`}
@@ -412,7 +412,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
     if (node.layout === 'collapse') {
       return (
         <section
-          className="a3s-form-layout a3s-form-collapse accordion"
+          className="aster-form-layout aster-form-collapse accordion"
           aria-labelledby={node.label ? `${prefix}-${node.id}-title` : undefined}
           style={layoutStyle}
         >
@@ -439,7 +439,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
     }
     return (
       <Tag
-        className={`a3s-form-layout a3s-form-${node.kind} a3s-form-${node.layout ?? 'flow'}${node.layout === 'card' ? ' card' : ''}`}
+        className={`aster-form-layout aster-form-${node.kind} aster-form-${node.layout ?? 'flow'}${node.layout === 'card' ? ' card' : ''}`}
         aria-labelledby={node.label ? `${prefix}-${node.id}-title` : undefined}
         style={layoutStyle}
       >
@@ -450,11 +450,11 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
           </header>
         )}
         <div
-          className="a3s-form-grid"
+          className="aster-form-grid"
           style={
             {
-              '--a3s-form-columns': node.columns ?? 12,
-              '--a3s-form-gap': `${node.gap ?? 16}px`,
+              '--aster-form-columns': node.columns ?? 12,
+              '--aster-form-gap': `${node.gap ?? 16}px`,
             } as React.CSSProperties
           }
         >
@@ -498,7 +498,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
         name={valuePath}
         value={hiddenValue}
         readOnly
-        data-a3s-form-path={valuePath}
+        data-aster-form-path={valuePath}
       />
     );
   }
@@ -657,7 +657,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
   }
   return (
     <div
-      className={`a3s-form-field field${booleanField ? ' is-boolean' : ''}${errors.length ? ' is-invalid' : ''}`}
+      className={`aster-form-field field${booleanField ? ' is-boolean' : ''}${errors.length ? ' is-invalid' : ''}`}
       data-orientation={booleanField ? 'horizontal' : undefined}
       data-disabled={
         props.readOnly ||
@@ -668,7 +668,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
       }
       data-invalid={errors.length > 0 || undefined}
       data-validating={validating || undefined}
-      data-a3s-form-path={valuePath}
+      data-aster-form-path={valuePath}
       aria-busy={
         validating || dataSource.status === 'loading' || dataSource.loadingMore || undefined
       }
@@ -678,7 +678,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
         (compositeField ? (
           <div
             id={`${inputId}-label`}
-            className={`a3s-form-field-label${required ? ' is-required' : ''}`}
+            className={`aster-form-field-label${required ? ' is-required' : ''}`}
           >
             {node.label ?? node.id}
           </div>
@@ -736,7 +736,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
       {!matrixField &&
         errors.map((error, index) => (
           <div
-            className="a3s-form-error"
+            className="aster-form-error"
             id={`${inputId}-error-${index + 1}`}
             role="alert"
             key={`${error.code}-${error.message}`}
@@ -774,7 +774,7 @@ function handleLayoutTabKey(
 
 export function FormRenderer(props: FormRendererProps) {
   const generatedId = useId().replaceAll(':', '');
-  const prefix = `a3sf-${generatedId}`;
+  const prefix = `asterf-${generatedId}`;
   const formRef = useRef<HTMLFormElement>(null);
   const actionController = useRef<AbortController | null>(null);
   const formValidationController = useRef<AbortController | null>(null);
@@ -1098,7 +1098,7 @@ export function FormRenderer(props: FormRendererProps) {
   return (
     <form
       ref={formRef}
-      className={`a3s-form-renderer ${props.className ?? ''}`}
+      className={`aster-form-renderer ${props.className ?? ''}`}
       onSubmit={submit}
       noValidate
       aria-busy={Boolean(pendingAction || validatingForm || validatingWizardPageId)}
@@ -1127,7 +1127,7 @@ export function FormRenderer(props: FormRendererProps) {
       />
       {errors.length > 0 && (
         <section
-          className="a3s-form-error-summary"
+          className="aster-form-error-summary"
           role="alert"
           aria-label={messages.errorSummaryLabel}
         >
@@ -1164,12 +1164,12 @@ export function FormRenderer(props: FormRendererProps) {
         </section>
       )}
       {actionError && (
-        <div className="a3s-form-action-error" role="alert">
+        <div className="aster-form-action-error" role="alert">
           {actionError}
         </div>
       )}
       {props.plan.actions.length > 0 && wizardController.allAtEnd && (
-        <footer className="a3s-form-actions">
+        <footer className="aster-form-actions">
           {props.plan.actions.map((action) => {
             const primary =
               action.tone === 'primary' ||
@@ -1180,7 +1180,7 @@ export function FormRenderer(props: FormRendererProps) {
               <button
                 key={action.id}
                 type={primary ? 'submit' : 'button'}
-                className={`btn ${danger ? 'a3s-form-danger' : primary ? 'a3s-form-primary' : 'a3s-form-secondary'}`}
+                className={`btn ${danger ? 'aster-form-danger' : primary ? 'aster-form-primary' : 'aster-form-secondary'}`}
                 data-variant={variant}
                 onClick={(event) => {
                   if (primary) event.preventDefault();
@@ -1201,13 +1201,13 @@ export function FormRenderer(props: FormRendererProps) {
         </footer>
       )}
       {pendingAction && (
-        <span className="a3s-form-action-progress" role="status" aria-live="polite">
+        <span className="aster-form-action-progress" role="status" aria-live="polite">
           {messages.actionPending}
         </span>
       )}
       {validatingForm && (
         <span
-          className="a3s-form-action-progress"
+          className="aster-form-action-progress"
           role="status"
           aria-label={messages.formValidationPendingLabel}
           aria-live="polite"

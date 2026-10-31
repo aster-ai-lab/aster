@@ -5,8 +5,8 @@
   min-width: 0;
   flex: 0 0 auto;
   flex-direction: column;
-  border-bottom: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
+  border-bottom: 1px solid var(--aster-line);
+  background: var(--aster-panel);
 }
 
 .work-office-preview-bar {
@@ -18,8 +18,8 @@
   flex: 0 0 36px;
   align-items: center;
   gap: 12px;
-  border-bottom: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
+  border-bottom: 1px solid var(--aster-line);
+  background: var(--aster-panel);
 }
 
 .work-office-preview-summary {
@@ -29,7 +29,7 @@
   align-items: center;
   gap: 6px;
   overflow: hidden;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
   white-space: nowrap;
 }
@@ -41,17 +41,17 @@
 
 .work-office-preview-summary > svg {
   flex: 0 0 auto;
-  color: var(--work-office-accent, var(--a3s-ink));
+  color: var(--work-office-accent, var(--aster-ink));
 }
 
 .work-office-preview-summary strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-weight: 500;
 }
 
 .work-office-preview-summary span {
   overflow: hidden;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   text-overflow: ellipsis;
 }
 
@@ -94,13 +94,13 @@
   border-radius: 8px;
   font-size: 13px;
   font-weight: 400;
-  color: var(--a3s-body);
+  color: var(--aster-body);
 }
 
 .work-office-ribbon-tabs > button[data-contextual="true"] {
-  background: var(--a3s-panel-soft);
-  box-shadow: inset 0 2px var(--a3s-line);
-  color: var(--a3s-body);
+  background: var(--aster-panel-soft);
+  box-shadow: inset 0 2px var(--aster-line);
+  color: var(--aster-body);
 }
 
 .work-office-ribbon-tabs > button[data-contextual="true"]:hover:not(:disabled) {
@@ -113,13 +113,13 @@
 }
 
 .work-office-ribbon-tabs > button:focus-visible {
-  outline: 2px solid var(--a3s-ink);
+  outline: 2px solid var(--aster-ink);
   outline-offset: -2px;
   box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
 }
 
 .work-office-ribbon-tabs.ds-tabs > button[aria-selected="true"] {
-  background: var(--a3s-panel-strong);
+  background: var(--aster-panel-strong);
   box-shadow: none;
   color: var(--work-office-accent);
   font-weight: 500;
@@ -127,7 +127,7 @@
 
 .work-office-ribbon-tabs.ds-tabs
   > button[aria-selected="true"]:hover:not(:disabled) {
-  background: var(--a3s-panel-strong);
+  background: var(--aster-panel-strong);
   color: var(--work-office-accent);
 }
 
@@ -147,9 +147,9 @@
   align-items: center;
   gap: 1px;
   padding: 0 4px;
-  border-left: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
-  box-shadow: -5px 0 10px color-mix(in srgb, var(--a3s-panel) 88%, transparent);
+  border-left: 1px solid var(--aster-line);
+  background: var(--aster-panel);
+  box-shadow: -5px 0 10px color-mix(in srgb, var(--aster-panel) 88%, transparent);
 }
 
 .work-office-ribbon-tab-navigation > button {
@@ -162,7 +162,7 @@
   border-radius: 5px;
   outline: 0;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   cursor: pointer;
 }
 
@@ -171,7 +171,7 @@
   background: color-mix(
     in srgb,
     var(--work-office-accent) 8%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
   color: var(--work-office-accent);
 }
@@ -192,7 +192,7 @@
   align-items: center;
   gap: 1px;
   padding: 0 5px;
-  border-right: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
 }
 
 .work-office-quick-access > button,
@@ -206,7 +206,7 @@
   border-radius: 5px;
   outline: 0;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   cursor: pointer;
 }
 
@@ -217,7 +217,7 @@
   background: color-mix(
     in srgb,
     var(--work-office-accent) 8%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
   color: var(--work-office-accent);
 }
@@ -248,7 +248,7 @@
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  border-right: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
 }
 
 .work-office-file-trigger {
@@ -274,7 +274,7 @@
   background: color-mix(
     in srgb,
     var(--work-office-accent) 8%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
 }
 
@@ -334,7 +334,7 @@
 }
 
 .work-office-file-popover > button:disabled {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   cursor: not-allowed;
   opacity: 1;
 }
@@ -360,28 +360,28 @@
 }
 
 .work-office-file-popover > button:disabled .work-office-file-action-icon {
-  background: color-mix(in srgb, var(--a3s-faint) 8%, transparent);
-  color: var(--a3s-faint);
+  background: color-mix(in srgb, var(--aster-faint) 8%, transparent);
+  color: var(--aster-faint);
 }
 
 .work-office-file-popover > button.danger:not(:disabled) {
-  color: var(--a3s-red);
+  color: var(--aster-red);
 }
 
 .work-office-file-popover
   > button.danger:not(:disabled)
   .work-office-file-action-icon {
-  background: color-mix(in srgb, var(--a3s-red) 9%, transparent);
+  background: color-mix(in srgb, var(--aster-red) 9%, transparent);
   color: currentcolor;
 }
 
 .work-office-file-popover > button.danger:hover:not(:disabled),
 .work-office-file-popover > button.danger:focus-visible {
-  background: color-mix(in srgb, var(--a3s-red) 8%, var(--a3s-panel));
+  background: color-mix(in srgb, var(--aster-red) 8%, var(--aster-panel));
 }
 
 .work-office-file-popover kbd {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font: inherit;
   font-size: 9px;
   white-space: nowrap;
@@ -391,7 +391,7 @@
   height: 1px;
   margin: 6px 8px;
   border: 0;
-  background: var(--a3s-line);
+  background: var(--aster-line);
 }
 
 @media (max-width: 640px) {
@@ -419,9 +419,9 @@
   top: 36px;
   right: 0;
   left: 0;
-  border-top: 1px solid var(--a3s-line);
-  border-bottom: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
+  border-top: 1px solid var(--aster-line);
+  border-bottom: 1px solid var(--aster-line);
+  background: var(--aster-panel);
   box-shadow: 0 12px 26px rgb(24 31 46 / 15%);
 }
 
@@ -458,9 +458,9 @@
   padding: 0;
   place-items: center;
   border: 1px solid
-    color-mix(in srgb, var(--work-office-accent) 18%, var(--a3s-line));
+    color-mix(in srgb, var(--work-office-accent) 18%, var(--aster-line));
   border-radius: 7px;
-  background: color-mix(in srgb, var(--a3s-panel) 94%, transparent);
+  background: color-mix(in srgb, var(--aster-panel) 94%, transparent);
   box-shadow: 0 3px 12px rgb(20 27 43 / 10%);
   color: var(--work-office-accent);
   cursor: pointer;
@@ -480,12 +480,12 @@
   border-color: color-mix(
     in srgb,
     var(--work-office-accent) 38%,
-    var(--a3s-line)
+    var(--aster-line)
   );
   background: color-mix(
     in srgb,
     var(--work-office-accent) 8%,
-    var(--a3s-panel)
+    var(--aster-panel)
   );
   box-shadow: 0 5px 16px rgb(20 27 43 / 14%);
 }
@@ -499,9 +499,9 @@
   border-color: color-mix(
     in srgb,
     var(--work-office-accent) 18%,
-    var(--a3s-line)
+    var(--aster-line)
   );
-  background: color-mix(in srgb, var(--a3s-panel) 94%, transparent);
+  background: color-mix(in srgb, var(--aster-panel) 94%, transparent);
   box-shadow: 0 3px 12px rgb(20 27 43 / 10%);
 }
 
@@ -512,7 +512,7 @@
   flex: 0 0 auto;
   align-items: stretch;
   padding: 0 9px 12px;
-  border-right: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
 }
 
 .work-office-ribbon-group:first-child {
@@ -536,7 +536,7 @@
   bottom: 0;
   left: 8px;
   overflow: hidden;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 9px;
   line-height: 9px;
   text-align: center;
@@ -561,7 +561,7 @@
   border: 0;
   border-radius: 2px;
   background: transparent;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   cursor: pointer;
 }
 
@@ -572,7 +572,7 @@
   .work-office-toolbar
   .work-office-ribbon-dialog-launcher:focus-visible {
   outline: 0;
-  background: var(--a3s-panel-strong);
+  background: var(--aster-panel-strong);
   color: var(--work-office-accent);
 }
 
@@ -680,8 +680,8 @@
   min-width: 14px;
   padding: 0 3px;
   border-radius: 999px;
-  background: var(--a3s-panel-strong);
-  color: var(--a3s-faint);
+  background: var(--aster-panel-strong);
+  color: var(--aster-faint);
   font-size: 7px;
   font-weight: 650;
   line-height: 13px;
@@ -702,9 +702,9 @@
   justify-content: space-between;
   gap: 12px;
   padding: 0 9px 0 12px;
-  border-top: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
-  color: var(--a3s-muted);
+  border-top: 1px solid var(--aster-line);
+  background: var(--aster-panel);
+  color: var(--aster-muted);
   font-size: 12px;
 }
 
@@ -741,22 +741,22 @@
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: var(--a3s-muted);
-  font: 600 10px / 1 var(--a3s-ui-font);
+  color: var(--aster-muted);
+  font: 600 10px / 1 var(--aster-ui-font);
   cursor: pointer;
 }
 
 .work-office-collaboration-trigger:hover,
 .work-office-collaboration-trigger[aria-expanded="true"] {
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
 }
 
 .work-office-collaboration-trigger:focus-visible {
   outline: 2px solid
     color-mix(
       in srgb,
-      var(--work-office-accent, var(--a3s-ink)) 42%,
+      var(--work-office-accent, var(--aster-ink)) 42%,
       transparent
     );
   outline-offset: 1px;
@@ -777,11 +777,11 @@
   flex: 0 0 28px;
   place-items: center;
   overflow: visible;
-  border: 2px solid var(--a3s-panel);
+  border: 2px solid var(--aster-panel);
   border-radius: 50%;
-  background: var(--work-office-presence-color, var(--a3s-blue));
+  background: var(--work-office-presence-color, var(--aster-blue));
   color: #fff;
-  font: 700 11px / 1 var(--a3s-ui-font);
+  font: 700 11px / 1 var(--aster-ui-font);
   isolation: isolate;
 }
 
@@ -812,7 +812,7 @@
   bottom: -2px;
   width: 7px;
   height: 7px;
-  border: 1.5px solid var(--a3s-panel);
+  border: 1.5px solid var(--aster-panel);
   border-radius: 50%;
   background: #16a34a;
   content: "";
@@ -831,13 +831,13 @@
 }
 
 .work-office-collaboration-avatar[data-activity="away"]::after {
-  background: var(--a3s-faint);
+  background: var(--aster-faint);
 }
 
 .work-office-collaboration-overflow {
   z-index: 4;
-  background: var(--a3s-panel-strong);
-  color: var(--a3s-muted);
+  background: var(--aster-panel-strong);
+  color: var(--aster-muted);
 }
 
 .work-office-collaboration-summary {
@@ -858,7 +858,7 @@
   align-items: center;
   gap: 10px;
   padding: 12px 14px 10px;
-  border-bottom: 1px solid var(--a3s-line);
+  border-bottom: 1px solid var(--aster-line);
 }
 
 .work-office-collaboration-heading-icon {
@@ -870,10 +870,10 @@
   border-radius: 8px;
   background: color-mix(
     in srgb,
-    var(--work-office-accent, var(--a3s-ink)) 10%,
-    var(--a3s-panel)
+    var(--work-office-accent, var(--aster-ink)) 10%,
+    var(--aster-panel)
   );
-  color: var(--work-office-accent, var(--a3s-ink));
+  color: var(--work-office-accent, var(--aster-ink));
 }
 
 .work-office-collaboration-heading > span:last-child {
@@ -882,12 +882,12 @@
 }
 
 .work-office-collaboration-heading strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 12px;
 }
 
 .work-office-collaboration-heading small {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
 }
 
@@ -907,7 +907,7 @@
 }
 
 .work-office-collaboration-list > li[data-local="true"] {
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-office-collaboration-participant {
@@ -936,8 +936,8 @@ button.work-office-collaboration-participant {
 button.work-office-collaboration-participant:hover {
   background: color-mix(
     in srgb,
-    var(--work-office-accent, var(--a3s-ink)) 7%,
-    var(--a3s-panel)
+    var(--work-office-accent, var(--aster-ink)) 7%,
+    var(--aster-panel)
   );
 }
 
@@ -945,13 +945,13 @@ button.work-office-collaboration-participant:focus-visible {
   box-shadow: inset 0 0 0 2px
     color-mix(
       in srgb,
-      var(--work-office-accent, var(--a3s-ink)) 44%,
+      var(--work-office-accent, var(--aster-ink)) 44%,
       transparent
     );
 }
 
 .work-office-collaboration-locate {
-  color: var(--work-office-accent, var(--a3s-ink));
+  color: var(--work-office-accent, var(--aster-ink));
   opacity: 0.72;
 }
 
@@ -981,7 +981,7 @@ button.work-office-collaboration-participant:focus-visible
 
 .work-office-collaboration-name strong {
   overflow: hidden;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -991,15 +991,15 @@ button.work-office-collaboration-participant:focus-visible
   flex: 0 0 auto;
   padding: 2px 5px;
   border-radius: 999px;
-  background: var(--a3s-panel-strong);
-  color: var(--a3s-muted);
+  background: var(--aster-panel-strong);
+  color: var(--aster-muted);
   font-size: 8px;
   line-height: 1;
 }
 
 .work-office-collaboration-detail {
   overflow: hidden;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 9px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1050,7 +1050,7 @@ button.work-office-collaboration-participant:focus-visible
   background: var(--work-office-presence-color);
   box-shadow: 0 3px 8px rgb(15 23 42 / 16%);
   color: #fff;
-  font: 650 9px / 1.25 var(--a3s-ui-font);
+  font: 650 9px / 1.25 var(--aster-ui-font);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1146,7 +1146,7 @@ button.work-office-collaboration-participant:focus-visible
   border: 0;
   border-radius: 4px;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   cursor: pointer;
 }
 
@@ -1161,8 +1161,8 @@ button.work-office-collaboration-participant:focus-visible
 
 .work-office-status button:hover:not(:disabled),
 .work-office-status button[aria-pressed="true"] {
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
 }
 
 .work-office-status button:disabled {
@@ -1184,12 +1184,12 @@ button.work-office-collaboration-participant:focus-visible
   width: 1px;
   height: 15px;
   margin: 0 3px;
-  background: var(--a3s-line);
+  background: var(--aster-line);
 }
 
 .work-office-save-status {
   gap: 4px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 @media (max-width: 1120px) {

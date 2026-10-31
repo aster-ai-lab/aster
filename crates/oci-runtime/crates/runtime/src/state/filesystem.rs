@@ -6,7 +6,7 @@ use std::sync::Arc;
 mod platform;
 mod transaction;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use cap_fs_ext::{DirExt, FollowSymlinks, MetadataExt, OpenOptionsFollowExt};
 use cap_std::ambient_authority;
 use cap_std::fs::{Dir, OpenOptions};
@@ -802,6 +802,6 @@ mod tests {
             .verify_directory_location(&foreign, Path::new("/dev"))
             .expect_err("a foreign mount must fail the state-root identity check");
 
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::FailedPrecondition);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::FailedPrecondition);
     }
 }

@@ -24,90 +24,90 @@ pub(crate) fn expand_injectable(
     Ok(quote! {
         #item_struct
 
-        impl #from_impl_generics ::a3s_boot::FromModuleRef for #ident #ty_generics #from_where_clause {
-            fn from_module_ref(module_ref: &::a3s_boot::ModuleRef) -> ::a3s_boot::Result<Self> {
+        impl #from_impl_generics ::aster_boot::FromModuleRef for #ident #ty_generics #from_where_clause {
+            fn from_module_ref(module_ref: &::aster_boot::ModuleRef) -> ::aster_boot::Result<Self> {
                 #constructor
             }
 
             fn provider_dependencies() -> ::std::option::Option<
-                ::std::vec::Vec<::a3s_boot::ProviderDependency>,
+                ::std::vec::Vec<::aster_boot::ProviderDependency>,
             > {
                 ::std::option::Option::Some(::std::vec![#(#dependencies,)*])
             }
         }
 
         impl #impl_generics #ident #ty_generics #where_clause {
-            pub fn provider() -> ::a3s_boot::ProviderDefinition
+            pub fn provider() -> ::aster_boot::ProviderDefinition
             where
-                Self: ::a3s_boot::FromModuleRef,
+                Self: ::aster_boot::FromModuleRef,
             {
-                ::a3s_boot::ProviderDefinition::injectable::<Self>()
+                ::aster_boot::ProviderDefinition::injectable::<Self>()
             }
 
-            pub fn named_provider(token: impl Into<String>) -> ::a3s_boot::ProviderDefinition
+            pub fn named_provider(token: impl Into<String>) -> ::aster_boot::ProviderDefinition
             where
-                Self: ::a3s_boot::FromModuleRef,
+                Self: ::aster_boot::FromModuleRef,
             {
-                ::a3s_boot::ProviderDefinition::named_injectable::<Self>(token)
+                ::aster_boot::ProviderDefinition::named_injectable::<Self>(token)
             }
 
-            pub fn request_scoped_provider() -> ::a3s_boot::ProviderDefinition
+            pub fn request_scoped_provider() -> ::aster_boot::ProviderDefinition
             where
-                Self: ::a3s_boot::FromModuleRef,
+                Self: ::aster_boot::FromModuleRef,
             {
-                ::a3s_boot::ProviderDefinition::request_scoped_injectable::<Self>()
+                ::aster_boot::ProviderDefinition::request_scoped_injectable::<Self>()
             }
 
-            pub fn named_request_scoped_provider(token: impl Into<String>) -> ::a3s_boot::ProviderDefinition
+            pub fn named_request_scoped_provider(token: impl Into<String>) -> ::aster_boot::ProviderDefinition
             where
-                Self: ::a3s_boot::FromModuleRef,
+                Self: ::aster_boot::FromModuleRef,
             {
-                ::a3s_boot::ProviderDefinition::named_request_scoped_injectable::<Self>(token)
+                ::aster_boot::ProviderDefinition::named_request_scoped_injectable::<Self>(token)
             }
 
-            pub fn transient_provider() -> ::a3s_boot::ProviderDefinition
+            pub fn transient_provider() -> ::aster_boot::ProviderDefinition
             where
-                Self: ::a3s_boot::FromModuleRef,
+                Self: ::aster_boot::FromModuleRef,
             {
-                ::a3s_boot::ProviderDefinition::transient_injectable::<Self>()
+                ::aster_boot::ProviderDefinition::transient_injectable::<Self>()
             }
 
-            pub fn named_transient_provider(token: impl Into<String>) -> ::a3s_boot::ProviderDefinition
+            pub fn named_transient_provider(token: impl Into<String>) -> ::aster_boot::ProviderDefinition
             where
-                Self: ::a3s_boot::FromModuleRef,
+                Self: ::aster_boot::FromModuleRef,
             {
-                ::a3s_boot::ProviderDefinition::named_transient_injectable::<Self>(token)
+                ::aster_boot::ProviderDefinition::named_transient_injectable::<Self>(token)
             }
 
-            pub fn into_provider(self) -> ::a3s_boot::ProviderDefinition
+            pub fn into_provider(self) -> ::aster_boot::ProviderDefinition
             where
                 Self: ::std::marker::Send + ::std::marker::Sync + 'static,
             {
-                ::a3s_boot::ProviderDefinition::singleton(self)
+                ::aster_boot::ProviderDefinition::singleton(self)
             }
 
-            pub fn into_named_provider(self, token: impl Into<String>) -> ::a3s_boot::ProviderDefinition
+            pub fn into_named_provider(self, token: impl Into<String>) -> ::aster_boot::ProviderDefinition
             where
                 Self: ::std::marker::Send + ::std::marker::Sync + 'static,
             {
-                ::a3s_boot::ProviderDefinition::named_singleton(token, self)
+                ::aster_boot::ProviderDefinition::named_singleton(token, self)
             }
 
-            pub fn from_arc_provider(value: ::std::sync::Arc<Self>) -> ::a3s_boot::ProviderDefinition
+            pub fn from_arc_provider(value: ::std::sync::Arc<Self>) -> ::aster_boot::ProviderDefinition
             where
                 Self: ::std::marker::Send + ::std::marker::Sync + 'static,
             {
-                ::a3s_boot::ProviderDefinition::from_arc(value)
+                ::aster_boot::ProviderDefinition::from_arc(value)
             }
 
             pub fn from_named_arc_provider(
                 token: impl Into<String>,
                 value: ::std::sync::Arc<Self>,
-            ) -> ::a3s_boot::ProviderDefinition
+            ) -> ::aster_boot::ProviderDefinition
             where
                 Self: ::std::marker::Send + ::std::marker::Sync + 'static,
             {
-                ::a3s_boot::ProviderDefinition::named_from_arc(token, value)
+                ::aster_boot::ProviderDefinition::named_from_arc(token, value)
             }
         }
     })
@@ -148,7 +148,7 @@ pub(crate) fn expand_module(
                 #({
                     if module_ref.provider_is_contextual::<#controllers>()?
                         || module_ref.provider_scope::<#controllers>()?
-                            != ::a3s_boot::ProviderScope::Singleton
+                            != ::aster_boot::ProviderScope::Singleton
                     {
                         <#controllers>::provider_controller()?
                     } else {
@@ -177,12 +177,12 @@ pub(crate) fn expand_module(
         })
     } else {
         quote! {
-            let mut __a3s_boot_patterns = ::std::vec::Vec::new();
+            let mut __aster_boot_patterns = ::std::vec::Vec::new();
             #(
-                __a3s_boot_patterns.extend({
+                __aster_boot_patterns.extend({
                     if module_ref.provider_is_contextual::<#message_controllers>()?
                         || module_ref.provider_scope::<#message_controllers>()?
-                            != ::a3s_boot::ProviderScope::Singleton
+                            != ::aster_boot::ProviderScope::Singleton
                     {
                         <#message_controllers>::provider_message_patterns()?
                     } else {
@@ -190,7 +190,7 @@ pub(crate) fn expand_module(
                     }
                 });
             )*
-            Ok(__a3s_boot_patterns)
+            Ok(__aster_boot_patterns)
         }
     };
     let global = args.global;
@@ -199,24 +199,24 @@ pub(crate) fn expand_module(
     Ok(quote! {
         #item_struct
 
-        impl #impl_generics ::a3s_boot::Module for #ident #ty_generics #where_clause {
+        impl #impl_generics ::aster_boot::Module for #ident #ty_generics #where_clause {
             fn name(&self) -> &'static str {
                 #module_name
             }
 
-            fn imports(&self) -> ::std::vec::Vec<::std::sync::Arc<dyn ::a3s_boot::Module>> {
+            fn imports(&self) -> ::std::vec::Vec<::std::sync::Arc<dyn ::aster_boot::Module>> {
                 ::std::vec![#(::std::sync::Arc::new(#imports),)*]
             }
 
-            fn forward_imports(&self) -> ::std::vec::Vec<::std::sync::Arc<dyn ::a3s_boot::Module>> {
+            fn forward_imports(&self) -> ::std::vec::Vec<::std::sync::Arc<dyn ::aster_boot::Module>> {
                 ::std::vec![#(::std::sync::Arc::new(#forward_imports),)*]
             }
 
-            fn providers(&self) -> ::a3s_boot::Result<::std::vec::Vec<::a3s_boot::ProviderDefinition>> {
+            fn providers(&self) -> ::aster_boot::Result<::std::vec::Vec<::aster_boot::ProviderDefinition>> {
                 Ok(::std::vec![#(#provider_tokens,)*])
             }
 
-            fn exports(&self) -> ::a3s_boot::Result<::std::vec::Vec<::a3s_boot::ProviderToken>> {
+            fn exports(&self) -> ::aster_boot::Result<::std::vec::Vec<::aster_boot::ProviderToken>> {
                 Ok(::std::vec![#(#exports,)*])
             }
 
@@ -230,26 +230,26 @@ pub(crate) fn expand_module(
 
             fn controllers(
                 &self,
-                module_ref: &::a3s_boot::ModuleRef,
-            ) -> ::a3s_boot::Result<::std::vec::Vec<::a3s_boot::ControllerDefinition>> {
+                module_ref: &::aster_boot::ModuleRef,
+            ) -> ::aster_boot::Result<::std::vec::Vec<::aster_boot::ControllerDefinition>> {
                 #controllers_body
             }
 
-            fn routes(&self) -> ::a3s_boot::Result<::std::vec::Vec<::a3s_boot::RouteDefinition>> {
+            fn routes(&self) -> ::aster_boot::Result<::std::vec::Vec<::aster_boot::RouteDefinition>> {
                 Ok(::std::vec![#(#routes,)*])
             }
 
             fn gateways(
                 &self,
-                module_ref: &::a3s_boot::ModuleRef,
-            ) -> ::a3s_boot::Result<::std::vec::Vec<::a3s_boot::WebSocketGatewayDefinition>> {
+                module_ref: &::aster_boot::ModuleRef,
+            ) -> ::aster_boot::Result<::std::vec::Vec<::aster_boot::WebSocketGatewayDefinition>> {
                 #gateways_body
             }
 
             fn message_patterns(
                 &self,
-                module_ref: &::a3s_boot::ModuleRef,
-            ) -> ::a3s_boot::Result<::std::vec::Vec<::a3s_boot::MessagePatternDefinition>> {
+                module_ref: &::aster_boot::ModuleRef,
+            ) -> ::aster_boot::Result<::std::vec::Vec<::aster_boot::MessagePatternDefinition>> {
                 #message_patterns_body
             }
         }
@@ -270,21 +270,21 @@ pub(crate) fn expand_catch(
         #item_struct
 
         impl #impl_generics #ident #ty_generics #where_clause {
-            pub fn catch_filter() -> ::a3s_boot::CatchFilter<Self>
+            pub fn catch_filter() -> ::aster_boot::CatchFilter<Self>
             where
-                Self: ::std::default::Default + ::a3s_boot::ExceptionFilter,
+                Self: ::std::default::Default + ::aster_boot::ExceptionFilter,
             {
-                ::a3s_boot::catch_errors(#catch_kinds_for_default, Self::default())
+                ::aster_boot::catch_errors(#catch_kinds_for_default, Self::default())
             }
 
-            pub fn catch_filter_with(filter: Self) -> ::a3s_boot::CatchFilter<Self>
+            pub fn catch_filter_with(filter: Self) -> ::aster_boot::CatchFilter<Self>
             where
-                Self: ::a3s_boot::ExceptionFilter,
+                Self: ::aster_boot::ExceptionFilter,
             {
-                ::a3s_boot::catch_errors(#catch_kinds, filter)
+                ::aster_boot::catch_errors(#catch_kinds, filter)
             }
 
-            pub fn caught_kinds() -> ::std::vec::Vec<::a3s_boot::BootErrorKind> {
+            pub fn caught_kinds() -> ::std::vec::Vec<::aster_boot::BootErrorKind> {
                 ::std::vec![#(#caught_kinds),*]
             }
         }
@@ -293,7 +293,7 @@ pub(crate) fn expand_catch(
 
 fn catch_kinds_token(kinds: &[Expr]) -> proc_macro2::TokenStream {
     if kinds.is_empty() {
-        return quote!(::std::iter::empty::<::a3s_boot::BootErrorKind>());
+        return quote!(::std::iter::empty::<::aster_boot::BootErrorKind>());
     }
 
     let kinds = kinds.iter().map(catch_kind_token);
@@ -305,7 +305,7 @@ fn catch_kind_token(expr: &Expr) -> proc_macro2::TokenStream {
         if path.qself.is_none() && path.path.segments.len() == 1 {
             let ident = &path.path.segments[0].ident;
             if is_boot_error_kind_ident(ident) {
-                return quote!(::a3s_boot::BootErrorKind::#ident);
+                return quote!(::aster_boot::BootErrorKind::#ident);
             }
         }
     }
@@ -362,8 +362,8 @@ fn provider_registration_token(expr: &Expr) -> proc_macro2::TokenStream {
 
 fn export_registration_token(spec: &ModuleExportSpec) -> proc_macro2::TokenStream {
     match spec {
-        ModuleExportSpec::Type(ty) => quote!(::a3s_boot::ProviderToken::of::<#ty>()),
-        ModuleExportSpec::Named(token) => quote!(::a3s_boot::ProviderToken::named(#token)),
+        ModuleExportSpec::Type(ty) => quote!(::aster_boot::ProviderToken::of::<#ty>()),
+        ModuleExportSpec::Named(token) => quote!(::aster_boot::ProviderToken::named(#token)),
     }
 }
 
@@ -445,8 +445,8 @@ fn provider_dependency_token(
         | InjectableFieldDependency::OptionalProviderRef(inner) => inner,
     };
     let dependency = match token {
-        Some(token) => quote! { ::a3s_boot::ProviderDependency::named(#token) },
-        None => quote! { ::a3s_boot::ProviderDependency::typed::<#inner>() },
+        Some(token) => quote! { ::aster_boot::ProviderDependency::named(#token) },
+        None => quote! { ::aster_boot::ProviderDependency::typed::<#inner>() },
     };
 
     match kind {

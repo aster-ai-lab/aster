@@ -74,7 +74,7 @@ fn protocol_messages(bytes: &[u8]) -> Vec<(Value, usize)> {
 }
 
 fn write_native_diagnostics(capture: &Capture, root: &Path) {
-    let Some(output) = std::env::var_os("A3S_CODE_LSP_SMOKE_EVIDENCE") else {
+    let Some(output) = std::env::var_os("ASTER_LSP_SMOKE_EVIDENCE") else {
         return;
     };
     let streams = capture.snapshot();

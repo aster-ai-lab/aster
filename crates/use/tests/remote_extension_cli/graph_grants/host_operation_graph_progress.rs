@@ -263,7 +263,7 @@ async fn host_graph_operation_observation_aggregates_dependency_progress() {
         .plan
         .packages
         .iter()
-        .all(|transition| { transition.change == a3s_use_core::PlanPackageChangeKind::Replace }));
+        .all(|transition| { transition.change == aster_use_core::PlanPackageChangeKind::Replace }));
     let upgrade_apply = PluginHostApplyRequest {
         schema: PLUGIN_HOST_APPLY_REQUEST_SCHEMA.to_owned(),
         request_id: "apply:graph-progress:upgrade:0001".to_owned(),
@@ -393,7 +393,7 @@ async fn host_graph_operation_observation_aggregates_dependency_progress() {
         .plan
         .packages
         .iter()
-        .all(|transition| { transition.change == a3s_use_core::PlanPackageChangeKind::Remove }));
+        .all(|transition| { transition.change == aster_use_core::PlanPackageChangeKind::Remove }));
     let uninstall_apply = PluginHostApplyRequest {
         schema: PLUGIN_HOST_APPLY_REQUEST_SCHEMA.to_owned(),
         request_id: "apply:graph-progress:uninstall:0001".to_owned(),

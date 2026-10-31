@@ -52,7 +52,7 @@ pub(crate) fn query_text(
     for (key, value) in [
         ("user", user),
         ("database", database),
-        ("application_name", "a3s-box-hvf-regression"),
+        ("application_name", "aster-box-hvf-regression"),
         ("client_encoding", "UTF8"),
     ] {
         startup.extend_from_slice(key.as_bytes());
@@ -65,7 +65,7 @@ pub(crate) fn query_text(
 
     authenticate(&mut stream, user, password, nonce)?;
 
-    let query = "SELECT 'a3s-box-hvf-' || current_database()";
+    let query = "SELECT 'aster-box-hvf-' || current_database()";
     let mut query_payload = query.as_bytes().to_vec();
     query_payload.push(0);
     write_message(&mut stream, b'Q', &query_payload)?;

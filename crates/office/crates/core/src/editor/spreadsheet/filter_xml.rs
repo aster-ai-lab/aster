@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::spreadsheet_filter::escape_wildcard_literal;
 use crate::xml_edit::{escape_attribute, IndexedXmlElement};
@@ -272,7 +272,7 @@ const fn bool_token(value: bool) -> &'static str {
     }
 }
 
-fn unknown_content(part_name: &str) -> a3s_use_core::UseError {
+fn unknown_content(part_name: &str) -> aster_use_core::UseError {
     super::editor_error(
         "use.office.spreadsheet_filter_unknown_content",
         "The Spreadsheet AutoFilter contains sort state, date groups, color/icon filters, extensions, or other content outside the typed filter contract.",

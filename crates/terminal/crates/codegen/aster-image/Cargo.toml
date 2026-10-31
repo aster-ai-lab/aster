@@ -1,0 +1,18 @@
+[package]
+name = "aster-image"
+version = "0.1.0"
+license = "Apache-2.0"
+description = "Image validation and transcoding shared by Aster Code tools and clients"
+edition = "2024"
+publish = false
+
+[dependencies]
+crc32fast = {version = "1.4"}
+image = {version = "0.25.10", default-features = false, features = ["png", "jpeg", "gif", "webp", "bmp", "tiff", "ico"]}
+thiserror = {workspace = true}
+
+[dev-dependencies]
+aster-test-utils = {path = "../../common/aster-test-utils"}
+
+[lints]
+workspace = true

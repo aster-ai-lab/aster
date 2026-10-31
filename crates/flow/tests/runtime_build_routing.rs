@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEventStore, FlowRuntime, FlowScheduler, FlowTask,
     FlowTaskDispatcher, FlowTaskQueue, FlowWorker, InMemoryEventStore, InMemoryFlowTaskQueue,
     RuntimeBuildCompatibility, RuntimeBuildId, RuntimeBuildTaskRouter, RuntimeCommand,
@@ -51,7 +51,7 @@ impl FlowRuntime for TimerRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.wait_completed(TIMER_ID) {
             return Ok(context.complete(json!({ "build_safe": true })));
@@ -64,7 +64,7 @@ impl FlowRuntime for TimerRuntime {
         Ok(context.wait_until(TIMER_ID, resume_at))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("timer runtime does not schedule steps")
     }
 }
@@ -82,7 +82,7 @@ impl RecordingDispatcher {
 
 #[async_trait]
 impl FlowTaskDispatcher for RecordingDispatcher {
-    async fn dispatch(&self, task: FlowTask) -> a3s_flow::Result<()> {
+    async fn dispatch(&self, task: FlowTask) -> aster_flow::Result<()> {
         self.tasks.lock().unwrap().push(task);
         Ok(())
     }

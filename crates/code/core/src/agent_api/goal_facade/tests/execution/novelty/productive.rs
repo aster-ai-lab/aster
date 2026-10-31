@@ -40,7 +40,7 @@ async fn accepted_step_progress_continues_with_identical_tool_observations() {
     let goal = session.goal_definition().unwrap().unwrap();
     let deltas: Vec<_> = settlement::facts(root.path())
         .iter()
-        .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+        .filter(|fact| fact.kind == "aster.goal.slice.settled")
         .map(|fact| {
             (
                 fact.payload["body"]["progress"]["information_delta"]
@@ -86,7 +86,7 @@ async fn genuinely_changed_observations_extend_progress_but_revisited_bytes_do_n
         .unwrap();
     let deltas: Vec<_> = settlement::facts(root.path())
         .iter()
-        .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+        .filter(|fact| fact.kind == "aster.goal.slice.settled")
         .map(|fact| {
             fact.payload["body"]["progress"]["information_delta"]
                 .as_u64()

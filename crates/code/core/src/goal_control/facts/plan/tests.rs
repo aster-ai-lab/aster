@@ -2,7 +2,7 @@
 
 use super::*;
 use crate::planning::{Complexity, Task};
-use a3s_effect::{FileLog, LogStore, MemoryLog};
+use aster_effect::{FileLog, LogStore, MemoryLog};
 
 fn initial(log: &dyn LogStore) -> DurableGoalDefinitionV1 {
     let command = super::super::tests::command();

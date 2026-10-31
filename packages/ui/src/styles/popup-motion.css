@@ -4,7 +4,7 @@
  * position, and filter adds a layer.
  */
 
-@keyframes a3s-popup-from-above {
+@keyframes aster-popup-from-above {
   from {
     opacity: 0;
     translate: 0 -0.5rem;
@@ -16,7 +16,7 @@
   }
 }
 
-@keyframes a3s-popup-from-below {
+@keyframes aster-popup-from-below {
   from {
     opacity: 0;
     translate: 0 0.5rem;
@@ -28,7 +28,7 @@
   }
 }
 
-@keyframes a3s-popup-from-left {
+@keyframes aster-popup-from-left {
   from {
     opacity: 0;
     translate: -0.5rem 0;
@@ -40,7 +40,7 @@
   }
 }
 
-@keyframes a3s-popup-from-right {
+@keyframes aster-popup-from-right {
   from {
     opacity: 0;
     translate: 0.5rem 0;
@@ -52,7 +52,7 @@
   }
 }
 
-@keyframes a3s-popup-leave-above {
+@keyframes aster-popup-leave-above {
   from {
     opacity: 1;
     translate: 0 0;
@@ -64,7 +64,7 @@
   }
 }
 
-@keyframes a3s-popup-leave-below {
+@keyframes aster-popup-leave-below {
   from {
     opacity: 1;
     translate: 0 0;
@@ -76,7 +76,7 @@
   }
 }
 
-@keyframes a3s-popup-leave-left {
+@keyframes aster-popup-leave-left {
   from {
     opacity: 1;
     translate: 0 0;
@@ -88,7 +88,7 @@
   }
 }
 
-@keyframes a3s-popup-leave-right {
+@keyframes aster-popup-leave-right {
   from {
     opacity: 1;
     translate: 0 0;
@@ -100,7 +100,7 @@
   }
 }
 
-@keyframes a3s-popup-fade-in {
+@keyframes aster-popup-fade-in {
   from {
     opacity: 0;
   }
@@ -110,7 +110,7 @@
   }
 }
 
-@keyframes a3s-popup-fade-out {
+@keyframes aster-popup-fade-out {
   from {
     opacity: 1;
   }
@@ -120,7 +120,7 @@
   }
 }
 
-@keyframes a3s-drawer-in {
+@keyframes aster-drawer-in {
   from {
     opacity: 0;
     scale: 0.98;
@@ -132,7 +132,7 @@
   }
 }
 
-@keyframes a3s-drawer-out {
+@keyframes aster-drawer-out {
   from {
     opacity: 1;
     scale: 1;
@@ -164,7 +164,7 @@
   [data-slot='select-content'][data-side='bottom'][data-state='open'],
   [data-slot='hover-card-content'][data-side='bottom'][data-state='open'],
   [data-slot='tooltip-content'][data-side='bottom'][data-state*='open'] {
-    animation: a3s-popup-from-above 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-popup-from-above 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   [data-slot='dropdown-menu-content'][data-side='top'][data-state='open'],
@@ -175,7 +175,7 @@
   [data-slot='select-content'][data-side='top'][data-state='open'],
   [data-slot='hover-card-content'][data-side='top'][data-state='open'],
   [data-slot='tooltip-content'][data-side='top'][data-state*='open'] {
-    animation: a3s-popup-from-below 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-popup-from-below 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   [data-slot='dropdown-menu-content'][data-side='right'][data-state='open'],
@@ -186,7 +186,7 @@
   [data-slot='select-content'][data-side='right'][data-state='open'],
   [data-slot='hover-card-content'][data-side='right'][data-state='open'],
   [data-slot='tooltip-content'][data-side='right'][data-state*='open'] {
-    animation: a3s-popup-from-left 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-popup-from-left 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   [data-slot='dropdown-menu-content'][data-side='left'][data-state='open'],
@@ -197,7 +197,7 @@
   [data-slot='select-content'][data-side='left'][data-state='open'],
   [data-slot='hover-card-content'][data-side='left'][data-state='open'],
   [data-slot='tooltip-content'][data-side='left'][data-state*='open'] {
-    animation: a3s-popup-from-right 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-popup-from-right 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   [data-slot='dropdown-menu-content'][data-side='bottom'][data-state='closed'],
@@ -208,7 +208,7 @@
   [data-slot='select-content'][data-side='bottom'][data-state='closed'],
   [data-slot='hover-card-content'][data-side='bottom'][data-state='closed'],
   [data-slot='tooltip-content'][data-side='bottom'][data-state='closed'] {
-    animation: a3s-popup-leave-above 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    animation: aster-popup-leave-above 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   [data-slot='dropdown-menu-content'][data-side='top'][data-state='closed'],
@@ -219,7 +219,7 @@
   [data-slot='select-content'][data-side='top'][data-state='closed'],
   [data-slot='hover-card-content'][data-side='top'][data-state='closed'],
   [data-slot='tooltip-content'][data-side='top'][data-state='closed'] {
-    animation: a3s-popup-leave-below 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    animation: aster-popup-leave-below 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   [data-slot='dropdown-menu-content'][data-side='right'][data-state='closed'],
@@ -230,7 +230,7 @@
   [data-slot='select-content'][data-side='right'][data-state='closed'],
   [data-slot='hover-card-content'][data-side='right'][data-state='closed'],
   [data-slot='tooltip-content'][data-side='right'][data-state='closed'] {
-    animation: a3s-popup-leave-left 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    animation: aster-popup-leave-left 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   [data-slot='dropdown-menu-content'][data-side='left'][data-state='closed'],
@@ -241,24 +241,24 @@
   [data-slot='select-content'][data-side='left'][data-state='closed'],
   [data-slot='hover-card-content'][data-side='left'][data-state='closed'],
   [data-slot='tooltip-content'][data-side='left'][data-state='closed'] {
-    animation: a3s-popup-leave-right 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    animation: aster-popup-leave-right 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   [data-slot='drawer-overlay'][data-state='open'] {
-    animation: a3s-popup-fade-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-popup-fade-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   [data-slot='drawer-overlay'][data-state='closed'] {
-    animation: a3s-popup-fade-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    animation: aster-popup-fade-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   .ui-search-select__panel--shown,
-  .a3s-popup-rise:not([data-state='closed']) {
-    animation: a3s-popup-from-below 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  .aster-popup-rise:not([data-state='closed']) {
+    animation: aster-popup-from-below 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  .a3s-popup-rise[data-state='closed'] {
-    animation: a3s-popup-leave-below 200ms cubic-bezier(0.4, 0, 1, 1) both;
+  .aster-popup-rise[data-state='closed'] {
+    animation: aster-popup-leave-below 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   /* Phone bottom sheets keep the library slide. Every other edge, and desktop, stays put. */
@@ -267,11 +267,11 @@
   }
 
   [data-slot='drawer-content']:not([data-vaul-drawer-direction='bottom'])[data-state='open'] {
-    animation: a3s-drawer-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: aster-drawer-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   [data-slot='drawer-content']:not([data-vaul-drawer-direction='bottom'])[data-state='closed'] {
-    animation: a3s-drawer-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+    animation: aster-drawer-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
   @media (min-width: 640px) {
@@ -280,11 +280,11 @@
     }
 
     [data-slot='drawer-content'][data-vaul-drawer-direction='bottom'][data-state='open'] {
-      animation: a3s-drawer-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: aster-drawer-in 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
     [data-slot='drawer-content'][data-vaul-drawer-direction='bottom'][data-state='closed'] {
-      animation: a3s-drawer-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
+      animation: aster-drawer-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
     }
   }
 
@@ -312,7 +312,7 @@
     [data-slot='drawer-overlay'],
     [data-slot='drawer-content'],
     .ui-search-select__panel--shown,
-    .a3s-popup-rise {
+    .aster-popup-rise {
       animation: none;
     }
   }

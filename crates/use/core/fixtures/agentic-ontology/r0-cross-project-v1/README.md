@@ -1,16 +1,16 @@
 # R0 cross-project contract fixtures
 
-This data-only package freezes the first Agentic Ontology -> A3S Use -> A3S
-Code -> A3S Cloud integration boundary. It does not grant package lifecycle,
+This data-only package freezes the first Agentic Ontology -> Aster Use -> Aster
+Code -> Aster Cloud integration boundary. It does not grant package lifecycle,
 Knowledge, Agent, tenant, publication, or authorization authority.
 
 ## Ownership
 
 - Agentic Ontology owns the candidate handoff and this integration projection.
-- A3S Use owns the reviewed lock, Registry generation, installed receipt,
+- Aster Use owns the reviewed lock, Registry generation, installed receipt,
   Knowledge capability projection, and exact-generation search/read behavior.
-- A3S Code owns the Agent release, session, run, events, result, and task proof.
-- A3S Cloud owns organization, Workspace, immutable release, execution, and
+- Aster Code owns the Agent release, session, run, events, result, and task proof.
+- Aster Cloud owns organization, Workspace, immutable release, execution, and
   audit identities.
 
 Every runtime must resolve and revalidate the referenced state from its own
@@ -20,10 +20,10 @@ with local `latest` state.
 
 ## Canonical fixtures
 
-- `a3s-use-handoff.valid.json` is a real, revision-bound compiler handoff.
+- `aster-use-handoff.valid.json` is a real, revision-bound compiler handoff.
 - `plugin-package-lock.json`, `registry-snapshot.json`,
-  `extension-receipt.json`, and `a3s-use-generation-receipt.json` freeze the
-  exact reviewed A3S Use generation evidence.
+  `extension-receipt.json`, and `aster-use-generation-receipt.json` freeze the
+  exact reviewed Aster Use generation evidence.
 - `knowledge-lease-binding.json`, `capability-snapshot.json`, and
   `knowledge-citation.json` freeze the minimum Agent-facing OKF search/read and
   citation projection. They expose no internal `GraphProjection` or source
@@ -48,7 +48,7 @@ Agentic Ontology canonical digests use SHA-256 over:
 3. the big-endian `u64` byte length of compact deterministic JSON and those
    JSON bytes.
 
-A3S Use lock, Registry snapshot, and extension receipt digests use the owning
+Aster Use lock, Registry snapshot, and extension receipt digests use the owning
 Use contract's canonical JSON rules. `manifest.json` records the raw SHA-256
 and byte length of every other package file. Its `packageDigest` uses the
 Agentic Ontology canonical algorithm with domain

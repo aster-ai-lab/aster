@@ -1,4 +1,4 @@
-//! One short prompt against the shipped `a3s-code-acp` process and a real model.
+//! One short prompt against the shipped `aster-acp` process and a real model.
 //!
 //! Ignored by default. Verification runs it twice with `--ignored`. A scripted
 //! conformance model does not satisfy this file. The child keeps the caller's
@@ -19,7 +19,7 @@ const MODEL: &str = "deepseek/deepseek-flash";
 const PROMPT: &str = "Reply with the single word pong. Do not use tools.";
 
 fn selected_model() -> String {
-    std::env::var("A3S_LIVE_MODEL")
+    std::env::var("ASTER_LIVE_MODEL")
         .ok()
         .map(|value| value.trim().to_string())
         .filter(|value| !value.is_empty())
@@ -58,34 +58,34 @@ impl Client for CaptureClient {
 }
 
 fn live_config_path() -> PathBuf {
-    if let Some(value) = std::env::var_os("A3S_CONFIG_FILE") {
+    if let Some(value) = std::env::var_os("ASTER_CONFIG_FILE") {
         let path = PathBuf::from(value);
         assert!(
             path.is_file(),
-            "A3S_CONFIG_FILE is not a file: {}",
+            "ASTER_CONFIG_FILE is not a file: {}",
             path.display()
         );
         return path;
     }
     let repo = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../..")
-        .join(".a3s/config.acl");
+        .join(".aster/config.acl");
     if repo.is_file() {
         return repo;
     }
     if let Some(home) = std::env::var_os("HOME") {
-        let user = PathBuf::from(home).join(".a3s/config.acl");
+        let user = PathBuf::from(home).join(".aster/config.acl");
         if user.is_file() {
             return user;
         }
     }
-    panic!("no ACL: set A3S_CONFIG_FILE or provide .a3s/config.acl");
+    panic!("no ACL: set ASTER_CONFIG_FILE or provide .aster/config.acl");
 }
 
 fn engineering_off() -> acp::Meta {
     let mut meta = acp::Meta::new();
     meta.insert(
-        "a3sEngineering".to_string(),
+        "asterEngineering".to_string(),
         serde_json::json!({"policy": "none"}),
     );
     meta
@@ -120,7 +120,7 @@ async fn spawn_agent(
     std::sync::Arc<std::sync::Mutex<String>>,
     PathBuf,
 ) {
-    let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
+    let bin = PathBuf::from(env!("CARGO_BIN_EXE_aster-acp"));
     let agent_text = std::sync::Arc::new(std::sync::Mutex::new(String::new()));
     let client_text = std::sync::Arc::clone(&agent_text);
     let stderr_path = workspace.join("acp.stderr");
@@ -132,10 +132,10 @@ async fn spawn_agent(
         .arg(config)
         .arg("--model")
         .arg(model)
-        .env("A3S_CONFIG", config)
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_CONFIG", config)
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .current_dir(workspace)
         .kill_on_drop(true)
         .stdin(Stdio::piped())
@@ -163,11 +163,11 @@ async fn spawn_agent(
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "real deepseek/deepseek-flash via A3S ACL; not a scripted model"]
+#[ignore = "real deepseek/deepseek-flash via Aster ACL; not a scripted model"]
 async fn shared_acp_live_prompt_returns_usage() {
     let config = live_config_path();
     let workspace = std::env::temp_dir().join(format!(
-        "a3s-shared-acp-live-{}-{}",
+        "aster-shared-acp-live-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -258,7 +258,7 @@ async fn dialogue(
     let info: serde_json::Value = serde_json::from_str(
         acp::Agent::ext_method(
             conn,
-            acp::ExtRequest::new("a3s/session/info", std::sync::Arc::from(params)),
+            acp::ExtRequest::new("aster/session/info", std::sync::Arc::from(params)),
         )
         .await
         .map_err(|error| format!("session info: {error}"))?

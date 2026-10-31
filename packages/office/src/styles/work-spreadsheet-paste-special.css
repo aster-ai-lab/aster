@@ -1,5 +1,5 @@
 .work-spreadsheet-paste-special-dialog {
-  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--aster-ink));
 
   width: min(660px, 100%);
 }
@@ -19,15 +19,15 @@
   border-radius: 7px;
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 7%,
-    var(--a3s-panel-soft)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 7%,
+    var(--aster-panel-soft)
   );
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
 }
 
 .work-spreadsheet-paste-special-source strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-weight: 650;
 }
 
@@ -48,7 +48,7 @@
 .work-spreadsheet-paste-special-dialog legend {
   width: 100%;
   margin-bottom: 8px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-weight: 650;
 }
@@ -72,27 +72,27 @@
   gap: 8px;
   padding: 6px 8px;
   border-radius: 7px;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   cursor: pointer;
   font-size: 11px;
 }
 
 .work-spreadsheet-paste-special-modes label:hover {
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-paste-special-modes label.selected {
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 10%,
-    var(--a3s-panel)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 10%,
+    var(--aster-panel)
   );
 }
 
 .work-spreadsheet-paste-special-modes label:has(input:focus-visible),
 .work-spreadsheet-paste-special-operations label:has(input:focus-visible) {
   outline: 2px solid
-    color-mix(in srgb, var(--work-spreadsheet-accent, var(--a3s-ink)) 32%, transparent);
+    color-mix(in srgb, var(--work-spreadsheet-accent, var(--aster-ink)) 32%, transparent);
   outline-offset: 1px;
 }
 
@@ -115,21 +115,21 @@
   width: 14px;
   height: 14px;
   place-items: center;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 50%;
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
 }
 
 .work-spreadsheet-paste-special-modes
   label.selected
   > span[aria-hidden="true"] {
-  border: 4px solid var(--work-spreadsheet-accent, var(--a3s-ink));
+  border: 4px solid var(--work-spreadsheet-accent, var(--aster-ink));
 }
 
 .work-spreadsheet-paste-special-modes small {
   grid-column: 2;
   margin-top: -2px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 9px;
   line-height: 1.2;
 }
@@ -145,10 +145,10 @@
   display: grid;
   min-height: 30px;
   place-items: center;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
-  background: var(--a3s-panel);
-  color: var(--a3s-muted);
+  background: var(--aster-panel);
+  color: var(--aster-muted);
   cursor: pointer;
   font-size: 10px;
 }
@@ -160,23 +160,23 @@
 .work-spreadsheet-paste-special-operations label:hover {
   border-color: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 42%,
-    var(--a3s-line)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 42%,
+    var(--aster-line)
   );
 }
 
 .work-spreadsheet-paste-special-operations label.selected {
   border-color: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 58%,
-    var(--a3s-line)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 58%,
+    var(--aster-line)
   );
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 9%,
-    var(--a3s-panel)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 9%,
+    var(--aster-panel)
   );
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-weight: 650;
 }
 
@@ -200,8 +200,8 @@
   margin: -4px 0 0;
   padding: 8px 10px;
   border-radius: 6px;
-  background: color-mix(in srgb, var(--a3s-red) 8%, var(--a3s-panel));
-  color: color-mix(in srgb, var(--a3s-red) 88%, var(--a3s-ink));
+  background: color-mix(in srgb, var(--aster-red) 8%, var(--aster-panel));
+  color: color-mix(in srgb, var(--aster-red) 88%, var(--aster-ink));
   font-size: 11px;
   line-height: 1.45;
 }

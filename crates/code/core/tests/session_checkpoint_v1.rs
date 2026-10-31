@@ -1,32 +1,32 @@
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityCeiling, CapabilityExecutionCeiling, CapabilitySet, GovernanceCapabilityCeiling,
     RunCapabilityBindingV1, WorkspaceCapabilityCeiling,
 };
-use a3s_code_core::loop_checkpoint::{
+use aster_core::loop_checkpoint::{
     LoopCheckpoint, LoopConvergenceState, LOOP_CHECKPOINT_SCHEMA_VERSION,
 };
-use a3s_code_core::package_context::{
+use aster_core::package_context::{
     PackageBindingV1, PackageContextLimits, PackageKnowledgeBindingV1,
 };
-use a3s_code_core::run::{RunRecord, RunSnapshot, RunStatus};
-use a3s_code_core::session_checkpoint::{
+use aster_core::run::{RunRecord, RunSnapshot, RunStatus};
+use aster_core::session_checkpoint::{
     SessionCheckpointExportV1, SESSION_CHECKPOINT_FORMAT_V1,
     SESSION_CHECKPOINT_LOGICAL_RESUME_SEMANTICS_V1, SESSION_CHECKPOINT_MEDIA_TYPE_V1,
 };
-use a3s_code_core::store::{
+use aster_core::store::{
     ContextUsage, LlmConfigData, SessionConfig, SessionData, SessionSnapshotV1, SessionState,
 };
-use a3s_code_core::tools::ArtifactStore;
-use a3s_code_core::{
+use aster_core::tools::ArtifactStore;
+use aster_core::{
     llm::Message, llm::TokenUsage, DurableMemoryBindingV1, DurableMemoryRecallPolicy,
     DurableMemorySession,
 };
-use a3s_memory::repository::{InMemoryRepository, MemoryNamespace};
+use aster_durable_memory::repository::{InMemoryRepository, MemoryNamespace};
 use sha2::{Digest, Sha256};
 use std::sync::Arc;
 
 const CANONICAL_DIGEST_PREFIX: &[u8] = b"agentic-ontology-canonical-v1\0";
-const CAPABILITY_SNAPSHOT_DIGEST_DOMAIN: &str = "a3s.use.capability-snapshot.v1";
+const CAPABILITY_SNAPSHOT_DIGEST_DOMAIN: &str = "aster.use.capability-snapshot.v1";
 
 fn session_data() -> SessionData {
     SessionData {
@@ -38,7 +38,7 @@ fn session_data() -> SessionData {
             max_context_length: 128_000,
             // The pinned digests below freeze a checkpoint written under this policy.
             tool_result_transform_policy:
-                a3s_code_core::tools::ToolResultTransformPolicyV1::conservative(),
+                aster_core::tools::ToolResultTransformPolicyV1::conservative(),
             ..SessionConfig::default()
         },
         state: SessionState::Active,
@@ -334,7 +334,7 @@ fn portable_checkpoint_rejects_invalid_durable_memory_binding() {
     .binding();
     let mut encoded = serde_json::to_value(binding).unwrap();
     encoded["schemaVersion"] =
-        serde_json::json!(a3s_code_core::DURABLE_MEMORY_HYBRID_BINDING_SCHEMA_VERSION + 1);
+        serde_json::json!(aster_core::DURABLE_MEMORY_HYBRID_BINDING_SCHEMA_VERSION + 1);
     let invalid: DurableMemoryBindingV1 = serde_json::from_value(encoded).unwrap();
     let mut invalid_snapshot = snapshot(false);
     invalid_snapshot.session.durable_memory_binding = Some(invalid);
@@ -368,7 +368,7 @@ fn portable_checkpoint_rejects_invalid_durable_memory_binding() {
     )
     .binding();
     let mut encoded = serde_json::to_value(binding).unwrap();
-    encoded["retrievalProfile"] = serde_json::json!("a3s.memory.lexical.unknown.v1");
+    encoded["retrievalProfile"] = serde_json::json!("aster.memory.lexical.unknown.v1");
     let invalid: DurableMemoryBindingV1 = serde_json::from_value(encoded).unwrap();
     let mut invalid_snapshot = snapshot(false);
     invalid_snapshot.session.durable_memory_binding = Some(invalid);
@@ -386,7 +386,7 @@ fn portable_checkpoint_rejects_invalid_durable_memory_binding() {
     )
     .binding();
     let mut encoded = serde_json::to_value(binding).unwrap();
-    encoded["contextIdProfile"] = serde_json::json!("a3s.code.memory.context.unknown.v1");
+    encoded["contextIdProfile"] = serde_json::json!("aster.code.memory.context.unknown.v1");
     let invalid: DurableMemoryBindingV1 = serde_json::from_value(encoded).unwrap();
     let mut invalid_snapshot = snapshot(false);
     invalid_snapshot.session.durable_memory_binding = Some(invalid);
@@ -466,10 +466,10 @@ fn portable_checkpoint_keeps_legacy_durable_memory_state_readable() {
     encoded.as_object_mut().unwrap().remove("contextIdProfile");
     let legacy: DurableMemoryBindingV1 = serde_json::from_value(encoded).unwrap();
     assert_eq!(legacy.schema_version(), 1);
-    assert_eq!(legacy.retrieval_profile(), "a3s.memory.lexical.word.v1");
+    assert_eq!(legacy.retrieval_profile(), "aster.memory.lexical.word.v1");
     assert_eq!(
         legacy.context_id_profile(),
-        "a3s.code.memory.context.host-id.v0"
+        "aster.code.memory.context.host-id.v0"
     );
 
     let mut legacy_snapshot = snapshot(false);
@@ -486,11 +486,11 @@ fn portable_checkpoint_keeps_legacy_durable_memory_state_readable() {
     assert_eq!(legacy.schema_version(), 2);
     assert_eq!(
         legacy.retrieval_profile(),
-        "a3s.memory.lexical.word-cjk-bigram.v1"
+        "aster.memory.lexical.word-cjk-bigram.v1"
     );
     assert_eq!(
         legacy.context_id_profile(),
-        "a3s.code.memory.context.host-id.v0"
+        "aster.code.memory.context.host-id.v0"
     );
 
     let mut legacy_snapshot = snapshot(false);
@@ -503,16 +503,16 @@ fn portable_checkpoint_keeps_legacy_durable_memory_state_readable() {
     let mut encoded = serde_json::to_value(&binding).unwrap();
     encoded["schemaVersion"] = serde_json::json!(3);
     encoded["contextIdProfile"] =
-        serde_json::json!(a3s_code_core::DURABLE_MEMORY_CONTEXT_ID_PROFILE_V1);
+        serde_json::json!(aster_core::DURABLE_MEMORY_CONTEXT_ID_PROFILE_V1);
     let legacy: DurableMemoryBindingV1 = serde_json::from_value(encoded).unwrap();
     assert_eq!(legacy.schema_version(), 3);
     assert_eq!(
         legacy.retrieval_profile(),
-        "a3s.memory.lexical.word-cjk-bigram.v1"
+        "aster.memory.lexical.word-cjk-bigram.v1"
     );
     assert_eq!(
         legacy.context_id_profile(),
-        a3s_code_core::DURABLE_MEMORY_CONTEXT_ID_PROFILE_V1
+        aster_core::DURABLE_MEMORY_CONTEXT_ID_PROFILE_V1
     );
 
     let mut legacy_snapshot = snapshot(false);

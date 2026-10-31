@@ -65,7 +65,7 @@ pub(crate) fn spawn_detached_health_checker(record: &BoxRecord) -> Result<(), St
     let generation = health_generation(record)
         .ok_or_else(|| format!("box '{}' has no health-check generation", record.name))?;
     let executable = std::env::current_exe()
-        .map_err(|error| format!("failed to locate a3s-box for health checker: {error}"))?;
+        .map_err(|error| format!("failed to locate aster-box for health checker: {error}"))?;
     let arguments = detached_health_worker_args(&record.id, generation);
 
     detached_health_worker_command(&executable, &arguments)
@@ -199,7 +199,7 @@ impl HealthWorkerLock {
 
 #[cfg(not(windows))]
 fn health_worker_lock_path(box_id: &str, generation: i64) -> PathBuf {
-    a3s_box_core::dirs_home()
+    aster_box_core::dirs_home()
         .join("locks")
         .join(format!("{box_id}.{generation}.health.lock"))
 }
@@ -341,7 +341,7 @@ pub(crate) async fn run_probe_for_record(
     cmd: &[String],
     timeout_ns: u64,
 ) -> bool {
-    use a3s_box_core::exec::ExecRequest;
+    use aster_box_core::exec::ExecRequest;
 
     let request = ExecRequest {
         request_id: None,
@@ -372,8 +372,8 @@ pub(crate) async fn run_probe(
     cmd: &[String],
     timeout_ns: u64,
 ) -> bool {
-    use a3s_box_core::exec::ExecRequest;
-    use a3s_box_runtime::ExecClient;
+    use aster_box_core::exec::ExecRequest;
+    use aster_box_runtime::ExecClient;
 
     let client = match ExecClient::connect(exec_socket_path).await {
         Ok(c) => c,

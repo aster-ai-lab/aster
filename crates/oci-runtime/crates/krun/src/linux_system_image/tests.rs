@@ -128,7 +128,7 @@ impl Fixture {
                 "name": IMAGE_NAME,
                 "size": IMAGE_SIZE,
                 "sha256": image_sha256,
-                "archive_name": "a3s-oci-system.ext4.xz",
+                "archive_name": "aster-oci-system.ext4.xz",
                 "archive_size": 1,
                 "archive_sha256": "1".repeat(64),
                 "filesystem": FILESYSTEM,

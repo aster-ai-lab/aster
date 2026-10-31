@@ -5,7 +5,7 @@ use std::os::fd::{AsRawFd, FromRawFd, OwnedFd, RawFd};
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     Error, ErrorCode, Result, CONTROL_CGROUP_NAME, CONTROL_CGROUP_PROCS_FD, WORKLOAD_CGROUP_NAME,
     WORKLOAD_CGROUP_PROCS_FD,
 };
@@ -1320,7 +1320,7 @@ mod tests {
     use std::os::unix::process::CommandExt;
     use std::process::{Command, Stdio};
 
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{
         apply_settings, cgroup_event_value, cgroup_join_error_code, cgroup_move_error_code,

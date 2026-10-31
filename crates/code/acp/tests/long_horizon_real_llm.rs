@@ -72,7 +72,7 @@ async fn real_native_file_workflow_multiple_user_turns() {
         let started = Instant::now();
         let mut turns = Vec::new();
         let work = tokio::time::timeout(std::time::Duration::from_secs(1800), async {
-            let host_meta = json!({"a3sHost":{"completionAttestation":"disk_content"}}).as_object().unwrap().clone();
+            let host_meta = json!({"asterHost":{"completionAttestation":"disk_content"}}).as_object().unwrap().clone();
             let session = driver.open(&task.workspace,Some(host_meta)).await?;
             for revision in 1..=6 {
                 let expected = task.prepare(revision).map_err(|_| "fixture_prepare")?;
@@ -80,7 +80,7 @@ async fn real_native_file_workflow_multiple_user_turns() {
                 let source_policy = task.read("policy.json").map_err(|_| "fixture_policy")?;
                 let event_start = driver.capture.lock().unwrap().events.len();
                 let answer = driver.prompt(&session,&format!("Revision {revision}: Read README.md, current order.json and policy.json. Update report.json to satisfy the stated contract. Preserve all source files and unrelated user work. Use native read/edit tools only; do not run commands or code. Finish with a concise account of the current result.")).await?;
-                let outcome = driver.capture.lock().unwrap().events.iter().skip(event_start).find(|event| event["method"] == "a3s/turn/outcome" && event["params"]["sessionId"] == session.0.as_ref()).map(|event| event["params"]["outcome"].clone());
+                let outcome = driver.capture.lock().unwrap().events.iter().skip(event_start).find(|event| event["method"] == "aster/turn/outcome" && event["params"]["sessionId"] == session.0.as_ref()).map(|event| event["params"]["outcome"].clone());
                 let attested = outcome.as_ref().is_some_and(|outcome| outcome["terminal"] == "verified" && outcome["status"] == "passed");
                 let correct = task.check(&expected);
                 let sources_preserved = task.read("order.json").ok().as_ref() == Some(&source_order) && task.read("policy.json").ok().as_ref() == Some(&source_policy);

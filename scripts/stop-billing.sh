@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Stop the background a3s-billing started by ensure-billing.sh / just up.
+# Stop the background aster-billing started by ensure-billing.sh / just up.
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 pid_file="apps/billing/.data/billing.pid"
-port="${A3S_BILLING_LISTEN:-127.0.0.1:7651}"
+port="${ASTER_BILLING_LISTEN:-127.0.0.1:7651}"
 port="${port##*:}"
 
 stop_pid() {
@@ -34,9 +34,9 @@ fi
 
 for pid in $(lsof -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null || true); do
   cmd="$(ps -p "$pid" -o comm= 2>/dev/null || true)"
-  if [[ "$cmd" == *a3s-billing* ]]; then
+  if [[ "$cmd" == *aster-billing* ]]; then
     stop_pid "$pid"
   fi
 done
 
-echo "a3s-billing stopped"
+echo "aster-billing stopped"

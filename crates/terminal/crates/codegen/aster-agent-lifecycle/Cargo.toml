@@ -1,0 +1,16 @@
+[package]
+license = "Apache-2.0"
+name = "aster-agent-lifecycle"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+async-trait = {workspace = true}
+tracing = {workspace = true}
+
+[dev-dependencies]
+tokio = {version = "1", features = ["full", "macros", "rt"]}
+
+[lints]
+workspace = true

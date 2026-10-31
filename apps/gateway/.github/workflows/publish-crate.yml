@@ -43,7 +43,7 @@ jobs:
             exit 1
           fi
           manifest_version="$(cargo metadata --locked --no-deps --format-version 1 \
-            | jq -er '.packages[] | select(.name == "a3s-gateway") | .version')"
+            | jq -er '.packages[] | select(.name == "aster-gateway") | .version')"
           if [ "$manifest_version" != "$version" ]; then
             echo "operation tag requests $version but source contains $manifest_version" >&2
             exit 1
@@ -77,40 +77,40 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          user_agent="A3S-Lab-Gateway-crate-publisher/$VERSION (https://github.com/kense-labs/gateway)"
+          user_agent="aster-ai-lab-Gateway-crate-publisher/$VERSION (https://github.com/kense-labs/gateway)"
           crate_status() {
             curl --retry 5 --retry-all-errors --silent --show-error \
               --location --user-agent "$user_agent" \
               --output /dev/null --write-out '%{http_code}' \
-              "https://crates.io/api/v1/crates/a3s-gateway/$VERSION"
+              "https://crates.io/api/v1/crates/aster-gateway/$VERSION"
           }
           status="$(crate_status)"
           case "$status" in
             200)
-              echo "a3s-gateway@$VERSION already exists; skipping upload"
+              echo "aster-gateway@$VERSION already exists; skipping upload"
               ;;
             404)
               cargo publish --locked
               ;;
             *)
-              echo "::error::crates.io returned HTTP $status for a3s-gateway@$VERSION"
+              echo "::error::crates.io returned HTTP $status for aster-gateway@$VERSION"
               exit 1
               ;;
           esac
           for attempt in $(seq 1 24); do
             status="$(crate_status)"
-            if [ "$status" = "200" ] && cargo info "a3s-gateway@$VERSION" \
+            if [ "$status" = "200" ] && cargo info "aster-gateway@$VERSION" \
               --registry crates-io >/dev/null 2>&1; then
-              echo "Verified a3s-gateway@$VERSION in crates.io and its index"
+              echo "Verified aster-gateway@$VERSION in crates.io and its index"
               exit 0
             fi
             if [ "$status" != "200" ] && [ "$status" != "404" ]; then
-              echo "::error::crates.io returned HTTP $status for a3s-gateway@$VERSION"
+              echo "::error::crates.io returned HTTP $status for aster-gateway@$VERSION"
               exit 1
             fi
             if [ "$attempt" -lt 24 ]; then
               sleep 10
             fi
           done
-          echo "::error::a3s-gateway@$VERSION did not become visible in time"
+          echo "::error::aster-gateway@$VERSION did not become visible in time"
           exit 1

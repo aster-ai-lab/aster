@@ -9,7 +9,7 @@ export const pdfUiMessagesZhCN = {
   'pdf.viewer.aria': 'PDF 编辑器：{fileName}',
   'pdf.viewer.closeNav': '关闭 PDF 页面导航遮罩',
   'pdf.viewer.canvasAria': 'PDF 页面画布',
-  'pdf.viewer.defaultAuthor': 'A3S Office 用户',
+  'pdf.viewer.defaultAuthor': 'Aster Office 用户',
   'pdf.viewer.opening': '正在打开…',
   'pdf.evidence.unavailable': '当前页定位不可用',
   'pdf.evidence.empty': '当前页暂无安全定位',

@@ -45,7 +45,7 @@ fn killed_registry_archive_extraction_retries_offline_without_partial_publicatio
             "1.0.0",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .env("TMPDIR", &process_temp)
         .env("TMP", &process_temp)
         .env("TEMP", &process_temp)
@@ -128,7 +128,7 @@ fn killed_lifecycle_package_copy_reclaims_staging_and_replays_exact_install() {
             "1.0.0",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .spawn()
         .unwrap();
     let reached_staging = wait_for_partial_lifecycle_staging(&package_parent);
@@ -239,7 +239,7 @@ fn killed_package_removal_replays_partial_directory_without_generation_inflation
             "user/current",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .spawn()
         .unwrap();
     let reached_removal = wait_for_partial_package_removal(&payload_root);

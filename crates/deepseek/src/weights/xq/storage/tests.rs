@@ -1,4 +1,4 @@
-use a3s_power::inference::{InferenceLimits, WeightFileDescriptor};
+use aster_power::inference::{InferenceLimits, WeightFileDescriptor};
 use sha2::{Digest, Sha256};
 
 use super::*;

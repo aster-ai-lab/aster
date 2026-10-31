@@ -1,7 +1,7 @@
 //! Reconstructed observed workspace states; never a second journal or authority.
 
 use super::*;
-use a3s_effect::{ToolFileIdentityV1, ToolFileKind, ToolPathChangeV1};
+use aster_effect::{ToolFileIdentityV1, ToolFileKind, ToolPathChangeV1};
 use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Default, PartialEq, Eq)]
@@ -84,7 +84,7 @@ impl MutationProgress {
             })
             .collect();
         Ok(crate::content_digest::digest_json(
-            "a3s.code.goal-observed-workspace.v1",
+            "aster.code.goal-observed-workspace.v1",
             &deviations,
         )?)
     }

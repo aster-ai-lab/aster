@@ -783,8 +783,8 @@ const catalogIconById: Readonly<Record<string, DesignerIconName>> = {
   content: 'info',
   divider: 'layout',
   spacer: 'spacer',
-  'custom:a3s.file-upload': 'file',
-  'custom:a3s.signature': 'signature',
+  'custom:aster.file-upload': 'file',
+  'custom:aster.signature': 'signature',
 };
 
 export function CatalogIcon({ id, fallback }: { id: string; fallback: string }) {

@@ -5162,7 +5162,7 @@ function naryLimitLocation(
 function nextEquationMarker(state: EquationMarkerState): string {
   let marker = '';
   do {
-    marker = `__A3S_WORK_EQUATION_${state.nextMarker}__`;
+    marker = `__ASTER_WORK_EQUATION_${state.nextMarker}__`;
     state.nextMarker += 1;
   } while (state.occupiedText.includes(marker));
   state.occupiedText += marker;

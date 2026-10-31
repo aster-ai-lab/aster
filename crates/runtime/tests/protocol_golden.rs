@@ -1,9 +1,9 @@
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     RuntimeActionRequest, RuntimeApplyRequest, RuntimeCapabilities, RuntimeExecRequest,
     RuntimeExecResult, RuntimeInspection, RuntimeLogChunk, RuntimeLogQuery, RuntimeObservation,
     RuntimeRemoval, RuntimeUnitSpec,
 };
-use a3s_runtime::{RuntimeRequestReceipt, RuntimeUnitRecord};
+use aster_runtime::{RuntimeRequestReceipt, RuntimeUnitRecord};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use serde_json::{Map, Value};

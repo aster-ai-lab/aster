@@ -2,9 +2,9 @@
 //!
 //! Tests that make live network requests use `require_network!` to skip
 //! gracefully when the internet is unavailable, rather than failing.
-//! Run all tests normally with: `cargo test -p a3s-search --test integration`
+//! Run all tests normally with: `cargo test -p aster-search --test integration`
 
-use a3s_search::{Engine, SearchQuery, SearchResult};
+use aster_search::{Engine, SearchQuery, SearchResult};
 
 /// Skip a network-dependent test gracefully when the internet is unreachable.
 ///
@@ -120,7 +120,7 @@ mod fixture_server {
 
 mod duckduckgo_tests {
     use super::*;
-    use a3s_search::engines::DuckDuckGo;
+    use aster_search::engines::DuckDuckGo;
 
     #[tokio::test]
     async fn test_duckduckgo_search() {
@@ -155,7 +155,7 @@ mod duckduckgo_tests {
 
 mod wikipedia_tests {
     use super::*;
-    use a3s_search::engines::Wikipedia;
+    use aster_search::engines::Wikipedia;
 
     #[tokio::test]
     async fn test_wikipedia_search() {
@@ -184,7 +184,7 @@ mod wikipedia_tests {
 
 mod brave_tests {
     use super::*;
-    use a3s_search::engines::Brave;
+    use aster_search::engines::Brave;
 
     #[tokio::test]
     async fn test_brave_search() {
@@ -206,7 +206,7 @@ mod brave_tests {
 
 mod sogou_tests {
     use super::*;
-    use a3s_search::engines::Sogou;
+    use aster_search::engines::Sogou;
 
     #[tokio::test]
     async fn test_sogou_search() {
@@ -227,7 +227,7 @@ mod sogou_tests {
 
 mod so360_tests {
     use super::*;
-    use a3s_search::engines::So360;
+    use aster_search::engines::So360;
 
     #[tokio::test]
     async fn test_so360_search() {
@@ -251,7 +251,7 @@ mod google_tests {
     use super::*;
     use std::sync::Arc;
 
-    use a3s_search::{
+    use aster_search::{
         browser::{BrowserFetcher, BrowserPool, BrowserPoolConfig},
         engines::Google,
         WaitStrategy,
@@ -290,7 +290,7 @@ mod baidu_tests {
     use super::*;
     use std::sync::Arc;
 
-    use a3s_search::{
+    use aster_search::{
         browser::{BrowserFetcher, BrowserPool, BrowserPoolConfig},
         engines::Baidu,
         WaitStrategy,
@@ -326,7 +326,7 @@ mod bing_china_tests {
     use super::*;
     use std::sync::Arc;
 
-    use a3s_search::{engines::BingChina, HttpFetcher};
+    use aster_search::{engines::BingChina, HttpFetcher};
 
     fn make_bing_china_engine() -> BingChina {
         BingChina::new(Arc::new(HttpFetcher::new()))
@@ -364,7 +364,7 @@ mod cli_bing_rss_tests {
         require_network!();
 
         let started = Instant::now();
-        let output = Command::new(env!("CARGO_BIN_EXE_a3s-search"))
+        let output = Command::new(env!("CARGO_BIN_EXE_aster-search"))
             .args([
                 "巴威 2020 台风 登陆 风速 灾情 预警",
                 "-e",
@@ -375,7 +375,7 @@ mod cli_bing_rss_tests {
                 "15",
             ])
             .output()
-            .expect("run a3s-search");
+            .expect("run aster-search");
         let elapsed = started.elapsed();
 
         assert!(output.status.success(), "CLI failed: {output:?}");
@@ -393,7 +393,7 @@ mod cli_bing_rss_tests {
 
 mod bing_tests {
     use super::*;
-    use a3s_search::engines::Bing;
+    use aster_search::engines::Bing;
 
     #[tokio::test]
     async fn test_bing_search() {
@@ -415,7 +415,7 @@ mod bing_tests {
 mod health_monitor_tests {
     use std::time::Duration;
 
-    use a3s_search::{engines::DuckDuckGo, HealthConfig, Search, SearchQuery};
+    use aster_search::{engines::DuckDuckGo, HealthConfig, Search, SearchQuery};
 
     #[tokio::test]
     async fn test_health_monitor_with_real_engines() {
@@ -440,7 +440,7 @@ mod health_monitor_tests {
 }
 
 mod config_tests {
-    use a3s_search::SearchConfig;
+    use aster_search::SearchConfig;
 
     #[test]
     fn test_load_acl_config() {
@@ -511,8 +511,8 @@ mod config_tests {
 ///
 /// To make all tests exercise real assertions:
 ///   - Install lightpanda and put it in PATH, or
-///   - Set `A3S_LIGHTPANDA_EXECUTABLE=/path/to/binary`, or
-///   - Install it explicitly with `a3s install use/browser`.
+///   - Set `ASTER_LIGHTPANDA_EXECUTABLE=/path/to/binary`, or
+///   - Install it explicitly with `aster install use/browser`.
 ///
 /// Run with:
 ///   cargo test --features lightpanda --test integration -- lightpanda --nocapture
@@ -522,18 +522,18 @@ mod lightpanda_tests {
     use std::time::Duration;
 
     use super::fixture_server::FixtureServer;
-    use a3s_search::{
+    use aster_search::{
         browser::{BrowserFetcher, BrowserPool, BrowserPoolConfig, BrowserProvider},
         engines::Google,
         PageFetcher, WaitStrategy,
     };
-    use a3s_use_browser::detect_lightpanda;
+    use aster_use_browser::detect_lightpanda;
 
     // ─── helpers ────────────────────────────────────────────────────────────
 
     /// Find the Lightpanda binary without triggering an auto-download.
     ///
-    /// Check order is owned by A3S Browser: environment, PATH, then its managed cache.
+    /// Check order is owned by Aster Browser: environment, PATH, then its managed cache.
     /// Returns `None` if the binary is not locally available.
     fn find_lp_binary() -> Option<std::path::PathBuf> {
         detect_lightpanda()
@@ -558,7 +558,7 @@ mod lightpanda_tests {
             let Some($pool_var) = try_lp_pool(3) else {
                 println!(
                      "SKIP: Lightpanda binary not found. \
-                     Install it, set A3S_LIGHTPANDA_EXECUTABLE=/path, or run `a3s install use/browser`."
+                     Install it, set ASTER_LIGHTPANDA_EXECUTABLE=/path, or run `aster install use/browser`."
                 );
                 return;
             };
@@ -567,7 +567,7 @@ mod lightpanda_tests {
             let Some($pool_var) = try_lp_pool($n) else {
                 println!(
                      "SKIP: Lightpanda binary not found. \
-                     Install it, set A3S_LIGHTPANDA_EXECUTABLE=/path, or run `a3s install use/browser`."
+                     Install it, set ASTER_LIGHTPANDA_EXECUTABLE=/path, or run `aster install use/browser`."
                 );
                 return;
             };
@@ -594,18 +594,18 @@ mod lightpanda_tests {
         }
     }
 
-    /// `detect_lightpanda()` must honour the A3S executable override.
+    /// `detect_lightpanda()` must honour the Aster executable override.
     #[test]
     fn test_detect_lightpanda_env_var() {
-        if let Ok(path) = std::env::var("A3S_LIGHTPANDA_EXECUTABLE") {
+        if let Ok(path) = std::env::var("ASTER_LIGHTPANDA_EXECUTABLE") {
             let result = detect_lightpanda();
             assert!(
                 result.is_some(),
-                "detect_lightpanda() must find the A3S override"
+                "detect_lightpanda() must find the Aster override"
             );
             assert_eq!(result.unwrap().to_string_lossy(), path);
         } else {
-            println!("A3S_LIGHTPANDA_EXECUTABLE not set — detection test is a no-op");
+            println!("ASTER_LIGHTPANDA_EXECUTABLE not set — detection test is a no-op");
         }
     }
 
@@ -783,7 +783,7 @@ mod lightpanda_tests {
     #[tokio::test]
     async fn test_lightpanda_exact_user_agent_is_explicitly_unsupported() {
         require_lp!(pool);
-        let custom_ua = "A3S-SearchBot/1.0 (lightpanda test)";
+        let custom_ua = "Aster-SearchBot/1.0 (lightpanda test)";
 
         let fetcher = BrowserFetcher::new(pool.clone())
             .with_wait(WaitStrategy::Load)
@@ -1006,7 +1006,7 @@ mod lightpanda_tests {
 #[cfg(feature = "headless")]
 mod moli_tests {
     use super::fixture_server::FixtureServer;
-    use a3s_search::{detect_moli, BrowserFetcher, MoliPool, PageFetcher, WaitStrategy};
+    use aster_search::{detect_moli, BrowserFetcher, MoliPool, PageFetcher, WaitStrategy};
     use std::sync::Arc;
     use std::time::Duration;
 
@@ -1018,7 +1018,7 @@ mod moli_tests {
     #[tokio::test]
     async fn test_moli_fetch_local_js_fixture() {
         let Some(pool) = pool_or_skip() else {
-            println!("SKIP: Moli executable not found; install it or set A3S_MOLI_EXECUTABLE");
+            println!("SKIP: Moli executable not found; install it or set ASTER_MOLI_EXECUTABLE");
             return;
         };
         let server = FixtureServer::start(
@@ -1083,7 +1083,7 @@ mod moli_tests {
         permissions.set_mode(0o755);
         fs::set_permissions(&executable, permissions).unwrap();
 
-        let output = Command::new(env!("CARGO_BIN_EXE_a3s-search"))
+        let output = Command::new(env!("CARGO_BIN_EXE_aster-search"))
             .args([
                 "moli cli fixture",
                 "--engines",
@@ -1093,8 +1093,8 @@ mod moli_tests {
                 "--timeout",
                 "5",
             ])
-            .env("A3S_MOLI_EXECUTABLE", &executable)
-            .env("A3S_SEARCH_STATE_DIR", directory.path())
+            .env("ASTER_MOLI_EXECUTABLE", &executable)
+            .env("ASTER_SEARCH_STATE_DIR", directory.path())
             .output()
             .unwrap();
 
@@ -1110,7 +1110,7 @@ mod moli_tests {
 }
 
 mod meta_search_tests {
-    use a3s_search::{
+    use aster_search::{
         engines::{DuckDuckGo, Wikipedia},
         Search, SearchQuery,
     };
@@ -1155,7 +1155,7 @@ mod meta_search_tests {
     #[tokio::test]
     async fn test_meta_search_chinese() {
         require_network!();
-        use a3s_search::engines::{So360, Sogou};
+        use aster_search::engines::{So360, Sogou};
 
         let mut search = Search::new();
         search.add_engine(Sogou::new());
@@ -1184,10 +1184,10 @@ mod proxy_pool_tests {
     use std::sync::Arc;
     use std::time::Duration;
 
-    use a3s_search::proxy::{
+    use aster_search::proxy::{
         spawn_auto_refresh, ProxyConfig, ProxyPool, ProxyProvider, ProxyStrategy,
     };
-    use a3s_search::PooledHttpFetcher;
+    use aster_search::PooledHttpFetcher;
     use async_trait::async_trait;
 
     /// A mock provider that returns a fixed list and tracks call count.
@@ -1198,7 +1198,7 @@ mod proxy_pool_tests {
 
     #[async_trait]
     impl ProxyProvider for CountingProvider {
-        async fn fetch_proxies(&self) -> a3s_search::Result<Vec<ProxyConfig>> {
+        async fn fetch_proxies(&self) -> aster_search::Result<Vec<ProxyConfig>> {
             let mut count = self.call_count.lock().await;
             *count += 1;
             Ok(self.proxies.clone())
@@ -1326,7 +1326,7 @@ mod full_text_tests {
     use std::sync::Arc;
     use std::time::Duration;
 
-    use a3s_search::{enrich_full_text, HttpFetcher, PageFetcher, SearchResult, SearchResults};
+    use aster_search::{enrich_full_text, HttpFetcher, PageFetcher, SearchResult, SearchResults};
 
     use super::fixture_server::FixtureServer;
 
@@ -1403,7 +1403,7 @@ mod full_text_real_tests {
     use std::sync::Arc;
     use std::time::Duration;
 
-    use a3s_search::{
+    use aster_search::{
         engines::Wikipedia, enrich_full_text, HttpFetcher, PageFetcher, Search, SearchQuery,
         SearchResult, SearchResults,
     };
@@ -1508,7 +1508,7 @@ mod full_text_headless_tests {
     use std::sync::Arc;
     use std::time::Duration;
 
-    use a3s_search::{
+    use aster_search::{
         browser::{BrowserFetcher, BrowserPool, BrowserPoolConfig},
         enrich_full_text, HttpFetcher, PageFetcher, SearchResult, SearchResults, WaitStrategy,
     };

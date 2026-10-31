@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 use std::time::Instant;
 
 #[test]

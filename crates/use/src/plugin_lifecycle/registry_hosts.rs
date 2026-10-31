@@ -1,7 +1,7 @@
 use std::time::Duration;
 
-use a3s_use_core::{UseError, UseResult};
-use a3s_use_extension::{
+use aster_use_core::{UseError, UseResult};
+use aster_use_extension::{
     ExtensionLifecycleIdentity, ExtensionLifecyclePackage, ExtensionLifecycleResult,
     ExtensionRegistry,
 };
@@ -141,7 +141,7 @@ impl ExtensionGraphCapabilityLifecycleHost {
 impl PluginGraphCapabilityLifecycleHost for ExtensionGraphCapabilityLifecycleHost {
     async fn publish_capabilities_with_cutover(
         &self,
-        package_lock: &a3s_use_core::PluginPackageLock,
+        package_lock: &aster_use_core::PluginPackageLock,
         intents: &[PluginLifecycleIntent],
         expected_capability_generation: u64,
         idempotency_key: &str,
@@ -174,7 +174,7 @@ impl PluginGraphCapabilityLifecycleHost for ExtensionGraphCapabilityLifecycleHos
 
     async fn publish_upgrade_capabilities_with_cutover(
         &self,
-        package_lock: &a3s_use_core::PluginPackageLock,
+        package_lock: &aster_use_core::PluginPackageLock,
         candidate_intents: &[PluginLifecycleIntent],
         removed_intents: &[PluginLifecycleIntent],
         expected_capability_generation: u64,
@@ -213,7 +213,7 @@ impl PluginGraphCapabilityLifecycleHost for ExtensionGraphCapabilityLifecycleHos
 
     async fn hide_capabilities_with_cutover(
         &self,
-        package_lock: &a3s_use_core::PluginPackageLock,
+        package_lock: &aster_use_core::PluginPackageLock,
         intents: &[PluginLifecycleIntent],
         expected_capability_generation: u64,
         idempotency_key: &str,
@@ -258,7 +258,7 @@ impl PluginGraphCapabilityLifecycleHost for ExtensionGraphCapabilityLifecycleHos
 
     async fn rollback_candidates(
         &self,
-        candidate_lock: &a3s_use_core::PluginPackageLock,
+        candidate_lock: &aster_use_core::PluginPackageLock,
         candidate_intents: &[PluginLifecycleIntent],
         prior_intents: &[PluginLifecycleIntent],
         idempotency_key: &str,
@@ -346,7 +346,7 @@ impl PluginGraphCapabilityLifecycleHost for ExtensionGraphCapabilityLifecycleHos
 
 fn publication_evidence(
     intents: &[PluginLifecycleIntent],
-    results: Vec<a3s_use_extension::ExtensionLifecycleResult>,
+    results: Vec<aster_use_extension::ExtensionLifecycleResult>,
     idempotency_key: &str,
     label: &str,
 ) -> UseResult<Vec<PluginPackagePublicationEvidence>> {
@@ -561,7 +561,7 @@ fn single_package_cutover_publication(
     intent: &PluginLifecycleIntent,
     idempotency_key: &str,
     label: &str,
-    publication: a3s_use_extension::ExtensionLifecycleGraphPublication,
+    publication: aster_use_extension::ExtensionLifecycleGraphPublication,
 ) -> UseResult<PluginCapabilityPublication> {
     let [result] = publication.packages.as_slice() else {
         return Err(UseError::new(
@@ -676,7 +676,7 @@ mod tests {
     #[tokio::test]
     async fn upgrade_commits_a_disabled_candidate_while_the_prior_generation_stays_published() {
         let temp = tempfile::tempdir().unwrap();
-        let registry = ExtensionRegistry::new(a3s_use_extension::ExtensionPaths::new(
+        let registry = ExtensionRegistry::new(aster_use_extension::ExtensionPaths::new(
             temp.path().join("data"),
             temp.path().join("state"),
         ));
@@ -703,8 +703,8 @@ mod tests {
             crate::plugin_lifecycle::PluginLifecycleIntentSpec {
                 operation_id: "upgrade:acme-cognitive:2".to_string(),
                 plan_digest: format!("sha256:{}", "1".repeat(64)),
-                scope: a3s_use_core::PlanScope {
-                    kind: a3s_use_core::PlanScopeKind::Workspace,
+                scope: aster_use_core::PlanScope {
+                    kind: aster_use_core::PlanScopeKind::Workspace,
                     id: "cognitive".to_string(),
                 },
                 package_id: candidate.manifest().package_id.clone(),

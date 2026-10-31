@@ -1,8 +1,8 @@
 use std::path::Path;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     Error, ErrorCode, ExitStatus, OperationId, ProcessId, ProcessIo, ProcessRecord, ProcessTarget,
     TerminalSize,
 };
@@ -26,7 +26,7 @@ pub(super) fn waitable_exec_process(
     let process_id = ProcessId::new(format!("wait-worker-{nonce}"))
         .map_err(|error| format!("failed to construct waitable Exec process ID: {error}"))?;
     let command = format!(
-        "set -eu; printf 'a3s-oci-wait-process-{nonce}\\n' > /{}; exec /bin/busybox sleep 3600",
+        "set -eu; printf 'aster-oci-wait-process-{nonce}\\n' > /{}; exec /bin/busybox sleep 3600",
         super::super::exec::EXEC_MARKER_NAME,
     );
     let process: Process = serde_json::from_value(serde_json::json!({
@@ -39,9 +39,9 @@ pub(super) fn waitable_exec_process(
     }))
     .map_err(|error| format!("failed to construct waitable terminal Exec process: {error}"))?;
     let io = ProcessIo {
-        stdin: a3s_oci_sdk::IoMode::Terminal,
-        stdout: a3s_oci_sdk::IoMode::Terminal,
-        stderr: a3s_oci_sdk::IoMode::Terminal,
+        stdin: aster_oci_sdk::IoMode::Terminal,
+        stdout: aster_oci_sdk::IoMode::Terminal,
+        stderr: aster_oci_sdk::IoMode::Terminal,
         terminal_size: Some(TerminalSize {
             width: 80,
             height: 24,
@@ -121,7 +121,7 @@ pub(super) fn identity_or_expected<T: Clone>(
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{ContainerId, ContainerTarget, Generation, ProcessTarget};
+    use aster_oci_sdk::{ContainerId, ContainerTarget, Generation, ProcessTarget};
 
     use super::waitable_exec_process;
 

@@ -2,7 +2,7 @@ use std::path::Path;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_box_core::{
+use aster_box_core::{
     BoxConfig, CreateExecutionRequest, ExecutionId, ExecutionIsolation, ExecutionManager,
     ExecutionManagerError, ExecutionManagerResult, ExecutionState, KillOutcome, OperationId,
 };

@@ -1,10 +1,10 @@
-//! Host execution handle for one exact projected A3S Flow generation.
+//! Host execution handle for one exact projected Aster Flow generation.
 
 use std::fmt;
 use std::future::Future;
 use std::sync::Arc;
 
-use a3s_flow::{FlowEventEnvelope, WorkflowRunSnapshot, WorkflowSpec};
+use aster_flow::{FlowEventEnvelope, WorkflowRunSnapshot, WorkflowSpec};
 
 use super::AgentSession;
 use crate::capability::{
@@ -13,7 +13,7 @@ use crate::capability::{
 };
 use crate::error::Result;
 
-/// Non-clone host handle that retains one exact Code projection and A3S Use lease.
+/// Non-clone host handle that retains one exact Code projection and Aster Use lease.
 ///
 /// Every operation uses the [`FlowBinding`] selected at admission. Publishing a
 /// newer catalog generation cannot replace this handle's workflow definition,
@@ -37,7 +37,7 @@ impl ProjectedFlowHandle {
         self.binding.spec()
     }
 
-    /// Upstream A3S Use generation retained by this handle, when applicable.
+    /// Upstream Aster Use generation retained by this handle, when applicable.
     pub fn use_generation(&self) -> Option<&UseCapabilityGeneration> {
         self.capability_run.run_scope().use_generation()
     }
@@ -88,7 +88,7 @@ impl ProjectedFlowHandle {
         self.capability_run.close().await.map_err(Into::into)
     }
 
-    async fn await_flow<T>(&self, future: impl Future<Output = a3s_flow::Result<T>>) -> Result<T> {
+    async fn await_flow<T>(&self, future: impl Future<Output = aster_flow::Result<T>>) -> Result<T> {
         let cancellation = self.capability_run.run_scope().cancellation();
         tokio::pin!(future);
         tokio::select! {
@@ -113,7 +113,7 @@ impl fmt::Debug for ProjectedFlowHandle {
 impl AgentSession {
     /// Admit and return one exact named Flow from the current atomic catalog.
     ///
-    /// Missing names return `None` without acquiring an A3S Use lease. A found
+    /// Missing names return `None` without acquiring an Aster Use lease. A found
     /// binding pins its Code generation before asynchronous Use admission, so a
     /// concurrent N+1 publication cannot alter the returned engine or spec.
     pub async fn projected_flow(&self, public_name: &str) -> Result<Option<ProjectedFlowHandle>> {

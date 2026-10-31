@@ -24,12 +24,12 @@ use std::time::Duration;
 use tokio::sync::Mutex;
 
 /// User header carrying the full event subject
-const HEADER_SUBJECT: &str = "a3s-subject";
+const HEADER_SUBJECT: &str = "aster-subject";
 /// User header carrying the event id
-const HEADER_EVENT_ID: &str = "a3s-event-id";
+const HEADER_EVENT_ID: &str = "aster-event-id";
 /// User header carrying the caller's dedup id (observability; broker-side
 /// idempotence depends on server configuration and numeric message ids)
-const HEADER_MSG_ID: &str = "a3s-msg-id";
+const HEADER_MSG_ID: &str = "aster-msg-id";
 
 /// Iggy client
 ///
@@ -129,7 +129,7 @@ impl IggyClient {
 
     /// Publish an event with options.
     ///
-    /// - `msg_id`: stored in the `a3s-msg-id` user header. Broker-side
+    /// - `msg_id`: stored in the `aster-msg-id` user header. Broker-side
     ///   deduplication is NOT provided in this version.
     /// - `expected_sequence`: unsupported — fails closed with
     ///   [`EventError::Provider`]. Iggy sends have no optimistic-concurrency

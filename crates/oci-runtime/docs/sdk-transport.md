@@ -2,7 +2,7 @@
 
 ## Contract
 
-`a3s-oci-sdk` is the only lifecycle API that A3S Box should consume. The same
+`aster-oci-sdk` is the only lifecycle API that Aster Box should consume. The same
 `OciRuntimeService` trait is used for in-process tests and out-of-process
 runtime calls. The transport maps every trait method; it does not invoke the
 CLI or expose WHPX, libkrun, or native Linux driver internals.
@@ -16,7 +16,7 @@ retains its attachment-dependent minimum, and a non-TEE restore retains its
 protocol-8 minimum.
 
 Version 8 replaced the legacy checkpoint directory and `leave_running` boolean with an immutable
-`a3s.oci.checkpoint-reference.v1`, typed single-file artifact paths, paused
+`aster.oci.checkpoint-reference.v1`, typed single-file artifact paths, paused
 quiescence, exact driver/build compatibility evidence, and request-bound
 checkpoint/restore responses. Every checkpoint and non-TEE restore requires
 protocol 8 regardless of attachment schema; protocol 7 and earlier reject it
@@ -37,21 +37,21 @@ replays byte-for-byte without another driver call. Runtime treats evidence as
 opaque and does not appraise provider claims; no production driver advertises
 the TEE operation or extensions yet.
 
-Version 7 added `a3s.oci.attachments.v4` reusable guest-session identity
+Version 7 added `aster.oci.attachments.v4` reusable guest-session identity
 evidence to create. A v4 create is rejected before dispatch when a connection
 negotiated protocol 6 or earlier. Version 6 added
-`a3s.oci.attachments.v3` already-authorized network identity evidence; v3
-create requires protocol 6. Version 5 added `a3s.oci.attachments.v2`
+`aster.oci.attachments.v3` already-authorized network identity evidence; v3
+create requires protocol 6. Version 5 added `aster.oci.attachments.v2`
 already-authorized storage evidence; v2 create requires protocol 5, while
 ordinary v1 create requests remain valid on protocol 3. Restore combines the
 selected attachment schema with the protocol-8 checkpoint reference. The
-required `dev.a3s.network.enforcement@1` extension reuses the existing
+required `dev.aster.network.enforcement@1` extension reuses the existing
 extension wire and per-driver negotiation; because it requires v3 network
 bindings, protocol 6 remains its create minimum. Version 4 added exact-target
 file upload/download and filesystem stat/mkdir/move/list/remove. Mutations
 carry stable `OperationContext` identities, payloads and recursive listings
 are bounded, and protocol-3 peers reject those file operations before
-dispatch. Version 3 made the complete `a3s.oci.attachments.v1` manifest
+dispatch. Version 3 made the complete `aster.oci.attachments.v1` manifest
 mandatory for create and the later restore contract, moved init process I/O
 inside that versioned contract, and returned its durable digest.
 The transport rejects protocol-2 peers rather than silently dropping rootfs,
@@ -101,7 +101,7 @@ transport evidence.
 
 ## Per-driver Capability Negotiation
 
-`RuntimeInfo::extensions` carries the additive `a3s.oci.extensions.v1`
+`RuntimeInfo::extensions` carries the additive `aster.oci.extensions.v1`
 catalog. The Host hashes the currently running executable and binds its
 component name, semantic version, optional source revision, and lowercase
 SHA-256 to the complete catalog. Each launch-ready registered driver then owns
@@ -112,12 +112,12 @@ Callers negotiate against the isolation requirement rather than a raw backend
 name:
 
 ```rust,no_run
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     IsolationClass, RuntimeClient, RuntimeNegotiationRequest, RuntimeOperation,
     ATTACHMENT_SCHEMA_V1, RUNTIME_OPERATION_CONTRACT_V1,
 };
 
-async fn require_update(client: &RuntimeClient) -> a3s_oci_sdk::Result<()> {
+async fn require_update(client: &RuntimeClient) -> aster_oci_sdk::Result<()> {
     let info = client.features().await?;
     let requirement = RuntimeNegotiationRequest::new(IsolationClass::SharedHostKernel)
         .with_operation(RuntimeOperation::Update, RUNTIME_OPERATION_CONTRACT_V1)?
@@ -162,21 +162,21 @@ hostnames, addresses, routes, endpoints, credentials, or tenant metadata.
 
 TEE negotiation likewise requires more than `DedicatedVm`. A caller requests
 `RuntimeOperation::Attest` and exactly one
-`dev.a3s.tee.amd-sev-snp@1` or `dev.a3s.tee.intel-tdx@1` extension from the
+`dev.aster.tee.amd-sev-snp@1` or `dev.aster.tee.intel-tdx@1` extension from the
 same per-driver catalog entry. The registry rejects an `Attest` operation
 without a known TEE extension, a TEE extension without `Attest`, or either on a
 driver that lacks dedicated-VM isolation.
 
-## A3S Box Client
+## Aster Box Client
 
 On Windows, use a local named pipe:
 
 ```rust
-use a3s_oci_sdk::{LocalIpcEndpoint, RuntimeClient};
+use aster_oci_sdk::{LocalIpcEndpoint, RuntimeClient};
 
-# async fn connect() -> a3s_oci_sdk::Result<()> {
+# async fn connect() -> aster_oci_sdk::Result<()> {
 let endpoint =
-    LocalIpcEndpoint::windows_named_pipe(r"\\.\pipe\a3s-oci-runtime")?;
+    LocalIpcEndpoint::windows_named_pipe(r"\\.\pipe\aster-oci-runtime")?;
 let client = RuntimeClient::connect(&endpoint).await?;
 let info = client.features().await?;
 # let _ = info;
@@ -187,10 +187,10 @@ let info = client.features().await?;
 On Linux and macOS, use an absolute Unix-domain-socket path:
 
 ```rust
-use a3s_oci_sdk::{LocalIpcEndpoint, RuntimeClient};
+use aster_oci_sdk::{LocalIpcEndpoint, RuntimeClient};
 
-# async fn connect() -> a3s_oci_sdk::Result<()> {
-let endpoint = LocalIpcEndpoint::unix_socket("/run/a3s-oci/runtime.sock")?;
+# async fn connect() -> aster_oci_sdk::Result<()> {
+let endpoint = LocalIpcEndpoint::unix_socket("/run/aster-oci/runtime.sock")?;
 let client = RuntimeClient::connect(&endpoint).await?;
 let info = client.features().await?;
 # let _ = info;
@@ -204,7 +204,7 @@ already authenticated async byte stream.
 
 ### Native Linux multi-container host owner
 
-`a3s-oci native-linux-host-service --root <absolute-root> --agent
+`aster-oci native-linux-host-service --root <absolute-root> --agent
 <absolute-agent>` publishes a long-lived Linux SDK endpoint for ordinary
 transported create requests. It opens the experimental Native Linux driver and
 reconciles the durable state root before binding `runtime.sock`; the endpoint
@@ -219,13 +219,13 @@ owner. Abrupt owner replacement reopens the same durable service state; the
 client still exposes the first broken request and reconnects only on a later
 explicit reconciliation.
 
-### Native Linux A3S Box owner
+### Native Linux Aster Box owner
 
-`a3s-oci native-linux-service` is the Linux process owner used by the Box
+`aster-oci native-linux-service` is the Linux process owner used by the Box
 adapter. It binds one absolute private runtime root and one `ContainerId`.
 Before starting it, Box creates and listens on its exec and PTY Unix sockets,
 opens the writable init log, and inherits those handles as FD 3, FD 4, and FD
-5. The explicit `--a3s-box-control-fds` flag prevents an accidental service
+5. The explicit `--aster-box-control-fds` flag prevents an accidental service
 start with a different descriptor contract.
 
 The owner creates `runtime.sock` beneath its `0700` runtime root, applies mode
@@ -244,7 +244,7 @@ transient executor slot before the exact service socket is removed. Durable
 state stays inside the Sandbox runtime root until Box removes that
 product-owned root.
 
-For an in-process host integration, A3S Box can wrap
+For an in-process host integration, Aster Box can wrap
 `HostRuntimeService::open(state_root, driver)` in `RuntimeClient`. The
 `RuntimeDriver` trait receives exact-generation requests and the immutable
 durable bundle at both create and start. Its mutating methods are async,
@@ -258,13 +258,13 @@ protocol types remain behind that boundary.
 the wire protocol, so there is only one lifecycle implementation:
 
 ```rust,no_run
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerId, CreateAttachments, CreateRequest, IsolationRequest,
     OperationContext, OperationId, ProcessIo, RunRequest, RuntimeClient,
 };
 
-# async fn run(client: RuntimeClient, bundle: a3s_oci_sdk::OciBundle)
-#     -> a3s_oci_sdk::Result<()> {
+# async fn run(client: RuntimeClient, bundle: aster_oci_sdk::OciBundle)
+#     -> aster_oci_sdk::Result<()> {
 let attachments = CreateAttachments::from_bundle(&bundle, ProcessIo::default())?;
 let status = client
     .run(RunRequest {
@@ -316,12 +316,12 @@ Poll from the beginning with cursor zero, then pass each returned
 all retained generations of that container ID:
 
 ```rust,no_run
-use a3s_oci_sdk::{ContainerTarget, EventsRequest, RuntimeClient};
+use aster_oci_sdk::{ContainerTarget, EventsRequest, RuntimeClient};
 
 async fn poll_events(
     client: &RuntimeClient,
     container: ContainerTarget,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     let mut cursor = 0;
     let batch = client
         .events(EventsRequest {
@@ -413,13 +413,13 @@ local stream, the runtime serves it with:
 ```rust
 use std::sync::Arc;
 
-use a3s_oci_sdk::{serve_transport_connection, OciRuntimeService};
+use aster_oci_sdk::{serve_transport_connection, OciRuntimeService};
 use tokio::io::{AsyncRead, AsyncWrite};
 
 async fn serve<T>(
     service: Arc<dyn OciRuntimeService>,
     stream: T,
-) -> a3s_oci_sdk::Result<()>
+) -> aster_oci_sdk::Result<()>
 where
     T: AsyncRead + AsyncWrite + Unpin + Send,
 {

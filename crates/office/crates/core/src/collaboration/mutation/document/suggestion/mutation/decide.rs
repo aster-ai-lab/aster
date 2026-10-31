@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::Attrs;
 use yrs::{Any, Array, Text, Transact, Xml, XmlElementRef, XmlTextRef};
 
@@ -371,7 +371,7 @@ fn should_delete(
     )
 }
 
-fn invalid_mutation() -> a3s_use_core::UseError {
+fn invalid_mutation() -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_invalid",
         "The supplied mutation is not a Document suggestion decision.",

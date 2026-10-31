@@ -49,7 +49,7 @@ def decide(body):
                 result = {}
             result = result if isinstance(result, dict) else {}
             values = result.get('values')
-            accepted = (result.get('schema') == 'a3s.code.user-form.v1' and values == EXPECTED
+            accepted = (result.get('schema') == 'aster.code.user-form.v1' and values == EXPECTED
                         and type(values.get('amount')) in (int, float)
                         and type(values.get('ready')) is bool and result.get('permission_grant') is False)
             suffix = 'PASS: Ada, 4, true, alpha, Need a detailed plan' if accepted else 'BAD-VALUES'

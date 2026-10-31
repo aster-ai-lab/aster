@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionSchema, DataType, DiskannQueryParams, Doc, ErrorCode, FieldSchema,
     HnswQueryParams, IndexParams, IndexType, IvfQueryParams, IvfRabitqQueryParams, MetricType,
     QuantizeType, SearchQuery,

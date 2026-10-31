@@ -2,7 +2,7 @@
 //! inside the page bound, and retention must delete until the retained log is
 //! inside the byte cap. The cursor walk reconstructs only the retained window.
 
-use a3s_code_core::{AgentEvent, InMemoryRunStore};
+use aster_core::{AgentEvent, InMemoryRunStore};
 
 #[tokio::test]
 #[ignore = "S-RO-01 soak: twenty event pages stay bounded after retention"]

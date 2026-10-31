@@ -163,7 +163,7 @@ async fn checkpoint_rejects_a_same_name_but_different_host_artifact_identity() {
         .extensions
         .artifact()
         .expect("current runtime artifact");
-    let incompatible = a3s_oci_sdk::RuntimeArtifact::new(
+    let incompatible = aster_oci_sdk::RuntimeArtifact::new(
         current.name(),
         current.version(),
         format!("sha256:{}", "d".repeat(64)),

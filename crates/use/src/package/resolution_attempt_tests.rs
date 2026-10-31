@@ -1,10 +1,10 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanScope, PlanScopeKind, PluginManagerInstallPlanInput, PluginOperationAction,
     PluginPackageId, PluginReleaseChannel,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     PackageRegistryResolutionObserver, TrustedRegistry, VerifiedRegistryMetadata,
 };
 
@@ -29,7 +29,7 @@ fn scope() -> PlanScope {
 fn registry(temp: &std::path::Path, name: &str, seed: char) -> TrustedRegistry {
     TrustedRegistry::new(
         name,
-        format!("https://{name}.example.test/a3s/"),
+        format!("https://{name}.example.test/aster/"),
         digest(seed),
         None,
         temp.join(format!("registry-{name}")),

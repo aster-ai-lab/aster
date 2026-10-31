@@ -2,10 +2,10 @@
 
 当前工作区 Wiki 采用产物／看板／百科／记忆；已删除独立百科问答。当前合同见[工作区 Wiki](../../specs/021-workspace-wiki/contracts/workspace-wiki.md)，执行结果及未通过项见[2026-10-26/27 证据](../../docs/evidence/desktop/2026-10-26-workspace-wiki/OUTCOME.md)。下方 015 计划与个人知识夹具是历史／独立范围，不代表当前产品恢复独立问答。
 
-`workspace_wiki_native.py` 通过正在运行的原生应用、真实 ACP 和配置的模型生成自有合成文件的 Wiki，校验秘密排除、来源不变、陈旧审阅拒绝、整代发布与无变化零生成；`--cancel-running` 另验运行中取消。它不操作 GUI，不替代原生桌面验收。仅使用为测试选择的 a3s-code Agent；记录 token 是运行时凭据，不能提交或复制到证据中。
+`workspace_wiki_native.py` 通过正在运行的原生应用、真实 ACP 和配置的模型生成自有合成文件的 Wiki，校验秘密排除、来源不变、陈旧审阅拒绝、整代发布与无变化零生成；`--cancel-running` 另验运行中取消。它不操作 GUI，不替代原生桌面验收。仅使用为测试选择的 aster Agent；记录 token 是运行时凭据，不能提交或复制到证据中。
 
 ```sh
-python3 tests/e2e/workspace_wiki_native.py --runtime "$TMPDIR/a3s-studio/aster/runtime.json" \
+python3 tests/e2e/workspace_wiki_native.py --runtime "$TMPDIR/aster-studio/aster/runtime.json" \
   --agent-id YOUR_FIXTURE_AGENT_ID --evidence target/workspace-wiki-native.json
 ```
 
@@ -27,9 +27,9 @@ Markdown 报告；`--fixture mixed` 再加入读取台账的 Python 脚本。每
 
 1. 先冻结功能/Office工具栏清单、隔离fixture、匹配构建及后台驱动能力。
 2. 保留空工作区初始化等已知红例，完成正确owner修复；不得预建wiki绕过首次使用。
-3. 用A3S Test MCP观察真实应用，再按当前观察执行；UI、真实磁盘/SDK/ACP、执行身份同时核对。
+3. 用Aster Test MCP观察真实应用，再按当前观察执行；UI、真实磁盘/SDK/ACP、执行身份同时核对。
 4. 脚本模型只替代模型供应方；真实Agent、工具、存储和百科发布仍执行。带L的用例另跑真实模型。
-5. 稳定路径再生成私有Studio里的`native_*.acl`，先`a3s-test check`再用相同可信host配置`run`。
+5. 稳定路径再生成私有Studio里的`native_*.acl`，先`aster-test check`再用相同可信host配置`run`。
 6. 参数变体、失败/阻断/待实现与实际通过分别计数；组件测试、旧stub API测试或截图不代替原生业务验收。
 
 现成可执行的预检和底层回归命令、未来runner的明确缺口、清单之外新增功能的登记规则、
@@ -52,8 +52,8 @@ python3 tests/e2e/knowledge_model.py --events target/knowledge-e2e/model-events.
 服务只绑定动态 loopback 端口，启动时输出模型名和地址。它只替代模型供应方；
 原生 GUI、暂存 owner、发布合并及独立磁盘校验仍须执行，不能以该夹具代替真实模型。
 
-协议补充使用 `cargo run --locked --offline -p a3s-okf --example knowledge_maintenance_fixture -- begin ROOT`
+协议补充使用 `cargo run --locked --offline -p aster-okf --example knowledge_maintenance_fixture -- begin ROOT`
 创建真实暂存任务，ACP 结束后用同一入口的 `finish ROOT JOB_ID` 发布。`ROOT` 必须是自有隔离的
 `wiki/local` 测试资料库；此入口不会预置候选页或绕过发布校验。ACP 的 `session/new` 必须像
-原生 Studio 一样声明 `_meta.a3sHost.completionAttestation = "disk_content"`，并对实际写入逐次审批。
+原生 Studio 一样声明 `_meta.asterHost.completionAttestation = "disk_content"`，并对实际写入逐次审批。
 这些补充命令不构成完整 GUI runner。

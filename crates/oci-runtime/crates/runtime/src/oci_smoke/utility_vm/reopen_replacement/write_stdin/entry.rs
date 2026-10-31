@@ -1,10 +1,10 @@
 use std::path::Path;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportOperationStage, AgentTransportQualificationRequest,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{
     CreateAttachments, CreateRequest, ExecRequest, IoMode, IsolationRequest, OciBundle,
     OperationContext, ProcessIo, ProcessTarget, StartRequest, WriteStdinRequest,
 };
@@ -183,7 +183,7 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
             container: exact_target.clone(),
             process_id: process_id.clone(),
         },
-        data: format!("a3s-oci-write-stdin-{nonce}\n").into_bytes(),
+        data: format!("aster-oci-write-stdin-{nonce}\n").into_bytes(),
     };
     let guest_qualification = if stage.is_guest() {
         match AgentTransportQualificationRequest::new(
@@ -211,7 +211,7 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
     report.exec_terminal = Some(false);
     report.write_stdin_data = Some(write_stdin.data.clone());
 
-    let state_root = console_directory.join(format!("a3s-oci-write-stdin-reopen-{nonce}-state"));
+    let state_root = console_directory.join(format!("aster-oci-write-stdin-reopen-{nonce}-state"));
     if let Err(reason) = super::super::create_qualification_state_root(&state_root).await {
         return failed(report, reason);
     }
@@ -221,16 +221,16 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
         system_image_manifest: system_image_manifest.to_path_buf(),
         state_root: state_root.clone(),
         first_console: console_directory
-            .join(format!("a3s-oci-write-stdin-reopen-{nonce}-first.log")),
+            .join(format!("aster-oci-write-stdin-reopen-{nonce}-first.log")),
         replacement_console: console_directory.join(format!(
-            "a3s-oci-write-stdin-reopen-{nonce}-replacement.log"
+            "aster-oci-write-stdin-reopen-{nonce}-replacement.log"
         )),
         init_marker,
         exec_marker,
         write_marker,
-        init_marker_contents: format!("a3s-oci-exec-init-{nonce}\n").into_bytes(),
-        exec_marker_contents: format!("a3s-oci-exec-process-{nonce}\n").into_bytes(),
-        write_marker_contents: format!("a3s-oci-write-stdin-{nonce}\n").into_bytes(),
+        init_marker_contents: format!("aster-oci-exec-init-{nonce}\n").into_bytes(),
+        exec_marker_contents: format!("aster-oci-exec-process-{nonce}\n").into_bytes(),
+        write_marker_contents: format!("aster-oci-write-stdin-{nonce}\n").into_bytes(),
         create,
         start,
         exec,

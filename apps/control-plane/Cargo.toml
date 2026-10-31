@@ -1,0 +1,14 @@
+[workspace]
+resolver = "3"
+members = [
+    "auth",
+    "billing",
+    "config",
+    "runtime",
+    "runner",
+]
+default-members = ["auth", "billing", "config", "runtime", "runner"]
+
+[workspace.package]
+edition = "2021"
+publish = false

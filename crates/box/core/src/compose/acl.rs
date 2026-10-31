@@ -1,8 +1,8 @@
-//! Closed-schema A3S ACL parser for Compose applications.
+//! Closed-schema Aster ACL parser for Compose applications.
 
 use std::collections::HashMap;
 
-use a3s_acl::{Block, Document, Lexer, Token, Value};
+use aster_acl::{Block, Document, Lexer, Token, Value};
 use thiserror::Error;
 
 use super::diagnostic::{child_path, pointer_segment, ComposeDiagnostic};
@@ -17,7 +17,7 @@ use super::{
     ServiceNetworks, StringOrList, VolumeDeclaration,
 };
 
-/// An invalid A3S Compose ACL document.
+/// An invalid Aster Compose ACL document.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 #[error("{diagnostic}")]
 pub struct ComposeAclError {
@@ -70,8 +70,8 @@ pub(super) fn parse_compose_acl(
     environment: &HashMap<String, String>,
 ) -> Result<ComposeConfig, ComposeAclError> {
     validate_balanced_braces(source)?;
-    let mut document = a3s_acl::parse(source)
-        .map_err(|error| ComposeAclError::syntax(format!("invalid A3S ACL: {error}")))?;
+    let mut document = aster_acl::parse(source)
+        .map_err(|error| ComposeAclError::syntax(format!("invalid Aster ACL: {error}")))?;
     interpolate_document_values(&mut document, environment)?;
     resolve_environment_calls(&mut document, environment)?;
     convert_document(document)
@@ -809,7 +809,7 @@ mod tests {
 
     const COMPLETE: &str = r#"
 service "api" {
-  image = "ghcr.io/a3s/api:latest"
+  image = "ghcr.io/aster/api:latest"
   entrypoint = ["/bin/api"]
   command = ["serve", "--port", "8080"]
   environment = {
@@ -867,7 +867,7 @@ network "backend" {
 
         assert_eq!(config.services.len(), 2);
         let api = &config.services["api"];
-        assert_eq!(api.image.as_deref(), Some("ghcr.io/a3s/api:latest"));
+        assert_eq!(api.image.as_deref(), Some("ghcr.io/aster/api:latest"));
         assert_eq!(
             api.command.as_ref().unwrap().to_vec(),
             ["serve", "--port", "8080"]

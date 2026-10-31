@@ -6,19 +6,19 @@ use super::{open_read_pinned, strict_json, ALPINE_ARCHIVE_SHA256, IMAGE_NAME, SC
 
 fn valid_manifest() -> serde_json::Value {
     json!({
-        "schema_version": "a3s.oci.windows-system-image.v1",
-        "compatibility_level": "a3s-oci-runtime-0.2.0-agent-protocol-v10",
+        "schema_version": "aster.oci.windows-system-image.v1",
+        "compatibility_level": "aster-oci-runtime-0.2.0-agent-protocol-v10",
         "architecture": "x86_64",
         "image": {
-            "name": "a3s-oci-system.ext4",
+            "name": "aster-oci-system.ext4",
             "size": 67108864,
             "sha256": "1".repeat(64),
-            "archive_name": "a3s-oci-system.ext4.xz",
+            "archive_name": "aster-oci-system.ext4.xz",
             "archive_size": 1,
             "archive_sha256": "2".repeat(64),
             "filesystem": "ext4",
             "filesystem_uuid": "a3a30c1a-2026-4000-8000-000000000011",
-            "filesystem_label": "a3s-oci-system",
+            "filesystem_label": "aster-oci-system",
             "directory_hash_seed": "a3a30c1a-2026-4000-8000-000000000012"
         },
         "sources": {
@@ -90,8 +90,8 @@ fn rejects_trailing_manifest_data() {
 
 #[test]
 fn manifest_constants_are_canonical() {
-    assert_eq!(SCHEMA_VERSION, "a3s.oci.windows-system-image.v1");
-    assert_eq!(IMAGE_NAME, "a3s-oci-system.ext4");
+    assert_eq!(SCHEMA_VERSION, "aster.oci.windows-system-image.v1");
+    assert_eq!(IMAGE_NAME, "aster-oci-system.ext4");
     assert_eq!(ALPINE_ARCHIVE_SHA256.len(), 64);
     assert!(json!({ "digest": ALPINE_ARCHIVE_SHA256 }).is_object());
 }

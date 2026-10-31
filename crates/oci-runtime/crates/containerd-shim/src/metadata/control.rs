@@ -1,5 +1,5 @@
-use a3s_oci_sdk::oci_spec::runtime::LinuxResources;
-use a3s_oci_sdk::{canonical_json_bytes, Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::LinuxResources;
+use aster_oci_sdk::{canonical_json_bytes, Error, ErrorCode, Result};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 

@@ -1,6 +1,6 @@
 #![cfg(feature = "database")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, Database, DatabaseModule, DatabaseRow, InMemoryDatabaseBackend,
     Module, ModuleRef, ProviderDefinition, Result,
 };

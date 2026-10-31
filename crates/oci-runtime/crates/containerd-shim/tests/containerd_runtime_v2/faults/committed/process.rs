@@ -1,7 +1,7 @@
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, Process};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, Process};
+use aster_oci_sdk::{
     ContainerTarget, ExecRequest as RuntimeExecRequest, Generation, IoMode, OperationContext,
     ProcessIo, ProcessRecord, ProcessTarget, Signal,
     SignalProcessRequest as RuntimeSignalProcessRequest, StateRequest as RuntimeStateRequest,
@@ -363,7 +363,7 @@ async fn wait_runtime_process(
     task_id: &str,
     exec_id: &str,
     identity: &RuntimeIdentity,
-) -> TestResult<a3s_oci_sdk::ExitStatus> {
+) -> TestResult<aster_oci_sdk::ExitStatus> {
     let client = runtime_client(config).await?;
     let request = RuntimeWaitProcessRequest {
         process: exact_process_target(config, task_id, exec_id, identity)?,
@@ -389,7 +389,7 @@ async fn wait_runtime_process(
 async fn runtime_state(
     config: &QualificationConfig,
     identity: &RuntimeIdentity,
-) -> TestResult<a3s_oci_sdk::ContainerRecord> {
+) -> TestResult<aster_oci_sdk::ContainerRecord> {
     runtime_client(config)
         .await?
         .state(RuntimeStateRequest {

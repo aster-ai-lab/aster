@@ -7,9 +7,9 @@ use super::{
 use serde::{Deserialize, Serialize};
 
 pub const RESEARCH_REPRODUCIBILITY_MANIFEST_SCHEMA_V1: &str =
-    "a3s.code.reproducibility-manifest.v1";
+    "aster.code.reproducibility-manifest.v1";
 const RESEARCH_REPRODUCIBILITY_MANIFEST_DIGEST_DOMAIN: &str =
-    "a3s.code.reproducibility-manifest.identity.v1";
+    "aster.code.reproducibility-manifest.identity.v1";
 
 /// Digests and non-secret parameters that make one research Run reproducible.
 ///

@@ -154,13 +154,13 @@ pub fn list_workspace_sessions(
     })
 }
 
-/// `<workspace>/.a3s`, or the host-set [`crate::state_root`] override.
+/// `<workspace>/.aster`, or the host-set [`crate::state_root`] override.
 fn open_state_dir(workspace: &Path) -> io::Result<Option<Dir>> {
     if let Some(root) = crate::state_root::state_root_override() {
         return Dir::open_ambient_dir(root, cap_std::ambient_authority()).map(Some);
     }
     let root = Dir::open_ambient_dir(workspace, cap_std::ambient_authority())?;
-    optional_dir(&root, ".a3s")
+    optional_dir(&root, ".aster")
 }
 
 fn optional_dir(parent: &Dir, name: &str) -> io::Result<Option<Dir>> {
@@ -406,7 +406,7 @@ fn read_log(
         if fact_count > MAX_FACTS {
             return Err(invalid_data("too many session facts"));
         }
-        let fact = a3s_effect::parse_fact_json(line).map_err(invalid_data)?;
+        let fact = aster_effect::parse_fact_json(line).map_err(invalid_data)?;
         if fact.seq != fact_count || !keys.insert(fact.key) {
             return Err(invalid_data("invalid session fact order or identity"));
         }
@@ -424,7 +424,7 @@ fn read_log(
         } else if fact.kind == "model.turn" {
             // Use the scheduler's typed decision contract, not an inferred
             // payload shape. Tools/control facts are not user/model messages.
-            let _: a3s_effect::coding::ModelDecision =
+            let _: aster_effect::coding::ModelDecision =
                 serde_json::from_value(fact.payload).map_err(invalid_data)?;
             num_messages += 1;
         }

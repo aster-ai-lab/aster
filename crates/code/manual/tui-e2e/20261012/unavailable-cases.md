@@ -10,7 +10,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/usage.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/usage.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/usage.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/usage.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -26,7 +26,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/view_plan.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/view_plan.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/view_plan.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/view_plan.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -42,7 +42,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plan.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plan.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plan.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plan.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -58,7 +58,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/tutorial.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/tutorial.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/tutorial.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/tutorial.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -74,7 +74,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/docs.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/docs.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/docs.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/docs.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -90,7 +90,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/privacy.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/privacy.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/privacy.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/privacy.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -106,7 +106,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/login.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/login.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/login.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/login.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -122,7 +122,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/logout.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/logout.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/logout.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/logout.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -138,7 +138,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/btw.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/btw.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/btw.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/btw.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -154,7 +154,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/feedback.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/feedback.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/feedback.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/feedback.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -170,7 +170,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/queue.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/queue.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/queue.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/queue.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 动作参数化：`ToggleQueue`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -188,7 +188,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/fork.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/fork.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/fork.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/fork.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -204,7 +204,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/resume.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/resume.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/resume.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/resume.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -220,7 +220,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/rename.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/rename.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/rename.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/rename.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -236,7 +236,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/history.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/history.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/history.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/history.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -252,7 +252,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/transcript.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/transcript.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/transcript.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/transcript.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -268,7 +268,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/rewind.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/rewind.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/rewind.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/rewind.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 动作参数化：`Rewind`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -286,7 +286,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/workflows.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/workflows.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/workflows.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/workflows.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -302,7 +302,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/workflow.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/workflow.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/workflow.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/workflow.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -318,7 +318,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/personas.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/personas.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/personas.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/personas.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -334,7 +334,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/config_agents.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/config_agents.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/config_agents.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/config_agents.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -350,7 +350,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 动作参数化：`OpenExtensions`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -368,7 +368,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 动作参数化：`OpenExtensions`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -386,7 +386,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mcps.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mcps.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mcps.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mcps.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 动作参数化：`OpenExtensions`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -404,7 +404,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 动作参数化：`OpenExtensions`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -422,7 +422,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -438,7 +438,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/import_claude.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/import_claude.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/import_claude.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/import_claude.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/import_claude.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/import_claude.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/import_claude.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/import_claude.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -459,7 +459,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/remember.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/remember.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/remember.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/remember.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -475,7 +475,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/tasks.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/tasks.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/tasks.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/tasks.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 动作参数化：`ToggleTasks`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -493,7 +493,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/imagine.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/imagine.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/imagine.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/imagine.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -509,7 +509,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/imagine_video.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/imagine_video.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/imagine_video.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/imagine_video.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -525,7 +525,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/voice.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/voice.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/voice.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/voice.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -541,7 +541,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/dashboard.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/dashboard.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/dashboard.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/dashboard.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 动作参数化：`OpenDashboard`、`DashboardSelectNext`、`DashboardSelectPrev`、`DashboardTogglePin`、`DashboardBeginRename`、`DashboardStop`、`DashboardCycleMode`、`DashboardToggleGrouping`、`DashboardReorderUp`、`DashboardReorderDown`、`DashboardShortcutsHelp`、`DashboardExit`、`DashboardToggleAutoApprove`、`DashboardOpenLocationPicker`、`DashboardToggleWorktree`、`DashboardOverlayExit`、`DashboardOverlayPrev`、`DashboardOverlayNext`、`DashboardOverlayStop`。每个当前可触发动作都要运行对应场景；不可达动作要记录原因。
 
@@ -559,7 +559,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/recap.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/recap.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/recap.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/recap.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -575,7 +575,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/share.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/share.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/share.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/share.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -591,7 +591,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/release_notes.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/release_notes.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/release_notes.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/release_notes.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -607,7 +607,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/announcements.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/announcements.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/announcements.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/announcements.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -623,7 +623,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory_ops.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory_ops.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory_ops.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory_ops.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -639,7 +639,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory_ops.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory_ops.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory_ops.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory_ops.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -655,7 +655,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -671,7 +671,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/loop_cmd.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/loop_cmd.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/loop_cmd.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/loop_cmd.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |
@@ -687,7 +687,7 @@
 
 可达性：CODE BACKEND UNAVAILABLE：只有拒绝路径可测；不计算该功能正向通过。
 
-源码：[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/auto.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/auto.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs)；[apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs](../../../vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs)。
+源码：[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/auto.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/auto.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs)；[apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs](../../../vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs)。
 
 | 用例 | 操作 | 通过判据 |
 | --- | --- | --- |

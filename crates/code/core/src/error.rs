@@ -1,4 +1,4 @@
-//! Typed error enum for A3S Code Core
+//! Typed error enum for Aster Code Core
 //!
 //! Provides categorized errors that SDK consumers can match on programmatically,
 //! instead of receiving opaque `anyhow::Error` strings.
@@ -55,7 +55,7 @@ struct OriginalRunCancelled {
     run_id: String,
 }
 
-/// Categorized error type for A3S Code Core.
+/// Categorized error type for Aster Code Core.
 ///
 /// SDK bindings (Python/Node) can match on the variant to expose typed
 /// exceptions (e.g., `CodeConfigError`, `CodeLlmError`).
@@ -163,10 +163,10 @@ pub enum CodeError {
     #[error("Capability runtime error: {0}")]
     Capability(#[from] crate::capability::CapabilityRuntimeError),
 
-    /// A3S Flow definition, replay, store, or runtime failure.
+    /// Aster Flow definition, replay, store, or runtime failure.
     #[cfg(feature = "dynamic-workflow")]
     #[error("Flow error: {0}")]
-    Flow(#[from] a3s_flow::FlowError),
+    Flow(#[from] aster_flow::FlowError),
 
     /// Optional typed System-1 decision (Apofasi) failure.
     #[cfg(feature = "apofasi")]

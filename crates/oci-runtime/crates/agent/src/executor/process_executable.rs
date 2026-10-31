@@ -114,8 +114,8 @@ mod tests {
 
     use super::execute;
 
-    const CHILD_ENV: &str = "A3S_OCI_EXECVP_TEST_CHILD";
-    const PATH_ENV: &str = "A3S_OCI_EXECVP_TEST_PATH";
+    const CHILD_ENV: &str = "ASTER_OCI_EXECVP_TEST_CHILD";
+    const PATH_ENV: &str = "ASTER_OCI_EXECVP_TEST_PATH";
 
     #[test]
     fn executes_a_file_from_the_configured_path_in_an_isolated_process() {
@@ -123,7 +123,7 @@ mod tests {
             Ok("lookup") => {
                 let path = std::env::var(PATH_ENV).expect("read isolated executable path");
                 let arguments = [
-                    "a3s-oci-execvp-test",
+                    "aster-oci-execvp-test",
                     "executor::process_executable::tests::executes_a_file_from_the_configured_path_in_an_isolated_process",
                     "--exact",
                 ]
@@ -139,7 +139,7 @@ mod tests {
 
         let directory = tempfile::tempdir().expect("create isolated executable directory");
         let executable = std::env::current_exe().expect("resolve current test executable");
-        symlink(&executable, directory.path().join("a3s-oci-execvp-test"))
+        symlink(&executable, directory.path().join("aster-oci-execvp-test"))
             .expect("link isolated executable into configured PATH");
         let output = Command::new(executable)
             .arg("executor::process_executable::tests::executes_a_file_from_the_configured_path_in_an_isolated_process")

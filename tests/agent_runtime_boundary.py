@@ -1,4 +1,4 @@
-"""Closed sets for the Aster terminal and a3s-code-acp boundary.
+"""Closed sets for the Aster terminal and aster-acp boundary.
 
 Growth fails. Shrink prints that the baseline ceiling is unchanged.
 The script has no switch that raises a ceiling.
@@ -20,16 +20,16 @@ ASTER_CARGO = ROOT / "apps/aster/Cargo.toml"
 ASTER_MAIN = ROOT / "apps/aster/src/main.rs"
 CONFIG_LOADER = (
     ROOT
-    / "crates/terminal/crates/codegen/a3s-code-config/src/loader.rs"
+    / "crates/terminal/crates/codegen/aster-config/src/loader.rs"
 )
 EVENT_LOOP = (
     ROOT
-    / "crates/terminal/crates/codegen/a3s-code-pager/src/app/event_loop.rs"
+    / "crates/terminal/crates/codegen/aster-pager/src/app/event_loop.rs"
 )
-PAGER_SRC = ROOT / "crates/terminal/crates/codegen/a3s-code-pager/src"
+PAGER_SRC = ROOT / "crates/terminal/crates/codegen/aster-pager/src"
 PAGER_ACP = PAGER_SRC / "acp/mod.rs"
 PAGER_RUNTIME = PAGER_SRC / "agent_runtime.rs"
-PAGER_SPAWN = PAGER_SRC / "acp/a3s_spawn.rs"
+PAGER_SPAWN = PAGER_SRC / "acp/aster_spawn.rs"
 PAGER_LEADER = PAGER_SRC / "app/leader_cluster/mod.rs"
 SPAWN_DEFINITION = "acp/spawn.rs"
 SIDECAR_GATE = "pub async fn spawn_required_sidecar("
@@ -104,7 +104,7 @@ def check_source_versions(core, acp, lib, baseline):
     version = package_string(core, "version")
     if package_string(acp, "version") != version:
         raise BoundaryError("Core and ACP package versions differ")
-    marker = "a3s-code-core "
+    marker = "aster-core "
     pinned_version = baseline["acp_description"].split(marker, 1)[1].split(" ", 1)[0]
     # The frozen baseline owns architecture wording; manifests own the source version.
     old, new = marker + pinned_version, marker + version
@@ -364,7 +364,7 @@ def check_stdio_runtime(text, present, forbidden):
 
 
 def function_body(text, signature):
-    """Slice one function. The file defines spawn_a3s_acp before the gate."""
+    """Slice one function. The file defines spawn_aster_acp before the gate."""
     start = text.find(signature)
     if start < 0:
         raise BoundaryError("missing " + signature)
@@ -402,7 +402,7 @@ def check_sidecar_entries(root, entries):
 def check_leader_in_process(text):
     if "MvpAgent" not in text:
         raise BoundaryError("leader cluster lost MvpAgent")
-    if "spawn_required_sidecar(" in text or "spawn_a3s_acp(" in text:
+    if "spawn_required_sidecar(" in text or "spawn_aster_acp(" in text:
         raise BoundaryError("leader cluster left the in-process agent")
 
 
@@ -436,7 +436,7 @@ def check_repository(baseline):
     check_account_mods(lib, baseline["acp_account_mods"])
     check_feature_gates(lib)
     check_default_features(cargo, baseline["acp_default_features"])
-    for name in ("a3s-code-mermaid", "rusqlite", "quick-xml"):
+    for name in ("aster-mermaid", "rusqlite", "quick-xml"):
         check_optional_dependency(cargo, name)
     check_shell_spawn_files(PAGER_SRC, baseline["pager_shell_spawn_files"])
     check_stdio_runtime(
@@ -465,8 +465,8 @@ class AgentRuntimeBoundaryTest(unittest.TestCase):
         for version in ("0.8.2", "9.1.6", "10.2.0-rc.1"):
             with self.subTest(version=version):
                 manifest = f'[package]\nversion = "{version}"\n'
-                acp = manifest + f'description = "ACP stdio agent over a3s-code-core {version} for Aster desktop hosts"\n'
-                lib = f"//! ACP stdio agent over a3s-code-core {version}.\n" + "\n".join(self.baseline["acp_crate_doc"][1:])
+                acp = manifest + f'description = "ACP stdio agent over aster-core {version} for Aster desktop hosts"\n'
+                lib = f"//! ACP stdio agent over aster-core {version}.\n" + "\n".join(self.baseline["acp_crate_doc"][1:])
                 check_source_versions(manifest, acp, lib, self.baseline)
                 with self.assertRaisesRegex(BoundaryError, "package versions differ"):
                     check_source_versions(manifest.replace(version, "0.0.0"), acp, lib, self.baseline)
@@ -496,18 +496,18 @@ class AgentRuntimeBoundaryTest(unittest.TestCase):
 
     def test_terminal_path_growth_is_rejected(self):
         text = (
-            'a3s-code-mermaid = {path = "../../terminal/crates/codegen/a3s-code-mermaid"}\n'
-            'a3s-code-pager = {path = "../../terminal/crates/codegen/a3s-code-pager"}\n'
+            'aster-mermaid = {path = "../../terminal/crates/codegen/aster-mermaid"}\n'
+            'aster-pager = {path = "../../terminal/crates/codegen/aster-pager"}\n'
         )
         with self.assertRaises(BoundaryError) as caught:
             check_terminal_paths(text, self.baseline["acp_terminal_paths"])
-        self.assertIn("a3s-code-pager", str(caught.exception))
+        self.assertIn("aster-pager", str(caught.exception))
 
     def test_missing_pager_dep_is_rejected(self):
-        text = "[dependencies]\na3s-code-pager = {path = \"x\"}\n"
+        text = "[dependencies]\naster-pager = {path = \"x\"}\n"
         with self.assertRaises(BoundaryError) as caught:
             check_pager_deps(text, self.baseline["aster_pager_deps"])
-        self.assertIn("a3s-code-shell", str(caught.exception))
+        self.assertIn("aster-shell", str(caught.exception))
 
     def test_config_filename_growth_is_rejected(self):
         text = 'pub const EXTRA_FILENAME: &str = "extra.toml";\n'
@@ -608,10 +608,10 @@ class AgentRuntimeBoundaryTest(unittest.TestCase):
 
     def test_sidecar_gate_reorder_is_rejected(self):
         text = (
-            "pub async fn spawn_a3s_acp() {}\n"
+            "pub async fn spawn_aster_acp() {}\n"
             "pub async fn spawn_required_sidecar() {\n"
-            "    spawn_a3s_acp().await\n"
-            "    if !a3s_acp_enabled() {}\n"
+            "    spawn_aster_acp().await\n"
+            "    if !aster_acp_enabled() {}\n"
             "}\n"
             "pub async fn later() {}\n"
         )
@@ -637,16 +637,16 @@ class AgentRuntimeBoundaryTest(unittest.TestCase):
 
     def test_stale_core_version_growth_is_rejected(self):
         with self.assertRaises(BoundaryError) as caught:
-            check_stale_core_version("a3s-code-core 9.0.0\n", 0)
+            check_stale_core_version("aster-core 9.0.0\n", 0)
         self.assertIn("9.0.0", str(caught.exception))
 
     def test_core_dep_on_aster_is_allowed(self):
         text = (
             "[dependencies]\n"
-            "a3s-code-core = {path = \"../../crates/code/core\"}\n"
-            "a3s-code-pager = {path = \"x\"}\n"
-            "a3s-code-pager-minimal = {path = \"x\"}\n"
-            "a3s-code-shell = {path = \"x\"}\n"
+            "aster-core = {path = \"../../crates/code/core\"}\n"
+            "aster-pager = {path = \"x\"}\n"
+            "aster-pager-minimal = {path = \"x\"}\n"
+            "aster-shell = {path = \"x\"}\n"
         )
         check_pager_deps(text, self.baseline["aster_pager_deps"])
 

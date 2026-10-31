@@ -3,7 +3,7 @@ use std::io;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::{cgroup_error, CgroupSetting};
 
@@ -173,7 +173,7 @@ mod tests {
     use std::collections::{BTreeSet, HashMap};
     use std::os::unix::fs::{symlink, PermissionsExt};
 
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{
         UnifiedPlan, MAX_ENTRIES, MAX_FILE_NAME_BYTES, MAX_TOTAL_VALUE_BYTES, MAX_VALUE_BYTES,

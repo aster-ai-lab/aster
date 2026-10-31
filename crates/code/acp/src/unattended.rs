@@ -1,4 +1,4 @@
-//! `a3s-code-acp --unattended`: one task run with nobody on the other end of
+//! `aster-acp --unattended`: one task run with nobody on the other end of
 //! the wire, such as a Terminal-Bench trial driven by Harbor's ACP client.
 //!
 //! Interactive launches never build an [`Unattended`]. With it, the agent
@@ -12,9 +12,9 @@ pub(crate) mod result;
 #[path = "unattended/tests.rs"]
 mod tests;
 
-use a3s_code_core::goal_control::GoalContinuationPolicyV1;
-use a3s_code_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
-use a3s_code_core::{AgentEvent, AgentStyle, PlanningMode, SessionOptions, SystemPromptSlots};
+use aster_core::goal_control::GoalContinuationPolicyV1;
+use aster_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
+use aster_core::{AgentEvent, AgentStyle, PlanningMode, SessionOptions, SystemPromptSlots};
 use anyhow::{bail, Context, Result};
 use std::collections::HashSet;
 use std::num::NonZeroU64;
@@ -163,7 +163,7 @@ impl Unattended {
     }
 
     /// Core options for every unattended session. Every capability the
-    /// interactive host offers stays on — `a3s-vec` FTS search, Code
+    /// interactive host offers stays on — `aster-vec` FTS search, Code
     /// Intelligence, file memory, skills, web tools, delegation — while the
     /// interactive guardrail and skill watching are absent: one asks a person,
     /// the other waits for installs nobody makes. File memory and indexes land
@@ -178,7 +178,7 @@ impl Unattended {
             .with_assistant_final_response(true)
             .with_session_id(session_id.to_string())
             .with_model(model_id.to_string())
-            .with_confirmation_manager(Arc::new(a3s_code_core::hitl::AutoApproveConfirmation))
+            .with_confirmation_manager(Arc::new(aster_core::hitl::AutoApproveConfirmation))
             // Task text is arbitrary. Pin the writable general style so words
             // in a task cannot select a read-only style.
             .with_prompt_slots(SystemPromptSlots {
@@ -219,14 +219,14 @@ impl Unattended {
 /// Create a private state root outside the workspace and make it the
 /// process-wide harness state directory. Call once, before any session opens.
 pub fn install_state_root() -> Result<PathBuf> {
-    let root = std::env::temp_dir().join(format!("a3s-code-acp-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("aster-acp-{}", uuid::Uuid::new_v4()));
     let mut builder = std::fs::DirBuilder::new();
     #[cfg(unix)]
     std::os::unix::fs::DirBuilderExt::mode(&mut builder, 0o700);
     builder
         .create(&root)
         .with_context(|| format!("create unattended state root {}", root.display()))?;
-    a3s_code_core::state_root::set_state_root_override(&root)?;
+    aster_core::state_root::set_state_root_override(&root)?;
     Ok(root)
 }
 
@@ -420,7 +420,7 @@ pub(crate) fn note_event(progress: &mut RunProgress, facts: &mut AttemptFacts, e
             progress.remember_error(message);
             facts.failed = true;
             facts.last_error = Some(message.clone());
-            if let Some(digest) = a3s_code_core::harness_loop::unbound_mutation_digest(message) {
+            if let Some(digest) = aster_core::harness_loop::unbound_mutation_digest(message) {
                 facts.gate_digest = Some(digest.to_string());
             }
         }

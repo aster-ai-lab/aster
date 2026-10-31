@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-07-17
-- Decision owners: A3S Runtime maintainers
+- Decision owners: Aster Runtime maintainers
 
 ## Context
 
@@ -45,14 +45,14 @@ fields:
 
 Nested value objects remain versioned by their enclosing top-level schema.
 Making `ephemeral_storage_bytes` optional changes unit specifications to
-`a3s.runtime.unit-spec.v2`; v1 required a numeric quota. An omitted quota is
+`aster.runtime.unit-spec.v2`; v1 required a numeric quota. An omitted quota is
 encoded explicitly as `null` in v2 and requires no ephemeral-storage
 capability. Adding `size_bytes` to output artifacts changes observations to
-`a3s.runtime.observation.v2`. Adding typed provider identity and output
-capability changes capabilities to `a3s.runtime.capabilities.v3`. The durable
-request-journal layout uses `a3s.runtime.unit-record.v2`. Persisting the
+`aster.runtime.observation.v2`. Adding typed provider identity and output
+capability changes capabilities to `aster.runtime.capabilities.v3`. The durable
+request-journal layout uses `aster.runtime.unit-record.v2`. Persisting the
 effective request deadline changes request receipts to
-`a3s.runtime.request-receipt.v2`.
+`aster.runtime.request-receipt.v2`.
 
 The Runtime core does not silently reinterpret legacy records or receipts. A
 caller that needs old state owns an explicit archival decoder or migration
@@ -256,6 +256,6 @@ Health, Resources, Logs, Exec, Security, Outputs, and Evidence profiles.
 - Exact replay no longer has an arbitrary embedded-record limit.
 - Docker truthfully rejects requested outputs and exec until those capabilities
   are implemented.
-- A3S Box can implement `IsolationLevel::Sandbox` behind the same contract
+- Aster Box can implement `IsolationLevel::Sandbox` behind the same contract
   without adding Box-specific fields.
 - Tests can now derive a deterministic oracle for every public operation.

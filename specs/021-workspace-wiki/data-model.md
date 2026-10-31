@@ -41,7 +41,7 @@
 - 不保留独立百科问答入口、会话或协议；普通任务通过原内置 `search_wiki` 检索已保存绑定的工作区百科。
 - 原 WikiIndex 只收录该输出根的当前 `concepts` 页面，排除历史、候选及 `wiki/local`，不合并其他工作区或 personal/team。
 - 路径与片段去重后返回真实页面出处；来源当前性由原宿主引用接口重新校验，生成文本不能自行认证引用。
-- 普通任务的原文件 hybrid 检索沿用原 catalog、持久 a3s-vec FTS 和异步向量构建。Studio 由受信 ACL 启用既有离线 `local_cpu`；受限编译/审阅会话跳过环境向量预热。没有第二个索引服务或模型客户端。
+- 普通任务的原文件 hybrid 检索沿用原 catalog、持久 aster-vec FTS 和异步向量构建。Studio 由受信 ACL 启用既有离线 `local_cpu`；受限编译/审阅会话跳过环境向量预热。没有第二个索引服务或模型客户端。
 
 ## Lifecycle invariants
 

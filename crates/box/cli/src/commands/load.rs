@@ -1,4 +1,4 @@
-//! `a3s-box load` command — Load an image from a tar archive.
+//! `aster-box load` command — Load an image from a tar archive.
 
 use clap::Args;
 

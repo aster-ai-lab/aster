@@ -35,12 +35,12 @@ bom = {
     "version": 1,
     "metadata": {
         "timestamp": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "tools": {"components": [{"type": "application", "name": "a3s-sandbox-sbom", "version": "0.1.3"}]},
+        "tools": {"components": [{"type": "application", "name": "aster-sandbox-sbom", "version": "0.1.3"}]},
         "component": {
             "type": "library",
-            "name": "a3s-sandbox",
+            "name": "aster-sandbox",
             "version": resolve[next(iter(root_ids))]["version"] if root_ids else "0.0.0",
-            "purl": "pkg:cargo/a3s-sandbox",
+            "purl": "pkg:cargo/aster-sandbox",
         },
     },
     "components": components,

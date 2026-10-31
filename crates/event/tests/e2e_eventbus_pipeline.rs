@@ -17,22 +17,22 @@
 
 #![cfg(feature = "routing")]
 
-use a3s_event::provider::memory::MemoryProvider;
-use a3s_event::sink::CollectorSink;
-use a3s_event::state::FileStateStore;
-use a3s_event::{
+use aster_event::provider::memory::MemoryProvider;
+use aster_event::sink::CollectorSink;
+use aster_event::state::FileStateStore;
+use aster_event::{
     Aes256GcmEncryptor, Broker, EncryptedPayload, Event, EventBus, EventEncryptor,
     MemoryDlqHandler, MemorySchemaRegistry, SchemaRegistry, SubscriptionFilter, Trigger,
     TriggerFilter,
 };
-use a3s_event::{DlqHandler, EventProvider};
+use aster_event::{DlqHandler, EventProvider};
 use std::sync::Arc;
 
 #[tokio::test]
 async fn schema_gated_publish_rejects_before_provider() {
     let registry = Arc::new(MemorySchemaRegistry::new());
     registry
-        .register(a3s_event::EventSchema {
+        .register(aster_event::EventSchema {
             event_type: "trade.executed".to_string(),
             version: 1,
             required_fields: vec!["symbol".to_string(), "qty".to_string()],
@@ -42,7 +42,7 @@ async fn schema_gated_publish_rejects_before_provider() {
 
     // The raw provider is kept so the test can prove rejections never reach it.
     let raw = Arc::new(MemoryProvider::default());
-    let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn a3s_event::EventProvider>);
+    let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn aster_event::EventProvider>);
     bus.set_schema_registry(registry.clone() as Arc<dyn SchemaRegistry>);
 
     // Valid typed event passes and is stored.
@@ -101,7 +101,7 @@ async fn encrypted_publish_stores_ciphertext_reads_plaintext() {
     let encryptor = Arc::new(Aes256GcmEncryptor::new("k1", &key));
 
     let raw = Arc::new(MemoryProvider::default());
-    let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn a3s_event::EventProvider>);
+    let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn aster_event::EventProvider>);
     bus.set_encryptor(encryptor.clone() as Arc<dyn EventEncryptor>);
 
     let secret = serde_json::json!({
@@ -144,11 +144,11 @@ async fn encrypted_publish_stores_ciphertext_reads_plaintext() {
 #[tokio::test]
 async fn publish_routes_through_broker_and_dlq_captures_failures() {
     let raw = Arc::new(MemoryProvider::default());
-    let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn a3s_event::EventProvider>);
+    let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn aster_event::EventProvider>);
 
     let broker = Arc::new(Broker::new());
     let good_sink = Arc::new(CollectorSink::new("collector"));
-    let failing_sink = Arc::new(a3s_event::FailingSink::new("broken", "simulated outage"));
+    let failing_sink = Arc::new(aster_event::FailingSink::new("broken", "simulated outage"));
 
     broker
         .add_trigger(Trigger::new(
@@ -176,7 +176,7 @@ async fn publish_routes_through_broker_and_dlq_captures_failures() {
     assert_eq!(broker.trigger_count().await, 3);
 
     let dlq = Arc::new(MemoryDlqHandler::new(100));
-    bus.set_dlq_handler(dlq.clone() as Arc<dyn a3s_event::DlqHandler>);
+    bus.set_dlq_handler(dlq.clone() as Arc<dyn aster_event::DlqHandler>);
 
     let trade = Event::typed(
         "events.trades.executed",
@@ -256,7 +256,7 @@ async fn publish_routes_through_broker_and_dlq_captures_failures() {
 
 #[tokio::test]
 async fn subscriptions_persist_across_restart_via_file_state_store() {
-    let dir = std::env::temp_dir().join(format!("a3s-event-e2e-{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("aster-event-e2e-{}", std::process::id()));
     std::fs::create_dir_all(&dir).unwrap();
     let state_path = dir.join("subscriptions.json");
 
@@ -279,7 +279,7 @@ async fn subscriptions_persist_across_restart_via_file_state_store() {
     // "Process 2": a fresh bus restores the registry from the file and can
     // materialize the subscriber without re-registering.
     let raw = Arc::new(MemoryProvider::default());
-    let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn a3s_event::EventProvider>);
+    let mut bus = EventBus::from_provider(Arc::clone(&raw) as Arc<dyn aster_event::EventProvider>);
     // set_state_store restores persisted subscriptions immediately
     bus.set_state_store(Arc::new(FileStateStore::new(&state_path)))
         .unwrap();
@@ -319,7 +319,7 @@ async fn subscriptions_persist_across_restart_via_file_state_store() {
 async fn metrics_snapshot_is_a_cross_cutting_audit() {
     let mut bus = EventBus::new(MemoryProvider::default());
     let dlq = Arc::new(MemoryDlqHandler::new(10));
-    bus.set_dlq_handler(dlq as Arc<dyn a3s_event::DlqHandler>);
+    bus.set_dlq_handler(dlq as Arc<dyn aster_event::DlqHandler>);
 
     let before = bus.metrics().snapshot();
     assert_eq!(before.publish_count, 0);
@@ -369,7 +369,7 @@ async fn metrics_snapshot_is_a_cross_cutting_audit() {
 // extra feature (MemoryStateStore is exercised in state.rs unit tests).
 #[test]
 fn memory_state_store_is_available() {
-    let store = a3s_event::state::MemoryStateStore::default();
-    use a3s_event::StateStore as _;
+    let store = aster_event::state::MemoryStateStore::default();
+    use aster_event::StateStore as _;
     assert!(store.load().unwrap().is_empty());
 }

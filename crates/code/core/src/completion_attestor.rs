@@ -139,7 +139,7 @@ impl DiskContentAttestor {
 
 impl CompletionAttestor for DiskContentAttestor {
     fn attest_ledger(&self, ledger: &MutationLedger) -> Option<VerificationReport> {
-        use a3s_effect::ToolFileKind;
+        use aster_effect::ToolFileKind;
         let records = ledger.observed_records();
         if !records.iter().any(|record| {
             record
@@ -260,7 +260,7 @@ mod tests {
 
     #[test]
     fn disk_attestor_passes_only_when_bytes_match() {
-        let dir = std::env::temp_dir().join(format!("a3s-disk-attest-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("aster-disk-attest-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("pomodoro.html"), "timer").unwrap();

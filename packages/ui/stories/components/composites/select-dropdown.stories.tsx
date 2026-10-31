@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Bot } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
-import { Badge, SelectDropdown } from '@a3s-lab/ui'
+import { Badge, SelectDropdown } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof SelectDropdown> = {
   title: 'Components/Composites/select-dropdown',

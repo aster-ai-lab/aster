@@ -11,9 +11,9 @@
 
 [package]
 edition = "2021"
-name = "a3s-lane"
+name = "aster-lane"
 version = "0.5.1"
-authors = ["A3S Lab"]
+authors = ["Aster"]
 build = false
 autolib = false
 autobins = false
@@ -21,7 +21,7 @@ autoexamples = false
 autotests = false
 autobenches = false
 description = "Lane-based priority command queue for async task scheduling with reliability, scalability, and observability features"
-documentation = "https://docs.rs/a3s-lane"
+documentation = "https://docs.rs/aster-lane"
 readme = "README.md"
 keywords = [
     "queue",
@@ -35,7 +35,7 @@ categories = [
     "concurrency",
 ]
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Lane"
+repository = "https://github.com/aster-ai-lab/Lane"
 publish = false
 
 [features]
@@ -57,7 +57,7 @@ telemetry = [
 ]
 
 [lib]
-name = "a3s_lane"
+name = "aster_lane"
 path = "src/lib.rs"
 
 [[example]]

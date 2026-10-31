@@ -1,13 +1,13 @@
 //! Native web search service.
 //!
-//! `a3s-search serve` answers `GET /health` and `POST /v1/search` from the
+//! `aster-search serve` answers `GET /health` and `POST /v1/search` from the
 //! in-process HTTP engines (Wikipedia, DuckDuckGo, Brave, and Bing). The
 //! unified gateway fronts that listener.
 
 mod http;
 
 /// Binds the search listener and serves `GET /health` and `POST /v1/search`.
-/// A non-loopback address is refused unless `A3S_SEARCH_API_KEY` is set.
+/// A non-loopback address is refused unless `ASTER_SEARCH_API_KEY` is set.
 pub async fn serve_native(listen: &str) -> Result<()> {
     http::serve_native(listen).await
 }

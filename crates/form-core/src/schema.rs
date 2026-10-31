@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use crate::{canonicalize_value, CanonicalValue, Diagnostic};
 
-pub const A3S_FORM_SCHEMA_PROFILE_1_ID: &str = "a3s.dev/form-schema-profile/1";
+pub const ASTER_FORM_SCHEMA_PROFILE_1_ID: &str = "aster.dev/form-schema-profile/1";
 pub const JSON_SCHEMA_2020_12_DIALECT: &str = "https://json-schema.org/draft/2020-12/schema";
 
 pub const SUPPORTED_SCHEMA_FORMATS: &[&str] = &[
@@ -46,7 +46,7 @@ pub const SUPPORTED_SCHEMA_KEYWORDS: &[&str] = &[
     "uniqueItems",
 ];
 
-/// Validates A3S Form Schema Profile 1 recursively without interpreting form
+/// Validates Aster Form Schema Profile 1 recursively without interpreting form
 /// layout or runtime values.
 #[must_use]
 pub fn inspect_schema_profile(schema: &CanonicalValue, path: &str) -> Vec<Diagnostic> {
@@ -72,7 +72,7 @@ fn inspect_schema(schema: &CanonicalValue, path: &str, diagnostics: &mut Vec<Dia
         if !SUPPORTED_SCHEMA_KEYWORDS.contains(&keyword.as_str()) {
             diagnostics.push(schema_diagnostic(
                 "schema.keyword.unsupported",
-                format!("Schema keyword {keyword} is not supported by A3S Form Schema Profile 1."),
+                format!("Schema keyword {keyword} is not supported by Aster Form Schema Profile 1."),
                 format!("{path}/{}", pointer_token(keyword)),
                 Some(format!(
                     "Use one of: {}.",
@@ -245,7 +245,7 @@ fn inspect_schema(schema: &CanonicalValue, path: &str, diagnostics: &mut Vec<Dia
             diagnostics.push(schema_diagnostic(
                 "schema.format.unsupported",
                 format!(
-                    "Schema format {} is not supported by A3S Form Schema Profile 1.",
+                    "Schema format {} is not supported by Aster Form Schema Profile 1.",
                     display_json_scalar(format)
                 ),
                 format!("{path}/format"),
@@ -279,7 +279,7 @@ fn inspect_properties(schema: &CanonicalValue, path: &str, diagnostics: &mut Vec
                 "schema.property.invalid",
                 "Property names must be non-empty and cannot contain dots or the reserved * segment.",
                 child_path.clone(),
-                Some("A3S Form uses dot-separated paths and * for repeater rows.".to_owned()),
+                Some("Aster Form uses dot-separated paths and * for repeater rows.".to_owned()),
             ));
         }
         if child.as_object().is_none() {

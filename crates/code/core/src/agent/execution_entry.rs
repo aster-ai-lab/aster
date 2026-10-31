@@ -37,10 +37,10 @@ impl crate::agent::TurnEngine {
         let event_tx = invocation.event_tx().clone();
         let token = invocation.cancellation();
         tracing::info!(
-            a3s.run.id = invocation.run_id(),
-            a3s.session.id = session_id.unwrap_or("none"),
-            a3s.agent.max_turns = agent.config.max_tool_rounds,
-            "a3s.agent.execute_from_messages started"
+            aster.run.id = invocation.run_id(),
+            aster.session.id = session_id.unwrap_or("none"),
+            aster.agent.max_turns = agent.config.max_tool_rounds,
+            "aster.agent.execute_from_messages started"
         );
 
         // Extract the last user message text for hooks, memory recall, and events.
@@ -69,13 +69,13 @@ impl crate::agent::TurnEngine {
 
         match &result {
             Ok(r) => tracing::info!(
-                a3s.agent.tool_calls_count = r.tool_calls_count,
-                a3s.llm.total_tokens = r.usage.total_tokens,
-                "a3s.agent.execute_from_messages completed"
+                aster.agent.tool_calls_count = r.tool_calls_count,
+                aster.llm.total_tokens = r.usage.total_tokens,
+                "aster.agent.execute_from_messages completed"
             ),
             Err(e) => tracing::warn!(
                 error = %e,
-                "a3s.agent.execute_from_messages failed"
+                "aster.agent.execute_from_messages failed"
             ),
         }
 

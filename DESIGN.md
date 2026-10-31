@@ -15,8 +15,8 @@ Token architecture stays in [packages/ui/docs/design-token-system.md](./packages
 [packages/ui/docs/variable-catalog.md](./packages/ui/docs/variable-catalog.md). Those documents own the Shadcn
 variable graph. This document owns the product look. `packages/ui` writes
 `src/styles/tokens/spec-roles.css` from the Color, Type, and Shape tables here. After a table change, run
-`pnpm --filter @a3s-lab/ui theme:build`. Selection, rail icons, rows, and buttons use the neutral palette here.
-The tenant brand is the build-time stamp `--a3s-tenant-brand`. It does not paint this chrome. A tenant's name,
+`pnpm --filter @aster-ai-lab/ui theme:build`. Selection, rail icons, rows, and buttons use the neutral palette here.
+The tenant brand is the build-time stamp `--aster-tenant-brand`. It does not paint this chrome. A tenant's name,
 wordmark, and logo notes live beside that tenant's `INFO.md` in `BRAND.md`.
 
 This file is the only `DESIGN.md` in the tree.
@@ -437,10 +437,10 @@ Every dropdown is drawn by the design system. The operating-system menu (native 
 `document.createElement('select')`) never ships in a product surface: it ignores this palette, the radius
 scale, dark mode and the motion rules, and it differs per platform.
 
-- **Component.** `SearchSelect` from `@a3s-lab/ui` is the default for filters, toolbars, forms and settings.
+- **Component.** `SearchSelect` from `@aster-ai-lab/ui` is the default for filters, toolbars, forms and settings.
   Use `Combobox` only when the trigger must read as a text field (free text plus suggestions). Vanilla shells
   and non-React packages draw the same anatomy themselves (Aster's first-run shell picker; `SelectControl`
-  in `@a3s-lab/form`). The Radix `Select` composite is legacy: existing screens are tracked in a shrink-only
+  in `@aster-ai-lab/form`). The Radix `Select` composite is legacy: existing screens are tracked in a shrink-only
   list and new code does not add it.
 - **Trigger.** Borderless field fill `#f5f5f5` (`--color-control-fill`), radius 8px, 13px `#171717`, value
   truncated with an ellipsis. Toolbar size `sm` is 30px tall (min 120px wide); form size is 36px and fills its
@@ -471,8 +471,8 @@ scale, dark mode and the motion rules, and it differs per platform.
   own name (model ids, file formats such as PNG / JPEG).
 
 Enforcement: `apps/studio/src/renderer/__tests__/noNativeSelect.test.ts` fails on any native dropdown in Aster,
-`@a3s-lab/ui` and `@a3s-lab/intelligent-ui`, and holds the Radix `Select` list shrink-only;
-`crates/flow/packages/ui/tests/form-select-control.test.tsx` does the same for `@a3s-lab/form`.
+`@aster-ai-lab/ui` and `@aster-ai-lab/intelligent-ui`, and holds the Radix `Select` list shrink-only;
+`crates/flow/packages/ui/tests/form-select-control.test.tsx` does the same for `@aster-ai-lab/form`.
 
 ### Buttons
 
@@ -580,7 +580,7 @@ Management tables (section 14) add these rules:
 
 ### Transient popups
 
-Menus, context menus, popovers and hover cards use the shared `@a3s-lab/ui` primitives.
+Menus, context menus, popovers and hover cards use the shared `@aster-ai-lab/ui` primitives.
 An outside press closes the popup and performs the clicked control's action on that first press.
 Outside clicks must not move focus back to the popup trigger. Escape closes a keyboard-opened
 popup and returns focus to its trigger. Nested portalled content remains inside its parent popup.
@@ -680,7 +680,7 @@ There is no standalone Encyclopedia question pane. Ordinary tasks use the existi
 `search_wiki` and `search_memory` are optional evidence tools: the agent decides whether a task needs retrieval. Tool availability or index preparation does not trigger a search. The message flow displays only actual calls, with localized query, scope, wait/run/result state, available coverage counts and numbered evidence cards. Incomplete coverage never becomes a complete no-match. Citations show the original task/workspace, page or independent memory layer/type; source details disclose path, time and available generation/revision. Source-workspace actions reuse the Encyclopedia/Memory surface and reject changed bindings. Search text stays inert evidence; no cross-workspace path is silently opened in the caller's editor.
 
 Memory reading uses a readable Markdown column. Layer and type are independent labels; creation time remains visible, useful properties have named values and confidence/importance use human-readable scales. Storage paths, identifiers and raw metadata live in secondary technical disclosures. Editing provides explicit save and cancel, preserves revision conflict feedback and discards only the current draft on cancel.
-In an admitted Studio session, `search_wiki` defaults to `scope=all` over the current profile's saved active task and project bindings; `scope=current` limits it to the caller's workspace publication. The model supplies a query and optional continuation cursor, never roots or another profile. The native owner resolves each binding before and after reads, and the original ACP WikiIndex/a3s-vec engine admits cold published collections. One call considers at most 32 bindings within a 3-second budget, returns at most 12 attributed page passages and 48 KiB of hits, and exposes pending/continuation coverage. Per-index relevance ranks are interleaved; they are not presented as a global similarity score. The bounded cold set retains 32 original indexes per ACP process. Personal `wiki/local`, source packets, historical files, unpublished candidates and archived/deleted/rebound task owners are not search collections. An incomplete search is never displayed as a complete no-match. Bare ACP clients without the Studio capability retain current-workspace search.
+In an admitted Studio session, `search_wiki` defaults to `scope=all` over the current profile's saved active task and project bindings; `scope=current` limits it to the caller's workspace publication. The model supplies a query and optional continuation cursor, never roots or another profile. The native owner resolves each binding before and after reads, and the original ACP WikiIndex/aster-vec engine admits cold published collections. One call considers at most 32 bindings within a 3-second budget, returns at most 12 attributed page passages and 48 KiB of hits, and exposes pending/continuation coverage. Per-index relevance ranks are interleaved; they are not presented as a global similarity score. The bounded cold set retains 32 original indexes per ACP process. Personal `wiki/local`, source packets, historical files, unpublished candidates and archived/deleted/rebound task owners are not search collections. An incomplete search is never displayed as a complete no-match. Bare ACP clients without the Studio capability retain current-workspace search.
 Outputs are the workspace's source files; compiled Encyclopedia pages retain the original OKF format and owner. PDF/image/Office conversion supplies bounded frozen evidence with page, slide, paragraph or cell coordinates and never rewrites those source files. Native Office semantics and the existing local document worker are preferred; explicitly configured document processors may be used through their existing settings. Unsupported, failed and truncated inputs remain visible in coverage, and OCR/conversion observations require factual review before publication.
 Memory layer and memory type each have a separate 24px icon button in the sidebar header. Each opens its own short, single-choice menu directly; the selected row is checked, the current value is announced and shown in the tooltip, and a non-default filter marks its trigger. All layers merges bounded pages from the original three stores and retains each row's layer for reads, edits and deletion; changing type never changes layer. Escape or choosing an option closes only that menu and restores trigger focus. The reader retains its 40px “Memory details” header when empty, loading or failed; separate labels identify the selected record's layer and type. Readable Markdown prose uses a 720px measure and 16px text, with created time visible and tags/technical storage fields collapsed. Stored HTML and remote images remain inert. Edit/Preview, Save and Delete use the existing small-action style: 24px targets, 14px Lucide outlines at stroke 1.7, radius 6px, quiet hover/focus states and tooltips. File-tab menus close when their owning resource view hides.
 
@@ -829,7 +829,7 @@ each install or uninstall, the shell reconciles the member's installed set into
 `<app data>/<tenant>/capabilities/`. Connectors go to `mcp.json` (`mcpServers`, either stdio `command`/`args` or a
 `http`/`sse` URL). Skills unpack into `skills/<slug>/`, downloaded from `GET /api/org/capabilities/{slug}/bundle`
 (stored in RustFS). The shell checks the bytes against `install.digest` before unpacking and pins the result with
-a `.a3s-digest` marker, so a replaced package is fetched again on the next reconcile. If the OS records an install but the device can't apply it, the shell answers
+a `.aster-digest` marker, so a replaced package is fetched again on the next reconcile. If the OS records an install but the device can't apply it, the shell answers
 502, and the page re-reads the OS so the toggle reflects the recorded state.
 
 A pinned toolbar holds the size-`sm` segmented control (连接器, 技能) on the left. On the right, refresh, 管理,
@@ -895,7 +895,7 @@ trigger it, and reduced motion removes the gesture immediately. Reuse the existi
 
 Each row opens the matching settings job. 通用 keeps launch, proxy, and developer controls, and adds 应用,
 权限 (电脑操控权限 and Agent 控制权限), 语言 / 设置应用语言, and 关于. The 语言 row jumps to that control on
-通用. 通用 also shows 工作区管理. That card shows the application workspace folder and lets you change it. When it is not set, the folder is `.a3s` in the home directory. 外观 keeps light, dark, and system, the color, the UI font, and the code font, and adds 主题, 界面密度,
+通用. 通用 also shows 工作区管理. That card shows the application workspace folder and lets you change it. When it is not set, the folder is `.aster` in the home directory. 外观 keeps light, dark, and system, the color, the UI font, and the code font, and adds 主题, 界面密度,
 对话最大宽度, and 页面对比度. 快捷键 lists bindings, rebinds them, clears a binding with Backspace while
 recording, and reports a conflict. 个性化 loads, edits, and saves 自定义指令; a failed save or a failed retry
 keeps the draft. 浏览器 keeps the toggles, clear, and a visible save failure, and shows 从 Chrome 导入 Cookie

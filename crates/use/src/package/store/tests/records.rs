@@ -342,8 +342,8 @@ async fn pending_store_rejects_superseded_v2_and_v3_records() {
     let lock = package_lock("1.0.0", '1');
     let admitted = install_pending(&lock);
     for schema in [
-        "a3s.use.pending-package-graph-operation.v2",
-        "a3s.use.pending-package-graph-operation.v3",
+        "aster.use.pending-package-graph-operation.v2",
+        "aster.use.pending-package-graph-operation.v3",
     ] {
         let temp = tempfile::tempdir().unwrap();
         let state_root = temp.path().join("state");
@@ -357,7 +357,7 @@ async fn pending_store_rejects_superseded_v2_and_v3_records() {
         .unwrap();
         let mut superseded = serde_json::to_value(&admitted).unwrap();
         superseded["schema"] = serde_json::json!(schema);
-        if schema == "a3s.use.pending-package-graph-operation.v2" {
+        if schema == "aster.use.pending-package-graph-operation.v2" {
             superseded.as_object_mut().unwrap().remove("phase");
             superseded.as_object_mut().unwrap().remove("plannedAtMs");
         }

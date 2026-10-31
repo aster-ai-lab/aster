@@ -47,16 +47,16 @@ fn main() {
         stage_windows_runtime(&runtime_dir, &profile_dir, bundle);
         println!("cargo:rustc-link-search=native={}", runtime_dir.display());
         println!(
-            "cargo:rustc-env=A3S_OCI_KRUN_RUNTIME_DIR={}",
+            "cargo:rustc-env=ASTER_OCI_KRUN_RUNTIME_DIR={}",
             runtime_dir.display()
         );
     } else {
-        let staged_runtime = profile_dir.join("a3s-oci-krun-runtime");
+        let staged_runtime = profile_dir.join("aster-oci-krun-runtime");
         stage_runtime_files(&runtime_dir, &staged_runtime, &bundle.files).unwrap_or_else(|error| {
             panic!("failed to stage {} runtime files: {error}", bundle.platform)
         });
         println!(
-            "cargo:rustc-env=A3S_OCI_KRUN_RUNTIME_DIR={}",
+            "cargo:rustc-env=ASTER_OCI_KRUN_RUNTIME_DIR={}",
             staged_runtime.display()
         );
     }

@@ -1,11 +1,11 @@
-use a3s_oci_sdk::{Error, ErrorCode, OperationId, Result};
+use aster_oci_sdk::{Error, ErrorCode, OperationId, Result};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use serde::{Deserialize, Serialize};
 
 use crate::{AgentOperation, AgentTransportOperationStage};
 
 /// Guest environment key used only by the explicit real-VM qualification path.
-pub const AGENT_TRANSPORT_QUALIFICATION_ENV: &str = "A3S_OCI_AGENT_TRANSPORT_QUALIFICATION";
+pub const AGENT_TRANSPORT_QUALIFICATION_ENV: &str = "ASTER_OCI_AGENT_TRANSPORT_QUALIFICATION";
 /// Prefix used when a Windows libkrun kernel command line carries the request.
 ///
 /// The Windows boot shim imports environment variables from the kernel command
@@ -14,16 +14,16 @@ pub const AGENT_TRANSPORT_QUALIFICATION_ENV: &str = "A3S_OCI_AGENT_TRANSPORT_QUA
 const AGENT_TRANSPORT_QUALIFICATION_BASE64_PREFIX: &str = "base64:";
 /// Prefix that identifies one bounded qualification evidence line on the guest console.
 pub const AGENT_TRANSPORT_QUALIFICATION_EVIDENCE_PREFIX: &str =
-    "A3S_OCI_AGENT_TRANSPORT_QUALIFICATION_EVIDENCE ";
+    "ASTER_OCI_AGENT_TRANSPORT_QUALIFICATION_EVIDENCE ";
 /// Stable operation attached to the intentional guest-side interruption.
 pub const AGENT_TRANSPORT_QUALIFICATION_FAULT_OPERATION: &str =
     "guest-agent-transport-qualification-fault";
 /// Version of the qualification request contract.
 pub const AGENT_TRANSPORT_QUALIFICATION_REQUEST_SCHEMA_VERSION: &str =
-    "a3s.oci.agent-transport-qualification-request.v1";
+    "aster.oci.agent-transport-qualification-request.v1";
 /// Version of the cleanup evidence emitted by the fixed guest agent.
 pub const AGENT_TRANSPORT_QUALIFICATION_EVIDENCE_SCHEMA_VERSION: &str =
-    "a3s.oci.agent-transport-qualification-evidence.v1";
+    "aster.oci.agent-transport-qualification-evidence.v1";
 
 const MAX_QUALIFICATION_JSON_BYTES: usize = 1_024;
 const MAX_QUALIFICATION_HANDOFF_BYTES: usize = AGENT_TRANSPORT_QUALIFICATION_BASE64_PREFIX.len()
@@ -268,7 +268,7 @@ fn qualification_error(message: impl Into<String>) -> Error {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::OperationId;
+    use aster_oci_sdk::OperationId;
 
     use super::{
         AgentTransportQualificationEvidence, AgentTransportQualificationRequest,

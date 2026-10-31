@@ -1,6 +1,6 @@
-# A3S Code 用户与开发者指南
+# Aster Code 用户与开发者指南
 
-本仓库交付本地 Rust SDK `a3s-code-core` 和宿主使用的 `a3s-code-acp` 伴随进程。
+本仓库交付本地 Rust SDK `aster-core` 和宿主使用的 `aster-acp` 伴随进程。
 这些包保留在根 Cargo 工作区中，使用仓库锁定的工具链，不发布额外语言 SDK。
 
 ## 1. 接入本地 Rust SDK
@@ -9,7 +9,7 @@
 
 ```toml
 [dependencies]
-a3s-code-core = { path = "../../crates/code/core" }
+aster-core = { path = "../../crates/code/core" }
 ```
 
 [Core 的公开实现与示例](../core/src/lib.rs)是 API 依据。外部宿主沿用 ACP 进程边界。
@@ -36,7 +36,7 @@ providers "openai" {
 ## 3. 创建、使用与关闭会话
 
 ```rust,no_run
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::{Agent, SessionOptions};
 
 async fn run() -> anyhow::Result<()> {
     let agent = Agent::new("agent.acl").await?;
@@ -95,7 +95,7 @@ Core 默认使用 `local-code`。高级工作流、S3、遥测通过显式 featu
 独立 ACP 默认使用 API/HTTP 搜索。需要浏览器搜索时运行：
 
 ```sh
-cargo build --locked -p aster -p a3s-code-acp --features a3s-code-acp/headless-search
+cargo build --locked -p aster -p aster-acp --features aster-acp/headless-search
 ```
 
 桌面开发、构建与打包配方显式选择浏览器能力；只有实际进入浏览器搜索阶段才准备运行时。
@@ -103,7 +103,7 @@ cargo build --locked -p aster -p a3s-code-acp --features a3s-code-acp/headless-s
 Office 工具由 ACP 宿主在 `session/new` 中明确请求。以下是请求元数据，不是产品配置文件：
 
 ```json
-{"_meta":{"a3sHost":{"officeTools":true}}}
+{"_meta":{"asterHost":{"officeTools":true}}}
 ```
 
 缺省或 false 不注册原生 Office 工具，类型错误明确拒绝。Studio 明确声明办公支持。

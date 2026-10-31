@@ -14,7 +14,7 @@ async fn send_now_cancels_before_waiting_for_the_previous_turn_permit() {
         let root = tempfile::tempdir().unwrap();
         let mut launch = tests::test_launch(Some(root.path().join("sessions")));
         launch.workspace = root.path().to_owned();
-        let agent = A3sCodeAgent::new(launch);
+        let agent = AsterCodeAgent::new(launch);
         let id = agent
             .new_session(acp::NewSessionRequest::new(root.path()))
             .await
@@ -62,7 +62,7 @@ async fn malformed_send_now_is_refused_without_cancelling_a_turn() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_owned();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let id = agent
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -85,14 +85,12 @@ async fn malformed_send_now_is_refused_without_cancelling_a_turn() {
         let error = result
             .expect("invalid send-now metadata must be refused before work")
             .unwrap_err();
-        assert!(
-            error
-                .data
-                .unwrap()
-                .as_str()
-                .unwrap()
-                .contains("sendNow must be a boolean")
-        );
+        assert!(error
+            .data
+            .unwrap()
+            .as_str()
+            .unwrap()
+            .contains("sendNow must be a boolean"));
         assert!(agent.cancelled_generation.lock().await.is_empty());
     }
 }
@@ -110,7 +108,7 @@ fn direct_bash_metadata_is_never_reinterpreted_as_model_text() {
                 .as_object()
                 .cloned(),
         );
-        let error = A3sCodeAgent::prompt_content(&[
+        let error = AsterCodeAgent::prompt_content(&[
             acp::ContentBlock::Text(acp::TextContent::new("ordinary prefix")),
             acp::ContentBlock::Text(block),
         ])
@@ -131,7 +129,7 @@ fn ordinary_text_and_unrelated_metadata_preserve_exact_user_bytes() {
             .cloned(),
     );
     let (actual, attachments) =
-        A3sCodeAgent::prompt_content(&[acp::ContentBlock::Text(block)]).unwrap();
+        AsterCodeAgent::prompt_content(&[acp::ContentBlock::Text(block)]).unwrap();
     assert_eq!(actual, text);
     assert!(attachments.is_empty());
 }

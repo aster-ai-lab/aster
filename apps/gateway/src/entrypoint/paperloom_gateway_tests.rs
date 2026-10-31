@@ -10,17 +10,17 @@ use argon2::Argon2;
 mod api_job;
 
 #[tokio::test]
-#[ignore = "requires A3S_PAPERLOOM_TEST_PYTHON with PyMuPDF and the installed platform OCR runtime"]
+#[ignore = "requires ASTER_PAPERLOOM_TEST_PYTHON with PyMuPDF and the installed platform OCR runtime"]
 async fn paperloom_pdf_pages_use_authenticated_gateway_ocr() {
     let python =
-        std::env::var("A3S_PAPERLOOM_TEST_PYTHON").expect("explicit isolated Python environment");
+        std::env::var("ASTER_PAPERLOOM_TEST_PYTHON").expect("explicit isolated Python environment");
     ensure_ocr_runtime().await;
     let (chat, _) = spawn_capturing_backend().await;
     let (embeddings, _) = spawn_capturing_backend().await;
     let (config, key, prefix) = workload_ocr_config(chat, embeddings);
     let (address, shutdown, server) = start_test_entrypoint(gateway_state(&config)).await;
     let client = reqwest::Client::new();
-    let png = draw_a3s_png();
+    let png = draw_aster_png();
     for credential in [None, Some(format!("{prefix}{}", Uuid::new_v4().simple()))] {
         let mut request = client
             .post(format!("http://{address}/v1/ocr"))
@@ -53,8 +53,8 @@ async fn paperloom_pdf_pages_use_authenticated_gateway_ocr() {
         std::process::Command::new(python)
             .arg(repository.join("apps/use-registry/packages/paperloom/runtime/gateway_ocr.py"))
             .env_clear()
-            .env("A3S_GATEWAY_ORIGIN", format!("http://{address}"))
-            .env("A3S_GATEWAY_KEY", key)
+            .env("ASTER_GATEWAY_ORIGIN", format!("http://{address}"))
+            .env("ASTER_GATEWAY_KEY", key)
             .env(
                 "RETAIN_OCR_SOURCE_PDF",
                 repository.join("fixtures/paperloom/two-pages.pdf"),
@@ -73,7 +73,7 @@ async fn paperloom_pdf_pages_use_authenticated_gateway_ocr() {
     let raw = std::fs::read_to_string(result_path).unwrap();
     save_evidence("paperloom-gateway-ocr.json", &raw);
     let payload: serde_json::Value = serde_json::from_str(&raw).unwrap();
-    assert_eq!(payload["source"]["provider"], "a3s_gateway");
+    assert_eq!(payload["source"]["provider"], "aster_gateway");
     let pages = payload["pages"].as_array().unwrap();
     assert_eq!(pages.len(), 2);
     for (index, page) in pages.iter().enumerate() {
@@ -113,7 +113,7 @@ fn workload_ocr_config(
     });
     config.mode = OperatingMode::CloudManaged;
     config.managed.gateway_id = Some(Uuid::new_v4());
-    let prefix = format!("a3s_inf_{}", &Uuid::new_v4().simple().to_string()[..8]);
+    let prefix = format!("aster_inf_{}", &Uuid::new_v4().simple().to_string()[..8]);
     let key = format!("{prefix}{}", Uuid::new_v4().simple());
     let salt = SaltString::encode_b64(Uuid::new_v4().as_bytes()).unwrap();
     let verifier_hash = Argon2::default()
@@ -163,7 +163,7 @@ async fn paperloom_private_unix_gateway_runs_real_ocr_with_endpoint_authorizatio
     let (embeddings, _) = spawn_capturing_backend().await;
     let (mut config, key, prefix) = workload_ocr_config(chat, embeddings);
     let directory = tempfile::Builder::new()
-        .prefix("a3s-ocr-")
+        .prefix("aster-ocr-")
         .tempdir_in("/tmp")
         .unwrap();
     let parent = directory.path().canonicalize().unwrap();
@@ -188,7 +188,7 @@ async fn paperloom_private_unix_gateway_runs_real_ocr_with_endpoint_authorizatio
         .timeout(std::time::Duration::from_secs(120))
         .build()
         .unwrap();
-    let png = draw_a3s_png();
+    let png = draw_aster_png();
     for token in [None, Some(format!("{prefix}{}", Uuid::new_v4().simple()))] {
         let mut request = client
             .post("http://gateway.test/v1/ocr")
@@ -233,23 +233,23 @@ async fn paperloom_private_unix_gateway_runs_real_ocr_with_endpoint_authorizatio
 
 #[cfg(unix)]
 #[tokio::test]
-#[ignore = "requires an owned Box home, digest-pinned PaperLoom image, real HVF/KVM and A3S_PAPERLOOM_TEST_BOX_RUNTIME_TEST_BIN"]
+#[ignore = "requires an owned Box home, digest-pinned PaperLoom image, real HVF/KVM and ASTER_PAPERLOOM_TEST_BOX_RUNTIME_TEST_BIN"]
 async fn paperloom_guest_vsock_runs_real_pdf_ocr_without_network_egress() {
-    run_box_ocr_test("a3s_runtime_driver::host_service_live_tests::paperloom_gateway_vsock_ocr_has_no_ambient_egress").await;
+    run_box_ocr_test("aster_runtime_driver::host_service_live_tests::paperloom_gateway_vsock_ocr_has_no_ambient_egress").await;
 }
 
 #[cfg(unix)]
 #[tokio::test]
 #[ignore = "requires a runner-owned RAM Secret root, Paperloom image and real HVF/KVM"]
 async fn paperloom_service_job_uses_real_gateway_ocr_and_retires_secrets() {
-    run_box_ocr_test("a3s_runtime_driver::paperloom_processing_live_tests::paperloom_service_completes_real_gateway_ocr_job_and_retires_secrets").await;
+    run_box_ocr_test("aster_runtime_driver::paperloom_processing_live_tests::paperloom_service_completes_real_gateway_ocr_job_and_retires_secrets").await;
 }
 
 #[cfg(target_os = "macos")]
 #[tokio::test]
 #[ignore = "requires runner-owned RAM Secret root and actual macOS MicroVM admission"]
 async fn paperloom_unsupported_secret_refuses_before_execution() {
-    run_box_ocr_test("a3s_runtime_driver::paperloom_processing_live_tests::paperloom_unsupported_secret_refuses_without_execution_or_ram_material").await;
+    run_box_ocr_test("aster_runtime_driver::paperloom_processing_live_tests::paperloom_unsupported_secret_refuses_without_execution_or_ram_material").await;
 }
 
 #[cfg(unix)]
@@ -257,7 +257,7 @@ async fn run_box_ocr_test(test_name: &str) {
     use crate::config::EntrypointConfig;
     use std::os::unix::fs::PermissionsExt;
     let binary = std::path::PathBuf::from(
-        std::env::var_os("A3S_PAPERLOOM_TEST_BOX_RUNTIME_TEST_BIN")
+        std::env::var_os("ASTER_PAPERLOOM_TEST_BOX_RUNTIME_TEST_BIN")
             .expect("explicit Box test binary"),
     );
     assert!(binary.is_file());
@@ -266,7 +266,7 @@ async fn run_box_ocr_test(test_name: &str) {
     let (embeddings, _) = spawn_capturing_backend().await;
     let (mut config, key, _) = workload_ocr_config(chat, embeddings);
     let directory = tempfile::Builder::new()
-        .prefix("a3s-ocr-")
+        .prefix("aster-ocr-")
         .tempdir_in("/tmp")
         .unwrap();
     let parent = directory.path().canonicalize().unwrap();
@@ -287,8 +287,8 @@ async fn run_box_ocr_test(test_name: &str) {
     .unwrap();
     let result = tokio::process::Command::new(binary)
         .args(["--exact", test_name, "--ignored", "--nocapture"])
-        .env("A3S_BOX_TEST_GATEWAY_SOCKET", &path)
-        .env("A3S_BOX_TEST_GATEWAY_KEY", key)
+        .env("ASTER_BOX_TEST_GATEWAY_SOCKET", &path)
+        .env("ASTER_BOX_TEST_GATEWAY_KEY", key)
         .kill_on_drop(true)
         .output()
         .await;

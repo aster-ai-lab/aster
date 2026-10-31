@@ -1,5 +1,5 @@
 {
-  "apiVersion": "a3s.dev/form-compiler-schema-profile-conformance/v1",
+  "apiVersion": "aster.dev/form-compiler-schema-profile-conformance/v1",
   "generator": "root-only-form-v1",
   "cases": [
     {
@@ -28,7 +28,7 @@
         {
           "code": "schema.keyword.unsupported",
           "severity": "error",
-          "message": "Schema keyword oneOf is not supported by A3S Form Schema Profile 1.",
+          "message": "Schema keyword oneOf is not supported by Aster Form Schema Profile 1.",
           "path": "/schema/oneOf",
           "hint": "Use one of: $schema, $id, type, title, description, default, enum, const, properties, required, items, additionalProperties, minLength, maxLength, pattern, format, minimum, maximum, multipleOf, minItems, maxItems, uniqueItems."
         }
@@ -161,7 +161,7 @@
           "severity": "error",
           "message": "Property names must be non-empty and cannot contain dots or the reserved * segment.",
           "path": "/schema/properties/profile.name",
-          "hint": "A3S Form uses dot-separated paths and * for repeater rows."
+          "hint": "Aster Form uses dot-separated paths and * for repeater rows."
         }
       ]
     },
@@ -355,7 +355,7 @@
         {
           "code": "schema.format.unsupported",
           "severity": "error",
-          "message": "Schema format company-id is not supported by A3S Form Schema Profile 1.",
+          "message": "Schema format company-id is not supported by Aster Form Schema Profile 1.",
           "path": "/schema/format",
           "hint": "Use one of: email, uri, date, date-time, time, hostname, ipv4, ipv6, uuid."
         }

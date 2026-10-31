@@ -5,12 +5,12 @@
 //! Layer C live E2E model binding for the monorepo Flash default.
 //!
 //! Pins `boyue/deepseek-v4-flash` when that model exists under
-//! `providers "boyue"`, matching monorepo `.a3s/config.acl` `default_model`.
-//! `A3S_TEST_MODEL` overrides the pin when the named route exists in the ACL.
+//! `providers "boyue"`, matching monorepo `.aster/config.acl` `default_model`.
+//! `ASTER_TEST_MODEL` overrides the pin when the named route exists in the ACL.
 
 use std::path::PathBuf;
 
-use a3s_code_core::config::CodeConfig;
+use aster_core::config::CodeConfig;
 
 /// Goal-required Layer C default (`provider/model` form).
 pub const REQUIRED_DEFAULT_MODEL: &str = "boyue/deepseek-v4-flash";
@@ -22,12 +22,12 @@ pub const ALTERNATE_FLASH_MODEL: &str = "boyue/bailian/deepseek-v4.1-flash";
 const ALTERNATE_MODEL_ID: &str = "bailian/deepseek-v4.1-flash";
 
 pub fn repo_config_path() -> PathBuf {
-    std::env::var_os("A3S_CONFIG_FILE")
+    std::env::var_os("ASTER_CONFIG_FILE")
         .map(PathBuf::from)
         .unwrap_or_else(|| {
             PathBuf::from(env!("CARGO_MANIFEST_DIR"))
                 .join("../../..")
-                .join(".a3s/config.acl")
+                .join(".aster/config.acl")
         })
 }
 
@@ -51,7 +51,7 @@ pub fn load_pinned_layer_c_config() -> CodeConfig {
     let path = repo_config_path();
     let mut config = CodeConfig::from_file(&path)
         .unwrap_or_else(|error| panic!("failed to load {}: {error}", path.display()));
-    let pin = std::env::var("A3S_TEST_MODEL")
+    let pin = std::env::var("ASTER_TEST_MODEL")
         .ok()
         .map(|value| value.trim().to_string())
         .filter(|value| !value.is_empty())
@@ -59,7 +59,7 @@ pub fn load_pinned_layer_c_config() -> CodeConfig {
             // Common typo: bailian Flash is `…/deepseek-v4.1-flash` in ACL.
             let resolved = if full == "boyue/bailian/deepseek-v4-flash" {
                 eprintln!(
-                    "A3S_TEST_MODEL={full} is not declared; using {ALTERNATE_FLASH_MODEL}"
+                    "ASTER_TEST_MODEL={full} is not declared; using {ALTERNATE_FLASH_MODEL}"
                 );
                 ALTERNATE_FLASH_MODEL.to_string()
             } else {
@@ -70,7 +70,7 @@ pub fn load_pinned_layer_c_config() -> CodeConfig {
                 Some(resolved)
             } else {
                 eprintln!(
-                    "A3S_TEST_MODEL={resolved} is not declared in {}; falling back to {REQUIRED_DEFAULT_MODEL}",
+                    "ASTER_TEST_MODEL={resolved} is not declared in {}; falling back to {REQUIRED_DEFAULT_MODEL}",
                     path.display()
                 );
                 None
@@ -113,9 +113,9 @@ pub fn assert_pinned_layer_c_flash(config: &CodeConfig, suite: &str) {
     );
 }
 
-/// Resolve a declared Layer C model after applying `A3S_TEST_MODEL` remapping.
+/// Resolve a declared Layer C model after applying `ASTER_TEST_MODEL` remapping.
 ///
-/// Prefer this over reading `A3S_TEST_MODEL` raw — the loader maps the common
+/// Prefer this over reading `ASTER_TEST_MODEL` raw — the loader maps the common
 /// bailian typo `boyue/bailian/deepseek-v4-flash` onto the declared route.
 pub fn pinned_layer_c_model(config: &CodeConfig) -> String {
     assert_pinned_layer_c_flash(config, "Layer C live suite");

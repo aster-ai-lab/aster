@@ -1,8 +1,8 @@
 #![cfg(test)]
 
 mod support;
-use a3s_runtime::contract::{NetworkMode, RuntimeFeature, RuntimeHostService, RuntimeUnitSpec};
-use a3s_runtime::RuntimeDriver;
+use aster_runtime::contract::{NetworkMode, RuntimeFeature, RuntimeHostService, RuntimeUnitSpec};
+use aster_runtime::RuntimeDriver;
 use support::fault_driver::DeterministicFaultDriver;
 use support::fixtures::service_spec;
 

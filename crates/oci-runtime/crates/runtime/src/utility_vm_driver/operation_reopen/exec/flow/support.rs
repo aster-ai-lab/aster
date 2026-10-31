@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerTarget, DeleteRequest, Error, ErrorCode, ExecRequest, OciBundle, OperationId,
     ProcessId, ProcessIo, ProcessTarget, StartRequest, TerminalSize,
 };
@@ -16,9 +16,9 @@ use crate::{DriverExecRequest, OciVmOperationReopenReplacementReport};
 use super::super::super::{QUALIFICATION_FAULT_OPERATION, QUALIFICATION_TIMEOUT};
 
 pub(in crate::utility_vm_driver::operation_reopen) const EXEC_MARKER_NAME: &str =
-    ".a3s-oci-exec-reopen-smoke";
+    ".aster-oci-exec-reopen-smoke";
 const ORIGINAL_INIT_MARKER_WRITE: &str =
-    "printf 'a3s-oci-create-start-user-time-v1\\n' > /.a3s-oci-create-start-smoke;";
+    "printf 'aster-oci-create-start-user-time-v1\\n' > /.aster-oci-create-start-smoke;";
 const MARKER_POLL_INTERVAL: std::time::Duration = std::time::Duration::from_millis(25);
 
 pub(super) type CreateIdentity = (OperationId, ContainerTarget);
@@ -65,7 +65,7 @@ pub(in crate::utility_vm_driver::operation_reopen) fn nonce_bound_bundle(
         );
     }
     let replacement =
-        format!("printf 'a3s-oci-exec-init-{nonce}\\n' > /.a3s-oci-create-start-smoke;");
+        format!("printf 'aster-oci-exec-init-{nonce}\\n' > /.aster-oci-create-start-smoke;");
     config["process"]["args"][2] =
         serde_json::Value::String(command.replacen(ORIGINAL_INIT_MARKER_WRITE, &replacement, 1));
     let encoded = serde_json::to_string_pretty(&config)
@@ -80,7 +80,7 @@ pub(in crate::utility_vm_driver::operation_reopen) fn exec_process(
     let process_id = ProcessId::new(format!("worker-{nonce}"))
         .map_err(|error| format!("failed to construct KVM Exec process ID: {error}"))?;
     let command = format!(
-        "set -eu; printf 'a3s-oci-exec-process-{nonce}\\n' > /{EXEC_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"
+        "set -eu; printf 'aster-oci-exec-process-{nonce}\\n' > /{EXEC_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"
     );
     let process: Process = serde_json::from_value(serde_json::json!({
         "terminal": true,
@@ -92,9 +92,9 @@ pub(in crate::utility_vm_driver::operation_reopen) fn exec_process(
     }))
     .map_err(|error| format!("failed to construct terminal KVM Exec process: {error}"))?;
     let io = ProcessIo {
-        stdin: a3s_oci_sdk::IoMode::Terminal,
-        stdout: a3s_oci_sdk::IoMode::Terminal,
-        stderr: a3s_oci_sdk::IoMode::Terminal,
+        stdin: aster_oci_sdk::IoMode::Terminal,
+        stdout: aster_oci_sdk::IoMode::Terminal,
+        stderr: aster_oci_sdk::IoMode::Terminal,
         terminal_size: Some(TerminalSize {
             width: 80,
             height: 24,
@@ -201,7 +201,7 @@ pub(super) async fn exec_journal_status(
 pub(super) async fn durable_exec_process(
     state_root: &Path,
     target: &ProcessTarget,
-) -> Result<a3s_oci_sdk::ProcessRecord, String> {
+) -> Result<aster_oci_sdk::ProcessRecord, String> {
     crate::operation_journal_evidence::durable_process(state_root, target).await
 }
 
@@ -226,7 +226,7 @@ pub(in crate::utility_vm_driver::operation_reopen) fn stale_target(
         .ok_or_else(|| "KVM Exec qualification generation cannot be incremented".to_string())?;
     Ok(ContainerTarget::exact(
         container.id.clone(),
-        a3s_oci_sdk::Generation(stale),
+        aster_oci_sdk::Generation(stale),
     ))
 }
 
@@ -269,7 +269,7 @@ pub(super) fn append_failure(failure: &mut Option<String>, reason: impl Into<Str
 mod tests {
     use std::path::PathBuf;
 
-    use a3s_oci_sdk::OciBundle;
+    use aster_oci_sdk::OciBundle;
 
     use super::{exec_process, nonce_bound_bundle, EXEC_MARKER_NAME, ORIGINAL_INIT_MARKER_WRITE};
 
@@ -290,7 +290,7 @@ mod tests {
             .expect("init shell command");
         assert!(!command.contains(ORIGINAL_INIT_MARKER_WRITE));
         assert!(command
-            .contains("printf 'a3s-oci-exec-init-exec-123\\n' > /.a3s-oci-create-start-smoke;"));
+            .contains("printf 'aster-oci-exec-init-exec-123\\n' > /.aster-oci-create-start-smoke;"));
         assert!(nonce_bound_bundle(bound, "unsafe nonce").is_err());
     }
 
@@ -307,13 +307,13 @@ mod tests {
             .pointer("/args/2")
             .and_then(serde_json::Value::as_str)
             .is_some_and(|command| {
-                command.contains("a3s-oci-exec-process-exec-123")
+                command.contains("aster-oci-exec-process-exec-123")
                     && command.contains(EXEC_MARKER_NAME)
                     && command.contains("while :")
             }));
         assert_eq!(
             io.terminal_size,
-            Some(a3s_oci_sdk::TerminalSize {
+            Some(aster_oci_sdk::TerminalSize {
                 width: 80,
                 height: 24,
             })

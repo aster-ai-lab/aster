@@ -14,7 +14,7 @@ async fn interrupted_target_download_resumes_from_a_durable_verified_prefix() {
     let target_path = format!("/targets/{}", repository.target_name);
     let chunk_bytes = (archive.len() / 8).max(1);
 
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let digest = prepared.resolved().sha256.clone();
@@ -33,7 +33,7 @@ async fn interrupted_target_download_resumes_from_a_durable_verified_prefix() {
 
     server.allow_complete_requests(&target_path);
     server.clear_requests();
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let downloaded = prepared.download().await.unwrap();
@@ -59,7 +59,7 @@ async fn tampered_resumable_prefix_fails_digest_verification_and_is_discarded() 
     let datastore = temp.path().join("tuf");
     let trusted = trusted_registry(&server, &repository, datastore.clone());
     let target_path = format!("/targets/{}", repository.target_name);
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let digest = prepared.resolved().sha256.clone();
@@ -87,7 +87,7 @@ async fn tampered_resumable_prefix_fails_digest_verification_and_is_discarded() 
         .exists());
 
     server.clear_requests();
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let downloaded = prepared.download().await.unwrap();
@@ -104,7 +104,7 @@ async fn mismatched_content_range_discards_the_unverified_partial() {
     let datastore = temp.path().join("tuf");
     let trusted = trusted_registry(&server, &repository, datastore.clone());
     let target_path = format!("/targets/{}", repository.target_name);
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let digest = prepared.resolved().sha256.clone();
@@ -141,7 +141,7 @@ async fn server_that_ignores_range_restarts_from_a_complete_response() {
     let datastore = temp.path().join("tuf");
     let trusted = trusted_registry(&server, &repository, datastore.clone());
     let target_path = format!("/targets/{}", repository.target_name);
-    let prepared = prepare_remote_package(&trusted, "a3s/science", None, "stable", None)
+    let prepared = prepare_remote_package(&trusted, "aster/science", None, "stable", None)
         .await
         .unwrap();
     let digest = prepared.resolved().sha256.clone();

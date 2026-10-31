@@ -10,7 +10,7 @@
 
 ### User Story 1 — 复用原生文件生成 (P1)
 
-用户将识别文字和会议记录导出为 DOCX。文件生成复用现有 `office_tool` 与 `a3s-office`，删除重复的 DOCX JSZip 写入器。XLSX 原生生产接线延后。
+用户将识别文字和会议记录导出为 DOCX。文件生成复用现有 `office_tool` 与 `aster-office`，删除重复的 DOCX JSZip 写入器。XLSX 原生生产接线延后。
 
 **Independent Test**: 原生命令测试实际生成并重新打开 DOCX/XLSX；renderer 测试实际导出流程及主机请求。
 
@@ -59,7 +59,7 @@
 - [ ] 原生与 renderer 的小型 hermetic 测试（T001–T003）
 - [x] 不增加枚举或扩大命令集合
 - [x] 不增加生产 unwrap/expect
-- [x] 不增加外部 A3S 依赖或 Cargo 工作区
+- [x] 不增加外部 Aster 依赖或 Cargo 工作区
 - [x] 不增加产品配置
 - [ ] 留存 `docs/evidence/desktop/2026-10-30-native-office-quick-wins/OUTCOME.md`（T004）
 

@@ -1,5 +1,5 @@
-use a3s_code_core::skills::{Skill, SkillKind, SkillRegistry};
-use a3s_code_core::{Agent, CodeConfig, CodeError, SessionOptions};
+use aster_core::skills::{Skill, SkillKind, SkillRegistry};
+use aster_core::{Agent, CodeConfig, CodeError, SessionOptions};
 use serde_json::json;
 use std::sync::Arc;
 

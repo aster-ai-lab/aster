@@ -6,10 +6,10 @@
 //!
 //! Tier 2 (cgroup-based limits): MicroVMs write the guest workload cgroup via
 //! the exec channel. Host Sandboxes send one complete resource contract through
-//! the exact-generation A3S OCI SDK.
+//! the exact-generation Aster OCI SDK.
 
-use a3s_box_core::config::{BoxConfig, ResourceLimits};
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::config::{BoxConfig, ResourceLimits};
+use aster_box_core::error::{BoxError, Result};
 
 /// A resource update request.
 ///
@@ -52,7 +52,7 @@ impl ResourceUpdate {
 
     /// Merge every explicitly requested value into a complete Box config.
     ///
-    /// Sandbox live updates use the resulting full snapshot because the A3S
+    /// Sandbox live updates use the resulting full snapshot because the Aster
     /// OCI update contract replaces `linux.resources` atomically rather than
     /// applying a sequence of partial cgroup writes.
     pub fn apply_to_config(&self, config: &mut BoxConfig) {
@@ -119,7 +119,7 @@ impl ResourceUpdate {
 
     /// Build shell commands to apply Tier 2 cgroup changes inside a MicroVM guest.
     ///
-    /// Host Sandbox updates must use the A3S OCI SDK and never call this method.
+    /// Host Sandbox updates must use the Aster OCI SDK and never call this method.
     /// For a MicroVM, the resize exec runs in the guest root cgroup, so each
     /// command resolves the per-container `box-<pid>-<seq>` slice at runtime.
     /// A bare `/sys/fs/cgroup/<file>` write would hit the root cgroup and silently
@@ -233,7 +233,7 @@ fn parse_cpu_index(value: &str) -> Option<u32> {
 /// call site (container_update) instead of a silent mis-apply.
 fn cgroup_write_cmd(file: &str, value: &str) -> String {
     format!(
-        "d=\"\"; n=0; for x in /sys/fs/cgroup/box-*/; do [ -d \"$x\" ] && {{ d=\"$x\"; n=$((n+1)); }}; done; [ \"$n\" = 1 ] || {{ echo \"a3s-resize: cannot resolve a unique per-container cgroup ($n box-* slices) to set {file}\" >&2; exit 1; }}; echo '{value}' > \"${{d}}{file}\""
+        "d=\"\"; n=0; for x in /sys/fs/cgroup/box-*/; do [ -d \"$x\" ] && {{ d=\"$x\"; n=$((n+1)); }}; done; [ \"$n\" = 1 ] || {{ echo \"aster-resize: cannot resolve a unique per-container cgroup ($n box-* slices) to set {file}\" >&2; exit 1; }}; echo '{value}' > \"${{d}}{file}\""
     )
 }
 
@@ -266,7 +266,7 @@ pub fn validate_update(update: &ResourceUpdate) -> Result<()> {
 /// lifecycle state only controls hot-resize support, not input validity.
 pub fn validate_update_values(update: &ResourceUpdate) -> Result<()> {
     if let Some(vcpus) = update.vcpus {
-        a3s_box_core::config::validate_vcpu_count(vcpus).map_err(BoxError::ResizeError)?;
+        aster_box_core::config::validate_vcpu_count(vcpus).map_err(BoxError::ResizeError)?;
     }
     // Reject a malformed cpuset before it can be persisted or interpolated into
     // the resize shell command (cgroup `cpuset.cpus` accepts only indices/ranges).

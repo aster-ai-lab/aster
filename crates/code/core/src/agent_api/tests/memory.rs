@@ -2,7 +2,7 @@ use super::*;
 
 #[tokio::test(flavor = "multi_thread")]
 async fn test_session_with_memory_store() {
-    use a3s_memory::InMemoryStore;
+    use aster_durable_memory::InMemoryStore;
     let store = Arc::new(InMemoryStore::new());
     let agent = Agent::from_config(test_config()).await.unwrap();
     let opts = SessionOptions::new().with_memory(store);
@@ -28,7 +28,7 @@ async fn test_session_without_memory_store() {
 
 #[tokio::test(flavor = "multi_thread")]
 async fn test_session_memory_wired_into_config() {
-    use a3s_memory::InMemoryStore;
+    use aster_durable_memory::InMemoryStore;
     let store = Arc::new(InMemoryStore::new());
     let agent = Agent::from_config(test_config()).await.unwrap();
     let opts = SessionOptions::new().with_memory(store);
@@ -42,7 +42,7 @@ async fn test_session_memory_wired_into_config() {
 
 #[tokio::test(flavor = "multi_thread")]
 async fn test_session_memory_uses_code_config_limits() {
-    use a3s_memory::{InMemoryStore, MemoryItem};
+    use aster_durable_memory::{InMemoryStore, MemoryItem};
 
     let mut config = test_config();
     config.memory = Some(crate::memory::MemoryConfig {
@@ -90,7 +90,7 @@ async fn test_session_uses_configured_default_memory_dir() {
         .unwrap();
     let memory = session.memory().expect("default memory store");
     memory
-        .remember(a3s_memory::MemoryItem::new("configured default memory dir"))
+        .remember(aster_durable_memory::MemoryItem::new("configured default memory dir"))
         .await
         .unwrap();
 
@@ -124,7 +124,7 @@ async fn test_session_file_memory_initialization_failure_is_typed() {
 
 #[tokio::test(flavor = "multi_thread")]
 async fn test_memory_remember_and_recall() {
-    use a3s_memory::InMemoryStore;
+    use aster_durable_memory::InMemoryStore;
     let store = Arc::new(InMemoryStore::new());
     let agent = Agent::from_config(test_config()).await.unwrap();
     let opts = SessionOptions::new().with_memory(store);

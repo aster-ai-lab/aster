@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::text::wrap;
 use super::write_path;
@@ -42,9 +42,9 @@ pub(super) fn render(document: &NativeOfficeDocument, limit: usize) -> UseResult
     };
 
     let mut output = BoundedOutput::new(limit);
-    output.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-labelledby=\"a3s-title a3s-desc\" data-renderer=\"a3s-office-semantic-v1\" data-document-kind=\"word\" viewBox=\"0 0 ")?;
+    output.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-labelledby=\"aster-title aster-desc\" data-renderer=\"aster-office-semantic-v1\" data-document-kind=\"word\" viewBox=\"0 0 ")?;
     output.push_fmt(format_args!("{CANVAS_WIDTH:.4} {total_height:.4}"))?;
-    output.push("\"><title id=\"a3s-title\">A3S Native Office Word semantic preview</title><desc id=\"a3s-desc\">Deterministic semantic preview; it does not claim Microsoft Office pagination or layout fidelity.</desc><style>text{font-family:ui-sans-serif,system-ui,sans-serif;fill:#172033}.canvas{fill:#eef1f5}.region{fill:#fff;stroke:#aab4c3;stroke-width:1.5}.region-label{font-size:20px;font-weight:700}.paragraph{fill:#fff;stroke:#d2d8e2}.paragraph-text{font-size:16px}.empty-text{font-size:14px;fill:#667085;font-style:italic}.table{fill:#fff;stroke:#8491a5}.cell{fill:#fff;stroke:#aab4c3}.cell-text{font-size:13px}.picture{fill:#f8fafc;stroke:#8491a5}.missing-image{fill:#f8fafc;stroke:#8491a5;stroke-dasharray:7 5}.picture-label{font-size:13px;fill:#526079}</style><rect class=\"canvas\" x=\"0\" y=\"0\" width=\"1000\" height=\"")?;
+    output.push("\"><title id=\"aster-title\">Aster Native Office Word semantic preview</title><desc id=\"aster-desc\">Deterministic semantic preview; it does not claim Microsoft Office pagination or layout fidelity.</desc><style>text{font-family:ui-sans-serif,system-ui,sans-serif;fill:#172033}.canvas{fill:#eef1f5}.region{fill:#fff;stroke:#aab4c3;stroke-width:1.5}.region-label{font-size:20px;font-weight:700}.paragraph{fill:#fff;stroke:#d2d8e2}.paragraph-text{font-size:16px}.empty-text{font-size:14px;fill:#667085;font-style:italic}.table{fill:#fff;stroke:#8491a5}.cell{fill:#fff;stroke:#aab4c3}.cell-text{font-size:13px}.picture{fill:#f8fafc;stroke:#8491a5}.missing-image{fill:#f8fafc;stroke:#8491a5;stroke-dasharray:7 5}.picture-label{font-size:13px;fill:#526079}</style><rect class=\"canvas\" x=\"0\" y=\"0\" width=\"1000\" height=\"")?;
     output.push_fmt(format_args!("{total_height:.4}"))?;
     output.push("\"/>")?;
 

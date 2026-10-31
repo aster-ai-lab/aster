@@ -9,7 +9,7 @@ import {
 import { xlsxRgbColor } from './work-xlsx-cell-style-xml';
 import { resolveXlsxColor, type XlsxColorResolver } from './work-xlsx-colors';
 
-export const XLSX_GRADIENT_FILL_CELL_KEY = 'a3sXlsxGradientFill' as const;
+export const XLSX_GRADIENT_FILL_CELL_KEY = 'asterXlsxGradientFill' as const;
 export const MAX_XLSX_GRADIENT_STOPS = 256;
 
 export interface XlsxGradientStop {

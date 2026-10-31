@@ -1,4 +1,4 @@
-//! A3S Box Shim - MicroVM subprocess for process isolation.
+//! Aster Box Shim - MicroVM subprocess for process isolation.
 //!
 //! This binary is spawned by VmController to isolate the VM from the host application.
 //! libkrun's `krun_start_enter()` performs process takeover, so we need a separate
@@ -6,7 +6,7 @@
 //!
 //! # Usage
 //! ```bash
-//! a3s-box-shim --config '{"box_id": "...", ...}'
+//! aster-box-shim --config '{"box_id": "...", ...}'
 //! ```
 
 // Allow large error types - this is a binary, not a library
@@ -17,21 +17,21 @@ mod managed_oci_log_worker;
 mod vm_launch;
 
 #[cfg(target_os = "windows")]
-use a3s_box_core::config::validate_vcpu_count;
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::config::validate_vcpu_count;
+use aster_box_core::error::{BoxError, Result};
 #[cfg(target_os = "windows")]
-use a3s_box_core::exec::WINDOWS_STOP_REQUEST_FILE;
-use a3s_box_core::vmm::{InstanceSpec, RawBlockDevice, RootfsSource};
+use aster_box_core::exec::WINDOWS_STOP_REQUEST_FILE;
+use aster_box_core::vmm::{InstanceSpec, RawBlockDevice, RootfsSource};
 #[cfg(not(target_os = "windows"))]
-use a3s_box_core::EXEC_VSOCK_PORT;
+use aster_box_core::EXEC_VSOCK_PORT;
 #[cfg(target_os = "windows")]
-use a3s_box_core::PORT_FWD_VSOCK_PORT;
+use aster_box_core::PORT_FWD_VSOCK_PORT;
 #[cfg(not(target_os = "windows"))]
-use a3s_box_core::{ATTEST_VSOCK_PORT, PORT_FWD_VSOCK_PORT, PTY_VSOCK_PORT};
+use aster_box_core::{ATTEST_VSOCK_PORT, PORT_FWD_VSOCK_PORT, PTY_VSOCK_PORT};
 #[cfg(target_os = "macos")]
-use a3s_box_netproxy::{spawn_inherited_netproxy, InheritedNetProxyConfig};
+use aster_box_netproxy::{spawn_inherited_netproxy, InheritedNetProxyConfig};
 #[cfg(target_os = "linux")]
-use a3s_box_netproxy::{spawn_inherited_passt_bridge, UntrustedEgressScope};
+use aster_box_netproxy::{spawn_inherited_passt_bridge, UntrustedEgressScope};
 use clap::Parser;
 use krun::KrunContext;
 #[cfg(target_os = "windows")]
@@ -53,17 +53,17 @@ use vm_launch::configure_and_start_vm;
 #[cfg(target_os = "windows")]
 use vm_launch::*;
 
-/// A3S Box Shim - MicroVM subprocess
+/// Aster Box Shim - MicroVM subprocess
 #[derive(Parser, Debug)]
-#[command(name = "a3s-box-shim")]
-#[command(about = "MicroVM shim process for A3S Box")]
+#[command(name = "aster-box-shim")]
+#[command(about = "MicroVM shim process for Aster Box")]
 struct Args {
     /// JSON-encoded InstanceSpec configuration
     #[arg(long)]
     config: Option<String>,
 
     /// Internal: project one Sandbox generation's split console into its
-    /// configured log driver until the exact A3S OCI owner exits.
+    /// configured log driver until the exact Aster OCI owner exits.
     #[cfg(target_os = "linux")]
     #[arg(long, hide = true)]
     sandbox_log_worker_config: Option<String>,
@@ -110,7 +110,7 @@ fn main() {
     }
 }
 
-/// Opt-in (env `A3S_BOX_KSM=1`): mark this shim's anonymous memory — including
+/// Opt-in (env `ASTER_BOX_KSM=1`): mark this shim's anonymous memory — including
 /// libkrun's guest RAM, which `start_enter` allocates as anonymous `mmap` after
 /// this runs — as KSM-mergeable via `prctl(PR_SET_MEMORY_MERGE)` (Linux 6.4+).
 /// With KSM enabled on the host (`/sys/kernel/mm/ksm/run = 1`), identical pages
@@ -123,7 +123,7 @@ fn maybe_enable_ksm_merge() {
     // the numeric value directly.
     const PR_SET_MEMORY_MERGE: libc::c_int = 67;
 
-    let enabled = std::env::var("A3S_BOX_KSM")
+    let enabled = std::env::var("ASTER_BOX_KSM")
         .map(|v| matches!(v.as_str(), "1" | "true" | "yes" | "on"))
         .unwrap_or(false);
     if !enabled {
@@ -138,7 +138,7 @@ fn maybe_enable_ksm_merge() {
     } else {
         tracing::warn!(
             error = %std::io::Error::last_os_error(),
-            "A3S_BOX_KSM set but PR_SET_MEMORY_MERGE failed (needs Linux 6.4+); continuing without KSM"
+            "ASTER_BOX_KSM set but PR_SET_MEMORY_MERGE failed (needs Linux 6.4+); continuing without KSM"
         );
     }
 }
@@ -218,7 +218,7 @@ fn run() -> Result<()> {
     maybe_enable_ksm_merge();
 
     validate_rootfs_source(&spec.rootfs)?;
-    a3s_box_core::validate_host_service_sockets(&spec.host_services, None)?;
+    aster_box_core::validate_host_service_sockets(&spec.host_services, None)?;
     if !spec.host_services.is_empty()
         && (spec.snapshot_mem_file.is_some()
             || spec.snapshot_sock.is_some()
@@ -268,7 +268,7 @@ fn run() -> Result<()> {
 
 #[cfg(target_os = "linux")]
 fn run_sandbox_log_worker(config: &str) -> Result<()> {
-    use a3s_box_core::log::{
+    use aster_box_core::log::{
         run_log_processor_with_ready_and_eof_policy, ConsoleEofPolicy, SandboxLogWorkerSpec,
     };
     use std::io::Write;
@@ -362,8 +362,8 @@ fn run_sandbox_log_worker(config: &str) -> Result<()> {
 }
 
 #[cfg(target_os = "linux")]
-fn validate_sandbox_log_worker_spec(spec: &a3s_box_core::log::SandboxLogWorkerSpec) -> Result<()> {
-    if spec.schema != a3s_box_core::log::SANDBOX_LOG_WORKER_SCHEMA
+fn validate_sandbox_log_worker_spec(spec: &aster_box_core::log::SandboxLogWorkerSpec) -> Result<()> {
+    if spec.schema != aster_box_core::log::SANDBOX_LOG_WORKER_SCHEMA
         || spec.box_id.is_empty()
         || spec.watched_pid == 0
         || spec.watched_pid_start_time == 0
@@ -538,15 +538,15 @@ fn is_auto_assigned_host_port(mapping: &str) -> bool {
 }
 
 #[cfg(target_os = "windows")]
-const WINDOWS_GUEST_EXIT_CODE: &str = ".a3s_exit_code";
+const WINDOWS_GUEST_EXIT_CODE: &str = ".aster_exit_code";
 #[cfg(target_os = "windows")]
 const WINDOWS_GUEST_STDOUT: &str = "guest-init.stdout.log";
 #[cfg(target_os = "windows")]
 const WINDOWS_GUEST_STDERR: &str = "guest-init.stderr.log";
 #[cfg(target_os = "windows")]
-const WINDOWS_GUEST_RESULT_MARKER: &str = ".a3s_host_result_collected";
+const WINDOWS_GUEST_RESULT_MARKER: &str = ".aster_host_result_collected";
 #[cfg(target_os = "windows")]
-const WINDOWS_LIVE_LOGS_DRAINED_MARKER: &str = ".a3s_host_live_logs_drained";
+const WINDOWS_LIVE_LOGS_DRAINED_MARKER: &str = ".aster_host_live_logs_drained";
 #[cfg(target_os = "windows")]
 const WINDOWS_RETURN_ON_EXIT_ENV: &str = "LIBKRUN_WINDOWS_RETURN_ON_EXIT";
 
@@ -677,7 +677,7 @@ fn validate_raw_block_device(disk: &RawBlockDevice) -> Result<()> {
 }
 
 /// Hold an advisory exclusive lock for every raw disk throughout the libkrun
-/// process lifetime. All A3S shims participate, so an orphaned read-only
+/// process lifetime. All Aster shims participate, so an orphaned read-only
 /// maintenance VM and a normal writable boot can never own one generation at
 /// the same time.
 #[cfg(unix)]
@@ -706,7 +706,7 @@ fn lock_raw_disk_ownership(spec: &InstanceSpec) -> Result<Vec<std::fs::File>> {
             })?;
         if unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) } != 0 {
             return Err(BoxError::StateError(format!(
-                "Raw disk {} is already owned by another A3S VM",
+                "Raw disk {} is already owned by another Aster VM",
                 path.display()
             )));
         }

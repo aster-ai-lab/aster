@@ -208,7 +208,7 @@ fn document_state(store: &NativeOfficeCollaborationStore) -> ComplexDocumentStat
     peer.transact_mut()
         .apply_update(Update::decode_v1(&update).unwrap())
         .unwrap();
-    let fragment = peer.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = peer.get_or_insert_xml_fragment("aster.office.document.content");
     let transaction = peer.transact();
     let mut paragraphs = Vec::new();
     let mut rows = Vec::new();
@@ -337,7 +337,7 @@ fn document_table_row_frame_rewrites_ancestor_identity_or_writes_nothing() {
         .unwrap();
     let peer_before = peer.transact().state_vector();
     {
-        let fragment = peer.get_or_insert_xml_fragment("a3s.office.document.content");
+        let fragment = peer.get_or_insert_xml_fragment("aster.office.document.content");
         let mut transaction = peer.transact_mut();
         let row = fragment
             .successors(&transaction)
@@ -927,7 +927,7 @@ fn section_ids(store: &NativeOfficeCollaborationStore) -> Vec<String> {
     doc.transact_mut()
         .apply_update(Update::decode_v1(&exported).unwrap())
         .unwrap();
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let transaction = doc.transact();
     fragment
         .children(&transaction)
@@ -946,7 +946,7 @@ fn list_item_paragraphs(store: &NativeOfficeCollaborationStore) -> Vec<Vec<Strin
     doc.transact_mut()
         .apply_update(Update::decode_v1(&exported).unwrap())
         .unwrap();
-    let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
     let transaction = doc.transact();
     let mut items = Vec::new();
     for node in fragment.successors(&transaction) {
@@ -981,7 +981,7 @@ fn seed_list_in_outer_cell(store: &NativeOfficeCollaborationStore) {
         .unwrap();
     let peer_before = peer.transact().state_vector();
     {
-        let fragment = peer.get_or_insert_xml_fragment("a3s.office.document.content");
+        let fragment = peer.get_or_insert_xml_fragment("aster.office.document.content");
         let mut transaction = peer.transact_mut();
         let paragraph = fragment
             .successors(&transaction)

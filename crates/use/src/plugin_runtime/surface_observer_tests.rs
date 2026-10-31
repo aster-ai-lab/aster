@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
-use a3s_runtime::contract::NetworkMode;
-use a3s_runtime::{
+use aster_runtime::contract::NetworkMode;
+use aster_runtime::{
     ProviderId, RuntimeClient, RuntimeClientRegistry, RuntimeProviderFactory, RuntimeResult,
 };
-use a3s_use_core::{PackageSurfaceKind, PlanScope, PlanScopeKind, PluginSurfaceRef};
-use a3s_use_extension::{ExtensionManifest, ToolWorkload};
+use aster_use_core::{PackageSurfaceKind, PlanScope, PlanScopeKind, PluginSurfaceRef};
+use aster_use_extension::{ExtensionManifest, ToolWorkload};
 use async_trait::async_trait;
 use tempfile::TempDir;
 
@@ -331,7 +331,7 @@ async fn install_mcp_service_binding(
 fn named_capabilities(
     plan: &RuntimeSurfacePlan,
     provider_id: &str,
-) -> a3s_runtime::contract::RuntimeCapabilities {
+) -> aster_runtime::contract::RuntimeCapabilities {
     let mut capabilities = capabilities(plan);
     capabilities.provider_id = ProviderId::parse(provider_id).unwrap();
     capabilities

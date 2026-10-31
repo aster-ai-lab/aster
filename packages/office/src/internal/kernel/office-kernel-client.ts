@@ -103,7 +103,7 @@ class BrowserOfficeKernelClient implements OfficeKernelClient {
       this.worker = new Worker(
         new URL('./office-kernel.worker.js', import.meta.url),
         {
-          name: 'a3s-office-kernel',
+          name: 'aster-office-kernel',
         },
       );
       this.worker.addEventListener('message', this.handleMessage);

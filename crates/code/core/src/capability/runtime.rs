@@ -16,7 +16,7 @@ use super::{
 
 const MAX_USE_LEASE_ERROR_BYTES: usize = 1_024;
 
-/// Bounded failure returned while retaining one exact A3S Use generation.
+/// Bounded failure returned while retaining one exact Aster Use generation.
 #[derive(Clone, Debug, Eq, Error, PartialEq)]
 #[error("{message}")]
 pub struct UseGenerationLeaseError {
@@ -27,7 +27,7 @@ impl UseGenerationLeaseError {
     pub fn new(message: impl Into<String>) -> Self {
         let message = message.into();
         let message = if message.is_empty() {
-            "A3S Use generation lease acquisition failed".to_owned()
+            "Aster Use generation lease acquisition failed".to_owned()
         } else {
             truncate_utf8(message, MAX_USE_LEASE_ERROR_BYTES)
         };
@@ -41,10 +41,10 @@ impl UseGenerationLeaseError {
     }
 }
 
-/// Generation-bound host seam for the real non-clone A3S Use snapshot lease.
+/// Generation-bound host seam for the real non-clone Aster Use snapshot lease.
 ///
 /// A provider is published in the same catalog CAS as its projection. Each Run
-/// calls [`Self::acquire`] again so A3S Use can reject a generation that has
+/// calls [`Self::acquire`] again so Aster Use can reject a generation that has
 /// become hidden or stale since Code installed the projection. Implementations
 /// must retain the concrete upstream snapshot or reconcile selection lease
 /// inside the returned [`RetainedUseGeneration`] value.
@@ -81,12 +81,12 @@ pub enum CapabilityRuntimeError {
     Projection(#[from] CapabilityProjectionError),
     #[error(transparent)]
     Scope(#[from] CapabilityScopeError),
-    #[error("A Session capability batch with an A3S Use cursor requires a lease provider")]
+    #[error("A Session capability batch with an Aster Use cursor requires a lease provider")]
     MissingUseLeaseProvider,
-    #[error("A Session capability batch without an A3S Use cursor cannot carry a lease provider")]
+    #[error("A Session capability batch without an Aster Use cursor cannot carry a lease provider")]
     UnexpectedUseLeaseProvider,
     #[error(
-        "A3S Use lease provider does not match the batch cursor (generation {expected_generation} vs {actual_generation}, capability revision mismatch: {revision_mismatch}, Registry revision mismatch: {registry_revision_mismatch}, publication origin mismatch: {origin_mismatch})"
+        "Aster Use lease provider does not match the batch cursor (generation {expected_generation} vs {actual_generation}, capability revision mismatch: {revision_mismatch}, Registry revision mismatch: {registry_revision_mismatch}, publication origin mismatch: {origin_mismatch})"
     )]
     UseLeaseProviderMismatch {
         expected_generation: u64,
@@ -95,7 +95,7 @@ pub enum CapabilityRuntimeError {
         registry_revision_mismatch: bool,
         origin_mismatch: bool,
     },
-    #[error("A3S Use generation lease acquisition failed: {message}")]
+    #[error("Aster Use generation lease acquisition failed: {message}")]
     UseLeaseAcquisition { message: String },
     #[error("Session capability workspace binding refused: {message}")]
     WorkspaceBinding { message: String },
@@ -365,7 +365,7 @@ impl PreparedSessionCapabilityBatch {
 /// Non-clone Run guard retaining one Code projection and one exact Use lease.
 ///
 /// The Run and its generation-specific Session scope are closed together. The
-/// A3S Use lease lives in the Run supervisor and is released after children,
+/// Aster Use lease lives in the Run supervisor and is released after children,
 /// tasks, and effects. The projection lease remains pinned until this guard is
 /// dropped, so model definitions and execution borrow the same runtime values.
 #[must_use = "a Session capability Run must remain alive for the complete execution"]

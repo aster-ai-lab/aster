@@ -1,13 +1,13 @@
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
-use a3s_code_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
-use a3s_code_core::run::{RunRecord, RunSnapshot, RunStatus};
-use a3s_code_core::store::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
+use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
+use aster_core::run::{RunRecord, RunSnapshot, RunStatus};
+use aster_core::store::{
     ContextUsage, MemorySessionStore, SessionConfig, SessionData, SessionSnapshotV1, SessionState,
     SessionStore,
 };
-use a3s_code_core::tools::ArtifactStore;
-use a3s_code_core::{
+use aster_core::tools::ArtifactStore;
+use aster_core::{
     Agent, AgentProtocolCommandActionV1, AgentProtocolCommandReceiptV1, AgentProtocolError,
     AgentProtocolExactRecoveryError, AgentProtocolHost, AgentProtocolHostError,
     AgentProtocolRunIdentityV1, AgentProtocolRunRecoverExactV1, AgentProtocolRunStateV1, CodeError,
@@ -53,7 +53,7 @@ impl LlmClient for StaticStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         Ok(Self::response())
     }
@@ -62,7 +62,7 @@ impl LlmClient for StaticStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let (sender, receiver) = mpsc::channel(2);
@@ -81,6 +81,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/static".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -223,7 +224,7 @@ async fn host_fixture(
     session_id: &str,
 ) -> (
     tempfile::TempDir,
-    Arc<a3s_code_core::AgentSession>,
+    Arc<aster_core::AgentSession>,
     AgentProtocolHost,
     String,
 ) {
@@ -357,7 +358,7 @@ async fn overwritten_checkpoint_is_rejected_before_target_run_admission() {
         error,
         AgentProtocolExactRecoveryError::Checkpoint(SessionCheckpointError::ContentDrift(_))
     ));
-    assert_eq!(error.code(), "a3s.code.session_checkpoint.content_drift");
+    assert_eq!(error.code(), "aster.code.session_checkpoint.content_drift");
     assert!(session.runs().await.is_empty());
 }
 
@@ -397,7 +398,7 @@ async fn exact_recovery_replays_only_the_same_boundary_identity() {
     .await
     .expect("exactly recovered run must terminate");
     assert!(
-        workspace.path().join(".a3s").join("effect-log").is_dir(),
+        workspace.path().join(".aster").join("effect-log").is_dir(),
         "exact recovery resumes the session fact log"
     );
 

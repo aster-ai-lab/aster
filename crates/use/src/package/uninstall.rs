@@ -1,9 +1,9 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanPackageChangeKind, PlanScope, PluginOperationAction, PluginPackageLock, UseResult,
 };
-use a3s_use_extension::{ExtensionLifecycleIdentity, ExtensionManifest, InstalledExtension};
+use aster_use_extension::{ExtensionLifecycleIdentity, ExtensionManifest, InstalledExtension};
 
 use crate::plugin_lifecycle::{
     ExtensionGraphCapabilityLifecycleHost, PluginLifecycleAction, PluginLifecycleIntent,
@@ -346,7 +346,7 @@ impl PackageManager {
 
     async fn installed_lock_nodes(
         &self,
-        lock: &a3s_use_core::PluginPackageLock,
+        lock: &aster_use_core::PluginPackageLock,
     ) -> UseResult<BTreeMap<String, Option<InstalledExtension>>> {
         let mut installed = BTreeMap::new();
         for package in &lock.packages {
@@ -369,7 +369,7 @@ impl PackageManager {
 
     async fn uninstall_dispositions(
         &self,
-        lock: &a3s_use_core::PluginPackageLock,
+        lock: &aster_use_core::PluginPackageLock,
         graphs: &[InstalledPackageGraph],
     ) -> UseResult<BTreeMap<String, UninstallDisposition>> {
         let closure = lock
@@ -440,7 +440,7 @@ impl PackageManager {
 }
 
 fn require_fresh_installed_closure(
-    lock: &a3s_use_core::PluginPackageLock,
+    lock: &aster_use_core::PluginPackageLock,
     installed: &BTreeMap<String, Option<InstalledExtension>>,
 ) -> UseResult<BTreeMap<String, InstalledExtension>> {
     let mut exact = BTreeMap::new();
@@ -499,7 +499,7 @@ fn pending_dispositions(
 
 fn validate_pending_lock(
     pending: &PendingPackageGraphOperation,
-    lock: &a3s_use_core::PluginPackageLock,
+    lock: &aster_use_core::PluginPackageLock,
     scope: &PlanScope,
 ) -> UseResult<()> {
     pending.validate()?;

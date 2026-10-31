@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { Checkbox, Input, Label } from '@a3s-lab/ui'
+import { Checkbox, Input, Label } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Label> = {
   title: 'Components/Primitives/Label',

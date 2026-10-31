@@ -2,7 +2,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_box_core::{
+use aster_box_core::{
     FileOp, FileRequest, FileResponse, FilesystemEntry, FilesystemOp, FilesystemRequest,
     FilesystemResponse, MAX_BOUNDED_FILE_BYTES,
 };
@@ -146,7 +146,7 @@ impl Filesystem {
             .await
         {
             Ok(response) => response,
-            Err(ClientError::Execution(a3s_box_core::ExecutionManagerError::Unavailable(
+            Err(ClientError::Execution(aster_box_core::ExecutionManagerError::Unavailable(
                 message,
             ))) => {
                 return Err(ClientError::CommandUnavailable {
@@ -272,7 +272,7 @@ impl Filesystem {
         let entry = self
             .stat_with_options(path.clone(), filesystem_options.clone())
             .await?;
-        if entry.kind != a3s_box_core::FilesystemEntryKind::File {
+        if entry.kind != aster_box_core::FilesystemEntryKind::File {
             return Err(ClientError::Validation(format!(
                 "artifact source {path:?} must be a file"
             )));
@@ -452,7 +452,7 @@ impl Filesystem {
         request.request_id = Some(request_id.clone());
         match self.filesystem(request).await {
             Ok(response) => require_filesystem_success(response).map(|_| MutateInfo { request_id }),
-            Err(ClientError::Execution(a3s_box_core::ExecutionManagerError::Unavailable(
+            Err(ClientError::Execution(aster_box_core::ExecutionManagerError::Unavailable(
                 message,
             ))) => Err(ClientError::CommandUnavailable {
                 request_id,

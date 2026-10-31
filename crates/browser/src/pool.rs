@@ -10,7 +10,7 @@ use futures::StreamExt;
 use tokio::sync::{Mutex, Semaphore};
 use tracing::{debug, warn};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 /// Selects which headless browser backend the pool uses.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -30,7 +30,7 @@ pub enum BrowserProvider {
     /// Use an already installed or previously managed Chrome executable.
     #[default]
     DiscoveredChrome,
-    /// Permit A3S Use to download Chrome when no executable is available.
+    /// Permit Aster Use to download Chrome when no executable is available.
     ManagedChrome,
     /// Use this exact Chrome-compatible executable.
     ChromeExecutable(std::path::PathBuf),
@@ -38,7 +38,7 @@ pub enum BrowserProvider {
     /// Use an already installed or previously managed Lightpanda executable.
     #[cfg(feature = "lightpanda")]
     DiscoveredLightpanda,
-    /// Permit A3S Use to download Lightpanda when it is unavailable.
+    /// Permit Aster Use to download Lightpanda when it is unavailable.
     #[cfg(feature = "lightpanda")]
     ManagedLightpanda,
     /// Use this exact Lightpanda executable.
@@ -112,7 +112,7 @@ impl BrowserPool {
         static NEXT_PROFILE_ID: AtomicU64 = AtomicU64::new(1);
         let max_tabs = config.max_tabs.max(1);
         let chrome_profile_dir = std::env::temp_dir().join(format!(
-            "a3s-use-chrome-{}-{}",
+            "aster-use-chrome-{}-{}",
             std::process::id(),
             NEXT_PROFILE_ID.fetch_add(1, Ordering::Relaxed)
         ));

@@ -73,7 +73,7 @@ async fn compact_bad_policy_source_refuses_before_summary_provider() {
         crate::fact_control::read_workspace_facts(root.path(), "compact-source").unwrap();
     facts
         .iter_mut()
-        .find(|f| f.kind == "a3s.work-policy.admitted")
+        .find(|f| f.kind == "aster.work-policy.admitted")
         .unwrap()
         .payload["digest"] = "sha256:invalid".into();
     let bytes = facts
@@ -135,7 +135,7 @@ async fn compact_close_cancels_budget_wait_and_retains_original_writer() {
     let (compacted, ()) = tokio::time::timeout(std::time::Duration::from_secs(10), async {
         tokio::join!(session.compact_conversation(None), async {
             gate.entered.notified().await;
-            let other = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+            let other = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
                 root.path(),
                 "compact-source",
             ))
@@ -170,7 +170,7 @@ async fn compact_append_refuses_foreign_writer_and_changed_source() {
         .clone()
         .unwrap();
     let other_root = tempfile::tempdir().unwrap();
-    let other = a3s_effect::FileLog::open(other_root.path()).unwrap();
+    let other = aster_effect::FileLog::open(other_root.path()).unwrap();
     let other_writer = other.try_writer_fence().unwrap();
     let before = crate::fact_control::read_workspace_facts(root.path(), "compact-source").unwrap();
     let error = crate::fact_control::append_compaction_done(

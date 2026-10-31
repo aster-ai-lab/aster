@@ -7,7 +7,7 @@ mod context;
 
 pub use context::KrunContext;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 /// Check libkrun FFI call status and convert to Result.
 pub fn check_status(fn_name: &str, status: i32) -> Result<()> {

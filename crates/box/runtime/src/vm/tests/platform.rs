@@ -26,7 +26,7 @@ fn test_append_windows_guest_stream_uses_shared_phase_and_keeps_partial_lines() 
     )
     .unwrap();
 
-    let filter = a3s_box_core::log::RuntimeConsoleFilter::new();
+    let filter = aster_box_core::log::RuntimeConsoleFilter::new();
     append_windows_guest_stream(&stdout_source, &stdout_destination, &filter).unwrap();
     append_windows_guest_stream(&stderr_source, &stderr_destination, &filter).unwrap();
 
@@ -51,7 +51,7 @@ fn test_collect_windows_guest_result_is_idempotent() {
     std::fs::write(rootfs.join(WINDOWS_GUEST_STDERR), "error once\n").unwrap();
     std::fs::write(rootfs.join(WINDOWS_GUEST_EXIT_CODE), "7\n").unwrap();
 
-    let config = a3s_box_core::log::LogConfig::default();
+    let config = aster_box_core::log::LogConfig::default();
     assert_eq!(
         collect_windows_guest_result(&box_dir, &config, 0).unwrap(),
         7
@@ -92,7 +92,7 @@ fn test_collect_windows_guest_result_does_not_replay_drained_live_logs() {
         "{\"log\":\"live once\\n\",\"stream\":\"stdout\",\"time\":\"2026-01-01T00:00:00Z\"}\n";
     std::fs::write(logs.join("container.json"), live_json).unwrap();
 
-    let config = a3s_box_core::log::LogConfig::default();
+    let config = aster_box_core::log::LogConfig::default();
     assert_eq!(
         collect_windows_guest_result(&box_dir, &config, 0).unwrap(),
         4
@@ -127,12 +127,12 @@ fn test_collect_windows_guest_result_replaces_marker_symlink_without_touching_ta
     let host_target = tmp.path().join("host-target.txt");
     std::fs::write(&host_target, "host secret").unwrap();
     let marker = rootfs.join(WINDOWS_GUEST_RESULT_MARKER);
-    let guard = a3s_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
+    let guard = aster_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
     let assigned_privilege_enabled = guard.assigned_privilege_enabled();
     match std::os::windows::fs::symlink_file(&host_target, &marker) {
         Ok(()) => {}
         Err(error)
-            if a3s_box_core::windows_symlink::is_capability_denial(
+            if aster_box_core::windows_symlink::is_capability_denial(
                 &error,
                 assigned_privilege_enabled,
             ) =>
@@ -142,7 +142,7 @@ fn test_collect_windows_guest_result_replaces_marker_symlink_without_touching_ta
         Err(error) => panic!("failed to create marker symlink: {error}"),
     }
 
-    let config = a3s_box_core::log::LogConfig::default();
+    let config = aster_box_core::log::LogConfig::default();
     assert_eq!(
         collect_windows_guest_result(&box_dir, &config, 0).unwrap(),
         0
@@ -167,12 +167,12 @@ fn test_collect_windows_guest_result_refuses_stream_symlink() {
     std::fs::create_dir_all(&rootfs).unwrap();
     let host_secret = tmp.path().join("host-secret.txt");
     std::fs::write(&host_secret, "must not be logged\n").unwrap();
-    let guard = a3s_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
+    let guard = aster_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
     let assigned_privilege_enabled = guard.assigned_privilege_enabled();
     match std::os::windows::fs::symlink_file(&host_secret, rootfs.join(WINDOWS_GUEST_STDOUT)) {
         Ok(()) => {}
         Err(error)
-            if a3s_box_core::windows_symlink::is_capability_denial(
+            if aster_box_core::windows_symlink::is_capability_denial(
                 &error,
                 assigned_privilege_enabled,
             ) =>
@@ -184,7 +184,7 @@ fn test_collect_windows_guest_result_refuses_stream_symlink() {
     std::fs::write(rootfs.join(WINDOWS_GUEST_STDERR), "").unwrap();
     std::fs::write(rootfs.join(WINDOWS_GUEST_EXIT_CODE), "0\n").unwrap();
 
-    let config = a3s_box_core::log::LogConfig::default();
+    let config = aster_box_core::log::LogConfig::default();
     let error = collect_windows_guest_result(&box_dir, &config, 0)
         .unwrap_err()
         .to_string();
@@ -205,7 +205,7 @@ fn test_collect_windows_guest_result_rejects_false_success() {
     let tmp = tempfile::tempdir().unwrap();
     let box_dir = tmp.path().join("box");
     std::fs::create_dir_all(box_dir.join("rootfs")).unwrap();
-    let config = a3s_box_core::log::LogConfig::default();
+    let config = aster_box_core::log::LogConfig::default();
 
     let error = collect_windows_guest_result(&box_dir, &config, 0)
         .unwrap_err()
@@ -234,7 +234,7 @@ async fn test_windows_exit_file_waits_for_shim_log_relay() {
         .join("boxes")
         .join(&box_id)
         .join("rootfs")
-        .join(".a3s_exit_code");
+        .join(".aster_exit_code");
     std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
     std::fs::write(exit_path, "0\n").unwrap();
 
@@ -405,7 +405,7 @@ async fn test_wait_for_exec_ready_polls_for_delayed_guest_exit_before_heartbeat(
         .path()
         .join("boxes")
         .join(&box_id)
-        .join("rootfs/.a3s_exit_code");
+        .join("rootfs/.aster_exit_code");
     *vm.handler.write().await = Some(Box::new(DelayedCompletionHandler {
         polls: Arc::clone(&polls),
         available_after: 2,
@@ -510,7 +510,7 @@ async fn test_wait_for_exec_ready_fails_closed_when_guest_exit_persisted_before_
         .join("boxes")
         .join(&box_id)
         .join("upper")
-        .join(".a3s_exit_code");
+        .join(".aster_exit_code");
     std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
     std::fs::write(&exit_path, "17\n").unwrap();
 
@@ -534,7 +534,7 @@ async fn test_wait_for_exec_ready_fails_closed_when_guest_exit_persisted_before_
 #[cfg(unix)]
 #[tokio::test]
 async fn test_wait_for_exec_ready_fails_closed_when_cap_elapses_without_heartbeat() {
-    std::env::set_var("A3S_EXEC_READY_TIMEOUT_MS", "400");
+    std::env::set_var("ASTER_EXEC_READY_TIMEOUT_MS", "400");
 
     let tmp = tempfile::tempdir().unwrap();
     let box_id = "box-exec-cap".to_string();
@@ -549,7 +549,7 @@ async fn test_wait_for_exec_ready_fails_closed_when_cap_elapses_without_heartbea
         .wait_for_exec_ready(&tmp.path().join("missing-exec.sock"))
         .await
         .expect_err("wedged guest without heartbeat must fail closed");
-    std::env::remove_var("A3S_EXEC_READY_TIMEOUT_MS");
+    std::env::remove_var("ASTER_EXEC_READY_TIMEOUT_MS");
 
     assert!(
         error
@@ -845,7 +845,7 @@ async fn microvm_pause_demotes_ready_when_exec_frozen() {
     }
 
     impl crate::vmm::VmHandler for SleepHandler {
-        fn stop(&mut self, _: i32, _: u64) -> a3s_box_core::error::Result<()> {
+        fn stop(&mut self, _: i32, _: u64) -> aster_box_core::error::Result<()> {
             self.stopped.store(true, Ordering::SeqCst);
             Ok(())
         }
@@ -906,7 +906,7 @@ async fn microvm_resume_refuses_ready_without_post_cont_heartbeat() {
     }
 
     impl crate::vmm::VmHandler for SleepHandler {
-        fn stop(&mut self, _: i32, _: u64) -> a3s_box_core::error::Result<()> {
+        fn stop(&mut self, _: i32, _: u64) -> aster_box_core::error::Result<()> {
             self.stopped.store(true, Ordering::SeqCst);
             Ok(())
         }

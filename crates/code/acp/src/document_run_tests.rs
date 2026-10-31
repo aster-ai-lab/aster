@@ -1,10 +1,10 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::{Agent, AgentSession, HarnessComposeOptions, SessionOptions};
+use aster_core::{Agent, AgentSession, HarnessComposeOptions, SessionOptions};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::Semaphore;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
@@ -67,10 +67,10 @@ impl Client for Host {
             None => {
                 json!({
                     "content":"clean text",
-                    "_meta":{"a3sDocument":{
+                    "_meta":{"asterDocument":{
                         "path":self.root.join("note.txt"),
                         "snapshot":{"documentId":"native-model","uri":url::Url::from_file_path(self.root.join("note.txt")).unwrap().to_string(),"version":1,"dirty":false,"diskConflict":false},
-                        "runId":params["_meta"]["a3sDocument"]["runId"],
+                        "runId":params["_meta"]["asterDocument"]["runId"],
                         "released":false
                     }}
                 })
@@ -89,36 +89,18 @@ impl Client for Host {
         let params: Value = serde_json::from_str(request.params.get()).unwrap();
         assert_eq!(params["sessionId"], "document-session");
         let method = request.method.to_string();
-        assert_eq!(method, "a3s/document/release_run");
+        assert_eq!(method, "aster/document/release_run");
         self.state
             .calls
             .lock()
             .unwrap()
             .push((method.clone(), params.clone()));
-        let value = if method == "a3s/document/release_run" {
-            self.state.closing.add_permits(1);
-            self.state.release.acquire().await.unwrap().forget();
-            let mut probe = self.state.probe.lock().unwrap();
-            match probe.as_mut() {
-                Some(probe) => {
-                    probe.call(json!({"harness":{"operation":"release_run","params":params}}))
-                }
-                None => json!({"runId":params["runId"],"released":self.state.ack}),
-            }
-        } else {
-            assert_eq!(method, "a3s/document/read");
-            let mut probe = self.state.probe.lock().unwrap();
-            match probe.as_mut() {
-                Some(probe) => {
-                    let value = probe.call(json!({"harness":{"operation":"read","params":params}}));
-                    if let Some(lease) = probe.editor.take() {
-                        probe.call(json!({"request":{"operation":"close","lease":lease}}));
-                    }
-                    value
-                }
-                None => {
-                    json!({"path":self.root.join("note.txt"),"snapshot":{"documentId":"native-model","uri":url::Url::from_file_path(self.root.join("note.txt")).unwrap().to_string(),"version":1,"text":"clean text","dirty":false,"diskConflict":false},"runId":params["runId"],"released":false})
-                }
+        self.state.closing.add_permits(1);
+        self.state.release.acquire().await.unwrap().forget();
+        let mut probe = self.state.probe.lock().unwrap();
+        let value = match probe.as_mut() {
+            Some(probe) => {
+                probe.call(json!({"harness":{"operation":"release_run","params":params}}))
             }
             None => json!({"runId":params["runId"],"released":self.state.ack}),
         };
@@ -280,7 +262,7 @@ impl Fixture {
         let (ar, aw) = tokio::io::split(left);
         let (cr, cw) = tokio::io::split(right);
         let (connection, agent_io) = agent_client_protocol::AgentSideConnection::new(
-            crate::A3sCodeAgent::new(crate::agent::test_launch(None)),
+            crate::AsterCodeAgent::new(crate::agent::test_launch(None)),
             aw.compat_write(),
             ar.compat(),
             |future| {
@@ -318,12 +300,12 @@ impl Fixture {
             Agent::from_config(crate::agent::test_launch(Some(root.join("sessions"))).config)
                 .await
                 .unwrap();
-        let local = a3s_code_core::workspace::WorkspaceServices::local(root);
-        let services = a3s_code_core::workspace::WorkspaceServicesBuilder::new(
+        let local = aster_core::workspace::WorkspaceServices::local(root);
+        let services = aster_core::workspace::WorkspaceServicesBuilder::new(
             local.workspace_ref().clone(),
             local.fs(),
         )
-        .capabilities(a3s_code_core::workspace::WorkspaceCapabilities {
+        .capabilities(aster_core::workspace::WorkspaceCapabilities {
             read,
             write: false,
             exec: false,
@@ -336,9 +318,9 @@ impl Fixture {
             .with_session_id("document-session")
             .with_llm_client(model.clone())
             .with_workspace_backend(services)
-            .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+            .with_planning_mode(aster_core::PlanningMode::Disabled)
             .with_permission_policy(
-                a3s_code_core::permissions::PermissionPolicy::new().allow("studio_document_read"),
+                aster_core::permissions::PermissionPolicy::new().allow("studio_document_read"),
             )
             .with_harness(
                 HarnessComposeOptions::compose(
@@ -408,14 +390,14 @@ async fn native_release_acknowledgement_gates_completion_and_keeps_one_actual_ru
                 let calls = f.state.calls.lock().unwrap();
                 assert_eq!(calls.len(), 3);
                 assert_eq!(
-                    calls[0].1["_meta"]["a3sDocument"]["runId"],
-                    calls[1].1["_meta"]["a3sDocument"]["runId"]
+                    calls[0].1["_meta"]["asterDocument"]["runId"],
+                    calls[1].1["_meta"]["asterDocument"]["runId"]
                 );
                 assert_eq!(
-                    calls[1].1["_meta"]["a3sDocument"]["runId"],
+                    calls[1].1["_meta"]["asterDocument"]["runId"],
                     calls[2].1["runId"]
                 );
-                assert_eq!(calls[2].0, "a3s/document/release_run");
+                assert_eq!(calls[2].0, "aster/document/release_run");
             }
             {
                 let roots = f.state.roots.lock().unwrap();
@@ -456,7 +438,7 @@ async fn refused_native_release_cannot_complete_a_pinned_document_run() {
             );
             assert_eq!(
                 f.session.runs().await[0].status,
-                a3s_code_core::run::RunStatus::Failed
+                aster_core::run::RunStatus::Failed
             );
             assert_eq!(f.bridge.runs.lock().unwrap().len(), 1);
             f.stop().await;
@@ -591,7 +573,7 @@ async fn actual_harness_keeps_clean_native_model_across_turns_and_releases_it_be
     tokio::task::LocalSet::new()
         .run_until(async {
             let (_directory, root) = workspace();
-            let binary = std::env::var("A3S_STUDIO_DOCUMENT_PROBE").unwrap();
+            let binary = std::env::var("ASTER_STUDIO_DOCUMENT_PROBE").unwrap();
             let (probe, identity) = Probe::new(&binary, &root);
             let f = Fixture::new(&root, true, true, true, false, Some(probe)).await;
             f.session.send("Read twice", None).await.unwrap();
@@ -642,8 +624,8 @@ async fn fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses
                 let calls = f.state.calls.lock().unwrap();
                 assert_eq!(calls.len(), 6);
                 assert_ne!(
-                    calls[0].1["_meta"]["a3sDocument"]["runId"],
-                    calls[3].1["_meta"]["a3sDocument"]["runId"]
+                    calls[0].1["_meta"]["asterDocument"]["runId"],
+                    calls[3].1["_meta"]["asterDocument"]["runId"]
                 );
             }
             assert!(f.bridge.runs.lock().unwrap().is_empty());
@@ -671,7 +653,7 @@ async fn a_native_release_that_never_acknowledges_refuses_success_at_the_run_dea
             );
             assert_eq!(
                 f.session.runs().await[0].status,
-                a3s_code_core::run::RunStatus::Failed
+                aster_core::run::RunStatus::Failed
             );
             assert_eq!(f.bridge.runs.lock().unwrap().len(), 1);
             f.stop().await;

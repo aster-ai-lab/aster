@@ -1,7 +1,7 @@
 //! Explicit host policy selection; Core owns admission, rendering and enforcement.
 
-use a3s_code_core::session_review::{ReviewFindingDraft, ReviewScenario, ReviewSubjectV1};
-use a3s_code_core::{AgentSession, WorkPolicyV1};
+use aster_core::session_review::{ReviewFindingDraft, ReviewScenario, ReviewSubjectV1};
+use aster_core::{AgentSession, WorkPolicyV1};
 use serde::Deserialize;
 use serde_json::{Map, Value};
 use std::collections::BTreeSet;
@@ -42,11 +42,11 @@ pub(crate) fn policy_from_meta(
         policy: String,
     }
 
-    let Some(value) = meta.and_then(|meta| meta.get("a3sEngineering")) else {
+    let Some(value) = meta.and_then(|meta| meta.get("asterEngineering")) else {
         return Ok(None);
     };
     let input =
-        Selection::deserialize(value).map_err(|error| format!("a3sEngineering: {error}"))?;
+        Selection::deserialize(value).map_err(|error| format!("asterEngineering: {error}"))?;
     if matches!(
         EngineeringPolicy::parse(&input.policy)?,
         EngineeringPolicy::Disabled
@@ -117,7 +117,7 @@ pub(crate) fn register_scenarios(session: &AgentSession) -> Result<(), String> {
     Ok(())
 }
 
-/// `a3s/review/target`: pin the current bytes of a review target.
+/// `aster/review/target`: pin the current bytes of a review target.
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub(crate) struct ReviewTargetRequest {
@@ -134,9 +134,9 @@ pub(crate) enum ReviewRequest {
 impl ReviewRequest {
     pub(crate) fn parse(method: &str, params: &str) -> Result<Self, String> {
         let parsed = match method {
-            "a3s/review/target" => serde_json::from_str(params).map(Self::Target),
-            "a3s/review/admit" => serde_json::from_str(params).map(Self::Admit),
-            "a3s/review/settle" => serde_json::from_str(params).map(Self::Settle),
+            "aster/review/target" => serde_json::from_str(params).map(Self::Target),
+            "aster/review/admit" => serde_json::from_str(params).map(Self::Admit),
+            "aster/review/settle" => serde_json::from_str(params).map(Self::Settle),
             _ => return Err(format!("unknown review method {method:?}")),
         };
         parsed.map_err(|error| error.to_string())
@@ -212,8 +212,8 @@ impl ReviewScope {
                 run_id,
             } => (
                 REVIEW_GOAL_STEP_KIND,
-                a3s_code_core::digest_json(
-                    "a3s.code.review-scope.v1",
+                aster_core::digest_json(
+                    "aster.code.review-scope.v1",
                     &(
                         target_digest,
                         goal_id,
@@ -247,7 +247,7 @@ impl ReviewScope {
     }
 }
 
-/// `a3s/review/admit`: the original drafts plus the binding the host verifies.
+/// `aster/review/admit`: the original drafts plus the binding the host verifies.
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub(crate) struct ReviewAdmission {
@@ -300,10 +300,10 @@ async fn target_digest(workspace: &Path, paths: &[String]) -> Result<String, Str
         }
         files.push((
             path.as_str(),
-            a3s_code_core::digest_bytes("a3s.code.review-target-file.v1", &bytes),
+            aster_core::digest_bytes("aster.code.review-target-file.v1", &bytes),
         ));
     }
-    a3s_code_core::digest_json("a3s.code.review-target.v1", &files).map_err(|e| e.to_string())
+    aster_core::digest_json("aster.code.review-target.v1", &files).map_err(|e| e.to_string())
 }
 
 /// Admit drafts only for this session's current policy, target bytes and,
@@ -368,7 +368,7 @@ enum SettleAction {
     Waive,
 }
 
-/// `a3s/review/settle`: move an engineering Finding through the original
+/// `aster/review/settle`: move an engineering Finding through the original
 /// lifecycle only under the target and scope it was admitted for.
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]

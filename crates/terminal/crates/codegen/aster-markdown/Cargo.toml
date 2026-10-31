@@ -1,0 +1,55 @@
+[package]
+license = "Apache-2.0"
+name = "aster-markdown"
+version = "0.1.0"
+authors = ["Aster"]
+description = "Streaming markdown renderer for terminal UIs"
+edition = "2024"
+publish = false
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(fuzzing)'] }
+
+[dependencies]
+anstyle = {version = "1.0"}
+anstyle-lossy = {version = "1.1.4"}
+anstyle-syntect = {version = "1.0.4"}
+html-escape = {version = "0.2"}
+linkify = {version = "0.10"}
+pulldown-cmark = {workspace = true}
+ratatui = {version = "0.29"}
+supports-color = {version = "3.0"}
+syntect = {workspace = true}
+textwrap = {workspace = true}
+unicode-segmentation = {workspace = true}
+unicode-width = {workspace = true}
+url = {workspace = true}
+crossterm = {workspace = true, optional = true}
+aster-ratatui-textarea = {optional = true, path = "../aster-ratatui-textarea"}
+aster-markdown-core = {path = "../aster-markdown-core"}
+
+[build-dependencies]
+syntect = {workspace = true}
+two-face = {version = "0.4", default-features = false, features = ["syntect-onig"]}
+
+[dev-dependencies]
+criterion = {workspace = true}
+pretty_assertions = {workspace = true}
+
+[[bin]]
+name = "md-table-test"
+path = "bin/md_table_test.rs"
+required-features = ["playground"]
+
+[[bin]]
+name = "md-mermaid-test"
+path = "bin/md_mermaid_test.rs"
+required-features = ["playground"]
+
+[features]
+default = []
+playground = ["dep:crossterm", "dep:aster-ratatui-textarea"]
+
+[[bench]]
+name = "bench"
+harness = false

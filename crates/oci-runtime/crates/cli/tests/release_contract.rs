@@ -25,7 +25,7 @@ const UPSTREAM_RUNTIME_TOOLS_LOCK: &str =
 const ATTEST_ACTION: &str = "actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1";
 const RELEASE_ACTION: &str =
     "softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2";
-const SIGNER_WORKFLOW: &str = "--signer-workflow A3S-Lab/OCI-Runtime/.github/workflows/release.yml";
+const SIGNER_WORKFLOW: &str = "--signer-workflow aster-ai-lab/OCI-Runtime/.github/workflows/release.yml";
 const PINNED_RELEASE_ACTIONS: [(&str, usize); 8] = [
     (
         "actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0",
@@ -133,7 +133,7 @@ fn release_attests_every_checksum_bound_archive_before_publishing() {
         .contains("subject-path: |\n            dist/*.tar.gz\n            dist/SHA256SUMS"));
     assert!(publish_job.contains("${{ steps.provenance.outputs.bundle-path }}"));
     assert!(
-        publish_job.contains("dist/a3s-oci-runtime-${GITHUB_REF_NAME}-provenance.sigstore.json")
+        publish_job.contains("dist/aster-oci-runtime-${GITHUB_REF_NAME}-provenance.sigstore.json")
     );
     assert!(publish_job.contains("files: dist/*"));
 
@@ -195,21 +195,21 @@ fn linux_release_archives_retain_exact_package_qualification() {
     assert!(qualification_position < archive_position);
 
     for required in [
-        "a3s.oci.native-linux-package-qualification.v7",
+        "aster.oci.native-linux-package-qualification.v7",
         "full-sdk-oar01-oar02-oar03-upstream-lifecycle-qualified-without-kvm-v7",
-        "A3S_OCI_NATIVE_RUNTIME_BINARY",
-        "A3S_OCI_NATIVE_AGENT_BINARY",
-        "A3S_OCI_NATIVE_NETWORK_ENFORCEMENT_REPORT",
-        "a3s.oci.native-linux-network-enforcement-smoke.v1",
-        "A3S_OCI_NATIVE_KVM_ABSENCE_EVIDENCE",
+        "ASTER_OCI_NATIVE_RUNTIME_BINARY",
+        "ASTER_OCI_NATIVE_AGENT_BINARY",
+        "ASTER_OCI_NATIVE_NETWORK_ENFORCEMENT_REPORT",
+        "aster.oci.native-linux-network-enforcement-smoke.v1",
+        "ASTER_OCI_NATIVE_KVM_ABSENCE_EVIDENCE",
         "checkpoint_driver_build_digest",
         "checkpoint_source_revision",
         "verify-static-elf.sh",
-        "containerd-shim-a3s-oci-v2",
+        "containerd-shim-aster-oci-v2",
         "upstream_bundle_validation_verified",
-        "a3s.oci.upstream-bundle-validation.v1",
+        "aster.oci.upstream-bundle-validation.v1",
         "upstream_core_lifecycle_verified",
-        "a3s.oci.upstream-lifecycle-validation.v1",
+        "aster.oci.upstream-lifecycle-validation.v1",
     ] {
         assert!(
             NATIVE_LINUX_PACKAGE_SMOKE.contains(required),
@@ -217,21 +217,21 @@ fn linux_release_archives_retain_exact_package_qualification() {
         );
     }
     assert!(release_workflow.contains(
-        "bash .github/scripts/build-pinned-criu.sh \\\n            /usr/local/lib/a3s-oci-tools/criu-4.2.1"
+        "bash .github/scripts/build-pinned-criu.sh \\\n            /usr/local/lib/aster-oci-tools/criu-4.2.1"
     ));
     assert!(release_workflow.contains(
-        "bash .github/scripts/build-pinned-runtime-tools.sh \\\n            /usr/local/lib/a3s-oci-tools/runtime-tools-8a4db579f5c88af5a0d036fad34bddc9c1f703f3"
+        "bash .github/scripts/build-pinned-runtime-tools.sh \\\n            /usr/local/lib/aster-oci-tools/runtime-tools-8a4db579f5c88af5a0d036fad34bddc9c1f703f3"
     ));
     assert!(release_workflow.contains(
-        "A3S_OCI_UPSTREAM_RUNTIME_TOOL=/usr/local/lib/a3s-oci-tools/runtime-tools-8a4db579f5c88af5a0d036fad34bddc9c1f703f3/oci-runtime-tool"
+        "ASTER_OCI_UPSTREAM_RUNTIME_TOOL=/usr/local/lib/aster-oci-tools/runtime-tools-8a4db579f5c88af5a0d036fad34bddc9c1f703f3/oci-runtime-tool"
     ));
     assert!(release_workflow.contains(
-        "A3S_OCI_UPSTREAM_RUNTIME_TOOL_MANIFEST=/usr/local/lib/a3s-oci-tools/runtime-tools-8a4db579f5c88af5a0d036fad34bddc9c1f703f3/build.json"
+        "ASTER_OCI_UPSTREAM_RUNTIME_TOOL_MANIFEST=/usr/local/lib/aster-oci-tools/runtime-tools-8a4db579f5c88af5a0d036fad34bddc9c1f703f3/build.json"
     ));
     assert!(
-        release_workflow.contains("A3S_OCI_CRIU_BINARY=/usr/local/lib/a3s-oci-tools/criu-4.2.1")
+        release_workflow.contains("ASTER_OCI_CRIU_BINARY=/usr/local/lib/aster-oci-tools/criu-4.2.1")
     );
-    assert!(release_workflow.contains("A3S_OCI_GIT_REVISION=\"$GITHUB_SHA\""));
+    assert!(release_workflow.contains("ASTER_OCI_GIT_REVISION=\"$GITHUB_SHA\""));
 }
 
 #[test]
@@ -256,7 +256,7 @@ fn linux_release_archives_bind_and_verify_their_complete_package_manifest() {
         .contains("cp .github/scripts/verify-release-package-manifest.sh \"$package/docs/\""));
 
     for required in [
-        "a3s.oci.release-package-manifest.v1",
+        "aster.oci.release-package-manifest.v1",
         "export LC_ALL=C",
         "qualification/native-linux-package.json",
         "compat/containerd-runtime-v2.json",
@@ -272,7 +272,7 @@ fn linux_release_archives_bind_and_verify_their_complete_package_manifest() {
         );
     }
     for required in [
-        "a3s.oci.release-package-manifest.v1",
+        "aster.oci.release-package-manifest.v1",
         "export LC_ALL=C",
         "Release package file inventory differs from its manifest",
         "Release package qualification record does not match its manifest",
@@ -294,11 +294,11 @@ fn linux_release_archives_bind_and_verify_their_complete_package_manifest() {
 fn native_package_qualification_retains_oar01_real_host_evidence() {
     for required in [
         "native-linux-network-enforcement-smoke",
-        "dev.a3s.network.enforcement",
+        "dev.aster.network.enforcement",
         "network_enforcement_table_digest",
         "namespace_preserved_after_delete",
         "mechanism_preserved_after_delete",
-        "A3S_OCI_NATIVE_NETWORK_ENFORCEMENT_REPORT",
+        "ASTER_OCI_NATIVE_NETWORK_ENFORCEMENT_REPORT",
     ] {
         assert!(
             NATIVE_LINUX_SMOKE.contains(required),
@@ -329,7 +329,7 @@ fn native_linux_smoke_memory_policy_gate_is_fixture_conditional() {
 #[test]
 fn native_package_qualification_pins_upstream_oci_bundle_validation() {
     for required in [
-        "a3s.oci.upstream-runtime-tools-lock.v2",
+        "aster.oci.upstream-runtime-tools-lock.v2",
         "https://github.com/opencontainers/runtime-tools.git",
         "8a4db579f5c88af5a0d036fad34bddc9c1f703f3",
         "\"version\": \"0.9.0\"",
@@ -360,12 +360,12 @@ fn native_package_qualification_pins_upstream_oci_bundle_validation() {
         "CGO_ENABLED=0 GOFLAGS=-mod=readonly",
         "-trimpath -buildvcs=false",
         "git -C \"$source_directory\" diff --exit-code",
-        "a3s.oci.upstream-runtime-tools-build.v3",
+        "aster.oci.upstream-runtime-tools-build.v3",
         "tool runtimetest \"${validation_targets[@]}\"",
         "rootfs-$go_architecture.tar.gz",
         "curl --fail --location --retry 3",
         "rootfs.source == $rootfs_source",
-        "expected_destination=\"/usr/local/lib/a3s-oci-tools/runtime-tools-$upstream_commit\"",
+        "expected_destination=\"/usr/local/lib/aster-oci-tools/runtime-tools-$upstream_commit\"",
         "install -m 0755 -o root -g root",
     ] {
         assert!(
@@ -405,12 +405,12 @@ fn native_package_qualification_pins_upstream_oci_bundle_validation() {
 #[test]
 fn native_package_qualification_retains_the_pinned_upstream_lifecycle_qualification() {
     for required in [
-        "a3s.oci.upstream-lifecycle-validation.v1",
+        "aster.oci.upstream-lifecycle-validation.v1",
         "native-linux-core-v1",
         "RUNTIME=\"$runtime_binary\"",
-        "A3S_OCI_RUNTIME_ENDPOINT=\"$socket_path\"",
-        "A3S_OCI_CLI_STATE_ROOT=\"$adapter_root\"",
-        "A3S_OCI_CLI_ISOLATION=shared-host-kernel",
+        "ASTER_OCI_RUNTIME_ENDPOINT=\"$socket_path\"",
+        "ASTER_OCI_CLI_STATE_ROOT=\"$adapter_root\"",
+        "ASTER_OCI_CLI_ISOLATION=shared-host-kernel",
         "TAP version 13",
         "runtime-tools-start-process-unset-inverted-assertion",
         "runtime-tools-pidfile-true-kill-race",
@@ -536,7 +536,7 @@ fn ci_runs_the_pinned_upstream_core_lifecycle_on_both_linux_architectures() {
 #[test]
 fn native_package_qualification_retains_oar02_real_host_evidence() {
     for required in [
-        "a3s.oci.native-linux-soak.v2",
+        "aster.oci.native-linux-soak.v2",
         "pause_resume_evidence",
         "progress_after_pause_reopen",
         "progress_after_resume_reopen",
@@ -554,14 +554,14 @@ fn native_package_qualification_retains_oar02_real_host_evidence() {
 #[test]
 fn native_package_qualification_retains_oar03_real_host_evidence() {
     for required in [
-        "A3S_OCI_CRIU_BINARY",
-        "A3S_OCI_NATIVE_CHECKPOINT_REPORT",
-        "A3S_OCI_NATIVE_CHECKPOINT_PIDNS_REPORT",
-        "A3S_OCI_NATIVE_CHECKPOINT_NETNS_REPORT",
+        "ASTER_OCI_CRIU_BINARY",
+        "ASTER_OCI_NATIVE_CHECKPOINT_REPORT",
+        "ASTER_OCI_NATIVE_CHECKPOINT_PIDNS_REPORT",
+        "ASTER_OCI_NATIVE_CHECKPOINT_NETNS_REPORT",
         "native-linux-checkpoint.json",
         "native-linux-checkpoint-pidns.json",
         "native-linux-checkpoint-netns.json",
-        "a3s.oci.native-linux-checkpoint-smoke.v3",
+        "aster.oci.native-linux-checkpoint-smoke.v3",
         "checkpoint_driver_build_digest",
         "checkpoint_criu_digest",
         "oar03_checkpoint_restore_verified",
@@ -651,7 +651,7 @@ fn pinned_runtime_tools_install_validates_the_locked_destination_before_publicat
         .expect("Pinned Runtime Tools builder lost destination canonicalization");
     let exact_destination = BUILD_PINNED_RUNTIME_TOOLS
         .find(
-            "expected_destination=\"/usr/local/lib/a3s-oci-tools/runtime-tools-$upstream_commit\"",
+            "expected_destination=\"/usr/local/lib/aster-oci-tools/runtime-tools-$upstream_commit\"",
         )
         .expect("Pinned Runtime Tools builder lost its exact locked destination");
     let parent_identity = BUILD_PINNED_RUNTIME_TOOLS

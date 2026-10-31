@@ -134,23 +134,23 @@ pub(super) fn goals() {
     let objective = "Wait for the user to provide an approval token in their next message. Do not call tools or finish the goal; ask them to provide the token.";
     let before = tui.facts().len();
     tui.command(&format!("/goal {objective}"));
-    let created = tui.wait_fact("a3s.goal.created", before);
+    let created = tui.wait_fact("aster.goal.created", before);
     assert!(created.to_string().contains(objective));
     tui.record(
         "goal-create",
         "actual Core goal.created fact preserves the objective",
     );
     for (command, fact) in [
-        ("/goal pause", "a3s.goal.paused"),
-        ("/goal resume", "a3s.goal.resumed"),
-        ("/goal clear", "a3s.goal.cancelled"),
+        ("/goal pause", "aster.goal.paused"),
+        ("/goal resume", "aster.goal.resumed"),
+        ("/goal clear", "aster.goal.cancelled"),
     ] {
         let before = tui.facts().len();
         tui.command(command);
         tui.wait_fact(fact, before);
         tui.record(command, fact);
     }
-    assert!(tui.facts().iter().any(|f| f["type"] == "a3s.goal.created"));
+    assert!(tui.facts().iter().any(|f| f["type"] == "aster.goal.created"));
     tui.quit();
     tui.finish();
 }

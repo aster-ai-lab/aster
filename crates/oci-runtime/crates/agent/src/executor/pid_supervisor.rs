@@ -2,7 +2,7 @@ use std::io::{self, Read, Write};
 use std::os::fd::RawFd;
 use std::os::unix::net::UnixStream;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::process_group::ProcessGroupLease;
 
@@ -211,7 +211,7 @@ pub(super) fn supervise_exec_payload(
         if let Some(outcome) = peek_child_outcome(payload_pid)? {
             // Keep the exited leader as a zombie while signaling its process
             // group. This is the same WNOWAIT ownership pattern used by the
-            // A3S Box PID 1 reaper and prevents the kernel from reusing the
+            // Aster Box PID 1 reaper and prevents the kernel from reusing the
             // leader PID/PGID before descendant cleanup.
             let lease = process_group.lock_for_reap()?;
             terminate_process_group(payload_pid);

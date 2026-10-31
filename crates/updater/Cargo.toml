@@ -11,23 +11,23 @@
 
 [package]
 edition = "2021"
-name = "a3s-updater"
+name = "aster-updater"
 version = "0.3.0"
 publish = false
-authors = ["A3S Lab"]
+authors = ["Aster"]
 build = false
 autolib = false
 autobins = false
 autoexamples = false
 autotests = false
 autobenches = false
-description = "Self-update library for A3S CLI binaries via GitHub Releases"
+description = "Self-update library for Aster CLI binaries via GitHub Releases"
 readme = false
 license = "MIT"
-repository = "https://github.com/a3s-lab/a3s"
+repository = "https://github.com/aster-ai-lab/aster"
 
 [lib]
-name = "a3s_updater"
+name = "aster_updater"
 path = "src/lib.rs"
 
 [dependencies.anyhow]

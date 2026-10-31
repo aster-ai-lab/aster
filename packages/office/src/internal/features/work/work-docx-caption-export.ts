@@ -79,7 +79,7 @@ export function docxCaptionBookmarkId(source: string): string {
     .replace(/[^a-z0-9_]/gi, '_')
     .replace(/^([^a-z_])/i, '_$1')
     .slice(0, 18);
-  return `A3SCaption_${safe || 'item'}_${stableHash(source)}`.slice(0, 40);
+  return `AsterCaption_${safe || 'item'}_${stableHash(source)}`.slice(0, 40);
 }
 
 function stableHash(source: string): string {

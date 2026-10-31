@@ -100,7 +100,7 @@ fn copy_directory_contents(
     let (reader, writer) = UnixStream::pair()?;
     let source = source.to_path_buf();
     let producer = std::thread::Builder::new()
-        .name("a3s-volume-copy".to_string())
+        .name("aster-volume-copy".to_string())
         .spawn(move || -> Result<(), String> {
             let mut builder = tar::Builder::new(writer);
             builder.follow_symlinks(false);
@@ -196,7 +196,7 @@ mod tests {
         std::fs::create_dir_all(&destination).unwrap();
         std::fs::write(source.join("nested/config.txt"), b"from-image").unwrap();
         std::fs::write(
-            source.join(".a3s-volume-seed-0.tar"),
+            source.join(".aster-volume-seed-0.tar"),
             b"ordinary image data",
         )
         .unwrap();
@@ -227,7 +227,7 @@ mod tests {
             std::path::PathBuf::from("nested/config.txt")
         );
         assert_eq!(
-            std::fs::read(destination.join(".a3s-volume-seed-0.tar")).unwrap(),
+            std::fs::read(destination.join(".aster-volume-seed-0.tar")).unwrap(),
             b"ordinary image data"
         );
         #[cfg(unix)]

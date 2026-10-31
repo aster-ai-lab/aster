@@ -2,9 +2,9 @@
 
 use super::*;
 
-/// Map a3s-code planning tasks onto ACP `PlanEntry` so the pager plan strip updates.
-pub(super) fn task_to_plan_entry(task: &a3s_code_core::planning::Task) -> acp::PlanEntry {
-    use a3s_code_core::planning::{TaskPriority, TaskStatus};
+/// Map aster planning tasks onto ACP `PlanEntry` so the pager plan strip updates.
+pub(super) fn task_to_plan_entry(task: &aster_core::planning::Task) -> acp::PlanEntry {
+    use aster_core::planning::{TaskPriority, TaskStatus};
     let priority = match task.priority {
         TaskPriority::High => acp::PlanEntryPriority::High,
         TaskPriority::Medium => acp::PlanEntryPriority::Medium,
@@ -27,7 +27,7 @@ pub(super) fn task_to_plan_entry(task: &a3s_code_core::planning::Task) -> acp::P
         TaskStatus::Failed | TaskStatus::Skipped | TaskStatus::Cancelled
     ) {
         meta.insert(
-            "a3sStatus".into(),
+            "asterStatus".into(),
             serde_json::Value::String(task.status.to_string()),
         );
     }
@@ -44,7 +44,7 @@ pub(super) fn tool_kind_for(name: &str) -> acp::ToolKind {
         "grep" | "glob" | "search" | "semantic" | "hybrid" | "bm25" | "code_symbols"
         | "code_navigation" | "code_diagnostics" | "web_search" | "search_wiki"
         | "search_memory" => acp::ToolKind::Search,
-        "web_fetch" | "download" => acp::ToolKind::Fetch,
+        "web_fetch" | "download" | "open_workspace_browser" => acp::ToolKind::Fetch,
         _ => acp::ToolKind::Other,
     }
 }
@@ -56,7 +56,7 @@ pub(super) fn tool_title(name: &str) -> String {
     }
 }
 
-/// Copy a3s argument names onto the fields the pager card renderer reads.
+/// Copy aster argument names onto the fields the pager card renderer reads.
 pub(super) fn prepared_raw_input(
     name: &str,
     args: &serde_json::Value,
@@ -280,7 +280,7 @@ pub(super) fn tool_raw_output(
 #[cfg(test)]
 mod plan_tests {
     use super::*;
-    use a3s_code_core::planning::{Task, TaskStatus};
+    use aster_core::planning::{Task, TaskStatus};
 
     #[test]
     fn plan_entries_keep_identity_and_all_six_core_statuses() {
@@ -302,7 +302,7 @@ mod plan_tests {
                 _ => acp::PlanEntryStatus::Completed,
             };
             assert_eq!(entry.status, expected_acp);
-            let terminal = entry.meta.as_ref().unwrap().get("a3sStatus");
+            let terminal = entry.meta.as_ref().unwrap().get("asterStatus");
             if matches!(
                 status,
                 TaskStatus::Failed | TaskStatus::Skipped | TaskStatus::Cancelled

@@ -26,9 +26,9 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_oci_core::{DriverKind, IsolationClass, LifecycleEvent, LifecycleState};
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_core::{DriverKind, IsolationClass, LifecycleEvent, LifecycleState};
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     CheckpointResponse, ContainerId, ContainerRecord, ContainerTarget, CreateAttachments,
     CreateRequest, ErrorCode, FileOp, Generation, IsolationRequest, OciBundle, OciSchemaValidator,
     OperationId, ProcessRecord, ProcessTarget, RestoreResponse, Result, RuntimeEventKind,
@@ -115,7 +115,7 @@ pub(crate) enum SignalProcessPreparation {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum ProcessWaitPreparation {
     /// The terminal result was already committed.
-    Replayed(a3s_oci_sdk::ExitStatus),
+    Replayed(aster_oci_sdk::ExitStatus),
     /// The exact process target must be waited through the driver.
     Prepared(ProcessTarget),
 }
@@ -254,7 +254,7 @@ impl DurableStateStore {
         &self,
         request: &CreateRequest,
         driver: DriverKind,
-        inherited_descriptors: Option<&a3s_oci_agent_protocol::AgentInheritedDescriptorSchema>,
+        inherited_descriptors: Option<&aster_oci_agent_protocol::AgentInheritedDescriptorSchema>,
     ) -> Result<RecordOperationPreparation> {
         request.validate()?;
         let request_digest = create_request_digest(request, inherited_descriptors)?;
@@ -1273,7 +1273,7 @@ fn generation_conflict(
     expected: Generation,
     actual: Generation,
     operation: &'static str,
-) -> a3s_oci_sdk::Error {
+) -> aster_oci_sdk::Error {
     state_error(
         ErrorCode::Conflict,
         operation,

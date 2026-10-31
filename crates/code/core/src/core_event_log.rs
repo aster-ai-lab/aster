@@ -22,8 +22,8 @@ use std::collections::{HashMap, VecDeque};
 use std::sync::{Arc, RwLock};
 use thiserror::Error;
 
-pub const CORE_LOG_ENTRY_SCHEMA_V1: &str = "a3s.code.core-event-log-entry.v1";
-pub const CORE_LOG_ENTRY_DIGEST_DOMAIN_V1: &str = "a3s.code.core-event-log.entry.v1";
+pub const CORE_LOG_ENTRY_SCHEMA_V1: &str = "aster.code.core-event-log-entry.v1";
+pub const CORE_LOG_ENTRY_DIGEST_DOMAIN_V1: &str = "aster.code.core-event-log.entry.v1";
 /// Chain anchor used by the first entry of every operation stream.
 pub const CORE_LOG_GENESIS_PREVIOUS_DIGEST: &str =
     "sha256:0000000000000000000000000000000000000000000000000000000000000000";
@@ -878,7 +878,7 @@ mod tests {
         {
             let mut state = log.inner.write().unwrap();
             let buffer = state.get_mut(&operation()).unwrap();
-            buffer.entries[1].artifact_refs = vec!["a3s://artifact/1".to_owned()];
+            buffer.entries[1].artifact_refs = vec!["aster://artifact/1".to_owned()];
         }
         assert!(matches!(
             log.verify(&operation()),

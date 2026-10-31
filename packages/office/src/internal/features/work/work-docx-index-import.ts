@@ -47,8 +47,8 @@ export function markDocxIndexes(document: Document): ImportedDocxIndexMarkers {
       return [];
     }
     const marker: ImportedDocxIndexEntryMarker = {
-      start: `__A3S_WORK_INDEX_ENTRY_START_${index + 1}__`,
-      end: `__A3S_WORK_INDEX_ENTRY_END_${index + 1}__`,
+      start: `__ASTER_WORK_INDEX_ENTRY_START_${index + 1}__`,
+      end: `__ASTER_WORK_INDEX_ENTRY_END_${index + 1}__`,
       id: `index-entry-import-${index + 1}`,
       value: parsed.value,
     };
@@ -65,7 +65,7 @@ export function markDocxIndexes(document: Document): ImportedDocxIndexMarkers {
     if (!control || !document.documentElement.contains(control)) continue;
     const index = indexes.length + 1;
     const marker: ImportedDocxIndexMarker = {
-      marker: `__A3S_WORK_DOCUMENT_INDEX_${index}__`,
+      marker: `__ASTER_WORK_DOCUMENT_INDEX_${index}__`,
       id: `document-index-import-${index}`,
       options: {
         ...parsed.options,

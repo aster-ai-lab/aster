@@ -58,7 +58,7 @@ impl Default for NatsConfig {
             url: "nats://127.0.0.1:4222".to_string(),
             token: None,
             credentials_path: None,
-            stream_name: "A3S_EVENTS".to_string(),
+            stream_name: "ASTER_EVENTS".to_string(),
             subject_prefix: "events".to_string(),
             storage: StorageType::File,
             max_events: 100_000,
@@ -85,7 +85,7 @@ mod tests {
     fn test_default_config() {
         let config = NatsConfig::default();
         assert_eq!(config.url, "nats://127.0.0.1:4222");
-        assert_eq!(config.stream_name, "A3S_EVENTS");
+        assert_eq!(config.stream_name, "ASTER_EVENTS");
         assert_eq!(config.subject_prefix, "events");
         assert_eq!(config.storage, StorageType::File);
         assert_eq!(config.max_events, 100_000);
@@ -103,11 +103,11 @@ mod tests {
     fn test_config_serialization() {
         let config = NatsConfig::default();
         let json = serde_json::to_string(&config).unwrap();
-        assert!(json.contains("\"streamName\":\"A3S_EVENTS\""));
+        assert!(json.contains("\"streamName\":\"ASTER_EVENTS\""));
         assert!(!json.contains("token")); // None fields skipped
 
         let parsed: NatsConfig = serde_json::from_str(&json).unwrap();
-        assert_eq!(parsed.stream_name, "A3S_EVENTS");
+        assert_eq!(parsed.stream_name, "ASTER_EVENTS");
         assert!(parsed.token.is_none());
     }
 

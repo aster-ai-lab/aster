@@ -6,7 +6,7 @@ use crate::write_json;
 
 pub(super) fn smoke(agent: PathBuf, bundle: PathBuf, work_parent: PathBuf) -> CommandFuture {
     Box::pin(async move {
-        let report = a3s_oci_runtime::native_linux_smoke(&agent, &bundle, &work_parent).await;
+        let report = aster_oci_runtime::native_linux_smoke(&agent, &bundle, &work_parent).await;
         let succeeded = report.is_success();
         write_json(&report)?;
         Ok(success_exit(succeeded))
@@ -21,7 +21,7 @@ pub(super) fn checkpoint(
     source_revision: String,
 ) -> CommandFuture {
     Box::pin(async move {
-        let report = a3s_oci_runtime::native_linux_checkpoint_smoke(
+        let report = aster_oci_runtime::native_linux_checkpoint_smoke(
             &agent,
             &criu,
             &bundle,
@@ -47,7 +47,7 @@ pub(super) fn checkpoint_restore_owner(
     crash_point: crate::NativeLinuxCheckpointRestoreCrashPointArg,
 ) -> CommandFuture {
     Box::pin(async move {
-        a3s_oci_runtime::native_linux_checkpoint_restore_owner(
+        aster_oci_runtime::native_linux_checkpoint_restore_owner(
             &agent,
             &criu,
             &state_root,
@@ -73,14 +73,14 @@ pub(super) fn network_enforcement(
     rejected_port: u16,
 ) -> CommandFuture {
     Box::pin(async move {
-        let configuration = a3s_oci_runtime::NativeLinuxNetworkEnforcementSmokeConfig::new(
+        let configuration = aster_oci_runtime::NativeLinuxNetworkEnforcementSmokeConfig::new(
             source_interface,
-            a3s_oci_sdk::NetworkInterfaceId::new(interface_id)?,
-            a3s_oci_sdk::NetworkCleanupId::new(cleanup_id)?,
+            aster_oci_sdk::NetworkInterfaceId::new(interface_id)?,
+            aster_oci_sdk::NetworkCleanupId::new(cleanup_id)?,
             redirect_port,
             rejected_port,
         )?;
-        let report = a3s_oci_runtime::native_linux_network_enforcement_smoke(
+        let report = aster_oci_runtime::native_linux_network_enforcement_smoke(
             &agent,
             &bundle,
             &work_parent,

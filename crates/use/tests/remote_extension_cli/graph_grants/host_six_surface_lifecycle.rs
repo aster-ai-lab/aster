@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 use super::*;
 
-use a3s_use_core::{
+use aster_use_core::{
     CatalogAvailability, CatalogMcpTransport, CatalogPlanningTarget, CatalogSurface,
     ExecutablePlanningSurface, PackageSurfaceKind, PlanningSurfaceActivation,
     PluginPermissionCeiling, ResourcePermissionCeiling, SurfacePermissionCeiling,
@@ -317,10 +317,10 @@ async fn plan_operation(
     version: &str,
     selected_surfaces: Vec<PluginSurfaceRef>,
     label: &str,
-    prior_lock: Option<a3s_use_core::PluginPackageLock>,
+    prior_lock: Option<aster_use_core::PluginPackageLock>,
 ) -> (
     PluginHostPlanRequest,
-    a3s_use_core::PluginHostPlanResult,
+    aster_use_core::PluginHostPlanResult,
     PluginHostApplyRequest,
 ) {
     let (candidate, package_lock) = if action == PluginOperationAction::Uninstall {
@@ -390,7 +390,7 @@ async fn plan_operation(
 }
 
 fn assert_ready_state(
-    state: &a3s_use_core::PluginHostPackageState,
+    state: &aster_use_core::PluginHostPackageState,
     version: &str,
     selected_surfaces: &[PluginSurfaceRef],
 ) {
@@ -410,7 +410,7 @@ async fn assert_scope_fence_rejected(
     package_id: &PluginPackageId,
     request: &PluginHostPlanRequest,
     apply: &PluginHostApplyRequest,
-    planned: &a3s_use_core::PluginHostPlanResult,
+    planned: &aster_use_core::PluginHostPlanResult,
 ) {
     let wrong_scope = opposite_scope(scope);
     let mut wrong_plan = request.clone();
@@ -561,13 +561,13 @@ fn package_six_surface_targets(
         .join("extension//fixtures/packages/plugin-v3-package/package");
     let package_root = fixture_root.join("package");
     copy_fixture_tree(&source, &package_root);
-    let manifest_path = package_root.join("a3s-use-extension.acl");
+    let manifest_path = package_root.join("aster-use-extension.acl");
     let manifest = strip_flow_surface(std::fs::read_to_string(&manifest_path).unwrap().replace(
         "version        = \"1.0.0\"",
         &format!("version        = \"{version}\""),
     ));
     std::fs::write(&manifest_path, &manifest).unwrap();
-    let parsed = a3s_use_extension::ExtensionManifest::parse_acl(&manifest).unwrap();
+    let parsed = aster_use_extension::ExtensionManifest::parse_acl(&manifest).unwrap();
     parsed.validate_package_root(&package_root).unwrap();
 
     let archive = package_directory_archive(&package_root);
@@ -602,21 +602,21 @@ fn package_six_surface_targets(
                 .iter()
                 .find(|tool| tool.id == surface.surface.id)
                 .map(|tool| match tool.workload {
-                    a3s_use_extension::ToolWorkload::Task(_) => ToolWorkloadClass::Task,
-                    a3s_use_extension::ToolWorkload::Service(_) => ToolWorkloadClass::Service,
+                    aster_use_extension::ToolWorkload::Task(_) => ToolWorkloadClass::Task,
+                    aster_use_extension::ToolWorkload::Service(_) => ToolWorkloadClass::Service,
                 }),
             mcp_transport: parsed
                 .mcp_servers
                 .iter()
                 .find(|mcp| mcp.id == surface.surface.id)
                 .and_then(|mcp| match mcp.launch {
-                    a3s_use_extension::PluginMcpLaunch::Stdio { .. } => {
+                    aster_use_extension::PluginMcpLaunch::Stdio { .. } => {
                         Some(CatalogMcpTransport::Stdio)
                     }
-                    a3s_use_extension::PluginMcpLaunch::StreamableHttp { .. } => {
+                    aster_use_extension::PluginMcpLaunch::StreamableHttp { .. } => {
                         Some(CatalogMcpTransport::StreamableHttp)
                     }
-                    a3s_use_extension::PluginMcpLaunch::Catalog { .. } => None,
+                    aster_use_extension::PluginMcpLaunch::Catalog { .. } => None,
                 }),
             mcp_tool_count: None,
             okf_bundle: parsed
@@ -751,7 +751,7 @@ async fn assert_operation_completed(
     scope: &PluginManagedScope,
     capabilities_digest: &str,
     package_id: &PluginPackageId,
-    planned: &a3s_use_core::PluginHostPlanResult,
+    planned: &aster_use_core::PluginHostPlanResult,
     request_id: &str,
     result_digest: &str,
 ) {

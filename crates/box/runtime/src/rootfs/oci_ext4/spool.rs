@@ -1,7 +1,7 @@
 use std::io::{Read, Seek, SeekFrom, Write};
 use std::path::PathBuf;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 use super::super::ext4::sparse::{SourceSegment, SparseLayout};
 use super::tree::{build_error, LogicalRootfs};

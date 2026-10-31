@@ -28,7 +28,7 @@ case "$(uname -s):$(uname -m)" in
     ;;
 esac
 
-root="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/a3s-moli-${version}-${target}"
+root="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/aster-moli-${version}-${target}"
 archive="${root}.tar.gz"
 mkdir -p "$root"
 url="https://github.com/lexmount/moli/releases/download/v${version}/moli-${target}.tar.gz"

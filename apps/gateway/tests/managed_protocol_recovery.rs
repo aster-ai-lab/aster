@@ -1,4 +1,4 @@
-use a3s_gateway::managed_snapshot::{ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus};
+use aster_gateway::managed_snapshot::{ManagedSnapshot, ManagedSnapshotState, ManagedSnapshotStatus};
 use chrono::{Duration, Utc};
 use futures_util::{SinkExt, StreamExt};
 use http::header::{CONNECTION, CONTENT_TYPE, HOST};
@@ -40,7 +40,7 @@ struct GatewayProcess {
 impl GatewayProcess {
     fn start(config_path: &Path) -> Self {
         common::ensure_test_admin_token();
-        let mut command = Command::new(env!("CARGO_BIN_EXE_a3s-gateway"));
+        let mut command = Command::new(env!("CARGO_BIN_EXE_aster-gateway"));
         command
             .env(common::TEST_ADMIN_TOKEN_ENV, common::TEST_ADMIN_TOKEN)
             .arg("--config")
@@ -210,7 +210,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 
@@ -307,7 +307,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 

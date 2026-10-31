@@ -4,7 +4,7 @@
 //!
 //! `cargo run --example vector_search_benchmark --release`
 
-use a3s_memory::{
+use aster_durable_memory::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord, VectorSearchRequest,
 };
 use anyhow::{bail, Context, Result};
@@ -108,7 +108,7 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn verify_top_k(result: a3s_memory::VectorSearchResult) -> Result<()> {
+fn verify_top_k(result: aster_durable_memory::VectorSearchResult) -> Result<()> {
     if result.hits.len() != TOP_K || result.searched_records != RECORD_COUNT {
         bail!(
             "search returned {} hits after scanning {} records",

@@ -4,12 +4,12 @@
 //! field, so Harbor reads either lane the same way. It stays adapter-local:
 //! the generic Code run store remains provider-neutral.
 
-use a3s_code_core::execution_identity::ExecutionResultOutcomeV1;
+use aster_core::execution_identity::ExecutionResultOutcomeV1;
 use anyhow::{Context, Result};
 use serde::Serialize;
 use std::time::Instant;
 
-const TERMINAL_BENCH_RESULT_SCHEMA_V1: &str = "a3s.code.terminal-bench-result.v1";
+const TERMINAL_BENCH_RESULT_SCHEMA_V1: &str = "aster.code.terminal-bench-result.v1";
 const MAX_REPORTED_ERROR_BYTES: usize = 4 * 1024;
 
 /// Stable host-facing reason for why a Terminal-Bench run stopped.
@@ -35,7 +35,7 @@ pub(crate) struct ExecutionDeadline;
 
 impl std::fmt::Display for ExecutionDeadline {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        formatter.write_str("A3S Code execution deadline exceeded")
+        formatter.write_str("Aster Code execution deadline exceeded")
     }
 }
 
@@ -45,9 +45,9 @@ fn is_execution_deadline(error: &anyhow::Error) -> bool {
     error.chain().any(|source| {
         source.is::<ExecutionDeadline>()
             || matches!(
-                source.downcast_ref::<a3s_code_core::goal_control::GoalControlError>(),
-                Some(a3s_code_core::goal_control::GoalControlError::Refused {
-                    refusal: a3s_code_core::goal_control::GoalRefusal::DeadlineExpired,
+                source.downcast_ref::<aster_core::goal_control::GoalControlError>(),
+                Some(aster_core::goal_control::GoalControlError::Refused {
+                    refusal: aster_core::goal_control::GoalRefusal::DeadlineExpired,
                     ..
                 })
             )
@@ -162,12 +162,12 @@ impl RunProgress {
         }
         self.remember_error(error);
         if let Some(provider_error) =
-            error.downcast_ref::<a3s_code_core::llm::NonRetryableLlmError>()
+            error.downcast_ref::<aster_core::llm::NonRetryableLlmError>()
         {
             self.provider = provider_error.provider().map(str::to_owned);
             self.provider_status = provider_error.status();
         } else if let Some(retry_error) =
-            error.downcast_ref::<a3s_code_core::llm::RetryExhaustedError>()
+            error.downcast_ref::<aster_core::llm::RetryExhaustedError>()
         {
             self.provider_status = Some(retry_error.status_code());
         }
@@ -289,7 +289,7 @@ pub(crate) async fn persist_result(
     let file_name = path
         .file_name()
         .map(|name| name.to_string_lossy().into_owned())
-        .unwrap_or_else(|| "a3s-code.result.json".to_string());
+        .unwrap_or_else(|| "aster.result.json".to_string());
     let temporary = path.with_file_name(format!(".{file_name}.tmp-{}", std::process::id()));
     tokio::fs::write(&temporary, bytes)
         .await
@@ -330,7 +330,7 @@ pub(crate) fn classify_failure(
     // not infer this class from rendered text: bodies are bounded and may be
     // localized or omit the word "provider" entirely.
     if error
-        .downcast_ref::<a3s_code_core::llm::NonRetryableLlmError>()
+        .downcast_ref::<aster_core::llm::NonRetryableLlmError>()
         .is_some()
     {
         return (
@@ -339,7 +339,7 @@ pub(crate) fn classify_failure(
         );
     }
     if error
-        .downcast_ref::<a3s_code_core::llm::RetryExhaustedError>()
+        .downcast_ref::<aster_core::llm::RetryExhaustedError>()
         .is_some()
     {
         return (

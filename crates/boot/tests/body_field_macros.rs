@@ -3,8 +3,8 @@
 use std::sync::Arc;
 
 #[allow(unused_imports)]
-use a3s_boot::{body, post};
-use a3s_boot::{
+use aster_boot::{body, post};
+use aster_boot::{
     controller, injectable, BootApplication, BootError, BootRequest, ControllerDefinition,
     HttpMethod, Module, OpenApiInfo, ParseIntPipe, Result,
 };
@@ -64,7 +64,7 @@ impl Module for BodyFieldFeatureModule {
         "body-field-feature"
     }
 
-    fn controllers(&self, _module_ref: &a3s_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
+    fn controllers(&self, _module_ref: &aster_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
         Ok(vec![Arc::new(BodyFieldController).controller()?])
     }
 }

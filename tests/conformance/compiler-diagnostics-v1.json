@@ -1,6 +1,6 @@
 {
-  "apiVersion": "a3s.dev/form-compiler-diagnostics-conformance/v1",
-  "baseInputJson": "{\"kind\":\"a3s.form\",\"apiVersion\":\"a3s.dev/form/v1alpha1\",\"revision\":1,\"metadata\":{\"title\":\"Portable diagnostics\",\"locale\":\"en-US\"},\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}},\"required\":[\"name\"],\"additionalProperties\":false},\"ui\":{\"root\":\"root\",\"nodes\":[{\"id\":\"root\",\"kind\":\"root\",\"children\":[\"name\"]},{\"id\":\"name\",\"kind\":\"field\",\"schemaPath\":\"/properties/name\",\"widget\":\"text\"}]},\"rules\":[],\"dataSources\":[],\"actions\":[]}",
+  "apiVersion": "aster.dev/form-compiler-diagnostics-conformance/v1",
+  "baseInputJson": "{\"kind\":\"aster.form\",\"apiVersion\":\"aster.dev/form/v1alpha1\",\"revision\":1,\"metadata\":{\"title\":\"Portable diagnostics\",\"locale\":\"en-US\"},\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}},\"required\":[\"name\"],\"additionalProperties\":false},\"ui\":{\"root\":\"root\",\"nodes\":[{\"id\":\"root\",\"kind\":\"root\",\"children\":[\"name\"]},{\"id\":\"name\",\"kind\":\"field\",\"schemaPath\":\"/properties/name\",\"widget\":\"text\"}]},\"rules\":[],\"dataSources\":[],\"actions\":[]}",
   "cases": [
     {
       "name": "document-kind",
@@ -9,21 +9,21 @@
         {
           "code": "document.kind",
           "severity": "error",
-          "message": "kind must be a3s.form.",
+          "message": "kind must be aster.form.",
           "path": "/kind"
         }
       ]
     },
     {
       "name": "document-api-version",
-      "operations": [{ "op": "set", "path": "/apiVersion", "value": "a3s.dev/form/v0" }],
+      "operations": [{ "op": "set", "path": "/apiVersion", "value": "aster.dev/form/v0" }],
       "diagnostics": [
         {
           "code": "document.api_version",
           "severity": "error",
           "message": "Unsupported Form document apiVersion.",
           "path": "/apiVersion",
-          "hint": "Use a3s.dev/form/v1alpha1."
+          "hint": "Use aster.dev/form/v1alpha1."
         }
       ]
     },

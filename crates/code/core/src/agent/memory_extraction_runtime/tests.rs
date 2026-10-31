@@ -8,7 +8,7 @@ fn snapshot(state: &ExecutionLoopState) -> MemoryExtractionSnapshot {
 fn parses_fenced_extraction_json() {
     let items = parse_extracted_memories(
             r#"```json
-{"items":[{"memory_type":"semantic","content":"A3S memory should store durable project facts.","importance":0.8,"tags":["A3S","Memory"],"source":"project_fact"}]}
+{"items":[{"memory_type":"semantic","content":"Aster memory should store durable project facts.","importance":0.8,"tags":["Aster","Memory"],"source":"project_fact"}]}
 ```"#,
         )
         .unwrap().items;
@@ -21,7 +21,7 @@ fn parses_fenced_extraction_json() {
 fn parser_keeps_valid_items_when_sibling_is_malformed() {
     let items = parse_extracted_memories(
             r#"{"items":[
-                {"memory_type":"semantic","content":"A3S asks the LLM to judge every completed non-empty turn for durable memory.","importance":0.8,"tags":["memory"],"source":"project_fact"},
+                {"memory_type":"semantic","content":"Aster asks the LLM to judge every completed non-empty turn for durable memory.","importance":0.8,"tags":["memory"],"source":"project_fact"},
                 {"memory_type":"semantic","content":42,"importance":"high"},
                 {"memory_type":"procedural","content":"Run memory extraction tests after changing extraction parsing behavior.","importance":0.7,"tags":["tests"],"source":"workflow"}
             ]}"#,
@@ -165,7 +165,7 @@ fn extraction_prompt_requires_plain_user_facing_learning_text() {
 fn extraction_rejects_missing_or_unknown_source() {
     let missing = ExtractedMemory {
         memory_type: "semantic".to_string(),
-        content: "A3S memory uses LLM value judgment after completed turns.".to_string(),
+        content: "Aster memory uses LLM value judgment after completed turns.".to_string(),
         importance: Some(0.8),
         confidence: Some(0.9),
         tags: vec![],
@@ -178,7 +178,7 @@ fn extraction_rejects_missing_or_unknown_source() {
     };
     let extracted = ExtractedMemory {
         memory_type: "semantic".to_string(),
-        content: "A3S memory lets the LLM judge value after completed turns.".to_string(),
+        content: "Aster memory lets the LLM judge value after completed turns.".to_string(),
         importance: Some(0.8),
         confidence: Some(0.9),
         tags: vec![],
@@ -513,7 +513,7 @@ fn related_memories_skip_sensitive_items() {
 
 #[tokio::test]
 async fn related_memories_are_loaded_for_extraction_prompt() {
-    let memory = Arc::new(AgentMemory::new(Arc::new(a3s_memory::InMemoryStore::new())));
+    let memory = Arc::new(AgentMemory::new(Arc::new(aster_durable_memory::InMemoryStore::new())));
     memory
         .remember(
             MemoryItem::new(

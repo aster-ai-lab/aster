@@ -7,7 +7,7 @@ import sys
 
 
 def record(event):
-    with Path(os.environ['A3S_TEST_MCP_LOG']).open('a') as output:
+    with Path(os.environ['ASTER_TEST_MCP_LOG']).open('a') as output:
         output.write(json.dumps({'event': event, 'pid': os.getpid()}) + '\n')
 
 

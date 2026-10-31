@@ -100,7 +100,7 @@ fn read_properties() -> serde_json::Value {
     serde_json::json!({
         "file_path": {
             "type": "string",
-            "description": "Path to one file, absolute or relative to the workspace, or an a3s://tool-output/... artifact URI named by a truncated tool result. Use exactly one of file_path or files."
+            "description": "Path to one file, absolute or relative to the workspace, or an aster://tool-output/... artifact URI named by a truncated tool result. Use exactly one of file_path or files."
         },
         "offset": {
             "type": "integer",
@@ -1055,21 +1055,21 @@ mod tests {
             0x02, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
         ];
         let temp = tempfile::tempdir().unwrap();
-        std::fs::write(temp.path().join("shot.png"), PNG).unwrap();
+        let ctx = ToolContext::new(temp.path().to_path_buf());
+        for name in ["shot.png", "IMG_3904.PNG"] {
+            std::fs::write(temp.path().join(name), PNG).unwrap();
 
-        let result = ReadTool
-            .execute(
-                &serde_json::json!({"file_path": "shot.png"}),
-                &ToolContext::new(temp.path().to_path_buf()),
-            )
-            .await
-            .unwrap();
+            let result = ReadTool
+                .execute(&serde_json::json!({"file_path": name}), &ctx)
+                .await
+                .unwrap();
 
-        assert!(result.success, "{}", result.content);
-        assert_eq!(result.images.len(), 1);
-        assert_eq!(result.images[0].media_type, "image/png");
-        assert_eq!(result.images[0].data, PNG);
-        assert!(result.content.contains("image/png"));
+            assert!(result.success, "{name}: {}", result.content);
+            assert_eq!(result.images.len(), 1, "{name}");
+            assert_eq!(result.images[0].media_type, "image/png", "{name}");
+            assert_eq!(result.images[0].data, PNG);
+            assert!(result.content.contains("image/png"), "{name}");
+        }
     }
 
     #[tokio::test]

@@ -33,7 +33,7 @@ export const meta = {
 可信宿主的 `tool`、`read_file` 和 `bash` 直接入口与模型受控调用不是同一授权入口。需要按模型相同的权限、确认、Hook 和预算执行时，调用 `governed_tool`。模型生成的工具名和参数必须经过受控入口，不能交给宿主直接执行以绕过拒绝。
 
 ```rust
-use a3s_code_core::AgentSession;
+use aster_core::AgentSession;
 use serde_json::json;
 
 async fn inspect_readme(session: &AgentSession) -> anyhow::Result<()> {

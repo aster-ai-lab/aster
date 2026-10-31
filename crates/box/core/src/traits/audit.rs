@@ -1,7 +1,7 @@
 //! Audit sink abstraction.
 //!
 //! Decouples audit event recording from the file-based JSON-lines
-//! implementation in `a3s-box-runtime`. Implementations can write to
+//! implementation in `aster-box-runtime`. Implementations can write to
 //! any backend: files, databases, SIEM systems, cloud logging, etc.
 
 use crate::audit::AuditEvent;

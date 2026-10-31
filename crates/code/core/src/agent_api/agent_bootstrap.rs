@@ -119,9 +119,9 @@ fn base_agent_config(config: &CodeConfig) -> AgentConfig {
 fn install_global_skill_registry(agent_config: &mut AgentConfig, config: &CodeConfig) {
     let registry = Arc::new(crate::skills::SkillRegistry::with_builtins());
     // Watch the canonical install targets even before they exist: the first
-    // `a3s code skills add` creates one and the running session must see it.
+    // `aster code skills add` creates one and the running session must see it.
     if let Some(home) = std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE")) {
-        registry.watch_dir(std::path::Path::new(&home).join(".a3s").join("skills"));
+        registry.watch_dir(std::path::Path::new(&home).join(".aster").join("skills"));
     }
     for dir in &config.skill_dirs {
         if let Err(e) = registry.load_from_dir(dir) {

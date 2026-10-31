@@ -1,7 +1,7 @@
 use std::path::Path;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::{ContainerTarget, Error, ErrorCode, OperationId};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::{ContainerTarget, Error, ErrorCode, OperationId};
 
 use super::super::{QualificationHvfDriver, FAULT_OPERATION};
 pub(super) use crate::operation_journal_evidence::ContainerOperationJournalStatus as FreezerJournalStatus;

@@ -37,13 +37,13 @@ virtio-fs 共享令牌：KVM 与 HVF 是 `same-uid-private-per-generation-virtio
 
 ## 这台 Mac 已经留下的范围
 
-2026-10-04，arm64，`kern.hv_support=1`。二进制按 `packaging/macos/a3s-oci-hvf.entitlements` 做了 ad-hoc 签名。三次命令都退出 0：
+2026-10-04，arm64，`kern.hv_support=1`。二进制按 `packaging/macos/aster-oci-hvf.entitlements` 做了 ad-hoc 签名。三次命令都退出 0：
 
-1. `a3s-oci hvf-smoke`，schema `a3s.oci.hvf-smoke.v1`。它调用 `hv_vm_create` / `hv_vm_destroy`，不读取这份配置。
-2. `a3s-oci-krun-shim context-smoke`，schema `a3s.oci.krun-context-smoke.v2`。`VmConfig::new(1, 128)`，没有进入客户机。
-3. `a3s-oci-krun-shim vm-smoke`，schema `a3s.oci.krun-vm-smoke.v2`。`VmConfig::new(1, 512)`，客户机退出码 0，根盘只读，runtime share 与根盘分开，nonce 标记核对后删除。
+1. `aster-oci hvf-smoke`，schema `aster.oci.hvf-smoke.v1`。它调用 `hv_vm_create` / `hv_vm_destroy`，不读取这份配置。
+2. `aster-oci-krun-shim context-smoke`，schema `aster.oci.krun-context-smoke.v2`。`VmConfig::new(1, 128)`，没有进入客户机。
+3. `aster-oci-krun-shim vm-smoke`，schema `aster.oci.krun-vm-smoke.v2`。`VmConfig::new(1, 512)`，客户机退出码 0，根盘只读，runtime share 与根盘分开，nonce 标记核对后删除。
 
-同日交叉编译 `x86_64-unknown-linux-gnu` 与 `x86_64-pc-windows-msvc` 的 `cargo check -p a3s-oci-runtime --lib` 通过。两次都没有启动客户机。`aarch64-unknown-linux-gnu` 没有做这次检查。Windows 单测 `rejects_uncertified_windows_smp_configuration` 带有 `#[cfg(all(target_os = "windows", target_arch = "x86_64"))]`，没有在这台 Mac 上执行。
+同日交叉编译 `x86_64-unknown-linux-gnu` 与 `x86_64-pc-windows-msvc` 的 `cargo check -p aster-oci-runtime --lib` 通过。两次都没有启动客户机。`aarch64-unknown-linux-gnu` 没有做这次检查。Windows 单测 `rejects_uncertified_windows_smp_configuration` 带有 `#[cfg(all(target_os = "windows", target_arch = "x86_64"))]`，没有在这台 Mac 上执行。
 
 没有记录任何一组 launch-to-runnable 毫秒数。测试里的 40、100、70 只是夹具，不能写进实机报告。临时客户机镜像已经删除，Linux 和 Windows 使用各自文档里的 system-image manifest。
 
@@ -51,36 +51,36 @@ virtio-fs 共享令牌：KVM 与 HVF 是 `same-uid-private-per-generation-virtio
 
 在一台有 `/dev/kvm` 的 x86_64 Linux 上，从 `crates/oci-runtime` 用 rustc 1.98.1 完成：
 
-1. `cargo test -p a3s-oci-core --lib hardware_vm -- --test-threads=1`
-2. `cargo test -p a3s-oci-krun --lib -- rejects_resources_outside_the_shared_hardware_vm_profile accepts_profile_vcpu_and_aligned_memory`
-3. `cargo test -p a3s-oci-sdk --lib checkpoint::tests -- --test-threads=1`
-4. 在 `crates/box/src` 里：`cargo test -p a3s-box-runtime --lib hardware_vm -- --test-threads=1`，以及 `cargo test -p a3s-box-cli --lib hardware_vm_consumer -- --test-threads=1`
+1. `cargo test -p aster-oci-core --lib hardware_vm -- --test-threads=1`
+2. `cargo test -p aster-oci-krun --lib -- rejects_resources_outside_the_shared_hardware_vm_profile accepts_profile_vcpu_and_aligned_memory`
+3. `cargo test -p aster-oci-sdk --lib checkpoint::tests -- --test-threads=1`
+4. 在 `crates/box/src` 里：`cargo test -p aster-box-runtime --lib hardware_vm -- --test-threads=1`，以及 `cargo test -p aster-box-cli --lib hardware_vm_consumer -- --test-threads=1`
 
 然后跑实机门，命令和通过条件以 `docs/linux-native.md` 为准：
 
 ```bash
-cargo run -p a3s-oci-krun --bin a3s-oci-krun-shim -- context-smoke
+cargo run -p aster-oci-krun --bin aster-oci-krun-shim -- context-smoke
 ```
 
-成功报告是 `a3s.oci.krun-context-smoke.v2`，platform `linux`，1 vCPU，128 MiB。这一步不打开 `/dev/kvm`，也不进入客户机。
+成功报告是 `aster.oci.krun-context-smoke.v2`，platform `linux`，1 vCPU，128 MiB。这一步不打开 `/dev/kvm`，也不进入客户机。
 
 真正进入客户机使用短的 `RUNNER_TEMP`（例如 `/tmp`）和本机的 system-image manifest：
 
 ```bash
 export RUNNER_TEMP=/tmp
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-agent-entry.sh
 ```
 
-保留 `a3s.oci.linux-kvm-agent-entry.v1`。客户机 ISA 用 `linux-direct-x86_64`，内核输入对上 x86_64 的 `SOURCE-DIGEST`。根盘只读。目录共享只接受同一 UID；外来 UID 在 KVM 上失败。控制通道是同一用户的 Unix socket，限额用共享配置里的 65536 和 32。
+保留 `aster.oci.linux-kvm-agent-entry.v1`。客户机 ISA 用 `linux-direct-x86_64`，内核输入对上 x86_64 的 `SOURCE-DIGEST`。根盘只读。目录共享只接受同一 UID；外来 UID 在 KVM 上失败。控制通道是同一用户的 Unix socket，限额用共享配置里的 65536 和 32。
 
-fresh-host 晋升仍走 `ROADMAP.md` 的 Linux KVM R2L：`A3S_OCI_LINUX_KVM_HOST_CLASS=fresh`，加上 `a3s.oci.linux-kvm-fresh-host-attestation.v1`，soak 保持 25 轮。用过的机器和 WSL 保持 `existing`，报告里 `promotes_readiness` 维持 false。
+fresh-host 晋升仍走 `ROADMAP.md` 的 Linux KVM R2L：`ASTER_OCI_LINUX_KVM_HOST_CLASS=fresh`，加上 `aster.oci.linux-kvm-fresh-host-attestation.v1`，soak 保持 25 轮。用过的机器和 WSL 保持 `existing`，报告里 `promotes_readiness` 维持 false。
 
 ## Linux KVM aarch64
 
 重复上一节的全部命令和报告，换到 aarch64 Linux 主机。客户机 ISA 用 `linux-direct-aarch64`，内核输入对上 aarch64 的 `SOURCE-DIGEST`。x86_64 的通过结果不能抄过来。
 
-这台 Mac 的 aarch64 客户机是 HVF，不是 KVM。KVM aarch64 要自己打开 `/dev/kvm`、核对 API version 12，并留下 `a3s.oci.linux-kvm-agent-entry.v1`。
+这台 Mac 的 aarch64 客户机是 HVF，不是 KVM。KVM aarch64 要自己打开 `/dev/kvm`、核对 API version 12，并留下 `aster.oci.linux-kvm-agent-entry.v1`。
 
 ## Windows x86_64 WHPX
 
@@ -90,7 +90,7 @@ fresh-host 晋升仍走 `ROADMAP.md` 的 Linux KVM R2L：`A3S_OCI_LINUX_KVM_HOST
 2. krun 测试必须实际执行 `rejects_uncertified_windows_smp_configuration`。`VmConfig::new(2, 128)` 失败，文本包含 `exactly 1 vCPU`。`VmConfig::new(1, 128)` 与 `VmConfig::new(1, 512)` 成功。`(4, 8192)` 和 `(8, 128)` 也要被这道主机门槛拒绝。
 3. `rejects_resources_outside_the_shared_hardware_vm_profile`：`(3, 256)`、`(1, 64)`、`(1, 129)`、`(1, 8193)` 失败，文本包含 `hardware-vm profile`。
 
-实机命令和资产以 `docs/windows-whpx.md` 为准：`a3s-oci whpx-smoke`、`a3s-oci-krun-shim context-smoke`、`a3s-oci-krun-shim vm-smoke`，以及文档里的 `agent-vm-smoke` 和 `oci-vm-smoke`。进入客户机时保持 1 vCPU、512 MiB、只读根盘，以及 `protected-per-generation-virtiofs`。客户机 ISA 是 x86_64。WHPX 不把 aarch64 算作合格主机。
+实机命令和资产以 `docs/windows-whpx.md` 为准：`aster-oci whpx-smoke`、`aster-oci-krun-shim context-smoke`、`aster-oci-krun-shim vm-smoke`，以及文档里的 `agent-vm-smoke` 和 `oci-vm-smoke`。进入客户机时保持 1 vCPU、512 MiB、只读根盘，以及 `protected-per-generation-virtiofs`。客户机 ISA 是 x86_64。WHPX 不把 aarch64 算作合格主机。
 
 外来 UID 只允许 portable metadata。guest-native ext4 和直接的外来 UID 目录共享都要失败。控制通道是同一用户的命名管道，记录长度和信用窗口与 KVM、HVF 相同。
 

@@ -5,15 +5,15 @@ use std::path::{Path, PathBuf};
 use crate::oci::OciImageConfig;
 use crate::rootfs::GUEST_WORKDIR;
 use crate::vmm::{Entrypoint, FsMount, InstanceSpec, RootfsSource};
-use a3s_box_core::config::{validate_vcpu_count, TeeConfig};
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::guest_exec::{
+use aster_box_core::config::{validate_vcpu_count, TeeConfig};
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::guest_exec::{
     GuestBootConfig, GuestExecConfig, GuestHostConfig, GUEST_BOOT_CONFIG_ENV,
     GUEST_BOOT_CONFIG_FILE_NAME, GUEST_BOOT_CONFIG_PATH, GUEST_BOOT_CONTROL_TAG,
     GUEST_TERMINAL_CONTROL_TAG, GUEST_TERMINAL_STATUS_FILE_NAME, MAX_GUEST_BOOT_CONFIG_BYTES,
     MAX_RUNTIME_EXEC_CONFIG_BYTES, RUNTIME_EXEC_CONFIG_PATH,
 };
-use a3s_box_core::rootfs_metadata::RUNTIME_ENV_PATH;
+use aster_box_core::rootfs_metadata::RUNTIME_ENV_PATH;
 
 use super::{BoxLayout, VmManager};
 
@@ -85,7 +85,7 @@ impl VmManager {
         guest_control_transport: GuestControlTransport,
     ) -> Result<InstanceSpec> {
         if !self.config.host_services.is_empty() {
-            a3s_box_core::resolve_execution(&self.config)?;
+            aster_box_core::resolve_execution(&self.config)?;
             #[cfg(unix)]
             for service in &self.config.host_services {
                 service.validate_host_path(unsafe { libc::geteuid() })?;
@@ -265,7 +265,7 @@ impl VmManager {
                     (exec, args, vec![])
                 }
             };
-            a3s_box_core::env::merge_env_pairs(&mut container_env, &self.config.extra_env);
+            aster_box_core::env::merge_env_pairs(&mut container_env, &self.config.extra_env);
 
             // Keep user-controlled exec/argv strings off libkrun's kernel command
             // line. Linux truncates that command line at COMMAND_LINE_SIZE, which
@@ -383,9 +383,9 @@ impl VmManager {
                 .config
                 .virtiofs_cache
                 .clone()
-                .or_else(|| env_nonempty("A3S_VIRTIOFS_CACHE"))
+                .or_else(|| env_nonempty("ASTER_VIRTIOFS_CACHE"))
             {
-                env.push(("A3S_VIRTIOFS_CACHE".to_string(), cache_mode));
+                env.push(("ASTER_VIRTIOFS_CACHE".to_string(), cache_mode));
             }
 
             // Pass user volume mounts to guest init for mounting inside the VM.
@@ -438,7 +438,7 @@ impl VmManager {
             }
 
             // Pass security configuration to guest init
-            let security_config = a3s_box_core::SecurityConfig::from_options(
+            let security_config = aster_box_core::SecurityConfig::from_options(
                 &self.config.security_opt,
                 &self.config.cap_add,
                 &self.config.cap_drop,
@@ -452,29 +452,29 @@ impl VmManager {
             // cgroup `pids.max`; it reads this env in PID 1 before the container
             // fork.
             if let Some(pids_limit) = self.config.resource_limits.pids_limit {
-                env.push(("A3S_SEC_PIDS_LIMIT".to_string(), pids_limit.to_string()));
+                env.push(("ASTER_SEC_PIDS_LIMIT".to_string(), pids_limit.to_string()));
             }
 
             // CPU cgroup limits (`--cpu-quota`/`--cpu-period`/`--cpu-shares`).
             // Like the pids cap these have no VM-boundary equivalent, so the
             // guest enforces them with a per-container cgroup v2 cpu.max /
-            // cpu.weight. The CRI path already plumbs the identical A3S_SEC_CPU_*
+            // cpu.weight. The CRI path already plumbs the identical ASTER_SEC_CPU_*
             // vars (runtime_service mod.rs) and the guest consumes them in
             // exec_server; mirror it here so a `run --cpu-quota ...` is actually
             // capped instead of silently dropped. A quota of 0/-1 is unlimited.
             if let Some(cpu_quota) = self.config.resource_limits.cpu_quota {
                 if cpu_quota > 0 {
-                    env.push(("A3S_SEC_CPU_QUOTA".to_string(), cpu_quota.to_string()));
+                    env.push(("ASTER_SEC_CPU_QUOTA".to_string(), cpu_quota.to_string()));
                     if let Some(cpu_period) = self.config.resource_limits.cpu_period {
                         if cpu_period > 0 {
-                            env.push(("A3S_SEC_CPU_PERIOD".to_string(), cpu_period.to_string()));
+                            env.push(("ASTER_SEC_CPU_PERIOD".to_string(), cpu_period.to_string()));
                         }
                     }
                 }
             }
             if let Some(cpu_shares) = self.config.resource_limits.cpu_shares {
                 if cpu_shares > 0 {
-                    env.push(("A3S_SEC_CPU_SHARES".to_string(), cpu_shares.to_string()));
+                    env.push(("ASTER_SEC_CPU_SHARES".to_string(), cpu_shares.to_string()));
                 }
             }
 
@@ -482,14 +482,14 @@ impl VmManager {
             // swap cap (--memory-swap → memory.swap.max). Like the CPU caps these
             // are enforced by the in-guest per-container cgroup (the broken
             // host-side path was removed); the hard --memory limit stays
-            // VM-sized, so no A3S_SEC_MEM_LIMIT is emitted here.
+            // VM-sized, so no ASTER_SEC_MEM_LIMIT is emitted here.
             if let Some(reservation) = self.config.resource_limits.memory_reservation {
                 if reservation > 0 {
-                    env.push(("A3S_SEC_MEM_LOW".to_string(), reservation.to_string()));
+                    env.push(("ASTER_SEC_MEM_LOW".to_string(), reservation.to_string()));
                 }
             }
             if let Some(swap) = self.config.resource_limits.memory_swap {
-                env.push(("A3S_SEC_MEM_SWAP".to_string(), swap.to_string()));
+                env.push(("ASTER_SEC_MEM_SWAP".to_string(), swap.to_string()));
             }
 
             // Signal guest init to remount rootfs read-only after all setup
@@ -527,7 +527,7 @@ impl VmManager {
                         self.config.entrypoint_override.as_deref(),
                     );
                     let mut env = oci_config.env.clone();
-                    a3s_box_core::env::merge_env_pairs(&mut env, &self.config.extra_env);
+                    aster_box_core::env::merge_env_pairs(&mut env, &self.config.extra_env);
 
                     tracing::debug!(
                         executable = %executable,
@@ -563,7 +563,7 @@ impl VmManager {
         {
             entrypoint
                 .env
-                .push(("A3S_TEE_SIMULATE".to_string(), "1".to_string()));
+                .push(("ASTER_TEE_SIMULATE".to_string(), "1".to_string()));
         }
 
         if include_guest_controls {
@@ -646,13 +646,13 @@ impl VmManager {
             // legacy no-guest-init path uses the shim's set_uid.
             user: if has_guest_init { None } else { user },
             network: None, // Network config is set by CLI when --network is specified
-            disable_tsi: matches!(&self.config.network, a3s_box_core::NetworkMode::None),
+            disable_tsi: matches!(&self.config.network, aster_box_core::NetworkMode::None),
             host_services: self.config.host_services.clone(),
             resource_limits: self.config.resource_limits.clone(),
             log_config: self.log_config.clone(),
-            // KSM page-merging: config field, or the A3S_BOX_KSM env override.
+            // KSM page-merging: config field, or the ASTER_BOX_KSM env override.
             ksm: self.config.ksm
-                || std::env::var("A3S_BOX_KSM")
+                || std::env::var("ASTER_BOX_KSM")
                     .map(|v| matches!(v.as_str(), "1" | "true" | "yes" | "on"))
                     .unwrap_or(false),
             // Snapshot-fork (per-VM): config field, or the env override (single-VM
@@ -912,7 +912,7 @@ impl VmManager {
     }
 
     fn effective_workdir(
-        config: &a3s_box_core::config::BoxConfig,
+        config: &aster_box_core::config::BoxConfig,
         oci_config: Option<&OciImageConfig>,
     ) -> String {
         let image_workdir = oci_config
@@ -938,7 +938,7 @@ impl VmManager {
     }
 
     fn effective_user(
-        config: &a3s_box_core::config::BoxConfig,
+        config: &aster_box_core::config::BoxConfig,
         oci_config: Option<&OciImageConfig>,
     ) -> Option<String> {
         config

@@ -8,20 +8,20 @@ use super::{
 use crate::execution_identity::ExecutionIdentityV1;
 use crate::planning::AgentGoal;
 use crate::workspace::WorkspaceRef;
-use a3s_effect::{Fact, NewFact};
+use aster_effect::{Fact, NewFact};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 
-pub const GOAL_FACT_SCHEMA_V1: &str = "a3s.code.goal.fact.v1";
+pub const GOAL_FACT_SCHEMA_V1: &str = "aster.code.goal.fact.v1";
 
 closed_set!(GoalFactKindV1 {
-    Created => "a3s.goal.created", Revised => "a3s.goal.revised",
-    PlanProposed => "a3s.goal.plan.proposed", PlanAccepted => "a3s.goal.plan.accepted",
-    SliceAdmitted => "a3s.goal.slice.admitted", SliceSettled => "a3s.goal.slice.settled",
-    StepAccepted => "a3s.goal.step.accepted", WaitDeclared => "a3s.goal.wait.declared",
-    WaitObserved => "a3s.goal.wait.observed", Paused => "a3s.goal.paused",
-    Resumed => "a3s.goal.resumed", Cancelled => "a3s.goal.cancelled",
-    Completed => "a3s.goal.completed",
+    Created => "aster.goal.created", Revised => "aster.goal.revised",
+    PlanProposed => "aster.goal.plan.proposed", PlanAccepted => "aster.goal.plan.accepted",
+    SliceAdmitted => "aster.goal.slice.admitted", SliceSettled => "aster.goal.slice.settled",
+    StepAccepted => "aster.goal.step.accepted", WaitDeclared => "aster.goal.wait.declared",
+    WaitObserved => "aster.goal.wait.observed", Paused => "aster.goal.paused",
+    Resumed => "aster.goal.resumed", Cancelled => "aster.goal.cancelled",
+    Completed => "aster.goal.completed",
 });
 
 pub fn goal_fact_key(
@@ -31,9 +31,9 @@ pub fn goal_fact_key(
 ) -> Result<String, GoalControlError> {
     validate_id("goal_id", goal_id)?;
     validate_id("operation_id", operation_id)?;
-    let goal = crate::content_digest::digest_bytes("a3s.code.goal-id.v1", goal_id.as_bytes());
+    let goal = crate::content_digest::digest_bytes("aster.code.goal-id.v1", goal_id.as_bytes());
     let operation = crate::content_digest::digest_bytes(
-        "a3s.code.goal-operation-id.v1",
+        "aster.code.goal-operation-id.v1",
         operation_id.as_bytes(),
     );
     Ok(format!("goal/{goal}/{operation}/{}", kind.as_str()))
@@ -58,8 +58,8 @@ mod wait;
 pub(crate) use wait::prepare_wait;
 pub(crate) use wait::slice_unsettled;
 
-const COMMAND_DOMAIN: &str = "a3s.code.goal-command.v1";
-const AUTHORIZATION_DOMAIN: &str = "a3s.code.goal-authorization.v1";
+const COMMAND_DOMAIN: &str = "aster.code.goal-command.v1";
+const AUTHORIZATION_DOMAIN: &str = "aster.code.goal-authorization.v1";
 
 #[derive(Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -280,7 +280,7 @@ fn fold_definitions(
     let mut operations = BTreeSet::new();
     for fact in facts
         .iter()
-        .filter(|fact| fact.kind.starts_with("a3s.goal.") || fact.key.starts_with("goal/"))
+        .filter(|fact| fact.kind.starts_with("aster.goal.") || fact.key.starts_with("goal/"))
     {
         let fact_kind = GoalFactKindV1::parse(&fact.kind)?;
         let (operation_id, digest, view) = match fact_kind {
@@ -514,7 +514,7 @@ pub(crate) fn prepare_definition(
 }
 
 pub(crate) fn refuse_unbound_goal_execution(facts: &[Fact]) -> Result<(), GoalControlError> {
-    if facts.iter().any(|fact| fact.kind.starts_with("a3s.goal.")) {
+    if facts.iter().any(|fact| fact.kind.starts_with("aster.goal.")) {
         return Err(refused(
             GoalRefusal::HostDriverConflict,
             "goal-bound execution requires the original qualified goal projection",

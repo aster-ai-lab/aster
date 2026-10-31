@@ -9,8 +9,8 @@ pub(super) fn facts(workspace: &Path, home: &Path) -> Vec<Value> {
 
 pub(super) fn facts_for_session(workspace: &Path, home: &Path, session_id: &str) -> Vec<Value> {
     let mut logs = Vec::new();
-    collect_trace_files(&workspace.join(".a3s"), &mut logs);
-    collect_trace_files(&home.join(".a3s/logs"), &mut logs);
+    collect_trace_files(&workspace.join(".aster"), &mut logs);
+    collect_trace_files(&home.join(".aster/logs"), &mut logs);
     logs.into_iter()
         .map(|text| parse_facts(&text))
         .filter(|records| {
@@ -36,7 +36,7 @@ fn session_fact_sources_are_selected_by_the_exact_admission_identity() {
     let root = tempfile::tempdir().unwrap();
     let workspace = root.path().join("workspace");
     let home = root.path().join("home");
-    std::fs::create_dir_all(workspace.join(".a3s")).unwrap();
+    std::fs::create_dir_all(workspace.join(".aster")).unwrap();
     for (file, session, marker) in [
         ("a.jsonl", "new-session", "new reply"),
         ("z.jsonl", "old-session", "old reply"),
@@ -51,7 +51,7 @@ fn session_fact_sources_are_selected_by_the_exact_admission_identity() {
             .map(Value::to_string)
             .collect::<Vec<_>>()
             .join("\n");
-        std::fs::write(workspace.join(".a3s").join(file), text).unwrap();
+        std::fs::write(workspace.join(".aster").join(file), text).unwrap();
     }
     assert_eq!(
         completed_narrative(&facts_for_session(&workspace, &home, "new-session")),

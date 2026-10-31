@@ -8,7 +8,7 @@ use std::sync::Arc;
 
 /// Environment opt-in for process-host fallback when the native sandbox cannot
 /// initialize (Harbor / Terminal-Bench containers without bubblewrap).
-pub const ALLOW_PROCESS_HOST_SANDBOX_ENV: &str = "A3S_CODE_ALLOW_PROCESS_HOST_SANDBOX";
+pub const ALLOW_PROCESS_HOST_SANDBOX_ENV: &str = "ASTER_ALLOW_PROCESS_HOST_SANDBOX";
 
 /// Bind the built-in native sandbox before capabilities are assembled so the
 /// top-level Bash tool, workflows, and delegated child runs all inherit the
@@ -118,7 +118,7 @@ pub(crate) fn select_default_local_sandbox(
             }
             crate::sandbox::SandboxNetworkMode::Mediated => {
                 let message = format!(
-                    "the default A3S native sandbox is unavailable for '{}': {error:#}; the \
+                    "the default Aster native sandbox is unavailable for '{}': {error:#}; the \
                      process-host fallback was NOT installed because it cannot honor the \
                      requested '{}' network posture — install the native backend (e.g. \
                      bubblewrap) or drop the mediated posture",
@@ -143,7 +143,7 @@ pub(crate) fn select_default_local_sandbox(
                 String::new()
             };
             let message = format!(
-                "the default A3S native sandbox is unavailable for '{}': {error:#}{hint}",
+                "the default Aster native sandbox is unavailable for '{}': {error:#}{hint}",
                 local_root.display()
             );
             tracing::warn!(workspace = %local_root.display(), error = %error, hint = %hint, "default native Bash sandbox is unavailable; Bash remains denied");
@@ -238,7 +238,7 @@ mod tests {
         };
         assert!(error
             .to_string()
-            .contains("the default A3S native sandbox is unavailable"));
+            .contains("the default Aster native sandbox is unavailable"));
     }
 
     // Harbor / Terminal-Bench process-host bash is a Unix outer-isolation path.
@@ -341,7 +341,7 @@ mod tests {
             Err(error) => error,
         };
         let message = error.to_string();
-        assert!(message.contains("the default A3S native sandbox is unavailable"));
+        assert!(message.contains("the default Aster native sandbox is unavailable"));
         assert!(message.contains(ALLOW_PROCESS_HOST_SANDBOX_ENV));
         assert!(message.contains("outer container"));
         assert!(message.contains("network posture: deny"));
@@ -435,7 +435,7 @@ mod tests {
         };
         let message = error.to_string();
         assert!(
-            message.contains("the default A3S native sandbox is unavailable"),
+            message.contains("the default Aster native sandbox is unavailable"),
             "stable prefix kept: {message}"
         );
         assert!(
@@ -547,8 +547,8 @@ mod tests {
         let root = tempfile::tempdir().unwrap();
         let assets = root.path().join("assets");
         for relative in [
-            "a3s-oci",
-            "a3s-oci-krun-shim",
+            "aster-oci",
+            "aster-oci-krun-shim",
             "system-image.json",
             "bundle/config.json",
             "bundle/rootfs/bin/bash",
@@ -624,8 +624,8 @@ mod tests {
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     fn write_stub_companions(assets: &std::path::Path, skip: Option<&str>) {
         for relative in [
-            "a3s-oci",
-            "a3s-oci-krun-shim",
+            "aster-oci",
+            "aster-oci-krun-shim",
             "system-image.json",
             "bundle/config.json",
             "bundle/rootfs/bin/bash",
@@ -662,8 +662,8 @@ mod tests {
         }
 
         for skip in [
-            "a3s-oci",
-            "a3s-oci-krun-shim",
+            "aster-oci",
+            "aster-oci-krun-shim",
             "system-image.json",
             "bundle/config.json",
             "bundle/rootfs/bin/bash",
@@ -989,9 +989,9 @@ mod tests {
             "image.name must be one plain file name, got {image_name:?}"
         );
         let image = directory.join(image_name);
-        let host_path = directory.join("a3s-oci");
+        let host_path = directory.join("aster-oci");
         let host_bytes = std::fs::read(&host_path).expect("host binary discovery launches");
-        let agent_path = root.join("a3s-oci-agent");
+        let agent_path = root.join("aster-oci-agent");
         let agent_bytes = guest_agent_bytes(&image, &agent_path);
         let host_version = crate::sandbox::oci::host_runtime_version(&host_bytes)
             .expect("host runtime version sits before the mismatch error");
@@ -1040,7 +1040,7 @@ mod tests {
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     fn guest_agent_bytes(image: &std::path::Path, destination: &std::path::Path) -> Vec<u8> {
         let debugfs = "/opt/homebrew/opt/e2fsprogs/sbin/debugfs";
-        let dump = format!("dump /usr/bin/a3s-oci-agent {}", destination.display());
+        let dump = format!("dump /usr/bin/aster-oci-agent {}", destination.display());
         let output = std::process::Command::new(debugfs)
             .args(["-R", &dump])
             .arg(image)
@@ -1048,7 +1048,7 @@ mod tests {
             .unwrap_or_else(|error| panic!("debugfs is required to read the guest agent: {error}"));
         assert!(
             output.status.success(),
-            "debugfs dump of /usr/bin/a3s-oci-agent failed: {}",
+            "debugfs dump of /usr/bin/aster-oci-agent failed: {}",
             String::from_utf8_lossy(&output.stderr)
         );
         std::fs::read(destination).expect("dumped guest agent")

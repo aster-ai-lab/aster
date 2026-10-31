@@ -25,11 +25,11 @@ export function OptionEditor({
     'option',
   );
   return (
-    <section className="a3s-form-collection-editor" aria-label="选项配置">
+    <section className="aster-form-collection-editor" aria-label="选项配置">
       <CollectionHeading title="选项" meta={`${options.length} 项 · 值保持稳定`} />
-      <div className="a3s-form-collection-list item-group">
+      <div className="aster-form-collection-list item-group">
         {options.length === 0 ? (
-          <p className="a3s-form-collection-empty">暂无静态选项，可逐项添加或使用批量编辑。</p>
+          <p className="aster-form-collection-empty">暂无静态选项，可逐项添加或使用批量编辑。</p>
         ) : (
           options.map((option, index) => (
             <CollectionItem
@@ -68,7 +68,7 @@ export function OptionEditor({
       </div>
       <button
         type="button"
-        className="a3s-form-collection-add btn"
+        className="aster-form-collection-add btn"
         data-variant="secondary"
         disabled={nextValue === undefined}
         onClick={() => {
@@ -116,10 +116,10 @@ export function MatrixDefinitionEditor({
     rows.length * (columns.length + 1) <= MATRIX_LIMITS.maxCells;
 
   return (
-    <div className="a3s-form-matrix-definition-editor">
-      <section className="a3s-form-collection-editor" aria-label="矩阵行配置">
+    <div className="aster-form-matrix-definition-editor">
+      <section className="aster-form-collection-editor" aria-label="矩阵行配置">
         <CollectionHeading title="矩阵行" meta={`${rows.length} 行 · ID 保持稳定`} />
-        <div className="a3s-form-collection-list item-group">
+        <div className="aster-form-collection-list item-group">
           {rows.map((row, index) => (
             <CollectionItem
               key={row.id}
@@ -156,7 +156,7 @@ export function MatrixDefinitionEditor({
         </div>
         <button
           type="button"
-          className="a3s-form-collection-add btn"
+          className="aster-form-collection-add btn"
           data-variant="secondary"
           disabled={!canAddRow}
           onClick={() =>
@@ -167,7 +167,7 @@ export function MatrixDefinitionEditor({
         </button>
       </section>
 
-      <section className="a3s-form-collection-editor" aria-label="矩阵列配置">
+      <section className="aster-form-collection-editor" aria-label="矩阵列配置">
         <CollectionHeading
           title="矩阵列"
           meta={
@@ -176,7 +176,7 @@ export function MatrixDefinitionEditor({
               : `${columns.length} 列 · 值保持稳定`
           }
         />
-        <div className="a3s-form-collection-list item-group">
+        <div className="aster-form-collection-list item-group">
           {columns.map((column, index) => (
             <CollectionItem
               key={`${typeof column.value}-${String(column.value)}`}
@@ -226,7 +226,7 @@ export function MatrixDefinitionEditor({
         </div>
         <button
           type="button"
-          className="a3s-form-collection-add btn"
+          className="aster-form-collection-add btn"
           data-variant="secondary"
           disabled={!canAddColumn}
           onClick={() => {
@@ -241,9 +241,9 @@ export function MatrixDefinitionEditor({
         </button>
       </section>
 
-      <details className="a3s-form-bulk-editor">
+      <details className="aster-form-bulk-editor">
         <summary>批量编辑</summary>
-        <div className="a3s-form-bulk-editor-fields">
+        <div className="aster-form-bulk-editor-fields">
           <BulkField
             label="矩阵行"
             value={rows.map(({ label }) => label).join('\n')}
@@ -283,7 +283,7 @@ export function LayoutItemEditor({
   const regionLabel = layout === 'wizard' ? '向导步骤配置' : `${noun}配置`;
   const reviewCount = items.filter((item) => item.pageRole === 'review').length;
   return (
-    <section className="a3s-form-collection-editor" aria-label={regionLabel}>
+    <section className="aster-form-collection-editor" aria-label={regionLabel}>
       <CollectionHeading
         title={noun}
         meta={
@@ -292,7 +292,7 @@ export function LayoutItemEditor({
             : `${items.length} 项`
         }
       />
-      <div className="a3s-form-collection-list item-group">
+      <div className="aster-form-collection-list item-group">
         {items.map((item, index) => (
           <CollectionItem
             key={item.id}
@@ -334,7 +334,7 @@ export function LayoutItemEditor({
       </div>
       <button
         type="button"
-        className="a3s-form-collection-add btn"
+        className="aster-form-collection-add btn"
         data-variant="secondary"
         onClick={onAdd}
       >
@@ -346,7 +346,7 @@ export function LayoutItemEditor({
 
 function CollectionHeading({ title, meta }: { title: string; meta: string }) {
   return (
-    <div className="a3s-form-collection-heading">
+    <div className="aster-form-collection-heading">
       <strong>{title}</strong>
       <span>{meta}</span>
     </div>
@@ -390,9 +390,9 @@ function CollectionItem({
 }) {
   const safeLabel = label || `未命名${disableLabel}`;
   return (
-    <article className="a3s-form-collection-item item" data-disabled={disabled || undefined}>
-      <div className="a3s-form-collection-content">{children}</div>
-      <details className="a3s-form-collection-actions a3s-form-disclosure">
+    <article className="aster-form-collection-item item" data-disabled={disabled || undefined}>
+      <div className="aster-form-collection-content">{children}</div>
+      <details className="aster-form-collection-actions aster-form-disclosure">
         <summary
           className="btn"
           data-size="icon-xs"
@@ -403,7 +403,7 @@ function CollectionItem({
           <DesignerIcon name="more" size={14} />
         </summary>
         <div
-          className="a3s-form-collection-menu item-group"
+          className="aster-form-collection-menu item-group"
           role="menu"
           aria-label={`${disableLabel} ${safeLabel} 操作菜单`}
         >
@@ -509,7 +509,7 @@ function CollectionValueDetails({
   children: React.ReactNode;
 }) {
   return (
-    <details className="a3s-form-collection-value a3s-form-disclosure">
+    <details className="aster-form-collection-value aster-form-disclosure">
       <summary>
         <span>{label}</span>
         <code>{formatPrimitive(value)}</code>
@@ -522,7 +522,7 @@ function CollectionValueDetails({
 
 function StableToken({ label, value }: { label: string; value: string | number | boolean | null }) {
   return (
-    <span className="a3s-form-stable-token">
+    <span className="aster-form-stable-token">
       {label}
       <code>{formatPrimitive(value)}</code>
     </span>
@@ -540,7 +540,7 @@ function PrimitiveValueEditor({
   values: readonly JsonPrimitive[];
   onChange: (value: JsonPrimitive) => void;
 }) {
-  const errorId = `a3s-form-option-value-${useId().replaceAll(':', '')}`;
+  const errorId = `aster-form-option-value-${useId().replaceAll(':', '')}`;
   const [draft, setDraft] = useState(() => formatPrimitive(value));
   const [error, setError] = useState('');
   const valueType = value === null ? 'null' : typeof value;
@@ -578,7 +578,7 @@ function PrimitiveValueEditor({
 
   return (
     <div
-      className="a3s-form-primitive-editor field"
+      className="aster-form-primitive-editor field"
       data-orientation="horizontal"
       data-invalid={error || undefined}
     >
@@ -647,7 +647,7 @@ function IdentifierEditor({
   values: readonly string[];
   onChange: (value: string) => void;
 }) {
-  const errorId = `a3s-form-row-id-${useId().replaceAll(':', '')}`;
+  const errorId = `aster-form-row-id-${useId().replaceAll(':', '')}`;
   const [draft, setDraft] = useState(value);
   const [error, setError] = useState('');
 
@@ -680,7 +680,7 @@ function IdentifierEditor({
 
   return (
     <label
-      className="a3s-form-identifier-editor field"
+      className="aster-form-identifier-editor field"
       data-orientation="horizontal"
       data-invalid={error || undefined}
     >
@@ -741,7 +741,7 @@ function BulkEditor({
   onChange: (text: string) => void;
 }) {
   return (
-    <details className="a3s-form-bulk-editor">
+    <details className="aster-form-bulk-editor">
       <summary>批量编辑</summary>
       <BulkField label={label} value={value} onChange={onChange} />
     </details>
@@ -758,7 +758,7 @@ function BulkField({
   onChange: (text: string) => void;
 }) {
   return (
-    <label className="a3s-form-bulk-field">
+    <label className="aster-form-bulk-field">
       <span>{label}标题，每行一项</span>
       <textarea
         className="textarea"

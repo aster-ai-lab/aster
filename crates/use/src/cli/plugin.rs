@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{
+use aster_use_core::{
     PackageSurfaceKind, PlanActor, PlanPolicyDecision, PluginHostEnablementPlanResult,
     PluginHostEnablementPlanStatus, PluginHostObservationStatus, PluginManagerApplyPlanInput,
     PluginManagerInspectInput, PluginManagerInstallPlanInput, PluginManagerListInstalledInput,
@@ -346,7 +346,7 @@ async fn apply_plan(args: &[String]) -> UseResult<CommandOutput> {
     )
 }
 
-fn plan_output(result: &a3s_use_core::PluginHostPlanResult) -> UseResult<CommandOutput> {
+fn plan_output(result: &aster_use_core::PluginHostPlanResult) -> UseResult<CommandOutput> {
     encoded_output(
         format!(
             "Planned {} for '{}' as operation {} with digest {}.",
@@ -558,7 +558,7 @@ mod tests {
             .iter()
             .map(|command| manager_tool_name(command).unwrap())
             .collect::<Vec<_>>();
-        let frozen_tools = a3s_use_core::PluginManagerToolset::v4()
+        let frozen_tools = aster_use_core::PluginManagerToolset::v4()
             .tools
             .into_iter()
             .map(|tool| tool.name)

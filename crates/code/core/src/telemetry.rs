@@ -1,23 +1,23 @@
 //! Telemetry Module (Core)
 //!
-//! Provides centralized observability primitives for the A3S Code agent:
+//! Provides centralized observability primitives for the Aster Code agent:
 //! - Span name and attribute key constants
 //! - LLM cost tracking (model, tokens, cost per call)
 //! - Tool execution metrics (duration, success/failure)
 //! - Span helper functions using `tracing` (no OTel dependency)
 //!
 //! For OpenTelemetry initialization (OTLP exporter, subscriber setup),
-//! see the `telemetry_init` module in the `a3s-code` server crate.
+//! see the `telemetry_init` module in the `aster` server crate.
 //!
 //! ## Span Hierarchy
 //!
 //! ```text
-//! a3s.agent.execute
-//!   +-- a3s.agent.context_resolve
-//!   +-- a3s.agent.turn (repeated)
-//!   |   +-- a3s.llm.completion
-//!   |   +-- a3s.tool.execute (repeated)
-//!   +-- a3s.agent.turn_notify
+//! aster.agent.execute
+//!   +-- aster.agent.context_resolve
+//!   +-- aster.agent.turn (repeated)
+//!   |   +-- aster.llm.completion
+//!   |   +-- aster.tool.execute (repeated)
+//!   +-- aster.agent.turn_notify
 //! ```
 
 use std::time::Instant;
@@ -27,39 +27,39 @@ use std::time::Instant;
 // ============================================================================
 
 /// Service name for telemetry
-pub const SERVICE_NAME: &str = "a3s-code";
+pub const SERVICE_NAME: &str = "aster";
 
 // Span name constants
-pub const SPAN_AGENT_EXECUTE: &str = "a3s.agent.execute";
-pub const SPAN_AGENT_TURN: &str = "a3s.agent.turn";
-pub const SPAN_LLM_COMPLETION: &str = "a3s.llm.completion";
-pub const SPAN_TOOL_EXECUTE: &str = "a3s.tool.execute";
-pub const SPAN_CONTEXT_RESOLVE: &str = "a3s.agent.context_resolve";
+pub const SPAN_AGENT_EXECUTE: &str = "aster.agent.execute";
+pub const SPAN_AGENT_TURN: &str = "aster.agent.turn";
+pub const SPAN_LLM_COMPLETION: &str = "aster.llm.completion";
+pub const SPAN_TOOL_EXECUTE: &str = "aster.tool.execute";
+pub const SPAN_CONTEXT_RESOLVE: &str = "aster.agent.context_resolve";
 
 // Attribute key constants
-pub const ATTR_SESSION_ID: &str = "a3s.session.id";
-pub const ATTR_TURN_NUMBER: &str = "a3s.agent.turn_number";
-pub const ATTR_MAX_TURNS: &str = "a3s.agent.max_turns";
-pub const ATTR_TOOL_CALLS_COUNT: &str = "a3s.agent.tool_calls_count";
+pub const ATTR_SESSION_ID: &str = "aster.session.id";
+pub const ATTR_TURN_NUMBER: &str = "aster.agent.turn_number";
+pub const ATTR_MAX_TURNS: &str = "aster.agent.max_turns";
+pub const ATTR_TOOL_CALLS_COUNT: &str = "aster.agent.tool_calls_count";
 
-pub const ATTR_LLM_MODEL: &str = "a3s.llm.model";
-pub const ATTR_LLM_PROVIDER: &str = "a3s.llm.provider";
-pub const ATTR_LLM_STREAMING: &str = "a3s.llm.streaming";
-pub const ATTR_LLM_PROMPT_TOKENS: &str = "a3s.llm.prompt_tokens";
-pub const ATTR_LLM_COMPLETION_TOKENS: &str = "a3s.llm.completion_tokens";
-pub const ATTR_LLM_TOTAL_TOKENS: &str = "a3s.llm.total_tokens";
-pub const ATTR_LLM_STOP_REASON: &str = "a3s.llm.stop_reason";
+pub const ATTR_LLM_MODEL: &str = "aster.llm.model";
+pub const ATTR_LLM_PROVIDER: &str = "aster.llm.provider";
+pub const ATTR_LLM_STREAMING: &str = "aster.llm.streaming";
+pub const ATTR_LLM_PROMPT_TOKENS: &str = "aster.llm.prompt_tokens";
+pub const ATTR_LLM_COMPLETION_TOKENS: &str = "aster.llm.completion_tokens";
+pub const ATTR_LLM_TOTAL_TOKENS: &str = "aster.llm.total_tokens";
+pub const ATTR_LLM_STOP_REASON: &str = "aster.llm.stop_reason";
 
-pub const ATTR_TOOL_NAME: &str = "a3s.tool.name";
-pub const ATTR_TOOL_ID: &str = "a3s.tool.id";
-pub const ATTR_TOOL_EXIT_CODE: &str = "a3s.tool.exit_code";
-pub const ATTR_TOOL_SUCCESS: &str = "a3s.tool.success";
-pub const ATTR_TOOL_DURATION_MS: &str = "a3s.tool.duration_ms";
-pub const ATTR_TOOL_PERMISSION: &str = "a3s.tool.permission";
+pub const ATTR_TOOL_NAME: &str = "aster.tool.name";
+pub const ATTR_TOOL_ID: &str = "aster.tool.id";
+pub const ATTR_TOOL_EXIT_CODE: &str = "aster.tool.exit_code";
+pub const ATTR_TOOL_SUCCESS: &str = "aster.tool.success";
+pub const ATTR_TOOL_DURATION_MS: &str = "aster.tool.duration_ms";
+pub const ATTR_TOOL_PERMISSION: &str = "aster.tool.permission";
 
-pub const ATTR_CONTEXT_PROVIDERS: &str = "a3s.context.providers";
-pub const ATTR_CONTEXT_ITEMS: &str = "a3s.context.items";
-pub const ATTR_CONTEXT_TOKENS: &str = "a3s.context.tokens";
+pub const ATTR_CONTEXT_PROVIDERS: &str = "aster.context.providers";
+pub const ATTR_CONTEXT_ITEMS: &str = "aster.context.items";
+pub const ATTR_CONTEXT_TOKENS: &str = "aster.context.tokens";
 
 // ============================================================================
 // Span Helpers
@@ -427,7 +427,7 @@ pub fn aggregate_cost_records(
 
 /// Record LLM metrics via tracing events.
 ///
-/// In the server crate (`a3s-code`), this is overridden by `telemetry_init::record_llm_metrics`
+/// In the server crate (`aster`), this is overridden by `telemetry_init::record_llm_metrics`
 /// which writes to OpenTelemetry counters. In the core library, we emit a tracing event
 /// so the data is available to any subscriber (including OTel if wired up externally).
 pub fn record_llm_metrics(
@@ -526,21 +526,21 @@ mod tests {
 
     #[test]
     fn test_span_name_constants() {
-        // Verify span names follow a3s.* convention
-        assert!(SPAN_AGENT_EXECUTE.starts_with("a3s."));
-        assert!(SPAN_AGENT_TURN.starts_with("a3s."));
-        assert!(SPAN_LLM_COMPLETION.starts_with("a3s."));
-        assert!(SPAN_TOOL_EXECUTE.starts_with("a3s."));
-        assert!(SPAN_CONTEXT_RESOLVE.starts_with("a3s."));
+        // Verify span names follow aster.* convention
+        assert!(SPAN_AGENT_EXECUTE.starts_with("aster."));
+        assert!(SPAN_AGENT_TURN.starts_with("aster."));
+        assert!(SPAN_LLM_COMPLETION.starts_with("aster."));
+        assert!(SPAN_TOOL_EXECUTE.starts_with("aster."));
+        assert!(SPAN_CONTEXT_RESOLVE.starts_with("aster."));
     }
 
     #[test]
     fn test_attribute_key_constants() {
-        // Verify attribute keys follow a3s.* convention
-        assert!(ATTR_SESSION_ID.starts_with("a3s."));
-        assert!(ATTR_LLM_MODEL.starts_with("a3s."));
-        assert!(ATTR_TOOL_NAME.starts_with("a3s."));
-        assert!(ATTR_CONTEXT_PROVIDERS.starts_with("a3s."));
+        // Verify attribute keys follow aster.* convention
+        assert!(ATTR_SESSION_ID.starts_with("aster."));
+        assert!(ATTR_LLM_MODEL.starts_with("aster."));
+        assert!(ATTR_TOOL_NAME.starts_with("aster."));
+        assert!(ATTR_CONTEXT_PROVIDERS.starts_with("aster."));
     }
 
     #[test]
@@ -890,52 +890,52 @@ mod tests {
 
     #[test]
     fn test_service_name_constant() {
-        assert_eq!(SERVICE_NAME, "a3s-code");
+        assert_eq!(SERVICE_NAME, "aster");
     }
 
     #[test]
     fn test_span_constants() {
-        assert_eq!(SPAN_AGENT_EXECUTE, "a3s.agent.execute");
-        assert_eq!(SPAN_AGENT_TURN, "a3s.agent.turn");
-        assert_eq!(SPAN_LLM_COMPLETION, "a3s.llm.completion");
-        assert_eq!(SPAN_TOOL_EXECUTE, "a3s.tool.execute");
-        assert_eq!(SPAN_CONTEXT_RESOLVE, "a3s.agent.context_resolve");
+        assert_eq!(SPAN_AGENT_EXECUTE, "aster.agent.execute");
+        assert_eq!(SPAN_AGENT_TURN, "aster.agent.turn");
+        assert_eq!(SPAN_LLM_COMPLETION, "aster.llm.completion");
+        assert_eq!(SPAN_TOOL_EXECUTE, "aster.tool.execute");
+        assert_eq!(SPAN_CONTEXT_RESOLVE, "aster.agent.context_resolve");
     }
 
     #[test]
     fn test_attribute_constants_session() {
-        assert_eq!(ATTR_SESSION_ID, "a3s.session.id");
-        assert_eq!(ATTR_TURN_NUMBER, "a3s.agent.turn_number");
-        assert_eq!(ATTR_MAX_TURNS, "a3s.agent.max_turns");
-        assert_eq!(ATTR_TOOL_CALLS_COUNT, "a3s.agent.tool_calls_count");
+        assert_eq!(ATTR_SESSION_ID, "aster.session.id");
+        assert_eq!(ATTR_TURN_NUMBER, "aster.agent.turn_number");
+        assert_eq!(ATTR_MAX_TURNS, "aster.agent.max_turns");
+        assert_eq!(ATTR_TOOL_CALLS_COUNT, "aster.agent.tool_calls_count");
     }
 
     #[test]
     fn test_attribute_constants_llm() {
-        assert_eq!(ATTR_LLM_MODEL, "a3s.llm.model");
-        assert_eq!(ATTR_LLM_PROVIDER, "a3s.llm.provider");
-        assert_eq!(ATTR_LLM_STREAMING, "a3s.llm.streaming");
-        assert_eq!(ATTR_LLM_PROMPT_TOKENS, "a3s.llm.prompt_tokens");
-        assert_eq!(ATTR_LLM_COMPLETION_TOKENS, "a3s.llm.completion_tokens");
-        assert_eq!(ATTR_LLM_TOTAL_TOKENS, "a3s.llm.total_tokens");
-        assert_eq!(ATTR_LLM_STOP_REASON, "a3s.llm.stop_reason");
+        assert_eq!(ATTR_LLM_MODEL, "aster.llm.model");
+        assert_eq!(ATTR_LLM_PROVIDER, "aster.llm.provider");
+        assert_eq!(ATTR_LLM_STREAMING, "aster.llm.streaming");
+        assert_eq!(ATTR_LLM_PROMPT_TOKENS, "aster.llm.prompt_tokens");
+        assert_eq!(ATTR_LLM_COMPLETION_TOKENS, "aster.llm.completion_tokens");
+        assert_eq!(ATTR_LLM_TOTAL_TOKENS, "aster.llm.total_tokens");
+        assert_eq!(ATTR_LLM_STOP_REASON, "aster.llm.stop_reason");
     }
 
     #[test]
     fn test_attribute_constants_tool() {
-        assert_eq!(ATTR_TOOL_NAME, "a3s.tool.name");
-        assert_eq!(ATTR_TOOL_ID, "a3s.tool.id");
-        assert_eq!(ATTR_TOOL_EXIT_CODE, "a3s.tool.exit_code");
-        assert_eq!(ATTR_TOOL_SUCCESS, "a3s.tool.success");
-        assert_eq!(ATTR_TOOL_DURATION_MS, "a3s.tool.duration_ms");
-        assert_eq!(ATTR_TOOL_PERMISSION, "a3s.tool.permission");
+        assert_eq!(ATTR_TOOL_NAME, "aster.tool.name");
+        assert_eq!(ATTR_TOOL_ID, "aster.tool.id");
+        assert_eq!(ATTR_TOOL_EXIT_CODE, "aster.tool.exit_code");
+        assert_eq!(ATTR_TOOL_SUCCESS, "aster.tool.success");
+        assert_eq!(ATTR_TOOL_DURATION_MS, "aster.tool.duration_ms");
+        assert_eq!(ATTR_TOOL_PERMISSION, "aster.tool.permission");
     }
 
     #[test]
     fn test_attribute_constants_context() {
-        assert_eq!(ATTR_CONTEXT_PROVIDERS, "a3s.context.providers");
-        assert_eq!(ATTR_CONTEXT_ITEMS, "a3s.context.items");
-        assert_eq!(ATTR_CONTEXT_TOKENS, "a3s.context.tokens");
+        assert_eq!(ATTR_CONTEXT_PROVIDERS, "aster.context.providers");
+        assert_eq!(ATTR_CONTEXT_ITEMS, "aster.context.items");
+        assert_eq!(ATTR_CONTEXT_TOKENS, "aster.context.tokens");
     }
 
     #[test]

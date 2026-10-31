@@ -22,7 +22,7 @@
 - [ ] Owning focused tests 通过；每个批量失败已单独复核并记录。
 - [ ] `cargo fmt --all -- --check` 干净。
 - [ ] Studio 双租户 owning Clippy 和根依赖检查，结果留存。
-- [ ] 无新 crates.io A3S 依赖、Cargo workspace 或锁文件。
+- [ ] 无新 crates.io Aster 依赖、Cargo workspace 或锁文件。
 - [ ] 无新 native select 或产品配置。
 - [ ] 生成 DOCX/XLSX 已重新打开，与原始输入逐项对照。
 - [ ] 不截断超限输入，deadline、输出边界、临时目录清理保留。

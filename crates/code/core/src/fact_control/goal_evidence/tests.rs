@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{
+use aster_effect::{
     Fact, ToolAdmissionIdentityV1, ToolEffectObservationV1, ToolExecutionOutcome,
     ToolExecutionResultV1, ToolFileIdentityV1, ToolFileKind, ToolInvocationIdentityV1,
     ToolPathChangeV1, ToolPreparedV1, ToolRecoveryPolicy, TOOL_PREPARED_SCHEMA, TOOL_RESULT_SCHEMA,
@@ -35,7 +35,7 @@ fn fact(seq: u64, kind: &str, key: &str, payload: serde_json::Value) -> Fact {
 }
 
 fn receipt_pair(effects: ToolEffectObservationV1) -> Vec<Fact> {
-    let args = a3s_effect::tool_args_digest(&json!({"command":"fixture"})).unwrap();
+    let args = aster_effect::tool_args_digest(&json!({"command":"fixture"})).unwrap();
     let prepared = ToolPreparedV1 {
         schema: TOOL_PREPARED_SCHEMA.into(),
         identity: ToolInvocationIdentityV1 {
@@ -65,7 +65,7 @@ fn receipt_pair(effects: ToolEffectObservationV1) -> Vec<Fact> {
         effects,
     };
     vec![
-        fact(1, "a3s.goal.slice.admitted", "slice", json!({})),
+        fact(1, "aster.goal.slice.admitted", "slice", json!({})),
         fact(2, "tool.prepared", "prepared", json!({"prepared":prepared})),
         fact(
             3,
@@ -96,7 +96,7 @@ fn only_complete_known_workspace_identity_changes_are_progress() {
         ToolEffectObservationV1::incomplete("scan unavailable")
     )));
     let mut harness = observation();
-    harness.changes[0].path = ".a3s/session.json".into();
+    harness.changes[0].path = ".aster/session.json".into();
     assert!(!progress(&receipt_pair(harness)));
 }
 
@@ -116,7 +116,7 @@ fn a_foreign_or_later_slice_cannot_refresh_this_slice() {
         "other-run"
     ));
     let mut current = receipt_pair(ToolEffectObservationV1::complete(vec![]));
-    current.push(fact(4, "a3s.goal.slice.admitted", "later-slice", json!({})));
+    current.push(fact(4, "aster.goal.slice.admitted", "later-slice", json!({})));
     current.extend(facts.into_iter().skip(1).map(|mut fact| {
         fact.seq += 3;
         fact
@@ -140,7 +140,7 @@ fn mixed_capability_receipts_and_unsettled_outcomes_do_not_refresh_progress() {
         .as_mut()
         .unwrap()
         .capability_binding_digest =
-        a3s_effect::tool_args_digest(&json!({"other_capability":true})).unwrap();
+        aster_effect::tool_args_digest(&json!({"other_capability":true})).unwrap();
     result.identity = prepared.identity.clone();
     result.prepared_digest = prepared.digest().unwrap();
     extra[1] = fact(
@@ -179,7 +179,7 @@ fn a_settled_background_mutation_must_belong_to_the_current_run() {
         .unresolved_external_operations
         .push("workspace-child:child-one".into());
     result.output = json!(serde_json::json!({
-        "kind":"a3s.fact_tool_result", "text":"accepted", "is_error":false,
+        "kind":"aster.fact_tool_result", "text":"accepted", "is_error":false,
         "images":[], "workspace_child":"child-one",
         "metadata":{"workspace_child":"child-one", "source_run":"current-run", "run":"effect-run"}
     })

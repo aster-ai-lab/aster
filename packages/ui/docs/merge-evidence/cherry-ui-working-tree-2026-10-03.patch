@@ -7,7 +7,7 @@ index 9b5b2ad67f..87c6714c0f 100644
      const sources = await loadSources()
      sources.providerColors = sources.providerColors.replace(
 -      '--cs-primary: var(--cs-brand-500);',
-+      '--cs-primary: var(--a3s-tenant-brand, var(--cs-brand-500));',
++      '--cs-primary: var(--aster-tenant-brand, var(--cs-brand-500));',
        '--cs-primary: var(--background);'
      )
  
@@ -16,7 +16,7 @@ index 9b5b2ad67f..87c6714c0f 100644
      const sources = await loadSources()
      sources.providerColors = sources.providerColors.replace(
 -      '--cs-primary: var(--cs-brand-500);',
-+      '--cs-primary: var(--a3s-tenant-brand, var(--cs-brand-500));',
++      '--cs-primary: var(--aster-tenant-brand, var(--cs-brand-500));',
        '--cs-primary: var(--success);'
      )
  
@@ -25,7 +25,7 @@ index 9b5b2ad67f..87c6714c0f 100644
      const sources = await loadSources()
      sources.providerColors = sources.providerColors.replace(
 -      '--cs-primary: var(--cs-brand-500);',
-+      '--cs-primary: var(--a3s-tenant-brand, var(--cs-brand-500));',
++      '--cs-primary: var(--aster-tenant-brand, var(--cs-brand-500));',
        '--cs-primary: var( --cs-missing-primary);'
      )
  
@@ -934,8 +934,8 @@ index 961ba4f498..cdb79d8c71 100644
 -  --cs-primary: var(--cs-brand-500);
 +  /* Brand Colors. A stamped tenant brand replaces the stock green in every theme.
 +   * `initial` is guaranteed-invalid, so an unstamped build still uses the stock primary. */
-+  --a3s-tenant-brand: initial;
-+  --cs-primary: var(--a3s-tenant-brand, var(--cs-brand-500));
++  --aster-tenant-brand: initial;
++  --cs-primary: var(--aster-tenant-brand, var(--cs-brand-500));
    --cs-destructive: var(--cs-red-500);
    --cs-destructive-hover: var(--cs-red-400);
    --cs-success: var(--cs-green-500);

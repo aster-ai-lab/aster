@@ -74,7 +74,7 @@ fn oracle(name: &str, detail: &str) {
 
 fn isolate(label: &str) -> PathBuf {
     let path = std::env::temp_dir().join(format!(
-        "a3s-boundary-{label}-{}-{}",
+        "aster-boundary-{label}-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -86,7 +86,7 @@ fn isolate(label: &str) -> PathBuf {
 }
 
 fn write_acl(workspace: &Path, base_url: &str) -> PathBuf {
-    let dir = workspace.join(".a3s");
+    let dir = workspace.join(".aster");
     std::fs::create_dir_all(&dir).expect("acl dir");
     let path = dir.join("config.acl");
     std::fs::write(
@@ -515,7 +515,7 @@ fn assert_no_leak(roots: &[PathBuf]) {
 }
 
 /// A live provider request. The pager's local auth scope is
-/// `https://auth.a3s::<uuid>` and is not a network call.
+/// `https://auth.aster::<uuid>` and is not a network call.
 fn live_request(line: &str) -> Option<&'static str> {
     if line.contains("https://api.x.ai") || line.contains("://api.x.ai") {
         return Some("api.x.ai");
@@ -526,8 +526,8 @@ fn live_request(line: &str) -> Option<&'static str> {
     if line.contains("googleapis.com") {
         return Some("googleapis.com");
     }
-    if line.contains("auth.a3s") && !line.contains("https://auth.a3s::") {
-        return Some("auth.a3s");
+    if line.contains("auth.aster") && !line.contains("https://auth.aster::") {
+        return Some("auth.aster");
     }
     None
 }
@@ -568,10 +568,10 @@ async fn spawn_agent(workspace: &Path, config: &Path, home: &Path) -> AgentProc 
     let mut child = command
         .arg("--cwd")
         .arg(workspace)
-        .env("A3S_CONFIG", config)
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_CONFIG", config)
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("XAI_API_KEY", "sk-dummy-not-a-model")
         .env("HOME", home)
         .env("GROK_HOME", home.join("grok"))
@@ -579,7 +579,7 @@ async fn spawn_agent(workspace: &Path, config: &Path, home: &Path) -> AgentProc 
         .stdout(Stdio::piped())
         .stderr(stderr)
         .spawn()
-        .expect("spawn a3s-code-acp");
+        .expect("spawn aster-acp");
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
     let (conn, io) = acp::ClientSideConnection::new(TestClient, stdin, stdout, |fut| {
@@ -609,7 +609,7 @@ async fn open_case(workspace: &Path, arm: Arm) -> Case {
     let session = acp::Agent::new_session(
         agent.conn.as_ref(),
         acp::NewSessionRequest::new(workspace.to_path_buf()).meta(
-            serde_json::json!({"a3sHost": {"officeTools": true}})
+            serde_json::json!({"asterHost": {"officeTools": true}})
                 .as_object()
                 .unwrap()
                 .clone(),
@@ -881,7 +881,7 @@ impl Drop for PtySession {
 }
 
 fn tui_binary() -> PathBuf {
-    if let Some(path) = std::env::var_os("A3S_CODE_TUI_BIN") {
+    if let Some(path) = std::env::var_os("ASTER_TUI_BIN") {
         return PathBuf::from(path);
     }
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../target/debug/aster")
@@ -1042,11 +1042,11 @@ fn t_ask() {
     let grok_home = home.join("grok");
     let grok_home_path = grok_home.to_str().expect("grok home").to_string();
     let env = [
-        ("A3S_ACP_AGENT_BIN", acp_bin.as_str()),
-        ("A3S_CONFIG", config_path.as_str()),
-        ("A3S_DISABLE_CC_SWITCH", "1"),
-        ("A3S_DISABLE_GROK_ACCOUNT", "1"),
-        ("A3S_DISABLE_CURSOR_ACCOUNT", "1"),
+        ("ASTER_ACP_AGENT_BIN", acp_bin.as_str()),
+        ("ASTER_CONFIG", config_path.as_str()),
+        ("ASTER_DISABLE_CC_SWITCH", "1"),
+        ("ASTER_DISABLE_GROK_ACCOUNT", "1"),
+        ("ASTER_DISABLE_CURSOR_ACCOUNT", "1"),
         ("XAI_API_KEY", "sk-dummy-not-a-model"),
         ("HOME", home_path.as_str()),
         ("GROK_HOME", grok_home_path.as_str()),

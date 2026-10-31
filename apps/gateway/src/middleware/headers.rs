@@ -254,12 +254,12 @@ mod tests {
 
     #[tokio::test]
     async fn request_header_reads_an_environment_variable() {
-        let name = "A3S_SEARCH_HEADER_TEST";
+        let name = "ASTER_SEARCH_HEADER_TEST";
         std::env::set_var(name, "deployment-secret");
         let config = make_config(
             HashMap::from([(
                 "Authorization".to_string(),
-                "Bearer ${A3S_SEARCH_HEADER_TEST}".to_string(),
+                "Bearer ${ASTER_SEARCH_HEADER_TEST}".to_string(),
             )]),
             HashMap::new(),
         );

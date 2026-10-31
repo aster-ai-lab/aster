@@ -4,7 +4,7 @@ use super::*;
 
 pub(super) fn run_execution_cycle(
     surface: &SessionSurface,
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
 ) -> Result<Option<receipts::ExecutionCycle>, ActorError> {
     let threshold = surface.agent.duplicate_tool_threshold();
     if surface.agent.is_child_run() {
@@ -21,7 +21,7 @@ pub(super) fn run_execution_cycle(
                 "tool_effect_admission_missing: original Run has no capability binding".into(),
             )
         })?;
-    let digest = crate::content_digest::digest_json("a3s.code.tool-admission-binding.v1", binding)
+    let digest = crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", binding)
         .map_err(|error| ActorError::Schema(error.to_string()))?;
     Ok(receipts::execution_cycle(
         facts,

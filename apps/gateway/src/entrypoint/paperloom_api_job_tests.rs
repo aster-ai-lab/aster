@@ -9,15 +9,15 @@ use std::time::Duration;
 #[tokio::test]
 #[ignore = "requires an owned job root, pinned Paperloom API/source/Python and actual platform OCR"]
 async fn actual_api_job_publishes_gateway_ocr_bytes() {
-    let root = required_path("A3S_PAPERLOOM_API_JOB_ROOT");
+    let root = required_path("ASTER_PAPERLOOM_API_JOB_ROOT");
     assert_eq!(
         std::fs::read_to_string(root.join(".owned")).unwrap(),
         "paperloom-real-api-job-20261017\n"
     );
-    let binary = required_path("A3S_PAPERLOOM_API_BIN");
+    let binary = required_path("ASTER_PAPERLOOM_API_BIN");
     // Preserve the venv entry point: resolving its symlink loses site-packages.
-    let python = PathBuf::from(std::env::var_os("A3S_PAPERLOOM_PIPELINE_PYTHON").unwrap());
-    let source = required_path("A3S_PAPERLOOM_SOURCE_ROOT");
+    let python = PathBuf::from(std::env::var_os("ASTER_PAPERLOOM_PIPELINE_PYTHON").unwrap());
+    let source = required_path("ASTER_PAPERLOOM_SOURCE_ROOT");
     assert!(binary.is_file() && python.is_absolute() && python.is_file());
     assert!(source.join("backend/pipeline/retainpdf_pipeline").is_dir());
     let run = root.join(format!("run-{}", Uuid::new_v4().simple()));
@@ -60,8 +60,8 @@ async fn actual_api_job_publishes_gateway_ocr_bytes() {
         .env("RUST_API_MAX_RUNNING_JOBS", "1")
         .env("RUST_API_AI_SUPERVISE", "false")
         .env("RUST_API_JOBS_MODE", "inprocess")
-        .env("A3S_GATEWAY_ORIGIN", format!("http://{gateway}"))
-        .env("A3S_GATEWAY_KEY", &key)
+        .env("ASTER_GATEWAY_ORIGIN", format!("http://{gateway}"))
+        .env("ASTER_GATEWAY_KEY", &key)
         .env("RUST_LOG", "warn")
         .current_dir(&run)
         .stdout(output.try_clone().unwrap())
@@ -108,7 +108,7 @@ async fn actual_api_job_publishes_gateway_ocr_bytes() {
         let repo = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
         let pdf = std::fs::read(repo.join("fixtures/paperloom/two-pages.pdf")).unwrap();
         let digest = sha256(&pdf);
-        let boundary = format!("a3s-{}", Uuid::new_v4().simple());
+        let boundary = format!("aster-{}", Uuid::new_v4().simple());
         let mut body = format!("--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"paper.pdf\"\r\nContent-Type: application/pdf\r\n\r\n").into_bytes();
         body.extend(&pdf);
         body.extend(format!("\r\n--{boundary}--\r\n").as_bytes());

@@ -5,7 +5,7 @@ use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use a3s_use_core::{Artifact, UseError, UseResult, UseSessionId};
+use aster_use_core::{Artifact, UseError, UseResult, UseSessionId};
 use chromiumoxide::Page;
 use serde::{Deserialize, Serialize};
 use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock};
@@ -690,7 +690,7 @@ mod tests {
                 let (mut stream, _) = listener.accept().await.unwrap();
                 let mut request = vec![0; 4_096];
                 let _ = stream.read(&mut request).await.unwrap();
-                let body = r#"<!doctype html><html><head><title>A3S fixture</title></head><body><label for="query">Query</label><input id="query" aria-label="Query"></body></html>"#;
+                let body = r#"<!doctype html><html><head><title>Aster fixture</title></head><body><label for="query">Query</label><input id="query" aria-label="Query"></body></html>"#;
                 let response = format!(
                     "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
                     body.len()
@@ -716,7 +716,7 @@ mod tests {
                 })
                 .await?;
             assert_eq!(opened.generation, 1);
-            assert_eq!(opened.title, "A3S fixture");
+            assert_eq!(opened.title, "Aster fixture");
             let textbox = opened
                 .elements
                 .iter()
@@ -724,7 +724,7 @@ mod tests {
                 .expect("the fixture textbox should have a semantic reference");
             let reference = textbox.reference.clone();
 
-            sessions.type_text(&session, &reference, "a3s use").await?;
+            sessions.type_text(&session, &reference, "aster use").await?;
             let stale = sessions.type_text(&session, &reference, " stale").await;
             assert_eq!(stale.unwrap_err().code, "use.browser.reference_stale");
 
@@ -736,7 +736,7 @@ mod tests {
                     .iter()
                     .find(|element| element.role == "textbox")
                     .and_then(|element| element.value.as_deref()),
-                Some("a3s use")
+                Some("aster use")
             );
             assert!(sessions.close(&session).await?);
             assert!(!sessions.close(&session).await?);

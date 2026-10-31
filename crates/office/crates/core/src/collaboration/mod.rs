@@ -18,7 +18,7 @@ mod validation;
 
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::encoding::read::Cursor;
 use yrs::sync::MessageReader;
 use yrs::sync::{Message, SyncMessage};

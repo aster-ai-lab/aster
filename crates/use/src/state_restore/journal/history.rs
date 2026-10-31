@@ -1,7 +1,7 @@
 use std::io;
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use tokio::fs;
 
 use super::storage::{read_optional_json, sync_directory, validate_directory_chain};
@@ -162,7 +162,7 @@ pub(super) async fn reserve(
     let rename_source = source.clone();
     let rename_target = tombstone.clone();
     tokio::task::spawn_blocking(move || {
-        a3s_use_extension::rename_path_with_windows_retry_blocking(&rename_source, &rename_target)
+        aster_use_extension::rename_path_with_windows_retry_blocking(&rename_source, &rename_target)
     })
     .await
     .map_err(|error| {
@@ -229,7 +229,7 @@ async fn read_root_entries(
             ))
         }
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(operation_invalid(
             "The restore operation history root is not an owned directory.",
         ));
@@ -261,7 +261,7 @@ async fn read_root_entries(
         let metadata = fs::symlink_metadata(&directory).await.map_err(|error| {
             operation_io("inspect restore operation directory", &directory, error)
         })?;
-        if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+        if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
             return Err(operation_invalid(
                 "A restore operation history path is not an owned directory.",
             ));
@@ -354,7 +354,7 @@ async fn validate_owned_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| operation_io("inspect restore history directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(operation_invalid(
             "A restore history path is not an owned directory.",
         ));
@@ -366,7 +366,7 @@ async fn validate_bounded_file(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| operation_io("inspect restore history evidence", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > MAX_OPERATION_BYTES

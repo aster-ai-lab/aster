@@ -45,7 +45,7 @@ export function createComparisonIdentityFactory(
   const seed = stableHash(
     `${options.mode}\u0000${currentSignature}\u0000${revisedSignature}`,
   );
-  const author = boundedMetadata(options.author, 256) || 'A3S Work user';
+  const author = boundedMetadata(options.author, 256) || 'Aster Work user';
   const date = normalizedDate(options.date);
   const summary = emptyComparisonSummary();
   let sequence = 0;

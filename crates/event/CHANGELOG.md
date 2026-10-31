@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Apache Iggy provider** (`iggy` feature, SDK `iggy` 0.11 / server 0.9):
   stream→topic mapping where each subject category is one topic (full subject
-  preserved in payload + `a3s-subject` user header; subscription filters
+  preserved in payload + `aster-subject` user header; subscription filters
   narrowed client-side), durable subscriptions as consumer groups with
   explicitly stored offsets (at-least-once, last-consumed convention),
   ephemeral subscriptions, subscribe-time head probing for `New`/`Last`

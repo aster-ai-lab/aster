@@ -40,11 +40,11 @@ const MAX_ARCHIVE: u64 = 512 * 1024 * 1024;
 const READ_CHUNK: usize = 4096;
 // The shared sandbox producer's installed-file contract, in checksum order.
 const SANDBOX_MEMBERS: [&str; 9] = [
-    "sandbox/a3s-oci",
-    "sandbox/a3s-oci-krun-runtime/libkrun.1.17.0.dylib",
-    "sandbox/a3s-oci-krun-runtime/libkrunfw.5.dylib",
-    "sandbox/a3s-oci-krun-shim",
-    "sandbox/a3s-oci-system.ext4",
+    "sandbox/aster-oci",
+    "sandbox/aster-oci-krun-runtime/libkrun.1.17.0.dylib",
+    "sandbox/aster-oci-krun-runtime/libkrunfw.5.dylib",
+    "sandbox/aster-oci-krun-shim",
+    "sandbox/aster-oci-system.ext4",
     "sandbox/bundle/config.json",
     "sandbox/bundle/rootfs.tar",
     "sandbox/manifest.json",
@@ -182,7 +182,7 @@ pub fn run(request: Request) -> Result<()> {
                 println!("identity={identity}");
             }
             println!("aster={}", dir.join(aster_name).display());
-            println!("a3s-code-acp={}", dir.join(acp_name).display());
+            println!("aster-acp={}", dir.join(acp_name).display());
         }
         InstallOutcome::Current {
             identity,
@@ -385,11 +385,11 @@ fn parse_manifest(bytes: &[u8], tag_hint: &str) -> Result<Manifest> {
 fn binary_names() -> (&'static str, &'static str) {
     #[cfg(windows)]
     {
-        ("aster.exe", "a3s-code-acp.exe")
+        ("aster.exe", "aster-acp.exe")
     }
     #[cfg(not(windows))]
     {
-        ("aster", "a3s-code-acp")
+        ("aster", "aster-acp")
     }
 }
 
@@ -436,19 +436,19 @@ fn install_dir() -> Result<PathBuf> {
 
 fn print_status(channel: &Channel, json: bool) -> Result<()> {
     let available = channel.version > Version::current();
-    let status = a3s_code_update::UpdateStatus {
+    let status = aster_update::UpdateStatus {
         current_version: env!("VERSION_WITH_COMMIT").to_string(),
         latest_version: Some(channel.version.to_string()),
         update_available: available,
         installer: Some("aster-cli".to_string()),
-        channel: a3s_code_update::channel_name()
+        channel: aster_update::channel_name()
             .unwrap_or("unknown")
             .to_string(),
         auto_update: Some(false),
         error: None,
     };
     if json {
-        return a3s_code_update::auto_update::print_update_status(&status, true);
+        return aster_update::auto_update::print_update_status(&status, true);
     }
     println!("release={}", channel.tag);
     println!("latest={}", channel.version);
@@ -576,7 +576,7 @@ fn verify_pair(unpacked: &Path) -> Result<VerifiedPair> {
                 bail!("release is missing sandbox companions");
             }
         }
-        for name in ["a3s-oci", "a3s-oci-krun-shim"] {
+        for name in ["aster-oci", "aster-oci-krun-shim"] {
             make_executable(&sandbox.join(name))?;
         }
         Some(sandbox)
@@ -784,12 +784,12 @@ fn promote_pair(dir: &Path, dest_aster: &Path, dest_acp: &Path, pair: &VerifiedP
     }
     if stage.had_acp {
         fs::copy(dest_acp, stage.dir.join("old-acp"))
-            .context("cannot preserve the current a3s-code-acp")?;
+            .context("cannot preserve the current aster-acp")?;
     }
     let new_aster = stage.dir.join("new-aster");
     let new_acp = stage.dir.join("new-acp");
     fs::copy(&pair.aster, &new_aster).context("cannot stage aster")?;
-    fs::copy(&pair.acp, &new_acp).context("cannot stage a3s-code-acp")?;
+    fs::copy(&pair.acp, &new_acp).context("cannot stage aster-acp")?;
     make_executable(&new_aster)?;
     make_executable(&new_acp)?;
     let new_sandbox = stage.dir.join("new-sandbox");
@@ -799,7 +799,7 @@ fn promote_pair(dir: &Path, dest_aster: &Path, dest_acp: &Path, pair: &VerifiedP
     replace_file(&new_aster, dest_aster).context("cannot install aster")?;
     stage.aster_promoted = true;
     make_executable(dest_aster)?;
-    replace_file(&new_acp, dest_acp).context("cannot install a3s-code-acp")?;
+    replace_file(&new_acp, dest_acp).context("cannot install aster-acp")?;
     stage.acp_promoted = true;
     make_executable(dest_acp)?;
     if let Some(dest) = &stage.dest_sandbox {
@@ -824,7 +824,7 @@ fn copy_sandbox(source: &Path, destination: &Path) -> Result<()> {
         fs::create_dir_all(dest.parent().context("sandbox member has no parent")?)?;
         fs::copy(source.join(relative), dest).context("cannot stage sandbox companions")?;
     }
-    for name in ["a3s-oci", "a3s-oci-krun-shim"] {
+    for name in ["aster-oci", "aster-oci-krun-shim"] {
         make_executable(&destination.join(name))?;
     }
     Ok(())

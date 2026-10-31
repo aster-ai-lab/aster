@@ -14,7 +14,7 @@
       {
         "expected_accepted": true,
         "memory_type": "semantic",
-        "content": "SDK sessions default to workspace-local .a3s/memory stores instead of the global user directory.",
+        "content": "SDK sessions default to workspace-local .aster/memory stores instead of the global user directory.",
         "importance": 0.9,
         "confidence": 0.96,
         "tags": ["memory", "defaults"],

@@ -1,4 +1,4 @@
-//! `a3s-box rename` command — Rename a box.
+//! `aster-box rename` command — Rename a box.
 
 use clap::Args;
 
@@ -82,13 +82,13 @@ mod tests {
             health_status: "none".to_string(),
             health_retries: 0,
             health_last_check: None,
-            network_mode: a3s_box_core::NetworkMode::default(),
+            network_mode: aster_box_core::NetworkMode::default(),
             network_name: None,
             volume_names: vec![],
             tmpfs: vec![],
             anonymous_volumes: vec![],
-            resource_limits: a3s_box_core::config::ResourceLimits::default(),
-            log_config: a3s_box_core::log::LogConfig::default(),
+            resource_limits: aster_box_core::config::ResourceLimits::default(),
+            log_config: aster_box_core::log::LogConfig::default(),
             add_host: vec![],
             platform: None,
             init: false,

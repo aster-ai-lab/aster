@@ -13,13 +13,13 @@
 //!
 //! ## Storage
 //!
-//! Version state is stored in `~/.a3s/sealed-versions.json` (or a custom path).
+//! Version state is stored in `~/.aster/sealed-versions.json` (or a custom path).
 //! The file is atomically updated on each seal operation.
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use serde::{Deserialize, Serialize};
 
 /// Versioned sealed data — extends SealedData with rollback protection.
@@ -74,9 +74,9 @@ impl VersionStore {
         })
     }
 
-    /// Load from the default path (~/.a3s/sealed-versions.json).
+    /// Load from the default path (~/.aster/sealed-versions.json).
     pub fn load_default() -> Result<Self> {
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         Self::load(&home.join("sealed-versions.json"))
     }
 

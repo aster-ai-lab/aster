@@ -14,11 +14,11 @@ export const meta = {
 ## 在创建会话前绑定工作要求与工作区
 
 ```rust
-use a3s_code_core::{SessionOptions, WorkPolicyV1};
-use a3s_code_core::workspace::WorkspaceServices;
+use aster_core::{SessionOptions, WorkPolicyV1};
+use aster_core::workspace::WorkspaceServices;
 
 fn goal_options(workspace: &std::path::Path, options: SessionOptions)
-    -> anyhow::Result<(SessionOptions, a3s_code_core::workspace::WorkspaceRef)>
+    -> anyhow::Result<(SessionOptions, aster_core::workspace::WorkspaceRef)>
 {
     let services = WorkspaceServices::local_with_manifest(workspace);
     let workspace_ref = services.workspace_ref().clone();
@@ -36,10 +36,10 @@ fn goal_options(workspace: &std::path::Path, options: SessionOptions)
 ## 创建一个明确目标
 
 ```rust
-use a3s_code_core::AgentSession;
-use a3s_code_core::goal_control::{GoalCommandKindV1, GoalDefinitionCommandV1};
-use a3s_code_core::planning::AgentGoal;
-use a3s_code_core::workspace::WorkspaceRef;
+use aster_core::AgentSession;
+use aster_core::goal_control::{GoalCommandKindV1, GoalDefinitionCommandV1};
+use aster_core::planning::AgentGoal;
+use aster_core::workspace::WorkspaceRef;
 
 fn create_goal(session: &AgentSession, workspace: WorkspaceRef)
     -> anyhow::Result<()>
@@ -71,7 +71,7 @@ fn create_goal(session: &AgentSession, workspace: WorkspaceRef)
 创建 `src/goals.rs`，将目标与计划函数放在这个模块中，并在主模块声明 `mod goals;`。读取 `session.goal_definition()`，用其中的 binding、修订和序列构建 `GoalPlanCommandV1`。计划至少包含 `inspect` 和依赖它的 `verify`：
 
 ```rust
-use a3s_code_core::planning::{ExecutionPlan, Complexity, Task};
+use aster_core::planning::{ExecutionPlan, Complexity, Task};
 
 fn repair_plan() -> ExecutionPlan {
     let mut plan = ExecutionPlan::new("修复练习项目", Complexity::Medium);
@@ -87,7 +87,7 @@ fn repair_plan() -> ExecutionPlan {
 先提出计划，并把返回的准确版本交给界面：
 
 ```rust
-use a3s_code_core::goal_control::{DurableGoalDefinitionV1, GoalPlanCommandV1};
+use aster_core::goal_control::{DurableGoalDefinitionV1, GoalPlanCommandV1};
 
 fn propose_plan(session: &AgentSession, operation_id: &str)
     -> anyhow::Result<DurableGoalDefinitionV1>
@@ -142,7 +142,7 @@ fn accept_plan(session: &AgentSession, shown: &DurableGoalDefinitionV1,
 开始这一步前，按下文在可信宿主配置中设置有限的 `goal_control`。未提供这些上限时，即使步骤就绪也可能返回 `BudgetExhausted`；这不表示流式接口失效。
 
 ```rust
-use a3s_code_core::{GoalTickStream, goal_control::GoalControlCommandV1};
+use aster_core::{GoalTickStream, goal_control::GoalControlCommandV1};
 
 async fn advance_once(session: &AgentSession, operation_id: &str)
     -> anyhow::Result<GoalTickStream>

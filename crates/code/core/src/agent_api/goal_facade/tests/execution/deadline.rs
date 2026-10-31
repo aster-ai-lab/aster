@@ -141,7 +141,7 @@ async fn stalled_automatic_call(stall_at: usize, streaming: bool) {
     )).count(), 1, "the exact Run must retain one named deadline diagnostic");
     let closeout = facts
         .iter()
-        .find(|fact| fact.kind == "a3s.goal.slice.settled")
+        .find(|fact| fact.kind == "aster.goal.slice.settled")
         .unwrap();
     assert_eq!(closeout.payload["body"]["outcome"], "interrupted");
     assert!(
@@ -150,7 +150,7 @@ async fn stalled_automatic_call(stall_at: usize, streaming: bool) {
     );
     assert!(!facts.iter().any(|fact| matches!(
         fact.kind.as_str(),
-        "a3s.goal.step.accepted" | "a3s.goal.completed"
+        "aster.goal.step.accepted" | "aster.goal.completed"
     )));
     assert!(!crate::goal_control::slice_unsettled(&facts));
     if stall_at == 3 {
@@ -255,6 +255,6 @@ async fn a_source_that_expires_before_its_worker_starts_cannot_reach_the_model()
     assert_eq!(client.calls.load(Ordering::SeqCst), 0);
     assert!(!settlement::facts(root.path()).iter().any(|fact| matches!(
         fact.kind.as_str(),
-        "a3s.goal.step.accepted" | "a3s.goal.completed"
+        "aster.goal.step.accepted" | "aster.goal.completed"
     )));
 }

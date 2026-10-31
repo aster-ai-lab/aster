@@ -1,7 +1,7 @@
 use std::process::Command;
 
-use a3s_oci_sdk::oci_spec::runtime::{Linux, LinuxSeccompAction, LinuxSeccompOperator};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{Linux, LinuxSeccompAction, LinuxSeccompOperator};
+use aster_oci_sdk::{
     ErrorCode, OCI_LINUX_SECCOMP_ACTIONS, OCI_LINUX_SECCOMP_ARCHITECTURES,
     OCI_LINUX_SECCOMP_KNOWN_FLAGS, OCI_LINUX_SECCOMP_OPERATORS,
 };
@@ -9,11 +9,11 @@ use serde_json::json;
 
 use super::seccomp::SeccompPlan;
 
-const INSTALL_HELPER_ENV: &str = "A3S_OCI_SECCOMP_INSTALL_HELPER";
+const INSTALL_HELPER_ENV: &str = "ASTER_OCI_SECCOMP_INSTALL_HELPER";
 const INSTALL_HELPER_TEST: &str =
     "executor::seccomp_tests::installs_stacked_seccomp_filters_in_helper";
 
-fn plan(seccomp: serde_json::Value) -> a3s_oci_sdk::Result<SeccompPlan> {
+fn plan(seccomp: serde_json::Value) -> aster_oci_sdk::Result<SeccompPlan> {
     let linux: Linux =
         serde_json::from_value(json!({"seccomp": seccomp})).expect("valid Linux seccomp fixture");
     SeccompPlan::from_linux(Some(&linux))
@@ -23,7 +23,7 @@ fn plan(seccomp: serde_json::Value) -> a3s_oci_sdk::Result<SeccompPlan> {
 fn rejects_every_unadvertised_seccomp_control_before_mutation() {
     let error = plan(json!({
         "defaultAction": "SCMP_ACT_NOTIFY",
-        "listenerPath": "/run/a3s-seccomp.sock"
+        "listenerPath": "/run/aster-seccomp.sock"
     }))
     .expect_err("userspace notification is not implemented");
     assert_eq!(error.code, ErrorCode::Unsupported);

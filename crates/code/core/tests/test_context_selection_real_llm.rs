@@ -6,16 +6,16 @@
 
 mod support;
 
-use a3s_code_core::budget::{BudgetDecision, BudgetGuard};
-use a3s_code_core::context::{ContextItem, ContextType, StaticContextProvider};
-use a3s_code_core::fact_control::{read_workspace_facts, thread_for_session};
-use a3s_code_core::harness_loop::CompletionTerminal;
-use a3s_code_core::llm::TokenUsage;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::budget::{BudgetDecision, BudgetGuard};
+use aster_core::context::{ContextItem, ContextType, StaticContextProvider};
+use aster_core::fact_control::{read_workspace_facts, thread_for_session};
+use aster_core::harness_loop::CompletionTerminal;
+use aster_core::llm::TokenUsage;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentEvent, PlanningMode, RunStatus, SessionOptions, ToolPresentationProfileV1,
 };
-use a3s_effect::{
+use aster_effect::{
     ToolExecutionOutcome, ToolExecutionResultV1, ToolObservationCompleteness, ToolPreparedV1,
 };
 use std::collections::{BTreeMap, BTreeSet};
@@ -41,12 +41,12 @@ const FILES: [(&str, &str); 4] = [
 struct RefuseCommands(AtomicUsize);
 
 #[async_trait::async_trait]
-impl a3s_code_core::sandbox::BashSandbox for RefuseCommands {
+impl aster_core::sandbox::BashSandbox for RefuseCommands {
     async fn exec_command(
         &self,
         _: &str,
         _: &str,
-    ) -> anyhow::Result<a3s_code_core::sandbox::SandboxOutput> {
+    ) -> anyhow::Result<aster_core::sandbox::SandboxOutput> {
         self.0.fetch_add(1, Ordering::SeqCst);
         anyhow::bail!("read-only context qualification refuses all commands")
     }
@@ -125,11 +125,11 @@ async fn scenario(streaming: bool, collision: bool, hostile_source: bool) {
     }
     // Credentials/model binding are the only inherited live configuration.
     // MCP bootstrap and retrieval/notification processes are absent.
-    let config = a3s_code_core::config::CodeConfig {
+    let config = aster_core::config::CodeConfig {
         providers,
         default_model: Some(route.clone()),
         user_instructions_dir: Some(root.join("personal")),
-        memory: Some(a3s_code_core::memory::MemoryConfig {
+        memory: Some(aster_core::memory::MemoryConfig {
             llm_extraction: false,
             prune_policy: None,
             ..Default::default()
@@ -161,7 +161,7 @@ async fn scenario(streaming: bool, collision: bool, hostile_source: bool) {
         // Retain call bindings across reasoning deltas for this bounded fixture.
         // Production defaults and runtime collection remain unchanged.
         .with_retention_limits(
-            a3s_code_core::retention::SessionRetentionLimits::default()
+            aster_core::retention::SessionRetentionLimits::default()
                 .with_max_runs(1)
                 .with_max_events_per_run(65_536)
                 .with_max_event_bytes_per_run(16 * 1024 * 1024),
@@ -272,7 +272,7 @@ async fn scenario(streaming: bool, collision: bool, hostile_source: bool) {
         }
     }
     let observed = serde_json::json!({
-        "schema": "a3s.code.context-selection-live.evidence.v1",
+        "schema": "aster.code.context-selection-live.evidence.v1",
         "route": route, "streaming": streaming, "collision": collision, "hostile_source": hostile_source,
         "session_id": session_id, "run_id": snapshot.id, "status": snapshot.status,
         "text": text, "usage": usage, "completion": completion, "forced_stop": forced_stop,

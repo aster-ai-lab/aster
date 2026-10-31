@@ -3,7 +3,7 @@ mod rewrite;
 
 use std::collections::BTreeMap;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use crate::discovery::office_error;
 use crate::semantic::{DocumentNode, OfficeNodeType};

@@ -1,6 +1,6 @@
 //! In-process checks for the user's text length and percentage requirements.
 
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use anyhow::Result;
 use async_trait::async_trait;
 use serde::Deserialize;

@@ -1,7 +1,7 @@
-use a3s_code_core::planning::{AgentGoal, Complexity, ExecutionPlan, TaskStatus};
-use a3s_code_core::queue::SessionLane;
-use a3s_code_core::verification::VerificationSummary;
-use a3s_code_core::{
+use aster_core::planning::{AgentGoal, Complexity, ExecutionPlan, TaskStatus};
+use aster_core::queue::SessionLane;
+use aster_core::verification::VerificationSummary;
+use aster_core::{
     run_event_envelope_v1, AgentEvent, AgentEventProjectionV1, EventEnvelopeV1, ModelInputKindV1,
     ModelInputSnapshotV1, ModelPresentationApplicationV1, ModelPresentationSnapshotV1,
     ModelUsageSnapshotV1, PackageBindingV1, PackageContextLimits, PackageKnowledgeBindingV1,
@@ -329,7 +329,7 @@ fn representative_events() -> Vec<EventCase> {
         case(
             "tool_effect_unresolved",
             AgentEvent::ToolEffectUnresolved {
-                error: a3s_code_core::harness_loop::ToolEffectUnresolved {
+                error: aster_core::harness_loop::ToolEffectUnresolved {
                     obligation_ids: vec!["invocation-1".into()],
                 },
             },
@@ -683,7 +683,7 @@ fn representative_events() -> Vec<EventCase> {
             "run_control_applied",
             AgentEvent::RunControlApplied {
                 request_id: "request-1".into(),
-                operation: a3s_code_core::run_control::RunControlOperation::Steer,
+                operation: aster_core::run_control::RunControlOperation::Steer,
                 turn_id: Some("turn-1".into()),
                 turn_revision: 2,
                 input: Some("continue with the verified fix".into()),
@@ -912,7 +912,7 @@ fn envelope_v1_rejects_a_different_protocol_version() {
 
 #[test]
 fn persisted_run_event_uses_the_live_v1_envelope_shape() {
-    let record = a3s_code_core::run::RunEventRecord {
+    let record = aster_core::run::RunEventRecord {
         sequence: 7,
         timestamp_ms: 1_700_000_000_000,
         event: AgentEvent::TextDelta {

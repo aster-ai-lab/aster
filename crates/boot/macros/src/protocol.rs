@@ -45,14 +45,14 @@ where
                     if let Some(default) = default {
                         quote! {
                             let #ident: #ty = match #value? {
-                                Some(__a3s_boot_value) => {
-                                    Some(::a3s_boot::transform_request_value::<String, #inner, _>(
-                                        __a3s_boot_value,
+                                Some(__aster_boot_value) => {
+                                    Some(::aster_boot::transform_request_value::<String, #inner, _>(
+                                        __aster_boot_value,
                                         #pipe,
                                     )?)
                                 }
                                 None => {
-                                    Some(::a3s_boot::transform_request_value::<String, #inner, _>(
+                                    Some(::aster_boot::transform_request_value::<String, #inner, _>(
                                         ::std::string::ToString::to_string(&(#default)),
                                         #pipe,
                                     )?)
@@ -62,9 +62,9 @@ where
                     } else {
                         quote! {
                             let #ident: #ty = match #value? {
-                                Some(__a3s_boot_value) => {
-                                    Some(::a3s_boot::transform_request_value::<String, #inner, _>(
-                                        __a3s_boot_value,
+                                Some(__aster_boot_value) => {
+                                    Some(::aster_boot::transform_request_value::<String, #inner, _>(
+                                        __aster_boot_value,
                                         #pipe,
                                     )?)
                                 }
@@ -75,19 +75,19 @@ where
                 } else if let Some(default) = default {
                     let value = optional_string(&name);
                     quote! {
-                        let __a3s_boot_value = match #value? {
-                            Some(__a3s_boot_value) => __a3s_boot_value,
+                        let __aster_boot_value = match #value? {
+                            Some(__aster_boot_value) => __aster_boot_value,
                             None => ::std::string::ToString::to_string(&(#default)),
                         };
-                        let #ident: #ty = ::a3s_boot::transform_request_value::<String, #ty, _>(
-                            __a3s_boot_value,
+                        let #ident: #ty = ::aster_boot::transform_request_value::<String, #ty, _>(
+                            __aster_boot_value,
                             #pipe,
                         )?;
                     }
                 } else {
                     let value = required_string(&name);
                     quote! {
-                        let #ident: #ty = ::a3s_boot::transform_request_value::<String, #ty, _>(
+                        let #ident: #ty = ::aster_boot::transform_request_value::<String, #ty, _>(
                             #value?,
                             #pipe,
                         )?;
@@ -98,7 +98,7 @@ where
                 if let Some(default) = default {
                     quote! {
                         let #ident: #ty = match #value? {
-                            Some(__a3s_boot_value) => Some(__a3s_boot_value),
+                            Some(__aster_boot_value) => Some(__aster_boot_value),
                             None => Some(#default),
                         };
                     }
@@ -111,7 +111,7 @@ where
                 let value = optional(&ty, &name);
                 quote! {
                     let #ident: #ty = match #value? {
-                        Some(__a3s_boot_value) => __a3s_boot_value,
+                        Some(__aster_boot_value) => __aster_boot_value,
                         None => #default,
                     };
                 }

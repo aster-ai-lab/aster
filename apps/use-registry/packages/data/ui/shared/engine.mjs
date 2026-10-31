@@ -1,5 +1,5 @@
 /**
- * Database statements for the data plugin. a3s-orm owns the drivers:
+ * Database statements for the data plugin. aster-orm owns the drivers:
  * SQLite and PostgreSQL. The Studio window sends the engine and target
  * to the host command. A Node process runs that same library.
  */
@@ -15,7 +15,7 @@ function tauriInvoke() {
 const HELPER = 'native/data-sqlite/target/debug/data-sqlite'
 
 async function helperProgram(fileURLToPath) {
-  const override = typeof process === 'object' ? process.env?.A3S_DATA_SQLITE_BIN : ''
+  const override = typeof process === 'object' ? process.env?.ASTER_DATA_SQLITE_BIN : ''
   if (typeof override === 'string' && override) return override
   const { dirname, resolve } = await import(/* @vite-ignore */ 'node:path')
   const moduleUrl = import.meta.url
@@ -25,7 +25,7 @@ async function helperProgram(fileURLToPath) {
   return resolve(process.cwd(), HELPER)
 }
 
-/** The body of the `data_sqlite_query` host command: one a3s-orm driver, one statement. */
+/** The body of the `data_sqlite_query` host command: one aster-orm driver, one statement. */
 export async function runDataSqliteCommand(path, sql, engine) {
   let spawn
   let fileURLToPath

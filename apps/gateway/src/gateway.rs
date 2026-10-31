@@ -13,7 +13,7 @@ mod startup;
 use crate::config::GatewayConfig;
 use crate::entrypoint;
 use crate::error::{GatewayError, Result};
-use crate::managed_service::{MANAGED_SERVICE_MIDDLEWARE_NAME, ManagedServiceStore};
+use crate::managed_service::{ManagedServiceStore, MANAGED_SERVICE_MIDDLEWARE_NAME};
 use crate::managed_snapshot::{ManagedSnapshotReloadCallback, ManagedSnapshotStore};
 use crate::middleware::MiddlewareRegistry;
 use crate::observability::metrics::GatewayMetrics;
@@ -28,7 +28,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, RwLock, Weak};
 use std::time::{Duration, Instant};
 
-use self::autoscaling::{PreparedAutoscaler, prepare_autoscaler};
+use self::autoscaling::{prepare_autoscaler, PreparedAutoscaler};
 use self::builders::{
     build_mirror_failover_state, build_passive_health, build_pipeline_cache, build_route_plans,
     build_scaling_state, build_service_grpc_proxies, build_service_http_proxies,

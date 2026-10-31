@@ -5,7 +5,7 @@ use std::os::fd::AsRawFd;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::{ErrorCode, IoMode, OciBundle, ProcessIo, OCI_LINUX_MOUNT_OPTIONS};
+use aster_oci_sdk::{ErrorCode, IoMode, OciBundle, ProcessIo, OCI_LINUX_MOUNT_OPTIONS};
 use tempfile::tempdir;
 
 use super::mount::{
@@ -394,11 +394,11 @@ fn rejects_unimplemented_optional_tmpcopyup_without_advertising_support() {
 
 #[test]
 fn passes_unknown_mount_options_to_filesystem_specific_data() {
-    let config = with_second_mount_options(MOUNT_CONFIG, &["x-a3s-test=enabled"]);
+    let config = with_second_mount_options(MOUNT_CONFIG, &["x-aster-test=enabled"]);
     let plan = InitPlan::from_bundle(&bundle(&config), &null_io())
         .expect("unknown mount options are filesystem-specific data");
 
-    assert_eq!(plan.mounts[1].data, ["x-a3s-test=enabled"]);
+    assert_eq!(plan.mounts[1].data, ["x-aster-test=enabled"]);
 }
 
 #[test]
@@ -1007,7 +1007,7 @@ fn applies_an_ordered_idmapped_bind_after_its_source_mount_exists() {
 async fn ordered_bind_source_resolves_from_the_effective_rootfs() {
     use std::os::unix::fs::symlink;
 
-    use a3s_oci_agent_protocol::GuestPath;
+    use aster_oci_agent_protocol::GuestPath;
 
     use super::bundle_scope::BundleDirectoryScope;
 
@@ -1053,7 +1053,7 @@ async fn ordered_bind_source_resolves_from_the_effective_rootfs() {
 async fn descriptor_confined_bind_source_survives_an_entry_swap() {
     use std::os::unix::fs::symlink;
 
-    use a3s_oci_agent_protocol::GuestPath;
+    use aster_oci_agent_protocol::GuestPath;
 
     use super::bundle_scope::BundleDirectoryScope;
 
@@ -1101,7 +1101,7 @@ fn directory_transport_keeps_bind_sources_inside_the_bundle_only_boundary() {
         "destination":"/workspace", "type":"none", "source":"/srv/authorized-directory",
         "options":["rbind","ro","nodev"]
     }]);
-    let source = format!(".a3s-oci-directories/a3s-dir-{}", "b".repeat(24));
+    let source = format!(".aster-oci-directories/aster-dir-{}", "b".repeat(24));
     let encoded =
         serde_json::json!([{"mountIndex":0,"configuredSource":"/srv/authorized-directory",
         "guestSource":source}])

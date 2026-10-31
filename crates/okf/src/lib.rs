@@ -410,7 +410,7 @@ fn render_concept(
     let generation = yaml_quote(request.source_generation);
     let parser = yaml_quote(PARSER_GENERATION);
     let mut body = format!(
-        "---\ntype: Document\ntitle: {title}\nresource: {resource}\nsource_generation: {generation}\nparser_generation: {parser}\ngenerated:\n  by: a3s-okf-compiler/0.2\nsources:\n  - id: source\n    resource: {resource}\n    title: {source}\n---\n\n{prose}\n"
+        "---\ntype: Document\ntitle: {title}\nresource: {resource}\nsource_generation: {generation}\nparser_generation: {parser}\ngenerated:\n  by: aster-okf-compiler/0.2\nsources:\n  - id: source\n    resource: {resource}\n    title: {source}\n---\n\n{prose}\n"
     );
     if truncated {
         body.push_str(&format!(
@@ -720,7 +720,7 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_nanos();
-        let path = std::env::temp_dir().join(format!("a3s-okf-{nanos}-{n}"));
+        let path = std::env::temp_dir().join(format!("aster-okf-{nanos}-{n}"));
         fs::create_dir_all(&path).unwrap();
         path
     }

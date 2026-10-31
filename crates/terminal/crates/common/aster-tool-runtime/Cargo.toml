@@ -1,0 +1,25 @@
+[package]
+license = "Apache-2.0"
+name = "aster-tool-runtime"
+version = "0.1.0"
+description = "Unified Tool trait, dispatch trait, error taxonomy, notifications, and search index for the Aster Computer Hub"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = {workspace = true}
+async-trait = {workspace = true}
+futures = {workspace = true}
+schemars = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+tokio-util = {workspace = true}
+aster-tool-types = {path = "../aster-tool-types"}
+aster-tool-protocol = {path = "../aster-tool-protocol"}
+aster-tools-api = {path = "../../codegen/aster-tools-api"}
+
+[dev-dependencies]
+tokio = {version = "1", features = ["full", "rt", "rt-multi-thread", "macros", "test-util"]}
+
+[lints]
+workspace = true

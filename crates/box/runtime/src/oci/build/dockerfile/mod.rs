@@ -4,7 +4,7 @@
 //! Supports line continuations (`\`), comments, and both shell and JSON
 //! (exec) forms for RUN/CMD/ENTRYPOINT.
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 mod parsers;
 mod tests;

@@ -1,6 +1,6 @@
 //! Port publishing validation.
 //!
-//! a3s-box supports Docker-style TCP and UDP port publishing in the
+//! aster-box supports Docker-style TCP and UDP port publishing in the
 //! `host_port:guest_port[/tcp|/udp]` form. Bind-specific host IPs, ranges,
 //! and other protocols are rejected before a box record is persisted or a VM
 //! boots. Unresolved `host_port=0` is allocated here when the caller uses

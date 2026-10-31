@@ -6,20 +6,20 @@
 //! reproducibility manifest. A finding does not approve the run, and this
 //! fixture does not resolve a package or open a second research store.
 
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityCeiling, CapabilityContribution, CapabilityDescriptor, CapabilityExecutionCeiling,
     CapabilityKind, CapabilitySet, CapabilitySource, CodeCatalogGeneration,
     GovernanceCapabilityCeiling, RunCapabilityBindingV1, Sha256Digest, UseCapabilityGeneration,
     UsePackageGeneration, WorkspaceCapabilityCeiling,
 };
-use a3s_code_core::evaluation::{
+use aster_core::evaluation::{
     AuxiliaryCapabilityProfileV1, AuxiliaryExecutor, AuxiliaryModeV1, AuxiliaryRunContextV1,
     AuxiliaryRunError, AuxiliaryRunService, AuxiliaryRunSpecV1, EvaluationRecordV1,
     EvaluationResultSink, EvaluationResultV1, EvidenceContentModeV1, EvidenceReadRequestV1,
     ExecutionFactRecorder, ExecutionFrameV1, ExecutionTargetV1, InMemoryAuxiliaryRunService,
     InMemoryEvaluationResultStore, InMemoryExecutionFactJournal, RunEvidenceReader,
 };
-use a3s_code_core::{
+use aster_core::{
     digest_bytes, AgentEvent, InMemoryRunStore, ResearchArtifactKindV1, ResearchCitationV1,
     ResearchClaimV1, ResearchEventV1, ResearchEvidenceFactKindV1, ResearchEvidenceFactV1,
     ResearchEvidenceGraphV1, ResearchProvenanceReceiptV1, ResearchReproducibilityManifestV1,
@@ -40,15 +40,15 @@ const OBSERVED_AT_MS: u64 = 1_700_000_000_000;
 const PROJECT_ID: &str = "project-literature";
 const PROVIDER_ID: &str = "local-fixture";
 const MODEL_ID: &str = "deterministic-analyzer";
-const SOURCE_DOMAIN: &str = "a3s.code.literature-fixture.source.v1";
-const DATA_DOMAIN: &str = "a3s.code.literature-fixture.data.v1";
-const SNAPSHOT_DOMAIN: &str = "a3s.code.literature-fixture.snapshot.v1";
-const ARTIFACT_DOMAIN: &str = "a3s.code.literature-fixture.artifact.v1";
-const CODE_DOMAIN: &str = "a3s.code.literature-fixture.code.v1";
-const WORKFLOW_DOMAIN: &str = "a3s.code.literature-fixture.workflow.v1";
-const ENVIRONMENT_DOMAIN: &str = "a3s.code.literature-fixture.environment.v1";
-const PARAMETER_DOMAIN: &str = "a3s.code.literature-fixture.parameters.v1";
-const APPROVAL_DOMAIN: &str = "a3s.code.literature-fixture.approval.v1";
+const SOURCE_DOMAIN: &str = "aster.code.literature-fixture.source.v1";
+const DATA_DOMAIN: &str = "aster.code.literature-fixture.data.v1";
+const SNAPSHOT_DOMAIN: &str = "aster.code.literature-fixture.snapshot.v1";
+const ARTIFACT_DOMAIN: &str = "aster.code.literature-fixture.artifact.v1";
+const CODE_DOMAIN: &str = "aster.code.literature-fixture.code.v1";
+const WORKFLOW_DOMAIN: &str = "aster.code.literature-fixture.workflow.v1";
+const ENVIRONMENT_DOMAIN: &str = "aster.code.literature-fixture.environment.v1";
+const PARAMETER_DOMAIN: &str = "aster.code.literature-fixture.parameters.v1";
+const APPROVAL_DOMAIN: &str = "aster.code.literature-fixture.approval.v1";
 const APPROVAL_EVENT: &str = "research.approval.recorded";
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
@@ -634,7 +634,7 @@ async fn literature_plus_data_fixture_restarts_forks_reviews_and_exports() {
         &parent.run_id,
         "claim-total",
         digest_bytes(SOURCE_DOMAIN, LITERATURE),
-        digest_bytes("a3s.code.literature-fixture.span.v1", b"note#p1"),
+        digest_bytes("aster.code.literature-fixture.span.v1", b"note#p1"),
         None,
         OBSERVED_AT_MS,
     )
@@ -644,7 +644,7 @@ async fn literature_plus_data_fixture_restarts_forks_reviews_and_exports() {
         PROJECT_ID,
         &parent.run_id,
         digest_bytes(
-            "a3s.code.literature-fixture.claim.v1",
+            "aster.code.literature-fixture.claim.v1",
             b"cohort total is 24",
         ),
         OBSERVED_AT_MS,
@@ -732,7 +732,7 @@ async fn literature_plus_data_fixture_restarts_forks_reviews_and_exports() {
     assert!(graph.validate_publication_completeness().is_ok());
     assert!(export_bundle(&restarted, &manifest, &receipt, Some(&batch), None).is_err());
     let resolution = digest_bytes(
-        "a3s.code.literature-fixture.resolution.v1",
+        "aster.code.literature-fixture.resolution.v1",
         b"resolved-without-approval",
     );
     let mut resolved = batch.findings[0].clone();

@@ -2,7 +2,7 @@
 //! MIT-licensed `tile_kernels/torch/engram.py`, revision
 //! c1cf914a82e6901c679445f872051ce44ac2cc63 (Copyright 2026 DeepSeek).
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 
 use super::{invalid, tensor_error, validate_finite, CudaLayerDevice};

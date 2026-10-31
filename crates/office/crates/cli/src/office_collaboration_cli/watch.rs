@@ -1,13 +1,13 @@
 use std::path::PathBuf;
 use std::time::Duration;
 
-use a3s_office::{
+use aster_office::{
     NativeOfficeCollaborationEventBatch, NativeOfficeCollaborationEventsRequest,
     NativeOfficeCollaborationInspection, NativeOfficeCollaborationResetEvent,
     NativeOfficeCollaborationStore, NativeOfficeCollaborationUpdateEvent,
     MAX_NATIVE_OFFICE_COLLABORATION_EVENT_BATCH,
 };
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine as _;
 use serde_json::{json, Value};

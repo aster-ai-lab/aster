@@ -6,7 +6,7 @@ use tokio::sync::Mutex;
 
 const TEST_COMMAND_TIMEOUT_MS: u64 = 5_000;
 #[cfg(windows)]
-const WINDOWS_PROBE_MARKER: &str = "a3s-sandbox-probe";
+const WINDOWS_PROBE_MARKER: &str = "aster-sandbox-probe";
 
 fn create_test_sandbox(workspace: &std::path::Path) -> NativeSandbox {
     NativeSandbox::new(workspace).unwrap()
@@ -283,9 +283,9 @@ async fn native_backend_rejects_invalid_explicit_environment_entries() {
 async fn native_backend_starts_and_writes_only_ordinary_workspace_content() {
     let workspace = tempfile::tempdir().unwrap();
     std::fs::create_dir_all(workspace.path().join(".git")).unwrap();
-    std::fs::create_dir_all(workspace.path().join(".a3s")).unwrap();
+    std::fs::create_dir_all(workspace.path().join(".aster")).unwrap();
     std::fs::write(workspace.path().join(".git/config"), "original-git").unwrap();
-    std::fs::write(workspace.path().join(".a3s/policy.acl"), "original-policy").unwrap();
+    std::fs::write(workspace.path().join(".aster/policy.acl"), "original-policy").unwrap();
     std::fs::write(workspace.path().join(".env"), "workspace-secret").unwrap();
     let sandbox = create_test_sandbox(workspace.path());
 
@@ -331,8 +331,8 @@ if ([IO.File]::ReadAllText((Join-Path (Get-Location) '.git/config')) -ne 'origin
             "original-git",
         ),
         (
-            "printf changed > .a3s/policy.acl",
-            ".a3s/policy.acl",
+            "printf changed > .aster/policy.acl",
+            ".aster/policy.acl",
             "original-policy",
         ),
     ];
@@ -344,8 +344,8 @@ if ([IO.File]::ReadAllText((Join-Path (Get-Location) '.git/config')) -ne 'origin
             "original-git",
         ),
         (
-            "[IO.File]::WriteAllText((Join-Path (Get-Location) '.a3s/policy.acl'), 'changed')",
-            ".a3s/policy.acl",
+            "[IO.File]::WriteAllText((Join-Path (Get-Location) '.aster/policy.acl'), 'changed')",
+            ".aster/policy.acl",
             "original-policy",
         ),
     ];
@@ -363,13 +363,13 @@ if ([IO.File]::ReadAllText((Join-Path (Get-Location) '.git/config')) -ne 'origin
 
     #[cfg(not(windows))]
     {
-        let loops = workspace.path().join(".a3s/loops/goal-carve");
+        let loops = workspace.path().join(".aster/loops/goal-carve");
         std::fs::create_dir_all(&loops).unwrap();
         // Recreate sandbox so policy picks up the loops carve-out directory.
         let sandbox = create_test_sandbox(workspace.path());
         let loop_write = execute_test_command(
             &sandbox,
-            "printf carved > .a3s/loops/goal-carve/ACCEPTANCE.md",
+            "printf carved > .aster/loops/goal-carve/ACCEPTANCE.md",
         )
         .await
         .unwrap();
@@ -520,7 +520,7 @@ async fn windows_backend_blocks_preexisting_hardlink_escape() {
 
     let output = execute_test_command(
         &sandbox,
-        "[Console]::Out.Write('a3s-sandbox-probe'); $ErrorActionPreference = 'Stop'; [IO.File]::WriteAllText((Join-Path (Get-Location) 'outside-hardlink'), 'escaped')",
+        "[Console]::Out.Write('aster-sandbox-probe'); $ErrorActionPreference = 'Stop'; [IO.File]::WriteAllText((Join-Path (Get-Location) 'outside-hardlink'), 'escaped')",
     )
     .await
     .unwrap();
@@ -538,7 +538,7 @@ async fn windows_backend_suppresses_powershell_startup_progress() {
     let workspace = tempfile::tempdir().unwrap();
     let sandbox = create_test_sandbox(workspace.path());
 
-    let output = execute_test_command(&sandbox, "[Console]::Out.Write('a3s-sandbox-probe')")
+    let output = execute_test_command(&sandbox, "[Console]::Out.Write('aster-sandbox-probe')")
         .await
         .unwrap();
 

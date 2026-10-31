@@ -61,7 +61,7 @@ const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const XMLNS_NAMESPACE = 'http://www.w3.org/2000/xmlns/';
-const PARAGRAPH_BORDER_MARKER_PATTERN = /__A3S_WORK_PARAGRAPH_BORDER_\d+__/g;
+const PARAGRAPH_BORDER_MARKER_PATTERN = /__ASTER_WORK_PARAGRAPH_BORDER_\d+__/g;
 const BORDER_EDGE_SET = new Set<string>(DOCUMENT_PARAGRAPH_BORDER_EDGES);
 const BORDER_STYLE_SET = new Set<string>(DOCUMENT_PARAGRAPH_BORDER_STYLES);
 const WORD_THEME_COLORS = new Set([
@@ -120,7 +120,7 @@ export function markDocxParagraphBorders(
     spoofedCount += resolved.spoofedCount;
     const borders = resolved.borders;
     if (!borders) continue;
-    const marker = `__A3S_WORK_PARAGRAPH_BORDER_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_BORDER_${paragraphs.length + 1}__`;
     const writableProperties =
       properties ?? insertParagraphProperties(document, paragraph);
     insertParagraphMarker(document, paragraph, writableProperties, marker);
@@ -180,7 +180,7 @@ export function applyImportedDocxParagraphBorderMarkers(
     markers.paragraphs.map(({ marker, borders }) => [marker, borders]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_BORDER_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_BORDER_')) continue;
     node.data = node.data.replace(PARAGRAPH_BORDER_MARKER_PATTERN, (marker) => {
       const borders = bordersByMarker.get(marker);
       const block = borders

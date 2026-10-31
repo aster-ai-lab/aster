@@ -1,5 +1,5 @@
 [package]
-name = "a3s-deepseek"
+name = "aster-deepseek"
 version = "0.1.0"
 edition = "2021"
 license = "MIT AND Apache-2.0"
@@ -8,8 +8,8 @@ description = "Model-owned native DeepSeek execution components using the local 
 
 [features]
 default = []
-cuda = ["a3s-power/embedded-cuda", "candle-core/cuda", "candle-nn/cuda"]
-server = ["a3s-power/server", "dep:async-trait", "dep:futures", "dep:chrono", "tokio/rt-multi-thread"]
+cuda = ["aster-power/embedded-cuda", "candle-core/cuda", "candle-nn/cuda"]
+server = ["aster-power/server", "dep:async-trait", "dep:futures", "dep:chrono", "tokio/rt-multi-thread"]
 # Explicit experimental binary profile; never enabled by an execution error.
 xq-fused-sinkhorn = ["cuda"]
 xq-fused-validation = ["cuda"]
@@ -18,11 +18,11 @@ xq-fused-activation-codecs = ["cuda"]
 xq-borrowed-kernel-inputs = ["cuda"]
 
 [dependencies]
-a3s-acl = { version = "=0.3.0", path = "../acl" }
+aster-acl = { version = "=0.3.0", path = "../acl" }
 async-trait = { version = "0.1", optional = true }
 futures = { version = "0.3", optional = true }
 chrono = { version = "0.4", optional = true }
-a3s-power = { path = "../power", default-features = false, features = ["embedded-inference"] }
+aster-power = { path = "../power", default-features = false, features = ["embedded-inference"] }
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
 sha2 = "0.10"

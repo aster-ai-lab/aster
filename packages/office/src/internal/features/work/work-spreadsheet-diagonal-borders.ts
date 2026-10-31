@@ -11,13 +11,13 @@ export interface WorkSpreadsheetDiagonalBorder {
 
 type UnknownRecord = Record<string, unknown>;
 
-const A3S_DIAGONAL_BORDER_KEY = 'a3sDiagonal';
+const ASTER_DIAGONAL_BORDER_KEY = 'asterDiagonal';
 
 export function spreadsheetDiagonalBorderFromCellValue(
   value: unknown,
 ): WorkSpreadsheetDiagonalBorder | null | undefined {
   if (!isRecord(value)) return undefined;
-  const metadata = value[A3S_DIAGONAL_BORDER_KEY];
+  const metadata = value[ASTER_DIAGONAL_BORDER_KEY];
   if (isRecord(metadata)) {
     const up = metadata.up;
     const down = metadata.down;
@@ -39,10 +39,10 @@ export function spreadsheetCellValueWithDiagonalBorder(
 ): UnknownRecord {
   const next = { ...value };
   delete next.s;
-  delete next[A3S_DIAGONAL_BORDER_KEY];
+  delete next[ASTER_DIAGONAL_BORDER_KEY];
   if (!border) return next;
   const line = { ...border.line };
-  next[A3S_DIAGONAL_BORDER_KEY] = {
+  next[ASTER_DIAGONAL_BORDER_KEY] = {
     down: border.down,
     line,
     up: border.up,

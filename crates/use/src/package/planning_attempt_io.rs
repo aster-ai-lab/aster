@@ -3,7 +3,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{PluginPackageId, UseError, UseResult};
+use aster_use_core::{PluginPackageId, UseError, UseResult};
 use fs2::FileExt;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -57,7 +57,7 @@ pub(super) async fn acquire_package_lock(
     ensure_owned_directory(state_root, parent, kind).await?;
     match fs::symlink_metadata(&path).await {
         Ok(metadata)
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                 || !metadata.is_file() =>
         {
             return Err(store_invalid(kind))
@@ -115,7 +115,7 @@ pub(super) async fn read_optional_json<T: DeserializeOwned>(
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(path_error(kind, "inspect planning attempt", path, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > max_bytes
@@ -214,7 +214,7 @@ pub(super) async fn validate_existing_directory_chain(
         }
         match fs::symlink_metadata(&current).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(store_invalid(kind)),
             Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(false),
@@ -238,7 +238,7 @@ async fn activate_temporary_file(
 ) -> UseResult<()> {
     let error_target = target.clone();
     tokio::task::spawn_blocking(move || {
-        a3s_use_extension::persist_temporary_replace_blocking(temporary, &target)
+        aster_use_extension::persist_temporary_replace_blocking(temporary, &target)
     })
     .await
     .map_err(|error| {
@@ -289,7 +289,7 @@ async fn validate_directory(path: &Path, kind: PlanningAttemptKind) -> UseResult
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error(kind, "inspect planning attempt directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(store_invalid(kind));
     }
     Ok(())

@@ -1,7 +1,7 @@
 //! The ACP permission ask for one tool call, with the reason it needs approval.
 
 use super::*;
-use a3s_code_core::permissions::{
+use aster_core::permissions::{
     InteractiveApprovalMode, InteractiveToolGuardrail, ToolRiskAssessment, ToolRiskLevel,
     ToolRiskReason,
 };
@@ -129,7 +129,7 @@ fn reason_text(reason: ToolRiskReason) -> &'static str {
     }
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     /// Ask the ACP client (pager) whether a tool may run. Fail closed when no client is wired.
     /// A pager allow is a confirmation fact. Core still projects the admitted policy, and a deny is not executed.
     pub(super) async fn request_tool_permission(
@@ -364,11 +364,11 @@ pub(super) fn question_has_choices(options: &[String]) -> bool {
 
 /// How long an `request_permission` ask may park before the agent fails
 /// closed. Default 30 minutes (the same budget `ask_user` gives an
-/// unanswered questionnaire); `A3S_CODE_PERMISSION_ASK_TIMEOUT_SECS`
+/// unanswered questionnaire); `ASTER_PERMISSION_ASK_TIMEOUT_SECS`
 /// overrides, `0` disables the bound entirely.
 pub(super) fn ask_deadline() -> std::time::Duration {
     const DEFAULT_SECS: u64 = 1800;
-    let configured = std::env::var("A3S_CODE_PERMISSION_ASK_TIMEOUT_SECS")
+    let configured = std::env::var("ASTER_PERMISSION_ASK_TIMEOUT_SECS")
         .ok()
         .and_then(|value| value.trim().parse::<u64>().ok());
     let secs = match configured {

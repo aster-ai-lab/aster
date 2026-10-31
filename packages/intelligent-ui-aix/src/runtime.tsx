@@ -4,7 +4,7 @@ import {
   IntelligentUI,
   type IntelligentUIProps,
   type SubmitOutcome,
-} from "@a3s-lab/intelligent-ui";
+} from "@aster-ai-lab/intelligent-ui";
 type Values = Parameters<NonNullable<IntelligentUIProps["submit"]>>[0];
 
 let port: MessagePort | null = null;
@@ -26,7 +26,7 @@ window.addEventListener("message", (event) => {
   if (
     port ||
     event.source !== window.parent ||
-    event.data?.type !== "a3s-intelligent-ui-connect" ||
+    event.data?.type !== "aster-intelligent-ui-connect" ||
     event.ports.length !== 1
   )
     return;

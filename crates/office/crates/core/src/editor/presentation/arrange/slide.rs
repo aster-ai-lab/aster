@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{container_end, local_name, parse_slide_path};
 use crate::editor::presentation::{editor_error, node_not_found};
@@ -275,7 +275,7 @@ fn contains_relationship_reference(element: &IndexedXmlElement) -> bool {
     }) || element.children.iter().any(contains_relationship_reference)
 }
 
-fn slide_copy_unsupported(path: &str) -> a3s_use_core::UseError {
+fn slide_copy_unsupported(path: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.presentation_slide_copy_unsupported",
         format!(

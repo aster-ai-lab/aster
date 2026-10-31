@@ -64,9 +64,9 @@ const CATALOG: &[CatalogTool] = &[
         pipx_extras: None,
     },
     CatalogTool {
-        name: "a3s-box",
-        spec: "github:A3S-Lab/Box",
-        executable: "a3s-box",
+        name: "aster-box",
+        spec: "github:aster-ai-lab/Box",
+        executable: "aster-box",
         pipx_extras: None,
     },
     CatalogTool {

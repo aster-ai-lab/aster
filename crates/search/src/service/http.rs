@@ -24,12 +24,12 @@ pub(crate) fn public_bind_requires_key(
     if addr.ip().is_loopback() || api_key.is_some_and(|key| !key.is_empty()) {
         Ok(())
     } else {
-        Err("a non-loopback search listener requires A3S_SEARCH_API_KEY".to_string())
+        Err("a non-loopback search listener requires ASTER_SEARCH_API_KEY".to_string())
     }
 }
 
 pub(crate) fn deployment_api_key() -> Option<String> {
-    std::env::var("A3S_SEARCH_API_KEY")
+    std::env::var("ASTER_SEARCH_API_KEY")
         .ok()
         .map(|value| value.trim().to_string())
         .filter(|value| !value.is_empty())

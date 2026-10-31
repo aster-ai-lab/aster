@@ -29,7 +29,7 @@ use windows_sys::Win32::Storage::FileSystem::{
     FILE_SHARE_DELETE, FILE_SHARE_READ, FILE_SHARE_WRITE,
 };
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentVsockEndpoint, SessionToken, AGENT_RUNTIME_SHARE_GUEST_ROOT,
     AGENT_SESSION_TOKEN_DIRECTORY_PREFIX, AGENT_SESSION_TOKEN_FILE_NAME,
 };
@@ -699,7 +699,7 @@ fn contextual(error: io::Error, context: String) -> io::Error {
 mod tests {
     use std::path::Path;
 
-    use a3s_oci_agent_protocol::{AgentVsockEndpoint, SessionToken};
+    use aster_oci_agent_protocol::{AgentVsockEndpoint, SessionToken};
 
     use super::BootstrapTokenFile;
 
@@ -732,7 +732,7 @@ mod tests {
         let rootfs = tempfile::tempdir().expect("temporary rootfs");
         protect_handoff_root(rootfs.path());
         let endpoint =
-            AgentVsockEndpoint::new("a3s-oci-agent-bootstrap-test").expect("valid endpoint");
+            AgentVsockEndpoint::new("aster-oci-agent-bootstrap-test").expect("valid endpoint");
         let token = SessionToken::from_bytes([0x5a; 32]).expect("nonzero token");
         let bootstrap = BootstrapTokenFile::create(rootfs.path(), "/", &endpoint, &token)
             .expect("bootstrap file");
@@ -759,11 +759,11 @@ mod tests {
         let runtime_share = tempfile::tempdir().expect("temporary runtime share");
         protect_handoff_root(runtime_share.path());
         let endpoint =
-            AgentVsockEndpoint::new("a3s-oci-agent-runtime-share").expect("valid endpoint");
+            AgentVsockEndpoint::new("aster-oci-agent-runtime-share").expect("valid endpoint");
         let token = SessionToken::from_bytes([0x3c; 32]).expect("nonzero token");
         let bootstrap = BootstrapTokenFile::create(
             runtime_share.path(),
-            a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
+            aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
             &endpoint,
             &token,
         )
@@ -771,7 +771,7 @@ mod tests {
 
         assert!(bootstrap
             .guest_path()
-            .starts_with(a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT));
+            .starts_with(aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT));
         bootstrap.cleanup().expect("remove bootstrap file");
     }
 
@@ -788,7 +788,7 @@ mod tests {
         let rootfs = tempfile::tempdir().expect("temporary rootfs");
         protect_handoff_root(rootfs.path());
         let endpoint =
-            AgentVsockEndpoint::new("a3s-oci-agent-bootstrap-replacement").expect("valid endpoint");
+            AgentVsockEndpoint::new("aster-oci-agent-bootstrap-replacement").expect("valid endpoint");
         let token = SessionToken::from_bytes([0x42; 32]).expect("nonzero token");
         let bootstrap = BootstrapTokenFile::create(rootfs.path(), "/", &endpoint, &token)
             .expect("bootstrap file");
@@ -843,12 +843,12 @@ mod tests {
         std::fs::set_permissions(runtime_share.path(), std::fs::Permissions::from_mode(0o755))
             .expect("make Linux handoff root public");
         let endpoint =
-            AgentVsockEndpoint::new("a3s-oci-agent-public-runtime-share").expect("valid endpoint");
+            AgentVsockEndpoint::new("aster-oci-agent-public-runtime-share").expect("valid endpoint");
         let token = SessionToken::from_bytes([0x7d; 32]).expect("nonzero token");
 
         assert!(BootstrapTokenFile::create(
             runtime_share.path(),
-            a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
+            aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
             &endpoint,
             &token,
         )

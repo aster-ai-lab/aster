@@ -1,7 +1,7 @@
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources};
+use aster_oci_sdk::{
     ContainerOperationRequest, ContainerRecord, ContainerTarget, Generation, OperationContext,
     StatsRequest, UpdateRequest, PIDS_LIMIT_METRIC,
 };

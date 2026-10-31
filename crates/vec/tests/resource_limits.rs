@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionResourceLimits, CollectionSchema, DataType, Doc,
     Durability, ErrorCode, FieldSchema, IndexParams, MetricType, MultiQuery, SearchQuery, SubQuery,
 };

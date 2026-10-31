@@ -1,14 +1,14 @@
 //! End-to-end smoke test for automatic subagent parallel delegation.
 //!
 //! Run with:
-//!   A3S_CONFIG_FILE=/Users/roylin/code/a3s/.a3s/config.acl \
-//!     cargo test -p a3s-code-core --test test_auto_delegation_real_parallel -- --ignored --nocapture
+//!   ASTER_CONFIG_FILE=/Users/roylin/code/aster/.aster/config.acl \
+//!     cargo test -p aster-core --test test_auto_delegation_real_parallel -- --ignored --nocapture
 
 mod support;
 
 use std::time::Duration;
 
-use a3s_code_core::{Agent, AgentEvent, AutoDelegationConfig, SessionOptions};
+use aster_core::{Agent, AgentEvent, AutoDelegationConfig, SessionOptions};
 
 async fn configured_agent_and_model() -> (Agent, String) {
     let config = support::layer_c_model::load_pinned_layer_c_config();
@@ -49,7 +49,7 @@ async fn auto_delegation_triggers_unified_task_fanout_with_real_provider() {
         // The test explicitly authorizes the model-selected delegation call;
         // production sessions should keep their normal HITL policy.
         .with_confirmation_manager(std::sync::Arc::new(
-            a3s_code_core::hitl::AutoApproveConfirmation,
+            aster_core::hitl::AutoApproveConfirmation,
         ))
         .with_auto_delegation(auto);
 

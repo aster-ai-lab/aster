@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_acl::{Document, Value};
+use aster_acl::{Document, Value};
 
 fn block(name: &str, attributes: &[(&str, Value)]) -> Block {
     Block {
@@ -157,7 +157,7 @@ fn live() -> Block {
     )
 }
 fn encode(document: &Document) -> String {
-    a3s_acl::generate_acl(document)
+    aster_acl::generate_acl(document)
 }
 fn parse(document: &Document) -> Result<AcceptanceManifestV1, ContractError> {
     AcceptanceManifestV1::parse_host(&encode(document))

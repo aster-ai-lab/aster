@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::AgentUpdateRequest;
-use a3s_oci_core::IsolationClass;
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentUpdateRequest;
+use aster_oci_core::IsolationClass;
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     DeleteMode, DeleteRequest, ErrorCode, ListRequest, OciRuntimeService, OperationContext,
     StatsRequest, UpdateRequest,
 };
@@ -24,7 +24,7 @@ pub(super) async fn run(
     report: &mut OciVmOperationReopenReplacementReport,
 ) -> std::result::Result<(), String> {
     let response_delivered = qualification.stage
-        == a3s_oci_agent_protocol::AgentTransportOperationStage::GuestAfterResponseWrite;
+        == aster_oci_agent_protocol::AgentTransportOperationStage::GuestAfterResponseWrite;
     let cleanup = MacosHostCleanupTracker::capture();
     let session = match super::super::connect_replacement_qualification_session(
         &qualification.shim,
@@ -624,8 +624,8 @@ pub(super) async fn run(
 }
 
 fn changed_resources(
-    original: &a3s_oci_sdk::oci_spec::runtime::LinuxResources,
-) -> std::result::Result<a3s_oci_sdk::oci_spec::runtime::LinuxResources, String> {
+    original: &aster_oci_sdk::oci_spec::runtime::LinuxResources,
+) -> std::result::Result<aster_oci_sdk::oci_spec::runtime::LinuxResources, String> {
     let mut value = serde_json::to_value(original)
         .map_err(|error| format!("failed to encode changed Update resources: {error}"))?;
     value["memory"]["limit"] = serde_json::json!(256 * 1024 * 1024_u64);

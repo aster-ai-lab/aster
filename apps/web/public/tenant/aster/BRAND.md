@@ -1,6 +1,6 @@
 # Aster
 
-租户标识与构建选择保持 `aster`、`A3S_TENANT_SLUG=aster`，产品显示名统一为 Aster。
+租户标识与构建选择保持 `aster`、`ASTER_TENANT_SLUG=aster`，产品显示名统一为 Aster。
 现有应用标识、数据目录与保存的用户主题继续兼容。
 
 `logo.png` 是唯一品牌母版：曜石黑底、银白浮雕星芒与环轨、底部细颗粒纹理。
@@ -32,10 +32,10 @@ macOS 从 `tray.png` 的 alpha 通道生成 16 pt（2× 为 32 px）单色模板
 
 | 位置 | 取值 |
 | --- | --- |
-| `tauri.conf.json` 的 `identifier` | `dev.a3s.studio.aster` |
-| 窗口类（X11 `WM_CLASS`、Wayland `app_id`） | `dev.a3s.studio.aster` |
-| 桌面文件名 | `dev.a3s.studio.aster.desktop` |
-| `Icon=` 与 hicolor 图标名 | `dev.a3s.studio.aster` |
+| `tauri.conf.json` 的 `identifier` | `dev.aster.studio.aster` |
+| 窗口类（X11 `WM_CLASS`、Wayland `app_id`） | `dev.aster.studio.aster` |
+| 桌面文件名 | `dev.aster.studio.aster.desktop` |
+| `Icon=` 与 hicolor 图标名 | `dev.aster.studio.aster` |
 
 主操作色为石墨黑 `#171717`，浅色悬停为 `#2A2A2A`；画布、导航与边框分别使用
 `#F6F6F6`、`#E6E6E6`、`#E3E3E3`。深色主操作使用 `#F5F5F5`，文字与图标保持高对比。

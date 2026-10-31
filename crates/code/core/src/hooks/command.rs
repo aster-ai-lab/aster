@@ -1,10 +1,10 @@
-//! Trusted command-hook discovery and execution for A3S Code.
+//! Trusted command-hook discovery and execution for Aster Code.
 //!
 //! User and repository hook definitions are inert until their exact semantic
 //! definition hash is trusted. Editing a command, matcher, event, or timeout
 //! creates a new pending definition instead of inheriting old authority.
 //!
-//! shortcut: apps/cli/src/code_hooks.rs is still the copy `a3s code exec` compiles
+//! shortcut: apps/cli/src/code_hooks.rs is still the copy `aster code exec` compiles
 //! against core 9.1.2. Delete that copy when the CLI pin exports this type.
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -34,7 +34,7 @@ const MAX_COMMAND_OUTPUT_BYTES: u64 = 1024 * 1024;
 const DEFAULT_TIMEOUT_SECONDS: u64 = 30;
 const MAX_TIMEOUT_SECONDS: u64 = 600;
 
-/// Home used to find `~/.a3s/hooks.json`. Same order as the CLI user home.
+/// Home used to find `~/.aster/hooks.json`. Same order as the CLI user home.
 pub fn command_hook_home() -> Option<PathBuf> {
     if let Some(home) = nonempty_env("HOME") {
         return Some(home);
@@ -57,7 +57,7 @@ pub fn command_hook_home() -> Option<PathBuf> {
 pub fn command_hook_trust_path(directory: &Path) -> anyhow::Result<PathBuf> {
     command_hook_trust_path_from(
         directory,
-        nonempty_env("A3S_STATE_HOME").as_deref(),
+        nonempty_env("ASTER_STATE_HOME").as_deref(),
         nonempty_env("HOME").as_deref(),
         nonempty_env("XDG_STATE_HOME").as_deref(),
         nonempty_env("LOCALAPPDATA").as_deref(),
@@ -92,8 +92,8 @@ fn state_root_without_override(
     #[cfg(target_os = "macos")]
     {
         let _ = (directory, xdg_state_home, local_app_data);
-        let home = home.context("A3S_STATE_HOME is not set and no home directory is available")?;
-        Ok(home.join("Library/Application Support/A3S/State"))
+        let home = home.context("ASTER_STATE_HOME is not set and no home directory is available")?;
+        Ok(home.join("Library/Application Support/Aster/State"))
     }
     #[cfg(all(unix, not(target_os = "macos")))]
     {
@@ -104,17 +104,17 @@ fn state_root_without_override(
             } else {
                 directory.join(value)
             };
-            return Ok(base.join("a3s"));
+            return Ok(base.join("aster"));
         }
-        let home = home.context("A3S_STATE_HOME is not set and no home directory is available")?;
-        Ok(home.join(".local/state/a3s"))
+        let home = home.context("ASTER_STATE_HOME is not set and no home directory is available")?;
+        Ok(home.join(".local/state/aster"))
     }
     #[cfg(windows)]
     {
         let _ = (directory, home, xdg_state_home);
         let local = local_app_data
-            .context("A3S_STATE_HOME is not set and no home directory is available")?;
-        Ok(local.join("A3S/State"))
+            .context("ASTER_STATE_HOME is not set and no home directory is available")?;
+        Ok(local.join("Aster/State"))
     }
 }
 
@@ -180,7 +180,7 @@ impl TrustStore {
     }
 }
 
-/// Command hooks shared by an ACP session and `a3s code exec`.
+/// Command hooks shared by an ACP session and `aster code exec`.
 pub struct CommandHookExecutor {
     workspace: PathBuf,
     home: Option<PathBuf>,
@@ -273,7 +273,7 @@ impl CommandHookExecutor {
         }
         if hooks.is_empty() {
             lines.push(
-                "  Define hooks in ~/.a3s/hooks.json or <git-root>/.a3s/hooks.json.".to_string(),
+                "  Define hooks in ~/.aster/hooks.json or <git-root>/.aster/hooks.json.".to_string(),
             );
         } else {
             lines.push(
@@ -487,7 +487,7 @@ fn describe_hook_event(event: &HookEvent, workspace: &Path) -> (&'static str, St
         HookEvent::PrePrompt(_) => ("UserPromptSubmit", String::new()),
         HookEvent::SessionStart(_) => ("SessionStart", String::new()),
         HookEvent::SessionEnd(_) => ("SessionEnd", String::new()),
-        _ => ("A3SEvent", event.event_type().to_string()),
+        _ => ("AsterEvent", event.event_type().to_string()),
     };
     let mut payload = serde_json::to_value(event).unwrap_or(Value::Null);
     if let Value::Object(root) = &mut payload {
@@ -678,12 +678,12 @@ fn discover_hooks(
 ) -> anyhow::Result<(Vec<LoadedHook>, Vec<String>)> {
     let mut sources = Vec::new();
     if let Some(home) = home {
-        sources.push((home.join(".a3s/hooks.json"), "user"));
+        sources.push((home.join(".aster/hooks.json"), "user"));
     }
     let project_root = find_project_root(workspace).unwrap_or_else(|| workspace.to_path_buf());
-    sources.push((project_root.join(".a3s/hooks.json"), "project"));
+    sources.push((project_root.join(".aster/hooks.json"), "project"));
     if project_root != workspace {
-        sources.push((workspace.join(".a3s/hooks.json"), "workspace"));
+        sources.push((workspace.join(".aster/hooks.json"), "workspace"));
     }
     sources.dedup_by(|left, right| left.0 == right.0);
 
@@ -982,8 +982,8 @@ fn configure_hook_environment(
     .collect::<Vec<_>>();
     command.env_clear();
     command.envs(preserved);
-    command.env("A3S_WORKSPACE", workspace);
-    command.env("A3S_HOOK_EVENT", event_name);
+    command.env("ASTER_WORKSPACE", workspace);
+    command.env("ASTER_HOOK_EVENT", event_name);
 }
 
 fn bounded_event_input(payload: &Value) -> Vec<u8> {
@@ -1037,7 +1037,7 @@ mod tests {
     use super::*;
 
     fn write_config(root: &Path, command: &str) {
-        let directory = root.join(".a3s");
+        let directory = root.join(".aster");
         std::fs::create_dir_all(&directory).unwrap();
         std::fs::write(
             directory.join("hooks.json"),
@@ -1064,25 +1064,25 @@ mod tests {
                 command_hook_trust_path_from(directory, None, Some(home), None, None).unwrap();
             assert_eq!(
                 path,
-                home.join("Library/Application Support/A3S/State/code/hooks-trust.json")
+                home.join("Library/Application Support/Aster/State/code/hooks-trust.json")
             );
         }
         #[cfg(all(unix, not(target_os = "macos")))]
         {
             let path =
                 command_hook_trust_path_from(directory, None, Some(home), None, None).unwrap();
-            assert_eq!(path, home.join(".local/state/a3s/code/hooks-trust.json"));
+            assert_eq!(path, home.join(".local/state/aster/code/hooks-trust.json"));
             let xdg = Path::new("/xdg");
             let path =
                 command_hook_trust_path_from(directory, None, Some(home), Some(xdg), None).unwrap();
-            assert_eq!(path, xdg.join("a3s/code/hooks-trust.json"));
+            assert_eq!(path, xdg.join("aster/code/hooks-trust.json"));
         }
         #[cfg(windows)]
         {
             let local = Path::new("C:/Users/example/AppData/Local");
             let path =
                 command_hook_trust_path_from(directory, None, None, None, Some(local)).unwrap();
-            assert_eq!(path, local.join("A3S/State/code/hooks-trust.json"));
+            assert_eq!(path, local.join("Aster/State/code/hooks-trust.json"));
         }
         let override_root = Path::new("/override/state");
         let path =
@@ -1125,7 +1125,7 @@ mod tests {
     fn independent_executors_merge_trust_updates_under_the_file_lock() {
         let workspace = tempfile::tempdir().unwrap();
         std::fs::create_dir(workspace.path().join(".git")).unwrap();
-        let directory = workspace.path().join(".a3s");
+        let directory = workspace.path().join(".aster");
         std::fs::create_dir_all(&directory).unwrap();
         std::fs::write(
             directory.join("hooks.json"),
@@ -1164,18 +1164,18 @@ mod tests {
     async fn trusted_command_process_can_rewrite_tool_input() {
         let workspace = tempfile::tempdir().unwrap();
         std::fs::create_dir(workspace.path().join(".git")).unwrap();
-        let hook_directory = workspace.path().join(".a3s");
+        let hook_directory = workspace.path().join(".aster");
         std::fs::create_dir_all(&hook_directory).unwrap();
         #[cfg(windows)]
         let (script_name, command, script) = (
             "rewrite.ps1",
-            "powershell.exe -NoProfile -NonInteractive -File .a3s/rewrite.ps1",
+            "powershell.exe -NoProfile -NonInteractive -File .aster/rewrite.ps1",
             "[Console]::Out.Write('{\"hookSpecificOutput\":{\"updatedInput\":{\"path\":\"safe.txt\"}}}')",
         );
         #[cfg(not(windows))]
         let (script_name, command, script) = (
             "rewrite.sh",
-            "/bin/sh .a3s/rewrite.sh",
+            "/bin/sh .aster/rewrite.sh",
             "printf '%s' '{\"hookSpecificOutput\":{\"updatedInput\":{\"path\":\"safe.txt\"}}}'",
         );
         std::fs::write(hook_directory.join(script_name), script).unwrap();

@@ -1,4 +1,4 @@
-//! A3S Apofasi — typed System-1 decisions for A3S hosts.
+//! Aster Apofasi — typed System-1 decisions for Aster hosts.
 //!
 //! *Apófasi* (απόφαση) means **decision**. This crate owns fast, non-generative
 //! typed decisions (`choice`, `score`, `noul`) that hosts can route, gate, and
@@ -11,7 +11,7 @@
 //! # Quick start
 //!
 //! ```
-//! use a3s_apofasi::{Client, Criteria, DecisionKind, Question, State, SystemOneRequest};
+//! use aster_apofasi::{Client, Criteria, DecisionKind, Question, State, SystemOneRequest};
 //! use indexmap::IndexMap;
 //! use serde_json::json;
 //!

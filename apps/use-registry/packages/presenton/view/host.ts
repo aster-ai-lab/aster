@@ -59,9 +59,9 @@ export function reportHomeDeck(holdsWork: boolean) {
   postHome({ holdsWork });
 }
 
-/** Compact deck text for the a3s-code read tool. The renderer posts it to the plane. */
+/** Compact deck text for the aster read tool. The renderer posts it to the plane. */
 export function reportDeckSnapshot() {
-  const read = (globalThis as typeof globalThis & { __a3sPresentonReadDeck?: () => unknown }).__a3sPresentonReadDeck;
+  const read = (globalThis as typeof globalThis & { __asterPresentonReadDeck?: () => unknown }).__asterPresentonReadDeck;
   if (typeof read !== "function" || !port) return;
   const text = read();
   if (typeof text !== "string") return;
@@ -69,8 +69,8 @@ export function reportDeckSnapshot() {
 }
 
 function applySeed(body: unknown) {
-  const accept = (globalThis as typeof globalThis & { __a3sPresentonAcceptHomeSeed?: (value: unknown) => SeedResult })
-    .__a3sPresentonAcceptHomeSeed;
+  const accept = (globalThis as typeof globalThis & { __asterPresentonAcceptHomeSeed?: (value: unknown) => SeedResult })
+    .__asterPresentonAcceptHomeSeed;
   if (typeof accept !== "function") {
     postHome({ holdsWork: false, applied: false });
     return;
@@ -94,8 +94,8 @@ function receiveSeed(body: unknown, delivery: number) {
 }
 
 function applyDeck(part: unknown) {
-  const apply = (globalThis as typeof globalThis & { __a3sPresentonApplyDeckToolPart?: (value: unknown) => unknown })
-    .__a3sPresentonApplyDeckToolPart;
+  const apply = (globalThis as typeof globalThis & { __asterPresentonApplyDeckToolPart?: (value: unknown) => unknown })
+    .__asterPresentonApplyDeckToolPart;
   const result = typeof apply === "function" ? apply(part) : { status: "idle" };
   reportDeckSnapshot();
   port?.postMessage({ protocolVersion: PROTOCOL, type: "aix.view.deck-result", result });

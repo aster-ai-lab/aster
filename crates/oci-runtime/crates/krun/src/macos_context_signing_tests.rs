@@ -20,7 +20,7 @@ fn resigned_runtime_keeps_pinned_code_and_rejects_modified_payloads() {
     ] {
         let path = temporary.path().join(name);
         fs::copy(
-            Path::new(env!("A3S_OCI_KRUN_RUNTIME_DIR")).join(name),
+            Path::new(env!("ASTER_OCI_KRUN_RUNTIME_DIR")).join(name),
             &path,
         )
         .unwrap();

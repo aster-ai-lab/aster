@@ -11,7 +11,7 @@
 
 ## Phase 2: Native reads, execution facts and tool contracts
 
-- [x] T004 [US2] Trace a3s_office public APIs, then add/reuse bounded source reads through ACP document_read/plugin_tools. Fixture tests prove DOCX paragraph/table locations, XLSX cells/types/formats/formulas, PDF text/page-image capability and explicit unavailable OCR; reject over-limit, malformed, unauthorized and symlink-escape inputs.
+- [x] T004 [US2] Trace aster_office public APIs, then add/reuse bounded source reads through ACP document_read/plugin_tools. Fixture tests prove DOCX paragraph/table locations, XLSX cells/types/formats/formulas, PDF text/page-image capability and explicit unavailable OCR; reject over-limit, malformed, unauthorized and symlink-escape inputs.
 - [x] T005 [US2] Extend existing OCI/context facts and qualified Studio companion startup checks. Hermetic tests distinguish actual guest shell, persistent workspace, per-call temp files, missing companions and unavailable optional tools without permission/network expansion.
 - [x] T006 [US3] Reproduce the observed heredoc permission refusals through the governed call path; verify projected patch schema against execution. Add exact-approved/effective-rewrite/deny/invalid-diff tests and retained bounded diagnostic evidence. Change production admission only for a demonstrated defect.
 
@@ -30,7 +30,7 @@
 
 - [ ] Every behavior change has its focused owning-package test and connected caller coverage.
 - [ ] cargo fmt --all -- --check and applicable workspace CI checks are verified.
-- [ ] No new crates.io A3S dependency, SDK binding, workspace, lockfile or native select.
+- [ ] No new crates.io Aster dependency, SDK binding, workspace, lockfile or native select.
 - [ ] Product configuration remains ACL; sandbox/trust/read bounds remain enforced.
 - [ ] Private Studio source remains in its submodule; unrelated dirty changes remain intact.
 - [ ] Candidate CUA artifacts prove actual presentation and open/download, not only file existence.

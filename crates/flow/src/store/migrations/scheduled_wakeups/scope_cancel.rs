@@ -151,7 +151,7 @@ WHERE wakeup.run_id = cancelled_tree.run_id
       LIMIT 1
   );
 
-CREATE OR REPLACE FUNCTION a3s_flow_drop_scoped_wakeups()
+CREATE OR REPLACE FUNCTION aster_flow_drop_scoped_wakeups()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
@@ -201,5 +201,5 @@ CREATE TRIGGER flow_scheduled_wakeups_after_scope_cancelled
 AFTER INSERT ON flow_events
 FOR EACH ROW
 WHEN ((NEW.event_json::jsonb ->> 'type') = 'scope_cancelled')
-EXECUTE FUNCTION a3s_flow_drop_scoped_wakeups();
+EXECUTE FUNCTION aster_flow_drop_scoped_wakeups();
 "#;

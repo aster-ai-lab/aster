@@ -6,7 +6,7 @@
 
 ## Summary
 
-Extend the shared screenshot control with an independently implemented visual feedback workspace. Rust owns typed document validation, image decoding/compositing, geometric candidates, stitching, history and feedback/project encoding. Existing React/Tauri controls provide accessible editing and existing drawing/OCR. The composer starts native capture; Visual Feedback appears only as an advanced action on the captured-image toolbar and opens its edited PNG. Library selection is outside this workflow. Preserve all unrelated working changes. Exercise an isolated managed Aster instance through native A3S Test.
+Extend the shared screenshot control with an independently implemented visual feedback workspace. Rust owns typed document validation, image decoding/compositing, geometric candidates, stitching, history and feedback/project encoding. Existing React/Tauri controls provide accessible editing and existing drawing/OCR. The composer starts native capture; Visual Feedback appears only as an advanced action on the captured-image toolbar and opens its edited PNG. Library selection is outside this workflow. Preserve all unrelated working changes. Exercise an isolated managed Aster instance through native Aster Test.
 
 ## Constitution Check
 
@@ -49,7 +49,7 @@ See [research.md](research.md). Reuse the existing screenshot byte decoder for s
 
 ## Verification Plan
 
-- Focused `cargo test -p a3s-studio --lib visual_feedback` from repository root with the Studio target directory.
+- Focused `cargo test -p aster-studio --lib visual_feedback` from repository root with the Studio target directory.
 - Focused screenshot renderer tests and typecheck; i18n sync/check, formatter limited to touched files; `cargo fmt --all -- --check` and existing desktop command authority regression.
 - Early native CUA attach smoke, then full user scenarios against an isolated managed instance. Compare actual JSON/projects/images with fixtures and record source/build identity.
 - No live model call, no production app replacement, no full unrelated cloud/workspace suite, no Windows/Linux hardware run.

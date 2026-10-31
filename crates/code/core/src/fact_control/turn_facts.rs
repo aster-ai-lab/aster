@@ -11,7 +11,7 @@ pub const TURN_COMPLETE_FACT_KIND: &str = "turn.complete";
 /// This run's thread, read through the run's own log handle.
 pub(super) fn surface_thread_facts(
     surface: &SessionSurface,
-) -> Result<Vec<a3s_effect::Fact>, ActorError> {
+) -> Result<Vec<aster_effect::Fact>, ActorError> {
     surface_fact_log(surface)?.read(&thread_for_session(&surface.session_id))
 }
 
@@ -64,7 +64,7 @@ pub(crate) fn append_turn_complete_fact(
         // closed with every step bound, so the bookkeeping is settled.
         crate::harness_loop::CompletionTerminal::Distinct => ("distinct", None),
     };
-    let cut = a3s_effect::cut_log(&facts);
+    let cut = aster_effect::cut_log(&facts);
     let payload = serde_json::json!({
         "terminal": label,
         "effect_digest": digest,
@@ -91,11 +91,11 @@ pub(crate) fn append_turn_complete_fact(
 /// cannot forgive missing terminals, incomplete observation or external debt.
 /// Legacy unsettled evidence remains unknown rather than gaining invented
 /// byte identities from the current filesystem.
-pub(crate) fn unsettled_mutation_paths(facts: &[a3s_effect::Fact]) -> Vec<String> {
+pub(crate) fn unsettled_mutation_paths(facts: &[aster_effect::Fact]) -> Vec<String> {
     receipts::fold_debt(facts).paths
 }
 
-pub(crate) fn has_unsettled_effects(facts: &[a3s_effect::Fact]) -> bool {
+pub(crate) fn has_unsettled_effects(facts: &[aster_effect::Fact]) -> bool {
     let debt = receipts::fold_debt(facts);
     !debt.paths.is_empty() || !debt.unresolved.is_empty()
 }
@@ -165,7 +165,7 @@ pub(crate) fn restore_checkpoint_mutation_cache(
 }
 
 pub(super) fn checkpoint_mutation_cache_covered(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
     checkpoint: &crate::loop_checkpoint::LoopCheckpoint,
     thread: &str,
     session_id: &str,
@@ -178,7 +178,7 @@ pub(super) fn checkpoint_mutation_cache_covered(
             if binding.validate().is_err() {
                 return false;
             }
-            match crate::content_digest::digest_json("a3s.code.tool-admission-binding.v1", binding)
+            match crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", binding)
             {
                 Ok(digest) => Some(digest),
                 Err(_) => return false,
@@ -324,7 +324,7 @@ pub(crate) fn replay_unsettled_mutations(surface: &SessionSurface) {
 
 pub(super) fn replay_unsettled_mutations_from_facts(
     surface: &SessionSurface,
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
 ) {
     let workspace = surface.agent.tool_context_handle().workspace.clone();
     let debt = receipts::fold_debt(facts);
@@ -404,7 +404,7 @@ pub(super) fn append_context_sections_fact(
     // into a DuplicateFact rejection — identical payloads in the same
     // millisecond dedupe to one record, which is their identity anyway.
     let payload_fingerprint = crate::content_digest::digest_bytes(
-        "a3s.code.context.sections-key.v1",
+        "aster.code.context.sections-key.v1",
         payload.to_string().as_bytes(),
     );
     let _ = log.append(
@@ -518,11 +518,11 @@ pub(super) fn append_steer_input(
     // A distinct prefix is outside the entire historical steer:{raw_id} set.
     // Fixed-array encoding distinguishes colons, Unicode and empty components.
     let digest = crate::content_digest::digest_json(
-        "a3s.code.steer-input.identity.v1",
+        "aster.code.steer-input.identity.v1",
         &[session_id, run_id, request_id],
     )
     .map_err(|error| ActorError::Schema(error.to_string()))?;
-    a3s_effect::append_input(
+    aster_effect::append_input(
         log,
         &thread_for_session(session_id),
         message_fact(format!("run-steer-v1:{digest}"), input),

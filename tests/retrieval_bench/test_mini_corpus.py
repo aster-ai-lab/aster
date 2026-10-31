@@ -7,7 +7,7 @@ from mini_corpus import FILES, QUERIES, write_corpus
 
 class CorpusTests(unittest.TestCase):
     def test_every_graded_chunk_exists(self):
-        root = Path("/tmp/a3s-bench-corpus-selftest")
+        root = Path("/tmp/aster-bench-corpus-selftest")
         root.mkdir(parents=True, exist_ok=True)
         write_corpus(root)
         for query_id, spec in QUERIES.items():

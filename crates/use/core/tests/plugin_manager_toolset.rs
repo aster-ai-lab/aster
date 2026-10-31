@@ -1,4 +1,4 @@
-use a3s_use_core::{PluginManagerToolset, PLUGIN_MANAGER_TOOLSET_SCHEMA_V4};
+use aster_use_core::{PluginManagerToolset, PLUGIN_MANAGER_TOOLSET_SCHEMA_V4};
 
 const TOOLSET: &[u8] = include_bytes!("../fixtures/plugins/manager-toolset-v4.json");
 const TOOLSET_DIGEST: &str =
@@ -108,7 +108,7 @@ fn current_manager_toolset_fixture_is_canonical_and_frozen() {
     assert_eq!(error.code, "use.plugin.manager_toolset_invalid");
 
     let mut retired = serde_json::to_value(PluginManagerToolset::v4()).unwrap();
-    retired["schema"] = serde_json::json!("a3s.use.plugin-manager-tools.v3");
+    retired["schema"] = serde_json::json!("aster.use.plugin-manager-tools.v3");
     let error =
         PluginManagerToolset::from_json(&serde_json::to_vec(&retired).unwrap()).unwrap_err();
     assert_eq!(error.code, "use.plugin.manager_toolset_invalid");

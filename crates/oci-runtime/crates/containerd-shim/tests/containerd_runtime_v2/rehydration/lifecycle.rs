@@ -1,7 +1,7 @@
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerRecord, ContainerTarget, Generation, OperationContext,
     StartRequest as RuntimeStartRequest, StateRequest,
 };
@@ -55,7 +55,7 @@ pub(super) async fn qualify_committed_init_start(
 
     let host_pid = faults::find_runtime_host_pid(config).await?;
     let mut suspended_host =
-        faults::SuspendedProcess::stop(host_pid, "committed-Start A3S OCI host service")?;
+        faults::SuspendedProcess::stop(host_pid, "committed-Start Aster OCI host service")?;
     let start_address = bootstrap.address.clone();
     let start_id = id.clone();
     let mut start_call =
@@ -65,7 +65,7 @@ pub(super) async fn qualify_committed_init_start(
         .is_ok()
     {
         return Err(qualification_error(
-            "Start completed while the exact A3S OCI host service was suspended",
+            "Start completed while the exact Aster OCI host service was suspended",
         )
         .into());
     }
@@ -73,7 +73,7 @@ pub(super) async fn qualify_committed_init_start(
     let old_shim_pid = faults::find_exact_shim_pid(config, &id).await?;
     let suspended_shim =
         faults::SuspendedProcess::stop(old_shim_pid, "committed-Start original shim")?;
-    suspended_host.resume("committed-Start A3S OCI host service")?;
+    suspended_host.resume("committed-Start Aster OCI host service")?;
     let committed = commit_runtime_start(config, &id, &identity).await?;
     validate_started_record(&before, &committed, &identity, created.pid)?;
 

@@ -3,7 +3,7 @@ use std::io::{Read, Write};
 use std::path::{Component, Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
 use tokio::io::AsyncWriteExt;
@@ -21,9 +21,9 @@ const STAGE_PREFIX: &str = ".stage-";
 const BACKUP_PREFIX: &str = ".backup-";
 
 const MODEL_BUNDLE: PinnedBundle = PinnedBundle {
-    url: "https://github.com/A3S-Lab/OCR/releases/download/v0.3.0/a3s-use-ocr-assets-0.3.0.tar.gz",
-    bytes: 26_105_899,
-    sha256: "3376f84f400590c3c9c06ccef11494aac9877d7c19b8ffa38254e64db55c6d75",
+    url: "https://github.com/aster-ai-lab/OCR/releases/download/v0.3.0/aster-use-ocr-assets-0.3.0.tar.gz",
+    bytes: 26_110_635,
+    sha256: "25abc059ff1085187b6184033a936b0e5308b7f59ba4df2bfe5c95c7eec99c2c",
 };
 
 #[derive(Debug, Clone, Copy)]
@@ -124,7 +124,7 @@ pub async fn uninstall_managed_ppocr_v6() -> UseResult<bool> {
 
 async fn install_into(stage: &Path) -> UseResult<()> {
     let client = download::client()?;
-    let bundle_path = stage.join("a3s-use-ocr-assets-0.3.0.tar.gz");
+    let bundle_path = stage.join("aster-use-ocr-assets-0.3.0.tar.gz");
     let downloaded =
         download::pinned(&client, MODEL_BUNDLE.url, &bundle_path, MODEL_BUNDLE.bytes).await?;
     if downloaded.bytes != MODEL_BUNDLE.bytes || downloaded.sha256 != MODEL_BUNDLE.sha256 {
@@ -276,7 +276,7 @@ fn allowed_bundle_directory(components: &[&std::ffi::OsStr]) -> bool {
         [root] => *root == "ocr-models" || *root == "ocr-skills",
         [root, model] => {
             (*root == "ocr-models" && *model == MODEL_FAMILY)
-                || (*root == "ocr-skills" && *model == "a3s-use-ocr")
+                || (*root == "ocr-skills" && *model == "aster-use-ocr")
         }
         [root, model, role] => {
             *root == "ocr-models" && *model == MODEL_FAMILY && (*role == "det" || *role == "rec")
@@ -289,7 +289,7 @@ fn ignored_bundle_file(components: &[&std::ffi::OsStr]) -> bool {
     match components {
         [name] => *name == "LICENSE" || *name == "THIRD_PARTY_NOTICES.md",
         [root, scope, name] => {
-            (*root == "ocr-skills" && *scope == "a3s-use-ocr" && *name == "SKILL.md")
+            (*root == "ocr-skills" && *scope == "aster-use-ocr" && *name == "SKILL.md")
                 || (*root == "ocr-models" && *scope == MODEL_FAMILY && *name == RECEIPT_FILE)
         }
         _ => false,

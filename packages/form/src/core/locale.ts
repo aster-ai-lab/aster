@@ -1,6 +1,6 @@
 import type { FormLocaleCatalog, FormLocaleCatalogOverride, FormLocaleMessages } from './types';
 
-export const FORM_LOCALE_CATALOG_API_VERSION = 'a3s.dev/form-locale-catalog/v1' as const;
+export const FORM_LOCALE_CATALOG_API_VERSION = 'aster.dev/form-locale-catalog/v1' as const;
 
 const EN_MESSAGES: Readonly<FormLocaleMessages> = Object.freeze({
   checkboxEnabled: 'Enabled',

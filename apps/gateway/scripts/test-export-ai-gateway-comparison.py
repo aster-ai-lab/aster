@@ -39,7 +39,7 @@ def distribution(samples: int, base: int) -> dict[str, int | float]:
 def trial_payload(product: str, trial: int) -> dict[str, object]:
     requests = 4
     tokens = 4
-    product_offset = 0 if product == "a3s-gateway" else 100
+    product_offset = 0 if product == "aster-gateway" else 100
     trial_offset = trial * 10
     base = 100 + product_offset + trial_offset
     goodput = 1100.0 - product_offset + trial_offset
@@ -91,13 +91,13 @@ class ExporterTests(unittest.TestCase):
         self.assertIn('stream_total_timeout = "120s"', gateway)
 
     def test_trial_validation_rejects_silent_token_loss(self) -> None:
-        payload = trial_payload("a3s-gateway", 1)
+        payload = trial_payload("aster-gateway", 1)
         payload["completed_tokens"] = 15
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "trial.json"
             path.write_text(json.dumps(payload), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "completed-token"):
-                EXPORTER.read_trial(path, "a3s-gateway", 1)
+                EXPORTER.read_trial(path, "aster-gateway", 1)
 
     def test_trial_validation_rejects_inconsistent_distribution_counts(self) -> None:
         payload = trial_payload("nginx", 1)
@@ -109,14 +109,14 @@ class ExporterTests(unittest.TestCase):
                 EXPORTER.read_trial(path, "nginx", 1)
 
     def test_trial_validation_rejects_combined_disconnect_and_read_delay(self) -> None:
-        payload = trial_payload("a3s-gateway", 1)
+        payload = trial_payload("aster-gateway", 1)
         payload["scenario"]["disconnect_after_tokens"] = 1
         payload["scenario"]["read_delay_ms"] = 50
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "trial.json"
             path.write_text(json.dumps(payload), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "cannot combine"):
-                EXPORTER.read_trial(path, "a3s-gateway", 1)
+                EXPORTER.read_trial(path, "aster-gateway", 1)
 
     def test_prompt_limit_lanes_use_target_body_bytes(self) -> None:
         self.assertIn("prompt-limit", EXPORTER.PROFILE_DETAILS)
@@ -180,7 +180,7 @@ class ExporterTests(unittest.TestCase):
         self.assertIn("stream-overhead-c1", EXPORTER.PROFILE_DETAILS)
         self.assertIn("sse-transport-c1", EXPORTER.PROFILE_DETAILS)
         self.assertIn("sse-transport-c64", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("sse-transport-c1", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("sse-transport-c1", EXPORTER.ASTER_ONLY_PROFILES)
         self.assertIn("sse-transport-c1)", runner)
         self.assertIn("sse-transport-c64)", runner)
         self.assertIn("endpoint=sse-transport", runner)
@@ -193,7 +193,7 @@ class ExporterTests(unittest.TestCase):
         self.assertIn("SseTransportRequest", upstream)
         self.assertIn("request-buffering-on", EXPORTER.PROFILE_DETAILS)
         self.assertIn("request-buffering-off", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("request-buffering-on", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("request-buffering-on", EXPORTER.ASTER_ONLY_PROFILES)
         self.assertIn("request-buffering-on)", runner)
         self.assertIn("request-buffering-off)", runner)
         self.assertIn("request_buffering_off_fixture=1", runner)
@@ -209,7 +209,7 @@ class ExporterTests(unittest.TestCase):
         nginx_default = (FIXTURE_ROOT / "nginx.conf").read_text(encoding="utf-8")
         self.assertIn("proxy_request_buffering on", nginx_default)
         self.assertIn("disk-spill", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("disk-spill", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("disk-spill", EXPORTER.ASTER_ONLY_PROFILES)
         self.assertIn("disk-spill)", runner)
         self.assertIn("disk_spill_fixture=1", runner)
         self.assertIn("ensure_ai_disk_spill_volume", runner)
@@ -220,10 +220,10 @@ class ExporterTests(unittest.TestCase):
         )
         nginx_disk = (FIXTURE_ROOT / "nginx-disk-spill.conf").read_text(encoding="utf-8")
         self.assertIn("client_body_buffer_size 16k", nginx_disk)
-        self.assertIn("client_body_temp_path /tmp/a3s-ai-bench-client-body", nginx_disk)
+        self.assertIn("client_body_temp_path /tmp/aster-ai-bench-client-body", nginx_disk)
         self.assertIn("disk-spill-volume.txt", runner)
         self.assertIn("gateway-restart", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("gateway-restart", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("gateway-restart", EXPORTER.ASTER_ONLY_PROFILES)
         self.assertIn("gateway-restart)", runner)
         self.assertIn("gateway_restart_fixture=1", runner)
         self.assertIn("restart_proxy_product", runner)
@@ -240,8 +240,8 @@ class ExporterTests(unittest.TestCase):
         self.assertIn("force_connection_close", load)
         self.assertIn("transport-tls-http1", EXPORTER.PROFILE_DETAILS)
         self.assertIn("transport-tls-http2", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("transport-tls-http1", EXPORTER.A3S_ONLY_PROFILES)
-        self.assertNotIn("transport-tls-http2", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("transport-tls-http1", EXPORTER.ASTER_ONLY_PROFILES)
+        self.assertNotIn("transport-tls-http2", EXPORTER.ASTER_ONLY_PROFILES)
         self.assertIn("transport-tls-http1)", runner)
         self.assertIn("transport-tls-http2)", runner)
         self.assertIn("gateway-tls.acl", runner)
@@ -263,7 +263,7 @@ class ExporterTests(unittest.TestCase):
         self.assertIn("transport-ipv6", EXPORTER.PROFILE_DETAILS)
         self.assertIn("transport-ipv6)", runner)
         self.assertIn("transport-upstream-tls", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("transport-upstream-tls", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("transport-upstream-tls", EXPORTER.ASTER_ONLY_PROFILES)
         self.assertIn("transport-upstream-tls)", runner)
         self.assertIn("gateway-upstream-tls.acl", runner)
         self.assertIn("nginx-upstream-tls.conf", runner)
@@ -416,21 +416,21 @@ class ExporterTests(unittest.TestCase):
         self.assertTrue((FIXTURE_ROOT / "gateway-blackhole.acl").is_file())
         self.assertTrue((FIXTURE_ROOT / "nginx-blackhole.conf").is_file())
 
-    def test_telemetry_on_is_a3s_only_policy_lane(self) -> None:
+    def test_telemetry_on_is_aster_only_policy_lane(self) -> None:
         self.assertIn("telemetry-on", EXPORTER.PROFILE_DETAILS)
         self.assertIn("telemetry-off", EXPORTER.PROFILE_DETAILS)
-        self.assertIn("telemetry-on", EXPORTER.A3S_ONLY_PROFILES)
-        self.assertIn("telemetry-off", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertIn("telemetry-on", EXPORTER.ASTER_ONLY_PROFILES)
+        self.assertIn("telemetry-off", EXPORTER.ASTER_ONLY_PROFILES)
         runner = RUNNER.read_text(encoding="utf-8")
         self.assertIn("telemetry-on)", runner)
         self.assertIn("telemetry-off)", runner)
         self.assertIn("gateway-telemetry.acl", runner)
-        self.assertIn("a3s_only=1", runner)
+        self.assertIn("aster_only=1", runner)
         self.assertTrue((FIXTURE_ROOT / "gateway-telemetry.acl").is_file())
 
     def test_fallback_is_dual_product_recovery_lane(self) -> None:
         self.assertIn("fallback", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("fallback", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("fallback", EXPORTER.ASTER_ONLY_PROFILES)
         runner = RUNNER.read_text(encoding="utf-8")
         self.assertIn("fallback)", runner)
         self.assertIn("fallback_fixture=1", runner)
@@ -449,7 +449,7 @@ class ExporterTests(unittest.TestCase):
 
     def test_stream_bursty_uses_tokens_per_write(self) -> None:
         self.assertIn("stream-bursty", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("stream-bursty", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("stream-bursty", EXPORTER.ASTER_ONLY_PROFILES)
         runner = RUNNER.read_text(encoding="utf-8")
         self.assertIn("stream-bursty)", runner)
         self.assertIn("tokens_per_write=8", runner)
@@ -457,7 +457,7 @@ class ExporterTests(unittest.TestCase):
 
     def test_stream_fragmented_uses_fragments_per_event(self) -> None:
         self.assertIn("stream-fragmented", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("stream-fragmented", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("stream-fragmented", EXPORTER.ASTER_ONLY_PROFILES)
         runner = RUNNER.read_text(encoding="utf-8")
         self.assertIn("stream-fragmented)", runner)
         self.assertIn("fragments_per_event=4", runner)
@@ -475,7 +475,7 @@ class ExporterTests(unittest.TestCase):
 
     def test_stream_unicode_uses_utf8_multiline_and_mid_codepoint_cuts(self) -> None:
         self.assertIn("stream-unicode", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("stream-unicode", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("stream-unicode", EXPORTER.ASTER_ONLY_PROFILES)
         runner = RUNNER.read_text(encoding="utf-8")
         self.assertIn("stream-unicode)", runner)
         self.assertIn("unicode_payload=1", runner)
@@ -490,7 +490,7 @@ class ExporterTests(unittest.TestCase):
 
     def test_weighted_rollout_uses_revision_fixtures(self) -> None:
         self.assertIn("weighted-rollout", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("weighted-rollout", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("weighted-rollout", EXPORTER.ASTER_ONLY_PROFILES)
         runner = RUNNER.read_text(encoding="utf-8")
         self.assertIn("weighted-rollout)", runner)
         self.assertIn("weighted_fixture=1", runner)
@@ -510,7 +510,7 @@ class ExporterTests(unittest.TestCase):
 
     def test_rate_limit_is_dual_product_policy_lane(self) -> None:
         self.assertIn("rate-limit", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("rate-limit", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("rate-limit", EXPORTER.ASTER_ONLY_PROFILES)
         runner = RUNNER.read_text(encoding="utf-8")
         self.assertIn("rate-limit)", runner)
         self.assertIn("ratelimit_fixture=1", runner)
@@ -525,13 +525,13 @@ class ExporterTests(unittest.TestCase):
         self.assertIn("limit_req", nginx)
         self.assertIn("limit_req_status 429", nginx)
 
-    def test_api_key_auth_is_a3s_only_policy_lane(self) -> None:
+    def test_api_key_auth_is_aster_only_policy_lane(self) -> None:
         self.assertIn("api-key-auth", EXPORTER.PROFILE_DETAILS)
-        self.assertIn("api-key-auth", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertIn("api-key-auth", EXPORTER.ASTER_ONLY_PROFILES)
         runner = RUNNER.read_text(encoding="utf-8")
         self.assertIn("api-key-auth)", runner)
         self.assertIn("apikey_fixture=1", runner)
-        self.assertIn("a3s_only=1", runner)
+        self.assertIn("aster_only=1", runner)
         self.assertIn("--omit-api-key-every", runner)
         self.assertIn("gateway-apikey.acl", runner)
         self.assertTrue((FIXTURE_ROOT / "gateway-apikey.acl").is_file())
@@ -544,7 +544,7 @@ class ExporterTests(unittest.TestCase):
 
     def test_no_replay_after_token_is_dual_product_stream_safety_lane(self) -> None:
         self.assertIn("no-replay-after-token", EXPORTER.PROFILE_DETAILS)
-        self.assertNotIn("no-replay-after-token", EXPORTER.A3S_ONLY_PROFILES)
+        self.assertNotIn("no-replay-after-token", EXPORTER.ASTER_ONLY_PROFILES)
         runner = RUNNER.read_text(encoding="utf-8")
         self.assertIn("no-replay-after-token)", runner)
         self.assertIn("noreplay_fixture=1", runner)
@@ -570,7 +570,7 @@ class ExporterTests(unittest.TestCase):
         )
         self.assertEqual(
             EXPORTER.relative_position(90.0, 100.0, True),
-            "a3s_lower",
+            "aster_lower",
         )
 
     def test_main_embeds_raw_trials_and_median_token_metrics(self) -> None:
@@ -609,8 +609,8 @@ class ExporterTests(unittest.TestCase):
                 "16000",
                 "--kernel",
                 "Linux",
-                "--a3s-version",
-                "a3s-gateway 9.8.7-test",
+                "--aster-version",
+                "aster-gateway 9.8.7-test",
                 "--nginx-version",
                 "nginx/1.26.0",
                 "--upstream-version",
@@ -624,16 +624,16 @@ class ExporterTests(unittest.TestCase):
 
         self.assertEqual(result["schema_version"], EXPORTER.OUTPUT_SCHEMA)
         profile = result["profiles"]["stream-paced-c16"]
-        self.assertEqual(len(profile["products"]["a3s-gateway"]["trials"]), 2)
+        self.assertEqual(len(profile["products"]["aster-gateway"]["trials"]), 2)
         self.assertEqual(
-            profile["products"]["a3s-gateway"]["median"]["ttft"]["p50_us"],
+            profile["products"]["aster-gateway"]["median"]["ttft"]["p50_us"],
             119,
         )
         self.assertGreater(
-            profile["comparison"]["a3s_to_nginx_token_goodput_ratio"], 1
+            profile["comparison"]["aster_to_nginx_token_goodput_ratio"], 1
         )
         self.assertEqual(
-            profile["comparison"]["positions"]["ttft_p50"], "a3s_lower"
+            profile["comparison"]["positions"]["ttft_p50"], "aster_lower"
         )
 
 

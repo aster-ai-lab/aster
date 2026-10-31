@@ -228,7 +228,7 @@ fn unbound_validation_providers(
                         package_id: package_id.to_owned(),
                         surface: reference,
                     },
-                    provider_id: "a3s-use-unbound-provider".to_owned(),
+                    provider_id: "aster-use-unbound-provider".to_owned(),
                     provider_build_id: "host-preflight-pending".to_owned(),
                     capability_digest:
                         "sha256:0000000000000000000000000000000000000000000000000000000000000000"

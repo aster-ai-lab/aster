@@ -5,7 +5,7 @@
 use std::collections::BTreeMap;
 use std::ops::Range;
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use sha2::{Digest, Sha256};
 
 use super::{invalid, XqTensorType};

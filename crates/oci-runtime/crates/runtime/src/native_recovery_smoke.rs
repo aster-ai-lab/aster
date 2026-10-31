@@ -5,9 +5,9 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, CreateAttachments, CreateRequest, DeleteMode, DeleteRequest,
     Error, ErrorCode, IsolationRequest, KillRequest, OciBundle, OciRuntimeService,
     OperationContext, OperationId, ProcessIo, ProcessesRequest, Result, Signal, StartRequest,
@@ -23,10 +23,10 @@ use crate::{
 
 /// Versioned readiness handoff written by the live Native Linux owner.
 pub const NATIVE_LINUX_RECOVERY_OWNER_READY_SCHEMA_VERSION: &str =
-    "a3s.oci.native-linux-recovery-owner-ready.v3";
+    "aster.oci.native-linux-recovery-owner-ready.v3";
 /// Versioned evidence emitted after real owner death and driver reopen.
 pub const NATIVE_LINUX_RECOVERY_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.native-linux-recovery-smoke.v2";
+    "aster.oci.native-linux-recovery-smoke.v2";
 
 const OWNER_MAX_LIFETIME: Duration = Duration::from_secs(300);
 const LINUX_SIGKILL: i32 = 9;
@@ -782,7 +782,7 @@ fn delegated_cgroup_has_no_runtime_children(root: &Path) -> std::result::Result<
             && entry
                 .file_name()
                 .to_str()
-                .is_none_or(|name| name.starts_with("a3s-oci-"))
+                .is_none_or(|name| name.starts_with("aster-oci-"))
         {
             return Ok(false);
         }
@@ -823,7 +823,7 @@ mod tests {
     fn report_requires_every_safe_recovery_gate() {
         let target = ContainerTarget::exact(
             ContainerId::new("native-recovery-report").expect("container ID"),
-            a3s_oci_sdk::Generation(1),
+            aster_oci_sdk::Generation(1),
         );
         let mut report = NativeLinuxRecoverySmokeReport::initial(target, false);
         assert!(!report.is_success());
@@ -849,7 +849,7 @@ mod tests {
     fn delegated_report_requires_verified_and_clean_delegation() {
         let target = ContainerTarget::exact(
             ContainerId::new("native-rootless-recovery-report").expect("container ID"),
-            a3s_oci_sdk::Generation(1),
+            aster_oci_sdk::Generation(1),
         );
         let mut report = NativeLinuxRecoverySmokeReport::initial(target, true);
         report.status = CapabilityStatus::Available;

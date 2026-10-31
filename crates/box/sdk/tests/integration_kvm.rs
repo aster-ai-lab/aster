@@ -2,38 +2,38 @@
 //!
 //! `#[ignore]` by default. Run on a `/dev/kvm` host:
 //! ```text
-//! A3S_BOX=/path/to/a3s-box \
-//!   cargo test -p a3s-box-sdk --test integration_kvm -- --ignored --nocapture --test-threads=1
+//! ASTER_BOX=/path/to/aster-box \
+//!   cargo test -p aster-box-sdk --test integration_kvm -- --ignored --nocapture --test-threads=1
 //! ```
-//! Override the image with `A3S_SDK_TEST_IMAGE` (default: a daocloud alpine mirror).
-//! Each test self-skips if no usable `a3s-box`/virtualization is present.
+//! Override the image with `ASTER_SDK_TEST_IMAGE` (default: a daocloud alpine mirror).
+//! Each test self-skips if no usable `aster-box`/virtualization is present.
 
-use a3s_box_sdk::pipeline::{sweep_orphans, warm_base, FileCache, Step, WarmBase};
+use aster_box_sdk::pipeline::{sweep_orphans, warm_base, FileCache, Step, WarmBase};
 use std::process::Command;
 
-fn a3s_box() -> String {
-    std::env::var("A3S_BOX").unwrap_or_else(|_| "a3s-box".into())
+fn aster_box() -> String {
+    std::env::var("ASTER_BOX").unwrap_or_else(|_| "aster-box".into())
 }
 
 fn image() -> String {
-    std::env::var("A3S_SDK_TEST_IMAGE")
+    std::env::var("ASTER_SDK_TEST_IMAGE")
         .unwrap_or_else(|_| "docker.m.daocloud.io/library/alpine:latest".into())
 }
 
-/// Run `a3s-box <args>`, returning (success, stdout+stderr).
+/// Run `aster-box <args>`, returning (success, stdout+stderr).
 fn run(args: &[&str]) -> (bool, String) {
-    let out = Command::new(a3s_box())
+    let out = Command::new(aster_box())
         .args(args)
         .output()
-        .expect("spawn a3s-box");
+        .expect("spawn aster-box");
     let mut s = String::from_utf8_lossy(&out.stdout).into_owned();
     s.push_str(&String::from_utf8_lossy(&out.stderr));
     (out.status.success(), s)
 }
 
-/// True only when a working `a3s-box` reports virtualization is available.
+/// True only when a working `aster-box` reports virtualization is available.
 fn kvm_ready() -> bool {
-    match Command::new(a3s_box()).arg("info").output() {
+    match Command::new(aster_box()).arg("info").output() {
         Ok(o) => o.status.success() && String::from_utf8_lossy(&o.stdout).contains("available"),
         Err(_) => false,
     }
@@ -64,13 +64,13 @@ fn ci_base_snaps() -> usize {
 }
 
 #[test]
-#[ignore = "needs a real a3s-box + /dev/kvm"]
+#[ignore = "needs a real aster-box + /dev/kvm"]
 fn warm_fork_exec_and_cache() {
     if !kvm_ready() {
-        eprintln!("SKIP warm_fork_exec_and_cache: no A3S_BOX/KVM");
+        eprintln!("SKIP warm_fork_exec_and_cache: no ASTER_BOX/KVM");
         return;
     }
-    let cdir = std::env::temp_dir().join(format!("a3s-sdk-it-cache-{}", std::process::id()));
+    let cdir = std::env::temp_dir().join(format!("aster-sdk-it-cache-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&cdir);
     let cache = FileCache::new(&cdir).unwrap();
 
@@ -91,10 +91,10 @@ fn warm_fork_exec_and_cache() {
 }
 
 #[test]
-#[ignore = "needs a real a3s-box + /dev/kvm"]
+#[ignore = "needs a real aster-box + /dev/kvm"]
 fn parallel_collect_all_ordered_with_metrics() {
     if !kvm_ready() {
-        eprintln!("SKIP parallel_collect_all_ordered_with_metrics: no A3S_BOX/KVM");
+        eprintln!("SKIP parallel_collect_all_ordered_with_metrics: no ASTER_BOX/KVM");
         return;
     }
     let base = warm_base(WarmBase::new(image(), "true")).expect("warm_base");
@@ -124,10 +124,10 @@ fn parallel_collect_all_ordered_with_metrics() {
 }
 
 #[test]
-#[ignore = "needs a real a3s-box + /dev/kvm"]
+#[ignore = "needs a real aster-box + /dev/kvm"]
 fn forks_are_isolated() {
     if !kvm_ready() {
-        eprintln!("SKIP forks_are_isolated: no A3S_BOX/KVM");
+        eprintln!("SKIP forks_are_isolated: no ASTER_BOX/KVM");
         return;
     }
     let base = warm_base(WarmBase::new(image(), "true")).expect("warm_base");
@@ -150,10 +150,10 @@ fn forks_are_isolated() {
 }
 
 #[test]
-#[ignore = "needs a real a3s-box + /dev/kvm"]
+#[ignore = "needs a real aster-box + /dev/kvm"]
 fn leak_free_under_churn() {
     if !kvm_ready() {
-        eprintln!("SKIP leak_free_under_churn: no A3S_BOX/KVM");
+        eprintln!("SKIP leak_free_under_churn: no ASTER_BOX/KVM");
         return;
     }
     let boxes0 = ci_base_boxes();
@@ -183,10 +183,10 @@ fn leak_free_under_churn() {
 }
 
 #[test]
-#[ignore = "needs a real a3s-box + /dev/kvm"]
+#[ignore = "needs a real aster-box + /dev/kvm"]
 fn sweep_reclaims_dead_pid_orphan_but_spares_live() {
     if !kvm_ready() {
-        eprintln!("SKIP sweep_reclaims_dead_pid_orphan_but_spares_live: no A3S_BOX/KVM");
+        eprintln!("SKIP sweep_reclaims_dead_pid_orphan_but_spares_live: no ASTER_BOX/KVM");
         return;
     }
     // The sweep deliberately fails closed when host process liveness cannot

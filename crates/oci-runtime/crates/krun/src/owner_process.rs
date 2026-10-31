@@ -50,7 +50,7 @@ pub(crate) fn start(
     let vm_completion = VmCompletion::new();
     let watchdog_completion = vm_completion.clone();
     thread::Builder::new()
-        .name("a3s-oci-owner-watchdog".into())
+        .name("aster-oci-owner-watchdog".into())
         .spawn(move || {
             terminate_when_signaled(
                 owner,
@@ -66,7 +66,7 @@ pub(crate) fn start(
 pub(crate) fn start_guest_command(owner_pid: NonZeroU32) -> io::Result<()> {
     let owner = open(owner_pid)?;
     thread::Builder::new()
-        .name("a3s-oci-guest-owner".into())
+        .name("aster-oci-guest-owner".into())
         .spawn(move || {
             wait_for_owner_exit(&owner);
             terminate_current_shim();
@@ -420,7 +420,7 @@ mod tests {
     fn opens_the_exact_direct_linux_parent() {
         use std::os::unix::process::CommandExt;
 
-        const OWNER_PID_ENV: &str = "A3S_OCI_TEST_OWNER_PID";
+        const OWNER_PID_ENV: &str = "ASTER_OCI_TEST_OWNER_PID";
         const CHILD_TEST: &str = "owner_process::tests::linux_owner_child";
 
         let output = std::process::Command::new(
@@ -446,10 +446,10 @@ mod tests {
     fn linux_owner_child() {
         use std::os::fd::AsRawFd;
 
-        let Ok(owner_pid) = std::env::var("A3S_OCI_TEST_OWNER_PID") else {
+        let Ok(owner_pid) = std::env::var("ASTER_OCI_TEST_OWNER_PID") else {
             return;
         };
-        std::env::remove_var("A3S_OCI_TEST_OWNER_PID");
+        std::env::remove_var("ASTER_OCI_TEST_OWNER_PID");
         let owner_pid = owner_pid
             .parse::<u32>()
             .ok()

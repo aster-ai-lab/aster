@@ -4,7 +4,7 @@ use crate::layers::{
     engram::lookup::tests::{checkpoint, table},
     xq::mhc::XqMhcBlock,
 };
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 
 fn fp8(byte: u8) -> f32 {
     let exponent = (byte >> 3) & 15;

@@ -15,7 +15,7 @@ and remediation evidence do.
 
 ## Scope (out)
 
-- A3S Cloud control-plane UX, long-term usage ledger
+- Aster Cloud control-plane UX, long-term usage ledger
 - Power `PW0` observation delivery, Box MicroVM, Cloud `WEB0.1` object authority
 - Multi-replica Cloud rolling orchestration (`H0.3`/`H0.4` EXIT)
 

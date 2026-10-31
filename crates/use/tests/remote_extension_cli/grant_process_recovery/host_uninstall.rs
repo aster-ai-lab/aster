@@ -1,7 +1,7 @@
 use super::host_support::*;
 use super::*;
 
-use a3s_use_core::{
+use aster_use_core::{
     PluginDesiredState, PluginHostManager, PluginObservedState, PluginOperationAction,
 };
 

@@ -1,9 +1,9 @@
 //! Managed Moli runtime for the Code headless search tier.
 //!
-//! `a3s-search` owns the renderer adapter but intentionally leaves executable
-//! provisioning to its host.  This module is that host boundary for A3S Code:
+//! `aster-search` owns the renderer adapter but intentionally leaves executable
+//! provisioning to its host.  This module is that host boundary for Aster Code:
 //! it prefers an explicitly configured path, then a sidecar packaged next to
-//! the current executable or the `a3s` CLI on `PATH` (`bin/moli/moli` after
+//! the current executable or the `aster` CLI on `PATH` (`bin/moli/moli` after
 //! resolving symlinks such as Homebrew), then a versioned cache, and only
 //! then a pinned release download with a SHA-256 check.  Installation is
 //! atomic and protected by a cross-process lock so concurrent SDK/CLI calls
@@ -24,17 +24,17 @@ use tokio::io::AsyncWriteExt;
 
 pub use manifest::{DEFAULT_MOLI_VERSION, MOLI_REPOSITORY_URL};
 
-const CACHE_ENV: &str = "A3S_CODE_MOLI_CACHE_DIR";
-const EXECUTABLE_ENV: &str = "A3S_CODE_MOLI_EXECUTABLE";
-const RELEASE_BASE_ENV: &str = "A3S_CODE_MOLI_RELEASE_BASE_URL";
-const RECEIPT_SCHEMA: &str = "a3s-code/moli-runtime-receipt/v1";
+const CACHE_ENV: &str = "ASTER_MOLI_CACHE_DIR";
+const EXECUTABLE_ENV: &str = "ASTER_MOLI_EXECUTABLE";
+const RELEASE_BASE_ENV: &str = "ASTER_MOLI_RELEASE_BASE_URL";
+const RECEIPT_SCHEMA: &str = "aster/moli-runtime-receipt/v1";
 const MAX_ARCHIVE_BYTES: u64 = 128 * 1024 * 1024;
 const MAX_BINARY_BYTES: u64 = 256 * 1024 * 1024;
 const MAX_INSTALL_RECEIPT_BYTES: usize = 16 * 1024;
 const LOCK_POLL: Duration = Duration::from_millis(50);
 
 /// Schema identifier for [`MoliRuntimeInfo`].
-pub const MOLI_RUNTIME_INFO_SCHEMA_V1: &str = "a3s-code/moli-runtime-info/v1";
+pub const MOLI_RUNTIME_INFO_SCHEMA_V1: &str = "aster/moli-runtime-info/v1";
 
 /// Secret-free diagnostics for the Moli runtime resolution path.
 ///
@@ -72,7 +72,7 @@ pub fn moli_runtime_info(config: Option<&HeadlessConfig>) -> MoliRuntimeInfo {
         .filter(|path| is_executable(path))
         .or_else(|| explicit_environment_executable().ok().flatten())
         .or_else(|| packaged.clone())
-        .or_else(a3s_search::detect_moli)
+        .or_else(aster_search::detect_moli)
         .or_else(|| {
             let target = target.as_deref()?;
             let root = cache_root(config).ok()?;
@@ -196,7 +196,7 @@ async fn ensure_moli_from(
     // upstream release does not publish an archive for the current target
     // (notably musl Linux).  Check it after the verified managed cache so a
     // pinned cache remains authoritative when both are available.
-    if let Some(path) = a3s_search::detect_moli() {
+    if let Some(path) = aster_search::detect_moli() {
         return Ok(path);
     }
 
@@ -204,7 +204,7 @@ async fn ensure_moli_from(
         managed
     else {
         return Err(anyhow::anyhow!(
-            "Moli has no prebuilt asset for this target; use an explicit Chrome/Lightpanda backend or provide A3S_CODE_MOLI_EXECUTABLE"
+            "Moli has no prebuilt asset for this target; use an explicit Chrome/Lightpanda backend or provide ASTER_MOLI_EXECUTABLE"
         ));
     };
 
@@ -330,7 +330,7 @@ fn cache_root(config: &HeadlessConfig) -> Result<PathBuf> {
         .unwrap_or_else(|| {
             dirs::cache_dir()
                 .unwrap_or_else(std::env::temp_dir)
-                .join("a3s-code")
+                .join("aster")
                 .join("moli")
         });
     if !configured.is_absolute() {
@@ -353,10 +353,10 @@ fn explicit_environment_executable() -> Result<Option<PathBuf>> {
 
 fn packaged_candidates() -> Vec<PathBuf> {
     let mut candidates = Vec::new();
-    if let Some(path) = std::env::var_os("A3S_CODE_MOLI_PATH") {
+    if let Some(path) = std::env::var_os("ASTER_MOLI_PATH") {
         candidates.push(PathBuf::from(path));
     }
-    if let Some(directory) = std::env::var_os("A3S_CODE_MOLI_DIR") {
+    if let Some(directory) = std::env::var_os("ASTER_MOLI_DIR") {
         let directory = PathBuf::from(directory);
         candidates.push(directory.join(manifest::executable_name()));
     }
@@ -364,7 +364,7 @@ fn packaged_candidates() -> Vec<PathBuf> {
         candidates.extend(executable_layout_candidates(&executable));
     }
     // The Code agent is a separate process from the umbrella CLI. Release and
-    // Homebrew installs place Moli beside `a3s`, not beside `a3s-code-acp`.
+    // Homebrew installs place Moli beside `aster`, not beside `aster-acp`.
     // Unit tests skip this lookup so a developer machine that already has the
     // CLI sidecar cannot satisfy a hermetic download fixture.
     if !cfg!(test) {
@@ -389,15 +389,15 @@ fn packaged_candidates() -> Vec<PathBuf> {
 
 fn cli_binary_name() -> &'static str {
     if cfg!(windows) {
-        "a3s.exe"
+        "aster.exe"
     } else {
-        "a3s"
+        "aster"
     }
 }
 
 /// Sidecar locations for one executable, including its canonical path.
 ///
-/// `PATH` entries such as `/opt/homebrew/bin/a3s` are symlinks into the
+/// `PATH` entries such as `/opt/homebrew/bin/aster` are symlinks into the
 /// Cellar. The Moli directory is installed next to the real binary.
 fn executable_layout_candidates(executable: &Path) -> Vec<PathBuf> {
     let mut executables = vec![executable.to_path_buf()];
@@ -1017,19 +1017,19 @@ mod tests {
     #[test]
     fn cli_symlink_resolves_to_the_cellar_moli_sidecar() {
         let root = tempfile::tempdir().unwrap();
-        let cellar_bin = root.path().join("Cellar/a3s/0.16.0/bin");
+        let cellar_bin = root.path().join("Cellar/aster/0.16.0/bin");
         let moli_dir = cellar_bin.join("moli");
         std::fs::create_dir_all(&moli_dir).unwrap();
-        let a3s = cellar_bin.join("a3s");
+        let aster = cellar_bin.join("aster");
         let moli = moli_dir.join("moli");
-        std::fs::write(&a3s, b"#!/bin/sh\n").unwrap();
+        std::fs::write(&aster, b"#!/bin/sh\n").unwrap();
         std::fs::write(&moli, b"#!/bin/sh\n").unwrap();
-        set_executable(&a3s).unwrap();
+        set_executable(&aster).unwrap();
         set_executable(&moli).unwrap();
         let opt_bin = root.path().join("opt/bin");
         std::fs::create_dir_all(&opt_bin).unwrap();
-        let link = opt_bin.join("a3s");
-        std::os::unix::fs::symlink(&a3s, &link).unwrap();
+        let link = opt_bin.join("aster");
+        std::os::unix::fs::symlink(&aster, &link).unwrap();
 
         let candidates = executable_layout_candidates(&link);
         let expected = std::fs::canonicalize(&moli).unwrap();

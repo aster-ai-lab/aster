@@ -25,7 +25,7 @@ query ──> lexical branch ─────────────────
                          final assembly ──> admission ──> model
 ```
 
-The A3S Memory repository remains the serving authority. A vector hit is only a
+The Aster Memory repository remains the serving authority. A vector hit is only a
 candidate. Code re-reads the bound namespace and requires the current `Active`
 revision and exact content digest. The final selected revision must still
 persist admission before model use.
@@ -55,7 +55,7 @@ availability.
 Run from the Code crate workspace:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_semantic_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_semantic_eval -- --nocapture
 ```
 
 The retained marker is:
@@ -64,8 +64,8 @@ The retained marker is:
 {
   "schemaVersion": 1,
   "bindingSchemaVersion": 5,
-  "semanticBindingSchema": "a3s.code.memory.semantic-recall-binding.v1",
-  "fusionProfile": "a3s.code.memory.hybrid.rrf-k60.v1",
+  "semanticBindingSchema": "aster.code.memory.semantic-recall-binding.v1",
+  "fusionProfile": "aster.code.memory.hybrid.rrf-k60.v1",
   "queries": 4,
   "semanticRecallAt1": 1.0,
   "lexicalPositiveHits": 0,

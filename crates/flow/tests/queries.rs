@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventStore, FlowRuntime, InMemoryEventStore, JsonValue,
     QueryInvocation, RuntimeCommand, WorkflowInvocation, WorkflowSpec, MAX_FLOW_HISTORY_PAGE_SIZE,
 };
@@ -17,7 +17,7 @@ impl FlowRuntime for QueryRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         self.workflow_calls.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::Runtime(
             "workflow replay should not run for queries".to_string(),
@@ -26,12 +26,12 @@ impl FlowRuntime for QueryRuntime {
 
     async fn run_step(
         &self,
-        _invocation: a3s_flow::StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime("steps are unused".to_string()))
     }
 
-    async fn run_query(&self, invocation: QueryInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_query(&self, invocation: QueryInvocation) -> aster_flow::Result<JsonValue> {
         self.query_calls.fetch_add(1, Ordering::SeqCst);
         let workflow = invocation.workflow_invocation();
         let context = workflow.context();
@@ -41,7 +41,7 @@ impl FlowRuntime for QueryRuntime {
             "input": invocation.input,
             "history_len": invocation.history.len(),
             "open_waits": context.history().iter().any(|envelope| {
-                matches!(envelope.event, a3s_flow::FlowEvent::WaitCreated { .. })
+                matches!(envelope.event, aster_flow::FlowEvent::WaitCreated { .. })
             }),
         }))
     }
@@ -149,7 +149,7 @@ impl FlowEventStore for PagedQueryStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -158,13 +158,13 @@ impl FlowEventStore for PagedQueryStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, _run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, _run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history read is not allowed for queries".into(),
         ))
@@ -174,7 +174,7 @@ impl FlowEventStore for PagedQueryStore {
         &self,
         _run_id: &str,
         _sequence: u64,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history tail read is not allowed for queries".into(),
         ))
@@ -185,7 +185,7 @@ impl FlowEventStore for PagedQueryStore {
         run_id: &str,
         after_sequence: u64,
         limit: usize,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         let history = self.inner.list(run_id).await?;
         Ok(history
             .into_iter()
@@ -194,7 +194,7 @@ impl FlowEventStore for PagedQueryStore {
             .collect())
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }

@@ -12,7 +12,7 @@
 #   I5 Client consume uses TUF pin     → plan-install provenance matches URL+root
 #   I6 Failures are loud               → smoke fails when stopped; busy port fails
 #
-# Optional: set A3S_USE_BIN to a package-manager a3s-use (0.3.x). Cases that
+# Optional: set ASTER_USE_BIN to a package-manager aster-use (0.3.x). Cases that
 # need the client are skipped with an explicit note when unavailable.
 set -euo pipefail
 
@@ -20,19 +20,19 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SERVE="${ROOT_DIR}/scripts/serve_local.sh"
 SMOKE="${ROOT_DIR}/scripts/smoke_local.sh"
 CONSUME="${ROOT_DIR}/scripts/consume_local.sh"
-EXPECTED_ROOT="${A3S_USE_REGISTRY_EXPECTED_ROOT:-sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172}"
+EXPECTED_ROOT="${ASTER_USE_REGISTRY_EXPECTED_ROOT:-sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172}"
 
 PASS=0
 FAIL=0
 SKIP=0
 
-STATE_DIR="$(mktemp -d "${TMPDIR:-/tmp}/a3s-use-registry-test.XXXXXX")"
+STATE_DIR="$(mktemp -d "${TMPDIR:-/tmp}/aster-use-registry-test.XXXXXX")"
 # Prefer an ephemeral high port to avoid colliding with a developer serve.
 PORT="$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1",0)); print(s.getsockname()[1]); s.close()')"
-export A3S_USE_REGISTRY_HOST=127.0.0.1
-export A3S_USE_REGISTRY_PORT="${PORT}"
-export A3S_USE_REGISTRY_STATE_DIR="${STATE_DIR}/serve"
-export A3S_USE_REGISTRY_EXPECTED_ROOT="${EXPECTED_ROOT}"
+export ASTER_USE_REGISTRY_HOST=127.0.0.1
+export ASTER_USE_REGISTRY_PORT="${PORT}"
+export ASTER_USE_REGISTRY_STATE_DIR="${STATE_DIR}/serve"
+export ASTER_USE_REGISTRY_EXPECTED_ROOT="${EXPECTED_ROOT}"
 
 cleanup() {
   "${SERVE}" stop >/dev/null 2>&1 || true
@@ -103,16 +103,16 @@ assert_fails() {
 }
 
 resolve_use_bin() {
-  if [[ -n "${A3S_USE_BIN:-}" && -x "${A3S_USE_BIN}" ]]; then
-    if "${A3S_USE_BIN}" registry source list --json >/dev/null 2>&1; then
-      printf '%s\n' "${A3S_USE_BIN}"
+  if [[ -n "${ASTER_USE_BIN:-}" && -x "${ASTER_USE_BIN}" ]]; then
+    if "${ASTER_USE_BIN}" registry source list --json >/dev/null 2>&1; then
+      printf '%s\n' "${ASTER_USE_BIN}"
       return 0
     fi
   fi
   local candidate
   for candidate in \
-    "${ROOT_DIR}/../crates/use/target/debug/a3s-use" \
-    "${ROOT_DIR}/../crates/use/target/release/a3s-use"; do
+    "${ROOT_DIR}/../crates/use/target/debug/aster-use" \
+    "${ROOT_DIR}/../crates/use/target/release/aster-use"; do
     if [[ -x "${candidate}" ]] && "${candidate}" registry source list --json >/dev/null 2>&1; then
       printf '%s\n' "${candidate}"
       return 0
@@ -163,16 +163,16 @@ wait "${DECOY_PID}" 2>/dev/null || true
 
 # Stale PID pointing at unrelated alive process must not block a real start.
 assert_ok "I3 start after busy-port clear" "${SERVE}" start
-REAL_PID="$(tr -d '[:space:]' <"${A3S_USE_REGISTRY_STATE_DIR}/httpd.pid")"
+REAL_PID="$(tr -d '[:space:]' <"${ASTER_USE_REGISTRY_STATE_DIR}/httpd.pid")"
 "${SERVE}" stop >/dev/null
 # Fake a stale PID file with a long-lived process (this shell's parent is wrong;
 # use `sleep` as a live unrelated PID).
 sleep 120 &
 STALE_PID=$!
-mkdir -p "${A3S_USE_REGISTRY_STATE_DIR}"
-echo "${STALE_PID}" >"${A3S_USE_REGISTRY_STATE_DIR}/httpd.pid"
+mkdir -p "${ASTER_USE_REGISTRY_STATE_DIR}"
+echo "${STALE_PID}" >"${ASTER_USE_REGISTRY_STATE_DIR}/httpd.pid"
 assert_ok "I3 start recovers from stale unrelated PID" "${SERVE}" start
-NEW_PID="$(tr -d '[:space:]' <"${A3S_USE_REGISTRY_STATE_DIR}/httpd.pid")"
+NEW_PID="$(tr -d '[:space:]' <"${ASTER_USE_REGISTRY_STATE_DIR}/httpd.pid")"
 if [[ "${NEW_PID}" != "${STALE_PID}" ]] && kill -0 "${STALE_PID}" 2>/dev/null; then
   pass "I3 stale PID was not stolen"
 else
@@ -184,21 +184,21 @@ wait "${STALE_PID}" 2>/dev/null || true
 # --- I1 / I5 client consume --------------------------------------------------
 USE_BIN=""
 if USE_BIN="$(resolve_use_bin)"; then
-  export A3S_USE_BIN="${USE_BIN}"
+  export ASTER_USE_BIN="${USE_BIN}"
   assert_ok "I5 consume plan-install against local URL" "${CONSUME}"
 
   # Wrong trust root must fail closed at plan time (source may add; refresh fails).
   HOME_BAD="$(mktemp -d "${STATE_DIR}/bad-home.XXXXXX")"
   set +e
   BAD_OUT="$(
-    A3S_USE_HOME="${HOME_BAD}" "${USE_BIN}" registry source add local \
+    ASTER_USE_HOME="${HOME_BAD}" "${USE_BIN}" registry source add local \
       --url "${URL}" \
       --trust-root "sha256:0000000000000000000000000000000000000000000000000000000000000000" \
       --json 2>&1
   )"
   BAD_ADD_EC=$?
   BAD_PLAN="$(
-    A3S_USE_HOME="${HOME_BAD}" "${USE_BIN}" plugin plan-install a3s/registry-selftest \
+    ASTER_USE_HOME="${HOME_BAD}" "${USE_BIN}" plugin plan-install aster/registry-selftest \
       --registry-name local \
       --scope-kind user \
       --scope-id user/registry-local \
@@ -212,8 +212,8 @@ if USE_BIN="$(resolve_use_bin)"; then
     fail "I1 wrong trust-root fails closed" "add=${BAD_OUT} plan=${BAD_PLAN}"
   fi
 else
-  skip "I5 consume plan-install against local URL" "set A3S_USE_BIN to Use package-manager 0.3.x"
-  skip "I1 wrong trust-root fails closed" "requires A3S_USE_BIN"
+  skip "I5 consume plan-install against local URL" "set ASTER_USE_BIN to Use package-manager 0.3.x"
+  skip "I1 wrong trust-root fails closed" "requires ASTER_USE_BIN"
 fi
 
 assert_ok "I4 final stop" "${SERVE}" stop

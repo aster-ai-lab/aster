@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::{Device, Var};
 
 #[test]

@@ -183,7 +183,7 @@ impl OriginalExecutionContext {
         let now_ms = super::super::session_clock::now_ms();
         let decided = inbox
             .persist_pending(true, now_ms, |_| {
-                Err(a3s_effect::ActorError::Defect(
+                Err(aster_effect::ActorError::Defect(
                     "original execution owner ended before input retention".into(),
                 ))
             })

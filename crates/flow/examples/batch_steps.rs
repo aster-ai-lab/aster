@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RetryPolicy, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowSpec,
 };
@@ -14,7 +14,7 @@ impl FlowRuntime for ResearchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         let facts = ctx.step_output("facts");
         let risks = ctx.step_output("risks");
@@ -47,7 +47,7 @@ impl FlowRuntime for ResearchRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "research_track" => Ok(json!({
                 "track": invocation.input["track"],
@@ -60,12 +60,12 @@ impl FlowRuntime for ResearchRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(ResearchRuntime));
     let spec = WorkflowSpec::rust_embedded("examples.research", "0.1.0", "examples", "main");
 
     let run_id = engine
-        .start(spec, json!({ "query": "A3S Flow durable workflows" }))
+        .start(spec, json!({ "query": "Aster Flow durable workflows" }))
         .await?;
     let snapshot = engine.snapshot(&run_id).await?;
 

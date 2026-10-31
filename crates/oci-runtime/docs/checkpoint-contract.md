@@ -39,7 +39,7 @@ Version 1 has a deliberately narrow source profile:
 - the source is rootful Native Linux, running and already paused;
 - its cgroup annotation selects `control-workload-v1`, and the exact OCI init
   PID is the only runtime-tracked live process and is a member of the frozen
-  `a3s-workload` leaf;
+  `aster-workload` leaf;
 - a private PID namespace is rejected because this version checkpoints the OCI
   init payload, not the runtime's namespace supervisor;
 - configured user and network namespaces, terminal-backed init I/O, Intel RDT,
@@ -75,13 +75,13 @@ artifact read-only, extracts images into an operation-owned stage, recreates
 device placeholders without replacing bundle-owned files, prepares new
 generation device sources, and supplies the exact recorded cookies to CRIU.
 CRIU restores with `--leave-stopped` and `--manage-cgroups=ignore` beneath an
-A3S supervisor that becomes the restored init's authenticated direct parent.
+Aster supervisor that becomes the restored init's authenticated direct parent.
 The executor adopts the supervisor and restored tree into the new generation's
 control/workload cgroups, retains their namespace and pidfd evidence, and
 returns the generation running but cgroup-paused. Resume remains an explicit
 caller operation.
 
-Driver-local state beneath `.a3s-oci-native-checkpoint-v1` records allocated,
+Driver-local state beneath `.aster-oci-native-checkpoint-v1` records allocated,
 prepared, and published phases under an exclusive process lock. Publication
 creates one owner-token-bound sibling pending file, flushes and validates it,
 uses a no-replace hard link for the final name, and flushes the parent
@@ -144,7 +144,7 @@ an already-authorized absolute, normalized, non-NUL UTF-8 file path of at most
 resolve a named snapshot. The caller must authorize and prepare the parent
 directory before invoking the runtime.
 
-`CheckpointReference` schema `a3s.oci.checkpoint-reference.v1` binds all of the
+`CheckpointReference` schema `aster.oci.checkpoint-reference.v1` binds all of the
 evidence required to identify and consume that file:
 
 - the exact source container ID and positive generation;
@@ -175,7 +175,7 @@ Version 1 has one explicit quiescence mode:
 2. checkpoint accepts only that already-paused `running` generation;
 3. checkpoint success or failure leaves the source paused; and
 4. restore creates a new `running` generation with
-   `dev.a3s.oci.runtime.paused=true`; the caller explicitly invokes `resume`
+   `dev.aster.oci.runtime.paused=true`; the caller explicitly invokes `resume`
    after reconciliation.
 
 Checkpoint never hides an automatic pause or resume transition. Restore never
@@ -201,7 +201,7 @@ A failed restore removes only runtime-owned lifecycle, driver, and attachment
 resources created for that attempt.
 
 Both requests carry `OperationContext`. New Host journals use
-`a3s.oci.operation.v6`; checkpoint records written with v4 or v5 remain
+`aster.oci.operation.v6`; checkpoint records written with v4 or v5 remain
 readable, and restore records written with v5 remain readable.
 Checkpoint retains the exact normalized request and typed response. It claims
 the source before driver dispatch, rejects active process mutations and I/O,
@@ -233,7 +233,7 @@ ID only with a higher generation.
 
 The runtime contract deliberately excludes business lineage, fork ancestry,
 retention policy, garbage collection, encryption policy, replication, remote
-object naming, upload/download, and checkpoint selection. A3S Box or another
+object naming, upload/download, and checkpoint selection. Aster Box or another
 caller owns those policies and may persist `CheckpointReference` beside its own
 metadata. The runtime owns only the validated local operation and its scoped
 partial cleanup.

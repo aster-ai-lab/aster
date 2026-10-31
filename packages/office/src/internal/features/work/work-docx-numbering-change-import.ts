@@ -49,7 +49,7 @@ const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const MAX_NUMBERING_CHANGES = 65_536;
-const NUMBERING_CHANGE_MARKER_PATTERN = /__A3S_WORK_NUMBERING_CHANGE_\d+__/g;
+const NUMBERING_CHANGE_MARKER_PATTERN = /__ASTER_WORK_NUMBERING_CHANGE_\d+__/g;
 
 export function markDocxNumberingChanges(
   document: Document,
@@ -90,7 +90,7 @@ export function markDocxNumberingChanges(
       active = { change, group };
     }
     markerIndex += 1;
-    const marker = `__A3S_WORK_NUMBERING_CHANGE_${markerIndex}__`;
+    const marker = `__ASTER_WORK_NUMBERING_CHANGE_${markerIndex}__`;
     insertParagraphMarker(
       document,
       change.paragraph,

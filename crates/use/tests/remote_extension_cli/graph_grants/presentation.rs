@@ -63,7 +63,7 @@ async fn host_manager_fetches_only_media_bound_to_verified_presentation() {
                 "package/presentation-index-v1.json",
                 index,
                 serde_json::json!({
-                    "a3sPackagePresentationIndex": {
+                    "asterPackagePresentationIndex": {
                         "schema": PACKAGE_PRESENTATION_INDEX_SCHEMA
                     }
                 }),
@@ -284,7 +284,7 @@ async fn embedded_catalog_plan_apply_and_workspace_okf_lease_are_exact() {
         .unwrap();
     assert!(!found.hits.is_empty());
 
-    let identity = a3s_use_extension::ExtensionLifecycleIdentity::new(
+    let identity = aster_use_extension::ExtensionLifecycleIdentity::new(
         "acme/knowledge",
         &evidence.package_digest,
         &evidence.manifest_digest,

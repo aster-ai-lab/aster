@@ -2,8 +2,8 @@ use std::collections::BTreeSet;
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::oci_spec::runtime::LinuxResources;
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::LinuxResources;
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::hugetlb::HugeTlbPlan;
 use super::io::{AppliedBlockIoUpdate, BlockIoPlan};
@@ -804,8 +804,8 @@ fn update_error(code: ErrorCode, message: impl Into<String>) -> Error {
 mod tests {
     use std::os::unix::fs::PermissionsExt;
 
-    use a3s_oci_sdk::oci_spec::runtime::LinuxResources;
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::oci_spec::runtime::LinuxResources;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{
         apply_prepared_update_settings, apply_update_settings, prepare_update_settings,
@@ -960,7 +960,7 @@ mod tests {
             let error = CgroupUpdatePlan::from_resources(&resources)
                 .expect_err("a memory update below -1 must fail planning");
 
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
             assert!(error.message.contains("-1 or non-negative"));
         }
     }
@@ -982,7 +982,7 @@ mod tests {
             let error = CgroupUpdatePlan::from_resources(&resources)
                 .expect_err("unsupported cgroup v1 memory update must fail planning");
 
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::Unsupported);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::Unsupported);
             assert!(error
                 .message
                 .contains(&format!("linux.resources.memory.{field}")));
@@ -1004,7 +1004,7 @@ mod tests {
             let error = CgroupUpdatePlan::from_resources(&resources)
                 .expect_err("cgroup v1 network controls must fail before update mutation");
 
-            assert_eq!(error.code, a3s_oci_sdk::ErrorCode::Unsupported);
+            assert_eq!(error.code, aster_oci_sdk::ErrorCode::Unsupported);
             assert!(error.message.contains("linux.resources.network"));
             assert!(error.message.contains("net_cls"));
             assert!(error.message.contains("net_prio"));
@@ -1037,7 +1037,7 @@ mod tests {
             .expect("unlimited memory is valid for a flat cgroup")
             .management_plan(&headroom)
             .expect_err("control/workload update must retain a finite memory limit");
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
         assert!(error.message.contains("finite memory limit"));
     }
 
@@ -1110,7 +1110,7 @@ mod tests {
             .settings(directory.path(), true)
             .await
             .expect_err("a missing CPU burst control must fail");
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::Unsupported);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::Unsupported);
         assert!(error.message.contains("burst"));
     }
 
@@ -1433,7 +1433,7 @@ mod tests {
         let error = CgroupUpdatePlan::from_resources(&resources)
             .expect_err("a PIDs update below -1 must fail planning");
 
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
         assert!(error.message.contains("-1 or non-negative"));
     }
 
@@ -1462,7 +1462,7 @@ mod tests {
             .expect("unlimited PIDs is valid for a flat cgroup")
             .management_plan(&headroom)
             .expect_err("control/workload update must retain a finite PIDs limit");
-        assert_eq!(error.code, a3s_oci_sdk::ErrorCode::InvalidArgument);
+        assert_eq!(error.code, aster_oci_sdk::ErrorCode::InvalidArgument);
         assert!(error.message.contains("finite PID limit"));
     }
 

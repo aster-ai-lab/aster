@@ -6,10 +6,10 @@ use std::path::Path;
 use std::time::Duration;
 
 #[test]
-fn native_ts_default_cache_stays_under_a3s_state_root() {
+fn native_ts_default_cache_stays_under_aster_state_root() {
     let config = NativeTsRuntimeConfig::default();
 
-    assert_eq!(config.cache_dir, Path::new(".a3s/flow/native-ts"));
+    assert_eq!(config.cache_dir, Path::new(".aster/flow/native-ts"));
 }
 
 #[test]

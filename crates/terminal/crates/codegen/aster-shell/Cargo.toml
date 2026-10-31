@@ -1,0 +1,339 @@
+[package]
+license = "Apache-2.0"
+name = "aster-shell"
+version = "1.0.41"
+edition = "2024"
+publish = false
+
+[features]
+default = []
+dhat-heap = ["dep:dhat"]
+# Session synthesis + in-process e2e harness (`session::testkit`) for soak,
+# load, and bench tests. Off by default; the tests/benches that use it declare
+# it via `required-features`. Forwards login, sampler, and workspace
+# `test-support` so downstream test builds see those crates' test seams
+# (`isolated_spawn_e2e` uses `WorkspaceOps::for_test`).
+test-support = [
+    "aster-login/test-support",
+    "aster-sampler/test-support",
+    "aster-workspace/test-support",
+]
+test-util = []
+# Local Computer Hub workspace_server (own/attach + crash-restart). Requires
+local-workspace = []
+# CI default set (preferred over cargo `default` for hermetic CI builds):
+# `config-docs` is on this set (not cargo `default`) so hermetic lib tests
+# parse the committed config-reference page.
+config-docs = []
+default-bazel = [
+    "local-workspace",
+    "test-support",
+    "config-docs",
+]
+
+[dependencies]
+dunce = {workspace = true}
+agent-client-protocol = {workspace = true}
+anyhow = {workspace = true}
+
+async-openai = {workspace = true}
+async-trait = {workspace = true}
+blake3 = {workspace = true}
+bm25 = "2.3"
+bytes = {workspace = true}
+chrono = {workspace = true}
+indexmap = {workspace = true}
+ignore = {workspace = true}
+jsonschema = {version = "0.30.0"}
+futures = {workspace = true}
+glob = {workspace = true}
+globset = {workspace = true}
+kanal = "0.1"
+regex = {workspace = true}
+# rmcp 2.1 + reqwest 0.13 are quarantined inside `aster-mcp`. The remaining
+# MCP code in this crate (extensions/mcp.rs, mcp_doctor.rs) reaches rmcp model
+# types via `aster_mcp::rmcp::model::*`. reqwest 0.13 is a private impl
+# detail of aster-mcp::servers; shell never sees it. Every HTTP call site
+# in this crate uses workspace reqwest 0.12.
+reqwest = {workspace = true}
+reqwest-middleware = {workspace = true}
+serde = {workspace = true}
+serde_ignored = "0.1"
+serde_json = {version = "1", features = ["preserve_order"]}
+thiserror = {workspace = true}
+clap = {workspace = true}
+toml = {version = "0.9", features = ["preserve_order"]}
+toml_edit = {version = "0.22"}
+tokio = {version = "1", features = ["full", "io-std", "process", "rt", "macros", "rt-multi-thread", "net", "sync"]}
+tracing = {workspace = true}
+tracing-subscriber = {version = "0.3.23", default-features = false, features = ["env-filter", "smallvec", "tracing-log", "std", "ansi", "fmt", "json", "time"]}
+obfstr = {workspace = true}
+tokio-util = {version = "0.7", features = ["rt", "compat"]}
+tokio-retry = {version = "0.3"}
+uuid = {version = "1", features = ["serde", "v4", "v5", "v7"]}
+axum = {version = "0.8", features = ["macros", "ws", "multipart"]}
+backon = {workspace = true}
+webbrowser = {workspace = true}
+tokio-tungstenite = {version = "0.28", features = ["rustls-tls-native-roots"]}
+tokio-rustls = {version = "0.26", default-features = false, features = [
+    "ring",
+    "logging",
+    "tls12",
+]}
+rustls = {version = "0.23", default-features = false, features = [
+    "ring",
+    "logging",
+    "std",
+    "tls12",
+]}
+futures-util = {workspace = true}
+urlencoding = {workspace = true}
+gethostname = {version = "1"}
+gcloud-storage = {version = "1.3.0", default-features = false, features = ["auth", "jwt-aws-lc-rs", "external-account"]}
+git2 = {workspace = true}
+notify = {workspace = true}
+notify-debouncer-mini = {version = "0.6"}
+nucleo = {git = "https://github.com/helix-editor/nucleo.git", rev = "5b74652"}
+arc-swap = {workspace = true}
+infer = "0.15"
+image = {version = "0.25.10", default-features = false, features = ["png", "jpeg", "gif", "webp"]}
+moka = {version = "0.12", features = ["future"]}
+dhat = {version = "0.3", optional = true}
+base64 = {workspace = true}
+hmac = {version = "0.12"}
+sha2 = {version = "0.10", features = ["force-soft"]}
+strum = {workspace = true}
+
+# Segment markdown rendering + the `compaction/` store path convention.
+# Leader lock: bounded flock polling behind the machine-local acquire slot.
+# Session FTS search; owns this crate's only rusqlite/bundled-SQLite use.
+# Backs the compatibility-only `aster_shell::foreign_sessions` re-export.
+prod-mc-cli-chat-proxy-types = {path = "../../../prod/mc/cli-chat-proxy-types"}
+flate2 = {workspace = true}
+fs2 = {workspace = true}
+zstd = {workspace = true}
+tar = {workspace = true}
+url = {workspace = true}
+walkdir = {workspace = true}
+tdigests = "1.0"
+semver = {workspace = true}
+
+# Used by acp_session.rs and mcp_servers.rs for the unified
+# aster_tool_runtime::Tool dispatch model and the computer-hub MCP adapter.
+parking_lot = {workspace = true}
+dashmap = {workspace = true}
+tempfile = {workspace = true}
+aster-tool-types = {path = "../../common/aster-tool-types"}
+aster-tool-protocol = {path = "../../common/aster-tool-protocol"}
+aster-tool-runtime = {path = "../../common/aster-tool-runtime"}
+aster-computer-hub-sdk = {path = "../../common/aster-computer-hub-sdk"}
+aster-models = {path = "../aster-models"}
+aster-login = {path = "../aster-login"}
+aster-http = {path = "../aster-http"}
+aster-telemetry = {path = "../aster-telemetry"}
+aster-auth = {features = ["middleware"], path = "../aster-auth"}
+aster-session-events = {path = "../aster-session-events"}
+aster-otel = {path = "../aster-otel"}
+aster-file-utils = {path = "../aster-file-utils"}
+aster-plugin-marketplace = {path = "../aster-plugin-marketplace"}
+aster-hooks-plugins-types = {path = "../aster-hooks-plugins-types"}
+aster-hooks = {path = "../aster-hooks"}
+aster-memory = {path = "../aster-memory"}
+aster-dirs = {path = "../aster-dirs"}
+aster-env = {path = "../aster-env"}
+aster-config-types = {path = "../aster-config-types"}
+aster-feedback = {path = "../aster-feedback"}
+aster-config = {path = "../aster-config"}
+aster-bundle = {path = "../aster-bundle"}
+aster-agent = {path = "../aster-agent"}
+aster-subagent-resolution = {path = "../aster-subagent-resolution"}
+aster-foreign-sessions = {path = "../aster-foreign-sessions"}
+aster-workspace = {default-features = false, path = "../aster-workspace"}
+aster-workflow = {path = "../aster-workflow"}
+aster-tty-utils = {path = "../aster-tty-utils"}
+aster-tools = {path = "../aster-tools"}
+aster-sampling-types = {path = "../aster-sampling-types"}
+aster-token-estimation = {path = "../aster-token-estimation"}
+aster-session-search = {path = "../aster-session-search"}
+aster-sampler = {path = "../aster-sampler"}
+aster-file-lock = {path = "../aster-file-lock"}
+aster-extra-ca = {path = "../aster-extra-ca"}
+aster-compaction = {path = "../../common/aster-compaction"}
+aster-compaction-transcript = {path = "../aster-compaction-transcript"}
+aster-chat-state = {path = "../aster-chat-state"}
+aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-message-delivery-core = {path = "../../common/aster-message-delivery-core"}
+aster-interjection-core = {path = "../../common/aster-interjection-core"}
+aster-agent-lifecycle = {path = "../aster-agent-lifecycle"}
+aster-hunk-tracker = {path = "../aster-hunk-tracker"}
+aster-codebase-graph = {path = "../aster-codebase-graph"}
+aster-fsnotify = {path = "../aster-fsnotify"}
+aster-tracing-macros = {path = "../aster-tracing-macros"}
+aster-status-line = {path = "../aster-status-line"}
+aster-shared = {path = "../aster-shared"}
+aster-shell-terminal = {path = "../aster-shell-terminal"}
+aster-shell-session-support = {path = "../aster-shell-session-support"}
+aster-shell-base = {path = "../aster-shell-base"}
+aster-paths = {path = "../aster-paths"}
+aster-fast-worktree = {features = ["metadata"], path = "../aster-fast-worktree"}
+aster-acp-lib = {path = "../aster-acp-lib"}
+aster-mcp = {path = "../aster-mcp"}
+aster-version = {path = "../aster-version"}
+aster-prompt-queue = {path = "../aster-prompt-queue"}
+aster-announcements = {path = "../aster-announcements"}
+
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+nix = {workspace = true}
+
+[target.'cfg(windows)'.dependencies]
+siphasher = {version = "1"}
+windows = {workspace = true}
+
+[dev-dependencies]
+criterion = {workspace = true}
+# Pre-main unified-log redirect (`test_support::redirect_unified_log_for_tests`).
+ctor = {version = "0.4"}
+filetime = {workspace = true}
+pretty_assertions = {workspace = true}
+tempfile = {workspace = true}
+# `extensions::bundle` tests build archives with `bundle::test_helpers`, which
+# is `#[cfg(test)]`-only inside aster-bundle without this feature.
+# sandbox-enforce: keep tests running against the enforcing sandbox build.
+tar = {workspace = true}
+flate2 = {workspace = true}
+semver = {workspace = true}
+serial_test = {workspace = true}
+# Test-only builds expose `env::EnvVarGuard` and the cpu_profile test seams to
+# this crate's test targets.
+# Exposes the login crate's `#[cfg(test)]`-only auth-provider helpers
+# (`test_counting_provider`, `test_backdate_provider_mint`) to shell tests.
+# Exposes sampler's `notify_on_submit` mock to lib tests via feature unification.
+# `test-util` enables `#[tokio::test(start_paused = true)]` (paused virtual
+# clock with auto-advance) so interval-driven loop tests in `auth::refresh`
+# can assert exact tick counts deterministically without real-time sleep.
+tokio = {version = "1", features = ["full", "test-util"]}
+aster-test-utils = {path = "../../common/aster-test-utils"}
+aster-test-support = {features = [], path = "../aster-test-support"}
+aster-sampler = {features = ["test-support"], path = "../aster-sampler"}
+aster-login = {features = ["test-support"], path = "../aster-login"}
+aster-shell-base = {features = ["test-support"], path = "../aster-shell-base"}
+aster-config = {features = [], path = "../aster-config"}
+aster-workspace = {default-features = false, features = ["test-support", "sandbox-enforce"], path = "../aster-workspace"}
+aster-memory = {features = ["test-support"], path = "../aster-memory"}
+aster-bundle = {features = ["test-support"], path = "../aster-bundle"}
+aster-status-line = {features = ["test-support"], path = "../aster-status-line"}
+aster-dirs = {path = "../aster-dirs"}
+
+[[bench]]
+name = "session_list"
+harness = false
+
+[[bench]]
+name = "fork_copy"
+harness = false
+required-features = ["test-support"]
+
+[[bench]]
+name = "skills_watcher_startup"
+harness = false
+
+[[bench]]
+name = "child_replay_lookup"
+harness = false
+
+# Ordinary integration tests live in `tests/all.rs` (`mod suite`) so cargo
+# links one binary. The test name is `aster-shell-all` (Bazel `//pkg:all`
+# is the package wildcard). Process-isolated suites stay as implicit
+# `tests/*.rs` binaries.
+[[test]]
+name = "test_startup_prefetch_fallback"
+required-features = ["test-support"]
+
+[[test]]
+name = "test_startup_prefetch_overlap"
+required-features = ["test-support"]
+
+[[test]]
+name = "test_startup_prefetch_policy"
+required-features = ["test-support"]
+
+[[test]]
+name = "test_startup_prefetch_repair_overlap"
+required-features = ["test-support"]
+
+[[test]]
+name = "test_startup_prefetch_repair_skip"
+required-features = ["test-support"]
+
+[[test]]
+name = "mcp_toggle_gateway_persist"
+required-features = ["test-support"]
+
+[[test]]
+name = "plugins_action_policy_gate"
+required-features = ["test-support"]
+
+[[test]]
+name = "session_create_hook_deferral"
+required-features = ["test-support"]
+
+[[test]]
+name = "e2e_grove_worktree"
+required-features = ["test-support"]
+
+[[test]]
+name = "plugins_action_uninstall_data"
+required-features = ["test-support"]
+
+[[test]]
+name = "session_create_subphase_timers"
+required-features = ["test-support"]
+
+[[test]]
+name = "sessions_active_gauge"
+required-features = ["test-support"]
+[[test]]
+name = "spawn_actor_timers"
+required-features = ["test-support"]
+
+[[test]]
+name = "subagent_bootstrap_regression"
+required-features = ["test-support"]
+
+[[test]]
+name = "test_image_strip_recovery"
+required-features = ["test-support"]
+
+[[test]]
+name = "test_startup_boot_current_thread"
+required-features = ["test-support"]
+
+[[test]]
+name = "test_startup_settings_unpersisted_session"
+required-features = ["test-support"]
+
+[[test]]
+name = "test_startup_prefetch_shared"
+required-features = ["test-support"]
+
+[[test]]
+name = "tool_call_trace"
+required-features = ["test-support"]
+
+[[test]]
+name = "tool_call_trace_off"
+required-features = ["test-support"]
+
+[lints]
+workspace = true
+[build-dependencies]
+# build.rs only downloads ripgrep — no rmcp involvement. Workspace reqwest
+# (0.12) is plenty.
+reqwest = {workspace = true}
+flate2 = {workspace = true}
+tar = {workspace = true}
+
+[[bin]]
+name = "chat-history-downgrade"
+path = "src/bin/chat-history-downgrade.rs"

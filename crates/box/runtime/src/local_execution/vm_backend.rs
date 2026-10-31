@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_box_core::{
+use aster_box_core::{
     BoxError, EventEmitter, ExecutionBackend, ExecutionId, ExecutionManagerError,
     ExecutionManagerResult, ExecutionState, KillOutcome, DEFAULT_SHUTDOWN_TIMEOUT_MS,
 };
@@ -295,7 +295,7 @@ impl VmLocalExecutionBackend {
                 "runtime returned no host PID for {execution_id}"
             ))
         })?;
-        let has_record_binding = record.isolation == a3s_box_core::ExecutionIsolation::Microvm
+        let has_record_binding = record.isolation == aster_box_core::ExecutionIsolation::Microvm
             && (record.pid.is_some() || record.pid_start_time.is_some());
         let pid_start_time = if has_record_binding {
             self.metadata(record)?;
@@ -455,7 +455,7 @@ impl VmLocalExecutionBackend {
         exit_code: Option<i32>,
     ) -> ExecutionManagerResult<LocalExecutionObservation> {
         // A workload can exit between the first non-blocking wait and the
-        // following health probe. A3S OCI publishes the exact status shortly
+        // following health probe. Aster OCI publishes the exact status shortly
         // after the process becomes non-running, so retain its terminal record
         // and poll within a strict bound before any teardown.
         let deadline = tokio::time::Instant::now() + TERMINAL_EXIT_POLL_TIMEOUT;
@@ -734,7 +734,7 @@ impl VmLocalExecutionBackend {
         let home_dir = self.home_dir.clone();
         let execution_id = record.id.clone();
         let short_id = record.id.chars().take(8).collect::<String>();
-        let result = tokio::task::spawn_blocking(move || -> a3s_box_core::Result<Vec<String>> {
+        let result = tokio::task::spawn_blocking(move || -> aster_box_core::Result<Vec<String>> {
             let store =
                 crate::VolumeStore::new(home_dir.join("volumes.json"), home_dir.join("volumes"));
             let prefix = format!("anon_{short_id}_");
@@ -779,7 +779,7 @@ impl VmLocalExecutionBackend {
         let home_dir = self.home_dir.clone();
         let owner = owner.to_string();
         let owner_for_error = owner.clone();
-        let task = tokio::task::spawn_blocking(move || -> a3s_box_core::Result<()> {
+        let task = tokio::task::spawn_blocking(move || -> aster_box_core::Result<()> {
             let store =
                 crate::VolumeStore::new(home_dir.join("volumes.json"), home_dir.join("volumes"));
             for name in names {
@@ -835,7 +835,7 @@ impl VmLocalExecutionBackend {
                 .await;
         }
         match metadata.plan.backend {
-            ExecutionBackend::A3sOci => {
+            ExecutionBackend::AsterOci => {
                 self.destroy_detached_sandbox(record, remove_anonymous_volumes, false, timeout_secs)
                     .await
             }
@@ -854,12 +854,12 @@ impl VmLocalExecutionBackend {
     }
 }
 
-fn admit_launch(isolation: a3s_box_core::ExecutionIsolation) -> ExecutionManagerResult<()> {
+fn admit_launch(isolation: aster_box_core::ExecutionIsolation) -> ExecutionManagerResult<()> {
     crate::host_check::admit_requested_isolation(isolation)
         .map_err(|error| ExecutionManagerError::Unavailable(error.to_string()))
 }
 
-fn admit_create(isolation: a3s_box_core::ExecutionIsolation) -> ExecutionManagerResult<()> {
+fn admit_create(isolation: aster_box_core::ExecutionIsolation) -> ExecutionManagerResult<()> {
     crate::host_check::admit_isolation_class(isolation)
         .map_err(|error| ExecutionManagerError::Unavailable(error.to_string()))
 }
@@ -867,7 +867,7 @@ fn admit_create(isolation: a3s_box_core::ExecutionIsolation) -> ExecutionManager
 async fn destroy_after_observation(
     manager: &mut VmManager,
     preserve_rootfs: bool,
-) -> a3s_box_core::Result<()> {
+) -> aster_box_core::Result<()> {
     if preserve_rootfs {
         manager.destroy_preserving_rootfs().await
     } else {
@@ -1004,7 +1004,7 @@ impl LocalExecutionBackend for VmLocalExecutionBackend {
 
     async fn preflight_isolation(
         &self,
-        isolation: a3s_box_core::ExecutionIsolation,
+        isolation: aster_box_core::ExecutionIsolation,
     ) -> ExecutionManagerResult<()> {
         // CLI and explicit readiness probes open the hypervisor.
         admit_launch(isolation)
@@ -1014,12 +1014,12 @@ impl LocalExecutionBackend for VmLocalExecutionBackend {
         self.require_legacy_lineage(&record.id)?;
         if let Some(metadata) = record.managed_execution.as_ref() {
             #[cfg(not(any(target_os = "linux", target_os = "windows")))]
-            if record.isolation == a3s_box_core::ExecutionIsolation::Microvm {
+            if record.isolation == aster_box_core::ExecutionIsolation::Microvm {
                 VmManager::validate_virtiofs_mount_support(&metadata.request.config)
                     .map_err(|error| ExecutionManagerError::InvalidRequest(error.to_string()))?;
             }
             if !metadata.request.config.host_services.is_empty() {
-                a3s_box_core::resolve_execution(&metadata.request.config)
+                aster_box_core::resolve_execution(&metadata.request.config)
                     .map_err(|error| ExecutionManagerError::InvalidRequest(error.to_string()))?;
                 #[cfg(unix)]
                 for service in &metadata.request.config.host_services {
@@ -1321,7 +1321,7 @@ impl LocalExecutionBackend for VmLocalExecutionBackend {
                 .outcome);
         }
         match metadata.plan.backend {
-            ExecutionBackend::A3sOci => Ok(self
+            ExecutionBackend::AsterOci => Ok(self
                 .destroy_detached_sandbox(record, false, true, timeout_secs)
                 .await?
                 .outcome),
@@ -1390,7 +1390,7 @@ fn graceful_stop_options(
     let signal = record
         .stop_signal
         .as_deref()
-        .map(a3s_box_core::vmm::parse_signal_name)
+        .map(aster_box_core::vmm::parse_signal_name)
         .unwrap_or(libc::SIGTERM);
     Ok(Some((signal, timeout_ms)))
 }
@@ -1529,7 +1529,7 @@ fn execution_id(record: &BoxRecord) -> ExecutionManagerResult<ExecutionId> {
 #[cfg(target_os = "windows")]
 fn authenticate_windows_managed_terminal_exit(
     box_dir: &Path,
-    log_config: &a3s_box_core::log::LogConfig,
+    log_config: &aster_box_core::log::LogConfig,
     exit_code: Option<i32>,
 ) -> Option<i32> {
     let Some(code) = exit_code else {
@@ -1585,11 +1585,11 @@ async fn exec_endpoint_ready(box_id: &str, path: Option<&Path>) -> bool {
         return false;
     };
     let guest_control_ready =
-        layout_path.with_file_name(a3s_box_core::exec::WINDOWS_GUEST_CONTROL_READY_FILE);
+        layout_path.with_file_name(aster_box_core::exec::WINDOWS_GUEST_CONTROL_READY_FILE);
     if !guest_control_ready.is_file() {
         return false;
     }
-    let pipe = std::path::PathBuf::from(a3s_box_core::exec::windows_exec_pipe_path(box_id));
+    let pipe = std::path::PathBuf::from(aster_box_core::exec::windows_exec_pipe_path(box_id));
     let attempt = async {
         let client = crate::ExecClient::connect(&pipe).await.ok()?;
         client.heartbeat().await.ok().filter(|ready| *ready)
@@ -1648,11 +1648,11 @@ impl OwnedVmJobKind {
 }
 
 enum OwnedVmJobOutput {
-    Metadata(a3s_box_core::Result<()>),
+    Metadata(aster_box_core::Result<()>),
     Prepare(ExecutionManagerResult<()>),
     Rollback(ExecutionManagerResult<()>),
-    Finalize(a3s_box_core::Result<()>),
-    Anonymous(a3s_box_core::Result<()>),
+    Finalize(aster_box_core::Result<()>),
+    Anonymous(aster_box_core::Result<()>),
 }
 
 impl OwnedVmJobOutput {
@@ -1703,9 +1703,9 @@ struct OwnedVmProgress {
     anonymous: Option<Arc<std::sync::Mutex<OwnedAnonymousCleanup>>>,
     job: OwnedVmJobSlot,
     completed: Vec<OwnedVmCompleted>,
-    physical: Option<a3s_box_core::Result<a3s_box_core::vmm::VmExitConfirmation>>,
-    physical_budget: Option<a3s_box_core::vmm::OwnedCloseBudget>,
-    cleanup_budget: Option<a3s_box_core::vmm::OwnedCleanupBudget>,
+    physical: Option<aster_box_core::Result<aster_box_core::vmm::VmExitConfirmation>>,
+    physical_budget: Option<aster_box_core::vmm::OwnedCloseBudget>,
+    cleanup_budget: Option<aster_box_core::vmm::OwnedCleanupBudget>,
     #[cfg(test)]
     hooks: Option<OwnedJobHooks>,
 }
@@ -1811,7 +1811,7 @@ impl OwnedVmProgress {
         &mut self,
         call: &super::store::ValidatedOwnedCall<'_>,
         work: OwnedVmWork,
-        budget: a3s_box_core::vmm::OwnedCleanupBudget,
+        budget: aster_box_core::vmm::OwnedCleanupBudget,
     ) -> ExecutionManagerResult<()> {
         let binding = call.stage(budget)?;
         self.validate_bound_settings(call.record)?;
@@ -1913,7 +1913,7 @@ impl OwnedVmProgress {
     async fn poll_job(
         &mut self,
         call: &super::store::ValidatedOwnedCall<'_>,
-        budget: a3s_box_core::vmm::OwnedCleanupBudget,
+        budget: aster_box_core::vmm::OwnedCleanupBudget,
     ) -> ExecutionManagerResult<()> {
         use std::future::Future;
         self.reconcile_ready(call)?;
@@ -1963,7 +1963,7 @@ struct OwnedAnonymousCleanup {
     unproved: bool,
 }
 impl OwnedAnonymousCleanup {
-    fn run(&mut self, budget: a3s_box_core::vmm::OwnedCleanupBudget) -> a3s_box_core::Result<()> {
+    fn run(&mut self, budget: aster_box_core::vmm::OwnedCleanupBudget) -> aster_box_core::Result<()> {
         if self.unproved {
             return Err(BoxError::StateError(
                 "original anonymous cleanup effect is unproved".into(),
@@ -2070,7 +2070,7 @@ impl OwnedVmWork {
             Self::CleanupAnonymousVolumes(_) => OwnedVmJobKind::CleanupAnonymousVolumes,
         }
     }
-    fn run(self, budget: a3s_box_core::vmm::OwnedCleanupBudget) -> OwnedVmJobOutput {
+    fn run(self, budget: aster_box_core::vmm::OwnedCleanupBudget) -> OwnedVmJobOutput {
         match self {
             Self::StageMetadata(path) => OwnedVmJobOutput::Metadata(
                 require_job_time(budget)
@@ -2104,7 +2104,7 @@ impl OwnedVmWork {
         }
     }
 }
-fn require_job_time(budget: a3s_box_core::vmm::OwnedCleanupBudget) -> a3s_box_core::Result<()> {
+fn require_job_time(budget: aster_box_core::vmm::OwnedCleanupBudget) -> aster_box_core::Result<()> {
     if budget.remaining_at(std::time::Instant::now()).is_zero() {
         Err(BoxError::StateError(
             "original ancillary job deadline expired".into(),
@@ -2126,7 +2126,7 @@ struct OwnedJobHooks {
 fn spawn_original_work(
     work: OwnedVmWork,
     guard: Arc<super::ExecutionLifecycleLock>,
-    budget: a3s_box_core::vmm::OwnedCleanupBudget,
+    budget: aster_box_core::vmm::OwnedCleanupBudget,
     #[cfg(test)] hooks: Option<OwnedJobHooks>,
 ) -> tokio::task::JoinHandle<OwnedVmJobOutput> {
     // Closed concrete dispatch only, never a generic closure/future host.
@@ -2213,7 +2213,7 @@ impl VmLocalExecutionBackend {
     async fn run_original_preparation(
         &self,
         call: &super::store::ValidatedOwnedCall<'_>,
-        budget: a3s_box_core::vmm::OwnedCleanupBudget,
+        budget: aster_box_core::vmm::OwnedCleanupBudget,
     ) -> ExecutionManagerResult<()> {
         let owner = self.exact_original(call)?;
         let mut progress = tokio::time::timeout_at(
@@ -2275,7 +2275,7 @@ impl VmLocalExecutionBackend {
     async fn rollback_original_resources(
         &self,
         call: &super::store::ValidatedOwnedCall<'_>,
-        budget: a3s_box_core::vmm::OwnedCleanupBudget,
+        budget: aster_box_core::vmm::OwnedCleanupBudget,
     ) -> ExecutionManagerResult<()> {
         let owner = self.exact_original(call)?;
         let mut progress = tokio::time::timeout_at(
@@ -2312,7 +2312,7 @@ impl VmLocalExecutionBackend {
     async fn boot_original_component(
         &self,
         call: &super::store::ValidatedOwnedCall<'_>,
-        budget: a3s_box_core::vmm::OwnedCleanupBudget,
+        budget: aster_box_core::vmm::OwnedCleanupBudget,
     ) -> ExecutionManagerResult<()> {
         self.run_original_preparation(call, budget).await?;
         let owner = self.exact_original(call)?;
@@ -2354,7 +2354,7 @@ impl VmLocalExecutionBackend {
         &self,
         call: &super::store::ValidatedOwnedCall<'_>,
         signal: i32,
-        budget: a3s_box_core::vmm::OwnedCloseBudget,
+        budget: aster_box_core::vmm::OwnedCloseBudget,
     ) -> ExecutionManagerResult<()> {
         let owner = self.exact_original(call)?;
         let deadline = tokio::time::Instant::from_std(budget.physical_deadline());
@@ -2412,7 +2412,7 @@ impl VmLocalExecutionBackend {
             Some(Ok(_)) => {
                 if progress.cleanup_budget.is_none() {
                     progress.cleanup_budget = Some(
-                        a3s_box_core::vmm::OwnedCleanupBudget::from_validation(
+                        aster_box_core::vmm::OwnedCleanupBudget::from_validation(
                             std::time::Instant::now(),
                         )
                         .map_err(|e| runtime_error("admit original cleanup", call.record, e))?,
@@ -2431,7 +2431,7 @@ impl VmLocalExecutionBackend {
     async fn cleanup_original_anonymous(
         &self,
         call: &super::store::ValidatedOwnedCall<'_>,
-        budget: a3s_box_core::vmm::OwnedCleanupBudget,
+        budget: aster_box_core::vmm::OwnedCleanupBudget,
     ) -> ExecutionManagerResult<()> {
         let owner = self.exact_original(call)?;
         let deadline = tokio::time::Instant::from_std(budget.deadline());
@@ -2496,7 +2496,7 @@ impl VmLocalExecutionBackend {
         &self,
         call: &super::store::ValidatedOwnedCall<'_>,
         preserve_rootfs: bool,
-        budget: a3s_box_core::vmm::OwnedCleanupBudget,
+        budget: aster_box_core::vmm::OwnedCleanupBudget,
     ) -> ExecutionManagerResult<()> {
         let owner = self.exact_original(call)?;
         let mut progress = tokio::time::timeout_at(

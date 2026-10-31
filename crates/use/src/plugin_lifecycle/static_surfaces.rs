@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use a3s_use_core::{PackageSurfaceKind, PluginSurfaceRef, UseError, UseResult};
-use a3s_use_extension::{
+use aster_use_core::{PackageSurfaceKind, PluginSurfaceRef, UseError, UseResult};
+use aster_use_extension::{
     inspect_agent_surface_file, inspect_plugin_surface_file, inspect_skill_surface_file,
     inspect_ui_surface_files, PackagePluginSurface, PluginAgentSurface, PluginSkillSurface,
     PluginUiSurface,
@@ -26,7 +26,7 @@ pub struct StaticPluginSurfaceLifecycleHost {
     package_root: PathBuf,
 }
 
-/// Default UI composition for standalone A3S Use hosts.
+/// Default UI composition for standalone Aster Use hosts.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct StaticPluginSurfaceLifecycleHostFactory;
 

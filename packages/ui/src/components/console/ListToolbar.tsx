@@ -104,7 +104,7 @@ export function ListToolbar({
       )}
       <div
         className="ml-auto flex shrink-0 items-center gap-1"
-        data-a3s-list-tools=""
+        data-aster-list-tools=""
       />
       {secondaryActions || primaryAction ? (
         <div className="flex shrink-0 items-center gap-2">

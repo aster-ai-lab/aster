@@ -2,7 +2,7 @@ mod reference;
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 use crate::discovery::office_error;

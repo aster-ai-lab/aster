@@ -11,7 +11,7 @@ use std::process::{Command, Stdio};
 use std::thread;
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_TAG;
+use aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_TAG;
 use serde::{Deserialize, Serialize};
 
 use crate::macos_context::{KrunContext, MacosKrunApi};
@@ -23,8 +23,8 @@ use crate::unix_process::{
 };
 
 const WORKER_COMMAND: &str = "__macos-guest-command-worker";
-const WORKER_SCHEMA_VERSION: &str = "a3s.oci.guest-command-worker.v1";
-pub const GUEST_COMMAND_SCHEMA_VERSION: &str = "a3s.oci.guest-command.v1";
+const WORKER_SCHEMA_VERSION: &str = "aster.oci.guest-command-worker.v1";
+pub const GUEST_COMMAND_SCHEMA_VERSION: &str = "aster.oci.guest-command.v1";
 const MAX_WORKER_OUTPUT_BYTES: u64 = 64 * 1024;
 const TIMEOUT_EXIT_CODE: i32 = 124;
 
@@ -129,9 +129,9 @@ impl WorkerEvidence {
 /// not text in this string.
 pub fn guest_init_command() -> String {
     format!(
-        "mount -t virtiofs {AGENT_RUNTIME_SHARE_TAG} /run/a3s-oci-runtime && \
-         cd /run/a3s-oci-runtime && \
-         exec /usr/bin/a3s-oci-agent --guest-command ./.a3s-guest-command"
+        "mount -t virtiofs {AGENT_RUNTIME_SHARE_TAG} /run/aster-oci-runtime && \
+         cd /run/aster-oci-runtime && \
+         exec /usr/bin/aster-oci-agent --guest-command ./.aster-guest-command"
     )
 }
 
@@ -498,7 +498,7 @@ fn emit_worker_evidence(evidence: &WorkerEvidence) -> io::Result<()> {
 fn fail_worker(evidence: &mut WorkerEvidence, reason: String) -> bool {
     evidence.reason = Some(reason);
     if let Err(error) = emit_worker_evidence(evidence) {
-        eprintln!("a3s-oci-krun-shim: failed to emit guest worker failure evidence: {error}");
+        eprintln!("aster-oci-krun-shim: failed to emit guest worker failure evidence: {error}");
     }
     false
 }
@@ -513,9 +513,9 @@ mod tests {
     #[test]
     fn init_command_is_fixed_and_carries_no_caller_text() {
         let command = super::guest_init_command();
-        assert!(command.contains("mount -t virtiofs a3s-oci-runtime /run/a3s-oci-runtime"));
+        assert!(command.contains("mount -t virtiofs aster-oci-runtime /run/aster-oci-runtime"));
         assert!(
-            command.contains("exec /usr/bin/a3s-oci-agent --guest-command ./.a3s-guest-command")
+            command.contains("exec /usr/bin/aster-oci-agent --guest-command ./.aster-guest-command")
         );
         assert!(!command.contains("setsid"));
         assert_eq!(

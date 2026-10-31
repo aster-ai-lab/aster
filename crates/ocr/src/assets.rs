@@ -1,11 +1,11 @@
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 use crate::config::{load_detection, load_recognition, MODEL_FAMILY};
 
-pub(crate) const RECEIPT_FILE: &str = ".a3s-ppocr-v6.json";
+pub(crate) const RECEIPT_FILE: &str = ".aster-ppocr-v6.json";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -69,7 +69,7 @@ pub fn ocr_status() -> OcrRuntimeStatus {
 }
 
 pub(crate) fn resolve_model_assets() -> UseResult<ModelAssets> {
-    if let Some(path) = std::env::var_os("A3S_OCR_MODEL_DIR")
+    if let Some(path) = std::env::var_os("ASTER_OCR_MODEL_DIR")
         .filter(|value| !value.is_empty())
         .map(PathBuf::from)
     {
@@ -95,7 +95,7 @@ pub(crate) fn resolve_model_assets() -> UseResult<ModelAssets> {
         "use.ocr.model_missing",
         format!("The local {MODEL_FAMILY} model bundle is not installed."),
     )
-    .with_suggestion("Run 'a3s install use/ocr'.")
+    .with_suggestion("Run 'aster install use/ocr'.")
     .with_detail("source", "missing")
     .with_detail("modelDir", managed.display().to_string()))
 }
@@ -130,25 +130,25 @@ pub(crate) fn validate_assets(root: &Path, source: OcrInstallSource) -> UseResul
 }
 
 pub(crate) fn managed_root() -> UseResult<PathBuf> {
-    if let Some(value) = std::env::var_os("A3S_USE_OCR_HOME") {
+    if let Some(value) = std::env::var_os("ASTER_USE_OCR_HOME") {
         return absolute(PathBuf::from(value));
     }
-    if let Some(value) = std::env::var_os("A3S_DATA_HOME") {
+    if let Some(value) = std::env::var_os("ASTER_DATA_HOME") {
         return Ok(absolute(PathBuf::from(value))?.join("use/ocr"));
     }
     if let Some(value) = std::env::var_os("XDG_DATA_HOME") {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s/use/ocr"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster/use/ocr"));
     }
     if let Some(home) = std::env::var_os("HOME").map(PathBuf::from) {
-        return Ok(absolute(home)?.join(".local/share/a3s/use/ocr"));
+        return Ok(absolute(home)?.join(".local/share/aster/use/ocr"));
     }
     #[cfg(windows)]
     if let Some(value) = std::env::var_os("LOCALAPPDATA") {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s/use/ocr"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster/use/ocr"));
     }
     Err(UseError::new(
         "use.ocr.data_home_missing",
-        "Cannot determine the A3S Use OCR data directory.",
+        "Cannot determine the Aster Use OCR data directory.",
     ))
 }
 
@@ -222,7 +222,7 @@ fn path_exists(path: &Path) -> UseResult<bool> {
 
 fn model_error(source: OcrInstallSource, root: &Path, message: impl Into<String>) -> UseError {
     UseError::new("use.ocr.model_invalid", message)
-        .with_suggestion("Run 'a3s install use/ocr --force' to restore the pinned PP-OCRv6 bundle.")
+        .with_suggestion("Run 'aster install use/ocr --force' to restore the pinned PP-OCRv6 bundle.")
         .with_detail("source", source_name(source))
         .with_detail("modelDir", root.display().to_string())
 }

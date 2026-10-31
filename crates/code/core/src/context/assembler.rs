@@ -681,7 +681,7 @@ mod tests {
             ContextType::Resource,
             "one two three four five six",
         )
-        .with_source("a3s://workspace-instructions")
+        .with_source("aster://workspace-instructions")
         .with_provenance("workspace_instructions")
         .with_token_count(6)
         .with_required();

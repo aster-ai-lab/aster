@@ -22,8 +22,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@a3s-lab/ui": ["./src/index.ts"],
-      "@a3s-lab/ui/*": ["./src/*"]
+      "@aster-ai-lab/ui": ["./src/index.ts"],
+      "@aster-ai-lab/ui/*": ["./src/*"]
     }
   },
   "include": ["src", "stories/components", "scripts", "rsbuild.ts"],

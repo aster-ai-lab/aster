@@ -1,4 +1,4 @@
-//! `a3s-box inject-secret` command — Inject secrets into a TEE via RA-TLS.
+//! `aster-box inject-secret` command — Inject secrets into a TEE via RA-TLS.
 //!
 //! Connects to a running box's RA-TLS attestation server, verifies the TEE,
 //! then injects secrets over the encrypted channel. Secrets are stored in
@@ -12,7 +12,7 @@ use crate::resolve;
 use crate::state::StateFile;
 
 #[cfg(not(windows))]
-use a3s_box_runtime::{tee::AttestationPolicy, SecretEntry, SecretInjector};
+use aster_box_runtime::{tee::AttestationPolicy, SecretEntry, SecretInjector};
 
 #[derive(Args)]
 pub struct InjectSecretArgs {

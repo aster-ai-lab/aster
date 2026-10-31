@@ -1,7 +1,7 @@
 //! Original F16 index projections with F32 activations/head weights, explicit
 //! 1/sqrt(index_dim*heads), and the XQ FP4/pow2 grid. Index K consumes the
 //! normalized main latent before its rotary/quantized representation.
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

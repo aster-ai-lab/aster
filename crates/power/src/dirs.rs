@@ -1,0 +1,106 @@
+use std::path::PathBuf;
+
+/// Returns the base directory for Power data.
+///
+/// Uses `$ASTER_POWER_HOME` if set, otherwise defaults to `~/.aster/power`.
+pub fn power_home() -> PathBuf {
+    if let Ok(home) = std::env::var("ASTER_POWER_HOME") {
+        return PathBuf::from(home);
+    }
+
+    dirs::home_dir()
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join(".aster")
+        .join("power")
+}
+
+/// Returns the directory where model manifest files are stored.
+pub fn manifests_dir() -> PathBuf {
+    power_home().join("models").join("manifests")
+}
+
+/// Returns the directory where model blob files (content-addressed) are stored.
+pub fn blobs_dir() -> PathBuf {
+    power_home().join("models").join("blobs")
+}
+
+/// Returns the directory where pull state files are stored.
+pub fn pulls_dir() -> PathBuf {
+    power_home().join("pulls")
+}
+
+/// Returns the path to the user configuration file (Aster ACL format).
+pub fn config_path() -> PathBuf {
+    power_home().join("config.acl")
+}
+
+/// Ensure all required directories exist.
+pub fn ensure_dirs() -> std::io::Result<()> {
+    std::fs::create_dir_all(manifests_dir())?;
+    std::fs::create_dir_all(blobs_dir())?;
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serial_test::serial;
+
+    #[test]
+    #[serial]
+    fn test_power_home_default() {
+        // Unset env var to test default path
+        std::env::remove_var("ASTER_POWER_HOME");
+        let home = power_home();
+        assert!(home.ends_with(".aster/power") || home.ends_with(".aster\\power"));
+    }
+
+    #[test]
+    #[serial]
+    fn test_power_home_from_env() {
+        std::env::set_var("ASTER_POWER_HOME", "/tmp/test-power");
+        let home = power_home();
+        assert_eq!(home, PathBuf::from("/tmp/test-power"));
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[test]
+    #[serial]
+    fn test_manifests_dir() {
+        std::env::set_var("ASTER_POWER_HOME", "/tmp/test-power");
+        assert_eq!(
+            manifests_dir(),
+            PathBuf::from("/tmp/test-power/models/manifests")
+        );
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[test]
+    #[serial]
+    fn test_blobs_dir() {
+        std::env::set_var("ASTER_POWER_HOME", "/tmp/test-power");
+        assert_eq!(blobs_dir(), PathBuf::from("/tmp/test-power/models/blobs"));
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[test]
+    #[serial]
+    fn test_config_path() {
+        std::env::set_var("ASTER_POWER_HOME", "/tmp/test-power");
+        assert_eq!(config_path(), PathBuf::from("/tmp/test-power/config.acl"));
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+
+    #[test]
+    #[serial]
+    fn test_ensure_dirs_creates_directories() {
+        let dir = tempfile::tempdir().unwrap();
+        std::env::set_var("ASTER_POWER_HOME", dir.path());
+
+        ensure_dirs().unwrap();
+        assert!(manifests_dir().exists());
+        assert!(blobs_dir().exists());
+
+        std::env::remove_var("ASTER_POWER_HOME");
+    }
+}

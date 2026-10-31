@@ -10,9 +10,9 @@ This turn is already a single-source `/review`. The host supplies either extract
 
 ## Output
 
-Write one closed `a3s-review-finding` fence per finding and nothing else:
+Write one closed `aster-review-finding` fence per finding and nothing else:
 
-```a3s-review-finding
+```aster-review-finding
 {"id":"…","title":"…","evidenceQuote":"…","summary":"…","guidance":"…"}
 ```
 

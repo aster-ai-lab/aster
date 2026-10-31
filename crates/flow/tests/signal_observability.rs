@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use a3s_flow::{
-    A3sFlowEventBridge, FlowEngine, FlowError, FlowRuntime, InMemoryA3sFlowEventSink,
+use aster_flow::{
+    AsterFlowEventBridge, FlowEngine, FlowError, FlowRuntime, InMemoryAsterFlowEventSink,
     RuntimeCommand, SignalWaitStatus, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
     WorkflowRunSuspension, WorkflowSignal, WorkflowSpec,
 };
@@ -18,7 +18,7 @@ impl FlowRuntime for ObservableSignalRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let Some(payload) = context.signal_payload("approval") else {
             return Ok(context.wait_for_signal("approval", SIGNAL_NAME));
@@ -26,7 +26,7 @@ impl FlowRuntime for ObservableSignalRuntime {
         Ok(context.complete(payload.clone()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime(
             "signal observability workflow does not execute steps".to_string(),
         ))
@@ -35,8 +35,8 @@ impl FlowRuntime for ObservableSignalRuntime {
 
 #[tokio::test]
 async fn signal_waits_are_visible_to_inspection_and_the_event_bridge() {
-    let sink = Arc::new(InMemoryA3sFlowEventSink::new());
-    let observer = Arc::new(A3sFlowEventBridge::new(sink.clone()));
+    let sink = Arc::new(InMemoryAsterFlowEventSink::new());
+    let observer = Arc::new(AsterFlowEventBridge::new(sink.clone()));
     let engine = FlowEngine::builder(Arc::new(ObservableSignalRuntime))
         .with_observer(observer)
         .build();

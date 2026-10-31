@@ -5,13 +5,13 @@
 
 mod support;
 
-use a3s_code_core::budget::{BudgetDecision, BudgetGuard};
-use a3s_code_core::fact_control::{
+use aster_core::budget::{BudgetDecision, BudgetGuard};
+use aster_core::fact_control::{
     read_workspace_facts, thread_for_session, TURN_COMPLETE_FACT_KIND,
 };
-use a3s_code_core::llm::TokenUsage;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::llm::TokenUsage;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentEvent, PlanningMode, RunControlReceiptState, RunStatus, SessionOptions,
     SteerRequest,
 };
@@ -29,12 +29,12 @@ const STEER: &str = " \tFor the next reply, the host token is CODE_TERMINAL_STEE
 struct NoCommands(AtomicUsize);
 
 #[async_trait::async_trait]
-impl a3s_code_core::sandbox::BashSandbox for NoCommands {
+impl aster_core::sandbox::BashSandbox for NoCommands {
     async fn exec_command(
         &self,
         _: &str,
         _: &str,
-    ) -> anyhow::Result<a3s_code_core::sandbox::SandboxOutput> {
+    ) -> anyhow::Result<aster_core::sandbox::SandboxOutput> {
         self.0.fetch_add(1, Ordering::SeqCst);
         anyhow::bail!("provider-only qualification refuses command execution")
     }
@@ -43,18 +43,18 @@ impl a3s_code_core::sandbox::BashSandbox for NoCommands {
 }
 
 #[derive(Debug, Default)]
-struct ReceiptCapture(Mutex<Vec<a3s_code_core::RunControlReceipt>>);
+struct ReceiptCapture(Mutex<Vec<aster_core::RunControlReceipt>>);
 
 #[async_trait::async_trait]
-impl a3s_code_core::hooks::HookExecutor for ReceiptCapture {
-    async fn fire(&self, _: &a3s_code_core::hooks::HookEvent) -> a3s_code_core::hooks::HookResult {
-        a3s_code_core::hooks::HookResult::continue_()
+impl aster_core::hooks::HookExecutor for ReceiptCapture {
+    async fn fire(&self, _: &aster_core::hooks::HookEvent) -> aster_core::hooks::HookResult {
+        aster_core::hooks::HookResult::continue_()
     }
 
     async fn record_run_control(
         &self,
-        _: &a3s_code_core::RunControlRequest,
-        receipt: &a3s_code_core::RunControlReceipt,
+        _: &aster_core::RunControlRequest,
+        receipt: &aster_core::RunControlReceipt,
     ) {
         self.0.lock().unwrap().push(receipt.clone());
     }
@@ -89,7 +89,7 @@ fn options(commands: Arc<NoCommands>, receipts: Arc<ReceiptCapture>) -> SessionO
         // Supplying the host seam skips the default native constructor.
         .with_sandbox_handle(commands)
         .with_hook_executor(receipts)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_planning_mode(PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
@@ -108,10 +108,10 @@ async fn terminal_steer(streaming: bool) {
     );
     // Keep only the ACL's real provider binding. Host MCP connections can
     // spawn processes during Agent bootstrap, before Session tool policy.
-    let config = a3s_code_core::config::CodeConfig {
+    let config = aster_core::config::CodeConfig {
         providers: configured.providers,
         default_model: configured.default_model,
-        memory: Some(a3s_code_core::memory::MemoryConfig {
+        memory: Some(aster_core::memory::MemoryConfig {
             llm_extraction: false,
             prune_policy: None,
             ..Default::default()
@@ -205,8 +205,8 @@ async fn terminal_steer(streaming: bool) {
         .filter(|fact| fact.kind == "user.message" && fact.payload["text"] == STEER)
         .collect();
     assert_eq!(retained.len(), 1, "exact original input retained once");
-    let digest = a3s_code_core::digest_json(
-        "a3s.code.steer-input.identity.v1",
+    let digest = aster_core::digest_json(
+        "aster.code.steer-input.identity.v1",
         &[SESSION, run.id(), accepted.request_id.as_str()],
     )
     .unwrap();

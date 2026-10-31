@@ -1,8 +1,8 @@
 #[cfg(feature = "postgres")]
-use a3s_flow::PostgresEventStore;
+use aster_flow::PostgresEventStore;
 #[cfg(feature = "sqlite")]
-use a3s_flow::SqliteEventStore;
-use a3s_flow::{
+use aster_flow::SqliteEventStore;
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventStore, FlowRuntime, InMemoryEventStore,
     LocalFileEventStore, RuntimeCommand, WorkflowInvocation, WorkflowProgress, WorkflowSpec,
     MAX_FLOW_HISTORY_PAGE_SIZE,
@@ -19,7 +19,7 @@ impl FlowRuntime for TestRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Err(FlowError::Runtime(
             "test runtime is not executable".to_string(),
         ))
@@ -27,8 +27,8 @@ impl FlowRuntime for TestRuntime {
 
     async fn run_step(
         &self,
-        _invocation: a3s_flow::StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime(
             "test runtime is not executable".to_string(),
         ))
@@ -197,10 +197,10 @@ async fn stale_projection_checkpoint_is_rebuilt_from_history() {
         FlowEvent::SelectCreated {
             select_id: "race".to_string(),
             arms: vec![
-                a3s_flow::SelectArm::timer("soon", "2030-01-01T00:00:00Z".parse().unwrap()),
-                a3s_flow::SelectArm::timer("later", "2030-01-01T00:00:01Z".parse().unwrap()),
+                aster_flow::SelectArm::timer("soon", "2030-01-01T00:00:00Z".parse().unwrap()),
+                aster_flow::SelectArm::timer("later", "2030-01-01T00:00:01Z".parse().unwrap()),
             ],
-            mode: a3s_flow::SelectMode::Race,
+            mode: aster_flow::SelectMode::Race,
         },
         FlowEvent::ScopeCancelled {
             scope_id: "payment".to_string(),
@@ -213,14 +213,14 @@ async fn stale_projection_checkpoint_is_rebuilt_from_history() {
     let fresh = engine.snapshot(run_id).await.unwrap();
     assert_eq!(
         fresh.select("race").unwrap().status,
-        a3s_flow::SelectStatus::Cancelled
+        aster_flow::SelectStatus::Cancelled
     );
     let (sequence, event_id) = store.latest_event(run_id).await.unwrap().unwrap();
     let mut stale = fresh;
-    stale.selects.get_mut("race").unwrap().status = a3s_flow::SelectStatus::Open;
+    stale.selects.get_mut("race").unwrap().status = aster_flow::SelectStatus::Open;
     stale.selects.get_mut("race").unwrap().scope_id = None;
     let checkpoint =
-        a3s_flow::FlowProjectionCheckpoint::new(run_id, sequence, event_id, stale).unwrap();
+        aster_flow::FlowProjectionCheckpoint::new(run_id, sequence, event_id, stale).unwrap();
     let mut value = serde_json::to_value(&checkpoint).unwrap();
     value["snapshot"]
         .as_object_mut()
@@ -240,7 +240,7 @@ async fn stale_projection_checkpoint_is_rebuilt_from_history() {
         .unwrap();
     assert_eq!(
         snapshot.select("race").unwrap().status,
-        a3s_flow::SelectStatus::Cancelled,
+        aster_flow::SelectStatus::Cancelled,
         "a checkpoint written before select scope ownership must be rebuilt from history"
     );
 }
@@ -455,7 +455,7 @@ impl FlowEventStore for FailFullReplayStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -464,13 +464,13 @@ impl FlowEventStore for FailFullReplayStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         if self.fail_list.load(std::sync::atomic::Ordering::SeqCst) {
             return Err(FlowError::Store(
                 "full history replay is not allowed once a tip checkpoint exists".into(),
@@ -479,25 +479,25 @@ impl FlowEventStore for FailFullReplayStore {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 
-    async fn latest_event(&self, run_id: &str) -> a3s_flow::Result<Option<(u64, uuid::Uuid)>> {
+    async fn latest_event(&self, run_id: &str) -> aster_flow::Result<Option<(u64, uuid::Uuid)>> {
         self.inner.latest_event(run_id).await
     }
 
     async fn load_checkpoint(
         &self,
         run_id: &str,
-    ) -> a3s_flow::Result<Option<a3s_flow::FlowProjectionCheckpoint>> {
+    ) -> aster_flow::Result<Option<aster_flow::FlowProjectionCheckpoint>> {
         self.inner.load_checkpoint(run_id).await
     }
 
     async fn save_checkpoint(
         &self,
-        checkpoint: &a3s_flow::FlowProjectionCheckpoint,
-    ) -> a3s_flow::Result<()> {
+        checkpoint: &aster_flow::FlowProjectionCheckpoint,
+    ) -> aster_flow::Result<()> {
         self.inner.save_checkpoint(checkpoint).await
     }
 }
@@ -535,7 +535,7 @@ impl FlowEventStore for PageOnlyTailStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -544,13 +544,13 @@ impl FlowEventStore for PageOnlyTailStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         if self
             .reject_unbounded
             .load(std::sync::atomic::Ordering::SeqCst)
@@ -566,7 +566,7 @@ impl FlowEventStore for PageOnlyTailStore {
         &self,
         _run_id: &str,
         _sequence: u64,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store("unbounded history tail read".to_string()))
     }
 
@@ -575,7 +575,7 @@ impl FlowEventStore for PageOnlyTailStore {
         run_id: &str,
         after_sequence: u64,
         limit: usize,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         let history = self.inner.list(run_id).await?;
         Ok(history
             .into_iter()
@@ -584,11 +584,11 @@ impl FlowEventStore for PageOnlyTailStore {
             .collect())
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 
-    async fn latest_event(&self, run_id: &str) -> a3s_flow::Result<Option<(u64, uuid::Uuid)>> {
+    async fn latest_event(&self, run_id: &str) -> aster_flow::Result<Option<(u64, uuid::Uuid)>> {
         self.inner.latest_event(run_id).await
     }
 
@@ -596,7 +596,7 @@ impl FlowEventStore for PageOnlyTailStore {
         &self,
         run_id: &str,
         sequence: u64,
-    ) -> a3s_flow::Result<Option<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Option<aster_flow::FlowEventEnvelope>> {
         Ok(self
             .inner
             .list(run_id)
@@ -608,14 +608,14 @@ impl FlowEventStore for PageOnlyTailStore {
     async fn load_checkpoint(
         &self,
         run_id: &str,
-    ) -> a3s_flow::Result<Option<a3s_flow::FlowProjectionCheckpoint>> {
+    ) -> aster_flow::Result<Option<aster_flow::FlowProjectionCheckpoint>> {
         self.inner.load_checkpoint(run_id).await
     }
 
     async fn save_checkpoint(
         &self,
-        checkpoint: &a3s_flow::FlowProjectionCheckpoint,
-    ) -> a3s_flow::Result<()> {
+        checkpoint: &aster_flow::FlowProjectionCheckpoint,
+    ) -> aster_flow::Result<()> {
         self.inner.save_checkpoint(checkpoint).await
     }
 }

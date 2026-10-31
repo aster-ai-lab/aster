@@ -105,8 +105,8 @@ fn porcelain_path(line: &str) -> &str {
     line.get(3..).map(str::trim).unwrap_or("")
 }
 
-/// `cargo test` rewrites the unused-patch order of `a3s-apofasi` and
-/// `a3s-sandbox` without changing the admitted source. Any other dirty path,
+/// `cargo test` rewrites the unused-patch order of `aster-apofasi` and
+/// `aster-cmd-sandbox` without changing the admitted source. Any other dirty path,
 /// including a real `Cargo.lock` edit, still refuses the receipt.
 fn cargo_lock_is_unused_patch_reorder(diff: &str) -> bool {
     diff.lines()
@@ -116,8 +116,8 @@ fn cargo_lock_is_unused_patch_reorder(diff: &str) -> bool {
             matches!(
                 line[1..].trim(),
                 "" | "[[patch.unused]]"
-                    | "name = \"a3s-apofasi\""
-                    | "name = \"a3s-sandbox\""
+                    | "name = \"aster-apofasi\""
+                    | "name = \"aster-cmd-sandbox\""
                     | "version = \"0.1.2\""
                     | "version = \"0.2.0\""
             )
@@ -176,7 +176,7 @@ fn assert_clean_receipt_commit() -> String {
 }
 
 async fn pinned_completion(case_id: &str) -> String {
-    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../.a3s/config.acl");
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../.aster/config.acl");
     let config = match crate::CodeConfig::from_file(&path) {
         Ok(config) => config,
         Err(_) => panic!("acl unreadable"),
@@ -216,7 +216,7 @@ fn workspace_dir() -> tempfile::TempDir {
 fn admitted_options(id: &str) -> crate::SessionOptions {
     crate::SessionOptions::new()
         .with_session_id(id)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
 }
 
 async fn open_session(id: &str) -> (crate::Agent, crate::AgentSession, tempfile::TempDir) {
@@ -624,7 +624,7 @@ async fn case_mcp_and_skills(commit: &str) {
     let config = McpServerConfig {
         name: "deep-e2e-mcp".to_string(),
         transport: McpTransportConfig::Stdio {
-            command: "/nonexistent/a3s-deep-e2e-mcp".to_string(),
+            command: "/nonexistent/aster-deep-e2e-mcp".to_string(),
             args: Vec::new(),
         },
         enabled: true,
@@ -931,7 +931,7 @@ async fn case_run_observability(commit: &str) {
 
 async fn case_context_memory(commit: &str) {
     let model = pinned_completion("context_memory").await;
-    use a3s_memory::repository::{
+    use aster_durable_memory::repository::{
         DurableMemoryKind, EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet,
         MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRelation, MemoryRelationKind,
         MemoryRepository, MemoryStatus,
@@ -943,7 +943,7 @@ async fn case_context_memory(commit: &str) {
     }
     fn evidence(name: &str, kind: EvidenceKind, offset_seconds: i64) -> EvidenceRef {
         EvidenceRef::try_new(
-            format!("a3s://evidence/{name}"),
+            format!("aster://evidence/{name}"),
             format!("sha256:{name:0>64}"),
             kind,
             time(offset_seconds),
@@ -1707,15 +1707,15 @@ fn git(root: &Path, args: &[&str]) {
 fn init_repo(root: &Path) {
     std::fs::create_dir_all(root).expect("repo");
     git(root, &["init"]);
-    git(root, &["config", "user.email", "a3s@example.com"]);
-    git(root, &["config", "user.name", "a3s"]);
+    git(root, &["config", "user.email", "aster@example.com"]);
+    git(root, &["config", "user.name", "aster"]);
     std::fs::write(root.join("README.md"), "source\n").expect("readme");
     git(root, &["add", "README.md"]);
     git(root, &["commit", "-m", "init"]);
 }
 
 async fn case_effect_isolation(commit: &str) {
-    let model = pinned_completion("Effect isolation / orphan `.a3s-isolate-*`").await;
+    let model = pinned_completion("Effect isolation / orphan `.aster-isolate-*`").await;
     let parent = workspace_dir();
     let root = parent.path().join("repo");
     init_repo(&root);
@@ -1756,12 +1756,12 @@ async fn case_effect_isolation(commit: &str) {
             entry
                 .file_name()
                 .to_string_lossy()
-                .starts_with(".a3s-isolate-")
+                .starts_with(".aster-isolate-")
         });
     assert!(!orphans, "isolation directory remained");
     row(
         commit,
-        "Effect isolation / orphan `.a3s-isolate-*`",
+        "Effect isolation / orphan `.aster-isolate-*`",
         &model,
         "PromoteOutcome-Conflict",
     );
@@ -1790,7 +1790,7 @@ async fn case_native_sandbox(commit: &str) {
         Ok(_) => panic!("native sandbox: command ran on the process host"),
     };
     assert!(
-        message.contains("the default A3S native sandbox is unavailable"),
+        message.contains("the default Aster native sandbox is unavailable"),
         "native sandbox: {message}"
     );
     assert!(
@@ -1850,12 +1850,12 @@ async fn case_agent_release_contract(commit: &str) {
         AGENT_PROTOCOL_V1,
     };
 
-    const RAW_FIXTURE: &str = include_str!("../../fixtures/agent-release-contract/.a3s/asset.acl");
+    const RAW_FIXTURE: &str = include_str!("../../fixtures/agent-release-contract/.aster/asset.acl");
     let fixture = RAW_FIXTURE.replace("\r\n", "\n").replace('\r', "\n");
     let manifest = AgentReleaseManifest::parse(&fixture).expect("manifest");
     let digest = manifest.artifact().digest().to_string();
     let mismatch = AgentReleaseCompatibility::new(
-        "a3s.code.agent.v2",
+        "aster.code.agent.v2",
         [AgentReleaseCapability::new("runtime.service", 1).expect("capability")],
     )
     .expect("mismatch compatibility");

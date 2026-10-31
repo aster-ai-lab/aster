@@ -2,10 +2,10 @@
 //!
 //! The release CI intentionally uses the bounded `ann_recall` and feature
 //! fixtures. This benchmark is a separate, reproducible measurement tool for
-//! comparing a3s-vec with another engine at a chosen corpus size. It emits
+//! comparing aster-vec with another engine at a chosen corpus size. It emits
 //! machine-readable rows and never treats a timing value as a correctness gate.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, HnswQueryParams,
     IndexParams, MetricType, SearchQuery,
 };
@@ -32,7 +32,7 @@ struct Config {
 
 impl Config {
     fn from_environment() -> Self {
-        let smoke = std::env::var("A3S_VEC_BENCH_SCALE").as_deref() == Ok("smoke");
+        let smoke = std::env::var("ASTER_VEC_BENCH_SCALE").as_deref() == Ok("smoke");
         let config = if smoke {
             Self {
                 documents: 96,
@@ -46,14 +46,14 @@ impl Config {
             }
         } else {
             Self {
-                documents: env_usize("A3S_VEC_SCALE_DOCUMENTS", 10_000),
-                dimensions: env_usize("A3S_VEC_SCALE_DIMENSIONS", 128),
-                queries: env_usize("A3S_VEC_SCALE_QUERIES", 32),
-                rounds: env_usize("A3S_VEC_SCALE_ROUNDS", 3),
-                batch_size: env_usize("A3S_VEC_SCALE_BATCH_SIZE", 512),
-                ef_search: env_i32("A3S_VEC_SCALE_EF_SEARCH", 64),
-                hnsw_m: env_i32("A3S_VEC_SCALE_HNSW_M", 16),
-                ef_construction: env_i32("A3S_VEC_SCALE_EF_CONSTRUCTION", 96),
+                documents: env_usize("ASTER_VEC_SCALE_DOCUMENTS", 10_000),
+                dimensions: env_usize("ASTER_VEC_SCALE_DIMENSIONS", 128),
+                queries: env_usize("ASTER_VEC_SCALE_QUERIES", 32),
+                rounds: env_usize("ASTER_VEC_SCALE_ROUNDS", 3),
+                batch_size: env_usize("ASTER_VEC_SCALE_BATCH_SIZE", 512),
+                ef_search: env_i32("ASTER_VEC_SCALE_EF_SEARCH", 64),
+                hnsw_m: env_i32("ASTER_VEC_SCALE_HNSW_M", 16),
+                ef_construction: env_i32("ASTER_VEC_SCALE_EF_CONSTRUCTION", 96),
             }
         };
         assert!(
@@ -74,7 +74,7 @@ impl Config {
     }
 
     fn modes() -> Vec<Mode> {
-        match std::env::var("A3S_VEC_SCALE_MODE")
+        match std::env::var("ASTER_VEC_SCALE_MODE")
             .unwrap_or_else(|_| "both".to_string())
             .to_ascii_lowercase()
             .as_str()
@@ -82,7 +82,7 @@ impl Config {
             "flat" => vec![Mode::Flat],
             "hnsw" => vec![Mode::Hnsw],
             "both" => vec![Mode::Flat, Mode::Hnsw],
-            value => panic!("A3S_VEC_SCALE_MODE must be flat, hnsw, or both; got {value}"),
+            value => panic!("ASTER_VEC_SCALE_MODE must be flat, hnsw, or both; got {value}"),
         }
     }
 }
@@ -331,7 +331,7 @@ fn print_row(
     assert!(recall.is_finite() && (0.0..=1.0).contains(&recall));
     assert!(qps.is_finite() && qps > 0.0);
     println!(
-        "a3s-vec,{},{},{},{},{},{},{},{},{},{},{:.3},{:.3},0.000,{:.3},{:.4},{:.3},{:.3},{:.3},{:.2}",
+        "aster-vec,{},{},{},{},{},{},{},{},{},{},{:.3},{:.3},0.000,{:.3},{:.4},{:.3},{:.3},{:.3},{:.2}",
         env!("CARGO_PKG_VERSION"),
         mode.name(),
         config.documents,

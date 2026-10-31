@@ -154,13 +154,13 @@ mcp_servers "host" {
 #[test]
 fn untrusted_directories_must_stay_inside_the_repository() {
     let root = tempfile::tempdir().unwrap();
-    std::fs::create_dir_all(root.path().join(".a3s/skills")).unwrap();
+    std::fs::create_dir_all(root.path().join(".aster/skills")).unwrap();
     let outside = tempfile::tempdir().unwrap();
     std::os::unix::fs::symlink(outside.path(), root.path().join("escape")).unwrap();
-    let inside_absolute = root.path().canonicalize().unwrap().join(".a3s/skills");
+    let inside_absolute = root.path().canonicalize().unwrap().join(".aster/skills");
     let body = format!(
         r#"
-skill_dirs = [".a3s/skills", "{inside}", "../sibling", "/etc", "escape"]
+skill_dirs = [".aster/skills", "{inside}", "../sibling", "/etc", "escape"]
 agent_dirs = ["{home}"]
 "#,
         inside = inside_absolute.display(),
@@ -175,7 +175,7 @@ agent_dirs = ["{home}"]
         config.skill_dirs,
         vec![
             PathBuf::from("/host/skills"),
-            PathBuf::from(".a3s/skills"),
+            PathBuf::from(".aster/skills"),
             inside_absolute,
         ]
     );
@@ -190,9 +190,9 @@ agent_dirs = ["{home}"]
         ]
     );
 
-    std::fs::create_dir_all(root.path().join(".a3s/skills/inside")).unwrap();
+    std::fs::create_dir_all(root.path().join(".aster/skills/inside")).unwrap();
     std::fs::write(
-        root.path().join(".a3s/skills/inside/SKILL.md"),
+        root.path().join(".aster/skills/inside/SKILL.md"),
         "---\nname: inside-skill\ndescription: Stays\nkind: instruction\n---\nINSIDE_TOKEN\n",
     )
     .unwrap();

@@ -4,7 +4,7 @@ import {
   type JsonObject,
   type JsonValue,
   type UiOption,
-} from '@a3s-lab/form/core';
+} from '@aster-ai-lab/form/core';
 import {
   normalizeWorkflowControlWidget,
   WORKFLOW_CONFIGURATION_WIDGETS,
@@ -15,7 +15,7 @@ import {
   type FormWidgetProps,
   type FormWidgetRegistry,
   NativeWidget,
-} from '@a3s-lab/form/react';
+} from '@aster-ai-lab/form/react';
 import { SelectControl } from './select-control';
 import { workflowDurationUnitLabel, workflowWidgetCopy } from './workflow-configuration-copy';
 import {
@@ -197,7 +197,7 @@ function FieldFlags({ props }: { props: WorkflowFieldActionTarget }) {
   const copy = workflowWidgetCopy(props.locale);
   if (!flags.realtime && !flags.toolMode) return null;
   return (
-    <div className="a3s-form-workflow-field-flags">
+    <div className="aster-form-workflow-field-flags">
       {flags.realtime && (
         <span className="badge" data-variant="outline">
           {copy.live}
@@ -225,7 +225,7 @@ function RefreshButton({
   return (
     <button
       type="button"
-      className="btn a3s-form-workflow-inline-action"
+      className="btn aster-form-workflow-inline-action"
       data-size="icon-sm"
       data-variant="ghost"
       aria-label={copy.refreshField(label)}
@@ -257,7 +257,7 @@ function CopyButton({
   return (
     <button
       type="button"
-      className="btn a3s-form-workflow-inline-action"
+      className="btn aster-form-workflow-inline-action"
       data-size="icon-sm"
       data-variant="ghost"
       aria-label={copy.copyField(label)}
@@ -323,7 +323,7 @@ function ParameterActions({
   if (!connectable && !copyable && !flags.refresh && !flags.realtime && !flags.toolMode)
     return null;
   return (
-    <div className="a3s-form-workflow-parameter-actions" data-action-count={actionCount}>
+    <div className="aster-form-workflow-parameter-actions" data-action-count={actionCount}>
       <FieldFlags props={props} />
       <div>
         <CopyButton props={props} callbacks={callbacks} />
@@ -347,19 +347,19 @@ export function WorkflowFieldAccessory({ callbacks = {}, ...props }: WorkflowFie
     <>
       <RealTimeRefreshEffect props={props} callbacks={callbacks} />
       <fieldset
-        className="a3s-form-workflow-field-accessory item"
+        className="aster-form-workflow-field-accessory item"
         data-size="sm"
         data-variant="outline"
       >
-        <legend className="a3s-form-visually-hidden">{copy.workflowInputLegend(label)}</legend>
-        <span className="a3s-form-workflow-control-icon">
+        <legend className="aster-form-visually-hidden">{copy.workflowInputLegend(label)}</legend>
+        <span className="aster-form-workflow-control-icon">
           <DesignerIcon name="link" size={15} />
         </span>
-        <span className="a3s-form-workflow-control-copy">
+        <span className="aster-form-workflow-control-copy">
           <strong>{copy.workflowInput}</strong>
           <small>{accepted.length > 0 ? accepted.join(' · ') : copy.runtimeConfigured}</small>
         </span>
-        <div className="a3s-form-workflow-field-accessory-actions">
+        <div className="aster-form-workflow-field-accessory-actions">
           <FieldFlags props={props} />
           <CopyButton props={props} callbacks={callbacks} />
           <ConnectionAction props={props} callbacks={callbacks} />
@@ -384,15 +384,15 @@ function ConnectionWidget(props: FormWidgetProps, callbacks: WorkflowConfigurati
   const label = props.node.label ?? props.node.id;
   return (
     <div
-      className="a3s-form-workflow-connection item"
+      className="aster-form-workflow-connection item"
       data-size="sm"
       data-variant="outline"
       data-connected={connected || undefined}
     >
-      <span className="a3s-form-workflow-control-icon">
+      <span className="aster-form-workflow-control-icon">
         <DesignerIcon name="link" size={16} />
       </span>
-      <span className="a3s-form-workflow-control-copy">
+      <span className="aster-form-workflow-control-copy">
         <strong>{connected ? copy.connectionSet : copy.connectFromCanvas}</strong>
         <small>{accepted.length > 0 ? accepted.join(' · ') : copy.anyCompatibleOutput}</small>
       </span>
@@ -415,7 +415,7 @@ function ConnectionWidget(props: FormWidgetProps, callbacks: WorkflowConfigurati
         {connected ? copy.change : copy.connect}
       </button>
       {(nonObject || emptySource) && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {nonObject ? copy.invalidObject : copy.emptySource}
         </p>
       )}
@@ -433,7 +433,7 @@ function ModelControl(props: FormWidgetProps) {
       ? props.node.customProps.modelType
       : 'language';
   return (
-    <div className="a3s-form-workflow-model-control">
+    <div className="aster-form-workflow-model-control">
       <div className="input-group">
         <span data-align="start">
           <DesignerIcon name="sparkles" size={15} />
@@ -475,7 +475,7 @@ function ModelControl(props: FormWidgetProps) {
         )}
       </div>
       {unknown && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.invalidOption}
         </p>
       )}
@@ -484,7 +484,7 @@ function ModelControl(props: FormWidgetProps) {
 }
 
 /**
- * Renders the form renderer's ordinary enum fields with the Flow A3S UI
+ * Renders the form renderer's ordinary enum fields with the Flow Aster UI
  * select adapter. The upstream form package keeps its NativeWidget select
  * intentionally native for compatibility, but workflow panels use the same
  * runtime-backed surface as the composite Flow controls.
@@ -531,7 +531,7 @@ export function WorkflowSelectWidget(props: FormWidgetProps) {
       ))}
     </SelectControl>
     {unknown && (
-      <p className="a3s-form-workflow-field-feedback" role="alert">
+      <p className="aster-form-workflow-field-feedback" role="alert">
         {copy.invalidOption}
       </p>
     )}
@@ -596,7 +596,7 @@ function TabsWidget(props: FormWidgetProps) {
     props.value !== undefined && props.value !== null && props.value !== '' && !selected;
   return (
     <div
-      className="a3s-form-workflow-segments"
+      className="aster-form-workflow-segments"
       role="radiogroup"
       aria-label={props.labelledBy ? undefined : (props.node.label ?? props.node.id)}
       aria-labelledby={props.labelledBy}
@@ -611,7 +611,7 @@ function TabsWidget(props: FormWidgetProps) {
         >
           <input
             id={index === 0 ? props.id : undefined}
-            className="a3s-form-visually-hidden"
+            className="aster-form-visually-hidden"
             type="radio"
             name={`${props.id}-options`}
             value={String(option.value)}
@@ -623,7 +623,7 @@ function TabsWidget(props: FormWidgetProps) {
         </label>
       ))}
       {invalidValue && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.invalidOption}
         </p>
       )}
@@ -670,7 +670,7 @@ function SortableListWidget(props: FormWidgetProps) {
     props.onChange(next);
   };
   return (
-    <div className="a3s-form-workflow-sortable">
+    <div className="aster-form-workflow-sortable">
       {selected.length > 0 ? (
         <ol aria-label={copy.sortableOrder(label)} ref={listRef}>
           {selected.map((item, index) => {
@@ -688,7 +688,7 @@ function SortableListWidget(props: FormWidgetProps) {
                 key={selected.filter((item) => optionName(item) === name).length > 1 ? `${name}-${index}` : name}
               >
                 {reorderable && (
-                  <span className="a3s-form-workflow-drag-mark">
+                  <span className="aster-form-workflow-drag-mark">
                     <DesignerIcon name="grip" size={14} />
                   </span>
                 )}
@@ -701,7 +701,7 @@ function SortableListWidget(props: FormWidgetProps) {
                     </small>
                   )}
                 </span>
-                <span className="a3s-form-workflow-sort-actions">
+                <span className="aster-form-workflow-sort-actions">
                   {reorderable && (
                     <>
                       <button
@@ -747,7 +747,7 @@ function SortableListWidget(props: FormWidgetProps) {
           })}
         </ol>
       ) : (
-        <p className="a3s-form-workflow-empty-control">{copy.noOperations}</p>
+        <p className="aster-form-workflow-empty-control">{copy.noOperations}</p>
       )}
       {available.length > 0 ? (
         <SelectControl
@@ -777,7 +777,7 @@ function SortableListWidget(props: FormWidgetProps) {
           })}
         </SelectControl>
       ) : (
-        <p className="a3s-form-workflow-empty-control" role="status">
+        <p className="aster-form-workflow-empty-control" role="status">
           {copy.noAvailableOperations}
         </p>
       )}
@@ -821,7 +821,7 @@ function DurationWidget(props: FormWidgetProps) {
     step,
   );
   return (
-    <div className="a3s-form-workflow-duration input-group">
+    <div className="aster-form-workflow-duration input-group">
       <input
         id={props.id}
         className="input"
@@ -866,7 +866,7 @@ function DurationWidget(props: FormWidgetProps) {
         ))}
       </SelectControl>
       {unknownUnit && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.invalidUnit}
         </p>
       )}
@@ -900,7 +900,7 @@ function ActionPickerWidget(props: FormWidgetProps) {
     setFeedback(null);
   };
   return (
-    <div className="a3s-form-workflow-actions-editor">
+    <div className="aster-form-workflow-actions-editor">
       <div
         className="item-group"
         tabIndex={0}
@@ -956,7 +956,7 @@ function ActionPickerWidget(props: FormWidgetProps) {
         <small role="status">{copy.selectedCount(values.length, limit)}</small>
       )}
       {values.length === 0 && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.emptyDecisions}
         </p>
       )}
@@ -1044,8 +1044,8 @@ function MultiselectWidget(props: FormWidgetProps) {
     : [];
   const missing = props.required === true && selected.length === 0;
   return (
-    <div className="a3s-form-workflow-multiselect">
-      <div className="a3s-form-workflow-multiselect-chips" tabIndex={0} aria-label={label}>
+    <div className="aster-form-workflow-multiselect">
+      <div className="aster-form-workflow-multiselect-chips" tabIndex={0} aria-label={label}>
         {selected.length === 0
           ? copy.noOperations
           : selected.map((item) => {
@@ -1076,7 +1076,7 @@ function MultiselectWidget(props: FormWidgetProps) {
         ))}
       </SelectControl>
       {missing && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.requiredValue}
         </p>
       )}
@@ -1142,8 +1142,8 @@ function ParameterWidget(
   }
   return (
     <div
-      className="a3s-form-workflow-parameter-control"
-      data-a3s-flow-widget-fallback={isKnownParameterControl(widget) ? undefined : widget}
+      className="aster-form-workflow-parameter-control"
+      data-aster-flow-widget-fallback={isKnownParameterControl(widget) ? undefined : widget}
       data-control-widget={widget}
     >
       <RealTimeRefreshEffect props={props} callbacks={callbacks} />

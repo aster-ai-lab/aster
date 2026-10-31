@@ -4,7 +4,7 @@ set -Eeuo pipefail
 # Fail-closed unit checks for Linux KVM release-matrix promotion policy.
 source .github/scripts/lib/linux-kvm-release-matrix-promotion.sh
 
-work="$(mktemp -d /tmp/a3s-oci-kvm-promotion-test.XXXXXX)"
+work="$(mktemp -d /tmp/aster-oci-kvm-promotion-test.XXXXXX)"
 trap 'rm -rf -- "$work"' EXIT
 mkdir -p "$work/gates"
 
@@ -54,19 +54,19 @@ fi
 jq --null-input '{case_count: 17}' > "$work/gates/lifecycle.json"
 
 # promotes_readiness stays false for existing
-[[ "$(linux_kvm_compute_promotes_readiness existing '{"schema_version":"a3s.oci.linux-kvm-fresh-host-attestation.v1"}' 0 1 25 25 1)" == "false" ]]
+[[ "$(linux_kvm_compute_promotes_readiness existing '{"schema_version":"aster.oci.linux-kvm-fresh-host-attestation.v1"}' 0 1 25 25 1)" == "false" ]]
 
 # fresh + attestation + full soak + bound depths promotes
-[[ "$(linux_kvm_compute_promotes_readiness fresh '{"schema_version":"a3s.oci.linux-kvm-fresh-host-attestation.v1"}' 0 1 25 25 1)" == "true" ]]
+[[ "$(linux_kvm_compute_promotes_readiness fresh '{"schema_version":"aster.oci.linux-kvm-fresh-host-attestation.v1"}' 0 1 25 25 1)" == "true" ]]
 
 # fresh without bound depths does not promote
-[[ "$(linux_kvm_compute_promotes_readiness fresh '{"schema_version":"a3s.oci.linux-kvm-fresh-host-attestation.v1"}' 0 1 25 25 0)" == "false" ]]
+[[ "$(linux_kvm_compute_promotes_readiness fresh '{"schema_version":"aster.oci.linux-kvm-fresh-host-attestation.v1"}' 0 1 25 25 0)" == "false" ]]
 
 # fresh + attestation but soak skipped does not promote
-[[ "$(linux_kvm_compute_promotes_readiness fresh '{"schema_version":"a3s.oci.linux-kvm-fresh-host-attestation.v1"}' 1 0 0 0 1)" == "false" ]]
+[[ "$(linux_kvm_compute_promotes_readiness fresh '{"schema_version":"aster.oci.linux-kvm-fresh-host-attestation.v1"}' 1 0 0 0 1)" == "false" ]]
 
 # fresh + attestation but reduced soak depth does not promote
-[[ "$(linux_kvm_compute_promotes_readiness fresh '{"schema_version":"a3s.oci.linux-kvm-fresh-host-attestation.v1"}' 0 1 1 1 1)" == "false" ]]
+[[ "$(linux_kvm_compute_promotes_readiness fresh '{"schema_version":"aster.oci.linux-kvm-fresh-host-attestation.v1"}' 0 1 1 1 1)" == "false" ]]
 
 # fresh without attestation does not promote
 [[ "$(linux_kvm_compute_promotes_readiness fresh 'null' 0 1 25 25 1)" == "false" ]]

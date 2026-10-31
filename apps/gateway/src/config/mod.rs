@@ -1,4 +1,4 @@
-//! Configuration types for A3S Gateway
+//! Configuration types for Aster Gateway
 //!
 //! Defines the configuration model following Traefik's
 //! entrypoint → router → middleware → service architecture.
@@ -988,7 +988,7 @@ impl Default for GatewayConfig {
 /// configurations remain valid. The managed snapshot endpoint requires it.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ManagedConfig {
-    /// Logical Gateway identity assigned by A3S Cloud.
+    /// Logical Gateway identity assigned by Aster Cloud.
     #[serde(default)]
     pub gateway_id: Option<uuid::Uuid>,
 
@@ -1111,7 +1111,7 @@ fn default_management_path_prefix() -> String {
 }
 
 fn default_management_auth_token_env() -> Option<String> {
-    Some("A3S_GATEWAY_ADMIN_TOKEN".to_string())
+    Some("ASTER_GATEWAY_ADMIN_TOKEN".to_string())
 }
 
 fn default_management_allowed_ips() -> Vec<String> {
@@ -1163,14 +1163,14 @@ pub struct ProviderConfig {
 /// # Label Format
 ///
 /// ```text
-/// a3s.enable=true
-/// a3s.router.rule=PathPrefix(`/api`)
-/// a3s.router.entrypoints=web
-/// a3s.router.middlewares=rate-limit
-/// a3s.router.priority=10
-/// a3s.service.port=8080
-/// a3s.service.strategy=round-robin
-/// a3s.service.weight=1
+/// aster.enable=true
+/// aster.router.rule=PathPrefix(`/api`)
+/// aster.router.entrypoints=web
+/// aster.router.middlewares=rate-limit
+/// aster.router.priority=10
+/// aster.service.port=8080
+/// aster.service.strategy=round-robin
+/// aster.service.weight=1
 /// ```
 ///
 /// # Example
@@ -1191,7 +1191,7 @@ pub struct DockerProviderConfig {
     #[serde(default = "default_docker_host")]
     pub host: String,
 
-    /// Label prefix used to identify A3S routing labels (default: `a3s`)
+    /// Label prefix used to identify Aster routing labels (default: `aster`)
     #[serde(default = "default_label_prefix")]
     pub label_prefix: String,
 
@@ -1205,7 +1205,7 @@ fn default_docker_host() -> String {
 }
 
 fn default_label_prefix() -> String {
-    "a3s".to_string()
+    "aster".to_string()
 }
 
 fn default_docker_poll() -> u64 {
@@ -1274,7 +1274,7 @@ impl Default for KubernetesProviderConfig {
 
 /// Health-based service discovery configuration
 ///
-/// Polls backend seed URLs for `/.well-known/a3s-service.json` metadata
+/// Polls backend seed URLs for `/.well-known/aster-service.json` metadata
 /// and health endpoints to auto-register services.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DiscoveryConfig {

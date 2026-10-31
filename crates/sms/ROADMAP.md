@@ -1,4 +1,4 @@
-# A3S SMS roadmap
+# Aster SMS roadmap
 
 | Gate | State | Evidence / acceptance |
 | --- | --- | --- |

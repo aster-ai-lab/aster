@@ -16,7 +16,7 @@ impl FlowRuntime for StepDefinitionRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if completed_step(&invocation, "load-user").is_none() {
             return Ok(RuntimeCommand::ScheduleStep {
                 step_id: "load-user".to_string(),
@@ -46,7 +46,7 @@ impl FlowRuntime for StepDefinitionRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({ "version": invocation.input["version"] }))
     }
 }
@@ -126,7 +126,7 @@ impl FlowRuntime for WaitDefinitionRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let _ = invocation.context().updates().len();
         Ok(RuntimeCommand::WaitUntil {
             wait_id: "definition-gate".to_string(),
@@ -134,14 +134,14 @@ impl FlowRuntime for WaitDefinitionRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("wait definition runtime does not schedule steps")
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({ "ok": true }))
     }
 }
@@ -177,7 +177,7 @@ async fn open_wait_redrive_tolerates_resume_at_recomputation() {
     let applied = second
         .apply_update(
             &run_id,
-            a3s_flow::WorkflowUpdate::new("upd-1", "bump", json!({})),
+            aster_flow::WorkflowUpdate::new("upd-1", "bump", json!({})),
         )
         .await
         .expect("forced replay must tolerate wait resume_at recomputation");
@@ -198,7 +198,7 @@ impl FlowRuntime for HookDefinitionRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(RuntimeCommand::CreateHook {
             hook_id: "approval".to_string(),
             token: self.token.to_string(),
@@ -206,7 +206,7 @@ impl FlowRuntime for HookDefinitionRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("hook definition runtime does not schedule steps")
     }
 }
@@ -289,7 +289,7 @@ impl FlowRuntime for UniqueHookRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if let Some(payload) = received_hook(&invocation, "approval") {
             return Ok(RuntimeCommand::Complete {
                 output: json!({ "approved": payload["approved"] }),
@@ -303,7 +303,7 @@ impl FlowRuntime for UniqueHookRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("unique hook runtime does not schedule steps")
     }
 }

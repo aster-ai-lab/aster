@@ -10,7 +10,7 @@ Every supported backend applies the same baseline policy:
 
 - deny IPv4, IPv6, and host Unix-domain socket communication;
 - deny reads of known credential locations and workspace secret files;
-- deny writes to A3S, agent, editor, shell, and Git control metadata;
+- deny writes to Aster, agent, editor, shell, and Git control metadata;
 - deny symbolic-link and hard-link escape paths;
 - expose only a sanitized environment with state and temporary paths redirected
   into a private scratch directory;
@@ -71,13 +71,13 @@ Cargo, Rustup, or other user toolchain trees. System tools retain their
 host-provided AppContainer grants, workspace-local tools are covered by the
 workspace grant, and inaccessible user-private tools fail closed. Mediated HTTP
 CONNECT is claimed via an AppContainer-ACL'd connected named-pipe pair: the
-guest inherits the client handle as `A3S_SANDBOX_MEDIATOR_PIPE_HANDLE` (not
+guest inherits the client handle as `ASTER_SANDBOX_MEDIATOR_PIPE_HANDLE` (not
 `HTTP_PROXY`; name-open alone stays Access Denied under AppContainer).
 
 ## Non-goals
 
 This crate does not provide remote container orchestration, TLS interception by
-default, or a virtual shell. Network access remains deny-all for the A3S Bash
+default, or a virtual shell. Network access remains deny-all for the Aster Bash
 baseline. Opt-in host-supervised HTTP CONNECT / SOCKS5 mediation (Gates 4–5)
 is available only where the OS can fence the guest to the mediator and the
 policy enablement is explicit; unsupported platforms fail closed. Mediated
@@ -86,7 +86,7 @@ network must not become the default profile without independent review
 
 ## Reporting
 
-Please report security issues privately to the A3S Lab maintainers rather than
+Please report security issues privately to the Aster maintainers rather than
 opening a public issue with exploit details. Include the crate version, OS,
-backend (`a3s-sandbox capabilities`), and a minimal reproduction. Related
+backend (`aster-sandbox capabilities`), and a minimal reproduction. Related
 threat-model notes live in `THREAT_MODEL.md`.

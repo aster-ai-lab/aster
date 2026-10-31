@@ -16,7 +16,7 @@
 | 当前请求终结驱动：完整十条，三次 | **10/10、10/10、10/10**，各 0 失败、0 忽略；324.232、299.048、305.687 秒 | 同一冻结 pager/ACP/test 二进制，`boyue/deepseek-v4-flash`；正式审批对测试拥有的精确命令逐次批准，不证明默认 native 执行 |
 | 当前四请求编码及独立审计 | 三次均 4 个独立 Run；实际部分检查退出 1；两次绑定 Verified；Unknown=0；每次重算两个效果摘要 | 请求终结后再提交；原始完整回执；最终助手引用。首轮外部快照缺末尾两条事实，其第四次最终回复仅由进程内记录证明；第二、三次外部快照完整 |
 | 当前证据反证与边界检查 | 编码 30 份篡改副本在第二、三次各全部拒绝；读取每次 5/5、26 份篡改副本全部拒绝；13 hermetic、3 relay 边界测试、严格 Core/ACP Clippy 通过 | 篡改副本不算真实 LLM 运行；独立审计不认证省略的完整日志哈希链或原子编译输入闭包 |
-| 实际 A3S Test ACL 引擎：直接指令拒绝恢复 | Bash、background 各连续三次通过，共 6 次；每次两个独立 Run、1 Denied+Complete、下一轮读取成功、Unknown=0 | 同一冻结 pager/ACP；正常逐次审批，无升级；原始回执、请求终结、用量及夹具独立核对；不证明默认 native 执行 |
+| 实际 Aster Test ACL 引擎：直接指令拒绝恢复 | Bash、background 各连续三次通过，共 6 次；每次两个独立 Run、1 Denied+Complete、下一轮读取成功、Unknown=0 | 同一冻结 pager/ACP；正常逐次审批，无升级；原始回执、请求终结、用量及夹具独立核对；不证明默认 native 执行 |
 | 实际 ACL 引擎：任务文件变体 | 分别保留 5 次通过、3 条未调用所需工具的失败前缀、2 次规范中止；后台失败精确 SOLO 通过 | Bash 原规范 SOLO 重现省略前缀，但观察器失败，不能算完成的 SOLO；未断言根因，也不混算稳定通过 |
 | ACL 引擎证据审计 | 11 份通过原始记录复核通过；8 份实际通过基线各拒绝 29 份篡改副本 | 审计发现并修复“最后一个模型工具调用无回执”漏检；副本不是真实 Unknown/hook 故障注入；任务文件可靠性仍开放 |
 
@@ -32,7 +32,7 @@
 
 原生插件的 execute 能力拒绝已在最新候选中通过原始回归。底层预检查和 Core 包装器转发缺口均已修复，实时 scope 检查保持。最新 ACP 全量首轮 198 通过、2 失败；两条 MCP 夹具失败 SOLO 均通过，全量重跑为 200 通过、4 忽略。首轮失败仍保留待查。
 
-实际运行链为冻结 pager → ACP → Core → `boyue/deepseek-v4-flash` → 真实夹具。上一轮完整十条使用 Rust PTY 驱动；本轮拒绝恢复另由实际 A3S Test 1.0.1 ACL 引擎执行，两者分别记账。直接指令两例各三次通过；读取任务文件后执行的变体仍偶发省略所需工具并给出确认词，保留为开放缺陷。不能用直接指令通过覆盖该失败。规划目录保持 PLANNED，不换算执行通过率。
+实际运行链为冻结 pager → ACP → Core → `boyue/deepseek-v4-flash` → 真实夹具。上一轮完整十条使用 Rust PTY 驱动；本轮拒绝恢复另由实际 Aster Test 1.0.1 ACL 引擎执行，两者分别记账。直接指令两例各三次通过；读取任务文件后执行的变体仍偶发省略所需工具并给出确认词，保留为开放缺陷。不能用直接指令通过覆盖该失败。规划目录保持 PLANNED，不换算执行通过率。
 
 具体候选摘要和历史结果见 [实际 ACL 引擎及失败证据](../../../../../docs/evidence/code-harness/20261012-tui-acl-native-refusal/OUTCOME.md)、[请求终结证据](../../../../../docs/evidence/code-harness/20261012-tui-request-terminals/OUTCOME.md)、[读取证据](../../../../../docs/evidence/code-harness/20261012-tui-read-real-llm/OUTCOME.md)及 [宿主合同与回复证据](../../../../../docs/evidence/code-harness/20261012-tui-host-verification-delivery/OUTCOME.md)。RT10-03 初始化失败、RT10-04 真实派发后结果不明、RT10-05 实际 hook 变化，以及其他 P0、发布依赖闭包、原 Core 全量失败、Qwen 截图路由、第二真实 adapter、其他声明平台及剩余功能仍待资格验证。选定门禁三次通过不等于完整 P0 或全产品资格。
 

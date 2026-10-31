@@ -393,7 +393,7 @@ def export(task_id):
         images[view] = obs[cam + "_image"][::-1]
     gripper_ids = [mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_ACTUATOR, a) for a in robot.gripper.actuators]
     episode = {
-        "format": "a3s-libero-episode-v1",
+        "format": "aster-libero-episode-v1",
         "benchmark": "LIBERO", "libero_revision": REVISION, "suite": "libero_90", "task_id": task_id,
         "task_name": task.name, "language": task.language, "init_index": 0, "seed": 0, "settle_steps": 10,
         "versions": {k: importlib.metadata.version(k) for k in ("mujoco", "robosuite", "numpy", "torch")},

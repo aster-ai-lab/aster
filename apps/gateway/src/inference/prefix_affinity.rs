@@ -144,7 +144,7 @@ impl PrefixAffinity {
             return None;
         }
         let mut scope_hash = Sha256::new();
-        scope_hash.update(b"a3s.gateway.prefix-affinity.v1");
+        scope_hash.update(b"aster.gateway.prefix-affinity.v1");
         scope_hash.update(self.salt.as_bytes());
         let scope = serde_json::to_vec(&scope).ok()?;
         scope_hash.update((scope.len() as u64).to_le_bytes());

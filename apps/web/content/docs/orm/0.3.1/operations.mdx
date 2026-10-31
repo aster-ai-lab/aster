@@ -17,10 +17,10 @@ PostgreSQL 事务隔离、访问模式和超时只作用于当前事务。SQLite
 
 ## 迁移与只读核对
 
-迁移按版本排序，使用 SHA-256 校验和，并记录在 `a3s_orm_migrations`。重复执行未变化的集合是 no-op。修改或删除已应用迁移会返回错误。
+迁移按版本排序，使用 SHA-256 校验和，并记录在 `aster_orm_migrations`。重复执行未变化的集合是 no-op。修改或删除已应用迁移会返回错误。
 
 ```rust
-use a3s_orm::{Migration, Migrator, SqliteExecutor};
+use aster_orm::{Migration, Migrator, SqliteExecutor};
 
 let executor = SqliteExecutor::open_in_memory().await?;
 let report = Migrator::new(executor)

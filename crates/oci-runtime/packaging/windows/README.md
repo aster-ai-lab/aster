@@ -13,35 +13,35 @@ directory. Do **not** flatten `bin/*` into the same directory as
 `system-image/` — WHPX `WindowsSystemImage::load` requires the shim/runtime
 directory and the system-image directory to be disjoint.
 
-Place beside `a3s-box.exe` under an install root, or under
-`%USERPROFILE%\.a3s\`:
+Place beside `aster-box.exe` under an install root, or under
+`%USERPROFILE%\.aster\`:
 
 ```text
 install-root/
   bin/
-    a3s-oci.exe
-    a3s-oci-krun-shim.exe
+    aster-oci.exe
+    aster-oci-krun-shim.exe
     krun.dll
     libkrunfw.dll
   system-image/
-    system-image.json          # a3s.oci.windows-system-image.v1
+    system-image.json          # aster.oci.windows-system-image.v1
     <ext4 image + companions>  # as bound by the manifest
   bootstrap-vm-rootfs/         # empty seed; Box materializes the live copy
 ```
 
-Equivalent A3S-home layout:
+Equivalent Aster-home layout:
 
 ```text
-%USERPROFILE%\.a3s\
-  bin\                         # Host binaries (+ optional a3s-box.exe)
-  share\a3s\
+%USERPROFILE%\.aster\
+  bin\                         # Host binaries (+ optional aster-box.exe)
+  share\aster\
     system-image\
     bootstrap-vm-rootfs\       # empty seed
 ```
 
 `box-whpx-qualification-service` requires both `--vm-rootfs` (bootstrap) and
 `--system-image-manifest`. The guest agent is embedded in the system image;
-do not require a loose `usr\bin\a3s-oci-agent` under the bootstrap root for
+do not require a loose `usr\bin\aster-oci-agent` under the bootstrap root for
 Box-owned ensure. The bootstrap root must stay empty (or only the fixed
 post-boot mount points / bounded init logs); it is not an Alpine rootfs.
 
@@ -53,27 +53,27 @@ OCI WHPX requires:
 2. Immutable `system-image/` is **disjoint** from that mutable runtime root
 3. Host `bin/` (shim/runtime directory) is **disjoint** from `system-image/`
 
-Do **not** point `A3S_BOX_OCI_HOST_ROOT` / `A3S_BOX_WHPX_OCI_SERVICE_ROOT` at
+Do **not** point `ASTER_BOX_OCI_HOST_ROOT` / `ASTER_BOX_WHPX_OCI_SERVICE_ROOT` at
 the install root that contains `system-image/`. Box packaged opt-in defaults
-the mutable service root under the A3S home (`run/oci-host`) and materializes
+the mutable service root under the Aster home (`run/oci-host`) and materializes
 `bootstrap-vm-rootfs/` there from the packaged seed.
 
 ## Staging from CI (operator / packager)
 
 ```powershell
-gh run download <run-id> --repo A3S-Lab/OCI-Runtime `
-  --name windows-whpx-qualification --dir C:\a3s\oci-host-package
+gh run download <run-id> --repo aster-ai-lab/OCI-Runtime `
+  --name windows-whpx-qualification --dir C:\aster\oci-host-package
 
 # Expected under that directory after extract:
-#   bin\a3s-oci.exe, bin\a3s-oci-krun-shim.exe, bin\krun.dll, bin\libkrunfw.dll
+#   bin\aster-oci.exe, bin\aster-oci-krun-shim.exe, bin\krun.dll, bin\libkrunfw.dll
 #   system-image\system-image.json (+ image files)
 ```
 
 Preserve the artifact’s `bin\` vs `system-image\` sibling layout when copying
-into the install root (or into `%USERPROFILE%\.a3s\bin` +
-`%USERPROFILE%\.a3s\share\a3s\system-image`). Create an empty
+into the install root (or into `%USERPROFILE%\.aster\bin` +
+`%USERPROFILE%\.aster\share\aster\system-image`). Create an empty
 `bootstrap-vm-rootfs` directory beside `system-image` (or under
-`share\a3s\`). Do **not** copy `bin\*` into the same folder as `system-image\`.
+`share\aster\`). Do **not** copy `bin\*` into the same folder as `system-image\`.
 
 ## Non-claims
 

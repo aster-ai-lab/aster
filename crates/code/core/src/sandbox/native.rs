@@ -1,7 +1,7 @@
-//! A3S native sandbox adapter.
+//! Aster native sandbox adapter.
 //!
 //! Isolation policy and platform enforcement live in the independent
-//! `a3s-sandbox` crate. This module preserves the A3S Code `BashSandbox`
+//! `aster-cmd-sandbox` crate. This module preserves the Aster Code `BashSandbox`
 //! contract and translates output observation without duplicating security
 //! behavior.
 
@@ -12,23 +12,23 @@ use async_trait::async_trait;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-pub use a3s_sandbox::NATIVE_SANDBOX_BACKEND;
-pub(crate) use a3s_sandbox::{
+pub use aster_cmd_sandbox::NATIVE_SANDBOX_BACKEND;
+pub(crate) use aster_cmd_sandbox::{
     hard_link_count, hard_link_count_for_open_file, sensitive_paths,
     should_skip_workspace_scan_directory, workspace_hardlink_paths, workspace_sensitive_paths,
 };
 
-/// Fail-closed native sandbox implementation for the A3S Code bash contract.
+/// Fail-closed native sandbox implementation for the Aster Code bash contract.
 #[derive(Debug)]
 pub struct NativeBashSandbox {
-    inner: a3s_sandbox::NativeSandbox,
+    inner: aster_cmd_sandbox::NativeSandbox,
     guest_unavailable_reason: Option<String>,
 }
 
 impl NativeBashSandbox {
     pub fn new(workspace: impl Into<PathBuf>) -> Result<Self> {
         Ok(Self {
-            inner: a3s_sandbox::NativeSandbox::new(workspace)?,
+            inner: aster_cmd_sandbox::NativeSandbox::new(workspace)?,
             guest_unavailable_reason: None,
         })
     }
@@ -44,12 +44,12 @@ impl NativeBashSandbox {
         allow_origins: &[String],
     ) -> Result<Self> {
         let inner = match mode {
-            super::SandboxNetworkMode::Deny => a3s_sandbox::NativeSandbox::new(workspace)?,
+            super::SandboxNetworkMode::Deny => aster_cmd_sandbox::NativeSandbox::new(workspace)?,
             super::SandboxNetworkMode::Mediated => {
-                let mut policy = a3s_sandbox::SandboxPolicy::a3s_bash_baseline();
+                let mut policy = aster_cmd_sandbox::SandboxPolicy::aster_bash_baseline();
                 policy.features.mediated_network = true;
                 policy.network.allow = parse_network_allow_rules(allow_origins)?;
-                a3s_sandbox::NativeSandbox::with_policy(workspace, policy)?
+                aster_cmd_sandbox::NativeSandbox::with_policy(workspace, policy)?
             }
         };
         Ok(Self {
@@ -132,12 +132,12 @@ struct OutputObserverAdapter {
 }
 
 #[async_trait]
-impl a3s_sandbox::OutputObserver for OutputObserverAdapter {
+impl aster_cmd_sandbox::OutputObserver for OutputObserverAdapter {
     async fn on_output_delta(&self, delta: &str) {
         self.inner.on_output_delta(delta).await;
     }
 
-    async fn on_output_complete(&self, summary: &a3s_sandbox::OutputSummary) {
+    async fn on_output_complete(&self, summary: &aster_cmd_sandbox::OutputSummary) {
         self.inner
             .on_output_complete(&CommandOutputSummary {
                 total_bytes: summary.total_bytes,
@@ -149,7 +149,7 @@ impl a3s_sandbox::OutputObserver for OutputObserverAdapter {
     }
 }
 
-fn execution_output(output: a3s_sandbox::CommandOutput) -> SandboxExecutionOutput {
+fn execution_output(output: aster_cmd_sandbox::CommandOutput) -> SandboxExecutionOutput {
     SandboxExecutionOutput {
         stdout: output.stdout,
         stderr: output.stderr,
@@ -197,7 +197,7 @@ impl BashSandbox for NativeBashSandbox {
 
     fn apply_network_grant(
         &self,
-        grant: a3s_sandbox::NetworkGrant,
+        grant: aster_cmd_sandbox::NetworkGrant,
         expected_base_digest: &str,
     ) -> Result<String> {
         self.inner.apply_network_grant(grant, expected_base_digest)
@@ -215,12 +215,12 @@ impl BashSandbox for NativeBashSandbox {
 
     async fn exec(&self, request: SandboxCommandRequest) -> Result<SandboxExecutionOutput> {
         self.ensure_process_lifetime_qualified()?;
-        let output_observer: Option<Arc<dyn a3s_sandbox::OutputObserver>> = request
+        let output_observer: Option<Arc<dyn aster_cmd_sandbox::OutputObserver>> = request
             .output_observer
             .map(|inner| Arc::new(OutputObserverAdapter { inner }) as Arc<_>);
         let output = self
             .inner
-            .execute(a3s_sandbox::CommandRequest {
+            .execute(aster_cmd_sandbox::CommandRequest {
                 command: request.command,
                 timeout_ms: request.timeout_ms,
                 output_observer,
@@ -238,7 +238,7 @@ impl BashSandbox for NativeBashSandbox {
 /// silently wider origin.
 pub(crate) fn parse_network_allow_rules(
     origins: &[String],
-) -> Result<Vec<a3s_sandbox::NetworkAllowRule>> {
+) -> Result<Vec<aster_cmd_sandbox::NetworkAllowRule>> {
     origins
         .iter()
         .map(|origin| {
@@ -267,7 +267,7 @@ pub(crate) fn parse_network_allow_rules(
             if port == Some(0) {
                 anyhow::bail!("sandbox network allow origin {origin:?} has port 0");
             }
-            Ok(a3s_sandbox::NetworkAllowRule {
+            Ok(aster_cmd_sandbox::NetworkAllowRule {
                 host,
                 port,
                 path_prefix: None,
@@ -292,7 +292,7 @@ mod tests {
             .expect("native backend exposes a digest");
         let new_digest = sandbox
             .apply_network_grant(
-                a3s_sandbox::NetworkGrant::new("api.example.com", Some(443)).unwrap(),
+                aster_cmd_sandbox::NetworkGrant::new("api.example.com", Some(443)).unwrap(),
                 &base,
             )
             .expect("grant must apply on the deny-all baseline");
@@ -302,7 +302,7 @@ mod tests {
         // Stale lineage refuses: the digest moved since the approval.
         let error = sandbox
             .apply_network_grant(
-                a3s_sandbox::NetworkGrant::new("other.example.com", Some(443)).unwrap(),
+                aster_cmd_sandbox::NetworkGrant::new("other.example.com", Some(443)).unwrap(),
                 &base,
             )
             .expect_err("stale digest must refuse");

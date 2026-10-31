@@ -5,8 +5,8 @@ use crate::durable_memory::{DurableMemoryRecallPolicy, DurableMemorySession};
 use crate::host_env::{FixedClock, HostEnv, SequentialIdGenerator};
 use crate::llm::{LlmClient, LlmResponse, Message, StreamEvent, ToolDefinition};
 use crate::memory::{AgentMemory, MemoryConfig};
-use a3s_memory::repository::*;
-use a3s_memory::{FileMemoryStore, InMemoryStore, MemoryItem, MemoryStore, MemoryType};
+use aster_durable_memory::repository::*;
+use aster_durable_memory::{FileMemoryStore, InMemoryStore, MemoryItem, MemoryStore, MemoryType};
 use async_trait::async_trait;
 use chrono::{DateTime, TimeZone, Utc};
 use serde_json::{json, Value};
@@ -204,7 +204,7 @@ pub(super) fn expected_metadata(workspace: &Path, session: &str) -> HashMap<Stri
         ("reason", REASON.into()),
         ("workspace", workspace.display().to_string()),
         ("session_id", session.into()),
-        ("schema", "a3s.memory.durable.v1".into()),
+        ("schema", "aster.memory.durable.v1".into()),
     ]
     .into_iter()
     .map(|(k, v)| (k.into(), v))

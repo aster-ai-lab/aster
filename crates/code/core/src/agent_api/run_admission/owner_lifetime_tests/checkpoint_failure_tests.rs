@@ -249,7 +249,7 @@ async fn scenario(file: bool, streaming: bool, returned: ExportReturn, io_fault:
                     .with_planning_mode(crate::PlanningMode::Disabled)
                     .with_auto_delegation_enabled(false)
                     .with_manual_delegation_enabled(false)
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_session_store(store.clone())
                     .with_auto_save(true)
                     .with_session_checkpoint_export_sink(export.clone())
@@ -382,13 +382,13 @@ async fn scenario(file: bool, streaming: bool, returned: ExportReturn, io_fault:
     .unwrap();
     let tool: Vec<_> = facts.iter().filter(|f| f.kind == "tool.result").collect();
     assert_eq!(tool.len(), 1);
-    let denied: a3s_effect::ToolExecutionResultV1 =
+    let denied: aster_effect::ToolExecutionResultV1 =
         serde_json::from_value(tool[0].payload["receipt"].clone()).unwrap();
     denied.validate().unwrap();
-    assert_eq!(denied.outcome, a3s_effect::ToolExecutionOutcome::Denied);
+    assert_eq!(denied.outcome, aster_effect::ToolExecutionOutcome::Denied);
     assert_eq!(
         denied.effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     assert!(denied.effects.changes.is_empty());
     assert_eq!(denied.identity.admission.as_ref().unwrap().run_id, run.id());

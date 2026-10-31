@@ -204,7 +204,7 @@ winget install --id zig.zig --exact --version 0.16.0
 
 ```powershell
 # Clone the revision under test
-git clone https://github.com/A3S-Lab/libkrun.git
+git clone https://github.com/aster-ai-lab/libkrun.git
 cd libkrun
 
 # Build the real, stripped Linux init payload required by the build
@@ -269,10 +269,10 @@ Register a runner on a Hyper-V capable Windows machine:
 
 ```powershell
 # Generate registration token
-gh api -X POST repos/A3S-Lab/libkrun/actions/runners/registration-token --jq '.token'
+gh api -X POST repos/aster-ai-lab/libkrun/actions/runners/registration-token --jq '.token'
 
 # Configure the runner (on the Windows machine)
-./config.cmd --url https://github.com/A3S-Lab/libkrun --token <TOKEN> \
+./config.cmd --url https://github.com/aster-ai-lab/libkrun --token <TOKEN> \
   --labels self-hosted,windows,hyperv
 ```
 

@@ -276,7 +276,7 @@ pub(super) fn attachments_from_user_payload(payload: &serde_json::Value) -> Vec<
 /// compaction. `kept` lines are already in the scheduler transcript and are
 /// not paired with these facts.
 pub(super) fn user_attachment_plan(
-    facts: &[a3s_effect::Fact],
+    facts: &[aster_effect::Fact],
 ) -> (usize, std::collections::VecDeque<Vec<Attachment>>) {
     let start = facts
         .iter()
@@ -394,7 +394,7 @@ pub(super) fn recorded_tool_calls(
 }
 
 pub(super) fn recorded_tool_calls_in(
-    facts: Vec<a3s_effect::Fact>,
+    facts: Vec<aster_effect::Fact>,
 ) -> Result<Vec<RecordedCall>, ActorError> {
     let mut pending = std::collections::VecDeque::new();
     let mut completed: Vec<(RecordedCall, String)> = Vec::new();
@@ -430,7 +430,7 @@ pub(super) fn recorded_tool_calls_in(
                 .payload
                 .get("receipt")
                 .map(|receipt| {
-                    serde_json::from_value::<a3s_effect::ToolExecutionResultV1>(receipt.clone())
+                    serde_json::from_value::<aster_effect::ToolExecutionResultV1>(receipt.clone())
                         .map_err(|error| {
                             ActorError::Schema(format!("invalid original tool receipt: {error}"))
                         })
@@ -548,7 +548,7 @@ pub(super) fn workspace_boundary_error(message: &str) -> bool {
 }
 
 pub(super) fn repeat_note_prefix(name: &str) -> String {
-    format!("\n\n[a3s host: `{name}` returned byte-identical output for identical arguments")
+    format!("\n\n[aster host: `{name}` returned byte-identical output for identical arguments")
 }
 
 /// Mechanical feedback when a call repeats the name, arguments and output of the
@@ -561,11 +561,11 @@ pub(super) fn repeated_result_note(
     output: &str,
 ) -> Option<String> {
     let call = crate::content_digest::digest_bytes(
-        "a3s.code.tool-repeat.call.v1",
+        "aster.code.tool-repeat.call.v1",
         format!("{name}\n{args}").as_bytes(),
     );
     let result =
-        crate::content_digest::digest_bytes("a3s.code.tool-repeat.result.v1", output.as_bytes());
+        crate::content_digest::digest_bytes("aster.code.tool-repeat.result.v1", output.as_bytes());
     let mut repeats = repeats
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
@@ -595,7 +595,7 @@ pub(super) fn visible_tool_output(
     }
 }
 
-pub(super) async fn emit_tool_request_bound(tools: &ExecutorTools, call: &a3s_effect::ToolCall) {
+pub(super) async fn emit_tool_request_bound(tools: &ExecutorTools, call: &aster_effect::ToolCall) {
     let Ok(snapshot) = crate::harness_evidence::ToolRequestSnapshotV1::capture(
         &call.id,
         &call.name,

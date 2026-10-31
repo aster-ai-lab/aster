@@ -74,7 +74,7 @@ export class DocxRunFontsPatchCollector {
     if (existing) return existing;
     let marker = '';
     do {
-      marker = `A3SOfficeRunFonts${String(this.nextMarker).padStart(8, '0')}`;
+      marker = `AsterOfficeRunFonts${String(this.nextMarker).padStart(8, '0')}`;
       this.nextMarker += 1;
     } while (
       this.occupied.includes(marker) ||

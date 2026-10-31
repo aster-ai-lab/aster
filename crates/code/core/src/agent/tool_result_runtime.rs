@@ -207,7 +207,7 @@ mod tests {
         let evidence = result
             .metadata
             .as_ref()
-            .and_then(|metadata| metadata.get("a3s_tool_result_evidence"))
+            .and_then(|metadata| metadata.get("aster_tool_result_evidence"))
             .expect("context evidence");
         assert_eq!(
             evidence["schema"],

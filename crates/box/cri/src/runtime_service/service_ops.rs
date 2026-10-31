@@ -94,7 +94,7 @@ fn unmount_submounts_under(_root: &std::path::Path) -> Result<(), String> {
 impl BoxRuntimeService {
     pub(super) async fn connect_sandbox_network(
         &self,
-        box_config: &a3s_box_core::config::BoxConfig,
+        box_config: &aster_box_core::config::BoxConfig,
         sandbox_id: &str,
         pod_name: &str,
     ) -> Result<Option<SandboxNetworkAllocation>, Status> {
@@ -159,7 +159,7 @@ impl BoxRuntimeService {
             )));
         };
 
-        let image = a3s_box_runtime::OciImage::from_path(&stored.path)
+        let image = aster_box_runtime::OciImage::from_path(&stored.path)
             .map_err(|e| Status::failed_precondition(format!("Invalid stored image: {e}")))?;
         Ok(Some(ResolvedContainerImage {
             digest: stored.digest,
@@ -441,7 +441,7 @@ impl BoxRuntimeService {
 
     pub(super) async fn acquire_vm_with_box_id(
         &self,
-        box_config: a3s_box_core::config::BoxConfig,
+        box_config: aster_box_core::config::BoxConfig,
         box_id: String,
     ) -> Result<VmManager, Status> {
         self.acquire_vm_inner(box_config, Some(box_id)).await
@@ -562,9 +562,9 @@ impl BoxRuntimeService {
     /// become CRI `SandboxState::Ready` (#428).
     async fn require_authenticated_ready_for_sandbox(vm: &VmManager) -> Result<(), Status> {
         match vm.state().await {
-            a3s_box_runtime::BoxState::Ready
-            | a3s_box_runtime::BoxState::Busy
-            | a3s_box_runtime::BoxState::Compacting => Ok(()),
+            aster_box_runtime::BoxState::Ready
+            | aster_box_runtime::BoxState::Busy
+            | aster_box_runtime::BoxState::Compacting => Ok(()),
             other => Err(Status::failed_precondition(format!(
                 "sandbox VM is not Ready after acquire (state={other:?}); exec heartbeat did not authenticate"
             ))),
@@ -573,7 +573,7 @@ impl BoxRuntimeService {
 
     pub(super) async fn acquire_vm_inner(
         &self,
-        box_config: a3s_box_core::config::BoxConfig,
+        box_config: aster_box_core::config::BoxConfig,
         box_id: Option<String>,
     ) -> Result<VmManager, Status> {
         if let Some(ref pool) = self.warm_pool {
@@ -656,7 +656,7 @@ impl BoxRuntimeService {
                     "Failed to destroy soft-Created sandbox VM after Ready gate refusal"
                 );
                 #[cfg(target_os = "linux")]
-                a3s_box_runtime::vm::reap::reap_orphaned_box(&box_id);
+                aster_box_runtime::vm::reap::reap_orphaned_box(&box_id);
             }
             return Err(status);
         }
@@ -679,14 +679,14 @@ impl BoxRuntimeService {
             Some(timeout_ms) => {
                 if let Err(error) = vm.destroy_with_timeout(timeout_ms).await {
                     #[cfg(target_os = "linux")]
-                    a3s_box_runtime::vm::reap::reap_orphaned_box(&box_id);
+                    aster_box_runtime::vm::reap::reap_orphaned_box(&box_id);
                     return Err(box_error_to_status(error));
                 }
             }
             None => {
                 if let Err(error) = vm.destroy().await {
                     #[cfg(target_os = "linux")]
-                    a3s_box_runtime::vm::reap::reap_orphaned_box(&box_id);
+                    aster_box_runtime::vm::reap::reap_orphaned_box(&box_id);
                     return Err(box_error_to_status(error));
                 }
             }
@@ -705,19 +705,19 @@ mod cleanup_tests {
         // /proc/self/mountinfo lines; field index 4 is the mount point.
         let mountinfo = "\
 24 30 0:22 / /proc rw shared:5 - proc proc rw
-60 30 0:46 / /root/.a3s/images/cri-container-rootfs/sb/ctr/rootfs/data rw - ext4 /dev/sda1 rw
-61 30 0:47 / /root/.a3s/images/cri-container-rootfs/sb/ctr/rootfs/data/deep rw - ext4 /dev/sda1 rw
-62 30 0:48 / /root/.a3s/images/cri-container-rootfs/other/x rw - ext4 /dev/sda1 rw
+60 30 0:46 / /root/.aster/images/cri-container-rootfs/sb/ctr/rootfs/data rw - ext4 /dev/sda1 rw
+61 30 0:47 / /root/.aster/images/cri-container-rootfs/sb/ctr/rootfs/data/deep rw - ext4 /dev/sda1 rw
+62 30 0:48 / /root/.aster/images/cri-container-rootfs/other/x rw - ext4 /dev/sda1 rw
 ";
         let got = submounts_under(
             mountinfo,
-            "/root/.a3s/images/cri-container-rootfs/sb/ctr/rootfs",
+            "/root/.aster/images/cri-container-rootfs/sb/ctr/rootfs",
         );
         assert_eq!(
             got,
             vec![
-                "/root/.a3s/images/cri-container-rootfs/sb/ctr/rootfs/data/deep".to_string(),
-                "/root/.a3s/images/cri-container-rootfs/sb/ctr/rootfs/data".to_string(),
+                "/root/.aster/images/cri-container-rootfs/sb/ctr/rootfs/data/deep".to_string(),
+                "/root/.aster/images/cri-container-rootfs/sb/ctr/rootfs/data".to_string(),
             ]
         );
     }

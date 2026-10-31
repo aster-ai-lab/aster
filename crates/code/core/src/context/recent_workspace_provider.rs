@@ -14,7 +14,7 @@ const MAX_DIRECTORY_CANDIDATES: usize = 256;
 const MAX_NAVIGATION_BYTES: usize = 8 * 1024;
 const MAX_NAVIGATION_TOKENS: usize = 1000;
 const PROVIDER: &str = "recent_workspace_files";
-const SOURCE: &str = "a3s://workspace/recent-files";
+const SOURCE: &str = "aster://workspace/recent-files";
 
 /// Hosts explicitly register this provider with their authorized manifest.
 /// It shares the original snapshot and never activates discovery or reads files.

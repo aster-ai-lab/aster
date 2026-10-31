@@ -17,7 +17,7 @@ async fn fixture() -> (Arc<InMemoryRunStore>, ExecutionTargetV1, ArtifactStore) 
             args: None,
             output: "secret output".to_string(),
             exit_code: 0,
-            metadata: Some(serde_json::json!({"artifact_uri": "a3s://artifact/1"})),
+            metadata: Some(serde_json::json!({"artifact_uri": "aster://artifact/1"})),
             error_kind: None,
         },
     )
@@ -26,7 +26,7 @@ async fn fixture() -> (Arc<InMemoryRunStore>, ExecutionTargetV1, ArtifactStore) 
     let artifacts = ArtifactStore::new();
     artifacts.put(ToolArtifact {
         artifact_id: "artifact-1".to_string(),
-        artifact_uri: "a3s://artifact/1".to_string(),
+        artifact_uri: "aster://artifact/1".to_string(),
         tool_name: "read".to_string(),
         content: "artifact content".to_string(),
         original_bytes: 16,
@@ -43,7 +43,7 @@ async fn fixture() -> (Arc<InMemoryRunStore>, ExecutionTargetV1, ArtifactStore) 
 async fn artifact_projection_is_canonical_even_when_store_insertion_is_not() {
     let runs = Arc::new(InMemoryRunStore::new());
     let run = runs.create_run("session-artifacts", "prompt").await;
-    for (uri, content) in [("a3s://artifact/z", "z"), ("a3s://artifact/a", "a")] {
+    for (uri, content) in [("aster://artifact/z", "z"), ("aster://artifact/a", "a")] {
         runs.record_event(
             &run.id,
             AgentEvent::ToolEnd {
@@ -62,8 +62,8 @@ async fn artifact_projection_is_canonical_even_when_store_insertion_is_not() {
     // Deliberately insert in reverse lexical order. The evidence contract is
     // URI sorted regardless of the backing store's insertion order.
     for (uri, content) in [
-        ("a3s://artifact/z", "z-content"),
-        ("a3s://artifact/a", "a-content"),
+        ("aster://artifact/z", "z-content"),
+        ("aster://artifact/a", "a-content"),
     ] {
         artifacts.put(ToolArtifact {
             artifact_id: uri.to_string(),
@@ -86,7 +86,7 @@ async fn artifact_projection_is_canonical_even_when_store_insertion_is_not() {
             .iter()
             .map(|artifact| artifact.artifact_uri.as_str())
             .collect::<Vec<_>>(),
-        vec!["a3s://artifact/a", "a3s://artifact/z"]
+        vec!["aster://artifact/a", "aster://artifact/z"]
     );
     snapshot.validate().expect("canonical snapshot");
 }
@@ -249,7 +249,7 @@ async fn event_metadata_binding_is_checked_even_when_digest_is_recomputed() {
     snapshot.events[0].event.metadata.as_mut().unwrap()["run_id"] =
         Value::String("another-run".into());
     snapshot.events[0].payload_digest = digest_bytes(
-        "a3s.code.evidence.event-payload.v1",
+        "aster.code.evidence.event-payload.v1",
         &serde_json::to_vec(&snapshot.events[0].event).unwrap(),
     );
     snapshot.snapshot_digest = snapshot.expected_digest().unwrap();
@@ -278,7 +278,7 @@ async fn recomputed_event_digest_cannot_break_fact_payload_binding() {
     snapshot.events[0].event.payload["output"] = Value::String("forged".into());
     let encoded = serde_json::to_vec(&snapshot.events[0].event).unwrap();
     snapshot.events[0].payload_digest =
-        digest_bytes("a3s.code.evidence.event-payload.v1", &encoded);
+        digest_bytes("aster.code.evidence.event-payload.v1", &encoded);
     snapshot.events[0].payload_bytes = encoded.len() as u64;
     snapshot.snapshot_digest = snapshot.expected_digest().unwrap();
     let validation = snapshot.validate();

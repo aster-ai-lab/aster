@@ -1,5 +1,5 @@
-use a3s_use_core::UseResult;
-use a3s_use_extension::{ExtensionRegistry, ExtensionRegistrySnapshot, InstalledExtension};
+use aster_use_core::UseResult;
+use aster_use_extension::{ExtensionRegistry, ExtensionRegistrySnapshot, InstalledExtension};
 use std::time::Duration;
 
 pub async fn list() -> UseResult<Vec<InstalledExtension>> {

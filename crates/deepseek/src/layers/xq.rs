@@ -3,7 +3,7 @@
 //! b3452666e07a6374d06bb8c2185dffa271e8f65f, MIT notice retained at
 //! licenses/Xolotl-MIT.txt. Components do not register a complete model.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

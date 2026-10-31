@@ -1,6 +1,6 @@
 //! Filesystem mount management for virtio-fs
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use std::path::{Path, PathBuf};
 
 /// Mount point configuration
@@ -42,7 +42,7 @@ impl FsManager {
         });
     }
 
-    /// Setup default mounts for A3S Box
+    /// Setup default mounts for Aster Box
     pub fn setup_default_mounts(
         &mut self,
         workspace: impl AsRef<Path>,
@@ -97,7 +97,7 @@ impl Default for FsManager {
 pub async fn ensure_cache_dir() -> Result<PathBuf> {
     let cache_dir = dirs::cache_dir()
         .ok_or_else(|| BoxError::ConfigError("Cannot determine cache directory".to_string()))?
-        .join("a3s-box");
+        .join("aster-box");
 
     tokio::fs::create_dir_all(&cache_dir).await?;
 
@@ -130,7 +130,7 @@ mod dirs {
 
 /// Remove virtio-fs file-mount staging left by the shim.
 ///
-/// The shim writes `$TMPDIR/a3s-fs-mount-<box_id>-<tag>` (and older callers
+/// The shim writes `$TMPDIR/aster-fs-mount-<box_id>-<tag>` (and older callers
 /// also used the unsuffixed directory). Cleanup must match those identities.
 /// A directory listing or delete error fails closed so remove cannot invent a
 /// clean host while staging remains. Absent directories are success.
@@ -149,8 +149,8 @@ pub(crate) fn remove_file_mount_staging_in(temp_dir: &Path, box_id: &str) -> Res
         )));
     }
 
-    let exact = format!("a3s-fs-mount-{box_id}");
-    let prefix = format!("a3s-fs-mount-{box_id}-");
+    let exact = format!("aster-fs-mount-{box_id}");
+    let prefix = format!("aster-fs-mount-{box_id}-");
     let entries = match std::fs::read_dir(temp_dir) {
         Ok(entries) => entries,
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(()),
@@ -289,18 +289,18 @@ mod tests {
     async fn test_ensure_cache_dir() {
         let dir = ensure_cache_dir().await.unwrap();
         assert!(dir.exists());
-        assert!(dir.to_string_lossy().contains("a3s-box"));
+        assert!(dir.to_string_lossy().contains("aster-box"));
     }
 
     #[test]
     fn file_mount_staging_removes_tagged_dirs_and_keeps_siblings() {
         let temp = tempfile::tempdir().unwrap();
         let box_id = "11111111-1111-4111-8111-111111111111";
-        let tagged = temp.path().join(format!("a3s-fs-mount-{box_id}-app"));
-        let legacy = temp.path().join(format!("a3s-fs-mount-{box_id}"));
+        let tagged = temp.path().join(format!("aster-fs-mount-{box_id}-app"));
+        let legacy = temp.path().join(format!("aster-fs-mount-{box_id}"));
         let sibling = temp
             .path()
-            .join("a3s-fs-mount-22222222-2222-4222-8222-222222222222-app");
+            .join("aster-fs-mount-22222222-2222-4222-8222-222222222222-app");
         std::fs::create_dir_all(&tagged).unwrap();
         std::fs::create_dir_all(&legacy).unwrap();
         std::fs::create_dir_all(&sibling).unwrap();

@@ -5,7 +5,7 @@
 //! trait; [`super::redis_index`] composes these pieces into the CAS contract.
 
 use super::connection::RedisLease;
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     VectorBudgetResource, VectorIndexDescriptor, VectorIndexError, VectorIndexStatus, VectorMetric,
     VectorNormalization, VectorRecord, VectorResult, VectorRevision,
 };
@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 
-const HISTORY_DIGEST_DOMAIN: &str = "a3s.code.dm-prod1.redis-vector-index-history.v1";
+const HISTORY_DIGEST_DOMAIN: &str = "aster.code.dm-prod1.redis-vector-index-history.v1";
 /// Bound on optimistic retries before a caller sees a conflict as an error.
 pub(crate) const MAX_CAS_ATTEMPTS: usize = 64;
 
@@ -493,7 +493,7 @@ pub(crate) async fn delete_keyspace(
     command.query_async(connection).await
 }
 
-const FATAL_PREFIX: &str = "a3s-dm-prod1-fatal: ";
+const FATAL_PREFIX: &str = "aster-dm-prod1-fatal: ";
 
 /// Smuggle a typed [`VectorIndexError`] through `redis`'s error channel so the
 /// retry wrapper can distinguish contract failures from connection loss.

@@ -1,7 +1,7 @@
 //! Cache backend abstraction.
 //!
 //! Decouples rootfs and layer caching from the filesystem-based LRU
-//! implementation in `a3s-box-runtime`. Implementations can use any
+//! implementation in `aster-box-runtime`. Implementations can use any
 //! storage backend: local filesystem, shared NFS, Redis, content-addressable
 //! store, etc.
 //!

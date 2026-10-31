@@ -1,6 +1,6 @@
-# a3s-vec Test Case Plan
+# aster-vec Test Case Plan
 
-First-principles catalog for comprehensive, deep testing of `a3s-vec`.
+First-principles catalog for comprehensive, deep testing of `aster-vec`.
 This document is the planning source of truth for new cases. It does not
 replace executable gates in CI; every P0 case below must eventually land as
 code with an explicit oracle or typed failure assertion.

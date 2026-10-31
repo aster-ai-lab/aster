@@ -12,7 +12,7 @@ use super::validation::{
 use super::{
     AgentReleaseError, AgentReleaseField, AGENT_RELEASE_CONTRACT_V1, AGENT_RELEASE_LIMITS,
 };
-use a3s_acl::{
+use aster_acl::{
     canonical_bytes_with_schema, canonical_digest_with_schema, parse_with_limits,
     validate_document_with_limits, Value,
 };
@@ -38,7 +38,7 @@ pub struct AgentReleaseManifest {
 }
 
 impl AgentReleaseManifest {
-    /// Parse, admit, and canonicalize one untrusted `.a3s/asset.acl` document.
+    /// Parse, admit, and canonicalize one untrusted `.aster/asset.acl` document.
     pub fn parse(source: &str) -> Result<Self, AgentReleaseError> {
         let document = parse_with_limits(source, AGENT_RELEASE_LIMITS)?;
         let schema = release_schema();

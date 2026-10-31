@@ -4,14 +4,14 @@ use std::io::ErrorKind;
 use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use super::{last_os_error, mount_raw, remount_readonly, rootfs_error, verify_readonly};
 
 const MASK_DIRECTORY_DATA: &[u8] = b"nr_blocks=1,nr_inodes=2,mode=000\0";
 const MASK_SOURCE_DATA: &[u8] = b"size=4k,nr_inodes=2,mode=0700\0";
 const MASK_SOURCE_FILE: &str = "source";
-const MASK_SOURCE_PREFIX: &str = ".a3s-oci-mask-source-";
+const MASK_SOURCE_PREFIX: &str = ".aster-oci-mask-source-";
 
 pub(super) struct MaskSource {
     file: File,

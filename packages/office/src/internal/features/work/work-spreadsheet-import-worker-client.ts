@@ -27,7 +27,7 @@ export function readSpreadsheetWorkbookInWorker(
   try {
     worker = new Worker(
       new URL('./work-spreadsheet-import.worker.js', import.meta.url),
-      { name: 'a3s-office-spreadsheet-import' },
+      { name: 'aster-office-spreadsheet-import' },
     );
   } catch {
     return Promise.resolve(null);
@@ -75,7 +75,7 @@ export function readSpreadsheetWorkbookInWorker(
         workbook = { ...response.workbook, Sheets: {} } as WorkBook;
         workbookReceivedAt = spreadsheetImportNow();
         recordSpreadsheetImportMeasure(
-          'a3s-office.spreadsheet.worker-ready',
+          'aster-office.spreadsheet.worker-ready',
           startedAt,
           workbookReceivedAt,
         );
@@ -133,14 +133,14 @@ export function readSpreadsheetWorkbookInWorker(
         const finishedAt = spreadsheetImportNow();
         if (workbookReceivedAt !== null) {
           recordSpreadsheetImportMeasure(
-            'a3s-office.spreadsheet.worker-stream',
+            'aster-office.spreadsheet.worker-stream',
             workbookReceivedAt,
             finishedAt,
             { rowChunkCount, sparseCellChunkCount },
           );
         }
         recordSpreadsheetImportMeasure(
-          'a3s-office.spreadsheet.worker-total',
+          'aster-office.spreadsheet.worker-total',
           startedAt,
           finishedAt,
           { rowChunkCount, sparseCellChunkCount },

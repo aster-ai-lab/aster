@@ -11,7 +11,7 @@ import {
   FieldSeparator,
   FieldSet,
   Input
-} from '@a3s-lab/ui'
+} from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Field> = {
   title: 'Components/Primitives/Field',

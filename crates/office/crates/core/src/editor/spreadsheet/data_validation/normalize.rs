@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::super::editor_error;
 use crate::editor::{NativeSpreadsheetDataValidation, NativeSpreadsheetDataValidationType};
@@ -87,7 +87,7 @@ fn looks_like_list_formula(value: &str) -> bool {
     CellRange::parse(&reference).is_ok()
 }
 
-fn invalid_list_formula() -> a3s_use_core::UseError {
+fn invalid_list_formula() -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_validation_list_invalid",
         "List validation values cannot contain embedded or unmatched double quotes; use a cell range for those values.",
@@ -220,7 +220,7 @@ fn excel_time_fraction(value: &str) -> UseResult<String> {
     Ok(result)
 }
 
-fn invalid_time(value: &str) -> a3s_use_core::UseError {
+fn invalid_time(value: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_validation_time_invalid",
         format!("Data-validation time '{value}' must be HH:MM or HH:MM:SS from 00:00:00 through 23:59:59."),

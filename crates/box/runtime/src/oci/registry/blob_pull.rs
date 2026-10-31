@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use oci_distribution::manifest::OciDescriptor;
 use oci_distribution::{Client, Reference};
 use tokio::io::{AsyncReadExt, AsyncSeekExt, AsyncWriteExt};

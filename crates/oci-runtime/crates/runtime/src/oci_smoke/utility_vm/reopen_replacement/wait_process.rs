@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
+use aster_oci_sdk::{
     ContainerTarget, CreateRequest, ExecRequest, OperationId, SignalProcessRequest, StartRequest,
     WaitProcessRequest,
 };
@@ -35,10 +35,10 @@ struct Qualification {
 struct FirstOwnerEvidence {
     create_identity: (OperationId, ContainerTarget),
     start_identity: (OperationId, ContainerTarget),
-    exec_record: a3s_oci_sdk::ProcessRecord,
+    exec_record: aster_oci_sdk::ProcessRecord,
     exec_identity: DriverExecRequest,
     signal_process_identity: DriverSignalProcessRequest,
-    wait_process_identity: (a3s_oci_sdk::ProcessTarget, Option<u64>),
+    wait_process_identity: (aster_oci_sdk::ProcessTarget, Option<u64>),
 }
 
 mod entry;

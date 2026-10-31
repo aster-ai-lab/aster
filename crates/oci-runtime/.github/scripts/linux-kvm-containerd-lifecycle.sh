@@ -6,7 +6,7 @@ set -Eeuo pipefail
 # Observation-only: does not promote readiness or close fresh-host/AArch64 /
 # the full Native Linux restart-boundary matrix.
 
-: "${A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
+: "${ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
 
 if [[ "$(uname -s)" != "Linux" ]]; then
   printf 'Linux KVM containerd lifecycle requires a Linux host\n' >&2
@@ -26,8 +26,8 @@ done
 
 temporary_root="${RUNNER_TEMP:-/tmp}"
 test -d "$temporary_root"
-work="$(mktemp -d "$temporary_root/a3s-oci-kvm-containerd.XXXXXX")"
-report_path="${A3S_OCI_LINUX_KVM_CONTAINERD_REPORT:-$work/report.json}"
+work="$(mktemp -d "$temporary_root/aster-oci-kvm-containerd.XXXXXX")"
+report_path="${ASTER_OCI_LINUX_KVM_CONTAINERD_REPORT:-$work/report.json}"
 if [[ -e "$report_path" || -L "$report_path" ]]; then
   printf 'refusing to overwrite report: %s\n' "$report_path" >&2
   exit 1
@@ -48,12 +48,12 @@ cleanup() {
     rm -f "/etc/systemd/system/${unit_name}.service"
     systemctl daemon-reload 2>/dev/null || true
   fi
-  if [[ "$status" -ne 0 && "${A3S_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
+  if [[ "$status" -ne 0 && "${ASTER_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
     printf 'preserving failed work directory: %s\n' "$work" >&2
     return 0
   fi
   case "$work" in
-    "$temporary_root"/a3s-oci-kvm-containerd.*)
+    "$temporary_root"/aster-oci-kvm-containerd.*)
       rm -rf -- "$work"
       ;;
   esac
@@ -67,8 +67,8 @@ target_dir="${CARGO_TARGET_DIR:-target}"
 if [[ "$target_dir" != /* ]]; then
   target_dir="$PWD/$target_dir"
 fi
-profile="${A3S_OCI_BUILD_PROFILE:-debug}"
-build_args=(build -p a3s-oci-cli -p a3s-oci-krun -p a3s-oci-containerd-shim)
+profile="${ASTER_OCI_BUILD_PROFILE:-debug}"
+build_args=(build -p aster-oci-cli -p aster-oci-krun -p aster-oci-containerd-shim)
 case "$profile" in
   debug) ;;
   release) build_args+=(--release) ;;
@@ -77,39 +77,39 @@ esac
 cargo "${build_args[@]}"
 case "$profile" in
   release)
-    cargo test -p a3s-oci-containerd-shim --test containerd_runtime_v2 --release --no-run
+    cargo test -p aster-oci-containerd-shim --test containerd_runtime_v2 --release --no-run
     ;;
   debug)
-    cargo test -p a3s-oci-containerd-shim --test containerd_runtime_v2 --no-run
+    cargo test -p aster-oci-containerd-shim --test containerd_runtime_v2 --no-run
     ;;
   *)
-    cargo test -p a3s-oci-containerd-shim --test containerd_runtime_v2 --profile "$profile" --no-run
+    cargo test -p aster-oci-containerd-shim --test containerd_runtime_v2 --profile "$profile" --no-run
     ;;
 esac
 
-cli="$target_dir/$profile/a3s-oci"
-krun_shim="$target_dir/$profile/a3s-oci-krun-shim"
-krun_runtime="$target_dir/$profile/a3s-oci-krun-runtime"
+cli="$target_dir/$profile/aster-oci"
+krun_shim="$target_dir/$profile/aster-oci-krun-shim"
+krun_runtime="$target_dir/$profile/aster-oci-krun-runtime"
 ctrd_shim="$(find "$target_dir/$profile/deps" -maxdepth 1 -type f -name 'containerd_runtime_v2-*' ! -name '*.d' | sort | tail -n 1)"
-shim_bin="$target_dir/$profile/containerd-shim-a3s-oci-v2"
+shim_bin="$target_dir/$profile/containerd-shim-aster-oci-v2"
 test -x "$cli"
 test -x "$krun_shim"
 test -d "$krun_runtime"
 test -x "$shim_bin"
 test -n "$ctrd_shim" && test -x "$ctrd_shim"
 
-cp -p "$cli" "$work/bin/a3s-oci"
-cp -p "$krun_shim" "$work/bin/a3s-oci-krun-shim"
-cp -a "$krun_runtime" "$work/bin/a3s-oci-krun-runtime"
-cp -p "$shim_bin" "$work/path/containerd-shim-a3s-oci-v2"
-chmod 0700 "$work/bin/a3s-oci" "$work/bin/a3s-oci-krun-shim" "$work/path"/*
-export LD_LIBRARY_PATH="$work/bin/a3s-oci-krun-runtime${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+cp -p "$cli" "$work/bin/aster-oci"
+cp -p "$krun_shim" "$work/bin/aster-oci-krun-shim"
+cp -a "$krun_runtime" "$work/bin/aster-oci-krun-runtime"
+cp -p "$shim_bin" "$work/path/containerd-shim-aster-oci-v2"
+chmod 0700 "$work/bin/aster-oci" "$work/bin/aster-oci-krun-shim" "$work/path"/*
+export LD_LIBRARY_PATH="$work/bin/aster-oci-krun-runtime${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 # A stale absolute binary at the filesystem root hijacks LookPath when PATH
 # contains an empty component or cwd is /. Never let that shadow the gate shim.
-if [[ -e /containerd-shim-a3s-oci-v2 || -L /containerd-shim-a3s-oci-v2 ]]; then
-  printf 'removing hijacking shim at /containerd-shim-a3s-oci-v2\n' >&2
-  rm -f /containerd-shim-a3s-oci-v2
+if [[ -e /containerd-shim-aster-oci-v2 || -L /containerd-shim-aster-oci-v2 ]]; then
+  printf 'removing hijacking shim at /containerd-shim-aster-oci-v2\n' >&2
+  rm -f /containerd-shim-aster-oci-v2
 fi
 
 # Private containerd with KillMode=process (shim survives daemon restart).
@@ -129,22 +129,22 @@ state = "$ctrd_state"
 [plugins."io.containerd.grpc.v1.cri"]
   disable_tcp_service = true
 [plugins."io.containerd.shim.v1.manager"]
-  env = ["A3S_OCI_RUNTIME_ENDPOINT=$work/host/runtime.sock", "A3S_OCI_RUNTIME_ROOT=$work/host/runtime", "PATH=$shim_path_env"]
+  env = ["ASTER_OCI_RUNTIME_ENDPOINT=$work/host/runtime.sock", "ASTER_OCI_RUNTIME_ROOT=$work/host/runtime", "PATH=$shim_path_env"]
 EOF
 
-unit_name="a3s-oci-kvm-ctrd-$(basename "$work")"
+unit_name="aster-oci-kvm-ctrd-$(basename "$work")"
 cat >"/etc/systemd/system/${unit_name}.service" <<EOF
 [Unit]
-Description=A3S OCI private containerd for Linux KVM dedicated-vm qualification
+Description=Aster OCI private containerd for Linux KVM dedicated-vm qualification
 [Service]
 Type=notify
 ExecStart=/usr/bin/containerd --config $config
 KillMode=process
 Delegate=yes
 Environment=PATH=$shim_path_env
-Environment=A3S_OCI_RUNTIME_ENDPOINT=$work/host/runtime.sock
-Environment=A3S_OCI_RUNTIME_ROOT=$work/host/runtime
-Environment=LD_LIBRARY_PATH=$work/bin/a3s-oci-krun-runtime
+Environment=ASTER_OCI_RUNTIME_ENDPOINT=$work/host/runtime.sock
+Environment=ASTER_OCI_RUNTIME_ROOT=$work/host/runtime
+Environment=LD_LIBRARY_PATH=$work/bin/aster-oci-krun-runtime
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -163,26 +163,26 @@ grep -q '^KillMode=process$' "$work/unit.props"
 grep -q '^Transient=no$' "$work/unit.props"
 
 # Load busybox into the private daemon (pull, else import a local OCI archive).
-image_ref="${A3S_OCI_CONTAINERD_IMAGE:-docker.io/library/busybox:latest}"
-image_tar="${A3S_OCI_CONTAINERD_IMAGE_TAR:-}"
-if [[ -z "$image_tar" && -f /tmp/a3s-oci-image-cache/busybox-latest.tar ]]; then
-  image_tar=/tmp/a3s-oci-image-cache/busybox-latest.tar
+image_ref="${ASTER_OCI_CONTAINERD_IMAGE:-docker.io/library/busybox:latest}"
+image_tar="${ASTER_OCI_CONTAINERD_IMAGE_TAR:-}"
+if [[ -z "$image_tar" && -f /tmp/aster-oci-image-cache/busybox-latest.tar ]]; then
+  image_tar=/tmp/aster-oci-image-cache/busybox-latest.tar
 fi
 if ! ctr --address "$sock" images pull "$image_ref" >/dev/null 2>"$work/image-pull.err"; then
   if [[ -n "$image_tar" && -s "$image_tar" ]]; then
     ctr --address "$sock" images import "$image_tar" >/dev/null
   else
     cat "$work/image-pull.err" >&2 || true
-    printf 'failed to pull %s and no usable A3S_OCI_CONTAINERD_IMAGE_TAR\n' "$image_ref" >&2
+    printf 'failed to pull %s and no usable ASTER_OCI_CONTAINERD_IMAGE_TAR\n' "$image_ref" >&2
     exit 1
   fi
 fi
 
 # KVM Host Service (dedicated-vm only).
-nohup "$work/bin/a3s-oci" box-kvm-qualification-service \
+nohup "$work/bin/aster-oci" box-kvm-qualification-service \
   --root "$work/host" \
-  --shim "$work/bin/a3s-oci-krun-shim" \
-  --system-image-manifest "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
+  --shim "$work/bin/aster-oci-krun-shim" \
+  --system-image-manifest "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
   >"$work/host-service.log" 2>&1 &
 host_pid=$!
 echo "$host_pid" >"$work/host-service.pid"
@@ -201,24 +201,24 @@ test -S "$work/host/runtime.sock"
 
 started_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 set +e
-A3S_OCI_CONTAINERD_QUALIFY=1 \
-A3S_OCI_CONTAINERD_ALLOW_RESTART=1 \
-A3S_OCI_CONTAINERD_SOCKET="$sock" \
+ASTER_OCI_CONTAINERD_QUALIFY=1 \
+ASTER_OCI_CONTAINERD_ALLOW_RESTART=1 \
+ASTER_OCI_CONTAINERD_SOCKET="$sock" \
 CONTAINERD_ADDRESS="$sock" \
-A3S_OCI_CONTAINERD_TTRPC_ADDRESS="$ttrpc" \
-A3S_OCI_CONTAINERD_STATE_ROOT="$ctrd_state/io.containerd.runtime.v2.task" \
-A3S_OCI_RUNTIME_ENDPOINT="$work/host/runtime.sock" \
-A3S_OCI_CONTAINERD_SERVICE="$unit_name" \
-A3S_OCI_CONTAINERD_IMAGE=docker.io/library/busybox:latest \
-A3S_OCI_CONTAINERD_RUNTIME=io.containerd.a3s-oci.v2 \
+ASTER_OCI_CONTAINERD_TTRPC_ADDRESS="$ttrpc" \
+ASTER_OCI_CONTAINERD_STATE_ROOT="$ctrd_state/io.containerd.runtime.v2.task" \
+ASTER_OCI_RUNTIME_ENDPOINT="$work/host/runtime.sock" \
+ASTER_OCI_CONTAINERD_SERVICE="$unit_name" \
+ASTER_OCI_CONTAINERD_IMAGE=docker.io/library/busybox:latest \
+ASTER_OCI_CONTAINERD_RUNTIME=io.containerd.aster-oci.v2 \
 "$ctrd_shim" --ignored --exact real_containerd_linux_kvm_dedicated_vm_lifecycle --nocapture \
   >"$work/test.log" 2>&1
 status=$?
 set -e
 completed_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-manifest_sha256="$(sha256sum "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1)"
-source_commit="${A3S_QUALIFICATION_SOURCE_COMMIT:-}"
+manifest_sha256="$(sha256sum "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1)"
+source_commit="${ASTER_QUALIFICATION_SOURCE_COMMIT:-}"
 if [[ -z "$source_commit" ]]; then
   source_commit="$(
     git -c safe.directory="$PWD" rev-parse HEAD 2>/dev/null \
@@ -231,7 +231,7 @@ if [[ "$status" -eq 0 ]]; then
 fi
 
 jq -n \
-  --arg schema_version "a3s.oci.linux-kvm-containerd-lifecycle.v3" \
+  --arg schema_version "aster.oci.linux-kvm-containerd-lifecycle.v3" \
   --arg result "$result" \
   --argjson exit_status "$status" \
   --arg started_at "$started_at" \

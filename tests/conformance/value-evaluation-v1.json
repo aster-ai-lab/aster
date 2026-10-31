@@ -1,13 +1,13 @@
 {
-  "apiVersion": "a3s.dev/form-value-evaluation-conformance/v1",
+  "apiVersion": "aster.dev/form-value-evaluation-conformance/v1",
   "cases": [
     {
       "name": "computed-value-and-schema-error",
       "request": {
-        "apiVersion": "a3s.dev/form-core/evaluate-request/v1alpha1",
+        "apiVersion": "aster.dev/form-core/evaluate-request/v1alpha1",
         "formPlan": {
-          "apiVersion": "a3s.dev/form-plan/v1alpha1",
-          "schemaProfile": "a3s.dev/form-schema-profile/1",
+          "apiVersion": "aster.dev/form-plan/v1alpha1",
+          "schemaProfile": "aster.dev/form-schema-profile/1",
           "metadata": { "locale": "en-US" },
           "schema": {
             "type": "object",
@@ -43,8 +43,8 @@
         "options": { "includeValues": true }
       },
       "response": {
-        "apiVersion": "a3s.dev/form-core/evaluate-response/v1alpha1",
-        "compilerRevision": "a3s-form-core@0.1.0",
+        "apiVersion": "aster.dev/form-core/evaluate-response/v1alpha1",
+        "compilerRevision": "aster-form-core@0.1.0",
         "ok": false,
         "value": { "quantity": 2, "unitPrice": 4, "extra": true, "total": 8 },
         "trace": [
@@ -69,10 +69,10 @@
     {
       "name": "row-scoped-computation-and-failure-propagation",
       "request": {
-        "apiVersion": "a3s.dev/form-core/evaluate-request/v1alpha1",
+        "apiVersion": "aster.dev/form-core/evaluate-request/v1alpha1",
         "formPlan": {
-          "apiVersion": "a3s.dev/form-plan/v1alpha1",
-          "schemaProfile": "a3s.dev/form-schema-profile/1",
+          "apiVersion": "aster.dev/form-plan/v1alpha1",
+          "schemaProfile": "aster.dev/form-schema-profile/1",
           "metadata": { "locale": "zh-CN" },
           "schema": {
             "type": "object",
@@ -163,8 +163,8 @@
         "options": { "includeValues": true }
       },
       "response": {
-        "apiVersion": "a3s.dev/form-core/evaluate-response/v1alpha1",
-        "compilerRevision": "a3s-form-core@0.1.0",
+        "apiVersion": "aster.dev/form-core/evaluate-response/v1alpha1",
+        "compilerRevision": "aster-form-core@0.1.0",
         "ok": false,
         "value": {
           "lines": [
@@ -235,10 +235,10 @@
     {
       "name": "validation-rule-and-locale-override",
       "request": {
-        "apiVersion": "a3s.dev/form-core/evaluate-request/v1alpha1",
+        "apiVersion": "aster.dev/form-core/evaluate-request/v1alpha1",
         "formPlan": {
-          "apiVersion": "a3s.dev/form-plan/v1alpha1",
-          "schemaProfile": "a3s.dev/form-schema-profile/1",
+          "apiVersion": "aster.dev/form-plan/v1alpha1",
+          "schemaProfile": "aster.dev/form-schema-profile/1",
           "metadata": { "locale": "zh-CN" },
           "schema": {
             "type": "object",
@@ -280,7 +280,7 @@
         "options": {
           "locale": "en-US",
           "localeCatalog": {
-            "apiVersion": "a3s.dev/form-locale-catalog/v1",
+            "apiVersion": "aster.dev/form-locale-catalog/v1",
             "messages": {
               "validationRequired": "REQ",
               "validationFormat": "FMT {format}",
@@ -290,8 +290,8 @@
         }
       },
       "response": {
-        "apiVersion": "a3s.dev/form-core/evaluate-response/v1alpha1",
-        "compilerRevision": "a3s-form-core@0.1.0",
+        "apiVersion": "aster.dev/form-core/evaluate-response/v1alpha1",
+        "compilerRevision": "aster-form-core@0.1.0",
         "ok": false,
         "value": { "email": "bad", "age": 20 },
         "trace": [],
@@ -305,10 +305,10 @@
     {
       "name": "hidden-wizard-page-errors-are-filtered",
       "request": {
-        "apiVersion": "a3s.dev/form-core/evaluate-request/v1alpha1",
+        "apiVersion": "aster.dev/form-core/evaluate-request/v1alpha1",
         "formPlan": {
-          "apiVersion": "a3s.dev/form-plan/v1alpha1",
-          "schemaProfile": "a3s.dev/form-schema-profile/1",
+          "apiVersion": "aster.dev/form-plan/v1alpha1",
+          "schemaProfile": "aster.dev/form-schema-profile/1",
           "metadata": { "locale": "en-US" },
           "schema": {
             "type": "object",
@@ -418,8 +418,8 @@
         "value": { "kind": "personal", "personal": {}, "company": {} }
       },
       "response": {
-        "apiVersion": "a3s.dev/form-core/evaluate-response/v1alpha1",
-        "compilerRevision": "a3s-form-core@0.1.0",
+        "apiVersion": "aster.dev/form-core/evaluate-response/v1alpha1",
+        "compilerRevision": "aster-form-core@0.1.0",
         "ok": false,
         "value": { "kind": "personal", "personal": {}, "company": {} },
         "trace": [],
@@ -435,10 +435,10 @@
     {
       "name": "complete-expression-operator-coverage",
       "request": {
-        "apiVersion": "a3s.dev/form-core/evaluate-request/v1alpha1",
+        "apiVersion": "aster.dev/form-core/evaluate-request/v1alpha1",
         "formPlan": {
-          "apiVersion": "a3s.dev/form-plan/v1alpha1",
-          "schemaProfile": "a3s.dev/form-schema-profile/1",
+          "apiVersion": "aster.dev/form-plan/v1alpha1",
+          "schemaProfile": "aster.dev/form-schema-profile/1",
           "metadata": { "locale": "en-US" },
           "schema": { "type": "object" },
           "nodes": [
@@ -623,8 +623,8 @@
         }
       },
       "response": {
-        "apiVersion": "a3s.dev/form-core/evaluate-response/v1alpha1",
-        "compilerRevision": "a3s-form-core@0.1.0",
+        "apiVersion": "aster.dev/form-core/evaluate-response/v1alpha1",
+        "compilerRevision": "aster-form-core@0.1.0",
         "ok": true,
         "value": {
           "left": 10,

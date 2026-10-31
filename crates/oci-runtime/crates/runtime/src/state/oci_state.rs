@@ -1,6 +1,6 @@
-use a3s_oci_core::LifecycleState;
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, State, StateBuilder};
-use a3s_oci_sdk::{ContainerId, ErrorCode, OciBundle, Result, PAUSED_STATE_ANNOTATION};
+use aster_oci_core::LifecycleState;
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, State, StateBuilder};
+use aster_oci_sdk::{ContainerId, ErrorCode, OciBundle, Result, PAUSED_STATE_ANNOTATION};
 
 use super::filesystem::state_error;
 
@@ -131,8 +131,8 @@ pub(super) const fn container_state(state: LifecycleState) -> ContainerState {
 mod tests {
     use std::collections::HashMap;
 
-    use a3s_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
-    use a3s_oci_sdk::{ContainerId, OciBundle, OciSchemaValidator};
+    use aster_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
+    use aster_oci_sdk::{ContainerId, OciBundle, OciSchemaValidator};
 
     use super::{build_state, rebuild_paused_state, rebuild_state};
 
@@ -148,7 +148,7 @@ mod tests {
                 "\"process\":{\"user\":{\"uid\":0,\"gid\":0},",
                 "\"args\":[\"/bin/true\"],\"cwd\":\"/\"},",
                 "\"root\":{\"path\":\"rootfs\"},",
-                "\"annotations\":{\"dev.a3s.test\":\"retained\"}}"
+                "\"annotations\":{\"dev.aster.test\":\"retained\"}}"
             ),
         )
         .expect("valid bundle");
@@ -165,7 +165,7 @@ mod tests {
             created
                 .annotations()
                 .as_ref()
-                .and_then(|annotations| annotations.get("dev.a3s.test"))
+                .and_then(|annotations| annotations.get("dev.aster.test"))
                 .map(String::as_str),
             Some("retained")
         );
@@ -226,7 +226,7 @@ mod tests {
             .pid(42)
             .bundle("/bundle")
             .annotations(HashMap::from([(
-                "dev.a3s.test".to_string(),
+                "dev.aster.test".to_string(),
                 "retained".to_string(),
             )]))
             .build()
@@ -239,7 +239,7 @@ mod tests {
             resumed
                 .annotations()
                 .as_ref()
-                .and_then(|annotations| annotations.get("dev.a3s.test"))
+                .and_then(|annotations| annotations.get("dev.aster.test"))
                 .map(String::as_str),
             Some("retained")
         );

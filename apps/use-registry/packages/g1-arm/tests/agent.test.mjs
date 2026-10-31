@@ -336,7 +336,7 @@ function rawPost(port, path, body) {
 
 function command(runId, value, extra = {}) {
   return {
-    schema: 'a3s.code.agent.start.v1',
+    schema: 'aster.code.agent.start.v1',
     request_id: runId,
     identity: { session_id: 'session', run_id: runId },
     prompt: '选择下一步动作。',

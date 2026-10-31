@@ -1,4 +1,4 @@
-# Feature Specification: A3S OS 技术收敛执行（W0–W3）
+# Feature Specification: Aster OS 技术收敛执行（W0–W3）
 
 **Feature Branch**: `main`（未要求特性分支；按仓库默认直接落在 main）
 
@@ -11,7 +11,7 @@
 Phase 0 收口 + Phase 1 GA-2），即开发计划 W0–W3 波次。
 
 **Gate context**: 本史诗是 `apps/cloud/docs/convergence/plan.md`（Active,
-Phase 0→3）与根 `a3s-convergence-plan.html` 已批准决议（DP-1..DP-5，
+Phase 0→3）与根 `aster-convergence-plan.html` 已批准决议（DP-1..DP-5，
 2026-10-20）在 aster 侧的执行载体，服务其 Phase 0 出口与 GA-2 验收链。
 GA-2 是既有产品门（`apps/cloud/ROADMAP.md` W0/APP0 行、
 `ga2-workflow-application-checklist.md`）；本史诗自身不新增产品门。上游
@@ -144,12 +144,12 @@ live PostgreSQL。
 ### User Story 6 - `apps/runtime` 命名与注册收尾（Priority: P2）
 
 > **2026-10-21 证据修正**：改名已完成。`apps/runtime` 的包名是
-> `a3s-gateway-runtime`（`apps/runtime/Cargo.toml:2`）且已是根 workspace
-> 成员（根 `Cargo.toml` members）；`a3s-runtime` 现仅属于
+> `aster-gateway-runtime`（`apps/runtime/Cargo.toml:2`）且已是根 workspace
+> 成员（根 `Cargo.toml` members）；`aster-runtime` 现仅属于
 > `crates/runtime`（拷贝的 exec runtime）。原「撞名待改名」的前提不复存
 > 在，D-C 撤销。残余：registry-builder 仍未注册（依赖 pinned extension
 > 0.1.3 的决定）；`lib.rs` 文档注释已随本切片对齐包名；线上身份字符串
-> （health 的 `service: "a3s-runtime"`、user_agent）保留待消费方澄清。
+> （health 的 `service: "aster-runtime"`、user_agent）保留待消费方澄清。
 
 Gateway /v1 数据面二进制的命名一致性收尾：包名、模块文档、注册状态三
 者对齐；registry-builder 注册决定同批处理。
@@ -161,9 +161,9 @@ Gateway /v1 数据面二进制的命名一致性收尾：包名、模块文档�
 
 **Acceptance Scenarios**:
 
-1. **Given** 包名已唯一，**When** 校验，**Then** `a3s-gateway-runtime`
-   与 `a3s-runtime` 各自唯一可解析，无歧义。
-2. **Given** 后续引入新的内部 `a3s-*` 依赖，**When** 解析，**Then** 依赖
+1. **Given** 包名已唯一，**When** 校验，**Then** `aster-gateway-runtime`
+   与 `aster-runtime` 各自唯一可解析，无歧义。
+2. **Given** 后续引入新的内部 `aster-*` 依赖，**When** 解析，**Then** 依赖
    只指向本仓库路径；远端依赖出现即被 `tests/workspace_dependencies.py`
    拒绝。
 
@@ -217,7 +217,7 @@ G0 构建日志契约与 Box 的外联 issue（D-F 同渠道）、以及每次�
 > 切换到自有 fork」，替代 US-3 中 T014 的外发 issue 路径。T020-T022 已
 > 在 tasks.md Phase C+ 承载。
 
-libkrun（A3S-Lab 自有 Rust fork）的引导链故障转为 aster-ai-lab 自有
+libkrun（aster-ai-lab 自有 Rust fork）的引导链故障转为 aster-ai-lab 自有
 资产修复：fork、插桩（`KRUN_BOOT_ABORT` 早退具名）、Box 侧保留失败
 引导日志、fork 修复合并后重 vendor 切换。
 
@@ -269,7 +269,7 @@ fork `cargo check -p libkrun` exit 0（占位 init、check-only、未发布）�
 - **FR-007**: lane payload 修复必须以三副本一致的一次对账落地；单边修改
   导致漂移集生长时必须被 `tests/crate_drift_report.py` 拒绝。
 - **FR-008**: `apps/runtime` 改名必须由 ADR 记录旧名→新名映射，且新名在
-  `cargo metadata` 中唯一；必须拒绝两个同名 `a3s-runtime` 包同时可解析。
+  `cargo metadata` 中唯一；必须拒绝两个同名 `aster-runtime` 包同时可解析。
 - **FR-009**: usage/analytics 端点在导出未接线时必须返回 501 与命名原因，
   必须拒绝以 200 + 空 records 冒充导出；真实导出的 response schema 必须
   是闭集。
@@ -279,7 +279,7 @@ fork `cargo check -p libkrun` exit 0（占位 init、check-only、未发布）�
   `docs/evidence/<domain>/<date-slug>/OUTCOME.md`（命令、计数、not
   claimed 段）；证据目录不得删除。
 - **FR-012**: 本史诗不得引入第二种产品配置语言；若 D-A 的私有 CA 准入产
-  物构成产品行为配置，必须以 ACL（`.acl`，仅经 `a3s-acl` 解析）表达
+  物构成产品行为配置，必须以 ACL（`.acl`，仅经 `aster-acl` 解析）表达
   （宪法 IX）。
 
 ### Key Entities
@@ -304,9 +304,9 @@ fork `cargo check -p libkrun` exit 0（占位 init、check-only、未发布）�
   新增需要 `parse()`/`as_str()` 的枚举（如 plan 阶段发现新增，按宪法 IV
   补齐）
 - [x] 生产路径无新 `unwrap()`/`expect()`（除非构造级不可失败论证注释）
-- [x] 内部 `a3s-*` 依赖保持本仓库路径解析（US-6 改名后由
+- [x] 内部 `aster-*` 依赖保持本仓库路径解析（US-6 改名后由
   `tests/workspace_dependencies.py` 把关）
-- [x] 产品配置如有新增（D-A 产物）仅 ACL、仅 `a3s-acl` 解析
+- [x] 产品配置如有新增（D-A 产物）仅 ACL、仅 `aster-acl` 解析
 - [x] 证据目标：每故事落 `docs/evidence/<domain>/<date-slug>/OUTCOME.md`
       （域跟随现有目录集：`development/`（US-1/2/6/7）、`execution/`
       （US-3/4/8）、US-5 的对账证据随上游仓库记录）
@@ -325,7 +325,7 @@ fork `cargo check -p libkrun` exit 0（占位 init、check-only、未发布）�
   月度评审追认关闭；`G0/P0/WEB0` 证据日期回填（aging 无日期 lane
   3→0）。
 - **SC-005**: lane 三副本回归测试通过且 `tests/crate_drift_report.py` 绿。
-- **SC-006**: `cargo metadata` 无重复 `a3s-runtime` 包名（依赖 D-C 落
+- **SC-006**: `cargo metadata` 无重复 `aster-runtime` 包名（依赖 D-C 落
   地）。
 - **SC-007**: usage/analytics 契约测试通过：未接线 501 + 命名原因，接线
   后 200 仅真实 records。
@@ -358,10 +358,10 @@ fork `cargo check -p libkrun` exit 0（占位 init、check-only、未发布）�
 
 - **D-A（私有 CA 准入）**：产品侧信任链调整 vs 测试联邦换公共 CA——两方
   案的安全边界不同，需 owner 拍板后方可执行 T0.4.2 runbook 步骤 1。
-- **D-B（保留运行凭据）**：GHA 环境 + `A3S_LABS_READ_TOKEN` vs 自托管
+- **D-B（保留运行凭据）**：GHA 环境 + `ASTER_LABS_READ_TOKEN` vs 自托管
   runner——影响 SC-008 的实现路径与运维成本。
 - **D-C（`apps/runtime` 新包名）**：已解决（2026-10-21 核验：包名
-  `a3s-gateway-runtime` 已落地且已注册；见 US-6 的证据修正）。残余的
+  `aster-gateway-runtime` 已落地且已注册；见 US-6 的证据修正）。残余的
   registry-builder 注册（pinned extension 0.1.3）另记。
 - **D-D（postgres digest）**：镜像代理 vs 重新 pin，阻塞 T0.4.2 步骤
   4–6 的可执行性。

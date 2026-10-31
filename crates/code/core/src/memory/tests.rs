@@ -1,6 +1,6 @@
 use super::*;
 use crate::context::ContextProvider;
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::InMemoryStore;
 use async_trait::async_trait;
 use std::sync::{Arc, Mutex};
 
@@ -299,13 +299,13 @@ async fn superseded_memory_is_preserved_but_excluded_from_recall() {
 
 #[tokio::test]
 async fn test_agent_memory_prune_delegates() {
-    use a3s_memory::PrunePolicy;
+    use aster_durable_memory::PrunePolicy;
 
     let store = Arc::new(InMemoryStore::new());
     let memory = AgentMemory::new(store.clone());
 
     // Insert one old low-importance item directly into the store.
-    let mut old_item = a3s_memory::MemoryItem::new("stale").with_importance(0.2);
+    let mut old_item = aster_durable_memory::MemoryItem::new("stale").with_importance(0.2);
     old_item.timestamp = chrono::Utc::now() - chrono::Duration::days(100);
     store.store(old_item).await.unwrap();
 

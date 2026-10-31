@@ -1,11 +1,11 @@
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
 /// Integration test for fine-grained permission control.
 ///
 /// Tests that explicit allow-by-default policies with deny rules correctly
 /// block specific tools while allowing others.
 ///
 /// Run with: cargo test --test test_subagent_permissions -- --nocapture
-use a3s_code_core::subagent::{load_agents_from_dir, AgentRegistry};
+use aster_core::subagent::{load_agents_from_dir, AgentRegistry};
 
 fn allow_by_default_policy() -> PermissionPolicy {
     PermissionPolicy {

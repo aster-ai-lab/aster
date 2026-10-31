@@ -93,8 +93,8 @@ fn assert_chat_attributes(span: &HashMap<String, String>) {
     assert_eq!(span["gen_ai.response.finish_reasons"], "end_turn");
     assert_eq!(span["gen_ai.usage.input_tokens"], "10");
     assert_eq!(span["gen_ai.usage.output_tokens"], "5");
-    assert_eq!(span["a3s.llm.total_tokens"], "15");
-    assert_eq!(span["a3s.llm.model"], "fixture-model");
+    assert_eq!(span["aster.llm.total_tokens"], "15");
+    assert_eq!(span["aster.llm.model"], "fixture-model");
     assert!(!span.contains_key("error.type"), "{span:?}");
 }
 

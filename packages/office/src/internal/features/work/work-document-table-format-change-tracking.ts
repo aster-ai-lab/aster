@@ -65,7 +65,7 @@ export function trackDocumentTableFormattingTransaction(
       propertyRevisionOmml: null,
       tableChangeKind: 'table-formatting',
       tableChangeId: identity.id,
-      tableChangeAuthor: identity.author || 'A3S Work',
+      tableChangeAuthor: identity.author || 'Aster Work',
       tableChangeDate: identity.date || new Date().toISOString(),
       tableChangeBefore: previous,
     });

@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 
 /// Schema emitted by the runtime `features` command.
-pub const FEATURES_SCHEMA_VERSION: &str = "a3s.oci.features.v1";
+pub const FEATURES_SCHEMA_VERSION: &str = "aster.oci.features.v1";
 
 /// Host operating-system family.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, LinuxResources};
+use aster_oci_sdk::{
     ContainerRecord, ContainerTarget, ErrorCode, OperationId, Result, RuntimeEventKind,
     UpdateRequest, ValidateRequest,
 };

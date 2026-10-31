@@ -12,10 +12,10 @@ mod measurement;
 #[path = "durable_memory_semantic_refresh_benchmark/runtime.rs"]
 mod runtime;
 
-use a3s_code_core::memory::{ScheduledSemanticRefresh, SemanticRefreshRunOutcome};
-use a3s_code_core::DurableMemorySemanticRefreshCheckpoint;
-use a3s_memory::repository::{FileMemoryRepository, MemoryNamespace};
-use a3s_memory::vector::{SqliteVectorIndex, VectorIndex, VectorIndexDescriptor};
+use aster_core::memory::{ScheduledSemanticRefresh, SemanticRefreshRunOutcome};
+use aster_core::DurableMemorySemanticRefreshCheckpoint;
+use aster_durable_memory::repository::{FileMemoryRepository, MemoryNamespace};
+use aster_durable_memory::vector::{SqliteVectorIndex, VectorIndex, VectorIndexDescriptor};
 use anyhow::{bail, Context, Result};
 use fixture::{revise_source_node, seed_repository, QualificationProvider};
 use measurement::{
@@ -354,7 +354,7 @@ async fn main() -> Result<()> {
             "queryMeasuredSamples": QUERY_MEASURED_SAMPLES,
         },
         "sourceRepository": {
-            "backend": "a3s-memory/FileMemoryRepository",
+            "backend": "aster-memory/FileMemoryRepository",
             "seedChangeSets": seed_change_sets,
             "contentBytes": corpus_bytes,
             "seedObservedMs": seed_ms,
@@ -389,7 +389,7 @@ async fn main() -> Result<()> {
             "passed": checkpoint_secret_free && reopen_continuity_passed && close_passed,
         },
         "vectorIndex": {
-            "backend": "a3s-memory/SqliteVectorIndex",
+            "backend": "aster-memory/SqliteVectorIndex",
             "mutationConsistency": "index_revision_cas",
             "finalObservation": final_observation,
             "logicalByteBudget": VECTOR_MAX_BYTES,

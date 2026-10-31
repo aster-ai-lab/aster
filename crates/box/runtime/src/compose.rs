@@ -7,11 +7,11 @@
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::compose::ComposeConfig;
-use a3s_box_core::config::{BoxConfig, ResourceConfig, DEFAULT_VCPUS};
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::network::NetworkMode;
-use a3s_box_core::secret::{
+use aster_box_core::compose::ComposeConfig;
+use aster_box_core::config::{BoxConfig, ResourceConfig, DEFAULT_VCPUS};
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::network::NetworkMode;
+use aster_box_core::secret::{
     validate_environment_variable_name, SECRET_ENVIRONMENT_MANIFEST, SECRET_GUEST_ROOT,
 };
 
@@ -62,7 +62,7 @@ impl ComposeRuntimePlan {
                     svc_name
                 )));
             }
-            a3s_box_core::normalize_port_maps(&svc.ports).map_err(|e| {
+            aster_box_core::normalize_port_maps(&svc.ports).map_err(|e| {
                 BoxError::ConfigError(format!(
                     "Service '{}' has invalid port mapping: {}",
                     svc_name, e
@@ -155,13 +155,13 @@ impl ComposeRuntimePlan {
             }
         });
         if let Some(hostname) = svc.hostname.as_deref() {
-            a3s_box_core::dns::validate_hostname(hostname)
+            aster_box_core::dns::validate_hostname(hostname)
                 .map_err(|e| BoxError::ConfigError(format!("Invalid hostname: {e}")))?;
         }
         let add_hosts = svc.extra_hosts.to_vec();
-        a3s_box_core::dns::parse_add_host_entries(&add_hosts)
+        aster_box_core::dns::parse_add_host_entries(&add_hosts)
             .map_err(|e| BoxError::ConfigError(format!("Invalid extra_hosts entry: {e}")))?;
-        let port_map = a3s_box_core::normalize_and_resolve_port_maps(&svc.ports).map_err(|e| {
+        let port_map = aster_box_core::normalize_and_resolve_port_maps(&svc.ports).map_err(|e| {
             BoxError::ConfigError(format!(
                 "Service '{}' has invalid port mapping: {}",
                 service_name, e
@@ -197,18 +197,18 @@ impl ComposeRuntimePlan {
 
     fn service_env(
         &self,
-        svc: &a3s_box_core::compose::ServiceConfig,
+        svc: &aster_box_core::compose::ServiceConfig,
     ) -> Result<Vec<(String, String)>> {
         let mut env = Vec::new();
         for env_file in svc.env_file.to_vec() {
             let path = resolve_compose_path(&self.base_dir, &env_file);
-            let entries = a3s_box_core::env::parse_env_file(&path).map_err(|e| {
+            let entries = aster_box_core::env::parse_env_file(&path).map_err(|e| {
                 BoxError::ConfigError(format!("Invalid env_file '{}': {}", path.display(), e))
             })?;
-            a3s_box_core::env::merge_env_pairs(&mut env, &entries);
+            aster_box_core::env::merge_env_pairs(&mut env, &entries);
         }
         let inline_env = svc.environment.to_pairs();
-        a3s_box_core::env::merge_env_pairs(&mut env, &inline_env);
+        aster_box_core::env::merge_env_pairs(&mut env, &inline_env);
         Ok(env)
     }
 
@@ -249,7 +249,7 @@ impl ComposeRuntimePlan {
         let Some(service) = self.config.services.get(service_name) else {
             return aliases.into_iter().collect();
         };
-        let a3s_box_core::compose::ServiceNetworks::Map(networks) = &service.networks else {
+        let aster_box_core::compose::ServiceNetworks::Map(networks) = &service.networks else {
             return aliases.into_iter().collect();
         };
         let Some(selected_network) = service.networks.names().into_iter().next() else {
@@ -283,7 +283,7 @@ impl ComposeRuntimePlan {
         };
 
         let mut dependencies = match &svc.depends_on {
-            a3s_box_core::compose::DependsOn::Map(map) => map
+            aster_box_core::compose::DependsOn::Map(map) => map
                 .iter()
                 .filter(|(_, cond)| cond.condition == "service_healthy")
                 .map(|(name, _)| name.clone())
@@ -302,7 +302,7 @@ impl ComposeRuntimePlan {
         };
 
         let mut dependencies = match &svc.depends_on {
-            a3s_box_core::compose::DependsOn::Map(map) => map
+            aster_box_core::compose::DependsOn::Map(map) => map
                 .iter()
                 .filter(|(_, cond)| cond.condition == "service_completed_successfully")
                 .map(|(name, _)| name.clone())
@@ -356,12 +356,12 @@ impl ComposeRuntimePlan {
                 hc.disable
                     || matches!(
                         &hc.test,
-                        a3s_box_core::compose::StringOrList::List(items)
+                        aster_box_core::compose::StringOrList::List(items)
                             if items.first().is_some_and(|value| value.eq_ignore_ascii_case("NONE"))
                     )
                     || matches!(
                         &hc.test,
-                        a3s_box_core::compose::StringOrList::Single(value)
+                        aster_box_core::compose::StringOrList::Single(value)
                             if value.trim().eq_ignore_ascii_case("NONE")
                     )
             })
@@ -370,7 +370,7 @@ impl ComposeRuntimePlan {
 
 fn validate_secret_environment(
     service_name: &str,
-    service: &a3s_box_core::compose::ServiceConfig,
+    service: &aster_box_core::compose::ServiceConfig,
 ) -> Result<()> {
     if service.secret_environment.is_empty() {
         return Ok(());
@@ -486,8 +486,8 @@ fn parse_duration_secs(s: &str) -> std::result::Result<u64, String> {
     }
 }
 
-fn healthcheck_command(test: &a3s_box_core::compose::StringOrList) -> Option<Vec<String>> {
-    use a3s_box_core::compose::StringOrList;
+fn healthcheck_command(test: &aster_box_core::compose::StringOrList) -> Option<Vec<String>> {
+    use aster_box_core::compose::StringOrList;
 
     match test {
         StringOrList::Empty => None,
@@ -528,9 +528,9 @@ fn healthcheck_command(test: &a3s_box_core::compose::StringOrList) -> Option<Vec
 
 fn validate_depends_on_conditions(
     service_name: &str,
-    depends_on: &a3s_box_core::compose::DependsOn,
+    depends_on: &aster_box_core::compose::DependsOn,
 ) -> Result<()> {
-    let a3s_box_core::compose::DependsOn::Map(map) = depends_on else {
+    let aster_box_core::compose::DependsOn::Map(map) = depends_on else {
         return Ok(());
     };
 

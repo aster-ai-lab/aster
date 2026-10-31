@@ -131,7 +131,7 @@ fn browser_edit_after_projection_makes_stale_agent_paragraph_guard_fail_closed()
         .apply_update(Update::decode_v1(&store.synchronize(None).unwrap().update).unwrap())
         .unwrap();
     let before_browser_edit = browser.transact().state_vector();
-    let fragment = browser.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = browser.get_or_insert_xml_fragment("aster.office.document.content");
     let (paragraph, text) = {
         let transaction = browser.transact();
         let paragraph = fragment
@@ -248,7 +248,7 @@ fn document_replica_export_writes_every_paragraph_or_returns_no_package() {
         .apply_update(Update::decode_v1(&store.synchronize(None).unwrap().update).unwrap())
         .unwrap();
     let before = browser.transact().state_vector();
-    let fragment = browser.get_or_insert_xml_fragment("a3s.office.document.content");
+    let fragment = browser.get_or_insert_xml_fragment("aster.office.document.content");
     {
         let mut transaction = browser.transact_mut();
         let section = fragment

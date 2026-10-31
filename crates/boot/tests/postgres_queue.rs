@@ -5,7 +5,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use std::{process::Command, process::Stdio};
 
-use a3s_boot::{
+use aster_boot::{
     ModuleRef, PostgresQueueBackend, Queue, QueueContext, QueueJob, QueueJobOptions, QueueOptions,
     QueueRetryPolicy,
 };
@@ -14,7 +14,7 @@ use tokio::sync::Notify;
 use uuid::Uuid;
 
 fn postgres_url() -> Option<String> {
-    std::env::var("A3S_BOOT_POSTGRES_URL")
+    std::env::var("ASTER_BOOT_POSTGRES_URL")
         .ok()
         .filter(|value| !value.trim().is_empty())
 }
@@ -39,7 +39,7 @@ async fn wait_until(mut predicate: impl FnMut() -> bool) {
 #[tokio::test]
 async fn queued_job_survives_backend_reconstruction() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = queue_name("restart");
@@ -82,7 +82,7 @@ async fn queued_job_survives_backend_reconstruction() {
 #[tokio::test]
 async fn processor_failures_follow_the_typed_retry_policy() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = queue_name("retry");
@@ -101,7 +101,7 @@ async fn processor_failures_follow_the_typed_retry_policy() {
             let observed = Arc::clone(&observed);
             async move {
                 if observed.fetch_add(1, Ordering::SeqCst) == 0 {
-                    return Err(a3s_boot::BootError::Internal("first attempt".into()));
+                    return Err(aster_boot::BootError::Internal("first attempt".into()));
                 }
                 Ok(())
             }
@@ -127,7 +127,7 @@ async fn processor_failures_follow_the_typed_retry_policy() {
 #[tokio::test]
 async fn active_deduplication_keeps_only_the_latest_successor() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = queue_name("dedup");
@@ -195,7 +195,7 @@ async fn active_deduplication_keeps_only_the_latest_successor() {
 #[tokio::test]
 async fn processor_timeout_is_fenced_and_recorded() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = queue_name("timeout");
@@ -212,7 +212,7 @@ async fn processor_timeout_is_fenced_and_recorded() {
         .process(
             "timeout",
             |_job: QueueJob, _context: QueueContext| async move {
-                std::future::pending::<a3s_boot::Result<()>>().await
+                std::future::pending::<aster_boot::Result<()>>().await
             },
         )
         .expect("register timeout processor");
@@ -260,7 +260,7 @@ async fn processor_timeout_is_fenced_and_recorded() {
 #[tokio::test]
 async fn heartbeat_prevents_competing_workers_from_reclaiming_live_work() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = queue_name("heartbeat");
@@ -322,7 +322,7 @@ async fn heartbeat_prevents_competing_workers_from_reclaiming_live_work() {
 #[tokio::test]
 async fn expired_lease_recovers_the_same_job_after_process_death() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = queue_name("process-death");
@@ -343,9 +343,9 @@ async fn expired_lease_recovers_the_same_job_after_process_death() {
         .arg("--exact")
         .arg("postgres_queue_process_death_probe")
         .arg("--nocapture")
-        .env("A3S_BOOT_POSTGRES_URL", &url)
-        .env("A3S_BOOT_POSTGRES_CRASH_PROBE", "1")
-        .env("A3S_BOOT_POSTGRES_CRASH_QUEUE", &name)
+        .env("ASTER_BOOT_POSTGRES_URL", &url)
+        .env("ASTER_BOOT_POSTGRES_CRASH_PROBE", "1")
+        .env("ASTER_BOOT_POSTGRES_CRASH_QUEUE", &name)
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null())
@@ -415,11 +415,11 @@ async fn expired_lease_recovers_the_same_job_after_process_death() {
 
 #[tokio::test]
 async fn postgres_queue_process_death_probe() {
-    if std::env::var("A3S_BOOT_POSTGRES_CRASH_PROBE").as_deref() != Ok("1") {
+    if std::env::var("ASTER_BOOT_POSTGRES_CRASH_PROBE").as_deref() != Ok("1") {
         return;
     }
-    let url = std::env::var("A3S_BOOT_POSTGRES_URL").expect("crash probe PostgreSQL URL");
-    let name = std::env::var("A3S_BOOT_POSTGRES_CRASH_QUEUE").expect("crash probe queue name");
+    let url = std::env::var("ASTER_BOOT_POSTGRES_URL").expect("crash probe PostgreSQL URL");
+    let name = std::env::var("ASTER_BOOT_POSTGRES_CRASH_QUEUE").expect("crash probe queue name");
     let options = QueueOptions::new()
         .with_poll_interval(Duration::from_millis(5))
         .with_lease_duration(Duration::from_millis(150));
@@ -431,7 +431,7 @@ async fn postgres_queue_process_death_probe() {
         .process(
             "block",
             |_job: QueueJob, _context: QueueContext| async move {
-                std::future::pending::<a3s_boot::Result<()>>().await
+                std::future::pending::<aster_boot::Result<()>>().await
             },
         )
         .expect("register blocking crash probe processor");

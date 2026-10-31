@@ -1,13 +1,13 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportFaultInjector, AgentTransportFaultStage,
     AgentTransportOperationStage, AgentTransportQualificationRequest, AGENT_PROTOCOL_VERSION_MAX,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform, IsolationClass};
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, HostPlatform, IsolationClass};
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerTarget, CreateAttachments, CreateRequest, DeleteMode, DeleteRequest, Error, ErrorCode,
     IoMode, IsolationRequest, ListRequest, OciBundle, OciRuntimeService, OperationContext,
     OperationId, ProcessIo, StateRequest,
@@ -160,13 +160,13 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
     report.setup_create_operation_id = Some(create_operation_id);
     report.container_id = Some(exact_target.id.clone());
 
-    let state_root = console_directory.join(format!("a3s-oci-state-reopen-{nonce}-state"));
+    let state_root = console_directory.join(format!("aster-oci-state-reopen-{nonce}-state"));
     if let Err(reason) = create_qualification_state_root(&state_root).await {
         return failed(report, reason);
     }
-    let first_console = console_directory.join(format!("a3s-oci-state-reopen-{nonce}-first.log"));
+    let first_console = console_directory.join(format!("aster-oci-state-reopen-{nonce}-first.log"));
     let replacement_console =
-        console_directory.join(format!("a3s-oci-state-reopen-{nonce}-replacement.log"));
+        console_directory.join(format!("aster-oci-state-reopen-{nonce}-replacement.log"));
 
     let exercise = exercise(
         shim,

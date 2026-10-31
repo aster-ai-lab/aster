@@ -16,7 +16,7 @@ async fn structural_edits_rewrite_tables_comments_drawings_vml_and_chart_formula
         (
             "xl/comments1.xml",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml",
-            br#"<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors><author>A3S</author></authors><commentList><comment ref="B2" authorId="0"><text><t>note</t></text></comment></commentList></comments>"#.as_slice(),
+            br#"<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors><author>Aster</author></authors><commentList><comment ref="B2" authorId="0"><text><t>note</t></text></comment></commentList></comments>"#.as_slice(),
         ),
         (
             "xl/drawings/vmlDrawing1.vml",
@@ -139,7 +139,7 @@ async fn worksheet_copy_clones_related_parts_names_and_local_definitions_atomica
         (
             "xl/comments1.xml",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml",
-            br#"<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors><author>A3S</author></authors><commentList><comment ref="A2" authorId="0"><text><t>note</t></text></comment></commentList></comments>"#.as_slice(),
+            br#"<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors><author>Aster</author></authors><commentList><comment ref="A2" authorId="0"><text><t>note</t></text></comment></commentList></comments>"#.as_slice(),
         ),
         (
             "xl/drawings/vmlDrawing1.vml",

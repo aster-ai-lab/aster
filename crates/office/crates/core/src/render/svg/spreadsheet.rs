@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::text::wrap;
 use super::write_path;
@@ -52,9 +52,9 @@ fn render_sheets(
     };
 
     let mut output = BoundedOutput::new(limit);
-    output.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-labelledby=\"a3s-title a3s-desc\" data-renderer=\"a3s-office-semantic-v1\" data-document-kind=\"spreadsheet\" viewBox=\"0 0 ")?;
+    output.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-labelledby=\"aster-title aster-desc\" data-renderer=\"aster-office-semantic-v1\" data-document-kind=\"spreadsheet\" viewBox=\"0 0 ")?;
     output.push_fmt(format_args!("{CANVAS_WIDTH:.4} {total_height:.4}"))?;
-    output.push("\"><title id=\"a3s-title\">A3S Native Office Spreadsheet semantic preview</title><desc id=\"a3s-desc\">Deterministic sparse semantic preview; gaps are not expanded and it does not claim Microsoft Excel layout or print fidelity.</desc><style>text{font-family:ui-sans-serif,system-ui,sans-serif;fill:#172033}.canvas{fill:#eef1f5}.sheet{fill:#fff;stroke:#aab4c3;stroke-width:1.5}.sheet-label{font-size:20px;font-weight:700}.row-label{font-size:14px;font-weight:700;fill:#526079}.cell{fill:#fff;stroke:#aab4c3}.cell-reference{font-size:14px;font-weight:700;fill:#43506a}.cell-value{font-size:15px}.cell-formula{font-size:13px;fill:#6b4ca5}.empty-text{font-size:14px;fill:#667085;font-style:italic}.picture{fill:#f8fafc;stroke:#8491a5}.missing-image{fill:#f8fafc;stroke:#8491a5;stroke-dasharray:7 5}.picture-label{font-size:13px;fill:#526079}</style><rect class=\"canvas\" x=\"0\" y=\"0\" width=\"1100\" height=\"")?;
+    output.push("\"><title id=\"aster-title\">Aster Native Office Spreadsheet semantic preview</title><desc id=\"aster-desc\">Deterministic sparse semantic preview; gaps are not expanded and it does not claim Microsoft Excel layout or print fidelity.</desc><style>text{font-family:ui-sans-serif,system-ui,sans-serif;fill:#172033}.canvas{fill:#eef1f5}.sheet{fill:#fff;stroke:#aab4c3;stroke-width:1.5}.sheet-label{font-size:20px;font-weight:700}.row-label{font-size:14px;font-weight:700;fill:#526079}.cell{fill:#fff;stroke:#aab4c3}.cell-reference{font-size:14px;font-weight:700;fill:#43506a}.cell-value{font-size:15px}.cell-formula{font-size:13px;fill:#6b4ca5}.empty-text{font-size:14px;fill:#667085;font-style:italic}.picture{fill:#f8fafc;stroke:#8491a5}.missing-image{fill:#f8fafc;stroke:#8491a5;stroke-dasharray:7 5}.picture-label{font-size:13px;fill:#526079}</style><rect class=\"canvas\" x=\"0\" y=\"0\" width=\"1100\" height=\"")?;
     output.push_fmt(format_args!("{total_height:.4}"))?;
     output.push("\"/>")?;
 

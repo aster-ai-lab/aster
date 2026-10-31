@@ -7,7 +7,7 @@ use serde::Deserialize;
 use serde_json::json;
 
 use super::workspace_scope::canonical_workspace;
-use super::A3sCodeAgent;
+use super::AsterCodeAgent;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -25,7 +25,7 @@ struct ListRequest {
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct ListMeta {
-    #[serde(rename = "a3s/facetFilters")]
+    #[serde(rename = "aster/facetFilters")]
     facets: Option<Facets>,
 }
 
@@ -100,7 +100,7 @@ impl TryFrom<String> for HeadlessPolicy {
     }
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) async fn handle_session_list(
         &self,
         args: &acp::ExtRequest,
@@ -144,7 +144,7 @@ impl A3sCodeAgent {
                 .as_ref()
                 .map(|f| f.kind.iter().map(SessionFacet::as_str).collect());
             let mut page = if includes_build {
-                a3s_code_core::session_folder::list_workspace_sessions(
+                aster_core::session_folder::list_workspace_sessions(
                     &workspace,
                     limit,
                     request.query.as_deref(),
@@ -153,7 +153,7 @@ impl A3sCodeAgent {
                     acp::Error::internal_error().data("session catalog could not be read")
                 })?
             } else {
-                a3s_code_core::session_folder::SessionCatalog {
+                aster_core::session_folder::SessionCatalog {
                     sessions: Vec::new(),
                     truncated: false,
                     incomplete: false,
@@ -176,11 +176,11 @@ impl A3sCodeAgent {
                     HeadlessPolicy::Include => true,
                     HeadlessPolicy::Exclude => {
                         entry.session_kind
-                            == Some(a3s_code_core::session_folder::SessionKind::Interactive)
+                            == Some(aster_core::session_folder::SessionKind::Interactive)
                     }
                     HeadlessPolicy::Only => {
                         entry.session_kind
-                            == Some(a3s_code_core::session_folder::SessionKind::Headless)
+                            == Some(aster_core::session_folder::SessionKind::Headless)
                     }
                 });
                 count
@@ -193,16 +193,16 @@ impl A3sCodeAgent {
                 .map(|entry| {
                     let mut row = json!(entry);
                     row["source"] = json!("local");
-                    row["_meta"] = json!({"a3sCode/sessionCatalog": "a3s.code.session-catalog.v1"});
+                    row["_meta"] = json!({"asterCode/sessionCatalog": "aster.code.session-catalog.v1"});
                     row
                 })
                 .collect();
             Ok::<_, acp::Error>(json!({
                 "sessions": sessions,
                 "_meta": {
-                    "a3s/listScope": "cwd",
-                    "a3sCode/sessionCatalog": {
-                        "schema": "a3s.code.session-catalog.v1",
+                    "aster/listScope": "cwd",
+                    "asterCode/sessionCatalog": {
+                        "schema": "aster.code.session-catalog.v1",
                         "incomplete": page.incomplete,
                         "truncated": page.truncated,
                         "skippedEntries": page.skipped_entries,

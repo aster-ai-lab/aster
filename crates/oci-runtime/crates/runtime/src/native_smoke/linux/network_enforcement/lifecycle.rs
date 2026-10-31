@@ -3,8 +3,8 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, CreateAttachments, CreateRequest, DeleteMode, DeleteRequest,
     ErrorCode, ExitStatus, IsolationRequest, KillRequest, ListRequest, NetworkAttachmentIdentity,
     NetworkCleanup, OciBundle, OperationContext, OperationId, ProcessIo, RuntimeClient, Signal,
@@ -331,7 +331,7 @@ fn operation(nonce: &str, suffix: &str) -> Result<OperationContext, String> {
 
 async fn native_call<T>(
     description: &str,
-    future: impl Future<Output = a3s_oci_sdk::Result<T>>,
+    future: impl Future<Output = aster_oci_sdk::Result<T>>,
 ) -> Result<T, String> {
     match timeout(CALL_TIMEOUT, future).await {
         Ok(Ok(value)) => Ok(value),

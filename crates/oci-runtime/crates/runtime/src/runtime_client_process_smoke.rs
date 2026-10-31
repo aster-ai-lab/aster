@@ -1,8 +1,8 @@
 use std::future::Future;
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::{ExecCPUAffinity, Process};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ExecCPUAffinity, Process};
+use aster_oci_sdk::{
     CloseStdinRequest, ContainerTarget, Error, ErrorCode, ExecRequest, ExitStatus, IoMode,
     OperationContext, OperationId, OutputStream, ProcessId, ProcessIo, ProcessTarget,
     ReadOutputRequest, ResizeRequest, RuntimeClient, Signal, SignalProcessRequest, TerminalSize,
@@ -91,7 +91,7 @@ pub(crate) async fn exercise_process_io(
     let first_write = WriteStdinRequest {
         context: operation(nonce, "write-io-first")?,
         process: process.clone(),
-        data: b"a3s-io-first\n".to_vec(),
+        data: b"aster-io-first\n".to_vec(),
     };
     call(
         "write first process I/O probe stdin",
@@ -108,7 +108,7 @@ pub(crate) async fn exercise_process_io(
         client.write_stdin(WriteStdinRequest {
             context: operation(nonce, "write-io-second")?,
             process: process.clone(),
-            data: b"a3s-io-second\n".to_vec(),
+            data: b"aster-io-second\n".to_vec(),
         }),
     )
     .await?;
@@ -144,8 +144,8 @@ pub(crate) async fn exercise_process_io(
     }
 
     let (stdout, stderr) = collect_output(client, &process).await?;
-    if stdout != b"stdout:a3s-io-first:a3s-io-second\n"
-        || stderr != b"stderr:a3s-io-first:a3s-io-second\n"
+    if stdout != b"stdout:aster-io-first:aster-io-second\n"
+        || stderr != b"stderr:aster-io-first:aster-io-second\n"
     {
         return Err(format!(
             "native captured output mismatch: stdout={stdout:?}, stderr={stderr:?}"
@@ -648,7 +648,7 @@ fn operation(nonce: &str, suffix: &str) -> Result<OperationContext, String> {
 
 async fn call<T>(
     operation: &str,
-    future: impl Future<Output = a3s_oci_sdk::Result<T>>,
+    future: impl Future<Output = aster_oci_sdk::Result<T>>,
 ) -> Result<T, String> {
     match timeout(CALL_TIMEOUT, future).await {
         Ok(Ok(value)) => Ok(value),
@@ -663,7 +663,7 @@ fn call_error(operation: &str, error: &Error) -> String {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{ContainerId, Generation};
+    use aster_oci_sdk::{ContainerId, Generation};
 
     use super::{terminal_exec_request, ContainerTarget, TerminalSize};
 

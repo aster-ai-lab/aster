@@ -2,7 +2,7 @@
 //! independently from CPU layout validation and whole-model activation.
 
 #[cfg(any(feature = "cuda", test))]
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use sha2::{Digest, Sha256};
 
 use super::KernelAttributes;

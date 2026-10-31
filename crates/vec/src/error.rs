@@ -1,8 +1,8 @@
-//! Error types used by `a3s-vec`.
+//! Error types used by `aster-vec`.
 //!
 //! The public error intentionally mirrors zvec's status taxonomy while still
 //! carrying a useful, typed Rust error.  Keeping the status code at the API
-//! boundary makes it possible for adapters (CLI, HTTP, and A3S Code) to map
+//! boundary makes it possible for adapters (CLI, HTTP, and Aster Code) to map
 //! failures without parsing strings.
 
 use std::fmt;
@@ -64,7 +64,7 @@ impl fmt::Display for ErrorCode {
     }
 }
 
-/// An error returned by a3s-vec.
+/// An error returned by aster-vec.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Error {
     /// Stable machine-readable category.
@@ -129,7 +129,7 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "a3s-vec error {}: {}", self.code, self.message)
+        write!(f, "aster-vec error {}: {}", self.code, self.message)
     }
 }
 

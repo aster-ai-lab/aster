@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "a3s-runtime"
+name = "aster-runtime"
 version = "0.8.0"
 dependencies = [
  "async-trait",

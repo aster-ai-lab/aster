@@ -3,8 +3,8 @@
 use std::io::{Read, Write};
 use std::path::{Component, Path, PathBuf};
 
-use a3s_code_core::tools::{Tool, ToolArtifactVerification, ToolContext, ToolOutput};
-use a3s_office::{
+use aster_core::tools::{Tool, ToolArtifactVerification, ToolContext, ToolOutput};
+use aster_office::{
     NativeOfficeDocument, NativeOfficeEditor, NativeOfficeImage, NativeOfficeMutation,
     NativeSpreadsheetCellFormat, SpreadsheetCellValue, SpreadsheetFormulaValue,
 };
@@ -226,7 +226,7 @@ impl Tool for OfficeFileTool {
         let outcome = async {
             self.validate_execution_available(args, ctx)?;
             let access =
-                ctx.workspace_operation(a3s_code_core::capability::WorkspaceOperation::Write)?;
+                ctx.workspace_operation(aster_core::capability::WorkspaceOperation::Write)?;
             ctx.register_capability_effect(self.workspace.clone())?;
             let cancel = access.cancellation()?;
             let validate_access = || {
@@ -319,12 +319,12 @@ async fn create(
         .session_id
         .as_deref()
         .ok_or_else(|| anyhow::anyhow!("write requires a session id"))?;
-    let acquired = !a3s_code_core::external_observation::session_owns_write(
+    let acquired = !aster_core::external_observation::session_owns_write(
         session,
         &ctx.workspace,
         path.as_str(),
     );
-    a3s_code_core::external_observation::claim_bound_write(
+    aster_core::external_observation::claim_bound_write(
         Some(session),
         &ctx.workspace,
         path.as_str(),
@@ -332,7 +332,7 @@ async fn create(
     .map_err(anyhow::Error::msg)?;
     if let Err(error) = publish(&parent, &name, &bytes, ctx, validate_access) {
         if acquired {
-            a3s_code_core::external_observation::release_write_claim(
+            aster_core::external_observation::release_write_claim(
                 session,
                 &ctx.workspace,
                 path.as_str(),

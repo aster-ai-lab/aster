@@ -128,10 +128,10 @@ function writePosition(
   panel: HTMLElement,
   position: FloatingPanelPosition,
 ): void {
-  panel.style.setProperty("--a3s-floating-left", `${position.left}px`);
-  panel.style.setProperty("--a3s-floating-top", `${position.top}px`);
-  panel.style.setProperty("--a3s-floating-width", `${position.width}px`);
-  panel.style.setProperty("--a3s-floating-max-height", `${position.height}px`);
+  panel.style.setProperty("--aster-floating-left", `${position.left}px`);
+  panel.style.setProperty("--aster-floating-top", `${position.top}px`);
+  panel.style.setProperty("--aster-floating-width", `${position.width}px`);
+  panel.style.setProperty("--aster-floating-max-height", `${position.height}px`);
   panel.dataset.floatingPlacement = position.placement;
   panel.dataset.floatingPositioned = "true";
   panel.dataset.floatingAnchorHidden = position.visible ? "false" : "true";
@@ -207,10 +207,10 @@ export function useFloatingPanelPosition(
         availableWidth,
       );
       panel.dataset.floatingPositioned = "true";
-      panel.style.setProperty("--a3s-floating-left", "0px");
-      panel.style.setProperty("--a3s-floating-top", "0px");
-      panel.style.setProperty("--a3s-floating-width", `${provisionalWidth}px`);
-      panel.style.setProperty("--a3s-floating-max-height", `${maxHeight}px`);
+      panel.style.setProperty("--aster-floating-left", "0px");
+      panel.style.setProperty("--aster-floating-top", "0px");
+      panel.style.setProperty("--aster-floating-width", `${provisionalWidth}px`);
+      panel.style.setProperty("--aster-floating-max-height", `${maxHeight}px`);
       const panelRect = panel.getBoundingClientRect();
 
       // jsdom and a detached host have no layout metrics. Keep the panel
@@ -299,10 +299,10 @@ export function useFloatingPanelPosition(
       delete panel.dataset.floatingPositioned;
       delete panel.dataset.floatingPlacement;
       delete panel.dataset.floatingAnchorHidden;
-      panel.style.removeProperty("--a3s-floating-left");
-      panel.style.removeProperty("--a3s-floating-top");
-      panel.style.removeProperty("--a3s-floating-width");
-      panel.style.removeProperty("--a3s-floating-max-height");
+      panel.style.removeProperty("--aster-floating-left");
+      panel.style.removeProperty("--aster-floating-top");
+      panel.style.removeProperty("--aster-floating-width");
+      panel.style.removeProperty("--aster-floating-max-height");
     };
   }, [active, anchorRef, panelRef]);
 }

@@ -101,7 +101,7 @@ binary_is_stale() {
   # Docs and READMEs sit next to sources. They must not force a rebuild.
   newer="$(
     find "$@" \
-      \( -name target -o -name .git -o -name .data -o -name .a3s -o -name node_modules -o -name dist -o -name docs \) -prune \
+      \( -name target -o -name .git -o -name .data -o -name .aster -o -name node_modules -o -name dist -o -name docs \) -prune \
       -o -type f \( -name '*.rs' -o -name 'Cargo.toml' -o -name 'Cargo.lock' -o -name 'build.rs' -o -name '*.sql' -o -name '*.proto' \) \
       -newer "$bin" -print 2>/dev/null | head -1 || true
   )"
@@ -116,7 +116,7 @@ launch_service() {
     echo "launch_service: missing command" >&2
     return 64
   fi
-  if [[ "${A3S_LAUNCH_APPEND:-}" == 1 ]]; then
+  if [[ "${ASTER_LAUNCH_APPEND:-}" == 1 ]]; then
     if command -v setsid >/dev/null 2>&1; then
       setsid "$@" >>"$log_file" 2>&1 </dev/null &
     else

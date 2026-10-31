@@ -3,10 +3,10 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_boot::{ModuleRef, Queue, QueueJobOptions, QueueOptions, QueueRetryPolicy};
+use aster_boot::{ModuleRef, Queue, QueueJobOptions, QueueOptions, QueueRetryPolicy};
 #[cfg(feature = "sqlite")]
-use a3s_flow::SqliteEventStore;
-use a3s_flow::{
+use aster_flow::SqliteEventStore;
+use aster_flow::{
     BootFlowTaskDeduplication, BootFlowTaskManager, BootFlowTaskPolicy, FlowEngine, FlowError,
     FlowRuntime, FlowScheduler, FlowTask, FlowTaskDispatcher, RuntimeBuildCompatibility,
     RuntimeBuildId, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
@@ -32,7 +32,7 @@ impl FlowRuntime for SleepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.wait_completed("sleep") {
             return Ok(ctx.complete(json!({ "slept": true })));
@@ -46,7 +46,7 @@ impl FlowRuntime for SleepRuntime {
         Ok(ctx.wait_until("sleep", resume_at))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("sleep runtime does not schedule steps")
     }
 }
@@ -62,7 +62,7 @@ impl FlowRuntime for BlockingScheduledRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.wait_completed("sleep") {
             self.started.notify_one();
@@ -78,7 +78,7 @@ impl FlowRuntime for BlockingScheduledRuntime {
         Ok(ctx.wait_until("sleep", resume_at))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("blocking scheduled runtime does not schedule steps")
     }
 }
@@ -271,7 +271,7 @@ fn boot_task_policy_maps_typed_options_and_scan_targets() {
     let other_run = other_run.deduplication.unwrap();
     assert_eq!(first_run.id, later_same_run.id);
     assert_ne!(first_run.id, other_run.id);
-    assert!(first_run.id.starts_with("a3s-flow:resume_scheduled_run:"));
+    assert!(first_run.id.starts_with("aster-flow:resume_scheduled_run:"));
     assert!(first_run.keep_last_if_active);
 }
 
@@ -325,11 +325,11 @@ fn boot_task_deduplication_redacts_tokens_and_preserves_target_semantics() {
     assert!(!first_resume.id.contains(token));
     assert!(first_resume
         .id
-        .starts_with("a3s-flow:resume_hook_by_token:"));
+        .starts_with("aster-flow:resume_hook_by_token:"));
     assert!(drive.keep_last_if_active);
     assert!(!wait.keep_last_if_active);
     assert_eq!(first_signal.id, duplicate_signal.id);
-    assert!(first_signal.id.starts_with("a3s-flow:send_signal:"));
+    assert!(first_signal.id.starts_with("aster-flow:send_signal:"));
     assert!(first_signal.keep_last_if_active);
 }
 

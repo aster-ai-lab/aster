@@ -1,16 +1,16 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerTarget, CreateRequest, ExecRequest, OperationId, ProcessId, ProcessIo, StartRequest,
 };
 
 use super::QualificationHvfDriver;
 use crate::{DriverExecRequest, OciVmOperationReopenReplacementReport};
 
-pub(super) const EXEC_MARKER_NAME: &str = ".a3s-oci-exec-reopen-smoke";
+pub(super) const EXEC_MARKER_NAME: &str = ".aster-oci-exec-reopen-smoke";
 
 struct Qualification {
     shim: PathBuf,

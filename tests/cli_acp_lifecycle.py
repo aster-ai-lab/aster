@@ -73,12 +73,12 @@ try:
             home, workspace = scope / 'home', scope / 'workspace'
             home.mkdir()
             workspace.mkdir()
-            config = home / '.a3s/config.acl'
+            config = home / '.aster/config.acl'
             config.parent.mkdir()
             config.write_text(f'providers "mock" {{\n base_url = "http://127.0.0.1:{server.server_port}/v1"\n api_key = "issue2-fixture-not-real"\n models "gpt" {{\n }}\n}}\ndefault_model = "mock/gpt"\n')
-            environment = {'HOME': str(home), 'GROK_HOME': str(home / 'grok'), 'XDG_CONFIG_HOME': str(home / 'config'), 'XDG_CACHE_HOME': str(home / 'cache'), 'XDG_DATA_HOME': str(home / 'data'), 'XDG_STATE_HOME': str(home / 'state'), 'A3S_CONFIG': str(config), 'A3S_ACP_AGENT_BIN': str(args.binaries.resolve() / 'a3s-code-acp'), 'A3S_DISABLE_CC_SWITCH': '1', 'A3S_DISABLE_GROK_ACCOUNT': '1', 'A3S_DISABLE_CURSOR_ACCOUNT': '1', 'PATH': '/usr/bin:/bin:/usr/sbin:/opt/homebrew/bin', 'TERM': 'dumb', 'LANG': 'en_US.UTF-8', 'RUST_LOG': 'warn'}
+            environment = {'HOME': str(home), 'GROK_HOME': str(home / 'grok'), 'XDG_CONFIG_HOME': str(home / 'config'), 'XDG_CACHE_HOME': str(home / 'cache'), 'XDG_DATA_HOME': str(home / 'data'), 'XDG_STATE_HOME': str(home / 'state'), 'ASTER_CONFIG': str(config), 'ASTER_ACP_AGENT_BIN': str(args.binaries.resolve() / 'aster-acp'), 'ASTER_DISABLE_CC_SWITCH': '1', 'ASTER_DISABLE_GROK_ACCOUNT': '1', 'ASTER_DISABLE_CURSOR_ACCOUNT': '1', 'PATH': '/usr/bin:/bin:/usr/sbin:/opt/homebrew/bin', 'TERM': 'dumb', 'LANG': 'en_US.UTF-8', 'RUST_LOG': 'warn'}
             if api_key:
-                environment['A3S_API_KEY'] = 'issue2-fixture-not-real'
+                environment['ASTER_API_KEY'] = 'issue2-fixture-not-real'
             command = [str(args.binaries.resolve() / 'aster'), '-p', 'Return ' + marker, '--cwd', str(workspace), '--output-format', 'json']
             if prompt_option == 'rules':
                 command.extend(['--rules', rule_marker])
@@ -88,7 +88,7 @@ try:
             provider_mode = 'stalled_error' if prompt_option == 'stalled_error' else 'healthy'
             if prompt_option == 'missing_acl':
                 config.unlink()
-                environment.pop('A3S_CONFIG')
+                environment.pop('ASTER_CONFIG')
             elif prompt_option == 'stalled_error':
                 config.write_text(config.read_text() + 'llm_api_timeout_ms = 300\n')
             before_count = len(requests)
@@ -111,7 +111,7 @@ try:
 finally:
     stalled_body_release.set()
     server.shutdown()
-receipt = {'phase': args.phase, 'fixture': 'isolated child home, explicit local ACL, real CLI and ACP, loopback-only provider', 'cases': results, 'binary_sha256': {name: hashlib.sha256((args.binaries / name).read_bytes()).hexdigest() for name in ['aster', 'a3s-code-acp']}}
+receipt = {'phase': args.phase, 'fixture': 'isolated child home, explicit local ACL, real CLI and ACP, loopback-only provider', 'cases': results, 'binary_sha256': {name: hashlib.sha256((args.binaries / name).read_bytes()).hexdigest() for name in ['aster', 'aster-acp']}}
 (args.evidence / f'headless-{args.phase}-result.json').write_text(json.dumps(receipt, indent=2) + '\n')
 if args.phase == 'after':
     assert all(result['returncode'] == 0 and not result['timed_out'] and result['stdout_contains_marker'] and result['provider_requests'] for result in results[:3])

@@ -213,7 +213,7 @@ impl Watch {
         self,
         root: &Path,
         attribute_revision: bool,
-    ) -> a3s_effect::ToolEffectObservationV1 {
+    ) -> aster_effect::ToolEffectObservationV1 {
         let delta = self.observe_delta(root, attribute_revision).await;
         let mut effects = observe_path_effects(root, delta);
         let stamps = self
@@ -236,8 +236,8 @@ impl Watch {
                             .is_err()
                 }) =>
                 {
-                    Some(a3s_effect::ToolFileIdentityV1 {
-                        kind: a3s_effect::ToolFileKind::Missing,
+                    Some(aster_effect::ToolFileIdentityV1 {
+                        kind: aster_effect::ToolFileKind::Missing,
                         content_digest: None,
                         mode: None,
                     })
@@ -246,18 +246,18 @@ impl Watch {
             };
         }
         if effects.exceeds_canonical_bound() {
-            return if effects.completeness == a3s_effect::ToolObservationCompleteness::Incomplete
+            return if effects.completeness == aster_effect::ToolObservationCompleteness::Incomplete
                 && !effects.budget_exceeded
             {
-                a3s_effect::ToolEffectObservationV1::incomplete(
+                aster_effect::ToolEffectObservationV1::incomplete(
                     "tool_effect_observation_incomplete: pre-image identity or canonical size bound failed",
                 )
             } else {
-                a3s_effect::ToolEffectObservationV1::budget_exceeded()
+                aster_effect::ToolEffectObservationV1::budget_exceeded()
             };
         }
         if effects.validate().is_err() {
-            return a3s_effect::ToolEffectObservationV1::incomplete(
+            return aster_effect::ToolEffectObservationV1::incomplete(
                 "tool_effect_observation_incomplete: pre-image identity or canonical size bound failed",
             );
         }
@@ -303,7 +303,7 @@ pub(crate) struct PathDelta {
 pub(crate) fn observe_path_effects(
     root: &Path,
     delta: PathDelta,
-) -> a3s_effect::ToolEffectObservationV1 {
+) -> aster_effect::ToolEffectObservationV1 {
     observe_path_effects_within(root, delta, CHANGED_PATH_BYTE_CAP)
 }
 
@@ -311,8 +311,8 @@ fn observe_path_effects_within(
     root: &Path,
     mut delta: PathDelta,
     mut budget: u64,
-) -> a3s_effect::ToolEffectObservationV1 {
-    use a3s_effect::{
+) -> aster_effect::ToolEffectObservationV1 {
+    use aster_effect::{
         ToolEffectObservationV1, ToolFileIdentityV1, ToolFileKind, ToolObservationCompleteness,
         ToolPathChangeV1,
     };
@@ -338,13 +338,13 @@ fn observe_path_effects_within(
     delta.incomplete |= invalid_scope;
     delta.paths.sort();
     delta.paths.dedup();
-    if !delta.incomplete && delta.paths.len() > a3s_effect::MAX_TOOL_EFFECT_PATHS {
+    if !delta.incomplete && delta.paths.len() > aster_effect::MAX_TOOL_EFFECT_PATHS {
         return ToolEffectObservationV1::budget_exceeded();
     }
     let mut effects = ToolEffectObservationV1::complete(Vec::new());
-    if delta.paths.len() > a3s_effect::MAX_TOOL_EFFECT_PATHS {
+    if delta.paths.len() > aster_effect::MAX_TOOL_EFFECT_PATHS {
         delta.incomplete = true;
-        delta.paths.truncate(a3s_effect::MAX_TOOL_EFFECT_PATHS);
+        delta.paths.truncate(aster_effect::MAX_TOOL_EFFECT_PATHS);
     }
     for path in delta.paths {
         if path.is_empty() || path.len() > OBSERVATION_PATH_BYTE_CAP {
@@ -894,9 +894,9 @@ fn index_files_within(root: &Path, cap: usize) -> FileIndex {
         for (name, stat) in found {
             visited += 1;
             if name == ".git"
-                || name == ".a3s"
-                || name == ".a3s-code"
-                || name == ".a3s-agent-retrievals"
+                || name == ".aster"
+                || name == ".aster"
+                || name == ".aster-agent-retrievals"
             {
                 continue;
             }
@@ -1009,7 +1009,7 @@ pub(crate) fn file_delta(root: &Path, before: &FileIndex) -> PathDelta {
 }
 
 /// Baseline taken at run start. Queried again at the gate so a writer that
-/// never published a path still opens the same ledger. `.a3s` and `.git` are
+/// never published a path still opens the same ledger. `.aster` and `.git` are
 /// harness metadata, not source mutations.
 pub(crate) struct RunWatch {
     snapshot: Snapshot,
@@ -1152,15 +1152,15 @@ fn source_paths(mut paths: Vec<String>) -> Vec<String> {
 
 pub(crate) fn is_harness_path(path: &str) -> bool {
     // Separators belong to the host filesystem. A Unix backslash is a literal
-    // byte in the name, so `.a3s\\file` is not the `.a3s` directory.
+    // byte in the name, so `.aster\\file` is not the `.aster` directory.
     // `__pycache__` is Python's own bytecode side effect, not a user edit.
     Path::new(path).components().any(|component| {
         matches!(
             component,
             std::path::Component::Normal(name)
-                if name == ".a3s"
-                    || name == ".a3s-code"
-                    || name == ".a3s-agent-retrievals"
+                if name == ".aster"
+                    || name == ".aster"
+                    || name == ".aster-agent-retrievals"
                     || name == ".git"
                     || name == "__pycache__"
         )

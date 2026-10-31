@@ -2,7 +2,7 @@
 
 Platform decision: `goal_control` belongs to the existing
 `HOST_AUTHORITATIVE_BLOCKS` set (spec 018, T002/T017). Explicit host ACL
-(`--config` / `A3S_CONFIG`) and the trusted user ACL may supply it.
+(`--config` / `ASTER_CONFIG`) and the trusted user ACL may supply it.
 Automatically discovered workspace ACL cannot enable, increase, disable,
 or replace the host's policy. The existing host-layer filter enforces this
 for ACP and the local TUI scaffold.
@@ -13,7 +13,7 @@ successive slices without observed workspace mutation, and a 24-hour deadline fr
 initialization. They still require an explicit goal/wake and retain original
 historical counts. A trusted declaration overrides these defaults, including
 an explicit disabled policy. Workspace declarations remain withheld.
-For `a3s-code-acp --unattended`, the absent-policy defaults instead allow up to
+For `aster-acp --unattended`, the absent-policy defaults instead allow up to
 1000 slices within the run deadline, with a limit of 3 successive settled slices
 without observed workspace mutation. The trusted ACL declaration still wins.
 Progress comes from complete, identity-bound receipts for actual workspace
@@ -38,7 +38,7 @@ most 1000 (checked at parse). A slice is admitted only while the deadline is
 within 30 days of the host clock, so set it close to now before enabling work. The deadline is an absolute UTC Unix
 timestamp in milliseconds; the host must choose a current finite deadline
 before enabling work. Strings preserve integer precision in the ACL numeric
-model. A closed-field check uses a3s-acl tokens before accepting the
+model. A closed-field check uses aster-acl tokens before accepting the
 AST, which otherwise erases duplicate fields. Unknown or duplicate fields,
 missing values, labels, nested blocks, expressions, numeric values, signs,
 leading zeroes and overflow are rejected. A file may declare this block once; separate configuration layers retain their original ordering

@@ -3,7 +3,7 @@
 //! ## Contract
 //!
 //! Keys: `{prefix}/{service}/{instance_id}`  
-//! Default prefix: `/a3s/services`
+//! Default prefix: `/aster/services`
 //!
 //! Value: JSON [`ServiceInstance`].
 //!
@@ -21,7 +21,7 @@ use std::time::Duration;
 use tokio::sync::{oneshot, Mutex};
 use tokio::task::JoinHandle;
 
-const DEFAULT_PREFIX: &str = "/a3s/services";
+const DEFAULT_PREFIX: &str = "/aster/services";
 const DEFAULT_LEASE_TTL_SECS: i64 = 30;
 
 /// Connection and key-layout options for [`EtcdServiceDiscovery`].
@@ -386,10 +386,10 @@ mod tests {
 
     #[test]
     fn instance_key_and_parse_round_trip() {
-        let key = instance_key("/a3s/services", "billing", "pod-1");
-        assert_eq!(key, "/a3s/services/billing/pod-1");
+        let key = instance_key("/aster/services", "billing", "pod-1");
+        assert_eq!(key, "/aster/services/billing/pod-1");
         assert_eq!(
-            parse_instance_key("/a3s/services", key.as_bytes()),
+            parse_instance_key("/aster/services", key.as_bytes()),
             Some(("billing".to_string(), "pod-1".to_string()))
         );
     }
@@ -404,8 +404,8 @@ mod tests {
     }
 
     #[test]
-    fn default_etcd_prefix_is_the_a3s_service_root() {
-        assert_eq!(DEFAULT_PREFIX, "/a3s/services");
-        assert_eq!(EtcdDiscoveryOptions::default().key_prefix, "/a3s/services");
+    fn default_etcd_prefix_is_the_aster_service_root() {
+        assert_eq!(DEFAULT_PREFIX, "/aster/services");
+        assert_eq!(EtcdDiscoveryOptions::default().key_prefix, "/aster/services");
     }
 }

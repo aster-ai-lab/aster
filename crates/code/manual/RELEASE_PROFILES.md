@@ -1,15 +1,15 @@
 # Release profiles (KRN-10)
 
 `HARNESS-CONV5` already published the Cargo feature profiles on
-`a3s-code-core`. This note records their size, startup, memory, and feature
+`aster-core`. This note records their size, startup, memory, and feature
 behavior for the core feature profiles. It does not redefine the features.
 
-`a3s-code-core` owns operation identity, the logical clock, and
+`aster-core` owns operation identity, the logical clock, and
 domain-separated digests in `core_identity` and `content_digest`. The
-separate `a3s-code-kernel` package was removed because nothing linked it.
+separate `aster-kernel` package was removed because nothing linked it.
 Agent event adaptation, the digest-only event log, and capability projection
-stay in core. The other KRN-10 layer names (`a3s-code-engine`,
-`a3s-code-data`, `a3s-code-evaluation`, `a3s-code-host`) stay roadmap names.
+stay in core. The other KRN-10 layer names (`aster-engine`,
+`aster-data`, `aster-evaluation`, `aster-host`) stay roadmap names.
 
 Measurements below are from the local macOS tree on 2026-09-30, using
 `cargo tree -e normal`. They are dependency and artifact facts. They are not
@@ -19,12 +19,12 @@ a new process-RSS or admission-latency run. Workload latency stays in
 ## Kernel
 
 The numbers below are the 2026-09-30 measurement of the retired
-`a3s-code-kernel` package. That package is no longer a workspace member, and
-`a3s-code-core` does not link it.
+`aster-kernel` package. That package is no longer a workspace member, and
+`aster-core` does not link it.
 
-Normal dependency closure, 23 packages: `a3s-code-kernel`, `serde`,
+Normal dependency closure, 23 packages: `aster-kernel`, `serde`,
 `serde_json`, `sha2`, `thiserror`, and their build dependencies. The closure
-does not contain `a3s-search`, `a3s-vec`, `aws-sdk-s3`, `chromiumoxide`,
+does not contain `aster-search`, `aster-vec`, `aws-sdk-s3`, `chromiumoxide`,
 `rquickjs`, or `opentelemetry`.
 
 | | |
@@ -39,20 +39,20 @@ must not add browser, S3, or zvec dependencies to identity types.
 
 ## Facade profiles
 
-`a3s-search` (HTTP/RSS) and `rquickjs` are unconditional facade dependencies.
-Browser engines are the `headless-search` feature (`a3s-search` features
+`aster-search` (HTTP/RSS) and `rquickjs` are unconditional facade dependencies.
+Browser engines are the `headless-search` feature (`aster-search` features
 `headless`, `moli`, `lightpanda`, which also link `chromiumoxide`). QuickJS
-is not selected by a profile and is not part of the kernel. `a3s-lane` brings
+is not selected by a profile and is not part of the kernel. `aster-lane` brings
 `opentelemetry` 0.21 into every facade profile; the Code OTLP exporter
 (`opentelemetry-otlp` 0.27 and `tracing-opentelemetry`) is only the
 `telemetry` feature.
 
 Package counts are unique normal-dependency names.
 
-| Profile | Normal packages | zvec (`a3s-vec`) | Browser (`headless` / `moli` / `lightpanda`, `chromiumoxide`) | S3 (`aws-sdk-s3`) | Code OTLP exporter | Startup and memory behavior |
+| Profile | Normal packages | zvec (`aster-vec`) | Browser (`headless` / `moli` / `lightpanda`, `chromiumoxide`) | S3 (`aws-sdk-s3`) | Code OTLP exporter | Startup and memory behavior |
 | --- | --- | --- | --- | --- | --- | --- |
 | `minimal` | 324 | no | no | no | no | Governed loop and identity only. No vector index, no S3 client, no browser download. QuickJS stays linked for program tools. |
-| `local-code` | 357 | yes | no | no | no | Adds the persistent lexical index, trigram grep pruning, and PDF text extraction. `a3s-vec` loads when that index opens. |
+| `local-code` | 357 | yes | no | no | no | Adds the persistent lexical index, trigram grep pruning, and PDF text extraction. `aster-vec` loads when that index opens. |
 | `scientific` | 403 | yes | yes | no | no | Adds durable SQLite memory, Advanced harness modules, and browser-backed search. The first headless use can download Moli. |
 | `server` | 413 | yes | no | yes | yes | Adds the S3 workspace backend and OpenTelemetry OTLP export. Those clients start when the host enables them. |
 | `full` | 456 | yes | yes | yes | yes | Union of `scientific` and `server`. |
@@ -62,8 +62,8 @@ serve surface.
 
 ## ACP and desktop selection
 
-The standalone `a3s-code-acp` default enables HTTP/RSS search without browser
-engines. Opt in with `--features a3s-code-acp/headless-search`. Studio development,
+The standalone `aster-acp` default enables HTTP/RSS search without browser
+engines. Opt in with `--features aster-acp/headless-search`. Studio development,
 build and package recipes explicitly select that feature to retain browser search.
 Cargo features are additive: another selected package can also enable Core's
 headless feature, so inspect the selected delivery graph when qualifying a build.

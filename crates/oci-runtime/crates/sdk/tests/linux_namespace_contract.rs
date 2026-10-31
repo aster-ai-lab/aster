@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{OciSchemaDocument, OciSchemaValidator};
+use aster_oci_sdk::{OciSchemaDocument, OciSchemaValidator};
 use serde_json::{json, Value};
 
 fn configuration(linux: Value) -> Value {

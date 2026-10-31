@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::Attrs;
 use yrs::{Any, Out, ReadTxn, Text, Transact, Xml, XmlElementRef, XmlFragment, XmlOut, XmlTextRef};
 
@@ -517,7 +517,7 @@ fn invalid_document_splice_range(
     index_utf16: u32,
     delete_utf16: u32,
     current_len: u32,
-) -> a3s_use_core::UseError {
+) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_range_invalid",
         "Document splice range is outside the text node or splits a surrogate pair.",
@@ -710,10 +710,10 @@ mod tests {
     fn identity_anchors_accept_matching_find_hit_and_reject_drift() {
         let doc = new_replica_document(
             7,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Document,
         );
-        let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+        let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
         {
             let mut transaction = doc.transact_mut();
             let first = fragment.push_back(&mut transaction, XmlElementPrelim::empty("paragraph"));
@@ -763,10 +763,10 @@ mod tests {
     fn replacement_preserves_format_and_rotates_the_word_text_identity_once() {
         let doc = new_replica_document(
             7,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Document,
         );
-        let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+        let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
         let (paragraph, text) = {
             let mut transaction = doc.transact_mut();
             let paragraph =
@@ -804,10 +804,10 @@ mod tests {
     fn occurrence_replaces_only_the_selected_document_match() {
         let doc = new_replica_document(
             7,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Document,
         );
-        let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+        let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
         let text = {
             let mut transaction = doc.transact_mut();
             let paragraph =
@@ -838,10 +838,10 @@ mod tests {
     fn find_lists_matches_in_the_same_order_as_replace() {
         let doc = new_replica_document(
             7,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Document,
         );
-        let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+        let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
         {
             let mut transaction = doc.transact_mut();
             let paragraph =
@@ -873,10 +873,10 @@ mod tests {
     fn replacement_rotates_every_ancestor_table_row_text_identity() {
         let doc = new_replica_document(
             7,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Document,
         );
-        let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+        let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
         let (outer_row, inner_row, paragraph, text) = {
             let mut transaction = doc.transact_mut();
             let section =
@@ -935,10 +935,10 @@ mod tests {
     fn replacement_rejects_partial_ancestor_table_row_identity_before_writing() {
         let doc = new_replica_document(
             7,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Document,
         );
-        let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+        let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
         let text = {
             let mut transaction = doc.transact_mut();
             let section =
@@ -973,10 +973,10 @@ mod tests {
     fn splice_keeps_text_id_and_the_mark_before_the_caret() {
         let doc = new_replica_document(
             7,
-            "a3s.office",
+            "aster.office",
             NativeOfficeCollaborationArtifactKind::Document,
         );
-        let fragment = doc.get_or_insert_xml_fragment("a3s.office.document.content");
+        let fragment = doc.get_or_insert_xml_fragment("aster.office.document.content");
         let (paragraph, text) = {
             let mut transaction = doc.transact_mut();
             let paragraph =
@@ -1066,7 +1066,7 @@ mod tests {
             schema_version: 1,
             protocol: String::new(),
             protocol_version: 1,
-            namespace: "a3s.office".to_owned(),
+            namespace: "aster.office".to_owned(),
             artifact_id: "document".to_owned(),
             kind: NativeOfficeCollaborationArtifactKind::Document,
             actor_id: "agent".to_owned(),

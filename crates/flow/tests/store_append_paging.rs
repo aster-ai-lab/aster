@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowError, FlowEvent, FlowEventStore, InMemoryEventStore, WorkflowSpec,
     MAX_FLOW_HISTORY_PAGE_SIZE,
 };
@@ -16,7 +16,7 @@ impl FlowEventStore for PageOnlyAppendStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -25,13 +25,13 @@ impl FlowEventStore for PageOnlyAppendStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, _run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, _run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history read is not allowed for default append validation".into(),
         ))
@@ -41,7 +41,7 @@ impl FlowEventStore for PageOnlyAppendStore {
         &self,
         _run_id: &str,
         _sequence: u64,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history tail read is not allowed for default append validation".into(),
         ))
@@ -52,7 +52,7 @@ impl FlowEventStore for PageOnlyAppendStore {
         run_id: &str,
         after_sequence: u64,
         limit: usize,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         let history = self.inner.list(run_id).await?;
         Ok(history
             .into_iter()
@@ -61,11 +61,11 @@ impl FlowEventStore for PageOnlyAppendStore {
             .collect())
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 
-    async fn latest_event(&self, run_id: &str) -> a3s_flow::Result<Option<(u64, uuid::Uuid)>> {
+    async fn latest_event(&self, run_id: &str) -> aster_flow::Result<Option<(u64, uuid::Uuid)>> {
         self.inner.latest_event(run_id).await
     }
 }
@@ -105,7 +105,7 @@ async fn default_append_validated_pages_history_instead_of_unbounded_list() {
                 run_id,
                 2 + index as u64,
                 FlowEvent::RunProgressRecorded {
-                    progress: a3s_flow::WorkflowProgress::new(format!("pad-{index}"), index as u64),
+                    progress: aster_flow::WorkflowProgress::new(format!("pad-{index}"), index as u64),
                 },
             )
             .await
@@ -117,7 +117,7 @@ async fn default_append_validated_pages_history_instead_of_unbounded_list() {
             run_id,
             expected,
             FlowEvent::RunProgressRecorded {
-                progress: a3s_flow::WorkflowProgress::new("after-pages", 9_999),
+                progress: aster_flow::WorkflowProgress::new("after-pages", 9_999),
             },
         )
         .await

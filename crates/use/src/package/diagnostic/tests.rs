@@ -1,5 +1,5 @@
 use super::*;
-use a3s_use_core::PlanScopeKind;
+use aster_use_core::PlanScopeKind;
 
 fn digest(byte: char) -> String {
     format!("sha256:{}", byte.to_string().repeat(64))
@@ -65,7 +65,7 @@ fn resolution_attempt_diagnostic() -> PluginResolutionAttemptDiagnostic {
             started_at_ms: 10,
             completed_at_ms: None,
             requested_version: Some("1.0.0".to_owned()),
-            channel: a3s_use_core::PluginReleaseChannel::Stable,
+            channel: aster_use_core::PluginReleaseChannel::Stable,
             registry_count: 1,
             verified_registry_count: 0,
             package_lock_digest: None,

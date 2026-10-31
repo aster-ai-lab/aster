@@ -1,0 +1,26 @@
+[package]
+license = "Apache-2.0"
+name = "aster-computer-hub-core"
+version = "0.1.0"
+description = "Transport, ToolRegistry, and resolver abstractions for the Aster Computer Hub"
+edition = "2024"
+publish = false
+
+[dependencies]
+async-trait = {workspace = true}
+chrono = {workspace = true}
+futures = {workspace = true}
+serde_json = {workspace = true}
+tracing = {workspace = true}
+aster-tool-types = {path = "../aster-tool-types"}
+aster-tool-runtime = {path = "../aster-tool-runtime"}
+aster-tool-protocol = {path = "../aster-tool-protocol"}
+
+[dev-dependencies]
+dashmap = {workspace = true}
+schemars = {workspace = true}
+tokio = {version = "1", features = ["full", "rt", "rt-multi-thread", "macros", "test-util", "sync"]}
+serde = {workspace = true}
+
+[lints]
+workspace = true

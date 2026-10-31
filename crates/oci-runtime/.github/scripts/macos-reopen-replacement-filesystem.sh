@@ -5,9 +5,9 @@ run_filesystem_stage() {
   mkdir "$stage_console_dir"
   set +e
   output="$(
-    target/debug/a3s-oci oci-vm-reopen-replacement \
+    target/debug/aster-oci oci-vm-reopen-replacement \
       --operation filesystem \
-      --shim "$signed_dir/a3s-oci-krun-shim" \
+      --shim "$signed_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs_dir" \
       --system-image-manifest "$system_image_manifest" \
       --bundle "$bundle_dir" \
@@ -22,7 +22,7 @@ run_filesystem_stage() {
     test "$gate_exit_code" -eq 0
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v19"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v19"
        and .platform == "macos" and .status == "available"
        and .bundle_loaded
        and .requested_operation == "filesystem"
@@ -32,7 +32,7 @@ run_filesystem_stage() {
        and (.file_user == null)
        and .filesystem_op == "make-dir"
        and (.filesystem_path
-            | startswith("/tmp/.a3s-oci-filesystem-reopen-"))
+            | startswith("/tmp/.aster-oci-filesystem-reopen-"))
        and (.filesystem_destination == null)
        and .filesystem_depth == 0
        and (.filesystem_user == null)
@@ -162,7 +162,7 @@ run_filesystem_stage() {
     test "$gate_exit_code" -eq 2
     jq --exit-status --arg stage "$fault_stage" \
       '.schema_version
-           == "a3s.oci.oci-vm-operation-reopen-replacement.v19"
+           == "aster.oci.oci-vm-operation-reopen-replacement.v19"
        and .platform == "macos"
        and .status != "available"
        and .requested_operation == "filesystem"

@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     PlanActor, PlanAuthority, PluginGrantConfirmation, PluginOperationConfirmation,
     PluginOperationPlan, PluginOperationPlanBinding, PluginOperationPlanDraft,
     PluginOperationPlanEnvelope, PluginWorkspaceGrantChangeSet, UseError, UseResult,

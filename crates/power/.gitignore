@@ -1,0 +1,44 @@
+# Rust
+/target/
+/target-*/
+**/*.rs.bk
+*.pdb
+
+# Python tooling
+__pycache__/
+*.py[cod]
+
+# Coverage
+*.lcov
+lcov.info
+*.profraw
+*.profdata
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Documentation site
+/site/doc_build/
+/site/node_modules/
+
+# Claude Code
+.claude/settings.local.json
+.claude/sessions/
+.claude/cache/
+
+# Local short Cargo home (never commit)
+.cargo-home-short/
+.cargo/config.toml
+.tmp-perf-goal/

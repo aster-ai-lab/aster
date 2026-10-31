@@ -48,7 +48,7 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          cargo fmt -p aster -p a3s-code-core -p a3s-code-acp -- --check
+          cargo fmt -p aster -p aster-core -p aster-acp -- --check
           python3 tests/workspace_dependencies.py
           python3 tests/studio_checkout.py
           python3 tests/cli_pair_delivery.py
@@ -60,7 +60,7 @@ jobs:
           python3 tests/release_governance.py
       - name: Build the CLI and ACP companion pair
         shell: bash
-        run: cargo build --locked -p aster -p a3s-code-acp
+        run: cargo build --locked -p aster -p aster-acp
       - name: Test Aster CLI
         shell: bash
         run: cargo test --locked -p aster --bin aster -- --test-threads=4

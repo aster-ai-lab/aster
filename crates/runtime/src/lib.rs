@@ -1,4 +1,4 @@
-//! General provider-neutral Task and Service Runtime contracts for A3S.
+//! General provider-neutral Task and Service Runtime contracts for Aster.
 
 mod attestation;
 mod client;

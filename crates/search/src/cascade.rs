@@ -122,7 +122,7 @@ pub(crate) fn normalized_usable_host(result: &SearchResult) -> Option<String> {
 ///
 /// The requirements deliberately contain no text, topic, language, publisher,
 /// domain, or semantic thresholds. Applications that need semantic evaluation
-/// must make that decision outside A3S Search.
+/// must make that decision outside Aster Search.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
@@ -191,7 +191,7 @@ pub enum SearchTierDecision {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SearchTierDecisionSource {
-    /// A3S Search applied only the recorded structural requirements.
+    /// Aster Search applied only the recorded structural requirements.
     RetrievalRequirements,
     /// An external caller or evaluator supplied the decision.
     ExternalPolicy,
@@ -260,7 +260,7 @@ impl SearchCascade {
 
     /// Merges one tier and records a decision made by an external policy.
     ///
-    /// A3S Search does not inspect, reproduce, or validate the policy's semantic
+    /// Aster Search does not inspect, reproduce, or validate the policy's semantic
     /// reasoning. The receipt records that the decision came from outside.
     pub fn push_tier_with_decision(
         &mut self,

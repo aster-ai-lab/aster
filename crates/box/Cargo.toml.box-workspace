@@ -22,16 +22,12 @@ resolver = "2"
 # UDS-style authority instead of resetting. See third_party/h2/src/server.rs.
 h2 = { path = "third_party/h2" }
 
-# In-tree Runtime protocol additions, matching the OS control-plane workspace.
-[patch."https://github.com/A3S-Lab/Runtime.git"]
-a3s-runtime = { path = "../../runtime" }
-
 [workspace.package]
 version = "3.2.7"
 edition = "2021"
-authors = ["A3S Lab Team"]
+authors = ["Aster Team"]
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Box"
+repository = "https://github.com/aster-ai-lab/Box"
 
 [workspace.dependencies]
 # Async runtime
@@ -118,7 +114,7 @@ oci-distribution = "0.11"
 comfy-table = { version = "7", default-features = false }
 
 # Random
-rand = "0.8"
+rand = "0.9"
 
 # Base64 encoding
 base64 = "0.22"
@@ -127,15 +123,15 @@ base64 = "0.22"
 ring = "0.17"
 
 # Shared types (transport protocol, privacy, tools)
-a3s-acl = { version = "0.3.0", git = "https://github.com/A3S-Lab/ACL.git", rev = "5317e166222495585909d81f2caffdca90273c99" }
-a3s-transport = { version = "0.1.1", package = "a3s-common" }
-a3s-runtime = { version = "=0.8.0", git = "https://github.com/A3S-Lab/Runtime.git", rev = "dbe2ee9b73c995c4dafbcec16e40be3b2362eb0a" }
-a3s-oci-sdk = { git = "https://github.com/A3S-Lab/OCI-Runtime.git", rev = "b26155b1b68b83bbb8c22d2f549cae587a23c0b0" }
+aster-acl = { path = "../acl" }
+aster-transport = { version = "0.1.1", package = "aster-common", path = "../common" }
+aster-runtime = { path = "../runtime" }
+aster-oci-sdk = { path = "../oci-runtime/crates/sdk" }
 
 # Metrics
 prometheus = "0.13"
 
 # The release-owned ext4 writer keeps its upstream test profile while sharing
 # the Box workspace version and publication lifecycle.
-[profile.test.package.a3s-box-mkext4]
+[profile.test.package.aster-box-mkext4]
 opt-level = 2

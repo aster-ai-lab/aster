@@ -4,13 +4,13 @@ use std::io::{self, Read};
 use std::os::fd::{AsRawFd, FromRawFd};
 use std::os::unix::fs::MetadataExt;
 
-use a3s_oci_agent_protocol::AgentVsockEndpoint;
+use aster_oci_agent_protocol::AgentVsockEndpoint;
 use zeroize::Zeroizing;
 
 use crate::macos_runtime_share::MacosRuntimeShare;
 
-const MARKER_PREFIX: &str = ".a3s-oci-hvf-vm-smoke-";
-const MARKER_NONCE_PREFIX: &str = "a3s-oci-agent-";
+const MARKER_PREFIX: &str = ".aster-oci-hvf-vm-smoke-";
+const MARKER_NONCE_PREFIX: &str = "aster-oci-agent-";
 const MARKER_NONCE_HEX_BYTES: usize = 32;
 const MARKER_TOKEN_HEX_BYTES: usize = 64;
 pub(crate) const MAX_MARKER_BYTES: usize = MARKER_TOKEN_HEX_BYTES + 1;
@@ -328,17 +328,17 @@ mod tests {
     }
 
     fn marker_name() -> &'static str {
-        ".a3s-oci-hvf-vm-smoke-0123456789abcdef0123456789abcdef"
+        ".aster-oci-hvf-vm-smoke-0123456789abcdef0123456789abcdef"
     }
 
     #[test]
     fn marker_name_requires_a_fresh_hex_nonce() {
         validate_marker_name(marker_name()).expect("generated marker must pass");
-        assert!(validate_marker_name(".a3s-oci-hvf-vm-smoke-123").is_err());
+        assert!(validate_marker_name(".aster-oci-hvf-vm-smoke-123").is_err());
         assert!(validate_marker_name("../marker").is_err());
-        assert!(validate_marker_name(".a3s-oci-hvf-vm-smoke-1';reboot").is_err());
+        assert!(validate_marker_name(".aster-oci-hvf-vm-smoke-1';reboot").is_err());
         assert!(
-            validate_marker_name(".a3s-oci-hvf-vm-smoke-0123456789ABCDEF0123456789abcdef").is_err()
+            validate_marker_name(".aster-oci-hvf-vm-smoke-0123456789ABCDEF0123456789abcdef").is_err()
         );
     }
 

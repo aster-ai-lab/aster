@@ -5,7 +5,7 @@
 //! in-memory provider. Covers publish/subscribe, history, encryption,
 //! schema validation, DLQ, state persistence, metrics, and concurrency.
 
-use a3s_event::{
+use aster_event::{
     Aes256GcmEncryptor, Broker, CloudEvent, CollectorSink, DeadLetterEvent, DlqHandler, Event,
     EventBus, EventSchema, EventSink, MemoryDlqHandler, MemorySchemaRegistry, MemoryStateStore,
     SchemaRegistry, SinkDlqHandler, StateStore, SubscriptionFilter, TopicSink, Trigger,
@@ -14,7 +14,7 @@ use a3s_event::{
 use std::sync::Arc;
 
 fn test_bus() -> EventBus {
-    EventBus::new(a3s_event::MemoryProvider::default())
+    EventBus::new(aster_event::MemoryProvider::default())
 }
 
 // ─── Publish & History ───────────────────────────────────────────
@@ -289,7 +289,7 @@ async fn test_encrypted_publish_decrypt_on_list() {
         .unwrap();
 
     // Returned event has encrypted payload
-    assert!(a3s_event::EncryptedPayload::is_encrypted(&event.payload));
+    assert!(aster_event::EncryptedPayload::is_encrypted(&event.payload));
 
     // list_events auto-decrypts
     let events = bus.list_events(Some("compliance"), 10).await.unwrap();
@@ -360,7 +360,7 @@ async fn test_publish_event_prebuilt_does_not_mutate_original() {
 
     // Original event must NOT be mutated
     assert_eq!(original.payload["ssn"], "123-45-6789");
-    assert!(!a3s_event::EncryptedPayload::is_encrypted(
+    assert!(!aster_event::EncryptedPayload::is_encrypted(
         &original.payload
     ));
 }
@@ -383,7 +383,7 @@ async fn test_schema_validation_rejects_invalid_event() {
         })
         .unwrap();
 
-    let bus = EventBus::with_schema_registry(a3s_event::MemoryProvider::default(), registry);
+    let bus = EventBus::with_schema_registry(aster_event::MemoryProvider::default(), registry);
 
     // Valid typed event
     let valid = Event::typed(
@@ -428,7 +428,7 @@ async fn test_schema_validation_with_encryption() {
         })
         .unwrap();
 
-    let mut bus = EventBus::with_schema_registry(a3s_event::MemoryProvider::default(), registry);
+    let mut bus = EventBus::with_schema_registry(aster_event::MemoryProvider::default(), registry);
     bus.set_encryptor(Arc::new(Aes256GcmEncryptor::new("k1", &[0x55; 32])));
 
     // Valid: passes validation, then gets encrypted
@@ -472,7 +472,7 @@ async fn test_dlq_integration() {
     assert!(bus.dlq_handler().is_some());
 
     // Simulate a failed event routed to DLQ
-    let received = a3s_event::ReceivedEvent {
+    let received = aster_event::ReceivedEvent {
         event: Event::new(
             "events.payment.failed",
             "payment",
@@ -548,9 +548,9 @@ async fn test_state_persistence_across_bus_instances() {
 
 #[tokio::test]
 async fn test_state_persistence_with_file_store() {
-    let dir = std::env::temp_dir().join(format!("a3s-mem-integ-{}", uuid::Uuid::new_v4()));
+    let dir = std::env::temp_dir().join(format!("aster-mem-integ-{}", uuid::Uuid::new_v4()));
     let path = dir.join("state.json");
-    let store = Arc::new(a3s_event::FileStateStore::new(&path));
+    let store = Arc::new(aster_event::FileStateStore::new(&path));
 
     // Bus 1: add subscription, persist to file
     {
@@ -616,7 +616,7 @@ async fn test_metrics_full_lifecycle() {
         })
         .unwrap();
 
-    let mut bus = EventBus::with_schema_registry(a3s_event::MemoryProvider::default(), registry);
+    let mut bus = EventBus::with_schema_registry(aster_event::MemoryProvider::default(), registry);
     bus.set_encryptor(Arc::new(Aes256GcmEncryptor::new("k1", &[0x77; 32])));
 
     // Successful publishes
@@ -779,7 +779,7 @@ async fn test_concurrent_publish_with_encryption() {
     let events = bus.list_events(None, 100).await.unwrap();
     assert_eq!(events.len(), 20);
     for event in &events {
-        assert!(!a3s_event::EncryptedPayload::is_encrypted(&event.payload));
+        assert!(!aster_event::EncryptedPayload::is_encrypted(&event.payload));
         assert_eq!(event.payload["sensitive"], true);
     }
 
@@ -807,7 +807,7 @@ async fn test_full_stack_all_features() {
     let dlq = Arc::new(MemoryDlqHandler::default());
     let enc = Arc::new(Aes256GcmEncryptor::new("prod-key", &[0xDE; 32]));
 
-    let mut bus = EventBus::with_schema_registry(a3s_event::MemoryProvider::default(), registry);
+    let mut bus = EventBus::with_schema_registry(aster_event::MemoryProvider::default(), registry);
     bus.set_state_store(store.clone()).unwrap();
     bus.set_dlq_handler(dlq.clone());
     bus.set_encryptor(enc);
@@ -858,7 +858,7 @@ async fn test_full_stack_all_features() {
     .unwrap();
 
     // 5. Route a failed event to DLQ
-    let failed = a3s_event::ReceivedEvent {
+    let failed = aster_event::ReceivedEvent {
         event: Event::new(
             "events.commerce.order",
             "commerce",
@@ -917,7 +917,7 @@ async fn test_cloudevents_roundtrip_via_bus() {
     let event = Event::typed(
         "events.gateway.scale.up",
         "gateway",
-        "a3s.gateway.scale.up",
+        "aster.gateway.scale.up",
         1,
         "Scale up web-api",
         "gateway",
@@ -930,12 +930,12 @@ async fn test_cloudevents_roundtrip_via_bus() {
     // Convert to CloudEvent and back
     let ce: CloudEvent = event.clone().into();
     assert_eq!(ce.specversion, "1.0");
-    assert_eq!(ce.event_type, "a3s.gateway.scale.up");
+    assert_eq!(ce.event_type, "aster.gateway.scale.up");
     assert_eq!(ce.source, "gateway");
 
     let recovered: Event = ce.try_into().unwrap();
     assert_eq!(recovered.id, event.id);
-    assert_eq!(recovered.event_type, "a3s.gateway.scale.up");
+    assert_eq!(recovered.event_type, "aster.gateway.scale.up");
     assert_eq!(recovered.metadata["priority"], "high");
     assert_eq!(recovered.payload["service"], "web-api");
 }
@@ -953,7 +953,7 @@ async fn test_broker_trigger_routing_via_bus() {
     broker
         .add_trigger(Trigger::new(
             "scale-trigger",
-            TriggerFilter::by_type("a3s.gateway.scale.up"),
+            TriggerFilter::by_type("aster.gateway.scale.up"),
             scale_sink.clone(),
         ))
         .await;
@@ -961,7 +961,7 @@ async fn test_broker_trigger_routing_via_bus() {
     broker
         .add_trigger(Trigger::new(
             "health-trigger",
-            TriggerFilter::by_type("a3s.box.instance.health"),
+            TriggerFilter::by_type("aster.box.instance.health"),
             health_sink.clone(),
         ))
         .await;
@@ -970,7 +970,7 @@ async fn test_broker_trigger_routing_via_bus() {
     let scale_event = Event::typed(
         "events.gateway.scale.up",
         "gateway",
-        "a3s.gateway.scale.up",
+        "aster.gateway.scale.up",
         1,
         "Scale up web-api",
         "gateway",
@@ -985,7 +985,7 @@ async fn test_broker_trigger_routing_via_bus() {
     let health_event = Event::typed(
         "events.box.instance.health",
         "box",
-        "a3s.box.instance.health",
+        "aster.box.instance.health",
         1,
         "Health report",
         "box",
@@ -1064,7 +1064,7 @@ async fn test_sink_dlq_integration() {
     bus.set_dlq_handler(dlq.clone());
 
     // Simulate a dead-lettered event
-    let received = a3s_event::ReceivedEvent {
+    let received = aster_event::ReceivedEvent {
         event: Event::new(
             "events.payment.process",
             "payment",
@@ -1090,7 +1090,7 @@ async fn test_sink_dlq_integration() {
     // Verify event was forwarded to sink
     let events = collector.events().await;
     assert_eq!(events.len(), 1);
-    assert_eq!(events[0].event_type, "a3s.dlq.dead_letter");
+    assert_eq!(events[0].event_type, "aster.dlq.dead_letter");
     assert_eq!(events[0].metadata["dlq_reason"], "Timeout after 5 retries");
     assert_eq!(
         events[0].metadata["dlq_original_subject"],

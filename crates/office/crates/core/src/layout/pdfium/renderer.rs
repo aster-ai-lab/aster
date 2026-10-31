@@ -6,7 +6,7 @@ use std::time::Duration;
 #[cfg(test)]
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use async_trait::async_trait;
 use sha2::{Digest, Sha256};
 
@@ -30,7 +30,7 @@ use crate::layout::{
 };
 use crate::{NativeOfficeUnit, NativeOfficeUnitLocator, PackageRevision};
 
-const RENDERER_ID: &str = "a3s-office-native-pdfium";
+const RENDERER_ID: &str = "aster-office-native-pdfium";
 const ENGINE_NAME: &str = "pdfium";
 const DEVICE_SCALE_FACTOR_MILLI: u32 = 1_000;
 
@@ -124,7 +124,7 @@ impl NativeOfficePdfiumLayoutRenderer {
             .await
             .map_err(|_| pdfium_task_failed())??;
             verify_source_revision(&source_for_task, &revision_for_task).await?;
-            Ok::<_, a3s_use_core::UseError>(pages)
+            Ok::<_, aster_use_core::UseError>(pages)
         };
         let pages = match tokio::time::timeout(Duration::from_millis(timeout_ms), task).await {
             Ok(result) => result?,
@@ -178,7 +178,7 @@ impl NativeOfficePdfiumLayoutRenderer {
             .await
             .map_err(|_| pdfium_task_failed())??;
             verify_source_revision(&source_for_task, &revision_for_task).await?;
-            Ok::<_, a3s_use_core::UseError>(layer)
+            Ok::<_, aster_use_core::UseError>(layer)
         };
         let layer = match tokio::time::timeout(Duration::from_millis(timeout_ms), task).await {
             Ok(result) => result?,
@@ -222,7 +222,7 @@ impl NativeOfficePdfiumLayoutRenderer {
             .await
             .map_err(|_| pdfium_task_failed())??;
             verify_source_revision(&source_for_task, &revision_for_task).await?;
-            Ok::<_, a3s_use_core::UseError>(outline)
+            Ok::<_, aster_use_core::UseError>(outline)
         };
         let outline = match tokio::time::timeout(Duration::from_millis(timeout_ms), task).await {
             Ok(result) => result?,
@@ -545,7 +545,7 @@ fn renderer_config_sha256() -> String {
     format!(
         "{:x}",
         Sha256::digest(
-            b"a3s-office-pdfium-layout-v1\0pdfium-7881\0rgba8\0png\0white-background\0annotations\0forms\0no-fetch"
+            b"aster-office-pdfium-layout-v1\0pdfium-7881\0rgba8\0png\0white-background\0annotations\0forms\0no-fetch"
         )
     )
 }
@@ -590,21 +590,21 @@ fn absolute(path: &Path) -> UseResult<PathBuf> {
         .map_err(|_| pdf_source_invalid())
 }
 
-fn layout_timeout(timeout_ms: u64) -> a3s_use_core::UseError {
+fn layout_timeout(timeout_ms: u64) -> aster_use_core::UseError {
     layout_error(
         "use.office.layout_timeout",
         format!("Office layout rendering exceeded {timeout_ms} ms."),
     )
 }
 
-fn pdf_source_invalid() -> a3s_use_core::UseError {
+fn pdf_source_invalid() -> aster_use_core::UseError {
     layout_error(
         "use.office.pdf_source_invalid",
         "The PDF source is missing, unsafe, empty, or exceeds its explicit byte bound.",
     )
 }
 
-fn pdfium_task_failed() -> a3s_use_core::UseError {
+fn pdfium_task_failed() -> aster_use_core::UseError {
     layout_error(
         "use.office.pdfium_unavailable",
         "The bounded PDFium task did not complete successfully.",

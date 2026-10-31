@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, HookCallbackRoute, HookMetadata, HookStatus,
     RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowSpec,
 };
@@ -13,7 +13,7 @@ impl FlowRuntime for ApprovalRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(payload) = ctx.hook_payload("approval") {
             return Ok(ctx.complete(json!({
@@ -42,13 +42,13 @@ impl FlowRuntime for ApprovalRuntime {
         )?)
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("approval runtime does not schedule steps")
     }
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(ApprovalRuntime));
     let spec =
         WorkflowSpec::rust_embedded("examples.approval-disposal", "0.1.0", "examples", "main");

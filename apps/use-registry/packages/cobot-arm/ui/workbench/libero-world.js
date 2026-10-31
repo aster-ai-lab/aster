@@ -76,11 +76,11 @@ export function orientationError(desired, current) {
 
 export class LiberoWorld {
   /**
-   * scene: { physics: MJCF text, episode: the exported a3s-libero-episode-v1
+   * scene: { physics: MJCF text, episode: the exported aster-libero-episode-v1
    * object, init: the index of one of its exported init states (default 0) }.
    */
   static create(mujoco, scene) {
-    if (scene?.episode?.format !== 'a3s-libero-episode-v1') throw new Error('不是 LIBERO 场景包')
+    if (scene?.episode?.format !== 'aster-libero-episode-v1') throw new Error('不是 LIBERO 场景包')
     const init = scene.init ?? 0
     if (!Number.isInteger(init) || !scene.episode.inits?.[init]) throw new Error('LIBERO 初始状态无效')
     const model = mujoco.MjModel.from_xml_string(scene.physics)

@@ -1,10 +1,10 @@
 use std::path::Path;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportOperationStage, AgentTransportQualificationRequest,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{
     ContainerOperationRequest, CreateAttachments, CreateRequest, IoMode, IsolationRequest,
     OciBundle, OperationContext, ProcessIo, StartRequest,
 };
@@ -179,7 +179,7 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
     report.setup_start_operation_id = Some(start_operation_id);
     report.container_id = Some(exact_target.id.clone());
 
-    let state_root = console_directory.join(format!("a3s-oci-pause-reopen-{nonce}-state"));
+    let state_root = console_directory.join(format!("aster-oci-pause-reopen-{nonce}-state"));
     if let Err(reason) = super::super::create_qualification_state_root(&state_root).await {
         return failed(report, reason);
     }
@@ -188,11 +188,11 @@ pub(in crate::oci_smoke::utility_vm) async fn run(
         vm_rootfs,
         system_image_manifest: system_image_manifest.to_path_buf(),
         state_root: state_root.clone(),
-        first_console: console_directory.join(format!("a3s-oci-pause-reopen-{nonce}-first.log")),
+        first_console: console_directory.join(format!("aster-oci-pause-reopen-{nonce}-first.log")),
         replacement_console: console_directory
-            .join(format!("a3s-oci-pause-reopen-{nonce}-replacement.log")),
+            .join(format!("aster-oci-pause-reopen-{nonce}-replacement.log")),
         marker,
-        marker_contents: format!("a3s-oci-exec-init-{nonce}\n").into_bytes(),
+        marker_contents: format!("aster-oci-exec-init-{nonce}\n").into_bytes(),
         create,
         start,
         pause,

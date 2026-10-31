@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowRuntime, FlowScheduler, FlowWorker,
     InMemoryFlowTaskQueue, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
     WorkflowSpec,
@@ -19,7 +19,7 @@ impl FlowRuntime for ImportRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         let Some(job) = ctx.step_output("start-import") else {
             return Ok(ctx.schedule_step(
@@ -66,7 +66,7 @@ impl FlowRuntime for ImportRuntime {
         Ok(ctx.fail("import did not become ready after 3 polls"))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "start_import" => Ok(json!({
                 "jobId": format!("job-{}", invocation.input["source"].as_str().unwrap_or("unknown")),
@@ -93,7 +93,7 @@ impl FlowRuntime for ImportRuntime {
 fn next_poll_at(
     invocation: &WorkflowInvocation,
     attempt: usize,
-) -> a3s_flow::Result<DateTime<Utc>> {
+) -> aster_flow::Result<DateTime<Utc>> {
     let step_id = format!("poll-{attempt}");
     let output = invocation
         .history
@@ -119,7 +119,7 @@ fn next_poll_at(
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let runtime = Arc::new(ImportRuntime::default());
     let engine = FlowEngine::in_memory(runtime.clone());
     let queue = Arc::new(InMemoryFlowTaskQueue::new());

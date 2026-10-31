@@ -5,7 +5,7 @@ use http::{HeaderMap, HeaderValue, Response};
 use uuid::Uuid;
 
 pub(crate) const REQUEST_ID_HEADER: &str = "x-request-id";
-pub(crate) const ATTEMPT_ID_HEADER: &str = "x-a3s-attempt-id";
+pub(crate) const ATTEMPT_ID_HEADER: &str = "x-aster-attempt-id";
 
 /// Stable identity and correlation context for one managed inference request.
 #[derive(Debug, Clone, PartialEq, Eq)]

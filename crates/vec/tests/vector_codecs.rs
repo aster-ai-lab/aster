@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionSchema, DataType, Doc, ErrorCode, FieldSchema, SearchQuery, VectorValue,
 };
 use serde_json::json;

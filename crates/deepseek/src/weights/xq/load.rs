@@ -2,7 +2,7 @@
 //! own-window/compressed/index/history state. Sequential sharing is explicit;
 //! a failed layer poisons the whole request proposal. No backend is registered.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

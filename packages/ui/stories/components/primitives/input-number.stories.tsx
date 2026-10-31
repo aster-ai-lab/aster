@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { InputGroup, InputGroupAddon, InputGroupInputNumber, InputGroupText, InputNumber } from '@a3s-lab/ui'
+import { InputGroup, InputGroupAddon, InputGroupInputNumber, InputGroupText, InputNumber } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof InputNumber> = {
   title: 'Components/Primitives/input-number',

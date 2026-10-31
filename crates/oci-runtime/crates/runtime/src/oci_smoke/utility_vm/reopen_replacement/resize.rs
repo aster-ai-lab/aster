@@ -1,15 +1,15 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentTransportOperationStage, AgentTransportQualificationRequest};
+use aster_oci_sdk::{
     ContainerTarget, CreateRequest, ExecRequest, OperationId, ResizeRequest, StartRequest,
 };
 
 use super::QualificationHvfDriver;
 use crate::{DriverExecRequest, DriverResizeRequest, OciVmOperationReopenReplacementReport};
 
-pub(super) const RESIZE_MARKER_NAME: &str = ".a3s-oci-resize-reopen-smoke";
+pub(super) const RESIZE_MARKER_NAME: &str = ".aster-oci-resize-reopen-smoke";
 
 struct Qualification {
     shim: PathBuf,

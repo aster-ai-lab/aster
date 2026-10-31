@@ -13,15 +13,15 @@
 //! (plan-every-turn) plus a per-turn imperative prompt suffix, which is what made
 //! ultracode explore the workspace on a bare "hi".
 //!
-//! `#[ignore]` — requires a live provider in `.a3s/config.acl`. Run:
+//! `#[ignore]` — requires a live provider in `.aster/config.acl`. Run:
 //!
-//!   A3S_CONFIG_FILE=/Users/roylin/code/a3s/.a3s/config.acl \
-//!     cargo test -p a3s-code-core --test test_ultracode_discretion_real_llm \
+//!   ASTER_CONFIG_FILE=/Users/roylin/code/aster/.aster/config.acl \
+//!     cargo test -p aster-core --test test_ultracode_discretion_real_llm \
 //!     -- --ignored --nocapture
 
 use std::time::Duration;
 
-use a3s_code_core::{
+use aster_core::{
     hitl::AutoApproveConfirmation, Agent, AgentEvent, PlanningMode, SessionOptions,
     SystemPromptSlots,
 };

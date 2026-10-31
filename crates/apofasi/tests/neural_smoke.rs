@@ -6,7 +6,7 @@
 
 #![cfg(feature = "infer")]
 
-use a3s_apofasi::{
+use aster_apofasi::{
     Criteria, DecisionEngine, DecisionKind, DeviceRequest, NeuralEngine, Question, State,
     SystemOneRequest,
 };
@@ -62,13 +62,13 @@ fn neural_english_smoke_cpu() {
     let res = engine.decide(&refund_request()).expect("decide");
     assert!(res.model.starts_with("apofasi-"), "model id {}", res.model);
     match &res.answers["department"] {
-        a3s_apofasi::Answer::Choice { choice, .. } => {
+        aster_apofasi::Answer::Choice { choice, .. } => {
             assert_eq!(choice, "billing", "department={choice}");
         }
         other => panic!("unexpected department answer {other:?}"),
     }
     match &res.answers["refund_requested"] {
-        a3s_apofasi::Answer::Noul { noul } => {
+        aster_apofasi::Answer::Noul { noul } => {
             assert!(*noul > 0.5, "noul={noul}");
         }
         other => panic!("unexpected noul answer {other:?}"),
@@ -92,7 +92,7 @@ fn neural_english_smoke_metal() {
     };
     let res = engine.decide(&refund_request()).expect("decide metal");
     match &res.answers["department"] {
-        a3s_apofasi::Answer::Choice { choice, .. } => {
+        aster_apofasi::Answer::Choice { choice, .. } => {
             assert_eq!(choice, "billing", "department={choice}");
         }
         other => panic!("unexpected department answer {other:?}"),

@@ -1,5 +1,5 @@
-use a3s_use_core::{PlanScope, PlanScopeKind};
-use a3s_use_extension::ExtensionManifest;
+use aster_use_core::{PlanScope, PlanScopeKind};
+use aster_use_extension::ExtensionManifest;
 use sha2::{Digest, Sha256};
 
 use super::*;

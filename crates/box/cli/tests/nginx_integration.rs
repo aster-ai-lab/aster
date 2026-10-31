@@ -1,7 +1,7 @@
-//! Integration test: Run containers in a3s-box MicroVM.
+//! Integration test: Run containers in aster-box MicroVM.
 //!
 //! This test demonstrates the full lifecycle of running containers
-//! inside a3s-box MicroVMs:
+//! inside aster-box MicroVMs:
 //!
 //! 1. Pull an OCI image from Docker Hub
 //! 2. Run a container in detached mode
@@ -11,7 +11,7 @@
 //!
 //! ## Prerequisites
 //!
-//! - `a3s-box` binary built (`cargo build -p a3s-box-cli`)
+//! - `aster-box` binary built (`cargo build -p aster-box-cli`)
 //! - macOS with Apple HVF or Linux with KVM
 //! - Internet access (to pull images on first run)
 //! - `DYLD_LIBRARY_PATH` set to include libkrun/libkrunfw build dirs
@@ -25,10 +25,10 @@
 //! export DYLD_LIBRARY_PATH="$(ls -td target/debug/build/libkrun-sys-*/out/libkrun/lib | head -1):$(ls -td target/debug/build/libkrun-sys-*/out/libkrunfw/lib | head -1)"
 //!
 //! # Run all integration tests
-//! cargo test -p a3s-box-cli --test nginx_integration -- --ignored --nocapture
+//! cargo test -p aster-box-cli --test nginx_integration -- --ignored --nocapture
 //!
 //! # Run a single test
-//! cargo test -p a3s-box-cli --test nginx_integration -- --ignored --nocapture test_alpine_full_lifecycle
+//! cargo test -p aster-box-cli --test nginx_integration -- --ignored --nocapture test_alpine_full_lifecycle
 //! ```
 //!
 //! Tests are `#[ignore]` by default because they require a built binary,
@@ -37,7 +37,7 @@
 use std::process::Command;
 use std::time::Duration;
 
-/// Find the a3s-box binary in the target directory.
+/// Find the aster-box binary in the target directory.
 fn find_binary() -> String {
     // CARGO_MANIFEST_DIR points to the cli crate: crates/box/src/cli
     // target dir is at: crates/box/src/target/
@@ -47,72 +47,72 @@ fn find_binary() -> String {
         .expect("cli crate should be inside workspace");
 
     for profile in ["debug", "release"] {
-        let bin = workspace_root.join("target").join(profile).join("a3s-box");
+        let bin = workspace_root.join("target").join(profile).join("aster-box");
         if bin.exists() {
             return bin.to_string_lossy().to_string();
         }
     }
 
     // Fall back to PATH
-    "a3s-box".to_string()
+    "aster-box".to_string()
 }
 
-/// Run an a3s-box command and return (stdout, stderr, success).
+/// Run an aster-box command and return (stdout, stderr, success).
 /// Both stdout and stderr go directly to terminal for real-time output.
 fn run_cmd(args: &[&str]) -> (String, String, bool) {
     let bin = find_binary();
-    eprintln!("    $ a3s-box {}", args.join(" "));
+    eprintln!("    $ aster-box {}", args.join(" "));
 
     let status = Command::new(&bin)
         .args(args)
         .stdout(std::process::Stdio::inherit())
         .stderr(std::process::Stdio::inherit())
         .status()
-        .unwrap_or_else(|e| panic!("Failed to run `a3s-box {}`: {}", args.join(" "), e));
+        .unwrap_or_else(|e| panic!("Failed to run `aster-box {}`: {}", args.join(" "), e));
 
     // stdout is inherited (not captured), so return empty
     (String::new(), String::new(), status.success())
 }
 
-/// Run an a3s-box command and capture stdout (no real-time output).
+/// Run an aster-box command and capture stdout (no real-time output).
 /// Used when we need the command's output (e.g., box ID, ps, inspect).
 fn run_cmd_capture(args: &[&str]) -> (String, String, bool) {
     let bin = find_binary();
     let output = Command::new(&bin)
         .args(args)
         .output()
-        .unwrap_or_else(|e| panic!("Failed to run `a3s-box {}`: {}", args.join(" "), e));
+        .unwrap_or_else(|e| panic!("Failed to run `aster-box {}`: {}", args.join(" "), e));
 
     let stdout = String::from_utf8_lossy(&output.stdout).to_string();
     let stderr = String::from_utf8_lossy(&output.stderr).to_string();
     (stdout, stderr, output.status.success())
 }
 
-/// Run an a3s-box command quietly (no output), return (stdout, stderr, success).
+/// Run an aster-box command quietly (no output), return (stdout, stderr, success).
 /// Used for polling commands like `ps` to avoid spamming output.
 fn run_cmd_quiet(args: &[&str]) -> (String, String, bool) {
     run_cmd_capture(args)
 }
 
-/// Run an a3s-box command with inherited output, assert success.
+/// Run an aster-box command with inherited output, assert success.
 fn run_ok(args: &[&str]) -> String {
     let (_, stderr, success) = run_cmd(args);
     assert!(
         success,
-        "Command `a3s-box {}` failed.\nstderr: {}",
+        "Command `aster-box {}` failed.\nstderr: {}",
         args.join(" "),
         stderr,
     );
     String::new()
 }
 
-/// Run an a3s-box command, capture stdout, assert success, return stdout.
+/// Run an aster-box command, capture stdout, assert success, return stdout.
 fn run_ok_capture(args: &[&str]) -> String {
-    eprintln!("    $ a3s-box {}", args.join(" "));
+    eprintln!("    $ aster-box {}", args.join(" "));
     let (stdout, stderr, success) = run_cmd_capture(args);
     assert!(
         success,
-        "Command `a3s-box {}` failed.\nstdout: {}\nstderr: {}",
+        "Command `aster-box {}` failed.\nstdout: {}\nstderr: {}",
         args.join(" "),
         stdout,
         stderr,
@@ -196,7 +196,7 @@ fn cleanup(name: &str) {
 // Test: Full alpine lifecycle (pull → run → ps → exec → stop → rm)
 // ============================================================================
 
-/// Demonstrates the complete a3s-box VM lifecycle using Alpine Linux.
+/// Demonstrates the complete aster-box VM lifecycle using Alpine Linux.
 ///
 /// This is the primary integration test that verifies:
 /// - Image pulling from Docker Hub
@@ -302,7 +302,7 @@ fn test_alpine_full_lifecycle() {
 // Test: Execute multiple commands inside a running box
 // ============================================================================
 
-/// Demonstrates executing various commands inside a running a3s-box VM.
+/// Demonstrates executing various commands inside a running aster-box VM.
 #[test]
 #[ignore]
 fn test_exec_commands() {
@@ -352,15 +352,15 @@ fn test_exec_commands() {
         "--",
         "sh",
         "-c",
-        "echo hello-a3s > /tmp/test.txt",
+        "echo hello-aster > /tmp/test.txt",
     ]);
     if success {
         let (stdout, _, success) =
             run_cmd_capture(&["exec", box_name, "--", "cat", "/tmp/test.txt"]);
         if success {
             assert!(
-                stdout.trim() == "hello-a3s",
-                "Expected 'hello-a3s', got '{}'",
+                stdout.trim() == "hello-aster",
+                "Expected 'hello-aster', got '{}'",
                 stdout.trim()
             );
             println!("    ✓ Write + read file inside VM works");
@@ -389,7 +389,7 @@ fn test_env_and_labels() {
         "--name",
         box_name,
         "-e",
-        "MY_APP=a3s-test",
+        "MY_APP=aster-test",
         "-e",
         "MY_VERSION=1.0",
         "-l",
@@ -415,8 +415,8 @@ fn test_env_and_labels() {
         run_cmd_capture(&["exec", box_name, "--", "sh", "-c", "echo $MY_APP"]);
     if success {
         assert!(
-            stdout.trim() == "a3s-test",
-            "Expected MY_APP=a3s-test, got: '{}'",
+            stdout.trim() == "aster-test",
+            "Expected MY_APP=aster-test, got: '{}'",
             stdout.trim()
         );
         println!("    ✓ Environment variable MY_APP set correctly");
@@ -441,7 +441,7 @@ fn test_env_and_labels() {
 // Test: nginx with known limitation
 // ============================================================================
 
-/// Demonstrates running nginx in a3s-box.
+/// Demonstrates running nginx in aster-box.
 ///
 /// NOTE: nginx's default `listen ... backlog 511` may fail under libkrun's
 /// TSI networking with `listen() failed (22: Invalid argument)`. This test

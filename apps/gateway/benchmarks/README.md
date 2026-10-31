@@ -72,7 +72,7 @@ HTTP, HTTPS, HTTP/2, gRPC, SSE, WebSocket, TCP, and UDP use comparable
 forwarding capabilities in both products. The two OpenAI profiles deliberately
 measure a different question: Kense Gateway recognizes and validates the OpenAI
 request shape before using its bounded response relay, while NGINX performs
-transport-only forwarding. Those rows quantify the cost of enabled A3S
+transport-only forwarding. Those rows quantify the cost of enabled Aster
 features and are not an equivalent policy-capability comparison.
 
 The result remains a synthetic same-host measurement on shared infrastructure.
@@ -94,7 +94,7 @@ then build the shipped release profile and benchmark fixtures:
 
 ```bash
 cargo build --locked --release \
-  --bin a3s-gateway \
+  --bin aster-gateway \
   --example protocol_benchmark_upstream \
   --example protocol_benchmark_load
 bash scripts/run-proxy-comparison.sh

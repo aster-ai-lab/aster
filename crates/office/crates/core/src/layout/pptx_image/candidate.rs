@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use sha2::{Digest, Sha256};
 
 use super::io::{source_mutated, verify_source_revision};
@@ -332,7 +332,7 @@ fn signed_i64(value: Option<&str>) -> UseResult<i64> {
         .ok_or_else(layout_unsupported)
 }
 
-fn layout_unsupported() -> a3s_use_core::UseError {
+fn layout_unsupported() -> aster_use_core::UseError {
     layout_error(
         "use.office.layout_unsupported",
         "This source unit is not an opaque PNG that exactly covers one PPTX slide surface.",

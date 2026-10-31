@@ -1,8 +1,8 @@
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
-use a3s_code_core::permissions::PermissionPolicy;
-use a3s_code_core::store::{MemorySessionStore, SessionStore};
-use a3s_code_core::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
+use aster_core::permissions::PermissionPolicy;
+use aster_core::store::{MemorySessionStore, SessionStore};
+use aster_core::{
     Agent, AgentEvent, PlanningMode, SessionCheckpointExportSink, SessionCheckpointExportV1,
     SessionOptions,
 };
@@ -39,7 +39,7 @@ impl LlmClient for ScriptedClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         self.next()
     }
@@ -48,7 +48,7 @@ impl LlmClient for ScriptedClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let response = self.next()?;
@@ -124,6 +124,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/static".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -201,7 +202,7 @@ fn usage() -> TokenUsage {
 
 async fn run_with_sink(
     sink: Arc<RecordingExportSink>,
-) -> (a3s_code_core::AgentSession, a3s_code_core::AgentResult) {
+) -> (aster_core::AgentSession, aster_core::AgentResult) {
     let workspace = tempfile::tempdir().unwrap();
     std::fs::write(
         workspace.path().join("evidence.txt"),
@@ -499,7 +500,7 @@ async fn runtime_set_session_checkpoint_export_sink_captures_next_boundary() {
     assert_eq!(result.text, "boundary export complete");
     let exports = sink.take();
     assert_eq!(exports.len(), 1);
-    let wire = a3s_code_core::SdkSessionCheckpointExportV1::from_export(&exports[0]);
+    let wire = aster_core::SdkSessionCheckpointExportV1::from_export(&exports[0]);
     assert!(!wire.content_base64.is_empty());
     assert!(!wire.descriptor.content_digest.is_empty());
 

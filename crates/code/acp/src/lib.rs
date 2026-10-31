@@ -1,7 +1,7 @@
-//! ACP stdio agent over a3s-code-core 9.1.6.
+//! ACP stdio agent over aster-core 9.1.6.
 //!
 //! Desktop hosts start this process for a session. The Aster terminal
-//! binary links `a3s-code-pager` and `a3s-code-shell` in-process.
+//! binary links `aster-pager` and `aster-shell` in-process.
 
 mod agent;
 pub mod approval_learning;
@@ -36,8 +36,9 @@ mod sampling_consent;
 mod turn_cancel;
 pub mod unattended;
 mod wiki_search;
+mod workspace_browser;
 
-pub use agent::A3sCodeAgent;
+pub use agent::AsterCodeAgent;
 pub use config::{
     ensure_user_acl, load_launch_config, load_launch_config_with_admission,
     load_launch_config_with_imports, trust_workspace_mcp, workspace_mcp_declarations, LaunchConfig,
@@ -55,12 +56,12 @@ pub fn check_admitted_tool<T>(
     args: &serde_json::Value,
     execute: impl FnOnce() -> T,
 ) -> Result<T, &'static str> {
-    let policy = a3s_code_core::permissions::policy_for_posture(posture).deny(deny_rule);
-    match a3s_code_core::fact_control::admit_tool_call(&policy, tool, args, execute) {
+    let policy = aster_core::permissions::policy_for_posture(posture).deny(deny_rule);
+    match aster_core::fact_control::admit_tool_call(&policy, tool, args, execute) {
         Ok(value) => Ok(value),
-        Err(a3s_code_core::permissions::PermissionDecision::Deny) => Err("deny"),
-        Err(a3s_code_core::permissions::PermissionDecision::Ask) => Err("ask"),
-        Err(a3s_code_core::permissions::PermissionDecision::Allow) => Err("allow"),
+        Err(aster_core::permissions::PermissionDecision::Deny) => Err("deny"),
+        Err(aster_core::permissions::PermissionDecision::Ask) => Err("ask"),
+        Err(aster_core::permissions::PermissionDecision::Allow) => Err("allow"),
     }
 }
 

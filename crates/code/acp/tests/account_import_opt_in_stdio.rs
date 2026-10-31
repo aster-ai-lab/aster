@@ -5,7 +5,7 @@
 //! product's login. Cursor and Grok logins sit at their real discovery
 //! paths under `HOME`; a sentinel `agent` program records whether the
 //! Cursor importer ran. Only the host's opt-in (`import_accounts` in
-//! `~/.a3s/config.acl` or `--import-accounts`) imports, and a repository
+//! `~/.aster/config.acl` or `--import-accounts`) imports, and a repository
 //! layer cannot opt in.
 
 use std::os::unix::fs::PermissionsExt;
@@ -43,10 +43,10 @@ impl Fixture {
         let state = root.path().join("state");
         let workspace = root.path().join("repo");
         let bin = root.path().join("bin");
-        for dir in [&home.join(".a3s"), &state, &workspace, &bin] {
+        for dir in [&home.join(".aster"), &state, &workspace, &bin] {
             std::fs::create_dir_all(dir).unwrap();
         }
-        std::fs::write(home.join(".a3s/config.acl"), USER_ACL).unwrap();
+        std::fs::write(home.join(".aster/config.acl"), USER_ACL).unwrap();
 
         std::fs::create_dir_all(home.join(".cursor")).unwrap();
         std::fs::write(
@@ -91,15 +91,15 @@ impl Fixture {
         path.extend(std::env::split_paths(
             &std::env::var_os("PATH").unwrap_or_default(),
         ));
-        let mut command = tokio::process::Command::new(env!("CARGO_BIN_EXE_a3s-code-acp"));
+        let mut command = tokio::process::Command::new(env!("CARGO_BIN_EXE_aster-acp"));
         command
             .current_dir(&self.workspace)
             .env_clear()
             .env("PATH", std::env::join_paths(path).unwrap())
             .env("HOME", &self.home)
-            .env("A3S_STATE_HOME", &self.state)
+            .env("ASTER_STATE_HOME", &self.state)
             // The keychain is never consulted in this test, opted in or not.
-            .env("A3S_CURSOR_TOKEN_FILE", &self.token)
+            .env("ASTER_CURSOR_TOKEN_FILE", &self.token)
             .args(["--cwd", "."])
             .args(args)
             .stdin(Stdio::piped())
@@ -192,9 +192,9 @@ async fn a_default_launch_reads_no_other_products_login() {
 #[tokio::test]
 async fn a_repository_layer_cannot_opt_the_host_in() {
     let fixture = Fixture::new();
-    std::fs::create_dir_all(fixture.workspace.join(".a3s")).unwrap();
+    std::fs::create_dir_all(fixture.workspace.join(".aster")).unwrap();
     std::fs::write(
-        fixture.workspace.join(".a3s/config.acl"),
+        fixture.workspace.join(".aster/config.acl"),
         "import_accounts = [\"cursor\", \"grok\"]\n",
     )
     .unwrap();
@@ -221,7 +221,7 @@ async fn the_host_opt_in_imports_only_the_named_sources() {
 
     let fixture = Fixture::new();
     std::fs::write(
-        fixture.home.join(".a3s/config.acl"),
+        fixture.home.join(".aster/config.acl"),
         format!("{USER_ACL}import_accounts = [\"grok\"]\n"),
     )
     .unwrap();

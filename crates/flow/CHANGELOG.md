@@ -451,7 +451,7 @@
   `with_trace_context` / `without_trace_context` / `current_trace_context`, and
   optional `trace_context` on workflow/step/activity/query/update invocations.
   Hosts bind context for a drive without writing it into replay history;
-  `A3sFlowEvent` and the a3s-event sink mirror `traceparent` / `tracestate` when
+  `AsterFlowEvent` and the aster-event sink mirror `traceparent` / `tracestate` when
   ambient context is present.
 
 - Added durable per-item aggregates through `ItemAggregateContribution`,
@@ -593,7 +593,7 @@
   flags that belong to another command before any workflow file is read.
 
 - Preserved stable Step/Activity attempt, attempt ID, and idempotency-key
-  correlation in `A3sFlowEvent` and A3S Event metadata without increasing metric
+  correlation in `AsterFlowEvent` and Aster Event metadata without increasing metric
   label cardinality.
 
 - Added `FlowEngine::export_history_pages` for bounded, tip-pinned, contiguous
@@ -666,7 +666,7 @@
   additive wakeup-cleanup migration.
 - Isolated post-commit observer panics and bounded observer delays, delivered
   fan-out sinks concurrently, and released terminal workflow identities from
-  the A3S event bridge cache.
+  the Aster event bridge cache.
 - Anchored retry deadlines at the effective failure clock and rejected direct
   resumption of open timer waits before their persisted deadline.
 - Added a complete manifest-contract inspector for the React authoring panel,
@@ -678,9 +678,9 @@
   `content-visibility` containment for long panels, adaptive minimap pausing,
   and a reproducible 100/500/1,000-node p50/p95/p99 benchmark harness for the
   Worker and WebAssembly layout path.
-- Added deterministic A3S Test coverage for the complete designer and custom
-  node catalog, including localized A3S UI controls and browser error checks.
-- Made the A3S UI select adapter progressively usable while its browser runtime
+- Added deterministic Aster Test coverage for the complete designer and custom
+  node catalog, including localized Aster UI controls and browser error checks.
+- Made the Aster UI select adapter progressively usable while its browser runtime
   loads, preserving first-click, pointer, keyboard, focus, and disabled states
   in embedded workflow configuration panels.
 - Prevented runtime option-selection re-targeting without swallowing an
@@ -725,12 +725,12 @@
   and a complete Playground sample containing every built-in, internal, and
   registered host node type. Added per-node valid and invalid configuration
   coverage, Rust DSL custom-node round-trip and digest coverage, and a
-  deterministic A3S Test suite for custom-node search and addition.
-- Enforced the A3S UI form-control contract across every node configuration
+  deterministic Aster Test suite for custom-node search and addition.
+- Enforced the Aster UI form-control contract across every node configuration
   panel, localized workflow-specific composite controls, and fixed empty file
   values that were previously displayed as selected files. The component
   matrix now rejects visible inputs, selects, and textareas that drift from
-  the shared A3S UI primitives.
+  the shared Aster UI primitives.
 - Added `RetryPolicy::exponential` with a finite attempt budget, a maximum
   delay cap, and deterministic full jitter derived from immutable run, step,
   and failed-attempt identities. Delayed retries now calculate their next
@@ -853,7 +853,7 @@
   whose completion they committed, and workers acknowledge stale
   `ResumeWait` tasks without falsely reporting a resumed timer. Engine timer
   and delayed-retry operations now live in a dedicated scheduling module.
-- Hardened local JSONL audit recovery. `LocalFileA3sFlowEventSink` now preserves
+- Hardened local JSONL audit recovery. `LocalFileAsterFlowEventSink` now preserves
   a complete final record missing its newline, discards only an unterminated
   malformed tail before the next append, and rejects terminated or interior
   corruption without extending the damaged log. The event store and audit sink
@@ -1108,7 +1108,7 @@
   that cannot produce a UTC deadline before persisting a step or invoking its
   side effect, preventing negative-delay wraparound and process panics.
 - Preserved lease-age ordering across the full Chrono timestamp range by
-  saturating out-of-nanosecond-range cutoffs for local-file and A3S ORM-backed
+  saturating out-of-nanosecond-range cutoffs for local-file and Aster ORM-backed
   PostgreSQL queues. Minimum cutoffs retain current leases and maximum cutoffs
   reclaim them without arithmetic overflow.
 - Added single-step, batch-step, local queue, and real PostgreSQL boundary
@@ -1137,7 +1137,7 @@
   retries in `FlowTaskOutcome`, resume waits, and drive all due retry siblings
   together. The global `ResumeDueWaits` and `ResumeDueRetries` variants remain
   supported for queue compatibility.
-- Extended A3S Boot logical deduplication with stable per-run scheduling IDs
+- Extended Aster Boot logical deduplication with stable per-run scheduling IDs
   that ignore the volatile scan timestamp, distinguish different runs, and
   retain the latest successor while a matching task is active.
 - Added scheduler grouping, targeted-worker isolation, stable JSON protocol,
@@ -1149,7 +1149,7 @@
   store-level due and next-wakeup queries. Custom, in-memory, and local-file
   stores retain replay-compatible defaults, while engine and scheduler paths
   can delegate scheduling discovery to accelerated stores.
-- Added A3S ORM-managed `flow_scheduled_wakeups` projections for SQLite and
+- Added Aster ORM-managed `flow_scheduled_wakeups` projections for SQLite and
   PostgreSQL. Due waits, delayed retries, and the earliest timed suspension now
   use indexed, parameterized queries instead of replaying every workflow
   history; one scheduler tick discovers waits and retries with a single store
@@ -1165,7 +1165,7 @@
 
 ## 0.8.0 - 2026-08-07
 
-- Added A3S ORM-managed `flow_active_hooks` projections for SQLite and
+- Added Aster ORM-managed `flow_active_hooks` projections for SQLite and
   PostgreSQL. Callback-token lookup and active-hook listing now use indexed,
   parameterized store queries instead of replaying every workflow history.
 - Added checksummed migrations that backfill active hooks from existing event
@@ -1225,7 +1225,7 @@
   durable holds, explicit run scopes, parent-child component protection,
   SHA-256 tombstones, run-ID reuse prevention, and atomic rollback when a
   retention write fails.
-- Added an upgrade-safe A3S ORM migration for existing SQLite event databases
+- Added an upgrade-safe Aster ORM migration for existing SQLite event databases
   and moved retention eligibility into one backend-independent planner shared
   by SQLite and PostgreSQL.
 - Added SQLite retention tests for restart persistence, cutoff and scope
@@ -1244,7 +1244,7 @@
   process replacement in projected snapshots and Native TypeScript history.
 - Added `WorkflowTerminalOutcome` so generic failure, cancellation, timeout,
   retry exhaustion, and explicit non-resumable host shutdown remain typed.
-- Added PostgreSQL whole-history retention on A3S ORM transactions. Durable
+- Added PostgreSQL whole-history retention on Aster ORM transactions. Durable
   audit holds and connected parent-child runs prevent unsafe deletion; every
   deletion leaves a SHA-256 tombstone and tombstoned run IDs cannot be reused.
   Partial event-stream compaction remains intentionally unsupported.
@@ -1253,7 +1253,7 @@
   stale-token fencing, reconnect, same-attempt replay, and one logical effect.
 
 - Added the optional `boot` integration and `BootFlowTaskManager`. Flow
-  schedulers now target an enqueue-only dispatcher, while A3S Boot can own
+  schedulers now target an enqueue-only dispatcher, while Aster Boot can own
   processor registration, queue job state, worker lifecycle, and shutdown.
 - Replaced the SQLx storage path with `kense-orm` executors, transactions, typed
   row decoding, and checksummed migrations for SQLite and PostgreSQL event
@@ -1299,16 +1299,16 @@
 
 ## 0.4.1 - 2026-07-06
 
-- Added the optional `a3s-event` feature.
-- Added `A3sEventBusFlowEventSink` for publishing committed Flow events through
-  A3S Event providers while keeping Flow event storage authoritative.
-- Documented A3S Event integration in the README and cookbook.
-- Added coverage that publishes Flow events into an `a3s_event::EventBus` backed
+- Added the optional `aster-event` feature.
+- Added `AsterEventBusFlowEventSink` for publishing committed Flow events through
+  Aster Event providers while keeping Flow event storage authoritative.
+- Documented Aster Event integration in the README and cookbook.
+- Added coverage that publishes Flow events into an `aster_event::EventBus` backed
   by the in-memory provider.
 
 ## 0.4.0 - 2026-07-06
 
-This release promotes Kense Flow into the durable Rust workflow SDK for A3S.
+This release promotes Kense Flow into the durable Rust workflow SDK for Aster.
 
 Highlights:
 

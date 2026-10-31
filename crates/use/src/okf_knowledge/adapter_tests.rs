@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_use_core::{
+use aster_use_core::{
     OkfKnowledgeObservation, OkfKnowledgeObservedState, OkfProjectionReceipt, UseError, UseResult,
 };
 use async_trait::async_trait;
@@ -129,7 +129,7 @@ async fn client_rejects_a_valid_binding_for_a_different_reviewed_candidate() {
 #[tokio::test]
 async fn client_rejects_scope_kind_substitution_with_the_same_scope_id() {
     let mut wrong_receipt = receipt(1);
-    wrong_receipt.scope.kind = a3s_use_core::PlanScopeKind::User;
+    wrong_receipt.scope.kind = aster_use_core::PlanScopeKind::User;
     let client = client_with_receipt(&wrong_receipt);
 
     let error = client

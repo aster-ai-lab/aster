@@ -19,21 +19,21 @@ use super::{
 };
 
 pub(super) enum SupervisedWorkload {
-    Exec(a3s_box_runtime::StreamingExec),
-    Pty(a3s_box_runtime::StreamingPty),
+    Exec(aster_box_runtime::StreamingExec),
+    Pty(aster_box_runtime::StreamingPty),
 }
 
 impl SupervisedWorkload {
     async fn next_event(
         &mut self,
-    ) -> a3s_box_core::error::Result<Option<a3s_box_core::exec::ExecEvent>> {
+    ) -> aster_box_core::error::Result<Option<aster_box_core::exec::ExecEvent>> {
         match self {
             Self::Exec(stream) => stream.next_event().await,
             Self::Pty(stream) => stream.next_event().await,
         }
     }
 
-    pub(super) async fn cancel(&mut self) -> a3s_box_core::error::Result<()> {
+    pub(super) async fn cancel(&mut self) -> aster_box_core::error::Result<()> {
         match self {
             Self::Exec(stream) => stream.cancel().await,
             Self::Pty(stream) => stream.cancel().await,
@@ -44,7 +44,7 @@ impl SupervisedWorkload {
     /// boundary. Returns `true` if a `FlushAck` should be awaited (exec
     /// workloads), `false` if the workload does not support flushing (pty
     /// workloads keep the prior best-effort reopen behaviour).
-    async fn flush(&mut self) -> a3s_box_core::error::Result<bool> {
+    async fn flush(&mut self) -> aster_box_core::error::Result<bool> {
         match self {
             Self::Exec(stream) => {
                 stream.flush().await?;
@@ -132,9 +132,9 @@ pub(super) fn spawn_container_exit_supervisor(supervisor: ContainerExitSuperviso
                     if await_ack {
                         loop {
                             match workload.next_event().await {
-                                Ok(Some(a3s_box_core::exec::ExecEvent::FlushAck)) => break,
-                                Ok(Some(a3s_box_core::exec::ExecEvent::Chunk(chunk))) => {
-                                    let _ = attach_tx.send(a3s_box_core::exec::ExecEvent::Chunk(chunk.clone()));
+                                Ok(Some(aster_box_core::exec::ExecEvent::FlushAck)) => break,
+                                Ok(Some(aster_box_core::exec::ExecEvent::Chunk(chunk))) => {
+                                    let _ = attach_tx.send(aster_box_core::exec::ExecEvent::Chunk(chunk.clone()));
                                     if let Some(writer) = log_writer.as_mut() {
                                         if let Err(error) = writer.write_chunk(chunk.stream, &chunk.data).await {
                                             tracing::warn!(
@@ -147,7 +147,7 @@ pub(super) fn spawn_container_exit_supervisor(supervisor: ContainerExitSuperviso
                                         }
                                     }
                                 }
-                                Ok(Some(a3s_box_core::exec::ExecEvent::Exit(exit))) => {
+                                Ok(Some(aster_box_core::exec::ExecEvent::Exit(exit))) => {
                                     exit_code = exit.exit_code;
                                     oom_killed = exit.oom_killed;
                                     reopen_then_exit = true;
@@ -210,8 +210,8 @@ pub(super) fn spawn_container_exit_supervisor(supervisor: ContainerExitSuperviso
                 }
                 event = workload.next_event() => {
                     match event {
-                        Ok(Some(a3s_box_core::exec::ExecEvent::Chunk(chunk))) => {
-                            let _ = attach_tx.send(a3s_box_core::exec::ExecEvent::Chunk(chunk.clone()));
+                        Ok(Some(aster_box_core::exec::ExecEvent::Chunk(chunk))) => {
+                            let _ = attach_tx.send(aster_box_core::exec::ExecEvent::Chunk(chunk.clone()));
                             if let Some(writer) = log_writer.as_mut() {
                                 if let Err(error) = writer.write_chunk(chunk.stream, &chunk.data).await {
                                     tracing::warn!(
@@ -225,11 +225,11 @@ pub(super) fn spawn_container_exit_supervisor(supervisor: ContainerExitSuperviso
                                 }
                             }
                         }
-                        Ok(Some(a3s_box_core::exec::ExecEvent::FlushAck)) => {
+                        Ok(Some(aster_box_core::exec::ExecEvent::FlushAck)) => {
                             // Only meaningful while draining for a log rotation
                             // (handled in the reopen arm); ignore otherwise.
                         }
-                        Ok(Some(a3s_box_core::exec::ExecEvent::Exit(exit))) => {
+                        Ok(Some(aster_box_core::exec::ExecEvent::Exit(exit))) => {
                             exit_code = exit.exit_code;
                             oom_killed = exit.oom_killed;
                             break;
@@ -271,8 +271,8 @@ pub(super) fn spawn_container_exit_supervisor(supervisor: ContainerExitSuperviso
             );
             exit_code = 255;
         }
-        let _ = attach_tx.send(a3s_box_core::exec::ExecEvent::Exit(
-            a3s_box_core::exec::ExecExit {
+        let _ = attach_tx.send(aster_box_core::exec::ExecEvent::Exit(
+            aster_box_core::exec::ExecExit {
                 exit_code,
                 oom_killed,
             },

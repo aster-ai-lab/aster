@@ -1,6 +1,6 @@
 //! Built-in skills
 //!
-//! A3S Code no longer ships default embedded skills. This module keeps the
+//! Aster Code no longer ships default embedded skills. This module keeps the
 //! public `builtin_skills()` compatibility entry point so existing SDK callers
 //! that query or enable built-ins continue to compile, but it intentionally
 //! returns an empty list.

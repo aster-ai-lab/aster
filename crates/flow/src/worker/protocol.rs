@@ -5,7 +5,7 @@ use crate::error::{FlowError, Result};
 use super::FlowTask;
 
 /// Versioned protocol exchanged by Flow-compatible workers and hosts.
-pub const FLOW_WORKER_PROTOCOL: &str = "a3s.flow.worker.v1";
+pub const FLOW_WORKER_PROTOCOL: &str = "aster.flow.worker.v1";
 
 /// Execution capabilities advertised by one Flow worker.
 ///

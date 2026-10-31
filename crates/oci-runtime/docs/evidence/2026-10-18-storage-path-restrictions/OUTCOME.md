@@ -2,13 +2,13 @@
 
 本次补上公共存储授权中的必选路径拒绝契约，不能据此宣称默认 Bash 已恢复。
 
-`dev.a3s.storage-path-restrictions` v1 在不可变 OCI 注解中记录按存储身份绑定的
+`dev.aster.storage-path-restrictions` v1 在不可变 OCI 注解中记录按存储身份绑定的
 源相对拒读、拒写子树和更窄的可写例外。通用扩展接口同样校验必选版本、授权身份、
 只读授权、相对路径、顺序和大小边界，不接收任意宿主绝对路径或原始 Seatbelt 代码。
 
 受限目录采用内部清单 v4，仅传拒绝策略摘要。Shim 从同一钉住的配置解码路径集合，
 在 VMM 进入前执行宿主 Seatbelt，按原有 Sandbox 语义固定拒写路径的祖先，保留
-`.a3s/loops` 等可写例外。Guest 必须验证私有启动变量中的正向执行摘要才开放 RPC。
+`.aster/loops` 等可写例外。Guest 必须验证私有启动变量中的正向执行摘要才开放 RPC。
 旧 Shim/Guest 不识别 v4；无新契约时原有 v1/v2/v3 字节编码不增加字段。
 
 Sandbox 新增 WorkspaceFilesystemBoundary::compile，直接复用原有策略编译与凭据、

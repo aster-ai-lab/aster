@@ -1,8 +1,8 @@
-//! `a3s-box container-update` command — Update resource limits on a running box.
+//! `aster-box container-update` command — Update resource limits on a running box.
 //!
 //! Allows changing cgroup-based limits on a running box without restarting it.
 //! MicroVM changes use the guest exec channel; host Sandbox changes use the
-//! exact-generation A3S OCI SDK update. Successful changes are then persisted.
+//! exact-generation Aster OCI SDK update. Successful changes are then persisted.
 //!
 //! Tier 1 provisioning (`--cpus`, `--memory`) remains immutable for a running
 //! Box and requires a stop/recreate cycle. MicroVMs cannot hot-resize the
@@ -11,11 +11,11 @@
 use clap::Args;
 
 #[cfg(not(windows))]
-use a3s_box_core::exec::ExecRequest;
-use a3s_box_core::ExecutionRestartPolicy;
-use a3s_box_runtime::resize::{validate_update, validate_update_values, ResourceUpdate};
+use aster_box_core::exec::ExecRequest;
+use aster_box_core::ExecutionRestartPolicy;
+use aster_box_runtime::resize::{validate_update, validate_update_values, ResourceUpdate};
 #[cfg(not(windows))]
-use a3s_box_runtime::ExecClient;
+use aster_box_runtime::ExecClient;
 
 #[cfg(not(windows))]
 mod managed;
@@ -225,7 +225,7 @@ pub async fn execute(args: ContainerUpdateArgs) -> Result<(), Box<dyn std::error
                 // `ExecutionManager::update_resources` acquires this exact
                 // lock itself and atomically persists its completed intent.
                 drop(lifecycle_lock.take());
-                let home = a3s_box_core::dirs_home();
+                let home = aster_box_core::dirs_home();
                 let manager = super::configured_local_execution_manager(&home).await?;
                 managed::apply(&manager, &target)
                     .await
@@ -359,17 +359,17 @@ async fn apply_legacy_live_tier2_update(
         let box_id = record.id.clone();
         let box_name = record.name.clone();
         return tokio::task::spawn_blocking(move || {
-            a3s_box_runtime::sandbox::update_recorded_resources(&box_dir, &box_id, &config)
+            aster_box_runtime::sandbox::update_recorded_resources(&box_dir, &box_id, &config)
         })
         .await
         .map_err(|error| {
             format!(
-                "A3S OCI resource update worker failed for {box_name}: {error}; no state changes were persisted"
+                "Aster OCI resource update worker failed for {box_name}: {error}; no state changes were persisted"
             )
         })?
         .map_err(|error| {
             format!(
-                "failed to apply A3S OCI resource update to {box_name}: {error}; no state changes were persisted"
+                "failed to apply Aster OCI resource update to {box_name}: {error}; no state changes were persisted"
             )
         });
     }
@@ -378,7 +378,7 @@ async fn apply_legacy_live_tier2_update(
         crate::socket_paths::runtime_socket(record, crate::socket_paths::RuntimeSocket::Exec);
     if !exec_socket_path.exists() {
         return Err(format!(
-            "cannot apply live update to running box {}: exec socket is missing at {}; no state changes were persisted. Run `a3s-box ps` to reconcile state, then retry or restart {}",
+            "cannot apply live update to running box {}: exec socket is missing at {}; no state changes were persisted. Run `aster-box ps` to reconcile state, then retry or restart {}",
             record.name,
             exec_socket_path.display(),
             record.name
@@ -564,7 +564,7 @@ fn sync_managed_creation_intent(
         };
         metadata.request.policy.max_restart_count = record.max_restart_count;
     }
-    metadata.plan = a3s_box_core::resolve_execution(&metadata.request.config)
+    metadata.plan = aster_box_core::resolve_execution(&metadata.request.config)
         .map_err(|error| error.to_string())?;
     Ok(())
 }
@@ -572,9 +572,9 @@ fn sync_managed_creation_intent(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::config::{BoxConfig, ResourceLimits};
-    use a3s_box_core::{CreateExecutionRequest, ExecutionGeneration, OperationId};
-    use a3s_box_runtime::ManagedExecutionMetadata;
+    use aster_box_core::config::{BoxConfig, ResourceLimits};
+    use aster_box_core::{CreateExecutionRequest, ExecutionGeneration, OperationId};
+    use aster_box_runtime::ManagedExecutionMetadata;
 
     #[cfg(windows)]
     #[test]

@@ -1,11 +1,11 @@
 //! Simulated TEE attestation for development and testing.
 //!
-//! When `A3S_TEE_SIMULATE=1` is set, the guest attestation server generates
+//! When `ASTER_TEE_SIMULATE=1` is set, the guest attestation server generates
 //! fake SNP reports with correct field layout but no hardware signature.
 //! The host verifier can accept these with `allow_simulated: true`.
 
 /// Environment variable to enable TEE simulation mode.
-pub const TEE_SIMULATE_ENV: &str = "A3S_TEE_SIMULATE";
+pub const TEE_SIMULATE_ENV: &str = "ASTER_TEE_SIMULATE";
 
 /// Check if TEE simulation mode is enabled via environment variable.
 pub fn is_simulate_mode() -> bool {

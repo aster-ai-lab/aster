@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowRuntime, FlowVisibilityProjection, JsonValue, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowProgress, WorkflowSpec, FLOW_VISIBILITY_PROJECTION_SCHEMA_VERSION,
 };
@@ -13,7 +13,7 @@ impl FlowRuntime for VisRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.progress("half").is_none() {
             return Ok(ctx.record_progress(
@@ -29,7 +29,7 @@ impl FlowRuntime for VisRuntime {
         Ok(ctx.complete(json!({ "ok": true, "blob": "x".repeat(64) })))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<JsonValue> {
         Ok(json!({ "step": invocation.step_name }))
     }
 }
@@ -54,7 +54,7 @@ async fn visibility_projection_is_tip_anchored_and_rebuildable_from_history() {
     );
     assert_eq!(live.run_id, "vis-run");
     assert_eq!(live.workflow_name, "visibility.demo");
-    assert_eq!(live.status, a3s_flow::WorkflowRunStatus::Completed);
+    assert_eq!(live.status, aster_flow::WorkflowRunStatus::Completed);
     assert_eq!(
         live.latest_progress
             .as_ref()
@@ -98,9 +98,9 @@ async fn visibility_projection_matches_checkpoint_snapshot_digest() {
 
 #[tokio::test]
 async fn visibility_projection_rebuilds_from_tip_validated_checkpoint_without_full_history() {
-    use a3s_flow::FlowEventStore;
+    use aster_flow::FlowEventStore;
 
-    let store = Arc::new(a3s_flow::InMemoryEventStore::new());
+    let store = Arc::new(aster_flow::InMemoryEventStore::new());
     let engine = FlowEngine::new(store.clone(), Arc::new(VisRuntime));
     engine
         .start_with_id("vis-checkpoint-rebuild", spec(), json!({ "n": 1 }))

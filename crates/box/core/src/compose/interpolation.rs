@@ -65,7 +65,7 @@ fn interpolate_value(
         serde_yaml::Value::Mapping(mapping) => {
             // Compose interpolation applies to YAML values, not mapping keys.
             for (key, item) in mapping {
-                // A3S transient Secret bindings contain environment variable
+                // Aster transient Secret bindings contain environment variable
                 // names, never values. Do not expand a reference into Secret
                 // bytes before the typed parser can enforce that boundary.
                 if key.as_str() == Some("secret_environment") {

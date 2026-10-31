@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-07-19
-- Decision owners: A3S Runtime maintainers
+- Decision owners: Aster Runtime maintainers
 
 ## Context
 

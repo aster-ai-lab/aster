@@ -1,7 +1,7 @@
 //! Destructive live-session qualification for Box over Native Linux OCI.
 //!
 //! Exercises the public Box Sandbox path with
-//! `A3S_OCI_NATIVE_SESSION_SUPERVISOR=1`, keeps the Box manager across a
+//! `ASTER_OCI_NATIVE_SESSION_SUPERVISOR=1`, keeps the Box manager across a
 //! Native Linux Host owner SIGKILL, proves retained streaming process-handle
 //! continuity, mutating filesystem continuity via public Box `filesystem`
 //! (keyed MakeDir / Move / Remove before kill, ListDir after reattach) plus
@@ -9,7 +9,7 @@
 //! same generation), and keyed captured exec / state / inventory / stats /
 //! kill, without inventing an exit status.
 //!
-//! Schema `a3s.box.linux-native-live-session.v7`.
+//! Schema `aster.box.linux-native-live-session.v7`.
 //!
 //! Honest scope (anti-overfit):
 //! - Live Host-reopen is Native-Linux-driver-only today.
@@ -57,7 +57,7 @@ mod qualification {
     use std::path::{Path, PathBuf};
     use std::time::Duration;
 
-    use a3s_box_core::{
+    use aster_box_core::{
         BoxConfig, CreateExecutionRequest, ExecEvent, ExecRequest, ExecutionBackend,
         ExecutionGeneration, ExecutionId, ExecutionIsolation, ExecutionManager,
         ExecutionManagerError, ExecutionProcessSignal, ExecutionProcessStream,
@@ -66,44 +66,44 @@ mod qualification {
         IsolationClass as BoxIsolationClass, NetworkMode, OperationId, ReconcileOutcome,
         ResourceConfig, StreamType,
     };
-    use a3s_box_runtime::{
+    use aster_box_runtime::{
         LocalExecutionManager, ManagedExecutionStore, ManagedRuntimeRoute,
         NativeLinuxOciMigrationConfig, OciRuntimeBinding,
     };
-    use a3s_oci_sdk::{DriverKind, IsolationClass as OciIsolationClass};
+    use aster_oci_sdk::{DriverKind, IsolationClass as OciIsolationClass};
     use base64::engine::general_purpose::STANDARD;
     use base64::Engine;
     use serde::Serialize;
     use serde_json::Value;
 
-    const ENABLE_ENV: &str = "A3S_BOX_NATIVE_LIVE_SESSION_QUALIFICATION";
-    const HOME_ENV: &str = "A3S_HOME";
-    const HOST_ROOT_ENV: &str = "A3S_BOX_OCI_HOST_ROOT";
-    const RUNTIME_PATH_ENV: &str = "A3S_BOX_OCI_RUNTIME_PATH";
-    const AGENT_PATH_ENV: &str = "A3S_BOX_OCI_AGENT_PATH";
-    const IMAGE_ENV: &str = "A3S_BOX_NATIVE_LIVE_SESSION_IMAGE";
-    const REPORT_ENV: &str = "A3S_BOX_NATIVE_LIVE_SESSION_REPORT";
-    const BOX_SHA_ENV: &str = "A3S_BOX_NATIVE_LIVE_SESSION_BOX_SHA";
-    const OCI_SHA_ENV: &str = "A3S_BOX_NATIVE_LIVE_SESSION_OCI_SHA";
-    const SUPERVISOR_ENV: &str = "A3S_OCI_NATIVE_SESSION_SUPERVISOR";
-    const SCHEMA_VERSION: &str = "a3s.box.linux-native-live-session.v7";
-    const OWNER_SCHEMA: &str = "a3s.box.native-linux-oci-owner.v1";
-    const KEYED_EXEC_BEFORE: &str = "a3s.box.live-session.keyed-exec.before-owner-kill";
-    const KEYED_EXEC_AFTER: &str = "a3s.box.live-session.keyed-exec.after-reopen";
-    const KEYED_FILE_UPLOAD_BEFORE: &str = "a3s.box.live-session.keyed-file.before-owner-kill";
-    const KEYED_MKDIR_BEFORE: &str = "a3s.box.live-session.keyed-mkdir.before-owner-kill";
-    const KEYED_MOVE_BEFORE: &str = "a3s.box.live-session.keyed-move.before-owner-kill";
-    const KEYED_REMOVE_BEFORE: &str = "a3s.box.live-session.keyed-remove.before-owner-kill";
+    const ENABLE_ENV: &str = "ASTER_BOX_NATIVE_LIVE_SESSION_QUALIFICATION";
+    const HOME_ENV: &str = "ASTER_HOME";
+    const HOST_ROOT_ENV: &str = "ASTER_BOX_OCI_HOST_ROOT";
+    const RUNTIME_PATH_ENV: &str = "ASTER_BOX_OCI_RUNTIME_PATH";
+    const AGENT_PATH_ENV: &str = "ASTER_BOX_OCI_AGENT_PATH";
+    const IMAGE_ENV: &str = "ASTER_BOX_NATIVE_LIVE_SESSION_IMAGE";
+    const REPORT_ENV: &str = "ASTER_BOX_NATIVE_LIVE_SESSION_REPORT";
+    const BOX_SHA_ENV: &str = "ASTER_BOX_NATIVE_LIVE_SESSION_BOX_SHA";
+    const OCI_SHA_ENV: &str = "ASTER_BOX_NATIVE_LIVE_SESSION_OCI_SHA";
+    const SUPERVISOR_ENV: &str = "ASTER_OCI_NATIVE_SESSION_SUPERVISOR";
+    const SCHEMA_VERSION: &str = "aster.box.linux-native-live-session.v7";
+    const OWNER_SCHEMA: &str = "aster.box.native-linux-oci-owner.v1";
+    const KEYED_EXEC_BEFORE: &str = "aster.box.live-session.keyed-exec.before-owner-kill";
+    const KEYED_EXEC_AFTER: &str = "aster.box.live-session.keyed-exec.after-reopen";
+    const KEYED_FILE_UPLOAD_BEFORE: &str = "aster.box.live-session.keyed-file.before-owner-kill";
+    const KEYED_MKDIR_BEFORE: &str = "aster.box.live-session.keyed-mkdir.before-owner-kill";
+    const KEYED_MOVE_BEFORE: &str = "aster.box.live-session.keyed-move.before-owner-kill";
+    const KEYED_REMOVE_BEFORE: &str = "aster.box.live-session.keyed-remove.before-owner-kill";
     const KEYED_EXEC_MARKER: &[u8] = b"live-session-keyed-ok\n";
     const STREAM_MARKER: &[u8] = b"live-session-stream-ok\n";
     const STREAM_ECHO_BEFORE: &[u8] = b"before-owner-kill\n";
     const STREAM_ECHO_AFTER: &[u8] = b"after-owner-reopen\n";
-    const FS_GUEST_DIR: &str = "/tmp/.a3s-box-native-live-fs.d";
-    const FS_GUEST_PATH: &str = "/tmp/.a3s-box-native-live-fs.d/payload.bin";
-    const FS_GUEST_DIR_KEPT: &str = "/tmp/.a3s-box-native-live-fs.kept.d";
-    const FS_GUEST_PATH_KEPT: &str = "/tmp/.a3s-box-native-live-fs.kept.d/payload.bin";
-    const FS_GUEST_EPHEMERAL: &str = "/tmp/.a3s-box-native-live-fs.ephemeral.d";
-    const FS_PAYLOAD: &[u8] = b"a3s-box-native-live-fs\0binary\nv7\n";
+    const FS_GUEST_DIR: &str = "/tmp/.aster-box-native-live-fs.d";
+    const FS_GUEST_PATH: &str = "/tmp/.aster-box-native-live-fs.d/payload.bin";
+    const FS_GUEST_DIR_KEPT: &str = "/tmp/.aster-box-native-live-fs.kept.d";
+    const FS_GUEST_PATH_KEPT: &str = "/tmp/.aster-box-native-live-fs.kept.d/payload.bin";
+    const FS_GUEST_EPHEMERAL: &str = "/tmp/.aster-box-native-live-fs.ephemeral.d";
+    const FS_PAYLOAD: &[u8] = b"aster-box-native-live-fs\0binary\nv7\n";
 
     type AnyError = Box<dyn Error + Send + Sync>;
 
@@ -352,7 +352,7 @@ mod qualification {
                 .file_name()
                 .and_then(|name| name.to_str())
                 .is_some_and(|name| name.contains("native-live-session")),
-            "A3S_HOME must name a dedicated native-live-session directory",
+            "ASTER_HOME must name a dedicated native-live-session directory",
         )?;
         let host_root = absolute_environment_path(HOST_ROOT_ENV)?;
         let runtime_path = absolute_environment_path(RUNTIME_PATH_ENV)?;
@@ -399,7 +399,7 @@ mod qualification {
         report.execution_id = Some(reservation.execution_id.to_string());
         report.box_generation = Some(reservation.generation);
         require(
-            reservation.plan.backend == ExecutionBackend::A3sOci
+            reservation.plan.backend == ExecutionBackend::AsterOci
                 && reservation.plan.isolation_class == BoxIsolationClass::SharedKernel,
             "the Box request did not retain its Native Linux Sandbox product plan",
         )?;
@@ -1331,7 +1331,7 @@ mod qualification {
                 cmd: vec![
                     "/bin/sh".to_string(),
                     "-c".to_string(),
-                    "printf 'a3s-box-native-live-session\\n'; while :; do sleep 60; done"
+                    "printf 'aster-box-native-live-session\\n'; while :; do sleep 60; done"
                         .to_string(),
                 ],
                 network: NetworkMode::None,
@@ -1406,7 +1406,7 @@ mod qualification {
         binding: &OciRuntimeBinding,
     ) -> Result<RecoverySnapshot, AnyError> {
         let executor_root = host_root.join("executor").join(format!(
-            "a3s-oci-agent-{}-{:016x}",
+            "aster-oci-agent-{}-{:016x}",
             owner.pid, owner.start_time_ticks
         ));
         let mut candidates = Vec::new();
@@ -1437,7 +1437,7 @@ mod qualification {
             .ok_or_else(|| failure("recovery record lacks schemaVersion"))?
             .to_string();
         require(
-            schema_version.starts_with("a3s.oci.native-linux-recovery.v"),
+            schema_version.starts_with("aster.oci.native-linux-recovery.v"),
             format!("unexpected recovery schema {schema_version}"),
         )?;
         let target_id = recovery

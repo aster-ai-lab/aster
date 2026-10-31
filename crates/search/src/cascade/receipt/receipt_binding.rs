@@ -13,7 +13,7 @@ use crate::{
     SearchTierReport,
 };
 
-const SEARCH_CASCADE_RECEIPT_BINDING_V2_DOMAIN: &[u8] = b"a3s/search-cascade-receipt-binding/v2\0";
+const SEARCH_CASCADE_RECEIPT_BINDING_V2_DOMAIN: &[u8] = b"aster/search-cascade-receipt-binding/v2\0";
 
 /// Canonical SHA-256 identity of every field in a V2 cascade receipt.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

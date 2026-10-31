@@ -1,5 +1,5 @@
 /**
- * ARIA contract for the A3S-owned spreadsheet virtual grid.
+ * ARIA contract for the Aster-owned spreadsheet virtual grid.
  * Fortune canvas has no grid semantics; this module owns the accessible name
  * and activedescendant identity the virtual grid surface must expose.
  */
@@ -16,7 +16,7 @@ export function spreadsheetVirtualGridActiveCellId(
   row: number,
   column: number,
 ): string {
-  return `a3s-ss-cell-${row}-${column}`;
+  return `aster-ss-cell-${row}-${column}`;
 }
 
 export function spreadsheetVirtualGridAria(options: {

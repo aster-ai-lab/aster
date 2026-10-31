@@ -4,7 +4,7 @@
 //! model receives one unified `search` tool and must choose the mode from the
 //! tool description. A natural-language repository question should select
 //! `bm25`, which the default local workspace transparently serves from the
-//! durable a3s-vec FTS projection.
+//! durable aster-vec FTS projection.
 //!
 //! Run through `scripts/workspace_search_real_llm.sh`; it is ignored because
 //! it spends one real provider request and requires the configured ACL.
@@ -13,9 +13,9 @@ use std::collections::HashMap;
 use std::path::Path;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::workspace::WorkspaceServices;
-use a3s_code_core::{Agent, AgentEvent, PlanningMode, SessionOptions, SystemPromptSlots};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::workspace::WorkspaceServices;
+use aster_core::{Agent, AgentEvent, PlanningMode, SessionOptions, SystemPromptSlots};
 use serde_json::Value;
 
 mod support;
@@ -55,7 +55,7 @@ pub fn suppress_replayed_envelopes(delivery_id: &str, last_accepted: &str) -> bo
 }
 
 async fn wait_for_native_index(root: &Path, services: &WorkspaceServices) {
-    // Durable a3s-vec opens on demand. Warm catalog + index, then publish the
+    // Durable aster-vec opens on demand. Warm catalog + index, then publish the
     // current snapshot explicitly — the demand path may open an Absent index
     // before the catalog coordinator has submitted the first generation.
     let catalog = services
@@ -63,8 +63,8 @@ async fn wait_for_native_index(root: &Path, services: &WorkspaceServices) {
         .expect("local retrieval sessions expose a chunk catalog");
     let index = services
         .persistent_index()
-        .expect("a3s-vec-fts builds must expose a durable workspace index");
-    let current = root.join(".a3s-code/index/CURRENT");
+        .expect("aster-vec-fts builds must expose a durable workspace index");
+    let current = root.join(".aster/index/CURRENT");
     tokio::time::timeout(INDEX_READY_TIMEOUT, async {
         loop {
             if let Ok(snapshot) = catalog.snapshot() {
@@ -81,7 +81,7 @@ async fn wait_for_native_index(root: &Path, services: &WorkspaceServices) {
     .await
     .unwrap_or_else(|_| {
         panic!(
-            "a3s-vec index did not become ready: status={:?} path={}",
+            "aster-vec index did not become ready: status={:?} path={}",
             index.status(),
             current.display()
         )
@@ -96,7 +96,7 @@ struct SearchCall {
 }
 
 async fn run_search_turn(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
 ) -> (String, SearchCall, usize, u128) {
     let prompt = r#"Investigate this workspace and answer the user's intent.
 
@@ -170,7 +170,7 @@ Use exactly one call to the `search` tool and no other tool. Choose the search m
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_model_selects_bm25_and_uses_native_workspace_index() {
     let config = load_pinned_layer_c_config();
     let selected_model = config
@@ -184,7 +184,7 @@ async fn real_model_selects_bm25_and_uses_native_workspace_index() {
     let workspace = tempfile::tempdir().expect("create fixture workspace");
     write_fixture(workspace.path());
     let services = WorkspaceServices::local_with_indexed_retrieval(workspace.path())
-        .expect("configure durable a3s-vec workspace index for the live search gate");
+        .expect("configure durable aster-vec workspace index for the live search gate");
     wait_for_native_index(workspace.path(), services.as_ref()).await;
     let mut permissions = PermissionPolicy::new().allow_all(&["search(*)"]);
     permissions.default_decision = PermissionDecision::Deny;
@@ -217,8 +217,8 @@ async fn real_model_selects_bm25_and_uses_native_workspace_index() {
     assert_eq!(call.args["limit"], 5);
     assert_eq!(call.args["context"], 2);
     assert_eq!(call.metadata["mode"], "bm25");
-    assert_eq!(call.metadata["execution_mode"], "persistent_a3s_vec_fts");
-    assert_eq!(call.metadata["index_kind"], "persistent_a3s_vec_fts");
+    assert_eq!(call.metadata["execution_mode"], "persistent_aster_vec_fts");
+    assert_eq!(call.metadata["index_kind"], "persistent_aster_vec_fts");
     assert_eq!(call.metadata["source_verified"], true);
     let paths = call.metadata["results"]
         .as_array()
@@ -235,7 +235,7 @@ async fn real_model_selects_bm25_and_uses_native_workspace_index() {
         "model answer must be grounded in the search result: {final_text:?}"
     );
     println!(
-        "workspace-search-real-llm model={} mode=bm25 index=persistent_a3s_vec_fts tokens={} turn_ms={} result=pass",
+        "workspace-search-real-llm model={} mode=bm25 index=persistent_aster_vec_fts tokens={} turn_ms={} result=pass",
         selected_model, total_tokens, turn_ms
     );
     session.close().await;

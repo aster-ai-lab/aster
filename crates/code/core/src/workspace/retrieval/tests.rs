@@ -16,7 +16,7 @@ mod rerank;
 mod semantic;
 mod semantic_batching;
 mod semantic_query;
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 mod wiki_index;
 
 #[test]
@@ -296,9 +296,9 @@ fn incremental_lexical_index_matches_the_locked_native_bm25_fixture() {
     }
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[test]
-fn a3s_vec_lexical_backend_preserves_the_workspace_result_contract() {
+fn aster_vec_lexical_backend_preserves_the_workspace_result_contract() {
     let fixture = [
         (
             "src/path_policy.rs",
@@ -309,7 +309,7 @@ fn a3s_vec_lexical_backend_preserves_the_workspace_result_contract() {
     ];
     let engines = [
         WorkspaceLexicalEngine::Portable,
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     ];
 
     for engine in engines {
@@ -355,13 +355,13 @@ fn a3s_vec_lexical_backend_preserves_the_workspace_result_contract() {
     }
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[test]
-fn a3s_vec_lexical_snapshot_supports_concurrent_queries() {
+fn aster_vec_lexical_snapshot_supports_concurrent_queries() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .unwrap();
     for index in 0..8 {
@@ -392,9 +392,9 @@ fn a3s_vec_lexical_snapshot_supports_concurrent_queries() {
     }
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[test]
-fn a3s_vec_lexical_backend_matches_locked_bm25_paths() {
+fn aster_vec_lexical_backend_matches_locked_bm25_paths() {
     #[derive(Debug, Deserialize)]
     struct Fixture {
         documents: Vec<FixtureDocument>,
@@ -420,9 +420,9 @@ fn a3s_vec_lexical_backend_matches_locked_bm25_paths() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
-    .expect("a3s-vec catalog must construct");
+    .expect("aster-vec catalog must construct");
     for (revision, document) in fixture.documents.iter().enumerate() {
         catalog
             .replace_file(
@@ -431,9 +431,9 @@ fn a3s_vec_lexical_backend_matches_locked_bm25_paths() {
                 revision as u64 + 1,
                 &document.content,
             )
-            .expect("a3s-vec catalog replacement must succeed");
+            .expect("aster-vec catalog replacement must succeed");
     }
-    let snapshot = catalog.snapshot().expect("a3s-vec snapshot must exist");
+    let snapshot = catalog.snapshot().expect("aster-vec snapshot must exist");
 
     for query in fixture.queries {
         let result = snapshot
@@ -448,13 +448,13 @@ fn a3s_vec_lexical_backend_matches_locked_bm25_paths() {
     }
 }
 
-#[cfg(not(feature = "a3s-vec-fts"))]
+#[cfg(not(feature = "aster-vec-fts"))]
 #[test]
-fn a3s_vec_selection_fails_closed_without_the_native_feature() {
+fn aster_vec_selection_fails_closed_without_the_native_feature() {
     let error = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .unwrap_err();
     assert!(matches!(error, WorkspaceIndexError::InvalidConfig(_)));
@@ -496,7 +496,7 @@ fn eligibility_excludes_sensitive_generated_binary_and_oversized_files() {
     for path in [
         ".env",
         ".env.production",
-        ".a3s/config.acl",
+        ".aster/config.acl",
         ".claude/settings.local.json",
         ".codex/session.json",
         ".docker/config.json",
@@ -509,7 +509,7 @@ fn eligibility_excludes_sensitive_generated_binary_and_oversized_files() {
         assert!(!policy.admits(&manifest_file(path, 20, 1)), "{path}");
     }
     assert!(
-        policy.admits(&manifest_file(".a3s/kb/sources/note.md", 20, 1)),
+        policy.admits(&manifest_file(".aster/kb/sources/note.md", 20, 1)),
         "personal KB vault must be eligible for agent search"
     );
     let mut generated = manifest_file("generated.rs", 20, 1);

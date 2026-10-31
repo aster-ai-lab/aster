@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::SpreadsheetFormulaErrorLiteral;
 
@@ -135,7 +135,7 @@ fn positive_dimension(value: ScalarValue) -> Result<usize, SpreadsheetFormulaErr
     usize::try_from(value as u64).map_err(|_| SpreadsheetFormulaErrorLiteral::Number)
 }
 
-fn function_array_limit() -> a3s_use_core::UseError {
+fn function_array_limit() -> aster_use_core::UseError {
     calculation_error(
         "use.office.spreadsheet_formula_function_array_limit",
         format!(

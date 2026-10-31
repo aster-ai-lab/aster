@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::Value as JsonValue;
 use yrs::{Any, GetString, Map, MapPrelim, Out, Text, TextPrelim, Transact};
 

@@ -4,10 +4,10 @@ use std::time::{Duration, Instant};
 
 use super::{HookPhase, HookPlan, HookSet};
 
-const OWNER_DEATH_CHILD_ENV: &str = "A3S_OCI_TEST_HOOK_OWNER_DEATH_CHILD";
+const OWNER_DEATH_CHILD_ENV: &str = "ASTER_OCI_TEST_HOOK_OWNER_DEATH_CHILD";
 const OWNER_DEATH_CHILD_TEST: &str = "executor::hook::owner_death_tests::hook_owner_death_child";
-const OWNER_DEATH_LEADER_ENV: &str = "A3S_OCI_TEST_HOOK_OWNER_DEATH_LEADER";
-const OWNER_DEATH_DESCENDANT_ENV: &str = "A3S_OCI_TEST_HOOK_OWNER_DEATH_DESCENDANT";
+const OWNER_DEATH_LEADER_ENV: &str = "ASTER_OCI_TEST_HOOK_OWNER_DEATH_LEADER";
+const OWNER_DEATH_DESCENDANT_ENV: &str = "ASTER_OCI_TEST_HOOK_OWNER_DEATH_DESCENDANT";
 
 #[test]
 fn hook_owner_death_child() {
@@ -22,7 +22,7 @@ fn hook_owner_death_child() {
         prestart: vec![HookPlan {
             path: PathBuf::from("/bin/sh"),
             args: Some(vec![
-                "a3s-hook".to_string(),
+                "aster-hook".to_string(),
                 "-c".to_string(),
                 "set -eu; (trap '' HUP TERM; exec /bin/sleep 30) & child=$!; \
                  printf '%s\\n' \"$$\" > \"$LEADER\"; \

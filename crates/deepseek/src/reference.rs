@@ -4,7 +4,7 @@
 //! encodings follow OCP MX 1.0. Gate and asymmetric SwiGLU semantics follow
 //! the pinned TileKernels references recorded in the implementation evidence.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 
 pub mod compression;
 

@@ -80,8 +80,8 @@ async fn bounded_reader_keeps_the_source_and_refuses_special_files() {
         expected_source: None,
     };
     assert!(preview_import(root.path(), &request).await.is_err());
-    assert!(!root.path().join(".a3s").exists());
-    std::fs::create_dir_all(root.path().join(".a3s")).unwrap();
+    assert!(!root.path().join(".aster").exists());
+    std::fs::create_dir_all(root.path().join(".aster")).unwrap();
     std::fs::write(
         root.path().join(SOURCE_PATH),
         r#"{"objective":"retained","paused":true}"#,
@@ -149,9 +149,9 @@ async fn bounded_reader_keeps_the_source_and_refuses_special_files() {
         .await
         .unwrap();
         std::fs::remove_file(&path).unwrap();
-        std::fs::remove_dir(root.path().join(".a3s")).unwrap();
+        std::fs::remove_dir(root.path().join(".aster")).unwrap();
         std::fs::create_dir(root.path().join("outside")).unwrap();
-        std::os::unix::fs::symlink(root.path().join("outside"), root.path().join(".a3s")).unwrap();
+        std::os::unix::fs::symlink(root.path().join("outside"), root.path().join(".aster")).unwrap();
         std::fs::write(root.path().join(SOURCE_PATH), "{}").unwrap();
         assert!(preview_import(root.path(), &request).await.is_err());
     }

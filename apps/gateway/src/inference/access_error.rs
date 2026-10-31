@@ -149,7 +149,7 @@ impl InferenceAccessError {
         if matches!(self, Self::Unauthorized | Self::Revoked) {
             response.headers_mut().insert(
                 WWW_AUTHENTICATE,
-                HeaderValue::from_static(r#"Bearer realm="a3s-inference""#),
+                HeaderValue::from_static(r#"Bearer realm="aster-inference""#),
             );
         }
         if let Some(retry_after_secs) = retry_after_secs {

@@ -36,7 +36,7 @@ async fn rewrite_segments_as_v1(directory: &Path, manifest: &serde_json::Value) 
         let header_end = bytes.iter().position(|byte| *byte == b'\n').unwrap();
         let mut header: serde_json::Value = serde_json::from_slice(&bytes[..header_end]).unwrap();
         header["schema"] =
-            serde_json::Value::String("a3s.gateway.usage-spool-segment.v1".to_string());
+            serde_json::Value::String("aster.gateway.usage-spool-segment.v1".to_string());
         header.as_object_mut().unwrap().remove("first_sequence");
         let mut migrated = serde_json::to_vec(&header).unwrap();
         migrated.push(b'\n');
@@ -311,7 +311,7 @@ async fn legacy_manifest_migrates_without_losing_retained_records() {
     };
     let mut manifest = read_manifest(directory.path()).await;
     manifest["schema"] =
-        serde_json::Value::String("a3s.gateway.usage-spool-manifest.v1".to_string());
+        serde_json::Value::String("aster.gateway.usage-spool-manifest.v1".to_string());
     manifest
         .as_object_mut()
         .unwrap()
@@ -333,7 +333,7 @@ async fn legacy_manifest_migrates_without_losing_retained_records() {
     assert_eq!(spool.status().oldest_retained_cursor, Some(cursor));
     assert_eq!(spool.read_batch(None, 10).await.unwrap()[0].cursor, cursor);
     let migrated = read_manifest(directory.path()).await;
-    assert_eq!(migrated["schema"], "a3s.gateway.usage-spool-manifest.v3");
+    assert_eq!(migrated["schema"], "aster.gateway.usage-spool-manifest.v3");
     assert_eq!(
         migrated["acknowledged_through"]["sequence"],
         "ffffffffffffffff"
@@ -360,7 +360,7 @@ async fn v2_manifest_migrates_to_v3_without_losing_acknowledgement() {
     };
     let mut manifest = read_manifest(directory.path()).await;
     manifest["schema"] =
-        serde_json::Value::String("a3s.gateway.usage-spool-manifest.v2".to_string());
+        serde_json::Value::String("aster.gateway.usage-spool-manifest.v2".to_string());
     for epoch in manifest["epochs"].as_array_mut().unwrap() {
         epoch.as_object_mut().unwrap().remove("first_sequence");
         epoch
@@ -381,7 +381,7 @@ async fn v2_manifest_migrates_to_v3_without_losing_acknowledgement() {
         second
     );
     let migrated = read_manifest(directory.path()).await;
-    assert_eq!(migrated["schema"], "a3s.gateway.usage-spool-manifest.v3");
+    assert_eq!(migrated["schema"], "aster.gateway.usage-spool-manifest.v3");
     assert_eq!(migrated["epochs"][0]["first_sequence"], "0000000000000002");
     assert_eq!(
         migrated["epochs"][0]["compacted_last_sequence"],

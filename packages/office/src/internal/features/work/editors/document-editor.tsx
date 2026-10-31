@@ -559,7 +559,7 @@ function DocumentEditorSurface({
       collaboration ? EMPTY_DOCUMENT_EXTENSIONS : extensions,
     );
     recordDocumentEditorMeasure(
-      'a3s-office.document.editor-extensions',
+      'aster-office.document.editor-extensions',
       startedAt,
       documentEditorNow(),
     );
@@ -684,7 +684,7 @@ function DocumentEditorSurface({
         Math.round((publishEndedAt - publishStartedAt) * 10) / 10,
       );
       recordDocumentEditorMeasure(
-        'a3s-office.document.controlled-publish',
+        'aster-office.document.controlled-publish',
         publishStartedAt,
         publishEndedAt,
         { mode: current.view.dom.dataset.documentControlledPublishMode },
@@ -795,7 +795,7 @@ function DocumentEditorSurface({
       const beforeCreateAt = documentEditorNow();
       editorBeforeCreateAtRef.current = beforeCreateAt;
       recordDocumentEditorMeasure(
-        'a3s-office.document.editor-before-create',
+        'aster-office.document.editor-before-create',
         editorMountStartedAtRef.current,
         beforeCreateAt,
       );
@@ -806,7 +806,7 @@ function DocumentEditorSurface({
       const beforeCreateAt = editorBeforeCreateAtRef.current;
       if (beforeCreateAt !== null) {
         recordDocumentEditorMeasure(
-          'a3s-office.document.editor-state-view',
+          'aster-office.document.editor-state-view',
           beforeCreateAt,
           mountedAt,
         );
@@ -820,7 +820,7 @@ function DocumentEditorSurface({
       const detachedMountAt = editorDetachedMountAtRef.current;
       if (detachedMountAt !== null) {
         recordDocumentEditorMeasure(
-          'a3s-office.document.editor-create-dispatch',
+          'aster-office.document.editor-create-dispatch',
           detachedMountAt,
           mountedAt,
         );
@@ -829,7 +829,7 @@ function DocumentEditorSurface({
         Math.round((mountedAt - editorMountStartedAtRef.current) * 10) / 10,
       );
       recordDocumentEditorMeasure(
-        'a3s-office.document.editor-mount',
+        'aster-office.document.editor-mount',
         editorMountStartedAtRef.current,
         mountedAt,
         {

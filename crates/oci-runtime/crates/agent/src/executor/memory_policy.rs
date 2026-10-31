@@ -1,10 +1,10 @@
 use std::io;
 use std::ptr;
 
-use a3s_oci_sdk::oci_spec::runtime::{
+use aster_oci_sdk::oci_spec::runtime::{
     LinuxMemoryPolicy, MemoryPolicyFlagType, MemoryPolicyModeType,
 };
-use a3s_oci_sdk::{Error, ErrorCode, Result, OCI_LINUX_MEMORY_POLICY_MAX_NODE_BITS};
+use aster_oci_sdk::{Error, ErrorCode, Result, OCI_LINUX_MEMORY_POLICY_MAX_NODE_BITS};
 
 const MPOL_PREFERRED_MANY: libc::c_int = 5;
 const MPOL_WEIGHTED_INTERLEAVE: libc::c_int = 6;
@@ -417,12 +417,12 @@ mod tests {
     use std::io;
     use std::process::Command;
 
-    use a3s_oci_sdk::oci_spec::runtime::LinuxMemoryPolicy;
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::oci_spec::runtime::LinuxMemoryPolicy;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{apply, current, error_code_for_io, MemoryPolicyPlan, NodeMask};
 
-    const CHILD_PROBE: &str = "A3S_OCI_MEMORY_POLICY_CHILD_PROBE";
+    const CHILD_PROBE: &str = "ASTER_OCI_MEMORY_POLICY_CHILD_PROBE";
     const APPLY_TEST: &str =
         "executor::memory_policy::tests::applies_and_reads_back_bind_in_an_isolated_process";
 

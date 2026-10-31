@@ -1,5 +1,5 @@
 #[cfg(feature = "sqlite")]
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RuntimeCommand, SqliteEventStore, StepInvocation,
     WorkflowInvocation, WorkflowSpec,
 };
@@ -19,7 +19,7 @@ impl FlowRuntime for GreetingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(output) = ctx.step_output("greet") {
             return Ok(ctx.complete(output.clone()));
@@ -32,7 +32,7 @@ impl FlowRuntime for GreetingRuntime {
         ))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "greet_user" => Ok(json!({
                 "message": format!("hello {}", invocation.input["name"].as_str().unwrap_or("unknown")),
@@ -44,9 +44,9 @@ impl FlowRuntime for GreetingRuntime {
 
 #[cfg(feature = "sqlite")]
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let db_path =
-        std::env::temp_dir().join(format!("a3s-flow-sqlite-example-{}.db", std::process::id()));
+        std::env::temp_dir().join(format!("aster-flow-sqlite-example-{}.db", std::process::id()));
     let _ = tokio::fs::remove_file(&db_path).await;
     let url = format!("sqlite://{}", db_path.display());
 

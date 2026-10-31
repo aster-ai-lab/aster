@@ -2,7 +2,7 @@ use std::io::{Read, Write};
 use std::os::fd::{AsRawFd, OwnedFd, RawFd};
 use std::os::unix::net::UnixStream as StdUnixStream;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use tokio::io::AsyncReadExt;
 use tokio::net::UnixStream;
 
@@ -22,7 +22,7 @@ const DEVICE_MOUNTS_BYTE: u8 = 0xD1;
 const CAPABILITY_WARNING_BYTE: u8 = 0xD2;
 const MAX_REJECTION_BYTES: usize = 64 * 1024;
 const MAX_CAPABILITY_WARNING_BYTES: usize = 4 * 1024;
-const MAX_CAPABILITY_WARNINGS: usize = a3s_oci_sdk::OCI_LINUX_CAPABILITY_NAMES.len();
+const MAX_CAPABILITY_WARNINGS: usize = aster_oci_sdk::OCI_LINUX_CAPABILITY_NAMES.len();
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) enum InitOutcome {
@@ -456,7 +456,7 @@ pub(super) async fn read_start_result(stream: &mut UnixStream) -> Result<Vec<Cap
                     ));
                 }
                 eprintln!(
-                    "a3s-oci-agent: OCI process capability warning: {}",
+                    "aster-oci-agent: OCI process capability warning: {}",
                     warning.message()
                 );
                 warnings.push(warning);

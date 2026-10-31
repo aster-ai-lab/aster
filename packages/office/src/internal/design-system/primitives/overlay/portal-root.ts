@@ -34,7 +34,7 @@ function resolveOfficeOverlayPortalRoot(
 function closestOfficeOverlayRoot(anchor: Element | null | undefined) {
   return (
     anchor?.closest<HTMLElement>('[role="dialog"][aria-modal="true"]') ??
-    anchor?.closest<HTMLElement>('[data-a3s-office]') ??
+    anchor?.closest<HTMLElement>('[data-aster-office]') ??
     null
   );
 }
@@ -60,10 +60,10 @@ function floatingThemeRoot(
   source: HTMLElement,
 ): HTMLElement {
   const existing = Array.from(ownerDocument.body.children)
-    .find((child): child is HTMLElement => child instanceof HTMLElement && child.classList.contains('a3s-office-floating-root'));
+    .find((child): child is HTMLElement => child instanceof HTMLElement && child.classList.contains('aster-office-floating-root'));
   const root = existing ?? ownerDocument.createElement('div');
-  root.className = 'a3s-office a3s-office-floating-root';
-  root.setAttribute('data-a3s-office', '');
+  root.className = 'aster-office aster-office-floating-root';
+  root.setAttribute('data-aster-office', '');
   root.setAttribute(
     'data-theme',
     source.getAttribute('data-theme') ??

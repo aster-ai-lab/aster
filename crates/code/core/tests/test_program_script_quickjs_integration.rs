@@ -1,4 +1,4 @@
-use a3s_code_core::tools::ToolExecutor;
+use aster_core::tools::ToolExecutor;
 use serde_json::json;
 
 #[tokio::test]
@@ -357,7 +357,7 @@ async fn run_program(
     executor: &ToolExecutor,
     path: &str,
     timeout_ms: u64,
-) -> a3s_code_core::tools::ToolResult {
+) -> aster_core::tools::ToolResult {
     executor
         .execute(
             "program",

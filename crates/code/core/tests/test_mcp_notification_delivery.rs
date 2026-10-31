@@ -1,10 +1,10 @@
 #![cfg(test)]
 
-use a3s_code_core::mcp::client::McpClient;
-use a3s_code_core::mcp::protocol::McpNotification;
-use a3s_code_core::mcp::transport::http_sse::HttpSseTransport;
-use a3s_code_core::mcp::transport::streamable_http::StreamableHttpTransport;
-use a3s_code_core::mcp::transport::McpTransport;
+use aster_core::mcp::client::McpClient;
+use aster_core::mcp::protocol::McpNotification;
+use aster_core::mcp::transport::http_sse::HttpSseTransport;
+use aster_core::mcp::transport::streamable_http::StreamableHttpTransport;
+use aster_core::mcp::transport::McpTransport;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::process::Stdio;
@@ -210,7 +210,7 @@ async fn delivery(streamable: bool) {
     );
     let result = result.unwrap().unwrap().unwrap();
     assert!(
-        matches!(&result.content[..], [a3s_code_core::mcp::protocol::ToolContent::Text { text }] if text == "http-progress-cache-913")
+        matches!(&result.content[..], [aster_core::mcp::protocol::ToolContent::Text { text }] if text == "http-progress-cache-913")
     );
     exited.unwrap().unwrap();
 }

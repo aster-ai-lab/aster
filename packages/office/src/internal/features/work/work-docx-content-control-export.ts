@@ -50,8 +50,8 @@ export class DocxContentControlPatchCollector {
     const index = this.nextMarker;
     this.nextMarker += 1;
     const patch: DocxContentControlPatch = {
-      startMarker: `__A3S_WORK_CONTENT_CONTROL_START_${index}__`,
-      endMarker: `__A3S_WORK_CONTENT_CONTROL_END_${index}__`,
+      startMarker: `__ASTER_WORK_CONTENT_CONTROL_START_${index}__`,
+      endMarker: `__ASTER_WORK_CONTENT_CONTROL_END_${index}__`,
       properties: normalizeDocumentContentControlProperties(properties),
     };
     this.patches.push(patch);

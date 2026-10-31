@@ -6,12 +6,12 @@ that are allowed to drift out of date.
 `upstream/crud_operations.rs`, `upstream/vector_search.rs`, and
 `upstream/schema_builder.rs` are copied from
 `zvec-ai/zvec-rust@0d40cb1aef081bae175061fef35c89269e6a80f4` with only the
-crate namespace changed from `zvec_rust` to `a3s_vec`. Their top-level
+crate namespace changed from `zvec_rust` to `aster_vec`. Their top-level
 executables only include those sources under narrowly scoped Clippy allowances
 for upstream style that does not follow this repository's lint policy.
 
 The CRUD fixture's two upsert documents omit its required `id` field, so both
-the official zvec core and `a3s-vec` correctly report per-document validation
+the official zvec core and `aster-vec` correctly report per-document validation
 failures. The file is intentionally not corrected here because its purpose is
 source-level compatibility evidence. The schema fixture enables IVF SOAR, so
 it is also an executable contract for the dual-assignment implementation.

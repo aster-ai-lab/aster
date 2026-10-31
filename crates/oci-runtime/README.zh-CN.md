@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/hero.svg" width="100%" alt="A3S OCI Runtime 将每个容器绑定到确切的代次、持久化生命周期和以证据为准入条件的执行驱动">
+  <img src="assets/readme/hero.svg" width="100%" alt="Aster OCI Runtime 将每个容器绑定到确切的代次、持久化生命周期和以证据为准入条件的执行驱动">
 </p>
 
 <p align="center">
@@ -9,12 +9,12 @@
 </p>
 
 <p align="center">
-  <strong>A3S 的底层执行平面：官方 OCI 类型、持久化生命周期重放，以及原生与辅助虚拟机路径共用的经审查 Linux 执行器。</strong>
+  <strong>Aster 的底层执行平面：官方 OCI 类型、持久化生命周期重放，以及原生与辅助虚拟机路径共用的经审查 Linux 执行器。</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/OCI-Runtime/actions/workflows/ci.yml"><img alt="CI 状态" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/OCI-Runtime/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
-  <a href="https://github.com/A3S-Lab/OCI-Runtime/releases/latest"><img alt="A3S OCI Runtime 最新版本" src="https://img.shields.io/github/v/release/A3S-Lab/OCI-Runtime?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=68c7ff"></a>
+  <a href="https://github.com/aster-ai-lab/OCI-Runtime/actions/workflows/ci.yml"><img alt="CI 状态" src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/OCI-Runtime/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
+  <a href="https://github.com/aster-ai-lab/OCI-Runtime/releases/latest"><img alt="Aster OCI Runtime 最新版本" src="https://img.shields.io/github/v/release/aster-ai-lab/OCI-Runtime?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=68c7ff"></a>
   <img alt="OCI 运行时规范 1.3.0" src="https://img.shields.io/badge/OCI_Runtime_Spec-1.3.0-68c7ff?style=flat-square">
   <img alt="Rust 工作区" src="https://img.shields.io/badge/implementation-Rust-dbe7f0?style=flat-square&amp;logo=rust&amp;logoColor=111827">
   <a href="LICENSE"><img alt="MIT 许可证" src="https://img.shields.io/badge/license-MIT-f0b85a?style=flat-square"></a>
@@ -32,19 +32,19 @@
 
 ---
 
-**A3S OCI Runtime** 负责 A3S 中实际的 Linux 容器执行：精确的 OCI
+**Aster OCI Runtime** 负责 Aster 中实际的 Linux 容器执行：精确的 OCI
 校验、容器与进程状态、单调递增的代次、操作
 日志、终态、平台驱动、辅助虚拟机、经过身份认证的
 客户机代理，以及运行时范围内的清理。
 
 它的职责不包括拉取镜像、构建镜像、实现 Compose、管理
 产品网络或卷，也不充当 Docker 守护进程。这些职责
-仍由 [A3S Box](https://github.com/A3S-Lab/Box) 承担；Box 通过
-公共 `a3s-oci-sdk` 提供准备好的
+仍由 [Aster Box](https://github.com/aster-ai-lab/Box) 承担；Box 通过
+公共 `aster-oci-sdk` 提供准备好的
 bundle、隔离要求和带版本的附件清单。
 
 不依赖具体提供方的 Rust 契约也可独立使用，包版本为
-`a3s-oci-core = "=0.3.2"` 和 `a3s-oci-sdk = "=0.3.2"`。其
+`aster-oci-core = "=0.3.2"` 和 `aster-oci-sdk = "=0.3.2"`。其
 `sdk/rust/v*` 源码标签与完整 Runtime 二进制发行版相互独立。
 
 > [!WARNING]
@@ -68,9 +68,9 @@ bundle、隔离要求和带版本的附件清单。
 设计上，第一步成功执行的操作是只读检查：
 
 ```bash
-git clone https://github.com/A3S-Lab/OCI-Runtime.git
+git clone https://github.com/aster-ai-lab/OCI-Runtime.git
 cd OCI-Runtime
-cargo run -p a3s-oci-cli -- features
+cargo run -p aster-oci-cli -- features
 ```
 
 在当前分支用于资格验证的 Windows x86_64 主机上，该命令
@@ -79,7 +79,7 @@ cargo run -p a3s-oci-cli -- features
 
 ```json
 {
-  "schema_version": "a3s.oci.features.v1",
+  "schema_version": "aster.oci.features.v1",
   "platform": "windows",
   "architecture": "x86_64",
   "drivers": [
@@ -121,8 +121,8 @@ cargo run -p a3s-oci-cli -- features
 | 持久化主机服务 | 精确的 create/state/start/kill/delete；驱动声明的可选操作，包括不可变检查点与暂停代次恢复编排；全局幂等日志，涵盖 File upload 和 Filesystem mkdir/move/remove；重放、代次隔离、启动恢复、启动时跨所有日志的孤立项审计、失败代次隔离、以能力句柄为根且通过 Unix 挂载身份进行隔离的状态遍历、本地与辅助虚拟机驱动提交后的重放记录确认、排序列表、有序事件，以及 Native Linux 和 Apple Silicon HVF 上同 UID 的多容器所有者 |
 | 共享 Linux 执行器 | 命名空间创建/加入；进入命名空间前对声明的根目录进行准入检查；`pivot_root`；有序 OCI 挂载，支持相对于根的旧式目标路径和可选字段处理；根据先前配置或合成挂载后的有效目录树解析 rootfs 内部绑定源；分离式有序 `idmap`/`ridmap` 绑定挂载；加入挂载命名空间后，在递归私有化的 rootfs 中暂存设备且不向来源命名空间传播；完整的 OCI 1.3 Linux 挂载选项控制注册表；精确的 init/exec argv、环境、cwd、终端默认值、UID/GID、附加组和 umask；挂载处理后按条件创建 `/dev/fd`、`/dev/stdin`、`/dev/stdout` 和 `/dev/stderr` 链接；OCI hook，具备失败即拒绝的私有描述符隔离和绑定确切所有者的 pidfd 进程组监管；用户映射；精确的绝对 `cgroupsPath` 与稳定的相对路径解析，省略时使用受代次隔离的私有路径；完整的 cgroup v2 CPU shares/quota/burst/period/cpuset/idle 映射，并显式拒绝 cgroup v1 realtime；精确的内存 limit/reservation/swap 和 PIDs 创建/更新映射，保留零值并将 OCI `-1` 编码为 `max`；有限总交换量校验；完整的 cgroup v2 块 I/O 默认/逐设备权重与读写 BPS/IOPS 限速映射，支持零速率清除、按键回读、保留未涉及的局部更新、逆序回滚，并显式拒绝叶级权重；动态 HugeTLB 用量/预留控制；按键设置的 RDMA HCA 句柄/对象限制；有界 OCI 1.3 unified 控制文件写入，支持动态启用控制器、内核定义的格式、拒绝与类型化文件冲突、可读取的空操作/回滚快照和只写控制项；以类型化错误拒绝仅限 cgroup v1 的内存及网络 `net_cls`/`net_prio` 控制；全部五个 capability 集合及内核回读；精确验证 `no_new_privileges`；全部 16 种 OCI rlimit 类型及精确内核回读；`oomScoreAdj`、调度策略、I/O 优先级、精确的 `LINUX`/`LINUX32` init personality；全部七种 OCI NUMA 内存策略模式和三个标志及内核回读；由父进程持有的 Intel RDT CLOS、有序 schemata、进程分配、监控和所有者死亡清理；在加入 cgroup 前后应用 exec CPU 亲和性；事务式命名空间 sysctl，通过描述符限定应用、回读和回滚范围；精确的 rootful 块/字符/FIFO 节点、六个默认设备、`/dev/ptmx`、由 PTY 支撑的 `/dev/console`、持久化占位项清理；基于不可变声明/默认设备清单的 BPF，按顺序收窄资源规则；seccomp、PID 1 监管、pidfd、exec、进程 I/O、按 OCI `consoleSize` 初始化的 PTY；有界且由 Host 确认的变更重放日志；绑定父进程的启动/会话辅助进程；绑定 PID 启动时间的所有者死亡墓碑记录；通过描述符限定范围的文件/文件系统会话；暂停/恢复、资源更新、标准化 CPU/内存/PID/块 I/O 统计，以及已验证配置范围内的清理 |
 | 辅助虚拟机边界 | 隔离的 libkrun shim；经过身份认证的 protocol v10，兼容 v1-v9；20 个公共工作负载操作和一个有界维护确认操作；覆盖所有克隆实例的关闭；绑定确切代次的虚拟机会话；静态客户机代理后使用同一个 Linux 执行器。平台中立、每代次一台虚拟机的生命周期现已同时支撑公共 HVF 驱动和 Linux KVM 候选驱动，涵盖 bundle 所有权交接、并发 Create 隔离、重试和终态清理、停止状态恢复墓碑记录及有界关闭。持久化恢复记录保留在各代次的共享目录中；特权 OCI 设备源仅在 Guest 本地 devtmpfs 上创建，并在 Create 屏障处移除；关闭流程会在删除 Guest 运行时根目录前逐一处理所有保留的设备目标清单 |
-| containerd runtime-v2 | 仅依赖 SDK 的 `containerd-shim-a3s-oci-v2`，以代码定义 `containerd.task.v2.Task` 全部 17 个方法的契约；包含 24 条路由的转换表，其所需 SDK 操作的确切并集共 18 项，用于端点准入；逐驱动协商 `Checkpoint`/`Restore` v1。Task Checkpoint 提交经过摘要校验的目录包；基于检查点的 Create 恢复暂停代次，schema-v10 元数据在 shim 更换后仍保留 CREATED 到 Start 的屏障。shim 还保留了确切的 2.2.2 arm64 Native Linux 开发资格验证、2.2.3 x86_64 回归证据，以及当前覆盖全部 23 个重启/状态重建边界的 2.2.1 WSL2 连续三轮观测。持久化命名空间/task/exec 身份、可重放的 task 和 `DeleteProcess` 回执、有序的输入/信号/尺寸调整/控制日志、有界 FIFO/PTY I/O、确切代次的崩溃清理与重启恢复均予以保留。Schema v9 仍可读取，并引入精确的待处理 Update 请求体；schema v1-v8 按其文档规定的默认值保持兼容。单元覆盖包括包重放与篡改拒绝、恢复意图的 DeleteShim 清理、接管已提交的 Resume、接管已提交的 init/exec Start、终态信号结算、响应回执重放，以及无竞态的输出游标恢复。没有生产驱动声明 Checkpoint 或 Restore。独立的 rootful Native Linux CRIU 构造器声明这两项操作，并已具备有界的真实内核 v3 检查点/恢复生命周期、响应丢失重放、跨两个边界的替代进程恢复验证，以及 PID/网络命名空间拒绝验证；包 v6 集成了该关卡，而留存带标签包、更广泛配置、跨驱动及多架构资格验证仍待完成。 |
-| A3S Box 使用方 | 仅通过公共 SDK 使用生命周期和附件；暂停/恢复；进程与文件系统会话；精确的实时清单、标准化统计、有界有序事件，以及可安全重放的完整资源更新；显式 Native Linux Sandbox 生产路由、带校验和的发行版布局安装；在 `/dev/kvm` 缺失且不可访问的 x86_64 和 aarch64 上，Rust/Python/TypeScript/Go SDK 全部通过验证，而默认路径与跨平台切换仍待完成 |
+| containerd runtime-v2 | 仅依赖 SDK 的 `containerd-shim-aster-oci-v2`，以代码定义 `containerd.task.v2.Task` 全部 17 个方法的契约；包含 24 条路由的转换表，其所需 SDK 操作的确切并集共 18 项，用于端点准入；逐驱动协商 `Checkpoint`/`Restore` v1。Task Checkpoint 提交经过摘要校验的目录包；基于检查点的 Create 恢复暂停代次，schema-v10 元数据在 shim 更换后仍保留 CREATED 到 Start 的屏障。shim 还保留了确切的 2.2.2 arm64 Native Linux 开发资格验证、2.2.3 x86_64 回归证据，以及当前覆盖全部 23 个重启/状态重建边界的 2.2.1 WSL2 连续三轮观测。持久化命名空间/task/exec 身份、可重放的 task 和 `DeleteProcess` 回执、有序的输入/信号/尺寸调整/控制日志、有界 FIFO/PTY I/O、确切代次的崩溃清理与重启恢复均予以保留。Schema v9 仍可读取，并引入精确的待处理 Update 请求体；schema v1-v8 按其文档规定的默认值保持兼容。单元覆盖包括包重放与篡改拒绝、恢复意图的 DeleteShim 清理、接管已提交的 Resume、接管已提交的 init/exec Start、终态信号结算、响应回执重放，以及无竞态的输出游标恢复。没有生产驱动声明 Checkpoint 或 Restore。独立的 rootful Native Linux CRIU 构造器声明这两项操作，并已具备有界的真实内核 v3 检查点/恢复生命周期、响应丢失重放、跨两个边界的替代进程恢复验证，以及 PID/网络命名空间拒绝验证；包 v6 集成了该关卡，而留存带标签包、更广泛配置、跨驱动及多架构资格验证仍待完成。 |
+| Aster Box 使用方 | 仅通过公共 SDK 使用生命周期和附件；暂停/恢复；进程与文件系统会话；精确的实时清单、标准化统计、有界有序事件，以及可安全重放的完整资源更新；显式 Native Linux Sandbox 生产路由、带校验和的发行版布局安装；在 `/dev/kvm` 缺失且不可访问的 x86_64 和 aarch64 上，Rust/Python/TypeScript/Go SDK 全部通过验证，而默认路径与跨平台切换仍待完成 |
 | 留存证据 | Schema 与规范锁定清单；189 对已认证协议故障覆盖；可移植的九阶段 Create/State/Start/Kill/Delete/Wait/Exec/SignalProcess/WaitProcess/Pause/Resume/Processes/Update/Stats/ReadOutput/WriteStdin/CloseStdin/Resize/File/Filesystem 主机重新打开验证，含精确提交后确认；真实 HVF 的九阶段 Host/Guest Create，加上两阶段 Host 关闭中断与清理；通过持久化服务重新打开及虚拟机/会话所有者替换，验证真实 HVF 上 Create、State、Start、Kill、Delete、Wait、Exec、SignalProcess、WaitProcess、Pause、Resume、Processes、Update、Stats、ReadOutput、WriteStdin、CloseStdin、Resize、File、Filesystem 全部操作各自的九个转换阶段；真实 protocol-v10 Apple Silicon Guest 启动；原生 Linux 真实容器验证，分别精确回读 init/exec capability、`NoNewPrivs`、rlimit、OOM 分数、I/O 优先级、调度器、init personality、init NUMA 内存策略、exec CPU 亲和性和命名空间 sysctl；rootless 默认设备与设备策略关卡；跨两次 Host 重新打开、精确重放 Pause/Resume 操作 ID 并使用原子进度计数器的浸泡测试；所有者死亡时安全终止；精确的 `startContainer` Hook 进程组所有者死亡恢复；同一 Host 上连续三轮真实 containerd 2.2 生命周期/重启/I/O 矩阵，覆盖已删除 exec ID 复用、`DeleteProcess` 与 task Delete 响应丢失重放、提交后客户机日志回收，以及已提交 init-Start、exec-Start、init-Kill、Pause、Resume、Update、WriteStdin、CloseStdin、SignalProcess 和 ResizePty 的 shim 替换关卡；提交后 `WriteStdin` 与 `CloseStdin` 强制清理；全新虚拟机 HVF 浸泡测试；失败即拒绝的 Linux KVM 生命周期/恢复/25 轮浸泡测试入口，加上真实 x86_64 上九阶段 Create/State/Start/Kill/Delete/Wait/Exec/SignalProcess/WaitProcess/Pause/Resume/Processes/Update/Stats/ReadOutput/WriteStdin/CloseStdin/Resize/File/Filesystem 所有者替换；以及 WHPX 正常路径与所有者死亡/服务重启资格验证 |
 
 shim 恢复现在会先核对 Runtime 中确切的 `Stopped` 记录，再
@@ -148,7 +148,7 @@ PID、退出状态和纳秒级退出时间。同一 exec ID 的新持久化
 实例会清除旧回执，而完整的 task Delete 或 DeleteShim 会移除
 该日志。
 
-Task Delete 现在先保存 `a3s-oci-shim-task-delete-v1.json`，再分派
+Task Delete 现在先保存 `aster-oci-shim-task-delete-v1.json`，再分派
 受代次隔离保护的 Runtime delete。回执绑定命名空间、task
 实例、容器身份、代次、bundle、PID、退出状态和
 纳秒级退出时间。若主元数据仍在且 Runtime 代次仍存活，
@@ -285,14 +285,14 @@ agent、资格验证进程及 Host 子进程数量均为零，僵尸进程和已
 验证迁移、重命名、地址/MTU/MAC 保留、目标冲突、部分
 回滚、rootless 拒绝及清理。
 
-rootful 公共 `a3s.oci.attachments.v3` 配置在此 OCI 机制之上增加了
+rootful 公共 `aster.oci.attachments.v3` 配置在此 OCI 机制之上增加了
 由调用方签发的不可变命名空间、接口和清理身份。它
 要求使用确切的目标接口名而非 `%d`，将这三个
 身份全部绑定到持久化重放证据，并区分运行时创建的
 命名空间的释放与所加入的调用方命名空间的保留。它从不
 接收或决定 IPAM、DNS、路由、别名或网络策略。
 
-必需扩展 `dev.a3s.network.enforcement@1` 为一个确切的、
+必需扩展 `dev.aster.network.enforcement@1` 为一个确切的、
 已加入的调用方命名空间添加不透明的调用方强制执行身份，
 并可选添加节点本地重定向身份，均绑定代次和 SHA-256。其封闭
 schema 无法承载主机名/IP 规则、路由、端点、凭据、租户
@@ -318,7 +318,7 @@ Native Linux 浸泡测试 schema v2 现在保留每个 Pause 和 Resume 操作 I
 Runtime 不决定工作负载何时空闲或何时唤醒；该策略由
 调用方掌握，并由调用方发出显式操作。
 
-公共 `a3s.oci.attachments.v4` 配置确立了可复用的
+公共 `aster.oci.attachments.v4` 配置确立了可复用的
 客户机会话边界。SharedGuestKernel create 或 restore 必须绑定一个
 逻辑会话 ID、正数实例编号、不可变信任域、
 1 到 64 的容量、运行时所有权，以及显式的空时销毁或
@@ -372,7 +372,7 @@ workload 叶节点；Native Linux 资格验证从两个子节点回读
 `memory.high`，在条件允许时验证由内核规范化的部分 `io.max` 写入，
 并测试 rootful 和委派权限的 rootless 实时更新。
 
-当前 `A3S-Lab/Box@a16772c3` 的 Box 适配器会对照
+当前 `aster-ai-lab/Box@a16772c3` 的 Box 适配器会对照
 确切的运行时绑定重新检查每次读取。文件上传/下载和文件系统
 stat/mkdir/move/list/remove 现在使用同一个跨平台会话门面；
 分派前检查能力与 Box 代次，重新校验响应目标
@@ -383,7 +383,7 @@ stat/mkdir/move/list/remove 现在使用同一个跨平台会话门面；
 重放。Runtime 确认会以原子方式更新 Box 重启意图，
 不改变最初的 create 身份。
 
-新的变更记录使用 `a3s.oci.operation.v6`。版本 3 的 File 上传和
+新的变更记录使用 `aster.oci.operation.v6`。版本 3 的 File 上传和
 Filesystem mkdir/move/remove 仍可读取；版本 4 还保留
 每个精确的 checkpoint 请求和类型化不可变响应；版本 5 添加
 精确的 restore 请求、分配的代次和暂停运行响应；
@@ -412,17 +412,17 @@ Host 结果，而不再次分派变更。在驱动证据
 资格验证边界详见
 [containerd Runtime V2](docs/containerd-runtime-v2.md)。
 
-契约 v1 固定运行时类型 `io.containerd.a3s-oci.v2`、task 服务
+契约 v1 固定运行时类型 `io.containerd.aster-oci.v2`、task 服务
 `containerd.task.v2.Task` 和 Linux 归档条目
-`containerd-shim-a3s-oci-v2`。将该条目安装到
-`/usr/local/bin/containerd-shim-a3s-oci-v2`。命名空间和 task ID 使用
+`containerd-shim-aster-oci-v2`。将该条目安装到
+`/usr/local/bin/containerd-shim-aster-oci-v2`。命名空间和 task ID 使用
 `sha256-length-framed-u64be-v1` 编码生成稳定的 SDK 容器 ID；
 Host 分配 Create 返回的单调递增运行时代次，
 shim 将其持久化，并在之后每个请求中寻址该确切代次。
 同一张代码定义的表将每个 Task 分支和 FIFO 泵映射到相应公共
 SDK 操作。RuntimeInfo 将确切的 18 操作并集发布为
-`dev.a3s.oci.containerd-sdk-operations`；缺少任何成员的端点都会被 shim
-拒绝，且测试会检查其 crate 清单，确保 A3S Box 和驱动
+`dev.aster.oci.containerd-sdk-operations`；缺少任何成员的端点都会被 shim
+拒绝，且测试会检查其 crate 清单，确保 Aster Box 和驱动
 实现位于这一适配器边界之外。
 有界进程 I/O 路径在每个 shim 步骤最多读写 64 KiB，
 非终端模式下将 stdout 和 stderr 分开，终端模式下则将输出
@@ -463,7 +463,7 @@ rootfs、绑定挂载、ID 映射挂载及容器创建的 tmpfs 文件系统上�
 
 完整发布目标涵盖 Linux 容器的 OCI 运行时规范
 1.3.0 中每条适用要求，以及每个声明的驱动，而非
-精简的 A3S 专用配置。[ROADMAP.md](ROADMAP.md) 将已完成证据与
+精简的 Aster 专用配置。[ROADMAP.md](ROADMAP.md) 将已完成证据与
 待完成发布关卡分开记录。
 
 对于运行时能够授予的每个值，capability 集合强制执行始终精确，
@@ -505,7 +505,7 @@ running  ── init terminated  ──▶ stopped
 每条持久化容器记录保留：
 
 - 精确校验后的配置及其摘要；
-- 新建记录的完整 `a3s.oci.attachments.v1`、支持存储的 v2、支持网络的 v3 或
+- 新建记录的完整 `aster.oci.attachments.v1`、支持存储的 v2、支持网络的 v3 或
   支持客户机会话的 v4 清单及其摘要；
 - 使用 shared-guest-kernel 隔离时，确切的可复用客户机会话
   实例；
@@ -527,7 +527,7 @@ running  ── init terminated  ──▶ stopped
 | `SharedGuestKernel` | 硬件辅助虚拟机 | 一个已声明的信任域共享客户机内核 |
 | `SharedHostKernel` | Native Linux | 容器共享主机内核 |
 
-`SharedGuestKernel` 请求必须携带 `a3s.oci.attachments.v4` 绑定，
+`SharedGuestKernel` 请求必须携带 `aster.oci.attachments.v4` 绑定，
 对应一个确切的客户机会话实例。这是持久化身份与权限
 证据，并非声称当前注册的辅助虚拟机驱动已提供
 池化；能力协商仍会拒绝 v4，直到该驱动声明相应 schema。
@@ -540,11 +540,11 @@ running  ── init terminated  ──▶ stopped
 ### SDK 即执行边界
 
 ```rust,no_run
-use a3s_oci_runtime::HostRuntimeService;
-use a3s_oci_sdk::RuntimeClient;
+use aster_oci_runtime::HostRuntimeService;
+use aster_oci_sdk::RuntimeClient;
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_oci_sdk::Result<()> {
+async fn main() -> aster_oci_sdk::Result<()> {
     let client = RuntimeClient::new(HostRuntimeService::new());
     let info = client.features().await?;
 
@@ -577,15 +577,15 @@ async fn main() -> a3s_oci_sdk::Result<()> {
 端点，且不会打开 KVM：
 
 ```bash
-a3s-oci native-linux-host-service \
-  --root /run/a3s/oci-native \
-  --agent /usr/libexec/a3s-oci-agent
+aster-oci native-linux-host-service \
+  --root /run/aster/oci-native \
+  --agent /usr/libexec/aster-oci-agent
 ```
 
 所有者在发布 `runtime.sock` 前打开 Native Linux 驱动与持久化状态，
 向经身份认证的同 UID 客户端提供独立隔离的容器代次服务，
 并在优雅关闭时回收驱动持有的进程。Box 显式
-`A3S_BOX_OCI_MIGRATION=sandbox` 生产路由使用此所有者。现有
+`ASTER_BOX_OCI_MIGRATION=sandbox` 生产路由使用此所有者。现有
 `native-linux-service` 命令仍是 Sandbox 范围内 FD 3/4/5 的所有者，
 用于兼容性与聚焦资格验证。
 
@@ -593,9 +593,9 @@ a3s-oci native-linux-host-service \
 将持久化状态与每代虚拟机状态分离：
 
 ```bash
-a3s-oci macos-hvf-host-service \
-  --root "$HOME/Library/Application Support/A3S/oci-hvf" \
-  --shim /absolute/path/to/a3s-oci-krun-shim \
+aster-oci macos-hvf-host-service \
+  --root "$HOME/Library/Application Support/Aster/oci-hvf" \
+  --shim /absolute/path/to/aster-oci-krun-shim \
   --system-image-manifest /absolute/path/to/system-image.json
 ```
 
@@ -628,9 +628,9 @@ Box B2 切换所需的 live process-session 重新附着仍待完成。
 
 | 主机路径 | 留存的真实证据 | 当前就绪状态与开放关卡 |
 | --- | --- | --- |
-| Native Linux x86_64/aarch64 | Rootful 与 helper 支撑的 rootless 生命周期，包括全部六个 OCI 默认设备、`/dev/ptmx`、配置 init 的 `/dev/console`、`/dev` 外的显式 FIFO、不可变 declared/default 设备边界，以及有界 A3S Box 设备策略；SDK 服务传输；exec/PTY/I/O；init/exec 调度器与 namespaced-sysctl 回读；cgroup update/stats；hooks；命名空间与 mount profile；多容器隔离；fault cleanup；owner-`SIGKILL` 安全终止与 stopped cleanup；精确 `startContainer` Hook owner-death 进程组 cleanup 与 replacement recovery；25 波 × 4 容器；x86_64/aarch64 经全部四个 SDK 的已安装 Box 生产所有者组合，`/dev/kvm` 缺失且不可访问，加上 fresh-Box-process owner-death/restart 关卡 | 默认 inventory 为 `probe-only`；显式打开的 development driver 为 `experimental`。Live session 重新附着、默认切换、生产安全与 OCI conformance 仍待完成 |
+| Native Linux x86_64/aarch64 | Rootful 与 helper 支撑的 rootless 生命周期，包括全部六个 OCI 默认设备、`/dev/ptmx`、配置 init 的 `/dev/console`、`/dev` 外的显式 FIFO、不可变 declared/default 设备边界，以及有界 Aster Box 设备策略；SDK 服务传输；exec/PTY/I/O；init/exec 调度器与 namespaced-sysctl 回读；cgroup update/stats；hooks；命名空间与 mount profile；多容器隔离；fault cleanup；owner-`SIGKILL` 安全终止与 stopped cleanup；精确 `startContainer` Hook owner-death 进程组 cleanup 与 replacement recovery；25 波 × 4 容器；x86_64/aarch64 经全部四个 SDK 的已安装 Box 生产所有者组合，`/dev/kvm` 缺失且不可访问，加上 fresh-Box-process owner-death/restart 关卡 | 默认 inventory 为 `probe-only`；显式打开的 development driver 为 `experimental`。Live session 重新附着、默认切换、生产安全与 OCI conformance 仍待完成 |
 | Linux KVM 辅助虚拟机 | 独立的 device/access/ioctl/API-version 探测；确定性的 x86_64 与 AArch64 runtime archive 与不可变 ext4 root；精确的 libkrun、firmware、exported kernel 与 static Guest Agent 兼容性集合；descriptor-pinned 只读 root attachment；隔离的 create/configure/root/plain-vsock/release context 关卡；带 descriptor-pinned KVM 与 runtime-share 检查、parent-to-worker device/inode 身份绑定、pidfd owner death、kernel-authenticated Unix peer identity、protocol-v10 协商，以及 KVM 不可用时的 fail-closed cleanup 证据的隔离 real-entry worker。两条架构通道均保留 14-case pre-entry compatibility-drift matrix，并调用 KVM-gated 17-case lifecycle matrix。其 versioned 十 case Guest path-isolation entry 检查 traversal、symbolic-link 与 magic-link 逃逸；聚焦回归还会在 descriptor 校验后交换 bundle、rootfs 与 bind-source entry。通道还调用 scoped owner-death/restart 关卡、scoped 25-wave fresh-generation soak，以及九阶段 Create、State、Start、Kill、Delete、Wait、Exec、SignalProcess、WaitProcess、Pause、Resume、Processes、Update、Stats、ReadOutput、WriteStdin、CloseStdin、Resize、File 与 Filesystem owner-replacement 关卡。Guest 在 virtiofs runtime share 上的 durable ownership 遵循 share-root Host UID，而非 Guest `geteuid()`，因此 non-root Host Service 可保留 recovery record 与 device-target manifest。KVM-independent driver preflight 在创建 Guest-visible generation share 前，会拒绝 shared-kernel class、不精确代次、缺失 handoff ownership，以及缺失、linked、non-private、drifted、escaping-rootfs 或 absolute-bind handoff。soak 审计 generation fencing 与 replay，以及每波的 process、marker、endpoint、descriptor、bundle-handoff、runtime-share、recovery-report 与 configured Guest `cgroupsPath` 生命周期。公共候选驱动每确切代次拥有一台 VM，拒绝 host-kernel fallback，将 bootstrap 与 writable share 分离，且仍不可注册 | `probe-only`；2026 年 9 月 11 日 tip `ff97257` existing-host WSL2 x86_64 release-matrix 观测（skip soak）已绿 agent-entry 至 create-reopen，且 `promotes_readiness=false`。2026 年 9 月 8 日裸机 x86_64 观测（`e71a995`/`a35703c`）在短 `RUNNER_TEMP` 下留存 lifecycle、recovery、180/180 operation-stage reopen path 与 25/25 soak。更早的 clean revision 保留 File/Filesystem 各 9/9（`fa4c593`）及先前 lifecycle/soak 行。promotion 仍需 fresh-host x86_64 + AArch64 attestation-bound matrix；Host shutdown 与独立 real-entry negative-isolation profile 仍开放 |
-| macOS arm64/HVF | 公共同 UID SDK host service；每确切代次一台 dedicated VM；manifest-bound 不可变 ext4 system image，含 pinned A3S Linux kernel 与 agent；只读 root disk 加独立同 UID mode-0700 writable runtime share，经 retained no-follow directory handle 与 parent-to-worker device/inode 身份绑定固定；Guest-local devtmpfs 上的 privileged OCI device node；真实 protocol-v10 bridge，含全部 21 个 Guest 操作；留存完整 protocol-v9 lifecycle、multi-container、namespace/rootfs enforcement、3 个 no-delete cleanup point、11 个 transport fault point、180/180 workload-operation replacement path、negative asset/authentication 关卡，以及 25 fresh-VM wave；源码 revision `a5a6b53` 通过 revision-bound public-path 关卡，覆盖全部 20 个 driver 操作以及 `features`/`list`/`events`、Host Service `SIGKILL` recovery，以及独立 25/25 fresh-VM soak，零 transient leak | Apple Silicon 上为 `experimental`。当前声明的每个公共 macOS/HVF 功能均已实现，protocol-v10 public path 在记录 revision 上已通过资格验证。Versioned 十 case Guest path-isolation profile 已实现且 CI 已接入；updated revision 上的首个 `available` artifact 仍待完成。Signed release-package qualification、OCI conformance、security review、upgrade/rollback compatibility 与更长 release soak 在 `supported` 之前仍待完成 |
+| macOS arm64/HVF | 公共同 UID SDK host service；每确切代次一台 dedicated VM；manifest-bound 不可变 ext4 system image，含 pinned Aster Linux kernel 与 agent；只读 root disk 加独立同 UID mode-0700 writable runtime share，经 retained no-follow directory handle 与 parent-to-worker device/inode 身份绑定固定；Guest-local devtmpfs 上的 privileged OCI device node；真实 protocol-v10 bridge，含全部 21 个 Guest 操作；留存完整 protocol-v9 lifecycle、multi-container、namespace/rootfs enforcement、3 个 no-delete cleanup point、11 个 transport fault point、180/180 workload-operation replacement path、negative asset/authentication 关卡，以及 25 fresh-VM wave；源码 revision `a5a6b53` 通过 revision-bound public-path 关卡，覆盖全部 20 个 driver 操作以及 `features`/`list`/`events`、Host Service `SIGKILL` recovery，以及独立 25/25 fresh-VM soak，零 transient leak | Apple Silicon 上为 `experimental`。当前声明的每个公共 macOS/HVF 功能均已实现，protocol-v10 public path 在记录 revision 上已通过资格验证。Versioned 十 case Guest path-isolation profile 已实现且 CI 已接入；updated revision 上的首个 `available` artifact 仍待完成。Signed release-package qualification、OCI conformance、security review、upgrade/rollback compatibility 与更长 release soak 在 `supported` 之前仍待完成 |
 | Windows x86_64/WHPX | 真实 partition/context/guest 关卡、protocol-v9 lifecycle 与 filesystem session、direct driver qualification、protected per-generation share、exact exit replay、两个 recovery fault boundary 处的 owner death、host-service reopen、stopped-only delete 与完整 transient cleanup。当前实现还构建可复现的 x86_64 ext4 system image，pin Linux 6.12.91 与全部 native boot asset，只读 attach root，并保持 runtime share 独立。existing-host 证据现已覆盖 20 个 workload operation 的全部 180/180 operation-stage replacement path，以及独立同进程 8-cycle handle-reclamation 关卡，exact 115 cold、122 baseline 与 122 final handle | `probe-only`；完整 SDK/recovery/negative/soak matrix 仍须在新配置的 WHPX 主机上以这些 exact asset 通过。v7 shim 与 Host 保留 v6 in-process handle-restoration 契约，但 fresh-host release 关卡仍开放 |
 
 Windows WHPX guest handoff 现在携带显式 `windows-virtiofs-acl-v1`
@@ -647,13 +647,13 @@ owner-death/reopen 关卡；fresh-host release 关卡仍显式开放。
 有界运行通过 180/180 operation-stage case（20 operation × 9 retained
 fault stage），包括 clock-adjusted Stats replacement case；所有 report
 均保留预期 owner/fault crossing、immutable asset hash 与完整
-process/share cleanup。独立 `a3s.oci.windows-whpx-handle-reclamation-run.v1`
+process/share cleanup。独立 `aster.oci.windows-whpx-handle-reclamation-run.v1`
 关卡还通过八次同进程 VM cycle，`115 -> 122 -> 122` cold/baseline/final
 handle、零 final delta 与 restored runtime share。这些是 existing-host
 观测，并不关闭 freshly provisioned release-host 关卡。
 
 2026 年 9 月 7 日，merged implementation 还通过完整 current-host
-`a3s.oci.windows-whpx-soak.v2` run：25/25 serial、3/3 multi-container、
+`aster.oci.windows-whpx-soak.v2` run：25/25 serial、3/3 multi-container、
 3/3 lifecycle-fault、6/6 parallel、5/5 workload、10/10 typed-negative
 与 4/4 owner-kill case，verification 与 final process cleanup 均通过。
 这仍是 existing-host 证据；fresh-host promotion 关卡仍显式开放。
@@ -685,7 +685,7 @@ Linux discovery 与 Native Linux development 在 `/dev/kvm` 缺失或不可用�
 必须仍可用。KVM 是可选的辅助虚拟机驱动，从不是 host-kernel execution
 的前置条件。Box main commit
 `d6861de302e6e165a2fdc473b2d399bb0692048e` 在
-[CI run 33497670646](https://github.com/A3S-Lab/Box/actions/runs/33497670646)
+[CI run 33497670646](https://github.com/aster-ai-lab/Box/actions/runs/33497670646)
 上，于 x86_64 与 aarch64 对 Runtime commit
 `438e4b7936cd08d408160fe9341a21786f60cd26` 留存了该 installed-product
 边界。
@@ -699,7 +699,7 @@ owner-replacement matrix，共 18/18 path。运行使用 agent SHA-256
 `e888c52e35ba8ed8f747d55bdc32316190dc317865e6919014e434a1e644e6ef`。
 
 最新 WHPX owner-death 关卡从 clean runtime commit `2d91cd0` 发出
-`a3s.oci.whpx-recovery-smoke-run.v1`。这关闭了 service-restart 证据项。
+`aster.oci.whpx-recovery-smoke-run.v1`。这关闭了 service-restart 证据项。
 immutable-image code 与 qualification artifact 现已存在，但尚未产生
 promotion 公共候选所需的 fresh-host matrix。当前 shim 还在 libkrun context
 创建前与 VM exit 后立即记录 Windows handle inventory；Host validation 与
@@ -747,7 +747,7 @@ default containerd 保持 PID 180，final audit 在移除 private root 与 unit
 
 current packaged qualification 使用 source revision
 `af8c5f97ac1f4eb506b32e8d57b3d1c0d5fb3645`，经 staged static-musl package
-`a3s-oci-runtime-v0.2.0-linux-x86_64` 执行。三轮 isolated containerd 2.2.1
+`aster-oci-runtime-v0.2.0-linux-x86_64` 执行。三轮 isolated containerd 2.2.1
 WSL2 x86_64 matrix 在 95.09/95.25/114.44 秒内完成全部 23 个 restart、
 shim-rehydration 与 forced-cleanup boundary。package report 与 executable
 digest（含 report SHA-256
@@ -772,7 +772,7 @@ fresh AArch64 operation-stage 证据与 promotion 关卡仍开放。
 `e71a995`（virtiofs durable-owner fix）与 follow-on merge `a35703c` 在
 Zorin OS 18.1（`Linux 7.0.0-31-generic`）裸机 x86_64 上留存 observation，
 使用真实 `/dev/kvm`。Non-root Host virtiofs share 在 Host Service UID 下
-存储 durable file；Guest Agent 在 `/run/a3s-oci-runtime` 下的 ownership
+存储 durable file；Guest Agent 在 `/run/aster-oci-runtime` 下的 ownership
 检查现遵循 runtime-share root owner，而非 `geteuid()`。在 `RUNNER_TEMP=/tmp`
 与 source-matched immutable system image 下，host 通过 Linux KVM lifecycle、
 owner-death/recovery、全部二十个 operation-stage reopen matrix（180/180
@@ -786,7 +786,7 @@ shutdown 与 signed release 关卡仍开放，Linux KVM 候选仍为 `probe-only
 
 2026 年 9 月 11 日，tip `ff97257` 在 existing-host WSL2 x86_64 `/dev/kvm`
 上留存 Linux KVM release-matrix 观测（`host_class=existing`，
-`A3S_OCI_LINUX_KVM_SKIP_SOAK=1`）：agent-entry、compatibility-drift、
+`ASTER_OCI_LINUX_KVM_SKIP_SOAK=1`）：agent-entry、compatibility-drift、
 lifecycle、recovery 与 create-reopen 均为 `available`
 （`promotes_readiness=false`；report SHA-256
 `1bd77d6c9091168220ce4d35d0d5f19d1a381498f5b048c5588761c8efb09ccd`）。
@@ -808,12 +808,12 @@ existing-host 绿从不设置 `promotes_readiness=true`。
 | Fresh KVM R2L x86_64 | **阻塞** — 需要新装 Linux KVM 主机（重装 WSL 不算 fresh） |
 | Fresh KVM R2L AArch64 | **阻塞** — 需要 AArch64 KVM 主机 |
 | WHPX/KVM `probe-only` → `experimental` | **阻塞** — 依赖上述 fresh 矩阵 |
-| 与当前 `main` 对齐的 promote | **硬件阻塞** — 检出当前 `main`。最新已发布归档是 [`v0.3.6`](https://github.com/A3S-Lab/OCI-Runtime/releases/tag/v0.3.6)（`b34c81c`），只是 `v0.3.5`（`139850c`）之上的文档和版本字符串归档。不晋升 readiness |
+| 与当前 `main` 对齐的 promote | **硬件阻塞** — 检出当前 `main`。最新已发布归档是 [`v0.3.6`](https://github.com/aster-ai-lab/OCI-Runtime/releases/tag/v0.3.6)（`b34c81c`），只是 `v0.3.5`（`139850c`）之上的文档和版本字符串归档。不晋升 readiness |
 
 | 项 | 诚实 fresh-host 之后 |
 | --- | --- |
 | W4 Box cutover（`microvm` / `sandbox` 走 SDK，无 silent fallback） | 开放；禁止过早合入 |
-| 默认 supervised create | 开放；`A3S_OCI_NATIVE_SESSION_SUPERVISOR=1` 仍为 opt-in |
+| 默认 supervised create | 开放；`ASTER_OCI_NATIVE_SESSION_SUPERVISOR=1` 仍为 opt-in |
 | `HostRuntimeService` 公开注册 KVM | 开放；fresh 矩阵通过前公开候选保持 `probe-only` |
 
 | 项 | 策略 |
@@ -828,10 +828,10 @@ existing-host 绿从不设置 `promotes_readiness=true`。
 ## 架构
 
 ```text
-A3S Box（当前 Sandbox 使用方；显式 Native Linux 生产路由
+Aster Box（当前 Sandbox 使用方；显式 Native Linux 生产路由
          负责 bundle/资源准备并使用长期 SDK 所有者；
          default、MicroVM 与 cross-platform cutover 仍待完成）
-a3s-oci CLI
+aster-oci CLI
 containerd runtime-v2 shim
                          │
                          ▼
@@ -863,18 +863,18 @@ containerd runtime-v2 shim
           cgroups · process I/O · confined filesystem · exact cleanup
 ```
 
-只有隔离的 `a3s-oci-krun-shim` 加载 checksum-pinned native libkrun
+只有隔离的 `aster-oci-krun-shim` 加载 checksum-pinned native libkrun
 asset。SDK、CLI discovery path、durable host service 与 Native Linux
 driver 不会初始化 hypervisor library。
 
-在 Linux x86_64 与 AArch64 上，`a3s-oci-krun-shim context-smoke` 校验并
+在 Linux x86_64 与 AArch64 上，`aster-oci-krun-shim context-smoke` 校验并
 加载所选 native bundle，检查 firmware-exported kernel，并 create、configure、
 release 一个 libkrun context。该命令不会打开 `/dev/kvm`、进入 VM，或
 改变 KVM driver 的 `probe-only` readiness。更强的 pre-entry 关卡还会从
 同一 target manifest 绑定 exact static agent 与 immutable root disk：
 
 ```bash
-a3s-oci-krun-shim system-image-context-smoke \
+aster-oci-krun-shim system-image-context-smoke \
   --system-image-manifest /absolute/path/to/system-image.json
 ```
 
@@ -898,7 +898,7 @@ check。它仅通过 immutable system root 进入。Host 在 protocol-v10 token
 negotiation 前，只接受 kernel-reported direct worker child：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-agent-entry.sh
 ```
 
@@ -906,7 +906,7 @@ A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
 KVM：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-compatibility-drift.sh
 ```
 
@@ -916,7 +916,7 @@ version 与 digest drift；以及 runtime archive、libkrun、firmware 与 expor
 kernel provenance drift。每个 case 必须 fail，且无 KVM-device access 或 VM
 entry，并恢复 endpoint、shim-process、token-handoff 与 runtime-share
 inventory。machine-readable result 使用
-`a3s.oci.linux-kvm-compatibility-drift.v2`。
+`aster.oci.linux-kvm-compatibility-drift.v2`。
 
 在无可用 KVM 的主机上，authenticated entry command 必须在 non-KVM setup
 后 fail，保留 nested KVM evidence，并恢复 endpoint、process 与 handoff
@@ -928,9 +928,9 @@ qualification-only failure。Shim schema v7 记录该 exact boundary，script
 lifecycle、recovery 与 soak matrix 仍必需。
 
 script 将 normal entry 留存于
-`a3s.oci.linux-kvm-agent-entry.v1`，injected boundary 留存于
-`a3s.oci.linux-kvm-post-probe-failure.v1`。两者用
-`a3s.oci.linux-kvm-provenance.v1` 包装 raw v10/v7 Host 与 shim report。
+`aster.oci.linux-kvm-agent-entry.v1`，injected boundary 留存于
+`aster.oci.linux-kvm-post-probe-failure.v1`。两者用
+`aster.oci.linux-kvm-provenance.v1` 包装 raw v10/v7 Host 与 shim report。
 common object 要求 clean checkout，绑定 Git object format、actual checkout
 commit 与 tree、Linux platform 与 target architecture，并对 CLI、shim、
 runtime-assets manifest、selected runtime file 与 system-image manifest 做
@@ -943,7 +943,7 @@ KVM-gated lifecycle entry 复用 Apple Silicon qualification 的同一 Utility
 VM implementation，而非维护第二套 Linux-only test harness：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-lifecycle.sh
 ```
 
@@ -951,7 +951,7 @@ A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
 exercise 该 candidate，但不使其 normally registerable：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-recovery.sh
 ```
 
@@ -960,7 +960,7 @@ Host 与五个 Guest request/response transition 处替换 real KVM VM/session
 owner：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-create-reopen.sh
 ```
 
@@ -969,7 +969,7 @@ replacement Guest 中 rebuild 该 Created container，并对 original durable
 generation 重新发出 State：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-state-reopen.sh
 ```
 
@@ -978,7 +978,7 @@ dispatch prepared Start 一次，要么在 Host replay durable response 前
 reconstruct 已 committed Running state：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-start-reopen.sh
 ```
 
@@ -987,7 +987,7 @@ Guest reconstruct Running workload，要么 dispatch prepared Kill 一次，要�
 在 Host replay durable response 前 rebuild 已 committed Stopped tombstone：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-kill-reopen.sh
 ```
 
@@ -997,7 +997,7 @@ committed path 启动 distinct empty KVM owner，不 rebuild workload，让 Host
 replay completed journal 而无需再次 driver dispatch：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-delete-reopen.sh
 ```
 
@@ -1008,7 +1008,7 @@ generation。前八条 path rebuild Stopped Guest tombstone，dispatch original
 Guest dispatch：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-wait-reopen.sh
 ```
 
@@ -1019,7 +1019,7 @@ path 在 recovery 中 recreate init 与 Exec，将 positive PID rebind 到 durab
 response，让 Host replay Exec 而无需再次 API-driven dispatch：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-exec-reopen.sh
 ```
 
@@ -1030,7 +1030,7 @@ path rebuild init 与 Exec，但 leave Prepared signal 供 API retry dispatch
 dispatch：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-signal-process-reopen.sh
 ```
 
@@ -1041,7 +1041,7 @@ retry 上 dispatch resolved WaitProcess target 一次，并 cache
 因此 replacement 与后续 WaitProcess call 均不 driver dispatch：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-wait-process-reopen.sh
 ```
 
@@ -1052,7 +1052,7 @@ retry 上 dispatch unchanged Pause 一次。committed final path 在 recovery
 replay 而无需再次 API-driven dispatch：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-pause-reopen.sh
 ```
 
@@ -1063,7 +1063,7 @@ path 在 API retry 上 dispatch unchanged Resume 一次；committed final path
 dispatch：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-resume-reopen.sh
 ```
 
@@ -1074,7 +1074,7 @@ durable query-response journal。returned inventory 必须恰好包含这两个
 target，generation 不变，包括 first owner 已写入 complete response 之后：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-processes-reopen.sh
 ```
 
@@ -1086,7 +1086,7 @@ recovery 将 resource profile reapply 到 fresh cgroup，Host replay response
 counter：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-update-reopen.sh
 ```
 
@@ -1097,7 +1097,7 @@ snapshot 更新且 distinct，同时两个 snapshot 均保留 exact generation �
 updated resource profile：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-stats-reopen.sh
 ```
 
@@ -1108,7 +1108,7 @@ nonce-bound stdout chunk 之后。Recovery rebind 两个 setup PID，fence stale
 Host 与 Guest generation，并移除两个 marker 与全部 transient owner state：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-read-output-reopen.sh
 ```
 
@@ -1120,7 +1120,7 @@ path 验证 exact effect marker、request identity、stale Host 与 Guest fence
 与 complete cleanup：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-write-stdin-reopen.sh
 ```
 
@@ -1132,7 +1132,7 @@ dispatch unchanged close 一次。在 `guest-after-response-write`，recovery
 marker、stale Host 与 Guest fence 与 complete cleanup：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-close-stdin-reopen.sh
 ```
 
@@ -1142,7 +1142,7 @@ reapply committed dimension，并 replay Host response 而无需第二次 driver
 dispatch：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-resize-reopen.sh
 ```
 
@@ -1152,7 +1152,7 @@ idempotently replay acknowledged upload，从 replacement Guest download
 bytes，reject changed 与 stale identity，并在 force-delete 前 remove file：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-file-reopen.sh
 ```
 
@@ -1161,14 +1161,14 @@ Filesystem 验证 mkdir，含对应 directory metadata 与 Stat effect。它使�
 fence、explicit Remove 与 zero-residue check：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-filesystem-reopen.sh
 ```
 
 bounded soak 使用独立 qualification scope 与一个 durable Host Service：
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-soak.sh
 ```
 
@@ -1179,57 +1179,57 @@ no-delete cleanup boundary，以及全部 11 个 transport fault point。Guest-
 isolation entry 含 bundle、rootfs、bind-source、File 与 Filesystem boundary
 的十个 ordered hostile-path case。它要求 exact owning operation 返回 typed
 `permission-denied` error，canary 不变，container state 缺失，且 fixture/
-runtime cleanup 完整。`a3s.oci.linux-kvm-lifecycle-matrix.v2` report
+runtime cleanup 完整。`aster.oci.linux-kvm-lifecycle-matrix.v2` report
 留存每个 nested runtime report，以及 endpoint、process、runtime-state、
 bootstrap、token/recovery 与 marker cleanup check。无可用 KVM 时跳过
 fixture download 并 emit `status: unavailable` 与 zero case。这使 CI 如实
-反映 runner capability；它不算 hardware pass。`a3s.oci.linux-kvm-recovery-
+反映 runner capability；它不算 hardware pass。`aster.oci.linux-kvm-recovery-
 matrix.v2` entry 在 KVM unavailable 时 likewise 跳过 Alpine。有 KVM 时 kill
 live Host Service，require authenticated SIGKILL recovery，open distinct
 replacement socket owner，replay exact stopped state 与 Wait，并证明
 stopped-only Delete 加 transient cleanup。soak 在 unavailable host 上也
 跳过 Alpine；其 retained aggregate schema 为
-`a3s.oci.linux-kvm-soak-matrix.v2`。有 KVM 时运行 25 fresh generation，并
+`aster.oci.linux-kvm-soak-matrix.v2`。有 KVM 时运行 25 fresh generation，并
 要求每个 process、descriptor、endpoint、handoff、share、recovery record 与
 Guest marker 在每波后回到 baseline。Available lifecycle、recovery 与 soak
 report（含 integrated Guest-isolation entry）仍须来自 fresh x86_64 与
 AArch64 KVM host。其他 real-entry negative-isolation profile 仍是独立
 promotion evidence。
 
-`a3s.oci.linux-kvm-create-reopen-matrix.v1` entry 在 KVM unavailable 时也
+`aster.oci.linux-kvm-create-reopen-matrix.v1` entry 在 KVM unavailable 时也
 跳过 Alpine。有 KVM 时，在九个 real Host/Guest interruption point 上保留
 exact durable generation 与 Create operation identity，包括在 distinct
 replacement Guest 中 rehydrate committed `guest-after-response-write`
 outcome。所有 case force-delete 并恢复 bootstrap、endpoint、process、
 bundle-handoff、runtime-share、recovery-report 与 marker inventory。
-`a3s.oci.linux-kvm-state-reopen-matrix.v1` 关卡对 State 应用相同九点。前
+`aster.oci.linux-kvm-state-reopen-matrix.v1` 关卡对 State 应用相同九点。前
 八点 retain exact Created record 且不返回 response；`guest-after-response-
 write` 在 disconnect probe 证明 owner loss 前 deliver exact response。
 Replacement recovery 必须 rebuild Created state，preserve setup Create
 identity 与 generation，返回 recovered durable record，并恢复相同 cleanup
-inventory。`a3s.oci.linux-kvm-start-reopen-matrix.v1` 关卡随后对 Start 应用
+inventory。`aster.oci.linux-kvm-start-reopen-matrix.v1` 关卡随后对 Start 应用
 相同点。前八条 path retain Created state，经 replacement driver dispatch
 exact Start 一次。final path retain Running state；recovery recreate 并
 start workload，rebind replacement PID，regenerate exact marker，让 Host
 replay completed journal 而无需再次 API-driven Start dispatch。
-`a3s.oci.linux-kvm-kill-reopen-matrix.v1` 关卡对 Kill 应用相同九点。前八条
+`aster.oci.linux-kvm-kill-reopen-matrix.v1` 关卡对 Kill 应用相同九点。前八条
 path retain Running state；replacement recovery recreate 并 start workload，
 repair setup response，dispatch unchanged SIGKILL 一次。final path retain
 Stopped state；recovery recreate、start 并 kill replacement workload 以
 reconstruct Guest tombstone，然后 Host replay completed Kill journal 而无需
 再次 API-driven dispatch。每条 path 验证 replacement marker 并使用
-stopped-only Delete。`a3s.oci.linux-kvm-delete-reopen-matrix.v1` 关卡随后
+stopped-only Delete。`aster.oci.linux-kvm-delete-reopen-matrix.v1` 关卡随后
 对 Delete 应用全部九点。前八条 path retain Stopped state 与 Prepared
 journal；replacement recovery 以 original setup identity recreate、start
 并 kill workload，然后 dispatch unchanged Delete 一次。committed final path
 retain empty inventory 与 SucceededEmpty journal，因此 distinct empty
 replacement owner 在 Host replay 前不做 workload recovery 或 driver Delete。
-`a3s.oci.linux-kvm-wait-reopen-matrix.v1` 关卡在全部九点 rebuild stopped
+`aster.oci.linux-kvm-wait-reopen-matrix.v1` 关卡在全部九点 rebuild stopped
 tombstone。前八条 path dispatch exact resolved Wait target 一次，并 durable
 cache `signal=9, oom_killed=false`；committed final path 保留该 cache，让
 replacement 与后续 Wait call replay 而无需 driver dispatch。每条 path reject
 stale generation（Host 与 Guest boundary），使用 stopped-only Delete，并
-恢复全部 inventory。`a3s.oci.linux-kvm-exec-reopen-matrix.v1` 关卡对
+恢复全部 inventory。`aster.oci.linux-kvm-exec-reopen-matrix.v1` 关卡对
 terminal Exec 应用全部九点。前八条 path retain Prepared journal，仅 recover
 Running init process，并 dispatch byte-identical process、terminal、I/O、
 generation 与 operation identity 一次。committed final path retain Succeeded
@@ -1237,7 +1237,7 @@ process journal，recreate init 与 Exec（fresh positive PID），rebind setup
 与 Exec response，并 replay Host request 而无需再次 driver dispatch。每条
 path 验证 distinct nonce-bound init 与 Exec marker，reject changed request
 与 stale generation，force-delete workload，并恢复全部 inventory。
-`a3s.oci.linux-kvm-signal-process-reopen-matrix.v1` 关卡 retain exact
+`aster.oci.linux-kvm-signal-process-reopen-matrix.v1` 关卡 retain exact
 terminal Exec，并在全部九点 apply signal 10。前八条 path retain Prepared
 signal journal，rebuild init 与 Exec，并在 API retry 上 dispatch unchanged
 target 与 signal 一次。committed final path retain SucceededEmpty journal，
@@ -1246,60 +1246,60 @@ rebuild init 与 Exec，wait nonce-bound Exec readiness marker，并在 recovery
 验证 separate signal marker，reject signal drift 与 stale Host/Guest
 generation，force-delete workload，并恢复全部 inventory。WaitProcess 的
 equivalent coverage 使用
-`a3s.oci.linux-kvm-wait-process-reopen-matrix.v1`。前八条 path 无 Host exit
+`aster.oci.linux-kvm-wait-process-reopen-matrix.v1`。前八条 path 无 Host exit
 cache，因此 recovery rebuild 并 terminate exact Exec，然后一次 resolved
 WaitProcess dispatch 持久化 `signal=10, oom_killed=false`。在
 `guest-after-response-write`，cache 已 durable；recovery 仍 recreate 并
 terminate Exec，但 omit 它于 live inventory，replacement 与后续 wait 均以
 零 driver dispatch replay。每条 path 复用全部 setup identity，reject stale
 Host 与 Guest generation，force-delete workload，并恢复每个 inventory。
-Pause 的 equivalent coverage 使用 `a3s.oci.linux-kvm-pause-reopen-matrix.v1`。
+Pause 的 equivalent coverage 使用 `aster.oci.linux-kvm-pause-reopen-matrix.v1`。
 前八条 path retain Running state 与 Prepared Pause journal，rebuild unpaused
 init，并 dispatch unchanged Pause 一次。committed final path retain paused
 state 与 Succeeded journal；recovery start replacement init，wait marker，
 reapply Pause，并在 Host replay 前 report recreated-paused-running evidence。
 每条 path fence changed request 与 stale Host/Guest generation，force-delete
 paused generation，并恢复每个 inventory。Resume 使用
-`a3s.oci.linux-kvm-resume-reopen-matrix.v1`。每个 replacement owner
+`aster.oci.linux-kvm-resume-reopen-matrix.v1`。每个 replacement owner
 reconstruct Create、Start 与 Pause（rebound PID）。前八条 path retain paused
 state 与 Prepared Resume journal，然后 unchanged dispatch 一次。committed
 final path retain unpaused state 与 Succeeded journal；recovery reapply
 Resume，Host replay 不再 additional API-driven dispatch。每条 path fence
 changed request 与 stale Host/Guest generation，force-delete resumed
 generation，并恢复每个 inventory。Processes 使用
-`a3s.oci.linux-kvm-processes-reopen-matrix.v1`。每个 replacement owner
+`aster.oci.linux-kvm-processes-reopen-matrix.v1`。每个 replacement owner
 reconstruct Create、Start 与 committed terminal Exec，rebind 两个 positive
 process PID，并 verify 两个 nonce-bound marker。因 query 为 read-only，全部
 九条 path 在 reopen 后 dispatch Processes 恰好一次，包括 delivered final
 response path。每个 inventory 仅含 init 与 original Exec target，generation
 不变，PID 为 replacement。每条 path reject stale Host/Guest generation，
 force-delete workload，并恢复每个 inventory。Update 使用
-`a3s.oci.linux-kvm-update-reopen-matrix.v1`。前八条 path preserve Prepared
+`aster.oci.linux-kvm-update-reopen-matrix.v1`。前八条 path preserve Prepared
 journal，并在 recovery 后 dispatch unchanged complete Linux resource request
 一次。committed final path preserve Succeeded journal；recovery 将 request
 reapply 到 fresh cgroup，Host replay 不再 additional API-driven dispatch。
 每条 path 经 direct Guest Stats 验证 512 MiB limit 与 live counter，reject
 changed request 与 stale Host/Guest generation，force-delete workload，并
 恢复每个 inventory。Stats 使用
-`a3s.oci.linux-kvm-stats-reopen-matrix.v1`。每个 replacement owner
+`aster.oci.linux-kvm-stats-reopen-matrix.v1`。每个 replacement owner
 reconstruct Create、Start 与 committed Update，然后 dispatch 一次 fresh
 read-only query。在 `guest-after-response-write`，first delivered snapshot
 与 newer replacement snapshot 均 retain exact generation 与 updated resource
 profile。每条 path reject stale Host/Guest generation，force-delete workload，
 并恢复每个 inventory。ReadOutput 使用
-`a3s.oci.linux-kvm-read-output-reopen-matrix.v1`。每个 replacement owner
+`aster.oci.linux-kvm-read-output-reopen-matrix.v1`。每个 replacement owner
 reconstruct Create、Start 与 live non-terminal Exec（rebound PID），然后
 dispatch 一次 fresh query，process target、cursor、byte limit 与 timeout
 不变。在 `guest-after-response-write`，delivered first chunk 与 replacement
 chunk 均等于 nonce-bound stdout。每条 path reject stale Host/Guest
 generation，force-delete workload，并恢复每个 inventory。WriteStdin 使用
-`a3s.oci.linux-kvm-write-stdin-reopen-matrix.v1`。前八条 path retain
+`aster.oci.linux-kvm-write-stdin-reopen-matrix.v1`。前八条 path retain
 Prepared Host journal，并在 recovery 后 dispatch exact bytes 一次。在
 `guest-after-response-write`，recovery 将 committed bytes 写入 rebuilt
 pipe-backed Exec，API retry 不再 additional dispatch。每条 path reject
 changed bytes 与 stale Host/Guest generation，verify nonce-bound effect
 marker，force-delete workload，并恢复每个 inventory。CloseStdin 使用
-`a3s.oci.linux-kvm-close-stdin-reopen-matrix.v1`。前八条 path retain
+`aster.oci.linux-kvm-close-stdin-reopen-matrix.v1`。前八条 path retain
 Prepared Host journal，并在 recovery 后 dispatch exact EOF 一次。在
 `guest-after-response-write`，recovery close rebuilt pipe-backed Exec，API
 retry 不再 additional dispatch。每条 path reject changed process target 与
@@ -1310,7 +1310,7 @@ shutdown 仍是 explicit readiness 关卡。
 
 | 所有者 | 保留 | 不得吸收 |
 | --- | --- | --- |
-| A3S Box 产品平面 | 期望状态、镜像/构建、命名卷、产品网络、Compose、健康/重启策略、日志保留与密钥授权 | 实际 PID/VM 身份或 runtime operation journal |
+| Aster Box 产品平面 | 期望状态、镜像/构建、命名卷、产品网络、Compose、健康/重启策略、日志保留与密钥授权 | 实际 PID/VM 身份或 runtime operation journal |
 | OCI Runtime 控制平面 | 精确 OCI 校验、实际状态、代次、重放、退出状态、驱动选择、恢复与清理 | Registry pull、镜像构建、Compose 或静默 isolation fallback |
 | 平台执行平面 | Linux 强制执行、辅助虚拟机、传输、进程控制与 runtime attachment | 产品编排或第二套 durable lifecycle |
 
@@ -1338,7 +1338,7 @@ compatibility contract；packaged verifier 可在安装前 offline 校验。
 | 主机 | 入口 | 指南 |
 | --- | --- | --- |
 | Linux x86_64/aarch64 | `bash .github/scripts/native-linux-smoke.sh`、`bash .github/scripts/native-linux-checkpoint.sh`（需 exact CRIU binary），以及带 pinned KVM manifest 的 `bash .github/scripts/linux-kvm-lifecycle.sh` | [Native Linux development](docs/linux-native.md) |
-| Apple Silicon | `cargo run -p a3s-oci-cli -- hvf-smoke`，随后 signed utility-VM profile | [macOS HVF development](docs/macos-hvf.md) |
+| Apple Silicon | `cargo run -p aster-oci-cli -- hvf-smoke`，随后 signed utility-VM profile | [macOS HVF development](docs/macos-hvf.md) |
 | Windows x86_64 | `scripts/windows-whpx-driver-smoke.ps1` 与 `scripts/windows-whpx-recovery-smoke.ps1`（需 verified container-rootfs archive 与 `windows-system-image` manifest） | [Windows WHPX development](docs/windows-whpx.md) |
 
 Linux smoke 为 rootless v4 关卡准备 explicit user-owned cgroup-v2 subtree。
@@ -1346,7 +1346,7 @@ Tokio 启动前，CLI retain 该 exact delegation，启动 parent-bound effectiv
 helper，并永久 drop runtime owner 到 real identity。普通 rootless launch 使用
 helper 提供六个 OCI default device node，并安装与 rootful execution 相同的
 immutable inventory boundary；它不会发明 `linux.resources.devices` policy。
-独立 A3S Box profile 还 exercise bounded device-access BPF replacement 与
+独立 Aster Box profile 还 exercise bounded device-access BPF replacement 与
 rollback。Runtime commit `bed43d2` 在 CI run `31714178349` 上于 x86_64 与
 aarch64 通过 full policy profile。v4 关卡验证 create、live update/stats、
 workload-proven pause/resume、durable event、全部六个 node、请求的 exact
@@ -1357,7 +1357,7 @@ rootful device-boundary profile 刻意 omit `linux.cgroupsPath`，grant
 `CAP_MKNOD`，并证明仅 declared/default identity 仍可用。它还将 `nodev` bind
 source 在 workload 内 remount 为 `dev`，并验证 late device access 仍以
 `EPERM` fail。运行聚焦关卡：
-`A3S_OCI_NATIVE_FOCUS=device-boundary bash .github/scripts/native-linux-smoke.sh`。
+`ASTER_OCI_NATIVE_FOCUS=device-boundary bash .github/scripts/native-linux-smoke.sh`。
 
 writable OCI cgroup mount 现遵循 OCI 1.3 delegation boundary。executor 仅
 对 exact `source: "cgroup"` mount 于 `/sys/fs/cgroup`（无 `ro` option 且
@@ -1366,7 +1366,7 @@ UID，preserve group，并仅变更 container cgroup directory 与
 `/sys/kernel/cgroup/delegate` 列出的 existing file；若 inventory 缺失，使用
 三个 normative fallback file。聚焦 Native Linux 关卡还证明 read-only cgroup
 mount 与 unlisted controller file 保持 ownership：
-`A3S_OCI_NATIVE_FOCUS=cgroup-ownership bash .github/scripts/native-linux-smoke.sh`。
+`ASTER_OCI_NATIVE_FOCUS=cgroup-ownership bash .github/scripts/native-linux-smoke.sh`。
 
 rootful terminal-init profile 从 `process.terminal` 派生 init I/O，在 launch
 前 apply configured 120x40 size，并将 exact PTY slave bind 到 `/dev/console`。
@@ -1405,7 +1405,7 @@ discovery 保持 empty，driver-specific extension（如 bundle handoff）仅当
 selected driver set 实际 advertise 时出现。
 
 `RuntimeInfo::extensions` 是选择该 driver-specific surface 的 versioned
-`a3s.oci.extensions.v1` source of truth。它将 catalog 绑定到 running Host
+`aster.oci.extensions.v1` source of truth。它将 catalog 绑定到 running Host
 executable 的 SHA-256，并为每个 launch-ready driver 及其 unique isolation
 class 发布 canonical operation-contract 与 attachment version。
 `RuntimeNegotiationRequest` 按 typed `IsolationClass` 选择，若任一 requested
@@ -1413,18 +1413,18 @@ version 缺失则在 workload preparation 前 fail。legacy flat `operations` �
 `attachments` field 仅 expose 对每个 registered driver 安全的 intersection；
 older peer 的 response 默认 empty catalog，不能 silently satisfy negotiation。
 
-`a3s.oci.attachments.v2` 将 already-authorized storage bind 到 exact OCI
+`aster.oci.attachments.v2` 将 already-authorized storage bind 到 exact OCI
 mount、immutable caller-issued allocation identity、matching read-only 或
 read-write access、caller ownership 与 detach-only cleanup。runtime 从不
 resolve named volume 或 snapshot，也从不 delete caller-owned backing resource。
 Storage create 要求 SDK protocol 5，而 v1 create manifest 保留 protocol-3
 compatibility。每次 restore 要求下文 immutable protocol-8 checkpoint reference。
 
-`a3s.oci.attachments.v3` 将 already-authorized Linux interface bind 到 exact
+`aster.oci.attachments.v3` 将 already-authorized Linux interface bind 到 exact
 OCI network namespace 与 `linux.netDevices` entry，以及 immutable namespace、
 interface 与 cleanup identity。Runtime-created namespace 随 container release；
 joined caller namespace 保留。IPAM、DNS、route、alias、policy 与 backing-
-network cleanup 留在 A3S Box。Network create 要求 SDK protocol 6；restore
+network cleanup 留在 Aster Box。Network create 要求 SDK protocol 6；restore
 要求 protocol 8。Rootful Native Linux advertise cumulative v1-v3；rootless
 Native 保持 v1-v2，因无 host network-device authority。Dedicated Linux KVM 现
 有 internal、fail-closed v2/v3 transport。Caller-owned non-bind `ext4` raw
@@ -1438,7 +1438,7 @@ Guest MAC；Guest 仅 rename uniquely matching VMM NIC。Joined caller namespace
 qualification 通过。HVF 保持 v1，直到获得 equivalent independent transport
 与 evidence。
 
-`dev.a3s.network.enforcement@1` 是 v3 上 independently negotiated required
+`dev.aster.network.enforcement@1` 是 v3 上 independently negotiated required
 extension。它将一个 opaque caller-compiled enforcement incarnation 与 optional
 opaque local-redirect incarnation bind 到 exact joined caller-owned namespace，
 仅使用 positive generation 与 lowercase SHA-256 digest。Runtime 既不 receive
@@ -1449,7 +1449,7 @@ Linux implementation 已 qualified；rootless Native 与 VM driver 在各自
 authority model 与 driver-specific real-host qualification 完成前继续 omit
 该 capability。
 
-`a3s.oci.attachments.v4` 将 SharedGuestKernel request bind 到一个 reusable
+`aster.oci.attachments.v4` 将 SharedGuestKernel request bind 到一个 reusable
 guest-session ID 与 positive incarnation、request 的 immutable trust domain、
 capacity 上限 64 member、runtime ownership 与 explicit empty-session reset
 mode。Create 要求 SDK protocol 7，restore 要求 protocol 8。exact binding
@@ -1460,7 +1460,7 @@ production utility-VM driver advertise v4，直到其 prerequisite storage/netwo
 transport 与 real-host restart/leak qualification 通过。fail-closed composition
 规则见 [attachment contract](docs/attachment-contracts.md)。
 
-SDK protocol 8 freeze `a3s.oci.checkpoint-reference.v1`：一个 exact paused
+SDK protocol 8 freeze `aster.oci.checkpoint-reference.v1`：一个 exact paused
 source generation、configuration 与 attachment digest、driver/isolation、
 platform 与 architecture、Host executable 与 driver-build evidence、
 driver-defined format，以及 exact artifact digest 与 size。Checkpoint 仅接受
@@ -1497,7 +1497,7 @@ retained tagged multi-architecture qualification，以及 production readiness
 
 containerd runtime-v2 shim 现 expose 该 optional contract，但不将其纳入
 endpoint 18-operation base admission set。paused Task Checkpoint 写入
-`a3s-oci-checkpoint-v1.bin` 加 atomically committed `a3s-oci-checkpoint-v1.json`
+`aster-oci-checkpoint-v1.bin` 加 atomically committed `aster-oci-checkpoint-v1.json`
 reference manifest 到 containerd requested directory。Create 带该 directory
 validate immutable package 并 call SDK Restore。虽 SDK restore 返回 paused
 running generation，shim 报告 CREATED，直到 first Start 执行一次 replay-
@@ -1507,8 +1507,8 @@ stable Resume；schema-v10 metadata 与 schema-v2 create intent 在 shim crash
 option 仍 rejected。
 
 SDK protocol 9 增加 policy-neutral TEE mechanism boundary。dedicated-VM
-create 或 restore 可 require 恰好一个 `dev.a3s.tee.amd-sev-snp@1` 或
-`dev.a3s.tee.intel-tdx@1` launch extension，mode 为 explicit `hardware` 或
+create 或 restore 可 require 恰好一个 `dev.aster.tee.amd-sev-snp@1` 或
+`dev.aster.tee.intel-tdx@1` launch extension，mode 为 explicit `hardware` 或
 `simulated`。独立 durable `attest` operation 携带 exact 64-byte report-data
 binding，返回 bounded opaque provider evidence 加 launch measurement、
 configuration 与 attachment digest、driver 与 driver-build identity，以及
@@ -1621,7 +1621,7 @@ artifact qualification 均须通过，driver 才能成为 `supported`。
 - 已实现 immutable WHPX system root 的 fresh-host qualification，以及已实现
   KVM system root 的 real-entry qualification；
 - utility-VM hook recovery 与 security certification；
-- default 与 cross-platform A3S Box cutover，以及剩余 containerd compatibility、
+- default 与 cross-platform Aster Box cutover，以及剩余 containerd compatibility、
   packaging 与 cross-driver 关卡；
 - Native Linux CRIU 更广 checkpoint source profile、cross-driver 与 retained
   tagged multi-architecture real-host qualification，以及 production
@@ -1714,5 +1714,5 @@ suite 或非 Linux platform。package availability 永不会 override exact bina
 
 ## 许可证
 
-A3S OCI Runtime 在 [MIT License](LICENSE) 下提供。
+Aster OCI Runtime 在 [MIT License](LICENSE) 下提供。
 

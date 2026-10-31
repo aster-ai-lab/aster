@@ -22,7 +22,7 @@ const PATCHES = [
     anchor: `      let [args, invokerFnBody] = createJsInvoker(argTypes, isClassMethodFunc, returns, isAsync);
       var invokerFn = new Function(...args, invokerFnBody)(...closureArgs);
 `,
-    replacement: `      // a3s patch: closure invoker, not generated code (view policy has no 'unsafe-eval').
+    replacement: `      // aster patch: closure invoker, not generated code (view policy has no 'unsafe-eval').
       var invokerFn = function(...callArgs) {
         checkArgCount(callArgs.length, minArgs, expectedArgCount, humanName, throwBindingError);
         var destructors = needsDestructorStack ? [] : null;
@@ -54,7 +54,7 @@ const PATCHES = [
   {
     anchor: `      var invokerFunction = new Function(...params, functionBody)(...args);
 `,
-    replacement: `      // a3s patch: closure method caller, not generated code (view policy has no 'unsafe-eval').
+    replacement: `      // aster patch: closure method caller, not generated code (view policy has no 'unsafe-eval').
       var invokerFunction = (obj, func, destructorsRef, argsPointer) => {
         var values = kind === /* FUNCTION */ 0 ? [obj] : [];
         var offset = 0;

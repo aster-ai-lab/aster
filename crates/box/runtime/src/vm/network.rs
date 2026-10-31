@@ -1,8 +1,8 @@
 //! Network setup for VM instances (bridge networking and DNS).
 
-use a3s_box_core::dns::HostEntry;
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::guest_exec::GuestHostConfig;
+use aster_box_core::dns::HostEntry;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::guest_exec::GuestHostConfig;
 
 use crate::vmm::NetworkInstanceConfig;
 
@@ -19,8 +19,8 @@ impl VmManager {
         let resolv_dns =
             network_dns.map(|servers| servers.iter().map(ToString::to_string).collect::<Vec<_>>());
         let resolv_conf = match resolv_dns.as_deref() {
-            Some(servers) => a3s_box_core::dns::generate_resolv_conf(servers),
-            None => a3s_box_core::dns::generate_resolv_conf(&self.config.dns),
+            Some(servers) => aster_box_core::dns::generate_resolv_conf(servers),
+            None => aster_box_core::dns::generate_resolv_conf(&self.config.dns),
         };
         let hosts = match network_name {
             Some(network_name) => Some(self.render_network_hosts_file(network_name)?),
@@ -50,7 +50,7 @@ impl VmManager {
         let dns_servers: Vec<std::net::Ipv4Addr> = if self.config.dns.is_empty() {
             vec![std::net::Ipv4Addr::new(8, 8, 8, 8)]
         } else {
-            a3s_box_core::dns::parse_ipv4_dns_servers(&self.config.dns).map_err(|error| {
+            aster_box_core::dns::parse_ipv4_dns_servers(&self.config.dns).map_err(|error| {
                 BoxError::NetworkError(format!("invalid DNS server for published network: {error}"))
             })?
         };
@@ -81,7 +81,7 @@ impl VmManager {
         let Some(hostname) = self.config.hostname.as_deref() else {
             return Ok(());
         };
-        a3s_box_core::dns::validate_hostname(hostname).map_err(BoxError::ConfigError)?;
+        aster_box_core::dns::validate_hostname(hostname).map_err(BoxError::ConfigError)?;
 
         crate::oci::rootfs::write_guest_file(
             &layout.rootfs_path,
@@ -108,7 +108,7 @@ impl VmManager {
             return Ok(None);
         }
 
-        Ok(Some(a3s_box_core::dns::generate_hosts_file_with_entries(
+        Ok(Some(aster_box_core::dns::generate_hosts_file_with_entries(
             None,
             &aliases,
             &[],
@@ -185,7 +185,7 @@ impl VmManager {
         // path and egress profile are IPv4-only, and silently dropping a value
         // would leave guest resolv.conf disagreeing with the host proxy.
         let dns_servers: Vec<std::net::Ipv4Addr> = if !self.config.dns.is_empty() {
-            a3s_box_core::dns::parse_ipv4_dns_servers(&self.config.dns).map_err(|error| {
+            aster_box_core::dns::parse_ipv4_dns_servers(&self.config.dns).map_err(|error| {
                 BoxError::NetworkError(format!("invalid DNS server for bridge network: {error}"))
             })?
         } else {
@@ -306,7 +306,7 @@ impl VmManager {
         let peers = net_config.peer_endpoints(&self.box_id);
         let add_hosts = self.parse_add_hosts()?;
 
-        Ok(a3s_box_core::dns::generate_hosts_file_with_entries(
+        Ok(aster_box_core::dns::generate_hosts_file_with_entries(
             Some(&own_ip),
             &own_names,
             &peers,
@@ -315,7 +315,7 @@ impl VmManager {
     }
 
     fn parse_add_hosts(&self) -> Result<Vec<HostEntry>> {
-        a3s_box_core::dns::parse_add_host_entries(&self.config.add_hosts)
+        aster_box_core::dns::parse_add_host_entries(&self.config.add_hosts)
             .map_err(BoxError::ConfigError)
     }
 
@@ -345,7 +345,7 @@ impl VmManager {
         peers: &[(String, String)],
         add_hosts: &[HostEntry],
     ) -> Result<()> {
-        let hosts_content = a3s_box_core::dns::generate_hosts_file_with_entries(
+        let hosts_content = aster_box_core::dns::generate_hosts_file_with_entries(
             own_ip, own_names, peers, add_hosts,
         );
         crate::oci::rootfs::write_guest_file(&layout.rootfs_path, "etc/hosts", &hosts_content)?;
@@ -384,12 +384,12 @@ mod tests {
 
     #[cfg(windows)]
     fn create_dir_symlink(target: &Path, link: &Path) -> bool {
-        let guard = a3s_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
+        let guard = aster_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
         let assigned_privilege_enabled = guard.assigned_privilege_enabled();
         match std::os::windows::fs::symlink_dir(target, link) {
             Ok(()) => true,
             Err(error)
-                if a3s_box_core::windows_symlink::is_capability_denial(
+                if aster_box_core::windows_symlink::is_capability_denial(
                     &error,
                     assigned_privilege_enabled,
                 ) =>
@@ -454,11 +454,11 @@ mod tests {
     #[test]
     fn test_hostname_aliases_include_default_and_override() {
         let vm = VmManager::with_box_id(
-            a3s_box_core::config::BoxConfig {
+            aster_box_core::config::BoxConfig {
                 hostname: Some("web".to_string()),
                 ..Default::default()
             },
-            a3s_box_core::event::EventEmitter::new(16),
+            aster_box_core::event::EventEmitter::new(16),
             "box-id".to_string(),
         );
 
@@ -471,7 +471,7 @@ mod tests {
     #[test]
     fn test_render_network_hosts_includes_own_endpoint_aliases() {
         let dir = TempDir::new().unwrap();
-        let mut net = a3s_box_core::network::NetworkConfig::new("mynet", "10.88.0.0/24").unwrap();
+        let mut net = aster_box_core::network::NetworkConfig::new("mynet", "10.88.0.0/24").unwrap();
         let ep = net
             .connect_with_aliases("box-db", "proj-db", &["db".to_string()])
             .unwrap();
@@ -483,11 +483,11 @@ mod tests {
         .unwrap();
 
         let mut vm = VmManager::with_box_id(
-            a3s_box_core::config::BoxConfig {
+            aster_box_core::config::BoxConfig {
                 hostname: Some("db-host".to_string()),
                 ..Default::default()
             },
-            a3s_box_core::event::EventEmitter::new(16),
+            aster_box_core::event::EventEmitter::new(16),
             "box-db".to_string(),
         );
         vm.home_dir = dir.path().to_path_buf();
@@ -499,13 +499,13 @@ mod tests {
     #[test]
     fn test_guest_host_config_renders_without_touching_rootfs() {
         let vm = VmManager::with_box_id(
-            a3s_box_core::config::BoxConfig {
+            aster_box_core::config::BoxConfig {
                 hostname: Some("web".to_string()),
                 dns: vec!["1.1.1.1".to_string()],
                 add_hosts: vec!["db.local:10.88.0.10".to_string()],
                 ..Default::default()
             },
-            a3s_box_core::event::EventEmitter::new(16),
+            aster_box_core::event::EventEmitter::new(16),
             "box-id".to_string(),
         );
 
@@ -523,12 +523,12 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let layout = test_layout(dir.path().join("rootfs"));
         let vm = VmManager::with_box_id(
-            a3s_box_core::config::BoxConfig {
+            aster_box_core::config::BoxConfig {
                 hostname: Some("web".to_string()),
                 add_hosts: vec!["db.local:10.88.0.10".to_string()],
                 ..Default::default()
             },
-            a3s_box_core::event::EventEmitter::new(16),
+            aster_box_core::event::EventEmitter::new(16),
             "box-id".to_string(),
         );
 
@@ -551,8 +551,8 @@ mod tests {
         std::fs::write(&hosts_path, "127.0.0.1 localhost\n::1 localhost\n").unwrap();
         std::fs::set_permissions(&hosts_path, std::fs::Permissions::from_mode(0o600)).unwrap();
         let vm = VmManager::with_box_id(
-            a3s_box_core::config::BoxConfig::default(),
-            a3s_box_core::event::EventEmitter::new(16),
+            aster_box_core::config::BoxConfig::default(),
+            aster_box_core::event::EventEmitter::new(16),
             "box-id".to_string(),
         );
 
@@ -573,11 +573,11 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let layout = test_layout(dir.path().join("rootfs"));
         let vm = VmManager::with_box_id(
-            a3s_box_core::config::BoxConfig {
+            aster_box_core::config::BoxConfig {
                 hostname: Some("web".to_string()),
                 ..Default::default()
             },
-            a3s_box_core::event::EventEmitter::new(16),
+            aster_box_core::event::EventEmitter::new(16),
             "box-id".to_string(),
         );
 
@@ -602,12 +602,12 @@ mod tests {
         }
         let layout = test_layout(rootfs.clone());
         let vm = VmManager::with_box_id(
-            a3s_box_core::config::BoxConfig {
+            aster_box_core::config::BoxConfig {
                 hostname: Some("web".to_string()),
                 add_hosts: vec!["db.local:10.88.0.10".to_string()],
                 ..Default::default()
             },
-            a3s_box_core::event::EventEmitter::new(16),
+            aster_box_core::event::EventEmitter::new(16),
             "box-id".to_string(),
         );
 
@@ -635,11 +635,11 @@ mod tests {
         }
         let layout = test_layout(rootfs);
         let vm = VmManager::with_box_id(
-            a3s_box_core::config::BoxConfig {
+            aster_box_core::config::BoxConfig {
                 hostname: Some("web".to_string()),
                 ..Default::default()
             },
-            a3s_box_core::event::EventEmitter::new(16),
+            aster_box_core::event::EventEmitter::new(16),
             "box-id".to_string(),
         );
 

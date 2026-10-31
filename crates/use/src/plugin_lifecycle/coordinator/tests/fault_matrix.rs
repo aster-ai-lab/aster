@@ -8,9 +8,9 @@ use crate::plugin_lifecycle::{PluginLifecycleAction, PluginLifecycleOperationSta
 
 pub(super) const CHECKPOINT_CRASH_EXIT_CODE: i32 = 86;
 
-const CHILD_ROOT_ENV: &str = "A3S_USE_TEST_LIFECYCLE_FAULT_ROOT";
-const CHILD_ACTION_ENV: &str = "A3S_USE_TEST_LIFECYCLE_FAULT_ACTION";
-const CHILD_CHECKPOINT_ENV: &str = "A3S_USE_TEST_LIFECYCLE_FAULT_CHECKPOINT";
+const CHILD_ROOT_ENV: &str = "ASTER_USE_TEST_LIFECYCLE_FAULT_ROOT";
+const CHILD_ACTION_ENV: &str = "ASTER_USE_TEST_LIFECYCLE_FAULT_ACTION";
+const CHILD_CHECKPOINT_ENV: &str = "ASTER_USE_TEST_LIFECYCLE_FAULT_CHECKPOINT";
 
 #[tokio::test]
 async fn every_lifecycle_checkpoint_recovers_after_an_ambiguous_host_effect() {

@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::platform::Platform;
+use aster_box_core::platform::Platform;
 use oci_spec::image::{Descriptor, ImageConfiguration, ImageIndex, ImageManifest, MediaType};
 use sha2::{Digest, Sha256};
 
@@ -23,7 +23,7 @@ pub(super) struct PreparedLayout {
 /// Resolve an extracted OCI layout to one runnable image manifest.
 ///
 /// A normal OCI archive may point from its root `index.json` to another image
-/// index. A3S image consumers intentionally operate on a normalized layout
+/// index. Aster image consumers intentionally operate on a normalized layout
 /// whose root descriptor is an image manifest, so selection must happen before
 /// the layout is published to the persistent store.
 pub(super) fn prepare(
@@ -64,7 +64,7 @@ pub(super) fn prepare(
     std::fs::write(&index_path, normalized)
         .map_err(|error| format!("Failed to normalize index.json: {error}"))?;
 
-    let image = a3s_box_runtime::OciImage::from_path(root)
+    let image = aster_box_runtime::OciImage::from_path(root)
         .map_err(|error| format!("Selected image for {target} is not usable: {error}"))?;
     if image.manifest_digest() != digest {
         return Err(format!(
@@ -90,7 +90,7 @@ fn target_platform(requested: Option<&str>) -> Result<Platform, String> {
 
     if platform.os != "linux" {
         return Err(format!(
-            "Unsupported image platform {platform}: A3S Box executes Linux images"
+            "Unsupported image platform {platform}: Aster Box executes Linux images"
         ));
     }
     Ok(platform)

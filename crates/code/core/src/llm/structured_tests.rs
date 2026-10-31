@@ -1509,17 +1509,17 @@ fn test_find_balanced_nested_strings_with_braces() {
 
 // ========================================================================
 // Integration tests (require real LLM API)
-// Run with: cargo test -p a3s-code-core --lib structured_tests::test_integration -- --ignored
+// Run with: cargo test -p aster-core --lib structured_tests::test_integration -- --ignored
 // ========================================================================
 
 fn load_minimax_config() -> Option<(String, String, String)> {
     // CARGO_MANIFEST_DIR = .../crates/code/core
-    // config.acl is at repo root: .../a3s/.a3s/config.acl
+    // config.acl is at repo root: .../aster/.aster/config.acl
     let manifest_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
     let candidates = [
-        manifest_dir.join("../../../.a3s/config.acl"), // crates/code/core → repo root
-        manifest_dir.join("../../.a3s/config.acl"),
-        manifest_dir.join("../.a3s/config.acl"),
+        manifest_dir.join("../../../.aster/config.acl"), // crates/code/core → repo root
+        manifest_dir.join("../../.aster/config.acl"),
+        manifest_dir.join("../.aster/config.acl"),
     ];
 
     let config_path = candidates.iter().find(|p| p.exists())?;
@@ -1543,10 +1543,10 @@ fn extract_acl_field(content: &str, section: &str, field: &str) -> Option<String
 }
 
 #[tokio::test]
-#[ignore = "requires MiniMax (or compatible) credentials in .a3s/config.acl"]
+#[ignore = "requires MiniMax (or compatible) credentials in .aster/config.acl"]
 async fn test_integration_generate_blocking_tool_mode() {
     let Some((base_url, api_key, model)) = load_minimax_config() else {
-        eprintln!("Skipping: .a3s/config.acl not found or missing MiniMax config");
+        eprintln!("Skipping: .aster/config.acl not found or missing MiniMax config");
         return;
     };
 
@@ -1598,10 +1598,10 @@ async fn test_integration_generate_blocking_tool_mode() {
 }
 
 #[tokio::test]
-#[ignore = "requires MiniMax (or compatible) credentials in .a3s/config.acl"]
+#[ignore = "requires MiniMax (or compatible) credentials in .aster/config.acl"]
 async fn test_integration_generate_blocking_prompt_mode() {
     let Some((base_url, api_key, model)) = load_minimax_config() else {
-        eprintln!("Skipping: .a3s/config.acl not found");
+        eprintln!("Skipping: .aster/config.acl not found");
         return;
     };
 
@@ -1645,10 +1645,10 @@ async fn test_integration_generate_blocking_prompt_mode() {
 }
 
 #[tokio::test]
-#[ignore = "requires MiniMax (or compatible) credentials in .a3s/config.acl"]
+#[ignore = "requires MiniMax (or compatible) credentials in .aster/config.acl"]
 async fn test_integration_generate_streaming_tool_mode() {
     let Some((base_url, api_key, model)) = load_minimax_config() else {
-        eprintln!("Skipping: .a3s/config.acl not found");
+        eprintln!("Skipping: .aster/config.acl not found");
         return;
     };
 
@@ -1722,10 +1722,10 @@ async fn test_integration_generate_streaming_tool_mode() {
 }
 
 #[tokio::test]
-#[ignore = "requires MiniMax (or compatible) credentials in .a3s/config.acl"]
+#[ignore = "requires MiniMax (or compatible) credentials in .aster/config.acl"]
 async fn test_integration_generate_complex_nested_schema() {
     let Some((base_url, api_key, model)) = load_minimax_config() else {
-        eprintln!("Skipping: .a3s/config.acl not found");
+        eprintln!("Skipping: .aster/config.acl not found");
         return;
     };
 

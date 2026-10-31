@@ -1,0 +1,17 @@
+extension "aster/travel" {
+  schema_version = 3
+  version        = "0.1.0"
+  route          = "travel"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://aster.dev/packages/applets/travel"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  ui "travel" {
+    point = "studio.applets"
+    entry = "ui/home/index.html"
+  }
+}

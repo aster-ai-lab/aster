@@ -15,7 +15,7 @@ const base = () => [
 
 test('latest downloads follow numeric versions per product/platform and exclude SDK, draft and prerelease assets', () => {
   const data = [release('v0.10.0', ['aster_0.10.0_aarch64.dmg']), ...base(),
-    release('v9.1.6', ['a3s-code-acp-v9.1.6-macos.tar.gz']),
+    release('v9.1.6', ['aster-acp-v9.1.6-macos.tar.gz']),
     release('v0.99.0', ['aster_0.99.0_aarch64.dmg'], { draft: true }),
     release('v0.98.0', ['aster_0.98.0_x64-setup.exe'], { prerelease: true })];
   const selected = selectDownloads(data);

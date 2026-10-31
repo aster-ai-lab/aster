@@ -4,7 +4,7 @@ use super::decision_ledger::{
 use crate::execution_identity::{
     ExecutionClaimV1, ExecutionResultOutcomeV1, ExecutionResultReceiptV1,
 };
-use a3s_flow::RetryPolicy;
+use aster_flow::RetryPolicy;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -459,11 +459,11 @@ fn decision_result_receipt(
     let result = serde_json::to_vec(&request.decision)
         .map_err(|error| FlowDecisionDispatchError::Ledger(error.to_string()))?;
     let evidence_digest = crate::content_digest::digest_bytes(
-        "a3s.code.flow-decision.evidence.v1",
+        "aster.code.flow-decision.evidence.v1",
         request.causation_event_id.as_bytes(),
     );
     let result_digest =
-        crate::content_digest::digest_bytes("a3s.code.flow-decision.result.v1", &result);
+        crate::content_digest::digest_bytes("aster.code.flow-decision.result.v1", &result);
     let result_bytes = u64::try_from(result.len())
         .map_err(|_| FlowDecisionDispatchError::Ledger("decision result is too large".into()))?;
     claim

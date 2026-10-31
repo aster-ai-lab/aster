@@ -9,7 +9,7 @@ Read-only review of spec.md, plan.md and tasks.md completed on 2026-10-23 before
 | Every success criterion has a producing task | note | SC-001 T001-T008; SC-002 T009; SC-003/004 T010; final audit T011. |
 | Existing dirty files overlap some target modules | warning | Baseline hashes recorded before changes. Keep existing edits; restrict patches to the scoped behavior. No automatic staging/commit. |
 | Live-model correctness and call-count improvement are empirical | note | Report independent outcomes and median counts; do not claim universal correctness or hide residual model failures. |
-| A3S Test adapter currently refuses installed browser 0.3.2 | warning | Preserve infrastructure error; use admitted native background CUA for actual GUI proof. No driver-version bypass. |
+| Aster Test adapter currently refuses installed browser 0.3.2 | warning | Preserve infrastructure error; use admitted native background CUA for actual GUI proof. No driver-version bypass. |
 
 **Verdict**: Ready for implementation. No blocker or unresolved clarification marker. No delegation or parallel agents required by these tasks.
 

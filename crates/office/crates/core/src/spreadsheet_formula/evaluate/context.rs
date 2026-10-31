@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use crate::semantic::{DocumentNode, NativeOfficeDocument, OfficeNodeType};
 use crate::spreadsheet_reference::{CellRange, CellReference};

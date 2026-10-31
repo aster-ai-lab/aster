@@ -1,15 +1,15 @@
-use a3s_code_core::context::{ContextItem, ContextType, StaticContextProvider};
-use a3s_code_core::durable_memory::{DurableMemoryRecallPolicy, DurableMemorySession};
-use a3s_code_core::goal_control::{
+use aster_core::context::{ContextItem, ContextType, StaticContextProvider};
+use aster_core::durable_memory::{DurableMemoryRecallPolicy, DurableMemorySession};
+use aster_core::goal_control::{
     DurableGoalDefinitionV1, GoalCommandKindV1, GoalControlCommandV1, GoalDefinitionCommandV1,
     GoalPlanCommandV1,
 };
-use a3s_code_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task};
-use a3s_code_core::workspace::{WorkspaceRef, WorkspaceServices};
-use a3s_code_core::{
+use aster_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task};
+use aster_core::workspace::{WorkspaceRef, WorkspaceServices};
+use aster_core::{
     AgentSession, GoalTickStream, HarnessComposeOptions, SessionOptions, WorkPolicyV1,
 };
-use a3s_memory::repository::{FileMemoryRepository, MemoryNamespace};
+use aster_durable_memory::repository::{FileMemoryRepository, MemoryNamespace};
 use std::sync::Arc;
 
 pub fn coding_harness() -> anyhow::Result<HarnessComposeOptions> {
@@ -50,7 +50,7 @@ pub async fn project_memory(state_dir: &std::path::Path) -> anyhow::Result<Durab
 pub fn goal_options(
     workspace: &std::path::Path,
     options: SessionOptions,
-) -> anyhow::Result<(SessionOptions, a3s_code_core::workspace::WorkspaceRef)> {
+) -> anyhow::Result<(SessionOptions, aster_core::workspace::WorkspaceRef)> {
     let services = WorkspaceServices::local_with_manifest(workspace);
     let workspace_ref = services.workspace_ref().clone();
     let policy = WorkPolicyV1::new(

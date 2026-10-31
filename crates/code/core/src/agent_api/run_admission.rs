@@ -22,7 +22,7 @@ pub(super) struct RunAdmission {
     original: Mutex<Option<Arc<OriginalExecutionContext>>>,
     idle: Notify,
     log_source: Option<(std::path::PathBuf, String)>,
-    fact_log: Arc<Mutex<Option<Arc<a3s_effect::FileLog>>>>,
+    fact_log: Arc<Mutex<Option<Arc<aster_effect::FileLog>>>>,
 }
 
 impl std::fmt::Debug for RunAdmission {
@@ -62,7 +62,7 @@ impl RunAdmission {
         }
     }
 
-    pub(super) fn fact_log_slot(&self) -> Arc<Mutex<Option<Arc<a3s_effect::FileLog>>>> {
+    pub(super) fn fact_log_slot(&self) -> Arc<Mutex<Option<Arc<aster_effect::FileLog>>>> {
         Arc::clone(&self.fact_log)
     }
 
@@ -94,7 +94,7 @@ impl RunAdmission {
                     Some(log) => Arc::clone(log),
                     None => {
                         let log =
-                            Arc::new(a3s_effect::FileLog::open(directory).map_err(|error| {
+                            Arc::new(aster_effect::FileLog::open(directory).map_err(|error| {
                                 CodeError::Session(format!("original log admission: {error}"))
                             })?);
                         *shared = Some(Arc::clone(&log));
@@ -105,7 +105,7 @@ impl RunAdmission {
             lease.log_owner = Some(
                 log.try_run_owner(&crate::fact_control::thread_for_session(session_id))
                     .map_err(|error| match error {
-                        a3s_effect::ActorError::LogBusy => CodeError::SessionBusy {
+                        aster_effect::ActorError::LogBusy => CodeError::SessionBusy {
                             session_id: session_id.to_owned(),
                         },
                         other => CodeError::Session(format!("original log ownership: {other}")),
@@ -240,7 +240,7 @@ pub(super) struct RunAdmissionLease {
     session_id: String,
     original: OnceLock<Arc<OriginalExecutionContext>>,
     retirement_handled: bool,
-    log_owner: Option<a3s_effect::FileLogRunOwnerFence>,
+    log_owner: Option<aster_effect::FileLogRunOwnerFence>,
 }
 
 impl RunAdmissionLease {
@@ -248,7 +248,7 @@ impl RunAdmissionLease {
         &self,
         actual: &Arc<RunAdmission>,
         session_id: &str,
-    ) -> Result<Arc<a3s_effect::FileLog>> {
+    ) -> Result<Arc<aster_effect::FileLog>> {
         if !self.is_nonexecuting_fence_for(actual)
             || self.log_owner.is_none()
             || self.session_id != session_id
@@ -522,7 +522,7 @@ pub(super) struct OriginalExecutionContext {
     state: Mutex<OriginalOwnerState>,
     committer: OriginalCommitterCell,
     model_call: OriginalModelCell,
-    original_fact_log: Option<Arc<a3s_effect::FileLog>>,
+    original_fact_log: Option<Arc<aster_effect::FileLog>>,
 }
 
 /// Lifetime-only port to the SAME original execution. Only its actual canonical
@@ -542,7 +542,7 @@ enum ModelCallJoin {
 #[derive(Debug)]
 struct ModelReady {
     actual: std::result::Result<
-        std::result::Result<crate::agent::FactModelCallOutcome, a3s_effect::ActorError>,
+        std::result::Result<crate::agent::FactModelCallOutcome, aster_effect::ActorError>,
         tokio::task::JoinError,
     >,
     accounting: Arc<crate::agent::FactModelAccountingObservation>,
@@ -558,7 +558,7 @@ enum OriginalModelState {
     },
     Running {
         actual: JoinHandle<
-            std::result::Result<crate::agent::FactModelCallOutcome, a3s_effect::ActorError>,
+            std::result::Result<crate::agent::FactModelCallOutcome, aster_effect::ActorError>,
         >,
         attempt: CancellationToken,
         accounting: Arc<crate::agent::FactModelAccountingObservation>,
@@ -603,7 +603,7 @@ impl OriginalModelCallReservation {
     pub(crate) fn install_and_start(
         mut self,
         actual: JoinHandle<
-            std::result::Result<crate::agent::FactModelCallOutcome, a3s_effect::ActorError>,
+            std::result::Result<crate::agent::FactModelCallOutcome, aster_effect::ActorError>,
         >,
         attempt: CancellationToken,
         accounting: Arc<crate::agent::FactModelAccountingObservation>,
@@ -631,7 +631,7 @@ impl OriginalExecutionContext {
 impl OriginalModelCallPort {
     pub(crate) fn admits_original_run(
         &self,
-        log: &Arc<a3s_effect::FileLog>,
+        log: &Arc<aster_effect::FileLog>,
         session_id: &str,
         run_id: &str,
     ) -> bool {
@@ -645,7 +645,7 @@ impl OriginalModelCallPort {
 
     pub(crate) fn admits_original_log(
         &self,
-        log: &Arc<a3s_effect::FileLog>,
+        log: &Arc<aster_effect::FileLog>,
         session_id: &str,
     ) -> bool {
         let Some(original) = self.original.upgrade() else {
@@ -711,11 +711,11 @@ impl OriginalModelCallPort {
 
     pub(crate) async fn wait_same_original_call(
         &self,
-    ) -> std::result::Result<crate::agent::FactAccountingDisposition, a3s_effect::ActorError> {
+    ) -> std::result::Result<crate::agent::FactAccountingDisposition, aster_effect::ActorError> {
         let original = self
             .original
             .upgrade()
-            .ok_or_else(|| a3s_effect::ActorError::Defect("original model owner missing".into()))?;
+            .ok_or_else(|| aster_effect::ActorError::Defect("original model owner missing".into()))?;
         let observed = original.model_call.wait().await;
         let state = original.model_call.state.lock().await;
         if let OriginalModelState::Ready(ready) = &*state {
@@ -723,14 +723,14 @@ impl OriginalModelCallPort {
                 return Err(error.clone());
             }
             if let Err(error) = &ready.actual {
-                return Err(a3s_effect::ActorError::Defect(format!(
+                return Err(aster_effect::ActorError::Defect(format!(
                     "model task failed: {error}"
                 )));
             }
         }
         match observed {
             ModelCallJoin::Returned(disposition) => Ok(disposition),
-            _ => Err(a3s_effect::ActorError::Defect(
+            _ => Err(aster_effect::ActorError::Defect(
                 "original model join/accounting unproved".into(),
             )),
         }

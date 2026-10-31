@@ -58,8 +58,8 @@ async fn test_node_api_reconfigures_policy_on_an_existing_connection() {
     let traffic_port = free_port().await;
     let management_port = free_port().await;
     let backend = spawn_backend("traffic-ok").await;
-    let old_token_env = format!("A3S_TEST_GATEWAY_IN_PLACE_OLD_{management_port}");
-    let new_token_env = format!("A3S_TEST_GATEWAY_IN_PLACE_NEW_{management_port}");
+    let old_token_env = format!("ASTER_TEST_GATEWAY_IN_PLACE_OLD_{management_port}");
+    let new_token_env = format!("ASTER_TEST_GATEWAY_IN_PLACE_NEW_{management_port}");
     std::env::set_var(&old_token_env, "old-token");
     std::env::set_var(&new_token_env, "new-token");
 
@@ -111,7 +111,7 @@ async fn test_node_api_uses_dedicated_listener() {
     let backend = spawn_backend("traffic-ok").await;
     let mut config = build_config(traffic_port, backend, "PathPrefix(`/`)").await;
     config.mode = OperatingMode::CloudManaged;
-    let token_env = format!("A3S_TEST_GATEWAY_ADMIN_TOKEN_{}", management_port);
+    let token_env = format!("ASTER_TEST_GATEWAY_ADMIN_TOKEN_{}", management_port);
     std::env::set_var(&token_env, "secret-token");
     config.management = ManagementConfig {
         enabled: true,
@@ -159,7 +159,7 @@ async fn test_node_api_uses_dedicated_listener() {
 #[tokio::test]
 async fn test_node_api_exposes_only_the_machine_contract() {
     let token_env = format!(
-        "A3S_GATEWAY_TEST_NODE_API_MACHINE_TOKEN_{}",
+        "ASTER_GATEWAY_TEST_NODE_API_MACHINE_TOKEN_{}",
         uuid::Uuid::new_v4().simple()
     );
     std::env::set_var(&token_env, "machine-contract-token");
@@ -250,7 +250,7 @@ async fn test_node_api_exposes_only_the_machine_contract() {
 #[tokio::test]
 async fn test_node_api_rejects_disallowed_ip() {
     let token_env = format!(
-        "A3S_GATEWAY_TEST_NODE_API_DENIED_IP_TOKEN_{}",
+        "ASTER_GATEWAY_TEST_NODE_API_DENIED_IP_TOKEN_{}",
         uuid::Uuid::new_v4().simple()
     );
     std::env::set_var(&token_env, "denied-ip-token");
@@ -287,7 +287,7 @@ async fn test_node_api_rejects_disallowed_ip() {
 #[tokio::test]
 async fn test_node_api_requires_valid_client_certificate() {
     let token_env = format!(
-        "A3S_GATEWAY_TEST_NODE_API_MTLS_TOKEN_{}",
+        "ASTER_GATEWAY_TEST_NODE_API_MTLS_TOKEN_{}",
         uuid::Uuid::new_v4().simple()
     );
     std::env::set_var(&token_env, "mtls-token");
@@ -368,7 +368,7 @@ async fn test_reload_enables_node_api_on_dedicated_listener() {
     gw.start().await.unwrap();
     wait_ready(traffic_port).await;
 
-    let token_env = format!("A3S_TEST_GATEWAY_RELOAD_ADMIN_TOKEN_{}", management_port);
+    let token_env = format!("ASTER_TEST_GATEWAY_RELOAD_ADMIN_TOKEN_{}", management_port);
     std::env::set_var(&token_env, "reload-secret");
     let mut new_config = config;
     new_config.management = ManagementConfig {
@@ -413,8 +413,8 @@ async fn test_failed_node_api_reload_keeps_old_runtime_and_listener() {
     let backend_v2 = spawn_backend("v2").await;
     let mut config = build_config(traffic_port, backend_v1, "PathPrefix(`/`)").await;
 
-    let token_env = format!("A3S_TEST_GATEWAY_OLD_ADMIN_TOKEN_{}", management_port);
-    let missing_token_env = format!("A3S_TEST_GATEWAY_MISSING_ADMIN_TOKEN_{}", management_port);
+    let token_env = format!("ASTER_TEST_GATEWAY_OLD_ADMIN_TOKEN_{}", management_port);
+    let missing_token_env = format!("ASTER_TEST_GATEWAY_MISSING_ADMIN_TOKEN_{}", management_port);
     std::env::set_var(&token_env, "old-secret");
     std::env::remove_var(&missing_token_env);
     config.management = ManagementConfig {
@@ -511,8 +511,8 @@ async fn test_failed_entrypoint_reload_does_not_switch_node_api_listener() {
     let backend_v2 = spawn_backend("v2").await;
     let mut config = build_config(traffic_port, backend_v1, "PathPrefix(`/`)").await;
 
-    let old_token_env = format!("A3S_TEST_GATEWAY_OLD_MGMT_TOKEN_{}", old_management_port);
-    let new_token_env = format!("A3S_TEST_GATEWAY_NEW_MGMT_TOKEN_{}", new_management_port);
+    let old_token_env = format!("ASTER_TEST_GATEWAY_OLD_MGMT_TOKEN_{}", old_management_port);
+    let new_token_env = format!("ASTER_TEST_GATEWAY_NEW_MGMT_TOKEN_{}", new_management_port);
     std::env::set_var(&old_token_env, "old-token");
     std::env::set_var(&new_token_env, "new-token");
     config.management = ManagementConfig {

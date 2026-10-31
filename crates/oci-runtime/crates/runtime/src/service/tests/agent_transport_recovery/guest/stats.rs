@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
-use a3s_oci_agent_protocol::AgentStatsRequest;
-use a3s_oci_sdk::{ContainerStats, CpuStats, Error, ErrorCode, MemoryStats, Result};
+use aster_oci_agent_protocol::AgentStatsRequest;
+use aster_oci_sdk::{ContainerStats, CpuStats, Error, ErrorCode, MemoryStats, Result};
 
 use super::JournaledLifecycleGuest;
 

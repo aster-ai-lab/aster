@@ -24,9 +24,9 @@ fn bound_value<'a>(value: &Value, prepared: &'a Prepared) -> Option<&'a str> {
 fn nested_acl_round_trip_preserves_other_blocks_and_env_calls() {
     let prepared = prepare(FIXTURE, |_| None).expect("fixture");
     assert_eq!(prepared.api_key.as_deref(), Some("key-{literal}"));
-    let rendered = a3s_acl::generate(&prepared.document);
+    let rendered = aster_acl::generate(&prepared.document);
     assert!(!rendered.contains("key-{literal}"));
-    let parsed = a3s_acl::parse(&rendered).expect("generated ACL");
+    let parsed = aster_acl::parse(&rendered).expect("generated ACL");
     assert!(parsed.blocks.iter().any(|block| block.name == "memory"));
     let provider = parsed
         .blocks
@@ -72,15 +72,15 @@ fn the_selected_model_export_cannot_replace_other_environment_references() {
     let source = format!(
         r#"{FIXTURE}
 providers "other" {{
-  api_key = env("A3S_OPENAI_API_KEY")
-  base_url = env("A3S_OPENAI_BASE_URL")
+  api_key = env("ASTER_OPENAI_API_KEY")
+  base_url = env("ASTER_OPENAI_BASE_URL")
   models "alternate" {{}}
 }}
 "#
     );
     let prepared = prepare(&source, |name| match name {
-        "A3S_OPENAI_API_KEY" => Some("other-provider-key".into()),
-        "A3S_OPENAI_BASE_URL" => Some("https://other.invalid/v1".into()),
+        "ASTER_OPENAI_API_KEY" => Some("other-provider-key".into()),
+        "ASTER_OPENAI_BASE_URL" => Some("https://other.invalid/v1".into()),
         _ => None,
     })
     .unwrap();
@@ -99,7 +99,7 @@ providers "other" {{
         Some("https://other.invalid/v1")
     );
     assert_eq!(
-        prepared.environment["A3S_OPENAI_API_KEY"].as_deref(),
+        prepared.environment["ASTER_OPENAI_API_KEY"].as_deref(),
         Some("other-provider-key")
     );
     let selected = &prepared
@@ -124,7 +124,7 @@ fn model_overrides_and_explicit_provider_env_have_correct_precedence() {
     let model = prepare(&text, |_| None).expect("model override");
     assert_eq!(model.api_key.as_deref(), Some("model-key"));
     let host = prepare(&text, |name| {
-        (name == "A3S_FIXTURE_X_API_KEY").then(|| "host-key".to_owned())
+        (name == "ASTER_FIXTURE_X_API_KEY").then(|| "host-key".to_owned())
     })
     .expect("host override");
     assert_eq!(host.api_key.as_deref(), Some("host-key"));
@@ -145,7 +145,7 @@ mcp_servers "fixture" {{ transport = "stdio" command = "fixture-process" env = {
     );
     CodeConfig::from_acl(&source).expect("valid synthetic MCP/provider configuration");
     let prepared = prepare(&source, |_| None).expect("multi-provider fixture");
-    let rendered = a3s_acl::generate(&prepared.document);
+    let rendered = aster_acl::generate(&prepared.document);
     for secret in [
         "other-bearer",
         "https://other.invalid/v1?credential=private",
@@ -174,16 +174,16 @@ mcp_servers "fixture" {{ transport = "stdio" command = "fixture-process" env = {
 fn existing_env_names_are_forwarded_and_cannot_collide_with_generated_names() {
     let source = FIXTURE.replace(
         "name = \"Fixture\"",
-        "name = \"Fixture\" headers = { A = env(\"A3S_ACL_VALUE_2\") B = \"literal-header\" }",
+        "name = \"Fixture\" headers = { A = env(\"ASTER_ACL_VALUE_2\") B = \"literal-header\" }",
     );
     let prepared = prepare(&source, |name| {
-        (name == "A3S_ACL_VALUE_2").then(|| "existing-env-value".to_owned())
+        (name == "ASTER_ACL_VALUE_2").then(|| "existing-env-value".to_owned())
     })
     .unwrap();
     assert_eq!(
         prepared
             .environment
-            .get("A3S_ACL_VALUE_2")
+            .get("ASTER_ACL_VALUE_2")
             .and_then(|value| value.as_deref()),
         Some("existing-env-value")
     );
@@ -191,7 +191,7 @@ fn existing_env_names_are_forwarded_and_cannot_collide_with_generated_names() {
         .environment
         .values()
         .any(|value| value.as_deref() == Some("literal-header")));
-    assert!(!a3s_acl::generate(&prepared.document).contains("literal-header"));
+    assert!(!aster_acl::generate(&prepared.document).contains("literal-header"));
 }
 
 #[test]
@@ -212,7 +212,7 @@ providers "unused" {{
         _ => None,
     })
     .unwrap();
-    let rendered = a3s_acl::generate(&prepared.document);
+    let rendered = aster_acl::generate(&prepared.document);
     for secret in [
         "nested-key",
         "nested-header",
@@ -291,7 +291,7 @@ fn quoted_multiline_unicode_credentials_survive_only_in_the_environment() {
         bound_value(&provider.blocks[0].attributes["api_key"], &prepared),
         Some(key)
     );
-    assert!(!a3s_acl::generate(&prepared.document).contains("密钥"));
+    assert!(!aster_acl::generate(&prepared.document).contains("密钥"));
 }
 
 #[test]

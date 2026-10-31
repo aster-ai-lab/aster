@@ -27,7 +27,7 @@ use std::path::Path;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
 
-use a3s_box_core::exec::{ExecEvent, StreamType as ExecStream};
+use aster_box_core::exec::{ExecEvent, StreamType as ExecStream};
 use flate2::{Compress, Compression, FlushCompress, Status};
 
 use crate::streaming::StreamingSession;
@@ -328,10 +328,10 @@ pub async fn serve_exec(mut stream: TcpStream, session: &StreamingSession) -> Re
     let stderr_id = ids.get(&Channel::Stderr).copied();
     let error_id = ids.get(&Channel::Error).copied();
 
-    let request = a3s_box_core::exec::ExecRequest {
+    let request = aster_box_core::exec::ExecRequest {
         request_id: None,
         cmd: session.cmd.clone(),
-        timeout_ns: a3s_box_core::exec::DEFAULT_EXEC_TIMEOUT_NS,
+        timeout_ns: aster_box_core::exec::DEFAULT_EXEC_TIMEOUT_NS,
         env: vec![],
         working_dir: None,
         rootfs: session.rootfs.clone(),
@@ -341,7 +341,7 @@ pub async fn serve_exec(mut stream: TcpStream, session: &StreamingSession) -> Re
         streaming: false,
     };
     tracing::debug!(socket = %session.exec_socket_path, "spdy exec: connecting to guest exec");
-    let client = a3s_box_runtime::ExecClient::connect(Path::new(&session.exec_socket_path)).await?;
+    let client = aster_box_runtime::ExecClient::connect(Path::new(&session.exec_socket_path)).await?;
     let mut exec = client.exec_stream(&request).await?;
     let input = exec.input();
     tracing::debug!("spdy exec: streaming started");
@@ -451,7 +451,7 @@ pub async fn serve_exec(mut stream: TcpStream, session: &StreamingSession) -> Re
 /// The client opens error, [stdin], stdout and resize streams; PTY output is a
 /// single stream relayed to stdout, and resize frames drive the guest PTY.
 async fn serve_exec_tty(stream: TcpStream, session: &StreamingSession) -> Result<(), DynError> {
-    use a3s_box_core::pty;
+    use aster_box_core::pty;
     use tokio::net::UnixStream;
 
     let expected = expected_channels(session);

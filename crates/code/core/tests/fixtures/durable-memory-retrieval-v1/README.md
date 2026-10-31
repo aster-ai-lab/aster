@@ -1,7 +1,7 @@
 # Durable Memory Retrieval Fixture v1
 
 This synthetic fixture is the deterministic quality and safety contract for
-A3S Code V2 memory recall. Relevance labels are declared independently from
+Aster Code V2 memory recall. Relevance labels are declared independently from
 returned results. The corpus covers direct lexical matches, explicit
 `RelatedTo` hops, a conflict edge, a hidden candidate, and one known
 paraphrase miss.
@@ -37,7 +37,7 @@ a different requirement.
 Reproduce the locked report with:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_retrieval_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_retrieval_eval -- --nocapture
 ```
 
 Future ranking changes must add a versioned result set or fixture. They must not

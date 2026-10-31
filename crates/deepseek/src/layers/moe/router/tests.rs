@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::{Device, Var};
 
 fn bf16(rows: &[[f32; 2]]) -> Tensor {

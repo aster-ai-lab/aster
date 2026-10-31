@@ -1,4 +1,4 @@
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use super::CommandOutput;
 
@@ -44,13 +44,13 @@ async fn search(args: &[String]) -> UseResult<CommandOutput> {
             "Install and enable a signed package with an OKF surface, then retry the search.",
         ));
     }
-    let paths = a3s_use_extension::ExtensionPaths::from_env()?;
+    let paths = aster_use_extension::ExtensionPaths::from_env()?;
     let client = crate::okf_knowledge::OkfKnowledgeClient::new(std::sync::Arc::new(
         crate::okf_knowledge::SqliteOkfKnowledgeAdapter::from_extension_paths(&paths),
     ));
     let request = crate::okf_knowledge::OkfKnowledgeSearchRequest::new(
-        a3s_use_core::PlanScope {
-            kind: a3s_use_core::PlanScopeKind::User,
+        aster_use_core::PlanScope {
+            kind: aster_use_core::PlanScopeKind::User,
             id: crate::package::PACKAGE_DEFAULT_SCOPE.to_owned(),
         },
         query,
@@ -232,7 +232,7 @@ async fn plan_restore(args: &[String]) -> UseResult<CommandOutput> {
     validate_scope_options(args, 2, false)?;
     let backup_path = value_argument(args, 1, "knowledge plan-restore requires a backup path")?;
     let scope = scope(args)?;
-    let paths = a3s_use_extension::ExtensionPaths::from_env()?;
+    let paths = aster_use_extension::ExtensionPaths::from_env()?;
     let plan = crate::okf_knowledge::OkfKnowledgeRecoveryManager::from_extension_paths(&paths)
         .plan_restore(&scope, backup_path)
         .await?;
@@ -269,7 +269,7 @@ async fn restore(args: &[String]) -> UseResult<CommandOutput> {
         usage_error("knowledge restore requires the exact --plan-digest returned by plan-restore")
     })?;
     let scope = scope(args)?;
-    let paths = a3s_use_extension::ExtensionPaths::from_env()?;
+    let paths = aster_use_extension::ExtensionPaths::from_env()?;
     let result = crate::okf_knowledge::OkfKnowledgeRecoveryManager::from_extension_paths(&paths)
         .apply_restore(&scope, backup_path, plan_digest)
         .await?;
@@ -306,7 +306,7 @@ async fn restore(args: &[String]) -> UseResult<CommandOutput> {
 async fn restore_status(args: &[String]) -> UseResult<CommandOutput> {
     validate_scope_options(args, 1, false)?;
     let scope = scope(args)?;
-    let paths = a3s_use_extension::ExtensionPaths::from_env()?;
+    let paths = aster_use_extension::ExtensionPaths::from_env()?;
     let diagnostic =
         crate::okf_knowledge::OkfKnowledgeRecoveryManager::from_extension_paths(&paths)
             .diagnose_restores(&scope)
@@ -359,7 +359,7 @@ async fn repair_search_index(args: &[String]) -> UseResult<CommandOutput> {
 
 #[cfg(feature = "extensions")]
 fn adapter() -> UseResult<crate::okf_knowledge::SqliteOkfKnowledgeAdapter> {
-    let paths = a3s_use_extension::ExtensionPaths::from_env()?;
+    let paths = aster_use_extension::ExtensionPaths::from_env()?;
     Ok(crate::okf_knowledge::SqliteOkfKnowledgeAdapter::from_extension_paths(&paths))
 }
 
@@ -446,10 +446,10 @@ fn validate_backup_retention_options(args: &[String]) -> UseResult<()> {
 }
 
 #[cfg(feature = "extensions")]
-fn scope(args: &[String]) -> UseResult<a3s_use_core::PlanScope> {
+fn scope(args: &[String]) -> UseResult<aster_use_core::PlanScope> {
     let kind = match option_argument(args, "--scope-kind")?.unwrap_or("user") {
-        "user" => a3s_use_core::PlanScopeKind::User,
-        "workspace" => a3s_use_core::PlanScopeKind::Workspace,
+        "user" => aster_use_core::PlanScopeKind::User,
+        "workspace" => aster_use_core::PlanScopeKind::Workspace,
         value => {
             return Err(usage_error(format!(
                 "--scope-kind must be 'user' or 'workspace', received '{value}'"
@@ -457,12 +457,12 @@ fn scope(args: &[String]) -> UseResult<a3s_use_core::PlanScope> {
         }
     };
     let scope_id = option_argument(args, "--scope-id")?;
-    if kind == a3s_use_core::PlanScopeKind::Workspace && scope_id.is_none() {
+    if kind == aster_use_core::PlanScopeKind::Workspace && scope_id.is_none() {
         return Err(usage_error(
             "--scope-id is required when --scope-kind is 'workspace'",
         ));
     }
-    Ok(a3s_use_core::PlanScope {
+    Ok(aster_use_core::PlanScope {
         kind,
         id: scope_id
             .unwrap_or(crate::package::PACKAGE_DEFAULT_SCOPE)

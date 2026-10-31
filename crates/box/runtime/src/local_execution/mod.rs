@@ -47,7 +47,7 @@ mod oci_whpx_owner {
     //! Stub types so WHPX owner recovery builders compile off Windows x86_64.
     use std::path::{Component, Path, PathBuf};
 
-    use a3s_box_core::{ExecutionManagerError, ExecutionManagerResult};
+    use aster_box_core::{ExecutionManagerError, ExecutionManagerResult};
     use sha2::{Digest, Sha256};
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -76,7 +76,7 @@ mod oci_whpx_owner {
         let mut hasher = Sha256::new();
         hasher.update(service_root.to_string_lossy().as_bytes());
         let digest = format!("{:x}", hasher.finalize());
-        Ok(format!(r"\\.\pipe\a3s-box-whpx-owner-{}", &digest[..32]))
+        Ok(format!(r"\\.\pipe\aster-box-whpx-owner-{}", &digest[..32]))
     }
 }
 #[cfg(all(feature = "vm", target_os = "linux"))]
@@ -123,7 +123,7 @@ mod vm_process;
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use a3s_box_core::{
+use aster_box_core::{
     ExecutionGeneration, ExecutionId, ExecutionIsolation, ExecutionManagerError,
     ExecutionManagerResult,
 };

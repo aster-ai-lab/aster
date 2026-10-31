@@ -15,8 +15,8 @@ use super::install_default_local_sandbox;
 #[tokio::test]
 #[ignore = "boots a real HVF guest; run with --ignored"]
 async fn admitted_commands_settle_inside_a_guest_pid_namespace() {
-    let manifest = require_artifact("A3S_CODE_GUEST_SYSTEM_IMAGE");
-    let shim = require_artifact("A3S_CODE_KRUN_SHIM");
+    let manifest = require_artifact("ASTER_GUEST_SYSTEM_IMAGE");
+    let shim = require_artifact("ASTER_KRUN_SHIM");
     let image_sha256 = image_sha256(&manifest);
     println!("e2e image_sha256={image_sha256}");
     println!("e2e manifest={}", manifest.display());
@@ -29,7 +29,7 @@ async fn admitted_commands_settle_inside_a_guest_pid_namespace() {
     let sibling = parent.path().join("sibling");
     std::fs::create_dir(&sibling).expect("sibling");
     std::fs::write(sibling.join("keep"), "keep").expect("sibling marker");
-    let host_tmp_escape = std::env::temp_dir().join("a3s-guest-lifetime-host-escape");
+    let host_tmp_escape = std::env::temp_dir().join("aster-guest-lifetime-host-escape");
     if host_tmp_escape.exists() {
         let _ = std::fs::remove_file(&host_tmp_escape);
     }
@@ -37,14 +37,14 @@ async fn admitted_commands_settle_inside_a_guest_pid_namespace() {
     let mut passed = 0u32;
     let failed = 0u32;
 
-    let write = run(&workspace, "printf 'guest-wrote\\n' > host-visible.txt\ntouch ../a3s-guest-sibling-escape\ntouch /tmp/a3s-guest-lifetime-host-escape\nwget -T 5 -O net-escape http://example.com/ || true\nls /sys/class/net > net-ifaces || true\n", 120_000).await;
+    let write = run(&workspace, "printf 'guest-wrote\\n' > host-visible.txt\ntouch ../aster-guest-sibling-escape\ntouch /tmp/aster-guest-lifetime-host-escape\nwget -T 5 -O net-escape http://example.com/ || true\nls /sys/class/net > net-ifaces || true\n", 120_000).await;
     match write {
         Ok(output) if output.exit_code == 0 && !output.timed_out => {
             let body =
                 std::fs::read_to_string(workspace.join("host-visible.txt")).unwrap_or_default();
             let net = std::fs::read_to_string(workspace.join("net-escape")).unwrap_or_default();
             let ifaces = std::fs::read_to_string(workspace.join("net-ifaces")).unwrap_or_default();
-            let sibling_escape = parent.path().join("a3s-guest-sibling-escape");
+            let sibling_escape = parent.path().join("aster-guest-sibling-escape");
             let host_write_ok = body == "guest-wrote\n";
             let outside_ok = !sibling_escape.exists()
                 && !host_tmp_escape.exists()

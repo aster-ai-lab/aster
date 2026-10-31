@@ -2,12 +2,12 @@
 //!
 //! Implements `EventProvider` using Apache Iggy for persistent,
 //! distributed event streaming. Iggy organizes data as
-//! stream → topic → partition; this provider maps the a3s-event
+//! stream → topic → partition; this provider maps the aster-event
 //! subject space onto it with one rule:
 //!
 //! - everything lives in the single configured stream
 //! - each subject **category** (the token after the prefix) is one topic
-//! - the full subject rides in the payload and the `a3s-subject` user
+//! - the full subject rides in the payload and the `aster-subject` user
 //!   header; subscription filters narrow it client-side
 //!
 //! Durability: durable subscriptions are Iggy consumer groups with

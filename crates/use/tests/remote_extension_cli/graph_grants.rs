@@ -3,12 +3,12 @@ use super::*;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 
-use a3s_use::package::{
+use aster_use::package::{
     PackageAuthorizationEvidence, PackageAuthorizationProvider, PackageEnablementPreparation,
     PackageEnablementRequest, PackageHostManager, PackageRegistryAccess,
     ReviewedPackageAuthorizationProvider, StandalonePackageLifecycleFactory,
 };
-use a3s_use_core::{
+use aster_use_core::{
     CatalogPlanningTarget, ExecutablePlanningSurface, PlanActor, PlanAuthority, PlanPolicyDecision,
     PlanScope, PlanScopeKind, PlanningSurfaceActivation, PluginDesiredState,
     PluginHostApplyRequest, PluginHostCancelRequest, PluginHostCancellationStatus,
@@ -24,7 +24,7 @@ use a3s_use_core::{
     PLUGIN_HOST_PLAN_REQUEST_SCHEMA, PLUGIN_MANAGED_SCOPE_SCHEMA_V2,
     PLUGIN_OPERATION_CONFIRMATION_SCHEMA, PLUGIN_PLANNING_BUNDLE_SCHEMA,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     PackageFormFactor, PackageMediaKind, PackagePresentationIndexV1, PackagePresentationMediaV1,
     PackagePresentationRecordV1, PackagePresentationV1, PluginCatalogSearch, RegistrySourceInput,
     RegistrySourceStore, StoredWorkspaceGrant, VerifiedTargetCachePolicy,
@@ -82,7 +82,7 @@ impl PackageAuthorizationProvider for ConfirmAllPlans {
     fn verify_authority(&self, plan: &PluginOperationPlan) -> UseResult<()> {
         plan.validate()?;
         if plan.authority != test_authority() {
-            return Err(a3s_use_core::UseError::new(
+            return Err(aster_use_core::UseError::new(
                 "test.plugin.authority_changed",
                 "The test authorization authority changed after planning.",
             ));
@@ -153,7 +153,7 @@ pub(super) fn package_tool_targets_version_with_dependencies_and_payload(
     let manifest = format!(
         "extension \"{package_id}\" {{\n  schema_version = 3\n  version = \"{version}\"\n  route = \"{route}\"\n  requires_use = \">=0.3.0, <0.4.0\"\n  actions = [\"read\", \"execute\"]\n{dependency_blocks}\n  repository {{\n    url = \"https://github.com/acme/worker\"\n    revision = \"0123456789abcdef0123456789abcdef01234567\"\n  }}\n\n  tool \"convert\" {{\n    workload = \"task\"\n    interface = \"cli\"\n    executable = \"tools/convert/bin/convert\"\n    command = \"acme-worker-convert\"\n    json_output = true\n    interactive = false\n    timeout_ms = 120000\n    activation = \"lazy\"\n    optional = false\n  }}\n}}\n"
     );
-    std::fs::write(package_root.join("a3s-use-extension.acl"), &manifest).unwrap();
+    std::fs::write(package_root.join("aster-use-extension.acl"), &manifest).unwrap();
     std::fs::write(
         package_root.join("README.md"),
         "# Worker\n\nPermission-bearing package fixture.\n",

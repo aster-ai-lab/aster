@@ -1,10 +1,10 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanPackageChangeKind, PlanPolicyDecision, PluginOperationPlanEnvelope,
     ResolvedWorkspaceGrantChangeSet, UseError, UseResult,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     WorkspaceGrantCandidateCeiling, WorkspaceGrantCutoverEvidence, WorkspaceGrantLifecyclePhase,
     WorkspaceGrantOperationJournal, WorkspaceGrantStore, WORKSPACE_GRANT_CUTOVER_SCHEMA,
 };
@@ -265,7 +265,7 @@ fn validate_binding(
                 && (matches!(
                     package.change,
                     PlanPackageChangeKind::Add | PlanPackageChangeKind::Replace
-                ) || (plan.action == a3s_use_core::PluginOperationAction::Enable
+                ) || (plan.action == aster_use_core::PluginOperationAction::Enable
                     && package.change == PlanPackageChangeKind::Retain))
                 && package
                     .after
@@ -287,7 +287,7 @@ fn validate_binding(
                 && (matches!(
                     package.change,
                     PlanPackageChangeKind::Remove | PlanPackageChangeKind::Replace
-                ) || (plan.action == a3s_use_core::PluginOperationAction::Disable
+                ) || (plan.action == aster_use_core::PluginOperationAction::Disable
                     && package.change == PlanPackageChangeKind::Retain))
                 && package
                     .before

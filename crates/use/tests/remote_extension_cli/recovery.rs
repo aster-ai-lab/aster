@@ -178,7 +178,7 @@ fn schema_v3_upgrade_replays_removed_node_cleanup_without_generation_inflation()
             "1.1.0",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .spawn()
         .unwrap();
     let reached_removed_drain = wait_until(Duration::from_secs(15), || {
@@ -307,7 +307,7 @@ fn schema_v3_uninstall_replays_cutover_drain_and_removal_after_real_process_kill
             "user/current",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .spawn()
         .unwrap();
 
@@ -383,7 +383,7 @@ fn schema_v3_uninstall_replays_cutover_drain_and_removal_after_real_process_kill
             "user/current",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .spawn()
@@ -446,7 +446,7 @@ fn schema_v3_uninstall_replays_cutover_drain_and_removal_after_real_process_kill
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(diagnostic.status.success(), "{diagnostic:?}");

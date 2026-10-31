@@ -15,8 +15,8 @@ const UNSUPPORTED_DEFAULT_WIDGETS = new Set([
   'matrix-multiple',
   'file',
   'signature',
-  'a3s.file-upload',
-  'a3s.signature',
+  'aster.file-upload',
+  'aster.signature',
 ]);
 
 export function DefaultValueControl({
@@ -55,7 +55,7 @@ export function DefaultValueControl({
     const defaults = Array.isArray(schema.default) ? schema.default.filter(isPrimitive) : [];
     const selected = new Set(defaults.map(encodePrimitive));
     return (
-      <fieldset className="a3s-form-default-options fieldset" aria-label="默认选择">
+      <fieldset className="aster-form-default-options fieldset" aria-label="默认选择">
         <legend>默认选择</legend>
         <p>不选择时保持空数组。</p>
         <div className="item-group">
@@ -63,7 +63,7 @@ export function DefaultValueControl({
             const key = encodePrimitive(option.value);
             return (
               <label
-                className="a3s-form-default-option item field"
+                className="aster-form-default-option item field"
                 data-size="xs"
                 data-variant="outline"
                 key={key}
@@ -184,15 +184,15 @@ function TemporalDefaultValueControl({
   value: string;
   onChange: (value: JsonValue | undefined) => void;
 }) {
-  const id = `a3s-form-temporal-default-${useId().replaceAll(':', '')}`;
+  const id = `aster-form-temporal-default-${useId().replaceAll(':', '')}`;
   const dateTime = mode === 'date-time';
   return (
-    <div className="a3s-form-control field">
+    <div className="aster-form-control field">
       <label htmlFor={id}>
         <span>默认值</span>
         <small>UTC</small>
       </label>
-      <div className="a3s-form-temporal input-group">
+      <div className="aster-form-temporal input-group">
         <input
           id={id}
           className="input"
@@ -230,7 +230,7 @@ export function DataSourceControl({
   if (definitions.length === 0) return null;
   const definition = definitions.find(({ id }) => id === node.dataSource);
   return (
-    <div className="a3s-form-data-source-setting">
+    <div className="aster-form-data-source-setting">
       <Control label="选项来源" hint={node.dataSource ? '宿主数据源' : '表单内维护'}>
         <SelectControl
           aria-label="选项来源"
@@ -261,7 +261,7 @@ export function DataSourceControl({
       </Control>
       {definition && (
         <article
-          className="a3s-form-data-source-profile item"
+          className="aster-form-data-source-profile item"
           data-size="xs"
           data-variant="outline"
         >

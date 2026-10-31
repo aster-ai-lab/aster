@@ -23,7 +23,7 @@ impl OutputObserver for RecordingObserver {
 #[tokio::test]
 async fn gate2_policy_output_ceiling_truncates_capture() {
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.resources.max_output_bytes = 4_096;
     let sandbox = NativeSandbox::with_policy(workspace.path(), policy).unwrap();
     let observer = Arc::new(RecordingObserver::default());
@@ -57,7 +57,7 @@ async fn gate2_policy_output_ceiling_truncates_capture() {
 #[tokio::test]
 async fn gate2_policy_timeout_ceiling_caps_request() {
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.resources.timeout_ms = 200;
     let sandbox = NativeSandbox::with_policy(workspace.path(), policy).unwrap();
 
@@ -87,7 +87,7 @@ async fn gate2_policy_timeout_ceiling_caps_request() {
 #[tokio::test]
 async fn gate2_memory_ceiling_stops_overallocation() {
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     // Keep enough headroom for launcher + shell, but far below the allocation.
     policy.resources.max_memory_bytes = Some(64 * 1024 * 1024);
     let sandbox = NativeSandbox::with_policy(workspace.path(), policy).unwrap();
@@ -122,7 +122,7 @@ async fn gate2_memory_ceiling_stops_overallocation() {
 #[test]
 fn gate2_macos_memory_limit_fails_closed_at_policy() {
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.resources.max_memory_bytes = Some(64 * 1024 * 1024);
     let error = format!(
         "{:#}",
@@ -138,7 +138,7 @@ fn gate2_macos_memory_limit_fails_closed_at_policy() {
 #[tokio::test]
 async fn gate2_windows_process_limit_blocks_extra_children() {
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     // Job ACTIVE_PROCESS counts the whole tree; keep it tight.
     policy.resources.max_processes = Some(2);
     let sandbox = NativeSandbox::with_policy(workspace.path(), policy).unwrap();
@@ -172,7 +172,7 @@ async fn gate2_windows_process_limit_blocks_extra_children() {
 #[test]
 fn gate2_unix_process_limit_fails_closed_at_policy() {
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.resources.max_processes = Some(8);
     let error = format!(
         "{:#}",

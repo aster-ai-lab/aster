@@ -1,6 +1,6 @@
 export const meta = {
   title: 'Aster Harness 概述',
-  description: 'A3S Code 负责 Aster 的模型调用、工具执行、会话记录和完成检查。',
+  description: 'Aster Code 负责 Aster 的模型调用、工具执行、会话记录和完成检查。',
   updated: '2026-10-26',
   label: '架构概览',
 };
@@ -11,7 +11,7 @@ export const meta = {
 
 假设 Aster 需要修复一个失败的测试。模型先查找代码，再修改文件并运行测试，然后根据结果决定是否继续。Harness 组织这些步骤：准备模型输入、执行工具调用、检查权限、记录结果，并判断任务能否结束。
 
-在 Aster 中，这部分由 **A3S Code** 实现。它的核心库是 `a3s-code-core`，下文简称 Core。终端和桌面通过 ACP 协议与 `a3s-code-acp` 进程通信，由该进程调用 Core。Rust 应用也可以直接嵌入 Core。使用这套库的应用称为“宿主”。
+在 Aster 中，这部分由 **Aster Code** 实现。它的核心库是 `aster-core`，下文简称 Core。终端和桌面通过 ACP 协议与 `aster-acp` 进程通信，由该进程调用 Core。Rust 应用也可以直接嵌入 Core。使用这套库的应用称为“宿主”。
 
 Core 提供 Anthropic、OpenAI、智谱及 OpenAI 兼容接口的模型适配器。
 
@@ -19,7 +19,7 @@ Core 提供 Anthropic、OpenAI、智谱及 OpenAI 兼容接口的模型适配器
 
 ## 事实日志如何支持恢复
 
-`FactRun` 是执行任务的核心，底层使用 `a3s-effect`。事实日志按顺序保存用户输入、模型回复和工具结果。执行组件读取这些记录，计算当前状态和下一步可以执行的动作。
+`FactRun` 是执行任务的核心，底层使用 `aster-effect`。事实日志按顺序保存用户输入、模型回复和工具结果。执行组件读取这些记录，计算当前状态和下一步可以执行的动作。
 
 例如，一次工具调用已完成并留下记录，恢复会话时就不需要重新执行这一步。运行时根据日志重建状态，继续处理尚未完成的动作。宿主通过实时事件或运行快照显示进度。子代理采用相同机制，但各自保存日志。
 
@@ -55,7 +55,7 @@ Core 默认使用 `local-code` 构建，包含本地编码所需的执行循环�
 
 ## 实现依据
 
-本文根据 Aster 仓库中的 `a3s-code-core 9.1.5` 编写，代码核对日期为 2026-10-26。
+本文根据 Aster 仓库中的 `aster-core 9.1.5` 编写，代码核对日期为 2026-10-26。
 
 - [Core 中各项职责由谁负责](https://github.com/aster-ai-lab/aster/blob/main/crates/code/docs/architecture/core-authorities.md)
 - [Meta Harness 组合契约](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/META_HARNESS.md)

@@ -4,7 +4,7 @@ pub(in crate::layout) mod io;
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use async_trait::async_trait;
 use sha2::{Digest, Sha256};
 
@@ -23,8 +23,8 @@ use super::{
 };
 use crate::{NativeOfficeUnit, PackageRevision};
 
-const RENDERER_ID: &str = "a3s-office-native-pptx-image";
-const ENGINE_NAME: &str = "a3s-office-png-passthrough";
+const RENDERER_ID: &str = "aster-office-native-pptx-image";
+const ENGINE_NAME: &str = "aster-office-png-passthrough";
 const ENGINE_VERSION: &str = "1";
 const DEVICE_SCALE_FACTOR_MILLI: u32 = 1_000;
 
@@ -297,26 +297,26 @@ fn validate_timeout(timeout_ms: u64) -> UseResult<()> {
 }
 
 fn empty_font_manifest_sha256() -> String {
-    format!("{:x}", Sha256::digest(b"a3s-office-font-manifest-v1\0[]"))
+    format!("{:x}", Sha256::digest(b"aster-office-font-manifest-v1\0[]"))
 }
 
 fn renderer_config_sha256() -> String {
     format!(
         "{:x}",
         Sha256::digest(
-            b"a3s-office-pptx-image-layout-v1\0opaque-png\0full-surface\0no-crop\0no-transform\0no-resampling"
+            b"aster-office-pptx-image-layout-v1\0opaque-png\0full-surface\0no-crop\0no-transform\0no-resampling"
         )
     )
 }
 
-fn layout_timeout(timeout_ms: u64) -> a3s_use_core::UseError {
+fn layout_timeout(timeout_ms: u64) -> aster_use_core::UseError {
     layout_error(
         "use.office.layout_timeout",
         format!("Office layout rendering exceeded {timeout_ms} ms."),
     )
 }
 
-fn layout_output_too_large(max_output_bytes: u64) -> a3s_use_core::UseError {
+fn layout_output_too_large(max_output_bytes: u64) -> aster_use_core::UseError {
     layout_error(
         "use.office.layout_output_too_large",
         format!("Office layout raster exceeds the {max_output_bytes}-byte output limit."),

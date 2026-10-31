@@ -1163,8 +1163,8 @@ async function textBoxToDocx(
       noAutoFit: true,
     },
     altText: {
-      name: `A3S Text Box ${properties.id || 'text-box'} ${identity.marker}`,
-      description: 'A3S editable text box',
+      name: `Aster Text Box ${properties.id || 'text-box'} ${identity.marker}`,
+      description: 'Aster editable text box',
       title: 'Text box',
       ...(identity.docPropertiesId === null
         ? {}
@@ -1210,7 +1210,7 @@ async function connectorToDocx(
     children: [new docx.Paragraph('')],
     altText: {
       name: identity.marker,
-      description: 'A3S editable straight connector',
+      description: 'Aster editable straight connector',
       title: 'Connector',
       ...(identity.docPropertiesId === null
         ? {}
@@ -1971,7 +1971,7 @@ function docxTextRevision(
   const revision: DocxTextRevision = {
     kind,
     id,
-    author: element.dataset.changeAuthor?.trim() || 'A3S Work',
+    author: element.dataset.changeAuthor?.trim() || 'Aster Work',
     date: Number.isFinite(time)
       ? new Date(time).toISOString()
       : kind === 'move-from' || kind === 'move-to'

@@ -9,6 +9,7 @@ use super::structured::NativeStructuredSupport;
 use super::types::SecretString;
 use super::zhipu::ZhipuClient;
 use super::LlmClient;
+use crate::config::ProviderProtocol;
 use crate::retry::RetryConfig;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -19,6 +20,8 @@ use url::Url;
 #[derive(Clone, Default)]
 pub struct LlmConfig {
     pub provider: String,
+    /// Wire protocol selected for this client. Defaults to OpenAI-compatible.
+    pub protocol: ProviderProtocol,
     pub model: String,
     pub api_key: SecretString,
     pub base_url: Option<String>,
@@ -58,6 +61,7 @@ impl std::fmt::Debug for LlmConfig {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("LlmConfig")
             .field("provider", &self.provider)
+            .field("protocol", &self.protocol)
             .field("model", &self.model)
             .field("api_key", &"[REDACTED]")
             .field("base_url", &self.base_url)
@@ -89,8 +93,11 @@ impl LlmConfig {
         model: impl Into<String>,
         api_key: impl Into<String>,
     ) -> Self {
+        let provider = provider.into();
+        let protocol = ProviderProtocol::resolve(None, &provider, None);
         Self {
-            provider: provider.into(),
+            provider,
+            protocol,
             model: model.into(),
             api_key: SecretString::new(api_key.into()),
             base_url: None,
@@ -117,8 +124,21 @@ impl LlmConfig {
         self
     }
 
+    pub fn with_protocol(mut self, protocol: ProviderProtocol) -> Self {
+        self.protocol = protocol;
+        self
+    }
+
     pub fn with_base_url(mut self, base_url: impl Into<String>) -> Self {
         self.base_url = Some(base_url.into());
+        // Custom account names default to OpenAI-compatible; an Anthropic
+        // Messages base URL still selects that wire until ACL sets protocol.
+        if self.protocol == ProviderProtocol::Openai
+            && ProviderProtocol::resolve(None, "", self.base_url.as_deref())
+                == ProviderProtocol::Anthropic
+        {
+            self.protocol = ProviderProtocol::Anthropic;
+        }
         self
     }
 
@@ -227,6 +247,15 @@ fn has_api_host(base_url: &str, expected: &str) -> bool {
     })
 }
 
+/// Whether this provider/base URL pair speaks Anthropic Messages (`/v1/messages`).
+///
+/// Selection is by wire contract, not by a host-local provider nickname:
+/// known Anthropic aliases, the CC Switch import prefix, or an Anthropic
+/// Messages base URL (including BigModel's `/api/anthropic` gateway).
+pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>) -> bool {
+    ProviderProtocol::resolve(None, provider, base_url) == ProviderProtocol::Anthropic
+}
+
 /// Create LLM client with full configuration (supports custom base_url)
 pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
     let retry = config.retry_config.clone().unwrap_or_default();
@@ -248,9 +277,10 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
     });
     let api_key = config.api_key.expose().to_string();
     let headers = config.resolved_headers();
+    let protocol = config.protocol;
 
-    match config.provider.as_str() {
-        "anthropic" | "claude" | "cc-switch" => {
+    match protocol {
+        ProviderProtocol::Anthropic => {
             let mut client = AnthropicClient::new(api_key, config.model)
                 .with_provider_name(config.provider.clone())
                 .with_headers(headers.clone())
@@ -277,49 +307,7 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
             }
             Arc::new(client)
         }
-        // OpenAI-compatible providers (deepseek, groq, together, ollama, grok,
-        // etc.)
-        "openai" | "gpt" | "grok" | "xai" => {
-            let native_structured_support = config.native_structured_support.unwrap_or_else(|| {
-                default_openai_native_structured_support(
-                    &config.provider,
-                    config.base_url.as_deref(),
-                )
-            });
-            let mut client = OpenAiClient::new(api_key, config.model)
-                .with_provider_name(config.provider.clone())
-                .with_retry_config(retry)
-                .with_native_structured_support(native_structured_support)
-                .with_text_only_input(config.text_only_input);
-            if let Some(http) = http.clone() {
-                client = client.with_http_client(http);
-            }
-            if let Some(base_url) = config.base_url {
-                client = client.with_base_url(base_url);
-            }
-            if !headers.is_empty() {
-                client = client.with_headers(headers.clone());
-            }
-            if !config.disable_temperature {
-                if let Some(temp) = config.temperature {
-                    client = client.with_temperature(temp);
-                }
-            }
-            if let Some(max) = config.max_tokens {
-                client = client.with_max_tokens(max);
-            }
-            if let Some(effort) = config.reasoning_effort.clone() {
-                client = client.with_reasoning_effort(effort);
-            }
-            if let Some(enabled) = config.logprobs {
-                client = client.with_logprobs(enabled);
-            }
-            if let Some(top_logprobs) = config.top_logprobs {
-                client = client.with_top_logprobs(top_logprobs);
-            }
-            Arc::new(client)
-        }
-        "glm" | "zhipu" | "bigmodel" => {
+        ProviderProtocol::Glm => {
             let mut client = ZhipuClient::new(api_key, config.model)
                 .with_retry_config(retry)
                 .with_text_only_input(config.text_only_input);
@@ -348,9 +336,7 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
             }
             Arc::new(client)
         }
-        // Cursor account sessions speak Connect RPC, not chat completions.
-        // Effort stays off this path: the listed model id already encodes it.
-        "cursor" => {
+        ProviderProtocol::Cursor => {
             let transport = config
                 .http_override
                 .clone()
@@ -366,17 +352,12 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
             }
             Arc::new(client)
         }
-        "openai-responses" => Arc::new(CodexLoginClient::for_api(
+        ProviderProtocol::OpenaiResponses => Arc::new(CodexLoginClient::for_api(
             config,
             headers,
             http.unwrap_or_else(default_http_client),
         )),
-        // Codex account sessions speak the ChatGPT Responses API with an
-        // OAuth bearer from the account import. `base_url` is deliberately
-        // not honored: the endpoint is the account contract, and a redirect
-        // would send that bearer somewhere else. The account id rides the
-        // protocol header the importer or an explicit provider block sets.
-        "codex" => {
+        ProviderProtocol::Codex => {
             let transport = config
                 .http_override
                 .clone()
@@ -387,7 +368,7 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
                 .cloned()
                 .unwrap_or_default();
             let reasoning_effort = config.reasoning_effort.clone().or_else(|| {
-                std::env::var("A3S_CODEX_REASONING_EFFORT")
+                std::env::var("ASTERX_REASONING_EFFORT")
                     .ok()
                     .filter(|effort| !effort.trim().is_empty())
             });
@@ -401,11 +382,11 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
             .with_http_client(transport);
             Arc::new(client)
         }
-        // OpenAI-compatible providers (deepseek, groq, together, ollama, etc.)
-        _ => {
+        ProviderProtocol::Openai => {
             tracing::info!(
-                "Using OpenAI-compatible client for provider '{}'",
-                config.provider
+                provider = %config.provider,
+                protocol = protocol.as_str(),
+                "using OpenAI-compatible client"
             );
             let native_structured_support = config.native_structured_support.unwrap_or_else(|| {
                 default_openai_native_structured_support(
@@ -446,5 +427,37 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
             }
             Arc::new(client)
         }
+    }
+}
+
+#[cfg(test)]
+mod protocol_routing_tests {
+    use super::{uses_anthropic_messages_api, LlmConfig};
+    use crate::config::ProviderProtocol;
+
+    #[test]
+    fn explicit_protocol_selects_the_wire() {
+        let anthropic = LlmConfig::new("glm-01", "glm-5.3-flash", "sk")
+            .with_protocol(ProviderProtocol::Anthropic)
+            .with_base_url("https://open.bigmodel.cn/api/anthropic");
+        assert_eq!(anthropic.protocol, ProviderProtocol::Anthropic);
+
+        let openai = LlmConfig::new("custom", "m", "sk");
+        assert_eq!(openai.protocol, ProviderProtocol::Openai);
+    }
+
+    #[test]
+    fn anthropic_messages_follow_aliases_import_prefix_or_base_url() {
+        assert!(uses_anthropic_messages_api("anthropic", None));
+        assert!(uses_anthropic_messages_api("cc-switch-zhipu-glm-01", None));
+        assert!(!uses_anthropic_messages_api("glm-01", None));
+        assert!(uses_anthropic_messages_api(
+            "glm-01",
+            Some("https://open.bigmodel.cn/api/anthropic")
+        ));
+        assert!(!uses_anthropic_messages_api(
+            "glm",
+            Some("https://open.bigmodel.cn/api/paas/v4")
+        ));
     }
 }

@@ -1,16 +1,16 @@
 {
-  "schema_version": "a3s.oci.macos-hvf-host-service-smoke.v1",
+  "schema_version": "aster.oci.macos-hvf-host-service-smoke.v1",
   "status": "available",
   "platform": "macos",
   "evidence_root": "/private/var/tmp/oh-d46hue8m/hvf-14340-1792330820148210000",
   "artifacts": {
-    "host_service_executable": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/a3s-oci",
+    "host_service_executable": "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/aster-oci",
     "host_service_executable_sha256": "8e3eb4cf86d653055f211aa1963dc4dfeb61e6cbf3787d51c8aa9ce76b4ccfdc",
-    "shim": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/a3s-oci-krun-shim",
+    "shim": "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/aster-oci-krun-shim",
     "shim_sha256": "3cd5cc093becc2ce6c8fc2c36f15daced76aa24387c8eb0e4e6b8b1c63a66962",
-    "system_image_manifest": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/clean-system/system-image.json",
+    "system_image_manifest": "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/clean-system/system-image.json",
     "system_image_manifest_sha256": "2a9d7ad6e72e8d93a8f6b4d9dae8a036e8c65a552094b2c2e2dbbc7f7319744f",
-    "source_bundle": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
+    "source_bundle": "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
     "source_bundle_config_digest": "sha256:4b735fa45be897471578f2d34bf8b0018483176f0dbdee96791b8bce13237b4e",
     "source_revision": "86e6cd2a21025875ba0903d7be74da58c7a66224"
   },
@@ -125,7 +125,7 @@
       "parent_pid": 14340,
       "process_group_id": 14340,
       "start_time_unix_us": 1792330846590255,
-      "command": "a3s-oci"
+      "command": "aster-oci"
     },
     "target": {
       "id": "hvf-owner-death-14340-1792330820148210000-owner",
@@ -138,14 +138,14 @@
         "parent_pid": 14436,
         "process_group_id": 14436,
         "start_time_unix_us": 1792330846836827,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14436,
         "parent_pid": 14433,
         "process_group_id": 14436,
         "start_time_unix_us": 1792330846826993,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       }
     ],
     "authenticated_endpoint_consumed": true,
@@ -161,7 +161,7 @@
       "parent_pid": 14340,
       "process_group_id": 14340,
       "start_time_unix_us": 1792330857643185,
-      "command": "a3s-oci"
+      "command": "aster-oci"
     },
     "replacement_socket_new_owner": true,
     "replacement_connected": true,
@@ -207,350 +207,350 @@
         "parent_pid": 14474,
         "process_group_id": 14474,
         "start_time_unix_us": 1792330858107352,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14474,
         "parent_pid": 14472,
         "process_group_id": 14474,
         "start_time_unix_us": 1792330858096244,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14503,
         "parent_pid": 14502,
         "process_group_id": 14502,
         "start_time_unix_us": 1792330869455315,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14502,
         "parent_pid": 14472,
         "process_group_id": 14502,
         "start_time_unix_us": 1792330869428779,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14702,
         "parent_pid": 14701,
         "process_group_id": 14701,
         "start_time_unix_us": 1792330882924151,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14701,
         "parent_pid": 14472,
         "process_group_id": 14701,
         "start_time_unix_us": 1792330882909892,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14747,
         "parent_pid": 14746,
         "process_group_id": 14746,
         "start_time_unix_us": 1792330894530548,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14746,
         "parent_pid": 14472,
         "process_group_id": 14746,
         "start_time_unix_us": 1792330894519890,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14772,
         "parent_pid": 14771,
         "process_group_id": 14771,
         "start_time_unix_us": 1792330905696138,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14771,
         "parent_pid": 14472,
         "process_group_id": 14771,
         "start_time_unix_us": 1792330905684947,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14841,
         "parent_pid": 14840,
         "process_group_id": 14840,
         "start_time_unix_us": 1792330916836701,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14840,
         "parent_pid": 14472,
         "process_group_id": 14840,
         "start_time_unix_us": 1792330916825489,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14879,
         "parent_pid": 14878,
         "process_group_id": 14878,
         "start_time_unix_us": 1792330927980593,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14878,
         "parent_pid": 14472,
         "process_group_id": 14878,
         "start_time_unix_us": 1792330927969131,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14939,
         "parent_pid": 14938,
         "process_group_id": 14938,
         "start_time_unix_us": 1792330939264773,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 14938,
         "parent_pid": 14472,
         "process_group_id": 14938,
         "start_time_unix_us": 1792330939253658,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15308,
         "parent_pid": 15307,
         "process_group_id": 15307,
         "start_time_unix_us": 1792330954429136,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15307,
         "parent_pid": 14472,
         "process_group_id": 15307,
         "start_time_unix_us": 1792330954410471,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15533,
         "parent_pid": 15532,
         "process_group_id": 15532,
         "start_time_unix_us": 1792330972219824,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15532,
         "parent_pid": 14472,
         "process_group_id": 15532,
         "start_time_unix_us": 1792330972204492,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15681,
         "parent_pid": 15680,
         "process_group_id": 15680,
         "start_time_unix_us": 1792330985163436,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15680,
         "parent_pid": 14472,
         "process_group_id": 15680,
         "start_time_unix_us": 1792330985151534,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15754,
         "parent_pid": 15753,
         "process_group_id": 15753,
         "start_time_unix_us": 1792330997650679,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15753,
         "parent_pid": 14472,
         "process_group_id": 15753,
         "start_time_unix_us": 1792330997638739,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15859,
         "parent_pid": 15857,
         "process_group_id": 15857,
         "start_time_unix_us": 1792331008971346,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15857,
         "parent_pid": 14472,
         "process_group_id": 15857,
         "start_time_unix_us": 1792331008960399,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15918,
         "parent_pid": 15917,
         "process_group_id": 15917,
         "start_time_unix_us": 1792331020199512,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15917,
         "parent_pid": 14472,
         "process_group_id": 15917,
         "start_time_unix_us": 1792331020187942,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15945,
         "parent_pid": 15944,
         "process_group_id": 15944,
         "start_time_unix_us": 1792331031337689,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15944,
         "parent_pid": 14472,
         "process_group_id": 15944,
         "start_time_unix_us": 1792331031326618,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15968,
         "parent_pid": 15967,
         "process_group_id": 15967,
         "start_time_unix_us": 1792331042514253,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15967,
         "parent_pid": 14472,
         "process_group_id": 15967,
         "start_time_unix_us": 1792331042502405,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15991,
         "parent_pid": 15990,
         "process_group_id": 15990,
         "start_time_unix_us": 1792331053651013,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 15990,
         "parent_pid": 14472,
         "process_group_id": 15990,
         "start_time_unix_us": 1792331053639871,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16014,
         "parent_pid": 16013,
         "process_group_id": 16013,
         "start_time_unix_us": 1792331064889248,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16013,
         "parent_pid": 14472,
         "process_group_id": 16013,
         "start_time_unix_us": 1792331064878313,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16150,
         "parent_pid": 16149,
         "process_group_id": 16149,
         "start_time_unix_us": 1792331076058519,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16149,
         "parent_pid": 14472,
         "process_group_id": 16149,
         "start_time_unix_us": 1792331076047886,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16212,
         "parent_pid": 16211,
         "process_group_id": 16211,
         "start_time_unix_us": 1792331087668992,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16211,
         "parent_pid": 14472,
         "process_group_id": 16211,
         "start_time_unix_us": 1792331087657459,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16264,
         "parent_pid": 16263,
         "process_group_id": 16263,
         "start_time_unix_us": 1792331098898581,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16263,
         "parent_pid": 14472,
         "process_group_id": 16263,
         "start_time_unix_us": 1792331098886591,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16287,
         "parent_pid": 16286,
         "process_group_id": 16286,
         "start_time_unix_us": 1792331110200105,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16286,
         "parent_pid": 14472,
         "process_group_id": 16286,
         "start_time_unix_us": 1792331110188738,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16358,
         "parent_pid": 16357,
         "process_group_id": 16357,
         "start_time_unix_us": 1792331121605627,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16357,
         "parent_pid": 14472,
         "process_group_id": 16357,
         "start_time_unix_us": 1792331121592386,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16557,
         "parent_pid": 16556,
         "process_group_id": 16556,
         "start_time_unix_us": 1792331133525669,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16556,
         "parent_pid": 14472,
         "process_group_id": 16556,
         "start_time_unix_us": 1792331133514895,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16749,
         "parent_pid": 16748,
         "process_group_id": 16748,
         "start_time_unix_us": 1792331147068424,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       },
       {
         "pid": 16748,
         "parent_pid": 14472,
         "process_group_id": 16748,
         "start_time_unix_us": 1792331147055855,
-        "command": "a3s-oci-krun-shim"
+        "command": "aster-oci-krun-shim"
       }
     ],
     "console_files_created": 25,

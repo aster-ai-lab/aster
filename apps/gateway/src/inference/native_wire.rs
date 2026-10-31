@@ -67,7 +67,7 @@ pub(crate) fn render_native_error(wire: NativeWire, error: &EnvelopeError) -> By
                     "type": kind,
                     "param": null,
                     "code": code,
-                    "a3s_error_code": error.error_code,
+                    "aster_error_code": error.error_code,
                 }
             })
         }
@@ -100,7 +100,7 @@ pub(crate) fn native_models_body(models: &[String]) -> Bytes {
                 "id": model,
                 "object": "model",
                 "created": 0,
-                "owned_by": "a3s"
+                "owned_by": "aster"
             })
         })
         .collect::<Vec<_>>();

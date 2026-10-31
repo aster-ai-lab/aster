@@ -139,12 +139,12 @@ mod tests {
 
     #[test]
     fn digest_is_stable_under_rule_reordering() {
-        let mut left = SandboxPolicy::a3s_bash_baseline();
+        let mut left = SandboxPolicy::aster_bash_baseline();
         left.filesystem.allow_write = vec![
             PathRule::Exact("workspace".into()),
             PathRule::Exact("scratch".into()),
         ];
-        let mut right = SandboxPolicy::a3s_bash_baseline();
+        let mut right = SandboxPolicy::aster_bash_baseline();
         right.filesystem.allow_write = vec![
             PathRule::Exact("scratch".into()),
             PathRule::Exact("workspace".into()),
@@ -154,7 +154,7 @@ mod tests {
 
     #[test]
     fn digest_changes_when_rules_change() {
-        let baseline = SandboxPolicy::a3s_bash_baseline();
+        let baseline = SandboxPolicy::aster_bash_baseline();
         let mut changed = baseline.clone();
         changed
             .filesystem
@@ -165,7 +165,7 @@ mod tests {
 
     #[test]
     fn baseline_digest_is_hex_sha256_length() {
-        let digest = policy_digest(&SandboxPolicy::a3s_bash_baseline());
+        let digest = policy_digest(&SandboxPolicy::aster_bash_baseline());
         assert_eq!(digest.len(), 64);
         assert!(digest.chars().all(|c| c.is_ascii_hexdigit()));
     }

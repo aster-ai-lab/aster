@@ -1,7 +1,7 @@
 //! Opt-in H200 qualification. The pinned golden rows were independently
 //! decoded with NumPy; F64 dots set the numeric reference before execution.
 use super::*;
-use a3s_power::inference::{DevicePreference, InferenceLimits, RuntimeDevice};
+use aster_power::inference::{DevicePreference, InferenceLimits, RuntimeDevice};
 use candle_core::Tensor;
 use tokio_util::sync::CancellationToken;
 

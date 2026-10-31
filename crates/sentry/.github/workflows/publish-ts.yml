@@ -1,6 +1,6 @@
 name: publish-ts
 
-# Publish the native napi SDK (@a3s-lab/sentry) to npm on a `ts-vX.Y.Z` tag. Builds the native addon
+# Publish the native napi SDK (@aster-ai-lab/sentry) to npm on a `ts-vX.Y.Z` tag. Builds the native addon
 # per platform, then publishes ONE package bundling all the .node binaries — the generated index.js
 # loads the right one per platform (its built-in local-file fallback). Requires an `NPM_TOKEN` secret.
 on:

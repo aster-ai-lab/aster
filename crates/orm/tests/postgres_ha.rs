@@ -3,7 +3,7 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_orm::{
+use aster_orm::{
     sql_query, Executor, FromRow, Migration, Migrator, PostgresDialect, PostgresError,
     PostgresExecutor, PostgresIsolationLevel, PostgresMigrationError, PostgresMigrationOptions,
     PostgresPoolOptions, PostgresRetryClass, PostgresTlsOptions, PostgresTransaction,
@@ -16,7 +16,7 @@ const MIGRATION_LOCK_ID: i64 = 0x4133_534f_524e;
 
 #[tokio::test]
 async fn postgres_ha_controls_are_bounded_observable_and_retry_safe() {
-    let Some(url) = std::env::var("A3S_ORM_POSTGRES_URL").ok() else {
+    let Some(url) = std::env::var("ASTER_ORM_POSTGRES_URL").ok() else {
         return;
     };
 
@@ -82,8 +82,8 @@ async fn abandoned_transactions_do_not_reenter_the_pool(url: &str) {
 
 async fn tls_connection_and_rotation_are_verified() {
     let (Some(url), Some(ca_path)) = (
-        std::env::var("A3S_ORM_POSTGRES_TLS_URL").ok(),
-        std::env::var("A3S_ORM_POSTGRES_TLS_CA").ok(),
+        std::env::var("ASTER_ORM_POSTGRES_TLS_URL").ok(),
+        std::env::var("ASTER_ORM_POSTGRES_TLS_CA").ok(),
     ) else {
         return;
     };
@@ -118,15 +118,15 @@ async fn reset_tables(executor: &PostgresExecutor) {
         .await
         .unwrap()
         .batch_execute(
-            "drop table if exists a3s_orm_migrations;
-             drop table if exists a3s_orm_ha_counter;
-             drop table if exists a3s_orm_ha_contract;
-             create table a3s_orm_ha_counter (
+            "drop table if exists aster_orm_migrations;
+             drop table if exists aster_orm_ha_counter;
+             drop table if exists aster_orm_ha_contract;
+             create table aster_orm_ha_counter (
                  id bigint primary key,
                  value bigint not null
              );
-             insert into a3s_orm_ha_counter (id, value) values (1, 0);
-             create table a3s_orm_ha_contract (
+             insert into aster_orm_ha_counter (id, value) values (1, 0);
+             create table aster_orm_ha_contract (
                  id bigint primary key,
                  value text not null
              )",
@@ -178,7 +178,7 @@ async fn transaction_options_are_applied_locally(executor: &PostgresExecutor) {
         "2s"
     );
 
-    let write = sql_query::<()>("update a3s_orm_ha_counter set value = value + 1 where id = 1")
+    let write = sql_query::<()>("update aster_orm_ha_counter set value = value + 1 where id = 1")
         .compile(&PostgresDialect)
         .unwrap();
     let error = transaction.execute(&write).await.unwrap_err();
@@ -213,7 +213,7 @@ async fn serializable_conflicts_are_typed(executor: &PostgresExecutor) {
         .connection()
         .await
         .unwrap()
-        .query_one("select value from a3s_orm_ha_counter where id = 1", &[])
+        .query_one("select value from aster_orm_ha_counter where id = 1", &[])
         .await
         .unwrap()
         .get::<_, i64>(0);
@@ -233,13 +233,13 @@ async fn serializable_increment(
             move |transaction| {
                 Box::pin(async move {
                     let read =
-                        sql_query::<i64>("select value from a3s_orm_ha_counter where id = 1")
+                        sql_query::<i64>("select value from aster_orm_ha_counter where id = 1")
                             .compile(&PostgresDialect)
                             .unwrap();
                     transaction.fetch_all(&read).await?;
                     barrier.wait().await;
                     let write = sql_query::<()>(
-                        "update a3s_orm_ha_counter set value = value + 1 where id = 1",
+                        "update aster_orm_ha_counter set value = value + 1 where id = 1",
                     )
                     .compile(&PostgresDialect)
                     .unwrap();
@@ -281,7 +281,7 @@ async fn failover_and_disconnects_are_typed(executor: &PostgresExecutor) {
     assert!(error.is_retryable());
 
     let unavailable = PostgresExecutor::connect_no_tls_with(
-        "postgres://postgres:postgres@127.0.0.1:1/a3s_orm",
+        "postgres://postgres:postgres@127.0.0.1:1/aster_orm",
         PostgresPoolOptions::new(1)
             .with_wait_timeout(Some(Duration::from_millis(200)))
             .with_create_timeout(Some(Duration::from_millis(200)))
@@ -370,7 +370,7 @@ async fn migration_contention_is_bounded(url: &str) {
         .run(Vec::<Migration>::new())
         .await
         .unwrap_err();
-    let a3s_orm::migration::MigrationRunError::Backend(error) = error else {
+    let aster_orm::migration::MigrationRunError::Backend(error) = error else {
         panic!("expected migration backend error");
     };
     assert!(matches!(error, PostgresMigrationError::LockTimeout { .. }));
@@ -391,33 +391,33 @@ async fn expand_contract_window_supports_old_and_new_callers(executor: &Postgres
     let client = executor.connection().await.unwrap();
     client
         .execute(
-            "insert into a3s_orm_ha_contract (id, value) values ($1, $2)",
+            "insert into aster_orm_ha_contract (id, value) values ($1, $2)",
             &[&1_i64, &"before-expand"],
         )
         .await
         .unwrap();
     client
-        .batch_execute("alter table a3s_orm_ha_contract add column value_v2 text")
+        .batch_execute("alter table aster_orm_ha_contract add column value_v2 text")
         .await
         .unwrap();
 
     client
         .execute(
-            "insert into a3s_orm_ha_contract (id, value) values ($1, $2)",
+            "insert into aster_orm_ha_contract (id, value) values ($1, $2)",
             &[&2_i64, &"old-writer"],
         )
         .await
         .unwrap();
     client
         .execute(
-            "insert into a3s_orm_ha_contract (id, value, value_v2) values ($1, $2, $3)",
+            "insert into aster_orm_ha_contract (id, value, value_v2) values ($1, $2, $3)",
             &[&3_i64, &"new-writer", &"new-writer-v2"],
         )
         .await
         .unwrap();
 
     let old_values = client
-        .query("select value from a3s_orm_ha_contract order by id", &[])
+        .query("select value from aster_orm_ha_contract order by id", &[])
         .await
         .unwrap()
         .into_iter()
@@ -425,7 +425,7 @@ async fn expand_contract_window_supports_old_and_new_callers(executor: &Postgres
         .collect::<Vec<_>>();
     let new_values = client
         .query(
-            "select coalesce(value_v2, value) from a3s_orm_ha_contract order by id",
+            "select coalesce(value_v2, value) from aster_orm_ha_contract order by id",
             &[],
         )
         .await

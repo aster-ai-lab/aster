@@ -1,10 +1,10 @@
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     ArtifactRef, IsolationLevel, NetworkMode, ResourceControl, ResourceLimits, RestartPolicy,
     RuntimeCapabilities, RuntimeEvidence, RuntimeFeature, RuntimeNetworkSpec, RuntimeObservation,
     RuntimePort, RuntimeProcessSpec, RuntimeServiceEndpoint, RuntimeUnitClass, RuntimeUnitSpec,
     RuntimeUnitState, TransportProtocol,
 };
-use a3s_runtime::{runtime_profile_requirements, ProviderId, RuntimeConformanceProfile};
+use aster_runtime::{runtime_profile_requirements, ProviderId, RuntimeConformanceProfile};
 use std::collections::BTreeMap;
 use std::net::{IpAddr, Ipv4Addr};
 
@@ -16,7 +16,7 @@ fn service_spec(protocol: TransportProtocol) -> RuntimeUnitSpec {
         class: RuntimeUnitClass::Service,
         artifact: ArtifactRef {
             uri: format!(
-                "oci://registry.example/a3s/service@sha256:{}",
+                "oci://registry.example/aster/service@sha256:{}",
                 "a".repeat(64)
             ),
             digest: format!("sha256:{}", "a".repeat(64)),

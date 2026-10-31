@@ -29,7 +29,7 @@ fn killed_registry_resolution_retains_a_path_free_pre_lock_diagnostic() {
             "1.0.0",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .spawn()
         .unwrap();
     let attempt_path = home.join("state/operations/package-resolutions/install/acme/root.json");
@@ -63,7 +63,7 @@ fn killed_registry_resolution_retains_a_path_free_pre_lock_diagnostic() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(active.status.success(), "{active:?}");
@@ -71,7 +71,7 @@ fn killed_registry_resolution_retains_a_path_free_pre_lock_diagnostic() {
     let diagnostic = &active["data"]["diagnostic"];
     assert_eq!(
         diagnostic["schema"],
-        "a3s.use.plugin-resolution-attempt-diagnostic.v1"
+        "aster.use.plugin-resolution-attempt-diagnostic.v1"
     );
     assert_eq!(diagnostic["packageId"], "acme/root");
     assert_eq!(diagnostic["scope"]["kind"], "user");
@@ -120,7 +120,7 @@ fn killed_registry_resolution_retains_a_path_free_pre_lock_diagnostic() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(retained.status.success(), "{retained:?}");
@@ -143,7 +143,7 @@ fn killed_registry_resolution_retains_a_path_free_pre_lock_diagnostic() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!rejected.status.success(), "{rejected:?}");
@@ -195,7 +195,7 @@ fn failed_registry_verification_retains_only_a_bounded_error_code() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(diagnostic.status.success(), "{diagnostic:?}");
@@ -282,7 +282,7 @@ fn offline_resolution_failure_is_diagnostic_and_constructs_no_network_transport(
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(diagnostic.status.success(), "{diagnostic:?}");

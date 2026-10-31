@@ -13,12 +13,12 @@ async fn opted_in_agent_registers_reader_on_open_and_replacement_only() {
             "disabled"
         })));
         launch.workspace = workspace.clone();
-        let agent = A3sCodeAgent::new(launch);
+        let agent = AsterCodeAgent::new(launch);
         let mut request = acp::NewSessionRequest::new(workspace.clone());
         if enabled {
             let mut meta = acp::Meta::new();
             meta.insert(
-                "a3sStudioDocuments".to_string(),
+                "asterStudioDocuments".to_string(),
                 serde_json::Value::Bool(true),
             );
             request = request.meta(Some(meta));

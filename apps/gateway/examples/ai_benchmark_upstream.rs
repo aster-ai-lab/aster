@@ -309,7 +309,7 @@ async fn handle_request(request: Request<Incoming>) -> Result<Response<ResponseB
             StatusCode::OK,
             json!({
                 "status": "ok",
-                "service": "a3s-ai-benchmark-upstream",
+                "service": "aster-ai-benchmark-upstream",
                 "instance": instance_id(),
             }),
         ),
@@ -709,7 +709,7 @@ fn token_event(path: &str, model: &str, sequence: usize, unicode: bool) -> Value
         })
     } else if path == "/v1/completions" {
         json!({
-            "id": "cmpl-a3s-ai-benchmark",
+            "id": "cmpl-aster-ai-benchmark",
             "object": "text_completion",
             "created": 1_700_000_000_u64,
             "model": model,
@@ -724,7 +724,7 @@ fn token_event(path: &str, model: &str, sequence: usize, unicode: bool) -> Value
         })
     } else {
         json!({
-            "id": "chatcmpl-a3s-ai-benchmark",
+            "id": "chatcmpl-aster-ai-benchmark",
             "object": "chat.completion.chunk",
             "created": 1_700_000_000_u64,
             "model": model,
@@ -755,7 +755,7 @@ fn non_streaming_response(
     };
     let document = if path == "/v1/completions" {
         json!({
-            "id": "cmpl-a3s-ai-benchmark",
+            "id": "cmpl-aster-ai-benchmark",
             "object": "text_completion",
             "created": 1_700_000_000_u64,
             "model": model,
@@ -764,7 +764,7 @@ fn non_streaming_response(
         })
     } else {
         json!({
-            "id": "chatcmpl-a3s-ai-benchmark",
+            "id": "chatcmpl-aster-ai-benchmark",
             "object": "chat.completion",
             "created": 1_700_000_000_u64,
             "model": model,

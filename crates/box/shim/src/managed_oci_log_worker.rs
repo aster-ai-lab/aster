@@ -6,13 +6,13 @@ use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::log::{
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::log::{
     run_log_processor_with_ready_and_eof_policy, ConsoleEofPolicy, ManagedOciLogEndpoint,
     ManagedOciLogWorkerMarker, ManagedOciLogWorkerSpec, MANAGED_OCI_LOG_WORKER_SCHEMA,
 };
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, ErrorCode, Generation, LocalIpcEndpoint, OutputChunk,
     OutputStream, ProcessId, ProcessTarget, ReadOutputRequest, RuntimeClient, StateRequest,
 };
@@ -49,7 +49,7 @@ async fn run_async(spec: ManagedOciLogWorkerSpec) -> Result<()> {
         ))
     })?;
     let target = exact_process_target(&spec)?;
-    let stderr_log = a3s_box_core::log::stderr_console_path(&spec.console_log);
+    let stderr_log = aster_box_core::log::stderr_console_path(&spec.console_log);
     let log_dir = spec
         .console_log
         .parent()
@@ -305,7 +305,7 @@ async fn project_output(
     Ok(())
 }
 
-fn should_retry_output_read(error: &a3s_oci_sdk::Error) -> bool {
+fn should_retry_output_read(error: &aster_oci_sdk::Error) -> bool {
     error.code == ErrorCode::Unavailable || (error.code == ErrorCode::Conflict && error.retryable)
 }
 
@@ -430,14 +430,14 @@ mod tests {
 
     #[test]
     fn retries_only_transient_output_ownership_conflicts() {
-        let active_start = a3s_oci_sdk::Error::new(
+        let active_start = aster_oci_sdk::Error::new(
             ErrorCode::Conflict,
             "container is owned by the active start operation",
         )
         .retryable(true);
         let stale_generation =
-            a3s_oci_sdk::Error::new(ErrorCode::Conflict, "container generation does not match");
-        let unavailable = a3s_oci_sdk::Error::new(ErrorCode::Unavailable, "runtime reconnecting");
+            aster_oci_sdk::Error::new(ErrorCode::Conflict, "container generation does not match");
+        let unavailable = aster_oci_sdk::Error::new(ErrorCode::Unavailable, "runtime reconnecting");
 
         assert!(should_retry_output_read(&active_start));
         assert!(!should_retry_output_read(&stale_generation));

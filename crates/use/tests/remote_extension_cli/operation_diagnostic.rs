@@ -24,7 +24,7 @@ fn completed_operations_have_bounded_zero_network_history_after_package_removal(
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(first_history.status.success(), "{first_history:?}");
@@ -33,7 +33,7 @@ fn completed_operations_have_bounded_zero_network_history_after_package_removal(
     let first_history = &first_history["data"]["diagnostic"];
     assert_eq!(
         first_history["schema"],
-        "a3s.use.plugin-operation-history-diagnostic.v1"
+        "aster.use.plugin-operation-history-diagnostic.v1"
     );
     assert_eq!(first_history["retentionLimit"], 16);
     assert_eq!(first_history["retentionByteLimit"], 8 * 1024 * 1024);
@@ -67,7 +67,7 @@ fn completed_operations_have_bounded_zero_network_history_after_package_removal(
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(removed_history.status.success(), "{removed_history:?}");
@@ -99,7 +99,7 @@ fn completed_operations_have_bounded_zero_network_history_after_package_removal(
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(
@@ -156,7 +156,7 @@ fn completed_operations_have_bounded_zero_network_history_after_package_removal(
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!invalid.status.success(), "{invalid:?}");
@@ -181,7 +181,7 @@ async fn reviewed_graph_plan_has_a_bounded_path_free_operation_diagnostic() {
     let home = temp.path().join("private-home-marker");
     configure_registry(&server, &repository, &home, &[]);
     let paths = ExtensionPaths::new(home.join("data"), home.join("state"));
-    let resolved = a3s_use_extension::RegistrySourceStore::new(paths.clone())
+    let resolved = aster_use_extension::RegistrySourceStore::new(paths.clone())
         .resolve(Some("fixture"))
         .await
         .unwrap();
@@ -223,7 +223,7 @@ async fn reviewed_graph_plan_has_a_bounded_path_free_operation_diagnostic() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(output.status.success(), "{output:?}");
@@ -233,7 +233,7 @@ async fn reviewed_graph_plan_has_a_bounded_path_free_operation_diagnostic() {
     let diagnostic = &value["data"]["diagnostic"];
     assert_eq!(
         diagnostic["schema"],
-        "a3s.use.plugin-operation-diagnostic.v1"
+        "aster.use.plugin-operation-diagnostic.v1"
     );
     assert_eq!(diagnostic["packageId"], "acme/root");
     assert_eq!(diagnostic["scope"]["kind"], "user");
@@ -325,7 +325,7 @@ async fn reviewed_graph_plan_has_a_bounded_path_free_operation_diagnostic() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(missing.status.success(), "{missing:?}");
@@ -360,7 +360,7 @@ async fn reviewed_graph_plan_has_a_bounded_path_free_operation_diagnostic() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(partial.status.success(), "{partial:?}");
@@ -391,7 +391,7 @@ async fn reviewed_graph_plan_has_a_bounded_path_free_operation_diagnostic() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!invalid.status.success(), "{invalid:?}");
@@ -470,7 +470,7 @@ async fn operation_diagnostic_sanitizes_invalid_pending_state() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(!output.status.success(), "{output:?}");

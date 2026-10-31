@@ -1,5 +1,5 @@
 use super::*;
-use a3s_flow::{
+use aster_flow::{
     FlowEvent, FlowEventEnvelope, FlowEventStore, InMemoryEventStore, ScheduledWakeupKind,
 };
 
@@ -19,7 +19,7 @@ impl CoordinatedWaitCompletionStore {
 
 #[async_trait]
 impl FlowEventStore for CoordinatedWaitCompletionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -28,7 +28,7 @@ impl FlowEventStore for CoordinatedWaitCompletionStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(&event, FlowEvent::WaitCompleted { .. }) {
             self.completion_barrier.wait().await;
         }
@@ -37,11 +37,11 @@ impl FlowEventStore for CoordinatedWaitCompletionStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }

@@ -63,12 +63,10 @@ async fn test_stream_updates_history_and_auto_saves() {
         run_records[0].snapshot.status,
         crate::run::RunStatus::Completed
     );
-    assert!(
-        run_records[0]
-            .events
-            .iter()
-            .any(|record| matches!(record.event, AgentEvent::End { .. }))
-    );
+    assert!(run_records[0]
+        .events
+        .iter()
+        .any(|record| matches!(record.event, AgentEvent::End { .. })));
 }
 
 /// After a completed tool round, `auto_save` must flush `sessions` JSON at the
@@ -78,7 +76,7 @@ async fn test_stream_updates_history_and_auto_saves() {
 async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
     let store = Arc::new(crate::store::MemorySessionStore::new());
     let workspace = std::env::temp_dir().join(format!(
-        "a3s-ckpt-flush-{}",
+        "aster-ckpt-flush-{}",
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
@@ -91,7 +89,7 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
             "call-write",
             "write",
             serde_json::json!({
-                "file_path": "a3s-ckpt-flush.md",
+                "file_path": "aster-ckpt-flush.md",
                 "content": "7"
             }),
         ),
@@ -111,7 +109,7 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
         .unwrap();
 
     let (mut rx, handle) = session
-        .stream("write a3s-ckpt-flush.md then stop", None)
+        .stream("write aster-ckpt-flush.md then stop", None)
         .await
         .unwrap();
     let mut flushed_before_end = false;
@@ -151,7 +149,7 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
             if let Ok(Some(saved)) = store.load("stream-ckpt-flush-test").await {
                 let hay = serde_json::to_string(&saved.messages).unwrap_or_default();
                 if write_id.as_ref().is_some_and(|id| hay.contains(id))
-                    && hay.contains("a3s-ckpt-flush.md")
+                    && hay.contains("aster-ckpt-flush.md")
                 {
                     flushed_before_end = true;
                 }
@@ -165,7 +163,7 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
     let _ = handle.await;
 
     assert_eq!(
-        std::fs::read(workspace.join("a3s-ckpt-flush.md")).unwrap(),
+        std::fs::read(workspace.join("aster-ckpt-flush.md")).unwrap(),
         b"7",
         "the checkpoint pin requires an actual schema-admitted write"
     );
@@ -263,11 +261,9 @@ async fn test_stream_bridges_subagent_lifecycle_events() {
 
     let tasks = session.subagent_tasks().await;
     assert_eq!(tasks.len(), 2);
-    assert!(
-        tasks
-            .iter()
-            .all(|task| task.status == SubagentStatus::Completed)
-    );
+    assert!(tasks
+        .iter()
+        .all(|task| task.status == SubagentStatus::Completed));
 }
 
 #[tokio::test]
@@ -670,7 +666,7 @@ async fn cancelled_fact_stream_settles_without_memory_extraction() {
             &SessionOptions::new()
                 .with_session_id("cancel-skips-memory-extraction")
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
-                .with_memory(std::sync::Arc::new(a3s_memory::InMemoryStore::new())),
+                .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new())),
         )
         .unwrap();
 
@@ -706,12 +702,10 @@ async fn cancelled_fact_stream_settles_without_memory_extraction() {
         extraction_calls.load(std::sync::atomic::Ordering::SeqCst),
         0
     );
-    assert!(
-        session
-            .history()
-            .iter()
-            .any(|message| message.text().contains("interrupted"))
-    );
+    assert!(session
+        .history()
+        .iter()
+        .any(|message| message.text().contains("interrupted")));
 }
 
 struct SlowExtractionClient {
@@ -761,7 +755,7 @@ async fn v912_stream_end_waiver_and_cancel() {
     let store = Arc::new(crate::store::MemorySessionStore::new());
     let agent = Agent::from_config(test_config()).await.unwrap();
     let workspace = std::env::temp_dir().join(format!(
-        "a3s-v912-end-{}",
+        "aster-v912-end-{}",
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
@@ -808,7 +802,7 @@ async fn v912_stream_end_waiver_and_cancel() {
 
     let calls = Arc::new(std::sync::Mutex::new(Vec::<String>::new()));
     let waiver_workspace = std::env::temp_dir().join(format!(
-        "a3s-v912-waiver-{}",
+        "aster-v912-waiver-{}",
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
@@ -833,17 +827,17 @@ async fn v912_stream_end_waiver_and_cancel() {
     );
     ledger.observe_tool_receipt(
         "write",
-        &a3s_effect::ToolExecutionResultV1 {
-            schema: a3s_effect::TOOL_RESULT_SCHEMA.into(),
-            identity: a3s_effect::ToolInvocationIdentityV1 {
+        &aster_effect::ToolExecutionResultV1 {
+            schema: aster_effect::TOOL_RESULT_SCHEMA.into(),
+            identity: aster_effect::ToolInvocationIdentityV1 {
                 turn: 1,
                 cycle: 0,
                 tool_call_id: "host-expected-effect".into(),
                 batch_index: 0,
                 admission: None,
             },
-            prepared_digest: a3s_effect::tool_args_digest(&serde_json::json!({})).unwrap(),
-            outcome: a3s_effect::ToolExecutionOutcome::Succeeded,
+            prepared_digest: aster_effect::tool_args_digest(&serde_json::json!({})).unwrap(),
+            outcome: aster_effect::ToolExecutionOutcome::Succeeded,
             exit_code: Some(0),
             output: serde_json::json!("host expected identity"),
             effects,
@@ -860,7 +854,7 @@ async fn v912_stream_end_waiver_and_cancel() {
         .with_continuation(false)
         .with_confirmation_policy(crate::hitl::ConfirmationPolicy::default())
         .with_completion_waivers(vec![waiver])
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()));
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let waiver_session = waiver_agent
         .build_session(
             waiver_workspace.display().to_string(),
@@ -921,7 +915,7 @@ async fn v912_stream_end_waiver_and_cancel() {
     );
 
     let cancel_workspace = std::env::temp_dir().join(format!(
-        "a3s-v912-cancel-{}",
+        "aster-v912-cancel-{}",
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()

@@ -49,7 +49,7 @@
 .work-print-preview-dialog > header {
   flex: 0 0 auto;
   padding: 14px 18px 12px;
-  border-bottom: 1px solid var(--a3s-line);
+  border-bottom: 1px solid var(--aster-line);
 }
 
 .work-print-preview-dialog > .ds-dialog-body {
@@ -68,7 +68,7 @@
 
 .work-print-preview-output-summary {
   margin-right: auto;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
@@ -86,8 +86,8 @@
   min-height: 0;
   padding: 18px 16px 24px;
   overflow: auto;
-  border-right: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
+  border-right: 1px solid var(--aster-line);
+  background: var(--aster-panel);
 }
 
 .work-print-preview-file-summary {
@@ -102,7 +102,7 @@
 .work-print-preview-file-summary strong {
   min-width: 0;
   overflow: hidden;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -110,7 +110,7 @@
 
 .work-print-preview-file-summary output {
   flex: 0 0 auto;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 10px;
   font-variant-numeric: tabular-nums;
 }
@@ -123,7 +123,7 @@
 
 .work-print-preview-field > span,
 .work-print-preview-range legend {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   font-weight: 650;
 }
@@ -154,8 +154,8 @@
 }
 
 .work-print-preview-range > .work-office-text-field:disabled {
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-faint);
+  background: var(--aster-panel-soft);
+  color: var(--aster-faint);
   cursor: not-allowed;
 }
 
@@ -176,10 +176,10 @@
   gap: 8px;
   margin-bottom: 16px;
   padding: 9px 10px;
-  border: 1px solid color-mix(in srgb, var(--a3s-warning) 35%, var(--a3s-line));
+  border: 1px solid color-mix(in srgb, var(--aster-warning) 35%, var(--aster-line));
   border-radius: 8px;
-  background: color-mix(in srgb, var(--a3s-warning) 7%, var(--a3s-panel));
-  color: var(--a3s-warning);
+  background: color-mix(in srgb, var(--aster-warning) 7%, var(--aster-panel));
+  color: var(--aster-warning);
   text-align: left;
   cursor: pointer;
 }
@@ -191,12 +191,12 @@
 }
 
 .work-print-preview-compatibility strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 10px;
 }
 
 .work-print-preview-compatibility small {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 8px;
 }
 
@@ -204,8 +204,8 @@
   margin: 0 0 16px;
   padding: 9px 10px;
   border-radius: 8px;
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-muted);
+  background: var(--aster-panel-soft);
+  color: var(--aster-muted);
   font-size: 9px;
   line-height: 1.55;
 }
@@ -226,20 +226,20 @@
   border-radius: 8px;
   outline: 0;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   text-align: left;
   cursor: pointer;
 }
 
 .work-print-preview-thumbnails > button:hover,
 .work-print-preview-thumbnails > button:focus-visible {
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-print-preview-thumbnails > button.active {
-  border-color: color-mix(in srgb, var(--a3s-blue) 44%, var(--a3s-line));
-  background: color-mix(in srgb, var(--a3s-blue) 8%, var(--a3s-panel));
-  color: var(--a3s-blue);
+  border-color: color-mix(in srgb, var(--aster-blue) 44%, var(--aster-line));
+  background: color-mix(in srgb, var(--aster-blue) 8%, var(--aster-panel));
+  color: var(--aster-blue);
 }
 
 .work-print-preview-thumbnails > button.excluded {
@@ -253,7 +253,7 @@
   height: 54px;
   justify-content: center;
   padding: 12px 7px 7px;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 2px;
   background: #fff;
   box-shadow: 0 2px 6px rgb(18 25 38 / 10%);
@@ -300,7 +300,7 @@
   gap: 4px;
   padding: 0 12px;
   border-bottom: 1px solid rgb(34 43 59 / 13%);
-  background: color-mix(in srgb, var(--a3s-panel) 94%, transparent);
+  background: color-mix(in srgb, var(--aster-panel) 94%, transparent);
   box-shadow: 0 1px 8px rgb(31 37 49 / 7%);
 }
 
@@ -314,14 +314,14 @@
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   cursor: pointer;
 }
 
 .work-print-preview-toolbar button:hover:not(:disabled),
 .work-print-preview-toolbar button:focus-visible {
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
 }
 
 .work-print-preview-toolbar button:disabled {
@@ -331,7 +331,7 @@
 
 .work-print-preview-toolbar output {
   min-width: 48px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   font-variant-numeric: tabular-nums;
   text-align: center;

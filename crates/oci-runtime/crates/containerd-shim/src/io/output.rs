@@ -17,7 +17,7 @@ pub(super) struct OutputPumpEndpoints {
 
 pub(super) async fn pump_output(
     adapter: RuntimeAdapter,
-    target: a3s_oci_sdk::ProcessTarget,
+    target: aster_oci_sdk::ProcessTarget,
     endpoints: OutputPumpEndpoints,
     mut cancelled: watch::Receiver<bool>,
 ) -> Result<(), RuntimeError> {
@@ -111,7 +111,7 @@ pub(super) async fn pump_output(
 }
 
 pub(super) fn validate_output_chunk(
-    chunk: &a3s_oci_sdk::OutputChunk,
+    chunk: &aster_oci_sdk::OutputChunk,
     cursor: u64,
 ) -> Result<u64, RuntimeError> {
     let width = match (chunk.eof, chunk.data.is_empty()) {
@@ -159,7 +159,7 @@ pub(super) fn validate_output_chunk(
 }
 
 pub(super) fn validate_output_stream_state(
-    chunk: &a3s_oci_sdk::OutputChunk,
+    chunk: &aster_oci_sdk::OutputChunk,
     terminal: bool,
     stdout_done: bool,
     stderr_done: bool,

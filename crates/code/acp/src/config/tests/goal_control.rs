@@ -16,7 +16,7 @@ const POLICY: &str = r#"goal_control {
 #[test]
 fn goal_control_actual_workspace_layer_cannot_activate_or_override_host() {
     env_locked(|| {
-        std::env::remove_var("A3S_DEFAULT_MODEL");
+        std::env::remove_var("ASTER_DEFAULT_MODEL");
         for host in [
             "".to_string(),
             POLICY.into(),
@@ -46,7 +46,7 @@ fn goal_control_actual_workspace_layer_cannot_activate_or_override_host() {
 #[test]
 fn goal_control_explicit_host_file_retains_authority() {
     env_locked(|| {
-        std::env::remove_var("A3S_DEFAULT_MODEL");
+        std::env::remove_var("ASTER_DEFAULT_MODEL");
         let (user, workspace) =
             write_user_and_workspace_layers(MODEL, &POLICY.replace("true", "false"));
         let explicit = user.path().join("explicit.acl");
@@ -62,7 +62,7 @@ fn goal_control_explicit_host_file_retains_authority() {
 #[test]
 fn goal_control_layer_errors_refuse_instead_of_using_account_fallback() {
     env_locked(|| {
-        std::env::remove_var("A3S_DEFAULT_MODEL");
+        std::env::remove_var("ASTER_DEFAULT_MODEL");
         for bad in [
             format!("{POLICY}\n{POLICY}"),
             "goal_control {}".into(),

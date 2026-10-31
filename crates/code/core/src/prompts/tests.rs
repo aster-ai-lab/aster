@@ -94,7 +94,7 @@ fn test_slots_default_builds_system_default() {
     assert!(built.contains("Evidence and completion"));
     assert!(built.contains("Response Format"));
     assert!(built.contains("use standard Markdown"));
-    assert!(built.contains("A3S Code"));
+    assert!(built.contains("Aster Code"));
     assert!(built.contains("## Runtime Contract"));
     assert_eq!(built.matches("## Runtime Contract").count(), 1);
     // Safety boundaries are injected even though they no longer live inline
@@ -351,7 +351,7 @@ fn test_slots_custom_role_replaces_default() {
     };
     let built = slots.build();
     assert!(built.contains("You are a senior Python developer"));
-    assert!(!built.contains("You are A3S Code"));
+    assert!(!built.contains("You are Aster Code"));
     // Core sections still present
     assert!(built.contains("Core Behaviour"));
     assert!(built.contains("Tool Usage Strategy"));
@@ -470,7 +470,7 @@ fn select_turn_reply_language_keeps_a_published_language() {
         Some("zh-CN")
     );
     assert_eq!(
-        select_turn_reply_language(Some("zh-CN"), "Execute the 'a3s-test' skill", true).as_deref(),
+        select_turn_reply_language(Some("zh-CN"), "Execute the 'aster-test' skill", true).as_deref(),
         Some("zh-CN")
     );
     assert_eq!(

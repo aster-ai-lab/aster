@@ -5,7 +5,7 @@ export interface OfficeNotification {
   tone: OfficeNotificationTone;
 }
 
-export const OFFICE_NOTIFICATION_EVENT = 'a3s-office:notify';
+export const OFFICE_NOTIFICATION_EVENT = 'aster-office:notify';
 
 export function showToast(
   message: string,

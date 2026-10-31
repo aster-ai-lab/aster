@@ -20,13 +20,13 @@ async fn public_stream_end_preserves_mapped_usage_including_cache_tokens() {
         forced_stop: None,
         run_admission: "ordinary".into(),
     };
-    let mut view = a3s_effect::CodingView::empty();
+    let mut view = aster_effect::CodingView::empty();
     view.assistant = Some(result.text.clone());
-    let settled = Ok(a3s_effect::Settlement {
+    let settled = Ok(aster_effect::Settlement {
         view,
         log: Vec::new(),
         steps: 0,
-        cut: a3s_effect::cut_log(&[]),
+        cut: aster_effect::cut_log(&[]),
         trace: Vec::new(),
     });
     for streamed_text in [false, true] {

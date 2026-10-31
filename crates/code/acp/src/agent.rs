@@ -1,4 +1,4 @@
-//! `acp::Agent` backed by a3s-code-core fact-log sessions.
+//! `acp::Agent` backed by aster-core fact-log sessions.
 
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
@@ -6,10 +6,10 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::sync::Arc;
 
-use a3s_code_core::{Agent, AgentEvent, AgentSession, SessionOptions};
+use aster_core::{Agent, AgentEvent, AgentSession, SessionOptions};
 use agent_client_protocol as acp;
 use agent_client_protocol::Client;
-use tokio::sync::{Mutex, OwnedMutexGuard, watch};
+use tokio::sync::{watch, Mutex, OwnedMutexGuard};
 use tokio::task::JoinHandle;
 
 use crate::config::LaunchConfig;
@@ -46,8 +46,8 @@ use emit::{progress_duration_ms, progress_tokens_used, subagent_finished_update}
 use extensions::answer_wiki_search;
 #[cfg(test)]
 use extensions::{parse_interject_params, recorded_session_homes, remove_recorded_session_under};
-use host_methods::{HostMethod, session_tooling_projection};
-use models::{EffortLimits, effort_guideline, effort_limits};
+use host_methods::{session_tooling_projection, HostMethod};
+use models::{effort_guideline, effort_limits, EffortLimits};
 #[cfg(test)]
 use models::{effort_limits_from_meta, reasoning_effort_catalog_meta, reasoning_effort_token};
 #[cfg(test)]
@@ -80,7 +80,7 @@ use turn::{agent_failure_error, worker_join_failure};
 use turn::{should_emit_end_text, turn_outcome_payload};
 
 const NO_MODEL_CONFIGURED: &str =
-    "no model is configured; open /config and save ~/.a3s/config.acl, then start aster again";
+    "no model is configured; open /config and save ~/.aster/config.acl, then start aster again";
 
 /// Empty launch ids are not model names. Callers surface [`NO_MODEL_CONFIGURED`]
 /// instead of asking the provider parser to split a blank string.
@@ -156,7 +156,7 @@ impl TurnQueue {
 }
 
 /// Sessions whose `session/load` has started and not yet inserted a live
-/// session. `a3s/session/info` waits here. A lookup that runs first answers
+/// session. `aster/session/info` waits here. A lookup that runs first answers
 /// `unknown session id` while the pager is still on "Loading session".
 struct InflightSessionLoads {
     open: std::sync::Mutex<HashMap<String, watch::Sender<bool>>>,
@@ -256,7 +256,7 @@ struct LiveSession {
     asset_denies: std::sync::Arc<std::sync::Mutex<Vec<String>>>,
     /// Standing Studio instructions admitted into the system prompt at build.
     host: crate::host_context::StudioHost,
-    /// Plugin executables from `_meta.a3sTools`, reapplied when the session is replaced.
+    /// Plugin executables from `_meta.asterTools`, reapplied when the session is replaced.
     plugin_tools: Vec<serde_json::Value>,
     /// Admitted assemble list for this process. A later list starts a new session.
     components: Vec<String>,
@@ -270,7 +270,7 @@ struct LiveSession {
     /// Session-scoped MCP servers (the `mcp_servers` this session was opened
     /// with). The agent-global manager serves the UNION of all live
     /// sessions' sets, so one session's sync can never delete another's.
-    mcp_servers: Vec<a3s_code_core::mcp::McpServerConfig>,
+    mcp_servers: Vec<aster_core::mcp::McpServerConfig>,
     /// The client's prompt id for the in-flight turn, echoed on every
     /// session notification per the ACP prompt-ack contract.
     active_prompt_id: std::sync::Mutex<Option<String>>,
@@ -285,12 +285,12 @@ struct SessionSetup<'a> {
     effort: Option<EffortLimits>,
     host: crate::host_context::StudioHost,
     components: &'a [String],
-    mcp_servers: Vec<a3s_code_core::mcp::McpServerConfig>,
+    mcp_servers: Vec<aster_core::mcp::McpServerConfig>,
 }
 
 /// Skill roots the interactive session scans. Existing directories only.
 /// Configured ACL paths join the workspace when they are relative. The user
-/// directory `~/.a3s/skills` is included so installed user skills are visible
+/// directory `~/.aster/skills` is included so installed user skills are visible
 /// without editing `skill_dirs`.
 fn session_capability_note(
     semantic: bool,
@@ -314,11 +314,11 @@ fn session_capability_note(
     )
 }
 
-fn session_memory_dir(workspace: &std::path::Path, config: &a3s_code_core::CodeConfig) -> PathBuf {
+fn session_memory_dir(workspace: &std::path::Path, config: &aster_core::CodeConfig) -> PathBuf {
     config
         .memory_dir
         .clone()
-        .unwrap_or_else(|| a3s_code_core::state_root::workspace_state_dir(workspace).join("memory"))
+        .unwrap_or_else(|| aster_core::state_root::workspace_state_dir(workspace).join("memory"))
 }
 
 fn discovered_command_hooks(
@@ -326,11 +326,11 @@ fn discovered_command_hooks(
     home: Option<&std::path::Path>,
     trust_path: &std::path::Path,
 ) -> (
-    Option<Arc<a3s_code_core::hooks::CommandHookExecutor>>,
+    Option<Arc<aster_core::hooks::CommandHookExecutor>>,
     usize,
     usize,
 ) {
-    match a3s_code_core::hooks::CommandHookExecutor::discover(
+    match aster_core::hooks::CommandHookExecutor::discover(
         workspace,
         home,
         trust_path.to_path_buf(),
@@ -346,7 +346,7 @@ fn discovered_command_hooks(
     }
 }
 
-fn append_slot_extra(slots: &mut a3s_code_core::SystemPromptSlots, body: &str) {
+fn append_slot_extra(slots: &mut aster_core::SystemPromptSlots, body: &str) {
     if body.is_empty() {
         return;
     }
@@ -408,7 +408,7 @@ fn process_skill_home() -> Option<PathBuf> {
 
 /// Directories a session should WATCH for later installs even though they do
 /// not exist yet. Workspace and home use the same roots (`skills`,
-/// `.a3s/skills`, `.agents/skills`, `.claude/skills`, `.codex/skills`).
+/// `.aster/skills`, `.agents/skills`, `.claude/skills`, `.codex/skills`).
 /// The first install creates one of these; the next catalog refresh or Skill
 /// lookup then loads the package.
 fn watched_skill_dirs(workspace: &std::path::Path) -> Vec<PathBuf> {
@@ -419,9 +419,9 @@ fn watched_skill_dirs_under(
     workspace: &std::path::Path,
     home: Option<&std::path::Path>,
 ) -> Vec<PathBuf> {
-    let mut dirs = a3s_code_core::skills::agent_skill_roots(workspace);
+    let mut dirs = aster_core::skills::agent_skill_roots(workspace);
     if let Some(home) = home {
-        dirs.extend(a3s_code_core::skills::agent_skill_roots(home));
+        dirs.extend(aster_core::skills::agent_skill_roots(home));
     }
     dirs
 }
@@ -441,7 +441,7 @@ fn interactive_skill_dirs_under(
 ) -> (Vec<PathBuf>, Vec<PathBuf>) {
     let mut dirs = Vec::new();
     let mut missing = Vec::new();
-    for project in a3s_code_core::skills::agent_skill_roots(workspace) {
+    for project in aster_core::skills::agent_skill_roots(workspace) {
         if project.is_dir() {
             dirs.push(project);
         }
@@ -459,7 +459,7 @@ fn interactive_skill_dirs_under(
         }
     }
     if let Some(home) = home {
-        for personal in a3s_code_core::skills::agent_skill_roots(home) {
+        for personal in aster_core::skills::agent_skill_roots(home) {
             if personal.is_dir() {
                 dirs.push(personal);
             }
@@ -478,39 +478,39 @@ fn interactive_skill_dirs_under(
 /// at `<product home>/session-store`.
 fn interactive_session_store_dir_from(
     configured: Option<&std::path::Path>,
-    a3s_home: Option<&std::ffi::OsStr>,
+    aster_home: Option<&std::ffi::OsStr>,
     os_home: Option<&std::ffi::OsStr>,
 ) -> PathBuf {
     if let Some(dir) = configured {
         return dir.to_path_buf();
     }
-    if let Some(home) = a3s_home.filter(|value| !value.is_empty()) {
+    if let Some(home) = aster_home.filter(|value| !value.is_empty()) {
         return PathBuf::from(home).join("session-store");
     }
     if let Some(home) = os_home.filter(|value| !value.is_empty()) {
-        return PathBuf::from(home).join(".a3s").join("session-store");
+        return PathBuf::from(home).join(".aster").join("session-store");
     }
-    PathBuf::from(".a3s").join("session-store")
+    PathBuf::from(".aster").join("session-store")
 }
 
 /// WC-NOTIFY1: whether a completed run owes the configured completion
 /// signal. Pure so the floor and the closed set stay pinnable without
 /// a terminal.
 fn completion_bell_due(
-    notifications: &a3s_code_core::config::NotificationsConfig,
+    notifications: &aster_core::config::NotificationsConfig,
     elapsed: std::time::Duration,
 ) -> bool {
     matches!(
         notifications.run_completion,
-        a3s_code_core::config::RunCompletionSignal::Bell
+        aster_core::config::RunCompletionSignal::Bell
     ) && elapsed.as_secs() >= notifications.min_seconds
 }
 
 fn posture_policy(
     posture: &str,
     denies: &[String],
-) -> a3s_code_core::permissions::PermissionPolicy {
-    let mut policy = a3s_code_core::permissions::policy_for_posture(posture);
+) -> aster_core::permissions::PermissionPolicy {
+    let mut policy = aster_core::permissions::policy_for_posture(posture);
     for rule in denies {
         policy = policy.deny(rule);
     }
@@ -537,9 +537,9 @@ fn remember_denies(live: &mut LiveSession) {
 }
 
 /// ACP agent that owns live [`AgentSession`] values keyed by ACP session id.
-pub struct A3sCodeAgent {
+pub struct AsterCodeAgent {
     launch: LaunchConfig,
-    managed_memory: Arc<a3s_code_core::durable_memory_vec::LazyFileMemoryStore>,
+    managed_memory: Arc<aster_core::durable_memory_vec::LazyFileMemoryStore>,
     /// Set once the stdio `AgentSideConnection` is built (chicken/egg with
     /// ACP ctor). `Rc`-shared so the sampling consent consumer (spawned on
     /// the same LocalSet) reads the live connection.
@@ -569,9 +569,9 @@ pub struct A3sCodeAgent {
     /// MCP servers loaded from the launch config, captured before a session
     /// list is applied. Session servers replace same-named entries; an empty
     /// session list leaves this baseline in place.
-    config_mcp: Mutex<Option<Vec<a3s_code_core::mcp::McpServerConfig>>>,
+    config_mcp: Mutex<Option<Vec<aster_core::mcp::McpServerConfig>>>,
     plugin_selection: Option<crate::PluginSelectionHost>,
-    /// Present after a launcher asks in `session/new` `_meta.a3sStudioDocuments`,
+    /// Present after a launcher asks in `session/new` `_meta.asterStudioDocuments`,
     /// or after the legacy `--studio-documents` process flag.
     documents: RefCell<Option<Arc<crate::document_read::DocumentBridge>>>,
     /// The consent channel the sampling factory's bridge parks asks on;
@@ -586,13 +586,13 @@ pub struct A3sCodeAgent {
     /// `--unattended` only. `None` for every interactive host.
     unattended: Option<crate::unattended::Unattended>,
     /// What the untrusted workspace layer was refused or left pending.
-    workspace_admission: a3s_code_core::config::WorkspaceLayerAdmission,
+    workspace_admission: aster_core::config::WorkspaceLayerAdmission,
     client_reads_files: std::cell::Cell<bool>,
     /// Trusted launcher instructions from initialize, kept separate from the
     /// workspace configuration and applied whenever a session is opened.
     client_rules: RefCell<Option<String>>,
     client_permissions: RefCell<ClientPermissionRules>,
-    /// This process created `~/.a3s/config.acl`. The pager opens `/config`.
+    /// This process created `~/.aster/config.acl`. The pager opens `/config`.
     first_run_config: bool,
 }
 
@@ -620,14 +620,14 @@ fn model_picker_description(provider_name: &str) -> String {
     } else if provider_name == "codex" {
         "Logged-in Codex account".to_string()
     } else {
-        format!("From A3S ACL provider {provider_name}")
+        format!("From Aster ACL provider {provider_name}")
     }
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub fn new(launch: LaunchConfig) -> Self {
         let model_id = launch.model_id.clone();
-        let managed_memory = Arc::new(a3s_code_core::durable_memory_vec::LazyFileMemoryStore::new(
+        let managed_memory = Arc::new(aster_core::durable_memory_vec::LazyFileMemoryStore::new(
             session_memory_dir(&launch.workspace, &launch.config),
         ));
         let (consent_tx, consent_rx) = tokio::sync::mpsc::channel(16);
@@ -640,7 +640,7 @@ impl A3sCodeAgent {
             sessions: Arc::new(Mutex::new(HashMap::new())),
             session_loads: InflightSessionLoads::new(),
             model_id: Mutex::new(model_id),
-            // a3s-code TUI default is BudgetProfile index 2 (`high`).
+            // aster TUI default is BudgetProfile index 2 (`high`).
             effort: Mutex::new(effort_limits("high")),
             goals: Mutex::new(HashMap::new()),
             turn_generation: Mutex::new(HashMap::new()),
@@ -677,7 +677,7 @@ impl A3sCodeAgent {
     /// Report the launch's workspace-layer admission to the client.
     pub fn with_workspace_admission(
         mut self,
-        admission: a3s_code_core::config::WorkspaceLayerAdmission,
+        admission: aster_core::config::WorkspaceLayerAdmission,
     ) -> Self {
         self.workspace_admission = admission;
         self
@@ -694,7 +694,7 @@ impl A3sCodeAgent {
                     .filter(|server| server.trusted)
                     .map(|server| server.name.as_str())
                     .collect::<Vec<_>>(),
-                "trustCommand": "a3s-code-acp --trust-workspace-mcp <id|all>",
+                "trustCommand": "aster-acp --trust-workspace-mcp <id|all>",
             },
             "withheldBlocks": admission.withheld_blocks,
             "droppedDirs": admission.dropped_dirs,
@@ -718,12 +718,12 @@ impl A3sCodeAgent {
         self
     }
 
-    /// `_meta.a3sStudioDocuments: true` opts this process into the document host.
+    /// `_meta.asterStudioDocuments: true` opts this process into the document host.
     /// Any other value leaves the bridge unset. A later session on the same
     /// process keeps the bridge the first request created.
     fn admit_studio_documents(&self, meta: Option<&serde_json::Map<String, serde_json::Value>>) {
         let requested = meta
-            .and_then(|meta| meta.get("a3sStudioDocuments"))
+            .and_then(|meta| meta.get("asterStudioDocuments"))
             .and_then(|value| value.as_bool())
             == Some(true);
         if !requested || self.documents.borrow().is_some() {
@@ -753,11 +753,11 @@ impl A3sCodeAgent {
         meta: Option<&serde_json::Map<String, serde_json::Value>>,
         servers: &[acp::McpServer],
     ) -> acp::Result<()> {
-        let requested = meta.and_then(|meta| meta.get("a3sPluginSelection"));
+        let requested = meta.and_then(|meta| meta.get("asterPluginSelection"));
         match (&self.plugin_selection, requested) {
             (None, None) => Ok(()),
             (Some(host), Some(value)) => {
-                let cursor: a3s_use_reconcile::SelectionCursor =
+                let cursor: aster_use_reconcile::SelectionCursor =
                     serde_json::from_value(value.clone())
                         .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?;
                 if &cursor != host.cursor()
@@ -814,13 +814,13 @@ impl A3sCodeAgent {
     #[allow(clippy::too_many_arguments)]
     fn host_session_options_with_hook_roots(
         options: SessionOptions,
-        slots: &mut a3s_code_core::SystemPromptSlots,
+        slots: &mut aster_core::SystemPromptSlots,
         setup: &SessionSetup<'_>,
-        config: &a3s_code_core::CodeConfig,
+        config: &aster_core::CodeConfig,
         session_store_dir: &std::path::Path,
         hook_home: Option<&std::path::Path>,
         trust_path: Option<&std::path::Path>,
-        embedding: Option<Arc<dyn a3s_code_core::EmbeddingProvider>>,
+        embedding: Option<Arc<dyn aster_core::EmbeddingProvider>>,
     ) -> acp::Result<SessionOptions> {
         let max_tool_rounds = config.max_tool_rounds.unwrap_or(0);
         let count_guideline = if max_tool_rounds == 0 {
@@ -854,7 +854,7 @@ impl A3sCodeAgent {
         let contracts = config
             .verification_contracts_for_workspace(&setup.workspace)
             .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?;
-        let guardrail = a3s_code_core::permissions::InteractiveToolGuardrail::default()
+        let guardrail = aster_core::permissions::InteractiveToolGuardrail::default()
             .with_workspace(&setup.workspace);
         let mut options = options
             .with_max_tool_rounds(max_tool_rounds)
@@ -862,9 +862,9 @@ impl A3sCodeAgent {
             .with_verification_contracts(contracts)
             .with_permission_checker(Arc::new(guardrail))
             .with_confirmation_policy(
-                a3s_code_core::hitl::ConfirmationPolicy::enabled().with_timeout(
+                aster_core::hitl::ConfirmationPolicy::enabled().with_timeout(
                     u64::try_from(permission_ask::ask_deadline().as_millis()).unwrap_or(u64::MAX),
-                    a3s_code_core::hitl::TimeoutAction::Reject,
+                    aster_core::hitl::TimeoutAction::Reject,
                 ),
             )
             .with_sandbox_network_mode(config.sandbox_network)
@@ -885,14 +885,14 @@ impl A3sCodeAgent {
             options = options.with_hook_executor(executor);
         }
         options = options.with_memory(Arc::new(
-            a3s_code_core::durable_memory_vec::LazyFileMemoryStore::new(session_memory_dir(
+            aster_core::durable_memory_vec::LazyFileMemoryStore::new(session_memory_dir(
                 &setup.workspace,
                 config,
             )),
         ));
         if let Some(provider) = embedding {
             options = options
-                .with_workspace_retrieval(a3s_code_core::WorkspaceRetrievalOptions::new(provider));
+                .with_workspace_retrieval(aster_core::WorkspaceRetrievalOptions::new(provider));
         }
         Ok(options.with_file_session_store(session_store_dir))
     }
@@ -966,12 +966,12 @@ fn note_tool_row(painted: &mut HashSet<String>, id: &str) -> ToolRowPaint {
 struct TurnState {
     observer: Option<crate::run_observation::Observer>,
     turn_failure: Option<String>,
-    reconciliation: Option<a3s_code_core::harness_loop::ToolEffectUnresolved>,
+    reconciliation: Option<aster_core::harness_loop::ToolEffectUnresolved>,
     saw_text: bool,
     delta_text: String,
     end_text: Option<String>,
     /// The completion-gate terminal from the run's End event, forwarded to
-    /// the client as an `a3s/turn/outcome` notification just before the
+    /// the client as an `aster/turn/outcome` notification just before the
     /// prompt response resolves (so it precedes the terminal marker).
     end_outcome: Option<serde_json::Value>,
     stop_reason: Option<acp::StopReason>,
@@ -983,8 +983,8 @@ struct TurnState {
     /// updates that row instead of opening another Run card.
     painted_tools: HashSet<String>,
     /// Last model invocation's usage, paired with End's response metadata for measured TPS.
-    last_turn_usage: Option<a3s_code_core::llm::TokenUsage>,
-    end_usage: Option<a3s_code_core::llm::TokenUsage>,
+    last_turn_usage: Option<aster_core::llm::TokenUsage>,
+    end_usage: Option<aster_core::llm::TokenUsage>,
     model_calls: u64,
 }
 
@@ -1028,7 +1028,7 @@ const HOST_CONTINUATION_TURNS: u32 = 8;
 /// Meta key marking a `request_permission` as an agent question riding the
 /// permission channel, not a permission ask; the payload carries
 /// `{"allowFreeText": bool, "hasChoices": bool}`. Twin of `QUESTION_META_KEY` in
-/// `vendor/a3s-code-ui/crates/codegen/a3s-code-workspace/src/permission/types.rs`
+/// `vendor/aster-ui/crates/codegen/aster-workspace/src/permission/types.rs`
 /// (this crate does not depend on the vendored workspace crate; keep them in sync).
 const QUESTION_META_KEY: &str = "question";
 

@@ -1,4 +1,4 @@
-// examples/start_vm.rs — minimal end-to-end smoke test for a3s-libkrun-sys.
+// examples/start_vm.rs — minimal end-to-end smoke test for aster-libkrun-sys.
 //
 // Usage (PowerShell):
 //   $env:LIBKRUN_DIR = "..\..\target\x86_64-pc-windows-msvc\release"
@@ -25,7 +25,7 @@ fn main() {
 
 #[cfg(windows)]
 unsafe fn run(kernel_path: &str, disk_path: &str) {
-    use a3s_libkrun_sys::*;
+    use aster_libkrun_sys::*;
     use std::ffi::CString;
 
     macro_rules! check {

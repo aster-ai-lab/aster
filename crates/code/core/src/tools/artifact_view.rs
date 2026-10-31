@@ -1,4 +1,4 @@
-//! Model-facing pages over retained `a3s://tool-output/...` artifacts.
+//! Model-facing pages over retained `aster://tool-output/...` artifacts.
 //!
 //! A lossy tool-result transform keeps the original bytes in the session
 //! artifact store. `read` and `search` page that exact content so the model
@@ -8,7 +8,7 @@ use super::types::{ToolContext, ToolOutput};
 use super::{MAX_LINE_LENGTH, MAX_READ_LINES};
 use crate::text::truncate_utf8;
 
-pub(crate) const TOOL_OUTPUT_URI_PREFIX: &str = "a3s://tool-output/";
+pub(crate) const TOOL_OUTPUT_URI_PREFIX: &str = "aster://tool-output/";
 const MAX_GREP_MATCHES: usize = 1_000;
 pub(crate) const DEFAULT_GREP_MATCHES: usize = 200;
 const MAX_GREP_CONTEXT: usize = 8;

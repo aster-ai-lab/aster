@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ChildWorkflowCancellationPolicy, FlowError, FlowEvent, FlowEventStore, LocalFileEventStore,
     WorkflowSpec, WorkflowTerminalOutcome,
 };

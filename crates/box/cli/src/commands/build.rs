@@ -1,4 +1,4 @@
-//! `a3s-box build` command — Build an image from a Dockerfile or Containerfile.
+//! `aster-box build` command — Build an image from a Dockerfile or Containerfile.
 //!
 //! Parses a Dockerfile/Containerfile, pulls the base image, executes instructions,
 //! and produces an OCI image stored in the local image store.
@@ -9,9 +9,9 @@ use std::sync::Arc;
 
 use clap::Args;
 
-const BUILD_RUN_POOL_SOCKET_ENV: &str = "A3S_BOX_BUILD_RUN_POOL_SOCKET";
-const BUILD_RUN_CACHE_DIR_ENV: &str = "A3S_BOX_BUILD_RUN_CACHE_DIR";
-const DEFAULT_BUILD_RUN_POOL_GUEST_ROOTFS: &str = "/run/a3s/build-rootfs";
+const BUILD_RUN_POOL_SOCKET_ENV: &str = "ASTER_BOX_BUILD_RUN_POOL_SOCKET";
+const BUILD_RUN_CACHE_DIR_ENV: &str = "ASTER_BOX_BUILD_RUN_CACHE_DIR";
+const DEFAULT_BUILD_RUN_POOL_GUEST_ROOTFS: &str = "/run/aster/build-rootfs";
 
 #[derive(Args)]
 pub struct BuildArgs {
@@ -115,7 +115,7 @@ pub async fn execute(args: BuildArgs) -> Result<(), Box<dyn std::error::Error>> 
     // Open image store
     let store = Arc::new(super::open_image_store()?);
 
-    let config = a3s_box_runtime::BuildConfig {
+    let config = aster_box_runtime::BuildConfig {
         context_dir,
         dockerfile_path,
         tag: args.tag.clone(),
@@ -124,12 +124,12 @@ pub async fn execute(args: BuildArgs) -> Result<(), Box<dyn std::error::Error>> 
         platforms,
         target: args.target.clone(),
         no_cache: args.no_cache,
-        network: a3s_box_runtime::BuildNetworkPolicy::Outbound,
+        network: aster_box_runtime::BuildNetworkPolicy::Outbound,
         metrics: None,
         run_pool,
     };
 
-    let result = a3s_box_runtime::oci::build::engine::build(config, store).await?;
+    let result = aster_box_runtime::oci::build::engine::build(config, store).await?;
 
     if args.quiet {
         println!("{}", result.digest);
@@ -140,7 +140,7 @@ pub async fn execute(args: BuildArgs) -> Result<(), Box<dyn std::error::Error>> 
 
 fn resolve_run_pool_config(
     args: &BuildArgs,
-) -> Result<Option<a3s_box_runtime::BuildRunPoolConfig>, Box<dyn std::error::Error>> {
+) -> Result<Option<aster_box_runtime::BuildRunPoolConfig>, Box<dyn std::error::Error>> {
     let env_socket = std::env::var(BUILD_RUN_POOL_SOCKET_ENV)
         .ok()
         .filter(|value| !value.trim().is_empty());
@@ -184,12 +184,12 @@ fn resolve_run_pool_config(
         .or(env_cache_dir)
         .map(PathBuf::from)
         .unwrap_or_else(|| {
-            a3s_box_core::dirs_home()
+            aster_box_core::dirs_home()
                 .join("buildcache")
                 .join("run-cache")
         });
 
-    Ok(Some(a3s_box_runtime::BuildRunPoolConfig {
+    Ok(Some(aster_box_runtime::BuildRunPoolConfig {
         socket,
         image: args.run_pool_image.clone(),
         vcpus: args.run_pool_cpus,
@@ -201,7 +201,7 @@ fn resolve_run_pool_config(
 }
 
 fn pool_autostart_config_for_build(
-    config: &a3s_box_runtime::BuildRunPoolConfig,
+    config: &aster_box_runtime::BuildRunPoolConfig,
 ) -> Result<super::pool::PoolAutoStartConfig, Box<dyn std::error::Error>> {
     Ok(super::pool::PoolAutoStartConfig {
         socket: config.socket.clone(),
@@ -225,12 +225,12 @@ fn parse_build_args(args: &[String]) -> Result<HashMap<String, String>, String> 
 
 fn parse_platforms(
     platform: Option<&str>,
-) -> Result<Vec<a3s_box_core::platform::Platform>, Box<dyn std::error::Error>> {
+) -> Result<Vec<aster_box_core::platform::Platform>, Box<dyn std::error::Error>> {
     let Some(platform) = platform else {
         return Ok(vec![]);
     };
 
-    let platforms = a3s_box_core::platform::Platform::parse_list(platform)
+    let platforms = aster_box_core::platform::Platform::parse_list(platform)
         .map_err(|e| format!("Invalid --platform: {e}"))?;
     if platforms.len() > 1 {
         return Err(
@@ -358,22 +358,22 @@ mod tests {
     fn test_resolve_run_pool_config_explicit_socket() {
         let mut args = build_args();
         args.run_pool = true;
-        args.run_pool_socket = Some("/tmp/a3s-build-pool.sock".to_string());
+        args.run_pool_socket = Some("/tmp/aster-build-pool.sock".to_string());
         args.run_pool_image = Some("alpine:latest".to_string());
         args.run_pool_cpus = 4;
         args.run_pool_memory = "1g".to_string();
         args.run_pool_timeout = 90;
-        args.run_cache_dir = Some("/tmp/a3s-run-cache".to_string());
+        args.run_cache_dir = Some("/tmp/aster-run-cache".to_string());
 
         let config = resolve_run_pool_config(&args).unwrap().unwrap();
 
-        assert_eq!(config.socket, "/tmp/a3s-build-pool.sock");
+        assert_eq!(config.socket, "/tmp/aster-build-pool.sock");
         assert_eq!(config.image.as_deref(), Some("alpine:latest"));
         assert_eq!(config.vcpus, 4);
         assert_eq!(config.memory_mb, 1024);
         assert_eq!(config.guest_rootfs, DEFAULT_BUILD_RUN_POOL_GUEST_ROOTFS);
         assert_eq!(config.timeout_ns, 90_000_000_000);
-        assert_eq!(config.run_cache_dir, PathBuf::from("/tmp/a3s-run-cache"));
+        assert_eq!(config.run_cache_dir, PathBuf::from("/tmp/aster-run-cache"));
     }
 
     #[test]
@@ -414,14 +414,14 @@ mod tests {
         let mut args = build_args();
         args.run_pool = true;
         args.run_pool_autostart = true;
-        args.run_pool_socket = Some("/tmp/a3s-build-pool.sock".to_string());
+        args.run_pool_socket = Some("/tmp/aster-build-pool.sock".to_string());
         args.run_pool_image = Some("alpine:latest".to_string());
 
         let config = resolve_run_pool_config(&args).unwrap().unwrap();
         let autostart = pool_autostart_config_for_build(&config).unwrap();
 
         assert_eq!(config.image.as_deref(), Some("alpine:latest"));
-        assert_eq!(autostart.socket, "/tmp/a3s-build-pool.sock");
+        assert_eq!(autostart.socket, "/tmp/aster-build-pool.sock");
         assert!(autostart.image.is_none());
         assert_eq!(
             autostart.size,

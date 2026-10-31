@@ -1776,7 +1776,7 @@ pub fn coding_scheduler(config: HarnessConfig) -> ErasedComponent<CodingServices
 /// behavior; budget/compact also appear as explicit tree parts.
 pub fn coding_actor(config: HarnessConfig) -> Actor<CodingServices, CodingView> {
     let spec = crate::compose::MetaHarnessSpec {
-        name: "a3s-code",
+        name: "aster",
         budget: config.budget(),
         compact_after_chars: config.compact_after_chars(),
         step_limit: config.step_limit(),

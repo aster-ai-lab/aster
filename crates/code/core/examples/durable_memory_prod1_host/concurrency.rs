@@ -14,7 +14,7 @@
 
 use super::connection::RedisSocket;
 use super::redis_index::RedisVectorIndex;
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     VectorIndex, VectorIndexDescriptor, VectorIndexError, VectorRecord, VectorRevision,
 };
 use anyhow::{Context, Result};
@@ -182,5 +182,5 @@ fn writer_partition(prefix: &str, writer: usize) -> String {
 
 fn writer_record(writer: usize, embedding: &[f32]) -> VectorRecord {
     VectorRecord::new(format!("writer-record-{writer:03}"), embedding.to_vec())
-        .with_label("a3s.dm-prod1.writer", writer.to_string())
+        .with_label("aster.dm-prod1.writer", writer.to_string())
 }

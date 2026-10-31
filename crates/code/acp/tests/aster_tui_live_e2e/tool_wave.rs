@@ -105,7 +105,7 @@ fn exercise_git(case: &str, check_status: impl FnOnce(&Value)) {
     git(path, &["config", "core.autocrlf", "false"]);
     git(path, &["config", "core.hooksPath", ".git/no-hooks"]);
     std::fs::create_dir_all(path.join(".git/info")).unwrap();
-    std::fs::write(path.join(".git/info/exclude"), ".a3s/\n").unwrap();
+    std::fs::write(path.join(".git/info/exclude"), ".aster/\n").unwrap();
     std::fs::write(path.join("tracked.txt"), "ORIGINAL\n").unwrap();
     git(path, &["add", "--", "tracked.txt"]);
     git(
@@ -373,7 +373,7 @@ fn exercise_checklist(mut tui: LiveTui, restore_composer: bool, leave_overlay: b
     assert_eq!(last[0]["content"], "CHECKLIST-SECOND");
     assert_eq!(last[0]["status"], "completed");
     assert_eq!(last[1]["content"], "CHECKLIST-FIRST");
-    assert_eq!(last[1]["_meta"]["a3sStatus"], "cancelled");
+    assert_eq!(last[1]["_meta"]["asterStatus"], "cancelled");
     tui.record("checklist-replacement-ui", "replacement removes the old row, changes the order and projects completed/cancelled statuses independently of Plan review mode");
     if leave_overlay {
         tui.bytes(b" ");
@@ -599,7 +599,7 @@ pub(super) fn start(case: &str, args: &[&str]) -> LiveTui {
 fn start_traced(case: &str, args: &[&str]) -> LiveTui {
     let mut tui = LiveTui::new(case);
     let proxy = std::path::PathBuf::from(
-        std::env::var_os("A3S_CODE_ACP_TRACE_PROXY").expect("transparent native ACP trace relay"),
+        std::env::var_os("ASTER_ACP_TRACE_PROXY").expect("transparent native ACP trace relay"),
     );
     tui.trace_acp(&proxy);
     launch(&mut tui, args);

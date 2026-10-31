@@ -3,7 +3,7 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_oci_sdk::{OciSchemaEvidenceManifest, OciSchemaValidator};
+use aster_oci_sdk::{OciSchemaEvidenceManifest, OciSchemaValidator};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let (evidence, output) = paths()?;

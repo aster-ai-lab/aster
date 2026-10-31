@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     editor_error, mark_workbook_for_recalculation, node_not_found, update_dimension,
@@ -81,6 +81,6 @@ fn require_spreadsheet(package: &NativeOfficePackage) -> UseResult<()> {
     }
 }
 
-fn sort_error(code: &str, message: impl Into<String>) -> a3s_use_core::UseError {
+fn sort_error(code: &str, message: impl Into<String>) -> aster_use_core::UseError {
     editor_error(code, message)
 }

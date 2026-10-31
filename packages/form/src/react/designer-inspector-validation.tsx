@@ -24,7 +24,7 @@ export interface ValidationPanelProps {
 export function ValidationPanel(props: ValidationPanelProps) {
   const { selected, selectedSchema } = props;
   if (selected.kind !== 'field' && selected.kind !== 'repeater') {
-    return <p className="a3s-form-empty">当前节点没有字段校验设置。</p>;
+    return <p className="aster-form-empty">当前节点没有字段校验设置。</p>;
   }
 
   const binding = schemaBindingForNode(props.document, selected);
@@ -35,8 +35,8 @@ export function ValidationPanel(props: ValidationPanelProps) {
   const widget = selected.widget ?? 'text';
   const stringConstraintField =
     stringField && !['select', 'radio', 'date', 'date-time', 'time', 'hidden'].includes(widget);
-  const signatureField = widget === 'a3s.signature' || widget === 'signature';
-  const fileField = widget === 'a3s.file-upload' || widget === 'file';
+  const signatureField = widget === 'aster.signature' || widget === 'signature';
+  const fileField = widget === 'aster.file-upload' || widget === 'file';
   const arrayConstraintField = arrayField && !signatureField;
   const fixedUniqueCollection =
     widget === 'multi-select' || widget === 'tags' || fileField || signatureField;
@@ -75,7 +75,7 @@ export function ValidationPanel(props: ValidationPanelProps) {
   const matrixMaximum = matrixRowSchemas[0]?.maxItems;
 
   return (
-    <div className="a3s-form-inspector-fields">
+    <div className="aster-form-inspector-fields">
       <InspectorSection title="可用性" description="控制字段在填写流程中的基础状态。">
         <ValueShape schema={selectedSchema} widget={selected.widget} />
         <Toggle label="必填字段" checked={required} onChange={props.onSetRequired} />
@@ -94,7 +94,7 @@ export function ValidationPanel(props: ValidationPanelProps) {
           />
         )}
         {alwaysReadOnly && (
-          <p className="a3s-form-component-note">
+          <p className="aster-form-component-note">
             {selected.widget === 'hidden' ? '隐藏值没有可见控件。' : '计算结果固定为只读输出。'}
           </p>
         )}
@@ -108,7 +108,7 @@ export function ValidationPanel(props: ValidationPanelProps) {
             onChange={props.onSetMatrixRowsRequired}
           />
           {selected.widget === 'matrix-multiple' && selected.matrix && (
-            <div className="a3s-form-inline-controls">
+            <div className="aster-form-inline-controls">
               <Control label="每行最少选择">
                 <input
                   aria-label="每行最少选择数"
@@ -147,7 +147,7 @@ export function ValidationPanel(props: ValidationPanelProps) {
         >
           {stringConstraintField && (
             <>
-              <div className="a3s-form-inline-controls">
+              <div className="aster-form-inline-controls">
                 <Control label="最少字符">
                   <input
                     aria-label="最小字符数"
@@ -184,7 +184,7 @@ export function ValidationPanel(props: ValidationPanelProps) {
           )}
           {numberField && (
             <>
-              <div className="a3s-form-inline-controls">
+              <div className="aster-form-inline-controls">
                 <Control label="最小值">
                   <input
                     aria-label="最小值"
@@ -234,7 +234,7 @@ export function ValidationPanel(props: ValidationPanelProps) {
           )}
           {arrayConstraintField && (
             <>
-              <div className="a3s-form-inline-controls">
+              <div className="aster-form-inline-controls">
                 <Control label={`最少${collectionNoun}`}>
                   <input
                     aria-label={`最少${collectionNoun}数`}
@@ -277,7 +277,7 @@ export function ValidationPanel(props: ValidationPanelProps) {
         collapsible
         summary={`${props.document.rules?.filter((rule) => rule.target === selected.id).length ?? 0} 条`}
       >
-        <div className="a3s-form-rule-summary">
+        <div className="aster-form-rule-summary">
           <span>关联规则</span>
           <strong>
             {props.document.rules?.filter((rule) => rule.target === selected.id).length ?? 0} 条

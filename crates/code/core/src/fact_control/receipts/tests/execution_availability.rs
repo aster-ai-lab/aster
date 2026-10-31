@@ -266,6 +266,9 @@ async fn assert_unavailable_sandbox_does_not_open_debt(initialization_failure: b
         .set_len(crate::porcelain::OBSERVATION_BYTE_CAP + 1)
         .unwrap();
     let (base, _) = executor_tools(root.path());
+    base.executor.register_dynamic_tool(Arc::new(
+        crate::tools::builtin::background::BackgroundTool::default(),
+    ));
     let mut tools = base.as_ref().clone();
     let refusal = if initialization_failure {
         "fixture native initialization refused"

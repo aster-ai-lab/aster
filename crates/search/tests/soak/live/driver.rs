@@ -226,7 +226,7 @@ pub(super) struct ProcessTreeResourceSample {
 pub(super) struct TierReceipt {
     pub capability: TierCapability,
     pub profile_sha256: String,
-    pub results: a3s_search::SearchResults,
+    pub results: aster_search::SearchResults,
     pub calls: Vec<UpstreamCallReceipt>,
 }
 

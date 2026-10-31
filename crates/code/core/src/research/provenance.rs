@@ -3,8 +3,8 @@ use super::{
 };
 use serde::{Deserialize, Serialize};
 
-pub const RESEARCH_PROVENANCE_RECEIPT_SCHEMA_V1: &str = "a3s.code.provenance-receipt.v1";
-const RESEARCH_PROVENANCE_RECEIPT_DIGEST_DOMAIN: &str = "a3s.code.provenance-receipt.identity.v1";
+pub const RESEARCH_PROVENANCE_RECEIPT_SCHEMA_V1: &str = "aster.code.provenance-receipt.v1";
+const RESEARCH_PROVENANCE_RECEIPT_DIGEST_DOMAIN: &str = "aster.code.provenance-receipt.identity.v1";
 
 /// Artifact families that can be bound to a research provenance receipt.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]

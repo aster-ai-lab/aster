@@ -1,7 +1,7 @@
 use std::io;
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{PlanQualifiedSurfaceRef, PlanScope, UseResult};
+use aster_use_core::{PlanQualifiedSurfaceRef, PlanScope, UseResult};
 use serde::Serialize;
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
@@ -270,7 +270,7 @@ pub(super) async fn read_optional_provisioning(
             ))
         }
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > MAX_BINDING_RECEIPT_BYTES
@@ -355,7 +355,7 @@ async fn write_bounded_json<T: Serialize>(path: &Path, value: &T) -> UseResult<(
 async fn activate_temporary(temporary: PathBuf, target: PathBuf) -> UseResult<()> {
     let error_target = target.clone();
     tokio::task::spawn_blocking(move || {
-        a3s_use_extension::persist_temporary_replace_blocking(temporary, &target)
+        aster_use_extension::persist_temporary_replace_blocking(temporary, &target)
     })
     .await
     .map_err(|error| {
@@ -370,6 +370,6 @@ async fn activate_temporary(temporary: PathBuf, target: PathBuf) -> UseResult<()
     .map_err(|error| path_error("activate Runtime provisioning", &error_target, error))
 }
 
-fn provisioning_error(code: &'static str, message: impl Into<String>) -> a3s_use_core::UseError {
-    a3s_use_core::UseError::new(code, message)
+fn provisioning_error(code: &'static str, message: impl Into<String>) -> aster_use_core::UseError {
+    aster_use_core::UseError::new(code, message)
 }

@@ -1,4 +1,4 @@
-use a3s_oci_sdk::oci_spec::runtime::LinuxResources;
+use aster_oci_sdk::oci_spec::runtime::LinuxResources;
 
 use super::{
     BpfInsn, DeviceAccessBoundary, DeviceAccessKind, DeviceAccessPolicy, BPF_ALU64, BPF_AND,
@@ -111,7 +111,7 @@ fn maximum_planned_inventory_includes_defaults_and_dynamic_ptys() {
     oversized.push((DeviceAccessKind::Block, 2_000, 0));
     let error = DeviceAccessBoundary::for_oci_nodes(oversized, None)
         .expect_err("an inventory above the planner limit must fail closed");
-    assert_eq!(error.code, a3s_oci_sdk::ErrorCode::PermissionDenied);
+    assert_eq!(error.code, aster_oci_sdk::ErrorCode::PermissionDenied);
     assert!(error.message.contains("invalid identity count"));
 }
 

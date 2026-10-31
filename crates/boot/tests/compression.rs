@@ -1,6 +1,6 @@
 #![cfg(feature = "compression")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootRequest, BootResponse, CompressionOptions, HttpMethod, RouteDefinition,
 };
 use flate2::read::GzDecoder;

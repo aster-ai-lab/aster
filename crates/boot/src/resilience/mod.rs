@@ -2,7 +2,7 @@
 //!
 //! These policies sit on the **client** side of a call (Boot service → peer).
 //! Edge ingress resilience (rate limit, circuit break on upstream, failover)
-//! belongs to `a3s-gateway`.
+//! belongs to `aster-gateway`.
 
 mod bulkhead;
 mod circuit_breaker;

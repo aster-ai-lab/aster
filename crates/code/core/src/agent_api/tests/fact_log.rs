@@ -216,7 +216,7 @@ async fn fact_log_session_send_projects_the_skill_catalog() {
     assert!(
         projected
             .iter()
-            .any(|system| system.contains("source=\"a3s://skills/catalog\"")),
+            .any(|system| system.contains("source=\"aster://skills/catalog\"")),
         "session send must project the skill catalog into the model request"
     );
 
@@ -238,7 +238,7 @@ async fn fact_log_session_send_projects_the_skill_catalog() {
     assert!(
         empty_systems
             .iter()
-            .all(|system| !system.contains("source=\"a3s://skills/catalog\"")),
+            .all(|system| !system.contains("source=\"aster://skills/catalog\"")),
         "an empty skill registry must not project a catalog"
     );
 }
@@ -982,7 +982,7 @@ impl LlmClient for VerifiedThenTextClient {
 #[tokio::test]
 async fn fact_log_session_explicit_preference_fails_closed_when_extraction_json_fails() {
     let token = "REMEMBER-TOKEN-4411";
-    let store: Arc<dyn a3s_memory::MemoryStore> = Arc::new(a3s_memory::InMemoryStore::new());
+    let store: Arc<dyn aster_durable_memory::MemoryStore> = Arc::new(aster_durable_memory::InMemoryStore::new());
     let workspace = tempfile::tempdir().unwrap();
     let agent = crate::Agent::from_config(test_config()).await.unwrap();
     let session = agent
@@ -1000,7 +1000,7 @@ async fn fact_log_session_explicit_preference_fails_closed_when_extraction_json_
          always use the verification codename {token}."
     );
     session.send(&prompt, None).await.unwrap();
-    let hits = a3s_memory::MemoryStore::search(store.as_ref(), token, 5)
+    let hits = aster_durable_memory::MemoryStore::search(store.as_ref(), token, 5)
         .await
         .unwrap();
     assert!(
@@ -1298,15 +1298,15 @@ async fn standing_context_stays_the_admitted_projection() {
 
 #[tokio::test]
 async fn a_new_run_without_a_standing_digest_does_not_call_the_model() {
-    use a3s_effect::LogStore;
+    use aster_effect::LogStore;
     let workspace = tempfile::tempdir().unwrap();
     crate::fact_control::reset_session_fact_log(workspace.path());
-    let log_dir = workspace.path().join(".a3s").join("effect-log");
-    a3s_effect::FileLog::open(&log_dir)
+    let log_dir = workspace.path().join(".aster").join("effect-log");
+    aster_effect::FileLog::open(&log_dir)
         .unwrap()
         .append(
             "no-digest",
-            &[a3s_effect::NewFact {
+            &[aster_effect::NewFact {
                 kind: crate::standing_context::STANDING_CONTEXT_FACT_KIND.to_string(),
                 key: "standing-context".into(),
                 payload: serde_json::json!({}),
@@ -1509,7 +1509,7 @@ impl crate::context::ContextProvider for StaticProbeProvider {
 }
 
 /// Digested `(provider, digest)` pairs from the last `context.sections` fact.
-fn last_context_sections(facts: &[a3s_effect::Fact]) -> Vec<(String, String)> {
+fn last_context_sections(facts: &[aster_effect::Fact]) -> Vec<(String, String)> {
     let Some(fact) = facts.iter().rfind(|fact| fact.kind == "context.sections") else {
         panic!("no context.sections fact recorded");
     };

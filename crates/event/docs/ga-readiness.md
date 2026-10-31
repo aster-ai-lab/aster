@@ -1,4 +1,4 @@
-# a3s-event 0.4.0 — GA readiness audit
+# aster-event 0.4.0 — GA readiness audit
 
 Date: 2026-09-30 · Branch: `feat/iggy-provider-ga` (local, not pushed)
 
@@ -95,7 +95,7 @@ GA-hardened**, regardless of this crate's own quality.
 
 - Push `feat/iggy-provider-ga`, wire CI to the remote, first remote run.
 - `cargo publish` for real (0.4.0; migration warnings in CHANGELOG §0.4.0).
-- How this crate rejoins the a3s monorepo (in-tree vs submodule re-pin) —
+- How this crate rejoins the aster monorepo (in-tree vs submodule re-pin) —
   the root `.gitmodules` deletion is mid-conversion and is an owners' call.
 - Filing the upstream iggy issue.
 

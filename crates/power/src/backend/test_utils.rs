@@ -1,0 +1,848 @@
+use std::pin::Pin;
+use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::{Arc, Mutex};
+
+use async_trait::async_trait;
+use futures::Stream;
+
+use crate::backend::prompt_cache::PromptCacheSupport;
+use crate::backend::types::{
+    ChatRequest, ChatResponseChunk, CompletionRequest, CompletionResponseChunk,
+    EffectivePromptDigest, EmbeddingRequest, EmbeddingResponse, FunctionCall, SystemOneAnswerSpec,
+    SystemOneQuestionSpec, SystemOneRequest, SystemOneResponse, ToolCall,
+};
+use crate::backend::{Backend, BackendRegistry};
+use crate::config::PowerConfig;
+use crate::error::{PowerError, Result};
+use crate::model::manifest::{ModelFormat, ModelManifest, ModelParameters};
+use crate::model::registry::ModelRegistry;
+use crate::server::request_context::RequestContext;
+use crate::server::state::AppState;
+use std::collections::BTreeMap;
+
+/// A mock backend for testing handlers without real inference.
+pub struct MockBackend {
+    backend_name: &'static str,
+    supported_family: Option<String>,
+    load_succeeds: bool,
+    memory_load_succeeds: bool,
+    supports_memory_load: bool,
+    streaming_load_succeeds: bool,
+    supports_streaming_load: bool,
+    supports_remote: bool,
+    openai_tool_selection: bool,
+    prompt_cache_support: PromptCacheSupport,
+    unload_succeeds: bool,
+    cleanup_succeeds: bool,
+    /// When true, chat() emits chunks simulating `<think>reasoning</think>answer`.
+    emit_thinking: bool,
+    /// When true, chat() emits a tool-call response.
+    emit_tool_calls: bool,
+    /// When true, the final chunk carries the generated token and metadata.
+    terminal_payload: bool,
+    /// When false, `systemone` returns BackendNotAvailable.
+    systemone_supported: bool,
+    effective_prompt: Option<EffectivePromptDigest>,
+    loaded_speculative_artifacts: Vec<crate::backend::LoadedSpeculativeArtifact>,
+    last_chat_request: Arc<Mutex<Option<ChatRequest>>>,
+    last_completion_request: Arc<Mutex<Option<CompletionRequest>>>,
+    /// Counter for file-backed load calls (for test verification).
+    pub load_count: Arc<AtomicU32>,
+    /// Counter for in-memory load calls (for test verification).
+    pub memory_load_count: Arc<AtomicU32>,
+    /// Counter for layer-streaming decrypted load calls (for test verification).
+    pub streaming_load_count: Arc<AtomicU32>,
+    /// Counter for cleanup_request calls (for test verification).
+    pub cleanup_count: Arc<AtomicU32>,
+}
+
+impl MockBackend {
+    pub fn with_openai_tool_selection(mut self) -> Self {
+        self.openai_tool_selection = true;
+        self
+    }
+
+    /// Create a mock backend where all operations succeed.
+    pub fn success() -> Self {
+        Self {
+            backend_name: "mock",
+            supported_family: None,
+            load_succeeds: true,
+            memory_load_succeeds: true,
+            supports_memory_load: false,
+            streaming_load_succeeds: true,
+            supports_streaming_load: false,
+            supports_remote: false,
+            openai_tool_selection: false,
+            prompt_cache_support: PromptCacheSupport::Unsupported,
+            unload_succeeds: true,
+            cleanup_succeeds: true,
+            emit_thinking: false,
+            emit_tool_calls: false,
+            terminal_payload: false,
+            systemone_supported: true,
+            effective_prompt: None,
+            loaded_speculative_artifacts: Vec::new(),
+            last_chat_request: Arc::new(Mutex::new(None)),
+            last_completion_request: Arc::new(Mutex::new(None)),
+            load_count: Arc::new(AtomicU32::new(0)),
+            memory_load_count: Arc::new(AtomicU32::new(0)),
+            streaming_load_count: Arc::new(AtomicU32::new(0)),
+            cleanup_count: Arc::new(AtomicU32::new(0)),
+        }
+    }
+
+    /// Create a mock backend where `load()` returns an error.
+    pub fn load_fails() -> Self {
+        Self {
+            backend_name: "mock",
+            supported_family: None,
+            load_succeeds: false,
+            memory_load_succeeds: false,
+            supports_memory_load: false,
+            streaming_load_succeeds: false,
+            supports_streaming_load: false,
+            supports_remote: false,
+            openai_tool_selection: false,
+            prompt_cache_support: PromptCacheSupport::Unsupported,
+            unload_succeeds: true,
+            cleanup_succeeds: true,
+            emit_thinking: false,
+            emit_tool_calls: false,
+            terminal_payload: false,
+            systemone_supported: true,
+            effective_prompt: None,
+            loaded_speculative_artifacts: Vec::new(),
+            last_chat_request: Arc::new(Mutex::new(None)),
+            last_completion_request: Arc::new(Mutex::new(None)),
+            load_count: Arc::new(AtomicU32::new(0)),
+            memory_load_count: Arc::new(AtomicU32::new(0)),
+            streaming_load_count: Arc::new(AtomicU32::new(0)),
+            cleanup_count: Arc::new(AtomicU32::new(0)),
+        }
+    }
+
+    /// Create a mock backend where `unload()` returns an error.
+    pub fn unload_fails() -> Self {
+        Self {
+            backend_name: "mock",
+            supported_family: None,
+            load_succeeds: true,
+            memory_load_succeeds: true,
+            supports_memory_load: false,
+            streaming_load_succeeds: true,
+            supports_streaming_load: false,
+            supports_remote: false,
+            openai_tool_selection: false,
+            prompt_cache_support: PromptCacheSupport::Unsupported,
+            unload_succeeds: false,
+            cleanup_succeeds: true,
+            emit_thinking: false,
+            emit_tool_calls: false,
+            terminal_payload: false,
+            systemone_supported: true,
+            effective_prompt: None,
+            loaded_speculative_artifacts: Vec::new(),
+            last_chat_request: Arc::new(Mutex::new(None)),
+            last_completion_request: Arc::new(Mutex::new(None)),
+            load_count: Arc::new(AtomicU32::new(0)),
+            memory_load_count: Arc::new(AtomicU32::new(0)),
+            streaming_load_count: Arc::new(AtomicU32::new(0)),
+            cleanup_count: Arc::new(AtomicU32::new(0)),
+        }
+    }
+
+    /// Create a mock backend where `cleanup_request()` returns an error.
+    pub fn cleanup_fails() -> Self {
+        Self {
+            backend_name: "mock",
+            supported_family: None,
+            load_succeeds: true,
+            memory_load_succeeds: true,
+            supports_memory_load: false,
+            streaming_load_succeeds: true,
+            supports_streaming_load: false,
+            supports_remote: false,
+            openai_tool_selection: false,
+            prompt_cache_support: PromptCacheSupport::Unsupported,
+            unload_succeeds: true,
+            cleanup_succeeds: false,
+            emit_thinking: false,
+            emit_tool_calls: false,
+            terminal_payload: false,
+            systemone_supported: true,
+            effective_prompt: None,
+            loaded_speculative_artifacts: Vec::new(),
+            last_chat_request: Arc::new(Mutex::new(None)),
+            last_completion_request: Arc::new(Mutex::new(None)),
+            load_count: Arc::new(AtomicU32::new(0)),
+            memory_load_count: Arc::new(AtomicU32::new(0)),
+            streaming_load_count: Arc::new(AtomicU32::new(0)),
+            cleanup_count: Arc::new(AtomicU32::new(0)),
+        }
+    }
+
+    /// Create a mock backend that emits thinking content in chat responses.
+    pub fn with_thinking() -> Self {
+        Self {
+            backend_name: "mock",
+            supported_family: None,
+            load_succeeds: true,
+            memory_load_succeeds: true,
+            supports_memory_load: false,
+            streaming_load_succeeds: true,
+            supports_streaming_load: false,
+            supports_remote: false,
+            openai_tool_selection: false,
+            prompt_cache_support: PromptCacheSupport::Unsupported,
+            unload_succeeds: true,
+            cleanup_succeeds: true,
+            emit_thinking: true,
+            emit_tool_calls: false,
+            terminal_payload: false,
+            systemone_supported: true,
+            effective_prompt: None,
+            loaded_speculative_artifacts: Vec::new(),
+            last_chat_request: Arc::new(Mutex::new(None)),
+            last_completion_request: Arc::new(Mutex::new(None)),
+            load_count: Arc::new(AtomicU32::new(0)),
+            memory_load_count: Arc::new(AtomicU32::new(0)),
+            streaming_load_count: Arc::new(AtomicU32::new(0)),
+            cleanup_count: Arc::new(AtomicU32::new(0)),
+        }
+    }
+
+    /// Create a mock backend that emits a chat tool-call response.
+    pub fn with_tool_calls() -> Self {
+        let mut mock = Self::success();
+        mock.emit_tool_calls = true;
+        mock
+    }
+
+    /// Disable System One scoring support on this mock.
+    pub fn without_systemone(mut self) -> Self {
+        self.systemone_supported = false;
+        self
+    }
+
+    /// Add an effective prompt digest claim to this mock backend.
+    pub fn with_effective_prompt(mut self, digest: EffectivePromptDigest) -> Self {
+        self.effective_prompt = Some(digest);
+        self
+    }
+
+    /// Add a verified speculative artifact to proof-interface tests.
+    pub fn with_loaded_speculative_artifact(
+        mut self,
+        artifact: crate::backend::LoadedSpeculativeArtifact,
+    ) -> Self {
+        self.loaded_speculative_artifacts.push(artifact);
+        self
+    }
+
+    /// Allow tests to exercise encrypted in-memory model loading.
+    pub fn with_memory_load(mut self) -> Self {
+        self.supports_memory_load = true;
+        self.memory_load_succeeds = true;
+        self
+    }
+
+    /// Allow tests to exercise encrypted streaming-decrypt model loading.
+    pub fn with_streaming_load(mut self) -> Self {
+        self.supports_streaming_load = true;
+        self.streaming_load_succeeds = true;
+        self
+    }
+
+    /// Allow tests to exercise remote/proxy-shaped request handling.
+    pub fn with_remote_support(mut self) -> Self {
+        self.supports_remote = true;
+        self
+    }
+
+    /// Advertise exact prompt-prefix matching for public API contract tests.
+    pub fn with_prompt_cache_support(mut self) -> Self {
+        self.prompt_cache_support = PromptCacheSupport::PrefixMatch;
+        self
+    }
+
+    /// Create a mock backend whose generated token is carried by the terminal chunk.
+    pub fn with_terminal_payload() -> Self {
+        let mut mock = Self::success();
+        mock.terminal_payload = true;
+        mock
+    }
+
+    /// Override the mock's stable backend name.
+    pub fn with_name(mut self, name: &'static str) -> Self {
+        self.backend_name = name;
+        self
+    }
+
+    /// Restrict the mock to one manifest family.
+    pub fn with_family(mut self, family: impl Into<String>) -> Self {
+        self.supported_family = Some(family.into());
+        self
+    }
+
+    /// Share a handle that captures the most recent chat request.
+    pub fn chat_request_capture(&self) -> Arc<Mutex<Option<ChatRequest>>> {
+        self.last_chat_request.clone()
+    }
+
+    /// Share a handle that captures the most recent completion request.
+    pub fn completion_request_capture(&self) -> Arc<Mutex<Option<CompletionRequest>>> {
+        self.last_completion_request.clone()
+    }
+}
+
+#[async_trait]
+impl Backend for MockBackend {
+    fn supports_openai_tool_selection(&self) -> bool {
+        self.openai_tool_selection
+    }
+
+    fn name(&self) -> &str {
+        self.backend_name
+    }
+
+    fn supports(&self, format: &ModelFormat) -> bool {
+        matches!(format, ModelFormat::Gguf)
+            || (self.supports_remote && matches!(format, ModelFormat::Remote))
+    }
+
+    fn supports_manifest(&self, manifest: &ModelManifest) -> bool {
+        self.supports(&manifest.format)
+            && match self.supported_family.as_deref() {
+                Some(family) => manifest.family.as_deref() == Some(family),
+                None => true,
+            }
+    }
+
+    fn supports_systemone(&self) -> bool {
+        self.systemone_supported
+    }
+
+    fn prompt_cache_support(&self) -> PromptCacheSupport {
+        self.prompt_cache_support
+    }
+
+    async fn loaded_speculative_artifacts(&self) -> Vec<crate::backend::LoadedSpeculativeArtifact> {
+        self.loaded_speculative_artifacts.clone()
+    }
+
+    async fn load(&self, _manifest: &ModelManifest) -> Result<()> {
+        self.load_count.fetch_add(1, Ordering::Relaxed);
+        if self.load_succeeds {
+            Ok(())
+        } else {
+            Err(PowerError::InferenceFailed("mock load failure".to_string()))
+        }
+    }
+
+    fn supports_memory_load(&self, format: &ModelFormat) -> bool {
+        self.supports_memory_load && self.supports(format)
+    }
+
+    async fn load_from_memory(
+        &self,
+        _manifest: &ModelManifest,
+        plaintext: crate::tee::encrypted_model::MemoryDecryptedModel,
+    ) -> Result<()> {
+        self.memory_load_count.fetch_add(1, Ordering::Relaxed);
+        drop(plaintext);
+        if self.memory_load_succeeds {
+            Ok(())
+        } else {
+            Err(PowerError::InferenceFailed(
+                "mock memory load failure".to_string(),
+            ))
+        }
+    }
+
+    fn supports_streaming_decrypt_load(&self, format: &ModelFormat) -> bool {
+        self.supports_streaming_load && self.supports(format)
+    }
+
+    async fn load_from_streaming_decrypt(
+        &self,
+        _manifest: &ModelManifest,
+        plaintext: crate::tee::encrypted_model::LayerStreamingDecryptedModel,
+    ) -> Result<()> {
+        self.streaming_load_count.fetch_add(1, Ordering::Relaxed);
+        drop(plaintext);
+        if self.streaming_load_succeeds {
+            Ok(())
+        } else {
+            Err(PowerError::InferenceFailed(
+                "mock streaming decrypt load failure".to_string(),
+            ))
+        }
+    }
+
+    async fn unload(&self, _model_name: &str) -> Result<()> {
+        if self.unload_succeeds {
+            Ok(())
+        } else {
+            Err(PowerError::InferenceFailed(
+                "mock unload failure".to_string(),
+            ))
+        }
+    }
+
+    async fn chat(
+        &self,
+        _model_name: &str,
+        request: ChatRequest,
+    ) -> Result<Pin<Box<dyn Stream<Item = Result<ChatResponseChunk>> + Send>>> {
+        *self
+            .last_chat_request
+            .lock()
+            .expect("chat request lock poisoned") = Some(request);
+
+        let chunks = if self.emit_thinking {
+            vec![
+                Ok(ChatResponseChunk {
+                    content: "".to_string(),
+                    thinking_content: Some("Let me think about this.".to_string()),
+                    done: false,
+                    prompt_tokens: None,
+                    done_reason: None,
+                    prompt_eval_duration_ns: None,
+                    tool_calls: None,
+                    upstream_timings: None,
+                }),
+                Ok(ChatResponseChunk {
+                    content: "The answer is 42.".to_string(),
+                    thinking_content: None,
+                    done: false,
+                    prompt_tokens: None,
+                    done_reason: None,
+                    prompt_eval_duration_ns: None,
+                    tool_calls: None,
+                    upstream_timings: None,
+                }),
+                Ok(ChatResponseChunk {
+                    content: "".to_string(),
+                    thinking_content: None,
+                    done: true,
+                    prompt_tokens: Some(5),
+                    done_reason: Some("stop".to_string()),
+                    prompt_eval_duration_ns: Some(1_000_000),
+                    tool_calls: None,
+                    upstream_timings: None,
+                }),
+            ]
+        } else if self.emit_tool_calls {
+            vec![
+                Ok(ChatResponseChunk {
+                    content: String::new(),
+                    thinking_content: None,
+                    done: false,
+                    prompt_tokens: None,
+                    done_reason: None,
+                    prompt_eval_duration_ns: None,
+                    tool_calls: Some(vec![ToolCall {
+                        id: "call_1".to_string(),
+                        tool_type: "function".to_string(),
+                        function: FunctionCall {
+                            name: "get_weather".to_string(),
+                            arguments: "{\"city\":\"Paris\"}".to_string(),
+                        },
+                        index: Some(0),
+                    }]),
+                    upstream_timings: None,
+                }),
+                Ok(ChatResponseChunk {
+                    content: String::new(),
+                    thinking_content: None,
+                    done: true,
+                    prompt_tokens: Some(5),
+                    done_reason: Some("tool_calls".to_string()),
+                    prompt_eval_duration_ns: Some(1_000_000),
+                    tool_calls: None,
+                    upstream_timings: None,
+                }),
+            ]
+        } else if self.terminal_payload {
+            vec![Ok(ChatResponseChunk {
+                content: "Hello".to_string(),
+                thinking_content: None,
+                done: true,
+                prompt_tokens: Some(5),
+                done_reason: Some("length".to_string()),
+                prompt_eval_duration_ns: Some(1_000_000),
+                tool_calls: None,
+                upstream_timings: None,
+            })]
+        } else {
+            vec![
+                Ok(ChatResponseChunk {
+                    content: "Hello".to_string(),
+                    thinking_content: None,
+                    done: false,
+                    prompt_tokens: None,
+                    done_reason: None,
+                    prompt_eval_duration_ns: None,
+                    tool_calls: None,
+                    upstream_timings: None,
+                }),
+                Ok(ChatResponseChunk {
+                    content: "".to_string(),
+                    thinking_content: None,
+                    done: true,
+                    prompt_tokens: Some(5),
+                    done_reason: Some("stop".to_string()),
+                    prompt_eval_duration_ns: Some(1_000_000),
+                    tool_calls: None,
+                    upstream_timings: None,
+                }),
+            ]
+        };
+        Ok(Box::pin(futures::stream::iter(chunks)))
+    }
+
+    async fn effective_chat_prompt_digest(
+        &self,
+        _model_name: &str,
+        _request: &ChatRequest,
+    ) -> Result<Option<EffectivePromptDigest>> {
+        Ok(self.effective_prompt.clone())
+    }
+
+    async fn complete(
+        &self,
+        _model_name: &str,
+        request: CompletionRequest,
+    ) -> Result<Pin<Box<dyn Stream<Item = Result<CompletionResponseChunk>> + Send>>> {
+        *self
+            .last_completion_request
+            .lock()
+            .expect("completion request lock poisoned") = Some(request);
+
+        let chunks = if self.terminal_payload {
+            vec![Ok(CompletionResponseChunk {
+                text: "World".to_string(),
+                done: true,
+                prompt_tokens: Some(5),
+                done_reason: Some("length".to_string()),
+                prompt_eval_duration_ns: Some(1_000_000),
+                token_id: Some(42),
+            })]
+        } else {
+            vec![
+                Ok(CompletionResponseChunk {
+                    text: "World".to_string(),
+                    done: false,
+                    prompt_tokens: None,
+                    done_reason: None,
+                    prompt_eval_duration_ns: None,
+                    token_id: Some(42),
+                }),
+                Ok(CompletionResponseChunk {
+                    text: "".to_string(),
+                    done: true,
+                    prompt_tokens: Some(5),
+                    done_reason: Some("stop".to_string()),
+                    prompt_eval_duration_ns: Some(1_000_000),
+                    token_id: None,
+                }),
+            ]
+        };
+        Ok(Box::pin(futures::stream::iter(chunks)))
+    }
+
+    async fn effective_completion_prompt_digest(
+        &self,
+        _model_name: &str,
+        _request: &CompletionRequest,
+    ) -> Result<Option<EffectivePromptDigest>> {
+        Ok(self.effective_prompt.clone())
+    }
+
+    async fn embed(
+        &self,
+        _model_name: &str,
+        request: EmbeddingRequest,
+    ) -> Result<EmbeddingResponse> {
+        let embeddings = request.input.iter().map(|_| vec![0.1, 0.2, 0.3]).collect();
+        Ok(EmbeddingResponse { embeddings })
+    }
+
+    async fn systemone(
+        &self,
+        model_name: &str,
+        request: SystemOneRequest,
+    ) -> Result<SystemOneResponse> {
+        if !self.systemone_supported {
+            return Err(PowerError::BackendNotAvailable(format!(
+                "backend '{}' does not support System One decision scoring (model: '{model_name}')",
+                self.name()
+            )));
+        }
+
+        let mut answers = BTreeMap::new();
+        for (name, question) in request.questions {
+            let answer = match question {
+                SystemOneQuestionSpec::Choice { criteria, .. } => {
+                    let mut probabilities = BTreeMap::new();
+                    let mut first_key = None;
+                    let n = criteria.len().max(1) as f64;
+                    for (i, key) in criteria.keys().enumerate() {
+                        let p = if i == 0 {
+                            0.7
+                        } else {
+                            0.3 / (n - 1.0).max(1.0)
+                        };
+                        if i == 0 {
+                            first_key = Some(key.clone());
+                        }
+                        probabilities.insert(key.clone(), p);
+                    }
+                    // Normalize in case of floating drift.
+                    let sum: f64 = probabilities.values().sum();
+                    if sum > 0.0 {
+                        for v in probabilities.values_mut() {
+                            *v /= sum;
+                        }
+                    }
+                    SystemOneAnswerSpec::Choice {
+                        choice: first_key.unwrap_or_default(),
+                        confidence: 0.7,
+                        probabilities,
+                    }
+                }
+                SystemOneQuestionSpec::Noul { .. } => SystemOneAnswerSpec::Noul { noul: 0.65 },
+                SystemOneQuestionSpec::Score { criteria, .. } => {
+                    let mut probabilities = BTreeMap::new();
+                    let mut legend = BTreeMap::new();
+                    let n = criteria.len().max(1) as f64;
+                    for (i, level) in criteria.iter().enumerate() {
+                        let key = i.to_string();
+                        legend.insert(key.clone(), level.clone());
+                        probabilities.insert(
+                            key,
+                            if i == 0 {
+                                0.6
+                            } else {
+                                0.4 / (n - 1.0).max(1.0)
+                            },
+                        );
+                    }
+                    let sum: f64 = probabilities.values().sum();
+                    if sum > 0.0 {
+                        for v in probabilities.values_mut() {
+                            *v /= sum;
+                        }
+                    }
+                    SystemOneAnswerSpec::Score {
+                        score: 0.0,
+                        confidence: 0.55,
+                        legend,
+                        probabilities,
+                    }
+                }
+            };
+            answers.insert(name, answer);
+        }
+
+        Ok(SystemOneResponse {
+            answers,
+            input_tokens: (request.state.split_whitespace().count() as u32).max(1),
+        })
+    }
+
+    async fn cleanup_request(&self, _model_name: &str, _ctx: &RequestContext) -> Result<()> {
+        self.cleanup_count.fetch_add(1, Ordering::Relaxed);
+        if self.cleanup_succeeds {
+            Ok(())
+        } else {
+            Err(PowerError::InferenceFailed(
+                "mock cleanup failure".to_string(),
+            ))
+        }
+    }
+}
+
+/// Create an `AppState` backed by the given mock backend and an empty registry.
+pub fn test_state_with_mock(mock: MockBackend) -> AppState {
+    let mut backends = BackendRegistry::new();
+    backends.register(Arc::new(mock));
+    AppState::new(
+        Arc::new(ModelRegistry::new()),
+        Arc::new(backends),
+        Arc::new(PowerConfig::default()),
+    )
+}
+
+/// Create a sample `ModelManifest` for testing.
+pub fn sample_manifest(name: &str) -> ModelManifest {
+    ModelManifest {
+        name: name.to_string(),
+        format: ModelFormat::Gguf,
+        size: 1_000_000,
+        sha256: format!("sha256-{name}"),
+        parameters: Some(ModelParameters {
+            context_length: Some(4096),
+            embedding_length: Some(3200),
+            parameter_count: Some(3_000_000_000),
+            quantization: Some("Q4_K_M".to_string()),
+        }),
+        created_at: chrono::Utc::now(),
+        path: std::path::PathBuf::from(format!("/tmp/blobs/sha256-{name}")),
+        system_prompt: None,
+        template_override: None,
+        default_parameters: None,
+        modelfile_content: None,
+        license: None,
+        adapter_path: None,
+        adapter_artifact: None,
+        external_draft: None,
+        projector_path: None,
+        projector_artifact: None,
+        messages: vec![],
+        family: None,
+        families: None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_mock_backend_success() {
+        let mock = MockBackend::success();
+        let manifest = sample_manifest("test");
+        assert!(mock.load(&manifest).await.is_ok());
+        assert!(mock.supports(&ModelFormat::Gguf));
+        assert!(!mock.supports(&ModelFormat::SafeTensors));
+        assert_eq!(mock.name(), "mock");
+    }
+
+    #[tokio::test]
+    async fn test_mock_backend_load_failure() {
+        let mock = MockBackend::load_fails();
+        let manifest = sample_manifest("test");
+        let result = mock.load(&manifest).await;
+        assert!(result.is_err());
+        assert!(result
+            .unwrap_err()
+            .to_string()
+            .contains("mock load failure"));
+    }
+
+    #[tokio::test]
+    async fn test_mock_backend_stream_output() {
+        use futures::StreamExt;
+
+        let mock = MockBackend::success();
+        let request = ChatRequest {
+            messages: vec![],
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            stop: None,
+            stream: false,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            num_ctx: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            response_format: None,
+            stream_options: None,
+            tools: None,
+            tool_choice: None,
+            parallel_tool_calls: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_batch: None,
+            num_thread: None,
+            num_thread_batch: None,
+            flash_attention: None,
+            num_gpu: None,
+            main_gpu: None,
+            use_mmap: None,
+            use_mlock: None,
+            num_parallel: None,
+            images: None,
+            session_id: None,
+        };
+        let mut stream = mock.chat("test", request).await.unwrap();
+        let first = stream.next().await.unwrap().unwrap();
+        assert_eq!(first.content, "Hello");
+        assert!(!first.done);
+        let second = stream.next().await.unwrap().unwrap();
+        assert!(second.done);
+    }
+
+    #[tokio::test]
+    async fn test_mock_backend_with_thinking() {
+        use futures::StreamExt;
+
+        let mock = MockBackend::with_thinking();
+        let request = ChatRequest {
+            messages: vec![],
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            stop: None,
+            stream: false,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            num_ctx: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            response_format: None,
+            stream_options: None,
+            tools: None,
+            tool_choice: None,
+            parallel_tool_calls: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_batch: None,
+            num_thread: None,
+            num_thread_batch: None,
+            flash_attention: None,
+            num_gpu: None,
+            main_gpu: None,
+            use_mmap: None,
+            use_mlock: None,
+            num_parallel: None,
+            images: None,
+            session_id: None,
+        };
+        let mut stream = mock.chat("test", request).await.unwrap();
+
+        let first = stream.next().await.unwrap().unwrap();
+        assert_eq!(first.content, "");
+        assert_eq!(
+            first.thinking_content.as_deref(),
+            Some("Let me think about this.")
+        );
+        assert!(!first.done);
+
+        let second = stream.next().await.unwrap().unwrap();
+        assert_eq!(second.content, "The answer is 42.");
+        assert!(second.thinking_content.is_none());
+        assert!(!second.done);
+
+        let third = stream.next().await.unwrap().unwrap();
+        assert!(third.done);
+        assert_eq!(third.done_reason.as_deref(), Some("stop"));
+    }
+}

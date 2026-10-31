@@ -240,12 +240,12 @@ async fn late_input_scenario(route: &str, file_store: bool) {
         inbox.submit(retry, 1).await.unwrap().state,
         RunControlReceiptState::Applied
     );
-    let original = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+    let original = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
         workspace.path(),
         "late-input-matrix",
     ))
     .unwrap();
-    let facts = a3s_effect::LogStore::read(&original, "late-input-matrix").unwrap();
+    let facts = aster_effect::LogStore::read(&original, "late-input-matrix").unwrap();
     let retained = facts
         .iter()
         .position(|fact| fact.kind == "user.message" && fact.payload["text"] == input)

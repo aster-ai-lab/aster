@@ -461,7 +461,7 @@ fn configured_http_connector(connect_timeout: Duration) -> HttpConnector {
 
 fn build_clients(connect_timeout: Duration) -> std::result::Result<Box<[ProxyClient]>, String> {
     let connector = HttpsConnectorBuilder::new()
-        .with_provider_and_webpki_roots(Arc::new(rustls::crypto::ring::default_provider()))
+        .with_provider_and_webpki_roots(rustls::crypto::ring::default_provider())
         .map_err(|error| error.to_string())?
         .https_or_http()
         .enable_http1()

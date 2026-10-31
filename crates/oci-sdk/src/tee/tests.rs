@@ -82,7 +82,7 @@ fn attestation_response_is_exactly_request_bound() {
         TeeSha256Digest::new(format!("sha256:{}", "2".repeat(64))).unwrap(),
         DriverKind::LibkrunKvm,
         RuntimeArtifact::new(
-            "a3s-oci-runtime",
+            "aster-oci-runtime",
             "0.3.1",
             format!("sha256:{}", "3".repeat(64)),
             None,

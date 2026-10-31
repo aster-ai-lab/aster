@@ -102,7 +102,7 @@ async fn presentation_html_and_svg_render_semantics_and_validated_images() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("deck.pptx");
     let mut editor = NativeOfficeEditor::create(&path).await.unwrap();
-    let slide = editor.add_slide("/", "A3S <Native>").unwrap();
+    let slide = editor.add_slide("/", "Aster <Native>").unwrap();
     editor.add_shape(&slide, "Body & details").unwrap();
     editor
         .add_image(
@@ -122,8 +122,8 @@ async fn presentation_html_and_svg_render_semantics_and_validated_images() {
     assert_eq!(svg.media_type, "image/svg+xml");
     assert!(html.content.contains("data:image/png;base64,"));
     assert!(svg.content.contains("data:image/png;base64,"));
-    assert!(html.content.contains("A3S &lt;Native&gt;"));
-    assert!(svg.content.contains("A3S &lt;Native&gt;"));
+    assert!(html.content.contains("Aster &lt;Native&gt;"));
+    assert!(svg.content.contains("Aster &lt;Native&gt;"));
     assert!(svg.content.contains("data-path=\"/slide[1]\""));
     assert!(svg.content.starts_with("<?xml version=\"1.0\""));
     assert!(!html.content.contains("<script"));

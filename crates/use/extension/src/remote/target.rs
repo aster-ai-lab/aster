@@ -1,4 +1,4 @@
-use a3s_use_core::{PluginCatalogRecord, UseError, UseResult};
+use aster_use_core::{PluginCatalogRecord, UseError, UseResult};
 use semver::Version;
 use tough::{Repository, TargetName};
 
@@ -49,7 +49,7 @@ pub(super) fn decode_registry_target_metadata(
         UseError::new(
             "use.extension.registry_target_invalid",
             format!(
-                "Failed to decode A3S catalog metadata for TUF target '{}': {error}",
+                "Failed to decode Aster catalog metadata for TUF target '{}': {error}",
                 target_name.raw()
             ),
         )

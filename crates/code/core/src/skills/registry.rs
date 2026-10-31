@@ -47,7 +47,7 @@ pub struct SkillRegistry {
     origins: Arc<RwLock<HashMap<String, PathBuf>>>,
     /// Directories this registry watches for changes, with the modification
     /// stamp last seen. A directory that did not exist at load time is still
-    /// watched: `a3s code skills add` creates it later.
+    /// watched: `aster code skills add` creates it later.
     watched: Arc<std::sync::Mutex<Vec<WatchedDir>>>,
     discovered_files: Arc<RwLock<DiscoveredSkillFiles>>,
     excluded_files: Arc<RwLock<HashSet<PathBuf>>>,
@@ -463,7 +463,7 @@ impl SkillRegistry {
     /// Re-scan watched directories whose modification stamp changed and drop
     /// skills that disappeared from them. Returns how many directories were
     /// reloaded. This is what makes the skills directory live for a running
-    /// session: `a3s code skills add` (or any file change) shows up on the
+    /// session: `aster code skills add` (or any file change) shows up on the
     /// next context query without rebuilding the session.
     pub fn refresh_watched_dirs(&self) -> usize {
         let watched = self

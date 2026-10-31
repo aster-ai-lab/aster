@@ -1,19 +1,19 @@
 # Durable Memory Semantic Refresh
 
 `DM-REFRESH1` qualifies the explicit lifecycle boundary between the authoritative
-A3S Memory repository and a caller-owned semantic vector index. `DM-CAS1` adds
+Aster Memory repository and a caller-owned semantic vector index. `DM-CAS1` adds
 revision-conditional publication for independently constructed runtimes sharing
 one capable index. `DM-SCHED1` adds an opt-in Code-owned periodic lifecycle for
 that same verified operation. `DM-SKIP1` lets that owned schedule suppress
 redundant embedding and publication only after proving the source and index are
-unchanged. `DM-TOKEN1` uses A3S Memory's optional exact namespace token to
+unchanged. `DM-TOKEN1` uses Aster Memory's optional exact namespace token to
 remove redundant source snapshots from that proof. `DM-REUSE1` lets a required
 rebuild reuse exact embeddings already committed and verified in the current
 ownership epoch. `DM-OBS1` exposes the bounded work performed by every
 scheduled attempt. `DM-RECOVER1` lets a host persist secret-free recovery
 evidence without trusting a token from another repository history.
 `DM-SQLITE1` proves that the same recovery contract survives a real close and
-reopen of A3S Memory's local SQLite vector backend. `DM-QUAL1` adds a retained
+reopen of Aster Memory's local SQLite vector backend. `DM-QUAL1` adds a retained
 release profile over 10,000 durable source nodes and 384-dimensional SQLite
 vectors. None of these gates adds a distributed lease or moves embedding policy
 into the repository.
@@ -170,7 +170,7 @@ inside one repository history, so persisting it could let unrelated repositories
 with the same local sequence collide. Recovery instead always reads and verifies
 one complete bounded Active snapshot. It then compares the source and semantic
 generation with the checkpoint and sandwiches the current full index status
-with the index revision and A3S Memory's exact vector-index history token.
+with the index revision and Aster Memory's exact vector-index history token.
 
 When every value matches, the first recovered run is verified unchanged: it
 performs one snapshot read but no provider-adapter invocation or vector
@@ -183,7 +183,7 @@ attempt retains the checkpoint only as unverified recovery evidence for retry.
 
 The built-in in-memory index preserves its history token across clones of the
 same live object. Constructing a new index creates a new history and therefore
-rebuilds. With Code's `durable-memory-sqlite` feature, A3S Memory's
+rebuilds. With Code's `durable-memory-sqlite` feature, Aster Memory's
 `SqliteVectorIndex` persists the token, descriptor, revision, and content in one
 local database; the deterministic gate closes the first handle, reopens the
 database, and proves unchanged recovery without provider or publication work.
@@ -234,7 +234,7 @@ reporting remains the evidence for that bounded-abort path.
 ## Local release qualification
 
 `durable_memory_semantic_refresh_benchmark` is the `DM-QUAL1` operational gate.
-It constructs 10,000 Active nodes in A3S Memory's synchronized
+It constructs 10,000 Active nodes in Aster Memory's synchronized
 `FileMemoryRepository`, refreshes a 384-dimensional `SqliteVectorIndex` through
 the real owned schedule, persists and synchronizes a checkpoint, closes every
 repository/index/runtime owner, and reopens both durable backends. Its exact
@@ -267,7 +267,7 @@ the JSON output as one of its fail-closed release artifacts.
 
 ## Ownership
 
-A3S Memory owns complete bounded snapshot construction and identity, the
+Aster Memory owns complete bounded snapshot construction and identity, the
 optional namespace token's same-repository-history linearization contract, and
 the optional vector token's exact index-history contract. Code owns embedding
 execution, single-live-generation serialization, atomic publication,
@@ -285,7 +285,7 @@ receipt promotion. The host still owns:
 
 The refresh lock is shared by clones of one `DurableMemorySemanticRecall`; it is
 not a remote lease. Revision CAS separately orders independently constructed
-runtimes only when they share a backend that truthfully implements the A3S
+runtimes only when they share a backend that truthfully implements the Aster
 Memory CAS contract and every semantic writer uses conditional mutation. It
 does not prove remote durability, lease retention, or backend failover. Every
 semantic query continues to re-read the current repository node and verify
@@ -297,18 +297,18 @@ reduce recall but cannot authorize stale memory.
 Run from the Code crate workspace:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_semantic_refresh
-cargo test -p a3s-code-core --test durable_memory_semantic_refresh_cas
-cargo test -p a3s-code-core --test durable_memory_semantic_refresh_failure
-cargo test -p a3s-code-core --test memory_semantic_refresh_schedule
-cargo test -p a3s-code-core --test memory_semantic_refresh_change_detection
-cargo test -p a3s-code-core --test memory_semantic_refresh_change_token
-cargo test -p a3s-code-core --test memory_semantic_refresh_checkpoint
-cargo test -p a3s-code-core --test memory_semantic_index_observation
-cargo test -p a3s-code-core --features durable-memory-sqlite --test memory_semantic_refresh_sqlite
-cargo test -p a3s-code-core --test memory_semantic_refresh_metrics
-cargo test -p a3s-code-core --test memory_maintenance_close
-cargo run --locked --release -p a3s-code-core --features durable-memory-sqlite --example durable_memory_semantic_refresh_benchmark
+cargo test -p aster-core --test durable_memory_semantic_refresh
+cargo test -p aster-core --test durable_memory_semantic_refresh_cas
+cargo test -p aster-core --test durable_memory_semantic_refresh_failure
+cargo test -p aster-core --test memory_semantic_refresh_schedule
+cargo test -p aster-core --test memory_semantic_refresh_change_detection
+cargo test -p aster-core --test memory_semantic_refresh_change_token
+cargo test -p aster-core --test memory_semantic_refresh_checkpoint
+cargo test -p aster-core --test memory_semantic_index_observation
+cargo test -p aster-core --features durable-memory-sqlite --test memory_semantic_refresh_sqlite
+cargo test -p aster-core --test memory_semantic_refresh_metrics
+cargo test -p aster-core --test memory_maintenance_close
+cargo run --locked --release -p aster-core --features durable-memory-sqlite --example durable_memory_semantic_refresh_benchmark
 ```
 
 The contracts cover complete Active-only publication, Candidate exclusion,
@@ -331,7 +331,7 @@ exact committed-vector reuse across index drift, partial source change and
 Active removal, rejection of prepared vectors after a lost CAS race, cache
 release on owner close, exact settled successful/unchanged/failed work
 accounting, provider-boundary retry accounting, bounded redacted retention,
-ownership-epoch reset, and bounded abort for a non-cooperative job. A3S
+ownership-epoch reset, and bounded abort for a non-cooperative job. Aster
 Memory's contracts
 separately cover deterministic
 snapshot identity, byte and node overflow, restart-stable digests, exactly one

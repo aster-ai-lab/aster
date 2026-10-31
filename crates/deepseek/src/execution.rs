@@ -23,7 +23,7 @@ use crate::{
         CheckpointWeights,
     },
 };
-use a3s_power::{
+use aster_power::{
     error::{PowerError, Result},
     inference::{CudaPeerCopyReceipt, CudaPeerGroup, InferenceLimits, RuntimeDevice},
 };

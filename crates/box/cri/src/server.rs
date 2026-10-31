@@ -13,7 +13,7 @@ use tokio::net::{UnixListener, UnixStream};
 use tokio_stream::wrappers::UnixListenerStream;
 use tonic::transport::Server;
 
-use a3s_box_runtime::oci::{ImageStore, RegistryAuth};
+use aster_box_runtime::oci::{ImageStore, RegistryAuth};
 
 use crate::cri_api::image_service_server::ImageServiceServer;
 use crate::cri_api::runtime_service_server::RuntimeServiceServer;
@@ -46,7 +46,7 @@ const SOCKET_PROBE_TIMEOUT: Duration = Duration::from_millis(250);
 ///
 /// Unix sockets survive an ungraceful process exit as filesystem entries, so a
 /// stale entry is normal.  The old implementation unconditionally removed the
-/// pathname, which made a second `a3s-box-cri` silently take over a live
+/// pathname, which made a second `aster-box-cri` silently take over a live
 /// server's endpoint.  Probe a socket first and fail closed when it is live,
 /// unresponsive, or has been replaced while we were probing.  Never remove a
 /// regular file or symlink at the configured path.

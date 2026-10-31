@@ -41,11 +41,11 @@ pub(super) fn opts() -> crate::SessionOptions {
     )
 }
 
-pub(super) fn facts(root: &std::path::Path) -> Vec<a3s_effect::Fact> {
+pub(super) fn facts(root: &std::path::Path) -> Vec<aster_effect::Fact> {
     crate::fact_control::read_workspace_facts(root, "goal-run").unwrap()
 }
 
-pub(super) fn seq_of(facts: &[a3s_effect::Fact], kind: &str) -> u64 {
+pub(super) fn seq_of(facts: &[aster_effect::Fact], kind: &str) -> u64 {
     facts.iter().find(|fact| fact.kind == kind).unwrap().seq
 }
 
@@ -100,17 +100,17 @@ async fn the_original_owner_closes_a_completed_slice_and_a_forged_closeout_refus
     assert_eq!(executed, 1);
     let all = facts(root.path());
     let settled = all.last().unwrap();
-    assert_eq!(settled.kind, "a3s.goal.slice.settled");
+    assert_eq!(settled.kind, "aster.goal.slice.settled");
     let body = &settled.payload["body"];
     assert_eq!(body["outcome"], "completed");
     assert_eq!(
         body["run_sequence"],
-        seq_of(&all, "a3s.goal.slice.admitted")
+        seq_of(&all, "aster.goal.slice.admitted")
     );
     assert_eq!(body["completion_sequence"], seq_of(&all, "turn.complete"));
     assert_eq!(
         body["step_sequence"],
-        seq_of(&all, "a3s.goal.step.accepted")
+        seq_of(&all, "aster.goal.step.accepted")
     );
     assert_eq!(body["usage"]["total_tokens"], result.usage.total_tokens);
     assert!(!crate::goal_control::slice_unsettled(&all));
@@ -119,7 +119,7 @@ async fn the_original_owner_closes_a_completed_slice_and_a_forged_closeout_refus
     let goal = session.goal_definition().unwrap().unwrap();
     assert_eq!(
         goal.goal_sequence,
-        seq_of(&all, "a3s.goal.step.accepted"),
+        seq_of(&all, "aster.goal.step.accepted"),
         "a closeout changes no goal state"
     );
     assert_eq!(session.reconcile_goal_slices().unwrap(), 0);
@@ -130,7 +130,7 @@ async fn the_original_owner_closes_a_completed_slice_and_a_forged_closeout_refus
     );
     assert_eq!(facts(root.path()), all);
     let workspace = goal.binding.workspace.clone();
-    let fold = |facts: &[a3s_effect::Fact]| {
+    let fold = |facts: &[aster_effect::Fact]| {
         crate::goal_control::definition_from_facts(facts, "goal-run", &workspace, None)
     };
     assert!(fold(&all).is_ok());
@@ -168,15 +168,15 @@ async fn a_stopped_owner_at_each_barrier_reconciles_without_replay_or_new_usage(
     let probe = tempfile::tempdir().unwrap();
     complete_slice(probe.path()).await;
     let reference = facts(probe.path());
-    let first = seq_of(&reference, "a3s.goal.slice.admitted");
-    let accepted = seq_of(&reference, "a3s.goal.step.accepted");
+    let first = seq_of(&reference, "aster.goal.slice.admitted");
+    let accepted = seq_of(&reference, "aster.goal.step.accepted");
     let completion = seq_of(&reference, "turn.complete");
     assert_eq!(reference.last().unwrap().seq, accepted + 1);
     for stop in first..=accepted {
         let root = tempfile::tempdir().unwrap();
         let (_, executed) = complete_slice(root.path()).await;
         assert_eq!(executed, 1);
-        let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+        let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
             root.path(),
             "goal-run",
         ))
@@ -214,7 +214,7 @@ async fn a_stopped_owner_at_each_barrier_reconciles_without_replay_or_new_usage(
             assert_eq!(&after[..before.len()], before.as_slice());
             assert_eq!(after.len(), before.len() + 1);
             let body = &after.last().unwrap().payload["body"];
-            assert_eq!(after.last().unwrap().kind, "a3s.goal.slice.settled");
+            assert_eq!(after.last().unwrap().kind, "aster.goal.slice.settled");
             assert_eq!(body["outcome"], "interrupted");
             assert!(body["usage"].is_null(), "usage stays unknown");
             assert_eq!(body["run_sequence"], first);
@@ -237,7 +237,7 @@ async fn a_stopped_owner_at_each_barrier_reconciles_without_replay_or_new_usage(
             assert_eq!(
                 after
                     .iter()
-                    .filter(|fact| fact.kind == "a3s.goal.step.accepted")
+                    .filter(|fact| fact.kind == "aster.goal.step.accepted")
                     .count(),
                 usize::from(stop >= accepted),
                 "acceptance is neither repeated nor invented"
@@ -273,7 +273,7 @@ async fn a_stopped_owner_at_each_barrier_reconciles_without_replay_or_new_usage(
         unknown.contains(&"tool.prepared".to_string()),
         "{unknown:?}"
     );
-    assert_eq!(closed.first().unwrap(), "a3s.goal.slice.admitted");
-    assert_eq!(closed.last().unwrap(), "a3s.goal.step.accepted");
+    assert_eq!(closed.first().unwrap(), "aster.goal.slice.admitted");
+    assert_eq!(closed.last().unwrap(), "aster.goal.step.accepted");
     eprintln!("BARRIERS closed={closed:?} unknown={unknown:?}");
 }

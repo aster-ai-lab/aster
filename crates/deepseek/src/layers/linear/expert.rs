@@ -2,7 +2,7 @@
 //! the down-projection activation cast. Shared experts omit the route weight.
 //! This composes tensor controls, not a grouped SM90 expert kernel.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

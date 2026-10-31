@@ -1,0 +1,14 @@
+[package]
+license = "Apache-2.0"
+name = "aster-markdown-core"
+version = "0.1.0"
+description = "Headless markdown analysis sharing Aster Code's exact pulldown-cmark config."
+edition = "2024"
+publish = false
+
+[dependencies]
+pulldown-cmark = {workspace = true}
+strum = {workspace = true}
+
+[lints]
+workspace = true

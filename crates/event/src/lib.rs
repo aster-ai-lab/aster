@@ -1,20 +1,20 @@
-//! # a3s-event
+//! # aster-event
 //!
-//! Pluggable event subscription, dispatch, and persistence for the A3S ecosystem.
+//! Pluggable event subscription, dispatch, and persistence for the Aster ecosystem.
 //!
 //! ## Overview
 //!
-//! `a3s-event` provides a provider-agnostic API for publishing, subscribing to,
+//! `aster-event` provides a provider-agnostic API for publishing, subscribing to,
 //! and persisting events. Swap backends (NATS, in-memory, Redis, Kafka, etc.)
 //! without changing application code.
 //!
 //! ## Quick Start
 //!
 //! ```rust
-//! use a3s_event::{EventBus, Event};
-//! use a3s_event::provider::memory::MemoryProvider;
+//! use aster_event::{EventBus, Event};
+//! use aster_event::provider::memory::MemoryProvider;
 //!
-//! # async fn example() -> a3s_event::Result<()> {
+//! # async fn example() -> aster_event::Result<()> {
 //! // Create an event bus with the in-memory provider
 //! let bus = EventBus::new(MemoryProvider::default());
 //!

@@ -19,7 +19,7 @@ const SOURCE_ONLY = ['brand/', 'tests/', 'tools/', 'view/']
 /** Hand-written package files; everything under ui/workbench is built by tools/. */
 const AUTHORED = [
   'README.md',
-  'a3s-use-extension.acl',
+  'aster-use-extension.acl',
   'agent/deck.mjs',
   'agent/icons.mjs',
   'agent/languages.mjs',
@@ -65,8 +65,8 @@ test('the API seed lists the same files', () => {
 })
 
 test('the manifest declares schema 3 with an edge agent and a homepage composer mode', () => {
-  const manifest = read('a3s-use-extension.acl')
-  assert.match(manifest, /^extension "a3s\/presenton" \{$/m)
+  const manifest = read('aster-use-extension.acl')
+  assert.match(manifest, /^extension "aster\/presenton" \{$/m)
   assert.match(manifest, /^\s*schema_version\s*=\s*3$/m)
   assert.match(manifest, /^\s*harness\s*=\s*"package"$/m)
   assert.match(manifest, /^\s*runtime\s*=\s*"edge"$/m)
@@ -180,7 +180,7 @@ function quotedList(body, name) {
 }
 
 test('the slides composer mode lists the outline closed sets and not the templates', () => {
-  const manifest = read('a3s-use-extension.acl')
+  const manifest = read('aster-use-extension.acl')
   assert.match(manifest, /composer_mode "slides"/)
   assert.match(manifest, /kept_notice = "draft"/)
   const languageOptions = quotedList(controlBody(manifest, 'language'), 'options')

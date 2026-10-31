@@ -1,7 +1,7 @@
 use crate::{BootError, BoxFuture, Module, ModuleRef, ProviderDefinition, ProviderToken, Result};
-pub use a3s_event::{
-    Event as A3sEvent, EventBus as A3sEventBus, EventProvider as A3sEventProvider,
-    MemoryConfig as A3sMemoryEventConfig, MemoryProvider as A3sMemoryEventProvider,
+pub use aster_event::{
+    Event as AsterEvent, EventBus as AsterEventBus, EventProvider as AsterEventProvider,
+    MemoryConfig as AsterMemoryEventConfig, MemoryProvider as AsterMemoryEventProvider,
 };
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -14,7 +14,7 @@ use std::sync::{Arc, RwLock};
 pub struct EventEnvelope {
     name: String,
     data: Value,
-    event: A3sEvent,
+    event: AsterEvent,
 }
 
 impl PartialEq for EventEnvelope {
@@ -26,7 +26,7 @@ impl PartialEq for EventEnvelope {
 impl EventEnvelope {
     pub fn new(name: impl Into<String>, data: Value) -> Result<Self> {
         let name = validate_event_name(name.into())?;
-        let event = a3s_event_from_name(&name, data.clone());
+        let event = aster_event_from_name(&name, data.clone());
         Ok(Self { name, data, event })
     }
 
@@ -47,7 +47,7 @@ impl EventEnvelope {
         &self.data
     }
 
-    pub fn as_a3s_event(&self) -> &A3sEvent {
+    pub fn as_aster_event(&self) -> &AsterEvent {
         &self.event
     }
 
@@ -64,7 +64,7 @@ impl EventEnvelope {
         self.data
     }
 
-    pub fn into_a3s_event(self) -> A3sEvent {
+    pub fn into_aster_event(self) -> AsterEvent {
         self.event
     }
 }
@@ -157,7 +157,7 @@ impl EventListenerDefinition {
 /// In-process async event emitter exposed as a provider by [`EventModule`].
 #[derive(Clone)]
 pub struct EventEmitter {
-    bus: Arc<A3sEventBus>,
+    bus: Arc<AsterEventBus>,
     listeners: Arc<RwLock<Vec<EventListenerRegistration>>>,
     module_ref: Arc<RwLock<Option<ModuleRef>>>,
 }
@@ -186,17 +186,17 @@ impl Default for EventEmitter {
 
 impl EventEmitter {
     pub fn new() -> Self {
-        Self::from_provider(A3sMemoryEventProvider::default())
+        Self::from_provider(AsterMemoryEventProvider::default())
     }
 
     pub fn from_provider<P>(provider: P) -> Self
     where
-        P: A3sEventProvider + 'static,
+        P: AsterEventProvider + 'static,
     {
-        Self::from_event_bus(A3sEventBus::new(provider))
+        Self::from_event_bus(AsterEventBus::new(provider))
     }
 
-    pub fn from_event_bus(bus: A3sEventBus) -> Self {
+    pub fn from_event_bus(bus: AsterEventBus) -> Self {
         Self {
             bus: Arc::new(bus),
             listeners: Arc::new(RwLock::new(Vec::new())),
@@ -204,7 +204,7 @@ impl EventEmitter {
         }
     }
 
-    pub fn event_bus(&self) -> Arc<A3sEventBus> {
+    pub fn event_bus(&self) -> Arc<AsterEventBus> {
         Arc::clone(&self.bus)
     }
 
@@ -242,11 +242,11 @@ impl EventEmitter {
 
     pub async fn emit_event(&self, event: EventEnvelope) -> Result<usize> {
         self.bus
-            .publish_event(event.as_a3s_event())
+            .publish_event(event.as_aster_event())
             .await
             .map_err(event_error)?;
 
-        let listeners = self.matching_listeners(event.as_a3s_event())?;
+        let listeners = self.matching_listeners(event.as_aster_event())?;
         let context = EventContext::new(self.module_ref()?);
         let listener_count = listeners.len();
 
@@ -271,7 +271,7 @@ impl EventEmitter {
         Ok(())
     }
 
-    fn matching_listeners(&self, event: &A3sEvent) -> Result<Vec<Arc<dyn EventListener>>> {
+    fn matching_listeners(&self, event: &AsterEvent) -> Result<Vec<Arc<dyn EventListener>>> {
         Ok(self
             .read_listeners()?
             .iter()
@@ -343,14 +343,14 @@ impl fmt::Debug for EventModule {
 
 impl EventModule {
     pub fn in_process(name: &'static str) -> Self {
-        Self::from_provider(name, A3sMemoryEventProvider::default())
+        Self::from_provider(name, AsterMemoryEventProvider::default())
     }
 
     pub fn from_emitter(name: &'static str, emitter: EventEmitter) -> Self {
         Self {
             name,
             token: ProviderToken::of::<EventEmitter>(),
-            event_bus_token: ProviderToken::of::<A3sEventBus>(),
+            event_bus_token: ProviderToken::of::<AsterEventBus>(),
             emitter: Arc::new(emitter),
             listeners: Vec::new(),
             global: false,
@@ -359,12 +359,12 @@ impl EventModule {
 
     pub fn from_provider<P>(name: &'static str, provider: P) -> Self
     where
-        P: A3sEventProvider + 'static,
+        P: AsterEventProvider + 'static,
     {
-        Self::from_event_bus(name, A3sEventBus::new(provider))
+        Self::from_event_bus(name, AsterEventBus::new(provider))
     }
 
-    pub fn from_event_bus(name: &'static str, bus: A3sEventBus) -> Self {
+    pub fn from_event_bus(name: &'static str, bus: AsterEventBus) -> Self {
         Self::from_emitter(name, EventEmitter::from_event_bus(bus))
     }
 
@@ -466,19 +466,19 @@ fn validate_event_pattern(pattern: String) -> Result<String> {
     validate_event_name(pattern)
 }
 
-fn a3s_event_from_name(name: &str, data: Value) -> A3sEvent {
+fn aster_event_from_name(name: &str, data: Value) -> AsterEvent {
     let category = name
         .split_once('.')
         .map(|(category, _)| category)
         .unwrap_or(name)
         .to_string();
-    A3sEvent::typed(
+    AsterEvent::typed(
         event_subject(name),
         category,
         name.to_string(),
         1,
         name.to_string(),
-        "a3s-boot",
+        "aster-boot",
         data,
     )
 }
@@ -498,9 +498,9 @@ fn event_pattern_subject_filter(pattern: &str) -> String {
 }
 
 fn event_subject_matches(filter: &str, subject: &str) -> bool {
-    a3s_event::subject::subject_matches(subject, filter)
+    aster_event::subject::subject_matches(subject, filter)
 }
 
-fn event_error(error: a3s_event::EventError) -> BootError {
+fn event_error(error: aster_event::EventError) -> BootError {
     BootError::Internal(format!("event bus error: {error}"))
 }

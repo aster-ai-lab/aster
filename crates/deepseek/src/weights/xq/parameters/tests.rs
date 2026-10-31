@@ -1,6 +1,6 @@
 use super::*;
 use crate::weights::xq::storage::tests::fixture_from_tensors;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 
 #[test]
 fn small_f16_and_f32_parameters_keep_gguf_dimension_order_and_exact_values() {

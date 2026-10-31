@@ -22,7 +22,7 @@ does not use a global backend and does not inherit memory into delegated
 children.
 
 The profile
-`a3s.code.memory.context.session-run-invocation-sequence-sha256.v2` hashes the
+`aster.code.memory.context.session-run-invocation-sequence-sha256.v2` hashes the
 exact `(session_id, run_id, invocation_incarnation, context_sequence)` tuple
 with domain separation. Code creates a fresh incarnation for each actual
 invocation; the incarnation and sequence belong to that immutable invocation
@@ -34,13 +34,13 @@ and are shared across its clones. It has five properties:
 - reconstructed invocations remain different when a resumed process reuses a
   run ID after retained run history is evicted;
 - multiple model contexts assembled inside one planned run remain separate;
-- the opaque `a3s-code-context-v2-*` value is bounded for the Memory repository
+- the opaque `aster-context-v2-*` value is bounded for the Memory repository
   and does not expose raw session or run identifiers.
 
 `DurableMemoryBindingV1.contextIdProfile` persists this profile in schema `4`.
 Schema `1` and `2` snapshots remain readable with the explicit legacy
-`a3s.code.memory.context.host-id.v0` identity. Schema `3` remains readable with
-`a3s.code.memory.context.session-run-sequence-sha256.v1`. A current host cannot
+`aster.code.memory.context.host-id.v0` identity. Schema `3` remains readable with
+`aster.code.memory.context.session-run-sequence-sha256.v1`. A current host cannot
 silently resume any of them with new admission keys. Migration requires a new
 session.
 
@@ -104,8 +104,8 @@ Those remaining distributions stay under `DM-PROD1`.
 Run from the Code crate workspace:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_multi_agent_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_multi_agent_eval -- --nocapture
 ```
 
 The command prints the retained JSON value after the stable
-`A3S_DURABLE_MEMORY_MULTI_AGENT_EVAL=` marker.
+`ASTER_DURABLE_MEMORY_MULTI_AGENT_EVAL=` marker.

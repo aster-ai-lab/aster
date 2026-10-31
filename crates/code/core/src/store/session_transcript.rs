@@ -9,8 +9,8 @@ pub struct TranscriptSourceCut {
     pub digest: String,
 }
 
-impl From<a3s_effect::LogCut> for TranscriptSourceCut {
-    fn from(cut: a3s_effect::LogCut) -> Self {
+impl From<aster_effect::LogCut> for TranscriptSourceCut {
+    fn from(cut: aster_effect::LogCut) -> Self {
         Self {
             seq: cut.seq,
             digest: cut.digest,
@@ -133,7 +133,7 @@ pub struct TranscriptPage {
     pub source_cut: TranscriptSourceCut,
 }
 
-pub const LEGACY_STUDIO_MIGRATION_SCHEMA_V1: &str = "a3s.code.legacy-studio-migration.v1";
+pub const LEGACY_STUDIO_MIGRATION_SCHEMA_V1: &str = "aster.code.legacy-studio-migration.v1";
 
 /// Closed input role for imported Studio product history. This is deliberately
 /// not an execution role or an assistant terminal status.

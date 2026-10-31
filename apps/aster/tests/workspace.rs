@@ -9,7 +9,7 @@ fn product_help_and_version_use_aster() {
         ("--version", version.as_str()),
     ] {
         let output = Command::new(
-            std::env::var_os("A3S_CODE_TUI_BIN")
+            std::env::var_os("ASTER_TUI_BIN")
                 .unwrap_or_else(|| env!("CARGO_BIN_EXE_aster").into()),
         )
         .arg(arg)
@@ -46,7 +46,7 @@ fn workspace_contains_local_rust_harness_and_both_product_binaries() {
     let defaults = metadata["workspace_default_members"]
         .as_array()
         .expect("default members");
-    for name in ["aster", "a3s-code-acp"] {
+    for name in ["aster", "aster-acp"] {
         let package = packages
             .iter()
             .find(|p| p["name"] == name)
@@ -58,11 +58,11 @@ fn workspace_contains_local_rust_harness_and_both_product_binaries() {
     }
     for package in packages {
         let name = package["name"].as_str().expect("package name");
-        assert!(!["a3s-code-node", "a3s-code-py", "a3s-code-go-bridge"].contains(&name));
+        assert!(!["aster-node", "aster-py", "aster-go-bridge"].contains(&name));
         for dependency in package["dependencies"].as_array().expect("dependencies") {
             if dependency["name"]
                 .as_str()
-                .is_some_and(|name| name.starts_with("a3s-") || name.starts_with("aster-"))
+                .is_some_and(|name| name.starts_with("aster-") || name.starts_with("aster-"))
             {
                 let path = dependency["path"]
                     .as_str()

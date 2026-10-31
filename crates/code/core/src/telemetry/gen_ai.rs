@@ -1,5 +1,5 @@
 //! One span per model call, named and attributed per the OpenTelemetry
-//! GenAI semantic conventions (`gen_ai.*`), with the `a3s.llm.*` names
+//! GenAI semantic conventions (`gen_ai.*`), with the `aster.llm.*` names
 //! recorded on the same span.
 //!
 //! Prompt and completion text never become attributes.
@@ -27,12 +27,12 @@ pub(crate) fn chat_span() -> tracing::Span {
         gen_ai.response.finish_reasons = Empty,
         gen_ai.usage.input_tokens = Empty,
         gen_ai.usage.output_tokens = Empty,
-        a3s.llm.provider = Empty,
-        a3s.llm.model = Empty,
-        a3s.llm.prompt_tokens = Empty,
-        a3s.llm.completion_tokens = Empty,
-        a3s.llm.total_tokens = Empty,
-        a3s.llm.stop_reason = Empty,
+        aster.llm.provider = Empty,
+        aster.llm.model = Empty,
+        aster.llm.prompt_tokens = Empty,
+        aster.llm.completion_tokens = Empty,
+        aster.llm.total_tokens = Empty,
+        aster.llm.stop_reason = Empty,
         error.type = Empty,
     )
 }

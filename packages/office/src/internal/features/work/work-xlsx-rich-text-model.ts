@@ -16,7 +16,7 @@ export const MAX_XLSX_RICH_TEXT_FONT_NAME_CHARACTERS = 128;
 export const MAX_XLSX_RICH_TEXT_FONT_SIZE = 409;
 
 export interface XlsxRichTextRun {
-  a3sXlsxColorOrigin?: XlsxSemanticColorOrigin;
+  asterXlsxColorOrigin?: XlsxSemanticColorOrigin;
   bl?: 0 | 1;
   cl?: 0 | 1;
   fc?: string;
@@ -96,7 +96,7 @@ export function xlsxRichTextBaseRun(
       xlsxCellStyleOrigin(cell ?? {})?.fontColor,
     );
     if (origin && xlsxSemanticColorMatchesValue(origin, color)) {
-      run.a3sXlsxColorOrigin = origin;
+      run.asterXlsxColorOrigin = origin;
     }
   }
   return run;
@@ -169,9 +169,9 @@ export function normalizeXlsxRichTextRun(
     run.un = underline as SpreadsheetUnderlineCellValue;
   }
   const colorOrigin = normalizeXlsxSemanticColorOrigin(
-    value.a3sXlsxColorOrigin,
+    value.asterXlsxColorOrigin,
   );
-  if (colorOrigin) run.a3sXlsxColorOrigin = colorOrigin;
+  if (colorOrigin) run.asterXlsxColorOrigin = colorOrigin;
   return run;
 }
 
@@ -208,8 +208,8 @@ export function sameXlsxRichTextRunStyle(
     left.fs === right.fs &&
     left.it === right.it &&
     left.un === right.un &&
-    JSON.stringify(left.a3sXlsxColorOrigin) ===
-      JSON.stringify(right.a3sXlsxColorOrigin)
+    JSON.stringify(left.asterXlsxColorOrigin) ===
+      JSON.stringify(right.asterXlsxColorOrigin)
   );
 }
 

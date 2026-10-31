@@ -2,9 +2,9 @@ use std::fmt;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::GuestAgentService;
-use a3s_oci_core::{CapabilityStatus, DriverCapability, DriverReadiness, IsolationClass};
-use a3s_oci_sdk::{async_trait, Error, ErrorCode, Result};
+use aster_oci_agent_protocol::GuestAgentService;
+use aster_oci_core::{CapabilityStatus, DriverCapability, DriverReadiness, IsolationClass};
+use aster_oci_sdk::{async_trait, Error, ErrorCode, Result};
 
 use crate::agent_driver::AgentDriverClient;
 use crate::agent_session::{UtilityVmSession, VerifiedLinuxUtilityVmConnectOptions};
@@ -116,7 +116,7 @@ impl KvmRuntimeDriver {
         .await
     }
 
-    /// Open the candidate only for the A3S Box product lifecycle qualification
+    /// Open the candidate only for the Aster Box product lifecycle qualification
     /// owner.
     ///
     /// The public candidate remains `probe-only`. This crate-private scope is
@@ -169,7 +169,7 @@ impl KvmRuntimeDriver {
         Ok(Self {
             inner: UtilityVmRuntimeDriver::new(
                 capability,
-                a3s_oci_sdk::AttachmentCapabilities::base_v1(),
+                aster_oci_sdk::AttachmentCapabilities::base_v1(),
                 "KVM",
                 prepared.runtime_root,
                 prepared.runtime_share_root,
@@ -202,8 +202,8 @@ fn candidate_capability(
     system_image_manifest_sha256: &str,
     registration: KvmRegistration,
 ) -> DriverCapability {
-    const RUNTIME_SHARE: &str = match a3s_oci_core::hardware_vm::virtiofs_share_mode(
-        a3s_oci_core::DriverKind::LibkrunKvm,
+    const RUNTIME_SHARE: &str = match aster_oci_core::hardware_vm::virtiofs_share_mode(
+        aster_oci_core::DriverKind::LibkrunKvm,
     ) {
         Some(mode) => mode,
         None => panic!("libkrun KVM must advertise a hardware-vm virtio-fs share"),
@@ -377,7 +377,7 @@ mod tests {
     use std::collections::BTreeMap;
     use std::os::unix::fs::PermissionsExt;
 
-    use a3s_oci_core::{DriverKind, DriverReadiness};
+    use aster_oci_core::{DriverKind, DriverReadiness};
 
     use super::*;
     use crate::{HostRuntimeService, RuntimeDriver};
@@ -410,7 +410,7 @@ mod tests {
         let runtime_root = root.join("runtime");
         let inner = UtilityVmRuntimeDriver::new(
             capability,
-            a3s_oci_sdk::AttachmentCapabilities::base_v1(),
+            aster_oci_sdk::AttachmentCapabilities::base_v1(),
             "KVM",
             runtime_root.clone(),
             runtime_root.join("shares"),
@@ -460,14 +460,14 @@ mod tests {
         assert_eq!(driver.operations().len(), 20);
         assert!(!driver
             .operations()
-            .contains(&a3s_oci_sdk::RuntimeOperation::Attest));
+            .contains(&aster_oci_sdk::RuntimeOperation::Attest));
         for extension in [
-            a3s_oci_sdk::AMD_SEV_SNP_LAUNCH_EXTENSION,
-            a3s_oci_sdk::INTEL_TDX_LAUNCH_EXTENSION,
+            aster_oci_sdk::AMD_SEV_SNP_LAUNCH_EXTENSION,
+            aster_oci_sdk::INTEL_TDX_LAUNCH_EXTENSION,
         ] {
             assert!(!driver
                 .attachment_capabilities()
-                .supports_extension(extension, a3s_oci_sdk::TEE_LAUNCH_EXTENSION_VERSION,));
+                .supports_extension(extension, aster_oci_sdk::TEE_LAUNCH_EXTENSION_VERSION,));
         }
         assert_eq!(driver.hooks(), &crate::agent_driver::AGENT_DRIVER_HOOKS);
         assert_eq!(driver.hooks().len(), 6);
@@ -640,19 +640,19 @@ mod tests {
     fn config_rejects_relative_or_ambiguous_paths() {
         assert!(KvmRuntimeDriverConfig::new(
             "relative-shim",
-            "/tmp/a3s-oci-kvm",
+            "/tmp/aster-oci-kvm",
             "/tmp/system-image.json"
         )
         .is_err());
         assert!(KvmRuntimeDriverConfig::new(
             "/tmp/shim",
-            "/tmp/a3s-oci-kvm/../runtime",
+            "/tmp/aster-oci-kvm/../runtime",
             "/tmp/system-image.json"
         )
         .is_err());
         assert!(KvmRuntimeDriverConfig::new(
             "/tmp/shim",
-            "/tmp/a3s-oci-kvm",
+            "/tmp/aster-oci-kvm",
             "relative-system-image.json"
         )
         .is_err());

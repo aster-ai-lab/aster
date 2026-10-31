@@ -26,7 +26,7 @@ import {
   InputGroupInput,
   InputGroupText,
   InputGroupTextarea
-} from '@a3s-lab/ui/components/primitives/input-group'
+} from '@aster-ai-lab/ui/components/primitives/input-group'
 
 const meta: Meta<typeof InputGroup> = {
   title: 'Components/Primitives/InputGroup',

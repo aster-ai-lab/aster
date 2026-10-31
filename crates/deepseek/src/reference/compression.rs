@@ -2,7 +2,7 @@
 //! partial-acceptance rollback observable; it is not the native ring layout.
 
 use super::{checked_shape, finite, invalid, softmax, ReferenceMatrix, MAX_REFERENCE_ELEMENTS};
-use a3s_power::error::Result;
+use aster_power::error::Result;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ReferenceCompressionKind {

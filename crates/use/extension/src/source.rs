@@ -3,7 +3,7 @@ use std::fs::{File, OpenOptions};
 use std::io::{self, Read, Write};
 use std::path::{Component, Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use tempfile::TempDir;
 use tokio::fs;
 
@@ -41,7 +41,7 @@ pub(crate) async fn prepare_package_source(source: &Path) -> UseResult<PreparedP
     let source_metadata = fs::symlink_metadata(source)
         .await
         .map_err(|error| io_error("inspect extension package", source, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&source_metadata) {
+    if aster_use_core::metadata_is_link_or_reparse_point(&source_metadata) {
         return Err(UseError::new(
             "use.extension.package_symlink",
             "The local extension source cannot be a link or reparse point.",
@@ -53,7 +53,7 @@ pub(crate) async fn prepare_package_source(source: &Path) -> UseResult<PreparedP
     let metadata = fs::symlink_metadata(&source)
         .await
         .map_err(|error| io_error("inspect extension package", &source, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) {
         return Err(UseError::new(
             "use.extension.package_symlink",
             "The resolved extension source cannot be a link or reparse point.",
@@ -716,7 +716,7 @@ mod tests {
             let mut writer = zip::ZipWriter::new(file);
             writer
                 .start_file(
-                    "../a3s-use-extension.acl",
+                    "../aster-use-extension.acl",
                     zip::write::SimpleFileOptions::default(),
                 )
                 .unwrap();

@@ -169,7 +169,7 @@ export async function analyzeDocxCompatibility(
           issue(
             'docx.embedded-fonts',
             'Embedded fonts',
-            `${embeddedFontReferences} embedded font reference(s) were found. Eligible internal obfuscated-font payloads, metadata, relationships, and remapped IDs survive source-backed DOCX export, but the browser editor, preview, and PDF renderer use registered A3S fonts or substitution and may wrap text differently.`,
+            `${embeddedFontReferences} embedded font reference(s) were found. Eligible internal obfuscated-font payloads, metadata, relationships, and remapped IDs survive source-backed DOCX export, but the browser editor, preview, and PDF renderer use registered Aster fonts or substitution and may wrap text differently.`,
           ),
         );
       }

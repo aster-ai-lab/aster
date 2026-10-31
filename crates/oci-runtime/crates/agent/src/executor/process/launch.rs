@@ -6,8 +6,8 @@ use std::os::unix::process::ExitStatusExt;
 use std::process::ExitStatus as ProcessExitStatus;
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::{AgentInheritedDescriptorSchema, AgentVsockEndpoint};
-use a3s_oci_sdk::{Error, ErrorCode, IoMode, ProcessIo, Result};
+use aster_oci_agent_protocol::{AgentInheritedDescriptorSchema, AgentVsockEndpoint};
+use aster_oci_sdk::{Error, ErrorCode, IoMode, ProcessIo, Result};
 use tokio::net::UnixListener;
 use tokio::process::Child;
 
@@ -179,7 +179,7 @@ pub(in crate::executor) struct SupervisedChildStdio {
 /// supervisor-parented launcher connects (`send_device_mounts` / SCM_RIGHTS).
 /// Empty and nonempty frames share that path; spawn_launcher does not carry them.
 ///
-/// The A3S Box control schema (`a3s_box_control_v1`, targets 3/4/5) is allowed
+/// The Aster Box control schema (`aster_box_control_v1`, targets 3/4/5) is allowed
 /// and installed via session-supervisor `spawn_launcher_with_inherited`.
 /// Unknown inherited schemas remain fail-closed.
 ///
@@ -196,7 +196,7 @@ pub(super) fn supervised_create_unsupported_reason(
         );
     }
     if let Some(schema) = inherited_schema {
-        if schema != &AgentInheritedDescriptorSchema::a3s_box_control_v1() {
+        if schema != &AgentInheritedDescriptorSchema::aster_box_control_v1() {
             return Some(
                 "session-supervisor create does not support inherited workload descriptors yet",
             );
@@ -396,7 +396,7 @@ pub(super) async fn retain_original_rootfs(
 
 pub(in crate::executor) fn bind_control_listener() -> Result<(UnixListener, String)> {
     let endpoint = AgentVsockEndpoint::generate()?;
-    let control_name = format!("a3s-oci-init-{}", endpoint.pipe_name());
+    let control_name = format!("aster-oci-init-{}", endpoint.pipe_name());
     let address = StdSocketAddr::from_abstract_name(control_name.as_bytes()).map_err(|error| {
         process_error(
             ErrorCode::Internal,

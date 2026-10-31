@@ -519,7 +519,7 @@ export const presentationUiMessagesZhCN = {
   'presentation.comments.promptTitle': '批注内容',
   'presentation.comments.promptConfirm': '添加批注',
   'presentation.comments.promptRequired': '请输入批注内容。',
-  'presentation.comments.defaultAuthor': 'A3S Work 用户',
+  'presentation.comments.defaultAuthor': 'Aster Work 用户',
   'presentation.design.layoutCopySuffix': '{name} 副本',
   'presentation.design.customLayoutName': '自定义布局 {n}',
   'presentation.design.placeholderTitle': '单击添加标题',

@@ -1,28 +1,28 @@
 //! Approval-learning probe over the REAL pager path: an in-process
 //! ClientSideConnection (the pager's exact transport role) drives the
-//! A3sCodeAgent backend across cross-wired duplexes, with a client that
+//! AsterCodeAgent backend across cross-wired duplexes, with a client that
 //! counts every permission round-trip and answers `allow-always`.
 //!
 //! Contracts asserted:
 //! 1. A turn whose model call runs `make check` asks the client exactly
 //!    once; the `allow-always` answer persists the `make check` rule to
-//!    `<A3S_STATE_HOME>/code/approvals.acl` (parseable ACL, entry present)
-//!    and writes nothing into the workspace `.a3s`.
+//!    `<ASTER_STATE_HOME>/code/approvals.acl` (parseable ACL, entry present)
+//!    and writes nothing into the workspace `.aster`.
 //! 2. A NEW session in the SAME workspace runs the same rule with ZERO
 //!    further permission round-trips.
 //! 3. The second session's stream carries the target's real output
 //!    (`make-check-ran`), so "no round-trip" cannot pass vacuously — the
 //!    tool provably ran.
 //!
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-acp --test approval_learning_probe -- --ignored --nocapture --test-threads=1
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-acp --test approval_learning_probe -- --ignored --nocapture --test-threads=1
 
 use std::cell::RefCell;
 use std::path::PathBuf;
 use std::rc::Rc;
 use std::time::Duration;
 
-use a3s_code_acp::{load_launch_config, A3sCodeAgent};
+use aster_acp::{load_launch_config, AsterCodeAgent};
 use agent_client_protocol as acp;
 use async_trait::async_trait;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
@@ -104,13 +104,13 @@ async fn assert_eventually_contains(client: &ApprovingClient, marker: &str, what
 }
 
 #[tokio::test(flavor = "current_thread")]
-#[ignore = "requires the model configured in .a3s/config.acl"]
+#[ignore = "requires the model configured in .aster/config.acl"]
 async fn allow_always_rule_skips_confirmation_in_later_sessions() {
     tokio::task::LocalSet::new()
         .run_until(async move {
-            let config_path = std::env::var_os("A3S_CONFIG_FILE").map(PathBuf::from);
+            let config_path = std::env::var_os("ASTER_CONFIG_FILE").map(PathBuf::from);
             let workspace =
-                std::env::temp_dir().join(format!("a3s-approval-probe-{}", std::process::id()));
+                std::env::temp_dir().join(format!("aster-approval-probe-{}", std::process::id()));
             let _ = std::fs::remove_dir_all(&workspace);
             std::fs::create_dir_all(&workspace).expect("workspace");
             std::fs::write(
@@ -120,16 +120,16 @@ async fn allow_always_rule_skips_confirmation_in_later_sessions() {
             .expect("Makefile");
             let state = workspace.with_extension("state");
             let _ = std::fs::remove_dir_all(&state);
-            std::env::set_var("A3S_STATE_HOME", &state);
+            std::env::set_var("ASTER_STATE_HOME", &state);
 
             let mut launch =
                 load_launch_config(workspace.clone(), config_path).expect("launch config");
-            if let Ok(raw) = std::env::var("A3S_TEST_MODEL") {
+            if let Ok(raw) = std::env::var("ASTER_TEST_MODEL") {
                 let model = raw.trim().to_string();
                 launch.model_id = model.clone();
                 launch.config.default_model = Some(model);
             }
-            let agent = Rc::new(A3sCodeAgent::new(launch));
+            let agent = Rc::new(AsterCodeAgent::new(launch));
             let client = Rc::new(ApprovingClient::default());
 
             let (agent_in_r, client_out_w) = tokio::io::duplex(65536);
@@ -207,10 +207,10 @@ async fn allow_always_rule_skips_confirmation_in_later_sessions() {
             let approvals = state.join("code").join("approvals.acl");
             let raw = std::fs::read_to_string(&approvals)
                 .unwrap_or_else(|e| panic!("approvals.acl must exist after allow-always: {e}"));
-            assert!(a3s_acl::parse_acl(&raw).is_ok(), "raw: {raw}");
+            assert!(aster_acl::parse_acl(&raw).is_ok(), "raw: {raw}");
             assert!(raw.contains("\"make check\""), "raw: {raw}");
             assert!(
-                !workspace.join(".a3s").join("approvals.acl").exists(),
+                !workspace.join(".aster").join("approvals.acl").exists(),
                 "approvals must not be written into the workspace"
             );
 

@@ -2,7 +2,7 @@
 
 ## Decision
 
-A3S Code provides Code Intelligence as a native, workspace-scoped Core
+Aster Code provides Code Intelligence as a native, workspace-scoped Core
 capability shared by agent tools and the terminal editor. The Rust
 runtime owns language-process discovery, framed stdio JSON-RPC, lifecycle,
 capability negotiation, saved-document synchronization, result normalization,
@@ -22,7 +22,7 @@ Code Intelligence owns only language-semantic operations:
 - document and bounded workspace diagnostics;
 - runtime status and negotiated capabilities.
 
-Existing A3S Code capabilities remain the single source of truth for adjacent
+Existing Aster Code capabilities remain the single source of truth for adjacent
 work:
 
 | Concern | Existing owner | Code Intelligence behavior |

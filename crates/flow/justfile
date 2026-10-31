@@ -58,7 +58,7 @@ postgres-test:
 
 # Run the opt-in real Bun compiler and workflow smoke test
 native-ts-bun-test:
-    test -n "${A3S_FLOW_NATIVE_TS_COMPILER:-}" || (echo "A3S_FLOW_NATIVE_TS_COMPILER is required" >&2; exit 1)
+    test -n "${ASTER_FLOW_NATIVE_TS_COMPILER:-}" || (echo "ASTER_FLOW_NATIVE_TS_COMPILER is required" >&2; exit 1)
     cargo test --test native_ts_bun_smoke --features native-ts -- --ignored --exact native_ts_compiler_executes_real_bun_workflow
 
 # Run strict linting across non-Postgres feature combinations

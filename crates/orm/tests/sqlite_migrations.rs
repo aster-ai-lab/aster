@@ -1,6 +1,6 @@
 #![cfg(feature = "sqlite")]
 
-use a3s_orm::{
+use aster_orm::{
     orm_table, select_from, Database, Migration, MigrationError, Migrator, SqliteDialect,
     SqliteExecutor,
 };
@@ -54,7 +54,7 @@ async fn serving_admission_reads_the_ledger_without_creating_it() {
     let absent = migrator.verify_required(migrations()).await.unwrap_err();
     assert!(matches!(
         absent,
-        a3s_orm::migration::MigrationRunError::Backend(a3s_orm::SqliteMigrationError::Driver(_))
+        aster_orm::migration::MigrationRunError::Backend(aster_orm::SqliteMigrationError::Driver(_))
     ));
 
     let applied = migrator.run(migrations()).await.unwrap();
@@ -81,7 +81,7 @@ async fn detects_changed_and_missing_source_migrations() {
         .unwrap_err();
     assert!(matches!(
         changed,
-        a3s_orm::migration::MigrationRunError::Backend(a3s_orm::SqliteMigrationError::Migration(
+        aster_orm::migration::MigrationRunError::Backend(aster_orm::SqliteMigrationError::Migration(
             MigrationError::ChecksumMismatch { .. }
         ))
     ));
@@ -89,8 +89,8 @@ async fn detects_changed_and_missing_source_migrations() {
     let missing = migrator.run([migrations().remove(1)]).await.unwrap_err();
     assert!(matches!(
         missing,
-        a3s_orm::migration::MigrationRunError::Backend(
-            a3s_orm::SqliteMigrationError::Migration(
+        aster_orm::migration::MigrationRunError::Backend(
+            aster_orm::SqliteMigrationError::Migration(
                 MigrationError::MissingSourceMigration(version)
             )
         ) if version == "001"

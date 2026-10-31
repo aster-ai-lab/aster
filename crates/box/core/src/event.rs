@@ -116,7 +116,7 @@ impl EventStream {
 /// Event catalog - predefined event keys for Box runtime events.
 ///
 /// Agent-level events (session, prompt, skill, queue, context) belong
-/// in the a3s-code crate, not the Box runtime.
+/// in the aster crate, not the Box runtime.
 pub mod events {
     // Box lifecycle events
     pub const BOX_READY: &str = "box.ready";

@@ -61,7 +61,7 @@ fn worker_capabilities_negotiate_fail_closed() {
     FlowWorkerCapabilities::negotiate(&required, &offered).unwrap();
 
     let mut incompatible = offered.clone();
-    incompatible.protocol = "a3s.flow.worker.v0".to_string();
+    incompatible.protocol = "aster.flow.worker.v0".to_string();
     let error = FlowWorkerCapabilities::negotiate(&required, &incompatible).unwrap_err();
     assert!(matches!(error, FlowError::UnsupportedWorkerProtocol { .. }));
 

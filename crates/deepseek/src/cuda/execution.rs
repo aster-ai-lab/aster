@@ -3,7 +3,7 @@
 
 use std::sync::OnceLock;
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::cuda_backend::{cudarc, WrapErr};
 use candle_core::{CpuStorage, CudaStorage, CustomOp1, Layout, Shape, Storage, Tensor};
 use cudarc::driver::{LaunchConfig, PushKernelArg};

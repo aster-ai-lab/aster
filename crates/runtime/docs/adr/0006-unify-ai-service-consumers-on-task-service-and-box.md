@@ -1,12 +1,12 @@
-# ADR 0006: Unify AI Service Consumers on Task, Service, and A3S Box
+# ADR 0006: Unify AI Service Consumers on Task, Service, and Aster Box
 
 - Status: Accepted
 - Date: 2026-08-28
-- Decision owners: A3S Runtime maintainers
+- Decision owners: Aster Runtime maintainers
 
 ## Context
 
-A3S Cloud exposes Agent as a Service, Workflow as a Service, and Function as a
+Aster Cloud exposes Agent as a Service, Workflow as a Service, and Function as a
 Service, supports Durable Cells, and hosts sessionless MCP services. Each has
 different product invariants, but their executable processes need the same
 identity, generation, replay, health, endpoint, resource, recovery, and cleanup
@@ -18,7 +18,7 @@ lifecycle implementations. Collapsing the product aggregates into one generic
 execution aggregate would instead erase their authorization and recovery
 boundaries.
 
-A3S Box is the production process and sandbox provider. A3S Gateway is the
+Aster Box is the production process and sandbox provider. Aster Gateway is the
 public traffic boundary. Neither should acquire Cloud product semantics.
 
 ## Decision
@@ -29,7 +29,7 @@ A finite executable is a `Task`. A continuously available executable is a
 `Service`. Product identity is bound through an opaque immutable semantics
 profile digest, not a product-specific wire field.
 
-A Workflow is not itself a Runtime unit. A3S Flow owns Workflow durability;
+A Workflow is not itself a Runtime unit. Aster Flow owns Workflow durability;
 Agent and Function nodes delegate only their executable child to Runtime.
 
 ### 2. Consumers compose one generic requirements abstraction
@@ -43,7 +43,7 @@ The abstraction reuses `RuntimeCapabilities`, `RuntimeUnitSpec`, and
 `RuntimeObservation`. It introduces no registry, scheduler, receipt, endpoint
 store, or second validation protocol.
 
-### 3. A3S Box is the production provider baseline
+### 3. Aster Box is the production provider baseline
 
 The supported production chain is Cloud to Runtime to Box. Cloud may depend on
 the Runtime client and contracts, but product domains must not invoke Box

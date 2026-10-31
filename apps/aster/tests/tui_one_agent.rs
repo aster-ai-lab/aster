@@ -13,7 +13,7 @@ const SESSION_TIMEOUT: Duration = Duration::from_secs(180);
 const SERVE_TIMEOUT: Duration = Duration::from_secs(90);
 
 fn shipped_aster() -> PathBuf {
-    std::env::var_os("A3S_CODE_TUI_BIN")
+    std::env::var_os("ASTER_TUI_BIN")
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_aster")))
 }
@@ -32,8 +32,8 @@ fn temp_root(label: &str) -> PathBuf {
 }
 
 fn write_preferences(home: &Path) {
-    let dir = home.join(".a3s");
-    fs::create_dir_all(&dir).expect("a3s home");
+    let dir = home.join(".aster");
+    fs::create_dir_all(&dir).expect("aster home");
     fs::write(
         dir.join("config.acl"),
         r#"
@@ -66,9 +66,9 @@ fn child_env(command: &mut portable_pty::CommandBuilder, home: &Path, workspace:
     command.env("HOME", home);
     command.env("PATH", "/usr/bin:/bin:/usr/local/bin");
     command.env("TERM", "xterm-256color");
-    command.env("A3S_DISABLE_CC_SWITCH", "1");
-    command.env("A3S_DISABLE_GROK_ACCOUNT", "1");
-    command.env("A3S_DISABLE_CURSOR_ACCOUNT", "1");
+    command.env("ASTER_DISABLE_CC_SWITCH", "1");
+    command.env("ASTER_DISABLE_GROK_ACCOUNT", "1");
+    command.env("ASTER_DISABLE_CURSOR_ACCOUNT", "1");
     command.cwd(workspace);
     if let Some(tmpdir) = std::env::var_os("TMPDIR") {
         command.env("TMPDIR", tmpdir);
@@ -80,9 +80,9 @@ fn shell_env(command: &mut Command, home: &Path) {
     command.env("HOME", home);
     command.env("PATH", "/usr/bin:/bin:/usr/local/bin");
     command.env("TERM", "xterm-256color");
-    command.env("A3S_DISABLE_CC_SWITCH", "1");
-    command.env("A3S_DISABLE_GROK_ACCOUNT", "1");
-    command.env("A3S_DISABLE_CURSOR_ACCOUNT", "1");
+    command.env("ASTER_DISABLE_CC_SWITCH", "1");
+    command.env("ASTER_DISABLE_GROK_ACCOUNT", "1");
+    command.env("ASTER_DISABLE_CURSOR_ACCOUNT", "1");
     if let Some(tmpdir) = std::env::var_os("TMPDIR") {
         command.env("TMPDIR", tmpdir);
     }
@@ -185,7 +185,7 @@ impl PtySession {
 }
 
 fn acp_log(home: &Path) -> String {
-    let dir = home.join(".a3s").join("logs");
+    let dir = home.join(".aster").join("logs");
     let Ok(entries) = fs::read_dir(&dir) else {
         return String::new();
     };
@@ -193,7 +193,7 @@ fn acp_log(home: &Path) -> String {
     for entry in entries.flatten() {
         let name = entry.file_name();
         let name = name.to_string_lossy();
-        if name.starts_with("a3s-code-acp.") && name.ends_with(".log") {
+        if name.starts_with("aster-acp.") && name.ends_with(".log") {
             if let Ok(body) = fs::read_to_string(entry.path()) {
                 text.push_str(&body);
             }
@@ -265,12 +265,12 @@ fn assert_acp_session(home: &Path, leader: bool) {
         !line.contains("run_terminal_command"),
         "leader and default sessions use the ACP bash tool: {line}"
     );
-    let shell_log = home.join(".a3s").join("shell-agent.log");
+    let shell_log = home.join(".aster").join("shell-agent.log");
     assert!(
         !shell_log.exists(),
         "the interactive session constructed the in-process shell agent"
     );
-    let forward = home.join(".a3s").join("leader-forward.log");
+    let forward = home.join(".aster").join("leader-forward.log");
     if leader {
         let body = fs::read_to_string(&forward).unwrap_or_default();
         assert!(
@@ -325,7 +325,7 @@ fn isolated_aster(dir: &Path) -> PathBuf {
         }
     }
     assert!(
-        !dir.join("a3s-code-acp").exists(),
+        !dir.join("aster-acp").exists(),
         "the missing-companion directory must not contain the ACP sibling"
     );
     dest
@@ -348,20 +348,20 @@ fn assert_missing_companion() {
     loop {
         pty.pump();
         let text = String::from_utf8_lossy(&pty.raw).into_owned();
-        if text.contains("a3s-code-acp") && text.contains("no agent backend") {
+        if text.contains("aster-acp") && text.contains("no agent backend") {
             println!(
-                "CAPTURE missing companion failed closed and named a3s-code-acp while A3S_ACP_AGENT_BIN was unset"
+                "CAPTURE missing companion failed closed and named aster-acp while ASTER_ACP_AGENT_BIN was unset"
             );
             return;
         }
         if let Some(code) = pty.exited() {
             assert!(
-                text.contains("a3s-code-acp"),
+                text.contains("aster-acp"),
                 "startup failure must name the missing companion (exit {code}): {}",
                 tail(&pty.raw)
             );
             println!(
-                "CAPTURE missing companion failed closed and named a3s-code-acp while A3S_ACP_AGENT_BIN was unset"
+                "CAPTURE missing companion failed closed and named aster-acp while ASTER_ACP_AGENT_BIN was unset"
             );
             return;
         }
@@ -462,7 +462,7 @@ fn assert_serve_constructs_shell_agent() {
     let stderr = child.stderr.take().expect("stderr");
     let stdout_thread = std::thread::spawn(move || read_pipe(stdout));
     let stderr_thread = std::thread::spawn(move || read_pipe(stderr));
-    let marker = home.join(".a3s").join("shell-agent.log");
+    let marker = home.join(".aster").join("shell-agent.log");
     let deadline = Instant::now() + SERVE_TIMEOUT;
     let mut upgraded = false;
     let mut socket = None;

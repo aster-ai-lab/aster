@@ -1,4 +1,4 @@
-# First-Principles E2E Matrix (`a3s-code`)
+# First-Principles E2E Matrix (`aster`)
 
 Mission under test: a **governed coding-agent harness** (loop / tools /
 adapters / policy / events / retrieval / evidence) — not Cloud UI, not a
@@ -12,10 +12,10 @@ S3 / telemetry / headless / Harbor / prod memory are explicit opt-in gates.
 
 | ID | Mechanism | Command / artifact |
 | --- | --- | --- |
-| A1 | Thin default tree | `cargo check -p a3s-code-core` + tree free of evaluation/research/chromiumoxide/s3 |
+| A1 | Thin default tree | `cargo check -p aster-core` + tree free of evaluation/research/chromiumoxide/s3 |
 | A2 | local-code CI matrix | `cargo check/test --no-default-features --features local-code --lib` |
 | A3 | Dual-path removal | `parallel_task` unregistered; Active-only memory (`candidate_write_stays_inactive`) |
-| A4 | SDK alignment | `cargo test --locked -p a3s-code-core --lib sdk_capabilities` |
+| A4 | SDK alignment | `cargo test --locked -p aster-core --lib sdk_capabilities` |
 | A5 | Agent protocol / checkpoint / run control | `agent_protocol_*`, `*_checkpoint_*`, `run_control_runtime` integration tests |
 | A6 | Tools + permissions | lib tests for builtin tools, style specialty overlays, `update_plan` |
 | A7 | Events / evidence digests | `event_protocol_v1`, `content_digest`, durable-memory product eval hermetic |
@@ -47,7 +47,7 @@ Orchestration: `just harness-convergence-check` covers A1–A4.
 
 Run the full serial matrix with `just layer-c-live-e2e` (defaults to
 `boyue/deepseek-v4-flash`). For bailian Flash qualification set
-`A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash` (remaps to declared
+`ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash` (remaps to declared
 `boyue/bailian/deepseek-v4.1-flash` via `support/layer_c_model.rs`). See
 [FULL_FEATURE_TEST_PLAN.md](FULL_FEATURE_TEST_PLAN.md) §2.
 Typed System-1 decisions are a separate composition. Hermetic coverage uses the
@@ -104,10 +104,10 @@ source. Optimize a measured distribution, not a single transcript.
 
 | Hole | Layer | Oracle |
 | --- | --- | --- |
-| `a3s-code-acp` drops `AgentEvent::UserQuestion` (`agent.rs` catch-all) | A, beside F26 `ask_user` | A question event is delivered on the ACP session channel. A user answer appends `question.answered` for that id. Dropping the event is a failure. Do not assert the question sentence. |
+| `aster-acp` drops `AgentEvent::UserQuestion` (`agent.rs` catch-all) | A, beside F26 `ask_user` | A question event is delivered on the ACP session channel. A user answer appends `question.answered` for that id. Dropping the event is a failure. Do not assert the question sentence. |
 | `DirectoryProjection` is a library map, not a daemon | A, `directory_projection` unit tests already | Stock compose list stays `system/tools/budget/compact/infer`. A script path outside the directory fails. A cron that does not match `now` yields no prompt. |
-| Pager hides commands with no ACP backing | A, existing `A3S_CODE_EFFECTIVE_COMMANDS` visibility test | Every visible a3s command is on the effective list and has a backing effect. Do not re-show `/compact`, `/tasks`, `/memory`, `/hooks`, or `/rewind` until that effect exists. |
-| CLI crate pins `a3s-code-core` 8.7.0 while the TUI agent links workspace 9.0.0 | A8 / release pin | Record which binary serves `a3s code`. Do not add a shim that makes 9.0.0 imitate 8.7.0. |
+| Pager hides commands with no ACP backing | A, existing `ASTER_EFFECTIVE_COMMANDS` visibility test | Every visible aster command is on the effective list and has a backing effect. Do not re-show `/compact`, `/tasks`, `/memory`, `/hooks`, or `/rewind` until that effect exists. |
+| CLI crate pins `aster-core` 8.7.0 while the TUI agent links workspace 9.0.0 | A8 / release pin | Record which binary serves `aster code`. Do not add a shim that makes 9.0.0 imitate 8.7.0. |
 | `review` is a `task` child, `auto_delegation.enabled` defaults off | A, F19 | Explicit `@reviewer` resolves to builtin `review`. The parent prompt still owns the final decision. No test that a reviewer runs on every turn. |
 | `TB-QUAL1` waived; one diagnostic trial scored 0.0 | D1 | Full `terminal-bench@4.0.0` or keep the waiver. One task is not a pass. |
 | `CAR-*` | D3 | Stay out of scope while Cloud is retired. Do not fake a Cloud receipt. |
@@ -115,7 +115,7 @@ source. Optimize a measured distribution, not a single transcript.
 
 Layer C stays on the bailian Flash pin and the file/digest/gate oracles
 already listed above. Do not add a live suite whose only assertion is
-assistant prose. `UserQuestion` is delivered by `a3s-code-acp` on
+assistant prose. `UserQuestion` is delivered by `aster-acp` on
 `request_permission` (`RejectOnce` choices). Hermetic oracles:
 `question_options_are_not_permission_grants`,
 `selected_question_option_is_the_answer_text`,
@@ -181,11 +181,11 @@ suite is not added for them.
 Filled as this goal progresses; do not mark complete without requirement-level
 evidence.
 
-Evidence `/tmp/a3s-session-bailian-r14/` (2026-09-16):
+Evidence `/tmp/aster-session-bailian-r14/` (2026-09-16):
 - Requested id `boyue/bailian/deepseek-v4-flash` is **not** in
-  `./.a3s/config.acl`. Declared bailian Flash is
+  `./.aster/config.acl`. Declared bailian Flash is
   `boyue/bailian/deepseek-v4.1-flash` (Layer C maps the typo → declared id).
-- Live pin: `boyue/bailian/deepseek-v4.1-flash` via `A3S_TEST_MODEL`.
+- Live pin: `boyue/bailian/deepseek-v4.1-flash` via `ASTER_TEST_MODEL`.
 - Session continue: run_control steer + interrupt **2/2**, plus
   `real_model_session_continues_after_interrupt` **PASS** (Cancelled →
   follow-up `CONTINUE_OK`).
@@ -196,9 +196,9 @@ Evidence `/tmp/a3s-session-bailian-r14/` (2026-09-16):
 - Cluster **8/8**, run_control focus **3/3** under bailian Flash.
   Hermetic: `replacement_is_atomic`, `resume_run*`, `session_with_model*`.
 
-Evidence `/tmp/a3s-session-flash-r13/` (2026-09-16):
-- Model pin: `boyue/deepseek-v4-flash` via `./.a3s/config.acl` +
-  `support/layer_c_model.rs` (honors `A3S_TEST_MODEL` when declared).
+Evidence `/tmp/aster-session-flash-r13/` (2026-09-16):
+- Model pin: `boyue/deepseek-v4-flash` via `./.aster/config.acl` +
+  `support/layer_c_model.rs` (honors `ASTER_TEST_MODEL` when declared).
 - WorkBuddy / leaked tool markup: hermetic `llm::text_tool_calls` **9/9**
   (attribute, WorkBuddy bare, WorkBuddy tagged, Claude invoke, DeepSeek
   DSML). Product fix recovers bare/tagged/`invoke` into structured
@@ -214,8 +214,8 @@ Evidence `/tmp/a3s-session-flash-r13/` (2026-09-16):
   (oversized tool_end can flake once under Flash; reconfirmed green).
   Hermetic: `replacement_is_atomic`, `resume_run*`, `session_with_model*`.
 
-Evidence `/tmp/a3s-layer-c-sandbox013-r12/` (2026-09-16):
-- Model pin: `boyue/bailian/deepseek-v4.1-flash` via `./.a3s/config.acl`.
+Evidence `/tmp/aster-layer-c-sandbox013-r12/` (2026-09-16):
+- Model pin: `boyue/bailian/deepseek-v4.1-flash` via `./.aster/config.acl`.
 - Fake-IP LAN (`example.com` → `198.18.0.95`) blocked direct `web_fetch` /
   `download`. Product fix: when every local answer is Clash/Surge Fake-IP
   (`198.18.0.0/15`) and no proxy is configured, resolve via Cloudflare DoH
@@ -229,21 +229,21 @@ Evidence `/tmp/a3s-layer-c-sandbox013-r12/` (2026-09-16):
   agent protocol **3/3**, update_plan / prompt / structured_json / run_control
   PASS. CI: Windows check timeout raised to 45m for serial lib tests.
 
-Clean Layer C matrix against `A3S_CONFIG_FILE=./.a3s/config.acl` with
-`A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash` (in-process pin remaps to
+Clean Layer C matrix against `ASTER_CONFIG_FILE=./.aster/config.acl` with
+`ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash` (in-process pin remaps to
 declared `boyue/bailian/deepseek-v4.1-flash` via `support/layer_c_model.rs`).
 Recipe: `just layer-c-live-e2e`.
 
-Evidence `/tmp/a3s-layer-c-bailian-flash-goal3/` (2026-09-18):
+Evidence `/tmp/aster-layer-c-bailian-flash-goal3/` (2026-09-18):
 - Clean orchestrator with retrieval `TURN_TIMEOUT=420`: **22/23 PASS** including
   workspace retrieval / context / ultracode / extensibility on first pass.
 - Sole fail: `test_harness_loop_live_e2e` narrative-mutation gate hit
   `MODEL_TIMEOUT=180s` (`mutating run timed out`). Non-overfit: raise to
   **420s** (same measured-latency class as retrieval); re-ran **8/8 PASS** in
   72s (`rerun/`). `FINAL.audit.txt`: `LAYER_C_PASS`.
-- Layer A: `/tmp/a3s-layer-a-bailian-goal3/FINAL.txt` **EXIT:0**.
+- Layer A: `/tmp/aster-layer-a-bailian-goal3/FINAL.txt` **EXIT:0**.
 
-Evidence `/tmp/a3s-layer-c-bailian-flash-goal2/` (2026-09-17/18):
+Evidence `/tmp/aster-layer-c-bailian-flash-goal2/` (2026-09-17/18):
 - Fresh clean matrix pin `boyue/bailian/deepseek-v4-flash` →
   `boyue/bailian/deepseek-v4.1-flash`.
 - First orchestrator: **20/23 PASS**; fails were (1) workspace retrieval
@@ -254,11 +254,11 @@ Evidence `/tmp/a3s-layer-c-bailian-flash-goal2/` (2026-09-17/18):
   aligned with context-tools `REAL_LLM_TIMEOUT`); kernel assertions unchanged.
   Retrieval re-verify **3/3 PASS** (`rerun2/`).
 - Combined `FINAL.audit.txt`: `LAYER_C_PASS`. Layer A:
-  `/tmp/a3s-layer-a-bailian-goal2/FINAL.txt` **EXIT:0**.
+  `/tmp/aster-layer-a-bailian-goal2/FINAL.txt` **EXIT:0**.
 
-Evidence `/tmp/a3s-layer-c-bailian-flash-goal/` (2026-09-17):
-- Pin `A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash` against
-  `A3S_CONFIG_FILE=./.a3s/config.acl` → remapped
+Evidence `/tmp/aster-layer-c-bailian-flash-goal/` (2026-09-17):
+- Pin `ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash` against
+  `ASTER_CONFIG_FILE=./.aster/config.acl` → remapped
   `boyue/bailian/deepseek-v4.1-flash`.
 - First serial orchestrator: **22/23 PASS**; only
   `test_extensibility_real_llm` PTC case flaked when the model passed
@@ -267,32 +267,32 @@ Evidence `/tmp/a3s-layer-c-bailian-flash-goal/` (2026-09-17):
   extensibility re-run **4/4 PASS** (`test_extensibility_real_llm.rerun.log`).
   Combined `FINAL.txt`: `LAYER_C_PASS` with flake/rerun note.
 - Layer A after orphan-isolation clear: `harness-convergence-check` **EXIT:0**
-  (`/tmp/a3s-layer-a-bailian-goal/FINAL.txt`). Product fix: clear empty
-  non-`.git` `.a3s-isolate-*` siblings before `create_worktree` (unit
+  (`/tmp/aster-layer-a-bailian-goal/FINAL.txt`). Product fix: clear empty
+  non-`.git` `.aster-isolate-*` siblings before `create_worktree` (unit
   `bind_clears_a_stale_empty_isolation_directory`).
 
-Evidence `/tmp/a3s-layer-c-bailian-flash-r19-full/` (2026-09-16):
+Evidence `/tmp/aster-layer-c-bailian-flash-r19-full/` (2026-09-16):
 - Full serial matrix **LAYER_C_PASS** on bailian Flash (`FINAL.txt`).
 - All 23 Layer C suites PASS (21 core + `advanced-harness` extensibility +
   agent-dir).
-- llvm-cov `--tests` `/tmp/a3s-llvm-cov-r20/`: E2E surfaces all ≥90% lines —
+- llvm-cov `--tests` `/tmp/aster-llvm-cov-r20/`: E2E surfaces all ≥90% lines —
   `agent_protocol` **93.50%**, `agent_protocol_host` **90.91%**,
   `agent_protocol_harness` **90.14%**, `session_sandbox` **95.72%**,
   `streaming` **92.78%**, `stdio` **92.76%**, `process_host` **95.71%**.
 
-Evidence `/tmp/a3s-layer-c-boyue-r11/`:
+Evidence `/tmp/aster-layer-c-boyue-r11/`:
 - Full serial matrix on `boyue/bailian/deepseek-v4.1-flash` via
   `just layer-c-live-e2e`. First pass failed only
   `test_deepseek_adversarial_e2e` cancel assert when session created a
-  workspace `.a3s/` root (harness-owned, same class as `.a3s-code`). Fixed by
-  ignoring `.a3s` / `.a3s-code` / `.git` in the cancel workspace filter
+  workspace `.aster/` root (harness-owned, same class as `.aster`). Fixed by
+  ignoring `.aster` / `.aster` / `.git` in the cancel workspace filter
   (aligned with harness loop/capabilities live helpers). Adversarial retry
-  **3/3 PASS**; `FINAL.txt`: `LAYER_C_PASS … (adversarial-retry after .a3s
+  **3/3 PASS**; `FINAL.txt`: `LAYER_C_PASS … (adversarial-retry after .aster
   harness filter)`.
 - Coverage delta (non-overfit): `store_persists_main_agent_reply_until_reopen`
   for session-review address reply persistence.
 
-Evidence `/tmp/a3s-issue-fix-live-r10/`:
+Evidence `/tmp/aster-issue-fix-live-r10/`:
 - `test_issue_fix_live_e2e` **4/4 PASS** on `boyue/bailian/deepseek-v4.1-flash`
   (`FINAL.txt`: `ISSUE_FIX_LIVE_PASS`). Kernel checks only: non-empty streamed
   tool names across write→read turns; ≥2 MCP `notifications/progress` during
@@ -301,7 +301,7 @@ Evidence `/tmp/a3s-issue-fix-live-r10/`:
   injected `ProcessHostBashSandbox` writes `host_token.txt` (Harbor path, not
   native Seatbelt success masking).
 
-Evidence `/tmp/a3s-agent-protocol-live-r10/`:
+Evidence `/tmp/aster-agent-protocol-live-r10/`:
 - `test_agent_protocol_live_e2e` **3/3 PASS** on `boyue/bailian/deepseek-v4.1-flash`
   (`FINAL.txt`: `AGENT_PROTOCOL_LIVE_PASS`). Kernel checks only: Harness Start
   receipt + terminal event page + replayed Start; live `write` projects
@@ -315,12 +315,12 @@ Hermetic coverage deltas (non-overfit, kernel branches of the same fixes):
   `call_{index}` when the gateway never provides a tool-call id (`#139` class)
 - `from_run_page_projects_oversized_tool_end_instead_of_400` (`#138`)
 - Prompt contract updated to native-default / process-host opt-in wording (`#140`)
-- llvm-cov `--tests` `/tmp/a3s-fix-cov-r10b/`: `agent_protocol` **85.9%**,
+- llvm-cov `--tests` `/tmp/aster-fix-cov-r10b/`: `agent_protocol` **85.9%**,
   `agent_protocol_host` **89.4%**, `agent_protocol_harness` **79.6%**, weighted
   protocol ≈ **85.2%** (prior ≈ **82.8%**); `stdio` **92.5%**, `process_host`
   **89.7%**, `session_sandbox` **89.8%**, `streaming` **69.3%**.
 
-Evidence `/tmp/a3s-layer-c-boyue-r10/`:
+Evidence `/tmp/aster-layer-c-boyue-r10/`:
 - Full serial matrix via `just layer-c-live-e2e` on
   `boyue/bailian/deepseek-v4.1-flash`. First pass failed only
   `test_workspace_retrieval_real_llm` (3/3) with kernel evidence
@@ -329,18 +329,18 @@ Evidence `/tmp/a3s-layer-c-boyue-r10/`:
   empty names). Fixed by ignoring empty id continuations and synthesizing
   `call_{index}` when the stream never provides an id.
 - After the empty-id fix: retrieval **3/3 PASS**
-  (`/tmp/a3s-layer-c-boyue-r10/retry2/`); issue-fix reconfirmed **4/4**
-  (`/tmp/a3s-issue-fix-live-r10b/`). `FINAL.txt`:
+  (`/tmp/aster-layer-c-boyue-r10/retry2/`); issue-fix reconfirmed **4/4**
+  (`/tmp/aster-issue-fix-live-r10b/`). `FINAL.txt`:
   `LAYER_C_PASS … (retrieval-retry after empty tool-call id fix)`.
 
-Evidence `/tmp/a3s-issue-fix-live/`:
+Evidence `/tmp/aster-issue-fix-live/`:
 - Prior `test_issue_fix_live_e2e` 3/3 PASS on `boyue/bailian/deepseek-v4.1-flash`
   (`FINAL.txt`: `ISSUE_FIX_LIVE_PASS`). Kernel checks only: non-empty streamed
   tool names across write→read turns; ≥2 MCP `notifications/progress` during
   live `tools/call`; oversized `tool_end` still projects via
   `AgentProtocolEventPageV1::from_run_page`.
 
-Evidence `/tmp/a3s-agent-protocol-live/`:
+Evidence `/tmp/aster-agent-protocol-live/`:
 - `test_agent_protocol_live_e2e` **3/3 PASS** on `boyue/bailian/deepseek-v4.1-flash`
   (`FINAL.txt`: `AGENT_PROTOCOL_LIVE_PASS`). Kernel checks only: Harness Start
   receipt + terminal event page + replayed Start; live `write` projects
@@ -353,7 +353,7 @@ Evidence `/tmp/a3s-agent-protocol-live/`:
   / capacity / closed error arms — not live LLM paths). Weighted protocol
   surface ≈ **82.8%** lines.
 
-Evidence `/tmp/a3s-layer-c-boyue-v858-r9/`:
+Evidence `/tmp/aster-layer-c-boyue-v858-r9/`:
 - Full serial matrix green on `boyue/bailian/deepseek-v4.1-flash`
   (`FINAL.txt`: `LAYER_C_PASS … (capabilities-retry)`).
 - Initial capabilities fail was DNS lookup for `example.com` on `download`;
@@ -387,12 +387,12 @@ Evidence `/tmp/a3s-layer-c-boyue-v858-r9/`:
 | `test_memory_store_real_llm` | 2/2 |
 | `test_extensibility_real_llm` (`advanced-harness`) | 4/4 |
 
-Prior r6 under `/tmp/a3s-layer-c-boyue-v858-r6/` is the last clean pass before
+Prior r6 under `/tmp/aster-layer-c-boyue-v858-r6/` is the last clean pass before
 these coverage deltas. r7/r8 aborted mid-matrix after probe fixes.
 
 | Layer | Status | Evidence |
 | --- | --- | --- |
 | A | Pass | content-bind Verify + hermetic + SDK matrix (+ batch) + zh-CN honesty |
 | B | Prior hermetic pass | Advanced feature suites unchanged this pass |
-| C | Pass (boyue bailian Flash) | r19 `/tmp/a3s-layer-c-bailian-flash-r19-full/` LAYER_C_PASS; llvm-cov r20 E2E surfaces ≥90% |
+| C | Pass (boyue bailian Flash) | r19 `/tmp/aster-layer-c-bailian-flash-r19-full/` LAYER_C_PASS; llvm-cov r20 E2E surfaces ≥90% |
 | D | Blocked externally until Harbor/host/CAR reports | |

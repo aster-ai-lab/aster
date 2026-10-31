@@ -1,12 +1,12 @@
 //! Health-based service discovery provider
 //!
-//! Polls backend seed URLs for `/.well-known/a3s-service.json` metadata
+//! Polls backend seed URLs for `/.well-known/aster-service.json` metadata
 //! and health endpoints. Discovered services are merged with static config
 //! and trigger `Gateway::reload()` on change.
 //!
 //! ## Contract
 //!
-//! Backends expose a JSON document at `/.well-known/a3s-service.json`:
+//! Backends expose a JSON document at `/.well-known/aster-service.json`:
 //!
 //! ```json
 //! {
@@ -36,7 +36,7 @@ use std::time::Duration;
 use tokio::sync::{oneshot, RwLock};
 
 /// Well-known path for service metadata (RFC 8615)
-pub const WELL_KNOWN_PATH: &str = "/.well-known/a3s-service.json";
+pub const WELL_KNOWN_PATH: &str = "/.well-known/aster-service.json";
 const MAX_METADATA_BYTES: usize = 64 * 1024;
 const MAX_METADATA_NAME_BYTES: usize = 128;
 const MAX_METADATA_VERSION_BYTES: usize = 128;
@@ -87,7 +87,7 @@ fn default_weight() -> u32 {
 pub struct DiscoveredService {
     /// Base URL of the seed that was probed
     pub seed_url: String,
-    /// Parsed service metadata from `/.well-known/a3s-service.json`
+    /// Parsed service metadata from `/.well-known/aster-service.json`
     pub metadata: ServiceMetadata,
     /// Whether the health endpoint returned 2xx
     pub healthy: bool,
@@ -1386,7 +1386,7 @@ mod tests {
 
     #[test]
     fn test_well_known_path() {
-        assert_eq!(WELL_KNOWN_PATH, "/.well-known/a3s-service.json");
+        assert_eq!(WELL_KNOWN_PATH, "/.well-known/aster-service.json");
     }
 
     // --- update_cache / discovered ---

@@ -5,16 +5,16 @@
 
 mod support;
 
-use a3s_code_core::budget::{BudgetDecision, BudgetGuard};
-use a3s_code_core::fact_control::{read_workspace_facts, thread_for_session};
-use a3s_code_core::harness_loop::CompletionTerminal;
-use a3s_code_core::llm::TokenUsage;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::budget::{BudgetDecision, BudgetGuard};
+use aster_core::fact_control::{read_workspace_facts, thread_for_session};
+use aster_core::harness_loop::CompletionTerminal;
+use aster_core::llm::TokenUsage;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentEvent, CompletionAttestor, MutatedPathRecord, PlanningMode, RunStatus,
     SessionOptions, ToolPresentationProfileV1,
 };
-use a3s_effect::{
+use aster_effect::{
     tool_args_digest, ToolExecutionOutcome, ToolExecutionResultV1, ToolObservationCompleteness,
     ToolPreparedV1,
 };
@@ -25,7 +25,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use a3s_code_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
+use aster_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
 
 const TIMEOUT: Duration = Duration::from_secs(240);
 const MAX_CALLS: usize = 8;
@@ -49,12 +49,12 @@ const DENY_PROMPT: &str = "Use read once with exactly files=[{\"path\":\"src/lib
 struct RefuseCommands(AtomicUsize);
 
 #[async_trait::async_trait]
-impl a3s_code_core::sandbox::BashSandbox for RefuseCommands {
+impl aster_core::sandbox::BashSandbox for RefuseCommands {
     async fn exec_command(
         &self,
         _: &str,
         _: &str,
-    ) -> anyhow::Result<a3s_code_core::sandbox::SandboxOutput> {
+    ) -> anyhow::Result<aster_core::sandbox::SandboxOutput> {
         self.0.fetch_add(1, Ordering::SeqCst);
         anyhow::bail!("scoped batch qualification refuses all commands")
     }
@@ -207,11 +207,11 @@ async fn scenario(deny_mixed_batch: bool) {
             };
         }
     }
-    let config = a3s_code_core::config::CodeConfig {
+    let config = aster_core::config::CodeConfig {
         providers,
         default_model: Some(route.clone()),
         user_instructions_dir: Some(root.join("personal")),
-        memory: Some(a3s_code_core::memory::MemoryConfig {
+        memory: Some(aster_core::memory::MemoryConfig {
             llm_extraction: false,
             prune_policy: None,
             ..Default::default()
@@ -258,7 +258,7 @@ async fn scenario(deny_mixed_batch: bool) {
         .with_parse_retries(0)
         .with_max_tool_rounds(6)
         .with_retention_limits(
-            a3s_code_core::retention::SessionRetentionLimits::default()
+            aster_core::retention::SessionRetentionLimits::default()
                 .with_max_runs(1)
                 .with_max_events_per_run(65_536)
                 .with_max_event_bytes_per_run(16 * 1024 * 1024),
@@ -332,7 +332,7 @@ async fn scenario(deny_mixed_batch: bool) {
         .map(|(p, _, _)| (*p, bounded_bytes(&root.join(p))))
         .collect();
     let observed = serde_json::json!({
-        "schema": "a3s.code.scoped-batch-live.evidence.v1", "route": route,
+        "schema": "aster.code.scoped-batch-live.evidence.v1", "route": route,
         "deny_mixed_batch": deny_mixed_batch, "session_id": session_id, "run_id": snapshot.id,
         "status": snapshot.status, "text": text, "usage": usage, "completion": completion,
         "forced_stop": forced_stop, "seconds": seconds,

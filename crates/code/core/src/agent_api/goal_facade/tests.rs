@@ -70,17 +70,17 @@ async fn prove_session(
     let first = session.apply_goal_definition(create.clone()).unwrap();
     assert_eq!(first.binding.goal_revision, 1);
     let thread = crate::fact_control::thread_for_session(&session.session_id);
-    let log = a3s_effect::FileLog::open(&directory).unwrap();
+    let log = aster_effect::FileLog::open(&directory).unwrap();
     let before = log.read(&thread).unwrap();
     assert_eq!(
         before[0].kind,
         crate::standing_context::STANDING_CONTEXT_FACT_KIND
     );
-    assert_eq!(before.last().unwrap().kind, "a3s.goal.created");
+    assert_eq!(before.last().unwrap().kind, "aster.goal.created");
     assert_eq!(
         before
             .iter()
-            .filter(|fact| fact.kind == "a3s.work-policy.admitted")
+            .filter(|fact| fact.kind == "aster.work-policy.admitted")
             .count(),
         usize::from(with_policy)
     );
@@ -442,7 +442,7 @@ async fn goal_definition_requires_original_owner_and_rejects_foreign_or_busy_bef
         .to_string()
         .contains("goal.not_found"));
     let directory = crate::session_folder::effect_log_dir(workspace.path(), "session");
-    let log = a3s_effect::FileLog::open(&directory).unwrap();
+    let log = aster_effect::FileLog::open(&directory).unwrap();
     assert!(log.read("session").unwrap().is_empty());
     let writer = log.try_writer_fence().unwrap();
     assert!(first
@@ -483,7 +483,7 @@ async fn goal_definition_recovers_each_initialization_prefix_and_rejects_legacy_
         let create = command(&session, Some(policy.digest().unwrap()));
         session.apply_goal_definition(create.clone()).unwrap();
         session.close().await;
-        let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+        let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
             workspace.path(),
             "prefix",
         ))
@@ -505,7 +505,7 @@ async fn goal_definition_recovers_each_initialization_prefix_and_rejects_legacy_
         assert_eq!(&complete[..retained], prefix.as_slice());
         resumed.close().await;
         // An old conversation prevents a new policy before standing or Goal writes.
-        let old = a3s_effect::NewFact {
+        let old = aster_effect::NewFact {
             kind: "user.message".into(),
             key: "old-message".into(),
             payload: serde_json::json!({"text":"old"}),

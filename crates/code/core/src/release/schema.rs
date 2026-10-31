@@ -1,4 +1,4 @@
-use a3s_acl::{AttributeSchema, BlockSchema, Cardinality, Schema, ValueSchema};
+use aster_acl::{AttributeSchema, BlockSchema, Cardinality, Schema, ValueSchema};
 
 pub(crate) fn release_schema() -> Schema {
     let artifact = Schema::new()

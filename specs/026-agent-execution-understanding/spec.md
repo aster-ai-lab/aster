@@ -118,8 +118,8 @@
 - [x] New behavior has a small hermetic test in the owning package
 - [x] Closed sets: every new enum has `parse()` / `as_str()`；TypeScript 边界使用等价封闭 Schema／union 与未知值拒绝，Rust 若新增枚举才使用 `parse()` / `as_str()`
 - [x] No production `unwrap()` / `expect()` without an infallibility comment
-- [x] Internal `a3s-*` dependencies stay on a path in this repository
-- [x] Product configuration, if any, is ACL parsed by `a3s-acl`；本期不新增产品配置
+- [x] Internal `aster-*` dependencies stay on a path in this repository
+- [x] Product configuration, if any, is ACL parsed by `aster-acl`；本期不新增产品配置
 - [x] Evidence target: `docs/evidence/desktop/<date>-agent-execution-understanding/OUTCOME.md` when the landing is recorded
 
 ## Success Criteria *(mandatory)*

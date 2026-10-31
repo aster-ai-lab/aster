@@ -1,6 +1,6 @@
 //! Reproducible indexed-BM25 versus scan-BM25 latency fixture.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema, Fts,
     IndexParams, SearchQuery,
 };

@@ -109,7 +109,7 @@ pub(super) async fn run_foreground(
     let tail_console_log = console_log.clone();
     let tail_console_err = console_err.clone();
     let runtime_filter = cfg!(target_os = "windows")
-        .then(|| Arc::new(a3s_box_core::log::RuntimeConsoleFilter::new()));
+        .then(|| Arc::new(aster_box_core::log::RuntimeConsoleFilter::new()));
     let stdout_runtime_filter = runtime_filter.clone();
     let stderr_runtime_filter = runtime_filter;
     let mut log_handle = tokio::spawn(async move {
@@ -186,7 +186,7 @@ pub(super) async fn run_foreground(
             }
         }
     };
-    a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+    aster_box_core::lifecycle_profile::record_lifecycle_phase(
         "foreground.command_execution",
         foreground_start.elapsed(),
     );
@@ -194,13 +194,13 @@ pub(super) async fn run_foreground(
     let natural_exit = stop_reason == ForegroundStopReason::ProcessExited;
     let sandbox_natural_exit = natural_exit && ctx.record.isolation.is_sandbox();
     if sandbox_natural_exit {
-        // The generation-owned worker exits only after the A3S OCI owner has closed both
+        // The generation-owned worker exits only after the Aster OCI owner has closed both
         // raw console streams and projected their final records. Once it is
         // gone, the terminal tailers can catch up to immutable file lengths
         // without an additional writer-quiet grace period.
         let structured_log_drain_start = std::time::Instant::now();
         wait_for_sandbox_structured_log_drain(&ctx).await?;
-        a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+        aster_box_core::lifecycle_profile::record_lifecycle_phase(
             "foreground.structured_log_drain",
             structured_log_drain_start.elapsed(),
         );
@@ -216,7 +216,7 @@ pub(super) async fn run_foreground(
         natural_exit,
     )
     .await;
-    a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+    aster_box_core::lifecycle_profile::record_lifecycle_phase(
         "foreground.raw_log_drain",
         raw_log_drain_start.elapsed(),
     );
@@ -231,7 +231,7 @@ pub(super) async fn run_foreground(
     if stop_reason == ForegroundStopReason::ProcessExited && !sandbox_natural_exit {
         let structured_log_drain_start = std::time::Instant::now();
         wait_for_sandbox_structured_log_drain(&ctx).await?;
-        a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+        aster_box_core::lifecycle_profile::record_lifecycle_phase(
             "foreground.structured_log_drain",
             structured_log_drain_start.elapsed(),
         );
@@ -246,7 +246,7 @@ pub(super) async fn run_foreground(
     let exit_code = foreground_exit_code(stop_reason, persisted_exit_code);
     let archive_start = std::time::Instant::now();
     archive_auto_removed_logs(&ctx, args.rm, exit_code, stop_reason.stopped_by_user());
-    a3s_box_core::lifecycle_profile::record_lifecycle_phase(
+    aster_box_core::lifecycle_profile::record_lifecycle_phase(
         "foreground.archive",
         archive_start.elapsed(),
     );
@@ -281,7 +281,7 @@ async fn wait_for_sandbox_structured_log_drain(
     let box_dir = ctx.box_dir.clone();
     let box_id = ctx.box_id.clone();
     let drained = tokio::task::spawn_blocking(move || {
-        a3s_box_runtime::vm::reap::wait_for_recorded_sandbox_log_drain(
+        aster_box_runtime::vm::reap::wait_for_recorded_sandbox_log_drain(
             &box_dir,
             &box_id,
             std::time::Duration::from_secs(3),
@@ -361,7 +361,7 @@ pub(super) fn foreground_exit_code(
     match reason {
         // A dead runtime without a persisted guest result is not evidence of a
         // successful command. This happens when the VM/shim fails before
-        // guest-init can write `.a3s_exit_code`; returning `None` here used to
+        // guest-init can write `.aster_exit_code`; returning `None` here used to
         // make foreground `run --rm` fall through to CLI exit status 0.
         ForegroundStopReason::ProcessExited => vm_exit_code.or(Some(1)),
         ForegroundStopReason::UserInterrupted(signal) => vm_exit_code.or(Some(128 + signal)),
@@ -381,18 +381,18 @@ pub(super) fn foreground_health_stop_reason(exit_code: Option<i32>) -> Foregroun
 pub(super) fn foreground_workload_exit_code(
     box_dir: &std::path::Path,
     recorded_exit_code: Option<i32>,
-    isolation: a3s_box_core::ExecutionIsolation,
+    isolation: aster_box_core::ExecutionIsolation,
     trust_oci_wait: bool,
 ) -> Option<i32> {
     // Sandbox and OCI-routed DedicatedVm/MicroVM publish an authenticated
     // container wait status. Trust that provider exit; do not require a second
-    // guest `.a3s_exit_code` proof (legacy libkrun MicroVM still does).
+    // guest `.aster_exit_code` proof (legacy libkrun MicroVM still does).
     let policy = if trust_oci_wait || isolation.is_sandbox() {
-        a3s_box_runtime::rootfs::ProviderExitPolicy::TrustProvider
+        aster_box_runtime::rootfs::ProviderExitPolicy::TrustProvider
     } else {
-        a3s_box_runtime::rootfs::ProviderExitPolicy::RequireGuestProof
+        aster_box_runtime::rootfs::ProviderExitPolicy::RequireGuestProof
     };
-    a3s_box_runtime::rootfs::resolve_workload_exit_code_for(box_dir, recorded_exit_code, policy)
+    aster_box_runtime::rootfs::resolve_workload_exit_code_for(box_dir, recorded_exit_code, policy)
 }
 
 async fn managed_process_alive(ctx: &mut RunContext) -> bool {
@@ -418,7 +418,7 @@ async fn managed_process_alive(ctx: &mut RunContext) -> bool {
         }
     } else {
         ctx.record.pid.is_some_and(|pid| {
-            a3s_box_runtime::is_process_alive_with_identity(pid, ctx.record.pid_start_time)
+            aster_box_runtime::is_process_alive_with_identity(pid, ctx.record.pid_start_time)
         })
     }
 }
@@ -429,12 +429,12 @@ async fn managed_runtime_healthy(ctx: &RunContext) -> bool {
         return true;
     }
     if !ctx.record.pid.is_some_and(|pid| {
-        a3s_box_runtime::is_process_alive_with_identity(pid, ctx.record.pid_start_time)
+        aster_box_runtime::is_process_alive_with_identity(pid, ctx.record.pid_start_time)
     }) {
         return false;
     }
     let probe = async {
-        let client = a3s_box_runtime::ExecClient::connect(&ctx.exec_socket_path)
+        let client = aster_box_runtime::ExecClient::connect(&ctx.exec_socket_path)
             .await
             .ok()?;
         client.heartbeat().await.ok().filter(|ready| *ready)
@@ -452,13 +452,13 @@ async fn managed_runtime_healthy(ctx: &RunContext) -> bool {
         true
     } else {
         ctx.record.pid.is_some_and(|pid| {
-            a3s_box_runtime::is_process_alive_with_identity(pid, ctx.record.pid_start_time)
+            aster_box_runtime::is_process_alive_with_identity(pid, ctx.record.pid_start_time)
         })
     }
 }
 
 pub(super) fn run_context_uses_oci(ctx: &RunContext) -> bool {
-    // Linux Sandbox executions are hosted by the A3S OCI runtime through the
+    // Linux Sandbox executions are hosted by the Aster OCI runtime through the
     // VM backend. Their durable route remains `BoxVm` for compatibility, so
     // the route field alone cannot identify the live owner or its log worker.
     // Treat the isolation mode as OCI-backed on Linux as well as honoring the
@@ -466,7 +466,7 @@ pub(super) fn run_context_uses_oci(ctx: &RunContext) -> bool {
     ctx.record
         .managed_execution
         .as_ref()
-        .is_some_and(a3s_box_runtime::ManagedExecutionMetadata::is_oci_routed)
+        .is_some_and(aster_box_runtime::ManagedExecutionMetadata::is_oci_routed)
         || (cfg!(target_os = "linux") && ctx.record.isolation.is_sandbox())
 }
 

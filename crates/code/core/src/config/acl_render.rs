@@ -4,7 +4,7 @@ use crate::queue::{
     LaneHandlerConfig, PriorityBoostConfig, RateLimitConfig, RetryPolicyConfig, SessionLane,
     TaskHandlerMode,
 };
-use a3s_acl::{Block, Document, Value};
+use aster_acl::{Block, Document, Value};
 use std::collections::HashMap;
 use std::path::Path;
 
@@ -732,6 +732,12 @@ fn render_provider(provider: &ProviderConfig, original: &CodeConfig, document: &
         .find(|item| item.name == provider.name);
     let mut block = base_block(document, &["providers"], Some(&provider.name), "providers");
     block.labels = vec![provider.name.clone()];
+    set_attr(
+        &mut block,
+        &["protocol"],
+        "protocol",
+        provider.protocol.map(|protocol| string(protocol.as_str())),
+    );
     let original_api_key = find_attr(&block, &["api_key", "apiKey"]).cloned();
     set_attr(
         &mut block,
@@ -1151,7 +1157,7 @@ fn block_entry(names: &'static [&'static str], block: Option<Block>) -> SingleEn
 }
 
 fn generate_block(block: Block) -> String {
-    a3s_acl::generate_acl(&Document {
+    aster_acl::generate_acl(&Document {
         blocks: vec![block],
     })
 }

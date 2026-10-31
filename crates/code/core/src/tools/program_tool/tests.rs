@@ -781,7 +781,7 @@ fn program_tool_accepts_plain_function_run_entrypoint() {
     )
     .unwrap();
 
-    assert!(source.contains("globalThis.__a3sResultJson"));
+    assert!(source.contains("globalThis.__asterResultJson"));
     assert!(source.contains("async function run"));
 }
 
@@ -1006,7 +1006,7 @@ impl Tool for EvidenceTool {
         } else {
             ToolOutput::success(content)
         };
-        Ok(output.with_metadata(serde_json::json!({"artifact_uri":"a3s://tool-output/fixture", "source":"controlled-check"})))
+        Ok(output.with_metadata(serde_json::json!({"artifact_uri":"aster://tool-output/fixture", "source":"controlled-check"})))
     }
 }
 
@@ -1074,7 +1074,7 @@ async fn program_child_truncation_preserves_structured_flags_original_bytes_and_
     assert!(call["output_bytes"].as_u64().unwrap() <= 1024);
     assert_eq!(
         call["metadata"]["artifact_uri"],
-        "a3s://tool-output/fixture"
+        "aster://tool-output/fixture"
     );
 }
 

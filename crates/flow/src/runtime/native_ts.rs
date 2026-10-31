@@ -17,10 +17,10 @@ const ARTIFACT_FILE_NAME: &str = "artifact";
 #[cfg(windows)]
 const ARTIFACT_FILE_NAME: &str = "artifact.exe";
 const ARTIFACT_MANIFEST_FILE_NAME: &str = "manifest.json";
-const ARTIFACT_MANIFEST_FORMAT: &str = "a3s.flow.native_ts.cache.v1";
+const ARTIFACT_MANIFEST_FORMAT: &str = "aster.flow.native_ts.cache.v1";
 const MAX_ARTIFACT_MANIFEST_BYTES: u64 = 16 * 1024;
-const COMPILER_FINGERPRINT_DOMAIN: &[u8] = b"a3s.flow.native_ts.compiler.v2";
-const ARTIFACT_FINGERPRINT_DOMAIN: &[u8] = b"a3s.flow.native_ts.artifact.contents.v1";
+const COMPILER_FINGERPRINT_DOMAIN: &[u8] = b"aster.flow.native_ts.compiler.v2";
+const ARTIFACT_FINGERPRINT_DOMAIN: &[u8] = b"aster.flow.native_ts.artifact.contents.v1";
 const MAX_STABLE_READ_ATTEMPTS: usize = 3;
 const MAX_PUBLISH_ATTEMPTS: usize = 3;
 

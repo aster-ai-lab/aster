@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{semantic_error, DocumentNode, OfficeNodeType};
 use crate::spreadsheet_filter::{criteria_type, decode_custom_pattern};
@@ -376,7 +376,7 @@ fn boolean_attribute(
     }
 }
 
-fn filter_error(part_name: &str, reason: impl Into<String>) -> a3s_use_core::UseError {
+fn filter_error(part_name: &str, reason: impl Into<String>) -> aster_use_core::UseError {
     semantic_error(
         "use.office.spreadsheet_filter_invalid",
         format!(

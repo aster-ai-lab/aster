@@ -6,12 +6,12 @@
 //! process address spaces, the shared Flow journal, and the shared lease
 //! sidecar.
 
-use a3s_code_core::tools::{Tool, ToolContext, ToolExecutor, ToolOutput};
-use a3s_code_core::{
+use aster_core::tools::{Tool, ToolContext, ToolExecutor, ToolOutput};
+use aster_core::{
     CrossProcessFlowEventStore, DynamicWorkflowControlSnapshot, DynamicWorkflowRuntime,
     DynamicWorkflowTool, FlowDecisionClaimState, ToolCapabilities,
 };
-use a3s_flow::{FlowEngine, FlowEvent, FlowEventStore, WorkflowProgress};
+use aster_flow::{FlowEngine, FlowEvent, FlowEventStore, WorkflowProgress};
 use async_trait::async_trait;
 use serde_json::{json, Value};
 use std::path::{Path, PathBuf};
@@ -21,11 +21,11 @@ use std::sync::Arc;
 use std::time::Duration;
 use tokio::process::{Child, Command};
 
-const ROLE_ENV: &str = "A3S_DYNAMIC_WORKFLOW_CONTROL_ROLE";
-const WORKSPACE_ENV: &str = "A3S_DYNAMIC_WORKFLOW_CONTROL_WORKSPACE";
-const MARKER_ENV: &str = "A3S_DYNAMIC_WORKFLOW_CONTROL_MARKER";
-const GO_ENV: &str = "A3S_DYNAMIC_WORKFLOW_CONTROL_GO";
-const PROGRESS_ID_ENV: &str = "A3S_DYNAMIC_WORKFLOW_CONTROL_PROGRESS_ID";
+const ROLE_ENV: &str = "ASTER_DYNAMIC_WORKFLOW_CONTROL_ROLE";
+const WORKSPACE_ENV: &str = "ASTER_DYNAMIC_WORKFLOW_CONTROL_WORKSPACE";
+const MARKER_ENV: &str = "ASTER_DYNAMIC_WORKFLOW_CONTROL_MARKER";
+const GO_ENV: &str = "ASTER_DYNAMIC_WORKFLOW_CONTROL_GO";
+const PROGRESS_ID_ENV: &str = "ASTER_DYNAMIC_WORKFLOW_CONTROL_PROGRESS_ID";
 const RUN_ID: &str = "cross-process-control-run";
 const PROGRESS_RUN_ID: &str = "cross-process-progress-run";
 
@@ -95,7 +95,7 @@ impl FlowEventStore for ConflictOnceStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -104,7 +104,7 @@ impl FlowEventStore for ConflictOnceStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         if self.injected.swap(true, Ordering::SeqCst) {
             return self
                 .inner
@@ -120,7 +120,7 @@ impl FlowEventStore for ConflictOnceStore {
             .append_if_sequence(run_id, expected_sequence, injected)
             .await
         {
-            Ok(_) | Err(a3s_flow::FlowError::EventConflict { .. }) => {}
+            Ok(_) | Err(aster_flow::FlowError::EventConflict { .. }) => {}
             Err(error) => return Err(error),
         }
         self.inner
@@ -128,11 +128,11 @@ impl FlowEventStore for ConflictOnceStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -235,7 +235,7 @@ async fn dynamic_workflow_control_recovers_after_process_crash_and_retries_confl
         serde_json::from_slice(&tokio::fs::read(&recovered).await?)?;
     assert_eq!(
         recovered_snapshot.status,
-        a3s_flow::WorkflowRunStatus::Cancelled
+        aster_flow::WorkflowRunStatus::Cancelled
     );
     assert!(recovered_snapshot.cancellation_requested);
     assert!(matches!(
@@ -255,7 +255,7 @@ async fn dynamic_workflow_control_recovers_after_process_crash_and_retries_confl
         &executor.registry().context(),
     )?;
     let progress = progress_control.drive().await?;
-    assert_eq!(progress.status, a3s_flow::WorkflowRunStatus::Suspended);
+    assert_eq!(progress.status, aster_flow::WorkflowRunStatus::Suspended);
     let progress_a_marker = workspace.path().join("progress-a-ready");
     let progress_b_marker = workspace.path().join("progress-b-ready");
     let progress_a = spawn_progress_helper(
@@ -356,7 +356,7 @@ async fn dynamic_workflow_process_helper() -> anyhow::Result<()> {
             let go = PathBuf::from(std::env::var(GO_ENV)?);
             let executor = ToolExecutor::new(workspace.display().to_string());
             let inner = Arc::new(CrossProcessFlowEventStore::new(
-                a3s_code_core::dynamic_workflow_store_path(&workspace),
+                aster_core::dynamic_workflow_store_path(&workspace),
             ));
             let store = Arc::new(ConflictOnceStore {
                 inner,

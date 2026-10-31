@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_box_core::OperationId;
+use aster_box_core::OperationId;
 use serde::Serialize;
 
 use super::*;
@@ -31,7 +31,7 @@ build "oci" {{
   file = "Dockerfile"
   network = "none"
   platform = "{}"
-  schema = "a3s.box.build-plan.v1"
+  schema = "aster.box.build-plan.v1"
 }}
 "#,
         platform()
@@ -112,7 +112,7 @@ async fn recorded_build_replays_the_exact_output_after_reconstruction() {
         .receipt
         .output
         .reference
-        .starts_with("a3s-box/build-operation:"));
+        .starts_with("aster-box/build-operation:"));
     assert_eq!(first.receipt.output.descriptor, first.output.descriptor);
     assert_eq!(first.receipt.output.platform, first.output.platform);
     assert_eq!(

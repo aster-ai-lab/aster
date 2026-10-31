@@ -8,7 +8,7 @@ read. A principle marked **NON-NEGOTIABLE** may not be waived by any
 spec, plan, or task.
 
 One constitution covers this repository. A change follows the regime
-of the path it edits. Crate identifiers that start with `a3s-` remain.
+of the path it edits. Crate identifiers that start with `aster-` remain.
 
 ## Regimes
 
@@ -23,8 +23,10 @@ for Aster desktop tenants; membership in the root Cargo workspace;
 
 ### Control-plane regime
 
-Paths: `apps/cloud`, `apps/api`, `apps/auth`, `apps/billing`,
-`apps/config`.
+Paths: `apps/cloud`, `apps/api`, `apps/control-plane` (auth,
+billing, config, runtime, runner). Compat symlinks keep the legacy
+`apps/auth`, `apps/billing`, `apps/config`, `apps/runtime`, and
+`apps/runner` paths resolvable.
 
 Obligations: bounded contexts (`domain/`, `application/`,
 `infrastructure/`, `presentation/`, `published/`). Cloud schema
@@ -33,10 +35,11 @@ with `LATEST_CLOUD_MIGRATION_VERSION`. HTTP surfaces use
 `#[controller]` with a guard and `auth.scopes`. A repository proof
 is a dual-adapter proof: the same scenario runs on the in-memory
 adapter and on live PostgreSQL. PostgreSQL harnesses use
-`A3S_CLOUD_TEST_POSTGRES_URL` and `--test-threads=1`.
+`ASTER_CLOUD_TEST_POSTGRES_URL` and `--test-threads=1`.
 
-`apps/api` and `apps/cloud` keep their own Cargo workspaces. They
-are not members of the root workspace.
+`apps/api`, `apps/cloud`, and `apps/control-plane` keep their own
+Cargo workspaces. They are not members of the root workspace.
+`apps/gateway` stays in the root workspace because Studio embeds it.
 
 ### Shared-crate copies
 
@@ -92,10 +95,10 @@ and do not grow another workspace. Cross-crate use goes through the
 owning crate's public API. Preserve upstream package names and
 public Rust APIs unless a task explicitly requires a rename.
 
-On a control-plane path, `apps/api` and `apps/cloud` keep the
-workspaces named in the control-plane regime. Domain code does not
-import presentation or infrastructure. Cross-context data crosses
-`published/` types.
+On a control-plane path, `apps/api`, `apps/cloud`, and
+`apps/control-plane` keep the workspaces named in the control-plane
+regime. Domain code does not import presentation or infrastructure.
+Cross-context data crosses `published/` types.
 
 ### VI. Schema Changes Follow the Path
 
@@ -121,7 +124,7 @@ Product configuration of a transport is an ACL block.
 
 ### IX. One Configuration Language
 
-ACL (`.acl`), parsed only by `a3s-acl`, is the only product
+ACL (`.acl`), parsed only by `aster-acl`, is the only product
 configuration language. Never create, restore, document, or parse
 another product configuration format. **NON-NEGOTIABLE.**
 
@@ -168,7 +171,7 @@ for a library, product, or tool. Rust libraries go under `crates/`,
 applications under `apps/`, and TypeScript or React libraries under
 `packages/`. A second checkout of this repository is a git worktree.
 The user-authorized desktop source boundary is the private submodule at
-`apps/studio` (`git@github.com:kense-labs/studio.git`, `main`). It remains in
+`apps/studio` (`git@github.com:aster-ai-lab/studio.git`, `main`). It remains in
 the root Rust workspace and uses the root lockfile; the parent tracks only
 its gitlink, never desktop source files.
 **NON-NEGOTIABLE.**
@@ -211,11 +214,12 @@ sheet is the only edge travel. The contract is `DESIGN.md` §6
 
 ## Constraints
 
-- Rust toolchain `1.97.1`. The root workspace, `apps/api`, and
-  `apps/cloud` each keep their own lockfile. `publish = false`.
-- Internal `a3s-*` crates resolve to a path in this repository.
+- Rust toolchain `1.97.1`. The root workspace, `apps/api`,
+  `apps/cloud`, and `apps/control-plane` each keep their own
+  lockfile. `publish = false`.
+- Internal `aster-*` crates resolve to a path in this repository.
 - Do not restore an upstream binary update that replaces Aster with
-  an A3S or Grok release.
+  an Aster or Grok release.
 - Production paths carry no `unwrap()` or `expect()` without a
   construction-level infallibility argument in a comment.
 - Bearer comparisons use constant-time equality.

@@ -254,10 +254,10 @@ fn kimi_plan_ceiling_remains_binding_with_yolo() {
 fn kimi_disabled_and_unknown_commands_never_reach_model() {
     let source = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../terminal/crates/codegen/a3s-code-pager/src/app/app_view.rs"
+        "/../../terminal/crates/codegen/aster-pager/src/app/app_view.rs"
     ));
     let block = source
-        .split_once("pub(crate) const A3S_CODE_UNAVAILABLE_COMMANDS: &[&str] = &[")
+        .split_once("pub(crate) const ASTER_UNAVAILABLE_COMMANDS: &[&str] = &[")
         .unwrap()
         .1
         .split_once("];")
@@ -386,7 +386,7 @@ fn kimi_config_crud_validation_cancel_reload_and_restart() {
     tui.bytes(b"s");
     tui.wait_for("Restart aster to use it", 8);
     let saved = std::fs::read(&config).unwrap();
-    let document = a3s_acl::parse_acl(std::str::from_utf8(&saved).unwrap()).unwrap();
+    let document = aster_acl::parse_acl(std::str::from_utf8(&saved).unwrap()).unwrap();
     let added = document
         .blocks
         .iter()
@@ -439,7 +439,7 @@ fn kimi_config_crud_validation_cancel_reload_and_restart() {
     tui.wait_for("Removed provider acceptance", 8);
     tui.bytes(b"s");
     tui.wait_for("Restart aster to use it", 8);
-    let document = a3s_acl::parse_acl(&std::fs::read_to_string(&config).unwrap()).unwrap();
+    let document = aster_acl::parse_acl(&std::fs::read_to_string(&config).unwrap()).unwrap();
     let providers: Vec<_> = document
         .blocks
         .iter()
@@ -522,7 +522,7 @@ fn kimi_new_session_isolated_from_previous_history_permissions_and_runtime() {
     let first = tui.turn(initial, None);
     assert!(tui.assistant_text(&first).contains("FIRST-SESSION-OK"));
     let first_path = tui
-        .files(&tui.workspace.join(".a3s"), "jsonl")
+        .files(&tui.workspace.join(".aster"), "jsonl")
         .into_iter()
         .find(|path| path.file_stem().and_then(|name| name.to_str()) == Some(first_id.as_str()))
         .expect("the original session fact log exists");
@@ -591,7 +591,7 @@ fn kimi_home_picker_cancel_and_return_preserves_existing_session() {
     let first = tui.turn(initial, None);
     assert!(tui.assistant_text(&first).contains("HOME-ORIGINAL-OK"));
     let fact_log = tui
-        .files(&tui.workspace.join(".a3s"), "jsonl")
+        .files(&tui.workspace.join(".aster"), "jsonl")
         .into_iter()
         .find(|path| path.file_stem().and_then(|name| name.to_str()) == Some(original_id.as_str()))
         .expect("the original session fact log exists");
@@ -604,7 +604,7 @@ fn kimi_home_picker_cancel_and_return_preserves_existing_session() {
     let welcome = tui.wait_for("Resume session", 10);
     assert!(welcome.contains("New worktree"));
     assert_eq!(tui.facts().len(), original_fact_count);
-    assert_eq!(tui.files(&tui.workspace.join(".a3s"), "jsonl").len(), 1);
+    assert_eq!(tui.files(&tui.workspace.join(".aster"), "jsonl").len(), 1);
     assert_eq!(std::fs::read(&fact_log).unwrap(), original_bytes);
     tui.record(
         "home-welcome",
@@ -618,7 +618,7 @@ fn kimi_home_picker_cancel_and_return_preserves_existing_session() {
     let cancelled = tui.wait_for("New worktree", 8);
     assert!(!cancelled.contains("Esc:back"));
     assert_eq!(tui.facts().len(), original_fact_count);
-    assert_eq!(tui.files(&tui.workspace.join(".a3s"), "jsonl").len(), 1);
+    assert_eq!(tui.files(&tui.workspace.join(".aster"), "jsonl").len(), 1);
     assert_eq!(std::fs::read(&fact_log).unwrap(), original_bytes);
     tui.record(
         "home-picker-cancelled",
@@ -632,7 +632,7 @@ fn kimi_home_picker_cancel_and_return_preserves_existing_session() {
     assert_eq!(tui.session_id(), original_id);
     tui.dismiss();
     assert_eq!(tui.facts().len(), original_fact_count);
-    assert_eq!(tui.files(&tui.workspace.join(".a3s"), "jsonl").len(), 1);
+    assert_eq!(tui.files(&tui.workspace.join(".aster"), "jsonl").len(), 1);
     assert_eq!(std::fs::read(&fact_log).unwrap(), original_bytes);
     tui.record(
         "home-return-restored",
@@ -655,14 +655,14 @@ fn kimi_home_picker_cancel_and_return_preserves_existing_session() {
 fn kimi_session_info_matches_backend_identity_mode_turn_and_usage() {
     let mut tui = LiveTui::new("session-info-contract");
     let proxy = std::path::PathBuf::from(
-        std::env::var_os("A3S_CODE_ACP_TRACE_PROXY").expect("transparent ACP trace proxy"),
+        std::env::var_os("ASTER_ACP_TRACE_PROXY").expect("transparent ACP trace proxy"),
     );
     tui.trace_acp(&proxy);
     tui.launch_default(&[]);
     tui.wait_for("Aster", 45);
     let id = tui.session_id();
     let info = tui.wait_for("Context:", 8);
-    let marker_path = a3s_code_core::session_folder::find_session_dir(&tui.workspace, &id)
+    let marker_path = aster_core::session_folder::find_session_dir(&tui.workspace, &id)
         .unwrap()
         .expect("new session has a persisted marker")
         .join("session.json");
@@ -679,15 +679,15 @@ fn kimi_session_info_matches_backend_identity_mode_turn_and_usage() {
     assert!(info.contains("Working directory:"), "{info}");
     assert!(info.contains(backend_cwd), "{info}");
     let config_path =
-        std::path::PathBuf::from(std::env::var_os("A3S_CONFIG_FILE").expect("explicit host ACL"));
-    let config = a3s_code_core::CodeConfig::from_file(&config_path).unwrap();
+        std::path::PathBuf::from(std::env::var_os("ASTER_CONFIG_FILE").expect("explicit host ACL"));
+    let config = aster_core::CodeConfig::from_file(&config_path).unwrap();
     let (provider, model) = config.default_model_config().unwrap();
     let model_id = format!("{}/{}", provider.name, model.id);
     assert_eq!(model_id, "kimi/k3.1-pro");
     assert!(info.contains(&format!("Model: {model_id}")), "{info}");
     let configured_window = (model.limit.context > 0).then_some(model.limit.context as usize);
     let context_total =
-        a3s_code_core::context_window_for_model(None, configured_window, &model_id, true, 200_000)
+        aster_core::context_window_for_model(None, configured_window, &model_id, true, 200_000)
             as u64;
     assert!(context_total > 0);
     assert!(info.contains("Turn: 0"), "{info}");

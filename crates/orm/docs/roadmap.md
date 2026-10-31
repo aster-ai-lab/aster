@@ -4,7 +4,7 @@
 
 The project is being developed incrementally. Completed items describe implemented behavior, not full Kysely compatibility.
 
-## A3S Cloud substrate obligations
+## Aster Cloud substrate obligations
 
 | Priority | This repository must deliver | Forbidden |
 | --- | --- | --- |
@@ -12,7 +12,7 @@ The project is being developed incrementally. Completed items describe implement
 | Integrity | Support Cloud’s one-mapping-authority-per-table discipline | Leaking ORM models into Domain |
 
 Portfolio detail:
-[foundations-and-execution.md](https://github.com/A3S-Lab/Cloud/blob/main/docs/project-roadmaps/foundations-and-execution.md).
+[foundations-and-execution.md](https://github.com/aster-ai-lab/Cloud/blob/main/docs/project-roadmaps/foundations-and-execution.md).
 
 ## Available
 

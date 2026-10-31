@@ -44,7 +44,7 @@ use std::path::{Path, PathBuf};
 pub fn agent_skill_roots(base: &Path) -> Vec<PathBuf> {
     vec![
         base.join("skills"),
-        base.join(".a3s").join("skills"),
+        base.join(".aster").join("skills"),
         base.join(".agents").join("skills"),
         base.join(".claude").join("skills"),
         base.join(".codex").join("skills"),

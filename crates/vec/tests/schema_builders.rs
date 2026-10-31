@@ -10,7 +10,7 @@
 
 //! Exhaustive IndexParams / schema builder coverage (coverage + contracts).
 
-use a3s_vec::{
+use aster_vec::{
     DataType, FieldSchema, IndexParams, IndexParamsBuilder, IndexType, MetricType, QuantizeType,
     VectorSchema,
 };
@@ -107,7 +107,7 @@ fn field_and_vector_schema_helpers_cover_accessors() {
 
 #[test]
 fn collection_schema_builder_covers_vector_and_indexed_helpers() {
-    use a3s_vec::CollectionSchema;
+    use aster_vec::CollectionSchema;
 
     let schema = CollectionSchema::builder("builder-surface")
         .add_vector_field(
@@ -169,7 +169,7 @@ fn collection_schema_builder_covers_vector_and_indexed_helpers() {
 
 #[test]
 fn collection_and_vector_schema_mutators_cover_accessors() {
-    use a3s_vec::{CollectionSchema, FieldSchema, IndexParams, IndexType, VectorSchema};
+    use aster_vec::{CollectionSchema, FieldSchema, IndexParams, IndexType, VectorSchema};
 
     let mut schema = CollectionSchema::new("mutators").expect("schema");
     assert_eq!(schema.name(), "mutators");
@@ -177,7 +177,7 @@ fn collection_and_vector_schema_mutators_cover_accessors() {
     schema.add_field(&title).expect("add");
     assert!(schema.has_field("title"));
     assert_eq!(
-        schema.field("title").map(a3s_vec::FieldSchema::name),
+        schema.field("title").map(aster_vec::FieldSchema::name),
         Some("title")
     );
     assert!(title.is_nullable());
@@ -227,7 +227,7 @@ fn collection_and_vector_schema_mutators_cover_accessors() {
 
 #[test]
 fn collection_schema_validate_and_mutators_reject_unsupported_shapes() {
-    use a3s_vec::{CollectionSchema, FieldSchema, IndexParams, VectorSchema};
+    use aster_vec::{CollectionSchema, FieldSchema, IndexParams, VectorSchema};
 
     let mut schema = CollectionSchema::new("validate").expect("schema");
     schema

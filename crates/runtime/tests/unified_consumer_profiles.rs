@@ -1,10 +1,10 @@
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     ArtifactRef, HealthCheckKind, HealthProbe, IsolationLevel, MountKind, NetworkMode,
     ResourceControl, RuntimeCapabilities, RuntimeEvidence, RuntimeFeature,
     RuntimeHealthObservation, RuntimeHealthState, RuntimeObservation, RuntimeServiceEndpoint,
     RuntimeUnitClass, RuntimeUnitSpec, RuntimeUnitState,
 };
-use a3s_runtime::{
+use aster_runtime::{
     ProviderId, RuntimeAttestationBinding, RuntimeConsumerRequirements, RuntimeError,
 };
 use std::collections::BTreeMap;
@@ -311,7 +311,7 @@ fn rcon_identity_001_binds_one_opaque_attachment_to_exact_attested_evidence() {
             "8".repeat(64)
         ),
         digest: format!("sha256:{}", "8".repeat(64)),
-        media_type: "application/vnd.a3s.runtime-attestation.v1+json".into(),
+        media_type: "application/vnd.aster.runtime-attestation.v1+json".into(),
     });
     requirements
         .accept_observation(&agent, &observation)
@@ -400,7 +400,7 @@ fn rcon_identity_003_confidential_binding_cannot_drop_its_attestation() {
     observation.provider_attestation = Some(ArtifactRef {
         uri: format!("attestation://consumer-fixture@sha256:{}", "8".repeat(64)),
         digest: format!("sha256:{}", "8".repeat(64)),
-        media_type: "application/vnd.a3s.runtime-attestation.v1+json".into(),
+        media_type: "application/vnd.aster.runtime-attestation.v1+json".into(),
     });
     requirements
         .accept_observation(&agent, &observation)

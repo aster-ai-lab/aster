@@ -9,7 +9,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "paths": { "@a3s-lab/ui/*": ["../ui/src/*"] }
+    "paths": { "@aster-ai-lab/ui/*": ["../ui/src/*"] }
   },
   "include": ["src"]
 }

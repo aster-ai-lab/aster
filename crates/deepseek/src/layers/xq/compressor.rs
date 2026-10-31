@@ -1,7 +1,7 @@
 //! XQ F16 projections with F32 C1/C2 state, learned norm and explicit FP4
 //! main-KV grid. Readiness uses the pair end; compressed RoPE uses its start.
 //! Pinned ds41_dense.cpp / ds41_geometry.hpp, MIT notice retained.
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

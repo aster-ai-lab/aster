@@ -1,11 +1,11 @@
-//! Bridge from Code's search configuration to A3S Search's product plan.
+//! Bridge from Code's search configuration to Aster Search's product plan.
 
 use crate::config::SearchCascadeTier;
-use a3s_search::providers::{
-    A3sConfig, AliyunConfig, AnySearchConfig, BochaConfig, BuiltinProvider, CredentialSource,
+use aster_search::providers::{
+    AsterConfig, AliyunConfig, AnySearchConfig, BochaConfig, BuiltinProvider, CredentialSource,
     DeepSeekConfig, DoubaoConfig, FirecrawlConfig, TavilyConfig, TencentConfig, TinyFishConfig,
 };
-use a3s_search::{
+use aster_search::{
     EngineEntry, EngineFailure, EngineTier, HealthEntry, ProviderEntry, ProviderSettings,
     SearchError,
 };
@@ -19,13 +19,13 @@ pub(super) fn provider_setup_failure(
         .with_transient(error.is_transient())
 }
 
-/// Code's configuration as A3S Search configuration. A provider whose
+/// Code's configuration as Aster Search configuration. A provider whose
 /// configuration is invalid is left out and reported as a typed failure, so a
 /// bad endpoint never silently falls back to the provider's default.
 pub(crate) fn bridge_search_config(
     config: &crate::config::SearchConfig,
-) -> (a3s_search::SearchConfig, Vec<EngineFailure>) {
-    let mut bridged = a3s_search::SearchConfig::new();
+) -> (aster_search::SearchConfig, Vec<EngineFailure>) {
+    let mut bridged = aster_search::SearchConfig::new();
     bridged.timeout = config.timeout;
     bridged.health = config.health.as_ref().map(|health| HealthEntry {
         max_failures: health.max_failures,
@@ -89,7 +89,7 @@ fn with_api_key<T>(
 fn parse_optional_endpoint(
     provider: &str,
     endpoint: Option<&str>,
-) -> a3s_search::Result<Option<url::Url>> {
+) -> aster_search::Result<Option<url::Url>> {
     let Some(endpoint) = endpoint.map(str::trim).filter(|value| !value.is_empty()) else {
         return Ok(None);
     };
@@ -103,7 +103,7 @@ fn parse_optional_endpoint(
 fn provider_settings(
     provider: BuiltinProvider,
     engine: &crate::config::SearchEngineConfig,
-) -> a3s_search::Result<ProviderSettings> {
+) -> aster_search::Result<ProviderSettings> {
     let api_key = engine
         .api_key
         .as_deref()
@@ -192,15 +192,15 @@ fn provider_settings(
             api_key,
             DeepSeekConfig::with_api_key,
         ))),
-        BuiltinProvider::A3s => {
-            let mut provider_config = A3sConfig::new()?;
+        BuiltinProvider::Aster => {
+            let mut provider_config = AsterConfig::new()?;
             if let Some(endpoint) = endpoint {
                 provider_config = provider_config.with_endpoint(endpoint)?;
             }
-            Ok(ProviderSettings::A3s(with_api_key(
+            Ok(ProviderSettings::Aster(with_api_key(
                 provider_config,
                 api_key,
-                A3sConfig::with_api_key,
+                AsterConfig::with_api_key,
             )))
         }
         // BuiltinProvider is non_exhaustive; refuse unknown future providers fail-closed.

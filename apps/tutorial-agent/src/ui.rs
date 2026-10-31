@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use a3s_code_core::{AgentEvent, AgentRunStream, hitl::PendingConfirmationInfo};
+use aster_core::{AgentEvent, AgentRunStream, hitl::PendingConfirmationInfo};
 use crossterm::event::{Event, EventStream, KeyCode, KeyEventKind, KeyModifiers};
 use futures_util::StreamExt;
 use ratatui::{
@@ -169,7 +169,7 @@ impl App {
             question.allow_free_text || question.options.contains(&answer),
             "这道问题只接受列出的选项"
         );
-        let _ = a3s_code_core::ask_user::answer(&question.id, &answer);
+        let _ = aster_core::ask_user::answer(&question.id, &answer);
         self.input.clear();
         self.questions.pop_front();
         self.interaction_scroll = 0;

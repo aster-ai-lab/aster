@@ -1,4 +1,4 @@
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexChangeToken, VectorIndexDescriptor,
     VectorIndexObservation, VectorRecord, VectorRevision, VECTOR_INDEX_CHANGE_TOKEN_PROFILE_V1,
 };
@@ -71,7 +71,7 @@ fn observations_reject_tokens_from_a_different_revision() {
     )
     .unwrap();
     let observation = VectorIndexObservation {
-        status: a3s_memory::vector::VectorIndexStatus {
+        status: aster_durable_memory::vector::VectorIndexStatus {
             revision: VectorRevision::new(4),
             ..Default::default()
         },
@@ -99,7 +99,7 @@ fn custom_change_tokens_validate_bounded_history_identity_and_profile() {
     .is_err());
 
     let mut forged = serde_json::to_value(token).unwrap();
-    forged["profile"] = serde_json::json!("a3s.memory.vector-index-change-token.v2");
+    forged["profile"] = serde_json::json!("aster.memory.vector-index-change-token.v2");
     let forged: VectorIndexChangeToken = serde_json::from_value(forged).unwrap();
     assert!(forged.verify().is_err());
 }

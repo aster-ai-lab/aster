@@ -1,14 +1,14 @@
 [package]
-name = "a3s-box-core"
+name = "aster-box-core"
 publish = false
 version = "3.2.7"
 edition = "2021"
 license = "MIT"
-description = "Core types, config, and error handling for A3S Box MicroVM runtime"
+description = "Core types, config, and error handling for Aster Box MicroVM runtime"
 
 [dependencies]
-a3s-acl = { workspace = true }
-a3s-transport = { workspace = true }
+aster-acl = { workspace = true }
+aster-transport = { workspace = true }
 async-trait = { workspace = true }
 tokio = { workspace = true }
 serde = { workspace = true }
@@ -30,7 +30,7 @@ windows-sys = { version = "0.48", features = [
 ] }
 
 [lib]
-name = "a3s_box_core"
+name = "aster_box_core"
 path = "src/lib.rs"
 
 [dev-dependencies]

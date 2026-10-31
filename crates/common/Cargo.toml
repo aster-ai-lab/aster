@@ -11,29 +11,29 @@
 
 [package]
 edition = "2021"
-name = "a3s-common"
+name = "aster-common"
 version = "0.1.1"
-authors = ["A3S Lab"]
+authors = ["Aster"]
 build = false
 autolib = false
 autobins = false
 autoexamples = false
 autotests = false
 autobenches = false
-description = "Shared types for A3S: privacy classification, tool definitions, transport protocol"
+description = "Shared types for Aster: privacy classification, tool definitions, transport protocol"
 readme = false
 keywords = [
-    "a3s",
+    "aster",
     "privacy",
     "tools",
     "transport",
 ]
 license = "MIT"
-repository = "https://github.com/A3S-Lab/a3s"
+repository = "https://github.com/aster-ai-lab/aster"
 publish = false
 
 [lib]
-name = "a3s_common"
+name = "aster_common"
 path = "src/lib.rs"
 
 [dependencies]

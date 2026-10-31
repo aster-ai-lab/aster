@@ -7,7 +7,7 @@ use crate::goal_control::{
     GoalPlanCommandV1, GoalWaitCommandV1,
 };
 use crate::permissions::PermissionChecker;
-use a3s_effect::LogStore;
+use aster_effect::LogStore;
 
 impl AgentSession {
     /// Serialize a host's legacy goal state access against original Goal admission.
@@ -100,7 +100,7 @@ impl AgentSession {
 
     fn prepare_goal_definition(
         &self,
-        facts: &[a3s_effect::Fact],
+        facts: &[aster_effect::Fact],
         thread: &str,
         command: &GoalDefinitionCommandV1,
     ) -> Result<(
@@ -226,7 +226,7 @@ impl AgentSession {
     fn apply_goal_update(
         &self,
         prepare: impl FnOnce(
-            &[a3s_effect::Fact],
+            &[aster_effect::Fact],
             Option<&str>,
         ) -> std::result::Result<
             crate::goal_control::PreparedDefinition,
@@ -263,8 +263,8 @@ impl AgentSession {
 
     pub(super) fn admit_nonexecuting_standing(
         &self,
-        log: &a3s_effect::FileLog,
-        facts: &[a3s_effect::Fact],
+        log: &aster_effect::FileLog,
+        facts: &[aster_effect::Fact],
         thread: &str,
     ) -> Result<()> {
         let permission = self
@@ -375,7 +375,7 @@ impl AgentSession {
         })?
     }
 
-    fn policy_digest_from(&self, facts: &[a3s_effect::Fact]) -> Result<Option<String>> {
+    fn policy_digest_from(&self, facts: &[aster_effect::Fact]) -> Result<Option<String>> {
         let thread = crate::fact_control::thread_for_session(&self.session_id);
         let policy =
             crate::work_policy::prepare_policy(facts, &thread, None).map_err(goal_error)?;
@@ -571,7 +571,7 @@ impl AgentSession {
         .map_err(|error| CodeError::Internal(error.into()))
     }
 
-    fn configured_policy_digest(&self, facts: &[a3s_effect::Fact]) -> Result<Option<String>> {
+    fn configured_policy_digest(&self, facts: &[aster_effect::Fact]) -> Result<Option<String>> {
         let thread = crate::fact_control::thread_for_session(&self.session_id);
         crate::work_policy::prepare_policy(facts, &thread, self.config.work_policy.as_ref())
             .map_err(goal_error)?
@@ -598,7 +598,7 @@ impl AgentSession {
         crate::goal_control::tick_feedback(&facts, command, step_id).map_err(goal_error)
     }
 
-    fn goal_facts(&self) -> Result<Vec<a3s_effect::Fact>> {
+    fn goal_facts(&self) -> Result<Vec<aster_effect::Fact>> {
         let thread = crate::fact_control::thread_for_session(&self.session_id);
         // Cache the handle the Run lease reuses: a second handle would take the
         // log lock during this read and could refuse a concurrent first Run.
@@ -614,7 +614,7 @@ impl AgentSession {
                         crate::session_folder::effect_log_dir(&self.workspace, &self.session_id);
                     if directory.try_exists().map_err(goal_error)? {
                         let log = std::sync::Arc::new(
-                            a3s_effect::FileLog::open(directory).map_err(goal_log_error)?,
+                            aster_effect::FileLog::open(directory).map_err(goal_log_error)?,
                         );
                         *shared = Some(std::sync::Arc::clone(&log));
                         Some(log)
@@ -635,9 +635,9 @@ impl AgentSession {
 }
 
 fn append_goal(
-    log: &a3s_effect::FileLog,
+    log: &aster_effect::FileLog,
     thread: &str,
-    pending: a3s_effect::NewFact,
+    pending: aster_effect::NewFact,
     mut view: DurableGoalDefinitionV1,
 ) -> Result<DurableGoalDefinitionV1> {
     let appended = log
@@ -676,7 +676,7 @@ pub(super) fn host_clock_unix_ms() -> Result<u64> {
         .ok_or_else(|| goal_error("goal.conflict: host clock is unavailable"))
 }
 
-fn goal_log_error(error: a3s_effect::ActorError) -> CodeError {
+fn goal_log_error(error: aster_effect::ActorError) -> CodeError {
     goal_error(crate::goal_control::GoalControlError::from(error))
 }
 

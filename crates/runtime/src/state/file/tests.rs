@@ -19,11 +19,11 @@ const APPLY_ID: &str = "receipt-first-apply";
 const STOP_ID: &str = "receipt-first-stop";
 const REMOVE_ID: &str = "receipt-first-remove";
 const EXEC_ID: &str = "receipt-first-exec";
-const FAILPOINT_ENV: &str = "A3S_RUNTIME_TEST_FAILPOINT";
-const IO_FAULT_ENV: &str = "A3S_RUNTIME_TEST_IO_FAULT";
-const READY_ENV: &str = "A3S_RUNTIME_TEST_FAILPOINT_READY";
-const ROOT_ENV: &str = "A3S_RUNTIME_TEST_STATE_ROOT";
-const OPERATION_ENV: &str = "A3S_RUNTIME_TEST_COMPLETION_KIND";
+const FAILPOINT_ENV: &str = "ASTER_RUNTIME_TEST_FAILPOINT";
+const IO_FAULT_ENV: &str = "ASTER_RUNTIME_TEST_IO_FAULT";
+const READY_ENV: &str = "ASTER_RUNTIME_TEST_FAILPOINT_READY";
+const ROOT_ENV: &str = "ASTER_RUNTIME_TEST_STATE_ROOT";
+const OPERATION_ENV: &str = "ASTER_RUNTIME_TEST_COMPLETION_KIND";
 const OBSERVATION_FAILPOINT: &str = "state.complete-observation.after-receipt-publish";
 const REMOVAL_FAILPOINT: &str = "state.complete-removal.after-receipt-publish";
 const EXEC_FAILPOINT: &str = "state.complete-exec.after-receipt-publish";
@@ -111,7 +111,7 @@ fn spec() -> RuntimeUnitSpec {
         class: RuntimeUnitClass::Service,
         artifact: ArtifactRef {
             uri: format!(
-                "oci://registry.example/a3s/runtime@sha256:{}",
+                "oci://registry.example/aster/runtime@sha256:{}",
                 "a".repeat(64)
             ),
             digest: digest('a'),
@@ -536,7 +536,7 @@ fn state_fs_002_corrupt_permission_and_non_regular_boundaries_fail_closed() {
     // The hashed record path plus the default macOS temp root exceeds
     // SUN_LEN, so the socket binds under the short /tmp root instead.
     let non_regular = tempfile::Builder::new()
-        .prefix("a3s-rt")
+        .prefix("aster-rt")
         .tempdir_in("/tmp")
         .expect("non-regular state root");
     let store = FileRuntimeStateStore::new(non_regular.path());
@@ -608,7 +608,7 @@ fn staging_files(root: &Path) -> Vec<PathBuf> {
             let name = entry.file_name();
             let name = name.to_string_lossy();
             if name.starts_with(".tmp")
-                || (name.starts_with(".a3s-runtime-") && name.ends_with(".tmp"))
+                || (name.starts_with(".aster-runtime-") && name.ends_with(".tmp"))
             {
                 staging.push(path);
             }

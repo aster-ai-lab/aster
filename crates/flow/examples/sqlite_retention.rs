@@ -1,5 +1,5 @@
 #[cfg(feature = "sqlite")]
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowHistoryRetentionPolicy, FlowRuntime, RuntimeCommand,
     SqliteEventStore, StepInvocation, WorkflowInvocation, WorkflowRunStatus, WorkflowSpec,
 };
@@ -21,7 +21,7 @@ impl FlowRuntime for RetentionRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         match ctx.input()["mode"].as_str() {
             Some("complete") => Ok(ctx.complete(json!({ "archived": true }))),
@@ -32,14 +32,14 @@ impl FlowRuntime for RetentionRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("retention example does not schedule steps")
     }
 }
 
 #[cfg(feature = "sqlite")]
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let directory = tempfile::tempdir()?;
     let database_url = format!("sqlite://{}", directory.path().join("flow.db").display());
     let store = Arc::new(SqliteEventStore::connect(database_url).await?);

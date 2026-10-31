@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::time::Duration;
 
-use a3s_oci_sdk::{LocalIpcEndpoint, RuntimeClient};
+use aster_oci_sdk::{LocalIpcEndpoint, RuntimeClient};
 use tokio::process::{Child, Command};
 use tokio::time::{sleep, timeout, Instant};
 
@@ -18,7 +18,7 @@ use crate::native_hook_recovery_smoke::{
 const START_TIMEOUT: Duration = Duration::from_secs(20);
 const STOP_TIMEOUT: Duration = Duration::from_secs(45);
 const POLL_INTERVAL: Duration = Duration::from_millis(25);
-const SESSION_SUPERVISOR_ENV: &str = "A3S_OCI_NATIVE_SESSION_SUPERVISOR";
+const SESSION_SUPERVISOR_ENV: &str = "ASTER_OCI_NATIVE_SESSION_SUPERVISOR";
 
 pub(super) struct HostServiceProcess {
     child: Child,

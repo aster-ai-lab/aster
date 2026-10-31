@@ -52,7 +52,7 @@ export function trackDocumentSectionFormattingTransaction(
       propertyRevisionOmml: null,
       sectionChangeKind: 'section-formatting',
       sectionChangeId: identity.id,
-      sectionChangeAuthor: identity.author || 'A3S Work',
+      sectionChangeAuthor: identity.author || 'Aster Work',
       sectionChangeDate: identity.date || new Date().toISOString(),
       sectionChangeBefore: previous,
     });

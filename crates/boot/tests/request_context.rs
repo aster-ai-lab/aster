@@ -1,6 +1,6 @@
 #![cfg(feature = "request-context")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootRequest, BootResponse, HttpMethod, MiddlewareOutcome, Module,
     ProviderDefinition, RequestContext, Result, RouteDefinition,
 };
@@ -103,7 +103,7 @@ async fn request_context_is_not_available_outside_a_route_scope() {
 #[cfg(feature = "auth")]
 #[tokio::test]
 async fn request_context_tracks_auth_principal_when_auth_guard_runs() {
-    use a3s_boot::{AuthModule, AuthPrincipal, ExecutionContext};
+    use aster_boot::{AuthModule, AuthPrincipal, ExecutionContext};
 
     let app = BootApplication::builder()
         .import(
@@ -118,7 +118,7 @@ async fn request_context_tracks_auth_principal_when_auth_guard_runs() {
             RouteDefinition::get("/me", |_| async {
                 let context = RequestContext::current()?;
                 let principal = context.auth_principal()?.ok_or_else(|| {
-                    a3s_boot::BootError::Internal("missing principal".to_string())
+                    aster_boot::BootError::Internal("missing principal".to_string())
                 })?;
                 Ok(BootResponse::text(principal.subject().to_string()))
             })

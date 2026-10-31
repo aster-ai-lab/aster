@@ -3,21 +3,21 @@
 //! The catalog is the CLI model list (`agent models`). The bearer stays in the
 //! in-memory provider API key. Nothing here rewrites ACL. Runs only when the
 //! host opts in (`import_accounts = ["cursor"]` or `--import-accounts cursor`);
-//! `A3S_DISABLE_CURSOR_ACCOUNT=1` still turns it off. Prefer the account as the default model
-//! with `A3S_PREFER_CURSOR=1` (same missing-default rule as the Grok import).
+//! `ASTER_DISABLE_CURSOR_ACCOUNT=1` still turns it off. Prefer the account as the default model
+//! with `ASTER_PREFER_CURSOR=1` (same missing-default rule as the Grok import).
 //!
-//! Fixture tests set `A3S_CURSOR_HOME`, `A3S_CURSOR_TOKEN_FILE`, and
-//! `A3S_CURSOR_MODELS_FILE`. Those paths never read the keychain, the IDE
+//! Fixture tests set `ASTER_CURSOR_HOME`, `ASTER_CURSOR_TOKEN_FILE`, and
+//! `ASTER_CURSOR_MODELS_FILE`. Those paths never read the keychain, the IDE
 //! database, or the network, and they do not spawn `agent`.
 
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-use a3s_code_core::{ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::{ModelConfig, ModelModalities, ProviderConfig, ProviderProtocol};
 use anyhow::{Context, Result};
 use serde_json::Value;
 
-/// Provider name registered into [`a3s_code_core::CodeConfig`].
+/// Provider name registered into [`aster_core::CodeConfig`].
 pub const PROVIDER_NAME: &str = "cursor";
 
 /// Account endpoint. `CURSOR_API_ENDPOINT` may replace the origin.
@@ -43,7 +43,7 @@ pub struct CursorAccountImport {
 ///
 /// Returns `Ok(true)` when a provider was merged. A missing login, an
 /// unusable credential, an empty catalog, or the disable switch is `Ok(false)`.
-pub fn merge_into_config(config: &mut a3s_code_core::CodeConfig) -> Result<bool> {
+pub fn merge_into_config(config: &mut aster_core::CodeConfig) -> Result<bool> {
     if disabled_by_env() {
         return Ok(false);
     }
@@ -76,11 +76,11 @@ pub fn merge_into_config(config: &mut a3s_code_core::CodeConfig) -> Result<bool>
 }
 
 fn disabled_by_env() -> bool {
-    env_flag("A3S_DISABLE_CURSOR_ACCOUNT")
+    env_flag("ASTER_DISABLE_CURSOR_ACCOUNT")
 }
 
 fn prefer_cursor_default() -> bool {
-    env_flag("A3S_PREFER_CURSOR")
+    env_flag("ASTER_PREFER_CURSOR")
 }
 
 fn env_flag(name: &str) -> bool {
@@ -142,6 +142,7 @@ pub fn load_logged_in_account() -> Result<Option<CursorAccountImport>> {
     );
 
     let provider = ProviderConfig {
+        protocol: Some(ProviderProtocol::Cursor),
         name: PROVIDER_NAME.to_string(),
         api_key: Some(token),
         base_url: Some(account_endpoint()),
@@ -191,7 +192,7 @@ fn account_identity(config: &Value) -> Option<AccountIdentity> {
 }
 
 fn resolve_cursor_home() -> Option<PathBuf> {
-    if let Some(explicit) = std::env::var_os("A3S_CURSOR_HOME") {
+    if let Some(explicit) = std::env::var_os("ASTER_CURSOR_HOME") {
         if explicit.is_empty() {
             return None;
         }
@@ -207,10 +208,10 @@ fn resolve_cursor_home() -> Option<PathBuf> {
 }
 
 fn fixture_mode() -> bool {
-    env_nonempty("A3S_CURSOR_HOME")
-        || env_nonempty("A3S_CURSOR_TOKEN_FILE")
-        || env_nonempty("A3S_CURSOR_MODELS_FILE")
-        || env_nonempty("A3S_CURSOR_STATE_DB")
+    env_nonempty("ASTER_CURSOR_HOME")
+        || env_nonempty("ASTER_CURSOR_TOKEN_FILE")
+        || env_nonempty("ASTER_CURSOR_MODELS_FILE")
+        || env_nonempty("ASTER_CURSOR_STATE_DB")
 }
 
 fn env_nonempty(name: &str) -> bool {
@@ -230,7 +231,7 @@ fn load_usable_token(identity: &AccountIdentity) -> Result<Option<String>> {
 }
 
 fn read_cli_token() -> Result<Option<String>> {
-    if let Some(explicit) = std::env::var_os("A3S_CURSOR_TOKEN_FILE") {
+    if let Some(explicit) = std::env::var_os("ASTER_CURSOR_TOKEN_FILE") {
         if explicit.is_empty() {
             return Ok(None);
         }
@@ -341,7 +342,7 @@ fn ide_token_when_same_account(identity: &AccountIdentity) -> Option<String> {
 }
 
 fn ide_state_db() -> Option<PathBuf> {
-    if let Some(explicit) = std::env::var_os("A3S_CURSOR_STATE_DB") {
+    if let Some(explicit) = std::env::var_os("ASTER_CURSOR_STATE_DB") {
         if explicit.is_empty() {
             return None;
         }
@@ -472,7 +473,7 @@ fn decode_base64url(input: &str) -> Option<Vec<u8>> {
 }
 
 fn read_model_catalog() -> Result<Option<String>> {
-    if let Some(explicit) = std::env::var_os("A3S_CURSOR_MODELS_FILE") {
+    if let Some(explicit) = std::env::var_os("ASTER_CURSOR_MODELS_FILE") {
         if explicit.is_empty() {
             return Ok(None);
         }
@@ -492,7 +493,7 @@ fn read_model_catalog() -> Result<Option<String>> {
         return Ok(None);
     };
     let dir = std::env::temp_dir().join(format!(
-        "a3s-cursor-models-{}-{}",
+        "aster-cursor-models-{}-{}",
         std::process::id(),
         unix_now()
     ));
@@ -706,7 +707,7 @@ fn account_endpoint() -> String {
 }
 
 fn client_version() -> String {
-    if let Ok(value) = std::env::var("A3S_CURSOR_CLIENT_VERSION") {
+    if let Ok(value) = std::env::var("ASTER_CURSOR_CLIENT_VERSION") {
         let value = value.trim();
         if !value.is_empty()
             && value.len() <= 128
@@ -801,13 +802,13 @@ mod tests {
     fn isolated(test: impl FnOnce()) {
         let _lock = test_env_lock();
         let _guard = EnvGuard::set(&[
-            ("A3S_DISABLE_CURSOR_ACCOUNT", None),
-            ("A3S_PREFER_CURSOR", None),
-            ("A3S_CURSOR_HOME", None),
-            ("A3S_CURSOR_TOKEN_FILE", None),
-            ("A3S_CURSOR_MODELS_FILE", None),
-            ("A3S_CURSOR_STATE_DB", None),
-            ("A3S_CURSOR_CLIENT_VERSION", None),
+            ("ASTER_DISABLE_CURSOR_ACCOUNT", None),
+            ("ASTER_PREFER_CURSOR", None),
+            ("ASTER_CURSOR_HOME", None),
+            ("ASTER_CURSOR_TOKEN_FILE", None),
+            ("ASTER_CURSOR_MODELS_FILE", None),
+            ("ASTER_CURSOR_STATE_DB", None),
+            ("ASTER_CURSOR_CLIENT_VERSION", None),
             ("CURSOR_API_ENDPOINT", None),
         ]);
         test();
@@ -958,12 +959,12 @@ mod tests {
 
             let logs = capture_logs(|| {
                 let _env = EnvGuard::set(&[
-                    ("A3S_CURSOR_HOME", Some(home.to_str().unwrap())),
-                    ("A3S_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
-                    ("A3S_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
+                    ("ASTER_CURSOR_HOME", Some(home.to_str().unwrap())),
+                    ("ASTER_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
+                    ("ASTER_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
                     ("PATH", Some(&path)),
                 ]);
-                let mut config = a3s_code_core::CodeConfig::default();
+                let mut config = aster_core::CodeConfig::default();
                 let merged = merge_into_config(&mut config).unwrap();
                 assert!(merged);
                 let provider = config
@@ -1010,8 +1011,8 @@ mod tests {
             let root = tempfile::tempdir().unwrap();
             let empty = root.path().join("empty-home");
             std::fs::create_dir_all(&empty).unwrap();
-            let _env = EnvGuard::set(&[("A3S_CURSOR_HOME", Some(empty.to_str().unwrap()))]);
-            let mut config = a3s_code_core::CodeConfig {
+            let _env = EnvGuard::set(&[("ASTER_CURSOR_HOME", Some(empty.to_str().unwrap()))]);
+            let mut config = aster_core::CodeConfig {
                 default_model: Some("mock/m1".into()),
                 ..Default::default()
             };
@@ -1027,10 +1028,10 @@ mod tests {
             let models = root.path().join("models.txt");
             write_models(&models);
             let _env = EnvGuard::set(&[
-                ("A3S_DISABLE_CURSOR_ACCOUNT", Some("1")),
-                ("A3S_CURSOR_HOME", Some(home.to_str().unwrap())),
-                ("A3S_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
-                ("A3S_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
+                ("ASTER_DISABLE_CURSOR_ACCOUNT", Some("1")),
+                ("ASTER_CURSOR_HOME", Some(home.to_str().unwrap())),
+                ("ASTER_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
+                ("ASTER_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
             ]);
             assert!(!merge_into_config(&mut config).unwrap());
             assert!(config.providers.is_empty());
@@ -1050,18 +1051,18 @@ mod tests {
             let models = root.path().join("models.txt");
             write_models(&models);
             let _env = EnvGuard::set(&[
-                ("A3S_CURSOR_HOME", Some(home.to_str().unwrap())),
-                ("A3S_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
-                ("A3S_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
+                ("ASTER_CURSOR_HOME", Some(home.to_str().unwrap())),
+                ("ASTER_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
+                ("ASTER_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
             ]);
-            let mut config = a3s_code_core::CodeConfig {
+            let mut config = aster_core::CodeConfig {
                 default_model: Some("mock/m1".into()),
                 ..Default::default()
             };
             assert!(merge_into_config(&mut config).unwrap());
             assert_eq!(config.default_model.as_deref(), Some("mock/m1"));
 
-            let _prefer = EnvGuard::set(&[("A3S_PREFER_CURSOR", Some("yes"))]);
+            let _prefer = EnvGuard::set(&[("ASTER_PREFER_CURSOR", Some("yes"))]);
             assert!(merge_into_config(&mut config).unwrap());
             assert_eq!(config.default_model.as_deref(), Some("cursor/composer-2.5"));
             assert_eq!(
@@ -1102,11 +1103,11 @@ mod tests {
             let models = root.path().join("models.txt");
             write_models(&models);
             let _env = EnvGuard::set(&[
-                ("A3S_CURSOR_HOME", Some(home.to_str().unwrap())),
-                ("A3S_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
-                ("A3S_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
+                ("ASTER_CURSOR_HOME", Some(home.to_str().unwrap())),
+                ("ASTER_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
+                ("ASTER_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
             ]);
-            let mut config = a3s_code_core::CodeConfig::default();
+            let mut config = aster_core::CodeConfig::default();
             assert!(!merge_into_config(&mut config).unwrap());
             assert!(config.providers.is_empty());
         });
@@ -1124,11 +1125,11 @@ mod tests {
             let models = root.path().join("models.txt");
             write_models(&models);
             let _env = EnvGuard::set(&[
-                ("A3S_CURSOR_HOME", Some(home.to_str().unwrap())),
-                ("A3S_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
-                ("A3S_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
+                ("ASTER_CURSOR_HOME", Some(home.to_str().unwrap())),
+                ("ASTER_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
+                ("ASTER_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
             ]);
-            let mut config = a3s_code_core::CodeConfig::default();
+            let mut config = aster_core::CodeConfig::default();
             let logs = capture_logs(|| {
                 assert!(!merge_into_config(&mut config).unwrap());
             });
@@ -1159,12 +1160,12 @@ mod tests {
             .unwrap();
             drop(conn);
             let _env = EnvGuard::set(&[
-                ("A3S_CURSOR_HOME", Some(home.to_str().unwrap())),
-                ("A3S_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
-                ("A3S_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
-                ("A3S_CURSOR_STATE_DB", Some(db.to_str().unwrap())),
+                ("ASTER_CURSOR_HOME", Some(home.to_str().unwrap())),
+                ("ASTER_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
+                ("ASTER_CURSOR_MODELS_FILE", Some(models.to_str().unwrap())),
+                ("ASTER_CURSOR_STATE_DB", Some(db.to_str().unwrap())),
             ]);
-            let mut config = a3s_code_core::CodeConfig::default();
+            let mut config = aster_core::CodeConfig::default();
             let logs = capture_logs(|| {
                 assert!(merge_into_config(&mut config).unwrap());
             });
@@ -1211,11 +1212,11 @@ mod tests {
             let path = std::env::join_paths(&paths).unwrap();
             let path = path.to_string_lossy().into_owned();
             let _env = EnvGuard::set(&[
-                ("A3S_CURSOR_HOME", Some(home.to_str().unwrap())),
-                ("A3S_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
+                ("ASTER_CURSOR_HOME", Some(home.to_str().unwrap())),
+                ("ASTER_CURSOR_TOKEN_FILE", Some(token.to_str().unwrap())),
                 ("PATH", Some(&path)),
             ]);
-            let mut config = a3s_code_core::CodeConfig::default();
+            let mut config = aster_core::CodeConfig::default();
             assert!(merge_into_config(&mut config).unwrap());
             let argv = std::fs::read_to_string(&marker).unwrap();
             assert_eq!(argv.trim(), "models");
@@ -1243,7 +1244,7 @@ mod tests {
             let (launch, _) = crate::config::load_launch_config_with_imports(
                 workspace,
                 None,
-                &[a3s_code_core::config::AccountImport::Cursor],
+                &[aster_core::config::AccountImport::Cursor],
             )
             .expect("shipped launch");
             println!("launch ok {}", launch.model_id);
@@ -1290,13 +1291,13 @@ mod tests {
     fn live_cursor_completion_returns_assistant_text() {
         let _lock = test_env_lock();
         let _guard = EnvGuard::set(&[
-            ("A3S_DISABLE_CURSOR_ACCOUNT", None),
-            ("A3S_PREFER_CURSOR", None),
-            ("A3S_CURSOR_HOME", None),
-            ("A3S_CURSOR_TOKEN_FILE", None),
-            ("A3S_CURSOR_MODELS_FILE", None),
-            ("A3S_CURSOR_STATE_DB", None),
-            ("A3S_CURSOR_CLIENT_VERSION", None),
+            ("ASTER_DISABLE_CURSOR_ACCOUNT", None),
+            ("ASTER_PREFER_CURSOR", None),
+            ("ASTER_CURSOR_HOME", None),
+            ("ASTER_CURSOR_TOKEN_FILE", None),
+            ("ASTER_CURSOR_MODELS_FILE", None),
+            ("ASTER_CURSOR_STATE_DB", None),
+            ("ASTER_CURSOR_CLIENT_VERSION", None),
             ("CURSOR_API_ENDPOINT", None),
         ]);
         let workspace = tempfile::tempdir().unwrap();
@@ -1312,7 +1313,7 @@ mod tests {
         }
         let _restore = Restore(prior);
 
-        let mut config = a3s_code_core::CodeConfig::default();
+        let mut config = aster_core::CodeConfig::default();
         assert!(merge_into_config(&mut config).expect("merge"));
         let provider = config
             .providers
@@ -1333,7 +1334,7 @@ mod tests {
         let llm = config
             .llm_config(PROVIDER_NAME, &model_id)
             .expect("session llm config");
-        let client = a3s_code_core::llm::create_client_with_config(llm);
+        let client = aster_core::llm::create_client_with_config(llm);
         // Keep this environment-mutating fixture serialized while a private
         // runtime drives the request, without holding a std lock in an async
         // test future that can suspend on the shared executor.
@@ -1343,11 +1344,11 @@ mod tests {
             .expect("fixture runtime");
         let response = runtime
             .block_on(client.complete(
-                &[a3s_code_core::Message::user(
+                &[aster_core::Message::user(
                     "Reply with the single word pong.",
                 )],
                 None,
-                &[] as &[a3s_code_core::llm::ToolDefinition],
+                &[] as &[aster_core::llm::ToolDefinition],
             ))
             .expect("live completion");
         let text = response.text();

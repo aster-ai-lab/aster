@@ -1,6 +1,6 @@
-use a3s_vec::*;
+use aster_vec::*;
 
-fn main() -> a3s_vec::Result<()> {
+fn main() -> aster_vec::Result<()> {
     println!("zvec version: {}", version());
     initialize(None)?;
 

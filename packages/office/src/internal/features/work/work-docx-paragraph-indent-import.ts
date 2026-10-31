@@ -27,7 +27,7 @@ const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const TWIPS_PER_CSS_PIXEL = 15;
-const PARAGRAPH_INDENT_MARKER_PATTERN = /__A3S_WORK_PARAGRAPH_INDENT_\d+__/g;
+const PARAGRAPH_INDENT_MARKER_PATTERN = /__ASTER_WORK_PARAGRAPH_INDENT_\d+__/g;
 
 export function markDocxParagraphIndents(
   document: Document,
@@ -48,7 +48,7 @@ export function markDocxParagraphIndents(
     const indent = resolveDocxParagraphIndent(sources);
     if (!indent.left && !indent.right && !indent.firstLine) continue;
     properties ??= insertParagraphProperties(document, paragraph);
-    const marker = `__A3S_WORK_PARAGRAPH_INDENT_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_INDENT_${paragraphs.length + 1}__`;
     insertParagraphMarker(document, paragraph, properties, marker);
     paragraphs.push({ marker, indent });
   }
@@ -63,7 +63,7 @@ export function applyImportedDocxParagraphIndentMarkers(
     markers.paragraphs.map(({ marker, indent }) => [marker, indent]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_INDENT_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_INDENT_')) continue;
     const block = closestParagraphBlock(node.parentElement);
     node.data = node.data.replace(PARAGRAPH_INDENT_MARKER_PATTERN, (marker) => {
       const indent = indentByMarker.get(marker);

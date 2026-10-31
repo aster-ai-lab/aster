@@ -7,7 +7,7 @@
 //!
 //! - the event stream is the single configured `stream_name`
 //! - the **topic is the first token after the subject prefix** (the category)
-//! - the full subject travels in the message payload and the `a3s-subject`
+//! - the full subject travels in the message payload and the `aster-subject`
 //!   user header, and consumers narrow it client-side with
 //!   [`crate::subject::subject_matches`]
 //!
@@ -163,7 +163,7 @@ mod tests {
     #[test]
     fn test_sanitize_name_passes_valid_chars() {
         assert_eq!(sanitize_name("market"), "market");
-        assert_eq!(sanitize_name("a3s-cloud_events"), "a3s-cloud_events");
+        assert_eq!(sanitize_name("aster-cloud_events"), "aster-cloud_events");
         assert_eq!(sanitize_name("Node-1"), "Node-1");
     }
 
@@ -200,7 +200,7 @@ mod tests {
 
     #[test]
     fn test_parse_subject_multi_token_prefix() {
-        let route = parse_subject("a3s.events.market.forex", "a3s.events").unwrap();
+        let route = parse_subject("aster.events.market.forex", "aster.events").unwrap();
         assert_eq!(route.topic, "market");
     }
 

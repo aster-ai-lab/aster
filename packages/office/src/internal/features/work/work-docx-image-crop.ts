@@ -13,7 +13,7 @@ export class DocxImageCropPatchCollector {
 
   marker(crop: WorkDocumentImageCrop | null): string {
     if (!crop) return '';
-    const marker = `__A3S_IMAGE_CROP_${this.nextMarker}__`;
+    const marker = `__ASTER_IMAGE_CROP_${this.nextMarker}__`;
     this.nextMarker += 1;
     this.patches.push({ marker, crop });
     return marker;

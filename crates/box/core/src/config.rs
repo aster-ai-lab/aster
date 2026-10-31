@@ -81,7 +81,7 @@ pub struct CacheConfig {
     #[serde(default = "default_true")]
     pub enabled: bool,
 
-    /// Cache directory (default: ~/.a3s/cache)
+    /// Cache directory (default: ~/.aster/cache)
     pub cache_dir: Option<PathBuf>,
 
     /// Maximum number of cached rootfs entries (default: 10)
@@ -496,7 +496,7 @@ impl Default for BoxConfig {
             isolation: ExecutionIsolation::default(),
             image: String::new(),
             // Empty path signals the runtime to create a per-box workspace
-            // under ~/.a3s/boxes/<box_id>/workspace/ at boot time.
+            // under ~/.aster/boxes/<box_id>/workspace/ at boot time.
             workspace: PathBuf::new(),
             resources: ResourceConfig::default(),
             log_level: LogLevel::Info,
@@ -554,7 +554,7 @@ impl Default for BoxConfig {
 /// ```
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SidecarConfig {
-    /// OCI image reference for the sidecar (e.g., "ghcr.io/a3s-lab/safeclaw:latest")
+    /// OCI image reference for the sidecar (e.g., "ghcr.io/aster-lab/safeclaw:latest")
     pub image: String,
 
     /// Vsock port the sidecar listens on for host-side control (default: 4092)
@@ -1302,7 +1302,7 @@ mod tests {
     #[test]
     fn test_sidecar_config_roundtrip() {
         let s = SidecarConfig {
-            image: "ghcr.io/a3s-lab/safeclaw:latest".to_string(),
+            image: "ghcr.io/aster-lab/safeclaw:latest".to_string(),
             vsock_port: 4092,
             env: vec![
                 ("LOG_LEVEL".to_string(), "debug".to_string()),
@@ -1311,7 +1311,7 @@ mod tests {
         };
         let json = serde_json::to_string(&s).unwrap();
         let parsed: SidecarConfig = serde_json::from_str(&json).unwrap();
-        assert_eq!(parsed.image, "ghcr.io/a3s-lab/safeclaw:latest");
+        assert_eq!(parsed.image, "ghcr.io/aster-lab/safeclaw:latest");
         assert_eq!(parsed.vsock_port, 4092);
         assert_eq!(parsed.env.len(), 2);
         assert_eq!(

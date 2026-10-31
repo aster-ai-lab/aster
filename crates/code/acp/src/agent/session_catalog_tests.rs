@@ -1,12 +1,12 @@
 #![cfg(test)]
 
-use super::{test_launch, A3sCodeAgent};
+use super::{test_launch, AsterCodeAgent};
 use agent_client_protocol::{self as acp, Agent as _};
 use serde_json::{json, Value};
 
 fn request(value: &Value) -> acp::ExtRequest {
     acp::ExtRequest::new(
-        "a3s/session/list",
+        "aster/session/list",
         serde_json::value::to_raw_value(value)
             .expect("request")
             .into(),
@@ -17,7 +17,7 @@ fn request(value: &Value) -> acp::ExtRequest {
 async fn list_reads_workspace_facts_without_initializing_an_agent_or_store() {
     let root = tempfile::tempdir().expect("workspace");
     let workspace = root.path().canonicalize().expect("canonical workspace");
-    let home = a3s_code_core::session_folder::prepare_session_home(&workspace, "catalog-session")
+    let home = aster_core::session_folder::prepare_session_home(&workspace, "catalog-session")
         .expect("session home")
         .expect("new folder");
     let fact = json!({
@@ -28,7 +28,7 @@ async fn list_reads_workspace_facts_without_initializing_an_agent_or_store() {
     let store = workspace.join("snapshot-store-must-not-be-created");
     let mut launch = test_launch(Some(store.clone()));
     launch.workspace = workspace.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let response = agent
         .ext_method(request(
             &json!({"cwd": workspace, "limit": 30, "headless": "include"}),
@@ -42,27 +42,27 @@ async fn list_reads_workspace_facts_without_initializing_an_agent_or_store() {
         "修复列表中的会话\n完整原文"
     );
     assert_eq!(body["sessions"][0]["numMessages"], 1);
-    assert_eq!(body["_meta"]["a3s/listScope"], "cwd");
+    assert_eq!(body["_meta"]["aster/listScope"], "cwd");
     assert!(agent.core_agent.lock().await.is_none());
     assert!(agent.sessions.lock().await.is_empty());
     assert!(agent.config_mcp.lock().await.is_none());
     assert!(!store.exists());
 }
 
-fn agent_at(workspace: &std::path::Path) -> A3sCodeAgent {
+fn agent_at(workspace: &std::path::Path) -> AsterCodeAgent {
     let mut launch = test_launch(Some(workspace.join("must-not-create-store")));
     launch.workspace = workspace.to_owned();
-    A3sCodeAgent::new(launch)
+    AsterCodeAgent::new(launch)
 }
 
 fn legacy_fact(workspace: &std::path::Path, id: &str, text: &str) {
-    let home = workspace.join(".a3s/effect-log");
+    let home = workspace.join(".aster/effect-log");
     std::fs::create_dir_all(&home).expect("fixture directory");
     let fact = json!({"seq":1,"type":"user.message","key":"user:1","payload":{"text":text}});
     std::fs::write(home.join(format!("{id}.jsonl")), format!("{fact}\n")).expect("fixture fact");
 }
 
-async fn list(agent: &A3sCodeAgent, params: Value) -> Value {
+async fn list(agent: &AsterCodeAgent, params: Value) -> Value {
     let response = agent
         .ext_method(request(&params))
         .await
@@ -76,8 +76,8 @@ async fn empty_workspace_does_not_create_state() {
     let agent = agent_at(root.path());
     let body = list(&agent, json!({})).await;
     assert_eq!(body["sessions"], json!([]));
-    assert_eq!(body["_meta"]["a3sCode/sessionCatalog"]["incomplete"], false);
-    assert!(!root.path().join(".a3s").exists());
+    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["incomplete"], false);
+    assert!(!root.path().join(".aster").exists());
     assert!(agent.core_agent.lock().await.is_none());
 }
 
@@ -101,7 +101,7 @@ async fn concurrent_inventory_is_refused_without_queuing_or_creating_state() {
         )
         .expect("expected error")
     );
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
     assert!(agent.core_agent.lock().await.is_none());
     drop(permit);
     assert_eq!(list(&agent, json!({})).await["sessions"], json!([]));
@@ -155,7 +155,7 @@ fn dropped_request_keeps_admission_until_its_blocking_worker_exits() {
         drop(permit);
         assert_eq!(list(&agent, json!({})).await["sessions"], json!([]));
     });
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
     assert!(agent.core_agent.try_lock().expect("agent lock").is_none());
 }
 
@@ -179,7 +179,7 @@ async fn foreign_and_missing_workspace_share_not_found_even_with_relaxation() {
         serde_json::to_value(acp::Error::resource_not_found(None)).expect("not found")
     );
     assert!(agent.core_agent.lock().await.is_none());
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
 }
 
 #[tokio::test]
@@ -194,7 +194,7 @@ async fn invalid_fields_closed_sets_and_bounds_are_rejected() {
         json!({"allowRelax":"true"}),
         json!({"extra":true}),
         json!({"query":"x".repeat(4097)}),
-        json!({"_meta":{"a3s/facetFilters":{"kind":["invented"]}}}),
+        json!({"_meta":{"aster/facetFilters":{"kind":["invented"]}}}),
         json!({"_meta":{"unknown":true}}),
     ] {
         assert!(
@@ -205,7 +205,7 @@ async fn invalid_fields_closed_sets_and_bounds_are_rejected() {
     let large = json!({"query":"x".repeat(1024*1024)});
     assert!(agent.ext_method(request(&large)).await.is_err());
     assert!(agent.core_agent.lock().await.is_none());
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
 }
 
 #[tokio::test]
@@ -220,13 +220,13 @@ async fn query_limit_and_projection_use_legacy_facts() {
     assert_eq!(body["sessions"][0]["summary"], "精确原文查询");
     assert_eq!(body["sessions"][0]["source"], "local");
     assert_eq!(
-        body["sessions"][0]["_meta"]["a3sCode/sessionCatalog"],
-        "a3s.code.session-catalog.v1"
+        body["sessions"][0]["_meta"]["asterCode/sessionCatalog"],
+        "aster.code.session-catalog.v1"
     );
     assert!(body["sessions"][0]["updatedAt"].as_str().is_some());
-    assert_eq!(body["_meta"]["a3sCode/sessionCatalog"]["truncated"], false);
+    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["truncated"], false);
     let page = list(&agent, json!({"limit":1})).await;
-    assert_eq!(page["_meta"]["a3sCode/sessionCatalog"]["truncated"], true);
+    assert_eq!(page["_meta"]["asterCode/sessionCatalog"]["truncated"], true);
     assert!(agent.core_agent.lock().await.is_none());
 }
 
@@ -234,11 +234,11 @@ async fn query_limit_and_projection_use_legacy_facts() {
 async fn corrupt_logs_are_visible_as_partial_inventory() {
     let root = tempfile::tempdir().expect("workspace");
     legacy_fact(root.path(), "valid", "valid");
-    std::fs::write(root.path().join(".a3s/effect-log/bad.jsonl"), b"corrupt").expect("bad log");
+    std::fs::write(root.path().join(".aster/effect-log/bad.jsonl"), b"corrupt").expect("bad log");
     let body = list(&agent_at(root.path()), json!({})).await;
     assert_eq!(body["sessions"].as_array().expect("rows").len(), 1);
-    assert_eq!(body["_meta"]["a3sCode/sessionCatalog"]["incomplete"], true);
-    assert_eq!(body["_meta"]["a3sCode/sessionCatalog"]["skippedEntries"], 1);
+    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["incomplete"], true);
+    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["skippedEntries"], 1);
 }
 
 #[tokio::test]
@@ -249,9 +249,9 @@ async fn unknown_session_kind_is_never_invented_for_a_filtered_view() {
     for policy in ["exclude", "only"] {
         let body = list(&agent, json!({"headless":policy})).await;
         assert_eq!(body["sessions"], json!([]));
-        assert_eq!(body["_meta"]["a3sCode/sessionCatalog"]["incomplete"], true);
+        assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["incomplete"], true);
         assert_eq!(
-            body["_meta"]["a3sCode/sessionCatalog"]["unclassifiedPageEntries"],
+            body["_meta"]["asterCode/sessionCatalog"]["unclassifiedPageEntries"],
             1
         );
     }
@@ -266,14 +266,14 @@ async fn persisted_session_kind_filters_without_guessing_legacy_records() {
     for (id, kind) in [
         (
             "interactive",
-            a3s_code_core::session_folder::SessionKind::Interactive,
+            aster_core::session_folder::SessionKind::Interactive,
         ),
         (
             "headless",
-            a3s_code_core::session_folder::SessionKind::Headless,
+            aster_core::session_folder::SessionKind::Headless,
         ),
     ] {
-        a3s_code_core::session_folder::prepare_session_home_with_kind(root.path(), id, kind)
+        aster_core::session_folder::prepare_session_home_with_kind(root.path(), id, kind)
             .expect("typed session home");
     }
     let agent = agent_at(root.path());
@@ -282,11 +282,11 @@ async fn persisted_session_kind_filters_without_guessing_legacy_records() {
     assert_eq!(interactive["sessions"][0]["id"], "interactive");
     assert_eq!(interactive["sessions"][0]["sessionKind"], "interactive");
     assert_eq!(
-        interactive["_meta"]["a3sCode/sessionCatalog"]["incomplete"],
+        interactive["_meta"]["asterCode/sessionCatalog"]["incomplete"],
         true
     );
     assert_eq!(
-        interactive["_meta"]["a3sCode/sessionCatalog"]["unclassifiedPageEntries"],
+        interactive["_meta"]["asterCode/sessionCatalog"]["unclassifiedPageEntries"],
         1
     );
 
@@ -302,15 +302,15 @@ async fn persisted_session_kind_filters_without_guessing_legacy_records() {
 #[tokio::test]
 async fn chat_facet_does_not_read_or_mislabel_code_sessions() {
     let root = tempfile::tempdir().expect("workspace");
-    std::fs::create_dir(root.path().join(".a3s")).expect("state");
-    std::fs::write(root.path().join(".a3s/sessions"), b"not a directory").expect("bad state");
+    std::fs::create_dir(root.path().join(".aster")).expect("state");
+    std::fs::write(root.path().join(".aster/sessions"), b"not a directory").expect("bad state");
     let body = list(
         &agent_at(root.path()),
-        json!({"_meta":{"a3s/facetFilters":{"kind":["chat"]}}}),
+        json!({"_meta":{"aster/facetFilters":{"kind":["chat"]}}}),
     )
     .await;
     assert_eq!(body["sessions"], json!([]));
-    assert_eq!(body["_meta"]["a3sCode/sessionCatalog"]["incomplete"], false);
+    assert_eq!(body["_meta"]["asterCode/sessionCatalog"]["incomplete"], false);
 }
 
 #[tokio::test]
@@ -343,7 +343,7 @@ async fn acp_wire_initialize_then_list_returns_persisted_facts() {
                 ),
                 (
                     2,
-                    "_a3s/session/list",
+                    "_aster/session/list",
                     json!({"cwd":root.path(),"limit":30,"headless":"include"}),
                 ),
             ] {
@@ -364,7 +364,7 @@ async fn acp_wire_initialize_then_list_returns_persisted_facts() {
                 assert_eq!(response["id"], id);
                 assert!(response.get("error").is_none(), "{response}");
                 if id == 1 {
-                    assert_eq!(response["result"]["_meta"]["a3sCode"], true);
+                    assert_eq!(response["result"]["_meta"]["asterCode"], true);
                 } else {
                     assert_eq!(response["result"]["sessions"][0]["id"], "wire-session");
                     assert_eq!(
@@ -379,5 +379,5 @@ async fn acp_wire_initialize_then_list_returns_persisted_facts() {
         })
         .await;
     assert!(!root.path().join("must-not-create-store").exists());
-    assert!(!root.path().join(".a3s/sessions").exists());
+    assert!(!root.path().join(".aster/sessions").exists());
 }

@@ -1,11 +1,11 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanActor, PlanEnforcementProfile, PlanPackageChangeKind, PlanPolicyDecision, PlanScope,
     PlannedPackageState, PluginOperationAction, PluginOperationPlanEnvelope, PluginPackageId,
     PluginPlanSource, UseError, UseResult, MAX_PLUGIN_PLAN_ITEMS,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionRegistryCutoverRecord, RegistrySourceStore, WorkspaceGrantLifecyclePhase,
     WorkspaceGrantOperationJournal,
 };
@@ -41,13 +41,13 @@ use projection::{
     project_registry_cutover, project_sources,
 };
 
-pub const PLUGIN_OPERATION_DIAGNOSTIC_SCHEMA: &str = "a3s.use.plugin-operation-diagnostic.v1";
+pub const PLUGIN_OPERATION_DIAGNOSTIC_SCHEMA: &str = "aster.use.plugin-operation-diagnostic.v1";
 pub const PLUGIN_OPERATION_HISTORY_DIAGNOSTIC_SCHEMA: &str =
-    "a3s.use.plugin-operation-history-diagnostic.v1";
+    "aster.use.plugin-operation-history-diagnostic.v1";
 pub const PLUGIN_DOWNLOAD_ATTEMPT_DIAGNOSTIC_SCHEMA: &str =
-    "a3s.use.plugin-download-attempt-diagnostic.v1";
+    "aster.use.plugin-download-attempt-diagnostic.v1";
 pub const PLUGIN_RESOLUTION_ATTEMPT_DIAGNOSTIC_SCHEMA: &str =
-    "a3s.use.plugin-resolution-attempt-diagnostic.v1";
+    "aster.use.plugin-resolution-attempt-diagnostic.v1";
 pub const MAX_PLUGIN_OPERATION_DIAGNOSTIC_BYTES: usize = 2 * 1024 * 1024;
 pub const MAX_RETAINED_PLUGIN_OPERATION_HISTORY_BYTES: usize = 8 * 1024 * 1024;
 pub const MAX_PLUGIN_OPERATION_HISTORY_BYTES: usize =
@@ -171,7 +171,7 @@ pub struct PluginPendingResolutionAttemptDiagnostic {
     pub completed_at_ms: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_version: Option<String>,
-    pub channel: a3s_use_core::PluginReleaseChannel,
+    pub channel: aster_use_core::PluginReleaseChannel,
     pub registry_count: u32,
     pub verified_registry_count: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -413,7 +413,7 @@ pub enum PluginOperationSourceDiagnostic {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PluginProviderOperationDiagnostic {
-    pub surface: a3s_use_core::PlanQualifiedSurfaceRef,
+    pub surface: aster_use_core::PlanQualifiedSurfaceRef,
     pub provider_id: String,
     pub provider_build_id: String,
     pub capability_digest: String,
@@ -617,7 +617,7 @@ impl PackageManager {
                     "No diagnosable package operation exists for this package and scope.",
                 )
                 .with_suggestion(
-                    "Use 'a3s-use extension inspect <publisher/name> --json' for installed lifecycle history.",
+                    "Use 'aster-use extension inspect <publisher/name> --json' for installed lifecycle history.",
                 ))
             }
         }

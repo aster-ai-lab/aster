@@ -75,7 +75,7 @@ async fn the_run_removes_its_worktree_at_settlement_without_an_llm() {
     let workspace = tempfile::tempdir().unwrap();
     let root = workspace.path().to_path_buf();
     git(&root, &["init", "-q"]);
-    git(&root, &["config", "user.email", "wt@a3s.local"]);
+    git(&root, &["config", "user.email", "wt@aster.local"]);
     git(&root, &["config", "user.name", "WT Settlement"]);
     std::fs::write(root.join("README.md"), "settlement twin\n").unwrap();
     git(&root, &["add", "README.md"]);

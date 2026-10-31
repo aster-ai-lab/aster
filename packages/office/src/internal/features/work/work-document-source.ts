@@ -13,7 +13,7 @@ import type {
 } from './work-types';
 
 export const WORK_DOCUMENT_SOURCE_SCHEMA =
-  'a3s.office.document.source' as const;
+  'aster.office.document.source' as const;
 export const WORK_DOCUMENT_SOURCE_VERSION = 1 as const;
 export const WORK_DOCUMENT_SOURCE_MEDIA_TYPE =
   'text/markdown; charset=utf-8' as const;
@@ -148,7 +148,7 @@ function assertDocumentSource(
     source.mediaType !== WORK_DOCUMENT_SOURCE_MEDIA_TYPE ||
     typeof source.content !== 'string'
   ) {
-    throw new Error('The A3S Office document source envelope is invalid.');
+    throw new Error('The Aster Office document source envelope is invalid.');
   }
 }
 

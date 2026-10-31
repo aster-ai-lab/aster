@@ -1,6 +1,6 @@
 //! MCP (Model Context Protocol) Support
 //!
-//! Provides integration with MCP servers for extending A3S Code with external tools.
+//! Provides integration with MCP servers for extending Aster Code with external tools.
 //!
 //! ## Overview
 //!
@@ -16,7 +16,7 @@
 //! ## Usage
 //!
 //! ```rust,ignore
-//! use a3s_code::mcp::{McpManager, McpServerConfig, McpTransportConfig};
+//! use aster::mcp::{McpManager, McpServerConfig, McpTransportConfig};
 //!
 //! // Create manager
 //! let manager = McpManager::new();

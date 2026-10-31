@@ -1,6 +1,6 @@
 //! Reproducible workspace-shaped n-gram FTS build, query, and reopen fixture.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema, Fts,
     FtsQueryParams, IndexParams, SearchQuery,
 };
@@ -182,8 +182,8 @@ fn file_bytes(path: &Path) -> u64 {
 }
 
 fn main() {
-    let documents = positive_env("A3S_VEC_NGRAM_DOCUMENTS", DEFAULT_DOCUMENTS);
-    let rounds = positive_env("A3S_VEC_NGRAM_ROUNDS", DEFAULT_ROUNDS);
+    let documents = positive_env("ASTER_VEC_NGRAM_DOCUMENTS", DEFAULT_DOCUMENTS);
+    let rounds = positive_env("ASTER_VEC_NGRAM_ROUNDS", DEFAULT_ROUNDS);
     let temporary = tempdir().expect("temporary directory must be available");
     let path = temporary.path().join("ngram");
     let collection = Collection::create(

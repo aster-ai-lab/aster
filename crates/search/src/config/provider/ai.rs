@@ -1,9 +1,9 @@
 //! ACL parsing for authenticated AI search providers.
 
-use a3s_acl::ast::Block;
+use aster_acl::ast::Block;
 
 use crate::providers::{
-    A3sAuth, A3sConfig, AliyunConfig, AliyunEngineType, BochaConfig, DeepSeekConfig, DoubaoConfig,
+    AsterAuth, AsterConfig, AliyunConfig, AliyunEngineType, BochaConfig, DeepSeekConfig, DoubaoConfig,
     FirecrawlCategory, FirecrawlConfig, FirecrawlSource, TencentConfig, TencentIndustry,
     TinyFishConfig, TinyFishDomainType,
 };
@@ -143,8 +143,8 @@ pub(super) fn parse_tencent(block: &Block, provider: &str) -> Result<TencentConf
     Ok(config)
 }
 
-pub(super) fn parse_a3s(block: &Block, provider: &str) -> Result<A3sConfig> {
-    let mut config = A3sConfig::new()?;
+pub(super) fn parse_aster(block: &Block, provider: &str) -> Result<AsterConfig> {
+    let mut config = AsterConfig::new()?;
     if let Some(endpoint) = optional_url(block, provider, "endpoint")? {
         config = config.with_endpoint(endpoint)?;
     }
@@ -159,8 +159,8 @@ pub(super) fn parse_a3s(block: &Block, provider: &str) -> Result<A3sConfig> {
     }
     if let Some(auth_header) = optional_string(block, provider, "auth_header")? {
         config = config.with_auth(match auth_header.as_str() {
-            "bearer" => A3sAuth::Bearer,
-            "x-api-key" => A3sAuth::ApiKey,
+            "bearer" => AsterAuth::Bearer,
+            "x-api-key" => AsterAuth::ApiKey,
             _ => {
                 return Err(config_error(
                     provider,

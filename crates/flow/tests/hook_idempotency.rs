@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ActiveHookSnapshot, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore,
     FlowRuntime, FlowTask, FlowWorker, HookStatus, InMemoryEventStore, RuntimeBuildCompatibility,
     RuntimeBuildId, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
@@ -33,7 +33,7 @@ impl FlowRuntime for HookRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if let Some(payload) = context.hook_payload(HOOK_ID) {
             return Ok(context.complete(json!({
@@ -51,7 +51,7 @@ impl FlowRuntime for HookRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("hook runtime does not schedule steps")
     }
 }
@@ -72,7 +72,7 @@ impl CrashBeforeCompletionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeCompletionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -81,7 +81,7 @@ impl FlowEventStore for CrashBeforeCompletionStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(event, FlowEvent::RunCompleted { .. })
             && self.armed.swap(false, Ordering::SeqCst)
         {
@@ -94,11 +94,11 @@ impl FlowEventStore for CrashBeforeCompletionStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -468,7 +468,7 @@ impl FlowRuntime for HookBesideOpenWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.hook_payload(HOOK_ID).is_some() {
             return Ok(context.complete(json!("received")));
@@ -486,11 +486,11 @@ impl FlowRuntime for HookBesideOpenWaitRuntime {
         Ok(context.wait_until("pause", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("hook-beside-wait runtime does not schedule steps")
     }
 
-    async fn run_update(&self, _invocation: a3s_flow::UpdateInvocation) -> a3s_flow::Result<Value> {
+    async fn run_update(&self, _invocation: aster_flow::UpdateInvocation) -> aster_flow::Result<Value> {
         Ok(json!({ "opened": true }))
     }
 }
@@ -574,7 +574,7 @@ impl CrashAfterHookReceivedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterHookReceivedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -583,7 +583,7 @@ impl FlowEventStore for CrashAfterHookReceivedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -600,11 +600,11 @@ impl FlowEventStore for CrashAfterHookReceivedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -625,7 +625,7 @@ impl CrashAfterHookDisposedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterHookDisposedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -634,7 +634,7 @@ impl FlowEventStore for CrashAfterHookDisposedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -651,11 +651,11 @@ impl FlowEventStore for CrashAfterHookDisposedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -686,7 +686,7 @@ async fn hook_received_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
     let mid = engine.snapshot("hook-received-drive").await.unwrap();
     assert!(!mid.status.is_terminal());
     assert_eq!(mid.hooks[HOOK_ID].status, HookStatus::Received);
-    assert_eq!(mid.waits["pause"].status, a3s_flow::WaitStatus::Waiting);
+    assert_eq!(mid.waits["pause"].status, aster_flow::WaitStatus::Waiting);
 
     let recovered = engine.drive("hook-received-drive").await.unwrap();
     assert_eq!(
@@ -723,7 +723,7 @@ async fn hook_disposed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
     let mid = engine.snapshot("hook-disposed-drive").await.unwrap();
     assert!(!mid.status.is_terminal());
     assert_eq!(mid.hooks[HOOK_ID].status, HookStatus::Disposed);
-    assert_eq!(mid.waits["pause"].status, a3s_flow::WaitStatus::Waiting);
+    assert_eq!(mid.waits["pause"].status, aster_flow::WaitStatus::Waiting);
 
     let recovered = engine.drive("hook-disposed-drive").await.unwrap();
     assert_eq!(
@@ -741,7 +741,7 @@ impl FlowRuntime for ParallelSiblingHookRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let left_done = context.hook_payload("left").is_some();
         let right_done = context.hook_payload("right").is_some();
@@ -769,7 +769,7 @@ impl FlowRuntime for ParallelSiblingHookRuntime {
         Ok(context.create_hook("left", "left-token", json!({ "arm": "left" })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("parallel sibling hook runtime does not schedule steps")
     }
 }

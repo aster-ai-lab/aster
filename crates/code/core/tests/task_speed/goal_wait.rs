@@ -1,13 +1,13 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::goal_control::{
+use aster_core::goal_control::{
     GoalControlCommandV1, GoalState, GoalWaitCommandV1, GoalWaitConditionV1, GoalWaitEvidenceV1,
 };
-use a3s_code_core::{AgentRunSpawn, GoalTickAdmission};
+use aster_core::{AgentRunSpawn, GoalTickAdmission};
 
 fn wait(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     operation: &str,
     step: &str,
     condition: Option<GoalWaitConditionV1>,
@@ -35,7 +35,7 @@ fn wait(
 }
 
 /// `padded` fills the description and non-goals to their admitted maximum.
-fn create_goal(session: &a3s_code_core::AgentSession, workspace: &std::path::Path, padded: bool) {
+fn create_goal(session: &aster_core::AgentSession, workspace: &std::path::Path, padded: bool) {
     let mut description = "Verify the source and report the owner's release code".to_string();
     let mut non_goals = vec!["Do not change any file".to_string()];
     if padded {
@@ -65,7 +65,7 @@ fn create_goal(session: &a3s_code_core::AgentSession, workspace: &std::path::Pat
 }
 
 /// Propose and accept `steps` through the original plan commands.
-fn accept_plan(session: &a3s_code_core::AgentSession, id: &str, steps: Vec<Task>) {
+fn accept_plan(session: &aster_core::AgentSession, id: &str, steps: Vec<Task>) {
     let goal = session.goal_definition().unwrap().unwrap();
     let mut plan = ExecutionPlan::new("Release check", Complexity::Simple);
     for step in steps {
@@ -120,7 +120,7 @@ async fn live_session(
     padded: bool,
 ) -> (
     Agent,
-    a3s_code_core::AgentSession,
+    aster_core::AgentSession,
     Arc<compaction::UsageProbe>,
 ) {
     let opened = open_live(workspace, session_id, value, max_slices, max_no_progress).await;
@@ -137,7 +137,7 @@ async fn open_live(
     max_no_progress: u64,
 ) -> (
     Agent,
-    a3s_code_core::AgentSession,
+    aster_core::AgentSession,
     Arc<compaction::UsageProbe>,
 ) {
     let mut config = load_pinned_layer_c_config();
@@ -146,7 +146,7 @@ async fn open_live(
         .unwrap()
         .as_millis()
         + 300_000;
-    config.goal_control = a3s_code_core::CodeConfig::from_acl(&format!(
+    config.goal_control = aster_core::CodeConfig::from_acl(&format!(
         r#"goal_control {{
             automatic_enabled = true
             max_slices = "{max_slices}"
@@ -156,7 +156,7 @@ async fn open_live(
     ))
     .unwrap()
     .goal_control;
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         prune_policy: None,
         ..Default::default()
@@ -192,7 +192,7 @@ async fn open_live(
     (agent, session, guard)
 }
 
-async fn run_tick(session: &a3s_code_core::AgentSession, operation: &str) -> (String, f64) {
+async fn run_tick(session: &aster_core::AgentSession, operation: &str) -> (String, f64) {
     let started = std::time::Instant::now();
     let GoalTickAdmission::Admitted(AgentRunSpawn::Started { worker, .. }) = session
         .tick_goal(&tick_request(session, operation))
@@ -206,14 +206,14 @@ async fn run_tick(session: &a3s_code_core::AgentSession, operation: &str) -> (St
         .unwrap()
         .unwrap();
     let snapshot = session.run_snapshot(operation).await.unwrap();
-    assert_eq!(snapshot.status, a3s_code_core::run::RunStatus::Completed);
+    assert_eq!(snapshot.status, aster_core::run::RunStatus::Completed);
     (
         snapshot.result_text.unwrap_or_default(),
         started.elapsed().as_secs_f64(),
     )
 }
 
-fn step_status(session: &a3s_code_core::AgentSession, id: &str) -> TaskStatus {
+fn step_status(session: &aster_core::AgentSession, id: &str) -> TaskStatus {
     let goal = session.goal_definition().unwrap().unwrap();
     goal.plan
         .unwrap()
@@ -225,10 +225,10 @@ fn step_status(session: &a3s_code_core::AgentSession, id: &str) -> TaskStatus {
 }
 
 fn slice_steps(workspace: &std::path::Path, session_id: &str) -> Vec<String> {
-    a3s_code_core::fact_control::read_workspace_facts(workspace, session_id)
+    aster_core::fact_control::read_workspace_facts(workspace, session_id)
         .unwrap()
         .into_iter()
-        .filter(|f| f.kind == "a3s.goal.slice.admitted")
+        .filter(|f| f.kind == "aster.goal.slice.admitted")
         .map(|f| f.payload["body"]["step_id"].as_str().unwrap().to_owned())
         .collect()
 }
@@ -257,7 +257,7 @@ async fn waits_real_independent_step_runs_and_the_answer_reaches_the_waiting_ste
         ],
     );
     let facts = || {
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "goal-wait-live")
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "goal-wait-live")
             .unwrap()
     };
     let question = GoalWaitConditionV1::QuestionAnswer {
@@ -420,16 +420,16 @@ async fn stall_real_one_replan_recovers_and_pause_settles_the_running_slice() {
     assert_eq!(paused.state, GoalState::Paused);
     assert_ne!(
         session.run_snapshot("wake-summary").await.unwrap().status,
-        a3s_code_core::run::RunStatus::Completed
+        aster_core::run::RunStatus::Completed
     );
     // The original owner closes the cancelled slice itself: interrupted, usage unknown.
     let slices = slice_steps(workspace.path(), id);
     let recorded = slices.len() == 3;
     assert_eq!(slices[..2], ["token", "inspect"]);
-    let closeouts = a3s_code_core::fact_control::read_workspace_facts(workspace.path(), id)
+    let closeouts = aster_core::fact_control::read_workspace_facts(workspace.path(), id)
         .unwrap()
         .into_iter()
-        .filter(|f| f.kind == "a3s.goal.slice.settled")
+        .filter(|f| f.kind == "aster.goal.slice.settled")
         .collect::<Vec<_>>();
     assert_eq!(
         closeouts.len(),

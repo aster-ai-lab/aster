@@ -5,16 +5,16 @@
 //! A model that never exercises the mechanism fails the test.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_harness_capabilities_live_e2e \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_harness_capabilities_live_e2e \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentEvent, SessionOptions};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentEvent, SessionOptions};
 
 mod support;
 use support::layer_c_model::load_pinned_layer_c_config;
@@ -38,7 +38,7 @@ const ASK_HOST_ANSWER: &str = "host-answer-token-4c7b";
 const BASH_TOKEN: &str = "bash-live-token-2e9c";
 const WRITE_TOKEN: &str = "write-live-token-7d1a";
 const PROGRAM_TOKEN: &str = "program-live-token-55aa";
-const WEB_QUERY_MARKER: &str = "A3S harness web_search live probe";
+const WEB_QUERY_MARKER: &str = "Aster harness web_search live probe";
 const WEB_FETCH_URL: &str = "https://example.com/";
 const DOWNLOAD_URL: &str = "https://example.com/";
 const DOWNLOAD_FILE: &str = "example-download.html";
@@ -69,7 +69,7 @@ async fn configured_agent() -> Agent {
     let config = load_pinned_layer_c_config();
     Agent::from_config(config)
         .await
-        .expect("build agent from .a3s/config.acl")
+        .expect("build agent from .aster/config.acl")
 }
 
 fn policy(allows: &[&str]) -> PermissionPolicy {
@@ -87,7 +87,7 @@ fn policy(allows: &[&str]) -> PermissionPolicy {
 fn options(session_id: &str, allows: &[&str]) -> SessionOptions {
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy(allows))
         .with_default_security()
         .with_planning(false)
@@ -99,12 +99,12 @@ fn options(session_id: &str, allows: &[&str]) -> SessionOptions {
         .with_continuation(false)
 }
 
-async fn observe(session: &a3s_code_core::AgentSession, prompt: &str) -> Observed {
+async fn observe(session: &aster_core::AgentSession, prompt: &str) -> Observed {
     observe_host(session, prompt, None).await
 }
 
 async fn observe_host(
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     prompt: &str,
     host_answer: Option<&str>,
 ) -> Observed {
@@ -164,7 +164,7 @@ async fn observe_host(
                 AgentEvent::Error { message } => observed.errors.push(message),
                 AgentEvent::UserQuestion { question_id, .. } => {
                     if let Some(answer) = host_answer.as_deref() {
-                        let _ = a3s_code_core::ask_user::answer(&question_id, answer);
+                        let _ = aster_core::ask_user::answer(&question_id, answer);
                     }
                 }
                 _ => {}
@@ -195,7 +195,7 @@ fn workspace_files(root: &Path) -> Vec<String> {
         for entry in entries.flatten() {
             let path = entry.path();
             let name = entry.file_name();
-            if name == ".a3s" || name == ".a3s-code" || name == ".git" {
+            if name == ".aster" || name == ".aster" || name == ".git" {
                 continue;
             }
             if path.is_dir() {
@@ -215,7 +215,7 @@ fn workspace_files(root: &Path) -> Vec<String> {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_read_tool_returns_the_fixture() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -247,7 +247,7 @@ async fn deepseek_flash_read_tool_returns_the_fixture() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_search_finds_the_workspace_token() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -298,7 +298,7 @@ async fn deepseek_flash_search_finds_the_workspace_token() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_glob_finds_the_nested_fixture() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -345,7 +345,7 @@ async fn deepseek_flash_glob_finds_the_nested_fixture() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_grep_finds_the_nested_token() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -388,7 +388,7 @@ async fn deepseek_flash_grep_finds_the_nested_token() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_git_diff_returns_the_changed_token() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -431,7 +431,7 @@ async fn deepseek_flash_git_diff_returns_the_changed_token() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_ask_user_returns_the_host_answer() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -518,7 +518,7 @@ fn init_git_repo(root: &Path) {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_mcp_tool_returns_the_server_token() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -532,9 +532,9 @@ async fn deepseek_flash_mcp_tool_returns_the_server_token() {
         .await
         .expect("session");
     let registered = session
-        .add_mcp_server(a3s_code_core::mcp::McpServerConfig {
+        .add_mcp_server(aster_core::mcp::McpServerConfig {
             name: "fixture".to_string(),
-            transport: a3s_code_core::mcp::McpTransportConfig::Stdio {
+            transport: aster_core::mcp::McpTransportConfig::Stdio {
                 command: python_stdio_command(),
                 args: vec![script.to_string_lossy().to_string()],
             },
@@ -568,7 +568,7 @@ async fn deepseek_flash_mcp_tool_returns_the_server_token() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_skill_tool_returns_the_skill_token() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -620,7 +620,7 @@ async fn deepseek_flash_skill_tool_returns_the_skill_token() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_background_task_returns_before_the_child_finishes() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -668,7 +668,7 @@ async fn deepseek_flash_background_task_returns_before_the_child_finishes() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_compaction_keeps_the_earlier_token() {
     let token = "compact-live-token-18ab";
     let agent = configured_agent().await;
@@ -718,7 +718,7 @@ async fn deepseek_flash_compaction_keeps_the_earlier_token() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_plan_tracks_a_read_only_goal() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -730,7 +730,7 @@ async fn deepseek_flash_plan_tracks_a_read_only_goal() {
             Some(
                 options("live-plan", &["search(**)", "grep(**)"])
                     .with_planning(true)
-                    .with_planning_mode(a3s_code_core::PlanningMode::Enabled)
+                    .with_planning_mode(aster_core::PlanningMode::Enabled)
                     .with_goal_tracking(true)
                     .with_read_only_session(true),
             ),
@@ -761,7 +761,7 @@ async fn deepseek_flash_plan_tracks_a_read_only_goal() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_task_fanout_reads_two_files() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -822,7 +822,7 @@ async fn deepseek_flash_task_fanout_reads_two_files() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_review_agent_does_not_edit() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -868,7 +868,7 @@ async fn deepseek_flash_review_agent_does_not_edit() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_ls_lists_the_fixture() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -900,7 +900,7 @@ async fn deepseek_flash_ls_lists_the_fixture() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_edit_replaces_the_fixture_token() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -942,7 +942,7 @@ async fn deepseek_flash_edit_replaces_the_fixture_token() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_patch_applies_the_given_hunk() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -1000,7 +1000,7 @@ async fn deepseek_flash_patch_applies_the_given_hunk() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_bash_echoes_the_token() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -1035,7 +1035,7 @@ async fn deepseek_flash_bash_echoes_the_token() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_write_creates_the_fixture_file() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -1072,7 +1072,7 @@ async fn deepseek_flash_write_creates_the_fixture_file() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_program_returns_the_script_marker() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -1118,7 +1118,7 @@ async fn deepseek_flash_program_returns_the_script_marker() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_web_search_invokes_the_baseline_engine() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -1185,7 +1185,7 @@ async fn deepseek_flash_web_search_invokes_the_baseline_engine() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_web_fetch_returns_remote_content() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -1222,7 +1222,7 @@ async fn deepseek_flash_web_fetch_returns_remote_content() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_download_writes_a_workspace_file() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -1263,7 +1263,7 @@ async fn deepseek_flash_download_writes_a_workspace_file() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn deepseek_flash_batch_reads_two_fixture_files() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");

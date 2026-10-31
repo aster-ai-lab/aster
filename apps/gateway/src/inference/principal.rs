@@ -132,7 +132,7 @@ impl PrincipalVerifier {
         principal: &InferencePrincipalConfig,
         headers: &HeaderMap,
     ) -> Result<PrincipalSubject, InferenceAccessError> {
-        // A3S_GATEWAY_SHARED_TOKEN skips verify_url. Any other presented credential is checked. No credential is unauthorized.
+        // ASTER_GATEWAY_SHARED_TOKEN skips verify_url. Any other presented credential is checked. No credential is unauthorized.
         let token = principal_token(headers)?;
         if let Some(subject) = shared_subject(route_id, token) {
             self.remember_subject(&subject);
@@ -234,7 +234,7 @@ pub(crate) fn shared_token_admits(headers: &HeaderMap) -> bool {
     let Ok(token) = principal_token(headers) else {
         return false;
     };
-    let Ok(expected) = std::env::var("A3S_GATEWAY_SHARED_TOKEN") else {
+    let Ok(expected) = std::env::var("ASTER_GATEWAY_SHARED_TOKEN") else {
         return false;
     };
     let expected = expected.trim();
@@ -242,7 +242,7 @@ pub(crate) fn shared_token_admits(headers: &HeaderMap) -> bool {
 }
 
 fn shared_subject(route_id: Uuid, token: &str) -> Option<PrincipalSubject> {
-    let Ok(expected) = std::env::var("A3S_GATEWAY_SHARED_TOKEN") else {
+    let Ok(expected) = std::env::var("ASTER_GATEWAY_SHARED_TOKEN") else {
         return None;
     };
     let expected = expected.trim();
@@ -351,8 +351,8 @@ async fn call_verify(
     })?;
     let org = principal.org_header.as_deref().and_then(header);
     let credential_id =
-        header("x-a3s-credential-id").and_then(|value| Uuid::parse_str(&value).ok());
-    let allowed_models = header("x-a3s-models").map(|value| {
+        header("x-aster-credential-id").and_then(|value| Uuid::parse_str(&value).ok());
+    let allowed_models = header("x-aster-models").map(|value| {
         value
             .split(',')
             .map(str::trim)
@@ -360,7 +360,7 @@ async fn call_verify(
             .map(Arc::from)
             .collect::<Vec<Arc<str>>>()
     });
-    let rpm_limit = header("x-a3s-rpm").and_then(|value| value.parse::<u32>().ok());
+    let rpm_limit = header("x-aster-rpm").and_then(|value| value.parse::<u32>().ok());
     Ok(VerifiedPrincipal {
         subject,
         org,
@@ -376,7 +376,7 @@ mod tests {
     use http::HeaderValue;
     use std::sync::Mutex;
 
-    /// Serializes tests that mutate `A3S_GATEWAY_SHARED_TOKEN`; the variable is
+    /// Serializes tests that mutate `ASTER_GATEWAY_SHARED_TOKEN`; the variable is
     /// process-wide, so parallel tests would otherwise observe each other.
     static ENV_LOCK: Mutex<()> = Mutex::new(());
 
@@ -391,20 +391,20 @@ mod tests {
     #[test]
     fn token_accepts_bearer_or_x_api_key() {
         assert_eq!(
-            principal_token(&headers(&[("authorization", "Bearer a3s_sk_one")])).unwrap(),
-            "a3s_sk_one"
+            principal_token(&headers(&[("authorization", "Bearer aster_sk_one")])).unwrap(),
+            "aster_sk_one"
         );
         assert_eq!(
-            principal_token(&headers(&[("x-api-key", "a3s_sk_two")])).unwrap(),
-            "a3s_sk_two"
+            principal_token(&headers(&[("x-api-key", "aster_sk_two")])).unwrap(),
+            "aster_sk_two"
         );
         assert_eq!(
             principal_token(&headers(&[
-                ("authorization", "Bearer a3s_sk_same"),
-                ("x-api-key", "a3s_sk_same"),
+                ("authorization", "Bearer aster_sk_same"),
+                ("x-api-key", "aster_sk_same"),
             ]))
             .unwrap(),
-            "a3s_sk_same"
+            "aster_sk_same"
         );
     }
 
@@ -430,7 +430,7 @@ mod tests {
         let route_id = Uuid::nil();
         let principal = crate::config::InferencePrincipalConfig {
             verify_url: "http://127.0.0.1:9/auth/verify".into(),
-            subject_header: "x-a3s-subject".into(),
+            subject_header: "x-aster-subject".into(),
             org_header: None,
             cache_ttl_secs: 60,
             models: vec!["*".into()],
@@ -457,12 +457,12 @@ mod tests {
     #[test]
     fn shared_token_skips_verify() {
         let _guard = ENV_LOCK.lock().unwrap_or_else(|error| error.into_inner());
-        let token = "a3s_gw_testtoken";
-        std::env::set_var("A3S_GATEWAY_SHARED_TOKEN", token);
+        let token = "aster_gw_testtoken";
+        std::env::set_var("ASTER_GATEWAY_SHARED_TOKEN", token);
         let verifier = PrincipalVerifier::new(None);
         let principal = crate::config::InferencePrincipalConfig {
             verify_url: "http://127.0.0.1:9/auth/verify".into(),
-            subject_header: "x-a3s-subject".into(),
+            subject_header: "x-aster-subject".into(),
             org_header: None,
             cache_ttl_secs: 60,
             models: vec!["*".into()],
@@ -478,30 +478,30 @@ mod tests {
                 tokens_per_minute: 100_000,
             },
         };
-        let headers = headers(&[("authorization", "Bearer a3s_gw_testtoken")]);
+        let headers = headers(&[("authorization", "Bearer aster_gw_testtoken")]);
         let subject = tokio::runtime::Builder::new_current_thread()
             .enable_all()
             .build()
             .unwrap()
             .block_on(verifier.verify(Uuid::nil(), &principal, &headers))
             .unwrap();
-        std::env::remove_var("A3S_GATEWAY_SHARED_TOKEN");
+        std::env::remove_var("ASTER_GATEWAY_SHARED_TOKEN");
         assert_eq!(&*subject.subject, "shared");
     }
 
     #[test]
     fn shared_token_admits_matches_the_configured_token() {
         let _guard = ENV_LOCK.lock().unwrap_or_else(|error| error.into_inner());
-        let token = "a3s_gw_testtoken";
-        std::env::set_var("A3S_GATEWAY_SHARED_TOKEN", token);
+        let token = "aster_gw_testtoken";
+        std::env::set_var("ASTER_GATEWAY_SHARED_TOKEN", token);
 
         assert!(shared_token_admits(&headers(&[(
             "authorization",
-            "Bearer a3s_gw_testtoken"
+            "Bearer aster_gw_testtoken"
         )])));
         assert!(shared_token_admits(&headers(&[(
             "x-api-key",
-            "a3s_gw_testtoken"
+            "aster_gw_testtoken"
         )])));
         assert!(!shared_token_admits(&headers(&[(
             "authorization",
@@ -509,6 +509,6 @@ mod tests {
         )])));
         assert!(!shared_token_admits(&headers(&[])));
 
-        std::env::remove_var("A3S_GATEWAY_SHARED_TOKEN");
+        std::env::remove_var("ASTER_GATEWAY_SHARED_TOKEN");
     }
 }

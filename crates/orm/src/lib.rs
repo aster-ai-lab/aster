@@ -1,6 +1,6 @@
 //! Type-safe SQL query building inspired by Kysely.
 //!
-//! `a3s-orm` keeps schema typing, query construction, SQL compilation, and
+//! `aster-orm` keeps schema typing, query construction, SQL compilation, and
 //! execution behind separate interfaces. It does not use an Active Record
 //! model and never performs implicit runtime value conversion.
 
@@ -68,7 +68,7 @@ pub use window::{dense_rank, rank, row_number, WindowExpression};
 /// Define a typed table marker and its columns.
 ///
 /// ```
-/// use a3s_orm::orm_table;
+/// use aster_orm::orm_table;
 ///
 /// orm_table! {
 ///     pub struct Person => "person" {
@@ -81,7 +81,7 @@ pub use window::{dense_rank, rank, row_number, WindowExpression};
 /// Column values are checked against the schema type:
 ///
 /// ```compile_fail
-/// use a3s_orm::{insert_into, orm_table};
+/// use aster_orm::{insert_into, orm_table};
 ///
 /// orm_table! {
 ///     struct Person => "person" {
@@ -95,7 +95,7 @@ pub use window::{dense_rank, rank, row_number, WindowExpression};
 /// Assignments cannot use a column owned by another table:
 ///
 /// ```compile_fail
-/// use a3s_orm::{orm_table, update_table};
+/// use aster_orm::{orm_table, update_table};
 ///
 /// orm_table! { struct Person => "person" { name: String => "name" } }
 /// orm_table! { struct Pet => "pet" { name: String => "name" } }
@@ -106,7 +106,7 @@ pub use window::{dense_rank, rank, row_number, WindowExpression};
 /// Expression assignments preserve the column's declared value family:
 ///
 /// ```compile_fail
-/// use a3s_orm::{bound, orm_table, update_table};
+/// use aster_orm::{bound, orm_table, update_table};
 ///
 /// orm_table! { struct Person => "person" { age: i32 => "age" } }
 ///
@@ -118,7 +118,7 @@ pub use window::{dense_rank, rank, row_number, WindowExpression};
 /// nullable and non-nullable forms of the same base type:
 ///
 /// ```compile_fail
-/// use a3s_orm::orm_table;
+/// use aster_orm::orm_table;
 ///
 /// orm_table! { struct Person => "person" { id: i64 => "id" } }
 /// orm_table! { struct Pet => "pet" { name: String => "name" } }

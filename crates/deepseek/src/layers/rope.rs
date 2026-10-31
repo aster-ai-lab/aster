@@ -7,8 +7,8 @@
 //! 9bd9cf243fc53ef9afbf8f04d391d989117d6ab9. Original notices are retained
 //! in licenses/Rotary-Apache-NOTICE.txt.
 
-use a3s_power::error::{PowerError, Result};
-use a3s_power::inference::InferenceLimits;
+use aster_power::error::{PowerError, Result};
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

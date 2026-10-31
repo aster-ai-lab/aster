@@ -1,0 +1,28 @@
+[package]
+license = "Apache-2.0"
+name = "aster-sampling-types"
+version = "0.1.0"
+description = "Pure data types for the Aster sampling / chat-completion API layer"
+edition = "2024"
+publish = false
+
+[dependencies]
+async-openai = {workspace = true}
+chrono = {workspace = true}
+indexmap = {workspace = true}
+reqwest = {workspace = true}
+schemars = {workspace = true}
+serde = {workspace = true}
+serde_json = {version = "1", features = ["preserve_order"]}
+strum = {workspace = true}
+thiserror = {workspace = true}
+tracing = {workspace = true}
+aster-tool-types = {path = "../../common/aster-tool-types"}
+aster-compaction = {path = "../../common/aster-compaction"}
+aster-circuit-breaker = {path = "../../common/aster-circuit-breaker"}
+
+[dev-dependencies]
+assert_matches = {version = "1.5.0"}
+
+[lints]
+workspace = true

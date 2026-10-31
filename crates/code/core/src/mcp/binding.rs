@@ -47,7 +47,7 @@ pub enum McpBindingError {
 /// mutable discovery handle. Its client and canonical tool definitions are
 /// frozen together, while the owning capability transaction retains the
 /// client's asynchronous close effect. A Run separately retains the matching
-/// non-clone A3S Use generation lease.
+/// non-clone Aster Use generation lease.
 pub struct McpBinding {
     server_name: Box<str>,
     client: Arc<McpClient>,

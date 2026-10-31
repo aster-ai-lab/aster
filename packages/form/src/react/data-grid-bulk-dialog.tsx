@@ -92,10 +92,10 @@ function DialogHeader(props: {
   return (
     <header>
       <span>
-        <h3 className="a3s-form-data-grid-dialog-title" id={`${props.id}-title`}>
+        <h3 className="aster-form-data-grid-dialog-title" id={`${props.id}-title`}>
           {props.title}
         </h3>
-        <p className="a3s-form-data-grid-dialog-description" id={`${props.id}-description`}>
+        <p className="aster-form-data-grid-dialog-description" id={`${props.id}-description`}>
           {props.description}
         </p>
       </span>
@@ -156,7 +156,7 @@ export function DataGridPasteDialog(props: {
   return (
     <dialog
       ref={dialogRef}
-      className="a3s-form-data-grid-dialog is-bulk is-paste"
+      className="aster-form-data-grid-dialog is-bulk is-paste"
       aria-labelledby={`${props.id}-paste-title`}
       aria-describedby={`${props.id}-paste-description`}
       onCancel={(event) => {
@@ -165,7 +165,7 @@ export function DataGridPasteDialog(props: {
       }}
       onClose={props.onRequestClose}
     >
-      <div className="a3s-form-data-grid-dialog-shell">
+      <div className="aster-form-data-grid-dialog-shell">
         <DialogHeader
           id={`${props.id}-paste`}
           title={formatFormMessage(props.messages, 'dataGridPasteTitle', { label: props.label })}
@@ -173,9 +173,9 @@ export function DataGridPasteDialog(props: {
           closeLabel={props.messages.dataGridPasteClose}
           onClose={props.onRequestClose}
         />
-        <div className="a3s-form-data-grid-bulk-body">
+        <div className="aster-form-data-grid-bulk-body">
           <section
-            className="a3s-form-data-grid-paste-columns"
+            className="aster-form-data-grid-paste-columns"
             aria-labelledby={`${props.id}-paste-columns`}
           >
             <div>
@@ -191,7 +191,7 @@ export function DataGridPasteDialog(props: {
               ))}
             </ol>
           </section>
-          <label className="a3s-form-data-grid-paste-input">
+          <label className="aster-form-data-grid-paste-input">
             <span>{props.messages.dataGridPasteInputLabel}</span>
             <textarea
               className="textarea"
@@ -206,10 +206,10 @@ export function DataGridPasteDialog(props: {
             />
           </label>
           {!hasInput ? (
-            <p className="a3s-form-data-grid-bulk-hint">{props.messages.dataGridPasteHint}</p>
+            <p className="aster-form-data-grid-bulk-hint">{props.messages.dataGridPasteHint}</p>
           ) : result.ok ? (
             <section
-              className="a3s-form-data-grid-paste-preview"
+              className="aster-form-data-grid-paste-preview"
               aria-labelledby={`${props.id}-paste-preview`}
             >
               <div>
@@ -252,7 +252,7 @@ export function DataGridPasteDialog(props: {
             </section>
           ) : (
             <div
-              className="a3s-form-data-grid-dialog-alert a3s-form-error"
+              className="aster-form-data-grid-dialog-alert aster-form-error"
               role="alert"
               tabIndex={-1}
             >
@@ -261,7 +261,7 @@ export function DataGridPasteDialog(props: {
           )}
           {validationError && (
             <div
-              className="a3s-form-data-grid-dialog-alert a3s-form-error"
+              className="aster-form-data-grid-dialog-alert aster-form-error"
               role="alert"
               tabIndex={-1}
             >
@@ -274,7 +274,7 @@ export function DataGridPasteDialog(props: {
         <footer>
           <button
             type="button"
-            className="btn a3s-form-secondary"
+            className="btn aster-form-secondary"
             data-variant="secondary"
             onClick={props.onRequestClose}
           >
@@ -282,7 +282,7 @@ export function DataGridPasteDialog(props: {
           </button>
           <button
             type="button"
-            className="btn a3s-form-primary"
+            className="btn aster-form-primary"
             data-variant="primary"
             disabled={props.disabled || !result.ok}
             onClick={apply}
@@ -378,7 +378,7 @@ export function DataGridFillDialog(props: {
   return (
     <dialog
       ref={dialogRef}
-      className="a3s-form-data-grid-dialog is-bulk is-fill"
+      className="aster-form-data-grid-dialog is-bulk is-fill"
       aria-labelledby={`${props.id}-fill-title`}
       aria-describedby={`${props.id}-fill-description`}
       onCancel={(event) => {
@@ -387,7 +387,7 @@ export function DataGridFillDialog(props: {
       }}
       onClose={props.onRequestClose}
     >
-      <div className="a3s-form-data-grid-dialog-shell">
+      <div className="aster-form-data-grid-dialog-shell">
         <DialogHeader
           id={`${props.id}-fill`}
           title={formatFormMessage(props.messages, 'dataGridFillTitle', { label: props.label })}
@@ -395,8 +395,8 @@ export function DataGridFillDialog(props: {
           closeLabel={props.messages.dataGridFillClose}
           onClose={props.onRequestClose}
         />
-        <div className="a3s-form-data-grid-bulk-body">
-          <label className="a3s-form-data-grid-fill-column">
+        <div className="aster-form-data-grid-bulk-body">
+          <label className="aster-form-data-grid-fill-column">
             <span>{props.messages.dataGridFillColumnLabel}</span>
             <SelectControl
               ref={selectRef}
@@ -415,7 +415,7 @@ export function DataGridFillDialog(props: {
               ))}
             </SelectControl>
           </label>
-          <dl className="a3s-form-data-grid-fill-summary">
+          <dl className="aster-form-data-grid-fill-summary">
             <div>
               <dt>{props.messages.dataGridFillSourceLabel}</dt>
               <dd>{fillValueText(sourceValue, props.messages)}</dd>
@@ -431,7 +431,7 @@ export function DataGridFillDialog(props: {
           </dl>
           {alertMessage && (
             <div
-              className="a3s-form-data-grid-dialog-alert a3s-form-error"
+              className="aster-form-data-grid-dialog-alert aster-form-error"
               role="alert"
               tabIndex={-1}
             >
@@ -442,7 +442,7 @@ export function DataGridFillDialog(props: {
         <footer>
           <button
             type="button"
-            className="btn a3s-form-secondary"
+            className="btn aster-form-secondary"
             data-variant="secondary"
             onClick={props.onRequestClose}
           >
@@ -450,7 +450,7 @@ export function DataGridFillDialog(props: {
           </button>
           <button
             type="button"
-            className="btn a3s-form-primary"
+            className="btn aster-form-primary"
             data-variant="primary"
             disabled={props.disabled || !column || props.snapshot.rows.length < 2}
             onClick={apply}

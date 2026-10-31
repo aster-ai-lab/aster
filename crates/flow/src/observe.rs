@@ -16,7 +16,7 @@ use crate::model::{FlowEvent, FlowEventEnvelope, WorkflowSpec};
 
 mod local_file;
 
-pub use local_file::LocalFileA3sFlowEventSink;
+pub use local_file::LocalFileAsterFlowEventSink;
 
 /// Observer for committed workflow events.
 ///
@@ -190,22 +190,22 @@ impl From<&WorkflowSpec> for FlowWorkflowIdentity {
 /// Subject touched by a workflow event.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[non_exhaustive]
-pub struct A3sFlowEventSubject {
+pub struct AsterFlowEventSubject {
     /// Low-cardinality subject kind such as `step` or `hook`.
     pub kind: String,
     /// Durable subject identity within the run.
     pub id: String,
 }
 
-/// A3S-style event record derived from a committed [`FlowEventEnvelope`].
+/// Aster-style event record derived from a committed [`FlowEventEnvelope`].
 ///
 /// The event keeps full routing/audit identity such as `run_id` and
 /// `event_id`, but [`safe_metric_labels`](Self::safe_metric_labels) intentionally
 /// returns only low-cardinality labels.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[non_exhaustive]
-pub struct A3sFlowEvent {
-    /// Dot-separated A3S event routing key.
+pub struct AsterFlowEvent {
+    /// Dot-separated Aster event routing key.
     pub key: String,
     /// Run whose history owns the event.
     pub run_id: String,
@@ -220,7 +220,7 @@ pub struct A3sFlowEvent {
     /// Low-cardinality lifecycle status associated with the event.
     pub status: Option<String>,
     /// Step, wait, hook, signal, progress, or child touched by the event.
-    pub subject: Option<A3sFlowEventSubject>,
+    pub subject: Option<AsterFlowEventSubject>,
     /// One-based attempt number when the event belongs to a step or activity attempt.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attempt: Option<u32>,
@@ -238,8 +238,8 @@ pub struct A3sFlowEvent {
     pub tracestate: Option<String>,
 }
 
-impl A3sFlowEvent {
-    /// Maps a committed Flow envelope to an A3S-style event record.
+impl AsterFlowEvent {
+    /// Maps a committed Flow envelope to an Aster-style event record.
     pub fn from_envelope(
         envelope: &FlowEventEnvelope,
         workflow: Option<FlowWorkflowIdentity>,
@@ -278,24 +278,24 @@ impl A3sFlowEvent {
     }
 }
 
-#[cfg(feature = "a3s-event")]
-/// Sink that publishes bridged Flow events into an A3S Event bus.
+#[cfg(feature = "aster-event")]
+/// Sink that publishes bridged Flow events into an Aster Event bus.
 ///
-/// The sink uses A3S Event as the transport and history layer while preserving
+/// The sink uses Aster Event as the transport and history layer while preserving
 /// the durable Flow event store as the source of truth. Publish failures are
 /// recorded in `last_error()` and logged; they do not roll back workflow events
 /// that have already been committed.
-pub struct A3sEventBusFlowEventSink {
-    bus: Arc<a3s_event::EventBus>,
+pub struct AsterEventBusFlowEventSink {
+    bus: Arc<aster_event::EventBus>,
     category: String,
     source: String,
     last_error: Mutex<Option<String>>,
 }
 
-#[cfg(feature = "a3s-event")]
-impl A3sEventBusFlowEventSink {
+#[cfg(feature = "aster-event")]
+impl AsterEventBusFlowEventSink {
     /// Creates a sink using the default `flow` category and `kense-flow` source.
-    pub fn new(bus: Arc<a3s_event::EventBus>) -> Self {
+    pub fn new(bus: Arc<aster_event::EventBus>) -> Self {
         Self {
             bus,
             category: "flow".to_string(),
@@ -304,29 +304,29 @@ impl A3sEventBusFlowEventSink {
         }
     }
 
-    /// Replaces the A3S Event category.
+    /// Replaces the Aster Event category.
     pub fn with_category(mut self, category: impl Into<String>) -> Self {
         self.category = category.into();
         self
     }
 
-    /// Replaces the A3S Event source identity.
+    /// Replaces the Aster Event source identity.
     pub fn with_source(mut self, source: impl Into<String>) -> Self {
         self.source = source.into();
         self
     }
 
-    /// Returns the configured A3S Event bus.
-    pub fn bus(&self) -> Arc<a3s_event::EventBus> {
+    /// Returns the configured Aster Event bus.
+    pub fn bus(&self) -> Arc<aster_event::EventBus> {
         Arc::clone(&self.bus)
     }
 
-    /// Returns the configured A3S Event category.
+    /// Returns the configured Aster Event category.
     pub fn category(&self) -> &str {
         &self.category
     }
 
-    /// Returns the configured A3S Event source identity.
+    /// Returns the configured Aster Event source identity.
     pub fn source(&self) -> &str {
         &self.source
     }
@@ -336,11 +336,11 @@ impl A3sEventBusFlowEventSink {
         self.last_error.lock().await.clone()
     }
 
-    /// Converts a bridged record into the A3S Event transport shape.
-    pub fn to_a3s_event(
+    /// Converts a bridged record into the Aster Event transport shape.
+    pub fn to_aster_event(
         &self,
-        event: &A3sFlowEvent,
-    ) -> std::result::Result<a3s_event::Event, serde_json::Error> {
+        event: &AsterFlowEvent,
+    ) -> std::result::Result<aster_event::Event, serde_json::Error> {
         let topic = flow_event_topic(&event.key);
         let subject = self.bus.provider_arc().build_subject(&self.category, topic);
         let timestamp = event.timestamp.timestamp_millis();
@@ -379,7 +379,7 @@ impl A3sEventBusFlowEventSink {
             metadata.insert("tracestate".to_string(), tracestate.clone());
         }
 
-        Ok(a3s_event::Event {
+        Ok(aster_event::Event {
             id: format!("evt-{}", event.event_id),
             subject,
             category: self.category.clone(),
@@ -394,22 +394,22 @@ impl A3sEventBusFlowEventSink {
     }
 }
 
-#[cfg(feature = "a3s-event")]
-impl fmt::Debug for A3sEventBusFlowEventSink {
+#[cfg(feature = "aster-event")]
+impl fmt::Debug for AsterEventBusFlowEventSink {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
-            .debug_struct("A3sEventBusFlowEventSink")
+            .debug_struct("AsterEventBusFlowEventSink")
             .field("category", &self.category)
             .field("source", &self.source)
             .finish_non_exhaustive()
     }
 }
 
-#[cfg(feature = "a3s-event")]
+#[cfg(feature = "aster-event")]
 #[async_trait]
-impl A3sFlowEventSink for A3sEventBusFlowEventSink {
-    async fn emit(&self, event: A3sFlowEvent) {
-        let a3s_event = match self.to_a3s_event(&event) {
+impl AsterFlowEventSink for AsterEventBusFlowEventSink {
+    async fn emit(&self, event: AsterFlowEvent) {
+        let aster_event = match self.to_aster_event(&event) {
             Ok(event) => event,
             Err(err) => {
                 let message = err.to_string();
@@ -417,14 +417,14 @@ impl A3sFlowEventSink for A3sEventBusFlowEventSink {
                     error = %message,
                     event_key = %event.key,
                     run_id = %event.run_id,
-                    "failed to convert flow event for A3S Event"
+                    "failed to convert flow event for Aster Event"
                 );
                 *self.last_error.lock().await = Some(message);
                 return;
             }
         };
 
-        match self.bus.publish_event(&a3s_event).await {
+        match self.bus.publish_event(&aster_event).await {
             Ok(_) => {
                 *self.last_error.lock().await = None;
             }
@@ -432,9 +432,9 @@ impl A3sFlowEventSink for A3sEventBusFlowEventSink {
                 let message = err.to_string();
                 tracing::warn!(
                     error = %message,
-                    subject = %a3s_event.subject,
-                    event_type = %a3s_event.event_type,
-                    "failed to publish flow event to A3S Event"
+                    subject = %aster_event.subject,
+                    event_type = %aster_event.event_type,
+                    "failed to publish flow event to Aster Event"
                 );
                 *self.last_error.lock().await = Some(message);
             }
@@ -442,23 +442,23 @@ impl A3sFlowEventSink for A3sEventBusFlowEventSink {
     }
 }
 
-/// Sink for A3S-style Flow events.
+/// Sink for Aster-style Flow events.
 #[async_trait]
-pub trait A3sFlowEventSink: Send + Sync {
+pub trait AsterFlowEventSink: Send + Sync {
     /// Publishes one best-effort observer record.
-    async fn emit(&self, event: A3sFlowEvent);
+    async fn emit(&self, event: AsterFlowEvent);
 }
 
-/// Observer adapter that maps Flow envelopes to A3S-style event records.
+/// Observer adapter that maps Flow envelopes to Aster-style event records.
 #[derive(Debug)]
-pub struct A3sFlowEventBridge<S> {
+pub struct AsterFlowEventBridge<S> {
     sink: Arc<S>,
     workflows: Mutex<HashMap<String, FlowWorkflowIdentity>>,
 }
 
-impl<S> A3sFlowEventBridge<S>
+impl<S> AsterFlowEventBridge<S>
 where
-    S: A3sFlowEventSink,
+    S: AsterFlowEventSink,
 {
     /// Creates a bridge that forwards records to `sink`.
     pub fn new(sink: Arc<S>) -> Self {
@@ -484,9 +484,9 @@ where
 }
 
 #[async_trait]
-impl<S> FlowEventObserver for A3sFlowEventBridge<S>
+impl<S> FlowEventObserver for AsterFlowEventBridge<S>
 where
-    S: A3sFlowEventSink,
+    S: AsterFlowEventSink,
 {
     async fn observe(&self, envelope: FlowEventEnvelope) {
         let terminal = is_terminal_run_event(&envelope.event);
@@ -502,37 +502,37 @@ where
             workflow
         };
         self.sink
-            .emit(A3sFlowEvent::from_envelope(&envelope, workflow))
+            .emit(AsterFlowEvent::from_envelope(&envelope, workflow))
             .await;
     }
 }
 
-/// In-memory A3S event sink for examples and tests.
+/// In-memory Aster event sink for examples and tests.
 #[derive(Debug, Default)]
-pub struct InMemoryA3sFlowEventSink {
-    events: Mutex<Vec<A3sFlowEvent>>,
+pub struct InMemoryAsterFlowEventSink {
+    events: Mutex<Vec<AsterFlowEvent>>,
 }
 
-impl InMemoryA3sFlowEventSink {
+impl InMemoryAsterFlowEventSink {
     /// Creates an empty in-memory sink.
     pub fn new() -> Self {
         Self::default()
     }
 
     /// Returns a snapshot of emitted records in observation order.
-    pub async fn events(&self) -> Vec<A3sFlowEvent> {
+    pub async fn events(&self) -> Vec<AsterFlowEvent> {
         self.events.lock().await.clone()
     }
 }
 
 #[async_trait]
-impl A3sFlowEventSink for InMemoryA3sFlowEventSink {
-    async fn emit(&self, event: A3sFlowEvent) {
+impl AsterFlowEventSink for InMemoryAsterFlowEventSink {
+    async fn emit(&self, event: AsterFlowEvent) {
         self.events.lock().await.push(event);
     }
 }
 
-#[cfg(feature = "a3s-event")]
+#[cfg(feature = "aster-event")]
 fn flow_event_topic(key: &str) -> &str {
     key.strip_prefix("flow.").unwrap_or(key)
 }
@@ -656,7 +656,7 @@ fn is_terminal_run_event(event: &FlowEvent) -> bool {
     )
 }
 
-fn event_subject(event: &FlowEvent) -> Option<A3sFlowEventSubject> {
+fn event_subject(event: &FlowEvent) -> Option<AsterFlowEventSubject> {
     match event {
         FlowEvent::StepCreated { step_id, .. }
         | FlowEvent::StepStarted { step_id, .. }
@@ -665,7 +665,7 @@ fn event_subject(event: &FlowEvent) -> Option<A3sFlowEventSubject> {
         | FlowEvent::StepFailed { step_id, .. }
         | FlowEvent::StepNonRetryable { step_id, .. }
         | FlowEvent::StepCancelled { step_id, .. }
-        | FlowEvent::RunRetryExhausted { step_id, .. } => Some(A3sFlowEventSubject {
+        | FlowEvent::RunRetryExhausted { step_id, .. } => Some(AsterFlowEventSubject {
             kind: "step".to_string(),
             id: step_id.clone(),
         }),
@@ -678,81 +678,81 @@ fn event_subject(event: &FlowEvent) -> Option<A3sFlowEventSubject> {
         | FlowEvent::ActivityNonRetryable { activity_id, .. }
         | FlowEvent::ActivityUnknown { activity_id, .. }
         | FlowEvent::ActivityHeartbeat { activity_id, .. }
-        | FlowEvent::ActivityCancelled { activity_id, .. } => Some(A3sFlowEventSubject {
+        | FlowEvent::ActivityCancelled { activity_id, .. } => Some(AsterFlowEventSubject {
             kind: "activity".to_string(),
             id: activity_id.clone(),
         }),
-        FlowEvent::RunProgressRecorded { progress } => Some(A3sFlowEventSubject {
+        FlowEvent::RunProgressRecorded { progress } => Some(AsterFlowEventSubject {
             kind: "progress".to_string(),
             id: progress.progress_id.clone(),
         }),
-        FlowEvent::ChildOperationLinked { child } => Some(A3sFlowEventSubject {
+        FlowEvent::ChildOperationLinked { child } => Some(AsterFlowEventSubject {
             kind: "child_operation".to_string(),
             id: child.reference_id.clone(),
         }),
         FlowEvent::ChildWorkflowRequested { child_id, .. }
-        | FlowEvent::ChildWorkflowResolved { child_id, .. } => Some(A3sFlowEventSubject {
+        | FlowEvent::ChildWorkflowResolved { child_id, .. } => Some(AsterFlowEventSubject {
             kind: "child_workflow".to_string(),
             id: child_id.clone(),
         }),
         FlowEvent::ChildWorkflowMapOpened { map_id, .. }
-        | FlowEvent::ChildWorkflowMapCompleted { map_id } => Some(A3sFlowEventSubject {
+        | FlowEvent::ChildWorkflowMapCompleted { map_id } => Some(AsterFlowEventSubject {
             kind: "child_workflow_map".to_string(),
             id: map_id.clone(),
         }),
-        FlowEvent::SignalReceived { signal } => Some(A3sFlowEventSubject {
+        FlowEvent::SignalReceived { signal } => Some(AsterFlowEventSubject {
             kind: "signal".to_string(),
             id: signal.signal_id.clone(),
         }),
         FlowEvent::SignalWaitCreated { wait_id, .. }
-        | FlowEvent::SignalWaitCompleted { wait_id, .. } => Some(A3sFlowEventSubject {
+        | FlowEvent::SignalWaitCompleted { wait_id, .. } => Some(AsterFlowEventSubject {
             kind: "signal_wait".to_string(),
             id: wait_id.clone(),
         }),
-        FlowEvent::UpdateApplied { update, .. } => Some(A3sFlowEventSubject {
+        FlowEvent::UpdateApplied { update, .. } => Some(AsterFlowEventSubject {
             kind: "update".to_string(),
             id: update.update_id.clone(),
         }),
-        FlowEvent::CompensationMarkerRecorded { marker } => Some(A3sFlowEventSubject {
+        FlowEvent::CompensationMarkerRecorded { marker } => Some(AsterFlowEventSubject {
             kind: "compensation_marker".to_string(),
             id: marker.marker_id.clone(),
         }),
-        FlowEvent::CompensationMarkerCompleted { marker_id, .. } => Some(A3sFlowEventSubject {
+        FlowEvent::CompensationMarkerCompleted { marker_id, .. } => Some(AsterFlowEventSubject {
             kind: "compensation_marker".to_string(),
             id: marker_id.clone(),
         }),
-        FlowEvent::ExternalDatasetAttached { dataset } => Some(A3sFlowEventSubject {
+        FlowEvent::ExternalDatasetAttached { dataset } => Some(AsterFlowEventSubject {
             kind: "external_dataset".to_string(),
             id: dataset.dataset_id.clone(),
         }),
-        FlowEvent::BlobRefAttached { blob } => Some(A3sFlowEventSubject {
+        FlowEvent::BlobRefAttached { blob } => Some(AsterFlowEventSubject {
             kind: "blob_ref".to_string(),
             id: blob.blob_id.clone(),
         }),
-        FlowEvent::ItemAggregateRecorded { contribution } => Some(A3sFlowEventSubject {
+        FlowEvent::ItemAggregateRecorded { contribution } => Some(AsterFlowEventSubject {
             kind: "item_aggregate".to_string(),
             id: format!("{}:{}", contribution.aggregate_id, contribution.item_id),
         }),
         FlowEvent::WaitCreated { wait_id, .. } | FlowEvent::WaitCompleted { wait_id } => {
-            Some(A3sFlowEventSubject {
+            Some(AsterFlowEventSubject {
                 kind: "wait".to_string(),
                 id: wait_id.clone(),
             })
         }
         FlowEvent::ScopeOpened { scope_id, .. }
         | FlowEvent::ScopeCompleted { scope_id }
-        | FlowEvent::ScopeCancelled { scope_id, .. } => Some(A3sFlowEventSubject {
+        | FlowEvent::ScopeCancelled { scope_id, .. } => Some(AsterFlowEventSubject {
             kind: "scope".to_string(),
             id: scope_id.clone(),
         }),
         FlowEvent::SelectCreated { select_id, .. }
-        | FlowEvent::SelectCompleted { select_id, .. } => Some(A3sFlowEventSubject {
+        | FlowEvent::SelectCompleted { select_id, .. } => Some(AsterFlowEventSubject {
             kind: "select".to_string(),
             id: select_id.clone(),
         }),
         FlowEvent::HookCreated { hook_id, .. }
         | FlowEvent::HookReceived { hook_id, .. }
-        | FlowEvent::HookDisposed { hook_id } => Some(A3sFlowEventSubject {
+        | FlowEvent::HookDisposed { hook_id } => Some(AsterFlowEventSubject {
             kind: "hook".to_string(),
             id: hook_id.clone(),
         }),

@@ -364,7 +364,7 @@ test('current Core and ACP coverage indexes match the authoritative public contr
   assert.deepEqual(coreCoverage.map(({ id, operations, hostOwned, tier }) => ({ id, operations, hostOwned, tier })), actual);
   const methodsSource = await readFile(path.join(root, 'crates/code/acp/src/agent/host_methods.rs'), 'utf8');
   const parser = methodsSource.split('fn parse(method: &str)')[1].split('fn as_str')[0];
-  const methods = [...parser.matchAll(/"((?:a3s|x\.ai)\/[^"\n]+)"/g)].map((match) => match[1]);
+  const methods = [...parser.matchAll(/"((?:aster|x\.ai)\/[^"\n]+)"/g)].map((match) => match[1]);
   const acpCoverage = JSON.parse(await readFile(path.join(root, `apps/web/content/docs/acp/${acp.defaultVersion}/_coverage.json`), 'utf8'));
   assert.deepEqual(acpCoverage.map((record) => record.method).sort(), methods.sort());
   for (const [project, records] of [[core, coreCoverage], [acp, acpCoverage]]) {

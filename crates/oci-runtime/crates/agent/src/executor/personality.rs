@@ -1,7 +1,7 @@
 use std::io;
 
-use a3s_oci_sdk::oci_spec::runtime::{LinuxPersonality, LinuxPersonalityDomain};
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::{LinuxPersonality, LinuxPersonalityDomain};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 const PER_LINUX: libc::c_ulong = 0x0000;
 const PER_LINUX32: libc::c_ulong = 0x0008;
@@ -143,12 +143,12 @@ mod tests {
     use std::io;
     use std::process::Command;
 
-    use a3s_oci_sdk::oci_spec::runtime::LinuxPersonality;
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::oci_spec::runtime::LinuxPersonality;
+    use aster_oci_sdk::ErrorCode;
 
     use super::{apply, current, error_code_for_io, PersonalityPlan, PER_LINUX, PER_LINUX32};
 
-    const CHILD_PROBE: &str = "A3S_OCI_PERSONALITY_CHILD_PROBE";
+    const CHILD_PROBE: &str = "ASTER_OCI_PERSONALITY_CHILD_PROBE";
     const APPLY_TEST: &str =
         "executor::personality::tests::applies_and_reads_back_linux32_in_an_isolated_process";
 

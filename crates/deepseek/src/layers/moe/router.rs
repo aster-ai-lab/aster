@@ -2,7 +2,7 @@
 //! TileKernels `torch/topk.py`. Parameters/inputs are BF16, but logits and
 //! sqrt-softplus scores stay FP32. Casting logits to BF16 changes routing.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

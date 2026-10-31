@@ -1,4 +1,4 @@
-//! `a3s-box attest` command — Request and verify a TEE attestation report.
+//! `aster-box attest` command — Request and verify a TEE attestation report.
 //!
 //! Connects to a running box's agent socket, requests a hardware-signed
 //! SNP attestation report, optionally verifies it against a policy, and
@@ -13,7 +13,7 @@ use crate::resolve;
 use crate::state::StateFile;
 
 #[cfg(not(windows))]
-use a3s_box_runtime::{verify_attestation, AttestationPolicy, RaTlsAttestationClient};
+use aster_box_runtime::{verify_attestation, AttestationPolicy, RaTlsAttestationClient};
 
 #[derive(Args)]
 pub struct AttestArgs {
@@ -60,7 +60,7 @@ struct AttestOutput {
     verified: Option<bool>,
     /// Platform info from the report
     #[serde(skip_serializing_if = "Option::is_none")]
-    platform: Option<a3s_box_runtime::PlatformInfo>,
+    platform: Option<aster_box_runtime::PlatformInfo>,
     /// Nonce used (hex-encoded)
     nonce: String,
     /// Raw report (hex-encoded)
@@ -162,7 +162,7 @@ pub async fn execute(args: AttestArgs) -> Result<(), Box<dyn std::error::Error>>
             box_id: record.id.clone(),
             box_name: record.name.clone(),
             verified: None,
-            platform: a3s_box_runtime::tee::parse_platform_info(&report.report),
+            platform: aster_box_runtime::tee::parse_platform_info(&report.report),
             nonce: bytes_to_hex(&report_nonce),
             report_hex: Some(bytes_to_hex(&report.report)),
             failures: vec![],

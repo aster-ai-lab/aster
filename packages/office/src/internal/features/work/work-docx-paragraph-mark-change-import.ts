@@ -94,7 +94,7 @@ const PICTURE_NAMESPACES = new Set([
 const MAX_PARAGRAPH_MARK_CHANGES = 65_536;
 const MAX_REVISION_DATE_LENGTH = 64;
 const PARAGRAPH_MARK_CHANGE_MARKER_PATTERN =
-  /__A3S_WORK_PARAGRAPH_MARK_CHANGE_\d+__/g;
+  /__ASTER_WORK_PARAGRAPH_MARK_CHANGE_\d+__/g;
 const REVISION_ATTRIBUTES = new Set(['id', 'author', 'date']);
 
 /**
@@ -122,7 +122,7 @@ export function markDocxParagraphMarkChanges(
     if (paragraphs.length >= MAX_PARAGRAPH_MARK_CHANGES) {
       throw new Error('Document exceeds the paragraph-mark revision limit.');
     }
-    const marker = `__A3S_WORK_PARAGRAPH_MARK_CHANGE_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_MARK_CHANGE_${paragraphs.length + 1}__`;
     insertParagraphMarker(paragraph, marker);
     // Mammoth applies w:del on a paragraph mark by joining the following
     // paragraph.  The bounded Work model reviews the complete text-only
@@ -155,7 +155,7 @@ export function applyImportedDocxParagraphMarkChangeMarkers(
     markers.paragraphs.map((change) => [change.marker, change]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_MARK_CHANGE_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_MARK_CHANGE_')) continue;
     node.data = node.data.replace(
       PARAGRAPH_MARK_CHANGE_MARKER_PATTERN,
       (marker) => {
@@ -230,7 +230,7 @@ export interface ImportedDocxParagraphBreakChangeMarkers {
 }
 
 const PARAGRAPH_BREAK_CHANGE_MARKER_PATTERN =
-  /__A3S_WORK_PARAGRAPH_BREAK_CHANGE_\d+__/g;
+  /__ASTER_WORK_PARAGRAPH_BREAK_CHANGE_\d+__/g;
 
 /**
  * Mark-only paragraph revisions (no matching body wrap) are paragraph-break
@@ -296,7 +296,7 @@ export function markDocxParagraphBreakChanges(
     if (paragraphs.length >= MAX_PARAGRAPH_MARK_CHANGES) {
       throw new Error('Document exceeds the paragraph-break revision limit.');
     }
-    const marker = `__A3S_WORK_PARAGRAPH_BREAK_CHANGE_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_BREAK_CHANGE_${paragraphs.length + 1}__`;
     insertParagraphMarker(paragraph, marker);
     change.element.remove();
     paragraphs.push({
@@ -318,7 +318,7 @@ export function applyImportedDocxParagraphBreakChangeMarkers(
     markers.paragraphs.map((change) => [change.marker, change]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_BREAK_CHANGE_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_BREAK_CHANGE_')) continue;
     node.data = node.data.replace(
       PARAGRAPH_BREAK_CHANGE_MARKER_PATTERN,
       (marker) => {

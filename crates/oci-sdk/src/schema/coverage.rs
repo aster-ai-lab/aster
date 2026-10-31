@@ -8,8 +8,8 @@ use crate::{Error, ErrorCode, Result};
 
 const OCI_RUNTIME_SPEC_VERSION: &str = "1.3.0";
 const OCI_RUNTIME_SPEC_COMMIT: &str = "92249139eea7161e13745abd4cb6d0ea02a3227a";
-const SCHEMA_COVERAGE_VERSION: &str = "a3s.oci.schema-coverage.v2";
-const SCHEMA_EVIDENCE_VERSION: &str = "a3s.oci.schema-evidence.v1";
+const SCHEMA_COVERAGE_VERSION: &str = "aster.oci.schema-coverage.v2";
+const SCHEMA_EVIDENCE_VERSION: &str = "aster.oci.schema-evidence.v1";
 
 /// Current implementation disposition for one pinned schema inventory item.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -211,7 +211,7 @@ fn baseline_item(inventory: OciSchemaInventoryItem) -> OciSchemaCoverageItem {
                     .to_string(),
             ],
             rationale: Some(
-                "A3S executes Linux workloads and rejects native non-Linux platform sections before mutation."
+                "Aster executes Linux workloads and rejects native non-Linux platform sections before mutation."
                     .to_string(),
             ),
         };
@@ -700,7 +700,7 @@ mod tests {
             "/vm/properties/hypervisor/properties/parameters",
             "/vm/properties/kernel/properties/parameters",
         ];
-        const RATIONALE: &str = "Current A3S drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation.";
+        const RATIONALE: &str = "Current Aster drivers use runtime-owned, digest-pinned VM assets and reject every caller-provided vm section before durable reservation or platform mutation.";
 
         let manifest = checked_in_manifest();
         let vm_items = manifest

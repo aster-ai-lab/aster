@@ -17,7 +17,7 @@ use thiserror::Error;
 use tokio::io::AsyncWriteExt;
 use tokio::sync::Mutex;
 
-pub const EVALUATION_DISPATCH_LEDGER_SCHEMA_V1: &str = "a3s.code.evaluation-dispatch-ledger.v1";
+pub const EVALUATION_DISPATCH_LEDGER_SCHEMA_V1: &str = "aster.code.evaluation-dispatch-ledger.v1";
 pub const EVALUATION_DISPATCH_LEDGER_DEFAULT_MAX_RECORDS: usize = 4096;
 pub const EVALUATION_DISPATCH_LEDGER_MAX_BYTES: usize = 16 * 1024 * 1024;
 pub const EVALUATION_DISPATCH_MIN_LEASE_MS: u64 = 60 * 1000;
@@ -1159,8 +1159,8 @@ mod tests {
     #[tokio::test]
     async fn identity_fences_claim_renewal_and_terminal_receipt() {
         let ledger = MemoryEvaluationDispatchLedger::new();
-        let canonical = identity("a3s.test.identity");
-        let wrong = identity("a3s.test.other");
+        let canonical = identity("aster.test.identity");
+        let wrong = identity("aster.test.other");
         let request_digest =
             "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
 

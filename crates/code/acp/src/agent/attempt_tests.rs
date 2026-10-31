@@ -6,7 +6,7 @@ use unattended_turn::Attempt;
 
 struct Fixture {
     _root: tempfile::TempDir,
-    agent: A3sCodeAgent,
+    agent: AsterCodeAgent,
     session_id: acp::SessionId,
     session: Arc<AgentSession>,
 }
@@ -16,7 +16,7 @@ impl Fixture {
         let root = tempfile::tempdir().unwrap();
         let mut launch = tests::test_launch(Some(root.path().join("sessions")));
         launch.workspace = root.path().to_owned();
-        let agent = A3sCodeAgent::new(launch);
+        let agent = AsterCodeAgent::new(launch);
         let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
             .await
             .unwrap();
@@ -35,13 +35,13 @@ impl Fixture {
         &self,
         events: Vec<AgentEvent>,
         worker: JoinHandle<()>,
-    ) -> a3s_code_core::AgentRunStream {
+    ) -> aster_core::AgentRunStream {
         let (sender, receiver) = tokio::sync::mpsc::channel(events.len().max(1));
         for event in events {
             sender.try_send(event).unwrap();
         }
         drop(sender);
-        a3s_code_core::AgentRunStream {
+        aster_core::AgentRunStream {
             run: None,
             events: receiver,
             worker,
@@ -58,7 +58,7 @@ impl Fixture {
 
     async fn interactive(
         &self,
-        stream: a3s_code_core::AgentRunStream,
+        stream: aster_core::AgentRunStream,
         cancelled: bool,
     ) -> acp::Result<acp::PromptResponse> {
         if cancelled {
@@ -80,7 +80,7 @@ impl Fixture {
 
     async fn unattended(
         &self,
-        stream: a3s_code_core::AgentRunStream,
+        stream: aster_core::AgentRunStream,
         remaining: std::time::Duration,
         cancelled: bool,
     ) -> (
@@ -115,7 +115,7 @@ fn end() -> AgentEvent {
         text: "done".into(),
         usage: Default::default(),
         verification_summary: Box::new(
-            a3s_code_core::verification::VerificationSummary::from_reports(&[]),
+            aster_core::verification::VerificationSummary::from_reports(&[]),
         ),
         completion_terminal: Default::default(),
         forced_stop: None,

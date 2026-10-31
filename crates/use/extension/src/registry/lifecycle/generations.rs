@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use tokio::fs;
 
 use super::{
@@ -30,7 +30,7 @@ impl ExtensionRegistry {
         candidates: &[ExtensionLifecycleIdentity],
         priors: &[ExtensionLifecycleIdentity],
     ) -> UseResult<Vec<ExtensionLifecycleRollbackResult>> {
-        if candidates.is_empty() || candidates.len() > a3s_use_core::MAX_PLUGIN_PLAN_ITEMS {
+        if candidates.is_empty() || candidates.len() > aster_use_core::MAX_PLUGIN_PLAN_ITEMS {
             return Err(lifecycle_identity_error(
                 "A lifecycle graph rollback requires a bounded non-empty candidate set.",
             ));
@@ -478,7 +478,7 @@ impl ExtensionRegistry {
                 io_error("inspect retained lifecycle receipt", &entry.path(), error)
             })?;
             if name.starts_with(".receipt-") && name.ends_with(".tmp") {
-                if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     || !metadata.is_file()
                     || metadata.len() > MAX_RETAINED_RECEIPT_BYTES
                 {
@@ -592,7 +592,7 @@ async fn validate_existing_directory_chain(root: &Path, directory: &Path) -> Use
         }
         match fs::symlink_metadata(&current).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(path_identity_error()),
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
@@ -612,14 +612,14 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| io_error("inspect lifecycle receipt directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(path_identity_error());
     }
     Ok(())
 }
 
 fn validate_receipt_metadata(metadata: &std::fs::Metadata) -> UseResult<()> {
-    if a3s_use_core::metadata_is_link_or_reparse_point(metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > MAX_RETAINED_RECEIPT_BYTES

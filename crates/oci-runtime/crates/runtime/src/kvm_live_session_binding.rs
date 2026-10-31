@@ -1,6 +1,6 @@
 //! Opt-in durable KVM Live session binding for Host reopen reattach.
 //!
-//! When `A3S_OCI_KVM_SESSION_OWNER=1`, the first Host publishes authenticated
+//! When `ASTER_OCI_KVM_SESSION_OWNER=1`, the first Host publishes authenticated
 //! process identities and the Host-control socket path into the runtime share.
 //! A replacement Host loads that binding, re-authenticates PID + start-time,
 //! and reconnects to the surviving session-owner bridge without launching a
@@ -16,10 +16,10 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 
 /// Binding schema published under the container runtime share.
-pub const KVM_LIVE_SESSION_BINDING_SCHEMA: &str = "a3s.oci.kvm-live-session-binding.v1";
+pub const KVM_LIVE_SESSION_BINDING_SCHEMA: &str = "aster.oci.kvm-live-session-binding.v1";
 
 /// Filename under the runtime share for the Live reattach binding.
-pub const KVM_LIVE_SESSION_BINDING_FILE: &str = ".a3s-oci-kvm-live-session-binding.json";
+pub const KVM_LIVE_SESSION_BINDING_FILE: &str = ".aster-oci-kvm-live-session-binding.json";
 
 /// Host-facing control socket owned by the durable session-owner bridge.
 ///
@@ -28,7 +28,7 @@ pub const KVM_LIVE_SESSION_BINDING_FILE: &str = ".a3s-oci-kvm-live-session-bindi
 pub const KVM_HOST_CONTROL_SOCKET_FILE: &str = "host-control.sock";
 
 /// Guest reconnect loop flag forwarded into the utility-VM agent.
-pub const GUEST_HOST_RECONNECT_ENV: &str = "A3S_OCI_GUEST_HOST_RECONNECT";
+pub const GUEST_HOST_RECONNECT_ENV: &str = "ASTER_OCI_GUEST_HOST_RECONNECT";
 
 const PRIVATE_FILE_MODE: u32 = 0o600;
 const MAX_BINDING_BYTES: u64 = 16 * 1024;
@@ -307,7 +307,7 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("time")
             .as_nanos();
-        let path = std::env::temp_dir().join(format!("a3s-oci-kvm-live-binding-{nanos}"));
+        let path = std::env::temp_dir().join(format!("aster-oci-kvm-live-binding-{nanos}"));
         fs::create_dir_all(&path).expect("temp share");
         path
     }
@@ -324,7 +324,7 @@ mod tests {
             session_owner: owner,
             shim,
             host_control_socket: "/tmp/control.sock".into(),
-            pipe_name: "a3s-oci-pipe".into(),
+            pipe_name: "aster-oci-pipe".into(),
             session_token_hex: "ab".repeat(32),
         }
     }
@@ -332,7 +332,7 @@ mod tests {
     #[test]
     fn host_control_path_stays_under_sun_len_for_typical_pipe() {
         let path = KvmLiveSessionBinding::host_control_path_for_pipe(
-            "a3s-oci-abcdefghijklmnopqrstuvwxyz012345",
+            "aster-oci-abcdefghijklmnopqrstuvwxyz012345",
         );
         assert!(
             path.as_os_str().len() < 108,

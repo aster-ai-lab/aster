@@ -1,14 +1,14 @@
-//! Programmable CI on a3s-box. A pipeline is a Rust program; a3s-box is the
+//! Programmable CI on aster-box. A pipeline is a Rust program; aster-box is the
 //! execution backend — one Linux kernel per step, exit code = pass/fail.
 //!
-//! This pipeline layer still drives lifecycle-heavy `a3s-box` CLI commands while
+//! This pipeline layer still drives lifecycle-heavy `aster-box` CLI commands while
 //! the lower-level runtime exposes those flows as stable Rust APIs. It hides the
 //! CLI footguns verified on a real KVM host: `run`/`exec` need `--` before the
 //! command; `snapshot restore` yields a *created* box that must be `start`ed
 //! before exec; `snapshot rm` keys on snapshot ID, not name.
 //!
 //! Model: warm a base box once (clone + install deps), `snapshot` it, then fork
-//! the snapshot per step. With a3s-box's copy-on-write restore (overlay lower)
+//! the snapshot per step. With aster-box's copy-on-write restore (overlay lower)
 //! each fork shares the snapshot's pristine rootfs read-only and writes to its
 //! own upper — near-instant, space-cheap, isolated. Steps are *independent*
 //! forks of the same base, so they run sequentially with [`Base::step`]
@@ -19,12 +19,12 @@
 //! A step reports metrics by printing `::metric <key>=<number>` lines to stdout;
 //! they surface as [`StepResult::metrics`] for scoring (e.g. an evolution loop).
 //!
-//! Set `A3S_BOX` to the CLI path if `a3s-box` is not on `PATH`.
+//! Set `ASTER_BOX` to the CLI path if `aster-box` is not on `PATH`.
 //!
 //! ```no_run
-//! use a3s_box_sdk::pipeline::{warm_base, WarmBase, FileCache, Step};
+//! use aster_box_sdk::pipeline::{warm_base, WarmBase, FileCache, Step};
 //!
-//! # fn main() -> Result<(), a3s_box_sdk::pipeline::PipelineError> {
+//! # fn main() -> Result<(), aster_box_sdk::pipeline::PipelineError> {
 //! let cache = FileCache::new(".ci-cache")?;
 //! let base = warm_base(
 //!     WarmBase::new("node:20", "git clone $REPO /w && cd /w && npm ci")
@@ -85,13 +85,13 @@ fn instance_token() -> String {
 }
 
 fn box_bin() -> String {
-    std::env::var("A3S_BOX").unwrap_or_else(|_| "a3s-box".to_string())
+    std::env::var("ASTER_BOX").unwrap_or_else(|_| "aster-box".to_string())
 }
 
-/// Errors from driving the `a3s-box` CLI.
+/// Errors from driving the `aster-box` CLI.
 #[derive(Debug)]
 pub enum PipelineError {
-    /// Spawning `a3s-box` or a filesystem op failed.
+    /// Spawning `aster-box` or a filesystem op failed.
     Io(std::io::Error),
     /// A box lifecycle command (run/exec/snapshot/start) exited non-zero.
     Cli {
@@ -112,11 +112,11 @@ pub enum PipelineError {
 impl fmt::Display for PipelineError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            PipelineError::Io(e) => write!(f, "a3s-box invocation failed: {e}"),
+            PipelineError::Io(e) => write!(f, "aster-box invocation failed: {e}"),
             PipelineError::Cli { args, code, stderr } => {
                 write!(
                     f,
-                    "`a3s-box {args}` failed (exit {code:?}): {}",
+                    "`aster-box {args}` failed (exit {code:?}): {}",
                     stderr.trim()
                 )
             }
@@ -138,7 +138,7 @@ impl From<std::io::Error> for PipelineError {
 
 type Result<T> = std::result::Result<T, PipelineError>;
 
-/// Run an `a3s-box` subcommand, capturing output. `Ok` only on a zero exit.
+/// Run an `aster-box` subcommand, capturing output. `Ok` only on a zero exit.
 fn box_run(args: &[&str]) -> Result<Output> {
     let out = Command::new(box_bin()).args(args).output()?;
     if !out.status.success() {
@@ -517,7 +517,7 @@ impl Base<'_> {
         let box_name = format!("{}-job{}-{}", self.snapshot_name, i, slug(&step.name));
         let _guard = BoxGuard(box_name.clone());
 
-        // Fork = restore + start. Thanks to a3s-box's CoW restore, this mounts the
+        // Fork = restore + start. Thanks to aster-box's CoW restore, this mounts the
         // snapshot's rootfs as a read-only overlay lower with a fresh per-box upper.
         box_run(&[
             "snapshot",
@@ -601,7 +601,7 @@ impl Base<'_> {
     /// Fan steps out concurrently — each is an isolated CoW fork of the base —
     /// bounded to `max_concurrency` at a time. **Collect-all** (not fail-fast):
     /// every step runs and is returned in input order. This is the primitive that
-    /// makes a3s-box's cheap fork (~ms) usable for matrix / evolution-scale CI.
+    /// makes aster-box's cheap fork (~ms) usable for matrix / evolution-scale CI.
     /// Do not call [`Base::dispose`] while a `run_parallel` is in flight.
     pub fn run_parallel(&self, steps: Vec<Step>, max_concurrency: usize) -> Report {
         let start = Instant::now();
@@ -934,7 +934,7 @@ mod tests {
 
     #[test]
     fn file_cache_roundtrip() {
-        let dir = std::env::temp_dir().join(format!("a3s-ci-test-{}", key(&["cache"])));
+        let dir = std::env::temp_dir().join(format!("aster-ci-test-{}", key(&["cache"])));
         let _ = std::fs::remove_dir_all(&dir);
         let cache = FileCache::new(&dir).unwrap();
         let k = key(&["x"]);
@@ -948,7 +948,7 @@ mod tests {
     fn file_cache_put_recreates_missing_dir() {
         // If the cache dir vanishes after construction, put must not silently drop
         // the marker (regression: a dropped marker is a missed cache hit).
-        let dir = std::env::temp_dir().join(format!("a3s-ci-test-{}", key(&["recreate"])));
+        let dir = std::env::temp_dir().join(format!("aster-ci-test-{}", key(&["recreate"])));
         let cache = FileCache::new(&dir).unwrap();
         let k = key(&["y"]);
         let _ = std::fs::remove_dir_all(&dir);
@@ -1024,7 +1024,7 @@ mod tests {
         assert!(format!("{}", PipelineError::NotReady("b1".into())).contains("b1"));
     }
 
-    // A POSIX-sh stub standing in for `a3s-box`: enough to drive warm_base + step
+    // A POSIX-sh stub standing in for `aster-box`: enough to drive warm_base + step
     // through their happy paths (run/exec/start/stop/rm succeed; `snapshot create`
     // records name->id in a state file that `snapshot ls` echoes; an exec whose
     // command contains "boom" exits 7, "emitmetric" prints a `::metric` line;
@@ -1063,17 +1063,17 @@ esac
     #[test]
     fn orchestration_drives_the_cli() {
         use std::os::unix::fs::PermissionsExt;
-        // The ONLY test that touches the A3S_BOX env, so it cannot race a concurrent
+        // The ONLY test that touches the ASTER_BOX env, so it cannot race a concurrent
         // box_bin() reader.
-        let dir = std::env::temp_dir().join(format!("a3s-ci-fakebox-{}", key(&["fakebox"])));
+        let dir = std::env::temp_dir().join(format!("aster-ci-fakebox-{}", key(&["fakebox"])));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        let fake = dir.join("a3s-box");
+        let fake = dir.join("aster-box");
         std::fs::write(&fake, FAKE_BOX).unwrap();
         std::fs::set_permissions(&fake, std::fs::Permissions::from_mode(0o755)).unwrap();
 
         // Happy path against the stub.
-        std::env::set_var("A3S_BOX", &fake);
+        std::env::set_var("ASTER_BOX", &fake);
         let cache = FileCache::new(dir.join("cache")).unwrap();
         let base = warm_base(WarmBase::new("img", "echo hi").cache(&cache)).expect("warm_base");
         let r = base.step(Step::new("build", "make")).expect("step");
@@ -1161,7 +1161,7 @@ esac
         nocache.dispose();
 
         // Failure path: a missing binary must surface as Err, never panic.
-        std::env::set_var("A3S_BOX", "/nonexistent/a3s-box-xyzzy");
+        std::env::set_var("ASTER_BOX", "/nonexistent/aster-box-xyzzy");
         assert!(matches!(box_run(&["version"]), Err(PipelineError::Io(_))));
         box_cleanup(&["rm", "-f", "x"]); // best-effort: must not panic
         assert!(snapshot_id("any").is_err());
@@ -1172,14 +1172,14 @@ esac
             Err(PipelineError::NotReady(_))
         ));
 
-        std::env::remove_var("A3S_BOX");
+        std::env::remove_var("ASTER_BOX");
         let _ = std::fs::remove_dir_all(&dir);
     }
 
     #[test]
     fn builders_chain_all_options() {
         // Exercise every builder method (fields are private; chaining covers the bodies).
-        let c = FileCache::new(std::env::temp_dir().join(format!("a3s-ci-bld-{}", key(&["bld"]))))
+        let c = FileCache::new(std::env::temp_dir().join(format!("aster-ci-bld-{}", key(&["bld"]))))
             .unwrap();
         let _ = WarmBase::new("img", "setup")
             .env("A", "1")

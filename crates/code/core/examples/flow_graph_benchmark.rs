@@ -2,10 +2,10 @@
 //!
 //! Run from the Code repository root:
 //!
-//! `cargo run --locked --release -p a3s-code-core --example flow_graph_benchmark`
+//! `cargo run --locked --release -p aster-core --example flow_graph_benchmark`
 
-use a3s_code_core::{flow_run_object_id, FlowGraphObserver, GraphRuntime, RuntimeLimits};
-use a3s_flow::{FlowEvent, FlowEventEnvelope, RetryPolicy, WorkflowSpec};
+use aster_core::{flow_run_object_id, FlowGraphObserver, GraphRuntime, RuntimeLimits};
+use aster_flow::{FlowEvent, FlowEventEnvelope, RetryPolicy, WorkflowSpec};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use serde_json::json;

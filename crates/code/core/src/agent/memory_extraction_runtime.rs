@@ -4,7 +4,7 @@ use crate::durable_memory::DurableTurnEvidence;
 use crate::llm::Message;
 use crate::memory::AgentMemory;
 use crate::tools::ToolContext;
-use a3s_memory::{MemoryItem, MemoryType};
+use aster_durable_memory::{MemoryItem, MemoryType};
 use regex::Regex;
 use serde::Deserialize;
 use std::collections::HashSet;
@@ -572,7 +572,7 @@ impl ExtractedMemory {
             .with_metadata("reason", reason)
             .with_metadata("workspace", workspace.display().to_string())
             .with_metadata("session_id", session_id)
-            .with_metadata("schema", "a3s.memory.durable.v1");
+            .with_metadata("schema", "aster.memory.durable.v1");
         if !supersedes.is_empty() {
             item = item
                 .with_tag("consolidated")
@@ -587,7 +587,7 @@ impl ExtractedMemory {
             item = item
                 .with_tag("evolution")
                 .with_tag(format!("evolution-{}", signal.kind))
-                .with_metadata("evolution_schema", "a3s.evolution.signal.v1")
+                .with_metadata("evolution_schema", "aster.evolution.signal.v1")
                 .with_metadata("evolution_kind", signal.kind)
                 .with_metadata("evolution_pattern", signal.pattern_key)
                 .with_metadata("evolution_title", signal.title)

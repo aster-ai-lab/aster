@@ -53,12 +53,12 @@ async function parseDocument(
       kind: 'success',
       streamed,
       timings: {
-        contentMs: measureDuration('a3s-office.document.large-simple-content'),
+        contentMs: measureDuration('aster-office.document.large-simple-content'),
         eligibilityMs: measureDuration(
-          'a3s-office.document.large-simple-eligibility',
+          'aster-office.document.large-simple-eligibility',
         ),
         envelopeMs: measureDuration(
-          'a3s-office.document.large-simple-envelope',
+          'aster-office.document.large-simple-envelope',
         ),
         parseMs: parseFinishedAt - parseStartedAt,
         xmlMs: xmlFinishedAt - xmlStartedAt,

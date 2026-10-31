@@ -2,7 +2,7 @@
 
 use super::*;
 use crate::harness_loop::{decide_with_observations, CompletionGate, MutationLedger};
-use a3s_effect::{
+use aster_effect::{
     ToolEffectObservationV1, ToolExecutionOutcome, ToolExecutionResultV1, ToolFileIdentityV1,
     ToolFileKind, ToolInvocationIdentityV1, ToolPathChangeV1,
 };
@@ -13,7 +13,7 @@ fn receipt(
     changes: &[(&str, Option<&str>)],
 ) -> ToolExecutionResultV1 {
     let result = ToolExecutionResultV1 {
-        schema: "a3s.code.tool-result.v1".into(),
+        schema: "aster.code.tool-result.v1".into(),
         identity: ToolInvocationIdentityV1 {
             turn,
             cycle: 0,

@@ -36,12 +36,12 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             "--format-version", "1",
         ], cwd=ROOT))
         engines = [package for package in metadata["packages"]
-                   if any(target["name"] == "a3s_flow" for target in package["targets"])]
+                   if any(target["name"] == "aster_flow" for target in package["targets"])]
         self.assertEqual(len(engines), 1, [package["manifest_path"] for package in engines])
         engine = engines[0]
-        self.assertEqual(engine["name"], "a3s-flow")
+        self.assertEqual(engine["name"], "aster-flow")
         self.assertEqual(Path(engine["manifest_path"]), ROOT / "crates/flow/Cargo.toml")
-        for consumer in ["a3s-code-core", "a3s-studio"]:
+        for consumer in ["aster-core", "aster-studio"]:
             package = next(package for package in metadata["packages"] if package["name"] == consumer)
             dependencies = [dependency for dependency in package["dependencies"]
                             if dependency["name"] == engine["name"]]
@@ -59,7 +59,7 @@ class WorkspaceDependenciesTest(unittest.TestCase):
         hosts = [package for package in metadata["packages"]
                  if Path(package["manifest_path"]).resolve() == host.resolve()]
         self.assertEqual(len(hosts), 1)
-        self.assertEqual(hosts[0]["name"], "a3s-studio")
+        self.assertEqual(hosts[0]["name"], "aster-studio")
         self.assertNotIn("aster-dream", {package["name"] for package in metadata["packages"]})
         self.assertIn(hosts[0]["id"], metadata["workspace_members"])
         for manifest in [desktop / "Cargo.toml", host]:
@@ -88,7 +88,7 @@ class WorkspaceDependenciesTest(unittest.TestCase):
         shell = (ROOT / "apps/studio/scripts/studio-shell.sh").read_text(encoding="utf-8")
         self.assertIn('"build": "bash scripts/build-office-kernel.sh && rslib"', package)
         self.assertIn("--locked", script)
-        self.assertIn("--package a3s-office-web-kernel", script)
+        self.assertIn("--package aster-office-web-kernel", script)
         self.assertIn("OFFICE_KERNEL_REQUIRED", script)
         self.assertIn("generated/office-kernel.wasm", script)
         self.assertNotIn("apps/work", script)
@@ -102,7 +102,7 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             "git", "config", "--file", str(ROOT / ".gitmodules"),
             "--get", "submodule.studio.url",
         ], cwd=ROOT, text=True, encoding="utf-8").strip()
-        self.assertEqual(modules, "git@github.com:kense-labs/studio.git")
+        self.assertEqual(modules, "git@github.com:aster-ai-lab/studio.git")
         tracked = subprocess.check_output([
             "git", "ls-files", "--stage", "--", "apps/studio",
         ], cwd=ROOT, text=True, encoding="utf-8").splitlines()
@@ -143,16 +143,16 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             self.assertIn("build ACP and Office first", refused.stderr)
             env["PROFILE"] = "debug"
             subprocess.run([str(executable)], env=env, check=True, capture_output=True)
-            for name in ["a3s-code-acp.exe", "a3s-office.exe"]:
+            for name in ["aster-acp.exe", "aster-office.exe"]:
                 (output.parents[2] / name).write_bytes(name.encode())
             subprocess.run([str(executable)], env=env, check=True, capture_output=True)
-            for name in ["a3s-code-acp.exe", "a3s-office.exe"]:
+            for name in ["aster-acp.exe", "aster-office.exe"]:
                 self.assertEqual((manifest / "resources/agent" / name).read_bytes(), name.encode())
             resource = manifest / "resources/agent"
             stamps = {path: path.stat().st_mtime_ns for path in [resource, *resource.iterdir()]}
             subprocess.run([str(executable)], env=env, check=True, capture_output=True)
             self.assertEqual({path: path.stat().st_mtime_ns for path in stamps}, stamps)
-            source = output.parents[2] / "a3s-office.exe"
+            source = output.parents[2] / "aster-office.exe"
             source.write_bytes(b"x" * source.stat().st_size)
             subprocess.run([str(executable)], env=env, check=True, capture_output=True)
             self.assertEqual((resource / source.name).read_bytes(), source.read_bytes())
@@ -161,23 +161,23 @@ class WorkspaceDependenciesTest(unittest.TestCase):
             self.assertNotEqual(refused.returncode, 0)
             private = output.parents[2] / "studio-resources/agent"
             private.mkdir(parents=True, exist_ok=True)
-            for name in ["a3s-code-acp.exe", "a3s-office.exe"]:
+            for name in ["aster-acp.exe", "aster-office.exe"]:
                 (private / name).write_bytes((output.parents[2] / name).read_bytes())
-            neighbor = resource / "a3s-code-acp.exe"
+            neighbor = resource / "aster-acp.exe"
             neighbor.write_bytes(b"another target's companion")
             subprocess.run([str(executable)], env=env, check=True, capture_output=True)
             self.assertEqual(neighbor.read_bytes(), b"another target's companion")
-            (private / "a3s-office.exe").write_bytes(b"stale private companion")
+            (private / "aster-office.exe").write_bytes(b"stale private companion")
             refused = subprocess.run([str(executable)], env=env, capture_output=True, text=True)
             self.assertNotEqual(refused.returncode, 0)
             env.pop("STUDIO_COMPANIONS_STAGED")
             subprocess.run([str(executable)], env=env, check=True, capture_output=True)
             if sys.platform == "darwin":
-                locked = manifest / "resources/agent" / "a3s-code-acp.exe"
+                locked = manifest / "resources/agent" / "aster-acp.exe"
                 locked.write_bytes(b"stale")
                 subprocess.run(["chflags", "uchg", str(locked)], check=True)
                 try:
-                    (output.parents[2] / "a3s-code-acp.exe").write_bytes(b"replaced")
+                    (output.parents[2] / "aster-acp.exe").write_bytes(b"replaced")
                     subprocess.run([str(executable)], env=env, check=True, capture_output=True)
                     self.assertEqual(locked.read_bytes(), b"replaced")
                 finally:
@@ -199,16 +199,16 @@ class WorkspaceDependenciesTest(unittest.TestCase):
         ], cwd=ROOT)
         metadata = json.loads(output)
         names = {package["name"] for package in metadata["packages"]}
-        self.assertTrue({"aster", "a3s-code-acp", "a3s-office-cli", "a3s-studio", "a3s-studio-data-sqlite", "a3s-studio-desktop-contract"} <= names)
+        self.assertTrue({"aster", "aster-acp", "aster-office-cli", "aster-studio", "aster-studio-data-sqlite", "aster-studio-desktop-contract"} <= names)
         for package in metadata["packages"]:
             self.assertEqual(package["publish"], [], package["name"])
             for dependency in package["dependencies"]:
-                if dependency["name"].startswith("a3s-"):
+                if dependency["name"].startswith("aster-"):
                     self.assertIsNone(dependency["source"], dependency["name"])
                     self.assertTrue(Path(dependency["path"]).resolve().is_relative_to(ROOT))
         lock = tomllib.loads((ROOT / "Cargo.lock").read_text(encoding="utf-8"))
         for package in lock["package"]:
-            if package["name"].startswith("a3s-"):
+            if package["name"].startswith("aster-"):
                 self.assertNotIn("source", package, package["name"])
 
 

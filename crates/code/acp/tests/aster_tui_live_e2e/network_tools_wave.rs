@@ -182,7 +182,7 @@ fn kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content() {
         .as_str()
         .unwrap()
         .to_owned();
-    assert!(uri.starts_with("a3s://tool-output/"));
+    assert!(uri.starts_with("aster://tool-output/"));
     tui.record("web-fetch-unicode-first-page", "the first real response uses Unicode character offsets, reports next_offset=17 and retains a content-addressed full-text artifact");
     let before = server.requests.lock().unwrap().len();
     let facts = request(&mut tui, "fetch-artifact", "read", json!({"file_path":uri}), "Report the actual retained content without fetching any URL, retrying or calling other tools.");
@@ -375,7 +375,7 @@ fn assert_no_temps(path: &Path) {
             assert!(!entry
                 .file_name()
                 .to_string_lossy()
-                .starts_with(".a3s-download-"));
+                .starts_with(".aster-download-"));
         }
     }
 }
@@ -553,7 +553,7 @@ fn kimi_web_fetch_unicode_pagination_and_one_inline_artifact_read() {
         .as_str()
         .unwrap()
         .to_owned();
-    assert!(uri.starts_with("a3s://tool-output/"));
+    assert!(uri.starts_with("aster://tool-output/"));
     tui.record("web-fetch-unicode-first-page", "the actual first response returns exactly 17 Unicode characters and binds a full-text content-addressed artifact");
     let before = server.requests.lock().unwrap().len();
     let args = json!({"file_path":uri});

@@ -1,15 +1,15 @@
-#[cfg(feature = "a3s-event")]
-use a3s_flow::A3sEventBusFlowEventSink;
+#[cfg(feature = "aster-event")]
+use aster_flow::AsterEventBusFlowEventSink;
 #[cfg(feature = "postgres")]
-use a3s_flow::PostgresEventStore;
+use aster_flow::PostgresEventStore;
 #[cfg(feature = "sqlite")]
-use a3s_flow::SqliteEventStore;
-use a3s_flow::{
-    A3sFlowEvent, A3sFlowEventBridge, A3sFlowEventSink, ActivityInvocation, ActivityResolution,
+use aster_flow::SqliteEventStore;
+use aster_flow::{
+    AsterFlowEvent, AsterFlowEventBridge, AsterFlowEventSink, ActivityInvocation, ActivityResolution,
     FanoutFlowEventObserver, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope,
     FlowEventObserver, FlowEventStore, FlowRuntime, HookMetadata, HookStatus,
-    InMemoryA3sFlowEventSink, InMemoryEventStore, InMemoryFlowEventObserver,
-    LocalFileA3sFlowEventSink, LocalFileEventStore, RetryPolicy, RuntimeCommand, ScheduledWakeup,
+    InMemoryAsterFlowEventSink, InMemoryEventStore, InMemoryFlowEventObserver,
+    LocalFileAsterFlowEventSink, LocalFileEventStore, RetryPolicy, RuntimeCommand, ScheduledWakeup,
     StepFailureAction, StepInvocation, StepStatus, WaitStatus, WorkflowInvocation,
     WorkflowRunStatus, WorkflowRunSummary, WorkflowRunSuspension, WorkflowSpec,
     WorkflowTerminalOutcome,
@@ -112,7 +112,7 @@ fn completed_step(invocation: &WorkflowInvocation, step_id: &str) -> Option<serd
         .history
         .iter()
         .find_map(|event| match &event.event {
-            a3s_flow::FlowEvent::StepCompleted {
+            aster_flow::FlowEvent::StepCompleted {
                 step_id: id,
                 output,
             } if id == step_id => Some(output.clone()),
@@ -124,7 +124,7 @@ fn completed_wait(invocation: &WorkflowInvocation, wait_id: &str) -> bool {
     invocation.history.iter().any(|event| {
         matches!(
             &event.event,
-            a3s_flow::FlowEvent::WaitCompleted { wait_id: id } if id == wait_id
+            aster_flow::FlowEvent::WaitCompleted { wait_id: id } if id == wait_id
         )
     })
 }
@@ -134,7 +134,7 @@ fn received_hook(invocation: &WorkflowInvocation, hook_id: &str) -> Option<serde
         .history
         .iter()
         .find_map(|event| match &event.event {
-            a3s_flow::FlowEvent::HookReceived {
+            aster_flow::FlowEvent::HookReceived {
                 hook_id: id,
                 payload,
             } if id == hook_id => Some(payload.clone()),
@@ -146,7 +146,7 @@ fn disposed_hook(invocation: &WorkflowInvocation, hook_id: &str) -> bool {
     invocation.history.iter().any(|event| {
         matches!(
             &event.event,
-            a3s_flow::FlowEvent::HookDisposed { hook_id: id } if id == hook_id
+            aster_flow::FlowEvent::HookDisposed { hook_id: id } if id == hook_id
         )
     })
 }
@@ -158,7 +158,7 @@ impl FlowRuntime for SequentialRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let first = completed_step(&invocation, "load-user");
         let second = completed_step(&invocation, "send-email");
         match (first, second) {
@@ -178,7 +178,7 @@ impl FlowRuntime for SequentialRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "loadUser" => Ok(json!({ "id": invocation.input["userId"], "name": "Ada" })),
             "sendEmail" => Ok(json!({ "sent": true })),
@@ -194,7 +194,7 @@ impl FlowRuntime for ActivityRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if invocation.history.iter().any(|event| {
             matches!(
                 event.event,
@@ -213,14 +213,14 @@ impl FlowRuntime for ActivityRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         assert_eq!(invocation.activity_id, "fetch");
         assert_eq!(invocation.attempt, 1);
         assert!(invocation
@@ -241,7 +241,7 @@ async fn first_class_activity_persists_identity_and_output() {
         .unwrap();
     let snapshot = engine.snapshot(&run_id).await.unwrap();
     let activity = snapshot.activities.get("fetch").unwrap();
-    assert_eq!(activity.status, a3s_flow::ActivityStatus::Completed);
+    assert_eq!(activity.status, aster_flow::ActivityStatus::Completed);
     assert_eq!(activity.output, Some(json!({ "user": "alice" })));
     assert_eq!(activity.attempt, 1);
     assert_ne!(activity.idempotency_key, activity.attempt_id);
@@ -258,7 +258,7 @@ impl FlowRuntime for RetryingActivityRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if invocation.history.iter().any(|event| {
             matches!(
                 event.event,
@@ -279,14 +279,14 @@ impl FlowRuntime for RetryingActivityRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         let call = self.calls.fetch_add(1, Ordering::SeqCst);
         if call == 0 {
             Err(FlowError::Runtime("transient activity failure".to_string()))
@@ -309,7 +309,7 @@ async fn activity_retry_reuses_identity_per_attempt_and_recovers() {
         .unwrap();
     let snapshot = engine.snapshot(&run_id).await.unwrap();
     let activity = snapshot.activities.get("retry").unwrap();
-    assert_eq!(activity.status, a3s_flow::ActivityStatus::Completed);
+    assert_eq!(activity.status, aster_flow::ActivityStatus::Completed);
     assert_eq!(activity.attempt, 2);
     assert_eq!(runtime.calls.load(Ordering::SeqCst), 2);
 }
@@ -327,7 +327,7 @@ impl FlowRuntime for TimedActivityRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if invocation.history.iter().any(|event| {
             matches!(
                 event.event,
@@ -348,14 +348,14 @@ impl FlowRuntime for TimedActivityRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         _invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         tokio::time::sleep(Duration::from_millis(50)).await;
         Ok(json!("late"))
@@ -367,7 +367,7 @@ impl FlowRuntime for UnknownOutcomeActivityRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if invocation.history.iter().any(|event| {
             matches!(
                 event.event,
@@ -386,14 +386,14 @@ impl FlowRuntime for UnknownOutcomeActivityRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         _invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::UnknownOutcome(
             "provider connection lost after request".to_string(),
@@ -413,7 +413,7 @@ async fn unknown_activity_outcome_waits_for_fenced_reconciliation() {
         .unwrap();
     let suspended = engine.snapshot(&run_id).await.unwrap();
     let activity = suspended.activities.get("charge").unwrap();
-    assert_eq!(activity.status, a3s_flow::ActivityStatus::Unknown);
+    assert_eq!(activity.status, aster_flow::ActivityStatus::Unknown);
     assert_eq!(suspended.status, WorkflowRunStatus::Suspended);
     assert_eq!(runtime.calls.load(Ordering::SeqCst), 1);
     assert!(engine
@@ -465,7 +465,7 @@ impl FlowRuntime for UnknownActivityBesideOpenTimerRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if let Some(output) = context.activity_output("charge") {
             return Ok(context.complete(output.clone()));
@@ -488,14 +488,14 @@ impl FlowRuntime for UnknownActivityBesideOpenTimerRuntime {
         Ok(context.wait_until("blocker", Utc::now() + ChronoDuration::hours(1)))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         _invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::UnknownOutcome(
             "provider connection lost after request".to_string(),
@@ -517,7 +517,7 @@ async fn unknown_activity_resolution_wakes_workflow_while_timer_wait_is_open() {
     assert_eq!(suspended.status, WorkflowRunStatus::Suspended);
     assert_eq!(
         suspended.activities["charge"].status,
-        a3s_flow::ActivityStatus::Unknown
+        aster_flow::ActivityStatus::Unknown
     );
     assert_eq!(suspended.waits["blocker"].status, WaitStatus::Waiting);
     assert_eq!(runtime.calls.load(Ordering::SeqCst), 1);
@@ -563,7 +563,7 @@ impl CrashAfterActivityCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterActivityCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -572,7 +572,7 @@ impl FlowEventStore for CrashAfterActivityCompletedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -592,11 +592,11 @@ impl FlowEventStore for CrashAfterActivityCompletedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -630,7 +630,7 @@ async fn activity_completed_recovery_wakes_via_drive_while_unscoped_timer_is_ope
     assert!(!mid.status.is_terminal());
     assert_eq!(
         mid.activities["charge"].status,
-        a3s_flow::ActivityStatus::Completed
+        aster_flow::ActivityStatus::Completed
     );
     assert_eq!(mid.waits["blocker"].status, WaitStatus::Waiting);
 
@@ -653,7 +653,7 @@ impl FlowRuntime for NonRetryableActivityBesideOpenTimerRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if let Some(error) = context.activity_failed("charge") {
             return Ok(context.complete(json!({ "failed": error })));
@@ -676,14 +676,14 @@ impl FlowRuntime for NonRetryableActivityBesideOpenTimerRuntime {
         Ok(context.wait_until("blocker", Utc::now() + ChronoDuration::hours(1)))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         _invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::UnknownOutcome(
             "provider connection lost after request".to_string(),
@@ -707,7 +707,7 @@ impl CrashAfterActivityNonRetryableStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterActivityNonRetryableStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -716,7 +716,7 @@ impl FlowEventStore for CrashAfterActivityNonRetryableStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -736,11 +736,11 @@ impl FlowEventStore for CrashAfterActivityNonRetryableStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -780,7 +780,7 @@ async fn activity_non_retryable_recovery_wakes_via_drive_while_unscoped_timer_is
     assert!(!mid.status.is_terminal());
     assert_eq!(
         mid.activities["charge"].status,
-        a3s_flow::ActivityStatus::Failed
+        aster_flow::ActivityStatus::Failed
     );
     assert_eq!(mid.waits["blocker"].status, WaitStatus::Waiting);
 
@@ -805,7 +805,7 @@ async fn activity_timeout_persists_deadline_and_enters_unknown_state() {
         .unwrap();
     let snapshot = engine.snapshot(&run_id).await.unwrap();
     let activity = snapshot.activities.get("slow").unwrap();
-    assert_eq!(activity.status, a3s_flow::ActivityStatus::Unknown);
+    assert_eq!(activity.status, aster_flow::ActivityStatus::Unknown);
     assert_eq!(activity.timeout_ms, Some(10));
     assert!(activity.deadline.is_some());
     assert_eq!(runtime.calls.load(Ordering::SeqCst), 1);
@@ -822,7 +822,7 @@ impl FlowRuntime for HeartbeatActivityRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if invocation.history.iter().any(|event| {
             matches!(event.event, FlowEvent::ActivityCompleted { ref activity_id, .. } if activity_id == "long")
         }) {
@@ -832,14 +832,14 @@ impl FlowRuntime for HeartbeatActivityRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!(null))
     }
 
     async fn run_activity(
         &self,
         invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         self.started.notify_one();
         self.release.notified().await;
         Ok(json!({ "ok": true, "attempt": invocation.attempt }))
@@ -901,7 +901,7 @@ impl FlowRuntime for DisposableHookRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(payload) = ctx.hook_payload("approval") {
             return Ok(ctx.complete(json!({
@@ -920,7 +920,7 @@ impl FlowRuntime for DisposableHookRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("disposable hook runtime does not schedule steps")
     }
 }
@@ -932,7 +932,7 @@ impl FlowRuntime for InputSleepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         if completed_wait(&invocation, "nap") {
             return Ok(RuntimeCommand::Complete {
                 output: json!({ "slept": true }),
@@ -951,7 +951,7 @@ impl FlowRuntime for InputSleepRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("sleep workflow does not schedule steps")
     }
 }

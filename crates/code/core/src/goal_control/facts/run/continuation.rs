@@ -61,7 +61,7 @@ pub(crate) struct ContinuationUsage {
 impl ContinuationUsage {
     pub(in crate::goal_control::facts) fn observe_workspace_changes(
         &mut self,
-        changes: Option<Vec<a3s_effect::ToolPathChangeV1>>,
+        changes: Option<Vec<aster_effect::ToolPathChangeV1>>,
     ) -> Result<bool, GoalControlError> {
         self.mutation_progress.observe(changes)
     }

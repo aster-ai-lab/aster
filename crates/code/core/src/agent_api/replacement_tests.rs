@@ -7,7 +7,7 @@ use crate::store::MemorySessionStore;
 fn replacement_options(store: Arc<MemorySessionStore>, model: &str) -> SessionOptions {
     SessionOptions::new()
         .with_session_store(store)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_model(model)
 }
 
@@ -77,7 +77,7 @@ async fn failed_replacement_leaves_the_current_session_live() {
         .replace_session_async(
             &current,
             SessionOptions::new()
-                .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                 .with_model("openai/gpt-4o"),
         )
         .await

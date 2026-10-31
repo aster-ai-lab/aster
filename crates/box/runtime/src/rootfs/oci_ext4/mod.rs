@@ -2,7 +2,7 @@
 
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 use crate::oci::OciImage;
 
@@ -16,7 +16,7 @@ mod tree;
 
 use tree::LogicalRootfs;
 
-pub(super) const CONTENT_STAGING_PREFIX: &str = ".a3s-oci-ext4-content-";
+pub(super) const CONTENT_STAGING_PREFIX: &str = ".aster-oci-ext4-content-";
 
 pub(super) fn publish_oci_layers_ext4(
     image: &OciImage,

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { JsonValue } from '@a3s-lab/form/core';
-import { type FormWidgetProps, NativeWidget } from '@a3s-lab/form/react';
+import type { JsonValue } from '@aster-ai-lab/form/core';
+import { type FormWidgetProps, NativeWidget } from '@aster-ai-lab/form/react';
 import { DesignerIcon } from './designer-icons';
 import { workflowWidgetCopy } from './workflow-configuration-copy';
 import type { WorkflowConfigurationWidgetCallbacks } from './workflow-configuration-widgets';
@@ -8,9 +8,9 @@ import { WorkflowMetadataIcon } from './workflow-metadata-icon';
 import { WorkflowCodeEditor } from './workflow-code-editor';
 import {
   VariableTemplateTextarea,
-  type A3sFlowExpressionVariable,
-  useA3sFlowExpressionVariables,
-} from './a3s-flow-variable-picker';
+  type AsterFlowExpressionVariable,
+  useAsterFlowExpressionVariables,
+} from './aster-flow-variable-picker';
 
 function stringArray(value: JsonValue | undefined): string[] {
   return Array.isArray(value)
@@ -112,7 +112,7 @@ function EditorExpandButton({
   return (
     <button
       type="button"
-      className="btn a3s-form-workflow-editor-expand"
+      className="btn aster-form-workflow-editor-expand"
       data-size="xs"
       data-variant="ghost"
       aria-controls={targetId}
@@ -133,7 +133,7 @@ export function WorkflowMultilineWidget(props: FormWidgetProps) {
   const copy = workflowWidgetCopy(props.locale);
   return (
     <div
-      className="a3s-form-workflow-source-editor is-multiline"
+      className="aster-form-workflow-source-editor is-multiline"
       data-expanded={expanded || undefined}
     >
       <textarea
@@ -151,7 +151,7 @@ export function WorkflowMultilineWidget(props: FormWidgetProps) {
         onBlur={props.onBlur}
         onFocus={props.onFocus}
       />
-      <div className="a3s-form-workflow-editor-footer">
+      <div className="aster-form-workflow-editor-footer">
         <span>{lineCount === 0 ? copy.empty : copy.lineCount(lineCount)}</span>
         <EditorExpandButton
           expanded={expanded}
@@ -197,7 +197,7 @@ export function WorkflowJsonWidget(props: FormWidgetProps) {
   };
   return (
     <div
-      className="a3s-form-workflow-source-editor"
+      className="aster-form-workflow-source-editor"
       data-expanded={expanded || undefined}
       data-invalid={invalid || nonObject || undefined}
     >
@@ -248,7 +248,7 @@ export function WorkflowCodeWidget(props: FormWidgetProps) {
     customString(props, 'filePath', 'file_path') ??
     `handler.${language === 'typescript' ? 'ts' : 'txt'}`;
   return (
-    <div className="a3s-form-workflow-source-editor is-code" data-expanded={expanded || undefined}>
+    <div className="aster-form-workflow-source-editor is-code" data-expanded={expanded || undefined}>
       <WorkflowCodeEditor
         ariaLabel={props.node.label ?? props.node.id}
         describedBy={props.describedBy}
@@ -275,7 +275,7 @@ export function WorkflowCodeWidget(props: FormWidgetProps) {
         value={text}
       />
       {missing && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.emptyCode}
         </p>
       )}
@@ -285,21 +285,21 @@ export function WorkflowCodeWidget(props: FormWidgetProps) {
 
 export function WorkflowPromptWidget(
   props: FormWidgetProps & {
-    variables?: readonly A3sFlowExpressionVariable[];
+    variables?: readonly AsterFlowExpressionVariable[];
   },
 ) {
   const text = typeof props.value === 'string' ? props.value : '';
   const [expanded, setExpanded] = useState(false);
   const copy = workflowWidgetCopy(props.locale);
   const missing = props.required === true && text.trim().length === 0;
-  const availableVariables = useA3sFlowExpressionVariables(props.variables);
+  const availableVariables = useAsterFlowExpressionVariables(props.variables);
   const variables = useMemo(() => {
     const names = new Set<string>();
     for (const match of text.matchAll(/\{\{?\s*([\w.-]+)\s*\}?\}/g)) names.add(match[1]);
     return [...names];
   }, [text]);
   return (
-    <div className="a3s-form-workflow-prompt-editor" data-expanded={expanded || undefined}>
+    <div className="aster-form-workflow-prompt-editor" data-expanded={expanded || undefined}>
       <VariableTemplateTextarea
         id={props.id}
         className="textarea"
@@ -316,7 +316,7 @@ export function WorkflowPromptWidget(
         onFocus={props.onFocus}
         variables={availableVariables}
       />
-      <div className="a3s-form-workflow-editor-footer">
+      <div className="aster-form-workflow-editor-footer">
         <div className="item-group">
           {variables.map((variable) => (
             <code className="badge" data-variant="outline" key={variable}>
@@ -333,7 +333,7 @@ export function WorkflowPromptWidget(
         />
       </div>
       {missing && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.emptyPrompt}
         </p>
       )}
@@ -369,7 +369,7 @@ export function WorkflowFileWidget(props: FormWidgetProps) {
   };
   return (
     <div
-      className="a3s-form-workflow-file-control"
+      className="aster-form-workflow-file-control"
       data-empty={current.length === 0 || undefined}
       data-invalid={error ? 'true' : undefined}
     >
@@ -386,7 +386,7 @@ export function WorkflowFileWidget(props: FormWidgetProps) {
       </button>
       <input
         id={props.id}
-        className="a3s-form-visually-hidden"
+        className="aster-form-visually-hidden"
         tabIndex={-1}
         type="file"
         multiple={multiple}
@@ -430,7 +430,7 @@ export function WorkflowFileWidget(props: FormWidgetProps) {
         }}
       />
       {current.length > 0 ? (
-        <ul className="a3s-form-workflow-file-list" aria-label={copy.selectedFiles}>
+        <ul className="aster-form-workflow-file-list" aria-label={copy.selectedFiles}>
           {current.map((name, index) => (
             <li key={`${name}-${index}`}>
               <span>{name}</span>
@@ -454,7 +454,7 @@ export function WorkflowFileWidget(props: FormWidgetProps) {
       {current.length > 0 && (
         <button
           type="button"
-          className="btn a3s-form-workflow-file-clear"
+          className="btn aster-form-workflow-file-clear"
           data-size="xs"
           data-variant="ghost"
           aria-label={copy.clearFiles}
@@ -470,12 +470,12 @@ export function WorkflowFileWidget(props: FormWidgetProps) {
       )}
       {allowedTypes.length > 0 && <small>{allowedTypes.join(' · ')}</small>}
       {props.required === true && current.length === 0 && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.emptyFiles}
         </p>
       )}
       {error && (
-        <small id={errorId} className="a3s-form-workflow-file-error" role="alert">
+        <small id={errorId} className="aster-form-workflow-file-error" role="alert">
           {error}
         </small>
       )}
@@ -493,9 +493,9 @@ export function WorkflowMcpControl(props: FormWidgetProps) {
     props.onChange({ ...record, ...patch });
   };
   return (
-    <div className="a3s-form-workflow-mcp-control">
-      <div className="a3s-form-workflow-mcp-status">
-        <span className="a3s-form-workflow-control-icon">
+    <div className="aster-form-workflow-mcp-control">
+      <div className="aster-form-workflow-mcp-status">
+        <span className="aster-form-workflow-control-icon">
           <DesignerIcon name="components" size={15} />
         </span>
         <span>
@@ -526,7 +526,7 @@ export function WorkflowMcpControl(props: FormWidgetProps) {
         />
       </label>
       {invalidShape && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.invalidObject}
         </p>
       )}
@@ -548,7 +548,7 @@ export function WorkflowNumberWidget(props: FormWidgetProps) {
       (maximum !== undefined && numeric > maximum));
   const label = props.node.label ?? props.node.id;
   return (
-    <div className="a3s-form-workflow-number">
+    <div className="aster-form-workflow-number">
       <input
         id={props.id}
         className="input"
@@ -572,10 +572,10 @@ export function WorkflowNumberWidget(props: FormWidgetProps) {
         onFocus={props.onFocus}
       />
       {props.required && (missing || notNumber) && (
-        <span className="a3s-form-workflow-required-marker">*</span>
+        <span className="aster-form-workflow-required-marker">*</span>
       )}
       {(notNumber || outside || (props.required && missing)) && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {outside ? copy.outOfRange : copy.requiredValue}
         </p>
       )}
@@ -587,7 +587,7 @@ export function WorkflowSecretWidget(props: FormWidgetProps) {
   const text = typeof props.value === 'string' ? props.value : '';
   const label = props.node.label ?? props.node.id;
   return (
-    <div className="a3s-form-workflow-secret">
+    <div className="aster-form-workflow-secret">
       <input
         id={props.id}
         className="input"
@@ -622,10 +622,10 @@ export function WorkflowDataDisplayWidget({
   const buttonIcon = customString(props, 'buttonIcon', 'button_icon');
   const language = typeof props.value === 'object' && props.value !== null ? 'json' : 'text';
   return (
-    <div className="a3s-form-workflow-data-display-control">
+    <div className="aster-form-workflow-data-display-control">
       <WorkflowCodeEditor
         ariaLabel={props.node.label ?? props.node.id}
-        className="a3s-form-workflow-data-display"
+        className="aster-form-workflow-data-display"
         describedBy={props.describedBy}
         disabled={props.disabled}
         fileName={language === 'json' ? 'result.preview.json' : 'result.preview.txt'}
@@ -695,7 +695,7 @@ export function WorkflowSliderWidget(props: FormWidgetProps) {
       : props.node.customProps,
   };
   return (
-    <div className="a3s-form-workflow-slider">
+    <div className="aster-form-workflow-slider">
       <NativeWidget
         {...props}
         node={sliderNode}
@@ -708,12 +708,12 @@ export function WorkflowSliderWidget(props: FormWidgetProps) {
         }}
       />
       {outside && (
-        <p className="a3s-form-workflow-field-feedback" role="alert">
+        <p className="aster-form-workflow-field-feedback" role="alert">
           {copy.outOfRange}
         </p>
       )}
       {metadata.length > 0 && (
-        <div className="a3s-form-workflow-field-flags">
+        <div className="aster-form-workflow-field-flags">
           {metadata.map(([label, value]) => (
             <span className="badge" data-variant="outline" key={label}>
               {label} {numberFormat.format(value)}

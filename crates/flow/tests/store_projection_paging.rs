@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowError, FlowEvent, FlowEventStore, InMemoryEventStore, WorkflowProgress, WorkflowSpec,
     MAX_FLOW_HISTORY_PAGE_SIZE,
 };
@@ -17,7 +17,7 @@ impl FlowEventStore for PageOnlyProjectionStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -26,13 +26,13 @@ impl FlowEventStore for PageOnlyProjectionStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, _run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, _run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history read is not allowed for default projection scans".into(),
         ))
@@ -42,7 +42,7 @@ impl FlowEventStore for PageOnlyProjectionStore {
         &self,
         _run_id: &str,
         _sequence: u64,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         Err(FlowError::Store(
             "unbounded history tail read is not allowed for default projection scans".into(),
         ))
@@ -53,7 +53,7 @@ impl FlowEventStore for PageOnlyProjectionStore {
         run_id: &str,
         after_sequence: u64,
         limit: usize,
-    ) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    ) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         let history = self.inner.list(run_id).await?;
         Ok(history
             .into_iter()
@@ -62,11 +62,11 @@ impl FlowEventStore for PageOnlyProjectionStore {
             .collect())
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 
-    async fn latest_event(&self, run_id: &str) -> a3s_flow::Result<Option<(u64, uuid::Uuid)>> {
+    async fn latest_event(&self, run_id: &str) -> aster_flow::Result<Option<(u64, uuid::Uuid)>> {
         self.inner.latest_event(run_id).await
     }
 }

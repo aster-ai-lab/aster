@@ -1,0 +1,847 @@
+pub mod chat_template;
+pub mod gguf_stream;
+pub mod gpu;
+pub mod json_schema;
+pub mod llamacpp;
+#[cfg(feature = "magnitude")]
+pub mod magnitude;
+pub mod mistralrs_backend;
+mod openai_compat;
+pub mod picolm;
+pub mod picolm_ops;
+pub mod prism;
+pub mod prompt_cache;
+pub mod proxy;
+pub mod systemone_scoring;
+/// Test utilities for integration tests. Not part of the public API.
+#[doc(hidden)]
+pub mod test_utils;
+pub mod think_parser;
+pub mod tool_parser;
+pub mod types;
+pub mod xolotl;
+
+use std::pin::Pin;
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use futures::Stream;
+
+use crate::config::PowerConfig;
+use crate::error::{PowerError, Result};
+use crate::model::manifest::{ModelFormat, ModelManifest};
+use crate::server::request_context::RequestContext;
+use crate::speculative::{SpeculativeCapabilities, SpeculativeStrategy};
+use crate::tee::encrypted_model::{LayerStreamingDecryptedModel, MemoryDecryptedModel};
+
+use prompt_cache::{PromptCacheMetricsSnapshot, PromptCacheSupport};
+
+use types::{
+    ChatRequest, ChatResponseChunk, CompletionRequest, CompletionResponseChunk,
+    EffectivePromptDigest, EmbeddingRequest, EmbeddingResponse, SystemOneRequest,
+    SystemOneResponse,
+};
+
+/// Public proof that a content-addressed speculative artifact was verified and loaded.
+///
+/// Absolute paths and mutable source locators are deliberately excluded. The two
+/// digests bind a draft artifact to its exact target model.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub struct LoadedSpeculativeArtifact {
+    pub backend: String,
+    pub model: String,
+    pub strategy: String,
+    pub artifact_size: u64,
+    pub artifact_sha256: String,
+    pub target_sha256: String,
+}
+
+/// Cumulative, completed-request speculative decoding counters.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct SpeculativeMetricsSnapshot {
+    pub backend: String,
+    pub model: String,
+    pub strategy: String,
+    pub requests: u64,
+    pub rounds: u64,
+    pub target_passes: u64,
+    pub drafted_tokens: u64,
+    pub accepted_tokens: u64,
+    pub emitted_tokens: u64,
+    pub decode_duration_ns: u64,
+}
+
+/// GGUF packs that a generic backend must not load.
+///
+/// Prism and Xolotl register ahead of llama.cpp, mistral.rs, and picolm.
+/// Their `supports_manifest` claims are also excluded here so a format-only
+/// match, including TEE routing to picolm, cannot take the file.
+pub(crate) fn is_reserved_gguf_manifest(manifest: &ModelManifest) -> bool {
+    prism::is_prism_required_manifest(manifest) || xolotl::is_xolotl_required_manifest(manifest)
+}
+
+/// Reject an explicit speculative strategy for a backend that only implements
+/// ordinary autoregressive decoding. `auto` safely resolves to `off`.
+pub(crate) fn ensure_non_speculative_mode(configured: &str, backend: &str) -> Result<()> {
+    let requested = SpeculativeStrategy::parse(configured)
+        .ok_or_else(|| PowerError::Config(format!("unsupported spec_mode '{configured}'")))?;
+    SpeculativeCapabilities::none()
+        .resolve(requested, SpeculativeStrategy::Off)
+        .map(|_| ())
+        .map_err(|error| PowerError::Config(format!("{backend}: {error}")))
+}
+
+/// Trait for inference backends that can load models and run inference.
+#[async_trait]
+pub trait Backend: Send + Sync {
+    /// Human-readable name of this backend.
+    fn name(&self) -> &str;
+
+    /// Check if this backend can serve the given model format.
+    fn supports(&self, format: &ModelFormat) -> bool;
+
+    /// Check whether this backend can serve one exact model manifest.
+    ///
+    /// Format-only backends inherit the existing behavior. Architecture-aware
+    /// backends should override this method so multiple implementations of the
+    /// same container format can coexist without relying on raw backend names.
+    fn supports_manifest(&self, manifest: &ModelManifest) -> bool {
+        self.supports(&manifest.format)
+    }
+
+    /// The backend forwards explicit OpenAI tool selection and validates its
+    /// generated tool names, complete arguments, and single-call policy.
+    fn supports_openai_tool_selection(&self) -> bool {
+        false
+    }
+
+    /// Chat chunks carry exact final token usage in `upstream_timings.usage`.
+    /// This also supports locally executed native models whose UTF-8/SSE
+    /// fragments are not one-to-one with model tokens. Missing or malformed
+    /// usage must not fall back to counting transport fragments.
+    fn reports_exact_chat_usage(&self) -> bool {
+        false
+    }
+
+    /// Whether this backend can score System One (Jev-shaped) decisions.
+    ///
+    /// Default: false. Only backends that can read next-token option-label
+    /// logits should override this. Callers must select via
+    /// [`BackendRegistry::find_for_systemone`] rather than format priority so
+    /// GGUF models are not loaded into a chat-only backend first.
+    fn supports_systemone(&self) -> bool {
+        false
+    }
+
+    /// Describe whether this backend guarantees keyed prompt-prefix KV reuse.
+    fn prompt_cache_support(&self) -> PromptCacheSupport {
+        PromptCacheSupport::Unsupported
+    }
+
+    /// Return cumulative prompt-cache telemetry when the backend implements it.
+    fn prompt_cache_metrics(&self) -> Option<PromptCacheMetricsSnapshot> {
+        None
+    }
+
+    /// Return non-secret identities for verified speculative artifacts currently loaded.
+    async fn loaded_speculative_artifacts(&self) -> Vec<LoadedSpeculativeArtifact> {
+        Vec::new()
+    }
+
+    /// Return cumulative speculative counters for completed requests.
+    fn speculative_metrics(&self) -> Vec<SpeculativeMetricsSnapshot> {
+        Vec::new()
+    }
+
+    /// Readiness of resources explicitly owned by this backend.
+    async fn runtime_readiness(&self) -> Result<()> {
+        Ok(())
+    }
+
+    /// Load a model into memory, ready for inference.
+    async fn load(&self, manifest: &ModelManifest) -> Result<()>;
+
+    /// Return true when this backend can load a decrypted model without writing
+    /// plaintext back to disk.
+    fn supports_memory_load(&self, _format: &ModelFormat) -> bool {
+        false
+    }
+
+    /// Load a model from locked plaintext memory.
+    ///
+    /// Backends must take ownership of `plaintext` or otherwise keep the bytes
+    /// alive for as long as inference can access them. The default fails closed
+    /// so encrypted in-memory loading is never silently downgraded to a file path.
+    async fn load_from_memory(
+        &self,
+        manifest: &ModelManifest,
+        plaintext: MemoryDecryptedModel,
+    ) -> Result<()> {
+        drop(plaintext);
+        Err(PowerError::BackendNotAvailable(format!(
+            "backend '{}' does not support locked in-memory model loading for format {} \
+             (model '{}')",
+            self.name(),
+            manifest.format,
+            manifest.name
+        )))
+    }
+
+    /// Return true when this backend can load a decrypted model from the
+    /// layer-streaming plaintext source without writing plaintext back to disk.
+    fn supports_streaming_decrypt_load(&self, _format: &ModelFormat) -> bool {
+        false
+    }
+
+    /// Load a model from the layer-streaming decrypted plaintext source.
+    ///
+    /// Backends must take ownership of `plaintext` or otherwise keep the bytes
+    /// alive for as long as inference can access them. The default fails closed
+    /// so encrypted streaming decrypt loading is never silently downgraded to a
+    /// file path.
+    async fn load_from_streaming_decrypt(
+        &self,
+        manifest: &ModelManifest,
+        plaintext: LayerStreamingDecryptedModel,
+    ) -> Result<()> {
+        drop(plaintext);
+        Err(PowerError::BackendNotAvailable(format!(
+            "backend '{}' does not support layer-streaming decrypted model loading for format {} \
+             (model '{}')",
+            self.name(),
+            manifest.format,
+            manifest.name
+        )))
+    }
+
+    /// Unload a model from memory.
+    async fn unload(&self, model_name: &str) -> Result<()>;
+
+    /// Run chat completion inference, returning a stream of token chunks.
+    async fn chat(
+        &self,
+        model_name: &str,
+        request: ChatRequest,
+    ) -> Result<Pin<Box<dyn Stream<Item = Result<ChatResponseChunk>> + Send>>>;
+
+    /// Return the digest of the exact rendered chat prompt used for inference.
+    ///
+    /// Backends should return `None` unless they locally render the prompt and can
+    /// guarantee the same bytes are passed to the model. This keeps receipts from
+    /// overclaiming for delegated renderers such as upstream proxy servers.
+    async fn effective_chat_prompt_digest(
+        &self,
+        _model_name: &str,
+        _request: &ChatRequest,
+    ) -> Result<Option<EffectivePromptDigest>> {
+        Ok(None)
+    }
+
+    /// Run text completion inference, returning a stream of token chunks.
+    async fn complete(
+        &self,
+        model_name: &str,
+        request: CompletionRequest,
+    ) -> Result<Pin<Box<dyn Stream<Item = Result<CompletionResponseChunk>> + Send>>>;
+
+    /// Return the digest of the exact text-completion prompt used for inference.
+    ///
+    /// Backends should return `None` unless they can guarantee the same prompt
+    /// bytes or token IDs are passed to the model. Delegating/proxy backends
+    /// should stay absent unless the upstream exposes an explicit digest.
+    async fn effective_completion_prompt_digest(
+        &self,
+        _model_name: &str,
+        _request: &CompletionRequest,
+    ) -> Result<Option<EffectivePromptDigest>> {
+        Ok(None)
+    }
+
+    /// Generate embeddings for the given input texts.
+    async fn embed(&self, model_name: &str, request: EmbeddingRequest)
+        -> Result<EmbeddingResponse>;
+
+    /// Score typed System One decisions from option-label logits (Jev-shaped).
+    ///
+    /// Default: not supported. Only backends that can read next-token logits for
+    /// a declared option subset should override this. This is intentionally
+    /// separate from OpenAI `logprobs`.
+    async fn systemone(
+        &self,
+        model_name: &str,
+        _request: SystemOneRequest,
+    ) -> Result<SystemOneResponse> {
+        Err(PowerError::BackendNotAvailable(format!(
+            "backend '{}' does not support System One decision scoring (model: '{model_name}')",
+            self.name()
+        )))
+    }
+
+    /// Clean up request-scoped resources after inference completes.
+    ///
+    /// Default: no-op. Backends that support KV cache isolation should
+    /// override this to clear the request's cache slot, zeroize
+    /// intermediate buffers, etc.
+    async fn cleanup_request(&self, _model_name: &str, _ctx: &RequestContext) -> Result<()> {
+        Ok(())
+    }
+
+    /// Pull (download) a model by name from a remote registry.
+    ///
+    /// Default: not supported. Backends that can fetch models should override this.
+    async fn pull(&self, name: &str) -> Result<ModelManifest> {
+        Err(PowerError::BackendNotAvailable(format!(
+            "backend '{}' does not support model pull (requested: '{name}')",
+            self.name()
+        )))
+    }
+}
+
+/// Registry of available inference backends.
+///
+/// Backends are stored in priority order — the first registered backend that
+/// supports a given format wins. This allows callers to control preference
+/// (e.g., register mistral.rs before llama.cpp for pure-Rust priority).
+pub struct BackendRegistry {
+    backends: Vec<Arc<dyn Backend>>,
+}
+
+impl BackendRegistry {
+    pub fn new() -> Self {
+        Self {
+            backends: Vec::new(),
+        }
+    }
+
+    /// Refuse health while an explicitly managed runtime is unavailable.
+    pub async fn runtime_readiness(&self) -> Result<()> {
+        for backend in &self.backends {
+            backend.runtime_readiness().await?;
+        }
+        Ok(())
+    }
+
+    /// Register a new backend. Backends registered first have higher priority.
+    pub fn register(&mut self, backend: Arc<dyn Backend>) {
+        self.backends.push(backend);
+    }
+
+    /// Find the highest-priority backend that supports the given model format.
+    pub fn find_for_format(&self, format: &ModelFormat) -> Result<Arc<dyn Backend>> {
+        self.backends
+            .iter()
+            .find(|b| b.supports(format))
+            .cloned()
+            .ok_or_else(|| {
+                PowerError::BackendNotAvailable(format!(
+                    "No backend available for format: {format}"
+                ))
+            })
+    }
+
+    /// Find the highest-priority backend that supports the exact manifest.
+    pub fn find_for_manifest(&self, manifest: &ModelManifest) -> Result<Arc<dyn Backend>> {
+        self.backends
+            .iter()
+            .find(|backend| backend.supports_manifest(manifest))
+            .cloned()
+            .ok_or_else(|| {
+                PowerError::BackendNotAvailable(format!(
+                    "No backend available for model '{}' with format {}",
+                    manifest.name, manifest.format
+                ))
+            })
+    }
+
+    /// Find the highest-priority backend that can score System One decisions.
+    pub fn find_for_systemone(&self) -> Result<Arc<dyn Backend>> {
+        self.backends
+            .iter()
+            .find(|backend| backend.supports_systemone())
+            .cloned()
+            .ok_or_else(|| {
+                PowerError::BackendNotAvailable(
+                    "No backend available for System One decision scoring".to_string(),
+                )
+            })
+    }
+
+    /// Append another registry while preserving both registries' priority order.
+    pub fn extend(&mut self, other: BackendRegistry) {
+        self.backends.extend(other.backends);
+    }
+
+    /// Find a backend for TEE-constrained inference.
+    ///
+    /// When `model_size_bytes` exceeds 75% of available EPC memory, prefers the
+    /// picolm backend (layer-streaming, O(layer_size) RAM) over mistralrs/llamacpp
+    /// (which load the full model into RAM). Falls back to normal priority order
+    /// when EPC info is unavailable or the model fits comfortably.
+    pub fn find_for_tee(
+        &self,
+        format: &ModelFormat,
+        model_size_bytes: u64,
+    ) -> Result<Arc<dyn Backend>> {
+        use crate::tee::epc::model_exceeds_epc;
+
+        if model_exceeds_epc(model_size_bytes) {
+            // Prefer picolm for layer-streaming when model won't fit in EPC
+            if let Ok(b) = self.find_by_name("picolm") {
+                if b.supports(format) {
+                    tracing::info!(
+                        model_size_mb = model_size_bytes / 1_048_576,
+                        "TEE EPC pressure: routing to picolm layer-streaming backend"
+                    );
+                    return Ok(b);
+                }
+            }
+            // picolm not available — warn and fall through to normal selection
+            tracing::warn!(
+                model_size_mb = model_size_bytes / 1_048_576,
+                "Model may exceed TEE EPC budget. Enable --features picolm for layer-streaming."
+            );
+        }
+
+        self.find_for_format(format)
+    }
+
+    /// Find a backend for one exact manifest under TEE memory pressure.
+    ///
+    /// The EPC-aware picolm preference is retained, but the candidate must also
+    /// accept the complete manifest. This prevents a format-compatible backend
+    /// from intercepting a model family it cannot execute.
+    pub fn find_for_tee_manifest(&self, manifest: &ModelManifest) -> Result<Arc<dyn Backend>> {
+        use crate::tee::epc::model_exceeds_epc;
+
+        if model_exceeds_epc(manifest.size) {
+            if let Ok(backend) = self.find_by_name("picolm") {
+                if backend.supports_manifest(manifest) {
+                    tracing::info!(
+                        model_size_mb = manifest.size / 1_048_576,
+                        "TEE EPC pressure: routing to picolm layer-streaming backend"
+                    );
+                    return Ok(backend);
+                }
+            }
+            tracing::warn!(
+                model_size_mb = manifest.size / 1_048_576,
+                "Model may exceed TEE EPC budget. Enable --features picolm for layer-streaming."
+            );
+        }
+
+        self.find_for_manifest(manifest)
+    }
+
+    /// Find a backend by name.
+    pub fn find_by_name(&self, name: &str) -> Result<Arc<dyn Backend>> {
+        self.backends
+            .iter()
+            .find(|b| b.name() == name)
+            .cloned()
+            .ok_or_else(|| PowerError::BackendNotAvailable(format!("No backend with name: {name}")))
+    }
+
+    /// List all registered backend names.
+    pub fn list_names(&self) -> Vec<&str> {
+        self.backends.iter().map(|b| b.name()).collect()
+    }
+
+    /// List backends that can honor the public `prompt_cache_key` contract.
+    pub fn prompt_cache_backend_names(&self) -> Vec<&str> {
+        self.backends
+            .iter()
+            .filter(|backend| backend.prompt_cache_support().is_supported())
+            .map(|backend| backend.name())
+            .collect()
+    }
+
+    /// Snapshot prompt-cache counters for every instrumented backend.
+    pub fn prompt_cache_metrics(&self) -> Vec<(&str, PromptCacheMetricsSnapshot)> {
+        self.backends
+            .iter()
+            .filter_map(|backend| {
+                backend
+                    .prompt_cache_metrics()
+                    .map(|snapshot| (backend.name(), snapshot))
+            })
+            .collect()
+    }
+
+    /// Snapshot verified speculative artifacts from every backend.
+    pub async fn loaded_speculative_artifacts(&self) -> Vec<LoadedSpeculativeArtifact> {
+        let mut artifacts = Vec::new();
+        for backend in &self.backends {
+            artifacts.extend(backend.loaded_speculative_artifacts().await);
+        }
+        artifacts.sort_by(|left, right| {
+            (&left.backend, &left.model, &left.strategy).cmp(&(
+                &right.backend,
+                &right.model,
+                &right.strategy,
+            ))
+        });
+        artifacts
+    }
+
+    /// Snapshot cumulative speculative counters from every backend.
+    pub fn speculative_metrics(&self) -> Vec<SpeculativeMetricsSnapshot> {
+        let mut snapshots = self
+            .backends
+            .iter()
+            .flat_map(|backend| backend.speculative_metrics())
+            .collect::<Vec<_>>();
+        snapshots.sort_by(|left, right| {
+            (&left.backend, &left.model, &left.strategy).cmp(&(
+                &right.backend,
+                &right.model,
+                &right.strategy,
+            ))
+        });
+        snapshots
+    }
+}
+
+impl Default for BackendRegistry {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+/// Create a `BackendRegistry` with all available backends pre-registered.
+///
+/// Backends are registered in priority order: Xolotl, then Prism, then the
+/// optional Magnitude engine, mistral.rs, and llama.cpp. Xolotl and Prism claim
+/// only their own GGUF packs via `supports_manifest`. Ordinary GGUF falls
+/// through to the first backend that recognizes the exact manifest.
+pub fn default_backends(#[allow(unused)] config: Arc<PowerConfig>) -> BackendRegistry {
+    #[allow(unused_mut)]
+    let mut registry = BackendRegistry::new();
+
+    // Xolotl XQ packs must be claimed before Prism and before generic GGUF.
+    registry.register(Arc::new(xolotl::XolotlBackend::new(config.clone())));
+
+    // PrismML / Bonsai packs — must register before generic GGUF backends.
+    registry.register(Arc::new(prism::PrismBackend::new(config.clone())));
+
+    #[cfg(feature = "magnitude")]
+    registry.register(Arc::new(magnitude::MagnitudeBackend::new(config.clone())));
+
+    // Register mistral.rs backend (pure Rust)
+    #[cfg(feature = "mistralrs")]
+    registry.register(Arc::new(mistralrs_backend::MistralRsBackend::new(
+        config.clone(),
+    )));
+
+    // Register llama.cpp backend (available as fallback or explicit selection)
+    #[cfg(feature = "llamacpp")]
+    registry.register(Arc::new(llamacpp::LlamaCppBackend::new(config.clone())));
+
+    // Register picolm backend (pure Rust, layer-streaming, TEE memory-efficient)
+    // Lower priority than mistralrs/llamacpp for normal use; selected automatically
+    // by memory-aware routing when model_size > EPC * 0.75.
+    #[cfg(feature = "picolm")]
+    registry.register(Arc::new(picolm::PicolmBackend::new(config.clone())));
+
+    // Register the proxy backend when any upstream is configured. Serves
+    // `ModelFormat::Remote` models by forwarding to an OpenAI-compatible server.
+    if !config.proxy_upstreams.is_empty() {
+        registry.register(Arc::new(proxy::ProxyBackend::new(config.clone())));
+    }
+
+    registry
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::backend::test_utils::{sample_manifest, MockBackend};
+
+    #[test]
+    fn non_speculative_backend_accepts_auto_and_off() {
+        ensure_non_speculative_mode("auto", "test").unwrap();
+        ensure_non_speculative_mode("off", "test").unwrap();
+    }
+
+    #[test]
+    fn non_speculative_backend_rejects_explicit_strategy() {
+        let error = ensure_non_speculative_mode("mtp", "test").unwrap_err();
+        let message = error.to_string();
+        assert!(message.contains("test"));
+        assert!(message.contains("mtp"));
+        assert!(message.contains("not supported"));
+    }
+
+    #[cfg(any(feature = "mistralrs", feature = "llamacpp"))]
+    fn test_config() -> Arc<PowerConfig> {
+        Arc::new(PowerConfig::default())
+    }
+
+    #[cfg(any(feature = "mistralrs", feature = "llamacpp"))]
+    #[test]
+    fn test_backend_registry_find() {
+        let registry = default_backends(test_config());
+        let backend = registry.find_for_format(&ModelFormat::Gguf);
+        assert!(backend.is_ok());
+        let backend = backend.unwrap();
+        let name = backend.name();
+        assert!(name == "mistral.rs" || name == "llama.cpp");
+    }
+
+    #[cfg(feature = "mistralrs")]
+    #[test]
+    fn test_mistralrs_has_priority() {
+        // When mistralrs is enabled, it should be the first match for GGUF
+        let registry = default_backends(test_config());
+        let backend = registry.find_for_format(&ModelFormat::Gguf).unwrap();
+        assert_eq!(backend.name(), "mistral.rs");
+    }
+
+    #[cfg(any(feature = "mistralrs", feature = "llamacpp"))]
+    #[test]
+    fn test_backend_registry_list() {
+        let registry = default_backends(test_config());
+        let names = registry.list_names();
+        assert!(!names.is_empty());
+    }
+
+    #[cfg(all(feature = "mistralrs", feature = "llamacpp"))]
+    #[test]
+    fn test_both_backends_registered() {
+        let registry = default_backends(test_config());
+        let names = registry.list_names();
+        assert_eq!(names.first().copied(), Some("xolotl"));
+        assert!(names.contains(&"prism"));
+        assert!(names.contains(&"mistral.rs"));
+        assert!(names.contains(&"llama.cpp"));
+        #[cfg(feature = "picolm")]
+        assert!(names.contains(&"picolm"));
+        assert_eq!(names.len(), 4 + usize::from(cfg!(feature = "picolm")));
+    }
+
+    #[cfg(all(feature = "mistralrs", feature = "llamacpp"))]
+    #[test]
+    fn test_find_by_name_selects_specific_backend() {
+        let registry = default_backends(test_config());
+        let llama = registry.find_by_name("llama.cpp");
+        assert!(llama.is_ok());
+        assert_eq!(llama.unwrap().name(), "llama.cpp");
+
+        let mistral = registry.find_by_name("mistral.rs");
+        assert!(mistral.is_ok());
+        assert_eq!(mistral.unwrap().name(), "mistral.rs");
+    }
+
+    #[cfg(feature = "llamacpp")]
+    #[test]
+    fn find_for_systemone_selects_llamacpp_over_format_priority() {
+        let mut registry = BackendRegistry::new();
+        registry.register(Arc::new(
+            MockBackend::success()
+                .with_name("chat-only")
+                .without_systemone(),
+        ));
+        registry.register(Arc::new(llamacpp::LlamaCppBackend::new(test_config())));
+
+        let backend = registry.find_for_systemone().unwrap();
+        assert_eq!(backend.name(), "llama.cpp");
+    }
+
+    #[test]
+    fn find_for_systemone_errors_when_none_support_it() {
+        let mut registry = BackendRegistry::new();
+        registry.register(Arc::new(MockBackend::success().without_systemone()));
+        match registry.find_for_systemone() {
+            Ok(_) => panic!("expected System One backend lookup to fail"),
+            Err(err) => assert!(err.to_string().contains("System One")),
+        }
+    }
+
+    #[test]
+    fn test_find_by_name_not_found() {
+        let registry = BackendRegistry::new();
+        let result = registry.find_by_name("nonexistent");
+        assert!(result.is_err());
+        match result {
+            Err(e) => assert!(e.to_string().contains("No backend with name")),
+            Ok(_) => panic!("expected error"),
+        }
+    }
+
+    #[cfg(feature = "mistralrs")]
+    #[test]
+    fn test_mistralrs_backend_supports() {
+        let backend = mistralrs_backend::MistralRsBackend::new(test_config());
+        assert!(backend.supports(&ModelFormat::Gguf));
+        assert!(backend.supports(&ModelFormat::SafeTensors));
+        assert!(backend.supports(&ModelFormat::HuggingFace));
+    }
+
+    #[cfg(feature = "llamacpp")]
+    #[test]
+    fn test_llamacpp_backend_supports() {
+        let backend = llamacpp::LlamaCppBackend::new(test_config());
+        assert!(backend.supports(&ModelFormat::Gguf));
+        assert!(!backend.supports(&ModelFormat::SafeTensors));
+    }
+
+    #[test]
+    fn test_find_for_format_unsupported() {
+        let registry = BackendRegistry::new();
+        let result = registry.find_for_format(&ModelFormat::SafeTensors);
+        assert!(result.is_err());
+        match result {
+            Err(e) => assert!(e.to_string().contains("No backend available")),
+            Ok(_) => panic!("expected error"),
+        }
+    }
+
+    #[test]
+    fn test_backend_registry_default() {
+        let registry = BackendRegistry::default();
+        assert!(registry.list_names().is_empty());
+    }
+
+    #[cfg(any(feature = "mistralrs", feature = "llamacpp"))]
+    #[test]
+    fn test_registry_priority_order() {
+        // First registered backend wins for find_for_format
+        let mut registry = BackendRegistry::new();
+        let config = test_config();
+        #[cfg(feature = "mistralrs")]
+        {
+            registry.register(Arc::new(mistralrs_backend::MistralRsBackend::new(
+                config.clone(),
+            )));
+        }
+        #[cfg(feature = "llamacpp")]
+        {
+            registry.register(Arc::new(llamacpp::LlamaCppBackend::new(config.clone())));
+        }
+        let first = registry.find_for_format(&ModelFormat::Gguf).unwrap();
+        // First registered backend should be returned
+        assert_eq!(first.name(), registry.list_names()[0]);
+    }
+
+    #[test]
+    fn manifest_matching_skips_an_incompatible_specialized_backend() {
+        let mut registry = BackendRegistry::new();
+        registry.register(Arc::new(
+            MockBackend::success()
+                .with_name("olmoe")
+                .with_family("olmoe"),
+        ));
+        registry.register(Arc::new(MockBackend::success().with_name("generic")));
+
+        let mut manifest = sample_manifest("other-model");
+        manifest.family = Some("other".to_string());
+
+        let backend = registry.find_for_manifest(&manifest).unwrap();
+        assert_eq!(backend.name(), "generic");
+    }
+
+    #[test]
+    fn manifest_matching_prefers_a_compatible_specialized_backend() {
+        let mut registry = BackendRegistry::new();
+        registry.register(Arc::new(
+            MockBackend::success()
+                .with_name("olmoe")
+                .with_family("olmoe"),
+        ));
+        registry.register(Arc::new(MockBackend::success().with_name("generic")));
+
+        let mut manifest = sample_manifest("olmoe-model");
+        manifest.family = Some("olmoe".to_string());
+
+        let backend = registry.find_for_manifest(&manifest).unwrap();
+        assert_eq!(backend.name(), "olmoe");
+    }
+
+    #[test]
+    fn tee_manifest_matching_preserves_manifest_filtering() {
+        let mut registry = BackendRegistry::new();
+        registry.register(Arc::new(
+            MockBackend::success()
+                .with_name("olmoe")
+                .with_family("olmoe"),
+        ));
+        registry.register(Arc::new(MockBackend::success().with_name("generic")));
+
+        let mut manifest = sample_manifest("other-model");
+        manifest.family = Some("other".to_string());
+        manifest.size = 0;
+
+        let backend = registry.find_for_tee_manifest(&manifest).unwrap();
+        assert_eq!(backend.name(), "generic");
+    }
+
+    #[test]
+    fn default_backends_route_prism_packs_fail_closed() {
+        let config = Arc::new(PowerConfig::default());
+        let registry = default_backends(config.clone());
+
+        let mut prism = sample_manifest("bonsai2-ptq1");
+        prism.format = ModelFormat::Gguf;
+        prism.path = std::path::PathBuf::from(
+            "D:/Bonsai-demo/models/bonsai2-gguf/27B/Ternary-Bonsai-2-27B-PTQ1_0.gguf",
+        );
+        let backend = registry.find_for_manifest(&prism).unwrap();
+        assert_eq!(backend.name(), "prism");
+
+        let mut xq = sample_manifest("xq-1017");
+        xq.format = ModelFormat::Gguf;
+        xq.path = std::path::PathBuf::from("DeepSeek-V4.1-Flash-1017-XQ-Uncensored.gguf");
+        let backend = registry.find_for_manifest(&xq).unwrap();
+        assert_eq!(backend.name(), "xolotl");
+
+        let mut marked = sample_manifest("marked-xolotl");
+        marked.format = ModelFormat::Gguf;
+        marked.path = std::path::PathBuf::from("weights.gguf");
+        marked.family = Some("xolotl".into());
+        assert_eq!(
+            registry.find_for_manifest(&marked).unwrap().name(),
+            "xolotl"
+        );
+
+        let mut ordinary = sample_manifest("qwen-q6");
+        ordinary.format = ModelFormat::Gguf;
+        ordinary.path = std::path::PathBuf::from("Qwen3.8-27B-Q6_K.gguf");
+        let generic = registry
+            .list_names()
+            .iter()
+            .any(|name| *name == "mistral.rs" || *name == "llama.cpp" || *name == "picolm");
+        let ordinary_backend = registry.find_for_manifest(&ordinary);
+        if generic {
+            let backend = ordinary_backend.unwrap();
+            assert_ne!(backend.name(), "xolotl");
+            assert_ne!(backend.name(), "prism");
+        } else {
+            assert!(ordinary_backend.is_err());
+        }
+
+        let llama = llamacpp::LlamaCppBackend::new(config.clone());
+        let mistral = mistralrs_backend::MistralRsBackend::new(config.clone());
+        let picolm = picolm::PicolmBackend::new(config);
+        assert!(!llama.supports_manifest(&xq));
+        assert!(!mistral.supports_manifest(&xq));
+        assert!(!picolm.supports_manifest(&xq));
+        assert!(!llama.supports_manifest(&prism));
+        assert!(!mistral.supports_manifest(&prism));
+        assert!(!picolm.supports_manifest(&prism));
+    }
+
+    #[test]
+    fn extending_a_registry_preserves_custom_backend_priority() {
+        let mut custom = BackendRegistry::new();
+        custom.register(Arc::new(MockBackend::success().with_name("custom")));
+        let mut defaults = BackendRegistry::new();
+        defaults.register(Arc::new(MockBackend::success().with_name("default")));
+
+        custom.extend(defaults);
+
+        assert_eq!(custom.list_names(), ["custom", "default"]);
+        assert_eq!(
+            custom.find_for_format(&ModelFormat::Gguf).unwrap().name(),
+            "custom"
+        );
+    }
+}

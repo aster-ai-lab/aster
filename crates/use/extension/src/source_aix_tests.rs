@@ -15,7 +15,7 @@ fn archive(path: &Path, entry: &str, bytes: &[u8]) {
 async fn aix_extracts_the_existing_acl_manifest_and_preserves_package_identity() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("acme-research-2.0.0.aix");
-    let bytes = include_bytes!("../fixtures/packages/plugin-v3/package/a3s-use-extension.acl");
+    let bytes = include_bytes!("../fixtures/packages/plugin-v3/package/aster-use-extension.acl");
     let mut writer = zip::ZipWriter::new(File::create(&path).unwrap());
     let package = Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/packages/plugin-v3/package");
     let mut stack = vec![package.clone()];
@@ -54,7 +54,7 @@ async fn aix_extracts_the_existing_acl_manifest_and_preserves_package_identity()
 async fn aix_refuses_traversal_and_a_renamed_vsix_without_the_native_manifest() {
     let temp = tempfile::tempdir().unwrap();
     let traversal = temp.path().join("traversal.aix");
-    archive(&traversal, "../a3s-use-extension.acl", b"escape");
+    archive(&traversal, "../aster-use-extension.acl", b"escape");
     assert_eq!(
         prepare_package_source(&traversal).await.unwrap_err().code,
         "use.extension.path_escape"
@@ -80,7 +80,7 @@ async fn aix_refuses_traversal_and_a_renamed_vsix_without_the_native_manifest() 
 #[tokio::test]
 async fn aix_refuses_incomplete_native_packages_and_nested_manifest_roots() {
     let temp = tempfile::tempdir().unwrap();
-    let manifest = include_bytes!("../fixtures/packages/plugin-v3/package/a3s-use-extension.acl");
+    let manifest = include_bytes!("../fixtures/packages/plugin-v3/package/aster-use-extension.acl");
     let incomplete = temp.path().join("incomplete.aix");
     archive(&incomplete, MANIFEST_NAME, manifest);
     assert_eq!(
@@ -88,7 +88,7 @@ async fn aix_refuses_incomplete_native_packages_and_nested_manifest_roots() {
         "use.extension.package_file_missing"
     );
     let nested = temp.path().join("nested.aix");
-    archive(&nested, "package/a3s-use-extension.acl", manifest);
+    archive(&nested, "package/aster-use-extension.acl", manifest);
     assert_eq!(
         prepare_package_source(&nested).await.unwrap_err().code,
         "use.extension.package_layout_invalid"

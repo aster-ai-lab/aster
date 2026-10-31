@@ -21,8 +21,8 @@ const runtimeGate = vi.hoisted(() => {
   };
 });
 
-vi.mock('../src/react/a3s-ui-runtime', () => ({
-  loadA3SUIRuntime: () => runtimeGate.promise,
+vi.mock('../src/react/aster-ui-runtime', () => ({
+  loadAsterUIRuntime: () => runtimeGate.promise,
 }));
 
 import { SelectControl } from '../src/react/select-control';
@@ -102,7 +102,7 @@ describe('SelectControl runtime fallback', () => {
 
     const view = render(<Harness />);
     const root = view.container.querySelector<HTMLElement>(
-      '.a3s-flow-select-control',
+      '.aster-flow-select-control',
     ) as HTMLElement & {
       close?: (focusOnTrigger?: boolean) => void;
       open?: () => void;
@@ -226,7 +226,7 @@ describe('SelectControl runtime fallback', () => {
       </SelectControl>,
     );
     const root = view.container.querySelector<HTMLElement>(
-      '.a3s-flow-select-control',
+      '.aster-flow-select-control',
     ) as HTMLElement & {
       close?: (focusOnTrigger?: boolean) => void;
       open?: () => void;
@@ -285,7 +285,7 @@ describe('SelectControl runtime fallback', () => {
       </SelectControl>,
     );
     const root = view.container.querySelector<HTMLElement>(
-      '.a3s-flow-select-control',
+      '.aster-flow-select-control',
     ) as HTMLElement & {
       close?: (focusOnTrigger?: boolean) => void;
       open?: () => void;

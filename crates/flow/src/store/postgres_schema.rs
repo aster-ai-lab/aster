@@ -1,4 +1,4 @@
-use a3s_orm::{
+use aster_orm::{
     sql_query, Database, DatabaseError, MigrationReport, Migrator, PostgresDialect, PostgresError,
     PostgresExecutor, Value,
 };
@@ -26,13 +26,13 @@ pub async fn migrate_postgres_flow(executor: &PostgresExecutor) -> Result<Migrat
 
 /// Journals created before the Flow migration ids were renamed still record
 /// `kense-flow-*`. The SQL checksum is unchanged, so the ledger version is
-/// rewritten to `a3s-flow-*` before admission. A checksum that does not
+/// rewritten to `aster-flow-*` before admission. A checksum that does not
 /// match the current script is left untouched and fails closed.
 async fn adopt_historical_flow_migration_ids(executor: &PostgresExecutor) -> Result<()> {
     let database = Database::new(PostgresDialect, executor.clone());
     let applied = match database
         .fetch_all(sql_query::<()>(
-            "select version, checksum from a3s_orm_migrations where version like 'kense-flow-%' order by version",
+            "select version, checksum from aster_orm_migrations where version like 'kense-flow-%' order by version",
         ))
         .await
     {
@@ -65,7 +65,7 @@ async fn adopt_historical_flow_migration_ids(executor: &PostgresExecutor) -> Res
         }
         database
             .execute(
-                sql_query::<()>("update a3s_orm_migrations set version = ")
+                sql_query::<()>("update aster_orm_migrations set version = ")
                     .bind(renamed)
                     .append(" where version = ")
                     .bind(version),
@@ -80,7 +80,7 @@ async fn adopt_historical_flow_migration_ids(executor: &PostgresExecutor) -> Res
     Ok(())
 }
 
-fn ledger_text(row: &a3s_orm::PostgresRow, index: usize) -> Result<String> {
+fn ledger_text(row: &aster_orm::PostgresRow, index: usize) -> Result<String> {
     match row.get(index) {
         Some(Value::String(value)) => Ok(value.clone()),
         _ => Err(FlowError::Store(
@@ -115,10 +115,10 @@ mod tests {
     fn historical_flow_migration_ids_rename_only_the_prefix() {
         assert_eq!(
             canonical_flow_migration_version("kense-flow-0001-events").as_deref(),
-            Some("a3s-flow-0001-events")
+            Some("aster-flow-0001-events")
         );
         assert_eq!(
-            canonical_flow_migration_version("a3s-flow-0001-events"),
+            canonical_flow_migration_version("aster-flow-0001-events"),
             None
         );
         assert_eq!(canonical_flow_migration_version("kense-flow-"), None);
@@ -127,4 +127,4 @@ mod tests {
 
 // NOTE: `kense-flow-` prefixed migration versions are historical records.
 // The canonical_flow_migration_version function maps them to the
-// a3s-flow namespace for lookup. Do not rewrite historical records.
+// aster-flow namespace for lookup. Do not rewrite historical records.

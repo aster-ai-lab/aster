@@ -438,7 +438,7 @@ fn robust_prune(
     pool.sort_unstable();
     pool.dedup();
     // DiskANN calls this bound `maxc`: it limits the candidate set before
-    // RobustPrune. A zero value preserves the historical A3S behavior and
+    // RobustPrune. A zero value preserves the historical Aster behavior and
     // leaves the candidate set unbounded.
     let mut saturation_pool = pool.clone();
     if max_occlusion > 0 && pool.len() > max_occlusion {

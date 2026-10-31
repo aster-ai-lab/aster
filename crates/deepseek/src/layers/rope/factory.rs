@@ -8,7 +8,7 @@
 //! substitute exp(log(x)*y), and is intentionally not used. CPU fixtures
 //! establish arithmetic order; they do not qualify CUDA libdevice results.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::Tensor;
 use tokio_util::sync::CancellationToken;
 

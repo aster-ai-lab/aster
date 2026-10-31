@@ -50,7 +50,7 @@ Only UI owner writes locale files; other owners send exact key/text requests. Co
 
 ## Verification Plan
 
-Capture clean AsterDream baseline and all existing dirty paths. First compile/check the existing host and renderer to identify prerequisites. Run small red/green cases, focused module regressions and independent reviews. Use the current A3S Test capabilities/schema; if that adapter is unavailable, record the infrastructure refusal and use supported direct CUA to obtain native evidence without pretending ACL certification. Test only isolated fixture state and owned processes. Final gates include root fmt/workspace checks, renderer build, `just build-desktop`, native AsterDream flows, local package and isolated upgrade, plus Linux IME packaging/protocol boundaries.
+Capture clean AsterDream baseline and all existing dirty paths. First compile/check the existing host and renderer to identify prerequisites. Run small red/green cases, focused module regressions and independent reviews. Use the current Aster Test capabilities/schema; if that adapter is unavailable, record the infrastructure refusal and use supported direct CUA to obtain native evidence without pretending ACL certification. Test only isolated fixture state and owned processes. Final gates include root fmt/workspace checks, renderer build, `just build-desktop`, native AsterDream flows, local package and isolated upgrade, plus Linux IME packaging/protocol boundaries.
 
 Public release/feed changes and commits are outside this authorization. AsterDream required tenant brand assets and the pure launch parser are restored from their recorded historical source; the deleted web application and JSON model-market configuration remain removed. Packaged resources carry the selected tenant.
 

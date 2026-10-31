@@ -276,8 +276,8 @@ export function WizardContainer({
     : undefined;
   if (!activePage) {
     return (
-      <section className="a3s-form-wizard" aria-label={state.wizard.label ?? state.wizard.id}>
-        <div className="a3s-form-wizard-empty" role="status">
+      <section className="aster-form-wizard" aria-label={state.wizard.label ?? state.wizard.id}>
+        <div className="aster-form-wizard-empty" role="status">
           {messages.wizardEmpty}
         </div>
       </section>
@@ -299,16 +299,16 @@ export function WizardContainer({
 
   return (
     <section
-      className="a3s-form-wizard"
+      className="aster-form-wizard"
       aria-labelledby={state.wizard.label ? `${prefix}-${state.wizard.id}-title` : undefined}
     >
       {state.wizard.label && (
-        <header className="a3s-form-wizard-heading">
+        <header className="aster-form-wizard-heading">
           <h2 id={`${prefix}-${state.wizard.id}-title`}>{state.wizard.label}</h2>
           {state.wizard.description && <p>{state.wizard.description}</p>}
         </header>
       )}
-      <nav className="a3s-form-wizard-progress" aria-label={messages.wizardProgressLabel}>
+      <nav className="aster-form-wizard-progress" aria-label={messages.wizardProgressLabel}>
         <ol>
           {state.pages.map((page, index) => {
             const current = page.id === activePage.id;
@@ -325,7 +325,7 @@ export function WizardContainer({
                   disabled={!canOpen || validating}
                   onClick={() => onGoTo(page.id)}
                 >
-                  <span className="a3s-form-wizard-step-index" aria-hidden="true">
+                  <span className="aster-form-wizard-step-index" aria-hidden="true">
                     {index + 1}
                   </span>
                   <span>{page.label ?? page.id}</span>
@@ -334,18 +334,18 @@ export function WizardContainer({
             );
           })}
         </ol>
-        <span className="a3s-form-wizard-progress-text" aria-live="polite">
+        <span className="aster-form-wizard-progress-text" aria-live="polite">
           {progressText}
         </span>
       </nav>
-      <section className="a3s-form-wizard-page" aria-labelledby={headingId}>
+      <section className="aster-form-wizard-page" aria-labelledby={headingId}>
         <header>
           <h3 id={headingId}>{activePage.label ?? activePage.id}</h3>
           {activePage.description && <p>{activePage.description}</p>}
         </header>
         {renderPage(activePage.id)}
         {activePage.pageRole === 'review' && (
-          <section className="a3s-form-wizard-review" aria-label={messages.wizardReviewTitle}>
+          <section className="aster-form-wizard-review" aria-label={messages.wizardReviewTitle}>
             <h4>{messages.wizardReviewTitle}</h4>
             {reviewItems.length === 0 ? (
               <p>{messages.wizardReviewEmpty}</p>
@@ -379,7 +379,7 @@ export function WizardContainer({
           .filter((error) => error.path === '')
           .map((error) => (
             <div
-              className="a3s-form-wizard-error"
+              className="aster-form-wizard-error"
               role="alert"
               key={`${error.code}-${error.message}`}
             >
@@ -387,10 +387,10 @@ export function WizardContainer({
             </div>
           ))}
       </section>
-      <footer className="a3s-form-wizard-navigation">
+      <footer className="aster-form-wizard-navigation">
         <button
           type="button"
-          className="a3s-form-secondary btn"
+          className="aster-form-secondary btn"
           data-variant="secondary"
           disabled={!previousPage || validating}
           onClick={onPrevious}
@@ -401,7 +401,7 @@ export function WizardContainer({
         {nextPage && (
           <button
             type="button"
-            className="a3s-form-primary btn"
+            className="aster-form-primary btn"
             data-variant="primary"
             disabled={validating}
             onClick={onNext}
@@ -412,7 +412,7 @@ export function WizardContainer({
       </footer>
       {validating && (
         <span
-          className="a3s-form-wizard-validation-status"
+          className="aster-form-wizard-validation-status"
           role="status"
           aria-live="polite"
           aria-label={formatFormMessage(messages, 'wizardPageValidationPendingLabel', {

@@ -79,9 +79,9 @@ fn every_manual_document_is_indexed_once_under_one_kind() {
 fn current_manuals_only_document_the_local_rust_sdk() {
     let dir = manual_dir();
     let retired = [
-        "@a3s-lab/code",
-        "from a3s_code import",
-        "github.com/A3S-Lab/Code/sdk/go",
+        "@aster-ai-lab/code",
+        "from aster import",
+        "github.com/aster-ai-lab/Code/sdk/go",
         "sdk/node/",
         "sdk/python/",
         "sdk/go/",

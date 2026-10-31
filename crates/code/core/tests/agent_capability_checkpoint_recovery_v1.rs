@@ -1,12 +1,12 @@
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityContribution, CapabilityDescriptor, CapabilityKind, CapabilitySet, CapabilitySource,
     CapabilityValue, CodeCatalogGeneration, SessionCapabilityBatch, Sha256Digest,
 };
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
-use a3s_code_core::permissions::PermissionPolicy;
-use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
-use a3s_code_core::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
+use aster_core::permissions::PermissionPolicy;
+use aster_core::tools::{Tool, ToolContext, ToolOutput};
+use aster_core::{
     Agent, AgentProtocolEventPageRequestV1, AgentProtocolExactRecoveryError, AgentProtocolHarness,
     AgentProtocolHost, AgentProtocolRunIdentityV1, AgentProtocolRunRecoverExactV1,
     AgentProtocolRunStateV1, PlanningMode, SessionCheckpointError, SessionCheckpointExportSink,
@@ -45,7 +45,7 @@ impl LlmClient for ScriptedClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         self.next()
     }
@@ -54,7 +54,7 @@ impl LlmClient for ScriptedClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let response = self.next()?;
@@ -145,6 +145,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/static".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -202,9 +203,9 @@ fn final_response(text: &str) -> LlmResponse {
     }
 }
 
-fn release_manifest() -> a3s_code_core::release::AgentReleaseManifest {
-    a3s_code_core::release::AgentReleaseManifest::parse(include_str!(
-        "../../fixtures/agent-release-contract/.a3s/asset.acl"
+fn release_manifest() -> aster_core::release::AgentReleaseManifest {
+    aster_core::release::AgentReleaseManifest::parse(include_str!(
+        "../../fixtures/agent-release-contract/.aster/asset.acl"
     ))
     .unwrap()
 }
@@ -371,7 +372,7 @@ async fn fresh_session_bootstraps_the_exact_historical_generation_before_recover
         .expect_err("a recovery batch must match the checkpoint identity");
     assert!(matches!(
         mismatch,
-        a3s_code_core::capability::CapabilityRuntimeError::RecoveryBinding { .. }
+        aster_core::capability::CapabilityRuntimeError::RecoveryBinding { .. }
     ));
     assert_eq!(recovery.capability_catalog_stamp().generation().get(), 0);
 
@@ -498,7 +499,7 @@ async fn harness_requires_and_consumes_an_exact_capability_recovery_batch() {
         .expect_err("the Harness cannot invent historical runtime values");
     assert!(matches!(
         missing,
-        a3s_code_core::AgentProtocolCheckpointRecoveryError::Checkpoint(
+        aster_core::AgentProtocolCheckpointRecoveryError::Checkpoint(
             SessionCheckpointError::ContentDrift(_)
         )
     ));
@@ -626,8 +627,8 @@ async fn harness_rejects_a_capability_batch_that_does_not_match_the_checkpoint_b
         .expect_err("mismatched recovery batch must fail closed");
     assert!(matches!(
         error,
-        a3s_code_core::AgentProtocolCheckpointRecoveryError::Harness(
-            a3s_code_core::AgentProtocolHarnessError::Code(_)
+        aster_core::AgentProtocolCheckpointRecoveryError::Harness(
+            aster_core::AgentProtocolHarnessError::Code(_)
         )
     ));
     assert_eq!(harness.session_count().await, 0);

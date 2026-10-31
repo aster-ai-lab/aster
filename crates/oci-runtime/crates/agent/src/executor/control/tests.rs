@@ -3,7 +3,7 @@ use std::net::Shutdown;
 use std::os::fd::{AsRawFd, OwnedFd};
 use std::os::unix::net::UnixStream as StdUnixStream;
 
-use a3s_oci_sdk::{Error, ErrorCode};
+use aster_oci_sdk::{Error, ErrorCode};
 
 use super::super::capability::{CapabilitySet, CapabilityWarning};
 use super::{

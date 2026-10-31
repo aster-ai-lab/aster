@@ -6,7 +6,7 @@ use std::{
     sync::Arc,
 };
 
-use a3s_box_core::{
+use aster_box_core::{
     scale::ScaleEndpoint, CreateExecutionRequest, ExecutionGeneration, ExecutionId, ExecutionLease,
     ExecutionManager, ExecutionPortConnector, ExecutionState, OperationId, ReconcileOutcome,
 };
@@ -704,7 +704,7 @@ mod tests {
         },
     };
 
-    use a3s_box_core::{
+    use aster_box_core::{
         ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult, KillOutcome,
     };
     use chrono::Utc;
@@ -766,7 +766,7 @@ mod tests {
             _generation: ExecutionGeneration,
             _port: NonZeroU16,
             _timeout: std::time::Duration,
-        ) -> ExecutionManagerResult<a3s_box_core::ExecutionPortStream> {
+        ) -> ExecutionManagerResult<aster_box_core::ExecutionPortStream> {
             let (client, mut server) = tokio::io::duplex(1_024);
             tokio::spawn(async move {
                 let mut buffer = [0_u8; 1_024];
@@ -792,7 +792,7 @@ mod tests {
             _generation: ExecutionGeneration,
             _port: NonZeroU16,
             _timeout: std::time::Duration,
-        ) -> ExecutionManagerResult<a3s_box_core::ExecutionPortStream> {
+        ) -> ExecutionManagerResult<aster_box_core::ExecutionPortStream> {
             Err(ExecutionManagerError::Unavailable(
                 "MicroVM port 8080 rejected the connection".to_string(),
             ))

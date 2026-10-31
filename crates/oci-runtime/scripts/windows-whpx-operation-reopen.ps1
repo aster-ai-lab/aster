@@ -74,34 +74,34 @@ $operationCliNames = @{
     Filesystem = 'filesystem'
 }
 $operationSchemas = @{
-    Create = 'a3s.oci.oci-vm-reopen-replacement.v3'
-    State = 'a3s.oci.oci-vm-operation-reopen-replacement.v1'
-    Start = 'a3s.oci.oci-vm-operation-reopen-replacement.v2'
-    Kill = 'a3s.oci.oci-vm-operation-reopen-replacement.v3'
-    Delete = 'a3s.oci.oci-vm-operation-reopen-replacement.v4'
-    Wait = 'a3s.oci.oci-vm-operation-reopen-replacement.v5'
-    Exec = 'a3s.oci.oci-vm-operation-reopen-replacement.v6'
-    SignalProcess = 'a3s.oci.oci-vm-operation-reopen-replacement.v7'
-    WaitProcess = 'a3s.oci.oci-vm-operation-reopen-replacement.v8'
-    Pause = 'a3s.oci.oci-vm-operation-reopen-replacement.v9'
-    Resume = 'a3s.oci.oci-vm-operation-reopen-replacement.v10'
-    Processes = 'a3s.oci.oci-vm-operation-reopen-replacement.v11'
-    Update = 'a3s.oci.oci-vm-operation-reopen-replacement.v12'
-    Stats = 'a3s.oci.oci-vm-operation-reopen-replacement.v13'
-    ReadOutput = 'a3s.oci.oci-vm-operation-reopen-replacement.v14'
-    WriteStdin = 'a3s.oci.oci-vm-operation-reopen-replacement.v15'
-    CloseStdin = 'a3s.oci.oci-vm-operation-reopen-replacement.v16'
-    Resize = 'a3s.oci.oci-vm-operation-reopen-replacement.v17'
-    File = 'a3s.oci.oci-vm-operation-reopen-replacement.v18'
-    Filesystem = 'a3s.oci.oci-vm-operation-reopen-replacement.v19'
+    Create = 'aster.oci.oci-vm-reopen-replacement.v3'
+    State = 'aster.oci.oci-vm-operation-reopen-replacement.v1'
+    Start = 'aster.oci.oci-vm-operation-reopen-replacement.v2'
+    Kill = 'aster.oci.oci-vm-operation-reopen-replacement.v3'
+    Delete = 'aster.oci.oci-vm-operation-reopen-replacement.v4'
+    Wait = 'aster.oci.oci-vm-operation-reopen-replacement.v5'
+    Exec = 'aster.oci.oci-vm-operation-reopen-replacement.v6'
+    SignalProcess = 'aster.oci.oci-vm-operation-reopen-replacement.v7'
+    WaitProcess = 'aster.oci.oci-vm-operation-reopen-replacement.v8'
+    Pause = 'aster.oci.oci-vm-operation-reopen-replacement.v9'
+    Resume = 'aster.oci.oci-vm-operation-reopen-replacement.v10'
+    Processes = 'aster.oci.oci-vm-operation-reopen-replacement.v11'
+    Update = 'aster.oci.oci-vm-operation-reopen-replacement.v12'
+    Stats = 'aster.oci.oci-vm-operation-reopen-replacement.v13'
+    ReadOutput = 'aster.oci.oci-vm-operation-reopen-replacement.v14'
+    WriteStdin = 'aster.oci.oci-vm-operation-reopen-replacement.v15'
+    CloseStdin = 'aster.oci.oci-vm-operation-reopen-replacement.v16'
+    Resize = 'aster.oci.oci-vm-operation-reopen-replacement.v17'
+    File = 'aster.oci.oci-vm-operation-reopen-replacement.v18'
+    Filesystem = 'aster.oci.oci-vm-operation-reopen-replacement.v19'
 }
 
 $repositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $rootfsArchive = (Resolve-Path -LiteralPath $RootfsArchive -ErrorAction Stop).Path
 $systemImageManifest = (Resolve-Path -LiteralPath $SystemImageManifest -ErrorAction Stop).Path
 $fixtureConfig = Join-Path $repositoryRoot 'fixtures\utility-vm\config.windows.json'
-$cli = Join-Path $repositoryRoot 'target\debug\a3s-oci.exe'
-$shim = Join-Path $repositoryRoot 'target\debug\a3s-oci-krun-shim.exe'
+$cli = Join-Path $repositoryRoot 'target\debug\aster-oci.exe'
+$shim = Join-Path $repositoryRoot 'target\debug\aster-oci-krun-shim.exe'
 $krunDll = Join-Path $repositoryRoot 'target\debug\krun.dll'
 $firmwareDll = Join-Path $repositoryRoot 'target\debug\libkrunfw.dll'
 $tar = (Get-Command tar.exe -ErrorAction Stop).Source
@@ -173,22 +173,22 @@ function Invoke-CapturedProcess {
     $process.Dispose()
 }
 
-function Get-A3sOciProcesses {
+function Get-AsterOciProcesses {
     @(
         Get-Process -ErrorAction SilentlyContinue |
-            Where-Object { $_.ProcessName -in @('a3s-oci', 'a3s-oci-krun-shim') } |
+            Where-Object { $_.ProcessName -in @('aster-oci', 'aster-oci-krun-shim') } |
             Select-Object ProcessName, Id
     )
 }
 
-function Assert-NoA3sOciProcesses {
+function Assert-NoAsterOciProcesses {
     param([string]$Context)
-    $processes = @(Get-A3sOciProcesses)
+    $processes = @(Get-AsterOciProcesses)
     if ($processes.Count -gt 0) {
         $description = ($processes | ForEach-Object {
             '{0}:{1}' -f $_.ProcessName, $_.Id
         }) -join ', '
-        throw "$Context found active A3S OCI processes: $description"
+        throw "$Context found active Aster OCI processes: $description"
     }
 }
 
@@ -249,9 +249,9 @@ if ($rootfsSha256 -ne $expectedRootfsSha256) {
 Assert-RegularFile -Path $systemImageManifest -Label 'System-image manifest' | Out-Null
 Assert-RegularFile -Path $fixtureConfig -Label 'Windows OCI fixture' | Out-Null
 $systemImage = Get-Content -LiteralPath $systemImageManifest -Raw | ConvertFrom-Json
-if ($systemImage.schema_version -ne 'a3s.oci.windows-system-image.v1' -or
+if ($systemImage.schema_version -ne 'aster.oci.windows-system-image.v1' -or
     $systemImage.architecture -ne 'x86_64' -or
-    $systemImage.image.name -ne 'a3s-oci-system.ext4') {
+    $systemImage.image.name -ne 'aster-oci-system.ext4') {
     throw "Unexpected Windows system-image manifest: $systemImageManifest"
 }
 $manifestDirectory = (Get-Item -LiteralPath $systemImageManifest).DirectoryName
@@ -305,7 +305,7 @@ New-Item -ItemType Directory -Path (Join-Path $outputRoot 'cases') | Out-Null
 
 if (-not $SkipBuild) {
     & cargo.exe build --manifest-path (Join-Path $repositoryRoot 'Cargo.toml') `
-        -p a3s-oci-cli -p a3s-oci-krun
+        -p aster-oci-cli -p aster-oci-krun
     if ($LASTEXITCODE -ne 0) {
         throw 'Failed to build the Windows WHPX qualification binaries.'
     }
@@ -315,7 +315,7 @@ Assert-RegularFile -Path $shim -Label 'libkrun shim binary' | Out-Null
 Assert-RegularFile -Path $krunDll -Label 'krun.dll' | Out-Null
 Assert-RegularFile -Path $firmwareDll -Label 'libkrunfw.dll' | Out-Null
 
-Assert-NoA3sOciProcesses -Context 'Qualification start'
+Assert-NoAsterOciProcesses -Context 'Qualification start'
 $startedAt = [DateTime]::UtcNow
 $results = @()
 $caseIndex = 0
@@ -329,7 +329,7 @@ foreach ($operation in $Operations) {
         New-Item -ItemType Directory -Path $fixtureRoot, $consoleDirectory | Out-Null
         $fixture = New-OperationFixture `
             -FixtureRoot $fixtureRoot `
-            -CgroupName "a3s-oci-whpx-reopen-$caseIndex"
+            -CgroupName "aster-oci-whpx-reopen-$caseIndex"
         $stdoutPath = Join-Path $caseRoot 'report.json'
         $stderrPath = Join-Path $caseRoot 'stderr.log'
         $metadataPath = Join-Path $caseRoot 'case.json'
@@ -399,13 +399,13 @@ foreach ($operation in $Operations) {
             duration_ms = $completed.DurationMs
             report = $stdoutPath
         }
-        Assert-NoA3sOciProcesses -Context "$caseName completion"
+        Assert-NoAsterOciProcesses -Context "$caseName completion"
         Write-Output ("PASS {0} ({1} ms)" -f $caseName, $completed.DurationMs)
     }
 }
 
 $summary = [ordered]@{
-    schema_version = 'a3s.oci.whpx-operation-reopen-run.v1'
+    schema_version = 'aster.oci.whpx-operation-reopen-run.v1'
     status = 'available'
     started_at_utc = $startedAt.ToString('o')
     completed_at_utc = [DateTime]::UtcNow.ToString('o')
@@ -427,6 +427,6 @@ if ($results.Count -ne $expectedCaseCount) {
 }
 Write-Utf8Text -Path (Join-Path $outputRoot 'summary.json') `
     -Text ($summary | ConvertTo-Json -Depth 16)
-Assert-NoA3sOciProcesses -Context 'Qualification completion'
+Assert-NoAsterOciProcesses -Context 'Qualification completion'
 Write-Output "WHPX operation/reopen qualification passed: $($results.Count) cases"
 Write-Output "Evidence: $outputRoot"

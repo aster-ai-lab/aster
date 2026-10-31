@@ -1,11 +1,11 @@
 //! S-GT-01: after the host budget is already exhausted, governed calls must
 //! not enter a tool body, and the host counter must stay at the floor.
 
-use a3s_code_core::budget::{BudgetDecision, BudgetGuard};
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::hitl::ConfirmationPolicy;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::budget::{BudgetDecision, BudgetGuard};
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::hitl::ConfirmationPolicy;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, SessionOptions};
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicI64, AtomicUsize, Ordering};
 use std::sync::Arc;
@@ -35,6 +35,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,

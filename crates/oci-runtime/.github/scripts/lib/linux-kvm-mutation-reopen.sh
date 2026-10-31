@@ -15,7 +15,7 @@ linux_kvm_mutation_reopen() {
   local cgroups_path="$7"
   local operation_label="${operation^}"
 
-  : "${A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
+  : "${ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
 
   source .github/scripts/lib/linux-kvm-provenance.sh
 
@@ -59,35 +59,35 @@ linux_kvm_mutation_reopen() {
   if [[ "$target_dir" != /* ]]; then
     target_dir="$PWD/$target_dir"
   fi
-  local profile="${A3S_OCI_BUILD_PROFILE:-debug}"
-  local -a build_arguments=(build -p a3s-oci-cli -p a3s-oci-krun)
+  local profile="${ASTER_OCI_BUILD_PROFILE:-debug}"
+  local -a build_arguments=(build -p aster-oci-cli -p aster-oci-krun)
   case "$profile" in
     debug) ;;
     release) build_arguments+=(--release) ;;
     *) build_arguments+=(--profile "$profile") ;;
   esac
   local binary_dir="$target_dir/$profile"
-  local source_cli="$binary_dir/a3s-oci"
-  local source_shim="$binary_dir/a3s-oci-krun-shim"
-  local source_runtime_dir="$binary_dir/a3s-oci-krun-runtime"
+  local source_cli="$binary_dir/aster-oci"
+  local source_shim="$binary_dir/aster-oci-krun-shim"
+  local source_runtime_dir="$binary_dir/aster-oci-krun-runtime"
   local runtime_assets_manifest="crates/krun/runtime/runtime-assets.json"
 
   local temporary_root="${RUNNER_TEMP:-/tmp}"
   test -d "$temporary_root"
   local work
-  work="$(mktemp -d "$temporary_root/a3s-oci-kvm-${operation}-reopen.XXXXXX")"
+  work="$(mktemp -d "$temporary_root/aster-oci-kvm-${operation}-reopen.XXXXXX")"
   local current_stage="setup"
   local case_report=""
   local case_stderr=""
   cleanup() {
     local status=$?
-    if [[ "$status" -ne 0 && "${A3S_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
+    if [[ "$status" -ne 0 && "${ASTER_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
       printf 'preserving failed Linux KVM %s reopen work directory: %s\n' \
         "$operation_label" "$work" >&2
       return 0
     fi
     case "$work" in
-      "$temporary_root"/a3s-oci-kvm-${operation}-reopen.*)
+      "$temporary_root"/aster-oci-kvm-${operation}-reopen.*)
         rm -rf -- "$work"
         ;;
       *)
@@ -136,8 +136,8 @@ linux_kvm_mutation_reopen() {
     exit 1
   fi
   test -d "$(dirname "$report_path")"
-  test -f "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
-  test ! -L "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+  test -f "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+  test ! -L "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
 
   cargo "${build_arguments[@]}"
   test -x "$source_cli"
@@ -147,12 +147,12 @@ linux_kvm_mutation_reopen() {
   local binary_stage="$work/bin"
   mkdir "$binary_stage"
   chmod 0700 "$work" "$binary_stage"
-  cp -p "$source_cli" "$binary_stage/a3s-oci"
-  cp -p "$source_shim" "$binary_stage/a3s-oci-krun-shim"
-  cp -a "$source_runtime_dir" "$binary_stage/a3s-oci-krun-runtime"
-  local cli="$binary_stage/a3s-oci"
-  local shim="$binary_stage/a3s-oci-krun-shim"
-  local runtime_dir="$binary_stage/a3s-oci-krun-runtime"
+  cp -p "$source_cli" "$binary_stage/aster-oci"
+  cp -p "$source_shim" "$binary_stage/aster-oci-krun-shim"
+  cp -a "$source_runtime_dir" "$binary_stage/aster-oci-krun-runtime"
+  local cli="$binary_stage/aster-oci"
+  local shim="$binary_stage/aster-oci-krun-shim"
+  local runtime_dir="$binary_stage/aster-oci-krun-runtime"
 
   local provenance
   provenance="$(
@@ -160,7 +160,7 @@ linux_kvm_mutation_reopen() {
       "$qualification_profile" "$profile" \
       "$cli" "$shim" "$runtime_dir" \
       "$runtime_assets_manifest" \
-      "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+      "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
   )"
 
   local features kvm_driver kvm_status manifest_sha256
@@ -168,7 +168,7 @@ linux_kvm_mutation_reopen() {
   kvm_driver="$(jq --compact-output '.drivers[] | select(.driver == "libkrun-kvm")' <<<"$features")"
   test -n "$kvm_driver"
   kvm_status="$(jq --raw-output '.status' <<<"$kvm_driver")"
-  manifest_sha256="$(sha256sum "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1)"
+  manifest_sha256="$(sha256sum "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1)"
 
   if [[ "$kvm_status" == "unavailable" ]]; then
     local reason
@@ -206,7 +206,7 @@ linux_kvm_mutation_reopen() {
        and .platform == "linux" and .status == "unavailable"
        and .qualification_scope == "linux-kvm-operation-stage-reopen-only-v1"
        and .kvm_required and .expected_case_count == 9 and .case_count == 0
-       and .provenance.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+       and .provenance.schema_version == "aster.oci.linux-kvm-provenance.v1"
        and .provenance.qualification_profile == $profile_name
        and .provenance.source_tree_clean
       and .kvm_driver.status == "unavailable"
@@ -221,7 +221,7 @@ linux_kvm_mutation_reopen() {
     exit 1
   fi
 
-  local alpine_archive="${A3S_OCI_LINUX_KVM_ALPINE_ARCHIVE:-}"
+  local alpine_archive="${ASTER_OCI_LINUX_KVM_ALPINE_ARCHIVE:-}"
   if [[ -n "$alpine_archive" ]]; then
     test -f "$alpine_archive"
     test ! -L "$alpine_archive"
@@ -239,7 +239,7 @@ linux_kvm_mutation_reopen() {
     --config fixtures/utility-vm/config.linux-kvm.json \
     --bundle "$bundle" \
     --cgroups-path "$cgroups_path"
-  local init_marker="$bundle/rootfs/.a3s-oci-create-start-smoke"
+  local init_marker="$bundle/rootfs/.aster-oci-create-start-smoke"
   test ! -e "$init_marker"
 
   local case_report_directory="$work/cases"
@@ -250,11 +250,11 @@ linux_kvm_mutation_reopen() {
 
   endpoint_inventory() {
     find /tmp -maxdepth 1 -type d -uid "$(id -u)" \
-      -name 'a3s-oci-agent-*' -print 2>/dev/null | sort
+      -name 'aster-oci-agent-*' -print 2>/dev/null | sort
   }
   shim_process_inventory() {
     ps -eo pid=,comm= | \
-      awk 'index($2, "a3s-oci-krun") == 1 {print $1 " " $2}' | sort
+      awk 'index($2, "aster-oci-krun") == 1 {print $1 " " $2}' | sort
   }
   local endpoint_baseline process_baseline
   endpoint_baseline="$(endpoint_inventory)"
@@ -285,7 +285,7 @@ linux_kvm_mutation_reopen() {
     "$cli" "$cli_command" \
       --shim "$shim" \
       --runtime-root "$runtime_root" \
-      --system-image-manifest "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
+      --system-image-manifest "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
       --bundle "$bundle" \
       --fault-at "$stage" \
       > "$case_report" 2> "$case_stderr"
@@ -301,8 +301,8 @@ linux_kvm_mutation_reopen() {
       --arg prefix "$qualification_prefix" \
       '.schema_version
          == (if $operation == "file"
-             then "a3s.oci.oci-vm-operation-reopen-replacement.v18"
-             else "a3s.oci.oci-vm-operation-reopen-replacement.v19" end)
+             then "aster.oci.oci-vm-operation-reopen-replacement.v18"
+             else "aster.oci.oci-vm-operation-reopen-replacement.v19" end)
        and .platform == "linux" and .status == "available"
        and .bundle_loaded and .requested_operation == $operation
        and .requested_stage == $stage
@@ -397,11 +397,11 @@ linux_kvm_mutation_reopen() {
        and .first_guest_runtime_clean and .replacement_guest_runtime_clean
        and .owners_distinct and .state_root_removed
        and (if $operation == "file"
-            then (.file_path | startswith("/tmp/.a3s-oci-file-reopen-"))
+            then (.file_path | startswith("/tmp/.aster-oci-file-reopen-"))
                  and (.file_data | length > 0)
                  and .file_op == "upload"
                  and (.filesystem_path == null)
-            else (.filesystem_path | startswith("/tmp/.a3s-oci-filesystem-reopen-"))
+            else (.filesystem_path | startswith("/tmp/.aster-oci-filesystem-reopen-"))
                  and .filesystem_op == "make-dir"
                  and .filesystem_depth == 0
                  and (.file_path == null) end)
@@ -498,7 +498,7 @@ linux_kvm_mutation_reopen() {
      and .qualification_scope == "linux-kvm-operation-stage-reopen-only-v1"
      and .kvm_required and .expected_case_count == 9 and .case_count == 9
      and .operation == $operation
-     and .provenance.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+     and .provenance.schema_version == "aster.oci.linux-kvm-provenance.v1"
      and .provenance.platform == .platform
      and .provenance.architecture == .architecture
      and .provenance.qualification_profile == $profile_name

@@ -182,7 +182,7 @@ export function normalizeMarkdownInsertSource(
   }
 
   try {
-    const base = new URL('https://a3s-office.invalid/');
+    const base = new URL('https://aster-office.invalid/');
     const resolved = new URL(value, base);
     const path = value.split(/[?#]/u, 1)[0] ?? '';
     return resolved.protocol === base.protocol &&

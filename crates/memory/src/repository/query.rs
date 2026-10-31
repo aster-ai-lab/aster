@@ -9,7 +9,7 @@ use std::collections::{BTreeMap, BTreeSet};
 ///
 /// Hosts that persist serving policy can bind this value and reject silent
 /// query-semantics drift after a binary upgrade.
-pub const MEMORY_LEXICAL_QUERY_PROFILE_V1: &str = "a3s.memory.lexical.word-cjk-bigram.v1";
+pub const MEMORY_LEXICAL_QUERY_PROFILE_V1: &str = "aster.memory.lexical.word-cjk-bigram.v1";
 
 /// Exact-namespace repository query. Active status is the default view.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

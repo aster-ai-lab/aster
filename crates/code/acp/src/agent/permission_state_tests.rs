@@ -4,7 +4,7 @@ use super::*;
 use acp::Agent as _;
 use serde_json::json;
 
-async fn write(session: &AgentSession, args: serde_json::Value) -> a3s_code_core::ToolCallResult {
+async fn write(session: &AgentSession, args: serde_json::Value) -> aster_core::ToolCallResult {
     tokio::time::timeout(
         std::time::Duration::from_secs(5),
         session.governed_tool("write", args),
@@ -14,10 +14,10 @@ async fn write(session: &AgentSession, args: serde_json::Value) -> a3s_code_core
     .unwrap()
 }
 
-async fn setup(root: &std::path::Path) -> (A3sCodeAgent, acp::SessionId) {
+async fn setup(root: &std::path::Path) -> (AsterCodeAgent, acp::SessionId) {
     let mut launch = tests::test_launch(Some(root.join("store")));
     launch.workspace = root.to_owned();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let id = agent
         .new_session(acp::NewSessionRequest::new(root))
         .await
@@ -26,9 +26,9 @@ async fn setup(root: &std::path::Path) -> (A3sCodeAgent, acp::SessionId) {
     (agent, id)
 }
 
-async fn deny_write(agent: &A3sCodeAgent, id: &acp::SessionId) {
+async fn deny_write(agent: &AsterCodeAgent, id: &acp::SessionId) {
     let request = acp::ExtRequest::new(
-        "a3s/permission_posture",
+        "aster/permission_posture",
         serde_json::value::to_raw_value(&json!({
             "sessionId":id, "posture":"yolo", "deny":["write"]
         }))
@@ -154,7 +154,7 @@ async fn unknown_session_model_change_does_not_activate_or_create_a_session() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let model = agent.model_id.lock().await.clone();
     let error = agent
         .set_session_model(acp::SetSessionModelRequest::new("missing", "openai/gpt-4o"))
@@ -236,7 +236,7 @@ async fn invalid_permission_seed_is_refused_before_creating_any_session() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     for meta in [
         json!({"yoloMode":"true"}),
         json!({"permissionPosture":"typo"}),
@@ -286,7 +286,7 @@ async fn stale_prompt_cleanup_cannot_clear_a_newer_prompts_identity() {
 #[test]
 fn reconciliation_wire_error_carries_an_action_and_refuses_retry() {
     let error =
-        super::turn::reconciliation_error(&a3s_code_core::harness_loop::ToolEffectUnresolved {
+        super::turn::reconciliation_error(&aster_core::harness_loop::ToolEffectUnresolved {
             obligation_ids: vec!["exact-invocation-1".into()],
         });
     let data = error.data.unwrap();

@@ -1,10 +1,10 @@
 #![cfg(test)]
 
-use super::{test_launch, A3sCodeAgent};
+use super::{test_launch, AsterCodeAgent};
 use agent_client_protocol::{self as acp, Agent as _};
 use serde_json::json;
 
-fn agent_without_model(workspace: &std::path::Path) -> A3sCodeAgent {
+fn agent_without_model(workspace: &std::path::Path) -> AsterCodeAgent {
     let mut launch = test_launch(Some(workspace.join("must-not-create-store")));
     launch.workspace = workspace.to_owned();
     // Deliberately no model source: the old path must fail during model
@@ -12,7 +12,7 @@ fn agent_without_model(workspace: &std::path::Path) -> A3sCodeAgent {
     // can observe the premature directory write without activating execution.
     launch.config.providers.clear();
     launch.config.default_model = None;
-    A3sCodeAgent::new(launch)
+    AsterCodeAgent::new(launch)
 }
 
 #[tokio::test]
@@ -21,7 +21,7 @@ async fn registered_secondary_workspace_resume_is_bound_to_its_original_core_roo
     let secondary = tempfile::tempdir().unwrap();
     let mut launch = test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().canonicalize().unwrap();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let opened = agent
         .new_session(acp::NewSessionRequest::new(secondary.path()))
         .await
@@ -74,7 +74,7 @@ async fn unknown_resume_refuses_before_any_session_or_model_initialization() {
     println!(
         "unknown resume observations: {}",
         json!({
-            "createdStateDirectory": root.path().join(".a3s").exists(),
+            "createdStateDirectory": root.path().join(".aster").exists(),
             "createdSnapshotStore": root.path().join("must-not-create-store").exists(),
             "initializedCoreAgent": agent.core_agent.lock().await.is_some(),
         })
@@ -83,7 +83,7 @@ async fn unknown_resume_refuses_before_any_session_or_model_initialization() {
         serde_json::to_value(error).expect("error"),
         serde_json::to_value(acp::Error::resource_not_found(None)).expect("not found")
     );
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
     assert!(!root.path().join("must-not-create-store").exists());
     assert!(agent.core_agent.lock().await.is_none());
     assert!(agent.config_mcp.lock().await.is_none());
@@ -105,7 +105,7 @@ async fn foreign_resume_refuses_before_touching_the_requested_workspace() {
     println!(
         "foreign resume observations: {}",
         json!({
-            "createdForeignStateDirectory": foreign.path().join(".a3s").exists(),
+            "createdForeignStateDirectory": foreign.path().join(".aster").exists(),
             "initializedCoreAgent": agent.core_agent.lock().await.is_some(),
         })
     );
@@ -113,12 +113,12 @@ async fn foreign_resume_refuses_before_touching_the_requested_workspace() {
         serde_json::to_value(error).expect("error"),
         serde_json::to_value(acp::Error::resource_not_found(None)).expect("not found")
     );
-    assert!(!foreign.path().join(".a3s").exists());
+    assert!(!foreign.path().join(".aster").exists());
     assert!(agent.core_agent.lock().await.is_none());
 }
 
 fn record(workspace: &std::path::Path, id: &str) -> std::path::PathBuf {
-    let home = workspace.join(".a3s/effect-log");
+    let home = workspace.join(".aster/effect-log");
     std::fs::create_dir_all(&home).expect("legacy home");
     let path = home.join(format!("{id}.jsonl"));
     let fact =
@@ -140,7 +140,7 @@ async fn existing_fact_record_is_admitted_without_activating_any_surface() {
     assert_eq!(workspace, root.path().canonicalize().expect("canonical"));
     assert_eq!(std::fs::read(path).expect("after"), before);
     assert!(!root.path().join("must-not-create-store").exists());
-    assert!(!root.path().join(".a3s/sessions").exists());
+    assert!(!root.path().join(".aster/sessions").exists());
     assert!(agent.core_agent.lock().await.is_none());
     assert!(agent.config_mcp.lock().await.is_none());
     assert!(agent.documents.borrow().is_none());
@@ -166,7 +166,7 @@ async fn a_legacy_record_without_a_snapshot_refuses_instead_of_creating_an_empty
         .expect("snapshot recovery reason")
         .contains("snapshot store is missing"));
     assert_eq!(std::fs::read(path).expect("after"), before);
-    assert!(!root.path().join(".a3s/sessions").exists());
+    assert!(!root.path().join(".aster/sessions").exists());
     assert!(!root.path().join("must-not-create-store").exists());
     assert!(agent.sessions.lock().await.is_empty());
 }
@@ -202,24 +202,24 @@ async fn refused_resume_does_not_admit_an_opted_in_document_surface() {
     let root = tempfile::tempdir().expect("workspace");
     let agent = agent_without_model(root.path());
     let mut meta = acp::Meta::new();
-    meta.insert("a3sStudioDocuments".into(), json!(true));
+    meta.insert("asterStudioDocuments".into(), json!(true));
     let request = acp::LoadSessionRequest::new("missing", root.path().to_owned()).meta(Some(meta));
     assert!(agent.load_session(request).await.is_err());
     assert!(agent.documents.borrow().is_none());
     assert!(agent.core_agent.lock().await.is_none());
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
 }
 
 #[tokio::test]
 async fn an_empty_new_session_can_resume_without_a_turn() {
-    use a3s_code_core::store::{FileSessionStore, SessionStore};
+    use aster_core::store::{FileSessionStore, SessionStore};
 
     let root = tempfile::tempdir().unwrap();
     let directory = root.path().join("sessions");
     let mut launch = test_launch(Some(directory.clone()));
     launch.workspace = root.path().to_owned();
     let expected_model = launch.model_id.clone();
-    let host = A3sCodeAgent::new(launch.clone());
+    let host = AsterCodeAgent::new(launch.clone());
     let id = host
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -242,7 +242,7 @@ async fn an_empty_new_session_can_resume_without_a_turn() {
         .await;
     drop(host);
 
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let restored = host
         .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
         .await
@@ -263,18 +263,18 @@ async fn an_empty_new_session_can_resume_without_a_turn() {
 
 #[tokio::test]
 async fn snapshot_resume_keeps_usage_and_refuses_foreign_or_corrupt_snapshot() {
-    use a3s_code_core::store::{FileSessionStore, SessionStore};
+    use aster_core::store::{FileSessionStore, SessionStore};
 
     let root = tempfile::tempdir().unwrap();
     let foreign = tempfile::tempdir().unwrap();
     let directory = root.path().join("sessions");
     let mut launch = test_launch(Some(directory.clone()));
     launch.workspace = root.path().to_owned();
-    let host = A3sCodeAgent::new(launch.clone());
+    let host = AsterCodeAgent::new(launch.clone());
     let id = host
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(
-                json!({"a3sEngineering":{"policy":"none"}})
+                json!({"asterEngineering":{"policy":"none"}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -294,8 +294,8 @@ async fn snapshot_resume_keeps_usage_and_refuses_foreign_or_corrupt_snapshot() {
     session.save().await.unwrap();
     session.close().await;
     drop(host);
-    let thread = a3s_code_core::fact_control::thread_for_session(id.0.as_ref());
-    let source = a3s_code_core::session_folder::effect_log_dir(root.path(), id.0.as_ref())
+    let thread = aster_core::fact_control::thread_for_session(id.0.as_ref());
+    let source = aster_core::session_folder::effect_log_dir(root.path(), id.0.as_ref())
         .join(format!("{thread}.jsonl"));
     let fact =
         json!({"seq":1,"type":"user.message","key":"user:1","payload":{"text":"retained prompt"}});
@@ -307,7 +307,7 @@ async fn snapshot_resume_keeps_usage_and_refuses_foreign_or_corrupt_snapshot() {
     snapshot.session.total_usage.completion_tokens = 3;
     snapshot.session.total_usage.total_tokens = 20;
     store.save_snapshot(&snapshot).await.unwrap();
-    let host = A3sCodeAgent::new(launch.clone());
+    let host = AsterCodeAgent::new(launch.clone());
     host.load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
         .await
         .unwrap();
@@ -325,7 +325,7 @@ async fn snapshot_resume_keeps_usage_and_refuses_foreign_or_corrupt_snapshot() {
 
     snapshot.session.config.workspace = foreign.path().to_string_lossy().into_owned();
     store.save_snapshot(&snapshot).await.unwrap();
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let error = host
         .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
         .await
@@ -336,7 +336,7 @@ async fn snapshot_resume_keeps_usage_and_refuses_foreign_or_corrupt_snapshot() {
         .as_str()
         .is_some_and(|reason| reason.contains("foreign workspace")));
     assert!(host.sessions.lock().await.is_empty());
-    assert!(!foreign.path().join(".a3s").exists());
+    assert!(!foreign.path().join(".aster").exists());
 
     let path = std::fs::read_dir(directory.join("v1/sessions"))
         .unwrap()

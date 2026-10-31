@@ -30,7 +30,7 @@ CLI 输出 `cascade_receipt` 和 `cascade_receipt_binding`。回执记录层级�
 ## 浏览器与全文
 
 <DocTable caption="浏览器构建和后端" headers={['构建或参数', '行为']} rows={[
-  ['默认 / headless / moli', '从 A3S_MOLI_EXECUTABLE、PATH 或安装位置发现 Moli'],
+  ['默认 / headless / moli', '从 ASTER_MOLI_EXECUTABLE、PATH 或安装位置发现 Moli'],
   ['--browser chrome', '显式使用 Chrome / Chromium 后端'],
   ['lightpanda feature', '显式使用 Lightpanda，Windows 需要 WSL2'],
   ['--no-default-features', '不包含 Browser / CDP 栈'],
@@ -50,7 +50,7 @@ HTML Engine 遇到 CAPTCHA、Consent 或反自动化页面时返回 `challenge`�
   ['RetryBudget', '只限制浏览器渲染重试放大'],
 ]} />
 
-只在兼容的租户、凭据、Endpoint 和代理之间共享控制。CLI 的持久 Circuit 不保存查询、结果或秘密。`A3S_SEARCH_STATE_DIR` 必须使用绝对目录来隔离状态。
+只在兼容的租户、凭据、Endpoint 和代理之间共享控制。CLI 的持久 Circuit 不保存查询、结果或秘密。`ASTER_SEARCH_STATE_DIR` 必须使用绝对目录来隔离状态。
 
 ## 验收清单
 

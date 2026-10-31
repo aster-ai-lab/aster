@@ -2,7 +2,7 @@
 
 #![cfg(feature = "infer")]
 
-use a3s_apofasi::{
+use aster_apofasi::{
     pack_question, Criteria, DecisionKind, HfTokenizer, Question, SequenceConfig, State,
 };
 use indexmap::IndexMap;

@@ -31,8 +31,8 @@ fn release_workflow_publishes_both_verified_installers() {
         );
     }
     assert!(workflow.contains("checksums.txt.sigstore.json"));
-    assert!(!workflow.contains("A3S_USE_OCR_HOME"));
-    assert!(!workflow.contains("A3S_USE_BROWSER_SKILLS_DIR"));
+    assert!(!workflow.contains("ASTER_USE_OCR_HOME"));
+    assert!(!workflow.contains("ASTER_USE_BROWSER_SKILLS_DIR"));
     assert!(workflow.contains("use.builtin_removed"));
     assert!(unix.contains("checksums.txt"));
     assert!(windows.contains("checksums.txt"));
@@ -42,7 +42,7 @@ fn release_workflow_publishes_both_verified_installers() {
         assert!(installer.contains("https://token.actions.githubusercontent.com"));
         assert!(installer.contains(".github/workflows/release.yml@refs/tags/"));
     }
-    assert!(ci.contains("cargo test -p a3s-use --test release_installers --locked"));
+    assert!(ci.contains("cargo test -p aster-use --test release_installers --locked"));
     assert!(!unix.to_ascii_lowercase().contains("science"));
     assert!(!windows.to_ascii_lowercase().contains("science"));
 }
@@ -64,22 +64,22 @@ fn unix_installer_verifies_and_atomically_activates_the_release() {
     assert_success(&output);
 
     let release_root = install_root.join("releases").join(VERSION);
-    let executable = release_root.join("a3s-use");
-    let launcher = release_root.join("a3s-use-launcher");
-    let shim = bin_dir.join("a3s-use");
+    let executable = release_root.join("aster-use");
+    let launcher = release_root.join("aster-use-launcher");
+    let shim = bin_dir.join("aster-use");
     assert!(executable.is_file());
     assert!(launcher.is_file());
-    assert!(!release_root.join("a3s-use-browser-driver").exists());
+    assert!(!release_root.join("aster-use-browser-driver").exists());
     assert_eq!(
-        fs::read_to_string(release_root.join(".a3s-use-archive.sha256")).unwrap(),
+        fs::read_to_string(release_root.join(".aster-use-archive.sha256")).unwrap(),
         format!("{digest}\n")
     );
     assert_eq!(
-        fs::read(release_root.join(".a3s-use-checksums.sigstore.json")).unwrap(),
+        fs::read(release_root.join(".aster-use-checksums.sigstore.json")).unwrap(),
         SIGSTORE_BUNDLE
     );
     assert_eq!(
-        fs::read_to_string(release_root.join(".a3s-use-checksums.txt")).unwrap(),
+        fs::read_to_string(release_root.join(".aster-use-checksums.txt")).unwrap(),
         format!("{digest}  {archive_name}\n")
     );
     assert!(fs::symlink_metadata(&shim)
@@ -94,7 +94,7 @@ fn unix_installer_verifies_and_atomically_activates_the_release() {
     assert_success(&launched);
     assert_eq!(
         String::from_utf8(launched.stdout).unwrap(),
-        "a3s-use\nprobe\n"
+        "aster-use\nprobe\n"
     );
 
     let retry_server = release_server(&archive_name, archive.clone(), &digest);
@@ -124,7 +124,7 @@ fn unix_installer_rejects_a_checksum_mismatch_without_activation() {
     let output = run_unix_installer(&server, &install_root, &bin_dir);
     assert!(!output.status.success(), "installer unexpectedly succeeded");
     assert!(!install_root.join("releases").join(VERSION).exists());
-    assert!(!bin_dir.join("a3s-use").exists());
+    assert!(!bin_dir.join("aster-use").exists());
 }
 
 #[cfg(unix)]
@@ -148,7 +148,7 @@ fn unix_installer_rejects_invalid_sigstore_evidence_without_activation() {
     );
     assert!(String::from_utf8_lossy(&output.stderr).contains("Sigstore"));
     assert!(!install_root.join("releases").join(VERSION).exists());
-    assert!(!bin_dir.join("a3s-use").exists());
+    assert!(!bin_dir.join("aster-use").exists());
 }
 
 #[cfg(unix)]
@@ -184,14 +184,14 @@ fn unix_installer_refuses_to_replace_an_unmanaged_command() {
     let install_root = temp.path().join("use");
     let bin_dir = temp.path().join("bin");
     fs::create_dir(&bin_dir).unwrap();
-    fs::write(bin_dir.join("a3s-use"), b"user-owned\n").unwrap();
+    fs::write(bin_dir.join("aster-use"), b"user-owned\n").unwrap();
 
     let output = run_unix_installer(&server, &install_root, &bin_dir);
     assert!(
         !output.status.success(),
         "installer replaced an unmanaged file"
     );
-    assert_eq!(fs::read(bin_dir.join("a3s-use")).unwrap(), b"user-owned\n");
+    assert_eq!(fs::read(bin_dir.join("aster-use")).unwrap(), b"user-owned\n");
     assert!(!install_root.join("releases").join(VERSION).exists());
 }
 
@@ -211,13 +211,13 @@ fn unix_installer_rejects_link_entries_before_extraction() {
     let output = run_unix_installer(&server, &install_root, &bin_dir);
     assert!(!output.status.success(), "installer accepted a link entry");
     assert!(!install_root.join("releases").join(VERSION).exists());
-    assert!(!bin_dir.join("a3s-use").exists());
+    assert!(!bin_dir.join("aster-use").exists());
 }
 
 #[cfg(windows)]
 #[test]
 fn windows_installer_verifies_and_atomically_activates_the_release() {
-    let archive_name = format!("a3s-use-{VERSION}-windows-x86_64.zip");
+    let archive_name = format!("aster-use-{VERSION}-windows-x86_64.zip");
     let archive = windows_fixture_archive();
     let digest = sha256_hex(&archive);
     let server = release_server(&archive_name, archive.clone(), &digest);
@@ -229,25 +229,25 @@ fn windows_installer_verifies_and_atomically_activates_the_release() {
     assert_success(&output);
 
     let release_root = install_root.join("releases").join(VERSION);
-    assert!(release_root.join("a3s-use.exe").is_file());
-    assert!(!release_root.join("a3s-use-browser-driver.exe").exists());
+    assert!(release_root.join("aster-use.exe").is_file());
+    assert!(!release_root.join("aster-use-browser-driver.exe").exists());
     assert_eq!(
-        fs::read_to_string(release_root.join(".a3s-use-archive.sha256")).unwrap(),
+        fs::read_to_string(release_root.join(".aster-use-archive.sha256")).unwrap(),
         format!("{digest}\r\n")
     );
     assert_eq!(
-        fs::read(release_root.join(".a3s-use-checksums.sigstore.json")).unwrap(),
+        fs::read(release_root.join(".aster-use-checksums.sigstore.json")).unwrap(),
         SIGSTORE_BUNDLE
     );
     assert_eq!(
-        fs::read_to_string(release_root.join(".a3s-use-checksums.txt")).unwrap(),
+        fs::read_to_string(release_root.join(".aster-use-checksums.txt")).unwrap(),
         format!("{digest}  {archive_name}\n")
     );
-    let shim = fs::read_to_string(bin_dir.join("a3s-use.cmd")).unwrap();
-    assert!(shim.contains("A3S_USE_MANAGED_SHIM=1"));
-    assert_windows_shim_target(&shim, &release_root.join("a3s-use.exe"));
-    assert!(!shim.contains("A3S_USE_OCR_HOME"));
-    assert!(!shim.contains("A3S_USE_BROWSER_SKILLS_DIR"));
+    let shim = fs::read_to_string(bin_dir.join("aster-use.cmd")).unwrap();
+    assert!(shim.contains("ASTER_USE_MANAGED_SHIM=1"));
+    assert_windows_shim_target(&shim, &release_root.join("aster-use.exe"));
+    assert!(!shim.contains("ASTER_USE_OCR_HOME"));
+    assert!(!shim.contains("ASTER_USE_BROWSER_SKILLS_DIR"));
 
     let retry_server = release_server(&archive_name, archive.clone(), &digest);
     assert_success(&run_windows_installer(
@@ -273,7 +273,7 @@ fn windows_installer_verifies_and_atomically_activates_the_release() {
 #[cfg(windows)]
 #[test]
 fn windows_installer_rejects_a_checksum_mismatch_without_activation() {
-    let archive_name = format!("a3s-use-{VERSION}-windows-x86_64.zip");
+    let archive_name = format!("aster-use-{VERSION}-windows-x86_64.zip");
     let archive = windows_fixture_archive();
     let server = release_server(&archive_name, archive, &"0".repeat(64));
     let temp = tempfile::tempdir().unwrap();
@@ -283,13 +283,13 @@ fn windows_installer_rejects_a_checksum_mismatch_without_activation() {
     let output = run_windows_installer(&server, &install_root, &bin_dir);
     assert!(!output.status.success(), "installer unexpectedly succeeded");
     assert!(!install_root.join("releases").join(VERSION).exists());
-    assert!(!bin_dir.join("a3s-use.cmd").exists());
+    assert!(!bin_dir.join("aster-use.cmd").exists());
 }
 
 #[cfg(windows)]
 #[test]
 fn windows_installer_rejects_invalid_sigstore_evidence_without_activation() {
-    let archive_name = format!("a3s-use-{VERSION}-windows-x86_64.zip");
+    let archive_name = format!("aster-use-{VERSION}-windows-x86_64.zip");
     let archive = windows_fixture_archive();
     let digest = sha256_hex(&archive);
     let server = release_server(&archive_name, archive, &digest);
@@ -310,13 +310,13 @@ fn windows_installer_rejects_invalid_sigstore_evidence_without_activation() {
         String::from_utf8_lossy(&output.stderr)
     );
     assert!(!install_root.join("releases").join(VERSION).exists());
-    assert!(!bin_dir.join("a3s-use.cmd").exists());
+    assert!(!bin_dir.join("aster-use.cmd").exists());
 }
 
 #[cfg(windows)]
 #[test]
 fn windows_installer_requires_a_cosign_verifier() {
-    let archive_name = format!("a3s-use-{VERSION}-windows-x86_64.zip");
+    let archive_name = format!("aster-use-{VERSION}-windows-x86_64.zip");
     let archive = windows_fixture_archive();
     let digest = sha256_hex(&archive);
     let server = release_server(&archive_name, archive, &digest);
@@ -335,7 +335,7 @@ fn windows_installer_requires_a_cosign_verifier() {
 #[cfg(windows)]
 #[test]
 fn windows_installer_refuses_to_replace_an_unmanaged_command() {
-    let archive_name = format!("a3s-use-{VERSION}-windows-x86_64.zip");
+    let archive_name = format!("aster-use-{VERSION}-windows-x86_64.zip");
     let archive = windows_fixture_archive();
     let digest = sha256_hex(&archive);
     let server = release_server(&archive_name, archive, &digest);
@@ -343,7 +343,7 @@ fn windows_installer_refuses_to_replace_an_unmanaged_command() {
     let install_root = temp.path().join("use");
     let bin_dir = temp.path().join("bin");
     fs::create_dir(&bin_dir).unwrap();
-    fs::write(bin_dir.join("a3s-use.cmd"), b"user-owned\r\n").unwrap();
+    fs::write(bin_dir.join("aster-use.cmd"), b"user-owned\r\n").unwrap();
 
     let output = run_windows_installer(&server, &install_root, &bin_dir);
     assert!(
@@ -351,7 +351,7 @@ fn windows_installer_refuses_to_replace_an_unmanaged_command() {
         "installer replaced an unmanaged file"
     );
     assert_eq!(
-        fs::read(bin_dir.join("a3s-use.cmd")).unwrap(),
+        fs::read(bin_dir.join("aster-use.cmd")).unwrap(),
         b"user-owned\r\n"
     );
     assert!(!install_root.join("releases").join(VERSION).exists());
@@ -360,7 +360,7 @@ fn windows_installer_refuses_to_replace_an_unmanaged_command() {
 #[cfg(windows)]
 #[test]
 fn windows_installer_rejects_parent_traversal_before_extraction() {
-    let archive_name = format!("a3s-use-{VERSION}-windows-x86_64.zip");
+    let archive_name = format!("aster-use-{VERSION}-windows-x86_64.zip");
     let archive = windows_fixture_archive_with_parent_traversal();
     let digest = sha256_hex(&archive);
     let server = release_server(&archive_name, archive, &digest);
@@ -374,7 +374,7 @@ fn windows_installer_rejects_parent_traversal_before_extraction() {
         "installer accepted a parent-traversal entry"
     );
     assert!(!install_root.join("releases").join(VERSION).exists());
-    assert!(!bin_dir.join("a3s-use.cmd").exists());
+    assert!(!bin_dir.join("aster-use.cmd").exists());
 }
 
 #[cfg(unix)]
@@ -454,7 +454,7 @@ fn write_fake_cosign(root: &Path, accepts_evidence: bool) -> PathBuf {
          [ \"$2\" = --bundle ] || exit 64\n\
          [ -s \"$3\" ] || exit 64\n\
          [ \"$4\" = --certificate-identity ] || exit 64\n\
-         [ \"$5\" = \"https://github.com/A3S-Lab/Use/.github/workflows/release.yml@refs/tags/v{VERSION}\" ] || exit 64\n\
+         [ \"$5\" = \"https://github.com/aster-ai-lab/Use/.github/workflows/release.yml@refs/tags/v{VERSION}\" ] || exit 64\n\
          [ \"$6\" = --certificate-oidc-issuer ] || exit 64\n\
          [ \"$7\" = \"https://token.actions.githubusercontent.com\" ] || exit 64\n\
          [ -s \"$8\" ] || exit 64\n\
@@ -479,7 +479,7 @@ fn write_fake_cosign(root: &Path, accepts_evidence: bool) -> PathBuf {
          if not \"%~2\"==\"--bundle\" exit /b 64\r\n\
          if not exist \"%~3\" exit /b 64\r\n\
          if not \"%~4\"==\"--certificate-identity\" exit /b 64\r\n\
-         if not \"%~5\"==\"https://github.com/A3S-Lab/Use/.github/workflows/release.yml@refs/tags/v{VERSION}\" exit /b 64\r\n\
+         if not \"%~5\"==\"https://github.com/aster-ai-lab/Use/.github/workflows/release.yml@refs/tags/v{VERSION}\" exit /b 64\r\n\
          if not \"%~6\"==\"--certificate-oidc-issuer\" exit /b 64\r\n\
          if not \"%~7\"==\"https://token.actions.githubusercontent.com\" exit /b 64\r\n\
          if not exist \"%~8\" exit /b 64\r\n\
@@ -530,7 +530,7 @@ fn unix_archive_name() -> Option<String> {
         ("macos", "aarch64") => "darwin-arm64",
         _ => return None,
     };
-    Some(format!("a3s-use-{VERSION}-{platform}.tar.gz"))
+    Some(format!("aster-use-{VERSION}-{platform}.tar.gz"))
 }
 
 #[cfg(unix)]
@@ -539,9 +539,9 @@ fn unix_fixture_archive() -> Vec<u8> {
     let mut archive = tar::Builder::new(encoder);
     append_tar_file(
         &mut archive,
-        "a3s-use",
+        "aster-use",
         0o755,
-        b"#!/bin/sh\nprintf '%s\\n' \"a3s-use\" \"$@\"\n",
+        b"#!/bin/sh\nprintf '%s\\n' \"aster-use\" \"$@\"\n",
     );
     append_tar_file(&mut archive, "README.md", 0o644, b"fixture\n");
     archive.finish().unwrap();
@@ -552,7 +552,7 @@ fn unix_fixture_archive() -> Vec<u8> {
 fn unix_fixture_archive_with_link() -> Vec<u8> {
     let encoder = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
     let mut archive = tar::Builder::new(encoder);
-    append_tar_file(&mut archive, "a3s-use", 0o755, b"#!/bin/sh\nexit 0\n");
+    append_tar_file(&mut archive, "aster-use", 0o755, b"#!/bin/sh\nexit 0\n");
     let mut link = tar::Header::new_gnu();
     link.set_entry_type(tar::EntryType::Symlink);
     link.set_path("unsafe-link").unwrap();
@@ -584,7 +584,7 @@ fn windows_fixture_archive() -> Vec<u8> {
     let output = Cursor::new(Vec::new());
     let mut archive = zip::ZipWriter::new(output);
     let options = SimpleFileOptions::default();
-    archive.start_file("a3s-use.exe", options).unwrap();
+    archive.start_file("aster-use.exe", options).unwrap();
     archive.write_all(b"fixture executable").unwrap();
     archive.start_file("README.md", options).unwrap();
     archive.write_all(b"fixture\n").unwrap();
@@ -599,7 +599,7 @@ fn windows_fixture_archive_with_parent_traversal() -> Vec<u8> {
     let output = Cursor::new(Vec::new());
     let mut archive = zip::ZipWriter::new(output);
     let options = SimpleFileOptions::default();
-    archive.start_file("a3s-use.exe", options).unwrap();
+    archive.start_file("aster-use.exe", options).unwrap();
     archive.write_all(b"fixture executable").unwrap();
     archive.start_file("../escape.txt", options).unwrap();
     archive.write_all(b"escape").unwrap();

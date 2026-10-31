@@ -1,7 +1,7 @@
 #![cfg(test)]
 
-use super::{test_launch, A3sCodeAgent, SessionSetup};
-use a3s_code_core::{
+use super::{test_launch, AsterCodeAgent, SessionSetup};
+use aster_core::{
     CodeConfig, EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, ModelConfig, ProviderConfig,
     WorkspaceRetrievalPhase,
@@ -29,10 +29,10 @@ async fn embedded_local_vectors_publish_before_search_and_are_released_on_close(
     .unwrap();
     std::fs::write(root.path().join(".env"), "qxz_vector_secret=excluded\n").unwrap();
     let config = fixture_config();
-    let agent = a3s_code_core::Agent::from_config(config.clone())
+    let agent = aster_core::Agent::from_config(config.clone())
         .await
         .unwrap();
-    let provider = Arc::new(a3s_embedding::LightTierProvider::load().unwrap());
+    let provider = Arc::new(aster_embedding::LightTierProvider::load().unwrap());
     let options = host_options(
         root.path(),
         &config,
@@ -64,7 +64,7 @@ async fn embedded_local_vectors_publish_before_search_and_are_released_on_close(
     assert_eq!(status.model.as_ref().unwrap().provider, "light");
     let found = session
         .semantic_search(
-            a3s_code_core::workspace::WorkspaceSemanticSearchRequest::new(
+            aster_core::workspace::WorkspaceSemanticSearchRequest::new(
                 "parse application configuration",
             ),
         )
@@ -91,7 +91,7 @@ async fn embedded_local_vectors_publish_before_search_and_are_released_on_close(
     assert_eq!(closed.vector_records, 0);
     assert!(session
         .semantic_search(
-            a3s_code_core::workspace::WorkspaceSemanticSearchRequest::new("configuration")
+            aster_core::workspace::WorkspaceSemanticSearchRequest::new("configuration")
         )
         .await
         .is_err());
@@ -108,10 +108,10 @@ async fn offline_vectors_index_a_large_fixture_before_search_with_bounded_state(
         std::fs::write(root.path().join("billing.md"),
         "# Customer billing\n\nLoad payment ledger invoices, reconcile customer charges, and calculate billing balances.\n").unwrap();
         let config = fixture_config();
-        let agent = a3s_code_core::Agent::from_config(config.clone())
+        let agent = aster_core::Agent::from_config(config.clone())
             .await
             .unwrap();
-        let provider = Arc::new(a3s_embedding::LightTierProvider::load().unwrap());
+        let provider = Arc::new(aster_embedding::LightTierProvider::load().unwrap());
         let options = host_options(
             root.path(),
             &config,
@@ -146,7 +146,7 @@ async fn offline_vectors_index_a_large_fixture_before_search_with_bounded_state(
             let query_started = std::time::Instant::now();
             let found = session
                 .semantic_search(
-                    a3s_code_core::workspace::WorkspaceSemanticSearchRequest::new(
+                    aster_core::workspace::WorkspaceSemanticSearchRequest::new(
                         "payment ledger invoices and customer billing",
                     ),
                 )
@@ -169,12 +169,12 @@ async fn offline_vectors_index_a_large_fixture_before_search_with_bounded_state(
 async fn restricted_review_skips_the_host_enabled_embedding_provider() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = test_launch(Some(root.path().join("sessions")));
-    launch.config.workspace_retrieval = Some(a3s_code_core::config::WorkspaceRetrievalConfig {
+    launch.config.workspace_retrieval = Some(aster_core::config::WorkspaceRetrievalConfig {
         enabled: true,
         local_cpu: true,
     });
     let model = launch.model_id.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let options = agent
         .session_options_for(
             "isolated-review",
@@ -211,7 +211,7 @@ async fn workspace_index_builds_asynchronously_after_acp_session_open_without_a_
     launch.workspace = workspace.clone();
     launch.config.memory_dir = Some(root.path().join("memory"));
     let model = launch.model_id.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let live = agent
         .open_core_session(
             "automatic-workspace-index",
@@ -228,7 +228,7 @@ async fn workspace_index_builds_asynchronously_after_acp_session_open_without_a_
         .await
         .unwrap();
     tokio::time::timeout(Duration::from_secs(15), async {
-        while !workspace.join(".a3s-code/index/CURRENT").is_file() {
+        while !workspace.join(".aster/index/CURRENT").is_file() {
             tokio::time::sleep(Duration::from_millis(20)).await;
         }
     })
@@ -248,7 +248,7 @@ async fn workspace_index_builds_asynchronously_after_acp_session_open_without_a_
     assert!(result.output.contains("acp_index_marker"));
     assert_eq!(
         result.metadata.unwrap()["index_kind"],
-        "persistent_a3s_vec_fts"
+        "persistent_aster_vec_fts"
     );
     live.session.close().await;
 }
@@ -257,6 +257,7 @@ fn fixture_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/model".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".to_string(),
             api_key: Some("test-key".to_string()),
             base_url: None,
@@ -289,7 +290,7 @@ fn host_options(
     config: &CodeConfig,
     session_id: &str,
     embedding: Option<Arc<dyn EmbeddingProvider>>,
-) -> a3s_code_core::SessionOptions {
+) -> aster_core::SessionOptions {
     let setup = SessionSetup {
         workspace: root.to_owned(),
         model_id: "fixture/model",
@@ -298,14 +299,14 @@ fn host_options(
         components: &[],
         mcp_servers: Vec::new(),
     };
-    let store = root.join(".a3s/store");
-    let trust = root.join(".a3s/hooks-trust.json");
-    let options = A3sCodeAgent::core_session_options(session_id, setup.model_id, setup.effort);
+    let store = root.join(".aster/store");
+    let trust = root.join(".aster/hooks-trust.json");
+    let options = AsterCodeAgent::core_session_options(session_id, setup.model_id, setup.effort);
     let mut slots = crate::host_context::merge_studio_host(
         options.prompt_slots.clone().unwrap_or_default(),
         &setup.host,
     );
-    A3sCodeAgent::host_session_options_with_hook_roots(
+    AsterCodeAgent::host_session_options_with_hook_roots(
         options,
         &mut slots,
         &setup,
@@ -318,7 +319,7 @@ fn host_options(
     .expect("host options")
 }
 
-fn capability_note(options: &a3s_code_core::SessionOptions) -> String {
+fn capability_note(options: &aster_core::SessionOptions) -> String {
     options
         .prompt_slots
         .as_ref()
@@ -326,7 +327,7 @@ fn capability_note(options: &a3s_code_core::SessionOptions) -> String {
         .expect("capability status")
 }
 
-fn search_surface(session: &a3s_code_core::AgentSession) -> (serde_json::Value, String) {
+fn search_surface(session: &aster_core::AgentSession) -> (serde_json::Value, String) {
     let search = session
         .tool_definitions()
         .into_iter()
@@ -409,10 +410,10 @@ impl EmbeddingProvider for FailingEmbed {
 }
 
 async fn open_session(
-    agent: &a3s_code_core::Agent,
+    agent: &aster_core::Agent,
     root: &Path,
-    options: a3s_code_core::SessionOptions,
-) -> a3s_code_core::AgentSession {
+    options: aster_core::SessionOptions,
+) -> aster_core::AgentSession {
     tokio::time::timeout(
         Duration::from_secs(5),
         agent.session_async(root.to_string_lossy().to_string(), Some(options)),
@@ -425,7 +426,7 @@ async fn open_session(
 #[tokio::test]
 async fn retrieval_seam_stays_closed_until_a_provider_is_injected() {
     let config = fixture_config();
-    let agent = a3s_code_core::Agent::from_config(config.clone())
+    let agent = aster_core::Agent::from_config(config.clone())
         .await
         .expect("agent");
 
@@ -440,7 +441,7 @@ async fn retrieval_seam_stays_closed_until_a_provider_is_injected() {
         mcp_servers: Vec::new(),
     };
     let closed_options =
-        A3sCodeAgent::host_session_options("retrieval-seam-off", &setup, &config, &store)
+        AsterCodeAgent::host_session_options("retrieval-seam-off", &setup, &config, &store)
             .expect("host options");
     assert!(closed_options.workspace_retrieval.is_none());
     let closed_note = capability_note(&closed_options);

@@ -19,7 +19,7 @@ const MCP_PROJECTION_CONNECT_TIMEOUT: Duration = Duration::from_secs(3);
 
 /// Fallible MCP preparation owned by one capability contribution.
 ///
-/// A trusted host constructs the configuration from an already selected A3S
+/// A trusted host constructs the configuration from an already selected Aster
 /// Use surface and its exact Runtime/Gateway evidence. This adapter performs
 /// only standard MCP transport connection, initialize, and `tools/list`; it
 /// does not inspect package files, select a provider, resolve a Registry, or

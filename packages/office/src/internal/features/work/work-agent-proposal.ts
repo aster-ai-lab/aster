@@ -1,4 +1,4 @@
-export const WORK_AGENT_PROPOSAL_PROTOCOL = 'a3s-work-proposal/v1';
+export const WORK_AGENT_PROPOSAL_PROTOCOL = 'aster-work-proposal/v1';
 
 const maximumProposalTargets = 200;
 const maximumTargetSourceLength = 12_000;
@@ -111,7 +111,7 @@ export function workAgentProposalInstruction(
   return [
     instruction.trim(),
     '',
-    '请先给出简短说明，再在回复末尾提供一份可由 A3S Work 审阅的结构化修改建议。不要调用工具或直接修改文件。',
+    '请先给出简短说明，再在回复末尾提供一份可由 Aster Work 审阅的结构化修改建议。不要调用工具或直接修改文件。',
     `请求 ID：${request.id}`,
     '只能使用下面清单中的 targetId；不需要改动的目标不要出现在 changes 中：',
     JSON.stringify(manifest, null, 2),
@@ -168,7 +168,7 @@ export function workAgentProposalStatus(
   return {
     state: 'invalid',
     message:
-      'AI 助手已返回说明，但没有生成可验证的 A3S Work 差异。你可以调整草稿后重试。',
+      'AI 助手已返回说明，但没有生成可验证的 Aster Work 差异。你可以调整草稿后重试。',
   };
 }
 

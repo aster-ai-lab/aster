@@ -1,4 +1,4 @@
-# A3S Code Deep Test-Case Catalog
+# Aster Code Deep Test-Case Catalog
 
 For the actual interactive pager → ACP → Core surface, use the
 [2026-10-12 TUI E2E plan](../tui-e2e/20261012/README.md): 200 behavior,
@@ -53,7 +53,7 @@ Layers:
 | Soak | Repetition, duration, or crash/restart with a resource bound. | Re-running a unit test with a bigger timeout. |
 
 Live integration (`I-*-L*`) is `#[ignore]`, serial, and pinned to
-`A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash` via `.a3s/config.acl`. It is
+`ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash` via `.aster/config.acl`. It is
 never Required CI. See `just layer-c-live-e2e`.
 
 ## Evidence rules
@@ -121,7 +121,7 @@ to be safe, live next to the capability they protect:
 
 | Kernel | Protects | Catalog |
 | --- | --- | --- |
-| Effect isolation / orphan `.a3s-isolate-*` | workspace writes | execution `EI` |
+| Effect isolation / orphan `.aster-isolate-*` | workspace writes | execution `EI` |
 | Native sandbox and process-host opt-in | `bash` | execution `SB` |
 | Safe HTTP / Fake-IP / SSRF | `web_fetch`, `web_search`, `download` | execution `SH` |
 | Mutation verify gate | completion | execution `VG` |
@@ -140,8 +140,8 @@ Hermetic required path (does not run soak or live):
 
 ```bash
 just harness-convergence-check
-cargo test -p a3s-code-core --lib
-cargo test --locked -p a3s-code-core --lib sdk_capabilities
+cargo test -p aster-core --lib
+cargo test --locked -p aster-core --lib sdk_capabilities
 ```
 
 Feature-gated hermetic: `advanced-harness`, `s3`, `telemetry`, `headless-search`,

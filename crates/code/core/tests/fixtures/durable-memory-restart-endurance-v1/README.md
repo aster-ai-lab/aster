@@ -9,7 +9,7 @@ reopens and resumes the persisted sessions.
 Each session retains one run while its deterministic host ID generator resets
 to the same sequence after every restart. Consequently, the retained run IDs
 are deliberately reused after FIFO eviction. Binding schema `4` and
-`a3s.code.memory.context.session-run-invocation-sequence-sha256.v2` must still
+`aster.code.memory.context.session-run-invocation-sequence-sha256.v2` must still
 record all 24 distinct model contexts. Schema `3` collapsed the second epoch
 into the first and reported only 8 admissions where 16 were required.
 

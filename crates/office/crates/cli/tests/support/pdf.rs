@@ -28,20 +28,20 @@ pub fn pdf_snapshot(update: &[u8]) -> PdfSnapshot {
         .transact_mut()
         .apply_update(Update::decode_v1(update).unwrap())
         .unwrap();
-    let presence = document.get_or_insert_map("a3s.office.pdf.form-values.presence");
-    let fields = document.get_or_insert_map("a3s.office.pdf.form-values.fields");
-    let order = document.get_or_insert_array("a3s.office.pdf.form-values.order");
-    let annotation_presence = document.get_or_insert_map("a3s.office.pdf.annotations.presence");
-    let annotation_fields = document.get_or_insert_map("a3s.office.pdf.annotations.fields");
+    let presence = document.get_or_insert_map("aster.office.pdf.form-values.presence");
+    let fields = document.get_or_insert_map("aster.office.pdf.form-values.fields");
+    let order = document.get_or_insert_array("aster.office.pdf.form-values.order");
+    let annotation_presence = document.get_or_insert_map("aster.office.pdf.annotations.presence");
+    let annotation_fields = document.get_or_insert_map("aster.office.pdf.annotations.fields");
     let redaction_presence =
-        document.get_or_insert_map("a3s.office.pdf.redaction-proposals.presence");
-    let redaction_fields = document.get_or_insert_map("a3s.office.pdf.redaction-proposals.fields");
+        document.get_or_insert_map("aster.office.pdf.redaction-proposals.presence");
+    let redaction_fields = document.get_or_insert_map("aster.office.pdf.redaction-proposals.fields");
     let page_operation_presence =
-        document.get_or_insert_map("a3s.office.pdf.page-operations.presence");
-    let page_operation_fields = document.get_or_insert_map("a3s.office.pdf.page-operations.fields");
-    let decision_presence = document.get_or_insert_map("a3s.office.pdf.review-decisions.presence");
-    let decision_fields = document.get_or_insert_map("a3s.office.pdf.review-decisions.fields");
-    let claims = document.get_or_insert_array("a3s.office.pdf.record-claims");
+        document.get_or_insert_map("aster.office.pdf.page-operations.presence");
+    let page_operation_fields = document.get_or_insert_map("aster.office.pdf.page-operations.fields");
+    let decision_presence = document.get_or_insert_map("aster.office.pdf.review-decisions.presence");
+    let decision_fields = document.get_or_insert_map("aster.office.pdf.review-decisions.fields");
+    let claims = document.get_or_insert_array("aster.office.pdf.record-claims");
     let transaction = document.transact();
     let form_values = presence
         .iter(&transaction)

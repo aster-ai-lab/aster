@@ -1,4 +1,4 @@
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use sha2::{Digest, Sha256};
 use yrs::updates::decoder::Decode;
 use yrs::{ReadTxn, StateVector, Transact};
@@ -372,7 +372,7 @@ mod tests {
             schema_version: NATIVE_OFFICE_COLLABORATION_STORE_SCHEMA_VERSION,
             protocol: NATIVE_OFFICE_COLLABORATION_PROTOCOL.to_owned(),
             protocol_version: 1,
-            namespace: "a3s.office".to_owned(),
+            namespace: "aster.office".to_owned(),
             artifact_id: "notes".to_owned(),
             kind: NativeOfficeCollaborationArtifactKind::Markdown,
             actor_id: "agent-7".to_owned(),

@@ -1,5 +1,5 @@
 use super::*;
-use a3s_flow::{FlowEvent, FlowEventEnvelope};
+use aster_flow::{FlowEvent, FlowEventEnvelope};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
 const START_ROOT_RUN_ID: &str = "idempotent-start-root";
@@ -20,7 +20,7 @@ impl FlowRuntime for IdempotentStartRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         self.workflow_calls.fetch_add(1, Ordering::SeqCst);
         let context = invocation.context();
         let mode = context.input()["mode"]
@@ -39,7 +39,7 @@ impl FlowRuntime for IdempotentStartRuntime {
         Ok(context.complete(json!({ "generation": generation })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("idempotent start tests do not execute steps")
     }
 }
@@ -200,7 +200,7 @@ impl CrashBeforeStartSuccessorStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeStartSuccessorStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -209,7 +209,7 @@ impl FlowEventStore for CrashBeforeStartSuccessorStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id != START_ROOT_RUN_ID
             && matches!(&event, FlowEvent::RunCreated { .. })
             && self.armed.swap(false, Ordering::SeqCst)
@@ -223,11 +223,11 @@ impl FlowEventStore for CrashBeforeStartSuccessorStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }

@@ -1,1 +1,1 @@
-export * from './vue/a3s-flow-hook';
+export * from './vue/aster-flow-hook';

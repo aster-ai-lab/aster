@@ -29,7 +29,7 @@ linux_kvm_assert_fresh_host_skip_policy() {
 
   if [[ "$host_class" == "fresh" && "$skip_soak" == "1" ]]; then
     printf '%s\n' \
-      'host_class=fresh refuses A3S_OCI_LINUX_KVM_SKIP_SOAK=1 (soak is required to promote readiness)' >&2
+      'host_class=fresh refuses ASTER_OCI_LINUX_KVM_SKIP_SOAK=1 (soak is required to promote readiness)' >&2
     return 2
   fi
   return 0
@@ -52,7 +52,7 @@ linux_kvm_assert_fresh_host_soak_profile() {
   if [[ "$host_class" == "fresh" &&
         "$soak_iterations" != "$LINUX_KVM_PROMOTION_SOAK_ITERATIONS" ]]; then
     printf '%s\n' \
-      "host_class=fresh requires A3S_OCI_LINUX_KVM_SOAK_ITERATIONS=$LINUX_KVM_PROMOTION_SOAK_ITERATIONS (refusing reduced soak depth)" >&2
+      "host_class=fresh requires ASTER_OCI_LINUX_KVM_SOAK_ITERATIONS=$LINUX_KVM_PROMOTION_SOAK_ITERATIONS (refusing reduced soak depth)" >&2
     return 2
   fi
   return 0

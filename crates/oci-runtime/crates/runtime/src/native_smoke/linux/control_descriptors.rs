@@ -4,17 +4,17 @@ use std::os::unix::net::UnixListener;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_sdk::OciBundle;
+use aster_oci_sdk::OciBundle;
 use tokio::net::UnixStream;
 use tokio::time::{sleep, Instant};
 
 use super::filesystem::create_private_directory;
 use crate::NativeControlDescriptors;
 
-const CONTROL_ENVIRONMENT: &str = "A3S_OCI_NATIVE_CONTROL_SMOKE=1";
+const CONTROL_ENVIRONMENT: &str = "ASTER_OCI_NATIVE_CONTROL_SMOKE=1";
 const CONTROL_TIMEOUT: Duration = Duration::from_secs(15);
 const CONTROL_POLL_INTERVAL: Duration = Duration::from_millis(25);
-pub(super) const INIT_LOG_CONTENTS: &[u8] = b"a3s-box-native-control-v1\n";
+pub(super) const INIT_LOG_CONTENTS: &[u8] = b"aster-box-native-control-v1\n";
 
 pub(super) struct ControlDescriptorFixture {
     descriptors: Option<NativeControlDescriptors>,
@@ -136,7 +136,7 @@ pub(super) fn enable_workload_verification(bundle: &OciBundle) -> Result<OciBund
     if environment.iter().any(|entry| {
         entry
             .as_str()
-            .is_some_and(|entry| entry.starts_with("A3S_OCI_NATIVE_CONTROL_SMOKE="))
+            .is_some_and(|entry| entry.starts_with("ASTER_OCI_NATIVE_CONTROL_SMOKE="))
     }) {
         return Err("native smoke control environment is already configured".into());
     }

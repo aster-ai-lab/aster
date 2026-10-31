@@ -26,13 +26,13 @@ fn client_completes_scram_and_reads_one_text_row() {
 
     let row = query_text(
         address,
-        "a3s_cloud",
-        "a3s_cloud",
-        "a3s_cloud",
-        "a3sbox-client-nonce",
+        "aster_cloud",
+        "aster_cloud",
+        "aster_cloud",
+        "asterbox-client-nonce",
     )
     .unwrap();
-    assert_eq!(row, "a3s-box-hvf-a3s_cloud");
+    assert_eq!(row, "aster-box-hvf-aster_cloud");
     server.join().unwrap();
 }
 
@@ -50,8 +50,8 @@ fn serve_test_connection(listener: TcpListener) {
 
     let startup = read_startup_for_test(&mut stream);
     assert!(startup
-        .windows(b"user\0a3s_cloud\0".len())
-        .any(|window| { window == b"user\0a3s_cloud\0" }));
+        .windows(b"user\0aster_cloud\0".len())
+        .any(|window| { window == b"user\0aster_cloud\0" }));
 
     let mut sasl = 10_u32.to_be_bytes().to_vec();
     sasl.extend_from_slice(b"SCRAM-SHA-256\0\0");
@@ -82,7 +82,7 @@ fn serve_test_connection(listener: TcpListener) {
     let (tag, client_final) = read_message(&mut stream).unwrap();
     assert_eq!(tag, b'p');
     let (expected_final, server_signature) =
-        scram_client_final("a3s_cloud", client_nonce, client_first_bare, &server_first).unwrap();
+        scram_client_final("aster_cloud", client_nonce, client_first_bare, &server_first).unwrap();
     assert_eq!(client_final, expected_final.as_bytes());
 
     let mut final_message = 12_u32.to_be_bytes().to_vec();
@@ -100,9 +100,9 @@ fn serve_test_connection(listener: TcpListener) {
     assert_eq!(tag, b'Q');
     assert_eq!(
         query.strip_suffix(&[0]).unwrap(),
-        b"SELECT 'a3s-box-hvf-' || current_database()"
+        b"SELECT 'aster-box-hvf-' || current_database()"
     );
-    let value = b"a3s-box-hvf-a3s_cloud";
+    let value = b"aster-box-hvf-aster_cloud";
     let mut data_row = 1_u16.to_be_bytes().to_vec();
     data_row.extend_from_slice(&(value.len() as u32).to_be_bytes());
     data_row.extend_from_slice(value);

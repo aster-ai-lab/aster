@@ -7,8 +7,8 @@
 //! not a fused SM90 kernel, paged allocator or model-wide admission permit.
 //! Public constructors require actual CUDA. Private CPU entry is for tests.
 
-use a3s_power::error::{PowerError, Result};
-use a3s_power::inference::InferenceLimits;
+use aster_power::error::{PowerError, Result};
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Device, Tensor};
 use tokio_util::sync::CancellationToken;
 

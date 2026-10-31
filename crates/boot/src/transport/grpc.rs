@@ -14,9 +14,9 @@ use tonic::transport::{Channel, Endpoint, Server};
 use tonic::{Request, Response, Status};
 use tonic_prost::ProstCodec;
 
-const SERVICE_NAME: &str = "a3s.boot.transport.MessageTransport";
-const SEND_PATH: &str = "/a3s.boot.transport.MessageTransport/Send";
-const EMIT_PATH: &str = "/a3s.boot.transport.MessageTransport/Emit";
+const SERVICE_NAME: &str = "aster.boot.transport.MessageTransport";
+const SEND_PATH: &str = "/aster.boot.transport.MessageTransport/Send";
+const EMIT_PATH: &str = "/aster.boot.transport.MessageTransport/Emit";
 
 /// Options for the gRPC message transport.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

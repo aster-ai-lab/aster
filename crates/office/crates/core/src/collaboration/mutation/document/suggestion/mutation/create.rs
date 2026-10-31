@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::Attrs;
 use yrs::{Any, Text, Transact, XmlFragment, XmlTextPrelim};
 
@@ -356,7 +356,7 @@ fn validate_optional_change_id(
     }
 }
 
-fn invalid_mutation() -> a3s_use_core::UseError {
+fn invalid_mutation() -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_invalid",
         "The supplied mutation is not a Document suggestion creation.",

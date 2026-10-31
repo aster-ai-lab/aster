@@ -5,9 +5,9 @@ use std::io::{Read, Write};
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_code_core::capability::WorkspaceOperation;
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
-use a3s_office::{NativeOfficeDocument, NativeOfficePackage, OfficeNodeType, PackageLimits};
+use aster_core::capability::WorkspaceOperation;
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_office::{NativeOfficeDocument, NativeOfficePackage, OfficeNodeType, PackageLimits};
 use anyhow::{bail, ensure, Context, Result};
 use async_trait::async_trait;
 use cap_fs_ext::{FollowSymlinks, OpenOptionsFollowExt, OpenOptionsSyncExt};
@@ -273,7 +273,7 @@ async fn read_source(
         json!({"node":value})
     } else {
         let view =
-            document.annotated(a3s_office::NativeOfficeAnnotatedOptions { limit: input.limit })?;
+            document.annotated(aster_office::NativeOfficeAnnotatedOptions { limit: input.limit })?;
         let mut entries = Vec::with_capacity(view.entries.len());
         for entry in view.entries {
             let mut value = serde_json::to_value(&entry)?;

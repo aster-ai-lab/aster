@@ -2,7 +2,7 @@
 
 ## PaddlePaddle/PaddleOCR PP-OCRv6 Models
 
-A3S OCR release archives redistribute the official `PP-OCRv6_small_det` and
+Aster OCR release archives redistribute the official `PP-OCRv6_small_det` and
 `PP-OCRv6_small_rec` ONNX inference model bundles published by
 PaddlePaddle/PaddleOCR. The installer pins the upstream archive URLs, byte
 sizes, and SHA-256 digests and does not modify the model weights.
@@ -15,7 +15,7 @@ Model collection: <https://huggingface.co/collections/PaddlePaddle/pp-ocrv6>
 
 ## Microsoft ONNX Runtime
 
-`a3s-use-ocr` uses the ONNX Runtime 1.22 C API through the pinned
+`aster-use-ocr` uses the ONNX Runtime 1.22 C API through the pinned
 `ort`/`ort-sys` Rust bindings. The host supplies a compatible dynamic library;
 Studio packages ONNX Runtime 1.25.1. ONNX Runtime is licensed under the MIT License.
 
@@ -33,7 +33,7 @@ Upstream repository: <https://github.com/pykeio/ort>
 
 ## image-rs/imageproc
 
-`a3s-use-ocr` uses `imageproc` version `0.25.0` for geometric image
+`aster-use-ocr` uses `imageproc` version `0.25.0` for geometric image
 transformations. `imageproc` is licensed under the MIT License.
 
 Copyright (c) 2015 PistonDevelopers.
@@ -42,7 +42,7 @@ Upstream repository: <https://github.com/image-rs/imageproc>
 
 ## clipper2
 
-`a3s-use-ocr` uses the `clipper2` Rust crate version `0.5.3` and
+`aster-use-ocr` uses the `clipper2` Rust crate version `0.5.3` and
 `clipper2c-sys` version `0.1.6` for bounded polygon offsetting during DB
 post-processing. The Rust crates are available under the MIT License or the
 Apache License, Version 2.0. Their bundled Clipper2 C/C++ implementation is

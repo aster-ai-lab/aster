@@ -4,7 +4,7 @@
 - 日期：2026-09-29
 - slug：`kense`
 - 目录：`apps/web/public/tenant/kense/`
-- 启动：`just up kense` 与 `just up:kense` 读取本目录。`just up` 读取 `tenant/a3s`
+- 启动：`just up kense` 与 `just up:kense` 读取本目录。`just up` 读取 `tenant/aster`
 
 本目录是 Kense 这个租户的全部平台身份。旁边的 `INFO.md` 是加载器读取的记录。本文件给人读，加载器不解析它，也不把它算进重启用的哈希。
 
@@ -48,6 +48,6 @@
 
 `just up:kense` 拉起的控制台用本目录的名称和字标：文档标题、favicon、登录字标、活动栏、侧栏品牌、门户和登录链接上的名称。设置里保存的名称或 logo 只盖住这一次启动的 `kense`，颜色仍来自旁边的 `INFO.md`。PageLoading 描的是这枚 K：先描边，再填成墨色。
 
-服务名和进程名不在本目录里，也不随本租户改变。它们使用 `a3s-` 前缀，例如 `a3s-api`、`a3s-gateway`、`a3s-runtime`。控制台若回显这些服务名，显示的是 `a3s-` 名字。
+服务名和进程名不在本目录里，也不随本租户改变。它们使用 `aster-` 前缀，例如 `aster-api`、`aster-gateway`、`aster-runtime`。控制台若回显这些服务名，显示的是 `aster-` 名字。
 
-默认租户在 `apps/web/public/tenant/a3s/`。`just up` 读取那个目录。通友科技在 `apps/web/public/tenant/legacy/`，用 `just up legacy` 启动。桌面图标和窗口字标由 `scripts/render-tenant-desktop-icons.py` 从上面的两张字标生成。
+默认租户在 `apps/web/public/tenant/aster/`。`just up` 读取那个目录。通友科技在 `apps/web/public/tenant/legacy/`，用 `just up legacy` 启动。桌面图标和窗口字标由 `scripts/render-tenant-desktop-icons.py` 从上面的两张字标生成。

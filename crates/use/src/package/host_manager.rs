@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanPackageChangeKind, PlanPackageRole, PlanPolicyDecision, PlannedPackageState,
     PluginDesiredState, PluginHostApplyRequest, PluginHostApplyResult, PluginHostCancelRequest,
     PluginHostCancelResult, PluginHostCancellationStatus, PluginHostCapabilities,
@@ -16,7 +16,7 @@ use a3s_use_core::{
     PLUGIN_HOST_ENABLEMENT_PLAN_RESULT_SCHEMA, PLUGIN_HOST_OBSERVATION_RESULT_SCHEMA,
     PLUGIN_HOST_OPERATION_OBSERVATION_RESULT_SCHEMA, PLUGIN_HOST_PLAN_RESULT_SCHEMA,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     ExtensionRegistry, RegistrySourceStore, ResolvedRegistrySources, TrustedRegistry,
 };
 use async_trait::async_trait;
@@ -44,7 +44,7 @@ use super::{
     ReviewedPackageAuthorizationProvider, PACKAGE_HOST_VERSION,
 };
 
-const HOST_OPERATION_OUTCOME_SCHEMA: &str = "a3s.use.plugin-host-operation-outcome.v1";
+const HOST_OPERATION_OUTCOME_SCHEMA: &str = "aster.use.plugin-host-operation-outcome.v1";
 
 /// Production adapter from the frozen Plugin Host protocol to the shared
 /// package manager.
@@ -123,7 +123,7 @@ impl PackageHostManager {
         &self,
         access: PackageRegistryAccess,
         selected_registry: Option<&str>,
-        search: &a3s_use_extension::PluginCatalogSearch,
+        search: &aster_use_extension::PluginCatalogSearch,
     ) -> UseResult<PackageCatalogSearchResult> {
         search_catalogs(&self.registry_sources, access, selected_registry, search).await
     }
@@ -134,7 +134,7 @@ impl PackageHostManager {
         &self,
         access: PackageRegistryAccess,
         candidate: &VerifiedPluginCatalogRecord,
-    ) -> UseResult<a3s_use_extension::PluginCatalogInspection> {
+    ) -> UseResult<aster_use_extension::PluginCatalogInspection> {
         inspect_catalog(&self.registry_sources, access, candidate).await
     }
 
@@ -159,7 +159,7 @@ impl PackageHostManager {
         selected_registry: Option<&str>,
         package_id: &str,
         version_requirement: Option<&str>,
-        channel: a3s_use_core::PluginReleaseChannel,
+        channel: aster_use_core::PluginReleaseChannel,
         expected_package_lock_digest: Option<&str>,
     ) -> UseResult<PluginPackageLock> {
         if !matches!(
@@ -257,7 +257,7 @@ impl PackageHostManager {
         plan_digest: &str,
     ) -> UseResult<PluginHostPlanResult> {
         self.verify_fence(scope)?;
-        a3s_use_core::PluginOperationPlan::validate_operation_id(operation_id)?;
+        aster_use_core::PluginOperationPlan::validate_operation_id(operation_id)?;
         let stored = self
             .store
             .get_by_operation(scope, operation_id, plan_digest)
@@ -299,15 +299,15 @@ impl PackageHostManager {
         &self,
         access: PackageRegistryAccess,
         candidate: &VerifiedPluginCatalogRecord,
-    ) -> UseResult<Option<a3s_use_extension::VerifiedPackagePresentation>> {
+    ) -> UseResult<Option<aster_use_extension::VerifiedPackagePresentation>> {
         candidate.validate()?;
         let sources = self.resolve_sources(candidate).await?;
         match access {
             PackageRegistryAccess::Refreshed => {
-                a3s_use_extension::inspect_package_presentation(sources.root(), candidate).await
+                aster_use_extension::inspect_package_presentation(sources.root(), candidate).await
             }
             PackageRegistryAccess::Cached => {
-                a3s_use_extension::inspect_cached_package_presentation(sources.root(), candidate)
+                aster_use_extension::inspect_cached_package_presentation(sources.root(), candidate)
                     .await
             }
         }
@@ -323,20 +323,20 @@ impl PackageHostManager {
     pub async fn fetch_package_media(
         &self,
         access: PackageRegistryAccess,
-        presentation: &a3s_use_extension::VerifiedPackagePresentation,
+        presentation: &aster_use_extension::VerifiedPackagePresentation,
         target_name: &str,
-    ) -> UseResult<a3s_use_extension::VerifiedPackageMedia> {
+    ) -> UseResult<aster_use_extension::VerifiedPackageMedia> {
         let sources = self
             .registry_sources
             .resolve(Some(&presentation.registry_name))
             .await?;
         match access {
             PackageRegistryAccess::Refreshed => {
-                a3s_use_extension::fetch_package_media(sources.root(), presentation, target_name)
+                aster_use_extension::fetch_package_media(sources.root(), presentation, target_name)
                     .await
             }
             PackageRegistryAccess::Cached => {
-                a3s_use_extension::fetch_cached_package_media(
+                aster_use_extension::fetch_cached_package_media(
                     sources.root(),
                     presentation,
                     target_name,
@@ -440,7 +440,7 @@ impl PackageHostManager {
     fn reviewed_manager(
         &self,
         envelope: PluginOperationPlanEnvelope,
-        confirmation: Option<a3s_use_core::PluginOperationConfirmation>,
+        confirmation: Option<aster_use_core::PluginOperationConfirmation>,
     ) -> UseResult<PackageManager> {
         let authorization = ReviewedPackageAuthorizationProvider::new(envelope, confirmation)?;
         PackageManager::with_plan_scope_lifecycle_and_authorization(
@@ -1806,7 +1806,7 @@ fn validate_state_for_plan(
         .release
         .surfaces
         .iter()
-        .map(a3s_use_core::CatalogSurface::reference)
+        .map(aster_use_core::CatalogSurface::reference)
         .collect::<Vec<PluginSurfaceRef>>();
     let desired = match envelope.plan.action {
         PluginOperationAction::Install | PluginOperationAction::Upgrade => {

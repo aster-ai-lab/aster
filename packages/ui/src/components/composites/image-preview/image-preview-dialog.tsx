@@ -146,7 +146,7 @@ export function ImagePreviewDialog({
             onClick={close}
             size="icon"
             // The native title band takes clicks in its 44px strip. Keep the glyph below it.
-            style={{ top: 'calc(var(--a3s-titlebar-height, 0px) + 1rem)' }}
+            style={{ top: 'calc(var(--aster-titlebar-height, 0px) + 1rem)' }}
             type="button"
             variant="ghost">
             <X className="size-5" />

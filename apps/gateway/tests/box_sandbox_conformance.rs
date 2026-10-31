@@ -11,7 +11,7 @@ use tokio::process::{Child, Command};
 
 type TestResult<T = ()> = Result<T, Box<dyn Error + Send + Sync>>;
 
-const SANDBOX_BODY: &str = "a3s-box-sandbox-ready";
+const SANDBOX_BODY: &str = "aster-box-sandbox-ready";
 const DEFAULT_SANDBOX_IMAGE: &str = "docker.io/library/busybox@sha256:fc6dddc4c44b1bfe37f41cae8e67d1693828e8f42a91862816d7953e2c9d3f23";
 
 struct ProcessGuard {
@@ -126,7 +126,7 @@ management {{
   enabled        = true
   address        = "127.0.0.1:{management_port}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 
@@ -160,11 +160,11 @@ fn start_box(
         .arg("127.0.0.1")
         .arg("--endpoint-drain-timeout-secs")
         .arg("1");
-    ProcessGuard::spawn("A3S Box scale API", &mut command)
+    ProcessGuard::spawn("Aster Box scale API", &mut command)
 }
 
 fn start_gateway(config: &Path) -> TestResult<ProcessGuard> {
-    let mut command = Command::new(env!("CARGO_BIN_EXE_a3s-gateway"));
+    let mut command = Command::new(env!("CARGO_BIN_EXE_aster-gateway"));
     command
         .arg("--config")
         .arg(config)
@@ -245,7 +245,7 @@ async fn box_failure_context(client: &Client, box_url: &str) -> String {
         }
         Err(error) => format!("Box observation failed: {error}"),
     };
-    let state = env::var("A3S_HOME")
+    let state = env::var("ASTER_HOME")
         .ok()
         .map(PathBuf::from)
         .map(|home| home.join("boxes.json"));
@@ -257,7 +257,7 @@ async fn box_failure_context(client: &Client, box_url: &str) -> String {
                 path.display()
             ),
         },
-        None => "A3S_HOME was unavailable while collecting Box lifecycle state".to_string(),
+        None => "ASTER_HOME was unavailable while collecting Box lifecycle state".to_string(),
     };
     format!("{observation}\n{state}")
 }
@@ -272,7 +272,7 @@ fn required_path(name: &str) -> TestResult<PathBuf> {
 
 #[test]
 fn generated_gateway_acl_validates() {
-    let config = a3s_gateway::config::GatewayConfig::from_acl(&gateway_config(18080, 18081, 19090))
+    let config = aster_gateway::config::GatewayConfig::from_acl(&gateway_config(18080, 18081, 19090))
         .expect("Box Sandbox conformance ACL should parse");
     config
         .validate()
@@ -280,25 +280,25 @@ fn generated_gateway_acl_validates() {
 }
 
 #[tokio::test]
-#[ignore = "requires the pinned A3S Box and OCI Runtime on a privileged Linux host"]
+#[ignore = "requires the pinned Aster Box and OCI Runtime on a privileged Linux host"]
 async fn real_box_sandbox_endpoint_relay_scales_from_zero_and_retires() -> TestResult {
-    if env::var("A3S_GATEWAY_TEST_BOX_SANDBOX").as_deref() != Ok("1") {
-        return Err("set A3S_GATEWAY_TEST_BOX_SANDBOX=1 to run this destructive gate".into());
+    if env::var("ASTER_GATEWAY_TEST_BOX_SANDBOX").as_deref() != Ok("1") {
+        return Err("set ASTER_GATEWAY_TEST_BOX_SANDBOX=1 to run this destructive gate".into());
     }
     if !cfg!(target_os = "linux") {
         return Err("real Box Sandbox conformance requires Linux".into());
     }
     for name in [
-        "A3S_HOME",
-        "A3S_BOX_OCI_RUNTIME_PATH",
-        "A3S_BOX_OCI_AGENT_PATH",
-        "A3S_BOX_OCI_HOST_ROOT",
+        "ASTER_HOME",
+        "ASTER_BOX_OCI_RUNTIME_PATH",
+        "ASTER_BOX_OCI_AGENT_PATH",
+        "ASTER_BOX_OCI_HOST_ROOT",
     ] {
         env::var(name).map_err(|_| format!("{name} must be set"))?;
     }
 
-    let box_binary = required_path("A3S_GATEWAY_BOX_BINARY")?;
-    let image = env::var("A3S_GATEWAY_BOX_SANDBOX_IMAGE")
+    let box_binary = required_path("ASTER_GATEWAY_BOX_BINARY")?;
+    let image = env::var("ASTER_GATEWAY_BOX_SANDBOX_IMAGE")
         .unwrap_or_else(|_| DEFAULT_SANDBOX_IMAGE.to_string());
     let directory = tempfile::tempdir()?;
     let catalog = directory.path().join("services.acl");

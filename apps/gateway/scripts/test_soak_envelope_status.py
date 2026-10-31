@@ -51,10 +51,10 @@ def test_published_refuses_without_dedicated_flag():
 
     with_env(
         {
-            "A3S_GATEWAY_DEDICATED_RUNNER": None,
-            "A3S_GATEWAY_HW_CPU_MODEL": "Intel Xeon",
-            "A3S_GATEWAY_HW_MEMORY_GB": "64",
-            "A3S_GATEWAY_HW_HOST": "bench-1",
+            "ASTER_GATEWAY_DEDICATED_RUNNER": None,
+            "ASTER_GATEWAY_HW_CPU_MODEL": "Intel Xeon",
+            "ASTER_GATEWAY_HW_MEMORY_GB": "64",
+            "ASTER_GATEWAY_HW_HOST": "bench-1",
         },
         run,
     )
@@ -67,10 +67,10 @@ def test_published_refuses_short_duration():
 
     with_env(
         {
-            "A3S_GATEWAY_DEDICATED_RUNNER": "1",
-            "A3S_GATEWAY_HW_CPU_MODEL": "Intel Xeon",
-            "A3S_GATEWAY_HW_MEMORY_GB": "64",
-            "A3S_GATEWAY_HW_HOST": "bench-1",
+            "ASTER_GATEWAY_DEDICATED_RUNNER": "1",
+            "ASTER_GATEWAY_HW_CPU_MODEL": "Intel Xeon",
+            "ASTER_GATEWAY_HW_MEMORY_GB": "64",
+            "ASTER_GATEWAY_HW_HOST": "bench-1",
         },
         run,
     )
@@ -83,11 +83,11 @@ def test_published_refuses_lowered_floor():
 
     with_env(
         {
-            "A3S_GATEWAY_DEDICATED_RUNNER": "1",
-            "A3S_GATEWAY_HW_CPU_MODEL": "Intel Xeon",
-            "A3S_GATEWAY_HW_MEMORY_GB": "64",
-            "A3S_GATEWAY_HW_HOST": "bench-1",
-            "A3S_GATEWAY_PUBLISH_MIN_DURATION": "30",
+            "ASTER_GATEWAY_DEDICATED_RUNNER": "1",
+            "ASTER_GATEWAY_HW_CPU_MODEL": "Intel Xeon",
+            "ASTER_GATEWAY_HW_MEMORY_GB": "64",
+            "ASTER_GATEWAY_HW_HOST": "bench-1",
+            "ASTER_GATEWAY_PUBLISH_MIN_DURATION": "30",
         },
         run,
     )
@@ -117,21 +117,21 @@ def test_failed_published_run_is_not_named_published():
 
 
 def test_published_sha_comes_from_the_binary():
-    clean = "a3s-gateway 1.1.1 " + ("b" * 40)
+    clean = "aster-gateway 1.1.1 " + ("b" * 40)
     assert soak.git_sha_from_version(clean) == "b" * 40
     assert soak.published_version_identity_error(clean) is None
     assert soak.git_sha_from_version(clean + "-dirty") is None
     assert "dirty" in (soak.published_version_identity_error(clean + "-dirty") or "")
-    assert soak.git_sha_from_version("a3s-gateway 1.1.1") is None
-    assert "embedded" in (soak.published_version_identity_error("a3s-gateway 1.1.1") or "")
+    assert soak.git_sha_from_version("aster-gateway 1.1.1") is None
+    assert "embedded" in (soak.published_version_identity_error("aster-gateway 1.1.1") or "")
 
 
 def test_published_without_identity_is_refused():
     assert soak.published_identity_error(None, None)
-    assert soak.published_identity_error("a3s-gateway 1.1.1", "abc")
-    assert soak.published_identity_error("a3s-gateway 1.1.1", "A" * 40)
+    assert soak.published_identity_error("aster-gateway 1.1.1", "abc")
+    assert soak.published_identity_error("aster-gateway 1.1.1", "A" * 40)
     assert soak.published_identity_error("", "a" * 40)
-    assert soak.published_identity_error("a3s-gateway 1.1.1", "a" * 40) is None
+    assert soak.published_identity_error("aster-gateway 1.1.1", "a" * 40) is None
 
 
 def test_published_accepts_complete_pins():
@@ -141,10 +141,10 @@ def test_published_accepts_complete_pins():
 
     with_env(
         {
-            "A3S_GATEWAY_DEDICATED_RUNNER": "1",
-            "A3S_GATEWAY_HW_CPU_MODEL": "Intel Xeon",
-            "A3S_GATEWAY_HW_MEMORY_GB": "64",
-            "A3S_GATEWAY_HW_HOST": "bench-1",
+            "ASTER_GATEWAY_DEDICATED_RUNNER": "1",
+            "ASTER_GATEWAY_HW_CPU_MODEL": "Intel Xeon",
+            "ASTER_GATEWAY_HW_MEMORY_GB": "64",
+            "ASTER_GATEWAY_HW_HOST": "bench-1",
         },
         run,
     )

@@ -1,36 +1,36 @@
 [submodule "crates/box"]
 	path = crates/box
-	url = git@github.com:A3S-Lab/Box.git
+	url = git@github.com:aster-ai-lab/Box.git
 [submodule "crates/code"]
 	path = crates/code
-	url = git@github.com:A3S-Lab/Code.git
+	url = git@github.com:aster-ai-lab/Code.git
 [submodule "crates/lane"]
 	path = crates/lane
-	url = git@github.com:A3S-Lab/Lane.git
+	url = git@github.com:aster-ai-lab/Lane.git
 [submodule "crates/context"]
 	path = crates/context
-	url = git@github.com:A3S-Lab/Context.git
+	url = git@github.com:aster-ai-lab/Context.git
 [submodule "homebrew-tap"]
 	path = homebrew-tap
-	url = git@github.com:A3S-Lab/homebrew-tap.git
+	url = git@github.com:aster-ai-lab/homebrew-tap.git
 [submodule "crates/search"]
 	path = crates/search
-	url = git@github.com:A3S-Lab/Search.git
+	url = git@github.com:aster-ai-lab/Search.git
 [submodule "crates/cron"]
 	path = crates/cron
-	url = git@github.com:A3S-Lab/Cron.git
+	url = git@github.com:aster-ai-lab/Cron.git
 [submodule "crates/safeclaw"]
 	path = crates/safeclaw
-	url = git@github.com:A3S-Lab/SafeClaw.git
+	url = git@github.com:aster-ai-lab/SafeClaw.git
 [submodule "crates/power"]
 	path = crates/power
-	url = git@github.com:A3S-Lab/Power.git
+	url = git@github.com:aster-ai-lab/Power.git
 [submodule "crates/gateway"]
 	path = crates/gateway
-	url = git@github.com:A3S-Lab/Gateway.git
+	url = git@github.com:aster-ai-lab/Gateway.git
 [submodule "crates/event"]
 	path = crates/event
-	url = git@github.com:A3S-Lab/Event.git
+	url = git@github.com:aster-ai-lab/Event.git
 [submodule "crates/safeclaw-ui"]
 	path = crates/safeclaw-ui
-	url = git@github.com:A3S-Lab/SafeClawUI.git
+	url = git@github.com:aster-ai-lab/SafeClawUI.git

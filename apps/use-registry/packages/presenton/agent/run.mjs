@@ -1,4 +1,4 @@
-// a3s.code.agent.v1 edge entry. One warm box serves many turns of one view, so
+// aster.code.agent.v1 edge entry. One warm box serves many turns of one view, so
 // the event sequence is process-wide and every event names its run. The box
 // holds no credential: a model call is a `model_request` event the host answers.
 import http from 'node:http'

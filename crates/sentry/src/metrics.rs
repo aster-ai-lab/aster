@@ -2,7 +2,7 @@
 //! signals that matter for a *fail-open* security control — chiefly `overload_degraded` (escalations
 //! that silently fell through to the fail mode because the worker queue was full) and `enforce_failed`
 //! (a block whose deny-write errored, i.e. a block that did not land). Opt-in via
-//! `A3S_SENTRY_METRICS_ADDR`; nothing is bound otherwise. No framework, no async — one accept thread.
+//! `ASTER_SENTRY_METRICS_ADDR`; nothing is bound otherwise. No framework, no async — one accept thread.
 
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};

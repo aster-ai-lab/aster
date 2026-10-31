@@ -671,7 +671,7 @@ async fn cancellation_rolls_back_a_prepared_stdio_connection_without_publication
     let entered = Arc::new(Semaphore::new(0));
     let mut environment = std::collections::HashMap::new();
     environment.insert(
-        "A3S_TEST_MCP_LOG".to_string(),
+        "ASTER_TEST_MCP_LOG".to_string(),
         log_path.display().to_string(),
     );
     let config = McpServerConfig {
@@ -708,9 +708,11 @@ async fn cancellation_rolls_back_a_prepared_stdio_connection_without_publication
     });
     tokio::select! {
         permit = entered.acquire() => permit.unwrap().forget(),
-        result = &mut apply => panic!("MCP preparation exited before the cancellation adapter: {result:?}"),
+        completed = &mut apply => match completed {
+            Ok(Err(error)) => panic!("MCP preparation exited before entering its wait: {error}"),
+            _ => panic!("MCP preparation ended before the cancellation boundary"),
+        },
     }
-    eprintln!("MCP-CANCEL prepared initial MCP connection");
     let log = std::fs::read_to_string(&log_path).unwrap();
     let pids = fixture_started_pids(&log);
     assert_eq!(pids.len(), 1, "unexpected fixture log: {log}");

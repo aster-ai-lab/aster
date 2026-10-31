@@ -20,14 +20,14 @@ Defaults:
 
 | Variable | Default |
 | --- | --- |
-| `A3S_USE_REGISTRY_HOST` | `127.0.0.1` |
-| `A3S_USE_REGISTRY_PORT` | `4873` |
+| `ASTER_USE_REGISTRY_HOST` | `127.0.0.1` |
+| `ASTER_USE_REGISTRY_PORT` | `4873` |
 | Base URL | `http://127.0.0.1:4873/` |
 
 State (PID, log, recorded URL) lives under `.local/serve/` (gitignored).
 
 Requires `python3` and `curl`. The process serves only the static `registry/`
-directory (metadata + targets). No Docker and no a3s-box are required for this
+directory (metadata + targets). No Docker and no aster-box are required for this
 preview transport.
 
 `serve_local.sh start` keeps a background `python3 -m http.server` process
@@ -37,18 +37,18 @@ that PID remains healthy.
 
 ## Client binary requirement
 
-Consuming the Registry requires the **A3S Use package manager** CLI (`registry`
+Consuming the Registry requires the **Aster Use package manager** CLI (`registry`
 and `plugin` routes), for example Use `0.3.x` built from
-[A3S-Lab/Use](https://github.com/A3S-Lab/Use).
+[aster-ai-lab/Use](https://github.com/aster-ai-lab/Use).
 
-Homebrew `a3s-use` **capability wrappers** (currently `0.1.x`: browser / box /
+Homebrew `aster-use` **capability wrappers** (currently `0.1.x`: browser / box /
 office routes only) answer `Unknown Use route 'registry'` and cannot consume
-this tree. Point `A3S_USE_BIN` at a package-manager build:
+this tree. Point `ASTER_USE_BIN` at a package-manager build:
 
 ```bash
 # from the Use checkout
-cargo build -p a3s-use
-export A3S_USE_BIN="$PWD/target/debug/a3s-use"
+cargo build -p aster-use
+export ASTER_USE_BIN="$PWD/target/debug/aster-use"
 ```
 
 ## Point a client at the local source
@@ -60,12 +60,12 @@ local URL:
 ROOT=sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172
 URL="$(./scripts/serve_local.sh url)"
 
-"$A3S_USE_BIN" registry source add local \
+"$ASTER_USE_BIN" registry source add local \
   --url "${URL}" \
   --trust-root "${ROOT}" \
   --json
 
-"$A3S_USE_BIN" plugin plan-install a3s/registry-selftest \
+"$ASTER_USE_BIN" plugin plan-install aster/registry-selftest \
   --registry-name local \
   --scope-kind user \
   --scope-id user/registry-local \
@@ -73,10 +73,10 @@ URL="$(./scripts/serve_local.sh url)"
 ```
 
 Or run the bundled consume check (starts the server if needed, uses an
-isolated `A3S_USE_HOME`, and proves TUF refresh + catalog resolution):
+isolated `ASTER_USE_HOME`, and proves TUF refresh + catalog resolution):
 
 ```bash
-export A3S_USE_BIN=/path/to/a3s-use   # package-manager binary
+export ASTER_USE_BIN=/path/to/aster-use   # package-manager binary
 ./scripts/consume_local.sh
 ```
 
@@ -92,24 +92,24 @@ a redirect or hostname change never rotates trust.
 
 1. root / timestamp / snapshot / targets metadata are reachable
 2. served `root.json` SHA-256 matches the bootstrap pin
-3. the admitted smoke target downloads (`A3S_USE_REGISTRY_SMOKE_TARGET`, default
-   `a3s/registry-selftest`)
-4. served root matches on-disk `${A3S_USE_REGISTRY_DIR:-registry}/metadata/root.json`
+3. the admitted smoke target downloads (`ASTER_USE_REGISTRY_SMOKE_TARGET`, default
+   `aster/registry-selftest`)
+4. served root matches on-disk `${ASTER_USE_REGISTRY_DIR:-registry}/metadata/root.json`
 
-`A3S_USE_REGISTRY_DIR` may point `serve_local.sh` at an ephemeral assembled tree
+`ASTER_USE_REGISTRY_DIR` may point `serve_local.sh` at an ephemeral assembled tree
 (mock multi-package gates). Changing the directory never changes trust; clients
 still pin `--trust-root`.
 
 From the monorepo root, the first-principles gate for `just up::registry` plus
-mock packages (`a3s/mock-alpha`, `a3s/mock-beta`, `a3s/mock-echo`, and
-`a3s/mock-compose` with Tool+MCP+OKF+Skill+UI cross-requires) is:
+mock packages (`aster/mock-alpha`, `aster/mock-beta`, `aster/mock-echo`, and
+`aster/mock-compose` with Tool+MCP+OKF+Skill+UI cross-requires) is:
 
 ```bash
 just test::registry
 ```
 
 `consume_local.sh` additionally verifies the package-manager client can add the
-source and `plugin plan-install a3s/registry-selftest` against the live local
+source and `plugin plan-install aster/registry-selftest` against the live local
 URL, and that plan provenance **equals** the served base URL and bootstrap root
 pin (transport is never trusted on its own).
 
@@ -123,7 +123,7 @@ Service shape and ownership: [registry-service-architecture.md](registry-service
 Run the automated gate (ephemeral port + isolated state dir):
 
 ```bash
-export A3S_USE_BIN=/path/to/a3s-use   # Use package-manager 0.3.x
+export ASTER_USE_BIN=/path/to/aster-use   # Use package-manager 0.3.x
 ./scripts/test_local_registry.sh
 ```
 

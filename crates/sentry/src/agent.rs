@@ -1,6 +1,6 @@
-//! L3 — deep investigation by an a3s-code agent.
+//! L3 — deep investigation by an aster agent.
 //!
-//! The terminal tier, reached only when L1 *and* L2 both punt. It shells out to `a3s-code`, handing
+//! The terminal tier, reached only when L1 *and* L2 both punt. It shells out to `aster`, handing
 //! it the event plus a directory of security skills (investigation playbooks), and parses a JSON
 //! verdict back. This is the "spend real time + tokens to actually reason about it" tier — minutes,
 //! not milliseconds — so it runs on a vanishing fraction of events. If the agent is missing, errors,
@@ -17,7 +17,7 @@ use std::thread;
 use std::time::Duration;
 
 pub struct AgentJudge {
-    /// The a3s-code binary (or path). Wire it to your install; the args below are configurable too.
+    /// The aster binary (or path). Wire it to your install; the args below are configurable too.
     bin: String,
     /// Args passed before the prompt; `{skills}` is substituted with `skills_dir` (the entry is
     /// dropped if no skills dir is set). The prompt is appended as the final argument.
@@ -36,7 +36,7 @@ impl AgentJudge {
     ) -> Self {
         Self {
             bin: bin.into(),
-            // Default invocation; override for your a3s-code CLI. `-p <prompt>` one-shot, JSON out.
+            // Default invocation; override for your aster CLI. `-p <prompt>` one-shot, JSON out.
             arg_template: vec![
                 "--skills".into(),
                 "{skills}".into(),
@@ -104,7 +104,7 @@ impl AgentJudge {
             .stdout(Stdio::piped())
             .stderr(Stdio::null());
         // Own process group, so on timeout we SIGKILL the WHOLE tree. The agent bin (e.g. a Node
-        // a3s-code) spawns helpers that a bare child.kill() would orphan — and an orphan holding the
+        // aster) spawns helpers that a bare child.kill() would orphan — and an orphan holding the
         // inherited stdout pipe keeps the reader thread blocked forever (one leaked thread + FD per
         // timeout, a slow-burn exhaustion of the terminal security tier).
         #[cfg(unix)]
@@ -257,7 +257,7 @@ mod tests {
     #[test]
     fn args_substitute_skills_dir_or_drop_it() {
         let with = AgentJudge::new(
-            "a3s-code",
+            "aster",
             Some("/skills".into()),
             Duration::from_secs(1),
             false,
@@ -265,7 +265,7 @@ mod tests {
         let a = with.args("PROMPT");
         assert_eq!(a, vec!["--skills", "/skills", "--json", "-p", "PROMPT"]);
 
-        let without = AgentJudge::new("a3s-code", None, Duration::from_secs(1), false);
+        let without = AgentJudge::new("aster", None, Duration::from_secs(1), false);
         assert_eq!(without.args("PROMPT"), vec!["--json", "-p", "PROMPT"]);
     }
 

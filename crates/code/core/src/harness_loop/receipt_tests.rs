@@ -2,7 +2,7 @@
 
 use super::*;
 use crate::verification::VerificationCheck;
-use a3s_effect::{
+use aster_effect::{
     ToolEffectObservationV1, ToolExecutionOutcome, ToolExecutionResultV1, ToolFileIdentityV1,
     ToolFileKind, ToolInvocationIdentityV1, ToolPathChangeV1, TOOL_RESULT_SCHEMA,
 };
@@ -280,7 +280,7 @@ fn typed_projection_preserves_real_space_unicode_control_and_backslash_paths() {
         #[cfg(unix)]
         r"literal\name",
         #[cfg(unix)]
-        r".a3s\legal-file",
+        r".aster\legal-file",
     ];
     #[cfg(windows)]
     for unsupported in ["line\nbreak", "tab\tname"] {
@@ -328,7 +328,7 @@ fn typed_projection_preserves_real_space_unicode_control_and_backslash_paths() {
         },
     );
     unknown.outcome = ToolExecutionOutcome::Unknown;
-    unknown.effects.completeness = a3s_effect::ToolObservationCompleteness::Incomplete;
+    unknown.effects.completeness = aster_effect::ToolObservationCompleteness::Incomplete;
     unknown.effects.reason = Some("interrupted".into());
     unknown.validate().unwrap();
     ledger.observe_tool_receipt("write", &unknown);

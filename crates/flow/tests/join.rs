@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, InMemoryEventStore, JsonValue, QueryInvocation,
     RuntimeCommand, SelectArm, WorkflowInvocation, WorkflowSpec,
 };
@@ -14,7 +14,7 @@ impl FlowRuntime for JoinRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.select_joined("both") {
             return Ok(RuntimeCommand::Complete {
@@ -29,11 +29,11 @@ impl FlowRuntime for JoinRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
-    async fn run_query(&self, _invocation: QueryInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_query(&self, _invocation: QueryInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("queries unused".into()))
     }
 }
@@ -54,11 +54,11 @@ async fn join_all_completes_only_after_every_arm_finishes() {
     assert!(suspended.select("both").unwrap().is_join_all());
     assert_eq!(
         suspended.waits.get("a").unwrap().status,
-        a3s_flow::WaitStatus::Waiting
+        aster_flow::WaitStatus::Waiting
     );
     assert_eq!(
         suspended.waits.get("b").unwrap().status,
-        a3s_flow::WaitStatus::Waiting
+        aster_flow::WaitStatus::Waiting
     );
 
     engine.resume_wait(&run_id, "a").await.unwrap();
@@ -67,11 +67,11 @@ async fn join_all_completes_only_after_every_arm_finishes() {
     assert!(after_first.select("both").unwrap().is_open());
     assert_eq!(
         after_first.waits.get("a").unwrap().status,
-        a3s_flow::WaitStatus::Completed
+        aster_flow::WaitStatus::Completed
     );
     assert_eq!(
         after_first.waits.get("b").unwrap().status,
-        a3s_flow::WaitStatus::Waiting
+        aster_flow::WaitStatus::Waiting
     );
 
     engine.resume_wait(&run_id, "b").await.unwrap();
@@ -82,6 +82,6 @@ async fn join_all_completes_only_after_every_arm_finishes() {
     assert!(completed.select("both").unwrap().winning_arm_id.is_none());
     assert_eq!(
         completed.waits.get("b").unwrap().status,
-        a3s_flow::WaitStatus::Completed
+        aster_flow::WaitStatus::Completed
     );
 }

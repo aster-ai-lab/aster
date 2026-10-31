@@ -1,13 +1,13 @@
 use std::convert::TryFrom;
 
-use a3s_use_core::{OkfCapabilityProjection, PlanScope, UseError, UseResult};
+use aster_use_core::{OkfCapabilityProjection, PlanScope, UseError, UseResult};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 use super::query::{OkfKnowledgeCitation, OKF_KNOWLEDGE_CITATION_SCHEMA};
 
-pub const OKF_KNOWLEDGE_READ_REQUEST_SCHEMA: &str = "a3s.use.okf-knowledge-read-request.v1";
-pub const OKF_KNOWLEDGE_READ_RESPONSE_SCHEMA: &str = "a3s.use.okf-knowledge-read-response.v1";
+pub const OKF_KNOWLEDGE_READ_REQUEST_SCHEMA: &str = "aster.use.okf-knowledge-read-request.v1";
+pub const OKF_KNOWLEDGE_READ_RESPONSE_SCHEMA: &str = "aster.use.okf-knowledge-read-response.v1";
 
 const MAX_READ_BYTES: usize = 8 * 1024 * 1024;
 const MAX_READ_PATH_BYTES: usize = 4 * 1024;

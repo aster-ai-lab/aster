@@ -175,7 +175,7 @@ function ColumnsIcon() {
   );
 }
 
-const LIST_TOOLS_ATTR = 'data-a3s-list-tools';
+const LIST_TOOLS_ATTR = 'data-aster-list-tools';
 /** One turn of ui-btn-spin, so a fast reload still shows the icon rotating. */
 const REFRESH_SPIN_MS = 700;
 

@@ -2,7 +2,7 @@ use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, DeleteMode, DeleteRequest, Error, ExitStatus, ListRequest, OciBundle,
     RuntimeClient, StartRequest,
 };
@@ -16,8 +16,8 @@ use super::lifecycle::{
 };
 use crate::NativeLinuxMultiContainerSmokeReport;
 
-const EXTERNAL_SCRIPT_EVIDENCE: &[u8] = b"a3s-oci-external-init-v1\n";
-const INLINE_EVIDENCE: &[u8] = b"a3s-oci-inline-init-v1\n";
+const EXTERNAL_SCRIPT_EVIDENCE: &[u8] = b"aster-oci-external-init-v1\n";
+const INLINE_EVIDENCE: &[u8] = b"aster-oci-inline-init-v1\n";
 const HOOK_DESCENDANT_STARTED: &str = "hook-timeout-descendant-started";
 const HOOK_DESCENDANT_ESCAPED: &str = "hook-timeout-descendant-escaped";
 const HOOK_DESCENDANT_OBSERVATION: Duration = Duration::from_secs(3);
@@ -66,18 +66,18 @@ impl InitializationFixture {
                 )
             })?;
 
-        let target_name = format!(".a3s-oci-init-{nonce}");
+        let target_name = format!(".aster-oci-init-{nonce}");
         let target = format!("/{target_name}");
-        let script_name = format!("a3s-oci-init-{nonce}");
+        let script_name = format!("aster-oci-init-{nonce}");
         let script_path = rootfs.join("bin").join(&script_name);
         let script = format!(
             "#!/bin/sh\nset -eu\ntest \"$PWD\" = \"{target}\"\n\
-             test \"${{A3S_INIT_PROFILE:-}}\" = external\n\
+             test \"${{ASTER_INIT_PROFILE:-}}\" = external\n\
              test \"$(/bin/busybox id -u)\" = 0\n\
              test \"$(/bin/busybox id -g)\" = 0\n\
              test \"$(umask)\" = 0022\n\
              case \" $(/bin/busybox id -G) \" in *\" 1 \"*) ;; *) exit 1 ;; esac\n\
-             printf 'a3s-oci-external-init-v1\\n' > {target}/evidence/external\n"
+             printf 'aster-oci-external-init-v1\\n' > {target}/evidence/external\n"
         );
         tokio::fs::write(&script_path, script)
             .await
@@ -107,21 +107,21 @@ impl InitializationFixture {
                 "/bin/sh",
                 "-c",
                 format!(
-                    "set -eu; printf 'a3s-oci-inline-init-v1\\n' > \
+                    "set -eu; printf 'aster-oci-inline-init-v1\\n' > \
                      {target}/evidence/inline"
                 )
             ]),
             json!(["PATH=/bin"]),
             None,
-            &format!("a3s-oci-init-inline-{nonce}"),
+            &format!("aster-oci-init-inline-{nonce}"),
         )?;
         let external_script = build_profile(
             base,
             mount,
             json!([format!("/bin/{script_name}")]),
-            json!(["PATH=/bin", "A3S_INIT_PROFILE=external"]),
+            json!(["PATH=/bin", "ASTER_INIT_PROFILE=external"]),
             None,
-            &format!("a3s-oci-init-script-{nonce}"),
+            &format!("aster-oci-init-script-{nonce}"),
         )?;
         let external_script = with_exact_process_profile(&external_script, &target)?;
         let direct_argv = build_profile(
@@ -130,7 +130,7 @@ impl InitializationFixture {
             json!(["/bin/busybox", "touch", format!("{target}/evidence/direct")]),
             json!(["PATH=/bin"]),
             None,
-            &format!("a3s-oci-init-direct-{nonce}"),
+            &format!("aster-oci-init-direct-{nonce}"),
         )?;
         let nonzero_exit = build_profile(
             base,
@@ -138,7 +138,7 @@ impl InitializationFixture {
             json!(["/bin/busybox", "sh", "-c", "exit 42"]),
             json!(["PATH=/bin"]),
             None,
-            &format!("a3s-oci-init-nonzero-{nonce}"),
+            &format!("aster-oci-init-nonzero-{nonce}"),
         )?;
         let prestart_failure = build_profile(
             base,
@@ -146,7 +146,7 @@ impl InitializationFixture {
             sleeping_init(),
             json!(["PATH=/bin"]),
             Some(hooks("prestart", "exit 11", 2)),
-            &format!("a3s-oci-hook-prestart-{nonce}"),
+            &format!("aster-oci-hook-prestart-{nonce}"),
         )?;
         let create_runtime_failure = build_profile(
             base,
@@ -154,7 +154,7 @@ impl InitializationFixture {
             sleeping_init(),
             json!(["PATH=/bin"]),
             Some(hooks("createRuntime", "exit 13", 2)),
-            &format!("a3s-oci-hook-create-runtime-{nonce}"),
+            &format!("aster-oci-hook-create-runtime-{nonce}"),
         )?;
         let create_container_failure = build_profile(
             base,
@@ -162,7 +162,7 @@ impl InitializationFixture {
             sleeping_init(),
             json!(["PATH=/bin"]),
             Some(hooks("createContainer", "exit 17", 2)),
-            &format!("a3s-oci-hook-create-container-{nonce}"),
+            &format!("aster-oci-hook-create-container-{nonce}"),
         )?;
         let start_container_failure = build_profile(
             base,
@@ -170,7 +170,7 @@ impl InitializationFixture {
             sleeping_init(),
             json!(["PATH=/bin"]),
             Some(hooks("startContainer", "exit 19", 2)),
-            &format!("a3s-oci-hook-start-container-{nonce}"),
+            &format!("aster-oci-hook-start-container-{nonce}"),
         )?;
         let poststart_failure = build_profile(
             base,
@@ -178,7 +178,7 @@ impl InitializationFixture {
             sleeping_init(),
             json!(["PATH=/bin"]),
             Some(hooks("poststart", "exit 21", 2)),
-            &format!("a3s-oci-hook-poststart-{nonce}"),
+            &format!("aster-oci-hook-poststart-{nonce}"),
         )?;
         let hook_timeout = build_profile(
             base,
@@ -186,7 +186,7 @@ impl InitializationFixture {
             sleeping_init(),
             json!(["PATH=/bin"]),
             Some(timeout_hooks(&evidence_directory)?),
-            &format!("a3s-oci-hook-timeout-{nonce}"),
+            &format!("aster-oci-hook-timeout-{nonce}"),
         )?;
         let poststop_failure = build_profile(
             base,
@@ -194,7 +194,7 @@ impl InitializationFixture {
             json!(["/bin/busybox", "true"]),
             json!(["PATH=/bin"]),
             Some(hooks("poststop", "exit 23", 2)),
-            &format!("a3s-oci-hook-poststop-{nonce}"),
+            &format!("aster-oci-hook-poststop-{nonce}"),
         )?;
 
         Ok(Self {
@@ -635,13 +635,13 @@ fn timeout_hooks(evidence_directory: &Path) -> Result<Value, String> {
                 "sh",
                 "-c",
                 "set -eu; (trap '' HUP TERM; /bin/busybox sleep 2; \
-                 /bin/busybox touch \"$A3S_HOOK_DESCENDANT_ESCAPED\") & \
-                 printf '%s\\n' \"$!\" > \"$A3S_HOOK_DESCENDANT_STARTED\"; \
+                 /bin/busybox touch \"$ASTER_HOOK_DESCENDANT_ESCAPED\") & \
+                 printf '%s\\n' \"$!\" > \"$ASTER_HOOK_DESCENDANT_STARTED\"; \
                  exec /bin/busybox sleep 30"
             ],
             "env": [
-                format!("A3S_HOOK_DESCENDANT_STARTED={started}"),
-                format!("A3S_HOOK_DESCENDANT_ESCAPED={escaped}")
+                format!("ASTER_HOOK_DESCENDANT_STARTED={started}"),
+                format!("ASTER_HOOK_DESCENDANT_ESCAPED={escaped}")
             ],
             "timeout": 1
         }]
@@ -729,7 +729,7 @@ fn object_mut<'a>(
 mod tests {
     use std::path::Path;
 
-    use a3s_oci_sdk::OciBundle;
+    use aster_oci_sdk::OciBundle;
     use serde_json::{json, Value};
 
     use super::{
@@ -748,19 +748,19 @@ mod tests {
         let bundle = build_profile(
             &base,
             EvidenceMount {
-                source: Path::new("/tmp/a3s-oci-init-evidence"),
+                source: Path::new("/tmp/aster-oci-init-evidence"),
                 target: "/.matrix",
             },
             json!(["/bin/busybox", "true"]),
             json!(["PATH=/bin"]),
             Some(hooks("poststop", "exit 7", 2)),
-            "a3s-oci-init-test",
+            "aster-oci-init-test",
         )
         .expect("init profile");
         let config: Value = serde_json::from_str(bundle.config_json()).expect("profile JSON");
 
         assert_eq!(config["process"]["args"], json!(["/bin/busybox", "true"]));
-        assert_eq!(config["linux"]["cgroupsPath"], "a3s-oci-init-test");
+        assert_eq!(config["linux"]["cgroupsPath"], "aster-oci-init-test");
         assert_eq!(config["hooks"]["poststop"][0]["timeout"], 2);
         assert!(config["mounts"]
             .as_array()
@@ -778,16 +778,16 @@ mod tests {
         assert_eq!(config["process"]["user"]["additionalGids"], json!([1]));
 
         let timeout =
-            timeout_hooks(Path::new("/tmp/a3s-oci-hook-evidence")).expect("timeout Hook profile");
+            timeout_hooks(Path::new("/tmp/aster-oci-hook-evidence")).expect("timeout Hook profile");
         assert_eq!(timeout["prestart"][0]["timeout"], 1);
         assert_eq!(
             timeout["prestart"][0]["env"],
             json!([
                 format!(
-                    "A3S_HOOK_DESCENDANT_STARTED=/tmp/a3s-oci-hook-evidence/{HOOK_DESCENDANT_STARTED}"
+                    "ASTER_HOOK_DESCENDANT_STARTED=/tmp/aster-oci-hook-evidence/{HOOK_DESCENDANT_STARTED}"
                 ),
                 format!(
-                    "A3S_HOOK_DESCENDANT_ESCAPED=/tmp/a3s-oci-hook-evidence/{HOOK_DESCENDANT_ESCAPED}"
+                    "ASTER_HOOK_DESCENDANT_ESCAPED=/tmp/aster-oci-hook-evidence/{HOOK_DESCENDANT_ESCAPED}"
                 )
             ])
         );

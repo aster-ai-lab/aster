@@ -62,7 +62,7 @@ fn test_build_instance_spec_passes_configured_virtiofs_cache_mode() {
 
     let spec = vm.build_instance_spec(&layout).unwrap();
 
-    assert_eq!(env_value(&spec, "A3S_VIRTIOFS_CACHE"), Some("always"));
+    assert_eq!(env_value(&spec, "ASTER_VIRTIOFS_CACHE"), Some("always"));
 }
 
 #[test]
@@ -70,7 +70,7 @@ fn test_build_instance_spec_disables_tsi_only_for_network_none() {
     let none_dir = tempdir().unwrap();
     let none_layout = test_layout(none_dir.path(), Some(test_oci_config(None, None)), true);
     let mut none_vm = test_vm_manager(BoxConfig {
-        network: a3s_box_core::NetworkMode::None,
+        network: aster_box_core::NetworkMode::None,
         ..Default::default()
     });
     assert!(
@@ -83,7 +83,7 @@ fn test_build_instance_spec_disables_tsi_only_for_network_none() {
     let tsi_dir = tempdir().unwrap();
     let tsi_layout = test_layout(tsi_dir.path(), Some(test_oci_config(None, None)), true);
     let mut tsi_vm = test_vm_manager(BoxConfig {
-        network: a3s_box_core::NetworkMode::Tsi,
+        network: aster_box_core::NetworkMode::Tsi,
         ..Default::default()
     });
     assert!(!tsi_vm.build_instance_spec(&tsi_layout).unwrap().disable_tsi);
@@ -119,7 +119,7 @@ fn test_windows_box_enables_host_control_without_published_ports() {
 #[test]
 fn test_run_path_plumbs_cpu_cgroup_limits_to_guest() {
     // The `run` boot path must hand the CPU cgroup limits to guest-init as
-    // A3S_SEC_CPU_* (the same vars the CRI path emits and the guest consumes),
+    // ASTER_SEC_CPU_* (the same vars the CRI path emits and the guest consumes),
     // so `run --cpu-quota/--cpu-shares` is actually enforced in-guest instead
     // of silently dropped.
     let temp = tempdir().unwrap();
@@ -133,16 +133,16 @@ fn test_run_path_plumbs_cpu_cgroup_limits_to_guest() {
     let layout = test_layout(temp.path(), Some(test_oci_config(None, None)), true);
     let spec = vm.build_instance_spec(&layout).unwrap();
 
-    assert_eq!(env_value(&spec, "A3S_SEC_CPU_QUOTA"), Some("50000"));
-    assert_eq!(env_value(&spec, "A3S_SEC_CPU_PERIOD"), Some("100000"));
-    assert_eq!(env_value(&spec, "A3S_SEC_CPU_SHARES"), Some("512"));
-    assert_eq!(env_value(&spec, "A3S_SEC_PIDS_LIMIT"), Some("100"));
+    assert_eq!(env_value(&spec, "ASTER_SEC_CPU_QUOTA"), Some("50000"));
+    assert_eq!(env_value(&spec, "ASTER_SEC_CPU_PERIOD"), Some("100000"));
+    assert_eq!(env_value(&spec, "ASTER_SEC_CPU_SHARES"), Some("512"));
+    assert_eq!(env_value(&spec, "ASTER_SEC_PIDS_LIMIT"), Some("100"));
 }
 
 #[test]
 fn test_run_path_plumbs_memory_reservation_and_swap_to_guest() {
     // --memory-reservation (memory.low) and --memory-swap (memory.swap.max)
-    // must reach guest-init as A3S_SEC_MEM_LOW / A3S_SEC_MEM_SWAP so the
+    // must reach guest-init as ASTER_SEC_MEM_LOW / ASTER_SEC_MEM_SWAP so the
     // in-guest cgroup enforces them (the broken host path was removed).
     let temp = tempdir().unwrap();
     let mut config = BoxConfig::default();
@@ -153,10 +153,10 @@ fn test_run_path_plumbs_memory_reservation_and_swap_to_guest() {
     let layout = test_layout(temp.path(), Some(test_oci_config(None, None)), true);
     let spec = vm.build_instance_spec(&layout).unwrap();
 
-    assert_eq!(env_value(&spec, "A3S_SEC_MEM_LOW"), Some("268435456"));
-    assert_eq!(env_value(&spec, "A3S_SEC_MEM_SWAP"), Some("-1"));
+    assert_eq!(env_value(&spec, "ASTER_SEC_MEM_LOW"), Some("268435456"));
+    assert_eq!(env_value(&spec, "ASTER_SEC_MEM_SWAP"), Some("-1"));
     // The hard --memory limit is VM-sized, not an in-guest memory.max.
-    assert_eq!(env_value(&spec, "A3S_SEC_MEM_LIMIT"), None);
+    assert_eq!(env_value(&spec, "ASTER_SEC_MEM_LIMIT"), None);
 }
 
 #[test]
@@ -177,8 +177,8 @@ fn test_run_path_omits_cpu_limits_when_unset_or_unlimited() {
             .entrypoint
             .env
             .iter()
-            .any(|(k, _)| k.starts_with("A3S_SEC_CPU_")),
-        "no A3S_SEC_CPU_* must be emitted for an unset/unlimited quota"
+            .any(|(k, _)| k.starts_with("ASTER_SEC_CPU_")),
+        "no ASTER_SEC_CPU_* must be emitted for an unset/unlimited quota"
     );
 }
 
@@ -198,9 +198,9 @@ fn test_parse_volume_mount_host_guest() {
 fn test_parse_volume_spec_rejects_runtime_control_namespace() {
     for guest_path in [
         "/run",
-        "/run/a3s-box",
-        "/run/a3s-box/boot",
-        "/run//a3s-box/./boot/config.json",
+        "/run/aster-box",
+        "/run/aster-box/boot",
+        "/run//aster-box/./boot/config.json",
     ] {
         let error = VmManager::parse_volume_spec(&format!("/tmp/data:{guest_path}"))
             .unwrap_err()
@@ -208,7 +208,7 @@ fn test_parse_volume_spec_rejects_runtime_control_namespace() {
         assert!(error.contains("reserved runtime state"), "{error}");
     }
 
-    let error = VmManager::parse_volume_spec("/tmp/data:/srv/../run/a3s-box")
+    let error = VmManager::parse_volume_spec("/tmp/data:/srv/../run/aster-box")
         .unwrap_err()
         .to_string();
     assert!(error.contains("Invalid guest volume path"), "{error}");
@@ -273,7 +273,7 @@ fn test_build_instance_spec_marks_named_volume_for_copy_up() {
         home.path().join("volumes"),
     );
     let volume = store
-        .create(a3s_box_core::volume::VolumeConfig::new("data", ""))
+        .create(aster_box_core::volume::VolumeConfig::new("data", ""))
         .unwrap();
     let mut vm = test_vm_manager(BoxConfig {
         volumes: vec![format!("{}:/data", volume.mount_point)],
@@ -425,7 +425,7 @@ fn managed_secret_single_file_staging_never_uses_durable_box_directory() {
     std::fs::write(&source, b"TRANSIENT").unwrap();
     std::fs::set_permissions(&source, std::fs::Permissions::from_mode(0o400)).unwrap();
     let parsed = VmManager::parse_volume_spec(&format!(
-        "{}:/.a3s-box-secrets/{identity}/000.secret:ro",
+        "{}:/.aster-box-secrets/{identity}/000.secret:ro",
         source.display()
     ))
     .unwrap();
@@ -438,7 +438,7 @@ fn managed_secret_single_file_staging_never_uses_durable_box_directory() {
         "compose-box-id",
     ) {
         Ok(mount) => mount,
-        Err(a3s_box_core::error::BoxError::BoxBootError {
+        Err(aster_box_core::error::BoxError::BoxBootError {
             hint: Some(hint), ..
         }) if hint.contains("CAP_SYS_ADMIN") => {
             // CI runners often lack the privileges needed for MS_RDONLY bind
@@ -466,7 +466,7 @@ fn missing_managed_secret_source_is_never_created_as_a_directory() {
     let source = transient.path().join(identity).join("000.secret");
     let parsed = ParsedVolumeMount {
         host_path: source.clone(),
-        guest_path: "/.a3s-box-secrets/missing/000.secret".into(),
+        guest_path: "/.aster-box-secrets/missing/000.secret".into(),
         read_only: true,
         copy_up: false,
     };
@@ -495,7 +495,7 @@ fn managed_secret_source_must_be_read_only() {
     std::fs::write(&source, b"TRANSIENT").unwrap();
     let parsed = ParsedVolumeMount {
         host_path: source,
-        guest_path: "/.a3s-box-secrets/managed/000.secret".into(),
+        guest_path: "/.aster-box-secrets/managed/000.secret".into(),
         read_only: false,
         copy_up: false,
     };

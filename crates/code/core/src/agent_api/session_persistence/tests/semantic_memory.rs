@@ -4,8 +4,8 @@ use crate::embedding::{
     EmbeddingProvider, EmbeddingProviderDescriptor, EmbeddingProviderError,
 };
 use crate::error::CodeError;
-use a3s_memory::repository::{InMemoryRepository, MemoryNamespace};
-use a3s_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
+use aster_durable_memory::repository::{InMemoryRepository, MemoryNamespace};
+use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 

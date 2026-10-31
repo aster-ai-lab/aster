@@ -15,7 +15,7 @@ fn write_member(root: &Path, name: &str, body: &[u8]) -> Member {
 fn fixture() -> (tempfile::TempDir, Candidate, PathBuf) {
     let root = tempfile::tempdir().unwrap();
     let candidate = Candidate {
-        schema: "a3s.code.lh.candidate.v1".into(),
+        schema: "aster.code.lh.candidate.v1".into(),
         build_id: "declared-pair".into(),
         aster: write_member(root.path(), "declared-aster", b"declared terminal bytes"),
         acp: write_member(root.path(), "declared-acp", b"declared ACP bytes"),
@@ -30,7 +30,7 @@ fn registered_pair_copies_only_the_declared_bytes_despite_other_candidates() {
     let (root, candidate, path) = fixture();
     write_member(
         root.path(),
-        "a3s-code-acp",
+        "aster-acp",
         b"other build with the same source id",
     );
     let loaded = Candidate::load(&path, "declared-pair").unwrap();
@@ -38,7 +38,7 @@ fn registered_pair_copies_only_the_declared_bytes_despite_other_candidates() {
     std::fs::create_dir(&output).unwrap();
     loaded.copy_into(&output).unwrap();
     assert_eq!(
-        std::fs::read(output.join("a3s-code-acp")).unwrap(),
+        std::fs::read(output.join("aster-acp")).unwrap(),
         std::fs::read(candidate.acp.path).unwrap()
     );
     assert_eq!(

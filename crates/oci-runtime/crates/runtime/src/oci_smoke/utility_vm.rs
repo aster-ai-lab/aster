@@ -2,17 +2,17 @@ use std::collections::BTreeSet;
 use std::path::{Component, Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_oci_agent_protocol::GuestPath;
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{ContainerId, ContainerTarget, Generation, OciBundle};
+use aster_oci_agent_protocol::GuestPath;
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{ContainerId, ContainerTarget, Generation, OciBundle};
 use tokio::io::AsyncReadExt;
 
 use super::OciVmSmokeReport;
 use crate::agent_session::UtilityVmSession;
 
-const MARKER_NAME: &str = ".a3s-oci-create-start-smoke";
+const MARKER_NAME: &str = ".aster-oci-create-start-smoke";
 const MAX_MARKER_BYTES: u64 = 1_024;
-const GUEST_RUNTIME_PREFIX: &str = "a3s-oci-agent-";
+const GUEST_RUNTIME_PREFIX: &str = "aster-oci-agent-";
 
 mod fault_cleanup;
 #[cfg(any(
@@ -96,7 +96,7 @@ pub(super) async fn run_transport_fault_cleanup(
     runtime_share: Option<&Path>,
     bundle_directory: &Path,
     console: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportFaultStage,
+    stage: aster_oci_agent_protocol::AgentTransportFaultStage,
 ) -> crate::OciVmTransportFaultCleanupReport {
     transport_fault_cleanup::run(
         shim,
@@ -120,7 +120,7 @@ pub(super) async fn run_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportFaultStage,
+    stage: aster_oci_agent_protocol::AgentTransportFaultStage,
 ) -> crate::OciVmReopenReplacementReport {
     reopen_replacement::run(
         shim,
@@ -143,7 +143,7 @@ pub(super) async fn run_state_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_state(
         shim,
@@ -166,7 +166,7 @@ pub(super) async fn run_start_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_start(
         shim,
@@ -189,7 +189,7 @@ pub(super) async fn run_kill_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_kill(
         shim,
@@ -212,7 +212,7 @@ pub(super) async fn run_delete_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_delete(
         shim,
@@ -235,7 +235,7 @@ pub(super) async fn run_wait_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_wait(
         shim,
@@ -258,7 +258,7 @@ pub(super) async fn run_exec_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_exec(
         shim,
@@ -281,7 +281,7 @@ pub(super) async fn run_signal_process_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_signal_process(
         shim,
@@ -304,7 +304,7 @@ pub(super) async fn run_wait_process_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_wait_process(
         shim,
@@ -327,7 +327,7 @@ pub(super) async fn run_pause_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_pause(
         shim,
@@ -350,7 +350,7 @@ pub(super) async fn run_processes_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_processes(
         shim,
@@ -373,7 +373,7 @@ pub(super) async fn run_read_output_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_read_output(
         shim,
@@ -396,7 +396,7 @@ pub(super) async fn run_close_stdin_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_close_stdin(
         shim,
@@ -419,7 +419,7 @@ pub(super) async fn run_resize_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_resize(
         shim,
@@ -442,7 +442,7 @@ pub(super) async fn run_file_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_file(
         shim,
@@ -465,7 +465,7 @@ pub(super) async fn run_filesystem_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_filesystem(
         shim,
@@ -488,7 +488,7 @@ pub(super) async fn run_write_stdin_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_write_stdin(
         shim,
@@ -511,7 +511,7 @@ pub(super) async fn run_resume_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_resume(
         shim,
@@ -534,7 +534,7 @@ pub(super) async fn run_stats_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_stats(
         shim,
@@ -557,7 +557,7 @@ pub(super) async fn run_update_reopen_replacement(
     system_image_manifest: &Path,
     bundle_directory: &Path,
     console_directory: &Path,
-    stage: a3s_oci_agent_protocol::AgentTransportOperationStage,
+    stage: aster_oci_agent_protocol::AgentTransportOperationStage,
 ) -> crate::OciVmOperationReopenReplacementReport {
     reopen_replacement::run_update(
         shim,
@@ -892,7 +892,7 @@ fn guest_path(vm_rootfs: &Path, bundle: &Path) -> Result<GuestPath, String> {
     ))]
     let path = format!(
         "{}/{}",
-        a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
+        aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_GUEST_ROOT,
         components.join("/")
     );
     #[cfg(not(any(
@@ -1062,20 +1062,20 @@ mod tests {
 
     #[test]
     fn guest_path_maps_runtime_share_descendants_to_the_fixed_guest_mount() {
-        let runtime_share = Path::new("/tmp/a3s-oci-runtime-share");
-        let bundle = runtime_share.join("var/lib/a3s-oci/bundle-a");
+        let runtime_share = Path::new("/tmp/aster-oci-runtime-share");
+        let bundle = runtime_share.join("var/lib/aster-oci/bundle-a");
 
         let guest = guest_path(runtime_share, &bundle).expect("guest bundle path");
 
         assert_eq!(
             guest.as_str(),
-            "/run/a3s-oci-runtime/var/lib/a3s-oci/bundle-a"
+            "/run/aster-oci-runtime/var/lib/aster-oci/bundle-a"
         );
     }
 
     #[test]
     fn guest_path_rejects_the_runtime_share_itself_and_outside_paths() {
-        let runtime_share = Path::new("/tmp/a3s-oci-runtime-share");
+        let runtime_share = Path::new("/tmp/aster-oci-runtime-share");
 
         assert!(guest_path(runtime_share, runtime_share).is_err());
         assert!(guest_path(runtime_share, Path::new("/tmp/other/bundle")).is_err());

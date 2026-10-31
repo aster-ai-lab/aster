@@ -6,7 +6,7 @@ use std::process::ExitStatus as ProcessExitStatus;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_sdk::{Error, ErrorCode, ExitStatus, IoMode, ProcessIo, Result};
+use aster_oci_sdk::{Error, ErrorCode, ExitStatus, IoMode, ProcessIo, Result};
 use tokio::io::AsyncWriteExt;
 use tokio::process::{Child, Command};
 use tokio::time::timeout;

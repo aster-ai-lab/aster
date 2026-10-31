@@ -98,7 +98,7 @@ async fn goal_tick_exact_operation_tracks_the_original_run_across_replan_cancel_
             assert_eq!(
                 before
                     .iter()
-                    .filter(|f| f.kind == "a3s.goal.slice.admitted")
+                    .filter(|f| f.kind == "aster.goal.slice.admitted")
                     .count(),
                 1
             );

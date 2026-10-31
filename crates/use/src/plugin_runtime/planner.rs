@@ -1,13 +1,13 @@
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     ArtifactRef, HealthProbe, NetworkMode, ResourceLimits, RestartPolicy, RuntimeHealthCheck,
     RuntimeNetworkSpec, RuntimePort, RuntimeProcessSpec, RuntimeUnitClass, RuntimeUnitSpec,
     TransportProtocol,
 };
-use a3s_use_core::{
+use aster_use_core::{
     McpReleaseDescriptor, PackageSurfaceKind, PlanScope, ReleaseResolution, ToolReleaseDescriptor,
     ToolWorkloadContract, UseError, UseResult,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     PluginMcpLaunch, PluginMcpSurface, ToolServiceSurface, ToolTaskSource, ToolTaskSurface,
 };
 use serde::Serialize;
@@ -18,13 +18,13 @@ use super::model::{
     RuntimeSurfacePlan, RuntimeTaskInvocation, RuntimeWorkloadPolicy,
 };
 
-const SEMANTICS_PROFILE_SCHEMA: &str = "a3s.use.runtime-semantics.v2";
+const SEMANTICS_PROFILE_SCHEMA: &str = "aster.use.runtime-semantics.v2";
 
 fn host_release_resolution() -> ReleaseResolution {
     ReleaseResolution {
         components: std::collections::BTreeMap::from([
-            ("a3s-runtime".into(), a3s_runtime::VERSION.into()),
-            ("a3s-use".into(), env!("CARGO_PKG_VERSION").into()),
+            ("aster-runtime".into(), aster_runtime::VERSION.into()),
+            ("aster-use".into(), env!("CARGO_PKG_VERSION").into()),
         ]),
         // shortcut: release dependencies stay closed, expand only with host-verified resolution facts.
         dependencies: Vec::new(),
@@ -45,7 +45,7 @@ pub fn plan_tool_task_release(
     descriptor.verify_resolution(&host_release_resolution())?;
     if !matches!(surface.source, ToolTaskSource::Release { .. }) || surface.interactive {
         return Err(runtime_input_error(
-            "Only non-interactive release-backed Tool Tasks can be mapped to A3S Runtime.",
+            "Only non-interactive release-backed Tool Tasks can be mapped to Aster Runtime.",
         ));
     }
     verify_artifact(
@@ -239,7 +239,7 @@ pub fn plan_mcp_service_release(
     descriptor.verify_resolution(&host_release_resolution())?;
     if !matches!(surface.launch, PluginMcpLaunch::StreamableHttp { .. }) {
         return Err(runtime_input_error(
-            "Only Streamable HTTP MCP releases can be mapped to A3S Runtime.",
+            "Only Streamable HTTP MCP releases can be mapped to Aster Runtime.",
         ));
     }
     verify_artifact(
@@ -431,7 +431,7 @@ pub(super) fn runtime_unit_id(
     }
 
     let identity = UnitIdentity {
-        schema: "a3s.use.runtime-unit-identity.v2",
+        schema: "aster.use.runtime-unit-identity.v2",
         package_id: &context.package_id,
         package_digest: &context.package_digest,
         scope: &context.scope,

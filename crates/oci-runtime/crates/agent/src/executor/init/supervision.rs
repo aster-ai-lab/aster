@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::os::unix::net::UnixStream;
 
-use a3s_oci_sdk::{ErrorCode, Result};
+use aster_oci_sdk::{ErrorCode, Result};
 
 use super::{complete_create_and_wait_for_start, init_error, reject_before_ready, CreateContext};
 use crate::executor::mount::DetachedMountSources;

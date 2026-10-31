@@ -1,7 +1,7 @@
 //! Unified ACL config for the in-process SDK.
 //!
 //! Where the daemon is configured by environment variables, the embeddable [`Sentry`](crate::Sentry)
-//! reads one ACL file — the same a3s config language a3s-code uses — that carries everything: the L1
+//! reads one ACL file — the same aster config language aster uses — that carries everything: the L1
 //! rules, the L2/L3 backends, the deny-file sinks, and the fail mode. Example:
 //!
 //! ```hcl
@@ -9,7 +9,7 @@
 //! speculate   = "high"        # optional: run L2+L3 in parallel at/above this severity
 //!
 //! llm   { url = "http://llm:18051/v1" model = "glm" key = "..." timeout_s = 30 }   # L2 (optional)
-//! agent { bin = "a3s-code" skills = "./skills" timeout_s = 120 }                    # L3 (optional)
+//! agent { bin = "aster" skills = "./skills" timeout_s = 120 }                    # L3 (optional)
 //! sae   { dict = "features.json" escalate_at = 0.3 block_at = 0.6 }                 # mech-interp (optional)
 //! deny  { egress = "egress.txt" file = "file.txt" exec = "exec.txt" }               # sinks (optional)
 //!
@@ -41,10 +41,10 @@ pub struct SdkConfig {
     pub speculate: Option<String>,
     /// L2 — a fast LLM classifier (OpenAI-compatible). Omit for rules-only / rules+L3.
     pub llm: Option<LlmCfg>,
-    /// L3 — a deep a3s-code agent investigation. Omit if you don't run L3.
+    /// L3 — a deep aster agent investigation. Omit if you don't run L3.
     pub agent: Option<AgentCfg>,
     /// SAE mechanistic-interpretability tier — judges model-output `LlmActivations` events (from
-    /// a3s-power's in-enclave tap) against a labeled feature dictionary. Omit if you don't run it.
+    /// aster-power's in-enclave tap) against a labeled feature dictionary. Omit if you don't run it.
     pub sae: Option<SaeCfg>,
     /// Deny-file sinks the kernel guards read. Omit to judge without enforcing.
     pub deny: Option<DenyCfg>,

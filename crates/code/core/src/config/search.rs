@@ -17,7 +17,7 @@ pub enum SearchCascadeTier {
     Api,
 }
 
-/// Search engine configuration (a3s-search integration)
+/// Search engine configuration (aster-search integration)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SearchConfig {
@@ -31,7 +31,7 @@ pub struct SearchConfig {
 
     /// Preferred cascade tier order for automatic fallback.
     ///
-    /// When omitted, A3S Search's product order applies: API → HTTP/RSS →
+    /// When omitted, Aster Search's product order applies: API → HTTP/RSS →
     /// headless. Listed tiers run first; omitted tiers keep that order after
     /// them. Duplicate entries are ignored.
     #[serde(
@@ -69,7 +69,7 @@ pub enum BrowserBackend {
 /// Headless browser configuration for JS-rendered search engines.
 ///
 /// Moli is the default backend. When it is selected and no executable is
-/// configured or packaged, A3S Code downloads the pinned, digest-verified
+/// configured or packaged, Aster Code downloads the pinned, digest-verified
 /// runtime into the user cache on first use.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -100,7 +100,7 @@ pub struct HeadlessConfig {
     pub auto_download_moli: bool,
 
     /// Optional pinned Moli release version. Defaults to the version bundled
-    /// by this A3S Code release.
+    /// by this Aster Code release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub moli_version: Option<String>,
 
@@ -262,7 +262,7 @@ pub struct SearchEngineConfig {
     /// Optional API provider endpoint override.
     ///
     /// Wired only for native API engines (`anysearch`, `tavily`). Validation
-    /// stays in `a3s-search`: HTTPS in production, loopback HTTP for fixtures.
+    /// stays in `aster-search`: HTTPS in production, loopback HTTP for fixtures.
     /// This does not weaken `web_fetch` / `download` SSRF checks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,

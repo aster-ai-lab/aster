@@ -1,4 +1,4 @@
-use a3s_oci_sdk::oci_spec::runtime::Linux;
+use aster_oci_sdk::oci_spec::runtime::Linux;
 use seccompiler::{sock_filter, BpfProgram};
 use serde_json::json;
 
@@ -85,7 +85,7 @@ fn compiled_arm_runtime_tools_policy_allows_shell_process_creation() {
     );
 }
 
-fn plan(seccomp: serde_json::Value) -> a3s_oci_sdk::Result<SeccompPlan> {
+fn plan(seccomp: serde_json::Value) -> aster_oci_sdk::Result<SeccompPlan> {
     let linux: Linux =
         serde_json::from_value(json!({"seccomp": seccomp})).expect("valid Linux seccomp fixture");
     SeccompPlan::from_linux(Some(&linux))

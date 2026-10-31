@@ -71,7 +71,7 @@ async fn service_open_rejects_drivers_with_different_linux_support_profiles() {
 #[tokio::test]
 async fn create_rejects_unadvertised_linux_features_before_durable_mutation() {
     let mut apparmor = base_config();
-    apparmor["process"]["apparmorProfile"] = serde_json::json!("a3s-test-profile");
+    apparmor["process"]["apparmorProfile"] = serde_json::json!("aster-test-profile");
 
     let mut selinux = base_config();
     selinux["process"]["selinuxLabel"] = serde_json::json!("system_u:system_r:container_t:s0");
@@ -168,7 +168,7 @@ async fn exec_and_update_linux_support_checks_run_before_operation_claims() {
         "args": ["/bin/true"],
         "cwd": "/",
         "noNewPrivileges": true,
-        "apparmorProfile": "a3s-test-profile"
+        "apparmorProfile": "aster-test-profile"
     }))
     .expect("schema-valid unsupported exec process");
     let error = service

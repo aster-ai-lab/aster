@@ -136,8 +136,8 @@ async fn native_editor_adds_reads_and_removes_embedded_images_in_all_formats() {
         }
         let image = NativeOfficeImage::from_bytes(PNG_1X1)
             .unwrap()
-            .with_name("A3S Logo")
-            .with_alt_text("A3S test logo")
+            .with_name("Aster Logo")
+            .with_alt_text("Aster test logo")
             .with_width_px(96)
             .with_height_px(48);
         let created = editor.add_image(parent, image).unwrap();
@@ -156,8 +156,8 @@ async fn native_editor_adds_reads_and_removes_embedded_images_in_all_formats() {
         let node = editor.snapshot().unwrap().get(&created.path, 0).unwrap();
         assert_eq!(node.node_type, OfficeNodeType::Picture);
         assert_eq!(node.format["relationshipId"], created.relationship_id);
-        assert_eq!(node.format["name"], "A3S Logo");
-        assert_eq!(node.format["alt"], "A3S test logo");
+        assert_eq!(node.format["name"], "Aster Logo");
+        assert_eq!(node.format["alt"], "Aster test logo");
         assert_eq!(node.format["widthPx"], "96");
         assert_eq!(node.format["heightPx"], "48");
 

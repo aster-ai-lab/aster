@@ -5,7 +5,7 @@
 //! the same percentile/throughput shape, so a successful query benchmark
 //! cannot hide a slow or disconnected lifecycle operation.
 
-use a3s_vec::{
+use aster_vec::{
     AddColumnOption, AlterColumnOption, Collection, CollectionMaintenanceOptions,
     CollectionOptions, CollectionResourceLimits, CollectionSchema, DataType, Doc, Durability,
     ErrorCode, FieldSchema, IndexParams, MetricType,
@@ -23,7 +23,7 @@ struct Config {
 
 impl Config {
     fn from_environment() -> Self {
-        let smoke = std::env::var("A3S_VEC_BENCH_SCALE").as_deref() == Ok("smoke");
+        let smoke = std::env::var("ASTER_VEC_BENCH_SCALE").as_deref() == Ok("smoke");
         let defaults = if smoke {
             Self {
                 documents: 96,
@@ -32,9 +32,9 @@ impl Config {
             }
         } else {
             Self {
-                documents: env_usize("A3S_VEC_LIFECYCLE_DOCUMENTS", 512),
-                dimensions: env_usize("A3S_VEC_LIFECYCLE_DIMENSIONS", 16),
-                samples: env_usize("A3S_VEC_LIFECYCLE_SAMPLES", 3),
+                documents: env_usize("ASTER_VEC_LIFECYCLE_DOCUMENTS", 512),
+                dimensions: env_usize("ASTER_VEC_LIFECYCLE_DIMENSIONS", 16),
+                samples: env_usize("ASTER_VEC_LIFECYCLE_SAMPLES", 3),
             }
         };
         assert!(defaults.documents > 0, "documents must be positive");

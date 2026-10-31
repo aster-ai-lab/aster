@@ -14,7 +14,7 @@ claim.
 The fixture is
 [`core/tests/fixtures/durable-memory-multilingual-v1/evaluation.json`](../../../core/tests/fixtures/durable-memory-multilingual-v1/evaluation.json).
 It declares schema version `1`, the exact
-`a3s.memory.lexical.word-cjk-bigram.v1` retrieval profile, serving policy,
+`aster.memory.lexical.word-cjk-bigram.v1` retrieval profile, serving policy,
 labeled queries, negative queries, and thresholds before the report is
 calculated.
 
@@ -26,7 +26,7 @@ phrase overlap in languages that commonly omit spaces.
 
 `DurableMemoryBindingV1.retrievalProfile` persists this identity. Old schema
 `1` snapshots without the field remain readable as
-`a3s.memory.lexical.word.v1`; schema `2` retains the current lexical profile but
+`aster.memory.lexical.word.v1`; schema `2` retains the current lexical profile but
 the legacy host-generated context identity; schema `3` retains the current
 lexical profile with the process-local session/run context profile. New schema
 `4` bindings add a Code-owned invocation incarnation so run IDs reused after
@@ -94,8 +94,8 @@ it does not silently change the lexical profile or this fixture's baseline.
 Run from the Code crate workspace:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_multilingual_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_multilingual_eval -- --nocapture
 ```
 
 The command prints its retained JSON value after the stable
-`A3S_DURABLE_MEMORY_MULTILINGUAL_EVAL=` marker.
+`ASTER_DURABLE_MEMORY_MULTILINGUAL_EVAL=` marker.

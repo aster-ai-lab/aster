@@ -244,7 +244,7 @@ fn read_json_file(path: &Path) -> Result<serde_json::Value> {
 }
 
 fn image_layout_error(message: impl Into<String>) -> ClientError {
-    ClientError::Runtime(a3s_box_core::error::BoxError::OciImageError(message.into()))
+    ClientError::Runtime(aster_box_core::error::BoxError::OciImageError(message.into()))
 }
 
 fn resolve_record<'a>(state: &'a StateFile, query: &str) -> Option<Result<&'a BoxRecord>> {
@@ -610,23 +610,23 @@ async fn wait_for_exit_or_kill(pid: u32, timeout_secs: u64) -> StopOutcome {
 }
 
 #[cfg(unix)]
-fn cleanup_stopped_box(paths: &A3sBoxPaths, record: &BoxRecord) -> Result<()> {
+fn cleanup_stopped_box(paths: &AsterBoxPaths, record: &BoxRecord) -> Result<()> {
     // Reap recorded Sandbox OCI owner / log worker before unmounting rootfs
     // (CLI parity). A failed runtime cleanup must not invent a clean stop while
     // a shared-kernel process may still hold the rootfs.
     cleanup_sandbox_runtime(record)?;
     detach_volumes(paths, &record.volume_names, &record.id)?;
-    a3s_box_runtime::rootfs::unmount_box_overlay_for_reuse(&record.box_dir.join("merged"))
+    aster_box_runtime::rootfs::unmount_box_overlay_for_reuse(&record.box_dir.join("merged"))
         .map_err(ClientError::Runtime)?;
-    a3s_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&record.box_dir.join("rootfs"))
+    aster_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&record.box_dir.join("rootfs"))
         .map_err(ClientError::Runtime)?;
     cleanup_external_socket_dir(&record.box_dir, &record.exec_socket_path)?;
     remove_host_cgroup(record)?;
     Ok(())
 }
 
-fn cleanup_removed_box(paths: &A3sBoxPaths, record: &BoxRecord) -> Result<()> {
-    // A Sandbox log worker exits only after the A3S OCI owner closes both output
+fn cleanup_removed_box(paths: &AsterBoxPaths, record: &BoxRecord) -> Result<()> {
+    // A Sandbox log worker exits only after the Aster OCI owner closes both output
     // streams. Reconcile that runtime first so wipe cannot invent success while
     // shared-kernel processes still use the rootfs (CLI parity).
     cleanup_sandbox_runtime(record)?;
@@ -638,29 +638,29 @@ fn cleanup_removed_box(paths: &A3sBoxPaths, record: &BoxRecord) -> Result<()> {
         // Tear down keep-authority host-netdevice before wiping boxes/{id}.
         // Fail closed: retain dir and return Err so callers do not drop state
         // while DNAT/veth/MASQUERADE may remain (CLI parity).
-        a3s_box_runtime::teardown_sandbox_host_netdevice_lease(&paths.home, &record.id).map_err(
+        aster_box_runtime::teardown_sandbox_host_netdevice_lease(&paths.home, &record.id).map_err(
             |error| {
-                ClientError::Runtime(a3s_box_core::error::BoxError::Other(format!(
+                ClientError::Runtime(aster_box_core::error::BoxError::Other(format!(
                     "Failed to tear down SandboxViaOci host netdevice lease for {}: {error}",
                     record.id
                 )))
             },
         )?;
-        a3s_box_runtime::cleanup_microvm_virtiofs_ro_shares(&record.box_dir).map_err(|error| {
-            ClientError::Runtime(a3s_box_core::error::BoxError::Other(format!(
+        aster_box_runtime::cleanup_microvm_virtiofs_ro_shares(&record.box_dir).map_err(|error| {
+            ClientError::Runtime(aster_box_core::error::BoxError::Other(format!(
                 "Failed to detach MicroVM :ro virtio-fs aliases for {}: {error}",
                 record.id
             )))
         })?;
-        a3s_box_runtime::rootfs::unmount_box_overlay_for_reuse(&record.box_dir.join("merged"))
+        aster_box_runtime::rootfs::unmount_box_overlay_for_reuse(&record.box_dir.join("merged"))
             .map_err(ClientError::Runtime)?;
-        a3s_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&record.box_dir.join("rootfs"))
+        aster_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&record.box_dir.join("rootfs"))
             .map_err(ClientError::Runtime)?;
         match std::fs::remove_dir_all(&record.box_dir) {
             Ok(()) => {}
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
             Err(error) => {
-                return Err(ClientError::Runtime(a3s_box_core::error::BoxError::Other(
+                return Err(ClientError::Runtime(aster_box_core::error::BoxError::Other(
                     format!(
                         "Failed to remove box directory {}: {error}",
                         record.box_dir.display()
@@ -670,7 +670,7 @@ fn cleanup_removed_box(paths: &A3sBoxPaths, record: &BoxRecord) -> Result<()> {
         }
     }
     cleanup_external_socket_dir(&record.box_dir, &record.exec_socket_path)?;
-    a3s_box_runtime::fs::remove_file_mount_staging(&record.id).map_err(ClientError::Runtime)?;
+    aster_box_runtime::fs::remove_file_mount_staging(&record.id).map_err(ClientError::Runtime)?;
     Ok(())
 }
 
@@ -678,11 +678,11 @@ fn cleanup_sandbox_runtime(record: &BoxRecord) -> Result<()> {
     if !record.isolation.is_sandbox() {
         return Ok(());
     }
-    a3s_box_runtime::vm::reap::cleanup_recorded_sandbox_runtime(&record.box_dir, &record.id)
+    aster_box_runtime::vm::reap::cleanup_recorded_sandbox_runtime(&record.box_dir, &record.id)
         .map_err(ClientError::Runtime)
 }
 
-fn detach_volumes(paths: &A3sBoxPaths, volume_names: &[String], box_id: &str) -> Result<()> {
+fn detach_volumes(paths: &AsterBoxPaths, volume_names: &[String], box_id: &str) -> Result<()> {
     let store = VolumeStore::new(&paths.volumes_file, &paths.volumes_dir);
     for volume_name in volume_names {
         store
@@ -695,7 +695,7 @@ fn detach_volumes(paths: &A3sBoxPaths, volume_names: &[String], box_id: &str) ->
 }
 
 fn cleanup_anonymous_volumes(
-    paths: &A3sBoxPaths,
+    paths: &AsterBoxPaths,
     owner: &str,
     volume_names: &[String],
 ) -> Result<()> {
@@ -708,14 +708,14 @@ fn cleanup_anonymous_volumes(
     Ok(())
 }
 
-fn cleanup_network_endpoint(paths: &A3sBoxPaths, record: &BoxRecord) -> Result<()> {
+fn cleanup_network_endpoint(paths: &AsterBoxPaths, record: &BoxRecord) -> Result<()> {
     let Some(network_name) = record_network_name(record).map(str::to_string) else {
         return Ok(());
     };
     let store = NetworkStore::new(&paths.networks_file);
     store
         .with_write_lock(
-            |networks| -> std::result::Result<(), a3s_box_core::error::BoxError> {
+            |networks| -> std::result::Result<(), aster_box_core::error::BoxError> {
                 if let Some(network) = networks.get_mut(&network_name) {
                     let _ = network.disconnect(&record.id);
                 }
@@ -731,14 +731,14 @@ fn cleanup_external_socket_dir(box_dir: &Path, exec_socket_path: &Path) -> Resul
         return Ok(());
     };
     #[cfg(target_os = "linux")]
-    a3s_box_runtime::network::terminate_passt(socket_dir).map_err(ClientError::Runtime)?;
+    aster_box_runtime::network::terminate_passt(socket_dir).map_err(ClientError::Runtime)?;
     if socket_dir.starts_with(box_dir) {
         return Ok(());
     }
     match std::fs::remove_dir_all(socket_dir) {
         Ok(()) => Ok(()),
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
-        Err(error) => Err(ClientError::Runtime(a3s_box_core::error::BoxError::Other(
+        Err(error) => Err(ClientError::Runtime(aster_box_core::error::BoxError::Other(
             format!(
                 "Failed to remove external socket directory {}: {error}",
                 socket_dir.display()
@@ -751,7 +751,7 @@ fn remove_host_cgroup(record: &BoxRecord) -> Result<()> {
     if record.isolation.is_sandbox() {
         return Ok(());
     }
-    a3s_box_runtime::process::remove_legacy_microvm_cgroup(&record.id).map_err(ClientError::Runtime)
+    aster_box_runtime::process::remove_legacy_microvm_cgroup(&record.id).map_err(ClientError::Runtime)
 }
 
 #[cfg(unix)]
@@ -957,12 +957,12 @@ fn project_runtime_box_stats(
         network_tx_bytes: network.tx_bytes,
         block_read_bytes: second
             .metrics
-            .get(a3s_box_runtime::IO_READ_BYTES_METRIC)
+            .get(aster_box_runtime::IO_READ_BYTES_METRIC)
             .copied()
             .unwrap_or_default(),
         block_write_bytes: second
             .metrics
-            .get(a3s_box_runtime::IO_WRITE_BYTES_METRIC)
+            .get(aster_box_runtime::IO_WRITE_BYTES_METRIC)
             .copied()
             .unwrap_or_default(),
         pids_current: Some(second.process_count),

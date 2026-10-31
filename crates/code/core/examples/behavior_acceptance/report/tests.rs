@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::content_digest::digest_bytes;
+use aster_core::content_digest::digest_bytes;
 
 fn hash(value: &str) -> DigestV1 {
     DigestV1::new(digest_bytes(
@@ -238,8 +238,8 @@ fn positive_case_coverage_and_waived_maker_cannot_be_inferred_from_report_text()
 fn generic_evaluation_carries_the_host_payload_without_a_core_business_enum() {
     let report = payload();
     report.validate().unwrap();
-    let result = a3s_code_core::evaluation::EvaluationResultV1::new(
-        "a3s.code.behavior-acceptance.v1",
+    let result = aster_core::evaluation::EvaluationResultV1::new(
+        "aster.code.behavior-acceptance.v1",
         report.maker_target.clone(),
         report.request().auxiliary_id().unwrap(),
         report.artifact_behavior.as_str(),

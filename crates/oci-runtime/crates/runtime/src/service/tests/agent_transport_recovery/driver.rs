@@ -2,18 +2,18 @@ use std::collections::BTreeMap;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentBundle, AgentClient, AgentCloseStdinRequest, AgentContainerOperationRequest,
     AgentCreateRequest, AgentDeleteRequest, AgentExecRequest, AgentKillRequest,
     AgentProcessesRequest, AgentReadOutputRequest, AgentResizeRequest, AgentSignalProcessRequest,
     AgentStartRequest, AgentState, AgentStateRequest, AgentStatsRequest, AgentUpdateRequest,
     AgentWaitProcessRequest, AgentWaitRequest, AgentWriteStdinRequest, GuestPath,
 };
-use a3s_oci_core::{
+use aster_oci_core::{
     CapabilityStatus, DriverCapability, DriverKind, DriverReadiness, IsolationClass,
 };
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     async_trait, ContainerRecord, ContainerStats, ContainerTarget, Error, ErrorCode, ExitStatus,
     FileRequest, FileResponse, FilesystemRequest, FilesystemResponse, OciBundle, OperationContext,
     OperationId, OutputChunk, ProcessIo, ProcessRecord, Result, RuntimeOperation,
@@ -83,8 +83,8 @@ impl RuntimeDriver for AgentLifecycleDriver {
         }
     }
 
-    fn linux_support(&self) -> Result<a3s_oci_sdk::OciLinuxSupport> {
-        a3s_oci_sdk::OciLinuxSupport::shared_executor()
+    fn linux_support(&self) -> Result<aster_oci_sdk::OciLinuxSupport> {
+        aster_oci_sdk::OciLinuxSupport::shared_executor()
     }
 
     fn operations(&self) -> &[RuntimeOperation] {
@@ -371,7 +371,7 @@ pub(super) fn agent_create_request(
     Ok(AgentCreateRequest {
         context,
         target,
-        bundle: AgentBundle::new(bundle, GuestPath::new("/run/a3s/reopen-test-bundle")?),
+        bundle: AgentBundle::new(bundle, GuestPath::new("/run/aster/reopen-test-bundle")?),
         io,
     })
 }

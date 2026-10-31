@@ -8,7 +8,7 @@ use crate::verification::{VerificationReport, VerificationStatus};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-pub const MUTATION_OBSERVATION_SCHEMA: &str = "a3s.code.mutation-observation.v1";
+pub const MUTATION_OBSERVATION_SCHEMA: &str = "aster.code.mutation-observation.v1";
 /// File tools whose settled result puts a workspace path on the mutation
 /// ledger. The fact-spine continuation replay uses the same list so an
 /// interrupted run's inherited debt matches what a live run would observe.
@@ -31,7 +31,7 @@ pub enum ForcedStop {
 }
 
 impl ForcedStop {
-    /// Wire name for the `a3s/turn/outcome` payload; the pager's parser
+    /// Wire name for the `aster/turn/outcome` payload; the pager's parser
     /// accepts exactly these values.
     pub fn as_str(self) -> &'static str {
         match self {
@@ -167,7 +167,7 @@ pub struct MutationRecord {
     pub content_digest: String,
     /// Exact observed state. The content field above remains file bytes only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub after_identity: Option<a3s_effect::ToolFileIdentityV1>,
+    pub after_identity: Option<aster_effect::ToolFileIdentityV1>,
 }
 
 /// A background child that shares this workspace and has not been observed yet.
@@ -258,12 +258,15 @@ impl MutationLedger {
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct MutationLedger {
     records: Vec<MutationRecord>,
+    // Derived from the admitted Goal's log version, never from checkpoint input.
+    #[serde(skip)]
+    legacy_accepted_receipts: bool,
     #[serde(default)]
     digest: String,
     /// A complete failed invocation changed these exact after-states. A
     /// byte-only host attestation cannot prove that failed work succeeded.
     #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
-    failed_effect_paths: std::collections::BTreeMap<String, a3s_effect::ToolFileIdentityV1>,
+    failed_effect_paths: std::collections::BTreeMap<String, aster_effect::ToolFileIdentityV1>,
     /// Background writers still sharing the workspace. Empty means none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     open_children: Vec<OpenWorkspaceChild>,
@@ -319,13 +322,13 @@ pub struct MutationLedger {
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct NativeArtifactVerification {
     tool: String,
-    identity: a3s_effect::ToolFileIdentityV1,
+    identity: aster_effect::ToolFileIdentityV1,
     check: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct NestedShellVerification {
-    identity: a3s_effect::ToolFileIdentityV1,
+    identity: aster_effect::ToolFileIdentityV1,
     command: String,
     scope_digest: String,
     epoch: u64,
@@ -355,6 +358,14 @@ pub(crate) fn workspace_relative_path(workspace: &std::path::Path, path: &str) -
 }
 
 impl MutationLedger {
+    pub(crate) fn bind_goal_continuation(
+        &mut self,
+        source: Option<&crate::goal_control::ContinuationSource>,
+    ) {
+        self.legacy_accepted_receipts =
+            source.is_some_and(|source| source.progress_basis.is_none());
+    }
+
     pub fn is_empty(&self) -> bool {
         self.records.is_empty()
     }
@@ -390,7 +401,7 @@ impl MutationLedger {
                 status_budget: false,
             },
         );
-        observed.completeness == a3s_effect::ToolObservationCompleteness::Complete
+        observed.completeness == aster_effect::ToolObservationCompleteness::Complete
             && observed.changes.len() == expected.len()
             && observed.changes.iter().all(|change| {
                 expected.get(change.path.as_str()).copied().flatten() == Some(&change.after)
@@ -737,7 +748,7 @@ impl MutationLedger {
     pub(crate) fn observe_tool_receipt(
         &mut self,
         tool: &str,
-        result: &a3s_effect::ToolExecutionResultV1,
+        result: &aster_effect::ToolExecutionResultV1,
     ) {
         if result.validate().is_err() {
             self.unresolved_tool_effects
@@ -765,10 +776,10 @@ impl MutationLedger {
         let mut failed_changed = false;
         for change in &result.effects.changes {
             if !crate::porcelain::is_harness_path(&change.path)
-                && result.effects.completeness == a3s_effect::ToolObservationCompleteness::Complete
+                && result.effects.completeness == aster_effect::ToolObservationCompleteness::Complete
             {
                 match result.outcome {
-                    a3s_effect::ToolExecutionOutcome::Failed
+                    aster_effect::ToolExecutionOutcome::Failed
                         if !unchanged_file_identity(change.before.as_ref(), &change.after) =>
                     {
                         failed_changed |= self
@@ -777,7 +788,7 @@ impl MutationLedger {
                             .as_ref()
                             != Some(&change.after);
                     }
-                    a3s_effect::ToolExecutionOutcome::Succeeded
+                    aster_effect::ToolExecutionOutcome::Succeeded
                         if self
                             .failed_effect_paths
                             .get(&change.path)
@@ -797,7 +808,7 @@ impl MutationLedger {
         // A captured exit settles the invocation. An incomplete file list is
         // the run scan's problem, and a later complete scan replaces it.
         // Unknown has no exit to settle, so the identity stays.
-        if result.outcome == a3s_effect::ToolExecutionOutcome::Unknown {
+        if result.outcome == aster_effect::ToolExecutionOutcome::Unknown {
             self.unresolved_tool_effects.insert(key);
         }
         self.unresolved_tool_effects.extend(
@@ -815,7 +826,7 @@ impl MutationLedger {
     pub(crate) fn observe_background_receipt(
         &mut self,
         fact_key: &str,
-        effects: &a3s_effect::ToolEffectObservationV1,
+        effects: &aster_effect::ToolEffectObservationV1,
     ) {
         if fact_key.trim().is_empty() {
             self.unresolved_tool_effects
@@ -848,8 +859,8 @@ impl MutationLedger {
         &mut self,
         tool: &str,
         path: &str,
-        before: Option<&a3s_effect::ToolFileIdentityV1>,
-        after: &a3s_effect::ToolFileIdentityV1,
+        before: Option<&aster_effect::ToolFileIdentityV1>,
+        after: &aster_effect::ToolFileIdentityV1,
     ) {
         if path.is_empty() || crate::porcelain::is_harness_path(path) {
             return;
@@ -857,27 +868,28 @@ impl MutationLedger {
         // A stat delta may only be timestamp or sandbox ACL bookkeeping.
         // Identical typed states cannot introduce a new mutation, but must
         // still reconcile an earlier record for this path.
-        if unchanged_file_identity(before, after)
+        if !self.legacy_accepted_receipts
+            && unchanged_file_identity(before, after)
             && !self.records.iter().any(|record| record.path == path)
         {
             return;
         }
         // A typed before of absence is the run's start for this path, unless
         // an earlier receipt already showed the path present.
-        if before.is_some_and(|before| before.kind == a3s_effect::ToolFileKind::Missing)
+        if before.is_some_and(|before| before.kind == aster_effect::ToolFileKind::Missing)
             && !self.records.iter().any(|record| {
                 record.path == path
                     && record
                         .after_identity
                         .as_ref()
-                        .is_some_and(|after| after.kind != a3s_effect::ToolFileKind::Missing)
+                        .is_some_and(|after| after.kind != aster_effect::ToolFileKind::Missing)
             })
         {
             self.started_absent.insert(path.to_string());
         }
         // Created in this run and absent again: the workspace matches the
         // start. A deletion of a file that was already there stays recorded.
-        if after.kind == a3s_effect::ToolFileKind::Missing
+        if after.kind == aster_effect::ToolFileKind::Missing
             && self.started_absent.contains(path)
             && !self.failed_effect_paths.contains_key(path)
         {
@@ -937,8 +949,8 @@ impl MutationLedger {
             .map(|path| path.trim().trim_start_matches("./"))
             .filter(|path| !path.is_empty() && !seen.contains(*path))
             .filter(|path| {
-                *path != ".a3s"
-                    && !path.starts_with(".a3s/")
+                *path != ".aster"
+                    && !path.starts_with(".aster/")
                     && *path != ".git"
                     && !path.starts_with(".git/")
             })
@@ -987,7 +999,7 @@ impl MutationLedger {
         &mut self,
         tool: &str,
         proof: crate::tools::ToolArtifactVerification,
-        expected: &a3s_effect::ToolFileIdentityV1,
+        expected: &aster_effect::ToolFileIdentityV1,
         workspace: &std::path::Path,
     ) {
         if proof.check.trim().is_empty()
@@ -1013,9 +1025,9 @@ impl MutationLedger {
         let [change] = observed.changes.as_slice() else {
             return;
         };
-        if observed.completeness != a3s_effect::ToolObservationCompleteness::Complete
+        if observed.completeness != aster_effect::ToolObservationCompleteness::Complete
             || &change.after != expected
-            || change.after.kind != a3s_effect::ToolFileKind::File
+            || change.after.kind != aster_effect::ToolFileKind::File
             || change.after.content_digest.as_deref()
                 != Some(format!("sha256:{}", proof.content_digest).as_str())
             || !self.records.iter().any(|record| {
@@ -1072,7 +1084,7 @@ impl MutationLedger {
         &mut self,
         observed: &Self,
         tool: &str,
-        result: &a3s_effect::ToolExecutionResultV1,
+        result: &aster_effect::ToolExecutionResultV1,
     ) {
         for change in &result.effects.changes {
             let path = &change.path;
@@ -1096,13 +1108,13 @@ impl MutationLedger {
     pub(crate) fn observe_nested_artifact_effects(
         &mut self,
         tool: &str,
-        effects: &a3s_effect::ToolEffectObservationV1,
+        effects: &aster_effect::ToolEffectObservationV1,
     ) {
         if effects.validate().is_err()
-            || effects.completeness != a3s_effect::ToolObservationCompleteness::Complete
+            || effects.completeness != aster_effect::ToolObservationCompleteness::Complete
             || !effects.unresolved_external_operations.is_empty()
             || self.records.len().saturating_add(effects.changes.len())
-                > a3s_effect::MAX_TOOL_EFFECT_PATHS
+                > aster_effect::MAX_TOOL_EFFECT_PATHS
         {
             self.observation_incomplete = true;
             return;
@@ -1160,12 +1172,12 @@ impl MutationLedger {
         if !self.nested_mutation_window_is_current(epoch)
             || self.observation_incomplete
             || !self.unresolved_tool_effects.is_empty()
-            || command.len() > a3s_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES
+            || command.len() > aster_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES
         {
             return;
         }
         let checks = crate::verification::existence_checks(command);
-        if checks.len() > a3s_effect::MAX_TOOL_EFFECT_PATHS {
+        if checks.len() > aster_effect::MAX_TOOL_EFFECT_PATHS {
             return;
         }
         let checks = checks
@@ -1198,7 +1210,7 @@ impl MutationLedger {
                 status_budget: false,
             },
         );
-        if observed.completeness != a3s_effect::ToolObservationCompleteness::Complete {
+        if observed.completeness != aster_effect::ToolObservationCompleteness::Complete {
             return;
         }
         let mut bytes = 0usize;
@@ -1206,7 +1218,7 @@ impl MutationLedger {
             let Some(change) = observed.changes.iter().find(|change| change.path == path) else {
                 continue;
             };
-            if change.after.kind != a3s_effect::ToolFileKind::File
+            if change.after.kind != aster_effect::ToolFileKind::File
                 || change
                     .after
                     .content_digest
@@ -1219,7 +1231,7 @@ impl MutationLedger {
                 .saturating_add(path.len())
                 .saturating_add(command.len())
                 .saturating_add(256);
-            if bytes > a3s_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES {
+            if bytes > aster_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES {
                 self.nested_shell_verifications.clear();
                 return;
             }
@@ -1283,7 +1295,7 @@ impl MutationLedger {
         &mut self,
         child: &Self,
         tool: &str,
-        effects: &a3s_effect::ToolEffectObservationV1,
+        effects: &aster_effect::ToolEffectObservationV1,
         allow_shell: bool,
     ) {
         if child.observation_incomplete || !child.unresolved_tool_effects.is_empty() {
@@ -1315,7 +1327,7 @@ impl MutationLedger {
             || child.has_open_children()
             || child.active_nested_mutations != 0
             || effects.validate().is_err()
-            || effects.completeness != a3s_effect::ToolObservationCompleteness::Complete
+            || effects.completeness != aster_effect::ToolObservationCompleteness::Complete
             || !effects.unresolved_external_operations.is_empty()
             || effects
                 .changes
@@ -1459,7 +1471,7 @@ fn content_digest(metadata: &Value) -> String {
 
 fn effect_digest(records: &[MutationRecord]) -> String {
     if records.iter().any(|record| record.after_identity.is_some()) {
-        let mut canonical = b"a3s.code.workspace-effect-state.v1\0".to_vec();
+        let mut canonical = b"aster.code.workspace-effect-state.v1\0".to_vec();
         for record in records {
             match &record.after_identity {
                 Some(after) => {
@@ -1503,13 +1515,13 @@ fn effect_digest(records: &[MutationRecord]) -> String {
 
 fn effect_digest_with_failed_effects(
     records: &[MutationRecord],
-    failed: &std::collections::BTreeMap<String, a3s_effect::ToolFileIdentityV1>,
+    failed: &std::collections::BTreeMap<String, aster_effect::ToolFileIdentityV1>,
 ) -> String {
     let current = effect_digest(records);
     if failed.is_empty() {
         return current;
     }
-    let mut canonical = b"a3s.code.failed-effect-state.v1\0".to_vec();
+    let mut canonical = b"aster.code.failed-effect-state.v1\0".to_vec();
     append_effect_field(&mut canonical, current.as_bytes());
     for (path, after) in failed {
         append_effect_field(&mut canonical, path.as_bytes());
@@ -1539,10 +1551,10 @@ fn append_effect_field(canonical: &mut Vec<u8>, field: &[u8]) {
 }
 
 fn unchanged_file_identity(
-    before: Option<&a3s_effect::ToolFileIdentityV1>,
-    after: &a3s_effect::ToolFileIdentityV1,
+    before: Option<&aster_effect::ToolFileIdentityV1>,
+    after: &aster_effect::ToolFileIdentityV1,
 ) -> bool {
-    use a3s_effect::ToolFileKind;
+    use aster_effect::ToolFileKind;
     before == Some(after)
         && match after.kind {
             ToolFileKind::Missing | ToolFileKind::Directory => true,
@@ -1739,7 +1751,7 @@ fn unbound_mutation_next_step(ledger: &MutationLedger) -> String {
                 && record
                     .after_identity
                     .as_ref()
-                    .is_none_or(|after| after.kind == a3s_effect::ToolFileKind::File)
+                    .is_none_or(|after| after.kind == aster_effect::ToolFileKind::File)
         })
         .map(|record| record.path.as_str())
         .min()

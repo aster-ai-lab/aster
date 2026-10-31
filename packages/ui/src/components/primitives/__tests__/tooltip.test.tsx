@@ -115,6 +115,39 @@ describe('Tooltip', () => {
     })
   })
 
+  describe('shared provider', () => {
+    it('opens the next tip at once and closes the previous one when the pointer moves between triggers', () => {
+      vi.useFakeTimers()
+      try {
+        render(
+          <TooltipProvider skipDelayDuration={300}>
+            <Tooltip content="first tip">
+              <button type="button">First trigger</button>
+            </Tooltip>
+            <Tooltip content="second tip">
+              <button type="button">Second trigger</button>
+            </Tooltip>
+          </TooltipProvider>
+        )
+        const first = screen.getByText('First trigger')
+        const second = screen.getByText('Second trigger')
+        fireEvent.pointerMove(first, { pointerType: 'mouse' })
+        act(() => {
+          vi.advanceTimersByTime(500)
+        })
+        expect(screen.getByRole('tooltip')).toHaveTextContent('first tip')
+
+        fireEvent.pointerLeave(first, { pointerType: 'mouse' })
+        fireEvent.pointerMove(second, { pointerType: 'mouse' })
+        // Shared providers drop the previous tip immediately so two black tips cannot linger.
+        expect(screen.getAllByRole('tooltip')).toHaveLength(1)
+        expect(screen.getByRole('tooltip')).toHaveTextContent('second tip')
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+  })
+
   describe('fallback rendering (no tooltip wrapper)', () => {
     it('renders a plain div when content is undefined', () => {
       const { container } = render(

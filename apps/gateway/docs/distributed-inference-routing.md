@@ -12,11 +12,11 @@ not a fourth service:
 
 | Component | Owns | Does not own |
 | --- | --- | --- |
-| A3S Cloud | Desired replicas and placement; exact target, Runtime unit, and generation identity; collection and certification of expiring Power observations; immutable snapshot publication | Per-request routing, prompt data, and model execution |
+| Aster Cloud | Desired replicas and placement; exact target, Runtime unit, and generation identity; collection and certification of expiring Power observations; immutable snapshot publication | Per-request routing, prompt data, and model execution |
 | Kense Gateway | Credential and grant enforcement; model-pool admission; target policy; worker-pair selection; scoped cache affinity; pre-response fallback; Power protocol orchestration; OpenAI response translation | Desired replicas, placement, KV bytes, and backend execution admission |
-| A3S Power | Model execution; local admission; phase readiness; prompt-cache state; worker epoch and execution profile; state-transfer target/source production and consumption | Fleet placement, client authorization, and public traffic policy |
+| Aster Power | Model execution; local admission; phase readiness; prompt-cache state; worker epoch and execution profile; state-transfer target/source production and consumption | Fleet placement, client authorization, and public traffic policy |
 
-There is no separate llm-d-style A3S subproject. A separate service would add
+There is no separate llm-d-style Aster subproject. A separate service would add
 a second discovery and scheduling authority without an independent business
 invariant or lifecycle. Cloud remains the control plane, Gateway remains the
 request and orchestration plane, and Power remains the execution plane.
@@ -25,7 +25,7 @@ request and orchestration plane, and Power remains the execution plane.
 
 Cloud publishes workers in the same immutable Gateway policy that binds every
 service endpoint to `target_id`, `unit_id`, and `generation`. Gateway accepts
-only `a3s.power.worker-observation.v1` observations. A distributed worker also
+only `aster.power.worker-observation.v1` observations. A distributed worker also
 has a Power boot epoch and the lowercase SHA-256 digest of its immutable
 execution profile.
 
@@ -60,7 +60,7 @@ inference {
   workers "power-prefill-1" {
     target_id = "66666666-6666-4666-8666-666666666666"
     generation = 5
-    schema = "a3s.power.worker-observation.v1"
+    schema = "aster.power.worker-observation.v1"
     worker_epoch = "77777777-7777-4777-8777-777777777777"
     execution_profile_sha256 = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     observation_generation = 9
@@ -83,7 +83,7 @@ inference {
   workers "power-decode-1" {
     target_id = "66666666-6666-4666-8666-666666666666"
     generation = 5
-    schema = "a3s.power.worker-observation.v1"
+    schema = "aster.power.worker-observation.v1"
     worker_epoch = "88888888-8888-4888-8888-888888888888"
     execution_profile_sha256 = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
     observation_generation = 12
@@ -123,7 +123,7 @@ inference {
         queue_timeout_ms = 500
         prompt_cache_affinity = true
         distributed_serving {
-          api_key_env = "A3S_POWER_DISTRIBUTED_API_KEY"
+          api_key_env = "ASTER_POWER_DISTRIBUTED_API_KEY"
           execution_timeout_ms = 30000
         }
       }
@@ -235,8 +235,8 @@ distinct target IDs fails closed.
 - bearer credentials: non-empty visible ASCII, at most 4 KiB.
 
 Power's protocol schemas are
-`a3s.power.distributed-serving.v1` and
-`a3s.power.distributed-serving-stream.v1`. Gateway accepts only the exact
+`aster.power.distributed-serving.v1` and
+`aster.power.distributed-serving-stream.v1`. Gateway accepts only the exact
 contract and treats unknown fields, status/decision mismatches, binding drift,
 out-of-order events, and premature stream termination as failures.
 
@@ -245,7 +245,7 @@ out-of-order events, and premature stream termination as failures.
 Gateway accepts `prompt_cache_key` only as a non-empty bounded identifier
 without surrounding whitespace or control characters. The raw value is never
 forwarded. Gateway hashes it with credential ID, model ID, and endpoint under a
-versioned domain and forwards only an opaque `a3s-gw-pcache-v1:` value. This
+versioned domain and forwards only an opaque `aster-gw-pcache-v1:` value. This
 prevents affinity crossing tenants, models, or endpoint classes and does not
 require Gateway to retain prompts or prefixes.
 

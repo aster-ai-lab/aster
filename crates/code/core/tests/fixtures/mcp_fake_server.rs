@@ -3,7 +3,7 @@ use std::io::{self, BufRead, BufReader, Write};
 use std::path::Path;
 
 fn main() -> io::Result<()> {
-    let log_path = std::env::var_os("A3S_TEST_MCP_LOG").map(std::path::PathBuf::from);
+    let log_path = std::env::var_os("ASTER_TEST_MCP_LOG").map(std::path::PathBuf::from);
     if let Some(path) = &log_path {
         append_log(
             path,
@@ -32,7 +32,7 @@ fn main() -> io::Result<()> {
             "initialize" => concat!(
                 "{\"protocolVersion\":\"2024-11-05\",",
                 "\"capabilities\":{},",
-                "\"serverInfo\":{\"name\":\"a3s-test-mcp\",\"version\":\"1\"}}"
+                "\"serverInfo\":{\"name\":\"aster-test-mcp\",\"version\":\"1\"}}"
             ),
             "tools/list" => concat!(
                 "{\"tools\":[{",

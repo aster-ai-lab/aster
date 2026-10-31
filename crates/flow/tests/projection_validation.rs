@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime, RetryPolicy,
     RuntimeCommand, StepInvocation, StepStatus, WorkflowInvocation, WorkflowRunStatus,
     WorkflowSpec,
@@ -24,7 +24,7 @@ impl FlowEventStore for StaticHistoryStore {
         &self,
         _run_id: &str,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store(
             "projection validation history is read-only".to_string(),
         ))
@@ -35,13 +35,13 @@ impl FlowEventStore for StaticHistoryStore {
         _run_id: &str,
         _expected_sequence: u64,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store(
             "projection validation history is read-only".to_string(),
         ))
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         if run_id == RUN_ID {
             Ok(self.events.clone())
         } else {
@@ -49,7 +49,7 @@ impl FlowEventStore for StaticHistoryStore {
         }
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         Ok(vec![RUN_ID.to_string()])
     }
 }
@@ -61,13 +61,13 @@ impl FlowRuntime for SnapshotOnlyRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Err(FlowError::Runtime(
             "projection validation must not invoke the workflow runtime".to_string(),
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime(
             "projection validation must not invoke the step runtime".to_string(),
         ))
@@ -371,7 +371,7 @@ async fn rejects_retry_exhaustion_with_a_different_error() {
 
 #[tokio::test]
 async fn projection_rejects_run_completed_with_running_step() {
-    use a3s_flow::InMemoryEventStore;
+    use aster_flow::InMemoryEventStore;
 
     let store = InMemoryEventStore::new();
     let run_id = "complete-with-running";
@@ -412,7 +412,7 @@ async fn projection_rejects_run_completed_with_running_step() {
 
 #[tokio::test]
 async fn projection_rejects_run_completed_with_unknown_activity() {
-    use a3s_flow::InMemoryEventStore;
+    use aster_flow::InMemoryEventStore;
 
     let store = InMemoryEventStore::new();
     let run_id = "complete-with-unknown-activity";

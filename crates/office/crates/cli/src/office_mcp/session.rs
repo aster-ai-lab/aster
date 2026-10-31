@@ -2,8 +2,8 @@ use std::collections::HashMap;
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_office::NativeOfficeEditor;
-use a3s_use_core::{UseError, UseResult, UseSessionId};
+use aster_office::NativeOfficeEditor;
+use aster_use_core::{UseError, UseResult, UseSessionId};
 use tokio::sync::{Mutex, RwLock};
 
 const MAX_OPEN_SESSIONS: usize = 64;
@@ -130,7 +130,7 @@ impl NativeOfficeSessions {
             }
         }
 
-        a3s_office::live_replica_blocks_office_session(path.as_ref())?;
+        aster_office::live_replica_blocks_office_session(path.as_ref())?;
         let editor = if create {
             NativeOfficeEditor::create(path).await?
         } else {
@@ -266,7 +266,7 @@ mod tests {
         let document = "<w:document xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" xmlns:w14=\"http://schemas.microsoft.com/office/word/2010/wordml\"><w:body><w:p w14:paraId=\"00000001\" w14:textId=\"00000002\"><w:r><w:t>Hello</w:t></w:r></w:p></w:body></w:document>";
         let mut parts = std::collections::BTreeMap::new();
         parts.insert("word/document.xml".to_owned(), document.as_bytes().to_vec());
-        a3s_office::import_document_snapshot(
+        aster_office::import_document_snapshot(
             &path,
             &parts,
             &temp.path().join("replica"),

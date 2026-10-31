@@ -220,7 +220,7 @@ async fn recover_limits(file: bool, constraint: Limit) {
         assert_eq!(restored.recorded_usage_tokens().2, expected_total);
         let settled: Vec<_> = settlement::facts(root.path())
             .into_iter()
-            .filter(|f| f.kind == "a3s.goal.slice.settled")
+            .filter(|f| f.kind == "aster.goal.slice.settled")
             .collect();
         assert_eq!(settled.len(), expected_slices);
         assert_eq!(

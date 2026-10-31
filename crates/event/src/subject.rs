@@ -12,7 +12,7 @@
 /// # Examples
 ///
 /// ```
-/// use a3s_event::subject::subject_matches;
+/// use aster_event::subject::subject_matches;
 ///
 /// assert!(subject_matches("events.market.forex", "events.market.forex"));
 /// assert!(subject_matches("events.market.forex", "events.market.>"));

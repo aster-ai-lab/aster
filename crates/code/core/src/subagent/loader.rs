@@ -227,7 +227,7 @@ pub fn parse_agent_md(content: &str) -> anyhow::Result<AgentDefinition> {
 pub fn load_agents_from_dir(dir: &Path) -> Vec<AgentDefinition> {
     let root = match std::fs::canonicalize(dir) {
         Ok(root) => root,
-        // Built-in search paths such as ~/.a3s/agents are optional.
+        // Built-in search paths such as ~/.aster/agents are optional.
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Vec::new(),
         Err(error) => {
             tracing::warn!(

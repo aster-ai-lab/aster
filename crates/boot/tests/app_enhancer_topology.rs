@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootRequest, BootResponse, BoxFuture, ExecutionContext, FromModuleRef, Guard,
     HttpMethod, Module, ModuleRef, OpenApiInfo, ProviderDefinition, ProviderDependency,
     ProviderToken, Result, RouteDefinition,

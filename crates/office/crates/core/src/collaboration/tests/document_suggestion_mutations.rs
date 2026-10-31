@@ -4,7 +4,7 @@ use yrs::{Transact, Update};
 use super::*;
 
 const SUGGESTER_ID: &str = "agent-suggester";
-const SUGGESTER_NAME: &str = "A3S Agent";
+const SUGGESTER_NAME: &str = "Aster Agent";
 const EDITOR_ID: &str = "human-editor";
 const EDITOR_NAME: &str = "Grace Editor";
 const CREATED_AT: &str = "2026-08-17T10:00:00.000Z";

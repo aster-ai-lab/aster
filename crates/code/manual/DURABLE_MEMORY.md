@@ -1,22 +1,22 @@
 # Durable Memory Integration
 
-A3S Code integrates with A3S Memory V2 through an exact, host-injected
+Aster Code integrates with Aster Memory V2 through an exact, host-injected
 `DurableMemorySession`. Candidate shadowing measures the new integrity model
 without changing model context. Active recall is a separate opt-in mode with
 evidence-backed activation and fail-safe admission. Rust hosts may additionally
 attach one exact semantic serving generation without moving embeddings or
-retrieval policy into the A3S Memory storage kernel.
+retrieval policy into the Aster Memory storage kernel.
 
 ## Ownership boundaries
 
-- A3S Code owns turn extraction, redaction, candidate proposal, activation
+- Aster Code owns turn extraction, redaction, candidate proposal, activation
   gates, context admission, and exact resume-binding validation.
-- A3S Memory owns exact namespace isolation, atomic and idempotent change sets,
+- Aster Memory owns exact namespace isolation, atomic and idempotent change sets,
   revision history, non-destructive lifecycle state, pure query, access events,
   complete dual-budget namespace snapshots, durable repository recovery, and
   caller-owned atomic and revision-CAS vector-index primitives, including an
   opt-in locally durable SQLite implementation.
-- A3S Code owns bounded embedding execution, hybrid fusion, candidate
+- Aster Code owns bounded embedding execution, hybrid fusion, candidate
   re-verification, lexical fallback, cancellation, verified snapshot refresh,
   conditional publication, drift cleanup, and receipts for an attached semantic
   generation.
@@ -24,7 +24,7 @@ retrieval policy into the A3S Memory storage kernel.
   construction; tenant/principal/scope selection; evidence retention; explicit
   refresh timing and receipt retention; restart reinjection; distributed lease
   policy and remote-backend qualification; and semantic lifecycle jobs. Code
-  can own their session schedule; A3S Flow may orchestrate broader jobs, but
+  can own their session schedule; Aster Flow may orchestrate broader jobs, but
   neither truth nor consolidation policy belongs to the storage kernel.
 
 This division keeps the repository policy-free. A storage backend cannot decide
@@ -57,7 +57,7 @@ An optional second stage performs a bounded number of exact reads for one-hop
 non-Active targets, or widen the exact namespace. It does not auto-activate
 extraction output. The host submits `DurableMemoryActivation` for one exact
 candidate revision; Code accepts only new Manual or Verification decision
-evidence, and A3S Memory stores that evidence in the atomic activation
+evidence, and Aster Memory stores that evidence in the atomic activation
 revision. LLM confidence and importance remain annotations and cannot authorize
 activation.
 
@@ -80,7 +80,7 @@ the archived item, but the original content and replacement link remain
 available for audit.
 
 The lexical algorithm has an explicit stable identity:
-`a3s.memory.lexical.word-cjk-bigram.v1`. It lowercases and matches ordinary
+`aster.memory.lexical.word-cjk-bigram.v1`. It lowercases and matches ordinary
 alphanumeric words. For contiguous Han, Kana, Hangul, Bopomofo, and related CJK
 runs, it also indexes the whole run and overlapping character bigrams. It does
 not add single-character unigrams. This supports deterministic same-language
@@ -91,7 +91,7 @@ semantic search system.
 ### Optional semantic recall
 
 `DurableMemorySemanticRecall` composes Code's existing bounded
-`EmbeddingExecutor` with a caller-owned A3S Memory `VectorIndex`. It adds no
+`EmbeddingExecutor` with a caller-owned Aster Memory `VectorIndex`. It adds no
 implicit task. The preferred `DurableMemorySession::refresh_semantic_recall`
 path reads a complete Active-only repository snapshot under node/byte budgets,
 verifies its identity, and atomically replaces the opaque partition derived
@@ -126,18 +126,18 @@ same node, the later repository-verified revision is used once and labeled
 ## Host wiring
 
 ```rust,no_run
-use a3s_code_core::{
+use aster_core::{
     DurableMemoryRecallPolicy, DurableMemorySession, SessionOptions,
 };
-use a3s_memory::repository::{FileMemoryRepository, MemoryNamespace};
+use aster_memory::repository::{FileMemoryRepository, MemoryNamespace};
 use std::sync::Arc;
 
 # async fn options() -> anyhow::Result<SessionOptions> {
-let repository = Arc::new(FileMemoryRepository::open(".a3s/memory-v2").await?);
+let repository = Arc::new(FileMemoryRepository::open(".aster/memory-v2").await?);
 let namespace = MemoryNamespace::try_new(
     "tenant-acme",
     "principal-alice",
-    "repository-a3s-code",
+    "repository-aster",
 )?;
 let recall = DurableMemoryRecallPolicy::try_new(5, 0.40)?
     .try_with_related_lookups(8)?;
@@ -157,10 +157,10 @@ provider, index, and authority identity, then explicitly refresh it from the
 bound repository:
 
 ```rust,no_run
-# use a3s_code_core::embedding::{EmbeddingExecutorConfig, EmbeddingProvider};
-# use a3s_code_core::{DurableMemoryRecallPolicy, DurableMemorySemanticRecall, DurableMemorySemanticRecallPolicy, DurableMemorySession};
-# use a3s_memory::repository::{InMemoryRepository, MemoryNamespace};
-# use a3s_memory::vector::{VectorIndex, VectorMutationConsistency};
+# use aster_core::embedding::{EmbeddingExecutorConfig, EmbeddingProvider};
+# use aster_core::{DurableMemoryRecallPolicy, DurableMemorySemanticRecall, DurableMemorySemanticRecallPolicy, DurableMemorySession};
+# use aster_memory::repository::{InMemoryRepository, MemoryNamespace};
+# use aster_memory::vector::{VectorIndex, VectorMutationConsistency};
 # use std::sync::Arc;
 # use tokio_util::sync::CancellationToken;
 # async fn binding(
@@ -232,14 +232,14 @@ A rollout from shadow to active recall therefore creates a new session rather
 than silently changing the semantics of an existing persisted session.
 
 Schema `1` snapshots written before either profile existed deserialize as the
-legacy `a3s.memory.lexical.word.v1` retrieval profile and
-`a3s.code.memory.context.host-id.v0` context profile. Schema `2` introduced the
+legacy `aster.memory.lexical.word.v1` retrieval profile and
+`aster.code.memory.context.host-id.v0` context profile. Schema `2` introduced the
 current lexical profile but still used the legacy host-generated context ID.
 Schema `3` introduced
-`a3s.code.memory.context.session-run-sequence-sha256.v1`, which separates
+`aster.code.memory.context.session-run-sequence-sha256.v1`, which separates
 process-local run IDs but cannot distinguish a run ID reused after FIFO
 retention and process restart. New bindings use schema `4` with
-`a3s.code.memory.context.session-run-invocation-sequence-sha256.v2`. Only those
+`aster.code.memory.context.session-run-invocation-sequence-sha256.v2`. Only those
 four lexical schema/profile combinations validate. New lexical-only sessions
 continue to use schema `4`. Attaching a semantic generation produces schema
 `5`, which requires the current lexical/context profiles, `ActiveRecall`, and a
@@ -269,10 +269,10 @@ isolated; a host that wants a separate agent to share memory creates that agent
 and injects the binding explicitly.
 
 Every final model context uses the stable identity profile
-`a3s.code.memory.context.session-run-invocation-sequence-sha256.v2`. Code hashes
+`aster.code.memory.context.session-run-invocation-sequence-sha256.v2`. Code hashes
 the exact session ID, run ID, Code-owned invocation incarnation, and
 invocation-local context sequence with domain separation, producing a bounded
-opaque `a3s-code-context-v2-*` value. Clones of one live invocation share its
+opaque `aster-context-v2-*` value. Clones of one live invocation share its
 incarnation and monotonic sequence, while a separately reconstructed
 invocation receives a fresh incarnation. Different sessions remain distinct
 when host run IDs collide, and the same session remains distinct when a
@@ -361,7 +361,7 @@ A host can explicitly carry safe recovery evidence across schedule owners by
 serializing `receipt.checkpoint()` from a successful `last_receipt()` and later
 calling `ScheduledSemanticRefresh::try_new_with_checkpoint`. The checkpoint
 excludes the repository-local change token. Its first run always verifies one
-complete Active snapshot and requires the exact A3S Memory vector-index history
+complete Active snapshot and requires the exact Aster Memory vector-index history
 token, matching revision, and full status before it can return unchanged without
 provider or publication work. The next stable tick can then use the zero-snapshot
 token path. Unrelated repository histories, colliding vector status from an
@@ -370,7 +370,7 @@ rebuilds. `last_receipt()` stays empty until current-epoch verification succeeds
 Code reads these values through `VectorIndex::observe`; synchronous status is a
 diagnostic compatibility hint and never guards publication or recovery.
 Durable checkpoint storage remains a host responsibility. With the
-`durable-memory-sqlite` Cargo feature, a Rust host may inject A3S Memory's
+`durable-memory-sqlite` Cargo feature, a Rust host may inject Aster Memory's
 `SqliteVectorIndex`, which persists the token and index content across a real
 local close/reopen. On Unix and Windows, a copied or atomically replaced closed
 database receives a new history token on next open. Restore must replace the
@@ -415,11 +415,11 @@ relations, and marks the old node Superseded while retaining its history. This
 is executable evidence for the mechanism, not a default consolidation policy.
 
 ```rust,no_run
-use a3s_code_core::memory::{
+use aster_core::memory::{
     MemoryMaintenanceJob, MemoryMaintenanceOptions, ScheduledMemoryMaintenance,
     ScheduledSemanticRefresh,
 };
-use a3s_code_core::SessionOptions;
+use aster_core::SessionOptions;
 use std::{sync::Arc, time::Duration};
 
 # fn options(
@@ -560,27 +560,27 @@ for the bounded repeated-restart production slice.
 Run checks from the Code crate workspace, not the monorepo root:
 
 ```text
-cargo test -p a3s-code-core --lib durable_memory
-cargo test -p a3s-code-core --test durable_memory_shadow
-cargo test -p a3s-code-core --test durable_memory_active
-cargo test -p a3s-code-core --test durable_memory_restart
-cargo test -p a3s-code-core --test durable_memory_retrieval_eval -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_product_eval -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_multilingual_eval -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_semantic
-cargo test -p a3s-code-core --test durable_memory_semantic_eval -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_semantic_refresh
-cargo test -p a3s-code-core --test durable_memory_semantic_refresh_cas
-cargo test -p a3s-code-core --test durable_memory_semantic_refresh_failure
-cargo test -p a3s-code-core --test memory_semantic_refresh_schedule
-cargo test -p a3s-code-core --test memory_semantic_refresh_change_detection
-cargo test -p a3s-code-core --test memory_semantic_refresh_checkpoint
-cargo test -p a3s-code-core --test memory_semantic_index_observation
-cargo test -p a3s-code-core --features durable-memory-sqlite --test memory_semantic_refresh_sqlite
-cargo test -p a3s-code-core --test memory_semantic_refresh_metrics
-cargo test -p a3s-code-core --test memory_maintenance_close
-cargo test -p a3s-code-core --test durable_memory_multi_agent_eval -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_restart_endurance_eval -- --nocapture
-cargo test -p a3s-code-core --test memory_maintenance_lifecycle
-cargo test -p a3s-code-core --lib
+cargo test -p aster-core --lib durable_memory
+cargo test -p aster-core --test durable_memory_shadow
+cargo test -p aster-core --test durable_memory_active
+cargo test -p aster-core --test durable_memory_restart
+cargo test -p aster-core --test durable_memory_retrieval_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_product_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_multilingual_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_semantic
+cargo test -p aster-core --test durable_memory_semantic_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_semantic_refresh
+cargo test -p aster-core --test durable_memory_semantic_refresh_cas
+cargo test -p aster-core --test durable_memory_semantic_refresh_failure
+cargo test -p aster-core --test memory_semantic_refresh_schedule
+cargo test -p aster-core --test memory_semantic_refresh_change_detection
+cargo test -p aster-core --test memory_semantic_refresh_checkpoint
+cargo test -p aster-core --test memory_semantic_index_observation
+cargo test -p aster-core --features durable-memory-sqlite --test memory_semantic_refresh_sqlite
+cargo test -p aster-core --test memory_semantic_refresh_metrics
+cargo test -p aster-core --test memory_maintenance_close
+cargo test -p aster-core --test durable_memory_multi_agent_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_restart_endurance_eval -- --nocapture
+cargo test -p aster-core --test memory_maintenance_lifecycle
+cargo test -p aster-core --lib
 ```

@@ -9946,9 +9946,9 @@ pub struct RedisJobQueue {
 }
 
 impl RedisJobQueue {
-    /// Create a Redis queue using the default `a3s:lane` namespace.
+    /// Create a Redis queue using the default `aster:lane` namespace.
     pub fn new(redis_url: &str, queue: impl Into<String>) -> Result<Self> {
-        Self::with_namespace(redis_url, "a3s:lane", queue)
+        Self::with_namespace(redis_url, "aster:lane", queue)
     }
 
     /// Create a Redis queue with a custom key namespace.

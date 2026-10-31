@@ -11,11 +11,11 @@ Kense Gateway is the **AI Native Traffic Layer**. It owns the local data plane:
 - node-local telemetry and a bounded durable usage spool; and
 - a machine-only Node API for health, metrics, version, and managed snapshots.
 
-A3S Cloud owns human operations, tenants, credentials, deployment, placement,
+Aster Cloud owns human operations, tenants, credentials, deployment, placement,
 desired replicas, production rollout, audit views, and the long-term usage
 ledger. Gateway does not provide an operator web platform.
 
-## A3S Cloud substrate obligations
+## Aster Cloud substrate obligations
 
 **Status as of 2026-09-10.**
 
@@ -47,16 +47,16 @@ store, and a real-listener middleware + SPA regression
 blocked on Cloud `WEB0.1`.
 
 See
-[architecture optimization roadmap](https://github.com/A3S-Lab/Cloud/blob/main/docs/architecture-optimization-roadmap.md),
-[coordination portfolio roadmap](https://github.com/A3S-Lab/Cloud/blob/main/docs/project-roadmaps/coordination-and-data-planes.md),
+[architecture optimization roadmap](https://github.com/aster-ai-lab/Cloud/blob/main/docs/architecture-optimization-roadmap.md),
+[coordination portfolio roadmap](https://github.com/aster-ai-lab/Cloud/blob/main/docs/project-roadmaps/coordination-and-data-planes.md),
 and
-[cloud-substrate-dependency-roadmap.md](https://github.com/A3S-Lab/a3s/blob/main/docs/cloud-substrate-dependency-roadmap.md).
+[cloud-substrate-dependency-roadmap.md](https://github.com/aster-ai-lab/aster/blob/main/docs/cloud-substrate-dependency-roadmap.md).
 
 The governed Agent Runtime plan preserves this boundary: Gateway may enforce
 public ingress and emit bounded demand/usage evidence, but it does not proxy
 ordinary Agent egress, inject Agent credentials, transform Tool results,
 decide idle suspension, or own checkpoint state. See
-[Cloud agent runtime architecture](https://github.com/A3S-Lab/Cloud/blob/main/docs/agent-runtime-architecture.md)
+[Cloud agent runtime architecture](https://github.com/aster-ai-lab/Cloud/blob/main/docs/agent-runtime-architecture.md)
 and the OS Wave H plan
 [`docs/ax-inspired-agent-platform-plan.md`](../../docs/ax-inspired-agent-platform-plan.md)
 (ordering hint only; Cloud gates remain authoritative).
@@ -93,7 +93,7 @@ security, or operating proof remains open.
 | Mode | Desired-state owner | Allowed behavior |
 | --- | --- | --- |
 | `standalone` | Local ACL | Local routes, services, middleware, providers, static revision weights, mirroring, and opt-in experimental scaling |
-| `cloud-managed` | A3S Cloud | One complete identity-, revision-, digest-, CAS-, and expiry-bound snapshot; local mutation sources, rollout, and autoscaling are rejected |
+| `cloud-managed` | Aster Cloud | One complete identity-, revision-, digest-, CAS-, and expiry-bound snapshot; local mutation sources, rollout, and autoscaling are rejected |
 
 Changing modes requires a process restart. A rejected or stale snapshot leaves
 the prior validated runtime active.
@@ -106,8 +106,8 @@ the prior validated runtime active.
 | Routing and middleware | Available | Precompiled route rules and pipelines; TCP `HostSNI` compiled into a dedicated table (empty table skips ClientHello peek for PathPrefix-only TCP); built-in ACL policy; typed Rust `MiddlewareRegistry`; startup and reload fail closed. `forward-auth` live listener fails closed without upstream contact when auth is unreachable (`502`) or denies (`forward_auth_unreachable_returns_502_on_listener_without_upstream_contact`, `forward_auth_deny_returns_auth_status_on_listener_without_upstream_contact`). `rate-limit` / `rate-limit-redis`, `circuit-breaker`, `retry`, and explicit `fallback` degrade short-circuit (`fallback_short_circuits_with_configured_body`, `test_parse_fallback_middleware`). `rate-limit-redis` live listener fails closed with `503` when Redis is unreachable, and explicit `redis_fail_open` still reaches upstream (`rate_limit_redis_unreachable_returns_503_on_listener_without_upstream_contact`, `rate_limit_redis_fail_open_reaches_upstream_on_listener_when_redis_unreachable` with `--features redis`). Response-phase middleware fail-closed covers HTTP, SSE, gRPC, distributed OpenAI (JSON + SSE), and native managed surfaces (`response_middleware_error_fails_closed_instead_of_returning_upstream_body`, `response_middleware_error_fails_closed_on_sse_listener_without_upstream_body`, `response_middleware_error_fails_closed_on_grpc_listener_without_upstream_stream`, `response_middleware_error_fails_closed_on_distributed_json_listener_without_power_body`, `response_middleware_error_fails_closed_on_distributed_sse_listener_without_power_body`, `response_middleware_error_fails_closed_on_native_models_listener_without_policy_body`). Traditional WAF is out of scope; optional `wire` is LLM/MCP inspection only |
 | Health and balancing | Available | Four balancing strategies, active/passive health, circuit state, sticky sessions, failover, mirroring, and static revision weights. Passive half-open recovery re-admits traffic after `recovery_time` without a Gateway restart (`passive_health_half_open_recovery_readmits_traffic_after_recovery_time`); a still-broken probe re-blacklists after the error threshold (`passive_health_half_open_still_broken_reblacklists_after_threshold`). Circuit-breaker half-open closes on a successful probe and re-opens when the probe still fails (`circuit_breaker_half_open_probe_closes_after_success_on_listener`, `circuit_breaker_half_open_still_failing_reopens_on_listener`). Active health evicts then re-admits on the live listener for service pools and revision-only pools (`active_health_check_evicts_backend_on_listener_then_readmits_when_healthy`, `active_health_check_evicts_revision_only_backend_on_listener_then_readmits_when_healthy`). Service failover routes to the backup pool on the live listener when the primary is unhealthy (`failover_routes_to_backup_on_listener_when_primary_unhealthy`). Sticky cookies pin backends on the live listener for HTTP and WebSocket upgrades (`sticky_session_cookie_pins_backend_on_listener`, `sticky_session_cookie_pins_websocket_backend_on_listener`). Traffic mirroring copies buffered request bodies to the shadow service on the live listener and keeps the primary response isolated from shadow failures (`traffic_mirror_copies_buffered_request_to_shadow_on_listener`, `traffic_mirror_primary_still_succeeds_when_shadow_unreachable_on_listener`). |
 | Configuration lifecycle | Available | Serialized startup/reload/shutdown, listener reconciliation, atomic snapshot swap, exact readiness, prior-runtime retention, and optional durable managed-state recovery |
-| Managed target delivery (`H0.2`) | Verified jointly | Released Gateway v1.0.14 and pinned A3S Cloud clean-host gates cover exact apply/ACK, process loss, redelivery, conflict/expiry rejection, certificate and target-generation replacement, independent replica readiness, and management-protocol compatibility |
-| Managed Runtime Service routes | Gateway foundation + cross-platform real-process qualification | Embedded hosts have a durable exact-generation loopback overlay with Gateway-path health, admission closure, accepted-stream drain (HTTP body, SSE/`text/event-stream`, WebSocket relay, and live-entrypoint gRPC response guards), receipt-owned removal, reload/snapshot preservation, and restart replay. Cross-platform real OS-process evidence: lifecycle `real_os_process_upstream_survives_bind_health_traffic_drain_remove`, restart/replay `real_os_process_upstream_restart_restores_route_and_replay_preserves_identity`, plus drain-wait for SSE / WebSocket / gRPC (`real_os_process_upstream_{sse,websocket,grpc}_drain_waits_for_admitted_stream` in `tests/managed_runtime_real_process.rs`, Windows + Unix). Production A3S Use/Code host provider composition remains open outside this crate. |
+| Managed target delivery (`H0.2`) | Verified jointly | Released Gateway v1.0.14 and pinned Aster Cloud clean-host gates cover exact apply/ACK, process loss, redelivery, conflict/expiry rejection, certificate and target-generation replacement, independent replica readiness, and management-protocol compatibility |
+| Managed Runtime Service routes | Gateway foundation + cross-platform real-process qualification | Embedded hosts have a durable exact-generation loopback overlay with Gateway-path health, admission closure, accepted-stream drain (HTTP body, SSE/`text/event-stream`, WebSocket relay, and live-entrypoint gRPC response guards), receipt-owned removal, reload/snapshot preservation, and restart replay. Cross-platform real OS-process evidence: lifecycle `real_os_process_upstream_survives_bind_health_traffic_drain_remove`, restart/replay `real_os_process_upstream_restart_restores_route_and_replay_preserves_identity`, plus drain-wait for SSE / WebSocket / gRPC (`real_os_process_upstream_{sse,websocket,grpc}_drain_waits_for_admitted_stream` in `tests/managed_runtime_real_process.rs`, Windows + Unix). Production Aster Use/Code host provider composition remains open outside this crate. |
 | Managed OpenAI paths | Gateway foundation available | Models, chat completions, completions, embeddings, grants, rewriting, RPM/burst/concurrency admission, request/attempt identity, health-aware targets, and pre-response fallback |
 | Platform model services | Certified live (deferred commit) | OCR, SystemOne, `platform/bge-m3` embeddings, and `platform/bge-reranker-v2-m3` rerank serve in-process behind one platform-model contract: alias interception before managed admission, optional `ocr/decision/embedding/rerank_supplier` binding with no fall-through, reserved-alias protection, `/v1/models` visibility per endpoint grant, and named fail-closed refusals. Certified over real HTTP on 2026-10-05 (docs/evidence/model-service/20261005-model-service-live-certification); gateway edits ride an in-flight tree and commit after it lands |
 | Multimodal adaptation | Design only; unavailable | Native multimodal upstreams pass content through unchanged. The proposed opt-in path uses bounded VLM/OCR/ASR evidence before text-model dispatch and requires independent security, quality, latency, and recovery gates |
@@ -117,7 +117,7 @@ the prior validated runtime active.
 | Standalone autoscaling | Experimental | Box v1 desired-state recovery, ready endpoint discovery, scale-from-zero routing, deterministic operation identity, Kubernetes resource-version CAS, and ambiguous-result/process recovery are covered by local, real-Gateway, real-Kubernetes, and exact-revision real Linux Box Sandbox fixtures; real MicroVM workload conformance remains open |
 | Automatic gradual rollout | Unavailable | `rollout {}` is rejected; use explicit static revision weights |
 | Same-host traffic performance | Measured | Three alternating trials across HTTP/1.1, HTTPS, HTTP/2, gRPC, SSE, WebSocket, TCP, UDP, OpenAI JSON, and OpenAI streaming; every published median has 100% success and includes throughput plus average/P50/P90/P99 latency; feature-free HTTP, SSE, and standalone OpenAI traffic share one route-bound Hyper pool |
-| AI token-streaming performance | Measured | Five alternating A3S/NGINX trials across eight OpenAI-compatible pacing, concurrency, output-length, endpoint, and prompt-size profiles; every valid trial requires exact ordered tokens and publishes TTFT, ITL, TPOT, E2E, stream rate, and token goodput |
+| AI token-streaming performance | Measured | Five alternating Aster/NGINX trials across eight OpenAI-compatible pacing, concurrency, output-length, endpoint, and prompt-size profiles; every valid trial requires exact ordered tokens and publishes TTFT, ITL, TPOT, E2E, stream rate, and token goodput |
 | Cross-platform installation | Available | Checksum-verified macOS, Linux, and Windows installers plus release archives, Cargo, Homebrew, Docker, and Helm |
 | Versioned documentation | Available | The `v1.1` stable channel documents released 1.1.x behavior; `next` is an explicitly non-release development channel with route and section-parity checks |
 
@@ -132,7 +132,7 @@ the prior validated runtime active.
 - Treat the ten-profile same-host comparison as regression evidence, not a
   capacity forecast or a claim that every path outperforms NGINX.
 - Keep the eight-profile token-aware AI comparison reproducible, publish all
-  five alternating trials, and separate feature-on A3S OpenAI validation from
+  five alternating trials, and separate feature-on Aster OpenAI validation from
   NGINX's transport-only baseline.
 
 ### Managed deployment proof - current and next
@@ -141,7 +141,7 @@ the prior validated runtime active.
   evidence covers process loss, redelivery, stale/conflicting/expired state,
   certificate and target replacement, independent replicas, and protocol
   compatibility.
-- Close `I0.2b` and `I0.2c` jointly with compatible A3S Cloud revisions,
+- Close `I0.2b` and `I0.2c` jointly with compatible Aster Cloud revisions,
   including expiry, revocation, fallback, usage gaps, and reconciliation.
 - Prove bounded drain, node loss, rolling replacement, and version skew across
   independently placed Gateway replicas for `H0.3` and production HA for
@@ -239,16 +239,16 @@ Prove each invariant locally; do not treat CI green as a substitute.
   request-buffering profiles `request-buffering-on` / `request-buffering-off`
   (chunked upload; NGINX `proxy_request_buffering` on vs off),
   disk-spill profile `disk-spill` (16 KiB NGINX client buffer + recorded temp
-  volume vs A3S in-memory OpenAI validation),
+  volume vs Aster in-memory OpenAI validation),
   process-restart profile `gateway-restart` (kill/restart product with the same
   standalone ACL/conf; record `restart_recovery_ms` to `/health`, then paced
   complete-stream availability; not Cloud managed-snapshot EXIT),
   and idle-deadline profiles
   `first-token-timeout` / `midstream-idle`, connect/bound timeout profiles
   `connect-refused` / `connect-timeout` / `headers-timeout` / `total-timeout`,
-  A3S-only policy profiles `telemetry-on` / `telemetry-off`, dual-product
+  Aster-only policy profiles `telemetry-on` / `telemetry-off`, dual-product
   recovery profile `fallback`, dual-product weighted profile `weighted-rollout`,
-  dual-product `rate-limit`, A3S-only `api-key-auth`, and dual-product
+  dual-product `rate-limit`, Aster-only `api-key-auth`, and dual-product
   stream-safety profile `no-replay-after-token` are now runnable via
   `AI_BENCH_PROFILES` (load client `--disconnect-after-tokens` /
   `--read-delay-ms` / `--stall-after-tokens`+`--stall-ms` / `--upstream-fault` /
@@ -284,7 +284,7 @@ Prove each invariant locally; do not treat CI green as a substitute.
   `container_concurrency` alone: that knob also arms Box/k8s autoscaler
   preparation (EXIT with Box provisioned evidence), not a fake noop executor.
   Do not invent `wire-policy` inside the default AI comparison binaries: wire
-  inspection lives behind the separate `wire` feature / a3s-sentry path.
+  inspection lives behind the separate `wire` feature / aster-sentry path.
 - Extend the plan with the multimodal image, document, audio, video, protocol,
   load, recovery, security, and quality lanes defined in the design proposal.
   Publish media-fetch, decode, adapter, rewrite, and target-first-token timing
@@ -305,7 +305,7 @@ and its full scenario backlog and fairness contract live in
 
 Complete. Gateway snapshot validation, atomic activation, exact readiness,
 replay, rejection retention, TLS replacement, target-generation identity, and
-durable restart recovery are covered locally. The pinned A3S Cloud clean-host
+durable restart recovery are covered locally. The pinned Aster Cloud clean-host
 gate adds process loss before acknowledgement, exact redelivery, certificate
 and target replacement, independent replica journals/readiness, rollout
 thresholds, and management-protocol compatibility against a released Gateway
@@ -369,9 +369,9 @@ now requires `tokenizer_revision = "kense.gateway.tokenizer.v1"` on every
 `inference` policy (`INFERENCE_TOKENIZER_REVISION`); missing or unknown
 revisions fail closed at parse/validate so Cloud's future compiler cannot
 silently change reservation semantics. Cloud mirrors the same identity as
-`a3s_cloud_contracts::INFERENCE_TOKENIZER_REVISION_V1` with
+`aster_cloud_contracts::INFERENCE_TOKENIZER_REVISION_V1` with
 `require_inference_tokenizer_revision` / `render_inference_policy_acl`.
-Cloud's Identity module owns inference credentials (`a3s_inf_` + Argon2id,
+Cloud's Identity module owns inference credentials (`aster_inf_` + Argon2id,
 migration `196` + delivery receipts in `197`). Identity exposes
 `CreateInferenceKey` / `RevokeInferenceKey` with one-time encrypted delivery
 receipts and `ENV/inference/keys` management HTTP (`inference:read` /
@@ -392,7 +392,7 @@ cross-product work:
   certificate convergence, MCP desired-state, route rollout, and rollback;
   Inference route catalog already fills
   `IInferenceRouteAclProjectionPort`). Cloud now freezes
-  `a3s.cloud.node-power-worker-observation-batch.v1`, owns
+  `aster.cloud.node-power-worker-observation-batch.v1`, owns
   nested→flat `project_power_worker_observation*`, proves an in-memory
   `StoredInferenceWorkerAclProjectionPort` (empty / fresh / expired), exposes
   authenticated
@@ -401,7 +401,7 @@ cross-product work:
   `inference_power_worker_observations` (`migration 201`) via
   `PostgresInferenceWorkerObservationRepository` for both accept and Edge
   worker ACL projection. Fleet production negotiation now includes
-  `a3s.cloud.node-power-worker-observation-batch.v1` when offered; node-agent
+  `aster.cloud.node-power-worker-observation-batch.v1` when offered; node-agent
   owns a durable `PowerWorkerObservationShipper` (stage/post/commit) and a
   `PowerWorkerObservationCollector` that reads live Power `/health` worker
   facts into Cloud-owned target bindings without inventing workers. Local
@@ -430,7 +430,7 @@ cross-product work:
 ### `I0.2c` — usage delivery
 
 The local spool and acknowledgement engine are available. Gateway speaks the
-same batch / receipt body contract as A3S Cloud
+same batch / receipt body contract as Aster Cloud
 (`kense.gateway.usage-batch.v1` / `kense.gateway.usage-batch-receipt.v1`; see
 [`docs/usage-cloud-ingest.md`](docs/usage-cloud-ingest.md)), ships
 `HttpUsageCloudTransport` (mTLS preferred; bearer transitional), and can start
@@ -478,7 +478,7 @@ ledger (`InferenceModule` query paths with environment grant checks).
 provider gate.)
 
 Status: landed 2026-10-12. Terminal lifecycle events now carry the observed
-token split — `a3s.gateway.usage-lifecycle.v2` adds a `tokens` object
+token split — `aster.gateway.usage-lifecycle.v2` adds a `tokens` object
 (`prompt_tokens`, `completion_tokens`, `cached_input_tokens`,
 `reasoning_tokens`; unknown lanes stay absent, never zero) beside the
 unchanged flat `total_tokens`. The response-body observer
@@ -564,7 +564,7 @@ lock pins both directions). Remaining: the token-aware matrix row
 ### `WR0` — guardrails in the inference pipeline
 
 Status: landed 2026-10-13 (wire feature). Named `guardrails` policies
-(inline a3s-sentry ACL sources, parse-validated) ride the inference
+(inline aster-sentry ACL sources, parse-validated) ride the inference
 block; grants reference them by name. The request leg gates at dispatch
 body finalization (mask-before-upstream with per-request placeholder
 restores; block refuses `403 guardrail.blocked`); the buffered response
@@ -614,7 +614,7 @@ render, byte-locked from the Gateway) landed the same day. Evidence:
   degraded-readiness evidence across multiple Gateway replicas.
 - Add trusted token throughput and provider-native capacity signals only after
   their source contracts close.
-- Keep managed replica and rollout decisions in A3S Cloud.
+- Keep managed replica and rollout decisions in Aster Cloud.
 
 ### `I0.3` to `I0.5` — intelligent distributed inference routing
 
@@ -746,7 +746,7 @@ The 2026-10-15 gap analysis against
 [HiRoute](https://github.com/higress-group/HiRoute) (higress-group's
 local-first routing engine for long-horizon agent tasks: "route agents
 by task, route models by stage") found the data-plane halves already
-aligned — a3s-gateway's ordered priority groups with explicit
+aligned — aster-gateway's ordered priority groups with explicit
 exhaustion and pre-response-only failover ARE HiRoute's bounded
 failover, and the usage lifecycle is the evidence substrate. What
 HiRoute has that this gateway lacks is the DECISION layer: nothing on
@@ -756,7 +756,7 @@ The family below imports that layer behind the standing invariants.
 
 HiRoute capabilities mapped to gates:
 
-| HiRoute capability | a3s-gateway state | Gate |
+| HiRoute capability | aster-gateway state | Gate |
 | --- | --- | --- |
 | Decision service contract (`POST /v1/decisions`, strict ≤64 KiB, model-blind) | absent | `HR0` |
 | Routing modes (fixed / smart saving / custom branches / free first) | fixed only (priority groups) | `HR1` |
@@ -877,7 +877,7 @@ plans.
 A roadmap item is complete when:
 
 - standalone and cloud-managed validation remain isolated;
-- ACL fields use `a3s-acl` and have canonical parse and compatibility tests;
+- ACL fields use `aster-acl` and have canonical parse and compatibility tests;
 - protocol behavior passes real client/upstream success, failure, timeout,
   disconnect, reload, and recovery fixtures;
 - rejected and replayed snapshots preserve one exact active revision;

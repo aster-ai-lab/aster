@@ -270,7 +270,7 @@ export interface WorkDocumentNode {
 }
 
 export interface WorkDocumentModel {
-  schema: 'a3s.office.document';
+  schema: 'aster.office.document';
   version: 1;
   revision: number;
   htmlFingerprint: string;
@@ -443,7 +443,7 @@ export interface WorkSpreadsheetDataValidationItem {
   value2: string;
   validity: string;
   remote: boolean;
-  /** Defaults to true for legacy A3S artifacts. */
+  /** Defaults to true for legacy Aster artifacts. */
   allowBlank?: boolean;
   /** Product semantic; OOXML stores the inverse in `showDropDown`. */
   showDropdownArrow?: boolean;

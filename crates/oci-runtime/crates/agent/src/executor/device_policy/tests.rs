@@ -3,7 +3,7 @@ use std::os::fd::{AsRawFd, FromRawFd, OwnedFd};
 use std::os::unix::net::UnixStream;
 use std::path::Path;
 
-use a3s_oci_sdk::ErrorCode;
+use aster_oci_sdk::ErrorCode;
 
 use super::mount::verify_prepared_device_mounts;
 use super::protocol::{send_device_mounts, DEVICE_MOUNT_FRAME_MARKER};
@@ -240,7 +240,7 @@ fn authority_treats_mount_preparation_rejection_as_permanent() {
         assert!(matches!(request, DevicePolicyRequest::PrepareMounts));
         write_message(
             &mut peer,
-            &DevicePolicyResponse::Rejected(a3s_oci_sdk::Error::new(
+            &DevicePolicyResponse::Rejected(aster_oci_sdk::Error::new(
                 ErrorCode::PermissionDenied,
                 "mount cloning failed",
             )),

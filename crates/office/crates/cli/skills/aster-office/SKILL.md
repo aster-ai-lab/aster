@@ -1,0 +1,494 @@
+---
+name: aster-office
+description: Inspect, create, edit, validate, merge, render, live-preview, and collaboratively synchronize Aster Office Writer (.docx), Spreadsheet (.xlsx), Presentation (.pptx), Markdown, and PDF artifacts through the typed native CLI, standard MCP server, and bounded browser-editor operator, with explicit fallback to its pinned OfficeCLI compatibility route for unpromoted operations. Use when an agent needs to work with Office OOXML documents, durable Yjs collaboration, editor UI/UX flows, WPS-referenced behavior, or saved artifact diagnostics.
+---
+
+# Aster Office
+
+Use Aster Use as the application boundary for Office documents. Prefer the
+in-process native engine and its typed operations. Use the compatibility route
+only when the requested operation is not yet native.
+
+Use the host surface that is already available:
+
+- In an Aster Code `use` worker, call the available
+  `mcp__use_office__*` tools directly. The host has already started the native
+  MCP server and owns its lifecycle; do not run shell commands or install a
+  provider.
+- If a requested operation is absent from the native tools, use an available
+  `mcp__use_office_compat__*` tool only as an explicit compatibility fallback.
+  If that route is absent, report the missing capability instead of installing,
+  repairing, or falling back to a shell.
+- In a CLI-only agent host, use the `aster use office native ...` commands below.
+
+Before relying on cached guidance, verify the packaged Skill contract once per
+host session:
+
+```bash
+aster use office skills manifest aster-office --json
+```
+
+The manifest returns the byte count and SHA-256 for `SKILL.md` and every
+bundled reference. If a previously recorded hash differs, reload the Skill
+before choosing an editor operation.
+
+For browser-editor UI/UX work, read [references/editor-ui.md](references/editor-ui.md)
+and use the source-checkout operator (`bun run office:ops -- ...`). It routes
+the same bounded workflow across Writer, Spreadsheet, Presentation, Markdown,
+and PDF, owns local fixtures and evidence, and keeps Aster Test interaction
+proof separate from native file mutations. Playwright is a supplemental pixel
+baseline, not the interaction authority. On Windows, its `wps-probe` command
+is the approved bounded WPS COM reference path. Before native GUI work, run
+`bun run office:ops -- aster cua certification --json`; the locked CUA Driver
+0.10.0 Windows profiles are currently `unsupported`, so use the Aster Test
+Web/CDP route for browser editors and fail closed for Windows CUA claims.
+Start each UI/UX pass with `bun run office:ops -- plan <surface> --json` (or
+`plan all --json`). The plan is generated from the shared editor matrix and
+emits typed fixture, ACL, Aster Test, visual, agent, and WPS-reference commands;
+do not hand-author per-surface shell conditionals.
+The Writer row includes the WPS shortcut, layout-parity, and font/grid ACLs plus
+their generated DOCX fixtures. Spreadsheet, Presentation, and PDF rows also
+expose representative ribbon/font, focus, keyboard, and compact-drawer
+contracts, so use the returned inventory before choosing a native or browser
+operation.
+`doctor --json` also fails closed for stale Aster Test binaries; the supported
+local gate line is Aster Test 1.x with the pinned standalone Web protocol.
+On Windows, the operator sends action JSON, selectors, and paths as typed child
+argv and does not pass them through `cmd.exe` shell parsing. Supplying a CDP
+port automatically builds a native `.exe` browser adapter in the ignored
+`.aster-test/office-ops/` directory; do not substitute a `.cmd` shim for an
+interactive Aster Test session unless an explicit adapter has been reviewed.
+
+## Workflow
+
+1. Identify and inspect the document before changing it.
+
+   In an Aster Code `use` worker, begin with
+   `mcp__use_office__office_validate`, then open a session and use
+   `mcp__use_office__office_view`, `office_get`, or `office_query` as needed.
+   In a CLI-only host, use:
+
+   ```bash
+   aster use office native validate "$FILE" --json
+   aster use office native view "$FILE" annotated --limit 200 --json
+   aster use office native view "$FILE" outline --json
+   aster use office native view "$FILE" issues --json
+   ```
+
+2. In a CLI-only agent host, load the format reference relevant to the task.
+   An Aster Code `use` worker cannot read Skill reference files; rely on this
+   guidance and the available MCP tool schemas instead.
+
+   - Read [references/word.md](references/word.md) for `.docx` and Writer.
+   - Read [references/spreadsheet.md](references/spreadsheet.md) for `.xlsx` and Spreadsheet.
+   - Read [references/presentation.md](references/presentation.md) for `.pptx` and Presentation.
+   - Read [references/markdown.md](references/markdown.md) for Markdown.
+   - Read [references/pdf.md](references/pdf.md) for PDF.
+
+3. Prefer a typed `office native` operation. Use `--output` for a distinct
+   result when the command supports it; otherwise work on an intentional copy.
+   Use one atomic `batch` for dependent changes. For general find/replace, use
+   `set <file> <scope> --find ... --replace ...`; use literal mode unless regex
+   captures are actually required.    locate matches first with
+   `find <file> [scope] --find ...`, then add `--occurrence <n>` (the 1-based
+   index from that result) to change one match. Omitting occurrence still
+   replaces every match. A missing occurrence fails before any write. For a
+   live Writer or Markdown replica, locate first with `collab find <store>
+   --find ...` or MCP `office_collaboration_find`, pass that `matchCount` as
+   `expectedMatches` on `document-replace-text` or `markdown-replace-text`, and
+   add optional `occurrence` the same way. For Writer under concurrent peers,
+   also pass the hit's `paragraphId`, `textId`, and `indexUtf16` so a drifted
+   span fails closed; use `document-replace-paragraph` when the whole paragraph
+   identity is known. For Markdown under concurrent peers, also pass the hit's
+   `indexUtf16` the same way. A whole-source `markdown-replace` requires
+   `expectedMarkdown` equal to the source just read; a drifted base fails
+   closed and writes nothing. `markdown-splice` requires `expectedSlice` equal to
+   the UTF-16 range being deleted, or empty when `deleteUtf16` is 0; a drifted
+   slice fails closed and writes nothing. The splice result carries
+   `caret.indexUtf16` just after the inserted text; do not send a follow-up
+   location message. Prefer `markdown-replace-text` or a
+   guarded splice so a live replica is not overwritten. For a live Spreadsheet replica,
+   `collab find` returns `sheetId`, `row`, and `column`; edit that cell with
+   `spreadsheet-set-cell` and pass `expectedCell` equal to the current leaf, or
+   null/absent when blank; a drifted base fails closed and writes nothing. For a live
+   Presentation replica, `collab find` returns `containerKind`, `containerId`,
+   `elementId`, and `indexUtf16`. Pass that `matchCount` as `expectedMatches` on
+   `presentation-replace-text`, and add optional `occurrence` plus those
+   identity fields the same way, to change only the matched text; use
+   `presentation-update-element` with `expectedElement` equal to the current
+   element when other scene fields change (a drifted base fails closed). For a live PDF
+   replica, `collab find` returns `fieldId` for form values or `annotationId`,
+   `pageIndex`, and `annotationType` for FreeText (`type` 3) contents; edit with
+   `pdf-set-form-value` or `pdf-update-annotation`. `pdf-set-form-value` requires
+   `expectedValue` equal to the current field value, or empty when the field
+   is absent; a drifted base fails closed and writes nothing. `pdf-update-annotation`
+   requires `expectedAnnotation` equal to the current annotation; a drifted base
+   fails closed and writes nothing. For a form value or FreeText
+   annotation under concurrent peers, also pass the hit's `indexUtf16` and the
+   matched `search`; `value` / `nextAnnotation.contents` then replace only that
+   span and a drifted offset fails closed. Omit both anchors to set the whole field
+   value or FreeText contents after that compare-and-swap. There is no PDF body replace-text mutation.
+
+4. Verify the result with `validate`, a targeted `get` or `query`, and
+   `view ... issues`. For native OOXML Spreadsheet sessions, filter issues with
+   `issueType=formula_not_evaluated` (or `formula_eval_error`) and confirm
+   `formulaCached=true` on the formula anchor after
+   `recalculate-spreadsheet-formulas`. Live collaboration Spreadsheet replicas
+   use `spreadsheet-set-cell` / `spreadsheet-batch-cells` with explicit cached
+   `"v"` / `"m"` beside `"f"`; they do not expose
+   `recalculate-spreadsheet-formulas` or native `formulaCached` issue filters.
+   Use HTML, SVG, or screenshot only as a semantic preview.
+
+5. Report the exact output path and any remaining issue records. Do not claim
+   Microsoft Office layout fidelity from a semantic preview.
+
+When the request includes editor interaction, add a focused UI pass after the
+native readback: inspect the target surface, perform the smallest user-level
+action, assert state/focus/responsive behavior, and retain screenshot plus
+console/page-error evidence. Do not use a successful `validate` result as a
+substitute for that pass.
+
+The browser operator exposes typed Aster Test agent actions so a Codex host does
+not need to hand-author action JSON for common editor work. Start with
+`observe`, then dispatch exactly one action and observe again:
+
+```bash
+bun run office:ops -- aster agent click --session <id> --observation <n> \
+  --target 'role=button|保存' --json
+bun run office:ops -- aster agent fill --session <id> \
+  --target 'label=标题' --value 'Aster Office' --json
+bun run office:ops -- aster agent press --session <id> --key Enter --json
+bun run office:ops -- aster agent screenshot --session <id> \
+  --path evidence/final.png --json
+```
+
+Targets use one stable grammar: `@e7` for the latest observation ref,
+`css=<selector>`, `role=<role>|<name>`, `label=<text>`,
+`placeholder=<text>`, `testid=<id>`, `automation=<id>`, or `text=<text>`.
+Refs always require the latest `--observation`; never reuse a ref after an
+action or another observation. The typed wrappers cover click, hover, focus,
+double-click, context-click, fill, type, check, uncheck, select, drag, press,
+wheel, viewport, wait, assertions, screenshot, accessibility, console, and
+page-error evidence. Use `aster agent act --action-json` only for a schema action
+not represented by a wrapper.
+
+For an iterative visual loop, run the foreground watch in a separate process:
+
+```bash
+aster use office native watch "$FILE" --port 0
+```
+
+Open the authenticated loopback URL printed at startup. The watch refreshes
+after on-disk saves, including separate native CLI mutations. It is read-only,
+does not expose OfficeCLI's resident protocol, and does not observe unsaved MCP
+session changes until `office_save`. Stop it with Ctrl+C; use `--timeout-ms`
+when an agent must bound its lifetime.
+
+In an Aster Code `use` worker, participate in shared Yjs state through the
+available `mcp__use_office__office_collaboration_*` tools. Create or join the
+replica once, then poll `office_collaboration_events` with the last successfully
+consumed `cursorSequence`; use `includeUpdates=true` when the agent needs to
+apply the update locally. No OOXML session is required for collaboration.
+Read the stable edit address from `collab read` or `office_collaboration_read`,
+then patch only that address with `collab mutate` or `office_collaboration_mutate`.
+Do not overwrite the whole document. Markdown addresses are `startUtf16` and
+`endUtf16` slices patched by `markdown-splice` with `expectedText`. A full next
+Markdown string uses `markdown-replace` only with `expectedMarkdown` from that
+read and must leave unrelated concurrent text in place. Document addresses are
+`paragraphId`, `textId`, `startUtf16`, and `endUtf16`. Spreadsheet addresses are
+`sheetId`, `row`, and `column`. Presentation addresses are `containerKind`,
+`containerId`, and `elementId`. PDF addresses are `pageIndex` and `annotationId`
+or `fieldId`.
+Use `office_collaboration_mutate` for local typed Markdown, Document,
+Spreadsheet, Presentation, or PDF operations instead of generating Yjs bytes;
+keep the operation ID stable and use the last inspected state vector as a
+precondition when rebasing matters.
+Document exact-text replacement requires the current match count and preserves
+the first replaced character's marks while rotating the affected Word `textId`.
+Bounded section/list-item/table-cell/header/blockquote paragraph insertion uses
+explicit stable IDs; deletion requires the current `textId` plus complete text
+and preserves required container blocks and list-leading paragraphs. It refuses
+inline/review content. Table-contained edits rotate every identified ancestor
+row's `rowTextId` atomically. Page color and track-changes are separate
+conflict-local option mutations. For Document review, read projection schema
+version 3 and use `document-comment-create` with the exact `paragraphId`,
+`textId`, UTF-16 range, and selected text; use `document-comment-reply`,
+`document-comment-set-resolved`, and `document-comment-delete` for the thread
+lifecycle. A new record's `author` must match the authenticated actor display
+name. Comment-mode deletion is limited to the actor's own comment or reply,
+while resolution/reopen is shared. Projection v3 also returns live
+`suggestions` with exact placements and immutable `changeDecisions`. Use an
+actor-scoped `suggest` replica plus `document-suggestion-create` to propose an
+insertion, deletion, or paired replacement. Match the current `paragraphId`,
+`textId`, UTF-16 range, and selected text, and never supply an actor ID inside
+the mutation. Use an `edit` replica plus `document-suggestion-decide` to accept
+or reject one or more exact suggestion identities atomically; include both
+members of a replacement pair and copy every expected actor, author, timestamp,
+kind, and text field from the latest projection. Spreadsheet set-cell
+recursively compares the observed and next cell, writes only changed leaves,
+and uses `expectedCell: null` only for a known blank coordinate. Spreadsheet
+delete-cell requires the exact complete observed cell. Use
+`spreadsheet-batch-cells` for 1 to 4,096 distinct coordinates from one sheet
+snapshot and one user gesture; any stale change rejects the complete batch.
+All variants use a stable sheet ID and zero-based row/column coordinates.
+Presentation element operations target a
+stable slide, master, or layout. Create uses a complete object and optional
+active insertion anchor; update uses complete expected/next objects and merges
+only unrelated top-level fields. Move uses stable observed and requested
+predecessor IDs instead of array indexes; `null` means the first order
+position, and an already-satisfied destination is idempotent. A stale source
+position or unavailable anchor fails before a durable update. Delete requires
+the exact complete object and writes a durable tombstone. Preserve immutable
+element ID/type and never reuse a tombstoned ID.
+
+In a CLI-only agent host, run the collaboration event stream in a separate
+process:
+
+```bash
+aster use office collab watch "$REPLICA" \
+  --after-sequence "$CURSOR" --include-updates --json
+```
+
+Read its JSONL records incrementally. Persist `cursorSequence` only after the
+corresponding `updateBase64` has been handled successfully, then pass that
+cursor back on reconnect. A `reset` record means checkpoint compaction removed
+the requested incremental history: replace/rebuild the local Yjs state from
+its complete update and persist the reset cursor. Bound unattended runs with
+`--max-events` or `--timeout-ms`. Omitting `--after-sequence` starts at the
+current durable sequence and watches only future changes.
+
+When the CLI-only host supplies an authenticated room transport, attach the
+replica as a live peer instead:
+
+```bash
+aster use office collab session "$REPLICA" --poll-ms 100 \
+  --actor-name "Aster Agent" --json
+```
+
+Treat stdin and stdout as JSONL. Forward each stdout `outbound.message` after
+decoding `payloadBase64`; send room messages back as `receive` records and use
+a stable host delivery `operationId` for every `sync-step-2` or `update`.
+When `--actor-name` is present, also forward each
+`outbound-awareness.message` as the room Awareness event. Publish the agent's
+typed activity and format location with `set-presence`, send remote Awareness
+as `receive-awareness`, and translate peer disconnects to `peer-left`.
+Send `{"type":"reconnect"}` after every transport reconnect and
+`{"type":"close"}` for an orderly stop. The session owns Yjs/Yrs handshakes,
+durable receipts, external agent-update polling, echo suppression, and an
+optional in-memory Awareness peer; the host continues to own room identity,
+authentication, authorization, buffering, and delivery. Never treat Presence
+as authorization or copy it into the durable replica. Use `ready.clientId` for
+the connection hello and room envelopes; `ready.replicaClientId` is the stable
+Yrs author ID and must not replace the ephemeral Presence sender ID.
+
+Make local typed Markdown, Document, Spreadsheet, Presentation, or PDF changes
+from another CLI process with `collab mutate`; the running session observes its
+durable event and publishes the incremental update. Markdown splice offsets
+are UTF-16 code units.
+Document replacement fails closed on a stale match count and never replaces
+the shared HTML/XML tree. Paragraph insert/delete mutations are limited to
+direct children of top-level sections and use uppercase eight-digit positive
+31-bit hexadecimal Word IDs. Canonical content mutations require an `edit`-mode
+replica. Document comment create/reply/resolve/delete accepts an `edit` or
+`comment` replica; use a separately joined actor-scoped comment replica when
+the participant must not edit content. Document suggestion creation requires
+an actor-scoped `suggest` replica; final suggestion decisions require `edit`.
+Spreadsheet cells use
+`spreadsheet-set-cell` with an observed
+`expectedCell` and complete `nextCell`, or `spreadsheet-delete-cell` with an
+exact complete `expectedCell`; stale same-leaf edits and stale deletes fail
+before a durable update. Use `spreadsheet-batch-cells` for a multi-cell gesture:
+every coordinate must be distinct, `nextCell: null` is an exact guarded
+delete, and one invalid or conflicting change aborts the entire transaction.
+Presentation uses
+`presentation-create/update/move/delete-element` with a stable `containerKind`
+and `containerId`; stale same-field updates, conflicting same-ID creation,
+stale source predecessors, missing anchors, and stale deletes fail before a
+durable update.
+
+## Choose the Surface
+
+- In an Aster Code `use` worker, use `mcp__use_office__*` and keep the returned
+  Office session ID stable until the document is saved and closed.
+- Use `mcp__use_office_compat__*` only when the native route lacks the requested
+  operation and the compatibility tools are actually present.
+- Use `aster use office native ... --json` for local automation and scripts.
+- Use `aster use office collab ... --json` for durable Yjs/Yrs replica exchange,
+  resumable coding-agent event streams, and host-injected live JSONL sessions.
+- Use `aster use mcp serve office-native` for typed, stateful agent sessions.
+  Read [references/mcp.md](references/mcp.md) before using its session tools.
+- Use the typed Rust API when embedding Office behavior in Rust.
+- Use `aster use office ...` only for an operation absent from the native route.
+  Check `aster use office doctor --json` first. The first real compatibility
+  command prepares the pinned OfficeCLI provider when policy allows it; help,
+  version, doctor, Skills, and native commands remain non-installing.
+
+`aster-use` accepts the same arguments when the umbrella `aster` executable is not
+available.
+
+## Safety Rules
+
+- Do not invoke LibreOffice, Microsoft Office, Python, Node.js, or .NET as an
+  implicit product runtime. LibreOffice is only an optional external CI
+  oracle. The explicit Windows-only WPS COM probe documented in
+  `references/editor-ui.md` is a bounded reference experiment, never a
+  dependency of native CLI execution or CI.
+- Do not use `raw-set` when a typed operation exists. When raw XML replacement
+  is unavoidable, inspect the exact part, preserve its root QName, write to a
+  distinct output, and validate the result.
+- Do not evaluate formulas through a shell or general-purpose script runtime.
+  Native cell-formula writes validate and store the expression but do not
+  compute a cached value implicitly. When fresh results are required, use
+  `office native recalculate` or the typed
+  `recalculate-spreadsheet-formulas` mutation. The closed native registry is
+  `ABS`, `AND`, `AVERAGE`, `AVERAGEIF`, `COLUMN`, `CONCAT`, `CONCATENATE`,
+  `COUNT`, `COUNTA`, `COUNTIF`, `IF`, `IFERROR`, `LEFT`, `LEN`, `MAX`, `MID`,
+  `MIN`, `MOD`, `NA`, `NOT`, `OR`, `PI`, `POWER`, `RIGHT`, `ROUND`, `ROW`,
+  `SEQUENCE`, `SQRT`, `SUBTOTAL`, `SUM`, `SUMIF`, and `TRANSPOSE`. Write the formula, then recalculate in that
+  same native batch. Call functions with bare names; sheet or workbook
+  qualifiers are not calculated. External-workbook references, unsupported
+  structured references, and 3D named references (`Sheet1:Sheet2!Name`) fail
+  closed with agent-directed suggestions: rewrite to in-workbook ranges/values,
+  use supported ListObject forms / sheet A1 ranges, or resolve names with a
+  single sheet or workbook scope. Wrong argument counts fail closed with an
+  agent-directed suggestion to match closed-registry arity. The registry must
+  reject unsupported functions
+  instead of falling back to code execution or the compatibility route.
+  `SUMIF`/`COUNTIF`/`AVERAGEIF` accept one exact value or a numeric comparison
+  such as `">=10"`; unescaped `*` / `?` wildcards fail closed. `SUMIF` and
+  `AVERAGEIF` expand the optional sum/average window from that range's
+  top-left cell to match the criteria rectangle.
+- Treat dynamic-array spill children as read-only calculated output. Find and
+  edit or remove the formula anchor whose `formulaRef` contains the child;
+  recalculation, cache writes, spill cleanup, and every sibling mutation in
+  the batch roll back together on failure.
+- Treat external OOXML relationships as inert. Do not fetch linked resources
+  while inspecting or rendering a document. Native hyperlink writes accept
+  only absolute HTTP, HTTPS, or mailto URIs without embedded credentials.
+- Preserve no-clobber behavior. Do not add `--force` or replace an existing
+  destination unless the user explicitly authorizes replacement.
+- Treat a zero-match replacement as an unchanged successful receipt, not as a
+  claimed edit. Keep Spreadsheet scopes narrow when only selected cells should
+  change; the engine protects shared-string aliases outside the scope.
+- Merge Spreadsheet cells only through a normalized cell/range path. Use
+  `--merge-cells false` only with the exact existing range reported by
+  `mergeCell` query results; do not approximate a destructive unmerge sweep.
+  Merges that overlap another merge or a Spreadsheet table must fail closed.
+- Treat Spreadsheet data validation as worksheet structure, not formula
+  execution. Query `dataValidation` first, use the returned stable path for
+  update/remove, and keep every rule area disjoint. Use typed list, comparison,
+  or custom rules; do not work around an overlap or formula/type error with raw
+  XML. Validate and read back one covered cell after mutation.
+- Treat Spreadsheet conditional formatting as ordered worksheet structure, not
+  evaluated styling. Query `conditionalFormatting` first, use the returned
+  `/Sheet/cf[N]` path, preserve rule priority and `stopIfTrue`, and use only the
+  closed classic/data-bar/color-scale/icon-set fields. Do not mutate a node
+  whose semantic readback reports `nativeMutable=false`, bypass a shared-range
+  or unknown-content error with raw XML, or claim that a semantic preview proves
+  Excel's rendered result.
+- Treat Spreadsheet defined names as scoped workbook identities. Query
+  `namedrange` first and use the returned `@name` plus `@scope` path for
+  update/remove. Do not edit `_xlnm.*` or `Slicer_*` names, collide with a table
+  name, add a formula-bar leading `=`, or use raw XML to bypass a typed
+  identity/ref error. Defined-name mutations store the definition and request
+  recalculation; supported names referenced by cell formulas are resolved only
+  during an explicit native recalculation pass.
+- Import CSV or TSV only through the bounded typed import. Use exactly one
+  regular source file or `--stdin`, make `--format` explicit for stdin, and
+  inspect the target worksheet, `/Sheet/autofilter`, and `/Sheet/freeze` before
+  enabling `--header`: header mode intentionally replaces the worksheet filter
+  range and canonical frozen pane in one transaction. Explicit empty fields
+  clear existing cells; missing trailing fields in ragged rows do not. Treat
+  inferred formulas as parsed but not implicitly recalculated; run the explicit
+  native pass when cached values are required. Never bypass a malformed-quote,
+  formula-syntax, range, type, or unknown-view error with `raw-set`.
+- Treat Spreadsheet AutoFilters as typed worksheet or table structure. Query
+  `autofilter` or `filtercolumn` first and inspect `nativeMutable`; use the
+  stable `/Sheet/autofilter` or `/Sheet/table[N]` path for updates. Every
+  `--filter` is one strict JSON object containing a unique zero-based `column`
+  and closed `criteria`. Repeated values replace the complete criterion list;
+  use `--clear-filters` explicitly to clear it. Do not use raw XML to flatten
+  imported date groups, color/icon filters, extensions, or embedded sort state.
+- Sort Spreadsheet records only with `office native sort`. Use `/Sheet` to
+  auto-detect the used range or an explicit `/Sheet/A1:D100`; supply ordered
+  absolute `--key` columns and explicit header/case flags. Equal keys are
+  stable, numbers precede text, and blanks stay last. A partial-column range
+  moves only those cells, not whole rows. Verify `/Sheet/sort` and its key
+  children after sorting. Removing `/Sheet/sort` clears metadata only and does
+  not restore the old physical order. Do not bypass failures for formulas,
+  totals rows, intersecting merges, pivots, unknown sort state, partial
+  table/AutoFilter overlap, or non-lossless drawings with raw XML.
+- Treat Spreadsheet ListObject tables as owned worksheet structures. Query
+  `table` first and use the returned `/Sheet/table[N]` path for set/remove. The
+  final range includes enabled header and totals rows; provide exactly one
+  unique `--table-column` per range column and leave at least one data row. Do
+  not overlap another table, a merge, or a worksheet AutoFilter, and do not use
+  raw XML to bypass `nativeMutable=false` or an unknown-content/relationship
+  error. Table criteria use the same typed filter-column values as worksheet
+  AutoFilters. Table set automatically rewrites common explicit structured
+  references and provably owned table-local column references when aliases or
+  position-mapped columns change. Do not bypass
+  `use.office.spreadsheet_table_formula_rewrite_unsupported` for unsafe local
+  geometry or ownership, or `use.office.spreadsheet_table_referenced` when
+  removal is blocked. Exact mutable table or data ranges without totals rows
+  can use the separate physical sort contract; unsupported embedded/imported
+  sort state remains non-mutable.
+- Keep the default OfficeCLI compatibility route separate from the native
+  engine. Do not depend on OfficeCLI's private resident protocol.
+
+## Native Boundaries
+
+The native engine currently owns safe OPC/ZIP admission, semantic reads,
+bounded annotated and issue analysis, common typed mutations, atomic batches,
+scoped literal/regex replacement, typed bold, italic, underline, vertical
+script, font, size, RGB, and alignment formatting, Word/Spreadsheet single
+strikethrough, Word double strikethrough, and Word/Presentation display case,
+portable highlight, and primary-language formatting. It also owns typed inert
+hyperlinks, typed legacy comments, typed Spreadsheet number formats, solid or
+cleared fills, cardinal and diagonal borders, vertical alignment, wrapping,
+rotation, indentation, shrink-to-fit, reading order, and exact merged-cell
+editing. It owns typed Spreadsheet list, whole, decimal, date, time,
+text-length, and custom data-validation rules over disjoint A1 ranges, with
+stable rule paths and sparse cell readback. It also owns typed Spreadsheet
+comparison/formula/text/statistical/date conditional-format rules, data bars,
+two/three-color scales, standard 3/4/5-icon sets, differential fill/font/bold,
+typed thresholds, stable paths, semantic queries, and exact canonical replay.
+It owns workbook-global and
+worksheet-local Spreadsheet defined names with stable scoped paths, typed
+add/set/remove, semantic readback, and exact replay. It owns typed Spreadsheet
+formula parsing, bounded dependency graphs, a closed typed function registry,
+read-only calculation, atomic cached-value and dynamic-array spill writeback,
+CLI/MCP/batch recalculation, and exact replay. It owns typed Spreadsheet
+CSV/TSV import with bounded strict parsing, typed cell inference, explicit
+empty-cell semantics, optional header AutoFilter/frozen-pane setup, semantic
+`/Sheet/freeze` state, and exact canonical replay. It owns typed Spreadsheet
+worksheet and table AutoFilters with closed value, comparison, top/bottom, and
+dynamic criteria, stable filter paths, add/set/remove, and exact replay. It
+owns stable ordered multi-key Spreadsheet physical sorting over an explicit or
+auto-detected used range, persisted `/Sheet/sort` and `/Sheet/sort/key[N]`
+state, record-bound metadata movement, metadata-only removal, and exact replay.
+It owns typed Spreadsheet ListObject names, ranges, column identities,
+header/totals state, filter criteria, built-in styles, stable table/column
+paths, add/set/remove, and exact replay. It also
+owns template merge, constrained XML access,
+deterministic all-format HTML/SVG, Browser-injected semantic screenshots, and
+authenticated loopback live watch for saved files.
+The collaboration replica separately supports durable Document selection
+comments, replies, resolution/reopen, detached anchors, attributed text
+suggestions, and immutable accept/reject decisions through browser-compatible
+Yjs/Yrs records. This does not imply native OOXML package support for modern
+Word threaded-comment or tracked-revision parts.
+Hyperlinks cover Word body/header/footer paragraphs and bookmarks, Spreadsheet
+cells or bounded ranges and internal locations, and external Presentation shape
+clicks or internal jumps to existing slides. Remaining boundaries include
+modern threaded comments, replies/resolution, writable comment dates,
+rich comment bodies, Word header/footer comment anchors,
+gradient/pattern/theme fills, advanced x14 conditional-format visuals, named
+styles, complete Excel function/structured-reference/external-workbook formula
+compatibility, formula-bearing or table-totals sorting, table calculated
+columns/totals functions, date-group/color/icon filters and unsupported
+embedded/imported sort-state variants, custom table styles, query
+tables/external data, advanced charts, pivots, and media,
+interactive preview editing/annotations, and full Office layout fidelity. Fail
+closed or use the explicit compatibility route rather than inventing
+unsupported native behavior.

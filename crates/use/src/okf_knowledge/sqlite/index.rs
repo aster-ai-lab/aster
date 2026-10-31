@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
-use a3s_use_core::{inspect_okf_bundle_files, OkfBundleFile, UseError, UseResult};
+use aster_use_core::{inspect_okf_bundle_files, OkfBundleFile, UseError, UseResult};
 use olpc_cjson::CanonicalFormatter;
 use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag, TagEnd};
 use serde::Serialize;
@@ -9,8 +9,8 @@ use sha2::{Digest, Sha256};
 
 use crate::okf_knowledge::OkfKnowledgeStageSpec;
 
-pub(super) const INDEX_SCHEMA: &str = "a3s-knowledge-okf-fts5-v1";
-const INDEX_DESCRIPTOR_SCHEMA: &str = "a3s.use.okf-sqlite-index.v1";
+pub(super) const INDEX_SCHEMA: &str = "aster-knowledge-okf-fts5-v1";
+const INDEX_DESCRIPTOR_SCHEMA: &str = "aster.use.okf-sqlite-index.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) struct IndexedDocument {

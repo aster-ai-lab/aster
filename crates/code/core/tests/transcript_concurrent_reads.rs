@@ -1,6 +1,6 @@
-use a3s_code_core::store::{MemorySessionStore, TranscriptPageRequest};
-use a3s_code_core::{Agent, AgentSession, CodeConfig, PlanningMode, SessionOptions};
-use a3s_effect::{FileLog, LogStore, NewFact};
+use aster_core::store::{MemorySessionStore, TranscriptPageRequest};
+use aster_core::{Agent, AgentSession, CodeConfig, PlanningMode, SessionOptions};
+use aster_effect::{FileLog, LogStore, NewFact};
 use std::sync::{Arc, Barrier};
 
 async fn fixture() -> (tempfile::TempDir, Agent, AgentSession) {
@@ -35,7 +35,7 @@ providers "mock" {
         )
         .await
         .unwrap();
-    let log = FileLog::open(a3s_code_core::session_folder::effect_log_dir(
+    let log = FileLog::open(aster_core::session_folder::effect_log_dir(
         root.path(),
         session.id(),
     ))
@@ -48,7 +48,7 @@ providers "mock" {
         })
         .collect();
     log.append(
-        &a3s_code_core::fact_control::thread_for_session(session.id()),
+        &aster_core::fact_control::thread_for_session(session.id()),
         &records,
         None,
     )
@@ -93,7 +93,7 @@ async fn concurrent_transcript_readers_share_the_session_log() {
 #[tokio::test]
 async fn a_foreign_log_owner_still_refuses_transcript_reads() {
     let (root, agent, session) = fixture().await;
-    let foreign = FileLog::open(a3s_code_core::session_folder::effect_log_dir(
+    let foreign = FileLog::open(aster_core::session_folder::effect_log_dir(
         root.path(),
         session.id(),
     ))

@@ -2,27 +2,27 @@
 //!
 //! `#[ignore]` by default. Run on a `/dev/kvm` host:
 //! ```text
-//! A3S_BOX=/path/to/a3s-box A3S_SDK_SOAK_FORKS=2000 \
-//!   cargo test -p a3s-box-sdk --test soak_kvm -- --ignored --nocapture --test-threads=1
+//! ASTER_BOX=/path/to/aster-box ASTER_SDK_SOAK_FORKS=2000 \
+//!   cargo test -p aster-box-sdk --test soak_kvm -- --ignored --nocapture --test-threads=1
 //! ```
-//! Knobs: `A3S_SDK_SOAK_FORKS` (total fork-evals, default 200),
-//! `A3S_SDK_SOAK_CONC` (max concurrency, default 8), `A3S_SDK_TEST_IMAGE`.
+//! Knobs: `ASTER_SDK_SOAK_FORKS` (total fork-evals, default 200),
+//! `ASTER_SDK_SOAK_CONC` (max concurrency, default 8), `ASTER_SDK_TEST_IMAGE`.
 
-use a3s_box_sdk::pipeline::{warm_base, Step, WarmBase};
+use aster_box_sdk::pipeline::{warm_base, Step, WarmBase};
 use std::process::Command;
 use std::time::Instant;
 
-fn a3s_box() -> String {
-    std::env::var("A3S_BOX").unwrap_or_else(|_| "a3s-box".into())
+fn aster_box() -> String {
+    std::env::var("ASTER_BOX").unwrap_or_else(|_| "aster-box".into())
 }
 
 fn image() -> String {
-    std::env::var("A3S_SDK_TEST_IMAGE")
+    std::env::var("ASTER_SDK_TEST_IMAGE")
         .unwrap_or_else(|_| "docker.m.daocloud.io/library/alpine:latest".into())
 }
 
 fn kvm_ready() -> bool {
-    match Command::new(a3s_box()).arg("info").output() {
+    match Command::new(aster_box()).arg("info").output() {
         Ok(o) => o.status.success() && String::from_utf8_lossy(&o.stdout).contains("available"),
         Err(_) => false,
     }
@@ -38,10 +38,10 @@ fn marker() -> String {
 /// Count THIS run's boxes whose name also contains `needle`.
 fn count_box_names(needle: &str) -> usize {
     let m = marker();
-    let out = Command::new(a3s_box())
+    let out = Command::new(aster_box())
         .args(["ps", "-a", "--format", "{{.Names}}"])
         .output()
-        .expect("a3s-box ps");
+        .expect("aster-box ps");
     String::from_utf8_lossy(&out.stdout)
         .lines()
         .filter(|l| l.contains(needle) && l.contains(&m))
@@ -51,10 +51,10 @@ fn count_box_names(needle: &str) -> usize {
 /// Count THIS run's ci-base snapshots.
 fn count_my_snaps() -> usize {
     let m = marker();
-    let out = Command::new(a3s_box())
+    let out = Command::new(aster_box())
         .args(["snapshot", "ls"])
         .output()
-        .expect("a3s-box snapshot ls");
+        .expect("aster-box snapshot ls");
     String::from_utf8_lossy(&out.stdout)
         .lines()
         .filter(|l| l.contains("ci-base-") && l.contains(&m))
@@ -77,14 +77,14 @@ fn env_usize(key: &str, default: usize) -> usize {
 }
 
 #[test]
-#[ignore = "needs a real a3s-box + /dev/kvm; long-running"]
+#[ignore = "needs a real aster-box + /dev/kvm; long-running"]
 fn soak_fork_eval_is_leak_free_and_stable() {
     if !kvm_ready() {
-        eprintln!("SKIP soak_fork_eval_is_leak_free_and_stable: no A3S_BOX/KVM");
+        eprintln!("SKIP soak_fork_eval_is_leak_free_and_stable: no ASTER_BOX/KVM");
         return;
     }
-    let target = env_usize("A3S_SDK_SOAK_FORKS", 200);
-    let conc = env_usize("A3S_SDK_SOAK_CONC", 8);
+    let target = env_usize("ASTER_SDK_SOAK_FORKS", 200);
+    let conc = env_usize("ASTER_SDK_SOAK_CONC", 8);
     let batch = 20usize;
 
     let snaps0 = count_my_snaps();

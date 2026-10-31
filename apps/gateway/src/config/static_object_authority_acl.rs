@@ -1,7 +1,7 @@
 use super::{bool_attr, config_error, required_string_attr, string_attr, u64_attr};
 use crate::config::{StaticObjectAuthorityConfig, StaticObjectS3Config};
 use crate::error::Result;
-use a3s_acl::Block;
+use aster_acl::Block;
 
 pub(super) fn parse(block: &Block) -> Result<StaticObjectAuthorityConfig> {
     if !block.labels.is_empty()

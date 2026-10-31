@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-/// A3S Box error types
+/// Aster Box error types
 #[derive(Error, Debug)]
 pub enum BoxError {
     /// VM failed to start
@@ -95,7 +95,7 @@ impl From<serde_yaml::Error> for BoxError {
     }
 }
 
-/// Result type alias for A3S Box operations
+/// Result type alias for Aster Box operations
 pub type Result<T> = std::result::Result<T, BoxError>;
 
 #[cfg(test)]

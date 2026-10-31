@@ -7,45 +7,45 @@ export const meta = {
 
 ## 会话目录与删除
 
-`a3s/session/list` 读取 Code 事实投影，不创建新的 AgentSession。参数支持 cwd、limit、query、headless，以及宿主使用的 facet 元数据。headless 只接受 include、exclude、only，kind facet 只接受 build、chat。
+`aster/session/list` 读取 Code 事实投影，不创建新的 AgentSession。参数支持 cwd、limit、query、headless，以及宿主使用的 facet 元数据。headless 只接受 include、exclude、only，kind facet 只接受 build、chat。
 
 cwd 仍受启动工作区范围约束，allowRelax 兼容字段不能扩大宿主范围。查询不到或无权访问时按资源不可用处理，不通过错误细节泄露其他工作区。
 
-`a3s/session/info` 查询指定会话，`a3s/session/delete` 是实际删除操作。客户端应在用户明确要求删除该会话后使用真实 ID 和 cwd；不要把“关闭标签页”接到删除接口。删除过程中还需关闭活动 Session 并清理相关记录，失败不能伪装成成功。
+`aster/session/info` 查询指定会话，`aster/session/delete` 是实际删除操作。客户端应在用户明确要求删除该会话后使用真实 ID 和 cwd；不要把“关闭标签页”接到删除接口。删除过程中还需关闭活动 Session 并清理相关记录，失败不能伪装成成功。
 
 ## 查询实际工具清单
 
 ```json
-{"jsonrpc":"2.0","id":21,"method":"a3s/session/tooling/v1","params":{"schema":"a3s.acp.session-tooling.v1","sessionId":"SESSION_FROM_RESPONSE","operationId":"tooling-001","cwd":"/absolute/practice-repo"}}
+{"jsonrpc":"2.0","id":21,"method":"aster/session/tooling/v1","params":{"schema":"aster.acp.session-tooling.v1","sessionId":"SESSION_FROM_RESPONSE","operationId":"tooling-001","cwd":"/absolute/practice-repo"}}
 ```
 
-响应包含当前能力目录身份、可用能力和 MCP 不可用原因。模型切换、能力准入后可收到 `a3s/session/tooling/update`。客户端按 generation 更新目录，不能把不同 generation 的清单拼在一起。
+响应包含当前能力目录身份、可用能力和 MCP 不可用原因。模型切换、能力准入后可收到 `aster/session/tooling/update`。客户端按 generation 更新目录，不能把不同 generation 的清单拼在一起。
 
 ## 转录分页
 
-`a3s/session/transcript/page/v1` 的 schema 是 `a3s.acp.session-transcript-page.v1`，参数为 sessionId、operationId、cwd、可选 cursor 和 limit。首屏不传 cursor，后续沿用服务端给出的 cursor，不按本地消息序号构造。
+`aster/session/transcript/page/v1` 的 schema 是 `aster.acp.session-transcript-page.v1`，参数为 sessionId、operationId、cwd、可选 cursor 和 limit。首屏不传 cursor，后续沿用服务端给出的 cursor，不按本地消息序号构造。
 
-加载时的 `a3s/session/transcript/update/v1` 是服务端通知，不是客户端调用的查询接口。保留转录条目身份、配对边界和重放标记，避免工具结果重复或断裂。
+加载时的 `aster/session/transcript/update/v1` 是服务端通知，不是客户端调用的查询接口。保留转录条目身份、配对边界和重放标记，避免工具结果重复或断裂。
 
 ## 后续建议与后台任务
 
-`a3s/followup/generate` 在回合结束后接收 sessionId、prompt 和 response，返回 suggestions。它不会另开用户回合，也不会代替用户继续任务；建议不可用时应按空结果处理，而不是编造下一条指令。
+`aster/followup/generate` 在回合结束后接收 sessionId、prompt 和 response，返回 suggestions。它不会另开用户回合，也不会代替用户继续任务；建议不可用时应按空结果处理，而不是编造下一条指令。
 
-`a3s/session/background-tasks/v1` 使用 `a3s.acp.session-background-tasks.v1` 查询会话的后台任务快照，包含子 Agent 与记忆提取任务的状态、时间和结果。`a3s/session/background-tasks/stop/v1` 使用同一 schema 并额外传入 taskId，返回是否实际停止。未知会话或任务必须按错误处理，不能显示为已停止。
+`aster/session/background-tasks/v1` 使用 `aster.acp.session-background-tasks.v1` 查询会话的后台任务快照，包含子 Agent 与记忆提取任务的状态、时间和结果。`aster/session/background-tasks/stop/v1` 使用同一 schema 并额外传入 taskId，返回是否实际停止。未知会话或任务必须按错误处理，不能显示为已停止。
 
 ## 前缀分支
 
-`a3s/session/fork/prefix/v1` 使用 `a3s.acp.session-prefix-fork.v1`，顶层含 sessionId、operationId、request。request 是 Core 的 PrefixForkRequest，包含 boundary_entry_id、expected_cut、target_session_id 与 expected_workspace。expected_cut 来自当前转录源 generation，boundary_entry_id 必须指向一个已完成的边界；不能只传一段聊天文本。
+`aster/session/fork/prefix/v1` 使用 `aster.acp.session-prefix-fork.v1`，顶层含 sessionId、operationId、request。request 是 Core 的 PrefixForkRequest，包含 boundary_entry_id、expected_cut、target_session_id 与 expected_workspace。expected_cut 来自当前转录源 generation，boundary_entry_id 必须指向一个已完成的边界；不能只传一段聊天文本。
 
 分支前先确认源 revision 和边界仍有效。新分支继承经准入的约束，文件和外部服务不会随转录倒退；UI 应提示用户核对当前工作区状态。
 
 ## 工作区搜索与压缩
 
-`a3s/workspace/search/v1` 使用 `a3s.acp.workspace-search.v1`，参数含 sessionId、operationId、cwd、query。当前实现调用受控 search 的 hybrid 模式，最多八条结果，因此需要混合检索路线可用；它不是任意文件系统搜索。
+`aster/workspace/search/v1` 使用 `aster.acp.workspace-search.v1`，参数含 sessionId、operationId、cwd、query。当前实现调用受控 search 的 hybrid 模式，最多八条结果，因此需要混合检索路线可用；它不是任意文件系统搜索。
 
-`a3s/compact_conversation` 接收 sessionId 和可选 userContext，压缩供模型使用的上下文。完整转录仍按 store 读取。压缩后不能删除 UI 中的重要工具与验证记录来假装从未发生。
+`aster/compact_conversation` 接收 sessionId 和可选 userContext，压缩供模型使用的上下文。完整转录仍按 store 读取。压缩后不能删除 UI 中的重要工具与验证记录来假装从未发生。
 
-`a3s/interject` 接收 sessionId 和 text，对活动 Run 追加输入；后续应用状态遵守 Core 的运行控制回执。空闲、新 generation 和取消竞争要分别处理。
+`aster/interject` 接收 sessionId 和 text，对活动 Run 追加输入；后续应用状态遵守 Core 的运行控制回执。空闲、新 generation 和取消竞争要分别处理。
 
 ## 验收
 

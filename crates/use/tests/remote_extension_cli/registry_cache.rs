@@ -12,7 +12,7 @@ fn cache_command(
         .args(["registry", "cache", action, "--registry-name", "fixture"])
         .args(extra)
         .arg("--json")
-        .env("A3S_USE_HOME", home)
+        .env("ASTER_USE_HOME", home)
         .output()
         .unwrap()
 }
@@ -79,7 +79,7 @@ fn registry_cache_usage_and_confirmed_prune_are_bounded_and_zero_network() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(replaced.status.success(), "{replaced:?}");
@@ -111,7 +111,7 @@ fn registry_cache_usage_and_confirmed_prune_are_bounded_and_zero_network() {
             "--yes",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(restored.status.success(), "{restored:?}");
@@ -223,7 +223,7 @@ fn killed_registry_download_resumes_without_publishing_partial_state() {
             "1.0.0",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .spawn()
         .unwrap();
     let reached_partial = wait_until(Duration::from_secs(15), || {
@@ -257,7 +257,7 @@ fn killed_registry_download_resumes_without_publishing_partial_state() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(active_diagnostic.status.success(), "{active_diagnostic:?}");
@@ -265,7 +265,7 @@ fn killed_registry_download_resumes_without_publishing_partial_state() {
     let diagnostic = &active_diagnostic["data"]["diagnostic"];
     assert_eq!(
         diagnostic["schema"],
-        "a3s.use.plugin-download-attempt-diagnostic.v1"
+        "aster.use.plugin-download-attempt-diagnostic.v1"
     );
     assert_eq!(diagnostic["packageId"], "acme/root");
     assert_eq!(diagnostic["scope"]["kind"], "user");
@@ -318,7 +318,7 @@ fn killed_registry_download_resumes_without_publishing_partial_state() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(
@@ -347,7 +347,7 @@ fn killed_registry_download_resumes_without_publishing_partial_state() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(
@@ -388,7 +388,7 @@ fn killed_registry_download_resumes_without_publishing_partial_state() {
             "--scope-id",
             "user/current",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(

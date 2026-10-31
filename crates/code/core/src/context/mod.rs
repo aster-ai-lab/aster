@@ -9,7 +9,7 @@
 //! Implement the `ContextProvider` trait and register it with a session:
 //!
 //! ```ignore
-//! use a3s_code::context::{ContextProvider, ContextQuery, ContextResult};
+//! use aster::context::{ContextProvider, ContextQuery, ContextResult};
 //!
 //! struct MyProvider { /* ... */ }
 //!
@@ -45,13 +45,13 @@ pub use static_provider::StaticContextProvider;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-pub const CONTEXT_PROVENANCE_METADATA: &str = "a3s.context.provenance";
-pub const CONTEXT_PRIORITY_METADATA: &str = "a3s.context.priority";
-pub const CONTEXT_TRUST_METADATA: &str = "a3s.context.trust";
-pub const CONTEXT_FRESHNESS_METADATA: &str = "a3s.context.freshness";
-pub(crate) const CONTEXT_REQUIRED_METADATA: &str = "a3s.context.required";
+pub const CONTEXT_PROVENANCE_METADATA: &str = "aster.context.provenance";
+pub const CONTEXT_PRIORITY_METADATA: &str = "aster.context.priority";
+pub const CONTEXT_TRUST_METADATA: &str = "aster.context.trust";
+pub const CONTEXT_FRESHNESS_METADATA: &str = "aster.context.freshness";
+pub(crate) const CONTEXT_REQUIRED_METADATA: &str = "aster.context.required";
 
-const CONTEXT_RESULT_CONTENT_DIGEST_DOMAIN: &str = "a3s.code.context.result-content.v1";
+const CONTEXT_RESULT_CONTENT_DIGEST_DOMAIN: &str = "aster.code.context.result-content.v1";
 
 /// Type of context being queried
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]

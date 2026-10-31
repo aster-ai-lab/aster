@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 use std::path::PathBuf;
 use std::time::Duration;
 
-use a3s_use_core::{PluginPackageLock, PluginSurfaceRef, UseError, UseResult};
+use aster_use_core::{PluginPackageLock, PluginSurfaceRef, UseError, UseResult};
 
 mod cutover;
 mod generations;
@@ -182,7 +182,7 @@ impl ExtensionRegistry {
                     "use.extension.lifecycle_receipt_incompatible",
                     "An obsolete pre-release receipt owns this package ID; remove the state and reinstall the package.",
                 )
-                .with_suggestion("Remove the pre-release A3S Use state, then install the package again."));
+                .with_suggestion("Remove the pre-release Aster Use state, then install the package again."));
             }
         }
 
@@ -592,7 +592,7 @@ impl ExtensionRegistry {
         cutover_request: Option<&ExtensionLifecycleCutoverRequest>,
     ) -> UseResult<ExtensionLifecycleGraphPublication> {
         if identities.is_empty() && removed.is_empty()
-            || identities.len().saturating_add(removed.len()) > a3s_use_core::MAX_PLUGIN_PLAN_ITEMS
+            || identities.len().saturating_add(removed.len()) > aster_use_core::MAX_PLUGIN_PLAN_ITEMS
         {
             return Err(lifecycle_state_error(
                 "A package-graph publication must contain a bounded non-empty closure.",
@@ -649,7 +649,7 @@ impl ExtensionRegistry {
             package_lock.validate()?;
             if package_lock.host.use_version != host_version {
                 return Err(lifecycle_graph_error(
-                    "The reviewed package lock belongs to a different A3S Use host version.",
+                    "The reviewed package lock belongs to a different Aster Use host version.",
                 ));
             }
             for identity in identities {
@@ -692,7 +692,7 @@ impl ExtensionRegistry {
                 return Err(UseError::new(
                     "use.extension.host_incompatible",
                     format!(
-                        "package '{}' is not compatible with this A3S Use host.",
+                        "package '{}' is not compatible with this Aster Use host.",
                         identity.package_id()
                     ),
                 ));

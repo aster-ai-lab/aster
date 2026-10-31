@@ -1,4 +1,4 @@
-import type { JsonObject, JsonValue } from '@a3s-lab/form/core';
+import type { JsonObject, JsonValue } from '@aster-ai-lab/form/core';
 import {
   isWorkflowNodeFieldVisible,
   resolveWorkflowNodeFields,
@@ -413,7 +413,7 @@ function ContractMeta({
     [copy.legacy, booleanText(snapshot.legacy, copy)],
   ];
   return (
-    <dl className="a3s-form-workflow-node-contract-meta">
+    <dl className="aster-form-workflow-node-contract-meta">
       {rows.map(([label, value]) => (
         <div key={label} data-contract-meta={label}>
           <dt>{label}</dt>
@@ -435,7 +435,7 @@ function ContractPorts({
 }) {
   return (
     <section
-      className="a3s-form-workflow-node-contract-ports"
+      className="aster-form-workflow-node-contract-ports"
       data-contract-ports={direction}
     >
       <h4>{direction === 'inputs' ? copy.inputs : copy.outputs}</h4>
@@ -474,7 +474,7 @@ function ContractOutputs({
   if (outputs.length === 0) return null;
   return (
     <section
-      className="a3s-form-workflow-node-contract-outputs"
+      className="aster-form-workflow-node-contract-outputs"
       data-contract-output-definitions
     >
       <h4>{copy.outputDefinitions}</h4>
@@ -516,7 +516,7 @@ function ContractField({
     field.valueState === 'missing' ? '—' : compactValue(field.value);
   return (
     <li
-      className="a3s-form-workflow-node-contract-field"
+      className="aster-form-workflow-node-contract-field"
       data-contract-field-name={field.name}
       data-contract-field-control={field.control}
       data-contract-field-group={field.group}
@@ -534,7 +534,7 @@ function ContractField({
         </div>
         <span data-contract-field-state={field.valueState}>{stateLabel}</span>
       </header>
-      <div className="a3s-form-workflow-node-contract-field-tags">
+      <div className="aster-form-workflow-node-contract-field-tags">
         <code>{field.control}</code>
         <code>{field.group}</code>
         {field.required && <em>{copy.required}</em>}
@@ -552,7 +552,7 @@ function ContractField({
           {copy.when(field.condition.field, compactValue(field.condition.equals))}
         </small>
       )}
-      <details className="a3s-form-workflow-node-contract-field-properties">
+      <details className="aster-form-workflow-node-contract-field-properties">
         <summary>{copy.properties}</summary>
         <ul>
           {field.properties.map(({ name, value }) => (
@@ -597,8 +597,8 @@ export function WorkflowNodeContractDetails({
   return (
     <details
       className={[
-        'a3s-form-workflow-node-developer-details',
-        'a3s-form-workflow-node-contract-details',
+        'aster-form-workflow-node-developer-details',
+        'aster-form-workflow-node-contract-details',
         className,
       ]
         .filter(Boolean)
@@ -620,14 +620,14 @@ export function WorkflowNodeContractDetails({
           {copy.fieldCount(snapshot.fields.length)} · {copy.portCount(portCount)}
         </small>
       </summary>
-      <div className="a3s-form-workflow-node-contract-details-body">
+      <div className="aster-form-workflow-node-contract-details-body">
         <section data-contract-section="metadata">
           <h3>{copy.metadata}</h3>
           <ContractMeta copy={copy} snapshot={snapshot} />
         </section>
         <section data-contract-section="ports">
           <h3>{copy.ports}</h3>
-          <div className="a3s-form-workflow-node-contract-port-columns">
+          <div className="aster-form-workflow-node-contract-port-columns">
             <ContractPorts copy={copy} direction="inputs" ports={snapshot.inputs} />
             <ContractPorts copy={copy} direction="outputs" ports={snapshot.outputs} />
           </div>
@@ -637,7 +637,7 @@ export function WorkflowNodeContractDetails({
           <h3>
             {copy.fields} <small>{copy.fieldCount(snapshot.fields.length)}</small>
           </h3>
-          <ol className="a3s-form-workflow-node-contract-fields">
+          <ol className="aster-form-workflow-node-contract-fields">
             {snapshot.fields.map((field) => (
               <ContractField copy={copy} field={field} key={field.name} />
             ))}

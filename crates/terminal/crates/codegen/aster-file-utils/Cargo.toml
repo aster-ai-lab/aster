@@ -1,0 +1,65 @@
+[package]
+license = "Apache-2.0"
+name = "aster-file-utils"
+version = "0.1.0"
+description = "Local data collection: upload queueing and blob storage"
+authors = ["Aster"]
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = {workspace = true}
+dunce = {workspace = true}
+aws-sdk-s3 = {version = "1", default-features = false, features = [
+    "rt-tokio",
+]}
+aws-config = {version = "1", default-features = false, features = [
+    "rt-tokio",
+    "sso",
+    "credentials-process",
+]}
+aws-smithy-http-client = {version = "1", features = ["rustls-ring"]}
+futures = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+tracing = {workspace = true}
+chrono = {workspace = true}
+dirs = {workspace = true}
+indexmap = {workspace = true}
+reqwest = {workspace = true}
+reqwest-middleware = {workspace = true}
+tokio = {version = "1", features = ["full", "macros", "rt", "rt-multi-thread", "sync", "time", "io-util", "fs"]}
+sha2 = {version = "0.10", features = ["force-soft"]}
+prod-mc-cli-chat-proxy-types = {path = "../../../prod/mc/cli-chat-proxy-types"}
+async-compression = {version = "0.4.17", default-features = false, features = ["gzip", "zstd", "tokio"]}
+gcloud-storage = {version = "1.3.0", default-features = false, features = ["auth", "jwt-aws-lc-rs", "external-account"]}
+reflink-copy = {version = "0.1"}
+url = {workspace = true}
+tokio-stream = {workspace = true}
+tokio-util = {version = "0.7", features = ["rt", "io"]}
+base64 = {workspace = true}
+zstd = {workspace = true}
+aster-otel = {path = "../aster-otel"}
+aster-auth = {features = ["middleware"], path = "../aster-auth"}
+aster-extra-ca = {path = "../aster-extra-ca"}
+aster-dirs = {path = "../aster-dirs"}
+aster-version = {path = "../aster-version"}
+aster-circuit-breaker = {path = "../../common/aster-circuit-breaker"}
+
+
+[features]
+default-bazel = []
+
+
+[dev-dependencies]
+tempfile = {workspace = true}
+axum = {version = "0.8", features = ["macros", "ws", "multipart"]}
+axum-server = {workspace = true}
+rcgen = {workspace = true}
+tokio = {version = "1", features = ["full", "macros", "rt", "rt-multi-thread", "sync", "net", "time"]}
+filetime = {workspace = true}
+tracing-subscriber = {workspace = true}
+aster-test-utils = {path = "../../common/aster-test-utils"}
+
+[lints]
+workspace = true

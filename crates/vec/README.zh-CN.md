@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="a3s-vec：面向 Coding Agent 工作区的进程内向量与全文检索">
+  <img src="./assets/readme/hero.svg" width="100%" alt="aster-vec：面向 Coding Agent 工作区的进程内向量与全文检索">
 </p>
 
 <p align="center">
-  <a href="https://crates.io/crates/a3s-vec"><img alt="crates.io" src="https://img.shields.io/crates/v/a3s-vec.svg"></a>
-  <a href="https://docs.rs/a3s-vec"><img alt="docs.rs" src="https://img.shields.io/docsrs/a3s-vec"></a>
-  <a href="https://github.com/A3S-Lab/Vec/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/Vec/ci.yml?branch=main"></a>
+  <a href="https://crates.io/crates/aster-vec"><img alt="crates.io" src="https://img.shields.io/crates/v/aster-vec.svg"></a>
+  <a href="https://docs.rs/aster-vec"><img alt="docs.rs" src="https://img.shields.io/docsrs/aster-vec"></a>
+  <a href="https://github.com/aster-ai-lab/Vec/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/Vec/ci.yml?branch=main"></a>
   <img alt="MSRV" src="https://img.shields.io/badge/MSRV-1.75-informational">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-blue">
 </p>
@@ -16,7 +16,7 @@
   <a href="README.zh-CN.md">中文</a>
 </p>
 
-# a3s-vec
+# aster-vec
 
 **面向 Coding Agent 工作区的进程内检索。**
 
@@ -30,7 +30,7 @@ Vamana、DiskANN、标量倒排和 BM25 是派生索引：它们提出候选，�
 `0.1.8` 保持这份实现，并把一个测试辅助函数换成 Rust 1.75 能编译的写法
 （`f32::next_up` 比 MSRV 新）。
 
-**[`0.1.8`](https://crates.io/crates/a3s-vec)** · 本发布。registry 校验和在
+**[`0.1.8`](https://crates.io/crates/aster-vec)** · 本发布。registry 校验和在
 `cargo publish` 之后写入 [RELEASE.md](RELEASE.md)。
 `0.1.7` 已发布（tag `0.1.7` @ `57fc476` · SHA-256 `90254cfd…`）。
 它的库代码与这份排序实现相同；它的单元测试在 Rust 1.75 上编不过。
@@ -40,7 +40,7 @@ Vamana、DiskANN、标量倒排和 BM25 是派生索引：它们提出候选，�
 
 [架构](ARCHITECTURE.md) · [路线图](ROADMAP.md) ·
 [测试](TESTING.md) · [基准](BENCHMARKS.md) ·
-[docs.rs](https://docs.rs/a3s-vec)
+[docs.rs](https://docs.rs/aster-vec)
 
 ---
 
@@ -55,7 +55,7 @@ Vamana、DiskANN、标量倒排和 BM25 是派生索引：它们提出候选，�
 | **类型化过滤** | 相等、范围、`IN`、null、通配/前缀/后缀、布尔组合——与 ANN/FTS 同一规划器。 |
 | **持久化** | WAL、校验和快照、文件锁、派生索引缓存、类型化资源限额；类型化 `StorageCeilings`（默认 8 GiB / 8 GiB / 8 GiB / DiskANN 512 MiB）——显式策略，从不按主机自动探测。 |
 | **失败封闭 API** | 不支持的路由与错误维度在变更前以类型化错误失败。 |
-| **嵌入外置** | 嵌入模型留给调用方；a3s-vec 负责存储、索引与规划。 |
+| **嵌入外置** | 嵌入模型留给调用方；aster-vec 负责存储、索引与规划。 |
 
 原生编码：FP16/32/64、INT4/8/16、Binary32/64、稀疏 FP16/32。度量：L2、IP、
 cosine、MIPS-L2。
@@ -78,21 +78,21 @@ cosine、MIPS-L2。
 
 ```toml
 [dependencies]
-a3s-vec = "0.1.8"
+aster-vec = "0.1.8"
 ```
 
 面向 Tokio 的查询（同一规划器，跑在 `spawn_blocking`）：
 
 ```toml
-a3s-vec = { version = "0.1.8", features = ["async"] }
+aster-vec = { version = "0.1.8", features = ["async"] }
 ```
 
-Monorepo path：`a3s-vec = { path = "crates/vec" }`。
+Monorepo path：`aster-vec = { path = "crates/vec" }`。
 
 ## 快速开始
 
 ```rust
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionSchema, DataType, Doc, FieldSchema, Fts, IndexParams,
     Result, SearchQuery,
 };
@@ -119,8 +119,8 @@ fn main() -> Result<()> {
 ```
 
 ```rust
-async fn search(collection: &a3s_vec::Collection, query: &a3s_vec::SearchQuery)
-    -> a3s_vec::Result<Vec<a3s_vec::Doc>>
+async fn search(collection: &aster_vec::Collection, query: &aster_vec::SearchQuery)
+    -> aster_vec::Result<Vec<aster_vec::Doc>>
 {
     collection.query_async(query).await
 }
@@ -162,14 +162,14 @@ DiskANN I/O、RaBitQ、FTS 分析器、`CollectionResourceLimits`、`StorageCeil
 [BENCHMARKS.md](BENCHMARKS.md)。
 
 控制：SplitMix64 语料、cosine、top-10、32×3 查询、batch 512、HNSW
-`m=16` / `ef_construction=96` / `ef=64`、单 worker。a3s-vec 保留 exact
+`m=16` / `ef_construction=96` / `ef=64`、单 worker。aster-vec 保留 exact
 re-rank 和公开 `f64` 分数；zvec 使用 `is_using_refiner=False`。
 2,000×32 与 100,000×128 是三次进程中位数，1,000,000×128 是单进程。
 数字来自 `0.1.7` 的排序实现；`0.1.8` 只改了 Rust 1.75 的测试辅助函数。
 Apple M5 Max，zvec `0.7.0`，2026-09-23。
 写入时间包含最后一次 flush。
 
-| 规模 | a3s 写入 | zvec 写入 | a3s Flat p50 | zvec Flat p50 | a3s HNSW 构建 | zvec HNSW 构建 | a3s HNSW p50 | zvec HNSW p50 | a3s Recall@10 | zvec Recall@10 |
+| 规模 | aster 写入 | zvec 写入 | aster Flat p50 | zvec Flat p50 | aster HNSW 构建 | zvec HNSW 构建 | aster HNSW p50 | zvec HNSW p50 | aster Recall@10 | zvec Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | 2,000×32 | 28.2 ms | 28.8 ms | 11.5 µs | 53.4 µs | 66.2 ms | 67.8 ms | 29.3 µs | 57.6 µs | 1.0000 | 1.0000 |
 | 100,000×128 | 346 ms | 964 ms | 770 µs | 1,694 µs | 12.4 s | 45.3 s | 98.3 µs | 136 µs | 0.6000 | 0.5813 |
@@ -184,7 +184,7 @@ Apple M5 Max，zvec `0.7.0`，2026-09-23。
 ## 边界
 
 - 不是 Alibaba zvec 存储或 C++ ABI 的二进制兼容克隆。
-- 过滤解析、全文分词，以及 FP16/INT8/INT4 索引量化都是本 crate 拥有的 Rust 实现。公开 API 由 A3S 拥有。
+- 过滤解析、全文分词，以及 FP16/INT8/INT4 索引量化都是本 crate 拥有的 Rust 实现。公开 API 由 Aster 拥有。
 - Binary ANN 与 C++ 线格式导入/导出是刻意非目标。
 - 原生异步文件读与直接文件映射 mmap 在有失败不变量测试前保持拒绝
   （[VEC-R2](ROADMAP.md)）。
@@ -208,8 +208,8 @@ cargo +1.75.0 test --locked
 正确性目标：Linux x86_64/aarch64、Windows x86_64、macOS arm64/x86_64
 （macOS 15.0+）。不要求 `io_uring`、C/C++ 运行时或强制架构 SIMD。
 
-仓库：[`A3S-Lab/Vec`](https://github.com/A3S-Lab/Vec)。A3S monorepo 以
+仓库：[`aster-ai-lab/Vec`](https://github.com/aster-ai-lab/Vec)。Aster monorepo 以
 `crates/vec` 消费。跨项目边界：
-[检索平台架构](https://github.com/A3S-Lab/a3s/blob/main/docs/retrieval-platform-architecture.md)。
+[检索平台架构](https://github.com/aster-ai-lab/aster/blob/main/docs/retrieval-platform-architecture.md)。
 
 采用 [MIT](LICENSE) 许可。

@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     FlowError, FlowEvent, FlowEventStore, InMemoryEventStore, SelectArm, SelectMode, WorkflowSpec,
 };
 use chrono::{TimeZone, Utc};

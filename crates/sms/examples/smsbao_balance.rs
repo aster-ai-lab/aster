@@ -1,7 +1,7 @@
 //! Read-only smoke tool. Reads two secret lines from piped stdin, never arguments.
 use std::{io, sync::Mutex};
 
-use a3s_sms::{
+use aster_sms::{
     SecretReference, SecretValue, SmsCredentialResolver, SmsError, SmsReason, SmsbaoConfig,
     SmsbaoProvider,
 };
@@ -50,14 +50,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let source = std::fs::read_to_string(path)?;
     let config = SmsbaoConfig::from_acl(&source)?;
-    let document = a3s_acl::parse(&source).map_err(|_| "invalid ACL profile")?;
+    let document = aster_acl::parse(&source).map_err(|_| "invalid ACL profile")?;
     // Configuration values are validated by SmsbaoConfig; these are reference IDs only.
     let block = document.blocks.first().ok_or("missing provider block")?;
     let reference = |field: &str| -> Result<String, Box<dyn std::error::Error>> {
         Ok(block
             .attributes
             .get(field)
-            .and_then(a3s_acl::Value::as_str)
+            .and_then(aster_acl::Value::as_str)
             .ok_or("missing secret reference")?
             .into())
     };

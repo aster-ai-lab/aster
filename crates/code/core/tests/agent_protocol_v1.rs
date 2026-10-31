@@ -1,4 +1,4 @@
-use a3s_code_core::{
+use aster_core::{
     AgentEvent, AgentProtocolChangeSetRequestV1, AgentProtocolChangeSetV1,
     AgentProtocolCommandActionV1, AgentProtocolCommandReceiptV1, AgentProtocolCommandV1,
     AgentProtocolEventPageRequestV1, AgentProtocolEventPageV1, AgentProtocolEventRecordV1,
@@ -77,7 +77,7 @@ fn event_record(
 }
 
 #[test]
-fn start_command_uses_the_declared_a3s_code_agent_protocol() {
+fn start_command_uses_the_declared_aster_agent_protocol() {
     let command = start_command();
     command.validate().expect("valid start command");
 
@@ -235,9 +235,9 @@ fn event_records_fit_one_bounded_durable_projection() {
 
 #[test]
 fn from_run_event_bounds_oversized_tool_end_instead_of_failing() {
-    use a3s_code_core::run::RunEventPage;
-    use a3s_code_core::tools::MAX_OUTPUT_SIZE;
-    use a3s_code_core::{RunEventRecord, RunStatus, AGENT_PROTOCOL_MAX_EVENT_PAYLOAD_BYTES};
+    use aster_core::run::RunEventPage;
+    use aster_core::tools::MAX_OUTPUT_SIZE;
+    use aster_core::{RunEventRecord, RunStatus, AGENT_PROTOCOL_MAX_EVENT_PAYLOAD_BYTES};
 
     let identity = identity("run-execution-018f4f86-attempt-1");
     let record = RunEventRecord {

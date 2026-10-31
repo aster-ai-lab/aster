@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="a3s-vec: process-local vector and full-text retrieval for Coding Agent workspaces">
+  <img src="./assets/readme/hero.svg" width="100%" alt="aster-vec: process-local vector and full-text retrieval for Coding Agent workspaces">
 </p>
 
 <p align="center">
-  <a href="https://crates.io/crates/a3s-vec"><img alt="crates.io" src="https://img.shields.io/crates/v/a3s-vec.svg"></a>
-  <a href="https://docs.rs/a3s-vec"><img alt="docs.rs" src="https://img.shields.io/docsrs/a3s-vec"></a>
-  <a href="https://github.com/A3S-Lab/Vec/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/Vec/ci.yml?branch=main"></a>
+  <a href="https://crates.io/crates/aster-vec"><img alt="crates.io" src="https://img.shields.io/crates/v/aster-vec.svg"></a>
+  <a href="https://docs.rs/aster-vec"><img alt="docs.rs" src="https://img.shields.io/docsrs/aster-vec"></a>
+  <a href="https://github.com/aster-ai-lab/Vec/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/Vec/ci.yml?branch=main"></a>
   <img alt="MSRV" src="https://img.shields.io/badge/MSRV-1.75-informational">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-blue">
 </p>
@@ -16,7 +16,7 @@
   <a href="README.zh-CN.md">中文</a>
 </p>
 
-# a3s-vec
+# aster-vec
 
 **Process-local retrieval for Coding Agent workspaces.**
 
@@ -32,7 +32,7 @@ revisioned ordinal domain. There is no server process and no C/C++ runtime.
 `0.1.8` keeps that crate and replaces one test helper so Rust 1.75 can compile
 the suite (`f32::next_up` is newer than the MSRV).
 
-**[`0.1.8`](https://crates.io/crates/a3s-vec)** · this release. The registry
+**[`0.1.8`](https://crates.io/crates/aster-vec)** · this release. The registry
 checksum is recorded in [RELEASE.md](RELEASE.md) after `cargo publish`.
 `0.1.7` is published (tag `0.1.7` @ `57fc476` · SHA-256 `90254cfd…`).
 Its library matches this ranking code; its unit tests do not build on Rust 1.75.
@@ -42,7 +42,7 @@ Its library matches this ranking code; its unit tests do not build on Rust 1.75.
 
 [Architecture](ARCHITECTURE.md) · [Roadmap](ROADMAP.md) ·
 [Testing](TESTING.md) · [Benchmarks](BENCHMARKS.md) ·
-[docs.rs](https://docs.rs/a3s-vec)
+[docs.rs](https://docs.rs/aster-vec)
 
 ---
 
@@ -57,7 +57,7 @@ Its library matches this ranking code; its unit tests do not build on Rust 1.75.
 | **Typed filters** | Equality, range, `IN`, null, wildcard/prefix/suffix, boolean composition—same planner as ANN/FTS. |
 | **Durability** | WAL, checksummed snapshots, file locking, derived-index cache, typed resource limits; typed `StorageCeilings` (defaults 8 GiB / 8 GiB / 8 GiB / 512 MiB DiskANN)—explicit policy, never host autodetection. |
 | **Fail-closed API** | Unsupported routes and bad dimensions fail with typed errors before mutation. |
-| **Embed anywhere** | Embedding models stay with the caller; a3s-vec owns storage, indexes, and planning. |
+| **Embed anywhere** | Embedding models stay with the caller; aster-vec owns storage, indexes, and planning. |
 
 Native encodings: FP16/32/64, INT4/8/16, Binary32/64, sparse FP16/32. Metrics:
 L2, IP, cosine, MIPS-L2.
@@ -89,21 +89,21 @@ universal engine ranking.
 
 ```toml
 [dependencies]
-a3s-vec = "0.1.8"
+aster-vec = "0.1.8"
 ```
 
 Tokio-facing queries (same planner on `spawn_blocking`):
 
 ```toml
-a3s-vec = { version = "0.1.8", features = ["async"] }
+aster-vec = { version = "0.1.8", features = ["async"] }
 ```
 
-Monorepo path dependency: `a3s-vec = { path = "crates/vec" }`.
+Monorepo path dependency: `aster-vec = { path = "crates/vec" }`.
 
 ## Quick start
 
 ```rust
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionSchema, DataType, Doc, FieldSchema, Fts, IndexParams,
     Result, SearchQuery,
 };
@@ -130,8 +130,8 @@ fn main() -> Result<()> {
 ```
 
 ```rust
-async fn search(collection: &a3s_vec::Collection, query: &a3s_vec::SearchQuery)
-    -> a3s_vec::Result<Vec<a3s_vec::Doc>>
+async fn search(collection: &aster_vec::Collection, query: &aster_vec::SearchQuery)
+    -> aster_vec::Result<Vec<aster_vec::Doc>>
 {
     collection.query_async(query).await
 }
@@ -175,14 +175,14 @@ Protocol: [docs/scale-compare-protocol.md](docs/scale-compare-protocol.md) ·
 [BENCHMARKS.md](BENCHMARKS.md).
 
 Controls: SplitMix64 corpus, cosine, top-10, 32×3 queries, batch 512, HNSW
-`m=16` / `ef_construction=96` / `ef=64`, one worker. a3s-vec keeps exact
+`m=16` / `ef_construction=96` / `ef=64`, one worker. aster-vec keeps exact
 re-rank and public `f64` scores; zvec uses `is_using_refiner=False`.
 2,000×32 and 100,000×128 are three-process medians. 1,000,000×128 is one
 process. Measured on the `0.1.7` ranking code, unchanged in `0.1.8` except the
 Rust 1.75 test helper. Apple M5 Max, zvec `0.7.0`, 2026-09-23.
 Insert time includes the final flush.
 
-| Fixture | a3s insert | zvec insert | a3s Flat p50 | zvec Flat p50 | a3s HNSW build | zvec HNSW build | a3s HNSW p50 | zvec HNSW p50 | a3s Recall@10 | zvec Recall@10 |
+| Fixture | aster insert | zvec insert | aster Flat p50 | zvec Flat p50 | aster HNSW build | zvec HNSW build | aster HNSW p50 | zvec HNSW p50 | aster Recall@10 | zvec Recall@10 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | 2,000×32 | 28.2 ms | 28.8 ms | 11.5 µs | 53.4 µs | 66.2 ms | 67.8 ms | 29.3 µs | 57.6 µs | 1.0000 | 1.0000 |
 | 100,000×128 | 346 ms | 964 ms | 770 µs | 1,694 µs | 12.4 s | 45.3 s | 98.3 µs | 136 µs | 0.6000 | 0.5813 |
@@ -199,7 +199,7 @@ to manufacture a win.
 
 - Not binary-compatible with Alibaba zvec storage or C++ ABI.
 - Filter parsing, FTS tokenization, and FP16/INT8/INT4 index quantization are
-  Rust owned by this crate. The public API is A3S-owned.
+  Rust owned by this crate. The public API is Aster-owned.
 - Binary ANN and C++ wire import/export are deliberate non-goals.
 - Native async file reads and direct file-backed mmap stay refused until an
   invariant fails ([VEC-R2](ROADMAP.md)).
@@ -224,8 +224,8 @@ Correctness targets Linux x86_64/aarch64, Windows x86_64, and macOS
 arm64/x86_64 (macOS 15.0+). No `io_uring`, C/C++ runtime, or mandatory
 arch-specific SIMD.
 
-Repository: [`A3S-Lab/Vec`](https://github.com/A3S-Lab/Vec). The A3S monorepo
+Repository: [`aster-ai-lab/Vec`](https://github.com/aster-ai-lab/Vec). The Aster monorepo
 consumes it as `crates/vec`. Cross-project boundary:
-[retrieval platform architecture](https://github.com/A3S-Lab/a3s/blob/main/docs/retrieval-platform-architecture.md).
+[retrieval platform architecture](https://github.com/aster-ai-lab/aster/blob/main/docs/retrieval-platform-architecture.md).
 
 Licensed under [MIT](LICENSE).

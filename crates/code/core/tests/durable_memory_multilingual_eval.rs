@@ -1,15 +1,15 @@
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::host_env::{FixedClock, HostEnv, SequentialIdGenerator};
-use a3s_code_core::memory::MemoryConfig;
-use a3s_code_core::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::host_env::{FixedClock, HostEnv, SequentialIdGenerator};
+use aster_core::memory::MemoryConfig;
+use aster_core::{
     Agent, DurableMemoryRecallPolicy, DurableMemorySession, PlanningMode, SessionOptions,
     DURABLE_MEMORY_RETRIEVAL_PROFILE_V1,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet,
     MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRepository, MemoryStatus,
 };
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::InMemoryStore;
 use chrono::{TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -101,7 +101,7 @@ fn evidence(node: &Node) -> EvidenceRef {
         EvidenceKind::SessionTurn
     };
     EvidenceRef::try_new(
-        format!("a3s://fixture/durable-memory-multilingual-v1/{}", node.id),
+        format!("aster://fixture/durable-memory-multilingual-v1/{}", node.id),
         format!("sha256:{:x}", Sha256::digest(node.content.as_bytes())),
         kind,
         fixture_time(),
@@ -125,6 +125,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,
@@ -341,7 +342,7 @@ async fn real_sessions_meet_versioned_multilingual_lexical_gate() {
     assert_eq!(admissions, fixture.thresholds.expected_admissions);
 
     println!(
-        "A3S_DURABLE_MEMORY_MULTILINGUAL_EVAL={}",
+        "ASTER_DURABLE_MEMORY_MULTILINGUAL_EVAL={}",
         serde_json::to_string(&Report {
             schema_version: fixture.schema_version,
             retrieval_profile: DURABLE_MEMORY_RETRIEVAL_PROFILE_V1,

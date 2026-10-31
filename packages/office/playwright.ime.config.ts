@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 
-const externalBaseUrl = process.env.A3S_OFFICE_VISUAL_BASE_URL;
+const externalBaseUrl = process.env.ASTER_OFFICE_VISUAL_BASE_URL;
 const baseURL = externalBaseUrl ?? 'http://127.0.0.1:4175';
 
 export default defineConfig({

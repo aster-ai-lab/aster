@@ -3,15 +3,15 @@ $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
-$Bin = if ($args.Count -ge 1) { $args[0] } else { ".\target\debug\a3s-gateway.exe" }
+$Bin = if ($args.Count -ge 1) { $args[0] } else { ".\target\debug\aster-gateway.exe" }
 if (-not (Test-Path $Bin)) {
-  Write-Host "building a3s-gateway..."
-  cargo build --bin a3s-gateway
-  $Bin = ".\target\debug\a3s-gateway.exe"
+  Write-Host "building aster-gateway..."
+  cargo build --bin aster-gateway
+  $Bin = ".\target\debug\aster-gateway.exe"
 }
 
-$Dur = if ($env:A3S_GATEWAY_SOAK_DURATION) { $env:A3S_GATEWAY_SOAK_DURATION } else { "120" }
-$C = if ($env:A3S_GATEWAY_SOAK_CONCURRENCY) { $env:A3S_GATEWAY_SOAK_CONCURRENCY } else { "8" }
+$Dur = if ($env:ASTER_GATEWAY_SOAK_DURATION) { $env:ASTER_GATEWAY_SOAK_DURATION } else { "120" }
+$C = if ($env:ASTER_GATEWAY_SOAK_CONCURRENCY) { $env:ASTER_GATEWAY_SOAK_CONCURRENCY } else { "8" }
 
 function Invoke-Python {
   param([string[]]$PythonArgs)

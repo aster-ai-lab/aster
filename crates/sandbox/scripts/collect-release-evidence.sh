@@ -38,7 +38,7 @@ log() {
   echo "$@" | tee -a "$REPORT"
 }
 
-log "# a3s-sandbox release evidence"
+log "# aster-sandbox release evidence"
 log ""
 log "- collected: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "- host: ${HOST} ${ARCH}"
@@ -89,17 +89,17 @@ log ""
 
 log "## release binaries + provenance"
 cargo build --release -q
-ARTS=(target/release/a3s-sandbox)
-if [[ -f target/release/a3s-sandbox-relay ]]; then
-  ARTS+=(target/release/a3s-sandbox-relay)
-elif [[ -f target/release/a3s-sandbox-relay.exe ]]; then
-  ARTS+=(target/release/a3s-sandbox-relay.exe)
+ARTS=(target/release/aster-sandbox)
+if [[ -f target/release/aster-sandbox-relay ]]; then
+  ARTS+=(target/release/aster-sandbox-relay)
+elif [[ -f target/release/aster-sandbox-relay.exe ]]; then
+  ARTS+=(target/release/aster-sandbox-relay.exe)
 fi
 # Windows cargo emits .exe
-if [[ -f target/release/a3s-sandbox.exe ]]; then
-  ARTS=(target/release/a3s-sandbox.exe)
-  if [[ -f target/release/a3s-sandbox-relay.exe ]]; then
-    ARTS+=(target/release/a3s-sandbox-relay.exe)
+if [[ -f target/release/aster-sandbox.exe ]]; then
+  ARTS=(target/release/aster-sandbox.exe)
+  if [[ -f target/release/aster-sandbox-relay.exe ]]; then
+    ARTS+=(target/release/aster-sandbox-relay.exe)
   fi
 fi
 OUT_DIR="$OUT" ./scripts/sign-release.sh "${ARTS[@]}"

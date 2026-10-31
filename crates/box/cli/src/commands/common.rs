@@ -2,12 +2,12 @@
 
 use std::collections::HashMap;
 
-use a3s_box_core::config::{
+use aster_box_core::config::{
     validate_vcpu_count, ExecutionIsolation, ResourceLimits, DEFAULT_VCPUS,
 };
-use a3s_box_core::network::NetworkMode;
-use a3s_box_runtime::hardware_vm::{self, IsolationSelection};
-use a3s_box_runtime::oci::{OciHealthCheck, OciImageConfig};
+use aster_box_core::network::NetworkMode;
+use aster_box_runtime::hardware_vm::{self, IsolationSelection};
+use aster_box_runtime::oci::{OciHealthCheck, OciImageConfig};
 use clap::{Args, ValueEnum};
 
 use crate::image_usage;
@@ -47,13 +47,13 @@ pub enum IsolationArg {
 
 /// Resolve the optional CLI selector without exposing an explicit MicroVM
 /// spelling. Omitting the option preserves the historical MicroVM default.
-/// `A3S_BOX_OCI_MIGRATION` is forwarded and does not change the selection.
+/// `ASTER_BOX_OCI_MIGRATION` is forwarded and does not change the selection.
 pub(crate) fn resolve_isolation(value: Option<IsolationArg>) -> ExecutionIsolation {
     let selector = match value {
         Some(IsolationArg::Sandbox) => Some("sandbox"),
         None => None,
     };
-    let migration = std::env::var("A3S_BOX_OCI_MIGRATION").ok();
+    let migration = std::env::var("ASTER_BOX_OCI_MIGRATION").ok();
     match hardware_vm::select_isolation(selector, migration.as_deref()) {
         Ok(IsolationSelection::HardwareVm) => ExecutionIsolation::Microvm,
         Ok(IsolationSelection::Sandbox) => ExecutionIsolation::Sandbox,
@@ -279,7 +279,7 @@ pub struct CommonBoxArgs {
 /// Parse KEY=VALUE pairs into a HashMap.
 pub(crate) fn parse_env_vars(vars: &[String]) -> Result<HashMap<String, String>, String> {
     let mut map = HashMap::new();
-    for (key, value) in a3s_box_core::env::parse_env_vars(vars)? {
+    for (key, value) in aster_box_core::env::parse_env_vars(vars)? {
         map.insert(key, value);
     }
     Ok(map)
@@ -292,7 +292,7 @@ pub(crate) fn parse_env_file(
     path: &str,
 ) -> Result<HashMap<String, String>, Box<dyn std::error::Error>> {
     let mut map = HashMap::new();
-    for (key, value) in a3s_box_core::env::parse_env_file(path)
+    for (key, value) in aster_box_core::env::parse_env_file(path)
         .map_err(|e| -> Box<dyn std::error::Error> { e.into() })?
     {
         map.insert(key, value);
@@ -303,12 +303,12 @@ pub(crate) fn parse_env_file(
 /// Build the effective CLI environment map.
 ///
 /// CLI `--env` values take precedence over `--env-file` values, matching the
-/// existing a3s-box run/create behavior.
+/// existing aster-box run/create behavior.
 pub(crate) fn build_env_map(
     common: &CommonBoxArgs,
 ) -> Result<HashMap<String, String>, Box<dyn std::error::Error>> {
     // Runtime `--env` honors `docker run -e KEY` host-env passthrough (bare key).
-    let mut env: HashMap<String, String> = a3s_box_core::env::parse_runtime_env_vars(&common.env)
+    let mut env: HashMap<String, String> = aster_box_core::env::parse_runtime_env_vars(&common.env)
         .into_iter()
         .collect();
     for env_file in &common.env_file {
@@ -392,7 +392,7 @@ pub(crate) async fn cached_image_config(
     };
 
     let stored = store.get(&stored.reference).await.unwrap_or(stored);
-    let image = a3s_box_runtime::OciImage::from_path(&stored.path)?;
+    let image = aster_box_runtime::OciImage::from_path(&stored.path)?;
     Ok(Some(image.config().clone()))
 }
 
@@ -410,11 +410,11 @@ pub(crate) fn effective_stop_signal(
 /// Validate and normalize published port mappings to the runtime format.
 pub(crate) fn normalize_port_maps(entries: &[String]) -> Result<Vec<String>, String> {
     // Resolve `0:guest` at CLI admission so shim/passt/DNAT see concrete ports
-    // and `a3s-box port` prints the real number (Docker-compatible).
-    a3s_box_core::normalize_and_resolve_port_maps(entries)
+    // and `aster-box port` prints the real number (Docker-compatible).
+    aster_box_core::normalize_and_resolve_port_maps(entries)
 }
 
-/// Reject runtime options that a3s-box cannot enforce yet.
+/// Reject runtime options that aster-box cannot enforce yet.
 pub(crate) fn validate_runtime_options(common: &CommonBoxArgs) -> Result<(), String> {
     #[cfg(windows)]
     if matches!(common.isolation, Some(IsolationArg::Sandbox)) {
@@ -454,7 +454,7 @@ pub(crate) fn validate_runtime_options(common: &CommonBoxArgs) -> Result<(), Str
     // relies on them, and validate the documented oom_score_adj range.
     if common.oom_kill_disable {
         eprintln!(
-            "a3s-box: warning: --oom-kill-disable is accepted but not enforced by the libkrun backend"
+            "aster-box: warning: --oom-kill-disable is accepted but not enforced by the libkrun backend"
         );
     }
     if let Some(adj) = common.oom_score_adj {
@@ -464,7 +464,7 @@ pub(crate) fn validate_runtime_options(common: &CommonBoxArgs) -> Result<(), Str
             ));
         }
         eprintln!(
-            "a3s-box: warning: --oom-score-adj is accepted but not enforced by the libkrun backend"
+            "aster-box: warning: --oom-score-adj is accepted but not enforced by the libkrun backend"
         );
     }
 
@@ -472,16 +472,16 @@ pub(crate) fn validate_runtime_options(common: &CommonBoxArgs) -> Result<(), Str
     validate_workdir_option(common.workdir.as_deref())?;
     normalize_port_maps(&common.publish)?;
     if let Some(hostname) = common.hostname.as_deref() {
-        a3s_box_core::dns::validate_hostname(hostname)
+        aster_box_core::dns::validate_hostname(hostname)
             .map_err(|e| format!("Invalid --hostname: {e}"))?;
     }
-    a3s_box_core::dns::parse_add_host_entries(&common.add_host)
+    aster_box_core::dns::parse_add_host_entries(&common.add_host)
         .map_err(|e| format!("Invalid --add-host: {e}"))?;
-    a3s_box_core::dns::parse_dns_servers(&common.dns).map_err(|e| format!("Invalid --dns: {e}"))?;
+    aster_box_core::dns::parse_dns_servers(&common.dns).map_err(|e| format!("Invalid --dns: {e}"))?;
 
     let network = resolve_network(common.network.as_deref());
     if matches!(network, NetworkMode::Bridge { .. }) {
-        a3s_box_core::dns::parse_ipv4_dns_servers(&common.dns)
+        aster_box_core::dns::parse_ipv4_dns_servers(&common.dns)
             .map_err(|e| format!("Invalid --dns for --network bridge: {e}"))?;
     }
     #[cfg(windows)]
@@ -491,7 +491,7 @@ pub(crate) fn validate_runtime_options(common: &CommonBoxArgs) -> Result<(), Str
                 .to_string(),
         );
     }
-    let compatibility_config = a3s_box_core::BoxConfig {
+    let compatibility_config = aster_box_core::BoxConfig {
         isolation: execution_isolation(common),
         port_map: common.publish.clone(),
         network,
@@ -501,7 +501,7 @@ pub(crate) fn validate_runtime_options(common: &CommonBoxArgs) -> Result<(), Str
         privileged: common.privileged,
         ..Default::default()
     };
-    a3s_box_core::resolve_execution(&compatibility_config).map_err(|error| error.to_string())?;
+    aster_box_core::resolve_execution(&compatibility_config).map_err(|error| error.to_string())?;
 
     Ok(())
 }
@@ -642,7 +642,7 @@ pub(crate) fn parse_memory_bytes(s: &str) -> Result<u64, String> {
 /// negative on the `as i64` cast, and `resize.rs` maps `swap < 0` to
 /// `memory.swap.max=max` (unlimited) — so a fat-fingered huge value would
 /// silently become *unlimited* swap. Reject it instead. Shared by the
-/// run/create path and `a3s-box update` so the two cannot diverge.
+/// run/create path and `aster-box update` so the two cannot diverge.
 pub(crate) fn parse_memory_swap(s: &str) -> Result<i64, String> {
     if s == "-1" {
         return Ok(-1);
@@ -672,7 +672,7 @@ pub(crate) fn build_resource_limits(
     Ok(ResourceLimits {
         pids_limit: args.pids_limit,
         cpuset_cpus: match &args.cpuset_cpus {
-            Some(cpuset) if !a3s_box_runtime::is_valid_cpuset(cpuset) => {
+            Some(cpuset) if !aster_box_runtime::is_valid_cpuset(cpuset) => {
                 return Err(format!(
                     "Invalid --cpuset-cpus value {cpuset:?}: expected a comma-separated list of CPU \
                      indices or ascending ranges such as \"0-3\" or \"0,2,4\" (inverted ranges like \

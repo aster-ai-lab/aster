@@ -259,7 +259,7 @@ pub struct CapabilityScope<K: ScopeKind> {
 ///
 /// A handle can transfer tasks and reversible effects into an active scope,
 /// and the permitted marker-specific methods can derive child scopes. It does
-/// not retain the scope, its immutable catalog generation, or an upstream A3S
+/// not retain the scope, its immutable catalog generation, or an upstream Aster
 /// Use lease. Once the owner closes or drops the scope, every operation fails
 /// closed.
 pub struct CapabilityScopeHandle<K: ScopeKind> {
@@ -377,7 +377,7 @@ impl CapabilityScope<Session> {
         })
     }
 
-    /// Admit a Run for a catalog without an upstream A3S Use cursor.
+    /// Admit a Run for a catalog without an upstream Aster Use cursor.
     pub fn admit_run(
         &self,
         local_id: impl Into<String>,
@@ -389,7 +389,7 @@ impl CapabilityScope<Session> {
         self.create_child(local_id, ceiling, None, None)
     }
 
-    /// Admit a Run while retaining the exact, non-clone A3S Use generation
+    /// Admit a Run while retaining the exact, non-clone Aster Use generation
     /// lease for the complete Run lifetime.
     pub fn admit_use_run<L>(
         &self,

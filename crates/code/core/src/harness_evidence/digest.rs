@@ -3,7 +3,7 @@ use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::io::Write;
 
-const DIGEST_PREFIX: &[u8] = b"a3s-code-harness-evidence\0";
+const DIGEST_PREFIX: &[u8] = b"aster-harness-evidence\0";
 
 pub(super) struct DigestMeasurement {
     pub(super) digest: String,

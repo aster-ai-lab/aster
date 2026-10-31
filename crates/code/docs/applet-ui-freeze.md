@@ -27,7 +27,7 @@ own CSP/origin policy.
 - Verification notes in `manual/CAPABILITY_VERIFICATION.md` and
   `manual/SCOPED_CAPABILITY_ARCHITECTURE.md` stay accurate for UI.
 - Monorepo non-Work gate (includes Code `ui_binding` / `ui_projection`):
-  `just test::applet-non-work` from the a3s root.
+  `just test::applet-non-work` from the aster root.
 
 ## Non-goals
 

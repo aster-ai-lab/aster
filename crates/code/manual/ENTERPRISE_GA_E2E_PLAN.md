@@ -1,4 +1,4 @@
-# Enterprise GA Deep E2E Plan (a3s-code)
+# Enterprise GA Deep E2E Plan (aster)
 
 **Status:** Planning authority for enterprise GA. Hermetic + L5 Layer C are
 already closed on the current line. L6 release performance and L7 external
@@ -71,10 +71,10 @@ Missing any row means **not enterprise GA**. Do not write the ledger as GA.
 3. L2 F-kernel coverage before a stable tag.
 4. L3 for every feature in the release Cargo set (including `apofasi` when that
    artifact ships).
-5. L5 `A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash just layer-c-live-e2e`.
+5. L5 `ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash just layer-c-live-e2e`.
 6. TD-D / TD-E ignored live typed-decision composition (serial, ACL required).
 7. TD-PERF complex Flash percentiles (serial, ACL required).
-8. L6 `gh workflow run performance.yml --repo A3S-Lab/Code` and download the
+8. L6 `gh workflow run performance.yml --repo aster-ai-lab/Code` and download the
    nine JSON reports.
 9. L7 Harbor / host receipts.
 10. L8 pin table for this cut.
@@ -104,14 +104,14 @@ Missing any row means **not enterprise GA**. Do not write the ledger as GA.
 
 ```bash
 cd crates/code
-export A3S_CONFIG_FILE="$(git rev-parse --show-toplevel)/.a3s/config.acl"
-export A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash
-cargo test -p a3s-code-core --no-default-features --features apofasi \
+export ASTER_CONFIG_FILE="$(git rev-parse --show-toplevel)/.aster/config.acl"
+export ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash
+cargo test -p aster-core --no-default-features --features apofasi \
   --test typed_decision_perf complex_billing_triage_flash_percentiles \
   -- --ignored --nocapture --test-threads=1
 
 export APOFASI_CHECKPOINT=/path/to/published/english/checkpoint
-cargo test -p a3s-code-core --release --no-default-features --features apofasi,apofasi-metal \
+cargo test -p aster-core --release --no-default-features --features apofasi,apofasi-metal \
   --test typed_decision_perf complex_billing_triage_neural_percentiles \
   -- --ignored --nocapture --test-threads=1
 ```
@@ -138,30 +138,30 @@ escalate-all as a defect; Auto requires confidence ≥ 0.7.
 | Item | State |
 | --- | --- |
 | L0/L1/L3/L4/L5 + integrated-use | Closed on the prior FULL_FEATURE status for this line |
-| L2 F-kernel cov (≥95%) | **PASS** — `/tmp/a3s-llvm-cov-f95/FINAL.txt` `ALL_F_TABLE_KERNELS_GE_95_PASS scored=42`; `core/src/agent_protocol_harness.rs` **95.16%** after SessionClosed→Closed mapper unit test (tip `15d2a863`) |
-| L8 §7 9.0.0 fact-log pins | **PASS (hermetic)** — `fact_log` 34/34; effect park + `tool_round_cap`; bm25 persistent a3s-vec FTS 17/17 on tip |
-| L6 performance.yml on tip `ee8f68ad` | **PASS** — run [`36092780724`](https://github.com/A3S-Lab/Code/actions/runs/36092780724), nine `passed: true`; digest `731386c0407e38bf8a14bcec939c438fdcc86a1cea9fff1e4b2a1a5eec21656b` |
-| L6 hermetic-integrations on tip `ee8f68ad` | **PASS** — run [`36122389323`](https://github.com/A3S-Lab/Code/actions/runs/36122389323); digest `4ac6d54e8867a5365e12ab70124949756121de5ad1984f6a5be2d6e7492906d3` |
-| L6 performance.yml on tip `91d34757` | **PASS** — run [`36089389830`](https://github.com/A3S-Lab/Code/actions/runs/36089389830), nine `passed: true` JSON reports; digest `6f6abcd483e49cbe6ca26adea9bbab461fa4c51cab60c0961fde5f52b4e06349` in PERFORMANCE_QUALIFICATION |
-| L6 hermetic-integrations on tip `91d34757` | **PASS** — run [`36089393353`](https://github.com/A3S-Lab/Code/actions/runs/36089393353); S3/CDP/OTLP `passed: true`; digest `18f3d7a42e5a8bba0e828e1d4d4be8e472f18818993a3036da5712d23ad82620` in PERFORMANCE_QUALIFICATION |
-| L6 performance.yml on `fa0a92ca` | **PASS** — run [`35947891976`](https://github.com/A3S-Lab/Code/actions/runs/35947891976), nine `passed: true` JSON reports; digest `b5ce0281d5bad5ab47003bd34d93ab11bc7eab1ef8f37c24b10b8fe619010b73` in PERFORMANCE_QUALIFICATION |
-| L6 hermetic-integrations on `fa0a92ca` | **PASS** — CI run [`35947892108`](https://github.com/A3S-Lab/Code/actions/runs/35947892108) job Hermetic integrations; S3/CDP/OTLP `passed: true`; digest `00ee5ea7eb32a09a9fd4cf8eacc40642c4d548319d01822ef3e809f753207269` in PERFORMANCE_QUALIFICATION |
-| L6 performance.yml on prior tip `c9e26504` | **PASS** — run [`35667548466`](https://github.com/A3S-Lab/Code/actions/runs/35667548466), nine `passed: true` JSON reports; digest `c4c96e0bf2544319354b09bdbf4e3954931eac4cd46d77b7a33ce044f1849c87` in PERFORMANCE_QUALIFICATION |
-| L6 hermetic-integrations on prior tip `c9e26504` | **PASS** — run [`35667552718`](https://github.com/A3S-Lab/Code/actions/runs/35667552718); S3/CDP/OTLP `passed: true`; digest `308370110f9f69cf8b71c75084e5853a0adbead77a46ca171338b5f9d9bef764` in PERFORMANCE_QUALIFICATION |
-| L6 performance.yml on `9b28f066` | **PASS** — prior RC [`35639843682`](https://github.com/A3S-Lab/Code/actions/runs/35639843682); superseded by tip digests above |
+| L2 F-kernel cov (≥95%) | **PASS** — `/tmp/aster-llvm-cov-f95/FINAL.txt` `ALL_F_TABLE_KERNELS_GE_95_PASS scored=42`; `core/src/agent_protocol_harness.rs` **95.16%** after SessionClosed→Closed mapper unit test (tip `15d2a863`) |
+| L8 §7 9.0.0 fact-log pins | **PASS (hermetic)** — `fact_log` 34/34; effect park + `tool_round_cap`; bm25 persistent aster-vec FTS 17/17 on tip |
+| L6 performance.yml on tip `ee8f68ad` | **PASS** — run [`36092780724`](https://github.com/aster-ai-lab/Code/actions/runs/36092780724), nine `passed: true`; digest `731386c0407e38bf8a14bcec939c438fdcc86a1cea9fff1e4b2a1a5eec21656b` |
+| L6 hermetic-integrations on tip `ee8f68ad` | **PASS** — run [`36122389323`](https://github.com/aster-ai-lab/Code/actions/runs/36122389323); digest `4ac6d54e8867a5365e12ab70124949756121de5ad1984f6a5be2d6e7492906d3` |
+| L6 performance.yml on tip `91d34757` | **PASS** — run [`36089389830`](https://github.com/aster-ai-lab/Code/actions/runs/36089389830), nine `passed: true` JSON reports; digest `6f6abcd483e49cbe6ca26adea9bbab461fa4c51cab60c0961fde5f52b4e06349` in PERFORMANCE_QUALIFICATION |
+| L6 hermetic-integrations on tip `91d34757` | **PASS** — run [`36089393353`](https://github.com/aster-ai-lab/Code/actions/runs/36089393353); S3/CDP/OTLP `passed: true`; digest `18f3d7a42e5a8bba0e828e1d4d4be8e472f18818993a3036da5712d23ad82620` in PERFORMANCE_QUALIFICATION |
+| L6 performance.yml on `fa0a92ca` | **PASS** — run [`35947891976`](https://github.com/aster-ai-lab/Code/actions/runs/35947891976), nine `passed: true` JSON reports; digest `b5ce0281d5bad5ab47003bd34d93ab11bc7eab1ef8f37c24b10b8fe619010b73` in PERFORMANCE_QUALIFICATION |
+| L6 hermetic-integrations on `fa0a92ca` | **PASS** — CI run [`35947892108`](https://github.com/aster-ai-lab/Code/actions/runs/35947892108) job Hermetic integrations; S3/CDP/OTLP `passed: true`; digest `00ee5ea7eb32a09a9fd4cf8eacc40642c4d548319d01822ef3e809f753207269` in PERFORMANCE_QUALIFICATION |
+| L6 performance.yml on prior tip `c9e26504` | **PASS** — run [`35667548466`](https://github.com/aster-ai-lab/Code/actions/runs/35667548466), nine `passed: true` JSON reports; digest `c4c96e0bf2544319354b09bdbf4e3954931eac4cd46d77b7a33ce044f1849c87` in PERFORMANCE_QUALIFICATION |
+| L6 hermetic-integrations on prior tip `c9e26504` | **PASS** — run [`35667552718`](https://github.com/aster-ai-lab/Code/actions/runs/35667552718); S3/CDP/OTLP `passed: true`; digest `308370110f9f69cf8b71c75084e5853a0adbead77a46ca171338b5f9d9bef764` in PERFORMANCE_QUALIFICATION |
+| L6 performance.yml on `9b28f066` | **PASS** — prior RC [`35639843682`](https://github.com/aster-ai-lab/Code/actions/runs/35639843682); superseded by tip digests above |
 | Standalone patch strip + relock | **Landed** on `9b28f066` |
-| L7 Harbor / CAR | **Waived by recorded product decision (2026-09-26)** — TB-QUAL1 waived; DM-PROD1 closed with the host pack (all seven dimensions, `HYGIENE_OK`); CAR-01/03/04/05 out of scope because A3S Cloud, their only certifier, was retired (Code-side contracts remain in place; CAR-02 delivered). Dispositions recorded in CHANGELOG v9.0.0 Notes. |
+| L7 Harbor / CAR | **Waived by recorded product decision (2026-09-26)** — TB-QUAL1 waived; DM-PROD1 closed with the host pack (all seven dimensions, `HYGIENE_OK`); CAR-01/03/04/05 out of scope because Aster Cloud, their only certifier, was retired (Code-side contracts remain in place; CAR-02 delivered). Dispositions recorded in CHANGELOG v9.0.0 Notes. |
 | TD-A…TD-E | Implemented; live Flash complex cases previously green |
 | TD-PERF Flash billing triage | **Measured** (§4.4) — p50 2531.9 ms, Evidence 7/7 |
 | TD-PERF neural billing triage | **Measured** (§4.4) — p50 45.5 ms, escalate 20/20 at 0.7 |
-| L6 performance.yml on the GA candidate line (tip `139c4680`) | **PASS** — run [36428840848](https://github.com/A3S-Lab/Code/actions/runs/36428840848), nine `passed: true`; ZIP digest `sha256:fc5fe4a8d0849a96f47ebc42c7ed3fc2a3831cf7560514640e8f9566656a7cee` in PERFORMANCE_QUALIFICATION. First attempt failed on the stale crates.io a3s-effect; resolved by resolving effect from the A3S-Lab/Effect repository in the standalone setup (`139c4680`). |
-| L6 hermetic-integrations on the GA candidate line (tip `139c4680`) | **PASS** — run [36428848277](https://github.com/A3S-Lab/Code/actions/runs/36428848277), S3/CDP/OTLP `passed: true`; ZIP digest `sha256:58c6e91b4e57c06aa1020e3a75f09f252235120c743d60e229c81ca79dfdc666` in PERFORMANCE_QUALIFICATION. |
-| L5 Layer C on the 9.1.0 tip `b3249a7e` | **PASS** — `/tmp/a3s-layer-c-run4/FINAL.txt` is exactly `LAYER_C_PASS model=boyue/deepseek-v4-flash`; 22/22 suites (one live-model variance absorbed by the bounded suite retry, recorded `PASS (rerun)`). Runs 1–3 (`/tmp/a3s-layer-c-live/summary.run1.txt`, `/tmp/a3s-layer-c-run2-archive/`) documented the variance: each full run failed a different suite once, always passing on isolation. The recipe now retries a failed suite once and still fails the gate on a double failure (`b3249a7e`). |
+| L6 performance.yml on the GA candidate line (tip `139c4680`) | **PASS** — run [36428840848](https://github.com/aster-ai-lab/Code/actions/runs/36428840848), nine `passed: true`; ZIP digest `sha256:fc5fe4a8d0849a96f47ebc42c7ed3fc2a3831cf7560514640e8f9566656a7cee` in PERFORMANCE_QUALIFICATION. First attempt failed on the stale crates.io aster-effect; resolved by resolving effect from the aster-ai-lab/Effect repository in the standalone setup (`139c4680`). |
+| L6 hermetic-integrations on the GA candidate line (tip `139c4680`) | **PASS** — run [36428848277](https://github.com/aster-ai-lab/Code/actions/runs/36428848277), S3/CDP/OTLP `passed: true`; ZIP digest `sha256:58c6e91b4e57c06aa1020e3a75f09f252235120c743d60e229c81ca79dfdc666` in PERFORMANCE_QUALIFICATION. |
+| L5 Layer C on the 9.1.0 tip `b3249a7e` | **PASS** — `/tmp/aster-layer-c-run4/FINAL.txt` is exactly `LAYER_C_PASS model=boyue/deepseek-v4-flash`; 22/22 suites (one live-model variance absorbed by the bounded suite retry, recorded `PASS (rerun)`). Runs 1–3 (`/tmp/aster-layer-c-live/summary.run1.txt`, `/tmp/aster-layer-c-run2-archive/`) documented the variance: each full run failed a different suite once, always passing on isolation. The recipe now retries a failed suite once and still fails the gate on a double failure (`b3249a7e`). |
 | 9.0.0 fact-log cut, local L5 through `74356768` | **PASS** — earlier `LAYER_C_PASS model=boyue/bailian/deepseek-v4-flash` (22/22). That FINAL does not cover `fa0a92ca`. |
-| L5 Layer C on tip `ee8f68ad` | **PASS** — `/tmp/a3s-layer-c-9.0.0-tip/FINAL.txt` is exactly `LAYER_C_PASS model=boyue/bailian/deepseek-v4-flash`. 22 suites passed, including `test_extensibility_real_llm`. `test_context_tools_real_llm` recovered after stream-worker join timeout fix. |
+| L5 Layer C on tip `ee8f68ad` | **PASS** — `/tmp/aster-layer-c-9.0.0-tip/FINAL.txt` is exactly `LAYER_C_PASS model=boyue/bailian/deepseek-v4-flash`. 22 suites passed, including `test_extensibility_real_llm`. `test_context_tools_real_llm` recovered after stream-worker join timeout fix. |
 | L5 Layer C on `fa0a92ca` | **PASS** — `just layer-c-live-e2e` wrote exactly `LAYER_C_PASS model=boyue/bailian/deepseek-v4-flash`. 22 suites passed, including `test_extensibility_real_llm`. The runner log ends `LAYER:0`. Pin remapped to `boyue/bailian/deepseek-v4.1-flash`. |
 | L6 on the 9.0.0 commit `fa0a92ca` | **PASS** — performance.yml `35947891976` and hermetic-integrations via CI `35947892108`, both `passed: true`, archived above |
-| Enterprise GA | **All eight gate rows closed on the 9.1.0 line** — L0–L8 plus the integrated-use ledger carry current dated evidence (L5 22/22 `LAYER_C_PASS`, L6 both `passed: true` with archived digests, L7 recorded dispositions, L8 pins re-verified). Remaining discretionary item: `generation_watch` (1/1898 CLI tests) needs a maintainer ruling on the SkillTool inner-turn surface; the published crates.io `a3s-effect` 0.1.1 remains the eventual replacement for the git rev pin. |
+| Enterprise GA | **All eight gate rows closed on the 9.1.0 line** — L0–L8 plus the integrated-use ledger carry current dated evidence (L5 22/22 `LAYER_C_PASS`, L6 both `passed: true` with archived digests, L7 recorded dispositions, L8 pins re-verified). Remaining discretionary item: `generation_watch` (1/1898 CLI tests) needs a maintainer ruling on the SkillTool inner-turn surface; the published crates.io `aster-effect` 0.1.1 remains the eventual replacement for the git rev pin. |
 
 ## 6. Closure checklist
 

@@ -4,7 +4,7 @@ use std::io::{Read, Seek, SeekFrom, Write};
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Component, Path, PathBuf};
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     canonical_json_bytes, CheckpointCompatibility, CheckpointDigest, ContainerTarget, ErrorCode,
     Result,
 };
@@ -17,8 +17,8 @@ use super::{checkpoint_error, io_error};
 // Framing version 1 remains stable. Manifest schema v2 adds the exact
 // external-device mount contract needed by restore without changing how the
 // length-delimited manifest and image bodies are encoded.
-const ARTIFACT_MAGIC: [u8; 16] = *b"A3SOCI-CRIU-V1\0\0";
-const ARTIFACT_SCHEMA_V2: &str = "a3s.oci.native-criu-checkpoint.v2";
+const ARTIFACT_MAGIC: [u8; 16] = *b"ASTR-OCI-CRIU-V1";
+const ARTIFACT_SCHEMA_V2: &str = "aster.oci.native-criu-checkpoint.v2";
 const INVENTORY_IMAGE: &str = "inventory.img";
 const MAX_IMAGE_FILES: usize = 4_096;
 const MAX_IMAGE_NAME_BYTES: usize = 255;
@@ -216,7 +216,7 @@ impl ExternalMountManifestEntry {
     }
 
     fn validate(&self) -> Result<()> {
-        let Some(index) = self.name.strip_prefix("a3s-oci-device-") else {
+        let Some(index) = self.name.strip_prefix("aster-oci-device-") else {
             return Err(invalid_artifact(
                 "native checkpoint external mount has an invalid cookie",
             ));
@@ -863,32 +863,32 @@ pub(super) fn retained_manifest_fixture() -> (CheckpointArtifactManifest, Vec<u8
         schema_version: ARTIFACT_SCHEMA_V2.to_string(),
         publication_token: encode_token(&token),
         source: ContainerTarget::exact(
-            a3s_oci_sdk::ContainerId::new("restore-journal-source").unwrap(),
-            a3s_oci_sdk::Generation(1),
+            aster_oci_sdk::ContainerId::new("restore-journal-source").unwrap(),
+            aster_oci_sdk::Generation(1),
         ),
         source_config_digest: digest('1'),
         source_attachments_digest: digest('2'),
         compatibility: CheckpointCompatibility::new(
-            a3s_oci_core::DriverKind::NativeLinux,
-            a3s_oci_core::IsolationClass::SharedHostKernel,
-            a3s_oci_core::HostPlatform::Linux,
+            aster_oci_core::DriverKind::NativeLinux,
+            aster_oci_core::IsolationClass::SharedHostKernel,
+            aster_oci_core::HostPlatform::Linux,
             std::env::consts::ARCH,
-            a3s_oci_sdk::RuntimeArtifact::new(
-                "a3s-oci-runtime",
+            aster_oci_sdk::RuntimeArtifact::new(
+                "aster-oci-runtime",
                 "0.2.0",
                 digest('3').to_string(),
                 None,
             )
             .unwrap(),
             digest('4'),
-            a3s_oci_sdk::CheckpointFormat::new("native-linux-criu", 1).unwrap(),
+            aster_oci_sdk::CheckpointFormat::new("native-linux-criu", 1).unwrap(),
         )
         .unwrap(),
         quiesce: "paused".to_string(),
         launcher_pid: 4_241,
         checkpoint_root_pid: 4_242,
         init_pid: 4_242,
-        cgroup_path: "/a3s/restore/a3s-workload".to_string(),
+        cgroup_path: "/aster/restore/aster-workload".to_string(),
         criu: CriuIdentity {
             executable_digest: digest('5'),
             version: "4.2.1".to_string(),
@@ -896,7 +896,7 @@ pub(super) fn retained_manifest_fixture() -> (CheckpointArtifactManifest, Vec<u8
         },
         dump_options: vec!["--shell-job".to_string()],
         external_mounts: vec![ExternalMountManifestEntry {
-            name: "a3s-oci-device-0000".to_string(),
+            name: "aster-oci-device-0000".to_string(),
             mountpoint: PathBuf::from("/dev/null"),
         }],
         images: vec![ImageManifestEntry {
@@ -914,11 +914,11 @@ fn image_io(
     directory: &Path,
     name: &str,
     error: std::io::Error,
-) -> a3s_oci_sdk::Error {
+) -> aster_oci_sdk::Error {
     io_error(action, &directory.join(name), error)
 }
 
-fn invalid_artifact(message: impl Into<String>) -> a3s_oci_sdk::Error {
+fn invalid_artifact(message: impl Into<String>) -> aster_oci_sdk::Error {
     checkpoint_error(ErrorCode::FailedPrecondition, message)
 }
 
@@ -926,8 +926,8 @@ fn invalid_artifact(message: impl Into<String>) -> a3s_oci_sdk::Error {
 mod tests {
     use std::os::unix::fs::OpenOptionsExt;
 
-    use a3s_oci_core::{DriverKind, HostPlatform, IsolationClass};
-    use a3s_oci_sdk::{CheckpointFormat, ContainerId, Generation, RuntimeArtifact};
+    use aster_oci_core::{DriverKind, HostPlatform, IsolationClass};
+    use aster_oci_sdk::{CheckpointFormat, ContainerId, Generation, RuntimeArtifact};
     use tempfile::tempdir;
 
     use super::*;
@@ -935,7 +935,7 @@ mod tests {
     fn metadata() -> ArtifactMetadata {
         let digest = CheckpointDigest::new(format!("sha256:{}", "1".repeat(64))).unwrap();
         let runtime = RuntimeArtifact::new(
-            "a3s-oci-runtime",
+            "aster-oci-runtime",
             "0.2.0",
             format!("sha256:{}", "2".repeat(64)),
             None,
@@ -961,7 +961,7 @@ mod tests {
             launcher_pid: 41,
             checkpoint_root_pid: 43,
             init_pid: 43,
-            cgroup_path: "/sys/fs/cgroup/a3s-test".to_string(),
+            cgroup_path: "/sys/fs/cgroup/aster-test".to_string(),
             criu: CriuIdentity {
                 executable_digest: digest,
                 version: "4.2.1".to_string(),
@@ -969,7 +969,7 @@ mod tests {
             },
             dump_options: vec!["--leave-running".to_string()],
             external_mounts: vec![ExternalMountManifestEntry::new(
-                "a3s-oci-device-0000",
+                "aster-oci-device-0000",
                 Path::new("/dev/null"),
             )
             .expect("external mount")],
@@ -1073,19 +1073,19 @@ mod tests {
     #[test]
     fn validates_exact_external_mount_cookie_and_path_contract() {
         let mount = ExternalMountManifestEntry::new(
-            "a3s-oci-device-0255",
+            "aster-oci-device-0255",
             Path::new("/dev/qualified-device"),
         )
         .expect("bounded external device mount");
-        assert_eq!(mount.name(), "a3s-oci-device-0255");
+        assert_eq!(mount.name(), "aster-oci-device-0255");
         assert_eq!(mount.mountpoint(), Path::new("/dev/qualified-device"));
 
         for cookie in [
             "device-0000",
-            "a3s-oci-device-000",
-            "a3s-oci-device-00000",
-            "a3s-oci-device-0256",
-            "a3s-oci-device-abcd",
+            "aster-oci-device-000",
+            "aster-oci-device-00000",
+            "aster-oci-device-0256",
+            "aster-oci-device-abcd",
         ] {
             assert!(ExternalMountManifestEntry::new(cookie, Path::new("/dev/null")).is_err());
         }
@@ -1098,7 +1098,7 @@ mod tests {
             "/dev/null/",
         ] {
             assert!(
-                ExternalMountManifestEntry::new("a3s-oci-device-0000", Path::new(mountpoint),)
+                ExternalMountManifestEntry::new("aster-oci-device-0000", Path::new(mountpoint),)
                     .is_err()
             );
         }

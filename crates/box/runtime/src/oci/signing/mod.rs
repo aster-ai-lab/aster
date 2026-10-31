@@ -4,7 +4,7 @@
 //! - Key-based: verify against a PEM-encoded public key
 //! - Keyless: verify Fulcio certificate identity (OIDC issuer + SAN) and signature
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 // `base64::Engine` is only needed by the test module now that the base64
 // helpers moved to `crypto`; `der::Decode` is still used by cert parsing here.
 #[cfg(test)]
@@ -921,7 +921,7 @@ mod tests {
                 },
                 sig_type: "cosign container image signature".to_string(),
             },
-            optional: serde_json::json!({"creator": "a3s-box"}),
+            optional: serde_json::json!({"creator": "aster-box"}),
         };
         let json = serde_json::to_string(&payload).unwrap();
         let parsed: CosignPayload = serde_json::from_str(&json).unwrap();
@@ -1034,9 +1034,9 @@ mod tests {
         let err = sign_image(
             missing.to_str().unwrap(),
             "registry.example.com",
-            "a3s/app",
+            "aster/app",
             "sha256:abc123",
-            "registry.example.com/a3s/app:latest",
+            "registry.example.com/aster/app:latest",
             oci_distribution::client::ClientProtocol::Https,
         )
         .await
@@ -1054,9 +1054,9 @@ mod tests {
         let err = sign_image(
             key_path.to_str().unwrap(),
             "registry.example.com",
-            "a3s/app",
+            "aster/app",
             "sha256:abc123",
-            "registry.example.com/a3s/app:latest",
+            "registry.example.com/aster/app:latest",
             oci_distribution::client::ClientProtocol::Https,
         )
         .await
@@ -1074,9 +1074,9 @@ mod tests {
         let err = sign_image(
             key_path.to_str().unwrap(),
             "bad registry",
-            "a3s/app",
+            "aster/app",
             "sha256:abc123",
-            "registry.example.com/a3s/app:latest",
+            "registry.example.com/aster/app:latest",
             oci_distribution::client::ClientProtocol::Https,
         )
         .await

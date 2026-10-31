@@ -1,7 +1,7 @@
 //! Linux capability evidence for the shared-kernel Sandbox backend.
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::ExecutionBackend;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::ExecutionBackend;
 use serde::{Deserialize, Serialize};
 #[cfg(target_os = "linux")]
 use sha2::{Digest, Sha256};
@@ -14,14 +14,14 @@ use std::path::Component;
 use std::path::{Path, PathBuf};
 
 /// Capability snapshot schema persisted with a resolved execution plan.
-pub const SANDBOX_CAPABILITY_SCHEMA: &str = "a3s.box.sandbox-capabilities.v1";
+pub const SANDBOX_CAPABILITY_SCHEMA: &str = "aster.box.sandbox-capabilities.v1";
 
 #[cfg(target_os = "linux")]
 const REQUIRED_CGROUP_CONTROLLERS: &[&str] = &["cpu", "memory", "pids"];
 
-/// Verified A3S OCI Runtime artifacts used by the native Linux owner.
+/// Verified Aster OCI Runtime artifacts used by the native Linux owner.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct CertifiedA3sOci {
+pub struct CertifiedAsterOci {
     pub runtime_path: PathBuf,
     pub runtime_sha256: String,
     pub agent_path: PathBuf,
@@ -142,7 +142,7 @@ pub struct SandboxCapabilitySnapshot {
     pub platform: String,
     pub architecture: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub a3s_oci: Option<CertifiedA3sOci>,
+    pub aster_oci: Option<CertifiedAsterOci>,
     pub namespaces: Vec<String>,
     pub user_namespace: Option<UserNamespaceEvidence>,
     pub seccomp_actions: Vec<String>,
@@ -170,7 +170,7 @@ impl SandboxCapabilitySnapshot {
                 self.failures.join("; ")
             ),
             hint: Some(
-                "Use an A3S Sandbox host with the selected runtime artifacts, user namespaces, and delegated cgroup v2"
+                "Use an Aster Sandbox host with the selected runtime artifacts, user namespaces, and delegated cgroup v2"
                     .to_string(),
             ),
         })
@@ -180,10 +180,10 @@ impl SandboxCapabilitySnapshot {
 /// Probe the current host without changing namespaces, cgroups, or mounts.
 ///
 /// An explicit runtime path is still subject to artifact validation. When
-/// omitted, only packaged A3S locations are searched; `PATH` is deliberately
+/// omitted, only packaged Aster locations are searched; `PATH` is deliberately
 /// ignored.
 pub fn probe_sandbox_capabilities(runtime_path: Option<&Path>) -> SandboxCapabilitySnapshot {
-    probe_sandbox_capabilities_for(ExecutionBackend::A3sOci, runtime_path, None)
+    probe_sandbox_capabilities_for(ExecutionBackend::AsterOci, runtime_path, None)
 }
 
 /// Probe host controls and the artifacts required by one Sandbox backend.
@@ -196,7 +196,7 @@ pub fn probe_sandbox_capabilities_for(
         schema: SANDBOX_CAPABILITY_SCHEMA.to_string(),
         platform: std::env::consts::OS.to_string(),
         architecture: std::env::consts::ARCH.to_string(),
-        a3s_oci: None,
+        aster_oci: None,
         namespaces: Vec::new(),
         user_namespace: None,
         seccomp_actions: Vec::new(),
@@ -223,8 +223,8 @@ pub fn probe_sandbox_capabilities_for(
     #[cfg(target_os = "linux")]
     {
         match backend {
-            ExecutionBackend::A3sOci => match resolve_a3s_oci_artifacts(runtime_path, agent_path) {
-                Ok(runtime) => snapshot.a3s_oci = Some(runtime),
+            ExecutionBackend::AsterOci => match resolve_aster_oci_artifacts(runtime_path, agent_path) {
+                Ok(runtime) => snapshot.aster_oci = Some(runtime),
                 Err(error) => snapshot.failures.push(error.to_string()),
             },
             ExecutionBackend::Krun => snapshot
@@ -247,11 +247,11 @@ pub fn probe_sandbox_capabilities_for(
 }
 
 #[cfg(target_os = "linux")]
-const SANDBOX_OCI_LAUNCHER_ENV: &str = "A3S_BOX_SANDBOX_OCI_LAUNCHER";
+const SANDBOX_OCI_LAUNCHER_ENV: &str = "ASTER_BOX_SANDBOX_OCI_LAUNCHER";
 #[cfg(target_os = "linux")]
-const SANDBOX_OCI_LAUNCHER_FILENAME: &str = "a3s-box-sandbox-oci-launcher";
+const SANDBOX_OCI_LAUNCHER_FILENAME: &str = "aster-box-sandbox-oci-launcher";
 #[cfg(target_os = "linux")]
-const SANDBOX_OCI_LAUNCHER_SYSTEM_PATH: &str = "/usr/local/libexec/a3s-box-sandbox-oci-launcher";
+const SANDBOX_OCI_LAUNCHER_SYSTEM_PATH: &str = "/usr/local/libexec/aster-box-sandbox-oci-launcher";
 
 /// Resolve the setuid Sandbox OCI launcher used for native-linux-service owners.
 #[cfg(target_os = "linux")]
@@ -262,7 +262,7 @@ pub(crate) fn resolve_sandbox_oci_launcher(explicit: Option<&Path>) -> Result<Pa
             explicit,
             SANDBOX_OCI_LAUNCHER_ENV,
             SANDBOX_OCI_LAUNCHER_FILENAME,
-            "A3S Box Sandbox OCI launcher",
+            "Aster Box Sandbox OCI launcher",
         );
     }
 
@@ -270,7 +270,7 @@ pub(crate) fn resolve_sandbox_oci_launcher(explicit: Option<&Path>) -> Result<Pa
         None,
         SANDBOX_OCI_LAUNCHER_ENV,
         SANDBOX_OCI_LAUNCHER_FILENAME,
-        "A3S Box Sandbox OCI launcher",
+        "Aster Box Sandbox OCI launcher",
     ) {
         Ok(path) => Ok(path),
         Err(packaged_error) => {
@@ -282,7 +282,7 @@ pub(crate) fn resolve_sandbox_oci_launcher(explicit: Option<&Path>) -> Result<Pa
                 Some(&system),
                 SANDBOX_OCI_LAUNCHER_ENV,
                 SANDBOX_OCI_LAUNCHER_FILENAME,
-                "A3S Box Sandbox OCI launcher",
+                "Aster Box Sandbox OCI launcher",
             )
         }
     }
@@ -290,7 +290,7 @@ pub(crate) fn resolve_sandbox_oci_launcher(explicit: Option<&Path>) -> Result<Pa
 
 /// Require a root-owned setuid launcher for non-root operator Host spawn.
 ///
-/// Lab CI may elevate through `A3S_BOX_CI_SETPRIV_WRAPPER` instead; that path
+/// Lab CI may elevate through `ASTER_BOX_CI_SETPRIV_WRAPPER` instead; that path
 /// skips this check. Does not claim that CI setpriv proves operator setuid.
 #[cfg(target_os = "linux")]
 pub(crate) fn require_operator_setuid_launcher(path: &Path) -> Result<()> {
@@ -327,7 +327,7 @@ pub(crate) fn require_operator_setuid_launcher(path: &Path) -> Result<()> {
             ),
             hint: Some(
                 format!(
-                    "Run: sudo bash scripts/prepare-linux-sandbox-host.sh --install-launcher <a3s-oci>; expected {SANDBOX_OCI_LAUNCHER_SYSTEM_PATH} mode 4755 root:root. After that exec, a3s-oci keeps the real uid and gid, sets effective gid 0, and clears supplementary groups before device-policy bootstrap. CI setpriv is not a substitute."
+                    "Run: sudo bash scripts/prepare-linux-sandbox-host.sh --install-launcher <aster-oci>; expected {SANDBOX_OCI_LAUNCHER_SYSTEM_PATH} mode 4755 root:root. After that exec, aster-oci keeps the real uid and gid, sets effective gid 0, and clears supplementary groups before device-policy bootstrap. CI setpriv is not a substitute."
                 ),
             ),
         });
@@ -349,23 +349,23 @@ pub(crate) fn require_operator_setuid_launcher(path: &Path) -> Result<()> {
 }
 
 #[cfg(target_os = "linux")]
-fn resolve_a3s_oci_artifacts(
+fn resolve_aster_oci_artifacts(
     runtime_path: Option<&Path>,
     agent_path: Option<&Path>,
-) -> Result<CertifiedA3sOci> {
+) -> Result<CertifiedAsterOci> {
     let runtime_path = resolve_packaged_artifact(
         runtime_path,
-        "A3S_BOX_OCI_RUNTIME_PATH",
-        "a3s-oci",
-        "A3S OCI Runtime",
+        "ASTER_BOX_OCI_RUNTIME_PATH",
+        "aster-oci",
+        "Aster OCI Runtime",
     )?;
     let agent_path = resolve_packaged_artifact(
         agent_path,
-        "A3S_BOX_OCI_AGENT_PATH",
-        "a3s-oci-agent",
-        "A3S OCI agent",
+        "ASTER_BOX_OCI_AGENT_PATH",
+        "aster-oci-agent",
+        "Aster OCI agent",
     )?;
-    Ok(CertifiedA3sOci {
+    Ok(CertifiedAsterOci {
         runtime_sha256: sha256_file(&runtime_path)?,
         agent_sha256: sha256_file(&agent_path)?,
         runtime_path,
@@ -396,14 +396,14 @@ fn resolve_packaged_artifact(
                 }
             }
         }
-        candidates.push(a3s_box_core::dirs_home().join("bin").join(filename));
+        candidates.push(aster_box_core::dirs_home().join("bin").join(filename));
         candidates
             .into_iter()
             .find(|candidate| candidate.is_file())
             .ok_or_else(|| BoxError::BoxBootError {
-                message: format!("{label} artifact was not found in packaged A3S locations"),
+                message: format!("{label} artifact was not found in packaged Aster locations"),
                 hint: Some(format!(
-                    "Install the A3S Box Sandbox runtime package or set {environment} to its packaged artifact"
+                    "Install the Aster Box Sandbox runtime package or set {environment} to its packaged artifact"
                 )),
             })?
     };
@@ -953,18 +953,18 @@ mod tests {
 
     #[cfg(target_os = "linux")]
     #[test]
-    fn resolves_and_digests_explicit_a3s_oci_artifacts() {
+    fn resolves_and_digests_explicit_aster_oci_artifacts() {
         use std::os::unix::fs::PermissionsExt;
 
         let temporary = tempfile::tempdir().unwrap();
-        let runtime = temporary.path().join("a3s-oci");
-        let agent = temporary.path().join("a3s-oci-agent");
+        let runtime = temporary.path().join("aster-oci");
+        let agent = temporary.path().join("aster-oci-agent");
         std::fs::write(&runtime, b"runtime-artifact").unwrap();
         std::fs::write(&agent, b"agent-artifact").unwrap();
         std::fs::set_permissions(&runtime, std::fs::Permissions::from_mode(0o700)).unwrap();
         std::fs::set_permissions(&agent, std::fs::Permissions::from_mode(0o700)).unwrap();
 
-        let artifacts = resolve_a3s_oci_artifacts(Some(&runtime), Some(&agent)).unwrap();
+        let artifacts = resolve_aster_oci_artifacts(Some(&runtime), Some(&agent)).unwrap();
 
         assert_eq!(artifacts.runtime_path, runtime.canonicalize().unwrap());
         assert_eq!(artifacts.agent_path, agent.canonicalize().unwrap());
@@ -979,7 +979,7 @@ mod tests {
         use std::os::unix::fs::PermissionsExt;
 
         let temporary = tempfile::tempdir().unwrap();
-        let launcher = temporary.path().join("a3s-box-sandbox-oci-launcher");
+        let launcher = temporary.path().join("aster-box-sandbox-oci-launcher");
         std::fs::write(&launcher, b"launcher").unwrap();
         std::fs::set_permissions(&launcher, std::fs::Permissions::from_mode(0o755)).unwrap();
 
@@ -993,7 +993,7 @@ mod tests {
         use std::os::unix::fs::PermissionsExt;
 
         let temporary = tempfile::tempdir().unwrap();
-        let launcher = temporary.path().join("a3s-box-sandbox-oci-launcher");
+        let launcher = temporary.path().join("aster-box-sandbox-oci-launcher");
         std::fs::write(&launcher, b"launcher").unwrap();
         std::fs::set_permissions(&launcher, std::fs::Permissions::from_mode(0o755)).unwrap();
 
@@ -1011,7 +1011,7 @@ mod tests {
         use std::os::unix::fs::{MetadataExt, PermissionsExt};
 
         let temporary = tempfile::tempdir().unwrap();
-        let launcher = temporary.path().join("a3s-box-sandbox-oci-launcher");
+        let launcher = temporary.path().join("aster-box-sandbox-oci-launcher");
         std::fs::write(&launcher, b"launcher").unwrap();
         std::fs::set_permissions(&launcher, std::fs::Permissions::from_mode(0o4755)).unwrap();
         let metadata = std::fs::metadata(&launcher).unwrap();
@@ -1033,18 +1033,18 @@ mod tests {
 
     #[cfg(target_os = "linux")]
     #[test]
-    fn rejects_a_non_executable_a3s_oci_artifact() {
+    fn rejects_a_non_executable_aster_oci_artifact() {
         use std::os::unix::fs::PermissionsExt;
 
         let temporary = tempfile::tempdir().unwrap();
-        let runtime = temporary.path().join("a3s-oci");
-        let agent = temporary.path().join("a3s-oci-agent");
+        let runtime = temporary.path().join("aster-oci");
+        let agent = temporary.path().join("aster-oci-agent");
         std::fs::write(&runtime, b"runtime-artifact").unwrap();
         std::fs::write(&agent, b"agent-artifact").unwrap();
         std::fs::set_permissions(&runtime, std::fs::Permissions::from_mode(0o600)).unwrap();
         std::fs::set_permissions(&agent, std::fs::Permissions::from_mode(0o700)).unwrap();
 
-        let error = resolve_a3s_oci_artifacts(Some(&runtime), Some(&agent)).unwrap_err();
+        let error = resolve_aster_oci_artifacts(Some(&runtime), Some(&agent)).unwrap_err();
 
         assert!(error.to_string().contains("not executable"));
     }
@@ -1188,12 +1188,12 @@ mod tests {
             Some(Path::new("/sys/fs/cgroup"))
         );
         assert_eq!(
-            parse_current_cgroup_path("0::/user.slice/a3s.service\n"),
-            Some("/user.slice/a3s.service")
+            parse_current_cgroup_path("0::/user.slice/aster.service\n"),
+            Some("/user.slice/aster.service")
         );
         assert_eq!(
-            parse_cgroup_v2_path(mountinfo, "0::/a3s-oci-42/a3s-box/unit-1\n").as_deref(),
-            Some(Path::new("/sys/fs/cgroup/a3s-oci-42/a3s-box/unit-1"))
+            parse_cgroup_v2_path(mountinfo, "0::/aster-oci-42/aster-box/unit-1\n").as_deref(),
+            Some(Path::new("/sys/fs/cgroup/aster-oci-42/aster-box/unit-1"))
         );
         assert!(safe_join_cgroup(Path::new("/sys/fs/cgroup"), "/../../etc").is_none());
         assert!(parse_cgroup_v2_path(mountinfo, "0::/../../etc\n").is_none());

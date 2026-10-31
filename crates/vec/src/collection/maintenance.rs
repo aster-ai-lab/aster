@@ -263,7 +263,7 @@ impl Collection {
         let worker_collection = self.clone();
         let worker_shared = Arc::clone(&shared);
         let worker = match thread::Builder::new()
-            .name("a3s-vec-maintenance".to_string())
+            .name("aster-vec-maintenance".to_string())
             .spawn(move || {
                 maintenance_worker(&worker_collection, &worker_shared, options.interval);
             }) {

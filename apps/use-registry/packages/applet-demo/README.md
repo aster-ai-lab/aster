@@ -1,4 +1,4 @@
-# A3S Applet Demo
+# Aster Applet Demo
 
 Signed example package that supplies an Applet UI surface (`ui` /
 `panel`) with Skill, stdio MCP, and package-local Executable Tool binds for

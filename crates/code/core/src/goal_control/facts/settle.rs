@@ -40,7 +40,7 @@ struct SettledBody {
 type SettledFact = GoalFact<SettledBody>;
 
 pub(super) fn operation_id(run_id: &str) -> String {
-    crate::content_digest::digest_bytes("a3s.code.goal-settle-operation.v1", run_id.as_bytes())
+    crate::content_digest::digest_bytes("aster.code.goal-settle-operation.v1", run_id.as_bytes())
 }
 
 fn digest(view: &DurableGoalDefinitionV1, body: &SettledBody) -> Result<String, GoalControlError> {

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{editor_error, mark_workbook_for_recalculation, prefix, qualified};
 use crate::editor::{NativeSpreadsheetNamedRange, NativeSpreadsheetNamedRangeScope};
@@ -544,7 +544,7 @@ fn validate_simple_qualified_sheet(reference: &str, sheet_names: &[String]) -> U
     }
 }
 
-fn unknown_content(child: &str) -> a3s_use_core::UseError {
+fn unknown_content(child: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_named_range_unknown_content",
         "The named-range mutation cannot proceed without risking unknown definedNames content.",
@@ -553,7 +553,7 @@ fn unknown_content(child: &str) -> a3s_use_core::UseError {
     .with_detail("child", child)
 }
 
-fn invalid_collection(reason: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_collection(reason: impl Into<String>) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_named_range_invalid",
         format!("Spreadsheet workbook.xml {}.", reason.into()),
@@ -561,7 +561,7 @@ fn invalid_collection(reason: impl Into<String>) -> a3s_use_core::UseError {
     .with_detail("part", "xl/workbook.xml")
 }
 
-fn not_found(path: &str) -> a3s_use_core::UseError {
+fn not_found(path: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.node_not_found",
         format!("Office semantic path '{path}' does not exist."),

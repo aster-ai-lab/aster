@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerTarget, DeleteRequest, Error, ErrorCode, ExecRequest, IoMode, OperationId, ProcessId,
     ProcessIo, ProcessTarget, StartRequest, WriteStdinRequest,
 };
@@ -16,7 +16,7 @@ use crate::transport_cleanup_report::is_retryable_disconnect_operation;
 use crate::{DriverExecRequest, DriverWriteStdinRequest, OciVmOperationReopenReplacementReport};
 
 pub(in crate::utility_vm_driver::operation_reopen::write_stdin) const WRITE_MARKER_NAME: &str =
-    ".a3s-oci-write-stdin-reopen-smoke";
+    ".aster-oci-write-stdin-reopen-smoke";
 
 pub(super) type CreateIdentity = (OperationId, ContainerTarget);
 
@@ -50,7 +50,7 @@ pub(in crate::utility_vm_driver::operation_reopen::write_stdin) fn stdin_exec_pr
     let process_id = ProcessId::new(format!("stdin-worker-{nonce}"))
         .map_err(|error| format!("failed to construct stdin Exec process ID: {error}"))?;
     let command = format!(
-        "set -eu; printf 'a3s-oci-exec-process-{nonce}\\n' > /{EXEC_MARKER_NAME}; IFS= read -r input; printf '%s\\n' \"$input\" > /{WRITE_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"
+        "set -eu; printf 'aster-oci-exec-process-{nonce}\\n' > /{EXEC_MARKER_NAME}; IFS= read -r input; printf '%s\\n' \"$input\" > /{WRITE_MARKER_NAME}; while :; do /bin/busybox sleep 1; done"
     );
     let process: Process = serde_json::from_value(serde_json::json!({
         "terminal": false,
@@ -127,7 +127,7 @@ pub(super) async fn write_stdin_journal_status(
 pub(super) async fn durable_exec_process(
     state_root: &Path,
     target: &ProcessTarget,
-) -> Result<a3s_oci_sdk::ProcessRecord, String> {
+) -> Result<aster_oci_sdk::ProcessRecord, String> {
     crate::operation_journal_evidence::durable_process(state_root, target).await
 }
 
@@ -190,9 +190,9 @@ mod tests {
                     && command.contains(EXEC_MARKER_NAME)
                     && command.contains("while :")
             }));
-        assert_eq!(io.stdin, a3s_oci_sdk::IoMode::Pipe);
-        assert_eq!(io.stdout, a3s_oci_sdk::IoMode::Null);
-        assert_eq!(io.stderr, a3s_oci_sdk::IoMode::Null);
+        assert_eq!(io.stdin, aster_oci_sdk::IoMode::Pipe);
+        assert_eq!(io.stdout, aster_oci_sdk::IoMode::Null);
+        assert_eq!(io.stderr, aster_oci_sdk::IoMode::Null);
         assert_eq!(io.terminal_size, None);
         assert!(stdin_exec_process("unsafe nonce").is_err());
     }

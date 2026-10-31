@@ -1,6 +1,6 @@
 //! VM Snapshot Store — Save and restore VM configuration snapshots.
 //!
-//! Snapshots are stored as directories under `~/.a3s/snapshots/<id>/`:
+//! Snapshots are stored as directories under `~/.aster/snapshots/<id>/`:
 //! - `metadata.json` — SnapshotMetadata (config, resources, env, etc.)
 //! - `rootfs.json` — versioned payload identity
 //! - `rootfs/` — immutable directory payload (legacy-compatible), or
@@ -13,14 +13,14 @@
 use std::cmp::Reverse;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::rootfs_metadata::RootfsMetadataManifest;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::rootfs_metadata::RootfsMetadataManifest;
 #[cfg(test)]
-use a3s_box_core::rootfs_metadata::{
+use aster_box_core::rootfs_metadata::{
     IMAGE_ROOTFS_METADATA_PATH, PREVIOUS_ROOTFS_METADATA_PATH, ROOTFS_METADATA_PATH,
 };
-use a3s_box_core::snapshot::SnapshotMetadata;
-use a3s_box_core::SnapshotStoreBackend;
+use aster_box_core::snapshot::SnapshotMetadata;
+use aster_box_core::SnapshotStoreBackend;
 
 use crate::file_lock::FileLock;
 
@@ -86,9 +86,9 @@ impl SnapshotStore {
         })
     }
 
-    /// Open the default snapshot store at `~/.a3s/snapshots`.
+    /// Open the default snapshot store at `~/.aster/snapshots`.
     pub fn default_path() -> Result<Self> {
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         Self::new(&home.join("snapshots"))
     }
 
@@ -376,7 +376,7 @@ impl SnapshotStore {
 
     /// Rootfs paths currently referenced by a restored box as its CoW overlay lower
     /// (`<box_dir>/.snapshot-lower`, written by `snapshot restore`). These snapshots
-    /// must not be pruned. Boxes live next to snapshots under the a3s home
+    /// must not be pruned. Boxes live next to snapshots under the aster home
     /// (`base_dir` = `<home>/snapshots`).
     ///
     /// Inventory I/O failures fail closed: callers must not treat an unread
@@ -878,7 +878,7 @@ mod tests {
         let second = rootfs.join("second");
         std::fs::write(&first, b"shared inode").unwrap();
         std::fs::hard_link(&first, &second).unwrap();
-        xattr::set(&first, "user.a3s.snapshot", b"preserved").unwrap();
+        xattr::set(&first, "user.aster.snapshot", b"preserved").unwrap();
 
         let saved = store
             .save(make_metadata("hardlink-xattr", "hardlink-xattr"), &rootfs)
@@ -891,7 +891,7 @@ mod tests {
         assert_eq!(captured_first.ino(), captured_second.ino());
         assert_eq!(saved.size_bytes, b"shared inode".len() as u64);
         assert_eq!(
-            xattr::get(captured.join("first"), "user.a3s.snapshot").unwrap(),
+            xattr::get(captured.join("first"), "user.aster.snapshot").unwrap(),
             Some(b"preserved".to_vec())
         );
     }

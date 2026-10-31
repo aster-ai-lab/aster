@@ -6,7 +6,7 @@
 //! `cursor-agent`, and it does not execute `execServerMessage`.
 //!
 //! `Run` uses a duplex HTTP/2 stream: acknowledge conversation blobs in
-//! bounded, request-local memory while A3S alone executes presented tools.
+//! bounded, request-local memory while Aster alone executes presented tools.
 //! `RunSSE` only heartbeats for this account. The Run stream stays open
 //! after the assistant text (heartbeats and `kvServerMessage`, often with
 //! no `turnEnded`), so a quiet gap after text completes the turn.
@@ -277,7 +277,7 @@ fn account_origin(raw: &str) -> Option<String> {
 }
 
 fn next_id() -> String {
-    format!("a3s-{}", MESSAGE_IDS.fetch_add(1, Ordering::Relaxed))
+    format!("aster-{}", MESSAGE_IDS.fetch_add(1, Ordering::Relaxed))
 }
 
 fn run_request_json(model: &str, prompt: &str) -> Vec<u8> {
@@ -406,7 +406,7 @@ fn apply_payload(payload: &[u8], text: &mut String) -> FrameControl {
     }
     if value.get("execServerMessage").is_some() {
         return FrameControl::Failed(anyhow!(super::NonRetryableLlmError::new(
-            "Cursor requested its native tools instead of an A3S tool response; select another Cursor model"
+            "Cursor requested its native tools instead of an Aster tool response; select another Cursor model"
         )));
     }
     // `kvServerMessage`, heartbeats, and other non-text frames are not

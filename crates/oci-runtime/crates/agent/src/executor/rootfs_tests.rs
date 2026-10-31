@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_oci_sdk::{ErrorCode, IoMode, OciBundle, ProcessIo};
+use aster_oci_sdk::{ErrorCode, IoMode, OciBundle, ProcessIo};
 
 use super::plan::InitPlan;
 use super::rootfs::RootfsPropagation;

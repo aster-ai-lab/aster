@@ -7,7 +7,7 @@
 
 use super::fact_evidence::{facts, receipt_for, settled_turns};
 use super::*;
-use a3s_code_core::content_digest::{digest_bytes, digest_json, validate_digest};
+use aster_core::content_digest::{digest_bytes, digest_json, validate_digest};
 use serde_json::{Value, json};
 
 struct ReadEvidence {
@@ -91,7 +91,7 @@ impl ReadEvidence {
 
 impl Drop for ReadEvidence {
     fn drop(&mut self) {
-        let Some(dir) = std::env::var_os("A3S_CODE_TUI_READ_EVIDENCE_DIR") else {
+        let Some(dir) = std::env::var_os("ASTER_TUI_READ_EVIDENCE_DIR") else {
             return;
         };
         let observed = facts(&self.workspace, &self.home);
@@ -111,17 +111,17 @@ impl Drop for ReadEvidence {
                     "turn.complete" => p.clone(),
                     "model.turn" => json!({"kind":p["kind"],"prompt_tokens":p["prompt_tokens"]}),
                     "user.message" => json!({"text_digest":p["text"].as_str().map(|text|
-                        digest_bytes("a3s.test.submitted-read-prompt.v1",text.as_bytes()))}),
+                        digest_bytes("aster.test.submitted-read-prompt.v1",text.as_bytes()))}),
                     _ => return None,
                 };
                 Some(json!({"seq":f["seq"],"type":f["type"],"payload":payload}))
             })
             .collect();
-        let artifact = json!({"schema":"a3s.test.tui-read-evidence.v1","case":self.case,
+        let artifact = json!({"schema":"aster.test.tui-read-evidence.v1","case":self.case,
             "assertions_finished":self.finished,"test_panicked":std::thread::panicking(),
             "facts":retained,"oracles":self.oracles,"requests":self.requests,
             "files":self.watched.iter().map(|(path,before)| {
-                let after = std::fs::read(path).ok().map(|bytes| digest_bytes("a3s.test.read-fixture.v1", &bytes));
+                let after = std::fs::read(path).ok().map(|bytes| digest_bytes("aster.test.read-fixture.v1", &bytes));
                 json!({"name":path.file_name().and_then(|s|s.to_str()),"before":before,
                     "after":after,"unchanged":after.as_ref()==Some(before)})
             }).collect::<Vec<_>>()});
@@ -144,7 +144,7 @@ impl Drop for ReadEvidence {
 
 fn file_digest(path: &Path) -> String {
     digest_bytes(
-        "a3s.test.read-fixture.v1",
+        "aster.test.read-fixture.v1",
         &std::fs::read(path).expect("owned regular fixture"),
     )
 }
@@ -297,13 +297,13 @@ fn read_turn(
                 && f["payload"]["prepared"]["identity"] == receipt["identity"]
         })
         .expect("actual preparation for this receipt");
-    let requested_digest = digest_json("a3s.code.tool-arguments.v1", &args).unwrap();
+    let requested_digest = digest_json("aster.code.tool-arguments.v1", &args).unwrap();
     assert_eq!(
         prepared["payload"]["prepared"]["original_args_digest"], requested_digest,
         "model changed requested read arguments"
     );
     evidence.requests.push(json!({"identity":receipt["identity"],"requested_args":args.clone(),"requested_args_digest":requested_digest,
-        "submitted_message_digest":digest_bytes("a3s.test.submitted-read-prompt.v1",prompt.as_bytes()),
+        "submitted_message_digest":digest_bytes("aster.test.submitted-read-prompt.v1",prompt.as_bytes()),
         "submitted_message_matches":true}));
     let reply = model_reply(session);
     let paths: Vec<&str> = if let Some(entries) = args["files"].as_array() {
@@ -354,7 +354,7 @@ fn content(receipt: &Value) -> (String, Value) {
     let wire: Value =
         serde_json::from_str(receipt["output"].as_str().expect("tool output envelope"))
             .expect("typed tool output envelope");
-    assert_eq!(wire["kind"], "a3s.fact_tool_result");
+    assert_eq!(wire["kind"], "aster.fact_tool_result");
     (
         wire["text"].as_str().expect("tool text").to_string(),
         wire["metadata"].clone(),
@@ -364,7 +364,7 @@ fn content(receipt: &Value) -> (String, Value) {
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
 fn real_llm_tui_tl01_01_reads_random_utf8_with_source() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required; refusing false PASS");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required; refusing false PASS");
     let mut evidence = ReadEvidence::new(&session, "TUI-TL01-01");
     let hidden = marker();
     seed(
@@ -399,7 +399,7 @@ fn real_llm_tui_tl01_01_reads_random_utf8_with_source() {
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
 fn real_llm_tui_tl01_02_respects_range_without_suffix_leak() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required; refusing false PASS");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required; refusing false PASS");
     let mut evidence = ReadEvidence::new(&session, "TUI-TL01-02");
     let a = marker();
     let b = marker();
@@ -441,7 +441,7 @@ fn real_llm_tui_tl01_02_respects_range_without_suffix_leak() {
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
 fn real_llm_tui_tl01_03_preserves_batch_member_errors() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required; refusing false PASS");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required; refusing false PASS");
     let mut evidence = ReadEvidence::new(&session, "TUI-TL01-03");
     let a = marker();
     let b = marker();
@@ -480,7 +480,7 @@ fn real_llm_tui_tl01_03_preserves_batch_member_errors() {
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
 fn real_llm_tui_tl01_04_file_errors_remain_bounded_and_recoverable() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required; refusing false PASS");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required; refusing false PASS");
     let mut evidence = ReadEvidence::new(&session, "TUI-TL01-04");
     std::fs::create_dir(session.workspace.join("directory")).unwrap();
     let fifo = session.workspace.join("writerless.fifo");
@@ -541,7 +541,7 @@ fn real_llm_tui_tl01_04_file_errors_remain_bounded_and_recoverable() {
 #[test]
 #[ignore = "requires the actual macOS pager/ACP and configured real provider; mandatory Layer C TUI gate"]
 fn real_llm_tui_tl01_05_refuses_outside_and_symlink_reads() {
-    let mut session = open_live().expect("A3S_CONFIG_FILE is required; refusing false PASS");
+    let mut session = open_live().expect("ASTER_CONFIG_FILE is required; refusing false PASS");
     let mut evidence = ReadEvidence::new(&session, "TUI-TL01-05");
     let outside = session
         .workspace

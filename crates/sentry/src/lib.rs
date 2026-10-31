@@ -1,11 +1,11 @@
-//! a3s-sentry — tiered runtime security control for AI agents.
+//! aster-sentry — tiered runtime security control for AI agents.
 //!
-//! Sentry is the **policy brain** for [a3s-observer](https://github.com/A3S-Lab/Observer): it reads
+//! Sentry is the **policy brain** for [aster-observer](https://github.com/aster-ai-lab/Observer): it reads
 //! observer's event stream (what an agent ran, sent, escalated), judges each event through three
 //! escalating tiers, and pushes a block down to observer's kernel guards when something is dangerous.
 //!
 //! ```text
-//! observer NDJSON ─▶ L1 rules ──escalate─▶ L2 LLM ──escalate─▶ L3 a3s-code agent
+//! observer NDJSON ─▶ L1 rules ──escalate─▶ L2 LLM ──escalate─▶ L3 aster agent
 //!                       │ block                │ block              │ block
 //!                       ▼                      ▼                    ▼
 //!                    Enforcer ──▶ observer deny-files ──▶ kernel denies (EPERM)
@@ -13,7 +13,7 @@
 //!
 //! - **L1** ([`RuleEngine`]) — deterministic regex rules; cheap, runs on every event.
 //! - **L2** ([`LlmJudge`]) — a fast LLM classifier; a second opinion on the ambiguous ones.
-//! - **L3** ([`AgentJudge`]) — a deep a3s-code investigation; for the genuinely hard cases.
+//! - **L3** ([`AgentJudge`]) — a deep aster investigation; for the genuinely hard cases.
 //!
 //! The tiers are composed by [`Pipeline`]; each is a [`Judge`], so the set is swappable and testable.
 

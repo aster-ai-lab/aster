@@ -1,7 +1,7 @@
 use std::time::Duration;
 
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerTarget, ExecRequest as RuntimeExecRequest, Generation, IoMode, OperationContext,
     ProcessIo, ProcessRecord, ProcessTarget, ProcessesRequest,
 };
@@ -121,7 +121,7 @@ pub(super) async fn qualify_committed_exec_start(
     let old_shim_pid = faults::find_exact_shim_pid(config, &id).await?;
     let host_pid = faults::find_runtime_host_pid(config).await?;
     let mut suspended_host =
-        faults::SuspendedProcess::stop(host_pid, "committed-Exec A3S OCI host service")?;
+        faults::SuspendedProcess::stop(host_pid, "committed-Exec Aster OCI host service")?;
     let start_address = bootstrap.address.clone();
     let start_id = id.clone();
     let mut start_call =
@@ -132,7 +132,7 @@ pub(super) async fn qualify_committed_exec_start(
 
     let suspended_shim =
         faults::SuspendedProcess::stop(old_shim_pid, "committed-Exec original shim")?;
-    suspended_host.resume("committed-Exec A3S OCI host service")?;
+    suspended_host.resume("committed-Exec Aster OCI host service")?;
     let committed = commit_runtime_exec(config, &id, &identity, process).await?;
     validate_runtime_process(&committed, &expected_target)?;
     evidence::require(

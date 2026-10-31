@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use a3s_acl::{Block, Value};
+use aster_acl::{Block, Value};
 
 use crate::{error::closed_set, SecretReference, SmsError};
 
@@ -25,7 +25,7 @@ pub struct SmsbaoConfig {
 impl SmsbaoConfig {
     /// Parse only ACL and refuse unknown fields, nested blocks and missing values.
     pub fn from_acl(source: &str) -> Result<Self, SmsError> {
-        let document = a3s_acl::parse(source).map_err(|_| invalid("acl_document"))?;
+        let document = aster_acl::parse(source).map_err(|_| invalid("acl_document"))?;
         let [block] = document.blocks.as_slice() else {
             return Err(invalid("provider"));
         };

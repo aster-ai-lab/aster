@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{ToolFileIdentityV1, ToolFileKind};
+use aster_effect::{ToolFileIdentityV1, ToolFileKind};
 
 #[cfg(unix)]
 fn checked_scope(root: &std::path::Path) -> MutationLedger {
@@ -29,10 +29,10 @@ fn checked_scope(root: &std::path::Path) -> MutationLedger {
 }
 
 #[cfg(unix)]
-fn parent_receipt(root: &std::path::Path) -> a3s_effect::ToolExecutionResultV1 {
-    a3s_effect::ToolExecutionResultV1 {
-        schema: a3s_effect::TOOL_RESULT_SCHEMA.into(),
-        identity: a3s_effect::ToolInvocationIdentityV1 {
+fn parent_receipt(root: &std::path::Path) -> aster_effect::ToolExecutionResultV1 {
+    aster_effect::ToolExecutionResultV1 {
+        schema: aster_effect::TOOL_RESULT_SCHEMA.into(),
+        identity: aster_effect::ToolInvocationIdentityV1 {
             turn: 1,
             cycle: 0,
             tool_call_id: "actual-parent".into(),
@@ -40,7 +40,7 @@ fn parent_receipt(root: &std::path::Path) -> a3s_effect::ToolExecutionResultV1 {
             admission: None,
         },
         prepared_digest: format!("sha256:{}", "a".repeat(64)),
-        outcome: a3s_effect::ToolExecutionOutcome::Succeeded,
+        outcome: aster_effect::ToolExecutionOutcome::Succeeded,
         exit_code: Some(0),
         output: serde_json::Value::Null,
         effects: crate::porcelain::observe_path_effects(
@@ -59,7 +59,7 @@ fn parent_receipt(root: &std::path::Path) -> a3s_effect::ToolExecutionResultV1 {
 fn bind_parent(
     root: &std::path::Path,
     scope: &MutationLedger,
-    receipt: &a3s_effect::ToolExecutionResultV1,
+    receipt: &aster_effect::ToolExecutionResultV1,
     id: &str,
 ) -> Vec<crate::verification::VerificationReport> {
     let engine = crate::agent::AgentLoop::new(
@@ -103,11 +103,11 @@ fn shell_proof_requires_a_complete_successful_exact_parent_and_current_effect_id
         let mut receipt = parent_receipt(root.path());
         match case {
             "failed" => {
-                receipt.outcome = a3s_effect::ToolExecutionOutcome::Failed;
+                receipt.outcome = aster_effect::ToolExecutionOutcome::Failed;
                 receipt.exit_code = Some(1);
             }
             "incomplete" => {
-                receipt.effects.completeness = a3s_effect::ToolObservationCompleteness::Incomplete;
+                receipt.effects.completeness = aster_effect::ToolObservationCompleteness::Incomplete;
                 receipt.effects.reason = Some("controlled incomplete parent observation".into());
             }
             "later-bytes" => {
@@ -177,8 +177,8 @@ fn serialized_or_forged_checkpoint_fields_cannot_restore_private_shell_authority
 fn shell_proof_authority_is_bounded_by_existing_command_and_effect_limits() {
     let root = tempfile::tempdir().unwrap();
     for command in [
-        "x".repeat(a3s_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES + 1),
-        std::iter::repeat_n("test -f checked.txt", a3s_effect::MAX_TOOL_EFFECT_PATHS + 1)
+        "x".repeat(aster_effect::MAX_TOOL_EFFECT_CANONICAL_BYTES + 1),
+        std::iter::repeat_n("test -f checked.txt", aster_effect::MAX_TOOL_EFFECT_PATHS + 1)
             .collect::<Vec<_>>()
             .join(";"),
     ] {

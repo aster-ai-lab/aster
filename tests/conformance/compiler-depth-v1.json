@@ -1,5 +1,5 @@
 {
-  "apiVersion": "a3s.dev/form-compiler-depth-conformance/v1",
+  "apiVersion": "aster.dev/form-compiler-depth-conformance/v1",
   "generator": "linear-layout-v1",
   "cases": [
     {

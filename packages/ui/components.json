@@ -1,11 +1,11 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
   "aliases": {
-    "components": "@a3s-lab/ui/components",
-    "hooks": "@a3s-lab/ui/hooks",
-    "lib": "@a3s-lab/ui/lib",
-    "ui": "@a3s-lab/ui/components/primitives",
-    "utils": "@a3s-lab/ui/lib/utils"
+    "components": "@aster-ai-lab/ui/components",
+    "hooks": "@aster-ai-lab/ui/hooks",
+    "lib": "@aster-ai-lab/ui/lib",
+    "ui": "@aster-ai-lab/ui/components/primitives",
+    "utils": "@aster-ai-lab/ui/lib/utils"
   },
   "iconLibrary": "lucide",
   "rsc": false,

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/A3S-Lab/ORM/main/assets/readme/hero.svg" width="100%" alt="A3S ORM 将类型化 Rust 模式和谓词转换为参数化 SQL 以用于异步 PostgreSQL 和 SQLite 执行">
+  <img src="https://raw.githubusercontent.com/aster-ai-lab/ORM/main/assets/readme/hero.svg" width="100%" alt="Aster ORM 将类型化 Rust 模式和谓词转换为参数化 SQL 以用于异步 PostgreSQL 和 SQLite 执行">
 </p>
 
 <p align="center">
@@ -13,14 +13,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/ORM/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/A3S-Lab/ORM/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="https://github.com/A3S-Lab/ORM/releases/latest"><img alt="最新版本" src="https://img.shields.io/github/v/release/A3S-Lab/ORM?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=5b8cff"></a>
+  <a href="https://github.com/aster-ai-lab/ORM/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/aster-ai-lab/ORM/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/aster-ai-lab/ORM/releases/latest"><img alt="最新版本" src="https://img.shields.io/github/v/release/aster-ai-lab/ORM?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=5b8cff"></a>
   <img alt="Rust 1.85 或更新版本" src="https://img.shields.io/badge/rust-1.85%2B-9b7bff?style=flat-square">
   <a href="LICENSE"><img alt="MIT 许可证" src="https://img.shields.io/badge/license-MIT-0b1020?style=flat-square"></a>
 </p>
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/ORM/">文档</a> ·
+  <a href="https://aster-lab.github.io/ORM/">文档</a> ·
   <a href="#the-contract">契约</a>·
   <a href="#quick-start">快速开始</a>·
   <a href="#capability-map">功能</a>·
@@ -31,7 +31,7 @@
 
 ---
 
-**A3S ORM** 是一个类型安全、执行器中立的 Rust SQL 查询构建器，
+**Aster ORM** 是一个类型安全、执行器中立的 Rust SQL 查询构建器，
 灵感来自 [Kysely](https://kysely.dev/)。表声明约束
 编译时的列、值、赋值和解码结果。不可变的
 构建器编译成 SQL 加绑定参数，然后通过异步执行
@@ -41,7 +41,7 @@
 持久化行为，查询保持可见，并且运行时值永远不会
 插值进生成的 SQL。
 
-[文档网站](https://a3s-lab.github.io/ORM/)提供了完整的
+[文档网站](https://aster-lab.github.io/ORM/)提供了完整的
 v0.3.1、v0.3.0 和 v0.2.0 的中英文指南，包括同页
 语言和版本切换。
 
@@ -51,7 +51,7 @@ v0.3.1、v0.3.0 和 v0.2.0 的中英文指南，包括同页
 在到达连接之前：
 
 ```rust
-use a3s_orm::{orm_table, select_from, OrderDirection, PostgresDialect, Query};
+use aster_orm::{orm_table, select_from, OrderDirection, PostgresDialect, Query};
 
 orm_table! {
     pub struct Person => "person" {
@@ -61,7 +61,7 @@ orm_table! {
     }
 }
 
-fn main() -> Result<(), a3s_orm::Error> {
+fn main() -> Result<(), aster_orm::Error> {
     let query = select_from::<Person>()
         .select((Person::id(), Person::name()))
         .filter(Person::age().gte(18))
@@ -93,20 +93,20 @@ SQLite 是默认运行时：
 
 ```toml
 [dependencies]
-a3s-orm = "0.3"
+aster-orm = "0.3"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
 改为启用捆绑的 PostgreSQL 驱动程序：
 
 ```toml
-a3s-orm = { version = "0.3", default-features = false, features = ["postgres"] }
+aster-orm = { version = "0.3", default-features = false, features = ["postgres"] }
 ```
 
 或者使用查询生成器和方言编译器而不捆绑运行时：
 
 ```toml
-a3s-orm = { version = "0.3", default-features = false }
+aster-orm = { version = "0.3", default-features = false }
 ```
 
 版本"0.2.1"是仅限于以下应用程序的维护向后移植
@@ -120,7 +120,7 @@ a3s-orm = { version = "0.3", default-features = false }
 对于真正的内存数据库来说，默认功能已经足够了：
 
 ```rust
-use a3s_orm::{
+use aster_orm::{
     insert_into, orm_table, select_from, Database, SqliteDialect, SqliteExecutor,
 };
 
@@ -187,7 +187,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 在一个参数化语句中获取：
 
 ```rust
-use a3s_orm::{
+use aster_orm::{
     orm_table, select_from, update_table, OrderDirection, PostgresDialect, Query,
 };
 
@@ -205,7 +205,7 @@ orm_table! {
     }
 }
 
-fn main() -> Result<(), a3s_orm::Error> {
+fn main() -> Result<(), aster_orm::Error> {
     let candidates = select_from::<Job>()
         .select(Job::id())
         .filter(Job::state().eq("ready"))
@@ -267,11 +267,11 @@ MySQL 支持当前仅意味着 SQL 生成。它并不意味着捆绑
 ## 迁移
 
 迁移按版本排序，使用 SHA-256 进行校验和，并记录在
-`a3s_orm_migrations`。重新运行未更改的集合是无操作的；修改或
+`aster_orm_migrations`。重新运行未更改的集合是无操作的；修改或
 删除已应用的迁移是一个错误。
 
 ```rust
-use a3s_orm::{Migration, Migrator, SqliteExecutor};
+use aster_orm::{Migration, Migrator, SqliteExecutor};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -297,7 +297,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 扩展兼容滚动升级。
 
 ```rust
-# use a3s_orm::{Migration, Migrator, SqliteExecutor};
+# use aster_orm::{Migration, Migrator, SqliteExecutor};
 # async fn admit(executor: SqliteExecutor) -> Result<(), Box<dyn std::error::Error>> {
 Migrator::new(executor)
     .verify_required([Migration::new(
@@ -368,7 +368,7 @@ RUSTDOCFLAGS="-D warnings" cargo doc --all-features --no-deps
 要在本地运行 PostgreSQL 集成测试：
 
 ```bash
-A3S_ORM_POSTGRES_URL=postgres://postgres:postgres@127.0.0.1:5432/a3s_orm \
+ASTER_ORM_POSTGRES_URL=postgres://postgres:postgres@127.0.0.1:5432/aster_orm \
   cargo test --all-features
 ```
 
@@ -384,4 +384,4 @@ npm run check:site
 
 ## 许可证
 
-[麻省理工学院许可证](https://github.com/A3S-Lab/ORM/blob/main/LICENSE)
+[麻省理工学院许可证](https://github.com/aster-ai-lab/ORM/blob/main/LICENSE)

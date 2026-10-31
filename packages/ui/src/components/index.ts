@@ -77,7 +77,7 @@ export { default as Scrollbar } from './composites/scrollbar'
 export { SearchInput, type SearchInputProps } from './composites/search-input'
 export { SelectDropdown, type SelectDropdownProps } from './composites/select-dropdown'
 
-// Icon Components — import from '@a3s-lab/ui/icons' path
+// Icon Components — import from '@aster-ai-lab/ui/icons' path
 export type { CompoundIcon, IconAvatarProps, IconComponent, IconMeta, IconProps } from './icons/types'
 
 /* Additional Composite Components */

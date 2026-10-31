@@ -42,7 +42,7 @@ impl BashSandbox for UnavailableSandbox {
         _guest_workspace: &str,
     ) -> anyhow::Result<SandboxOutput> {
         anyhow::bail!(
-            "the default A3S native sandbox is unavailable for this workspace: init failed"
+            "the default Aster native sandbox is unavailable for this workspace: init failed"
         )
     }
 

@@ -1,4 +1,4 @@
-# Releasing a3s-gateway
+# Releasing aster-gateway
 
 ## Pre-release Checklist
 
@@ -11,8 +11,8 @@
    [`tests/openai_sdk/README.md`](tests/openai_sdk/README.md)
 7. [ ] `CHANGELOG.md` has a dated entry for the new version
 8. [ ] `Cargo.toml` version matches target
-9. [ ] `deploy/helm/a3s-gateway/Chart.yaml` version and appVersion match target
-10. [ ] All registry dependencies, including the pinned `a3s-sentry`, are published
+9. [ ] `deploy/helm/aster-gateway/Chart.yaml` version and appVersion match target
+10. [ ] All registry dependencies, including the pinned `aster-sentry`, are published
 11. [ ] `cargo publish --locked --dry-run` passes
 12. [ ] `bash scripts/test-install.sh` passes
 13. [ ] CI `Installer / Windows` passes the Windows Rust/SDK tests, installer
@@ -29,7 +29,7 @@
 ```bash
 # 1. Update version
 # Edit Cargo.toml: version = "X.Y.Z"
-# Edit deploy/helm/a3s-gateway/Chart.yaml: version + appVersion
+# Edit deploy/helm/aster-gateway/Chart.yaml: version + appVersion
 
 # 2. Update CHANGELOG.md
 # Move [Unreleased] items to [X.Y.Z] - YYYY-MM-DD

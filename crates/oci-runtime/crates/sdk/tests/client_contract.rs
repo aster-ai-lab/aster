@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     async_trait, ContainerId, ContainerRecord, CreateAttachments, CreateRequest, DeleteRequest,
     Error, IsolationRequest, KillRequest, OciBundle, OciRuntimeService, OperationContext,
     OperationId, ProcessIo, Result, RuntimeClient, RuntimeInfo, StartRequest, StateRequest,
@@ -21,7 +21,7 @@ impl OciRuntimeService for RecordingService {
     async fn create(&self, request: CreateRequest) -> Result<ContainerRecord> {
         let mut recorded = self.create_request.lock().map_err(|error| {
             Error::new(
-                a3s_oci_sdk::ErrorCode::Internal,
+                aster_oci_sdk::ErrorCode::Internal,
                 format!("recording service lock was poisoned: {error}"),
             )
         })?;
@@ -61,7 +61,7 @@ async fn client_preserves_complete_oci_spec_and_unknown_properties_at_service_bo
         "root": { "path": "rootfs", "readonly": true },
         "linux": {
             "intelRdt": {
-                "closID": "a3s",
+                "closID": "aster",
                 "enableMonitoring": true
             },
             "memoryPolicy": {
@@ -70,15 +70,15 @@ async fn client_preserves_complete_oci_spec_and_unknown_properties_at_service_bo
             }
         },
         "vm": {
-            "hypervisor": { "path": "/ignored/by/a3s-policy" },
-            "kernel": { "path": "/ignored/by/a3s-policy" },
+            "hypervisor": { "path": "/ignored/by/aster-policy" },
+            "kernel": { "path": "/ignored/by/aster-policy" },
             "image": {
-                "path": "/ignored/by/a3s-policy",
+                "path": "/ignored/by/aster-policy",
                 "format": "raw"
             }
         },
         "annotations": {
-            "dev.a3s.test": "sdk-boundary"
+            "dev.aster.test": "sdk-boundary"
         }
     });
     let bundle_path = std::env::current_dir()
@@ -120,10 +120,10 @@ async fn client_preserves_complete_oci_spec_and_unknown_properties_at_service_bo
     assert_eq!(encoded["linux"]["memoryPolicy"]["mode"], json!("MPOL_BIND"));
     assert_eq!(
         encoded["vm"]["kernel"]["path"],
-        json!("/ignored/by/a3s-policy")
+        json!("/ignored/by/aster-policy")
     );
     assert_eq!(
-        encoded["annotations"]["dev.a3s.test"],
+        encoded["annotations"]["dev.aster.test"],
         json!("sdk-boundary")
     );
     assert!(encoded.get("futureTopLevel").is_none());

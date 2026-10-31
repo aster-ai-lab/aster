@@ -17,10 +17,10 @@ class ObjectFixtureStartup(unittest.TestCase):
             calls = Path(directory) / "calls"
             env = dict(os.environ, CALLS=str(calls), HEALTH_STATUS=str(health_status),
                        BUCKET_STATUS=str(bucket_status),
-                       A3S_CLOUD_TEST_S3_ENDPOINT="http://127.0.0.1:9000",
-                       A3S_CLOUD_TEST_S3_BUCKET="fixture-bucket",
-                       A3S_CLOUD_TEST_S3_ACCESS_KEY_ID="fixture-key",
-                       A3S_CLOUD_TEST_S3_SECRET_ACCESS_KEY="fixture-secret")
+                       ASTER_CLOUD_TEST_S3_ENDPOINT="http://127.0.0.1:9000",
+                       ASTER_CLOUD_TEST_S3_BUCKET="fixture-bucket",
+                       ASTER_CLOUD_TEST_S3_ACCESS_KEY_ID="fixture-key",
+                       ASTER_CLOUD_TEST_S3_SECRET_ACCESS_KEY="fixture-secret")
             commands = '''set -euo pipefail
 docker() {
   printf 'docker %s\n' "$*" >> "$CALLS"
@@ -47,7 +47,7 @@ sleep() { printf 'sleep\n' >> "$CALLS"; }
         self.assertEqual(result.returncode, 1)
         self.assertEqual(calls.count("health"), 60)
         self.assertEqual(calls.count("sleep"), 59)
-        self.assertEqual(calls[-1], "docker logs a3s-s3")
+        self.assertEqual(calls[-1], "docker logs aster-s3")
         self.assertFalse(any(" s3 mb " in call for call in calls))
 
     def test_bucket_failure_propagates(self):

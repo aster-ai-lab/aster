@@ -1,8 +1,8 @@
 #!/bin/sh
 set -eu
 
-evidence='/.a3s-network-evidence'
-marker='/.a3s-oci-create-start-smoke'
+evidence='/.aster-network-evidence'
+marker='/.aster-oci-create-start-smoke'
 
 on_term() {
     printf 'phase=term\n' >> "$evidence"
@@ -43,7 +43,7 @@ fi
     printf 'phase=ready\n'
     printf 'mode=isolated\n'
 } >> "$evidence"
-printf 'a3s-oci-create-start-user-time-v1\n' > "$marker"
+printf 'aster-oci-create-start-user-time-v1\n' > "$marker"
 
 while :; do
     sleep 1

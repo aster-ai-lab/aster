@@ -123,7 +123,7 @@ mod tests {
 
     #[test]
     fn test_volume_config_new() {
-        let vol = VolumeConfig::new("mydata", "/home/user/.a3s/volumes/mydata");
+        let vol = VolumeConfig::new("mydata", "/home/user/.aster/volumes/mydata");
         assert_eq!(vol.name, "mydata");
         assert_eq!(vol.driver, "local");
         assert!(vol.in_use_by.is_empty());
@@ -211,7 +211,7 @@ mod tests {
 
     #[test]
     fn test_volume_check_quota_within_limit() {
-        let dir = std::env::temp_dir().join("a3s_test_vol_quota_ok");
+        let dir = std::env::temp_dir().join("aster_test_vol_quota_ok");
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("data.txt"), "hello").unwrap();
@@ -230,7 +230,7 @@ mod tests {
 
     #[test]
     fn test_volume_check_quota_exceeded() {
-        let dir = std::env::temp_dir().join("a3s_test_vol_quota_exceed");
+        let dir = std::env::temp_dir().join("aster_test_vol_quota_exceed");
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("data.txt"), "hello world!").unwrap();
@@ -257,7 +257,7 @@ mod tests {
 
     #[test]
     fn test_dir_size_empty() {
-        let dir = std::env::temp_dir().join("a3s_test_dir_size_empty");
+        let dir = std::env::temp_dir().join("aster_test_dir_size_empty");
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         assert_eq!(dir_size(&dir), 0);
@@ -266,7 +266,7 @@ mod tests {
 
     #[test]
     fn test_dir_size_with_files() {
-        let dir = std::env::temp_dir().join("a3s_test_dir_size_files");
+        let dir = std::env::temp_dir().join("aster_test_dir_size_files");
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("a.txt"), "aaa").unwrap();
@@ -277,7 +277,7 @@ mod tests {
 
     #[test]
     fn test_dir_size_recursive() {
-        let dir = std::env::temp_dir().join("a3s_test_dir_size_recursive");
+        let dir = std::env::temp_dir().join("aster_test_dir_size_recursive");
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(dir.join("sub")).unwrap();
         std::fs::write(dir.join("a.txt"), "aaa").unwrap();

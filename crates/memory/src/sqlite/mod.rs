@@ -229,7 +229,7 @@ impl MemoryStore for SqliteMemoryStore {
 
         if append_markdown {
             if let Err(e) = markdown::append(&self.base_dir, &stored).await {
-                eprintln!("[a3s-memory] markdown write failed for {}: {e}", stored.id);
+                eprintln!("[aster-memory] markdown write failed for {}: {e}", stored.id);
             }
         }
 

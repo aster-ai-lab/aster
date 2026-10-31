@@ -1,16 +1,16 @@
 #[path = "durable_memory_semantic_refresh/support.rs"]
 mod refresh_support;
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingExecutorConfig, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
-use a3s_code_core::{DurableMemorySemanticError, DURABLE_MEMORY_SEMANTIC_REFRESH_PROFILE_V1};
-use a3s_memory::repository::{
+use aster_core::{DurableMemorySemanticError, DURABLE_MEMORY_SEMANTIC_REFRESH_PROFILE_V1};
+use aster_durable_memory::repository::{
     InMemoryRepository, MemoryChangeSet, MemoryNamespace, MemoryOperation, MemoryRepository,
     MemoryStatus, RevisionMode, MEMORY_NAMESPACE_SNAPSHOT_PROFILE_V1,
 };
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorIndexError,
     VectorMutationConsistency, VectorRevision,
 };
@@ -24,7 +24,7 @@ use tokio_util::sync::CancellationToken;
 #[tokio::test]
 async fn repository_refresh_publishes_one_complete_active_snapshot_and_receipt() {
     fn assert_send_sync<T: Send + Sync>() {}
-    assert_send_sync::<a3s_code_core::DurableMemorySemanticRefreshReceipt>();
+    assert_send_sync::<aster_core::DurableMemorySemanticRefreshReceipt>();
 
     let namespace = namespace("complete");
     let repository = Arc::new(InMemoryRepository::new());

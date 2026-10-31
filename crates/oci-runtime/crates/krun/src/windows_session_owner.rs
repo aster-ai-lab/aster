@@ -278,7 +278,7 @@ fn wait_for_pipe_client(
                     let client_pid = named_pipe_client_pid(server)?;
                     if client_pid != expected.get() {
                         eprintln!(
-                            "a3s-oci-krun-shim: session-owner rejected guest pipe client PID \
+                            "aster-oci-krun-shim: session-owner rejected guest pipe client PID \
                              {client_pid} (expected shim PID {})",
                             expected.get()
                         );
@@ -625,8 +625,8 @@ mod tests {
     #[test]
     fn pipe_name_qualifies_to_local_path() {
         assert_eq!(
-            windows_pipe_path_from_name("a3s-oci-agent-test"),
-            r"\\.\pipe\a3s-oci-agent-test"
+            windows_pipe_path_from_name("aster-oci-agent-test"),
+            r"\\.\pipe\aster-oci-agent-test"
         );
         assert_eq!(
             windows_pipe_path_from_name(r"\\.\pipe\already-qualified"),

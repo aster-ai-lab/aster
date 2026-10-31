@@ -83,6 +83,6 @@ export function acceptHomeSeed(body: unknown): { applied: boolean; notice?: stri
 }
 
 const target = globalThis as typeof globalThis & {
-  __a3sPresentonAcceptHomeSeed?: typeof acceptHomeSeed;
+  __asterPresentonAcceptHomeSeed?: typeof acceptHomeSeed;
 };
-target.__a3sPresentonAcceptHomeSeed = acceptHomeSeed;
+target.__asterPresentonAcceptHomeSeed = acceptHomeSeed;

@@ -1,15 +1,15 @@
 use std::sync::Arc;
 
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityContribution, CapabilityDescriptor, CapabilityKind, CapabilityProjectionError,
     CapabilityRuntimeError, CapabilitySet, CapabilitySource, CapabilityValue,
     CodeCatalogGeneration, ReconciledPackageGeneration, RetainedUseGeneration,
     SessionCapabilityBatch, Sha256Digest, UseCapabilityGeneration, UseGenerationLeaseError,
     UseGenerationLeaseProvider,
 };
-use a3s_code_core::mcp::McpProjectionAdapter;
-use a3s_code_core::AgentSession;
-use a3s_use_reconcile::{
+use aster_core::mcp::McpProjectionAdapter;
+use aster_core::AgentSession;
+use aster_use_reconcile::{
     Publication, ReconcileStore, SelectionCursor, SelectionLease, SurfaceKind,
 };
 use anyhow::{Context, Result};
@@ -86,8 +86,8 @@ impl PluginSelectionHost {
 
     pub(crate) fn session_options(
         &self,
-        options: a3s_code_core::SessionOptions,
-    ) -> a3s_code_core::SessionOptions {
+        options: aster_core::SessionOptions,
+    ) -> aster_core::SessionOptions {
         options.with_projected_skill_files(self.skill_files.clone())
     }
 
@@ -231,7 +231,7 @@ impl PluginSelectionHost {
                         continue;
                     };
                     let parsed = tokio::task::spawn_blocking(move || {
-                        a3s_code_core::skills::Skill::from_file(path)
+                        aster_core::skills::Skill::from_file(path)
                     })
                     .await?;
                     let skill = match parsed {
@@ -328,10 +328,10 @@ impl PluginSelectionHost {
 struct AdmittedPackage {
     source: CapabilitySource,
     descriptors: Vec<CapabilityDescriptor>,
-    values: Vec<(a3s_code_core::capability::CapabilityId, CapabilityValue)>,
+    values: Vec<(aster_core::capability::CapabilityId, CapabilityValue)>,
     servers: Vec<(
-        a3s_code_core::capability::CapabilityId,
-        a3s_code_core::mcp::McpServerConfig,
+        aster_core::capability::CapabilityId,
+        aster_core::mcp::McpServerConfig,
     )>,
 }
 

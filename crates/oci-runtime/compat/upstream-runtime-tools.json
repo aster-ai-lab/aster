@@ -1,5 +1,5 @@
 {
-  "schema_version": "a3s.oci.upstream-runtime-tools-lock.v2",
+  "schema_version": "aster.oci.upstream-runtime-tools-lock.v2",
   "repository": "https://github.com/opencontainers/runtime-tools.git",
   "commit": "8a4db579f5c88af5a0d036fad34bddc9c1f703f3",
   "version": "0.9.0",

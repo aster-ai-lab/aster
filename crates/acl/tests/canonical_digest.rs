@@ -1,7 +1,7 @@
 #[path = "support/schema_fixture.rs"]
 mod schema_fixture;
 
-use a3s_acl::{
+use aster_acl::{
     canonical_bytes, canonical_bytes_with_schema, canonical_digest, canonical_digest_with_schema,
     parse, validate_document, CanonicalError, CANONICAL_DIGEST_ALGORITHM,
 };
@@ -144,7 +144,7 @@ fn canonical_digest_rejects_non_finite_programmatic_numbers() {
     *document.blocks[0]
         .attributes
         .get_mut("value")
-        .expect("value attribute") = a3s_acl::Value::Number(f64::INFINITY);
+        .expect("value attribute") = aster_acl::Value::Number(f64::INFINITY);
 
     assert_eq!(
         canonical_bytes(&document),

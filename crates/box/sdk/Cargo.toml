@@ -1,17 +1,17 @@
 [package]
-name = "a3s-box-sdk"
+name = "aster-box-sdk"
 version = "3.2.7"
 edition = "2021"
 license = "MIT"
-description = "Rust SDK for a3s-box direct runtime-backed management APIs."
+description = "Rust SDK for aster-box direct runtime-backed management APIs."
 
 [features]
 default = []
 pipeline-cli = []
 
 [dependencies]
-a3s-box-core = { version = "3.2", path = "../core" }
-a3s-box-runtime = { version = "3.2", path = "../runtime" }
+aster-box-core = { version = "3.2", path = "../core" }
+aster-box-runtime = { version = "3.2", path = "../runtime" }
 base64 = { workspace = true }
 chrono = { workspace = true }
 futures = { workspace = true }
@@ -24,11 +24,11 @@ thiserror = { workspace = true }
 tokio = { workspace = true }
 uuid = { workspace = true }
 
-# Thin runner that bridges any agent (a3s-code / Claude Code / Codex) to the
+# Thin runner that bridges any agent (aster / Claude Code / Codex) to the
 # pipeline API: a line-based spec on stdin -> JSON Report on stdout.
 [[bin]]
-name = "a3s-box-ci"
-path = "src/bin/a3s-box-ci.rs"
+name = "aster-box-ci"
+path = "src/bin/aster-box-ci.rs"
 required-features = ["pipeline-cli"]
 
 [[example]]

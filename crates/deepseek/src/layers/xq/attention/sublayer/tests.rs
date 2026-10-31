@@ -1,7 +1,7 @@
 use super::super::{InputParts, OutputParts};
 use super::*;
 use crate::layers::linear::xq::XqDeviceMatrix;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::Device;
 
 pub(crate) fn cache(device: &CudaLayerDevice, context: usize) -> Tensor {

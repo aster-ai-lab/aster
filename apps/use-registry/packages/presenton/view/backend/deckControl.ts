@@ -1,4 +1,4 @@
-// Closed deck operations for one typed a3s-code tool result.
+// Closed deck operations for one typed aster tool result.
 // Human outline and slide writes use the same two mutations.
 // The renderer and this file do not share a realm: the host calls the global below.
 import { baseUi, now, slideModel, storedSlide, type Deck, type StoredSlide } from "./deck";
@@ -224,8 +224,8 @@ export function applyDeckToolPart(part: unknown): DeckCallResult {
 }
 
 const target = globalThis as typeof globalThis & {
-  __a3sPresentonApplyDeckToolPart?: typeof applyDeckToolPart;
-  __a3sPresentonReadDeck?: typeof readDeckText;
+  __asterPresentonApplyDeckToolPart?: typeof applyDeckToolPart;
+  __asterPresentonReadDeck?: typeof readDeckText;
 };
-target.__a3sPresentonApplyDeckToolPart = applyDeckToolPart;
-target.__a3sPresentonReadDeck = readDeckText;
+target.__asterPresentonApplyDeckToolPart = applyDeckToolPart;
+target.__asterPresentonReadDeck = readDeckText;

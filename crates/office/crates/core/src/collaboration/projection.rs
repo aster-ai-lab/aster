@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{Any, GetString, Map, Out, ReadTxn, Text, Transact, Xml, XmlFragment, XmlOut};
 
 use super::document::{canonical_state_vector, inspect_document};
@@ -280,14 +280,14 @@ fn utf16_len(value: &str) -> UseResult<u32> {
     u32::try_from(value.encode_utf16().count()).map_err(|_| utf16_overflow())
 }
 
-fn utf16_overflow() -> a3s_use_core::UseError {
+fn utf16_overflow() -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.projection_too_large",
         "The native Office text projection exceeds the supported UTF-16 offset range.",
     )
 }
 
-fn too_many_slices() -> a3s_use_core::UseError {
+fn too_many_slices() -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.projection_too_large",
         "The collaborative Markdown contains too many slices for a bounded native projection.",
@@ -359,21 +359,21 @@ fn is_review_attribute(value: &str) -> bool {
     )
 }
 
-fn missing_root(root: &str) -> a3s_use_core::UseError {
+fn missing_root(root: &str) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.content_invalid",
         format!("The initialized Office collaboration root '{root}' is missing."),
     )
 }
 
-fn invalid_root(root: &str, expected: &str) -> a3s_use_core::UseError {
+fn invalid_root(root: &str, expected: &str) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.root_invalid",
         format!("The Office collaboration root '{root}' must be a {expected}."),
     )
 }
 
-fn invalid_option(key: &str) -> a3s_use_core::UseError {
+fn invalid_option(key: &str) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.content_invalid",
         format!("The shared Document option '{key}' is invalid."),

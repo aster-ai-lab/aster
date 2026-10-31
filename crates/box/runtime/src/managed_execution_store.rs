@@ -2,7 +2,7 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::{ExecutionGeneration, ExecutionId, ExecutionSnapshotId, OperationId};
+use aster_box_core::{ExecutionGeneration, ExecutionId, ExecutionSnapshotId, OperationId};
 use thiserror::Error;
 
 use crate::{
@@ -571,7 +571,7 @@ impl ManagedExecutionStore {
                 .as_mut()
                 .ok_or_else(|| ManagedExecutionStoreError::Unmanaged(execution_id.clone()))?;
             update.apply_to(&mut metadata.request.config.resource_limits);
-            metadata.plan = a3s_box_core::resolve_execution(&metadata.request.config)
+            metadata.plan = aster_box_core::resolve_execution(&metadata.request.config)
                 .map_err(|error| ManagedExecutionStoreError::InvalidRecord(error.to_string()))?;
             record.resource_limits = metadata.request.config.resource_limits.clone();
             metadata.last_resource_update = Some(ManagedResourceUpdateCompletion {
@@ -657,7 +657,7 @@ fn same_immutable_reservation_shape(
     Ok(left_request == right_request && left.plan == right.plan)
 }
 
-fn clear_mutable_resource_limits(limits: &mut a3s_box_core::ResourceLimits) {
+fn clear_mutable_resource_limits(limits: &mut aster_box_core::ResourceLimits) {
     limits.memory_reservation = None;
     limits.memory_swap = None;
     limits.pids_limit = None;
@@ -740,7 +740,7 @@ mod tests {
     #[cfg(unix)]
     use std::sync::{Arc, Barrier};
 
-    use a3s_box_core::{CreateExecutionRequest, ExecutionIsolation, ExecutionSnapshotId};
+    use aster_box_core::{CreateExecutionRequest, ExecutionIsolation, ExecutionSnapshotId};
 
     use super::*;
     use crate::ManagedExecutionMetadata;
@@ -766,7 +766,7 @@ mod tests {
             "auto_remove": false
         }))
         .unwrap();
-        let config = a3s_box_core::BoxConfig {
+        let config = aster_box_core::BoxConfig {
             image: "alpine:latest".to_string(),
             isolation: ExecutionIsolation::Sandbox,
             ..Default::default()

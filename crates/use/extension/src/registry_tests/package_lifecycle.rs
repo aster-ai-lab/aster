@@ -362,8 +362,8 @@ async fn lifecycle_graph_requires_the_exact_published_retained_dependency() {
     let root_catalog =
         verified_knowledge_catalog(&root_source, "acme/root", &[("acme/base", "^1.0.0")], 'b')
             .await;
-    let package_lock = a3s_use_core::PluginPackageResolver::new(
-        a3s_use_core::PluginPackageLockHost::new("linux-x86_64", "0.3.0").unwrap(),
+    let package_lock = aster_use_core::PluginPackageResolver::new(
+        aster_use_core::PluginPackageLockHost::new("linux-x86_64", "0.3.0").unwrap(),
     )
     .resolve(root_catalog.clone(), vec![base_catalog.clone()])
     .unwrap();
@@ -617,7 +617,7 @@ async fn verified_catalog_dependencies_must_match_the_admitted_manifest() {
     let (manifest, manifest_bytes) = read_manifest(&source).await.unwrap();
     let package_digest = package_sha256(&source).await.unwrap();
     let manifest_digest = sha256(&manifest_bytes);
-    let mut catalog = a3s_use_core::PluginCatalogRecord::from_json(include_bytes!(
+    let mut catalog = aster_use_core::PluginCatalogRecord::from_json(include_bytes!(
         "../../../core/fixtures/plugins/catalog-record-okf-v3.json"
     ))
     .unwrap();
@@ -628,7 +628,7 @@ async fn verified_catalog_dependencies_must_match_the_admitted_manifest() {
     catalog.validate().unwrap();
     let verified = VerifiedPluginCatalogRecord::new(
         catalog.clone(),
-        a3s_use_core::VerifiedCatalogProvenance {
+        aster_use_core::VerifiedCatalogProvenance {
             registry_name: "fixture".to_string(),
             registry_url: "https://packages.example.test/catalog/".to_string(),
             root_sha256: format!("sha256:{}", "a".repeat(64)),
@@ -657,17 +657,17 @@ async fn verified_catalog_dependencies_must_match_the_admitted_manifest() {
 #[test]
 fn verified_catalog_flow_inventory_and_dependencies_match_the_admitted_manifest() {
     let manifest = ExtensionManifest::parse_acl(include_str!(
-        "../../fixtures/packages/plugin-v3-package/package/a3s-use-extension.acl"
+        "../../fixtures/packages/plugin-v3-package/package/aster-use-extension.acl"
     ))
     .unwrap();
     let graph = manifest.plugin_surfaces().unwrap();
-    let mut record = a3s_use_core::PluginCatalogRecord::from_json(include_bytes!(
+    let mut record = aster_use_core::PluginCatalogRecord::from_json(include_bytes!(
         "../../../core/fixtures/plugins/catalog-record-okf-v3.json"
     ))
     .unwrap();
     record.surfaces = graph
         .iter()
-        .map(|surface| a3s_use_core::CatalogSurface {
+        .map(|surface| aster_use_core::CatalogSurface {
             kind: surface.surface.kind,
             id: surface.surface.id.clone(),
             optional: surface.optional,

@@ -35,14 +35,14 @@ pub(crate) fn uploaded_file_extractor_tokens(
     let name = spec.name;
     if optional {
         quote! {
-            let #ident: #ty = __a3s_boot_multipart_form.file(#name).cloned();
+            let #ident: #ty = __aster_boot_multipart_form.file(#name).cloned();
         }
     } else {
         quote! {
-            let #ident: #ty = __a3s_boot_multipart_form
+            let #ident: #ty = __aster_boot_multipart_form
                 .file(#name)
                 .cloned()
-                .ok_or_else(|| ::a3s_boot::BootError::BadRequest(
+                .ok_or_else(|| ::aster_boot::BootError::BadRequest(
                     format!("missing uploaded file: {}", #name)
                 ))?;
         }
@@ -56,7 +56,7 @@ pub(crate) fn uploaded_files_extractor_tokens(
 ) -> proc_macro2::TokenStream {
     let name = spec.name;
     quote! {
-        let #ident: #ty = __a3s_boot_multipart_form
+        let #ident: #ty = __aster_boot_multipart_form
             .files_by_name(#name)
             .into_iter()
             .cloned()
@@ -80,14 +80,14 @@ pub(crate) fn multipart_openapi_token(
             properties.push(quote! {
                 (
                     #name,
-                    ::a3s_boot::OpenApiSchema::array(
-                        ::a3s_boot::OpenApiSchema::binary_file()
+                    ::aster_boot::OpenApiSchema::array(
+                        ::aster_boot::OpenApiSchema::binary_file()
                     )
                 )
             });
         } else {
             properties.push(quote! {
-                (#name, ::a3s_boot::OpenApiSchema::binary_file())
+                (#name, ::aster_boot::OpenApiSchema::binary_file())
             });
         }
 
@@ -105,7 +105,7 @@ pub(crate) fn multipart_openapi_token(
     Some(quote! {
         with_request_body_content_type(
             "multipart/form-data",
-            ::a3s_boot::OpenApiSchema::object_with_properties(
+            ::aster_boot::OpenApiSchema::object_with_properties(
                 [#(#properties),*],
                 #required,
             )

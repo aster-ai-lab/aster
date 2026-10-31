@@ -141,7 +141,7 @@ pub(super) fn clear(
         return Ok(success(current));
     }
     transaction
-        .execute("DELETE FROM a3s_vector_partitions", [])
+        .execute("DELETE FROM aster_vector_partitions", [])
         .map_err(|_| {
             VectorIndexError::StorageFailed("could not clear SQLite vector partitions".to_string())
         })?;
@@ -164,7 +164,7 @@ fn insert_partition(
 ) -> VectorResult<()> {
     connection
         .execute(
-            "INSERT INTO a3s_vector_partitions
+            "INSERT INTO aster_vector_partitions
              (name, record_count, byte_count, content_digest) VALUES (?1, ?2, ?3, ?4)",
             params![
                 &block.name,
@@ -191,7 +191,7 @@ fn insert_partition(
         })?;
         connection
             .execute(
-                "INSERT INTO a3s_vector_records
+                "INSERT INTO aster_vector_records
                  (partition, position, id, labels_json, embedding)
                  VALUES (?1, ?2, ?3, ?4, ?5)",
                 params![
@@ -235,7 +235,7 @@ fn partition_accounting(
 ) -> VectorResult<Option<(usize, usize)>> {
     let accounting = connection
         .query_row(
-            "SELECT record_count, byte_count FROM a3s_vector_partitions WHERE name = ?1",
+            "SELECT record_count, byte_count FROM aster_vector_partitions WHERE name = ?1",
             params![partition],
             |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
         )
@@ -258,7 +258,7 @@ fn partition_accounting(
 fn delete_partition(connection: &Connection, partition: &str) -> VectorResult<()> {
     connection
         .execute(
-            "DELETE FROM a3s_vector_partitions WHERE name = ?1",
+            "DELETE FROM aster_vector_partitions WHERE name = ?1",
             params![partition],
         )
         .map_err(|_| {
@@ -272,7 +272,7 @@ fn delete_partition(connection: &Connection, partition: &str) -> VectorResult<()
 fn update_status(connection: &Connection, status: &VectorIndexStatus) -> VectorResult<()> {
     let changed = connection
         .execute(
-            "UPDATE a3s_vector_index_metadata
+            "UPDATE aster_vector_index_metadata
              SET revision = ?1, partition_count = ?2, record_count = ?3, byte_count = ?4
              WHERE singleton = 1",
             params![

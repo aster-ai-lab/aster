@@ -9,7 +9,7 @@
 
 #![cfg(feature = "postgres")]
 
-use a3s_flow::{
+use aster_flow::{
     ChildWorkflowCommand, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore,
     FlowRuntime, PostgresEventStore, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowRunStatus, WorkflowSpec, WorkflowTerminalOutcome,
@@ -104,7 +104,7 @@ struct CrashDuringMapRequestStore {
 
 #[async_trait]
 impl FlowEventStore for CrashDuringMapRequestStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -113,7 +113,7 @@ impl FlowEventStore for CrashDuringMapRequestStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id == self.parent_run_id && matches!(event, FlowEvent::ChildWorkflowRequested { .. })
         {
             let request_index = self.request_count.fetch_add(1, Ordering::SeqCst);
@@ -130,11 +130,11 @@ impl FlowEventStore for CrashDuringMapRequestStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -148,7 +148,7 @@ struct CrashDuringBatchRequestStore {
 
 #[async_trait]
 impl FlowEventStore for CrashDuringBatchRequestStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -157,7 +157,7 @@ impl FlowEventStore for CrashDuringBatchRequestStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id == self.parent_run_id && matches!(event, FlowEvent::ChildWorkflowRequested { .. })
         {
             let request_index = self.request_count.fetch_add(1, Ordering::SeqCst);
@@ -172,11 +172,11 @@ impl FlowEventStore for CrashDuringBatchRequestStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -189,7 +189,7 @@ struct CrashBeforeParentResolutionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeParentResolutionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -198,7 +198,7 @@ impl FlowEventStore for CrashBeforeParentResolutionStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id == self.parent_run_id
             && matches!(event, FlowEvent::ChildWorkflowResolved { .. })
             && self.armed.swap(false, Ordering::SeqCst)
@@ -212,11 +212,11 @@ impl FlowEventStore for CrashBeforeParentResolutionStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -228,7 +228,7 @@ impl FlowRuntime for CompletingMapRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "child-map.parent" {
             if context.child_workflow_map_completed("items") {
@@ -256,7 +256,7 @@ impl FlowRuntime for CompletingMapRuntime {
         Ok(context.complete(json!({ "ordinal": context.input()["ordinal"] })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow map recovery does not execute steps")
     }
 }
@@ -268,7 +268,7 @@ impl FlowRuntime for CompletingBatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "child-batch.parent" {
             if ["child-0000", "child-0001"]
@@ -282,7 +282,7 @@ impl FlowRuntime for CompletingBatchRuntime {
         Ok(context.complete(context.input().clone()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow batch recovery does not execute steps")
     }
 }
@@ -294,7 +294,7 @@ impl FlowRuntime for ParentChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "recovery-parent" {
             return match context.child_workflow_outcome("child") {
@@ -312,7 +312,7 @@ impl FlowRuntime for ParentChildRuntime {
         Ok(context.complete(json!({ "value": 2 })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow recovery does not execute steps")
     }
 }

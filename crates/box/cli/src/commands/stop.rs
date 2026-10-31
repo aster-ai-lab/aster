@@ -1,12 +1,12 @@
-//! `a3s-box stop` command — Graceful stop of one or more boxes.
+//! `aster-box stop` command — Graceful stop of one or more boxes.
 
 use clap::Args;
 
-use a3s_box_core::{
+use aster_box_core::{
     vmm::parse_signal_name, ExecutionGeneration, ExecutionId, ExecutionManager,
     KillExecutionOptions,
 };
-use a3s_box_runtime::ManagedExecutionState;
+use aster_box_runtime::ManagedExecutionState;
 
 use crate::cleanup;
 use crate::lifecycle;
@@ -69,7 +69,7 @@ async fn stop_one(
         let name = record.name.clone();
         let auto_remove = record.auto_remove;
         drop(lifecycle_lock);
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         let manager = super::configured_local_execution_manager(&home).await?;
         manager
             .kill_with_options(&execution_id, generation, options)
@@ -80,8 +80,8 @@ async fn stop_one(
             return Ok(());
         }
         crate::audit::record(
-            a3s_box_core::audit::AuditAction::BoxStop,
-            a3s_box_core::audit::AuditOutcome::Success,
+            aster_box_core::audit::AuditAction::BoxStop,
+            aster_box_core::audit::AuditOutcome::Success,
             &box_id,
             &format!("stopped box {name}"),
         );
@@ -164,8 +164,8 @@ async fn stop_one(
         .into());
     }
     crate::audit::record(
-        a3s_box_core::audit::AuditAction::BoxStop,
-        a3s_box_core::audit::AuditOutcome::Success,
+        aster_box_core::audit::AuditAction::BoxStop,
+        aster_box_core::audit::AuditOutcome::Success,
         &box_id,
         &format!("stopped box {name}"),
     );
@@ -203,7 +203,7 @@ fn stop_plan(
             | ManagedExecutionState::Starting
     ) {
         return Err(format!(
-            "Cannot stop box {} because it is {state}. Use `a3s-box ps -a` to inspect state.",
+            "Cannot stop box {} because it is {state}. Use `aster-box ps -a` to inspect state.",
             record.name
         )
         .into());
@@ -237,8 +237,8 @@ fn stopped_exit_code(
 mod tests {
     use super::*;
     use crate::test_helpers::fixtures::make_record;
-    use a3s_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
-    use a3s_box_runtime::{ManagedExecutionMetadata, ManagedExecutionOperation};
+    use aster_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
+    use aster_box_runtime::{ManagedExecutionMetadata, ManagedExecutionOperation};
     use std::collections::BTreeMap;
 
     fn managed_record(state: ManagedExecutionState) -> crate::state::BoxRecord {

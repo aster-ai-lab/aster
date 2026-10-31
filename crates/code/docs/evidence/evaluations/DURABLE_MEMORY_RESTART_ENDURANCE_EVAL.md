@@ -32,9 +32,9 @@ call instead of `RUN_IDENTITY_CONFLICT`.
 ## Corrected ownership model
 
 Binding schema `4` pins
-`a3s.code.memory.context.session-run-invocation-sequence-sha256.v2`. Code adds a
+`aster.code.memory.context.session-run-invocation-sequence-sha256.v2`. Code adds a
 fresh internal invocation incarnation to the session, run, and monotonic
-context sequence. It does not ask A3S Memory to understand Code run lifecycles,
+context sequence. It does not ask Aster Memory to understand Code run lifecycles,
 and it does not strengthen the public host ID contract retroactively.
 
 The incarnation has one purpose: two actual invocations must never collapse
@@ -106,9 +106,9 @@ memory system production-complete.
 Run from the Code crate workspace:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_restart_endurance_eval -- --nocapture
-cargo test -p a3s-code-core --test durable_memory_restart -- --nocapture
+cargo test -p aster-core --test durable_memory_restart_endurance_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_restart -- --nocapture
 ```
 
 The first command emits the retained JSON report after
-`A3S_DURABLE_MEMORY_RESTART_ENDURANCE_EVAL=`.
+`ASTER_DURABLE_MEMORY_RESTART_ENDURANCE_EVAL=`.

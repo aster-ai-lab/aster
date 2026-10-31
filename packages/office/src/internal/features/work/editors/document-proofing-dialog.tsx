@@ -1,4 +1,4 @@
-import { Combobox } from '@a3s-lab/ui/components/primitives/combobox';
+import { Combobox } from '@aster-ai-lab/ui/components/primitives/combobox';
 import { type FormEvent, useId, useRef, useState } from 'react';
 import { officeFloatingPortalRoot } from '../../../design-system/primitives/overlay/portal-root';
 import { Button, Dialog } from '../../../design-system/primitives';

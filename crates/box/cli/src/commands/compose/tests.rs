@@ -56,7 +56,7 @@ fn explicit_relative_compose_file_uses_an_absolute_project_base() {
 #[test]
 fn service_config_hash_is_stable_across_environment_order() {
     let service = ServiceConfig::default();
-    let first = a3s_box_core::BoxConfig {
+    let first = aster_box_core::BoxConfig {
         image: "example:latest".to_string(),
         extra_env: vec![
             ("B".to_string(), "2".to_string()),
@@ -76,12 +76,12 @@ fn service_config_hash_is_stable_across_environment_order() {
 #[test]
 fn service_config_hash_tracks_runtime_isolation() {
     let service = ServiceConfig::default();
-    let microvm = a3s_box_core::BoxConfig {
+    let microvm = aster_box_core::BoxConfig {
         image: "example:latest".to_string(),
         ..Default::default()
     };
     let mut sandbox = microvm.clone();
-    sandbox.isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+    sandbox.isolation = aster_box_core::ExecutionIsolation::Sandbox;
 
     assert_ne!(
         service_config_hash(&service, &microvm).unwrap(),
@@ -139,7 +139,7 @@ services:
     assert_eq!(environment["DOTENV_ONLY"], "dotenv");
     assert_eq!(environment["SHELL_WINS"], "shell");
 
-    a3s_box_runtime::ComposeRuntimePlan::with_base_dir("test", config, directory.path())
+    aster_box_runtime::ComposeRuntimePlan::with_base_dir("test", config, directory.path())
         .expect("interpolation must run before port validation");
 }
 
@@ -264,8 +264,8 @@ fn test_load_compose_acl_uses_dotenv_and_shell_environment() {
 
 #[test]
 fn test_label_constants() {
-    assert_eq!(LABEL_PROJECT, "com.a3s.compose.project");
-    assert_eq!(LABEL_SERVICE, "com.a3s.compose.service");
+    assert_eq!(LABEL_PROJECT, "com.aster.compose.project");
+    assert_eq!(LABEL_SERVICE, "com.aster.compose.service");
 }
 
 #[test]
@@ -340,7 +340,7 @@ fn test_service_box_from_record_uses_network_mode_fallback() {
     let mut record =
         crate::test_helpers::fixtures::make_record("compose-id", "project-web", "running", None);
     record.network_name = None;
-    record.network_mode = a3s_box_core::NetworkMode::Bridge {
+    record.network_mode = aster_box_core::NetworkMode::Bridge {
         network: "legacy_default".to_string(),
     };
 
@@ -443,9 +443,9 @@ fn test_partial_service_cleanup_fails_closed_on_wipe() {
 
 #[cfg(windows)]
 fn cached_image_config_with_health(
-    health_check: Option<a3s_box_runtime::oci::OciHealthCheck>,
-) -> a3s_box_runtime::oci::OciImageConfig {
-    a3s_box_runtime::oci::OciImageConfig {
+    health_check: Option<aster_box_runtime::oci::OciHealthCheck>,
+) -> aster_box_runtime::oci::OciImageConfig {
+    aster_box_runtime::oci::OciImageConfig {
         entrypoint: None,
         cmd: None,
         env: Vec::new(),
@@ -495,7 +495,7 @@ fn windows_compose_rejects_declared_health_before_runtime_setup() {
 #[test]
 fn windows_compose_rejects_cached_image_health_before_runtime_setup() {
     let image_config =
-        cached_image_config_with_health(Some(a3s_box_runtime::oci::OciHealthCheck {
+        cached_image_config_with_health(Some(aster_box_runtime::oci::OciHealthCheck {
             test: vec!["CMD".to_string(), "true".to_string()],
             interval: Some(30),
             timeout: Some(5),

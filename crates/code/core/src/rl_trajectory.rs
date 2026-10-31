@@ -20,7 +20,7 @@ use std::sync::{
     Arc, Mutex,
 };
 
-pub const RL_TRAJECTORY_SCHEMA: &str = "a3s.rl_trajectory.v1";
+pub const RL_TRAJECTORY_SCHEMA: &str = "aster.rl_trajectory.v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
@@ -77,15 +77,15 @@ impl RlTrajectoryConfig {
     }
 
     pub fn from_env() -> Result<Option<Self>> {
-        let mode_env = env_first(&["A3S_CODE_TRAJECTORY_MODE", "A3S_CODE_RL_TRAJECTORY_MODE"]);
-        let path_env = env_first(&["A3S_CODE_TRAJECTORY_PATH", "A3S_CODE_RL_TRAJECTORY_PATH"]);
+        let mode_env = env_first(&["ASTER_TRAJECTORY_MODE", "ASTER_RL_TRAJECTORY_MODE"]);
+        let path_env = env_first(&["ASTER_TRAJECTORY_PATH", "ASTER_RL_TRAJECTORY_PATH"]);
         if mode_env.is_none() && path_env.is_none() {
             return Ok(None);
         }
 
         let mode = match mode_env.as_deref() {
             Some(raw) => RlTrajectoryMode::parse(raw)
-                .with_context(|| format!("invalid A3S_CODE_RL_TRAJECTORY_MODE: {raw}"))?,
+                .with_context(|| format!("invalid ASTER_RL_TRAJECTORY_MODE: {raw}"))?,
             None => RlTrajectoryMode::On,
         };
         if mode == RlTrajectoryMode::Off {
@@ -94,18 +94,18 @@ impl RlTrajectoryConfig {
 
         let path = path_env
             .filter(|s| !s.trim().is_empty())
-            .with_context(|| "A3S_CODE_TRAJECTORY_PATH is required when trajectory mode is on")?;
+            .with_context(|| "ASTER_TRAJECTORY_PATH is required when trajectory mode is on")?;
 
         let max_text_bytes = env_first(&[
-            "A3S_CODE_TRAJECTORY_MAX_TEXT_BYTES",
-            "A3S_CODE_RL_TRAJECTORY_MAX_TEXT_BYTES",
+            "ASTER_TRAJECTORY_MAX_TEXT_BYTES",
+            "ASTER_RL_TRAJECTORY_MAX_TEXT_BYTES",
         ])
         .and_then(|value| value.parse::<usize>().ok())
         .unwrap_or_else(|| default_max_text_bytes(mode));
 
         let include_messages = env_first(&[
-            "A3S_CODE_TRAJECTORY_INCLUDE_MESSAGES",
-            "A3S_CODE_RL_TRAJECTORY_INCLUDE_MESSAGES",
+            "ASTER_TRAJECTORY_INCLUDE_MESSAGES",
+            "ASTER_RL_TRAJECTORY_INCLUDE_MESSAGES",
         ])
         .and_then(|value| parse_bool(&value))
         .unwrap_or(true);
@@ -136,11 +136,11 @@ pub struct RlTrajectoryContext {
 impl RlTrajectoryContext {
     fn from_env() -> Self {
         Self {
-            run_id: env_first(&["A3S_CODE_RL_RUN_ID", "A3S_CODE_RUN_ID", "A3S_RUN_ID"]),
-            task_id: env_first(&["A3S_CODE_RL_TASK_ID", "A3S_CODE_TASK_ID", "TASK_ID"]),
-            group_id: env_first(&["A3S_CODE_RL_GROUP_ID", "A3S_CODE_GROUP_ID"]),
-            replica_id: env_first(&["A3S_CODE_RL_REPLICA_ID", "A3S_CODE_REPLICA_ID"]),
-            sample_id: env_first(&["A3S_CODE_RL_SAMPLE_ID", "A3S_CODE_SAMPLE_ID"]),
+            run_id: env_first(&["ASTER_RL_RUN_ID", "ASTER_RUN_ID", "ASTER_RUN_ID"]),
+            task_id: env_first(&["ASTER_RL_TASK_ID", "ASTER_TASK_ID", "TASK_ID"]),
+            group_id: env_first(&["ASTER_RL_GROUP_ID", "ASTER_GROUP_ID"]),
+            replica_id: env_first(&["ASTER_RL_REPLICA_ID", "ASTER_REPLICA_ID"]),
+            sample_id: env_first(&["ASTER_RL_SAMPLE_ID", "ASTER_SAMPLE_ID"]),
         }
     }
 }

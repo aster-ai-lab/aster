@@ -1,4 +1,4 @@
-//! Coordinated, path-free inventory backups for all A3S Use-owned state.
+//! Coordinated, path-free inventory backups for all Aster Use-owned state.
 //!
 //! A state backup is integrity evidence for one quiescent Use installation. It
 //! is deliberately not a restore authority: clean-machine recovery still
@@ -7,8 +7,8 @@
 
 use std::path::{Component, Path, PathBuf};
 
-use a3s_use_core::{UseError, UseResult};
-use a3s_use_extension::{ExtensionPaths, ExtensionRegistry, StateMaintenanceLock};
+use aster_use_core::{UseError, UseResult};
+use aster_use_extension::{ExtensionPaths, ExtensionRegistry, StateMaintenanceLock};
 use olpc_cjson::CanonicalFormatter;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -23,13 +23,13 @@ mod tests;
 
 pub use retention::{
     StateBackupRetentionEntry, StateBackupRetentionPlan, StateBackupRetentionPolicy,
-    StateBackupRetentionResult, A3S_USE_STATE_BACKUP_RETENTION_PLAN_SCHEMA,
-    A3S_USE_STATE_BACKUP_RETENTION_RESULT_SCHEMA, DEFAULT_STATE_BACKUP_RETENTION_MAX_BACKUPS,
+    StateBackupRetentionResult, ASTER_USE_STATE_BACKUP_RETENTION_PLAN_SCHEMA,
+    ASTER_USE_STATE_BACKUP_RETENTION_RESULT_SCHEMA, DEFAULT_STATE_BACKUP_RETENTION_MAX_BACKUPS,
     DEFAULT_STATE_BACKUP_RETENTION_MAX_BYTES, MAX_STATE_BACKUP_RETENTION_BACKUPS,
     MAX_STATE_BACKUP_RETENTION_BYTES, MIN_STATE_BACKUP_RETENTION_BACKUPS,
 };
 
-pub const A3S_USE_STATE_BACKUP_SCHEMA: &str = "a3s.use.state-backup.v1";
+pub const ASTER_USE_STATE_BACKUP_SCHEMA: &str = "aster.use.state-backup.v1";
 pub const MAX_STATE_BACKUP_FILES: u64 = 100_000;
 pub const MAX_STATE_BACKUP_ENTRIES: u64 = 200_000;
 pub const MAX_STATE_BACKUP_BYTES: u64 = 64 * 1024 * 1024 * 1024;
@@ -312,7 +312,7 @@ async fn read_authority(paths: &ExtensionPaths) -> UseResult<StateBackupAuthorit
     let installed = registry.list().await?;
     let expected_routes = installed
         .iter()
-        .map(|extension| a3s_use_extension::ExtensionRouteBinding {
+        .map(|extension| aster_use_extension::ExtensionRouteBinding {
             package_id: extension.receipt.package_id.clone(),
             component_id: extension.receipt.component_id.clone(),
             route: extension.receipt.route.clone(),
@@ -367,7 +367,7 @@ fn resolve_destination(destination: &Path, paths: &ExtensionPaths) -> UseResult<
             "The backup destination directory cannot be inspected: {error}"
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(state_backup_path_invalid(
             "The backup destination parent is not an owned directory.",
         ));
@@ -466,7 +466,7 @@ fn state_backup_nonterminal(message: impl Into<String>) -> UseError {
 
 fn state_backup_layout_unsupported(message: impl Into<String>) -> UseError {
     UseError::new("use.state_backup_layout_unsupported", message).with_suggestion(
-        "Upgrade A3S Use or remove only state that is independently proven to be unowned.",
+        "Upgrade Aster Use or remove only state that is independently proven to be unowned.",
     )
 }
 

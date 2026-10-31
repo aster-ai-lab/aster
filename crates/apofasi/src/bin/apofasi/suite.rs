@@ -9,7 +9,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::time::Instant;
 
-use a3s_apofasi::{Answer, CheckpointId, CheckpointRegistry, DeviceRequest, SystemOneRequest};
+use aster_apofasi::{Answer, CheckpointId, CheckpointRegistry, DeviceRequest, SystemOneRequest};
 use serde::Deserialize;
 use serde_json::{json, Value};
 

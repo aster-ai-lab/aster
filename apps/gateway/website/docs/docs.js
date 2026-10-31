@@ -126,7 +126,7 @@
     element.append(en, zh);
   }
 
-  const protocolProfiles = window.A3S_GATEWAY_TRAFFIC_PROFILES || [];
+  const protocolProfiles = window.ASTER_GATEWAY_TRAFFIC_PROFILES || [];
 
   async function loadProtocolMatrix() {
     const rows = document.querySelector("[data-doc-proxy-rows]");
@@ -149,22 +149,22 @@
       }));
       rows.replaceChildren();
       profiles.forEach((profile) => {
-        const a3s = profile.proxies?.["a3s-gateway"]?.median;
+        const aster = profile.proxies?.["aster-gateway"]?.median;
         const nginx = profile.proxies?.nginx?.median;
         const ratios = profile.comparison;
-        const a3sRate = a3s?.operations_per_second ?? a3s?.requests_per_second;
+        const asterRate = aster?.operations_per_second ?? aster?.requests_per_second;
         const nginxRate = nginx?.operations_per_second ?? nginx?.requests_per_second;
         const measured = [
-          a3sRate,
+          asterRate,
           nginxRate,
-          a3s?.p50_latency_us,
-          a3s?.p90_latency_us,
-          a3s?.p99_latency_us,
+          aster?.p50_latency_us,
+          aster?.p90_latency_us,
+          aster?.p99_latency_us,
           nginx?.p50_latency_us,
           nginx?.p90_latency_us,
           nginx?.p99_latency_us,
-          ratios?.a3s_to_nginx_throughput_ratio,
-          ratios?.a3s_to_nginx_p99_latency_ratio,
+          ratios?.aster_to_nginx_throughput_ratio,
+          ratios?.aster_to_nginx_p99_latency_ratio,
         ].every(Number.isFinite);
         const row = document.createElement("tr");
         row.dataset.measured = String(measured);
@@ -198,9 +198,9 @@
         ratio.className = "matrix-value";
         if (measured) {
           const strong = document.createElement("strong");
-          strong.textContent = `RATE ${ratios.a3s_to_nginx_throughput_ratio.toFixed(2)}×`;
+          strong.textContent = `RATE ${ratios.aster_to_nginx_throughput_ratio.toFixed(2)}×`;
           const latency = document.createElement("small");
-          latency.textContent = `P99 ${ratios.a3s_to_nginx_p99_latency_ratio.toFixed(2)}×`;
+          latency.textContent = `P99 ${ratios.aster_to_nginx_p99_latency_ratio.toFixed(2)}×`;
           ratio.append(strong, latency);
         } else {
           ratio.textContent = "Not measured";
@@ -209,7 +209,7 @@
         row.append(
           traffic,
           load,
-          productCell(a3s, a3sRate),
+          productCell(aster, asterRate),
           productCell(nginx, nginxRate),
           ratio,
         );
@@ -240,17 +240,17 @@
 
       rows.replaceChildren();
       Object.entries(payload.profiles).forEach(([profileId, profile]) => {
-        const a3s = profile.products?.["a3s-gateway"]?.median;
+        const aster = profile.products?.["aster-gateway"]?.median;
         const nginx = profile.products?.nginx?.median;
         const ratios = profile.comparison;
         const measured = [
-          a3s?.ttft?.p50_us,
-          a3s?.inter_token_latency?.p99_us,
+          aster?.ttft?.p50_us,
+          aster?.inter_token_latency?.p99_us,
           nginx?.ttft?.p50_us,
           nginx?.inter_token_latency?.p99_us,
-          ratios?.a3s_to_nginx_ttft_p50_ratio,
-          ratios?.a3s_to_nginx_inter_token_latency_p99_ratio,
-          ratios?.a3s_to_nginx_token_goodput_ratio,
+          ratios?.aster_to_nginx_ttft_p50_ratio,
+          ratios?.aster_to_nginx_inter_token_latency_p99_ratio,
+          ratios?.aster_to_nginx_token_goodput_ratio,
         ].every(Number.isFinite);
         if (!measured) throw new Error(`AI profile ${profileId} is incomplete`);
 
@@ -287,12 +287,12 @@
         const ratio = document.createElement("td");
         ratio.className = "matrix-value";
         const latency = document.createElement("strong");
-        latency.textContent = `TTFT ${ratios.a3s_to_nginx_ttft_p50_ratio.toFixed(2)}× / ITL ${ratios.a3s_to_nginx_inter_token_latency_p99_ratio.toFixed(2)}×`;
+        latency.textContent = `TTFT ${ratios.aster_to_nginx_ttft_p50_ratio.toFixed(2)}× / ITL ${ratios.aster_to_nginx_inter_token_latency_p99_ratio.toFixed(2)}×`;
         const goodput = document.createElement("small");
-        goodput.textContent = `TOKEN GOODPUT ${ratios.a3s_to_nginx_token_goodput_ratio.toFixed(2)}×`;
+        goodput.textContent = `TOKEN GOODPUT ${ratios.aster_to_nginx_token_goodput_ratio.toFixed(2)}×`;
         ratio.append(latency, goodput);
 
-        row.append(traffic, scenario, productCell(a3s), productCell(nginx), ratio);
+        row.append(traffic, scenario, productCell(aster), productCell(nginx), ratio);
         rows.append(row);
       });
 

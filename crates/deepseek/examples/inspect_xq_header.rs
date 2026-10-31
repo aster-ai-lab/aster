@@ -2,7 +2,7 @@
 use std::collections::BTreeMap;
 use std::io::Read;
 
-use a3s_deepseek::weights::xq::gguf::{XqGgufHeader, XQ_HEADER_BYTES, XQ_HEADER_SHA256};
+use aster_deepseek::weights::xq::gguf::{XqGgufHeader, XQ_HEADER_BYTES, XQ_HEADER_SHA256};
 use sha2::{Digest, Sha256};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

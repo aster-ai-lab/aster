@@ -1,10 +1,10 @@
 #![cfg(feature = "sqlite")]
 
-use a3s_flow::{
+use aster_flow::{
     ChildOperationReference, FlowEvent, FlowEventStore, FlowHistoryRetentionPolicy,
     SqliteEventStore, WorkflowSpec,
 };
-use a3s_orm::{sql_query, Database, Migration, Migrator, SqliteDialect, SqliteExecutor};
+use aster_orm::{sql_query, Database, Migration, Migrator, SqliteDialect, SqliteExecutor};
 use chrono::{Duration, Utc};
 use serde_json::json;
 use sha2::{Digest, Sha256};
@@ -94,13 +94,13 @@ async fn sqlite_retention_preserves_holds_live_runs_and_linked_history_after_reo
         store
             .hold_history(held_run, "audit-export", "different reason")
             .await,
-        Err(a3s_flow::FlowError::RunConflict { .. })
+        Err(aster_flow::FlowError::RunConflict { .. })
     ));
     assert!(matches!(
         store
             .hold_history("sqlite-retention-missing", "audit-export", "missing run")
             .await,
-        Err(a3s_flow::FlowError::RunNotFound(_))
+        Err(aster_flow::FlowError::RunNotFound(_))
     ));
 
     let deleted_history = store.list(delete_run).await.unwrap();
@@ -120,7 +120,7 @@ async fn sqlite_retention_preserves_holds_live_runs_and_linked_history_after_reo
     assert!(first.non_terminal_run_ids.contains(&parent_run.to_string()));
     assert!(matches!(
         store.list(delete_run).await,
-        Err(a3s_flow::FlowError::RunNotFound(_))
+        Err(aster_flow::FlowError::RunNotFound(_))
     ));
     let tombstone = store
         .history_tombstone(delete_run)
@@ -133,7 +133,7 @@ async fn sqlite_retention_preserves_holds_live_runs_and_linked_history_after_reo
     assert_eq!(tombstone.history_sha256, expected_checksum);
     assert!(matches!(
         store.append(delete_run, FlowEvent::RunStarted).await,
-        Err(a3s_flow::FlowError::RunConflict { .. })
+        Err(aster_flow::FlowError::RunConflict { .. })
     ));
     assert_eq!(store.history_holds(held_run).await.unwrap().len(), 1);
 
@@ -176,7 +176,7 @@ async fn sqlite_retention_preserves_holds_live_runs_and_linked_history_after_reo
                 },
             )
             .await,
-        Err(a3s_flow::FlowError::RunNotFound(_))
+        Err(aster_flow::FlowError::RunNotFound(_))
     ));
     assert!(matches!(
         store
@@ -188,7 +188,7 @@ async fn sqlite_retention_preserves_holds_live_runs_and_linked_history_after_reo
                 },
             )
             .await,
-        Err(a3s_flow::FlowError::RunConflict { .. })
+        Err(aster_flow::FlowError::RunConflict { .. })
     ));
 }
 
@@ -238,7 +238,7 @@ async fn sqlite_retention_migration_upgrades_a_v0_5_event_database() {
     let executor = SqliteExecutor::open(&database_path).await.unwrap();
     Migrator::new(executor)
         .run([Migration::new(
-            "a3s-flow-0001-events",
+            "aster-flow-0001-events",
             "create Flow event history",
             V0_5_EVENTS_SQL,
         )])
@@ -306,7 +306,7 @@ async fn sqlite_retention_rolls_back_all_deletions_when_a_tombstone_write_fails(
                     .with_run_ids([first_run, conflicting_run]),
             )
             .await,
-        Err(a3s_flow::FlowError::Store(_))
+        Err(aster_flow::FlowError::Store(_))
     ));
     assert!(store.list(first_run).await.is_ok());
     assert!(store.list(conflicting_run).await.is_ok());

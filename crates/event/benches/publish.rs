@@ -1,10 +1,10 @@
-//! Performance benchmarks for a3s-event
+//! Performance benchmarks for aster-event
 //!
 //! Run with: cargo bench
 //! Or via justfile: just bench
 
-use a3s_event::provider::memory::MemoryProvider;
-use a3s_event::{Event, EventBus};
+use aster_event::provider::memory::MemoryProvider;
+use aster_event::{Event, EventBus};
 use criterion::{criterion_group, criterion_main, Criterion};
 
 fn bench_event_creation(c: &mut Criterion) {

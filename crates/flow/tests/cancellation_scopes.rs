@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     CancellationRequest, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore,
     FlowRuntime, InMemoryEventStore, JsonValue, QueryInvocation, RuntimeCommand,
     WorkflowInvocation, WorkflowRunStatus, WorkflowSpec,
@@ -17,7 +17,7 @@ impl FlowRuntime for ScopeRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         self.workflow_calls.fetch_add(1, Ordering::SeqCst);
         let ctx = invocation.context();
         if ctx.cancellation_request().is_some() {
@@ -39,11 +39,11 @@ impl FlowRuntime for ScopeRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
-    async fn run_query(&self, _invocation: QueryInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_query(&self, _invocation: QueryInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("queries unused".into()))
     }
 }
@@ -73,7 +73,7 @@ async fn cancelling_a_scope_cancels_scoped_waits_without_terminating_the_run() {
     );
     assert_eq!(
         snapshot.waits.get("pause").unwrap().status,
-        a3s_flow::WaitStatus::Waiting
+        aster_flow::WaitStatus::Waiting
     );
 
     let after_cancel = engine
@@ -83,7 +83,7 @@ async fn cancelling_a_scope_cancels_scoped_waits_without_terminating_the_run() {
     assert!(after_cancel.scope("payment").unwrap().is_cancelled());
     assert_eq!(
         after_cancel.waits.get("pause").unwrap().status,
-        a3s_flow::WaitStatus::Cancelled
+        aster_flow::WaitStatus::Cancelled
     );
     assert!(after_cancel.status.is_terminal());
     assert_eq!(after_cancel.output, Some(json!({ "cancelled": true })));
@@ -96,7 +96,7 @@ impl FlowRuntime for SelectScopeRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.scope_cancelled("payment") {
             return Ok(RuntimeCommand::Complete {
@@ -110,8 +110,8 @@ impl FlowRuntime for SelectScopeRuntime {
             return Ok(ctx.select(
                 "race",
                 vec![
-                    a3s_flow::SelectArm::timer("soon", "2030-01-01T00:00:00Z".parse().unwrap()),
-                    a3s_flow::SelectArm::timer("later", "2030-01-01T00:00:01Z".parse().unwrap()),
+                    aster_flow::SelectArm::timer("soon", "2030-01-01T00:00:00Z".parse().unwrap()),
+                    aster_flow::SelectArm::timer("later", "2030-01-01T00:00:01Z".parse().unwrap()),
                 ],
             ));
         }
@@ -120,11 +120,11 @@ impl FlowRuntime for SelectScopeRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
-    async fn run_query(&self, _invocation: QueryInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_query(&self, _invocation: QueryInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("queries unused".into()))
     }
 }
@@ -145,7 +145,7 @@ async fn cancelling_a_scope_cancels_a_select_opened_inside_it() {
         .await
         .unwrap();
     assert!(
-        after.select("race").unwrap().status == a3s_flow::SelectStatus::Cancelled,
+        after.select("race").unwrap().status == aster_flow::SelectStatus::Cancelled,
         "scope cancellation must cancel a select opened inside that scope, status={:?}",
         after.select("race").map(|select| select.status)
     );
@@ -160,7 +160,7 @@ impl FlowRuntime for SignalSelectScopeRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.scope_cancelled("payment") {
             return Ok(RuntimeCommand::Complete {
@@ -179,8 +179,8 @@ impl FlowRuntime for SignalSelectScopeRuntime {
             return Ok(ctx.select(
                 "race",
                 vec![
-                    a3s_flow::SelectArm::signal("approved-arm", "approved"),
-                    a3s_flow::SelectArm::signal("rejected-arm", "rejected"),
+                    aster_flow::SelectArm::signal("approved-arm", "approved"),
+                    aster_flow::SelectArm::signal("rejected-arm", "rejected"),
                 ],
             ));
         }
@@ -189,11 +189,11 @@ impl FlowRuntime for SignalSelectScopeRuntime {
         })
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("steps unused".into()))
     }
 
-    async fn run_query(&self, _invocation: QueryInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_query(&self, _invocation: QueryInvocation) -> aster_flow::Result<JsonValue> {
         Err(FlowError::Runtime("queries unused".into()))
     }
 }
@@ -219,11 +219,11 @@ async fn cancelling_a_scope_cancels_signal_arms_of_a_select_opened_inside_it() {
         .unwrap();
     assert_eq!(
         after.select("race").unwrap().status,
-        a3s_flow::SelectStatus::Cancelled
+        aster_flow::SelectStatus::Cancelled
     );
     assert_eq!(
         after.signal_waits.get("approved-arm").unwrap().status,
-        a3s_flow::SignalWaitStatus::Cancelled
+        aster_flow::SignalWaitStatus::Cancelled
     );
     assert!(after.status.is_terminal());
 }
@@ -308,7 +308,7 @@ impl CrashBeforeScopeDriveStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeScopeDriveStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -317,7 +317,7 @@ impl FlowEventStore for CrashBeforeScopeDriveStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(event, FlowEvent::RunCompleted { .. })
             && self.armed.swap(false, Ordering::SeqCst)
         {
@@ -330,11 +330,11 @@ impl FlowEventStore for CrashBeforeScopeDriveStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -400,7 +400,7 @@ impl FlowRuntime for ScopeCancelBesideOpenWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.scope_cancelled("payment") {
             return Ok(ctx.complete(json!({ "cancelled": true })));
@@ -416,14 +416,14 @@ impl FlowRuntime for ScopeCancelBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         unreachable!("scope-beside-wait runtime does not schedule steps")
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<JsonValue> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -443,7 +443,7 @@ async fn scope_cancel_wakes_workflow_while_unscoped_timer_wait_is_open() {
     let armed = engine
         .apply_update(
             "scope-beside-wait",
-            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
         )
         .await
         .unwrap();
@@ -451,7 +451,7 @@ async fn scope_cancel_wakes_workflow_while_unscoped_timer_wait_is_open() {
     assert!(armed.snapshot.scope("payment").unwrap().is_open());
     assert_eq!(
         armed.snapshot.waits["outer"].status,
-        a3s_flow::WaitStatus::Waiting
+        aster_flow::WaitStatus::Waiting
     );
     assert!(armed.snapshot.waits["outer"].scope_id.is_none());
 
@@ -468,7 +468,7 @@ async fn scope_cancel_wakes_workflow_while_unscoped_timer_wait_is_open() {
     assert!(after.scope("payment").unwrap().is_cancelled());
     assert_eq!(
         after.waits["outer"].status,
-        a3s_flow::WaitStatus::Waiting,
+        aster_flow::WaitStatus::Waiting,
         "unscoped timer must remain open; only the cancelled scope tree is cleaned"
     );
 }
@@ -484,7 +484,7 @@ impl FlowRuntime for WorkflowCancelScopeBesideOpenWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.scope_cancelled("payment") {
             return Ok(ctx.complete(json!({ "cancelled": true })));
@@ -504,14 +504,14 @@ impl FlowRuntime for WorkflowCancelScopeBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         unreachable!("workflow-cancel-beside-wait runtime does not schedule steps")
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<JsonValue> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -532,7 +532,7 @@ impl CrashAfterWorkflowScopeCancelledStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterWorkflowScopeCancelledStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -541,7 +541,7 @@ impl FlowEventStore for CrashAfterWorkflowScopeCancelledStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -561,11 +561,11 @@ impl FlowEventStore for CrashAfterWorkflowScopeCancelledStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -588,7 +588,7 @@ async fn workflow_scope_cancelled_recovery_wakes_via_drive_while_unscoped_timer_
     engine
         .apply_update(
             "workflow-scope-cancel-drive",
-            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
         )
         .await
         .unwrap();
@@ -598,7 +598,7 @@ async fn workflow_scope_cancelled_recovery_wakes_via_drive_while_unscoped_timer_
     let interrupted = engine
         .apply_update(
             "workflow-scope-cancel-drive",
-            a3s_flow::WorkflowUpdate::new("cancel-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("cancel-1", "arm", json!({})),
         )
         .await
         .expect_err("crash after durable ScopeCancelled must interrupt");
@@ -610,7 +610,7 @@ async fn workflow_scope_cancelled_recovery_wakes_via_drive_while_unscoped_timer_
         .unwrap();
     assert!(!mid.status.is_terminal());
     assert!(mid.scope("payment").unwrap().is_cancelled());
-    assert_eq!(mid.waits["outer"].status, a3s_flow::WaitStatus::Waiting);
+    assert_eq!(mid.waits["outer"].status, aster_flow::WaitStatus::Waiting);
 
     // Ordinary DriveRun recovery — not host cancel_scope.
     let recovered = engine.drive("workflow-scope-cancel-drive").await.unwrap();
@@ -633,7 +633,7 @@ impl FlowRuntime for WorkflowCompleteScopeBesideOpenWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         let scope_completed = ctx.history().iter().any(|envelope| {
             matches!(
@@ -662,14 +662,14 @@ impl FlowRuntime for WorkflowCompleteScopeBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         unreachable!("workflow-complete-beside-wait runtime does not schedule steps")
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<JsonValue> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -690,7 +690,7 @@ impl CrashAfterWorkflowScopeCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterWorkflowScopeCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -699,7 +699,7 @@ impl FlowEventStore for CrashAfterWorkflowScopeCompletedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -719,11 +719,11 @@ impl FlowEventStore for CrashAfterWorkflowScopeCompletedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -746,7 +746,7 @@ async fn workflow_scope_completed_recovery_wakes_via_drive_while_unscoped_timer_
     engine
         .apply_update(
             "workflow-scope-complete-drive",
-            a3s_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("arm-1", "arm", json!({})),
         )
         .await
         .unwrap();
@@ -756,7 +756,7 @@ async fn workflow_scope_completed_recovery_wakes_via_drive_while_unscoped_timer_
     let interrupted = engine
         .apply_update(
             "workflow-scope-complete-drive",
-            a3s_flow::WorkflowUpdate::new("close-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("close-1", "arm", json!({})),
         )
         .await
         .expect_err("crash after durable ScopeCompleted must interrupt");
@@ -769,9 +769,9 @@ async fn workflow_scope_completed_recovery_wakes_via_drive_while_unscoped_timer_
     assert!(!mid.status.is_terminal());
     assert_eq!(
         mid.scope("payment").unwrap().status,
-        a3s_flow::CancellationScopeStatus::Completed
+        aster_flow::CancellationScopeStatus::Completed
     );
-    assert_eq!(mid.waits["outer"].status, a3s_flow::WaitStatus::Waiting);
+    assert_eq!(mid.waits["outer"].status, aster_flow::WaitStatus::Waiting);
 
     let recovered = engine.drive("workflow-scope-complete-drive").await.unwrap();
     assert_eq!(
@@ -793,7 +793,7 @@ impl FlowRuntime for WorkflowOpenScopeBesideOpenWaitRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         let scope_opened = ctx.history().iter().any(|envelope| {
             matches!(
@@ -813,14 +813,14 @@ impl FlowRuntime for WorkflowOpenScopeBesideOpenWaitRuntime {
         Ok(ctx.wait_until("outer", "2030-01-01T00:00:00Z".parse().unwrap()))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<JsonValue> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<JsonValue> {
         unreachable!("workflow-open-beside-wait runtime does not schedule steps")
     }
 
     async fn run_update(
         &self,
-        _invocation: a3s_flow::UpdateInvocation,
-    ) -> a3s_flow::Result<JsonValue> {
+        _invocation: aster_flow::UpdateInvocation,
+    ) -> aster_flow::Result<JsonValue> {
         Ok(json!({ "armed": true }))
     }
 }
@@ -841,7 +841,7 @@ impl CrashAfterWorkflowScopeOpenedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterWorkflowScopeOpenedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -850,7 +850,7 @@ impl FlowEventStore for CrashAfterWorkflowScopeOpenedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -870,11 +870,11 @@ impl FlowEventStore for CrashAfterWorkflowScopeOpenedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -910,7 +910,7 @@ async fn workflow_scope_opened_recovery_wakes_via_drive_while_unscoped_timer_is_
     let interrupted = engine
         .apply_update(
             "workflow-scope-open-drive",
-            a3s_flow::WorkflowUpdate::new("open-1", "arm", json!({})),
+            aster_flow::WorkflowUpdate::new("open-1", "arm", json!({})),
         )
         .await
         .expect_err("crash after durable ScopeOpened must interrupt");
@@ -919,7 +919,7 @@ async fn workflow_scope_opened_recovery_wakes_via_drive_while_unscoped_timer_is_
     let mid = engine.snapshot("workflow-scope-open-drive").await.unwrap();
     assert!(!mid.status.is_terminal());
     assert!(mid.scope("payment").unwrap().is_open());
-    assert_eq!(mid.waits["outer"].status, a3s_flow::WaitStatus::Waiting);
+    assert_eq!(mid.waits["outer"].status, aster_flow::WaitStatus::Waiting);
 
     let recovered = engine.drive("workflow-scope-open-drive").await.unwrap();
     assert_eq!(

@@ -88,15 +88,15 @@ pub(crate) fn writable_layer_quota_supported() -> bool {
 /// record and leak host mounts.
 pub(crate) fn cleanup_bounded_writable_layer_for_removal(
     box_dir: &Path,
-) -> a3s_box_core::error::Result<()> {
+) -> aster_box_core::error::Result<()> {
     overlay::cleanup_bounded_writable_layer(box_dir, false)
 }
 
 use std::io::Read;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::guest_exec::{
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::guest_exec::{
     GuestTerminalStatus, GUEST_TERMINAL_STATUS_FILE_NAME, MAX_GUEST_TERMINAL_STATUS_BYTES,
 };
 
@@ -178,7 +178,7 @@ pub enum ProviderExitPolicy {
 /// Read the exit code persisted by guest-init.
 ///
 /// New MicroVMs publish through the private terminal-control sidecar. Legacy
-/// providers expose `/.a3s_exit_code` at the overlay upper directory, copied
+/// providers expose `/.aster_exit_code` at the overlay upper directory, copied
 /// rootfs, or case-sensitive APFS data directory.
 pub fn read_persisted_exit_code(box_dir: &Path) -> Option<i32> {
     resolve_workload_exit_code(box_dir, None)
@@ -222,14 +222,14 @@ pub fn resolve_workload_exit_code_for(
     let candidates = [
         box_dir
             .join("upper")
-            .join(a3s_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/')),
+            .join(aster_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/')),
         box_dir
             .join("rootfs")
-            .join(".a3s-rootfs")
-            .join(a3s_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/')),
+            .join(".aster-rootfs")
+            .join(aster_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/')),
         box_dir
             .join("rootfs")
-            .join(a3s_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/')),
+            .join(aster_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/')),
     ];
 
     candidates
@@ -406,7 +406,7 @@ impl Drop for AttachedRootfs {
 /// filesystem when a backing image is missing.
 pub fn attach_persistent_rootfs(
     box_dir: &Path,
-) -> a3s_box_core::error::Result<Option<AttachedRootfs>> {
+) -> aster_box_core::error::Result<Option<AttachedRootfs>> {
     if guest_native_ext4_generation_exists(box_dir)? {
         return Err(BoxError::StateError(
             "Guest-native rootfs generations have no host directory attachment; use the trusted maintenance archive path for stopped access"
@@ -443,7 +443,7 @@ pub fn attach_persistent_rootfs(
 /// Staging is idempotent when the canonical marker is already absent: an
 /// existing replay marker is retained so a boot that failed before guest replay
 /// can be retried safely.
-pub fn stage_box_terminal_rootfs_metadata(box_dir: &Path) -> a3s_box_core::error::Result<()> {
+pub fn stage_box_terminal_rootfs_metadata(box_dir: &Path) -> aster_box_core::error::Result<()> {
     if guest_native_ext4_generation_exists(box_dir)? {
         // The raw disk is not host-mounted. Guest-init invalidates and consumes
         // the prior terminal generation before it starts any workload process.
@@ -476,7 +476,7 @@ pub fn stage_box_terminal_rootfs_metadata(box_dir: &Path) -> a3s_box_core::error
 
 fn stage_metadata_roots(roots: &[PathBuf]) -> std::io::Result<()> {
     for root in roots {
-        a3s_box_core::rootfs_metadata::stage_terminal_rootfs_metadata_for_boot(root)?;
+        aster_box_core::rootfs_metadata::stage_terminal_rootfs_metadata_for_boot(root)?;
     }
     Ok(())
 }
@@ -506,7 +506,7 @@ pub fn unmount_box_overlay(merged: &Path) {
 /// callers must not invent clean stop/remove while a stacked mount remains, and
 /// must not start another overlay writer until every mount has been
 /// synchronously released.
-pub fn unmount_box_overlay_for_reuse(merged: &Path) -> a3s_box_core::error::Result<()> {
+pub fn unmount_box_overlay_for_reuse(merged: &Path) -> aster_box_core::error::Result<()> {
     for _ in 0..8 {
         if !is_mountpoint(merged) {
             return Ok(());
@@ -515,7 +515,7 @@ pub fn unmount_box_overlay_for_reuse(merged: &Path) -> a3s_box_core::error::Resu
     }
 
     if is_mountpoint(merged) {
-        return Err(a3s_box_core::error::BoxError::BuildError(format!(
+        return Err(aster_box_core::error::BoxError::BuildError(format!(
             "Overlay at {} remained mounted after synchronous cleanup",
             merged.display()
         )));
@@ -542,10 +542,10 @@ pub fn unmount_box_rootfs(rootfs: &Path) {
 ///
 /// Absent mounts are success. A still-attached macOS APFS volume fails closed
 /// so stop/remove cannot invent clean teardown while the host mount remains.
-pub fn unmount_box_rootfs_for_reuse(rootfs: &Path) -> a3s_box_core::error::Result<()> {
+pub fn unmount_box_rootfs_for_reuse(rootfs: &Path) -> aster_box_core::error::Result<()> {
     #[cfg(target_os = "macos")]
     {
-        // The case-sensitive provider returns `<mount>/.a3s-rootfs`, keeping
+        // The case-sensitive provider returns `<mount>/.aster-rootfs`, keeping
         // APFS-created volume metadata outside the Linux tree. Accept either
         // that data path or the mountpoint itself at cleanup call sites.
         let mountpoint = rootfs_detach_mountpoint(rootfs);
@@ -558,13 +558,13 @@ pub fn unmount_box_rootfs_for_reuse(rootfs: &Path) -> a3s_box_core::error::Resul
             .arg(mountpoint)
             .status()
             .map_err(|error| {
-                a3s_box_core::error::BoxError::BuildError(format!(
+                aster_box_core::error::BoxError::BuildError(format!(
                     "Failed to run hdiutil detach for {}: {error}",
                     mountpoint.display()
                 ))
             })?;
         if !status.success() || is_mountpoint(mountpoint) {
-            return Err(a3s_box_core::error::BoxError::BuildError(format!(
+            return Err(aster_box_core::error::BoxError::BuildError(format!(
                 "Rootfs filesystem remained attached at {} after synchronous cleanup",
                 mountpoint.display()
             )));
@@ -581,7 +581,7 @@ pub fn unmount_box_rootfs_for_reuse(rootfs: &Path) -> a3s_box_core::error::Resul
 
 #[cfg(target_os = "macos")]
 fn rootfs_detach_mountpoint(rootfs: &Path) -> &Path {
-    if rootfs.file_name().is_some_and(|name| name == ".a3s-rootfs") {
+    if rootfs.file_name().is_some_and(|name| name == ".aster-rootfs") {
         rootfs.parent().unwrap_or(rootfs)
     } else {
         rootfs
@@ -593,17 +593,17 @@ fn rootfs_detach_mountpoint(rootfs: &Path) -> &Path {
 /// best-effort: a remaining host mount violates the guest-native invariant and
 /// aborts the boot.
 #[cfg(target_os = "macos")]
-pub(crate) fn unmount_box_rootfs_for_handoff(rootfs: &Path) -> a3s_box_core::error::Result<()> {
+pub(crate) fn unmount_box_rootfs_for_handoff(rootfs: &Path) -> aster_box_core::error::Result<()> {
     let mountpoint = rootfs_detach_mountpoint(rootfs);
     if !is_mountpoint(mountpoint) {
-        return Err(a3s_box_core::error::BoxError::BuildError(format!(
+        return Err(aster_box_core::error::BoxError::BuildError(format!(
             "Expected a mounted rootfs staging filesystem at {}",
             mountpoint.display()
         )));
     }
     unmount_box_rootfs_for_reuse(rootfs)?;
     if is_mountpoint(mountpoint) {
-        return Err(a3s_box_core::error::BoxError::BuildError(format!(
+        return Err(aster_box_core::error::BoxError::BuildError(format!(
             "Rootfs staging filesystem remained attached at {} after handoff",
             mountpoint.display()
         )));
@@ -621,15 +621,15 @@ mod tests {
         let rootfs = temp.path().join("rootfs");
         std::fs::create_dir_all(&rootfs).unwrap();
         unmount_box_rootfs_for_reuse(&rootfs).unwrap();
-        unmount_box_rootfs_for_reuse(&rootfs.join(".a3s-rootfs")).unwrap();
+        unmount_box_rootfs_for_reuse(&rootfs.join(".aster-rootfs")).unwrap();
     }
 
     #[test]
     fn persisted_exit_code_supports_each_rootfs_provider_layout() {
         for (relative, expected) in [
-            ("upper/.a3s_exit_code", 17),
-            ("rootfs/.a3s_exit_code", 23),
-            ("rootfs/.a3s-rootfs/.a3s_exit_code", 29),
+            ("upper/.aster_exit_code", 17),
+            ("rootfs/.aster_exit_code", 23),
+            ("rootfs/.aster-rootfs/.aster_exit_code", 29),
         ] {
             let temp = tempfile::tempdir().unwrap();
             let path = temp.path().join(relative);
@@ -645,7 +645,7 @@ mod tests {
         let temp = tempfile::tempdir().unwrap();
         assert_eq!(read_persisted_exit_code(temp.path()), None);
 
-        let path = temp.path().join("rootfs/.a3s_exit_code");
+        let path = temp.path().join("rootfs/.aster_exit_code");
         std::fs::create_dir_all(path.parent().unwrap()).unwrap();
         std::fs::write(path, "not-an-exit-code").unwrap();
         assert_eq!(read_persisted_exit_code(temp.path()), None);
@@ -664,7 +664,7 @@ mod tests {
             serde_json::to_vec(&GuestTerminalStatus::new(31)).unwrap(),
         )
         .unwrap();
-        let legacy = temp.path().join("rootfs/.a3s_exit_code");
+        let legacy = temp.path().join("rootfs/.aster_exit_code");
         std::fs::create_dir_all(legacy.parent().unwrap()).unwrap();
         std::fs::write(legacy, "7").unwrap();
 
@@ -704,7 +704,7 @@ mod tests {
             .join(GUEST_TERMINAL_STATUS_FILE_NAME);
         std::fs::create_dir_all(terminal.parent().unwrap()).unwrap();
         std::fs::write(terminal, []).unwrap();
-        let legacy = temp.path().join("rootfs/.a3s_exit_code");
+        let legacy = temp.path().join("rootfs/.aster_exit_code");
         std::fs::create_dir_all(legacy.parent().unwrap()).unwrap();
         std::fs::write(legacy, "0").unwrap();
 
@@ -757,7 +757,7 @@ mod tests {
     #[test]
     fn absent_terminal_keeps_authenticated_legacy_rootfs_marker() {
         let temp = tempfile::tempdir().unwrap();
-        let legacy = temp.path().join("rootfs/.a3s_exit_code");
+        let legacy = temp.path().join("rootfs/.aster_exit_code");
         std::fs::create_dir_all(legacy.parent().unwrap()).unwrap();
         std::fs::write(&legacy, "0").unwrap();
 
@@ -789,9 +789,9 @@ mod tests {
         let root = tempfile::tempdir().unwrap();
         let terminal = root
             .path()
-            .join(a3s_box_core::rootfs_metadata::ROOTFS_METADATA_PATH.trim_start_matches('/'));
+            .join(aster_box_core::rootfs_metadata::ROOTFS_METADATA_PATH.trim_start_matches('/'));
         let previous = root.path().join(
-            a3s_box_core::rootfs_metadata::PREVIOUS_ROOTFS_METADATA_PATH.trim_start_matches('/'),
+            aster_box_core::rootfs_metadata::PREVIOUS_ROOTFS_METADATA_PATH.trim_start_matches('/'),
         );
         std::fs::write(&terminal, b"clean generation").unwrap();
 
@@ -810,9 +810,9 @@ mod tests {
         std::fs::create_dir_all(&merged).unwrap();
         std::fs::create_dir_all(&upper).unwrap();
         let terminal_name =
-            a3s_box_core::rootfs_metadata::ROOTFS_METADATA_PATH.trim_start_matches('/');
+            aster_box_core::rootfs_metadata::ROOTFS_METADATA_PATH.trim_start_matches('/');
         let previous_name =
-            a3s_box_core::rootfs_metadata::PREVIOUS_ROOTFS_METADATA_PATH.trim_start_matches('/');
+            aster_box_core::rootfs_metadata::PREVIOUS_ROOTFS_METADATA_PATH.trim_start_matches('/');
         std::fs::write(merged.join(terminal_name), b"clean generation").unwrap();
         // Models the view through `upper` immediately after the same overlay
         // entry was renamed through `merged`.
@@ -832,7 +832,7 @@ mod tests {
             let root = box_dir.join(provider_root);
             std::fs::create_dir_all(&root).unwrap();
             std::fs::write(
-                root.join(a3s_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/')),
+                root.join(aster_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/')),
                 b"17\n",
             )
             .unwrap();
@@ -844,7 +844,7 @@ mod tests {
         for provider_root in ["rootfs", "upper", "merged"] {
             assert!(!box_dir
                 .join(provider_root)
-                .join(a3s_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/'))
+                .join(aster_box_core::rootfs_metadata::EXIT_CODE_PATH.trim_start_matches('/'))
                 .exists());
         }
     }
@@ -858,7 +858,7 @@ mod tests {
         std::fs::create_dir_all(&artifact).unwrap();
         std::fs::create_dir_all(&rootfs).unwrap();
         let terminal = rootfs
-            .join(a3s_box_core::rootfs_metadata::ROOTFS_METADATA_PATH.trim_start_matches('/'));
+            .join(aster_box_core::rootfs_metadata::ROOTFS_METADATA_PATH.trim_start_matches('/'));
         std::fs::write(&terminal, b"guest-owned").unwrap();
 
         assert!(guest_native_ext4_generation_exists(&box_dir).unwrap());

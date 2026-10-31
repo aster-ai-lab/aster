@@ -49,7 +49,7 @@ impl GrepOutputMode {
     }
 
     fn paginated(self) -> bool {
-        matches!(self, Self::FilesWithMatches | Self::Count)
+        matches!(self, Self::Content | Self::FilesWithMatches | Self::Count)
     }
 }
 
@@ -75,7 +75,7 @@ impl Tool for GrepTool {
     }
 
     fn description(&self) -> &str {
-        "Search file contents with regex. Return matching content, a paginated file list, per-file matching-line counts, or a compact full-scan summary."
+        "Search file contents with regex. Return paginated matches with context, file paths, per-file matching-line counts, or a compact full-scan summary."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -106,17 +106,17 @@ impl Tool for GrepTool {
                 "output_mode": {
                     "type": "string",
                     "enum": ["content", "files_with_matches", "count", "summary"],
-                    "description": "Optional. content returns matching lines (default); files_with_matches returns lexically paginated paths; count returns lexically paginated matching-line counts per file; summary returns only full-scan totals."
+                    "description": "Optional. content returns paginated matches with context (default); files_with_matches returns lexically paginated paths; count returns lexically paginated matching-line counts per file; summary returns only full-scan totals."
                 },
                 "limit": {
                     "type": "integer",
                     "minimum": 1,
                     "maximum": MAX_PAGE_LIMIT,
-                    "description": "Optional for files_with_matches/count. Maximum files to return. Default: 200; maximum: 1000."
+                    "description": "Optional. Maximum matching lines for content (each includes its context), or files for files_with_matches/count. Default: 200; maximum: 1000. Not used by summary."
                 },
                 "cursor": {
                     "type": "string",
-                    "description": "Optional for files_with_matches/count. Copy the exact cursor from the previous result."
+                    "description": "Optional for content/files_with_matches/count. Copy the exact cursor from the previous result."
                 }
             },
             "required": ["pattern"],
@@ -163,13 +163,10 @@ impl Tool for GrepTool {
                 Err(error) => return Ok(ToolOutput::error(error)),
             }
         } else {
-            // Structured-output providers can materialize omitted optional
-            // fields with their neutral schema defaults. Do not reject a
-            // content/summary call merely because it carries limit=200 and an
-            // empty cursor; neither value changes the non-paginated result.
+            // Summary has no page; providers can still materialize neutral defaults.
             if has_non_neutral_page_controls(args) {
                 return Ok(ToolOutput::error(
-                    "non-default limit and non-empty cursor are supported only with output_mode='files_with_matches' or 'count'",
+                    "non-default limit and non-empty cursor are supported only with output_mode='content', 'files_with_matches' or 'count'",
                 ));
             }
             None
@@ -235,6 +232,7 @@ impl Tool for GrepTool {
         };
 
         let result = outcome.result;
+        let matches = outcome.matches;
         let matched_paths = outcome.matched_paths;
         let skipped = outcome.skipped_oversize;
 
@@ -255,7 +253,10 @@ impl Tool for GrepTool {
             ));
         }
 
-        if output_mode.paginated() {
+        if matches!(
+            output_mode,
+            GrepOutputMode::FilesWithMatches | GrepOutputMode::Count
+        ) {
             let Some(page_request) = page_request else {
                 return Ok(ToolOutput::error(
                     "Unable to construct the requested grep page",
@@ -283,9 +284,41 @@ impl Tool for GrepTool {
             .map(|output| note_skipped_oversize(output, &skipped));
         }
 
+        let page_request = page_request.ok_or_else(|| anyhow::anyhow!("missing content page"))?;
+        let (rendered, page_metadata, next_cursor, page_paths) = match matches {
+            Some(matches) => {
+                let page = match page_request.page(matches) {
+                    Ok(page) => page,
+                    Err(error) => return Ok(ToolOutput::error(error)),
+                };
+                let mut rendered = String::new();
+                let mut paths = Vec::new();
+                for hit in &page.items {
+                    let Some(block) = result.output.get(hit.output_range.clone()) else {
+                        return Ok(ToolOutput::error(
+                            "workspace backend returned an invalid grep match range",
+                        ));
+                    };
+                    rendered.push_str(block);
+                    paths.push(hit.path.clone());
+                }
+                (
+                    rendered,
+                    Some(page.metadata()),
+                    page.next_cursor,
+                    Some(paths),
+                )
+            }
+            None if has_non_neutral_page_controls(args) => {
+                return Ok(ToolOutput::error(
+                    "this workspace backend does not provide structured content matches; omit limit and cursor, or use output_mode='files_with_matches'",
+                ));
+            }
+            None => (result.output.clone(), None, None, None),
+        };
         let source_anchors = grep_source_anchors(
             &result,
-            matched_paths.as_deref(),
+            page_paths.as_deref().or(matched_paths.as_deref()),
             &anchor_request,
             &regex,
             ctx,
@@ -296,22 +329,25 @@ impl Tool for GrepTool {
         } else if result.truncated {
             format!(
                 "{}\n... (output truncated)\nFound {} matches in {} files (output truncated)",
-                result.output, result.match_count, result.file_count
+                rendered, result.match_count, result.file_count
             )
         } else {
             format!(
                 "{}\n{} match(es) in {} file(s)",
-                result.output, result.match_count, result.file_count
+                rendered, result.match_count, result.file_count
             )
         };
-        let output = ToolOutput::success(content);
-        let output = if source_anchors.is_empty() {
-            output
-        } else {
-            output.with_metadata(serde_json::json!({
-                "source_anchors": source_anchors,
-            }))
-        };
+        let mut output = ToolOutput::success(content).with_metadata(serde_json::json!({
+            "output_mode": output_mode.as_str(),
+            "source_anchors": source_anchors,
+            "search": grep_search_metadata(&result),
+            "page": page_metadata,
+        }));
+        if let Some(cursor) = next_cursor {
+            output.content.push_str(&format!(
+                "\nMore matches available; continue with cursor={cursor}"
+            ));
+        }
         Ok(note_skipped_oversize(output, &skipped))
     }
 }
@@ -594,6 +630,10 @@ fn path_matches_grep_request(path: &WorkspacePath, request: &WorkspaceGrepReques
         pattern.matches(relative.rsplit('/').next().unwrap_or(relative))
     }
 }
+
+#[cfg(test)]
+#[path = "grep_content_tests.rs"]
+mod content_tests;
 
 #[cfg(test)]
 mod tests {
@@ -987,7 +1027,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn grep_finds_personal_kb_even_when_dot_a3s_is_gitignored() {
+    async fn grep_finds_personal_kb_even_when_dot_aster_is_gitignored() {
         use crate::workspace::{
             ChunkCatalogLimits, ChunkingConfig, ManifestWorkspaceBackend,
             WorkspaceChunkingStrategy, WorkspaceServices,
@@ -996,14 +1036,14 @@ mod tests {
         use std::time::Duration;
 
         let temp = tempfile::tempdir().unwrap();
-        std::fs::write(temp.path().join(".gitignore"), ".a3s/\n").unwrap();
-        std::fs::create_dir_all(temp.path().join(".a3s/kb/sources")).unwrap();
+        std::fs::write(temp.path().join(".gitignore"), ".aster/\n").unwrap();
+        std::fs::create_dir_all(temp.path().join(".aster/kb/sources")).unwrap();
         std::fs::write(
-            temp.path().join(".a3s/kb/sources/seed.md"),
+            temp.path().join(".aster/kb/sources/seed.md"),
             "grep_kb_token_unique_42 is vault content\n",
         )
         .unwrap();
-        std::fs::write(temp.path().join(".a3s/config.acl"), "x = 1\n").unwrap();
+        std::fs::write(temp.path().join(".aster/config.acl"), "x = 1\n").unwrap();
         std::fs::write(temp.path().join("lib.rs"), "fn main() {}\n").unwrap();
 
         let backend = ManifestWorkspaceBackend::new(temp.path());
@@ -1037,7 +1077,7 @@ mod tests {
             result.content
         );
         assert!(
-            result.content.contains(".a3s/kb/sources/seed.md")
+            result.content.contains(".aster/kb/sources/seed.md")
                 || result.content.contains("seed.md"),
             "expected KB path in grep output, got: {}",
             result.content
@@ -1045,7 +1085,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn grep_does_not_open_durable_a3s_vec() {
+    async fn grep_does_not_open_durable_aster_vec() {
         use crate::workspace::{
             ChunkCatalogLimits, ChunkingConfig, ManifestWorkspaceBackend,
             WorkspaceChunkingStrategy, WorkspaceServices,
@@ -1082,7 +1122,7 @@ mod tests {
             "grep must not attach durable FTS"
         );
         assert!(
-            !temp.path().join(".a3s-code").join("index").exists(),
+            !temp.path().join(".aster").join("index").exists(),
             "grep must not create the durable index directory"
         );
         #[cfg(feature = "grep-trigram")]
@@ -1092,8 +1132,8 @@ mod tests {
                 "default local-code grep may auto-attach the trigram candidate filter"
             );
             assert!(
-                temp.path().join(".a3s-code").join("grep-trigram").exists(),
-                "trigram stamp must stay under .a3s-code/grep-trigram, not durable FTS"
+                temp.path().join(".aster").join("grep-trigram").exists(),
+                "trigram stamp must stay under .aster/grep-trigram, not durable FTS"
             );
         }
     }

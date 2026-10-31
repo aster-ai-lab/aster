@@ -1,12 +1,12 @@
 #[path = "process_races/driver.rs"]
 mod driver;
 
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     ArtifactRef, HealthCheckKind, IsolationLevel, MountKind, NetworkMode, ResourceControl,
     ResourceLimits, RestartPolicy, RuntimeActionRequest, RuntimeApplyRequest, RuntimeFeature,
     RuntimeNetworkSpec, RuntimeProcessSpec, RuntimeUnitClass, RuntimeUnitSpec,
 };
-use a3s_runtime::{
+use aster_runtime::{
     required_runtime_profiles, runtime_profile_requirements, verify_runtime_profiles,
     FileRuntimeStateStore, ManagedRuntimeClient, RuntimeConformanceCase, RuntimeConformanceFixture,
     RuntimeConformanceInventory, RuntimeConformanceProfile, RuntimeConformanceProfileEvidence,
@@ -27,7 +27,7 @@ fn spec(unit_id: &str, class: RuntimeUnitClass, args: &[&str]) -> RuntimeUnitSpe
         class,
         artifact: ArtifactRef {
             uri: format!(
-                "oci://registry.example/a3s/conformance@sha256:{}",
+                "oci://registry.example/aster/conformance@sha256:{}",
                 "a".repeat(64)
             ),
             digest: format!("sha256:{}", "a".repeat(64)),
@@ -88,7 +88,7 @@ fn action(request_id: &str, apply: &RuntimeApplyRequest) -> RuntimeActionRequest
     }
 }
 
-fn base_case() -> a3s_runtime::RuntimeBaseConformanceCase {
+fn base_case() -> aster_runtime::RuntimeBaseConformanceCase {
     let task_apply = apply(
         "base-task-apply",
         spec("base-task", RuntimeUnitClass::Task, &[]),
@@ -113,7 +113,7 @@ fn base_case() -> a3s_runtime::RuntimeBaseConformanceCase {
         "base-generation-conflict",
         spec("base-generation", RuntimeUnitClass::Service, &["changed"]),
     );
-    a3s_runtime::RuntimeBaseConformanceCase {
+    aster_runtime::RuntimeBaseConformanceCase {
         lifecycle: RuntimeConformanceCase {
             task_remove: action("base-task-remove", &task_apply),
             service_stop: action("base-service-stop", &service_apply),
@@ -132,7 +132,7 @@ fn base_case() -> a3s_runtime::RuntimeBaseConformanceCase {
 }
 
 struct ProfileFixture {
-    base: a3s_runtime::RuntimeBaseConformanceCase,
+    base: aster_runtime::RuntimeBaseConformanceCase,
     driver: ProcessRaceDriver,
     available: BTreeSet<RuntimeConformanceProfile>,
     incomplete: Option<RuntimeConformanceProfile>,
@@ -168,7 +168,7 @@ impl ProfileFixture {
 
 #[async_trait]
 impl RuntimeConformanceFixture for ProfileFixture {
-    fn base_case(&self) -> &a3s_runtime::RuntimeBaseConformanceCase {
+    fn base_case(&self) -> &aster_runtime::RuntimeBaseConformanceCase {
         &self.base
     }
 
@@ -197,8 +197,8 @@ impl RuntimeConformanceFixture for ProfileFixture {
 
     async fn run_profile(
         &self,
-        _client: &dyn a3s_runtime::RuntimeClient,
-        capabilities: &a3s_runtime::contract::RuntimeCapabilities,
+        _client: &dyn aster_runtime::RuntimeClient,
+        capabilities: &aster_runtime::contract::RuntimeCapabilities,
         profile: RuntimeConformanceProfile,
     ) -> RuntimeResult<RuntimeConformanceProfileEvidence> {
         let requirements = runtime_profile_requirements(capabilities, profile)?;

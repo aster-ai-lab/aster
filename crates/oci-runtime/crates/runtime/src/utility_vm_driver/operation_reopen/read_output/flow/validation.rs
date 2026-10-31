@@ -1,5 +1,5 @@
-use a3s_oci_agent_protocol::AgentReadOutputRequest;
-use a3s_oci_sdk::{ErrorCode, OciRuntimeService, ProcessTarget, ReadOutputRequest};
+use aster_oci_agent_protocol::AgentReadOutputRequest;
+use aster_oci_sdk::{ErrorCode, OciRuntimeService, ProcessTarget, ReadOutputRequest};
 use tokio::time::timeout;
 
 use super::super::super::driver::QualificationKvmOperationDriver;

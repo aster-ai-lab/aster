@@ -1,12 +1,12 @@
 //! Memory and learning system for the agent.
 //!
 //! Core types (`MemoryStore`, `MemoryItem`, `MemoryType`, `RelevanceConfig`,
-//! `FileMemoryStore`, `InMemoryStore`) live in `a3s-memory`.
+//! `FileMemoryStore`, `InMemoryStore`) live in `aster-memory`.
 //!
 //! This module owns `MemoryConfig`, `MemoryStats`, `AgentMemory` (three-tier
 //! session memory), and `MemoryContextProvider` (context injection bridge).
 
-use a3s_memory::{MemoryItem, MemoryStore, MemoryType, PrunePolicy, RelevanceConfig};
+use aster_durable_memory::{MemoryItem, MemoryStore, MemoryType, PrunePolicy, RelevanceConfig};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
@@ -30,7 +30,7 @@ pub use semantic_refresh::{
     SemanticRefreshRunOutcome, SEMANTIC_REFRESH_JOB_NAME, SEMANTIC_REFRESH_RECENT_RUN_LIMIT,
 };
 
-const MEMORY_STATUS_METADATA: &str = "a3s.memory.status";
+const MEMORY_STATUS_METADATA: &str = "aster.memory.status";
 const MEMORY_STATUS_SUPERSEDED: &str = "superseded";
 
 /// One durable-memory write as observed by a host integration.

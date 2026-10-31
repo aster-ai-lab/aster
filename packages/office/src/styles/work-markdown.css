@@ -95,7 +95,7 @@
 }
 
 .work-markdown-pane + .work-markdown-pane {
-  border-left: 1px solid var(--a3s-line);
+  border-left: 1px solid var(--aster-line);
 }
 
 .work-markdown-splitter {
@@ -185,7 +185,7 @@
 }
 
 .work-markdown-pane.source textarea::placeholder {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
 }
 
 .work-markdown-pane.source textarea::selection {
@@ -255,7 +255,7 @@
   box-shadow: 0 3px 8px rgb(15 23 42 / 16%);
   color: #fff;
   content: attr(data-participant-name);
-  font: 650 9px / 1.25 var(--a3s-ui-font);
+  font: 650 9px / 1.25 var(--aster-ui-font);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -311,7 +311,7 @@
   padding: 56px clamp(42px, 7vw, 86px) 96px;
   outline: 0;
   color: #171717;
-  font-family: var(--a3s-ui-font);
+  font-family: var(--aster-ui-font);
   font-size: calc(16px * var(--work-markdown-zoom) / 100);
   line-height: 1.8;
   overflow-wrap: anywhere;
@@ -336,7 +336,7 @@
 .work-markdown-canvas .tiptap h5,
 .work-markdown-canvas .tiptap h6 {
   margin: 1.65em 0 0.6em;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.3;
@@ -415,10 +415,10 @@
   width: 16px;
   height: 16px;
   margin: 0;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 4px;
   appearance: none;
-  background-color: var(--a3s-panel);
+  background-color: var(--aster-panel);
   background-position: center;
   background-repeat: no-repeat;
   background-size: 12px;
@@ -443,7 +443,7 @@
   border-color: color-mix(
     in srgb,
     var(--work-office-accent) 72%,
-    var(--a3s-line)
+    var(--aster-line)
   );
 }
 
@@ -460,7 +460,7 @@
   .tiptap
   li[data-type="taskItem"][data-checked="true"]
   > div {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-markdown-canvas
@@ -475,10 +475,10 @@
   margin: 1.25em 0;
   padding: 0.7em 1em;
   border-left: 3px solid
-    color-mix(in srgb, var(--work-office-accent) 68%, var(--a3s-line));
+    color-mix(in srgb, var(--work-office-accent) 68%, var(--aster-line));
   border-radius: 0 7px 7px 0;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 82%, transparent);
-  color: var(--a3s-muted);
+  background: color-mix(in srgb, var(--aster-panel-soft) 82%, transparent);
+  color: var(--aster-muted);
 }
 
 .work-markdown-canvas .tiptap blockquote > :first-child {
@@ -492,8 +492,8 @@
 .work-markdown-canvas .tiptap code {
   padding: 0.16em 0.38em;
   border-radius: 4px;
-  background: var(--a3s-panel-soft);
-  color: color-mix(in srgb, var(--work-office-accent) 76%, var(--a3s-ink));
+  background: var(--aster-panel-soft);
+  color: color-mix(in srgb, var(--work-office-accent) 76%, var(--aster-ink));
   font-family: var(--font-mono);
   font-size: 0.9em;
 }
@@ -502,10 +502,10 @@
   margin: 1.3em 0;
   padding: 18px 20px;
   overflow: auto;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 9px;
-  background: color-mix(in srgb, var(--a3s-panel-soft) 90%, var(--a3s-bg));
-  color: var(--a3s-ink);
+  background: color-mix(in srgb, var(--aster-panel-soft) 90%, var(--aster-bg));
+  color: var(--aster-ink);
   line-height: 1.6;
 }
 
@@ -517,7 +517,7 @@
 }
 
 .work-markdown-canvas .tiptap a {
-  color: var(--a3s-blue);
+  color: var(--aster-blue);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -525,7 +525,7 @@
 .work-markdown-canvas .tiptap hr {
   margin: 2em 0;
   border: 0;
-  border-top: 1px solid var(--a3s-line-strong);
+  border-top: 1px solid var(--aster-line-strong);
 }
 
 .work-markdown-canvas .tiptap img {
@@ -541,7 +541,7 @@
   width: 100%;
   margin: 1.5em 0;
   overflow: hidden;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 8px;
   border-collapse: separate;
   border-spacing: 0;
@@ -554,8 +554,8 @@
   min-width: 80px;
   padding: 9px 12px;
   border: 0;
-  border-right: 1px solid var(--a3s-line);
-  border-bottom: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
+  border-bottom: 1px solid var(--aster-line);
   vertical-align: top;
 }
 
@@ -568,7 +568,7 @@
 }
 
 .work-markdown-canvas .tiptap th {
-  background: color-mix(in srgb, var(--a3s-panel-soft) 84%, var(--a3s-panel));
+  background: color-mix(in srgb, var(--aster-panel-soft) 84%, var(--aster-panel));
   font-weight: 660;
   text-align: left;
 }
@@ -581,7 +581,7 @@
 .work-markdown-canvas .tiptap .selectedCell::after {
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--a3s-blue) 10%, transparent);
+  background: color-mix(in srgb, var(--aster-blue) 10%, transparent);
   content: "";
   pointer-events: none;
 }
@@ -589,7 +589,7 @@
 .work-markdown-canvas .tiptap p.is-editor-empty:first-child::before {
   float: left;
   height: 0;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   content: attr(data-placeholder);
   pointer-events: none;
 }
@@ -628,8 +628,8 @@
     gap: 4px;
     padding: 6px 12px;
     border: 0;
-    border-bottom: 1px solid var(--a3s-line);
-    background: color-mix(in srgb, var(--a3s-panel) 97%, var(--a3s-bg));
+    border-bottom: 1px solid var(--aster-line);
+    background: color-mix(in srgb, var(--aster-panel) 97%, var(--aster-bg));
   }
 
   .work-markdown-compact-switch button {
@@ -639,7 +639,7 @@
     border: 1px solid transparent;
     border-radius: 7px;
     background: transparent;
-    color: var(--a3s-muted);
+    color: var(--aster-muted);
     font: inherit;
     font-size: 12px;
     font-weight: 640;
@@ -647,10 +647,10 @@
   }
 
   .work-markdown-compact-switch button[aria-pressed="true"] {
-    border-color: var(--a3s-line);
-    background: var(--a3s-panel);
+    border-color: var(--aster-line);
+    background: var(--aster-panel);
     box-shadow: 0 1px 2px rgb(22 28 40 / 6%);
-    color: var(--a3s-ink);
+    color: var(--aster-ink);
   }
 
   .work-markdown-compact-switch button:focus-visible {
@@ -711,7 +711,7 @@
   }
 
   .work-markdown-workspace.split[data-compact-pane="preview"] {
-    background: color-mix(in srgb, var(--a3s-bg) 82%, var(--a3s-panel));
+    background: color-mix(in srgb, var(--aster-bg) 82%, var(--aster-panel));
   }
 
   .work-markdown-workspace.split[data-compact-pane="preview"]
@@ -723,7 +723,7 @@
     width: 100%;
     min-height: 100%;
     margin: 0;
-    background: color-mix(in srgb, var(--a3s-bg) 82%, var(--a3s-panel));
+    background: color-mix(in srgb, var(--aster-bg) 82%, var(--aster-panel));
   }
 
   .work-markdown-workspace.split[data-compact-pane="preview"]
@@ -758,8 +758,8 @@
     gap: 4px;
     padding: 6px 12px;
     border: 0;
-    border-bottom: 1px solid var(--a3s-line);
-    background: color-mix(in srgb, var(--a3s-panel) 97%, var(--a3s-bg));
+    border-bottom: 1px solid var(--aster-line);
+    background: color-mix(in srgb, var(--aster-panel) 97%, var(--aster-bg));
   }
 
   .work-markdown-compact-switch button {
@@ -769,7 +769,7 @@
     border: 1px solid transparent;
     border-radius: 7px;
     background: transparent;
-    color: var(--a3s-muted);
+    color: var(--aster-muted);
     font: inherit;
     font-size: 12px;
     font-weight: 640;
@@ -777,10 +777,10 @@
   }
 
   .work-markdown-compact-switch button[aria-pressed="true"] {
-    border-color: var(--a3s-line);
-    background: var(--a3s-panel);
+    border-color: var(--aster-line);
+    background: var(--aster-panel);
     box-shadow: 0 1px 2px rgb(22 28 40 / 6%);
-    color: var(--a3s-ink);
+    color: var(--aster-ink);
   }
 
   .work-markdown-compact-switch button:focus-visible {
@@ -841,7 +841,7 @@
   }
 
   .work-markdown-workspace.split[data-compact-pane="preview"] {
-    background: color-mix(in srgb, var(--a3s-bg) 82%, var(--a3s-panel));
+    background: color-mix(in srgb, var(--aster-bg) 82%, var(--aster-panel));
   }
 
   .work-markdown-workspace.split[data-compact-pane="preview"]
@@ -853,7 +853,7 @@
     width: 100%;
     min-height: 100%;
     margin: 0;
-    background: color-mix(in srgb, var(--a3s-bg) 82%, var(--a3s-panel));
+    background: color-mix(in srgb, var(--aster-bg) 82%, var(--aster-panel));
   }
 
   .work-markdown-workspace.split[data-compact-pane="preview"]
@@ -872,35 +872,35 @@
 
 /* Studio writing surface. Scoped to the markdown editor so other office
    editors keep their own chrome. Light only. */
-.a3s-office:has(.work-markdown-editor) {
+.aster-office:has(.work-markdown-editor) {
   color-scheme: light;
-  --a3s-bg: #ffffff;
-  --a3s-panel: #ffffff;
-  --a3s-panel-soft: #f5f5f5;
-  --a3s-panel-strong: #f2f3f5;
-  --a3s-ink: #171717;
-  --a3s-muted: #8a8a8a;
-  --a3s-subtle: #6f6f6f;
-  --a3s-faint: #c5c5c5;
-  --a3s-line: #ececec;
-  --a3s-line-strong: #e5e5e5;
-  --a3s-action: #171717;
-  --a3s-action-hover: #171717;
-  --a3s-action-ink: #ffffff;
-  --a3s-blue: #171717;
+  --aster-bg: #ffffff;
+  --aster-panel: #ffffff;
+  --aster-panel-soft: #f5f5f5;
+  --aster-panel-strong: #f2f3f5;
+  --aster-ink: #171717;
+  --aster-muted: #8a8a8a;
+  --aster-subtle: #6f6f6f;
+  --aster-faint: #c5c5c5;
+  --aster-line: #ececec;
+  --aster-line-strong: #e5e5e5;
+  --aster-action: #171717;
+  --aster-action-hover: #171717;
+  --aster-action-ink: #ffffff;
+  --aster-blue: #171717;
   --work-office-accent: #171717;
   --work-office-control-accent: #171717;
-  --a3s-radius-sm: 8px;
+  --aster-radius-sm: 8px;
 }
 
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   :where(button, input, textarea, select, a):focus-visible {
   outline: 2px solid rgb(0 0 0 / 10%);
   outline-offset: 2px;
 }
 
 .work-markdown-editor .work-markdown-ribbon,
-.a3s-office:has(.work-markdown-editor) .work-office-ribbon {
+.aster-office:has(.work-markdown-editor) .work-office-ribbon {
   border-bottom: 1px solid #ececec;
   background: #ffffff;
   box-shadow: none;
@@ -908,20 +908,20 @@
   --work-office-control-accent: #171717;
 }
 
-.a3s-office:has(.work-markdown-editor) .work-office-ribbon .work-office-toolbar {
+.aster-office:has(.work-markdown-editor) .work-office-ribbon .work-office-toolbar {
   height: 44px;
   min-height: 44px;
   border-bottom: 0;
   background: #ffffff;
 }
 
-.a3s-office:has(.work-markdown-editor) .work-office-ribbon-group {
+.aster-office:has(.work-markdown-editor) .work-office-ribbon-group {
   height: auto;
   padding: 0 8px;
   border-right-color: transparent;
 }
 
-.a3s-office:has(.work-markdown-editor) .work-office-ribbon-group > span {
+.aster-office:has(.work-markdown-editor) .work-office-ribbon-group > span {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -932,7 +932,7 @@
   white-space: nowrap;
 }
 
-.a3s-office:has(.work-markdown-editor) .work-office-toolbar button {
+.aster-office:has(.work-markdown-editor) .work-office-toolbar button {
   height: 32px;
   min-width: 32px;
   border: 0;
@@ -942,15 +942,15 @@
   font-size: 13px;
 }
 
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-toolbar
   button:hover:not(:disabled) {
   background: #f5f5f5;
   color: #171717;
 }
 
-.a3s-office:has(.work-markdown-editor) .work-office-toolbar button.active,
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor) .work-office-toolbar button.active,
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon
   .work-office-toolbar
   button.active {
@@ -958,7 +958,7 @@
   color: #171717;
 }
 
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon
   .work-office-toolbar
   button.with-label {
@@ -972,7 +972,7 @@
   font-size: 13px;
 }
 
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon
   .work-office-toolbar
   button.with-label
@@ -982,17 +982,17 @@
   line-height: 18px;
 }
 
-.a3s-office:has(.work-markdown-editor) .work-office-ribbon-tabs > button {
+.aster-office:has(.work-markdown-editor) .work-office-ribbon-tabs > button {
   border-radius: 8px;
   color: #6f6f6f;
   font-size: 13px;
   font-weight: 400;
 }
 
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon-tabs.ds-tabs
   > button[aria-selected="true"],
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon-tabs.ds-tabs
   > button[aria-selected="true"]:hover:not(:disabled) {
   background: #f5f5f5;
@@ -1001,25 +1001,25 @@
   font-weight: 500;
 }
 
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon-tabs.ds-tabs
   > button[aria-selected="true"]::after {
   background: transparent;
 }
 
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon-tabs
   > button:focus-visible,
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon-collapse:focus-visible,
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon-tab-navigation
   > button:focus-visible,
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-select
   > button[role="combobox"]:focus-visible,
-.a3s-office:has(.work-markdown-editor) .work-office-text-field:focus-visible,
-.a3s-office:has(.work-markdown-editor) .work-office-text-area:focus-visible {
+.aster-office:has(.work-markdown-editor) .work-office-text-field:focus-visible,
+.aster-office:has(.work-markdown-editor) .work-office-text-area:focus-visible {
   border-color: #e5e5e5;
   border-radius: 8px;
   outline: 2px solid rgb(0 0 0 / 10%);
@@ -1027,7 +1027,7 @@
   box-shadow: none;
 }
 
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon
   .work-office-toolbar
   .work-office-select
@@ -1040,7 +1040,7 @@
   font-size: 13px;
 }
 
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-select
   > button[role="combobox"]:hover:not(:disabled) {
   border-color: transparent;
@@ -1231,7 +1231,7 @@
 
 .work-markdown-commands .work-markdown-mode-switch button,
 .work-markdown-editor .work-markdown-mode-switch button,
-.a3s-office:has(.work-markdown-editor) .work-office-toolbar .work-markdown-mode-switch button {
+.aster-office:has(.work-markdown-editor) .work-office-toolbar .work-markdown-mode-switch button {
   width: auto;
   height: 22px;
   min-width: 0;
@@ -1250,7 +1250,7 @@
 
 .work-markdown-commands .work-markdown-mode-switch button:hover:not(:disabled),
 .work-markdown-editor .work-markdown-mode-switch button:hover:not(:disabled),
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-toolbar
   .work-markdown-mode-switch
   button:hover:not(:disabled) {
@@ -1260,11 +1260,11 @@
 
 .work-markdown-commands .work-markdown-mode-switch button[aria-pressed='true'],
 .work-markdown-editor .work-markdown-mode-switch button[aria-pressed='true'],
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-toolbar
   .work-markdown-mode-switch
   button[aria-pressed='true'],
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon
   .work-office-toolbar
   .work-markdown-mode-switch
@@ -1282,7 +1282,7 @@
 
 .work-markdown-commands .work-markdown-mode-switch button.with-label,
 .work-markdown-editor .work-markdown-mode-switch button.with-label,
-.a3s-office:has(.work-markdown-editor)
+.aster-office:has(.work-markdown-editor)
   .work-office-ribbon
   .work-office-toolbar
   .work-markdown-mode-switch
@@ -1331,7 +1331,7 @@
   display: none;
 }
 
-.a3s-office:has(.work-markdown-editor.note) {
+.aster-office:has(.work-markdown-editor.note) {
   display: flex;
   width: 100%;
   min-width: 0;
@@ -1340,7 +1340,7 @@
   flex-direction: column;
 }
 
-.a3s-office:has(.work-markdown-editor.note) .work-office-ribbon,
+.aster-office:has(.work-markdown-editor.note) .work-office-ribbon,
 .work-markdown-editor.note .work-markdown-ribbon {
   align-self: stretch;
   width: 100%;
@@ -1355,7 +1355,7 @@
   justify-content: space-between;
 }
 
-.a3s-office:has(.work-markdown-editor.note) .work-office-ribbon .work-office-toolbar,
+.aster-office:has(.work-markdown-editor.note) .work-office-ribbon .work-office-toolbar,
 .work-markdown-editor.note .work-office-toolbar {
   height: 40px;
   min-height: 40px;
@@ -1467,7 +1467,7 @@
   flex: 1 1 auto;
   padding: 64px max(48px, calc((100% - 40rem) / 2)) 96px;
   color: #171717;
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
   font-size: 18px;
   font-weight: 400;
   font-synthesis: none;
@@ -1493,7 +1493,7 @@
   flex: 1 1 auto;
   padding: 64px max(48px, calc((100% - 40rem) / 2)) 96px;
   color: #171717;
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
   font-size: 18px;
   font-weight: 400;
   font-synthesis: none;
@@ -1774,10 +1774,10 @@
 
 .work-markdown-context-menu.work-office-context-menu {
   --work-office-menu-accent: #171717;
-  --a3s-blue: #171717;
-  --a3s-ink: #171717;
-  --a3s-muted: #8a8a8a;
-  --a3s-red: #b42318;
+  --aster-blue: #171717;
+  --aster-ink: #171717;
+  --aster-muted: #8a8a8a;
+  --aster-red: #b42318;
 
   min-width: 220px;
   padding: 4px;

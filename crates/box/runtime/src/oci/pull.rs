@@ -7,8 +7,8 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::StoredImage;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::StoredImage;
 
 use super::image::OciImage;
 use super::reference::ImageReference;
@@ -35,15 +35,15 @@ pub struct ImagePuller {
     metrics: Option<crate::prom::RuntimeMetrics>,
     /// Registry mirror map (original host → mirror host). Pulls fetch layers and
     /// manifests from the mirror while the image keeps its canonical reference
-    /// for storage and identity. Parsed from `A3S_REGISTRY_MIRRORS`
-    /// (`host=mirror,host=mirror`) — lets a3s-box pull in registry-restricted
+    /// for storage and identity. Parsed from `ASTER_REGISTRY_MIRRORS`
+    /// (`host=mirror,host=mirror`) — lets aster-box pull in registry-restricted
     /// environments, like containerd's registry mirrors.
     mirrors: std::collections::HashMap<String, String>,
 }
 
-/// Parse `A3S_REGISTRY_MIRRORS=host=mirror,host=mirror` into a map.
+/// Parse `ASTER_REGISTRY_MIRRORS=host=mirror,host=mirror` into a map.
 fn parse_registry_mirrors() -> std::collections::HashMap<String, String> {
-    std::env::var("A3S_REGISTRY_MIRRORS")
+    std::env::var("ASTER_REGISTRY_MIRRORS")
         .ok()
         .map(|raw| {
             raw.split(',')
@@ -525,20 +525,20 @@ fn push_unique(values: &mut Vec<String>, value: String) {
 }
 
 #[async_trait::async_trait]
-impl a3s_box_core::traits::ImageRegistry for ImagePuller {
-    async fn pull(&self, reference: &str) -> Result<a3s_box_core::traits::PulledImage> {
+impl aster_box_core::traits::ImageRegistry for ImagePuller {
+    async fn pull(&self, reference: &str) -> Result<aster_box_core::traits::PulledImage> {
         let (image, resolved_reference) = self.pull_resolved(reference).await?;
-        Ok(a3s_box_core::traits::PulledImage {
+        Ok(aster_box_core::traits::PulledImage {
             path: image.root_dir().to_path_buf(),
             digest: image.manifest_digest().to_string(),
             reference: resolved_reference,
         })
     }
 
-    async fn force_pull(&self, reference: &str) -> Result<a3s_box_core::traits::PulledImage> {
+    async fn force_pull(&self, reference: &str) -> Result<aster_box_core::traits::PulledImage> {
         let image = self.force_pull(reference).await?;
         let parsed = ImageReference::parse(reference)?;
-        Ok(a3s_box_core::traits::PulledImage {
+        Ok(aster_box_core::traits::PulledImage {
             path: image.root_dir().to_path_buf(),
             digest: image.manifest_digest().to_string(),
             reference: parsed.full_reference(),

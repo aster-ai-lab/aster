@@ -41,7 +41,7 @@ export class CliError extends Error {
   }
 }
 
-export const usage = `a3s-flow <command> [arguments] [options]
+export const usage = `aster-flow <command> [arguments] [options]
 
 Commands:
   nodes                    List public node manifests
@@ -87,10 +87,10 @@ Options:
   --output <file>          Write JSON to a file instead of stdout
   -                        Read a workflow document from stdin`;
 
-const CLI_STRING_SENTINEL = '__a3s_cli_string__';
+const CLI_STRING_SENTINEL = '__aster_cli_string__';
 
 function createCliParser() {
-  const cli = cac('a3s-flow');
+  const cli = cac('aster-flow');
   cli.command('nodes', 'List public node manifests');
   cli.command('node <type>', 'Describe one node manifest');
   cli.command('new <type>', 'Create one node with manifest defaults');
@@ -142,7 +142,7 @@ export function parseFlowCliOptions(
   let parsed: { args: readonly string[]; options: Record<string, unknown> };
   try {
     parsed = parser.parse(
-      [process.execPath, 'a3s-flow', ...normalizeStringOptionValues(arguments_, parser)],
+      [process.execPath, 'aster-flow', ...normalizeStringOptionValues(arguments_, parser)],
       { run: false },
     );
     const command = parser.matchedCommand ?? parser.globalCommand;

@@ -2,7 +2,7 @@
 
 use super::*;
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) async fn emit_permission_mode(
         &self,
         id: acp::SessionId,
@@ -118,7 +118,7 @@ impl A3sCodeAgent {
         .await;
     }
 
-    /// Attach a3s tool arguments once execution starts so the pager can render
+    /// Attach aster tool arguments once execution starts so the pager can render
     /// the Execute / Read / Edit / Search / Fetch card instead of a generic row.
     pub(super) async fn emit_tool_call_started(
         &self,
@@ -229,7 +229,7 @@ impl A3sCodeAgent {
     pub(super) async fn emit_plan(
         &self,
         session_id: &acp::SessionId,
-        tasks: &[a3s_code_core::planning::Task],
+        tasks: &[aster_core::planning::Task],
     ) {
         if tasks.is_empty() {
             return;
@@ -263,7 +263,7 @@ impl A3sCodeAgent {
         };
         let _ = client
             .ext_notification(acp::ExtNotification::new(
-                "a3s/session_notification",
+                "aster/session_notification",
                 raw.into(),
             ))
             .await;
@@ -301,7 +301,7 @@ impl A3sCodeAgent {
             return;
         };
         let _ = client
-            .ext_notification(acp::ExtNotification::new("a3s/turn/outcome", raw.into()))
+            .ext_notification(acp::ExtNotification::new("aster/turn/outcome", raw.into()))
             .await;
     }
 
@@ -387,11 +387,15 @@ impl A3sCodeAgent {
             progress,
         );
         update["completedAt"] = serde_json::json!(finished_ms);
-        let session = self.sessions.lock().await
-            .get(session_id.0.as_ref()).map(|live| Arc::clone(&live.session));
+        let session = self
+            .sessions
+            .lock()
+            .await
+            .get(session_id.0.as_ref())
+            .map(|live| Arc::clone(&live.session));
         if let Some(session) = session {
             if session.subagent_task(task_id).await.is_some_and(|task| {
-                task.status == a3s_code_core::subagent_task_tracker::SubagentStatus::Cancelled
+                task.status == aster_core::subagent_task_tracker::SubagentStatus::Cancelled
             }) {
                 update["status"] = "stopped".into();
                 update["error"] = serde_json::Value::Null;

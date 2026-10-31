@@ -3,7 +3,7 @@
 //! These tests deliberately verify the complete path from a configured model's
 //! tool choice through the governed runtime. They are ignored by default
 //! because they consume provider quota. Select any model declared in the same
-//! ACL file with `A3S_TEST_MODEL=provider/model`.
+//! ACL file with `ASTER_TEST_MODEL=provider/model`.
 
 #[path = "extensibility/metrics.rs"]
 mod metrics;
@@ -14,10 +14,10 @@ mod task_matrix;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::hooks::{HookEvent, HookExecutor, HookResult};
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::skills::{Skill, SkillKind, SkillRegistry};
-use a3s_code_core::{
+use aster_core::hooks::{HookEvent, HookExecutor, HookResult};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::skills::{Skill, SkillKind, SkillRegistry};
+use aster_core::{
     dynamic_workflow_store_path, Agent, AgentEvent, AgentSession, PlanningMode, RunStatus,
     SessionOptions, SystemPromptSlots,
 };
@@ -63,7 +63,7 @@ fn governed_options(model: &str, session_id: &str, rules: &[&str]) -> SessionOpt
     SessionOptions::new()
         .with_session_id(session_id)
         .with_model(model)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning_mode(PlanningMode::Disabled)
@@ -80,8 +80,8 @@ async fn run_and_events(
     session: &AgentSession,
     prompt: &str,
 ) -> (
-    a3s_code_core::AgentResult,
-    Vec<a3s_code_core::run::RunEventRecord>,
+    aster_core::AgentResult,
+    Vec<aster_core::run::RunEventRecord>,
 ) {
     let result = tokio::time::timeout(REAL_TIMEOUT, session.send(prompt, None))
         .await
@@ -95,7 +95,7 @@ async fn run_and_events(
 }
 
 fn successful_tool_end<'a>(
-    events: &'a [a3s_code_core::run::RunEventRecord],
+    events: &'a [aster_core::run::RunEventRecord],
     expected_name: &str,
 ) -> (&'a Value, &'a Value) {
     events
@@ -114,15 +114,15 @@ fn successful_tool_end<'a>(
 }
 
 fn measured_run(
-    result: &a3s_code_core::AgentResult,
-    events: &[a3s_code_core::run::RunEventRecord],
+    result: &aster_core::AgentResult,
+    events: &[aster_core::run::RunEventRecord],
 ) -> Value {
     let parents = result
         .messages
         .iter()
         .flat_map(|message| message.content.iter())
         .filter_map(|block| match block {
-            a3s_code_core::llm::ContentBlock::ToolUse { id, .. } => Some(id.clone()),
+            aster_core::llm::ContentBlock::ToolUse { id, .. } => Some(id.clone()),
             _ => None,
         })
         .collect::<Vec<_>>();
@@ -130,7 +130,7 @@ fn measured_run(
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_model_discovers_and_invokes_a_scoped_skill() {
     let workspace = tempfile::tempdir().expect("skill workspace");
     std::fs::write(
@@ -184,7 +184,7 @@ async fn real_model_discovers_and_invokes_a_scoped_skill() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_model_uses_ptc_program_for_bounded_parallel_tool_calls() {
     let workspace = tempfile::tempdir().expect("PTC workspace");
     std::fs::write(workspace.path().join("left.txt"), "PTC_LEFT\n").unwrap();
@@ -234,7 +234,7 @@ Do not call read outside program. After observing the program result, return exa
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires a real provider; fixed unforced task across adaptive/code sessions"]
 async fn real_model_unforced_fixed_task_compares_adaptive_and_code_profiles() {
-    use a3s_code_core::{ToolPresentationModeV1, ToolPresentationProfileV1};
+    use aster_core::{ToolPresentationModeV1, ToolPresentationProfileV1};
     let (agent, model) = real_agent().await;
     let prompt = "Read left.txt and right.txt. Return their trimmed contents joined by |. Inspect the actual files and do not invent their contents.";
     for mode in [
@@ -293,7 +293,7 @@ async fn real_model_unforced_fixed_task_compares_adaptive_and_code_profiles() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_model_drives_replayable_dynamic_workflow() {
     let workspace = tempfile::tempdir().expect("dynamic workflow workspace");
     std::fs::write(
@@ -377,7 +377,7 @@ async fn real_model_drives_replayable_dynamic_workflow() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_model_tool_call_is_rewritten_and_observed_by_hooks() {
     let workspace = tempfile::tempdir().expect("hook workspace");
     std::fs::write(workspace.path().join("decoy.txt"), "WRONG_MARKER\n").unwrap();

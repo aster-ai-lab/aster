@@ -1,10 +1,10 @@
 //! End-to-end WebSocket handshake and forwarding coverage.
 
-use a3s_gateway::config::{
+use aster_gateway::config::{
     EntrypointConfig, GatewayConfig, LoadBalancerConfig, MiddlewareConfig, Protocol, RouterConfig,
     ServerConfig, ServiceConfig, Strategy,
 };
-use a3s_gateway::Gateway;
+use aster_gateway::Gateway;
 use futures_util::{SinkExt, StreamExt};
 use http::header::{AUTHORIZATION, COOKIE, ORIGIN, SEC_WEBSOCKET_PROTOCOL};
 use http::HeaderValue;
@@ -415,7 +415,7 @@ async fn websocket_forwards_headers_and_negotiated_subprotocol() {
                 authorization: header_value(request.headers(), "authorization"),
                 cookie: header_value(request.headers(), "cookie"),
                 origin: header_value(request.headers(), "origin"),
-                custom: header_value(request.headers(), "x-a3s-test"),
+                custom: header_value(request.headers(), "x-aster-test"),
                 middleware: header_value(request.headers(), "x-from-middleware"),
                 forwarded_for: header_value(request.headers(), "x-forwarded-for"),
                 forwarded_host: header_value(request.headers(), "x-forwarded-host"),
@@ -458,7 +458,7 @@ async fn websocket_forwards_headers_and_negotiated_subprotocol() {
     );
     request
         .headers_mut()
-        .insert("x-a3s-test", HeaderValue::from_static("forward-me"));
+        .insert("x-aster-test", HeaderValue::from_static("forward-me"));
     request.headers_mut().insert(
         SEC_WEBSOCKET_PROTOCOL,
         HeaderValue::from_static("chat,superchat"),

@@ -1,4 +1,4 @@
-impl A3sBoxClient {
+impl AsterBoxClient {
     /// List box records from the shared state file.
     pub fn list_boxes(&self, options: ListBoxesOptions) -> Result<Vec<BoxSummary>> {
         let state = self.load_state()?;
@@ -323,7 +323,7 @@ impl A3sBoxClient {
         }
         if metadata.generation != generation {
             return Err(ClientError::Execution(
-                a3s_box_core::ExecutionManagerError::Conflict {
+                aster_box_core::ExecutionManagerError::Conflict {
                     execution_id: execution_id.clone(),
                     message: format!(
                         "expected generation {}, received {}",
@@ -449,7 +449,7 @@ impl A3sBoxClient {
     pub async fn build_image(&self, request: BuildImage) -> Result<BuildImageSummary> {
         request.validate()?;
         let store = Arc::new(self.open_image_store()?);
-        let result = a3s_box_runtime::oci::build::build(
+        let result = aster_box_runtime::oci::build::build(
             RuntimeBuildConfig {
                 context_dir: request.context_dir,
                 dockerfile_path: request.dockerfile_path,
@@ -552,7 +552,7 @@ impl A3sBoxClient {
         config.policy.validate().map_err(ClientError::Validation)?;
         for spec in &request.egress {
             config.egress.push(
-                a3s_box_core::EgressMatchRule::parse(spec).map_err(ClientError::Validation)?,
+                aster_box_core::EgressMatchRule::parse(spec).map_err(ClientError::Validation)?,
             );
         }
         config
@@ -619,9 +619,9 @@ impl A3sBoxClient {
         require_inactive_for_network_change(&record, "connect to a network")?;
 
         let endpoint = self.network_store().with_write_lock(
-            |networks| -> std::result::Result<NetworkEndpoint, a3s_box_core::error::BoxError> {
+            |networks| -> std::result::Result<NetworkEndpoint, aster_box_core::error::BoxError> {
                 let config = networks.get_mut(network).ok_or_else(|| {
-                    a3s_box_core::error::BoxError::NetworkError(format!(
+                    aster_box_core::error::BoxError::NetworkError(format!(
                         "network '{}' not found",
                         network
                     ))
@@ -629,10 +629,10 @@ impl A3sBoxClient {
                 config
                     .policy
                     .validate()
-                    .map_err(a3s_box_core::error::BoxError::NetworkError)?;
+                    .map_err(aster_box_core::error::BoxError::NetworkError)?;
                 config
                     .connect(&record.id, &record.name)
-                    .map_err(a3s_box_core::error::BoxError::NetworkError)
+                    .map_err(aster_box_core::error::BoxError::NetworkError)
             },
         )?;
 
@@ -659,16 +659,16 @@ impl A3sBoxClient {
         require_inactive_for_network_change(&record, "disconnect from a network")?;
 
         let endpoint = self.network_store().with_write_lock(
-            |networks| -> std::result::Result<NetworkEndpoint, a3s_box_core::error::BoxError> {
+            |networks| -> std::result::Result<NetworkEndpoint, aster_box_core::error::BoxError> {
                 let config = networks.get_mut(network).ok_or_else(|| {
-                    a3s_box_core::error::BoxError::NetworkError(format!(
+                    aster_box_core::error::BoxError::NetworkError(format!(
                         "network '{}' not found",
                         network
                     ))
                 })?;
                 config
                     .disconnect(&record.id)
-                    .map_err(a3s_box_core::error::BoxError::NetworkError)
+                    .map_err(aster_box_core::error::BoxError::NetworkError)
             },
         )?;
 
@@ -715,7 +715,7 @@ impl A3sBoxClient {
             .id
             .clone();
         let _lifecycle_lock =
-            a3s_box_runtime::acquire_execution_lifecycle_lock(&self.paths.home, &record_id)?;
+            aster_box_runtime::acquire_execution_lifecycle_lock(&self.paths.home, &record_id)?;
         let state = self.load_state()?;
         let record = state
             .find_by_id(&record_id)
@@ -770,13 +770,13 @@ impl A3sBoxClient {
 
         let store = self.snapshot_store()?;
         #[cfg(target_os = "macos")]
-        let saved = if a3s_box_runtime::rootfs::guest_native_ext4_generation_exists(
+        let saved = if aster_box_runtime::rootfs::guest_native_ext4_generation_exists(
             &record.box_dir,
         )? {
             store.save_guest_native_ext4(metadata, &record.box_dir)?
         } else {
             let _attached =
-                a3s_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
+                aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
             let rootfs_path = resolve_box_rootfs(&record.box_dir).ok_or_else(|| {
                 ClientError::Validation(format!(
                     "rootfs not found for box {} under {} (looked for merged/ and rootfs/)",
@@ -789,11 +789,11 @@ impl A3sBoxClient {
         #[cfg(not(target_os = "macos"))]
         let saved = {
             let _attached =
-                a3s_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
+                aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?;
             #[cfg(target_os = "linux")]
             if record.isolation.is_sandbox() && record.managed_execution.is_some() {
                 let (rootfs_path, rootfs_metadata) =
-                    a3s_box_runtime::capture_sandbox_host_rootfs_for_commit(&record).map_err(
+                    aster_box_runtime::capture_sandbox_host_rootfs_for_commit(&record).map_err(
                         |error| {
                             ClientError::Validation(format!(
                                 "cannot capture Sandbox host rootfs for stopped snapshot of {}: {error}",
@@ -920,8 +920,8 @@ impl A3sBoxClient {
             volume_names: vec![],
             tmpfs: vec![],
             anonymous_volumes: vec![],
-            resource_limits: a3s_box_core::config::ResourceLimits::default(),
-            log_config: a3s_box_core::log::LogConfig::default(),
+            resource_limits: aster_box_core::config::ResourceLimits::default(),
+            log_config: aster_box_core::log::LogConfig::default(),
             add_host: vec![],
             platform: None,
             init: false,
@@ -1072,7 +1072,7 @@ impl A3sBoxClient {
         request: &AttestationRequest,
     ) -> Result<AttestationReport> {
         let socket = self.require_runtime_socket(query, RuntimeSocket::Attest)?;
-        Ok(a3s_box_runtime::AttestationClient::connect(&socket)
+        Ok(aster_box_runtime::AttestationClient::connect(&socket)
             .await?
             .get_report(request)
             .await?)

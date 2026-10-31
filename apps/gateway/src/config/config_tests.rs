@@ -12,7 +12,7 @@ fn lock_kubeconfig_env() -> std::sync::MutexGuard<'static, ()> {
 }
 
 #[test]
-fn agent_search_example_requires_caller_auth_and_probes_a3s_health() {
+fn agent_search_example_requires_caller_auth_and_probes_aster_health() {
     let config = GatewayConfig::from_acl(include_str!("../../examples/agent-search.acl")).unwrap();
     config.validate().unwrap();
 
@@ -49,7 +49,7 @@ fn agent_search_example_requires_caller_auth_and_probes_a3s_health() {
             .request_headers
             .get("Authorization")
             .map(String::as_str),
-        Some("Bearer ${A3S_SEARCH_API_KEY}")
+        Some("Bearer ${ASTER_SEARCH_API_KEY}")
     );
 }
 
@@ -1244,9 +1244,9 @@ fn test_management_config_acl_parsing() {
             auth_token_env = "ADMIN_TOKEN"
             allowed_ips    = ["127.0.0.1", "10.0.0.0/8"]
             tls {
-                cert_file           = "/etc/a3s/admin.crt"
-                key_file            = "/etc/a3s/admin.key"
-                client_ca_file      = "/etc/a3s/admin-client-ca.crt"
+                cert_file           = "/etc/aster/admin.crt"
+                key_file            = "/etc/aster/admin.key"
+                client_ca_file      = "/etc/aster/admin-client-ca.crt"
                 require_client_cert = true
                 min_version         = "1.3"
             }
@@ -1263,11 +1263,11 @@ fn test_management_config_acl_parsing() {
     assert_eq!(config.management.allowed_ips.len(), 2);
     assert_eq!(config.management.allowed_ips[1], "10.0.0.0/8");
     let tls = config.management.tls.unwrap();
-    assert_eq!(tls.cert_file, "/etc/a3s/admin.crt");
-    assert_eq!(tls.key_file, "/etc/a3s/admin.key");
+    assert_eq!(tls.cert_file, "/etc/aster/admin.crt");
+    assert_eq!(tls.key_file, "/etc/aster/admin.key");
     assert_eq!(
         tls.client_ca_file.as_deref(),
-        Some("/etc/a3s/admin-client-ca.crt")
+        Some("/etc/aster/admin-client-ca.crt")
     );
     assert!(tls.require_client_cert);
     assert_eq!(tls.min_version, "1.3");
@@ -1355,8 +1355,8 @@ fn test_management_config_validate_mtls_requires_client_ca() {
         management {
             enabled = true
             tls {
-                cert_file           = "/etc/a3s/admin.crt"
-                key_file            = "/etc/a3s/admin.key"
+                cert_file           = "/etc/aster/admin.crt"
+                key_file            = "/etc/aster/admin.key"
                 require_client_cert = true
             }
         }
@@ -1372,9 +1372,9 @@ fn test_management_config_rejects_client_ca_without_require_client_cert() {
         management {
             enabled = true
             tls {
-                cert_file      = "/etc/a3s/admin.crt"
-                key_file       = "/etc/a3s/admin.key"
-                client_ca_file = "/etc/a3s/admin-client-ca.crt"
+                cert_file      = "/etc/aster/admin.crt"
+                key_file       = "/etc/aster/admin.key"
+                client_ca_file = "/etc/aster/admin-client-ca.crt"
             }
         }
     "#;
@@ -1392,8 +1392,8 @@ fn test_management_config_validate_tls_min_version() {
         management {
             enabled = true
             tls {
-                cert_file   = "/etc/a3s/admin.crt"
-                key_file    = "/etc/a3s/admin.key"
+                cert_file   = "/etc/aster/admin.crt"
+                key_file    = "/etc/aster/admin.key"
                 min_version = "1.1"
             }
         }
@@ -1559,7 +1559,7 @@ fn test_provider_config_with_kubernetes() {
 fn test_docker_config_default() {
     let config = DockerProviderConfig::default();
     assert_eq!(config.host, "/var/run/docker.sock");
-    assert_eq!(config.label_prefix, "a3s");
+    assert_eq!(config.label_prefix, "aster");
     assert_eq!(config.poll_interval_secs, 10);
 }
 
@@ -1591,7 +1591,7 @@ fn test_docker_config_defaults_in_acl() {
     let config = GatewayConfig::from_acl(acl).unwrap();
     let docker = config.providers.docker.unwrap();
     assert_eq!(docker.host, "/var/run/docker.sock");
-    assert_eq!(docker.label_prefix, "a3s");
+    assert_eq!(docker.label_prefix, "aster");
     assert_eq!(docker.poll_interval_secs, 10);
 }
 
@@ -1767,7 +1767,7 @@ fn default_docker_block_fails_validate_on_windows() {
 fn validate_rejects_docker_unix_socket_host_when_path_missing() {
     let mut config = GatewayConfig::default();
     config.providers.docker = Some(DockerProviderConfig {
-        host: "/tmp/a3s-gateway-missing-docker.sock".into(),
+        host: "/tmp/aster-gateway-missing-docker.sock".into(),
         ..DockerProviderConfig::default()
     });
     let error = config.validate().unwrap_err();
@@ -3057,12 +3057,12 @@ entrypoints "web" {{
   address = "127.0.0.1:0"
 }}
 inference {{
-    tokenizer_revision = "a3s.gateway.tokenizer.v1"
+    tokenizer_revision = "aster.gateway.tokenizer.v1"
     expires_at = "2099-01-01T00:00:00Z"
     credentials "00000000-0000-4000-8000-000000000010" {{
       environment_id = "00000000-0000-4000-8000-000000000030"
       audience = "cloud-inference"
-      prefix = "a3s_inf_x"
+      prefix = "aster_inf_x"
       verifier_hash = "h"
       generation = 1
       expires_at = "2099-01-01T00:00:00Z"
@@ -3141,12 +3141,12 @@ entrypoints "web" {
   address = "127.0.0.1:0"
 }
 inference {
-  tokenizer_revision = "a3s.gateway.tokenizer.v1"
+  tokenizer_revision = "aster.gateway.tokenizer.v1"
   expires_at = "2099-01-01T00:00:00Z"
   credentials "00000000-0000-4000-8000-000000000010" {
     environment_id = "00000000-0000-4000-8000-000000000030"
     audience = "cloud-inference"
-    prefix = "a3s_inf_x"
+    prefix = "aster_inf_x"
     verifier_hash = "h"
     generation = 1
     expires_at = "2099-01-01T00:00:00Z"
@@ -3210,12 +3210,12 @@ entrypoints "web" {
   address = "127.0.0.1:0"
 }
 inference {
-  tokenizer_revision = "a3s.gateway.tokenizer.v1"
+  tokenizer_revision = "aster.gateway.tokenizer.v1"
   expires_at = "2099-01-01T00:00:00Z"
   credentials "00000000-0000-4000-8000-000000000010" {
     environment_id = "00000000-0000-4000-8000-000000000030"
     audience = "cloud-inference"
-    prefix = "a3s_inf_x"
+    prefix = "aster_inf_x"
     verifier_hash = "h"
     generation = 1
     expires_at = "2099-01-01T00:00:00Z"
@@ -3265,7 +3265,7 @@ inference {
 fn test_validate_accepts_private_unix_http_entrypoint() {
     let config = GatewayConfig::from_acl(
         r#"
-        entrypoints "os-inference" { address = "unix:/tmp/a3s-gateway/inference.sock" }
+        entrypoints "os-inference" { address = "unix:/tmp/aster-gateway/inference.sock" }
     "#,
     )
     .unwrap();

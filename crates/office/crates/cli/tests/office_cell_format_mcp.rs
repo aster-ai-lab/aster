@@ -4,7 +4,7 @@ use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 #[tokio::test]
@@ -16,7 +16,7 @@ async fn native_standard_mcp_applies_typed_spreadsheet_cell_format_without_offic
     let document = temp.path().join("mcp-cell-format.xlsx");
     let mut child = tokio::process::Command::new(binary())
         .args(["mcp"])
-        .env("A3S_OFFICECLI_EXECUTABLE", &provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", &provider)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())

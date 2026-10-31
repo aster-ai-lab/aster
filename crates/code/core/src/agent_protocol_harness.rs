@@ -1,4 +1,4 @@
-//! Code-owned multi-session kernel for the native `a3s code harness` process.
+//! Code-owned multi-session kernel for the native `aster code harness` process.
 //!
 //! The executable supplies HTTP and health transport. This kernel owns only
 //! admission into existing `Agent`/`AgentSession` state and deliberately has
@@ -13,7 +13,7 @@ use crate::agent_protocol::{
 use crate::agent_protocol_host::{
     AgentProtocolExactRecoveryError, AgentProtocolHost, AgentProtocolHostError,
 };
-use crate::config::A3S_INFERENCE_PROVIDER;
+use crate::config::ASTER_INFERENCE_PROVIDER;
 use crate::error::CodeError;
 use crate::release::{agent_harness_compatibility_v1, AgentReleaseError, AgentReleaseManifest};
 use crate::session_checkpoint::{SessionCheckpointError, SessionCheckpointExportV1};
@@ -47,13 +47,13 @@ pub enum AgentProtocolHarnessError {
     Host(#[from] AgentProtocolHostError),
     #[error(transparent)]
     Code(#[from] CodeError),
-    #[error("A3S Code Harness session was not found")]
+    #[error("Aster Code Harness session was not found")]
     SessionNotFound,
-    #[error("A3S Code Harness session capacity is exhausted")]
+    #[error("Aster Code Harness session capacity is exhausted")]
     SessionCapacity,
-    #[error("A3S Code Harness is draining or stopped")]
+    #[error("Aster Code Harness is draining or stopped")]
     Closed,
-    #[error("A3S Code Harness workspace isolation failed: {0}")]
+    #[error("Aster Code Harness workspace isolation failed: {0}")]
     Workspace(String),
 }
 
@@ -64,10 +64,10 @@ impl AgentProtocolHarnessError {
             Self::Release(error) => error.code(),
             Self::Host(error) => error.code(),
             Self::Code(error) => error.code(),
-            Self::SessionNotFound => "a3s.code.agent_protocol.session_not_found",
-            Self::SessionCapacity => "a3s.code.agent_protocol.session_capacity",
-            Self::Closed => "a3s.code.agent_protocol.harness_closed",
-            Self::Workspace(_) => "a3s.code.agent_protocol.workspace_isolation",
+            Self::SessionNotFound => "aster.code.agent_protocol.session_not_found",
+            Self::SessionCapacity => "aster.code.agent_protocol.session_capacity",
+            Self::Closed => "aster.code.agent_protocol.harness_closed",
+            Self::Workspace(_) => "aster.code.agent_protocol.workspace_isolation",
         }
     }
 }
@@ -82,7 +82,7 @@ pub enum AgentProtocolCheckpointRecoveryError {
     Exact(#[from] AgentProtocolExactRecoveryError),
     #[error(transparent)]
     Checkpoint(#[from] SessionCheckpointError),
-    #[error("A3S Code Harness session is already active without the exact target Run")]
+    #[error("Aster Code Harness session is already active without the exact target Run")]
     SessionAlreadyActive,
 }
 
@@ -93,7 +93,7 @@ impl AgentProtocolCheckpointRecoveryError {
             Self::Exact(error) => error.code(),
             Self::Checkpoint(error) => error.code(),
             Self::SessionAlreadyActive => {
-                "a3s.code.agent_protocol.checkpoint_session_already_active"
+                "aster.code.agent_protocol.checkpoint_session_already_active"
             }
         }
     }
@@ -123,7 +123,7 @@ impl HarnessSessionWorkspace {
                 return Ok(Self::Shared(source));
             }
             let temporary_root = tempfile::Builder::new()
-                .prefix("a3s-code-harness-session-")
+                .prefix("aster-harness-session-")
                 .tempdir()
                 .map_err(|error| AgentProtocolHarnessError::Workspace(error.to_string()))?;
             let path = resume_workspace.unwrap_or_else(|| temporary_root.path().join("workspace"));
@@ -278,7 +278,7 @@ impl AgentProtocolHarness {
                 .models
                 .as_ref()
                 .and_then(|models| models.first())
-                .map(|pin| format!("{A3S_INFERENCE_PROVIDER}/{}", pin.alias)),
+                .map(|pin| format!("{ASTER_INFERENCE_PROVIDER}/{}", pin.alias)),
             _ => None,
         };
         let host =
@@ -662,13 +662,13 @@ mod tests {
         assert_eq!(errors[3].code(), CodeError::TaskSchedulerClosed.code());
         assert_eq!(
             errors[4].code(),
-            "a3s.code.agent_protocol.session_not_found"
+            "aster.code.agent_protocol.session_not_found"
         );
-        assert_eq!(errors[5].code(), "a3s.code.agent_protocol.session_capacity");
-        assert_eq!(errors[6].code(), "a3s.code.agent_protocol.harness_closed");
+        assert_eq!(errors[5].code(), "aster.code.agent_protocol.session_capacity");
+        assert_eq!(errors[6].code(), "aster.code.agent_protocol.harness_closed");
         assert_eq!(
             errors[7].code(),
-            "a3s.code.agent_protocol.workspace_isolation"
+            "aster.code.agent_protocol.workspace_isolation"
         );
         for error in &errors {
             assert!(!error.to_string().is_empty());
@@ -726,7 +726,7 @@ mod tests {
         );
         assert_eq!(
             errors[3].code(),
-            "a3s.code.agent_protocol.checkpoint_session_already_active"
+            "aster.code.agent_protocol.checkpoint_session_already_active"
         );
         for error in &errors {
             assert!(!error.to_string().is_empty());

@@ -7,7 +7,7 @@
 use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
 
-pub const SESSION_STORE_WRITER_LEASE_SCHEMA_V1: &str = "a3s.code.session-store-writer-lease.v1";
+pub const SESSION_STORE_WRITER_LEASE_SCHEMA_V1: &str = "aster.code.session-store-writer-lease.v1";
 
 /// Durable writer lease published by a session store that advertises
 /// [`super::SessionStoreCapabilities::lease_fencing`].

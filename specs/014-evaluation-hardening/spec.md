@@ -76,7 +76,7 @@ Tool schemas match execution. Approval stays bound to the exact admitted invocat
 - [x] Each behavior task names its owning hermetic test in tasks.md.
 - [x] New closed operation sets use explicit parsing and stable serialized names.
 - [x] No new production unwrap/expect without an infallibility argument.
-- [x] Internal A3S dependencies remain local; no new SDK bindings or workspace.
+- [x] Internal Aster dependencies remain local; no new SDK bindings or workspace.
 - [x] No new product configuration format; existing ACL governs authority.
 - [x] Evidence target: docs/evidence/code/2026-10-23-evaluation-hardening/OUTCOME.md.
 

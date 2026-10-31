@@ -67,7 +67,7 @@ async fn repeated_observations_under_new_run_identities_stop_and_stay_stalled_af
                 client.calls.load(Ordering::SeqCst),
                 facts
                     .iter()
-                    .rfind(|fact| fact.kind == "a3s.goal.slice.settled")
+                    .rfind(|fact| fact.kind == "aster.goal.slice.settled")
                     .unwrap()
                     .payload["body"]["progress"]
             );
@@ -88,7 +88,7 @@ async fn repeated_observations_under_new_run_identities_stop_and_stay_stalled_af
         );
         let progress: Vec<_> = all
             .iter()
-            .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+            .filter(|fact| fact.kind == "aster.goal.slice.settled")
             .map(|fact| {
                 fact.payload["body"]["progress"]["information_delta"]
                     .as_u64()
@@ -99,7 +99,7 @@ async fn repeated_observations_under_new_run_identities_stop_and_stay_stalled_af
             .iter()
             .filter(|fact| fact.kind == "tool.result")
             .filter_map(|fact| {
-                serde_json::from_value::<a3s_effect::ToolExecutionResultV1>(
+                serde_json::from_value::<aster_effect::ToolExecutionResultV1>(
                     fact.payload["receipt"].clone(),
                 )
                 .ok()

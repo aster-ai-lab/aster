@@ -6,7 +6,7 @@
 //! be safely indexed, return [`GrepCandidateSelection::Unconstrained`] so the
 //! existing full-scan path remains authoritative.
 //!
-//! This plane is intentionally separate from durable a3s-vec FTS/BM25.
+//! This plane is intentionally separate from durable aster-vec FTS/BM25.
 
 use std::collections::BTreeSet;
 use std::sync::Arc;
@@ -104,7 +104,7 @@ mod tests {
                     ("README.md", "no match here\n"),
                 ],
             );
-            let index_dir = root.join(".a3s-code/grep-trigram");
+            let index_dir = root.join(".aster/grep-trigram");
             let index =
                 TrigramGrepCandidateIndex::build_from_files(root, &index_dir, &files).unwrap();
 
@@ -138,7 +138,7 @@ mod tests {
                     ("other.rs", "fn alpha() {}\n"),
                 ],
             );
-            let index_dir = root.join(".a3s-code/grep-trigram");
+            let index_dir = root.join(".aster/grep-trigram");
             let index =
                 TrigramGrepCandidateIndex::build_from_files(root, &index_dir, &files).unwrap();
 
@@ -156,7 +156,7 @@ mod tests {
             let dir = tempdir().unwrap();
             let root = dir.path();
             let files = write_tree(root, &[("a.txt", "abc\n"), ("b.txt", "def\n")]);
-            let index_dir = root.join(".a3s-code/grep-trigram");
+            let index_dir = root.join(".aster/grep-trigram");
             let index =
                 TrigramGrepCandidateIndex::build_from_files(root, &index_dir, &files).unwrap();
 
@@ -177,7 +177,7 @@ mod tests {
                 ("four.rs", "nothing interesting\n"),
             ];
             let files = write_tree(root, &bodies);
-            let index_dir = root.join(".a3s-code/grep-trigram");
+            let index_dir = root.join(".aster/grep-trigram");
             let index =
                 TrigramGrepCandidateIndex::build_from_files(root, &index_dir, &files).unwrap();
 
@@ -218,7 +218,7 @@ mod tests {
                 ],
             );
 
-            let index_dir = root.join(".a3s-code/grep-trigram");
+            let index_dir = root.join(".aster/grep-trigram");
             let index = Arc::new(
                 TrigramGrepCandidateIndex::build_from_files(root, &index_dir, &files).unwrap(),
             );
@@ -318,10 +318,10 @@ mod tests {
                 "first grep must auto-attach the trigram candidate index"
             );
             assert!(
-                root.join(".a3s-code/grep-trigram").exists(),
-                "auto index must land under .a3s-code/grep-trigram"
+                root.join(".aster/grep-trigram").exists(),
+                "auto index must land under .aster/grep-trigram"
             );
-            // Grep still must not open durable a3s-vec FTS.
+            // Grep still must not open durable aster-vec FTS.
             assert!(backend.persistent_index().is_none());
         }
 

@@ -148,7 +148,7 @@ touched files.
 - **FR-006**: No locale divergence beyond product-name strings; all new
   strings follow the i18n gate (`en-us.json` source, `i18n:sync`).
 - **FR-007**: Data isolation is unchanged: bundle/app IDs
-  (`dev.a3s.studio.aster` / `dev.a3s.studio`), stores, locks, WebView and
+  (`dev.aster.studio.aster` / `dev.aster.studio`), stores, locks, WebView and
   runtime namespaces stay separate. **NON-NEGOTIABLE** even under future
   phase A.
 - **FR-008**: The 2026-10-22 revert (shell files to HEAD, `AsterShellNav`
@@ -161,7 +161,7 @@ touched files.
 ### Key Entities
 
 - **Tenant stamp**: `PUBLIC_STUDIO_TENANT` (renderer, compile-time) and
-  `A3S_TENANT_SLUG` (dev/build); `scripts/studio_product.py` resolves
+  `ASTER_TENANT_SLUG` (dev/build); `scripts/studio_product.py` resolves
   `tenant-aster` / `tenant-toyou` cargo features.
 - **`tenantBrand.ts`**: the only sanctioned brand surface (name, marks,
   company strings).
@@ -175,7 +175,7 @@ touched files.
 - [ ] Closed sets: the divergence inventory is the closed set; verified in
       plan's constitution check
 - [x] No production `unwrap()` / `expect()` — TypeScript surface; lint gates
-- [x] Internal `a3s-*` dependencies stay on local paths — no new deps
+- [x] Internal `aster-*` dependencies stay on local paths — no new deps
 - [x] Product configuration, if any, is ACL — none introduced
 - [x] Evidence target:
       `docs/evidence/desktop/2026-10-22-tenant-parity-phase-b/OUTCOME.md`

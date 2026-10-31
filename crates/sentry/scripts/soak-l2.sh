@@ -30,7 +30,7 @@ sleep 1
 echo "soak-l2: $BIN for ${DUR}s, mock-LLM delay=${DELAY}s, 4 workers"
 
 # generator: ~95% benign (L1 fast-path) + ~5% escalations (→ slow L2)
-python3 - "$DUR" <<'PY' | A3S_SENTRY_LLM_URL="http://127.0.0.1:${PORT}/v1" A3S_SENTRY_LLM_KEY=x A3S_SENTRY_WORKERS=4 A3S_SENTRY_QUEUE=128 A3S_SENTRY_LLM_TIMEOUT=10 "$BIN" >/dev/null 2>"$WORK/err" &
+python3 - "$DUR" <<'PY' | ASTER_SENTRY_LLM_URL="http://127.0.0.1:${PORT}/v1" ASTER_SENTRY_LLM_KEY=x ASTER_SENTRY_WORKERS=4 ASTER_SENTRY_QUEUE=128 ASTER_SENTRY_LLM_TIMEOUT=10 "$BIN" >/dev/null 2>"$WORK/err" &
 import sys, time
 end = time.time() + float(sys.argv[1]); i = 0; w = sys.stdout.write; buf = []
 benign = '{"event":{"ToolExec":{"pid":%d,"argv":["ls","-la"]}}}'

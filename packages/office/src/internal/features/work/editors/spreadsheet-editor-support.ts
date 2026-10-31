@@ -361,7 +361,7 @@ function recordSpreadsheetProjectionMeasure(
 ): void {
   try {
     globalThis.performance?.measure(
-      'a3s-office.spreadsheet.fortune-projection',
+      'aster-office.spreadsheet.fortune-projection',
       { detail, end, start },
     );
   } catch {
@@ -492,7 +492,7 @@ function recordSpreadsheetControlledProjectionMeasure(
 ): void {
   try {
     globalThis.performance?.measure(
-      'a3s-office.spreadsheet.controlled-projection',
+      'aster-office.spreadsheet.controlled-projection',
       { detail, end, start },
     );
   } catch {

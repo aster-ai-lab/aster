@@ -1,10 +1,10 @@
 use serde::{Deserialize, Serialize};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use super::model::{lifecycle_error, valid_sha256, PluginLifecycleIntent};
 
-pub const PLUGIN_LIFECYCLE_OPERATION_SCHEMA: &str = "a3s.use.plugin-lifecycle-operation.v2";
+pub const PLUGIN_LIFECYCLE_OPERATION_SCHEMA: &str = "aster.use.plugin-lifecycle-operation.v2";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]

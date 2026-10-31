@@ -1,0 +1,28 @@
+extension "aster/langchain-rate" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "langchain-rate"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url = "https://github.com/aster/langchain-rate"
+  }
+
+  mcp "rate" {
+    transport = "catalog"
+    server    = "mcp/rate/server.json"
+  }
+
+  agent "aster-langchain-rate" {
+    harness      = "package"
+    entry        = "mcp/rate/server.mjs"
+    runtime      = "edge"
+    requires_mcp = ["rate"]
+
+    resources {
+      cpu_millis   = 500
+      memory_bytes = 268435456
+    }
+  }
+}

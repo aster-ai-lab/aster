@@ -1,6 +1,6 @@
 #![cfg(feature = "native-ts")]
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, InMemoryEventStore, NativeTsCompilerCapabilities, NativeTsDependencyMode,
     NativeTsRuntime, NativeTsRuntimeConfig, WorkflowRunStatus, WorkflowSpec,
     NATIVE_COMPILER_PROTOCOL,
@@ -11,11 +11,11 @@ use std::sync::Arc;
 use tokio::process::Command;
 
 #[tokio::test(flavor = "current_thread")]
-#[ignore = "requires A3S_FLOW_NATIVE_TS_COMPILER and Bun"]
+#[ignore = "requires ASTER_FLOW_NATIVE_TS_COMPILER and Bun"]
 async fn native_ts_compiler_executes_real_bun_workflow() {
     let compiler = PathBuf::from(
-        std::env::var_os("A3S_FLOW_NATIVE_TS_COMPILER")
-            .expect("A3S_FLOW_NATIVE_TS_COMPILER must name the compiler under test"),
+        std::env::var_os("ASTER_FLOW_NATIVE_TS_COMPILER")
+            .expect("ASTER_FLOW_NATIVE_TS_COMPILER must name the compiler under test"),
     );
     let capabilities_output = Command::new(&compiler)
         .arg("capabilities")

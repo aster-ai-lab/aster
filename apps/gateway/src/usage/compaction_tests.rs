@@ -59,7 +59,7 @@ fn compacted_bytes(source: &[u8], first_sequence: u64) -> Vec<u8> {
     assert!(first_record < source_lines.len());
     let mut header: serde_json::Value =
         serde_json::from_slice(&source_lines[0][..source_lines[0].len() - 1]).unwrap();
-    header["schema"] = serde_json::Value::String("a3s.gateway.usage-spool-segment.v2".to_string());
+    header["schema"] = serde_json::Value::String("aster.gateway.usage-spool-segment.v2".to_string());
     header["first_sequence"] = serde_json::json!(first_sequence);
     let mut bytes = serde_json::to_vec(&header).unwrap();
     bytes.push(b'\n');
@@ -133,7 +133,7 @@ async fn partial_closed_epoch_is_compacted_without_reencoding_retained_records()
     assert_eq!(compacted_lines[1], retained_line);
     let header: serde_json::Value =
         serde_json::from_slice(&compacted_lines[0][..compacted_lines[0].len() - 1]).unwrap();
-    assert_eq!(header["schema"], "a3s.gateway.usage-spool-segment.v2");
+    assert_eq!(header["schema"], "aster.gateway.usage-spool-segment.v2");
     assert_eq!(header["first_sequence"], 2);
     let manifest = read_manifest(directory.path()).await;
     let descriptor = manifest["epochs"]

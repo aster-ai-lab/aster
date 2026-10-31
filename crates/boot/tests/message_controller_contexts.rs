@@ -3,7 +3,7 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_boot::{
+use aster_boot::{
     injectable, BootApplication, BootError, BoxFuture, CallHandler, ProviderDefinition, Result,
     TransportContext, TransportInterceptor, TransportMessage, TransportReply,
 };
@@ -43,11 +43,11 @@ impl RequestMessageController {
     }
 }
 
-#[a3s_boot::message_controller]
-#[a3s_boot::metadata("controller", "request")]
+#[aster_boot::message_controller]
+#[aster_boot::metadata("controller", "request")]
 impl RequestMessageController {
-    #[a3s_boot::message_pattern("macro.context.request.typed")]
-    #[a3s_boot::metadata("binding", "typed")]
+    #[aster_boot::message_pattern("macro.context.request.typed")]
+    #[aster_boot::metadata("binding", "typed")]
     async fn typed(&self, payload: TypedPayload) -> Result<ControllerReply> {
         Ok(ControllerReply {
             controller_id: self.id,
@@ -55,8 +55,8 @@ impl RequestMessageController {
         })
     }
 
-    #[a3s_boot::event_pattern("macro.context.request.event")]
-    async fn event(&self, #[a3s_boot::payload("value")] value: String) -> Result<()> {
+    #[aster_boot::event_pattern("macro.context.request.event")]
+    async fn event(&self, #[aster_boot::payload("value")] value: String) -> Result<()> {
         REQUEST_EVENTS.lock().unwrap().push((self.id, value));
         Ok(())
     }
@@ -96,11 +96,11 @@ impl TransportInterceptor for RetryOnce {
     }
 }
 
-#[a3s_boot::message_controller]
+#[aster_boot::message_controller]
 impl TransientMessageController {
-    #[a3s_boot::message_pattern("macro.context.transient.retry")]
-    #[a3s_boot::use_interceptor(RetryOnce)]
-    async fn retry(&self, #[a3s_boot::payload("value")] value: String) -> Result<ControllerReply> {
+    #[aster_boot::message_pattern("macro.context.transient.retry")]
+    #[aster_boot::use_interceptor(RetryOnce)]
+    async fn retry(&self, #[aster_boot::payload("value")] value: String) -> Result<ControllerReply> {
         TRANSIENT_ATTEMPTS.lock().unwrap().push(self.id);
         if self.attempts.fetch_add(1, Ordering::SeqCst) == 0 {
             return Err(BootError::Internal(
@@ -126,9 +126,9 @@ struct ContextualSingletonMessageController {
     state: Arc<ContextState>,
 }
 
-#[a3s_boot::message_controller]
+#[aster_boot::message_controller]
 impl ContextualSingletonMessageController {
-    #[a3s_boot::message_pattern("macro.context.singleton.bubbled")]
+    #[aster_boot::message_pattern("macro.context.singleton.bubbled")]
     async fn current(&self, message: TransportMessage) -> Result<ControllerReply> {
         Ok(ControllerReply {
             controller_id: self.state.id,
@@ -152,9 +152,9 @@ impl PureSingletonMessageController {
     }
 }
 
-#[a3s_boot::message_controller]
+#[aster_boot::message_controller]
 impl PureSingletonMessageController {
-    #[a3s_boot::message_pattern("macro.context.singleton.pure")]
+    #[aster_boot::message_pattern("macro.context.singleton.pure")]
     async fn current(&self, payload: TypedPayload) -> Result<ControllerReply> {
         Ok(ControllerReply {
             controller_id: self.id,
@@ -163,7 +163,7 @@ impl PureSingletonMessageController {
     }
 }
 
-#[a3s_boot::module(
+#[aster_boot::module(
     name = "macro-context-message-controllers",
     providers = [
         ProviderDefinition::request_scoped::<ContextState, _>(|_| {

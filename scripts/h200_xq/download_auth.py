@@ -46,7 +46,7 @@ def socks_authentication():
         return None
     value = json.loads(path.read_text())
     username, password = value.get('username'), value.get('password')
-    if (username != 'a3s-download' or not isinstance(password, str) or len(password) != 64
+    if (username != 'aster-download' or not isinstance(password, str) or len(password) != 64
             or any(character not in '0123456789abcdef' for character in password)):
         raise RuntimeError('download authentication record has an invalid format')
     return username.encode('ascii'), password.encode('ascii')

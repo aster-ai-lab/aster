@@ -1,8 +1,8 @@
 use std::io::{self, Read};
 use std::path::PathBuf;
 
-use a3s_oci_runtime::{MacosHvfHostService, MacosHvfHostServiceConfig};
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_runtime::{MacosHvfHostService, MacosHvfHostServiceConfig};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use tokio::signal::unix::{signal, SignalKind};
 
 #[cfg(test)]

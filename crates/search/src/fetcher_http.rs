@@ -115,8 +115,8 @@ impl PageFetcher for HttpFetcher {
 ///
 /// ```rust,no_run
 /// use std::sync::Arc;
-/// use a3s_search::proxy::{ProxyPool, ProxyConfig};
-/// use a3s_search::PooledHttpFetcher;
+/// use aster_search::proxy::{ProxyPool, ProxyConfig};
+/// use aster_search::PooledHttpFetcher;
 ///
 /// let pool = Arc::new(ProxyPool::with_proxies(vec![
 ///     ProxyConfig::new("10.0.0.1", 8080),

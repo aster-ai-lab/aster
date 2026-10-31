@@ -11,14 +11,14 @@ use super::{
     Sha256Digest,
 };
 
-pub const CAPABILITY_SET_SCHEMA: &str = "a3s.code.capability-set.v1";
-pub const CAPABILITY_SET_DIGEST_DOMAIN: &str = "a3s.code.capability-set.v1";
+pub const CAPABILITY_SET_SCHEMA: &str = "aster.code.capability-set.v1";
+pub const CAPABILITY_SET_DIGEST_DOMAIN: &str = "aster.code.capability-set.v1";
 pub const MAX_CAPABILITY_SOURCES: usize = 1_024;
 pub const MAX_CAPABILITIES: usize = 4_096;
 pub const MAX_CAPABILITY_DEPENDENCY_EDGES: usize = 32_768;
 pub const MAX_CAPABILITY_CANONICAL_BYTES: u64 = 16 * 1024 * 1024;
 
-const CAPABILITY_DIGEST_PREFIX: &[u8] = b"a3s-code-capability\0";
+const CAPABILITY_DIGEST_PREFIX: &[u8] = b"aster-capability\0";
 
 /// Canonically ordered immutable capability identity set.
 ///
@@ -310,7 +310,7 @@ mod tests {
 
     #[test]
     fn external_sources_cannot_shadow_a_sealed_builtin() {
-        let builtin = CapabilitySource::builtin("a3s-code", digest('a')).unwrap();
+        let builtin = CapabilitySource::builtin("aster", digest('a')).unwrap();
         let external = CapabilitySource::host("desktop", digest('b')).unwrap();
         let builtin_read = CapabilityDescriptor::new(
             &builtin,

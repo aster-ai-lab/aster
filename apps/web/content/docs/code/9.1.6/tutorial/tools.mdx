@@ -12,7 +12,7 @@ export const meta = {
 在练习包依赖中增加工作区的 `async-trait` 和 `serde_json`。创建 `src/project_label.rs`：
 
 ```rust
-use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
+use aster_core::tools::{Tool, ToolContext, ToolOutput};
 use serde_json::{Value, json};
 
 pub struct ProjectLabel;
@@ -43,7 +43,7 @@ impl Tool for ProjectLabel {
 
 ```rust
 use std::sync::Arc;
-use a3s_code_core::AgentSession;
+use aster_core::AgentSession;
 
 fn install_label(session: &AgentSession) -> anyhow::Result<()> {
     session.register_dynamic_tool(Arc::new(crate::project_label::ProjectLabel))?;

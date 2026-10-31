@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{FileLog, LogStore, MemoryLog};
+use aster_effect::{FileLog, LogStore, MemoryLog};
 
 mod import;
 
@@ -139,7 +139,7 @@ fn corrupted_or_future_definition_sources_fail_closed() {
     for mutation in 0..7 {
         let mut facts = original.clone();
         match mutation {
-            0 => facts[0].kind = "a3s.goal.future".into(),
+            0 => facts[0].kind = "aster.goal.future".into(),
             1 => facts[0].kind = GoalFactKindV1::PlanAccepted.as_str().into(),
             2 => facts[0].key = "foreign".into(),
             3 => facts[0].cause = Some("foreign-run".into()),

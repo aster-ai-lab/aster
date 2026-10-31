@@ -1,7 +1,7 @@
 #[cfg(feature = "boot")]
-use a3s_boot::{ModuleRef, Queue, QueueOptions, QueueRetryPolicy};
+use aster_boot::{ModuleRef, Queue, QueueOptions, QueueRetryPolicy};
 #[cfg(feature = "boot")]
-use a3s_flow::{
+use aster_flow::{
     BootFlowTaskDeduplication, BootFlowTaskManager, BootFlowTaskPolicy, FlowEngine, FlowError,
     FlowRuntime, FlowScheduler, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowRunStatus, WorkflowSpec,
@@ -26,7 +26,7 @@ impl FlowRuntime for ReminderRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.wait_completed("reminder") {
             return Ok(context.complete(json!({ "delivered": true })));
@@ -39,14 +39,14 @@ impl FlowRuntime for ReminderRuntime {
         Ok(context.wait_until("reminder", resume_at))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("Boot task policy example does not schedule steps")
     }
 }
 
 #[cfg(feature = "boot")]
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let now = Utc::now();
     let engine = FlowEngine::in_memory(Arc::new(ReminderRuntime));
     let run_id = engine
@@ -85,7 +85,7 @@ async fn main() -> a3s_flow::Result<()> {
     tokio::time::timeout(Duration::from_secs(1), async {
         loop {
             if engine.snapshot(&run_id).await?.status == WorkflowRunStatus::Completed {
-                return Ok::<(), a3s_flow::FlowError>(());
+                return Ok::<(), aster_flow::FlowError>(());
             }
             tokio::time::sleep(Duration::from_millis(5)).await;
         }
@@ -101,8 +101,8 @@ async fn main() -> a3s_flow::Result<()> {
 }
 
 #[cfg(feature = "boot")]
-fn boot_error(error: a3s_boot::BootError) -> FlowError {
-    FlowError::TaskManagement(format!("A3S Boot queue error: {error}"))
+fn boot_error(error: aster_boot::BootError) -> FlowError {
+    FlowError::TaskManagement(format!("Aster Boot queue error: {error}"))
 }
 
 #[cfg(not(feature = "boot"))]

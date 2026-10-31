@@ -3,7 +3,7 @@
 //! encoding/encoding.py SHA-256 13231c592e958fb39e2af6001dae69d90e7a36b265702b9b390236fb387599e2.
 //! See licenses/DeepSeek-MIT.txt. Tool/image formats require their own adapters.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use tokenizers::Tokenizer;

@@ -188,7 +188,7 @@ fn snapshot_cursor_rejects_noncanonical_unleasable_routes() {
     );
 
     let mut unbounded = canonical;
-    unbounded.unleasable_routes = (0..=a3s_use_core::MAX_PLUGIN_PLAN_ITEMS)
+    unbounded.unleasable_routes = (0..=aster_use_core::MAX_PLUGIN_PLAN_ITEMS)
         .map(|index| format!("route-{index:05}"))
         .collect();
     assert_eq!(

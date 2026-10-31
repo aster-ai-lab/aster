@@ -245,7 +245,7 @@ export class DocxEquationPatchCollector {
     }
     let marker = '';
     do {
-      marker = `__A3S_EQUATION_${this.nextMarker}__`;
+      marker = `__ASTER_EQUATION_${this.nextMarker}__`;
       this.nextMarker += 1;
     } while (this.source.includes(marker));
     this.patches.push(
@@ -2345,7 +2345,7 @@ function ensureMathPrefix(root: Element): string {
   let index = 1;
   let prefix = '';
   do {
-    prefix = `a3sm${index}`;
+    prefix = `asterm${index}`;
     index += 1;
   } while (xmlNamespaceUri(root, prefix));
   root.setAttributeNS(XMLNS_NAMESPACE, `xmlns:${prefix}`, MATH_NAMESPACE);
@@ -2363,7 +2363,7 @@ function ensureWordPrefix(root: Element): string {
   let index = 1;
   let prefix = '';
   do {
-    prefix = `a3sw${index}`;
+    prefix = `asterw${index}`;
     index += 1;
   } while (xmlNamespaceUri(root, prefix));
   root.setAttributeNS(XMLNS_NAMESPACE, `xmlns:${prefix}`, WORD_NAMESPACE);
@@ -2372,7 +2372,7 @@ function ensureWordPrefix(root: Element): string {
 
 function ensureWord2010Prefix(root: Element): string {
   const existing = xmlDeclaredPrefix(root, WORD_2010_NAMESPACE);
-  const prefix = existing ?? availableNamespacePrefix(root, 'w14', 'a3sw14');
+  const prefix = existing ?? availableNamespacePrefix(root, 'w14', 'asterw14');
   if (!existing) {
     root.setAttributeNS(
       XMLNS_NAMESPACE,
@@ -2400,7 +2400,7 @@ function ensureIgnorableNamespace(
   }
   const compatibilityPrefix =
     xmlDeclaredPrefix(root, MARKUP_COMPATIBILITY_NAMESPACE) ??
-    availableNamespacePrefix(root, 'mc', 'a3smc');
+    availableNamespacePrefix(root, 'mc', 'astermc');
   if (!xmlDeclaredPrefix(root, MARKUP_COMPATIBILITY_NAMESPACE)) {
     root.setAttributeNS(
       XMLNS_NAMESPACE,
@@ -2446,7 +2446,7 @@ function ensureWordDateUtcPrefix(root: Element): string {
   let index = 1;
   let prefix = '';
   do {
-    prefix = `a3sw16du${index}`;
+    prefix = `asterw16du${index}`;
     index += 1;
   } while (xmlNamespaceUri(root, prefix));
   root.setAttributeNS(

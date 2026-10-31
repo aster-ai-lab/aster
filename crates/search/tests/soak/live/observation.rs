@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use a3s_search::{
+use aster_search::{
     EngineOutcome, EngineOutcomeKind, RetrievalRequirements, SearchCascade, SearchQuery,
 };
 
@@ -326,7 +326,7 @@ fn validate_engine_call_chain(calls: &[&UpstreamCallReceipt]) -> Result<(), Stri
 
 fn validate_result_attribution(
     outcomes: &[EngineOutcome],
-    results: &[a3s_search::SearchResult],
+    results: &[aster_search::SearchResult],
 ) -> Result<(), String> {
     let successful = outcomes
         .iter()

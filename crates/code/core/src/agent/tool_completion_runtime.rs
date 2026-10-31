@@ -316,7 +316,7 @@ impl crate::agent::TurnEngine {
     pub(crate) fn record_native_artifact_verification(
         &self,
         call: &ToolCall,
-        result: &a3s_effect::ToolExecutionResultV1,
+        result: &aster_effect::ToolExecutionResultV1,
         output: &str,
         metadata: &mut Option<serde_json::Value>,
         ledger: &mut crate::harness_loop::MutationLedger,
@@ -325,9 +325,9 @@ impl crate::agent::TurnEngine {
     ) {
         if result.validate().is_err()
             || result.identity.tool_call_id != call.id
-            || result.outcome != a3s_effect::ToolExecutionOutcome::Succeeded
+            || result.outcome != aster_effect::ToolExecutionOutcome::Succeeded
             || result.exit_code != Some(0)
-            || result.effects.completeness != a3s_effect::ToolObservationCompleteness::Complete
+            || result.effects.completeness != aster_effect::ToolObservationCompleteness::Complete
             || !result.effects.unresolved_external_operations.is_empty()
             || metadata.as_ref().is_some_and(|value| {
                 !value.is_object() || value.get("verification_report").is_some()

@@ -1,10 +1,10 @@
-# A3S Flow Execution-Kernel Roadmap
+# Aster Flow Execution-Kernel Roadmap
 
 **Planning baseline: 2026-09-05.**
 
-This roadmap defines the work required for A3S Flow to become a world-class
+This roadmap defines the work required for Aster Flow to become a world-class
 durable execution kernel. It is deliberately narrower than a hosted workflow
-platform. A3S Cloud owns the hosted control plane, tenant policy, product
+platform. Aster Cloud owns the hosted control plane, tenant policy, product
 connectors, user-facing operations, and deployment fleet. Flow owns the
 replayable execution semantics that Cloud and other hosts consume.
 
@@ -55,7 +55,7 @@ stores, durable queues, and observer bridges. This roadmap extends those
 contracts without creating a second lifecycle authority.
 
 The Cloud-owned companion is the
-[Flow execution-integration roadmap](https://github.com/A3S-Lab/Cloud/blob/main/docs/flow-execution-integration-roadmap.md),
+[Flow execution-integration roadmap](https://github.com/aster-ai-lab/Cloud/blob/main/docs/flow-execution-integration-roadmap.md),
 which plans Operations, Outbox, product adapters, visibility, schedules,
 tenant policy, and platform recovery around this kernel.
 
@@ -333,7 +333,7 @@ The observability bridge now preserves stable step/activity attempt correlation
 for host logs, traces, and audit sinks while keeping those high-cardinality
 identities out of metric labels. Ambient W3C Trace Context propagation is also
 implemented: hosts bind `FlowTraceContext` with `with_trace_context` so
-invocations and `A3sFlowEvent` records can carry `traceparent` / `tracestate`
+invocations and `AsterFlowEvent` records can carry `traceparent` / `tracestate`
 without embedding those carriers in replay history. The first visibility
 projection contract is also implemented: `FlowEngine::visibility_projection`
 returns a tip-anchored, schema-versioned summary rebuildable from history or a
@@ -408,7 +408,7 @@ replay retained histories from every supported schema and runtime baseline.
 
 ## 5. Cloud integration contract
 
-A3S Cloud must consume Flow through the public engine, store, worker, and event
+Aster Cloud must consume Flow through the public engine, store, worker, and event
 protocols. Cloud owns the product aggregate, tenant authorization, Operation,
 Outbox, Lane admission, Workloads/Fleet placement, and user-facing control
 plane. Flow must never import Cloud repositories or product node semantics.

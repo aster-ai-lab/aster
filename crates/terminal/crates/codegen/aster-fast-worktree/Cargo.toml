@@ -1,0 +1,88 @@
+[package]
+license = "Apache-2.0"
+name = "aster-fast-worktree"
+version = "0.1.0"
+description = "High-performance git worktree creation using CoW cloning"
+edition = "2024"
+publish = false
+
+[[bin]]
+name = "fast-worktree"
+path = "src/bin/cli.rs"
+
+[[bin]]
+name = "pool-perf-bench"
+path = "src/bin/pool_perf_bench.rs"
+required-features = ["bench"]
+[[bin]]
+name = "worktree-lifecycle-bench"
+path = "src/bin/worktree_lifecycle_bench.rs"
+required-features = ["lifecycle-bench"]
+
+[features]
+default-bazel = ["metadata"]
+bench = []
+lifecycle-bench = [
+    "metadata",
+    "dep:sha2",
+    "dep:url",
+    "dep:uuid",
+]
+# SQLite metadata DB for worktree tracking.
+metadata = ["dep:rusqlite", "dep:aster-sqlite-journal"]
+
+[dependencies]
+anyhow = {workspace = true}
+bytes = {workspace = true}
+clap = {workspace = true}
+crossbeam = {version = "0.8"}
+dashmap = {workspace = true}
+dunce = {workspace = true}
+gix = {version = "0.83", default-features = false, features = ["sha1", "status", "parallel"]}
+gix-status = {version = "0.30.0"}
+globset = {workspace = true}
+ignore = {workspace = true}
+libc = {workspace = true}
+num_cpus = {workspace = true}
+
+reflink-copy = {version = "0.1"}
+rapidhash = "4.2.0"
+rusqlite = {workspace = true, optional = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+strum = {workspace = true}
+sha2 = {version = "0.10", features = ["force-soft"], optional = true}
+tokio-util = {workspace = true}
+tempfile = {workspace = true}
+tracing = {workspace = true}
+tracing-subscriber = {workspace = true}
+url = {workspace = true, optional = true}
+uuid = {workspace = true, optional = true}
+aster-tty-utils = {path = "../aster-tty-utils"}
+aster-sqlite-journal = {optional = true, path = "../aster-sqlite-journal"}
+aster-gix-status = {path = "../aster-gix-status"}
+aster-dirs = {path = "../aster-dirs"}
+
+[dev-dependencies]
+tempfile = {workspace = true}
+serde_json = {workspace = true}
+# Unconditional because cargo doesn't support feature-gated dev-deps cleanly.
+# Only used by tests behind #[cfg(feature = "metadata")] in db/tests.rs.
+rusqlite = {workspace = true}
+aster-test-utils = {path = "../../common/aster-test-utils"}
+
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+
+[target.'cfg(windows)'.dependencies]
+
+[target.'cfg(target_os = "linux")'.dev-dependencies]
+nix = {version = "0.30", features = ["fs"]}
+
+[target.'cfg(target_os = "linux")'.dependencies]
+nix = {version = "0.30", features = ["fs"]}
+serde = {workspace = true}
+serde_json = {workspace = true}
+
+[lints]
+workspace = true

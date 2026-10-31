@@ -1,14 +1,14 @@
 //! Deterministic end-to-end benchmark for agent convergence and crash recovery.
 //!
 //! Run with:
-//! `cargo run -p a3s-code-core --example agent_convergence_benchmark --release`
+//! `cargo run -p aster-core --example agent_convergence_benchmark --release`
 
-use a3s_code_core::hitl::AutoApproveConfirmation;
-use a3s_code_core::llm::{StreamEvent, ToolDefinition};
-use a3s_code_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
-use a3s_code_core::permissions::PermissionPolicy;
-use a3s_code_core::store::{MemorySessionStore, SessionStore};
-use a3s_code_core::{
+use aster_core::hitl::AutoApproveConfirmation;
+use aster_core::llm::{StreamEvent, ToolDefinition};
+use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
+use aster_core::permissions::PermissionPolicy;
+use aster_core::store::{MemorySessionStore, SessionStore};
+use aster_core::{
     Agent, CodeConfig, ContentBlock, LlmClient, LlmResponse, Message, PlanningMode, SessionOptions,
     TokenUsage,
 };
@@ -193,7 +193,7 @@ fn config() -> CodeConfig {
     // This benchmark measures foreground convergence and crash recovery. LLM
     // memory extraction is an intentionally detached background workload and
     // would make provider-call counts depend on task scheduling.
-    config.memory = Some(a3s_code_core::memory::MemoryConfig {
+    config.memory = Some(aster_core::memory::MemoryConfig {
         llm_extraction: false,
         ..Default::default()
     });
@@ -296,7 +296,7 @@ async fn incomplete_response_converges(agent: &Agent) -> Result<CaseResult> {
     ]));
     let session = agent
         .session_async(
-            "/tmp/a3s-convergence-benchmark".to_string(),
+            "/tmp/aster-convergence-benchmark".to_string(),
             Some(
                 base_options(client.clone())
                     .with_continuation(true)
@@ -403,7 +403,7 @@ async fn checkpoint_resume_preserves_accounting(agent: &Agent) -> Result<CaseRes
         .with_session_id("deterministic-benchmark-resume")
         .with_session_store(store_api);
     let session = agent
-        .session_async("/tmp/a3s-resume-benchmark".to_string(), Some(options))
+        .session_async("/tmp/aster-resume-benchmark".to_string(), Some(options))
         .await?;
     let started = Instant::now();
     let result = session.resume_run(run_id).await?;

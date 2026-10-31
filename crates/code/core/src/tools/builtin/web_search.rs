@@ -1,4 +1,4 @@
-//! Web search tool - Search the web via a3s-search
+//! Web search tool - Search the web via aster-search
 
 mod engines;
 mod fallback;
@@ -10,10 +10,10 @@ use crate::config::{BrowserBackend, HeadlessConfig};
 use crate::moli_runtime::ensure_moli;
 use crate::tools::types::{Tool, ToolContext, ToolErrorKind, ToolOutput};
 #[cfg(feature = "headless-search")]
-use a3s_search::product::PendingHeadlessRuntime;
-use a3s_search::product::{execute_cascade, CascadeControls, CascadeRequest, HeadlessBrowser};
-use a3s_search::proxy::ProxyConfig;
-use a3s_search::{
+use aster_search::product::PendingHeadlessRuntime;
+use aster_search::product::{execute_cascade, CascadeControls, CascadeRequest, HeadlessBrowser};
+use aster_search::proxy::ProxyConfig;
+use aster_search::{
     EngineTierPlan, Metrics, MetricsSnapshot, SearchCoalescerSnapshot, SearchQuery, SearchResult,
 };
 use anyhow::Result;
@@ -39,7 +39,7 @@ const WEB_SEARCH_DESCRIPTION: &str = "When saved notes are available, this tool 
      only when needed, and the bundled Moli headless browser only when earlier tiers remain insufficient. \
      Unavailable engines are skipped through session-scoped circuit state, and all executed tiers \
      are deduplicated and ranked together. An explicit engines list runs only those requested tiers. \
-     Moli is discovered from the package or installed once in the shared A3S Code cache, then reused by all local Code processes. \
+     Moli is discovered from the package or installed once in the shared Aster Code cache, then reused by all local Code processes. \
      Supports proxy configuration for conventional and headless search transports.";
 
 #[cfg(not(feature = "headless-search"))]
@@ -56,7 +56,7 @@ const ENGINE_CATALOG_DESCRIPTION: &str =
      defaults. Available: anysearch (anonymous or authenticated native provider), tavily (keyless \
      or authenticated native provider), ddg (DuckDuckGo), brave (Brave Search), bing (Bing RSS), \
      wiki (Wikipedia), sogou (Sogou), 360 / so360 (360 Search), bing_cn (Bing China RSS), \
-     and opt-in billed providers tinyfish, bocha, aliyun, tencent, firecrawl, and a3s (named only; \
+     and opt-in billed providers tinyfish, bocha, aliyun, tencent, firecrawl, and aster (named only; \
      they are not in the default cascade), \
      g / google (Google, headless), baidu (Baidu, headless), bing_browser (Bing, headless), \
      brave_browser (Brave, headless). The default headless backend is Moli; Chrome and \
@@ -69,7 +69,7 @@ const ENGINE_CATALOG_DESCRIPTION: &str =
      defaults. Available: anysearch (anonymous or authenticated native provider), tavily (keyless \
      or authenticated native provider), ddg (DuckDuckGo), brave (Brave Search), bing (Bing RSS), \
      wiki (Wikipedia), sogou (Sogou), 360 / so360 (360 Search), bing_cn (Bing China RSS), \
-     and opt-in billed providers tinyfish, bocha, aliyun, tencent, firecrawl, and a3s (named only; \
+     and opt-in billed providers tinyfish, bocha, aliyun, tencent, firecrawl, and aster (named only; \
      they are not in the default cascade).";
 
 #[cfg(test)]
@@ -339,7 +339,7 @@ fn headless_runtime(
     }
     let max_tabs = Some(config.max_tabs);
     if !config.backend.is_moli() {
-        let runtime = a3s_search::product::HeadlessRuntime {
+        let runtime = aster_search::product::HeadlessRuntime {
             executable: config.browser_path.as_ref().map(PathBuf::from),
             max_tabs,
             launch_args: config.launch_args.clone(),
@@ -351,7 +351,7 @@ fn headless_runtime(
     }
     let pending = async move {
         let path = prepare_moli(&config).await?;
-        Ok(a3s_search::product::HeadlessRuntime {
+        Ok(aster_search::product::HeadlessRuntime {
             executable: Some(path),
             max_tabs,
             launch_args: Vec::new(),
@@ -492,7 +492,7 @@ impl Tool for WebSearchTool {
                     "query": "Rust async trait"
                 },
                 {
-                    "query": "A3S Code GitHub",
+                    "query": "Aster Code GitHub",
                     "engines": ["ddg", "wiki"],
                     "limit": 5,
                     "format": "json"
@@ -962,8 +962,8 @@ fn parse_proxy_url(url: &str) -> Option<ProxyConfig> {
 
     let mut config = ProxyConfig::new(host, port);
     config = match scheme {
-        "socks5" => config.with_protocol(a3s_search::proxy::ProxyProtocol::Socks5),
-        "https" => config.with_protocol(a3s_search::proxy::ProxyProtocol::Https),
+        "socks5" => config.with_protocol(aster_search::proxy::ProxyProtocol::Socks5),
+        "https" => config.with_protocol(aster_search::proxy::ProxyProtocol::Https),
         _ => config, // default is Http
     };
 

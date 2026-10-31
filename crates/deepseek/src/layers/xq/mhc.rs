@@ -1,7 +1,7 @@
 //! XQ's F32 shifted trunk. RMS precedes the exported F16 mix projection,
 //! and no BF16 cast is inserted into the residual, branch or head reduction.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

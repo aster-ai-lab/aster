@@ -4,7 +4,7 @@
 //! measurement harness. Real-provider assertions against the published SQL
 //! targets run only when `KENSE_FLOW_POSTGRES_URL` is set.
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowEvent, FlowEventStore, FlowRuntime, InMemoryEventStore, RuntimeCommand,
     WorkflowInvocation, WorkflowSpec, MAX_FLOW_HISTORY_PAGE_SIZE,
 };
@@ -14,9 +14,9 @@ use std::sync::Arc;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 #[cfg(feature = "postgres")]
-use a3s_flow::{migrate_postgres_flow, PostgresEventStore};
+use aster_flow::{migrate_postgres_flow, PostgresEventStore};
 #[cfg(feature = "postgres")]
-use a3s_orm::PostgresExecutor;
+use aster_orm::PostgresExecutor;
 
 struct SloRuntime;
 
@@ -25,15 +25,15 @@ impl FlowRuntime for SloRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
-        Err(a3s_flow::FlowError::Runtime("unused".into()))
+    ) -> aster_flow::Result<RuntimeCommand> {
+        Err(aster_flow::FlowError::Runtime("unused".into()))
     }
 
     async fn run_step(
         &self,
-        _invocation: a3s_flow::StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
-        Err(a3s_flow::FlowError::Runtime("unused".into()))
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
+        Err(aster_flow::FlowError::Runtime("unused".into()))
     }
 }
 

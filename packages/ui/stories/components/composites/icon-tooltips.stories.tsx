@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react'
 
-import { HelpTooltip, InfoTooltip, WarnTooltip } from '@a3s-lab/ui'
+import { HelpTooltip, InfoTooltip, WarnTooltip } from '@aster-ai-lab/ui'
 
 const meta: Meta = {
   title: 'Components/Composites/icon-tooltips',

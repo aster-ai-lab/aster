@@ -10,7 +10,7 @@ use rusqlite::{params, Connection, TransactionBehavior};
 use std::path::Path;
 use std::time::Duration;
 
-const STORAGE_PROFILE: &str = "a3s.memory.sqlite-vector-index.v2";
+const STORAGE_PROFILE: &str = "aster.memory.sqlite-vector-index.v2";
 const BUSY_TIMEOUT: Duration = Duration::from_secs(5);
 
 const SCHEMA: &str = r#"
@@ -18,7 +18,7 @@ PRAGMA foreign_keys = ON;
 PRAGMA journal_mode = WAL;
 PRAGMA synchronous = FULL;
 
-CREATE TABLE IF NOT EXISTS a3s_vector_index_metadata (
+CREATE TABLE IF NOT EXISTS aster_vector_index_metadata (
     singleton       INTEGER PRIMARY KEY NOT NULL CHECK (singleton = 1),
     storage_profile TEXT    NOT NULL,
     descriptor_json TEXT    NOT NULL,
@@ -30,14 +30,14 @@ CREATE TABLE IF NOT EXISTS a3s_vector_index_metadata (
     byte_count      INTEGER NOT NULL CHECK (byte_count >= 0)
 );
 
-CREATE TABLE IF NOT EXISTS a3s_vector_partitions (
+CREATE TABLE IF NOT EXISTS aster_vector_partitions (
     name           TEXT    PRIMARY KEY NOT NULL,
     record_count   INTEGER NOT NULL CHECK (record_count > 0),
     byte_count     INTEGER NOT NULL CHECK (byte_count > 0),
     content_digest TEXT    NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS a3s_vector_records (
+CREATE TABLE IF NOT EXISTS aster_vector_records (
     partition  TEXT    NOT NULL,
     position   INTEGER NOT NULL CHECK (position >= 0),
     id         TEXT    NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS a3s_vector_records (
     embedding  BLOB    NOT NULL,
     PRIMARY KEY (partition, position),
     UNIQUE (partition, id),
-    FOREIGN KEY (partition) REFERENCES a3s_vector_partitions(name) ON DELETE CASCADE
+    FOREIGN KEY (partition) REFERENCES aster_vector_partitions(name) ON DELETE CASCADE
 );
 "#;
 
@@ -127,7 +127,7 @@ fn initialize_metadata(
 ) -> VectorResult<()> {
     let metadata_count: i64 = connection
         .query_row(
-            "SELECT COUNT(*) FROM a3s_vector_index_metadata",
+            "SELECT COUNT(*) FROM aster_vector_index_metadata",
             [],
             |row| row.get(0),
         )
@@ -140,8 +140,8 @@ fn initialize_metadata(
     if metadata_count != 0 {
         return Err(corrupted("metadata singleton count is invalid"));
     }
-    let content_rows = table_count(connection, "a3s_vector_partitions")?
-        .checked_add(table_count(connection, "a3s_vector_records")?)
+    let content_rows = table_count(connection, "aster_vector_partitions")?
+        .checked_add(table_count(connection, "aster_vector_records")?)
         .ok_or(VectorIndexError::SizeOverflow)?;
     if content_rows != 0 {
         return Err(corrupted("content exists without index metadata"));
@@ -152,7 +152,7 @@ fn initialize_metadata(
     })?;
     connection
         .execute(
-            "INSERT INTO a3s_vector_index_metadata
+            "INSERT INTO aster_vector_index_metadata
              (singleton, storage_profile, descriptor_json, history_digest, storage_identity, revision,
               partition_count, record_count, byte_count)
              VALUES (1, ?1, ?2, ?3, ?4, '0', 0, 0, 0)",
@@ -177,7 +177,7 @@ pub(super) fn read_observation(
         .query_row(
             "SELECT storage_profile, descriptor_json, history_digest, storage_identity, revision,
                     partition_count, record_count, byte_count
-             FROM a3s_vector_index_metadata WHERE singleton = 1",
+             FROM aster_vector_index_metadata WHERE singleton = 1",
             [],
             |row| {
                 Ok(RawMetadata {
@@ -242,19 +242,19 @@ fn verify_aggregates(connection: &Connection, status: &VectorIndexStatus) -> Vec
     let (partitions, records, bytes): (i64, i64, i64) = connection
         .query_row(
             "SELECT COUNT(*), COALESCE(SUM(record_count), 0), COALESCE(SUM(byte_count), 0)
-             FROM a3s_vector_partitions",
+             FROM aster_vector_partitions",
             [],
             |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
         )
         .map_err(|_| {
             VectorIndexError::StorageFailed("could not verify SQLite index accounting".to_string())
         })?;
-    let actual_records = table_count(connection, "a3s_vector_records")?;
+    let actual_records = table_count(connection, "aster_vector_records")?;
     let mismatched_partitions: i64 = connection
         .query_row(
-            "SELECT COUNT(*) FROM a3s_vector_partitions AS p
+            "SELECT COUNT(*) FROM aster_vector_partitions AS p
              WHERE p.record_count <> (
-                 SELECT COUNT(*) FROM a3s_vector_records AS r WHERE r.partition = p.name
+                 SELECT COUNT(*) FROM aster_vector_records AS r WHERE r.partition = p.name
              )",
             [],
             |row| row.get(0),
@@ -266,8 +266,8 @@ fn verify_aggregates(connection: &Connection, status: &VectorIndexStatus) -> Vec
         })?;
     let orphan_records: i64 = connection
         .query_row(
-            "SELECT COUNT(*) FROM a3s_vector_records AS r
-             LEFT JOIN a3s_vector_partitions AS p ON p.name = r.partition
+            "SELECT COUNT(*) FROM aster_vector_records AS r
+             LEFT JOIN aster_vector_partitions AS p ON p.name = r.partition
              WHERE p.name IS NULL",
             [],
             |row| row.get(0),
@@ -290,8 +290,8 @@ fn verify_aggregates(connection: &Connection, status: &VectorIndexStatus) -> Vec
 
 pub(super) fn table_count(connection: &Connection, table: &str) -> VectorResult<usize> {
     let sql = match table {
-        "a3s_vector_partitions" => "SELECT COUNT(*) FROM a3s_vector_partitions",
-        "a3s_vector_records" => "SELECT COUNT(*) FROM a3s_vector_records",
+        "aster_vector_partitions" => "SELECT COUNT(*) FROM aster_vector_partitions",
+        "aster_vector_records" => "SELECT COUNT(*) FROM aster_vector_records",
         _ => return Err(corrupted("an internal table selector is invalid")),
     };
     let count: i64 = connection
@@ -309,7 +309,7 @@ fn reconcile_storage_identity(
 ) -> VectorResult<()> {
     let stored_identity: String = connection
         .query_row(
-            "SELECT storage_identity FROM a3s_vector_index_metadata WHERE singleton = 1",
+            "SELECT storage_identity FROM aster_vector_index_metadata WHERE singleton = 1",
             [],
             |row| row.get(0),
         )
@@ -321,7 +321,7 @@ fn reconcile_storage_identity(
     }
     let changed = connection
         .execute(
-            "UPDATE a3s_vector_index_metadata
+            "UPDATE aster_vector_index_metadata
              SET history_digest = ?1, storage_identity = ?2
              WHERE singleton = 1 AND revision = ?3",
             params![

@@ -4,8 +4,8 @@ use std::fs::File;
 use std::io::{self, Read};
 use std::os::fd::{AsRawFd, FromRawFd};
 
-use a3s_oci_sdk::oci_spec::runtime::Linux;
-use a3s_oci_sdk::{Error, ErrorCode, OciLinuxSysctlKey, OciLinuxSysctlNamespace, Result};
+use aster_oci_sdk::oci_spec::runtime::Linux;
+use aster_oci_sdk::{Error, ErrorCode, OciLinuxSysctlKey, OciLinuxSysctlNamespace, Result};
 
 use super::namespace::{NamespaceIsolation, NamespacePlan};
 
@@ -453,7 +453,7 @@ mod tests {
     use std::fs::File;
     use std::path::Path;
 
-    use a3s_oci_sdk::OciLinuxSysctlKey;
+    use aster_oci_sdk::OciLinuxSysctlKey;
     use tempfile::{tempdir, TempDir};
 
     use super::{SysctlEntry, SysctlPlan};

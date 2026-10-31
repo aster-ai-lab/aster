@@ -1,11 +1,11 @@
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
-use a3s_runtime::contract::{NetworkMode, RuntimeLogStream, RuntimeUnitClass};
-use a3s_runtime::{
+use aster_runtime::contract::{NetworkMode, RuntimeLogStream, RuntimeUnitClass};
+use aster_runtime::{
     ProviderId, RuntimeClient, RuntimeClientRegistry, RuntimeProviderFactory, RuntimeResult,
 };
-use a3s_use_core::{
+use aster_use_core::{
     CatalogSurface, ExecutablePlanningSurface, NetworkEgressPermission, PackageSurfaceKind,
     PlanActor, PlanPolicyDecision, PlanScope, PlanScopeKind, PlannedPackageState,
     PlannedPluginRelease, PlanningArtifactRef, PlanningSurfaceActivation, PluginPermissionCeiling,
@@ -393,7 +393,7 @@ async fn task_binding_rejects_obsolete_or_tampered_durable_templates() {
     let binding = client.prepare_task(&plan, &provider).await.unwrap();
 
     let mut obsolete = binding.clone();
-    obsolete.schema = "a3s.use.runtime-task-binding.v3".to_string();
+    obsolete.schema = "aster.use.runtime-task-binding.v3".to_string();
     assert_eq!(
         obsolete.validate().unwrap_err().code,
         "use.plugin.runtime.input_invalid"

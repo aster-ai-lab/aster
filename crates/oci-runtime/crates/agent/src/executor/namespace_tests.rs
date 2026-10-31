@@ -1,7 +1,7 @@
 use std::path::Path;
 
-use a3s_oci_sdk::oci_spec::runtime::Linux;
-use a3s_oci_sdk::ErrorCode;
+use aster_oci_sdk::oci_spec::runtime::Linux;
+use aster_oci_sdk::ErrorCode;
 
 use super::{
     ensure_id_mapped, validate_observed_mappings, IdMapping, NamespacePlan, TimeOffset,

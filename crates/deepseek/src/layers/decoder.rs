@@ -4,7 +4,7 @@
 //! DeepInfer Apache-2.0 hc.py/hc_blocks.py composition at revision
 //! 9bd9cf243fc53ef9afbf8f04d391d989117d6ab9. No model loop is registered here.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

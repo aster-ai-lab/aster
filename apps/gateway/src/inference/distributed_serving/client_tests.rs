@@ -11,7 +11,7 @@ use tokio::sync::oneshot;
 use tokio::time::{Duration, Instant};
 use uuid::Uuid;
 
-const KEY_ENV: &str = "A3S_POWER_TEST_KEY";
+const KEY_ENV: &str = "ASTER_POWER_TEST_KEY";
 const API_KEY: &str = "power-internal-secret";
 const PROFILE: &str = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
@@ -247,7 +247,7 @@ async fn client_does_not_follow_redirects_and_classifies_protocol_errors() {
 async fn missing_runtime_key_reports_only_the_configured_environment_name() {
     let binding = binding();
     let client = PowerDistributedClient::with_test_key(KEY_ENV, API_KEY);
-    let environment = "A3S_POWER_UNCONFIGURED_KEY";
+    let environment = "ASTER_POWER_UNCONFIGURED_KEY";
 
     let error = client
         .prepare_decode(

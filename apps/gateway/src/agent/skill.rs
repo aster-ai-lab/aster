@@ -8,7 +8,7 @@ use crate::{GatewayError, Result};
 const MAX_SKILL_BYTES: u64 = 256 * 1024;
 const STANDARD_SKILL_ROOTS: &[&str] = &[
     ".agents/skills",
-    ".a3s/skills",
+    ".aster/skills",
     ".claude/skills",
     ".codex/skills",
     ".gemini/skills",

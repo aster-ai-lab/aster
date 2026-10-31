@@ -3,7 +3,7 @@
 set -euo pipefail
 
 repository_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-fixture_root=$(mktemp -d "${TMPDIR:-/tmp}/a3s-gateway-installer-test.XXXXXX")
+fixture_root=$(mktemp -d "${TMPDIR:-/tmp}/aster-gateway-installer-test.XXXXXX")
 server_pid=""
 
 cleanup() {
@@ -17,19 +17,19 @@ trap cleanup EXIT
 
 version="9.8.7-test"
 platform="linux-x86_64-musl"
-archive="a3s-gateway-${version}-${platform}.tar.gz"
+archive="aster-gateway-${version}-${platform}.tar.gz"
 release_dir="$fixture_root/download/v${version}"
 install_dir="$fixture_root/install"
 port_file="$fixture_root/port"
 mkdir -p "$release_dir" "$fixture_root/archive"
 printf '{"tag_name":"v%s"}\n' "$version" > "$fixture_root/latest.json"
 
-cat > "$fixture_root/archive/a3s-gateway" <<EOF
+cat > "$fixture_root/archive/aster-gateway" <<EOF
 #!/bin/sh
-printf '%s\n' 'a3s-gateway ${version}'
+printf '%s\n' 'aster-gateway ${version}'
 EOF
-chmod 755 "$fixture_root/archive/a3s-gateway"
-tar -czf "$release_dir/$archive" -C "$fixture_root/archive" a3s-gateway
+chmod 755 "$fixture_root/archive/aster-gateway"
+tar -czf "$release_dir/$archive" -C "$fixture_root/archive" aster-gateway
 
 if command -v sha256sum >/dev/null 2>&1; then
   archive_sha=$(sha256sum "$release_dir/$archive" | awk '{print $1}')
@@ -65,39 +65,39 @@ done
 port=$(<"$port_file")
 releases_url="http://127.0.0.1:${port}/download"
 
-installer_output=$(A3S_GATEWAY_RELEASES_URL="$releases_url" \
-  A3S_GATEWAY_PLATFORM="$platform" \
-  A3S_GATEWAY_ALLOW_INSECURE=1 \
+installer_output=$(ASTER_GATEWAY_RELEASES_URL="$releases_url" \
+  ASTER_GATEWAY_PLATFORM="$platform" \
+  ASTER_GATEWAY_ALLOW_INSECURE=1 \
   sh "$repository_root/install.sh" \
     --version "$version" \
     --install-dir "$install_dir" \
     --no-modify-path)
 
 grep -F "verified SHA-256" <<<"$installer_output" >/dev/null
-grep -F "installed a3s-gateway ${version}" <<<"$installer_output" >/dev/null
-[[ -x "$install_dir/a3s-gateway" ]]
-[[ "$("$install_dir/a3s-gateway" --version)" == "a3s-gateway ${version}" ]]
+grep -F "installed aster-gateway ${version}" <<<"$installer_output" >/dev/null
+[[ -x "$install_dir/aster-gateway" ]]
+[[ "$("$install_dir/aster-gateway" --version)" == "aster-gateway ${version}" ]]
 
 latest_install_dir="$fixture_root/install-latest"
-A3S_GATEWAY_RELEASES_URL="$releases_url" \
-  A3S_GATEWAY_LATEST_API_URL="http://127.0.0.1:${port}/latest.json" \
-  A3S_GATEWAY_PLATFORM="$platform" \
-  A3S_GATEWAY_ALLOW_INSECURE=1 \
+ASTER_GATEWAY_RELEASES_URL="$releases_url" \
+  ASTER_GATEWAY_LATEST_API_URL="http://127.0.0.1:${port}/latest.json" \
+  ASTER_GATEWAY_PLATFORM="$platform" \
+  ASTER_GATEWAY_ALLOW_INSECURE=1 \
   sh "$repository_root/install.sh" \
     --install-dir "$latest_install_dir" \
     --no-modify-path >/dev/null
-[[ "$("$latest_install_dir/a3s-gateway" --version)" == "a3s-gateway ${version}" ]]
+[[ "$("$latest_install_dir/aster-gateway" --version)" == "aster-gateway ${version}" ]]
 
 installed_sha_before=$(if command -v sha256sum >/dev/null 2>&1; then
-  sha256sum "$install_dir/a3s-gateway" | awk '{print $1}'
+  sha256sum "$install_dir/aster-gateway" | awk '{print $1}'
 else
-  shasum -a 256 "$install_dir/a3s-gateway" | awk '{print $1}'
+  shasum -a 256 "$install_dir/aster-gateway" | awk '{print $1}'
 fi)
 printf '%064d  %s\n' 0 "$archive" > "$release_dir/$archive.sha256"
 
-if A3S_GATEWAY_RELEASES_URL="$releases_url" \
-  A3S_GATEWAY_PLATFORM="$platform" \
-  A3S_GATEWAY_ALLOW_INSECURE=1 \
+if ASTER_GATEWAY_RELEASES_URL="$releases_url" \
+  ASTER_GATEWAY_PLATFORM="$platform" \
+  ASTER_GATEWAY_ALLOW_INSECURE=1 \
   sh "$repository_root/install.sh" \
     --version "$version" \
     --install-dir "$install_dir" \
@@ -107,13 +107,13 @@ if A3S_GATEWAY_RELEASES_URL="$releases_url" \
 fi
 
 installed_sha_after=$(if command -v sha256sum >/dev/null 2>&1; then
-  sha256sum "$install_dir/a3s-gateway" | awk '{print $1}'
+  sha256sum "$install_dir/aster-gateway" | awk '{print $1}'
 else
-  shasum -a 256 "$install_dir/a3s-gateway" | awk '{print $1}'
+  shasum -a 256 "$install_dir/aster-gateway" | awk '{print $1}'
 fi)
 [[ "$installed_sha_before" == "$installed_sha_after" ]]
 
-if A3S_GATEWAY_PLATFORM="plan9-mips" sh "$repository_root/install.sh" \
+if ASTER_GATEWAY_PLATFORM="plan9-mips" sh "$repository_root/install.sh" \
   --version "$version" --install-dir "$install_dir" --no-modify-path >/dev/null 2>&1; then
   echo "installer accepted an unsupported platform" >&2
   exit 1

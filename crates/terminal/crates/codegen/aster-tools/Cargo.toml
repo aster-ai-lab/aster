@@ -1,0 +1,127 @@
+[package]
+license = "Apache-2.0"
+name = "aster-tools"
+version = "0.1.220-alpha.4"
+description = "Aster Code tools library"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = {workspace = true}
+arc-swap = {workspace = true}
+derive_more = {version = "2", features = ["add", "add_assign", "debug", "deref", "deref_mut", "display", "from", "from_str", "into", "into_iterator", "as_ref", "try_into"]}
+dunce = {workspace = true}
+encoding_rs = {version = "0.8.35", optional = true}
+fs2 = {workspace = true}
+educe = {version = "0.6.0", features = ["Debug"]}
+async-openai = {workspace = true}
+async-lsp = {version = "0.2.3", features = ["tokio", "tracing"]}
+async-stream = {workspace = true}
+async-trait = {workspace = true}
+base64 = {workspace = true}
+ignore = {workspace = true}
+infer = {version = "0.19.0"}
+globset = {workspace = true}
+image = {version = "0.25.10", default-features = false, features = ["png", "jpeg", "gif", "webp", "bmp", "tiff", "ico"]}
+kamadak-exif = {version = "0.5", optional = true}
+pdf_oxide = {version = "0.3.43", features = ["rendering"]}
+# PPTX text extraction (implementations/read_file/pptx.rs). Deliberately NOT
+# `workspace = true`: the workspace `zip` pin has default features on, which
+# drag aes/bzip2/lzma/zstd into the shipped pager binary. PPTX entries are
+# only ever stored or deflated.
+zip = {version = "3", default-features = false, features = ["deflate-flate2"]}
+quick-xml = {version = "0.41"}
+indexmap = {workspace = true}
+minijinja = {version = "2", features = ["custom_syntax"]}
+parking_lot = {workspace = true}
+htmd = {version = "0.5.4"}
+scraper = {version = "0.23"}
+reqwest = {version = "0.12", features = ["rustls-tls", "stream", "json", "multipart", "http2", "blocking", "socks", "gzip", "brotli", "deflate"], default-features = false}
+pulldown-cmark = {workspace = true}
+regex = {workspace = true}
+schemars = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+serde_path_to_error = {version = "0.1"}
+
+futures = {workspace = true}
+similar = {workspace = true}
+strum = {version = "0.26", features = ["derive"]}
+strip-ansi-escapes = {version = "0.2.1"}
+thiserror = {workspace = true}
+tokio = {version = "1", features = ["full", "io-std", "process", "rt", "macros", "rt-multi-thread", "net", "sync"]}
+tokio-util = {version = "0.7", features = ["rt", "compat"]}
+tonic = {workspace = true}
+tracing = {workspace = true}
+unicode-normalization = {version = "0.1", optional = true}
+url = {workspace = true}
+uuid = {version = "1", features = ["serde", "v4", "v5", "v7"]}
+wildmatch = {version = "2"}
+serde_yaml = {workspace = true}
+shellexpand = {workspace = true}
+tempfile = {workspace = true}
+which = {workspace = true}
+
+chrono = {workspace = true}
+futures-util = {workspace = true}
+dhat = {version = "0.3", optional = true}
+zstd = {workspace = true}
+aster-otel = {path = "../aster-otel"}
+aster-file-utils = {path = "../aster-file-utils"}
+aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-env = {path = "../aster-env"}
+aster-computer-hub-sdk = {path = "../../common/aster-computer-hub-sdk"}
+aster-computer-hub-core = {path = "../../common/aster-computer-hub-core"}
+aster-tool-protocol = {path = "../../common/aster-tool-protocol"}
+aster-tool-types = {path = "../../common/aster-tool-types"}
+aster-tool-runtime = {path = "../../common/aster-tool-runtime"}
+aster-image = {path = "../aster-image"}
+aster-token-estimation = {path = "../aster-token-estimation"}
+aster-message-delivery-core = {path = "../../common/aster-message-delivery-core"}
+aster-interjection-core = {path = "../../common/aster-interjection-core"}
+aster-version = {path = "../aster-version"}
+aster-workspace-types = {path = "../aster-workspace-types"}
+aster-tools-api = {path = "../aster-tools-api"}
+aster-feedback = {path = "../aster-feedback"}
+aster-extra-ca = {path = "../aster-extra-ca"}
+aster-config = {path = "../aster-config"}
+aster-auth = {path = "../aster-auth"}
+aster-tty-utils = {path = "../aster-tty-utils"}
+aster-dirs = {path = "../aster-dirs"}
+
+[target.'cfg(unix)'.dependencies]
+command-fds = {version = "0.3", features = ["tokio"]}
+nix = {workspace = true}
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = {workspace = true}
+
+# windows: util::spawn uses Win32 Job Objects (CreateJobObjectW,
+# AssignProcessToJobObject, TerminateJobObject) and process creation flags
+# (CREATE_NO_WINDOW, DETACHED_PROCESS, CREATE_NEW_PROCESS_GROUP).
+[target.'cfg(windows)'.dependencies]
+windows = {version = "0.61", features = ["Win32_Security", "Win32_Security_Authorization", "Win32_Foundation", "Win32_System_Threading", "Win32_System_JobObjects", "Win32_System_Console", "Win32_System_Pipes", "Win32_Storage_FileSystem"]}
+
+[dev-dependencies]
+pretty_assertions = {workspace = true}
+tokio = {version = "1", features = ["full", "test-util"]}
+tracing-subscriber = {version = "0.3.23", default-features = false, features = ["env-filter", "smallvec", "tracing-log", "std", "ansi", "fmt"]}
+wiremock = {workspace = true}
+aster-test-utils = {path = "../../common/aster-test-utils"}
+aster-test-support = {path = "../aster-test-support"}
+
+[build-dependencies]
+reqwest = {workspace = true}
+flate2 = {workspace = true}
+sha2 = {version = "0.10", features = ["force-soft"]}
+tar = {workspace = true}
+zstd = {workspace = true}
+
+[lints]
+workspace = true
+
+[features]
+default-bazel = ["serde"]
+default = ["serde"]
+serde = []
+dhat-heap = ["dep:dhat"]

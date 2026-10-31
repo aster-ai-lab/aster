@@ -3,10 +3,10 @@
 use serde::{Deserialize, Serialize};
 
 /// Runtime control key carrying only environment names and guest file paths.
-pub const SECRET_ENVIRONMENT_MANIFEST: &str = "A3S_BOX_SECRET_ENV_V1";
+pub const SECRET_ENVIRONMENT_MANIFEST: &str = "ASTER_BOX_SECRET_ENV_V1";
 
 /// Reserved in-guest root for transient Secret files.
-pub const SECRET_GUEST_ROOT: &str = "/.a3s-box-secrets";
+pub const SECRET_GUEST_ROOT: &str = "/.aster-box-secrets";
 
 /// Validate one POSIX-style process environment variable name.
 pub fn validate_environment_variable_name(variable: &str) -> Result<(), String> {
@@ -59,8 +59,8 @@ mod tests {
     #[test]
     fn environment_binding_accepts_only_canonical_linux_paths_and_names() {
         let binding = SecretEnvironmentBinding {
-            variable: "A3S_PROVIDER_TOKEN".into(),
-            path: format!("/.a3s-box-secrets/{}/000.secret", "a".repeat(64)),
+            variable: "ASTER_PROVIDER_TOKEN".into(),
+            path: format!("/.aster-box-secrets/{}/000.secret", "a".repeat(64)),
         };
         binding.validate().unwrap();
 
@@ -72,10 +72,10 @@ mod tests {
 
         for path in [
             "relative/000.secret",
-            "/.a3s-box-secrets//000.secret",
-            "/.a3s-box-secrets/./000.secret",
-            "/.a3s-box-secrets/../000.secret",
-            "/.a3s-box-secrets/value:000.secret",
+            "/.aster-box-secrets//000.secret",
+            "/.aster-box-secrets/./000.secret",
+            "/.aster-box-secrets/../000.secret",
+            "/.aster-box-secrets/value:000.secret",
         ] {
             let mut invalid = binding.clone();
             invalid.path = path.into();

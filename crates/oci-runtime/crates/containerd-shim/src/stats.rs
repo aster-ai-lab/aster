@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{ContainerStats, Error, ErrorCode, PIDS_LIMIT_METRIC};
+use aster_oci_sdk::{ContainerStats, Error, ErrorCode, PIDS_LIMIT_METRIC};
 use containerd_shim_protos::cgroups_v2::metrics::{
     CPUStat, MemoryEvents, MemoryStat, Metrics, PidsStat,
 };
@@ -97,7 +97,7 @@ fn required_metric(stats: &ContainerStats, name: &str) -> Result<u64, Error> {
 mod tests {
     use std::collections::BTreeMap;
 
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         ContainerId, ContainerTarget, CpuStats, Generation, MemoryStats, PIDS_LIMIT_METRIC,
     };
     use containerd_shim_protos::protobuf::Message;

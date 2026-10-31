@@ -1,10 +1,10 @@
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentClient, AgentOperation, AgentTransportFaultPoint, AgentTransportOperationStage,
 };
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerTarget, CreateAttachments, ErrorCode, IoMode, ListRequest, OciRuntimeService,
 };
 use tokio::io::DuplexStream;
@@ -35,7 +35,7 @@ async fn exercise_create_reopen(index: usize, stage: AgentTransportOperationStag
     let guest = Arc::new(JournaledLifecycleGuest::new());
     let metrics = Arc::new(DriverMetrics::default());
     let fault_point = AgentTransportFaultPoint::Operation {
-        protocol_version: a3s_oci_agent_protocol::AGENT_PROTOCOL_VERSION_MAX,
+        protocol_version: aster_oci_agent_protocol::AGENT_PROTOCOL_VERSION_MAX,
         operation: AgentOperation::Create,
         stage,
     };
@@ -187,8 +187,8 @@ async fn exercise_create_reopen(index: usize, stage: AgentTransportOperationStag
 async fn verify_changed_replays_fail_closed(
     client: &AgentClient<DuplexStream>,
     service: &HostRuntimeService,
-    request: &a3s_oci_sdk::CreateRequest,
-    generation: a3s_oci_sdk::Generation,
+    request: &aster_oci_sdk::CreateRequest,
+    generation: aster_oci_sdk::Generation,
     guest: &JournaledLifecycleGuest,
     metrics: &DriverMetrics,
 ) {

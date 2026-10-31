@@ -6,7 +6,7 @@
 
 **Status**: Implementation
 
-**Input**: 知识页面增加类似 ReMe Studio 的记忆 tab，查看和管理底层 a3s-code 本地记忆。
+**Input**: 知识页面增加类似 ReMe Studio 的记忆 tab，查看和管理底层 aster 本地记忆。
 
 **Gate context**: User-requested extension of 015, owned by Core durable memory,
 ACP host extensions and the private Studio desktop submodule. Product regime.
@@ -96,8 +96,8 @@ ACP and renderer tests prove exact-ID/version binding and cancelled confirmation
 - [x] New behavior has a small hermetic test in the owning package (T001–T004)
 - [x] Closed sets: every new enum has parse/as_str (T001–T002)
 - [x] No production unwrap/expect without an infallibility comment (T005)
-- [x] Internal a3s dependencies stay local; no new dependency (T005)
-- [x] Trusted storage binding is ACL parsed by a3s-acl (T003)
+- [x] Internal aster dependencies stay local; no new dependency (T005)
+- [x] Trusted storage binding is ACL parsed by aster-acl (T003)
 - [x] Evidence: docs/evidence/desktop/2026-10-24-local-memory/OUTCOME.md (T005)
 
 ## Success Criteria *(mandatory)*

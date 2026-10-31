@@ -1,7 +1,7 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerRecord, ContainerTarget, Generation, KillRequest, OperationContext, Signal,
 };
 use serde::Deserialize;
@@ -62,7 +62,7 @@ pub(super) async fn qualify(
         .ok_or_else(|| qualification_error("committed-Kill shim has no PID"))?;
     let host_pid = faults::find_runtime_host_pid(config).await?;
     let mut suspended_host =
-        faults::SuspendedProcess::stop(host_pid, "committed-Kill A3S OCI host service")?;
+        faults::SuspendedProcess::stop(host_pid, "committed-Kill Aster OCI host service")?;
     let kill_address = bootstrap.address.clone();
     let kill_id = id.to_string();
     let mut kill_call =
@@ -79,7 +79,7 @@ pub(super) async fn qualify(
     .await?;
     let suspended_shim =
         faults::SuspendedProcess::stop(old_shim_pid, "committed-Kill original shim")?;
-    suspended_host.resume("committed-Kill A3S OCI host service")?;
+    suspended_host.resume("committed-Kill Aster OCI host service")?;
     commit_runtime_kill(config, id, identity, pending_sequence, libc::SIGSTOP, true).await?;
 
     let containerd_pid = containerd_main_pid(config).await?;
@@ -254,7 +254,7 @@ async fn wait_for_completed_signal(bundle: &Path, sequence: u64) -> TestResult<(
 }
 
 async fn read_task_signal_journal(bundle: &Path) -> TestResult<SignalJournalEvidence> {
-    let path = bundle.join("a3s-oci-shim-v1.json");
+    let path = bundle.join("aster-oci-shim-v1.json");
     let document: serde_json::Value = serde_json::from_slice(
         &tokio::fs::read(&path)
             .await

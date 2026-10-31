@@ -19,7 +19,7 @@
 - [ ] T009 [US4] 扩展 `client_fs_stdio.rs`、Office/检索/插件现有 owning tests，贯通 J01–J10 和 LH09；默认/feature、host bool、dirty buffer、stale index、浏览器惰性和失败清理均有对照。不为消除失败扩大能力或网络来源。
 - [ ] T010 [US5] 用小型资源 sampler 和既有 owner ledger 实施 L01–L06/L10 及 LH10；sampler/分位数/斜率/retention gap 自身有固定输入测试。先测基线再 ratchet；8h/24h 只有在明确档位与预算后启动，不用短循环代替实际耐久声明。
 - [ ] T011 [US1/US6] 复用现有 provider client/协议 fixture，实施 G01–G10 和 LH08。若需 fault relay，真实凭证仅留现有可信配置和测试父进程内存，ACP 使用无秘密的本地 fixture 凭证；不得把用户 ACL 中的明文秘密复制到仓库/证据。relay 的上游为精确预声明地址，认证不入日志；有损坏帧、限流、取消、重试计数、零外发和“实际请求确实到真实模型”的小测试。任何新依赖须先证明现有 HTTP/provider client 不能满足。
-- [ ] T012 [US4] 在 `crates/code/acp/tests/a3s-test/long_horizon.acl`（拟新增）及既有 TUI fixture 实施 LH11/L07；先实际观察稳定路径，`a3s-test check` 后执行。接线改动有 owning-package 测试；PTTY/ConPTY、授权、停止/恢复和打开当前产物都有可见断言。未观察路径不伪造 ACL。
+- [ ] T012 [US4] 在 `crates/code/acp/tests/aster-test/long_horizon.acl`（拟新增）及既有 TUI fixture 实施 LH11/L07；先实际观察稳定路径，`aster-test check` 后执行。接线改动有 owning-package 测试；PTTY/ConPTY、授权、停止/恢复和打开当前产物都有可见断言。未观察路径不伪造 ACL。
 - [ ] T013 [US4] 在私有 `apps/studio` 测试树实施 LH12/L08/L09；遵守其 AGENTS 和 GUI skill，先核验背景控制 capability、独占 lane 与当前候选。metadata/状态接线有私有 hermetic test；绑定丢失即停止，私有源和 fixture 不复制到父仓库。
 
 ## Phase 3 — 真实模型、缺陷修复与资格证据

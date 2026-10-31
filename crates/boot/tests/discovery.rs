@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootResponse, ControllerDefinition, DiscoveryService, HttpMethod,
     MessagePatternDefinition, MessagePatternKind, Module, ModuleRef, ProviderDefinition,
     ProviderToken, Result, RouteDefinition, TransportReply, WebSocketGatewayDefinition,
@@ -91,7 +91,7 @@ impl Module for DiscoveryModuleFixture {
             })?
             .subscribe_definition(
                 "cat.deleted",
-                a3s_boot::WebSocketSubscriptionDefinition::new(|_| async { Ok(()) })
+                aster_boot::WebSocketSubscriptionDefinition::new(|_| async { Ok(()) })
                     .with_metadata_value("policy", json!("cat:delete")),
             )?])
     }

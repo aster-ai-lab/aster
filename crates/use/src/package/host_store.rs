@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanScope, PluginHostEnablementPlanRequest, PluginHostEnablementPlanResult,
     PluginHostEnablementPlanStatus, PluginHostPackageState, PluginHostPlanRequest,
     PluginHostPlanResult, PluginManagedScope, PluginOperationPlan, PluginPackageId, UseError,
@@ -17,11 +17,11 @@ use sha2::{Digest, Sha256};
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
 
-const HOST_REQUEST_RECORD_SCHEMA: &str = "a3s.use.plugin-host-request-record.v1";
-const HOST_OPERATION_INDEX_SCHEMA: &str = "a3s.use.plugin-host-operation-index.v1";
+const HOST_REQUEST_RECORD_SCHEMA: &str = "aster.use.plugin-host-request-record.v1";
+const HOST_OPERATION_INDEX_SCHEMA: &str = "aster.use.plugin-host-operation-index.v1";
 const HOST_ENABLEMENT_DIAGNOSTIC_INDEX_SCHEMA: &str =
-    "a3s.use.plugin-host-enablement-diagnostic-index.v1";
-const HOST_CANCELLATION_RECORD_SCHEMA: &str = "a3s.use.plugin-host-cancellation-record.v1";
+    "aster.use.plugin-host-enablement-diagnostic-index.v1";
+const HOST_CANCELLATION_RECORD_SCHEMA: &str = "aster.use.plugin-host-cancellation-record.v1";
 const MAX_HOST_RECORD_BYTES: u64 = 4 * 1024 * 1024;
 static TEMPORARY_SEQUENCE: AtomicU64 = AtomicU64::new(0);
 
@@ -104,7 +104,7 @@ impl StoredPluginHostPlan {
         }
     }
 
-    pub fn envelope(&self) -> Option<&a3s_use_core::PluginOperationPlanEnvelope> {
+    pub fn envelope(&self) -> Option<&aster_use_core::PluginOperationPlanEnvelope> {
         match self {
             Self::Graph { result, .. } => Some(&result.plan),
             Self::Enablement { result, .. } => result.plan.as_ref(),
@@ -967,7 +967,7 @@ impl PluginHostProtocolStore {
 async fn acquire_lock(lock_path: PathBuf) -> UseResult<StdFile> {
     match fs::symlink_metadata(&lock_path).await {
         Ok(metadata)
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                 || !metadata.is_file() =>
         {
             return Err(store_invalid("A Plugin Host lock path is invalid."))
@@ -1017,7 +1017,7 @@ async fn read_optional<T: DeserializeOwned>(
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(path_error("inspect Plugin Host record", path, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > MAX_HOST_RECORD_BYTES
@@ -1096,9 +1096,9 @@ async fn write_record<T: Serialize>(
     let activation_target = error_target.clone();
     let activation = tokio::task::spawn_blocking(move || {
         if replace {
-            a3s_use_extension::persist_temporary_replace_blocking(temporary, &activation_target)
+            aster_use_extension::persist_temporary_replace_blocking(temporary, &activation_target)
         } else {
-            a3s_use_extension::persist_temporary_noclobber_blocking(temporary, &activation_target)
+            aster_use_extension::persist_temporary_noclobber_blocking(temporary, &activation_target)
         }
     })
     .await
@@ -1156,7 +1156,7 @@ async fn validate_existing_directory_chain(root: &Path, directory: &Path) -> Use
     let mut current = root.to_path_buf();
     match fs::symlink_metadata(&current).await {
         Ok(metadata)
-            if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata) && metadata.is_dir() => {
+            if !aster_use_core::metadata_is_link_or_reparse_point(&metadata) && metadata.is_dir() => {
         }
         Ok(_) => return Err(store_invalid("The Plugin Host state root is invalid.")),
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(false),
@@ -1172,7 +1172,7 @@ async fn validate_existing_directory_chain(root: &Path, directory: &Path) -> Use
         current.push(segment.as_os_str());
         match fs::symlink_metadata(&current).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(store_invalid("A Plugin Host state directory is invalid.")),
             Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(false),
@@ -1192,7 +1192,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect Plugin Host directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(store_invalid("A Plugin Host directory is invalid."));
     }
     Ok(())
@@ -1229,7 +1229,7 @@ fn sha256_hex(bytes: &[u8]) -> String {
 
 fn operation_binding_digest(operation_id: &str, plan_digest: &str) -> String {
     let mut hasher = Sha256::new();
-    hasher.update(b"a3s.use.plugin-host-operation-binding.v1\0");
+    hasher.update(b"aster.use.plugin-host-operation-binding.v1\0");
     hasher.update(operation_id.as_bytes());
     hasher.update(b"\0");
     hasher.update(plan_digest.as_bytes());

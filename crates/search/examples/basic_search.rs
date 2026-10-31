@@ -2,11 +2,11 @@
 
 use std::time::Duration;
 
-use a3s_search::product::{self, HeadlessBrowser};
-use a3s_search::{EngineTierPlan, SearchQuery};
+use aster_search::product::{self, HeadlessBrowser};
+use aster_search::{EngineTierPlan, SearchQuery};
 
 #[tokio::main]
-async fn main() -> a3s_search::Result<()> {
+async fn main() -> aster_search::Result<()> {
     let plan = EngineTierPlan::builtin_default();
     let outcome = product::execute_cascade(
         &plan,

@@ -1,4 +1,4 @@
-use a3s_oci_core::{DriverKind, HostPlatform, IsolationClass};
+use aster_oci_core::{DriverKind, HostPlatform, IsolationClass};
 use oci_spec::runtime::ContainerState;
 use serde::{de, Deserialize, Deserializer, Serialize};
 

@@ -5,12 +5,12 @@ use thiserror::Error;
 
 use super::{CapabilitySetError, Sha256Digest};
 
-pub const KNOWLEDGE_SURFACE_BINDING_SCHEMA: &str = "a3s.code.knowledge-surface-binding.v1";
+pub const KNOWLEDGE_SURFACE_BINDING_SCHEMA: &str = "aster.code.knowledge-surface-binding.v1";
 pub const MAX_KNOWLEDGE_SURFACE_PROJECTIONS: usize = 256;
 
 const MAX_KNOWLEDGE_PUBLIC_NAME_BYTES: usize = 256;
 const MAX_KNOWLEDGE_FORMAT_VERSION_BYTES: usize = 64;
-const KNOWLEDGE_SURFACE_DIGEST_PREFIX: &[u8] = b"a3s-code-knowledge-surface\0";
+const KNOWLEDGE_SURFACE_DIGEST_PREFIX: &[u8] = b"aster-knowledge-surface\0";
 
 /// Host-reviewed, path-free readiness evidence for one Knowledge surface.
 ///

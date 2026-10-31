@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::upstream::Route;
-use a3s_code_core::llm::{http::ReqwestHttpClient, HttpClient};
+use aster_core::llm::{http::ReqwestHttpClient, HttpClient};
 use serde::Serialize;
 use serde_json::Value;
 use std::collections::BTreeMap;

@@ -1,4 +1,4 @@
-// build.rs for a3s-libkrun-sys
+// build.rs for aster-libkrun-sys
 //
 // Locates krun.lib (MSVC import library) and emits the rustc-link directives.
 //
@@ -7,7 +7,7 @@
 //   2. prebuilt/<triple>/ directory adjacent to this Cargo.toml.
 //
 // The DLL path is emitted via cargo:dll_dir=<path> so that downstream
-// crates (e.g. a3s-box) can copy krun.dll next to the final binary.
+// crates (e.g. aster-box) can copy krun.dll next to the final binary.
 
 fn main() {
     let target_os = std::env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
@@ -56,12 +56,12 @@ fn main() {
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
     println!("cargo:rustc-link-lib=dylib=krun");
     // krun.dll itself links WinHvPlatform; re-declare it so linker finds it
-    // even when a3s-libkrun-sys is used as the sole Windows entry point.
+    // even when aster-libkrun-sys is used as the sole Windows entry point.
     println!("cargo:rustc-link-lib=WinHvPlatform");
 
     // --- Expose DLL location to downstream build scripts ---
     // Accessible as DEP_KRUN_DLL_DIR in build scripts of crates that
-    // depend on a3s-libkrun-sys.
+    // depend on aster-libkrun-sys.
     println!("cargo:dll_dir={}", lib_dir.display());
 
     // --- Rerun triggers ---

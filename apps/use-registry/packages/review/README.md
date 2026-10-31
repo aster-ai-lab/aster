@@ -1,6 +1,6 @@
-# 合同审查 · A3S Review
+# 合同审查 · Aster Review
 
-Package source `a3s/review@1.3.0` (unreleased). The Aster plugin page presents this `.aix` package as **合同审查**. It extends the composer's installed-agent list, with two declared surfaces:
+Package source `aster/review@1.3.0` (unreleased). The Aster plugin page presents this `.aix` package as **合同审查**. It extends the composer's installed-agent list, with two declared surfaces:
 
 | Surface | Id | Role |
 | --- | --- | --- |
@@ -44,5 +44,5 @@ The public registry address is the gateway route `/use-registry`. The process
 on `:4873` is only the upstream. Trust stays the pinned `--trust-root`.
 
 This directory is package source. It enters the signed tree through
-`admissions.acl` and `a3s-use-registry-tools assemble`. The picker never
+`admissions.acl` and `aster-use-registry-tools assemble`. The picker never
 receives the shell bearer.

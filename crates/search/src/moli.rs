@@ -2,13 +2,13 @@
 //!
 //! Moli is distributed as a standalone executable rather than a small Rust
 //! library.  This adapter keeps that process boundary explicit and implements
-//! the same [`a3s_use_browser::PageRenderer`] contract used by the other Search
+//! the same [`aster_use_browser::PageRenderer`] contract used by the other Search
 //! integrations.  Each render uses Moli's documented `fetch --dump html`
 //! command, while a semaphore bounds the number of concurrent Moli processes.
 //!
 //! The adapter deliberately does not download a runtime.  A browser executable
 //! is an operational dependency and must be installed by the host (or supplied
-//! through `A3S_MOLI_EXECUTABLE`).  This keeps library calls offline-safe and
+//! through `ASTER_MOLI_EXECUTABLE`).  This keeps library calls offline-safe and
 //! makes runtime provenance visible to operators.
 
 use std::ffi::OsString;
@@ -18,7 +18,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_use_browser::{
+use aster_use_browser::{
     PageRenderer, RenderRequest, RenderedPage, UseError, UseResult, WaitCondition,
 };
 use async_trait::async_trait;
@@ -233,13 +233,13 @@ impl PageRenderer for MoliPool {
 
 /// Finds an installed Moli executable without downloading anything.
 ///
-/// Detection order is intentionally deterministic: explicit A3S override,
+/// Detection order is intentionally deterministic: explicit Aster override,
 /// generic Moli overrides, PATH, then the locations used by the official
 /// installer and common package managers.
 pub fn detect_moli() -> Option<PathBuf> {
     for variable in [
-        "A3S_MOLI_EXECUTABLE",
-        "A3S_SEARCH_MOLI_EXECUTABLE",
+        "ASTER_MOLI_EXECUTABLE",
+        "ASTER_SEARCH_MOLI_EXECUTABLE",
         "MOLI_EXECUTABLE",
         "MOLI",
     ] {
@@ -263,7 +263,7 @@ pub fn detect_moli() -> Option<PathBuf> {
         candidates.extend([
             home.join(format!(".local/bin/{}", executable_name())),
             home.join(format!(".cargo/bin/{}", executable_name())),
-            home.join(format!(".a3s/bin/{}", executable_name())),
+            home.join(format!(".aster/bin/{}", executable_name())),
         ]);
     }
     candidates.extend([
@@ -293,7 +293,7 @@ pub fn resolve_moli() -> UseResult<PathBuf> {
             "Moli executable was not found.",
         )
         .with_suggestion(format!(
-            "Install Moli from {MOLI_REPOSITORY_URL} (the official installer places it in ~/.local/bin), or set A3S_MOLI_EXECUTABLE=/path/to/moli."
+            "Install Moli from {MOLI_REPOSITORY_URL} (the official installer places it in ~/.local/bin), or set ASTER_MOLI_EXECUTABLE=/path/to/moli."
         ))
     })
 }
@@ -307,7 +307,7 @@ fn validate_executable(path: &Path) -> UseResult<PathBuf> {
             format!("Moli executable is missing or not executable: {}", path.display()),
         )
         .with_suggestion(format!(
-            "Install Moli from {MOLI_REPOSITORY_URL} or provide an executable path through A3S_MOLI_EXECUTABLE."
+            "Install Moli from {MOLI_REPOSITORY_URL} or provide an executable path through ASTER_MOLI_EXECUTABLE."
         )))
     }
 }

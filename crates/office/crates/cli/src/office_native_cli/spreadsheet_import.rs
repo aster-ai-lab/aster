@@ -1,10 +1,10 @@
 use std::path::Path;
 
-use a3s_office::{
+use aster_office::{
     NativeOfficeEditor, NativeSpreadsheetDelimitedFormat, NativeSpreadsheetDelimitedImport,
     MAX_NATIVE_SPREADSHEET_IMPORT_BYTES,
 };
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::bounded_input::{input_error, read_bounded_input, read_bounded_stdin, NativeInputKind};
 use super::{save_editor, usage_error};

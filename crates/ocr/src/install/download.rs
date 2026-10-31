@@ -1,7 +1,7 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use sha2::{Digest, Sha256};
 use tokio::io::AsyncWriteExt;
 
@@ -30,7 +30,7 @@ pub(super) fn client() -> UseResult<reqwest::Client> {
         }
     });
     reqwest::Client::builder()
-        .user_agent(concat!("a3s-use-ocr/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("aster-use-ocr/", env!("CARGO_PKG_VERSION")))
         .redirect(redirects)
         .connect_timeout(Duration::from_secs(30))
         // Bound stalled reads, not the complete transfer. The pinned model

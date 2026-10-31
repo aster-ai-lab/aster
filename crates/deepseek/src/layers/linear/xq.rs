@@ -1,7 +1,7 @@
 //! Packed XQ device matrices. The explicit F32 CUDA control never creates a
 //! decoded resident matrix, changes quantization tiers or invokes HTTP.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

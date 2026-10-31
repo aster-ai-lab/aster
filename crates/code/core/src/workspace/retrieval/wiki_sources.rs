@@ -233,7 +233,7 @@ pub fn capture_workspace_wiki_sources(
             || path.components().any(|c| {
                 c.as_os_str()
                     .to_str()
-                    .is_some_and(|name| name.eq_ignore_ascii_case(".a3s"))
+                    .is_some_and(|name| name.eq_ignore_ascii_case(".aster"))
             })
             || crate::workspace::source_egress::path_is_denied(path)
             || entry.generated

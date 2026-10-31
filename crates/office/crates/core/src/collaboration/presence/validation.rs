@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::super::{
     collaboration_error, validate_client_id, NativeOfficeCollaborationArtifactKind,
@@ -201,6 +201,6 @@ fn validate_bounded_string(value: &str, maximum_units: usize, label: &str) -> Us
     )))
 }
 
-fn invalid_presence(message: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_presence(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.presence_invalid", message)
 }

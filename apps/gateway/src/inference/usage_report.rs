@@ -1,8 +1,8 @@
-//! Report one signed-in inference call to a3s-api.
+//! Report one signed-in inference call to aster-api.
 //!
-//! The URL comes from `A3S_USAGE_INGEST_URL`. An empty URL records nothing and
+//! The URL comes from `ASTER_USAGE_INGEST_URL`. An empty URL records nothing and
 //! logs that degrade once. The inference response is already complete; this
-//! report is the API ledger input, not a second write into a3s-billing.
+//! report is the API ledger input, not a second write into aster-billing.
 //! The API resolves the principal subject to an organization membership.
 
 use super::token_reconcile::UsageAttribution;
@@ -35,14 +35,14 @@ pub(crate) struct UsageFactBody {
 /// Resolve the principal to the member UUID the API ledger keys usage by.
 ///
 /// A shared deployment token carries no member identity of its own. It is
-/// attributed to the platform account named by `A3S_GATEWAY_SHARED_SUBJECT_ID`,
+/// attributed to the platform account named by `ASTER_GATEWAY_SHARED_SUBJECT_ID`,
 /// so the call is still metered even though that account is not charged.
 fn platform_attribution(attribution: &UsageAttribution) -> Option<UsageAttribution> {
     let subject = attribution.subject.subject.trim();
     if Uuid::parse_str(subject).is_ok() {
         return Some(attribution.clone());
     }
-    let mapped = std::env::var("A3S_GATEWAY_SHARED_SUBJECT_ID").ok()?;
+    let mapped = std::env::var("ASTER_GATEWAY_SHARED_SUBJECT_ID").ok()?;
     let mapped = mapped.trim();
     if Uuid::parse_str(mapped).is_err() {
         return None;
@@ -64,7 +64,7 @@ pub(crate) fn report_principal_usage(
         if LOGGED.set(()).is_ok() {
             tracing::warn!(
                 "usage ingest skipped: the principal subject is not a member id and \
-                 A3S_GATEWAY_SHARED_SUBJECT_ID is unset"
+                 ASTER_GATEWAY_SHARED_SUBJECT_ID is unset"
             );
         }
         return;
@@ -81,8 +81,8 @@ pub(crate) fn report_principal_usage(
         prompt_tokens,
         completion_tokens,
     );
-    let url = std::env::var("A3S_USAGE_INGEST_URL").unwrap_or_default();
-    let token = std::env::var("A3S_GATEWAY_ADMIN_TOKEN").unwrap_or_default();
+    let url = std::env::var("ASTER_USAGE_INGEST_URL").unwrap_or_default();
+    let token = std::env::var("ASTER_GATEWAY_ADMIN_TOKEN").unwrap_or_default();
     submit_usage_fact(url.trim(), token.trim(), body);
 }
 
@@ -121,13 +121,13 @@ pub(crate) fn submit_usage_fact(url: &str, token: &str, body: UsageFactBody) {
         static LOGGED: OnceLock<()> = OnceLock::new();
         LOGGED.get_or_init(|| {
             tracing::error!(
-                "usage ingest is disabled because A3S_USAGE_INGEST_URL is empty; signed-in calls are not reported"
+                "usage ingest is disabled because ASTER_USAGE_INGEST_URL is empty; signed-in calls are not reported"
             );
         });
         return;
     }
     if token.is_empty() {
-        tracing::error!("usage ingest is configured without A3S_GATEWAY_ADMIN_TOKEN");
+        tracing::error!("usage ingest is configured without ASTER_GATEWAY_ADMIN_TOKEN");
         return;
     }
     let Ok(handle) = tokio::runtime::Handle::try_current() else {
@@ -269,13 +269,13 @@ mod tests {
         // A shared token is attributed to the platform account when configured.
         let mut shared = attribution(None);
         shared.subject.subject = std::sync::Arc::from("shared");
-        std::env::set_var("A3S_GATEWAY_SHARED_SUBJECT_ID", platform);
+        std::env::set_var("ASTER_GATEWAY_SHARED_SUBJECT_ID", platform);
         let resolved = platform_attribution(&shared).expect("shared subject resolves");
         assert_eq!(&*resolved.subject.subject, platform);
 
         // Without a configured account the fact is dropped rather than sent
         // with a subject the ledger cannot key on.
-        std::env::remove_var("A3S_GATEWAY_SHARED_SUBJECT_ID");
+        std::env::remove_var("ASTER_GATEWAY_SHARED_SUBJECT_ID");
         assert!(platform_attribution(&shared).is_none());
     }
 

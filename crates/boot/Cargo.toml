@@ -1,19 +1,19 @@
 [package]
-name = "a3s-boot"
+name = "aster-boot"
 version = "0.2.0"
 edition = "2021"
-authors = ["A3S Lab"]
+authors = ["Aster"]
 license = "MIT"
-description = "Adapter-first modular Rust web framework for A3S inspired by Nest.js"
-repository = "https://github.com/A3S-Lab/Boot"
-documentation = "https://docs.rs/a3s-boot"
+description = "Adapter-first modular Rust web framework for Aster inspired by Nest.js"
+repository = "https://github.com/aster-ai-lab/Boot"
+documentation = "https://docs.rs/aster-boot"
 readme = "README.md"
 keywords = ["web", "framework", "modular", "nest", "adapter"]
 categories = ["web-programming", "asynchronous"]
 publish = false
 
 [lib]
-name = "a3s_boot"
+name = "aster_boot"
 path = "src/lib.rs"
 
 [features]
@@ -22,10 +22,10 @@ auth = []
 axum = ["dep:axum", "dep:http-body-util", "dep:tokio"]
 cache = []
 compression = ["dep:flate2"]
-config = ["dep:a3s-acl"]
+config = ["dep:aster-acl"]
 cqrs = []
 database = []
-events = ["dep:a3s-event"]
+events = ["dep:aster-event"]
 file-upload = ["dep:bytes", "dep:multer"]
 health = []
 http-client = ["dep:reqwest", "dep:tokio", "request-context"]
@@ -38,10 +38,10 @@ ilink = [
     "dep:zeroize",
 ]
 logging = []
-macros = ["dep:a3s-boot-macros"]
+macros = ["dep:aster-boot-macros"]
 openapi-schemas = ["dep:schemars"]
-queue = ["dep:a3s-lane", "dep:chrono", "dep:tokio"]
-queue-postgres = ["queue", "dep:a3s-orm", "dep:uuid"]
+queue = ["dep:aster-lane", "dep:chrono", "dep:tokio"]
+queue-postgres = ["queue", "dep:aster-orm", "dep:uuid"]
 request-context = ["dep:tokio"]
 grpc-transport = ["dep:prost", "dep:tokio", "dep:tonic", "dep:tonic-prost"]
 kafka-transport = ["dep:chrono", "dep:rskafka", "dep:tokio"]
@@ -92,11 +92,11 @@ tonic-prost = {version = "0.14.6", optional = true}
 url = {version = "2", optional = true}
 uuid = {version = "1", features = ["v4"], optional = true}
 zeroize = {version = "1", features = ["derive"], optional = true}
-a3s-orm = {default-features = false, features = ["postgres"], optional = true, path = "../orm"}
-a3s-lane = {default-features = false, optional = true, path = "../lane"}
-a3s-event = {default-features = false, optional = true, path = "../event"}
-a3s-boot-macros = {path = "macros", optional = true}
-a3s-acl = {optional = true, path = "../acl"}
+aster-orm = {default-features = false, features = ["postgres"], optional = true, path = "../orm"}
+aster-lane = {default-features = false, optional = true, path = "../lane"}
+aster-event = {default-features = false, optional = true, path = "../event"}
+aster-boot-macros = {path = "macros", optional = true}
+aster-acl = {optional = true, path = "../acl"}
 
 [dev-dependencies]
 tokio = {version = "1", features = ["macros", "rt", "sync", "time"]}

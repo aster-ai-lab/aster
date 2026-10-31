@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::{Map as JsonMap, Number as JsonNumber, Value as JsonValue};
 
 use super::super::super::{
@@ -950,7 +950,7 @@ fn days_in_month(year: u32, month: u32) -> u32 {
     }
 }
 
-fn review_match_conflict(message: String) -> a3s_use_core::UseError {
+fn review_match_conflict(message: String) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_match_conflict", message).with_suggestion(
         "Read the latest PDF review records and choose a fresh stable ID or target before retrying.",
     )

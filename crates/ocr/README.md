@@ -1,7 +1,7 @@
-# A3S OCR
+# Aster OCR
 
-`a3s-use-ocr` is the independently maintained, provider-oriented OCR library
-used by A3S Use. Its stable boundary is the `OcrProvider` interface, not one OCR
+`aster-use-ocr` is the independently maintained, provider-oriented OCR library
+used by Aster Use. Its stable boundary is the `OcrProvider` interface, not one OCR
 model:
 
 ```text
@@ -17,7 +17,7 @@ Provider results may include text only or optional confidence, polygon, and
 bounding-box evidence.
 
 The default feature set supplies `PpOcrV6Provider`, a local implementation using
-ONNX Runtime and the pinned `PP-OCRv6_small` model bundle. It is the default A3S
+ONNX Runtime and the pinned `PP-OCRv6_small` model bundle. It is the default Aster
 Use integration, not the architectural limit. Other local or remote providers
 can implement `OcrProvider` and be injected as typed objects without changing
 the client contract or selecting a backend by a raw string.
@@ -25,7 +25,7 @@ the client contract or selecting a backend by a raw string.
 ## Provider interface
 
 ```rust
-use a3s_use_ocr::{
+use aster_use_ocr::{
     OcrClient, OcrInput, OcrProvider, OcrProviderDescriptor,
     OcrProviderOutput, OcrProviderStatus, Readiness, UseResult,
 };
@@ -62,7 +62,7 @@ impl OcrProvider for MyProvider {
 }
 
 let client = OcrClient::with_provider(MyProvider)?;
-# Ok::<(), a3s_use_ocr::UseError>(())
+# Ok::<(), aster_use_ocr::UseError>(())
 ```
 
 Use `default-features = false` when only the provider-neutral contract and
@@ -87,11 +87,11 @@ The release packages the pinned detection and recognition models. If the model
 bundle is absent or damaged, install or repair it explicitly:
 
 ```bash
-a3s install use/ocr
-a3s install use/ocr --force
+aster install use/ocr
+aster install use/ocr --force
 ```
 
-Model installation uses the immutable A3S OCR release bundle derived from the
+Model installation uses the immutable Aster OCR release bundle derived from the
 pinned PaddleOCR artifacts, rather than depending on the upstream CDN at
 install time. Downloads bound connection setup and stalled reads without a
 total transfer deadline, so a healthy slow link can still complete the bundle.
@@ -101,27 +101,27 @@ bounded retry budget covers transient connection and origin failures. The
 complete bundle still must match its pinned length and SHA-256 before
 activation, and extraction admits only the four declared model assets.
 
-`A3S_OCR_MODEL_DIR` can point development builds at an explicit PP-OCRv6 model
-bundle. `A3S_USE_OCR_HOME` overrides its managed model root for packaging,
+`ASTER_OCR_MODEL_DIR` can point development builds at an explicit PP-OCRv6 model
+bundle. `ASTER_USE_OCR_HOME` overrides its managed model root for packaging,
 tests, or an isolated installation. These settings configure the default
 provider; custom providers own their own typed configuration.
 
 ## Commands
 
-A3S Use assembles the default provider as its reserved built-in `ocr` route:
+Aster Use assembles the default provider as its reserved built-in `ocr` route:
 
 ```bash
-a3s use ocr doctor --json
-a3s use ocr extract ./scan.png --json
-a3s use mcp serve ocr
+aster use ocr doctor --json
+aster use ocr extract ./scan.png --json
+aster use mcp serve ocr
 ```
 
 The standalone development binary accepts the equivalent domain arguments:
 
 ```bash
-a3s-use-ocr doctor --json
-a3s-use-ocr extract ./scan.png --json
-a3s-use-ocr serve --mcp
+aster-use-ocr doctor --json
+aster-use-ocr extract ./scan.png --json
+aster-use-ocr serve --mcp
 ```
 
 `OcrMcpServer::new` accepts any provider-backed `OcrClient` and projects the
@@ -142,7 +142,7 @@ cargo clippy --all-targets --all-features --locked -- -D warnings
 cargo package --locked
 ```
 
-The library depends on the stable `a3s-use-core` machine contracts. A3S Use
+The library depends on the stable `aster-use-core` machine contracts. Aster Use
 pins an immutable OCR revision when assembling its built-in provider, Skill,
 and model assets.
 
@@ -150,6 +150,6 @@ and model assets.
 
 This repository owns the provider interface, default PP-OCRv6 implementation,
 tests, model provenance, Skill content, crate publication, and platform
-archives. A3S Use owns the built-in route, chosen default provider, capability
+archives. Aster Use owns the built-in route, chosen default provider, capability
 projection, component policy, and final product assembly. Releases are joined
 only through immutable revisions and SHA-256-bound artifacts.

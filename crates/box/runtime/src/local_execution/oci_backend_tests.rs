@@ -3,9 +3,9 @@ use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_box_core::exec::{ExecRequest as BoxExecRequest, StreamType};
-use a3s_box_core::pty::PtyRequest;
-use a3s_box_core::{
+use aster_box_core::exec::{ExecRequest as BoxExecRequest, StreamType};
+use aster_box_core::pty::PtyRequest;
+use aster_box_core::{
     BoxConfig, CreateExecutionRequest, ExecEvent, ExecutionEventsRequest, ExecutionGeneration,
     ExecutionId, ExecutionIsolation, ExecutionManager, ExecutionManagerError,
     ExecutionProcessSignal, ExecutionResourceUpdate, ExecutionSessionManager, ExecutionSnapshotId,
@@ -14,8 +14,8 @@ use a3s_box_core::{
     FilesystemRequest as BoxFilesystemRequest, KillExecutionOptions, KillOutcome, NetworkMode,
     OperationId as BoxOperationId, ReconcileOutcome,
 };
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
+use aster_oci_sdk::{
     async_trait, CloseStdinRequest, ContainerId, ContainerOperationRequest, ContainerRecord,
     ContainerStats, ContainerTarget, CpuStats, CreateRequest, DeleteMode, DeleteRequest,
     DriverKind, Error, ErrorCode, EventBatch, EventsRequest, ExecRequest as OciExecRequest,
@@ -43,7 +43,7 @@ const CONFIG_DIGEST: &str =
     "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 const ATTACHMENTS_DIGEST: &str =
     "sha256:abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789";
-const RUNTIME_RECORD_PID_ENV: &str = "A3S_BOX_TEST_RUNTIME_RECORD_PID";
+const RUNTIME_RECORD_PID_ENV: &str = "ASTER_BOX_TEST_RUNTIME_RECORD_PID";
 
 #[cfg(any(unix, windows))]
 #[path = "oci_backend_tests/process_restart.rs"]
@@ -744,7 +744,7 @@ impl OciRuntimeService for FakeRuntimeService {
         }
         let target = if self.drift_process_target.load(Ordering::SeqCst) {
             ContainerTarget::exact(
-                ContainerId::new("a3s-box-drift").expect("drift container ID"),
+                ContainerId::new("aster-box-drift").expect("drift container ID"),
                 Generation(99),
             )
         } else {
@@ -786,7 +786,7 @@ impl OciRuntimeService for FakeRuntimeService {
         }
         let target = if self.drift_stats_target.load(Ordering::SeqCst) {
             ContainerTarget::exact(
-                ContainerId::new("a3s-box-drift").expect("drift container ID"),
+                ContainerId::new("aster-box-drift").expect("drift container ID"),
                 Generation(99),
             )
         } else {
@@ -807,7 +807,7 @@ impl OciRuntimeService for FakeRuntimeService {
                 peak_bytes: Some(72 * 1024 * 1024),
             },
             process_count: 1,
-            metrics: BTreeMap::from([(a3s_oci_sdk::IO_READ_BYTES_METRIC.to_string(), 4096)]),
+            metrics: BTreeMap::from([(aster_oci_sdk::IO_READ_BYTES_METRIC.to_string(), 4096)]),
         })
     }
 
@@ -870,7 +870,7 @@ impl OciRuntimeService for FakeRuntimeService {
         self.require_running_container(&request.target, "file")?;
         let response_target = if self.drift_file_target.load(Ordering::SeqCst) {
             ContainerTarget::exact(
-                ContainerId::new("a3s-box-file-drift").expect("file drift container ID"),
+                ContainerId::new("aster-box-file-drift").expect("file drift container ID"),
                 Generation(99),
             )
         } else {
@@ -955,7 +955,7 @@ impl OciRuntimeService for FakeRuntimeService {
         self.require_running_container(&request.target, "filesystem")?;
         let response_target = if self.drift_filesystem_target.load(Ordering::SeqCst) {
             ContainerTarget::exact(
-                ContainerId::new("a3s-box-filesystem-drift")
+                ContainerId::new("aster-box-filesystem-drift")
                     .expect("filesystem drift container ID"),
                 Generation(99),
             )
@@ -1681,7 +1681,7 @@ fn runtime_process_identity_exposes_only_shared_host_kernel_pid() {
         ),
     ] {
         let runtime_id =
-            ContainerId::new(format!("a3s-box-process-identity-{index}")).expect("runtime ID");
+            ContainerId::new(format!("aster-box-process-identity-{index}")).expect("runtime ID");
         let runtime = runtime_record(
             &runtime_id,
             RUNTIME_GENERATION,
@@ -1709,8 +1709,8 @@ fn runtime_process_identity_exposes_only_shared_host_kernel_pid() {
 #[test]
 fn lifecycle_operation_ids_are_stable_and_fenced_by_runtime_target() {
     let generation = ExecutionGeneration::new(7).expect("Box generation");
-    let first_id = ContainerId::new("a3s-box-first").expect("first runtime ID");
-    let second_id = ContainerId::new("a3s-box-second").expect("second runtime ID");
+    let first_id = ContainerId::new("aster-box-first").expect("first runtime ID");
+    let second_id = ContainerId::new("aster-box-second").expect("second runtime ID");
     let first_target = ContainerTarget::exact(first_id.clone(), RUNTIME_GENERATION);
     let second_target = ContainerTarget::exact(second_id.clone(), RUNTIME_GENERATION);
     let first = create_operation_context(
@@ -1803,7 +1803,7 @@ fn binding_validation_rejects_schema_identity_generation_and_evidence_drift() {
         .expect("round-tripped binding");
 
     let mut wrong_schema = decoded.clone();
-    wrong_schema.schema_version = "a3s.box.oci-runtime-binding.v1".to_string();
+    wrong_schema.schema_version = "aster.box.oci-runtime-binding.v1".to_string();
     assert!(wrong_schema.validate().is_err());
 
     let mut current_target = decoded.clone();
@@ -1815,7 +1815,7 @@ fn binding_validation_rejects_schema_identity_generation_and_evidence_drift() {
     assert!(zero_generation.validate().is_err());
 
     let mut wrong_identity = decoded.clone();
-    wrong_identity.target.id = ContainerId::new("a3s-box-other").expect("other runtime ID");
+    wrong_identity.target.id = ContainerId::new("aster-box-other").expect("other runtime ID");
     assert!(wrong_identity.validate_for(&execution_id).is_err());
 
     let mut malformed_digest = decoded.clone();
@@ -1855,7 +1855,7 @@ fn durable_state_rejects_a_runtime_binding_owned_by_another_product_execution() 
         Utc::now(),
     )
     .expect("managed record");
-    let other_id = ContainerId::new("a3s-box-other-product").expect("other runtime ID");
+    let other_id = ContainerId::new("aster-box-other-product").expect("other runtime ID");
     let other_record = runtime_record(
         &other_id,
         RUNTIME_GENERATION,
@@ -1988,9 +1988,9 @@ async fn preflight_rejects_host_services_before_oci_store_or_preparation() {
         provider.clone(),
     );
     let mut request = request("unsupported-host-service", ExecutionIsolation::Microvm);
-    request.config.host_services = vec![a3s_box_core::HostServiceSocket {
+    request.config.host_services = vec![aster_box_core::HostServiceSocket {
         guest_port: 61000,
-        socket_path: "/run/a3s-gateway/inference.sock".into(),
+        socket_path: "/run/aster-gateway/inference.sock".into(),
     }];
     let error = manager
         .create(request, &box_operation("unsupported-host-service"))
@@ -2029,7 +2029,7 @@ async fn preflight_requires_attachment_v1_before_store_or_preparation() {
     assert!(matches!(
         error,
         ExecutionManagerError::Unavailable(message)
-            if message.contains("a3s.oci.attachments.v1")
+            if message.contains("aster.oci.attachments.v1")
     ));
     assert!(!manager.state_path().exists());
     assert_eq!(provider.prepares.load(Ordering::SeqCst), 0);
@@ -2095,7 +2095,7 @@ async fn bundle_handoff_uses_the_exact_context_sent_to_runtime_create() {
     let creates = service.create_requests();
     assert_eq!(creates.len(), 1);
     let create = &creates[0];
-    let expected_directory = a3s_oci_sdk::runtime_bundle_handoff_directory(
+    let expected_directory = aster_oci_sdk::runtime_bundle_handoff_directory(
         &runtime_root,
         &create.id,
         &create.context.operation_id,
@@ -2392,7 +2392,7 @@ async fn launch_persists_exact_runtime_binding_for_both_product_isolations() {
         assert_eq!(binding.endpoint, endpoint);
         assert_eq!(
             binding.target.id.as_str(),
-            format!("a3s-box-{}", lease.execution_id)
+            format!("aster-box-{}", lease.execution_id)
         );
         assert_eq!(binding.target.generation, Some(RUNTIME_GENERATION));
         assert_eq!(binding.driver, expected_driver);
@@ -2484,7 +2484,7 @@ async fn captured_exec_replays_after_lost_response_within_one_execute() {
     assert!(calls[0]
         .process_id
         .as_str()
-        .starts_with("a3s-box-exec-process-"));
+        .starts_with("aster-box-exec-process-"));
     assert_eq!(
         calls[0].process.args().as_ref().expect("process args"),
         &["/bin/check", "--ready"]
@@ -2573,7 +2573,7 @@ async fn omit_path_captured_exec_inner_retry_reuses_minted_process_identity() {
     assert!(calls[0]
         .process_id
         .as_str()
-        .starts_with("a3s-box-exec-process-"));
+        .starts_with("aster-box-exec-process-"));
     assert_eq!(service.processes.lock().expect("process lock").len(), 1);
 }
 
@@ -2983,7 +2983,7 @@ async fn file_sessions_reject_invalid_download_limits_before_dispatch() {
             guest_path: "/tmp/result".to_string(),
             data: None,
             user: None,
-            max_bytes: Some(a3s_box_core::MAX_BOUNDED_FILE_BYTES + 1),
+            max_bytes: Some(aster_box_core::MAX_BOUNDED_FILE_BYTES + 1),
             request_id: None,
         },
     ] {
@@ -4929,7 +4929,7 @@ async fn exact_generation_processes_stats_and_events_use_the_public_sdk() {
     assert_eq!(stats.execution_id, lease.execution_id);
     assert_eq!(stats.cpu.usage_ns, 100);
     assert_eq!(stats.memory.limit_bytes, Some(128 * 1024 * 1024));
-    assert_eq!(stats.metrics[a3s_oci_sdk::IO_READ_BYTES_METRIC], 4096);
+    assert_eq!(stats.metrics[aster_oci_sdk::IO_READ_BYTES_METRIC], 4096);
     assert_eq!(service.stats_requests()[0].target, binding.target);
 
     let batch = manager
@@ -5426,7 +5426,7 @@ fn manager_with_provider(
 fn restart_test_endpoint(_directory: &tempfile::TempDir) -> OciRuntimeEndpoint {
     static NEXT_PIPE: AtomicUsize = AtomicUsize::new(20_000);
     OciRuntimeEndpoint::windows_named_pipe(format!(
-        r"\\.\pipe\a3s-box-oci-reconnect-test-{}-{}",
+        r"\\.\pipe\aster-box-oci-reconnect-test-{}-{}",
         std::process::id(),
         NEXT_PIPE.fetch_add(1, Ordering::Relaxed)
     ))
@@ -5459,7 +5459,7 @@ fn spawn_runtime_transport_server(
             .await
             .expect("accept Box named-pipe client");
         let runtime_service: Arc<dyn OciRuntimeService> = service;
-        a3s_oci_sdk::serve_transport_connection(runtime_service, server)
+        aster_oci_sdk::serve_transport_connection(runtime_service, server)
             .await
             .expect("serve Box SDK connection");
     })
@@ -5480,7 +5480,7 @@ fn spawn_runtime_transport_server(
     tokio::spawn(async move {
         let (stream, _) = listener.accept().await.expect("accept Box Unix client");
         let runtime_service: Arc<dyn OciRuntimeService> = service;
-        a3s_oci_sdk::serve_transport_connection(runtime_service, stream)
+        aster_oci_sdk::serve_transport_connection(runtime_service, stream)
             .await
             .expect("serve Box SDK connection");
     })
@@ -5498,13 +5498,13 @@ fn install_managed_snapshot(home: &std::path::Path, id: &str) -> ExecutionSnapsh
     let source = home.join(format!("{id}-rootfs-source"));
     std::fs::create_dir_all(&source).expect("snapshot source rootfs");
     std::fs::write(source.join("captured.txt"), b"captured").expect("snapshot source marker");
-    let mut metadata = a3s_box_core::SnapshotMetadata::new(
+    let mut metadata = aster_box_core::SnapshotMetadata::new(
         id.to_string(),
         id.to_string(),
         "source-execution".to_string(),
         "alpine:3.20".to_string(),
     );
-    metadata.image_config = Some(a3s_box_core::SnapshotImageConfig::default());
+    metadata.image_config = Some(aster_box_core::SnapshotImageConfig::default());
     crate::SnapshotStore::new(&home.join("snapshots"))
         .expect("snapshot store")
         .save(metadata, &source)
@@ -5519,7 +5519,7 @@ fn request(external_id: &str, isolation: ExecutionIsolation) -> CreateExecutionR
             image: "alpine:3.20".to_string(),
             isolation,
             network: NetworkMode::None,
-            resources: a3s_box_core::ResourceConfig {
+            resources: aster_box_core::ResourceConfig {
                 vcpus: 1,
                 memory_mb: 128,
                 disk_mb: 512,
@@ -5567,7 +5567,7 @@ fn runtime_info(dedicated_readiness: &str) -> RuntimeInfo {
             "ociVersionMax": "1.3.0"
         },
         "drivers": {
-            "schema_version": "a3s.oci.features.v1",
+            "schema_version": "aster.oci.features.v1",
             "platform": platform,
             "architecture": std::env::consts::ARCH,
             "drivers": [
@@ -5594,7 +5594,7 @@ fn runtime_info(dedicated_readiness: &str) -> RuntimeInfo {
             "events", "file", "filesystem"
         ],
         "attachments": {
-            "schemas": ["a3s.oci.attachments.v1"],
+            "schemas": ["aster.oci.attachments.v1"],
             "extensions": {}
         }
     }))
@@ -5755,7 +5755,7 @@ fn runtime_record(
         .id(id.as_str())
         .status(status)
         .pid(pid)
-        .bundle(std::env::temp_dir().join("a3s-box-oci-backend-tests"))
+        .bundle(std::env::temp_dir().join("aster-box-oci-backend-tests"))
         .build()
         .map_err(|error| Error::new(ErrorCode::Internal, error.to_string()))?;
     Ok(ContainerRecord {
@@ -5828,18 +5828,18 @@ fn lock_error<T>(operation: &str, error: std::sync::PoisonError<T>) -> Error {
 
 #[cfg(windows)]
 fn test_endpoint() -> OciRuntimeEndpoint {
-    OciRuntimeEndpoint::windows_named_pipe(r"\\.\pipe\a3s-box-oci-backend-tests")
+    OciRuntimeEndpoint::windows_named_pipe(r"\\.\pipe\aster-box-oci-backend-tests")
         .expect("Windows named-pipe endpoint")
 }
 
 #[cfg(unix)]
 fn test_endpoint() -> OciRuntimeEndpoint {
-    OciRuntimeEndpoint::unix_socket(std::env::temp_dir().join("a3s-box-oci-backend-tests.sock"))
+    OciRuntimeEndpoint::unix_socket(std::env::temp_dir().join("aster-box-oci-backend-tests.sock"))
         .expect("Unix socket endpoint")
 }
 
 #[cfg(not(any(unix, windows)))]
 fn test_endpoint() -> OciRuntimeEndpoint {
-    OciRuntimeEndpoint::unix_socket(std::path::PathBuf::from("/a3s-box-oci-backend-tests.sock"))
+    OciRuntimeEndpoint::unix_socket(std::path::PathBuf::from("/aster-box-oci-backend-tests.sock"))
         .expect("synthetic Unix socket endpoint")
 }

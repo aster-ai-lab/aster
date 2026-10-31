@@ -2,7 +2,7 @@
 //! It preserves FP32, epsilon and axis order. Promotion requires full-model A/B.
 
 #[cfg(any(feature = "cuda", test))]
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 
 pub const ABI: &str = "aster-xq-sinkhorn4-f32-v1";
 pub const SOURCE: &str = include_str!("sinkhorn.cu");

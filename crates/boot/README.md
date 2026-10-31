@@ -1,4 +1,4 @@
-# A3S Boot
+# Aster Boot
 
 <p align="center">
   <strong>Language / 语言:</strong>
@@ -8,7 +8,7 @@
 
 
 <p align="center">
-  <strong>Progressive Rust Web Framework for A3S</strong>
+  <strong>Progressive Rust Web Framework for Aster</strong>
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/Boot/">Documentation</a> •
+  <a href="https://aster-lab.github.io/Boot/">Documentation</a> •
   <a href="#overview">Overview</a> •
   <a href="#features">Features</a> •
   <a href="#quick-start">Quick Start</a> •
@@ -30,7 +30,7 @@
 
 ## Overview
 
-**A3S Boot** is a modular async service framework for Rust, inspired by
+**Aster Boot** is a modular async service framework for Rust, inspired by
 [Nest.js](https://nestjs.com/). Modules organize an application, typed providers
 supply dependencies, controllers expose routes, and a protocol-neutral pipeline
 applies guards, interceptors, pipes, validation, and exception filters.
@@ -40,14 +40,14 @@ belong to the framework core; Axum is the bundled default HTTP adapter. Rust
 attribute macros generate ordinary Boot definitions at compile time rather than
 relying on runtime decorator metadata.
 
-The [documentation website](https://a3s-lab.github.io/Boot/) provides complete
+The [documentation website](https://aster-lab.github.io/Boot/) provides complete
 Chinese and English guides for v0.2.0 and v0.1.4, including same-page language
 and version switching.
 
 ### Basic usage
 
 ```rust,no_run
-use a3s_boot::{
+use aster_boot::{
     AxumAdapter, BootApplication, BootResponse, ControllerDefinition, Module,
     ModuleRef, ProviderDefinition, Result,
 };
@@ -57,7 +57,7 @@ struct GreetingService;
 
 impl GreetingService {
     fn hello(&self) -> &'static str {
-        "Hello from A3S Boot"
+        "Hello from Aster Boot"
     }
 }
 
@@ -129,10 +129,10 @@ are opt-in.
 | Sessions | `session` | Session middleware and replaceable stores |
 | Cache | `cache` | Cache abstraction, interceptor, and in-memory store |
 | Database | `database` | Replaceable database facade and in-memory backend |
-| Events | `events` | A3S Event-backed emitter and listeners |
+| Events | `events` | Aster Event-backed emitter and listeners |
 | CQRS | `cqrs` | Command, query, and event buses |
-| Queue | `queue` | A3S Lane-backed in-process jobs, retries, priorities, and processors |
-| Queue persistence | `queue-postgres` | A3S ORM-backed shared PostgreSQL leasing, recovery, fencing, and retention |
+| Queue | `queue` | Aster Lane-backed in-process jobs, retries, priorities, and processors |
+| Queue persistence | `queue-postgres` | Aster ORM-backed shared PostgreSQL leasing, recovery, fencing, and retention |
 | Scheduling | `schedule` | Cron, interval, and timeout jobs |
 | Observability | `logging`, `health` | Structured logging and health indicators |
 | HTTP utilities | `http-client`, `compression` | Outbound HTTP and gzip responses |
@@ -156,7 +156,7 @@ not a claim of support for every production backend.
 
 ```toml
 [dependencies]
-a3s-boot = "0.2.0"
+aster-boot = "0.2.0"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
@@ -164,14 +164,14 @@ For a core-only build without Axum, macros, or shutdown signal handling:
 
 ```toml
 [dependencies]
-a3s-boot = { version = "0.2.0", default-features = false }
+aster-boot = { version = "0.2.0", default-features = false }
 ```
 
 Enable only the optional modules an application uses:
 
 ```toml
 [dependencies]
-a3s-boot = { version = "0.2.0", features = ["auth", "security", "openapi-schemas"] }
+aster-boot = { version = "0.2.0", features = ["auth", "security", "openapi-schemas"] }
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
@@ -184,7 +184,7 @@ remain normal Rust types, while attributes generate their Boot registrations.
 ```rust,no_run
 use std::sync::Arc;
 
-use a3s_boot::{
+use aster_boot::{
     controller, get, injectable, module, param, AxumAdapter, BootFactory, Result,
 };
 
@@ -266,13 +266,13 @@ application shutdown. Shutdown hooks can listen for SIGINT and SIGTERM when the
 ### Durable PostgreSQL queues
 
 Enable `queue-postgres` when workers in multiple processes must share durable
-work. `PostgresQueueBackend` stores jobs through A3S ORM, leases ready jobs with
+work. `PostgresQueueBackend` stores jobs through Aster ORM, leases ready jobs with
 PostgreSQL `SKIP LOCKED`, renews live leases, fences stale workers, and recovers
 expired leases after worker or process death.
 
 ```toml
 [dependencies]
-a3s-boot = { version = "0.2.0", features = ["queue-postgres"] }
+aster-boot = { version = "0.2.0", features = ["queue-postgres"] }
 serde_json = "1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
@@ -280,7 +280,7 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```rust,no_run
 use std::time::Duration;
 
-use a3s_boot::{
+use aster_boot::{
     ModuleRef, PostgresQueueBackend, Queue, QueueContext, QueueJob, QueueOptions,
     Result,
 };
@@ -303,7 +303,7 @@ async fn run_worker(database_url: &str) -> Result<()> {
 ```
 
 Use a database URL whose search path selects a schema dedicated to Boot. The
-host application creates that schema; Boot owns the queue tables and its A3S ORM
+host application creates that schema; Boot owns the queue tables and its Aster ORM
 migration ledger inside it. Sharing the Flow or application schema can make one
 component accept another component's migration history.
 
@@ -311,7 +311,7 @@ component accept another component's migration history.
 canonical migration set. Production hosts separate authority: a terminating
 migration process calls `migrate_postgres_queue`, while serving workers use
 `connect_verified` or `from_executor_verified`. The verified constructors reuse
-A3S ORM's read-only ledger admission and never create a table, acquire a
+Aster ORM's read-only ledger admission and never create a table, acquire a
 migration lock, or write migration history.
 
 The backend supports caller-assigned idempotency keys, priority and FIFO/LIFO
@@ -405,14 +405,14 @@ server URL validation, update polling, text replies, typing calls, and channel
 start/stop notifications.
 
 ```rust
-use a3s_boot::ilink::IlinkModule;
+use aster_boot::ilink::IlinkModule;
 
-let module = IlinkModule::weixin("A3S/0.10.1");
+let module = IlinkModule::weixin("Aster/0.10.1");
 ```
 
 The wire defaults are compatible with Tencent `openclaw-weixin` v2.4.6:
 `iLink-App-Id: bot`, `bot_type=3`, and packed client version `2.4.6`. The
-product-specific `bot_agent` remains `A3S/<version>` so upstream diagnostics do
+product-specific `bot_agent` remains `Aster/<version>` so upstream diagnostics do
 not misidentify the caller. Boot deliberately does not own browser APIs,
 credential persistence, owner authorization, or agent/session commands; those
 policies stay in the host application.
@@ -439,12 +439,12 @@ modules are feature-gated. The public `HttpAdapter`, `MessageTransport`, and
 backend traits are the primary extension contracts.
 
 Axum is currently the bundled HTTP adapter. Compile-time attributes live in the
-separate `a3s-boot-macros` crate and expand into the same explicit definitions
+separate `aster-boot-macros` crate and expand into the same explicit definitions
 used by the core API.
 
 ## Development
 
-Run checks from the `a3s-boot` crate directory:
+Run checks from the `aster-boot` crate directory:
 
 ```bash
 cargo fmt --all -- --check

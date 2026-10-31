@@ -3,7 +3,7 @@ use std::ffi::c_void;
 use std::mem;
 use std::ptr;
 
-use a3s_oci_core::{
+use aster_oci_core::{
     CapabilityStatus, DriverCapability, DriverKind, DriverReadiness, IsolationClass,
     RuntimeFeatures,
 };
@@ -282,7 +282,7 @@ pub(crate) fn whpx_smoke() -> WhpxSmokeReport {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_core::{CapabilityStatus, DriverReadiness};
+    use aster_oci_core::{CapabilityStatus, DriverReadiness};
 
     use super::{capability_from_observation, features, ProbeObservation};
 

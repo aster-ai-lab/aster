@@ -1,11 +1,11 @@
 [package]
-name = "a3s-use-reconcile"
+name = "aster-use-reconcile"
 version = "0.2.10"
 description = "One-generation reconcile for skill, OKF, UI, MCP, and in-package Tool"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Use"
-authors = ["A3S Lab"]
+repository = "https://github.com/aster-ai-lab/Use"
+authors = ["Aster"]
 rust-version = "1.82"
 publish = false
 
@@ -17,7 +17,7 @@ sha2 = {workspace = true}
 thiserror = {workspace = true}
 tokio = {version = "1", features = ["fs", "io-std", "io-util", "macros", "net", "rt-multi-thread", "process", "sync", "time"]}
 zip = {version = "2", default-features = false, features = ["deflate"]}
-a3s-use-core = {path = "../core"}
+aster-use-core = {path = "../core"}
 
 [dev-dependencies]
 tempfile = {version = "3.27"}

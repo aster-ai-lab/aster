@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{PlanScope, PluginPackageId, UseError, UseResult};
+use aster_use_core::{PlanScope, PluginPackageId, UseError, UseResult};
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -22,7 +22,7 @@ use super::enablement_store::PendingPackageEnablement;
 use super::store::{PendingPackageGraphOperation, PendingPackageGraphStore};
 use super::PackageManager;
 
-const PLUGIN_OPERATION_HISTORY_SCHEMA: &str = "a3s.use.plugin-operation-history.v1";
+const PLUGIN_OPERATION_HISTORY_SCHEMA: &str = "aster.use.plugin-operation-history.v1";
 static TEMPORARY_SEQUENCE: AtomicU64 = AtomicU64::new(0);
 
 /// Durable, non-authoritative observations retained oldest-first.
@@ -337,7 +337,7 @@ fn validate_scope(scope: &PlanScope) -> UseResult<()> {
 async fn acquire_lock(path: PathBuf) -> UseResult<StdFile> {
     match fs::symlink_metadata(&path).await {
         Ok(metadata)
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                 || !metadata.is_file() =>
         {
             return Err(history_invalid())
@@ -383,7 +383,7 @@ async fn read_optional(
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(path_error("inspect operation history", path, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > MAX_RETAINED_PLUGIN_OPERATION_HISTORY_BYTES as u64
@@ -454,7 +454,7 @@ fn encoded_history(history: &StoredPluginOperationHistory) -> UseResult<Vec<u8>>
 async fn activate_replace(temporary: PathBuf, target: PathBuf) -> UseResult<()> {
     let error_target = target.clone();
     tokio::task::spawn_blocking(move || {
-        a3s_use_extension::persist_temporary_replace_blocking(temporary, &target)
+        aster_use_extension::persist_temporary_replace_blocking(temporary, &target)
     })
     .await
     .map_err(|error| {
@@ -510,7 +510,7 @@ async fn validate_existing_directory_chain(root: &Path, directory: &Path) -> Use
         }
         match fs::symlink_metadata(&current).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(history_invalid()),
             Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(false),
@@ -530,7 +530,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect operation history directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(history_invalid());
     }
     Ok(())

@@ -1,5 +1,5 @@
 {
-  "apiVersion": "a3s.dev/form-semantic-primitives-conformance/v1",
+  "apiVersion": "aster.dev/form-semantic-primitives-conformance/v1",
   "schemaCases": [
     {
       "name": "valid-closed-object",

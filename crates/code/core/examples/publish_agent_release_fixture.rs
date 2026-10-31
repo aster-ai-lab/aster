@@ -1,4 +1,4 @@
-use a3s_code_core::release::{
+use aster_core::release::{
     agent_harness_compatibility_v1, AgentReleaseManifest, AgentReleaseProvenance,
 };
 use serde_json::json;
@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!(
         "{}",
         serde_json::to_string(&json!({
-            "schema": "a3s.code.agent-release-publication.v1",
+            "schema": "aster.code.agent-release-publication.v1",
             "artifactDigest": manifest.artifact().digest(),
             "manifestIdentity": manifest.identity(),
             "protocol": manifest.protocol(),

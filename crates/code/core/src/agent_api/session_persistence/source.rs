@@ -1,14 +1,14 @@
 //! Source checks shared by save, resume and the original Run capture.
 
 use super::*;
-use a3s_effect::LogStore;
+use aster_effect::LogStore;
 
-fn read_source(workspace: &Path, session_id: &str) -> Result<Vec<a3s_effect::Fact>> {
+fn read_source(workspace: &Path, session_id: &str) -> Result<Vec<aster_effect::Fact>> {
     let directory = crate::session_folder::effect_log_dir(workspace, session_id);
     if !directory.try_exists().map_err(source_error)? {
         return Ok(Vec::new());
     }
-    a3s_effect::FileLog::open(directory)
+    aster_effect::FileLog::open(directory)
         .and_then(|log| log.read(&crate::fact_control::thread_for_session(session_id)))
         .map_err(source_error)
 }
@@ -49,7 +49,7 @@ impl AgentSession {
 
     pub(in crate::agent_api) fn verify_saved_source(
         &self,
-        facts: &[a3s_effect::Fact],
+        facts: &[aster_effect::Fact],
     ) -> Result<()> {
         if let Some(source) = self.saved_durable_source() {
             source
@@ -85,7 +85,7 @@ impl SessionPersistenceContext {
 
     pub(in crate::agent_api) fn source_from_facts(
         &self,
-        facts: &[a3s_effect::Fact],
+        facts: &[aster_effect::Fact],
     ) -> Result<Option<crate::store::SessionFactSourceV1>> {
         let prior = read_or_recover(&self.persistence_state)
             .baseline

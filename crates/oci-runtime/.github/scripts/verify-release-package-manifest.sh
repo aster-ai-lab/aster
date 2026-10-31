@@ -9,7 +9,7 @@ if [[ "$#" -ne 1 ]]; then
 fi
 
 package_directory=$1
-expected_source_commit=$(printenv A3S_QUALIFICATION_SOURCE_COMMIT || true)
+expected_source_commit=$(printenv ASTER_QUALIFICATION_SOURCE_COMMIT || true)
 manifest_name='package-manifest.json'
 
 if [[ ! -d "$package_directory" || -L "$package_directory" ]]; then
@@ -53,7 +53,7 @@ manifest=$(jq -e \
    def positive_integer:
      if type == "number" then (. > 0 and . == floor) else false end;
    select(
-     .schema_version == "a3s.oci.release-package-manifest.v1"
+     .schema_version == "aster.oci.release-package-manifest.v1"
      and (.source_commit | type == "string" and test("^[0-9a-f]{40}$"))
      and (.package.name | type == "string" and length > 0)
      and (.package.version | type == "string" and length > 0)
@@ -62,7 +62,7 @@ manifest=$(jq -e \
      and .package.driver == "native-linux"
      and .package.isolation_class == "shared-host-kernel"
      and .qualification.schema_version ==
-       "a3s.oci.native-linux-package-qualification.v7"
+       "aster.oci.native-linux-package-qualification.v7"
      and .qualification.path == "qualification/native-linux-package.json"
      and (.qualification.sha256 | test("^[0-9a-f]{64}$"))
      and (.qualification.size_bytes | positive_integer)
@@ -71,7 +71,7 @@ manifest=$(jq -e \
      and (.containerd.compatibility_record.sha256 | test("^[0-9a-f]{64}$"))
      and (.containerd.compatibility_record.size_bytes | positive_integer)
      and .containerd.contract.version == 1
-     and .containerd.contract.runtime_type == "io.containerd.a3s-oci.v2"
+     and .containerd.contract.runtime_type == "io.containerd.aster-oci.v2"
      and .containerd.contract.task_api == "containerd.task.v2.Task"
      and .containerd.contract.identity_encoding == "sha256-length-framed-u64be-v1"
      and (.containerd.qualified_protocols | type == "array" and length > 0)
@@ -140,7 +140,7 @@ jq -e --arg source_commit "$source_commit" \
   --arg runtime_version "$(jq -r '.package.version' <<<"$manifest")" \
   --arg architecture "$(jq -r '.package.architecture' <<<"$manifest")" \
   'select(
-     .schema_version == "a3s.oci.native-linux-package-qualification.v7"
+     .schema_version == "aster.oci.native-linux-package-qualification.v7"
      and .status == "available"
      and .source_commit == $source_commit
      and .package_name == $package_name
@@ -157,10 +157,10 @@ jq -e --arg source_commit "$source_commit" \
    )' "$qualification_report" >/dev/null
 jq -e \
   'select(
-     .schema_version == "a3s.oci.containerd-runtime-v2-compatibility.v1"
+     .schema_version == "aster.oci.containerd-runtime-v2-compatibility.v1"
      and .contract == {
        version: 1,
-       runtime_type: "io.containerd.a3s-oci.v2",
+       runtime_type: "io.containerd.aster-oci.v2",
        task_api: "containerd.task.v2.Task",
        identity_encoding: "sha256-length-framed-u64be-v1"
      }
@@ -171,9 +171,9 @@ jq -e --argjson expected_protocols \
   "$compatibility_record" >/dev/null
 
 for executable in \
-  'runtime|a3s-oci|.executables.runtime.sha256|.executables.runtime.size' \
-  'agent|a3s-oci-agent|.executables.agent.sha256|.executables.agent.size' \
-  'containerd-shim|containerd-shim-a3s-oci-v2|.executables.containerd_shim.sha256|.executables.containerd_shim.size'; do
+  'runtime|aster-oci|.executables.runtime.sha256|.executables.runtime.size' \
+  'agent|aster-oci-agent|.executables.agent.sha256|.executables.agent.size' \
+  'containerd-shim|containerd-shim-aster-oci-v2|.executables.containerd_shim.sha256|.executables.containerd_shim.size'; do
   IFS='|' read -r role path report_pointer report_size_pointer <<<"$executable"
   report_sha256=$(jq -r "$report_pointer" "$qualification_report")
   report_size=$(jq -r "$report_size_pointer" "$qualification_report")

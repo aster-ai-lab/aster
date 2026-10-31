@@ -1,4 +1,4 @@
-//! One A3S Use generation, projected into the Meta Harness tool surface.
+//! One Aster Use generation, projected into the Meta Harness tool surface.
 //!
 //! The model sees built-in tools plus the skills, MCP servers, and Runtime
 //! Tasks published by the leased snapshot. Installing a missing package is a
@@ -35,7 +35,7 @@ impl UseHarnessGeneration {
     }
 
     pub fn allows_catalog_tool(&self, name: &str) -> bool {
-        if name == "a3s-use" || name.is_empty() {
+        if name == "aster-use" || name.is_empty() {
             return false;
         }
         if self.builtins.contains(name) || self.runtime_tasks.contains(name) {
@@ -113,7 +113,7 @@ pub fn project_generation(
         builtins: builtins
             .into_iter()
             .map(|name| name.as_ref().to_owned())
-            .filter(|name| !name.is_empty() && name != "a3s-use")
+            .filter(|name| !name.is_empty() && name != "aster-use")
             .collect(),
         skills,
         mcp_servers: published_mcp_servers(snapshot),
@@ -242,7 +242,7 @@ fn published_runtime_tasks(snapshot: &str) -> BTreeSet<String> {
                 .or_else(|| task.get("tool_name"))
                 .and_then(|item| item.as_str())
             {
-                if !name.is_empty() && name != "a3s-use" {
+                if !name.is_empty() && name != "aster-use" {
                     tasks.insert(name.to_owned());
                 }
             }
@@ -305,7 +305,7 @@ mod tests {
 
     fn snapshot(skill: Option<(&Path, &str)>, extra: serde_json::Value) -> String {
         let mut capability = serde_json::json!({
-            "id": "use/a3s/review",
+            "id": "use/aster/review",
             "enabled": true,
             "readiness": "ready",
             "activityBar": [{ "id": "picker" }],
@@ -343,7 +343,7 @@ mod tests {
 
     #[test]
     fn published_skill_loads_and_a_digest_mismatch_does_not() {
-        let root = std::env::temp_dir().join(format!("a3s-harness-skill-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("aster-harness-skill-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         let (path, digest) = skill_file(&root.join("ok"), REVIEW);
         let registry = SkillRegistry::new();
@@ -367,7 +367,7 @@ mod tests {
 
     #[test]
     fn snapshot_replaces_a_user_registration_and_leaves_the_file() {
-        let root = std::env::temp_dir().join(format!("a3s-harness-user-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("aster-harness-user-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         let user = root.join("user/review/SKILL.md");
         fs::create_dir_all(user.parent().unwrap()).unwrap();
@@ -393,7 +393,7 @@ mod tests {
 
     #[test]
     fn a_protected_host_skill_is_not_replaced() {
-        let root = std::env::temp_dir().join(format!("a3s-harness-host-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("aster-harness-host-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         let (path, digest) = skill_file(&root, REVIEW);
         let registry = SkillRegistry::new();
@@ -419,7 +419,7 @@ mod tests {
 
     #[test]
     fn one_generation_freezes_tools_and_omits_host_surfaces() {
-        let root = std::env::temp_dir().join(format!("a3s-harness-freeze-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("aster-harness-freeze-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         let (path, digest) = skill_file(&root, REVIEW);
         let raw = snapshot(
@@ -444,7 +444,7 @@ mod tests {
         assert!(generation.allows_catalog_tool("read"));
         assert!(generation.allows_catalog_tool("mcp__docs__lookup"));
         assert!(generation.allows_catalog_tool("use_review_task"));
-        assert!(!generation.allows_catalog_tool("a3s-use"));
+        assert!(!generation.allows_catalog_tool("aster-use"));
         assert!(!generation.allows_catalog_tool("review"));
         let _ = fs::remove_dir_all(&root);
     }
@@ -452,9 +452,9 @@ mod tests {
     #[test]
     fn denial_keeps_this_generation_and_acceptance_waits_for_the_next() {
         let current = project_generation(&SkillRegistry::new(), "{}", ["Skill", "read"]);
-        let request = PackageInstallRequest::parse("a3s/review", &["skill", "ui"]);
+        let request = PackageInstallRequest::parse("aster/review", &["skill", "ui"]);
         assert!(request.is_none());
-        let request = PackageInstallRequest::parse("a3s/review", &["skill"]).unwrap();
+        let request = PackageInstallRequest::parse("aster/review", &["skill"]).unwrap();
         let denied = cutover(
             &current,
             &request,
@@ -465,7 +465,7 @@ mod tests {
         assert_eq!(denied, current);
         assert!(!denied.skills().contains("review"));
 
-        let root = std::env::temp_dir().join(format!("a3s-harness-next-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("aster-harness-next-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         let (path, digest) = skill_file(&root, REVIEW);
         let next_registry = SkillRegistry::new();

@@ -2,10 +2,10 @@
 //!
 //! Session transcript admission remains single-flight. This scheduler adds a
 //! shared capacity boundary across every session created by one [`Agent`](crate::Agent),
-//! using `a3s-lane`'s stable priority queue for exact priority/FIFO ordering.
+//! using `aster-lane`'s stable priority queue for exact priority/FIFO ordering.
 
 use crate::execution_identity::ExecutionIdentityV1;
-use a3s_lane::{Priority, PriorityItem, PriorityQueue};
+use aster_lane::{Priority, PriorityItem, PriorityQueue};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::str::FromStr;

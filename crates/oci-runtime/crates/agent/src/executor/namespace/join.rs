@@ -4,7 +4,7 @@ use std::io;
 use std::os::fd::{AsRawFd, FromRawFd};
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::{NamespaceIsolation, NamespacePlan};
 
@@ -267,8 +267,8 @@ mod tests {
     use std::fs::File;
     use std::path::Path;
 
-    use a3s_oci_sdk::oci_spec::runtime::Linux;
-    use a3s_oci_sdk::{ErrorCode, OciLinuxSysctlNamespace};
+    use aster_oci_sdk::oci_spec::runtime::Linux;
+    use aster_oci_sdk::{ErrorCode, OciLinuxSysctlNamespace};
 
     use super::{enter, same_namespace, validate_namespace_type};
     use crate::executor::namespace::{NamespaceIsolation, NamespacePlan};

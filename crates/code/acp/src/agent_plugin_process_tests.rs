@@ -16,7 +16,7 @@ impl Drop for Workspace {
 #[tokio::test]
 async fn acp_registered_tool_inherits_session_cancellation_and_cleans_its_writer() {
     let root = Workspace(std::env::temp_dir().join(format!(
-        "a3s-acp-session-owned-tool-{}",
+        "aster-acp-session-owned-tool-{}",
         uuid::Uuid::new_v4()
     )));
     std::fs::create_dir_all(&root.0).unwrap();
@@ -29,13 +29,13 @@ async fn acp_registered_tool_inherits_session_cancellation_and_cleans_its_writer
     std::fs::set_permissions(&entry, std::fs::Permissions::from_mode(0o755)).unwrap();
     let mut launch = tests::test_launch(Some(root.0.join("sessions")));
     launch.workspace = root.0.clone();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let request = serde_json::from_value(serde_json::json!({
         "cwd": root.0,
         "mcpServers": [],
         "_meta": {
-            "a3sTools": [{ "id": "owned", "entry": entry }],
-            "a3sHarness": { "components": ["system", "tools", "host:intent_stamp", "budget", "compact", "infer"] }
+            "asterTools": [{ "id": "owned", "entry": entry }],
+            "asterHarness": { "components": ["system", "tools", "host:intent_stamp", "budget", "compact", "infer"] }
         }
     })).unwrap();
     let created = acp::Agent::new_session(&agent, request).await.unwrap();

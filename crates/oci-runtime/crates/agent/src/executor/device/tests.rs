@@ -2,8 +2,8 @@ use std::os::fd::AsRawFd;
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::fs::{MetadataExt, PermissionsExt};
 
-use a3s_oci_sdk::oci_spec::runtime::{Linux, LinuxResources};
-use a3s_oci_sdk::ErrorCode;
+use aster_oci_sdk::oci_spec::runtime::{Linux, LinuxResources};
+use aster_oci_sdk::ErrorCode;
 
 use super::{
     canonical_device_source_directory, cleanup_device_target_manifest, load_device_target_manifest,
@@ -311,7 +311,7 @@ fn checkpoint_device_mount_contract_is_stable_and_ordered() {
         .zip(crate::OCI_LINUX_DEFAULT_DEVICE_NODES)
         .enumerate()
     {
-        assert_eq!(cookie, &format!("a3s-oci-device-{index:04}"));
+        assert_eq!(cookie, &format!("aster-oci-device-{index:04}"));
         assert_eq!(mountpoint, std::path::Path::new(expected.path));
     }
 
@@ -668,7 +668,7 @@ fn legacy_absolute_device_target_manifest_fails_closed() {
     std::fs::write(
         &manifest_path,
         serde_json::to_vec_pretty(&serde_json::json!({
-            "schemaVersion": "a3s.oci.native-linux-device-targets.v1",
+            "schemaVersion": "aster.oci.native-linux-device-targets.v1",
             "targets": [{
                 "path": "/tmp/untrusted",
                 "dev": 1,
@@ -691,15 +691,15 @@ fn legacy_absolute_device_target_manifest_fails_closed() {
 }
 
 #[test]
-fn plans_the_exact_a3s_box_device_allowlist() {
+fn plans_the_exact_aster_box_device_allowlist() {
     let config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/a3s-box/config.json"))
+        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
             .expect("decode fixture");
     let linux: Linux =
         serde_json::from_value(config["linux"].clone()).expect("decode Linux config");
     let namespaces = NamespacePlan::from_linux(Some(&linux), 0, 0, &[]).expect("namespace plan");
     let mounts = mount::plan_all(
-        serde_json::from_value::<Vec<a3s_oci_sdk::oci_spec::runtime::Mount>>(
+        serde_json::from_value::<Vec<aster_oci_sdk::oci_spec::runtime::Mount>>(
             config["mounts"].clone(),
         )
         .expect("decode mounts")
@@ -711,7 +711,7 @@ fn plans_the_exact_a3s_box_device_allowlist() {
     let plan = DevicePlan::from_linux(Some(&linux), &mounts, false, true).expect("device plan");
     assert_eq!(plan.len(), 6);
     plan.validate_rootless_device_set()
-        .expect("A3S Box fixture is the fixed rootless device set");
+        .expect("Aster Box fixture is the fixed rootless device set");
 }
 
 #[test]
@@ -730,7 +730,7 @@ fn rootless_default_devices_do_not_require_an_access_policy() {
 #[test]
 fn rootless_policy_rejects_devices_outside_the_fixed_safe_set() {
     let mut config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/a3s-box/config.json"))
+        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
             .expect("decode fixture");
     config["linux"]["devices"][0] = serde_json::json!({
         "path": "/dev/sda",
@@ -810,7 +810,7 @@ fn fifo_device_numbers_are_ignored_by_node_creation() {
     let linux: Linux = serde_json::from_value(serde_json::json!({
         "devices": [
             {
-                "path": "/run/a3s/fifo",
+                "path": "/run/aster/fifo",
                 "type": "p",
                 "major": -1,
                 "minor": 9223372036854775807_i64,
@@ -824,7 +824,7 @@ fn fifo_device_numbers_are_ignored_by_node_creation() {
     let fifo = plan
         .nodes
         .iter()
-        .find(|node| node.path == std::path::Path::new("/run/a3s/fifo"))
+        .find(|node| node.path == std::path::Path::new("/run/aster/fifo"))
         .expect("planned FIFO");
     assert_eq!((fifo.major, fifo.minor), (0, 0));
 }
@@ -834,7 +834,7 @@ fn plans_all_oci_device_types_outside_dev_with_exact_metadata() {
     let linux: Linux = serde_json::from_value(serde_json::json!({
         "devices": [
             {
-                "path": "/run/a3s/character",
+                "path": "/run/aster/character",
                 "type": "c",
                 "major": 10,
                 "minor": 229,
@@ -843,7 +843,7 @@ fn plans_all_oci_device_types_outside_dev_with_exact_metadata() {
                 "gid": 2
             },
             {
-                "path": "/run/a3s/unbuffered-character",
+                "path": "/run/aster/unbuffered-character",
                 "type": "u",
                 "major": 10,
                 "minor": 230
@@ -858,7 +858,7 @@ fn plans_all_oci_device_types_outside_dev_with_exact_metadata() {
                 "gid": 4
             },
             {
-                "path": "/run/a3s/fifo",
+                "path": "/run/aster/fifo",
                 "type": "p",
                 "fileMode": 432,
                 "uid": 5,
@@ -873,7 +873,7 @@ fn plans_all_oci_device_types_outside_dev_with_exact_metadata() {
     assert_eq!(plan.nodes.len(), ROOTLESS_DEVICE_MOUNT_COUNT + 4);
     let expected = [
         (
-            "/run/a3s/character",
+            "/run/aster/character",
             DeviceKind::Character,
             10,
             229,
@@ -882,7 +882,7 @@ fn plans_all_oci_device_types_outside_dev_with_exact_metadata() {
             2,
         ),
         (
-            "/run/a3s/unbuffered-character",
+            "/run/aster/unbuffered-character",
             DeviceKind::Character,
             10,
             230,
@@ -891,7 +891,7 @@ fn plans_all_oci_device_types_outside_dev_with_exact_metadata() {
             0,
         ),
         ("/storage/block", DeviceKind::Block, 8, 0, 0o640, 3, 4),
-        ("/run/a3s/fifo", DeviceKind::Fifo, 0, 0, 0o660, 5, 6),
+        ("/run/aster/fifo", DeviceKind::Fifo, 0, 0, 0o660, 5, 6),
     ];
     for (path, kind, major, minor, mode, uid, gid) in expected {
         let node = plan
@@ -1078,7 +1078,7 @@ fn all_no_op_device_rules_keep_the_oci_inventory_filter_active() {
 #[test]
 fn fixed_device_nodes_and_inventory_survive_rule_clear_for_restore() {
     let config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/a3s-box/config.json"))
+        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
             .expect("decode fixture");
     let linux: Linux =
         serde_json::from_value(config["linux"].clone()).expect("decode Linux config");
@@ -1106,13 +1106,13 @@ fn fixed_device_nodes_and_inventory_survive_rule_clear_for_restore() {
 #[test]
 fn keeps_device_access_rules_independent_from_created_nodes() {
     let mut config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/a3s-box/config.json"))
+        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
             .expect("decode fixture");
     let linux: Linux =
         serde_json::from_value(config["linux"].clone()).expect("decode Linux config");
     let namespaces = NamespacePlan::from_linux(Some(&linux), 0, 0, &[]).expect("namespace plan");
     let mounts = mount::plan_all(
-        serde_json::from_value::<Vec<a3s_oci_sdk::oci_spec::runtime::Mount>>(
+        serde_json::from_value::<Vec<aster_oci_sdk::oci_spec::runtime::Mount>>(
             config["mounts"].clone(),
         )
         .expect("decode mounts")

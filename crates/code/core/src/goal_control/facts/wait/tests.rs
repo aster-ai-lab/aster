@@ -6,7 +6,7 @@ use crate::goal_control::{
     preview_tick, GoalControlCommandV1, GoalPlanCommandV1, GoalTickDecisionV1,
 };
 use crate::planning::{Complexity, ExecutionPlan, Task};
-use a3s_effect::{FileLog, LogStore, MemoryLog};
+use aster_effect::{FileLog, LogStore, MemoryLog};
 
 fn seed(log: &dyn LogStore) -> WorkspaceRef {
     let command = super::super::tests::command();

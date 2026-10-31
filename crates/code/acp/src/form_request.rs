@@ -1,4 +1,4 @@
-//! `_a3s/form/request` — the agent asks the client to render a JSON Render
+//! `_aster/form/request` — the agent asks the client to render a JSON Render
 //! form and waits for the submitted values. Mirrors the document bridge's
 //! ext-method round trip, but open-ended: a form can stay on screen until the
 //! user submits or the session dies, so there is no call timeout.
@@ -6,7 +6,7 @@
 use agent_client_protocol::{AgentSideConnection, Client, ExtRequest};
 use serde_json::{json, Value};
 
-pub const FORM_REQUEST_METHOD: &str = "a3s/form/request";
+pub const FORM_REQUEST_METHOD: &str = "aster/form/request";
 
 /// Send one form request. Returns the submitted values JSON, or `None` when
 /// the client cannot serve forms or the session ended first.

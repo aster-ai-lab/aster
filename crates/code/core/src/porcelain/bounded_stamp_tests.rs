@@ -21,7 +21,7 @@ fn large_fixture(root: &Path) -> std::path::PathBuf {
 
 #[tokio::test]
 async fn a_large_dirty_file_edit_has_a_receipt_even_with_restored_mtime() {
-    use a3s_effect::ToolObservationCompleteness;
+    use aster_effect::ToolObservationCompleteness;
     for restore_mtime in [false, true] {
         let root = tempfile::tempdir().unwrap();
         let file = large_fixture(root.path());

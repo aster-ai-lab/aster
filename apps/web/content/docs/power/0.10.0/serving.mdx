@@ -12,18 +12,18 @@ Power 支持独立服务和无监听器的嵌入式运行时。两种方式共�
 安装当前版本并启动本地监听器：
 
 ```bash
-cargo install a3s-power --version 0.10.0 --locked
-a3s-power serve --host 127.0.0.1 --port 11434
+cargo install aster-power --version 0.10.0 --locked
+aster-power serve --host 127.0.0.1 --port 11434
 ```
 
 拉取一个模型后，可以使用 CLI 发起对话：
 
 ```bash
-a3s-power models pull Qwen/Qwen2.5-0.5B-Instruct-GGUF:q4_k_m
-a3s-power chat Qwen/Qwen2.5-0.5B-Instruct-GGUF:q4_k_m
+aster-power models pull Qwen/Qwen2.5-0.5B-Instruct-GGUF:q4_k_m
+aster-power chat Qwen/Qwen2.5-0.5B-Instruct-GGUF:q4_k_m
 ```
 
-模型和内容寻址 blob 默认保存在 `~/.a3s/power`。设置 `A3S_POWER_HOME` 可以更换存储目录。
+模型和内容寻址 blob 默认保存在 `~/.aster/power`。设置 `ASTER_POWER_HOME` 可以更换存储目录。
 
 <DocTable caption="主要服务接口" headers={['接口', '用途']} rows={[
   ['GET /health', '读取服务健康、模型和 worker 观测'],
@@ -41,11 +41,11 @@ a3s-power chat Qwen/Qwen2.5-0.5B-Instruct-GGUF:q4_k_m
 
 ```toml
 [dependencies]
-a3s-power = { version = "0.10.0", default-features = false, features = ["embedded-inference"] }
+aster-power = { version = "0.10.0", default-features = false, features = ["embedded-inference"] }
 ```
 
 ```rust
-use a3s_power::inference::{DevicePreference, EmbeddedRuntime, InferenceLimits};
+use aster_power::inference::{DevicePreference, EmbeddedRuntime, InferenceLimits};
 
 let runtime = EmbeddedRuntime::new(
     DevicePreference::Auto,

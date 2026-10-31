@@ -26,14 +26,14 @@ rustup target add "${target}"
 cargo build \
   --manifest-path "${repository_root}/Cargo.toml" \
   --locked \
-  --package a3s-use-mcp-release-fixture \
+  --package aster-use-mcp-release-fixture \
   --release \
   --target "${target}" \
-  --bin a3s-use-mcp-release-fixture
+  --bin aster-use-mcp-release-fixture
 
-staging_root="$(mktemp -d /tmp/a3s-use-mcp-release.XXXXXX)"
-builder_name="a3s-use-mcp-builder-$$"
-registry_name="a3s-use-mcp-registry-$$"
+staging_root="$(mktemp -d /tmp/aster-use-mcp-release.XXXXXX)"
+builder_name="aster-use-mcp-builder-$$"
+registry_name="aster-use-mcp-registry-$$"
 service_names=()
 cleanup() {
   for service_name in "${service_names[@]}"; do
@@ -47,8 +47,8 @@ trap cleanup EXIT
 
 cp "${repository_root}/crates/mcp-release-fixture/Containerfile" "${staging_root}/Containerfile"
 cp \
-  "${repository_root}/target/${target}/release/a3s-use-mcp-release-fixture" \
-  "${staging_root}/a3s-use-mcp-release-fixture"
+  "${repository_root}/target/${target}/release/aster-use-mcp-release-fixture" \
+  "${staging_root}/aster-use-mcp-release-fixture"
 
 docker run \
   --detach \
@@ -75,7 +75,7 @@ docker buildx create \
   --driver-opt network=host >/dev/null
 docker buildx inspect "${builder_name}" --bootstrap >/dev/null
 
-image_tag="127.0.0.1:${registry_port}/a3s/mcp-release-fixture:conformance"
+image_tag="127.0.0.1:${registry_port}/aster/mcp-release-fixture:conformance"
 docker buildx build \
   --builder "${builder_name}" \
   --file "${staging_root}/Containerfile" \
@@ -94,7 +94,7 @@ curl \
   --header 'Accept: application/vnd.oci.image.manifest.v1+json' \
   --dump-header "${manifest_headers}" \
   --output "${manifest_body}" \
-  "${registry_endpoint}/v2/a3s/mcp-release-fixture/manifests/conformance"
+  "${registry_endpoint}/v2/aster/mcp-release-fixture/manifests/conformance"
 manifest_media_type="$(
   awk 'tolower($1) == "content-type:" { gsub("\r", "", $2); print $2; exit }' \
     "${manifest_headers}"
@@ -127,8 +127,8 @@ rendered_release="$(
     --manifest-path "${repository_root}/Cargo.toml" \
     --quiet \
     --locked \
-    --package a3s-use-mcp-release-fixture \
-    --bin a3s-use-mcp-release-descriptor \
+    --package aster-use-mcp-release-fixture \
+    --bin aster-use-mcp-release-descriptor \
     -- "${artifact_digest}" "${artifact_size}"
 )"
 release_identity="$(jq -er '.descriptorDigest' <<<"${rendered_release}")"
@@ -143,13 +143,13 @@ if [[ "${rendered_artifact}" != "${artifact_digest}" ||
 fi
 
 for generation in 1 2; do
-  service_name="a3s-use-mcp-fixture-${generation}-$$"
+  service_name="aster-use-mcp-fixture-${generation}-$$"
   service_names+=("${service_name}")
   docker run \
     --detach \
     --name "${service_name}" \
     --publish 127.0.0.1::8080 \
-    --env "A3S_MCP_FIXTURE_RELEASE_IDENTITY=${release_identity}" \
+    --env "ASTER_MCP_FIXTURE_RELEASE_IDENTITY=${release_identity}" \
     "${pinned_image}" >/dev/null
   service_port="$(docker port "${service_name}" 8080/tcp | sed -n 's/.*://p' | head -n 1)"
   if [[ ! "${service_port}" =~ ^[0-9]+$ ]]; then
@@ -157,13 +157,13 @@ for generation in 1 2; do
     exit 1
   fi
 
-  A3S_MCP_CONFORMANCE_ENDPOINT="http://127.0.0.1:${service_port}/mcp" \
-  A3S_MCP_CONFORMANCE_RELEASE_IDENTITY="${release_identity}" \
+  ASTER_MCP_CONFORMANCE_ENDPOINT="http://127.0.0.1:${service_port}/mcp" \
+  ASTER_MCP_CONFORMANCE_RELEASE_IDENTITY="${release_identity}" \
     cargo test \
       --manifest-path "${repository_root}/Cargo.toml" \
       --quiet \
       --locked \
-      --package a3s-use-mcp-release-fixture \
+      --package aster-use-mcp-release-fixture \
       --test headless_lifecycle \
       external_digest_pinned_container_conforms \
       -- --exact --nocapture

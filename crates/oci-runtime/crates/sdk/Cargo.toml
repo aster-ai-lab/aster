@@ -1,13 +1,13 @@
 [package]
 publish = false
-name = "a3s-oci-sdk"
+name = "aster-oci-sdk"
 version = "0.3.2"
 edition = "2021"
 license = "MIT"
-description = "Async, strongly typed Rust SDK for A3S OCI Runtime"
+description = "Async, strongly typed Rust SDK for Aster OCI Runtime"
 
 [dependencies]
-a3s-oci-core = { version = "=0.3.2", path = "../core" }
+aster-oci-core = { version = "=0.3.2", path = "../core" }
 async-trait.workspace = true
 base64.workspace = true
 cap-fs-ext.workspace = true

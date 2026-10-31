@@ -1,11 +1,11 @@
 //! Real-listener evidence: TCP entrypoints route by ClientHello SNI via
 //! pure `HostSNI(...)` rules compiled into `TcpRouterTable`.
 
-use a3s_gateway::config::{
+use aster_gateway::config::{
     EntrypointConfig, GatewayConfig, LoadBalancerConfig, Protocol, RouterConfig, ServerConfig,
     ServiceConfig, Strategy,
 };
-use a3s_gateway::Gateway;
+use aster_gateway::Gateway;
 use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::sync::Arc;

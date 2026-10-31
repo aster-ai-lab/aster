@@ -241,7 +241,7 @@ pub fn reuse_workspace_knowledge_maintenance(
                 .filter(|(path, _)| page_path(path))
             {
                 let references =
-                    a3s_use_core::okf_document_references(&path, &bytes, bundle_limits())
+                    aster_use_core::okf_document_references(&path, &bytes, bundle_limits())
                         .map_err(io::Error::other)?;
                 let reference = references
                     .last()
@@ -778,7 +778,7 @@ fn citation_at(
     reference: &str,
 ) -> io::Result<WorkspaceKnowledgeCitation> {
     let bytes = read_bounded(&root.join(page), MAX_TEXT_BYTES)?;
-    let references = a3s_use_core::okf_document_references(page, &bytes, bundle_limits())
+    let references = aster_use_core::okf_document_references(page, &bytes, bundle_limits())
         .map_err(io::Error::other)?;
     let target = references
         .iter()
@@ -855,7 +855,7 @@ pub fn workspace_knowledge_page(
     }
     let (bytes, references) = with_workspace(&input.output, &input.binding.revision, |root, _| {
         let bytes = read_bounded(&root.join(page), MAX_TEXT_BYTES)?;
-        let references = a3s_use_core::okf_document_references(page, &bytes, bundle_limits())
+        let references = aster_use_core::okf_document_references(page, &bytes, bundle_limits())
             .map_err(io::Error::other)?
             .into_iter()
             .filter(|reference| {

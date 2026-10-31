@@ -1,20 +1,20 @@
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use serde::Deserialize;
 
 use crate::macos_assets::{MacosRuntimeProvenance, PinnedFile};
 use crate::MacosBootAssetsEvidence;
 
-const SCHEMA_VERSION: &str = "a3s.oci.macos-system-image.v1";
-const COMPATIBILITY_LEVEL: &str = "a3s-oci-runtime-0.2.0-agent-protocol-v10";
-const IMAGE_NAME: &str = "a3s-oci-system.ext4";
+const SCHEMA_VERSION: &str = "aster.oci.macos-system-image.v1";
+const COMPATIBILITY_LEVEL: &str = "aster-oci-runtime-0.2.0-agent-protocol-v10";
+const IMAGE_NAME: &str = "aster-oci-system.ext4";
 const IMAGE_SIZE: u64 = 67_108_864;
 const ARCHITECTURE: &str = "aarch64";
 const FILESYSTEM: &str = "ext4";
 const FILESYSTEM_UUID: &str = "a3a30c1a-2026-4000-8000-000000000001";
-const FILESYSTEM_LABEL: &str = "a3s-oci-system";
+const FILESYSTEM_LABEL: &str = "aster-oci-system";
 const DIRECTORY_HASH_SEED: &str = "a3a30c1a-2026-4000-8000-000000000002";
 const ALPINE_VERSION: &str = "3.22.5";
 const ALPINE_URL: &str =
@@ -162,7 +162,7 @@ impl Image {
         require_equal(
             "image.archive_name",
             &self.archive_name,
-            "a3s-oci-system.ext4.xz",
+            "aster-oci-system.ext4.xz",
         )?;
         if self.archive_size == 0 {
             return Err(image_error(
@@ -597,7 +597,7 @@ mod tests {
                 "name": IMAGE_NAME,
                 "size": IMAGE_SIZE,
                 "sha256": image_sha256,
-                "archive_name": "a3s-oci-system.ext4.xz",
+                "archive_name": "aster-oci-system.ext4.xz",
                 "archive_size": 1,
                 "archive_sha256": "0".repeat(64),
                 "filesystem": FILESYSTEM,

@@ -197,7 +197,7 @@ mod tests {
             labels: HashMap::new(),
             annotations: HashMap::new(),
             log_directory: "/var/log/pods".to_string(),
-            runtime_handler: "a3s".to_string(),
+            runtime_handler: "aster".to_string(),
             network_ip: String::new(),
             additional_ips: vec![],
             dns: crate::sandbox::SandboxDns::default(),
@@ -233,7 +233,7 @@ mod tests {
             annotations: HashMap::new(),
             log_path: String::new(),
             rootfs_path: "/".to_string(),
-            rootfs_guest_path: format!("/run/a3s/cri/container-rootfs/{sandbox_id}/{id}/rootfs"),
+            rootfs_guest_path: format!("/run/aster/cri/container-rootfs/{sandbox_id}/{id}/rootfs"),
         }
     }
 

@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     runtime_bundle_handoff_directory, ContainerId, ContainerTarget, CreateAttachments,
     CreateRequest, DeleteMode, DeleteRequest, IsolationRequest, LocalIpcEndpoint, OciBundle,
     OperationContext, OperationId, ProcessId, ProcessIo, ProcessTarget, ReadOutputRequest,
@@ -104,13 +104,13 @@ async fn qualify(
     }
     fs::write(writable.join(".env"), b"host-credential")?;
     fs::hard_link(writable.join(".env"), writable.join("credential-alias"))?;
-    fs::create_dir_all(writable.join(".a3s/loops"))?;
-    fs::write(writable.join(".a3s/config"), b"host-control")?;
+    fs::create_dir_all(writable.join(".aster/loops"))?;
+    fs::write(writable.join(".aster/config"), b"host-control")?;
     let restrictions = StoragePathRestrictions::new(vec![StoragePathRestriction::new(
         StorageAttachmentId::new("caller-directory-1")?,
         vec![".env".into(), "credential-alias".into()],
-        vec![".env".into(), "credential-alias".into(), ".a3s".into()],
-        vec![".a3s/loops".into()],
+        vec![".env".into(), "credential-alias".into(), ".aster".into()],
+        vec![".aster/loops".into()],
     )?])?;
     let id = ContainerId::new("workspace-qualification")?;
     let create_context = operation("workspace-create")?;
@@ -154,9 +154,9 @@ async fn qualify(
             "if /bin/busybox cat /workspace-rw/.env >/dev/null 2>&1; then exit 93; fi; ",
             "if /bin/busybox cat /workspace-rw/credential-alias >/dev/null 2>&1; then exit 94; fi; ",
             "if printf denied > /workspace-rw/.env 2>/dev/null; then exit 95; fi; ",
-            "if /bin/busybox mv /workspace-rw/.a3s /workspace-rw/moved 2>/dev/null; then exit 96; fi; ",
-            "if printf denied > /workspace-rw/.a3s/config 2>/dev/null; then exit 97; fi; ",
-            "printf 'loop-state' > /workspace-rw/.a3s/loops/output; ",
+            "if /bin/busybox mv /workspace-rw/.aster /workspace-rw/moved 2>/dev/null; then exit 96; fi; ",
+            "if printf denied > /workspace-rw/.aster/config 2>/dev/null; then exit 97; fi; ",
+            "printf 'loop-state' > /workspace-rw/.aster/loops/output; ",
             "printf 'workspace-contract-passed\\n'; exit 7"
         )
     ]);
@@ -265,8 +265,8 @@ async fn qualify(
     }
     if fs::read(writable.join(".env"))? != b"host-credential"
         || fs::read(writable.join("credential-alias"))? != b"host-credential"
-        || fs::read(writable.join(".a3s/config"))? != b"host-control"
-        || fs::read(writable.join(".a3s/loops/output"))? != b"loop-state"
+        || fs::read(writable.join(".aster/config"))? != b"host-control"
+        || fs::read(writable.join(".aster/loops/output"))? != b"loop-state"
     {
         return Err(
             "Host credential, control-directory or writable exception contract failed".into(),
@@ -282,13 +282,13 @@ async fn qualify(
         return Err("runtime share leaked after delete".into());
     }
     Ok(
-        json!({"schema_version":"a3s.oci.hvf-workspace-qualification.v1", "status":"passed",
+        json!({"schema_version":"aster.oci.hvf-workspace-qualification.v1", "status":"passed",
         "target":target,"exit_status":status,"guest_rw_visible_on_host":true,
         "host_ro_survives_privileged_guest_remount":true,"caller_data_preserved":true,
         "caller_permissions_preserved":true,"runtime_share_clean":true, "host_credential_and_alias_protected":true,"control_directory_pinned":true,"write_exception_usable":true}),
     )
 }
 
-fn operation(name: &str) -> a3s_oci_sdk::Result<OperationContext> {
+fn operation(name: &str) -> aster_oci_sdk::Result<OperationContext> {
     Ok(OperationContext::new(OperationId::new(name)?))
 }

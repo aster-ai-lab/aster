@@ -156,7 +156,7 @@ impl VectorRevision {
 }
 
 /// Stable profile for exact vector-index history tokens.
-pub const VECTOR_INDEX_CHANGE_TOKEN_PROFILE_V1: &str = "a3s.memory.vector-index-change-token.v1";
+pub const VECTOR_INDEX_CHANGE_TOKEN_PROFILE_V1: &str = "aster.memory.vector-index-change-token.v1";
 
 /// Exact revision evidence scoped to one vector-index history.
 ///

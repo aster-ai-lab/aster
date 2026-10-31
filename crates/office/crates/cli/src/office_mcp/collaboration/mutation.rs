@@ -1,4 +1,4 @@
-use a3s_office::{
+use aster_office::{
     NativeOfficeCollaborationDocumentSuggestionDecision,
     NativeOfficeCollaborationDocumentSuggestionKind,
     NativeOfficeCollaborationDocumentSuggestionMatch, NativeOfficeCollaborationMutation,

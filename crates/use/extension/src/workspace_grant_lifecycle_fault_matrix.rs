@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::{
     StoredWorkspaceGrant, WorkspaceGrantLifecyclePhase, WorkspaceGrantOperationJournal,
@@ -23,9 +23,9 @@ pub(crate) const ROLLING_BACK: &str = "rolling-back";
 pub(crate) const ROLLED_BACK: &str = "rolled-back";
 
 const CHECKPOINT_CRASH_EXIT_CODE: i32 = 88;
-const CHILD_ROOT_ENV: &str = "A3S_USE_TEST_GRANT_CHECKPOINT_ROOT";
-const CHILD_SCENARIO_ENV: &str = "A3S_USE_TEST_GRANT_CHECKPOINT_SCENARIO";
-const FAULT_CHECKPOINT_ENV: &str = "A3S_USE_TEST_GRANT_CHECKPOINT";
+const CHILD_ROOT_ENV: &str = "ASTER_USE_TEST_GRANT_CHECKPOINT_ROOT";
+const CHILD_SCENARIO_ENV: &str = "ASTER_USE_TEST_GRANT_CHECKPOINT_SCENARIO";
+const FAULT_CHECKPOINT_ENV: &str = "ASTER_USE_TEST_GRANT_CHECKPOINT";
 const PREPARED_AT_MS: u64 = 1_250;
 const ROLLED_BACK_AT_MS: u64 = 1_275;
 

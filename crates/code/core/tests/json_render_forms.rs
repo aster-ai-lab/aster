@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use a3s_code_core::{
+use aster_core::{
     ask_user,
     tools::{ToolContext, ToolExecutor},
     AgentEvent,

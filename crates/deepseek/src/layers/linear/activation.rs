@@ -1,7 +1,7 @@
 //! Row-major group-32 E4M3/UE8M0 activations. F32 SwiGLU outputs are cast
 //! directly, without an intermediate BF16 rounding. Tensor control only.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

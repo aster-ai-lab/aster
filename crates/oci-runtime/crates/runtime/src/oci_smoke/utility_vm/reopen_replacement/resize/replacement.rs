@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::AgentResizeRequest;
-use a3s_oci_core::IsolationClass;
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentResizeRequest;
+use aster_oci_core::IsolationClass;
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     DeleteMode, DeleteRequest, ErrorCode, ListRequest, OciRuntimeService, OperationContext,
     ProcessTarget, ResizeRequest,
 };
@@ -26,7 +26,7 @@ pub(super) async fn run(
     report: &mut OciVmOperationReopenReplacementReport,
 ) -> std::result::Result<(), String> {
     let response_delivered = qualification.stage
-        == a3s_oci_agent_protocol::AgentTransportOperationStage::GuestAfterResponseWrite;
+        == aster_oci_agent_protocol::AgentTransportOperationStage::GuestAfterResponseWrite;
     let cleanup = MacosHostCleanupTracker::capture();
     let session = match super::super::connect_replacement_qualification_session(
         &qualification.shim,

@@ -16,11 +16,11 @@ use crate::policy::SecretHeaderInjection;
 use crate::policy::{AccessDecision, NetworkAllowRule, SandboxPolicy};
 use crate::{AuditSurface, CommandRequest, NativeSandbox, ReasonCode, SECRET_ENV_SENTINEL_PREFIX};
 
-const SECRET_NAME: &str = "A3S_GATE8_TOKEN";
+const SECRET_NAME: &str = "ASTER_GATE8_TOKEN";
 const SECRET_VALUE: &str = "gate8-super-secret-7f3a";
 
 fn mediated_policy() -> SandboxPolicy {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "api.example.com".into(),
@@ -46,9 +46,9 @@ fn ensure_guest_relay_available() {
         ONCE.call_once(|| {
             let test_exe = std::env::current_exe().expect("current test executable");
             if let Some(debug_dir) = test_exe.parent().and_then(|parent| parent.parent()) {
-                let relay = debug_dir.join("a3s-sandbox-relay");
+                let relay = debug_dir.join("aster-sandbox-relay");
                 if relay.is_file() {
-                    std::env::set_var("A3S_SANDBOX_RELAY", &relay);
+                    std::env::set_var("ASTER_SANDBOX_RELAY", &relay);
                 }
             }
         });
@@ -60,11 +60,11 @@ fn ensure_guest_relay_available() {
 fn print_secret_command() -> String {
     #[cfg(windows)]
     {
-        "[Console]::Out.Write($env:A3S_GATE8_TOKEN)".to_string()
+        "[Console]::Out.Write($env:ASTER_GATE8_TOKEN)".to_string()
     }
     #[cfg(not(windows))]
     {
-        "printf %s \"$A3S_GATE8_TOKEN\"".to_string()
+        "printf %s \"$ASTER_GATE8_TOKEN\"".to_string()
     }
 }
 
@@ -180,7 +180,7 @@ async fn gate8_reserved_secret_names_refuse() {
         "PATH",
         "http_proxy",
         "NO_PROXY",
-        "A3S_SANDBOX_MEDIATOR_PIPE",
+        "ASTER_SANDBOX_MEDIATOR_PIPE",
         "BASH_ENV",
         "LD_PRELOAD",
     ] {
@@ -315,7 +315,7 @@ async fn gate8_egress_reinjection_delivers_secret_without_landing_it() {
             "upstream must observe the injected secret: {head:?}"
         );
         assert!(
-            !head.contains("a3s:secret:"),
+            !head.contains("aster:secret:"),
             "sentinels must never be forwarded upstream: {head:?}"
         );
         stream
@@ -387,7 +387,7 @@ PY"#
 
 #[cfg(not(windows))]
 fn mediated_policy_for_port(port: u16) -> SandboxPolicy {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_network = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "127.0.0.1".into(),

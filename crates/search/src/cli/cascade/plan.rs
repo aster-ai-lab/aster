@@ -1,6 +1,6 @@
 //! CLI clap glue for the library cascade plan.
 
-use a3s_search::EngineTier;
+use aster_search::EngineTier;
 
 /// Clap-facing tier token. Converts to the library [`EngineTier`].
 #[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq, Hash)]

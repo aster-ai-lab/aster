@@ -8,7 +8,7 @@
   "guest_rw_visible_on_host": true,
   "host_ro_survives_privileged_guest_remount": true,
   "runtime_share_clean": true,
-  "schema_version": "a3s.oci.hvf-workspace-qualification.v1",
+  "schema_version": "aster.oci.hvf-workspace-qualification.v1",
   "status": "passed",
   "target": {
     "generation": 1,

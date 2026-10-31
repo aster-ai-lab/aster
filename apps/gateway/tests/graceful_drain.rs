@@ -1,10 +1,10 @@
 //! End-to-end graceful-drain and forced-cancellation evidence.
 
-use a3s_gateway::config::{
+use aster_gateway::config::{
     EntrypointConfig, GatewayConfig, LoadBalancerConfig, Protocol, RouterConfig, ServerConfig,
     ServiceConfig, Strategy,
 };
-use a3s_gateway::{Gateway, GatewayState};
+use aster_gateway::{Gateway, GatewayState};
 use futures_util::StreamExt;
 use std::collections::HashMap;
 use std::net::SocketAddr;

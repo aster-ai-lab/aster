@@ -5,13 +5,13 @@
 //! route. Lexical timing is local and does not use the network.
 //!
 //! ```bash
-//! cargo test -p a3s-code-core --features apofasi --test typed_decision_perf -- --ignored --nocapture
+//! cargo test -p aster-core --features apofasi --test typed_decision_perf -- --ignored --nocapture
 //! ```
 
 use std::time::{Duration, Instant};
 
-use a3s_code_core::llm::{create_client_with_config, Message};
-use a3s_code_core::{Answer, GateAction, GatePolicy, SystemOneRequest, TypedDecisionService};
+use aster_core::llm::{create_client_with_config, Message};
+use aster_core::{Answer, GateAction, GatePolicy, SystemOneRequest, TypedDecisionService};
 
 mod support;
 use support::layer_c_model::{load_pinned_layer_c_config, ALTERNATE_FLASH_MODEL};
@@ -180,7 +180,7 @@ fn model_prompt(task: &Task) -> String {
 }
 
 async fn model_once(
-    client: &dyn a3s_code_core::llm::LlmClient,
+    client: &dyn aster_core::llm::LlmClient,
     prompt: &str,
 ) -> Result<ModelSample, String> {
     let started = Instant::now();
@@ -200,7 +200,7 @@ async fn model_once(
 #[tokio::test]
 #[ignore = "live performance comparison against pinned bailian Flash"]
 async fn typed_decision_versus_model_on_real_tasks() {
-    unsafe { std::env::set_var("A3S_TEST_MODEL", "boyue/bailian/deepseek-v4-flash") };
+    unsafe { std::env::set_var("ASTER_TEST_MODEL", "boyue/bailian/deepseek-v4-flash") };
     let config = load_pinned_layer_c_config();
     assert_eq!(config.default_model.as_deref(), Some(ALTERNATE_FLASH_MODEL));
     let model = config.default_model.clone().expect("pin");
@@ -302,20 +302,20 @@ struct HostSample {
     class: &'static str,
 }
 
-fn escalation_class(escalation: &a3s_code_core::Escalation) -> &'static str {
+fn escalation_class(escalation: &aster_core::Escalation) -> &'static str {
     match escalation {
-        a3s_code_core::Escalation::Evidence(_) => "evidence",
-        a3s_code_core::Escalation::Rejected(a3s_code_core::HostEvidenceError::Empty) => {
+        aster_core::Escalation::Evidence(_) => "evidence",
+        aster_core::Escalation::Rejected(aster_core::HostEvidenceError::Empty) => {
             "rejected_empty"
         }
-        a3s_code_core::Escalation::Rejected(a3s_code_core::HostEvidenceError::NotJson) => {
+        aster_core::Escalation::Rejected(aster_core::HostEvidenceError::NotJson) => {
             "rejected_not_json"
         }
-        a3s_code_core::Escalation::Rejected(a3s_code_core::HostEvidenceError::KeyMismatch) => {
+        aster_core::Escalation::Rejected(aster_core::HostEvidenceError::KeyMismatch) => {
             "rejected_key_mismatch"
         }
-        a3s_code_core::Escalation::GenerationFailed(_) => "generation_failed",
-        a3s_code_core::Escalation::NotRequired => "not_required",
+        aster_core::Escalation::GenerationFailed(_) => "generation_failed",
+        aster_core::Escalation::NotRequired => "not_required",
     }
 }
 
@@ -324,8 +324,8 @@ fn percentile(samples: &mut [Duration], index_ratio: usize) -> Duration {
     samples[samples.len() / index_ratio]
 }
 
-fn pinned_flash_client() -> std::sync::Arc<dyn a3s_code_core::llm::LlmClient> {
-    unsafe { std::env::set_var("A3S_TEST_MODEL", "boyue/bailian/deepseek-v4-flash") };
+fn pinned_flash_client() -> std::sync::Arc<dyn aster_core::llm::LlmClient> {
+    unsafe { std::env::set_var("ASTER_TEST_MODEL", "boyue/bailian/deepseek-v4-flash") };
     let config = load_pinned_layer_c_config();
     assert_eq!(config.default_model.as_deref(), Some(ALTERNATE_FLASH_MODEL));
     let (provider, model_id) = ALTERNATE_FLASH_MODEL
@@ -369,7 +369,7 @@ fn complex_billing_triage_flash_percentiles() {
     for index in 0..(WARMUP + MEASURED) {
         let started = Instant::now();
         let mut usage = (0usize, 0usize);
-        let composition = a3s_code_core::compose_host_decision(
+        let composition = aster_core::compose_host_decision(
             &service,
             request.clone(),
             &policy,
@@ -408,7 +408,7 @@ fn complex_billing_triage_flash_percentiles() {
                     completion_tokens: usage.1,
                     admitted: matches!(
                         composition.escalation,
-                        a3s_code_core::Escalation::Evidence(_)
+                        aster_core::Escalation::Evidence(_)
                     ),
                     class: escalation_class(&composition.escalation),
                 }
@@ -456,16 +456,16 @@ fn complex_billing_triage_neural_percentiles() {
         serde_json::from_str(BILLING_TRIAGE).expect("billing triage request");
     let checkpoint = std::env::var("APOFASI_CHECKPOINT")
         .expect("APOFASI_CHECKPOINT must point at the published english checkpoint");
-    let engine = a3s_code_core::load_neural_engine(&checkpoint).expect("neural checkpoint");
+    let engine = aster_core::load_neural_engine(&checkpoint).expect("neural checkpoint");
     const WARMUP: usize = 3;
     const MEASURED: usize = 20;
     let mut samples = Vec::with_capacity(MEASURED);
     let mut escalated = 0usize;
     for index in 0..(WARMUP + MEASURED) {
         let started = Instant::now();
-        let response = a3s_code_core::TypedDecisionEngine::decide(&engine, request.clone())
+        let response = aster_core::TypedDecisionEngine::decide(&engine, request.clone())
             .expect("neural decide");
-        let gated = a3s_code_core::gate_system_one_response(&response, &policy);
+        let gated = aster_core::gate_system_one_response(&response, &policy);
         let elapsed = started.elapsed();
         if index >= WARMUP {
             if gated.escalate {

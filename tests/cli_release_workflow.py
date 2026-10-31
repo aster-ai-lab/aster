@@ -10,15 +10,16 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SHA = "a" * 40
-NAMES = [f"aster-cli-v0.1.5-{os}.{extension}" for os, extension in
+NAMES = [f"aster-cli-v0.1.6-{os}.{extension}" for os, extension in
          [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")]]
 
 
 class ReleaseAssembly(unittest.TestCase):
     def assemble(self, missing=False, extra=False, existing_draft=False, draft=True, draft_sha=SOURCE_SHA,
-                 qualification_exit=0, artifact_run_id="123", branch_qualification=1):
+                 qualification_exit=0, artifact_run_id="123", branch_qualification=1,
+                 yolo_qualification_exit=0):
         lines = (ROOT / ".github/workflows/release-aster-cli.yml").read_text().splitlines()
-        start = lines.index("      - name: Assemble draft aster-cli v0.1.5")
+        start = lines.index("      - name: Assemble draft aster-cli v0.1.6")
         start = lines.index("        run: |", start) + 1
         end = start
         while end < len(lines) and (not lines[end].strip() or lines[end].startswith("          ")):
@@ -30,22 +31,26 @@ class ReleaseAssembly(unittest.TestCase):
             dist, commands = root / "dist", root / "commands"
             dist.mkdir()
             commands.mkdir()
+            scripts = root / "scripts"
+            scripts.mkdir()
+            (scripts / "publish-aster-cli.sh").write_text(
+                (ROOT / "scripts/publish-aster-cli.sh").read_text())
             tests = root / "tests"
             tests.mkdir()
             (tests / "cli_sandbox_smoke.py").write_text(
-                'import os\nraise SystemExit(int(os.environ["TEST_QUALIFICATION_EXIT"]))\n')
+                'import os, sys\nraise SystemExit(int(os.environ["TEST_YOLO_QUALIFICATION_EXIT"] if "yolo" in sys.argv else os.environ["TEST_QUALIFICATION_EXIT"]))\n')
             for name in NAMES:
                 (dist / name).write_bytes(("opaque fixture " + name).encode())
             if missing:
                 (dist / NAMES[-1]).unlink()
             if extra:
-                (dist / "aster-cli-v0.1.5-kylin.tar.gz").write_bytes(b"retired fixture")
+                (dist / "aster-cli-v0.1.6-kylin.tar.gz").write_bytes(b"retired fixture")
             gh = commands / "gh"
             gh.write_text('''#!/bin/sh
 case "$1:$2" in
   api:repos/fixture/aster/actions/runs/123) printf '%s\\n' "$TEST_SOURCE_SHA" ;;
   api:repos/fixture/aster/actions/workflows/qualify-aster-cli.yml/runs*)
-    test "$2" = "repos/fixture/aster/actions/workflows/qualify-aster-cli.yml/runs?head_sha=$TEST_SOURCE_SHA&event=push&status=completed&per_page=100" || exit 92
+    test "$2" = "repos/fixture/aster/actions/workflows/qualify-aster-cli.yml/runs?head_sha=$TEST_QUALIFIED_SHA&event=push&status=completed&per_page=100" || exit 92
     printf '%s\\n' "$TEST_BRANCH_QUALIFICATION" ;;
   release:view)
     if [ "$TEST_EXISTING_DRAFT" = 1 ]; then
@@ -72,10 +77,12 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
                    "HOME": directory, "GH_REPO": "fixture/aster", "GH_TOKEN": "test",
                    "ARTIFACT_RUN_ID": artifact_run_id, "BUILD_SHA": "b" * 40,
                    "TEST_SOURCE_SHA": SOURCE_SHA, "TEST_CREATE_ARGS": str(receipt),
+                   "TEST_QUALIFIED_SHA": SOURCE_SHA if artifact_run_id else "b" * 40,
                    "TEST_EXISTING_DRAFT": "1" if existing_draft else "0",
                    "TEST_IS_DRAFT": "true" if draft else "false", "TEST_DRAFT_SHA": draft_sha,
                    "TEST_BRANCH_QUALIFICATION": str(branch_qualification),
-                   "TEST_QUALIFICATION_EXIT": str(qualification_exit)}
+                   "TEST_QUALIFICATION_EXIT": str(qualification_exit),
+                   "TEST_YOLO_QUALIFICATION_EXIT": str(yolo_qualification_exit)}
             result = subprocess.run(["bash", "-c", script], cwd=root, env=env, text=True, capture_output=True, timeout=10)
             manifest = json.loads((dist / "latest.json").read_text()) if (dist / "latest.json").exists() else None
             args = receipt.read_text().splitlines() if receipt.exists() else None
@@ -84,8 +91,8 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
     def test_three_archives_form_a_draft_bound_to_the_artifact_source(self):
         result, manifest, args = self.assemble()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(manifest["version"], "0.1.5")
-        self.assertEqual(manifest["tag"], "aster-cli-v0.1.5")
+        self.assertEqual(manifest["version"], "0.1.6")
+        self.assertEqual(manifest["tag"], "aster-cli-v0.1.6")
         self.assertEqual(set(manifest["assets"]), {"macos", "linux", "windows"})
         self.assertEqual(args[args.index("--target") + 1], SOURCE_SHA)
         self.assertIn("--draft", args)
@@ -134,14 +141,26 @@ print(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() + " *" + name)
                     self.assertIsNone(manifest)
                     self.assertIsNone(args)
 
-    def test_reused_artifacts_require_branch_qualification_for_their_own_source(self):
-        for existing_draft in (False, True):
-            with self.subTest(existing_draft=existing_draft):
-                result, manifest, args = self.assemble(existing_draft=existing_draft, branch_qualification=0)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertIn("no successful branch qualification", result.stderr)
-                self.assertIsNone(manifest)
-                self.assertIsNone(args)
+    def test_normal_and_reused_artifacts_require_branch_qualification_for_their_own_source(self):
+        for artifact_run_id in ("", "123"):
+            for existing_draft in (False, True):
+                with self.subTest(artifact_run_id=artifact_run_id, existing_draft=existing_draft):
+                    result, manifest, args = self.assemble(existing_draft=existing_draft,
+                        artifact_run_id=artifact_run_id, branch_qualification=0)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("no successful branch qualification", result.stderr)
+                    self.assertIsNone(manifest)
+                    self.assertIsNone(args)
+
+    def test_yolo_failure_also_blocks_create_and_upload(self):
+        for artifact_run_id in ("", "123"):
+            for existing_draft in (False, True):
+                with self.subTest(artifact_run_id=artifact_run_id, existing_draft=existing_draft):
+                    result, manifest, args = self.assemble(existing_draft=existing_draft,
+                        artifact_run_id=artifact_run_id, yolo_qualification_exit=54)
+                    self.assertEqual(result.returncode, 54, result.stderr)
+                    self.assertIsNone(manifest)
+                    self.assertIsNone(args)
 
     def test_windows_build_uses_a_short_cargo_home(self):
         workflow = (ROOT / ".github/workflows/release-aster-cli.yml").read_text()
@@ -163,24 +182,29 @@ class ReleaseWorkflowContract(unittest.TestCase):
         self.assertIn("python3 tests/release_governance.py", text)
         self.assertNotIn("cargo fmt", text)
         self.assertNotIn("cargo test", text)
-        self.assertIn("python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.5-macos.tar.gz --output-dir", text)
-        self.assertIn("--mode yolo --output-dir qualification/yolo", text)
-        self.assertIn("runs-on: macos-latest", text.split("\n  publish:\n", 1)[1])
+        self.assertIn("bash scripts/publish-aster-cli.sh", text)
+        publisher = (ROOT / "scripts/publish-aster-cli.sh").read_text()
+        self.assertIn("python3 tests/cli_sandbox_smoke.py dist/aster-cli-v0.1.6-macos.tar.gz --output-dir", publisher)
+        self.assertIn("--mode yolo --output-dir qualification/yolo", publisher)
+        publish_job = text.split("\n  publish:\n", 1)[1]
+        self.assertIn("runs-on: ${{ inputs.qualified_runner }}", publish_job)
+        self.assertIn("inputs.qualified_runner != ''", publish_job)
+        self.assertIn("needs.preflight.result == 'success'", publish_job)
 
     def test_all_three_cli_platforms_have_product_specific_caches(self):
         text = (ROOT / ".github/workflows/release-aster-cli.yml").read_text()
         self.assertEqual(text.count("uses: Swatinem/rust-cache@"), 2)
         self.assertIn("shared-key: aster-cli-release-${{ matrix.platform }}", text)
         self.assertIn("shared-key: aster-cli-release-linux", text)
-        self.assertIn("asset: aster-cli-v0.1.5-macos.tar.gz", text)
-        self.assertIn("asset: aster-cli-v0.1.5-windows.zip", text)
-        self.assertIn('package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.5-linux.tar.gz"', text)
+        self.assertIn("asset: aster-cli-v0.1.6-macos.tar.gz", text)
+        self.assertIn("asset: aster-cli-v0.1.6-windows.zip", text)
+        self.assertIn('package-aster-cli.sh linux "$bin_dir" "aster-cli-v0.1.6-linux.tar.gz"', text)
         self.assertIn('run-id: ${{ inputs.artifact_run_id != \'\' && inputs.artifact_run_id || github.run_id }}', text)
 
     def test_premerge_cli_workflow_runs_tests_and_delivery_contracts(self):
         text = (ROOT / ".github/workflows/qualify-aster-cli.yml").read_text()
         self.assertIn('push:\n    branches: ["**"]\n  pull_request:', text)
-        self.assertIn("cargo build --locked -p aster -p a3s-code-acp", text)
+        self.assertIn("cargo build --locked -p aster -p aster-acp", text)
         self.assertIn("cargo test --locked -p aster --bin aster -- --test-threads=4", text)
         self.assertIn("python3 tests/cli_pair_delivery.py", text)
         self.assertIn("python3 tests/aster_cli_linux.py", text)

@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     initialize, shutdown, Collection, CollectionHealthStatus, CollectionMaintenanceOptions,
     CollectionMaintenancePhase, CollectionOptions, CollectionSchema, DataType, Doc, Durability,
     FieldSchema, IndexParams,
@@ -29,9 +29,9 @@ impl Drop for ExampleDirectory {
     }
 }
 
-fn main() -> a3s_vec::Result<()> {
+fn main() -> aster_vec::Result<()> {
     initialize(None)?;
-    let directory = ExampleDirectory::new("a3s-vec-maintenance-health");
+    let directory = ExampleDirectory::new("aster-vec-maintenance-health");
     let data_path = directory.path().to_string_lossy();
     let mut category = FieldSchema::new("category", DataType::String, false, 0)?;
     category.set_index_params(&IndexParams::invert(false, false)?)?;

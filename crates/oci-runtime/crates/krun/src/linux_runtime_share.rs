@@ -2,7 +2,7 @@ use std::fs::{self, File, Metadata, OpenOptions};
 use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 const PRIVATE_DIRECTORY_MODE: u32 = 0o700;
 const RUNTIME_STATE_DIRECTORY: &str = "run";

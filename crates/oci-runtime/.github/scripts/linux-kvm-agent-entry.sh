@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-: "${A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
+: "${ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
 
 source .github/scripts/lib/linux-kvm-provenance.sh
 
@@ -9,45 +9,45 @@ target_dir="${CARGO_TARGET_DIR:-target}"
 if [[ "$target_dir" != /* ]]; then
   target_dir="$PWD/$target_dir"
 fi
-profile="${A3S_OCI_BUILD_PROFILE:-debug}"
-build_arguments=(build -p a3s-oci-cli -p a3s-oci-krun)
+profile="${ASTER_OCI_BUILD_PROFILE:-debug}"
+build_arguments=(build -p aster-oci-cli -p aster-oci-krun)
 case "$profile" in
   debug) ;;
   release) build_arguments+=(--release) ;;
   *) build_arguments+=(--profile "$profile") ;;
 esac
 binary_dir="$target_dir/$profile"
-cli="$binary_dir/a3s-oci"
-shim="$binary_dir/a3s-oci-krun-shim"
-runtime_dir="$binary_dir/a3s-oci-krun-runtime"
+cli="$binary_dir/aster-oci"
+shim="$binary_dir/aster-oci-krun-shim"
+runtime_dir="$binary_dir/aster-oci-krun-runtime"
 runtime_assets_manifest="crates/krun/runtime/runtime-assets.json"
 
 cargo "${build_arguments[@]}"
 test -x "$cli"
 test -x "$shim"
 test -d "$runtime_dir"
-test -f "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
-test ! -L "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+test -f "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+test ! -L "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
 
 entry_provenance="$(
   linux_kvm_provenance \
     linux-kvm-agent-entry-v1 "$profile" \
     "$cli" "$shim" "$runtime_dir" "$runtime_assets_manifest" \
-    "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+    "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
 )"
 post_probe_provenance="$(
   linux_kvm_provenance \
     linux-kvm-post-probe-failure-v1 "$profile" \
     "$cli" "$shim" "$runtime_dir" "$runtime_assets_manifest" \
-    "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+    "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
 )"
 
 temporary_root="${RUNNER_TEMP:-/tmp}"
 test -d "$temporary_root"
-work="$(mktemp -d "$temporary_root/a3s-oci-kvm-agent-entry.XXXXXX")"
+work="$(mktemp -d "$temporary_root/aster-oci-kvm-agent-entry.XXXXXX")"
 cleanup() {
   case "$work" in
-    "$temporary_root"/a3s-oci-kvm-agent-entry.*)
+    "$temporary_root"/aster-oci-kvm-agent-entry.*)
       rm -rf -- "$work"
       ;;
     *)
@@ -73,8 +73,8 @@ chmod 0700 \
   "$qualification_bootstrap" "$qualification_runtime_share" \
   "$qualification_runtime_share/run"
 
-report_path="${A3S_OCI_LINUX_KVM_AGENT_REPORT:-$work/report.json}"
-qualification_report_path="${A3S_OCI_LINUX_KVM_POST_PROBE_FAILURE_REPORT:-$work/post-probe-failure-report.json}"
+report_path="${ASTER_OCI_LINUX_KVM_AGENT_REPORT:-$work/report.json}"
+qualification_report_path="${ASTER_OCI_LINUX_KVM_POST_PROBE_FAILURE_REPORT:-$work/post-probe-failure-report.json}"
 if [[ "$report_path" == "$qualification_report_path" ]]; then
   printf '%s\n' 'Linux KVM entry reports must use distinct output paths' >&2
   exit 1
@@ -89,16 +89,16 @@ for output_path in "$report_path" "$qualification_report_path"; do
 done
 raw_report="$work/agent-vm-smoke.json"
 qualification_raw_report="$work/post-probe-failure.json"
-manifest_sha256="$(sha256sum "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1)"
+manifest_sha256="$(sha256sum "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1)"
 architecture="$(uname -m)"
 
 endpoint_inventory() {
   find /tmp -maxdepth 1 -type d -uid "$(id -u)" \
-    -name 'a3s-oci-agent-*' -print 2>/dev/null | sort
+    -name 'aster-oci-agent-*' -print 2>/dev/null | sort
 }
 
 shim_process_inventory() {
-  ps -eo pid=,comm= | awk 'index($2, "a3s-oci-krun") == 1 {print $1 " " $2}' | sort
+  ps -eo pid=,comm= | awk 'index($2, "aster-oci-krun") == 1 {print $1 " " $2}' | sort
 }
 
 runtime_share_inventory() {
@@ -132,7 +132,7 @@ output="$(
   "$cli" agent-vm-smoke \
     --shim "$shim" \
     --rootfs "$bootstrap" \
-    --system-image-manifest "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
+    --system-image-manifest "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
     --runtime-share "$runtime_share" \
     --console "$console"
 )"
@@ -145,7 +145,7 @@ if [[ "$kvm_status" == "available" ]]; then
   jq --exit-status \
     --arg architecture "$architecture" \
     --arg manifest_sha256 "$manifest_sha256" \
-    '.schema_version == "a3s.oci.agent-vm-smoke.v10"
+    '.schema_version == "aster.oci.agent-vm-smoke.v10"
      and .platform == "linux" and .status == "available"
      and .endpoint_bound and .shim_spawned
      and (.shim_process_id > 0) and (.bridge_process_id > 0)
@@ -161,7 +161,7 @@ if [[ "$kvm_status" == "available" ]]; then
            "acknowledge-operations"]
      and .shim_report_verified and .shim_exit_code == 0
      and .console_created
-     and .shim_report.schema_version == "a3s.oci.krun-agent-vm-smoke.v7"
+     and .shim_report.schema_version == "aster.oci.krun-agent-vm-smoke.v7"
      and .shim_report.platform == "linux"
      and .shim_report.status == "available"
      and .shim_report.runtime_bundle_loaded
@@ -193,7 +193,7 @@ if [[ "$kvm_status" == "available" ]]; then
     "$cli" agent-vm-smoke \
       --shim "$shim" \
       --rootfs "$qualification_bootstrap" \
-      --system-image-manifest "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
+      --system-image-manifest "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" \
       --runtime-share "$qualification_runtime_share" \
       --console "$qualification_console" \
       --qualify-kvm-post-probe-failure
@@ -206,7 +206,7 @@ if [[ "$kvm_status" == "available" ]]; then
   jq --exit-status \
     --arg architecture "$architecture" \
     --arg manifest_sha256 "$manifest_sha256" \
-    '.schema_version == "a3s.oci.agent-vm-smoke.v10"
+    '.schema_version == "aster.oci.agent-vm-smoke.v10"
      and .platform == "linux" and .status == "unavailable"
      and .endpoint_bound and .shim_spawned
      and (.shim_process_id > 0)
@@ -216,7 +216,7 @@ if [[ "$kvm_status" == "available" ]]; then
      and (.shim_report_verified | not)
      and .shim_exit_code == 2
      and (.console_created | not)
-     and .shim_report.schema_version == "a3s.oci.krun-agent-vm-smoke.v7"
+     and .shim_report.schema_version == "aster.oci.krun-agent-vm-smoke.v7"
      and .shim_report.platform == "linux"
      and .shim_report.status == "unavailable"
      and .shim_report.runtime_bundle_loaded
@@ -256,7 +256,7 @@ elif [[ "$kvm_status" == "unavailable" ]]; then
     --arg architecture "$architecture" \
     --arg manifest_sha256 "$manifest_sha256" \
     --argjson kvm_device_opened "$kvm_device_opened" \
-    '.schema_version == "a3s.oci.agent-vm-smoke.v10"
+    '.schema_version == "aster.oci.agent-vm-smoke.v10"
      and .platform == "linux" and .status == "unavailable"
      and .endpoint_bound and .shim_spawned
      and (.shim_process_id > 0)
@@ -264,7 +264,7 @@ elif [[ "$kvm_status" == "unavailable" ]]; then
      and (.protocol_negotiated | not)
      and (.shim_report_verified | not)
      and .shim_exit_code == 2
-     and .shim_report.schema_version == "a3s.oci.krun-agent-vm-smoke.v7"
+     and .shim_report.schema_version == "aster.oci.krun-agent-vm-smoke.v7"
      and .shim_report.platform == "linux"
      and .shim_report.status == "unavailable"
      and .shim_report.runtime_bundle_loaded
@@ -298,7 +298,7 @@ test "$process_after" = "$process_before"
 test "$runtime_share_after" = "$runtime_share_before"
 test -z "$(
   find "$runtime_share" "$qualification_runtime_share" -maxdepth 1 \
-    \( -name '.a3s-oci-bootstrap-*' -o -name '.a3s-oci-recovery-*' \) \
+    \( -name '.aster-oci-bootstrap-*' -o -name '.aster-oci-recovery-*' \) \
     -print -quit
 )"
 
@@ -309,7 +309,7 @@ if [[ "$kvm_status" == "available" ]]; then
     --argjson provenance "$entry_provenance" \
     --slurpfile report "$raw_report" \
     '{
-      schema_version: "a3s.oci.linux-kvm-agent-entry.v1",
+      schema_version: "aster.oci.linux-kvm-agent-entry.v1",
       platform: "linux",
       architecture: $architecture,
       status: "available",
@@ -322,10 +322,10 @@ if [[ "$kvm_status" == "available" ]]; then
       reason: null
     }' | tee "$report_path"
   jq --exit-status \
-    '.schema_version == "a3s.oci.linux-kvm-agent-entry.v1"
+    '.schema_version == "aster.oci.linux-kvm-agent-entry.v1"
      and .platform == "linux" and .status == "available"
      and .kvm_required and .expected_case_count == 1 and .case_count == 1
-     and .provenance.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+     and .provenance.schema_version == "aster.oci.linux-kvm-provenance.v1"
      and .provenance.platform == .platform
      and .provenance.architecture == .architecture
      and .provenance.qualification_profile == "linux-kvm-agent-entry-v1"
@@ -344,7 +344,7 @@ if [[ "$kvm_status" == "available" ]]; then
     --argjson provenance "$post_probe_provenance" \
     --slurpfile report "$qualification_raw_report" \
     '{
-      schema_version: "a3s.oci.linux-kvm-post-probe-failure.v1",
+      schema_version: "aster.oci.linux-kvm-post-probe-failure.v1",
       platform: "linux",
       architecture: $architecture,
       status: "available",
@@ -358,11 +358,11 @@ if [[ "$kvm_status" == "available" ]]; then
       reason: null
     }' | tee "$qualification_report_path"
   jq --exit-status \
-    '.schema_version == "a3s.oci.linux-kvm-post-probe-failure.v1"
+    '.schema_version == "aster.oci.linux-kvm-post-probe-failure.v1"
      and .platform == "linux" and .status == "available"
      and .expected_outcome == "fail-closed-before-vm-entry"
      and .kvm_required and .expected_case_count == 1 and .case_count == 1
-     and .provenance.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+     and .provenance.schema_version == "aster.oci.linux-kvm-provenance.v1"
      and .provenance.platform == .platform
      and .provenance.architecture == .architecture
      and .provenance.qualification_profile == "linux-kvm-post-probe-failure-v1"
@@ -385,7 +385,7 @@ else
     --argjson provenance "$entry_provenance" \
     --slurpfile report "$raw_report" \
     '{
-      schema_version: "a3s.oci.linux-kvm-agent-entry.v1",
+      schema_version: "aster.oci.linux-kvm-agent-entry.v1",
       platform: "linux",
       architecture: $architecture,
       status: "unavailable",
@@ -398,10 +398,10 @@ else
       reason: $reason
     }' | tee "$report_path"
   jq --exit-status \
-    '.schema_version == "a3s.oci.linux-kvm-agent-entry.v1"
+    '.schema_version == "aster.oci.linux-kvm-agent-entry.v1"
      and .platform == "linux" and .status == "unavailable"
      and .kvm_required and .expected_case_count == 1 and .case_count == 0
-     and .provenance.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+     and .provenance.schema_version == "aster.oci.linux-kvm-provenance.v1"
      and .provenance.platform == .platform
      and .provenance.architecture == .architecture
      and .provenance.qualification_profile == "linux-kvm-agent-entry-v1"
@@ -418,7 +418,7 @@ else
     --argjson kvm_driver "$kvm_driver" \
     --argjson provenance "$post_probe_provenance" \
     '{
-      schema_version: "a3s.oci.linux-kvm-post-probe-failure.v1",
+      schema_version: "aster.oci.linux-kvm-post-probe-failure.v1",
       platform: "linux",
       architecture: $architecture,
       status: "unavailable",
@@ -432,11 +432,11 @@ else
       reason: $reason
     }' | tee "$qualification_report_path"
   jq --exit-status \
-    '.schema_version == "a3s.oci.linux-kvm-post-probe-failure.v1"
+    '.schema_version == "aster.oci.linux-kvm-post-probe-failure.v1"
      and .platform == "linux" and .status == "unavailable"
      and .expected_outcome == "fail-closed-before-vm-entry"
      and .kvm_required and .expected_case_count == 1 and .case_count == 0
-     and .provenance.schema_version == "a3s.oci.linux-kvm-provenance.v1"
+     and .provenance.schema_version == "aster.oci.linux-kvm-provenance.v1"
      and .provenance.platform == .platform
      and .provenance.architecture == .architecture
      and .provenance.qualification_profile == "linux-kvm-post-probe-failure-v1"

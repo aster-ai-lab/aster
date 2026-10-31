@@ -1,14 +1,14 @@
-# ADR 0001: Keep the advanced harness feature-gated inside `a3s-code-core`
+# ADR 0001: Keep the advanced harness feature-gated inside `aster-core`
 
 - Status: accepted (CORE-SPLIT1, 2026-10-17)
 - Decision owner: core maintainers
 
 ## Context
 
-`a3s-code-core` carries five advanced modules — `evaluation`, `research`,
+`aster-core` carries five advanced modules — `evaluation`, `research`,
 `state_graph`, `flow_graph`, `dynamic_workflow` — about 25.9k of the crate's
 413.9k lines (6.3%), behind the `advanced-harness` feature. The question was
-whether to move them into a separate `a3s-code-advanced` crate so that the
+whether to move them into a separate `aster-advanced` crate so that the
 default `local-code` embedder pays less in compile time and dependencies.
 
 The split is only worth its cost (a new published crate, a cross-crate API
@@ -26,7 +26,7 @@ directory per profile. Each profile is built with `--no-default-features`.
 | `local-code,advanced-harness` | 396 | 91 s | 36 s | 717 MB |
 | `full` (`scientific` + `server`) | 521 | 113 s | 56 s | 730 MB |
 
-The advanced harness adds 2 dependencies (`a3s-flow` and its
+The advanced harness adds 2 dependencies (`aster-flow` and its
 `serde_yaml_ng`), no measurable clean-build time (the 2 s difference is below run
 noise), about 3 s of `check`, and 7.5% of rlib size. The dependency and
 build-time weight of `full` comes from `scientific`'s headless search and
@@ -35,7 +35,7 @@ SQLite memory and `server`'s S3 and OpenTelemetry stacks (+125 dependencies,
 
 ## Decision
 
-Do not split. Keep the advanced modules in `a3s-code-core` behind
+Do not split. Keep the advanced modules in `aster-core` behind
 `advanced-harness`, and keep module-path isolation:
 
 - the default `local-code` profile does not compile them;

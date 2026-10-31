@@ -744,7 +744,7 @@ pub enum AgentEvent {
     },
 
     // ========================================================================
-    // a3s-lane integration events
+    // aster-lane integration events
     // ========================================================================
     /// Command moved to dead letter queue after exhausting retries
     #[serde(rename = "command_dead_lettered")]

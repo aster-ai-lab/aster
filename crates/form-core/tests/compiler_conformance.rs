@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_form_core::{
+use aster_form_core::{
     canonical_sha256, canonicalize_value, compile_bytes, parse_json, CanonicalValue,
     COMPILE_REQUEST_API_VERSION,
 };
@@ -157,7 +157,7 @@ fn matches_shared_compiler_foundation_cases() {
     let fixture = fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-compiler-foundation-conformance/v1"
+        "aster.dev/form-compiler-foundation-conformance/v1"
     );
 
     for case in fixture.cases {
@@ -208,7 +208,7 @@ fn matches_shared_compiler_foundation_cases() {
 #[test]
 fn validates_matrix_semantics_instead_of_falling_back() {
     let response = compile(
-        r#"{"kind":"a3s.form","apiVersion":"a3s.dev/form/v1alpha1","revision":1,"metadata":{"title":"Matrix"},"schema":{"type":"object","properties":{"choice":{"type":"string"}}},"ui":{"root":"root","nodes":[{"id":"root","kind":"root","children":["choice"]},{"id":"choice","kind":"field","schemaPath":"/properties/choice","widget":"matrix-single","matrix":{"rows":[],"columns":[]}}]}}"#,
+        r#"{"kind":"aster.form","apiVersion":"aster.dev/form/v1alpha1","revision":1,"metadata":{"title":"Matrix"},"schema":{"type":"object","properties":{"choice":{"type":"string"}}},"ui":{"root":"root","nodes":[{"id":"root","kind":"root","children":["choice"]},{"id":"choice","kind":"field","schemaPath":"/properties/choice","widget":"matrix-single","matrix":{"rows":[],"columns":[]}}]}}"#,
     );
     assert_eq!(
         response.get("ok").and_then(CanonicalValue::as_bool),
@@ -231,7 +231,7 @@ fn matches_complete_matrix_diagnostics() {
     let fixture = matrix_fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-compiler-matrix-conformance/v1"
+        "aster.dev/form-compiler-matrix-conformance/v1"
     );
     let base: serde_json::Value =
         serde_json::from_str(&fixture.base_input_json).expect("base matrix document should decode");
@@ -268,7 +268,7 @@ fn matches_complete_compiler_failure_diagnostics() {
     let fixture = diagnostics_fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-compiler-diagnostics-conformance/v1"
+        "aster.dev/form-compiler-diagnostics-conformance/v1"
     );
     let base: serde_json::Value = serde_json::from_str(&fixture.base_input_json)
         .expect("base diagnostics document should decode");
@@ -316,7 +316,7 @@ fn matches_complete_container_rule_and_data_source_diagnostics() {
     } = semantics_fixture();
     assert_eq!(
         api_version,
-        "a3s.dev/form-compiler-semantics-conformance/v1"
+        "aster.dev/form-compiler-semantics-conformance/v1"
     );
     for case in cases {
         let mut document = bases

@@ -7,16 +7,16 @@
 Snapshot for Core line `9.1.0` (fact-log control), recorded 2026-09-28.
 The 9.0.0 snapshot (2026-09-25) remains below as supporting history; the
 `9.1.0` delta carries no `sdk_capabilities()` id changes (inventory still
-30 ids, schema `a3s-code/sdk-capabilities/v2`), so the per-capability
+30 ids, schema `aster/sdk-capabilities/v2`), so the per-capability
 matrix rows carry over with refreshed evidence roots.
 
 ## 9.1.0 delta evidence (this run, 2026-09-28)
 
 | Root | Path / fact |
 | --- | --- |
-| Layer C | Tip `b3249a7e` evidence `/tmp/a3s-layer-c-run4/FINAL.txt` is exactly `LAYER_C_PASS model=boyue/deepseek-v4-flash` (22/22 suites; one variance suite absorbed by the bounded suite retry recorded in the summary). Variance analysis across runs 1–3 archived in `/tmp/a3s-layer-c-run2-archive/` and the GA board. |
+| Layer C | Tip `b3249a7e` evidence `/tmp/aster-layer-c-run4/FINAL.txt` is exactly `LAYER_C_PASS model=boyue/deepseek-v4-flash` (22/22 suites; one variance suite absorbed by the bounded suite retry recorded in the summary). Variance analysis across runs 1–3 archived in `/tmp/aster-layer-c-run2-archive/` and the GA board. |
 | L0/L1 hermetic | `just harness-convergence-check` on the 9.1.0 tip (2026-09-28): thin default tree clean, `local-code` lib tests green, SDK alignment check green — see the harness-convergence evidence in FULL_FEATURE §13 for this cut. |
-| L8 pins | Re-verified 2026-09-28 on the 9.1.0 tip: `fact_log` 34/34, `tool_round_cap` 1/1, bm25 persistent a3s-vec FTS 23/23. |
+| L8 pins | Re-verified 2026-09-28 on the 9.1.0 tip: `fact_log` 34/34, `tool_round_cap` 1/1, bm25 persistent aster-vec FTS 23/23. |
 | SDK discovery | Inventory unchanged at 30 ids (`core/src/sdk_capabilities.rs`); Node/Python/Go projections re-checked by the alignment script in the same run. |
 
 ## 9.0.0 snapshot (2026-09-25, supporting)
@@ -26,8 +26,8 @@ Every `sdk_capabilities()` id must be **effective**, **efficient**, and
 Code boundary (activation + fail-closed); Use / CAR / Harbor remain external
 (L7).
 
-**Live model pin:** `A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash` → remapped
-`boyue/bailian/deepseek-v4.1-flash` (ACL peers; monorepo `./.a3s/config.acl`
+**Live model pin:** `ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash` → remapped
+`boyue/bailian/deepseek-v4.1-flash` (ACL peers; monorepo `./.aster/config.acl`
 default alias `boyue/deepseek-v4-flash`).
 
 See also: [FULL_FEATURE_TEST_PLAN.md](FULL_FEATURE_TEST_PLAN.md),
@@ -38,12 +38,12 @@ See also: [FULL_FEATURE_TEST_PLAN.md](FULL_FEATURE_TEST_PLAN.md),
 
 | Root | Path / fact |
 | --- | --- |
-| Layer A | `/tmp/a3s-goal-integ-use/layer-a.FINAL.txt` EXIT:0 (historical 29-cap snapshot); `typed_decisions` added via Core inventory + unit evidence below |
-| Layer C | Tip RC `b91462d3` evidence `/tmp/a3s-layer-c-b91462d3/FINAL.txt` is exactly `LAYER_C_PASS model=boyue/bailian/deepseek-v4-flash` (full matrix, incl. `test_meta_harness_compose_live_e2e`). Pin remapped to `boyue/bailian/deepseek-v4.1-flash`. Prior tip `ee8f68ad` / `fa0a92ca` archives remain supporting. |
-| Efficiency | `/tmp/a3s-goal-integ-use/efficiency.log` (THIN_OK, Active-only, hide-disabled, golden inventory) |
-| Advanced hermetics | `/tmp/a3s-goal-integ-use/advanced-integ.log` + `cap-targeted.log` |
-| SDK discovery | Node / Python / Go project `sdk_capabilities()`; Core inventory now has 30 ids including `typed_decisions` (schema `a3s-code/sdk-capabilities/v2`) |
-| L3 hermetics | `/tmp/a3s-l3-hermetic/FINAL.txt` EXIT:0 |
+| Layer A | `/tmp/aster-goal-integ-use/layer-a.FINAL.txt` EXIT:0 (historical 29-cap snapshot); `typed_decisions` added via Core inventory + unit evidence below |
+| Layer C | Tip RC `b91462d3` evidence `/tmp/aster-layer-c-b91462d3/FINAL.txt` is exactly `LAYER_C_PASS model=boyue/bailian/deepseek-v4-flash` (full matrix, incl. `test_meta_harness_compose_live_e2e`). Pin remapped to `boyue/bailian/deepseek-v4.1-flash`. Prior tip `ee8f68ad` / `fa0a92ca` archives remain supporting. |
+| Efficiency | `/tmp/aster-goal-integ-use/efficiency.log` (THIN_OK, Active-only, hide-disabled, golden inventory) |
+| Advanced hermetics | `/tmp/aster-goal-integ-use/advanced-integ.log` + `cap-targeted.log` |
+| SDK discovery | Node / Python / Go project `sdk_capabilities()`; Core inventory now has 30 ids including `typed_decisions` (schema `aster/sdk-capabilities/v2`) |
+| L3 hermetics | `/tmp/aster-l3-hermetic/FINAL.txt` EXIT:0 |
 
 ## Per-capability matrix (30)
 
@@ -84,13 +84,13 @@ See also: [FULL_FEATURE_TEST_PLAN.md](FULL_FEATURE_TEST_PLAN.md),
 
 | Gate | Evidence | Status |
 | --- | --- | --- |
-| L0/L1 Layer A | `/tmp/a3s-goal-integ-use/layer-a.FINAL.txt` | PASS |
+| L0/L1 Layer A | `/tmp/aster-goal-integ-use/layer-a.FINAL.txt` | PASS |
 | L3 advanced / s3 / otel / headless | advanced-integ + L3 FINAL | PASS |
 | L4 SDK | Node `npm test`, Python pytest, Go `test ./...`, alignment + discovery | PASS |
-| L5 Layer C bailian Flash | Tip RC `b91462d3` `/tmp/a3s-layer-c-b91462d3/FINAL.txt` (`LAYER_C_PASS`, full matrix incl. meta_harness compose; pin → `boyue/bailian/deepseek-v4.1-flash`) | PASS |
+| L5 Layer C bailian Flash | Tip RC `b91462d3` `/tmp/aster-layer-c-b91462d3/FINAL.txt` (`LAYER_C_PASS`, full matrix incl. meta_harness compose; pin → `boyue/bailian/deepseek-v4.1-flash`) | PASS |
 | Efficiency (thin / absence) | `just harness-convergence-check` on this cut; `local-code` lib 3825 passed; `ci-all` lib 4100 passed | PASS |
-| L2 F-kernel cov | `/tmp/a3s-llvm-cov-f95/FINAL.txt` `ALL_F_TABLE_KERNELS_GE_95_PASS scored=42`; worst prior miss `agent_protocol_harness.rs` now **95.16%** on tip `15d2a863`/`cdba052b` | PASS |
-| L8 §7 9.0.0 pins | Tip hermetics: `fact_log` 34/34; effect `tool_round_cap` + park 5/5; bm25/a3s-vec FTS 17/17 | PASS (hermetic) |
+| L2 F-kernel cov | `/tmp/aster-llvm-cov-f95/FINAL.txt` `ALL_F_TABLE_KERNELS_GE_95_PASS scored=42`; worst prior miss `agent_protocol_harness.rs` now **95.16%** on tip `15d2a863`/`cdba052b` | PASS |
+| L8 §7 9.0.0 pins | Tip hermetics: `fact_log` 34/34; effect `tool_round_cap` + park 5/5; bm25/aster-vec FTS 17/17 | PASS (hermetic) |
 | L6 Actions | Tip `ee8f68ad` performance.yml `36092780724` and hermetic-integrations `36122389323`, both `passed: true`, archived in PERFORMANCE_QUALIFICATION | PASS |
 | L7 Harbor / CAR | TB-QUAL1, DM-PROD1, CAR-01…CAR-05 still in progress; no product waiver | Not met |
 

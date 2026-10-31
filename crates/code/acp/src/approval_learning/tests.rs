@@ -43,7 +43,7 @@ fn rules_are_program_plus_the_subcommand_that_carries_the_risk() {
     for (command, rule) in [
         ("git status --short", "git status"),
         ("git log --format='%h %s' -n 5", "git log"),
-        ("cargo test -p a3s-code-acp", "cargo test"),
+        ("cargo test -p aster-acp", "cargo test"),
         ("npm run lint", "npm run lint"),
         ("pnpm test", "pnpm test"),
         ("just ci", "just ci"),
@@ -140,7 +140,7 @@ fn rules_are_keyed_by_workspace_and_round_trip_through_acl() {
         "an already learned rule is not learned again"
     );
     let text = std::fs::read_to_string(&fixture.store).unwrap();
-    assert!(a3s_acl::parse_acl(&text).is_ok());
+    assert!(aster_acl::parse_acl(&text).is_ok());
     assert_eq!(
         load_rules_in(&fixture.store, &fixture.workspace),
         vec!["cargo test".to_owned()]

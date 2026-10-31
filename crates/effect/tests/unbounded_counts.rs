@@ -3,7 +3,7 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_effect::{
+use aster_effect::{
     append_input, coding_actor, coding_scheduler, ingest_coding_with_optional_limit, message_fact,
     resume_coding_with_cancel, resume_coding_with_optional_limit, Actor, ActorError,
     CodingServices, CodingView, Compactor, Completion, CompletionRequest, Exit, HarnessConfig,
@@ -23,7 +23,7 @@ impl Completion for FiniteModel {
         &self,
         request: CompletionRequest,
         _cancel: CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         self.offered.lock().unwrap().push(request.tools.len());
         let index = self.calls.fetch_add(1, Ordering::SeqCst);
         let decision = if index < self.tools {
@@ -57,7 +57,7 @@ impl ToolRunner for CountingTools {
         &self,
         _call: ToolCall,
         cancel: CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<serde_json::Value, ActorError>> {
         let count = self.calls.fetch_add(1, Ordering::SeqCst) + 1;
         if self.cancel_after == Some(count) {
             cancel.cancel();
@@ -72,7 +72,7 @@ impl Compactor for NoCompact {
     fn compact(
         &self,
         _messages: &[String],
-    ) -> a3s_effect::coding::BoxFuture<Result<String, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
         Box::pin(async { Ok("unused".into()) })
     }
 }
@@ -129,7 +129,7 @@ async fn run(
     log: &MemoryLog,
     limit: Option<u32>,
     cancel: &CancellationToken,
-) -> Result<a3s_effect::Settlement<CodingView>, Exit<ActorError>> {
+) -> Result<aster_effect::Settlement<CodingView>, Exit<ActorError>> {
     ingest_coding_with_optional_limit(
         actor,
         log,

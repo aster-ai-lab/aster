@@ -13,7 +13,7 @@ import {
 } from './pointer';
 import { hasPortableJsonGraph, portableDocumentDiagnostic } from './portable-input';
 import {
-  A3S_FORM_SCHEMA_PROFILE_1_ID,
+  ASTER_FORM_SCHEMA_PROFILE_1_ID,
   inspectSchemaProfile,
   isJsonValue,
   jsonValuesEqual,
@@ -381,16 +381,16 @@ function inspectStructure(input: unknown, diagnostics: FormDiagnostic[]): input 
     diagnostics.push(diagnostic('document.type', 'Form document must be a JSON object.', ''));
     return false;
   }
-  if (input.kind !== 'a3s.form')
-    diagnostics.push(diagnostic('document.kind', 'kind must be a3s.form.', '/kind'));
-  if (input.apiVersion !== 'a3s.dev/form/v1alpha1') {
+  if (input.kind !== 'aster.form')
+    diagnostics.push(diagnostic('document.kind', 'kind must be aster.form.', '/kind'));
+  if (input.apiVersion !== 'aster.dev/form/v1alpha1') {
     diagnostics.push(
       diagnostic(
         'document.api_version',
         'Unsupported Form document apiVersion.',
         '/apiVersion',
         'error',
-        'Use a3s.dev/form/v1alpha1.',
+        'Use aster.dev/form/v1alpha1.',
       ),
     );
   }
@@ -1516,8 +1516,8 @@ function compileFormInternal(input: unknown, options: CompileOptions): Reference
     }),
   );
   const plan: FormPlan = {
-    apiVersion: 'a3s.dev/form-plan/v1alpha1',
-    schemaProfile: A3S_FORM_SCHEMA_PROFILE_1_ID,
+    apiVersion: 'aster.dev/form-plan/v1alpha1',
+    schemaProfile: ASTER_FORM_SCHEMA_PROFILE_1_ID,
     sourceRevision: normalized.revision,
     sourceDigest: normalized.digest as string,
     metadata: normalized.metadata,
@@ -1537,7 +1537,7 @@ function compileFormInternal(input: unknown, options: CompileOptions): Reference
 }
 
 export function compileForm(input: unknown, options: CompileOptions = {}): CompileResult {
-  const compilerRevision = 'a3s-form-typescript-reference@0.1.0';
+  const compilerRevision = 'aster-form-typescript-reference@0.1.0';
   try {
     const result = hasPortableJsonGraph(input)
       ? compileFormInternal(input, options)

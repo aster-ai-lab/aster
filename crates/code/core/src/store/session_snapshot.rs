@@ -397,7 +397,7 @@ fn validate_tool_result_transform_metadata(
     })?;
 
     let encoded_evidence = metadata
-        .and_then(|value| value.get("a3s_tool_result_evidence"))
+        .and_then(|value| value.get("aster_tool_result_evidence"))
         .ok_or_else(|| {
             anyhow::anyhow!(
                 "run {:?} event {} in session {:?} has a Tool result transform binding without Tool result evidence",

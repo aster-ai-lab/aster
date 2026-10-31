@@ -1,10 +1,10 @@
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{DomainDiagnostic, Readiness, UseError, UseResult};
+use aster_use_core::{DomainDiagnostic, Readiness, UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 pub const SUPPORTED_OFFICECLI_VERSION: &str = "1.0.136";
-pub(crate) const RECEIPT_FILE: &str = ".a3s-install.json";
+pub(crate) const RECEIPT_FILE: &str = ".aster-install.json";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -39,7 +39,7 @@ pub(crate) struct OfficeInstallReceipt {
 
 pub fn office_status() -> OfficeRuntimeStatus {
     let managed_root = managed_root().ok();
-    if let Some(path) = env_executable("A3S_OFFICECLI_EXECUTABLE") {
+    if let Some(path) = env_executable("ASTER_OFFICECLI_EXECUTABLE") {
         return ready(OfficeInstallSource::Environment, path, None, managed_root);
     }
     if let Some(path) = path_executable() {
@@ -83,7 +83,7 @@ pub fn doctor() -> DomainDiagnostic {
             version: None,
             path: None,
             message: status.detail,
-            suggestions: vec!["Run 'a3s install use/office'.".to_string()],
+            suggestions: vec!["Run 'aster install use/office'.".to_string()],
         }
     }
 }
@@ -93,25 +93,25 @@ pub fn discover_office_cli() -> Option<PathBuf> {
 }
 
 pub(crate) fn managed_root() -> UseResult<PathBuf> {
-    if let Some(value) = std::env::var_os("A3S_USE_OFFICE_HOME") {
+    if let Some(value) = std::env::var_os("ASTER_USE_OFFICE_HOME") {
         return absolute(PathBuf::from(value));
     }
-    if let Some(value) = std::env::var_os("A3S_DATA_HOME") {
+    if let Some(value) = std::env::var_os("ASTER_DATA_HOME") {
         return Ok(absolute(PathBuf::from(value))?.join("use/office"));
     }
     if let Some(value) = std::env::var_os("XDG_DATA_HOME") {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s/use/office"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster/use/office"));
     }
     if let Some(home) = std::env::var_os("HOME").map(PathBuf::from) {
-        return Ok(absolute(home)?.join(".local/share/a3s/use/office"));
+        return Ok(absolute(home)?.join(".local/share/aster/use/office"));
     }
     #[cfg(windows)]
     if let Some(value) = std::env::var_os("LOCALAPPDATA") {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s/use/office"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster/use/office"));
     }
     Err(office_error(
         "use.office.data_home_missing",
-        "Cannot determine the A3S Office data directory.",
+        "Cannot determine the Aster Office data directory.",
     ))
 }
 

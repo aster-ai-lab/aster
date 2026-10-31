@@ -148,7 +148,7 @@ def main():
             raise RuntimeError('owned allocation is already executing a CUDA workload')
         result.update(inputs=manifest, gpu_uuids=expected_ids)
         artifact = manifest['test_binary']
-        archive = root/'a3s-deepseek-cuda-tests.gz'
+        archive = root/'aster-deepseek-cuda-tests.gz'
         if not 0 < artifact['archive_bytes'] <= 256*1024**2 or archive.stat().st_size != artifact['archive_bytes']:
             raise RuntimeError('qualification archive has an unbounded or changed size')
         if digest(archive) != artifact['archive_sha256']:
@@ -157,7 +157,7 @@ def main():
             raise RuntimeError('qualification executable exceeds byte bound')
         work = Path('/tmp')/root.name
         work.mkdir(mode=0o700, exist_ok=False)
-        binary = work/'a3s-deepseek-cuda-tests'
+        binary = work/'aster-deepseek-cuda-tests'
         count = 0
         with gzip.open(archive, 'rb') as source, binary.open('xb') as target:
             while chunk := source.read(1024**2):

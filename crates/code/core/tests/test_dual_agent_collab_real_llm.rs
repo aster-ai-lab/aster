@@ -1,4 +1,4 @@
-//! Live dual-agent collaboration gates against `.a3s/config.acl`.
+//! Live dual-agent collaboration gates against `.aster/config.acl`.
 //!
 //! Three product contracts over the main-agent + reviewer-agent architecture:
 //!
@@ -15,8 +15,8 @@
 //!    else in the tree.
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_dual_agent_collab_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_dual_agent_collab_real_llm \
 //!   -- --ignored --nocapture --test-threads=1
 //! ```
 
@@ -26,8 +26,8 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
-use a3s_code_core::{Agent, AgentEvent, SessionOptions, SystemPromptSlots};
+use aster_core::mcp::{McpServerConfig, McpTransportConfig};
+use aster_core::{Agent, AgentEvent, SessionOptions, SystemPromptSlots};
 use support::layer_c_model::{load_pinned_layer_c_config, pinned_layer_c_model};
 
 const TURN_TIMEOUT: Duration = Duration::from_secs(600);
@@ -45,7 +45,7 @@ struct TurnRecord {
     final_text: String,
 }
 
-async fn run_turn(session: &a3s_code_core::AgentSession, prompt: &str) -> TurnRecord {
+async fn run_turn(session: &aster_core::AgentSession, prompt: &str) -> TurnRecord {
     let (mut events, worker) = session
         .stream(prompt, None)
         .await
@@ -130,7 +130,7 @@ pub fn billed_lines(lines: &[u8]) -> usize {{
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_model_delegates_review_and_the_provenance_chain_binds() {
     let started = Instant::now();
     let mut config = load_pinned_layer_c_config();
@@ -143,14 +143,14 @@ async fn real_model_delegates_review_and_the_provenance_chain_binds() {
     let workspace = tempfile::tempdir().expect("workspace");
     write_review_fixture(workspace.path());
 
-    let mut permissions = a3s_code_core::permissions::PermissionPolicy::new()
+    let mut permissions = aster_core::permissions::PermissionPolicy::new()
         .allow_all(&["task", "read", "ls", "grep", "glob", "Skill"]);
-    permissions.default_decision = a3s_code_core::permissions::PermissionDecision::Deny;
+    permissions.default_decision = aster_core::permissions::PermissionDecision::Deny;
     let options = SessionOptions::new()
         .with_session_id("dual-agent-review")
         .with_model(model.clone())
         .with_permission_policy(permissions)
-        .with_confirmation_manager(Arc::new(a3s_code_core::hitl::AutoApproveConfirmation))
+        .with_confirmation_manager(Arc::new(aster_core::hitl::AutoApproveConfirmation))
         .with_planning(false)
         .with_manual_delegation_enabled(true)
         .with_auto_delegation_enabled(false)
@@ -254,7 +254,7 @@ fn relay_server_config(script: &std::path::Path, log: &std::path::Path) -> McpSe
             args: vec![script.display().to_string()],
         },
         enabled: true,
-        env: HashMap::from([("A3S_RELAY_LOG".to_owned(), log.display().to_string())]),
+        env: HashMap::from([("ASTER_RELAY_LOG".to_owned(), log.display().to_string())]),
         oauth: None,
         tool_timeout_secs: 60,
     }
@@ -263,7 +263,7 @@ fn relay_server_config(script: &std::path::Path, log: &std::path::Path) -> McpSe
 fn relay_script() -> String {
     r#"import json, os, sys
 
-log_path = os.environ.get("A3S_RELAY_LOG")
+log_path = os.environ.get("ASTER_RELAY_LOG")
 def log(event):
     if log_path:
         with open(log_path, "a", encoding="ascii") as handle:
@@ -320,7 +320,7 @@ async fn real_model_uses_a_skill_whose_child_calls_the_mcp_server() {
     let options = SessionOptions::new()
         .with_session_id("skill-mcp-relay")
         .with_model(model.clone())
-        .with_confirmation_manager(Arc::new(a3s_code_core::hitl::AutoApproveConfirmation))
+        .with_confirmation_manager(Arc::new(aster_core::hitl::AutoApproveConfirmation))
         .with_planning(false)
         .with_auto_delegation_enabled(false)
         .with_manual_delegation_enabled(false)

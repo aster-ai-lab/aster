@@ -4,16 +4,16 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_boot::{
+use aster_boot::{
     migrate_postgres_queue, BootError, ModuleRef, PostgresQueueBackend, Queue, QueueJobOptions,
     QueueJobRetention, QueueOptions,
 };
-use a3s_orm::PostgresExecutor;
+use aster_orm::PostgresExecutor;
 use serde_json::json;
 use uuid::Uuid;
 
 fn postgres_url() -> Option<String> {
-    std::env::var("A3S_BOOT_POSTGRES_URL")
+    std::env::var("ASTER_BOOT_POSTGRES_URL")
         .ok()
         .filter(|value| !value.trim().is_empty())
 }
@@ -38,7 +38,7 @@ async fn wait_until(mut predicate: impl FnMut() -> bool) {
 #[tokio::test]
 async fn explicit_migrator_and_verified_serving_constructor_share_one_manifest() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let executor = PostgresExecutor::connect_no_tls(&url, 2).expect("PostgreSQL executor");
@@ -59,7 +59,7 @@ async fn explicit_migrator_and_verified_serving_constructor_share_one_manifest()
 #[tokio::test]
 async fn caller_assigned_job_ids_are_idempotent_and_conflicts_are_explicit() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = queue_name("idempotency");
@@ -108,7 +108,7 @@ async fn caller_assigned_job_ids_are_idempotent_and_conflicts_are_explicit() {
 #[tokio::test]
 async fn completion_retention_keeps_only_the_newest_terminal_job() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = queue_name("retention");
@@ -162,7 +162,7 @@ async fn completion_retention_keeps_only_the_newest_terminal_job() {
 #[tokio::test]
 async fn malformed_retention_is_rejected_before_storage() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = queue_name("retention-validation");

@@ -1,4 +1,4 @@
-//! Exact-generation process sessions over the public A3S OCI SDK.
+//! Exact-generation process sessions over the public Aster OCI SDK.
 
 use std::collections::VecDeque;
 use std::path::PathBuf;
@@ -6,19 +6,19 @@ use std::sync::atomic::{AtomicU8, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_box_core::exec::{
+use aster_box_core::exec::{
     ExecChunk, ExecEvent, ExecExit, ExecOutput, ExecRequest as BoxExecRequest, StreamType,
     DEFAULT_EXEC_TIMEOUT_NS, MAX_ONE_SHOT_OUTPUT_BYTES,
 };
-use a3s_box_core::pty::PtyRequest;
-use a3s_box_core::{
+use aster_box_core::pty::PtyRequest;
+use aster_box_core::{
     ExecutionGeneration, ExecutionManagerError, ExecutionManagerResult, ExecutionProcess,
     ExecutionProcessInput, ExecutionProcessSignal, ExecutionProcessStream,
 };
-use a3s_oci_sdk::oci_spec::runtime::{
+use aster_oci_sdk::oci_spec::runtime::{
     Capabilities, LinuxCapabilitiesBuilder, Process, ProcessBuilder, UserBuilder,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     CloseStdinRequest, ErrorCode, ExecRequest as OciExecRequest, ExitStatus, IoMode, OutputChunk,
     OutputStream, ProcessId, ProcessIo, ProcessRecord, ProcessTarget, ReadOutputRequest,
     ResizeRequest, RuntimeClient, RuntimeOperation, Signal, SignalProcessRequest, TerminalSize,
@@ -77,7 +77,7 @@ pub(super) async fn execute(
     }
 
     Err(ExecutionManagerError::Internal(format!(
-        "A3S OCI exec process for {} ended without an exact terminal status",
+        "Aster OCI exec process for {} ended without an exact terminal status",
         record.id
     )))
 }
@@ -89,7 +89,7 @@ pub(super) async fn start_process(
 ) -> ExecutionManagerResult<ExecutionProcess> {
     if request.request_id.is_some() {
         return Err(ExecutionManagerError::InvalidRequest(
-            "streaming A3S OCI exec does not accept a one-shot request_id".to_string(),
+            "streaming Aster OCI exec does not accept a one-shot request_id".to_string(),
         ));
     }
     Ok(Box::new(
@@ -140,7 +140,7 @@ impl LaunchRequest {
                 || request_id.contains('\0')
             {
                 return Err(ExecutionManagerError::InvalidRequest(
-                    "A3S OCI exec request ID is invalid".to_string(),
+                    "Aster OCI exec request ID is invalid".to_string(),
                 ));
             }
         }
@@ -216,7 +216,7 @@ async fn launch_process(
         .map(|timeout| {
             Instant::now().checked_add(timeout).ok_or_else(|| {
                 ExecutionManagerError::InvalidRequest(
-                    "A3S OCI exec timeout exceeds the host clock range".to_string(),
+                    "Aster OCI exec timeout exceeds the host clock range".to_string(),
                 )
             })
         })
@@ -225,7 +225,7 @@ async fn launch_process(
     let box_generation = backend.metadata(record)?.generation;
     let binding = backend.binding(record)?.ok_or_else(|| {
         ExecutionManagerError::Internal(format!(
-            "execution {execution_id} has no exact A3S OCI binding for exec"
+            "execution {execution_id} has no exact Aster OCI binding for exec"
         ))
     })?;
     binding.validate_for(&execution_id)?;
@@ -253,7 +253,7 @@ async fn launch_process(
         box_generation,
         "exec",
         (
-            "a3s.box.oci-exec.v1",
+            "aster.box.oci-exec.v1",
             &binding.target,
             terminal,
             process.user().uid(),
@@ -276,7 +276,7 @@ async fn launch_process(
         &launch.seed,
         box_generation,
         "exec-process",
-        ("a3s.box.oci-exec-process.v1", &binding.target),
+        ("aster.box.oci-exec-process.v1", &binding.target),
     )?;
     let process_id = ProcessId::new(process_context.operation_id.as_str().to_string())
         .map_err(|error| sdk_error("exec process identity", error))?;
@@ -379,7 +379,7 @@ fn resolve_exec_executable(
     let image_config = if request_path.is_none() {
         crate::load_resolved_image_config(&record.box_dir).map_err(|error| {
             ExecutionManagerError::Unavailable(format!(
-                "cannot load resolved image environment for A3S OCI exec in {}: {error}",
+                "cannot load resolved image environment for Aster OCI exec in {}: {error}",
                 record.id
             ))
         })?
@@ -404,17 +404,17 @@ fn resolve_exec_executable(
     Ok(())
 }
 
-fn exec_path_request_error(error: a3s_box_core::BoxError) -> ExecutionManagerError {
+fn exec_path_request_error(error: aster_box_core::BoxError) -> ExecutionManagerError {
     match error {
-        a3s_box_core::BoxError::ConfigError(message) => {
+        aster_box_core::BoxError::ConfigError(message) => {
             ExecutionManagerError::InvalidRequest(message)
         }
-        a3s_box_core::BoxError::BoxBootError { message, hint } => {
+        aster_box_core::BoxError::BoxBootError { message, hint } => {
             let message = hint.map_or(message.clone(), |hint| format!("{message} ({hint})"));
             ExecutionManagerError::InvalidRequest(message)
         }
         error => ExecutionManagerError::Unavailable(format!(
-            "failed to inspect the prepared rootfs for A3S OCI exec: {error}"
+            "failed to inspect the prepared rootfs for Aster OCI exec: {error}"
         )),
     }
 }
@@ -425,7 +425,7 @@ fn spawn_timeout_watchdog(
     exec_request: OciExecRequest,
     terminal: bool,
     deadline: Instant,
-    context: a3s_oci_sdk::OperationContext,
+    context: aster_oci_sdk::OperationContext,
     state: Arc<AtomicU8>,
 ) {
     tokio::spawn(async move {
@@ -465,7 +465,7 @@ fn spawn_timeout_watchdog(
                     tracing::warn!(
                         process_id = %target.process_id,
                         %error,
-                        "A3S OCI exec timeout watchdog could not inspect the process"
+                        "Aster OCI exec timeout watchdog could not inspect the process"
                     );
                     state.store(WATCHDOG_FAILED, Ordering::SeqCst);
                     return;
@@ -494,7 +494,7 @@ fn spawn_timeout_watchdog(
                         tracing::warn!(
                             process_id = %target.process_id,
                             %error,
-                            "A3S OCI exec timeout watchdog received an invalid replay binding"
+                            "Aster OCI exec timeout watchdog received an invalid replay binding"
                         );
                         state.store(WATCHDOG_FAILED, Ordering::SeqCst);
                         return;
@@ -509,7 +509,7 @@ fn spawn_timeout_watchdog(
                     tracing::warn!(
                         process_id = %target.process_id,
                         %error,
-                        "A3S OCI exec timeout watchdog refused a non-matching replay"
+                        "Aster OCI exec timeout watchdog refused a non-matching replay"
                     );
                     state.store(WATCHDOG_FAILED, Ordering::SeqCst);
                     return;
@@ -519,7 +519,7 @@ fn spawn_timeout_watchdog(
         if !validated {
             tracing::warn!(
                 process_id = %target.process_id,
-                "A3S OCI exec timeout watchdog could not validate its exact replay"
+                "Aster OCI exec timeout watchdog could not validate its exact replay"
             );
             state.store(WATCHDOG_FAILED, Ordering::SeqCst);
             return;
@@ -531,7 +531,7 @@ fn spawn_timeout_watchdog(
                 tracing::warn!(
                     process_id = %target.process_id,
                     %error,
-                    "A3S OCI exec timeout watchdog could not construct SIGKILL"
+                    "Aster OCI exec timeout watchdog could not construct SIGKILL"
                 );
                 state.store(WATCHDOG_FAILED, Ordering::SeqCst);
                 return;
@@ -576,7 +576,7 @@ fn spawn_timeout_watchdog(
                             tracing::warn!(
                                 process_id = %target.process_id,
                                 %wait_error,
-                                "A3S OCI exec timeout watchdog could not reconcile a lost signal response"
+                                "Aster OCI exec timeout watchdog could not reconcile a lost signal response"
                             );
                             state.store(WATCHDOG_FAILED, Ordering::SeqCst);
                             return;
@@ -590,7 +590,7 @@ fn spawn_timeout_watchdog(
                     tracing::warn!(
                         process_id = %target.process_id,
                         %error,
-                        "A3S OCI exec timeout watchdog could not signal the process"
+                        "Aster OCI exec timeout watchdog could not signal the process"
                     );
                     state.store(WATCHDOG_FAILED, Ordering::SeqCst);
                     return;
@@ -599,7 +599,7 @@ fn spawn_timeout_watchdog(
         }
         tracing::warn!(
             process_id = %target.process_id,
-            "A3S OCI exec timeout watchdog exhausted signal retries"
+            "Aster OCI exec timeout watchdog exhausted signal retries"
         );
         state.store(WATCHDOG_FAILED, Ordering::SeqCst);
     });
@@ -615,12 +615,12 @@ fn build_process(
 ) -> ExecutionManagerResult<Process> {
     if args.is_empty() {
         return Err(ExecutionManagerError::InvalidRequest(
-            "A3S OCI exec requires a non-empty command".to_string(),
+            "Aster OCI exec requires a non-empty command".to_string(),
         ));
     }
     if rootfs.is_some() {
         return Err(ExecutionManagerError::InvalidRequest(
-            "A3S OCI exec cannot reinterpret a second rootfs; prepare it as the container attachment"
+            "Aster OCI exec cannot reinterpret a second rootfs; prepare it as the container attachment"
                 .to_string(),
         ));
     }
@@ -631,7 +631,7 @@ fn build_process(
         .build()
         .map_err(|error| {
             ExecutionManagerError::InvalidRequest(format!(
-                "failed to build A3S OCI exec user: {error}"
+                "failed to build Aster OCI exec user: {error}"
             ))
         })?;
     let empty = Capabilities::new();
@@ -644,7 +644,7 @@ fn build_process(
         .build()
         .map_err(|error| {
             ExecutionManagerError::InvalidRequest(format!(
-                "failed to build A3S OCI exec capabilities: {error}"
+                "failed to build Aster OCI exec capabilities: {error}"
             ))
         })?;
     ProcessBuilder::default()
@@ -660,7 +660,7 @@ fn build_process(
         .build()
         .map_err(|error| {
             ExecutionManagerError::InvalidRequest(format!(
-                "failed to build A3S OCI exec process: {error}"
+                "failed to build Aster OCI exec process: {error}"
             ))
         })
 }
@@ -685,7 +685,7 @@ fn parse_id_component(value: &str, label: &str) -> ExecutionManagerResult<u32> {
     }
     value.parse::<u32>().map_err(|_| {
         ExecutionManagerError::InvalidRequest(format!(
-            "A3S OCI exec {label} {value:?} is not root or a numeric ID"
+            "Aster OCI exec {label} {value:?} is not root or a numeric ID"
         ))
     })
 }
@@ -723,7 +723,7 @@ async fn require_process_operations(
     for (operation, label) in required {
         if !info.operations.contains(&operation) {
             return Err(ExecutionManagerError::Unavailable(format!(
-                "A3S OCI Runtime does not advertise {label}"
+                "Aster OCI Runtime does not advertise {label}"
             )));
         }
     }
@@ -741,7 +741,7 @@ fn validate_process_record(
         || record.target.container.generation.is_none()
     {
         return Err(ExecutionManagerError::Internal(format!(
-            "A3S OCI exec returned an invalid process binding for {}",
+            "Aster OCI exec returned an invalid process binding for {}",
             target.process_id
         )));
     }
@@ -769,7 +769,7 @@ impl OciProcessInput {
         &self,
         sequence: u64,
         operation: &str,
-    ) -> ExecutionManagerResult<a3s_oci_sdk::OperationContext> {
+    ) -> ExecutionManagerResult<aster_oci_sdk::OperationContext> {
         operation_context(
             self.process.process_id.as_str(),
             self.box_generation,
@@ -781,7 +781,7 @@ impl OciProcessInput {
     fn advance(state: &mut InputState) -> ExecutionManagerResult<()> {
         state.next_mutation = state.next_mutation.checked_add(1).ok_or_else(|| {
             ExecutionManagerError::Internal(
-                "A3S OCI process mutation sequence is exhausted".to_string(),
+                "Aster OCI process mutation sequence is exhausted".to_string(),
             )
         })?;
         Ok(())
@@ -793,14 +793,14 @@ impl ExecutionProcessInput for OciProcessInput {
     async fn write_stdin(&self, data: &[u8]) -> ExecutionManagerResult<()> {
         if !self.stdin_enabled {
             return Err(ExecutionManagerError::InvalidRequest(format!(
-                "A3S OCI process for {} has no writable stdin",
+                "Aster OCI process for {} has no writable stdin",
                 self.execution_id
             )));
         }
         let mut state = self.state.lock().await;
         if state.stdin_closed {
             return Err(ExecutionManagerError::InvalidRequest(format!(
-                "A3S OCI process stdin for {} is already closed",
+                "Aster OCI process stdin for {} is already closed",
                 self.execution_id
             )));
         }
@@ -823,7 +823,7 @@ impl ExecutionProcessInput for OciProcessInput {
     async fn close_stdin(&self) -> ExecutionManagerResult<()> {
         if !self.stdin_enabled {
             return Err(ExecutionManagerError::InvalidRequest(format!(
-                "A3S OCI process for {} has no stdin to close",
+                "Aster OCI process for {} has no stdin to close",
                 self.execution_id
             )));
         }
@@ -874,7 +874,7 @@ impl ExecutionProcessInput for OciProcessInput {
     async fn resize_pty(&self, cols: u16, rows: u16) -> ExecutionManagerResult<()> {
         if !self.terminal {
             return Err(ExecutionManagerError::InvalidRequest(
-                "A3S OCI process does not have a PTY".to_string(),
+                "Aster OCI process does not have a PTY".to_string(),
             ));
         }
         let mut state = self.state.lock().await;
@@ -995,7 +995,7 @@ impl OciProcessStream {
 
     fn invalid_output(&self, reason: &str) -> ExecutionManagerError {
         ExecutionManagerError::Internal(format!(
-            "A3S OCI process output for {} is invalid: {reason}",
+            "Aster OCI process output for {} is invalid: {reason}",
             self.target.process_id
         ))
     }
@@ -1089,7 +1089,7 @@ impl ExecutionProcessStream for OciProcessStream {
                 match self.watchdog.load(Ordering::SeqCst) {
                     WATCHDOG_FAILED => {
                         return Err(ExecutionManagerError::Unavailable(format!(
-                            "A3S OCI exec timeout watchdog failed for {}",
+                            "Aster OCI exec timeout watchdog failed for {}",
                             self.target.process_id
                         )))
                     }

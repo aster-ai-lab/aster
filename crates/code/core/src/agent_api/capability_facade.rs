@@ -186,7 +186,7 @@ impl AgentSession {
     }
 
     /// Register a host-provided dynamic tool into the live session. Enables an
-    /// embedding app (e.g. the a3s-code CLI's login-gated `runtime` A3S Runtime
+    /// embedding app (e.g. the aster CLI's login-gated `runtime` Aster Runtime
     /// offload tool) to add a native tool at runtime; it enters the LLM's toolset
     /// on the next run (`build_agent_loop` re-snapshots `definitions()` per run),
     /// the same way MCP tools surface after `add_mcp_server`. Idempotent by name.
@@ -204,12 +204,12 @@ impl AgentSession {
         })?
     }
 
-    /// Register the A3S Flow-backed dynamic workflow tool for this live session.
+    /// Register the Aster Flow-backed dynamic workflow tool for this live session.
     ///
     /// The tool is named `dynamic_workflow`. It accepts a sandboxed JavaScript
     /// PTC workflow script and executes it through
-    /// [`crate::DynamicWorkflowRuntime`], so A3S Flow owns workflow replay while
-    /// the script can still call A3S Code tools.
+    /// [`crate::DynamicWorkflowRuntime`], so Aster Flow owns workflow replay while
+    /// the script can still call Aster Code tools.
     #[cfg(feature = "dynamic-workflow")]
     pub fn register_dynamic_workflow_runtime(&self) -> crate::error::Result<()> {
         self.close_handle.mutate_immediate(|| {
@@ -405,7 +405,7 @@ impl AgentSession {
     /// Unlike ordinary [`Self::apply_capability_batch`], this one-time path may
     /// jump directly from the empty generation-zero catalog to the generation
     /// named by `expected`. It never resolves packages or `latest`: the host
-    /// supplies every runtime adapter and any exact A3S Use lease provider in
+    /// supplies every runtime adapter and any exact Aster Use lease provider in
     /// `batch`, and Code verifies the resulting catalog plus authority ceiling
     /// before publication.
     pub async fn bootstrap_recovery_capability_batch(

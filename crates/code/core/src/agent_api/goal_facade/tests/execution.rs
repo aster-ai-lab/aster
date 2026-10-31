@@ -193,7 +193,7 @@ async fn accepted_goal_plan_binds_the_original_run_without_another_planner() {
     let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
     let bindings = facts
         .iter()
-        .filter(|f| f.kind == "a3s.goal.slice.admitted")
+        .filter(|f| f.kind == "aster.goal.slice.admitted")
         .collect::<Vec<_>>();
     assert_eq!(bindings.len(), 1);
     let binding = bindings[0];
@@ -229,7 +229,7 @@ async fn accepted_goal_plan_binds_the_original_run_without_another_planner() {
     assert_eq!(turns[0].cause.as_deref(), Some("infer:1:0"));
     assert!(!facts
         .iter()
-        .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "a3s.goal.completed"));
+        .any(|f| f.kind == "aster.goal.step.accepted" || f.kind == "aster.goal.completed"));
     {
         let inputs = client.inputs.lock().unwrap();
         assert!(inputs[0].contains("Inspect the original source"));
@@ -389,7 +389,7 @@ async fn prove_goal_recovery(file: bool, policy_enabled: bool, ingress: usize) {
     let before = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
     let original_binding = before
         .iter()
-        .find(|f| f.kind == "a3s.goal.slice.admitted")
+        .find(|f| f.kind == "aster.goal.slice.admitted")
         .unwrap();
     assert_eq!(
         checkpoint.durable_source.as_ref().unwrap().sequence,
@@ -472,7 +472,7 @@ async fn prove_goal_recovery(file: bool, policy_enabled: bool, ingress: usize) {
     );
     let bindings = after
         .iter()
-        .filter(|f| f.kind == "a3s.goal.slice.admitted")
+        .filter(|f| f.kind == "aster.goal.slice.admitted")
         .collect::<Vec<_>>();
     assert_eq!(bindings.len(), 2);
     assert_ne!(
@@ -488,7 +488,7 @@ async fn prove_goal_recovery(file: bool, policy_enabled: bool, ingress: usize) {
     );
     assert!(!after
         .iter()
-        .any(|f| f.kind == "a3s.goal.completed" || f.kind == "a3s.goal.step.accepted"));
+        .any(|f| f.kind == "aster.goal.completed" || f.kind == "aster.goal.step.accepted"));
     for input in client.inputs.lock().unwrap().iter() {
         assert_eq!(
             input.matches(policy.instructions()).count(),

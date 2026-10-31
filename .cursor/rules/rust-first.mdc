@@ -13,5 +13,5 @@ For Kense OS (`kense-labs/os` and its submodules):
    - Console / marketing apps (`apps/web`, `apps/official`)
    - Shared UI kit (`packages/ui`)
    - Browser-only glue that must run in the page
-4. When both a Rust and a TS option exist for the same server responsibility, **choose or migrate to Rust** (see `a3s-runtime` replacing `a3s-runtime`).
-5. New OS spine processes should follow existing Rust patterns (`a3s-boot` / axum / `a3s-orm`), not add another TS microservice.
+4. When both a Rust and a TS option exist for the same server responsibility, **choose or migrate to Rust** (see `aster-runtime` replacing `aster-runtime`).
+5. New OS spine processes should follow existing Rust patterns (`aster-boot` / axum / `aster-orm`), not add another TS microservice.

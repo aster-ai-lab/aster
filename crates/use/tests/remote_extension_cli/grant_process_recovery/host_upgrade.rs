@@ -1,7 +1,7 @@
 use super::host_support::*;
 use super::*;
 
-use a3s_use_core::{PluginHostManager, PluginOperationAction};
+use aster_use_core::{PluginHostManager, PluginOperationAction};
 
 #[test]
 fn killed_host_protocol_upgrade_apply_replays_offline_without_reauthorization() {

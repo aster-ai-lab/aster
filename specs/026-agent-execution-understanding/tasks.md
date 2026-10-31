@@ -137,7 +137,7 @@ description: "Agent 执行理解与证据回放实施任务"
 - [x] 20,000 事件、100 步 0 请求、8 个秘密零泄漏、7 类资源至少 30 节点和筛选坐标稳定均有实际断言
 - [x] Arc 9 类动效场景、连续 5 次切换、挂载后 reduced-motion、hidden／settled 停钟和无每帧 React render 均有实际断言
 - [x] `cargo fmt --all -- --check` 对 Rust edits 保持 clean；纯 TypeScript／docs 改动不虚构 Rust 行为验收
-- [x] No new crates.io `a3s-*` dependency、第二 workspace／lockfile、Python 服务、iframe Viewer、Arc 批量安装或第二组件系统
+- [x] No new crates.io `aster-*` dependency、第二 workspace／lockfile、Python 服务、iframe Viewer、Arc 批量安装或第二组件系统
 - [x] No native `<select>` added on a product surface；所有选择器均为 Aster 绘制式控件
 - [x] Product configuration, if added, is ACL；当前没有新增配置
 - [x] test-only Ajv 未进入生产 bundle，`pnpm deps:check` 与 renderer build 通过

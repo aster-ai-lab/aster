@@ -65,7 +65,7 @@ impl Middleware for FallbackMiddleware {
             })?,
         );
         response.headers_mut().insert(
-            header::HeaderName::from_static("x-a3s-degraded"),
+            header::HeaderName::from_static("x-aster-degraded"),
             HeaderValue::from_static("1"),
         );
         Ok(Some(response))
@@ -109,7 +109,7 @@ mod tests {
             .unwrap()
             .expect("short-circuit");
         assert_eq!(response.status(), StatusCode::SERVICE_UNAVAILABLE);
-        assert_eq!(response.headers().get("x-a3s-degraded").unwrap(), "1");
+        assert_eq!(response.headers().get("x-aster-degraded").unwrap(), "1");
         assert_eq!(response.body(), br#"{"error":"maintenance"}"#);
     }
 }

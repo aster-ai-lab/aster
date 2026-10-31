@@ -108,15 +108,15 @@ async fn prove_snapshot_source(file: bool) {
                 original
             );
             assert_eq!(session.fork_session_at(u64::MAX).await.unwrap(), 0);
-            let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+            let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
                 workspace.path(),
                 "source/session",
             ))
             .unwrap();
-            a3s_effect::LogStore::append(
+            aster_effect::LogStore::append(
                 &log,
                 &thread,
-                &[a3s_effect::NewFact {
+                &[aster_effect::NewFact {
                     kind: "user.message".into(),
                     key: "fork-boundary-probe".into(),
                     payload: serde_json::json!({"text":"unexecuted later input"}),
@@ -129,7 +129,7 @@ async fn prove_snapshot_source(file: bool) {
                 let error = session.fork_session_at(head).await.unwrap_err();
                 assert!(error.to_string().contains("cannot be truncated"), "{error}");
                 assert_eq!(
-                    a3s_effect::LogStore::read(&log, &thread).unwrap().len(),
+                    aster_effect::LogStore::read(&log, &thread).unwrap().len(),
                     original.len() + 1
                 );
             } else {
@@ -138,7 +138,7 @@ async fn prove_snapshot_source(file: bool) {
                     1,
                     "policy-only later history remains forkable"
                 );
-                assert_eq!(a3s_effect::LogStore::read(&log, &thread).unwrap(), original);
+                assert_eq!(aster_effect::LogStore::read(&log, &thread).unwrap(), original);
             }
             assert_eq!(calls.load(Ordering::SeqCst), attempts);
         }
@@ -255,7 +255,7 @@ async fn durable_source_four_modes_file_store_reopen() {
 #[tokio::test]
 async fn fork_refuses_invalid_source_before_first_snapshot() {
     for file in [false, true] {
-        for kind in ["a3s.work-policy.future", "a3s.goal.future"] {
+        for kind in ["aster.work-policy.future", "aster.goal.future"] {
             let workspace = tempfile::tempdir().unwrap();
             let storage = tempfile::tempdir().unwrap();
             let store: Arc<dyn SessionStore> = if file {
@@ -286,15 +286,15 @@ async fn fork_refuses_invalid_source_before_first_snapshot() {
                 .unwrap()
                 .is_none());
             let thread = crate::fact_control::thread_for_session(session.session_id());
-            let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+            let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
                 workspace.path(),
                 session.session_id(),
             ))
             .unwrap();
-            a3s_effect::LogStore::append(
+            aster_effect::LogStore::append(
                 &log,
                 &thread,
-                &[a3s_effect::NewFact {
+                &[aster_effect::NewFact {
                     kind: kind.into(),
                     key: "unrecognized-source".into(),
                     payload: serde_json::json!({}),
@@ -302,14 +302,14 @@ async fn fork_refuses_invalid_source_before_first_snapshot() {
                 None,
             )
             .unwrap();
-            let original = a3s_effect::LogStore::read(&log, &thread).unwrap();
+            let original = aster_effect::LogStore::read(&log, &thread).unwrap();
             let attempts = calls.load(Ordering::SeqCst);
             let error = session.fork_session_at(u64::MAX).await.unwrap_err();
             assert!(
                 error.to_string().contains("durable session source"),
                 "{error}"
             );
-            assert_eq!(a3s_effect::LogStore::read(&log, &thread).unwrap(), original);
+            assert_eq!(aster_effect::LogStore::read(&log, &thread).unwrap(), original);
             assert_eq!(calls.load(Ordering::SeqCst), attempts);
             session.close().await;
             agent.close().await;

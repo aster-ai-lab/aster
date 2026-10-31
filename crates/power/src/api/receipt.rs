@@ -1,0 +1,1597 @@
+//! Per-request attestation receipts for prompt and decoding policy.
+//!
+//! These receipts do not replace hardware attestation. They give verifiers a
+//! stable digest of the prompt-bearing request fields and sampling/decoding
+//! policy used for a specific inference request. When a backend can prove the
+//! exact prompt representation it submits to the model, the receipt also
+//! carries an `effective_prompt` digest.
+
+use std::collections::BTreeMap;
+
+use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
+
+use crate::api::types::{ChatCompletionRequest, CompletionRequest};
+use crate::backend::types::EffectivePromptDigest;
+use crate::tee::attestation::RuntimePolicyClaim;
+
+/// Request-level receipt returned with inference responses.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct AttestationReceipt {
+    pub schema: String,
+    pub request_type: ReceiptRequestType,
+    pub model: String,
+    pub input: ReceiptInputDigest,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub runtime_policy: Option<RuntimePolicyClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effective_prompt: Option<EffectivePromptDigest>,
+    pub decoding: ReceiptDecodingPolicy,
+}
+
+impl AttestationReceipt {
+    pub const SCHEMA: &'static str = "aster.power.inference-receipt.v2";
+}
+
+/// Kind of request covered by the receipt.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum ReceiptRequestType {
+    ChatCompletion,
+    TextCompletion,
+}
+
+/// Hash of the prompt-bearing input.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ReceiptInputDigest {
+    pub kind: String,
+    pub sha256: String,
+}
+
+/// Stable sampling and output-policy digest inputs.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ReceiptDecodingPolicy {
+    pub parameters: BTreeMap<String, serde_json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stream_options_sha256: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stop_tokens_sha256: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub response_format_sha256: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tools_sha256: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tool_choice_sha256: Option<String>,
+}
+
+/// Build a chat-completion receipt and its SHA-256 digest.
+pub fn chat_receipt(request: &ChatCompletionRequest) -> crate::error::Result<AttestationReceipt> {
+    chat_receipt_with_runtime_policy(request, None)
+}
+
+/// Build a chat-completion receipt with model runtime policy claims.
+pub fn chat_receipt_with_runtime_policy(
+    request: &ChatCompletionRequest,
+    runtime_policy: Option<RuntimePolicyClaim>,
+) -> crate::error::Result<AttestationReceipt> {
+    chat_receipt_with_runtime_policy_and_effective_prompt(request, runtime_policy, None)
+}
+
+/// Build a chat-completion receipt with model runtime policy and effective prompt claims.
+pub fn chat_receipt_with_runtime_policy_and_effective_prompt(
+    request: &ChatCompletionRequest,
+    runtime_policy: Option<RuntimePolicyClaim>,
+    effective_prompt: Option<EffectivePromptDigest>,
+) -> crate::error::Result<AttestationReceipt> {
+    if let Some(message) = request.unsupported_fields_message() {
+        return Err(crate::error::PowerError::InvalidRequest(format!(
+            "{message}; cannot be receipt-bound"
+        )));
+    }
+    crate::api::prompt_cache::validate_prompt_cache_key(request.prompt_cache_key.as_deref())
+        .map_err(crate::error::PowerError::InvalidRequest)?;
+    if request.has_conflicting_max_token_limits() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "max_tokens and max_completion_tokens must match when both are provided".to_string(),
+        ));
+    }
+    if request.has_stream_options_without_stream() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "chat completion stream_options require stream=true and cannot be receipt-bound for non-streaming responses".to_string(),
+        ));
+    }
+    if let Some(message) = request
+        .stream_options
+        .as_ref()
+        .and_then(|options| options.unsupported_fields_message())
+    {
+        return Err(crate::error::PowerError::InvalidRequest(format!(
+            "chat completion {message}; cannot be receipt-bound"
+        )));
+    }
+    if request.logprobs.unwrap_or(false) || request.top_logprobs.is_some() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "chat completion logprobs are unsupported and cannot be receipt-bound".to_string(),
+        ));
+    }
+    if request.logit_bias.is_some() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "chat completion logit_bias is unsupported and cannot be receipt-bound".to_string(),
+        ));
+    }
+    if request.has_unsupported_modalities() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            r#"chat completion modalities are unsupported except ["text"] and cannot be receipt-bound"#.to_string(),
+        ));
+    }
+    if request.audio.is_some() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "chat completion audio output is unsupported and cannot be receipt-bound".to_string(),
+        ));
+    }
+    if request.prediction.is_some() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "chat completion prediction hints are unsupported and cannot be receipt-bound"
+                .to_string(),
+        ));
+    }
+    if request.reasoning_effort.is_some() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "chat completion reasoning_effort is unsupported and cannot be receipt-bound"
+                .to_string(),
+        ));
+    }
+    if let Some((_, message)) = request
+        .response_format
+        .as_ref()
+        .and_then(|format| format.validation_error())
+    {
+        return Err(crate::error::PowerError::InvalidRequest(format!(
+            "{message}; cannot be receipt-bound"
+        )));
+    }
+    if let Some(message) = request.unsupported_message_fields_message() {
+        return Err(crate::error::PowerError::InvalidRequest(format!(
+            "chat completion {message}; cannot be receipt-bound"
+        )));
+    }
+    if request.has_thinking_inputs() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "chat message thinking input is unsupported and cannot be receipt-bound".to_string(),
+        ));
+    }
+    if request.has_conflicting_tool_definitions() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "tools and legacy functions cannot both be receipt-bound".to_string(),
+        ));
+    }
+    if request.has_conflicting_tool_choice() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "tool_choice and legacy function_call cannot both be receipt-bound".to_string(),
+        ));
+    }
+    if let Some(message) = request.unsupported_tool_fields_message() {
+        return Err(crate::error::PowerError::InvalidRequest(format!(
+            "chat completion {message}; cannot be receipt-bound"
+        )));
+    }
+    if let Some(message) = request.unsupported_tool_choice_fields_message() {
+        return Err(crate::error::PowerError::InvalidRequest(format!(
+            "chat completion {message}; cannot be receipt-bound"
+        )));
+    }
+
+    let input = ReceiptInputDigest {
+        kind: "chat.messages".to_string(),
+        sha256: digest_json(&request.messages)?,
+    };
+    let effective_tools = request.effective_tools();
+    let effective_tool_choice = request.effective_tool_choice();
+
+    let mut parameters = BTreeMap::new();
+    insert_optional_f32(&mut parameters, "temperature", request.temperature);
+    insert_optional_f32(&mut parameters, "top_p", request.top_p);
+    insert_optional_u32(&mut parameters, "max_tokens", request.max_tokens);
+    insert_optional_u32(
+        &mut parameters,
+        "max_completion_tokens",
+        request.max_completion_tokens,
+    );
+    insert_optional_u32(&mut parameters, "n", request.n);
+    insert_optional_i32(&mut parameters, "top_k", request.top_k);
+    insert_optional_f32(&mut parameters, "min_p", request.min_p);
+    insert_optional_f32(&mut parameters, "repeat_penalty", request.repeat_penalty);
+    insert_optional_i32(&mut parameters, "repeat_last_n", request.repeat_last_n);
+    insert_optional_bool(
+        &mut parameters,
+        "penalize_newline",
+        request.penalize_newline,
+    );
+    insert_optional_u32(&mut parameters, "num_ctx", request.num_ctx);
+    insert_optional_u32(&mut parameters, "mirostat", request.mirostat);
+    insert_optional_f32(&mut parameters, "mirostat_tau", request.mirostat_tau);
+    insert_optional_f32(&mut parameters, "mirostat_eta", request.mirostat_eta);
+    insert_optional_f32(&mut parameters, "tfs_z", request.tfs_z);
+    insert_optional_f32(&mut parameters, "typical_p", request.typical_p);
+    insert_optional_i64(&mut parameters, "seed", request.seed);
+    insert_optional_f32(
+        &mut parameters,
+        "presence_penalty",
+        request.presence_penalty,
+    );
+    insert_optional_f32(
+        &mut parameters,
+        "frequency_penalty",
+        request.frequency_penalty,
+    );
+    parameters.insert(
+        "stream".to_string(),
+        serde_json::Value::Bool(request.stream.unwrap_or(false)),
+    );
+    parameters.insert(
+        "modalities".to_string(),
+        request
+            .modalities
+            .as_ref()
+            .map(|modalities| serde_json::json!(modalities))
+            .unwrap_or(serde_json::Value::Null),
+    );
+    parameters.insert(
+        "parallel_tool_calls".to_string(),
+        request
+            .parallel_tool_calls
+            .map(serde_json::Value::Bool)
+            .unwrap_or(serde_json::Value::Null),
+    );
+    insert_optional_string_sha256(
+        &mut parameters,
+        "prompt_cache_key_sha256",
+        request.prompt_cache_key.as_deref(),
+    );
+    insert_optional_keep_alive(&mut parameters, request.keep_alive.as_deref())?;
+
+    Ok(AttestationReceipt {
+        schema: AttestationReceipt::SCHEMA.to_string(),
+        request_type: ReceiptRequestType::ChatCompletion,
+        model: request.model.clone(),
+        input,
+        runtime_policy,
+        effective_prompt,
+        decoding: ReceiptDecodingPolicy {
+            parameters,
+            stream_options_sha256: digest_optional_json(request.stream_options.as_ref())?,
+            stop_tokens_sha256: digest_optional_json(request.stop.as_ref())?,
+            response_format_sha256: digest_optional_json(request.response_format.as_ref())?,
+            tools_sha256: digest_optional_json(effective_tools.as_ref())?,
+            tool_choice_sha256: digest_optional_json(effective_tool_choice.as_ref())?,
+        },
+    })
+}
+
+/// Build a text-completion receipt and its SHA-256 digest.
+pub fn completion_receipt(request: &CompletionRequest) -> crate::error::Result<AttestationReceipt> {
+    completion_receipt_with_runtime_policy(request, None)
+}
+
+/// Build a text-completion receipt with model runtime policy claims.
+pub fn completion_receipt_with_runtime_policy(
+    request: &CompletionRequest,
+    runtime_policy: Option<RuntimePolicyClaim>,
+) -> crate::error::Result<AttestationReceipt> {
+    completion_receipt_with_runtime_policy_and_effective_prompt(request, runtime_policy, None)
+}
+
+/// Build a text-completion receipt with model runtime policy and effective prompt claims.
+pub fn completion_receipt_with_runtime_policy_and_effective_prompt(
+    request: &CompletionRequest,
+    runtime_policy: Option<RuntimePolicyClaim>,
+    effective_prompt: Option<EffectivePromptDigest>,
+) -> crate::error::Result<AttestationReceipt> {
+    if let Some(message) = request.unsupported_fields_message() {
+        return Err(crate::error::PowerError::InvalidRequest(format!(
+            "{message}; cannot be receipt-bound"
+        )));
+    }
+    crate::api::prompt_cache::validate_prompt_cache_key(request.prompt_cache_key.as_deref())
+        .map_err(crate::error::PowerError::InvalidRequest)?;
+    if request.suffix.is_some() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "completion suffix requests are unsupported and cannot be receipt-bound".to_string(),
+        ));
+    }
+    if request.logprobs.is_some() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "text completion logprobs are unsupported and cannot be receipt-bound".to_string(),
+        ));
+    }
+    if request.echo.unwrap_or(false) {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "completion echo requests are unsupported and cannot be receipt-bound".to_string(),
+        ));
+    }
+    if let Some(best_of) = request.best_of {
+        if best_of != 1 {
+            return Err(crate::error::PowerError::InvalidRequest(
+                "completion best_of requests greater than 1 are unsupported and cannot be receipt-bound".to_string(),
+            ));
+        }
+    }
+    if request.has_stream_options_without_stream() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "text completion stream_options require stream=true and cannot be receipt-bound for non-streaming responses".to_string(),
+        ));
+    }
+    if let Some(message) = request
+        .stream_options
+        .as_ref()
+        .and_then(|options| options.unsupported_fields_message())
+    {
+        return Err(crate::error::PowerError::InvalidRequest(format!(
+            "text completion {message}; cannot be receipt-bound"
+        )));
+    }
+    if request.logit_bias.is_some() {
+        return Err(crate::error::PowerError::InvalidRequest(
+            "text completion logit_bias is unsupported and cannot be receipt-bound".to_string(),
+        ));
+    }
+    if let Some((_, message)) = request
+        .response_format
+        .as_ref()
+        .and_then(|format| format.validation_error())
+    {
+        return Err(crate::error::PowerError::InvalidRequest(format!(
+            "{message}; cannot be receipt-bound"
+        )));
+    }
+
+    let input = ReceiptInputDigest {
+        kind: "text.prompt".to_string(),
+        sha256: digest_json(&request.prompt)?,
+    };
+
+    let mut parameters = BTreeMap::new();
+    insert_optional_f32(&mut parameters, "temperature", request.temperature);
+    insert_optional_f32(&mut parameters, "top_p", request.top_p);
+    insert_optional_u32(&mut parameters, "max_tokens", request.max_tokens);
+    insert_optional_u32(&mut parameters, "n", request.n);
+    insert_optional_u32(&mut parameters, "best_of", request.best_of);
+    insert_optional_i32(&mut parameters, "top_k", request.top_k);
+    insert_optional_f32(&mut parameters, "min_p", request.min_p);
+    insert_optional_f32(&mut parameters, "repeat_penalty", request.repeat_penalty);
+    insert_optional_i32(&mut parameters, "repeat_last_n", request.repeat_last_n);
+    insert_optional_bool(
+        &mut parameters,
+        "penalize_newline",
+        request.penalize_newline,
+    );
+    insert_optional_u32(&mut parameters, "num_ctx", request.num_ctx);
+    insert_optional_u32(&mut parameters, "num_batch", request.num_batch);
+    insert_optional_u32(&mut parameters, "mirostat", request.mirostat);
+    insert_optional_f32(&mut parameters, "mirostat_tau", request.mirostat_tau);
+    insert_optional_f32(&mut parameters, "mirostat_eta", request.mirostat_eta);
+    insert_optional_f32(&mut parameters, "tfs_z", request.tfs_z);
+    insert_optional_f32(&mut parameters, "typical_p", request.typical_p);
+    insert_optional_i64(&mut parameters, "seed", request.seed);
+    insert_optional_f32(
+        &mut parameters,
+        "presence_penalty",
+        request.presence_penalty,
+    );
+    insert_optional_f32(
+        &mut parameters,
+        "frequency_penalty",
+        request.frequency_penalty,
+    );
+    parameters.insert(
+        "stream".to_string(),
+        serde_json::Value::Bool(request.stream.unwrap_or(false)),
+    );
+    insert_optional_string_sha256(
+        &mut parameters,
+        "prompt_cache_key_sha256",
+        request.prompt_cache_key.as_deref(),
+    );
+    insert_optional_keep_alive(&mut parameters, request.keep_alive.as_deref())?;
+
+    Ok(AttestationReceipt {
+        schema: AttestationReceipt::SCHEMA.to_string(),
+        request_type: ReceiptRequestType::TextCompletion,
+        model: request.model.clone(),
+        input,
+        runtime_policy,
+        effective_prompt,
+        decoding: ReceiptDecodingPolicy {
+            parameters,
+            stream_options_sha256: digest_optional_json(request.stream_options.as_ref())?,
+            stop_tokens_sha256: digest_optional_json(request.stop.as_ref())?,
+            response_format_sha256: digest_optional_json(request.response_format.as_ref())?,
+            tools_sha256: None,
+            tool_choice_sha256: None,
+        },
+    })
+}
+
+/// SHA-256 digest of the canonical receipt bytes as lowercase hex.
+pub fn receipt_digest(receipt: &AttestationReceipt) -> crate::error::Result<String> {
+    let bytes = canonical_json_bytes(receipt)?;
+    Ok(hex::encode(Sha256::digest(&bytes)))
+}
+
+/// SHA-256 digest of the canonical request decoding-parameter map.
+///
+/// This covers sampling and request-visible decoding controls such as
+/// temperature, top_p, max_tokens, seed, penalties, stream, and tool-call mode.
+/// Output-shaping fields that are already digests in the receipt
+/// (`stream_options_sha256`, `stop_tokens_sha256`, `response_format_sha256`,
+/// `tools_sha256`, and `tool_choice_sha256`) are pinned separately by verifier
+/// policy.
+pub fn receipt_decoding_parameters_digest(
+    receipt: &AttestationReceipt,
+) -> crate::error::Result<String> {
+    digest_json(&receipt.decoding.parameters)
+}
+
+fn insert_optional_f32(
+    map: &mut BTreeMap<String, serde_json::Value>,
+    key: &'static str,
+    value: Option<f32>,
+) {
+    let value = value
+        .and_then(|v| serde_json::Number::from_f64(v as f64))
+        .map(serde_json::Value::Number)
+        .unwrap_or(serde_json::Value::Null);
+    map.insert(key.to_string(), value);
+}
+
+fn insert_optional_string_sha256(
+    map: &mut BTreeMap<String, serde_json::Value>,
+    key: &'static str,
+    value: Option<&str>,
+) {
+    if let Some(value) = value {
+        map.insert(
+            key.to_string(),
+            serde_json::Value::String(hex::encode(Sha256::digest(value.as_bytes()))),
+        );
+    }
+}
+
+fn insert_optional_keep_alive(
+    parameters: &mut BTreeMap<String, serde_json::Value>,
+    value: Option<&str>,
+) -> crate::error::Result<()> {
+    let Some(value) = value else {
+        return Ok(());
+    };
+    let seconds = crate::config::parse_keep_alive(value)
+        .map_err(crate::error::PowerError::InvalidRequest)?
+        .as_secs();
+    parameters.insert(
+        "keep_alive_seconds".to_string(),
+        serde_json::Value::Number(seconds.into()),
+    );
+    Ok(())
+}
+
+fn insert_optional_u32(
+    map: &mut BTreeMap<String, serde_json::Value>,
+    key: &'static str,
+    value: Option<u32>,
+) {
+    map.insert(
+        key.to_string(),
+        value
+            .map(|v| serde_json::Value::Number(v.into()))
+            .unwrap_or(serde_json::Value::Null),
+    );
+}
+
+fn insert_optional_i32(
+    map: &mut BTreeMap<String, serde_json::Value>,
+    key: &'static str,
+    value: Option<i32>,
+) {
+    map.insert(
+        key.to_string(),
+        value
+            .map(|v| serde_json::Value::Number(v.into()))
+            .unwrap_or(serde_json::Value::Null),
+    );
+}
+
+fn insert_optional_i64(
+    map: &mut BTreeMap<String, serde_json::Value>,
+    key: &'static str,
+    value: Option<i64>,
+) {
+    map.insert(
+        key.to_string(),
+        value
+            .map(|v| serde_json::Value::Number(v.into()))
+            .unwrap_or(serde_json::Value::Null),
+    );
+}
+
+fn insert_optional_bool(
+    map: &mut BTreeMap<String, serde_json::Value>,
+    key: &'static str,
+    value: Option<bool>,
+) {
+    map.insert(
+        key.to_string(),
+        value
+            .map(serde_json::Value::Bool)
+            .unwrap_or(serde_json::Value::Null),
+    );
+}
+
+fn digest_optional_json<T: Serialize>(value: Option<&T>) -> crate::error::Result<Option<String>> {
+    value.map(digest_json).transpose()
+}
+
+fn digest_json<T: Serialize>(value: &T) -> crate::error::Result<String> {
+    let bytes = canonical_json_bytes(value)?;
+    Ok(hex::encode(Sha256::digest(&bytes)))
+}
+
+fn canonical_json_bytes<T: Serialize>(value: &T) -> crate::error::Result<Vec<u8>> {
+    let value = serde_json::to_value(value)?;
+    serde_json::to_vec(&canonicalize_json_value(&value)).map_err(crate::error::PowerError::from)
+}
+
+fn canonicalize_json_value(value: &serde_json::Value) -> serde_json::Value {
+    match value {
+        serde_json::Value::Array(items) => serde_json::Value::Array(
+            items
+                .iter()
+                .map(canonicalize_json_value)
+                .collect::<Vec<_>>(),
+        ),
+        serde_json::Value::Object(map) => {
+            let mut sorted = BTreeMap::new();
+            for (key, value) in map {
+                sorted.insert(key.clone(), canonicalize_json_value(value));
+            }
+            let mut canonical = serde_json::Map::new();
+            for (key, value) in sorted {
+                canonical.insert(key, value);
+            }
+            serde_json::Value::Object(canonical)
+        }
+        other => other.clone(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::api::types::ChatCompletionMessage;
+    use crate::backend::types::{ContentPart, ImageUrl, MessageContent};
+
+    fn chat_request() -> ChatCompletionRequest {
+        ChatCompletionRequest {
+            model: "llama3".to_string(),
+            messages: vec![ChatCompletionMessage {
+                role: "user".to_string(),
+                content: MessageContent::Text("hello".to_string()),
+                name: None,
+                tool_calls: None,
+                tool_call_id: None,
+                images: None,
+                thinking: None,
+                reasoning_content: None,
+                unsupported: Default::default(),
+            }],
+            temperature: Some(0.2),
+            top_p: Some(0.9),
+            max_tokens: Some(128),
+            max_completion_tokens: None,
+            n: None,
+            logprobs: None,
+            top_logprobs: None,
+            logit_bias: None,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_ctx: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            stop: Some(vec!["</s>".to_string()]),
+            stream: Some(false),
+            stream_options: None,
+            frequency_penalty: Some(0.1),
+            presence_penalty: Some(0.0),
+            seed: Some(7),
+            response_format: None,
+            modalities: None,
+            audio: None,
+            prediction: None,
+            reasoning_effort: None,
+            tools: None,
+            tool_choice: None,
+            functions: None,
+            function_call: None,
+            parallel_tool_calls: None,
+            prompt_cache_key: None,
+            keep_alive: None,
+            unsupported: Default::default(),
+        }
+    }
+
+    fn completion_request() -> CompletionRequest {
+        CompletionRequest {
+            model: "llama3".to_string(),
+            prompt: "hello".to_string(),
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            n: None,
+            logprobs: None,
+            echo: None,
+            best_of: None,
+            logit_bias: None,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_ctx: None,
+            num_batch: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            stop: None,
+            stream: Some(false),
+            stream_options: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            response_format: None,
+            suffix: None,
+            prompt_cache_key: None,
+            keep_alive: None,
+            unsupported: Default::default(),
+        }
+    }
+
+    #[test]
+    fn chat_receipt_digest_is_stable_for_same_request() {
+        let receipt = chat_receipt(&chat_request()).unwrap();
+        assert_eq!(receipt.schema, "aster.power.inference-receipt.v2");
+        assert_eq!(
+            receipt_digest(&receipt).unwrap(),
+            receipt_digest(&receipt).unwrap()
+        );
+    }
+
+    #[test]
+    fn chat_receipt_runtime_policy_changes_digest() {
+        let request = chat_request();
+        let base = chat_receipt(&request).unwrap();
+        let runtime_policy =
+            RuntimePolicyClaim::new().with_prompt(crate::tee::attestation::PromptPolicyClaim {
+                chat_template_source: Some("manifest.template_override".to_string()),
+                chat_template_sha256: Some(vec![0x11; 32]),
+                system_prompt_sha256: None,
+                messages_sha256: None,
+            });
+        let with_runtime =
+            chat_receipt_with_runtime_policy(&request, Some(runtime_policy)).unwrap();
+
+        assert!(with_runtime.runtime_policy.is_some());
+        assert_ne!(
+            receipt_digest(&base).unwrap(),
+            receipt_digest(&with_runtime).unwrap()
+        );
+    }
+
+    #[test]
+    fn chat_receipt_effective_prompt_changes_digest() {
+        let request = chat_request();
+        let base = chat_receipt(&request).unwrap();
+        let with_effective = chat_receipt_with_runtime_policy_and_effective_prompt(
+            &request,
+            None,
+            Some(EffectivePromptDigest::chat_rendered_prompt(
+                "test-backend",
+                "rendered prompt",
+            )),
+        )
+        .unwrap();
+
+        assert!(with_effective.effective_prompt.is_some());
+        assert_ne!(
+            receipt_digest(&base).unwrap(),
+            receipt_digest(&with_effective).unwrap()
+        );
+    }
+
+    #[test]
+    fn completion_receipt_effective_prompt_changes_digest() {
+        let request = completion_request();
+        let base = completion_receipt(&request).unwrap();
+        let with_effective = completion_receipt_with_runtime_policy_and_effective_prompt(
+            &request,
+            None,
+            Some(EffectivePromptDigest::text_prompt("test-backend", "hello")),
+        )
+        .unwrap();
+
+        assert!(with_effective.effective_prompt.is_some());
+        assert_ne!(
+            receipt_digest(&base).unwrap(),
+            receipt_digest(&with_effective).unwrap()
+        );
+    }
+
+    #[test]
+    fn prompt_cache_key_is_digest_bound_without_raw_identifier() {
+        let mut first = chat_request();
+        first.prompt_cache_key = Some("private-agent-prefix".to_string());
+        let first_receipt = chat_receipt(&first).unwrap();
+        let expected = hex::encode(Sha256::digest(b"private-agent-prefix"));
+        assert_eq!(
+            first_receipt.decoding.parameters["prompt_cache_key_sha256"],
+            serde_json::json!(expected)
+        );
+        assert!(!serde_json::to_string(&first_receipt)
+            .unwrap()
+            .contains("private-agent-prefix"));
+
+        let mut second = first.clone();
+        second.prompt_cache_key = Some("private-agent-prefix-v2".to_string());
+        assert_ne!(
+            receipt_digest(&first_receipt).unwrap(),
+            receipt_digest(&chat_receipt(&second).unwrap()).unwrap()
+        );
+    }
+
+    #[test]
+    fn keep_alive_override_is_semantically_bound() {
+        let mut minutes = chat_request();
+        minutes.keep_alive = Some("5m".to_string());
+        let mut seconds = minutes.clone();
+        seconds.keep_alive = Some("300".to_string());
+
+        let minutes_receipt = chat_receipt(&minutes).unwrap();
+        let seconds_receipt = chat_receipt(&seconds).unwrap();
+
+        assert_eq!(
+            minutes_receipt.decoding.parameters["keep_alive_seconds"],
+            serde_json::json!(300)
+        );
+        assert_eq!(
+            receipt_digest(&minutes_receipt).unwrap(),
+            receipt_digest(&seconds_receipt).unwrap()
+        );
+    }
+
+    #[test]
+    fn keep_alive_override_rejects_invalid_value() {
+        let mut request = chat_request();
+        request.keep_alive = Some("eventually".to_string());
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("invalid keep_alive"));
+    }
+
+    #[test]
+    fn completion_keep_alive_override_is_semantically_bound() {
+        let mut minutes = completion_request();
+        minutes.keep_alive = Some("5m".to_string());
+        let mut seconds = minutes.clone();
+        seconds.keep_alive = Some("300".to_string());
+
+        let minutes_receipt = completion_receipt(&minutes).unwrap();
+        let seconds_receipt = completion_receipt(&seconds).unwrap();
+
+        assert_eq!(
+            minutes_receipt.decoding.parameters["keep_alive_seconds"],
+            serde_json::json!(300)
+        );
+        assert_eq!(
+            receipt_digest(&minutes_receipt).unwrap(),
+            receipt_digest(&seconds_receipt).unwrap()
+        );
+    }
+
+    #[test]
+    fn chat_receipt_input_digest_changes_when_message_images_change() {
+        let mut first = chat_request();
+        let mut second = chat_request();
+        first.messages[0].images = Some(vec!["base64-image-a".to_string()]);
+        second.messages[0].images = Some(vec!["base64-image-b".to_string()]);
+
+        let first_receipt = chat_receipt(&first).unwrap();
+        let second_receipt = chat_receipt(&second).unwrap();
+
+        assert_eq!(first_receipt.input.kind, "chat.messages");
+        assert_ne!(first_receipt.input.sha256, second_receipt.input.sha256);
+        assert_ne!(
+            receipt_digest(&first_receipt).unwrap(),
+            receipt_digest(&second_receipt).unwrap()
+        );
+    }
+
+    #[test]
+    fn chat_receipt_input_digest_changes_when_image_url_part_changes() {
+        let mut first = chat_request();
+        let mut second = chat_request();
+        first.messages[0].content = MessageContent::Parts(vec![
+            ContentPart::Text {
+                text: "describe".to_string(),
+                unsupported: Default::default(),
+            },
+            ContentPart::ImageUrl {
+                image_url: ImageUrl {
+                    url: "data:image/png;base64,aW1hZ2UtYQ==".to_string(),
+                    detail: Some("low".to_string()),
+                    unsupported: Default::default(),
+                },
+                unsupported: Default::default(),
+            },
+        ]);
+        second.messages[0].content = MessageContent::Parts(vec![
+            ContentPart::Text {
+                text: "describe".to_string(),
+                unsupported: Default::default(),
+            },
+            ContentPart::ImageUrl {
+                image_url: ImageUrl {
+                    url: "data:image/png;base64,aW1hZ2UtYg==".to_string(),
+                    detail: Some("low".to_string()),
+                    unsupported: Default::default(),
+                },
+                unsupported: Default::default(),
+            },
+        ]);
+
+        let first_receipt = chat_receipt(&first).unwrap();
+        let second_receipt = chat_receipt(&second).unwrap();
+
+        assert_ne!(first_receipt.input.sha256, second_receipt.input.sha256);
+    }
+
+    #[test]
+    fn chat_receipt_digest_changes_when_sampling_changes() {
+        let mut changed = chat_request();
+        let first = receipt_digest(&chat_receipt(&chat_request()).unwrap()).unwrap();
+        changed.temperature = Some(0.7);
+        let second = receipt_digest(&chat_receipt(&changed).unwrap()).unwrap();
+        assert_ne!(first, second);
+    }
+
+    #[test]
+    fn chat_receipt_covers_extended_sampling_controls() {
+        let mut changed = chat_request();
+        let first = receipt_digest(&chat_receipt(&changed).unwrap()).unwrap();
+
+        changed.top_k = Some(40);
+        changed.min_p = Some(0.5);
+        changed.repeat_penalty = Some(1.25);
+        changed.repeat_last_n = Some(64);
+        changed.penalize_newline = Some(true);
+        changed.num_ctx = Some(4096);
+        changed.mirostat = Some(2);
+        changed.mirostat_tau = Some(5.0);
+        changed.mirostat_eta = Some(0.25);
+        changed.tfs_z = Some(0.75);
+        changed.typical_p = Some(0.5);
+
+        let receipt = chat_receipt(&changed).unwrap();
+        assert_eq!(receipt.decoding.parameters["top_k"], serde_json::json!(40));
+        assert_eq!(receipt.decoding.parameters["min_p"], serde_json::json!(0.5));
+        assert_eq!(
+            receipt.decoding.parameters["repeat_penalty"],
+            serde_json::json!(1.25)
+        );
+        assert_eq!(
+            receipt.decoding.parameters["repeat_last_n"],
+            serde_json::json!(64)
+        );
+        assert_eq!(
+            receipt.decoding.parameters["penalize_newline"],
+            serde_json::json!(true)
+        );
+        assert_eq!(
+            receipt.decoding.parameters["num_ctx"],
+            serde_json::json!(4096)
+        );
+        assert_ne!(first, receipt_digest(&receipt).unwrap());
+    }
+
+    #[test]
+    fn chat_receipt_digest_changes_when_stop_tokens_change() {
+        let mut changed = chat_request();
+        let first = receipt_digest(&chat_receipt(&chat_request()).unwrap()).unwrap();
+        changed.stop = Some(vec!["END".to_string()]);
+        let second = receipt_digest(&chat_receipt(&changed).unwrap()).unwrap();
+        assert_ne!(first, second);
+    }
+
+    #[test]
+    fn chat_receipt_covers_stream_options() {
+        let first = receipt_digest(&chat_receipt(&chat_request()).unwrap()).unwrap();
+        let mut changed = chat_request();
+        changed.stream = Some(true);
+        changed.stream_options = Some(crate::api::types::StreamOptions {
+            include_usage: true,
+            ..Default::default()
+        });
+
+        let receipt = chat_receipt(&changed).unwrap();
+
+        assert!(receipt.decoding.stream_options_sha256.is_some());
+        assert_ne!(first, receipt_digest(&receipt).unwrap());
+    }
+
+    #[test]
+    fn chat_receipt_rejects_stream_options_without_stream() {
+        let mut request = chat_request();
+        request.stream_options = Some(crate::api::types::StreamOptions {
+            include_usage: true,
+            ..Default::default()
+        });
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("stream_options require stream=true"));
+    }
+
+    #[test]
+    fn chat_receipt_covers_tool_function_strict_flag() {
+        let mut loose = chat_request();
+        loose.tools = Some(vec![crate::backend::types::Tool {
+            tool_type: "function".to_string(),
+            function: crate::backend::types::FunctionDefinition {
+                name: "lookup".to_string(),
+                description: None,
+                parameters: serde_json::json!({"type": "object"}),
+                strict: Some(false),
+                unsupported: BTreeMap::new(),
+            },
+            unsupported: BTreeMap::new(),
+        }]);
+
+        let mut strict = loose.clone();
+        strict.tools.as_mut().unwrap()[0].function.strict = Some(true);
+
+        let loose_receipt = chat_receipt(&loose).unwrap();
+        let strict_receipt = chat_receipt(&strict).unwrap();
+
+        assert!(loose_receipt.decoding.tools_sha256.is_some());
+        assert!(strict_receipt.decoding.tools_sha256.is_some());
+        assert_ne!(
+            loose_receipt.decoding.tools_sha256,
+            strict_receipt.decoding.tools_sha256
+        );
+        assert_ne!(
+            receipt_digest(&loose_receipt).unwrap(),
+            receipt_digest(&strict_receipt).unwrap()
+        );
+    }
+
+    #[test]
+    fn chat_receipt_rejects_unsupported_stream_options_fields() {
+        let mut request = chat_request();
+        request.stream = Some(true);
+        request.stream_options = Some(crate::api::types::StreamOptions {
+            include_usage: true,
+            unsupported: BTreeMap::from([(
+                "include_obfuscation".to_string(),
+                serde_json::Value::Bool(true),
+            )]),
+        });
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("include_obfuscation"));
+    }
+
+    #[test]
+    fn chat_receipt_rejects_unsupported_tool_definition_fields() {
+        let mut request = chat_request();
+        request.tools = Some(vec![crate::backend::types::Tool {
+            tool_type: "function".to_string(),
+            function: crate::backend::types::FunctionDefinition {
+                name: "lookup".to_string(),
+                description: None,
+                parameters: serde_json::json!({"type": "object"}),
+                strict: None,
+                unsupported: BTreeMap::new(),
+            },
+            unsupported: BTreeMap::from([(
+                "cache_control".to_string(),
+                serde_json::Value::Bool(true),
+            )]),
+        }]);
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("cache_control"));
+    }
+
+    #[test]
+    fn chat_receipt_rejects_unsupported_tool_function_fields() {
+        let mut request = chat_request();
+        request.tools = Some(vec![crate::backend::types::Tool {
+            tool_type: "function".to_string(),
+            function: crate::backend::types::FunctionDefinition {
+                name: "lookup".to_string(),
+                description: None,
+                parameters: serde_json::json!({"type": "object"}),
+                strict: None,
+                unsupported: BTreeMap::from([(
+                    "x-strict-mode".to_string(),
+                    serde_json::Value::Bool(true),
+                )]),
+            },
+            unsupported: BTreeMap::new(),
+        }]);
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("x-strict-mode"));
+    }
+
+    #[test]
+    fn chat_receipt_rejects_unsupported_tool_choice_fields() {
+        let request: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model": "llama3",
+                "messages": [{"role": "user", "content": "hi"}],
+                "function_call": {
+                    "name": "lookup",
+                    "arguments": "{}"
+                }
+            }"#,
+        )
+        .unwrap();
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("unsupported function_call field(s): arguments"));
+    }
+
+    #[test]
+    fn chat_receipt_rejects_unsupported_message_fields() {
+        let request: ChatCompletionRequest = serde_json::from_str(
+            r#"{
+                "model": "llama3",
+                "messages": [{
+                    "role": "user",
+                    "content": "hi",
+                    "metadata": {"source": "test"}
+                }]
+            }"#,
+        )
+        .unwrap();
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("messages[0]: unsupported message field(s): metadata"));
+    }
+
+    #[test]
+    fn chat_receipt_rejects_unsupported_top_level_fields() {
+        let mut request = chat_request();
+        request
+            .unsupported
+            .insert("service_tier".to_string(), serde_json::json!("priority"));
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("unsupported chat completion field(s): service_tier"));
+    }
+
+    #[test]
+    fn chat_receipt_covers_text_modalities() {
+        let first = receipt_digest(&chat_receipt(&chat_request()).unwrap()).unwrap();
+        let mut changed = chat_request();
+        changed.modalities = Some(vec!["text".to_string()]);
+
+        let receipt = chat_receipt(&changed).unwrap();
+
+        assert_eq!(
+            receipt.decoding.parameters["modalities"],
+            serde_json::json!(["text"])
+        );
+        assert_ne!(first, receipt_digest(&receipt).unwrap());
+    }
+
+    #[test]
+    fn chat_receipt_rejects_unsupported_output_controls() {
+        let mut request = chat_request();
+        request.modalities = Some(vec!["text".to_string(), "audio".to_string()]);
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("modalities are unsupported"));
+
+        let mut request = chat_request();
+        request.audio = Some(serde_json::json!({"format": "wav"}));
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("audio output is unsupported"));
+
+        let mut request = chat_request();
+        request.prediction = Some(serde_json::json!({"type": "content", "content": "hello"}));
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("prediction hints are unsupported"));
+
+        let mut request = chat_request();
+        request.reasoning_effort = Some("high".to_string());
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("reasoning_effort is unsupported"));
+    }
+
+    #[test]
+    fn chat_receipt_rejects_invalid_response_format() {
+        let mut request = chat_request();
+        request.response_format = Some(crate::api::types::ResponseFormat {
+            r#type: "xml".to_string(),
+            json_schema: None,
+            unsupported: BTreeMap::new(),
+        });
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("unsupported response_format.type"));
+
+        let mut unsupported = BTreeMap::new();
+        unsupported.insert("future_policy".to_string(), serde_json::json!(true));
+        request.response_format = Some(crate::api::types::ResponseFormat {
+            r#type: "json_object".to_string(),
+            json_schema: None,
+            unsupported,
+        });
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("unsupported response_format field(s): future_policy"));
+
+        request.response_format = Some(crate::api::types::ResponseFormat {
+            r#type: "json_schema".to_string(),
+            json_schema: Some(crate::api::types::JsonSchemaSpec {
+                name: "Answer".to_string(),
+                description: None,
+                schema: None,
+                strict: Some(true),
+                unsupported: BTreeMap::new(),
+            }),
+            unsupported: BTreeMap::new(),
+        });
+
+        assert!(chat_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("json_schema.schema"));
+    }
+
+    #[test]
+    fn completion_receipt_hashes_prompt() {
+        let request = CompletionRequest {
+            model: "llama3".to_string(),
+            prompt: "hello".to_string(),
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            n: None,
+            logprobs: None,
+            echo: None,
+            best_of: None,
+            logit_bias: None,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_ctx: None,
+            num_batch: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            stop: None,
+            stream: Some(false),
+            stream_options: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            response_format: None,
+            suffix: None,
+            prompt_cache_key: None,
+            keep_alive: None,
+            unsupported: Default::default(),
+        };
+
+        let receipt = completion_receipt(&request).unwrap();
+        assert_eq!(receipt.input.kind, "text.prompt");
+        assert_eq!(receipt.input.sha256.len(), 64);
+    }
+
+    #[test]
+    fn completion_receipt_rejects_unsupported_top_level_fields() {
+        let request: CompletionRequest = serde_json::from_str(
+            r#"{
+                "model": "llama3",
+                "prompt": "hello",
+                "service_tier": "priority"
+            }"#,
+        )
+        .unwrap();
+
+        assert!(completion_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("unsupported text completion field(s): service_tier"));
+    }
+
+    #[test]
+    fn completion_receipt_covers_extended_sampling_controls() {
+        let request = CompletionRequest {
+            model: "llama3".to_string(),
+            prompt: "hello".to_string(),
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            n: None,
+            logprobs: None,
+            echo: None,
+            best_of: None,
+            logit_bias: None,
+            top_k: Some(40),
+            min_p: Some(0.5),
+            repeat_penalty: Some(1.25),
+            repeat_last_n: Some(64),
+            penalize_newline: Some(false),
+            num_ctx: Some(2048),
+            num_batch: Some(4),
+            mirostat: Some(1),
+            mirostat_tau: Some(4.0),
+            mirostat_eta: Some(0.25),
+            tfs_z: Some(0.75),
+            typical_p: Some(0.5),
+            stop: None,
+            stream: Some(false),
+            stream_options: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            response_format: None,
+            suffix: None,
+            prompt_cache_key: None,
+            keep_alive: None,
+            unsupported: Default::default(),
+        };
+
+        let receipt = completion_receipt(&request).unwrap();
+
+        assert_eq!(receipt.decoding.parameters["top_k"], serde_json::json!(40));
+        assert_eq!(
+            receipt.decoding.parameters["penalize_newline"],
+            serde_json::json!(false)
+        );
+        assert_eq!(
+            receipt.decoding.parameters["typical_p"],
+            serde_json::json!(0.5)
+        );
+        assert_eq!(
+            receipt.decoding.parameters["num_batch"],
+            serde_json::json!(4)
+        );
+        let mut without_batch = request.clone();
+        without_batch.num_batch = None;
+        assert_ne!(
+            receipt_digest(&receipt).unwrap(),
+            receipt_digest(&completion_receipt(&without_batch).unwrap()).unwrap()
+        );
+    }
+
+    #[test]
+    fn completion_receipt_covers_stream_options() {
+        let request = CompletionRequest {
+            model: "llama3".to_string(),
+            prompt: "hello".to_string(),
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            n: None,
+            logprobs: None,
+            echo: None,
+            best_of: None,
+            logit_bias: None,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_ctx: None,
+            num_batch: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            stop: None,
+            stream: Some(true),
+            stream_options: Some(crate::api::types::StreamOptions {
+                include_usage: true,
+                ..Default::default()
+            }),
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            response_format: None,
+            suffix: None,
+            prompt_cache_key: None,
+            keep_alive: None,
+            unsupported: Default::default(),
+        };
+
+        let receipt = completion_receipt(&request).unwrap();
+
+        assert!(receipt.decoding.stream_options_sha256.is_some());
+    }
+
+    #[test]
+    fn completion_receipt_rejects_stream_options_without_stream() {
+        let mut request = CompletionRequest {
+            model: "llama3".to_string(),
+            prompt: "hello".to_string(),
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            n: None,
+            logprobs: None,
+            echo: None,
+            best_of: None,
+            logit_bias: None,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_ctx: None,
+            num_batch: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            stop: None,
+            stream: Some(false),
+            stream_options: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            response_format: None,
+            suffix: None,
+            prompt_cache_key: None,
+            keep_alive: None,
+            unsupported: Default::default(),
+        };
+        request.stream_options = Some(crate::api::types::StreamOptions {
+            include_usage: true,
+            ..Default::default()
+        });
+
+        assert!(completion_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("stream_options require stream=true"));
+    }
+
+    #[test]
+    fn completion_receipt_rejects_unsupported_stream_options_fields() {
+        let mut request = CompletionRequest {
+            model: "llama3".to_string(),
+            prompt: "hello".to_string(),
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            n: None,
+            logprobs: None,
+            echo: None,
+            best_of: None,
+            logit_bias: None,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_ctx: None,
+            num_batch: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            stop: None,
+            stream: Some(true),
+            stream_options: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            response_format: None,
+            suffix: None,
+            prompt_cache_key: None,
+            keep_alive: None,
+            unsupported: Default::default(),
+        };
+        request.stream_options = Some(crate::api::types::StreamOptions {
+            include_usage: true,
+            unsupported: BTreeMap::from([(
+                "include_obfuscation".to_string(),
+                serde_json::Value::Bool(true),
+            )]),
+        });
+
+        assert!(completion_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("include_obfuscation"));
+    }
+
+    #[test]
+    fn completion_receipt_covers_response_format() {
+        let request = CompletionRequest {
+            model: "llama3".to_string(),
+            prompt: "hello".to_string(),
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            n: None,
+            logprobs: None,
+            echo: None,
+            best_of: None,
+            logit_bias: None,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_ctx: None,
+            num_batch: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            stop: None,
+            stream: Some(false),
+            stream_options: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            response_format: Some(crate::api::types::ResponseFormat {
+                r#type: "json_schema".to_string(),
+                json_schema: Some(crate::api::types::JsonSchemaSpec {
+                    name: "Answer".to_string(),
+                    description: None,
+                    schema: Some(serde_json::json!({"type":"object"})),
+                    strict: Some(true),
+                    unsupported: BTreeMap::new(),
+                }),
+                unsupported: BTreeMap::new(),
+            }),
+            suffix: None,
+            prompt_cache_key: None,
+            keep_alive: None,
+            unsupported: Default::default(),
+        };
+
+        let receipt = completion_receipt(&request).unwrap();
+
+        assert!(receipt.decoding.response_format_sha256.is_some());
+    }
+
+    #[test]
+    fn completion_receipt_rejects_invalid_response_format() {
+        let mut request = CompletionRequest {
+            model: "llama3".to_string(),
+            prompt: "hello".to_string(),
+            temperature: None,
+            top_p: None,
+            max_tokens: None,
+            n: None,
+            logprobs: None,
+            echo: None,
+            best_of: None,
+            logit_bias: None,
+            top_k: None,
+            min_p: None,
+            repeat_penalty: None,
+            repeat_last_n: None,
+            penalize_newline: None,
+            num_ctx: None,
+            num_batch: None,
+            mirostat: None,
+            mirostat_tau: None,
+            mirostat_eta: None,
+            tfs_z: None,
+            typical_p: None,
+            stop: None,
+            stream: Some(false),
+            stream_options: None,
+            frequency_penalty: None,
+            presence_penalty: None,
+            seed: None,
+            response_format: Some(crate::api::types::ResponseFormat {
+                r#type: "xml".to_string(),
+                json_schema: None,
+                unsupported: BTreeMap::new(),
+            }),
+            suffix: None,
+            prompt_cache_key: None,
+            keep_alive: None,
+            unsupported: Default::default(),
+        };
+
+        assert!(completion_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("unsupported response_format.type"));
+
+        let mut unsupported = BTreeMap::new();
+        unsupported.insert("future_policy".to_string(), serde_json::json!(true));
+        request.response_format = Some(crate::api::types::ResponseFormat {
+            r#type: "json_schema".to_string(),
+            json_schema: Some(crate::api::types::JsonSchemaSpec {
+                name: "Answer".to_string(),
+                description: None,
+                schema: Some(serde_json::json!({"type":"object"})),
+                strict: Some(true),
+                unsupported,
+            }),
+            unsupported: BTreeMap::new(),
+        });
+
+        assert!(completion_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("unsupported response_format.json_schema field(s): future_policy"));
+
+        request.response_format = Some(crate::api::types::ResponseFormat {
+            r#type: "json_schema".to_string(),
+            json_schema: Some(crate::api::types::JsonSchemaSpec {
+                name: "Answer".to_string(),
+                description: None,
+                schema: None,
+                strict: Some(true),
+                unsupported: BTreeMap::new(),
+            }),
+            unsupported: BTreeMap::new(),
+        });
+
+        assert!(completion_receipt(&request)
+            .unwrap_err()
+            .to_string()
+            .contains("json_schema.schema"));
+    }
+}

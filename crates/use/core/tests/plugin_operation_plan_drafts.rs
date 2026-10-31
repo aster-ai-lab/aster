@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     CatalogSurface, OkfBundleContract, PackageSurfaceKind, PlanPackageChangeKind,
     PlannedPackageTransition, PluginOperationPlan, PluginOperationPlanBinding,
     PluginOperationPlanDraft, PluginPermissionCeiling, PluginPlanSource,
@@ -173,7 +173,7 @@ fn resolved_retained_dependency_has_no_surface_delta() {
     let state = package.after.unwrap();
     let resolved = PlannedPackageTransition::resolved(
         package_id,
-        a3s_use_core::PlanPackageRole::Dependency,
+        aster_use_core::PlanPackageRole::Dependency,
         PlanPackageChangeKind::Retain,
         Some(state.clone()),
         Some(state),
@@ -271,6 +271,6 @@ fn okf_draft_derives_exact_bundle_impact_without_a_runtime_provider() {
         plan
     );
 
-    plan.schema = "a3s.use.plugin-operation-plan.v3".to_owned();
+    plan.schema = "aster.use.plugin-operation-plan.v3".to_owned();
     assert!(plan.validate().is_err());
 }

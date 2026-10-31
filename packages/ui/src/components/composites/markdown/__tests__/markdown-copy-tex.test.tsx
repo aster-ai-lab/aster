@@ -59,11 +59,11 @@ describe('markdown styles entry', () => {
   })
 
   it('keeps the styles entry covered by the package sideEffects manifest', () => {
-    // vitest may run with the package or the repo root as cwd; find @a3s/ui's manifest either way
+    // vitest may run with the package or the repo root as cwd; find @aster/ui's manifest either way
     const pkgPath = [resolve(process.cwd(), 'package.json'), resolve(process.cwd(), 'packages/ui/package.json')].find(
       (candidate) => {
         try {
-          return (JSON.parse(readFileSync(candidate, 'utf8')) as { name?: string }).name === '@a3s-lab/ui'
+          return (JSON.parse(readFileSync(candidate, 'utf8')) as { name?: string }).name === '@aster-ai-lab/ui'
         } catch {
           return false
         }

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "a3s.oci.attachments.v2",
+  "schemaVersion": "aster.oci.attachments.v2",
   "rootfs": {
     "jsonPointer": "/root",
     "valueDigest": "sha256:2f9b36d930ecf25ea5df68f77c368b53f750ca0bd8e82afff17dca1941d1fee4"
@@ -56,12 +56,12 @@
     }
   ],
   "extensions": {
-    "dev.a3s.bundle-handoff": {
-      "name": "dev.a3s.bundle-handoff",
+    "dev.aster.bundle-handoff": {
+      "name": "dev.aster.bundle-handoff",
       "version": 2,
       "required": true,
       "configuration": {
-        "jsonPointer": "/annotations/dev.a3s.bundle-handoff",
+        "jsonPointer": "/annotations/dev.aster.bundle-handoff",
         "valueDigest": "sha256:f645292ba8cd4e5d350ea79dc9e246f98a85aad6fd441e71f7eb29bcac432c81"
       }
     }

@@ -1,4 +1,4 @@
-use a3s_use_core::{
+use aster_use_core::{
     inspect_okf_bundle, okf_document_references, OkfBundleFile, OkfBundleLimits,
     OkfDocumentReference, OkfFormatVersion,
 };

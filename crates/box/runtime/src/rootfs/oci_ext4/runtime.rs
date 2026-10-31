@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 
 use super::tree::{
     build_error, canonical_meta, guest_path, EntryMetadata, LogicalRootfs, NodeKind,

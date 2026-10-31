@@ -2,7 +2,7 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::OperationId;
+use aster_box_core::OperationId;
 
 use super::{
     operation_key, BuildOutputReceipt, BuildReceiptError, PersistedBuildOperation,
@@ -513,7 +513,7 @@ fn persist_record(
         })?;
     bytes.push(b'\n');
     let temporary = path.with_extension("json.tmp");
-    a3s_box_core::fs_atomic::write_durable(&temporary, path, &bytes).map_err(|error| {
+    aster_box_core::fs_atomic::write_durable(&temporary, path, &bytes).map_err(|error| {
         BuildReceiptError::StoreIo {
             message: format!("failed to persist receipt for operation {operation_id}"),
             source: error,

@@ -1,4 +1,4 @@
-"""Generate an A3S Test suite for the shipped note editor, without editor mocks."""
+"""Generate an Aster Test suite for the shipped note editor, without editor mocks."""
 import argparse
 import json
 from pathlib import Path

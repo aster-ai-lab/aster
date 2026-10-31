@@ -1,6 +1,6 @@
 # Contract: Arc 微动效与分析页组件
 
-本合同把 Arc UI 的行为参考落实到 `WorkspaceAnalysisPage`。Arc 不是第二套设计系统，不批量安装组件，不使用公开示例中的模拟事件。实现继续使用 `@a3s-lab/ui`、现有 Motion／CSS、xyflow 和真实 `AnalysisRun`。
+本合同把 Arc UI 的行为参考落实到 `WorkspaceAnalysisPage`。Arc 不是第二套设计系统，不批量安装组件，不使用公开示例中的模拟事件。实现继续使用 `@aster-ai-lab/ui`、现有 Motion／CSS、xyflow 和真实 `AnalysisRun`。
 
 ## 1. 总原则
 

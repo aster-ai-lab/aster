@@ -623,7 +623,7 @@ async fn test_resume_session_restores_artifacts() {
         .artifact_store()
         .put(crate::tools::ToolArtifact {
             artifact_id: "tool-output:test:a".to_string(),
-            artifact_uri: "a3s://tool-output/test/a".to_string(),
+            artifact_uri: "aster://tool-output/test/a".to_string(),
             tool_name: "test".to_string(),
             content: "artifact content".to_string(),
             original_bytes: 16,
@@ -640,7 +640,7 @@ async fn test_resume_session_restores_artifacts() {
         .unwrap();
 
     let artifact = resumed
-        .get_artifact("a3s://tool-output/test/a")
+        .get_artifact("aster://tool-output/test/a")
         .expect("artifact");
     assert_eq!(artifact.content, "artifact content");
 }
@@ -674,7 +674,7 @@ async fn test_resume_session_preserves_artifacts_beyond_default_store_limits() {
             .artifact_store()
             .put(crate::tools::ToolArtifact {
                 artifact_id: format!("tool-output:test:{index}"),
-                artifact_uri: format!("a3s://tool-output/test/{index}"),
+                artifact_uri: format!("aster://tool-output/test/{index}"),
                 tool_name: "test".to_string(),
                 content: artifact_content.clone(),
                 original_bytes: bytes_per_artifact,
@@ -695,9 +695,9 @@ async fn test_resume_session_preserves_artifacts_beyond_default_store_limits() {
     let restored = resumed.tool_executor.artifact_store();
     assert_eq!(restored.len(), artifact_count);
     assert_eq!(restored.total_bytes(), persisted_bytes);
-    assert!(restored.get("a3s://tool-output/test/0").is_some());
+    assert!(restored.get("aster://tool-output/test/0").is_some());
     assert!(restored
-        .get(&format!("a3s://tool-output/test/{}", artifact_count - 1))
+        .get(&format!("aster://tool-output/test/{}", artifact_count - 1))
         .is_some());
 }
 
@@ -713,7 +713,7 @@ async fn test_resume_session_restores_trace_events() {
         32,
         Some(&serde_json::json!({
             "artifact": {
-                "artifact_uri": "a3s://tool-output/read/abc"
+                "artifact_uri": "aster://tool-output/read/abc"
             }
         })),
     );

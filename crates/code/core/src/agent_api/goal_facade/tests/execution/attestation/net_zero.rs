@@ -112,7 +112,7 @@ async fn repeated_workspace_states_stop_while_legal_v2_history_replays_unchanged
             let facts = settlement::facts(root.path());
             let bases: Vec<_> = facts
                 .iter()
-                .filter(|fact| fact.kind == "a3s.goal.slice.admitted")
+                .filter(|fact| fact.kind == "aster.goal.slice.admitted")
                 .map(|fact| {
                     fact.payload["body"]["continuation"]["progress_basis"]
                         .as_str()
@@ -229,7 +229,7 @@ async fn net_zero_write_cycles_cannot_refresh_automatic_progress_after_reopen() 
         let facts = settlement::facts(root.path());
         let deltas: Vec<_> = facts
             .iter()
-            .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+            .filter(|fact| fact.kind == "aster.goal.slice.settled")
             .map(|fact| {
                 fact.payload["body"]["progress"]["information_delta"]
                     .as_u64()

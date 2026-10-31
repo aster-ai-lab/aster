@@ -2,13 +2,13 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_oci_agent::{
+use aster_oci_agent::{
     InheritedDescriptorPlan, LinuxExecutor, LinuxExecutorTombstone, LinuxLiveSupervisedSession,
     RootlessDevicePolicyBootstrap, StaleGenerationRecovery,
 };
-use a3s_oci_agent_protocol::{AgentBundle, AgentCreateRequest, GuestAgentService, GuestPath};
-use a3s_oci_core::{CapabilityStatus, DriverCapability, DriverReadiness, IsolationClass};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::{AgentBundle, AgentCreateRequest, GuestAgentService, GuestPath};
+use aster_oci_core::{CapabilityStatus, DriverCapability, DriverReadiness, IsolationClass};
+use aster_oci_sdk::{
     async_trait, AttachmentCapabilities, ContainerId, ContainerRecord, ContainerStats,
     ContainerTarget, Error, ErrorCode, ExitStatus, FileRequest, FileResponse, FilesystemRequest,
     FilesystemResponse, OperationId, OutputChunk, ProcessRecord, Result, RuntimeOperation,
@@ -49,7 +49,7 @@ pub struct NativeLinuxDriver {
 impl NativeLinuxDriver {
     /// Open the experimental native driver beneath a runtime-owned directory.
     ///
-    /// `init_executable` must be the matching `a3s-oci-agent` binary. The
+    /// `init_executable` must be the matching `aster-oci-agent` binary. The
     /// caller must invoke [`Self::shutdown`] before removing the runtime
     /// directory.
     pub async fn open_experimental(
@@ -142,7 +142,7 @@ impl NativeLinuxDriver {
         );
         driver.capability.evidence.insert(
             "checkpoint_source_revision".to_string(),
-            option_env!("A3S_OCI_GIT_REVISION")
+            option_env!("ASTER_OCI_GIT_REVISION")
                 .unwrap_or("unavailable")
                 .to_string(),
         );
@@ -386,8 +386,8 @@ impl RuntimeDriver for NativeLinuxDriver {
         self.capability.clone()
     }
 
-    fn linux_support(&self) -> Result<a3s_oci_sdk::OciLinuxSupport> {
-        a3s_oci_sdk::OciLinuxSupport::shared_executor()
+    fn linux_support(&self) -> Result<aster_oci_sdk::OciLinuxSupport> {
+        aster_oci_sdk::OciLinuxSupport::shared_executor()
     }
 
     fn operations(&self) -> &[RuntimeOperation] {
@@ -427,7 +427,7 @@ impl RuntimeDriver for NativeLinuxDriver {
             }
         }
         let can_commit_stopped =
-            *record.state.status() != a3s_oci_sdk::oci_spec::runtime::ContainerState::Creating;
+            *record.state.status() != aster_oci_sdk::oci_spec::runtime::ContainerState::Creating;
         match self
             .client
             .state_with_digest(target.clone(), Some(&record.config_digest))
@@ -437,7 +437,7 @@ impl RuntimeDriver for NativeLinuxDriver {
                 if !can_commit_stopped {
                     return Ok(crate::DriverRecovery::none());
                 }
-                if observed.status() == a3s_oci_sdk::oci_spec::runtime::ContainerState::Stopped {
+                if observed.status() == aster_oci_sdk::oci_spec::runtime::ContainerState::Stopped {
                     let status = self
                         .client
                         .wait(DriverWaitRequest {
@@ -1066,16 +1066,16 @@ fn observe_live_supervised_state(
 
 fn observe_live_supervised_driver_state(live: &LinuxLiveSupervisedSession) -> Result<DriverState> {
     observe_live_supervised_driver_state_for_status(
-        a3s_oci_sdk::oci_spec::runtime::ContainerState::Running,
+        aster_oci_sdk::oci_spec::runtime::ContainerState::Running,
         live,
     )
 }
 
 fn observe_live_supervised_driver_state_for_status(
-    durable_status: a3s_oci_sdk::oci_spec::runtime::ContainerState,
+    durable_status: aster_oci_sdk::oci_spec::runtime::ContainerState,
     live: &LinuxLiveSupervisedSession,
 ) -> Result<DriverState> {
-    use a3s_oci_sdk::oci_spec::runtime::ContainerState;
+    use aster_oci_sdk::oci_spec::runtime::ContainerState;
     // Prefer authenticated /proc liveness. Never invent exit status here.
     if live.init_is_live()? {
         let state = match durable_status {
@@ -1168,7 +1168,7 @@ async fn guest_path(bundle: &Path) -> Result<GuestPath> {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         ErrorCode, AMD_SEV_SNP_LAUNCH_EXTENSION, ATTACHMENT_SCHEMA_V2, ATTACHMENT_SCHEMA_V3,
         INTEL_TDX_LAUNCH_EXTENSION, NETWORK_ENFORCEMENT_EXTENSION,
         NETWORK_ENFORCEMENT_EXTENSION_VERSION, TEE_LAUNCH_EXTENSION_VERSION,

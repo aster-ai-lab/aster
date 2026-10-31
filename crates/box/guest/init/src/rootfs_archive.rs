@@ -7,17 +7,17 @@ use std::collections::{BTreeMap, HashSet};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::rootfs_baseline::{GuestDiffBaseline, RootfsFileInfo};
+use aster_box_core::rootfs_baseline::{GuestDiffBaseline, RootfsFileInfo};
 #[cfg(target_os = "linux")]
-use a3s_box_core::rootfs_metadata::IMAGE_ROOTFS_METADATA_PATH;
-use a3s_box_core::rootfs_metadata::{
+use aster_box_core::rootfs_metadata::IMAGE_ROOTFS_METADATA_PATH;
+use aster_box_core::rootfs_metadata::{
     is_runtime_internal_rootfs_path, runtime_managed_rootfs_mode,
     stage_terminal_rootfs_metadata_for_boot, RootfsEntryKind, RootfsMetadataEntry,
     RootfsMetadataManifest, PREVIOUS_ROOTFS_METADATA_PATH, ROOTFS_METADATA_PATH,
 };
 use base64::Engine;
 
-/// Capture the pristine guest-visible tree used by `a3s-box diff`.
+/// Capture the pristine guest-visible tree used by `aster-box diff`.
 ///
 /// This uses the same nested-mount and runtime-control exclusions as live
 /// rootfs archives, so procfs, tmpfs, workspace, and user volumes never become
@@ -354,7 +354,7 @@ fn append_tree<W: Write>(
         }
         // `append_path_with_name` opens and reads the path; FIFOs block forever
         // (and can surface empty-path tar errors). Emit a zero-length FIFO entry
-        // so `a3s-box diff` can list them without hanging.
+        // so `aster-box diff` can list them without hanging.
         if file_type.is_fifo() {
             return append_fifo(builder, archive_path, &metadata);
         }
@@ -567,7 +567,7 @@ mod tests {
         std::fs::create_dir(&etc).unwrap();
         let hosts = etc.join("hosts");
         let probe = etc.join("probe");
-        let environment = directory.path().join(".a3s-box-env");
+        let environment = directory.path().join(".aster-box-env");
         let init = directory.path().join("usr/sbin/init");
         std::fs::create_dir_all(init.parent().unwrap()).unwrap();
         std::fs::write(&hosts, "127.0.0.1 localhost\n").unwrap();
@@ -595,7 +595,7 @@ mod tests {
             entry("./etc/hosts", 1),
             entry("./etc/probe", 6),
             entry("./usr/sbin/init", 1),
-            entry("./.a3s-box-env", 1),
+            entry("./.aster-box-env", 1),
         ]);
         std::fs::write(
             directory
@@ -719,7 +719,7 @@ mod tests {
         std::fs::write(&executable, b"payload").unwrap();
         std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o751)).unwrap();
         std::os::unix::fs::symlink("tool", tools.join("tool-link")).unwrap();
-        std::fs::write(directory.path().join(".a3s-box-exec.json"), b"runtime").unwrap();
+        std::fs::write(directory.path().join(".aster-box-exec.json"), b"runtime").unwrap();
 
         let baseline = snapshot_diff_baseline(directory.path()).unwrap();
 
@@ -731,7 +731,7 @@ mod tests {
         assert_eq!(tool.mode & 0o7777, 0o751);
         assert!(!tool.is_dir);
         assert!(baseline.entries.contains_key("/usr/bin/tool-link"));
-        assert!(!baseline.entries.contains_key("/.a3s-box-exec.json"));
+        assert!(!baseline.entries.contains_key("/.aster-box-exec.json"));
     }
 
     #[test]
@@ -758,12 +758,12 @@ mod tests {
         let executable = directory.path().join("probe");
         std::fs::write(&executable, b"probe").unwrap();
         std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o755)).unwrap();
-        std::fs::write(directory.path().join(".a3s_exit_code"), b"0").unwrap();
+        std::fs::write(directory.path().join(".aster_exit_code"), b"0").unwrap();
         std::fs::write(directory.path().join("init-rust.log"), b"runtime log").unwrap();
         std::fs::write(directory.path().join("init.trace.log"), b"runtime trace").unwrap();
 
         persist_rootfs_metadata(directory.path()).unwrap();
-        let manifest_path = directory.path().join(".a3s_rootfs_metadata_v1.json");
+        let manifest_path = directory.path().join(".aster_rootfs_metadata_v1.json");
         let manifest: RootfsMetadataManifest =
             serde_json::from_slice(&std::fs::read(manifest_path).unwrap()).unwrap();
         manifest.validate().unwrap();
@@ -778,7 +778,7 @@ mod tests {
         assert!(!manifest.entries.iter().any(|entry| {
             base64::engine::general_purpose::STANDARD
                 .decode(&entry.path_base64)
-                .is_ok_and(|path| path.ends_with(b".a3s_exit_code"))
+                .is_ok_and(|path| path.ends_with(b".aster_exit_code"))
         }));
         assert!(!manifest.entries.iter().any(|entry| {
             base64::engine::general_purpose::STANDARD

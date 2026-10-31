@@ -1,16 +1,16 @@
 #![cfg(feature = "evaluation")]
 #[cfg(feature = "research")]
-use a3s_code_core::evaluation::digest_bytes;
-use a3s_code_core::evaluation::{
+use aster_core::evaluation::digest_bytes;
+use aster_core::evaluation::{
     AuxiliaryCapabilityProfileV1, AuxiliaryExecutor, AuxiliaryRunContextV1, AuxiliaryRunError,
     AuxiliaryRunService, AuxiliaryRunSpecV1, AuxiliaryRunStateV1, EvaluationRecordV1,
     EvaluationResultSink, EvaluationResultV1, EvidenceContentModeV1, EvidenceReadRequestV1,
     ExecutionFactRecorder, ExecutionFrameV1, ExecutionTargetV1, InMemoryAuxiliaryRunService,
     InMemoryEvaluationResultStore, InMemoryExecutionFactJournal, RunEvidenceReader,
 };
-use a3s_code_core::{AgentEvent, InMemoryRunStore, RunEventRecord};
+use aster_core::{AgentEvent, InMemoryRunStore, RunEventRecord};
 #[cfg(feature = "research")]
-use a3s_code_core::{
+use aster_core::{
     ResearchReviewCategoryV1, ResearchReviewFindingV1, ResearchReviewSeverityV1,
     ResearchReviewStatusV1,
 };
@@ -221,8 +221,8 @@ async fn auxiliary_timeout_is_terminal_and_cancellable() {
 fn fact_serialization_is_digest_only_and_tamper_evident() {
     let target = ExecutionTargetV1::new("session-secure", "run-secure");
     let frame = ExecutionFrameV1::root(target);
-    let fact = a3s_code_core::evaluation::ExecutionFactV1::from_input(
-        a3s_code_core::evaluation::ExecutionFactInputV1::from_event(
+    let fact = aster_core::evaluation::ExecutionFactV1::from_input(
+        aster_core::evaluation::ExecutionFactInputV1::from_event(
             frame,
             0,
             1,

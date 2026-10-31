@@ -2,8 +2,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, MutexGuard};
 
-use a3s_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::{ContainerState, StateBuilder};
+use aster_oci_sdk::{
     async_trait, ContainerId, ContainerRecord, ContainerTarget, CreateRequest, DeleteMode,
     DeleteRequest, DriverKind, Error, ErrorCode, Generation, IsolationClass, IsolationRequest,
     KillRequest, OciBundle, OciRuntimeService, Result, RuntimeClient, RuntimeInfo, Signal,
@@ -590,7 +590,7 @@ async fn terminal_bundle_is_rejected_before_runtime_mutation() {
 #[test]
 fn parser_accepts_oci_and_runc_signal_forms() {
     let positional =
-        try_parse_cli_for_test(&["a3s-oci", "kill", "sample", "KILL"]).expect("positional signal");
+        try_parse_cli_for_test(&["aster-oci", "kill", "sample", "KILL"]).expect("positional signal");
     assert!(matches!(
         positional.command,
         Command::Kill {
@@ -600,7 +600,7 @@ fn parser_accepts_oci_and_runc_signal_forms() {
         } if signal == "KILL"
     ));
     let option =
-        try_parse_cli_for_test(&["a3s-oci", "kill", "--signal", "TERM", "--all", "sample"])
+        try_parse_cli_for_test(&["aster-oci", "kill", "--signal", "TERM", "--all", "sample"])
             .expect("OCI signal option");
     assert!(matches!(
         option.command,
@@ -704,7 +704,7 @@ async fn write_bundle(directory: PathBuf, terminal: bool, args: &[&str]) -> OciB
 
 #[cfg(windows)]
 fn create_private_directory(path: &Path) {
-    a3s_oci_runtime::windows_security::create_private_directory(path)
+    aster_oci_runtime::windows_security::create_private_directory(path)
         .expect("private Windows directory");
 }
 

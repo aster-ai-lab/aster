@@ -4,21 +4,21 @@
   .work-pdf-export-page.document
 ) {
   --work-document-render-font-family: var(
-    --a3s-document-font-family,
-    "A3S Office Noto Sans",
-    "A3S Office Noto Sans Hans",
-    "A3S Office Noto Naskh Arabic",
-    "A3S Office Noto Sans Hebrew",
+    --aster-document-font-family,
+    "Aster Office Noto Sans",
+    "Aster Office Noto Sans Hans",
+    "Aster Office Noto Naskh Arabic",
+    "Aster Office Noto Sans Hebrew",
     sans-serif
   );
-  --work-document-render-font-size: var(--a3s-document-font-size, 10.5pt);
-  --work-document-render-line-height: var(--a3s-document-line-height, 1.5);
+  --work-document-render-font-size: var(--aster-document-font-size, 10.5pt);
+  --work-document-render-line-height: var(--aster-document-line-height, 1.5);
   --work-document-render-paragraph-after: var(
-    --a3s-document-paragraph-after,
+    --aster-document-paragraph-after,
     6pt
   );
   --work-document-render-heading-font-family: var(
-    --a3s-document-heading-font-family,
+    --aster-document-heading-font-family,
     var(--work-document-render-font-family)
   );
 }
@@ -30,7 +30,7 @@
   min-height: 1123px;
   margin: 0 auto;
   padding: 25mm 23mm;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   background: var(--work-document-page-color, #ffffff);
   box-shadow: 0 8px 28px rgb(30 38 55 / 10%);
   color: #20232b;
@@ -100,7 +100,7 @@
 .work-document-page-sheet {
   position: absolute;
   box-sizing: border-box;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   box-shadow: 0 8px 28px rgb(30 38 55 / 10%);
 }
 
@@ -281,7 +281,7 @@
   place-items: center;
   color: #778196;
   content: "分页符";
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
   font-size: 9px;
   letter-spacing: 0.08em;
 }
@@ -343,9 +343,9 @@
   left: 0;
   box-sizing: border-box;
   height: var(--work-document-page-gap-height);
-  border-top: 1px solid color-mix(in srgb, var(--a3s-line) 80%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--a3s-line) 80%, transparent);
-  background: color-mix(in srgb, var(--a3s-bg) 80%, #dfe3e9);
+  border-top: 1px solid color-mix(in srgb, var(--aster-line) 80%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--aster-line) 80%, transparent);
+  background: color-mix(in srgb, var(--aster-bg) 80%, #dfe3e9);
   box-shadow:
     inset 0 5px 8px -8px rgb(30 38 55 / 48%),
     inset 0 -5px 8px -8px rgb(30 38 55 / 42%);
@@ -364,7 +364,7 @@
   justify-content: center;
   overflow: hidden;
   color: #7a8395;
-  font-family: var(--a3s-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
+  font-family: var(--aster-ui-font, ui-sans-serif), "PingFang SC", sans-serif;
   font-size: 12px;
   line-height: 1.4;
   pointer-events: none;
@@ -472,9 +472,9 @@
   left: 0;
   box-sizing: border-box;
   height: var(--work-document-page-gap-height);
-  border-top: 1px solid color-mix(in srgb, var(--a3s-line) 80%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--a3s-line) 80%, transparent);
-  background: color-mix(in srgb, var(--a3s-bg) 80%, #dfe3e9);
+  border-top: 1px solid color-mix(in srgb, var(--aster-line) 80%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--aster-line) 80%, transparent);
+  background: color-mix(in srgb, var(--aster-bg) 80%, #dfe3e9);
   box-shadow:
     inset 0 5px 8px -8px rgb(30 38 55 / 48%),
     inset 0 -5px 8px -8px rgb(30 38 55 / 42%);
@@ -563,9 +563,9 @@
   left: 0;
   box-sizing: border-box;
   height: var(--work-document-page-gap-height);
-  border-top: 1px solid color-mix(in srgb, var(--a3s-line) 80%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--a3s-line) 80%, transparent);
-  background: color-mix(in srgb, var(--a3s-bg) 80%, #dfe3e9);
+  border-top: 1px solid color-mix(in srgb, var(--aster-line) 80%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--aster-line) 80%, transparent);
+  background: color-mix(in srgb, var(--aster-bg) 80%, #dfe3e9);
   box-shadow:
     inset 0 5px 8px -8px rgb(30 38 55 / 48%),
     inset 0 -5px 8px -8px rgb(30 38 55 / 42%);
@@ -1148,7 +1148,7 @@
 }
 
 .work-document-page .tiptap .ProseMirror-selectednode {
-  outline: 2px solid color-mix(in srgb, var(--a3s-blue) 75%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--aster-blue) 75%, transparent);
   outline-offset: 3px;
 }
 
@@ -1237,7 +1237,7 @@
 .work-document-page .tiptap .selectedCell::after {
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--a3s-blue) 10%, transparent);
+  background: color-mix(in srgb, var(--aster-blue) 10%, transparent);
   content: "";
   pointer-events: none;
 }
@@ -1248,7 +1248,7 @@
   right: -2px;
   bottom: -2px;
   width: 4px;
-  background: var(--a3s-blue);
+  background: var(--aster-blue);
   pointer-events: none;
 }
 
@@ -1269,7 +1269,7 @@
 .work-document-statistics {
   display: grid;
   margin: 0;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 7px;
   overflow: hidden;
 }
@@ -1279,21 +1279,21 @@
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 24px;
   padding: 9px 12px;
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
   font-size: 12px;
 }
 
 .work-document-statistics > div + div {
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .work-document-statistics dt {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-document-statistics dd {
   margin: 0;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-variant-numeric: tabular-nums;
   font-weight: 620;
 }

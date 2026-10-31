@@ -7,8 +7,8 @@ use super::{FileMetadata, MAX_STABLE_READ_ATTEMPTS};
 use crate::error::{FlowError, Result};
 use crate::model::WorkflowSpec;
 
-const SOURCE_FINGERPRINT_DOMAIN: &[u8] = b"a3s.flow.native_ts.source.contents.v1";
-const SOURCE_GRAPH_DOMAIN: &[u8] = b"a3s.flow.native_ts.source.graph.v1";
+const SOURCE_FINGERPRINT_DOMAIN: &[u8] = b"aster.flow.native_ts.source.contents.v1";
+const SOURCE_GRAPH_DOMAIN: &[u8] = b"aster.flow.native_ts.source.graph.v1";
 const SOURCE_READ_BUFFER_BYTES: usize = 64 * 1024;
 
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -34,7 +34,7 @@ fn spec(class: RuntimeUnitClass) -> RuntimeUnitSpec {
         class,
         artifact: ArtifactRef {
             uri: format!(
-                "oci://registry.example/a3s/transition@sha256:{}",
+                "oci://registry.example/aster/transition@sha256:{}",
                 "a".repeat(64)
             ),
             digest: digest('a'),

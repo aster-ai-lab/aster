@@ -1,6 +1,6 @@
-//! Charge successful `/v1/search` and `/v1/parse` calls through a3s-billing.
+//! Charge successful `/v1/search` and `/v1/parse` calls through aster-billing.
 //!
-//! The listener reads `A3S_BILLING_URL` and `A3S_BILLING_INTERNAL_TOKEN` once
+//! The listener reads `ASTER_BILLING_URL` and `ASTER_BILLING_INTERNAL_TOKEN` once
 //! at startup. A router that publishes search or parse refuses to start unless
 //! both are set. One set and the other empty also refuses startup.
 
@@ -47,11 +47,11 @@ impl AgentBilling {
     }
 
     pub(crate) fn from_env() -> Result<Option<Self>, String> {
-        let base = std::env::var("A3S_BILLING_URL")
+        let base = std::env::var("ASTER_BILLING_URL")
             .ok()
             .map(|value| value.trim().trim_end_matches('/').to_string())
             .filter(|value| !value.is_empty());
-        let token = std::env::var("A3S_BILLING_INTERNAL_TOKEN")
+        let token = std::env::var("ASTER_BILLING_INTERNAL_TOKEN")
             .ok()
             .filter(|value| !value.is_empty());
         match (base, token) {
@@ -65,7 +65,7 @@ impl AgentBilling {
                     .map_err(|error| error.to_string())?,
             ))),
             _ => Err(
-                "A3S_BILLING_URL and A3S_BILLING_INTERNAL_TOKEN must both be set to meter /v1/search and /v1/parse"
+                "ASTER_BILLING_URL and ASTER_BILLING_INTERNAL_TOKEN must both be set to meter /v1/search and /v1/parse"
                     .into(),
             ),
         }
@@ -382,19 +382,19 @@ pub(crate) async fn settle(
             let org_id = match billable_org(request_headers) {
                 Ok(org_id) => org_id,
                 Err(error) => {
-                    response_headers.remove("x-a3s-usage-quantity");
+                    response_headers.remove("x-aster-usage-quantity");
                     return Err(error);
                 }
             };
             let quantity = if code == "parsed_page" {
                 match usage_quantity(response_headers, true) {
                     Ok(quantity) if quantity > MAX_PARSED_PAGES => {
-                        response_headers.remove("x-a3s-usage-quantity");
+                        response_headers.remove("x-aster-usage-quantity");
                         return Err(format!("parsed page quantity exceeds {MAX_PARSED_PAGES}"));
                     }
                     Ok(quantity) => quantity,
                     Err(error) => {
-                        response_headers.remove("x-a3s-usage-quantity");
+                        response_headers.remove("x-aster-usage-quantity");
                         return Err(error);
                     }
                 }
@@ -414,12 +414,12 @@ pub(crate) async fn settle(
         }
         _ => Ok(()),
     };
-    response_headers.remove("x-a3s-usage-quantity");
+    response_headers.remove("x-aster-usage-quantity");
     outcome
 }
 
 fn billable_org(headers: &http::HeaderMap) -> Result<&str, String> {
-    let org_id = header_text(headers, "x-a3s-org").ok_or_else(|| ORG_REQUIRED.to_string())?;
+    let org_id = header_text(headers, "x-aster-org").ok_or_else(|| ORG_REQUIRED.to_string())?;
     if uuid::Uuid::parse_str(org_id).is_err() {
         return Err(ORG_REQUIRED.to_string());
     }
@@ -438,7 +438,7 @@ pub(crate) fn usage_quantity(
     headers: &http::HeaderMap,
     require_header: bool,
 ) -> Result<i64, String> {
-    match headers.get("x-a3s-usage-quantity") {
+    match headers.get("x-aster-usage-quantity") {
         Some(value) => {
             let text = value
                 .to_str()
@@ -468,7 +468,7 @@ pub(crate) fn require_billing_for_agent_routes(
 ) -> Result<Option<AgentBilling>, String> {
     if needed && billing.is_none() {
         Err(
-            "A3S_BILLING_URL and A3S_BILLING_INTERNAL_TOKEN are required when /v1/search or /v1/parse is routed"
+            "ASTER_BILLING_URL and ASTER_BILLING_INTERNAL_TOKEN are required when /v1/search or /v1/parse is routed"
                 .into(),
         )
     } else {
@@ -512,9 +512,9 @@ mod tests {
     fn parse_requires_a_positive_quantity_header() {
         let mut headers = http::HeaderMap::new();
         assert!(usage_quantity(&headers, true).is_err());
-        headers.insert("x-a3s-usage-quantity", http::HeaderValue::from_static("0"));
+        headers.insert("x-aster-usage-quantity", http::HeaderValue::from_static("0"));
         assert_eq!(usage_quantity(&headers, true).unwrap(), 0);
-        headers.insert("x-a3s-usage-quantity", http::HeaderValue::from_static("4"));
+        headers.insert("x-aster-usage-quantity", http::HeaderValue::from_static("4"));
         assert_eq!(usage_quantity(&headers, true).unwrap(), 4);
         assert_eq!(usage_quantity(&http::HeaderMap::new(), false).unwrap(), 1);
     }
@@ -522,7 +522,7 @@ mod tests {
     #[tokio::test]
     async fn unset_billing_drops_the_quantity_header() {
         let mut headers = http::HeaderMap::new();
-        headers.insert("x-a3s-usage-quantity", http::HeaderValue::from_static("2"));
+        headers.insert("x-aster-usage-quantity", http::HeaderValue::from_static("2"));
         settle(
             None,
             "parse",
@@ -534,7 +534,7 @@ mod tests {
         )
         .await
         .unwrap();
-        assert!(headers.get("x-a3s-usage-quantity").is_none());
+        assert!(headers.get("x-aster-usage-quantity").is_none());
     }
 
     #[tokio::test]
@@ -567,13 +567,13 @@ mod tests {
             Some(ORG_REQUIRED)
         );
         let mut headers = http::HeaderMap::new();
-        headers.insert("x-a3s-org", http::HeaderValue::from_static("not-a-uuid"));
+        headers.insert("x-aster-org", http::HeaderValue::from_static("not-a-uuid"));
         assert_eq!(
             refusal(Some(&billing), "parse", "/v1/parse", &headers),
             Some(ORG_REQUIRED)
         );
         headers.insert(
-            "x-a3s-org",
+            "x-aster-org",
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         assert!(refusal(Some(&billing), "search", "/v1/search", &headers).is_none());
@@ -592,11 +592,11 @@ mod tests {
         let billing = AgentBilling::with_endpoint("http://127.0.0.1:9".into());
         let mut request = http::HeaderMap::new();
         request.insert(
-            "x-a3s-org",
+            "x-aster-org",
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         let mut response = http::HeaderMap::new();
-        response.insert("x-a3s-usage-quantity", http::HeaderValue::from_static("0"));
+        response.insert("x-aster-usage-quantity", http::HeaderValue::from_static("0"));
         settle(
             Some(&billing),
             "parse",
@@ -608,7 +608,7 @@ mod tests {
         )
         .await
         .unwrap();
-        assert!(response.get("x-a3s-usage-quantity").is_none());
+        assert!(response.get("x-aster-usage-quantity").is_none());
     }
 
     #[tokio::test]
@@ -618,7 +618,7 @@ mod tests {
         let billing = AgentBilling::with_endpoint(base);
         let mut request = http::HeaderMap::new();
         request.insert(
-            "x-a3s-org",
+            "x-aster-org",
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         request.insert("x-request-id", http::HeaderValue::from_static("repeat-me"));
@@ -663,11 +663,11 @@ mod tests {
         let billing = AgentBilling::with_endpoint(base);
         let mut request = http::HeaderMap::new();
         request.insert(
-            "x-a3s-org",
+            "x-aster-org",
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         let mut response = http::HeaderMap::new();
-        response.insert("x-a3s-usage-quantity", http::HeaderValue::from_static("9"));
+        response.insert("x-aster-usage-quantity", http::HeaderValue::from_static("9"));
         settle(
             Some(&billing),
             "search",
@@ -679,7 +679,7 @@ mod tests {
         )
         .await
         .unwrap();
-        assert!(response.get("x-a3s-usage-quantity").is_none());
+        assert!(response.get("x-aster-usage-quantity").is_none());
         let bodies = seen.lock().await;
         assert!(
             bodies.iter().any(|body| body.contains("\"requests\":1")),
@@ -693,12 +693,12 @@ mod tests {
         let billing = AgentBilling::with_endpoint("http://127.0.0.1:9".into());
         let mut request = http::HeaderMap::new();
         request.insert(
-            "x-a3s-org",
+            "x-aster-org",
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         let mut response = http::HeaderMap::new();
         response.insert(
-            "x-a3s-usage-quantity",
+            "x-aster-usage-quantity",
             http::HeaderValue::from_static("501"),
         );
         let error = settle(
@@ -713,7 +713,7 @@ mod tests {
         .await
         .unwrap_err();
         assert!(error.contains("500"), "{error}");
-        assert!(response.get("x-a3s-usage-quantity").is_none());
+        assert!(response.get("x-aster-usage-quantity").is_none());
     }
 
     #[tokio::test]
@@ -723,12 +723,12 @@ mod tests {
         let billing = AgentBilling::with_endpoint(base);
         let mut request = http::HeaderMap::new();
         request.insert(
-            "x-a3s-org",
+            "x-aster-org",
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         let mut response = http::HeaderMap::new();
         response.insert(
-            "x-a3s-usage-quantity",
+            "x-aster-usage-quantity",
             http::HeaderValue::from_static("500"),
         );
         settle(
@@ -756,7 +756,7 @@ mod tests {
         let billing = AgentBilling::with_endpoint(base);
         let mut request = http::HeaderMap::new();
         request.insert(
-            "x-a3s-org",
+            "x-aster-org",
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         for _ in 0..2 {
@@ -900,7 +900,7 @@ mod tests {
         let billing = AgentBilling::with_endpoint(format!("http://{address}"));
         let mut request = http::HeaderMap::new();
         request.insert(
-            "x-a3s-org",
+            "x-aster-org",
             http::HeaderValue::from_static("11111111-1111-1111-1111-111111111111"),
         );
         let first = settle(
@@ -1001,7 +1001,7 @@ mod tests {
         assert!(routes_need_agent_billing(["Path(/v1/search)"]));
         assert!(require_billing_for_agent_routes(false, None).is_ok());
         match require_billing_for_agent_routes(true, None) {
-            Err(message) => assert!(message.contains("A3S_BILLING_URL"), "{message}"),
+            Err(message) => assert!(message.contains("ASTER_BILLING_URL"), "{message}"),
             Ok(_) => panic!("search and parse routes must refuse to start without billing"),
         }
         let billing = AgentBilling::with_endpoint("http://127.0.0.1:9".into());

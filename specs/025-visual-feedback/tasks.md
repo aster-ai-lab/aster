@@ -24,7 +24,7 @@
 
 - [ ] Focused owning Rust and renderer suites pass
 - [ ] `cargo fmt --all -- --check` and applicable workspace checks
-- [ ] No new remote A3S dependency, native select, second workspace/lockfile or non-ACL settings
+- [ ] No new remote Aster dependency, native select, second workspace/lockfile or non-ACL settings
 - [ ] Native CUA actually passed; no static/unit substitute
 
 ## User follow-up: native window chrome and library sources

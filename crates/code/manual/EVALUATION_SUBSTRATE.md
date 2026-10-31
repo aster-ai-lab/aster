@@ -110,7 +110,7 @@ does not prescribe a reviewer prompt, rubric, or decision token.
 
 Code's `NativeBashSandbox::exec` and legacy `exec_command` refuse all macOS
 commands before native execution with `native_process_lifetime_unqualified`.
-The resolved dependency is `a3s-sandbox` 0.2.1 at git revision
+The resolved dependency is `aster-sandbox` 0.2.1 at git revision
 `2b8687892bbb4a5e3d6e74fca42949a3f186d236`; the unused local 0.2.2 patch is
 not the running backend. Native background admission is also refused. There
 is no command exception, configurable opt-out or automatic ProcessHost/host
@@ -200,7 +200,7 @@ above. Its JSON shape is intentionally small and strict:
 
 ```json
 {
-  "schema": "a3s.code.evaluation-wire.v1",
+  "schema": "aster.code.evaluation-wire.v1",
   "version": 1,
   "kind": "evidence_snapshot",
   "payload": { "...": "EvidenceSnapshotV1 fields" }
@@ -220,7 +220,7 @@ catalog and negative fixtures live in `fixtures/protocol/evaluation`.
 Validate the actual Core boundary with:
 
 ```sh
-cargo test --locked -p a3s-code-core --features advanced-harness --lib evaluation::protocol
+cargo test --locked -p aster-core --features advanced-harness --lib evaluation::protocol
 ```
 
 SDK payloads remain opaque JSON/bytes by design. This preserves one Core schema
@@ -230,7 +230,7 @@ turning Code into a reviewer or Cloud business-transport implementation.
 ## Minimal composition
 
 ```rust
-use a3s_code_core::evaluation::{
+use aster_core::evaluation::{
     AuxiliaryCapabilityProfileV1, AuxiliaryRunSpecV1, EvidenceReadRequestV1,
     EvaluationRecordV1, EvaluationResultV1, EvaluationResultSink,
     ExecutionFrameV1, InMemoryAuxiliaryRunService, InMemoryEvaluationResultStore,
@@ -274,11 +274,11 @@ reviewer is implied by the common API.
 From the Code repository, run the focused substrate checks:
 
 ```text
-cargo test -p a3s-code-core evaluation:: --lib -- --nocapture
-cargo test -p a3s-code-core --test evaluation_substrate -- --nocapture
-cargo test -p a3s-code-core --test evaluation_qualification -- --nocapture
-cargo run --locked --release -p a3s-code-core --example evaluation_substrate_benchmark
-cargo clippy -p a3s-code-core --all-targets -- -D warnings
+cargo test -p aster-core evaluation:: --lib -- --nocapture
+cargo test -p aster-core --test evaluation_substrate -- --nocapture
+cargo test -p aster-core --test evaluation_qualification -- --nocapture
+cargo run --locked --release -p aster-core --example evaluation_substrate_benchmark
+cargo clippy -p aster-core --all-targets -- -D warnings
 node scripts/generate_evaluation_protocol_artifacts.mjs --check
 node scripts/check_evaluation_protocol_artifacts.mjs
 ```
@@ -300,9 +300,9 @@ matrix, the automated `RUSTDOCFLAGS=-D warnings` rustdoc gate, protocol/SDK
 schema fixtures, restart and retention tests, adversarial redaction tests, a
 performance profile, and a durable host adapter. The change-scoped
 qualification suite covers the file result store and dispatch ledger. Hosted
-run [`33844533910`](https://github.com/A3S-Lab/Code/actions/runs/33844533910)
+run [`33844533910`](https://github.com/aster-ai-lab/Code/actions/runs/33844533910)
 produced and validated all nine machine-readable performance reports; the
-hosted [Code CI run `33847689080`](https://github.com/A3S-Lab/Code/actions/runs/33847689080)
+hosted [Code CI run `33847689080`](https://github.com/aster-ai-lab/Code/actions/runs/33847689080)
 then passed the strict release gate, including rustdoc, Clippy, feature-gated
 tests, convergence, packaged SDK, hermetic, and cross-platform checks. These
 are tracked as `EVAL-PROTO1` and `EVAL-GA1` in

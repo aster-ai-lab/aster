@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::Result;
+use aster_oci_sdk::Result;
 
 use super::{BindSourceResolver, DetachedMountSources, MountPlan};
 

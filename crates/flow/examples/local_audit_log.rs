@@ -1,5 +1,5 @@
-use a3s_flow::{
-    A3sFlowEventBridge, FlowEngine, FlowRuntime, LocalFileA3sFlowEventSink, RuntimeCommand,
+use aster_flow::{
+    AsterFlowEventBridge, FlowEngine, FlowRuntime, LocalFileAsterFlowEventSink, RuntimeCommand,
     StepInvocation, WorkflowInvocation, WorkflowSpec,
 };
 use async_trait::async_trait;
@@ -13,7 +13,7 @@ impl FlowRuntime for AuditRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(output) = ctx.step_output("build-report") {
             return Ok(ctx.complete(output.clone()));
@@ -26,7 +26,7 @@ impl FlowRuntime for AuditRuntime {
         ))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Ok(json!({
             "title": format!("Report: {}", invocation.input["topic"].as_str().unwrap_or("unknown")),
             "ready": true,
@@ -35,18 +35,18 @@ impl FlowRuntime for AuditRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let dir = tempfile::tempdir()?;
     let audit_path = dir.path().join("audit/flow-events.jsonl");
-    let sink = Arc::new(LocalFileA3sFlowEventSink::new(&audit_path));
-    let observer = Arc::new(A3sFlowEventBridge::new(sink.clone()));
+    let sink = Arc::new(LocalFileAsterFlowEventSink::new(&audit_path));
+    let observer = Arc::new(AsterFlowEventBridge::new(sink.clone()));
     let engine = FlowEngine::builder(Arc::new(AuditRuntime))
         .with_observer(observer)
         .build();
     let spec = WorkflowSpec::rust_embedded("examples.local-audit", "0.1.0", "examples", "main");
 
     let run_id = engine
-        .start_with_id("local-audit-demo", spec, json!({ "topic": "A3S Flow" }))
+        .start_with_id("local-audit-demo", spec, json!({ "topic": "Aster Flow" }))
         .await?;
     let snapshot = engine.snapshot(&run_id).await?;
     let events = sink.events().await?;

@@ -1,4 +1,4 @@
-use a3s_use_core::{ResolvedWorkspaceGrantChangeSet, UseResult, WorkspaceGrantEvidence};
+use aster_use_core::{ResolvedWorkspaceGrantChangeSet, UseResult, WorkspaceGrantEvidence};
 
 use super::workspace_grant::{
     StoredWorkspaceGrant, WorkspaceGrantReceipt, WorkspaceGrantRevocation, WorkspaceGrantStore,
@@ -554,42 +554,42 @@ fn verify_operation_ownership(
     Ok(())
 }
 
-fn candidate_ceiling_mismatch() -> a3s_use_core::UseError {
+fn candidate_ceiling_mismatch() -> aster_use_core::UseError {
     operation_state_error(
         "use.plugin.grant_operation.ceiling_mismatch",
         "Candidate ceilings do not exactly match the resolved workspace grant generations.",
     )
 }
 
-fn retirement_ownership_changed() -> a3s_use_core::UseError {
+fn retirement_ownership_changed() -> aster_use_core::UseError {
     operation_state_error(
         "use.plugin.grant_operation.ownership_changed",
         "A prior workspace grant changed before the durable operation intent was recorded.",
     )
 }
 
-fn operation_conflict() -> a3s_use_core::UseError {
+fn operation_conflict() -> aster_use_core::UseError {
     operation_state_error(
         "use.plugin.grant_operation.conflict",
         "The operation ID already owns different immutable workspace grant intent.",
     )
 }
 
-fn operation_not_found() -> a3s_use_core::UseError {
+fn operation_not_found() -> aster_use_core::UseError {
     operation_state_error(
         "use.plugin.grant_operation.not_found",
         "The workspace grant operation intent does not exist.",
     )
 }
 
-fn operation_corrupt() -> a3s_use_core::UseError {
+fn operation_corrupt() -> aster_use_core::UseError {
     operation_state_error(
         "use.plugin.grant_operation.invalid",
         "The workspace grant operation journal is internally inconsistent.",
     )
 }
 
-fn operation_rolled_back() -> a3s_use_core::UseError {
+fn operation_rolled_back() -> aster_use_core::UseError {
     operation_state_error(
         "use.plugin.grant_operation.rolled_back",
         "The workspace grant operation was rolled back and requires a fresh reviewed plan.",

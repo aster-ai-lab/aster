@@ -1,0 +1,41 @@
+[package]
+license = "Apache-2.0"
+name = "aster-otel"
+version = "0.1.0"
+description = "OpenTelemetry foundation for Aster Code: W3C trace-context propagation, the OTLP HTTP client, and the tracing->OTLP span layer/provider"
+authors = ["Aster"]
+edition = "2024"
+publish = false
+
+[features]
+default-bazel = []
+
+[dependencies]
+async-trait = {workspace = true}
+bytes = {workspace = true}
+http = {workspace = true}
+opentelemetry = {workspace = true}
+opentelemetry-http = {version = "0.32", features = ["reqwest-blocking"]}
+opentelemetry-otlp = {version = "0.32", features = ["grpc-tonic", "reqwest-blocking-client", "tls-roots"]}
+opentelemetry_sdk = {version = "0.32.1", features = ["spec_unstable_metrics_views"]}
+parking_lot = {workspace = true}
+reqwest = {workspace = true}
+serde_json = {workspace = true}
+tokio = {version = "1", features = ["full", "rt"]}
+tracing = {workspace = true}
+tracing-opentelemetry = {version = "0.33"}
+tracing-subscriber = {workspace = true}
+url = {workspace = true}
+aster-secrets = {path = "../aster-secrets"}
+aster-env = {optional = true, path = "../aster-env"}
+aster-extra-ca = {path = "../aster-extra-ca"}
+aster-auth = {path = "../aster-auth"}
+
+[dev-dependencies]
+opentelemetry_sdk = {workspace = true}
+rcgen = {workspace = true}
+rustls = {workspace = true}
+tempfile = {workspace = true}
+
+[lints]
+workspace = true

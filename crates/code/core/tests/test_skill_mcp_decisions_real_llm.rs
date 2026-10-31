@@ -22,17 +22,17 @@
 //! returning instructions.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +1.97.1 test -p a3s-code-core --test test_skill_mcp_decisions_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +1.97.1 test -p aster-core --test test_skill_mcp_decisions_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
 mod support;
 
-use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::skills::{Skill, SkillKind, SkillRegistry};
-use a3s_code_core::{Agent, AgentResult, SessionOptions, SystemPromptSlots};
+use aster_core::mcp::{McpServerConfig, McpTransportConfig};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::skills::{Skill, SkillKind, SkillRegistry};
+use aster_core::{Agent, AgentResult, SessionOptions, SystemPromptSlots};
 use std::collections::HashMap;
 use std::path::Path;
 use std::sync::Arc;
@@ -68,7 +68,7 @@ fn governed_options(session_id: &str) -> SessionOptions {
         .with_session_id(session_id)
         .with_permission_policy(policy)
         .with_default_security()
-        .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+        .with_planning_mode(aster_core::PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
         .with_manual_delegation_enabled(false)
         .with_read_only_session(true)
@@ -189,7 +189,7 @@ fn tool_uses(result: &AgentResult) -> Vec<(String, serde_json::Value)> {
         .iter()
         .flat_map(|message| message.content.iter())
         .filter_map(|block| match block {
-            a3s_code_core::llm::ContentBlock::ToolUse { name, input, .. } => {
+            aster_core::llm::ContentBlock::ToolUse { name, input, .. } => {
                 Some((name.clone(), input.clone()))
             }
             _ => None,
@@ -205,7 +205,7 @@ fn tool_result_texts(result: &AgentResult) -> Vec<String> {
         .iter()
         .flat_map(|message| message.content.iter())
         .filter_map(|block| match block {
-            a3s_code_core::llm::ContentBlock::ToolResult { content, .. } => Some(content.as_text()),
+            aster_core::llm::ContentBlock::ToolResult { content, .. } => Some(content.as_text()),
             _ => None,
         })
         .collect()
@@ -292,7 +292,7 @@ fn seed_release_workspace(root: &Path) {
 // ---------------------------------------------------------------------------
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn mcp_tool_is_selected_and_its_real_result_reaches_the_answer() {
     let workspace = tempfile::tempdir().expect("workspace");
     let secret = format!("{}short", uuid::Uuid::new_v4().simple());
@@ -355,7 +355,7 @@ async fn mcp_tool_is_selected_and_its_real_result_reaches_the_answer() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn without_the_server_the_answer_does_not_fabricate_the_secret() {
     let workspace = tempfile::tempdir().expect("workspace");
     let agent = pinned_agent().await;
@@ -389,7 +389,7 @@ async fn without_the_server_the_answer_does_not_fabricate_the_secret() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn a_matching_skill_is_loaded_and_its_ritual_reaches_the_answer() {
     let workspace = tempfile::tempdir().expect("workspace");
     seed_release_workspace(workspace.path());
@@ -431,13 +431,13 @@ async fn a_matching_skill_is_loaded_and_its_ritual_reaches_the_answer() {
     for (i, message) in answer.messages.iter().enumerate() {
         for block in message.content.iter() {
             match block {
-                a3s_code_core::llm::ContentBlock::Text { text } => {
+                aster_core::llm::ContentBlock::Text { text } => {
                     eprintln!("LH5B msg[{i}] text: {:?}", &text[..text.len().min(160)])
                 }
-                a3s_code_core::llm::ContentBlock::ToolUse { name, .. } => {
+                aster_core::llm::ContentBlock::ToolUse { name, .. } => {
                     eprintln!("LH5B msg[{i}] use {name}")
                 }
-                a3s_code_core::llm::ContentBlock::ToolResult { content, .. } => {
+                aster_core::llm::ContentBlock::ToolResult { content, .. } => {
                     let t = content.as_text();
                     eprintln!("LH5B msg[{i}] result: {:?}", &t[..t.len().min(120)])
                 }
@@ -456,7 +456,7 @@ async fn a_matching_skill_is_loaded_and_its_ritual_reaches_the_answer() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn an_unrelated_registry_does_not_invite_a_skill_invocation() {
     let workspace = tempfile::tempdir().expect("workspace");
     seed_release_workspace(workspace.path());
@@ -508,7 +508,7 @@ async fn an_unrelated_registry_does_not_invite_a_skill_invocation() {
 /// model must pick the RIGHT server and tool among competing candidates —
 /// not grab the nearest mcp__ tool.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn among_competing_servers_the_model_picks_the_right_tool() {
     let workspace = tempfile::tempdir().expect("workspace");
     let secret = format!("{}short", uuid::Uuid::new_v4().simple());
@@ -569,7 +569,7 @@ async fn among_competing_servers_the_model_picks_the_right_tool() {
 /// model must surface the failure honestly: the call happens, and no
 /// fingerprint is fabricated.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn a_failing_tool_result_is_reported_not_fabricated() {
     let workspace = tempfile::tempdir().expect("workspace");
     let secret = format!("{}short", uuid::Uuid::new_v4().simple());
@@ -617,7 +617,7 @@ async fn a_failing_tool_result_is_reported_not_fabricated() {
 async fn probe_naming_and_skill_tools_admit_offline() {
     let workspace = tempfile::tempdir().expect("workspace");
     let agent = Agent::from_config(
-        a3s_code_core::CodeConfig::from_acl(
+        aster_core::CodeConfig::from_acl(
             r#"
                 default_model = "openai/gpt-4o"
 
@@ -670,7 +670,7 @@ async fn probe_naming_and_skill_tools_admit_offline() {
     );
 
     // The policy namespace: an mcp__probe rule prefix-matches the tool.
-    let rule = a3s_code_core::permissions::PermissionRule::new("mcp__probe");
+    let rule = aster_core::permissions::PermissionRule::new("mcp__probe");
     assert!(rule.matches(MCP_TOOL, &serde_json::json!({})));
 
     // The Skill tool returns the instruction content for a known name.

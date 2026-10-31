@@ -11,7 +11,7 @@ fn utility_vm_layout_keeps_native_recovery_identity_out_of_guest_storage() {
     let (runtime_root, owner_identity) =
         executor_runtime_layout(parent, RecoveryMode::Transient).expect("transient guest layout");
 
-    let expected_name = format!("a3s-oci-agent-{}", std::process::id());
+    let expected_name = format!("aster-oci-agent-{}", std::process::id());
     assert_eq!(
         runtime_root.file_name().and_then(|name| name.to_str()),
         Some(expected_name.as_str())
@@ -21,7 +21,7 @@ fn utility_vm_layout_keeps_native_recovery_identity_out_of_guest_storage() {
 
 #[test]
 fn utility_vm_device_sources_stay_on_guest_local_storage() {
-    let runtime_parent = Path::new("/run/a3s-oci-runtime/run");
+    let runtime_parent = Path::new("/run/aster-oci-runtime/run");
     let (runtime_root, _) = executor_runtime_layout(runtime_parent, RecoveryMode::Transient)
         .expect("transient guest layout");
 
@@ -62,5 +62,5 @@ fn native_layout_retains_pid_reuse_safe_owner_identity() {
     assert!(runtime_root
         .file_name()
         .and_then(|name| name.to_str())
-        .is_some_and(|name| name.starts_with(&format!("a3s-oci-agent-{}-", std::process::id()))));
+        .is_some_and(|name| name.starts_with(&format!("aster-oci-agent-{}-", std::process::id()))));
 }

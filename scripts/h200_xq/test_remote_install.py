@@ -30,7 +30,7 @@ class PreparationTests(unittest.TestCase):
         for name in remote_install.STAGING_SHA256:
             expected[name] = remote_install.digest(root/name)
         (root/'source/SOURCES_READY').write_text(remote_install.XOLOTL_REVISION+'\n'+remote_install.LLAMA_REVISION+'\n')
-        with gzip.open(root/'a3s-power-glibc235.gz', 'wb') as output:
+        with gzip.open(root/'aster-power-glibc235.gz', 'wb') as output:
             output.write(b'prepared Power')
         operator = root/'service.py'
         operator.write_bytes(b'operator source')
@@ -52,7 +52,7 @@ class PreparationTests(unittest.TestCase):
     def test_corrupt_power_binary_is_refused(self):
         with tempfile.TemporaryDirectory() as directory, ExitStack() as stack:
             root = Path(directory); self.fixture(root, stack)
-            with gzip.open(root/'a3s-power-glibc235.gz', 'wb') as output:
+            with gzip.open(root/'aster-power-glibc235.gz', 'wb') as output:
                 output.write(b'wrong binary')
             with self.assertRaisesRegex(RuntimeError, 'Power binary checksum'):
                 remote_install.verify_staging(root)
@@ -87,7 +87,7 @@ class PreparationTests(unittest.TestCase):
             root = Path(directory); self.fixture(root, stack)
             bundle = root/'prepared-release'
             bundle.mkdir()
-            for name in ('a3s-power-glibc235.gz', 'operator-files.json', 'service.py'):
+            for name in ('aster-power-glibc235.gz', 'operator-files.json', 'service.py'):
                 (bundle/name).write_bytes((root/name).read_bytes())
             (root/'service.py').write_bytes(b'old active operator version')
             record = remote_install.verify_staging(root, bundle)

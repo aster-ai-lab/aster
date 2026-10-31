@@ -10,11 +10,11 @@ export const meta = {
 ## 提交类型化问题
 
 ```rust
-use a3s_apofasi::{Client, Criteria, DecisionKind, Question, State, SystemOneRequest};
+use aster_apofasi::{Client, Criteria, DecisionKind, Question, State, SystemOneRequest};
 use indexmap::IndexMap;
 use serde_json::json;
 
-fn main() -> a3s_apofasi::Result<()> {
+fn main() -> aster_apofasi::Result<()> {
     let mut options = IndexMap::new();
     options.insert("billing".into(), Some(json!("refunds")));
     options.insert("other".into(), Some(json!("else")));
@@ -54,7 +54,7 @@ fn main() -> a3s_apofasi::Result<()> {
 ## 宿主门禁
 
 ```rust
-use a3s_apofasi::{gate_response, GatePolicy};
+use aster_apofasi::{gate_response, GatePolicy};
 
 let gates = gate_response(&response, &GatePolicy::default());
 ```

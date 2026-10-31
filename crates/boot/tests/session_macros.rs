@@ -3,12 +3,12 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_boot::{
+use aster_boot::{
     controller, injectable, BootApplication, BootRequest, ControllerDefinition, HttpMethod, Module,
     Result, Session, SessionManager, SessionModule, SessionOptions,
 };
 #[allow(unused_imports)]
-use a3s_boot::{get, session};
+use aster_boot::{get, session};
 
 #[injectable]
 #[derive(Debug)]
@@ -51,7 +51,7 @@ impl Module for SessionFeatureModule {
         "session-feature"
     }
 
-    fn controllers(&self, _module_ref: &a3s_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
+    fn controllers(&self, _module_ref: &aster_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
         Ok(vec![Arc::new(SessionController).controller()?])
     }
 }

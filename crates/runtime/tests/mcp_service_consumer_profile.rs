@@ -1,4 +1,4 @@
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     NetworkMode, RuntimeEvidence, RuntimeHealthObservation, RuntimeHealthState, RuntimeObservation,
     RuntimeServiceEndpoint, RuntimeUnitClass, RuntimeUnitSpec, RuntimeUnitState, TransportProtocol,
 };
@@ -27,7 +27,7 @@ fn running_observation(spec: &RuntimeUnitSpec) -> RuntimeObservation {
         class: RuntimeUnitClass::Service,
         state: RuntimeUnitState::Running,
         provider_resource_id: Some("box/mcp-weather/replica-1/generation-3".into()),
-        provider_build: Some("a3s-box/mcp0.1-fixture".into()),
+        provider_build: Some("aster-box/mcp0.1-fixture".into()),
         observed_at_ms: 20_000,
         started_at_ms: Some(10_000),
         finished_at_ms: None,
@@ -40,7 +40,7 @@ fn running_observation(spec: &RuntimeUnitSpec) -> RuntimeObservation {
         outputs: Vec::new(),
         usage: None,
         evidence: Some(RuntimeEvidence {
-            provider_build: "a3s-box/mcp0.1-fixture".into(),
+            provider_build: "aster-box/mcp0.1-fixture".into(),
             spec_digest: spec.digest().expect("fixture spec digest"),
             semantics_profile_digest: spec.semantics_profile_digest.clone(),
             identity_attachment_digest: spec.identity_attachment_digest.clone(),

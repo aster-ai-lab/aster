@@ -2,7 +2,7 @@
 
 use super::*;
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) async fn ensure_core_agent(&self) -> acp::Result<()> {
         let mut guard = self.core_agent.lock().await;
         if guard.is_some() {
@@ -46,7 +46,7 @@ impl A3sCodeAgent {
         options = options
             .with_max_tool_rounds(0)
             .with_auto_compact(true)
-            .with_auto_compact_threshold(a3s_code_core::store::DEFAULT_AUTO_COMPACT_THRESHOLD);
+            .with_auto_compact_threshold(aster_core::store::DEFAULT_AUTO_COMPACT_THRESHOLD);
         let mut guideline = String::new();
         if let Some(limits) = effort {
             options = options
@@ -56,7 +56,7 @@ impl A3sCodeAgent {
                 .with_max_continuation_turns(limits.max_continuation_turns);
             if limits.token == "ultracode" {
                 options = options
-                    .with_planning_mode(a3s_code_core::PlanningMode::Auto)
+                    .with_planning_mode(aster_core::PlanningMode::Auto)
                     .with_auto_delegation_enabled(true)
                     .with_auto_parallel_delegation(true)
                     .with_manual_delegation_enabled(true);
@@ -65,7 +65,7 @@ impl A3sCodeAgent {
                 "The thinking budget is a maximum, not a quota. thinking_budget={}. Stop when the user's outcome is done.",
                 limits.thinking_budget
             );
-            if !a3s_code_core::llm::model_sends_native_effort(model_id) {
+            if !aster_core::llm::model_sends_native_effort(model_id) {
                 if let Some(extra) = effort_guideline(limits.token) {
                     guideline.push('\n');
                     guideline.push_str(extra);
@@ -77,7 +77,7 @@ impl A3sCodeAgent {
         }
         guideline.push_str(SESSION_OUTCOME_BOUNDARY);
         options = options.with_prompt_slots(
-            a3s_code_core::SystemPromptSlots::default()
+            aster_core::SystemPromptSlots::default()
                 .with_role("You are Aster, an expert AI coding agent.")
                 .with_guidelines(guideline),
         );
@@ -93,7 +93,7 @@ impl A3sCodeAgent {
     pub(super) fn interactive_session_store_dir(configured: Option<&std::path::Path>) -> PathBuf {
         interactive_session_store_dir_from(
             configured,
-            std::env::var_os("A3S_HOME").as_deref(),
+            std::env::var_os("ASTER_HOME").as_deref(),
             std::env::var_os("HOME").as_deref(),
         )
     }
@@ -102,7 +102,7 @@ impl A3sCodeAgent {
     pub(super) fn host_session_options(
         session_id: &str,
         setup: &SessionSetup<'_>,
-        config: &a3s_code_core::CodeConfig,
+        config: &aster_core::CodeConfig,
         session_store_dir: &std::path::Path,
     ) -> acp::Result<SessionOptions> {
         Self::host_session_options_with_embedding(
@@ -117,9 +117,9 @@ impl A3sCodeAgent {
     fn host_session_options_with_embedding(
         session_id: &str,
         setup: &SessionSetup<'_>,
-        config: &a3s_code_core::CodeConfig,
+        config: &aster_core::CodeConfig,
         session_store_dir: &std::path::Path,
-        embedding: Option<Arc<dyn a3s_code_core::EmbeddingProvider>>,
+        embedding: Option<Arc<dyn aster_core::EmbeddingProvider>>,
     ) -> acp::Result<SessionOptions> {
         let options = Self::core_session_options(session_id, setup.model_id, setup.effort);
         let mut slots = crate::host_context::merge_studio_host(
@@ -131,13 +131,13 @@ impl A3sCodeAgent {
                 if !setup.host.source_review =>
             {
                 options.with_completion_attestor(std::sync::Arc::new(
-                    a3s_code_core::completion_attestor::DiskContentAttestor::new(&setup.workspace),
+                    aster_core::completion_attestor::DiskContentAttestor::new(&setup.workspace),
                 ))
             }
             _ => options,
         };
-        let home = a3s_code_core::hooks::command_hook_home();
-        let trust = match a3s_code_core::hooks::command_hook_trust_path(&setup.workspace) {
+        let home = aster_core::hooks::command_hook_home();
+        let trust = match aster_core::hooks::command_hook_trust_path(&setup.workspace) {
             Ok(path) => Some(path),
             Err(error) => {
                 tracing::error!(%error, "hook trust path is unavailable");
@@ -189,7 +189,7 @@ impl A3sCodeAgent {
                 )
                 .map(|options| match embedding {
                     Some(provider) => options.with_workspace_retrieval(
-                        a3s_code_core::WorkspaceRetrievalOptions::new(provider),
+                        aster_core::WorkspaceRetrievalOptions::new(provider),
                     ),
                     None => options,
                 })
@@ -231,7 +231,7 @@ impl A3sCodeAgent {
             let mut options = options;
             options.hook_executor = None;
             Ok(options.with_isolated_context().with_permission_policy(
-                a3s_code_core::permissions::PermissionPolicy::new().deny("*"),
+                aster_core::permissions::PermissionPolicy::new().deny("*"),
             ))
         } else if let Some(scope) = &setup.host.knowledge_compile {
             let mut options = options;
@@ -241,7 +241,7 @@ impl A3sCodeAgent {
             Ok(options
                 .with_isolated_context()
                 .with_completion_attestor(Arc::new(
-                    a3s_code_core::completion_attestor::DiskContentAttestor::new(&setup.workspace),
+                    aster_core::completion_attestor::DiskContentAttestor::new(&setup.workspace),
                 ))
                 .with_permission_policy(crate::knowledge_compile::policy(&[]))
                 .with_permission_checker(Arc::new(guard)))
@@ -388,6 +388,20 @@ impl A3sCodeAgent {
                             )?,
                         ))
                         .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+                }
+                if live.host.user_browser_pane {
+                    if let Some(bridge) = self.document_bridge() {
+                        live.session
+                            .register_dynamic_tool(Arc::new(
+                                crate::workspace_browser::OpenWorkspaceBrowserTool::new(
+                                    bridge,
+                                    live.session.session_id(),
+                                ),
+                            ))
+                            .map_err(|error| {
+                                acp::Error::internal_error().data(error.to_string())
+                            })?;
+                    }
                 }
                 live.session
                     .register_dynamic_tool(Arc::new(crate::output_check::OutputCheckTool))
@@ -582,7 +596,7 @@ impl A3sCodeAgent {
             }
             cached.clone().unwrap_or_default()
         };
-        let live: Vec<(String, Vec<a3s_code_core::mcp::McpServerConfig>)> = {
+        let live: Vec<(String, Vec<aster_core::mcp::McpServerConfig>)> = {
             let sessions = self.sessions.lock().await;
             sessions
                 .iter()
@@ -608,9 +622,9 @@ fn start_workspace_indexing(live: &LiveSession) {
             return;
         };
         match session.prepare_workspace_index().await {
-            Ok(true) | Err(a3s_code_core::CodeError::SessionClosed { .. }) => {}
+            Ok(true) | Err(aster_core::CodeError::SessionClosed { .. }) => {}
             Ok(false) => tracing::warn!(
-                "workspace a3s-vec index unavailable; verified retrieval fallback remains active"
+                "workspace aster-vec index unavailable; verified retrieval fallback remains active"
             ),
             Err(error) => tracing::warn!(%error, "workspace index preparation failed"),
         }
@@ -631,12 +645,12 @@ fn start_workspace_indexing(live: &LiveSession) {
 /// silently re-pointing it would redirect another live session's tool
 /// source.
 pub(super) fn union_mcp_desired(
-    baseline: Vec<a3s_code_core::mcp::McpServerConfig>,
-    live: &[(String, Vec<a3s_code_core::mcp::McpServerConfig>)],
+    baseline: Vec<aster_core::mcp::McpServerConfig>,
+    live: &[(String, Vec<aster_core::mcp::McpServerConfig>)],
     skip: Option<&str>,
     add: &[acp::McpServer],
-) -> Result<Vec<a3s_code_core::mcp::McpServerConfig>, String> {
-    let mut desired: Vec<(a3s_code_core::mcp::McpServerConfig, &str)> = baseline
+) -> Result<Vec<aster_core::mcp::McpServerConfig>, String> {
+    let mut desired: Vec<(aster_core::mcp::McpServerConfig, &str)> = baseline
         .into_iter()
         .map(|server| (server, "the configuration baseline"))
         .collect();
@@ -660,8 +674,8 @@ pub(super) fn union_mcp_desired(
 /// itself (later wins), a same-definition collision across origins
 /// dedupes, and a different-definition collision across origins refuses.
 pub(super) fn merge_with_origin<'a>(
-    desired: &mut Vec<(a3s_code_core::mcp::McpServerConfig, &'a str)>,
-    server: a3s_code_core::mcp::McpServerConfig,
+    desired: &mut Vec<(aster_core::mcp::McpServerConfig, &'a str)>,
+    server: aster_core::mcp::McpServerConfig,
     origin: &'a str,
 ) -> Result<(), String> {
     match desired
@@ -694,8 +708,8 @@ pub(super) fn merge_with_origin<'a>(
 /// their serialization (serde_json maps are ordered — deterministic for
 /// this plain-data type).
 pub(super) fn same_server_definition(
-    left: &a3s_code_core::mcp::McpServerConfig,
-    right: &a3s_code_core::mcp::McpServerConfig,
+    left: &aster_core::mcp::McpServerConfig,
+    right: &aster_core::mcp::McpServerConfig,
 ) -> bool {
     match (serde_json::to_value(left), serde_json::to_value(right)) {
         (Ok(left), Ok(right)) => left == right,
@@ -707,21 +721,21 @@ pub(super) fn same_server_definition(
 
 pub(super) fn session_mcp_configs(
     servers: &[acp::McpServer],
-) -> Vec<a3s_code_core::mcp::McpServerConfig> {
+) -> Vec<aster_core::mcp::McpServerConfig> {
     servers.iter().filter_map(acp_mcp_to_config).collect()
 }
 
 pub(super) fn acp_mcp_to_config(
     server: &acp::McpServer,
-) -> Option<a3s_code_core::mcp::McpServerConfig> {
-    use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
+) -> Option<aster_core::mcp::McpServerConfig> {
+    use aster_core::mcp::{McpServerConfig, McpTransportConfig};
 
     let hosted = |name: &str,
                   url: &str,
                   headers: &[acp::HttpHeader],
                   meta: Option<&acp::Meta>,
                   sse: bool|
-     -> Option<a3s_code_core::mcp::McpServerConfig> {
+     -> Option<aster_core::mcp::McpServerConfig> {
         if name.is_empty() || url.is_empty() {
             return None;
         }
@@ -805,7 +819,7 @@ mod session_mcp_timeout_tests;
 /// The host's registered provider (BYO model engine) serves the trusted
 /// local_cpu opt-in; the product itself ships no engine.
 async fn local_cpu_embedding() -> (
-    Option<Arc<dyn a3s_code_core::EmbeddingProvider>>,
+    Option<Arc<dyn aster_core::EmbeddingProvider>>,
     Option<String>,
 ) {
     match super::local_embedding::local_embedding_provider(

@@ -55,8 +55,8 @@ export const PRODUCTION_NODE_UX_PROFILE_IDS = [
   'content',
   'divider',
   'spacer',
-  'custom:a3s.file-upload',
-  'custom:a3s.signature',
+  'custom:aster.file-upload',
+  'custom:aster.signature',
 ] as const;
 
 export type ProductionNodeUxProfileId = (typeof PRODUCTION_NODE_UX_PROFILE_IDS)[number];
@@ -339,7 +339,7 @@ export const PRODUCTION_NODE_UX_PROFILES: Readonly<
     ['间距高度'],
     ['内容宽度', '响应式行为'],
   ),
-  'custom:a3s.file-upload': profile(
+  'custom:aster.file-upload': profile(
     '文件上传',
     '宿主能力',
     '通过宿主文件服务接收并保存文件。',
@@ -347,7 +347,7 @@ export const PRODUCTION_NODE_UX_PROFILES: Readonly<
     ['文件数量', '受控引用', '宿主边界'],
     'host',
   ),
-  'custom:a3s.signature': profile(
+  'custom:aster.signature': profile(
     '签名',
     '宿主能力',
     '采集签名并保存宿主管理的不可变引用。',

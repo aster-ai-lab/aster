@@ -523,7 +523,7 @@ fn scale_operation_id(
     desired_replicas: u32,
 ) -> String {
     let mut digest = Sha256::new();
-    digest.update(b"a3s-gateway-scale-v1\0");
+    digest.update(b"aster-gateway-scale-v1\0");
     digest.update(service.as_bytes());
     digest.update(b"\0");
     digest.update(expected_revision.unwrap_or("unversioned").as_bytes());

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 /// Stable identity of the namespace change-token contract.
 pub const MEMORY_NAMESPACE_CHANGE_TOKEN_PROFILE_V1: &str =
-    "a3s.memory.namespace-change-token.sequence.v1";
+    "aster.memory.namespace-change-token.sequence.v1";
 
 /// Bounded, content-free evidence that one namespace did not change.
 ///

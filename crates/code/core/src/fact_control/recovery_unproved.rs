@@ -3,7 +3,7 @@
 //! This contract validates a host assertion and its content-bound identity.
 //! It does not prove source evidence, admit execution, or clear any debt.
 
-use a3s_effect::{Fact, NewFact};
+use aster_effect::{Fact, NewFact};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use thiserror::Error;
 
@@ -14,9 +14,9 @@ use crate::session_checkpoint::{
 };
 
 pub(super) const RECOVERY_UNPROVED_FACT_KIND: &str = "recovery.unproved";
-const RECOVERY_UNPROVED_SCHEMA: &str = "a3s.code.recovery-unproved.v1";
-const RECOVERY_UNPROVED_IDENTITY_DOMAIN: &str = "a3s.code.recovery-unproved.identity.v1";
-const SOURCE_BINDING_DIGEST_DOMAIN: &str = "a3s.code.tool-admission-binding.v1";
+const RECOVERY_UNPROVED_SCHEMA: &str = "aster.code.recovery-unproved.v1";
+const RECOVERY_UNPROVED_IDENTITY_DOMAIN: &str = "aster.code.recovery-unproved.identity.v1";
+const SOURCE_BINDING_DIGEST_DOMAIN: &str = "aster.code.tool-admission-binding.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 pub(super) enum RecoveryUnprovedError {

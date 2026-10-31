@@ -11,14 +11,14 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tracing::warn;
 use url::Url;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::pool::browser_error;
 
-pub(crate) const RECEIPT_FILE: &str = ".a3s-install.json";
+pub(crate) const RECEIPT_FILE: &str = ".aster-install.json";
 const INSTALL_LOCK_FILE: &str = ".install.lock";
-const STAGE_PREFIX: &str = ".a3s-stage-";
-const BACKUP_PREFIX: &str = ".a3s-backup-";
+const STAGE_PREFIX: &str = ".aster-stage-";
+const BACKUP_PREFIX: &str = ".aster-backup-";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

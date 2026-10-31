@@ -3,11 +3,11 @@ use std::os::fd::AsRawFd;
 use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentVmAttachmentManifest, AgentVmDirectoryAttachment, AGENT_RUNTIME_SHARE_GUEST_ROOT,
     AGENT_VM_ATTACHMENT_MANIFEST_FILE_NAME, AGENT_VM_ATTACHMENT_MANIFEST_MAX_BYTES,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     Error, ErrorCode, OciBundle, Result, StoragePathRestriction, StoragePathRestrictions,
     MAX_CONFIG_BYTES,
 };

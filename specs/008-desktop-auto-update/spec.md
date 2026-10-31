@@ -32,7 +32,7 @@ already shipped (available → downloading → ready → install).
 **Why this priority**: This is the capability itself; every other story
 depends on the feed and replace path existing.
 
-**Independent Test**: `a3s-studio` host hermetic tests: manifest parsing
+**Independent Test**: `aster-studio` host hermetic tests: manifest parsing
 (valid, missing platform, malformed, downgrade) and feed dispatch
 (`FeedKind::GitHub` for Aster, `FeedKind::Gateway` unchanged for ToYou, and
 each identity refusing the other's channel). No network in tests — the
@@ -63,7 +63,7 @@ store and the check can be turned off.
 **Why this priority**: Industry-standard update reach; without it users on
 old builds never learn an update exists.
 
-**Independent Test**: `a3s-studio` renderer vitest: the scheduler fires a
+**Independent Test**: `aster-studio` renderer vitest: the scheduler fires a
 check on mount and honors the 24 h suppression and the preference switch;
 host hermetic test for the preference read fail-closed default.
 
@@ -109,7 +109,7 @@ neither identity reads a manifest addressed to the other product.
 **Why this priority**: The existing code's stated invariant ("never query
 the other tenant's feed") stays true under the new feed.
 
-**Independent Test**: `a3s-studio` host hermetic tests pinning the
+**Independent Test**: `aster-studio` host hermetic tests pinning the
 identity→channel mapping and refusing cross-product manifests
 (`ProductMismatch`).
 
@@ -179,15 +179,15 @@ identity→channel mapping and refusing cross-product manifests
 ## House Checklist *(mandatory — from Agents.md)*
 
 - [x] New behavior has a small hermetic test in the owning package
-      (`a3s-studio` host lib + renderer vitest + `tests/` python manifest
+      (`aster-studio` host lib + renderer vitest + `tests/` python manifest
       check)
 - [x] Closed sets: every new enum has `parse()` / `as_str()`
       (`FeedKind`)
 - [x] No production `unwrap()` / `expect()` without an infallibility
       comment (existing updater discipline carries over)
-- [x] Internal `a3s-*` dependencies stay on a path in this repository
+- [x] Internal `aster-*` dependencies stay on a path in this repository
       (no new dependencies)
-- [x] Product configuration, if any, is ACL parsed by `a3s-acl`
+- [x] Product configuration, if any, is ACL parsed by `aster-acl`
       (preference key rides the existing schema pipeline)
 - [x] Evidence target: `docs/evidence/desktop/2026-10-22-desktop-auto-update/OUTCOME.md`
       when the landing is recorded
@@ -196,7 +196,7 @@ identity→channel mapping and refusing cross-product manifests
 
 ### Measurable Outcomes
 
-- **SC-001**: `cargo test -p a3s-studio --lib -- app_updater` green with
+- **SC-001**: `cargo test -p aster-studio --lib -- app_updater` green with
   the new feed/manifest/identity cases counted in the summary.
 - **SC-002**: Renderer vitest for the About/auto-check state machine green.
 - **SC-003**: `python3 tests/desktop_channel_manifest.py` green (schema,

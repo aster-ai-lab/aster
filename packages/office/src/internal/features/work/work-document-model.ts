@@ -15,7 +15,7 @@ import {
 
 export { documentHtmlFingerprint } from './work-document-html-fingerprint';
 
-const DOCUMENT_MODEL_SCHEMA = 'a3s.office.document';
+const DOCUMENT_MODEL_SCHEMA = 'aster.office.document';
 const DOCUMENT_MODEL_VERSION = 1;
 const MAX_DOCUMENT_MODEL_DEPTH = 256;
 // A 100,000-row, three-column Word table contains roughly one million

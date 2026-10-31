@@ -28,7 +28,7 @@ async fn persistent_coordinator_survives_initial_none_before_first_submit() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/late.rs");
@@ -36,8 +36,8 @@ async fn persistent_coordinator_survives_initial_none_before_first_submit() {
         .replace_file(&path, Some("rust"), 1, "pub fn late_marker() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -66,13 +66,13 @@ async fn persistent_coordinator_coalesces_a_save_burst_to_the_newest_snapshot() 
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/burst.rs");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -105,7 +105,7 @@ async fn persistent_coordinator_coalesces_a_save_burst_to_the_newest_snapshot() 
     .await
     .expect("coalesced persistent index did not catch up");
 
-    let generations = std::fs::read_dir(temp.path().join(".a3s-code/index"))
+    let generations = std::fs::read_dir(temp.path().join(".aster/index"))
         .expect("persistent index directory")
         .filter_map(Result::ok)
         .filter(|entry| {
@@ -126,7 +126,7 @@ async fn persistent_coordinator_retries_a_transient_publish_failure() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/retry.rs");
@@ -134,12 +134,12 @@ async fn persistent_coordinator_retries_a_transient_publish_failure() {
         .replace_file(&path, Some("rust"), 1, "pub fn retry_marker() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open_with_pinned_epoch(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
         "test",
     )
     .expect("persistent index");
-    let destination = temp.path().join(".a3s-code/index/generation-1-test");
+    let destination = temp.path().join(".aster/index/generation-1-test");
     std::fs::create_dir_all(destination.parent().expect("index parent")).expect("index parent");
     std::fs::write(&destination, "temporary publish blocker").expect("publish blocker");
 
@@ -208,7 +208,7 @@ async fn publish_submits_immediately_when_the_index_is_already_ready() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/ready.rs");
@@ -216,8 +216,8 @@ async fn publish_submits_immediately_when_the_index_is_already_ready() {
         .replace_file(&path, Some("rust"), 1, "pub fn ready_marker() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -259,7 +259,7 @@ async fn publish_queues_retry_when_inline_sync_fails() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/publish_fail.rs");
@@ -267,12 +267,12 @@ async fn publish_queues_retry_when_inline_sync_fails() {
         .replace_file(&path, Some("rust"), 1, "pub fn publish_fail_marker() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open_with_pinned_epoch(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
         "test",
     )
     .expect("persistent index");
-    let destination = temp.path().join(".a3s-code/index/generation-1-test");
+    let destination = temp.path().join(".aster/index/generation-1-test");
     std::fs::create_dir_all(destination.parent().expect("index parent")).expect("index parent");
     std::fs::write(&destination, "temporary publish blocker").expect("publish blocker");
 
@@ -310,7 +310,7 @@ async fn retry_wait_drains_newer_snapshots_submitted_during_backoff() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/drain.rs");
@@ -318,12 +318,12 @@ async fn retry_wait_drains_newer_snapshots_submitted_during_backoff() {
         .replace_file(&path, Some("rust"), 1, "pub fn drain_marker_v1() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open_with_pinned_epoch(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
         "test",
     )
     .expect("persistent index");
-    let destination = temp.path().join(".a3s-code/index/generation-1-test");
+    let destination = temp.path().join(".aster/index/generation-1-test");
     std::fs::create_dir_all(destination.parent().expect("index parent")).expect("index parent");
     std::fs::write(&destination, "temporary publish blocker").expect("publish blocker");
 
@@ -380,13 +380,13 @@ async fn catalog_runtime_seeds_from_an_already_scanned_manifest_with_persistent(
     .await
     .expect("manifest must publish a non-empty scan");
 
-    let index_root = temp.path().join(".a3s-code/index");
-    let persistent = WorkspacePersistentIndex::open(index_root, WorkspaceLexicalEngine::A3sVec)
+    let index_root = temp.path().join(".aster/index");
+    let persistent = WorkspacePersistentIndex::open(index_root, WorkspaceLexicalEngine::AsterVec)
         .expect("persistent index");
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let file_system: std::sync::Arc<dyn crate::workspace::WorkspaceFileSystem> =
@@ -430,8 +430,8 @@ async fn catalog_runtime_seeds_from_an_already_scanned_manifest_with_persistent(
 async fn coordinator_exits_cleanly_when_the_update_channel_closes() {
     let temp = tempfile::tempdir().expect("temporary workspace");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -449,7 +449,7 @@ async fn publish_queues_when_inline_worker_spawn_fails() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/spawn_fail.rs");
@@ -457,8 +457,8 @@ async fn publish_queues_when_inline_worker_spawn_fails() {
         .replace_file(&path, Some("rust"), 1, "pub fn spawn_fail_marker() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -487,7 +487,7 @@ async fn publish_queues_when_inline_worker_drops_its_result() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/drop_result.rs");
@@ -495,8 +495,8 @@ async fn publish_queues_when_inline_worker_drops_its_result() {
         .replace_file(&path, Some("rust"), 1, "pub fn drop_result_marker() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -525,7 +525,7 @@ async fn sync_worker_retries_after_forced_spawn_failure_then_cancels() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/sync_spawn.rs");
@@ -533,8 +533,8 @@ async fn sync_worker_retries_after_forced_spawn_failure_then_cancels() {
         .replace_file(&path, Some("rust"), 1, "pub fn sync_spawn_marker() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -553,7 +553,7 @@ async fn sync_worker_observes_non_retryable_failure_then_cancels() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/sync_non_retryable.rs");
@@ -566,8 +566,8 @@ async fn sync_worker_observes_non_retryable_failure_then_cancels() {
         )
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -597,7 +597,7 @@ async fn sync_worker_resets_retries_when_a_newer_snapshot_arrives_after_non_retr
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/sync_reset.rs");
@@ -605,8 +605,8 @@ async fn sync_worker_resets_retries_when_a_newer_snapshot_arrives_after_non_retr
         .replace_file(&path, Some("rust"), 1, "pub fn sync_reset_v1() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -631,7 +631,7 @@ async fn retry_wait_exits_when_lifetime_is_cancelled_during_backoff() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/cancel_backoff.rs");
@@ -644,12 +644,12 @@ async fn retry_wait_exits_when_lifetime_is_cancelled_during_backoff() {
         )
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open_with_pinned_epoch(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
         "test",
     )
     .expect("persistent index");
-    let destination = temp.path().join(".a3s-code/index/generation-1-test");
+    let destination = temp.path().join(".aster/index/generation-1-test");
     std::fs::create_dir_all(destination.parent().expect("index parent")).expect("index parent");
     std::fs::write(&destination, "permanent publish blocker").expect("publish blocker");
 
@@ -671,7 +671,7 @@ async fn settle_loop_breaks_when_update_channel_closes_mid_burst() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/mid_burst.rs");
@@ -679,8 +679,8 @@ async fn settle_loop_breaks_when_update_channel_closes_mid_burst() {
         .replace_file(&path, Some("rust"), 1, "pub fn mid_burst_marker() {}\n")
         .expect("catalog replacement");
     let index = WorkspacePersistentIndex::open(
-        temp.path().join(".a3s-code/index"),
-        WorkspaceLexicalEngine::A3sVec,
+        temp.path().join(".aster/index"),
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("persistent index");
     let lifetime = CancellationToken::new();
@@ -698,7 +698,7 @@ async fn wait_for_index_retry_returns_none_when_update_channel_closes() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let mut pending = Arc::new(catalog.snapshot().expect("snapshot"));
@@ -715,7 +715,7 @@ async fn wait_for_index_retry_observes_newer_snapshot_before_backoff() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let path = WorkspacePath::from_normalized("src/retry_newer.rs");
@@ -761,7 +761,7 @@ async fn report_reconciliation_warns_on_catalog_error() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let reconciler = WorkspaceCatalogReconciler::new(
@@ -787,7 +787,7 @@ async fn report_reconciliation_warns_on_partial_failures() {
     let catalog = WorkspaceChunkCatalog::new_with_engine(
         ChunkingConfig::default(),
         ChunkCatalogLimits::default(),
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
     )
     .expect("catalog");
     let reconciler = WorkspaceCatalogReconciler::new(

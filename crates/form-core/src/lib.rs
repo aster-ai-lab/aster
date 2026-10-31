@@ -1,6 +1,6 @@
-//! Portable semantic primitives for A3S Form.
+//! Portable semantic primitives for Aster Form.
 //!
-//! This crate is intentionally independent from A3S Cloud and UI frameworks.
+//! This crate is intentionally independent from Aster Cloud and UI frameworks.
 //! The current implementation establishes the byte-level canonical JSON,
 //! digest, and compile-envelope contracts used by the semantic compiler.
 
@@ -59,6 +59,6 @@ pub use protocol::{
     FORM_SCHEMA_PROFILE_1,
 };
 pub use schema::{
-    inspect_schema_profile, A3S_FORM_SCHEMA_PROFILE_1_ID, JSON_SCHEMA_2020_12_DIALECT,
+    inspect_schema_profile, ASTER_FORM_SCHEMA_PROFILE_1_ID, JSON_SCHEMA_2020_12_DIALECT,
     SUPPORTED_SCHEMA_FORMATS, SUPPORTED_SCHEMA_KEYWORDS,
 };

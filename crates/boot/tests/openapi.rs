@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootRequest, BootResponse, ControllerDefinition, HttpMethod, MiddlewareRoute,
     OpenApiExample, OpenApiHeader, OpenApiInfo, OpenApiParameter, OpenApiRequestBody,
     OpenApiResponse, OpenApiSchema, RouteDefinition,
@@ -476,7 +476,7 @@ fn openapi_documents_include_request_and_response_media_types() {
     .try_with_response_content_type_example(
         202,
         "Cat import accepted",
-        "application/vnd.a3s.cat+json",
+        "application/vnd.aster.cat+json",
         OpenApiSchema::reference("OpenApiCatDto"),
         json!({ "id": "imported", "name": "Milo" }),
     )
@@ -496,11 +496,11 @@ fn openapi_documents_include_request_and_response_media_types() {
     );
     assert!(operation["requestBody"]["content"]["application/json"].is_null());
     assert_eq!(
-        operation["responses"]["202"]["content"]["application/vnd.a3s.cat+json"]["schema"],
+        operation["responses"]["202"]["content"]["application/vnd.aster.cat+json"]["schema"],
         json!({ "$ref": "#/components/schemas/OpenApiCatDto" })
     );
     assert_eq!(
-        operation["responses"]["202"]["content"]["application/vnd.a3s.cat+json"]["example"],
+        operation["responses"]["202"]["content"]["application/vnd.aster.cat+json"]["example"],
         json!({ "id": "imported", "name": "Milo" })
     );
 }

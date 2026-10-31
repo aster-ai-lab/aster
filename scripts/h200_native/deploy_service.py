@@ -131,9 +131,9 @@ def main():
         if any('stubs' in Path(value).parts for value in paths):
             raise RuntimeError('CUDA linker stubs cannot execute the native service')
         environment.update(LD_LIBRARY_PATH=':'.join(['/usr/local/cuda/lib64'] + paths),
-                           CUDA_VISIBLE_DEVICES=','.join(identities), A3S_POWER_HOME=str(work / 'power-home'))
-        # Existing A3S_POWER_* overrides must not silently change frozen ACL.
-        forbidden = [name for name in environment if name.startswith('A3S_POWER_') and name != 'A3S_POWER_HOME']
+                           CUDA_VISIBLE_DEVICES=','.join(identities), ASTER_POWER_HOME=str(work / 'power-home'))
+        # Existing ASTER_POWER_* overrides must not silently change frozen ACL.
+        forbidden = [name for name in environment if name.startswith('ASTER_POWER_') and name != 'ASTER_POWER_HOME']
         if forbidden:
             raise RuntimeError('unexpected Power environment overrides are present')
         with (root / 'controls.stdout.log').open('x') as stdout, (root / 'controls.stderr.log').open('x') as stderr:
@@ -150,7 +150,7 @@ def main():
         key = 'sk-aster-' + secrets.token_urlsafe(32)
         starts = int(time.time())
         expires = min(starts + 7200, int(proof['leaseEndsUnix']) - 60)
-        lease = ('schema = "a3s.deepseek.credential-lease.v1"\napi_key_sha256 = "'
+        lease = ('schema = "aster.deepseek.credential-lease.v1"\napi_key_sha256 = "'
                  + hashlib.sha256(key.encode()).hexdigest() + '"\nstarts_unix = ' + str(starts)
                  + '\nexpires_unix = ' + str(expires) + '\n')
         (auth / 'credential.acl').write_text(lease)

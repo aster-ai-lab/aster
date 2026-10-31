@@ -1008,6 +1008,6 @@ function nextPaint(): Promise<void> {
 
 function safeFileName(value: string): string {
   return (
-    value.replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_').trim() || 'A3S Work file'
+    value.replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_').trim() || 'Aster Work file'
   );
 }

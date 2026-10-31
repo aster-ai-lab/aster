@@ -5,7 +5,7 @@ import * as React from 'react'
 
 import { cn } from '../../lib/utils'
 import { buttonVariants } from './button'
-import { DIALOG_CLOSE_DURATION_MS } from '@a3s-lab/ui/utils'
+import { DIALOG_CLOSE_DURATION_MS } from '@aster-ai-lab/ui/utils'
 
 import { PortalContainerProvider, useDialogPortalContainer } from './portal-container'
 
@@ -64,7 +64,7 @@ type DialogContentProps = React.ComponentProps<typeof DialogPrimitive.Content> &
 
 /**
  * Close-animation duration (ms) of DialogContent. The leave keyframe in
- * `styles/dialog-motion.css` (`a3s-dialog-out 200ms`) must stay equal to this
+ * `styles/dialog-motion.css` (`aster-dialog-out 200ms`) must stay equal to this
  * constant. A co-located test reads that file. Imperative host removal timing
  * is DIALOG_UNMOUNT_DELAY_MS.
  */

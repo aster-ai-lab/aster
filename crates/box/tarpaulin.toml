@@ -1,4 +1,4 @@
-# Tarpaulin configuration for a3s-box
+# Tarpaulin configuration for aster-box
 # Excludes vendor/third-party dependencies from coverage
 
 [tarpaulin]

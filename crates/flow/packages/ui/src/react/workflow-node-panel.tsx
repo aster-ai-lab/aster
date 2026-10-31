@@ -12,7 +12,7 @@ import {
   type FormDocument,
   type FormHostAdapter,
   type JsonObject,
-} from '@a3s-lab/form/core';
+} from '@aster-ai-lab/form/core';
 import {
   type CreateWorkflowNodeFormOptions,
   createWorkflowNodeDefaultValue,
@@ -25,12 +25,12 @@ import {
   type WorkflowNodeFieldDefinition,
 } from '../integrations/workflow-node-form';
 import { DesignerIcon } from './designer-icons';
-import type { FormWidgetRegistry } from '@a3s-lab/form/react';
-import type { FormNodeRegistry } from '@a3s-lab/form/react';
+import type { FormWidgetRegistry } from '@aster-ai-lab/form/react';
+import type { FormNodeRegistry } from '@aster-ai-lab/form/react';
 import {
   type FormNodeAccessoryContext,
   FormRenderer,
-} from '@a3s-lab/form/react';
+} from '@aster-ai-lab/form/react';
 import {
   createWorkflowConfigurationWidgetRegistry,
   type WorkflowConfigurationWidgetCallbacks,
@@ -299,7 +299,7 @@ export function WorkflowNodeConfigurationPanel(
 
   if (!compilation.ok || !compilation.plan || !compilation.document) {
     return (
-      <section className="a3s-form-workflow-node-panel" role="alert">
+      <section className="aster-form-workflow-node-panel" role="alert">
         <strong>{copy.compileTitle}</strong>
         <p>
           {taskPresentation
@@ -313,7 +313,7 @@ export function WorkflowNodeConfigurationPanel(
   const compiledDocument = compilation.document;
   return (
     <section
-      className={['a3s-form-workflow-node-panel', props.className]
+      className={['aster-form-workflow-node-panel', props.className]
         .filter(Boolean)
         .join(' ')}
       data-node-type={props.node.type}
@@ -333,24 +333,24 @@ export function WorkflowNodeConfigurationPanel(
       data-port-count={portCount}
       aria-label={`${displayTitle} ${copy.panelSections}`}
     >
-      <header className="a3s-form-workflow-node-panel-header">
-        <div className="a3s-form-workflow-node-identity">
+      <header className="aster-form-workflow-node-panel-header">
+        <div className="aster-form-workflow-node-identity">
           <span
-            className="a3s-form-workflow-node-icon"
+            className="aster-form-workflow-node-icon"
             data-source-icon={props.node.icon || undefined}
             title={props.node.icon || props.node.categoryLabel}
           >
             <DesignerIcon name={nodeVisual.icon} size={18} />
           </span>
           <span>
-            <span className="a3s-form-workflow-node-title-line">
+            <span className="aster-form-workflow-node-title-line">
               {taskPresentation && props.onTitleChange ? (
                 <>
-                  <h2 className="a3s-form-workflow-node-title-accessible">
+                  <h2 className="aster-form-workflow-node-title-accessible">
                     {displayTitle}
                   </h2>
                   <input
-                    className="input a3s-form-workflow-node-title-input"
+                    className="input aster-form-workflow-node-title-input"
                     aria-label={copy.nodeTitle}
                     value={displayTitle}
                     disabled={props.readOnly}
@@ -379,7 +379,7 @@ export function WorkflowNodeConfigurationPanel(
             </span>
             {taskPresentation && props.onDescriptionChange ? (
               <textarea
-                className="input textarea a3s-form-workflow-node-description-input"
+                className="input textarea aster-form-workflow-node-description-input"
                 aria-label={copy.nodeDescription}
                 placeholder={copy.descriptionPlaceholder}
                 rows={2}
@@ -396,7 +396,7 @@ export function WorkflowNodeConfigurationPanel(
             )}
           </span>
         </div>
-        <div className="a3s-form-workflow-node-header-actions">
+        <div className="aster-form-workflow-node-header-actions">
           {props.onRun && (
             <button
               type="button"
@@ -470,7 +470,7 @@ export function WorkflowNodeConfigurationPanel(
 
       {taskPresentation && (
         <div
-          className="a3s-form-workflow-node-tabs"
+          className="aster-form-workflow-node-tabs"
           role="tablist"
           aria-label={copy.panelSections}
         >
@@ -504,7 +504,7 @@ export function WorkflowNodeConfigurationPanel(
       )}
 
       {!taskPresentation && (
-        <div className="a3s-form-workflow-node-contract">
+        <div className="aster-form-workflow-node-contract">
           <span className="badge" data-variant="outline">
             {props.node.categoryLabel}
           </span>
@@ -527,7 +527,7 @@ export function WorkflowNodeConfigurationPanel(
 
       {!taskPresentation &&
         (inputTypes.length > 0 || outputTypes.length > 0) && (
-          <div className="a3s-form-workflow-node-ports">
+          <div className="aster-form-workflow-node-ports">
             <div>
               <span>{copy.accepts}</span>
               <div className="item-group">
@@ -565,10 +565,10 @@ export function WorkflowNodeConfigurationPanel(
                 'aria-labelledby': `${panelId}-settings-tab`,
               }
             : {})}
-          className="a3s-form-workflow-node-settings"
+          className="aster-form-workflow-node-settings"
         >
           {visibleCount === 0 ? (
-            <div className="a3s-form-workflow-node-settings-empty">
+            <div className="aster-form-workflow-node-settings-empty">
               <span aria-hidden="true">
                 <DesignerIcon name="check-square" size={18} />
               </span>
@@ -576,7 +576,7 @@ export function WorkflowNodeConfigurationPanel(
               <p>{copy.noSettingsHelp}</p>
             </div>
           ) : (
-            <div className="a3s-form-workflow-node-form">
+            <div className="aster-form-workflow-node-form">
               <FormRenderer
                 plan={compilation.plan}
                 value={props.value}
@@ -612,10 +612,10 @@ export function WorkflowNodeConfigurationPanel(
           id={`${panelId}-last-run-panel`}
           role="tabpanel"
           aria-labelledby={`${panelId}-last-run-tab`}
-          className="a3s-form-workflow-node-last-run"
+          className="aster-form-workflow-node-last-run"
         >
           {props.lastRun ?? (
-            <div className="a3s-form-workflow-node-last-run-empty">
+            <div className="aster-form-workflow-node-last-run-empty">
               <DesignerIcon name="play" size={18} />
               <p>{copy.emptyRun}</p>
             </div>

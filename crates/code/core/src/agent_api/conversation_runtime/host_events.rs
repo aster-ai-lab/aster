@@ -155,7 +155,7 @@ pub(super) async fn emit_interactive_host_event(
 
 pub(super) async fn emit_gated(
     tx: &mpsc::Sender<AgentEvent>,
-    settled: &anyhow::Result<a3s_effect::Settlement<a3s_effect::CodingView>>,
+    settled: &anyhow::Result<aster_effect::Settlement<aster_effect::CodingView>>,
     mapped: &std::result::Result<AgentResult, anyhow::Error>,
     streamed_text: bool,
     publication: run_admission::OriginalPublicationKind,
@@ -204,7 +204,7 @@ pub(super) async fn emit_gated(
 #[cfg(test)]
 pub(super) async fn emit_settled(
     tx: &mpsc::Sender<AgentEvent>,
-    settled: &anyhow::Result<a3s_effect::Settlement<a3s_effect::CodingView>>,
+    settled: &anyhow::Result<aster_effect::Settlement<aster_effect::CodingView>>,
     mapped: Option<&AgentResult>,
     streamed_text: bool,
 ) {
@@ -213,7 +213,7 @@ pub(super) async fn emit_settled(
 
 pub(super) async fn emit_settled_to_host(
     tx: &mpsc::Sender<AgentEvent>,
-    settled: &anyhow::Result<a3s_effect::Settlement<a3s_effect::CodingView>>,
+    settled: &anyhow::Result<aster_effect::Settlement<aster_effect::CodingView>>,
     mapped: Option<&AgentResult>,
     streamed_text: bool,
     cancellation: Option<&tokio_util::sync::CancellationToken>,

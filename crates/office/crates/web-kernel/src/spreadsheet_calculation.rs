@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
-use a3s_office_formula_parser::{
+use aster_office_formula_parser::{
     parse_spreadsheet_formula, SpreadsheetFormula, SpreadsheetFormulaErrorLiteral,
     MAX_SPREADSHEET_FORMULA_CHARACTERS,
 };

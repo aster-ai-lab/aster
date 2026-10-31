@@ -5,7 +5,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
     alias: {
-      '@a3s-lab/ui': resolve(__dirname, 'src')
+      '@aster-ai-lab/ui': resolve(__dirname, 'src')
     }
   },
   test: {

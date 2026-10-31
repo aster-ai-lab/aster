@@ -1,6 +1,6 @@
 use super::*;
 
-fn host_confirmation_policy() -> a3s_code_core::hitl::ConfirmationPolicy {
+fn host_confirmation_policy() -> aster_core::hitl::ConfirmationPolicy {
     let workspace = tempfile::tempdir().unwrap();
     let setup = SessionSetup {
         workspace: workspace.path().to_owned(),
@@ -10,12 +10,12 @@ fn host_confirmation_policy() -> a3s_code_core::hitl::ConfirmationPolicy {
         components: &[],
         mcp_servers: Vec::new(),
     };
-    let mut slots = a3s_code_core::SystemPromptSlots::default();
-    A3sCodeAgent::host_session_options_with_hook_roots(
-        a3s_code_core::SessionOptions::new(),
+    let mut slots = aster_core::SystemPromptSlots::default();
+    AsterCodeAgent::host_session_options_with_hook_roots(
+        aster_core::SessionOptions::new(),
         &mut slots,
         &setup,
-        &a3s_code_core::CodeConfig::default(),
+        &aster_core::CodeConfig::default(),
         &workspace.path().join("store"),
         None,
         None,
@@ -35,7 +35,7 @@ async fn host_tool_confirmation_policy_uses_the_existing_human_ask_deadline() {
         assert!(policy.enabled);
         assert!(matches!(
             policy.timeout_action,
-            a3s_code_core::hitl::TimeoutAction::Reject
+            aster_core::hitl::TimeoutAction::Reject
         ));
         assert_eq!(
             policy.default_timeout_ms, expected_ms,
@@ -56,14 +56,14 @@ async fn human_approval_deadline_preserves_default_disable_and_large_value_seman
             (Some("invalid"), 1_800_000),
         ] {
             match configured {
-                Some(value) => std::env::set_var("A3S_CODE_PERMISSION_ASK_TIMEOUT_SECS", value),
-                None => std::env::remove_var("A3S_CODE_PERMISSION_ASK_TIMEOUT_SECS"),
+                Some(value) => std::env::set_var("ASTER_PERMISSION_ASK_TIMEOUT_SECS", value),
+                None => std::env::remove_var("ASTER_PERMISSION_ASK_TIMEOUT_SECS"),
             }
             let policy = host_confirmation_policy();
             assert!(policy.enabled);
             assert!(matches!(
                 policy.timeout_action,
-                a3s_code_core::hitl::TimeoutAction::Reject
+                aster_core::hitl::TimeoutAction::Reject
             ));
             assert_eq!(
                 policy.default_timeout_ms, expected_ms,

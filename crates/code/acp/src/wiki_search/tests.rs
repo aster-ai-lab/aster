@@ -6,7 +6,7 @@ use super::*;
 fn cross_workspace_search_requires_an_explicit_boolean_host_capability() {
     let parse = |value| {
         crate::host_context::studio_host_from_meta(Some(&serde_json::Map::from_iter([(
-            "a3sHost".into(),
+            "asterHost".into(),
             value,
         )])))
     };
@@ -23,14 +23,14 @@ pub(super) fn fixture() -> (tempfile::TempDir, std::path::PathBuf) {
     let root = tempfile::tempdir().unwrap();
     let source = b"pub fn workspace_answer() -> u32 { 42 }\n";
     std::fs::write(root.path().join("source.rs"), source).unwrap();
-    let input = a3s_okf::WorkspaceKnowledgeInput::new(
+    let input = aster_okf::WorkspaceKnowledgeInput::new(
         root.path(),
         "workspace-tool-scope",
         &format!("sha256:{}", "a".repeat(64)),
-        vec![a3s_okf::WorkspaceKnowledgeSource::text("source.rs", source).unwrap()],
+        vec![aster_okf::WorkspaceKnowledgeSource::text("source.rs", source).unwrap()],
     )
     .unwrap();
-    let job = a3s_okf::begin_workspace_knowledge_maintenance(&input)
+    let job = aster_okf::begin_workspace_knowledge_maintenance(&input)
         .unwrap()
         .unwrap();
     let stage = std::path::Path::new(&job.staging);
@@ -39,7 +39,7 @@ pub(super) fn fixture() -> (tempfile::TempDir, std::path::PathBuf) {
         "sources":job.sources,"summary":"Workspace overview","categories":{},
         "pages":[{"path":"concepts/overview.md","title":"Workspace overview","kind":"synthesis","change":"create","reason":"From admitted evidence","requires_review":false,"sources":job.sources}]
     })).unwrap()).unwrap();
-    a3s_okf::finish_workspace_knowledge_maintenance(&input, &job.id).unwrap();
+    aster_okf::finish_workspace_knowledge_maintenance(&input, &job.id).unwrap();
     (root, input.output_root().to_path_buf())
 }
 
@@ -73,8 +73,8 @@ async fn workspace_search_wiki_uses_only_the_current_owned_publication() {
     let wire: Value = serde_json::from_str(&result.content).unwrap();
     assert_eq!(wire["hits"].as_array().unwrap().len(), 1);
     assert_eq!(wire["hits"][0]["path"], "concepts/overview.md");
-    assert!(root.path().join(".a3s-agent-retrievals").is_file());
-    assert!(!wiki.join(".a3s-agent-retrievals").exists());
+    assert!(root.path().join(".aster-agent-retrievals").is_file());
+    assert!(!wiki.join(".aster-agent-retrievals").exists());
     let shared = search_published(&wiki, "workspaceanswer42marker");
     assert_eq!(shared.phase, WikiSearchPhase::Published);
     assert_eq!(
@@ -165,8 +165,13 @@ async fn workspace_search_wiki_refuses_scope_overrides_and_respects_live_denies(
     let denies = Arc::new(Mutex::new(Vec::new()));
     let tool = SearchWikiTool::new(Some(indexed(&wiki).await), Arc::clone(&denies));
     let ctx = ToolContext::new(root.path().into());
+    // Legacy models still emit scope=local; admit it as current instead of failing closed.
+    let local = tool
+        .execute(&json!({"query":"workspaceanswer42marker","scope":"local"}), &ctx)
+        .await
+        .unwrap();
+    assert!(local.success, "{local:?}");
     for args in [
-        json!({"query":"answer","scope":"local"}),
         json!({"query":"answer","scope":"team"}),
         json!({"query":"answer","root":"/tmp"}),
         json!({"query":1}),

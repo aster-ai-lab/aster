@@ -12,10 +12,10 @@
 use serde::{Deserialize, Serialize};
 
 /// Schema identifier for [`SdkCapability`] values (pre-tier inventory).
-pub const SDK_CAPABILITIES_SCHEMA_V1: &str = "a3s-code/sdk-capabilities/v1";
+pub const SDK_CAPABILITIES_SCHEMA_V1: &str = "aster/sdk-capabilities/v1";
 
 /// Current schema for the tiered capability inventory.
-pub const SDK_CAPABILITIES_SCHEMA_V2: &str = "a3s-code/sdk-capabilities/v2";
+pub const SDK_CAPABILITIES_SCHEMA_V2: &str = "aster/sdk-capabilities/v2";
 
 /// Product maturity / packaging tier for one capability.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -266,7 +266,7 @@ const CAPABILITY_SPECS: &[CapabilitySpec] = &[
     CapabilitySpec {
         id: "web_search",
         category: "web",
-        description: "Baseline web search through a3s-search v3.1.4 over HTTP, native API, and RSS engines. JavaScript/headless engines require the Advanced `moli_runtime` / Cargo `headless-search` profile. Billed providers stay opt-in.",
+        description: "Baseline web search through aster-search v3.1.4 over HTTP, native API, and RSS engines. JavaScript/headless engines require the Advanced `moli_runtime` / Cargo `headless-search` profile. Billed providers stay opt-in.",
         operations: &["session.web_search", "session.tool:web_search"],
         host_owned: true,
         tier: CapabilityTier::Baseline,
@@ -305,7 +305,7 @@ const CAPABILITY_SPECS: &[CapabilitySpec] = &[
     CapabilitySpec {
         id: "use_runtime_tasks",
         category: "integration",
-        description: "Project host-owned A3S Use runtime tasks as governed model and direct-tool capabilities.",
+        description: "Project host-owned Aster Use runtime tasks as governed model and direct-tool capabilities.",
         operations: &["session.tool:use_runtime_task"],
         host_owned: true,
         tier: CapabilityTier::Advanced,

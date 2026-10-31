@@ -3,11 +3,11 @@
 use std::collections::{HashMap, HashSet};
 use std::path::{Component, Path, PathBuf};
 
-use a3s_box_core::config::BoxConfig;
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::guest_exec::RUNTIME_EXEC_CONFIG_PATH;
-use a3s_box_core::rootfs_metadata::RUNTIME_ENV_PATH;
-use a3s_oci_sdk::{
+use aster_box_core::config::BoxConfig;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::guest_exec::RUNTIME_EXEC_CONFIG_PATH;
+use aster_box_core::rootfs_metadata::RUNTIME_ENV_PATH;
+use aster_oci_sdk::{
     CONTROL_CGROUP_CPU_HEADROOM_ANNOTATION, CONTROL_CGROUP_MEMORY_HEADROOM_ANNOTATION,
     CONTROL_CGROUP_PIDS_HEADROOM_ANNOTATION, CONTROL_WORKLOAD_CGROUP_LAYOUT_ANNOTATION,
     CONTROL_WORKLOAD_CGROUP_LAYOUT_V1, PORTABLE_ROOTFS_METADATA_ANNOTATION,
@@ -25,10 +25,10 @@ use oci_spec::runtime::{
 
 use super::capability::{validate_id_mapping_plan, IdMapping, SandboxIdMappingPlan};
 
-/// OCI annotation schema for generated A3S Sandbox bundles.
-pub const SANDBOX_BUNDLE_SCHEMA: &str = "a3s.box.sandbox-bundle.v1";
+/// OCI annotation schema for generated Aster Sandbox bundles.
+pub const SANDBOX_BUNDLE_SCHEMA: &str = "aster.box.sandbox-bundle.v1";
 /// Qualification schema for a portable one-VM-per-container bundle.
-pub const PORTABLE_MICROVM_BUNDLE_SCHEMA: &str = "a3s.box.portable-microvm-bundle.v1";
+pub const PORTABLE_MICROVM_BUNDLE_SCHEMA: &str = "aster.box.portable-microvm-bundle.v1";
 /// Baseline process count enforced even when the caller omits `--pids-limit`.
 pub const DEFAULT_SANDBOX_PIDS_LIMIT: i64 = 4096;
 const DEFAULT_CPU_PERIOD_US: u64 = 100_000;
@@ -221,7 +221,7 @@ pub struct SandboxBundleSpec {
     pub share_host_network: bool,
 }
 
-/// Container process compiled for the long-lived A3S OCI Runtime owner.
+/// Container process compiled for the long-lived Aster OCI Runtime owner.
 ///
 /// The executable, user and working directory are resolved against the
 /// prepared rootfs before this value reaches the compiler. Bootstrap listener
@@ -247,7 +247,7 @@ impl SandboxProcessOwner {
     const fn annotation(self) -> &'static str {
         match self {
             Self::GuestInit => "guest-init",
-            Self::RuntimeOwned => "a3s-oci-runtime",
+            Self::RuntimeOwned => "aster-oci-runtime",
         }
     }
 
@@ -286,7 +286,7 @@ pub fn compile_oci_spec(input: &SandboxBundleSpec) -> Result<Spec> {
 }
 
 /// Compile a complete OCI config whose PID 1 and I/O are owned directly by
-/// A3S OCI Runtime. The legacy guest-init listener variables are removed even
+/// Aster OCI Runtime. The legacy guest-init listener variables are removed even
 /// if an image attempts to provide them.
 pub fn compile_runtime_owned_oci_spec(
     input: &SandboxBundleSpec,
@@ -349,21 +349,21 @@ pub fn compile_portable_microvm_oci_spec(
         .map_err(oci_error)?;
     let linux = LinuxBuilder::default()
         .namespaces(compile_portable_microvm_namespaces()?)
-        .cgroups_path(PathBuf::from(format!("a3s-box/{box_id}")))
+        .cgroups_path(PathBuf::from(format!("aster-box/{box_id}")))
         .build()
         .map_err(oci_error)?;
     let mut annotations = HashMap::new();
     annotations.insert(
-        "com.a3s.box.microvm.schema".to_string(),
+        "com.aster.box.microvm.schema".to_string(),
         PORTABLE_MICROVM_BUNDLE_SCHEMA.to_string(),
     );
     annotations.insert(
-        "com.a3s.box.isolation-class".to_string(),
+        "com.aster.box.isolation-class".to_string(),
         "hardware-vm".to_string(),
     );
     annotations.insert(
-        "com.a3s.box.process-owner".to_string(),
-        "a3s-oci-runtime".to_string(),
+        "com.aster.box.process-owner".to_string(),
+        "aster-oci-runtime".to_string(),
     );
     annotations.insert(
         RUNTIME_BUNDLE_HANDOFF_EXTENSION.to_string(),
@@ -422,7 +422,7 @@ fn compile_spec(
         .gid_mappings(compile_id_mappings(&input.id_mappings.gid_mappings)?)
         .namespaces(compile_namespaces(input.share_host_network)?)
         .resources(compile_resources(&input.resources)?)
-        .cgroups_path(PathBuf::from(format!("a3s-box/{}", input.box_id)))
+        .cgroups_path(PathBuf::from(format!("aster-box/{}", input.box_id)))
         .devices(compile_devices()?)
         .seccomp(compile_seccomp()?)
         .rootfs_propagation("private".to_string())
@@ -441,23 +441,23 @@ fn compile_spec(
 
     let mut annotations = HashMap::new();
     annotations.insert(
-        "com.a3s.box.sandbox.schema".to_string(),
+        "com.aster.box.sandbox.schema".to_string(),
         SANDBOX_BUNDLE_SCHEMA.to_string(),
     );
     annotations.insert(
-        "com.a3s.box.execution-plan.digest".to_string(),
+        "com.aster.box.execution-plan.digest".to_string(),
         input.execution_plan_digest.clone(),
     );
     annotations.insert(
-        "com.a3s.box.runtime.digest".to_string(),
+        "com.aster.box.runtime.digest".to_string(),
         input.runtime_digest.clone(),
     );
     annotations.insert(
-        "com.a3s.box.isolation-class".to_string(),
+        "com.aster.box.isolation-class".to_string(),
         "shared-kernel".to_string(),
     );
     annotations.insert(
-        "com.a3s.box.process-owner".to_string(),
+        "com.aster.box.process-owner".to_string(),
         owner.annotation().to_string(),
     );
     if owner.uses_control_workload_cgroup() {
@@ -502,11 +502,11 @@ fn compile_spec(
 }
 
 const RESERVED_BOOTSTRAP_ENVIRONMENT: &[&str] = &[
-    "A3S_BOOTSTRAP_MODE",
-    "A3S_EXEC_LISTENER_FD",
-    "A3S_PTY_LISTENER_FD",
-    "A3S_INIT_LOG_FD",
-    "A3S_SANDBOX_SHARE_HOST_NETWORK",
+    "ASTER_BOOTSTRAP_MODE",
+    "ASTER_EXEC_LISTENER_FD",
+    "ASTER_PTY_LISTENER_FD",
+    "ASTER_INIT_LOG_FD",
+    "ASTER_SANDBOX_SHARE_HOST_NETWORK",
 ];
 
 fn validated_environment(
@@ -535,15 +535,15 @@ fn compile_environment(
     for reserved in RESERVED_BOOTSTRAP_ENVIRONMENT {
         values.remove(*reserved);
     }
-    values.insert("A3S_BOOTSTRAP_MODE".to_string(), "host-sandbox".to_string());
-    values.insert("A3S_EXEC_LISTENER_FD".to_string(), "3".to_string());
-    values.insert("A3S_PTY_LISTENER_FD".to_string(), "4".to_string());
-    values.insert("A3S_INIT_LOG_FD".to_string(), "5".to_string());
+    values.insert("ASTER_BOOTSTRAP_MODE".to_string(), "host-sandbox".to_string());
+    values.insert("ASTER_EXEC_LISTENER_FD".to_string(), "3".to_string());
+    values.insert("ASTER_PTY_LISTENER_FD".to_string(), "4".to_string());
+    values.insert("ASTER_INIT_LOG_FD".to_string(), "5".to_string());
     // Host-netns Outbound shares the host stack; guest-init must not SIOCSIFFLAGS
     // host `lo` (userns CAP_NET_ADMIN is not real host CAP_NET_ADMIN → EPERM).
     if share_host_network {
         values.insert(
-            "A3S_SANDBOX_SHARE_HOST_NETWORK".to_string(),
+            "ASTER_SANDBOX_SHARE_HOST_NETWORK".to_string(),
             "1".to_string(),
         );
     }
@@ -781,8 +781,8 @@ pub(crate) fn compile_resources(
     resources: &SandboxResources,
 ) -> Result<oci_spec::runtime::LinuxResources> {
     // `linux.resources` is the exact workload source of truth. The versioned
-    // A3S OCI layout derives its outer management envelope from the annotations
-    // emitted above and applies these values unchanged to `a3s-workload`.
+    // Aster OCI layout derives its outer management envelope from the annotations
+    // emitted above and applies these values unchanged to `aster-workload`.
     let mut memory = LinuxMemoryBuilder::default().limit(resources.memory_limit);
     if let Some(reservation) = resources.memory_reservation {
         memory = memory.reservation(reservation);
@@ -1006,7 +1006,7 @@ fn compile_mounts(
         if linux_path_is_or_below(&tmpfs.destination, Path::new("/proc"))
             || linux_path_is_or_below(&tmpfs.destination, Path::new("/sys"))
             || (linux_path_is_or_below(&tmpfs.destination, Path::new("/dev")) && !is_shared_memory)
-            || linux_path_is_or_below(&tmpfs.destination, Path::new("/run/a3s-box"))
+            || linux_path_is_or_below(&tmpfs.destination, Path::new("/run/aster-box"))
             || tmpfs.destination == Path::new("/")
         {
             return Err(BoxError::ConfigError(format!(
@@ -1166,17 +1166,17 @@ fn validate_user_mount(mount: &SandboxMount) -> Result<()> {
     const PROTECTED_DESTINATIONS: &[&str] = &[
         "/dev",
         "/proc",
-        "/run/a3s-box",
+        "/run/aster-box",
         SBIN_INIT,
         USR_SBIN_INIT,
         "/sys",
         RUNTIME_EXEC_CONFIG_PATH,
         RUNTIME_ENV_PATH,
-        "/.a3s_image_metadata_v1.json",
-        "/.a3s_image_metadata_v1.json.tmp",
-        "/.a3s_rootfs_metadata_v1.json",
-        "/.a3s_rootfs_metadata_v1.json.tmp",
-        "/.a3s_rootfs_metadata_v1.previous.json",
+        "/.aster_image_metadata_v1.json",
+        "/.aster_image_metadata_v1.json.tmp",
+        "/.aster_rootfs_metadata_v1.json",
+        "/.aster_rootfs_metadata_v1.json.tmp",
+        "/.aster_rootfs_metadata_v1.previous.json",
     ];
     if mount.destination == Path::new("/")
         || PROTECTED_DESTINATIONS.iter().any(|protected| {
@@ -1627,19 +1627,19 @@ mod tests {
     fn sample_input() -> SandboxBundleSpec {
         SandboxBundleSpec {
             box_id: "box-123".to_string(),
-            rootfs_path: std::env::temp_dir().join("a3s/boxes/box-123/rootfs"),
+            rootfs_path: std::env::temp_dir().join("aster/boxes/box-123/rootfs"),
             rootfs_read_only: false,
             hostname: "box-123".to_string(),
             init_path: "/sbin/init".to_string(),
             init_environment: vec![
                 ("PATH".to_string(), "/bin".to_string()),
                 (
-                    "A3S_BOOTSTRAP_MODE".to_string(),
+                    "ASTER_BOOTSTRAP_MODE".to_string(),
                     "attacker-value".to_string(),
                 ),
             ],
             mounts: vec![SandboxMount {
-                source: std::env::temp_dir().join("a3s/workspaces/box-123"),
+                source: std::env::temp_dir().join("aster/workspaces/box-123"),
                 destination: PathBuf::from("/workspace"),
                 read_only: false,
             }],
@@ -1685,10 +1685,10 @@ mod tests {
             args: vec!["/usr/bin/example".to_string(), "--serve".to_string()],
             environment: vec![
                 ("APP_MODE".to_string(), "production".to_string()),
-                ("A3S_EXEC_LISTENER_FD".to_string(), "99".to_string()),
-                ("A3S_PTY_LISTENER_FD".to_string(), "98".to_string()),
-                ("A3S_INIT_LOG_FD".to_string(), "97".to_string()),
-                ("A3S_BOOTSTRAP_MODE".to_string(), "image-value".to_string()),
+                ("ASTER_EXEC_LISTENER_FD".to_string(), "99".to_string()),
+                ("ASTER_PTY_LISTENER_FD".to_string(), "98".to_string()),
+                ("ASTER_INIT_LOG_FD".to_string(), "97".to_string()),
+                ("ASTER_BOOTSTRAP_MODE".to_string(), "image-value".to_string()),
             ],
             cwd: PathBuf::from("/workspace"),
             uid: 123,
@@ -1739,7 +1739,7 @@ mod tests {
             RUNTIME_BUNDLE_HANDOFF_MOVE_V1
         );
         assert_eq!(
-            value["annotations"]["com.a3s.box.isolation-class"],
+            value["annotations"]["com.aster.box.isolation-class"],
             "hardware-vm"
         );
         let namespaces = value["linux"]["namespaces"].as_array().unwrap();
@@ -1769,8 +1769,8 @@ mod tests {
             serde_json::json!([789])
         );
         assert_eq!(
-            value["annotations"]["com.a3s.box.process-owner"],
-            "a3s-oci-runtime"
+            value["annotations"]["com.aster.box.process-owner"],
+            "aster-oci-runtime"
         );
         let annotations = value["annotations"].as_object().unwrap();
         for annotation in [
@@ -1859,19 +1859,19 @@ mod tests {
         assert_eq!(value["linux"]["resources"]["pids"]["limit"], 512);
         assert_eq!(value["linux"]["resources"]["cpu"]["cpus"], "0-1");
         assert_eq!(
-            value["annotations"][a3s_oci_sdk::CONTROL_WORKLOAD_CGROUP_LAYOUT_ANNOTATION],
-            a3s_oci_sdk::CONTROL_WORKLOAD_CGROUP_LAYOUT_V1
+            value["annotations"][aster_oci_sdk::CONTROL_WORKLOAD_CGROUP_LAYOUT_ANNOTATION],
+            aster_oci_sdk::CONTROL_WORKLOAD_CGROUP_LAYOUT_V1
         );
         assert_eq!(
-            value["annotations"][a3s_oci_sdk::CONTROL_CGROUP_MEMORY_HEADROOM_ANNOTATION],
+            value["annotations"][aster_oci_sdk::CONTROL_CGROUP_MEMORY_HEADROOM_ANNOTATION],
             SANDBOX_CONTROL_MEMORY_HEADROOM_BYTES.to_string()
         );
         assert_eq!(
-            value["annotations"][a3s_oci_sdk::CONTROL_CGROUP_CPU_HEADROOM_ANNOTATION],
+            value["annotations"][aster_oci_sdk::CONTROL_CGROUP_CPU_HEADROOM_ANNOTATION],
             DEFAULT_CPU_PERIOD_US.to_string()
         );
         assert_eq!(
-            value["annotations"][a3s_oci_sdk::CONTROL_CGROUP_PIDS_HEADROOM_ANNOTATION],
+            value["annotations"][aster_oci_sdk::CONTROL_CGROUP_PIDS_HEADROOM_ANNOTATION],
             SANDBOX_CONTROL_PIDS_HEADROOM.to_string()
         );
         let cgroup_mount = value["mounts"]
@@ -1958,7 +1958,7 @@ mod tests {
         let env = value["process"]["env"].as_array().unwrap();
         assert!(env
             .iter()
-            .any(|value| value == "A3S_SANDBOX_SHARE_HOST_NETWORK=1"));
+            .any(|value| value == "ASTER_SANDBOX_SHARE_HOST_NETWORK=1"));
     }
 
     #[test]
@@ -1990,13 +1990,13 @@ mod tests {
         let env = value["process"]["env"].as_array().unwrap();
         assert!(env
             .iter()
-            .any(|value| value == "A3S_BOOTSTRAP_MODE=host-sandbox"));
-        assert!(env.iter().any(|value| value == "A3S_EXEC_LISTENER_FD=3"));
-        assert!(env.iter().any(|value| value == "A3S_PTY_LISTENER_FD=4"));
-        assert!(env.iter().any(|value| value == "A3S_INIT_LOG_FD=5"));
+            .any(|value| value == "ASTER_BOOTSTRAP_MODE=host-sandbox"));
+        assert!(env.iter().any(|value| value == "ASTER_EXEC_LISTENER_FD=3"));
+        assert!(env.iter().any(|value| value == "ASTER_PTY_LISTENER_FD=4"));
+        assert!(env.iter().any(|value| value == "ASTER_INIT_LOG_FD=5"));
         assert!(!env
             .iter()
-            .any(|value| value == "A3S_BOOTSTRAP_MODE=attacker-value"));
+            .any(|value| value == "ASTER_BOOTSTRAP_MODE=attacker-value"));
 
         let bounding = value["process"]["capabilities"]["bounding"]
             .as_array()
@@ -2084,12 +2084,12 @@ mod tests {
     #[test]
     fn compiler_rejects_mounts_at_or_below_metadata_temp_paths() {
         for destination in [
-            "/.a3s-box-exec.json",
-            "/.a3s-box-exec.json/child",
-            "/.a3s_image_metadata_v1.json.tmp",
-            "/.a3s_image_metadata_v1.json.tmp/child",
-            "/.a3s_rootfs_metadata_v1.json.tmp",
-            "/.a3s_rootfs_metadata_v1.json.tmp/child",
+            "/.aster-box-exec.json",
+            "/.aster-box-exec.json/child",
+            "/.aster_image_metadata_v1.json.tmp",
+            "/.aster_image_metadata_v1.json.tmp/child",
+            "/.aster_rootfs_metadata_v1.json.tmp",
+            "/.aster_rootfs_metadata_v1.json.tmp/child",
         ] {
             let mut input = sample_input();
             input.mounts[0].destination = PathBuf::from(destination);
@@ -2130,7 +2130,7 @@ mod tests {
         assert_eq!(resources.memory_limit, 1024 * 1024 * 1024);
         assert_eq!(
             resources.cpu_quota,
-            i64::from(a3s_box_core::config::DEFAULT_VCPUS) * 100000
+            i64::from(aster_box_core::config::DEFAULT_VCPUS) * 100000
         );
         assert_eq!(resources.cpu_period, 100000);
         assert_eq!(resources.pids_limit, DEFAULT_SANDBOX_PIDS_LIMIT);

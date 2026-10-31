@@ -1,5 +1,5 @@
 {
-  "apiVersion": "a3s.dev/form-canonical-conformance/v1",
+  "apiVersion": "aster.dev/form-canonical-conformance/v1",
   "cases": [
     {
       "name": "object-array-unicode",
@@ -35,8 +35,8 @@
   "digestCases": [
     {
       "name": "top-level-digest-excluded",
-      "inputJson": "{\"kind\":\"a3s.form\",\"apiVersion\":\"a3s.dev/form/v1alpha1\",\"revision\":1,\"metadata\":{\"title\":\"Digest Ω\"},\"schema\":{\"type\":\"object\"},\"ui\":{\"root\":\"root\",\"nodes\":[{\"id\":\"root\",\"kind\":\"root\"}]},\"digest\":\"sha256:stale\"}",
-      "canonical": "{\"apiVersion\":\"a3s.dev/form/v1alpha1\",\"kind\":\"a3s.form\",\"metadata\":{\"title\":\"Digest Ω\"},\"revision\":1,\"schema\":{\"type\":\"object\"},\"ui\":{\"nodes\":[{\"id\":\"root\",\"kind\":\"root\"}],\"root\":\"root\"}}",
+      "inputJson": "{\"kind\":\"aster.form\",\"apiVersion\":\"aster.dev/form/v1alpha1\",\"revision\":1,\"metadata\":{\"title\":\"Digest Ω\"},\"schema\":{\"type\":\"object\"},\"ui\":{\"root\":\"root\",\"nodes\":[{\"id\":\"root\",\"kind\":\"root\"}]},\"digest\":\"sha256:stale\"}",
+      "canonical": "{\"apiVersion\":\"aster.dev/form/v1alpha1\",\"kind\":\"aster.form\",\"metadata\":{\"title\":\"Digest Ω\"},\"revision\":1,\"schema\":{\"type\":\"object\"},\"ui\":{\"nodes\":[{\"id\":\"root\",\"kind\":\"root\"}],\"root\":\"root\"}}",
       "sha256": "sha256:c6e8b895095e0853370857f504a997ad6dc0564360295c976eca7cbf49e0a9ab"
     }
   ]

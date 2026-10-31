@@ -6,7 +6,7 @@ set -Eeuo pipefail
 # host_class=fresh requires a single-use operator attestation and may set
 # promotes_readiness=true only when every bound gate reports available.
 
-: "${A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
+: "${ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST:?set the exact Linux KVM system-image manifest}"
 
 source .github/scripts/lib/linux-kvm-fresh-host-attestation.sh
 source .github/scripts/lib/linux-kvm-release-matrix-promotion.sh
@@ -24,10 +24,10 @@ for command in cargo cp cut date jq mkdir mktemp rm sha256sum uname; do
   fi
 done
 
-host_class="${A3S_OCI_LINUX_KVM_HOST_CLASS:-existing}"
-attestation_path="${A3S_OCI_LINUX_KVM_FRESH_HOST_ATTESTATION:-}"
-skip_soak="${A3S_OCI_LINUX_KVM_SKIP_SOAK:-0}"
-soak_iterations_env="${A3S_OCI_LINUX_KVM_SOAK_ITERATIONS:-}"
+host_class="${ASTER_OCI_LINUX_KVM_HOST_CLASS:-existing}"
+attestation_path="${ASTER_OCI_LINUX_KVM_FRESH_HOST_ATTESTATION:-}"
+skip_soak="${ASTER_OCI_LINUX_KVM_SKIP_SOAK:-0}"
+soak_iterations_env="${ASTER_OCI_LINUX_KVM_SOAK_ITERATIONS:-}"
 if [[ -n "$soak_iterations_env" ]]; then
   effective_soak_iterations="$soak_iterations_env"
 else
@@ -37,7 +37,7 @@ linux_kvm_assert_fresh_host_skip_policy "$host_class" "$skip_soak"
 linux_kvm_assert_fresh_host_soak_profile "$host_class" "$effective_soak_iterations"
 if [[ "$host_class" == "fresh" ]]; then
   # Pin the promotion soak depth so child gates cannot inherit a reduced profile.
-  export A3S_OCI_LINUX_KVM_SOAK_ITERATIONS="$LINUX_KVM_PROMOTION_SOAK_ITERATIONS"
+  export ASTER_OCI_LINUX_KVM_SOAK_ITERATIONS="$LINUX_KVM_PROMOTION_SOAK_ITERATIONS"
 fi
 fresh_host_attestation="$(
   linux_kvm_resolve_fresh_host_attestation "$host_class" "$attestation_path"
@@ -45,16 +45,16 @@ fresh_host_attestation="$(
 
 temporary_root="${RUNNER_TEMP:-/tmp}"
 test -d "$temporary_root"
-work="$(mktemp -d "$temporary_root/a3s-oci-kvm-release-matrix.XXXXXX")"
+work="$(mktemp -d "$temporary_root/aster-oci-kvm-release-matrix.XXXXXX")"
 cleanup() {
   local status=$?
-  if [[ "$status" -ne 0 && "${A3S_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
+  if [[ "$status" -ne 0 && "${ASTER_OCI_KEEP_FAILED_WORK:-0}" == "1" ]]; then
     printf 'preserving failed Linux KVM release-matrix work directory: %s\n' \
       "$work" >&2
     return 0
   fi
   case "$work" in
-    "$temporary_root"/a3s-oci-kvm-release-matrix.*)
+    "$temporary_root"/aster-oci-kvm-release-matrix.*)
       rm -rf -- "$work"
       ;;
     *)
@@ -66,7 +66,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-report_path="${A3S_OCI_LINUX_KVM_RELEASE_MATRIX_REPORT:-$work/report.json}"
+report_path="${ASTER_OCI_LINUX_KVM_RELEASE_MATRIX_REPORT:-$work/report.json}"
 if [[ -e "$report_path" || -L "$report_path" ]]; then
   printf 'refusing to overwrite Linux KVM release-matrix report: %s\n' \
     "$report_path" >&2
@@ -82,7 +82,7 @@ if [[ "$fresh_host_attestation" != "null" ]]; then
 fi
 
 manifest_sha256="$(
-  sha256sum "$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1
+  sha256sum "$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST" | cut -d ' ' -f 1
 )"
 started_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 gates_ndjson="$work/gates.ndjson"
@@ -100,13 +100,13 @@ run_gate() {
   printf 'BEGIN Linux KVM release gate: %s\n' "$name" >&2
   started="$(date +%s%3N)"
   env_args=(
-    "A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=$A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
+    "ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=$ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST"
     "$env_name=$gate_report"
   )
   case "$name" in
     agent-entry)
       env_args+=(
-        "A3S_OCI_LINUX_KVM_POST_PROBE_FAILURE_REPORT=$gates_dir/post-probe-failure.json"
+        "ASTER_OCI_LINUX_KVM_POST_PROBE_FAILURE_REPORT=$gates_dir/post-probe-failure.json"
       )
       ;;
   esac
@@ -147,28 +147,28 @@ run_gate() {
 
 run_gate agent-entry \
   .github/scripts/linux-kvm-agent-entry.sh \
-  A3S_OCI_LINUX_KVM_AGENT_REPORT \
-  a3s.oci.linux-kvm-agent-entry.v1
+  ASTER_OCI_LINUX_KVM_AGENT_REPORT \
+  aster.oci.linux-kvm-agent-entry.v1
 
 run_gate compatibility-drift \
   .github/scripts/linux-kvm-compatibility-drift.sh \
-  A3S_OCI_LINUX_KVM_COMPATIBILITY_DRIFT_REPORT \
-  a3s.oci.linux-kvm-compatibility-drift.v2
+  ASTER_OCI_LINUX_KVM_COMPATIBILITY_DRIFT_REPORT \
+  aster.oci.linux-kvm-compatibility-drift.v2
 
 run_gate lifecycle \
   .github/scripts/linux-kvm-lifecycle.sh \
-  A3S_OCI_LINUX_KVM_LIFECYCLE_REPORT \
-  a3s.oci.linux-kvm-lifecycle-matrix.v2
+  ASTER_OCI_LINUX_KVM_LIFECYCLE_REPORT \
+  aster.oci.linux-kvm-lifecycle-matrix.v2
 
 run_gate recovery \
   .github/scripts/linux-kvm-recovery.sh \
-  A3S_OCI_LINUX_KVM_RECOVERY_REPORT \
-  a3s.oci.linux-kvm-recovery-matrix.v2
+  ASTER_OCI_LINUX_KVM_RECOVERY_REPORT \
+  aster.oci.linux-kvm-recovery-matrix.v2
 
 run_gate create-reopen \
   .github/scripts/linux-kvm-create-reopen.sh \
-  A3S_OCI_LINUX_KVM_CREATE_REOPEN_REPORT \
-  a3s.oci.linux-kvm-create-reopen-matrix.v2
+  ASTER_OCI_LINUX_KVM_CREATE_REOPEN_REPORT \
+  aster.oci.linux-kvm-create-reopen-matrix.v2
 
 soak_ran=0
 soak_requested_iterations=0
@@ -176,8 +176,8 @@ soak_completed_iterations=0
 if [[ "$skip_soak" != "1" ]]; then
   run_gate soak \
     .github/scripts/linux-kvm-soak.sh \
-    A3S_OCI_LINUX_KVM_SOAK_REPORT \
-    a3s.oci.linux-kvm-soak-matrix.v2
+    ASTER_OCI_LINUX_KVM_SOAK_REPORT \
+    aster.oci.linux-kvm-soak-matrix.v2
   soak_ran=1
   soak_requested_iterations="$(
     jq --raw-output '.requested_iterations // 0' "$gates_dir/soak.json"
@@ -235,7 +235,7 @@ jq --null-input \
   --arg manifest_sha256 "$manifest_sha256" \
   --argjson gates "$gates_json" \
   '{
-    schema_version: "a3s.oci.linux-kvm-release-matrix.v1",
+    schema_version: "aster.oci.linux-kvm-release-matrix.v1",
     platform: "linux",
     architecture: $architecture,
     status: "available",
@@ -262,7 +262,7 @@ jq --exit-status \
   --arg host_class "$host_class" \
   --argjson promotion_soak_iterations "$LINUX_KVM_PROMOTION_SOAK_ITERATIONS" \
   '
-  .schema_version == "a3s.oci.linux-kvm-release-matrix.v1"
+  .schema_version == "aster.oci.linux-kvm-release-matrix.v1"
   and .platform == "linux"
   and .status == "available"
   and .host_class == $host_class
@@ -279,7 +279,7 @@ jq --exit-status \
       and .soak_requested_iterations == $promotion_soak_iterations
       and .soak_completed_iterations == $promotion_soak_iterations
       and (.fresh_host_attestation.schema_version
-           == "a3s.oci.linux-kvm-fresh-host-attestation.v1")
+           == "aster.oci.linux-kvm-fresh-host-attestation.v1")
     else
       (.promotes_readiness | not)
       and .fresh_host_attestation == null

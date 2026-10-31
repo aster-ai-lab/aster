@@ -8,7 +8,7 @@ use tokio::net::TcpListener;
 fn concurrency_ceiling_proxy_error_names_the_ceiling() {
     let config = crate::config::GatewayConfig::from_acl(
         r#"
-        entrypoints "a3s-cloud-function" { address = "127.0.0.1:18081" }
+        entrypoints "aster-cloud-function" { address = "127.0.0.1:18081" }
         hosted_function_service_edge_traffic_intents {
           intents "/functions/sessionless-mcp" {
             traffic {

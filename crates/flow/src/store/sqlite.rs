@@ -1,7 +1,7 @@
 use std::fmt;
 use std::path::{Path, PathBuf};
 
-use a3s_orm::{
+use aster_orm::{
     sql_query, Database, Executor, FromRow, Migrator, Query, SqlQuery, SqliteDialect, SqliteError,
     SqliteExecutor, SqliteRow, SqliteTransaction, SqliteTransactionError, Value,
 };
@@ -25,7 +25,7 @@ use super::{
 
 mod retention;
 
-/// A3S ORM-backed SQLite event store for single-node durable hosts.
+/// Aster ORM-backed SQLite event store for single-node durable hosts.
 ///
 /// The store keeps one row per [`FlowEventEnvelope`] and uses an ORM-managed
 /// immediate transaction for expected-sequence append safety and audit-safe
@@ -1153,19 +1153,19 @@ pub(super) fn map_sqlite_transaction<T>(
     }
 }
 
-fn sqlite_query_error(error: a3s_orm::Error) -> FlowError {
+fn sqlite_query_error(error: aster_orm::Error) -> FlowError {
     FlowError::Store(format!("SQLite Flow query build failed: {error}"))
 }
 
-fn sqlite_driver_error(error: a3s_orm::SqliteError) -> FlowError {
+fn sqlite_driver_error(error: aster_orm::SqliteError) -> FlowError {
     FlowError::Store(format!("SQLite Flow storage failed: {error}"))
 }
 
-fn sqlite_decode_error(error: a3s_orm::DecodeError) -> FlowError {
+fn sqlite_decode_error(error: aster_orm::DecodeError) -> FlowError {
     FlowError::Store(format!("SQLite Flow row decoding failed: {error}"))
 }
 
-fn sqlite_orm_error(error: a3s_orm::DatabaseError<a3s_orm::SqliteError>) -> FlowError {
+fn sqlite_orm_error(error: aster_orm::DatabaseError<aster_orm::SqliteError>) -> FlowError {
     FlowError::Store(format!("SQLite Flow storage failed: {error}"))
 }
 
@@ -1177,7 +1177,7 @@ async fn adopt_historical_sqlite_flow_migration_ids(executor: &SqliteExecutor) -
     let database = Database::new(SqliteDialect, executor.clone());
     let tables = database
         .fetch_all(sql_query::<()>(
-            "select name from sqlite_master where type = 'table' and name = 'a3s_orm_migrations'",
+            "select name from sqlite_master where type = 'table' and name = 'aster_orm_migrations'",
         ))
         .await
         .map_err(sqlite_orm_error)?;
@@ -1186,7 +1186,7 @@ async fn adopt_historical_sqlite_flow_migration_ids(executor: &SqliteExecutor) -
     }
     let applied = database
         .fetch_all(sql_query::<()>(
-            "select version, checksum from a3s_orm_migrations where version like 'kense-flow-%' order by version",
+            "select version, checksum from aster_orm_migrations where version like 'kense-flow-%' order by version",
         ))
         .await
         .map_err(sqlite_orm_error)?;
@@ -1211,7 +1211,7 @@ async fn adopt_historical_sqlite_flow_migration_ids(executor: &SqliteExecutor) -
         }
         database
             .execute(
-                sql_query::<()>("update a3s_orm_migrations set version = ")
+                sql_query::<()>("update aster_orm_migrations set version = ")
                     .bind(renamed)
                     .append(" where version = ")
                     .bind(version),

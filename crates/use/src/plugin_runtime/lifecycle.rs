@@ -1,8 +1,8 @@
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     RuntimeActionRequest, RuntimeFeature, RuntimeHealthState, RuntimeInspection,
     RuntimeObservation, RuntimeRemoval, RuntimeUnitClass, RuntimeUnitState,
 };
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use serde::Serialize;
 
 use super::client::{runtime_capabilities_digest, runtime_error, PluginRuntimeClient};

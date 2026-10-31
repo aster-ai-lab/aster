@@ -251,10 +251,10 @@ export function DataGridToolbar(props: {
     : '';
   return (
     <div
-      className={`a3s-form-data-grid-toolbar${props.filtering ? ' has-filter' : ''}${!props.filtering && props.sorting && !props.paste ? ' is-sort-only' : ''}`}
+      className={`aster-form-data-grid-toolbar${props.filtering ? ' has-filter' : ''}${!props.filtering && props.sorting && !props.paste ? ' is-sort-only' : ''}`}
     >
       {props.filtering && (
-        <label className="a3s-form-data-grid-filter">
+        <label className="aster-form-data-grid-filter">
           <DataGridViewIcon name="search" />
           <input
             className="input"
@@ -283,7 +283,7 @@ export function DataGridToolbar(props: {
         </label>
       )}
       {props.sorting && (
-        <label className="a3s-form-data-grid-mobile-sort">
+        <label className="aster-form-data-grid-mobile-sort">
           <DataGridViewIcon name="sort" />
           <SelectControl
             aria-label={formatFormMessage(props.messages, 'dataGridMobileSortLabel', {
@@ -315,7 +315,7 @@ export function DataGridToolbar(props: {
         </label>
       )}
       {props.filtering && props.filterValue.trim().length > 0 && (
-        <span className="a3s-form-data-grid-filter-status" role="status" aria-live="polite">
+        <span className="aster-form-data-grid-filter-status" role="status" aria-live="polite">
           {formatFormMessage(props.messages, 'dataGridFilterResults', {
             visible: props.visibleCount,
             total: props.totalCount,
@@ -326,7 +326,7 @@ export function DataGridToolbar(props: {
       {props.paste && (
         <button
           type="button"
-          className="a3s-form-data-grid-paste-action btn"
+          className="aster-form-data-grid-paste-action btn"
           data-size="sm"
           data-variant="secondary"
           disabled={props.pasteDisabled}
@@ -362,7 +362,7 @@ export function DataGridColumnHeader(props: {
     <th scope="col" aria-label={props.column.label} aria-sort={direction}>
       <button
         type="button"
-        className="a3s-form-data-grid-sort btn"
+        className="aster-form-data-grid-sort btn"
         data-size="xs"
         data-variant="ghost"
         data-direction={direction}
@@ -385,7 +385,7 @@ export function DataGridNoResults(props: {
 }) {
   return (
     <tr>
-      <td className="a3s-form-data-grid-empty is-filtered" colSpan={props.colSpan}>
+      <td className="aster-form-data-grid-empty is-filtered" colSpan={props.colSpan}>
         <span role="status">{props.messages.dataGridFilterNoResults}</span>
         <button type="button" className="btn" onClick={props.onClear}>
           {props.messages.dataGridFilterNoResultsClear}
@@ -408,7 +408,7 @@ export function SelectionCheckbox(props: {
         if (input) input.indeterminate = Boolean(props.mixed);
       }}
       type="checkbox"
-      className="a3s-form-data-grid-select input"
+      className="aster-form-data-grid-select input"
       aria-label={props.label}
       checked={props.checked}
       disabled={props.disabled}

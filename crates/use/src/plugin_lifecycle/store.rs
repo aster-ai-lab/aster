@@ -4,8 +4,8 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::{PlanScope, PluginPackageId, UseError, UseResult};
-use a3s_use_extension::{ExtensionPaths, StateMaintenanceGuard, StateMaintenanceLock};
+use aster_use_core::{PlanScope, PluginPackageId, UseError, UseResult};
+use aster_use_extension::{ExtensionPaths, StateMaintenanceGuard, StateMaintenanceLock};
 use fs2::FileExt;
 use sha2::{Digest, Sha256};
 use tokio::fs;
@@ -280,7 +280,7 @@ async fn acquire_lock(state_root: &Path, directory: &Path) -> UseResult<Lifecycl
     let lock_path = directory.join(".operation.lock");
     match fs::symlink_metadata(&lock_path).await {
         Ok(metadata)
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                 || !metadata.is_file() =>
         {
             return Err(path_identity_error())
@@ -323,7 +323,7 @@ async fn read_optional_record(path: &Path) -> UseResult<Option<PluginLifecycleOp
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(path_error("inspect lifecycle record", path, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > MAX_OPERATION_BYTES
@@ -443,7 +443,7 @@ async fn validate_existing_directory_chain(root: &Path, directory: &Path) -> Use
         }
         match fs::symlink_metadata(&current).await {
             Ok(metadata)
-                if !a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+                if !aster_use_core::metadata_is_link_or_reparse_point(&metadata)
                     && metadata.is_dir() => {}
             Ok(_) => return Err(path_identity_error()),
             Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(false),
@@ -462,7 +462,7 @@ async fn validate_existing_directory_chain(root: &Path, directory: &Path) -> Use
 async fn activate_temporary(temporary: PathBuf, target: PathBuf) -> UseResult<()> {
     let error_target = target.clone();
     tokio::task::spawn_blocking(move || {
-        a3s_use_extension::persist_temporary_replace_blocking(temporary, &target)
+        aster_use_extension::persist_temporary_replace_blocking(temporary, &target)
     })
     .await
     .map_err(|error| {
@@ -481,7 +481,7 @@ async fn validate_directory(path: &Path) -> UseResult<()> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| path_error("inspect lifecycle directory", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(path_identity_error());
     }
     Ok(())

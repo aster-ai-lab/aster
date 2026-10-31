@@ -1,7 +1,7 @@
-//! Registry for providers shipped with `a3s-search`.
+//! Registry for providers shipped with `aster-search`.
 
 use super::{
-    A3sProvider, AliyunProvider, AnySearchProvider, BochaProvider, DeepSeekProvider,
+    AsterProvider, AliyunProvider, AnySearchProvider, BochaProvider, DeepSeekProvider,
     DoubaoProvider, FirecrawlProvider, ProviderEngine, TavilyProvider, TencentProvider,
     TinyFishProvider,
 };
@@ -25,8 +25,8 @@ pub enum BuiltinProvider {
     Tencent,
     /// Firecrawl Search API. Requires `FIRECRAWL_API_KEY`.
     Firecrawl,
-    /// A3S search API. Requires `A3S_GATEWAY_KEY`.
-    A3s,
+    /// Aster search API. Requires `ASTER_GATEWAY_KEY`.
+    Aster,
     /// Volcengine Doubao Search. Requires `DOUBAO_SEARCH_API_KEY`.
     Doubao,
     /// DeepSeek Search. Requires `DEEPSEEK_API_KEY`.
@@ -43,7 +43,7 @@ impl BuiltinProvider {
         Self::Aliyun,
         Self::Tencent,
         Self::Firecrawl,
-        Self::A3s,
+        Self::Aster,
         Self::Doubao,
         Self::DeepSeek,
     ];
@@ -64,7 +64,7 @@ impl BuiltinProvider {
             "aliyun" => Some(Self::Aliyun),
             "tencent" => Some(Self::Tencent),
             "firecrawl" => Some(Self::Firecrawl),
-            "a3s" => Some(Self::A3s),
+            "aster" => Some(Self::Aster),
             "doubao" => Some(Self::Doubao),
             "deepseek" => Some(Self::DeepSeek),
             _ => None,
@@ -81,7 +81,7 @@ impl BuiltinProvider {
             Self::Aliyun => "aliyun",
             Self::Tencent => "tencent",
             Self::Firecrawl => "firecrawl",
-            Self::A3s => "a3s",
+            Self::Aster => "aster",
             Self::Doubao => "doubao",
             Self::DeepSeek => "deepseek",
         }
@@ -97,7 +97,7 @@ impl BuiltinProvider {
             Self::Aliyun => Ok(ProviderEngine::new(AliyunProvider::from_env()?)),
             Self::Tencent => Ok(ProviderEngine::new(TencentProvider::from_env()?)),
             Self::Firecrawl => Ok(ProviderEngine::new(FirecrawlProvider::from_env()?)),
-            Self::A3s => Ok(ProviderEngine::new(A3sProvider::from_env()?)),
+            Self::Aster => Ok(ProviderEngine::new(AsterProvider::from_env()?)),
             Self::Doubao => Ok(ProviderEngine::new(DoubaoProvider::from_env()?)),
             Self::DeepSeek => Ok(ProviderEngine::new(DeepSeekProvider::from_env()?)),
         }
@@ -126,7 +126,7 @@ mod tests {
                 "aliyun",
                 "tencent",
                 "firecrawl",
-                "a3s",
+                "aster",
                 "doubao",
                 "deepseek"
             ]

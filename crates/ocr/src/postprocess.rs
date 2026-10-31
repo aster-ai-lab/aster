@@ -1,4 +1,4 @@
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use clipper2::{Centi, EndType, JoinType};
 use image::{GrayImage, Luma};
 use imageproc::contours::find_contours;

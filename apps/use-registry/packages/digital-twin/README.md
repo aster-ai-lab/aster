@@ -7,7 +7,7 @@ declares an ActivityBar container and a workspace composer mode. Aster owns
 installation, scoped project resources and agent execution; the package owns
 scene editing and rendering. It grants no physical-device command channel.
 
-The editor uses `a3s-digital-twin` compiled to WebAssembly. ACL is the saved
+The editor uses `aster-digital-twin` compiled to WebAssembly. ACL is the saved
 scene format; structured JSON is used only for typed transport messages. Scene
 validation, revisions and inverse operations come from the same Rust domain.
 

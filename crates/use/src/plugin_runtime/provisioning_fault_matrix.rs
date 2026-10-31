@@ -1,7 +1,7 @@
 use super::RuntimeServiceProvisioningPhase;
 
 pub(crate) const CHECKPOINT_CRASH_EXIT_CODE: i32 = 87;
-pub(crate) const FAULT_CHECKPOINT_ENV: &str = "A3S_USE_TEST_RUNTIME_PROVISIONING_CHECKPOINT";
+pub(crate) const FAULT_CHECKPOINT_ENV: &str = "ASTER_USE_TEST_RUNTIME_PROVISIONING_CHECKPOINT";
 pub(crate) const REQUESTED_SYNCED: &str = "requested-synced";
 pub(crate) const RUNTIME_EFFECT: &str = "runtime-effect";
 pub(crate) const RUNTIME_APPLIED_SYNCED: &str = "runtime-applied-synced";

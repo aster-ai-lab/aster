@@ -1,5 +1,5 @@
 {
-  "schema": "a3s.workspace-chunking-sdk.fixture.v1",
+  "schema": "aster.workspace-chunking-sdk.fixture.v1",
   "cases": [
     {
       "name": "line",

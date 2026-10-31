@@ -113,7 +113,7 @@ Users on macOS and Windows use their native capture, input and transcription ada
 - **FR-016**: Provide equivalent native operations for the complete public and diagnostic inventory in `contracts/cli-inventory.md`, including inspect, zoom, frames, export, devices, link, import, retranscribe/reprocess, recover, autocrop, clean, pin, route and headless ingest, without adding Node, Python or Go SDK bindings.
 - **FR-017**: Provide macOS and Windows native adapters and a real Linux adapter or record the feature incomplete. Every unsupported operation must refuse with `desktop-capability-unavailable`; hiding failure must not count as completion.
 - **FR-018**: Provide configurable recording and paste shortcuts with conflict detection and independent enablement. Do not steal the existing screenshot binding.
-- **FR-019**: Keep product configuration in ACL parsed by `a3s-acl` through existing preference/config boundaries. Do not add another product configuration language or workspace.
+- **FR-019**: Keep product configuration in ACL parsed by `aster-acl` through existing preference/config boundaries. Do not add another product configuration language or workspace.
 - **FR-020**: Internalize permitted Scrawl source with an exact upstream revision, MIT notice and provenance. Keep Aster-owned UI, routing, permissions and delivery; do not embed the separate Scrawl.app or its updater.
 - **FR-021**: Add hermetic tests in each owning package and real native acceptance for the toolbar workflow, agent inspection, permissions, export, recovery and packaged helper processes. Static checks alone do not prove native capture.
 - **FR-022**: Do not send raw media or evidence to a model, endpoint or another tenant without the corresponding explicit product action and authorized destination.
@@ -133,8 +133,8 @@ Users on macOS and Windows use their native capture, input and transcription ada
 - [ ] New behavior has a small hermetic test in each owning package
 - [ ] Closed sets: every new Rust enum has `parse()` / `as_str()`
 - [ ] No production `unwrap()` / `expect()` without an infallibility comment
-- [ ] Internal `a3s-*` dependencies stay on a path in this repository
-- [ ] Product configuration is ACL parsed by `a3s-acl`
+- [ ] Internal `aster-*` dependencies stay on a path in this repository
+- [ ] Product configuration is ACL parsed by `aster-acl`
 - [ ] No second Cargo workspace, external repository, Node/Python/Go SDK, native HTML `<select>`, or unguarded Tauri command
 - [ ] Evidence target: `docs/evidence/desktop/2026-10-30-scrawl-evidence/OUTCOME.md`
 

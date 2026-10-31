@@ -2,7 +2,7 @@ mod create;
 mod decide;
 mod shared;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::collaboration::{
     collaboration_error, NativeOfficeCollaborationManifest, NativeOfficeCollaborationMutation,

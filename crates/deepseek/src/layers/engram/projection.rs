@@ -3,7 +3,7 @@
 //! DeepInfer algorithm adaptation (Apache-2.0), revision
 //! 9bd9cf243fc53ef9afbf8f04d391d989117d6ab9, v4_modules/engram.py.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::DType;
 use tokio_util::sync::CancellationToken;
 

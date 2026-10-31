@@ -1,7 +1,7 @@
 //! Mechanistic-interpretability tier — scoring an LLM output from the model's own residual-stream
 //! features, not its surface text.
 //!
-//! a3s-power serves the model inside a TEE and taps the residual stream at one layer, encodes it with
+//! aster-power serves the model inside a TEE and taps the residual stream at one layer, encodes it with
 //! a Sparse Autoencoder, and emits only the sparse `(feature_id, activation)` pairs as an
 //! [`Event::LlmActivations`] — the prompt/completion plaintext never leaves the enclave. This tier
 //! ([`SaeJudge`]) scores those features against a *labeled feature dictionary* (each SAE feature →
@@ -42,7 +42,7 @@ fn default_severity() -> Severity {
 pub type FeatureDict = HashMap<u32, FeatureLabel>;
 
 /// Scores a model output from its SAE feature activations against a labeled feature dictionary.
-/// Confidential (sees only `(id, activation)` from a3s-power's enclave) and auditable (linear in
+/// Confidential (sees only `(id, activation)` from aster-power's enclave) and auditable (linear in
 /// interpretable features). Thresholds map the harmful score onto block / escalate / allow.
 pub struct SaeJudge {
     dict: FeatureDict,

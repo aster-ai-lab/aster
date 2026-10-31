@@ -1,20 +1,20 @@
 [CmdletBinding()]
 param(
-    [string]$Version = $env:A3S_USE_VERSION,
-    [string]$BaseUrl = $env:A3S_USE_RELEASE_BASE_URL,
-    [string]$InstallRoot = $env:A3S_USE_INSTALL_ROOT,
-    [string]$BinDir = $env:A3S_USE_BIN_DIR,
-    [string]$CosignPath = $env:A3S_USE_COSIGN,
+    [string]$Version = $env:ASTER_USE_VERSION,
+    [string]$BaseUrl = $env:ASTER_USE_RELEASE_BASE_URL,
+    [string]$InstallRoot = $env:ASTER_USE_INSTALL_ROOT,
+    [string]$BinDir = $env:ASTER_USE_BIN_DIR,
+    [string]$CosignPath = $env:ASTER_USE_COSIGN,
     [switch]$NoPathUpdate
 )
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-$Repository = 'A3S-Lab/Use'
+$Repository = 'aster-ai-lab/Use'
 
 function Fail([string]$Message) {
-    throw "a3s-use installer: $Message"
+    throw "aster-use installer: $Message"
 }
 
 function Assert-DownloadUri([uri]$Uri, [switch]$AllowQuery) {
@@ -41,7 +41,7 @@ function Invoke-ReleaseFileDownload([uri]$Uri, [string]$Destination) {
         $Handler.UseProxy = $false
     }
     $Client = [Net.Http.HttpClient]::new($Handler)
-    $Client.DefaultRequestHeaders.UserAgent.ParseAdd('a3s-use-installer/1.0')
+    $Client.DefaultRequestHeaders.UserAgent.ParseAdd('aster-use-installer/1.0')
     try {
         $CurrentUri = $Uri
         foreach ($Redirect in 0..5) {
@@ -139,13 +139,13 @@ if ([string]::IsNullOrWhiteSpace($InstallRoot)) {
     if ([string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) {
         Fail 'LOCALAPPDATA or -InstallRoot is required'
     }
-    $InstallRoot = Join-Path $env:LOCALAPPDATA 'A3S\Use'
+    $InstallRoot = Join-Path $env:LOCALAPPDATA 'Aster\Use'
 }
 if ([string]::IsNullOrWhiteSpace($BinDir)) {
     if ([string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) {
         Fail 'LOCALAPPDATA or -BinDir is required'
     }
-    $BinDir = Join-Path $env:LOCALAPPDATA 'A3S\bin'
+    $BinDir = Join-Path $env:LOCALAPPDATA 'Aster\bin'
 }
 if ([string]::IsNullOrWhiteSpace($CosignPath)) {
     $CosignPath = 'cosign'
@@ -179,7 +179,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
     Assert-DownloadUri $LatestUri
     $Latest = Invoke-RestMethod -Uri $LatestUri -Headers @{
         Accept = 'application/vnd.github+json'
-        'User-Agent' = 'a3s-use-installer/1.0'
+        'User-Agent' = 'aster-use-installer/1.0'
     }
     $Version = [string]$Latest.tag_name
 }
@@ -204,9 +204,9 @@ if ([Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne
 }
 
 $Platform = 'windows-x86_64'
-$ArchiveName = "a3s-use-$Version-$Platform.zip"
+$ArchiveName = "aster-use-$Version-$Platform.zip"
 $ReleaseUri = "$BaseUrl/$Tag"
-$DownloadRoot = Join-Path ([IO.Path]::GetTempPath()) "a3s-use-install-$([guid]::NewGuid().ToString('N'))"
+$DownloadRoot = Join-Path ([IO.Path]::GetTempPath()) "aster-use-install-$([guid]::NewGuid().ToString('N'))"
 $StageRoot = $null
 $InstallLock = $null
 $LockPath = $null
@@ -314,14 +314,14 @@ try {
     }
 
     New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
-    $ShimPath = Join-Path $BinDir 'a3s-use.cmd'
+    $ShimPath = Join-Path $BinDir 'aster-use.cmd'
     if (Test-Path -LiteralPath $ShimPath) {
         if (-not (Test-Path -LiteralPath $ShimPath -PathType Leaf)) {
             Fail "refusing to replace a non-file command: $ShimPath"
         }
         $ExistingShim = Get-Content -LiteralPath $ShimPath -Raw
-        if (-not $ExistingShim.Contains('A3S_USE_MANAGED_SHIM=1')) {
-            Fail "refusing to replace a command not managed by A3S Use: $ShimPath"
+        if (-not $ExistingShim.Contains('ASTER_USE_MANAGED_SHIM=1')) {
+            Fail "refusing to replace a command not managed by Aster Use: $ShimPath"
         }
     }
 
@@ -334,20 +334,20 @@ try {
     New-Item -ItemType Directory -Path $StageRoot | Out-Null
     Expand-Archive -LiteralPath $ArchivePath -DestinationPath $StageRoot
 
-    $Executable = Join-Path $StageRoot 'a3s-use.exe'
+    $Executable = Join-Path $StageRoot 'aster-use.exe'
     if (-not (Test-Path -LiteralPath $Executable -PathType Leaf)) {
-        Fail 'the release archive does not contain a3s-use.exe'
+        Fail 'the release archive does not contain aster-use.exe'
     }
-    Set-Content -LiteralPath (Join-Path $StageRoot '.a3s-use-archive.sha256') -Value $ExpectedSha256 -Encoding ascii
-    Copy-Item -LiteralPath $ChecksumsPath -Destination (Join-Path $StageRoot '.a3s-use-checksums.txt')
-    Copy-Item -LiteralPath $SignatureBundlePath -Destination (Join-Path $StageRoot '.a3s-use-checksums.sigstore.json')
+    Set-Content -LiteralPath (Join-Path $StageRoot '.aster-use-archive.sha256') -Value $ExpectedSha256 -Encoding ascii
+    Copy-Item -LiteralPath $ChecksumsPath -Destination (Join-Path $StageRoot '.aster-use-checksums.txt')
+    Copy-Item -LiteralPath $SignatureBundlePath -Destination (Join-Path $StageRoot '.aster-use-checksums.sigstore.json')
 
     if (Test-Path -LiteralPath $ReleaseRoot) {
         $ReleaseRootItem = Get-Item -LiteralPath $ReleaseRoot -Force
         if (($ReleaseRootItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
             Fail "the existing release path cannot be a reparse point: $ReleaseRoot"
         }
-        $DigestPath = Join-Path $ReleaseRoot '.a3s-use-archive.sha256'
+        $DigestPath = Join-Path $ReleaseRoot '.aster-use-archive.sha256'
         $InstalledDigest = if (Test-Path -LiteralPath $DigestPath -PathType Leaf) {
             (Get-Content -LiteralPath $DigestPath -Raw).Trim()
         } else {
@@ -369,16 +369,16 @@ try {
         $StageRoot = $null
     }
 
-    $InstalledExecutable = Join-Path $ReleaseRoot 'a3s-use.exe'
-    $TemporaryShim = Join-Path $BinDir ".a3s-use-$([guid]::NewGuid().ToString('N')).cmd"
+    $InstalledExecutable = Join-Path $ReleaseRoot 'aster-use.exe'
+    $TemporaryShim = Join-Path $BinDir ".aster-use-$([guid]::NewGuid().ToString('N')).cmd"
     $ShimContent = @"
 @echo off
-rem A3S_USE_MANAGED_SHIM=1
+rem ASTER_USE_MANAGED_SHIM=1
 "$InstalledExecutable" %*
 "@ -replace "`r?`n", "`r`n"
     [IO.File]::WriteAllText($TemporaryShim, $ShimContent, [Text.UTF8Encoding]::new($false))
     if ([IO.File]::Exists($ShimPath)) {
-        $BackupShim = Join-Path $BinDir ".a3s-use-backup-$([guid]::NewGuid().ToString('N')).cmd"
+        $BackupShim = Join-Path $BinDir ".aster-use-backup-$([guid]::NewGuid().ToString('N')).cmd"
         [IO.File]::Replace($TemporaryShim, $ShimPath, $BackupShim, $true)
         $TemporaryShim = $null
         [IO.File]::Delete($BackupShim)
@@ -401,12 +401,12 @@ rem A3S_USE_MANAGED_SHIM=1
         }
     }
 
-    Write-Output "Installed A3S Use $Version for $Platform"
+    Write-Output "Installed Aster Use $Version for $Platform"
     Write-Output "Verified checksum signature: $CertificateIdentity"
     Write-Output "Verified archive: sha256:$ExpectedSha256"
     Write-Output "Command: $ShimPath"
     if ($NoPathUpdate) {
-        Write-Output "Add $BinDir to PATH to invoke a3s-use directly."
+        Write-Output "Add $BinDir to PATH to invoke aster-use directly."
     }
 }
 finally {

@@ -1,7 +1,7 @@
 use std::io;
 use std::path::Path;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::state::{
     parse_weight_state, read_max_state, read_max_state_async, read_optional, read_optional_async,

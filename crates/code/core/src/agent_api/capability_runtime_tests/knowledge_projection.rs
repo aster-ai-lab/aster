@@ -11,7 +11,7 @@ use crate::store::SessionStore;
 use sha2::{Digest, Sha256};
 
 const CANONICAL_DIGEST_PREFIX: &[u8] = b"agentic-ontology-canonical-v1\0";
-const CAPABILITY_SNAPSHOT_DIGEST_DOMAIN: &str = "a3s.use.capability-snapshot.v1";
+const CAPABILITY_SNAPSHOT_DIGEST_DOMAIN: &str = "aster.use.capability-snapshot.v1";
 
 struct NoKnowledgeClient;
 

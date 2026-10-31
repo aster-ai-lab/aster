@@ -15,14 +15,14 @@ use std::sync::{Arc, Condvar, Mutex, OnceLock};
 use std::time::Duration;
 
 #[cfg(any(target_os = "linux", test))]
-use a3s_box_core::exec::GuestSessionRequest;
-use a3s_box_core::exec::{
+use aster_box_core::exec::GuestSessionRequest;
+use aster_box_core::exec::{
     ExecChunk, ExecExit, ExecOutput, ExecRequest, FileOp, FileRequest, FileResponse,
     FilesystemEntry, FilesystemEntryKind, FilesystemOp, FilesystemRequest, FilesystemResponse,
     StreamType, DEFAULT_EXEC_TIMEOUT_NS, EXEC_VSOCK_PORT, MAX_BOUNDED_FILE_BYTES,
     MAX_ONE_SHOT_OUTPUT_BYTES,
 };
-use a3s_transport::{FrameType, MAX_PAYLOAD_SIZE};
+use aster_transport::{FrameType, MAX_PAYLOAD_SIZE};
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use sha2::{Digest, Sha256};
@@ -200,7 +200,7 @@ pub fn cgroup_oom_kills_at(procs_path: &str) -> u64 {
         .unwrap_or(0)
 }
 
-/// Create a per-exec cgroup when CRI/resource `A3S_SEC_*` limits are present.
+/// Create a per-exec cgroup when CRI/resource `ASTER_SEC_*` limits are present.
 ///
 /// CRI `StartContainer` does not reboot the guest; it only execs into the pod
 /// VM. Without this, limits pushed in the exec env were dropped and the child
@@ -217,13 +217,13 @@ pub fn create_exec_resource_cgroup(env: &[String]) -> Option<crate::cgroup::Cont
             .find_map(|entry| entry.strip_prefix(&format!("{key}=")))
             .and_then(|value| value.parse::<i64>().ok())
     };
-    let memory_max = env_u64("A3S_SEC_MEM_LIMIT");
-    let memory_low = env_u64("A3S_SEC_MEM_LOW");
-    let memory_swap_max = env_i64("A3S_SEC_MEM_SWAP");
-    let cpu_quota = env_i64("A3S_SEC_CPU_QUOTA");
-    let cpu_period = env_u64("A3S_SEC_CPU_PERIOD");
-    let cpu_shares = env_u64("A3S_SEC_CPU_SHARES");
-    let pids_max = env_u64("A3S_SEC_PIDS_LIMIT");
+    let memory_max = env_u64("ASTER_SEC_MEM_LIMIT");
+    let memory_low = env_u64("ASTER_SEC_MEM_LOW");
+    let memory_swap_max = env_i64("ASTER_SEC_MEM_SWAP");
+    let cpu_quota = env_i64("ASTER_SEC_CPU_QUOTA");
+    let cpu_period = env_u64("ASTER_SEC_CPU_PERIOD");
+    let cpu_shares = env_u64("ASTER_SEC_CPU_SHARES");
+    let pids_max = env_u64("ASTER_SEC_PIDS_LIMIT");
     let has_limits = memory_max.is_some_and(|value| value > 0)
         || memory_low.is_some_and(|value| value > 0)
         || memory_swap_max.is_some()
@@ -305,7 +305,7 @@ fn spawn_deferred_main(frame: Option<DeferredMainSpec>) -> Result<i32, String> {
         }
     };
 
-    // cmd vector + env. Include the guest's own A3S_SEC_* control vars so
+    // cmd vector + env. Include the guest's own ASTER_SEC_* control vars so
     // build_command applies the SAME seccomp/user/no-new-privs as a boot-spawned
     // main (the container env carries them on a normal exec; here we add them).
     let mut cmd_vec = Vec::with_capacity(1 + args.len());
@@ -313,7 +313,7 @@ fn spawn_deferred_main(frame: Option<DeferredMainSpec>) -> Result<i32, String> {
     cmd_vec.extend(args);
     let mut env_entries: Vec<String> = env.iter().map(|(k, v)| format!("{k}={v}")).collect();
     for (k, v) in std::env::vars() {
-        if k.starts_with("A3S_SEC_") {
+        if k.starts_with("ASTER_SEC_") {
             env_entries.push(format!("{k}={v}"));
         }
     }
@@ -2133,9 +2133,9 @@ fn build_command(
                 // /dev/urandom) fail to start without them.
                 crate::container_devices::ensure_container_dev_nodes(rootfs);
                 // CRI MaskedPaths/ReadonlyPaths arrive as ':'-separated absolute
-                // paths over A3S_SEC_MASKED_PATHS / A3S_SEC_READONLY_PATHS.
-                let masked = parse_sec_path_list(spec.env, "A3S_SEC_MASKED_PATHS=");
-                let readonly = parse_sec_path_list(spec.env, "A3S_SEC_READONLY_PATHS=");
+                // paths over ASTER_SEC_MASKED_PATHS / ASTER_SEC_READONLY_PATHS.
+                let masked = parse_sec_path_list(spec.env, "ASTER_SEC_MASKED_PATHS=");
+                let readonly = parse_sec_path_list(spec.env, "ASTER_SEC_READONLY_PATHS=");
                 if !masked.is_empty() || !readonly.is_empty() {
                     apply_container_path_restrictions(rootfs, &masked, &readonly);
                 }
@@ -2145,7 +2145,7 @@ fn build_command(
                 if spec
                     .env
                     .iter()
-                    .any(|entry| entry == "A3S_SEC_READONLY_ROOTFS=1")
+                    .any(|entry| entry == "ASTER_SEC_READONLY_ROOTFS=1")
                 {
                     remount_rootfs_readonly(rootfs);
                 }
@@ -2181,9 +2181,9 @@ fn build_command(
     // guest-init itself retains private runtime controls so it can secure
     // later sessions. Explicitly mask every inherited control before adding
     // workload environment; skipping request entries alone would still leak
-    // the parent process's A3S_SEC_* values through Command inheritance.
+    // the parent process's ASTER_SEC_* values through Command inheritance.
     for (key, _) in std::env::vars_os() {
-        if key.to_str().is_some_and(|key| key.starts_with("A3S_SEC_")) {
+        if key.to_str().is_some_and(|key| key.starts_with("ASTER_SEC_")) {
             command.env_remove(key);
         }
     }
@@ -2194,9 +2194,9 @@ fn build_command(
 
     for entry in spec.env {
         if let Some((key, value)) = entry.split_once('=') {
-            // A3S_SEC_* are runtime control vars (consumed below for setgroups /
+            // ASTER_SEC_* are runtime control vars (consumed below for setgroups /
             // masked paths / seccomp); don't leak them into the workload's env.
-            if key.starts_with("A3S_SEC_") {
+            if key.starts_with("ASTER_SEC_") {
                 continue;
             }
             command.env(key, value);
@@ -2212,12 +2212,12 @@ fn build_command(
         }
     }
 
-    // CRI SupplementalGroups arrive as A3S_SEC_SUPPLEMENTAL_GROUPS=gid,gid,...
+    // CRI SupplementalGroups arrive as ASTER_SEC_SUPPLEMENTAL_GROUPS=gid,gid,...
     // and are applied (setgroups) before dropping to the target uid/gid.
     let mut supplemental_groups: Vec<u32> = spec
         .env
         .iter()
-        .find_map(|entry| entry.strip_prefix("A3S_SEC_SUPPLEMENTAL_GROUPS="))
+        .find_map(|entry| entry.strip_prefix("ASTER_SEC_SUPPLEMENTAL_GROUPS="))
         .map(|csv| {
             csv.split(',')
                 .filter_map(|gid| gid.trim().parse::<u32>().ok())
@@ -2238,20 +2238,20 @@ fn build_command(
         let mut seen = std::collections::HashSet::new();
         supplemental_groups.retain(|gid| seen.insert(*gid));
     }
-    // CRI seccomp: A3S_SEC_SECCOMP=default applies the default BPF filter
+    // CRI seccomp: ASTER_SEC_SECCOMP=default applies the default BPF filter
     // (RuntimeDefault) in the child; unconfined/unset leave the process
     // unfiltered.
     let apply_seccomp = spec
         .env
         .iter()
-        .any(|entry| entry == "A3S_SEC_SECCOMP=default");
-    // CRI capability drop: A3S_SEC_CAP_DROP=NAME,NAME,... (or ALL) — the guest
+        .any(|entry| entry == "ASTER_SEC_SECCOMP=default");
+    // CRI capability drop: ASTER_SEC_CAP_DROP=NAME,NAME,... (or ALL) — the guest
     // clears these from the child's effective/permitted/inheritable + bounding
     // sets before exec.
     let cap_drop: Vec<String> = spec
         .env
         .iter()
-        .find_map(|entry| entry.strip_prefix("A3S_SEC_CAP_DROP="))
+        .find_map(|entry| entry.strip_prefix("ASTER_SEC_CAP_DROP="))
         .map(|csv| {
             csv.split(',')
                 .map(|name| name.trim().to_string())
@@ -2259,13 +2259,13 @@ fn build_command(
                 .collect()
         })
         .unwrap_or_default();
-    // CRI seccomp Localhost: A3S_SEC_SECCOMP_LOCALHOST=name,name lists the
+    // CRI seccomp Localhost: ASTER_SEC_SECCOMP_LOCALHOST=name,name lists the
     // profile's SCMP_ACT_ERRNO syscalls (defaultAction=ALLOW). The guest builds
     // an ERRNO filter for them.
     let seccomp_localhost: Vec<String> = spec
         .env
         .iter()
-        .find_map(|entry| entry.strip_prefix("A3S_SEC_SECCOMP_LOCALHOST="))
+        .find_map(|entry| entry.strip_prefix("ASTER_SEC_SECCOMP_LOCALHOST="))
         .map(|csv| {
             csv.split(',')
                 .map(|name| name.trim().to_string())
@@ -2273,14 +2273,14 @@ fn build_command(
                 .collect()
         })
         .unwrap_or_default();
-    // CRI capability keep-set: A3S_SEC_CAP_KEEP=NAME,NAME,... restricts a
+    // CRI capability keep-set: ASTER_SEC_CAP_KEEP=NAME,NAME,... restricts a
     // non-privileged container to exactly these capabilities (the runtime
     // default adjusted by add/drop), dropping all others. Present-but-empty
     // means drop everything; absent means leave the full set (privileged).
     let cap_keep: Option<Vec<String>> = spec
         .env
         .iter()
-        .find_map(|entry| entry.strip_prefix("A3S_SEC_CAP_KEEP="))
+        .find_map(|entry| entry.strip_prefix("ASTER_SEC_CAP_KEEP="))
         .map(|csv| {
             csv.split(',')
                 .map(|name| name.trim().to_string())
@@ -2288,15 +2288,15 @@ fn build_command(
                 .collect()
         })
         .or_else(|| {
-            (std::env::var("A3S_BOOTSTRAP_MODE").as_deref() == Ok("host-sandbox"))
+            (std::env::var("ASTER_BOOTSTRAP_MODE").as_deref() == Ok("host-sandbox"))
                 .then(crate::namespace::sandbox_workload_capability_keep_from_env)
         });
-    // CRI no_new_privs: A3S_SEC_NO_NEW_PRIVS=1 sets PR_SET_NO_NEW_PRIVS in the
+    // CRI no_new_privs: ASTER_SEC_NO_NEW_PRIVS=1 sets PR_SET_NO_NEW_PRIVS in the
     // child before exec, so a setuid/file-capability binary cannot raise privs.
     let no_new_privs = spec
         .env
         .iter()
-        .any(|entry| entry == "A3S_SEC_NO_NEW_PRIVS=1");
+        .any(|entry| entry == "ASTER_SEC_NO_NEW_PRIVS=1");
     configure_child_process(
         &mut command,
         spec.rootfs,
@@ -2677,7 +2677,7 @@ fn drain_exec_input_events(
             }
             Err(mpsc::TryRecvError::Empty) => return outcome,
             // The host closed the exec connection without an explicit cancel
-            // (e.g. a3s-box-cri died, or a client disconnect the host didn't
+            // (e.g. aster-box-cri died, or a client disconnect the host didn't
             // translate to a cancel). Treat it as a cancel so the command does
             // not keep running orphaned in the guest.
             Err(mpsc::TryRecvError::Disconnected) => {
@@ -3067,7 +3067,7 @@ pub(crate) fn ensure_container_pseudo_filesystems(rootfs: &str) {
     }
 }
 
-/// Parse a `':'`-separated absolute-path list from an `A3S_SEC_*` env entry.
+/// Parse a `':'`-separated absolute-path list from an `ASTER_SEC_*` env entry.
 #[cfg(target_os = "linux")]
 pub(crate) fn parse_sec_path_list<'a>(env: &'a [String], prefix: &str) -> Vec<&'a str> {
     env.iter()
@@ -3361,7 +3361,7 @@ mod tests {
     #[test]
     fn test_drain_exec_input_disconnected_requests_cancel() {
         use std::sync::mpsc;
-        // A disconnected host input channel (a3s-box-cri died, or a client
+        // A disconnected host input channel (aster-box-cri died, or a client
         // disconnect) must be treated as a cancel so the command is killed
         // rather than left running orphaned.
         let mut child = spawn_long_running_test_child();
@@ -3567,7 +3567,7 @@ mod tests {
     #[test]
     fn test_execute_command_nonexistent() {
         let output = execute_command(
-            &["this_command_does_not_exist_a3s_test".to_string()],
+            &["this_command_does_not_exist_aster_test".to_string()],
             0,
             &[],
             None,
@@ -3590,12 +3590,12 @@ mod tests {
     #[cfg(target_os = "linux")]
     fn create_exec_resource_cgroup_skips_without_positive_limits() {
         assert!(create_exec_resource_cgroup(&[]).is_none());
-        assert!(create_exec_resource_cgroup(&["A3S_SEC_MEM_LIMIT=0".into()]).is_none());
-        assert!(create_exec_resource_cgroup(&["A3S_SEC_CPU_QUOTA=0".into()]).is_none());
-        assert!(create_exec_resource_cgroup(&["A3S_SEC_CAP_DROP=ALL".into()]).is_none());
+        assert!(create_exec_resource_cgroup(&["ASTER_SEC_MEM_LIMIT=0".into()]).is_none());
+        assert!(create_exec_resource_cgroup(&["ASTER_SEC_CPU_QUOTA=0".into()]).is_none());
+        assert!(create_exec_resource_cgroup(&["ASTER_SEC_CAP_DROP=ALL".into()]).is_none());
         // Limits present still require a ready cgroup2 hierarchy; without one
         // create_for_main returns None — never invent a fake limit.
-        let _ = create_exec_resource_cgroup(&["A3S_SEC_MEM_LIMIT=15728640".into()]);
+        let _ = create_exec_resource_cgroup(&["ASTER_SEC_MEM_LIMIT=15728640".into()]);
     }
 
     #[test]
@@ -3721,9 +3721,9 @@ mod tests {
                 timeout_ns: 0,
                 env: &[
                     "PUBLIC_VALUE=visible".to_string(),
-                    "A3S_SEC_SECCOMP=default".to_string(),
-                    "A3S_SEC_NO_NEW_PRIVS=1".to_string(),
-                    "A3S_SEC_CAP_DROP=ALL".to_string(),
+                    "ASTER_SEC_SECCOMP=default".to_string(),
+                    "ASTER_SEC_NO_NEW_PRIVS=1".to_string(),
+                    "ASTER_SEC_CAP_DROP=ALL".to_string(),
                 ],
                 working_dir: None,
                 rootfs: None,
@@ -3739,7 +3739,7 @@ mod tests {
             key == "PUBLIC_VALUE" && value == Some(std::ffi::OsStr::new("visible"))
         }));
         assert!(!command.get_envs().any(|(key, value)| {
-            key.to_string_lossy().starts_with("A3S_SEC_") && value.is_some()
+            key.to_string_lossy().starts_with("ASTER_SEC_") && value.is_some()
         }));
     }
 

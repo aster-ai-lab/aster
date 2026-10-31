@@ -1,13 +1,13 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityAdapterError, CapabilityContribution, CapabilityDescriptor, CapabilityEffect,
     CapabilityEffectError, CapabilityKind, CapabilityProjectionAdapter, CapabilitySet,
     CapabilitySource, CapabilityValue, CodeCatalogGeneration, PreparedCapability,
     SessionCapabilityBatch, Sha256Digest,
 };
-use a3s_code_core::tools::Tool;
+use aster_core::tools::Tool;
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
@@ -91,7 +91,7 @@ async fn native_registration_failure_closes_and_settles_the_open_session() {
         launch.workspace = workspace.clone();
         launch.config.memory_dir = Some(root.path().join("memory"));
         let model = launch.model_id.clone();
-        let agent = A3sCodeAgent::new(launch);
+        let agent = AsterCodeAgent::new(launch);
         let live = agent
             .open_core_session(
                 "registration-cleanup",

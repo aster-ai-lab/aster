@@ -66,12 +66,12 @@ pub(crate) fn expand_event_listener(mut item_impl: ItemImpl) -> Result<proc_macr
         impl #self_ty {
             pub fn event_listeners(
                 self: ::std::sync::Arc<Self>,
-            ) -> ::std::vec::Vec<::a3s_boot::EventListenerDefinition> {
-                let mut __a3s_boot_listeners = ::std::vec::Vec::new();
+            ) -> ::std::vec::Vec<::aster_boot::EventListenerDefinition> {
+                let mut __aster_boot_listeners = ::std::vec::Vec::new();
                 #(
-                    __a3s_boot_listeners.push(#listeners);
+                    __aster_boot_listeners.push(#listeners);
                 )*
-                __a3s_boot_listeners
+                __aster_boot_listeners
             }
         }
     })
@@ -108,14 +108,14 @@ fn event_listener_registration(
     pattern: LitStr,
 ) -> Result<proc_macro2::TokenStream> {
     let method_ident = &method.sig.ident;
-    let listener_name = format_ident!("__a3s_boot_event_listener_{}", method_ident);
+    let listener_name = format_ident!("__aster_boot_event_listener_{}", method_ident);
     let (extractors, args) = input.argument_tokens();
 
     Ok(quote! {
-        ::a3s_boot::EventListenerDefinition::new(#pattern, {
+        ::aster_boot::EventListenerDefinition::new(#pattern, {
             let #listener_name = ::std::sync::Arc::clone(&self);
-            move |__a3s_boot_event: ::a3s_boot::EventEnvelope,
-                  __a3s_boot_context: ::a3s_boot::EventContext| {
+            move |__aster_boot_event: ::aster_boot::EventEnvelope,
+                  __aster_boot_context: ::aster_boot::EventContext| {
                 let #listener_name = ::std::sync::Arc::clone(&#listener_name);
                 async move {
                     #(#extractors)*
@@ -223,13 +223,13 @@ impl EventMethodInput {
             args.push(ident.clone());
             extractors.push(match arg.kind {
                 EventMethodArgKind::Envelope => quote! {
-                    let #ident: #ty = __a3s_boot_event.clone();
+                    let #ident: #ty = __aster_boot_event.clone();
                 },
                 EventMethodArgKind::Context => quote! {
-                    let #ident: #ty = __a3s_boot_context.clone();
+                    let #ident: #ty = __aster_boot_context.clone();
                 },
                 EventMethodArgKind::Payload => quote! {
-                    let #ident: #ty = __a3s_boot_event.data_as::<#ty>()?;
+                    let #ident: #ty = __aster_boot_event.data_as::<#ty>()?;
                 },
             });
         }

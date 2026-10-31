@@ -88,7 +88,7 @@ impl RedisRateLimitMiddleware {
             redis_url: redis_url.to_string(),
             rate,
             burst,
-            key_prefix: "a3s:ratelimit".to_string(),
+            key_prefix: "aster:ratelimit".to_string(),
             fail_open: config.redis_fail_open,
         })
     }
@@ -111,7 +111,7 @@ impl RedisRateLimitMiddleware {
             redis_url: redis_url.to_string(),
             rate,
             burst,
-            key_prefix: "a3s:ratelimit".to_string(),
+            key_prefix: "aster:ratelimit".to_string(),
             fail_open: false,
         })
     }
@@ -196,7 +196,7 @@ fn probe_redis_url_sync(middleware_name: &str, redis_url: &str) -> Result<()> {
             })
         }
         Ok(_) | Err(_) => std::thread::Builder::new()
-            .name("a3s-redis-activation-probe".into())
+            .name("aster-redis-activation-probe".into())
             .spawn(move || {
                 let runtime = tokio::runtime::Builder::new_current_thread()
                     .enable_all()

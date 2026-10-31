@@ -28,11 +28,11 @@ fn gate5_mediated_socks_capability_is_platform_scoped() {
 #[cfg(not(target_os = "macos"))]
 #[test]
 fn gate5_non_macos_refuses_unix_socket_allow_rules() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy
         .sockets
         .allow_unix
-        .push(PathRule::Exact("/tmp/a3s-gate5.sock".into()));
+        .push(PathRule::Exact("/tmp/aster-gate5.sock".into()));
     let error = policy
         .validate_for_backend(BackendCapabilities::native_gate2())
         .unwrap_err()
@@ -49,7 +49,7 @@ fn gate5_non_macos_refuses_mediated_socks() {
     // Linux now claims mediated_socks via the netns + Unix SOCKS mediator
     // bridge (Gate 9 slice 1), so only platforms without a live fence —
     // Windows — must still refuse the feature at policy validation.
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_socks = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "example.com".into(),
@@ -75,11 +75,11 @@ fn gate5_non_macos_refuses_mediated_socks() {
 #[cfg(target_os = "macos")]
 #[test]
 fn gate5_macos_accepts_exact_unix_socket_allow_rules() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy
         .sockets
         .allow_unix
-        .push(PathRule::Exact("/tmp/a3s-gate5.sock".into()));
+        .push(PathRule::Exact("/tmp/aster-gate5.sock".into()));
     policy
         .validate_for_backend(BackendCapabilities::native_gate2())
         .expect("macOS claims unix_socket_allowlist");
@@ -88,7 +88,7 @@ fn gate5_macos_accepts_exact_unix_socket_allow_rules() {
 #[cfg(target_os = "macos")]
 #[test]
 fn gate5_macos_accepts_mediated_socks_capability() {
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_socks = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "api.example.com".into(),
@@ -118,7 +118,7 @@ async fn gate5_socks_mediator_allow_and_deny_integration() {
         stream.write_all(b"ok").await.unwrap();
     });
 
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_socks = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "127.0.0.1".into(),
@@ -163,7 +163,7 @@ async fn gate5_macos_allows_listed_unix_socket_and_denies_others() {
     let _denied_listener = UnixListener::bind(&denied).unwrap();
 
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.sockets.allow_unix.push(PathRule::Exact(
         allowed
             .canonicalize()
@@ -253,7 +253,7 @@ async fn gate5_macos_sandbox_socks_tunnels_allowed_connect() {
     });
 
     let workspace = tempfile::tempdir().unwrap();
-    let mut policy = SandboxPolicy::a3s_bash_baseline();
+    let mut policy = SandboxPolicy::aster_bash_baseline();
     policy.features.mediated_socks = true;
     policy.network.allow.push(NetworkAllowRule {
         host: "127.0.0.1".into(),

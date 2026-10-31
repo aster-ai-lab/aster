@@ -35,10 +35,10 @@ class ManifestContractTests(unittest.TestCase):
         try:
             fixture.setUp()
             fixture.app = fixture.app.rename(fixture.root / "Aster.app")
-            fixture.info.update(CFBundleIdentifier="dev.a3s.studio.aster", CFBundleName="Aster",
+            fixture.info.update(CFBundleIdentifier="dev.aster.studio.aster", CFBundleName="Aster",
                                 CFBundleDisplayName="Aster", CFBundleShortVersionString=version)
             fixture.write_info()
-            (fixture.renderer / "windows/main/index.html").write_text('<html data-tenant="aster" data-a3s-product="Aster"></html>')
+            (fixture.renderer / "windows/main/index.html").write_text('<html data-tenant="aster" data-aster-product="Aster"></html>')
             studio_fixture.DELIVERY.seal(fixture.app, fixture.renderer, "aster", fixture.root / "tenant")
             studio_fixture.DELIVERY.archive(fixture.app, path)
         finally:

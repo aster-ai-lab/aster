@@ -1,12 +1,12 @@
 //! Accuracy evaluation — runs the labeled corpus through the real pipeline and reports FP/FN.
 //!
 //!   cargo run --release --example eval -- eval/corpus.ndjson            # L1 only
-//!   A3S_SENTRY_LLM_URL=… A3S_SENTRY_LLM_KEY=… cargo run --release --example eval -- eval/corpus.ndjson  # +L2 (live LLM)
+//!   ASTER_SENTRY_LLM_URL=… ASTER_SENTRY_LLM_KEY=… cargo run --release --example eval -- eval/corpus.ndjson  # +L2 (live LLM)
 //!
 //! "clear" cases measure FP/FN rigorously; "ambiguous" cases (where L2/L3 judgment matters) are
 //! scored separately against the security-conservative label.
 
-use a3s_sentry::{LiveRules, LlmJudge, ObservedEvent, Pipeline, Verdict};
+use aster_sentry::{LiveRules, LlmJudge, ObservedEvent, Pipeline, Verdict};
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -18,12 +18,12 @@ fn main() {
 
     let live = Arc::new(LiveRules::new(None).unwrap());
     let mut p = Pipeline::new(live);
-    let l2_on = std::env::var("A3S_SENTRY_LLM_URL").ok();
+    let l2_on = std::env::var("ASTER_SENTRY_LLM_URL").ok();
     if let Some(url) = &l2_on {
         p = p.with_l2(Arc::new(LlmJudge::new(
             url,
-            &std::env::var("A3S_SENTRY_LLM_MODEL").unwrap_or_else(|_| "glm5.1-w4a8".into()),
-            std::env::var("A3S_SENTRY_LLM_KEY").ok(),
+            &std::env::var("ASTER_SENTRY_LLM_MODEL").unwrap_or_else(|_| "glm5.1-w4a8".into()),
+            std::env::var("ASTER_SENTRY_LLM_KEY").ok(),
             Duration::from_secs(90),
         )));
     }
@@ -76,7 +76,7 @@ fn main() {
 
     let clear = tp + fp + tn + miss;
     println!(
-        "\n=== a3s-sentry accuracy — {clear} clear + {} ambiguous events | L2={} ===",
+        "\n=== aster-sentry accuracy — {clear} clear + {} ambiguous events | L2={} ===",
         amb_ok + amb_bad,
         if l2_on.is_some() {
             "ON (live LLM)"

@@ -1,14 +1,14 @@
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{
+use aster_use_core::{
     OkfCapabilityProjection, OkfKnowledgeObservedState, OkfSelectedGeneration, PackageSurfaceKind,
     PlanQualifiedSurfaceRef, PlanScope, PluginPackageId, UseError, UseResult,
 };
-use a3s_use_extension::ExtensionPaths;
+use aster_use_extension::ExtensionPaths;
 use sha2::{Digest, Sha256};
 
 use super::OkfKnowledgeBinding;
-use a3s_use_extension::{StateMaintenanceGuard, StateMaintenanceLock};
+use aster_use_extension::{StateMaintenanceGuard, StateMaintenanceLock};
 
 mod io;
 
@@ -252,7 +252,7 @@ impl OkfKnowledgeBindingStore {
                         .ok_or_else(invalid_path_identity)?;
                     let qualified = PlanQualifiedSurfaceRef {
                         package_id: package_id.clone(),
-                        surface: a3s_use_core::PluginSurfaceRef {
+                        surface: aster_use_core::PluginSurfaceRef {
                             kind: PackageSurfaceKind::Okf,
                             id: surface_id.to_owned(),
                         },
@@ -322,7 +322,7 @@ async fn next_directory(
                 error,
             )
         })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(invalid_path_identity());
     }
     Ok(Some(entry))

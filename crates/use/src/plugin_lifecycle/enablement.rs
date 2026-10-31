@@ -1,7 +1,7 @@
-use a3s_use_core::{
+use aster_use_core::{
     PlanPackageChangeKind, PluginOperationAction, PluginOperationPlanEnvelope, UseResult,
 };
-use a3s_use_extension::ExtensionManifest;
+use aster_use_extension::ExtensionManifest;
 
 use super::coordinator::{
     coordinator_error, validate_manifest_binding, PluginLifecycleCoordinator,

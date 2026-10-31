@@ -1,8 +1,8 @@
 //! VMM contract — types and traits for pluggable VM backends.
 //!
 //! All types here are pure data (no runtime dependencies). This lets
-//! third-party VMM implementors depend only on `a3s-box-core` rather
-//! than pulling in the full `a3s-box-runtime`.
+//! third-party VMM implementors depend only on `aster-box-core` rather
+//! than pulling in the full `aster-box-runtime`.
 //!
 //! # Extension points
 //!
@@ -275,7 +275,7 @@ pub struct NetworkInstanceConfig {
     pub network_name: Option<String>,
 }
 
-/// Stable guest device path used for an A3S-managed ext4 root disk.
+/// Stable guest device path used for an Aster-managed ext4 root disk.
 pub const GUEST_EXT4_ROOT_DEVICE: &str = "/dev/vda";
 
 /// An explicitly raw auxiliary block device attached to a MicroVM.
@@ -922,7 +922,7 @@ mod tests {
                 #[cfg(unix)]
                 net_proxy_fd: Some(43),
                 #[cfg(unix)]
-                bridge_socket_dir: Some(PathBuf::from("/tmp/a3s-switch")),
+                bridge_socket_dir: Some(PathBuf::from("/tmp/aster-switch")),
                 ip_address: "10.0.0.2".parse().unwrap(),
                 gateway: "10.0.0.1".parse().unwrap(),
                 prefix_len: 24,

@@ -1,8 +1,8 @@
-//! Native research-run contracts for the A3S Code scientific workflow.
+//! Native research-run contracts for the Aster Code scientific workflow.
 //!
 //! This module contains bounded, digest-bound transport values. It does not
 //! resolve packages, choose scientific methods, or decide whether a finding
-//! is acceptable. A3S Use owns package and environment authority; hosts own
+//! is acceptable. Aster Use owns package and environment authority; hosts own
 //! scientific policy and human decisions.
 
 mod citation;

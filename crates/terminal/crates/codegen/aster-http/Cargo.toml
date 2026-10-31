@@ -1,0 +1,28 @@
+[package]
+license = "Apache-2.0"
+name = "aster-http"
+version = "0.1.0"
+description = "Shared reqwest HTTP clients and User-Agent construction for the grok CLI."
+edition = "2024"
+publish = false
+
+[dependencies]
+reqwest = {version = "0.12", features = ["rustls-tls", "stream", "json", "multipart", "http2", "blocking", "socks", "rustls-tls-native-roots"], default-features = false}
+reqwest-middleware = {workspace = true}
+# Same 0.23 as reqwest's rustls, so the certificate classifier's downcast resolves.
+rustls = {workspace = true}
+serde_json = {workspace = true}
+tracing = {workspace = true}
+aster-workspace = {default-features = false, path = "../aster-workspace"}
+aster-version = {path = "../aster-version"}
+aster-telemetry = {path = "../aster-telemetry"}
+aster-sampler = {path = "../aster-sampler"}
+aster-extra-ca = {path = "../aster-extra-ca"}
+aster-auth = {features = ["middleware"], path = "../aster-auth"}
+
+[dev-dependencies]
+rcgen = {workspace = true}
+tokio = {version = "1", features = ["full", "macros", "rt-multi-thread"]}
+
+[lints]
+workspace = true

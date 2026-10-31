@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ChildOperationReference, FlowEngine, FlowError, FlowEventStore, FlowRuntime,
     LocalFileEventStore, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
     WorkflowSpec,
@@ -15,7 +15,7 @@ impl FlowRuntime for RetentionRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         match ctx.input()["mode"].as_str() {
             Some("complete") => Ok(ctx.complete(json!({ "kept": false }))),
@@ -28,15 +28,15 @@ impl FlowRuntime for RetentionRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("retention example does not schedule steps")
     }
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let root =
-        std::env::temp_dir().join(format!("a3s-flow-local-retention-{}", std::process::id()));
+        std::env::temp_dir().join(format!("aster-flow-local-retention-{}", std::process::id()));
     let _ = tokio::fs::remove_dir_all(&root).await;
 
     let store = Arc::new(LocalFileEventStore::new(&root));

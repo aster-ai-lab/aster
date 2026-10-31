@@ -3,7 +3,7 @@
 use std::process::{ExitStatus, Stdio};
 use std::time::Instant;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use tokio::io::{AsyncRead, AsyncReadExt};
 use tokio::task::JoinHandle;
 use tracing::warn;

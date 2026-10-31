@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-07-14
-- Decision owners: A3S Runtime maintainers
+- Decision owners: Aster Runtime maintainers
 
 ## Context
 
@@ -11,7 +11,7 @@ shapes, provider precedence, and a default local provider. That made the core
 unsuitable for application services, build tasks, migrations, Agents, MCP
 servers, and other callers with different policies.
 
-A3S Cloud needs one execution boundary that can converge finite and
+Aster Cloud needs one execution boundary that can converge finite and
 long-running work across multiple providers. It also needs to recover after a
 lost acknowledgement without changing provider identity or creating duplicate
 resources.
@@ -69,7 +69,7 @@ dispatch.
 ## Migration
 
 Version 0.2 is a breaking pre-1.0 contract. General Runtime records use the
-`a3s.runtime.unit-record.v1` schema and are not an in-place reinterpretation of
+`aster.runtime.unit-record.v1` schema and are not an in-place reinterpretation of
 records written by the earlier product-shaped API. Callers that retain older
 terminal records own their archival decoder and presentation. New operations
 must create general unit records; the Runtime core does not silently rewrite or

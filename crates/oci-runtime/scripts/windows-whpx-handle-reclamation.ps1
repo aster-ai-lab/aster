@@ -19,7 +19,7 @@ $expectedRootfsSha256 = '4b4daa9fe2fc696c4919c4412a4c3d3e770d8fb70292a004a2c72f5
 $repositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $rootfsArchive = (Resolve-Path -LiteralPath $RootfsArchive -ErrorAction Stop).Path
 $systemImageManifest = (Resolve-Path -LiteralPath $SystemImageManifest -ErrorAction Stop).Path
-$shim = Join-Path $repositoryRoot 'target\debug\a3s-oci-krun-shim.exe'
+$shim = Join-Path $repositoryRoot 'target\debug\aster-oci-krun-shim.exe'
 $krunDll = Join-Path $repositoryRoot 'target\debug\krun.dll'
 $firmwareDll = Join-Path $repositoryRoot 'target\debug\libkrunfw.dll'
 $tar = (Get-Command tar.exe -ErrorAction Stop).Source
@@ -106,10 +106,10 @@ function Invoke-CapturedProcess {
     }
 }
 
-function Get-A3sOciProcesses {
+function Get-AsterOciProcesses {
     @(
         Get-Process -ErrorAction SilentlyContinue |
-            Where-Object { $_.ProcessName -in @('a3s-oci', 'a3s-oci-krun-shim') } |
+            Where-Object { $_.ProcessName -in @('aster-oci', 'aster-oci-krun-shim') } |
             Select-Object ProcessName, Id, StartTime
     )
 }
@@ -122,8 +122,8 @@ if ($rootfsSha256 -ne $expectedRootfsSha256) {
 
 $manifestItem = Assert-PlainFile -Path $systemImageManifest -Description 'System-image manifest'
 $systemImage = Get-Content -LiteralPath $systemImageManifest -Raw | ConvertFrom-Json
-if ($systemImage.schema_version -ne 'a3s.oci.windows-system-image.v1' -or
-    $systemImage.architecture -ne 'x86_64' -or $systemImage.image.name -ne 'a3s-oci-system.ext4') {
+if ($systemImage.schema_version -ne 'aster.oci.windows-system-image.v1' -or
+    $systemImage.architecture -ne 'x86_64' -or $systemImage.image.name -ne 'aster-oci-system.ext4') {
     throw "Unexpected Windows system-image manifest: $systemImageManifest"
 }
 $systemImagePath = Join-Path $manifestItem.DirectoryName $systemImage.image.name
@@ -156,7 +156,7 @@ if (-not (Test-Path -LiteralPath (Join-Path $rootfs 'bin\sh') -PathType Leaf)) {
 }
 
 if (-not $SkipBuild) {
-    & cargo.exe build --manifest-path (Join-Path $repositoryRoot 'Cargo.toml') -p a3s-oci-krun --jobs 1
+    & cargo.exe build --manifest-path (Join-Path $repositoryRoot 'Cargo.toml') -p aster-oci-krun --jobs 1
     if ($LASTEXITCODE -ne 0) { throw 'Failed to build the Windows libkrun shim.' }
 }
 foreach ($path in @($shim, $krunDll, $firmwareDll)) {
@@ -168,7 +168,7 @@ if ($systemImage.runtime.krun_dll.sha256 -ne $krunDllSha256 -or
     $systemImage.runtime.firmware.sha256 -ne $firmwareDllSha256) {
     throw 'The adjacent Windows runtime DLLs do not match the system-image manifest.'
 }
-if (@(Get-A3sOciProcesses).Count -gt 0) { throw 'A3S OCI processes were already active.' }
+if (@(Get-AsterOciProcesses).Count -gt 0) { throw 'Aster OCI processes were already active.' }
 
 $startedAt = [DateTime]::UtcNow
 $failures = New-Object 'System.Collections.Generic.List[string]'
@@ -196,7 +196,7 @@ try {
     try { $report = Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json }
     catch { $failures.Add("shim report is not valid JSON: $($_.Exception.Message)") }
     if ($null -ne $report) {
-        if ($report.schema_version -ne 'a3s.oci.krun-whpx-handle-reclamation-smoke.v1') {
+        if ($report.schema_version -ne 'aster.oci.krun-whpx-handle-reclamation-smoke.v1') {
             $failures.Add("unexpected report schema: $($report.schema_version)")
         }
         if ($report.platform -ne 'windows' -or $report.status -ne 'available') {
@@ -234,11 +234,11 @@ try {
 } catch { $failures.Add($_.Exception.Message) }
 
 Start-Sleep -Milliseconds 250
-$remainingProcesses = @(Get-A3sOciProcesses)
-if ($remainingProcesses.Count -gt 0) { $failures.Add('A3S OCI processes remained after the gate') }
+$remainingProcesses = @(Get-AsterOciProcesses)
+if ($remainingProcesses.Count -gt 0) { $failures.Add('Aster OCI processes remained after the gate') }
 $finishedAt = [DateTime]::UtcNow
 $summary = [ordered]@{
-    schema_version = 'a3s.oci.windows-whpx-handle-reclamation-run.v1'
+    schema_version = 'aster.oci.windows-whpx-handle-reclamation-run.v1'
     result = if ($failures.Count -eq 0) { 'pass' } else { 'fail' }
     commit = (& git -C $repositoryRoot rev-parse HEAD).Trim()
     started_at = $startedAt.ToString('o'); finished_at = $finishedAt.ToString('o')

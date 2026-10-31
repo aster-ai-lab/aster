@@ -1,16 +1,18 @@
 [workspace]
 resolver = "3"
-exclude = ["crates/code/fixtures/s3-compat", "crates/power/third-party/magnitude/inference"]
+exclude = [
+    "crates/code/fixtures/s3-compat",
+    "crates/power/third-party/magnitude/inference",
+    "apps/api",
+    "apps/cloud",
+    "apps/control-plane",
+]
 members = [
     "crates/embedding",
     "crates/capture",
     "apps/aster",
     "apps/tutorial-agent",
-    "apps/auth",
-    "apps/billing",
-    "apps/runner",
     "apps/gateway",
-    "apps/runtime",
     "crates/bge",
     "crates/deepseek",
     "crates/power",
@@ -25,7 +27,6 @@ members = [
     "crates/runtime",
     "crates/sms",
     "crates/form-core",
-    "apps/config",
     "apps/studio/src-tauri",
     "apps/studio/src-tauri/contract",
     "apps/studio/native/data-sqlite",
@@ -48,102 +49,102 @@ members = [
     "crates/oci-runtime/crates/cli",
     "crates/oci-runtime/crates/krun",
     "crates/oci-runtime/crates/runtime",
-    "crates/terminal/crates/build/a3s-proto-build",
-    "crates/terminal/crates/codegen/a3s-acp-lib",
-    "crates/terminal/crates/codegen/a3s-agent-lifecycle",
-    "crates/terminal/crates/codegen/a3s-chat-state",
-    "crates/terminal/crates/codegen/a3s-code-active-sessions",
-    "crates/terminal/crates/codegen/a3s-code-agent",
-    "crates/terminal/crates/codegen/a3s-code-announcements",
-    "crates/terminal/crates/codegen/a3s-code-auth",
-    "crates/terminal/crates/codegen/a3s-code-bundle",
-    "crates/terminal/crates/codegen/a3s-code-config",
-    "crates/terminal/crates/codegen/a3s-code-config-types",
-    "crates/terminal/crates/codegen/a3s-code-dashboard-store",
-    "crates/terminal/crates/codegen/a3s-code-diag-server",
-    "crates/terminal/crates/codegen/a3s-code-env",
-    "crates/terminal/crates/codegen/a3s-code-extra-ca",
-    "crates/terminal/crates/codegen/a3s-code-feedback",
-    "crates/terminal/crates/codegen/a3s-code-file-lock",
-    "crates/terminal/crates/codegen/a3s-code-foreign-sessions",
-    "crates/terminal/crates/codegen/a3s-code-gboom",
-    "crates/terminal/crates/codegen/a3s-code-hooks",
-    "crates/terminal/crates/codegen/a3s-code-http",
-    "crates/terminal/crates/codegen/a3s-code-image",
-    "crates/terminal/crates/codegen/a3s-code-login",
-    "crates/terminal/crates/codegen/a3s-code-markdown",
-    "crates/terminal/crates/codegen/a3s-code-markdown-core",
-    "crates/terminal/crates/codegen/a3s-code-mcp",
-    "crates/terminal/crates/codegen/a3s-code-memory",
-    "crates/terminal/crates/codegen/a3s-code-mermaid",
-    "crates/terminal/crates/codegen/a3s-code-models",
-    "crates/terminal/crates/codegen/a3s-code-otel",
-    "crates/terminal/crates/codegen/a3s-code-pager",
-    "crates/terminal/crates/codegen/a3s-code-pager-diff",
-    "crates/terminal/crates/codegen/a3s-code-pager-minimal",
-    "crates/terminal/crates/codegen/a3s-code-pager-pty-harness",
-    "crates/terminal/crates/codegen/a3s-code-pager-render",
-    "crates/terminal/crates/codegen/a3s-code-paths",
-    "crates/terminal/crates/codegen/a3s-code-plugin-marketplace",
-    "crates/terminal/crates/codegen/a3s-code-sampler",
-    "crates/terminal/crates/codegen/a3s-code-sampling-types",
-    "crates/terminal/crates/codegen/a3s-code-sandbox",
-    "crates/terminal/crates/codegen/a3s-code-secrets",
-    "crates/terminal/crates/codegen/a3s-code-session-events",
-    "crates/terminal/crates/codegen/a3s-code-session-search",
-    "crates/terminal/crates/codegen/a3s-code-shared",
-    "crates/terminal/crates/codegen/a3s-code-shell",
-    "crates/terminal/crates/codegen/a3s-code-shell-base",
-    "crates/terminal/crates/codegen/a3s-code-shell-session-support",
-    "crates/terminal/crates/codegen/a3s-code-shell-terminal",
-    "crates/terminal/crates/codegen/a3s-code-status-line",
-    "crates/terminal/crates/codegen/a3s-code-subagent-resolution",
-    "crates/terminal/crates/codegen/a3s-code-telemetry",
-    "crates/terminal/crates/codegen/a3s-code-test-support",
-    "crates/terminal/crates/codegen/a3s-code-tools",
-    "crates/terminal/crates/codegen/a3s-code-tools-api",
-    "crates/terminal/crates/codegen/a3s-code-update",
-    "crates/terminal/crates/codegen/a3s-code-version",
-    "crates/terminal/crates/codegen/a3s-code-voice",
-    "crates/terminal/crates/codegen/a3s-code-workspace",
-    "crates/terminal/crates/codegen/a3s-code-workspace-client",
-    "crates/terminal/crates/codegen/a3s-code-workspace-daemon",
-    "crates/terminal/crates/codegen/a3s-code-workspace-types",
-    "crates/terminal/crates/codegen/a3s-codebase-graph",
-    "crates/terminal/crates/codegen/a3s-compaction-transcript",
-    "crates/terminal/crates/codegen/a3s-crash-handler",
-    "crates/terminal/crates/codegen/a3s-dirs",
-    "crates/terminal/crates/codegen/a3s-fast-worktree",
-    "crates/terminal/crates/codegen/a3s-file-utils",
-    "crates/terminal/crates/codegen/a3s-fsnotify",
-    "crates/terminal/crates/codegen/a3s-fuzzy-file-search",
-    "crates/terminal/crates/codegen/a3s-gix-status",
-    "crates/terminal/crates/codegen/a3s-hooks-plugins-types",
-    "crates/terminal/crates/codegen/a3s-hunk-tracker",
-    "crates/terminal/crates/codegen/a3s-mixpanel",
-    "crates/terminal/crates/codegen/a3s-prompt-queue",
-    "crates/terminal/crates/codegen/a3s-ratatui-inline",
-    "crates/terminal/crates/codegen/a3s-ratatui-textarea",
-    "crates/terminal/crates/codegen/a3s-sqlite-journal",
-    "crates/terminal/crates/codegen/a3s-system-power",
-    "crates/terminal/crates/codegen/a3s-token-estimation",
-    "crates/terminal/crates/codegen/a3s-tracing-macros",
-    "crates/terminal/crates/codegen/a3s-tty-utils",
-    "crates/terminal/crates/codegen/a3s-workflow",
+    "crates/terminal/crates/build/aster-proto-build",
+    "crates/terminal/crates/codegen/aster-acp-lib",
+    "crates/terminal/crates/codegen/aster-agent-lifecycle",
+    "crates/terminal/crates/codegen/aster-chat-state",
+    "crates/terminal/crates/codegen/aster-active-sessions",
+    "crates/terminal/crates/codegen/aster-agent",
+    "crates/terminal/crates/codegen/aster-announcements",
+    "crates/terminal/crates/codegen/aster-auth",
+    "crates/terminal/crates/codegen/aster-bundle",
+    "crates/terminal/crates/codegen/aster-config",
+    "crates/terminal/crates/codegen/aster-config-types",
+    "crates/terminal/crates/codegen/aster-dashboard-store",
+    "crates/terminal/crates/codegen/aster-diag-server",
+    "crates/terminal/crates/codegen/aster-env",
+    "crates/terminal/crates/codegen/aster-extra-ca",
+    "crates/terminal/crates/codegen/aster-feedback",
+    "crates/terminal/crates/codegen/aster-file-lock",
+    "crates/terminal/crates/codegen/aster-foreign-sessions",
+    "crates/terminal/crates/codegen/aster-gboom",
+    "crates/terminal/crates/codegen/aster-hooks",
+    "crates/terminal/crates/codegen/aster-http",
+    "crates/terminal/crates/codegen/aster-image",
+    "crates/terminal/crates/codegen/aster-login",
+    "crates/terminal/crates/codegen/aster-markdown",
+    "crates/terminal/crates/codegen/aster-markdown-core",
+    "crates/terminal/crates/codegen/aster-mcp",
+    "crates/terminal/crates/codegen/aster-memory",
+    "crates/terminal/crates/codegen/aster-mermaid",
+    "crates/terminal/crates/codegen/aster-models",
+    "crates/terminal/crates/codegen/aster-otel",
+    "crates/terminal/crates/codegen/aster-pager",
+    "crates/terminal/crates/codegen/aster-pager-diff",
+    "crates/terminal/crates/codegen/aster-pager-minimal",
+    "crates/terminal/crates/codegen/aster-pager-pty-harness",
+    "crates/terminal/crates/codegen/aster-pager-render",
+    "crates/terminal/crates/codegen/aster-paths",
+    "crates/terminal/crates/codegen/aster-plugin-marketplace",
+    "crates/terminal/crates/codegen/aster-sampler",
+    "crates/terminal/crates/codegen/aster-sampling-types",
+    "crates/terminal/crates/codegen/aster-sandbox",
+    "crates/terminal/crates/codegen/aster-secrets",
+    "crates/terminal/crates/codegen/aster-session-events",
+    "crates/terminal/crates/codegen/aster-session-search",
+    "crates/terminal/crates/codegen/aster-shared",
+    "crates/terminal/crates/codegen/aster-shell",
+    "crates/terminal/crates/codegen/aster-shell-base",
+    "crates/terminal/crates/codegen/aster-shell-session-support",
+    "crates/terminal/crates/codegen/aster-shell-terminal",
+    "crates/terminal/crates/codegen/aster-status-line",
+    "crates/terminal/crates/codegen/aster-subagent-resolution",
+    "crates/terminal/crates/codegen/aster-telemetry",
+    "crates/terminal/crates/codegen/aster-test-support",
+    "crates/terminal/crates/codegen/aster-tools",
+    "crates/terminal/crates/codegen/aster-tools-api",
+    "crates/terminal/crates/codegen/aster-update",
+    "crates/terminal/crates/codegen/aster-version",
+    "crates/terminal/crates/codegen/aster-voice",
+    "crates/terminal/crates/codegen/aster-workspace",
+    "crates/terminal/crates/codegen/aster-workspace-client",
+    "crates/terminal/crates/codegen/aster-workspace-daemon",
+    "crates/terminal/crates/codegen/aster-workspace-types",
+    "crates/terminal/crates/codegen/aster-codebase-graph",
+    "crates/terminal/crates/codegen/aster-compaction-transcript",
+    "crates/terminal/crates/codegen/aster-crash-handler",
+    "crates/terminal/crates/codegen/aster-dirs",
+    "crates/terminal/crates/codegen/aster-fast-worktree",
+    "crates/terminal/crates/codegen/aster-file-utils",
+    "crates/terminal/crates/codegen/aster-fsnotify",
+    "crates/terminal/crates/codegen/aster-fuzzy-file-search",
+    "crates/terminal/crates/codegen/aster-gix-status",
+    "crates/terminal/crates/codegen/aster-hooks-plugins-types",
+    "crates/terminal/crates/codegen/aster-hunk-tracker",
+    "crates/terminal/crates/codegen/aster-mixpanel",
+    "crates/terminal/crates/codegen/aster-prompt-queue",
+    "crates/terminal/crates/codegen/aster-ratatui-inline",
+    "crates/terminal/crates/codegen/aster-ratatui-textarea",
+    "crates/terminal/crates/codegen/aster-sqlite-journal",
+    "crates/terminal/crates/codegen/aster-system-power",
+    "crates/terminal/crates/codegen/aster-token-estimation",
+    "crates/terminal/crates/codegen/aster-tracing-macros",
+    "crates/terminal/crates/codegen/aster-tty-utils",
+    "crates/terminal/crates/codegen/aster-workflow",
     "crates/terminal/crates/codegen/ptyctl",
     "crates/terminal/crates/codegen/ptyctl-cli",
-    "crates/terminal/crates/common/a3s-circuit-breaker",
-    "crates/terminal/crates/common/a3s-code-compaction",
-    "crates/terminal/crates/common/a3s-computer-hub-core",
-    "crates/terminal/crates/common/a3s-computer-hub-mcp-adapter",
-    "crates/terminal/crates/common/a3s-computer-hub-sdk",
-    "crates/terminal/crates/common/a3s-interjection-core",
-    "crates/terminal/crates/common/a3s-message-delivery-core",
-    "crates/terminal/crates/common/a3s-test-utils",
-    "crates/terminal/crates/common/a3s-tool-protocol",
-    "crates/terminal/crates/common/a3s-tool-runtime",
-    "crates/terminal/crates/common/a3s-tool-types",
-    "crates/terminal/crates/common/a3s-tracing",
+    "crates/terminal/crates/common/aster-circuit-breaker",
+    "crates/terminal/crates/common/aster-compaction",
+    "crates/terminal/crates/common/aster-computer-hub-core",
+    "crates/terminal/crates/common/aster-computer-hub-mcp-adapter",
+    "crates/terminal/crates/common/aster-computer-hub-sdk",
+    "crates/terminal/crates/common/aster-interjection-core",
+    "crates/terminal/crates/common/aster-message-delivery-core",
+    "crates/terminal/crates/common/aster-test-utils",
+    "crates/terminal/crates/common/aster-tool-protocol",
+    "crates/terminal/crates/common/aster-tool-runtime",
+    "crates/terminal/crates/common/aster-tool-types",
+    "crates/terminal/crates/common/aster-tracing",
     "crates/terminal/prod/mc/cli-chat-proxy-types",
     "crates/terminal/third_party/dagre_rust",
     "crates/terminal/third_party/graphlib_rust",
@@ -263,8 +264,8 @@ windows = {features = ["Win32_Security", "Win32_Security_Authorization", "Win32_
 wiremock = {version = "0.6"}
 zstd = {version = "0.13"}
 
-a3s-acl = { path = "crates/acl" }
-a3s-boot = { path = "crates/boot", features = [
+aster-acl = { path = "crates/acl" }
+aster-boot = { path = "crates/boot", features = [
     "auth",
     "axum",
     "cqrs",
@@ -275,15 +276,15 @@ a3s-boot = { path = "crates/boot", features = [
     "queue-postgres",
     "security",
 ], default-features = false }
-a3s-box-core = { path = "crates/box/core" }
-a3s-box-runtime = { path = "crates/box/runtime", features = ["build", "vm"], default-features = false }
-a3s-code-core = { path = "crates/code/core", default-features = false }
-a3s-event = { path = "crates/event", features = ["nats", "iggy"], default-features = false }
-a3s-flow = { path = "crates/flow", features = ["boot", "postgres"], default-features = false }
-a3s-form-core = { path = "crates/form-core" }
-a3s-orm = { path = "crates/orm", features = ["postgres"], default-features = false }
-a3s-runtime = { path = "crates/runtime" }
-a3s-use-extension = { path = "crates/use/extension" }
+aster-box-core = { path = "crates/box/core" }
+aster-box-runtime = { path = "crates/box/runtime", features = ["build", "vm"], default-features = false }
+aster-core = { path = "crates/code/core", default-features = false }
+aster-event = { path = "crates/event", features = ["nats", "iggy"], default-features = false }
+aster-flow = { path = "crates/flow", features = ["boot", "postgres"], default-features = false }
+aster-form-core = { path = "crates/form-core" }
+aster-orm = { path = "crates/orm", features = ["postgres"], default-features = false }
+aster-runtime = { path = "crates/runtime" }
+aster-use-extension = { path = "crates/use/extension" }
 aes-gcm = "0.10"
 argon2 = "0.5"
 chrono-tz = "=0.10.4"
@@ -321,8 +322,8 @@ zeroize = "1"
 # Cryptography (for TEE attestation verification)
 zip = { version = "2", default-features = false, features = ["deflate"] }
 
-a3s-oci-sdk = { path = "crates/oci-runtime/crates/sdk" }
-a3s-transport = { version = "0.1.1", package = "a3s-common", path = "crates/common" }
+aster-oci-sdk = { path = "crates/oci-runtime/crates/sdk" }
+aster-transport = { version = "0.1.1", package = "aster-common", path = "crates/common" }
 der = { version = "0.7", features = ["std", "alloc"] }
 ecdsa = { version = "0.16", features = ["verifying"] }
 hex = "0.4"
@@ -347,7 +348,7 @@ olpc-cjson = "0.1"
 rmcp = { version = "=0.8.5", default-features = false, features = ["base64", "client", "macros", "server", "transport-io", "transport-streamable-http-client-reqwest", "transport-streamable-http-server"] }
 tonic-build = "0.11"
 
-a3s-libkrun-sys = { path = "crates/box/deps/libkrun-sys" }
+aster-libkrun-sys = { path = "crates/box/deps/libkrun-sys" }
 cap-fs-ext = "=4.0.2"
 cap-std = "=4.0.2"
 libloading = "0.8"
@@ -367,13 +368,13 @@ windows-sys = { version = "0.59", features = [
     "Win32_System_Threading",
 ] }
 
-[workspace.dependencies.a3s-office-formula-parser]
+[workspace.dependencies.aster-office-formula-parser]
 path = "crates/office/crates/formula-parser"
 
-[workspace.dependencies.a3s-use-core]
+[workspace.dependencies.aster-use-core]
 path = "crates/use/core"
 
-[workspace.dependencies.a3s-use-browser]
+[workspace.dependencies.aster-use-browser]
 path = "crates/browser"
 [workspace.lints.clippy]
 # prost 0.14 renders proto doc-comment bullet lists in a way that trips this

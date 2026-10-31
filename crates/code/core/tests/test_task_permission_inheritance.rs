@@ -13,19 +13,19 @@
 use std::path::PathBuf;
 use std::sync::{Arc, OnceLock};
 
-use a3s_code_core::config::CodeConfig;
-use a3s_code_core::llm::create_client_with_config;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::subagent::{AgentRegistry, WorkerAgentSpec};
-use a3s_code_core::tools::{TaskExecutor, TaskParams};
+use aster_core::config::CodeConfig;
+use aster_core::llm::create_client_with_config;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::subagent::{AgentRegistry, WorkerAgentSpec};
+use aster_core::tools::{TaskExecutor, TaskParams};
 
 fn repo_config_path() -> PathBuf {
-    std::env::var_os("A3S_CONFIG_FILE")
+    std::env::var_os("ASTER_CONFIG_FILE")
         .map(PathBuf::from)
         .unwrap_or_else(|| {
             PathBuf::from(env!("CARGO_MANIFEST_DIR"))
                 .join("../../..")
-                .join(".a3s/config.acl")
+                .join(".aster/config.acl")
         })
 }
 

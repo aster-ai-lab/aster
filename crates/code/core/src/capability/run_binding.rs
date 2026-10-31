@@ -8,10 +8,10 @@ use super::{
     USE_CAPABILITY_SNAPSHOT_CURSOR_SCHEMA, USE_SELECTION_CURSOR_SCHEMA,
 };
 
-pub const RUN_CAPABILITY_BINDING_SCHEMA: &str = "a3s.code.run-capability-binding.v1";
-pub const CAPABILITY_CEILING_DIGEST_DOMAIN: &str = "a3s.code.capability-ceiling-digest.v1";
+pub const RUN_CAPABILITY_BINDING_SCHEMA: &str = "aster.code.run-capability-binding.v1";
+pub const CAPABILITY_CEILING_DIGEST_DOMAIN: &str = "aster.code.capability-ceiling-digest.v1";
 
-const CAPABILITY_CEILING_DIGEST_PREFIX: &[u8] = b"a3s-code-capability-ceiling\0";
+const CAPABILITY_CEILING_DIGEST_PREFIX: &[u8] = b"aster-capability-ceiling\0";
 
 /// Stable validation and comparison failures for a persisted Run capability
 /// identity.
@@ -25,7 +25,7 @@ pub enum RunCapabilityBindingError {
     #[error("Run capability binding cannot encode its authority ceiling: {0}")]
     Encoding(String),
     #[error(
-        "Run capability binding drift (catalog generation {expected_generation} vs {actual_generation}, catalog digest mismatch: {catalog_digest_mismatch}, ceiling digest mismatch: {ceiling_digest_mismatch}, A3S Use generation mismatch: {use_generation_mismatch})"
+        "Run capability binding drift (catalog generation {expected_generation} vs {actual_generation}, catalog digest mismatch: {catalog_digest_mismatch}, ceiling digest mismatch: {ceiling_digest_mismatch}, Aster Use generation mismatch: {use_generation_mismatch})"
     )]
     ContentDrift {
         expected_generation: u64,
@@ -36,7 +36,7 @@ pub enum RunCapabilityBindingError {
     },
 }
 
-/// Diagnostic copy of the exact upstream A3S Use snapshot cursor retained by
+/// Diagnostic copy of the exact upstream Aster Use snapshot cursor retained by
 /// the Run. The catalog digest already binds these fields; keeping them
 /// explicit lets a recovery host request the correct generation without
 /// resolving `latest`.

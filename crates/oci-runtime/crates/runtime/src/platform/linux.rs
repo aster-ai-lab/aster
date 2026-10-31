@@ -3,7 +3,7 @@ use std::fs::{self, OpenOptions};
 use std::os::fd::AsRawFd;
 use std::path::Path;
 
-use a3s_oci_core::{
+use aster_oci_core::{
     CapabilityStatus, DriverCapability, DriverKind, DriverReadiness, IsolationClass,
     RuntimeFeatures,
 };
@@ -62,7 +62,7 @@ fn observe_native_linux() -> NativeLinuxObservation {
         .collect::<Vec<_>>();
     let namespace_api = missing_namespaces.is_empty();
     let cgroup_v2 = Path::new("/sys/fs/cgroup/cgroup.controllers").is_file();
-    let pidfd_error = a3s_oci_agent::verify_linux_pidfd_support().err();
+    let pidfd_error = aster_oci_agent::verify_linux_pidfd_support().err();
     let pidfd_signaling = pidfd_error.is_none();
     let reason = if !namespace_api {
         Some(format!(
@@ -247,7 +247,7 @@ fn kvm_capability(observation: KvmObservation) -> DriverCapability {
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_core::{CapabilityStatus, DriverKind, DriverReadiness, IsolationClass};
+    use aster_oci_core::{CapabilityStatus, DriverKind, DriverReadiness, IsolationClass};
 
     use super::{
         features, kvm_capability, native_capability, KvmObservation, NativeLinuxObservation,

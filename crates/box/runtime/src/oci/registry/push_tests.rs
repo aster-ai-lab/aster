@@ -10,7 +10,7 @@ use sha2::{Digest, Sha256};
 
 use super::{ImageReference, RegistryAuth, RegistryProtocol, RegistryPusher};
 
-const REPOSITORY: &str = "a3s/app";
+const REPOSITORY: &str = "aster/app";
 
 #[derive(Clone)]
 struct PushRegistryState {
@@ -169,8 +169,8 @@ async fn push_preserves_exact_content_addressed_manifest_bytes() {
     let fixture = PushRegistryFixture::start().await;
     let layout = tempfile::tempdir().unwrap();
     let config = br#"{"architecture":"amd64","os":"linux"}"#;
-    let first_layer = b"a3s-box-registry-push-layer-one";
-    let second_layer = b"a3s-box-registry-push-layer-two";
+    let first_layer = b"aster-box-registry-push-layer-one";
+    let second_layer = b"aster-box-registry-push-layer-two";
     let config_digest = write_blob(layout.path(), config);
     let first_layer_digest = write_blob(layout.path(), first_layer);
     let second_layer_digest = write_blob(layout.path(), second_layer);

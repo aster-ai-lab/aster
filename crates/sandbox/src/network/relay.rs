@@ -131,26 +131,26 @@ impl TcpUnixRelay {
 
 /// Resolve the guest TCP→Unix relay executable.
 ///
-/// Order: `A3S_SANDBOX_RELAY` env, then `a3s-sandbox-relay` next to the
+/// Order: `ASTER_SANDBOX_RELAY` env, then `aster-sandbox-relay` next to the
 /// current executable. Linux mediation fails closed if neither is found.
 pub fn resolve_relay_executable() -> Result<PathBuf> {
-    if let Ok(path) = std::env::var("A3S_SANDBOX_RELAY") {
+    if let Ok(path) = std::env::var("ASTER_SANDBOX_RELAY") {
         let path = PathBuf::from(path);
         if path.is_file() {
             return Ok(path);
         }
         bail!(
-            "A3S_SANDBOX_RELAY points to missing relay binary {}",
+            "ASTER_SANDBOX_RELAY points to missing relay binary {}",
             path.display()
         );
     }
     let exe = std::env::current_exe().context("failed to resolve current executable")?;
-    let sibling = exe.with_file_name("a3s-sandbox-relay");
+    let sibling = exe.with_file_name("aster-sandbox-relay");
     if sibling.is_file() {
         return Ok(sibling);
     }
     bail!(
-        "Linux mediation requires a3s-sandbox-relay next to {} or A3S_SANDBOX_RELAY",
+        "Linux mediation requires aster-sandbox-relay next to {} or ASTER_SANDBOX_RELAY",
         exe.display()
     );
 }
@@ -177,7 +177,7 @@ pub fn posix_shell_single_quote(value: &str) -> String {
 /// session scratch (which is always allow_read + allow_write).
 pub fn stage_relay_into_scratch(scratch: &Path) -> Result<PathBuf> {
     let host = resolve_relay_executable()?;
-    let guest = scratch.join("a3s-sandbox-relay");
+    let guest = scratch.join("aster-sandbox-relay");
     std::fs::copy(&host, &guest).with_context(|| {
         format!(
             "failed to stage relay {} into {}",
@@ -237,7 +237,7 @@ pub fn wrap_command_with_guest_relays(
     let mut pids: Vec<String> = Vec::new();
     let launch = |socket: &Path, port: u16, pids: &mut Vec<String>, script: &mut String| {
         let sock_q = posix_shell_single_quote(&socket.to_string_lossy());
-        let pid = format!("_a3s_relay_pid{}", pids.len());
+        let pid = format!("_aster_relay_pid{}", pids.len());
         script.push_str(&format!(
             "{relay_q} --unix {sock_q} --listen 127.0.0.1:{port} & {pid}=$!; "
         ));
@@ -271,7 +271,7 @@ mod tests {
     use tokio::net::{TcpListener, TcpStream};
 
     fn origin_policy(host: &str, port: u16) -> SandboxPolicy {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_network = true;
         policy.network.allow.push(NetworkAllowRule {
             host: host.into(),
@@ -353,7 +353,7 @@ mod tests {
     #[test]
     fn wrap_command_with_guest_relay_embeds_relay_and_socket() {
         let dir = tempfile::tempdir().unwrap();
-        let relay = dir.path().join("a3s-sandbox-relay");
+        let relay = dir.path().join("aster-sandbox-relay");
         std::fs::write(&relay, b"#!/bin/true\n").unwrap();
         #[cfg(unix)]
         {
@@ -382,11 +382,11 @@ mod tests {
             perms.set_mode(0o700);
             std::fs::set_permissions(&host, perms).unwrap();
         }
-        std::env::set_var("A3S_SANDBOX_RELAY", &host);
+        std::env::set_var("ASTER_SANDBOX_RELAY", &host);
         let scratch = tempfile::tempdir().unwrap();
         let staged = stage_relay_into_scratch(scratch.path()).unwrap();
-        std::env::remove_var("A3S_SANDBOX_RELAY");
-        assert_eq!(staged, scratch.path().join("a3s-sandbox-relay"));
+        std::env::remove_var("ASTER_SANDBOX_RELAY");
+        assert_eq!(staged, scratch.path().join("aster-sandbox-relay"));
         assert_eq!(std::fs::read(&staged).unwrap(), b"relay-bytes");
         #[cfg(unix)]
         {
@@ -416,7 +416,7 @@ mod tests {
             stream.write_all(b"pong").await.unwrap();
         });
 
-        let mut policy = crate::policy::SandboxPolicy::a3s_bash_baseline();
+        let mut policy = crate::policy::SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_socks = true;
         policy.network.allow.push(crate::policy::NetworkAllowRule {
             host: "127.0.0.1".into(),

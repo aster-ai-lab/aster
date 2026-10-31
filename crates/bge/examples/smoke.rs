@@ -1,11 +1,11 @@
 //! One-shot local smoke test against the installed weights.
 #[tokio::main]
 async fn main() {
-    let embed = a3s_use_bge::EmbeddingClient::from_env().expect("embed client");
+    let embed = aster_use_bge::EmbeddingClient::from_env().expect("embed client");
     println!("embedding status: {:?}", embed.status().available);
     let response = embed
         .embed(
-            a3s_use_bge::EmbeddingRequest::from_json(br#"{"input":["hello","a3s os"]}"#)
+            aster_use_bge::EmbeddingRequest::from_json(br#"{"input":["hello","aster os"]}"#)
                 .expect("request"),
         )
         .await
@@ -16,12 +16,12 @@ async fn main() {
         response.data[0].embedding.len(),
         response.usage
     );
-    let rerank = a3s_use_bge::RerankClient::from_env().expect("rerank client");
+    let rerank = aster_use_bge::RerankClient::from_env().expect("rerank client");
     println!("rerank status: {:?}", rerank.status().available);
     let response = rerank
         .rerank(
-            a3s_use_bge::RerankRequest::from_json(
-                br#"{"query":"what is a3s os","documents":["A3S OS is an operating system for agents","Bananas are yellow"],"top_n":2}"#,
+            aster_use_bge::RerankRequest::from_json(
+                br#"{"query":"what is aster os","documents":["Aster OS is an operating system for agents","Bananas are yellow"],"top_n":2}"#,
             )
             .expect("request"),
         )

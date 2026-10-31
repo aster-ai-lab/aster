@@ -73,7 +73,7 @@ impl LlmClient for NestedModel {
 struct UnverifiedMutator(&'static str);
 
 #[async_trait]
-impl a3s_code_core::tools::Tool for UnverifiedMutator {
+impl aster_core::tools::Tool for UnverifiedMutator {
     fn name(&self) -> &str {
         "unverified_mutator"
     }
@@ -110,7 +110,7 @@ async fn exercise(
 ) {
     let root = tempfile::tempdir().unwrap();
     let store = tempfile::tempdir().unwrap();
-    let agent = a3s_code_core::Agent::from_config(
+    let agent = aster_core::Agent::from_config(
         crate::agent::test_launch(Some(store.path().to_path_buf())).config,
     )
     .await
@@ -119,10 +119,10 @@ async fn exercise(
         calls: AtomicUsize::new(0),
         steps,
     });
-    let options = a3s_code_core::SessionOptions::new()
+    let options = aster_core::SessionOptions::new()
         .with_session_id(uuid::Uuid::new_v4().to_string())
         .with_permission_policy(
-            a3s_code_core::permissions::PermissionPolicy::new()
+            aster_core::permissions::PermissionPolicy::new()
                 .allow("office_file")
                 .allow("program")
                 .allow("batch")
@@ -130,9 +130,9 @@ async fn exercise(
         )
         .with_llm_client(model.clone())
         .with_assistant_final_response(true)
-        .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+        .with_planning_mode(aster_core::PlanningMode::Disabled)
         .with_harness(
-            a3s_code_core::HarnessComposeOptions::compose(
+            aster_core::HarnessComposeOptions::compose(
                 ["system", "tools", "budget", "compact", "infer"]
                     .into_iter()
                     .map(str::to_owned)
@@ -171,7 +171,7 @@ async fn exercise(
         let result = result.unwrap_or_else(|error| {
             panic!("all native writes succeeded, but send returned {error}")
         });
-        let a3s_code_core::harness_loop::CompletionTerminal::Verified { effect_digest } =
+        let aster_core::harness_loop::CompletionTerminal::Verified { effect_digest } =
             result.completion
         else {
             panic!("native artifacts must bind a Verified terminal");
@@ -183,7 +183,7 @@ async fn exercise(
                 |part| matches!(part, ContentBlock::Text { text } if text == "Charts created.")
             )));
         let facts =
-            a3s_code_core::fact_control::read_workspace_facts(root.path(), session.id()).unwrap();
+            aster_core::fact_control::read_workspace_facts(root.path(), session.id()).unwrap();
         let reports: Vec<_> = facts
             .iter()
             .filter(|fact| fact.kind == "tool.result")

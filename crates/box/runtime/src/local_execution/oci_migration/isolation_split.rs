@@ -6,8 +6,8 @@
 
 use std::sync::Arc;
 
-use a3s_box_core::pty::PtyRequest;
-use a3s_box_core::{
+use aster_box_core::pty::PtyRequest;
+use aster_box_core::{
     ExecOutput, ExecRequest, ExecutionEventBatch, ExecutionEventsRequest, ExecutionIsolation,
     ExecutionManagerResult, ExecutionProcess, ExecutionProcessInventory, ExecutionResourceUpdate,
     ExecutionStats, FileRequest, FileResponse, FilesystemRequest, FilesystemResponse, KillOutcome,

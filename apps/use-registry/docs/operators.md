@@ -4,7 +4,7 @@ Status: development preview. These procedures govern the **dev-preview
 bootstrap root** published under `registry/`. They become the production
 procedures only after the custody, rotation, expiry, withdrawal,
 mirror-replacement, and recovery gates in the
-[A3S Use roadmap](https://github.com/A3S-Lab/Use/blob/main/ROADMAP.md) (A5)
+[Aster Use roadmap](https://github.com/aster-ai-lab/Use/blob/main/ROADMAP.md) (A5)
 pass review.
 
 ## Custody
@@ -23,15 +23,15 @@ pass review.
 
 ```bash
 # One-time per environment:
-a3s-use-registry-tools keygen --keys-dir <custody>/dev-preview
+aster-use-registry-tools keygen --keys-dir <custody>/dev-preview
 
 # Every publication:
-a3s-use-registry-tools assemble \
+aster-use-registry-tools assemble \
   --keys-dir <custody>/dev-preview \
   --admissions admissions.acl \
   --out-root registry \
   --metadata-version <previous + 1>
-a3s-use-registry-tools verify --registry registry \
+aster-use-registry-tools verify --registry registry \
   --expected-root-sha256 sha256:<pinned-digest>
 ```
 
@@ -40,7 +40,7 @@ a3s-use-registry-tools verify --registry registry \
   `--metadata-version`, not the root.
 - Admissions are the review record: a package enters the tree only through a
   reviewed `admissions.acl` entry plus its committed package directory.
-- The package manifest (`a3s-use-extension.acl`) owns package identity;
+- The package manifest (`aster-use-extension.acl`) owns package identity;
   admission metadata owns presentation. Assembly fails closed when they
   disagree.
 
@@ -86,7 +86,7 @@ For a reproducible local HTTP source of the committed `registry/` tree, see
 ```bash
 ./scripts/serve_local.sh start
 ./scripts/smoke_local.sh
-./scripts/consume_local.sh   # needs A3S_USE_BIN with registry routes
+./scripts/consume_local.sh   # needs ASTER_USE_BIN with registry routes
 ./scripts/serve_local.sh status
 ```
 
@@ -97,6 +97,6 @@ distinction.
 
 ## Tooling source
 
-`a3s-use-registry-tools` is versioned by the
-[A3S Use](https://github.com/A3S-Lab/Use) repository (`crates/registry-tools`)
+`aster-use-registry-tools` is versioned by the
+[Aster Use](https://github.com/aster-ai-lab/Use) repository (`crates/registry-tools`)
 and must be built from a reviewed Use revision.

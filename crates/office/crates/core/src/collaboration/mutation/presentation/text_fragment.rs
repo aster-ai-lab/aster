@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::{GetString, Map, Out, Text, TextPrelim, Transact};
 
 use super::super::super::{collaboration_error, NativeOfficeCollaborationManifest};
@@ -155,6 +155,6 @@ fn utf16_len(value: &str) -> UseResult<u32> {
     })
 }
 
-fn invalid_splice(message: &str) -> a3s_use_core::UseError {
+fn invalid_splice(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_invalid", message)
 }

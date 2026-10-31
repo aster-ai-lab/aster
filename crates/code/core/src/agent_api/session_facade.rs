@@ -130,7 +130,7 @@ impl AgentSession {
 
     /// Attach the original durable workspace index off the async executor.
     /// Returns before source admission finishes; queries retain their verified
-    /// fallback while the same manifest owner builds and updates a3s-vec.
+    /// fallback while the same manifest owner builds and updates aster-vec.
     pub async fn prepare_workspace_index(&self) -> crate::error::Result<bool> {
         let boundary = Arc::clone(&self.close_handle);
         let services = Arc::clone(&self.tool_context.workspace_services);
@@ -289,7 +289,7 @@ impl AgentSession {
     /// Replaying the same id, session, and prompt returns the existing run
     /// without executing it again. Reusing the id for different immutable
     /// input fails with [`crate::error::CodeError::RunIdentityConflict`].
-    /// This is the canonical entry point for headless `a3s code` hosts.
+    /// This is the canonical entry point for headless `aster code` hosts.
     pub async fn spawn_run_with_id(&self, run_id: &str, prompt: &str) -> Result<AgentRunSpawn> {
         conversation_runtime::spawn_run_with_id(self, run_id, prompt).await
     }
@@ -518,7 +518,7 @@ impl AgentSession {
         };
         // Active runs must read through their existing handle: opening a
         // second FileLog would contend with the original writer's fence.
-        a3s_effect::LogStore::read(
+        aster_effect::LogStore::read(
             log.as_ref(),
             &crate::fact_control::thread_for_session(&self.session_id),
         )
@@ -560,10 +560,10 @@ impl AgentSession {
                 .try_writer_fence()
                 .map_err(|error| CodeError::Session(error.to_string()))?;
             let thread = crate::fact_control::thread_for_session(&self.session_id);
-            let facts = a3s_effect::LogStore::read(log.as_ref(), &thread)
+            let facts = aster_effect::LogStore::read(log.as_ref(), &thread)
                 .map_err(|error| CodeError::Session(error.to_string()))?;
             let source = persistence.source_from_facts(&facts)?;
-            let goal_bound = facts.iter().any(|fact| fact.kind.starts_with("a3s.goal."));
+            let goal_bound = facts.iter().any(|fact| fact.kind.starts_with("aster.goal."));
             if source.as_ref().is_some_and(|source| seq < source.sequence)
                 || (goal_bound && facts.last().is_some_and(|fact| seq < fact.seq))
             {
@@ -574,7 +574,7 @@ impl AgentSession {
             let removed = log
                 .truncate_after(&thread, seq)
                 .map_err(|error| CodeError::Session(error.to_string()))?;
-            let retained = a3s_effect::LogStore::read(log.as_ref(), &thread)
+            let retained = aster_effect::LogStore::read(log.as_ref(), &thread)
                 .map_err(|error| CodeError::Session(error.to_string()))?;
             *crate::error::write_or_recover(&self.history) =
                 crate::fact_control::compaction_transcript_from_facts(&retained);

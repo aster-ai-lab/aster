@@ -1,0 +1,254 @@
+[package]
+name = "aster-pager"
+version = "9.1.4"
+license = "Apache-2.0"
+authors = ["Aster"]
+edition = "2024"
+publish = false
+
+[dependencies]
+aster-form-core = { workspace = true }
+# TTY safety — detach subprocesses from the controlling terminal
+dunce = {workspace = true}
+
+# Shared prompt-queue wire types
+
+# Presentation-primitives layer (extracted)
+
+# The /gboom easter-egg game (extracted)
+
+# Diff hunk construction (extracted)
+
+# Rendering
+ratatui = {workspace = true}
+crossterm = {workspace = true}
+textwrap = {workspace = true}
+regex = {workspace = true}
+unicode-width = {workspace = true}
+unicode-segmentation = {workspace = true}
+strip-ansi-escapes = {version = "0.2.1"}
+
+# Markdown / syntax highlighting
+# Inline Mermaid rendering engine. Always compiled (no feature gate): the
+# dagre-based vendored engine renders detected ```mermaid fences out of process,
+# gated only at runtime by the `appearance.render_mermaid` setting.
+syntect = {workspace = true}
+
+# Data
+similar = {workspace = true}
+indexmap = {workspace = true}
+blake3 = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+strum = {workspace = true}
+toml = {workspace = true}
+toml_edit = {version = "0.22", features = ["serde"]}
+
+# ANSI parsing (tracing pane)
+ansi-to-tui = {version = "7.0.0"}
+
+# PTY for ssh wrapper, e2e tests, and benchmarking.
+portable-pty = {workspace = true}
+
+# Utilities
+anyhow = {workspace = true}
+thiserror = {workspace = true}
+shlex = {version = "1"}
+clap = {workspace = true}
+clap_complete = {version = "4"}
+rand = {workspace = true}
+tokio = {version = "1", features = ["full", "sync", "rt", "macros", "rt-multi-thread", "signal", "io-util", "io-std", "process"]}
+tokio-stream = {workspace = true, optional = true}
+tokio-util = {version = "0.7", features = ["rt", "compat"]}
+tempfile = {workspace = true, optional = true}
+tracing = {workspace = true}
+tracing-subscriber = {workspace = true}
+
+# Binary hardening: compile-time string obfuscation.
+# (cryptify / rustls / semver / tikv-jemallocator moved to the composition-root
+# binary `aster-pager-bin` with `main.rs`; this lib no longer references them.)
+obfstr = {workspace = true}
+
+# Fuzzy matching (history search daemon)
+nucleo = {git = "https://github.com/helix-editor/nucleo.git", rev = "5b74652"}
+
+# Prompt text input
+
+# Update
+
+# ACP
+agent-client-protocol = {workspace = true}
+# Crash-recovery registry of open TUI sessions.
+# Voice dictation. `audio` (mic capture) is enabled on every target. On
+# macOS/Windows it links cpal; on Linux it compiles a subprocess-recorder
+# backend instead, so cpal -> alsa-sys never reaches the static musl binary
+# (cpal is target-gated to non-Linux inside aster-voice).
+# The status-line contract: the config the user writes and the payload the
+# agent sends. A leaf crate rather than the agent's, so the client reads it
+# from upstream of the crate that fills it in.
+# Foreign coding-agent session discovery.
+gethostname = {version = "1", optional = true}
+backon = {workspace = true}
+chrono = {workspace = true}
+flate2 = {workspace = true}
+tar = {workspace = true}
+# Blocked-card copy: `hook_display_name` lives next to the hook-name grammar.
+walkdir = {workspace = true}
+
+# Base64 encoding for image data
+base64 = {workspace = true}
+
+# Image decoding/resizing for clipboard image validation before send
+image = {version = "0.25.10", default-features = false, features = ["png", "jpeg", "tiff", "gif", "webp"]}
+
+# ID generation
+uuid = {version = "1", features = ["serde", "v4", "v5", "v7"]}
+
+# Path computation (plan file, etc.)
+shellexpand = {workspace = true}
+
+# libgit2 for the startup git-info populator (no fork/exec, runs once on launch
+# in spawn_blocking; the render path never touches git directly).
+git2 = {workspace = true}
+urlencoding = {workspace = true}
+
+# Parsing (web_search)
+url = {workspace = true}
+
+# Crash diagnostics
+
+# Non-poisoning mutex for signal handler (active-sessions crash recovery).
+
+# nix: signal handling in notifications/.
+# signal-hook: SIGWINCH handler for the `aster wrap` PTY wrapper (pty_wrap.rs).
+# libc: poll/read for non-blocking terminal reads in theme/osc11.rs.
+parking_lot = {workspace = true}
+aster-crash-handler = {path = "../aster-crash-handler"}
+aster-sandbox = {default-features = false, path = "../aster-sandbox"}
+aster-hooks-plugins-types = {path = "../aster-hooks-plugins-types"}
+aster-hooks = {path = "../aster-hooks"}
+aster-plugin-marketplace = {path = "../aster-plugin-marketplace"}
+aster-agent = {path = "../aster-agent"}
+aster-tools = {path = "../aster-tools"}
+aster-fast-worktree = {features = ["metadata"], path = "../aster-fast-worktree"}
+aster-otel = {path = "../aster-otel"}
+aster-telemetry = {path = "../aster-telemetry"}
+aster-token-estimation = {path = "../aster-token-estimation"}
+aster-foreign-sessions = {path = "../aster-foreign-sessions"}
+aster-workspace = {default-features = false, path = "../aster-workspace"}
+aster-status-line = {path = "../aster-status-line"}
+aster-shell = {path = "../aster-shell"}
+aster-login = {path = "../aster-login"}
+aster-voice = {default-features = false, features = ["audio"], path = "../aster-voice"}
+aster-dashboard-store = {path = "../aster-dashboard-store"}
+aster-dirs = {path = "../aster-dirs"}
+aster-tool-types = {path = "../../common/aster-tool-types"}
+aster-sampling-types = {optional = true, path = "../aster-sampling-types"}
+aster-feedback = {path = "../aster-feedback"}
+aster-config = {path = "../aster-config"}
+aster-active-sessions = {path = "../aster-active-sessions"}
+aster-file-utils = {path = "../aster-file-utils"}
+aster-chat-state = {optional = true, path = "../aster-chat-state"}
+aster-acp-lib = {path = "../aster-acp-lib"}
+aster-update = {path = "../aster-update"}
+aster-ratatui-inline = {path = "../aster-ratatui-inline"}
+aster-ratatui-textarea = {path = "../aster-ratatui-textarea"}
+aster-acl = {path = "../../../../acl"}
+aster-mermaid = {path = "../aster-mermaid"}
+aster-markdown = {path = "../aster-markdown"}
+aster-announcements = {path = "../aster-announcements"}
+aster-pager-diff = {path = "../aster-pager-diff"}
+aster-gboom = {path = "../aster-gboom"}
+aster-pager-render = {path = "../aster-pager-render"}
+aster-prompt-queue = {path = "../aster-prompt-queue"}
+aster-version = {path = "../aster-version"}
+aster-tty-utils = {path = "../aster-tty-utils"}
+[target.'cfg(unix)'.dependencies]
+nix = {workspace = true}
+signal-hook = {version = "0.3"}
+libc = {workspace = true}
+
+# core-foundation: IOKit power assertions for sleep prevention (SleepInhibitor).
+[target.'cfg(target_os = "macos")'.dependencies]
+core-foundation = {version = "0.10"}
+
+# SetConsoleCtrlHandler for the exec-emulating screen-mode relaunch
+# (`/minimal` / `/fullscreen`): the waiting parent must ignore console Ctrl
+# events so only the relaunched child handles them. Version matches the other
+# in-repo consumers (aster-crash-handler, aster-system-power).
+[target.'cfg(windows)'.dependencies]
+windows-sys = {version = "0.59", features = ["Win32_System_Console"]}
+
+[dev-dependencies]
+tokio = {version = "1", features = ["full", "test-util"]}
+# The fixture that builds a `[ui.status_line]` section field by field.
+pretty_assertions = {workspace = true}
+wiremock = {workspace = true}
+insta = {version = "1"}
+criterion = {workspace = true}
+tempfile = {workspace = true}
+serial_test = {workspace = true}
+# In-process leader-cluster harness (mock inference server; no cycle:
+# aster-test-support depends on neither the pager nor the shell).
+# Provider install for the in-process leader-cluster tests.
+aster-extra-ca = {path = "../aster-extra-ca"}
+aster-test-support = {features = [], path = "../aster-test-support"}
+aster-agent = {path = "../aster-agent"}
+aster-shell = {features = ["test-support"], path = "../aster-shell"}
+aster-login = {features = ["test-support"], path = "../aster-login"}
+aster-gboom = {features = ["test-support"], path = "../aster-gboom"}
+aster-ratatui-inline = {features = ["test-support"], path = "../aster-ratatui-inline"}
+aster-pager-render = {features = ["test-support"], path = "../aster-pager-render"}
+aster-status-line = {features = ["test-support"], path = "../aster-status-line"}
+aster-interjection-core = {path = "../../common/aster-interjection-core"}
+
+[[bench]]
+name = "render"
+harness = false
+
+[[bench]]
+name = "search"
+harness = false
+
+[[bench]]
+name = "edit_highlight"
+harness = false
+
+[[bench]]
+name = "resize"
+harness = false
+
+# Settings modal regression tests — keyboard/mouse dispatch + registry
+# contracts. Not gated by `--ignored`; runs on every `cargo test`.
+# Spawn-only pager tests live in `aster-pager-pty-harness`.
+[[test]]
+name = "settings_e2e"
+path = "tests/settings_e2e.rs"
+
+# Opt into [workspace.lints.clippy] (too_many_arguments etc.). Without this,
+# `cargo clippy --workspace -- -D warnings` on this package is stricter than
+# the workspace-default clippy allows used in CI.
+[lints]
+workspace = true
+
+[features]
+default = ["jemalloc", "sandbox-enforce"]
+default-bazel = [
+    "jemalloc",
+    "sandbox-enforce",
+    "test-support",
+    "local-workspace",
+    ]
+local-workspace = ["aster-shell/local-workspace"]
+# No-op on this crate: the actual `#[global_allocator]` (and the
+# `tikv-jemallocator` dep) live on the composition-root binary
+# `aster-pager-bin`, which owns `main.rs`. Kept as an empty feature so the
+# workspace-uniform `[jemalloc, sandbox-enforce]` default set resolves
+# here too and the generated `crate_features` stay valid.
+jemalloc = []
+sandbox-enforce = ["aster-sandbox/enforce"]
+release-dist = []
+# Exposes test-only view-model constructors/setters (e.g. `test_agent_view`,
+# `AgentSession::set_yolo_mode_for_test`) to sibling crates' test builds — used
+# by `aster-pager-minimal`'s unit tests. Never enabled in production builds.
+test-support = ["aster-pager-render/test-support", "aster-gboom/test-support"]

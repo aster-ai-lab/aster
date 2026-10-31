@@ -1,18 +1,18 @@
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingExecutorConfig, EmbeddingNormalization,
     EmbeddingProvider, EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
-use a3s_code_core::{
+use aster_core::{
     DurableMemoryRecallChannel, DurableMemoryRecallPolicy, DurableMemorySemanticRecall,
     DurableMemorySemanticRecallPolicy, DurableMemorySession,
     DURABLE_MEMORY_HYBRID_BINDING_SCHEMA_VERSION,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet,
     MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRepository, MemoryStatus,
     RevisionMode,
 };
-use a3s_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
+use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor};
 use async_trait::async_trait;
 use chrono::{TimeZone, Utc};
 use std::collections::HashMap;
@@ -110,7 +110,7 @@ async fn seed_node(
                     DurableMemoryKind::Procedural,
                     status,
                     content,
-                    vec![evidence(&format!("a3s://semantic/{key}"))],
+                    vec![evidence(&format!("aster://semantic/{key}"))],
                     time(1),
                 ),
             }],
@@ -157,7 +157,7 @@ async fn typed_semantic_recall_crosses_languages_without_weakening_repository_au
                         DurableMemoryKind::Procedural,
                         MemoryStatus::Active,
                         CONTENT,
-                        vec![evidence("a3s://semantic/active")],
+                        vec![evidence("aster://semantic/active")],
                         time(1),
                     ),
                 },
@@ -168,7 +168,7 @@ async fn typed_semantic_recall_crosses_languages_without_weakening_repository_au
                         DurableMemoryKind::Procedural,
                         MemoryStatus::Candidate,
                         "Unverified candidate content",
-                        vec![evidence("a3s://semantic/candidate")],
+                        vec![evidence("aster://semantic/candidate")],
                         time(1),
                     ),
                 },
@@ -322,7 +322,7 @@ async fn stale_semantic_revision_is_reverified_and_dropped() {
                 expected_revision: 1,
                 content: "Use the blue recovery credential instead.".to_string(),
                 mode: RevisionMode::Correction,
-                evidence: vec![evidence("a3s://semantic/revise-stale")],
+                evidence: vec![evidence("aster://semantic/revise-stale")],
                 confidence: None,
                 importance: None,
             }],

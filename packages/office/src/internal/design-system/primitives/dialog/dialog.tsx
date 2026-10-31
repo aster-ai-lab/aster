@@ -1,7 +1,7 @@
 import { X } from 'lucide-react';
 import { usePresence } from 'motion/react';
-import { useReducedMotion } from '@a3s-lab/ui/lib/useReducedMotion';
-import { DIALOG_UNMOUNT_DELAY_MS } from '@a3s-lab/ui/utils';
+import { useReducedMotion } from '@aster-ai-lab/ui/lib/useReducedMotion';
+import { DIALOG_UNMOUNT_DELAY_MS } from '@aster-ai-lab/ui/utils';
 import { type ReactNode, useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { IconButton } from '../button/icon-button';
@@ -69,7 +69,7 @@ export function Dialog({
     <OfficeControlSizeContext value="md">
       <dialog
         open
-        className="ds-dialog-backdrop a3s-dialog-scrim"
+        className="ds-dialog-backdrop aster-dialog-scrim"
         data-state={present ? 'open' : 'closed'}
         role="presentation"
         onClick={(event) => {
@@ -84,7 +84,7 @@ export function Dialog({
       >
         <section
           ref={focusScope.scopeRef}
-          className={`ds-dialog a3s-dialog-surface${className ? ` ${className}` : ''}`}
+          className={`ds-dialog aster-dialog-surface${className ? ` ${className}` : ''}`}
           data-state={present ? 'open' : 'closed'}
           inert={!present}
           role="dialog"
@@ -93,7 +93,7 @@ export function Dialog({
           aria-describedby={description ? descriptionId : undefined}
           onKeyDown={focusScope.handleKeyDown}
           onAnimationEnd={(event) => {
-            if (!present && event.target === event.currentTarget && event.animationName === 'a3s-dialog-out') safeToRemove?.();
+            if (!present && event.target === event.currentTarget && event.animationName === 'aster-dialog-out') safeToRemove?.();
           }}
         >
           <header>

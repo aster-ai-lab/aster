@@ -7,7 +7,7 @@
 use std::fmt;
 use std::sync::{Arc, OnceLock};
 
-use a3s_code_core::EmbeddingProvider;
+use aster_core::EmbeddingProvider;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(super) enum LocalEmbeddingSetupError {
@@ -52,7 +52,7 @@ pub(super) async fn local_embedding_provider(
     // serves the trusted local_cpu opt-in (specs/013 P2 wiring).
     let load = tokio::task::spawn_blocking(|| match FACTORY.get() {
         Some(factory) => factory().ok_or(LocalEmbeddingSetupError::InvalidFactory),
-        None => a3s_embedding::LightTierProvider::load()
+        None => aster_embedding::LightTierProvider::load()
             .map(|provider| Arc::new(provider) as Arc<dyn EmbeddingProvider>)
             .map_err(|_| LocalEmbeddingSetupError::LightTierLoad),
     });
@@ -66,7 +66,7 @@ pub(super) async fn local_embedding_provider(
 #[cfg(test)]
 mod byo_factory_tests {
     use super::*;
-    use a3s_code_core::{
+    use aster_core::{
         EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingProviderDescriptor,
         EmbeddingProviderError,
     };
@@ -82,7 +82,7 @@ mod byo_factory_tests {
                 model: "fixture-model".into(),
                 revision: None,
                 dimension: 8,
-                normalization: a3s_code_core::EmbeddingNormalization::Unit,
+                normalization: aster_core::EmbeddingNormalization::Unit,
             }
         }
         async fn embed(
@@ -93,7 +93,7 @@ mod byo_factory_tests {
             let descriptor = self.descriptor();
             Ok(EmbeddingBatchResponse::new(
                 descriptor,
-                vec![a3s_code_core::EmbeddingVector {
+                vec![aster_core::EmbeddingVector {
                     id: "fixture-0".into(),
                     values: vec![0.0; 8],
                 }],

@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::pool::browser_error;
 
@@ -113,7 +113,7 @@ async fn install_or_update_browser(
 fn chrome_status() -> BrowserRuntimeStatus {
     let cache_dir = crate::chrome::managed_cache_dir().ok();
     if let Some(path) =
-        env_executable("A3S_BROWSER_EXECUTABLE").or_else(|| env_executable("CHROME"))
+        env_executable("ASTER_BROWSER_EXECUTABLE").or_else(|| env_executable("CHROME"))
     {
         return available_status(
             ManagedBrowser::Chrome,
@@ -146,7 +146,7 @@ fn lightpanda_status() -> BrowserRuntimeStatus {
     {
         let cache_dir = crate::lightpanda::managed_cache_dir().ok();
         if let Some(path) =
-            env_executable("A3S_LIGHTPANDA_EXECUTABLE").or_else(|| env_executable("LIGHTPANDA"))
+            env_executable("ASTER_LIGHTPANDA_EXECUTABLE").or_else(|| env_executable("LIGHTPANDA"))
         {
             return available_status(
                 ManagedBrowser::Lightpanda,
@@ -266,7 +266,7 @@ fn missing_status(
     }
 }
 
-/// Removes only Browser runtimes installed under the A3S Use data root.
+/// Removes only Browser runtimes installed under the Aster Use data root.
 pub async fn uninstall_managed_browsers() -> UseResult<bool> {
     let root = crate::chrome::browser_data_root()?;
     uninstall_managed_browsers_at(&root).await

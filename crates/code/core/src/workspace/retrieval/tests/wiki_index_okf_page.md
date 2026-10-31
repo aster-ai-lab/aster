@@ -5,7 +5,7 @@ resource: "workspace:规范.md"
 source_generation: "gen-1"
 parser_generation: "builtin:1"
 generated:
-  by: a3s-okf-compiler/0.2
+  by: aster-okf-compiler/0.2
 sources:
   - id: source
     resource: "workspace:规范.md"

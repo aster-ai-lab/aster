@@ -7,7 +7,7 @@ use crate::{
     model::DeepSeekModel,
     weights::{tests::fixture, MatrixLayout},
 };
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::DType;
 
 fn architecture() -> TextArchitecture {

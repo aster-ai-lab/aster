@@ -9,8 +9,8 @@ use super::{
     PluginHostCapabilities, PluginManagedScope, PluginOperationPlan, PluginPackageId,
 };
 
-pub const PLUGIN_HOST_CANCEL_REQUEST_SCHEMA: &str = "a3s.use.plugin-host-cancel-request.v1";
-pub const PLUGIN_HOST_CANCEL_RESULT_SCHEMA: &str = "a3s.use.plugin-host-cancel-result.v1";
+pub const PLUGIN_HOST_CANCEL_REQUEST_SCHEMA: &str = "aster.use.plugin-host-cancel-request.v1";
+pub const PLUGIN_HOST_CANCEL_RESULT_SCHEMA: &str = "aster.use.plugin-host-cancel-result.v1";
 
 const CANCEL_REQUEST_ERROR: &str = "use.plugin.host_cancel_request_invalid";
 const CANCEL_RESULT_ERROR: &str = "use.plugin.host_cancel_result_invalid";

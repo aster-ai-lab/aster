@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 
-use a3s_acl::Block;
-use a3s_use_core::{UseError, UseResult};
+use aster_acl::Block;
+use aster_use_core::{UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -467,14 +467,14 @@ mod tests {
 
     #[test]
     fn slides_mode_names_its_agent_and_editor() {
-        let acl = r#"extension "a3s/slides" {
+        let acl = r#"extension "aster/slides" {
   schema_version = 3
   version = "1.0.0"
   route = "slides"
   requires_use = ">=0.3.0, <0.4.0"
   actions = ["read"]
   repository {
-    url = "https://github.com/A3S-Lab/Use-Registry"
+    url = "https://github.com/aster-ai-lab/Use-Registry"
     revision = "0000000000000000000000000000000000000000"
   }
   agent "slides" {

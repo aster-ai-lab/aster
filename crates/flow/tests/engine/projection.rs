@@ -75,7 +75,7 @@ impl FlowEventStore for StaticHistoryStore {
         &self,
         _run_id: &str,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store(
             "static history store does not append".to_string(),
         ))
@@ -86,13 +86,13 @@ impl FlowEventStore for StaticHistoryStore {
         _run_id: &str,
         _expected_sequence: u64,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store(
             "static history store does not append".to_string(),
         ))
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         if run_id == self.run_id {
             Ok(self.events.clone())
         } else {
@@ -100,7 +100,7 @@ impl FlowEventStore for StaticHistoryStore {
         }
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         Ok(vec![self.run_id.clone()])
     }
 }

@@ -7,7 +7,7 @@
 //!
 //! The attest server runs inside the guest TEE and communicates with
 //! host-side clients over TLS (RA-TLS). Inside the TLS tunnel, messages
-//! use the `a3s-transport` Frame wire format:
+//! use the `aster-transport` Frame wire format:
 //!
 //! - Client sends a [`Data`] frame with JSON [`AttestRequest`]
 //! - Server responds with a [`Data`] frame (JSON response) or [`Error`] frame
@@ -15,13 +15,13 @@
 use serde::{Deserialize, Serialize};
 
 /// Vsock port for the attestation server.
-pub const ATTEST_VSOCK_PORT: u32 = a3s_transport::ports::TEE_CHANNEL;
+pub const ATTEST_VSOCK_PORT: u32 = aster_transport::ports::TEE_CHANNEL;
 
 /// Guest environment key carrying the SHA-256 Runtime specification binding.
 ///
 /// The RA-TLS server places these 32 bytes in the second half of SNP
 /// `report_data`; the first half remains bound to the ephemeral TLS key.
-pub const RUNTIME_ATTESTATION_BINDING_ENV: &str = "A3S_RUNTIME_ATTESTATION_BINDING";
+pub const RUNTIME_ATTESTATION_BINDING_ENV: &str = "ASTER_RUNTIME_ATTESTATION_BINDING";
 
 // ---------------------------------------------------------------------------
 // TEE self-detection API
@@ -35,7 +35,7 @@ pub enum TeeType {
     SevSnp,
     /// Intel TDX (Trust Domain Extensions).
     Tdx,
-    /// Simulation mode (`A3S_TEE_SIMULATE` env var).
+    /// Simulation mode (`ASTER_TEE_SIMULATE` env var).
     Simulated,
 }
 
@@ -57,14 +57,14 @@ pub struct TeeCapability {
 /// Detect TEE capability in the current environment.
 ///
 /// Checks (in order):
-/// 1. `A3S_TEE_SIMULATE` env var → simulation mode
+/// 1. `ASTER_TEE_SIMULATE` env var → simulation mode
 /// 2. `/dev/sev-guest` → AMD SEV-SNP with guest attestation support
 /// 3. `/dev/sev` → AMD SEV driver loaded
 ///
 /// # Example
 ///
 /// ```rust
-/// use a3s_box_core::tee::detect_tee;
+/// use aster_box_core::tee::detect_tee;
 ///
 /// let cap = detect_tee();
 /// if cap.available {
@@ -72,7 +72,7 @@ pub struct TeeCapability {
 /// }
 /// ```
 pub fn detect_tee() -> TeeCapability {
-    let simulated = std::env::var("A3S_TEE_SIMULATE").is_ok();
+    let simulated = std::env::var("ASTER_TEE_SIMULATE").is_ok();
     let sev_guest_device = std::path::Path::new("/dev/sev-guest").exists();
     let sev_device = std::path::Path::new("/dev/sev").exists();
     let tdx_guest_device = std::path::Path::new("/dev/tdx_guest").exists()
@@ -139,7 +139,7 @@ mod tests {
     #[test]
     fn test_detect_tee_returns_capability() {
         let cap = detect_tee();
-        // On dev machines without SEV hardware and without A3S_TEE_SIMULATE,
+        // On dev machines without SEV hardware and without ASTER_TEE_SIMULATE,
         // TEE should not be available (unless the test runner sets the env var).
         assert_eq!(cap.available, cap.tee_type.is_some());
     }

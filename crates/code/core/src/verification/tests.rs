@@ -6,7 +6,7 @@ fn report_from_required_program_hint_needs_review() {
         ProgramVerificationHint::new("inspect_matches", "Review matched files")
             .required()
             .with_suggested_tools(["read", "search"])
-            .with_evidence_uris(["a3s://tool-output/grep/abc"]),
+            .with_evidence_uris(["aster://tool-output/grep/abc"]),
     ];
 
     let report = VerificationReport::from_program_hints("program_code_search", &hints);
@@ -19,7 +19,7 @@ fn report_from_required_program_hint_needs_review() {
     assert_eq!(report.checks[0].suggested_tools, vec!["read", "search"]);
     assert_eq!(
         report.checks[0].evidence_uris,
-        vec!["a3s://tool-output/grep/abc"]
+        vec!["aster://tool-output/grep/abc"]
     );
 }
 
@@ -70,7 +70,7 @@ fn verification_command_builds_passed_check_with_evidence() {
         0,
         Some(&serde_json::json!({
             "artifact": {
-                "artifact_uri": "a3s://tool-output/bash/abc"
+                "artifact_uri": "aster://tool-output/bash/abc"
             }
         })),
         None,
@@ -79,7 +79,7 @@ fn verification_command_builds_passed_check_with_evidence() {
     assert_eq!(check.status, VerificationStatus::Passed);
     assert!(check.required);
     assert_eq!(check.suggested_tools, vec!["bash"]);
-    assert_eq!(check.evidence_uris, vec!["a3s://tool-output/bash/abc"]);
+    assert_eq!(check.evidence_uris, vec!["aster://tool-output/bash/abc"]);
     assert!(check.residual_risk.is_none());
 }
 
@@ -369,7 +369,7 @@ fn goal_emit_requires_acceptance_report_when_machine_acceptance_exists() {
     let root = tempfile::tempdir().unwrap();
     let loop_dir = root
         .path()
-        .join(".a3s")
+        .join(".aster")
         .join("loops")
         .join("goal-emit-gate");
     std::fs::create_dir_all(&loop_dir).unwrap();
@@ -430,7 +430,7 @@ fn goal_emit_requires_acceptance_report_when_machine_acceptance_exists() {
 #[test]
 fn stale_completed_loop_acceptance_does_not_authorize_or_pollute_active_goal() {
     let root = tempfile::tempdir().unwrap();
-    let loops = root.path().join(".a3s").join("loops");
+    let loops = root.path().join(".aster").join("loops");
 
     let stale = loops.join("goal-stale-old");
     std::fs::create_dir_all(&stale).unwrap();
@@ -499,7 +499,7 @@ fn stale_completed_loop_acceptance_does_not_authorize_or_pollute_active_goal() {
     let only_stale = tempfile::tempdir().unwrap();
     let only_stale_loop = only_stale
         .path()
-        .join(".a3s")
+        .join(".aster")
         .join("loops")
         .join("goal-done");
     std::fs::create_dir_all(&only_stale_loop).unwrap();
@@ -526,7 +526,7 @@ fn stale_completed_loop_acceptance_does_not_authorize_or_pollute_active_goal() {
 #[test]
 fn each_active_loop_needs_its_own_acceptance_report_before_goal_emit() {
     let root = tempfile::tempdir().unwrap();
-    let loops = root.path().join(".a3s").join("loops");
+    let loops = root.path().join(".aster").join("loops");
 
     let orphan = loops.join("goal-orphan-easy");
     std::fs::create_dir_all(&orphan).unwrap();
@@ -602,7 +602,7 @@ fn each_active_loop_needs_its_own_acceptance_report_before_goal_emit() {
 fn shell_command_covers_preset_matches_exact_and_trailing_args() {
     assert!(shell_command_covers_preset("cargo test", "cargo test"));
     assert!(shell_command_covers_preset(
-        "cargo test -p a3s-code-core",
+        "cargo test -p aster-core",
         "cargo test"
     ));
     assert!(shell_command_covers_preset(
@@ -638,7 +638,7 @@ fn shell_verification_report_attaches_for_goal_acceptance_commands() {
     let root = tempfile::tempdir().unwrap();
     let loop_dir = root
         .path()
-        .join(".a3s")
+        .join(".aster")
         .join("loops")
         .join("goal-demo-abcd");
     std::fs::create_dir_all(&loop_dir).unwrap();
@@ -712,7 +712,7 @@ fn acceptance_file_exists_quotes_paths_with_spaces() {
 #[test]
 fn acceptance_file_exists_skips_paths_that_escape_workspace() {
     let root = tempfile::tempdir().unwrap();
-    let loop_dir = root.path().join(".a3s").join("loops").join("goal-escape");
+    let loop_dir = root.path().join(".aster").join("loops").join("goal-escape");
     std::fs::create_dir_all(&loop_dir).unwrap();
     write_active_loop_state(&loop_dir, "running");
     std::fs::write(
@@ -1100,13 +1100,13 @@ fn python_workspace_preset_includes_mypy_when_configured() {
 fn artifact_uri_collection_walks_arrays_and_nested_objects() {
     let metadata = serde_json::json!({
         "items": [
-            {"artifact_uri": "a3s://tool-output/a"},
-            {"nested": {"artifact_uri": "a3s://tool-output/b"}}
+            {"artifact_uri": "aster://tool-output/a"},
+            {"nested": {"artifact_uri": "aster://tool-output/b"}}
         ]
     });
     let uris = artifact_uris(Some(&metadata));
-    assert!(uris.contains(&"a3s://tool-output/a".to_string()));
-    assert!(uris.contains(&"a3s://tool-output/b".to_string()));
+    assert!(uris.contains(&"aster://tool-output/a".to_string()));
+    assert!(uris.contains(&"aster://tool-output/b".to_string()));
 }
 
 #[test]
@@ -1473,7 +1473,7 @@ fn acceptance_helpers_cover_empty_quote_and_absolute_in_workspace_paths() {
     ));
     assert!(!acceptance_file_path_allowed_in_workspace(
         root.path(),
-        "/tmp/definitely-missing-a3s-coverage-file"
+        "/tmp/definitely-missing-aster-coverage-file"
     ));
     assert!(acceptance_file_path_allowed_in_workspace(
         root.path(),

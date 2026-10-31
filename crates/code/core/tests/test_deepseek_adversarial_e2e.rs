@@ -1,5 +1,5 @@
 //! Adversarial end-to-end checks for the DeepSeek model configured in
-//! `.a3s/config.acl`.
+//! `.aster/config.acl`.
 //!
 //! These checks follow the smallest causal chain that can establish a governed
 //! agent boundary with a live model:
@@ -13,20 +13,20 @@
 //! access. Run them serially so evidence and provider throttling stay bounded:
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_deepseek_adversarial_e2e \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_deepseek_adversarial_e2e \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::tools::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::tools::{
     ToolResultTransformBindingV1, ToolResultTransformPolicyV1,
     TOOL_RESULT_TRANSFORM_BINDING_METADATA_KEY,
 };
-use a3s_code_core::{Agent, AgentEvent, RunStatus, SessionOptions, ToolRequestOriginV1};
+use aster_core::{Agent, AgentEvent, RunStatus, SessionOptions, ToolRequestOriginV1};
 
 mod support;
 use support::layer_c_model::load_pinned_layer_c_config;
@@ -57,7 +57,7 @@ fn deny_by_default() -> PermissionPolicy {
 fn bounded_options(session_id: &str, policy: PermissionPolicy) -> SessionOptions {
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(std::sync::Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(std::sync::Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning(false)
@@ -71,8 +71,8 @@ fn bounded_options(session_id: &str, policy: PermissionPolicy) -> SessionOptions
 }
 
 async fn only_run_events(
-    session: &a3s_code_core::AgentSession,
-) -> Vec<a3s_code_core::run::RunEventRecord> {
+    session: &aster_core::AgentSession,
+) -> Vec<aster_core::run::RunEventRecord> {
     let runs = session.runs().await;
     assert_eq!(runs.len(), 1, "the scenario must record exactly one run");
     assert_eq!(
@@ -83,7 +83,7 @@ async fn only_run_events(
     session.run_events(&runs[0].id).await
 }
 
-fn assert_no_secret_in_events(events: &[a3s_code_core::run::RunEventRecord]) {
+fn assert_no_secret_in_events(events: &[aster_core::run::RunEventRecord]) {
     for event in events {
         let encoded = serde_json::to_string(&event.event).expect("serialize run event");
         assert!(
@@ -94,7 +94,7 @@ fn assert_no_secret_in_events(events: &[a3s_code_core::run::RunEventRecord]) {
 }
 
 fn assert_denied_tool_request_is_bound(
-    events: &[a3s_code_core::run::RunEventRecord],
+    events: &[aster_core::run::RunEventRecord],
     expected_name: &str,
 ) {
     let (denial_position, tool_id, args) = events
@@ -133,7 +133,7 @@ fn assert_denied_tool_request_is_bound(
 }
 
 fn assert_tool_result_transform_is_bound(
-    events: &[a3s_code_core::run::RunEventRecord],
+    events: &[aster_core::run::RunEventRecord],
     expected_name: &str,
 ) {
     let encoded = events
@@ -155,7 +155,7 @@ fn assert_tool_result_transform_is_bound(
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek provider configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek provider configured in .aster/config.acl"]
 async fn deepseek_prompt_injection_cannot_cross_the_permission_gate() {
     let agent = deepseek_agent().await;
     let workspace = tempfile::tempdir().expect("temporary adversarial workspace");
@@ -265,7 +265,7 @@ async fn deepseek_prompt_injection_cannot_cross_the_permission_gate() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek provider configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek provider configured in .aster/config.acl"]
 async fn deepseek_cannot_read_an_absolute_path_outside_the_workspace() {
     let agent = deepseek_agent().await;
     let boundary = tempfile::tempdir().expect("temporary boundary fixture");
@@ -358,7 +358,7 @@ async fn deepseek_cannot_read_an_absolute_path_outside_the_workspace() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek provider configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek provider configured in .aster/config.acl"]
 async fn deepseek_stream_cancellation_settles_the_run_and_tool_state() {
     let agent = deepseek_agent().await;
     let workspace = tempfile::tempdir().expect("temporary cancellation workspace");
@@ -521,11 +521,11 @@ fn assert_workspace_contains_only(workspace: &Path, expected: &[&str]) {
         .filter_map(|entry| {
             let entry = entry.expect("read cancellation workspace entry");
             let name = entry.file_name().to_string_lossy().into_owned();
-            // Code/session private roots (`.a3s`, `.a3s-code`) and VCS state
+            // Code/session private roots (`.aster`, `.aster`) and VCS state
             // are created by workspace services / default security — not shell
             // side effects. The cancellation gate only cares about user-visible
             // artifacts from the cancellable command.
-            if name == ".a3s" || name == ".a3s-code" || name == ".git" {
+            if name == ".aster" || name == ".aster" || name == ".git" {
                 return None;
             }
             Some(name)

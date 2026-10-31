@@ -1,10 +1,10 @@
 #![cfg(feature = "auth")]
 
-use a3s_boot::{
+use aster_boot::{
     AuthGuard, AuthModule, AuthPrincipal, AuthService, AUTH_PUBLIC_METADATA, AUTH_ROLES_METADATA,
     AUTH_SCOPES_METADATA, AUTH_STRATEGY_METADATA,
 };
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootRequest, BootResponse, ExecutionContext, HttpMethod, RouteDefinition,
 };
 use serde_json::json;

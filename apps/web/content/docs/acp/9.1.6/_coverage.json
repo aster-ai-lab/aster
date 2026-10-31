@@ -1,110 +1,110 @@
 [
   {
-    "method": "a3s/followup/generate",
+    "method": "aster/followup/generate",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/goal/import",
+    "method": "aster/goal/import",
     "page": "../goals/"
   },
   {
-    "method": "a3s/goal/import/preview",
+    "method": "aster/goal/import/preview",
     "page": "../goals/"
   },
   {
-    "method": "a3s/goal/definition",
+    "method": "aster/goal/definition",
     "page": "../goals/"
   },
   {
-    "method": "a3s/goal/plan",
+    "method": "aster/goal/plan",
     "page": "../goals/"
   },
   {
-    "method": "a3s/goal/control",
+    "method": "aster/goal/control",
     "page": "../goals/"
   },
   {
-    "method": "a3s/goal/wait",
+    "method": "aster/goal/wait",
     "page": "../goals/"
   },
   {
-    "method": "a3s/goal/state",
+    "method": "aster/goal/state",
     "page": "../goals/"
   },
   {
-    "method": "a3s/review/target",
+    "method": "aster/review/target",
     "page": "../goals/"
   },
   {
-    "method": "a3s/review/admit",
+    "method": "aster/review/admit",
     "page": "../goals/"
   },
   {
-    "method": "a3s/review/settle",
+    "method": "aster/review/settle",
     "page": "../goals/"
   },
   {
-    "method": "a3s/wiki/search",
+    "method": "aster/wiki/search",
     "page": "../memory/"
   },
   {
-    "method": "a3s/workspace/search/v1",
+    "method": "aster/workspace/search/v1",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/memory/manage",
+    "method": "aster/memory/manage",
     "page": "../memory/"
   },
   {
-    "method": "a3s/memory/snapshot",
+    "method": "aster/memory/snapshot",
     "page": "../memory/"
   },
   {
-    "method": "a3s/models/list",
+    "method": "aster/models/list",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/session/info",
+    "method": "aster/session/info",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/session/list",
+    "method": "aster/session/list",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/session/delete",
+    "method": "aster/session/delete",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/permission_posture",
+    "method": "aster/permission_posture",
     "page": "../permissions/"
   },
   {
-    "method": "a3s/session/transcript/page/v1",
+    "method": "aster/session/transcript/page/v1",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/session/fork/prefix/v1",
+    "method": "aster/session/fork/prefix/v1",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/session/tooling/v1",
+    "method": "aster/session/tooling/v1",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/session/background-tasks/v1",
+    "method": "aster/session/background-tasks/v1",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/session/background-tasks/stop/v1",
+    "method": "aster/session/background-tasks/stop/v1",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/compact_conversation",
+    "method": "aster/compact_conversation",
     "page": "../sessions/"
   },
   {
-    "method": "a3s/interject",
+    "method": "aster/interject",
     "page": "../sessions/"
   }
 ]

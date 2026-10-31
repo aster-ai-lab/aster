@@ -1,12 +1,12 @@
 # Meta Harness: Composable Harness Components
 
-A3S Code is a **Meta Harness**: hosts compose coding behavior as a Moore
+Aster Code is a **Meta Harness**: hosts compose coding behavior as a Moore
 component tree over one immutable fact log. Governance (permission projection
 and completion-gate enrollment) stays Core-owned and non-bypassable.
 
 Related: [HARNESS_CONVERGENCE.md](HARNESS_CONVERGENCE.md),
 [ADR-003](../../use/docs/adr-003-native-code-harness-boundary.md) (addendum),
-`a3s-effect` `compose` module, first-principles gate **F31**.
+`aster-effect` `compose` module, first-principles gate **F31**.
 
 ## Positioning
 
@@ -26,7 +26,7 @@ Session behavior does not regress when `SessionOptions.harness` is omitted.
 
 1. Single fact log is the only control source (`ingest` / `resume`).
 2. Components are Moore machines: `initial` / `step` / `output` → view + keyed
-   transitions (`a3s-effect` actor).
+   transitions (`aster-effect` actor).
 3. Transition keys are unique across the tree (`DuplicateTransition`); finished
    keys are not re-run.
 4. Confirm / question park until answer facts (no timers).
@@ -73,7 +73,7 @@ not follow from the model's completion fact or package generation pin.
 
 Hosts register Moore factories via `HostHarnessRegistry` and mount them from
 the same `components: [...]` list as `host:<id>`. Builtin registry ships
-`intent_stamp` (injects `a3s.meta_harness.intent_stamp.v1` into the system
+`intent_stamp` (injects `aster.meta_harness.intent_stamp.v1` into the system
 view) for hermetic / Layer C proofs. Full custom trees use
 `HostHarnessAssembler` / `admit_component_tree` (Rust embedders).
 
@@ -84,11 +84,11 @@ siblings cannot collide. CI / unit tests assert that discipline.
 
 ## Composition cookbook
 
-### Rust (`a3s-effect` + Core)
+### Rust (`aster-effect` + Core)
 
 ```rust
-use a3s_effect::{budget, coding_actor, compact, compose_coding_actor, system, tools, HarnessGraph};
-use a3s_code_core::{admit_component_tree, BuiltinHostHarnessRegistry, HarnessComposeOptions};
+use aster_effect::{budget, coding_actor, compact, compose_coding_actor, system, tools, HarnessGraph};
+use aster_core::{admit_component_tree, BuiltinHostHarnessRegistry, HarnessComposeOptions};
 
 // Sugar for the stock tree (bit-compatible default):
 let actor = coding_actor(config);
@@ -119,12 +119,12 @@ and [the local integration guide](USER_GUIDE.md).
 
 | Layer | Gate |
 | --- | --- |
-| Hermetic | `cargo test -p a3s-code-core --lib meta_harness` |
+| Hermetic | `cargo test -p aster-core --lib meta_harness` |
 | F-kernel ≥95% | `meta_harness.rs` + `completion_attestor.rs` in `scripts/f_table_coverage.sh` (F31) |
 | Layer C live | `test_meta_harness_compose_live_e2e` (file/digest/gate oracles only) |
 
-F31 tip evidence (2026-09-25): `A3S_F_TABLE_EVIDENCE=/tmp/a3s-f31-meta-harness
-A3S_F_TABLE_MIN_LINE_PCT=95 scripts/f_table_coverage.sh` →
+F31 tip evidence (2026-09-25): `ASTER_F_TABLE_EVIDENCE=/tmp/aster-f31-meta-harness
+ASTER_F_TABLE_MIN_LINE_PCT=95 scripts/f_table_coverage.sh` →
 `ALL_F_TABLE_KERNELS_GE_95` with `meta_harness.rs` **99.20%** and
 `completion_attestor.rs` **95.00%**. Hermetic suites cover stock/host partition,
 fail-closed unknown mounts, default/parts/components resolve paths, and mixed

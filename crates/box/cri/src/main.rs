@@ -1,7 +1,7 @@
-//! A3S Box CRI - Kubernetes Container Runtime Interface binary.
+//! Aster Box CRI - Kubernetes Container Runtime Interface binary.
 //!
 //! Serves CRI RuntimeService and ImageService over a Unix domain socket,
-//! allowing kubelet to schedule pods onto A3S Box microVMs.
+//! allowing kubelet to schedule pods onto Aster Box microVMs.
 
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -9,31 +9,31 @@ use std::sync::Arc;
 use clap::Parser;
 use tracing_subscriber::EnvFilter;
 
-use a3s_box_runtime::oci::{ImageStore, RegistryAuth};
+use aster_box_runtime::oci::{ImageStore, RegistryAuth};
 
-use a3s_box_cri::config_mapper::DEFAULT_AGENT_IMAGE;
-use a3s_box_cri::runtime_service::CriRuntimeOptions;
-use a3s_box_cri::server::CriServer;
+use aster_box_cri::config_mapper::DEFAULT_AGENT_IMAGE;
+use aster_box_cri::runtime_service::CriRuntimeOptions;
+use aster_box_cri::server::CriServer;
 
-const AGENT_IMAGE_ENV: &str = "A3S_BOX_CRI_AGENT_IMAGE";
+const AGENT_IMAGE_ENV: &str = "ASTER_BOX_CRI_AGENT_IMAGE";
 
-/// A3S Box CRI Runtime
+/// Aster Box CRI Runtime
 #[derive(Parser, Debug)]
-#[command(name = "a3s-box-cri", about = "A3S Box CRI Runtime")]
+#[command(name = "aster-box-cri", about = "Aster Box CRI Runtime")]
 struct Args {
     /// Path to the Unix domain socket for CRI communication.
-    #[arg(long, default_value = "/var/run/a3s-box/a3s-box.sock")]
+    #[arg(long, default_value = "/var/run/aster-box/aster-box.sock")]
     socket: PathBuf,
 
     /// Directory for storing pulled OCI images.
-    #[arg(long, default_value = "~/.a3s/images")]
+    #[arg(long, default_value = "~/.aster/images")]
     image_dir: String,
 
     /// Maximum image cache size in bytes (default: 10GB).
     #[arg(long, default_value = "10737418240")]
     image_cache_size: u64,
 
-    /// Default sandbox VM agent/rootfs image used when Pods omit a3s.box/agent-image.
+    /// Default sandbox VM agent/rootfs image used when Pods omit aster.box/agent-image.
     #[arg(long)]
     agent_image: Option<String>,
 
@@ -105,7 +105,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         cache_size = args.image_cache_size,
         agent_image = %runtime_options.default_agent_image,
         runtime_handler_overrides = runtime_options.runtime_handler_agent_images.len(),
-        "Starting A3S Box CRI Runtime"
+        "Starting Aster Box CRI Runtime"
     );
 
     // Initialize image store

@@ -20,7 +20,7 @@ mod oci_cli;
 mod reopen_replacement;
 
 #[derive(Debug, Parser)]
-#[command(name = "a3s-oci", version, about)]
+#[command(name = "aster-oci", version, about)]
 struct Cli {
     #[command(subcommand)]
     command: Command,
@@ -54,7 +54,7 @@ enum NativeLinuxCheckpointRestoreCrashPointArg {
 
 #[cfg(target_os = "linux")]
 impl From<NativeLinuxCheckpointRestoreCrashPointArg>
-    for a3s_oci_runtime::NativeLinuxCheckpointRestoreCrashPoint
+    for aster_oci_runtime::NativeLinuxCheckpointRestoreCrashPoint
 {
     fn from(value: NativeLinuxCheckpointRestoreCrashPointArg) -> Self {
         match value {
@@ -125,7 +125,7 @@ enum Command {
     HvfSmoke,
     /// Run the experimental native Linux core lifecycle through the Rust SDK.
     NativeLinuxSmoke {
-        /// Matching a3s-oci-agent executable used for the prepared init mode.
+        /// Matching aster-oci-agent executable used for the prepared init mode.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// OCI bundle containing config.json and rootfs.
@@ -137,7 +137,7 @@ enum Command {
     },
     /// Qualify immutable Native Linux checkpoints with one exact CRIU binary.
     NativeLinuxCheckpointSmoke {
-        /// Matching a3s-oci-agent executable used for the prepared init mode.
+        /// Matching aster-oci-agent executable used for the prepared init mode.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// Exact root-owned CRIU executable qualified by this run.
@@ -174,7 +174,7 @@ enum Command {
     },
     /// Qualify one opaque caller-owned network enforcement and redirect mechanism.
     NativeLinuxNetworkEnforcementSmoke {
-        /// Matching a3s-oci-agent executable used for the prepared init mode.
+        /// Matching aster-oci-agent executable used for the prepared init mode.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// OCI bundle bound to one joined namespace and exact interface.
@@ -201,7 +201,7 @@ enum Command {
     },
     /// Prove helper-backed native Linux execution as an unprivileged user.
     NativeLinuxRootlessSmoke {
-        /// Matching a3s-oci-agent executable used for the prepared init mode.
+        /// Matching aster-oci-agent executable used for the prepared init mode.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// Rootless OCI bundle containing config.json and rootfs.
@@ -237,7 +237,7 @@ enum Command {
     #[cfg(target_os = "linux")]
     #[command(hide = true)]
     NativeLinuxRootlessDevicePolicySmoke {
-        /// Matching a3s-oci-agent executable used for prepared init.
+        /// Matching aster-oci-agent executable used for prepared init.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// Rootless OCI bundle containing the bounded device profile.
@@ -256,7 +256,7 @@ enum Command {
         /// Private absolute root containing runtime.sock, state, and executor data.
         #[arg(long, value_name = "DIR")]
         root: PathBuf,
-        /// Absolute matching a3s-oci-agent executable used for prepared init.
+        /// Absolute matching aster-oci-agent executable used for prepared init.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// Explicit user-owned cgroup-v2 delegation for rootless Sandbox use.
@@ -297,7 +297,7 @@ enum Command {
         #[arg(long, value_name = "FILE")]
         system_image_manifest: PathBuf,
     },
-    /// Serve the KVM candidate only for A3S Box product-lifecycle qualification.
+    /// Serve the KVM candidate only for Aster Box product-lifecycle qualification.
     #[cfg(all(
         target_os = "linux",
         any(target_arch = "x86_64", target_arch = "aarch64")
@@ -364,7 +364,7 @@ enum Command {
     #[cfg(target_os = "linux")]
     #[command(hide = true)]
     LinuxNativeLiveRecoverySmoke {
-        /// Absolute `a3s-oci-agent` executable.
+        /// Absolute `aster-oci-agent` executable.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// OCI bundle for the supervised Native Live attempt.
@@ -912,7 +912,7 @@ enum Command {
         #[arg(long, value_name = "DIR")]
         bundle: PathBuf,
         #[arg(long, value_name = "ID")]
-        container_id: a3s_oci_sdk::ContainerId,
+        container_id: aster_oci_sdk::ContainerId,
         #[arg(long, value_name = "FILE")]
         ready_file: PathBuf,
         /// Explicit user-owned cgroup-v2 delegation for rootless recovery.
@@ -933,7 +933,7 @@ enum Command {
         #[arg(long, value_name = "DIR")]
         bundle: PathBuf,
         #[arg(long, value_name = "ID")]
-        container_id: a3s_oci_sdk::ContainerId,
+        container_id: aster_oci_sdk::ContainerId,
         #[arg(long)]
         generation: u64,
         /// Exact cgroup-v2 delegation used by the killed rootless owner.
@@ -954,7 +954,7 @@ enum Command {
         #[arg(long, value_name = "DIR")]
         bundle: PathBuf,
         #[arg(long, value_name = "ID")]
-        container_id: a3s_oci_sdk::ContainerId,
+        container_id: aster_oci_sdk::ContainerId,
         #[arg(long, value_name = "FILE")]
         ready_file: PathBuf,
     },
@@ -969,35 +969,35 @@ enum Command {
         #[arg(long, value_name = "DIR")]
         bundle: PathBuf,
         #[arg(long, value_name = "ID")]
-        container_id: a3s_oci_sdk::ContainerId,
+        container_id: aster_oci_sdk::ContainerId,
         #[arg(long)]
         generation: u64,
         /// Root-owned JSON captured while the Hook process group was live.
         #[arg(long, value_name = "FILE")]
         evidence: PathBuf,
     },
-    /// Own one A3S Box container through the native Linux SDK service.
+    /// Own one Aster Box container through the native Linux SDK service.
     #[cfg(target_os = "linux")]
     NativeLinuxService {
         /// Private absolute root containing runtime.sock, state, and executor data.
         #[arg(long, value_name = "DIR")]
         root: PathBuf,
-        /// Absolute matching a3s-oci-agent executable used for the prepared init mode.
+        /// Absolute matching aster-oci-agent executable used for the prepared init mode.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// Explicit user-owned cgroup-v2 delegation for rootless Sandbox use.
         #[arg(long, value_name = "DIR")]
         delegated_cgroup_root: Option<PathBuf>,
-        /// Exact A3S Box container identity allowed to consume the inherited descriptors.
+        /// Exact Aster Box container identity allowed to consume the inherited descriptors.
         #[arg(long, value_name = "ID")]
-        container_id: a3s_oci_sdk::ContainerId,
-        /// Require A3S Box exec, PTY, and init-log handles on descriptors 3, 4, and 5.
+        container_id: aster_oci_sdk::ContainerId,
+        /// Require Aster Box exec, PTY, and init-log handles on descriptors 3, 4, and 5.
         #[arg(long, action = clap::ArgAction::SetTrue, required = true)]
-        a3s_box_control_fds: bool,
+        aster_box_control_fds: bool,
     },
     /// Prove the complete native lifecycle over the packaged Unix SDK service.
     NativeLinuxServiceSmoke {
-        /// Matching a3s-oci-agent executable used for the prepared init mode.
+        /// Matching aster-oci-agent executable used for the prepared init mode.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// OCI bundle containing config.json and rootfs.
@@ -1009,7 +1009,7 @@ enum Command {
     },
     /// Prove two native Linux containers remain independently fenced.
     NativeLinuxMultiContainerSmoke {
-        /// Matching a3s-oci-agent executable used for the prepared init mode.
+        /// Matching aster-oci-agent executable used for the prepared init mode.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// First OCI bundle containing config.json and rootfs.
@@ -1024,7 +1024,7 @@ enum Command {
     },
     /// Run repeated concurrent native Linux lifecycle and leak checks.
     NativeLinuxSoak {
-        /// Matching a3s-oci-agent executable used for the prepared init mode.
+        /// Matching aster-oci-agent executable used for the prepared init mode.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// Distinct writable OCI bundle; repeat once per available soak slot.
@@ -1045,7 +1045,7 @@ enum Command {
     },
     /// Interrupt native Linux lifecycle and prove cleanup without OCI delete.
     NativeLinuxFaultCleanup {
-        /// Matching a3s-oci-agent executable used for the prepared init mode.
+        /// Matching aster-oci-agent executable used for the prepared init mode.
         #[arg(long, value_name = "FILE")]
         agent: PathBuf,
         /// OCI bundle containing config.json and rootfs.
@@ -1156,12 +1156,12 @@ enum Command {
         bundle: PathBuf,
         /// Exact path-safe container identity used by the candidate driver.
         #[arg(long, value_name = "ID")]
-        container_id: a3s_oci_sdk::ContainerId,
+        container_id: aster_oci_sdk::ContainerId,
         /// Exact container generation represented by the share.
         #[arg(long, default_value_t = 1)]
         generation: u64,
     },
-    /// Serve the explicit A3S Box lifecycle qualification over a protected Windows pipe.
+    /// Serve the explicit Aster Box lifecycle qualification over a protected Windows pipe.
     BoxWhpxQualificationService {
         /// Isolated libkrun shim executable.
         #[arg(long, value_name = "FILE")]
@@ -1201,7 +1201,7 @@ enum Command {
         #[arg(long, value_name = "DIR")]
         bundle: PathBuf,
         #[arg(long, value_name = "ID")]
-        container_id: a3s_oci_sdk::ContainerId,
+        container_id: aster_oci_sdk::ContainerId,
         #[arg(long, value_name = "FILE")]
         ready_file: PathBuf,
     },
@@ -1221,7 +1221,7 @@ enum Command {
         #[arg(long, value_name = "DIR")]
         bundle: PathBuf,
         #[arg(long, value_name = "ID")]
-        container_id: a3s_oci_sdk::ContainerId,
+        container_id: aster_oci_sdk::ContainerId,
         #[arg(long)]
         generation: u64,
     },
@@ -1359,7 +1359,7 @@ enum FaultPointArg {
     Kill,
 }
 
-impl From<FaultPointArg> for a3s_oci_runtime::LifecycleFaultPoint {
+impl From<FaultPointArg> for aster_oci_runtime::LifecycleFaultPoint {
     fn from(value: FaultPointArg) -> Self {
         match value {
             FaultPointArg::Create => Self::AfterCreate,
@@ -1395,41 +1395,41 @@ enum TransportFaultStageArg {
     HostAfterShutdown,
 }
 
-impl From<TransportFaultStageArg> for a3s_oci_runtime::AgentTransportFaultStage {
+impl From<TransportFaultStageArg> for aster_oci_runtime::AgentTransportFaultStage {
     fn from(value: TransportFaultStageArg) -> Self {
         match value {
             TransportFaultStageArg::BeforeRequestWrite => Self::Operation(
-                a3s_oci_runtime::AgentTransportOperationStage::HostBeforeRequestWrite,
+                aster_oci_runtime::AgentTransportOperationStage::HostBeforeRequestWrite,
             ),
             TransportFaultStageArg::AfterRequestWrite => Self::Operation(
-                a3s_oci_runtime::AgentTransportOperationStage::HostAfterRequestWrite,
+                aster_oci_runtime::AgentTransportOperationStage::HostAfterRequestWrite,
             ),
             TransportFaultStageArg::BeforeResponseRead => Self::Operation(
-                a3s_oci_runtime::AgentTransportOperationStage::HostBeforeResponseRead,
+                aster_oci_runtime::AgentTransportOperationStage::HostBeforeResponseRead,
             ),
             TransportFaultStageArg::AfterResponseRead => Self::Operation(
-                a3s_oci_runtime::AgentTransportOperationStage::HostAfterResponseRead,
+                aster_oci_runtime::AgentTransportOperationStage::HostAfterResponseRead,
             ),
             TransportFaultStageArg::GuestAfterRequestRead => Self::Operation(
-                a3s_oci_runtime::AgentTransportOperationStage::GuestAfterRequestRead,
+                aster_oci_runtime::AgentTransportOperationStage::GuestAfterRequestRead,
             ),
             TransportFaultStageArg::GuestBeforeDispatch => {
-                Self::Operation(a3s_oci_runtime::AgentTransportOperationStage::GuestBeforeDispatch)
+                Self::Operation(aster_oci_runtime::AgentTransportOperationStage::GuestBeforeDispatch)
             }
             TransportFaultStageArg::GuestAfterDispatch => {
-                Self::Operation(a3s_oci_runtime::AgentTransportOperationStage::GuestAfterDispatch)
+                Self::Operation(aster_oci_runtime::AgentTransportOperationStage::GuestAfterDispatch)
             }
             TransportFaultStageArg::GuestBeforeResponseWrite => Self::Operation(
-                a3s_oci_runtime::AgentTransportOperationStage::GuestBeforeResponseWrite,
+                aster_oci_runtime::AgentTransportOperationStage::GuestBeforeResponseWrite,
             ),
             TransportFaultStageArg::GuestAfterResponseWrite => Self::Operation(
-                a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite,
+                aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite,
             ),
             TransportFaultStageArg::HostBeforeShutdown => {
-                Self::Shutdown(a3s_oci_runtime::AgentTransportShutdownStage::HostBeforeShutdown)
+                Self::Shutdown(aster_oci_runtime::AgentTransportShutdownStage::HostBeforeShutdown)
             }
             TransportFaultStageArg::HostAfterShutdown => {
-                Self::Shutdown(a3s_oci_runtime::AgentTransportShutdownStage::HostAfterShutdown)
+                Self::Shutdown(aster_oci_runtime::AgentTransportShutdownStage::HostAfterShutdown)
             }
         }
     }
@@ -1440,7 +1440,7 @@ enum CliError {
     #[error("{0}")]
     Message(String),
     #[error("runtime request failed: {0}")]
-    Runtime(#[from] a3s_oci_sdk::Error),
+    Runtime(#[from] aster_oci_sdk::Error),
     #[error("failed to serialize command output: {0}")]
     Serialize(#[from] serde_json::Error),
     #[cfg(target_os = "linux")]
@@ -1464,7 +1464,7 @@ enum CliError {
             any(target_arch = "x86_64", target_arch = "aarch64")
         )
     ))]
-    #[error("failed to resolve the current a3s-oci executable: {0}")]
+    #[error("failed to resolve the current aster-oci executable: {0}")]
     CurrentExecutable(std::io::Error),
 }
 
@@ -1477,20 +1477,20 @@ const CLI_THREAD_STACK_BYTES: usize = 8 * 1024 * 1024;
 #[cfg(target_os = "windows")]
 fn main() -> ExitCode {
     let worker = match std::thread::Builder::new()
-        .name("a3s-oci-command".to_string())
+        .name("aster-oci-command".to_string())
         .stack_size(CLI_THREAD_STACK_BYTES)
         .spawn(cli_main)
     {
         Ok(worker) => worker,
         Err(error) => {
-            eprintln!("a3s-oci: failed to start command worker: {error}");
+            eprintln!("aster-oci: failed to start command worker: {error}");
             return ExitCode::FAILURE;
         }
     };
     match worker.join() {
         Ok(code) => code,
         Err(_) => {
-            eprintln!("a3s-oci: command worker panicked");
+            eprintln!("aster-oci: command worker panicked");
             ExitCode::FAILURE
         }
     }
@@ -1541,10 +1541,10 @@ fn cli_main() -> ExitCode {
     #[cfg(target_os = "linux")]
     let rootless_device_policy_bootstrap = match bootstrap_root {
         Some(delegated_cgroup_root) => {
-            match a3s_oci_runtime::RootlessDevicePolicyBootstrap::start(delegated_cgroup_root) {
+            match aster_oci_runtime::RootlessDevicePolicyBootstrap::start(delegated_cgroup_root) {
                 Ok(bootstrap) => Some(bootstrap),
                 Err(error) => {
-                    eprintln!("a3s-oci: runtime request failed: {error}");
+                    eprintln!("aster-oci: runtime request failed: {error}");
                     return ExitCode::FAILURE;
                 }
             }
@@ -1559,14 +1559,14 @@ fn cli_main() -> ExitCode {
     {
         Ok(runtime) => runtime,
         Err(error) => {
-            eprintln!("a3s-oci: failed to create async runtime: {error}");
+            eprintln!("aster-oci: failed to create async runtime: {error}");
             return ExitCode::FAILURE;
         }
     };
     match runtime.block_on(dispatch::run(cli, rootless_device_policy_bootstrap)) {
         Ok(code) => code,
         Err(error) => {
-            eprintln!("a3s-oci: {error}");
+            eprintln!("aster-oci: {error}");
             ExitCode::FAILURE
         }
     }

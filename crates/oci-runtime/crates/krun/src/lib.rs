@@ -106,10 +106,10 @@ mod windows_handle_reclamation;
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
 mod windows_system_image;
 
-pub use a3s_oci_agent_protocol::{AgentVsockEndpoint, AGENT_VSOCK_PORT};
-use a3s_oci_core::CapabilityStatus;
-use a3s_oci_core::HostPlatform;
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+pub use aster_oci_agent_protocol::{AgentVsockEndpoint, AGENT_VSOCK_PORT};
+use aster_oci_core::CapabilityStatus;
+use aster_oci_core::HostPlatform;
+use aster_oci_sdk::{Error, ErrorCode, Result};
 pub use agent_smoke::{agent_vm_smoke, AgentVmHandoff};
 pub use report::{
     KrunAgentVmSmokeReport, KrunContextSmokeReport, KrunSystemImageContextSmokeReport,
@@ -144,7 +144,7 @@ pub fn whpx_handle_reclamation_smoke(
 }
 
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
-const VM_SMOKE_TOKEN: &str = "a3s-oci-whpx-vm-smoke-v1";
+const VM_SMOKE_TOKEN: &str = "aster-oci-whpx-vm-smoke-v1";
 
 /// Validated utility-VM resource configuration.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -159,7 +159,7 @@ impl VmConfig {
     /// The shared hardware-vm profile admits the request first. The Windows
     /// WHPX host gate then keeps the certified one-vCPU limit.
     pub fn new(vcpus: u8, memory_mib: u32) -> Result<Self> {
-        a3s_oci_core::hardware_vm::validate_profile_resources(u32::from(vcpus), memory_mib)
+        aster_oci_core::hardware_vm::validate_profile_resources(u32::from(vcpus), memory_mib)
             .map_err(|error| Error::new(ErrorCode::InvalidArgument, error.to_string()))?;
         #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
         if vcpus != 1 {
@@ -267,7 +267,7 @@ fn context_smoke_windows() -> KrunContextSmokeReport {
     report.vm_configured = true;
 
     let endpoint =
-        match AgentVsockEndpoint::new(format!("a3s-oci-context-smoke-{}", std::process::id())) {
+        match AgentVsockEndpoint::new(format!("aster-oci-context-smoke-{}", std::process::id())) {
             Ok(endpoint) => endpoint,
             Err(error) => {
                 report.context_released = context.close().is_ok();
@@ -649,7 +649,7 @@ pub fn run_macos_vm_smoke_worker_with_runtime_share_identity(
     marker_name: &str,
     runtime_share_identity: Option<(u64, u64)>,
 ) -> bool {
-    let marker_token = match a3s_oci_agent_protocol::SessionToken::generate() {
+    let marker_token = match aster_oci_agent_protocol::SessionToken::generate() {
         Ok(token) => token.expose_hex(),
         Err(_) => return false,
     };
@@ -762,7 +762,7 @@ pub struct MacosAgentVmWorkerHandoff<'a> {
     socket: &'a Path,
     guest_recovery_report: Option<&'a str>,
     vm_attachment_manifest_sha256: Option<&'a str>,
-    transport_qualification: Option<&'a a3s_oci_agent_protocol::AgentTransportQualificationRequest>,
+    transport_qualification: Option<&'a aster_oci_agent_protocol::AgentTransportQualificationRequest>,
 }
 
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
@@ -828,7 +828,7 @@ impl<'a> MacosAgentVmWorkerHandoff<'a> {
     #[must_use]
     pub const fn with_transport_qualification(
         mut self,
-        request: Option<&'a a3s_oci_agent_protocol::AgentTransportQualificationRequest>,
+        request: Option<&'a aster_oci_agent_protocol::AgentTransportQualificationRequest>,
     ) -> Self {
         self.transport_qualification = request;
         self
@@ -886,7 +886,7 @@ pub fn run_macos_agent_vm_worker(
     console: &Path,
     socket: &Path,
     guest_recovery_report: Option<&str>,
-    transport_qualification: Option<&a3s_oci_agent_protocol::AgentTransportQualificationRequest>,
+    transport_qualification: Option<&aster_oci_agent_protocol::AgentTransportQualificationRequest>,
 ) -> bool {
     let (runtime_share_identity, runtime_state_identity) =
         match macos_runtime_share_identities(runtime_share) {
@@ -924,7 +924,7 @@ pub struct LinuxAgentVmWorkerHandoff<'a> {
     socket: &'a Path,
     guest_recovery_report: Option<&'a str>,
     vm_attachment_manifest_sha256: Option<&'a str>,
-    transport_qualification: Option<&'a a3s_oci_agent_protocol::AgentTransportQualificationRequest>,
+    transport_qualification: Option<&'a aster_oci_agent_protocol::AgentTransportQualificationRequest>,
     qualify_kvm_post_probe_failure: bool,
     qualify_kvm_compatibility_drift: Option<&'a str>,
 }
@@ -998,7 +998,7 @@ impl<'a> LinuxAgentVmWorkerHandoff<'a> {
     #[must_use]
     pub const fn with_transport_qualification(
         mut self,
-        request: Option<&'a a3s_oci_agent_protocol::AgentTransportQualificationRequest>,
+        request: Option<&'a aster_oci_agent_protocol::AgentTransportQualificationRequest>,
     ) -> Self {
         self.transport_qualification = request;
         self.qualify_kvm_compatibility_drift = None;
@@ -1093,7 +1093,7 @@ pub fn run_linux_agent_vm_worker(
     console: &Path,
     socket: &Path,
     guest_recovery_report: Option<&str>,
-    transport_qualification: Option<&a3s_oci_agent_protocol::AgentTransportQualificationRequest>,
+    transport_qualification: Option<&aster_oci_agent_protocol::AgentTransportQualificationRequest>,
 ) -> bool {
     let (runtime_share_identity, runtime_state_identity) =
         match linux_runtime_share_identities(runtime_share) {
@@ -1132,7 +1132,7 @@ pub fn run_linux_agent_vm_worker_with_kvm_post_probe_failure(
     console: &Path,
     socket: &Path,
     guest_recovery_report: Option<&str>,
-    transport_qualification: Option<&a3s_oci_agent_protocol::AgentTransportQualificationRequest>,
+    transport_qualification: Option<&aster_oci_agent_protocol::AgentTransportQualificationRequest>,
 ) -> bool {
     let (runtime_share_identity, runtime_state_identity) =
         match linux_runtime_share_identities(runtime_share) {
@@ -1241,7 +1241,7 @@ fn vm_smoke_windows(rootfs: &Path, console: &Path, config: VmConfig) -> KrunVmSm
         return report;
     }
 
-    let marker_name = format!(".a3s-oci-vm-smoke-{}", std::process::id());
+    let marker_name = format!(".aster-oci-vm-smoke-{}", std::process::id());
     let marker_host_path = rootfs.join(&marker_name);
     if marker_host_path.exists() {
         report.reason = Some(format!(
@@ -1297,7 +1297,7 @@ fn vm_smoke_windows(rootfs: &Path, console: &Path, config: VmConfig) -> KrunVmSm
     }
     report.console_configured = true;
 
-    // A3S's Windows libkrun build exposes an opt-in return path so this
+    // Aster's Windows libkrun build exposes an opt-in return path so this
     // one-shot diagnostic can verify guest effects before the shim exits.
     std::env::set_var("LIBKRUN_WINDOWS_RETURN_ON_EXIT", "1");
     match context.start_enter() {

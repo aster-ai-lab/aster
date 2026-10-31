@@ -10,19 +10,19 @@ import {
 } from 'node:fs/promises';
 import { basename, dirname, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import type { JsonObject } from '@a3s-lab/form/core';
+import type { JsonObject } from '@aster-ai-lab/form/core';
 import type {
-  A3sFlowWorkflowDagEdge,
-  A3sFlowWorkflowDagNode,
-  A3sFlowWorkflowDsl,
-} from './integrations/a3s-flow-dsl-types';
+  AsterFlowWorkflowDagEdge,
+  AsterFlowWorkflowDagNode,
+  AsterFlowWorkflowDsl,
+} from './integrations/aster-flow-dsl-types';
 import {
-  createA3sFlowDagNode,
-  mergeA3sFlowDagNodeConfiguration,
-  a3sFlowDagNodeRegistry,
-} from './integrations/a3s-flow-node-manifest';
-import { canonicalizeA3sFlowJson } from './integrations/a3s-flow-dsl';
-import { parseA3sFlowStrictJson } from './strict-json';
+  createAsterFlowDagNode,
+  mergeAsterFlowDagNodeConfiguration,
+  asterFlowDagNodeRegistry,
+} from './integrations/aster-flow-node-manifest';
+import { canonicalizeAsterFlowJson } from './integrations/aster-flow-dsl';
+import { parseAsterFlowStrictJson } from './strict-json';
 
 export type FlowCliWorkflowUpdate =
   | {
@@ -55,7 +55,7 @@ export type FlowCliWorkflowUpdate =
   | { kind: 'set-app-name'; name: string };
 
 export interface FlowCliWorkflowUpdateResult {
-  document: A3sFlowWorkflowDsl;
+  document: AsterFlowWorkflowDsl;
   changed: string[];
 }
 
@@ -70,11 +70,11 @@ export type FlowCliWorkflowUpdateObserver = (
 ) => void | Promise<void>;
 
 /** Maximum encoded size of one streamed authoring operation. */
-export const A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES = 1024 * 1024;
+export const ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES = 1024 * 1024;
 /** Maximum number of operations accepted by either array or stream transport. */
-export const A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS = 10_000;
+export const ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS = 10_000;
 /** Maximum UTF-8 byte length of an operation identity or endpoint string. */
-export const A3S_FLOW_CLI_MAX_ID_BYTES = 255;
+export const ASTER_FLOW_CLI_MAX_ID_BYTES = 255;
 
 const utf8Encoder = new TextEncoder();
 
@@ -97,9 +97,9 @@ function assertWorkflowUpdateBytes(candidate: unknown, index: number): void {
     throw new Error(`Workflow operation ${index} is not JSON-serializable.`);
   }
   const bytes = utf8Encoder.encode(encoded).byteLength;
-  if (bytes > A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
+  if (bytes > ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
     throw new Error(
-      `Workflow operation ${index} is ${bytes} bytes; maximum is ${A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes.`,
+      `Workflow operation ${index} is ${bytes} bytes; maximum is ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes.`,
     );
   }
 }
@@ -120,9 +120,9 @@ function parseFlowCliWorkflowUpdateObject(
     }
     if (bounded) {
       const bytes = utf8Encoder.encode(entry).byteLength;
-      if (bytes > A3S_FLOW_CLI_MAX_ID_BYTES) {
+      if (bytes > ASTER_FLOW_CLI_MAX_ID_BYTES) {
         throw new Error(
-          `Workflow operation ${index}.${key} exceeds ${A3S_FLOW_CLI_MAX_ID_BYTES} bytes.`,
+          `Workflow operation ${index}.${key} exceeds ${ASTER_FLOW_CLI_MAX_ID_BYTES} bytes.`,
         );
       }
     }
@@ -236,11 +236,11 @@ function canonicalizeParsedFlowCliWorkflowUpdate(
     operation.kind === 'move-node' && operation.parentId === undefined
       ? { ...operation, parentId: null }
       : operation;
-  const encoded = canonicalizeA3sFlowJson(canonicalOperation);
+  const encoded = canonicalizeAsterFlowJson(canonicalOperation);
   const bytes = utf8Encoder.encode(encoded).byteLength;
-  if (bytes > A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
+  if (bytes > ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
     throw new Error(
-      `Workflow operation ${index} canonical form is ${bytes} bytes; maximum is ${A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes.`,
+      `Workflow operation ${index} canonical form is ${bytes} bytes; maximum is ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes.`,
     );
   }
   return encoded;
@@ -251,9 +251,9 @@ export function canonicalizeFlowCliWorkflowUpdates(value: unknown): string[] {
   if (!Array.isArray(value) || value.length === 0) {
     throw new Error('Workflow operations must be a non-empty JSON array.');
   }
-  if (value.length > A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
+  if (value.length > ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
     throw new Error(
-      `Workflow update list exceeds ${A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
+      `Workflow update list exceeds ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
     );
   }
   return value.map((operation, index) => canonicalizeFlowCliWorkflowUpdate(operation, index));
@@ -278,9 +278,9 @@ export function parseFlowCliWorkflowUpdates(value: unknown): FlowCliWorkflowUpda
   if (!Array.isArray(value) || value.length === 0) {
     throw new Error('Workflow operations must be a non-empty JSON array.');
   }
-  if (value.length > A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
+  if (value.length > ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
     throw new Error(
-      `Workflow update list exceeds ${A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
+      `Workflow update list exceeds ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
     );
   }
   return value.map((candidate, index) => parseFlowCliWorkflowUpdateObject(candidate, index));
@@ -322,23 +322,23 @@ export async function* parseFlowCliWorkflowUpdateNdjson(
       bufferBytes -= encoder.encode(rawLine).byteLength;
       buffer = buffer.slice(newline + 1);
       const bytes = encoder.encode(line).byteLength;
-      if (bytes > A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
+      if (bytes > ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
         throw new Error(
-          `Workflow operation ${index} is ${bytes} bytes; maximum is ${A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes.`,
+          `Workflow operation ${index} is ${bytes} bytes; maximum is ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes.`,
         );
       }
       if (line.trim()) {
         let value: unknown;
         try {
-          value = parseA3sFlowStrictJson(line);
+          value = parseAsterFlowStrictJson(line);
         } catch (error) {
           throw new Error(
             `Workflow operation ${index} is invalid JSON: ${error instanceof Error ? error.message : String(error)}`,
           );
         }
-        if (index >= A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
+        if (index >= ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
           throw new Error(
-            `Workflow operation stream exceeds ${A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
+            `Workflow operation stream exceeds ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
           );
         }
         yield parseFlowCliWorkflowUpdateObject(value, index);
@@ -346,9 +346,9 @@ export async function* parseFlowCliWorkflowUpdateNdjson(
       }
       newline = buffer.indexOf('\n');
     }
-    if (bufferBytes > A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
+    if (bufferBytes > ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
       throw new Error(
-        `Workflow operation ${index} exceeds ${A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes before its newline (maximum is ${A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes).`,
+        `Workflow operation ${index} exceeds ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes before its newline (maximum is ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes).`,
       );
     }
   }
@@ -362,23 +362,23 @@ export async function* parseFlowCliWorkflowUpdateNdjson(
   }
   buffer += flushed;
   bufferBytes += encoder.encode(flushed).byteLength;
-  if (bufferBytes > A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
+  if (bufferBytes > ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES) {
     throw new Error(
-      `Workflow operation ${index} is ${bufferBytes} bytes; maximum is ${A3S_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes.`,
+      `Workflow operation ${index} is ${bufferBytes} bytes; maximum is ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATION_BYTES} bytes.`,
     );
   }
   if (buffer.trim()) {
     let value: unknown;
     try {
-      value = parseA3sFlowStrictJson(buffer);
+      value = parseAsterFlowStrictJson(buffer);
     } catch (error) {
       throw new Error(
         `Workflow operation ${index} is invalid JSON: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
-    if (index >= A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
+    if (index >= ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
       throw new Error(
-        `Workflow operation stream exceeds ${A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
+        `Workflow operation stream exceeds ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
       );
     }
     yield parseFlowCliWorkflowUpdateObject(value, index);
@@ -438,7 +438,7 @@ async function releaseWorkflowFileLock(lockPath: string, lock: { close(): Promis
 /** Write one workflow document through a same-directory temporary file. */
 export async function writeWorkflowFile(
   path: string,
-  document: A3sFlowWorkflowDsl,
+  document: AsterFlowWorkflowDsl,
   overwrite: boolean,
   expectedContents?: string,
 ): Promise<void> {
@@ -515,24 +515,24 @@ export async function deleteWorkflowFile(path: string): Promise<boolean> {
   }
 }
 
-function requireNode(document: A3sFlowWorkflowDsl, id: string): A3sFlowWorkflowDagNode {
+function requireNode(document: AsterFlowWorkflowDsl, id: string): AsterFlowWorkflowDagNode {
   const node = document.workflow.graph.nodes.find((candidate) => candidate.id === id);
   if (!node) throw new Error(`Workflow node not found: ${id}`);
   return node;
 }
 
 function requireNodeType(type: string) {
-  const manifest = a3sFlowDagNodeRegistry.get(type);
+  const manifest = asterFlowDagNodeRegistry.get(type);
   if (!manifest || manifest.internal) throw new Error(`Unknown public node type: ${type}`);
   return manifest;
 }
 
 function requireNodePlacement(
-  document: A3sFlowWorkflowDsl,
+  document: AsterFlowWorkflowDsl,
   type: string,
   parentId: string | undefined,
 ) {
-  const manifest = a3sFlowDagNodeRegistry.get(type);
+  const manifest = asterFlowDagNodeRegistry.get(type);
   if (!manifest) throw new Error(`Unknown workflow node type: ${type}`);
   if (parentId === undefined) {
     if (manifest.internal) {
@@ -542,7 +542,7 @@ function requireNodePlacement(
   }
 
   const parent = requireNode(document, parentId);
-  const parentManifest = a3sFlowDagNodeRegistry.get(parent.data.type);
+  const parentManifest = asterFlowDagNodeRegistry.get(parent.data.type);
   if (!parentManifest?.container) {
     throw new Error(`Workflow node parent must be an iteration or loop container: ${parentId}`);
   }
@@ -557,12 +557,12 @@ function requireNodePlacement(
 }
 
 function assertMoveTarget(
-  document: A3sFlowWorkflowDsl,
-  node: A3sFlowWorkflowDagNode,
+  document: AsterFlowWorkflowDsl,
+  node: AsterFlowWorkflowDagNode,
   parentId: string | null | undefined,
 ): void {
   if (parentId === null || parentId === undefined) {
-    const manifest = a3sFlowDagNodeRegistry.get(node.data.type);
+    const manifest = asterFlowDagNodeRegistry.get(node.data.type);
     if (manifest?.internal) {
       throw new Error(`Internal node type ${node.data.type} must remain inside its matching container.`);
     }
@@ -587,7 +587,7 @@ function assertMoveTarget(
 }
 
 export function applyFlowCliWorkflowUpdate(
-  source: A3sFlowWorkflowDsl,
+  source: AsterFlowWorkflowDsl,
   operation: FlowCliWorkflowUpdate,
 ): FlowCliWorkflowUpdateResult {
   const normalizedOperation = parseFlowCliWorkflowUpdateObject(operation, 0);
@@ -600,13 +600,13 @@ export function applyFlowCliWorkflowUpdate(
 
 /** Apply a patch list to one clone so callers can validate and publish once. */
 export function applyFlowCliWorkflowUpdates(
-  source: A3sFlowWorkflowDsl,
+  source: AsterFlowWorkflowDsl,
   operations: readonly FlowCliWorkflowUpdate[],
 ): FlowCliWorkflowUpdateResult {
   if (operations.length === 0) throw new Error('Workflow update list must not be empty.');
-  if (operations.length > A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
+  if (operations.length > ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
     throw new Error(
-      `Workflow update list exceeds ${A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
+      `Workflow update list exceeds ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
     );
   }
   const document = structuredClone(source);
@@ -623,7 +623,7 @@ export function applyFlowCliWorkflowUpdates(
  * soon as it arrives; callers publish only after the final document validates.
  */
 export async function applyFlowCliWorkflowUpdateStream(
-  source: A3sFlowWorkflowDsl,
+  source: AsterFlowWorkflowDsl,
   operations: AsyncIterable<FlowCliWorkflowUpdate>,
   observer?: FlowCliWorkflowUpdateObserver,
 ): Promise<FlowCliWorkflowUpdateResult> {
@@ -631,9 +631,9 @@ export async function applyFlowCliWorkflowUpdateStream(
   const changed: string[] = [];
   let index = 0;
   for await (const operation of operations) {
-    if (index >= A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
+    if (index >= ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS) {
       throw new Error(
-        `Workflow operation stream exceeds ${A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
+        `Workflow operation stream exceeds ${ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS} operations.`,
       );
     }
     const normalizedOperation = parseFlowCliWorkflowUpdateObject(operation, index);
@@ -649,7 +649,7 @@ export async function applyFlowCliWorkflowUpdateStream(
 }
 
 function applyFlowCliWorkflowUpdateInPlace(
-  document: A3sFlowWorkflowDsl,
+  document: AsterFlowWorkflowDsl,
   operation: FlowCliWorkflowUpdate,
 ): string[] {
   const graph = document.workflow.graph;
@@ -659,7 +659,7 @@ function applyFlowCliWorkflowUpdateInPlace(
       if (graph.nodes.some((node) => node.id === operation.id)) {
         throw new Error(`Workflow node already exists: ${operation.id}`);
       }
-      const node = createA3sFlowDagNode(operation.id, manifest, operation.configuration);
+      const node = createAsterFlowDagNode(operation.id, manifest, operation.configuration);
       if (operation.parentId !== undefined) node.parentId = operation.parentId;
       graph.nodes.push(node);
       return [`node:${operation.id}`];
@@ -706,7 +706,7 @@ function applyFlowCliWorkflowUpdateInPlace(
       if (graph.edges.some((edge) => edge.id === operation.id)) {
         throw new Error(`Workflow edge already exists: ${operation.id}`);
       }
-      const edge: A3sFlowWorkflowDagEdge = {
+      const edge: AsterFlowWorkflowDagEdge = {
         id: operation.id,
         source: operation.source,
         target: operation.target,
@@ -740,7 +740,7 @@ function applyFlowCliWorkflowUpdateInPlace(
       const manifest = requireNodeType(node.data.type);
       graph.nodes = graph.nodes.map((candidate) =>
         candidate.id === operation.id
-          ? mergeA3sFlowDagNodeConfiguration(candidate, manifest, operation.configuration)
+          ? mergeAsterFlowDagNodeConfiguration(candidate, manifest, operation.configuration)
           : candidate,
       );
       return [`node:${operation.id}`];

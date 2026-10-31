@@ -3,15 +3,15 @@
 
 #![cfg(feature = "routing")]
 
-use a3s_event::provider::memory::MemoryProvider;
-use a3s_event::source::{CronSource, EventSource};
-use a3s_event::{Event, EventBus};
+use aster_event::provider::memory::MemoryProvider;
+use aster_event::source::{CronSource, EventSource};
+use aster_event::{Event, EventBus};
 use std::time::Duration;
 
 #[tokio::test]
 async fn cron_source_drives_the_bus_until_stopped() {
     let bus = EventBus::new(MemoryProvider::default());
-    bus.update_subscription(a3s_event::SubscriptionFilter {
+    bus.update_subscription(aster_event::SubscriptionFilter {
         subscriber_id: "cron-watcher".to_string(),
         subjects: vec!["events.cron.>".to_string()],
         durable: false,

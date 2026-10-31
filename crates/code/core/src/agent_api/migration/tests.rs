@@ -370,7 +370,7 @@ async fn rejects_active_snapshot_and_fact_targets_and_foreign_workspace() {
                 assert!(error.to_string().contains("target already"));
             }
             _ => {
-                let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+                let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
                     fixture.root.path(),
                     &target,
                 ))
@@ -540,7 +540,7 @@ async fn legacy_assistant_is_not_a_fork_boundary_and_pagination_is_stable() {
     );
     assert!(!fixture.store.exists("illegal-fork").await.unwrap());
 
-    let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+    let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
         fixture.root.path(),
         session.id(),
     ))
@@ -563,7 +563,7 @@ async fn legacy_assistant_is_not_a_fork_boundary_and_pagination_is_stable() {
         None,
     )
     .unwrap();
-    let cut = a3s_effect::cut_log(&log.read(&thread).unwrap());
+    let cut = aster_effect::cut_log(&log.read(&thread).unwrap());
     log.append(
         &thread,
         &[NewFact {
@@ -594,7 +594,7 @@ async fn legacy_assistant_is_not_a_fork_boundary_and_pagination_is_stable() {
             &session,
             PrefixForkRequest {
                 boundary_entry_id: new_assistant,
-                expected_cut: TranscriptSourceCut::from(a3s_effect::cut_log(
+                expected_cut: TranscriptSourceCut::from(aster_effect::cut_log(
                     &log.read(&thread).unwrap(),
                 )),
                 target_session_id: "new-real-fork".into(),
@@ -628,7 +628,7 @@ async fn legacy_facts_without_a_completed_receipt_cannot_activate() {
         .await
         .unwrap();
     let request = fixture.request("incomplete-import", ordinary_entries());
-    let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+    let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
         fixture.root.path(),
         session.id(),
     ))

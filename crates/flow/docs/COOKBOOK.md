@@ -1,33 +1,33 @@
-# A3S Flow Cookbook
+# Aster Flow Cookbook
 
-This cookbook shows how to assemble A3S Flow capabilities into host workflows.
+This cookbook shows how to assemble Aster Flow capabilities into host workflows.
 Use it with the runnable examples in `examples/` and the architecture notes in
 `docs/ARCHITECTURE.md`.
 
-## Recommended A3S Boot And ORM Host
+## Recommended Aster Boot And ORM Host
 
-Use `a3s-orm` storage for authoritative workflow history and an `a3s-boot`
+Use `aster-orm` storage for authoritative workflow history and an `aster-boot`
 queue for application task management. The Flow feature flags select the
 integration adapters; the host still depends directly on Boot to construct or
 inject its queue.
 
 ```toml
 [dependencies]
-a3s-flow = { version = "0.11.0", features = ["boot", "sqlite"] }
-a3s-boot = { version = "0.1.3", default-features = false, features = ["queue"] }
+aster-flow = { version = "0.11.0", features = ["boot", "sqlite"] }
+aster-boot = { version = "0.1.3", default-features = false, features = ["queue"] }
 ```
 
 ```rust
-use a3s_boot::{ModuleRef, Queue, QueueRetryPolicy};
-use a3s_flow::{
+use aster_boot::{ModuleRef, Queue, QueueRetryPolicy};
+use aster_flow::{
     BootFlowTaskDeduplication, BootFlowTaskManager, BootFlowTaskPolicy, FlowEngine,
     FlowScheduler, SqliteEventStore,
 };
 use std::sync::Arc;
 use std::time::Duration;
 
-# async fn run(runtime: Arc<dyn a3s_flow::FlowRuntime>) -> Result<(), Box<dyn std::error::Error>> {
-let store = Arc::new(SqliteEventStore::connect("sqlite://.a3s/flow/flow.db").await?);
+# async fn run(runtime: Arc<dyn aster_flow::FlowRuntime>) -> Result<(), Box<dyn std::error::Error>> {
+let store = Arc::new(SqliteEventStore::connect("sqlite://.aster/flow/flow.db").await?);
 let engine = FlowEngine::new(store, runtime);
 
 let queue = Arc::new(Queue::in_process("flow"));
@@ -72,14 +72,14 @@ Pin every new run to the deployed code that can replay it. Configure the engine
 with the same current identity before starting the run:
 
 ```rust
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, RuntimeBuildCompatibility, RuntimeBuildId, WorkflowSpec,
 };
 
 # fn build(
-#     runtime: std::sync::Arc<dyn a3s_flow::FlowRuntime>,
-#     store: std::sync::Arc<dyn a3s_flow::FlowEventStore>,
-# ) -> a3s_flow::Result<(FlowEngine, WorkflowSpec)> {
+#     runtime: std::sync::Arc<dyn aster_flow::FlowRuntime>,
+#     store: std::sync::Arc<dyn aster_flow::FlowEventStore>,
+# ) -> aster_flow::Result<(FlowEngine, WorkflowSpec)> {
 let build_id = RuntimeBuildId::new("orders-2026.08.09-sha51e73a2")?;
 let engine = FlowEngine::builder(runtime)
     .with_store(store)
@@ -110,16 +110,16 @@ During a rolling upgrade, give each build a concrete Boot task manager or queue
 and register exact routes:
 
 ```rust
-use a3s_flow::{FlowScheduler, RuntimeBuildTaskRouter};
+use aster_flow::{FlowScheduler, RuntimeBuildTaskRouter};
 use std::sync::Arc;
 
 # fn route(
-#     build_v1: a3s_flow::RuntimeBuildId,
-#     build_v2: a3s_flow::RuntimeBuildId,
-#     tasks_v1: Arc<dyn a3s_flow::FlowTaskDispatcher>,
-#     tasks_v2: Arc<dyn a3s_flow::FlowTaskDispatcher>,
-#     control_engine: a3s_flow::FlowEngine,
-# ) -> a3s_flow::Result<FlowScheduler> {
+#     build_v1: aster_flow::RuntimeBuildId,
+#     build_v2: aster_flow::RuntimeBuildId,
+#     tasks_v1: Arc<dyn aster_flow::FlowTaskDispatcher>,
+#     tasks_v2: Arc<dyn aster_flow::FlowTaskDispatcher>,
+#     control_engine: aster_flow::FlowEngine,
+# ) -> aster_flow::Result<FlowScheduler> {
 let routes = RuntimeBuildTaskRouter::new()
     .with_route(build_v1, tasks_v1)?
     .with_route(build_v2, tasks_v2)?;
@@ -150,9 +150,9 @@ branch for existing runs while new runs select a replacement branch. Create a
 typed, stable ID and add it only to new workflow specs:
 
 ```rust
-use a3s_flow::{WorkflowPatchId, WorkflowSpec};
+use aster_flow::{WorkflowPatchId, WorkflowSpec};
 
-# fn patched_spec() -> a3s_flow::Result<WorkflowSpec> {
+# fn patched_spec() -> aster_flow::Result<WorkflowSpec> {
 let spec = WorkflowSpec::rust_embedded(
     "orders.fulfill",
     "2",
@@ -169,8 +169,8 @@ invocation context:
 
 ```rust
 # fn next_command(
-#     context: &a3s_flow::WorkflowContext<'_>,
-# ) -> a3s_flow::RuntimeCommand {
+#     context: &aster_flow::WorkflowContext<'_>,
+# ) -> aster_flow::RuntimeCommand {
 if context.has_patch_marker("orders.reserve-inventory-v2") {
     context.schedule_step(
         "reserve-inventory-v2",
@@ -215,10 +215,10 @@ aggregate needed by the next segment:
 
 ```rust
 # fn next(
-#     ctx: &a3s_flow::WorkflowContext<'_>,
+#     ctx: &aster_flow::WorkflowContext<'_>,
 #     cursor: u64,
 #     total: u64,
-# ) -> a3s_flow::RuntimeCommand {
+# ) -> aster_flow::RuntimeCommand {
 if cursor < total {
     ctx.continue_as_new(serde_json::json!({
         "cursor": cursor + 1,
@@ -265,7 +265,7 @@ execution. Keep the child ID stable across replay and branch on its persisted
 terminal outcome:
 
 ```rust
-use a3s_flow::WorkflowTerminalOutcome;
+use aster_flow::WorkflowTerminalOutcome;
 
 match ctx.child_workflow_outcome("index-batch") {
     Some(WorkflowTerminalOutcome::Completed { output }) => {
@@ -302,7 +302,7 @@ ctx.start_child_workflow_with_policy(
     "detached-export",
     export_spec,
     export_input,
-    a3s_flow::ChildWorkflowCancellationPolicy::Abandon,
+    aster_flow::ChildWorkflowCancellationPolicy::Abandon,
 )
 ```
 
@@ -342,14 +342,14 @@ inflight tasks that are old enough to retry, or move known poison tasks into the
 dead-letter directory for inspection.
 
 ```rust
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowTaskQueue, FlowWorker, LocalFileEventStore, LocalFileFlowTaskQueue,
 };
 use std::sync::Arc;
 
-# async fn run(runtime: Arc<dyn a3s_flow::FlowRuntime>) -> a3s_flow::Result<()> {
-let store = Arc::new(LocalFileEventStore::new(".a3s/flow/events"));
-let queue = Arc::new(LocalFileFlowTaskQueue::new(".a3s/flow/tasks"));
+# async fn run(runtime: Arc<dyn aster_flow::FlowRuntime>) -> aster_flow::Result<()> {
+let store = Arc::new(LocalFileEventStore::new(".aster/flow/events"));
+let queue = Arc::new(LocalFileFlowTaskQueue::new(".aster/flow/tasks"));
 
 queue.requeue_inflight().await?;
 queue
@@ -371,7 +371,7 @@ let _outcomes = worker.run_until_idle_bounded(100).await?;
 Directory layout:
 
 ```text
-.a3s/flow/
+.aster/flow/
   events/
     <run-id>.jsonl
   tasks/
@@ -421,20 +421,20 @@ Enable the feature:
 
 ```toml
 [dependencies]
-a3s-flow = { version = "0.11.0", features = ["sqlite"] }
+aster-flow = { version = "0.11.0", features = ["sqlite"] }
 ```
 
 Then wire the SQLite event store into the same engine and worker shape:
 
 ```rust
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowTaskQueue, FlowWorker, LocalFileFlowTaskQueue, SqliteEventStore,
 };
 use std::sync::Arc;
 
-# async fn run(runtime: Arc<dyn a3s_flow::FlowRuntime>) -> a3s_flow::Result<()> {
-let store = Arc::new(SqliteEventStore::connect("sqlite://.a3s/flow/flow.db").await?);
-let queue = Arc::new(LocalFileFlowTaskQueue::new(".a3s/flow/tasks"));
+# async fn run(runtime: Arc<dyn aster_flow::FlowRuntime>) -> aster_flow::Result<()> {
+let store = Arc::new(SqliteEventStore::connect("sqlite://.aster/flow/flow.db").await?);
+let queue = Arc::new(LocalFileFlowTaskQueue::new(".aster/flow/tasks"));
 
 queue.requeue_inflight().await?;
 
@@ -446,7 +446,7 @@ let worker = FlowWorker::new(engine.clone(), queue.clone())
 ```
 
 The store delegates connection execution, typed decoding, immediate
-transactions, and checksummed migrations to `a3s-orm`. It creates parent
+transactions, and checksummed migrations to `aster-orm`. It creates parent
 directories and the database when missing, enables WAL mode, persists one row
 per event envelope, and checks expected sequence inside each append
 transaction. Its active-hook migration backfills open callbacks, then SQLite
@@ -472,7 +472,7 @@ cargo run --example sqlite_worker --features sqlite
 ## PostgreSQL Shared Store And Compatibility Queue
 
 Use `PostgresEventStore` when multiple Flow processes need to share workflow
-event history. `a3s-orm` runs canonical checksummed migrations, persists one row
+event history. `aster-orm` runs canonical checksummed migrations, persists one row
 per event envelope, and wraps expected-sequence appends in a
 transaction-scoped advisory lock for the run ID. Active-hook lookup uses an
 indexed ORM projection; hook creation takes a second token-scoped lock so only
@@ -497,25 +497,25 @@ Enable the feature:
 
 ```toml
 [dependencies]
-a3s-flow = { version = "0.11.0", features = ["postgres"] }
+aster-flow = { version = "0.11.0", features = ["postgres"] }
 ```
 
 Then wire the Postgres event store and task queue into the same engine and
 worker shape:
 
 ```rust
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowTaskQueue, FlowWorker, PostgresEventStore, PostgresFlowTaskQueue,
 };
 use std::sync::Arc;
 
-# async fn run(runtime: Arc<dyn a3s_flow::FlowRuntime>) -> a3s_flow::Result<()> {
+# async fn run(runtime: Arc<dyn aster_flow::FlowRuntime>) -> aster_flow::Result<()> {
 let store = Arc::new(
-    PostgresEventStore::connect("postgres://user:pass@localhost:5432/a3s_flow").await?,
+    PostgresEventStore::connect("postgres://user:pass@localhost:5432/aster_flow").await?,
 );
 let queue = Arc::new(
     PostgresFlowTaskQueue::connect_with_queue(
-        "postgres://user:pass@localhost:5432/a3s_flow",
+        "postgres://user:pass@localhost:5432/aster_flow",
         "production",
     )
     .await?,
@@ -546,10 +546,10 @@ active worker on that queue.
 Run the companion examples with:
 
 ```sh
-KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
+KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/aster_flow \
   cargo run --example postgres_durability --features postgres
 
-KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
+KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/aster_flow \
   cargo run --example postgres_task_queue_durability --features postgres
 ```
 
@@ -604,7 +604,7 @@ Ok(ctx.schedule_step(
 
 Step IDs are durable. Once a step is created, replay must return the same step
 name, input, and retry policy for that ID. If workflow code changes the
-definition, A3S Flow reports non-deterministic replay instead of silently doing
+definition, Aster Flow reports non-deterministic replay instead of silently doing
 new work under an old ID.
 
 Every step invocation also carries a one-based `attempt` and an opaque
@@ -707,7 +707,7 @@ due retries. Flow rejects delays that cannot be represented as a UTC deadline
 before it persists or executes the step.
 
 ```rust
-use a3s_flow::RetryPolicy;
+use aster_flow::RetryPolicy;
 use std::time::Duration;
 
 Ok(ctx.schedule_step_with_retry(
@@ -754,7 +754,7 @@ calling `enqueue_due_work()` again. One scheduler tick discovers due waits and
 retries with a combined store query, groups them by run ID, and dispatches one
 targeted task per affected run. The worker replays only that run, so it does not
 repeat the global due query; a batch of due retry siblings is resumed together.
-SQL stores use their A3S ORM projection, while other stores preserve the same
+SQL stores use their Aster ORM projection, while other stores preserve the same
 behavior through event-history replay. With Boot deduplication enabled, the
 stable target is the run ID: scan timestamps do not fragment the identity, and
 the latest task is retained when the matching owner is active.
@@ -855,7 +855,7 @@ let Some(approval) = ctx.signal_payload_as::<Approval>("approval")? else {
 An authorized host or durable Outbox consumer supplies its own delivery ID:
 
 ```rust
-use a3s_flow::WorkflowSignal;
+use aster_flow::WorkflowSignal;
 
 engine
     .send_signal(
@@ -874,7 +874,7 @@ that pair with the same name and payload is idempotent, including when delivery
 or wait pairing committed before the worker stopped. A different name or
 payload returns `SignalConflict`. Delivery follows continue-as-new descendants
 of the original target and drives the active leaf. Use `FlowTask::SendSignal`
-for the same behavior through `FlowWorker` or A3S Boot; Boot deduplicates the
+for the same behavior through `FlowWorker` or Aster Boot; Boot deduplicates the
 logical target by run ID and signal ID. Treat `FlowTaskOutcome` as a commit
 report: only the task that appends `signal_received` sets `delivered_signal`.
 An identical redelivery still succeeds, drives recovery, and reports the active
@@ -916,11 +916,11 @@ Implement `FlowRuntime::run_update` to answer from durable history, then let
 workflow replay observe applied updates through `WorkflowContext`:
 
 ```rust
-async fn run_update(&self, invocation: UpdateInvocation) -> a3s_flow::Result<JsonValue> {
+async fn run_update(&self, invocation: UpdateInvocation) -> aster_flow::Result<JsonValue> {
     Ok(json!({ "name": invocation.update.name, "input": invocation.update.input }))
 }
 
-async fn run_workflow(&self, invocation: WorkflowInvocation) -> a3s_flow::Result<RuntimeCommand> {
+async fn run_workflow(&self, invocation: WorkflowInvocation) -> aster_flow::Result<RuntimeCommand> {
     let ctx = invocation.context();
     if ctx.update("bump").is_some() {
         return Ok(RuntimeCommand::Complete {
@@ -934,7 +934,7 @@ async fn run_workflow(&self, invocation: WorkflowInvocation) -> a3s_flow::Result
 Hosts supply a caller-owned `update_id` and retry the exact triple:
 
 ```rust
-use a3s_flow::WorkflowUpdate;
+use aster_flow::WorkflowUpdate;
 
 let outcome = engine
     .apply_update(
@@ -967,7 +967,7 @@ Ok(ctx.create_hook(
 For common approval and webhook routing metadata, prefer the typed helpers:
 
 ```rust
-use a3s_flow::{HookCallbackRoute, HookMetadata};
+use aster_flow::{HookCallbackRoute, HookMetadata};
 
 let metadata = HookMetadata::human_approval("invoice:2026-0001")
     .with_callback_route(HookCallbackRoute::post("/callbacks/flow/hooks/{token}"))
@@ -1043,7 +1043,7 @@ handling, but their `Display` and `Debug` diagnostics always redact it.
 Webhook routers and approval dashboards can inspect outstanding hooks directly:
 
 ```rust
-use a3s_flow::HookMetadata;
+use aster_flow::HookMetadata;
 
 let active_hooks = engine.list_active_hooks().await?;
 for active in active_hooks {
@@ -1071,7 +1071,7 @@ its callback even though Flow redacts it from error diagnostics.
 
 ## Compensation
 
-A3S Flow records compensation as durable markers plus ordinary steps. Markers
+Aster Flow records compensation as durable markers plus ordinary steps. Markers
 do not execute undo logic; they make saga-style obligations visible to replay.
 
 Recommended shape:
@@ -1144,20 +1144,20 @@ tip. See `examples/run_inspection.rs` for a runnable mixed-status inspection flo
 ## Observability
 
 Attach a `FlowEventObserver` to mirror committed events into logs, metrics, or
-A3S event bridges. The observer runs after the store append; the event store
+Aster event bridges. The observer runs after the store append; the event store
 remains the source of truth.
 
-For A3S-shaped event output, use `A3sFlowEventBridge` with a host-provided sink:
+For Aster-shaped event output, use `AsterFlowEventBridge` with a host-provided sink:
 
 ```rust
-use a3s_flow::{A3sFlowEventBridge, InMemoryA3sFlowEventSink};
+use aster_flow::{AsterFlowEventBridge, InMemoryAsterFlowEventSink};
 use std::sync::Arc;
 
-let sink = Arc::new(InMemoryA3sFlowEventSink::new());
-let observer = Arc::new(A3sFlowEventBridge::new(sink.clone()));
+let sink = Arc::new(InMemoryAsterFlowEventSink::new());
+let observer = Arc::new(AsterFlowEventBridge::new(sink.clone()));
 ```
 
-`A3sFlowEvent` carries audit identity (`run_id`, `event_id`, sequence) plus
+`AsterFlowEvent` carries audit identity (`run_id`, `event_id`, sequence) plus
 workflow identity, status, and step/wait/signal/hook subject when one exists.
 Step/activity events also retain attempt correlation when available:
 `attempt`, `attempt_id`, and `idempotency_key`. Use `safe_metric_labels()` for
@@ -1168,15 +1168,15 @@ When one host needs several observability outputs, compose observers with
 `FanoutFlowEventObserver`:
 
 ```rust
-use a3s_flow::{
-    A3sFlowEventBridge, FanoutFlowEventObserver, InMemoryA3sFlowEventSink,
+use aster_flow::{
+    AsterFlowEventBridge, FanoutFlowEventObserver, InMemoryAsterFlowEventSink,
     InMemoryFlowEventObserver,
 };
 use std::sync::Arc;
 
 let raw_observer = Arc::new(InMemoryFlowEventObserver::new());
-let sink = Arc::new(InMemoryA3sFlowEventSink::new());
-let bridge = Arc::new(A3sFlowEventBridge::new(sink.clone()));
+let sink = Arc::new(InMemoryAsterFlowEventSink::new());
+let bridge = Arc::new(AsterFlowEventBridge::new(sink.clone()));
 let observer = Arc::new(
     FanoutFlowEventObserver::new()
         .with_observer(raw_observer.clone())
@@ -1199,20 +1199,20 @@ full step inputs. Put those in trace/audit records when needed, not in metrics.
 For local audit trails, write the bridged events to JSONL:
 
 ```rust
-use a3s_flow::{A3sFlowEventBridge, FlowEngine, LocalFileA3sFlowEventSink};
+use aster_flow::{AsterFlowEventBridge, FlowEngine, LocalFileAsterFlowEventSink};
 use std::sync::Arc;
 
-# fn runtime() -> Arc<dyn a3s_flow::FlowRuntime> { unimplemented!() }
+# fn runtime() -> Arc<dyn aster_flow::FlowRuntime> { unimplemented!() }
 # fn build() {
-let sink = Arc::new(LocalFileA3sFlowEventSink::new(".a3s/flow/audit/events.jsonl"));
-let observer = Arc::new(A3sFlowEventBridge::new(sink.clone()));
+let sink = Arc::new(LocalFileAsterFlowEventSink::new(".aster/flow/audit/events.jsonl"));
+let observer = Arc::new(AsterFlowEventBridge::new(sink.clone()));
 let engine = FlowEngine::builder(runtime())
     .with_observer(observer)
     .build();
 # }
 ```
 
-The file sink appends one `A3sFlowEvent` per line, creates parent directories,
+The file sink appends one `AsterFlowEvent` per line, creates parent directories,
 and exposes `events()` for local inspection. After a crash, the next append
 preserves a complete final record missing only its newline and discards an
 unterminated malformed tail. Terminated or interior corruption fails closed and
@@ -1222,25 +1222,25 @@ workflow event. Share one sink instance (normally through `Arc`) per path; the
 local sink does not coordinate separate processes. See
 `examples/local_audit_log.rs` for a runnable audit-log flow.
 
-When the host uses A3S Event as its event backbone, enable the `a3s-event`
+When the host uses Aster Event as its event backbone, enable the `aster-event`
 feature and publish bridged records through an `EventBus`:
 
 ```toml
 [dependencies]
-a3s-flow = { version = "0.11.0", features = ["a3s-event"] }
-a3s-event = { version = "0.3", default-features = false }
+aster-flow = { version = "0.11.0", features = ["aster-event"] }
+aster-event = { version = "0.3", default-features = false }
 ```
 
 ```rust
-use a3s_event::{EventBus, MemoryProvider};
-use a3s_flow::{A3sEventBusFlowEventSink, A3sFlowEventBridge, FlowEngine};
+use aster_event::{EventBus, MemoryProvider};
+use aster_flow::{AsterEventBusFlowEventSink, AsterFlowEventBridge, FlowEngine};
 use std::sync::Arc;
 
-# fn runtime() -> Arc<dyn a3s_flow::FlowRuntime> { unimplemented!() }
+# fn runtime() -> Arc<dyn aster_flow::FlowRuntime> { unimplemented!() }
 # fn build() {
 let bus = Arc::new(EventBus::new(MemoryProvider::default()));
-let sink = Arc::new(A3sEventBusFlowEventSink::new(bus.clone()));
-let observer = Arc::new(A3sFlowEventBridge::new(sink.clone()));
+let sink = Arc::new(AsterEventBusFlowEventSink::new(bus.clone()));
+let observer = Arc::new(AsterFlowEventBridge::new(sink.clone()));
 let engine = FlowEngine::builder(runtime())
     .with_observer(observer)
     .build();
@@ -1249,7 +1249,7 @@ let engine = FlowEngine::builder(runtime())
 
 The sink publishes category `flow`, provider-built subjects such as
 `events.flow.step.completed`, the Flow event key as `event_type`, and the full
-`A3sFlowEvent` as payload. Publish failures are best-effort and visible through
+`AsterFlowEvent` as payload. Publish failures are best-effort and visible through
 `last_error()`.
 
 ## Cancellation And Host-Owned Cleanup
@@ -1278,7 +1278,7 @@ if ctx.cancellation_request().is_some() {
 The host initiates it with a stable reason:
 
 ```rust
-use a3s_flow::CancellationRequest;
+use aster_flow::CancellationRequest;
 
 engine
     .request_cancellation(
@@ -1386,7 +1386,7 @@ let report = store
 store.release_history_hold(&run_id, "audit-export").await?;
 ```
 
-The A3S ORM transaction preserves active/recent runs, held histories, and a
+The Aster ORM transaction preserves active/recent runs, held histories, and a
 linked Flow run whenever its connected child/continuation component is not entirely
 eligible. SQLite uses an immediate transaction to serialize retention with
 appends; PostgreSQL adds a database-wide retention guard and stable per-run
@@ -1401,7 +1401,7 @@ component. See `examples/sqlite_retention.rs` for a runnable SQLite flow.
 
 The public SDK remains Rust-first. `NativeTsRuntime` lets a Rust host execute
 TypeScript workflow source by compiling it into a native artifact and invoking
-that artifact through the `a3s.flow.native_ts.v1` JSON protocol.
+that artifact through the `aster.flow.native_ts.v1` JSON protocol.
 
 Use this when the product wants workflow authors to write TypeScript while the
 host still owns:
@@ -1476,7 +1476,7 @@ Before shipping a host integration:
 - Expose a cleanup-aware cancellation path and give every cleanup step a stable
   host idempotency key. Reserve force cancellation for explicit emergency
   policy.
-- Use `BootFlowTaskManager` when A3S Boot owns the host lifecycle and queue
+- Use `BootFlowTaskManager` when Aster Boot owns the host lifecycle and queue
   backend.
 - Pin new histories to a runtime build, advertise only builds whose replay code
   is actually present, and keep exact routes alive until their active histories
@@ -1491,7 +1491,7 @@ Before shipping a host integration:
   history. Configure a shared Boot queue backend for distributed task state;
   retain `PostgresFlowTaskQueue` only for direct FlowWorker compatibility.
 - Attach an observer before adding dashboards or audit exports.
-- Use `LocalFileA3sFlowEventSink` for local JSONL audit trails before wiring a
+- Use `LocalFileAsterFlowEventSink` for local JSONL audit trails before wiring a
   hosted event sink.
 - Define cleanup policy for completed event histories and task directories; for
   `LocalFileEventStore`, prune only old terminal histories. For SQLite or

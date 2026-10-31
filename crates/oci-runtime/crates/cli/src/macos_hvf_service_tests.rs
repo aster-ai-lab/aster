@@ -10,7 +10,7 @@ use super::wait_for_stdin_eof;
 fn lifetime_pipe_flag_is_explicit_and_defaults_to_disabled() {
     for enabled in [false, true] {
         let mut args = vec![
-            "a3s-oci",
+            "aster-oci",
             "macos-hvf-host-service",
             "--root",
             "/tmp/owner",

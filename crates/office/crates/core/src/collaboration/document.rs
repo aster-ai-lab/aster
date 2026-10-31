@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::ToJson;
 use yrs::updates::decoder::Decode;
 use yrs::{
@@ -448,7 +448,7 @@ pub(super) fn document_update_sha256(doc: &Doc) -> String {
 /// delivery-order comparisons stable without changing the standard Yjs v1
 /// updates exchanged with browser peers.
 fn canonical_document_state_sha256<T: ReadTxn>(transaction: &T) -> String {
-    let mut bytes = b"a3s.office.document-state.v1\0".to_vec();
+    let mut bytes = b"aster.office.document-state.v1\0".to_vec();
     let state_vector = canonical_state_vector(&transaction.state_vector());
     write_length_prefixed(&mut bytes, &state_vector);
 
@@ -466,7 +466,7 @@ fn canonical_document_state_sha256<T: ReadTxn>(transaction: &T) -> String {
 }
 
 pub(super) fn canonical_visible_root_sha256<T: ReadTxn>(transaction: &T, value: &Out) -> String {
-    let mut bytes = b"a3s.office.visible-root.v1\0".to_vec();
+    let mut bytes = b"aster.office.visible-root.v1\0".to_vec();
     write_canonical_out(&mut bytes, transaction, value);
     sha256_hex(&bytes)
 }
@@ -476,7 +476,7 @@ pub(super) fn canonical_map_without_key_sha256<T: ReadTxn>(
     map: &yrs::MapRef,
     omitted_key: &str,
 ) -> String {
-    let mut bytes = b"a3s.office.filtered-map.v1\0".to_vec();
+    let mut bytes = b"aster.office.filtered-map.v1\0".to_vec();
     let mut entries = map
         .iter(transaction)
         .filter(|(key, _)| *key != omitted_key)
@@ -494,7 +494,7 @@ pub(super) fn canonical_content_without_comment_marks_sha256<T: ReadTxn>(
     transaction: &T,
     value: &Out,
 ) -> String {
-    let mut bytes = b"a3s.office.document-content-without-comments.v1\0".to_vec();
+    let mut bytes = b"aster.office.document-content-without-comments.v1\0".to_vec();
     write_canonical_out_without_comment_marks(&mut bytes, transaction, value);
     sha256_hex(&bytes)
 }
@@ -503,7 +503,7 @@ pub(super) fn canonical_content_without_suggestion_effects_sha256<T: ReadTxn>(
     transaction: &T,
     value: &Out,
 ) -> String {
-    let mut bytes = b"a3s.office.document-content-without-suggestions.v1\0".to_vec();
+    let mut bytes = b"aster.office.document-content-without-suggestions.v1\0".to_vec();
     write_canonical_out_without_suggestion_effects(&mut bytes, transaction, value);
     sha256_hex(&bytes)
 }

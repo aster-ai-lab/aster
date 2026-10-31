@@ -1,6 +1,6 @@
 use std::io::Cursor;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use image::imageops::FilterType;
 use image::{DynamicImage, ImageReader, Limits, RgbImage};
 

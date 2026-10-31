@@ -1,6 +1,6 @@
 //! Tavily ACL provider parsing.
 
-use a3s_acl::ast::Block;
+use aster_acl::ast::Block;
 
 use crate::providers::{
     TavilyAnswer, TavilyConfig, TavilyCountry, TavilyDate, TavilyProvider, TavilyRawContent,

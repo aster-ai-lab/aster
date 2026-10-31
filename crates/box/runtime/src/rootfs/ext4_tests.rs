@@ -1,5 +1,5 @@
 use super::*;
-use a3s_box_core::rootfs_metadata::ROOTFS_METADATA_SCHEMA;
+use aster_box_core::rootfs_metadata::ROOTFS_METADATA_SCHEMA;
 use sha2::{Digest, Sha256};
 use std::io::Write;
 
@@ -29,7 +29,7 @@ fn image_entry(
 fn sample_source(root: &Path) {
     std::fs::create_dir_all(root.join("etc")).unwrap();
     std::fs::write(root.join("etc/config"), b"guest-native\n").unwrap();
-    xattr::set(root.join("etc/config"), "user.a3s.test", b"preserved").unwrap();
+    xattr::set(root.join("etc/config"), "user.aster.test", b"preserved").unwrap();
     std::fs::hard_link(root.join("etc/config"), root.join("etc/config.link")).unwrap();
     std::os::unix::fs::symlink("config", root.join("etc/current")).unwrap();
 
@@ -86,7 +86,7 @@ fn publishes_verified_metadata_faithful_artifact() {
     assert_eq!((inode.uid, inode.gid), (123, 456));
     let xattrs = filesystem.xattrs(config).unwrap();
     assert!(xattrs.iter().any(|xattr| {
-        xattr.full_name().as_deref() == Some(b"user.a3s.test") && xattr.value == b"preserved"
+        xattr.full_name().as_deref() == Some(b"user.aster.test") && xattr.value == b"preserved"
     }));
     let symlink = filesystem.resolve("/etc/current").unwrap();
     assert_eq!(filesystem.symlink_target(symlink).unwrap(), b"config");
@@ -185,7 +185,7 @@ fn failed_build_never_publishes_partial_generation() {
             .unwrap()
             .file_name()
             .to_string_lossy()
-            .starts_with(".a3s-rootfs-ext4-")),
+            .starts_with(".aster-rootfs-ext4-")),
         "temporary artifact directories must be cleaned on failure"
     );
 }

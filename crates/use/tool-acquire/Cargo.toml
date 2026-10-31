@@ -1,16 +1,16 @@
 [package]
-name = "a3s-use-tool-acquire"
+name = "aster-use-tool-acquire"
 description = "Machine-local installer for the command-line tools Studio already names"
 version = "0.2.4"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Use"
-authors = ["A3S Lab"]
+repository = "https://github.com/aster-ai-lab/Use"
+authors = ["Aster"]
 rust-version = "1.82"
 publish = false
 
 [dependencies]
-a3s-use-core = {path = "../core"}
+aster-use-core = {path = "../core"}
 zip = {version = "2", default-features = false, features = ["deflate"]}
 tokio = {version = "1", features = ["fs", "io-std", "io-util", "macros", "net", "rt-multi-thread", "process", "sync", "time"]}
 thiserror = {version = "2"}

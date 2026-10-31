@@ -33,8 +33,8 @@
 use super::{
     escape_control_chars_for_display, validate_relative_pattern, WorkspaceDirEntry, WorkspaceError,
     WorkspaceFileSystem, WorkspaceFileSystemExt, WorkspaceFileType, WorkspaceGlobRequest,
-    WorkspaceGlobResult, WorkspaceGrepOutcome, WorkspaceGrepRequest, WorkspaceGrepResult,
-    WorkspacePath, WorkspaceResult, WorkspaceSearch, WorkspaceVersionConflict,
+    WorkspaceGlobResult, WorkspaceGrepMatch, WorkspaceGrepOutcome, WorkspaceGrepRequest,
+    WorkspaceGrepResult, WorkspacePath, WorkspaceResult, WorkspaceSearch, WorkspaceVersionConflict,
     WorkspaceWriteOutcome,
 };
 use anyhow::{anyhow, Result};
@@ -93,7 +93,7 @@ impl S3WorkspaceBackend {
             config.secret_access_key,
             config.session_token,
             None,
-            "a3s-code-static",
+            "aster-static",
         );
 
         let mut builder = aws_sdk_s3::Config::builder()
@@ -790,6 +790,7 @@ impl WorkspaceSearch for S3WorkspaceBackend {
         let mut total_size = 0usize;
         let mut output_truncated = false;
         let mut matched_paths = Vec::new();
+        let mut matches = Vec::new();
         let metadata_only = request.max_output_size == 0;
 
         'outer: for (workspace_path, display_str, lines, file_matches) in hits {
@@ -809,6 +810,7 @@ impl WorkspaceSearch for S3WorkspaceBackend {
                     continue;
                 }
 
+                let output_start = output.len();
                 let start = match_idx.saturating_sub(request.context_lines);
                 let end = (match_idx + request.context_lines + 1).min(lines.len());
                 for (i, line) in lines[start..end].iter().enumerate() {
@@ -822,6 +824,10 @@ impl WorkspaceSearch for S3WorkspaceBackend {
                     output.push_str("--\n");
                     total_size += 3;
                 }
+                matches.push(WorkspaceGrepMatch {
+                    path: workspace_path.clone(),
+                    output_range: output_start..output.len(),
+                });
             }
         }
 
@@ -832,6 +838,7 @@ impl WorkspaceSearch for S3WorkspaceBackend {
                 file_count,
                 truncated: output_truncated || scan_truncated,
             },
+            matches: Some(matches),
             matched_paths: Some(matched_paths),
             skipped_oversize: Vec::new(),
         })

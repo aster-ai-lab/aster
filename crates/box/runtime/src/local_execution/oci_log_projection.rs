@@ -5,11 +5,11 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::time::{Duration, Instant};
 
-use a3s_box_core::log::{
+use aster_box_core::log::{
     ManagedOciLogEndpoint, ManagedOciLogWorkerMarker, ManagedOciLogWorkerSpec,
     MANAGED_OCI_LOG_WORKER_SCHEMA,
 };
-use a3s_box_core::{ExecutionId, ExecutionManagerError, ExecutionManagerResult};
+use aster_box_core::{ExecutionId, ExecutionManagerError, ExecutionManagerResult};
 
 use super::{OciRuntimeBinding, OciRuntimeEndpoint};
 use crate::BoxRecord;
@@ -207,7 +207,7 @@ fn ensure_blocking(record: &BoxRecord, binding: &OciRuntimeBinding) -> Execution
 
     let shim = crate::vmm::VmController::find_shim().map_err(|error| {
         ExecutionManagerError::Unavailable(format!(
-            "managed OCI log projection requires a3s-box-shim: {error}"
+            "managed OCI log projection requires aster-box-shim: {error}"
         ))
     })?;
     let encoded = serde_json::to_string(&spec).map_err(|error| {
@@ -434,7 +434,7 @@ fn projection_io(operation: &str, path: &Path, error: std::io::Error) -> Executi
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::log::LogConfig;
+    use aster_box_core::log::LogConfig;
 
     fn spec(directory: &Path) -> ManagedOciLogWorkerSpec {
         ManagedOciLogWorkerSpec {
@@ -444,7 +444,7 @@ mod tests {
             endpoint: ManagedOciLogEndpoint::UnixSocket {
                 path: directory.join("runtime.sock"),
             },
-            runtime_container_id: "a3s-box-box-id".to_string(),
+            runtime_container_id: "aster-box-box-id".to_string(),
             runtime_generation: 11,
             console_log: directory.join("console.log"),
             log_config: LogConfig::default(),

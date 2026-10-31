@@ -5,7 +5,7 @@
 //! publication/locking cost from changing nearest-neighbour ground truth.
 //! Vector-index mutation is covered separately by `incremental_write`.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     HnswQueryParams, IndexParams, MetricType, SearchQuery,
 };
@@ -28,7 +28,7 @@ struct Config {
 
 impl Config {
     fn from_environment() -> Self {
-        if std::env::var("A3S_VEC_BENCH_SCALE").as_deref() == Ok("smoke") {
+        if std::env::var("ASTER_VEC_BENCH_SCALE").as_deref() == Ok("smoke") {
             return Self {
                 documents: 96,
                 dimensions: 8,
@@ -38,16 +38,16 @@ impl Config {
             };
         }
         Self {
-            documents: env_usize("A3S_VEC_MIXED_DOCUMENTS", 2_000),
-            dimensions: env_usize("A3S_VEC_MIXED_DIMENSIONS", 32),
-            queries: env_usize("A3S_VEC_MIXED_QUERIES", 48),
-            rounds: env_usize("A3S_VEC_MIXED_ROUNDS", 5),
-            writes: env_usize("A3S_VEC_MIXED_WRITES", 192),
+            documents: env_usize("ASTER_VEC_MIXED_DOCUMENTS", 2_000),
+            dimensions: env_usize("ASTER_VEC_MIXED_DIMENSIONS", 32),
+            queries: env_usize("ASTER_VEC_MIXED_QUERIES", 48),
+            rounds: env_usize("ASTER_VEC_MIXED_ROUNDS", 5),
+            writes: env_usize("ASTER_VEC_MIXED_WRITES", 192),
         }
     }
 
     fn reader_counts() -> Vec<usize> {
-        let raw = std::env::var("A3S_VEC_MIXED_READERS").unwrap_or_else(|_| "1,2,4,8".into());
+        let raw = std::env::var("ASTER_VEC_MIXED_READERS").unwrap_or_else(|_| "1,2,4,8".into());
         let mut counts: Vec<usize> = raw
             .split(',')
             .filter_map(|value| value.trim().parse::<usize>().ok())

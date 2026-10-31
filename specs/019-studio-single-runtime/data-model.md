@@ -24,7 +24,7 @@ Both fields with closed sets implement `parse()` / `as_str()` and reject unknown
 
 - `origin`: `Live | Replay | Recovery | HostProjection`.
 - Identities: session, runtime incarnation, prompt/run/goal/plan revision when applicable.
-- Payload: typed ACP standard update or registered A3S extension.
+- Payload: typed ACP standard update or registered Aster extension.
 - Unknown required events produce a protocol/degraded error, never silent `_ => {}` loss.
 
 ## Core-owned records

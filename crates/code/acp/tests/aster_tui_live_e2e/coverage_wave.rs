@@ -17,7 +17,7 @@ fn kimi_program_code_search_registered_template_returns_real_match() {
         format!("// CATALOG-ANCHOR\n// {token}\n"),
     )
     .unwrap();
-    let catalog = a3s_code_core::program::ProgramCatalog::with_builtin_programs();
+    let catalog = aster_core::program::ProgramCatalog::with_builtin_programs();
     assert_eq!(
         catalog
             .list()

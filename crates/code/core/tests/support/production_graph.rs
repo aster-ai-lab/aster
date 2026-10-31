@@ -17,7 +17,7 @@ use syn::punctuated::Punctuated;
 pub const ROOTS: &[&str] = &[
     "core/src/lib.rs",
     "acp/src/lib.rs",
-    "acp/src/bin/a3s-code-acp.rs",
+    "acp/src/bin/aster-acp.rs",
 ];
 
 /// One production file: its source and its parsed syntax tree.

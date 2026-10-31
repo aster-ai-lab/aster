@@ -1,17 +1,17 @@
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
 use serde::{Deserialize, Serialize};
 
 use crate::VmConfig;
 
 /// Schema emitted by the libkrun context smoke.
-pub const KRUN_CONTEXT_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.krun-context-smoke.v2";
+pub const KRUN_CONTEXT_SMOKE_SCHEMA_VERSION: &str = "aster.oci.krun-context-smoke.v2";
 /// Schema emitted while binding the immutable Linux KVM boot compatibility set.
 pub const KRUN_SYSTEM_IMAGE_CONTEXT_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.krun-system-image-context-smoke.v1";
+    "aster.oci.krun-system-image-context-smoke.v1";
 /// Schema emitted by the real utility-VM entry smoke.
-pub const KRUN_VM_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.krun-vm-smoke.v2";
+pub const KRUN_VM_SMOKE_SCHEMA_VERSION: &str = "aster.oci.krun-vm-smoke.v2";
 /// Schema emitted while booting the negotiation-only guest agent.
-pub const KRUN_AGENT_VM_SMOKE_SCHEMA_VERSION: &str = "a3s.oci.krun-agent-vm-smoke.v7";
+pub const KRUN_AGENT_VM_SMOKE_SCHEMA_VERSION: &str = "aster.oci.krun-agent-vm-smoke.v7";
 
 /// Exact immutable macOS boot assets observed by the isolated VM worker.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -216,7 +216,7 @@ impl KrunContextSmokeReport {
         Self::initial(
             HostPlatform::Windows,
             config,
-            option_env!("A3S_OCI_KRUN_RUNTIME_DIR").is_some(),
+            option_env!("ASTER_OCI_KRUN_RUNTIME_DIR").is_some(),
         )
     }
 
@@ -353,7 +353,7 @@ impl KrunVmSmokeReport {
             schema_version: KRUN_VM_SMOKE_SCHEMA_VERSION.to_string(),
             platform,
             status: CapabilityStatus::Unavailable,
-            runtime_bundle_loaded: option_env!("A3S_OCI_KRUN_RUNTIME_DIR").is_some(),
+            runtime_bundle_loaded: option_env!("ASTER_OCI_KRUN_RUNTIME_DIR").is_some(),
             context_created: false,
             vm_configured: false,
             rootfs_configured: false,
@@ -468,7 +468,7 @@ impl KrunAgentVmSmokeReport {
             schema_version: KRUN_AGENT_VM_SMOKE_SCHEMA_VERSION.to_string(),
             platform,
             status: CapabilityStatus::Unavailable,
-            runtime_bundle_loaded: option_env!("A3S_OCI_KRUN_RUNTIME_DIR").is_some(),
+            runtime_bundle_loaded: option_env!("ASTER_OCI_KRUN_RUNTIME_DIR").is_some(),
             context_created: false,
             vm_configured: false,
             rootfs_configured: false,

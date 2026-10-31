@@ -2,7 +2,7 @@ use std::fs::{File, OpenOptions};
 use std::path::Path;
 use std::time::{Duration, Instant};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use fs2::FileExt;
 
 use super::package::{io_error, lock_is_contended};

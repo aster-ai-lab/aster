@@ -1,7 +1,7 @@
 # Official OpenAI SDK conformance
 
 This suite runs the pinned official Python SDK against a real
-`a3s-gateway` process. It applies a complete inference policy through the
+`aster-gateway` process. It applies a complete inference policy through the
 native managed snapshot API and uses a controllable HTTP/SSE upstream.
 
 The cases cover:
@@ -20,16 +20,16 @@ The cases cover:
 Run it from the Gateway repository:
 
 ```bash
-cargo build --locked --bin a3s-gateway
+cargo build --locked --bin aster-gateway
 python -m pip install --requirement tests/openai_sdk/requirements.txt
 python tests/openai_sdk/test_conformance.py
 ```
 
 The same commands work on Windows and automatically select
-`target/debug/a3s-gateway.exe`. To exercise a binary at another location, set
-`A3S_GATEWAY_BINARY` first:
+`target/debug/aster-gateway.exe`. To exercise a binary at another location, set
+`ASTER_GATEWAY_BINARY` first:
 
 ```powershell
-$env:A3S_GATEWAY_BINARY = (Resolve-Path target/debug/a3s-gateway.exe).Path
+$env:ASTER_GATEWAY_BINARY = (Resolve-Path target/debug/aster-gateway.exe).Path
 python tests/openai_sdk/test_conformance.py
 ```

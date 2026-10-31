@@ -399,11 +399,11 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
 +      if (matches) setConditionalCompute(computeMap, entry.r, entry.c, style);
 +    });
 +  }
-+  Object.defineProperty(computeMap, "__a3sLazyFormulaRules", {
++  Object.defineProperty(computeMap, "__asterLazyFormulaRules", {
 +    value: lazyFormulaRules,
 +    enumerable: false
 +  });
-+  Object.defineProperty(computeMap, "__a3sLazyFormulaEvaluated", {
++  Object.defineProperty(computeMap, "__asterLazyFormulaEvaluated", {
 +    value: {},
 +    enumerable: false
 +  });
@@ -438,8 +438,8 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
 -  if (!_.isNil(computeMap) && "".concat(r, "_").concat(c) in computeMap) {
 -    return computeMap["".concat(r, "_").concat(c)];
 +  var key = "".concat(r, "_").concat(c);
-+  var lazyRules = computeMap === null || computeMap === void 0 ? void 0 : computeMap.__a3sLazyFormulaRules;
-+  var evaluated = computeMap === null || computeMap === void 0 ? void 0 : computeMap.__a3sLazyFormulaEvaluated;
++  var lazyRules = computeMap === null || computeMap === void 0 ? void 0 : computeMap.__asterLazyFormulaRules;
++  var evaluated = computeMap === null || computeMap === void 0 ? void 0 : computeMap.__asterLazyFormulaEvaluated;
 +  if (Array.isArray(lazyRules) && evaluated && !evaluated[key]) {
 +    evaluated[key] = true;
 +    lazyRules.forEach(function (descriptor) {
@@ -825,7 +825,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78
        column = newDatum.column;
      var index = getSheetIndex(ctx, newDatum.id);
      if (data != null) {
-+      if (Object.isFrozen(data) && Array.isArray(data.__a3sShownCommentCells)) {
++      if (Object.isFrozen(data) && Array.isArray(data.__asterShownCommentCells)) {
 +        newDatum.data = data;
 +        delete newDatum.celldata;
 +        if (ctx.luckysheetfile[index] == null) {
@@ -1512,11 +1512,11 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
 +      if (matches) setConditionalCompute(computeMap, entry.r, entry.c, style);
 +    });
 +  }
-+  Object.defineProperty(computeMap, "__a3sLazyFormulaRules", {
++  Object.defineProperty(computeMap, "__asterLazyFormulaRules", {
 +    value: lazyFormulaRules,
 +    enumerable: false
 +  });
-+  Object.defineProperty(computeMap, "__a3sLazyFormulaEvaluated", {
++  Object.defineProperty(computeMap, "__asterLazyFormulaEvaluated", {
 +    value: {},
 +    enumerable: false
 +  });
@@ -1551,8 +1551,8 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
 -  if (!___default['default'].isNil(computeMap) && "".concat(r, "_").concat(c) in computeMap) {
 -    return computeMap["".concat(r, "_").concat(c)];
 +  var key = "".concat(r, "_").concat(c);
-+  var lazyRules = computeMap === null || computeMap === void 0 ? void 0 : computeMap.__a3sLazyFormulaRules;
-+  var evaluated = computeMap === null || computeMap === void 0 ? void 0 : computeMap.__a3sLazyFormulaEvaluated;
++  var lazyRules = computeMap === null || computeMap === void 0 ? void 0 : computeMap.__asterLazyFormulaRules;
++  var evaluated = computeMap === null || computeMap === void 0 ? void 0 : computeMap.__asterLazyFormulaEvaluated;
 +  if (Array.isArray(lazyRules) && evaluated && !evaluated[key]) {
 +    evaluated[key] = true;
 +    lazyRules.forEach(function (descriptor) {
@@ -1938,7 +1938,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8b
        column = newDatum.column;
      var index = getSheetIndex(ctx, newDatum.id);
      if (data != null) {
-+      if (Object.isFrozen(data) && Array.isArray(data.__a3sShownCommentCells)) {
++      if (Object.isFrozen(data) && Array.isArray(data.__asterShownCommentCells)) {
 +        newDatum.data = data;
 +        delete newDatum.celldata;
 +        if (ctx.luckysheetfile[index] == null) {

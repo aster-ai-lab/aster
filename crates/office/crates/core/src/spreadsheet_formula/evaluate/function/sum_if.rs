@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::spreadsheet_formula::evaluate::MAX_SPREADSHEET_FORMULA_SPILL_CELLS;
 use crate::spreadsheet_reference::{MAX_COLUMNS, MAX_ROWS};
@@ -85,7 +85,7 @@ fn argument(arguments: &[EvalValue], index: usize) -> UseResult<&EvalValue> {
     })
 }
 
-fn sum_if_limit_error() -> a3s_use_core::UseError {
+fn sum_if_limit_error() -> aster_use_core::UseError {
     calculation_error(
         "use.office.spreadsheet_formula_spill_limit",
         format!(

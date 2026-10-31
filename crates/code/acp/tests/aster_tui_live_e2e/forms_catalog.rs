@@ -9,7 +9,7 @@ use std::time::{Duration, Instant};
 #[ignore = "requires the paired native Aster/ACP build and original kimi/k3.1-pro ACL"]
 fn kimi_catalog_forms_render_all_components_and_preserve_typed_edits() {
     let form = catalog_form();
-    let catalog = a3s_form_core::json_render_component_catalog();
+    let catalog = aster_form_core::json_render_component_catalog();
     let expected = catalog
         .as_object()
         .unwrap()
@@ -216,7 +216,7 @@ fn kimi_long_form_small_window_reaches_fields_submit_and_cancel() {
 #[ignore = "requires the paired native Aster/ACP build and original kimi/k3.1-pro ACL"]
 fn kimi_catalog_native_viewport_and_typed_values_match_source() {
     let form = catalog_form();
-    let catalog = a3s_form_core::json_render_component_catalog();
+    let catalog = aster_form_core::json_render_component_catalog();
     let represented = form["elements"]
         .as_object()
         .unwrap()
@@ -486,7 +486,7 @@ fn kimi_background_form_and_repeated_submit_keep_the_session_owner() {
     tui.dismiss();
     tui.bytes(b"B-LOCAL-DRAFT");
     let a_log = tui
-        .files(&tui.workspace.join(".a3s"), "jsonl")
+        .files(&tui.workspace.join(".aster"), "jsonl")
         .into_iter()
         .find(|p| p.file_stem().and_then(|s| s.to_str()) == Some(a_id.as_str()))
         .unwrap();

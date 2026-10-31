@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use super::{test_launch, A3sCodeAgent};
+use super::{test_launch, AsterCodeAgent};
 use agent_client_protocol::{self as acp, Agent as _};
 
 #[tokio::test]
@@ -9,7 +9,7 @@ async fn two_acp_host_sessions_recall_and_write_the_same_durable_collection() {
     let mut launch = test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().into();
     launch.config.memory_dir = Some(root.path().join("memory"));
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let mut sessions = Vec::new();
     for _ in 0..2 {
         let id = host

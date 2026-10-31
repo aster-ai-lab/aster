@@ -117,7 +117,7 @@ async fn the_model_reads_and_greps_the_region_a_truncated_result_omitted() {
 async fn an_unretained_artifact_is_refused_by_name() {
     let workspace = tempfile::tempdir().expect("workspace");
     let executor = ToolExecutor::new(workspace.path().display().to_string());
-    let uri = "a3s://tool-output/bash/0000";
+    let uri = "aster://tool-output/bash/0000";
     let result = executor
         .registry()
         .execute("read", &serde_json::json!({"file_path": uri}))

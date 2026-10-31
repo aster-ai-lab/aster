@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 use std::ops::Range;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use quick_xml::events::Event;
 use quick_xml::name::{QName, ResolveResult};
 use quick_xml::reader::NsReader;

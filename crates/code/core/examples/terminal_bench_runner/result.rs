@@ -4,13 +4,13 @@
 //! evaluation substrate remain provider-neutral; Harbor needs this smaller
 //! process-boundary record to classify runner failures without scraping logs.
 
-use a3s_code_core::execution_identity::ExecutionResultOutcomeV1;
+use aster_core::execution_identity::ExecutionResultOutcomeV1;
 use anyhow::{Context, Result};
 use serde::Serialize;
 use std::time::Instant;
 
 pub(super) const DEFAULT_EXECUTION_BUDGET_MS: u64 = 840_000;
-const TERMINAL_BENCH_RESULT_SCHEMA_V1: &str = "a3s.code.terminal-bench-result.v1";
+const TERMINAL_BENCH_RESULT_SCHEMA_V1: &str = "aster.code.terminal-bench-result.v1";
 const MAX_REPORTED_ERROR_BYTES: usize = 4 * 1024;
 
 /// Stable host-facing reason for why a Terminal-Bench run stopped.
@@ -107,12 +107,12 @@ impl RunProgress {
     pub(super) fn remember_failure(&mut self, error: &anyhow::Error) {
         self.remember_error(error);
         if let Some(provider_error) =
-            error.downcast_ref::<a3s_code_core::llm::NonRetryableLlmError>()
+            error.downcast_ref::<aster_core::llm::NonRetryableLlmError>()
         {
             self.provider = provider_error.provider().map(str::to_owned);
             self.provider_status = provider_error.status();
         } else if let Some(retry_error) =
-            error.downcast_ref::<a3s_code_core::llm::RetryExhaustedError>()
+            error.downcast_ref::<aster_core::llm::RetryExhaustedError>()
         {
             self.provider_status = Some(retry_error.status_code());
         }
@@ -199,7 +199,7 @@ pub(super) async fn persist_result(
     let file_name = path
         .file_name()
         .map(|name| name.to_string_lossy().into_owned())
-        .unwrap_or_else(|| "a3s-code.result.json".to_string());
+        .unwrap_or_else(|| "aster.result.json".to_string());
     let temporary = path.with_file_name(format!(".{file_name}.tmp-{}", std::process::id()));
     tokio::fs::write(&temporary, bytes)
         .await
@@ -225,7 +225,7 @@ pub(super) fn classify_failure(
     // not infer this class from rendered text: bodies are bounded and may be
     // localized or omit the word "provider" entirely.
     if error
-        .downcast_ref::<a3s_code_core::llm::NonRetryableLlmError>()
+        .downcast_ref::<aster_core::llm::NonRetryableLlmError>()
         .is_some()
     {
         return (
@@ -234,7 +234,7 @@ pub(super) fn classify_failure(
         );
     }
     if error
-        .downcast_ref::<a3s_code_core::llm::RetryExhaustedError>()
+        .downcast_ref::<aster_core::llm::RetryExhaustedError>()
         .is_some()
     {
         return (
@@ -361,7 +361,7 @@ mod tests {
         progress.remember_error(
             "deepseek API returned HTTP 402: Insufficient Balance (request_id: test)",
         );
-        let error = anyhow::anyhow!("A3S Code stream ended without a terminal event");
+        let error = anyhow::anyhow!("Aster Code stream ended without a terminal event");
         let (outcome, reason) = classify_failure(&progress, &error);
         assert!(matches!(outcome, ExecutionResultOutcomeV1::Failed));
         assert!(matches!(reason, TerminalReason::ProviderRejected));
@@ -390,7 +390,7 @@ mod tests {
     #[test]
     fn typed_provider_response_is_classified_without_text_matching() {
         let progress = RunProgress::new();
-        let error = anyhow::Error::new(a3s_code_core::llm::NonRetryableLlmError::from_status(
+        let error = anyhow::Error::new(aster_core::llm::NonRetryableLlmError::from_status(
             "openai", 402, "quota",
         ));
         let (outcome, reason) = classify_failure(&progress, &error);
@@ -401,7 +401,7 @@ mod tests {
     #[test]
     fn typed_provider_response_wins_over_deadline_words_in_body() {
         let progress = RunProgress::new();
-        let error = anyhow::Error::new(a3s_code_core::llm::NonRetryableLlmError::from_status(
+        let error = anyhow::Error::new(aster_core::llm::NonRetryableLlmError::from_status(
             "openai",
             400,
             "request deadline rejected by provider",
@@ -425,7 +425,7 @@ mod tests {
     #[test]
     fn typed_retry_exhaustion_is_classified_without_rendered_text() {
         let progress = RunProgress::new();
-        let error = anyhow::Error::new(a3s_code_core::llm::RetryExhaustedError::from_status(
+        let error = anyhow::Error::new(aster_core::llm::RetryExhaustedError::from_status(
             2,
             503,
             "service unavailable",
@@ -438,7 +438,7 @@ mod tests {
     #[test]
     fn typed_provider_failure_metadata_is_retained_in_report() {
         let mut progress = RunProgress::new();
-        let error = anyhow::Error::new(a3s_code_core::llm::NonRetryableLlmError::from_status(
+        let error = anyhow::Error::new(aster_core::llm::NonRetryableLlmError::from_status(
             "anthropic",
             401,
             "denied",
@@ -456,7 +456,7 @@ mod tests {
     #[test]
     fn typed_retry_failure_status_is_retained_in_report() {
         let mut progress = RunProgress::new();
-        let error = anyhow::Error::new(a3s_code_core::llm::RetryExhaustedError::from_status(
+        let error = anyhow::Error::new(aster_core::llm::RetryExhaustedError::from_status(
             3,
             429,
             "rate limited",
@@ -473,8 +473,8 @@ mod tests {
     #[test]
     fn artifact_evidence_counter_walks_nested_tool_metadata() {
         let metadata = serde_json::json!({
-            "artifact_uri": "a3s://one",
-            "nested": [{"artifact_uri": "a3s://two"}, {"other": true}]
+            "artifact_uri": "aster://one",
+            "nested": [{"artifact_uri": "aster://two"}, {"other": true}]
         });
         assert_eq!(count_artifact_evidence(&metadata), 2);
     }
@@ -482,7 +482,7 @@ mod tests {
     #[tokio::test]
     async fn result_persistence_is_atomic_and_replaces_previous_report() {
         let directory = tempfile::tempdir().expect("temporary directory");
-        let path = directory.path().join("a3s-code.result.json");
+        let path = directory.path().join("aster.result.json");
         let mut progress = RunProgress::new();
         progress.terminal_event = true;
         let first = progress.report(

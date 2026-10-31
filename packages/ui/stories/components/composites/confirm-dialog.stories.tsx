@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { Button, ConfirmDialog } from '@a3s-lab/ui'
+import { Button, ConfirmDialog } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof ConfirmDialog> = {
   title: 'Components/Composites/confirm-dialog',

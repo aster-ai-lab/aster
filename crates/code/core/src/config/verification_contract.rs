@@ -3,7 +3,7 @@
 use super::CodeConfig;
 use crate::error::{CodeError, Result};
 use crate::verification::VerificationContractV1;
-use a3s_acl::{Block, Value};
+use aster_acl::{Block, Value};
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 

@@ -27,32 +27,32 @@
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, ImageSource, Message, TokenUsage, ToolResultContent, ToolResultContentField,
     ToolResultTrustV1,
 };
-use a3s_code_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
-use a3s_code_core::orchestration::{
+use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
+use aster_core::orchestration::{
     AgentStepSpec, StepOutcome, ToolSourceAnchor, WorkflowCheckpoint, WorkflowStepRecord,
     WORKFLOW_CHECKPOINT_SCHEMA_VERSION,
 };
-use a3s_code_core::permissions::{PermissionPolicy, PermissionRule};
-use a3s_code_core::planning::Task;
-use a3s_code_core::run::{
+use aster_core::permissions::{PermissionPolicy, PermissionRule};
+use aster_core::planning::Task;
+use aster_core::run::{
     RunEventRecord, RunRecord, RunSnapshot, RunStatus, RunWorkspaceChangeSet,
 };
-use a3s_code_core::store::{
+use aster_core::store::{
     ContextUsage, MemorySessionStore, SessionConfig, SessionData, SessionState, SessionStore,
 };
-use a3s_code_core::subagent_task_tracker::{
+use aster_core::subagent_task_tracker::{
     SubagentProgressEntry, SubagentStatus, SubagentTaskSnapshot,
 };
-use a3s_code_core::trace::{TraceEvent, TraceEventKind, TRACE_EVENT_SCHEMA};
-use a3s_code_core::verification::{
+use aster_core::trace::{TraceEvent, TraceEventKind, TRACE_EVENT_SCHEMA};
+use aster_core::verification::{
     VerificationCheck, VerificationReport, VerificationStatus, VERIFICATION_REPORT_SCHEMA,
 };
-use a3s_code_core::{AgentEvent, DurableMemoryRecallPolicy, DurableMemorySession};
-use a3s_memory::repository::{InMemoryRepository, MemoryNamespace};
+use aster_core::{AgentEvent, DurableMemoryRecallPolicy, DurableMemorySession};
+use aster_durable_memory::repository::{InMemoryRepository, MemoryNamespace};
 use std::sync::Arc;
 
 // ─────────────────────────────────────────────────────────────────────
@@ -545,7 +545,7 @@ fn gen_permission_policy(rng: &mut Rng) -> PermissionPolicy {
 /// `PermissionPolicy` (itself holding the persisted untagged `PermissionRule`),
 /// the `#[serde(alias = "todos")]` `tasks` field, and the `#[serde(skip)]`
 /// `hook_engine` (safe: skipped in both directions).
-fn gen_durable_memory_binding(rng: &mut Rng) -> Option<a3s_code_core::DurableMemoryBindingV1> {
+fn gen_durable_memory_binding(rng: &mut Rng) -> Option<aster_core::DurableMemoryBindingV1> {
     if !rng.boolean() {
         return None;
     }

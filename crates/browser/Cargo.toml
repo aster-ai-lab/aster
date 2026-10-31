@@ -1,15 +1,15 @@
 [package]
-name = "a3s-use-browser"
+name = "aster-use-browser"
 version = "0.3.2"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Browser"
-homepage = "https://github.com/A3S-Lab/Browser"
-authors = ["A3S Lab"]
+repository = "https://github.com/aster-ai-lab/Browser"
+homepage = "https://github.com/aster-ai-lab/Browser"
+authors = ["Aster"]
 rust-version = "1.82"
-description = "Provider-oriented browser rendering and session contracts for A3S"
+description = "Provider-oriented browser rendering and session contracts for Aster"
 readme = "README.md"
-keywords = ["browser", "automation", "chrome", "a3s"]
+keywords = ["browser", "automation", "chrome", "aster"]
 categories = ["web-programming", "api-bindings"]
 publish = false
 
@@ -40,7 +40,7 @@ tracing = {workspace = true, optional = true}
 url = {version = "2", features = ["serde"]}
 which = {version = "7", optional = true}
 zip = {version = "2", default-features = false, features = ["deflate"], optional = true}
-a3s-use-core = {path = "../use/core"}
+aster-use-core = {path = "../use/core"}
 
 [dev-dependencies]
 tempfile = {workspace = true}

@@ -28,7 +28,7 @@
         let mut old_json = serde_json::to_value(old_record).unwrap();
         old_json.as_object_mut().unwrap().remove("isolation");
         let mut sandbox_record = box_record("sandbox-id", "sandbox", "created");
-        sandbox_record.isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+        sandbox_record.isolation = aster_box_core::ExecutionIsolation::Sandbox;
         std::fs::create_dir_all(&client.paths().home).unwrap();
         std::fs::write(
             &client.paths().boxes_file,
@@ -42,11 +42,11 @@
 
         assert_eq!(
             client.get_box("old").unwrap().unwrap().isolation,
-            a3s_box_core::ExecutionIsolation::Microvm
+            aster_box_core::ExecutionIsolation::Microvm
         );
         assert_eq!(
             client.get_box("sandbox").unwrap().unwrap().isolation,
-            a3s_box_core::ExecutionIsolation::Sandbox
+            aster_box_core::ExecutionIsolation::Sandbox
         );
     }
 
@@ -256,11 +256,11 @@
                     .labels
                     .insert("anonymous".to_string(), "true".to_string());
                 volume.labels.insert(
-                    "a3s.box.volume.kind".to_string(),
+                    "aster.box.volume.kind".to_string(),
                     "anonymous-v1".to_string(),
                 );
                 volume.labels.insert(
-                    "a3s.box.volume.owner".to_string(),
+                    "aster.box.volume.owner".to_string(),
                     record.id.clone(),
                 );
             })
@@ -417,7 +417,7 @@
         std::fs::create_dir_all(record.box_dir.join("sockets")).unwrap();
         std::fs::write(
             record.box_dir.join("sockets").join("net.stats.json"),
-            r#"{"schema":"a3s-box.netproxy.stats.v1","rx_bytes":1024,"tx_bytes":2048}"#,
+            r#"{"schema":"aster-box.netproxy.stats.v1","rx_bytes":1024,"tx_bytes":2048}"#,
         )
         .unwrap();
         write_boxes(&client, &[record.clone()]);

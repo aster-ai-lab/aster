@@ -9,9 +9,9 @@ use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_box_core::config::{BoxConfig, PoolConfig};
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::event::{BoxEvent, EventEmitter};
+use aster_box_core::config::{BoxConfig, PoolConfig};
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::event::{BoxEvent, EventEmitter};
 use tokio::sync::{watch, Mutex, OwnedSemaphorePermit, Semaphore};
 use tokio::task::{JoinHandle, JoinSet};
 
@@ -708,7 +708,7 @@ impl WarmPool {
                 dirs.push(dir);
             }
         }
-        let canonical = a3s_box_core::dirs_home().join("pool").join(format!(
+        let canonical = aster_box_core::dirs_home().join("pool").join(format!(
             "tpl-{:016x}",
             crate::vm::fnv1a_hash(&self.box_config.image)
         ));
@@ -1119,7 +1119,7 @@ impl WarmPool {
         box_config: &BoxConfig,
         event_emitter: &EventEmitter,
     ) -> Result<PoolTemplate> {
-        let dir = a3s_box_core::dirs_home().join("pool").join(format!(
+        let dir = aster_box_core::dirs_home().join("pool").join(format!(
             "tpl-{:016x}",
             crate::vm::fnv1a_hash(&box_config.image)
         ));
@@ -1606,7 +1606,7 @@ mod shutdown_tests;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::config::PoolConfig;
+    use aster_box_core::config::PoolConfig;
 
     fn test_pool_config(min_idle: usize, max_size: usize) -> PoolConfig {
         PoolConfig {
@@ -1764,7 +1764,7 @@ mod tests {
         }
 
         impl VmHandler for AlwaysRunningHandler {
-            fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> a3s_box_core::error::Result<()> {
+            fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> aster_box_core::error::Result<()> {
                 self.stop_calls.fetch_add(1, Ordering::SeqCst);
                 Ok(())
             }
@@ -1843,7 +1843,7 @@ mod tests {
         }
 
         impl VmHandler for AlwaysRunningHandler {
-            fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> a3s_box_core::error::Result<()> {
+            fn stop(&mut self, _signal: i32, _timeout_ms: u64) -> aster_box_core::error::Result<()> {
                 self.stop_calls.fetch_add(1, Ordering::SeqCst);
                 Ok(())
             }
@@ -2334,7 +2334,7 @@ mod tests {
             Ok(pool) => pool,
             Err(_) => return,
         };
-        let dir = a3s_box_core::dirs_home().join("pool").join(format!(
+        let dir = aster_box_core::dirs_home().join("pool").join(format!(
             "tpl-{:016x}",
             crate::vm::fnv1a_hash(&box_config.image)
         ));

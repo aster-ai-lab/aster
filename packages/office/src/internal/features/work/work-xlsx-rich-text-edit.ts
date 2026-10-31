@@ -40,7 +40,7 @@ export interface SpreadsheetRichTextPasteIntent {
 /**
  * Reconciles a text edit emitted by Fortune with the previous native XLSX
  * rich-text cell. Formula-bar edits may arrive as a plain string, while the
- * in-cell editor emits visible runs without A3S-only semantic color metadata.
+ * in-cell editor emits visible runs without Aster-only semantic color metadata.
  * This bounded model restores only style and metadata justified by the prior
  * controlled value and the exact text replacement.
  */
@@ -352,13 +352,13 @@ function restoreSemanticColorOrigins(
         ...currentRun,
         v: currentRun.v.slice(localOffset, localOffset + width),
       };
-      delete next.a3sXlsxColorOrigin;
+      delete next.asterXlsxColorOrigin;
       if (
         origin &&
         currentRun.fc &&
         xlsxSemanticColorMatchesValue(origin, currentRun.fc)
       ) {
-        next.a3sXlsxColorOrigin = origin;
+        next.asterXlsxColorOrigin = origin;
       }
       runs.push(next);
       localOffset += width;
@@ -384,7 +384,7 @@ function semanticOriginAt(
   } else {
     indexed = insertionSourceRun(source, replacement);
   }
-  return normalizeXlsxSemanticColorOrigin(indexed?.run.a3sXlsxColorOrigin);
+  return normalizeXlsxSemanticColorOrigin(indexed?.run.asterXlsxColorOrigin);
 }
 
 function insertionSourceRun(

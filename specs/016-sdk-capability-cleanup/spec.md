@@ -55,14 +55,14 @@ A host can distinguish its registered embedding factory from the embedded light 
 - **FR-003**: Browser search MUST be an explicit Cargo capability; disabled builds MUST retain typed refusal for browser-only engines.
 - **FR-004**: Provisioning MUST be deferred until the headless tier is used and MUST preserve deadlines and cancellation ownership.
 - **FR-005**: Embedding guidance MUST identify actual backend selection; missing or broken resources MUST NOT silently activate remote services.
-- **FR-006**: Existing public Rust APIs, local A3S dependencies, tenant isolation and unrelated working changes MUST be preserved.
+- **FR-006**: Existing public Rust APIs, local Aster dependencies, tenant isolation and unrelated working changes MUST be preserved.
 
 ## House Checklist
 
 - [x] New behavior has small owning-package hermetic tests.
 - [x] Closed metadata booleans and existing Cargo features; no guessed intent.
 - [x] No new unexplained production unwrap/expect.
-- [x] A3S dependencies remain local and unpublishable.
+- [x] Aster dependencies remain local and unpublishable.
 - [x] Persistent product configuration remains ACL.
 - [x] Evidence is recorded in `docs/evidence/code/2026-10-24-sdk-capability-cleanup/OUTCOME.md`.
 
@@ -75,7 +75,7 @@ A host can distinguish its registered embedding factory from the embedded light 
 
 ## Assumptions
 
-- Cleanup concerns a3s-code SDK delivery, not JavaScript/Python tools used by the product or by coding fixtures.
+- Cleanup concerns aster SDK delivery, not JavaScript/Python tools used by the product or by coding fixtures.
 - Studio remains an Office-capable host; generic ACP clients explicitly opt in.
 
 ## Explicitly Not Claimed

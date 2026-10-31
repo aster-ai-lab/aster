@@ -4,7 +4,7 @@ use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use libloading::os::unix::{Library, RTLD_GLOBAL, RTLD_LOCAL, RTLD_NOW};
 use sha2::{Digest, Sha256};
 use zeroize::Zeroizing;
@@ -22,7 +22,7 @@ use crate::unix_process::PreparedConsoleOutput;
 use crate::VmConfig;
 
 const KRUN_DISK_FORMAT_RAW: u32 = 0;
-const SYSTEM_DISK_ID: &str = "a3s-oci-system";
+const SYSTEM_DISK_ID: &str = "aster-oci-system";
 const ROOT_DISK_DEVICE: &str = "/dev/vda";
 const ROOT_DISK_FILESYSTEM: &str = "ext4";
 const ROOT_DISK_OPTIONS: &str = "ro";
@@ -524,7 +524,7 @@ impl KrunContext {
             .iter()
             .filter(|directory| {
                 directory.grant().attachment().access_mode()
-                    == a3s_oci_sdk::StorageAccessMode::ReadOnly
+                    == aster_oci_sdk::StorageAccessMode::ReadOnly
             })
             .map(|directory| directory.path())
             .collect();
@@ -532,7 +532,7 @@ impl KrunContext {
             .iter()
             .filter(|directory| {
                 directory.grant().attachment().access_mode()
-                    == a3s_oci_sdk::StorageAccessMode::ReadWrite
+                    == aster_oci_sdk::StorageAccessMode::ReadWrite
             })
             .map(|directory| directory.path())
             .collect();
@@ -655,7 +655,7 @@ fn resolve_runtime_dir() -> Result<PathBuf> {
             ),
         )
     })?;
-    let adjacent = executable_dir.join("a3s-oci-krun-runtime");
+    let adjacent = executable_dir.join("aster-oci-krun-runtime");
     match fs::symlink_metadata(&adjacent) {
         Ok(_) => return verify_runtime_dir(&adjacent),
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
@@ -670,7 +670,7 @@ fn resolve_runtime_dir() -> Result<PathBuf> {
         }
     }
 
-    verify_runtime_dir(Path::new(env!("A3S_OCI_KRUN_RUNTIME_DIR")))
+    verify_runtime_dir(Path::new(env!("ASTER_OCI_KRUN_RUNTIME_DIR")))
 }
 
 fn verify_runtime_dir(runtime_dir: &Path) -> Result<PathBuf> {
@@ -897,7 +897,7 @@ mod tests {
             .expect("system time must be after the Unix epoch")
             .as_nanos();
         let path = std::env::temp_dir().join(format!(
-            "a3s-oci-tampered-runtime-{}-{nonce}",
+            "aster-oci-tampered-runtime-{}-{nonce}",
             std::process::id()
         ));
         let mut file = OpenOptions::new()

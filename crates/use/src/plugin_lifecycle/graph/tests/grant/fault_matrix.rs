@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 
-use a3s_use_extension::{
+use aster_use_extension::{
     StoredWorkspaceGrant, WorkspaceGrantLifecyclePhase, WorkspaceGrantReceipt, WorkspaceGrantStore,
 };
 
@@ -17,8 +17,8 @@ use crate::plugin_lifecycle::{
     PluginPackageGraphLifecycleCoordinator,
 };
 
-const CHILD_ROOT_ENV: &str = "A3S_USE_TEST_GRAPH_CUTOVER_FAULT_ROOT";
-const CHILD_ACTION_ENV: &str = "A3S_USE_TEST_GRAPH_CUTOVER_FAULT_ACTION";
+const CHILD_ROOT_ENV: &str = "ASTER_USE_TEST_GRAPH_CUTOVER_FAULT_ROOT";
+const CHILD_ACTION_ENV: &str = "ASTER_USE_TEST_GRAPH_CUTOVER_FAULT_ACTION";
 
 #[derive(Debug, Clone, Copy)]
 enum GraphAction {
@@ -241,7 +241,7 @@ async fn recover_uninstall(root: &Path, host: Arc<RecordingHost>) -> String {
     hide_key(&fixture.envelope).unwrap()
 }
 
-fn assert_prepared(journal: &Option<a3s_use_extension::WorkspaceGrantOperationJournal>) {
+fn assert_prepared(journal: &Option<aster_use_extension::WorkspaceGrantOperationJournal>) {
     assert_eq!(
         journal.as_ref().map(|journal| journal.phase),
         Some(WorkspaceGrantLifecyclePhase::Prepared),

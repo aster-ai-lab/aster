@@ -17,7 +17,7 @@ Ingest-deny → compensate is exercised by the Flow `compensation` example
 (card decline → release inventory). Run:
 
 ```bash
-cargo run -p a3s-flow --example compensation
+cargo run -p aster-flow --example compensation
 ```
 
 Expected: `status=Completed` and output `status=compensated`.

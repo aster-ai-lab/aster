@@ -1,6 +1,6 @@
-use a3s_oci_agent_protocol::{AgentContainerOperationRequest, AgentState};
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_agent_protocol::{AgentContainerOperationRequest, AgentState};
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::super::guest_journal::{already_exists, changed_request};
 use super::JournaledLifecycleGuest;

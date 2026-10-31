@@ -57,8 +57,8 @@ schedules "daily-review" {
 ## 创建会话并连接 MCP
 
 ```rust
-use a3s_code_core::{Agent, AgentSession};
-use a3s_code_core::directory_projection::DirectoryProjection;
+use aster_core::{Agent, AgentSession};
+use aster_core::directory_projection::DirectoryProjection;
 
 async fn open_directory(agent: &Agent) -> anyhow::Result<AgentSession> {
     let directory = DirectoryProjection::load("./project-agent")?;
@@ -98,7 +98,7 @@ async function run(ctx) {
 宿主按 ACL 中声明的准确名称选取脚本，再调用 `governed_tool`。当前 `program` 接口要求 `type: "script"`，而 `program_arguments()` 尚未提供这个字段，调用前需要补齐：
 
 ```rust
-use a3s_code_core::{AgentSession, directory_projection::DirectoryProjection};
+use aster_core::{AgentSession, directory_projection::DirectoryProjection};
 
 async fn check_project(
     session: &AgentSession,

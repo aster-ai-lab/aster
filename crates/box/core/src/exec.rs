@@ -8,7 +8,7 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 
 /// Vsock port for the exec server.
-pub const EXEC_VSOCK_PORT: u32 = a3s_transport::ports::EXEC_SERVER;
+pub const EXEC_VSOCK_PORT: u32 = aster_transport::ports::EXEC_SERVER;
 
 /// Vsock port for the Windows host-port forward control channel.
 pub const PORT_FWD_VSOCK_PORT: u32 = 4093;
@@ -38,7 +38,7 @@ pub const WINDOWS_GUEST_CONTROL_READY_FILE: &str = "guest-control.ready";
 
 /// Stable local pipe basename owned by the Windows shim worker for host exec.
 pub fn windows_exec_pipe_name(box_id: &str) -> String {
-    format!("a3s-box-exec-{}", box_id.replace('-', ""))
+    format!("aster-box-exec-{}", box_id.replace('-', ""))
 }
 
 /// Full local Windows named-pipe path used by host exec clients.
@@ -220,7 +220,7 @@ pub struct FileRequest {
 ///
 /// Download bytes are base64 encoded. Reserving half of the transport frame
 /// leaves deterministic room for that expansion and the response envelope.
-pub const MAX_BOUNDED_FILE_BYTES: u64 = a3s_transport::MAX_PAYLOAD_SIZE as u64 / 2;
+pub const MAX_BOUNDED_FILE_BYTES: u64 = aster_transport::MAX_PAYLOAD_SIZE as u64 / 2;
 
 /// File transfer operation type.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -357,7 +357,7 @@ mod tests {
             timeout_ns: 3_000_000_000,
             env: vec!["FOO=bar".to_string()],
             working_dir: Some("/tmp".to_string()),
-            rootfs: Some("/run/a3s/cri/rootfs/sb/c/rootfs".to_string()),
+            rootfs: Some("/run/aster/cri/rootfs/sb/c/rootfs".to_string()),
             stdin: None,
             stdin_streaming: false,
             user: None,
@@ -372,7 +372,7 @@ mod tests {
         assert_eq!(parsed.working_dir, Some("/tmp".to_string()));
         assert_eq!(
             parsed.rootfs,
-            Some("/run/a3s/cri/rootfs/sb/c/rootfs".to_string())
+            Some("/run/aster/cri/rootfs/sb/c/rootfs".to_string())
         );
         assert!(parsed.stdin.is_none());
         assert!(!parsed.stdin_streaming);
@@ -469,7 +469,7 @@ mod tests {
             truncated: true,
         };
         let encoded = serde_json::to_vec(&output).unwrap();
-        assert!(encoded.len() <= a3s_transport::MAX_PAYLOAD_SIZE as usize);
+        assert!(encoded.len() <= aster_transport::MAX_PAYLOAD_SIZE as usize);
     }
 
     #[test]
@@ -481,7 +481,7 @@ mod tests {
             error: None,
         };
         let encoded = serde_json::to_vec(&response).unwrap();
-        assert!(encoded.len() <= a3s_transport::MAX_PAYLOAD_SIZE as usize);
+        assert!(encoded.len() <= aster_transport::MAX_PAYLOAD_SIZE as usize);
     }
 
     #[test]

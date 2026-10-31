@@ -1,6 +1,6 @@
 #![cfg(feature = "health")]
 
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootRequest, HealthCheckService, HealthIndicatorResult,
     HealthModule, HealthStatus, HttpMethod,
 };

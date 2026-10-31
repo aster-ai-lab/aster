@@ -65,7 +65,7 @@ class OpenAISDKConformanceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(request.body["model"], "internal-economy-model")
         self.assertNotIn("authorization", request.headers)
         self.assertEqual(uuid.UUID(request.headers["x-request-id"]).version, 4)
-        self.assertEqual(uuid.UUID(request.headers["x-a3s-attempt-id"]).version, 4)
+        self.assertEqual(uuid.UUID(request.headers["x-aster-attempt-id"]).version, 4)
 
         scenario = self.harness.backend.scenario("done")
         stream = await self.client.chat.completions.create(

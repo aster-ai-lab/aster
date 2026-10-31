@@ -61,7 +61,7 @@ jobs:
     name: NATS JetStream 2.11.8
     runs-on: ubuntu-24.04
     env:
-      A3S_EVENT_REQUIRE_NATS: "1"
+      ASTER_EVENT_REQUIRE_NATS: "1"
       NATS_IMAGE: nats:2.11.8-alpine@sha256:71092f77d707a4a81b12aca5096d6b2d2e07ad16aa57c84066940a17af74f61a
     steps:
       - name: Checkout
@@ -78,7 +78,7 @@ jobs:
       - name: Start NATS with JetStream
         run: |
           docker run --detach \
-            --name a3s-event-nats \
+            --name aster-event-nats \
             --publish 4222:4222 \
             --publish 8222:8222 \
             "$NATS_IMAGE" \
@@ -93,7 +93,7 @@ jobs:
             sleep 1
           done
 
-          docker logs a3s-event-nats
+          docker logs aster-event-nats
           exit 1
 
       - name: Run real JetStream integration tests
@@ -101,17 +101,17 @@ jobs:
 
       - name: Show NATS logs after failure
         if: failure()
-        run: docker logs a3s-event-nats
+        run: docker logs aster-event-nats
 
       - name: Stop NATS
         if: always()
-        run: docker rm --force a3s-event-nats
+        run: docker rm --force aster-event-nats
 
   iggy:
     name: Apache Iggy 0.9.0
     runs-on: ubuntu-24.04
     env:
-      A3S_EVENT_REQUIRE_IGGY: "1"
+      ASTER_EVENT_REQUIRE_IGGY: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -129,7 +129,7 @@ jobs:
       # tests/iggy_integration.rs and tests/e2e_chaos_resilience.rs).
       - name: Start Iggy
         run: |
-          docker run --detach             --name a3s-event-iggy             --publish 5102:5102             --security-opt seccomp=unconfined             -e RUST_LOG=info             -e IGGY_ROOT_USERNAME=iggy             -e IGGY_ROOT_PASSWORD=iggy             -e IGGY_TCP_ADDRESS=0.0.0.0:5102             -e IGGY_NODE_ADVERTISED_ADDRESS=127.0.0.1             -e IGGY_SHARDING_CPU_ALLOCATION=1             -e IGGY_SHARDING_PIN_CORES=false             -e IGGY_CONSUMER_GROUP_REBALANCING_TIMEOUT=2s             apache/iggy:0.9.0
+          docker run --detach             --name aster-event-iggy             --publish 5102:5102             --security-opt seccomp=unconfined             -e RUST_LOG=info             -e IGGY_ROOT_USERNAME=iggy             -e IGGY_ROOT_PASSWORD=iggy             -e IGGY_TCP_ADDRESS=0.0.0.0:5102             -e IGGY_NODE_ADVERTISED_ADDRESS=127.0.0.1             -e IGGY_SHARDING_CPU_ALLOCATION=1             -e IGGY_SHARDING_PIN_CORES=false             -e IGGY_CONSUMER_GROUP_REBALANCING_TIMEOUT=2s             apache/iggy:0.9.0
 
           for attempt in $(seq 1 30); do
             if (echo > /dev/tcp/127.0.0.1/5102) 2>/dev/null; then
@@ -138,7 +138,7 @@ jobs:
             sleep 1
           done
 
-          docker logs a3s-event-iggy
+          docker logs aster-event-iggy
           exit 1
 
       - name: Cross-provider conformance + iggy e2e
@@ -153,10 +153,10 @@ jobs:
       - name: Retry once on fresh Iggy (upstream #4361 flake)
         if: failure()
         run: |
-          docker logs a3s-event-iggy || true
-          docker rm --force a3s-event-iggy
+          docker logs aster-event-iggy || true
+          docker rm --force aster-event-iggy
           docker run --detach \
-            --name a3s-event-iggy \
+            --name aster-event-iggy \
             --publish 5102:5102 \
             --security-opt seccomp=unconfined \
             -e RUST_LOG=info \
@@ -176,8 +176,8 @@ jobs:
 
       - name: Show Iggy logs after failure
         if: failure()
-        run: docker logs a3s-event-iggy
+        run: docker logs aster-event-iggy
 
       - name: Stop Iggy
         if: always()
-        run: docker rm --force a3s-event-iggy
+        run: docker rm --force aster-event-iggy

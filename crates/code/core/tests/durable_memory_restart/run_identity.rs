@@ -24,7 +24,7 @@ async fn resumed_session_rejects_a_retained_run_id_collision_without_overwrite()
                     MemoryStatus::Active,
                     MEMORY_CONTENT,
                     vec![evidence(
-                        "a3s://verification/restart-collision",
+                        "aster://verification/restart-collision",
                         EvidenceKind::Verification,
                         18,
                     )],

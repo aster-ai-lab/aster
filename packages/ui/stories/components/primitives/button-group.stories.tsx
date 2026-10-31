@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { ChevronLeft, ChevronRight, LayoutGrid, List } from 'lucide-react'
 
-import { Button, ButtonGroup, ButtonGroupItem, Input } from '@a3s-lab/ui'
+import { Button, ButtonGroup, ButtonGroupItem, Input } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof ButtonGroup> = {
   title: 'Components/Primitives/ButtonGroup',

@@ -1,11 +1,11 @@
-use a3s_use_core::{
+use aster_use_core::{
     PackageSurfaceKind, PlanScope, PluginPackageId, PluginSurfaceRef, UseError, UseResult,
 };
-use a3s_use_extension::SurfaceActivation;
+use aster_use_extension::SurfaceActivation;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
-pub const PLUGIN_LIFECYCLE_INTENT_SCHEMA: &str = "a3s.use.plugin-lifecycle-intent.v3";
+pub const PLUGIN_LIFECYCLE_INTENT_SCHEMA: &str = "aster.use.plugin-lifecycle-intent.v3";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]

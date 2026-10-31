@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run actual TUI tools through A3S Test with synthetic model requests."""
+"""Run actual TUI tools through Aster Test with synthetic model requests."""
 import hashlib
 import json
 import os
@@ -112,7 +112,7 @@ def main():
     WORK.mkdir(parents=True, exist_ok=True)
     stage = Path(sys.argv[1]).resolve()
     results = []
-    binary_hashes = {name: hashlib.sha256((stage / name).read_bytes()).hexdigest() for name in ['aster', 'a3s-code-acp']}
+    binary_hashes = {name: hashlib.sha256((stage / name).read_bytes()).hexdigest() for name in ['aster', 'aster-acp']}
     evidence = Path(sys.argv[2]).resolve()
     evidence.mkdir(parents=True, exist_ok=False)
     for case in CASES:
@@ -153,7 +153,7 @@ def main():
                 config.write_text('default_model = "fixture/capability-fixture"\nproviders "fixture" {\n api_key = "synthetic-fixture-key"\n base_url = "http://127.0.0.1:' + str(server.server_port) + '/v1"\n models "capability-fixture" {}\n}\n')
                 if case == 'mcp':
                     with config.open('a') as output:
-                        output.write('mcp_servers "fixture" {\n transport = "stdio"\n command = ' + json.dumps(sys.executable) + '\n args = [' + json.dumps(str(REPO / 'tests/e2e/capability_mcp.py')) + ']\n env = { A3S_TEST_MCP_LOG = ' + json.dumps(str(evidence / (case + '-mcp-process.jsonl'))) + ' }\n}\n')
+                        output.write('mcp_servers "fixture" {\n transport = "stdio"\n command = ' + json.dumps(sys.executable) + '\n args = [' + json.dumps(str(REPO / 'tests/e2e/capability_mcp.py')) + ']\n env = { ASTER_TEST_MCP_LOG = ' + json.dumps(str(evidence / (case + '-mcp-process.jsonl'))) + ' }\n}\n')
                 suite = root / 'suite.acl'
                 approval = (' wait "permission" { text = "Yes, proceed" }\n press "allow-once" { key = "1" }\n' if CASES[case][0] in ['program', 'Skill', 'mcp__fixture__lookup', 'patch', 'download'] else '')
                 if case == 'program-missing-use-runtime':
@@ -162,12 +162,12 @@ def main():
                 relay = root / 'acp-trace-proxy'
                 relay.write_bytes((REPO / 'apps/aster/tests/tui_913_real_llm/acp_trace_proxy.py').read_bytes())
                 relay.chmod(0o700)
-                env = dict(os.environ, HOME=str(home), GROK_HOME=str(home / 'grok'), A3S_CONFIG=str(config), A3S_ACP_AGENT_BIN=str(relay), A3S_CODE_TUI_TEST_ACP_REAL=str(stage / 'a3s-code-acp'), A3S_CODE_TUI_TEST_ACP_TRACE=str(evidence / (case + '-acp.jsonl')), A3S_DISABLE_CC_SWITCH='1', A3S_DISABLE_GROK_ACCOUNT='1', A3S_DISABLE_CURSOR_ACCOUNT='1', TERM='xterm-256color')
-                env['A3S_TEST_MCP_LOG'] = str(evidence / (case + '-mcp-process.jsonl'))
-                env.pop('A3S_LH_CANDIDATE_MANIFEST', None)
-                command = ['a3s-test', 'run', str(suite), '--tui-executable', str(stage / 'aster'), '--tui-arg=--no-plan', '--tui-working-directory', str(workspace), '--tui-columns', '120', '--tui-rows', '40', '--json']
+                env = dict(os.environ, HOME=str(home), GROK_HOME=str(home / 'grok'), ASTER_CONFIG=str(config), ASTER_ACP_AGENT_BIN=str(relay), ASTER_TUI_TEST_ACP_REAL=str(stage / 'aster-acp'), ASTER_TUI_TEST_ACP_TRACE=str(evidence / (case + '-acp.jsonl')), ASTER_DISABLE_CC_SWITCH='1', ASTER_DISABLE_GROK_ACCOUNT='1', ASTER_DISABLE_CURSOR_ACCOUNT='1', TERM='xterm-256color')
+                env['ASTER_TEST_MCP_LOG'] = str(evidence / (case + '-mcp-process.jsonl'))
+                env.pop('ASTER_LH_CANDIDATE_MANIFEST', None)
+                command = ['aster-test', 'run', str(suite), '--tui-executable', str(stage / 'aster'), '--tui-arg=--no-plan', '--tui-working-directory', str(workspace), '--tui-columns', '120', '--tui-rows', '40', '--json']
                 result = subprocess.run(command, cwd=REPO, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                (evidence / (case + '-a3s-test.json')).write_text(result.stdout)
+                (evidence / (case + '-aster-test.json')).write_text(result.stdout)
                 (evidence / (case + '-stderr.log')).write_text(result.stderr)
                 (evidence / (case + '-suite.acl')).write_text(suite.read_text())
                 records = [json.loads(line) for line in events.read_text().splitlines()] if events.exists() else []

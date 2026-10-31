@@ -1,11 +1,11 @@
 [package]
-name = "a3s-updater"
+name = "aster-updater"
 version = "0.3.0"
 edition = "2021"
-authors = ["A3S Lab"]
+authors = ["Aster"]
 license = "MIT"
-repository = "https://github.com/a3s-lab/a3s"
-description = "Self-update library for A3S CLI binaries via GitHub Releases"
+repository = "https://github.com/aster-ai-lab/aster"
+description = "Self-update library for Aster CLI binaries via GitHub Releases"
 
 [dependencies]
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream"] }

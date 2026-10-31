@@ -1,7 +1,7 @@
 use std::path::Path;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::{ContainerTarget, Error, ErrorCode, FileRequest, FileResponse, OciBundle};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::{ContainerTarget, Error, ErrorCode, FileRequest, FileResponse, OciBundle};
 
 use super::super::{QualificationHvfDriver, FAULT_OPERATION};
 use crate::transport_cleanup_report::is_retryable_disconnect_operation;

@@ -11,7 +11,7 @@ cleanup() {
   trap - EXIT
   if [[ -n "$validation_root" ]]; then
     case "$validation_root" in
-      /var/tmp/a3s-oci-upstream-bundles.????????)
+      /var/tmp/aster-oci-upstream-bundles.????????)
         rm -rf --one-file-system -- "$validation_root" || cleanup_status=1
         ;;
       *)
@@ -64,7 +64,7 @@ if [[ ! -f "$lock_file" || -L "$lock_file" ]]; then
   exit 2
 fi
 jq --exit-status \
-  '.schema_version == "a3s.oci.upstream-runtime-tools-lock.v2"
+  '.schema_version == "aster.oci.upstream-runtime-tools-lock.v2"
    and (.repository | type == "string" and length > 0)
    and (.commit | test("^[0-9a-f]{40}$"))
    and (.version | test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))
@@ -186,7 +186,7 @@ jq --exit-status \
   --argjson rootfs_sources "$(jq --compact-output '.lifecycle.rootfs_sources' "$lock_file")" \
   --argjson upstream_harness_defects "$(jq --compact-output '.lifecycle.upstream_harness_defects' "$lock_file")" \
   --argjson lifecycle_test_count "$lifecycle_test_count" \
-  '.schema_version == "a3s.oci.upstream-runtime-tools-build.v3"
+  '.schema_version == "aster.oci.upstream-runtime-tools-build.v3"
    and .repository == $repository
    and .commit == $commit
    and .version == $version
@@ -231,7 +231,7 @@ if readelf --program-headers "$tool" | grep --quiet 'INTERP'; then
 fi
 file "$tool" | grep --fixed-strings 'statically linked' >/dev/null
 
-validation_root="$(mktemp -d /var/tmp/a3s-oci-upstream-bundles.XXXXXXXX)"
+validation_root="$(mktemp -d /var/tmp/aster-oci-upstream-bundles.XXXXXXXX)"
 entries="$validation_root/entries.jsonl"
 declare -A profile_names=()
 first_bundle=''
@@ -328,7 +328,7 @@ runtime_sha256="$(sha256sum "$runtime_binary" | cut -d ' ' -f 1)"
 agent_sha256="$(sha256sum "$agent_binary" | cut -d ' ' -f 1)"
 shim_sha256="$(sha256sum "$shim_binary" | cut -d ' ' -f 1)"
 jq --null-input \
-  --arg schema_version 'a3s.oci.upstream-bundle-validation.v1' \
+  --arg schema_version 'aster.oci.upstream-bundle-validation.v1' \
   --arg status 'available' \
   --arg source_commit "$source_commit" \
   --arg repository "$upstream_repository" \
@@ -393,7 +393,7 @@ jq --exit-status \
   --arg runtime_spec_version "$runtime_spec_version" \
   --arg go_version "$required_go_version" \
   'select(
-     .schema_version == "a3s.oci.upstream-bundle-validation.v1"
+     .schema_version == "aster.oci.upstream-bundle-validation.v1"
      and .status == "available"
      and .source_commit == $source_commit
      and .upstream.commit == $upstream_commit

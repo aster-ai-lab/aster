@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publish Claim A (deny-all) enterprise GA cut for a3s-sandbox.
+# Publish Claim A (deny-all) enterprise GA cut for aster-sandbox.
 #
 # Prerequisites:
 #   - gh authenticated with repo + release permissions
@@ -60,7 +60,7 @@ GATE7_SOAK_ROUNDS="${GATE7_SOAK_ROUNDS:-256}" ./scripts/collect-release-evidence
 if git rev-parse "$TAG" >/dev/null 2>&1; then
   echo "tag ${TAG} already exists locally"
 else
-  git tag -a "$TAG" -m "a3s-sandbox ${TAG} deny-all production boundary"
+  git tag -a "$TAG" -m "aster-sandbox ${TAG} deny-all production boundary"
 fi
 git push origin "refs/tags/${TAG}"
 
@@ -92,7 +92,7 @@ for f in SHA256SUMS provenance.json sbom.cdx.json EVIDENCE.md; do
 done
 # Prefer release binaries if present.
 shopt -s nullglob
-for bin in "$OUT"/a3s-sandbox "$OUT"/a3s-sandbox.exe "$OUT"/a3s-sandbox-relay "$OUT"/a3s-sandbox-relay.exe; do
+for bin in "$OUT"/aster-sandbox "$OUT"/aster-sandbox.exe "$OUT"/aster-sandbox-relay "$OUT"/aster-sandbox-relay.exe; do
   ASSETS+=("$bin")
 done
 shopt -u nullglob
@@ -101,7 +101,7 @@ if gh release view "$TAG" >/dev/null 2>&1; then
   gh release upload "$TAG" "${ASSETS[@]}" --clobber
 else
   gh release create "$TAG" "${ASSETS[@]}" \
-    --title "a3s-sandbox ${TAG}" \
+    --title "aster-sandbox ${TAG}" \
     --notes-file "$NOTES"
 fi
 

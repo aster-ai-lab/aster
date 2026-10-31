@@ -7,15 +7,15 @@ use crate::execution_identity::ExecutionResultReceiptV1;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
-pub const RESEARCH_WORKFLOW_STEP_SCHEMA_V1: &str = "a3s.code.research-workflow-step.v1";
-pub const RESEARCH_WORKFLOW_PLAN_SCHEMA_V1: &str = "a3s.code.research-workflow-plan.v1";
-pub const RESEARCH_RERUN_LINEAGE_SCHEMA_V1: &str = "a3s.code.research-rerun-lineage.v1";
+pub const RESEARCH_WORKFLOW_STEP_SCHEMA_V1: &str = "aster.code.research-workflow-step.v1";
+pub const RESEARCH_WORKFLOW_PLAN_SCHEMA_V1: &str = "aster.code.research-workflow-plan.v1";
+pub const RESEARCH_RERUN_LINEAGE_SCHEMA_V1: &str = "aster.code.research-rerun-lineage.v1";
 pub const RESEARCH_MAX_WORKFLOW_STEPS: usize = 512;
-const RESEARCH_WORKFLOW_STEP_DIGEST_DOMAIN: &str = "a3s.code.research-workflow-step.identity.v1";
-const RESEARCH_WORKFLOW_PLAN_DIGEST_DOMAIN: &str = "a3s.code.research-workflow-plan.identity.v1";
+const RESEARCH_WORKFLOW_STEP_DIGEST_DOMAIN: &str = "aster.code.research-workflow-step.identity.v1";
+const RESEARCH_WORKFLOW_PLAN_DIGEST_DOMAIN: &str = "aster.code.research-workflow-plan.identity.v1";
 const RESEARCH_WORKFLOW_RECEIPT_DIGEST_DOMAIN: &str =
-    "a3s.code.research-workflow-receipt.identity.v1";
-const RESEARCH_RERUN_LINEAGE_DIGEST_DOMAIN: &str = "a3s.code.research-rerun-lineage.identity.v1";
+    "aster.code.research-workflow-receipt.identity.v1";
+const RESEARCH_RERUN_LINEAGE_DIGEST_DOMAIN: &str = "aster.code.research-rerun-lineage.identity.v1";
 
 /// One research-visible workflow step bound to digests and optional receipts.
 ///

@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootErrorKind, BootRequest, BootResponse, BoxFuture, CallHandler,
     ControllerDefinition, ExecutionContext, ExecutionInterceptor, Guard, HttpMethod, Interceptor,
     MessagePatternDefinition, Middleware, MiddlewareConsumer, MiddlewareOutcome, MiddlewareRoute,
@@ -196,7 +196,7 @@ async fn middleware_consumer_applies_and_excludes_module_routes() -> Result<()> 
 async fn dynamic_module_can_configure_middleware_consumer() -> Result<()> {
     let app = BootApplication::builder()
         .import(
-            a3s_boot::DynamicModule::new("dynamic-consumer")
+            aster_boot::DynamicModule::new("dynamic-consumer")
                 .route_prefix("/dynamic")
                 .route(RouteDefinition::get(
                     "/health",
@@ -230,7 +230,7 @@ async fn dynamic_module_can_configure_middleware_consumer() -> Result<()> {
 async fn middleware_consumer_can_apply_to_all_module_routes() -> Result<()> {
     let app = BootApplication::builder()
         .import(
-            a3s_boot::DynamicModule::new("all-consumer")
+            aster_boot::DynamicModule::new("all-consumer")
                 .route(RouteDefinition::get(
                     "/a",
                     |request: BootRequest| async move {
@@ -326,7 +326,7 @@ async fn global_execution_interceptors_apply_to_http_websocket_and_transport() -
     assert_eq!(reply, WebSocketMessage::text("pong", "ok"));
 
     let reply = app
-        .dispatch_message(a3s_boot::TransportMessage::new(
+        .dispatch_message(aster_boot::TransportMessage::new(
             "transport",
             json!({ "ok": true }),
         ))

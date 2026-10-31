@@ -1,26 +1,26 @@
 [package]
-name = "a3s-sandbox"
+name = "aster-cmd-sandbox"
 version = "0.2.3"
 edition = "2021"
-authors = ["A3S Lab Team"]
+authors = ["Aster Team"]
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Sandbox"
-description = "Cross-platform native command sandbox for A3S"
-keywords = ["sandbox", "security", "a3s"]
+repository = "https://github.com/aster-ai-lab/Sandbox"
+description = "Cross-platform native command sandbox for Aster"
+keywords = ["sandbox", "security", "aster"]
 categories = ["os", "development-tools"]
 publish = false
 
 [lib]
-name = "a3s_sandbox"
+name = "aster_cmd_sandbox"
 path = "src/lib.rs"
 
 [[bin]]
-name = "a3s-sandbox"
-path = "src/bin/a3s_sandbox.rs"
+name = "aster-cmd-sandbox"
+path = "src/bin/aster_cmd_sandbox.rs"
 
 [[bin]]
-name = "a3s-sandbox-relay"
-path = "src/bin/a3s_sandbox_relay.rs"
+name = "aster-cmd-sandbox-relay"
+path = "src/bin/aster_cmd_sandbox_relay.rs"
 
 [dependencies]
 anyhow = "1.0"

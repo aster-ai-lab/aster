@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{
+use aster_effect::{
     FileLog, LogStore, NewFact, ToolEffectObservationV1, ToolExecutionOutcome,
     ToolExecutionResultV1, ToolFileIdentityV1, ToolFileKind, ToolInvocationIdentityV1,
     ToolPathChangeV1, ToolPreparedV1, ToolRecoveryPolicy, TOOL_PREPARED_SCHEMA, TOOL_RESULT_SCHEMA,
@@ -52,7 +52,7 @@ fn checkpoint(session: &AgentSession) -> LoopCheckpoint {
 }
 
 fn prepared(id: &str) -> ToolPreparedV1 {
-    let digest = a3s_effect::tool_args_digest(&json!({})).unwrap();
+    let digest = aster_effect::tool_args_digest(&json!({})).unwrap();
     ToolPreparedV1 {
         schema: TOOL_PREPARED_SCHEMA.into(),
         identity: ToolInvocationIdentityV1 {
@@ -312,13 +312,13 @@ async fn retained_end_and_external_end_share_the_actual_byte_check_summary() {
         .reserve_run_with_id(run_id.into(), session.session_id(), "verify file bytes")
         .await;
     *session.current_run_id.lock().await = Some(run_id.into());
-    let mut view = a3s_effect::CodingView::empty();
+    let mut view = aster_effect::CodingView::empty();
     view.assistant = Some(result.text.clone());
-    let settled = Ok(a3s_effect::Settlement {
+    let settled = Ok(aster_effect::Settlement {
         view,
         log: Vec::new(),
         steps: 0,
-        cut: a3s_effect::cut_log(&[]),
+        cut: aster_effect::cut_log(&[]),
         trace: Vec::new(),
     });
     let (tx, mut rx) = mpsc::channel(4);

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-  printf 'usage: %s <linux-amd64-a3s-binary> <registry/repository:tag> <output-directory>\n' "$0" >&2
+  printf 'usage: %s <linux-amd64-aster-binary> <registry/repository:tag> <output-directory>\n' "$0" >&2
   exit 2
 }
 
@@ -25,11 +25,11 @@ for command_name in cargo docker file jq readelf rustc sha256sum sort; do
 done
 
 if [ ! -x "$binary_path" ]; then
-  printf 'A3S binary is not executable: %s\n' "$binary_path" >&2
+  printf 'Aster binary is not executable: %s\n' "$binary_path" >&2
   exit 1
 fi
 if ! file --brief -- "$binary_path" | grep -Eq 'ELF 64-bit LSB.*x86-64'; then
-  printf 'fixture requires a Linux amd64 ELF A3S binary\n' >&2
+  printf 'fixture requires a Linux amd64 ELF Aster binary\n' >&2
   exit 1
 fi
 required_glibc=$(readelf --version-info "$binary_path" \
@@ -37,14 +37,14 @@ required_glibc=$(readelf --version-info "$binary_path" \
   | sort --version-sort \
   | tail -n 1)
 if [ -z "$required_glibc" ]; then
-  printf 'could not determine the A3S binary GLIBC requirement\n' >&2
+  printf 'could not determine the Aster binary GLIBC requirement\n' >&2
   exit 1
 fi
 newest_glibc=$(printf '%s\n' "$required_glibc" 2.39 \
   | sort --version-sort \
   | tail -n 1)
 if [ "$newest_glibc" != 2.39 ]; then
-  printf 'A3S binary requires GLIBC %s; fixture base provides at most 2.39\n' \
+  printf 'Aster binary requires GLIBC %s; fixture base provides at most 2.39\n' \
     "$required_glibc" >&2
   exit 1
 fi
@@ -62,7 +62,7 @@ esac
 
 mkdir -p -- "$output_directory"
 output_directory=$(realpath -- "$output_directory")
-manifest_path=$output_directory/.a3s/asset.acl
+manifest_path=$output_directory/.aster/asset.acl
 publication_path=$output_directory/publication.json
 builder_provenance_path=$output_directory/provenance/builder.json
 for output_path in \
@@ -76,14 +76,14 @@ for output_path in \
   fi
 done
 
-temporary_directory=$(mktemp -d "${TMPDIR:-/tmp}/a3s-agent-release-publish.XXXXXX")
+temporary_directory=$(mktemp -d "${TMPDIR:-/tmp}/aster-agent-release-publish.XXXXXX")
 publication_complete=false
 cleanup() {
   if [ "$publication_complete" != true ]; then
     rm -f -- "$manifest_path" "$publication_path" "$builder_provenance_path"
   fi
   case "$temporary_directory" in
-    "${TMPDIR:-/tmp}"/a3s-agent-release-publish.*)
+    "${TMPDIR:-/tmp}"/aster-agent-release-publish.*)
       rm -rf -- "$temporary_directory"
       ;;
   esac
@@ -92,7 +92,7 @@ trap cleanup EXIT
 
 build_context=$temporary_directory/context
 mkdir -- "$build_context"
-cp -- "$binary_path" "$build_context/a3s"
+cp -- "$binary_path" "$build_context/aster"
 cp -- "$fixture_directory/.dockerignore" "$build_context/.dockerignore"
 cp -- "$fixture_directory/Containerfile" "$build_context/Containerfile"
 cp -- "$fixture_directory/config.acl" "$build_context/config.acl"
@@ -110,7 +110,7 @@ recipe_inputs=(
   core/src/release/types.rs
   core/src/release/validation.rs
   fixtures/agent-release-contract/.dockerignore
-  fixtures/agent-release-contract/.a3s/asset.acl
+  fixtures/agent-release-contract/.aster/asset.acl
   fixtures/agent-release-contract/Containerfile
   fixtures/agent-release-contract/config.acl
   fixtures/agent-release-contract/scripts/publish-release.sh
@@ -167,14 +167,14 @@ jq -cS -n \
   --arg jqVersion "$jq_version" \
   --slurpfile buildMetadata "$metadata_path" \
   '{
-    schema: "a3s.code.agent-release-builder-provenance.v1",
+    schema: "aster.code.agent-release-builder-provenance.v1",
     platform: "linux/amd64",
     recipe: {
       digest: $recipeDigest,
       inputs: $recipeInputs[0]
     },
     source: {
-      path: "/usr/bin/a3s",
+      path: "/usr/bin/aster",
       digest: $sourceDigest
     },
     artifact: {
@@ -195,15 +195,15 @@ publication_record=$(cargo run \
   --quiet \
   --locked \
   --manifest-path "$repository_root/Cargo.toml" \
-  --package a3s-code-core \
+  --package aster-core \
   --example publish_agent_release_fixture \
   -- \
-  "$fixture_directory/.a3s/asset.acl" \
+  "$fixture_directory/.aster/asset.acl" \
   "$manifest_path" \
   "$artifact_digest" \
-  'urn:a3s:source:a3s-cli-binary' \
+  'urn:aster:source:aster-cli-binary' \
   "$source_digest" \
-  'urn:a3s:builder:oci-buildkit-v1' \
+  'urn:aster:builder:oci-buildkit-v1' \
   "$builder_digest")
 
 publication_temporary=$temporary_directory/publication.json
@@ -216,9 +216,9 @@ jq -e \
     artifactMediaType: $artifactMediaType,
     provenanceArtifacts: [{
       kind: "builder",
-      uri: "urn:a3s:builder:oci-buildkit-v1",
+      uri: "urn:aster:builder:oci-buildkit-v1",
       digest: $builderProvenanceDigest,
-      mediaType: "application/vnd.a3s.code.agent-release-builder-provenance.v1+json",
+      mediaType: "application/vnd.aster.code.agent-release-builder-provenance.v1+json",
       path: "provenance/builder.json"
     }]
   }' \

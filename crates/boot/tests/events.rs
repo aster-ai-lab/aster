@@ -1,9 +1,9 @@
 #![cfg(feature = "events")]
 
 #[cfg(feature = "macros")]
-use a3s_boot::Result;
-use a3s_boot::{
-    A3sEventBus, A3sMemoryEventProvider, BootApplication, EventContext, EventEmitter,
+use aster_boot::Result;
+use aster_boot::{
+    AsterEventBus, AsterMemoryEventProvider, BootApplication, EventContext, EventEmitter,
     EventEnvelope, EventModule,
 };
 use serde::{Deserialize, Serialize};
@@ -21,9 +21,9 @@ struct MacroEventHandlers {
 }
 
 #[cfg(feature = "macros")]
-#[a3s_boot::event_listener]
+#[aster_boot::event_listener]
 impl MacroEventHandlers {
-    #[a3s_boot::on_event("cat.created")]
+    #[aster_boot::on_event("cat.created")]
     async fn cat_created(&self, payload: CatEvent, context: EventContext) -> Result<()> {
         let emitter = context.get::<EventEmitter>()?;
         self.observed.lock().unwrap().push(format!(
@@ -34,7 +34,7 @@ impl MacroEventHandlers {
         Ok(())
     }
 
-    #[a3s_boot::on_event("cat.*")]
+    #[aster_boot::on_event("cat.*")]
     async fn cat_event(&self, event: EventEnvelope) -> Result<()> {
         self.observed
             .lock()
@@ -109,7 +109,7 @@ async fn event_module_exports_emitter_and_dispatches_registered_listeners() {
     assert_eq!(count, 1);
     assert_eq!(observed.lock().unwrap().as_slice(), ["Milo"]);
 
-    let bus = app.get::<A3sEventBus>().unwrap();
+    let bus = app.get::<AsterEventBus>().unwrap();
     let emitter_bus = emitter.event_bus();
     assert!(Arc::ptr_eq(&bus, &emitter_bus));
 
@@ -193,7 +193,7 @@ async fn event_listener_context_can_resolve_the_emitter_provider() {
                 let observed = Arc::clone(&listener_observed);
                 async move {
                     let emitter = context.get::<EventEmitter>()?;
-                    let bus = context.get::<A3sEventBus>()?;
+                    let bus = context.get::<AsterEventBus>()?;
                     observed.lock().unwrap().push(format!(
                         "{}:{}",
                         emitter.listener_count()?,
@@ -234,7 +234,7 @@ fn event_module_supports_named_and_global_exports() {
 
     let emitter = app.get_named::<EventEmitter>("application-events").unwrap();
     let bus = app
-        .get_named::<A3sEventBus>("application-event-bus")
+        .get_named::<AsterEventBus>("application-event-bus")
         .unwrap();
     let emitter_bus = emitter.event_bus();
 
@@ -243,11 +243,11 @@ fn event_module_supports_named_and_global_exports() {
 }
 
 #[test]
-fn event_module_can_wrap_a3s_event_providers() {
+fn event_module_can_wrap_aster_event_providers() {
     let app = BootApplication::builder()
         .import(EventModule::from_provider(
             "events",
-            A3sMemoryEventProvider::default(),
+            AsterMemoryEventProvider::default(),
         ))
         .build()
         .unwrap();

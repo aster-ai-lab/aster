@@ -20,7 +20,7 @@ pub(super) fn prepare_windows_guest(spec: &InstanceSpec) -> Result<()> {
         tracing::debug!("Enabled the Windows WHPX noapic kernel boot path");
     }
 
-    // A3S owns this dedicated shim process and must regain control after the
+    // Aster owns this dedicated shim process and must regain control after the
     // workload exits so its live log processor can drain the complete streams.
     // The bundled libkrun keeps its normal process-takeover contract unless this
     // internal opt-in is set.
@@ -34,7 +34,7 @@ pub(super) fn prepare_windows_guest(spec: &InstanceSpec) -> Result<()> {
         WINDOWS_LIVE_LOGS_DRAINED_MARKER,
     ] {
         let path = rootfs.join(name);
-        if let Err(error) = a3s_box_core::windows_file::remove_path_no_follow(&path) {
+        if let Err(error) = aster_box_core::windows_file::remove_path_no_follow(&path) {
             return Err(BoxError::BoxBootError {
                 message: format!(
                     "Failed to remove stale Windows guest result {}: {error}",
@@ -53,7 +53,7 @@ pub(super) fn prepare_windows_guest(spec: &InstanceSpec) -> Result<()> {
     // to make that readiness barrier possible and discard any stale output.
     for name in [WINDOWS_GUEST_STDOUT, WINDOWS_GUEST_STDERR] {
         let path = rootfs.join(name);
-        a3s_box_core::windows_file::replace_regular_file(&path, b"").map_err(|error| {
+        aster_box_core::windows_file::replace_regular_file(&path, b"").map_err(|error| {
             BoxError::BoxBootError {
                 message: format!(
                     "Failed to create empty Windows guest stream {}: {error}",
@@ -153,7 +153,7 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
             // Per-mount temp dir (keyed by tag) so two file mounts sharing a
             // basename (e.g. two app.conf to different targets) don't collide.
             let temp_dir =
-                std::env::temp_dir().join(format!("a3s-fs-mount-{}-{}", spec.box_id, mount.tag));
+                std::env::temp_dir().join(format!("aster-fs-mount-{}-{}", spec.box_id, mount.tag));
             let file_name = host_path.file_name().unwrap();
             let temp_file_path = temp_dir.join(file_name);
 
@@ -374,7 +374,7 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
         port_forward_manager
     };
 
-    // Note: A3S_TEE_SIMULATE is already included in spec.entrypoint.env
+    // Note: ASTER_TEE_SIMULATE is already included in spec.entrypoint.env
     // (added by vm.rs when simulate mode is on) and passed to the guest init
     // via krun_set_exec's envp parameter. Do NOT call set_env here — libkrun's
     // krun_set_env overwrites (not appends) the environment, which would erase
@@ -383,9 +383,9 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
         .entrypoint
         .env
         .iter()
-        .any(|(k, _)| k == "A3S_TEE_SIMULATE")
+        .any(|(k, _)| k == "ASTER_TEE_SIMULATE")
     {
-        tracing::info!("TEE simulation mode: A3S_TEE_SIMULATE=1 included in entrypoint env");
+        tracing::info!("TEE simulation mode: ASTER_TEE_SIMULATE=1 included in entrypoint env");
     }
 
     // Configure networking: virtio-net (passt on Linux, gvproxy on macOS) or TSI (default)
@@ -434,7 +434,7 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
                     (Some(networks_json), Some(network_name))
                         if !net_config.dns_servers.is_empty() =>
                     {
-                        Some(a3s_box_netproxy::NetworkDnsConfig {
+                        Some(aster_box_netproxy::NetworkDnsConfig {
                             networks_json,
                             network_name,
                             dns_servers: net_config.dns_servers.clone(),
@@ -479,7 +479,7 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
             ctx.add_net_unixgram_fd(fd, &net_config.mac_address)?;
         }
 
-        // Network env vars (A3S_NET_IP, A3S_NET_GATEWAY, A3S_NET_DNS) are now
+        // Network env vars (ASTER_NET_IP, ASTER_NET_GATEWAY, ASTER_NET_DNS) are now
         // injected into spec.entrypoint.env by vm.rs, so they are passed via
         // krun_set_exec's envp alongside all BOX_EXEC_* vars. Do NOT call
         // ctx.set_env here — libkrun's krun_set_env overwrites (not appends)
@@ -582,7 +582,7 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
     // INSIDE the guest by guest-init's per-container cgroup (the workload runs in
     // the microVM, so the in-guest cgroup is what bounds it — real-VM measured
     // cpu.max actively throttling a 0.5-core cap). The old host-side
-    // apply_cgroup_limits created /sys/fs/cgroup/a3s-box/<id> and wrote
+    // apply_cgroup_limits created /sys/fs/cgroup/aster-box/<id> and wrote
     // cpu.weight/cpu.max/memory.* there, but the controllers were never delegated
     // to that subtree (writes ENOENT'd, swallowed) so it never enforced anything —
     // it only leaked an empty host cgroup. Removed. (cpuset above stays: CPU
@@ -613,7 +613,7 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
                 // diagnostics. Tail those files directly so `logs` is live.
                 let stdout = windows_guest_rootfs.join(WINDOWS_GUEST_STDOUT);
                 let stderr = windows_guest_rootfs.join(WINDOWS_GUEST_STDERR);
-                a3s_box_core::log::run_log_processor_streams_with_ready(
+                aster_box_core::log::run_log_processor_streams_with_ready(
                     &stdout,
                     &stderr,
                     &log_dir,
@@ -623,7 +623,7 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
                 );
             }
             #[cfg(not(target_os = "windows"))]
-            a3s_box_core::log::run_log_processor_with_ready(
+            aster_box_core::log::run_log_processor_with_ready(
                 &console,
                 &log_dir,
                 &config,
@@ -667,14 +667,14 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
     log_stop.store(true, std::sync::atomic::Ordering::SeqCst);
     let _log_thread_drained = log_thread.is_some_and(|handle| handle.join().is_ok());
     if let Some(console) = spec.console_output.as_ref() {
-        let structured = a3s_box_core::log::json_log_path(
+        let structured = aster_box_core::log::json_log_path(
             console
                 .parent()
                 .unwrap_or_else(|| std::path::Path::new(".")),
         );
         #[cfg(not(target_os = "windows"))]
         {
-            let stderr_console = a3s_box_core::log::stderr_console_path(console);
+            let stderr_console = aster_box_core::log::stderr_console_path(console);
             let structured_empty = structured.metadata().map(|m| m.len() == 0).unwrap_or(true);
             let raw_has_output = console.metadata().map(|m| m.len() > 0).unwrap_or(false)
                 || stderr_console
@@ -683,14 +683,14 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
                     .unwrap_or(false);
             if structured_empty
                 && raw_has_output
-                && spec.log_config.driver == a3s_box_core::log::LogDriver::JsonFile
+                && spec.log_config.driver == aster_box_core::log::LogDriver::JsonFile
             {
                 // A very short VM can finish while the first processor is sitting
                 // on a provisional console EOF. Its raw files are authoritative at
                 // this point (start_enter returned and the write fds are closed), so
                 // repair the empty projection synchronously. The empty guard makes
                 // this idempotent and prevents duplicate records.
-                a3s_box_core::log::run_log_processor(
+                aster_box_core::log::run_log_processor(
                     console,
                     console
                         .parent()
@@ -708,18 +708,18 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
             let stderr = rootfs.join(WINDOWS_GUEST_STDERR);
             let structured_empty = structured.metadata().map(|m| m.len() == 0).unwrap_or(true);
             let raw_has_output = [&stdout, &stderr].iter().any(|path| {
-                a3s_box_core::windows_file::open_regular_file(path, None)
+                aster_box_core::windows_file::open_regular_file(path, None)
                     .and_then(|(file, _)| file.metadata())
                     .is_ok_and(|metadata| metadata.len() > 0)
             });
             if structured_empty
                 && raw_has_output
-                && spec.log_config.driver == a3s_box_core::log::LogDriver::JsonFile
+                && spec.log_config.driver == aster_box_core::log::LogDriver::JsonFile
             {
                 // A short WHPX workload can finish before its live tailers emit
                 // the first record. The completed rootfs streams are authoritative
                 // after start_enter returns, so project them synchronously once.
-                a3s_box_core::log::run_log_processor_streams(
+                aster_box_core::log::run_log_processor_streams(
                     &stdout,
                     &stderr,
                     console
@@ -735,7 +735,7 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
     #[cfg(target_os = "windows")]
     if status >= 0 && _log_thread_drained {
         let marker = windows_rootfs_path(spec)?.join(WINDOWS_LIVE_LOGS_DRAINED_MARKER);
-        a3s_box_core::windows_file::replace_regular_file(&marker, b"drained\n").map_err(
+        aster_box_core::windows_file::replace_regular_file(&marker, b"drained\n").map_err(
             |error| BoxError::BoxBootError {
                 message: format!(
                     "Failed to mark Windows live logs drained at {}: {error}",
@@ -780,14 +780,14 @@ pub(super) unsafe fn configure_and_start_vm(spec: &InstanceSpec) -> Result<()> {
 /// Windows guest kernel chosen before libkrun opens a file.
 ///
 /// The bundled libkrunfw image is the default. An external path is used only
-/// when `A3S_BOX_KERNEL` is set, and that path is never discovered from a WSL
+/// when `ASTER_BOX_KERNEL` is set, and that path is never discovered from a WSL
 /// package directory.
 #[cfg(target_os = "windows")]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) enum WindowsKernelSelection {
     /// Bundled WHPX kernel. No host path is opened.
     Bundled,
-    /// Explicit `A3S_BOX_KERNEL` override.
+    /// Explicit `ASTER_BOX_KERNEL` override.
     External(PathBuf),
 }
 
@@ -809,7 +809,7 @@ impl WindowsKernelSelection {
 pub(super) fn configure_windows_kernel(ctx: &KrunContext) -> Result<()> {
     apply_windows_kernel_selection(
         ctx,
-        WindowsKernelSelection::from_env(std::env::var_os("A3S_BOX_KERNEL").as_deref()),
+        WindowsKernelSelection::from_env(std::env::var_os("ASTER_BOX_KERNEL").as_deref()),
     )
 }
 
@@ -828,11 +828,11 @@ fn apply_windows_kernel_selection(
     if !kernel_path.is_file() {
         return Err(BoxError::BoxBootError {
             message: format!(
-                "A3S_BOX_KERNEL does not point to a file: {}",
+                "ASTER_BOX_KERNEL does not point to a file: {}",
                 kernel_path.display()
             ),
             hint: Some(
-                "Provide an x86_64 ELF vmlinux or a PE/COFF kernel image. Leave A3S_BOX_KERNEL unset to use the bundled WHPX kernel."
+                "Provide an x86_64 ELF vmlinux or a PE/COFF kernel image. Leave ASTER_BOX_KERNEL unset to use the bundled WHPX kernel."
                     .to_string(),
             ),
         });
@@ -841,7 +841,7 @@ fn apply_windows_kernel_selection(
     let kernel_format = detect_windows_kernel_format(&kernel_path)?;
     let kernel_path_str = kernel_path.to_str().ok_or_else(|| BoxError::BoxBootError {
         message: format!(
-            "A3S_BOX_KERNEL is not valid UTF-8: {}",
+            "ASTER_BOX_KERNEL is not valid UTF-8: {}",
             kernel_path.display()
         ),
         hint: None,
@@ -900,7 +900,7 @@ pub(super) fn kernel_format_from_magic(magic: [u8; 4]) -> Option<u32> {
 /// backend directly and skips that proxy.
 #[cfg(unix)]
 pub(super) fn inherited_net_proxy_fds(
-    net: &a3s_box_core::vmm::NetworkInstanceConfig,
+    net: &aster_box_core::vmm::NetworkInstanceConfig,
 ) -> Result<(std::os::fd::RawFd, std::os::fd::RawFd)> {
     match (net.net_socket_fd, net.net_proxy_fd) {
         (Some(guest_fd), Some(proxy_fd)) => Ok((guest_fd, proxy_fd)),
@@ -919,18 +919,18 @@ pub(super) fn inherited_net_proxy_fds(
 fn load_microvm_egress_rules(
     networks_json: Option<&std::path::Path>,
     network_name: Option<&str>,
-) -> Vec<a3s_box_core::EgressMatchRule> {
+) -> Vec<aster_box_core::EgressMatchRule> {
     let (Some(path), Some(name)) = (networks_json, network_name) else {
         return Vec::new();
     };
-    match a3s_box_core::load_network_egress_rules(path, name) {
+    match aster_box_core::load_network_egress_rules(path, name) {
         Ok(rules) => rules,
         Err(error) => {
             tracing::error!(
                 %error,
                 "MicroVM egress rules failed to load; denying IPv4 egress"
             );
-            vec![a3s_box_core::EgressMatchRule::deny_all()]
+            vec![aster_box_core::EgressMatchRule::deny_all()]
         }
     }
 }

@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{Error, ErrorCode};
+use aster_oci_sdk::{Error, ErrorCode};
 
 #[derive(Debug)]
 pub(super) struct OperationJournal<Request, Response> {

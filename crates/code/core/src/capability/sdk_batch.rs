@@ -17,7 +17,7 @@ use super::{
     SessionCapabilityBatch, Sha256Digest,
 };
 
-pub const SDK_CAPABILITY_BATCH_SCHEMA: &str = "a3s.code.sdk_capability_batch.v1";
+pub const SDK_CAPABILITY_BATCH_SCHEMA: &str = "aster.code.sdk_capability_batch.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

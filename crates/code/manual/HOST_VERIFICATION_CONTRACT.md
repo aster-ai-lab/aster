@@ -10,8 +10,8 @@ An ordinary command exit 0 does not establish what it verified.
 
 ## Host entry and authority
 
-Place a declaration in the explicit host ACL selected with --config/A3S_CONFIG
-or in the user's ~/.a3s/config.acl. Parse and generate it with a3s-acl:
+Place a declaration in the explicit host ACL selected with --config/ASTER_CONFIG
+or in the user's ~/.aster/config.acl. Parse and generate it with aster-acl:
 
 ```acl
 verification_contract "project-tests" {

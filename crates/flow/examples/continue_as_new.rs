@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowRuntime, RuntimeCommand, StepInvocation, WorkflowInvocation, WorkflowRunStatus,
     WorkflowSpec,
 };
@@ -21,7 +21,7 @@ impl FlowRuntime for SegmentedImport {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let input: SegmentInput = context.input_as()?;
         if input.cursor < input.total {
@@ -33,13 +33,13 @@ impl FlowRuntime for SegmentedImport {
         Ok(context.complete(json!({ "processed": input.total })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("this history-segmentation example has no side-effecting steps")
     }
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(SegmentedImport));
     let spec = WorkflowSpec::rust_embedded(
         "examples.segmented-import",

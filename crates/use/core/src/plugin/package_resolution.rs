@@ -267,7 +267,7 @@ fn is_host_compatible(
     let requirement = VersionReq::parse(&candidate.record.requires_use).map_err(|_| {
         resolution_error(
             "use.plugin.package_resolution_invalid",
-            "A package candidate has an invalid A3S Use compatibility requirement.",
+            "A package candidate has an invalid Aster Use compatibility requirement.",
         )
     })?;
     Ok(

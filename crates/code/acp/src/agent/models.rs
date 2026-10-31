@@ -2,7 +2,7 @@
 
 use super::*;
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     pub(super) fn available_model_infos(&self) -> Vec<acp::ModelInfo> {
         let mut infos = Vec::new();
         for (provider, model) in self.launch.config.list_models() {
@@ -20,7 +20,7 @@ impl A3sCodeAgent {
             }
             let mut meta = reasoning_effort_catalog_meta(&id);
             let configured = (model.limit.context > 0).then_some(model.limit.context as usize);
-            let window = configured.or_else(|| a3s_code_core::documented_context_tokens(&id));
+            let window = configured.or_else(|| aster_core::documented_context_tokens(&id));
             meta.insert("contextWindowKnown".into(), window.is_some().into());
             if let Some(window) = window {
                 meta.insert("totalContextTokens".into(), window.into());
@@ -131,7 +131,7 @@ pub(super) struct EffortLimits {
 pub(super) fn reasoning_effort_catalog_meta(
     model_id: &str,
 ) -> serde_json::Map<String, serde_json::Value> {
-    let native = a3s_code_core::llm::native_effort_menu(model_id);
+    let native = aster_core::llm::native_effort_menu(model_id);
     let levels: &[&str] = if native.is_empty() {
         HOST_EFFORT_LEVELS
     } else {
@@ -173,7 +173,7 @@ pub(super) fn effort_level_description(level: &str) -> &'static str {
     }
 }
 
-/// Depth steer from a3s `BudgetProfile.guideline`. Medium has none.
+/// Depth steer from aster `BudgetProfile.guideline`. Medium has none.
 pub(super) fn effort_guideline(token: &str) -> Option<&'static str> {
     match token {
         "low" => Some(

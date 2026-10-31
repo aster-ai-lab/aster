@@ -4,13 +4,13 @@
 
 macOS feature discovery reports the `libkrun-hvf` driver. The feature probe:
 
-1. requires the Apple Silicon architecture supported by A3S OCI Runtime;
+1. requires the Apple Silicon architecture supported by Aster OCI Runtime;
 2. reads `kern.hv_support` directly through `sysctlbyname`;
 3. records both observations in the versioned feature inventory;
 4. does not create a VM or mutate runtime state;
 5. reports the R2M-qualified driver as `experimental`.
 
-Intel macOS is reported as unsupported by A3S driver policy instead of being
+Intel macOS is reported as unsupported by Aster driver policy instead of being
 silently treated as an unavailable Apple Silicon host.
 
 The launch-ready public driver and Host Service advertise only
@@ -23,16 +23,16 @@ real-host restart, cleanup, and soak qualification for that profile.
 The separate `hvf-smoke` command crosses the next host API boundary. On Apple
 Silicon it calls the system Hypervisor.framework directly, creates the single
 VM object associated with the process, destroys it, and emits a versioned
-`a3s.oci.hvf-smoke.v1` report. No libkrun dependency is involved.
+`aster.oci.hvf-smoke.v1` report. No libkrun dependency is involved.
 
 ## Public same-UID Host Service
 
 The Apple Silicon product entry point is:
 
 ```sh
-a3s-oci macos-hvf-host-service \
-  --root "$HOME/Library/Application Support/A3S/oci-hvf" \
-  --shim /absolute/path/to/a3s-oci-krun-shim \
+aster-oci macos-hvf-host-service \
+  --root "$HOME/Library/Application Support/Aster/oci-hvf" \
+  --shim /absolute/path/to/aster-oci-krun-shim \
   --system-image-manifest /absolute/path/to/system-image.json
 ```
 
@@ -101,7 +101,7 @@ shutdown fail closed.
 SDK `features()` through this socket reports 20 public driver operations over
 the protocol-v10 Guest plus `features`, `list`, and `events`, and requires the
 versioned runtime bundle-handoff extension. This is the integration boundary
-for A3S Box; the direct VM harnesses below remain evidence tools rather than a
+for Aster Box; the direct VM harnesses below remain evidence tools rather than a
 second product lifecycle.
 
 ## Entitlement and signing
@@ -111,7 +111,7 @@ hardware support. It does not prove that the executable has permission to
 create a VM.
 
 The repository contains the minimal development entitlement at
-`packaging/macos/a3s-oci-hvf.entitlements`:
+`packaging/macos/aster-oci-hvf.entitlements`:
 
 ```xml
 <key>com.apple.security.hypervisor</key>
@@ -121,16 +121,16 @@ The repository contains the minimal development entitlement at
 Build the CLI and ad-hoc sign a disposable copy:
 
 ```sh
-cargo build -p a3s-oci-cli
+cargo build -p aster-oci-cli
 
 smoke_dir="$(mktemp -d)"
 trap 'rm -rf "$smoke_dir"' EXIT
-cp target/debug/a3s-oci "$smoke_dir/a3s-oci"
+cp target/debug/aster-oci "$smoke_dir/aster-oci"
 codesign --force --sign - \
-  --entitlements packaging/macos/a3s-oci-hvf.entitlements \
-  "$smoke_dir/a3s-oci"
-codesign --verify --strict "$smoke_dir/a3s-oci"
-"$smoke_dir/a3s-oci" hvf-smoke
+  --entitlements packaging/macos/aster-oci-hvf.entitlements \
+  "$smoke_dir/aster-oci"
+codesign --verify --strict "$smoke_dir/aster-oci"
+"$smoke_dir/aster-oci" hvf-smoke
 ```
 
 The signed command exits successfully only when both `hv_vm_create` and
@@ -153,7 +153,7 @@ The stable report fields are:
 
 | Field | Meaning |
 | --- | --- |
-| `schema_version` | Always `a3s.oci.hvf-smoke.v1` for this contract |
+| `schema_version` | Always `aster.oci.hvf-smoke.v1` for this contract |
 | `platform` | Host platform on which the command ran |
 | `status` | Overall prerequisite and VM-object lifecycle status |
 | `apple_silicon` | Whether the runtime target is macOS arm64 |
@@ -166,7 +166,7 @@ A successful report is:
 
 ```json
 {
-  "schema_version": "a3s.oci.hvf-smoke.v1",
+  "schema_version": "aster.oci.hvf-smoke.v1",
   "platform": "macos",
   "status": "available",
   "apple_silicon": true,
@@ -195,11 +195,11 @@ positive host lifecycle evidence independently of hosted-runner policy.
 
 ## Isolated libkrun context gate
 
-The separate `a3s-oci-krun-shim` owns the native libkrun boundary. The main
+The separate `aster-oci-krun-shim` owns the native libkrun boundary. The main
 runtime, public SDK, and feature CLI do not link or load libkrun.
 
 The macOS arm64 shim carries a deterministic archive derived from the
-A3S Box v3.1.0 release:
+Aster Box v3.1.0 release:
 
 `crates/krun/runtime/macos-aarch64/krun-macos-arm64.tar.xz`
 
@@ -221,22 +221,22 @@ to the shim. The shim then:
 Run a relocatable, signed copy:
 
 ```sh
-cargo build -p a3s-oci-krun
+cargo build -p aster-oci-krun
 
 smoke_dir="$(mktemp -d)"
-cp target/debug/a3s-oci-krun-shim "$smoke_dir/"
-cp -R target/debug/a3s-oci-krun-runtime "$smoke_dir/"
+cp target/debug/aster-oci-krun-shim "$smoke_dir/"
+cp -R target/debug/aster-oci-krun-runtime "$smoke_dir/"
 codesign --force --sign - \
-  --entitlements packaging/macos/a3s-oci-hvf.entitlements \
-  "$smoke_dir/a3s-oci-krun-shim"
-"$smoke_dir/a3s-oci-krun-shim" context-smoke
+  --entitlements packaging/macos/aster-oci-hvf.entitlements \
+  "$smoke_dir/aster-oci-krun-shim"
+"$smoke_dir/aster-oci-krun-shim" context-smoke
 ```
 
-A successful `a3s.oci.krun-context-smoke.v2` report requires:
+A successful `aster.oci.krun-context-smoke.v2` report requires:
 
 ```json
 {
-  "schema_version": "a3s.oci.krun-context-smoke.v2",
+  "schema_version": "aster.oci.krun-context-smoke.v2",
   "platform": "macos",
   "status": "available",
   "runtime_bundle_loaded": true,
@@ -259,7 +259,7 @@ Native runtime hashes and source provenance are recorded in
 
 The `vm-smoke` command crosses the guest-execution boundary through the
 manifest-bound immutable system image. It attaches the raw ext4 system disk
-read-only, pins the A3S Linux kernel and guest agent through the manifest, keeps
+read-only, pins the Aster Linux kernel and guest agent through the manifest, keeps
 the writable runtime share separate, executes `/bin/sh`, and requires an exact
 guest-written marker to be visible on the host. Each invocation generates a
 fresh 128-bit marker name and a separate 256-bit marker nonce; the nonce is
@@ -271,7 +271,7 @@ therefore keeps verification in a parent process and performs all libkrun work
 in a hidden child:
 
 ```text
-a3s-oci-krun-shim vm-smoke
+aster-oci-krun-shim vm-smoke
         │
         ├── validate rootfs, /bin/sh, console, and nonce marker absence
         ├── spawn signed worker and read bounded setup evidence
@@ -290,7 +290,7 @@ guest execution. Success requires all of the following in one report:
 
 ```json
 {
-  "schema_version": "a3s.oci.krun-vm-smoke.v1",
+  "schema_version": "aster.oci.krun-vm-smoke.v1",
   "platform": "macos",
   "status": "available",
   "runtime_bundle_loaded": true,
@@ -317,7 +317,7 @@ guest execution. Success requires all of the following in one report:
 ```
 
 The retained immutable system root is reproducibly built from the pinned
-Alpine 3.22.5 aarch64 minirootfs plus the static A3S agent:
+Alpine 3.22.5 aarch64 minirootfs plus the static Aster agent:
 
 - URL:
   `https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/aarch64/alpine-minirootfs-3.22.5-aarch64.tar.gz`
@@ -339,7 +339,7 @@ printf '%s  %s\n' \
   '3fbc6285032ed46821b511292633d7b2a6306a2e254f590e92bdafff56cf2f70' \
   "$archive" | shasum -a 256 --check
 
-"$smoke_dir/a3s-oci-krun-shim" vm-smoke \
+"$smoke_dir/aster-oci-krun-shim" vm-smoke \
   --rootfs "$runtime_share" \
   --system-image-manifest "$system_image_manifest" \
   --runtime-share "$runtime_share" \
@@ -395,7 +395,7 @@ The host runtime establishes the trust chain in this order:
    operation.
 
 The parent shim validates the rootfs, fixed
-`/usr/bin/a3s-oci-agent`, console, and protected socket before spawning the
+`/usr/bin/aster-oci-agent`, console, and protected socket before spawning the
 worker. The worker validates them again, removes the bootstrap token from its
 own environment, configures plain vsock port 4093, passes the token only to
 the fixed guest executable, and emits bounded pre-entry evidence. Closing the
@@ -411,37 +411,37 @@ rust_lld="$(
   rustc --print sysroot
 )/lib/rustlib/$host_triple/bin/rust-lld"
 CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER="$rust_lld" \
-  cargo build -p a3s-oci-agent --release \
+  cargo build -p aster-oci-agent --release \
     --target aarch64-unknown-linux-musl
-cargo build -p a3s-oci-cli -p a3s-oci-krun
+cargo build -p aster-oci-cli -p aster-oci-krun
 
 install -d "$rootfs/usr/bin"
 install -m 0755 \
-  target/aarch64-unknown-linux-musl/release/a3s-oci-agent \
-  "$rootfs/usr/bin/a3s-oci-agent"
+  target/aarch64-unknown-linux-musl/release/aster-oci-agent \
+  "$rootfs/usr/bin/aster-oci-agent"
 ```
 
 Use the signed relocatable shim prepared above:
 
 ```sh
-target/debug/a3s-oci agent-vm-smoke \
-  --shim "$smoke_dir/a3s-oci-krun-shim" \
+target/debug/aster-oci agent-vm-smoke \
+  --shim "$smoke_dir/aster-oci-krun-shim" \
   --rootfs "$rootfs" \
   --system-image-manifest "$system_image_manifest" \
   --console "$asset_dir/agent-console.log"
 ```
 
-The top-level report uses the versioned `a3s.oci.agent-vm-smoke.v10` schema name;
+The top-level report uses the versioned `aster.oci.agent-vm-smoke.v10` schema name;
 the negotiated protocol is reported independently. A successful current Apple
 Silicon qualification must retain the following contract:
 
 ```json
 {
-  "schema_version": "a3s.oci.agent-vm-smoke.v10",
+  "schema_version": "aster.oci.agent-vm-smoke.v10",
   "platform": "macos",
   "status": "available",
   "endpoint_bound": true,
-  "endpoint_name": "a3s-oci-agent-<32 lowercase hex characters>",
+  "endpoint_name": "aster-oci-agent-<32 lowercase hex characters>",
   "shim_spawned": true,
   "shim_process_id": 12345,
   "bridge_process_id": 12346,
@@ -497,7 +497,7 @@ of the exact reported endpoint, and disappearance of both observed processes.
 The same local build without the Hypervisor entitlement completed all bounded
 shim configuration, failed `krun_start_enter`, returned status `2`, reported
 `protocol_negotiated = false`, and left neither a worker process nor an
-`a3s-oci-agent-*` directory below `/private/tmp`. Tests also reject an
+`aster-oci-agent-*` directory below `/private/tmp`. Tests also reject an
 unrelated Unix peer before reading protocol bytes, reject a wrong token after
 direct-child verification, prevent endpoint collisions, and terminate and
 reap the entire shim process group on timeout.
@@ -528,14 +528,14 @@ archive without `sudo` or ownership mutation:
 
 ```sh
 runtime_share="$asset_dir/runtime-share"
-bundle="$runtime_share/var/lib/a3s-oci-smoke/bundle"
+bundle="$runtime_share/var/lib/aster-oci-smoke/bundle"
 scripts/prepare-utility-vm-bundle.sh \
   --alpine-archive "$archive" \
   --config fixtures/utility-vm/config.macos.json \
   --bundle "$bundle"
 
-target/debug/a3s-oci oci-vm-smoke \
-  --shim "$smoke_dir/a3s-oci-krun-shim" \
+target/debug/aster-oci oci-vm-smoke \
+  --shim "$smoke_dir/aster-oci-krun-shim" \
   --vm-rootfs "$runtime_share" \
   --system-image-manifest "$system_image_manifest" \
   --bundle "$bundle" \
@@ -549,7 +549,7 @@ that root mapping and add non-overlapping ranges for IDs `1..65535`, so the
 1000/2000 ID-mapped-mount checks remain available without changing host files.
 
 The signed Apple Silicon qualification contract is
-`a3s.oci.oci-vm-smoke.v9`: bundle loading, created state, exact create replay,
+`aster.oci.oci-vm-smoke.v9`: bundle loading, created state, exact create replay,
 pre-start marker absence, start, running observation, a bounded wait that must
 time out while running, exact kill replay, exact normal exit status from the
 SIGTERM trap, repeated wait, exact-target exec replay, duplicate process-ID
@@ -597,12 +597,12 @@ The command then rejects A generation 1 after delete, recreates A as generation
 A, and lets B complete independently:
 
 ```sh
-jq '.linux.cgroupsPath = "a3s-oci-smoke-b"' \
+jq '.linux.cgroupsPath = "aster-oci-smoke-b"' \
   "$bundle_b/config.json" >"$bundle_b/config.json.tmp"
 mv "$bundle_b/config.json.tmp" "$bundle_b/config.json"
 
-target/debug/a3s-oci oci-vm-multi-container-smoke \
-  --shim "$smoke_dir/a3s-oci-krun-shim" \
+target/debug/aster-oci oci-vm-multi-container-smoke \
+  --shim "$smoke_dir/aster-oci-krun-shim" \
   --vm-rootfs "$rootfs" \
   --bundle-a "$bundle_a" \
   --bundle-b "$bundle_b" \
@@ -610,9 +610,9 @@ target/debug/a3s-oci oci-vm-multi-container-smoke \
 ```
 
 The two simultaneously live bundles must use distinct cgroup v2 paths; the
-checked-in fixture reserves `a3s-oci-smoke-a` for bundle A.
+checked-in fixture reserves `aster-oci-smoke-a` for bundle A.
 
-The `a3s.oci.oci-vm-multi-container-smoke.v11` report also requires exact
+The `aster.oci.oci-vm-multi-container-smoke.v11` report also requires exact
 mutation replay, exact repeated normal-exit results for A and B, independent
 wait/state progress, and an existing-namespace phase. That phase rejects a
 wrong-type descriptor before state, joins donor UTS, IPC, network, cgroup, PID,
@@ -647,8 +647,8 @@ creating a fresh authenticated libkrun/HVF utility VM for every serial wave:
 console_dir="$asset_dir/macos-hvf-soak-consoles"
 mkdir "$console_dir"
 
-target/debug/a3s-oci macos-hvf-soak \
-  --shim "$smoke_dir/a3s-oci-krun-shim" \
+target/debug/aster-oci macos-hvf-soak \
+  --shim "$smoke_dir/aster-oci-krun-shim" \
   --vm-rootfs "$runtime_share" \
   --system-image-manifest "$system_image_manifest" \
   --bundle-a "$bundle_a" \
@@ -657,7 +657,7 @@ target/debug/a3s-oci macos-hvf-soak \
   --iterations 25
 ```
 
-The bounded `a3s.oci.macos-hvf-soak.v1` configuration accepts 1–10,000 waves
+The bounded `aster.oci.macos-hvf-soak.v1` configuration accepts 1–10,000 waves
 and always keeps two primary containers live together. Each successful wave
 qualifies initial A and B plus recreated A, then aggregates the existing
 lifecycle/generation, eight-namespace join, rootfs/mount, ID-mapped mount,
@@ -735,8 +735,8 @@ start, or kill boundary:
 ```sh
 fault_dir="$(mktemp -d)"
 for fault in after-create after-start after-kill; do
-  target/debug/a3s-oci oci-vm-fault-cleanup \
-    --shim "$smoke_dir/a3s-oci-krun-shim" \
+  target/debug/aster-oci oci-vm-fault-cleanup \
+    --shim "$smoke_dir/aster-oci-krun-shim" \
     --vm-rootfs "$rootfs" \
     --bundle "$bundle" \
     --console "$fault_dir/$fault.log" \
@@ -744,17 +744,17 @@ for fault in after-create after-start after-kill; do
 done
 ```
 
-Each `a3s.oci.oci-vm-fault-cleanup.v4` success retains the exact requested and
+Each `aster.oci.oci-vm-fault-cleanup.v4` success retains the exact requested and
 injected boundary, a positive guest configured-process PID, pre-start
 non-execution, and `normal_delete_attempted: false`. Closing the authenticated
 connection must then make the guest executor force-stop any live configured
 process and its namespace supervisor, and remove its runtime root before the
 agent and VM exit.
 
-The nested `a3s.oci.agent-vm-smoke.v10` report independently requires exact
+The nested `aster.oci.agent-vm-smoke.v10` report independently requires exact
 endpoint removal, shim and direct VM-worker PID disappearance, and complete
 `(fd, fd_type)` inventory restoration. The outer report additionally requires
-marker removal and no new `a3s-oci-agent-*` directory under the guest `/run`.
+marker removal and no new `aster-oci-agent-*` directory under the guest `/run`.
 Both local Apple Silicon qualification and macOS CI run all three boundaries;
 the CI shell compares endpoint and guest-runtime inventories around every
 command.
@@ -782,8 +782,8 @@ for stage in \
   host-before-shutdown \
   host-after-shutdown
 do
-  target/debug/a3s-oci oci-vm-transport-fault-cleanup \
-    --shim "$smoke_dir/a3s-oci-krun-shim" \
+  target/debug/aster-oci oci-vm-transport-fault-cleanup \
+    --shim "$smoke_dir/aster-oci-krun-shim" \
     --vm-rootfs "$rootfs" \
     --bundle "$bundle" \
     --console "$transport_dir/$stage.log" \
@@ -791,7 +791,7 @@ do
 done
 ```
 
-The `a3s.oci.oci-vm-transport-fault-cleanup.v3` report succeeds only when the
+The `aster.oci.oci-vm-transport-fault-cleanup.v3` report succeeds only when the
 selected versioned point is crossed exactly once and normal OCI delete is never
 attempted. Host points return the qualification injector's retryable
 `Unavailable`. Guest points carry the same validated `OperationId` as
@@ -845,9 +845,9 @@ do
   do
     stage_dir="$reopen_dir/$operation/$fault_stage"
     mkdir -p "$stage_dir"
-    target/debug/a3s-oci oci-vm-reopen-replacement \
+    target/debug/aster-oci oci-vm-reopen-replacement \
       --operation "$operation" \
-      --shim "$smoke_dir/a3s-oci-krun-shim" \
+      --shim "$smoke_dir/aster-oci-krun-shim" \
       --vm-rootfs "$rootfs" \
       --bundle "$bundle" \
       --console-dir "$stage_dir" \
@@ -883,7 +883,7 @@ requests remain fenced by the Host journal after that record is gone. Read-only
 operations still deliver the completed first response and use a follow-up call
 to expose the disconnect.
 
-`a3s.oci.oci-vm-reopen-replacement.v2` retains nonce-bound Guest evidence and
+`aster.oci.oci-vm-reopen-replacement.v2` retains nonce-bound Guest evidence and
 both nested VM reports, and fails unless the endpoint, shim PID, and direct
 VM-worker PID identities differ. It also requires generation and OperationId
 reuse, one replacement recovery call, complete force-delete cleanup, and
@@ -901,7 +901,7 @@ the original Create identity and generation; the new query must equal that
 recovered record. At `guest-after-response-write`, the first response must be
 delivered and match durable state before a second query exposes the disconnect.
 
-`a3s.oci.oci-vm-operation-reopen-replacement.v1` retains this State evidence.
+`aster.oci.oci-vm-operation-reopen-replacement.v1` retains this State evidence.
 The August 10, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs,
 including real PID changes across owners and complete cleanup after force
 delete.
@@ -917,7 +917,7 @@ PID, and the subsequent Start replay returns without another driver dispatch.
 Every path removes any marker written by the first owner before starting the
 replacement and then requires the exact replacement marker.
 
-`a3s.oci.oci-vm-operation-reopen-replacement.v2` retains this Start evidence.
+`aster.oci.oci-vm-operation-reopen-replacement.v2` retains this Start evidence.
 The August 10, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs,
 including the completed-running replay path, distinct owners, and complete
 cleanup after force delete.
@@ -935,7 +935,7 @@ durable journal without an API-driven driver dispatch. Every path resets the
 first-owner marker, verifies the replacement workload before Kill, and uses
 stopped-only Delete.
 
-`a3s.oci.oci-vm-operation-reopen-replacement.v3` retains this Kill evidence.
+`aster.oci.oci-vm-operation-reopen-replacement.v3` retains this Kill evidence.
 The August 10, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs,
 including the completed-stopped replay path, distinct owners, and complete
 Host/Guest cleanup.
@@ -947,7 +947,7 @@ recreates, starts, and kills the workload with the original setup identities,
 rebuilds the Guest tombstone, and dispatches the unchanged Delete once. At
 `guest-after-response-write`, no live record remains and the journal is already
 SucceededEmpty, so the fresh owner performs no workload recovery or driver
-Delete. Schema `a3s.oci.oci-vm-operation-reopen-replacement.v4` retains this
+Delete. Schema `aster.oci.oci-vm-operation-reopen-replacement.v4` retains this
 evidence. The August 10, 2026 Apple Silicon matrix passed all nine stages in 18
 fresh VMs.
 
@@ -958,7 +958,7 @@ and dispatches Wait once, then caches `signal=9, oom_killed=false`. At
 `guest-after-response-write`, that cache is already durable and every reopened
 or repeated Wait returns without another driver or Guest dispatch. Host and
 Guest stale-generation probes must both fail before cleanup. Schema
-`a3s.oci.oci-vm-operation-reopen-replacement.v5` retains this evidence. The
+`aster.oci.oci-vm-operation-reopen-replacement.v5` retains this evidence. The
 August 10, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs.
 
 For terminal Exec, the first owner completes Create and Start, then submits one
@@ -974,7 +974,7 @@ without another API-driven dispatch. Every path fences the generation, process
 ID, terminal mode, and complete request identity; rejects stale or changed Host
 and Guest requests; validates a first-owner marker if scheduling reached it;
 and requires the replacement process to write the exact marker before force
-delete. Schema `a3s.oci.oci-vm-operation-reopen-replacement.v6` retains this
+delete. Schema `aster.oci.oci-vm-operation-reopen-replacement.v6` retains this
 evidence. The August 10, 2026 Apple Silicon matrix passed all nine stages in 18
 fresh VMs.
 
@@ -987,7 +987,7 @@ marker so the trap is installed, reapplies the committed signal, and Host replay
 returns without another API-driven driver dispatch. Every path fences complete
 Exec and SignalProcess identities, rejects stale and changed Host and Guest
 requests, and requires a fresh replacement signal marker before force delete.
-Schema `a3s.oci.oci-vm-operation-reopen-replacement.v7` retains this evidence.
+Schema `aster.oci.oci-vm-operation-reopen-replacement.v7` retains this evidence.
 The August 11, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs.
 
 For WaitProcess, setup runs a terminal Exec that writes a nonce-bound readiness
@@ -999,7 +999,7 @@ first owner already stored that result; replacement and later calls replay it
 without driver dispatch, and recovery does not report the rebuilt exited Exec
 as live. The exact target, timeout, setup identities, stale-generation fences,
 and complete cleanup are retained by
-`a3s.oci.oci-vm-operation-reopen-replacement.v8`. The August 11, 2026 Apple
+`aster.oci.oci-vm-operation-reopen-replacement.v8`. The August 11, 2026 Apple
 Silicon matrix passed all nine stages in 18 fresh VMs.
 
 For Pause, setup completes Create and Start and verifies the nonce-bound init
@@ -1013,7 +1013,7 @@ recovery so Create, Start, and Pause journals can bind to the replacement PID.
 The Host retry then replays without another driver dispatch. Changed and stale
 requests fail at both Host and Guest boundaries, force-delete removes the frozen
 generation, and both owners restore their resource inventories. Schema
-`a3s.oci.oci-vm-operation-reopen-replacement.v9` retains this evidence. The
+`aster.oci.oci-vm-operation-reopen-replacement.v9` retains this evidence. The
 August 11, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs.
 
 For Resume, setup first commits Create, Start, and Pause. Replacement recovery
@@ -1026,7 +1026,7 @@ returns recreated-running evidence. Create, Start, Pause, and Resume journal
 responses retain their historical state while binding to the replacement PID.
 Changed and stale requests fail at both boundaries, force-delete removes the
 resumed generation, and both owners restore their inventories. Schema
-`a3s.oci.oci-vm-operation-reopen-replacement.v10` retains this evidence. The
+`aster.oci.oci-vm-operation-reopen-replacement.v10` retains this evidence. The
 August 11, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs.
 
 For Processes, setup commits Create, Start, and a live terminal Exec. The
@@ -1037,7 +1037,7 @@ required. Processes is read-only and has no Host response journal, so every
 replacement path sends one query to the fresh Guest even after a completely
 written first response. Stale generations fail at both boundaries, force
 delete removes the live generation, and both owners return to baseline. Schema
-`a3s.oci.oci-vm-operation-reopen-replacement.v11` retains this evidence. The
+`aster.oci.oci-vm-operation-reopen-replacement.v11` retains this evidence. The
 August 11, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs.
 
 For Update, setup commits Create and Start, waits for the nonce-bound init
@@ -1052,7 +1052,7 @@ dispatch. Every path reads two fresh Stats snapshots and requires the 512 MiB
 limit, monotonic CPU/memory counters, live process count, and memory/PID event
 metrics. Changed resources and stale generations fail at both boundaries,
 force delete removes the live generation, and both owners return to baseline.
-Schema `a3s.oci.oci-vm-operation-reopen-replacement.v12` retains this evidence.
+Schema `aster.oci.oci-vm-operation-reopen-replacement.v12` retains this evidence.
 The August 11, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs.
 
 For Stats, setup commits Create, Start, and the complete resource Update before
@@ -1067,11 +1067,11 @@ required memory/PID event metrics. When the first response was delivered, the
 replacement timestamp and snapshot must be newer and distinct. Stale Host and
 Guest generations fail closed, force delete removes the live generation, and
 both owners return to baseline. Schema
-`a3s.oci.oci-vm-operation-reopen-replacement.v13` retains this evidence. The
+`aster.oci.oci-vm-operation-reopen-replacement.v13` retains this evidence. The
 August 11, 2026 Apple Silicon matrix passed all nine stages in 18 fresh VMs.
 
 ReadOutput now uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v14`. Both owners rebuild the
+`aster.oci.oci-vm-operation-reopen-replacement.v14`. Both owners rebuild the
 same non-terminal captured-output Exec identity; the replacement repairs the
 Create, Start, and Exec response PIDs and receives one fresh cursor request at
 every stage. Delivered first-owner output and replacement output must match the
@@ -1079,7 +1079,7 @@ exact nonce-bound stdout chunk, while stale generations and cleanup remain
 hard gates.
 
 WriteStdin now uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v15`. Recovery rebuilds the
+`aster.oci.oci-vm-operation-reopen-replacement.v15`. Recovery rebuilds the
 pipe-backed Exec for every stage. Prepared Host journals dispatch the write
 once after reopen. If the first owner already committed the write response,
 recovery replays those exact bytes into the fresh Exec before Host open
@@ -1088,7 +1088,7 @@ effect-marker bytes, request identity, changed-payload rejection, stale
 generation fencing, PID rebinding, and cleanup all passed on Apple Silicon.
 
 CloseStdin now uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v16`. Recovery rebuilds the
+`aster.oci.oci-vm-operation-reopen-replacement.v16`. Recovery rebuilds the
 pipe-backed Exec for every stage. Prepared Host journals dispatch the close
 once after reopen. If the first owner already committed the close response,
 recovery closes the replacement Exec input before Host open completes and the
@@ -1097,7 +1097,7 @@ request identity, changed-target rejection, stale generation fencing, PID
 rebinding, and cleanup passed all nine stages on Apple Silicon.
 
 Resize now uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v17`. Recovery rebuilds the
+`aster.oci.oci-vm-operation-reopen-replacement.v17`. Recovery rebuilds the
 terminal-backed Exec for every stage. Prepared Host journals dispatch one
 `120x40` resize after reopen. If the first owner committed its response,
 recovery restores the dimensions before Host open completes and the API retry
@@ -1106,7 +1106,7 @@ rejection, stale generation fencing, fresh-owner PID rebinding, and cleanup
 passed all nine stages on Apple Silicon.
 
 File now uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v18`. Its v3 Host journal retains
+`aster.oci.oci-vm-operation-reopen-replacement.v18`. Its v3 Host journal retains
 the exact binary upload and typed response. Prepared work dispatches once after
 reopen. At the completed-response point, the first API call exposes the
 acknowledgement disconnect; recovery rebuilds the upload in a fresh tmpfs, and
@@ -1116,7 +1116,7 @@ explicit removal, and cleanup passed all nine stages on Apple Silicon on
 August 15, 2026.
 
 Filesystem now uses
-`a3s.oci.oci-vm-operation-reopen-replacement.v19`. Its v3 Host journal retains
+`aster.oci.oci-vm-operation-reopen-replacement.v19`. Its v3 Host journal retains
 the exact MakeDir request and typed metadata response. Prepared work dispatches
 once after reopen. At the completed-response point, the first API call exposes
 the acknowledgement disconnect; recovery rebuilds the directory in a fresh
@@ -1152,7 +1152,7 @@ Those results qualify the historical direct R2M harness. A separate August 13,
 2026 run closed the public `macos-hvf-host-service` product-path gates. It used
 signed Apple Silicon executables built from source revision
 `414af625c5efaab1e8d8a4ffe44c570249b145b5` and produced
-`a3s.oci.macos-hvf-host-service-smoke.v1` evidence with these results:
+`aster.oci.macos-hvf-host-service-smoke.v1` evidence with these results:
 
 - public `RuntimeClient` connections exercised `features`, `list`, `events`,
   and all 20 advertised driver operations against real protocol-v9 guests;
@@ -1223,7 +1223,7 @@ used `fixtures/utility-vm/config.macos.json` (LINUX personality, no
 `MPOL_BIND`, capability ceiling for shared exec I/O), a portable process I/O
 scheduler probe that reads `/proc/self/stat` when `/proc/self/sched` is absent,
 and Guest Agent durable-owner matching that accepts either the virtiofs
-share-root Host UID or Guest `geteuid()` under `/run/a3s-oci-runtime` (macOS
+share-root Host UID or Guest `geteuid()` under `/run/aster-oci-runtime` (macOS
 libkrun preserves Guest-visible UIDs via `user.containers.override_stat` while
 remapping Host-side ownership). Public `macos-hvf-host-service-smoke` returned
 `status=available` with lifecycle delete replay, owner-death replacement, and
@@ -1246,11 +1246,11 @@ After building and signing both executables as described above, reproduce the
 complete gate with:
 
 ```bash
-work_parent="$(mktemp -d /private/tmp/a3s-oci-hvf-host.XXXXXX)"
+work_parent="$(mktemp -d /private/tmp/aster-oci-hvf-host.XXXXXX)"
 chmod 700 "$work_parent"
 
-target/debug/a3s-oci macos-hvf-host-service-smoke \
-  --shim "$PWD/target/debug/a3s-oci-krun-shim" \
+target/debug/aster-oci macos-hvf-host-service-smoke \
+  --shim "$PWD/target/debug/aster-oci-krun-shim" \
   --system-image-manifest /absolute/path/to/system-image.json \
   --bundle /absolute/path/to/oci-bundle \
   --work-parent "$work_parent" \

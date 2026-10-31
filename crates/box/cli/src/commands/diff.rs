@@ -1,4 +1,4 @@
-//! `a3s-box diff` command — Show filesystem changes in a box.
+//! `aster-box diff` command — Show filesystem changes in a box.
 //!
 //! Compares the box's rootfs against the original image layers to detect
 //! added, changed, and deleted files, similar to `docker diff`.
@@ -6,7 +6,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use a3s_box_runtime::rootfs::{RootfsFileInfo, DIFF_BASELINE_FILE};
+use aster_box_runtime::rootfs::{RootfsFileInfo, DIFF_BASELINE_FILE};
 use clap::Args;
 
 use crate::resolve;
@@ -147,7 +147,7 @@ async fn current_rootfs(
                 )
                 .into());
             }
-            let client = a3s_box_runtime::ExecClient::connect(&record.exec_socket_path).await?;
+            let client = aster_box_runtime::ExecClient::connect(&record.exec_socket_path).await?;
             let temporary = tempfile::tempdir()?;
             let archive_path = temporary.path().join("rootfs.tar");
             let mut output = tokio::fs::File::create(&archive_path).await?;
@@ -182,7 +182,7 @@ async fn current_rootfs(
         return current_stopped_sandbox_host_rootfs(record).await;
     }
 
-    if a3s_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)? {
+    if aster_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)? {
         #[cfg(unix)]
         {
             let temporary = tempfile::tempdir()?;
@@ -265,9 +265,9 @@ async fn current_stopped_sandbox_host_rootfs(
 
 /// Build a diff map from guest terminal rootfs metadata (not host NTFS mode bits).
 fn walk_guest_rootfs_metadata(
-    manifest: &a3s_box_core::rootfs_metadata::RootfsMetadataManifest,
+    manifest: &aster_box_core::rootfs_metadata::RootfsMetadataManifest,
 ) -> Result<HashMap<String, RootfsFileInfo>, Box<dyn std::error::Error>> {
-    use a3s_box_core::rootfs_metadata::RootfsEntryKind;
+    use aster_box_core::rootfs_metadata::RootfsEntryKind;
     use base64::Engine;
 
     const DIRECTORY_MODE: u32 = 0o040000;
@@ -280,7 +280,7 @@ fn walk_guest_rootfs_metadata(
             .decode(&entry.path_base64)
             .map_err(|error| format!("Invalid rootfs metadata path: {error}"))?;
         let path = std::path::PathBuf::from(String::from_utf8_lossy(&bytes).as_ref());
-        if a3s_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(&path) {
+        if aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(&path) {
             continue;
         }
         let Some(key) = guest_metadata_rootfs_key(&path)? else {
@@ -349,7 +349,7 @@ fn walk_tar_archive(
         let Some(key) = archive_rootfs_key(&path)? else {
             continue;
         };
-        if a3s_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(&path) {
+        if aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(&path) {
             continue;
         }
         let header = item.header();
@@ -408,7 +408,7 @@ fn archive_rootfs_key(path: &Path) -> Result<Option<String>, String> {
     Ok((!segments.is_empty()).then(|| format!("/{}", segments.join("/"))))
 }
 
-/// Fail closed when `a3s-box diff` has no durable baseline to compare against.
+/// Fail closed when `aster-box diff` has no durable baseline to compare against.
 fn ensure_diff_baseline_present(snapshot_path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     if snapshot_path.exists() {
         return Ok(());
@@ -421,7 +421,7 @@ fn ensure_diff_baseline_present(snapshot_path: &Path) -> Result<(), Box<dyn std:
     .into())
 }
 
-/// Create the per-box baseline snapshot used by `a3s-box diff`.
+/// Create the per-box baseline snapshot used by `aster-box diff`.
 ///
 /// The caller should invoke this after the rootfs is prepared and before user
 /// mutations that should appear in later diff output. Managed Linux
@@ -437,27 +437,27 @@ fn ensure_diff_baseline_present(snapshot_path: &Path) -> Result<(), Box<dyn std:
 pub(crate) fn create_box_baseline_snapshot(
     box_dir: &Path,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    if !a3s_box_runtime::rootfs::guest_diff_baseline_required(box_dir)? {
+    if !aster_box_runtime::rootfs::guest_diff_baseline_required(box_dir)? {
         return Ok(());
     }
 
     if let Some(rootfs_dir) = super::resolve_box_rootfs(box_dir) {
         #[cfg(target_os = "linux")]
         {
-            if a3s_box_runtime::sandbox::rootfs::try_create_managed_sandbox_diff_baseline_if_absent(
+            if aster_box_runtime::sandbox::rootfs::try_create_managed_sandbox_diff_baseline_if_absent(
                 box_dir,
                 &rootfs_dir,
             )? {
                 return Ok(());
             }
         }
-        a3s_box_runtime::rootfs::create_diff_baseline_if_absent(box_dir, &rootfs_dir)?;
+        aster_box_runtime::rootfs::create_diff_baseline_if_absent(box_dir, &rootfs_dir)?;
         return Ok(());
     }
 
     // No host-visible rootfs: publish the guest control-file handoff when
     // present (including after short-lived Tasks remove the ext4 generation).
-    match a3s_box_runtime::rootfs::publish_guest_diff_baseline(box_dir) {
+    match aster_box_runtime::rootfs::publish_guest_diff_baseline(box_dir) {
         Ok(()) => Ok(()),
         Err(error) => Err(format!(
             "refusing to invent a rootfs diff baseline without a resolved rootfs under {} ({error})",
@@ -474,7 +474,7 @@ pub type FileInfo = RootfsFileInfo;
 /// Walk a directory tree and collect file metadata, keyed by relative path.
 #[cfg(test)]
 pub fn walk_dir(root: &Path) -> Result<HashMap<String, FileInfo>, Box<dyn std::error::Error>> {
-    Ok(a3s_box_runtime::rootfs::walk_rootfs(root)?)
+    Ok(aster_box_runtime::rootfs::walk_rootfs(root)?)
 }
 
 /// Create a standalone baseline snapshot for diff behavior tests.
@@ -531,7 +531,7 @@ mod tests {
     fn create_baseline_publishes_guest_handoff_without_host_rootfs() {
         use std::collections::BTreeMap;
 
-        use a3s_box_core::rootfs_baseline::{GuestDiffBaseline, GUEST_DIFF_BASELINE_FILE_NAME};
+        use aster_box_core::rootfs_baseline::{GuestDiffBaseline, GUEST_DIFF_BASELINE_FILE_NAME};
 
         let dir = tempfile::tempdir().unwrap();
         let box_dir = dir.path();
@@ -569,12 +569,12 @@ mod tests {
     fn live_sandbox_host_rootfs_accepts_running_and_paused() {
         let mut running =
             crate::test_helpers::fixtures::make_record("id", "box", "running", Some(1));
-        running.isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+        running.isolation = aster_box_core::ExecutionIsolation::Sandbox;
         let mut paused = crate::test_helpers::fixtures::make_record("id", "box", "paused", Some(1));
-        paused.isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+        paused.isolation = aster_box_core::ExecutionIsolation::Sandbox;
         let mut microvm_paused =
             crate::test_helpers::fixtures::make_record("id", "box", "paused", Some(1));
-        microvm_paused.isolation = a3s_box_core::ExecutionIsolation::Microvm;
+        microvm_paused.isolation = aster_box_core::ExecutionIsolation::Microvm;
 
         assert!(uses_live_sandbox_host_rootfs(&running));
         assert!(uses_live_sandbox_host_rootfs(&paused));

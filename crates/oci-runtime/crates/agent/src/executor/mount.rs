@@ -11,8 +11,8 @@ use std::os::fd::{AsRawFd, FromRawFd};
 use std::os::unix::ffi::OsStrExt;
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::oci_spec::runtime::Mount;
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::oci_spec::runtime::Mount;
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::namespace::{collect_mappings, IdmapPlan, NamespacePlan};
 use super::PinnedBundleDirectory;

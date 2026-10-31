@@ -126,12 +126,12 @@ async fn an_absolute_deadline_stops_continuously_active_model_and_tool_rounds() 
     assert_eq!(
         facts
             .iter()
-            .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+            .filter(|fact| fact.kind == "aster.goal.slice.settled")
             .count(),
         1
     );
     assert!(!facts.iter().any(|fact| matches!(
         fact.kind.as_str(),
-        "a3s.goal.step.accepted" | "a3s.goal.completed"
+        "aster.goal.step.accepted" | "aster.goal.completed"
     )));
 }

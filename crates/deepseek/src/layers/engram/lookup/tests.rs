@@ -1,6 +1,6 @@
 use super::*;
 use crate::weights::{tests::fixture, CheckpointWeights};
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use tempfile::TempDir;
 
 pub(crate) fn checkpoint(

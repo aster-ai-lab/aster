@@ -5,7 +5,7 @@ struct Job {
     directory: tempfile::TempDir,
     scope: CompileScope,
     workspace: PathBuf,
-    input: Option<a3s_okf::WorkspaceKnowledgeInput>,
+    input: Option<aster_okf::WorkspaceKnowledgeInput>,
 }
 
 impl Job {
@@ -16,7 +16,7 @@ impl Job {
         let root = root.canonicalize().unwrap();
         std::fs::write(root.join("source.md"), "Frozen source evidence.").unwrap();
         let job =
-            a3s_okf::begin_knowledge_maintenance(&root, &[], a3s_okf::MaintenanceOperation::Ingest)
+            aster_okf::begin_knowledge_maintenance(&root, &[], aster_okf::MaintenanceOperation::Ingest)
                 .unwrap();
         Self {
             directory,
@@ -31,18 +31,18 @@ impl Job {
     }
     fn new_workspace() -> Self {
         let directory = tempfile::tempdir().unwrap();
-        let input = a3s_okf::WorkspaceKnowledgeInput::new(
+        let input = aster_okf::WorkspaceKnowledgeInput::new(
             &directory.path().canonicalize().unwrap(),
             "tenant:permission:binding",
             &format!("sha256:{}", "a".repeat(64)),
-            vec![a3s_okf::WorkspaceKnowledgeSource::text(
+            vec![aster_okf::WorkspaceKnowledgeSource::text(
                 "src/lib.rs",
                 b"pub fn answer() -> u8 { 42 }\n",
             )
             .unwrap()],
         )
         .unwrap();
-        let job = a3s_okf::begin_workspace_knowledge_maintenance(&input)
+        let job = aster_okf::begin_workspace_knowledge_maintenance(&input)
             .unwrap()
             .unwrap();
         Self {
@@ -64,9 +64,9 @@ impl Job {
 impl Drop for Job {
     fn drop(&mut self) {
         if let Some(input) = &self.input {
-            let _ = a3s_okf::cancel_workspace_knowledge_maintenance(input, &self.scope.job_id);
+            let _ = aster_okf::cancel_workspace_knowledge_maintenance(input, &self.scope.job_id);
         } else {
-            let _ = a3s_okf::cancel_knowledge_maintenance(&self.scope.root, &self.scope.job_id);
+            let _ = aster_okf::cancel_knowledge_maintenance(&self.scope.root, &self.scope.job_id);
         }
     }
 }
@@ -85,7 +85,7 @@ fn workspace_wiki_compile_prompt_excludes_the_ambient_asset_catalog() {
         ..Default::default()
     };
     let render = |host: &crate::host_context::StudioHost| {
-        crate::host_context::merge_studio_host(a3s_code_core::SystemPromptSlots::default(), host)
+        crate::host_context::merge_studio_host(aster_core::SystemPromptSlots::default(), host)
             .build()
     };
     assert!(render(&host).contains("personal-only-sentinel"));
@@ -168,7 +168,7 @@ fn workspace_wiki_compiler_uses_the_same_candidate_only_guard() {
     forged = personal.scope.clone();
     forged.workspace_revision = job.scope.workspace_revision.clone();
     assert!(CompileGuard::new(&forged, &personal.workspace).is_err());
-    a3s_okf::cancel_workspace_knowledge_maintenance(job.input.as_ref().unwrap(), &job.scope.job_id)
+    aster_okf::cancel_workspace_knowledge_maintenance(job.input.as_ref().unwrap(), &job.scope.job_id)
         .unwrap();
     assert_eq!(
         guard.check("write", &json!({"file_path":"concepts/a.md"})),
@@ -181,7 +181,7 @@ fn workspace_wiki_compiler_uses_the_same_candidate_only_guard() {
 fn workspace_wiki_compile_scope_refuses_unknown_or_untyped_fields_at_the_host_boundary() {
     let valid = json!({"root":"/tmp/wiki/workspace","jobId":"job","workspaceRevision":"scope"});
     let parse = |scope| {
-        let meta = [("a3sHost".into(), json!({"knowledgeCompile":scope}))]
+        let meta = [("asterHost".into(), json!({"knowledgeCompile":scope}))]
             .into_iter()
             .collect();
         crate::host_context::studio_host_from_meta(Some(&meta))
@@ -241,7 +241,7 @@ fn live_compiler_admits_candidate_writes_without_asking_and_preserves_explicit_d
         PermissionDecision::Deny
     );
     assert_eq!(
-        a3s_code_core::permissions::policy_for_posture("default")
+        aster_core::permissions::policy_for_posture("default")
             .check("write", &json!({"file_path":"concepts/alpha.md"})),
         PermissionDecision::Ask
     );
@@ -312,7 +312,7 @@ fn compiler_cannot_bind_an_unowned_workspace_or_continue_after_stop_or_failure()
     forged.job_id = "0".repeat(64);
     assert!(CompileGuard::new(&forged, &job.workspace).is_err());
     let guard = job.guard();
-    a3s_okf::cancel_knowledge_maintenance(&job.scope.root, &job.scope.job_id).unwrap();
+    aster_okf::cancel_knowledge_maintenance(&job.scope.root, &job.scope.job_id).unwrap();
     assert_eq!(
         guard.check("write", &json!({"file_path":"concepts/a.md"})),
         PermissionDecision::Deny
@@ -320,7 +320,7 @@ fn compiler_cannot_bind_an_unowned_workspace_or_continue_after_stop_or_failure()
     assert!(CompileGuard::new(&job.scope, &job.workspace).is_err());
     let failed = Job::new();
     let guard = failed.guard();
-    a3s_okf::fail_knowledge_maintenance(&failed.scope.root, &failed.scope.job_id).unwrap();
+    aster_okf::fail_knowledge_maintenance(&failed.scope.root, &failed.scope.job_id).unwrap();
     assert_eq!(
         guard.check("read", &json!({"file_path":"source.md"})),
         PermissionDecision::Deny

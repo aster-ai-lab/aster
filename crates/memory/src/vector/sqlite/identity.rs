@@ -4,7 +4,7 @@ use sha2::{Digest, Sha256};
 use std::fs::Metadata;
 use std::path::Path;
 
-const STORAGE_IDENTITY_DOMAIN: &str = "a3s.memory.sqlite-vector-storage-identity.v1";
+const STORAGE_IDENTITY_DOMAIN: &str = "aster.memory.sqlite-vector-storage-identity.v1";
 
 pub(super) fn storage_identity(path: &Path) -> VectorResult<String> {
     let metadata = std::fs::metadata(path).map_err(|_| {

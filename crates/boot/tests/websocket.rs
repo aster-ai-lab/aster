@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, BootErrorKind, BootRequest, BoxFuture, CallHandler,
     ExecutionContext, ExecutionProtocol, Guard, HttpMethod, Module, ModuleRef, ProviderDefinition,
     Result, Validate, ValidationOptions, ValidationSchema, WebSocketContext,

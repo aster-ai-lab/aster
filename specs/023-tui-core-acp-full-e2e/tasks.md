@@ -5,7 +5,7 @@
 
 ## Phase 1: Baseline and complete surface
 
-- [x] T001 [US1] Retain source/worktree identity, build `aster` and `a3s-code-acp` together, and inspect actual pair IDs and versions. Current owned source pair: `d2db60c55bd7323babe9f5443f0bcccc045971cf`; exact before/after source records and both binary hashes agree (`local-20261030/final-pair.json`). Rejected source-drift/cache-relocation candidates are retained. Final post-campaign recheck remains T014.
+- [x] T001 [US1] Retain source/worktree identity, build `aster` and `aster-acp` together, and inspect actual pair IDs and versions. Current owned source pair: `d2db60c55bd7323babe9f5443f0bcccc045971cf`; exact before/after source records and both binary hashes agree (`local-20261030/final-pair.json`). Rejected source-drift/cache-relocation candidates are retained. Final post-campaign recheck remains T014.
 - [ ] T002 [US1] Run existing `apps/aster/tests/workspace.rs`, `tui_one_agent.rs`, runtime-boundary and delivery guards against the source pair; triage each failure independently.
 - [ ] T003 [US2] Create the complete capability/feature matrix from Core inventory, ACP commands/host methods and shipped pager/CLI entries. Every row names implementation, activation, success, refusal/lifecycle cases and evidence.
 - [ ] T004 [US3] Review connected source and tests for oracle branches, guessed capability meanings, fake assertions, state loss and lifecycle leaks; retain concrete findings.

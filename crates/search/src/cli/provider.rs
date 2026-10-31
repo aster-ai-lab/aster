@@ -4,8 +4,8 @@ use std::path::Path;
 
 use anyhow::Result;
 
-use a3s_search::product::create_provider_engine as product_create_provider_engine;
-use a3s_search::{
+use aster_search::product::create_provider_engine as product_create_provider_engine;
+use aster_search::{
     providers::{BuiltinProvider, ProviderAuthentication, ProviderEngine, ProviderReadiness},
     SearchConfig,
 };
@@ -60,7 +60,7 @@ pub(crate) fn list_engines(config_path: Option<&Path>) -> Result<()> {
 
     println!();
     println!(
-        "Usage: a3s-search \"query\" -e ddg,wiki,anysearch,tavily,tinyfish,bocha,aliyun,tencent,firecrawl,a3s,doubao,deepseek"
+        "Usage: aster-search \"query\" -e ddg,wiki,anysearch,tavily,tinyfish,bocha,aliyun,tencent,firecrawl,aster,doubao,deepseek"
     );
     Ok(())
 }

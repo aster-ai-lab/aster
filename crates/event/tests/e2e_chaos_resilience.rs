@@ -5,8 +5,8 @@
 //! and the tests skip cleanly when it is unset (no overfitting to one
 //! machine's docker setup):
 //!
-//!   A3S_EVENT_IGGY_RESTART="docker restart a3s-iggy-test" \
-//!   A3S_EVENT_NATS_RESTART="docker restart a3s-nats" \
+//!   ASTER_EVENT_IGGY_RESTART="docker restart aster-iggy-test" \
+//!   ASTER_EVENT_NATS_RESTART="docker restart aster-nats" \
 //!   cargo test --test e2e_chaos_resilience -- --nocapture
 //!
 //! # What each restart proves
@@ -25,10 +25,10 @@
 // Per-test feature gates below (iggy and/or nats).
 
 #[cfg(feature = "iggy")]
-use a3s_event::provider::iggy::{IggyConfig, IggyPartitioning, IggyProvider};
+use aster_event::provider::iggy::{IggyConfig, IggyPartitioning, IggyProvider};
 #[cfg(feature = "iggy")]
-use a3s_event::SubscribeOptions;
-use a3s_event::{Event, EventProvider};
+use aster_event::SubscribeOptions;
+use aster_event::{Event, EventProvider};
 use std::time::Duration;
 
 /// Broker restarts are binary-global side effects: every test in this file
@@ -101,8 +101,8 @@ async fn wait_iggy_back(tag: &str, timeout: Duration) -> Option<IggyProvider> {
 #[tokio::test]
 async fn iggy_server_restart_preserves_offsets_and_resumes() {
     let _guard = BROKER_LOCK.lock().await;
-    if restart_broker("A3S_EVENT_IGGY_RESTART").is_none() {
-        eprintln!("A3S_EVENT_IGGY_RESTART unset, skipping (opt-in chaos test)");
+    if restart_broker("ASTER_EVENT_IGGY_RESTART").is_none() {
+        eprintln!("ASTER_EVENT_IGGY_RESTART unset, skipping (opt-in chaos test)");
         return;
     }
     // The restart above applied to a warm server; reconnect and prove the
@@ -154,7 +154,7 @@ async fn iggy_server_restart_preserves_offsets_and_resumes() {
 
     // Phase 2 — restart the broker MID-STREAM: state (stream, topic,
     // consumer group, committed offset) must survive.
-    restart_broker("A3S_EVENT_IGGY_RESTART").expect("mid-stream restart configured");
+    restart_broker("ASTER_EVENT_IGGY_RESTART").expect("mid-stream restart configured");
 
     let p = wait_iggy_back(&tag, Duration::from_secs(30))
         .await
@@ -260,7 +260,7 @@ async fn iggy_personal_access_token_login_flows_end_to_end() {
     }
     let pat = match admin
         .create_personal_access_token(
-            &format!("a3s-e2e-{}", std::process::id()),
+            &format!("aster-e2e-{}", std::process::id()),
             PersonalAccessTokenExpiry::ExpireDuration(iggy::prelude::IggyDuration::from(
                 Duration::from_secs(300),
             )),
@@ -317,12 +317,12 @@ async fn iggy_personal_access_token_login_flows_end_to_end() {
 #[cfg(feature = "nats")]
 #[tokio::test]
 async fn nats_server_restart_allows_fresh_pipelines() {
-    use a3s_event::provider::nats::{NatsConfig, NatsProvider, StorageType};
-    use a3s_event::Subscription;
+    use aster_event::provider::nats::{NatsConfig, NatsProvider, StorageType};
+    use aster_event::Subscription;
 
     let _guard = BROKER_LOCK.lock().await;
-    if restart_broker("A3S_EVENT_NATS_RESTART").is_none() {
-        eprintln!("A3S_EVENT_NATS_RESTART unset, skipping (opt-in chaos test)");
+    if restart_broker("ASTER_EVENT_NATS_RESTART").is_none() {
+        eprintln!("ASTER_EVENT_NATS_RESTART unset, skipping (opt-in chaos test)");
         return;
     }
 
@@ -355,7 +355,7 @@ async fn nats_server_restart_allows_fresh_pipelines() {
     drop(first);
 
     // Restart the broker mid-pipeline.
-    restart_broker("A3S_EVENT_NATS_RESTART").expect("mid-stream restart configured");
+    restart_broker("ASTER_EVENT_NATS_RESTART").expect("mid-stream restart configured");
 
     // Bounded wait for the server to accept connections again.
     let deadline = std::time::Instant::now() + Duration::from_secs(30);

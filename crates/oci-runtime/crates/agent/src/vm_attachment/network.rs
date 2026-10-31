@@ -3,8 +3,8 @@ use std::collections::{BTreeMap, BTreeSet};
 #[cfg(target_os = "linux")]
 use std::os::fd::{AsRawFd, FromRawFd, OwnedFd};
 
-use a3s_oci_agent_protocol::AgentVmAttachmentManifest;
-use a3s_oci_sdk::Result;
+use aster_oci_agent_protocol::AgentVmAttachmentManifest;
+use aster_oci_sdk::Result;
 
 use super::attachment_error;
 
@@ -92,7 +92,7 @@ pub(super) fn rename_plan(
     let mut staged = Vec::with_capacity(moves.len());
     for (index, (current, desired)) in moves.into_iter().enumerate() {
         let temporary = (0_u32..=u32::MAX)
-            .map(|attempt| format!("a3svm{index:03x}{attempt:03x}"))
+            .map(|attempt| format!("astervm{index:03x}{attempt:03x}"))
             .find(|candidate| candidate.len() <= 15 && !reserved.contains(candidate))
             .ok_or_else(|| attachment_error("failed to allocate a temporary Guest NIC name"))?;
         reserved.insert(temporary.clone());

@@ -189,7 +189,7 @@ fn compile_profile(policy: &EnforcedPolicy) -> Result<String> {
     lines.push("; Filesystem writes".to_string());
     push_path_rule(&mut lines, "allow", &["file-write*"], &policy.allow_write)?;
     push_path_rule(&mut lines, "deny", &["file-write*"], &policy.deny_write)?;
-    // Late allow for goal-loop carve-outs under protected `.a3s`.
+    // Late allow for goal-loop carve-outs under protected `.aster`.
     push_path_rule(
         &mut lines,
         "allow",
@@ -329,10 +329,10 @@ mod tests {
 
     #[test]
     fn escaped_path_quotes_special_characters() {
-        let path = Path::new("/tmp/a3s sandbox/quote\"file");
+        let path = Path::new("/tmp/aster sandbox/quote\"file");
         assert_eq!(
             escaped_path(path).unwrap(),
-            r#""/tmp/a3s sandbox/quote\"file""#
+            r#""/tmp/aster sandbox/quote\"file""#
         );
     }
 

@@ -8,7 +8,7 @@ use super::{
 };
 
 const RECORD: &str = include_str!("../../../../compat/containerd-runtime-v2.json");
-const RECORD_SCHEMA_VERSION: &str = "a3s.oci.containerd-runtime-v2-compatibility.v1";
+const RECORD_SCHEMA_VERSION: &str = "aster.oci.containerd-runtime-v2-compatibility.v1";
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]

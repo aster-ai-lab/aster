@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_box_core::pty::{parse_frame, PtyFrame, PtyRequest};
+use aster_box_core::pty::{parse_frame, PtyFrame, PtyRequest};
 
 const NONROOT_PROBE: &str = r#"
 set -eu
@@ -72,9 +72,9 @@ fn nonroot_drop_all_applies_to_main_exec_and_pty() {
         "--user",
         "10001:10001",
         "--env",
-        "A3S_SEC_CAP_DROP=ALL",
+        "ASTER_SEC_CAP_DROP=ALL",
         "--env",
-        "A3S_SEC_NO_NEW_PRIVS=1",
+        "ASTER_SEC_NO_NEW_PRIVS=1",
         boxes[1],
         "--",
         "sh",
@@ -91,15 +91,15 @@ fn nonroot_drop_all_applies_to_main_exec_and_pty() {
         .unwrap();
     let output = runtime.block_on(async {
         tokio::time::timeout(Duration::from_secs(10), async {
-            let mut client = a3s_box_runtime::grpc::PtyClient::connect(&socket)
+            let mut client = aster_box_runtime::grpc::PtyClient::connect(&socket)
                 .await
                 .unwrap();
             client
                 .send_request(&PtyRequest {
                     cmd: vec!["sh".into(), "-c".into(), NONROOT_PROBE.into()],
                     env: vec![
-                        "A3S_SEC_CAP_DROP=ALL".into(),
-                        "A3S_SEC_NO_NEW_PRIVS=1".into(),
+                        "ASTER_SEC_CAP_DROP=ALL".into(),
+                        "ASTER_SEC_NO_NEW_PRIVS=1".into(),
                     ],
                     working_dir: None,
                     rootfs: None,

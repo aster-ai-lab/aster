@@ -1,0 +1,33 @@
+[package]
+license = "Apache-2.0"
+name = "aster-active-sessions"
+version = "0.1.0"
+description = "Registry of open TUI sessions in a lock-guarded JSON file under the grok home"
+edition = "2024"
+publish = false
+
+[dependencies]
+# `SessionId`, the key each registry entry is filed under.
+agent-client-protocol = {workspace = true}
+# `opened_at` timestamps.
+chrono = {version = "0.4", features = ["serde"]}
+serde = {workspace = true}
+serde_json = {workspace = true}
+tracing = {workspace = true}
+# `grok_home()` supplies the directory the registry file lives in.
+
+# `kill(pid, 0)` liveness probe for the dead-PID prune in `register`.
+aster-config = {path = "../aster-config"}
+
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+
+# `OpenProcess` liveness probe for the dead-PID prune in `register`.
+[target.'cfg(windows)'.dependencies]
+windows = {workspace = true}
+
+[dev-dependencies]
+tempfile = {workspace = true}
+
+[lints]
+workspace = true

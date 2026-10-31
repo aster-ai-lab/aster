@@ -3,7 +3,7 @@ use crate::{
     layers::rope::{RopeDirection, RopeLayout, RotaryTransform},
     model::DeepSeekModel,
 };
-use a3s_power::{error::PowerError, inference::InferenceLimits};
+use aster_power::{error::PowerError, inference::InferenceLimits};
 use candle_core::DType;
 
 fn device() -> CudaLayerDevice {

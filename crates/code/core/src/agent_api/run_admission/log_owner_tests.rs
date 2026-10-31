@@ -42,7 +42,7 @@ fn a_foreign_admission_label_cannot_change_the_captured_source() {
     let workspace = tempfile::tempdir().unwrap();
     let original = admission(workspace.path(), "original");
     assert!(original.try_acquire("foreign").is_err());
-    assert!(!workspace.path().join(".a3s/effect-log").exists());
+    assert!(!workspace.path().join(".aster/effect-log").exists());
     assert!(!original.active.load(Ordering::Acquire));
     assert!(original.try_acquire("original").is_ok());
 }
@@ -106,8 +106,8 @@ fn child_probe(workspace: &std::path::Path, busy: bool) {
             "--ignored",
             "--nocapture",
         ])
-        .env("A3S_CODE_OWNER_TEST_WORKSPACE", workspace)
-        .env("A3S_CODE_OWNER_TEST_BUSY", busy.to_string())
+        .env("ASTER_OWNER_TEST_WORKSPACE", workspace)
+        .env("ASTER_OWNER_TEST_BUSY", busy.to_string())
         .output()
         .unwrap();
     assert!(
@@ -131,8 +131,8 @@ fn an_actual_child_process_uses_the_same_original_admission_boundary() {
 #[test]
 #[ignore = "invoked by the bounded parent process test with an explicit temporary workspace"]
 fn child_process_probe() {
-    let workspace = std::env::var_os("A3S_CODE_OWNER_TEST_WORKSPACE").unwrap();
-    let busy: bool = std::env::var("A3S_CODE_OWNER_TEST_BUSY")
+    let workspace = std::env::var_os("ASTER_OWNER_TEST_WORKSPACE").unwrap();
+    let busy: bool = std::env::var("ASTER_OWNER_TEST_BUSY")
         .unwrap()
         .parse()
         .unwrap();

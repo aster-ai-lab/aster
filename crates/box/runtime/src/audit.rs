@@ -9,8 +9,8 @@ use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
-use a3s_box_core::audit::{AuditAction, AuditConfig, AuditEvent, AuditOutcome};
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::audit::{AuditAction, AuditConfig, AuditEvent, AuditOutcome};
+use aster_box_core::error::{BoxError, Result};
 
 /// Persistent audit log that appends events to a JSON-lines file.
 ///
@@ -59,9 +59,9 @@ impl AuditLog {
         })
     }
 
-    /// Open the audit log at the default path (~/.a3s/audit/audit.jsonl).
+    /// Open the audit log at the default path (~/.aster/audit/audit.jsonl).
     pub fn default_path() -> Result<Self> {
-        let path = a3s_box_core::dirs_home().join("audit").join("audit.jsonl");
+        let path = aster_box_core::dirs_home().join("audit").join("audit.jsonl");
 
         Self::new(path, AuditConfig::default())
     }
@@ -259,7 +259,7 @@ pub fn read_audit_log(path: &Path, query: &AuditQuery) -> Result<Vec<AuditEvent>
     Ok(events)
 }
 
-impl a3s_box_core::traits::AuditSink for AuditLog {
+impl aster_box_core::traits::AuditSink for AuditLog {
     fn record(&self, event: &AuditEvent) -> Result<()> {
         self.log(event)
     }

@@ -3,11 +3,11 @@ use std::io::{Read, Seek, SeekFrom};
 use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentVmAttachmentManifest, AgentVmStorageAttachment, AGENT_RUNTIME_SHARE_GUEST_ROOT,
     AGENT_VM_ATTACHMENT_MANIFEST_FILE_NAME, AGENT_VM_ATTACHMENT_MANIFEST_MAX_BYTES,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     Error, ErrorCode, Result, StorageAccessMode, RUNTIME_BUNDLE_HANDOFF_BUNDLE_DIRECTORY,
 };
 use sha2::{Digest, Sha256};
@@ -519,11 +519,11 @@ mod tests {
     use std::os::unix::fs::{MetadataExt, PermissionsExt};
     use std::path::{Path, PathBuf};
 
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AgentVmMacAddress, AgentVmNetworkAttachment, AgentVmStorageAttachment,
         AgentVmStorageSourceIdentity, GuestPath, AGENT_VM_ATTACHMENT_MANIFEST_FILE_NAME,
     };
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         oci_spec::runtime::Spec, ContainerId, ContainerTarget, CreateAttachments, Generation,
         NetworkAttachmentIdentity, NetworkCleanup, NetworkCleanupId, NetworkInterfaceId,
         NetworkNamespaceId, OciBundle, ProcessIo, StorageAccessMode, StorageAttachmentId,
@@ -556,7 +556,7 @@ mod tests {
             "netDevices": {"tap0": {"name": "eth0"}}
         });
         let bundle = OciBundle::from_json(
-            std::env::temp_dir().join("a3s-krun-vm-attachment"),
+            std::env::temp_dir().join("aster-krun-vm-attachment"),
             serde_json::to_string(&value).expect("fixture JSON"),
         )
         .expect("valid bundle");
@@ -591,7 +591,7 @@ mod tests {
                 ContainerId::new("networked").expect("container ID"),
                 Generation(1),
             ),
-            GuestPath::new("/run/a3s-oci-runtime/bundle").expect("guest bundle"),
+            GuestPath::new("/run/aster-oci-runtime/bundle").expect("guest bundle"),
             bundle.config_digest(),
             attachment_digest,
             vec![network],
@@ -609,7 +609,7 @@ mod tests {
             "options": ["ro", "nodev"]
         }]);
         let bundle = OciBundle::from_json(
-            std::env::temp_dir().join("a3s-krun-vm-storage-attachment"),
+            std::env::temp_dir().join("aster-krun-vm-storage-attachment"),
             serde_json::to_string(&value).expect("fixture JSON"),
         )
         .expect("valid bundle");
@@ -649,7 +649,7 @@ mod tests {
                 ContainerId::new("stored").expect("container ID"),
                 Generation(1),
             ),
-            GuestPath::new("/run/a3s-oci-runtime/bundle").expect("guest bundle"),
+            GuestPath::new("/run/aster-oci-runtime/bundle").expect("guest bundle"),
             bundle.config_digest(),
             attachment_digest,
             Vec::new(),

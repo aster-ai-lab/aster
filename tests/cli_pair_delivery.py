@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # Exercise the macOS archive on every Unix runner; Linux ELF checks are separate.
 PLATFORM = "macos"
 IDENTITY = "aster-cli-pair-v1:fixture-source:fixture-target"
-NAMES = ("aster", "a3s-code-acp")
+NAMES = ("aster", "aster-acp")
 
 
 @unittest.skipUnless(os.name == "posix", "Unix installer requires a Unix host")
@@ -136,12 +136,12 @@ class PairDelivery(unittest.TestCase):
                 self.assert_old()
 
     def test_package_refuses_different_source_identities(self):
-        self.binary("a3s-code-acp", IDENTITY + "-old")
+        self.binary("aster-acp", IDENTITY + "-old")
         self.assertNotEqual(self.package().returncode, 0)
         self.assertFalse(self.archive.exists())
 
     def test_missing_binary_refuses_before_packaging(self):
-        (self.bins / "a3s-code-acp").unlink()
+        (self.bins / "aster-acp").unlink()
         self.assertNotEqual(self.package().returncode, 0)
         self.assertFalse(self.archive.exists())
 
@@ -200,7 +200,7 @@ class PairDelivery(unittest.TestCase):
     def test_matching_checksums_do_not_allow_mixed_build_identity(self):
         self.assertEqual(self.package().returncode, 0)
         def mix(entries):
-            entries["a3s-code-acp"] = entries["a3s-code-acp"].replace(b"fixture-source", b"older-source")
+            entries["aster-acp"] = entries["aster-acp"].replace(b"fixture-source", b"older-source")
             entries["SHA256SUMS"] = "".join(f"{hashlib.sha256(entries[name]).hexdigest()}  {name}\n" for name in [*NAMES, *self.sandbox_members]).encode()
         self.rewrite_archive(mix)
         result = self.install()
@@ -209,7 +209,7 @@ class PairDelivery(unittest.TestCase):
         self.assert_old()
 
     def test_missing_or_corrupt_runtime_refuses_packaging(self):
-        (self.sandbox / "a3s-oci").write_bytes(b"corrupt")
+        (self.sandbox / "aster-oci").write_bytes(b"corrupt")
         result = self.package()
         self.assertNotEqual(result.returncode, 0)
         self.assertFalse(self.archive.exists())
@@ -275,10 +275,10 @@ class PairDelivery(unittest.TestCase):
     def test_archive_links_are_refused_without_changing_the_foreign_file(self):
         self.assertEqual(self.package().returncode, 0)
         foreign = self.root / "foreign-file"
-        foreign.write_bytes((self.sandbox / "a3s-oci").read_bytes())
+        foreign.write_bytes((self.sandbox / "aster-oci").read_bytes())
         foreign.chmod(0o600)
         before = foreign.read_bytes()
-        self.rewrite_archive(lambda _: None, linked=("sandbox/a3s-oci", foreign))
+        self.rewrite_archive(lambda _: None, linked=("sandbox/aster-oci", foreign))
         result = self.install()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("regular files", result.stderr)

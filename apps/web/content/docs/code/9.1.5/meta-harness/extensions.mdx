@@ -9,11 +9,11 @@ export const meta = {
 
 配方中的 `host:<id>` 由宿主事先安装的 `HostHarnessRegistry` 解析。模型写出一个组件名称，并不能让运行时加载同名代码。
 
-下面的组件给系统指令增加一行应用说明，不执行外部操作。示例使用本仓库的 `a3s-code-core` 和 `a3s-effect`。
+下面的组件给系统指令增加一行应用说明，不执行外部操作。示例使用本仓库的 `aster-core` 和 `aster-effect`。
 
 ```rust
-use a3s_code_core::{HarnessConfig, HostHarnessRegistry};
-use a3s_effect::{component, CodingServices, CodingView, ErasedComponent, HarnessView};
+use aster_core::{HarnessConfig, HostHarnessRegistry};
+use aster_effect::{component, CodingServices, CodingView, ErasedComponent, HarnessView};
 
 struct AppComponents;
 
@@ -43,7 +43,7 @@ impl HostHarnessRegistry for AppComponents {
 
 ```rust
 use std::sync::Arc;
-use a3s_code_core::{HarnessComposeOptions, SessionOptions};
+use aster_core::{HarnessComposeOptions, SessionOptions};
 
 fn options() -> anyhow::Result<SessionOptions> {
     let recipe = HarnessComposeOptions::compose(
@@ -85,8 +85,8 @@ fn options() -> anyhow::Result<SessionOptions> {
 下面保留基础配置，用这些构建材料明确组装一棵树：
 
 ```rust
-use a3s_code_core::{admit_component_tree, HarnessConfig, HostHarnessAssembler};
-use a3s_effect::{coding_scheduler, compact, optional_budget, system, tools, HarnessGraph};
+use aster_core::{admit_component_tree, HarnessConfig, HostHarnessAssembler};
+use aster_effect::{coding_scheduler, compact, optional_budget, system, tools, HarnessGraph};
 
 struct AppHarness;
 

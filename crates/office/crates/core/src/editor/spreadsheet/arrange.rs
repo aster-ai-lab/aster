@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     editor_error, indexed_cells_in_row, indexed_rows, mark_workbook_for_recalculation,
@@ -752,7 +752,7 @@ fn updated_start_tag(element: &IndexedXmlElement, updates: &BTreeMap<String, Str
     format!("<{}{attributes}{terminator}", element.qualified_name)
 }
 
-fn row_arrange_unsupported() -> a3s_use_core::UseError {
+fn row_arrange_unsupported() -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_row_arrange_unsupported",
         "Native Spreadsheet row move/copy/swap currently requires dense plain rows without formulas, defined names, row-addressed metadata, or worksheet relationships; the mutation was not applied.",

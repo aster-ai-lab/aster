@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::{self, Read, Write};
 use std::os::fd::{AsRawFd, FromRawFd};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 const OOM_SCORE_ADJ_MIN: i32 = -1000;
 const OOM_SCORE_ADJ_MAX: i32 = 1000;
@@ -164,12 +164,12 @@ mod tests {
     use std::io;
     use std::process::Command;
 
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
     use tempfile::tempdir;
 
     use super::{apply, error_code_for_io};
 
-    const CHILD_PROBE: &str = "A3S_OCI_OOM_SCORE_ADJ_CHILD_PROBE";
+    const CHILD_PROBE: &str = "ASTER_OCI_OOM_SCORE_ADJ_CHILD_PROBE";
     const APPLY_TEST: &str = "executor::oom::tests::applies_exact_value_in_an_isolated_process";
 
     fn fake_proc(initial: &str) -> (tempfile::TempDir, File) {

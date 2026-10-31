@@ -7,7 +7,7 @@
 use super::*;
 use crate::harness_loop::CompletionTerminal;
 use crate::sandbox::{BashSandbox, SandboxOutput};
-use a3s_effect::{ToolExecutionOutcome, ToolExecutionResultV1};
+use aster_effect::{ToolExecutionOutcome, ToolExecutionResultV1};
 use std::path::PathBuf;
 
 const CHECK: &str = "test -f checked.txt";

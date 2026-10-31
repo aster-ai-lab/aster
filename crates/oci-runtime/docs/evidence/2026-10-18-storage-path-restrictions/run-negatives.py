@@ -7,11 +7,11 @@ assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()==ca
 for info in [candidate,previous]:
  for name,digest in info['sha256'].items():assert hashlib.sha256((Path(info['root'])/name).read_bytes()).hexdigest()==digest
 results=[]
-for name,shim,image in [('old-shim',oldbinary/'a3s-oci-krun-shim',q/'clean-system/system-image.json'),('old-guest',binary/'a3s-oci-krun-shim',old/'clean-system/system-image.json')]:
+for name,shim,image in [('old-shim',oldbinary/'aster-oci-krun-shim',q/'clean-system/system-image.json'),('old-guest',binary/'aster-oci-krun-shim',old/'clean-system/system-image.json')]:
  root=Path(tempfile.mkdtemp(prefix='vn-',dir='/private/var/tmp'))
- args=[str(binary/'qualify_hvf_workspace'),str(binary/'a3s-oci'),str(shim),str(image),str(q.parent/'macos-vmm-confinement-20261018/fixture'),str(root)]
+ args=[str(binary/'qualify_hvf_workspace'),str(binary/'aster-oci'),str(shim),str(image),str(q.parent/'macos-vmm-confinement-20261018/fixture'),str(root)]
  control=Path(tempfile.mkdtemp(prefix='vc-',dir='/private/var/tmp'))
- control_args=[str(oldbinary/'qualify_hvf_workspace'),str(binary/'a3s-oci'),str(shim),str(image),str(q.parent/'macos-vmm-confinement-20261018/fixture'),str(control)]
+ control_args=[str(oldbinary/'qualify_hvf_workspace'),str(binary/'aster-oci'),str(shim),str(image),str(q.parent/'macos-vmm-confinement-20261018/fixture'),str(control)]
  with (control/'stdout.json').open('wb') as out,(control/'stderr.log').open('wb') as err:
   child=subprocess.Popen(control_args,stdout=out,stderr=err,start_new_session=True)
   try:control_code=child.wait(timeout=210)
@@ -33,7 +33,7 @@ for name,shim,image in [('old-shim',oldbinary/'a3s-oci-krun-shim',q/'clean-syste
     try:proc.wait(timeout=10)
     except subprocess.TimeoutExpired:os.killpg(proc.pid,signal.SIGKILL);proc.wait()
  writable=root/'读写工作区';assert code!=0 and not timed_out,(name,code)
- assert not (writable/'中文.txt').exists() and not (writable/'.a3s/loops/output').exists(),name
+ assert not (writable/'中文.txt').exists() and not (writable/'.aster/loops/output').exists(),name
  assert (writable/'.env').read_bytes()==b'host-credential'
  logs=[]
  for path in root.rglob('*'):

@@ -1,11 +1,11 @@
 //! Real-provider interactive dialogue over the ACP wire against the shipped
-//! `a3s-code-acp` binary.
+//! `aster-acp` binary.
 //!
 //! Slice 2 of the multi-turn plan: not just N turns in one core session, but
 //! the interactive product loop — initialize, open a session, alternate
 //! user/agent turns through the real agent process, correct a constraint
 //! mid-dialogue, cancel a turn over the wire, and continue. Requires
-//! `A3S_CONFIG_FILE` (repo `.a3s/config.acl`); pins the flash model.
+//! `ASTER_CONFIG_FILE` (repo `.aster/config.acl`); pins the flash model.
 
 #![cfg(test)]
 
@@ -131,12 +131,12 @@ impl Client for AutoReadOnlyClient {
 }
 
 fn repo_config_path() -> PathBuf {
-    std::env::var_os("A3S_CONFIG_FILE")
+    std::env::var_os("ASTER_CONFIG_FILE")
         .map(PathBuf::from)
         .unwrap_or_else(|| {
             PathBuf::from(env!("CARGO_MANIFEST_DIR"))
                 .join("../../..")
-                .join(".a3s/config.acl")
+                .join(".aster/config.acl")
         })
 }
 
@@ -148,7 +148,7 @@ async fn spawn_real_agent(
     std::sync::Arc<std::sync::Mutex<Vec<String>>>,
     std::sync::Arc<std::sync::Mutex<String>>,
 ) {
-    let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
+    let bin = PathBuf::from(env!("CARGO_BIN_EXE_aster-acp"));
     let home = workspace.join("home");
     std::fs::create_dir_all(&home).expect("home");
     let denied = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
@@ -160,16 +160,16 @@ async fn spawn_real_agent(
     let mut child = tokio::process::Command::new(bin)
         .arg("--cwd")
         .arg(workspace)
-        .env("A3S_CONFIG", repo_config_path())
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_CONFIG", repo_config_path())
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("HOME", &home)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::from(stderr))
         .spawn()
-        .expect("spawn a3s-code-acp");
+        .expect("spawn aster-acp");
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
     let conn = ClientSideConnection::new(
@@ -198,12 +198,12 @@ fn prompt(session: &acp::SessionId, text: &str) -> acp::PromptRequest {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_agent_holds_an_interactive_dialogue_over_the_wire() {
     tokio::task::LocalSet::new()
         .run_until(async move {
             let workspace = std::env::temp_dir().join(format!(
-            "a3s-live-dialogue-{}",
+            "aster-live-dialogue-{}",
             std::process::id()
         ));
         let _ = std::fs::remove_dir_all(&workspace);
@@ -357,18 +357,18 @@ async fn real_agent_holds_an_interactive_dialogue_over_the_wire() {
 /// conversation using the file the first turn created — workspace state as
 /// cross-turn memory.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_agent_tool_dialogue_gates_then_remembers_workspace_state() {
     tokio::task::LocalSet::new()
         .run_until(async move {
             let workspace = std::env::temp_dir().join(format!(
-                "a3s-live-tool-dialogue-{}",
+                "aster-live-tool-dialogue-{}",
                 std::process::id()
             ));
             let _ = std::fs::remove_dir_all(&workspace);
             std::fs::create_dir_all(&workspace).expect("workspace");
 
-            let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
+            let bin = PathBuf::from(env!("CARGO_BIN_EXE_aster-acp"));
             let home = workspace.join("home");
             std::fs::create_dir_all(&home).expect("home");
             let (gate_tx, mut gate_rx) = tokio::sync::mpsc::unbounded_channel();
@@ -376,16 +376,16 @@ async fn real_agent_tool_dialogue_gates_then_remembers_workspace_state() {
             let mut child = tokio::process::Command::new(bin)
                 .arg("--cwd")
                 .arg(&workspace)
-                .env("A3S_CONFIG", repo_config_path())
-                .env("A3S_DISABLE_CC_SWITCH", "1")
-                .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-                .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+                .env("ASTER_CONFIG", repo_config_path())
+                .env("ASTER_DISABLE_CC_SWITCH", "1")
+                .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+                .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
                 .env("HOME", &home)
                 .stdin(Stdio::piped())
                 .stdout(Stdio::piped())
                 .stderr(Stdio::from(stderr))
                 .spawn()
-                .expect("spawn a3s-code-acp");
+                .expect("spawn aster-acp");
             let stdout = child.stdout.take().expect("stdout").compat();
             let stdin = child.stdin.take().expect("stdin").compat_write();
             let (conn, io) = ClientSideConnection::new(
@@ -494,12 +494,12 @@ async fn real_agent_tool_dialogue_gates_then_remembers_workspace_state() {
 /// agent process, respawn, `session/load`, and continue the conversation —
 /// the resumed history must still carry the earlier turns.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_agent_dialogue_resumes_after_process_restart() {
     tokio::task::LocalSet::new()
         .run_until(async move {
             let workspace = std::env::temp_dir()
-                .join(format!("a3s-live-restart-dialogue-{}", std::process::id()));
+                .join(format!("aster-live-restart-dialogue-{}", std::process::id()));
             let _ = std::fs::remove_dir_all(&workspace);
             std::fs::create_dir_all(&workspace).expect("workspace");
 
@@ -578,16 +578,16 @@ async fn real_agent_dialogue_resumes_after_process_restart() {
 }
 
 /// The mid-turn interjection: while the agent is working a multi-round turn,
-/// the user injects a late instruction over `a3s/interject`. The steer must
+/// the user injects a late instruction over `aster/interject`. The steer must
 /// land in the conversation (steer fact + the injected instruction shaping a
 /// visible answer) and the dialogue continues normally afterwards.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_agent_interject_mid_turn_lands_in_the_dialogue() {
     tokio::task::LocalSet::new()
         .run_until(async move {
             let workspace = std::env::temp_dir().join(format!(
-                "a3s-live-interject-{}",
+                "aster-live-interject-{}",
                 std::process::id()
             ));
             let _ = std::fs::remove_dir_all(&workspace);
@@ -641,7 +641,7 @@ async fn real_agent_interject_mid_turn_lands_in_the_dialogue() {
             .expect("interject params");
             let interjected = acp::Agent::ext_method(
                 conn.as_ref(),
-                acp::ExtRequest::new("a3s/interject", std::sync::Arc::from(params)),
+                acp::ExtRequest::new("aster/interject", std::sync::Arc::from(params)),
             )
             .await
             .expect("interject over the wire");
@@ -692,8 +692,8 @@ async fn real_agent_interject_mid_turn_lands_in_the_dialogue() {
             // Reopen this exact session's FileLog through the storage facade.
             // Versioned Steer inputs use a digest-bound identity, not the
             // historical steer:{raw_id} namespace or a raw-file substring.
-            let thread = a3s_code_core::fact_control::thread_for_session(session.0.as_ref());
-            let facts = a3s_code_core::fact_control::read_workspace_facts(&workspace, &thread)
+            let thread = aster_core::fact_control::thread_for_session(session.0.as_ref());
+            let facts = aster_core::fact_control::read_workspace_facts(&workspace, &thread)
                 .expect("reopen the original session fact log");
             let steer_facts: Vec<_> = facts
                 .iter()
@@ -713,7 +713,7 @@ async fn real_agent_interject_mid_turn_lands_in_the_dialogue() {
                 .key
                 .strip_prefix("run-steer-v1:")
                 .expect("versioned original-Run Steer input key");
-            a3s_code_core::validate_digest(digest).expect("valid Steer identity digest");
+            aster_core::validate_digest(digest).expect("valid Steer identity digest");
 
             drop(conn);
             let _ = child.kill().await;
@@ -737,7 +737,7 @@ async fn real_agent_installs_skill_from_url_and_session_survives() {
     tokio::task::LocalSet::new()
         .run_until(async move {
             let workspace = std::env::temp_dir().join(format!(
-                "a3s-live-install-{}",
+                "aster-live-install-{}",
                 std::process::id()
             ));
             let _ = std::fs::remove_dir_all(&workspace);
@@ -745,7 +745,7 @@ async fn real_agent_installs_skill_from_url_and_session_survives() {
             let home = workspace.join("home");
             std::fs::create_dir_all(&home).expect("home");
 
-            let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
+            let bin = PathBuf::from(env!("CARGO_BIN_EXE_aster-acp"));
             let allowed_log = std::sync::Arc::new(std::sync::Mutex::new(Vec::<String>::new()));
             let allowed_log2 = std::sync::Arc::clone(&allowed_log);
             let (gate_tx, mut gate_rx) = tokio::sync::mpsc::unbounded_channel::<QueuedGate>();
@@ -753,12 +753,12 @@ async fn real_agent_installs_skill_from_url_and_session_survives() {
             let mut child = tokio::process::Command::new(bin)
                 .arg("--cwd")
                 .arg(&workspace)
-                .env("A3S_CONFIG", repo_config_path())
-                .env("A3S_DISABLE_CC_SWITCH", "1")
-                .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-                .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+                .env("ASTER_CONFIG", repo_config_path())
+                .env("ASTER_DISABLE_CC_SWITCH", "1")
+                .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+                .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
                 .env("HOME", &home)
-                // The agent must find THIS tree's `a3s` (with `code skills
+                // The agent must find THIS tree's `aster` (with `code skills
                 // add`), not whatever older binary the host PATH carries.
                 .env(
                     "PATH",
@@ -772,7 +772,7 @@ async fn real_agent_installs_skill_from_url_and_session_survives() {
                 .stdout(Stdio::piped())
                 .stderr(Stdio::from(stderr))
                 .spawn()
-                .expect("spawn a3s-code-acp");
+                .expect("spawn aster-acp");
             let stdout = child.stdout.take().expect("stdout").compat();
             let stdin = child.stdin.take().expect("stdin").compat_write();
             struct InstallClient {
@@ -881,7 +881,7 @@ async fn real_agent_installs_skill_from_url_and_session_survives() {
 
             let install = tokio::time::timeout(Duration::from_secs(300), acp::Agent::prompt(
                 conn.as_ref(),
-                prompt(&session, "帮我安装 https://github.com/A3S-Lab/stc-answer"),
+                prompt(&session, "帮我安装 https://github.com/aster-ai-lab/stc-answer"),
             ))
             .await
             .expect("install turn timed out");
@@ -891,8 +891,8 @@ async fn real_agent_installs_skill_from_url_and_session_survives() {
             // The skill must have actually landed somewhere the agent reads.
             let candidates = [
                 workspace.join("skills").join("stc-answer"),
-                workspace.join(".a3s").join("skills").join("stc-answer"),
-                home.join(".a3s").join("skills").join("stc-answer"),
+                workspace.join(".aster").join("skills").join("stc-answer"),
+                home.join(".aster").join("skills").join("stc-answer"),
                 home.join(".claude").join("skills").join("stc-answer"),
             ];
             let _ = &home;
@@ -922,7 +922,7 @@ async fn real_agent_installs_skill_from_url_and_session_survives() {
                 let close = tokio::time::timeout(Duration::from_secs(300), acp::Agent::prompt(
                     conn.as_ref(),
                     prompt(&session, &format!(
-                        "请实际执行：运行 bash 工具，命令为 `a3s code skills add https://github.com/A3S-Lab/stc-answer --project`，\
+                        "请实际执行：运行 bash 工具，命令为 `aster code skills add https://github.com/aster-ai-lab/stc-answer --project`，\
                          并在该 bash 调用参数里附上 github.com 的 network_grant（沙箱内联网必需）。然后确认 SKILL.md 存在。第 {nudges} 次提醒。"
                     )),
                 ))
@@ -989,7 +989,7 @@ async fn real_agent_installs_skill_from_url_and_session_survives() {
                 .clone();
             // Count model turns from the durable log (efficiency receipt).
             let mut model_turns = 0usize;
-            if let Ok(days) = std::fs::read_dir(workspace.join(".a3s").join("sessions")) {
+            if let Ok(days) = std::fs::read_dir(workspace.join(".aster").join("sessions")) {
                 for day in days.flatten() {
                     if let Ok(sessions) = std::fs::read_dir(day.path()) {
                         for session_dir in sessions.flatten() {
@@ -1044,12 +1044,12 @@ fn effort_meta(level: &str) -> acp::Meta {
 /// to none (4 rounds) must tighten enforcement to 4 on the very next turn —
 /// and a switch back must loosen it again.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_agent_effort_switch_mid_dialogue_tracks_the_new_budget() {
     tokio::task::LocalSet::new()
         .run_until(async move {
             let workspace = std::env::temp_dir().join(format!(
-                "a3s-live-effort-{}",
+                "aster-live-effort-{}",
                 std::process::id()
             ));
             let _ = std::fs::remove_dir_all(&workspace);
@@ -1153,7 +1153,7 @@ async fn real_agent_effort_switch_mid_dialogue_tracks_the_new_budget() {
 /// Tool-carrying model turns in this session's durable fact log.
 fn fact_log_tool_rounds_in(workspace: &std::path::Path, session_id: &str) -> usize {
     let mut rounds = 0;
-    if let Ok(days) = std::fs::read_dir(workspace.join(".a3s").join("sessions")) {
+    if let Ok(days) = std::fs::read_dir(workspace.join(".aster").join("sessions")) {
         for day in days.flatten() {
             if let Ok(sessions) = std::fs::read_dir(day.path()) {
                 for session_dir in sessions.flatten() {
@@ -1191,7 +1191,7 @@ fn fact_log_tool_rounds_in(workspace: &std::path::Path, session_id: &str) -> usi
 /// context window is configurable; at the wire the window follows the model
 /// config, so compaction is not claimed here.)
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl (quota: ~16 completions)"]
+#[ignore = "requires a real provider configured in .aster/config.acl (quota: ~16 completions)"]
 async fn real_agent_wire_soak_fourteen_turns() {
     tokio::task::LocalSet::new()
         .run_until(async move {
@@ -1206,7 +1206,7 @@ async fn real_agent_wire_soak_fourteen_turns() {
                 .map(|(index, word)| format!("SOAK-{index:02}-{word}"))
                 .collect();
             let workspace =
-                std::env::temp_dir().join(format!("a3s-live-wire-soak-{}", std::process::id()));
+                std::env::temp_dir().join(format!("aster-live-wire-soak-{}", std::process::id()));
             let _ = std::fs::remove_dir_all(&workspace);
             std::fs::create_dir_all(&workspace).expect("workspace");
 
@@ -1264,7 +1264,7 @@ async fn real_agent_wire_soak_fourteen_turns() {
             let info: serde_json::Value = serde_json::from_str(
                 acp::Agent::ext_method(
                     conn.as_ref(),
-                    acp::ExtRequest::new("a3s/session/info", std::sync::Arc::from(params)),
+                    acp::ExtRequest::new("aster/session/info", std::sync::Arc::from(params)),
                 )
                 .await
                 .expect("session info")
@@ -1315,7 +1315,7 @@ async fn real_agent_resumes_with_mcp_capability_attached() {
     tokio::task::LocalSet::new()
         .run_until(async move {
             let workspace = std::env::temp_dir().join(format!(
-                "a3s-live-mcp-resume-{}",
+                "aster-live-mcp-resume-{}",
                 std::process::id()
             ));
             let _ = std::fs::remove_dir_all(&workspace);
@@ -1412,7 +1412,7 @@ for raw in sys.stdin:
             // The true oracle: the MCP tool EXECUTED — the durable log
             // carries the echoed code.
             let mut echoed = false;
-            if let Ok(days) = std::fs::read_dir(workspace.join(".a3s").join("sessions")) {
+            if let Ok(days) = std::fs::read_dir(workspace.join(".aster").join("sessions")) {
                 for day in days.flatten() {
                     if let Ok(sessions) = std::fs::read_dir(day.path()) {
                         for session_dir in sessions.flatten() {

@@ -176,13 +176,13 @@ pub mod windows_security;
 mod windows_service;
 
 #[cfg(target_os = "linux")]
-pub use a3s_oci_agent::RootlessDevicePolicyBootstrap;
+pub use aster_oci_agent::RootlessDevicePolicyBootstrap;
 #[cfg(not(target_os = "linux"))]
 #[derive(Debug)]
 pub struct RootlessDevicePolicyBootstrap {
     _private: (),
 }
-pub use a3s_oci_agent_protocol::{
+pub use aster_oci_agent_protocol::{
     AgentTransportFaultStage, AgentTransportOperationStage, AgentTransportShutdownStage,
 };
 #[cfg(windows)]
@@ -441,7 +441,7 @@ pub use whpx_recovery_smoke::{
 #[cfg(windows)]
 pub use windows_service::WindowsHostService;
 
-use a3s_oci_core::RuntimeFeatures;
+use aster_oci_core::RuntimeFeatures;
 
 /// Inspect runtime drivers without claiming unsupported workload capability.
 #[must_use]

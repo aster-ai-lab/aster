@@ -143,7 +143,7 @@ async fn repeated_state_run(external_at: Option<usize>) {
     assert!(!events
         .iter()
         .any(|r| matches!(r.event, crate::agent::AgentEvent::End { .. })));
-    assert!(!facts.iter().any(|f| f.kind == "a3s.goal.completed"));
+    assert!(!facts.iter().any(|f| f.kind == "aster.goal.completed"));
 }
 
 struct ExpectedSource {

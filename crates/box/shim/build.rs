@@ -4,13 +4,13 @@ mod macos;
 
 fn main() {
     // Read libkrun library paths from libkrun-sys build metadata.
-    // Cargo derives the DEP_* prefix from `links = "a3s_krun"` in
+    // Cargo derives the DEP_* prefix from `links = "aster_krun"` in
     // libkrun-sys. Keep the old prefix as a fallback for older releases.
-    let libkrun_dir = std::env::var("DEP_A3S_KRUN_LIBKRUN_A3S_DEP")
-        .or_else(|_| std::env::var("DEP_KRUN_LIBKRUN_A3S_DEP"))
+    let libkrun_dir = std::env::var("DEP_ASTER_KRUN_LIBKRUN_ASTER_DEP")
+        .or_else(|_| std::env::var("DEP_KRUN_LIBKRUN_ASTER_DEP"))
         .unwrap_or_default();
-    let libkrunfw_dir = std::env::var("DEP_A3S_KRUN_LIBKRUNFW_A3S_DEP")
-        .or_else(|_| std::env::var("DEP_KRUN_LIBKRUNFW_A3S_DEP"))
+    let libkrunfw_dir = std::env::var("DEP_ASTER_KRUN_LIBKRUNFW_ASTER_DEP")
+        .or_else(|_| std::env::var("DEP_KRUN_LIBKRUNFW_ASTER_DEP"))
         .unwrap_or_default();
 
     #[cfg(windows)]

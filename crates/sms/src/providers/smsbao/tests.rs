@@ -148,7 +148,7 @@ async fn trait_contract_sends_encoded_single_recipient_and_password_md5_once() {
         format!("{:x}", Md5::digest(b"fixture-password"))
     );
     assert_eq!(fields["m"], "13800138000");
-    assert_eq!(fields["c"], "【A3S】验证码：654321 & + ?");
+    assert_eq!(fields["c"], "【Aster】验证码：654321 & + ?");
     assert_eq!(fields["f"], "json");
     let debug = format!("{provider:?}");
     assert!(!debug.contains("fixture-password"));

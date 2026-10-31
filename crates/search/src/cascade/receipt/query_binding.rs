@@ -6,7 +6,7 @@ use sha2::{Digest, Sha256};
 use super::{is_canonical_sha256, SearchCascadeReceiptError};
 use crate::{EngineCategory, SafeSearch, SearchQuery, TimeRange};
 
-const SEARCH_QUERY_BINDING_V1_DOMAIN: &[u8] = b"a3s/search-query-binding/v1\0";
+const SEARCH_QUERY_BINDING_V1_DOMAIN: &[u8] = b"aster/search-query-binding/v1\0";
 
 /// A complete typed search query and its stable version-one identity.
 #[derive(Debug, Clone, PartialEq, Eq)]

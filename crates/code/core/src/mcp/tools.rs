@@ -1,6 +1,6 @@
 //! MCP Tools Integration
 //!
-//! Integrates MCP tools with the A3S Code tool system.
+//! Integrates MCP tools with the Aster Code tool system.
 
 use crate::mcp::manager::McpManager;
 use crate::mcp::protocol::McpTool;
@@ -75,7 +75,7 @@ fn custom_risk_requires_confirmation(key: &str, value: &serde_json::Value) -> bo
     let key = key.to_ascii_lowercase();
     if !matches!(
         key.as_str(),
-        "x-a3s-risk" | "a3s/risk" | "a3s.risk" | "risk"
+        "x-aster-risk" | "aster/risk" | "aster.risk" | "risk"
     ) {
         return false;
     }
@@ -321,7 +321,7 @@ mod tests {
                 read_only_hint: Some(true),
                 open_world_hint: Some(false),
                 additional: HashMap::from([(
-                    "x-a3s-risk".to_string(),
+                    "x-aster-risk".to_string(),
                     serde_json::json!("submit"),
                 )]),
                 ..Default::default()

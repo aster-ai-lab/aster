@@ -102,7 +102,7 @@ async fn destroy_skips_guest_stop_when_terminal_status_published_but_shim_alive(
     use std::sync::atomic::{AtomicBool, Ordering};
     use std::time::{Duration, Instant};
 
-    use a3s_box_core::guest_exec::{GuestTerminalStatus, GUEST_TERMINAL_STATUS_FILE_NAME};
+    use aster_box_core::guest_exec::{GuestTerminalStatus, GUEST_TERMINAL_STATUS_FILE_NAME};
 
     struct LiveShimHandler {
         stopped: Arc<AtomicBool>,
@@ -186,7 +186,7 @@ async fn destroy_skips_guest_stop_when_terminal_status_published_but_shim_alive(
 #[cfg(unix)]
 #[tokio::test]
 async fn destroy_uses_guest_stop_and_verifies_raw_rootfs_handoff() {
-    use a3s_box_core::guest_exec::{GuestTerminalStatus, GUEST_TERMINAL_STATUS_FILE_NAME};
+    use aster_box_core::guest_exec::{GuestTerminalStatus, GUEST_TERMINAL_STATUS_FILE_NAME};
 
     let tmp = tempfile::tempdir().unwrap();
     let box_id = "box-guest-stop".to_string();
@@ -223,10 +223,10 @@ async fn destroy_uses_guest_stop_and_verifies_raw_rootfs_handoff() {
     let server = tokio::spawn(async move {
         let (stream, _) = listener.accept().await.unwrap();
         let (read, write) = tokio::io::split(stream);
-        let mut reader = a3s_transport::FrameReader::new(read);
-        let mut writer = a3s_transport::FrameWriter::new(write);
+        let mut reader = aster_transport::FrameReader::new(read);
+        let mut writer = aster_transport::FrameWriter::new(write);
         let frame = reader.read_frame().await.unwrap().unwrap();
-        assert_eq!(frame.frame_type, a3s_transport::FrameType::Control);
+        assert_eq!(frame.frame_type, aster_transport::FrameType::Control);
         assert_eq!(frame.payload, b"signal-main:15");
 
         let status = GuestTerminalStatus::new(143).with_rootfs_quiesced();
@@ -311,7 +311,7 @@ async fn test_cleanup_boot_failure_retains_ephemeral_dir_for_durable_exit_zero()
     *vm.handler.write().await = Some(Box::new(CompletedHandler { code: 0 }));
 
     let box_dir = tmp.path().join("boxes").join(&box_id);
-    let exit_path = box_dir.join("upper").join(".a3s_exit_code");
+    let exit_path = box_dir.join("upper").join(".aster_exit_code");
     std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
     std::fs::create_dir_all(box_dir.join("logs")).unwrap();
     std::fs::write(&exit_path, "0\n").unwrap();
@@ -357,8 +357,8 @@ async fn test_cleanup_boot_failure_preserves_when_durable_exit_precedes_shim_exi
     let control = box_dir.join("runtime-control");
     std::fs::create_dir_all(&control).unwrap();
     std::fs::write(
-        control.join(a3s_box_core::guest_exec::GUEST_TERMINAL_STATUS_FILE_NAME),
-        serde_json::to_vec(&a3s_box_core::guest_exec::GuestTerminalStatus::new(0)).unwrap(),
+        control.join(aster_box_core::guest_exec::GUEST_TERMINAL_STATUS_FILE_NAME),
+        serde_json::to_vec(&aster_box_core::guest_exec::GuestTerminalStatus::new(0)).unwrap(),
     )
     .unwrap();
 
@@ -417,7 +417,7 @@ async fn test_cleanup_boot_failure_waits_for_delayed_terminal_status() {
         .path()
         .join("boxes")
         .join(&box_id)
-        .join("rootfs/.a3s_exit_code");
+        .join("rootfs/.aster_exit_code");
     *vm.handler.write().await = Some(Box::new(DelayedCompletionHandler {
         polls: Arc::clone(&polls),
         available_after: 3,
@@ -658,7 +658,7 @@ async fn test_try_wait_exit_accepts_cached_shim_zero_with_durable_guest_exit() {
     {
         let rootfs = box_dir.join("rootfs");
         std::fs::create_dir_all(&rootfs).unwrap();
-        std::fs::write(rootfs.join(".a3s_exit_code"), "0\n").unwrap();
+        std::fs::write(rootfs.join(".aster_exit_code"), "0\n").unwrap();
         std::fs::write(rootfs.join(WINDOWS_GUEST_STDOUT), "ok\n").unwrap();
         std::fs::write(
             rootfs.join(WINDOWS_GUEST_STDERR),
@@ -671,7 +671,7 @@ async fn test_try_wait_exit_accepts_cached_shim_zero_with_durable_guest_exit() {
     }
     #[cfg(not(target_os = "windows"))]
     {
-        let exit_path = box_dir.join("upper").join(".a3s_exit_code");
+        let exit_path = box_dir.join("upper").join(".aster_exit_code");
         std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
         std::fs::write(&exit_path, "0\n").unwrap();
     }
@@ -727,7 +727,7 @@ async fn test_try_wait_exit_reads_guest_persisted_exit_code() {
         .join("boxes")
         .join(&box_id)
         .join("upper")
-        .join(".a3s_exit_code");
+        .join(".aster_exit_code");
     std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
     std::fs::write(&exit_path, "42\n").unwrap();
 
@@ -750,7 +750,7 @@ async fn test_try_wait_exit_rereads_guest_exit_code_after_provider_completion() 
         .join("boxes")
         .join(&box_id)
         .join("upper")
-        .join(".a3s_exit_code");
+        .join(".aster_exit_code");
     std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
     *vm.handler.write().await = Some(Box::new(PersistedExitOnCompletionHandler {
         provider_code: 1,
@@ -783,7 +783,7 @@ async fn test_boot_cleanup_prefers_guest_exit_written_during_provider_completion
         .join("boxes")
         .join(&box_id)
         .join("upper")
-        .join(".a3s_exit_code");
+        .join(".aster_exit_code");
     std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
     *vm.handler.write().await = Some(Box::new(PersistedExitOnCompletionHandler {
         provider_code: 1,
@@ -814,7 +814,7 @@ async fn test_guest_exit_code_waits_for_runtime_log_drain() {
         .join("boxes")
         .join(&box_id)
         .join("upper")
-        .join(".a3s_exit_code");
+        .join(".aster_exit_code");
     std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
     std::fs::write(exit_path, "7\n").unwrap();
 
@@ -837,7 +837,7 @@ async fn test_try_wait_exit_reads_windows_rootfs_exit_code() {
         .join("boxes")
         .join(&box_id)
         .join("rootfs")
-        .join(".a3s_exit_code");
+        .join(".aster_exit_code");
     std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
     std::fs::write(&exit_path, "23\n").unwrap();
     #[cfg(target_os = "windows")]

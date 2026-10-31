@@ -1,6 +1,6 @@
 use std::sync::Mutex;
 
-use a3s_orm::{
+use aster_orm::{
     AppliedMigration, Migration, MigrationBackend, MigrationError, MigrationLedger,
     MigrationReport, Migrator, PreparedMigration,
 };
@@ -79,7 +79,7 @@ async fn rejects_invalid_and_duplicate_versions_without_calling_backend() {
         .unwrap_err();
     assert!(matches!(
         error,
-        a3s_orm::migration::MigrationRunError::Validation(
+        aster_orm::migration::MigrationRunError::Validation(
             MigrationError::DuplicateVersion(version)
         ) if version == "001"
     ));
@@ -124,7 +124,7 @@ async fn rejects_missing_or_changed_required_migrations() {
         .unwrap_err();
     assert!(matches!(
         missing,
-        a3s_orm::migration::MigrationRunError::Validation(
+        aster_orm::migration::MigrationRunError::Validation(
             MigrationError::MissingAppliedMigration(version)
         ) if version == "001"
     ));
@@ -141,7 +141,7 @@ async fn rejects_missing_or_changed_required_migrations() {
     .unwrap_err();
     assert!(matches!(
         changed,
-        a3s_orm::migration::MigrationRunError::Validation(
+        aster_orm::migration::MigrationRunError::Validation(
             MigrationError::ChecksumMismatch { version, .. }
         ) if version == "001"
     ));

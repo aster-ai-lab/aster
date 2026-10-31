@@ -15,7 +15,7 @@ SELECT
     created.run_id,
     0,
     arm ->> 'arm_id',
-    a3s_flow_normalize_wakeup_timestamp(arm ->> 'resume_at'),
+    aster_flow_normalize_wakeup_timestamp(arm ->> 'resume_at'),
     created.sequence
 FROM flow_events AS created
 CROSS JOIN LATERAL jsonb_array_elements(created.event_json::jsonb -> 'arms') AS arm
@@ -54,7 +54,7 @@ ON CONFLICT (run_id, wakeup_kind, subject_id) DO UPDATE SET
     scheduled_at_key = EXCLUDED.scheduled_at_key,
     created_sequence = EXCLUDED.created_sequence;
 
-CREATE OR REPLACE FUNCTION a3s_flow_project_select_timer_wakeup()
+CREATE OR REPLACE FUNCTION aster_flow_project_select_timer_wakeup()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
@@ -73,7 +73,7 @@ BEGIN
             NEW.run_id,
             0,
             arm ->> 'arm_id',
-            a3s_flow_normalize_wakeup_timestamp(arm ->> 'resume_at'),
+            aster_flow_normalize_wakeup_timestamp(arm ->> 'resume_at'),
             NEW.sequence
         FROM jsonb_array_elements(NEW.event_json::jsonb -> 'arms') AS arm
         WHERE arm ->> 'type' = 'timer'
@@ -105,5 +105,5 @@ CREATE TRIGGER flow_scheduled_wakeups_after_select
 AFTER INSERT ON flow_events
 FOR EACH ROW
 WHEN ((NEW.event_json::jsonb ->> 'type') IN ('select_created', 'select_completed'))
-EXECUTE FUNCTION a3s_flow_project_select_timer_wakeup();
+EXECUTE FUNCTION aster_flow_project_select_timer_wakeup();
 "#;

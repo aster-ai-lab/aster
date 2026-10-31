@@ -12,7 +12,7 @@ mod artifact;
 pub use artifact::RuntimeArtifact;
 
 /// First public schema for exact-artifact, per-driver runtime capabilities.
-pub const RUNTIME_EXTENSIONS_SCHEMA_V1: &str = "a3s.oci.extensions.v1";
+pub const RUNTIME_EXTENSIONS_SCHEMA_V1: &str = "aster.oci.extensions.v1";
 /// First public contract version for every currently implemented SDK operation.
 pub const RUNTIME_OPERATION_CONTRACT_V1: u16 = 1;
 

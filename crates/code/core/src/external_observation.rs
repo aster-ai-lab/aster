@@ -10,7 +10,7 @@ use std::collections::HashMap;
 use std::path::{Component, Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
 
-pub const EXTERNAL_OBSERVATION_SCHEMA: &str = "a3s.code.external-observation.v1";
+pub const EXTERNAL_OBSERVATION_SCHEMA: &str = "aster.code.external-observation.v1";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

@@ -1,0 +1,59 @@
+extension "aster/home-writing" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "home-writing"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  plugin "shelf" {
+    entry    = "probe.txt"
+    optional = true
+  }
+
+
+  home "notice" {
+    shelf        = "write"
+    title        = "通知"
+    description  = "发布、传达要求周知或执行的事项"
+    seed         = "发布需要周知或执行的事项。"
+    tag          = "通知"
+    order        = 10
+    action       = "writing"
+    writing_type = "notice"
+  }
+  home "report" {
+    shelf        = "write"
+    title        = "报告"
+    description  = "向上级汇报工作、反映情况"
+    seed         = "向上级汇报工作进展和需要说明的情况。"
+    tag          = "报告"
+    order        = 20
+    action       = "writing"
+    writing_type = "report"
+  }
+  home "request" {
+    shelf        = "write"
+    title        = "请示"
+    description  = "向上级请求指示或批准"
+    seed         = "就下列事项请求指示或批准。"
+    tag          = "请示"
+    order        = 30
+    action       = "writing"
+    writing_type = "request"
+  }
+  home "minutes" {
+    shelf        = "write"
+    title        = "纪要"
+    description  = "记载会议主要情况和议定事项"
+    seed         = "记载会议的主要情况和议定事项。"
+    tag          = "纪要"
+    order        = 40
+    action       = "writing"
+    writing_type = "minutes"
+  }
+}

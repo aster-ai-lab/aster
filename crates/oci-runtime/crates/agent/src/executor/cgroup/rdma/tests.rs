@@ -1,10 +1,10 @@
-use a3s_oci_sdk::oci_spec::runtime::LinuxResources;
-use a3s_oci_sdk::ErrorCode;
+use aster_oci_sdk::oci_spec::runtime::LinuxResources;
+use aster_oci_sdk::ErrorCode;
 
 use super::state::parse_state;
 use super::{RdmaLimit, RdmaPlan};
 
-fn plan(value: serde_json::Value) -> Result<RdmaPlan, a3s_oci_sdk::Error> {
+fn plan(value: serde_json::Value) -> Result<RdmaPlan, aster_oci_sdk::Error> {
     let resources: LinuxResources =
         serde_json::from_value(serde_json::json!({"rdma": value})).expect("decode RDMA resources");
     RdmaPlan::from_oci(resources.rdma().as_ref())

@@ -12,7 +12,7 @@ async fn send_now_cancels_before_waiting_for_the_active_turn_permit() {
         for provider in &mut launch.config.providers {
             provider.base_url = Some("http://127.0.0.1:9/v1".into());
         }
-        let agent = A3sCodeAgent::new(launch);
+        let agent = AsterCodeAgent::new(launch);
         let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
             .await
             .unwrap();
@@ -71,7 +71,7 @@ async fn malformed_send_now_refuses_without_cancelling_or_waiting_for_the_queue(
     for provider in &mut launch.config.providers {
         provider.base_url = Some("http://127.0.0.1:9/v1".into());
     }
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
         .await
         .unwrap();
@@ -128,7 +128,7 @@ async fn send_now_announces_the_running_prompt_before_its_text() {
             for provider in &mut launch.config.providers {
                 provider.base_url = Some("http://127.0.0.1:9/v1".into());
             }
-            let agent = A3sCodeAgent::new(launch);
+            let agent = AsterCodeAgent::new(launch);
             let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
                 .await
                 .unwrap();
@@ -138,7 +138,7 @@ async fn send_now_announces_the_running_prompt_before_its_text() {
             let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
             let (read, write) = tokio::io::split(agent_end);
             let (connection, io) = acp::AgentSideConnection::new(
-                A3sCodeAgent::new(tests::test_launch(None)),
+                AsterCodeAgent::new(tests::test_launch(None)),
                 write.compat_write(),
                 read.compat(),
                 |future| {
@@ -163,7 +163,7 @@ async fn send_now_announces_the_running_prompt_before_its_text() {
                 let mut line = String::new();
                 assert_ne!(reader.read_line(&mut line).await.unwrap(), 0);
                 let first: serde_json::Value = serde_json::from_str(&line).unwrap();
-                assert_eq!(first["method"], "_a3s/queue/changed");
+                assert_eq!(first["method"], "_aster/queue/changed");
                 assert_eq!(
                     first["params"]["sessionId"],
                     opened.session_id.0.to_string()
@@ -189,7 +189,7 @@ async fn drain(events: Vec<AgentEvent>, cancelled: bool) -> acp::Result<acp::Pro
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_owned();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
         .await
         .unwrap();
@@ -218,7 +218,7 @@ async fn drain(events: Vec<AgentEvent>, cancelled: bool) -> acp::Result<acp::Pro
         .drain_turn(
             &opened.session_id,
             &session,
-            a3s_code_core::AgentRunStream {
+            aster_core::AgentRunStream {
                 run: None,
                 events: receiver,
                 worker: tokio::spawn(async {}),
@@ -238,7 +238,7 @@ fn end() -> AgentEvent {
         text: "delivered answer".into(),
         usage: Default::default(),
         verification_summary: Box::new(
-            a3s_code_core::verification::VerificationSummary::from_reports(&[]),
+            aster_core::verification::VerificationSummary::from_reports(&[]),
         ),
         completion_terminal: Default::default(),
         forced_stop: None,
@@ -287,7 +287,7 @@ async fn an_explicit_terminal_preserves_success_failure_and_cancellation() {
 
 #[tokio::test]
 async fn forced_stop_is_not_a_successful_end_turn() {
-    use a3s_code_core::harness_loop::ForcedStop;
+    use aster_core::harness_loop::ForcedStop;
     for (forced, expected) in [
         (ForcedStop::ResponseTruncated, acp::StopReason::MaxTokens),
         (ForcedStop::ToolBudget, acp::StopReason::MaxTurnRequests),
@@ -312,7 +312,7 @@ async fn cancellation_after_event_eof_returns_while_retaining_the_live_worker_pe
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_owned();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
         .await
         .unwrap();
@@ -335,7 +335,7 @@ async fn cancellation_after_event_eof_returns_while_retaining_the_live_worker_pe
     let mut draining = Box::pin(agent.drain_turn(
         &opened.session_id,
         &session,
-        a3s_code_core::AgentRunStream {
+        aster_core::AgentRunStream {
             run: None,
             events,
             worker,
@@ -380,7 +380,7 @@ async fn cancel_unanswered_event(event: AgentEvent, already_cancelled: bool) {
             let root = tempfile::tempdir().unwrap();
             let mut launch = tests::test_launch(Some(root.path().join("sessions")));
             launch.workspace = root.path().to_owned();
-            let agent = A3sCodeAgent::new(launch);
+            let agent = AsterCodeAgent::new(launch);
             let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
                 .await
                 .unwrap();
@@ -395,7 +395,7 @@ async fn cancel_unanswered_event(event: AgentEvent, already_cancelled: bool) {
             let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
             let (read, write) = tokio::io::split(agent_end);
             let (connection, io) = acp::AgentSideConnection::new(
-                A3sCodeAgent::new(tests::test_launch(None)),
+                AsterCodeAgent::new(tests::test_launch(None)),
                 write.compat_write(),
                 read.compat(),
                 |future| {
@@ -423,7 +423,7 @@ async fn cancel_unanswered_event(event: AgentEvent, already_cancelled: bool) {
                     let request: serde_json::Value = serde_json::from_str(&line).unwrap();
                     if matches!(
                         request["method"].as_str(),
-                        Some("session/request_permission" | "_a3s/form/request")
+                        Some("session/request_permission" | "_aster/form/request")
                     ) {
                         assert!(
                             !already_cancelled,
@@ -452,7 +452,7 @@ async fn cancel_unanswered_event(event: AgentEvent, already_cancelled: bool) {
             let draining = agent.drain_turn(
                 &opened.session_id,
                 &session,
-                a3s_code_core::AgentRunStream {
+                aster_core::AgentRunStream {
                     run: None,
                     events,
                     worker: tokio::spawn(async {}),

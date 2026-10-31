@@ -153,20 +153,20 @@ mod tests {
 
     #[test]
     fn unwraps_desktop_user_task() {
-        let text = "A3S Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n规划如何开发一个游戏引擎？";
+        let text = "Aster Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n规划如何开发一个游戏引擎？";
         assert_eq!(product_user_text(text), "规划如何开发一个游戏引擎？");
         assert!(!is_wire_only_user_text(text));
     }
 
     #[test]
     fn unwraps_desktop_latest_user_message() {
-        let text = "A3S Desktop workbench context:\n- Active workbench: Office.\n\nLatest user message:\n再试试";
+        let text = "Aster Desktop workbench context:\n- Active workbench: Office.\n\nLatest user message:\n再试试";
         assert_eq!(product_user_text(text), "再试试");
     }
 
     #[test]
     fn unwraps_planner_wrapper_with_latest_user_message() {
-        let text = "Original user request:\nA3S Desktop workbench context:\nLatest user message:\n再试试\n\nPlanner-optimized request:\n再试试\n当前请求仅表示“再试试”，需先澄清。";
+        let text = "Original user request:\nAster Desktop workbench context:\nLatest user message:\n再试试\n\nPlanner-optimized request:\n再试试\n当前请求仅表示“再试试”，需先澄清。";
         assert_eq!(product_user_text(text), "再试试");
     }
 
@@ -180,7 +180,7 @@ mod tests {
     fn strips_pre_planning_hook_appendix() {
         let text = [
             "Original user request:",
-            "A3S Desktop workbench context:",
+            "Aster Desktop workbench context:",
             "User task:",
             "Ship the release",
             "",
@@ -196,13 +196,13 @@ mod tests {
 
     #[test]
     fn keeps_human_skill_slash_spelling_from_desktop_compose() {
-        let text = "A3S Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n/a3s-box run nginx";
-        assert_eq!(product_user_text(text), "/a3s-box run nginx");
+        let text = "Aster Desktop workbench context:\n- Active workbench: Office.\n\nUser task:\n/aster-box run nginx";
+        assert_eq!(product_user_text(text), "/aster-box run nginx");
     }
 
     #[test]
     fn unwraps_planner_optimized_wrapper() {
-        let text = "Original user request:\nA3S Desktop workbench context:\nUser task: 工作区有哪些文件？\nPlanner-optimized request:\nlist files";
+        let text = "Original user request:\nAster Desktop workbench context:\nUser task: 工作区有哪些文件？\nPlanner-optimized request:\nlist files";
         assert_eq!(product_user_text(text), "工作区有哪些文件？");
     }
 
@@ -253,7 +253,7 @@ mod tests {
         assert_eq!(wire.text(), "Execute step 1: Survey");
 
         let dual = Message::user_for_model_with_transcript(
-            "A3S Desktop workbench context:\n\nUser task:\n规划引擎",
+            "Aster Desktop workbench context:\n\nUser task:\n规划引擎",
             "规划引擎",
         );
         assert!(dual.is_product_transcript());

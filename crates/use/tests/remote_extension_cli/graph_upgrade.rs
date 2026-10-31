@@ -189,7 +189,7 @@ async fn schema_v3_cli_upgrade_uses_only_verified_cached_targets_when_offline() 
 
     let installed = package_registry_install(&server, &repository, &home, "acme/root", &[]);
     assert!(installed.status.success(), "{installed:?}");
-    let configured = a3s_use_extension::RegistrySourceStore::new(ExtensionPaths::new(
+    let configured = aster_use_extension::RegistrySourceStore::new(ExtensionPaths::new(
         home.join("data"),
         home.join("state"),
     ))
@@ -371,7 +371,7 @@ fn schema_v3_cli_upgrade_removes_an_unreferenced_dependency_node() {
         })));
     assert_eq!(
         upgraded["data"]["packageGraph"]["plan"]["plan"]["schema"],
-        "a3s.use.plugin-operation-plan.v4"
+        "aster.use.plugin-operation-plan.v4"
     );
     assert!(
         upgraded["data"]["packageGraph"]["plan"]["plan"]["priorPackageLockDigest"]
@@ -681,7 +681,7 @@ async fn schema_v3_manager_upgrades_one_exact_graph_and_retires_the_prior_genera
     assert_eq!(upgraded.retained_packages, ["acme/base"]);
     assert_eq!(
         upgraded.plan.as_ref().unwrap().plan.action,
-        a3s_use_core::PluginOperationAction::Upgrade
+        aster_use_core::PluginOperationAction::Upgrade
     );
     assert!(
         upgraded.root.receipt.lifecycle_generation.unwrap() > prior_generation,
@@ -694,7 +694,7 @@ async fn schema_v3_manager_upgrades_one_exact_graph_and_retires_the_prior_genera
         .catalog
         .selected_state(&[])
         .unwrap();
-    let prior_identity = a3s_use_extension::ExtensionLifecycleIdentity::new(
+    let prior_identity = aster_use_extension::ExtensionLifecycleIdentity::new(
         "acme/root",
         prior_state.release.package_sha256,
         prior_state.release.manifest_sha256,
@@ -799,7 +799,7 @@ async fn schema_v3_manager_upgrades_one_exact_graph_and_retires_the_prior_genera
     );
     assert_eq!(
         history.operations[0].outcome,
-        a3s_use::package::PluginRetainedOperationOutcome::RolledBack
+        aster_use::package::PluginRetainedOperationOutcome::RolledBack
     );
     assert!(history.operations[0]
         .diagnostic
@@ -807,7 +807,7 @@ async fn schema_v3_manager_upgrades_one_exact_graph_and_retires_the_prior_genera
         .lifecycle
         .iter()
         .any(|unit| {
-            unit.status == a3s_use::plugin_lifecycle::PluginLifecycleOperationStatus::RolledBack
+            unit.status == aster_use::plugin_lifecycle::PluginLifecycleOperationStatus::RolledBack
         }));
     assert_eq!(
         history.operations[1].diagnostic.operation.action,

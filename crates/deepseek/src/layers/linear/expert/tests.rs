@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::Tensor;
 
 fn matrix(device: &CudaLayerDevice, layout: MatrixLayout) -> DeviceMatrix {
@@ -156,6 +156,6 @@ fn mixed_weight_layouts_and_cancelled_expert_execution_refuse() {
     cancel.cancel();
     assert!(matches!(
         expert.forward(&input, None, &cancel),
-        Err(a3s_power::error::PowerError::InferenceCancelled)
+        Err(aster_power::error::PowerError::InferenceCancelled)
     ));
 }

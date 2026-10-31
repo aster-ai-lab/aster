@@ -7,7 +7,7 @@ impl FlowRuntime for HookContinuationRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.input()["generation"].as_u64().unwrap() {
             0 if context.hook_payload(HOOK_ID).is_some() || context.hook_disposed(HOOK_ID) => {
@@ -23,7 +23,7 @@ impl FlowRuntime for HookContinuationRuntime {
         }
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("hook continuation runtime does not schedule steps")
     }
 }
@@ -44,7 +44,7 @@ impl CrashBeforeHookSuccessorStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeHookSuccessorStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -53,7 +53,7 @@ impl FlowEventStore for CrashBeforeHookSuccessorStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id != RUN_ID
             && matches!(&event, FlowEvent::RunCreated { .. })
             && self.armed.swap(false, Ordering::SeqCst)
@@ -67,11 +67,11 @@ impl FlowEventStore for CrashBeforeHookSuccessorStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -168,7 +168,7 @@ impl CoordinatedHookLookupStore {
 
 #[async_trait]
 impl FlowEventStore for CoordinatedHookLookupStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -177,24 +177,24 @@ impl FlowEventStore for CoordinatedHookLookupStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner
             .append_if_sequence(run_id, expected_sequence, event)
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 
     async fn find_active_hooks_by_token(
         &self,
         token: &str,
-    ) -> a3s_flow::Result<Vec<ActiveHookSnapshot>> {
+    ) -> aster_flow::Result<Vec<ActiveHookSnapshot>> {
         let active = self.inner.find_active_hooks_by_token(token).await?;
         if !active.is_empty() {
             self.lookup_barrier.wait().await;

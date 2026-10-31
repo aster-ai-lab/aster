@@ -1,12 +1,12 @@
 [package]
-name = "a3s-boot-macros"
+name = "aster-boot-macros"
 version = "0.1.2"
 edition = "2021"
-authors = ["A3S Lab"]
+authors = ["Aster"]
 license = "MIT"
-description = "Attribute macros for a3s-boot"
-repository = "https://github.com/A3S-Lab/Boot"
-documentation = "https://docs.rs/a3s-boot"
+description = "Attribute macros for aster-boot"
+repository = "https://github.com/aster-ai-lab/Boot"
+documentation = "https://docs.rs/aster-boot"
 keywords = ["web", "framework", "macro", "nest", "adapter"]
 categories = ["web-programming", "asynchronous"]
 publish = false

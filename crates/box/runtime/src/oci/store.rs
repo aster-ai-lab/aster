@@ -9,8 +9,8 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::{ImageStoreBackend, StoredImage};
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::{ImageStoreBackend, StoredImage};
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
@@ -37,7 +37,7 @@ pub struct ImageStore {
 }
 
 fn state_dir_hint() -> &'static str {
-    "Set A3S_HOME to a writable directory to change the A3S Box state directory."
+    "Set ASTER_HOME to a writable directory to change the Aster Box state directory."
 }
 
 impl ImageStore {
@@ -635,7 +635,7 @@ impl ImageStore {
         let tmp_path = self.store_dir.join("index.json.tmp");
         let display_path = index_path.clone();
         tokio::task::spawn_blocking(move || {
-            a3s_box_core::fs_atomic::write_durable(&tmp_path, &index_path, &data)
+            aster_box_core::fs_atomic::write_durable(&tmp_path, &index_path, &data)
         })
         .await
         .map_err(|error| {
@@ -754,7 +754,7 @@ fn open_regular_source_no_follow(path: &Path) -> std::io::Result<std::fs::File> 
 
 #[cfg(windows)]
 fn open_regular_source_no_follow(path: &Path) -> std::io::Result<std::fs::File> {
-    a3s_box_core::windows_file::open_regular_file(path, None).map(|(file, _)| file)
+    aster_box_core::windows_file::open_regular_file(path, None).map(|(file, _)| file)
 }
 
 #[cfg(not(any(unix, windows)))]
@@ -1860,12 +1860,12 @@ mod tests {
         let link = source_dir.join("extra-blob");
         create_test_oci_layout(&source_dir);
         std::fs::write(&host_file, b"secret").unwrap();
-        let guard = a3s_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
+        let guard = aster_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
         let assigned_privilege_enabled = guard.assigned_privilege_enabled();
         match std::os::windows::fs::symlink_file(&host_file, &link) {
             Ok(()) => {}
             Err(error)
-                if a3s_box_core::windows_symlink::is_capability_denial(
+                if aster_box_core::windows_symlink::is_capability_denial(
                     &error,
                     assigned_privilege_enabled,
                 ) =>

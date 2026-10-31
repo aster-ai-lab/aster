@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, LocalFileEventStore, NativeTsDependencyMode, NativeTsRuntime,
     NativeTsRuntimeConfig, WorkflowSpec,
 };
@@ -7,10 +7,10 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
-    let Some(compiler) = std::env::var_os("A3S_FLOW_NATIVE_TS_COMPILER") else {
+async fn main() -> aster_flow::Result<()> {
+    let Some(compiler) = std::env::var_os("ASTER_FLOW_NATIVE_TS_COMPILER") else {
         println!("native TypeScript compiler not configured; skipping example");
-        println!("set A3S_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler to run it");
+        println!("set ASTER_FLOW_NATIVE_TS_COMPILER=/path/to/aster-flow-native-compiler to run it");
         return Ok(());
     };
 
@@ -18,13 +18,13 @@ async fn main() -> a3s_flow::Result<()> {
     let runtime = Arc::new(
         NativeTsRuntime::new(NativeTsRuntimeConfig::new(
             compiler,
-            manifest_dir.join("target/a3s-flow-native-ts/artifacts"),
+            manifest_dir.join("target/aster-flow-native-ts/artifacts"),
             &manifest_dir,
         ))
         .with_dependency_mode(NativeTsDependencyMode::CompilerManifest),
     );
     let store = Arc::new(LocalFileEventStore::new(
-        manifest_dir.join("target/a3s-flow-native-ts/events"),
+        manifest_dir.join("target/aster-flow-native-ts/events"),
     ));
     let engine = FlowEngine::new(store, runtime);
     let spec = WorkflowSpec::native_ts(

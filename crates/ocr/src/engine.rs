@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use image::{imageops, ImageBuffer, Rgb, RgbImage};
 use imageproc::geometric_transformations::{warp_into, Interpolation, Projection};
 use imageproc::point::Point;

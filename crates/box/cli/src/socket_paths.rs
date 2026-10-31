@@ -52,7 +52,7 @@ pub fn sibling(record: &BoxRecord, socket_name: &str) -> PathBuf {
 pub fn exec(record: &BoxRecord) -> PathBuf {
     #[cfg(windows)]
     {
-        PathBuf::from(a3s_box_core::exec::windows_exec_pipe_path(&record.id))
+        PathBuf::from(aster_box_core::exec::windows_exec_pipe_path(&record.id))
     }
 
     #[cfg(not(windows))]
@@ -89,7 +89,7 @@ pub fn require_running(record: &BoxRecord, action: &str) -> Result<(), String> {
     }
 
     Err(format!(
-        "Cannot {action} box {} because it is {}. Use `a3s-box start {}` to start it or `a3s-box ps -a` to inspect state.",
+        "Cannot {action} box {} because it is {}. Use `aster-box start {}` to start it or `aster-box ps -a` to inspect state.",
         record.name, record.status, record.name
     ))
 }
@@ -111,7 +111,7 @@ pub fn require_runtime_socket(
     }
 
     Err(format!(
-        "{} socket is missing for running box {} at {}. The box state may be stale or the guest control channel is not ready; run `a3s-box ps` to reconcile state, then `a3s-box restart {}` if the socket is still missing.",
+        "{} socket is missing for running box {} at {}. The box state may be stale or the guest control channel is not ready; run `aster-box ps` to reconcile state, then `aster-box restart {}` if the socket is still missing.",
         socket.label(),
         record.name,
         path.display(),
@@ -128,9 +128,9 @@ mod tests {
     #[test]
     fn test_exec_uses_recorded_exec_socket_path() {
         let mut record = make_record("id", "box", "running", Some(1));
-        record.exec_socket_path = PathBuf::from("/tmp/a3s-custom/exec.sock");
+        record.exec_socket_path = PathBuf::from("/tmp/aster-custom/exec.sock");
 
-        assert_eq!(exec(&record), PathBuf::from("/tmp/a3s-custom/exec.sock"));
+        assert_eq!(exec(&record), PathBuf::from("/tmp/aster-custom/exec.sock"));
     }
 
     #[cfg(windows)]
@@ -140,7 +140,7 @@ mod tests {
 
         assert_eq!(
             exec(&record),
-            PathBuf::from(r"\\.\pipe\a3s-box-exec-1a2b3c4d")
+            PathBuf::from(r"\\.\pipe\aster-box-exec-1a2b3c4d")
         );
     }
 
@@ -148,9 +148,9 @@ mod tests {
     #[test]
     fn test_pty_uses_exec_socket_sibling() {
         let mut record = make_record("id", "box", "running", Some(1));
-        record.exec_socket_path = PathBuf::from("/tmp/a3s-custom/exec.sock");
+        record.exec_socket_path = PathBuf::from("/tmp/aster-custom/exec.sock");
 
-        assert_eq!(pty(&record), PathBuf::from("/tmp/a3s-custom/pty.sock"));
+        assert_eq!(pty(&record), PathBuf::from("/tmp/aster-custom/pty.sock"));
     }
 
     #[test]
@@ -160,7 +160,7 @@ mod tests {
         let error = require_running(&record, "exec").unwrap_err();
 
         assert!(error.contains("Cannot exec box box because it is dead"));
-        assert!(error.contains("a3s-box start box"));
+        assert!(error.contains("aster-box start box"));
     }
 
     #[cfg(not(windows))]
@@ -171,8 +171,8 @@ mod tests {
         let error = require_runtime_socket(&record, RuntimeSocket::Exec).unwrap_err();
 
         assert!(error.contains("exec socket is missing"));
-        assert!(error.contains("a3s-box ps"));
-        assert!(error.contains("a3s-box restart box"));
+        assert!(error.contains("aster-box ps"));
+        assert!(error.contains("aster-box restart box"));
     }
 
     #[cfg(not(windows))]

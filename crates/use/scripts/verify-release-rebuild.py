@@ -255,7 +255,7 @@ def evidence_document(
             "size": archive_digest.size,
         },
         "platform": platform,
-        "schema": "a3s.use.release-rebuild.v1",
+        "schema": "aster.use.release-rebuild.v1",
         "sourceRevision": source_revision,
         "subjects": results,
     }

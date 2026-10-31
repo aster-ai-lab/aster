@@ -1,4 +1,4 @@
-use a3s_use_core::{PlanScope, PluginPackageId, PluginSurfaceRef, UseError, UseResult};
+use aster_use_core::{PlanScope, PluginPackageId, PluginSurfaceRef, UseError, UseResult};
 use serde::{Deserialize, Serialize};
 
 use super::{
@@ -6,7 +6,7 @@ use super::{
     PluginLifecycleFailure, PluginLifecycleOperationRecord, PluginLifecycleOperationStatus,
 };
 
-pub const PLUGIN_LIFECYCLE_DIAGNOSTIC_SCHEMA: &str = "a3s.use.plugin-lifecycle-diagnostic.v1";
+pub const PLUGIN_LIFECYCLE_DIAGNOSTIC_SCHEMA: &str = "aster.use.plugin-lifecycle-diagnostic.v1";
 
 /// Read-only, secret-free lifecycle evidence for one package and scope.
 ///

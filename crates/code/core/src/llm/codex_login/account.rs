@@ -7,7 +7,7 @@
 //! redirect where the OAuth bearer is sent; the cache's `identity` field
 //! is likewise never read — the account id comes from `auth.json` only
 //! (override everything with an explicit provider block and
-//! `A3S_DISABLE_CODEX_ACCOUNT=1`).
+//! `ASTER_DISABLE_CODEX_ACCOUNT=1`).
 //!
 //! The access token is a short-lived JWT and this importer never refreshes
 //! it (only `codex` itself can): an already-expired token is not imported,
@@ -20,7 +20,7 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-use crate::{ModelConfig, ProviderConfig};
+use crate::{ModelConfig, ProviderConfig, ProviderProtocol};
 use anyhow::{Context, Result};
 use serde_json::Value;
 
@@ -83,7 +83,7 @@ pub(super) fn merge_into_config(config: &mut crate::CodeConfig) -> Result<bool> 
 
 fn disabled_by_env() -> bool {
     matches!(
-        std::env::var("A3S_DISABLE_CODEX_ACCOUNT")
+        std::env::var("ASTER_DISABLE_CODEX_ACCOUNT")
             .unwrap_or_default()
             .to_ascii_lowercase()
             .as_str(),
@@ -93,7 +93,7 @@ fn disabled_by_env() -> bool {
 
 fn prefer_codex_default() -> bool {
     matches!(
-        std::env::var("A3S_PREFER_CODEX")
+        std::env::var("ASTER_PREFER_CODEX")
             .unwrap_or_default()
             .to_ascii_lowercase()
             .as_str(),
@@ -110,7 +110,7 @@ pub fn load_logged_in_account() -> Result<Option<CodexAccountImport>> {
 }
 
 fn resolve_codex_home() -> Option<PathBuf> {
-    if let Some(explicit) = std::env::var_os("A3S_CODEX_HOME") {
+    if let Some(explicit) = std::env::var_os("ASTERX_HOME") {
         if !explicit.is_empty() {
             return Some(PathBuf::from(explicit));
         }
@@ -237,6 +237,7 @@ fn provider_from_parts(
     headers.insert(ACCOUNT_ID_HEADER.to_string(), account_id.to_string());
 
     let provider = ProviderConfig {
+        protocol: Some(ProviderProtocol::Codex),
         name: PROVIDER_NAME.to_string(),
         api_key: Some(access_token.to_string()),
         base_url: None,
@@ -523,13 +524,11 @@ mod tests {
         .unwrap();
         let import = load_from_home(home.path()).unwrap().unwrap();
         assert_eq!(import.default_model_id, "synthetic-selected-model");
-        assert!(
-            import
-                .provider
-                .models
-                .iter()
-                .any(|model| model.id == "synthetic-selected-model")
-        );
+        assert!(import
+            .provider
+            .models
+            .iter()
+            .any(|model| model.id == "synthetic-selected-model"));
     }
 
     #[test]
@@ -599,7 +598,7 @@ mod tests {
     #[test]
     fn merge_replaces_a_stale_codex_provider_and_respects_the_disable_env() {
         let _lock = ENV_TEST.lock().unwrap_or_else(|poison| poison.into_inner());
-        let _prefer = EnvVar::set("A3S_PREFER_CODEX", None);
+        let _prefer = EnvVar::set("ASTER_PREFER_CODEX", None);
         let temp = tempfile::tempdir().unwrap();
         let home = temp.path().join("codex-home");
         write_login(&home, FUTURE_JWT);
@@ -608,6 +607,7 @@ mod tests {
         let mut config = crate::CodeConfig::default();
         config.default_model = Some("mock/m".to_string());
         config.providers.push(ProviderConfig {
+            protocol: None,
             name: PROVIDER_NAME.to_string(),
             api_key: None,
             base_url: None,
@@ -616,8 +616,8 @@ mod tests {
             models: Vec::new(),
         });
         {
-            let _home = EnvVar::set("A3S_CODEX_HOME", Some(home.clone().into_os_string()));
-            let _off = EnvVar::set("A3S_DISABLE_CODEX_ACCOUNT", None);
+            let _home = EnvVar::set("ASTERX_HOME", Some(home.clone().into_os_string()));
+            let _off = EnvVar::set("ASTER_DISABLE_CODEX_ACCOUNT", None);
             assert!(merge_into_config(&mut config).unwrap());
         }
         assert_eq!(config.providers.len(), 1);
@@ -627,8 +627,8 @@ mod tests {
 
         let mut config = crate::CodeConfig::default();
         {
-            let _home = EnvVar::set("A3S_CODEX_HOME", Some(home.into_os_string()));
-            let _off = EnvVar::set("A3S_DISABLE_CODEX_ACCOUNT", Some("1".into()));
+            let _home = EnvVar::set("ASTERX_HOME", Some(home.into_os_string()));
+            let _off = EnvVar::set("ASTER_DISABLE_CODEX_ACCOUNT", Some("1".into()));
             assert!(!merge_into_config(&mut config).unwrap());
         }
         assert!(config.providers.is_empty());

@@ -128,7 +128,7 @@ impl SessionPermissions {
         }
     }
 
-    pub(super) fn policy(&self) -> a3s_code_core::permissions::PermissionPolicy {
+    pub(super) fn policy(&self) -> aster_core::permissions::PermissionPolicy {
         let mut policy = if self.research_admission {
             crate::host_context::research_policy(self.posture.as_str(), &self.denies)
         } else {
@@ -169,9 +169,9 @@ impl LiveSession {
             next.policy()
         };
         let planning = match (&self.host.knowledge_compile, posture) {
-            _ if self.host.source_review => a3s_code_core::PlanningMode::Disabled,
-            (None, PermissionPosture::Plan) => a3s_code_core::PlanningMode::Enabled,
-            _ => a3s_code_core::PlanningMode::Disabled,
+            _ if self.host.source_review => aster_core::PlanningMode::Disabled,
+            (None, PermissionPosture::Plan) => aster_core::PlanningMode::Enabled,
+            _ => aster_core::PlanningMode::Disabled,
         };
         self.session
             .set_permission_policy(policy)

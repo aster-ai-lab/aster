@@ -1,4 +1,4 @@
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionHealthStatus, CollectionMaintenanceOptions, CollectionMaintenancePhase,
     CollectionOptions, CollectionSchema, DataType, Doc, ErrorCode, FieldSchema, IndexParams,
 };
@@ -24,7 +24,7 @@ fn indexed_schema() -> CollectionSchema {
 fn manual_options() -> CollectionOptions {
     let mut options = CollectionOptions::new().expect("options must be valid");
     options
-        .set_durability(a3s_vec::Durability::Manual)
+        .set_durability(aster_vec::Durability::Manual)
         .expect("manual durability must be valid");
     options
 }

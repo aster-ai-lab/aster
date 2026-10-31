@@ -84,8 +84,8 @@ import_accounts = [{import_accounts}]
         ),
     )
     .unwrap();
-    let a3s_home = root.path().join("a3s-home");
-    std::fs::create_dir_all(&a3s_home).unwrap();
+    let aster_home = root.path().join("aster-home");
+    std::fs::create_dir_all(&aster_home).unwrap();
     // env_clear() strips the launcher's environment; keep a usable PATH for
     // child tools the TUI may shell out to.
     let mut path = "/usr/bin:/bin".to_string();
@@ -95,15 +95,15 @@ import_accounts = [{import_accounts}]
     }
     let env = vec![
         (
-            "A3S_ACP_AGENT_BIN".to_string(),
-            env!("CARGO_BIN_EXE_a3s-code-acp").to_string(),
+            "ASTER_ACP_AGENT_BIN".to_string(),
+            env!("CARGO_BIN_EXE_aster-acp").to_string(),
         ),
-        ("A3S_HOME".to_string(), a3s_home.display().to_string()),
-        ("A3S_CONFIG".to_string(), config.display().to_string()),
-        ("A3S_DISABLE_CC_SWITCH".to_string(), "1".to_string()),
-        ("A3S_DISABLE_GROK_ACCOUNT".to_string(), "1".to_string()),
-        ("A3S_DISABLE_CURSOR_ACCOUNT".to_string(), "1".to_string()),
-        ("A3S_DISABLE_CODEX_ACCOUNT".to_string(), "1".to_string()),
+        ("ASTER_HOME".to_string(), aster_home.display().to_string()),
+        ("ASTER_CONFIG".to_string(), config.display().to_string()),
+        ("ASTER_DISABLE_CC_SWITCH".to_string(), "1".to_string()),
+        ("ASTER_DISABLE_GROK_ACCOUNT".to_string(), "1".to_string()),
+        ("ASTER_DISABLE_CURSOR_ACCOUNT".to_string(), "1".to_string()),
+        ("ASTER_DISABLE_CODEX_ACCOUNT".to_string(), "1".to_string()),
         ("HOME".to_string(), home.display().to_string()),
         (
             "TMPDIR".to_string(),
@@ -396,8 +396,8 @@ fn codex_models_list_filter_and_switch() {
     let env = with_env(
         &fixture,
         &[
-            ("A3S_CODEX_HOME", codex_home.to_str().unwrap()),
-            ("A3S_DISABLE_CODEX_ACCOUNT", "0"),
+            ("ASTERX_HOME", codex_home.to_str().unwrap()),
+            ("ASTER_DISABLE_CODEX_ACCOUNT", "0"),
         ],
     );
     let refs = as_refs(&env);
@@ -433,15 +433,15 @@ fn an_expired_codex_token_stays_out_of_the_picker() {
     let env = with_env(
         &fixture,
         &[
-            ("A3S_CODEX_HOME", codex_home.to_str().unwrap()),
-            ("A3S_DISABLE_CODEX_ACCOUNT", "0"),
+            ("ASTERX_HOME", codex_home.to_str().unwrap()),
+            ("ASTER_DISABLE_CODEX_ACCOUNT", "0"),
         ],
     );
     let refs = as_refs(&env);
     let mut pty = open_pty(&tui_binary(), &fixture.workspace, &refs);
     wait_ready(&mut pty, "mock/m1", Duration::from_secs(45));
 
-    open_model_picker(&mut pty, "From A3S ACL provider mock");
+    open_model_picker(&mut pty, "From Aster ACL provider mock");
     std::thread::sleep(Duration::from_millis(600));
     let settled = pty.screen();
     assert!(

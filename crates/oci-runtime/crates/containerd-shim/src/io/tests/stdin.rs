@@ -93,8 +93,8 @@ async fn stdin_pump_replays_pending_write_and_continues_after_durable_sequence()
     let service =
         ReplaySafeStdinService::with_completed(pending_operation.clone(), pending_data.clone());
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(service.clone()),
-        a3s_oci_sdk::IsolationRequest::SharedHostKernel,
+        aster_oci_sdk::RuntimeClient::new(service.clone()),
+        aster_oci_sdk::IsolationRequest::SharedHostKernel,
     );
     let journal = Arc::new(RecordingStdinJournal::default());
     let identity = TaskIdentity::new("k8s.io", "journaled-stdin").expect("task identity");
@@ -164,8 +164,8 @@ async fn stdin_pump_finishes_a_durable_close_without_reopening_its_fifo() {
     let service = BlockingStdinService::default();
     service.mark_producer_finished();
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(service.clone()),
-        a3s_oci_sdk::IsolationRequest::SharedHostKernel,
+        aster_oci_sdk::RuntimeClient::new(service.clone()),
+        aster_oci_sdk::IsolationRequest::SharedHostKernel,
     );
     let journal = Arc::new(RecordingStdinJournal::default());
     let identity = TaskIdentity::new("k8s.io", "closing-stdin").expect("task identity");
@@ -216,8 +216,8 @@ async fn stdin_pump_finishes_a_durable_close_without_reopening_its_fifo() {
 
     let closed_service = BlockingStdinService::default();
     let closed_adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(closed_service.clone()),
-        a3s_oci_sdk::IsolationRequest::SharedHostKernel,
+        aster_oci_sdk::RuntimeClient::new(closed_service.clone()),
+        aster_oci_sdk::IsolationRequest::SharedHostKernel,
     );
     let closed_journal = Arc::new(RecordingStdinJournal::default());
     let closed_identity = TaskIdentity::new("k8s.io", "closed-stdin").expect("task identity");
@@ -285,8 +285,8 @@ async fn initial_empty_stdin_closes_at_the_successful_start_boundary() {
     let service = BlockingStdinService::default();
     service.mark_producer_finished();
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(service.clone()),
-        a3s_oci_sdk::IsolationRequest::SharedHostKernel,
+        aster_oci_sdk::RuntimeClient::new(service.clone()),
+        aster_oci_sdk::IsolationRequest::SharedHostKernel,
     );
     let identity = TaskIdentity::new("k8s.io", "empty-stdin").expect("task identity");
     let mut pumps = start_process_pumps(
@@ -348,8 +348,8 @@ async fn connected_slow_stdin_is_not_mistaken_for_initial_eof() {
     let service = BlockingStdinService::default();
     service.release_writes(16);
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(service.clone()),
-        a3s_oci_sdk::IsolationRequest::SharedHostKernel,
+        aster_oci_sdk::RuntimeClient::new(service.clone()),
+        aster_oci_sdk::IsolationRequest::SharedHostKernel,
     );
     let identity = TaskIdentity::new("k8s.io", "slow-stdin").expect("task identity");
     let mut pumps = start_process_pumps(
@@ -426,8 +426,8 @@ async fn restored_stdin_waits_for_a_real_producer_reconnect() {
     let service = BlockingStdinService::default();
     service.release_writes(16);
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(service.clone()),
-        a3s_oci_sdk::IsolationRequest::SharedHostKernel,
+        aster_oci_sdk::RuntimeClient::new(service.clone()),
+        aster_oci_sdk::IsolationRequest::SharedHostKernel,
     );
     let identity = TaskIdentity::new("k8s.io", "restored-stdin").expect("task identity");
     let mut pumps = start_process_pumps(
@@ -508,8 +508,8 @@ async fn close_io_waits_for_every_buffered_stdin_byte_before_eof() {
 
     let service = BlockingStdinService::default();
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(service.clone()),
-        a3s_oci_sdk::IsolationRequest::SharedHostKernel,
+        aster_oci_sdk::RuntimeClient::new(service.clone()),
+        aster_oci_sdk::IsolationRequest::SharedHostKernel,
     );
     let identity = TaskIdentity::new("k8s.io", "stdin-drain").expect("task identity");
     let mut pumps = start_process_pumps(

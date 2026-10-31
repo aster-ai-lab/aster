@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::discovery::office_error;
 use crate::{
@@ -351,7 +351,7 @@ fn required<'a>(node: &'a DocumentNode, key: &str) -> UseResult<&'a str> {
         .ok_or_else(|| invalid_node(node, format!("has no required semantic property '{key}'")))
 }
 
-fn invalid_node(node: &DocumentNode, reason: impl Into<String>) -> a3s_use_core::UseError {
+fn invalid_node(node: &DocumentNode, reason: impl Into<String>) -> aster_use_core::UseError {
     office_error(
         "use.office.spreadsheet_conditional_format_semantic_invalid",
         format!(

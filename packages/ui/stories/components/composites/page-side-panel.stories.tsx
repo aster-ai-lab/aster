@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { Button, PageSidePanel, PageSidePanelItem, PageSidePanelSection, Switch } from '@a3s-lab/ui'
+import { Button, PageSidePanel, PageSidePanelItem, PageSidePanelSection, Switch } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof PageSidePanel> = {
   title: 'Components/Composites/page-side-panel',

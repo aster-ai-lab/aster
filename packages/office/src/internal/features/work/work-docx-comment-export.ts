@@ -12,7 +12,7 @@ export function createDocxCommentRecords(
     commentIds.set(comment.id, id);
     records.push({
       id,
-      author: comment.author || 'A3S Work',
+      author: comment.author || 'Aster Work',
       initials: commentInitials(comment.author),
       date: commentDate(comment.date),
       resolved: Boolean(comment.resolved),
@@ -23,7 +23,7 @@ export function createDocxCommentRecords(
       records.push({
         id: assignedReply.id,
         parentId: id,
-        author: reply.author || 'A3S Work',
+        author: reply.author || 'Aster Work',
         initials: commentInitials(reply.author),
         date: commentDate(reply.date),
         children: [new docx.Paragraph({ text: reply.text || '（空回复）' })],

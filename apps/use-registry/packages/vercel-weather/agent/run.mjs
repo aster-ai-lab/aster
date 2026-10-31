@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { readCall } from './call.mjs'
 import { currentWeather } from './weather.mjs'
 
-if (process.env.A3S_AGENT_PROTOCOL === '1') {
+if (process.env.ASTER_AGENT_PROTOCOL === '1') {
   const events = []
   const server = http.createServer(async (request, response) => {
     const chunks = []
@@ -59,16 +59,16 @@ const chunks = []
 for await (const chunk of process.stdin) chunks.push(chunk)
 const call = readCall(Buffer.concat(chunks).toString('utf8'))
 
-const baseURL = process.env.A3S_MODEL_BASE_URL?.trim()
+const baseURL = process.env.ASTER_MODEL_BASE_URL?.trim()
 if (!baseURL) {
   const text = await weather.execute({ city: call.city }, { toolCallId: 'turn', messages: [] })
   process.stdout.write(String(text))
 } else {
   const model = createOpenAICompatible({
-    name: 'a3s',
+    name: 'aster',
     baseURL,
-    apiKey: process.env.A3S_MODEL_API_KEY ?? ''
-  }).chatModel(process.env.A3S_MODEL_ID?.trim() || 'default')
+    apiKey: process.env.ASTER_MODEL_API_KEY ?? ''
+  }).chatModel(process.env.ASTER_MODEL_ID?.trim() || 'default')
   const result = streamText({
     model,
     tools: { current_weather: weather },

@@ -1,0 +1,44 @@
+[package]
+license = "Apache-2.0"
+name = "aster-foreign-sessions"
+version = "0.1.0"
+description = "Bounded, metadata-only discovery of foreign coding-agent sessions"
+edition = "2024"
+publish = false
+
+[features]
+default = []
+
+[dependencies]
+# Rollout-filename date windows for the Codex file scanner.
+chrono = {workspace = true}
+# Home/config discovery for the per-tool session stores.
+dirs = "6"
+# Non-UNC canonicalization so Windows path comparisons stay comparable.
+dunce = {workspace = true}
+# Branch lookup for session summaries.
+git2 = {workspace = true}
+# Per-workspace store-directory hashing for the optional peer-editor scanner.
+md5 = {version = "0.8", optional = true}
+# Read-only/query-only access to the foreign SQLite stores.
+rusqlite = {workspace = true}
+serde_json = {workspace = true}
+# Session ids are UUIDs; only parsing is used, no generation.
+uuid = {workspace = true}
+# Home-root resolution for the per-tool session stores (dirs::home_dir is banned).
+# Journal-mode probe: foreign stores are opened only under local WAL.
+# Codex rollout files may be zstd-compressed.
+zstd = {workspace = true}
+
+# Directory/file capability handles (openat-style) for the approved-root walk.
+aster-sqlite-journal = {path = "../aster-sqlite-journal"}
+aster-dirs = {path = "../aster-dirs"}
+[target.'cfg(unix)'.dependencies]
+libc = {workspace = true}
+
+[dev-dependencies]
+filetime = {workspace = true}
+tempfile = {workspace = true}
+
+[lints]
+workspace = true

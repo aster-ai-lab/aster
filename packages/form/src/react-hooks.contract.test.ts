@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest';
 
-import type { FieldError as A3SFieldError } from './core/types';
+import type { FieldError as AsterFieldError } from './core/types';
 import {
-  toA3SFormErrors,
+  toAsterFormErrors,
   toReactHookFormErrors,
 } from './react-hooks';
 
 // The React Hook Form binding contract: the error mappers are the
 // typed boundary between RHF's nested FieldErrors and the core's
-// flat A3SFieldError list. They are pure, so the contract pins them
+// flat AsterFieldError list. They are pure, so the contract pins them
 // without a DOM.
 
-const issue = (path: string, code: string, message: string): A3SFieldError =>
-  ({ path, code, message }) as A3SFieldError;
+const issue = (path: string, code: string, message: string): AsterFieldError =>
+  ({ path, code, message }) as AsterFieldError;
 
 describe('the react-hook-form error mappers', () => {
   it('maps a flat issue onto a nested FieldErrors tree', () => {
@@ -30,7 +30,7 @@ describe('the react-hook-form error mappers', () => {
       issue('address.city', 'required', '城市必填'),
       issue('tags.0', 'maxLength', '过长'),
     ];
-    const back = toA3SFormErrors(toReactHookFormErrors(issues));
+    const back = toAsterFormErrors(toReactHookFormErrors(issues));
     expect(back).toEqual(issues);
   });
 
@@ -42,7 +42,7 @@ describe('the react-hook-form error mappers', () => {
         types: { min: '太小', max: '太大' },
       },
     };
-    const issues = toA3SFormErrors(errors as never);
+    const issues = toAsterFormErrors(errors as never);
     expect(issues).toEqual([
       { path: 'age', code: 'validate', message: '校验失败' },
       { path: 'age', code: 'min', message: '太小' },
@@ -56,8 +56,8 @@ describe('the react-hook-form error mappers', () => {
       b: { type: 't', message: '重复' },
       b2: { type: 't', message: '重复' },
     };
-    const first = toA3SFormErrors(errors as never);
-    const doubled = toA3SFormErrors({
+    const first = toAsterFormErrors(errors as never);
+    const doubled = toAsterFormErrors({
       ...errors,
       b3: { type: 't', message: '重复' },
     } as never);

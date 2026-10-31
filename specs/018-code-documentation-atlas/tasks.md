@@ -28,7 +28,7 @@
 - [x] Focused renderer and interaction tests pass.
 - [x] Existing web Node and Python suites pass.
 - [x] Deterministic generation, site validation and staged file comparison pass.
-- [x] No Rust edits, new A3S dependencies, native choice controls or product configuration.
+- [x] No Rust edits, new Aster dependencies, native choice controls or product configuration.
 - [x] No unrelated edits staged or committed; publication is explicitly authorized by the active user goal.
 
 - [x] T012 [US4] Commit scoped files, push to main, retain the Pages run receipt and verify live root/docs pages and all six latest installer URLs.

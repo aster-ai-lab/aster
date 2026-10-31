@@ -1,19 +1,19 @@
 use super::fixture::{QualificationProvider, TARGET_INDEX, TARGET_QUERY};
 use super::measurement::{ExpectedBytes, ExpectedWork};
 use super::{CANDIDATE_LIMIT, CORPUS_RECORDS, EMBEDDING_BATCH_INPUTS, RUN_TIMEOUT};
-use a3s_code_core::embedding::{EmbeddingExecutorConfig, EmbeddingProvider};
-use a3s_code_core::memory::{
+use aster_core::embedding::{EmbeddingExecutorConfig, EmbeddingProvider};
+use aster_core::memory::{
     AgentMemory, MemoryConfig, MemoryMaintenanceOptions, MemoryMaintenanceRuntime,
     ScheduledSemanticRefresh, SemanticRefreshMetrics, SemanticRefreshRunMetrics,
     SemanticRefreshRunOutcome,
 };
-use a3s_code_core::{
+use aster_core::{
     DurableMemoryRecallChannel, DurableMemoryRecallPolicy, DurableMemorySemanticRecall,
     DurableMemorySemanticRecallPolicy, DurableMemorySession,
 };
-use a3s_memory::repository::{FileMemoryRepository, MemoryNamespace, MemoryRepository};
-use a3s_memory::vector::{SqliteVectorIndex, VectorIndex};
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::repository::{FileMemoryRepository, MemoryNamespace, MemoryRepository};
+use aster_durable_memory::vector::{SqliteVectorIndex, VectorIndex};
+use aster_durable_memory::InMemoryStore;
 use anyhow::{bail, Context, Result};
 use std::path::Path;
 use std::sync::Arc;

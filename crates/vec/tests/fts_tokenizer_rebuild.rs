@@ -9,7 +9,7 @@
 
 //! Changing FTS analyzer forces a full rebuild of the FTS generation (I1).
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema, Fts,
     IndexParams, SearchQuery,
 };

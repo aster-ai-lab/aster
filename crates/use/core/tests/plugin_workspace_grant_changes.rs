@@ -1,7 +1,7 @@
 #[path = "support/plugin_workspace_grant_fixtures.rs"]
 mod fixtures;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlannedWorkspaceGrantChange, PluginWorkspaceGrantChangeSet, PluginWorkspaceGrantSnapshot,
 };
 use fixtures::{
@@ -282,7 +282,7 @@ fn uninstall_binds_the_before_snapshot_and_resolves_exact_revocations() {
     );
 
     let mut denied_plan = plan;
-    denied_plan.authority.decision = a3s_use_core::PlanPolicyDecision::Deny;
+    denied_plan.authority.decision = aster_use_core::PlanPolicyDecision::Deny;
     denied_plan.authority.confirmation_required = false;
     assert_eq!(
         changes

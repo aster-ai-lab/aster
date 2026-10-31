@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowSignal, WorkflowSpec,
 };
@@ -22,7 +22,7 @@ impl FlowRuntime for InvoiceRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         let Some(approval) = context.signal_payload_as::<Approval>("approval")? else {
             return Ok(context.wait_for_signal("approval", APPROVAL_SIGNAL));
@@ -33,7 +33,7 @@ impl FlowRuntime for InvoiceRuntime {
         })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime(
             "invoice signal example does not execute steps".to_string(),
         ))
@@ -41,7 +41,7 @@ impl FlowRuntime for InvoiceRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(InvoiceRuntime));
     let spec = WorkflowSpec::rust_embedded(
         "example.invoice-approval",

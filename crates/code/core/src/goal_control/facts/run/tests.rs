@@ -3,7 +3,7 @@
 use super::*;
 use crate::goal_control::GoalPlanCommandV1;
 use crate::planning::{Complexity, ExecutionPlan, Task};
-use a3s_effect::{FileLog, LogStore, MemoryLog};
+use aster_effect::{FileLog, LogStore, MemoryLog};
 
 fn seed(log: &dyn LogStore) -> (WorkspaceRef, Vec<Fact>) {
     let command = super::super::tests::command();

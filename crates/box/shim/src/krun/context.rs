@@ -9,8 +9,8 @@
 use std::{ffi::CString, path::Path, ptr};
 
 use super::check_status;
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::vmm::{RawBlockDevice, RootfsSource};
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::vmm::{RawBlockDevice, RootfsSource};
 #[cfg(target_os = "macos")]
 use libkrun_sys::krun_add_net_unixgram;
 #[cfg(not(target_os = "windows"))]
@@ -63,15 +63,15 @@ impl KrunContext {
 
         // Determine log level from RUST_LOG environment variable
         let log_level = match std::env::var("RUST_LOG").as_deref() {
-            Ok("trace") | Ok("a3s_box=trace") => {
+            Ok("trace") | Ok("aster_box=trace") => {
                 tracing::debug!("Initializing libkrun with TRACE log level");
                 KRUN_LOG_LEVEL_TRACE
             }
-            Ok("debug") | Ok("a3s_box=debug") => {
+            Ok("debug") | Ok("aster_box=debug") => {
                 tracing::debug!("Initializing libkrun with DEBUG log level");
                 KRUN_LOG_LEVEL_DEBUG
             }
-            Ok("info") | Ok("a3s_box=info") => {
+            Ok("info") | Ok("aster_box=info") => {
                 tracing::debug!("Initializing libkrun with INFO log level");
                 KRUN_LOG_LEVEL_INFO
             }
@@ -138,7 +138,7 @@ impl KrunContext {
 
     #[cfg(not(target_os = "windows"))]
     unsafe fn set_ext4_root_disk(&self, path: &Path, read_only: bool) -> Result<()> {
-        // A3S-created root images are always raw ext4 files with no partition
+        // Aster-created root images are always raw ext4 files with no partition
         // table. They are deliberately never probed after guest access: an
         // untrusted guest could rewrite the bytes as a linked image format.
         const ROOT_DISK_ID: &str = "rootfs";
@@ -157,7 +157,7 @@ impl KrunContext {
             ),
         )?;
 
-        let device = value_to_cstring(a3s_box_core::vmm::GUEST_EXT4_ROOT_DEVICE, "root device")?;
+        let device = value_to_cstring(aster_box_core::vmm::GUEST_EXT4_ROOT_DEVICE, "root device")?;
         let filesystem = value_to_cstring(ROOT_FILESYSTEM, "root filesystem")?;
         let mount_options = read_only
             .then(|| value_to_cstring("ro", "root mount options"))

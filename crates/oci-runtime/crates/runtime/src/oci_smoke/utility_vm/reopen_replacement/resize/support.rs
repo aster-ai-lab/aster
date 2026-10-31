@@ -1,8 +1,8 @@
 use std::path::Path;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     Error, ErrorCode, IoMode, OperationId, ProcessId, ProcessIo, ProcessTarget, TerminalSize,
 };
 
@@ -32,7 +32,7 @@ pub(super) fn terminal_exec_process(
     let process_id = ProcessId::new(format!("resize-worker-{nonce}"))
         .map_err(|error| format!("failed to construct terminal Exec process ID: {error}"))?;
     let command = format!(
-        r#"set -eu; trap 'size=$(/bin/busybox stty size); printf "a3s-oci-resize-{nonce}:%s\n" "$size" > /{RESIZE_MARKER_NAME}' WINCH; printf 'a3s-oci-exec-process-{nonce}\n' > /{}; while :; do /bin/busybox sleep 1; done"#,
+        r#"set -eu; trap 'size=$(/bin/busybox stty size); printf "aster-oci-resize-{nonce}:%s\n" "$size" > /{RESIZE_MARKER_NAME}' WINCH; printf 'aster-oci-exec-process-{nonce}\n' > /{}; while :; do /bin/busybox sleep 1; done"#,
         super::super::exec::EXEC_MARKER_NAME,
     );
     let process: Process = serde_json::from_value(serde_json::json!({

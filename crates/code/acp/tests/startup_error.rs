@@ -5,16 +5,16 @@ use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::process::{Child, ChildStdout, Command};
 
 fn start(workspace: &std::path::Path, home: &std::path::Path) -> (Child, BufReader<ChildStdout>) {
-    let mut child = Command::new(env!("CARGO_BIN_EXE_a3s-code-acp"))
+    let mut child = Command::new(env!("CARGO_BIN_EXE_aster-acp"))
         .arg("--cwd")
         .arg(workspace)
         .env("HOME", home)
-        .env("A3S_CODE_LOG_FILE", "0")
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
-        .env_remove("A3S_CONFIG")
-        .env_remove("A3S_DEFAULT_MODEL")
+        .env("ASTER_LOG_FILE", "0")
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
+        .env_remove("ASTER_CONFIG")
+        .env_remove("ASTER_DEFAULT_MODEL")
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::null())
@@ -55,9 +55,9 @@ async fn request(
 async fn workspace_only_provider_returns_actionable_error_and_cannot_start_a_session() {
     let home = tempfile::tempdir().expect("home");
     let workspace = tempfile::tempdir().expect("workspace");
-    std::fs::create_dir(workspace.path().join(".a3s")).expect("config directory");
+    std::fs::create_dir(workspace.path().join(".aster")).expect("config directory");
     std::fs::write(
-        workspace.path().join(".a3s/config.acl"),
+        workspace.path().join(".aster/config.acl"),
         r#"
 providers "repository" {
   api_key = "never-display-this-key"
@@ -84,7 +84,7 @@ default_model = "repository/local"
         "{response}"
     );
     assert!(
-        error.contains("~/.a3s/config.acl") && error.contains("A3S_CONFIG"),
+        error.contains("~/.aster/config.acl") && error.contains("ASTER_CONFIG"),
         "{response}"
     );
     assert!(!response.to_string().contains("never-display-this-key"));
@@ -126,7 +126,7 @@ async fn first_run_template_is_loaded_before_opening_a_session() {
         opened["result"]["models"]["currentModelId"], "deepseek/deepseek-flash",
         "{opened}"
     );
-    assert!(home.path().join(".a3s/config.acl").is_file());
+    assert!(home.path().join(".aster/config.acl").is_file());
     child.kill().await.expect("stop owned agent");
 }
 
@@ -134,9 +134,9 @@ async fn first_run_template_is_loaded_before_opening_a_session() {
 async fn trusted_provider_still_initializes_without_contacting_the_model() {
     let home = tempfile::tempdir().expect("home");
     let workspace = tempfile::tempdir().expect("workspace");
-    std::fs::create_dir(home.path().join(".a3s")).expect("config directory");
+    std::fs::create_dir(home.path().join(".aster")).expect("config directory");
     std::fs::write(
-        home.path().join(".a3s/config.acl"),
+        home.path().join(".aster/config.acl"),
         include_str!("../../../../tests/fixtures/terminal/config.acl"),
     )
     .expect("host ACL");

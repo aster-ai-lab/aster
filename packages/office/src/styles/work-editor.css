@@ -9,7 +9,7 @@
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
 }
 
 .work-editor-header {
@@ -20,8 +20,8 @@
   align-items: center;
   gap: 9px;
   padding: 0 12px;
-  border-bottom: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
+  border-bottom: 1px solid var(--aster-line);
+  background: var(--aster-panel);
   box-shadow: 0 1px 4px rgb(20 27 43 / 3%);
 }
 
@@ -34,13 +34,13 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   cursor: pointer;
 }
 
 .work-editor-back:hover {
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
 }
 
 .work-file-kind-icon {
@@ -53,22 +53,22 @@
 }
 
 .work-file-kind-icon.document {
-  background: color-mix(in srgb, #3974e8 10%, var(--a3s-panel));
+  background: color-mix(in srgb, #3974e8 10%, var(--aster-panel));
   color: #3974e8;
 }
 
 .work-file-kind-icon.spreadsheet {
-  background: color-mix(in srgb, #159469 10%, var(--a3s-panel));
+  background: color-mix(in srgb, #159469 10%, var(--aster-panel));
   color: #159469;
 }
 
 .work-file-kind-icon.presentation {
-  background: color-mix(in srgb, #db663b 10%, var(--a3s-panel));
+  background: color-mix(in srgb, #db663b 10%, var(--aster-panel));
   color: #db663b;
 }
 
 .work-file-kind-icon.pdf {
-  background: color-mix(in srgb, #c84040 10%, var(--a3s-panel));
+  background: color-mix(in srgb, #c84040 10%, var(--aster-panel));
   color: #c84040;
 }
 
@@ -88,19 +88,19 @@
   border-radius: 5px;
   outline: 0;
   background: transparent;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 13px;
   font-weight: 650;
   text-overflow: ellipsis;
 }
 
 .work-editor-identity .work-office-text-field:hover {
-  border-color: var(--a3s-line);
+  border-color: var(--aster-line);
 }
 
 .work-editor-identity .work-office-text-field:focus {
-  border-color: var(--a3s-blue);
-  background: var(--a3s-panel);
+  border-color: var(--aster-blue);
+  background: var(--aster-panel);
 }
 
 .work-editor-identity > span {
@@ -109,7 +109,7 @@
   align-items: center;
   gap: 5px;
   padding-left: 4px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 9px;
 }
 
@@ -136,10 +136,10 @@
   align-items: center;
   gap: 6px;
   padding: 0 10px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
-  background: var(--a3s-panel);
-  color: var(--a3s-muted);
+  background: var(--aster-panel);
+  color: var(--aster-muted);
   font-size: 10px;
   font-weight: 620;
   white-space: nowrap;
@@ -148,8 +148,8 @@
 
 .work-editor-ai-button:hover,
 .work-editor-ai-button.active {
-  border-color: color-mix(in srgb, #6f5be8 42%, var(--a3s-line));
-  background: color-mix(in srgb, #6f5be8 8%, var(--a3s-panel));
+  border-color: color-mix(in srgb, #6f5be8 42%, var(--aster-line));
+  background: color-mix(in srgb, #6f5be8 8%, var(--aster-panel));
   color: #6453d9;
 }
 
@@ -159,10 +159,10 @@
   align-items: center;
   gap: 6px;
   padding: 0 10px;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 8px;
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
   font-size: 10px;
   font-weight: 620;
   white-space: nowrap;
@@ -170,9 +170,9 @@
 }
 
 .work-local-save-button:hover:not(:disabled) {
-  border-color: color-mix(in srgb, var(--a3s-blue) 54%, var(--a3s-line));
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-blue);
+  border-color: color-mix(in srgb, var(--aster-blue) 54%, var(--aster-line));
+  background: var(--aster-panel-soft);
+  color: var(--aster-blue);
 }
 
 .work-local-save-button:disabled {
@@ -188,15 +188,15 @@
   padding: 0 12px;
   border: 0;
   border-radius: 8px;
-  background: var(--a3s-action);
-  color: var(--a3s-action-ink);
+  background: var(--aster-action);
+  color: var(--aster-action-ink);
   font-size: 10px;
   font-weight: 620;
   cursor: pointer;
 }
 
 .work-export-button:hover:not(:disabled) {
-  background: var(--a3s-action-hover);
+  background: var(--aster-action-hover);
 }
 
 .work-export-button:disabled {
@@ -212,7 +212,7 @@
 .work-local-save-form > .work-office-field {
   display: grid;
   gap: 7px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-weight: 620;
 }
@@ -221,18 +221,18 @@
   min-width: 0;
   height: 36px;
   padding: 0 10px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
   outline: 0;
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
   font: inherit;
   font-weight: 500;
 }
 
 .work-local-save-form .work-office-text-field:focus {
-  border-color: var(--a3s-blue);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--a3s-blue) 10%, transparent);
+  border-color: var(--aster-blue);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--aster-blue) 10%, transparent);
 }
 
 .work-local-save-location {
@@ -243,7 +243,7 @@
 
 .work-local-save-location input {
   flex: 1;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-local-save-location button {
@@ -253,10 +253,10 @@
   align-items: center;
   gap: 6px;
   padding: 0 11px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
   font-size: 10px;
   cursor: pointer;
 }
@@ -277,7 +277,7 @@
 
 .work-local-conflict-summary code {
   overflow-wrap: anywhere;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font:
     10px / 1.5 "SFMono-Regular",
     Consolas,
@@ -300,9 +300,9 @@
   gap: 7px;
   padding: 0 15px;
   border: 0;
-  border-bottom: 1px solid color-mix(in srgb, #d89116 28%, var(--a3s-line));
-  background: color-mix(in srgb, #f0a51c 9%, var(--a3s-panel));
-  color: color-mix(in srgb, #8d5700 86%, var(--a3s-ink));
+  border-bottom: 1px solid color-mix(in srgb, #d89116 28%, var(--aster-line));
+  background: color-mix(in srgb, #f0a51c 9%, var(--aster-panel));
+  color: color-mix(in srgb, #8d5700 86%, var(--aster-ink));
   font-size: 10px;
   text-align: left;
   cursor: pointer;
@@ -337,9 +337,9 @@
   align-items: center;
   gap: 11px;
   padding: 11px 12px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 10px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-compatibility-report > header > span {
@@ -352,17 +352,17 @@
 }
 
 .work-compatibility-report > header.warning > span {
-  background: color-mix(in srgb, #f0a51c 14%, var(--a3s-panel));
+  background: color-mix(in srgb, #f0a51c 14%, var(--aster-panel));
   color: #ad6c00;
 }
 
 .work-compatibility-report > header.error > span {
-  background: color-mix(in srgb, var(--a3s-red) 11%, var(--a3s-panel));
-  color: var(--a3s-red);
+  background: color-mix(in srgb, var(--aster-red) 11%, var(--aster-panel));
+  color: var(--aster-red);
 }
 
 .work-compatibility-report > header.clear > span {
-  background: color-mix(in srgb, #159469 11%, var(--a3s-panel));
+  background: color-mix(in srgb, #159469 11%, var(--aster-panel));
   color: #147657;
 }
 
@@ -374,12 +374,12 @@
 }
 
 .work-compatibility-report > header strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
 }
 
 .work-compatibility-report > header small {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 9px;
   line-height: 1.4;
 }
@@ -399,9 +399,9 @@
   display: flex;
   gap: 9px;
   padding: 9px 10px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
 }
 
 .work-compatibility-report li > span {
@@ -410,7 +410,7 @@
 }
 
 .work-compatibility-report li.info > span {
-  color: var(--a3s-blue);
+  color: var(--aster-blue);
 }
 
 .work-compatibility-report li > div {
@@ -422,19 +422,19 @@
 }
 
 .work-compatibility-report li strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 10px;
 }
 
 .work-compatibility-report li p {
   margin: 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 9px;
   line-height: 1.45;
 }
 
 .work-compatibility-report li small {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -452,7 +452,7 @@
   padding: clamp(24px, 5vw, 56px);
   overflow: hidden;
   flex: 1 1 0;
-  background: var(--a3s-bg);
+  background: var(--aster-bg);
 }
 
 .work-editor-loading.ds-state-view .ds-state-view-icon {
@@ -477,7 +477,7 @@
   z-index: -1;
   inset: 5px;
   border-radius: 18px;
-  background: color-mix(in srgb, var(--a3s-blue) 10%, var(--a3s-panel));
+  background: color-mix(in srgb, var(--aster-blue) 10%, var(--aster-panel));
   opacity: 0.44;
   animation: work-editor-loading-focus 1.8s ease-in-out infinite;
 }
@@ -490,10 +490,10 @@
   flex-direction: column;
   gap: 5px;
   padding: 11px 7px 8px;
-  border: 1px solid color-mix(in srgb, var(--a3s-blue) 24%, var(--a3s-line));
+  border: 1px solid color-mix(in srgb, var(--aster-blue) 24%, var(--aster-line));
   border-radius: 7px;
-  background: var(--a3s-panel);
-  box-shadow: 0 10px 24px -16px color-mix(in srgb, var(--a3s-blue) 70%, black);
+  background: var(--aster-panel);
+  box-shadow: 0 10px 24px -16px color-mix(in srgb, var(--aster-blue) 70%, black);
   animation: work-editor-loading-page 1.8s cubic-bezier(0.16, 1, 0.3, 1)
     infinite;
 }
@@ -504,8 +504,8 @@
   right: 5px;
   width: 5px;
   height: 5px;
-  border-top: 1px solid color-mix(in srgb, var(--a3s-blue) 48%, transparent);
-  border-right: 1px solid color-mix(in srgb, var(--a3s-blue) 48%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--aster-blue) 48%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--aster-blue) 48%, transparent);
   border-radius: 0 2px 0 0;
   content: "";
 }
@@ -516,7 +516,7 @@
   height: 2px;
   flex: 0 0 2px;
   border-radius: 2px;
-  background: color-mix(in srgb, var(--a3s-ink) 36%, transparent);
+  background: color-mix(in srgb, var(--aster-ink) 36%, transparent);
   transform-origin: left center;
   animation: work-editor-loading-line 1.8s cubic-bezier(0.16, 1, 0.3, 1)
     infinite;
@@ -524,7 +524,7 @@
 
 .work-editor-loading-line--accent {
   width: 68%;
-  background: var(--a3s-blue);
+  background: var(--aster-blue);
   animation-delay: -120ms;
 }
 
@@ -558,12 +558,12 @@
   0%,
   100% {
     transform: translateY(1px);
-    box-shadow: 0 8px 20px -16px color-mix(in srgb, var(--a3s-blue) 56%, black);
+    box-shadow: 0 8px 20px -16px color-mix(in srgb, var(--aster-blue) 56%, black);
   }
 
   48% {
     transform: translateY(-1px);
-    box-shadow: 0 14px 28px -14px color-mix(in srgb, var(--a3s-blue) 72%, black);
+    box-shadow: 0 14px 28px -14px color-mix(in srgb, var(--aster-blue) 72%, black);
   }
 }
 
@@ -650,9 +650,9 @@
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 9px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-version-icon {
@@ -662,8 +662,8 @@
   flex: 0 0 30px;
   place-items: center;
   border-radius: 8px;
-  background: var(--a3s-panel);
-  color: var(--a3s-blue);
+  background: var(--aster-panel);
+  color: var(--aster-blue);
 }
 
 .work-version-history li > span:nth-child(2) {
@@ -674,18 +674,18 @@
 }
 
 .work-version-history strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
 }
 
 .work-version-history small {
   margin-top: 2px;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 9px;
 }
 
 .work-version-history em {
-  color: var(--a3s-blue);
+  color: var(--aster-blue);
   font-size: 9px;
   font-style: normal;
   font-weight: 650;
@@ -710,8 +710,8 @@
   gap: 3px;
   padding: 5px 12px;
   overflow-x: auto;
-  border-bottom: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
+  border-bottom: 1px solid var(--aster-line);
+  background: var(--aster-panel);
   scrollbar-width: none;
 }
 
@@ -731,19 +731,19 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 13px;
   cursor: pointer;
 }
 
 :where(.work-office-toolbar) button:hover:not(:disabled) {
   background: var(--spec-hover-row);
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
 }
 
 :where(.work-office-toolbar) button.active {
-  background: var(--a3s-panel-strong);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-strong);
+  color: var(--aster-ink);
 }
 
 :where(.work-office-toolbar) button:disabled {
@@ -763,21 +763,21 @@
 }
 
 .work-color-tool:hover {
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-color-tool > span {
   width: 15px;
   height: 5px;
   margin-top: 8px;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 2px;
 }
 
 .work-color-tool::before {
   position: absolute;
   top: 4px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   content: "A";
   font-size: 10px;
   font-weight: 650;

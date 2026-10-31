@@ -3,7 +3,7 @@ import { FileText, Folder } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { useState } from 'react'
 
-import { TreeSelect, type TreeSelectOption } from '@a3s-lab/ui'
+import { TreeSelect, type TreeSelectOption } from '@aster-ai-lab/ui'
 
 const treeData: TreeSelectOption[] = [
   {

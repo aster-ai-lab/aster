@@ -142,7 +142,7 @@ async fn sync_session_compatibility_rejects_async_resource_specs_without_panicki
 async fn sync_session_compatibility_accepts_preinitialized_resources() {
     let root = tempfile::tempdir().unwrap();
     let agent = Agent::from_config(test_config()).await.unwrap();
-    let memory = Arc::new(a3s_memory::InMemoryStore::new());
+    let memory = Arc::new(aster_durable_memory::InMemoryStore::new());
 
     let session = agent
         .session(
@@ -165,7 +165,7 @@ async fn sync_session_code_intelligence_requires_async_build() {
             root.path().display().to_string(),
             Some(
                 SessionOptions::new()
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_code_intelligence(),
             ),
         )
@@ -188,7 +188,7 @@ async fn sync_session_code_intelligence_keeps_host_services() {
             "/tmp/test-sync-host-code-intelligence",
             Some(
                 SessionOptions::new()
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_workspace_backend(services)
                     .with_code_intelligence(),
             ),
@@ -208,7 +208,7 @@ async fn async_session_code_intelligence_attaches_tools() {
     let plain = agent
         .session_async(
             root.path().display().to_string(),
-            Some(SessionOptions::new().with_memory(Arc::new(a3s_memory::InMemoryStore::new()))),
+            Some(SessionOptions::new().with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))),
         )
         .await
         .unwrap();
@@ -220,7 +220,7 @@ async fn async_session_code_intelligence_attaches_tools() {
             root.path().display().to_string(),
             Some(
                 SessionOptions::new()
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_code_intelligence(),
             ),
         )
@@ -330,7 +330,7 @@ async fn sync_session_uses_cached_global_mcp_without_blocking_runtime() {
     let session = agent
         .session(
             "/tmp/test-sync-global-mcp",
-            Some(SessionOptions::new().with_memory(Arc::new(a3s_memory::InMemoryStore::new()))),
+            Some(SessionOptions::new().with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))),
         )
         .unwrap();
 

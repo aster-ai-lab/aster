@@ -9,41 +9,41 @@
 #   J1 just up::registry becomes honestly ready
 #   J2 smoke: served root == disk root == bootstrap pin
 #   J3 consume selftest plan-install provenance == URL+root
-#   J6 consume committed a3s/applet-demo (ui/panel + targets↔archive digest)
+#   J6 consume committed aster/applet-demo (ui/panel + targets↔archive digest)
 #       then apply-plan → activity_bar entry digest == committed HTML
 #   J4 just down::registry clears readiness
 #   J5 wrong trust-root fails closed against the just-served URL
 #
 # Track S — supply drift / durable tip (no Use binary)
-#   S0 git HEAD targets.json advertises a3s/applet-demo archive (clean-clone P5)
-#   S1 packages/applet-demo/a3s-use-extension.acl == archive ACL bytes
+#   S0 git HEAD targets.json advertises aster/applet-demo archive (clean-clone P5)
+#   S1 packages/applet-demo/aster-use-extension.acl == archive ACL bytes
 #      (prevents bind_tool / surface drift after custody lag)
 #
 # Track M — mocked multi-package publication (alpha, beta, echo, compose)
 #   M1 assemble+verify four mock packages
-#   M2 serve mock tree via A3S_USE_REGISTRY_DIR (same serve_local)
+#   M2 serve mock tree via ASTER_USE_REGISTRY_DIR (same serve_local)
 #   M3 smoke both skill archives + tool planning target
 #   M4 plan-install alpha and beta with matching provenance
 #   M5 unknown package fails plan
 #   M6 wrong trust-root fails against mock URL
 #   M7 stop clears mock readiness
 #
-# Track C — OKF + Skill + Tool + UI + MCP cooperation (a3s/mock-compose)
+# Track C — OKF + Skill + Tool + UI + MCP cooperation (aster/mock-compose)
 #   C1 catalog surfaces include tool/mcp/okf/skill/ui with skill requires
 #   C2 planning target covers tool + mcp executables
 #   C3 plan-install compose provenance
 #   C4 skill/ui require edges present in plan catalog
 #   C5 broken requires_tool (missing id) fails assemble
 #
-# Track A — committed admissions include Applet UI supply (a3s/applet-demo)
+# Track A — committed admissions include Applet UI supply (aster/applet-demo)
 #   A1 assemble+verify admissions.acl includes applet-demo
 #   A2 planning covers tool+mcp executables for applet-demo
 #   A3 plan-install applet-demo; catalog has ui/panel with Tool/MCP/Skill binds
 #   A4 apply-plan → capability snapshot activity_bar matches signed package bytes
 #       (deps = UI bind_tool + bind_mcp + skill)
 #
-# Requires (from monorepo): just, python3, curl; A3S_USE_BIN (0.3.x+);
-# A3S_USE_REGISTRY_TOOLS_BIN or a built a3s-use-registry-tools.
+# Requires (from monorepo): just, python3, curl; ASTER_USE_BIN (0.3.x+);
+# ASTER_USE_REGISTRY_TOOLS_BIN or a built aster-use-registry-tools.
 set -euo pipefail
 
 REGISTRY_REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -51,13 +51,13 @@ MONOREPO="$(cd "${REGISTRY_REPO}/.." && pwd)"
 SERVE="${REGISTRY_REPO}/scripts/serve_local.sh"
 SMOKE="${REGISTRY_REPO}/scripts/smoke_local.sh"
 ASSEMBLE_MOCK="${REGISTRY_REPO}/scripts/assemble_mock_registry.sh"
-COMMITTED_ROOT="${A3S_USE_REGISTRY_EXPECTED_ROOT:-sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172}"
+COMMITTED_ROOT="${ASTER_USE_REGISTRY_EXPECTED_ROOT:-sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172}"
 
 PASS=0
 FAIL=0
 SKIP=0
 
-WORK="$(mktemp -d "${TMPDIR:-/tmp}/a3s-just-registry-gate.XXXXXX")"
+WORK="$(mktemp -d "${TMPDIR:-/tmp}/aster-just-registry-gate.XXXXXX")"
 JUST_PORT="$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1",0)); print(s.getsockname()[1]); s.close()')"
 MOCK_PORT="$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1",0)); print(s.getsockname()[1]); s.close()')"
 JUST_STATE="${WORK}/just-serve"
@@ -66,20 +66,20 @@ MOCK_ROOT="${WORK}/mock-pub"
 
 cleanup() {
   (
-    export A3S_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
-    export A3S_USE_REGISTRY_PORT="${JUST_PORT}"
+    export ASTER_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
+    export ASTER_USE_REGISTRY_PORT="${JUST_PORT}"
     "${SERVE}" stop >/dev/null 2>&1 || true
   )
   (
-    export A3S_USE_REGISTRY_STATE_DIR="${MOCK_STATE}"
-    export A3S_USE_REGISTRY_PORT="${MOCK_PORT}"
+    export ASTER_USE_REGISTRY_STATE_DIR="${MOCK_STATE}"
+    export ASTER_USE_REGISTRY_PORT="${MOCK_PORT}"
     "${SERVE}" stop >/dev/null 2>&1 || true
   )
   # Prefer just down when the recipe owns the process; ignore failures.
   (
     cd "${MONOREPO}"
-    export A3S_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
-    export A3S_USE_REGISTRY_PORT="${JUST_PORT}"
+    export ASTER_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
+    export ASTER_USE_REGISTRY_PORT="${JUST_PORT}"
     just down::registry >/dev/null 2>&1 || true
   )
   rm -rf "${WORK}"
@@ -129,16 +129,16 @@ assert_fails() {
 }
 
 resolve_use_bin() {
-  if [[ -n "${A3S_USE_BIN:-}" && -x "${A3S_USE_BIN}" ]]; then
-    if "${A3S_USE_BIN}" registry source list --json >/dev/null 2>&1; then
-      printf '%s\n' "${A3S_USE_BIN}"
+  if [[ -n "${ASTER_USE_BIN:-}" && -x "${ASTER_USE_BIN}" ]]; then
+    if "${ASTER_USE_BIN}" registry source list --json >/dev/null 2>&1; then
+      printf '%s\n' "${ASTER_USE_BIN}"
       return 0
     fi
   fi
   local candidate
   for candidate in \
-    "${MONOREPO}/crates/use/target/debug/a3s-use" \
-    "${MONOREPO}/crates/use/target/release/a3s-use"; do
+    "${MONOREPO}/crates/use/target/debug/aster-use" \
+    "${MONOREPO}/crates/use/target/release/aster-use"; do
     if [[ -x "${candidate}" ]] && "${candidate}" registry source list --json >/dev/null 2>&1; then
       printf '%s\n' "${candidate}"
       return 0
@@ -149,7 +149,7 @@ resolve_use_bin() {
 
 plan_install() {
   local home="$1" url="$2" root="$3" package="$4" source_name="$5"
-  export A3S_USE_HOME="${home}"
+  export ASTER_USE_HOME="${home}"
   "${USE_BIN}" registry source add "${source_name}" \
     --url "${url}" \
     --trust-root "${root}" \
@@ -192,32 +192,32 @@ printf 'just-registry first-principles gate\n'
 printf 'monorepo=%s just_port=%s mock_port=%s\n' "${MONOREPO}" "${JUST_PORT}" "${MOCK_PORT}"
 
 # --- Track J: just up::registry ------------------------------------------------
-export A3S_USE_REGISTRY_HOST=127.0.0.1
-export A3S_USE_REGISTRY_PORT="${JUST_PORT}"
-export A3S_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
-unset A3S_USE_REGISTRY_DIR || true
-export A3S_USE_REGISTRY_EXPECTED_ROOT="${COMMITTED_ROOT}"
+export ASTER_USE_REGISTRY_HOST=127.0.0.1
+export ASTER_USE_REGISTRY_PORT="${JUST_PORT}"
+export ASTER_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
+unset ASTER_USE_REGISTRY_DIR || true
+export ASTER_USE_REGISTRY_EXPECTED_ROOT="${COMMITTED_ROOT}"
 
 assert_fails "J4 status fails before just up" env \
-  A3S_USE_REGISTRY_PORT="${JUST_PORT}" \
-  A3S_USE_REGISTRY_STATE_DIR="${JUST_STATE}" \
+  ASTER_USE_REGISTRY_PORT="${JUST_PORT}" \
+  ASTER_USE_REGISTRY_STATE_DIR="${JUST_STATE}" \
   "${SERVE}" status
 
 (
   cd "${MONOREPO}"
-  export A3S_USE_REGISTRY_HOST=127.0.0.1
-  export A3S_USE_REGISTRY_PORT="${JUST_PORT}"
-  export A3S_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
+  export ASTER_USE_REGISTRY_HOST=127.0.0.1
+  export ASTER_USE_REGISTRY_PORT="${JUST_PORT}"
+  export ASTER_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
   just up::registry
 ) >/dev/null
 assert_ok "J1 just up::registry status ready" env \
-  A3S_USE_REGISTRY_PORT="${JUST_PORT}" \
-  A3S_USE_REGISTRY_STATE_DIR="${JUST_STATE}" \
+  ASTER_USE_REGISTRY_PORT="${JUST_PORT}" \
+  ASTER_USE_REGISTRY_STATE_DIR="${JUST_STATE}" \
   "${SERVE}" status
 
 JUST_URL="$(
-  A3S_USE_REGISTRY_PORT="${JUST_PORT}" \
-  A3S_USE_REGISTRY_STATE_DIR="${JUST_STATE}" \
+  ASTER_USE_REGISTRY_PORT="${JUST_PORT}" \
+  ASTER_USE_REGISTRY_STATE_DIR="${JUST_STATE}" \
   "${SERVE}" url
 )"
 case "${JUST_URL}" in
@@ -226,8 +226,8 @@ case "${JUST_URL}" in
 esac
 
 assert_ok "J2 smoke committed tree via just transport" env \
-  A3S_USE_REGISTRY_EXPECTED_ROOT="${COMMITTED_ROOT}" \
-  A3S_USE_REGISTRY_DIR="${REGISTRY_REPO}/registry" \
+  ASTER_USE_REGISTRY_EXPECTED_ROOT="${COMMITTED_ROOT}" \
+  ASTER_USE_REGISTRY_DIR="${REGISTRY_REPO}/registry" \
   "${SMOKE}" "${JUST_URL}"
 
 # S1 — first-principles: package source ACL must equal committed archive ACL.
@@ -236,7 +236,7 @@ assert_ok "J2 smoke committed tree via just transport" env \
 set +e
 SUPPLY_DRIFT="$(
   REGISTRY_DIR="${REGISTRY_REPO}/registry" \
-  PACKAGE_ACL="${REGISTRY_REPO}/packages/applet-demo/a3s-use-extension.acl" \
+  PACKAGE_ACL="${REGISTRY_REPO}/packages/applet-demo/aster-use-extension.acl" \
   python3 - <<'PY'
 import hashlib, os, tarfile
 from pathlib import Path
@@ -246,9 +246,9 @@ if not src.is_file():
     raise SystemExit(f"missing package source ACL: {src}")
 source = src.read_bytes()
 root = Path(os.environ["REGISTRY_DIR"])
-archive = next(root.glob("targets/extensions/a3s/applet-demo/**/a3s-applet-demo-*.tar.gz"))
+archive = next(root.glob("targets/extensions/aster/applet-demo/**/aster-applet-demo-*.tar.gz"))
 with tarfile.open(archive, "r:gz") as tar:
-    member = next(m for m in tar.getmembers() if m.name.endswith("a3s-use-extension.acl"))
+    member = next(m for m in tar.getmembers() if m.name.endswith("aster-use-extension.acl"))
     archived = tar.extractfile(member).read()
 if source != archived:
     raise SystemExit(
@@ -288,7 +288,7 @@ targets = json.loads(proc.stdout)["signed"]["targets"]
 keys = [k for k in targets if "applet-demo" in k and k.endswith(".tar.gz")]
 if not keys:
     raise SystemExit(
-        "HEAD registry/metadata/targets.json has no a3s/applet-demo archive; "
+        "HEAD registry/metadata/targets.json has no aster/applet-demo archive; "
         "commit packages/applet-demo + signed registry/targets + metadata "
         "(custody assemble) so clean checkouts keep P5 supply"
     )
@@ -305,13 +305,13 @@ fi
 
 USE_BIN=""
 if USE_BIN="$(resolve_use_bin)"; then
-  export A3S_USE_BIN="${USE_BIN}"
+  export ASTER_USE_BIN="${USE_BIN}"
   HOME_J="$(mktemp -d "${WORK}/home-just.XXXXXX")"
   set +e
-  PLAN_J="$(plan_install "${HOME_J}" "${JUST_URL}" "${COMMITTED_ROOT}" "a3s/registry-selftest" "just-local" 2>&1)"
+  PLAN_J="$(plan_install "${HOME_J}" "${JUST_URL}" "${COMMITTED_ROOT}" "aster/registry-selftest" "just-local" 2>&1)"
   PLAN_J_EC=$?
   set -e
-  if [[ "${PLAN_J_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_J}" "${JUST_URL}" "${COMMITTED_ROOT}" "a3s/registry-selftest"; then
+  if [[ "${PLAN_J_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_J}" "${JUST_URL}" "${COMMITTED_ROOT}" "aster/registry-selftest"; then
     pass "J3 consume selftest provenance"
   else
     fail "J3 consume selftest provenance" "ec=${PLAN_J_EC} out=${PLAN_J}"
@@ -320,10 +320,10 @@ if USE_BIN="$(resolve_use_bin)"; then
   # J6 — first-principles: committed tree (not fresh admissions assemble) supplies applet-demo
   HOME_JA="$(mktemp -d "${WORK}/home-just-applet.XXXXXX")"
   set +e
-  PLAN_JA="$(plan_install "${HOME_JA}" "${JUST_URL}" "${COMMITTED_ROOT}" "a3s/applet-demo" "just-applet" 2>&1)"
+  PLAN_JA="$(plan_install "${HOME_JA}" "${JUST_URL}" "${COMMITTED_ROOT}" "aster/applet-demo" "just-applet" 2>&1)"
   PLAN_JA_EC=$?
   set -e
-  if [[ "${PLAN_JA_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_JA}" "${JUST_URL}" "${COMMITTED_ROOT}" "a3s/applet-demo"; then
+  if [[ "${PLAN_JA_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_JA}" "${JUST_URL}" "${COMMITTED_ROOT}" "aster/applet-demo"; then
     pass "J6 plan-install committed applet-demo provenance"
   else
     fail "J6 plan-install committed applet-demo provenance" "ec=${PLAN_JA_EC} out=${PLAN_JA}"
@@ -361,11 +361,11 @@ if missing_req:
     raise SystemExit(f"ui missing requires {sorted(missing_req)}; have {sorted(requires)}")
 
 root = Path(os.environ["REGISTRY_DIR"])
-archive = next(root.glob("targets/extensions/a3s/applet-demo/**/a3s-applet-demo-*.tar.gz"))
+archive = next(root.glob("targets/extensions/aster/applet-demo/**/aster-applet-demo-*.tar.gz"))
 archive_bytes = archive.read_bytes()
 archive_digest = hashlib.sha256(archive_bytes).hexdigest()
 targets = json.loads((root / "metadata" / "targets.json").read_text())["signed"]["targets"]
-target_key = next(k for k in targets if k.endswith("a3s-applet-demo-0.1.0-any.tar.gz"))
+target_key = next(k for k in targets if k.endswith("aster-applet-demo-0.1.0-any.tar.gz"))
 meta_hash = targets[target_key]["hashes"]["sha256"]
 if meta_hash != archive_digest:
     raise SystemExit(
@@ -374,7 +374,7 @@ if meta_hash != archive_digest:
 with tarfile.open(archive, "r:gz") as tar:
     member = next(m for m in tar.getmembers() if m.name.endswith("ui/panel/index.html"))
     html = tar.extractfile(member).read()
-    acl_member = next(m for m in tar.getmembers() if m.name.endswith("a3s-use-extension.acl"))
+    acl_member = next(m for m in tar.getmembers() if m.name.endswith("aster-use-extension.acl"))
     manifest = tar.extractfile(acl_member).read().decode()
 if b"Applet Demo" not in html:
     raise SystemExit("committed archive HTML missing package title bytes")
@@ -406,7 +406,7 @@ plan = payload["data"]["plan"]
 operation_id = plan["plan"]["operationId"]
 plan_digest = plan["planDigest"]
 env = os.environ.copy()
-env["A3S_USE_HOME"] = os.environ["HOME_JSON"]
+env["ASTER_USE_HOME"] = os.environ["HOME_JSON"]
 proc = subprocess.run(
     [
         os.environ["USE_BIN_JSON"],
@@ -477,7 +477,7 @@ entry_digest = (bar.get("entry") or {}).get("sha256")
 if not entry_digest:
     raise SystemExit("activity_bar entry digest missing")
 root = Path(os.environ["REGISTRY_DIR"])
-archive = next(root.glob("targets/extensions/a3s/applet-demo/**/a3s-applet-demo-*.tar.gz"))
+archive = next(root.glob("targets/extensions/aster/applet-demo/**/aster-applet-demo-*.tar.gz"))
 with tarfile.open(archive, "r:gz") as tar:
     member = next(m for m in tar.getmembers() if m.name.endswith("ui/panel/index.html"))
     html = tar.extractfile(member).read()
@@ -501,7 +501,7 @@ PY
   set +e
   BAD_J="$(plan_install "${HOME_JBAD}" "${JUST_URL}" \
     "sha256:0000000000000000000000000000000000000000000000000000000000000000" \
-    "a3s/registry-selftest" "just-bad" 2>&1)"
+    "aster/registry-selftest" "just-bad" 2>&1)"
   BAD_J_EC=$?
   set -e
   if [[ "${BAD_J_EC}" -ne 0 ]]; then
@@ -510,22 +510,22 @@ PY
     fail "J5 wrong trust-root fails on just URL" "${BAD_J}"
   fi
 else
-  skip "J3 consume selftest provenance" "set A3S_USE_BIN"
-  skip "J6 plan-install committed applet-demo provenance" "set A3S_USE_BIN"
-  skip "J6 committed applet-demo catalog ui/panel + archive bytes" "set A3S_USE_BIN"
-  skip "J6 apply-plan committed applet-demo activity_bar matches archive" "set A3S_USE_BIN"
-  skip "J5 wrong trust-root fails on just URL" "requires A3S_USE_BIN"
+  skip "J3 consume selftest provenance" "set ASTER_USE_BIN"
+  skip "J6 plan-install committed applet-demo provenance" "set ASTER_USE_BIN"
+  skip "J6 committed applet-demo catalog ui/panel + archive bytes" "set ASTER_USE_BIN"
+  skip "J6 apply-plan committed applet-demo activity_bar matches archive" "set ASTER_USE_BIN"
+  skip "J5 wrong trust-root fails on just URL" "requires ASTER_USE_BIN"
 fi
 
 (
   cd "${MONOREPO}"
-  export A3S_USE_REGISTRY_PORT="${JUST_PORT}"
-  export A3S_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
+  export ASTER_USE_REGISTRY_PORT="${JUST_PORT}"
+  export ASTER_USE_REGISTRY_STATE_DIR="${JUST_STATE}"
   just down::registry
 ) >/dev/null
 assert_fails "J4 just down::registry clears readiness" env \
-  A3S_USE_REGISTRY_PORT="${JUST_PORT}" \
-  A3S_USE_REGISTRY_STATE_DIR="${JUST_STATE}" \
+  ASTER_USE_REGISTRY_PORT="${JUST_PORT}" \
+  ASTER_USE_REGISTRY_STATE_DIR="${JUST_STATE}" \
   "${SERVE}" status
 
 # --- Track M: mock multi-package tree ----------------------------------------
@@ -540,27 +540,27 @@ else
   fail "M1 assemble+verify four mock packages" "${MOCK_META}"
 fi
 
-export A3S_USE_REGISTRY_DIR="${MOCK_DIR}"
-export A3S_USE_REGISTRY_PORT="${MOCK_PORT}"
-export A3S_USE_REGISTRY_STATE_DIR="${MOCK_STATE}"
-export A3S_USE_REGISTRY_EXPECTED_ROOT="${MOCK_SHA}"
-export A3S_USE_REGISTRY_SMOKE_TARGET="targets/extensions/a3s/mock-alpha/0.1.0/stable/any/a3s-mock-alpha-0.1.0-any.tar.gz"
+export ASTER_USE_REGISTRY_DIR="${MOCK_DIR}"
+export ASTER_USE_REGISTRY_PORT="${MOCK_PORT}"
+export ASTER_USE_REGISTRY_STATE_DIR="${MOCK_STATE}"
+export ASTER_USE_REGISTRY_EXPECTED_ROOT="${MOCK_SHA}"
+export ASTER_USE_REGISTRY_SMOKE_TARGET="targets/extensions/aster/mock-alpha/0.1.0/stable/any/aster-mock-alpha-0.1.0-any.tar.gz"
 
 assert_ok "M2 start mock registry transport" "${SERVE}" start
 MOCK_URL="$("${SERVE}" url)"
 
 assert_ok "M3 smoke mock-alpha target" "${SMOKE}" "${MOCK_URL}"
 assert_ok "M3 download mock-beta archive" curl -fsS \
-  "${MOCK_URL}targets/extensions/a3s/mock-beta/0.1.0/stable/any/a3s-mock-beta-0.1.0-any.tar.gz" \
+  "${MOCK_URL}targets/extensions/aster/mock-beta/0.1.0/stable/any/aster-mock-beta-0.1.0-any.tar.gz" \
   -o "${WORK}/mock-beta.tar.gz"
 assert_ok "M3 download mock-echo planning target" curl -fsS \
-  "${MOCK_URL}targets/extensions/a3s/mock-echo/0.1.0/stable/any/planning-v1.json" \
+  "${MOCK_URL}targets/extensions/aster/mock-echo/0.1.0/stable/any/planning-v1.json" \
   -o "${WORK}/mock-echo-planning.json"
 assert_ok "C2 download mock-compose archive" curl -fsS \
-  "${MOCK_URL}targets/extensions/a3s/mock-compose/0.1.0/stable/any/a3s-mock-compose-0.1.0-any.tar.gz" \
+  "${MOCK_URL}targets/extensions/aster/mock-compose/0.1.0/stable/any/aster-mock-compose-0.1.0-any.tar.gz" \
   -o "${WORK}/mock-compose.tar.gz"
 assert_ok "C2 download mock-compose planning target" curl -fsS \
-  "${MOCK_URL}targets/extensions/a3s/mock-compose/0.1.0/stable/any/planning-v1.json" \
+  "${MOCK_URL}targets/extensions/aster/mock-compose/0.1.0/stable/any/planning-v1.json" \
   -o "${WORK}/mock-compose-planning.json"
 
 # Planning bundle must list both executable surfaces used by Skill/UI binds.
@@ -592,10 +592,10 @@ fi
 if [[ -n "${USE_BIN}" ]]; then
   HOME_MA="$(mktemp -d "${WORK}/home-alpha.XXXXXX")"
   set +e
-  PLAN_A="$(plan_install "${HOME_MA}" "${MOCK_URL}" "${MOCK_SHA}" "a3s/mock-alpha" "mock" 2>&1)"
+  PLAN_A="$(plan_install "${HOME_MA}" "${MOCK_URL}" "${MOCK_SHA}" "aster/mock-alpha" "mock" 2>&1)"
   PLAN_A_EC=$?
   set -e
-  if [[ "${PLAN_A_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_A}" "${MOCK_URL}" "${MOCK_SHA}" "a3s/mock-alpha"; then
+  if [[ "${PLAN_A_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_A}" "${MOCK_URL}" "${MOCK_SHA}" "aster/mock-alpha"; then
     pass "M4 plan-install mock-alpha provenance"
   else
     fail "M4 plan-install mock-alpha provenance" "ec=${PLAN_A_EC} out=${PLAN_A}"
@@ -604,7 +604,7 @@ if [[ -n "${USE_BIN}" ]]; then
   # Same home/source: second package must resolve without re-adding.
   set +e
   PLAN_B="$(
-    A3S_USE_HOME="${HOME_MA}" "${USE_BIN}" plugin plan-install a3s/mock-beta \
+    ASTER_USE_HOME="${HOME_MA}" "${USE_BIN}" plugin plan-install aster/mock-beta \
       --registry-name mock \
       --scope-kind user \
       --scope-id user/registry-gate \
@@ -612,7 +612,7 @@ if [[ -n "${USE_BIN}" ]]; then
   )"
   PLAN_B_EC=$?
   set -e
-  if [[ "${PLAN_B_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_B}" "${MOCK_URL}" "${MOCK_SHA}" "a3s/mock-beta"; then
+  if [[ "${PLAN_B_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_B}" "${MOCK_URL}" "${MOCK_SHA}" "aster/mock-beta"; then
     pass "M4 plan-install mock-beta provenance"
   else
     fail "M4 plan-install mock-beta provenance" "ec=${PLAN_B_EC} out=${PLAN_B}"
@@ -620,7 +620,7 @@ if [[ -n "${USE_BIN}" ]]; then
 
   set +e
   PLAN_C="$(
-    A3S_USE_HOME="${HOME_MA}" "${USE_BIN}" plugin plan-install a3s/mock-compose \
+    ASTER_USE_HOME="${HOME_MA}" "${USE_BIN}" plugin plan-install aster/mock-compose \
       --registry-name mock \
       --scope-kind user \
       --scope-id user/registry-gate \
@@ -628,7 +628,7 @@ if [[ -n "${USE_BIN}" ]]; then
   )"
   PLAN_C_EC=$?
   set -e
-  if [[ "${PLAN_C_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_C}" "${MOCK_URL}" "${MOCK_SHA}" "a3s/mock-compose"; then
+  if [[ "${PLAN_C_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_C}" "${MOCK_URL}" "${MOCK_SHA}" "aster/mock-compose"; then
     pass "C3 plan-install mock-compose provenance"
   else
     fail "C3 plan-install mock-compose provenance" "ec=${PLAN_C_EC} out=${PLAN_C}"
@@ -679,7 +679,7 @@ PY
 
   set +e
   PLAN_MISS="$(
-    A3S_USE_HOME="${HOME_MA}" "${USE_BIN}" plugin plan-install a3s/does-not-exist \
+    ASTER_USE_HOME="${HOME_MA}" "${USE_BIN}" plugin plan-install aster/does-not-exist \
       --registry-name mock \
       --scope-kind user \
       --scope-id user/registry-gate \
@@ -697,7 +697,7 @@ PY
   set +e
   BAD_M="$(plan_install "${HOME_MBAD}" "${MOCK_URL}" \
     "sha256:0000000000000000000000000000000000000000000000000000000000000000" \
-    "a3s/mock-alpha" "mock-bad" 2>&1)"
+    "aster/mock-alpha" "mock-bad" 2>&1)"
   BAD_M_EC=$?
   set -e
   if [[ "${BAD_M_EC}" -ne 0 ]]; then
@@ -706,12 +706,12 @@ PY
     fail "M6 wrong trust-root fails on mock URL" "${BAD_M}"
   fi
 else
-  skip "M4 plan-install mock-alpha provenance" "requires A3S_USE_BIN"
-  skip "M4 plan-install mock-beta provenance" "requires A3S_USE_BIN"
-  skip "C3 plan-install mock-compose provenance" "requires A3S_USE_BIN"
-  skip "C1/C4 compose surfaces + skill requires" "requires A3S_USE_BIN"
-  skip "M5 unknown package fails plan" "requires A3S_USE_BIN"
-  skip "M6 wrong trust-root fails on mock URL" "requires A3S_USE_BIN"
+  skip "M4 plan-install mock-alpha provenance" "requires ASTER_USE_BIN"
+  skip "M4 plan-install mock-beta provenance" "requires ASTER_USE_BIN"
+  skip "C3 plan-install mock-compose provenance" "requires ASTER_USE_BIN"
+  skip "C1/C4 compose surfaces + skill requires" "requires ASTER_USE_BIN"
+  skip "M5 unknown package fails plan" "requires ASTER_USE_BIN"
+  skip "M6 wrong trust-root fails on mock URL" "requires ASTER_USE_BIN"
 fi
 
 # C5: Skill requires a tool id that does not exist in the package → assemble fails.
@@ -721,8 +721,8 @@ cp -R "${MOCK_ROOT}/packages/mock-compose/." "${BROKEN}/packages/broken/" 2>/dev
 # Rebuild a minimal broken skill-only-requires-missing-tool package
 rm -rf "${BROKEN}"
 mkdir -p "${BROKEN}/packages/broken/skills/x"
-cat >"${BROKEN}/packages/broken/a3s-use-extension.acl" <<'EOF'
-extension "a3s/mock-broken" {
+cat >"${BROKEN}/packages/broken/aster-use-extension.acl" <<'EOF'
+extension "aster/mock-broken" {
   schema_version = 3
   version        = "0.1.0"
   route          = "mock-broken"
@@ -730,7 +730,7 @@ extension "a3s/mock-broken" {
   actions        = ["read"]
 
   repository {
-    url      = "https://github.com/A3S-Lab/Use-Registry"
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
     revision = "0123456789abcdef0123456789abcdef01234567"
   }
 
@@ -746,7 +746,7 @@ EOF
 echo '# broken' >"${BROKEN}/packages/broken/skills/x/SKILL.md"
 echo '# broken' >"${BROKEN}/packages/broken/README.md"
 cat >"${BROKEN}/admissions.acl" <<'EOF'
-admission "a3s/mock-broken" {
+admission "aster/mock-broken" {
   package_directory = "packages/broken"
   channel           = "stable"
   target            = "any"
@@ -757,11 +757,11 @@ admission "a3s/mock-broken" {
   categories        = ["testing"]
 }
 EOF
-TOOLS_BIN="${A3S_USE_REGISTRY_TOOLS_BIN:-}"
+TOOLS_BIN="${ASTER_USE_REGISTRY_TOOLS_BIN:-}"
 if [[ -z "${TOOLS_BIN}" || ! -x "${TOOLS_BIN}" ]]; then
   for candidate in \
-    "${MONOREPO}/crates/use/target/release/a3s-use-registry-tools" \
-    "${MONOREPO}/crates/use/target/debug/a3s-use-registry-tools"; do
+    "${MONOREPO}/crates/use/target/release/aster-use-registry-tools" \
+    "${MONOREPO}/crates/use/target/debug/aster-use-registry-tools"; do
     if [[ -x "${candidate}" ]]; then
       TOOLS_BIN="${candidate}"
       break
@@ -791,11 +791,11 @@ fi
 "${SERVE}" stop >/dev/null 2>&1 || true
 ADMISSIONS_ROOT="${WORK}/admissions-applet"
 mkdir -p "${ADMISSIONS_ROOT}"
-TOOLS_BIN="${A3S_USE_REGISTRY_TOOLS_BIN:-}"
+TOOLS_BIN="${ASTER_USE_REGISTRY_TOOLS_BIN:-}"
 if [[ -z "${TOOLS_BIN}" || ! -x "${TOOLS_BIN}" ]]; then
   for candidate in \
-    "${MONOREPO}/crates/use/target/release/a3s-use-registry-tools" \
-    "${MONOREPO}/crates/use/target/debug/a3s-use-registry-tools"; do
+    "${MONOREPO}/crates/use/target/release/aster-use-registry-tools" \
+    "${MONOREPO}/crates/use/target/debug/aster-use-registry-tools"; do
     if [[ -x "${candidate}" ]]; then
       TOOLS_BIN="${candidate}"
       break
@@ -823,7 +823,7 @@ if [[ -n "${TOOLS_BIN}" ]]; then
     REGISTRY_DIR="${ADMISSIONS_ROOT}/registry" python3 - <<'PY'
 import json, os, pathlib, sys
 root = pathlib.Path(os.environ["REGISTRY_DIR"])
-planning = list(root.glob("targets/extensions/a3s/applet-demo/**/planning-v1.json"))
+planning = list(root.glob("targets/extensions/aster/applet-demo/**/planning-v1.json"))
 if not planning:
     raise SystemExit("missing applet-demo planning-v1.json")
 bundle = json.loads(planning[0].read_text())
@@ -858,19 +858,19 @@ digest = hashlib.sha256(root.read_bytes()).hexdigest()
 print(f"sha256:{digest}")
 PY
     )"
-    export A3S_USE_REGISTRY_DIR="${ADMISSIONS_ROOT}/registry"
-    export A3S_USE_REGISTRY_PORT="${MOCK_PORT}"
-    export A3S_USE_REGISTRY_STATE_DIR="${ADMISSIONS_ROOT}/state"
-    export A3S_USE_REGISTRY_EXPECTED_ROOT="${ADMISSION_SHA}"
+    export ASTER_USE_REGISTRY_DIR="${ADMISSIONS_ROOT}/registry"
+    export ASTER_USE_REGISTRY_PORT="${MOCK_PORT}"
+    export ASTER_USE_REGISTRY_STATE_DIR="${ADMISSIONS_ROOT}/state"
+    export ASTER_USE_REGISTRY_EXPECTED_ROOT="${ADMISSION_SHA}"
     mkdir -p "${ADMISSIONS_ROOT}/state"
     assert_ok "A3 start admissions applet registry" "${SERVE}" start
     ADMISSION_URL="$("${SERVE}" url)"
     HOME_A="$(mktemp -d "${WORK}/home-applet.XXXXXX")"
     set +e
-    PLAN_A="$(plan_install "${HOME_A}" "${ADMISSION_URL}" "${ADMISSION_SHA}" "a3s/applet-demo" "applet-demo" 2>&1)"
+    PLAN_A="$(plan_install "${HOME_A}" "${ADMISSION_URL}" "${ADMISSION_SHA}" "aster/applet-demo" "applet-demo" 2>&1)"
     PLAN_A_EC=$?
     set -e
-    if [[ "${PLAN_A_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_A}" "${ADMISSION_URL}" "${ADMISSION_SHA}" "a3s/applet-demo"; then
+    if [[ "${PLAN_A_EC}" -eq 0 ]] && check_plan_provenance "${PLAN_A}" "${ADMISSION_URL}" "${ADMISSION_SHA}" "aster/applet-demo"; then
       pass "A3 plan-install applet-demo provenance"
     else
       fail "A3 plan-install applet-demo provenance" "ec=${PLAN_A_EC} out=${PLAN_A}"
@@ -905,9 +905,9 @@ if missing_req:
 # UI binds package-local Executable Tool + MCP + Skill. Presentation metadata
 # lives in the signed package manifest (activity_bar supply).
 root = pathlib.Path(os.environ["REGISTRY_DIR"])
-archive = next(root.glob("targets/extensions/a3s/applet-demo/**/a3s-applet-demo-*.tar.gz"))
+archive = next(root.glob("targets/extensions/aster/applet-demo/**/aster-applet-demo-*.tar.gz"))
 with tarfile.open(archive, "r:gz") as tar:
-    member = next(m for m in tar.getmembers() if m.name.endswith("a3s-use-extension.acl"))
+    member = next(m for m in tar.getmembers() if m.name.endswith("aster-use-extension.acl"))
     manifest = tar.extractfile(member).read().decode()
 for needle in ('title       = "Applet Demo"', 'icon        = "layout"', "order       = 20", 'bind_tool   = ["echo"]'):
     if needle not in manifest:
@@ -935,7 +935,7 @@ plan = payload["data"]["plan"]
 operation_id = plan["plan"]["operationId"]
 plan_digest = plan["planDigest"]
 env = os.environ.copy()
-env["A3S_USE_HOME"] = os.environ["HOME_JSON"]
+env["ASTER_USE_HOME"] = os.environ["HOME_JSON"]
 proc = subprocess.run(
     [
         os.environ["USE_BIN_JSON"],
@@ -982,7 +982,7 @@ import hashlib, json, os, subprocess, tarfile
 from pathlib import Path
 
 env = os.environ.copy()
-env["A3S_USE_HOME"] = os.environ["HOME_JSON"]
+env["ASTER_USE_HOME"] = os.environ["HOME_JSON"]
 proc = subprocess.run(
     [
         os.environ["USE_BIN_JSON"],
@@ -1025,7 +1025,7 @@ entry_digest = (bar.get("entry") or {}).get("sha256")
 if not entry_digest:
     raise SystemExit("activity_bar entry digest missing")
 root = Path(os.environ["REGISTRY_DIR"])
-archive = next(root.glob("targets/extensions/a3s/applet-demo/**/a3s-applet-demo-*.tar.gz"))
+archive = next(root.glob("targets/extensions/aster/applet-demo/**/aster-applet-demo-*.tar.gz"))
 with tarfile.open(archive, "r:gz") as tar:
     member = next(m for m in tar.getmembers() if m.name.endswith("ui/panel/index.html"))
     html = tar.extractfile(member).read()
@@ -1049,10 +1049,10 @@ PY
 
     assert_ok "A3 stop admissions applet registry" "${SERVE}" stop
   else
-    skip "A3 plan-install applet-demo provenance" "requires A3S_USE_BIN"
-    skip "A3 applet-demo catalog ui/panel + binds" "requires A3S_USE_BIN"
-    skip "A4 apply-plan applet-demo ready" "requires A3S_USE_BIN"
-    skip "A4 applet-demo activity_bar matches signed UI bytes" "requires A3S_USE_BIN"
+    skip "A3 plan-install applet-demo provenance" "requires ASTER_USE_BIN"
+    skip "A3 applet-demo catalog ui/panel + binds" "requires ASTER_USE_BIN"
+    skip "A4 apply-plan applet-demo ready" "requires ASTER_USE_BIN"
+    skip "A4 applet-demo activity_bar matches signed UI bytes" "requires ASTER_USE_BIN"
   fi
 else
   skip "A1 assemble+verify admissions includes applet-demo" "registry-tools missing"

@@ -35,16 +35,16 @@ pub use storage_paths::{
     STORAGE_PATH_RESTRICTIONS_VERSION,
 };
 
-/// First public create-time attachment contract understood by A3S OCI Runtime.
-pub const ATTACHMENT_SCHEMA_V1: &str = "a3s.oci.attachments.v1";
+/// First public create-time attachment contract understood by Aster OCI Runtime.
+pub const ATTACHMENT_SCHEMA_V1: &str = "aster.oci.attachments.v1";
 /// Storage-aware create-time attachment contract.
-pub const ATTACHMENT_SCHEMA_V2: &str = "a3s.oci.attachments.v2";
+pub const ATTACHMENT_SCHEMA_V2: &str = "aster.oci.attachments.v2";
 /// Network-aware create-time attachment contract.
-pub const ATTACHMENT_SCHEMA_V3: &str = "a3s.oci.attachments.v3";
+pub const ATTACHMENT_SCHEMA_V3: &str = "aster.oci.attachments.v3";
 /// Reusable-guest-session-aware create-time attachment contract.
-pub const ATTACHMENT_SCHEMA_V4: &str = "a3s.oci.attachments.v4";
+pub const ATTACHMENT_SCHEMA_V4: &str = "aster.oci.attachments.v4";
 /// Required extension declaring an operation-scoped transfer of bundle ownership.
-pub const RUNTIME_BUNDLE_HANDOFF_EXTENSION: &str = "dev.a3s.bundle-handoff";
+pub const RUNTIME_BUNDLE_HANDOFF_EXTENSION: &str = "dev.aster.bundle-handoff";
 /// First bundle-handoff contract version.
 pub const RUNTIME_BUNDLE_HANDOFF_EXTENSION_VERSION: u16 = 1;
 /// Exact annotation value for an atomic move into runtime-owned storage.

@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, FlowScheduler, FlowWorker, InMemoryFlowTaskQueue,
     RetryPolicy, RuntimeCommand, StepInvocation, StepStatus, WorkflowInvocation, WorkflowRunStatus,
     WorkflowSpec,
@@ -20,7 +20,7 @@ impl FlowRuntime for PaymentRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if let Some(charge) = ctx.step_output("charge-card") {
             return Ok(ctx.complete(charge.clone()));
@@ -37,7 +37,7 @@ impl FlowRuntime for PaymentRuntime {
         ))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "charge_card" => {
                 let attempt = self.attempts.fetch_add(1, Ordering::SeqCst) + 1;
@@ -59,7 +59,7 @@ impl FlowRuntime for PaymentRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let runtime = Arc::new(PaymentRuntime::default());
     let engine = FlowEngine::in_memory(runtime.clone());
     let queue = Arc::new(InMemoryFlowTaskQueue::new());

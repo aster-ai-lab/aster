@@ -4,14 +4,15 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::store::FileSessionStore;
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::store::FileSessionStore;
+use aster_core::{Agent, SessionOptions};
 
 fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,
@@ -75,7 +76,7 @@ async fn resume_unknown_session_does_not_create_a_store_file() {
             .resume_session_async(
                 session_id,
                 SessionOptions::new().with_session_store(
-                    Arc::clone(&store) as Arc<dyn a3s_code_core::store::SessionStore>
+                    Arc::clone(&store) as Arc<dyn aster_core::store::SessionStore>
                 ),
             )
             .await

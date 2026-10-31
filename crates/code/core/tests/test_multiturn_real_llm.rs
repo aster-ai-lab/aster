@@ -1,6 +1,6 @@
 //! Live multi-turn and long-horizon scenarios on a real provider.
 //!
-//! Slice 1 of `docs/a3s-code-live-multiturn-longhorizon-plan.md`. Each case
+//! Slice 1 of `docs/aster-live-multiturn-longhorizon-plan.md`. Each case
 //! drives several real conversation turns on one session and asserts kernel
 //! effects: transcript shape, run records, event kinds, workspace state, and
 //! planted-token recall (the in-tree precedent is
@@ -11,8 +11,8 @@
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentEvent, AgentSession, PlanningMode, SessionOptions};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentEvent, AgentSession, PlanningMode, SessionOptions};
 
 mod support;
 use support::layer_c_model::load_pinned_layer_c_config;
@@ -51,7 +51,7 @@ fn base_options(session_id: &str, model: &str) -> SessionOptions {
         .with_llm_api_timeout(120_000)
 }
 
-async fn send_bounded(session: &AgentSession, prompt: &str) -> a3s_code_core::AgentResult {
+async fn send_bounded(session: &AgentSession, prompt: &str) -> aster_core::AgentResult {
     tokio::time::timeout(TURN_TIMEOUT, session.send(prompt, None))
         .await
         .expect("turn timed out")
@@ -59,8 +59,8 @@ async fn send_bounded(session: &AgentSession, prompt: &str) -> a3s_code_core::Ag
 }
 
 /// Every fact-log line for this session. The log lives either in a prepared
-/// session folder (`.a3s/sessions/<day>/<id>/<id>.jsonl`) or in the legacy
-/// flat directory (`.a3s/effect-log/<thread>.jsonl`); walk both.
+/// session folder (`.aster/sessions/<day>/<id>/<id>.jsonl`) or in the legacy
+/// flat directory (`.aster/effect-log/<thread>.jsonl`); walk both.
 fn session_fact_lines(workspace: &Path, session_id: &str) -> Vec<String> {
     let mut lines = Vec::new();
     let mut visit = |dir: &Path| {
@@ -85,8 +85,8 @@ fn session_fact_lines(workspace: &Path, session_id: &str) -> Vec<String> {
             }
         }
     };
-    visit(&workspace.join(".a3s").join("effect-log"));
-    if let Ok(days) = std::fs::read_dir(workspace.join(".a3s").join("sessions")) {
+    visit(&workspace.join(".aster").join("effect-log"));
+    if let Ok(days) = std::fs::read_dir(workspace.join(".aster").join("sessions")) {
         for day in days.flatten() {
             let session_dir = day.path().join(session_id);
             visit(&session_dir);
@@ -116,7 +116,7 @@ fn fact_log_contains(workspace: &Path, session_id: &str, marker: &str) -> bool {
 /// is the recall of every planted token plus the durable transcript holding
 /// the whole conversation.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn sustained_multiturn_recall() {
     let tokens = [
         "MT-TOKEN-1-amber",
@@ -190,7 +190,7 @@ async fn sustained_multiturn_recall() {
 /// first one (recency over primacy — the property that makes multi-turn
 /// interactive dialogue usable).
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn interactive_correction_overrides_earlier_constraint() {
     let (agent, model) = real_agent_and_model().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -260,7 +260,7 @@ async fn interactive_correction_overrides_earlier_constraint() {
 /// NEXT turn must complete normally against that history — the interactive
 /// contract after a user Escape.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn cancelled_turn_marks_history_and_conversation_continues() {
     let (agent, model) = real_agent_and_model().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -335,7 +335,7 @@ async fn cancelled_turn_marks_history_and_conversation_continues() {
 /// MT-2: compaction must fire between turns of an ongoing chain and keep
 /// facts planted on both sides of the boundary.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn mid_conversation_compaction_continuity() {
     let (agent, model) = real_agent_and_model().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -416,7 +416,7 @@ async fn mid_conversation_compaction_continuity() {
 /// files and two rounds the model cannot read everything; the run still has
 /// to close with a terminal narrative instead of erroring or running away.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn budget_exhaustion_finalization() {
     let (agent, model) = real_agent_and_model().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -482,7 +482,7 @@ async fn budget_exhaustion_finalization() {
 /// agent from the file session store, resume the run from its loop
 /// checkpoint, and require the repair to finish from there.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn checkpoint_restart_finishes_task() {
     const SPEC: &str = "# Task\n`double(values)` must return each value multiplied by 2.\n";
     const TEST: &str = r#"import assert from "node:assert/strict";
@@ -516,7 +516,7 @@ console.log("MT_RESTART_OK");
         // the completion gate (the implicit binding was retired with the
         // declared-suite contract).
         .with_verification_contract(
-            a3s_code_core::verification::VerificationContractV1::new(
+            aster_core::verification::VerificationContractV1::new(
                 "node-suite",
                 "node test.mjs",
                 ["src/**"],
@@ -575,7 +575,7 @@ console.log("MT_RESTART_OK");
             SessionOptions::new()
                 .with_file_session_store(store_dir.path().to_path_buf())
                 .with_verification_contract(
-                    a3s_code_core::verification::VerificationContractV1::new(
+                    aster_core::verification::VerificationContractV1::new(
                         "node-suite",
                         "node test.mjs",
                         ["src/**"],
@@ -617,7 +617,7 @@ console.log("MT_RESTART_OK");
 /// recorded in the receipt as a measurement (a summary may legitimately
 /// fold early planted codes away — that is the product contract, not a bug).
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl (quota: ~22 completions)"]
+#[ignore = "requires a real provider configured in .aster/config.acl (quota: ~22 completions)"]
 async fn twenty_turn_soak_with_repeated_compaction() {
     const TURNS: usize = 20;
     let tokens: Vec<String> = [
@@ -731,7 +731,7 @@ async fn twenty_turn_soak_with_repeated_compaction() {
 /// both must pass independent verification at the end, and the session must
 /// still recall task A's detail after B.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn two_distinct_long_tasks_in_one_session_do_not_interfere() {
     const SPEC_A: &str = "# Task A\n`double(values)` returns each value times 2.\n";
     const TEST_A: &str = r#"import assert from "node:assert/strict";
@@ -776,7 +776,7 @@ console.log("TASK_B_OK");
                     // verifies the mutated paths, clearing the debt that
                     // would otherwise survive into the recall turn.
                     .with_verification_contract(
-                        a3s_code_core::verification::VerificationContractV1::new(
+                        aster_core::verification::VerificationContractV1::new(
                             "node-suite-a",
                             "node testA.mjs",
                             ["src/**"],
@@ -784,7 +784,7 @@ console.log("TASK_B_OK");
                         .expect("contract a"),
                     )
                     .with_verification_contract(
-                        a3s_code_core::verification::VerificationContractV1::new(
+                        aster_core::verification::VerificationContractV1::new(
                             "node-suite-b",
                             "node testB.mjs",
                             ["src/**"],
@@ -802,7 +802,7 @@ console.log("TASK_B_OK");
     // outcomes are accepted here and recorded.
     let settle =
         |label: &'static str,
-         outcome: Result<a3s_code_core::AgentResult, a3s_code_core::CodeError>| {
+         outcome: Result<aster_core::AgentResult, aster_core::CodeError>| {
             match outcome {
                 Ok(_) => format!("{label}=endturn"),
                 Err(error) => {
@@ -917,7 +917,7 @@ console.log("TASK_B_OK");
 /// crash a fresh runtime reattaches the session and continues the task from
 /// where the log left off.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn long_task_survives_two_restarts() {
     const SPEC: &str = "# Task\n`triple(values)` must return each value multiplied by 3.\n";
     const TEST: &str = r#"import assert from "node:assert/strict";
@@ -1082,7 +1082,7 @@ console.log("LH_RESTART2_OK");
 /// credential-shaped: the extraction prompt refuses to store secrets, and
 /// that refusal is a product policy this test must not fight.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn memory_extraction_then_recall_next_session() {
     let token = "MT-WINDOW-4d17";
     let (agent, model) = real_agent_and_model().await;
@@ -1106,7 +1106,7 @@ async fn memory_extraction_then_recall_next_session() {
     // The explicit-remember path persists before the extraction model call;
     // the LLM extraction that follows is background work. A bounded window
     // covers both writers.
-    let items = workspace.path().join(".a3s").join("memory").join("items");
+    let items = workspace.path().join(".aster").join("memory").join("items");
     let deadline = tokio::time::Instant::now() + Duration::from_secs(60);
     let mut found = false;
     while tokio::time::Instant::now() < deadline {
@@ -1164,7 +1164,7 @@ fn memory_items_carry(items: &Path, token: &str) -> bool {
 /// (session TTFB minus raw-client TTFB) so optimization targets only the
 /// delta. This is a measurement, not a pass/fail oracle.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn streaming_ttfb_baseline() {
     let (agent, model) = real_agent_and_model().await;
     let workspace = tempfile::tempdir().expect("workspace");
@@ -1186,13 +1186,13 @@ async fn streaming_ttfb_baseline() {
         let llm = config
             .llm_config(provider, model_id)
             .expect("pinned route resolves");
-        a3s_code_core::llm::create_client_with_config(llm)
+        aster_core::llm::create_client_with_config(llm)
     };
     let mut raw_ttfb = None;
     let mut raw_sized_ttfb = None;
     {
         let prompt =
-            a3s_code_core::llm::Message::user("Reply with the single word ok. (raw ttfb probe)");
+            aster_core::llm::Message::user("Reply with the single word ok. (raw ttfb probe)");
         let events = raw_client
             .complete_streaming(
                 &[prompt],
@@ -1205,7 +1205,7 @@ async fn streaming_ttfb_baseline() {
         let mut events = events;
         let started = std::time::Instant::now();
         while let Some(event) = events.recv().await {
-            if matches!(event, a3s_code_core::llm::StreamEvent::TextDelta(_)) {
+            if matches!(event, aster_core::llm::StreamEvent::TextDelta(_)) {
                 raw_ttfb = Some(started.elapsed());
                 break;
             }
@@ -1214,7 +1214,7 @@ async fn streaming_ttfb_baseline() {
     {
         let filler = "You are measuring prompt prefill. ".repeat(360);
         let prompt =
-            a3s_code_core::llm::Message::user("Reply with the single word ok. (sized ttfb probe)");
+            aster_core::llm::Message::user("Reply with the single word ok. (sized ttfb probe)");
         let events = raw_client
             .complete_streaming(
                 &[prompt],
@@ -1227,7 +1227,7 @@ async fn streaming_ttfb_baseline() {
         let mut events = events;
         let started = std::time::Instant::now();
         while let Some(event) = events.recv().await {
-            if matches!(event, a3s_code_core::llm::StreamEvent::TextDelta(_)) {
+            if matches!(event, aster_core::llm::StreamEvent::TextDelta(_)) {
                 raw_sized_ttfb = Some(started.elapsed());
                 break;
             }
@@ -1287,7 +1287,7 @@ async fn streaming_ttfb_baseline() {
 /// fixture and the tools must execute with real symbol data — narration does
 /// not count.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn code_intelligence_tools_execute_through_a_real_session() {
     let (agent, model) = real_agent_and_model().await;
     let workspace = tempfile::tempdir().expect("workspace");

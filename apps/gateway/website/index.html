@@ -39,7 +39,7 @@
         </button>
 
         <div class="nav-links" id="nav-links">
-          <a href="#why-kense"><span class="lang lang-en">Why A3S</span><span class="lang lang-zh">为何选择 A3S</span></a>
+          <a href="#why-kense"><span class="lang lang-en">Why Aster</span><span class="lang lang-zh">为何选择 Aster</span></a>
           <details class="nav-dropdown" data-nav-dropdown>
             <summary><span class="lang lang-en">Product</span><span class="lang lang-zh">产品</span></summary>
             <div class="nav-dropdown-panel">
@@ -49,7 +49,7 @@
               <a href="#architecture"><span class="lang lang-en">Architecture</span><span class="lang lang-zh">模块架构</span></a>
             </div>
           </details>
-          <a href="#comparison"><span class="lang lang-en">A3S vs NGINX</span><span class="lang lang-zh">对比 NGINX</span></a>
+          <a href="#comparison"><span class="lang lang-en">Aster vs NGINX</span><span class="lang lang-zh">对比 NGINX</span></a>
           <a href="#performance"><span class="lang lang-en">Performance</span><span class="lang lang-zh">性能</span></a>
           <a class="lang lang-en" href="docs/">Docs</a>
           <a class="lang lang-zh" href="docs/">文档</a>
@@ -200,8 +200,8 @@
         <div class="section-heading reveal">
           <h2 class="lang lang-en">Capabilities that change how the gateway operates</h2>
           <h2 class="lang lang-zh">这些能力改变的不只是转发方式</h2>
-          <p class="lang lang-en">A3S brings model, stream, backend, and configuration decisions into one validated local request path.</p>
-          <p class="lang lang-zh">A3S 将模型、流、后端和配置决策收敛到一条经过校验的本地请求路径。</p>
+          <p class="lang lang-en">Aster brings model, stream, backend, and configuration decisions into one validated local request path.</p>
+          <p class="lang lang-zh">Aster 将模型、流、后端和配置决策收敛到一条经过校验的本地请求路径。</p>
         </div>
 
         <div class="capability-stories">
@@ -235,8 +235,8 @@
         <div class="section-heading reveal">
           <h2 class="lang lang-en">Kense Gateway and NGINX start from different problems</h2>
           <h2 class="lang lang-zh">Kense Gateway 与 NGINX 的设计起点不同</h2>
-          <p class="lang lang-en">NGINX is a mature general-purpose proxy. A3S makes AI workload semantics part of the gateway contract.</p>
-          <p class="lang lang-zh">NGINX 是成熟的通用代理。A3S 则把 AI 工作负载语义纳入网关契约。</p>
+          <p class="lang lang-en">NGINX is a mature general-purpose proxy. Aster makes AI workload semantics part of the gateway contract.</p>
+          <p class="lang lang-zh">NGINX 是成熟的通用代理。Aster 则把 AI 工作负载语义纳入网关契约。</p>
         </div>
 
         <div class="comparison-fit reveal">
@@ -248,37 +248,37 @@
           <article class="design-shift">
             <div class="design-topic"><span>WORKLOAD</span><h3 class="lang lang-en">Traffic meaning</h3><h3 class="lang lang-zh">流量语义</h3></div>
             <div class="design-side"><small>NGINX</small><p class="lang lang-en">Routes HTTP and transport traffic through URI, header, upstream, and proxy directives. Model identity remains application data by default.</p><p class="lang lang-zh">通过 URI、header、upstream 和代理指令路由流量。默认情况下，模型身份仍属于应用数据。</p></div>
-            <div class="design-side design-side-kense"><small>A3S DESIGN</small><p class="lang lang-en">Model grants, rewriting, RPM, burst, concurrency, and request identities are first-class runtime policy.</p><p class="lang lang-zh">模型授权、重写、RPM、突发、并发和请求身份都是运行时一等策略。</p></div>
+            <div class="design-side design-side-kense"><small>Aster DESIGN</small><p class="lang lang-en">Model grants, rewriting, RPM, burst, concurrency, and request identities are first-class runtime policy.</p><p class="lang lang-zh">模型授权、重写、RPM、突发、并发和请求身份都是运行时一等策略。</p></div>
           </article>
 
           <article class="design-shift">
             <div class="design-topic"><span>STREAMS</span><h3 class="lang lang-en">Lifecycle control</h3><h3 class="lang lang-zh">生命周期控制</h3></div>
             <div class="design-side"><small>NGINX</small><p class="lang lang-en">Generic buffering plus connect, read, and send timeouts control proxied connections and responses.</p><p class="lang lang-zh">通过通用缓冲，以及连接、读取和发送超时控制代理连接与响应。</p></div>
-            <div class="design-side design-side-kense"><small>A3S DESIGN</small><p class="lang lang-en">First-response, idle-stream, and total-operation bounds model distinct stream failure modes.</p><p class="lang lang-zh">首响应、流空闲和总操作边界分别对应不同的流故障模式。</p></div>
+            <div class="design-side design-side-kense"><small>Aster DESIGN</small><p class="lang lang-en">First-response, idle-stream, and total-operation bounds model distinct stream failure modes.</p><p class="lang lang-zh">首响应、流空闲和总操作边界分别对应不同的流故障模式。</p></div>
           </article>
 
           <article class="design-shift">
             <div class="design-topic"><span>STATE</span><h3 class="lang lang-en">Change activation</h3><h3 class="lang lang-zh">变更激活</h3></div>
             <div class="design-side"><small>NGINX</small><p class="lang lang-en">Reload validates configuration, starts new workers, and gracefully retires old workers. Failure keeps the old configuration.</p><p class="lang lang-zh">reload 校验配置、启动新 worker 并平滑退出旧 worker。失败时保留旧配置。</p></div>
-            <div class="design-side design-side-kense"><small>A3S DESIGN</small><p class="lang lang-en">Domain references, listeners, policy, and health compile as one snapshot and stay pinned per request.</p><p class="lang lang-zh">领域引用、监听器、策略和健康规则被编译为一个快照，并固定到每个请求。</p></div>
+            <div class="design-side design-side-kense"><small>Aster DESIGN</small><p class="lang lang-en">Domain references, listeners, policy, and health compile as one snapshot and stay pinned per request.</p><p class="lang lang-zh">领域引用、监听器、策略和健康规则被编译为一个快照，并固定到每个请求。</p></div>
           </article>
 
           <article class="design-shift">
             <div class="design-topic"><span>RECOVERY</span><h3 class="lang lang-en">Backend decisions</h3><h3 class="lang lang-zh">后端决策</h3></div>
             <div class="design-side"><small>NGINX</small><p class="lang lang-en">Passive health is built in. Active health and live upstream reconfiguration are NGINX Plus capabilities.</p><p class="lang lang-zh">开源版内置被动健康检查。主动健康和 upstream 在线重配置属于 NGINX Plus 能力。</p></div>
-            <div class="design-side design-side-kense"><small>A3S DESIGN</small><p class="lang lang-en">Active and passive health, circuit state, balancing, failover, mirroring, and pre-response fallback share one selection model.</p><p class="lang lang-zh">主动与被动健康、熔断、均衡、故障转移、镜像和响应前 fallback 共用一套选择模型。</p></div>
+            <div class="design-side design-side-kense"><small>Aster DESIGN</small><p class="lang lang-en">Active and passive health, circuit state, balancing, failover, mirroring, and pre-response fallback share one selection model.</p><p class="lang lang-zh">主动与被动健康、熔断、均衡、故障转移、镜像和响应前 fallback 共用一套选择模型。</p></div>
           </article>
 
           <article class="design-shift">
             <div class="design-topic"><span>POLICY</span><h3 class="lang lang-en">Composition</h3><h3 class="lang lang-zh">策略组合</h3></div>
             <div class="design-side"><small>NGINX</small><p class="lang lang-en">Modules, authorization subrequests, and njs scripting compose deployment-specific behavior.</p><p class="lang lang-zh">通过模块、鉴权子请求和 njs 脚本组合部署所需行为。</p></div>
-            <div class="design-side design-side-kense"><small>A3S DESIGN</small><p class="lang lang-en">Fifteen built-in policies cover common controls, with typed Rust middleware registered by stable names.</p><p class="lang lang-zh">15 种内置策略覆盖常见控制，并可按稳定名称注册类型化 Rust 中间件。</p></div>
+            <div class="design-side design-side-kense"><small>Aster DESIGN</small><p class="lang lang-en">Fifteen built-in policies cover common controls, with typed Rust middleware registered by stable names.</p><p class="lang lang-zh">15 种内置策略覆盖常见控制，并可按稳定名称注册类型化 Rust 中间件。</p></div>
           </article>
         </div>
 
         <aside class="comparison-scope reveal">
-          <p class="lang lang-en"><strong>Comparison boundary.</strong> NGINX means NGINX Open Source unless Plus is named. Modules and scripting can extend it. A3S is not a replacement for every NGINX use case.</p>
-          <p class="lang lang-zh"><strong>对比边界。</strong>除明确标注 Plus 外，NGINX 均指 NGINX Open Source。模块和脚本可以扩展其能力，A3S 也不替代所有 NGINX 场景。</p>
+          <p class="lang lang-en"><strong>Comparison boundary.</strong> NGINX means NGINX Open Source unless Plus is named. Modules and scripting can extend it. Aster is not a replacement for every NGINX use case.</p>
+          <p class="lang lang-zh"><strong>对比边界。</strong>除明确标注 Plus 外，NGINX 均指 NGINX Open Source。模块和脚本可以扩展其能力，Aster 也不替代所有 NGINX 场景。</p>
           <div><span class="lang lang-en">Official references:</span><span class="lang lang-zh">官方参考：</span> <a href="https://nginx.org/en/docs/control.html">reload</a> / <a href="https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffering">proxy controls</a> / <a href="https://nginx.org/en/docs/http/load_balancing.html">load balancing</a> / <a href="https://nginx.org/en/docs/http/ngx_http_upstream_hc_module.html">active health</a> / <a href="https://nginx.org/en/docs/http/ngx_http_auth_request_module.html">authorization subrequests</a> / <a href="https://nginx.org/en/docs/njs/">njs</a></div>
         </aside>
       </section>
@@ -353,14 +353,14 @@
           <div class="section-heading reveal">
             <h2 class="lang lang-en">Measure the model stream, not a request-rate proxy</h2>
             <h2 class="lang lang-zh">测量模型流，而不是用请求吞吐代替</h2>
-            <p class="lang lang-en">The primary A3S-versus-NGINX lane decodes every token and publishes TTFT, ITL, TPOT, end-to-end latency, and completed-token goodput.</p>
-            <p class="lang lang-zh">A3S 与 NGINX 的主要对比会解码每个 Token，并发布 TTFT、ITL、TPOT、端到端延迟和完整 Token 吞吐。</p>
+            <p class="lang lang-en">The primary Aster-versus-NGINX lane decodes every token and publishes TTFT, ITL, TPOT, end-to-end latency, and completed-token goodput.</p>
+            <p class="lang lang-zh">Aster 与 NGINX 的主要对比会解码每个 Token，并发布 TTFT、ITL、TPOT、端到端延迟和完整 Token 吞吐。</p>
           </div>
 
           <aside class="performance-method reveal" data-delay="1" aria-label="AI token benchmark method">
             <div class="performance-method-title"><svg class="ui-icon" aria-hidden="true"><use href="assets/phosphor-icons.svg#network"></use></svg><strong class="lang lang-en">Same host. Exact tokens.</strong><strong class="lang lang-zh">同一主机，精确校验 Token</strong></div>
-            <p class="lang lang-en">A3S and NGINX alternate against one deterministic upstream. Any ordering, count, or terminal-marker error rejects the trial. Opt-in fault, framing, transport, policy, buffering, and restart lanes stay out of the published eight-profile medians until dedicated-runner evidence.</p>
-            <p class="lang lang-zh">A3S 与 NGINX 交替访问同一个确定性上游；顺序、数量或结束标记任一错误都会使试验失败。可选故障、分帧、传输、策略、缓冲与重启车道在专用 runner 证据出现前不进入已发布的 8 profile 中位数。</p>
+            <p class="lang lang-en">Aster and NGINX alternate against one deterministic upstream. Any ordering, count, or terminal-marker error rejects the trial. Opt-in fault, framing, transport, policy, buffering, and restart lanes stay out of the published eight-profile medians until dedicated-runner evidence.</p>
+            <p class="lang lang-zh">Aster 与 NGINX 交替访问同一个确定性上游；顺序、数量或结束标记任一错误都会使试验失败。可选故障、分帧、传输、策略、缓冲与重启车道在专用 runner 证据出现前不进入已发布的 8 profile 中位数。</p>
             <dl>
               <div><dt>PROFILES</dt><dd data-ai-profile-count>8 workloads</dd></div>
               <div><dt>ORDER</dt><dd data-ai-trial-plan>5 × alternating</dd></div>
@@ -371,7 +371,7 @@
         </div>
 
         <div class="performance-ledger ai-performance-ledger reveal">
-          <header aria-hidden="true"><span>AI WORKLOAD</span><span>TTFT + ITL P99</span><span>A3S / NGINX</span></header>
+          <header aria-hidden="true"><span>AI WORKLOAD</span><span>TTFT + ITL P99</span><span>Aster / NGINX</span></header>
 
           <article data-ai-profile="stream-overhead-c1" data-profile-status="lead">
             <div class="performance-context">
@@ -379,10 +379,10 @@
               <div><small>ZERO-DELAY / C1</small><h3 class="lang lang-en">Single-stream gateway overhead</h3><h3 class="lang lang-zh">单流网关开销</h3><p class="lang lang-en">32 exact tokens / 1 KiB prompt / no upstream pacing</p><p class="lang lang-zh">32 个精确 Token / 1 KiB Prompt / 上游不限速</p></div>
             </div>
             <dl class="performance-products">
-              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-ai-a3s-ttft>TTFT 0.343 ms</dd><small data-ai-a3s-itl>ITL P99 40.309 ms</small></div>
+              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-ai-aster-ttft>TTFT 0.343 ms</dd><small data-ai-aster-itl>ITL P99 40.309 ms</small></div>
               <div><dt>NGINX</dt><dd data-ai-nginx-ttft>TTFT 0.349 ms</dd><small data-ai-nginx-itl>ITL P99 40.618 ms</small></div>
             </dl>
-            <div class="performance-outcome"><small>A3S / NGINX</small><p data-ai-ratios>TTFT 0.98× · ITL 0.99×</p><em data-ai-goodput>Token goodput 1.00×</em></div>
+            <div class="performance-outcome"><small>Aster / NGINX</small><p data-ai-ratios>TTFT 0.98× · ITL 0.99×</p><em data-ai-goodput>Token goodput 1.00×</em></div>
           </article>
 
           <article data-ai-profile="stream-overhead-c64" data-profile-status="constraint">
@@ -391,7 +391,7 @@
               <div><small>ZERO-DELAY / C64</small><h3 class="lang lang-en">Current concurrency constraint</h3><h3 class="lang lang-zh">当前并发约束</h3><p class="lang lang-en">64 concurrent streams isolate scheduler and proxy overhead</p><p class="lang lang-zh">64 条并发流用于隔离调度器与代理开销</p></div>
             </div>
             <dl class="performance-products">
-              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-ai-a3s-ttft>TTFT 2.438 ms</dd><small data-ai-a3s-itl>ITL P99 40.089 ms</small></div>
+              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-ai-aster-ttft>TTFT 2.438 ms</dd><small data-ai-aster-itl>ITL P99 40.089 ms</small></div>
               <div><dt>NGINX</dt><dd data-ai-nginx-ttft>TTFT 1.184 ms</dd><small data-ai-nginx-itl>ITL P99 40.652 ms</small></div>
             </dl>
             <div class="performance-outcome"><small>CURRENT BOTTLENECK</small><p data-ai-ratios>TTFT 2.06× · ITL 0.99×</p><em data-ai-goodput>Token goodput 0.92×</em></div>
@@ -403,7 +403,7 @@
               <div><small>PACED STREAM / C64</small><h3 class="lang lang-en">Model-like first-token pacing</h3><h3 class="lang lang-zh">接近模型输出的首 Token 节奏</h3><p class="lang lang-en">50 ms first token / 10 ms token cadence / 32 tokens</p><p class="lang lang-zh">首 Token 50 ms / Token 间隔 10 ms / 32 个 Token</p></div>
             </div>
             <dl class="performance-products">
-              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-ai-a3s-ttft>TTFT 52.274 ms</dd><small data-ai-a3s-itl>ITL P99 12.137 ms</small></div>
+              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-ai-aster-ttft>TTFT 52.274 ms</dd><small data-ai-aster-itl>ITL P99 12.137 ms</small></div>
               <div><dt>NGINX</dt><dd data-ai-nginx-ttft>TTFT 52.152 ms</dd><small data-ai-nginx-itl>ITL P99 12.192 ms</small></div>
             </dl>
             <div class="performance-outcome"><small>WITHIN THRESHOLD</small><p data-ai-ratios>TTFT 1.00× · ITL 1.00×</p><em data-ai-goodput>Token goodput 1.00×</em></div>
@@ -415,7 +415,7 @@
               <div><small>LONG PROMPT / 256 KIB</small><h3 class="lang lang-en">Bounded long-context upload</h3><h3 class="lang lang-zh">有界长上下文上传</h3><p class="lang lang-en">8 concurrent streams / 32 exact paced tokens</p><p class="lang lang-zh">8 条并发流 / 32 个精确节奏 Token</p></div>
             </div>
             <dl class="performance-products">
-              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-ai-a3s-ttft>TTFT 52.928 ms</dd><small data-ai-a3s-itl>ITL P99 11.627 ms</small></div>
+              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-ai-aster-ttft>TTFT 52.928 ms</dd><small data-ai-aster-itl>ITL P99 11.627 ms</small></div>
               <div><dt>NGINX</dt><dd data-ai-nginx-ttft>TTFT 52.660 ms</dd><small data-ai-nginx-itl>ITL P99 11.695 ms</small></div>
             </dl>
             <div class="performance-outcome"><small>WITHIN THRESHOLD</small><p data-ai-ratios>TTFT 1.01× · ITL 0.99×</p><em data-ai-goodput>Token goodput 1.00×</em></div>
@@ -448,10 +448,10 @@
               <div><small>HTTPS / HTTP/2</small><h3 class="lang lang-en">Parallel model API calls</h3><h3 class="lang lang-zh">并行模型 API 调用</h3><p class="lang lang-en">TLS termination / 4 connections / 16 streams each</p><p class="lang lang-zh">TLS 终止 / 4 个连接 / 每连接 16 条流</p></div>
             </div>
             <dl class="performance-products">
-              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-performance-a3s-rate>47.7k requests/s</dd><small data-performance-a3s-p99>P99 2.70 ms</small></div>
+              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-performance-aster-rate>47.7k requests/s</dd><small data-performance-aster-p99>P99 2.70 ms</small></div>
               <div><dt>NGINX</dt><dd data-performance-nginx-rate>26.1k requests/s</dd><small data-performance-nginx-p99>P99 3.02 ms</small></div>
             </dl>
-            <div class="performance-outcome"><small>A3S RATE + P99</small><p data-performance-outcome><span class="lang lang-en">83% higher throughput / 11% lower P99</span><span class="lang lang-zh">吞吐高 83% / P99 低 11%</span></p></div>
+            <div class="performance-outcome"><small>Aster RATE + P99</small><p data-performance-outcome><span class="lang lang-en">83% higher throughput / 11% lower P99</span><span class="lang lang-zh">吞吐高 83% / P99 低 11%</span></p></div>
           </article>
 
           <article data-performance-profile="websocket-echo" data-profile-status="mixed">
@@ -460,7 +460,7 @@
               <div><small>WEBSOCKET</small><h3 class="lang lang-en">Persistent bidirectional traffic</h3><h3 class="lang lang-zh">持久双向流量</h3><p class="lang lang-en">64 persistent connections / 32-byte binary echo</p><p class="lang lang-zh">64 个持久连接 / 32 字节二进制回显</p></div>
             </div>
             <dl class="performance-products">
-              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-performance-a3s-rate>70.7k messages/s</dd><small data-performance-a3s-p99>P99 1.66 ms</small></div>
+              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-performance-aster-rate>70.7k messages/s</dd><small data-performance-aster-p99>P99 1.66 ms</small></div>
               <div><dt>NGINX</dt><dd data-performance-nginx-rate>84.7k messages/s</dd><small data-performance-nginx-p99>P99 3.13 ms</small></div>
             </dl>
             <div class="performance-outcome"><small>TAIL LATENCY TRADEOFF</small><p data-performance-outcome><span class="lang lang-en">17% lower throughput / 47% lower P99</span><span class="lang lang-zh">吞吐低 17% / P99 低 47%</span></p></div>
@@ -472,7 +472,7 @@
               <div><small>OPENAI STREAM</small><h3 class="lang lang-en">Feature-bearing AI path</h3><h3 class="lang lang-zh">启用策略能力的 AI 路径</h3><p class="lang lang-en">Bounded JSON validation / stream detection / SSE relay</p><p class="lang lang-zh">有界 JSON 校验 / 流检测 / SSE 转发</p></div>
             </div>
             <dl class="performance-products">
-              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-performance-a3s-rate>43.8k streams/s</dd><small data-performance-a3s-p99>P99 3.32 ms</small></div>
+              <div class="is-kense"><dt>KENSE GATEWAY</dt><dd data-performance-aster-rate>43.8k streams/s</dd><small data-performance-aster-p99>P99 3.32 ms</small></div>
               <div><dt>NGINX</dt><dd data-performance-nginx-rate>56.2k streams/s</dd><small data-performance-nginx-p99>P99 3.01 ms</small></div>
             </dl>
             <div class="performance-outcome"><small>FEATURE COST</small><p data-performance-outcome><span class="lang lang-en">KENSE validation: 22% lower throughput / 10% higher P99</span><span class="lang lang-zh">KENSE 校验成本：吞吐低 22% / P99 高 10%</span></p></div>
@@ -539,7 +539,7 @@
               <button type="button" role="tab" aria-selected="false" aria-controls="config-note-service" id="config-tab-service" tabindex="-1" data-config-step="service"><b>service</b></button>
             </div>
             <div class="config-notes">
-              <article id="config-note-mode" role="tabpanel" aria-labelledby="config-tab-mode" data-config-note="mode"><small>MODE</small><h3 class="lang lang-en">Choose the state source</h3><h3 class="lang lang-zh">选择状态来源</h3><p class="lang lang-en"><code>standalone</code> reads local ACL. <code>cloud-managed</code> accepts complete snapshots from A3S Cloud.</p><p class="lang lang-zh"><code>standalone</code> 读取本地 ACL，<code>cloud-managed</code> 接收 A3S Cloud 的完整快照。</p></article>
+              <article id="config-note-mode" role="tabpanel" aria-labelledby="config-tab-mode" data-config-note="mode"><small>MODE</small><h3 class="lang lang-en">Choose the state source</h3><h3 class="lang lang-zh">选择状态来源</h3><p class="lang lang-en"><code>standalone</code> reads local ACL. <code>cloud-managed</code> accepts complete snapshots from Aster Cloud.</p><p class="lang lang-zh"><code>standalone</code> 读取本地 ACL，<code>cloud-managed</code> 接收 Aster Cloud 的完整快照。</p></article>
               <article id="config-note-entrypoint" role="tabpanel" aria-labelledby="config-tab-entrypoint" data-config-note="entrypoint" hidden><small>ENTRYPOINT</small><h3 class="lang lang-en">Bind the listener</h3><h3 class="lang lang-zh">绑定监听器</h3><p class="lang lang-en"><code>address</code> opens the local socket. Routers opt into the named entrypoint.</p><p class="lang lang-zh"><code>address</code> 打开本地 socket，路由通过名称选择入口。</p></article>
               <article id="config-note-route" role="tabpanel" aria-labelledby="config-tab-route" data-config-note="route" hidden><small>ROUTER</small><h3 class="lang lang-en">Match and assemble the path</h3><h3 class="lang lang-zh">匹配并组装请求路径</h3><p class="lang lang-en">The route references one service, listener, and ordered middleware chain. Missing references fail validation.</p><p class="lang lang-zh">路由引用服务、监听器和有序中间件链。引用缺失会导致校验失败。</p></article>
               <article id="config-note-middleware" role="tabpanel" aria-labelledby="config-tab-middleware" data-config-note="middleware" hidden><small>MIDDLEWARE</small><h3 class="lang lang-en">Apply admission limits</h3><h3 class="lang lang-zh">执行准入限制</h3><p class="lang lang-en"><code>rate</code> permits 60 requests per second. <code>burst</code> allows a short queue of 10 tokens.</p><p class="lang lang-zh"><code>rate</code> 允许每秒 60 个请求，<code>burst</code> 允许 10 个令牌的短时突发。</p></article>
@@ -554,15 +554,15 @@
         <div class="section-heading reveal">
           <h2 class="lang lang-en">Cloud-managed or standalone, requests stay local</h2>
           <h2 class="lang lang-zh">无论 Cloud 管理还是独立运行，请求始终在本地处理</h2>
-          <p class="lang lang-en">A3S Cloud distributes complete desired state. Gateway validates, activates, and serves from the local snapshot.</p>
-          <p class="lang lang-zh">A3S Cloud 下发完整期望状态，Gateway 在本地校验、激活并基于快照处理流量。</p>
+          <p class="lang lang-en">Aster Cloud distributes complete desired state. Gateway validates, activates, and serves from the local snapshot.</p>
+          <p class="lang lang-zh">Aster Cloud 下发完整期望状态，Gateway 在本地校验、激活并基于快照处理流量。</p>
         </div>
 
         <div class="system-map reveal" data-testid="system-map">
           <div class="map-source">
             <div><small>STATE SOURCE</small><strong>Standalone ACL</strong><span class="lang lang-en">Local file and watch provider</span><span class="lang lang-zh">本地文件与监听提供方</span></div>
             <b>OR</b>
-            <div><small>CONTROL PLANE</small><strong>A3S Cloud</strong><span class="lang lang-en">Complete revisioned snapshots</span><span class="lang lang-zh">完整且带版本的快照</span></div>
+            <div><small>CONTROL PLANE</small><strong>Aster Cloud</strong><span class="lang lang-en">Complete revisioned snapshots</span><span class="lang lang-zh">完整且带版本的快照</span></div>
           </div>
           <div class="map-runtime">
             <div><small>PREPARE</small><strong>Validate and compile</strong><span class="lang lang-en">Listeners, references, policy, health</span><span class="lang lang-zh">监听器、引用、策略、健康</span></div>
@@ -599,7 +599,7 @@
       <a class="brand" href="#top"><img src="assets/mark.svg" alt="" width="30" height="30"><span>Kense <b>Gateway</b></span></a>
       <p class="lang lang-en">Workload-aware traffic for model APIs and long-lived streams.</p>
       <p class="lang lang-zh">面向模型 API 与长连接流量的工作负载感知网关。</p>
-      <nav aria-label="Footer navigation"><a href="https://github.com/kense-labs/gateway">GitHub</a><a class="lang lang-en" href="docs/">Docs</a><a class="lang lang-zh" href="docs/">文档</a><a href="https://crates.io/crates/a3s-gateway">crates.io</a><a href="https://github.com/kense-labs/gateway/blob/main/LICENSE">MIT</a></nav>
+      <nav aria-label="Footer navigation"><a href="https://github.com/kense-labs/gateway">GitHub</a><a class="lang lang-en" href="docs/">Docs</a><a class="lang lang-zh" href="docs/">文档</a><a href="https://crates.io/crates/aster-gateway">crates.io</a><a href="https://github.com/kense-labs/gateway/blob/main/LICENSE">MIT</a></nav>
       <small>© <span data-current-year>2026</span> Kense Labs</small>
     </footer>
   </body>

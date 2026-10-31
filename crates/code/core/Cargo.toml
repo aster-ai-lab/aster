@@ -1,15 +1,15 @@
 [package]
-name = "a3s-code-core"
+name = "aster-core"
 version = "9.1.6"
 edition = "2021"
-authors = ["A3S Lab Team"]
+authors = ["Aster Team"]
 license = "MIT"
-repository = "https://github.com/A3S-Lab/Code"
-description = "A3S Code Core - Embeddable AI agent library with tool execution"
+repository = "https://github.com/aster-ai-lab/Code"
+description = "Aster Code Core - Embeddable AI agent library with tool execution"
 publish = false
 
 [lib]
-name = "a3s_code_core"
+name = "aster_core"
 path = "src/lib.rs"
 
 [[example]]
@@ -26,11 +26,11 @@ required-features = ["dm-prod1-host"]
 
 [[example]]
 name = "workspace_persistent_index_benchmark"
-required-features = ["a3s-vec-fts"]
+required-features = ["aster-vec-fts"]
 
 [[example]]
 name = "workspace_persistent_index_production"
-required-features = ["a3s-vec-fts"]
+required-features = ["aster-vec-fts"]
 
 [[example]]
 name = "flow_graph_benchmark"
@@ -56,7 +56,7 @@ path = "tests/typed_decision_perf.rs"
 required-features = ["apofasi"]
 
 [dependencies]
-a3s-form-core = { workspace = true }
+aster-form-core = { workspace = true }
 # Internal crates
 # Pin the Search release so the browser-engine and Moli adapter APIs cannot
 # drift underneath the Code runtime manager.
@@ -64,7 +64,7 @@ a3s-form-core = { workspace = true }
 # Enabled by `dynamic-workflow` (and therefore `advanced-harness`).
 # Typed System-1 decisions (Apofasi). Optional so thin coding builds stay
 # ML-free; lexical/router path only unless `apofasi-infer` is enabled.
-# Pure-Rust a3s-vec FTS engine for the workspace lexical index. Optional so
+# Pure-Rust aster-vec FTS engine for the workspace lexical index. Optional so
 # minimal builds keep the portable BM25 scorer without pulling the engine.
 # Async runtime
 tokio = {version = "1.35", features = [
@@ -172,20 +172,20 @@ aws-sdk-s3 = {version = "1", default-features = false, features = ["rt-tokio", "
 aws-credential-types = {version = "1", optional = true}
 aws-smithy-types = {version = "1", optional = true}
 aws-smithy-runtime-api = {version = "1", optional = true}
-a3s-acl = {path = "../../acl"}
-a3s-okf = {path = "../../okf"}
-a3s-vec = {optional = true, path = "../../vec"}
-a3s-apofasi = {default-features = false, features = ["router"], optional = true, path = "../../apofasi"}
-a3s-sandbox = {path = "../../sandbox"}
-a3s-flow = {default-features = false, optional = true, path = "../../flow"}
-a3s-search = {default-features = false, path = "../../search"}
-a3s-lane = {path = "../../lane"}
-a3s-memory = {path = "../../memory"}
-a3s-common = {path = "../../common"}
-a3s-effect = {path = "../../effect"}
+aster-acl = {path = "../../acl"}
+aster-okf = {path = "../../okf"}
+aster-vec = {optional = true, path = "../../vec"}
+aster-apofasi = {default-features = false, features = ["router"], optional = true, path = "../../apofasi"}
+aster-cmd-sandbox = {path = "../../sandbox"}
+aster-flow = {default-features = false, optional = true, path = "../../flow"}
+aster-search = {default-features = false, path = "../../search"}
+aster-lane = {path = "../../lane"}
+aster-durable-memory = {path = "../../memory"}
+aster-common = {path = "../../common"}
+aster-effect = {path = "../../effect"}
 
 [target.'cfg(all(target_os = "macos", target_arch = "aarch64"))'.dependencies]
-a3s-oci-sdk = { workspace = true }
+aster-oci-sdk = { workspace = true }
 
 [target.'cfg(unix)'.dependencies]
 libc = {workspace = true}
@@ -195,7 +195,7 @@ windows-sys = {version = "0.61", features = ["Win32_Foundation", "Win32_Storage_
 
 [features]
 # Thin coding-harness default (`HARNESS-CONV5`): agent loop, tools, identity,
-# events, and a3s-vec FTS. Advanced evaluation/research/workflows (including
+# events, and aster-vec FTS. Advanced evaluation/research/workflows (including
 # Flow projection via `dynamic-workflow`), browser search, S3, and
 # telemetry require explicit profiles/features.
 default = ["local-code"]
@@ -204,13 +204,13 @@ default = ["local-code"]
 # native/runtime dependencies by hand; each profile documents the surface it
 # adds over `minimal`.
 # ---------------------------------------------------------------------------
-# Governed agent loop, workspace tools, identity/events — no browser, a3s-vec
+# Governed agent loop, workspace tools, identity/events — no browser, aster-vec
 # FTS, S3, telemetry, or Advanced harness modules.
 minimal = []
-# Minimal plus the workspace persistent a3s-vec FTS lexical path, in-tree
+# Minimal plus the workspace persistent aster-vec FTS lexical path, in-tree
 # trigram pruning for workspace `grep` candidates, and PDF text extraction
 # for `web_fetch`.
-local-code = ["a3s-vec-fts", "grep-trigram", "web-fetch-pdf"]
+local-code = ["aster-vec-fts", "grep-trigram", "web-fetch-pdf"]
 # Local code plus durable SQLite memory vectors, browser-backed web search, and
 # Advanced evaluation/research/workflow surfaces.
 scientific = ["local-code", "durable-memory-sqlite", "headless-search", "advanced-harness"]
@@ -224,10 +224,10 @@ evaluation = []
 research = ["evaluation"]
 state-graph = []
 # Programmable workflows plus named Flow capability projection (`HOST-FLOW1`).
-dynamic-workflow = ["state-graph", "dep:a3s-flow"]
+dynamic-workflow = ["state-graph", "dep:aster-flow"]
 advanced-harness = ["evaluation", "research", "state-graph", "dynamic-workflow"]
 # Enable the locally durable SQLite vector index for semantic-memory hosts.
-durable-memory-sqlite = ["a3s-memory/sqlite"]
+durable-memory-sqlite = ["aster-durable-memory/sqlite"]
 # Build the `DM-PROD1` host qualification harness
 # (`examples/durable_memory_prod1_host`). It injects a Redis-backed
 # `VectorIndex` and a Redis lease into `DurableMemorySession`, so it is the only
@@ -240,14 +240,14 @@ dm-prod1-host = ["dep:redis"]
 # Lightpanda remain selectable through configuration. HTTP/RSS and native API
 # search remain available when default features are disabled.
 headless-search = [
-    "a3s-search/moli",
-    "a3s-search/lightpanda",
+    "aster-search/moli",
+    "aster-search/lightpanda",
     "dep:zip",
     "dep:flate2",
     "dep:tar",
 ]
-# Compile the pure-Rust a3s-vec FTS adapter for workspace lexical retrieval.
-a3s-vec-fts = ["dep:a3s-vec"]
+# Compile the pure-Rust aster-vec FTS adapter for workspace lexical retrieval.
+aster-vec-fts = ["dep:aster-vec"]
 # Enable in-tree trigram pruning for workspace `grep` candidates (tgrep-style
 # fail-open filter). Exact regex matching stays owned by Code; no crates.io
 # git dep (`tgrep-core` is unpublished). Included in `local-code`.
@@ -271,16 +271,16 @@ s3 = [
     "dep:aws-smithy-types",
     "dep:aws-smithy-runtime-api",
 ]
-# Typed System-1 decisions via A3S Apofasi (lexical + script router).
+# Typed System-1 decisions via Aster Apofasi (lexical + script router).
 # Not part of `local-code` / `scientific` / `full` — hosts opt in explicitly.
 # Call sites, GatePolicy thresholds, and product routing stay host-owned.
-apofasi = ["dep:a3s-apofasi"]
+apofasi = ["dep:aster-apofasi"]
 # Neural checkpoint path (Candle). Requires bundled weights; keeps ML off
 # the default Apofasi surface.
-apofasi-infer = ["apofasi", "a3s-apofasi/infer"]
+apofasi-infer = ["apofasi", "aster-apofasi/infer"]
 # Apple Silicon Metal for Apofasi neural forwards. Not part of `ci-all`:
 # `--all-features` would pull objc2 onto Linux/Windows runners.
-apofasi-metal = ["apofasi-infer", "a3s-apofasi/metal"]
+apofasi-metal = ["apofasi-infer", "aster-apofasi/metal"]
 # Every optional surface that is safe on Linux/Windows CI hosts.
 # Prefer this over `--all-features` outside macOS.
 ci-all = ["full", "apofasi", "apofasi-infer"]

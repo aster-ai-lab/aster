@@ -1,4 +1,4 @@
-use a3s_use_core::{ToolReleaseDescriptor, ToolWorkloadContract};
+use aster_use_core::{ToolReleaseDescriptor, ToolWorkloadContract};
 use sha2::{Digest, Sha256};
 use tempfile::tempdir;
 use tokio::fs;
@@ -543,7 +543,7 @@ async fn complete_plugin_v3_package_fixture_is_valid_and_content_addressed() {
         .unwrap();
     let (verified_name, verified_target) = verified.all_targets().next().unwrap();
     assert_eq!(verified_name.raw(), repository.target_name);
-    let signed_catalog = verified_target.custom.get("a3s").unwrap();
+    let signed_catalog = verified_target.custom.get("aster").unwrap();
     assert_eq!(
         signed_catalog,
         &serde_json::from_slice::<serde_json::Value>(COMPLETE_PACKAGE_CATALOG).unwrap()

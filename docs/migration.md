@@ -38,13 +38,31 @@ binding change. Acceptance is recorded under
 
 ## Native Power integration, 2026-10-22
 
-The existing `crates/power` submodule is integrated into the root Cargo
+The existing `crates/power` tree is integrated into the root Cargo
 workspace for the native DeepSeek optimization work in
-`specs/009-power-native-deepseek-h200`. Its source ownership remains in that
-submodule; the parent tracks the gitlink. Power uses local ACL and Runtime,
-and the model-owned `a3s-deepseek` crate depends on local Power without
+`specs/009-power-native-deepseek-h200`. Power uses local ACL and Runtime,
+and the model-owned `aster-deepseek` crate depends on local Power without
 enabling an external inference backend by default. The nested Power lockfile
 is reconciled into the root lockfile rather than retained as a second lock.
+
+## Power vendored into the parent tree, 2026-10-31
+
+`crates/power` is no longer a gitlink to `aster-ai-lab/Power`. The previously
+pinned revision `cbe53bd40a4a3ba5fdb80861c11e491ab84e62be` was expanded into
+ordinary files under the parent repository so checkout no longer clones that
+remote. Provenance remains in `docs/source-manifest.json`. CI's Studio
+checkout action only resolves the `apps/studio` gitlink.
+
+## Local worktree scratch removed, 2026-10-31
+
+The untracked `work/` tree held agent git worktrees and screenshot/log
+scratch. Every registered worktree tip was already behind `main` (no unique
+product commits to merge, aside from a disposable worktree-preservation
+commit). Worktrees were removed, `work/` deleted, and `/work/` added to
+`.gitignore`. Local runtime dots (`.tmp`, `.local-archive`, `.aster*`,
+`.codex-worktrees`, `.pytest_cache`) were cleared the same pass. Spec-kit
+surfaces under `.claude` / `.agents` / `.cursor` / `.grok` stay — they are
+the SDD procedure set, not scratch.
 
 The pinned ONNX Runtime 2.0.0-rc.10 remains aligned with BGE/OCR. Its SmallVec
 2 alpha.10 pin conflicts with the optional Mistral backend's serde-saphyr
@@ -114,7 +132,7 @@ unfinished. Exact references and format distinctions are retained in the
 native H200 evidence directory.
 
 The 2026-10-18 import copies the required Rust source snapshots from
-`../a3s` into a standalone Aster workspace. The OS/backend checkout remains separate; the later Desktop cleanup is
+`../aster` into a standalone Aster workspace. The OS/backend checkout remains separate; the later Desktop cleanup is
 recorded below. Package-level provenance is recorded in
 [`source-manifest.json`](source-manifest.json). Local snapshots include
 working-tree changes; repository revisions do not imply release certification.
@@ -122,8 +140,8 @@ working-tree changes; repository revisions do not imply release certification.
 ## Product and dependency boundaries
 
 `aster` directly runs the existing pager composition root. It starts the
-sibling `a3s-code-acp` process, which owns the Code Core harness. There is
-no umbrella CLI or second agent loop. The old A3S umbrella CLI, cloud,
+sibling `aster-acp` process, which owns the Code Core harness. There is
+no umbrella CLI or second agent loop. The old Aster umbrella CLI, cloud,
 gateway, other desktop apps, web sites, distribution installers, and Code's
 Node/Python/Go SDKs are outside this product.
 
@@ -164,8 +182,8 @@ Retained package names and Rust module paths keep the embeddable SDK stable.
   identity comparisons already used by Core.
 - **Vector test utilities:** Vec's old exact tempfile 3.14 dev pin is
   widened to 3.27 to share the workspace's temporary-file library.
-- **Configuration and state:** existing `.a3s` / `.a3s-code` paths and
-  `A3S_*` environment variables remain compatible. The migration copies
+- **Configuration and state:** existing `.aster` / `.aster` paths and
+  `ASTER_*` environment variables remain compatible. The migration copies
   no personal credentials, session stores, browser profiles, or build outputs.
 - **macOS native execution:** the source Core deliberately refuses native
   shell execution with `native_process_lifetime_unqualified` until descendant
@@ -191,7 +209,7 @@ Retained package names and Rust module paths keep the embeddable SDK stable.
 
 The Aster entry point and the repository root license are MIT. The terminal
 tree retains Apache-2.0 in `crates/terminal/LICENSE`. Code Core, ACP, and the
-supporting A3S libraries retain their original MIT licenses. Third-party
+supporting Aster libraries retain their original MIT licenses. Third-party
 notices remain under `crates/terminal`. The root MIT license does not
 relicense the terminal tree, vendored Apache text, or the AGPL desktop
 components.
@@ -208,15 +226,15 @@ backends, and release certification are separate from the local migration.
 `aster` TUI. Arguments are forwarded as positional shell arguments.
 
 `just studio`、`just dev` 和兼容入口 `just work` 默认启动 AsterDream。
-构建和启动均从根工作区执行；`A3S_TENANT_SLUG=toyou` 选择通友托管版，
-`A3S_TENANT_SLUG=aster` 选择本地版，未设置时默认本地版。
+构建和启动均从根工作区执行；`ASTER_TENANT_SLUG=toyou` 选择通友托管版，
+`ASTER_TENANT_SLUG=aster` 选择本地版，未设置时默认本地版。
 `just build-studio` 先构建 ACP 和 Office，再构建 `apps/studio` 宿主。
 `just build-studio-release` 打包所选产品。构建失败不会启动旧二进制。
 这两个产品分别保留自己的构建身份、配置和数据目录。
 
 The welcome screen uses the full and compact ASCII artwork retained at
-`crates/terminal/crates/codegen/a3s-code-pager/assets/logo/aster.txt` and
-`crates/terminal/crates/codegen/a3s-code-pager/assets/logo/aster-small.txt`.
+`crates/terminal/crates/codegen/aster-pager/assets/logo/aster.txt` and
+`crates/terminal/crates/codegen/aster-pager/assets/logo/aster-small.txt`.
 Forty-eight frames are cached lazily and replayed at 12 FPS. Glyph and color
 sweeps share the existing welcome-screen redraw clock. Compact artwork reserves
 five rows so a standard 80-by-24 terminal can still show it. Color output
@@ -225,7 +243,7 @@ uses the terminal's existing quantization and NO_COLOR handling.
 
 ## Complete internalization
 
-The workspace now contains 137 Rust packages. A3S dependencies in every
+The workspace now contains 137 Rust packages. Aster dependencies in every
 manifest and the lockfile resolve to local source, including optional,
 target-specific, and test dependencies. Every workspace member is marked
 `publish = false`. The additional source snapshots are recorded in
@@ -238,10 +256,10 @@ fork and Work's modified PTY adapter are local as well. OCR's image dependency
 uses the workspace-compatible 0.25.10 release.
 
 Code, Work, and Desktop share the Flow 2 engine at `crates/flow`, with
-package name `a3s-flow` and library identity `a3s_flow`. The initial import
+package name `aster-flow` and library identity `aster_flow`. The initial import
 retained Flow 1 separately for Code at commit
 `2948ad51a1395177764766c3ddf7e44338f9e374`. The root workspace now resolves
-one engine, `a3s-flow` 2.0.0, from `crates/flow`. `crates/flow-v2` is not a
+one engine, `aster-flow` 2.0.0, from `crates/flow`. `crates/flow-v2` is not a
 workspace member. The workflow authoring package stays under
 `crates/flow/packages/ui`.
 
@@ -259,9 +277,9 @@ party forks retain their respective original licenses.
 
 ## Desktop import
 
-Desktop is imported from `../a3s/apps/desktop`, including its local source
+Desktop is imported from `../aster/apps/desktop`, including its local source
 changes. Provenance is recorded in `source-manifest.json`. It stays at
-`apps/desktop` alongside Aster Work. The host (`a3s-desktop`), native database
+`apps/desktop` alongside Aster Work. The host (`aster-desktop`), native database
 runner, and lightweight desktop contract tests join the root Cargo workspace.
 There is one Cargo lockfile and target directory; the default members stay
 Aster and ACP. All three imported packages have `publish = false`.
@@ -299,12 +317,12 @@ source checkout); every distinct local error also appears upstream. CI gates
 the Desktop renderer build and launcher tests while retaining Work's existing
 type-check gate. Fixing unrelated frontend typing is outside this import.
 
-After validation, `../a3s/apps/desktop`, `../a3s/packages/intelligent-ui`, and
-`../a3s/packages/intelligent-ui-aix` are removed from the source tree and moved
+After validation, `../aster/apps/desktop`, `../aster/packages/intelligent-ui`, and
+`../aster/packages/intelligent-ui-aix` are removed from the source tree and moved
 to the local Trash for recovery. OS, API, Gateway, and shared UI/Office/Form/CE/
 Flow sources remain there. Desktop's old submodule entry and launch commands
 are removed from the OS checkout. Four backend live tests now read the identical
-PDF fixture at `../a3s/fixtures/paperloom/two-pages.pdf`, so removing Desktop does
+PDF fixture at `../aster/fixtures/paperloom/two-pages.pdf`, so removing Desktop does
 not remove their input. Offline frontend installation and Rust checks pass
 again with the source Desktop directory absent.
 
@@ -325,22 +343,22 @@ No additional language SDK or in-process code sandbox was introduced.
 
 ## Backend services import
 
-A second 2026-10-18 import brings the A3S OS backend into this workspace as
+A second 2026-10-18 import brings the Aster OS backend into this workspace as
 five new members: `apps/api`, `apps/auth`, `apps/billing`, `apps/config`, and
-`apps/cloud/crates/sdk`, cut from `../a3s` at revision
+`apps/cloud/crates/sdk`, cut from `../aster` at revision
 `cde6ae1e0a1b0ee36078e12cf5defeeb814715d4`. Provenance and per-tree hashes are
 recorded in [`source-manifest.json`](source-manifest.json) under
 `backend_import`.
 
 - Dependencies resolve locally: the four service manifests replace the
-  `A3S-Lab/Boot` and `A3S-Lab/ORM` git pins with `crates/boot` (0.2.0) and
+  `aster-ai-lab/Boot` and `aster-ai-lab/ORM` git pins with `crates/boot` (0.2.0) and
   `crates/orm` (0.3.1), the same versions the pins named. The Use extension
   path follows this repository's flattened `crates/use/extension` layout.
 - Member `Cargo.lock` files are dropped; the root lockfile is the only one.
 - Rust sources are reformatted to the workspace's rustfmt defaults. A
   whitespace-insensitive audit attributed every differing source file to that
   reformatting; the only content change is the removal of the `maas-leave`
-  remote agent, deleted together with the a3s-maas service in the source
+  remote agent, deleted together with the aster-maas service in the source
   repository.
 - `apps/use-registry` and `apps/web` are imported as content trees (no Cargo
   membership); caches, build outputs, and local state are excluded.
@@ -358,9 +376,9 @@ recorded in [`source-manifest.json`](source-manifest.json) under
 The same day, the cloud dependency closure lands: `crates/box` (the sandbox
 runtime workspace: core, runtime, netproxy, plus the vendored deps and
 guest sources that stay unregistered), `crates/runtime`, `crates/sms`,
-`crates/form-core` (from the pinned A3S-Lab/UI source), `crates/oci-sdk`
-and `crates/oci-runtime` (from the pinned A3S-Lab/OCI-Runtime source), the
-`a3s-use` umbrella package, and the cloud members `apps/cloud/crates/
+`crates/form-core` (from the pinned aster-ai-lab/UI source), `crates/oci-sdk`
+and `crates/oci-runtime` (from the pinned aster-ai-lab/OCI-Runtime source), the
+`aster-use` umbrella package, and the cloud members `apps/cloud/crates/
 {contracts,node-agent}` joining the already-present sdk.
 
 - `apps/cloud/crates/control-plane` is copied but not registered: its HEAD
@@ -394,7 +412,7 @@ updater and sentry sources; `apps/runner` registers. The science, web,
 and official content trees are no longer in this checkout. crates/vec loosens its rayon pins
 from exact 1.10.0 to ^1.10 so the gateway's image/ravif chain resolves
 beside the vec index pin wall. apps/runtime (the Gateway /v1 data-plane
-binary) shares the a3s-runtime package name with the copied exec
+binary) shares the aster-runtime package name with the copied exec
 runtime and stays a standalone tree pending its rename decision. The
 registry-builder tool ships unregistered against the pinned extension
 0.1.3 for the same reason. Validation: vec 459, runner 33, gateway
@@ -468,7 +486,17 @@ not a complete KV cache, packed-cache CUDA implementation or deployed model.
 
 ## 私有桌面子仓库边界
 
-用户授权将 `apps/studio` 改为 `git@github.com:kense-labs/studio.git` 的私有子仓库，父仓库仅锁定提交引用。`apps/work` 与 `apps/desktop` 已退出目录与构建。早期完整桌面源码及源码补丁从父仓库分支和标签历史清理；原始证据在私有子仓库保留。构建仍使用根 Cargo 工作区和锁文件，CI 需配置 `STUDIO_READ_TOKEN`。
+用户授权将 `apps/studio` 改为私有子仓库，父仓库仅锁定提交引用。`apps/work` 与 `apps/desktop` 已退出目录与构建。早期完整桌面源码及源码补丁从父仓库分支和标签历史清理；原始证据在私有子仓库保留。构建仍使用根 Cargo 工作区和锁文件，CI 需配置 `STUDIO_READ_TOKEN`。
+
+## Private submodule remotes moved to aster-ai-lab, 2026-10-31
+
+`apps/studio`, `apps/api`, `apps/cloud`, and `apps/dashboard` now track
+`git@github.com:aster-ai-lab/{studio,api,cloud,dashboard}.git`. Histories were
+mirrored from the former `kense-labs` remotes (including local ahead commits on
+api/cloud). The misspelled `kense-labs/dashbaord` remote is corrected to
+`aster-ai-lab/dashboard`. Parent CI checkout actions and deploy-key workflows
+read the new org. After cutover verification, the `kense-labs` copies were
+emptied.
 
 ## 2026-10-23 原生 XQ 格式
 
@@ -681,3 +709,11 @@ unpublished. The paired CLI source stamp now covers the local input parser.
 Evidence, the failing regression and subsequent qualification are retained in
 docs/evidence/tui/2026-10-28-full-acceptance/OUTCOME.md. No credentials or user
 session state are imported.
+
+## Control-plane edge workspace (2026-10-31)
+
+Edge services `auth`, `billing`, `config`, `runtime`, and `runner` moved under
+`apps/control-plane` with their own Cargo workspace and lockfile. They are no
+longer root workspace members. Compat symlinks preserve the legacy `apps/auth`
+family of paths for Tilt, scripts, and submodule references. `apps/gateway`
+stays in the root workspace because Studio embeds it.

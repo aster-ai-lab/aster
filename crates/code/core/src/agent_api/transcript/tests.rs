@@ -1,7 +1,7 @@
 use super::*;
 use crate::agent_api::tests::test_config;
 use crate::store::{MemorySessionStore, SessionStore};
-use a3s_effect::NewFact;
+use aster_effect::NewFact;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 #[derive(Default)]
@@ -82,8 +82,8 @@ async fn fixture(id: &str) -> Fixture {
     }
 }
 
-fn log(fixture: &Fixture) -> a3s_effect::FileLog {
-    a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+fn log(fixture: &Fixture) -> aster_effect::FileLog {
+    aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
         fixture.root.path(),
         fixture.session.session_id(),
     ))
@@ -168,7 +168,7 @@ async fn prompt_count_reuses_the_session_writer_and_refuses_a_foreign_writer() {
 fn append_complete(fixture: &Fixture, key: &str) {
     let log = log(fixture);
     let thread = crate::fact_control::thread_for_session(fixture.session.session_id());
-    let cut = a3s_effect::cut_log(&log.read(&thread).unwrap());
+    let cut = aster_effect::cut_log(&log.read(&thread).unwrap());
     log.append(
         &thread,
         &[NewFact {
@@ -228,7 +228,7 @@ fn source_cut(fixture: &Fixture) -> TranscriptSourceCut {
         &crate::fact_control::thread_for_session(fixture.session.id()),
     )
     .unwrap();
-    TranscriptSourceCut::from(a3s_effect::cut_log(&facts))
+    TranscriptSourceCut::from(aster_effect::cut_log(&facts))
 }
 
 fn fork_request(fixture: &Fixture, boundary_entry_id: String, target: &str) -> PrefixForkRequest {
@@ -462,7 +462,7 @@ async fn prefix_fork_is_non_destructive_and_reopens_only_the_completed_prefix() 
     assert_eq!(selected.boundary_cut.seq, 3);
     assert_eq!(
         selected.boundary_cut,
-        TranscriptSourceCut::from(a3s_effect::cut_log(&source_facts[..3]))
+        TranscriptSourceCut::from(aster_effect::cut_log(&source_facts[..3]))
     );
     let before = crate::fact_control::read_workspace_facts(
         fixture.root.path(),

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::path::Path;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use futures::{stream, StreamExt, TryStreamExt};
 use oci_distribution::manifest::{OciDescriptor, OciImageManifest};
 use oci_distribution::Reference;

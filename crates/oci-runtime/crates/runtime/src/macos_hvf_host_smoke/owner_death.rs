@@ -2,9 +2,9 @@ use std::os::unix::fs::{MetadataExt, PermissionsExt};
 use std::path::Path;
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::AgentRecoveryReport;
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentRecoveryReport;
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerId, ContainerTarget, CreateRequest, DeleteMode, DeleteRequest, ExitStatus,
     IsolationRequest, ListRequest, ProcessesRequest, StartRequest, StateRequest, WaitRequest,
 };

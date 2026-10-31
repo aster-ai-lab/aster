@@ -1,13 +1,13 @@
 [package]
-name = "a3s-flow"
+name = "aster-flow"
 version = "2.0.0"
 edition = "2021"
 rust-version = "1.88"
-authors = ["A3S Lab"]
+authors = ["Aster"]
 license = "MIT"
-description = "Durable workflow engine and Rust SDK for A3S"
-repository = "https://github.com/A3S-Lab/Flow"
-documentation = "https://docs.rs/a3s-flow"
+description = "Durable workflow engine and Rust SDK for Aster"
+repository = "https://github.com/aster-ai-lab/Flow"
+documentation = "https://docs.rs/aster-flow"
 readme = "README.md"
 keywords = ["workflow", "durable", "event-sourcing", "async", "sdk"]
 categories = ["asynchronous", "development-tools"]
@@ -17,16 +17,16 @@ publish = false
 all-features = true
 
 [lib]
-name = "a3s_flow"
+name = "aster_flow"
 path = "src/lib.rs"
 
 [features]
 default = ["native-ts"]
 native-ts = []
-a3s-event = ["dep:a3s-event"]
-boot = ["dep:a3s-boot"]
-sqlite = ["dep:a3s-orm", "a3s-orm/sqlite"]
-postgres = ["dep:a3s-orm", "a3s-orm/postgres"]
+aster-event = ["dep:aster-event"]
+boot = ["dep:aster-boot"]
+sqlite = ["dep:aster-orm", "aster-orm/sqlite"]
+postgres = ["dep:aster-orm", "aster-orm/postgres"]
 
 [dependencies]
 async-trait = "0.1"
@@ -42,9 +42,9 @@ thiserror = "1"
 tracing = "0.1"
 uuid = {version = "1", features = ["serde", "v4", "v5"]}
 tokio = {version = "1", features = ["fs", "io-util", "macros", "process", "rt", "sync", "time"]}
-a3s-orm = {optional = true, default-features = false, path = "../orm"}
-a3s-event = {optional = true, default-features = false, path = "../event"}
-a3s-boot = {optional = true, default-features = false, features = ["queue"], path = "../boot"}
+aster-orm = {optional = true, default-features = false, path = "../orm"}
+aster-event = {optional = true, default-features = false, path = "../event"}
+aster-boot = {optional = true, default-features = false, features = ["queue"], path = "../boot"}
 
 [dev-dependencies]
 sha2 = "0.10"

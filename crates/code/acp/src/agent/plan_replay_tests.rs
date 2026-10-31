@@ -1,10 +1,10 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::store::{MemorySessionStore, SessionStore};
+use aster_core::store::{MemorySessionStore, SessionStore};
 use serde_json::{json, Value};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::mpsc;
@@ -98,7 +98,7 @@ async fn load_replay_publishes_the_resumed_typed_plan() {
             let acp_root = tempfile::tempdir().unwrap();
             let launch = crate::agent::tests::test_launch(Some(root.path().join("sessions")));
             let store = Arc::new(MemorySessionStore::new());
-            let core = Agent::from_config(a3s_code_core::CodeConfig::default())
+            let core = Agent::from_config(aster_core::CodeConfig::default())
                 .await
                 .unwrap();
             let session = core
@@ -109,9 +109,9 @@ async fn load_replay_publishes_the_resumed_typed_plan() {
                             .with_session_store(store.clone())
                             .with_auto_save(true)
                             .with_llm_client(Arc::new(PlanModel::default()))
-                            .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+                            .with_planning_mode(aster_core::PlanningMode::Disabled)
                             .with_permission_policy(
-                                a3s_code_core::permissions::PermissionPolicy::new()
+                                aster_core::permissions::PermissionPolicy::new()
                                     .allow("update_plan"),
                             ),
                     ),
@@ -120,7 +120,7 @@ async fn load_replay_publishes_the_resumed_typed_plan() {
                 .unwrap();
             let session = Arc::new(session);
             let core_session_id = session.session_id().to_string();
-            let agent = Rc::new(A3sCodeAgent::new(launch));
+            let agent = Rc::new(AsterCodeAgent::new(launch));
             let (left, right) = tokio::io::duplex(64 * 1024);
             let (agent_read, agent_write) = tokio::io::split(left);
             let (client_read, client_write) = tokio::io::split(right);
@@ -220,7 +220,7 @@ async fn load_replay_publishes_the_resumed_typed_plan() {
             current_session.close().await;
             drop(current_session);
             drop(session);
-            let resume_agent = Agent::from_config(a3s_code_core::CodeConfig::default())
+            let resume_agent = Agent::from_config(aster_core::CodeConfig::default())
                 .await
                 .unwrap();
             // Keep resume's nested runtime independent of ACP's LocalSet; the
@@ -291,7 +291,7 @@ async fn load_replay_publishes_the_resumed_typed_plan() {
                 ("cancelled", "cancelled"),
             ]) {
                 assert_eq!(entry["_meta"]["id"], id);
-                let actual = entry["_meta"]["a3sStatus"]
+                let actual = entry["_meta"]["asterStatus"]
                     .as_str()
                     .unwrap_or_else(|| entry["status"].as_str().unwrap());
                 assert_eq!(actual, status);
@@ -309,9 +309,9 @@ async fn load_replay_publishes_the_resumed_typed_plan() {
 }
 
 fn replay_entry(
-    payload: a3s_code_core::store::TranscriptEntryPayload,
-) -> a3s_code_core::store::TranscriptEntry {
-    use a3s_code_core::store::{TranscriptEntryKind, TranscriptEntryPayload as Payload};
+    payload: aster_core::store::TranscriptEntryPayload,
+) -> aster_core::store::TranscriptEntry {
+    use aster_core::store::{TranscriptEntryKind, TranscriptEntryPayload as Payload};
     let kind = match payload {
         Payload::User { .. } => TranscriptEntryKind::User,
         Payload::Assistant { .. } => TranscriptEntryKind::Assistant,
@@ -320,11 +320,11 @@ fn replay_entry(
         Payload::TurnComplete { .. } => TranscriptEntryKind::TurnComplete,
         Payload::LegacyHistory { .. } => TranscriptEntryKind::LegacyHistory,
     };
-    a3s_code_core::store::TranscriptEntry {
+    aster_core::store::TranscriptEntry {
         entry_id: "fact:7:digest".into(),
         kind,
         fact_seq: 7,
-        source_span: a3s_code_core::store::TranscriptSourceSpan {
+        source_span: aster_core::store::TranscriptSourceSpan {
             first_seq: 7,
             last_seq: 8,
         },
@@ -345,15 +345,15 @@ fn replay_json(notification: ReplayNotification) -> Value {
 
 #[test]
 fn replay_maps_tool_parts_without_dropping_text_or_entry_identity() {
-    let entry = replay_entry(a3s_code_core::store::TranscriptEntryPayload::Tool {
-        calls: vec![a3s_code_core::store::TranscriptToolCall {
+    let entry = replay_entry(aster_core::store::TranscriptEntryPayload::Tool {
+        calls: vec![aster_core::store::TranscriptToolCall {
             id: "call-1".into(),
             name: "read".into(),
             args: json!({"file_path":"lib.rs"}),
             text: Some("Reading".into()),
             reasoning: Some("Need source".into()),
         }],
-        results: vec![a3s_code_core::store::TranscriptToolResult {
+        results: vec![aster_core::store::TranscriptToolResult {
             tool_call_id: "call-1".into(),
             ok: true,
             output: "contents".into(),
@@ -395,18 +395,18 @@ fn replay_maps_tool_parts_without_dropping_text_or_entry_identity() {
 fn replay_exposes_compaction_turn_completion_and_legacy_as_typed_updates() {
     for (payload, expected) in [
         (
-            a3s_code_core::store::TranscriptEntryPayload::Compaction {
+            aster_core::store::TranscriptEntryPayload::Compaction {
                 summary: "summary".into(),
                 kept_lines: 2,
             },
             "compaction",
         ),
         (
-            a3s_code_core::store::TranscriptEntryPayload::TurnComplete {
+            aster_core::store::TranscriptEntryPayload::TurnComplete {
                 terminal: "narrative".into(),
                 effect_digest: None,
                 forced_stop: None,
-                log_cut: a3s_code_core::store::TranscriptSourceCut {
+                log_cut: aster_core::store::TranscriptSourceCut {
                     seq: 6,
                     digest: "cut".into(),
                 },
@@ -414,7 +414,7 @@ fn replay_exposes_compaction_turn_completion_and_legacy_as_typed_updates() {
             "turn_complete",
         ),
         (
-            a3s_code_core::store::TranscriptEntryPayload::LegacyHistory {
+            aster_core::store::TranscriptEntryPayload::LegacyHistory {
                 source_kind: "user.message".into(),
                 fact_key: "user:rich".into(),
                 reason: "rich user parts require legacy_history".into(),
@@ -430,7 +430,7 @@ fn replay_exposes_compaction_turn_completion_and_legacy_as_typed_updates() {
             .map(replay_json)
             .collect::<Vec<_>>();
         assert_eq!(notifications.len(), 1);
-        assert_eq!(notifications[0]["method"], "_a3s/session/transcript/update");
+        assert_eq!(notifications[0]["method"], "_aster/session/transcript/update");
         assert_eq!(
             notifications[0]["params"]["schema"],
             TRANSCRIPT_UPDATE_SCHEMA
@@ -454,14 +454,14 @@ fn replay_exposes_compaction_turn_completion_and_legacy_as_typed_updates() {
 
 #[test]
 fn replay_preserves_legacy_display_without_creating_an_executable_message() {
-    let display = a3s_code_core::store::TranscriptLegacyHistoryDisplay {
+    let display = aster_core::store::TranscriptLegacyHistoryDisplay {
         source_entry_id: "historical-entry".into(),
-        role: a3s_code_core::store::LegacyStudioRole::User,
+        role: aster_core::store::LegacyStudioRole::User,
         text: "A stored historical message.".into(),
         attachments: vec![],
     };
     let entry = replay_entry(
-        a3s_code_core::store::TranscriptEntryPayload::LegacyHistory {
+        aster_core::store::TranscriptEntryPayload::LegacyHistory {
             source_kind: "legacy.studio.entry".into(),
             fact_key: "historical-fact".into(),
             reason: "Display-only imported history".into(),
@@ -474,7 +474,7 @@ fn replay_preserves_legacy_display_without_creating_an_executable_message() {
         .map(replay_json)
         .collect::<Vec<_>>();
     assert_eq!(notifications.len(), 1);
-    assert_eq!(notifications[0]["method"], "_a3s/session/transcript/update");
+    assert_eq!(notifications[0]["method"], "_aster/session/transcript/update");
     assert_eq!(
         notifications[0]["params"]["update"]["sessionUpdate"],
         "legacy_history"

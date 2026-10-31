@@ -145,12 +145,12 @@ async fn a_single_run_cannot_keep_billing_after_its_identical_tool_calls_are_ref
     assert_eq!(
         facts
             .iter()
-            .filter(|fact| fact.kind == "a3s.goal.slice.settled")
+            .filter(|fact| fact.kind == "aster.goal.slice.settled")
             .count(),
         1
     );
     assert!(!facts.iter().any(|fact| matches!(
         fact.kind.as_str(),
-        "a3s.goal.step.accepted" | "a3s.goal.completed"
+        "aster.goal.step.accepted" | "aster.goal.completed"
     )));
 }

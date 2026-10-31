@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use a3s_box_core::compose::{normalize_compose, ComposeDiagnosticCode, ComposeSourceFormat};
+use aster_box_core::compose::{normalize_compose, ComposeDiagnosticCode, ComposeSourceFormat};
 
 const YAML_FIXTURE: &str = include_str!("fixtures/compose/canonical.yaml");
 const ACL_FIXTURE: &str = include_str!("fixtures/compose/canonical.acl");
@@ -9,7 +9,7 @@ const NORMALIZED_FIXTURE: &str = include_str!("fixtures/compose/canonical.normal
 fn environment() -> HashMap<String, String> {
     HashMap::from([(
         "API_IMAGE".to_string(),
-        "ghcr.io/a3s/api:latest".to_string(),
+        "ghcr.io/aster/api:latest".to_string(),
     )])
 }
 

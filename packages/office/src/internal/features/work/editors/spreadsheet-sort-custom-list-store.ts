@@ -7,7 +7,7 @@ import {
 const SPREADSHEET_SORT_CUSTOM_LIST_STORAGE_VERSION = 1;
 
 export const DEFAULT_SPREADSHEET_SORT_CUSTOM_LIST_STORAGE_KEY =
-  'a3s-office.spreadsheet-sort-custom-lists.v1';
+  'aster-office.spreadsheet-sort-custom-lists.v1';
 
 export interface SpreadsheetSortCustomListStore {
   load(): readonly (readonly string[])[];

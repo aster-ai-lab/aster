@@ -4,7 +4,7 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::error::Result;
+use aster_box_core::error::Result;
 use async_trait::async_trait;
 
 use super::attestation::{AttestationReport, AttestationRequest};

@@ -6,14 +6,14 @@
 
 mod support;
 
-use a3s_search::providers::{
-    A3sConfig, A3sProvider, AliyunConfig, AliyunProvider, AnySearchProvider, BochaConfig,
+use aster_search::providers::{
+    AsterConfig, AsterProvider, AliyunConfig, AliyunProvider, AnySearchProvider, BochaConfig,
     BochaProvider, BuiltinProvider, CredentialSource, DeepSeekConfig, DeepSeekProvider,
     DoubaoConfig, DoubaoProvider, FirecrawlConfig, FirecrawlProvider, ProviderEngine,
     ProviderReadiness, ProviderRequest, SearchProvider, TavilyProvider, TencentConfig,
     TencentProvider, TinyFishConfig, TinyFishProvider,
 };
-use a3s_search::{Engine, SafeSearch, SearchQuery};
+use aster_search::{Engine, SafeSearch, SearchQuery};
 use serde_json::json;
 use support::provider_server::{MockResponse, MockServer};
 use url::Url;
@@ -25,13 +25,13 @@ const BILLED: [&str; 8] = [
     "aliyun",
     "tencent",
     "firecrawl",
-    "a3s",
+    "aster",
     "doubao",
     "deepseek",
 ];
 
 type EchoBody = fn() -> String;
-type KeyedProvider = fn(Url) -> a3s_search::Result<Box<dyn SearchProvider>>;
+type KeyedProvider = fn(Url) -> aster_search::Result<Box<dyn SearchProvider>>;
 
 #[test]
 fn billed_providers_are_explicit_and_optional_auth_codecs_stay_anonymous() {
@@ -56,7 +56,7 @@ fn billed_providers_are_explicit_and_optional_auth_codecs_stay_anonymous() {
             );
             assert_eq!(
                 descriptor.capabilities.time_range,
-                provider.id() != "a3s",
+                provider.id() != "aster",
                 "{} time range follows the fields it sends",
                 provider.id()
             );
@@ -116,7 +116,7 @@ fn required_key_shell_rejects_unsafe_endpoints_and_missing_credentials() {
         .unwrap()
         .with_endpoint(insecure.clone())
         .is_err());
-    assert!(A3sConfig::new()
+    assert!(AsterConfig::new()
         .unwrap()
         .with_endpoint(insecure.clone())
         .is_err());
@@ -146,8 +146,8 @@ fn required_key_shell_rejects_unsafe_endpoints_and_missing_credentials() {
         ProviderReadiness::MissingCredential { .. }
     ));
     assert!(matches!(
-        A3sProvider::new(
-            A3sConfig::new()
+        AsterProvider::new(
+            AsterConfig::new()
                 .unwrap()
                 .with_api_key(CredentialSource::none())
         )
@@ -160,12 +160,12 @@ fn required_key_shell_rejects_unsafe_endpoints_and_missing_credentials() {
 #[tokio::test]
 async fn missing_credential_fails_before_the_network() {
     for build in [
-        missing_tinyfish as fn(Url) -> a3s_search::Result<Box<dyn SearchProvider>>,
+        missing_tinyfish as fn(Url) -> aster_search::Result<Box<dyn SearchProvider>>,
         missing_bocha,
         missing_aliyun,
         missing_tencent,
         missing_firecrawl,
-        missing_a3s,
+        missing_aster,
         missing_doubao,
         missing_deepseek,
     ] {
@@ -192,7 +192,7 @@ async fn success_urls_are_sealed_against_the_call_credential() {
         ("aliyun", aliyun_echo, keyed_aliyun),
         ("tencent", tencent_echo, keyed_tencent),
         ("firecrawl", firecrawl_echo, keyed_firecrawl),
-        ("a3s", a3s_echo, keyed_a3s),
+        ("aster", aster_echo, keyed_aster),
         ("doubao", doubao_echo, keyed_doubao),
         ("deepseek", deepseek_echo, keyed_deepseek),
     ];
@@ -230,7 +230,7 @@ async fn http_errors_redact_the_credential() {
         keyed_aliyun,
         keyed_tencent,
         keyed_firecrawl,
-        keyed_a3s,
+        keyed_aster,
         keyed_doubao,
         keyed_deepseek,
     ] {
@@ -296,7 +296,7 @@ async fn engine_forwards_advertised_time_range() {
     );
 
     engine
-        .search(&SearchQuery::new("rust").with_time_range(a3s_search::TimeRange::Day))
+        .search(&SearchQuery::new("rust").with_time_range(aster_search::TimeRange::Day))
         .await
         .unwrap();
     let body: serde_json::Value = serde_json::from_slice(&server.requests()[0].body).unwrap();
@@ -416,7 +416,7 @@ fn tencent_echo() -> String {
     .to_string()
 }
 
-fn a3s_echo() -> String {
+fn aster_echo() -> String {
     firecrawl_echo()
 }
 
@@ -445,7 +445,7 @@ fn tinyfish_provider(endpoint: Url) -> TinyFishProvider {
     .unwrap()
 }
 
-fn missing_tinyfish(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn missing_tinyfish(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(TinyFishProvider::new(
         TinyFishConfig::new()?
             .with_endpoint(endpoint)?
@@ -453,7 +453,7 @@ fn missing_tinyfish(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>
     )?))
 }
 
-fn missing_bocha(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn missing_bocha(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(BochaProvider::new(
         BochaConfig::new()?
             .with_endpoint(endpoint)?
@@ -461,7 +461,7 @@ fn missing_bocha(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
     )?))
 }
 
-fn missing_aliyun(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn missing_aliyun(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(AliyunProvider::new(
         AliyunConfig::new()?
             .with_endpoint(endpoint)?
@@ -469,7 +469,7 @@ fn missing_aliyun(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> 
     )?))
 }
 
-fn missing_tencent(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn missing_tencent(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(TencentProvider::new(
         TencentConfig::new()?
             .with_endpoint(endpoint)?
@@ -477,15 +477,15 @@ fn missing_tencent(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>>
     )?))
 }
 
-fn missing_a3s(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
-    Ok(Box::new(A3sProvider::new(
-        A3sConfig::new()?
+fn missing_aster(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
+    Ok(Box::new(AsterProvider::new(
+        AsterConfig::new()?
             .with_endpoint(endpoint)?
             .with_api_key(CredentialSource::none()),
     )?))
 }
 
-fn missing_firecrawl(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn missing_firecrawl(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(FirecrawlProvider::new(
         FirecrawlConfig::new()?
             .with_endpoint(endpoint)?
@@ -493,7 +493,7 @@ fn missing_firecrawl(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider
     )?))
 }
 
-fn keyed_tinyfish(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn keyed_tinyfish(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(TinyFishProvider::new(
         TinyFishConfig::new()?
             .with_endpoint(endpoint)?
@@ -501,7 +501,7 @@ fn keyed_tinyfish(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> 
     )?))
 }
 
-fn keyed_bocha(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn keyed_bocha(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(BochaProvider::new(
         BochaConfig::new()?
             .with_endpoint(endpoint)?
@@ -509,7 +509,7 @@ fn keyed_bocha(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
     )?))
 }
 
-fn keyed_aliyun(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn keyed_aliyun(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(AliyunProvider::new(
         AliyunConfig::new()?
             .with_endpoint(endpoint)?
@@ -517,7 +517,7 @@ fn keyed_aliyun(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
     )?))
 }
 
-fn keyed_tencent(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn keyed_tencent(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(TencentProvider::new(
         TencentConfig::new()?
             .with_endpoint(endpoint)?
@@ -525,15 +525,15 @@ fn keyed_tencent(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
     )?))
 }
 
-fn keyed_a3s(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
-    Ok(Box::new(A3sProvider::new(
-        A3sConfig::new()?
+fn keyed_aster(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
+    Ok(Box::new(AsterProvider::new(
+        AsterConfig::new()?
             .with_endpoint(endpoint)?
             .with_api_key(CredentialSource::value(SECRET)),
     )?))
 }
 
-fn keyed_firecrawl(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn keyed_firecrawl(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(FirecrawlProvider::new(
         FirecrawlConfig::new()?
             .with_endpoint(endpoint)?
@@ -555,7 +555,7 @@ fn doubao_echo() -> String {
     .to_string()
 }
 
-fn missing_doubao(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn missing_doubao(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(DoubaoProvider::new(
         DoubaoConfig::new()?
             .with_endpoint(endpoint)?
@@ -575,7 +575,7 @@ fn deepseek_echo() -> String {
     .to_string()
 }
 
-fn missing_deepseek(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn missing_deepseek(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(DeepSeekProvider::new(
         DeepSeekConfig::new()?
             .with_endpoint(endpoint)?
@@ -583,7 +583,7 @@ fn missing_deepseek(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>
     )?))
 }
 
-fn keyed_deepseek(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn keyed_deepseek(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(DeepSeekProvider::new(
         DeepSeekConfig::new()?
             .with_endpoint(endpoint)?
@@ -591,7 +591,7 @@ fn keyed_deepseek(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> 
     )?))
 }
 
-fn keyed_doubao(endpoint: Url) -> a3s_search::Result<Box<dyn SearchProvider>> {
+fn keyed_doubao(endpoint: Url) -> aster_search::Result<Box<dyn SearchProvider>> {
     Ok(Box::new(DoubaoProvider::new(
         DoubaoConfig::new()?
             .with_endpoint(endpoint)?

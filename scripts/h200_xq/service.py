@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Start the isolated remote H200 deployment behind authenticated a3s-power."""
+"""Start the isolated remote H200 deployment behind authenticated aster-power."""
 
 import argparse
 import hashlib
@@ -14,13 +14,13 @@ import urllib.request
 from contextlib import contextmanager
 from pathlib import Path
 
-ROOT = Path('/nvme/a3s-power-xq-20261021')
+ROOT = Path('/nvme/aster-power-xq-20261021')
 STAGING = Path('/mnt/shared-storage-user/yangchao/Workspace/aster-h200-xq')
 PRIVATE = Path('/root/aster-h200-xq')
 MODEL_NAME = 'deepseek-v4.1-flash-1017-xq-v3'
 MODEL_SHA256 = '73df1934302f867601dd27f7fca59109d9b11674f50cc60526ec2a1cd4f3d389'
 SIDECAR_SHA256 = '5f92242e2ebed06e6831bbcae4e35e679c9138cdf6df0c8b36e8013c99c79a34'
-PROCESS_MARKER = 'A3S_POWER_OPERATOR_INSTANCE'
+PROCESS_MARKER = 'ASTER_POWER_OPERATOR_INSTANCE'
 POWER_SHA256 = '0076e2a46734b54a51c6aea7b3e56dedb5326c3ed4b32b0f0ead919122c45d76'
 POWER_PORT = 30002
 UPSTREAM_PORT = 8150
@@ -240,7 +240,7 @@ def frontend_is_idle():
 
 
 def assert_frontend_owned(record):
-    power = ROOT/'bin/a3s-power'
+    power = ROOT/'bin/aster-power'
     if hashlib.sha256(power.read_bytes()).hexdigest() != POWER_SHA256:
         raise RuntimeError('frontend binary differs from the validated exact-usage build')
     if record.get('power_acl_sha256') != hashlib.sha256((PRIVATE/'power.acl').read_bytes()).hexdigest():
@@ -274,13 +274,13 @@ def _set_frontend_usage_mode(exact):
     if len(key) != 64 or any(c not in '0123456789abcdef' for c in key):
         raise RuntimeError('existing deployment API key has an invalid format')
     key_hash = hashlib.sha256(key.encode()).hexdigest()
-    power = ROOT/'bin/a3s-power'
+    power = ROOT/'bin/aster-power'
 
     def activate(mode):
         config = write_power_acl(record['max_concurrent'], key_hash, mode)
         stop_owned('power', power)
         environment = dict(os.environ)
-        environment['A3S_POWER_HOME'] = str(PRIVATE/'data')
+        environment['ASTER_POWER_HOME'] = str(PRIVATE/'data')
         environment[PROCESS_MARKER] = secrets.token_hex(16)
         process = start_process('power', [str(power), 'serve', '--config', str(config)], environment)
         try:
@@ -358,7 +358,7 @@ def main():
         print('FRONTEND_USAGE_MODE_UPDATED', args.exact_benchmark_usage)
         return
     engine = ROOT/'source/xolotl/tools/v41/serve/serve_ds41.py'
-    power = ROOT/'bin/a3s-power'
+    power = ROOT/'bin/aster-power'
     if args.action == 'stop':
         stop_owned('power', power)
         stop_owned('xolotl', engine)
@@ -411,7 +411,7 @@ def main():
                 'STRATA_KV_FP4', 'STRATA_SERVE_KEEP_CACHE', 'STRATA_SERVE_KEEP_LRU',
                 'STRATA_SERVE_KEEP_MAX', 'STRATA_DSPARK_DEPTH', 'STRATA_DECODE_DIRECT'):
         environment.pop(key, None)
-    environment['A3S_POWER_HOME'] = str(PRIVATE/'data')
+    environment['ASTER_POWER_HOME'] = str(PRIVATE/'data')
     environment[PROCESS_MARKER] = instance
     environment['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
     environment['LD_LIBRARY_PATH'] = '/usr/local/cuda/lib64:' + environment.get('LD_LIBRARY_PATH', '')

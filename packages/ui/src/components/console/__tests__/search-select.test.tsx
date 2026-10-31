@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import '@testing-library/jest-dom/vitest'
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -199,22 +199,41 @@ describe('SearchSelect menu scroll', () => {
 })
 
 describe('SearchSelect menu card', () => {
-  it('settles an inactive popup for its lifetime and animates the next foreground opening', () => {
-    const focus = vi.spyOn(document, 'hasFocus').mockReturnValue(true)
+  it('closes on the first outside press even when the target stops propagation', async () => {
+    const user = userEvent.setup()
+    const clicked = vi.fn()
+    render(<>
+      <SearchSelect searchable={false} options={options} value="beta" onChange={vi.fn()} aria-label="Status" />
+      <button onPointerDown={event => event.stopPropagation()} onMouseDown={event => event.stopPropagation()} onClick={clicked}>Outside</button>
+    </>)
+    await user.click(screen.getByRole('button', { name: 'Status' }))
+    expect(screen.getByRole('listbox')).toBeVisible()
+    await user.click(screen.getByRole('button', { name: 'Outside' }))
+    await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument())
+    expect(clicked).toHaveBeenCalledOnce()
+    expect(screen.getByRole('button', { name: 'Outside' })).toHaveFocus()
+  })
+
+  it('closes on a native click directed to the window', async () => {
+    render(<SearchSelect options={options} value="beta" onChange={vi.fn()} aria-label="Status" />)
+    fireEvent.click(screen.getByRole('button', { name: 'Status' }))
+    fireEvent.click(window)
+    await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument())
+  })
+
+  it('closes when the application loses focus', () => {
+    render(<SearchSelect options={options} value="beta" onChange={vi.fn()} aria-label="Status" />)
+    fireEvent.click(screen.getByRole('button', { name: 'Status' }))
+    fireEvent.blur(window)
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+  })
+
+  it('settles a background opening and animates the next foreground opening', () => {
+    const focus = vi.spyOn(document, 'hasFocus').mockReturnValue(false)
     try {
       render(<SearchSelect options={options} value="beta" onChange={vi.fn()} aria-label="Status" />)
       const trigger = screen.getByRole('button', { name: 'Status' })
       const panel = () => document.body.querySelector<HTMLElement>('.ui-search-select__panel')!
-      fireEvent.click(trigger)
-      expect(panel().style.animation).toBe('')
-      focus.mockReturnValue(false)
-      fireEvent.blur(window)
-      expect(panel().style.animation).toBe('none')
-      focus.mockReturnValue(true)
-      fireEvent.focus(window)
-      expect(panel().style.animation).toBe('none')
-      fireEvent.click(trigger)
-      focus.mockReturnValue(false)
       fireEvent.click(trigger)
       expect(panel().style.animation).toBe('none')
       fireEvent.click(trigger)

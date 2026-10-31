@@ -21,14 +21,14 @@ async fn start_with_id_is_idempotent_for_same_spec_and_input() {
     assert_eq!(
         second_events
             .iter()
-            .filter(|event| matches!(event.event, a3s_flow::FlowEvent::RunCreated { .. }))
+            .filter(|event| matches!(event.event, aster_flow::FlowEvent::RunCreated { .. }))
             .count(),
         1
     );
     assert_eq!(
         second_events
             .iter()
-            .filter(|event| matches!(event.event, a3s_flow::FlowEvent::RunStarted))
+            .filter(|event| matches!(event.event, aster_flow::FlowEvent::RunStarted))
             .count(),
         1
     );
@@ -469,7 +469,7 @@ impl FlowEventStore for RunCreatedConflictStore {
         &self,
         run_id: &str,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -478,7 +478,7 @@ impl FlowEventStore for RunCreatedConflictStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+    ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
         if expected_sequence == 0
             && matches!(event, FlowEvent::RunCreated { .. })
             && !self.injected.swap(true, Ordering::SeqCst)
@@ -499,11 +499,11 @@ impl FlowEventStore for RunCreatedConflictStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }

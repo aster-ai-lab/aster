@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::{
     CreateRequest, IsolationRequest, OciBundle, OperationContext, ProcessId, ProcessIo,
 };
 
@@ -30,14 +30,14 @@ pub struct LinuxKvmWriteStdinReopenConfig {
 
 pub(super) struct Qualification {
     create: CreateRequest,
-    start_operation_id: a3s_oci_sdk::OperationId,
-    exec_operation_id: a3s_oci_sdk::OperationId,
-    write_operation_id: a3s_oci_sdk::OperationId,
-    delete_operation_id: a3s_oci_sdk::OperationId,
-    stale_guest_operation_id: a3s_oci_sdk::OperationId,
-    stale_host_operation_id: a3s_oci_sdk::OperationId,
+    start_operation_id: aster_oci_sdk::OperationId,
+    exec_operation_id: aster_oci_sdk::OperationId,
+    write_operation_id: aster_oci_sdk::OperationId,
+    delete_operation_id: aster_oci_sdk::OperationId,
+    stale_guest_operation_id: aster_oci_sdk::OperationId,
+    stale_host_operation_id: aster_oci_sdk::OperationId,
     process_id: ProcessId,
-    process: a3s_oci_sdk::oci_spec::runtime::Process,
+    process: aster_oci_sdk::oci_spec::runtime::Process,
     io: ProcessIo,
     write_data: Vec<u8>,
     init_marker_contents: Vec<u8>,
@@ -82,7 +82,7 @@ pub async fn linux_kvm_write_stdin_reopen_replacement(
         Err(reason) => return failed(report, reason),
     };
     let container_id =
-        match a3s_oci_sdk::ContainerId::new(format!("kvm-write-stdin-reopen-{nonce}")) {
+        match aster_oci_sdk::ContainerId::new(format!("kvm-write-stdin-reopen-{nonce}")) {
             Ok(id) => id,
             Err(error) => {
                 return failed(report, format!("failed to construct container ID: {error}"));
@@ -174,7 +174,7 @@ pub async fn linux_kvm_write_stdin_reopen_replacement(
         Ok(process) => process,
         Err(reason) => return failed(report, reason),
     };
-    let write_data = format!("a3s-oci-write-stdin-{nonce}\n").into_bytes();
+    let write_data = format!("aster-oci-write-stdin-{nonce}\n").into_bytes();
     report.bundle_loaded = true;
     report.qualification_operation_id = Some(write_operation_id.clone());
     report.setup_create_operation_id = Some(create_operation_id.clone());
@@ -202,8 +202,8 @@ pub async fn linux_kvm_write_stdin_reopen_replacement(
         process,
         io,
         write_data: write_data.clone(),
-        init_marker_contents: format!("a3s-oci-exec-init-{nonce}\n").into_bytes(),
-        exec_marker_contents: format!("a3s-oci-exec-process-{nonce}\n").into_bytes(),
+        init_marker_contents: format!("aster-oci-exec-init-{nonce}\n").into_bytes(),
+        exec_marker_contents: format!("aster-oci-exec-process-{nonce}\n").into_bytes(),
         write_marker_contents: write_data,
         stage: config.stage,
     };

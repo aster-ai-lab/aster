@@ -4,7 +4,7 @@ use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime};
 
-use a3s_oci_sdk::{ContainerId, Generation, Result};
+use aster_oci_sdk::{ContainerId, Generation, Result};
 use serde::{Deserialize, Serialize};
 
 use crate::adapter::TaskIdentity;
@@ -15,7 +15,7 @@ use super::{
     validate_private_file,
 };
 
-const EXEC_DELETE_JOURNAL_FILE_NAME: &str = "a3s-oci-shim-exec-delete-v1.json";
+const EXEC_DELETE_JOURNAL_FILE_NAME: &str = "aster-oci-shim-exec-delete-v1.json";
 const EXEC_DELETE_JOURNAL_SCHEMA_VERSION: u32 = 1;
 const MAX_EXEC_DELETE_JOURNAL_BYTES: u64 = 1024 * 1024;
 
@@ -320,7 +320,7 @@ fn system_time_from_unix_nanos(nanos: u128) -> Option<SystemTime> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_oci_sdk::ErrorCode;
+    use aster_oci_sdk::ErrorCode;
 
     #[test]
     fn journal_round_trip_is_identity_bound_and_sorted() {

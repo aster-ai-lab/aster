@@ -1,4 +1,4 @@
-use a3s_orm::{sql_query, DecodeError, FromRow, PostgresTransaction, Row};
+use aster_orm::{sql_query, DecodeError, FromRow, PostgresTransaction, Row};
 
 use crate::Result;
 

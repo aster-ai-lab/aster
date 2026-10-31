@@ -8,11 +8,11 @@ use crate::{
 
 use super::{ComputedRuleTraceEntry, FieldError, FormValueEvaluation};
 
-pub const EVALUATE_REQUEST_API_VERSION: &str = "a3s.dev/form-core/evaluate-request/v1alpha1";
-pub const EVALUATE_RESPONSE_API_VERSION: &str = "a3s.dev/form-core/evaluate-response/v1alpha1";
-pub const FORM_LOCALE_CATALOG_API_VERSION: &str = "a3s.dev/form-locale-catalog/v1";
+pub const EVALUATE_REQUEST_API_VERSION: &str = "aster.dev/form-core/evaluate-request/v1alpha1";
+pub const EVALUATE_RESPONSE_API_VERSION: &str = "aster.dev/form-core/evaluate-response/v1alpha1";
+pub const FORM_LOCALE_CATALOG_API_VERSION: &str = "aster.dev/form-locale-catalog/v1";
 
-const FORM_PLAN_API_VERSION: &str = "a3s.dev/form-plan/v1alpha1";
+const FORM_PLAN_API_VERSION: &str = "aster.dev/form-plan/v1alpha1";
 const ABSOLUTE_MAX_EXPRESSION_OPERATIONS: u64 = 16_384;
 const MAX_LOCALE_BYTES: usize = 256;
 const MAX_LOCALE_MESSAGES: usize = 256;

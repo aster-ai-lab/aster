@@ -24,8 +24,8 @@ repository-root `AGENTS.md` also applies.
 ## Build and verification
 
 - Build from the repository root with the pinned Rust toolchain. Build and
-  distribute `aster` and `crates/code/acp`'s `a3s-code-acp` companion together.
-- Keep configuration in ACL parsed by `a3s-acl`. Preserve host/workspace trust
+  distribute `aster` and `crates/code/acp`'s `aster-acp` companion together.
+- Keep configuration in ACL parsed by `aster-acl`. Preserve host/workspace trust
   boundaries, sandbox enforcement, bounded reads, and fail-closed behavior.
 - Do not add Node, Python, or Go bindings, SDKs, or package publishing jobs to
   the embeddable Rust harness.

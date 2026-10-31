@@ -17,7 +17,7 @@ Container technologies (like Docker) achieve process isolation through Linux nam
 libkrun is a **lightweight VMM (Virtual Machine Monitor) in dynamic library form** that allows any program to gain hardware virtualization-based process isolation capabilities simply by linking to this library.
 
 ```
-Application (crun / krunkit / muvm / a3s box)
+Application (crun / krunkit / muvm / aster box)
          ↓ links to
     libkrun.so / libkrun.dylib
          ↓ calls
@@ -262,7 +262,7 @@ The WHPX backend implementation makes libkrun a truly cross-platform virtualizat
 
 1. **Windows Container Ecosystem**: Provides virtualization isolation capabilities for container runtimes on Windows (like Windows version of crun)
 2. **Development Environment Consistency**: Developers can use the same isolation mechanism on Windows as on Linux/macOS
-3. **a3s box Cross-Platform**: Enables a3s box to provide consistent security isolation experience on Windows as on other platforms
+3. **aster box Cross-Platform**: Enables aster box to provide consistent security isolation experience on Windows as on other platforms
 
 ---
 

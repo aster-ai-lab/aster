@@ -1,4 +1,4 @@
-name: Qualify a3s-code
+name: Qualify aster
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: qualify-a3s-code-${{ github.ref }}
+  group: qualify-aster-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -48,17 +48,20 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          cargo fmt -p a3s-code-core -p a3s-code-acp -- --check
+          cargo fmt -p aster-core -p aster-acp -- --check
           python3 tests/workspace_dependencies.py
           python3 tests/code_release_workflow.py
       - name: Test Core goal feedback
         shell: bash
-        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+        run: cargo test --locked -p aster-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+      - name: Test native host execution
+        shell: bash
+        run: cargo test --locked -p aster-core --lib sandbox::host_access::tests -- --test-threads=1
       - name: Test ACP unit and wire contracts
         shell: bash
         run: |
-          cargo test --locked -p a3s-code-acp --lib -- --test-threads=1
-          cargo test --locked -p a3s-code-acp --test acp_conformance_stdio -- --test-threads=1
+          cargo test --locked -p aster-acp --lib -- --test-threads=1
+          cargo test --locked -p aster-acp --test acp_conformance_stdio -- --test-threads=1
 
   test-windows:
     name: Core/ACP portable tests (windows-latest)
@@ -96,11 +99,14 @@ jobs:
       - name: Check Core/ACP formatting and dependency boundary
         shell: bash
         run: |
-          cargo fmt -p a3s-code-core -p a3s-code-acp -- --check
+          cargo fmt -p aster-core -p aster-acp -- --check
           python3 tests/workspace_dependencies.py
       - name: Test Core goal feedback
         shell: bash
-        run: cargo test --locked -p a3s-code-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+        run: cargo test --locked -p aster-core --lib agent_api::goal_facade::tests::execution::feedback -- --test-threads=1
+      - name: Test native host execution
+        shell: bash
+        run: cargo test --locked -p aster-core --lib sandbox::host_access::tests -- --test-threads=1
       - name: Test unsupported prompt refusal
         shell: bash
-        run: cargo test --locked -p a3s-code-acp --lib agent::tests::unsupported_prompt_content_fails_closed_before_a_turn -- --test-threads=1
+        run: cargo test --locked -p aster-acp --lib agent::tests::unsupported_prompt_content_fails_closed_before_a_turn -- --test-threads=1

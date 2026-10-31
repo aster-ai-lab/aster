@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/hero.svg" width="100%" alt="A3S OCI Runtime binds each container to an exact generation, durable lifecycle, and evidence-gated execution driver">
+  <img src="assets/readme/hero.svg" width="100%" alt="Aster OCI Runtime binds each container to an exact generation, durable lifecycle, and evidence-gated execution driver">
 </p>
 
 
@@ -10,12 +10,12 @@
 </p>
 
 <p align="center">
-  <strong>The low-level execution plane for A3S: official OCI types, durable lifecycle replay, and one reviewed Linux executor across native and utility-VM paths.</strong>
+  <strong>The low-level execution plane for Aster: official OCI types, durable lifecycle replay, and one reviewed Linux executor across native and utility-VM paths.</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/OCI-Runtime/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/OCI-Runtime/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
-  <a href="https://github.com/A3S-Lab/OCI-Runtime/releases/latest"><img alt="Latest A3S OCI Runtime release" src="https://img.shields.io/github/v/release/A3S-Lab/OCI-Runtime?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=68c7ff"></a>
+  <a href="https://github.com/aster-ai-lab/OCI-Runtime/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/OCI-Runtime/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
+  <a href="https://github.com/aster-ai-lab/OCI-Runtime/releases/latest"><img alt="Latest Aster OCI Runtime release" src="https://img.shields.io/github/v/release/aster-ai-lab/OCI-Runtime?display_name=tag&amp;sort=semver&amp;style=flat-square&amp;color=68c7ff"></a>
   <img alt="OCI Runtime Specification 1.3.0" src="https://img.shields.io/badge/OCI_Runtime_Spec-1.3.0-68c7ff?style=flat-square">
   <img alt="Rust workspace" src="https://img.shields.io/badge/implementation-Rust-dbe7f0?style=flat-square&amp;logo=rust&amp;logoColor=111827">
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-f0b85a?style=flat-square"></a>
@@ -33,19 +33,19 @@
 
 ---
 
-**A3S OCI Runtime** owns actual Linux-container execution for A3S: exact OCI
+**Aster OCI Runtime** owns actual Linux-container execution for Aster: exact OCI
 validation, container and process state, monotonic generations, operation
 journals, terminal status, platform drivers, utility VMs, the authenticated
 guest agent, and runtime-scoped cleanup.
 
 It deliberately does not pull images, build images, implement Compose, own
 product networks or volumes, or become a Docker daemon. Those responsibilities
-remain in [A3S Box](https://github.com/A3S-Lab/Box), which supplies prepared
+remain in [Aster Box](https://github.com/aster-ai-lab/Box), which supplies prepared
 bundles, an isolation requirement, and a versioned attachment manifest through
-the public `a3s-oci-sdk`.
+the public `aster-oci-sdk`.
 
 The provider-neutral Rust contracts are also available independently as
-`a3s-oci-core = "=0.3.2"` and `a3s-oci-sdk = "=0.3.2"`. Their
+`aster-oci-core = "=0.3.2"` and `aster-oci-sdk = "=0.3.2"`. Their
 `sdk/rust/v*` source tags are separate from full Runtime binary releases.
 
 > [!WARNING]
@@ -70,9 +70,9 @@ The provider-neutral Rust contracts are also available independently as
 The first successful action is intentionally read-only:
 
 ```bash
-git clone https://github.com/A3S-Lab/OCI-Runtime.git
+git clone https://github.com/aster-ai-lab/OCI-Runtime.git
 cd OCI-Runtime
-cargo run -p a3s-oci-cli -- features
+cargo run -p aster-oci-cli -- features
 ```
 
 On the qualified Windows x86_64 host used for the current branch, the command
@@ -81,7 +81,7 @@ readiness:
 
 ```json
 {
-  "schema_version": "a3s.oci.features.v1",
+  "schema_version": "aster.oci.features.v1",
   "platform": "windows",
   "architecture": "x86_64",
   "drivers": [
@@ -123,8 +123,8 @@ and `experimental` or `supported` readiness.
 | Durable host service | Exact create/state/start/kill/delete, driver-advertised optional operations including immutable checkpoint and paused-generation restore orchestration, global idempotency journals including File upload and Filesystem mkdir/move/remove, replay, generation fencing, startup recovery, startup-wide cross-journal orphan auditing, failed-generation quarantine, capability-rooted state traversal with Unix mount-identity fencing, post-commit replay-record acknowledgement for local and utility-VM drivers, sorted list, ordered events, and same-UID multi-container owners for Native Linux and Apple Silicon HVF |
 | Shared Linux executor | Namespace create/join, declared-root directory admission before namespace entry, `pivot_root`, ordered OCI mounts with root-relative legacy destinations and optional-field handling, rootfs-internal bind sources resolved from the effective tree after earlier configured or synthesized mounts, detached ordered `idmap`/`ridmap` binds, recursively private joined-mount rootfs device staging without donor propagation, the complete OCI 1.3 Linux mount-option control registry, exact init/exec argv, environment, cwd, terminal default, UID/GID, supplementary groups, and umask, conditional `/dev/fd`, `/dev/stdin`, `/dev/stdout`, and `/dev/stderr` links after mount processing, OCI hooks with fail-closed private-descriptor isolation and exact-owner pidfd process-group supervision, user mappings, exact absolute and stable relative `cgroupsPath` resolution plus a private generation-fenced path on omission, complete cgroup v2 CPU shares/quota/burst/period/cpuset/idle mapping with explicit cgroup v1 realtime rejection, exact memory limit/reservation/swap and PIDs create/update mapping with zero preserved and OCI `-1` encoded as `max`, finite total-swap validation, complete cgroup v2 Block I/O default/per-device weight and read/write BPS/IOPS throttle mapping with zero-rate clearing, keyed read-back, partial-update preservation, reverse rollback, and explicit leaf-weight rejection, dynamic HugeTLB usage/reservation controls, keyed RDMA HCA handle/object limits, bounded OCI 1.3 unified control-file writes with dynamic controller enablement, kernel-defined formatting, typed-file conflict rejection, readable no-op/rollback snapshots, and write-only control support, typed rejection of cgroup v1-only memory and network `net_cls`/`net_prio` controls, all five capability sets with kernel read-back, exact `no_new_privileges` verification, all 16 OCI rlimit types with exact kernel read-back, `oomScoreAdj`, scheduler policy, I/O priority, exact `LINUX`/`LINUX32` init personality, all seven OCI NUMA memory-policy modes and three flags with kernel read-back, parent-owned Intel RDT CLOS, ordered schemata, process assignment, monitoring, and owner-death cleanup, exec CPU affinity applied around cgroup membership, transactional namespaced sysctls with descriptor-confined apply, read-back, and rollback, exact rootful block/character/FIFO nodes, the six default devices, `/dev/ptmx`, PTY-backed `/dev/console`, durable placeholder cleanup, immutable declared/default device inventory BPF with ordered resource-rule narrowing, seccomp, PID 1 supervision, pidfds, exec, process I/O, PTY with OCI `consoleSize` initialization, a bounded Host-acknowledged mutation replay journal, parent-bound launch/session helpers, PID-start-time-bound owner-death tombstones, descriptor-confined file/filesystem sessions, pause/resume, resource updates, normalized CPU/memory/PID/block-I/O stats, and scoped cleanup for the qualified profile |
 | Utility-VM boundary | Isolated libkrun shim, authenticated protocol v10 with v1-v9 compatibility, 20 public workload operations plus one bounded maintenance acknowledgement, clone-wide shutdown, exact-generation VM sessions, and the same Linux executor behind the static guest agent. A platform-neutral one-VM-per-generation lifecycle now backs both the public HVF driver and the Linux KVM candidate, including bundle ownership handoff, concurrent Create fencing, retry and terminal cleanup, stopped recovery tombstones, and bounded shutdown. Durable recovery records remain on the per-generation share, privileged OCI device sources are created only on Guest-local devtmpfs and removed at the Create barrier, and shutdown consumes every retained device-target manifest before deleting the Guest runtime root |
-| containerd runtime-v2 | SDK-only `containerd-shim-a3s-oci-v2` with a code-owned contract for all 17 methods of `containerd.task.v2.Task`, a 24-route translation table whose exact 18-operation required SDK union gates endpoint admission, and per-driver `Checkpoint`/`Restore` v1 negotiation. Task Checkpoint commits a digest-validated directory package; checkpoint-backed Create restores a paused generation and schema-v10 metadata preserves its CREATED-to-Start barrier across shim replacement. The shim also retains exact 2.2.2 arm64 Native Linux development qualification, 2.2.3 x86_64 regression evidence, and a current three-pass 2.2.1 WSL2 observation covering all 23 restart/rehydration boundaries. Durable namespace/task/exec identities, replayable task and `DeleteProcess` receipts, sequenced input/signal/resize/control journals, bounded FIFO/PTY I/O, exact-generation crash cleanup, and restart recovery are retained. Schema v9 remains readable and introduced exact pending-Update bodies; schemas v1-v8 remain compatible under their documented defaults. Unit coverage includes package replay and tamper rejection, restore-intent DeleteShim cleanup, committed-Resume adoption, committed init/exec Start adoption, terminal signal settlement, response-receipt replay, and race-free output cursor restoration. No production driver advertises Checkpoint or Restore. The separate rootful Native Linux CRIU constructor advertises both operations and has a bounded real-kernel v3 checkpoint/restore lifecycle, response-loss replay, two-boundary replacement-process restore recovery, and PID/network-namespace rejection qualification; package v6 integrates that gate, while retained tagged-package, broader-profile, cross-driver, and multi-architecture qualification remain open. |
-| A3S Box consumer | Public-SDK-only lifecycle and attachments; pause/resume; process and filesystem sessions; exact live inventory, normalized stats, bounded ordered events, and replay-safe complete resource updates; explicit Native Linux Sandbox production routing, checksummed release-layout installation, and complete Rust/Python/TypeScript/Go SDK passes on x86_64 and aarch64 with `/dev/kvm` absent and inaccessible, while default and cross-platform cutover remain open |
+| containerd runtime-v2 | SDK-only `containerd-shim-aster-oci-v2` with a code-owned contract for all 17 methods of `containerd.task.v2.Task`, a 24-route translation table whose exact 18-operation required SDK union gates endpoint admission, and per-driver `Checkpoint`/`Restore` v1 negotiation. Task Checkpoint commits a digest-validated directory package; checkpoint-backed Create restores a paused generation and schema-v10 metadata preserves its CREATED-to-Start barrier across shim replacement. The shim also retains exact 2.2.2 arm64 Native Linux development qualification, 2.2.3 x86_64 regression evidence, and a current three-pass 2.2.1 WSL2 observation covering all 23 restart/rehydration boundaries. Durable namespace/task/exec identities, replayable task and `DeleteProcess` receipts, sequenced input/signal/resize/control journals, bounded FIFO/PTY I/O, exact-generation crash cleanup, and restart recovery are retained. Schema v9 remains readable and introduced exact pending-Update bodies; schemas v1-v8 remain compatible under their documented defaults. Unit coverage includes package replay and tamper rejection, restore-intent DeleteShim cleanup, committed-Resume adoption, committed init/exec Start adoption, terminal signal settlement, response-receipt replay, and race-free output cursor restoration. No production driver advertises Checkpoint or Restore. The separate rootful Native Linux CRIU constructor advertises both operations and has a bounded real-kernel v3 checkpoint/restore lifecycle, response-loss replay, two-boundary replacement-process restore recovery, and PID/network-namespace rejection qualification; package v6 integrates that gate, while retained tagged-package, broader-profile, cross-driver, and multi-architecture qualification remain open. |
+| Aster Box consumer | Public-SDK-only lifecycle and attachments; pause/resume; process and filesystem sessions; exact live inventory, normalized stats, bounded ordered events, and replay-safe complete resource updates; explicit Native Linux Sandbox production routing, checksummed release-layout installation, and complete Rust/Python/TypeScript/Go SDK passes on x86_64 and aarch64 with `/dev/kvm` absent and inaccessible, while default and cross-platform cutover remain open |
 | Retained evidence | Schema and normative locks, 189-pair authenticated protocol fault coverage, portable nine-stage Create/State/Start/Kill/Delete/Wait/Exec/SignalProcess/WaitProcess/Pause/Resume/Processes/Update/Stats/ReadOutput/WriteStdin/CloseStdin/Resize/File/Filesystem host reopen with exact post-commit acknowledgement, real-HVF nine-stage Host/Guest Create plus two-stage Host shutdown interruption and cleanup, all nine real-HVF Create, State, Start, Kill, Delete, Wait, Exec, SignalProcess, WaitProcess, Pause, Resume, Processes, Update, Stats, ReadOutput, WriteStdin, CloseStdin, Resize, File, and Filesystem transitions through durable service reopen and VM/session-owner replacement, a real protocol-v10 Apple Silicon Guest boot, native Linux real-container with distinct exact init/exec capability, `NoNewPrivs`, rlimit, OOM-score, I/O-priority, scheduler, init personality, init NUMA memory policy, exec CPU-affinity, and namespaced-sysctl read-back, rootless default-device and device-policy gates, soak with exact Pause/Resume operation-ID replay across two Host reopens and atomic progress counters, owner-death safe-termination, exact `startContainer` Hook process-group owner-death recovery, and three consecutive same-Host live containerd 2.2 lifecycle/restart/I/O matrices with deleted exec-ID reuse, lost `DeleteProcess` and task Delete response replay, post-commit guest-journal reclamation, and committed init-Start, exec-Start, init-Kill, Pause, Resume, Update, WriteStdin, CloseStdin, SignalProcess, and ResizePty shim-replacement gates, post-commit `WriteStdin` and `CloseStdin` forced cleanup, fresh-VM HVF soak, fail-closed Linux KVM lifecycle/recovery/25-wave soak entries plus real x86_64 nine-stage Create/State/Start/Kill/Delete/Wait/Exec/SignalProcess/WaitProcess/Pause/Resume/Processes/Update/Stats/ReadOutput/WriteStdin/CloseStdin/Resize/File/Filesystem owner replacement, and WHPX nominal plus owner-death/service-restart qualification |
 
 Shim restoration now reconciles an exact Runtime `Stopped` record before it
@@ -150,7 +150,7 @@ PID, exit status, and nanosecond exit time. A new durable incarnation of the
 same exec ID clears the old receipt, and full task Delete or DeleteShim removes
 the journal.
 
-Task Delete now stores `a3s-oci-shim-task-delete-v1.json` before dispatching
+Task Delete now stores `aster-oci-shim-task-delete-v1.json` before dispatching
 the generation-fenced Runtime delete. The receipt binds the namespace, task
 incarnation, container identity, generation, bundle, PID, exit status, and
 nanosecond exit time. Retained main metadata plus a live Runtime generation
@@ -287,14 +287,14 @@ network-device authority. The Native Linux gate uses real dummy interfaces to
 exercise move, rename, address/MTU/MAC preservation, target conflict, partial
 rollback, rootless rejection, and cleanup.
 
-The rootful public `a3s.oci.attachments.v3` profile adds immutable caller-issued
+The rootful public `aster.oci.attachments.v3` profile adds immutable caller-issued
 namespace, interface, and cleanup identities around that OCI mechanism. It
 requires an exact target interface name rather than `%d`, binds all three
 identities into durable replay evidence, and distinguishes runtime-created
 namespace release from preservation of a joined caller namespace. It never
 receives or decides IPAM, DNS, routes, aliases, or network policy.
 
-The required `dev.a3s.network.enforcement@1` extension adds an opaque,
+The required `dev.aster.network.enforcement@1` extension adds an opaque,
 generation- and SHA-256-bound caller enforcement identity plus an optional
 node-local redirect identity to one exact joined caller namespace. Its closed
 schema cannot carry hostname/IP rules, routes, endpoints, credentials, tenant
@@ -320,7 +320,7 @@ binds this OAR-02 evidence to the exact staged runtime and Agent artifacts.
 The Runtime does not decide when a workload is idle or should wake; callers own
 that policy and issue the explicit operations.
 
-The public `a3s.oci.attachments.v4` profile establishes the reusable
+The public `aster.oci.attachments.v4` profile establishes the reusable
 guest-session boundary. A SharedGuestKernel create or restore must bind one
 logical session ID, positive incarnation, immutable trust domain, capacity
 from 1 through 64, runtime ownership, and an explicit destroy-on-empty or
@@ -375,7 +375,7 @@ workload leaf; Native Linux qualification reads `memory.high` from both
 children, verifies a kernel-normalized partial `io.max` write when possible, and
 exercises rootful and delegated-rootless live updates.
 
-The current Box adapter at `A3S-Lab/Box@a16772c3` rechecks every read against
+The current Box adapter at `aster-ai-lab/Box@a16772c3` rechecks every read against
 the exact runtime binding. File upload/download and filesystem
 stat/mkdir/move/list/remove now use the same cross-platform session facade;
 capability and Box-generation checks happen before dispatch, response targets
@@ -386,7 +386,7 @@ claimed durably before dispatch, and replayed with the same runtime operation
 after a lost response. Runtime acknowledgement updates Box restart intent
 atomically without changing the original create identity.
 
-New mutation records use `a3s.oci.operation.v6`. Version 3 File uploads and
+New mutation records use `aster.oci.operation.v6`. Version 3 File uploads and
 Filesystem mkdir/move/remove remain readable; version 4 additionally retains
 each exact checkpoint request and typed immutable response; version 5 adds the
 exact restore request, allocated generation, and paused-running response; and
@@ -416,17 +416,17 @@ The exact containerd API, identity, installation, restart, cleanup, and
 qualification boundary is documented in
 [containerd Runtime V2](docs/containerd-runtime-v2.md).
 
-Contract v1 freezes runtime type `io.containerd.a3s-oci.v2`, task service
+Contract v1 freezes runtime type `io.containerd.aster-oci.v2`, task service
 `containerd.task.v2.Task`, and Linux archive entry
-`containerd-shim-a3s-oci-v2`. Install that entry as
-`/usr/local/bin/containerd-shim-a3s-oci-v2`. Namespace and task IDs use the
+`containerd-shim-aster-oci-v2`. Install that entry as
+`/usr/local/bin/containerd-shim-aster-oci-v2`. Namespace and task IDs use the
 `sha256-length-framed-u64be-v1` encoding to produce a stable SDK container ID;
 the Host assigns the monotonic runtime generation returned by Create, and the
 shim persists and addresses that exact generation on every later request.
 The same code-owned table maps every Task branch and FIFO pump to its public
 SDK operations. RuntimeInfo publishes the exact 18-operation union as
-`dev.a3s.oci.containerd-sdk-operations`; the shim refuses an endpoint missing
-any member, and its crate manifest is tested to keep A3S Box and driver
+`dev.aster.oci.containerd-sdk-operations`; the shim refuses an endpoint missing
+any member, and its crate manifest is tested to keep Aster Box and driver
 implementations outside this adapter boundary.
 The bounded process-I/O path reads and writes at most 64 KiB per shim step,
 keeps non-terminal stdout and stderr separate, and merges terminal output on
@@ -467,7 +467,7 @@ rootfs, bind mounts, ID-mapped mounts, and container-created tmpfs filesystems.
 
 The complete release target is every applicable OCI Runtime Specification
 1.3.0 requirement for Linux containers and every advertised driver—not a
-reduced A3S-only profile. [ROADMAP.md](ROADMAP.md) keeps completed evidence and
+reduced Aster-only profile. [ROADMAP.md](ROADMAP.md) keeps completed evidence and
 open release gates separate.
 
 Capability set enforcement remains exact and fail-closed for every value the
@@ -509,7 +509,7 @@ transitions fail without weakening that barrier.
 Each durable container record retains:
 
 - the exact validated configuration and digest;
-- the complete `a3s.oci.attachments.v1`, storage-aware v2, network-aware v3, or
+- the complete `aster.oci.attachments.v1`, storage-aware v2, network-aware v3, or
   guest-session-aware v4 manifest and its digest for newly created records;
 - the exact reusable guest-session incarnation when using shared-guest-kernel
   isolation;
@@ -531,7 +531,7 @@ isolation class, or changed recorded driver fails before mutation.
 | `SharedGuestKernel` | Hardware utility VM | One declared trust domain shares a guest kernel |
 | `SharedHostKernel` | Native Linux | Containers share the host kernel |
 
-`SharedGuestKernel` requests must carry an `a3s.oci.attachments.v4` binding for
+`SharedGuestKernel` requests must carry an `aster.oci.attachments.v4` binding for
 one exact guest-session incarnation. This is durable identity and authority
 evidence, not a claim that the currently registered utility-VM driver provides
 pooling; capability negotiation still rejects v4 until that driver advertises
@@ -546,11 +546,11 @@ back from a VM boundary to the host kernel.
 ### The SDK is the execution boundary
 
 ```rust,no_run
-use a3s_oci_runtime::HostRuntimeService;
-use a3s_oci_sdk::RuntimeClient;
+use aster_oci_runtime::HostRuntimeService;
+use aster_oci_sdk::RuntimeClient;
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_oci_sdk::Result<()> {
+async fn main() -> aster_oci_sdk::Result<()> {
     let client = RuntimeClient::new(HostRuntimeService::new());
     let info = client.features().await?;
 
@@ -584,15 +584,15 @@ On Linux, the explicit experimental host owner publishes one durable SDK
 endpoint without opening KVM:
 
 ```bash
-a3s-oci native-linux-host-service \
-  --root /run/a3s/oci-native \
-  --agent /usr/libexec/a3s-oci-agent
+aster-oci native-linux-host-service \
+  --root /run/aster/oci-native \
+  --agent /usr/libexec/aster-oci-agent
 ```
 
 The owner opens the Native Linux driver and durable state before publishing
 `runtime.sock`, serves independently fenced container generations to
 authenticated same-UID clients, and reaps driver-owned processes on graceful
-shutdown. Box's explicit `A3S_BOX_OCI_MIGRATION=sandbox` production route uses
+shutdown. Box's explicit `ASTER_BOX_OCI_MIGRATION=sandbox` production route uses
 this owner. The existing `native-linux-service` command remains the
 Sandbox-scoped FD 3/4/5 owner for compatibility and focused qualification.
 
@@ -600,9 +600,9 @@ On Apple Silicon, the public HVF owner exposes the same SDK contract while
 keeping durable state separate from per-generation VM state:
 
 ```bash
-a3s-oci macos-hvf-host-service \
-  --root "$HOME/Library/Application Support/A3S/oci-hvf" \
-  --shim /absolute/path/to/a3s-oci-krun-shim \
+aster-oci macos-hvf-host-service \
+  --root "$HOME/Library/Application Support/Aster/oci-hvf" \
+  --shim /absolute/path/to/aster-oci-krun-shim \
   --system-image-manifest /absolute/path/to/system-image.json
 ```
 
@@ -636,9 +636,9 @@ reattachment remains open for the Box B2 cutover.
 
 | Host path | Retained real evidence | Current readiness and open gate |
 | --- | --- | --- |
-| Native Linux x86_64/aarch64 | Rootful and helper-backed rootless lifecycle, including all six OCI default devices, `/dev/ptmx`, configured-init `/dev/console`, an explicit FIFO outside `/dev`, the immutable declared/default device boundary, and the bounded A3S Box device policy; SDK service transport; exec/PTY/I/O; init/exec scheduler and namespaced-sysctl read-back; cgroup update/stats; hooks; namespace and mount profiles; multi-container fencing; fault cleanup; owner-`SIGKILL` safe termination and stopped cleanup; exact `startContainer` Hook owner-death process-group cleanup and replacement recovery; 25 waves × 4 containers; x86_64/aarch64 installed Box production-owner composition through all four SDKs with `/dev/kvm` absent and inaccessible, plus fresh-Box-process owner-death/restart gates | Default inventory `probe-only`; explicitly opened development driver `experimental`. Live session reattachment, default cutover, production security, and OCI conformance remain |
+| Native Linux x86_64/aarch64 | Rootful and helper-backed rootless lifecycle, including all six OCI default devices, `/dev/ptmx`, configured-init `/dev/console`, an explicit FIFO outside `/dev`, the immutable declared/default device boundary, and the bounded Aster Box device policy; SDK service transport; exec/PTY/I/O; init/exec scheduler and namespaced-sysctl read-back; cgroup update/stats; hooks; namespace and mount profiles; multi-container fencing; fault cleanup; owner-`SIGKILL` safe termination and stopped cleanup; exact `startContainer` Hook owner-death process-group cleanup and replacement recovery; 25 waves × 4 containers; x86_64/aarch64 installed Box production-owner composition through all four SDKs with `/dev/kvm` absent and inaccessible, plus fresh-Box-process owner-death/restart gates | Default inventory `probe-only`; explicitly opened development driver `experimental`. Live session reattachment, default cutover, production security, and OCI conformance remain |
 | Linux KVM utility VM | Independent device/access/ioctl/API-version probes; deterministic x86_64 and AArch64 runtime archives and immutable ext4 roots; exact libkrun, firmware, exported kernel, and static Guest Agent compatibility sets; descriptor-pinned read-only root attachment; isolated create/configure/root/plain-vsock/release context gates; an isolated real-entry worker with descriptor-pinned KVM and runtime-share checks, parent-to-worker device/inode identity binding, pidfd owner death, kernel-authenticated Unix peer identity, protocol-v10 negotiation, and fail-closed cleanup evidence when KVM is unavailable. Both architecture lanes retain the 14-case pre-entry compatibility-drift matrix and invoke a KVM-gated 17-case lifecycle matrix. Its versioned ten-case Guest path-isolation entry checks traversal, symbolic-link, and magic-link escapes; focused regressions also swap bundle, rootfs, and bind-source entries after descriptor validation. The lanes also invoke a scoped owner-death/restart gate, a scoped 25-wave fresh-generation soak, and nine-stage Create, State, Start, Kill, Delete, Wait, Exec, SignalProcess, WaitProcess, Pause, Resume, Processes, Update, Stats, ReadOutput, WriteStdin, CloseStdin, Resize, File, and Filesystem owner-replacement gates. Guest durable ownership on the virtiofs runtime share follows the share-root Host UID rather than Guest `geteuid()`, so non-root Host Services can retain recovery records and device-target manifests. A KVM-independent driver preflight rejects both shared-kernel classes, inexact generations, missing handoff ownership, and missing, linked, non-private, drifted, escaping-rootfs, or absolute-bind handoffs before creating a Guest-visible generation share. The soak audits generation fencing and replay plus per-wave process, marker, endpoint, descriptor, bundle-handoff, runtime-share, recovery-report, and configured Guest `cgroupsPath` lifetime. The public candidate owns one VM per exact generation, rejects host-kernel fallback, keeps bootstrap and writable shares separate, and remains non-registerable | `probe-only`; September 11, 2026 tip `ff97257` existing-host WSL2 x86_64 release-matrix observation (skip soak) greened agent-entry through create-reopen with `promotes_readiness=false`. September 8 bare-metal x86_64 observation at `e71a995`/`a35703c` retained lifecycle, recovery, 180/180 operation-stage reopen paths, and 25/25 soak with short `RUNNER_TEMP`. Earlier clean revisions retain File/Filesystem 9/9 each (`fa4c593`) and prior lifecycle/soak rows. Fresh-host x86_64 + AArch64 attestation-bound matrices remain required for promotion; Host shutdown and separate real-entry negative-isolation profiles stay open |
-| macOS arm64/HVF | Public same-UID SDK host service; one dedicated VM per exact generation; manifest-bound immutable ext4 system image with pinned A3S Linux kernel and agent; read-only root disk plus separate same-UID mode-0700 writable runtime share pinned through retained no-follow directory handles and parent-to-worker device/inode identity binding; Guest-local devtmpfs sources for privileged OCI device nodes; a real protocol-v10 bridge with all 21 Guest operations; retained full protocol-v9 lifecycle, multi-container, namespace/rootfs enforcement, 3 no-delete cleanup points, 11 transport fault points, 180/180 workload-operation replacement paths, negative asset/authentication gates, and 25 fresh-VM waves; source revision `a5a6b53` passed the revision-bound public-path gate across all 20 driver operations plus `features`/`list`/`events`, Host Service `SIGKILL` recovery, and a separate 25/25 fresh-VM soak with zero transient leaks | `experimental` on Apple Silicon. Every currently advertised public macOS/HVF function is implemented and the protocol-v10 public path is qualified at the recorded revision. The versioned ten-case Guest path-isolation profile is implementation-complete and CI-wired; its first `available` artifact at the updated revision remains pending. Signed release-package qualification, OCI conformance, security review, upgrade/rollback compatibility, and longer release soak remain before `supported` |
+| macOS arm64/HVF | Public same-UID SDK host service; one dedicated VM per exact generation; manifest-bound immutable ext4 system image with pinned Aster Linux kernel and agent; read-only root disk plus separate same-UID mode-0700 writable runtime share pinned through retained no-follow directory handles and parent-to-worker device/inode identity binding; Guest-local devtmpfs sources for privileged OCI device nodes; a real protocol-v10 bridge with all 21 Guest operations; retained full protocol-v9 lifecycle, multi-container, namespace/rootfs enforcement, 3 no-delete cleanup points, 11 transport fault points, 180/180 workload-operation replacement paths, negative asset/authentication gates, and 25 fresh-VM waves; source revision `a5a6b53` passed the revision-bound public-path gate across all 20 driver operations plus `features`/`list`/`events`, Host Service `SIGKILL` recovery, and a separate 25/25 fresh-VM soak with zero transient leaks | `experimental` on Apple Silicon. Every currently advertised public macOS/HVF function is implemented and the protocol-v10 public path is qualified at the recorded revision. The versioned ten-case Guest path-isolation profile is implementation-complete and CI-wired; its first `available` artifact at the updated revision remains pending. Signed release-package qualification, OCI conformance, security review, upgrade/rollback compatibility, and longer release soak remain before `supported` |
 | Windows x86_64/WHPX | Real partition/context/guest gates, protocol-v9 lifecycle and filesystem sessions, direct driver qualification, protected per-generation shares, exact exit replay, owner death at both recovery fault boundaries, host-service reopen, stopped-only delete, and complete transient cleanup. The current implementation also builds a reproducible x86_64 ext4 system image, pins Linux 6.12.91 and all native boot assets, attaches the root read-only, and keeps the runtime share separate. Existing-host evidence now covers all 180/180 operation-stage replacement paths across the 20 workload operations and an independent same-process 8-cycle handle-reclamation gate with exact 115 cold, 122 baseline, and 122 final handles | `probe-only`; the complete SDK/recovery/negative/soak matrix must still pass with those exact assets on a freshly provisioned WHPX host. The v7 shim and Host retain the v6 in-process handle-restoration contract, but the fresh-host release gate remains open |
 
 Windows WHPX guest handoff now carries an explicit `windows-virtiofs-acl-v1`
@@ -657,13 +657,13 @@ evidence to every workload operation. Seven bounded runs on Windows 10 Pro
 fault stages), including the clock-adjusted Stats replacement case; all
 reports retained expected owner/fault crossings, immutable asset hashes, and
 complete process/share cleanup. The independent
-`a3s.oci.windows-whpx-handle-reclamation-run.v1` gate also passed eight
+`aster.oci.windows-whpx-handle-reclamation-run.v1` gate also passed eight
 same-process VM cycles with `115 -> 122 -> 122` cold/baseline/final handles,
 zero final delta, and a restored runtime share. These are existing-host
 observations and do not close the freshly provisioned release-host gate.
 
 On September 7, 2026, the merged implementation also passed a full current-
-host `a3s.oci.windows-whpx-soak.v2` run: 25/25 serial, 3/3 multi-container,
+host `aster.oci.windows-whpx-soak.v2` run: 25/25 serial, 3/3 multi-container,
 3/3 lifecycle-fault, 6/6 parallel, 5/5 workload, 10/10 typed-negative, and
 4/4 owner-kill cases, with verification and final process cleanup passing.
 This remains existing-host evidence; the fresh-host promotion gate is still
@@ -698,7 +698,7 @@ missing or unusable. KVM is an optional utility-VM driver, never a prerequisite
 for host-kernel execution. Box main commit
 `d6861de302e6e165a2fdc473b2d399bb0692048e` retained that installed-product
 boundary in
-[CI run 33497670646](https://github.com/A3S-Lab/Box/actions/runs/33497670646)
+[CI run 33497670646](https://github.com/aster-ai-lab/Box/actions/runs/33497670646)
 on x86_64 and aarch64 against Runtime commit
 `438e4b7936cd08d408160fe9341a21786f60cd26`.
 
@@ -712,7 +712,7 @@ and system-image SHA-256
 `e888c52e35ba8ed8f747d55bdc32316190dc317865e6919014e434a1e644e6ef`.
 
 The latest WHPX owner-death gate emitted
-`a3s.oci.whpx-recovery-smoke-run.v1` from clean runtime commit `2d91cd0`.
+`aster.oci.whpx-recovery-smoke-run.v1` from clean runtime commit `2d91cd0`.
 That closes the service-restart evidence item. The immutable-image code and
 qualification artifact are now present, but they have not yet produced the
 fresh-host matrix required to promote the public candidate. The current shim
@@ -767,7 +767,7 @@ does not close the cross-driver or signed release-package gates.
 The current packaged qualification used source revision
 `af8c5f97ac1f4eb506b32e8d57b3d1c0d5fb3645` and was exercised through the
 staged static-musl package
-`a3s-oci-runtime-v0.2.0-linux-x86_64`. Three isolated containerd 2.2.1 WSL2
+`aster-oci-runtime-v0.2.0-linux-x86_64`. Three isolated containerd 2.2.1 WSL2
 x86_64 matrices completed in 95.09/95.25/114.44 seconds across all 23
 restart, shim-rehydration, and forced-cleanup boundaries. The package report
 and executable digests (including report SHA-256
@@ -795,7 +795,7 @@ On September 8, 2026, clean current-main revisions
 bare-metal x86_64 observation on Zorin OS 18.1 (`Linux 7.0.0-31-generic`) with
 real `/dev/kvm`. Non-root Host virtiofs shares store durable files under the
 Host Service UID; Guest Agent ownership checks under
-`/run/a3s-oci-runtime` now follow the runtime-share root owner instead of
+`/run/aster-oci-runtime` now follow the runtime-share root owner instead of
 `geteuid()`. With `RUNNER_TEMP=/tmp` and a source-matched immutable system
 image, the host passed Linux KVM lifecycle, owner-death/recovery, all twenty
 operation-stage reopen matrices (180/180 paths), and the 25-wave soak. The
@@ -810,7 +810,7 @@ KVM candidate remains `probe-only`.
 
 On September 11, 2026, tip `ff97257` retained existing-host WSL2 x86_64
 `/dev/kvm` observation for the Linux KVM release matrix with
-`host_class=existing` and `A3S_OCI_LINUX_KVM_SKIP_SOAK=1`: agent-entry,
+`host_class=existing` and `ASTER_OCI_LINUX_KVM_SKIP_SOAK=1`: agent-entry,
 compatibility-drift, lifecycle, recovery, and create-reopen all `available`
 (`promotes_readiness=false`; report SHA-256
 `1bd77d6c9091168220ce4d35d0d5f19d1a381498f5b048c5588761c8efb09ccd`). The same
@@ -834,13 +834,13 @@ On September 12, 2026, the same tip retained OrbStack aarch64 Native Linux
 observation (no `/dev/kvm`): full `native-linux-smoke.sh` EXIT=0 with
 `fixtures/native-linux/config.aarch64.json`, smoke and soak both `available`
 (25-iteration soak). Digests live under
-`.a3s-evidence/native-orb-fb390b6/` (and Orb
-`/var/tmp/a3s-oci-native-orb-fb390b6/`) and in
+`.aster-evidence/native-orb-fb390b6/` (and Orb
+`/var/tmp/aster-oci-native-orb-fb390b6/`) and in
 [`docs/linux-native.md`](docs/linux-native.md). A follow-up honesty refresh
 on the same tip adds `init_memory_policy_configured` so aarch64 reports
 record `configured=false` / `verified=false` when the fixture omits
 `linux.memoryPolicy` (EXIT=0 evidence under
-`.a3s-evidence/native-orb-honesty/`; soak iterations=1 for that re-verify).
+`.aster-evidence/native-orb-honesty/`; soak iterations=1 for that re-verify).
 Native readiness remains `probe-only`. containerd observation stays blocked
 (`containerd`/`ctr` absent; KVM containerd slice also needs `/dev/kvm`).
 
@@ -856,12 +856,12 @@ Existing-host greens never set `promotes_readiness=true`.
 | Fresh KVM R2L x86_64 | **Blocked** — needs a newly provisioned Linux KVM host (WSL reinstall is not fresh) |
 | Fresh KVM R2L AArch64 | **Blocked** — needs an AArch64 KVM host |
 | Flip WHPX/KVM `probe-only` → `experimental` | **Blocked** — requires the fresh matrices above |
-| Tip-matched promote on current `main` | **Hardware-blocked** — check out current `main`. Latest published archive is [`v0.3.6`](https://github.com/A3S-Lab/OCI-Runtime/releases/tag/v0.3.6) (`b34c81c`), a docs and version-string archive on `v0.3.5` (`139850c`). That earlier archive is fmt-and-clippy-clean on pinned rustc `1.98.1` ([CI 34680331496](https://github.com/A3S-Lab/OCI-Runtime/actions/runs/34680331496)). No reachable self-hosted WHPX/KVM runners from this environment. Does not promote readiness |
+| Tip-matched promote on current `main` | **Hardware-blocked** — check out current `main`. Latest published archive is [`v0.3.6`](https://github.com/aster-ai-lab/OCI-Runtime/releases/tag/v0.3.6) (`b34c81c`), a docs and version-string archive on `v0.3.5` (`139850c`). That earlier archive is fmt-and-clippy-clean on pinned rustc `1.98.1` ([CI 34680331496](https://github.com/aster-ai-lab/OCI-Runtime/actions/runs/34680331496)). No reachable self-hosted WHPX/KVM runners from this environment. Does not promote readiness |
 
 | Item | Status after honest fresh-host |
 | --- | --- |
 | W4 Box cutover (`microvm` / `sandbox` via SDK, no silent fallback) | Open; must not land prematurely |
-| Default supervised create | Open; `A3S_OCI_NATIVE_SESSION_SUPERVISOR=1` stays opt-in |
+| Default supervised create | Open; `ASTER_OCI_NATIVE_SESSION_SUPERVISOR=1` stays opt-in |
 | `HostRuntimeService` public KVM registration | Open; public candidate stays `probe-only` until fresh matrices pass |
 
 | Item | Policy |
@@ -877,10 +877,10 @@ evidence does not unlock W4+.
 ## Architecture
 
 ```text
-A3S Box (current Sandbox consumer; explicit Native Linux production route
+Aster Box (current Sandbox consumer; explicit Native Linux production route
          owns bundle/resource preparation and uses the long-lived SDK owner;
          default, MicroVM, and cross-platform cutover remain open)
-a3s-oci CLI
+aster-oci CLI
 containerd runtime-v2 shim
                          │
                          ▼
@@ -912,11 +912,11 @@ containerd runtime-v2 shim
           cgroups · process I/O · confined filesystem · exact cleanup
 ```
 
-Only the isolated `a3s-oci-krun-shim` loads checksum-pinned native libkrun
+Only the isolated `aster-oci-krun-shim` loads checksum-pinned native libkrun
 assets. The SDK, CLI discovery path, durable host service, and Native Linux
 driver do not initialize a hypervisor library.
 
-On Linux x86_64 and AArch64, `a3s-oci-krun-shim context-smoke` verifies and
+On Linux x86_64 and AArch64, `aster-oci-krun-shim context-smoke` verifies and
 loads the selected native bundle, checks the firmware-exported kernel, and
 creates, configures, and releases one libkrun context. That command does not
 open `/dev/kvm`, enter a VM, or change the KVM driver's `probe-only` readiness.
@@ -924,7 +924,7 @@ The stronger pre-entry gate also binds the exact static agent and immutable
 root disk from the same target manifest:
 
 ```bash
-a3s-oci-krun-shim system-image-context-smoke \
+aster-oci-krun-shim system-image-context-smoke \
   --system-image-manifest /absolute/path/to/system-image.json
 ```
 
@@ -950,7 +950,7 @@ immutable system root. The Host accepts only the kernel-reported direct worker
 child before protocol-v10 token negotiation:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-agent-entry.sh
 ```
 
@@ -958,7 +958,7 @@ The separate compatibility matrix stops at the configured worker boundary and
 does not require KVM:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-compatibility-drift.sh
 ```
 
@@ -968,7 +968,7 @@ version and digest drift; and runtime archive, libkrun, firmware, and exported
 kernel provenance drift. Every case must fail with no KVM-device access or VM
 entry and restore endpoint, shim-process, token-handoff, and runtime-share
 inventories. The machine-readable result uses
-`a3s.oci.linux-kvm-compatibility-drift.v2`.
+`aster.oci.linux-kvm-compatibility-drift.v2`.
 
 On a host without usable KVM the authenticated entry command must fail after
 non-KVM setup, retain nested KVM evidence, and restore endpoint, process, and
@@ -982,9 +982,9 @@ successful real-entry evidence on both x86_64 and AArch64 plus the
 complete lifecycle, recovery, and soak matrices remain required.
 
 The script retains normal entry in
-`a3s.oci.linux-kvm-agent-entry.v1` and the injected boundary in
-`a3s.oci.linux-kvm-post-probe-failure.v1`. Both wrap the raw v10/v7 Host and
-shim reports with `a3s.oci.linux-kvm-provenance.v1`. The common object requires
+`aster.oci.linux-kvm-agent-entry.v1` and the injected boundary in
+`aster.oci.linux-kvm-post-probe-failure.v1`. Both wrap the raw v10/v7 Host and
+shim reports with `aster.oci.linux-kvm-provenance.v1`. The common object requires
 a clean checkout, binds the Git object format, actual checkout commit and tree,
 Linux platform and target architecture, and hashes the CLI, shim, runtime-assets
 manifest, selected runtime files, and system-image manifest. It also records
@@ -998,7 +998,7 @@ Apple Silicon qualification instead of maintaining a second Linux-only test
 harness:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-lifecycle.sh
 ```
 
@@ -1006,7 +1006,7 @@ The separate owner-death/restart entry exercises that candidate through an
 explicitly scoped Unix Host Service without making it normally registerable:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-recovery.sh
 ```
 
@@ -1015,7 +1015,7 @@ replaces the real KVM VM/session owner at all four Host and five Guest
 request/response transitions:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-create-reopen.sh
 ```
 
@@ -1024,7 +1024,7 @@ rebuilds that Created container in a distinct replacement Guest and reissues
 State against the original durable generation:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-state-reopen.sh
 ```
 
@@ -1033,7 +1033,7 @@ Guest either dispatches the prepared Start once or reconstructs an already
 committed Running state before the Host replays the durable response:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-start-reopen.sh
 ```
 
@@ -1043,7 +1043,7 @@ prepared Kill once or rebuilds an already committed Stopped tombstone before
 the Host replays the durable response:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-kill-reopen.sh
 ```
 
@@ -1054,7 +1054,7 @@ owner, rebuilds no workload, and lets the Host replay the completed journal
 without another driver dispatch:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-delete-reopen.sh
 ```
 
@@ -1065,7 +1065,7 @@ committed final path already has that cache, so both replacement and later Wait
 calls replay without another driver or Guest dispatch:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-wait-reopen.sh
 ```
 
@@ -1077,7 +1077,7 @@ their positive PIDs into the durable responses, and lets the Host replay Exec
 without another API-driven dispatch:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-exec-reopen.sh
 ```
 
@@ -1088,7 +1088,7 @@ Exec readiness marker, reapplies the signal once during recovery, and lets the
 Host replay the completed journal without another driver dispatch:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-signal-process-reopen.sh
 ```
 
@@ -1100,7 +1100,7 @@ has that durable cache, so replacement and later WaitProcess calls perform no
 driver dispatch:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-wait-process-reopen.sh
 ```
 
@@ -1112,7 +1112,7 @@ record to the replacement PID, and lets the Host replay without another
 API-driven dispatch:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-pause-reopen.sh
 ```
 
@@ -1123,7 +1123,7 @@ the committed final path reapplies Resume during recovery and lets the Host
 replay without another API-driven dispatch:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-resume-reopen.sh
 ```
 
@@ -1135,7 +1135,7 @@ must contain exactly those two targets at the retained generation, including
 after the first owner wrote a complete response:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-processes-reopen.sh
 ```
 
@@ -1147,7 +1147,7 @@ fresh cgroup and the Host replays the response without another API-driven
 dispatch. Direct Stats verifies the 512 MiB limit and live counters:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-update-reopen.sh
 ```
 
@@ -1158,7 +1158,7 @@ path requires the replacement snapshot to be newer and distinct while both
 snapshots preserve the exact generation and updated resource profile:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-stats-reopen.sh
 ```
 
@@ -1170,7 +1170,7 @@ setup PIDs, fences stale Host and Guest generations, and removes both markers
 and all transient owner state:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-read-output-reopen.sh
 ```
 
@@ -1182,7 +1182,7 @@ without another driver dispatch. Every path verifies the exact effect marker,
 request identity, stale Host and Guest fences, and complete cleanup:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-write-stdin-reopen.sh
 ```
 
@@ -1195,7 +1195,7 @@ dispatch. Every path verifies the exact process target, EOF marker, stale Host
 and Guest fences, and complete cleanup:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-close-stdin-reopen.sh
 ```
 
@@ -1205,7 +1205,7 @@ path reapplies committed dimensions during recovery and replays the Host
 response without a second driver dispatch:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-resize-reopen.sh
 ```
 
@@ -1216,7 +1216,7 @@ the bytes from the replacement Guest, rejects changed and stale identities, and
 removes the file before force-delete:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-file-reopen.sh
 ```
 
@@ -1225,14 +1225,14 @@ effect. It uses the same durable journal, replacement-owner replay, changed and
 stale-generation fences, explicit Remove, and zero-residue checks:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-filesystem-reopen.sh
 ```
 
 The bounded soak uses its own qualification scope and one durable Host Service:
 
 ```bash
-A3S_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
+ASTER_OCI_LINUX_KVM_SYSTEM_IMAGE_MANIFEST=/absolute/path/to/system-image.json \
   bash .github/scripts/linux-kvm-soak.sh
 ```
 
@@ -1244,63 +1244,63 @@ Guest-isolation entry contains ten ordered hostile-path cases for bundle,
 rootfs, bind-source, File, and Filesystem boundaries. It requires typed
 `permission-denied` errors from the exact owning operation, unchanged canaries,
 absent container state, and complete fixture/runtime cleanup. The
-`a3s.oci.linux-kvm-lifecycle-matrix.v2` report
+`aster.oci.linux-kvm-lifecycle-matrix.v2` report
 retains every nested runtime report plus endpoint, process, runtime-state,
 bootstrap, token/recovery, and marker cleanup checks. Without usable KVM it
 skips the fixture download and emits `status: unavailable` with zero cases.
 That keeps CI honest about runner capability; it does not count as a hardware
-pass. The `a3s.oci.linux-kvm-recovery-matrix.v2` entry likewise skips Alpine
+pass. The `aster.oci.linux-kvm-recovery-matrix.v2` entry likewise skips Alpine
 when KVM is unavailable. With KVM it kills the live Host Service, requires
 authenticated SIGKILL recovery,
 opens a distinct replacement socket owner, replays exact stopped state and
 Wait, and proves stopped-only Delete plus transient cleanup. The soak also
 skips Alpine on an unavailable host; its retained aggregate schema is
-`a3s.oci.linux-kvm-soak-matrix.v2`. On KVM it runs 25 fresh generations and
+`aster.oci.linux-kvm-soak-matrix.v2`. On KVM it runs 25 fresh generations and
 requires every process, descriptor, endpoint, handoff, share, recovery record,
 and Guest marker to return to baseline after each wave. Available lifecycle,
 recovery, and soak reports, including the integrated Guest-isolation entry, are
 still required from fresh x86_64 and AArch64 KVM hosts. Other real-entry
 negative-isolation profiles remain separate promotion evidence.
 
-The `a3s.oci.linux-kvm-create-reopen-matrix.v1` entry also skips Alpine when
+The `aster.oci.linux-kvm-create-reopen-matrix.v1` entry also skips Alpine when
 KVM is unavailable. On KVM it preserves the exact durable generation and
 Create operation identity across nine real Host/Guest interruption points,
 including rehydration of the committed `guest-after-response-write` outcome in
 a distinct replacement Guest. All cases force-delete and restore bootstrap,
 endpoint, process, bundle-handoff, runtime-share, recovery-report, and marker
-inventories. The `a3s.oci.linux-kvm-state-reopen-matrix.v1` gate applies the
+inventories. The `aster.oci.linux-kvm-state-reopen-matrix.v1` gate applies the
 same nine points to State. Its first eight points retain the exact Created
 record without returning a response; `guest-after-response-write` delivers an
 exact response before a disconnect probe proves owner loss. Replacement
 recovery must rebuild Created state, preserve the setup Create identity and
 generation, return the recovered durable record, and restore the same cleanup
-inventories. The `a3s.oci.linux-kvm-start-reopen-matrix.v1` gate then applies
+inventories. The `aster.oci.linux-kvm-start-reopen-matrix.v1` gate then applies
 the same points to Start. Its first eight paths retain Created state and
 dispatch the exact Start once through the replacement driver. The final path
 retains Running state; recovery recreates and starts the workload, rebinds the
 replacement PID, regenerates the exact marker, and lets the Host replay the
 completed journal without another API-driven Start dispatch. The
-`a3s.oci.linux-kvm-kill-reopen-matrix.v1` gate applies the same nine points to
+`aster.oci.linux-kvm-kill-reopen-matrix.v1` gate applies the same nine points to
 Kill. Its first eight paths retain Running state; replacement recovery
 recreates and starts the workload, repairs the setup responses, and dispatches
 the unchanged SIGKILL once. The final path retains Stopped state; recovery
 recreates, starts, and kills the replacement workload to reconstruct the Guest
 tombstone, then the Host replays the completed Kill journal without another
 API-driven dispatch. Every path verifies the replacement marker and uses
-stopped-only Delete. The `a3s.oci.linux-kvm-delete-reopen-matrix.v1` gate then
+stopped-only Delete. The `aster.oci.linux-kvm-delete-reopen-matrix.v1` gate then
 applies all nine points to Delete. Its first eight paths retain Stopped state
 and a Prepared journal; replacement recovery recreates, starts, and kills the
 workload with the original setup identities before dispatching the unchanged
 Delete once. The committed final path retains an empty inventory and a
 SucceededEmpty journal, so a distinct empty replacement owner performs no
 workload recovery or driver Delete before Host replay. The
-`a3s.oci.linux-kvm-wait-reopen-matrix.v1` gate rebuilds the stopped tombstone
+`aster.oci.linux-kvm-wait-reopen-matrix.v1` gate rebuilds the stopped tombstone
 at all nine points. Its first eight paths dispatch the exact resolved Wait
 target once and durably cache `signal=9, oom_killed=false`; the committed final
 path retains that cache and replays both replacement and later Wait calls
 without a driver dispatch. Every path rejects stale generations at both Host
 and Guest boundaries, uses stopped-only Delete, and restores all inventories.
-The `a3s.oci.linux-kvm-exec-reopen-matrix.v1` gate applies all nine points to a
+The `aster.oci.linux-kvm-exec-reopen-matrix.v1` gate applies all nine points to a
 terminal Exec. Its first eight paths retain a Prepared journal, recover only
 the Running init process, and dispatch the byte-identical process, terminal,
 I/O, generation, and operation identity once. The committed final path retains
@@ -1309,7 +1309,7 @@ PIDs, rebinds the setup and Exec responses, and replays the Host request without
 another driver dispatch. Every path verifies distinct nonce-bound init and Exec
 markers, rejects changed requests and stale generations, force-deletes the
 workload, and restores all inventories. The
-`a3s.oci.linux-kvm-signal-process-reopen-matrix.v1` gate retains that exact
+`aster.oci.linux-kvm-signal-process-reopen-matrix.v1` gate retains that exact
 terminal Exec and applies signal 10 at all nine points. Its first eight paths
 retain a Prepared signal journal, rebuild init and Exec, and dispatch the
 unchanged target and signal once on API retry. The committed final path retains
@@ -1319,7 +1319,7 @@ replay then performs no additional driver dispatch. Every path verifies the
 separate signal marker, rejects signal drift and stale Host/Guest generations,
 force-deletes the workload, and restores all inventories. Equivalent coverage
 for WaitProcess uses
-`a3s.oci.linux-kvm-wait-process-reopen-matrix.v1`. Its first eight paths have
+`aster.oci.linux-kvm-wait-process-reopen-matrix.v1`. Its first eight paths have
 no Host exit cache, so recovery rebuilds and terminates the exact Exec before
 one resolved WaitProcess dispatch persists `signal=10, oom_killed=false`. At
 `guest-after-response-write`, the cache is already durable; recovery still
@@ -1327,14 +1327,14 @@ recreates and terminates the Exec but omits it from the live inventory, and
 both replacement and later waits replay with zero driver dispatch. Every path
 reuses all setup identities, rejects stale Host and Guest generations,
 force-deletes the workload, and restores every inventory. Equivalent coverage
-for Pause uses `a3s.oci.linux-kvm-pause-reopen-matrix.v1`. Its first eight
+for Pause uses `aster.oci.linux-kvm-pause-reopen-matrix.v1`. Its first eight
 paths retain Running state and a Prepared Pause journal, rebuild the unpaused
 init, and dispatch the unchanged Pause once. The committed final path retains
 paused state and a Succeeded journal; recovery starts the replacement init,
 waits for its marker, reapplies Pause, and reports recreated-paused-running
 evidence before Host replay. Every path fences changed requests and stale Host
 and Guest generations, force-deletes the paused generation, and restores every
-inventory. Resume uses `a3s.oci.linux-kvm-resume-reopen-matrix.v1`. Every
+inventory. Resume uses `aster.oci.linux-kvm-resume-reopen-matrix.v1`. Every
 replacement owner reconstructs Create, Start, and Pause with rebound PIDs. Its
 first eight paths retain paused state and a Prepared Resume journal before one
 unchanged dispatch. The committed final path retains unpaused state and a
@@ -1342,7 +1342,7 @@ Succeeded journal; recovery reapplies Resume and the Host replay performs no
 additional API-driven dispatch. Every path fences changed requests and stale
 Host and Guest generations, force-deletes the resumed generation, and restores
 every inventory. Processes uses
-`a3s.oci.linux-kvm-processes-reopen-matrix.v1`. Every replacement owner
+`aster.oci.linux-kvm-processes-reopen-matrix.v1`. Every replacement owner
 reconstructs Create, Start, and the committed terminal Exec, rebinds both
 positive process PIDs, and verifies the two nonce-bound markers. Because the
 query is read-only, all nine paths dispatch Processes exactly once after
@@ -1350,35 +1350,35 @@ reopen, including the delivered final response path. Each inventory contains
 only init and the original Exec target at the retained generation with the
 replacement PIDs. Every path rejects stale Host and Guest generations,
 force-deletes the workload, and restores every inventory. Update uses
-`a3s.oci.linux-kvm-update-reopen-matrix.v1`. Its first eight paths preserve a
+`aster.oci.linux-kvm-update-reopen-matrix.v1`. Its first eight paths preserve a
 Prepared journal and dispatch the unchanged complete Linux resource request
 once after recovery. The committed final path preserves a Succeeded journal;
 recovery reapplies the request to the fresh cgroup and Host replay performs no
 additional API-driven dispatch. Every path verifies the 512 MiB limit and live
 counters through direct Guest Stats, rejects changed requests and stale
 Host/Guest generations, force-deletes the workload, and restores every
-inventory. Stats uses `a3s.oci.linux-kvm-stats-reopen-matrix.v1`. Every
+inventory. Stats uses `aster.oci.linux-kvm-stats-reopen-matrix.v1`. Every
 replacement owner reconstructs Create, Start, and the committed Update before
 dispatching one fresh read-only query. At `guest-after-response-write`, the
 first delivered snapshot and the newer replacement snapshot both retain the
 exact generation and updated resource profile. Every path rejects stale Host
 and Guest generations, force-deletes the workload, and restores every
 inventory. ReadOutput uses
-`a3s.oci.linux-kvm-read-output-reopen-matrix.v1`. Every replacement owner
+`aster.oci.linux-kvm-read-output-reopen-matrix.v1`. Every replacement owner
 reconstructs Create, Start, and the live non-terminal Exec with rebound PIDs,
 then dispatches one fresh query with the exact process target, cursor, byte
 limit, and timeout. At `guest-after-response-write`, both the delivered first
 chunk and the replacement chunk equal the nonce-bound stdout. Every path
 rejects stale Host and Guest generations, force-deletes the workload, and
 restores every inventory. WriteStdin uses
-`a3s.oci.linux-kvm-write-stdin-reopen-matrix.v1`. Its first eight paths retain
+`aster.oci.linux-kvm-write-stdin-reopen-matrix.v1`. Its first eight paths retain
 a Prepared Host journal and dispatch the exact bytes once after recovery. At
 `guest-after-response-write`, recovery writes the committed bytes into the
 rebuilt pipe-backed Exec and the API retry performs no additional dispatch.
 Every path rejects changed bytes and stale Host and Guest generations, verifies
 the nonce-bound effect marker, force-deletes the workload, and restores every
 inventory. CloseStdin uses
-`a3s.oci.linux-kvm-close-stdin-reopen-matrix.v1`. Its first eight paths retain
+`aster.oci.linux-kvm-close-stdin-reopen-matrix.v1`. Its first eight paths retain
 a Prepared Host journal and dispatch the exact EOF once after recovery. At
 `guest-after-response-write`, recovery closes the rebuilt pipe-backed Exec
 and the API retry performs no additional dispatch. Every path rejects a
@@ -1390,7 +1390,7 @@ an explicit readiness gate.
 
 | Owner | Keeps | Must not absorb |
 | --- | --- | --- |
-| A3S Box product plane | Desired state, images/builds, named volumes, product networks, Compose, health/restart policy, log retention, and secret authorization | Actual PID/VM identity or runtime operation journals |
+| Aster Box product plane | Desired state, images/builds, named volumes, product networks, Compose, health/restart policy, log retention, and secret authorization | Actual PID/VM identity or runtime operation journals |
 | OCI Runtime control plane | Exact OCI validation, actual state, generations, replay, exit status, driver selection, recovery, and cleanup | Registry pulls, image builds, Compose, or silent isolation fallback |
 | Platform execution plane | Linux enforcement, utility VM, transport, process control, and runtime attachments | Product orchestration or a second durable lifecycle |
 
@@ -1420,7 +1420,7 @@ Real execution gates require a prepared host and isolated runtime root.
 | Host | Entry point | Guide |
 | --- | --- | --- |
 | Linux x86_64/aarch64 | `bash .github/scripts/native-linux-smoke.sh`, `bash .github/scripts/native-linux-checkpoint.sh` with an exact CRIU binary, and `bash .github/scripts/linux-kvm-lifecycle.sh` with the pinned KVM manifest | [Native Linux development](docs/linux-native.md) |
-| Apple Silicon | `cargo run -p a3s-oci-cli -- hvf-smoke` followed by the signed utility-VM profiles | [macOS HVF development](docs/macos-hvf.md) |
+| Apple Silicon | `cargo run -p aster-oci-cli -- hvf-smoke` followed by the signed utility-VM profiles | [macOS HVF development](docs/macos-hvf.md) |
 | Windows x86_64 | `scripts/windows-whpx-release-matrix.ps1` (handle-reclamation, driver, recovery, transport-fault, soak, operation-reopen) or the focused scripts underneath, with a verified container-rootfs archive and `windows-system-image` manifest | [Windows WHPX development](docs/windows-whpx.md) |
 
 The Linux smoke prepares an explicit user-owned cgroup-v2 subtree for the
@@ -1429,7 +1429,7 @@ starts a parent-bound effective-root helper, and permanently drops the runtime
 owner to its real identity. Ordinary rootless launch uses the helper to provide
 the six OCI default device nodes and install the same immutable inventory
 boundary as rootful execution; it does not invent a `linux.resources.devices`
-policy. The separate A3S Box profile also exercises bounded device-access BPF
+policy. The separate Aster Box profile also exercises bounded device-access BPF
 replacement and rollback. Runtime commit `bed43d2`
 passed the full policy profile on x86_64 and aarch64 in CI run `31714178349`.
 The v4 gates verify create, live update/stats, workload-proven pause/resume,
@@ -1442,7 +1442,7 @@ grants `CAP_MKNOD`, and proves that only declared/default identities remain
 usable. It also remounts a `nodev` bind source with `dev` inside the workload
 and verifies that the late device access still fails with `EPERM`. Run the
 focused gate with
-`A3S_OCI_NATIVE_FOCUS=device-boundary bash .github/scripts/native-linux-smoke.sh`.
+`ASTER_OCI_NATIVE_FOCUS=device-boundary bash .github/scripts/native-linux-smoke.sh`.
 
 Writable OCI cgroup mounts now follow the OCI 1.3 delegation boundary. The
 executor changes ownership only for an exact `source: "cgroup"` mount at
@@ -1452,7 +1452,7 @@ the container cgroup directory plus existing files listed by
 `/sys/kernel/cgroup/delegate`; if that inventory is absent, it uses the three
 normative fallback files. The focused Native Linux gate also proves that a
 read-only cgroup mount and unlisted controller files keep their ownership:
-`A3S_OCI_NATIVE_FOCUS=cgroup-ownership bash .github/scripts/native-linux-smoke.sh`.
+`ASTER_OCI_NATIVE_FOCUS=cgroup-ownership bash .github/scripts/native-linux-smoke.sh`.
 
 The rootful terminal-init profile derives init I/O from `process.terminal`,
 applies the configured 120x40 size before launch, and binds the exact PTY slave
@@ -1495,7 +1495,7 @@ their active drivers. Probe-only discovery stays empty, and driver-specific
 extensions such as bundle handoff appear only when the selected driver set
 actually advertises them.
 
-`RuntimeInfo::extensions` is the versioned `a3s.oci.extensions.v1` source of
+`RuntimeInfo::extensions` is the versioned `aster.oci.extensions.v1` source of
 truth for selecting that driver-specific surface. It binds the catalog to the
 running Host executable's SHA-256 and publishes canonical operation-contract
 and attachment versions for each launch-ready driver and its unique isolation
@@ -1505,7 +1505,7 @@ legacy flat `operations` and `attachments` fields expose only the intersection
 safe for every registered driver; a response from an older peer defaults to an
 empty catalog and cannot silently satisfy negotiation.
 
-`a3s.oci.attachments.v2` binds already-authorized storage to an exact OCI
+`aster.oci.attachments.v2` binds already-authorized storage to an exact OCI
 mount, immutable caller-issued allocation identity, matching read-only or
 read-write access, caller ownership, and detach-only cleanup. The runtime never
 resolves a named volume or snapshot and never deletes the caller-owned backing
@@ -1513,12 +1513,12 @@ resource. Storage create requires SDK protocol 5, while v1 create manifests
 retain protocol-3 compatibility. Every restore requires the immutable
 protocol-8 checkpoint reference described below.
 
-`a3s.oci.attachments.v3` binds an already-authorized Linux interface to an
+`aster.oci.attachments.v3` binds an already-authorized Linux interface to an
 exact OCI network namespace and `linux.netDevices` entry, together with
 immutable namespace, interface, and cleanup identities. Runtime-created
 namespaces are released with the container; joined caller namespaces are
 preserved. IPAM, DNS, routes, aliases, policy, and backing-network cleanup stay
-in A3S Box. Network create requires SDK protocol 6; restore requires protocol
+in Aster Box. Network create requires SDK protocol 6; restore requires protocol
 8. Rootful Native Linux advertises cumulative v1-v3; rootless Native stays
 v1-v2 because it has no host network-device authority. Dedicated Linux KVM now
 has internal, fail-closed v2/v3 transports. Caller-owned non-bind `ext4` raw
@@ -1534,7 +1534,7 @@ cumulative v2/v3 destructive real-host restart, cleanup, replay, and soak
 qualification passes. HVF remains v1 until it gains equivalent independent
 transports and evidence.
 
-`dev.a3s.network.enforcement@1` is an independently negotiated required
+`dev.aster.network.enforcement@1` is an independently negotiated required
 extension over v3. It binds one opaque caller-compiled enforcement incarnation
 and optional opaque local-redirect incarnation to the exact joined,
 caller-owned namespace, using only positive generations and lowercase SHA-256
@@ -1546,7 +1546,7 @@ Native Linux implementation are qualified; the rootless Native and VM drivers
 continue to omit this capability pending their own authority model and
 driver-specific real-host qualification.
 
-`a3s.oci.attachments.v4` binds a SharedGuestKernel request to one reusable
+`aster.oci.attachments.v4` binds a SharedGuestKernel request to one reusable
 guest-session ID and positive incarnation, the request's immutable trust
 domain, a capacity bounded at 64 members, runtime ownership, and an explicit
 empty-session reset mode. Create requires SDK protocol 7, while restore
@@ -1559,7 +1559,7 @@ real-host restart/leak qualification pass. See the
 [attachment contract](docs/attachment-contracts.md) for the fail-closed
 composition rules.
 
-SDK protocol 8 freezes `a3s.oci.checkpoint-reference.v1`: one exact paused
+SDK protocol 8 freezes `aster.oci.checkpoint-reference.v1`: one exact paused
 source generation, configuration and attachment digests, driver/isolation,
 platform and architecture, Host executable and driver-build evidence,
 driver-defined format, and exact artifact digest and size. Checkpoint accepts
@@ -1600,8 +1600,8 @@ remain open. See the [immutable checkpoint contract](docs/checkpoint-contract.md
 
 The containerd runtime-v2 shim now exposes this optional contract without
 making it part of the endpoint's 18-operation base admission set. A paused
-Task Checkpoint writes `a3s-oci-checkpoint-v1.bin` plus an atomically committed
-`a3s-oci-checkpoint-v1.json` reference manifest into containerd's requested
+Task Checkpoint writes `aster-oci-checkpoint-v1.bin` plus an atomically committed
+`aster-oci-checkpoint-v1.json` reference manifest into containerd's requested
 directory. Create with that directory validates the immutable package and
 calls SDK Restore. Although SDK restore returns a paused running generation,
 the shim reports CREATED until the first Start performs one replay-stable
@@ -1611,8 +1611,8 @@ Unimplemented only for the optional request. Incremental checkpoints and
 non-neutral runc checkpoint options remain rejected.
 
 SDK protocol 9 adds the policy-neutral TEE mechanism boundary. A dedicated-VM
-create or restore may require exactly one `dev.a3s.tee.amd-sev-snp@1` or
-`dev.a3s.tee.intel-tdx@1` launch extension in explicit `hardware` or
+create or restore may require exactly one `dev.aster.tee.amd-sev-snp@1` or
+`dev.aster.tee.intel-tdx@1` launch extension in explicit `hardware` or
 `simulated` mode. The separate durable `attest` operation carries an exact
 64-byte report-data binding and returns bounded opaque provider evidence plus
 the launch measurement, configuration and attachment digests, driver and
@@ -1727,7 +1727,7 @@ exact release-artifact qualification must all pass before a driver becomes
 - fresh-host qualification of the implemented immutable WHPX system root, and
   real-entry qualification of the implemented KVM system root;
 - utility-VM hook recovery and security certification;
-- the default and cross-platform A3S Box cutover, plus the remaining
+- the default and cross-platform Aster Box cutover, plus the remaining
   containerd compatibility, packaging, and cross-driver gates;
 - Native Linux CRIU broader checkpoint source profiles, cross-driver and
   retained tagged multi-architecture real-host qualification, and production
@@ -1828,4 +1828,4 @@ exact binary's `features` result.
 
 ## License
 
-A3S OCI Runtime is available under the [MIT License](LICENSE).
+Aster OCI Runtime is available under the [MIT License](LICENSE).

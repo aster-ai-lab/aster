@@ -1,5 +1,5 @@
-use a3s_oci_core::HostPlatform;
-use a3s_oci_sdk::{
+use aster_oci_core::HostPlatform;
+use aster_oci_sdk::{
     CheckpointArtifactPath, CheckpointCompatibility, CheckpointDigest, CheckpointFormat,
     CheckpointReference, ContainerRecord, RestoreRequest, RuntimeArtifact,
 };

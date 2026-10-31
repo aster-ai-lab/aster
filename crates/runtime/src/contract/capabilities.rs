@@ -62,7 +62,7 @@ pub struct RuntimeCapabilities {
 }
 
 impl RuntimeCapabilities {
-    pub const SCHEMA: &'static str = "a3s.runtime.capabilities.v6";
+    pub const SCHEMA: &'static str = "aster.runtime.capabilities.v6";
 
     pub fn validate(&self) -> Result<(), String> {
         if self.schema != Self::SCHEMA {

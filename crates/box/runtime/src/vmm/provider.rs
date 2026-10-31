@@ -1,3 +1,3 @@
-//! VmmProvider re-exported from `a3s-box-core`.
+//! VmmProvider re-exported from `aster-box-core`.
 
-pub use a3s_box_core::vmm::VmmProvider;
+pub use aster_box_core::vmm::VmmProvider;

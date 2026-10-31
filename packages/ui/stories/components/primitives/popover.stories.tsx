@@ -11,7 +11,7 @@ import {
   PopoverAnchor,
   PopoverContent,
   PopoverTrigger
-} from '@a3s-lab/ui'
+} from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Popover> = {
   title: 'Components/Primitives/Popover',

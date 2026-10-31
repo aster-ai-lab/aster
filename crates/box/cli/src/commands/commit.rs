@@ -1,4 +1,4 @@
-//! `a3s-box commit` command — Create an image from a box's filesystem.
+//! `aster-box commit` command — Create an image from a box's filesystem.
 //!
 //! Packages the box's rootfs into an OCI image and stores it in the
 //! local image store, similar to `docker commit`.
@@ -69,7 +69,7 @@ pub async fn execute(args: CommitArgs) -> Result<(), Box<dyn std::error::Error>>
     let attached_rootfs = if capture_mode != CommitCaptureMode::OfflineDirectory {
         None
     } else {
-        a3s_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?
+        aster_box_runtime::rootfs::attach_persistent_rootfs(&record.box_dir)?
     };
     let rootfs_dir = if capture_mode != CommitCaptureMode::OfflineDirectory {
         None
@@ -239,7 +239,7 @@ fn commit_capture_mode(
             .into());
         }
     }
-    if a3s_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)? {
+    if aster_box_runtime::rootfs::guest_native_ext4_generation_exists(&record.box_dir)? {
         Ok(CommitCaptureMode::OfflineGuestNative)
     } else {
         Ok(CommitCaptureMode::OfflineDirectory)
@@ -272,7 +272,7 @@ async fn capture_rootfs_tar(
     }
 
     if capture_mode == CommitCaptureMode::LiveGuest && record.exec_socket_path.exists() {
-        let client = a3s_box_runtime::ExecClient::connect(&record.exec_socket_path).await?;
+        let client = aster_box_runtime::ExecClient::connect(&record.exec_socket_path).await?;
         let mut file = tokio::fs::File::create(output).await?;
         let written = client.archive_rootfs(&mut file, pause).await?;
         if written == 0 {
@@ -313,8 +313,8 @@ pub(crate) async fn capture_live_host_rootfs_tar(
     output: &Path,
     pause: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    use a3s_box_core::{ExecutionId, ExecutionManager};
-    use a3s_box_runtime::ManagedExecutionState;
+    use aster_box_core::{ExecutionId, ExecutionManager};
+    use aster_box_runtime::ManagedExecutionState;
 
     let metadata = record.managed_execution.as_ref().ok_or_else(|| {
         format!(
@@ -323,7 +323,7 @@ pub(crate) async fn capture_live_host_rootfs_tar(
         )
     })?;
     let execution_id = ExecutionId::new(record.id.clone())?;
-    let home = a3s_box_core::dirs_home();
+    let home = aster_box_core::dirs_home();
     let manager = super::configured_local_execution_manager(&home).await?;
 
     let managed_state = record.managed_state()?.ok_or_else(|| {
@@ -371,7 +371,7 @@ fn capture_paused_or_running_host_rootfs(
     record: &crate::state::BoxRecord,
     output: &Path,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let (rootfs, manifest) = a3s_box_runtime::capture_sandbox_host_rootfs_for_commit(record)
+    let (rootfs, manifest) = aster_box_runtime::capture_sandbox_host_rootfs_for_commit(record)
         .map_err(|error| {
             format!(
                 "Cannot capture Sandbox host rootfs for box '{}': {error}",
@@ -420,14 +420,14 @@ const MAX_GUEST_PATH_BYTES: usize = 4096;
 
 pub(crate) fn read_guest_rootfs_metadata(
     rootfs_dir: &Path,
-) -> Result<a3s_box_core::rootfs_metadata::RootfsMetadataManifest, Box<dyn std::error::Error>> {
+) -> Result<aster_box_core::rootfs_metadata::RootfsMetadataManifest, Box<dyn std::error::Error>> {
     use std::io::Read;
 
     let metadata_path = rootfs_dir
-        .join(a3s_box_core::rootfs_metadata::ROOTFS_METADATA_PATH.trim_start_matches('/'));
+        .join(aster_box_core::rootfs_metadata::ROOTFS_METADATA_PATH.trim_start_matches('/'));
     let file = open_regular_file_no_follow(&metadata_path).map_err(|error| {
         format!(
-            "Guest rootfs metadata is unavailable at {}: {error}. Start the box with this A3S Box version and stop it cleanly before capturing the offline rootfs.",
+            "Guest rootfs metadata is unavailable at {}: {error}. Start the box with this Aster Box version and stop it cleanly before capturing the offline rootfs.",
             metadata_path.display()
         )
     })?;
@@ -446,7 +446,7 @@ pub(crate) fn read_guest_rootfs_metadata(
     if bytes.len() as u64 > MAX_ROOTFS_METADATA_BYTES {
         return Err("Guest rootfs metadata grew beyond the byte limit while reading".into());
     }
-    let manifest: a3s_box_core::rootfs_metadata::RootfsMetadataManifest =
+    let manifest: aster_box_core::rootfs_metadata::RootfsMetadataManifest =
         serde_json::from_slice(&bytes)?;
     manifest
         .validate()
@@ -464,10 +464,10 @@ pub(crate) fn read_guest_rootfs_metadata(
 
 pub(crate) fn create_tar_from_guest_metadata(
     rootfs_dir: &Path,
-    manifest: &a3s_box_core::rootfs_metadata::RootfsMetadataManifest,
+    manifest: &aster_box_core::rootfs_metadata::RootfsMetadataManifest,
     output: &Path,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    use a3s_box_core::rootfs_metadata::RootfsEntryKind;
+    use aster_box_core::rootfs_metadata::RootfsEntryKind;
     use std::collections::{HashMap, HashSet};
     use std::io::Cursor;
 
@@ -495,7 +495,7 @@ pub(crate) fn create_tar_from_guest_metadata(
                 .into());
             }
         }
-        if a3s_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(&path) {
+        if aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(&path) {
             return Err(format!("Reserved rootfs metadata path: {}", path.display()).into());
         }
         if !paths.insert(path.clone()) {
@@ -644,7 +644,7 @@ fn open_regular_file_no_follow(path: &Path) -> std::io::Result<std::fs::File> {
 
 #[cfg(windows)]
 fn open_regular_file_no_follow(path: &Path) -> std::io::Result<std::fs::File> {
-    a3s_box_core::windows_file::open_regular_file(path, None).map(|(file, _)| file)
+    aster_box_core::windows_file::open_regular_file(path, None).map(|(file, _)| file)
 }
 
 #[cfg(unix)]
@@ -671,7 +671,7 @@ fn open_verified_regular_file(
     path: &Path,
     expected_size: u64,
 ) -> Result<(std::fs::File, Option<HostFileIdentity>, u64), Box<dyn std::error::Error>> {
-    let (file, identity) = a3s_box_core::windows_file::open_regular_file(path, None)?;
+    let (file, identity) = aster_box_core::windows_file::open_regular_file(path, None)?;
     let metadata = file.metadata()?;
     if !metadata.is_file() || metadata.len() != expected_size {
         return Err(format!("Rootfs entry changed after capture: {}", path.display()).into());
@@ -929,7 +929,7 @@ fn build_oci_image_from_tar(
         },
         "history": [{
             "created": chrono::Utc::now().to_rfc3339(),
-            "created_by": "a3s-box commit",
+            "created_by": "aster-box commit",
             "comment": message.as_deref().unwrap_or(""),
             "author": author.as_deref().unwrap_or("")
         }]

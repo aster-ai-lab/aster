@@ -9,7 +9,7 @@ use support::{pdf_collaboration_fixture, pdf_snapshot};
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 #[tokio::test]

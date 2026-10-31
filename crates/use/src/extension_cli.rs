@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::time::Duration;
 
-use a3s_use_core::{PluginHostApplyResult, PluginHostPlanResult, UseError, UseResult};
+use aster_use_core::{PluginHostApplyResult, PluginHostPlanResult, UseError, UseResult};
 
 use crate::cli::CommandOutput;
 #[cfg(feature = "extensions")]
@@ -80,15 +80,15 @@ impl PluginManagerMutationView {
 
 #[cfg(feature = "extensions")]
 pub(crate) fn standalone_plugin_manager_service(
-    scope: &a3s_use_core::PlanScope,
+    scope: &aster_use_core::PlanScope,
 ) -> UseResult<PluginManagerService> {
     manager::standalone_service(scope)
 }
 
 #[cfg(feature = "extensions")]
 pub(crate) fn registry_plugin_manager_service() -> UseResult<PluginManagerService> {
-    manager::standalone_service(&a3s_use_core::PlanScope {
-        kind: a3s_use_core::PlanScopeKind::User,
+    manager::standalone_service(&aster_use_core::PlanScope {
+        kind: aster_use_core::PlanScopeKind::User,
         id: crate::PACKAGE_DEFAULT_SCOPE.to_owned(),
     })
 }
@@ -213,10 +213,10 @@ pub(crate) async fn extension_inspect(package_id: &str) -> UseResult<CommandOutp
 #[cfg(feature = "extensions")]
 pub(crate) async fn extension_operation_diagnostic(
     package_id: &str,
-    scope: a3s_use_core::PlanScope,
+    scope: aster_use_core::PlanScope,
     include_history: bool,
 ) -> UseResult<CommandOutput> {
-    let registry = a3s_use_extension::ExtensionRegistry::from_env()?;
+    let registry = aster_use_extension::ExtensionRegistry::from_env()?;
     let manager = crate::package::PackageManager::with_plan_scope_lifecycle_and_authorization(
         registry,
         scope,
@@ -244,7 +244,7 @@ pub(crate) async fn extension_operation_diagnostic(
                 "No diagnosable package operation exists for this package and scope.",
             )
             .with_suggestion(
-                "Use 'a3s-use extension inspect <publisher/name> --json' for installed lifecycle history.",
+                "Use 'aster-use extension inspect <publisher/name> --json' for installed lifecycle history.",
             )
         })?
     };
@@ -303,7 +303,7 @@ fn diagnostic_encoding_error() -> UseError {
 #[cfg(not(feature = "extensions"))]
 pub(crate) async fn extension_operation_diagnostic(
     _package_id: &str,
-    _scope: a3s_use_core::PlanScope,
+    _scope: aster_use_core::PlanScope,
     _include_history: bool,
 ) -> UseResult<CommandOutput> {
     Err(UseError::new(
@@ -314,9 +314,9 @@ pub(crate) async fn extension_operation_diagnostic(
 
 #[cfg(feature = "extensions")]
 async fn extension_lifecycle_diagnostic(package_id: &str) -> UseResult<serde_json::Value> {
-    let paths = a3s_use_extension::ExtensionPaths::from_env()?;
-    let scope = a3s_use_core::PlanScope {
-        kind: a3s_use_core::PlanScopeKind::User,
+    let paths = aster_use_extension::ExtensionPaths::from_env()?;
+    let scope = aster_use_core::PlanScope {
+        kind: aster_use_core::PlanScopeKind::User,
         id: crate::package::PACKAGE_DEFAULT_SCOPE.to_owned(),
     };
     let diagnostic =
@@ -466,7 +466,7 @@ pub(crate) async fn install_remote_extension(
     channel: Option<&str>,
     expected_package_lock_digest: Option<&str>,
     offline: bool,
-    scope: &a3s_use_core::PlanScope,
+    scope: &aster_use_core::PlanScope,
 ) -> UseResult<ExtensionInstallView> {
     let result = manager::install(
         package_id,
@@ -502,7 +502,7 @@ pub(crate) async fn upgrade_remote_extension(
     channel: Option<&str>,
     expected_package_lock_digest: Option<&str>,
     offline: bool,
-    scope: &a3s_use_core::PlanScope,
+    scope: &aster_use_core::PlanScope,
 ) -> UseResult<ExtensionInstallView> {
     let result = manager::upgrade(
         package_id,
@@ -538,7 +538,7 @@ pub(crate) async fn install_remote_extension(
     _channel: Option<&str>,
     _expected_package_lock_digest: Option<&str>,
     _offline: bool,
-    _scope: &a3s_use_core::PlanScope,
+    _scope: &aster_use_core::PlanScope,
 ) -> UseResult<ExtensionInstallView> {
     Err(extensions_disabled())
 }
@@ -551,7 +551,7 @@ pub(crate) async fn upgrade_remote_extension(
     _channel: Option<&str>,
     _expected_package_lock_digest: Option<&str>,
     _offline: bool,
-    _scope: &a3s_use_core::PlanScope,
+    _scope: &aster_use_core::PlanScope,
 ) -> UseResult<ExtensionInstallView> {
     Err(extensions_disabled())
 }
@@ -559,7 +559,7 @@ pub(crate) async fn upgrade_remote_extension(
 #[cfg(feature = "extensions")]
 pub(crate) async fn uninstall_extension(
     package_id: &str,
-    scope: &a3s_use_core::PlanScope,
+    scope: &aster_use_core::PlanScope,
 ) -> UseResult<ExtensionUninstallView> {
     let result = manager::uninstall(package_id, scope).await?;
     Ok(ExtensionUninstallView {
@@ -573,7 +573,7 @@ pub(crate) async fn uninstall_extension(
 #[cfg(not(feature = "extensions"))]
 pub(crate) async fn uninstall_extension(
     _package_id: &str,
-    _scope: &a3s_use_core::PlanScope,
+    _scope: &aster_use_core::PlanScope,
 ) -> UseResult<ExtensionUninstallView> {
     Err(extensions_disabled())
 }
@@ -630,7 +630,7 @@ async fn watch_registry(
 }
 
 #[cfg(feature = "extensions")]
-fn extension_view(extension: a3s_use_extension::InstalledExtension) -> UseResult<ExtensionView> {
+fn extension_view(extension: aster_use_extension::InstalledExtension) -> UseResult<ExtensionView> {
     let surfaces = extension.surfaces();
     let compatible = extension.supports_use_version(env!("CARGO_PKG_VERSION"));
     let requires_use = extension.manifest.requires_use.clone();
@@ -647,9 +647,9 @@ fn extension_view(extension: a3s_use_extension::InstalledExtension) -> UseResult
             )
         })?;
     let trust = match extension.receipt.trust {
-        a3s_use_extension::ExtensionTrust::LocalExplicit => "local-explicit",
-        a3s_use_extension::ExtensionTrust::ReleaseBundle => "release-bundle",
-        a3s_use_extension::ExtensionTrust::RegistryTuf => "registry-tuf",
+        aster_use_extension::ExtensionTrust::LocalExplicit => "local-explicit",
+        aster_use_extension::ExtensionTrust::ReleaseBundle => "release-bundle",
+        aster_use_extension::ExtensionTrust::RegistryTuf => "registry-tuf",
     };
     let registry = extension
         .receipt

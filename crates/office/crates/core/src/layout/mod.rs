@@ -4,7 +4,7 @@ mod pptx_image;
 
 use std::path::PathBuf;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -35,7 +35,7 @@ pub const NATIVE_OFFICE_LAYOUT_PROFILE_SCHEMA_VERSION: u32 = 1;
 pub(crate) const MAX_LAYOUT_TEXT_BYTES: usize = 128;
 pub(crate) const MAX_LAYOUT_TIMEOUT_MS: u64 = 120_000;
 pub(crate) const MAX_LAYOUT_OUTPUT_BYTES: u64 = 64 * 1024 * 1024;
-const LAYOUT_PROFILE_DOMAIN: &[u8] = b"a3s-office-layout-profile-v1\0";
+const LAYOUT_PROFILE_DOMAIN: &[u8] = b"aster-office-layout-profile-v1\0";
 const MAX_DEVICE_SCALE_FACTOR_MILLI: u32 = 16_000;
 const MAX_DPI_MILLI: u32 = 2_400_000;
 

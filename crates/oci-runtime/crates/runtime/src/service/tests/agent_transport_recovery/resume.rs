@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentClient, AgentContainerOperationRequest, AgentOperation, AgentTransportFaultPoint,
     AgentTransportOperationStage,
 };
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     ContainerOperationRequest, ContainerTarget, ErrorCode, Generation, ListRequest,
     OciRuntimeService, OperationContext, StartRequest,
 };
@@ -40,7 +40,7 @@ async fn exercise_resume_reopen(index: usize, stage: AgentTransportOperationStag
     let guest = Arc::new(JournaledLifecycleGuest::new());
     let metrics = Arc::new(DriverMetrics::default());
     let fault_point = AgentTransportFaultPoint::Operation {
-        protocol_version: a3s_oci_agent_protocol::AGENT_PROTOCOL_VERSION_MAX,
+        protocol_version: aster_oci_agent_protocol::AGENT_PROTOCOL_VERSION_MAX,
         operation: AgentOperation::Resume,
         stage,
     };
@@ -225,7 +225,7 @@ async fn exercise_resume_reopen(index: usize, stage: AgentTransportOperationStag
 }
 
 fn assert_running(
-    record: &a3s_oci_sdk::ContainerRecord,
+    record: &aster_oci_sdk::ContainerRecord,
     generation: Generation,
     paused: bool,
     stage: AgentTransportOperationStage,

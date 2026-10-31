@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     CancellationRequest, FlowEngine, FlowError, FlowRuntime, FlowScheduler, FlowWorker,
     InMemoryFlowTaskQueue, RetryPolicy, RuntimeCommand, StepInvocation, WorkflowInvocation,
     WorkflowRunStatus, WorkflowSpec,
@@ -15,7 +15,7 @@ impl FlowRuntime for ExportRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.cancellation_request().is_some() {
             if !ctx.step_completed("cleanup-export") {
@@ -43,14 +43,14 @@ impl FlowRuntime for ExportRuntime {
         Ok(ctx.wait_until("export-window", resume_at))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         assert_eq!(invocation.step_id, "cleanup-export");
         Ok(json!({ "temporaryExportRemoved": true }))
     }
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let now = Utc::now();
     let engine = FlowEngine::in_memory(Arc::new(ExportRuntime));
     let queue = Arc::new(InMemoryFlowTaskQueue::new());

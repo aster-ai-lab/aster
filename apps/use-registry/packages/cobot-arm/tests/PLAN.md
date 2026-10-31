@@ -1,4 +1,4 @@
-# Functional test plan: 七轴轻量化协作机器人 (`a3s/cobot-arm`)
+# Functional test plan: 七轴轻量化协作机器人 (`aster/cobot-arm`)
 
 Every case below has an automated test. A case without one is not part of
 this plan. The tests run at five levels, cheapest first:
@@ -9,30 +9,30 @@ this plan. The tests run at five levels, cheapest first:
 | Browser | The view in Chromium under Aster's exact headers, sandbox, and handshake; the real `agent/run.mjs` | `node tests/browser.proof.mjs`, `node tests/libero.proof.mjs` |
 | Load | View load time per phase, Chromium and WebKit, fresh context per run | `node tests/load.proof.mjs [runs]` |
 | Aster native | Rust tests in `apps/desktop/src-tauri` (authority, view sessions, view-agent binding, warm box) and the renderer tests | see below |
-| End to end | Aster's authority, catalog sync, asset route, turn route, warm `a3s-box`, and a gateway; Chromium plays the renderer | see below |
+| End to end | Aster's authority, catalog sync, asset route, turn route, warm `aster-box`, and a gateway; Chromium plays the renderer | see below |
 
 Aster native:
 
 ```sh
 cd apps/desktop/src-tauri
 rustup run 1.97.1 cargo test --lib -- aix_episodes workbench_projection view_agent authority
-A3S_DESKTOP_BOX_LIVE=1 rustup run 1.97.1 cargo test --lib -- --ignored \
-  the_cobot_arm_agent_decides_in_a_live_a3s_box cobot_arm_view_load_timing --nocapture
+ASTER_DESKTOP_BOX_LIVE=1 rustup run 1.97.1 cargo test --lib -- --ignored \
+  the_cobot_arm_agent_decides_in_a_live_aster_box cobot_arm_view_load_timing --nocapture
 cd apps/desktop && npx vitest run src/renderer/services/plugins/__tests__/aixAgentProvider.test.ts \
   src/renderer/pages/agents/__tests__/aixAgentRuntime.test.ts \
   src/renderer/hooks/__tests__/useAssistantCatalogPresets.test.ts
-cd apps/api && rustup run 1.97.1 cargo test --bin a3s-api -- workbench cobot_arm a_renamed_seed
+cd apps/api && rustup run 1.97.1 cargo test --bin aster-api -- workbench cobot_arm a_renamed_seed
 ```
 
-End to end (needs node, the Playwright install in `apps/desktop`, and `a3s-box`):
+End to end (needs node, the Playwright install in `apps/desktop`, and `aster-box`):
 
 ```sh
 cd apps/desktop/src-tauri
 # Hermetic: a fake member gateway that answers System One at 0.8.
 rustup run 1.97.1 cargo test --lib cobot_arm_runs_end_to_end -- --ignored --nocapture
 # Live: the local gateway and a signed-in member session. The token stays in Rust.
-A3S_DESKTOP_E2E_GATEWAY=http://127.0.0.1:8080 \
-A3S_DESKTOP_E2E_MEMBER_SESSION="$HOME/Library/Application Support/dev.a3s.desktop/<instance>/member-session.json" \
+ASTER_DESKTOP_E2E_GATEWAY=http://127.0.0.1:8080 \
+ASTER_DESKTOP_E2E_MEMBER_SESSION="$HOME/Library/Application Support/dev.aster.desktop/<instance>/member-session.json" \
   rustup run 1.97.1 cargo test --lib cobot_arm_runs_end_to_end -- --ignored --nocapture
 ```
 
@@ -54,7 +54,7 @@ renderer test in `apps/desktop/src/renderer`, `api:` is a test in
 | P-06 | Seed list does not drift | The API's `include_bytes!` list equals the package directory minus `tests/`, `tools/`, `brand/` | api:`each_workbench_published_list_matches_the_package_directory` |
 | P-07 | Listed as a plugin, not an agent | The plugin page offers it; the experts (智能体) catalog skips a package with a `ui` surface | api:`the_plugin_page_offers_cobot_arm`, `the_catalog_stores_cobot_arm_for_the_plugin_page`; ui:`lists an agent package but leaves a package with a view to the plugin catalog` |
 | P-08 | Rename from `embodied-jev` | Members of the old seed end with exactly the current release; the old row is gone; a rerun changes nothing (in memory and PostgreSQL) | api:`a_renamed_seed_moves_its_members_in_memory`, `…_in_postgres`, `a_retired_cobot_arm_pin_follows_the_activity_bar_generation` |
-| P-09 | Install through the catalog | `PUT /api/capabilities/installations/a3s-cobot-arm` reaches the gateway once, Aster syncs the bundle, and the view appears in the catalogue | e2e `install`, `catalogue` (hermetic: installs 1, bundles ≥ 1) |
+| P-09 | Install through the catalog | `PUT /api/capabilities/installations/aster-cobot-arm` reaches the gateway once, Aster syncs the bundle, and the view appears in the catalogue | e2e `install`, `catalogue` (hermetic: installs 1, bundles ≥ 1) |
 
 ## 2. View load and view policy
 
@@ -96,13 +96,13 @@ renderer test in `apps/desktop/src/renderer`, `api:` is a test in
 | --- | --- | --- | --- |
 | A-01 | Warm agent protocol | One process serves many runs with one process-wide sequence; every reply is one `Content-Length` JSON body | pkg:agent `the warm entry serves many runs…`, `every reply is one Content-Length JSON body…` |
 | A-02 | Malformed traffic | Malformed, duplicate, and unknown traffic is refused | pkg:agent `the entry refuses malformed, duplicate, and unknown traffic` |
-| A-03 | One warm box per episode | Many turns, one `a3s-box run`; the box is removed on close | desktop:aix_episodes `a_warm_box_serves_many_turns_and_brokers_the_model_without_the_token`, `the_cobot_arm_agent_decides_in_one_warm_box_through_the_real_launcher` |
+| A-03 | One warm box per episode | Many turns, one `aster-box run`; the box is removed on close | desktop:aix_episodes `a_warm_box_serves_many_turns_and_brokers_the_model_without_the_token`, `the_cobot_arm_agent_decides_in_one_warm_box_through_the_real_launcher` |
 | A-04 | The member token never enters the box | The host brokers the model call with the bearer; box arguments and environment carry none | desktop:aix_episodes (same two tests); e2e hermetic `foreignBearer: 0` |
 | A-05 | Failure and reclaim | A failed turn removes the box; the reaper ends boxes whose view no longer binds the agent; a running turn and the box limit refuse without starting a box | desktop:aix_episodes `a_failed_turn_removes_the_box…`, `the_reaper_ends_boxes…`, `a_running_turn_and_the_box_limit_refuse…` |
 | A-06 | Closed request shape | Only the closed turn and model body shapes pass; `model_request.api` is `chat` or `systemone` | desktop:aix_episodes `view_turns_and_model_bodies_accept_only_the_closed_shape` |
 | A-07 | A view binds only its own agent | Another agent is 404; no bearer is 401; a bad body is 400; an unbound turn is 404; upgrade, owner change, and an undeclared harness refuse the binding | e2e `unbound`; desktop:authority `a_view_agent_turn_without_a_bound_view_is_not_found`; desktop:capabilities_view_agent_tests (2) |
 | A-08 | Renderer turn port | One turn at a time, each answer carries its own id; failures reduce to the closed refusal set; withdrawal aborts and drops the late answer; messages per document are bounded | ui:aixAgentProvider (4) |
-| A-09 | Live MicroVM | The published agent decides in a real `a3s-box` MicroVM; `a3s-box ps -a` shows none left | desktop:aix_episodes `the_cobot_arm_agent_decides_in_a_live_a3s_box` (`A3S_DESKTOP_BOX_LIVE=1`) |
+| A-09 | Live MicroVM | The published agent decides in a real `aster-box` MicroVM; `aster-box ps -a` shows none left | desktop:aix_episodes `the_cobot_arm_agent_decides_in_a_live_aster_box` (`ASTER_DESKTOP_BOX_LIVE=1`) |
 | A-10 | Whole chain | catalog → asset route → view → turn route → warm box → gateway → view; every turn 200 and model-decided | e2e hermetic and live |
 
 ## 6. Fallbacks
@@ -157,4 +157,4 @@ renderer test in `apps/desktop/src/renderer`, `api:` is a test in
   state 0; drawer 0/3 and microwave 1/2 completed from init states 0–2) are
   retained as evidence in
   `docs/evidence/desktop-plugins/20261012-cobot-arm-libero/`.
-- The operator path `a3s-use-registry-tools assemble`.
+- The operator path `aster-use-registry-tools assemble`.

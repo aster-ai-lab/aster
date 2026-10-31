@@ -1,11 +1,11 @@
-//! `a3s-box top` command — Display running processes in a box.
+//! `aster-box top` command — Display running processes in a box.
 //!
 //! Convenience wrapper that runs `ps` inside the box via the exec channel.
 
 use clap::{Args, ValueEnum};
 use serde::Serialize;
 
-use a3s_box_core::exec::{ExecRequest, DEFAULT_EXEC_TIMEOUT_NS};
+use aster_box_core::exec::{ExecRequest, DEFAULT_EXEC_TIMEOUT_NS};
 
 use crate::resolve;
 use crate::state::StateFile;

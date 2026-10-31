@@ -35,7 +35,7 @@ use std::path::Path;
 
 #[cfg(windows)]
 unsafe fn run(kernel_path: Option<&str>) {
-    use a3s_libkrun_sys::*;
+    use aster_libkrun_sys::*;
     use std::ffi::CString;
     use std::path::PathBuf;
 

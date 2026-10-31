@@ -18,8 +18,8 @@
 //!   (mutate+verify; the completion-gate posture).
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +1.97.1 test -p a3s-code-core --test test_task_speed_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +1.97.1 test -p aster-core --test test_task_speed_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -30,15 +30,15 @@ mod support;
 #[tokio::test]
 #[ignore = "requires the pinned real provider"]
 async fn child_policy_reaches_real_task_skill_and_workflow_after_reopen() {
-    use a3s_code_core::orchestration::{AgentStepSpec, WorkflowBudget};
-    use a3s_code_core::skills::{Skill, SkillKind, SkillRegistry};
-    use a3s_code_core::store::{FileSessionStore, SessionStore};
+    use aster_core::orchestration::{AgentStepSpec, WorkflowBudget};
+    use aster_core::skills::{Skill, SkillKind, SkillRegistry};
+    use aster_core::store::{FileSessionStore, SessionStore};
     use std::sync::Arc;
 
     let workspace = tempfile::tempdir().unwrap();
     let storage = tempfile::tempdir().unwrap();
     let marker = format!("CHILD-POLICY-{}", uuid::Uuid::new_v4());
-    let work = a3s_code_core::WorkPolicyV1::new("child-live", 1, format!("The selected policy marker is {marker}. When asked for the selected policy marker, quote it exactly. No tools are needed for that answer.")).unwrap();
+    let work = aster_core::WorkPolicyV1::new("child-live", 1, format!("The selected policy marker is {marker}. When asked for the selected policy marker, quote it exactly. No tools are needed for that answer.")).unwrap();
     let guard = Arc::new(WorkflowBudget::new(Some(250_000)));
     let skills = Arc::new(SkillRegistry::new());
     skills.register_unchecked(Arc::new(Skill {
@@ -72,7 +72,7 @@ async fn child_policy_reaches_real_task_skill_and_workflow_after_reopen() {
             .with_llm_api_timeout(180_000)
             .with_temperature(0.0)
             .with_worker_agent(
-                a3s_code_core::subagent::WorkerAgentSpec::read_only(
+                aster_core::subagent::WorkerAgentSpec::read_only(
                     "policy-reader",
                     "Read-only policy question",
                 )
@@ -156,8 +156,8 @@ async fn child_policy_reaches_real_task_skill_and_workflow_after_reopen() {
 use std::path::Path;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentResult, PlanningMode, SessionOptions, SystemPromptSlots};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentResult, PlanningMode, SessionOptions, SystemPromptSlots};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 const REAL_TIMEOUT: Duration = Duration::from_secs(300);
@@ -168,14 +168,14 @@ const SANITY_CEILING: Duration = Duration::from_secs(180);
 
 #[derive(Default)]
 struct CheckpointCapture {
-    exports: std::sync::Mutex<Vec<a3s_code_core::session_checkpoint::SessionCheckpointExportV1>>,
+    exports: std::sync::Mutex<Vec<aster_core::session_checkpoint::SessionCheckpointExportV1>>,
 }
 
 #[async_trait::async_trait]
-impl a3s_code_core::session_checkpoint::SessionCheckpointExportSink for CheckpointCapture {
+impl aster_core::session_checkpoint::SessionCheckpointExportSink for CheckpointCapture {
     async fn export_checkpoint(
         &self,
-        checkpoint: a3s_code_core::session_checkpoint::SessionCheckpointExportV1,
+        checkpoint: aster_core::session_checkpoint::SessionCheckpointExportV1,
     ) -> anyhow::Result<()> {
         self.exports.lock().unwrap().push(checkpoint);
         Ok(())
@@ -183,17 +183,17 @@ impl a3s_code_core::session_checkpoint::SessionCheckpointExportSink for Checkpoi
 }
 
 struct CrashCheckpointSink {
-    store: std::sync::Arc<a3s_code_core::store::FileSessionStore>,
+    store: std::sync::Arc<aster_core::store::FileSessionStore>,
     ready: std::path::PathBuf,
 }
 
 #[async_trait::async_trait]
-impl a3s_code_core::session_checkpoint::SessionCheckpointExportSink for CrashCheckpointSink {
+impl aster_core::session_checkpoint::SessionCheckpointExportSink for CrashCheckpointSink {
     async fn export_checkpoint(
         &self,
-        checkpoint: a3s_code_core::session_checkpoint::SessionCheckpointExportV1,
+        checkpoint: aster_core::session_checkpoint::SessionCheckpointExportV1,
     ) -> anyhow::Result<()> {
-        use a3s_code_core::store::SessionStore;
+        use aster_core::store::SessionStore;
         let payload = checkpoint.open()?;
         let logical = payload
             .logical_resume
@@ -246,7 +246,7 @@ fn speed_options(session_id: &str) -> SessionOptions {
         // repair-style tasks complete Verified without path-referencing
         // gymnastics (the LH4/GATE posture).
         .with_verification_contract(
-            a3s_code_core::verification::VerificationContractV1::new(
+            aster_core::verification::VerificationContractV1::new(
                 "node-suite",
                 "node test.mjs",
                 ["src/**"],
@@ -267,7 +267,7 @@ fn tool_uses(result: &AgentResult) -> Vec<(String, serde_json::Value)> {
         .iter()
         .flat_map(|message| message.content.iter())
         .filter_map(|block| match block {
-            a3s_code_core::llm::ContentBlock::ToolUse { name, input, .. } => {
+            aster_core::llm::ContentBlock::ToolUse { name, input, .. } => {
                 Some((name.clone(), input.clone()))
             }
             _ => None,
@@ -286,7 +286,7 @@ struct Measurement {
 
 async fn timed_send(
     task: &'static str,
-    session: &a3s_code_core::AgentSession,
+    session: &aster_core::AgentSession,
     prompt: &str,
 ) -> (Measurement, AgentResult) {
     let started = Instant::now();
@@ -295,7 +295,7 @@ async fn timed_send(
         .expect("task timed out");
     let answer = answer.unwrap_or_else(|error| {
         // Keep bounded tool evidence before TempDir cleanup; never print model prompts.
-        if let Ok(facts) = a3s_code_core::fact_control::read_workspace_facts(
+        if let Ok(facts) = aster_core::fact_control::read_workspace_facts(
             session.workspace(),
             session.session_id(),
         ) {
@@ -349,9 +349,9 @@ fn print_row(m: &Measurement) {
 
 const LOOKUP_ANSWER: &str = "LH6-LOOKUP-9f41c2";
 
-fn assert_lookup_evidence(session: &a3s_code_core::AgentSession, answer: &AgentResult) {
+fn assert_lookup_evidence(session: &aster_core::AgentSession, answer: &AgentResult) {
     if !answer.text.contains(LOOKUP_ANSWER) {
-        if let Ok(facts) = a3s_code_core::fact_control::read_workspace_facts(
+        if let Ok(facts) = aster_core::fact_control::read_workspace_facts(
             session.workspace(),
             session.session_id(),
         ) {
@@ -402,7 +402,7 @@ fn seed_lookup_workspace(root: &Path) {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn speed_lookup_task_completes_with_the_marked_value() {
     let workspace = tempfile::tempdir().expect("workspace");
     seed_lookup_workspace(workspace.path());
@@ -438,16 +438,16 @@ async fn speed_lookup_task_completes_with_the_marked_value() {
 
 /// T006 runtime diagnostic; it does not qualify engineering quality or native execution.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn admitted_policy_survives_real_model_file_session_reopen() {
-    use a3s_code_core::store::{FileSessionStore, SessionStore};
+    use aster_core::store::{FileSessionStore, SessionStore};
     use std::sync::Arc;
 
     const MARKER: &str = "M1-POLICY-4bd982";
     let workspace = tempfile::tempdir().expect("workspace");
     let store_directory = tempfile::tempdir().expect("session store");
     seed_lookup_workspace(workspace.path());
-    let policy = a3s_code_core::WorkPolicyV1::new(
+    let policy = aster_core::WorkPolicyV1::new(
         "runtime-diagnostic",
         1,
         format!("For deployment answers, include the host reference `{MARKER}` after the evidenced value. Keep the answer concise."),
@@ -483,7 +483,7 @@ async fn admitted_policy_survives_real_model_file_session_reopen() {
         };
         let session = if restored {
             let source =
-                a3s_code_core::session_folder::effect_log_dir(workspace.path(), "m1-policy-live");
+                aster_core::session_folder::effect_log_dir(workspace.path(), "m1-policy-live");
             let retained = workspace.path().join("retained-source");
             std::fs::rename(&source, &retained).unwrap();
             let error = agent
@@ -512,7 +512,7 @@ async fn admitted_policy_survives_real_model_file_session_reopen() {
         print_row(&measurement);
         assert_lookup_evidence(&session, &answer);
         assert!(answer.text.contains(MARKER), "{}", answer.text);
-        let facts = a3s_code_core::fact_control::read_workspace_facts(
+        let facts = aster_core::fact_control::read_workspace_facts(
             session.workspace(),
             session.session_id(),
         )
@@ -521,7 +521,7 @@ async fn admitted_policy_survives_real_model_file_session_reopen() {
         assert!(error.to_string().contains("cannot be truncated"), "{error}");
         assert_eq!(session.fork_session_at(u64::MAX).await.unwrap(), 0);
         assert_eq!(
-            a3s_code_core::fact_control::read_workspace_facts(
+            aster_core::fact_control::read_workspace_facts(
                 session.workspace(),
                 session.session_id()
             )
@@ -530,7 +530,7 @@ async fn admitted_policy_survives_real_model_file_session_reopen() {
         );
         let policies = facts
             .iter()
-            .filter(|fact| fact.kind == "a3s.work-policy.admitted")
+            .filter(|fact| fact.kind == "aster.work-policy.admitted")
             .collect::<Vec<_>>();
         assert_eq!(policies.len(), 1);
         assert_eq!(policies[0].payload["digest"], digest);
@@ -571,20 +571,20 @@ async fn admitted_policy_survives_real_model_file_session_reopen() {
 
 /// Metadata-only Goal definitions never bypass explicit plan admission.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn goal_definition_preserves_real_model_history_and_file_session_reopen() {
-    use a3s_code_core::goal_control::{
+    use aster_core::goal_control::{
         GoalCommandKindV1, GoalControlCommandV1, GoalDefinitionCommandV1, GoalState,
     };
-    use a3s_code_core::store::FileSessionStore;
-    use a3s_code_core::workspace::WorkspaceServices;
+    use aster_core::store::FileSessionStore;
+    use aster_core::workspace::WorkspaceServices;
     use std::sync::Arc;
 
     let workspace = tempfile::tempdir().unwrap();
     let store_directory = tempfile::tempdir().unwrap();
     seed_lookup_workspace(workspace.path());
     let backend = WorkspaceServices::local(workspace.path());
-    let policy = a3s_code_core::WorkPolicyV1::new(
+    let policy = aster_core::WorkPolicyV1::new(
         "goal-admission-diagnostic", 1,
         "For deployment answers, include the host reference M1-GOAL-83be21 after the evidenced value.",
     ).unwrap();
@@ -608,7 +608,7 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
     print_row(&measurement);
     assert_lookup_evidence(&session, &answer);
     assert!(answer.text.contains("M1-GOAL-83be21"), "{}", answer.text);
-    let before = a3s_code_core::fact_control::read_workspace_facts(
+    let before = aster_core::fact_control::read_workspace_facts(
         session.workspace(),
         session.session_id(),
     )
@@ -620,7 +620,7 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
         goal_id: "deployment-audit".into(),
         session_id: session.session_id().into(),
         workspace: backend.workspace_ref().clone(),
-        goal: a3s_code_core::planning::AgentGoal::new(
+        goal: aster_core::planning::AgentGoal::new(
             "Record deployment evidence for subsequent review",
         )
         .with_criteria(vec![format!(
@@ -634,7 +634,7 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
         expected_goal_sequence: None,
     };
     let first = session.apply_goal_definition(create.clone()).unwrap();
-    let bound = a3s_code_core::fact_control::read_workspace_facts(
+    let bound = aster_core::fact_control::read_workspace_facts(
         session.workspace(),
         session.session_id(),
     )
@@ -675,7 +675,7 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
     revise.goal.description = "Review both deployment references".into();
     let second = reopened.apply_goal_definition(revise).unwrap();
     assert_eq!(second.binding.goal_revision, 2);
-    let revised = a3s_code_core::fact_control::read_workspace_facts(
+    let revised = aster_core::fact_control::read_workspace_facts(
         reopened.workspace(),
         reopened.session_id(),
     )
@@ -691,7 +691,7 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
         "{error}"
     );
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(
+        aster_core::fact_control::read_workspace_facts(
             reopened.workspace(),
             reopened.session_id()
         )
@@ -713,14 +713,14 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
     let cancelled = reopened.apply_goal_control(cancel.clone()).unwrap();
     assert_eq!(cancelled.state, GoalState::Cancelled);
     assert_eq!(cancelled.binding, second.binding);
-    let retained = a3s_code_core::fact_control::read_workspace_facts(
+    let retained = aster_core::fact_control::read_workspace_facts(
         reopened.workspace(),
         reopened.session_id(),
     )
     .unwrap();
     assert_eq!(&retained[..revised.len()], revised.as_slice());
     assert_eq!(retained.len(), revised.len() + 1);
-    assert_eq!(retained.last().unwrap().kind, "a3s.goal.cancelled");
+    assert_eq!(retained.last().unwrap().kind, "aster.goal.cancelled");
     assert_eq!(reopened.recorded_usage_tokens(), usage);
     reopened.save().await.unwrap();
     reopened.close().await;
@@ -746,7 +746,7 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
     );
     assert_eq!(reopened.recorded_usage_tokens(), usage);
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(
+        aster_core::fact_control::read_workspace_facts(
             reopened.workspace(),
             reopened.session_id()
         )
@@ -759,14 +759,14 @@ async fn goal_definition_preserves_real_model_history_and_file_session_reopen() 
 
 /// T007 plan-association diagnostic; plan acceptance is not step-result acceptance.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() {
-    use a3s_code_core::goal_control::{
+    use aster_core::goal_control::{
         GoalCommandKindV1, GoalDefinitionCommandV1, GoalPlanCommandV1,
     };
-    use a3s_code_core::planning::TaskStatus;
-    use a3s_code_core::store::FileSessionStore;
-    use a3s_code_core::workspace::WorkspaceServices;
+    use aster_core::planning::TaskStatus;
+    use aster_core::store::FileSessionStore;
+    use aster_core::workspace::WorkspaceServices;
     use std::sync::Arc;
 
     let workspace = tempfile::tempdir().unwrap();
@@ -786,7 +786,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
                     .with_permission_policy(permission.clone())
                     // Keep the early plan event through a long streamed answer.
                     .with_retention_limits(
-                        a3s_code_core::retention::SessionRetentionLimits::default()
+                        aster_core::retention::SessionRetentionLimits::default()
                             .with_max_events_per_run(16_384),
                     )
                     .with_workspace_backend(backend.clone())
@@ -802,7 +802,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     let runs = session.runs().await;
     assert_eq!(runs.len(), 1);
     // Qualify original receipt provenance before associating any durable Goal metadata.
-    let source_facts = a3s_code_core::fact_control::read_workspace_facts(
+    let source_facts = aster_core::fact_control::read_workspace_facts(
         session.workspace(),
         session.session_id(),
     )
@@ -812,13 +812,13 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
         .as_ref()
         .expect("original Run binding");
     let binding_digest =
-        a3s_code_core::digest_json("a3s.code.tool-admission-binding.v1", binding).unwrap();
+        aster_core::digest_json("aster.code.tool-admission-binding.v1", binding).unwrap();
     let mut preparations = std::collections::BTreeMap::new();
     let mut results = std::collections::BTreeSet::new();
     for fact in &source_facts {
         match fact.kind.as_str() {
             "tool.prepared" => {
-                let prepared: a3s_effect::ToolPreparedV1 =
+                let prepared: aster_effect::ToolPreparedV1 =
                     serde_json::from_value(fact.payload["prepared"].clone()).unwrap();
                 prepared.validate().unwrap();
                 let admission = prepared.identity.admission.as_ref().expect("Run admission");
@@ -830,7 +830,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
                     .is_none());
             }
             "tool.result" => {
-                let result: a3s_effect::ToolExecutionResultV1 =
+                let result: aster_effect::ToolExecutionResultV1 =
                     serde_json::from_value(fact.payload["receipt"].clone()).unwrap();
                 let key = result.identity.key().unwrap();
                 result
@@ -848,7 +848,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     assert_eq!(results.len(), preparations.len());
     assert!(!source_facts
         .iter()
-        .any(|fact| fact.kind.starts_with("a3s.goal.")));
+        .any(|fact| fact.kind.starts_with("aster.goal.")));
     let markers = source_facts
         .iter()
         .filter(|fact| fact.kind == "turn.complete")
@@ -863,7 +863,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     }
     assert!(matches!(
         answer.completion,
-        a3s_code_core::harness_loop::CompletionTerminal::Narrative
+        aster_core::harness_loop::CompletionTerminal::Narrative
     ));
     println!(
         "original source: {} paired tool receipts, {} narrative markers; no durable Goal binding",
@@ -874,12 +874,12 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     let mut plan = events
         .into_iter()
         .find_map(|event| match event.event {
-            a3s_code_core::AgentEvent::PlanningEnd { plan, .. } => Some(plan),
+            aster_core::AgentEvent::PlanningEnd { plan, .. } => Some(plan),
             _ => None,
         })
         .expect("original model planner emitted its retained plan");
     assert_eq!(plan.steps.len(), 2);
-    a3s_code_core::goal_control::validate_goal_plan(&plan).unwrap();
+    aster_core::goal_control::validate_goal_plan(&plan).unwrap();
     let expected_ready = plan
         .get_ready_steps()
         .iter()
@@ -899,7 +899,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
             goal_id: "deployment-review".into(),
             session_id: session.session_id().into(),
             workspace: backend.workspace_ref().clone(),
-            goal: a3s_code_core::planning::AgentGoal::new("Review deployment references")
+            goal: aster_core::planning::AgentGoal::new("Review deployment references")
                 .with_criteria(vec![format!(
                     "Independent deployment fixture equals {LOOKUP_ANSWER}"
                 )]),
@@ -934,7 +934,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     acceptance.proposal_sequence = proposed.plan_fact_sequence;
     let accepted = session.apply_goal_plan(acceptance.clone()).unwrap();
     assert!(accepted.plan_accepted);
-    let before = a3s_code_core::fact_control::read_workspace_facts(
+    let before = aster_core::fact_control::read_workspace_facts(
         session.workspace(),
         session.session_id(),
     )
@@ -986,7 +986,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     print_row(&measurement);
     assert!(answer.text.contains(LOOKUP_ANSWER), "{}", answer.text);
     assert!(tool_uses(&answer).iter().any(|(name, _)| name == "read"));
-    let after = a3s_code_core::fact_control::read_workspace_facts(
+    let after = aster_core::fact_control::read_workspace_facts(
         reopened.workspace(),
         reopened.session_id(),
     )
@@ -997,7 +997,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
         .any(|f| f.kind == "tool.result"));
     let bindings = after
         .iter()
-        .filter(|f| f.kind == "a3s.goal.slice.admitted")
+        .filter(|f| f.kind == "aster.goal.slice.admitted")
         .collect::<Vec<_>>();
     assert_eq!(bindings.len(), 1);
     assert_eq!(bindings[0].payload["body"]["step_id"], expected_ready[0]);
@@ -1005,7 +1005,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
     assert_eq!(current.binding, accepted.binding);
     assert_eq!(
         current.state,
-        a3s_code_core::goal_control::GoalState::Active
+        aster_core::goal_control::GoalState::Active
     );
     let plan = current.plan.unwrap();
     assert_eq!(plan.definition_identity().unwrap(), identity);
@@ -1015,7 +1015,7 @@ async fn goal_plan_from_real_model_reopens_without_accepting_display_progress() 
         .all(|step| step.status == TaskStatus::Pending));
     assert!(!after
         .iter()
-        .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "a3s.goal.completed"));
+        .any(|f| f.kind == "aster.goal.step.accepted" || f.kind == "aster.goal.completed"));
     reopened.close().await;
     agent.close().await;
 }
@@ -1034,7 +1034,7 @@ fn seed_compute_workspace(root: &Path) {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn speed_compute_task_sums_three_regions() {
     let workspace = tempfile::tempdir().expect("workspace");
     seed_compute_workspace(workspace.path());
@@ -1091,7 +1091,7 @@ fn seed_repair_workspace(root: &Path) {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn speed_repair_task_lands_a_verified_fix() {
     let workspace = tempfile::tempdir().expect("workspace");
     seed_repair_workspace(workspace.path());
@@ -1129,7 +1129,7 @@ async fn speed_repair_task_lands_a_verified_fix() {
             .iter()
             .flat_map(|message| message.content.iter())
             .any(
-                |block| matches!(block, a3s_code_core::llm::ContentBlock::ToolResult { content, .. }
+                |block| matches!(block, aster_core::llm::ContentBlock::ToolResult { content, .. }
                 if content.as_text().contains("LH6-REPAIR-OK"))
             ),
         "the passing test run must be on the record"
@@ -1139,7 +1139,7 @@ async fn speed_repair_task_lands_a_verified_fix() {
     assert!(
         matches!(
             answer.completion,
-            a3s_code_core::harness_loop::CompletionTerminal::Verified { .. }
+            aster_core::harness_loop::CompletionTerminal::Verified { .. }
         ),
         "a verified repair must complete Verified; got {:?}",
         answer.completion
@@ -1150,12 +1150,12 @@ async fn speed_repair_task_lands_a_verified_fix() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the pinned actual model and credentials from .a3s/config.acl"]
+#[ignore = "requires the pinned actual model and credentials from .aster/config.acl"]
 async fn durable_loop_checkpoint_resumes_real_model_after_file_reopen() {
-    use a3s_code_core::store::{FileSessionStore, SessionStore};
+    use aster_core::store::{FileSessionStore, SessionStore};
     use std::sync::Arc;
-    const CHILD_WORKSPACE: &str = "A3S_CODE_TEST_LOOP_SOURCE_WORKSPACE";
-    const CHILD_STORAGE: &str = "A3S_CODE_TEST_LOOP_SOURCE_STORAGE";
+    const CHILD_WORKSPACE: &str = "ASTER_TEST_LOOP_SOURCE_WORKSPACE";
+    const CHILD_STORAGE: &str = "ASTER_TEST_LOOP_SOURCE_STORAGE";
     let prompt = "Following the deployment docs (start at README.md), what is the build stamp for the active deployment environment?";
     if let Some(workspace) = std::env::var_os(CHILD_WORKSPACE) {
         let storage =
@@ -1166,7 +1166,7 @@ async fn durable_loop_checkpoint_resumes_real_model_after_file_reopen() {
             store: store.clone(),
             ready: storage.join("boundary.ready"),
         });
-        let policy = a3s_code_core::WorkPolicyV1::new("checkpoint-live", 1,
+        let policy = aster_core::WorkPolicyV1::new("checkpoint-live", 1,
             "Preserve deployment evidence and include CHECKPOINT-SOURCE-OK after the evidenced answer.").unwrap();
         let session = agent
             .session_async(
@@ -1251,7 +1251,7 @@ async fn durable_loop_checkpoint_resumes_real_model_after_file_reopen() {
         .await
         .unwrap();
     let before =
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "checkpoint-live")
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "checkpoint-live")
             .unwrap();
     let answer = tokio::time::timeout(REAL_TIMEOUT, session.resume_run(&checkpoint.run_id))
         .await
@@ -1264,7 +1264,7 @@ async fn durable_loop_checkpoint_resumes_real_model_after_file_reopen() {
         answer.text
     );
     let after =
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "checkpoint-live")
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "checkpoint-live")
             .unwrap();
     assert!(
         after
@@ -1289,11 +1289,11 @@ async fn durable_loop_checkpoint_resumes_real_model_after_file_reopen() {
 
 /// T009: explicit policy admission carries historical evidence, never a source Goal/Run.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn fork_admission_preserves_real_history_policy_and_file_reopen() {
-    use a3s_code_core::goal_control::{GoalCommandKindV1, GoalDefinitionCommandV1};
-    use a3s_code_core::store::{FileSessionStore, SessionStore};
-    use a3s_code_core::workspace::WorkspaceServices;
+    use aster_core::goal_control::{GoalCommandKindV1, GoalDefinitionCommandV1};
+    use aster_core::store::{FileSessionStore, SessionStore};
+    use aster_core::workspace::WorkspaceServices;
     use std::sync::Arc;
 
     let workspace = tempfile::tempdir().unwrap();
@@ -1302,7 +1302,7 @@ async fn fork_admission_preserves_real_history_policy_and_file_reopen() {
     seed_lookup_workspace(workspace.path());
     let stamp = format!("FORK-{}", uuid::Uuid::new_v4());
     std::fs::write(target_workspace.path().join("fork-current.txt"), &stamp).unwrap();
-    let policy = a3s_code_core::WorkPolicyV1::new(
+    let policy = aster_core::WorkPolicyV1::new(
         "fork-live",
         1,
         "Include the host reference M1-FORK-31f942 in every final answer.",
@@ -1327,7 +1327,7 @@ async fn fork_admission_preserves_real_history_policy_and_file_reopen() {
     assert_lookup_evidence(&source, &answer);
     assert!(answer.text.contains("M1-FORK-31f942"), "{}", answer.text);
     let before =
-        a3s_code_core::fact_control::read_workspace_facts(source.workspace(), source.session_id())
+        aster_core::fact_control::read_workspace_facts(source.workspace(), source.session_id())
             .unwrap();
     source
         .apply_goal_definition(GoalDefinitionCommandV1 {
@@ -1339,7 +1339,7 @@ async fn fork_admission_preserves_real_history_policy_and_file_reopen() {
             workspace: WorkspaceServices::local(workspace.path())
                 .workspace_ref()
                 .clone(),
-            goal: a3s_code_core::planning::AgentGoal::new("Keep original deployment evidence")
+            goal: aster_core::planning::AgentGoal::new("Keep original deployment evidence")
                 .with_criteria(vec![format!("Deployment stamp equals {LOOKUP_ANSWER}")]),
             non_goals: vec![],
             scope_fact_sequences: vec![before.last().unwrap().seq],
@@ -1357,7 +1357,7 @@ async fn fork_admission_preserves_real_history_policy_and_file_reopen() {
         .unwrap();
     let original_snapshot = serde_json::to_value(&snapshot).unwrap();
     let facts =
-        a3s_code_core::fact_control::read_workspace_facts(source.workspace(), source.session_id())
+        aster_core::fact_control::read_workspace_facts(source.workspace(), source.session_id())
             .unwrap();
     let usage = source.recorded_usage_tokens();
     source.close().await;
@@ -1405,7 +1405,7 @@ async fn fork_admission_preserves_real_history_policy_and_file_reopen() {
     assert!(!tool_uses(&answer).is_empty(), "must obtain fresh evidence");
     assert!(target.recorded_usage_tokens() > usage);
     assert_eq!(
-        a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "fork-live-source")
+        aster_core::fact_control::read_workspace_facts(workspace.path(), "fork-live-source")
             .unwrap(),
         facts
     );
@@ -1429,10 +1429,10 @@ async fn fork_admission_preserves_real_history_policy_and_file_reopen() {
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires the pinned real provider"]
 async fn navigation_real_model_uses_shared_recent_files_after_deletion() {
-    use a3s_code_core::context::{
+    use aster_core::context::{
         ContextProvider, ContextQuery, RecentWorkspaceFilesContextProvider,
     };
-    use a3s_code_core::workspace::{ManifestWorkspaceBackend, WorkspaceServices};
+    use aster_core::workspace::{ManifestWorkspaceBackend, WorkspaceServices};
     use std::sync::Arc;
 
     let workspace = tempfile::tempdir().unwrap();
@@ -1441,7 +1441,7 @@ async fn navigation_real_model_uses_shared_recent_files_after_deletion() {
     let manifest = backend.manifest();
     let mut updates = manifest.subscribe();
     let provider = Arc::new(RecentWorkspaceFilesContextProvider::new(manifest.clone()));
-    let policy = a3s_code_core::WorkPolicyV1::new(
+    let policy = aster_core::WorkPolicyV1::new(
         "engineering-v1",
         1,
         include_str!("../../acp/prompts/engineering.md"),
@@ -1536,7 +1536,7 @@ async fn navigation_real_model_uses_shared_recent_files_after_deletion() {
             "{calls:?}"
         );
         assert!(calls.iter().all(|(name, _)| name == "read"), "{calls:?}");
-        let facts = a3s_code_core::fact_control::read_workspace_facts(
+        let facts = aster_core::fact_control::read_workspace_facts(
             workspace.path(),
             session.session_id(),
         )
@@ -1568,18 +1568,18 @@ async fn navigation_real_model_uses_shared_recent_files_after_deletion() {
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires the pinned real provider"]
 async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence() {
-    use a3s_code_core::goal_control::{
+    use aster_core::goal_control::{
         GoalCommandKindV1, GoalDefinitionCommandV1, GoalPlanCommandV1, GoalState,
     };
-    use a3s_code_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task, TaskStatus};
-    use a3s_code_core::store::FileSessionStore;
-    use a3s_code_core::workspace::WorkspaceServices;
+    use aster_core::planning::{AgentGoal, Complexity, ExecutionPlan, Task, TaskStatus};
+    use aster_core::store::FileSessionStore;
+    use aster_core::workspace::WorkspaceServices;
     use std::sync::Arc;
 
     let workspace = tempfile::tempdir().unwrap();
     let storage = tempfile::tempdir().unwrap();
     let marker = format!("GOAL-POLICY-{}", uuid::Uuid::new_v4());
-    let policy = a3s_code_core::WorkPolicyV1::new(
+    let policy = aster_core::WorkPolicyV1::new(
         "goal-live",
         1,
         format!("Include the exact policy reference {marker} in every final answer."),
@@ -1592,7 +1592,7 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
         std::fs::write(workspace.path().join("task-source.txt"), &value).unwrap();
         let mut config = load_pinned_layer_c_config();
         config.default_model = Some(support::layer_c_model::pinned_layer_c_model(&config));
-        config.memory = Some(a3s_code_core::memory::MemoryConfig {
+        config.memory = Some(aster_core::memory::MemoryConfig {
             llm_extraction: false,
             prune_policy: None,
             ..Default::default()
@@ -1682,7 +1682,7 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
             proposal.proposal_sequence = proposed.plan_fact_sequence;
             session.apply_goal_plan(proposal).unwrap();
         }
-        let before = a3s_code_core::fact_control::read_workspace_facts(
+        let before = aster_core::fact_control::read_workspace_facts(
             workspace.path(),
             session.session_id(),
         )
@@ -1700,7 +1700,7 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
         assert!(tool_uses(&answer)
             .iter()
             .any(|(name, args)| name == "read" && args.to_string().contains("task-source.txt")));
-        let after = a3s_code_core::fact_control::read_workspace_facts(
+        let after = aster_core::fact_control::read_workspace_facts(
             workspace.path(),
             session.session_id(),
         )
@@ -1714,14 +1714,14 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
         );
         let bindings = new_facts
             .iter()
-            .filter(|f| f.kind == "a3s.goal.slice.admitted")
+            .filter(|f| f.kind == "aster.goal.slice.admitted")
             .collect::<Vec<_>>();
         assert_eq!(bindings.len(), 1);
         assert_eq!(bindings[0].payload["body"]["step_id"], "inspect");
         let run_id = bindings[0].payload["body"]["run_id"].as_str().unwrap();
         let run = session.run_snapshot(run_id).await.unwrap();
-        let capability_digest = a3s_code_core::digest_json(
-            "a3s.code.tool-admission-binding.v1",
+        let capability_digest = aster_core::digest_json(
+            "aster.code.tool-admission-binding.v1",
             run.capability_binding.as_ref().unwrap(),
         )
         .unwrap();
@@ -1731,7 +1731,7 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
         for fact in new_facts {
             if fact.kind == "tool.prepared" {
                 assert!(fact.seq > bindings[0].seq);
-                let prepared: a3s_effect::ToolPreparedV1 =
+                let prepared: aster_effect::ToolPreparedV1 =
                     serde_json::from_value(fact.payload["prepared"].clone()).unwrap();
                 prepared.validate().unwrap();
                 let admission = prepared.identity.admission.as_ref().unwrap();
@@ -1742,16 +1742,16 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
                     .insert(prepared.identity.key().unwrap(), prepared)
                     .is_none());
             } else if fact.kind == "tool.result" {
-                let result: a3s_effect::ToolExecutionResultV1 =
+                let result: aster_effect::ToolExecutionResultV1 =
                     serde_json::from_value(fact.payload["receipt"].clone()).unwrap();
                 let key = result.identity.key().unwrap();
                 result
                     .ensure_prepared(preparations.get(&key).unwrap())
                     .unwrap();
-                assert_eq!(result.outcome, a3s_effect::ToolExecutionOutcome::Succeeded);
+                assert_eq!(result.outcome, aster_effect::ToolExecutionOutcome::Succeeded);
                 assert_eq!(
                     result.effects.completeness,
-                    a3s_effect::ToolObservationCompleteness::Complete
+                    aster_effect::ToolObservationCompleteness::Complete
                 );
                 assert!(result.effects.changes.is_empty());
                 current_value_observed |= result.output.to_string().contains(&value);
@@ -1779,7 +1779,7 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
             .all(|s| s.status == TaskStatus::Pending));
         assert!(!after
             .iter()
-            .any(|f| f.kind == "a3s.goal.step.accepted" || f.kind == "a3s.goal.completed"));
+            .any(|f| f.kind == "aster.goal.step.accepted" || f.kind == "aster.goal.completed"));
         assert_eq!(
             std::fs::read_to_string(workspace.path().join("task-source.txt")).unwrap(),
             value
@@ -1793,9 +1793,9 @@ async fn admitted_goal_uses_original_model_and_reopens_with_fresh_step_evidence(
 
 mod compaction {
     use super::*;
-    use a3s_code_core::budget::BudgetGuard;
-    use a3s_code_core::llm::TokenUsage;
-    use a3s_code_core::store::{FileSessionStore, SessionStore};
+    use aster_core::budget::BudgetGuard;
+    use aster_core::llm::TokenUsage;
+    use aster_core::store::{FileSessionStore, SessionStore};
     use std::sync::{Arc, Mutex};
 
     #[derive(Default)]
@@ -1816,7 +1816,7 @@ mod compaction {
         let stamp = format!("CURRENT-{}", uuid::Uuid::new_v4());
         let reference = format!("POLICY-{}", uuid::Uuid::new_v4());
         let memory = format!("TASK-{}", uuid::Uuid::new_v4());
-        let policy = a3s_code_core::WorkPolicyV1::new("compact-live", 1, format!(
+        let policy = aster_core::WorkPolicyV1::new("compact-live", 1, format!(
         "When asked for the policy reference, return exactly {reference}. Keep task references in conversation context. Use current file evidence for workspace questions."
     )).unwrap();
         let guard = Arc::new(UsageProbe::default());
@@ -1851,7 +1851,7 @@ mod compaction {
             }
             let before = guard.0.lock().unwrap().len();
             let facts_before =
-                a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "compact-live")
+                aster_core::fact_control::read_workspace_facts(workspace.path(), "compact-live")
                     .unwrap();
             let started = Instant::now();
             tokio::time::timeout(REAL_TIMEOUT, session.compact_conversation(None))
@@ -1869,7 +1869,7 @@ mod compaction {
             };
             assert!(usage.prompt_tokens > 0 && usage.completion_tokens > 0);
             let facts_after =
-                a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "compact-live")
+                aster_core::fact_control::read_workspace_facts(workspace.path(), "compact-live")
                     .unwrap();
             assert_eq!(&facts_after[..facts_before.len()], facts_before.as_slice());
             assert_eq!(facts_after.len(), facts_before.len() + 1);
@@ -1926,12 +1926,12 @@ mod compaction {
             before.session.durable_source
         );
         let facts =
-            a3s_code_core::fact_control::read_workspace_facts(workspace.path(), "compact-live")
+            aster_core::fact_control::read_workspace_facts(workspace.path(), "compact-live")
                 .unwrap();
         assert_eq!(
             facts
                 .iter()
-                .filter(|f| f.kind == "a3s.work-policy.admitted")
+                .filter(|f| f.kind == "aster.work-policy.admitted")
                 .count(),
             1
         );

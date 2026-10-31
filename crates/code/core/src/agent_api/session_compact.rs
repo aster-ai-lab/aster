@@ -11,7 +11,7 @@ use super::AgentSession;
 use crate::compaction::CompactionBudget;
 use crate::error::{write_or_recover, CodeError, Result};
 use crate::llm::Message;
-use a3s_effect::LogStore;
+use aster_effect::LogStore;
 
 impl AgentSession {
     /// Resolved context window for this session, in tokens.

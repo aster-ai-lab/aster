@@ -1,5 +1,5 @@
-use a3s_code_core::mcp::{McpServerConfig, McpTransportConfig};
-use a3s_use_reconcile::PublishedSurface;
+use aster_core::mcp::{McpServerConfig, McpTransportConfig};
+use aster_use_reconcile::PublishedSurface;
 use anyhow::{Context, Result};
 use serde_json::Value;
 

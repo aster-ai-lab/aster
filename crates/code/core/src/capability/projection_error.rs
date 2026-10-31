@@ -38,7 +38,7 @@ pub enum CapabilityProjectionError {
     UnexpectedValue { capability: String },
     #[error("Capability projection repeats runtime value '{capability}'")]
     DuplicateValue { capability: String },
-    #[error("Capability kind '{kind}' has no supported A3S Code runtime projection")]
+    #[error("Capability kind '{kind}' has no supported Aster Code runtime projection")]
     UnsupportedKind { kind: CapabilityKind },
     #[error(
         "Capability '{capability}' descriptor kind '{descriptor_kind}' does not match runtime value kind '{value_kind}'"

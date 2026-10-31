@@ -343,7 +343,7 @@ impl CertStorage {
                 base_path.display()
             ))
         })?;
-        let probe = base_path.join(".a3s-acme-activation-probe");
+        let probe = base_path.join(".aster-acme-activation-probe");
         std::fs::write(&probe, b"ok").map_err(|error| {
             GatewayError::Config(format!(
                 "ACME storage path {} is not writable: {error}",

@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     ChildWorkflowCommand, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore,
     FlowRuntime, InMemoryEventStore, RuntimeCommand, WorkflowInvocation, WorkflowRunStatus,
     WorkflowSpec, WorkflowTerminalOutcome, MAX_CHILD_WORKFLOW_BATCH_SIZE,
@@ -56,7 +56,7 @@ impl FlowRuntime for MapRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "child-map.parent" {
             if context.child_workflow_map_completed(MAP_ID) {
@@ -106,7 +106,7 @@ impl FlowRuntime for MapRuntime {
         Ok(context.complete(json!({ "ordinal": ordinal })))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow map tests do not execute steps")
     }
 }
@@ -170,7 +170,7 @@ async fn map_command_is_idempotent_and_rejects_plan_drift() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let context = invocation.context();
             if invocation.spec.name == "child-map.parent" {
                 if context.child_workflow_map_completed(MAP_ID) {
@@ -181,7 +181,7 @@ async fn map_command_is_idempotent_and_rejects_plan_drift() {
             Ok(context.complete(json!({ "ordinal": context.input()["ordinal"] })))
         }
 
-        async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<Value> {
+        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
             unreachable!()
         }
     }
@@ -218,7 +218,7 @@ async fn map_command_is_idempotent_and_rejects_plan_drift() {
 
 #[tokio::test]
 async fn map_rejects_plan_drift_on_redrive() {
-    use a3s_flow::{UpdateInvocation, WorkflowUpdate};
+    use aster_flow::{UpdateInvocation, WorkflowUpdate};
     use chrono::{Duration, Utc};
 
     struct DriftRuntime {
@@ -229,7 +229,7 @@ async fn map_rejects_plan_drift_on_redrive() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let context = invocation.context();
             if invocation.spec.name != "child-map.parent" {
                 if context.wait_completed("hold") {
@@ -245,11 +245,11 @@ async fn map_rejects_plan_drift_on_redrive() {
             Ok(context.map_child_workflows(MAP_ID, plan, 1))
         }
 
-        async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<Value> {
+        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
             unreachable!()
         }
 
-        async fn run_update(&self, _invocation: UpdateInvocation) -> a3s_flow::Result<Value> {
+        async fn run_update(&self, _invocation: UpdateInvocation) -> aster_flow::Result<Value> {
             Ok(json!({ "nudged": true }))
         }
     }
@@ -293,7 +293,7 @@ async fn map_rejects_oversized_plans_and_invalid_concurrency() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let ctx = invocation.context();
             let mode = ctx.input()["mode"].as_str().unwrap_or_default();
             match mode {
@@ -311,7 +311,7 @@ async fn map_rejects_oversized_plans_and_invalid_concurrency() {
             }
         }
 
-        async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<Value> {
+        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
             unreachable!()
         }
     }
@@ -358,7 +358,7 @@ impl CrashDuringMapRequestStore {
 
 #[async_trait]
 impl FlowEventStore for CrashDuringMapRequestStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -367,7 +367,7 @@ impl FlowEventStore for CrashDuringMapRequestStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id == PARENT_RUN_ID && matches!(event, FlowEvent::ChildWorkflowRequested { .. }) {
             let request_index = self.request_count.fetch_add(1, Ordering::SeqCst);
             // Fail while filling the first concurrency window so recovery must
@@ -383,11 +383,11 @@ impl FlowEventStore for CrashDuringMapRequestStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -399,7 +399,7 @@ impl FlowRuntime for CompletingMapRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "child-map.parent" {
             if context.child_workflow_map_completed(MAP_ID) {
@@ -427,7 +427,7 @@ impl FlowRuntime for CompletingMapRuntime {
         Ok(context.complete(json!({ "ordinal": context.input()["ordinal"] })))
     }
 
-    async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow map recovery does not execute steps")
     }
 }
@@ -508,7 +508,7 @@ async fn map_completion_wakes_parent_while_another_timer_is_open() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let context = invocation.context();
             if invocation.spec.name != "child-map.parent" {
                 unreachable!("unexpected child execution");
@@ -521,7 +521,7 @@ async fn map_completion_wakes_parent_while_another_timer_is_open() {
             ))
         }
 
-        async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<Value> {
+        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
             unreachable!()
         }
     }
@@ -545,7 +545,7 @@ async fn map_completion_wakes_parent_while_another_timer_is_open() {
             child_run_id: child_run_id.clone(),
             spec: child_spec(),
             input: plan[0].input.clone(),
-            cancellation_policy: a3s_flow::ChildWorkflowCancellationPolicy::default(),
+            cancellation_policy: aster_flow::ChildWorkflowCancellationPolicy::default(),
         },
         FlowEvent::ChildWorkflowResolved {
             child_id: plan[0].child_id.clone(),
@@ -592,7 +592,7 @@ impl CrashAfterChildWorkflowMapCompletedStore {
 
 #[async_trait]
 impl FlowEventStore for CrashAfterChildWorkflowMapCompletedStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -601,7 +601,7 @@ impl FlowEventStore for CrashAfterChildWorkflowMapCompletedStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         let envelope = self
             .inner
             .append_if_sequence(run_id, expected_sequence, event.clone())
@@ -618,11 +618,11 @@ impl FlowEventStore for CrashAfterChildWorkflowMapCompletedStore {
         Ok(envelope)
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -638,7 +638,7 @@ async fn map_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
         async fn run_workflow(
             &self,
             invocation: WorkflowInvocation,
-        ) -> a3s_flow::Result<RuntimeCommand> {
+        ) -> aster_flow::Result<RuntimeCommand> {
             let context = invocation.context();
             if invocation.spec.name != "child-map.parent" {
                 unreachable!("unexpected child execution");
@@ -651,7 +651,7 @@ async fn map_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
             ))
         }
 
-        async fn run_step(&self, _invocation: a3s_flow::StepInvocation) -> a3s_flow::Result<Value> {
+        async fn run_step(&self, _invocation: aster_flow::StepInvocation) -> aster_flow::Result<Value> {
             unreachable!()
         }
     }
@@ -675,7 +675,7 @@ async fn map_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
             child_run_id: child_run_id.clone(),
             spec: child_spec(),
             input: plan[0].input.clone(),
-            cancellation_policy: a3s_flow::ChildWorkflowCancellationPolicy::default(),
+            cancellation_policy: aster_flow::ChildWorkflowCancellationPolicy::default(),
         },
         FlowEvent::ChildWorkflowResolved {
             child_id: plan[0].child_id.clone(),
@@ -703,7 +703,7 @@ async fn map_completed_recovery_wakes_via_drive_while_unscoped_timer_is_open() {
     let mid = engine.snapshot("map-completed-drive").await.unwrap();
     assert!(!mid.status.is_terminal());
     assert!(mid.child_workflow_map(MAP_ID).unwrap().is_completed());
-    assert_eq!(mid.waits["poll"].status, a3s_flow::WaitStatus::Waiting);
+    assert_eq!(mid.waits["poll"].status, aster_flow::WaitStatus::Waiting);
 
     let recovered = engine.drive("map-completed-drive").await.unwrap();
     assert_eq!(

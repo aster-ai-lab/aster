@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{ContainerTarget, ErrorCode, OperationContext, Result};
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{ContainerTarget, ErrorCode, OperationContext, Result};
 
 use super::state::ContainerKey;
 use super::{executor_error, validate_deadline, LinuxExecutor};

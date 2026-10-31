@@ -1,17 +1,17 @@
 //! Original legacy goal persistence, scoped by the existing session identity.
 
 use super::{AppliedGoal, DurableGoal, GoalOp};
-use a3s_code_core::{AgentSession, CodeError};
+use aster_core::{AgentSession, CodeError};
 use anyhow::{Context, Result};
 use std::path::{Path, PathBuf};
 
 fn goal_file(workspace: &Path, session_id: &str) -> Result<PathBuf> {
     Ok(
-        match a3s_code_core::session_folder::find_session_dir(workspace, session_id)? {
+        match aster_core::session_folder::find_session_dir(workspace, session_id)? {
             Some(directory) => directory.join("durable-goal.json"),
-            None => a3s_code_core::session_folder::legacy_effect_log_dir(workspace).join(format!(
+            None => aster_core::session_folder::legacy_effect_log_dir(workspace).join(format!(
                 "{}.durable-goal.json",
-                a3s_code_core::fact_control::thread_for_session(session_id)
+                aster_core::fact_control::thread_for_session(session_id)
             )),
         },
     )
@@ -45,7 +45,7 @@ async fn store_goal(session: &AgentSession, goal: Option<&DurableGoal>) -> Resul
         if raw.len() > 16 * 1024 * 1024 {
             anyhow::bail!("session goal exceeds read bound");
         }
-        let services = a3s_code_core::workspace::WorkspaceServices::local(session.workspace());
+        let services = aster_core::workspace::WorkspaceServices::local(session.workspace());
         let relative = path.strip_prefix(session.workspace())?.to_string_lossy();
         let path = services.normalize_path(relative.as_ref())?;
         services.fs().write_text(&path, &raw).await?;

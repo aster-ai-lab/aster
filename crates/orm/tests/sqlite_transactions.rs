@@ -2,7 +2,7 @@
 
 use std::time::Duration;
 
-use a3s_orm::{
+use aster_orm::{
     insert_into, orm_table, select_from, Executor, Query, SqliteDialect, SqliteExecutor,
     Transaction, TransactionManager,
 };
@@ -23,7 +23,7 @@ async fn executor() -> SqliteExecutor {
     executor
 }
 
-fn insert(id: i64) -> a3s_orm::CompiledQuery {
+fn insert(id: i64) -> aster_orm::CompiledQuery {
     insert_into::<Account>()
         .value(Account::id(), id)
         .value(Account::balance(), 100)
@@ -31,7 +31,7 @@ fn insert(id: i64) -> a3s_orm::CompiledQuery {
         .unwrap()
 }
 
-fn select_all() -> a3s_orm::CompiledQuery {
+fn select_all() -> aster_orm::CompiledQuery {
     select_from::<Account>()
         .select(Account::id())
         .compile(&SqliteDialect)

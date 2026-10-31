@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore, FlowRuntime,
     InMemoryEventStore, RuntimeBuildCompatibility, RuntimeBuildId, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowRunStatus, WorkflowSpec, WorkflowTerminalOutcome,
@@ -25,7 +25,7 @@ impl FlowRuntime for ParentChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "recovery-parent" {
             return match context.child_workflow_outcome("child") {
@@ -49,7 +49,7 @@ impl FlowRuntime for ParentChildRuntime {
         Ok(context.complete(json!({ "value": 2 })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("child workflow recovery tests do not execute steps")
     }
 }
@@ -64,7 +64,7 @@ impl FlowRuntime for ContinuedChildRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if invocation.spec.name == "continued-recovery-parent" {
             return match context.child_workflow_outcome("child") {
@@ -88,7 +88,7 @@ impl FlowRuntime for ContinuedChildRuntime {
         Ok(context.complete(json!({ "continued": true })))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<Value> {
         unreachable!("continued child recovery tests do not execute steps")
     }
 }
@@ -109,7 +109,7 @@ impl CrashBeforeParentResolutionStore {
 
 #[async_trait]
 impl FlowEventStore for CrashBeforeParentResolutionStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -118,7 +118,7 @@ impl FlowEventStore for CrashBeforeParentResolutionStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if run_id == PARENT_RUN_ID
             && matches!(event, FlowEvent::ChildWorkflowResolved { .. })
             && self.armed.swap(false, Ordering::SeqCst)
@@ -132,11 +132,11 @@ impl FlowEventStore for CrashBeforeParentResolutionStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }

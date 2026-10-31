@@ -2,7 +2,7 @@
 set -eu
 
 log='/mnt/rw/lifecycle.log'
-marker='/.a3s-oci-create-start-smoke'
+marker='/.aster-oci-create-start-smoke'
 
 on_term() {
     printf 'phase=term\n' >> "$log"
@@ -23,7 +23,7 @@ test "$(cat /mnt/rw/round-trip.txt)" = 'rw-round-trip-v1'
     printf 'readonly=verified\n'
     printf 'rw_round_trip=verified\n'
 } > "$log"
-printf 'a3s-oci-create-start-user-time-v1\n' > "$marker"
+printf 'aster-oci-create-start-user-time-v1\n' > "$marker"
 
 while :; do
     sleep 1

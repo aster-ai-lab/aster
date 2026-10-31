@@ -381,7 +381,7 @@ fn assert_shape_text(store: &NativeOfficeCollaborationStore) {
 
 fn presentation_slide_order(store: &NativeOfficeCollaborationStore) -> Vec<String> {
     let peer = presentation_peer(store);
-    let order = peer.get_or_insert_array("a3s.office.presentation.slide-order");
+    let order = peer.get_or_insert_array("aster.office.presentation.slide-order");
     let transaction = peer.transact();
     (0..order.len(&transaction))
         .map(|index| match order.get(&transaction, index) {
@@ -397,7 +397,7 @@ fn presentation_background(
     container_id: &str,
 ) -> Option<String> {
     let peer = presentation_peer(store);
-    let containers = peer.get_or_insert_map(format!("a3s.office.presentation.{collection}"));
+    let containers = peer.get_or_insert_map(format!("aster.office.presentation.{collection}"));
     let transaction = peer.transact();
     let container = match containers.get(&transaction, container_id) {
         Some(Out::YMap(value)) => value,

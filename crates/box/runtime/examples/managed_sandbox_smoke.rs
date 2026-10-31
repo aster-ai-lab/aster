@@ -1,9 +1,9 @@
-//! Destructive lifecycle smoke test for a dedicated A3S OS Sandbox test home.
+//! Destructive lifecycle smoke test for a dedicated Aster OS Sandbox test home.
 //!
-//! The caller must set `A3S_BOX_MANAGED_SMOKE=1`, point `A3S_HOME` at a
+//! The caller must set `ASTER_BOX_MANAGED_SMOKE=1`, point `ASTER_HOME` at a
 //! dedicated directory whose name contains `managed-smoke`, and set
-//! `A3S_BOX_OCI_RUNTIME_PATH` and `A3S_BOX_OCI_AGENT_PATH` to that directory's
-//! matching A3S OCI Runtime artifacts.
+//! `ASTER_BOX_OCI_RUNTIME_PATH` and `ASTER_BOX_OCI_AGENT_PATH` to that directory's
+//! matching Aster OCI Runtime artifacts.
 
 #[cfg(not(target_os = "linux"))]
 fn main() {
@@ -27,13 +27,13 @@ mod linux {
     use std::io;
     use std::path::{Path, PathBuf};
 
-    use a3s_box_core::{
+    use aster_box_core::{
         BoxConfig, CreateExecutionRequest, ExecutionBackend, ExecutionGeneration, ExecutionId,
         ExecutionIsolation, ExecutionManager, ExecutionManagerError, ExecutionSnapshotId,
         ExecutionState, IsolationClass, KillOutcome, NetworkMode, OperationId, ReconcileOutcome,
         ResourceConfig,
     };
-    use a3s_box_runtime::{LocalExecutionManager, ManagedExecutionStore};
+    use aster_box_runtime::{LocalExecutionManager, ManagedExecutionStore};
 
     type AnyError = Box<dyn Error + Send + Sync>;
 
@@ -97,24 +97,24 @@ mod linux {
 
     fn validated_home() -> Result<PathBuf, AnyError> {
         require(
-            std::env::var("A3S_BOX_MANAGED_SMOKE").as_deref() == Ok("1"),
-            "set A3S_BOX_MANAGED_SMOKE=1 to acknowledge the destructive smoke test",
+            std::env::var("ASTER_BOX_MANAGED_SMOKE").as_deref() == Ok("1"),
+            "set ASTER_BOX_MANAGED_SMOKE=1 to acknowledge the destructive smoke test",
         )?;
-        let home_dir = std::env::var_os("A3S_HOME")
+        let home_dir = std::env::var_os("ASTER_HOME")
             .map(PathBuf::from)
-            .ok_or_else(|| failure("A3S_HOME must point to a dedicated smoke-test directory"))?;
-        require(home_dir.is_absolute(), "A3S_HOME must be absolute")?;
+            .ok_or_else(|| failure("ASTER_HOME must point to a dedicated smoke-test directory"))?;
+        require(home_dir.is_absolute(), "ASTER_HOME must be absolute")?;
         require(
             home_dir
                 .file_name()
                 .and_then(|name| name.to_str())
                 .is_some_and(|name| name.contains("managed-smoke")),
-            "A3S_HOME must name a dedicated managed-smoke directory",
+            "ASTER_HOME must name a dedicated managed-smoke directory",
         )?;
 
         for (variable, filename) in [
-            ("A3S_BOX_OCI_RUNTIME_PATH", "a3s-oci"),
-            ("A3S_BOX_OCI_AGENT_PATH", "a3s-oci-agent"),
+            ("ASTER_BOX_OCI_RUNTIME_PATH", "aster-oci"),
+            ("ASTER_BOX_OCI_AGENT_PATH", "aster-oci-agent"),
         ] {
             let expected = home_dir.join("bin").join(filename).canonicalize()?;
             let configured = std::env::var_os(variable)
@@ -123,16 +123,16 @@ mod linux {
                 .canonicalize()?;
             require(
                 configured == expected,
-                format!("{variable} must equal A3S_HOME/bin/{filename}"),
+                format!("{variable} must equal ASTER_HOME/bin/{filename}"),
             )?;
         }
         require(
-            home_dir.join("bin/a3s-box-guest-init").is_file(),
-            "A3S_HOME/bin/a3s-box-guest-init is missing",
+            home_dir.join("bin/aster-box-guest-init").is_file(),
+            "ASTER_HOME/bin/aster-box-guest-init is missing",
         )?;
         require(
-            home_dir.join("bin/a3s-box-shim").is_file(),
-            "A3S_HOME/bin/a3s-box-shim is missing",
+            home_dir.join("bin/aster-box-shim").is_file(),
+            "ASTER_HOME/bin/aster-box-shim is missing",
         )?;
         Ok(home_dir)
     }
@@ -147,7 +147,7 @@ mod linux {
         rejected_snapshot_id: &ExecutionSnapshotId,
     ) -> Result<(), AnyError> {
         let image =
-            std::env::var("A3S_BOX_SMOKE_IMAGE").unwrap_or_else(|_| "alpine:3.20".to_string());
+            std::env::var("ASTER_BOX_SMOKE_IMAGE").unwrap_or_else(|_| "alpine:3.20".to_string());
         let config = BoxConfig {
             isolation: ExecutionIsolation::Sandbox,
             image,
@@ -171,9 +171,9 @@ mod linux {
         let manager = LocalExecutionManager::with_vm_backend(state_path, home_dir);
         let reservation = manager.create(request, source_operation_id).await?;
         require(
-            reservation.plan.backend == ExecutionBackend::A3sOci
+            reservation.plan.backend == ExecutionBackend::AsterOci
                 && reservation.plan.isolation_class == IsolationClass::SharedKernel,
-            "Sandbox request did not resolve to the A3S OCI shared-kernel backend",
+            "Sandbox request did not resolve to the Aster OCI shared-kernel backend",
         )?;
         let execution_id = reservation.execution_id.clone();
         let status = manager.inspect(&execution_id).await?;
@@ -189,7 +189,7 @@ mod linux {
         let box_dir = home_dir.join("boxes").join(execution_id.as_str());
         validate_runtime_absent(home_dir, &execution_id)?;
         println!(
-            "created execution={} backend=a3s-oci state=created",
+            "created execution={} backend=aster-oci state=created",
             execution_id
         );
 
@@ -312,13 +312,13 @@ mod linux {
         require(!box_dir.exists(), "managed Sandbox box directory leaked")?;
         require(
             !home_dir
-                .join("run/a3s-oci")
+                .join("run/aster-oci")
                 .join(execution_id.as_str())
                 .exists(),
-            "managed Sandbox A3S OCI state directory leaked",
+            "managed Sandbox Aster OCI state directory leaked",
         )?;
         require(
-            !Path::new("/tmp/a3s-box-sockets")
+            !Path::new("/tmp/aster-box-sockets")
                 .join(execution_id.as_str())
                 .exists(),
             "managed Sandbox socket directory leaked",
@@ -342,9 +342,9 @@ mod linux {
             .await?;
         let restore_elapsed = restore_started.elapsed();
         require(
-            restored_lease.plan.backend == ExecutionBackend::A3sOci
+            restored_lease.plan.backend == ExecutionBackend::AsterOci
                 && restored_lease.plan.isolation_class == IsolationClass::SharedKernel,
-            "restored Sandbox did not stay on the A3S OCI backend",
+            "restored Sandbox did not stay on the Aster OCI backend",
         )?;
         require(
             restore_elapsed <= std::time::Duration::from_secs(30),
@@ -520,13 +520,13 @@ mod linux {
         )?;
         require(
             !home_dir
-                .join("run/a3s-oci")
+                .join("run/aster-oci")
                 .join(execution_id.as_str())
                 .exists(),
-            "created Sandbox unexpectedly allocated an A3S OCI state directory",
+            "created Sandbox unexpectedly allocated an Aster OCI state directory",
         )?;
         require(
-            !Path::new("/tmp/a3s-box-sockets")
+            !Path::new("/tmp/aster-box-sockets")
                 .join(execution_id.as_str())
                 .exists(),
             "created Sandbox unexpectedly allocated a socket directory",
@@ -543,13 +543,13 @@ mod linux {
         )?;
         require(
             !home_dir
-                .join("run/a3s-oci")
+                .join("run/aster-oci")
                 .join(execution_id.as_str())
                 .exists(),
-            "failed Sandbox restore leaked its A3S OCI state directory",
+            "failed Sandbox restore leaked its Aster OCI state directory",
         )?;
         require(
-            !Path::new("/tmp/a3s-box-sockets")
+            !Path::new("/tmp/aster-box-sockets")
                 .join(execution_id.as_str())
                 .exists(),
             "failed Sandbox restore leaked its socket directory",
@@ -594,11 +594,11 @@ mod linux {
         let record: serde_json::Value = serde_json::from_slice(&std::fs::read(&runtime_record)?)?;
         require(
             record.get("schema").and_then(serde_json::Value::as_str)
-                == Some("a3s.box.sandbox-runtime.v2"),
+                == Some("aster.box.sandbox-runtime.v2"),
             "Sandbox runtime record has an unexpected schema",
         )?;
         require(
-            record.get("backend").and_then(serde_json::Value::as_str) == Some("a3s-oci"),
+            record.get("backend").and_then(serde_json::Value::as_str) == Some("aster-oci"),
             "Sandbox runtime record has an unexpected backend",
         )?;
         require(
@@ -614,8 +614,8 @@ mod linux {
             .map(PathBuf::from)
             .ok_or_else(|| failure("Sandbox runtime record has no runtime path"))?;
         require(
-            runtime_path.canonicalize()? == home_dir.join("bin/a3s-oci").canonicalize()?,
-            "Sandbox runtime record does not reference the selected A3S OCI Runtime artifact",
+            runtime_path.canonicalize()? == home_dir.join("bin/aster-oci").canonicalize()?,
+            "Sandbox runtime record does not reference the selected Aster OCI Runtime artifact",
         )?;
         let agent_path = record
             .get("agent_path")
@@ -623,8 +623,8 @@ mod linux {
             .map(PathBuf::from)
             .ok_or_else(|| failure("Sandbox runtime record has no agent path"))?;
         require(
-            agent_path.canonicalize()? == home_dir.join("bin/a3s-oci-agent").canonicalize()?,
-            "Sandbox runtime record does not reference the selected A3S OCI agent artifact",
+            agent_path.canonicalize()? == home_dir.join("bin/aster-oci-agent").canonicalize()?,
+            "Sandbox runtime record does not reference the selected Aster OCI agent artifact",
         )?;
         require(
             record
@@ -633,7 +633,7 @@ mod linux {
                 .map(Path::new)
                 == Some(
                     home_dir
-                        .join("run/a3s-oci")
+                        .join("run/aster-oci")
                         .join(execution_id.as_str())
                         .join("runtime.sock")
                         .as_path(),
@@ -668,7 +668,7 @@ mod linux {
             .and_then(serde_json::Value::as_u64)
             .ok_or_else(|| failure("Sandbox runtime record has no log worker PID identity"))?;
         require(
-            a3s_box_runtime::is_process_alive_with_identity(
+            aster_box_runtime::is_process_alive_with_identity(
                 log_worker_pid,
                 Some(log_worker_pid_start_time),
             ),
@@ -682,7 +682,7 @@ mod linux {
         let deadline = tokio::time::Instant::now() + std::time::Duration::from_secs(5);
         loop {
             if let Ok(contents) = tokio::fs::read_to_string(&path).await {
-                let entries: Vec<a3s_box_core::log::LogEntry> = contents
+                let entries: Vec<aster_box_core::log::LogEntry> = contents
                     .lines()
                     .filter_map(|line| serde_json::from_str(line).ok())
                     .collect();
@@ -709,7 +709,7 @@ mod linux {
 
     async fn wait_for_process_exit(identity: (u32, u64)) -> Result<(), AnyError> {
         let deadline = tokio::time::Instant::now() + std::time::Duration::from_secs(3);
-        while a3s_box_runtime::is_process_alive_with_identity(identity.0, Some(identity.1)) {
+        while aster_box_runtime::is_process_alive_with_identity(identity.0, Some(identity.1)) {
             if tokio::time::Instant::now() >= deadline {
                 return Err(failure("Sandbox log worker leaked after terminal cleanup"));
             }

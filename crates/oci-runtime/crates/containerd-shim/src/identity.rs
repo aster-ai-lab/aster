@@ -1,4 +1,4 @@
-use a3s_oci_sdk::{ContainerId, OperationContext, OperationId, ProcessId, Result};
+use aster_oci_sdk::{ContainerId, OperationContext, OperationId, ProcessId, Result};
 use sha2::{Digest, Sha256};
 
 use crate::contract::{
@@ -14,8 +14,8 @@ impl IncarnationId {
     pub(crate) fn generate() -> Result<Self> {
         let mut bytes = [0_u8; TASK_INCARNATION_BYTES];
         getrandom::fill(&mut bytes).map_err(|error| {
-            a3s_oci_sdk::Error::new(
-                a3s_oci_sdk::ErrorCode::Unavailable,
+            aster_oci_sdk::Error::new(
+                aster_oci_sdk::ErrorCode::Unavailable,
                 format!("failed to generate a containerd task incarnation: {error}"),
             )
             .for_operation("containerd-shim-incarnation")
@@ -35,8 +35,8 @@ impl IncarnationId {
                 .bytes()
                 .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
         {
-            return Err(a3s_oci_sdk::Error::new(
-                a3s_oci_sdk::ErrorCode::InvalidArgument,
+            return Err(aster_oci_sdk::Error::new(
+                aster_oci_sdk::ErrorCode::InvalidArgument,
                 "containerd task incarnation must be exactly 64 lowercase hexadecimal bytes",
             )
             .for_operation("containerd-shim-incarnation"));

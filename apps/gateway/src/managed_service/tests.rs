@@ -420,7 +420,7 @@ fn cloud_managed_acl(
     base_upstream: Option<SocketAddr>,
 ) -> String {
     // Node API requires a configured bearer env when management.enabled.
-    std::env::set_var("A3S_GATEWAY_TEST_ADMIN_TOKEN", "managed-service-test-token");
+    std::env::set_var("ASTER_GATEWAY_TEST_ADMIN_TOKEN", "managed-service-test-token");
     let traffic = base_upstream.map_or_else(String::new, |upstream| {
         format!(
             r#"
@@ -449,7 +449,7 @@ management {{
   enabled        = true
   address        = "{management_address}"
   path_prefix    = "/api/gateway"
-  auth_token_env = "A3S_GATEWAY_TEST_ADMIN_TOKEN"
+  auth_token_env = "ASTER_GATEWAY_TEST_ADMIN_TOKEN"
   allowed_ips    = ["127.0.0.1"]
 }}
 {traffic}
@@ -519,7 +519,7 @@ fn managed_service_state_requires_an_absolute_file_path() {
     assert!(error.to_string().contains("absolute normalized file path"));
 
     let ambiguous = std::env::temp_dir()
-        .join("a3s-managed-state-parent")
+        .join("aster-managed-state-parent")
         .join("..")
         .join("managed-services.json");
     let error =
@@ -694,7 +694,7 @@ async fn linked_managed_service_state_fails_gateway_construct_closed() {
     let state_file = directory.path().join("managed-services.json");
     write_private(
         &target_file,
-        br#"{"schema":"a3s.gateway.managed-service-state.v1","bindings":[]}"#,
+        br#"{"schema":"aster.gateway.managed-service-state.v1","bindings":[]}"#,
     );
     symlink(&target_file, &state_file).unwrap();
     let Err(error) =
@@ -717,7 +717,7 @@ async fn broadly_readable_managed_service_state_fails_gateway_construct_closed()
     let state_file = directory.path().join("managed-services.json");
     write_private(
         &state_file,
-        br#"{"schema":"a3s.gateway.managed-service-state.v1","bindings":[]}"#,
+        br#"{"schema":"aster.gateway.managed-service-state.v1","bindings":[]}"#,
     );
     std::fs::set_permissions(&state_file, std::fs::Permissions::from_mode(0o640)).unwrap();
     let Err(error) =

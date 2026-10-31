@@ -1,11 +1,11 @@
 //! Agent Facade API
 //!
-//! High-level, ergonomic API for using A3S Code as an embedded library.
+//! High-level, ergonomic API for using Aster Code as an embedded library.
 //!
 //! ## Example
 //!
 //! ```rust,no_run
-//! use a3s_code_core::Agent;
+//! use aster_core::Agent;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let agent = Agent::new("agent.acl").await?;
@@ -28,8 +28,8 @@ use crate::queue::{
     SessionQueueStats,
 };
 use crate::tools::{ToolContext, ToolExecutor};
-use a3s_lane::{DeadLetter, MetricsSnapshot};
-use a3s_memory::MemoryStore;
+use aster_lane::{DeadLetter, MetricsSnapshot};
+use aster_durable_memory::MemoryStore;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock};
@@ -287,7 +287,7 @@ pub struct SessionOptions {
     ///
     /// This is separate from general-purpose RAG providers: Code persists the
     /// immutable package binding and treats provider failure as fatal. The host
-    /// retains A3S Use lease, Registry, installation, and lifecycle authority.
+    /// retains Aster Use lease, Registry, installation, and lifecycle authority.
     pub package_context: Option<crate::package_context::PackageContextSession>,
     /// Optional confirmation manager for HITL
     pub confirmation_manager: Option<Arc<dyn crate::hitl::ConfirmationProvider>>,
@@ -311,7 +311,7 @@ pub struct SessionOptions {
     pub projected_skill_files: Vec<PathBuf>,
     /// Extra environment variables merged into Bash / sandbox command execution.
     ///
-    /// Hosts use this to inject absolute tool paths (for example `A3S_BOX_CLI`
+    /// Hosts use this to inject absolute tool paths (for example `ASTER_BOX_CLI`
     /// and a PATH prefix) without requiring the agent process to inherit a
     /// full desktop environment. Values are applied on top of the sandbox
     /// safe-env allowlist.
@@ -398,10 +398,10 @@ pub struct SessionOptions {
     pub retention_limits: Option<crate::retention::SessionRetentionLimits>,
     /// Optional structured JSONL trajectory config.
     ///
-    /// When set, a3s-code records user prompts, LLM turns, tool calls,
+    /// When set, aster records user prompts, LLM turns, tool calls,
     /// tool observations, token usage, and execution end status for RL
     /// training or service data collection. If unset, the same config can
-    /// be enabled by `A3S_CODE_TRAJECTORY_PATH`.
+    /// be enabled by `ASTER_TRAJECTORY_PATH`.
     pub rl_trajectory: Option<crate::rl_trajectory::RlTrajectoryConfig>,
     /// Request token-level log probabilities from compatible LLM providers.
     ///
@@ -428,7 +428,7 @@ pub struct SessionOptions {
     /// Typed model-facing Tool presentation policy.
     ///
     /// The resolved value is frozen per Run and persisted for exact resume.
-    /// It never changes the Session's governed executor or A3S Use generation.
+    /// It never changes the Session's governed executor or Aster Use generation.
     pub tool_presentation_profile: Option<crate::tools::ToolPresentationProfileV1>,
     /// Max consecutive parse errors before aborting (overrides default of 2).
     /// `None` uses the `AgentConfig` default.
@@ -452,17 +452,17 @@ pub struct SessionOptions {
     pub duplicate_tool_call_threshold: Option<u32>,
     /// Optional custom sandbox implementation.
     ///
-    /// Local sessions install the A3S native sandbox by default. When set, this
+    /// Local sessions install the Aster native sandbox by default. When set, this
     /// handle replaces that default for `bash` tool commands. The host
     /// application constructs and owns the custom implementation (for example,
-    /// an A3S Box-backed handle).
+    /// an Aster Box-backed handle).
     pub sandbox_handle: Option<Arc<dyn crate::sandbox::BashSandbox>>,
     /// When the native sandbox cannot initialize, allow installing the
     /// process-host Bash runner instead of an error-only handle.
     ///
     /// Default is `false` (fail-closed). Harbor / Terminal-Bench containers
     /// that already isolate the job set this (or
-    /// `A3S_CODE_ALLOW_PROCESS_HOST_SANDBOX=1`) so default `bash` does not
+    /// `ASTER_ALLOW_PROCESS_HOST_SANDBOX=1`) so default `bash` does not
     /// require a `require_escalated` trial round.
     pub allow_process_host_sandbox: bool,
     /// Network posture of the default local sandbox.

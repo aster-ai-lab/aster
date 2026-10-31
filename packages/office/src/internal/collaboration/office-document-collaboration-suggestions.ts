@@ -89,7 +89,7 @@ export function createWorkOfficeDocumentChangeDecisions(
   decision: WorkDocumentChangeDecisionAction,
   decidedAt = new Date().toISOString(),
 ): WorkDocumentChangeDecision[] {
-  const decidedBy = session.actor?.name ?? 'A3S Work 用户';
+  const decidedBy = session.actor?.name ?? 'Aster Work 用户';
   return changes.map((change) => ({
     id: `${change.kind}:${change.id}`,
     changeId: change.id,

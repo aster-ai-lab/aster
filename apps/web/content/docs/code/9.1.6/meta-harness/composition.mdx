@@ -26,7 +26,7 @@ export const meta = {
 下面的例子保留五个默认组件，设置 12 次工具调用预算、历史长度阈值和模型尝试次数。它只配置执行方式；模型连接和工作区权限仍由你的 Agent 配置提供。
 
 ```rust
-use a3s_code_core::{Agent, HarnessComposeOptions, SessionOptions};
+use aster_core::{Agent, HarnessComposeOptions, SessionOptions};
 
 async fn run(agent: &Agent) -> anyhow::Result<()> {
     let mut harness = HarnessComposeOptions::compose(
@@ -83,7 +83,7 @@ token 压缩依赖模型适配器报告输入 token 数。接入自定义模型�
 
 ## ACP 可以选择哪些组合
 
-当前 ACP 的 `_meta.a3sHarness.components` 只接受以下精确列表：
+当前 ACP 的 `_meta.asterHarness.components` 只接受以下精确列表：
 
 ```text
 system, tools, budget, compact, infer

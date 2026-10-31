@@ -8,7 +8,7 @@ use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
 use tokio::sync::broadcast;
 
-pub const SESSION_STORE_COMMIT_EVENT_SCHEMA_V1: &str = "a3s.code.session-store-commit-event.v1";
+pub const SESSION_STORE_COMMIT_EVENT_SCHEMA_V1: &str = "aster.code.session-store-commit-event.v1";
 
 /// Notification that one complete session generation was committed.
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

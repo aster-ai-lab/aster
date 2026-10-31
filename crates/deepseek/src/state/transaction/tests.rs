@@ -1,7 +1,7 @@
 use super::*;
 use crate::layers::{kv::MainKvFormat, CudaLayerDevice};
 use crate::state::{kv::KvCacheKind, CompressionKind};
-use a3s_power::inference::InferenceLimits;
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Tensor};
 
 struct Bundle {
@@ -277,7 +277,7 @@ fn cancellation_after_all_staging_preserves_every_old_state_and_releases_leases(
     cancel.cancel();
     assert!(matches!(
         batch.commit(&cancel),
-        Err(a3s_power::error::PowerError::InferenceCancelled)
+        Err(aster_power::error::PowerError::InferenceCancelled)
     ));
     assert_eq!(snapshot(&actual), before);
     drop(prepare(&actual, 5));

@@ -62,7 +62,7 @@ async fn fixture() -> Fixture {
     let model = Arc::new(NoModelClient::default());
     let options = SessionOptions::new()
         .with_session_id("original-t002")
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()));
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let session = agent
         .build_session(
             workspace.path().display().to_string(),
@@ -662,7 +662,7 @@ async fn actual_model_handle_survives_cancelled_borrow_and_guardian_waits_worker
         let child = tokio::spawn(async move {
             started_child.await.unwrap();
             finished_child.await.unwrap();
-            Err(a3s_effect::ActorError::Handler {
+            Err(aster_effect::ActorError::Handler {
                 key: "infer".into(),
                 message: "actual child error without provider entry".into(),
             })
@@ -718,7 +718,7 @@ async fn actual_model_handle_survives_cancelled_borrow_and_guardian_waits_worker
     );
     let cell = original.model_call.state.lock().await;
     assert!(
-        matches!(&*cell, OriginalModelState::Ready(ModelReady { actual: Ok(Err(a3s_effect::ActorError::Handler { message, .. })), observed: true, .. }) if message == "actual child error without provider entry")
+        matches!(&*cell, OriginalModelState::Ready(ModelReady { actual: Ok(Err(aster_effect::ActorError::Handler { message, .. })), observed: true, .. }) if message == "actual child error without provider entry")
     );
     drop(cell);
     assert_eq!(health(&fixture).await.active, 1);
@@ -745,7 +745,7 @@ async fn actual_model_panic_is_retained_and_never_reusable_or_success() {
             started_child.await.unwrap();
             std::future::poll_fn(
                 |_| -> std::task::Poll<
-                    std::result::Result<crate::agent::FactModelCallOutcome, a3s_effect::ActorError>,
+                    std::result::Result<crate::agent::FactModelCallOutcome, aster_effect::ActorError>,
                 > {
                     panic!("actual model child panic");
                 },
@@ -759,7 +759,7 @@ async fn actual_model_panic_is_retained_and_never_reusable_or_success() {
             start_child,
         );
         assert!(
-            matches!(port.wait_same_original_call().await, Err(a3s_effect::ActorError::Defect(message)) if message.contains("panicked"))
+            matches!(port.wait_same_original_call().await, Err(aster_effect::ActorError::Defect(message)) if message.contains("panicked"))
         );
         assert!(port
             .reserve_same_original_call("original-t002")

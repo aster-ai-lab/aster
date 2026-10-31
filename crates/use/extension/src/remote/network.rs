@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::time::Duration;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use async_trait::async_trait;
 use futures_util::TryStreamExt;
 use reqwest::{Client, StatusCode};
@@ -113,7 +113,7 @@ pub(super) async fn public_internet_client(
         .port_or_known_default()
         .ok_or_else(|| network_denied("The public Registry URL has no valid port."))?;
     let mut builder = Client::builder()
-        .user_agent("a3s-use-extension/0.3")
+        .user_agent("aster-use-extension/0.3")
         .connect_timeout(connect_timeout)
         .timeout(timeout)
         .redirect(reqwest::redirect::Policy::none())

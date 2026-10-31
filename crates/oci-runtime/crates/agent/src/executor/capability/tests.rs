@@ -1,4 +1,4 @@
-use a3s_oci_sdk::oci_spec::runtime::LinuxCapabilities;
+use aster_oci_sdk::oci_spec::runtime::LinuxCapabilities;
 
 use super::{
     ensure_exact_sets, probe_kernel_capabilities, CapabilityPlan, CapabilitySet,
@@ -26,9 +26,9 @@ fn bounding_set_mismatch_fails_closed() {
 }
 
 #[test]
-fn plans_the_exact_a3s_box_capability_profile() {
+fn plans_the_exact_aster_box_capability_profile() {
     let config: serde_json::Value =
-        serde_json::from_str(include_str!("../../../../../fixtures/a3s-box/config.json"))
+        serde_json::from_str(include_str!("../../../../../fixtures/aster-box/config.json"))
             .expect("decode fixture");
     let capabilities: LinuxCapabilities =
         serde_json::from_value(config["process"]["capabilities"].clone())

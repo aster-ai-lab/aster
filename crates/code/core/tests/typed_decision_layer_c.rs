@@ -1,21 +1,21 @@
 //! Layer C pin and live escalate twin for typed System-1 decisions.
 //!
 //! `panicked_pin_does_not_poison_the_next_caller` is hermetic. The other tests
-//! are `#[ignore]`: TD-D reads `.a3s/config.acl` and TD-E also needs network.
+//! are `#[ignore]`: TD-D reads `.aster/config.acl` and TD-E also needs network.
 //!
 //! ```bash
-//! export A3S_CONFIG_FILE="$(git rev-parse --show-toplevel)/.a3s/config.acl"
-//! export A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash
-//! cargo test -p a3s-code-core --features apofasi --test typed_decision_layer_c -- --ignored --test-threads=1
+//! export ASTER_CONFIG_FILE="$(git rev-parse --show-toplevel)/.aster/config.acl"
+//! export ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash
+//! cargo test -p aster-core --features apofasi --test typed_decision_layer_c -- --ignored --test-threads=1
 //! ```
 
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Duration;
 
-use a3s_code_core::llm::{create_client_with_config, LlmClient, Message, ToolDefinition};
-use a3s_code_core::planning::LlmPlanner;
-use a3s_code_core::{
+use aster_core::llm::{create_client_with_config, LlmClient, Message, ToolDefinition};
+use aster_core::planning::LlmPlanner;
+use aster_core::{
     admit_planning_pre_analysis, compose_host_decision, gate_system_one_response, Escalation,
     GatePolicy, TypedDecisionEngine, TypedDecisionService,
 };
@@ -39,14 +39,14 @@ fn with_test_model<T>(model: &str, body: impl FnOnce() -> T) -> T {
     let _guard = env_lock()
         .lock()
         .unwrap_or_else(|poisoned| poisoned.into_inner());
-    let previous = std::env::var("A3S_TEST_MODEL").ok();
-    set_var("A3S_TEST_MODEL", model);
+    let previous = std::env::var("ASTER_TEST_MODEL").ok();
+    set_var("ASTER_TEST_MODEL", model);
     struct Restore(Option<String>);
     impl Drop for Restore {
         fn drop(&mut self) {
             match self.0.take() {
-                Some(value) => set_var("A3S_TEST_MODEL", &value),
-                None => remove_var("A3S_TEST_MODEL"),
+                Some(value) => set_var("ASTER_TEST_MODEL", &value),
+                None => remove_var("ASTER_TEST_MODEL"),
             }
         }
     }
@@ -63,7 +63,7 @@ fn remove_var(key: &str) {
     unsafe { std::env::remove_var(key) }
 }
 
-fn choice_request() -> a3s_code_core::SystemOneRequest {
+fn choice_request() -> aster_core::SystemOneRequest {
     serde_json::from_value(serde_json::json!({
         "state": "Please refund my invoice.",
         "questions": {
@@ -81,7 +81,7 @@ fn choice_request() -> a3s_code_core::SystemOneRequest {
     .expect("request")
 }
 
-fn complex_request() -> a3s_code_core::SystemOneRequest {
+fn complex_request() -> aster_core::SystemOneRequest {
     serde_json::from_value(serde_json::json!({
         "state": "Help! My payouts have been failing for 3 days.",
         "questions": {
@@ -112,7 +112,7 @@ fn complex_request() -> a3s_code_core::SystemOneRequest {
     .expect("complex request")
 }
 
-fn billing_triage_request() -> a3s_code_core::SystemOneRequest {
+fn billing_triage_request() -> aster_core::SystemOneRequest {
     serde_json::from_value(serde_json::json!({
         "state": {
             "from": "user@acme.com",
@@ -206,21 +206,21 @@ fn pinned_flash_client() -> Arc<dyn LlmClient> {
 
 #[test]
 fn panicked_pin_does_not_poison_the_next_caller() {
-    let previous = std::env::var("A3S_TEST_MODEL").ok();
+    let previous = std::env::var("ASTER_TEST_MODEL").ok();
     let caught = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         with_test_model("boyue/bailian/deepseek-v4-flash", || {
             panic!("provider timeout")
         });
     }));
     assert!(caught.is_err());
-    assert_eq!(std::env::var("A3S_TEST_MODEL").ok(), previous);
+    assert_eq!(std::env::var("ASTER_TEST_MODEL").ok(), previous);
     with_test_model("boyue/deepseek-v4-flash", || {
         assert_eq!(
-            std::env::var("A3S_TEST_MODEL").ok().as_deref(),
+            std::env::var("ASTER_TEST_MODEL").ok().as_deref(),
             Some("boyue/deepseek-v4-flash")
         );
     });
-    assert_eq!(std::env::var("A3S_TEST_MODEL").ok(), previous);
+    assert_eq!(std::env::var("ASTER_TEST_MODEL").ok(), previous);
 }
 
 #[test]
@@ -322,7 +322,7 @@ fn live_escalate_generates_once_on_remapped_pin() {
                 assert!(evidence.payload.contains_key("department"));
                 let payload = serde_json::Value::Object(evidence.payload.clone());
                 assert!(
-                    serde_json::from_value::<a3s_code_core::Answer>(payload).is_err(),
+                    serde_json::from_value::<aster_core::Answer>(payload).is_err(),
                     "model JSON was parsed as a typed Answer"
                 );
             }
@@ -344,7 +344,7 @@ struct CountingClient {
 
 #[async_trait::async_trait]
 impl LlmClient for CountingClient {
-    fn native_structured_support(&self) -> a3s_code_core::llm::structured::NativeStructuredSupport {
+    fn native_structured_support(&self) -> aster_core::llm::structured::NativeStructuredSupport {
         self.inner.native_structured_support()
     }
 
@@ -353,7 +353,7 @@ impl LlmClient for CountingClient {
         messages: &[Message],
         system: Option<&str>,
         tools: &[ToolDefinition],
-    ) -> anyhow::Result<a3s_code_core::llm::LlmResponse> {
+    ) -> anyhow::Result<aster_core::llm::LlmResponse> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         if let Some(system) = system {
             *self.system.lock().expect("system") = system.to_string();
@@ -368,8 +368,8 @@ impl LlmClient for CountingClient {
         messages: &[Message],
         system: Option<&str>,
         tools: &[ToolDefinition],
-        directive: &a3s_code_core::llm::structured::StructuredDirective,
-    ) -> anyhow::Result<a3s_code_core::llm::LlmResponse> {
+        directive: &aster_core::llm::structured::StructuredDirective,
+    ) -> anyhow::Result<aster_core::llm::LlmResponse> {
         self.calls.fetch_add(1, Ordering::SeqCst);
         if let Some(system) = system {
             *self.system.lock().expect("system") = system.to_string();
@@ -388,7 +388,7 @@ impl LlmClient for CountingClient {
         system: Option<&str>,
         tools: &[ToolDefinition],
         cancel_token: tokio_util::sync::CancellationToken,
-    ) -> anyhow::Result<tokio::sync::mpsc::Receiver<a3s_code_core::llm::StreamEvent>> {
+    ) -> anyhow::Result<tokio::sync::mpsc::Receiver<aster_core::llm::StreamEvent>> {
         self.inner
             .complete_streaming(messages, system, tools, cancel_token)
             .await
@@ -466,7 +466,7 @@ fn live_pre_analysis_is_not_replaced_by_a_typed_decision() {
             analysis.optimized_input, analysis.goal.description
         );
         assert!(
-            serde_json::from_str::<a3s_code_core::Answer>(analysis.optimized_input.trim()).is_err(),
+            serde_json::from_str::<aster_core::Answer>(analysis.optimized_input.trim()).is_err(),
             "model prose was parsed as a typed Answer"
         );
         eprintln!(
@@ -480,9 +480,9 @@ fn live_pre_analysis_is_not_replaced_by_a_typed_decision() {
 #[ignore = "TD-E live goal achievement against the pinned Flash model"]
 fn live_goal_achievement_is_not_replaced_by_a_typed_decision() {
     with_test_model("boyue/bailian/deepseek-v4-flash", || {
-        let admission = a3s_code_core::admit_goal_achievement();
+        let admission = aster_core::admit_goal_achievement();
         assert!(!admission.eligible);
-        a3s_code_core::enforce_ineligible(admission).expect("achievement stays a generation");
+        aster_core::enforce_ineligible(admission).expect("achievement stays a generation");
 
         let config = load_pinned_layer_c_config();
         assert_pinned_layer_c_flash(&config, "typed-decision achievement");
@@ -498,7 +498,7 @@ fn live_goal_achievement_is_not_replaced_by_a_typed_decision() {
             text: Mutex::new(String::new()),
         });
         let client: Arc<dyn LlmClient> = counted.clone();
-        let goal = a3s_code_core::planning::AgentGoal::new(
+        let goal = aster_core::planning::AgentGoal::new(
             "Rename the session helper in src/billing/invoice_store.rs",
         )
         .with_criteria(vec![
@@ -530,7 +530,7 @@ fn live_goal_achievement_is_not_replaced_by_a_typed_decision() {
         assert!(system.contains("achieved"));
         let _ = result.progress;
         assert!(
-            serde_json::from_str::<a3s_code_core::Answer>(
+            serde_json::from_str::<aster_core::Answer>(
                 counted.text.lock().expect("text").trim()
             )
             .is_err(),
@@ -553,7 +553,7 @@ fn live_goal_achievement_is_not_replaced_by_a_typed_decision() {
 fn live_neural_auto_skips_the_generative_model() {
     let checkpoint = std::env::var("APOFASI_CHECKPOINT")
         .expect("APOFASI_CHECKPOINT must point at the published english checkpoint");
-    let engine = a3s_code_core::load_neural_engine(&checkpoint).expect("load neural engine");
+    let engine = aster_core::load_neural_engine(&checkpoint).expect("load neural engine");
     let policy = GatePolicy::default();
     assert!((policy.min_confidence - 0.7).abs() < f32::EPSILON);
     let mut calls = 0u32;
@@ -622,7 +622,7 @@ fn live_complex_multi_kind_escalates_once_on_remapped_pin() {
                 assert_eq!(evidence.payload.len(), 3);
                 let payload = serde_json::Value::Object(evidence.payload.clone());
                 assert!(
-                    serde_json::from_value::<a3s_code_core::Answer>(payload).is_err(),
+                    serde_json::from_value::<aster_core::Answer>(payload).is_err(),
                     "model JSON was parsed as a typed Answer"
                 );
             }
@@ -641,7 +641,7 @@ fn live_complex_multi_kind_escalates_once_on_remapped_pin() {
 fn live_neural_complex_generation_matches_the_gate() {
     let checkpoint = std::env::var("APOFASI_CHECKPOINT")
         .expect("APOFASI_CHECKPOINT must point at the published english checkpoint");
-    let engine = a3s_code_core::load_neural_engine(&checkpoint).expect("load neural engine");
+    let engine = aster_core::load_neural_engine(&checkpoint).expect("load neural engine");
     with_test_model("boyue/bailian/deepseek-v4-flash", || {
         let client = pinned_flash_client();
         let policy = GatePolicy::default();
@@ -672,7 +672,7 @@ fn live_neural_complex_generation_matches_the_gate() {
             Escalation::Evidence(evidence) => {
                 assert_eq!(calls, 1);
                 let payload = serde_json::Value::Object(evidence.payload.clone());
-                assert!(serde_json::from_value::<a3s_code_core::Answer>(payload).is_err());
+                assert!(serde_json::from_value::<aster_core::Answer>(payload).is_err());
             }
             Escalation::Rejected(_) => assert_eq!(calls, 1),
             Escalation::GenerationFailed(error) => {
@@ -730,7 +730,7 @@ fn live_billing_triage_escalates_once_on_remapped_pin() {
                 assert_eq!(evidence.payload.len(), 4);
                 let payload = serde_json::Value::Object(evidence.payload.clone());
                 assert!(
-                    serde_json::from_value::<a3s_code_core::Answer>(payload).is_err(),
+                    serde_json::from_value::<aster_core::Answer>(payload).is_err(),
                     "model JSON was parsed as a typed Answer"
                 );
             }
@@ -755,7 +755,7 @@ fn live_billing_triage_escalates_once_on_remapped_pin() {
 fn live_neural_billing_triage_matches_the_gate() {
     let checkpoint = std::env::var("APOFASI_CHECKPOINT")
         .expect("APOFASI_CHECKPOINT must point at the published english checkpoint");
-    let engine = a3s_code_core::load_neural_engine(&checkpoint).expect("load neural engine");
+    let engine = aster_core::load_neural_engine(&checkpoint).expect("load neural engine");
     with_test_model("boyue/bailian/deepseek-v4-flash", || {
         let client = pinned_flash_client();
         let policy = GatePolicy::default();
@@ -788,7 +788,7 @@ fn live_neural_billing_triage_matches_the_gate() {
                 assert_eq!(calls, 1);
                 assert_eq!(evidence.payload.len(), 4);
                 let payload = serde_json::Value::Object(evidence.payload.clone());
-                assert!(serde_json::from_value::<a3s_code_core::Answer>(payload).is_err());
+                assert!(serde_json::from_value::<aster_core::Answer>(payload).is_err());
             }
             Escalation::Rejected(error) => {
                 assert_eq!(calls, 1);

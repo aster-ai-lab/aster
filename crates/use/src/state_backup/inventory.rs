@@ -3,8 +3,8 @@ use std::fs::File;
 use std::io::{self, Read};
 use std::path::{Component, Path, PathBuf};
 
-use a3s_use_core::UseResult;
-use a3s_use_extension::{ExtensionPaths, ACTIVE_STATE_RESTORE_MARKER};
+use aster_use_core::UseResult;
+use aster_use_extension::{ExtensionPaths, ACTIVE_STATE_RESTORE_MARKER};
 use sha2::{Digest, Sha256};
 
 use super::{
@@ -62,7 +62,7 @@ pub(super) fn reject_active_restore(state_root: &Path) -> UseResult<()> {
     let marker = state_root.join(ACTIVE_STATE_RESTORE_MARKER);
     match std::fs::symlink_metadata(&marker) {
         Ok(metadata) => {
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
                 return Err(state_backup_path_invalid(
                     "The active restore marker is not an owned regular file.",
                 ));
@@ -152,7 +152,7 @@ fn scan_root(
             )))
         }
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&root_metadata) || !root_metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&root_metadata) || !root_metadata.is_dir() {
         return Err(state_backup_path_invalid(
             "A Use-owned backup root is not an owned directory.",
         ));
@@ -209,7 +209,7 @@ fn scan_root(
             if excluded_active_restore_entry(kind, &relative, &metadata, active_plan_digest)? {
                 continue;
             }
-            if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) {
+            if aster_use_core::metadata_is_link_or_reparse_point(&metadata) {
                 return Err(state_backup_path_invalid(
                     "Use-owned backup state contains a link or reparse point.",
                 ));
@@ -297,7 +297,7 @@ fn excluded_active_restore_entry(
     let Some(directory) = expected else {
         return Ok(false);
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(metadata)
         || directory != metadata.is_dir()
         || (!directory && !metadata.is_file())
     {
@@ -571,7 +571,7 @@ fn hash_file(path: &Path, expected: &std::fs::Metadata) -> UseResult<(u64, Strin
             "A Use-owned state file cannot be reinspected: {error}"
         ))
     })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&after)
+    if aster_use_core::metadata_is_link_or_reparse_point(&after)
         || !after.is_file()
         || after.len() != expected.len()
         || after.permissions().readonly() != expected.permissions().readonly()

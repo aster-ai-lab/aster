@@ -1,13 +1,13 @@
-# a3s-box-mkext4
+# aster-box-mkext4
 
-[![crates.io](https://img.shields.io/crates/v/a3s-box-mkext4)](https://crates.io/crates/a3s-box-mkext4)
-[![docs.rs](https://img.shields.io/docsrs/a3s-box-mkext4)](https://docs.rs/a3s-box-mkext4)
-[![CI](https://github.com/A3S-Lab/Box/actions/workflows/ci.yml/badge.svg)](https://github.com/A3S-Lab/Box/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/aster-box-mkext4)](https://crates.io/crates/aster-box-mkext4)
+[![docs.rs](https://img.shields.io/docsrs/aster-box-mkext4)](https://docs.rs/aster-box-mkext4)
+[![CI](https://github.com/aster-ai-lab/Box/actions/workflows/ci.yml/badge.svg)](https://github.com/aster-ai-lab/Box/actions/workflows/ci.yml)
 
-This is the A3S Box release-owned fork of upstream `mkext4` 0.0.3. It keeps
+This is the Aster Box release-owned fork of upstream `mkext4` 0.0.3. It keeps
 the upstream implementation and adds byte-preserving Linux directory-entry and
 symbolic-link inputs required by Box's guest-native rootfs builder. See
-[`A3S_PATCHES.md`](A3S_PATCHES.md) for the exact provenance and patch boundary.
+[`ASTER_PATCHES.md`](ASTER_PATCHES.md) for the exact provenance and patch boundary.
 
 Deterministic, streaming, pure-Rust ext4 image builder — plus a
 verification-grade reader. No C dependencies, no kernel mounts, no clocks,
@@ -149,7 +149,7 @@ mount read-write on any modern Linux kernel.
 ## Installing
 
 ```sh
-cargo add a3s-box-mkext4 --rename mkext4
+cargo add aster-box-mkext4 --rename mkext4
 ```
 
 Early release (0.0.x): the API may still move before 0.1.

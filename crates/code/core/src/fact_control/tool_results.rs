@@ -2,7 +2,7 @@
 
 use super::*;
 
-pub(super) const FACT_TOOL_RESULT_KIND: &str = "a3s.fact_tool_result";
+pub(super) const FACT_TOOL_RESULT_KIND: &str = "aster.fact_tool_result";
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub(super) struct FactToolResultEnvelope {
@@ -14,7 +14,7 @@ pub(super) struct FactToolResultEnvelope {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(super) exit_code: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub(super) outcome: Option<a3s_effect::ToolExecutionOutcome>,
+    pub(super) outcome: Option<aster_effect::ToolExecutionOutcome>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(super) workspace_child: Option<String>,
     #[serde(default)]

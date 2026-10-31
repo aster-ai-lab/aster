@@ -180,7 +180,7 @@ review selection/focus, stale candidate errors and reading-draft preservation.
 - [ ] Owning hermetic tests accompany each behavior — tasks T002–T017.
 - [ ] Rust wire enums have parse/as_str and unknown-value refusal — T002/T006/T008/T016.
 - [ ] No unargued production unwrap/expect — T020 review.
-- [ ] A3S dependencies remain local; root workspace/lockfile — T020.
+- [ ] Aster dependencies remain local; root workspace/lockfile — T020.
 - [ ] No new configurable policy surface; any later configuration must use ACL — T020.
 - [ ] Landing evidence at `docs/evidence/desktop/<date>-knowledge-workbench-ux/OUTCOME.md` — T018–T020.
 
@@ -198,7 +198,7 @@ These boxes are implementation obligations, not completed checks.
 - **SC-005**: Baseline targets: warm search P95 ≤300 ms and opening a ≤100 KiB note
   P95 ≤250 ms on the recorded development host, using 5,000 synthetic notes and
   about 50 MiB text. These are targets to measure, not current performance claims.
-- **SC-006**: At least six proved desktop journeys are retained through A3S Test:
+- **SC-006**: At least six proved desktop journeys are retained through Aster Test:
   find, resolve ambiguity/rename, preserve drafts, recover a conflict/restart,
   review a proposal, and operate the narrow/keyboard layout.
 - **SC-007**: Reading/search/navigation makes no model request; repeated autosaves

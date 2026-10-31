@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootError, BootErrorKind, BootRequest, BootResponse, CookieOptions, CookieSameSite,
     DefaultValuePipe, HttpMethod, ParseArrayPipe, ParseBoolPipe, ParseEnumPipe, ParseFloatPipe,
     ParseIntPipe, ParseUuidPipe, SseEvent, StreamableFile, StreamableFileOptions, UuidVersion,
@@ -30,31 +30,31 @@ impl FromStr for TestCatKind {
 #[test]
 fn built_in_request_value_pipes_parse_and_default_values() {
     assert_eq!(
-        a3s_boot::transform_request_value::<String, u16, _>("42".to_string(), ParseIntPipe)
+        aster_boot::transform_request_value::<String, u16, _>("42".to_string(), ParseIntPipe)
             .unwrap(),
         42
     );
     assert!(
-        a3s_boot::transform_request_value::<String, u16, _>("cat".to_string(), ParseIntPipe)
+        aster_boot::transform_request_value::<String, u16, _>("cat".to_string(), ParseIntPipe)
             .is_err()
     );
-    assert!(a3s_boot::transform_request_value::<String, bool, _>(
+    assert!(aster_boot::transform_request_value::<String, bool, _>(
         "true".to_string(),
         ParseBoolPipe
     )
     .unwrap());
     assert_eq!(
-        a3s_boot::transform_request_value::<String, f64, _>("1.25".to_string(), ParseFloatPipe)
+        aster_boot::transform_request_value::<String, f64, _>("1.25".to_string(), ParseFloatPipe)
             .unwrap(),
         1.25
     );
     assert_eq!(
-        a3s_boot::transform_request_value::<Option<u8>, u8, _>(None, DefaultValuePipe::new(3))
+        aster_boot::transform_request_value::<Option<u8>, u8, _>(None, DefaultValuePipe::new(3))
             .unwrap(),
         3
     );
     assert_eq!(
-        a3s_boot::transform_request_value::<String, Vec<u8>, _>(
+        aster_boot::transform_request_value::<String, Vec<u8>, _>(
             "1, 2,3".to_string(),
             ParseArrayPipe,
         )
@@ -62,7 +62,7 @@ fn built_in_request_value_pipes_parse_and_default_values() {
         vec![1, 2, 3]
     );
     assert_eq!(
-        a3s_boot::transform_request_value::<String, Vec<TestCatKind>, _>(
+        aster_boot::transform_request_value::<String, Vec<TestCatKind>, _>(
             "tabby|tuxedo".to_string(),
             ParseArrayPipe::separator("|"),
         )
@@ -70,32 +70,32 @@ fn built_in_request_value_pipes_parse_and_default_values() {
         vec![TestCatKind::Tabby, TestCatKind::Tuxedo]
     );
     assert_eq!(
-        a3s_boot::transform_request_value::<String, TestCatKind, _>(
+        aster_boot::transform_request_value::<String, TestCatKind, _>(
             "tabby".to_string(),
             ParseEnumPipe,
         )
         .unwrap(),
         TestCatKind::Tabby
     );
-    assert!(a3s_boot::transform_request_value::<String, TestCatKind, _>(
+    assert!(aster_boot::transform_request_value::<String, TestCatKind, _>(
         "calico".to_string(),
         ParseEnumPipe,
     )
     .is_err());
     assert_eq!(
-        a3s_boot::transform_request_value::<String, String, _>(
+        aster_boot::transform_request_value::<String, String, _>(
             " 550e8400-e29b-41d4-a716-446655440000 ".to_string(),
             ParseUuidPipe,
         )
         .unwrap(),
         "550e8400-e29b-41d4-a716-446655440000"
     );
-    assert!(a3s_boot::transform_request_value::<String, String, _>(
+    assert!(aster_boot::transform_request_value::<String, String, _>(
         "not-a-uuid".to_string(),
         ParseUuidPipe,
     )
     .is_err());
-    assert!(a3s_boot::transform_request_value::<String, String, _>(
+    assert!(aster_boot::transform_request_value::<String, String, _>(
         "6ba7b810-9dad-11d1-80b4-00c04fd430c8".to_string(),
         ParseUuidPipe::version(UuidVersion::V4),
     )

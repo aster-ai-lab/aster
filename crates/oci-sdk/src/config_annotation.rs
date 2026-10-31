@@ -27,12 +27,12 @@ mod tests {
         assert_eq!(
             BUILTIN_POTENTIALLY_UNSAFE_CONFIG_ANNOTATIONS,
             [
-                "dev.a3s.oci.cgroup.control-cpu-headroom-micros",
-                "dev.a3s.oci.cgroup.control-memory-headroom-bytes",
-                "dev.a3s.oci.cgroup.control-pids-headroom",
-                "dev.a3s.oci.cgroup.layout",
-                "dev.a3s.oci.rootfs-metadata",
-                "dev.a3s.oci.runtime.paused",
+                "dev.aster.oci.cgroup.control-cpu-headroom-micros",
+                "dev.aster.oci.cgroup.control-memory-headroom-bytes",
+                "dev.aster.oci.cgroup.control-pids-headroom",
+                "dev.aster.oci.cgroup.layout",
+                "dev.aster.oci.rootfs-metadata",
+                "dev.aster.oci.runtime.paused",
             ]
         );
         assert!(BUILTIN_POTENTIALLY_UNSAFE_CONFIG_ANNOTATIONS

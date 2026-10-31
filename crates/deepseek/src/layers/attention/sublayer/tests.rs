@@ -8,7 +8,7 @@ use crate::layers::{
     mhc::{MhcNumerics, MhcParameters},
 };
 use crate::state::kv::{KvCacheKind, KvState};
-use a3s_power::{error::PowerError, inference::InferenceLimits};
+use aster_power::{error::PowerError, inference::InferenceLimits};
 use candle_core::DType;
 
 pub(crate) fn build_layer(limits: InferenceLimits) -> AttentionSublayer {

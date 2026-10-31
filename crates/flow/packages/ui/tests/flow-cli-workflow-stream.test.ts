@@ -1,5 +1,5 @@
 import {
-  A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS,
+  ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS,
   applyFlowCliWorkflowUpdateStream,
   applyFlowCliWorkflowUpdates,
   canonicalizeFlowCliWorkflowUpdate,
@@ -9,13 +9,13 @@ import {
   parseFlowCliWorkflowUpdates,
 } from '../src/flow-cli-workflow';
 import type { FlowCliWorkflowUpdate } from '../src/flow-cli-workflow';
-import type { A3sFlowWorkflowDsl } from '../src/integrations/a3s-flow-dsl-types';
-import { createA3sFlowDagNode, a3sFlowDagNodeRegistry } from '../src/integrations/a3s-flow-node-manifest';
+import type { AsterFlowWorkflowDsl } from '../src/integrations/aster-flow-dsl-types';
+import { createAsterFlowDagNode, asterFlowDagNodeRegistry } from '../src/integrations/aster-flow-node-manifest';
 
-function workflow(): A3sFlowWorkflowDsl {
-  const start = createA3sFlowDagNode(
+function workflow(): AsterFlowWorkflowDsl {
+  const start = createAsterFlowDagNode(
     'start',
-    a3sFlowDagNodeRegistry.require('flow.start'),
+    asterFlowDagNodeRegistry.require('flow.start'),
     { workflow_name: 'stream.test' },
   );
   return {
@@ -27,20 +27,20 @@ function workflow(): A3sFlowWorkflowDsl {
   };
 }
 
-function edgeWorkflow(): A3sFlowWorkflowDsl {
-  const start = createA3sFlowDagNode(
+function edgeWorkflow(): AsterFlowWorkflowDsl {
+  const start = createAsterFlowDagNode(
     'start',
-    a3sFlowDagNodeRegistry.require('flow.start'),
+    asterFlowDagNodeRegistry.require('flow.start'),
     { workflow_name: 'edge.test' },
   );
-  const progress = createA3sFlowDagNode(
+  const progress = createAsterFlowDagNode(
     'progress',
-    a3sFlowDagNodeRegistry.require('flow.progress'),
+    asterFlowDagNodeRegistry.require('flow.progress'),
     { progress_id: 'progress' },
   );
-  const complete = createA3sFlowDagNode(
+  const complete = createAsterFlowDagNode(
     'complete',
-    a3sFlowDagNodeRegistry.require('flow.complete'),
+    asterFlowDagNodeRegistry.require('flow.complete'),
     {},
   );
   return {
@@ -442,7 +442,7 @@ describe('workflow update streams', () => {
 
   it('applies the same operation-count bound to array and direct transports', () => {
     const operations = Array.from(
-      { length: A3S_FLOW_CLI_MAX_UPDATE_OPERATIONS + 1 },
+      { length: ASTER_FLOW_CLI_MAX_UPDATE_OPERATIONS + 1 },
       (_value, index) => ({ kind: 'set-app-name' as const, name: `workflow-${index}` }),
     );
     expect(() => parseFlowCliWorkflowUpdates(operations)).toThrow(/exceeds 10000 operations/);

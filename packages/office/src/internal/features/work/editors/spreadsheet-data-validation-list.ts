@@ -21,7 +21,7 @@ export const MAX_SPREADSHEET_DEPENDENT_LIST_FORMULA_LENGTH = 255;
 export const MAX_SPREADSHEET_DEPENDENT_LIST_REFERENCE_CELLS = 1_024;
 export const MAX_SPREADSHEET_DEPENDENT_LIST_MATERIALIZED_CELLS = 10_000;
 
-const DEPENDENT_LIST_PROJECTION_KEY = '__a3sDependentListProjection';
+const DEPENDENT_LIST_PROJECTION_KEY = '__asterDependentListProjection';
 
 interface DependentListProjection {
   kind: 'compact' | 'direct';

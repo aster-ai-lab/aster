@@ -1,8 +1,8 @@
 use super::*;
-use a3s_code_core::llm::{
+use aster_core::llm::{
     LlmClient, LlmResponse, Message, StreamEvent, TokenUsage, ToolDefinition,
 };
-use a3s_code_core::store::MemorySessionStore;
+use aster_core::store::MemorySessionStore;
 use agent_client_protocol::{self as acp, Agent as _};
 use serde_json::{json, Value};
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -60,7 +60,7 @@ impl LlmClient for StructuredModel {
 
 struct Fixture {
     _root: tempfile::TempDir,
-    host: A3sCodeAgent,
+    host: AsterCodeAgent,
     session_id: String,
     model: Arc<StructuredModel>,
 }
@@ -69,11 +69,11 @@ async fn fixture(normal: &'static str, repaired: &'static str) -> Fixture {
     let root = tempfile::tempdir().unwrap();
     let mut launch = test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_path_buf();
-    let host = A3sCodeAgent::new(launch.clone());
+    let host = AsterCodeAgent::new(launch.clone());
     let opened = host
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(
-                json!({"a3sEngineering":{"policy":"none"}})
+                json!({"asterEngineering":{"policy":"none"}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -98,7 +98,7 @@ async fn fixture(normal: &'static str, repaired: &'static str) -> Fixture {
                     .with_session_store(Arc::new(MemorySessionStore::new()))
                     .with_llm_client(model.clone())
                     .with_auto_save(true)
-                    .with_planning_mode(a3s_code_core::PlanningMode::Disabled)
+                    .with_planning_mode(aster_core::PlanningMode::Disabled)
                     .with_continuation(false),
             ),
         )

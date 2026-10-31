@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "a3s-form-core"
+name = "aster-form-core"
 version = "0.1.0"
 dependencies = [
  "regress",

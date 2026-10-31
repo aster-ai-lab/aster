@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentClient, AgentOperation, AgentTransportFaultPoint, AgentTransportOperationStage,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, ErrorCode, FilesystemEntryKind, FilesystemOp, FilesystemRequest,
     FilesystemResponse, Generation, OciRuntimeService, OperationContext, StartRequest,
 };
@@ -40,7 +40,7 @@ async fn exercise_filesystem_reopen(index: usize, stage: AgentTransportOperation
     let guest = Arc::new(JournaledLifecycleGuest::new());
     let metrics = Arc::new(DriverMetrics::default());
     let fault_point = AgentTransportFaultPoint::Operation {
-        protocol_version: a3s_oci_agent_protocol::AGENT_PROTOCOL_VERSION_MAX,
+        protocol_version: aster_oci_agent_protocol::AGENT_PROTOCOL_VERSION_MAX,
         operation: AgentOperation::Filesystem,
         stage,
     };

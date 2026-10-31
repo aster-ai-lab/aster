@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanScope, PluginOperationAction, PluginPackageId, PluginPackageLock, UseResult,
     MAX_PLUGIN_PLAN_ITEMS,
 };
@@ -12,7 +12,7 @@ use super::planning_attempt_io::{
     PackagePlanningLock, PlanningAttemptKind,
 };
 
-const DOWNLOAD_ATTEMPT_SCHEMA: &str = "a3s.use.plugin-download-attempt.v1";
+const DOWNLOAD_ATTEMPT_SCHEMA: &str = "aster.use.plugin-download-attempt.v1";
 const MAX_DOWNLOAD_ATTEMPT_BYTES: u64 = 2 * 1024 * 1024;
 
 /// Exact non-authoritative target set retained before a reviewed graph exists.
@@ -342,6 +342,6 @@ fn valid_scope_id(value: &str) -> bool {
         })
 }
 
-fn store_invalid() -> a3s_use_core::UseError {
+fn store_invalid() -> aster_use_core::UseError {
     super::planning_attempt_io::store_invalid(PlanningAttemptKind::Download)
 }

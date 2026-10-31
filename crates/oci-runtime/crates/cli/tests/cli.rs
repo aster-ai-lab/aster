@@ -1,10 +1,10 @@
 use std::process::Command;
 
-use a3s_oci_core::{DriverKind, DriverReadiness, HostPlatform, RuntimeFeatures};
+use aster_oci_core::{DriverKind, DriverReadiness, HostPlatform, RuntimeFeatures};
 
 #[test]
 fn features_command_emits_versioned_machine_readable_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .arg("features")
         .output()
         .expect("features command must start");
@@ -16,7 +16,7 @@ fn features_command_emits_versioned_machine_readable_output() {
     );
     let features: RuntimeFeatures =
         serde_json::from_slice(&output.stdout).expect("features output must be valid JSON");
-    assert_eq!(features.schema_version, "a3s.oci.features.v1");
+    assert_eq!(features.schema_version, "aster.oci.features.v1");
     match features.platform {
         HostPlatform::Linux => {
             assert!(features.driver(DriverKind::NativeLinux).is_some());
@@ -40,7 +40,7 @@ fn features_command_emits_versioned_machine_readable_output() {
             assert_eq!(driver.readiness, DriverReadiness::Experimental);
             assert_eq!(
                 driver.can_launch(),
-                driver.status == a3s_oci_core::CapabilityStatus::Available
+                driver.status == aster_oci_core::CapabilityStatus::Available
             );
         } else {
             assert_eq!(driver.readiness, DriverReadiness::ProbeOnly);
@@ -51,15 +51,15 @@ fn features_command_emits_versioned_machine_readable_output() {
 
 #[test]
 fn agent_vm_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "agent-vm-smoke",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--rootfs",
-            "missing-a3s-oci-rootfs",
+            "missing-aster-oci-rootfs",
             "--console",
-            "missing-a3s-oci-console",
+            "missing-aster-oci-console",
         ])
         .output()
         .expect("agent VM smoke command must start");
@@ -67,7 +67,7 @@ fn agent_vm_smoke_fails_closed_with_versioned_output() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.agent-vm-smoke.v10");
+    assert_eq!(report["schema_version"], "aster.oci.agent-vm-smoke.v10");
     assert_ne!(report["status"], "available");
     if cfg!(all(target_os = "macos", target_arch = "aarch64")) {
         let cleanup = &report["macos_cleanup"];
@@ -84,7 +84,7 @@ fn agent_vm_smoke_fails_closed_with_versioned_output() {
 
 #[test]
 fn hvf_smoke_emits_consistent_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .arg("hvf-smoke")
         .output()
         .expect("HVF smoke command must start");
@@ -94,23 +94,23 @@ fn hvf_smoke_emits_consistent_versioned_output() {
         "HVF smoke exited unexpectedly: {}",
         String::from_utf8_lossy(&output.stderr)
     );
-    let report: a3s_oci_runtime::HvfSmokeReport =
+    let report: aster_oci_runtime::HvfSmokeReport =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
-    assert_eq!(report.schema_version, "a3s.oci.hvf-smoke.v1");
+    assert_eq!(report.schema_version, "aster.oci.hvf-smoke.v1");
     assert_eq!(output.status.success(), report.is_success());
 }
 
 #[test]
 fn native_linux_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-smoke",
             "--agent",
-            "missing-a3s-oci-agent",
+            "missing-aster-oci-agent",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--work-parent",
-            "missing-a3s-oci-work-parent",
+            "missing-aster-oci-work-parent",
         ])
         .output()
         .expect("native Linux smoke command must start");
@@ -118,21 +118,21 @@ fn native_linux_smoke_fails_closed_with_versioned_output() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.native-linux-smoke.v20");
+    assert_eq!(report["schema_version"], "aster.oci.native-linux-smoke.v20");
     assert_ne!(report["status"], "available");
 }
 
 #[test]
 fn native_linux_network_enforcement_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-network-enforcement-smoke",
             "--agent",
-            "missing-a3s-oci-agent",
+            "missing-aster-oci-agent",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--work-parent",
-            "missing-a3s-oci-work-parent",
+            "missing-aster-oci-work-parent",
             "--source-interface",
             "oar01-source",
             "--interface-id",
@@ -152,22 +152,22 @@ fn native_linux_network_enforcement_smoke_fails_closed_with_versioned_output() {
         .expect("network-enforcement output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.native-linux-network-enforcement-smoke.v1"
+        "aster.oci.native-linux-network-enforcement-smoke.v1"
     );
     assert_ne!(report["status"], "available");
 }
 
 #[test]
 fn native_linux_rootless_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-rootless-smoke",
             "--agent",
-            "missing-a3s-oci-agent",
+            "missing-aster-oci-agent",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--work-parent",
-            "missing-a3s-oci-work-parent",
+            "missing-aster-oci-work-parent",
         ])
         .output()
         .expect("native Linux rootless smoke command must start");
@@ -177,22 +177,22 @@ fn native_linux_rootless_smoke_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("rootless smoke output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.native-linux-rootless-smoke.v4"
+        "aster.oci.native-linux-rootless-smoke.v4"
     );
     assert_ne!(report["status"], "available");
 }
 
 #[test]
 fn rootless_device_bootstrap_requires_an_explicit_delegation() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-rootless-smoke",
             "--agent",
-            "missing-a3s-oci-agent",
+            "missing-aster-oci-agent",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--work-parent",
-            "missing-a3s-oci-work-parent",
+            "missing-aster-oci-work-parent",
             "--rootless-device-bootstrap",
         ])
         .output()
@@ -206,8 +206,8 @@ fn rootless_device_bootstrap_requires_an_explicit_delegation() {
 #[cfg(target_os = "linux")]
 #[test]
 fn native_linux_service_requires_explicit_box_descriptor_contract() {
-    let root = format!("/tmp/a3s-oci-cli-service-contract-{}", std::process::id());
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let root = format!("/tmp/aster-oci-cli-service-contract-{}", std::process::id());
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-service",
             "--root",
@@ -221,7 +221,7 @@ fn native_linux_service_requires_explicit_box_descriptor_contract() {
         .expect("native Linux service command must start");
 
     assert_eq!(output.status.code(), Some(2));
-    assert!(String::from_utf8_lossy(&output.stderr).contains("--a3s-box-control-fds"));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("--aster-box-control-fds"));
     assert!(!std::path::Path::new(&root).exists());
 }
 
@@ -229,10 +229,10 @@ fn native_linux_service_requires_explicit_box_descriptor_contract() {
 #[test]
 fn native_linux_host_service_requires_both_owner_paths() {
     let root = format!(
-        "/tmp/a3s-oci-cli-host-service-contract-{}",
+        "/tmp/aster-oci-cli-host-service-contract-{}",
         std::process::id()
     );
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args(["native-linux-host-service", "--root", &root])
         .output()
         .expect("native Linux host service command must start");
@@ -246,11 +246,11 @@ fn native_linux_host_service_requires_both_owner_paths() {
 #[test]
 fn native_linux_host_service_bootstraps_device_policy_for_delegated_root() {
     let root = format!(
-        "/tmp/a3s-oci-cli-host-service-delegation-{}",
+        "/tmp/aster-oci-cli-host-service-delegation-{}",
         std::process::id()
     );
     let delegated = format!("{root}-cgroup");
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-host-service",
             "--root",
@@ -278,16 +278,16 @@ fn native_linux_host_service_bootstraps_device_policy_for_delegated_root() {
 #[test]
 fn macos_hvf_host_service_requires_all_owner_paths_without_creating_root() {
     let root = format!(
-        "/tmp/a3s-oci-cli-hvf-host-service-contract-{}",
+        "/tmp/aster-oci-cli-hvf-host-service-contract-{}",
         std::process::id()
     );
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "macos-hvf-host-service",
             "--root",
             &root,
             "--shim",
-            "/tmp/missing-a3s-oci-hvf-shim",
+            "/tmp/missing-aster-oci-hvf-shim",
         ])
         .output()
         .expect("macOS HVF host service command must start");
@@ -301,18 +301,18 @@ fn macos_hvf_host_service_requires_all_owner_paths_without_creating_root() {
 #[test]
 fn macos_hvf_host_service_smoke_fails_closed_without_creating_evidence() {
     let missing_parent = format!(
-        "/tmp/a3s-oci-cli-hvf-host-smoke-missing-{}",
+        "/tmp/aster-oci-cli-hvf-host-smoke-missing-{}",
         std::process::id()
     );
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "macos-hvf-host-service-smoke",
             "--shim",
-            "/tmp/missing-a3s-oci-hvf-shim",
+            "/tmp/missing-aster-oci-hvf-shim",
             "--system-image-manifest",
-            "/tmp/missing-a3s-oci-system-image.json",
+            "/tmp/missing-aster-oci-system-image.json",
             "--bundle",
-            "/tmp/missing-a3s-oci-bundle",
+            "/tmp/missing-aster-oci-bundle",
             "--work-parent",
             &missing_parent,
             "--source-revision",
@@ -326,7 +326,7 @@ fn macos_hvf_host_service_smoke_fails_closed_without_creating_evidence() {
         .expect("Host Service smoke output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.macos-hvf-host-service-smoke.v1"
+        "aster.oci.macos-hvf-host-service-smoke.v1"
     );
     assert_ne!(report["status"], "available");
     assert!(!std::path::Path::new(&missing_parent).exists());
@@ -338,11 +338,11 @@ fn macos_hvf_host_service_smoke_fails_closed_without_creating_evidence() {
 ))]
 #[test]
 fn linux_kvm_create_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-create-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -360,7 +360,7 @@ fn linux_kvm_create_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Create reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-reopen-replacement.v3"
+        "aster.oci.oci-vm-reopen-replacement.v3"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "create");
@@ -377,11 +377,11 @@ fn linux_kvm_create_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_state_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-state-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -399,7 +399,7 @@ fn linux_kvm_state_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("State reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v1"
+        "aster.oci.oci-vm-operation-reopen-replacement.v1"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "state");
@@ -416,11 +416,11 @@ fn linux_kvm_state_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_start_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-start-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -438,7 +438,7 @@ fn linux_kvm_start_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Start reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v2"
+        "aster.oci.oci-vm-operation-reopen-replacement.v2"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "start");
@@ -455,11 +455,11 @@ fn linux_kvm_start_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_exec_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-exec-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -477,7 +477,7 @@ fn linux_kvm_exec_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Exec reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v6"
+        "aster.oci.oci-vm-operation-reopen-replacement.v6"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "exec");
@@ -494,11 +494,11 @@ fn linux_kvm_exec_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_signal_process_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-signal-process-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -516,7 +516,7 @@ fn linux_kvm_signal_process_reopen_fails_closed_with_versioned_output() {
         .expect("SignalProcess reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v7"
+        "aster.oci.oci-vm-operation-reopen-replacement.v7"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "signal-process");
@@ -533,11 +533,11 @@ fn linux_kvm_signal_process_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_wait_process_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-wait-process-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -555,7 +555,7 @@ fn linux_kvm_wait_process_reopen_fails_closed_with_versioned_output() {
         .expect("WaitProcess reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v8"
+        "aster.oci.oci-vm-operation-reopen-replacement.v8"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "wait-process");
@@ -572,11 +572,11 @@ fn linux_kvm_wait_process_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_pause_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-pause-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -594,7 +594,7 @@ fn linux_kvm_pause_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Pause reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v9"
+        "aster.oci.oci-vm-operation-reopen-replacement.v9"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "pause");
@@ -611,11 +611,11 @@ fn linux_kvm_pause_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_resume_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-resume-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -633,7 +633,7 @@ fn linux_kvm_resume_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Resume reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v10"
+        "aster.oci.oci-vm-operation-reopen-replacement.v10"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "resume");
@@ -650,11 +650,11 @@ fn linux_kvm_resume_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_processes_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-processes-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -672,7 +672,7 @@ fn linux_kvm_processes_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Processes reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v11"
+        "aster.oci.oci-vm-operation-reopen-replacement.v11"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "processes");
@@ -689,11 +689,11 @@ fn linux_kvm_processes_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_update_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-update-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -711,7 +711,7 @@ fn linux_kvm_update_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Update reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v12"
+        "aster.oci.oci-vm-operation-reopen-replacement.v12"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "update");
@@ -728,11 +728,11 @@ fn linux_kvm_update_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_stats_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-stats-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -750,7 +750,7 @@ fn linux_kvm_stats_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Stats reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v13"
+        "aster.oci.oci-vm-operation-reopen-replacement.v13"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "stats");
@@ -767,11 +767,11 @@ fn linux_kvm_stats_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_read_output_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-read-output-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -789,7 +789,7 @@ fn linux_kvm_read_output_reopen_fails_closed_with_versioned_output() {
         .expect("ReadOutput reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v14"
+        "aster.oci.oci-vm-operation-reopen-replacement.v14"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "read-output");
@@ -806,11 +806,11 @@ fn linux_kvm_read_output_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_write_stdin_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-write-stdin-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -828,7 +828,7 @@ fn linux_kvm_write_stdin_reopen_fails_closed_with_versioned_output() {
         .expect("WriteStdin reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v15"
+        "aster.oci.oci-vm-operation-reopen-replacement.v15"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "write-stdin");
@@ -845,11 +845,11 @@ fn linux_kvm_write_stdin_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_close_stdin_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-close-stdin-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -867,7 +867,7 @@ fn linux_kvm_close_stdin_reopen_fails_closed_with_versioned_output() {
         .expect("CloseStdin reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v16"
+        "aster.oci.oci-vm-operation-reopen-replacement.v16"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "close-stdin");
@@ -884,11 +884,11 @@ fn linux_kvm_close_stdin_reopen_fails_closed_with_versioned_output() {
 ))]
 #[test]
 fn linux_kvm_resize_reopen_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-resize-reopen",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
             "relative-runtime-root",
             "--system-image-manifest",
@@ -906,7 +906,7 @@ fn linux_kvm_resize_reopen_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Resize reopen output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v17"
+        "aster.oci.oci-vm-operation-reopen-replacement.v17"
     );
     assert_eq!(report["platform"], "linux");
     assert_eq!(report["requested_operation"], "resize");
@@ -924,16 +924,16 @@ fn linux_kvm_resize_reopen_fails_closed_with_versioned_output() {
 #[test]
 fn linux_kvm_recovery_host_service_requires_all_owner_paths_without_creating_root() {
     let root = format!(
-        "/tmp/a3s-oci-cli-kvm-recovery-host-contract-{}",
+        "/tmp/aster-oci-cli-kvm-recovery-host-contract-{}",
         std::process::id()
     );
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-recovery-host-service",
             "--root",
             &root,
             "--shim",
-            "/tmp/missing-a3s-oci-kvm-shim",
+            "/tmp/missing-aster-oci-kvm-shim",
         ])
         .output()
         .expect("Linux KVM recovery Host Service command must start");
@@ -950,18 +950,18 @@ fn linux_kvm_recovery_host_service_requires_all_owner_paths_without_creating_roo
 #[test]
 fn linux_kvm_recovery_smoke_fails_closed_without_creating_evidence() {
     let missing_parent = format!(
-        "/tmp/a3s-oci-cli-kvm-recovery-smoke-missing-{}",
+        "/tmp/aster-oci-cli-kvm-recovery-smoke-missing-{}",
         std::process::id()
     );
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-recovery-smoke",
             "--shim",
-            "/tmp/missing-a3s-oci-kvm-shim",
+            "/tmp/missing-aster-oci-kvm-shim",
             "--system-image-manifest",
-            "/tmp/missing-a3s-oci-system-image.json",
+            "/tmp/missing-aster-oci-system-image.json",
             "--bundle",
-            "/tmp/missing-a3s-oci-bundle",
+            "/tmp/missing-aster-oci-bundle",
             "--work-parent",
             &missing_parent,
             "--source-revision",
@@ -975,7 +975,7 @@ fn linux_kvm_recovery_smoke_fails_closed_without_creating_evidence() {
         .expect("Linux KVM recovery smoke output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.linux-kvm-recovery-smoke.v1"
+        "aster.oci.linux-kvm-recovery-smoke.v1"
     );
     assert_ne!(report["status"], "available");
     assert!(!std::path::Path::new(&missing_parent).exists());
@@ -988,18 +988,18 @@ fn linux_kvm_recovery_smoke_fails_closed_without_creating_evidence() {
 #[test]
 fn linux_kvm_live_recovery_smoke_fails_closed_without_creating_evidence() {
     let missing_parent = format!(
-        "/tmp/a3s-oci-cli-kvm-live-recovery-smoke-missing-{}",
+        "/tmp/aster-oci-cli-kvm-live-recovery-smoke-missing-{}",
         std::process::id()
     );
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-live-recovery-smoke",
             "--shim",
-            "/tmp/missing-a3s-oci-kvm-shim",
+            "/tmp/missing-aster-oci-kvm-shim",
             "--system-image-manifest",
-            "/tmp/missing-a3s-oci-system-image.json",
+            "/tmp/missing-aster-oci-system-image.json",
             "--bundle",
-            "/tmp/missing-a3s-oci-bundle",
+            "/tmp/missing-aster-oci-bundle",
             "--work-parent",
             &missing_parent,
             "--source-revision",
@@ -1013,7 +1013,7 @@ fn linux_kvm_live_recovery_smoke_fails_closed_without_creating_evidence() {
         .expect("Linux KVM Live recovery smoke output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.linux-kvm-live-recovery-smoke.v3"
+        "aster.oci.linux-kvm-live-recovery-smoke.v3"
     );
     assert_ne!(report["status"], "available");
     assert!(!std::path::Path::new(&missing_parent).exists());
@@ -1026,16 +1026,16 @@ fn linux_kvm_live_recovery_smoke_fails_closed_without_creating_evidence() {
 #[test]
 fn linux_kvm_soak_host_service_requires_all_owner_paths_without_creating_root() {
     let root = format!(
-        "/tmp/a3s-oci-cli-kvm-soak-host-contract-{}",
+        "/tmp/aster-oci-cli-kvm-soak-host-contract-{}",
         std::process::id()
     );
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-soak-host-service",
             "--root",
             &root,
             "--shim",
-            "/tmp/missing-a3s-oci-kvm-shim",
+            "/tmp/missing-aster-oci-kvm-shim",
         ])
         .output()
         .expect("Linux KVM soak Host Service command must start");
@@ -1051,16 +1051,16 @@ fn linux_kvm_soak_host_service_requires_all_owner_paths_without_creating_root() 
 ))]
 #[test]
 fn linux_kvm_soak_fails_closed_without_creating_evidence() {
-    let missing_parent = format!("/tmp/a3s-oci-cli-kvm-soak-missing-{}", std::process::id());
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let missing_parent = format!("/tmp/aster-oci-cli-kvm-soak-missing-{}", std::process::id());
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "linux-kvm-soak",
             "--shim",
-            "/tmp/missing-a3s-oci-kvm-shim",
+            "/tmp/missing-aster-oci-kvm-shim",
             "--system-image-manifest",
-            "/tmp/missing-a3s-oci-system-image.json",
+            "/tmp/missing-aster-oci-system-image.json",
             "--bundle",
-            "/tmp/missing-a3s-oci-bundle",
+            "/tmp/missing-aster-oci-bundle",
             "--work-parent",
             &missing_parent,
             "--source-revision",
@@ -1074,7 +1074,7 @@ fn linux_kvm_soak_fails_closed_without_creating_evidence() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("Linux KVM soak output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.linux-kvm-soak.v1");
+    assert_eq!(report["schema_version"], "aster.oci.linux-kvm-soak.v1");
     assert_ne!(report["status"], "available");
     assert_eq!(report["requested_iterations"], 2);
     assert_eq!(report["waves"], serde_json::json!([]));
@@ -1083,15 +1083,15 @@ fn linux_kvm_soak_fails_closed_without_creating_evidence() {
 
 #[test]
 fn native_linux_service_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-service-smoke",
             "--agent",
-            "missing-a3s-oci-agent",
+            "missing-aster-oci-agent",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--work-parent",
-            "missing-a3s-oci-work-parent",
+            "missing-aster-oci-work-parent",
         ])
         .output()
         .expect("native Linux service smoke command must start");
@@ -1099,23 +1099,23 @@ fn native_linux_service_smoke_fails_closed_with_versioned_output() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value = serde_json::from_slice(&output.stdout)
         .expect("native service smoke output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.native-linux-smoke.v20");
+    assert_eq!(report["schema_version"], "aster.oci.native-linux-smoke.v20");
     assert_ne!(report["status"], "available");
 }
 
 #[test]
 fn native_linux_multi_container_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-multi-container-smoke",
             "--agent",
-            "missing-a3s-oci-agent",
+            "missing-aster-oci-agent",
             "--bundle-a",
-            "missing-a3s-oci-bundle-a",
+            "missing-aster-oci-bundle-a",
             "--bundle-b",
-            "missing-a3s-oci-bundle-b",
+            "missing-aster-oci-bundle-b",
             "--work-parent",
-            "missing-a3s-oci-work-parent",
+            "missing-aster-oci-work-parent",
         ])
         .output()
         .expect("native Linux multi-container command must start");
@@ -1125,24 +1125,24 @@ fn native_linux_multi_container_smoke_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.native-linux-multi-container-smoke.v20"
+        "aster.oci.native-linux-multi-container-smoke.v20"
     );
     assert_ne!(report["status"], "available");
 }
 
 #[test]
 fn native_linux_soak_fails_closed_with_versioned_configuration() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-soak",
             "--agent",
-            "missing-a3s-oci-agent",
+            "missing-aster-oci-agent",
             "--bundle",
-            "missing-a3s-oci-bundle-a",
+            "missing-aster-oci-bundle-a",
             "--bundle",
-            "missing-a3s-oci-bundle-b",
+            "missing-aster-oci-bundle-b",
             "--work-parent",
-            "missing-a3s-oci-work-parent",
+            "missing-aster-oci-work-parent",
             "--iterations",
             "3",
             "--concurrent-containers",
@@ -1156,7 +1156,7 @@ fn native_linux_soak_fails_closed_with_versioned_configuration() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("soak output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.native-linux-soak.v2");
+    assert_eq!(report["schema_version"], "aster.oci.native-linux-soak.v2");
     assert_eq!(report["configuration"]["iterations"], 3);
     assert_eq!(report["configuration"]["concurrent_containers"], 2);
     assert_eq!(report["configuration"]["operation_timeout_ms"], 1000);
@@ -1165,15 +1165,15 @@ fn native_linux_soak_fails_closed_with_versioned_configuration() {
 
 #[test]
 fn native_linux_fault_cleanup_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "native-linux-fault-cleanup",
             "--agent",
-            "missing-a3s-oci-agent",
+            "missing-aster-oci-agent",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--work-parent",
-            "missing-a3s-oci-work-parent",
+            "missing-aster-oci-work-parent",
             "--fault-after",
             "after-start",
         ])
@@ -1185,7 +1185,7 @@ fn native_linux_fault_cleanup_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.native-linux-fault-cleanup.v6"
+        "aster.oci.native-linux-fault-cleanup.v6"
     );
     assert_eq!(report["lifecycle"]["requested_fault"], "after-start");
     assert_ne!(report["status"], "available");
@@ -1193,19 +1193,19 @@ fn native_linux_fault_cleanup_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-smoke",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console",
-            "missing-a3s-oci-console",
+            "missing-aster-oci-console",
         ])
         .output()
         .expect("OCI VM smoke command must start");
@@ -1213,27 +1213,27 @@ fn oci_vm_smoke_fails_closed_with_versioned_output() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("smoke output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.oci-vm-smoke.v9");
+    assert_eq!(report["schema_version"], "aster.oci.oci-vm-smoke.v9");
     assert_ne!(report["status"], "available");
 }
 
 #[test]
 fn oci_vm_guest_isolation_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-guest-isolation-smoke",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--runtime-share",
-            "missing-a3s-oci-runtime-share",
+            "missing-aster-oci-runtime-share",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console",
-            "missing-a3s-oci-console",
+            "missing-aster-oci-console",
         ])
         .output()
         .expect("OCI VM Guest isolation command must start");
@@ -1243,7 +1243,7 @@ fn oci_vm_guest_isolation_smoke_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("Guest isolation output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-guest-isolation.v1"
+        "aster.oci.oci-vm-guest-isolation.v1"
     );
     assert_eq!(report["expected_case_count"], 10);
     assert_ne!(report["status"], "available");
@@ -1251,19 +1251,19 @@ fn oci_vm_guest_isolation_smoke_fails_closed_with_versioned_output() {
 
 #[test]
 fn whpx_driver_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "whpx-driver-smoke",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
-            "missing-a3s-oci-runtime-root",
+            "missing-aster-oci-runtime-root",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--container-id",
             "whpx-driver-smoke-test",
             "--generation",
@@ -1275,16 +1275,16 @@ fn whpx_driver_smoke_fails_closed_with_versioned_output() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value = serde_json::from_slice(&output.stdout)
         .expect("WHPX driver smoke output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.whpx-driver-smoke.v1");
+    assert_eq!(report["schema_version"], "aster.oci.whpx-driver-smoke.v1");
     assert_ne!(report["status"], "available");
 }
 
 #[test]
 fn box_whpx_qualification_service_fails_before_publishing_readiness() {
     let temporary =
-        std::env::temp_dir().join(format!("a3s-oci-box-whpx-cli-test-{}", std::process::id()));
+        std::env::temp_dir().join(format!("aster-oci-box-whpx-cli-test-{}", std::process::id()));
     let ready = temporary.join("ready.json");
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .arg("box-whpx-qualification-service")
         .arg("--shim")
         .arg(temporary.join("missing-shim"))
@@ -1298,7 +1298,7 @@ fn box_whpx_qualification_service_fails_before_publishing_readiness() {
         .arg(temporary.join("missing-state"))
         .arg("--pipe")
         .arg(format!(
-            r"\\.\pipe\a3s-oci-box-cli-test-{}",
+            r"\\.\pipe\aster-oci-box-cli-test-{}",
             std::process::id()
         ))
         .arg("--ready-file")
@@ -1313,21 +1313,21 @@ fn box_whpx_qualification_service_fails_before_publishing_readiness() {
 
 #[test]
 fn whpx_recovery_resume_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "whpx-recovery-resume",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--runtime-root",
-            "missing-a3s-oci-runtime-root",
+            "missing-aster-oci-runtime-root",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--state-root",
-            "missing-a3s-oci-state-root",
+            "missing-aster-oci-state-root",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--container-id",
             "whpx-recovery-smoke-test",
             "--generation",
@@ -1339,27 +1339,27 @@ fn whpx_recovery_resume_fails_closed_with_versioned_output() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value = serde_json::from_slice(&output.stdout)
         .expect("WHPX recovery resume output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.whpx-recovery-smoke.v1");
+    assert_eq!(report["schema_version"], "aster.oci.whpx-recovery-smoke.v1");
     assert_ne!(report["status"], "available");
 }
 
 #[test]
 fn oci_vm_multi_container_smoke_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-multi-container-smoke",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle-a",
-            "missing-a3s-oci-bundle-a",
+            "missing-aster-oci-bundle-a",
             "--bundle-b",
-            "missing-a3s-oci-bundle-b",
+            "missing-aster-oci-bundle-b",
             "--console",
-            "missing-a3s-oci-console",
+            "missing-aster-oci-console",
         ])
         .output()
         .expect("OCI VM multi-container command must start");
@@ -1369,28 +1369,28 @@ fn oci_vm_multi_container_smoke_fails_closed_with_versioned_output() {
         serde_json::from_slice(&output.stdout).expect("diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-multi-container-smoke.v11"
+        "aster.oci.oci-vm-multi-container-smoke.v11"
     );
     assert_ne!(report["status"], "available");
 }
 
 #[test]
 fn macos_hvf_soak_fails_closed_with_versioned_configuration() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "macos-hvf-soak",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle-a",
-            "missing-a3s-oci-bundle-a",
+            "missing-aster-oci-bundle-a",
             "--bundle-b",
-            "missing-a3s-oci-bundle-b",
+            "missing-aster-oci-bundle-b",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--iterations",
             "7",
         ])
@@ -1400,7 +1400,7 @@ fn macos_hvf_soak_fails_closed_with_versioned_configuration() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("soak output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.macos-hvf-soak.v1");
+    assert_eq!(report["schema_version"], "aster.oci.macos-hvf-soak.v1");
     assert_eq!(report["configuration"]["iterations"], 7);
     assert_eq!(report["configuration"]["concurrent_containers"], 2);
     assert_ne!(report["status"], "available");
@@ -1408,17 +1408,17 @@ fn macos_hvf_soak_fails_closed_with_versioned_configuration() {
 
 #[test]
 fn oci_vm_fault_cleanup_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-fault-cleanup",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console",
-            "missing-a3s-oci-console",
+            "missing-aster-oci-console",
             "--fault-after",
             "after-kill",
         ])
@@ -1428,7 +1428,7 @@ fn oci_vm_fault_cleanup_fails_closed_with_versioned_output() {
     assert_eq!(output.status.code(), Some(2));
     let report: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("diagnostic output must be valid JSON");
-    assert_eq!(report["schema_version"], "a3s.oci.oci-vm-fault-cleanup.v4");
+    assert_eq!(report["schema_version"], "aster.oci.oci-vm-fault-cleanup.v4");
     assert_eq!(report["lifecycle"]["requested_fault"], "after-kill");
     assert_ne!(report["status"], "available");
 }
@@ -1436,17 +1436,17 @@ fn oci_vm_fault_cleanup_fails_closed_with_versioned_output() {
 #[test]
 fn oci_vm_transport_fault_cleanup_fails_closed_with_versioned_output() {
     for stage in ["host-after-request-write", "host-before-shutdown"] {
-        let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+        let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
             .args([
                 "oci-vm-transport-fault-cleanup",
                 "--shim",
-                "missing-a3s-oci-krun-shim",
+                "missing-aster-oci-krun-shim",
                 "--vm-rootfs",
-                "missing-a3s-oci-vm-rootfs",
+                "missing-aster-oci-vm-rootfs",
                 "--bundle",
-                "missing-a3s-oci-bundle",
+                "missing-aster-oci-bundle",
                 "--console",
-                "missing-a3s-oci-console",
+                "missing-aster-oci-console",
                 "--fault-at",
                 stage,
             ])
@@ -1458,7 +1458,7 @@ fn oci_vm_transport_fault_cleanup_fails_closed_with_versioned_output() {
             .expect("transport diagnostic output must be valid JSON");
         assert_eq!(
             report["schema_version"],
-            "a3s.oci.oci-vm-transport-fault-cleanup.v3"
+            "aster.oci.oci-vm-transport-fault-cleanup.v3"
         );
         assert_eq!(report["requested_operation"], "create");
         assert_eq!(report["requested_stage"], stage);
@@ -1468,19 +1468,19 @@ fn oci_vm_transport_fault_cleanup_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
         ])
         .output()
         .expect("OCI VM reopen-replacement command must start");
@@ -1490,7 +1490,7 @@ fn oci_vm_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-reopen-replacement.v3"
+        "aster.oci.oci-vm-reopen-replacement.v3"
     );
     assert_eq!(report["requested_operation"], "create");
     assert_eq!(report["requested_stage"], "host-before-request-write");
@@ -1499,19 +1499,19 @@ fn oci_vm_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_state_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "state",
             "--fault-at",
@@ -1525,7 +1525,7 @@ fn oci_vm_state_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("State reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v1"
+        "aster.oci.oci-vm-operation-reopen-replacement.v1"
     );
     assert_eq!(report["requested_operation"], "state");
     assert_eq!(report["requested_stage"], "guest-after-response-write");
@@ -1534,19 +1534,19 @@ fn oci_vm_state_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_start_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "start",
             "--fault-at",
@@ -1560,7 +1560,7 @@ fn oci_vm_start_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Start reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v2"
+        "aster.oci.oci-vm-operation-reopen-replacement.v2"
     );
     assert_eq!(report["requested_operation"], "start");
     assert_eq!(report["requested_stage"], "guest-after-response-write");
@@ -1569,19 +1569,19 @@ fn oci_vm_start_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_kill_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "kill",
             "--fault-at",
@@ -1595,7 +1595,7 @@ fn oci_vm_kill_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Kill reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v3"
+        "aster.oci.oci-vm-operation-reopen-replacement.v3"
     );
     assert_eq!(report["requested_operation"], "kill");
     assert_eq!(report["kill_signal"], 9);
@@ -1606,19 +1606,19 @@ fn oci_vm_kill_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_delete_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "delete",
             "--fault-at",
@@ -1632,7 +1632,7 @@ fn oci_vm_delete_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Delete reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v4"
+        "aster.oci.oci-vm-operation-reopen-replacement.v4"
     );
     assert_eq!(report["requested_operation"], "delete");
     assert_eq!(report["delete_mode"], "stopped-only");
@@ -1642,19 +1642,19 @@ fn oci_vm_delete_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_wait_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "wait",
             "--fault-at",
@@ -1668,7 +1668,7 @@ fn oci_vm_wait_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Wait reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v5"
+        "aster.oci.oci-vm-operation-reopen-replacement.v5"
     );
     assert_eq!(report["requested_operation"], "wait");
     assert_eq!(report["kill_signal"], 9);
@@ -1682,19 +1682,19 @@ fn oci_vm_wait_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_exec_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "exec",
             "--fault-at",
@@ -1708,7 +1708,7 @@ fn oci_vm_exec_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Exec reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v6"
+        "aster.oci.oci-vm-operation-reopen-replacement.v6"
     );
     assert_eq!(report["requested_operation"], "exec");
     assert_eq!(report["exec_terminal"], true);
@@ -1718,19 +1718,19 @@ fn oci_vm_exec_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_signal_process_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "signal-process",
             "--fault-at",
@@ -1744,7 +1744,7 @@ fn oci_vm_signal_process_reopen_replacement_fails_closed_with_versioned_output()
         .expect("SignalProcess reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v7"
+        "aster.oci.oci-vm-operation-reopen-replacement.v7"
     );
     assert_eq!(report["requested_operation"], "signal-process");
     assert_eq!(report["signal_process_signal"], 10);
@@ -1755,19 +1755,19 @@ fn oci_vm_signal_process_reopen_replacement_fails_closed_with_versioned_output()
 
 #[test]
 fn oci_vm_wait_process_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "wait-process",
             "--fault-at",
@@ -1781,7 +1781,7 @@ fn oci_vm_wait_process_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("WaitProcess reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v8"
+        "aster.oci.oci-vm-operation-reopen-replacement.v8"
     );
     assert_eq!(report["requested_operation"], "wait-process");
     assert_eq!(report["wait_process_timeout_ms"], 15_000);
@@ -1796,19 +1796,19 @@ fn oci_vm_wait_process_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_pause_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "pause",
             "--fault-at",
@@ -1822,7 +1822,7 @@ fn oci_vm_pause_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Pause reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v9"
+        "aster.oci.oci-vm-operation-reopen-replacement.v9"
     );
     assert_eq!(report["requested_operation"], "pause");
     assert_eq!(report["requested_stage"], "guest-after-response-write");
@@ -1831,19 +1831,19 @@ fn oci_vm_pause_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_resume_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "resume",
             "--fault-at",
@@ -1857,7 +1857,7 @@ fn oci_vm_resume_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Resume reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v10"
+        "aster.oci.oci-vm-operation-reopen-replacement.v10"
     );
     assert_eq!(report["requested_operation"], "resume");
     assert_eq!(report["requested_stage"], "guest-after-response-write");
@@ -1866,19 +1866,19 @@ fn oci_vm_resume_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_processes_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "processes",
             "--fault-at",
@@ -1892,7 +1892,7 @@ fn oci_vm_processes_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Processes reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v11"
+        "aster.oci.oci-vm-operation-reopen-replacement.v11"
     );
     assert_eq!(report["requested_operation"], "processes");
     assert_eq!(report["exec_terminal"], true);
@@ -1902,19 +1902,19 @@ fn oci_vm_processes_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_read_output_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "read-output",
             "--fault-at",
@@ -1928,7 +1928,7 @@ fn oci_vm_read_output_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("ReadOutput reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v14"
+        "aster.oci.oci-vm-operation-reopen-replacement.v14"
     );
     assert_eq!(report["requested_operation"], "read-output");
     assert_eq!(report["exec_terminal"], false);
@@ -1938,19 +1938,19 @@ fn oci_vm_read_output_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_write_stdin_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "write-stdin",
             "--fault-at",
@@ -1964,7 +1964,7 @@ fn oci_vm_write_stdin_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("WriteStdin reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v15"
+        "aster.oci.oci-vm-operation-reopen-replacement.v15"
     );
     assert_eq!(report["requested_operation"], "write-stdin");
     assert_eq!(report["exec_terminal"], false);
@@ -1974,19 +1974,19 @@ fn oci_vm_write_stdin_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_close_stdin_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "close-stdin",
             "--fault-at",
@@ -2000,7 +2000,7 @@ fn oci_vm_close_stdin_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("CloseStdin reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v16"
+        "aster.oci.oci-vm-operation-reopen-replacement.v16"
     );
     assert_eq!(report["requested_operation"], "close-stdin");
     assert_eq!(report["exec_terminal"], false);
@@ -2010,19 +2010,19 @@ fn oci_vm_close_stdin_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_resize_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "resize",
             "--fault-at",
@@ -2036,7 +2036,7 @@ fn oci_vm_resize_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Resize reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v17"
+        "aster.oci.oci-vm-operation-reopen-replacement.v17"
     );
     assert_eq!(report["requested_operation"], "resize");
     assert_eq!(report["exec_terminal"], true);
@@ -2048,19 +2048,19 @@ fn oci_vm_resize_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_file_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "file",
             "--fault-at",
@@ -2074,7 +2074,7 @@ fn oci_vm_file_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("File reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v18"
+        "aster.oci.oci-vm-operation-reopen-replacement.v18"
     );
     assert_eq!(report["requested_operation"], "file");
     assert_eq!(report["file_op"], "upload");
@@ -2084,19 +2084,19 @@ fn oci_vm_file_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_filesystem_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "filesystem",
             "--fault-at",
@@ -2110,7 +2110,7 @@ fn oci_vm_filesystem_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Filesystem reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v19"
+        "aster.oci.oci-vm-operation-reopen-replacement.v19"
     );
     assert_eq!(report["requested_operation"], "filesystem");
     assert_eq!(report["filesystem_op"], "make-dir");
@@ -2121,19 +2121,19 @@ fn oci_vm_filesystem_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_update_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "update",
             "--fault-at",
@@ -2147,7 +2147,7 @@ fn oci_vm_update_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Update reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v12"
+        "aster.oci.oci-vm-operation-reopen-replacement.v12"
     );
     assert_eq!(report["requested_operation"], "update");
     assert_eq!(report["requested_stage"], "guest-after-response-write");
@@ -2156,19 +2156,19 @@ fn oci_vm_update_reopen_replacement_fails_closed_with_versioned_output() {
 
 #[test]
 fn oci_vm_stats_reopen_replacement_fails_closed_with_versioned_output() {
-    let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+    let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
         .args([
             "oci-vm-reopen-replacement",
             "--shim",
-            "missing-a3s-oci-krun-shim",
+            "missing-aster-oci-krun-shim",
             "--vm-rootfs",
-            "missing-a3s-oci-vm-rootfs",
+            "missing-aster-oci-vm-rootfs",
             "--system-image-manifest",
-            "missing-a3s-oci-system-image-manifest",
+            "missing-aster-oci-system-image-manifest",
             "--bundle",
-            "missing-a3s-oci-bundle",
+            "missing-aster-oci-bundle",
             "--console-dir",
-            "missing-a3s-oci-console-directory",
+            "missing-aster-oci-console-directory",
             "--operation",
             "stats",
             "--fault-at",
@@ -2182,7 +2182,7 @@ fn oci_vm_stats_reopen_replacement_fails_closed_with_versioned_output() {
         .expect("Stats reopen-replacement diagnostic output must be valid JSON");
     assert_eq!(
         report["schema_version"],
-        "a3s.oci.oci-vm-operation-reopen-replacement.v13"
+        "aster.oci.oci-vm-operation-reopen-replacement.v13"
     );
     assert_eq!(report["requested_operation"], "stats");
     assert_eq!(report["requested_stage"], "guest-after-response-write");
@@ -2202,19 +2202,19 @@ fn oci_vm_reopen_replacement_accepts_each_create_transport_stage() {
         "guest-before-response-write",
         "guest-after-response-write",
     ] {
-        let output = Command::new(env!("CARGO_BIN_EXE_a3s-oci"))
+        let output = Command::new(env!("CARGO_BIN_EXE_aster-oci"))
             .args([
                 "oci-vm-reopen-replacement",
                 "--shim",
-                "missing-a3s-oci-krun-shim",
+                "missing-aster-oci-krun-shim",
                 "--vm-rootfs",
-                "missing-a3s-oci-vm-rootfs",
+                "missing-aster-oci-vm-rootfs",
                 "--system-image-manifest",
-                "missing-a3s-oci-system-image-manifest",
+                "missing-aster-oci-system-image-manifest",
                 "--bundle",
-                "missing-a3s-oci-bundle",
+                "missing-aster-oci-bundle",
                 "--console-dir",
-                "missing-a3s-oci-console-directory",
+                "missing-aster-oci-console-directory",
                 "--fault-at",
                 stage,
             ])

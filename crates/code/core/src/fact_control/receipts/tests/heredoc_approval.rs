@@ -84,7 +84,7 @@ async fn exact_approved_heredoc_reaches_bash_but_unapproved_or_rewritten_calls_d
         .unwrap();
         assert_eq!(
             prepared.prepared.original_args_digest,
-            a3s_effect::tool_args_digest(&json!({"command":COMMAND})).unwrap()
+            aster_effect::tool_args_digest(&json!({"command":COMMAND})).unwrap()
         );
         assert_eq!(
             prepared.prepared.original_args_digest != prepared.prepared.effective_args_digest,

@@ -1,4 +1,4 @@
-use a3s_oci_core::{DriverKind, HostPlatform, IsolationClass};
+use aster_oci_core::{DriverKind, HostPlatform, IsolationClass};
 use oci_spec::runtime::ContainerState;
 use serde::{de, Deserialize, Deserializer, Serialize};
 
@@ -117,7 +117,7 @@ impl CheckpointCompatibility {
                 self.driver, self.platform
             )));
         }
-        if !a3s_oci_core::hardware_vm::checkpoint_pair_permitted(self.driver, self.isolation) {
+        if !aster_oci_core::hardware_vm::checkpoint_pair_permitted(self.driver, self.isolation) {
             return Err(checkpoint_error(format!(
                 "checkpoint driver {:?} is incompatible with isolation {:?}",
                 self.driver, self.isolation
@@ -128,8 +128,8 @@ impl CheckpointCompatibility {
             "checkpoint architecture",
             MAX_CHECKPOINT_ARCHITECTURE_BYTES,
         )?;
-        if a3s_oci_core::hardware_vm::is_libkrun(self.driver)
-            && a3s_oci_core::hardware_vm::admit_guest_arch(&self.architecture).is_err()
+        if aster_oci_core::hardware_vm::is_libkrun(self.driver)
+            && aster_oci_core::hardware_vm::admit_guest_arch(&self.architecture).is_err()
         {
             return Err(checkpoint_error(
                 "libkrun checkpoint architecture must be x86_64 or aarch64",

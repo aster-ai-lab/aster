@@ -1,10 +1,10 @@
 {
-  "schema": "a3s.runtime.unit-spec.v4",
+  "schema": "aster.runtime.unit-spec.v4",
   "unit_id": "workload:mcp-weather:replica:1",
   "generation": 3,
   "class": "service",
   "artifact": {
-    "uri": "oci://registry.example/a3s/mcp-weather@sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "uri": "oci://registry.example/aster/mcp-weather@sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
     "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
     "media_type": "application/vnd.oci.image.manifest.v1+json"
   },

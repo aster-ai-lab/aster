@@ -1,9 +1,9 @@
-import { Button } from "@a3s-lab/ui/components/primitives/button";
-import { Checkbox } from "@a3s-lab/ui/components/primitives/checkbox";
-import { Input } from "@a3s-lab/ui/components/primitives/input";
-import { SearchSelect } from "@a3s-lab/ui/components/console/SearchSelect";
-import { Input as Textarea } from "@a3s-lab/ui/components/primitives/textarea";
-import { Slider } from "@a3s-lab/ui/components/primitives/slider";
+import { Button } from "@aster-ai-lab/ui/components/primitives/button";
+import { Checkbox } from "@aster-ai-lab/ui/components/primitives/checkbox";
+import { Input } from "@aster-ai-lab/ui/components/primitives/input";
+import { SearchSelect } from "@aster-ai-lab/ui/components/console/SearchSelect";
+import { Input as Textarea } from "@aster-ai-lab/ui/components/primitives/textarea";
+import { Slider } from "@aster-ai-lab/ui/components/primitives/slider";
 import { useMemo, useState, type ReactNode } from "react";
 
 import { holdsControl, validAnswers, type UiNode, type Values } from "./document";

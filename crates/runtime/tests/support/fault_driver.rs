@@ -1,10 +1,10 @@
-use a3s_runtime::contract::{
+use aster_runtime::contract::{
     IsolationLevel, NetworkMode, ResourceControl, RuntimeActionRequest, RuntimeCapabilities,
     RuntimeExecRequest, RuntimeExecResult, RuntimeFeature, RuntimeInspection, RuntimeLogChunk,
     RuntimeLogQuery, RuntimeLogStream, RuntimeObservation, RuntimeRemoval, RuntimeUnitClass,
     RuntimeUnitSpec, RuntimeUnitState,
 };
-use a3s_runtime::{ProviderId, RuntimeDriver, RuntimeError, RuntimeResult, RuntimeUnitRecord};
+use aster_runtime::{ProviderId, RuntimeDriver, RuntimeError, RuntimeResult, RuntimeUnitRecord};
 use async_trait::async_trait;
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Mutex;
@@ -241,7 +241,7 @@ impl RuntimeDriver for DeterministicFaultDriver {
 
     async fn apply(
         &self,
-        request: &a3s_runtime::contract::RuntimeApplyRequest,
+        request: &aster_runtime::contract::RuntimeApplyRequest,
         current: &RuntimeObservation,
     ) -> RuntimeResult<RuntimeObservation> {
         self.boundary(FaultOperation::Apply, FaultBoundary::BeforeEffect)

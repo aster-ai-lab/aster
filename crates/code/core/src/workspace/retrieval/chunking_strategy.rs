@@ -64,7 +64,7 @@ pub enum WorkspaceChunkingError {
 
 /// Host extension point for deterministic workspace text splitting.
 ///
-/// Implementations return ranges only. A3S Code validates complete coverage,
+/// Implementations return ranges only. Aster Code validates complete coverage,
 /// ordering, UTF-8 boundaries, chunk size/count budgets, then computes line
 /// anchors, source digests, and stable IDs itself. Implementations must be pure,
 /// deterministic, and must not retain `input` after this call.

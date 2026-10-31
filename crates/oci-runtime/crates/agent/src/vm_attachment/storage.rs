@@ -2,8 +2,8 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_oci_agent_protocol::{AgentVmAttachmentManifest, AGENT_VM_DIRECTORY_RELATIVE_ROOT};
-use a3s_oci_sdk::{Error, ErrorCode, Result, StorageAccessMode};
+use aster_oci_agent_protocol::{AgentVmAttachmentManifest, AGENT_VM_DIRECTORY_RELATIVE_ROOT};
+use aster_oci_sdk::{Error, ErrorCode, Result, StorageAccessMode};
 use serde::{Deserialize, Serialize};
 
 #[cfg(target_os = "linux")]
@@ -54,7 +54,7 @@ impl UtilityVmStorageSource {
         });
         let directory = self
             .guest_source
-            .strip_prefix(&format!("{AGENT_VM_DIRECTORY_RELATIVE_ROOT}/a3s-dir-"))
+            .strip_prefix(&format!("{AGENT_VM_DIRECTORY_RELATIVE_ROOT}/aster-dir-"))
             .is_some_and(|tag| {
                 tag.len() == 24
                     && tag
@@ -322,14 +322,14 @@ fn storage_error(message: impl Into<String>) -> Error {
 mod tests {
     #[test]
     fn directory_sources_reject_paths_outside_the_reserved_bundle_subtree() {
-        let valid = format!(".a3s-oci-directories/a3s-dir-{}", "a".repeat(24));
+        let valid = format!(".aster-oci-directories/aster-dir-{}", "a".repeat(24));
         for source in [
             valid.as_str(),
             "../../etc",
             "/etc",
-            ".a3s-oci-directories/../secret",
-            ".a3s-oci-directories/a3s-dir-a",
-            ".a3s-oci-directories/a3s-dir-AAAAAAAAAAAAAAAAAAAAAAAA",
+            ".aster-oci-directories/../secret",
+            ".aster-oci-directories/aster-dir-a",
+            ".aster-oci-directories/aster-dir-AAAAAAAAAAAAAAAAAAAAAAAA",
         ] {
             let encoded = serde_json::json!([{"mountIndex":0, "configuredSource":"/srv/workspace",
                 "guestSource":source}])
@@ -343,11 +343,11 @@ mod tests {
         }
     }
 
-    use a3s_oci_agent_protocol::{
+    use aster_oci_agent_protocol::{
         AgentVmAttachmentManifest, AgentVmStorageAttachment, AgentVmStorageSourceIdentity,
         GuestPath,
     };
-    use a3s_oci_sdk::{
+    use aster_oci_sdk::{
         oci_spec::runtime::Spec, ContainerId, ContainerTarget, CreateAttachments, Generation,
         OciBundle, ProcessIo, StorageAccessMode, StorageAttachmentId, StorageCleanup,
         StorageOwnership,
@@ -365,7 +365,7 @@ mod tests {
             "options": ["ro"]
         }]);
         let bundle = OciBundle::from_json(
-            std::env::temp_dir().join("a3s-agent-storage-inventory"),
+            std::env::temp_dir().join("aster-agent-storage-inventory"),
             value.to_string(),
         )
         .expect("bundle");
@@ -395,7 +395,7 @@ mod tests {
         .expect("transport");
         AgentVmAttachmentManifest::new(
             ContainerTarget::exact(ContainerId::new("stored").unwrap(), Generation(1)),
-            GuestPath::new("/run/a3s-oci-runtime/bundle").unwrap(),
+            GuestPath::new("/run/aster-oci-runtime/bundle").unwrap(),
             bundle.config_digest(),
             digest,
             Vec::new(),

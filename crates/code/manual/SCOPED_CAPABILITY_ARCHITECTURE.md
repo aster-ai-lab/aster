@@ -1,19 +1,19 @@
 # Scoped Capability Architecture
 
-Status: accepted foundation; A3S Use bridge, immutable set, scoped lifecycle, atomic runtime projection, surface readiness DAG, official Tool/Skill host adoption, Run-frozen Tool presentation, Agent delegation, Command dispatch, Hook execution, Core MCP projection, general Context projection, named Flow projection, multi-instance Knowledge Surface readiness, exact package Knowledge projection, and typed UI host projection delivered
+Status: accepted foundation; Aster Use bridge, immutable set, scoped lifecycle, atomic runtime projection, surface readiness DAG, official Tool/Skill host adoption, Run-frozen Tool presentation, Agent delegation, Command dispatch, Hook execution, Core MCP projection, general Context projection, named Flow projection, multi-instance Knowledge Surface readiness, exact package Knowledge projection, and typed UI host projection delivered
 
 ## Decision
 
-A3S Code defines a native scoped capability lifecycle. It is informed by
+Aster Code defines a native scoped capability lifecycle. It is informed by
 first-principles review of existing Harness systems, but it is not a Cordis or
 DeepSeek Harness compatibility layer and does not become a general
 dependency-injection or package-management framework.
 
-A3S Use remains the only owner of package discovery, verification,
+Aster Use remains the only owner of package discovery, verification,
 dependency resolution, Grants, immutable package generations, capability
-cutover, lifecycle journals, and crash recovery. A3S Code consumes an exact
+cutover, lifecycle journals, and crash recovery. Aster Code consumes an exact
 Use capability snapshot and projects it into product-owned Session, Run, Turn,
-and Subtask scopes. A3S Runtime, Gateway, Flow, and Knowledge continue to own
+and Subtask scopes. Aster Runtime, Gateway, Flow, and Knowledge continue to own
 their native execution and data lifecycles.
 
 The native design provides four explicit lifecycle properties:
@@ -33,30 +33,30 @@ useful semantics at the Code boundary.
 | Owner | Owns | Must not own |
 | --- | --- | --- |
 | Host Plugin Manager | Registry selection, trust roots, policy, confirmation, secrets, provider injection, and product UX | Package storage or another lifecycle state machine |
-| A3S Use | Package graphs, verification, receipts, Grants, lifecycle generations, capability generations, atomic cutover, drain evidence, and recovery | Code sessions, model presentation, or generic workload scheduling |
-| A3S Code | Session projection, Run admission, scoped capability visibility, governance ceilings, model presentation, and local effect supervision | Package plan/apply, SemVer resolution, signature policy, Grants, or receipt retirement |
+| Aster Use | Package graphs, verification, receipts, Grants, lifecycle generations, capability generations, atomic cutover, drain evidence, and recovery | Code sessions, model presentation, or generic workload scheduling |
+| Aster Code | Session projection, Run admission, scoped capability visibility, governance ceilings, model presentation, and local effect supervision | Package plan/apply, SemVer resolution, signature policy, Grants, or receipt retirement |
 | Runtime and Gateway | Task and Service identity, process execution, health, routing, invocation, and drain | Package trust, Registry selection, or Code model policy |
-| A3S Flow | Workflow compilation, execution, replay, and observation | A parallel package lifecycle |
+| Aster Flow | Workflow compilation, execution, replay, and observation | A parallel package lifecycle |
 | Knowledge host | OKF validation, indexing, promotion, cited retrieval, retention, and exact query leases | Process execution or Code prompt construction |
 
 The authoritative Use design is the
-[A3S Use Plugin Platform Architecture](https://github.com/A3S-Lab/Use/blob/main/docs/plugin-platform-architecture.md).
+[Aster Use Plugin Platform Architecture](https://github.com/aster-ai-lab/Use/blob/main/docs/plugin-platform-architecture.md).
 Code adapters must consume that contract instead of inferring capability state
 from package directories or implementing another plan/apply path.
 
-## Delivered A3S Use bridge
+## Delivered Aster Use bridge
 
-A3S Use
-[`6ed0b4e`](https://github.com/A3S-Lab/Use/commit/6ed0b4eaf75c464f20690787e7d86471717158df)
+Aster Use
+[`6ed0b4e`](https://github.com/aster-ai-lab/Use/commit/6ed0b4eaf75c464f20690787e7d86471717158df)
 delivers the upstream half of Run admission. The implementation exposes two
 strict, canonical cursor protocols and retains package lifecycle authority in
 Use:
 
 | Contract | Public Use boundary | Verification evidence |
 | --- | --- | --- |
-| `a3s.use.extension-snapshot-cursor.v1` | `ExtensionRegistrySnapshot::cursor` and `ExtensionRegistry::acquire_published_snapshot` bind the Registry digest and every exact package, manifest, route, and lifecycle generation | [atomic Registry lease tests](https://github.com/A3S-Lab/Use/blob/6ed0b4eaf75c464f20690787e7d86471717158df/crates/extension/src/registry_tests/snapshot_lease.rs) |
-| `a3s.use.capability-snapshot-cursor.v1` | An injected `CapabilityRegistry` projects one complete Registry and `CapabilityRegistry::acquire_snapshot_lease` returns its immutable projection plus all upstream route leases | [facade cursor and injected-Registry tests](https://github.com/A3S-Lab/Use/blob/6ed0b4eaf75c464f20690787e7d86471717158df/src/capability_registry/lease.rs) |
-| Capability snapshot JSON v2 | The cursor remains an in-process Rust contract and is skipped by the separately released CLI serialization schema | [compatibility assertion](https://github.com/A3S-Lab/Use/blob/6ed0b4eaf75c464f20690787e7d86471717158df/src/capability_registry/lease.rs#L346) |
+| `aster.use.extension-snapshot-cursor.v1` | `ExtensionRegistrySnapshot::cursor` and `ExtensionRegistry::acquire_published_snapshot` bind the Registry digest and every exact package, manifest, route, and lifecycle generation | [atomic Registry lease tests](https://github.com/aster-ai-lab/Use/blob/6ed0b4eaf75c464f20690787e7d86471717158df/crates/extension/src/registry_tests/snapshot_lease.rs) |
+| `aster.use.capability-snapshot-cursor.v1` | An injected `CapabilityRegistry` projects one complete Registry and `CapabilityRegistry::acquire_snapshot_lease` returns its immutable projection plus all upstream route leases | [facade cursor and injected-Registry tests](https://github.com/aster-ai-lab/Use/blob/6ed0b4eaf75c464f20690787e7d86471717158df/src/capability_registry/lease.rs) |
+| Capability snapshot JSON v2 | The cursor remains an in-process Rust contract and is skipped by the separately released CLI serialization schema | [compatibility assertion](https://github.com/aster-ai-lab/Use/blob/6ed0b4eaf75c464f20690787e7d86471717158df/src/capability_registry/lease.rs#L346) |
 
 Acquisition sorts exact package identities, obtains every shared route lease,
 and rechecks the immutable publication while the complete batch is held. A
@@ -133,11 +133,11 @@ effects:
 
 | Rust boundary | Delivered invariant |
 | --- | --- |
-| `UseCapabilityGeneration` | Binds `a3s.use.capability-snapshot-cursor.v1`, the Use capability revision, and the authoritative Extension Registry revision without aliasing the local Code generation |
+| `UseCapabilityGeneration` | Binds `aster.use.capability-snapshot-cursor.v1`, the Use capability revision, and the authoritative Extension Registry revision without aliasing the local Code generation |
 | `UsePackageGeneration` | Binds package, component, route, version, lifecycle generation, package digest, and manifest digest from one exact Use cursor |
 | `CapabilitySource` and `CapabilityContribution` | Assign source class through typed host constructors, keep Built-in construction crate-private, and require one non-empty complete descriptor batch per exact source |
 | `CapabilitySet` | `from_use_projection` retains the upstream cursor even for an empty product projection; construction rejects mixed Use cursors, duplicate sources or identities, public-name conflicts, Built-in shadowing, unresolved dependencies, and bounded-input overflow before returning `Arc<CapabilitySet>` |
-| `a3s.code.capability-set.v1` | Hashes canonical `BTreeMap` order through a bounded streaming, domain-separated SHA-256 writer; the local `CodeCatalogGeneration` is part of the identity |
+| `aster.code.capability-set.v1` | Hashes canonical `BTreeMap` order through a bounded streaming, domain-separated SHA-256 writer; the local `CodeCatalogGeneration` is part of the identity |
 
 The [public contract tests](../core/tests/capability_set.rs) lock typed input
 validation, aggregate bounds, source ownership, insertion-order parity, one
@@ -163,7 +163,7 @@ authority out of Use:
 | `CapabilityScope<Session/Run/Turn/Subtask>` | Sealed marker types permit Session-to-Run, Run-to-Turn/Subtask, Turn-to-Subtask, and recursive Subtask-to-Turn/Subtask construction; every child shares the same immutable set and a derived cancellation token |
 | `CapabilityScopeHandle<K>` | Cloneable weak handles transfer tasks, reversible effects, or permitted child scopes into an active owner without retaining its catalog generation or exact Use lease; every operation fails closed after close or drop |
 | `CapabilityLease<'scope, K>` | Borrows its typed owner, filters descriptors through the ceiling, and fails after cancellation; compile-fail tests prevent lifetime escape and marker substitution |
-| `RetainedUseGeneration` | A trusted host adapter retains the real non-clone A3S Use `CapabilitySnapshotLease`; Run admission rejects missing, unexpected, or cursor-mismatched leases |
+| `RetainedUseGeneration` | A trusted host adapter retains the real non-clone Aster Use `CapabilitySnapshotLease`; Run admission rejects missing, unexpected, or cursor-mismatched leases |
 | Scope supervisor | Owns a bounded `JoinSet`, child registry, reverse-order effect stack, and final generation lease; one cancellation-safe close driver makes teardown idempotent and observable |
 
 Close cancels first, settles or aborts tasks, recursively closes children in
@@ -217,7 +217,7 @@ official Tool/Skill hosts to it, and `HOST-AGENT1` binds Core Agent delegation
 to the same Run generation. `HOST-COMMAND1` binds Core slash-command dispatch
 to that generation, `HOST-HOOK1` binds Hook definitions, handlers, and
 observational work, and `HOST-MCP1` binds one exact initialized MCP client and
-tool catalog without claiming end-to-end A3S Use or official-host adoption.
+tool catalog without claiming end-to-end Aster Use or official-host adoption.
 `HOST-CONTEXT1` binds general Context providers to the same admitted Run while
 leaving persisted package authority on the Knowledge/session boundary.
 `HOST-FLOW1` binds one named durable `WorkflowSpec` to the exact `FlowEngine`
@@ -241,7 +241,7 @@ document and its explicit backend readiness edges to a non-clone host handle.
 | Retirement and rollback | Transaction ownership synchronously transfers all completed effects to a catalog cleanup queue on prepare failure, cancellation, validation failure, dropped transaction, or lost CAS; an `Arc`-owned published generation transfers its effects only after the final old reader lease drops |
 
 The catalog never parses a package, selects a version, computes Grants, or
-advances an A3S Use lifecycle generation. Its `CapabilitySet` retains the
+advances an Aster Use lifecycle generation. Its `CapabilitySet` retains the
 complete Use cursor produced by `USE-BRIDGE1`. Run admission pairs the Code
 projection lease with a fresh real non-clone Use `CapabilitySnapshotLease`;
 neither lease substitutes for the other.
@@ -284,7 +284,7 @@ close in reverse order through the existing rollback queue.
 
 The plan is retained in `CapabilityProjection`, so a pinned Run can inspect
 the exact readiness ordering associated with its catalog generation. A
-cross-package surface edge remains legal only after A3S Use has already
+cross-package surface edge remains legal only after Aster Use has already
 published one complete cursor and Code has retained that cursor in the set.
 This surface DAG is not the Use package DAG and cannot install, resolve,
 activate, hide, retire, or recover a package.
@@ -380,7 +380,7 @@ reverse cleanup. After commit, `Arc` ownership delays retirement until the last
 old projection lease is released; cleanup never reconstructs a mixed old/new
 visible set.
 
-For A3S Use projections, Run admission requires an all-or-nothing upstream
+For Aster Use projections, Run admission requires an all-or-nothing upstream
 snapshot lease. Acquisition uses the exact capability generation, revision,
 and sorted package-generation identities, then rechecks the publication after
 all underlying leases are held. If the old generation has already been hidden,
@@ -399,7 +399,7 @@ in one catalog CAS. This gate did not claim the other capability kinds;
 `HOST-COMMAND1` extends it to slash Commands. `HOST-HOOK1` extends it to Hook
 bindings, `HOST-MCP1` extends it to exact-client MCP bindings, and
 `HOST-CONTEXT1` extends it to general Context providers. `HOST-FLOW1` extends it
-to named A3S Flow bindings, and `HOST-KNOWLEDGE1` extends it to multi-instance
+to named Aster Flow bindings, and `HOST-KNOWLEDGE1` extends it to multi-instance
 Knowledge Surface readiness plus one exact package authority per Run.
 `HOST-UI1` extends it to bounded, path-free UI
 documents consumed only through an exact host handle.
@@ -408,7 +408,7 @@ Run admission pins three things at one linearization point: the immutable Code
 projection, frozen compatibility Tool/Skill/Agent/Command/Hook maps plus exact
 MCP bindings, and the governance ceiling. It then asks the published provider
 for a fresh, non-clone retained generation. The provider implementation must
-own the concrete A3S Use `CapabilitySnapshotLease`; a generation number or
+own the concrete Aster Use `CapabilitySnapshotLease`; a generation number or
 cached projection pointer is not a substitute. Code rechecks generation,
 capability revision, and Registry revision before the Run scope accepts the
 lease.
@@ -425,11 +425,11 @@ and transfers every prepared effect to bounded cleanup. A non-clean Run scope
 close is a typed Run failure rather than a warning-only condition.
 
 The official
-[CLI adapter](https://github.com/A3S-Lab/CLI/commit/df2e081aff168bb0d5d7db895962583559979ad6)
+[CLI adapter](https://github.com/aster-ai-lab/CLI/commit/df2e081aff168bb0d5d7db895962583559979ad6)
 and
-[Work adapter](https://github.com/A3S-Lab/Work/commit/23f00e2bc8b555b406f6bcfe2df92b7c8c17a163)
+[Work adapter](https://github.com/aster-ai-lab/Work/commit/23f00e2bc8b555b406f6bcfe2df92b7c8c17a163)
 complete the first host cut over Core
-[`d1f70d5`](https://github.com/A3S-Lab/Code/commit/d1f70d57bcdbb3459d3205b647d61ebc0a00a940).
+[`d1f70d5`](https://github.com/aster-ai-lab/Code/commit/d1f70d57bcdbb3459d3205b647d61ebc0a00a940).
 The resident CLI watcher builds one complete verified managed MCP, Skill,
 eligible Runtime Tool, dependency-closed Flow, and UI batch for every Use
 cursor and lets each admitted Run or host handle acquire its own real non-clone
@@ -445,15 +445,15 @@ its Registry watcher has been cancelled and joined and the Session catalog is
 proven equal to its pre-setup stamp. Any visible catalog change or incomplete
 shutdown fails closed.
 
-A3S Work requires the reserved `scoped-v1` process contract. Discovery
+Aster Work requires the reserved `scoped-v1` process contract. Discovery
 probes the exact side-effect-free help route rather than trusting SemVer alone,
 and every launch passes the mode as shell-free arguments. Required setup may
 perform policy-authorized first-use installation, but offline and
 no-auto-install boundaries fail before provider egress. Before Run admission,
 Code waits for the atomic receipt, stops discovery, and verifies that the final
 Session stamp still matches it. A successful result returns
-`a3s.code.scoped-capability-runtime.v1` with the positive Code generation and
-digest plus the complete `a3s.use.capability-snapshot-cursor.v1` cursor.
+`aster.code.scoped-capability-runtime.v1` with the positive Code generation and
+digest plus the complete `aster.use.capability-snapshot-cursor.v1` cursor.
 Work rejects absent or malformed evidence as
 `protocol.capability-runtime-invalid`.
 
@@ -471,7 +471,7 @@ by `HOST-CAP1`. It introduces no package, Registry, capability-generation, or
 execution ownership. The complete path is:
 
 ```text
-A3S Use capability snapshot + non-clone Run lease
+Aster Use capability snapshot + non-clone Run lease
                          │
                          ▼
         Code Run-frozen Tool Arc values
@@ -489,7 +489,7 @@ model Tool call ──▶ existing ToolInvoker ──▶ same pinned Tool Arc
 ```
 
 `ToolPresentationProfileV1` is a serializable Rust closed value with schema
-`a3s.code.tool-presentation-profile.v1`. Its four exhaustive modes are
+`aster.code.tool-presentation-profile.v1`. Its four exhaustive modes are
 Adaptive, Direct, Code, and Disabled. Adaptive preserves the prior
 prompt-sensitive selector. Direct exposes every permission-visible definition.
 Code exposes only the already registered `program` Tool and replaces only its
@@ -525,9 +525,9 @@ The event is part of the existing `EventEnvelopeV1` journal and SDK catalogs.
 Rust hosts pass `ToolPresentationProfileV1` through typed Session options.
 The profile chooses presentation only; it does not grant execution authority.
 
-This cut deliberately does not consume an A3S Use cursor, publish a Code
+This cut deliberately does not consume an Aster Use cursor, publish a Code
 catalog generation, resolve a package, compute a Grant, install a Tool, or own
-drain and recovery. A3S Use remains authoritative for all of those operations;
+drain and recovery. Aster Use remains authoritative for all of those operations;
 Profile evidence only explains which definitions from the already admitted
 Run were placed in one model request.
 
@@ -535,7 +535,7 @@ Run were placed in one model request.
 
 `HOST-AGENT1` admits `CapabilityValue::Agent` through the existing
 `SessionCapabilityBatch`; it does not add an Agent package manager or a second
-generation counter. A3S Use still selects, verifies, grants, publishes, drains,
+generation counter. Aster Use still selects, verifies, grants, publishes, drains,
 and recovers the package generation. Code receives the exact projected
 `AgentDefinition` values and the generation-specific lease provider in the
 same transaction as Tool and Skill values.
@@ -550,7 +550,7 @@ registration, and `register_agent_dir` cannot shadow an Agent in the published
 projection.
 
 ```text
-A3S Use capability generation + exact Run lease
+Aster Use capability generation + exact Run lease
                          │
                          ▼
           Code immutable capability projection
@@ -574,7 +574,7 @@ nested child cannot escape into a newer Skill map through this rebind.
 
 An N+1 publication changes only later Run admission. An already admitted N Run
 continues to expose the N Agent catalog, resolves `task` through the N registry,
-and retains the exact N A3S Use lease until the foreground child and parent Run
+and retains the exact N Aster Use lease until the foreground child and parent Run
 settle. Hook now follows the same Run generation through `HOST-HOOK1`. MCP and
 its delegated wrappers now follow it through `HOST-MCP1`; general parent-Run
 Context follows it through `HOST-CONTEXT1`, while delegated prompt context is
@@ -585,7 +585,7 @@ an intentional narrowing. Named host Flow lookup follows it through
 ### HOST-COMMAND1 Command runtime cut
 
 `HOST-COMMAND1` admits `CapabilityValue::Command` through the existing
-`SessionCapabilityBatch`. A3S Use remains responsible for selecting,
+`SessionCapabilityBatch`. Aster Use remains responsible for selecting,
 verifying, granting, publishing, draining, and recovering the package
 generation. Code receives the exact projected `Arc<dyn SlashCommand>` values
 and the generation-specific lease provider; it does not clone Command objects
@@ -596,11 +596,11 @@ admission lease. Slash-command syntax then enters the same capability Run used
 by model-backed execution. At that boundary, Code snapshots the compatibility
 `CommandRegistry`, merges the projected generation into an independent name
 map, and builds `CommandContext` Tool names from the same pinned
-`ToolExecutor`. The capability Run and exact A3S Use generation lease remain
+`ToolExecutor`. The capability Run and exact Aster Use generation lease remain
 alive until synchronous Command execution has produced its output.
 
 ```text
-A3S Use capability generation + exact Run lease
+Aster Use capability generation + exact Run lease
                          │
                          ▼
           Code immutable capability projection
@@ -624,7 +624,7 @@ publication, both `register_command` and the legacy guard reject a projected
 name.
 
 An N Command already executing when N+1 is published continues to resolve and
-execute the exact N `Arc`. Its N A3S Use lease remains retained through that
+execute the exact N `Arc`. Its N Aster Use lease remains retained through that
 execution, while the next blocking or streaming dispatch admits N+1. Hook is
 bound to the same Run by `HOST-HOOK1`; MCP is bound by `HOST-MCP1`, while the
 remaining asynchronous resources stay gated on product-owned supervised
@@ -636,7 +636,7 @@ effects.
 existing `SessionCapabilityBatch`. A `HookBinding` is one immutable ownership
 atom containing `Arc<Hook>` metadata and its exact `Arc<dyn HookHandler>`.
 Code therefore cannot combine a definition from Use generation N with a
-callback from N+1. A3S Use still selects, verifies, grants, publishes, drains,
+callback from N+1. Aster Use still selects, verifies, grants, publishes, drains,
 and recovers the package generation; Code receives only the already selected
 binding and the generation-specific lease provider.
 
@@ -651,7 +651,7 @@ through Core's atomic `register_hook_registration` and
 compatibility.
 
 ```text
-A3S Use capability generation + exact Run lease
+Aster Use capability generation + exact Run lease
                          │
                          ▼
         Code immutable HookBinding projection
@@ -675,7 +675,7 @@ mutation affects only later Runs.
 Projected `SessionStart` and `SessionEnd` events fail before publication because
 Session construction and teardown are outside a capability Run. Projected
 `SkillLoad` and `SkillUnload` also fail because their package lifecycle belongs
-to A3S Use and Code has no Run-scoped production emitter for them. Other Hook
+to Aster Use and Code has no Run-scoped production emitter for them. Other Hook
 points execute only where the Agent loop produces the matching Run event.
 
 Observational dispatch no longer creates an untracked Tokio task. The
@@ -714,7 +714,7 @@ receive the same binding `Arc` after compatibility sources are assembled, so
 child execution preserves the parent Run generation as well.
 
 ```text
-A3S Use generation + exact non-clone Run route lease
+Aster Use generation + exact non-clone Run route lease
                          │
                          ▼
           Code immutable capability projection
@@ -740,7 +740,7 @@ when an async close cannot run.
 
 This introduces two deliberately different leases. The Code projection lease
 pins the exact local client, definitions, caller, and close effect. Every
-executing Run separately acquires and retains the non-clone A3S Use
+executing Run separately acquires and retains the non-clone Aster Use
 `CapabilitySnapshotLease`, whose canonical route leases govern upstream
 admission and drain. N+1 publication can replace the Session-visible Code
 binding without closing N while an N Run reads it, and cannot release N's Use
@@ -783,7 +783,7 @@ catalog bounds, N/N+1 definition and client isolation, separate Use lease
 retention, final-reader retirement, compatibility conflicts, stdio rollback
 without an orphan process, and delegated child inheritance.
 
-A3S Use and the official CLI now emit every exact extension MCP surface through
+Aster Use and the official CLI now emit every exact extension MCP surface through
 this adapter, including lazy trusted HTTP Runtime/Gateway composition in the
 one-shot host. Built-in MCP remains an explicit first-party compatibility path,
 and adoption by the remaining official hosts is still an integration gate.
@@ -803,7 +803,7 @@ discovers packages nor creates a second Context registry.
 Each admitted Agent Run copies the exact projected provider `Arc` values into
 its frozen `AgentConfig`. An N Run therefore continues to query N and call N's
 `on_turn_complete` after N+1 publication while retaining its separately
-acquired N A3S Use lease. Later Runs see N+1. Preparation, validation, name
+acquired N Aster Use lease. Later Runs see N+1. Preparation, validation, name
 conflict, cancellation, or a lost CAS leaves the current Run-visible provider
 set unchanged and follows the existing reverse cleanup path.
 
@@ -827,7 +827,7 @@ lock the delegated prompt-context isolation rule.
 
 `HOST-FLOW1` replaces the anonymous `DynamicWorkflowRuntime` capability value
 with `CapabilityValue::Flow(Arc<FlowBinding>)`. A binding pairs one immutable
-`WorkflowSpec` with the exact A3S Flow `FlowEngine` that owns its event store,
+`WorkflowSpec` with the exact Aster Flow `FlowEngine` that owns its event store,
 runtime, observer, replay, and runtime-build compatibility. The spec validates
 at construction, `WorkflowSpec::name` is the single public capability name, and
 the engine must explicitly support the spec's pinned build before the value can
@@ -836,7 +836,7 @@ projection transaction before catalog publication.
 
 `AgentSession::projected_flow(name)` pins the current Code projection under the
 same close/cutover linearization boundary used by Agent Runs. A missing name
-returns `None` before A3S Use lease acquisition. A found name admits a fresh
+returns `None` before Aster Use lease acquisition. A found name admits a fresh
 capability Run and returns a non-clone `ProjectedFlowHandle` that owns the exact
 binding, projection lease, and generation-specific Use lease. The handle starts,
 drives, inspects, and explicitly cancels workflows only through that engine.
@@ -881,7 +881,7 @@ Run admission copies that exact `Arc<PackageContextSession>` into the frozen
 Agent configuration and removes a Session-static package recovery provider
 from that Run only. General-purpose projected Context and host-supplied ambient
 Context cannot accompany exact Knowledge. An N Run therefore queries N and
-retains N's Code projection plus its separate exact A3S Use lease after N+1 is
+retains N's Code projection plus its separate exact Aster Use lease after N+1 is
 published; a later Run queries N+1. Delegated Agent prompt-context isolation is
 still an intentional child-scope narrowing, so Knowledge is not rediscovered
 through Session-latest state in a child.
@@ -889,7 +889,7 @@ through Session-latest state in a child.
 Temporal capability identity is persisted independently from any one projected
 surface. Every newly admitted Run records `RunCapabilityBindingV1`, which binds
 the immutable Code catalog generation and digest, a canonical digest of the
-complete downward-only authority ceiling, and the optional exact A3S Use
+complete downward-only authority ceiling, and the optional exact Aster Use
 cursor. A live `LoopCheckpoint` copies that value from its pinned Run. Recovery
 pins a real capability Run and compares the complete binding before reserving
 the target Run; an N/N+1 mismatch, including a cutover after preparation, fails
@@ -960,7 +960,7 @@ CSP, authorize navigation, persist renderer state, expose ambient filesystem,
 network, process, or secret access, or route backend messages. An embedding
 renderer host must complete its policy and backend readiness before staging the
 binding and may attach renderer lifetime as a reversible transaction effect.
-The authoritative A3S Use projection now exposes a versioned complete
+The authoritative Aster Use projection now exposes a versioned complete
 Skill/Tool/MCP/OKF/Flow dependency set, and the CLI stages managed MCP, Skill,
 reviewed Runtime Tool, immutable Knowledge Surface, dependency-closed Flow,
 and UI values through this batch. Tool, MCP, and OKF readiness edges are
@@ -993,14 +993,14 @@ readiness, and owned effects.
   source precedence, never insertion order.
 - Removing a source removes its contributions and recomputes the visible set;
   it never restores a saved pointer.
-- Package and SemVer dependency resolution remains in A3S Use. Code may validate
+- Package and SemVer dependency resolution remains in Aster Use. Code may validate
   and order a bounded readiness DAG from the published surface edges only.
 
 ## Architectural invariants
 
 | ID | Invariant |
 | --- | --- |
-| `CAP-I01` | A3S Use is the sole authority for package plan/apply, verification, dependency resolution, Grants, lifecycle generation, capability cutover, and recovery. |
+| `CAP-I01` | Aster Use is the sole authority for package plan/apply, verification, dependency resolution, Grants, lifecycle generation, capability cutover, and recovery. |
 | `CAP-I02` | One source generation is projected into a Session as one atomic contribution batch. |
 | `CAP-I03` | A failed transaction cannot change the visible catalog generation or leave a partially visible batch. |
 | `CAP-I04` | A Run's model definition and execution resolve through the same pinned capability value; delegated Agent definitions and lookup share one Run-frozen registry, slash-command selection and execution share another, Hook metadata and handlers remain one exact binding with supervised observations, MCP definitions and raw calls share one exact client binding, general Context queries use the Run-frozen provider list, a projected Flow handle uses one exact spec/engine pair and same-generation Knowledge Surface readiness, package queries and Run evidence use one separately selected exact Knowledge provider/binding pair, a projected UI handle uses one exact content-addressed document and dependency set, a presentation Profile can only remove Tool definitions or rephrase the existing code gateway, and persisted recovery must reproduce the Run's complete catalog-plus-ceiling identity before target admission. |
@@ -1045,7 +1045,7 @@ concerns and produce typed contributions.
 | Gate | State | Outcome | Exit criteria |
 | --- | --- | --- | --- |
 | `CAP-FND1` | Delivered | Accepted ownership, lifetime, identity, failure, verification, and migration contract | The contract and Roadmap are mechanically aligned; existing lifecycle and concurrency evidence is recorded and green |
-| `USE-BRIDGE1` | Delivered | Use `6ed0b4e` publishes `a3s.use.extension-snapshot-cursor.v1`, `a3s.use.capability-snapshot-cursor.v1`, and a non-clone atomic exact-generation snapshot lease | Full Use tests and strict Clippy pass; acquisition is all-or-nothing and rejects hidden, mixed, contended, stale, unleasable, or digest-mismatched generations without changing capability snapshot JSON v2 |
+| `USE-BRIDGE1` | Delivered | Use `6ed0b4e` publishes `aster.use.extension-snapshot-cursor.v1`, `aster.use.capability-snapshot-cursor.v1`, and a non-clone atomic exact-generation snapshot lease | Full Use tests and strict Clippy pass; acquisition is all-or-nothing and rejects hidden, mixed, contended, stale, unleasable, or digest-mismatched generations without changing capability snapshot JSON v2 |
 | `CAP-SET1` | Delivered | Typed Use package/cursor and Code catalog generations, sealed source classes, complete source-owned descriptor batches, and a bounded immutable `CapabilitySet` | `BTreeMap` ordering plus a domain-separated golden digest is insertion-order independent; mixed Use cursors, conflicts, missing edges, forged Built-in precedence, and every configured bound fail before an `Arc` can escape |
 | `CAP-SCOPE1` | Delivered | Session/Run/Turn/Subtask markers, catalog-bound ceilings, borrowed leases, reversible effects, exact Use Run leases, and a structured-concurrency supervisor | Compile-fail and runtime tests prevent lease escape or child expansion; close is reverse-order, cancellation-safe, idempotent, bounded, and releases the Use lease last |
 | `CAP-COMP1` | Delivered | Real Agent execution composes orchestration/provider/Tool Turns, recursive Skill/Task Subtasks, Turn-supervised bridges/effects, and Run-supervised background work under one downward-only cancellation tree | Runtime tests prove orchestration and Tool Turns, stream/effect settlement, `Run -> Turn -> Subtask -> Turn` recursion, fail-closed stale promotion, and Run-owned Task/memory settlement before lease release |
@@ -1058,7 +1058,7 @@ concerns and produce typed contributions.
 | `HOST-HOOK1` | Delivered | Core composes projected Hook bindings through one Run-frozen executor | Definition/handler pairs remain generation-exact, invalid Run event scopes and compatibility conflicts fail before publication, external `Skip` cannot bypass projected policy, and supervised observations retain the exact Use lease through bounded settlement |
 | `HOST-MCP1` | Delivered | Core projects each MCP server as one immutable exact-client binding and freezes its wrappers per Run | Initialization and `tools/list` finish before publication; N definitions, raw calls, foreground delegated children, and the parent Run's N Use lease remain generation-exact across N+1; rollback and final-reader retirement close the Code-owned connection effect without mutable-manager fallback |
 | `HOST-CONTEXT1` | Delivered | Core projects general `ContextProvider` values into each Run-frozen Agent configuration through the same atomic batch | N Runs retain N providers and the exact N Use lease across N+1; descriptor/provider names and Session-static names cannot conflict; package bindings remain on the separately persisted Knowledge/session boundary; delegated children keep isolated prompt context |
-| `HOST-FLOW1` | Delivered | With `dynamic-workflow`, Core projects each named `FlowBinding` as one exact `WorkflowSpec` plus `FlowEngine` and exposes it through a non-clone host handle | Spec/engine runtime-build incompatibility and descriptor/spec name drift fail before publication; an N handle retains N's definition, engine/store, and exact Use lease across N+1; missing lookup acquires no lease; Session close cancels active replay and explicit close releases the lease; thin/default builds do not link `a3s-flow` |
+| `HOST-FLOW1` | Delivered | With `dynamic-workflow`, Core projects each named `FlowBinding` as one exact `WorkflowSpec` plus `FlowEngine` and exposes it through a non-clone host handle | Spec/engine runtime-build incompatibility and descriptor/spec name drift fail before publication; an N handle retains N's definition, engine/store, and exact Use lease across N+1; missing lookup acquires no lease; Session close cancels active replay and explicit close releases the lease; thin/default builds do not link `aster-flow` |
 | `HOST-KNOWLEDGE1` | Delivered | Core projects multiple digest-bound, non-queryable Knowledge Surface readiness values while admitting at most one separately selected package Knowledge authority into each Run | Same-source Flow dependencies close only against exact surface evidence; surface values never become package context; N Runs retain N provider, binding, readiness set, and exact Use lease across N+1; each Run snapshot records its own package binding while the Session snapshot records the next-Run binding; resume requires an exact bootstrap; multiple or ambient general Context authorities fail before publication |
 | `HOST-UI1` | Delivered | Core projects bounded, path-free `UiBinding` values and exposes them through a non-clone host handle | Reviewed entry, style, and script bytes plus their content digests are frozen before publication; descriptor/binding name or digest drift and dependencies outside Tool, Skill, MCP, and Flow fail closed; an N handle retains N's exact document and Use lease across N+1; missing lookup acquires no lease; Session close cancels active host use; renderer policy remains host-owned |
 | `CODE-APOFASI1` | Delivered | Opt-in Apofasi System One substrate (`TypedDecisionEngine`, `TypedDecisionService`, `decide_and_gate`, digest `TypedDecisionReceiptV1`, `GatePolicy`, Advanced `typed_decisions` inventory, `CodeError::TypedDecision`) behind Cargo features `apofasi` / `apofasi-infer` / `apofasi-metal`. When enabled, Code refuses to replace planning pre-analysis and goal achievement | Thin `local-code` builds do not link Apofasi; empty requests fail closed; lexical path needs no weights; neural path stays feature-gated; the system prompt is unchanged; a typed answer cannot skip a generation that returns more than one field; call sites refuse that skip; Code does not add a keyword classifier and does not lower `GatePolicy`; the escalate prompt includes the task state; extra call sites stay host-owned; no Use-projected `CapabilityKind` yet (`HOST-APOFASI` remains future work) |
@@ -1082,7 +1082,7 @@ adds multi-instance non-queryable Knowledge Surface readiness plus at most one
 exact package provider/binding pair per Run and Run-local/next-Run
 persistence evidence without taking OKF or query-lease ownership.
 `HOST-UI1` adds bounded, content-addressed renderer-neutral documents and an
-exact host handle without taking renderer policy or state ownership. A3S Use
+exact host handle without taking renderer policy or state ownership. Aster Use
 and the CLI now supply versioned managed MCP and UI dependency evidence plus
 eligible managed MCP, Skill, Runtime Tool, Knowledge Surface, dependency-closed Flow, and UI
 atomic projection. The one-shot host also supplies lazy trusted HTTP
@@ -1096,7 +1096,7 @@ transaction instead of adding another reconciliation abstraction.
 `CAP-PROFILE1` operates only after that atomic admission boundary. It projects
 the Run-frozen permission-visible definition list, never the Session-latest
 registry, and preserves the Tool name/schema identity used by the same pinned
-executor. Profile selection therefore cannot advance or weaken the A3S Use or
+executor. Profile selection therefore cannot advance or weaken the Aster Use or
 Code catalog generation.
 
 ## Verification matrix

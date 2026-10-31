@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::super::{editor_error, qualified};
 use crate::editor::{
@@ -432,7 +432,7 @@ const fn bool_token(value: bool) -> &'static str {
     }
 }
 
-fn unknown_content(part_name: &str, child: &str) -> a3s_use_core::UseError {
+fn unknown_content(part_name: &str, child: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_conditional_format_unknown_content",
         "The conditional format cannot be replaced without discarding unknown child content.",
@@ -441,7 +441,7 @@ fn unknown_content(part_name: &str, child: &str) -> a3s_use_core::UseError {
     .with_detail("child", child)
 }
 
-fn invalid(part_name: &str, reason: &str) -> a3s_use_core::UseError {
+fn invalid(part_name: &str, reason: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_conditional_format_invalid",
         format!("Spreadsheet worksheet conditional formatting {reason}."),

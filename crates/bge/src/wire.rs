@@ -1,7 +1,7 @@
 //! Request and response shapes with closed-set limits.
 //!
 //! The embedding shape follows the OpenAI embeddings endpoint; the rerank
-//! shape follows the Jina/Cohere rerank wire used by A3S Studio. Unknown
+//! shape follows the Jina/Cohere rerank wire used by Aster Studio. Unknown
 //! fields are tolerated (both wire formats carry optional fields this
 //! crate does not act on), but every field this crate does act on is
 //! bounded and every refusal names its limit.

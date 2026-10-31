@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
-use a3s_oci_core::IsolationClass;
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_core::IsolationClass;
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     DeleteMode, DeleteRequest, ErrorCode, FileRequest, FilesystemRequest, Generation, ListRequest,
     OciRuntimeService, OperationContext,
 };
@@ -45,7 +45,7 @@ pub(super) async fn run(
         }
     };
     let response_delivered = qualification.stage
-        == a3s_oci_agent_protocol::AgentTransportOperationStage::GuestAfterResponseWrite;
+        == aster_oci_agent_protocol::AgentTransportOperationStage::GuestAfterResponseWrite;
     let recovery_file = response_delivered.then(|| qualification.file.clone());
     let recovery_marker = response_delivered.then(|| {
         (

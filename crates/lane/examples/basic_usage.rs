@@ -1,11 +1,11 @@
 //! Basic usage example
 //!
-//! This example demonstrates the basic usage of a3s-lane:
+//! This example demonstrates the basic usage of aster-lane:
 //! - Creating a queue manager with default lanes
 //! - Submitting commands
 //! - Receiving results
 
-use a3s_lane::{Command, EventEmitter, QueueManagerBuilder, Result};
+use aster_lane::{Command, EventEmitter, QueueManagerBuilder, Result};
 use async_trait::async_trait;
 
 /// A simple command that processes a string
@@ -35,7 +35,7 @@ async fn main() -> anyhow::Result<()> {
     // Initialize tracing
     tracing_subscriber::fmt::init();
 
-    println!("=== A3S Lane: Basic Usage Example ===\n");
+    println!("=== Aster Lane: Basic Usage Example ===\n");
 
     // Create event emitter
     let emitter = EventEmitter::new(100);

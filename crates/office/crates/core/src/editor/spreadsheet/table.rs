@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{editor_error, validate_mutation_path, SpreadsheetCellValue};
 use crate::editor::part::{dialect, relationship_part, relative_target};
@@ -646,7 +646,7 @@ fn required_table_format<'a>(node: &'a DocumentNode, key: &str) -> UseResult<&'a
     })
 }
 
-fn identity_collision(name: &str, owner: &str) -> a3s_use_core::UseError {
+fn identity_collision(name: &str, owner: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_table_name_collision",
         format!("Spreadsheet table identity '{name}' collides with '{owner}'."),
@@ -655,7 +655,7 @@ fn identity_collision(name: &str, owner: &str) -> a3s_use_core::UseError {
     .with_detail("owner", owner)
 }
 
-fn node_not_found(path: &str) -> a3s_use_core::UseError {
+fn node_not_found(path: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.node_not_found",
         format!("Office semantic path '{path}' does not exist."),
@@ -663,7 +663,7 @@ fn node_not_found(path: &str) -> a3s_use_core::UseError {
     .with_detail("path", path)
 }
 
-pub(super) fn table_error(part_name: &str, reason: impl Into<String>) -> a3s_use_core::UseError {
+pub(super) fn table_error(part_name: &str, reason: impl Into<String>) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_table_invalid",
         format!("Spreadsheet table part '{part_name}' {}.", reason.into()),

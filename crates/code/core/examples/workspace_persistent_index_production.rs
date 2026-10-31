@@ -1,4 +1,4 @@
-//! Production-style qualification of the workspace-owned a3s-vec FTS projection.
+//! Production-style qualification of the workspace-owned aster-vec FTS projection.
 //!
 //! This exercises the real manifest scanner, catalog runtime, background
 //! index coordinator, concurrent readers, same-content generation reuse,
@@ -6,9 +6,9 @@
 //!
 //! Run from `crates/code` in release mode:
 //!
-//! `cargo run --locked --release -p a3s-code-core --example workspace_persistent_index_production --features a3s-vec-fts`
+//! `cargo run --locked --release -p aster-core --example workspace_persistent_index_production --features aster-vec-fts`
 
-use a3s_code_core::workspace::{
+use aster_core::workspace::{
     scan_workspace_files, LexicalSearchRequest, ManifestWorkspaceBackend, WorkspaceLexicalEngine,
     WorkspacePersistentIndex, WorkspacePersistentIndexPhase, WorkspaceServices,
 };
@@ -25,9 +25,9 @@ const READY_TIMEOUT: Duration = Duration::from_secs(60);
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<()> {
-    let file_count = env_usize("A3S_WORKSPACE_ACCEPTANCE_FILES", DEFAULT_FILE_COUNT)?;
+    let file_count = env_usize("ASTER_WORKSPACE_ACCEPTANCE_FILES", DEFAULT_FILE_COUNT)?;
     let query_workers = env_usize(
-        "A3S_WORKSPACE_ACCEPTANCE_QUERY_WORKERS",
+        "ASTER_WORKSPACE_ACCEPTANCE_QUERY_WORKERS",
         DEFAULT_QUERY_WORKERS,
     )?;
     if file_count == 0 || query_workers == 0 {
@@ -48,7 +48,7 @@ async fn main() -> Result<()> {
     }
 
     let backend = ManifestWorkspaceBackend::new_deferred(workspace.path());
-    let index_root = workspace.path().join(".a3s-code").join("index");
+    let index_root = workspace.path().join(".aster").join("index");
     let persistent = backend
         .configure_persistent_index(&index_root)
         .context("configure persistent workspace index")?;
@@ -152,7 +152,7 @@ async fn main() -> Result<()> {
     drop(persistent);
     drop(services);
     drop(backend);
-    let reopened = WorkspacePersistentIndex::open(&index_root, WorkspaceLexicalEngine::A3sVec)
+    let reopened = WorkspacePersistentIndex::open(&index_root, WorkspaceLexicalEngine::AsterVec)
         .context("reopen persistent workspace index")?;
     let restart_hits = reopened
         .search(&LexicalSearchRequest::new("production changed sentinel"))?
@@ -186,7 +186,7 @@ fn write_fixture(root: &Path, file_count: usize) -> Result<()> {
 }
 
 async fn wait_for_catalog(
-    catalog: &a3s_code_core::workspace::WorkspaceChunkCatalog,
+    catalog: &aster_core::workspace::WorkspaceChunkCatalog,
     expected_files: usize,
 ) -> Result<()> {
     tokio::time::timeout(READY_TIMEOUT, async {
@@ -204,7 +204,7 @@ async fn wait_for_catalog(
 }
 
 async fn wait_for_source_revision(
-    catalog: &a3s_code_core::workspace::WorkspaceChunkCatalog,
+    catalog: &aster_core::workspace::WorkspaceChunkCatalog,
     previous: u64,
 ) -> Result<()> {
     tokio::time::timeout(READY_TIMEOUT, async {
@@ -226,8 +226,8 @@ async fn wait_for_source_revision(
 }
 
 async fn wait_for_catalog_stable(
-    catalog: &a3s_code_core::workspace::WorkspaceChunkCatalog,
-) -> Result<a3s_code_core::workspace::ChunkCatalogSnapshot> {
+    catalog: &aster_core::workspace::WorkspaceChunkCatalog,
+) -> Result<aster_core::workspace::ChunkCatalogSnapshot> {
     tokio::time::timeout(READY_TIMEOUT, async {
         loop {
             let first = catalog.snapshot().context("read catalog snapshot")?;
@@ -245,10 +245,10 @@ async fn wait_for_catalog_stable(
 }
 
 async fn wait_for_catalog_marker(
-    catalog: &a3s_code_core::workspace::WorkspaceChunkCatalog,
+    catalog: &aster_core::workspace::WorkspaceChunkCatalog,
     path: &str,
     marker: &str,
-) -> Result<a3s_code_core::workspace::ChunkCatalogSnapshot> {
+) -> Result<aster_core::workspace::ChunkCatalogSnapshot> {
     tokio::time::timeout(READY_TIMEOUT, async {
         loop {
             let snapshot = catalog.snapshot().context("read catalog snapshot")?;

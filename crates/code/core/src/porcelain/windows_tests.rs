@@ -33,7 +33,7 @@ async fn native_sandbox_read_has_no_completion_debt() {
     let effects = watch.finish_effects_with_revision(&workspace, false).await;
     assert_eq!(
         effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     assert!(effects
         .changes
@@ -116,7 +116,7 @@ fn actual_windows_walk_detects_changes_without_git() {
     let effects = observe_path_effects(root.path(), delta);
     assert_eq!(
         effects.completeness,
-        a3s_effect::ToolObservationCompleteness::Complete
+        aster_effect::ToolObservationCompleteness::Complete
     );
     assert!(effects
         .changes

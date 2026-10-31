@@ -9,7 +9,7 @@ use support::{complex_document_fixture, document_snapshot, DocumentRow};
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 #[tokio::test]

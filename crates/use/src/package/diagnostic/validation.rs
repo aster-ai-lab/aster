@@ -355,7 +355,7 @@ impl PluginPendingResolutionAttemptDiagnostic {
             })
             || self.registry_count == 0
             || self.registry_count as usize != self.registries.len()
-            || self.registry_count as usize > a3s_use_extension::MAX_CONFIGURED_REGISTRY_SOURCES
+            || self.registry_count as usize > aster_use_extension::MAX_CONFIGURED_REGISTRY_SOURCES
             || self.verified_registry_count
                 != self
                     .registries
@@ -481,7 +481,7 @@ impl PluginRegistryOperationDiagnostic {
     fn validate(&self) -> UseResult<()> {
         if !valid_sha256(&self.snapshot_digest)
             || self.pending_cutover_count as usize
-                > a3s_use_extension::MAX_PENDING_REGISTRY_CUTOVERS
+                > aster_use_extension::MAX_PENDING_REGISTRY_CUTOVERS
         {
             return Err(diagnostic_error(
                 "The Registry operation diagnostic is invalid.",
@@ -540,7 +540,7 @@ impl PluginRegistryCutoverDiagnostic {
 
 impl PluginPendingOperationDiagnostic {
     fn validate(&self, registry: &PluginRegistryOperationDiagnostic) -> UseResult<()> {
-        a3s_use_core::PluginOperationPlan::validate_operation_id(&self.operation_id)
+        aster_use_core::PluginOperationPlan::validate_operation_id(&self.operation_id)
             .map_err(|_| diagnostic_error("The diagnostic operation identity is invalid."))?;
         let phase_timestamps_valid = match self.phase {
             PluginOperationDiagnosticPhase::Planned => {

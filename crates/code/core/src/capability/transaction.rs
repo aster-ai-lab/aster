@@ -75,7 +75,7 @@ impl PreparedCapability {
 ///
 /// Tool, Skill, MCP, and other concerns implement this trait beside their
 /// native runtime types. The adapter does not resolve packages or dependencies;
-/// it projects one descriptor from the already selected A3S Use snapshot. A
+/// it projects one descriptor from the already selected Aster Use snapshot. A
 /// successful return is the surface readiness barrier: the adapter must not
 /// report success while its value still depends on unfinished initialization.
 #[async_trait]
@@ -123,7 +123,7 @@ impl Drop for TransactionBody {
 /// effects to the catalog-owned asynchronous rollback queue.
 ///
 /// ```compile_fail
-/// use a3s_code_core::capability::{CapabilityTxn, Prepared};
+/// use aster_core::capability::{CapabilityTxn, Prepared};
 ///
 /// fn publish_without_validation(txn: CapabilityTxn<Prepared>) {
 ///     let _ = txn.commit();

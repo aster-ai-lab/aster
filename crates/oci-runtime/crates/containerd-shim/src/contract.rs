@@ -2,17 +2,17 @@
 
 use std::collections::BTreeSet;
 
-use a3s_oci_sdk::RuntimeOperation;
+use aster_oci_sdk::RuntimeOperation;
 
 pub(crate) const CONTRACT_VERSION: u32 = 1;
-pub(crate) const RUNTIME_TYPE: &str = "io.containerd.a3s-oci.v2";
-pub(crate) const SHIM_BINARY: &str = "containerd-shim-a3s-oci-v2";
+pub(crate) const RUNTIME_TYPE: &str = "io.containerd.aster-oci.v2";
+pub(crate) const SHIM_BINARY: &str = "containerd-shim-aster-oci-v2";
 pub(crate) const TASK_API_SERVICE: &str = "containerd.task.v2.Task";
 pub(crate) const SHIM_INSTALL_DIRECTORY: &str = "/usr/local/bin";
-pub(crate) const DEFAULT_UNIX_ENDPOINT: &str = "/run/a3s-oci/runtime.sock";
-pub(crate) const RUNTIME_ENDPOINT_ENV: &str = "A3S_OCI_RUNTIME_ENDPOINT";
-pub(crate) const LEGACY_RUNTIME_ENDPOINT_ENV: &str = "A3S_OCI_RUNTIME_SOCKET";
-pub(crate) const SDK_OPERATIONS_ANNOTATION: &str = "dev.a3s.oci.containerd-sdk-operations";
+pub(crate) const DEFAULT_UNIX_ENDPOINT: &str = "/run/aster-oci/runtime.sock";
+pub(crate) const RUNTIME_ENDPOINT_ENV: &str = "ASTER_OCI_RUNTIME_ENDPOINT";
+pub(crate) const LEGACY_RUNTIME_ENDPOINT_ENV: &str = "ASTER_OCI_RUNTIME_SOCKET";
+pub(crate) const SDK_OPERATIONS_ANNOTATION: &str = "dev.aster.oci.containerd-sdk-operations";
 
 pub(crate) const OCI_FEATURES_TYPE_URL: &str =
     "types.containerd.io/opencontainers/runtime-spec/1/features/Features";
@@ -20,7 +20,7 @@ pub(crate) const OCI_PROCESS_TYPE_URL: &str =
     "types.containerd.io/opencontainers/runtime-spec/1/Process";
 pub(crate) const OCI_LINUX_RESOURCES_TYPE_URL: &str =
     "types.containerd.io/opencontainers/runtime-spec/1/LinuxResources";
-pub(crate) const CREATE_OPTIONS_TYPE_URL: &str = "dev.a3s.oci.runtime.v1.CreateOptions";
+pub(crate) const CREATE_OPTIONS_TYPE_URL: &str = "dev.aster.oci.runtime.v1.CreateOptions";
 pub(crate) const CREATE_OPTIONS_SCHEMA_VERSION: u32 = 1;
 
 pub(crate) const IDENTITY_ENCODING: &str = "sha256-length-framed-u64be-v1";
@@ -522,16 +522,16 @@ mod tests {
         let install_path = format!("{SHIM_INSTALL_DIRECTORY}/{SHIM_BINARY}");
 
         assert!(cargo_manifest.contains(&binary_declaration));
-        assert!(cargo_manifest.contains("a3s-oci-sdk ="));
+        assert!(cargo_manifest.contains("aster-oci-sdk ="));
         for forbidden_dependency in [
-            "a3s-oci-runtime",
-            "a3s-oci-core",
-            "a3s-oci-agent",
-            "a3s-box",
+            "aster-oci-runtime",
+            "aster-oci-core",
+            "aster-oci-agent",
+            "aster-box",
         ] {
             assert!(!cargo_manifest.contains(forbidden_dependency));
         }
-        assert!(release_workflow.contains("a3s-oci-containerd-shim"));
+        assert!(release_workflow.contains("aster-oci-containerd-shim"));
         assert!(release_workflow.contains("build-static-musl.sh"));
         assert!(release_workflow.contains("verify-static-elf.sh"));
         assert!(release_workflow.contains(&release_binary));

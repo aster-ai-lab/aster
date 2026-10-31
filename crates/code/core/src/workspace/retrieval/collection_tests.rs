@@ -694,12 +694,12 @@ fn collection_cancellation_does_not_publish_a_partial_generation() {
     assert_eq!(after.paths(), ["keep.md"]);
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[test]
 fn collection_results_do_not_depend_on_lexical_partition_backend() {
     let mut previous = None;
     for engine in [
-        WorkspaceLexicalEngine::A3sVec,
+        WorkspaceLexicalEngine::AsterVec,
         WorkspaceLexicalEngine::Portable,
     ] {
         let catalog = WorkspaceChunkCatalog::new_with_engine(

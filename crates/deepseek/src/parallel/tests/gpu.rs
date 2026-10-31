@@ -1,6 +1,6 @@
 //! Real eight-device peer qualification. No model/throughput claim.
 use super::*;
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 
 #[test]
 #[ignore = "requires an owned idle two-H200 replica group; bind its exact GPU UUID pair before execution"]

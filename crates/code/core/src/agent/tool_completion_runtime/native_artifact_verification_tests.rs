@@ -3,7 +3,7 @@
 use super::*;
 use crate::harness_loop::{CompletionGate, MutationLedger};
 use crate::tools::{Tool, ToolArtifactVerification, ToolContext, ToolExecutor, ToolOutput};
-use a3s_effect::{ToolExecutionOutcome, ToolExecutionResultV1, ToolInvocationIdentityV1};
+use aster_effect::{ToolExecutionOutcome, ToolExecutionResultV1, ToolInvocationIdentityV1};
 use serde_json::{json, Value};
 use std::{path::Path, sync::Arc};
 
@@ -74,7 +74,7 @@ fn receipt(
 ) -> ToolExecutionResultV1 {
     std::fs::write(root.join(path), path.as_bytes()).unwrap();
     let result = ToolExecutionResultV1 {
-        schema: a3s_effect::TOOL_RESULT_SCHEMA.into(),
+        schema: aster_effect::TOOL_RESULT_SCHEMA.into(),
         identity: ToolInvocationIdentityV1 {
             turn: 1,
             cycle: 0,
@@ -231,7 +231,7 @@ fn native_artifact_refuses_wrong_path_digest_bytes_and_incomplete_receipts() {
             }
             "bytes" => std::fs::write(root.path().join("book.xlsx"), "changed").unwrap(),
             "incomplete" => {
-                result.effects = a3s_effect::ToolEffectObservationV1::incomplete("unobserved")
+                result.effects = aster_effect::ToolEffectObservationV1::incomplete("unobserved")
             }
             "unknown" => result.outcome = ToolExecutionOutcome::Unknown,
             "observation" => ledger.set_observation_incomplete(true),

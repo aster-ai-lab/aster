@@ -14,7 +14,7 @@ use crate::{
         CompressionKind, CompressionState,
     },
 };
-use a3s_power::inference::{DevicePreference, RuntimeDevice};
+use aster_power::inference::{DevicePreference, RuntimeDevice};
 
 struct HostMatrix {
     values: Vec<Vec<f64>>,

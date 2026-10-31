@@ -1,6 +1,6 @@
 //! Core trait abstractions for pluggable backends.
 //!
-//! These traits define the extension points of A3S Box. The runtime provides
+//! These traits define the extension points of Aster Box. The runtime provides
 //! default implementations, but consumers can swap in their own backends
 //! (e.g., a different registry client, a Redis-backed cache, etc.).
 

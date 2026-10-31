@@ -2,7 +2,7 @@ use std::future::Future;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_oci_sdk::{ContainerId, Error, ErrorCode, Result};
+use aster_oci_sdk::{ContainerId, Error, ErrorCode, Result};
 
 use crate::unix_service::{
     combine_service_and_cleanup, prepare_private_directory, validate_absolute_normalized_path,
@@ -66,7 +66,7 @@ impl NativeLinuxHostServiceConfig {
         &self.root
     }
 
-    /// Unix socket consumed by [`a3s_oci_sdk::RuntimeClient::connect`].
+    /// Unix socket consumed by [`aster_oci_sdk::RuntimeClient::connect`].
     #[must_use]
     pub fn socket_path(&self) -> PathBuf {
         self.root.join(SERVICE_SOCKET_NAME)
@@ -116,7 +116,7 @@ impl NativeLinuxServiceConfig {
         &self.root
     }
 
-    /// Unix socket consumed by [`a3s_oci_sdk::RuntimeClient::connect`].
+    /// Unix socket consumed by [`aster_oci_sdk::RuntimeClient::connect`].
     #[must_use]
     pub fn socket_path(&self) -> PathBuf {
         self.root.join(SERVICE_SOCKET_NAME)
@@ -137,7 +137,7 @@ impl NativeLinuxServiceConfig {
     }
 }
 
-/// Bound native Linux SDK service owning one exact A3S Box runtime process.
+/// Bound native Linux SDK service owning one exact Aster Box runtime process.
 pub struct NativeLinuxService {
     endpoint: UnixServiceEndpoint,
     service: Arc<HostRuntimeService>,
@@ -252,7 +252,7 @@ impl NativeLinuxService {
 
 /// Bound native Linux SDK service owning multiple independently fenced containers.
 ///
-/// Unlike [`NativeLinuxService`], this owner carries no process-local A3S Box
+/// Unlike [`NativeLinuxService`], this owner carries no process-local Aster Box
 /// descriptors and therefore accepts normal SDK create requests for any valid
 /// container ID. Exact driver selection and generation routing remain durable
 /// in [`HostRuntimeService`].
@@ -384,25 +384,25 @@ mod tests {
 
     #[test]
     fn host_config_derives_one_private_durable_layout() {
-        let config = NativeLinuxHostServiceConfig::new("/tmp/a3s-oci-host", "/bin/true")
+        let config = NativeLinuxHostServiceConfig::new("/tmp/aster-oci-host", "/bin/true")
             .expect("valid native host config");
 
-        assert_eq!(config.root(), Path::new("/tmp/a3s-oci-host"));
+        assert_eq!(config.root(), Path::new("/tmp/aster-oci-host"));
         assert_eq!(
             config.socket_path(),
-            Path::new("/tmp/a3s-oci-host/runtime.sock")
+            Path::new("/tmp/aster-oci-host/runtime.sock")
         );
-        assert_eq!(config.state_root(), Path::new("/tmp/a3s-oci-host/state"));
+        assert_eq!(config.state_root(), Path::new("/tmp/aster-oci-host/state"));
         assert_eq!(
             config.executor_parent(),
-            Path::new("/tmp/a3s-oci-host/executor")
+            Path::new("/tmp/aster-oci-host/executor")
         );
     }
 
     #[test]
     fn delegated_root_without_device_policy_fails_before_side_effects() {
         let root = format!(
-            "/tmp/a3s-oci-host-device-policy-contract-{}",
+            "/tmp/aster-oci-host-device-policy-contract-{}",
             std::process::id()
         );
         let delegated = format!("{root}-cgroup");
@@ -429,7 +429,7 @@ mod tests {
     #[tokio::test]
     async fn host_service_bind_rejects_delegated_root_without_bootstrap() {
         let root = format!(
-            "/tmp/a3s-oci-host-device-policy-bind-{}",
+            "/tmp/aster-oci-host-device-policy-bind-{}",
             std::process::id()
         );
         let delegated = format!("{root}-cgroup");

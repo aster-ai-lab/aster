@@ -542,7 +542,7 @@ export const presentationUiMessagesEnUS = {
   'presentation.comments.promptTitle': 'Comment text',
   'presentation.comments.promptConfirm': 'Add Comment',
   'presentation.comments.promptRequired': 'Enter comment text.',
-  'presentation.comments.defaultAuthor': 'A3S Work user',
+  'presentation.comments.defaultAuthor': 'Aster Work user',
   'presentation.design.layoutCopySuffix': '{name} copy',
   'presentation.design.customLayoutName': 'Custom Layout {n}',
   'presentation.design.placeholderTitle': 'Click to add title',

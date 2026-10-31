@@ -1,5 +1,5 @@
 use super::*;
-use a3s_effect::{ToolExecutionOutcome, ToolFileIdentityV1, ToolFileKind, ToolPathChangeV1};
+use aster_effect::{ToolExecutionOutcome, ToolFileIdentityV1, ToolFileKind, ToolPathChangeV1};
 
 fn file(bytes: &[u8], mode: u32) -> ToolFileIdentityV1 {
     ToolFileIdentityV1 {
@@ -13,10 +13,10 @@ fn receipt(
     id: &str,
     before: Option<ToolFileIdentityV1>,
     after: ToolFileIdentityV1,
-) -> a3s_effect::ToolExecutionResultV1 {
-    a3s_effect::ToolExecutionResultV1 {
-        schema: a3s_effect::TOOL_RESULT_SCHEMA.into(),
-        identity: a3s_effect::ToolInvocationIdentityV1 {
+) -> aster_effect::ToolExecutionResultV1 {
+    aster_effect::ToolExecutionResultV1 {
+        schema: aster_effect::TOOL_RESULT_SCHEMA.into(),
+        identity: aster_effect::ToolInvocationIdentityV1 {
             turn: 1,
             cycle: 0,
             tool_call_id: id.into(),
@@ -27,7 +27,7 @@ fn receipt(
         outcome: ToolExecutionOutcome::Succeeded,
         exit_code: Some(0),
         output: serde_json::json!("actual receipt"),
-        effects: a3s_effect::ToolEffectObservationV1::complete(vec![ToolPathChangeV1 {
+        effects: aster_effect::ToolEffectObservationV1::complete(vec![ToolPathChangeV1 {
             path: "proof.txt".into(),
             before,
             after,
@@ -49,6 +49,34 @@ fn unchanged_receipt_does_not_create_mutation_or_failed_effect_debt() {
         assert!(ledger.is_empty());
         assert!(!ledger.has_failed_effects());
         assert_eq!(ledger.turn_progress.receipts_applied, 1);
+    }
+}
+
+#[test]
+fn historical_goal_receipt_semantics_do_not_become_a_new_run_or_checkpoint_setting() {
+    let legacy: crate::goal_control::ContinuationSource = serde_json::from_value(serde_json::json!({
+        "policy": {"automatic_enabled":true,"max_slices":8,"max_no_progress_slices":1,"deadline_unix_ms":1000},
+        "observed_unix_ms":100,
+    })).unwrap();
+    let current =
+        crate::goal_control::ContinuationSource::turn_progress(legacy.policy.clone(), 100);
+    let state = file(b"same bytes", 0o644);
+    let result = receipt("legacy", Some(state.clone()), state);
+    let mut ledger = MutationLedger::default();
+    ledger.bind_goal_continuation(Some(&legacy));
+    ledger.observe_tool_receipt("write", &result);
+    assert!(!ledger.is_empty());
+    let checkpoint = serde_json::to_value(&ledger).unwrap();
+    assert!(checkpoint.get("legacy_accepted_receipts").is_none());
+    let restored: MutationLedger = serde_json::from_value(checkpoint).unwrap();
+    assert!(!restored.is_empty());
+    assert!(!restored.legacy_accepted_receipts);
+    for source in [None, Some(&current)] {
+        let mut ledger = MutationLedger::default();
+        ledger.bind_goal_continuation(Some(&legacy));
+        ledger.bind_goal_continuation(source);
+        ledger.observe_tool_receipt("write", &result);
+        assert!(ledger.is_empty());
     }
 }
 
@@ -145,7 +173,7 @@ fn unchanged_receipt_does_not_treat_unknown_or_unread_bytes_as_unchanged() {
             mode: None,
         };
         let mut result = receipt("unread-state", Some(state.clone()), state);
-        result.effects.completeness = a3s_effect::ToolObservationCompleteness::Incomplete;
+        result.effects.completeness = aster_effect::ToolObservationCompleteness::Incomplete;
         result.effects.reason = Some("file identity could not be read".into());
         result.validate().unwrap();
         let mut ledger = MutationLedger::default();

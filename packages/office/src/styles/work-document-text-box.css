@@ -122,7 +122,7 @@
 }
 
 .work-document-page .tiptap [data-document-text-box].ProseMirror-selectednode {
-  outline: 2px solid color-mix(in srgb, var(--a3s-blue) 75%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--aster-blue) 75%, transparent);
   outline-offset: 3px;
 }
 
@@ -189,7 +189,7 @@
 }
 
 .work-document-page .tiptap [data-document-connector].ProseMirror-selectednode {
-  outline: 2px solid color-mix(in srgb, var(--a3s-blue) 75%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--aster-blue) 75%, transparent);
   outline-offset: 3px;
 }
 

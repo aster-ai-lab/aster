@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 ///
 /// Linux cache hits run through the overlay mount at `merged`, while cache
 /// misses and copy providers use `rootfs` directly. Legacy APFS providers
-/// expose their mounted data below `rootfs/.a3s-rootfs`. Keep this ordering in
+/// expose their mounted data below `rootfs/.aster-rootfs`. Keep this ordering in
 /// one place so lifecycle operations inspect the same filesystem view that was
 /// handed to the runtime.
 pub(super) fn resolve_prepared_rootfs(box_dir: &Path) -> Option<PathBuf> {
@@ -21,7 +21,7 @@ pub(super) fn resolve_prepared_rootfs(box_dir: &Path) -> Option<PathBuf> {
     }
 
     let rootfs = box_dir.join("rootfs");
-    let apfs_data = rootfs.join(".a3s-rootfs");
+    let apfs_data = rootfs.join(".aster-rootfs");
     if populated(&apfs_data) {
         return Some(apfs_data);
     }
@@ -55,7 +55,7 @@ mod tests {
         assert_eq!(resolve_prepared_rootfs(copy.path()), Some(copy_rootfs));
 
         let apfs = tempfile::tempdir().unwrap();
-        let apfs_rootfs = apfs.path().join("rootfs/.a3s-rootfs");
+        let apfs_rootfs = apfs.path().join("rootfs/.aster-rootfs");
         std::fs::create_dir_all(&apfs_rootfs).unwrap();
         std::fs::write(apfs_rootfs.join("visible"), b"apfs").unwrap();
         assert_eq!(resolve_prepared_rootfs(apfs.path()), Some(apfs_rootfs));

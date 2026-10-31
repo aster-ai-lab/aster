@@ -74,7 +74,7 @@ export function buildScene(task, seed) {
   if (task === 'barrier') {
     world.push('<geom name="barrier" type="box" pos=".43 0 .055" size=".115 .018 .055" rgba=".93 .66 .15 1"/>')
   }
-  const marker = '<!-- a3s:world -->'
+  const marker = '<!-- aster:world -->'
   if (PHYSICS_XML.split(marker).length !== 2) throw new Error('panda.xml has no world marker')
   return { xml: PHYSICS_XML.replace(marker, world.join('\n    ')), target, source }
 }

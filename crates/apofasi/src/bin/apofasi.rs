@@ -1,6 +1,6 @@
-//! `a3s-apofasi` CLI — smoke, latency bench, and batch suite.
+//! `aster-apofasi` CLI — smoke, latency bench, and batch suite.
 //!
-//! Build: `cargo run --features cli --bin a3s-apofasi -- smoke`
+//! Build: `cargo run --features cli --bin aster-apofasi -- smoke`
 
 #[path = "apofasi/suite.rs"]
 mod suite;
@@ -10,7 +10,7 @@ use std::path::PathBuf;
 use std::process::ExitCode;
 use std::time::Instant;
 
-use a3s_apofasi::{
+use aster_apofasi::{
     gate_response, Answer, Criteria, DecisionEngine, DecisionKind, DeviceRequest, GatePolicy,
     LexicalEngine, NeuralEngine, Question, State, SystemOneRequest, SystemOneResponse,
 };
@@ -60,7 +60,7 @@ fn main() -> ExitCode {
 
 fn print_help() {
     eprintln!(
-        "Usage:\n  a3s-apofasi smoke [--lexical] [--json] [--checkpoint DIR] [--device auto|metal|cuda|cpu]\n  a3s-apofasi bench [--checkpoint DIR] [--device auto|metal|cuda|cpu] [--iters N] [--warmup N] [--case smoke|triage]\n  a3s-apofasi suite --cases FILE [--checkpoint DIR] [--device auto|metal|cuda|cpu] [--warmup N] [--iters N]\n"
+        "Usage:\n  aster-apofasi smoke [--lexical] [--json] [--checkpoint DIR] [--device auto|metal|cuda|cpu]\n  aster-apofasi bench [--checkpoint DIR] [--device auto|metal|cuda|cpu] [--iters N] [--warmup N] [--case smoke|triage]\n  aster-apofasi suite --cases FILE [--checkpoint DIR] [--device auto|metal|cuda|cpu] [--warmup N] [--iters N]\n"
     );
 }
 
@@ -260,7 +260,7 @@ fn compact_answers(res: &SystemOneResponse) -> Value {
     Value::Object(out)
 }
 
-fn gates_json(gates: &std::collections::BTreeMap<String, a3s_apofasi::GateAction>) -> Value {
+fn gates_json(gates: &std::collections::BTreeMap<String, aster_apofasi::GateAction>) -> Value {
     let mut out = serde_json::Map::new();
     for (k, v) in gates {
         out.insert(k.clone(), json!(format!("{v:?}")));

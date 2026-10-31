@@ -2,12 +2,12 @@
 
 use std::sync::Arc;
 
-use a3s_boot::{
+use aster_boot::{
     controller, injectable, BootApplication, BootRequest, BootResponse, ControllerDefinition,
     CookieOptions, HttpMethod, Module, ResponsePassthrough, Result,
 };
 #[allow(unused_imports)]
-use a3s_boot::{get, res};
+use aster_boot::{get, res};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
@@ -49,7 +49,7 @@ impl Module for ResponseFeatureModule {
         "response-feature"
     }
 
-    fn controllers(&self, _module_ref: &a3s_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
+    fn controllers(&self, _module_ref: &aster_boot::ModuleRef) -> Result<Vec<ControllerDefinition>> {
         Ok(vec![Arc::new(ResponseController).controller()?])
     }
 }

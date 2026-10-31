@@ -5,12 +5,12 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use a3s_boot::{ModuleRef, PostgresQueueBackend, Queue, QueueContext, QueueJob, QueueOptions};
+use aster_boot::{ModuleRef, PostgresQueueBackend, Queue, QueueContext, QueueJob, QueueOptions};
 use serde_json::json;
 use uuid::Uuid;
 
 fn postgres_url() -> Option<String> {
-    std::env::var("A3S_BOOT_POSTGRES_URL")
+    std::env::var("ASTER_BOOT_POSTGRES_URL")
         .ok()
         .filter(|value| !value.trim().is_empty())
 }
@@ -18,7 +18,7 @@ fn postgres_url() -> Option<String> {
 #[tokio::test]
 async fn independent_backends_share_leases_without_duplicate_processing() {
     let Some(url) = postgres_url() else {
-        eprintln!("skipping PostgreSQL queue test; set A3S_BOOT_POSTGRES_URL");
+        eprintln!("skipping PostgreSQL queue test; set ASTER_BOOT_POSTGRES_URL");
         return;
     };
     let name = format!("boot-shared-{}", Uuid::new_v4());

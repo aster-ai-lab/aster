@@ -6,8 +6,8 @@ use serde::Serialize;
 use super::CapabilitySetError;
 
 pub const MAX_CAPABILITY_IDENTIFIER_BYTES: usize = 256;
-pub const USE_CAPABILITY_SNAPSHOT_CURSOR_SCHEMA: &str = "a3s.use.capability-snapshot-cursor.v1";
-pub const USE_SELECTION_CURSOR_SCHEMA: &str = "a3s.use.selection-cursor.v1";
+pub const USE_CAPABILITY_SNAPSHOT_CURSOR_SCHEMA: &str = "aster.use.capability-snapshot-cursor.v1";
+pub const USE_SELECTION_CURSOR_SCHEMA: &str = "aster.use.selection-cursor.v1";
 
 /// Canonical lowercase SHA-256 value used by capability identity contracts.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -157,7 +157,7 @@ impl fmt::Display for CapabilityId {
     }
 }
 
-/// Exact immutable A3S Use capability publication identity.
+/// Exact immutable Aster Use capability publication identity.
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UseCapabilityGeneration {
@@ -276,7 +276,7 @@ impl ReconciledPackageGeneration {
     }
 }
 
-/// Exact immutable A3S Use package lifecycle generation identity.
+/// Exact immutable Aster Use package lifecycle generation identity.
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UsePackageGeneration {

@@ -1,6 +1,6 @@
 # Windows and WSL GA evidence
 
-Local verification for enterprise GA readiness of `a3s-sandbox` on Windows host
+Local verification for enterprise GA readiness of `aster-sandbox` on Windows host
 and WSL2 Linux. CI still owns macOS / GitHub-hosted Linux / Windows matrix.
 
 ## Windows (native AppContainer)
@@ -35,11 +35,11 @@ Requirements:
 - Runner: [`../scripts/run-wsl-ga-tests.sh`](../scripts/run-wsl-ga-tests.sh)
 
 ```bash
-rsync -a --exclude target --exclude .git /path/to/crates/sandbox/ ~/a3s-sandbox-ga/
-~/a3s-sandbox-ga/scripts/run-wsl-ga-tests.sh
+rsync -a --exclude target --exclude .git /path/to/crates/sandbox/ ~/aster-sandbox-ga/
+~/aster-sandbox-ga/scripts/run-wsl-ga-tests.sh
 ```
 
-Observed (2026-09-25 local, native ext4 copy under `~/a3s-monorepo-fake`):
+Observed (2026-09-25 local, native ext4 copy under `~/aster-monorepo-fake`):
 
 | Suite | Result |
 | --- | --- |

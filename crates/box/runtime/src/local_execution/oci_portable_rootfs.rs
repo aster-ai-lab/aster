@@ -5,12 +5,12 @@ use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
 use std::path::Path;
 
-use a3s_box_core::rootfs_metadata::{
+use aster_box_core::rootfs_metadata::{
     RootfsEntryKind, RootfsMetadataManifest, IMAGE_ROOTFS_METADATA_PATH,
     IMAGE_ROOTFS_METADATA_TEMP_PATH,
 };
-use a3s_box_core::{BoxError, Result};
-use a3s_oci_sdk::{
+use aster_box_core::{BoxError, Result};
+use aster_oci_sdk::{
     PortableRootfsEntryKind, PortableRootfsMetadataEntry, PortableRootfsMetadataManifest,
     PORTABLE_ROOTFS_METADATA_ANNOTATION, PORTABLE_ROOTFS_METADATA_FILE,
     PORTABLE_ROOTFS_METADATA_MAX_BYTES, PORTABLE_ROOTFS_METADATA_MAX_ENTRIES,
@@ -22,21 +22,21 @@ use oci_spec::runtime::Spec;
 const MAX_SOURCE_METADATA_BYTES: u64 = 64 * 1024 * 1024;
 const MAX_ENCODED_PATH_BYTES: usize = 16 * 1024;
 const MAX_DECODED_PATH_BYTES: usize = 4_096;
-const PORTABLE_ROOTFS_METADATA_TEMP_FILE: &str = ".a3s-oci-rootfs-metadata.v1.json.tmp";
+const PORTABLE_ROOTFS_METADATA_TEMP_FILE: &str = ".aster-oci-rootfs-metadata.v1.json.tmp";
 
 const RUNTIME_INTERNAL_ROOT_ENTRIES: &[&[u8]] = &[
-    b".a3s-box-env",
-    b".a3s-box-exec.json",
-    b".a3s_exit_code",
-    b".a3s_host_live_logs_drained",
-    b".a3s_host_result_collected",
-    b".a3s_image_metadata_v1.json",
-    b".a3s_image_metadata_v1.json.tmp",
-    b".a3s_rootfs_metadata_v1.json",
-    b".a3s_rootfs_metadata_v1.json.tmp",
-    b".a3s_rootfs_metadata_v1.previous.json",
-    b".a3s-oci-rootfs-metadata.v1.json",
-    b".a3s-oci-rootfs-metadata.v1.json.tmp",
+    b".aster-box-env",
+    b".aster-box-exec.json",
+    b".aster_exit_code",
+    b".aster_host_live_logs_drained",
+    b".aster_host_result_collected",
+    b".aster_image_metadata_v1.json",
+    b".aster_image_metadata_v1.json.tmp",
+    b".aster_rootfs_metadata_v1.json",
+    b".aster_rootfs_metadata_v1.json.tmp",
+    b".aster_rootfs_metadata_v1.previous.json",
+    b".aster-oci-rootfs-metadata.v1.json",
+    b".aster-oci-rootfs-metadata.v1.json.tmp",
     b"guest-init.stderr.log",
     b"guest-init.stdout.log",
     b"init-rust.log",
@@ -352,7 +352,7 @@ fn open_plain_file(path: &Path, label: &str) -> Result<File> {
             .open(path)
     };
     #[cfg(windows)]
-    let file = a3s_box_core::windows_file::open_regular_file(path, None).map(|opened| opened.0);
+    let file = aster_box_core::windows_file::open_regular_file(path, None).map(|opened| opened.0);
     #[cfg(not(any(unix, windows)))]
     let file = File::open(path);
 
@@ -450,7 +450,7 @@ fn sync_directory(_path: &Path) -> std::io::Result<()> {
 
 #[cfg(windows)]
 fn remove_path_no_follow(path: &Path) -> std::io::Result<()> {
-    a3s_box_core::windows_file::remove_path_no_follow(path)
+    aster_box_core::windows_file::remove_path_no_follow(path)
 }
 
 #[cfg(not(windows))]
@@ -489,8 +489,8 @@ mod tests {
     fn entry(
         path: &[u8],
         kind: RootfsEntryKind,
-    ) -> a3s_box_core::rootfs_metadata::RootfsMetadataEntry {
-        a3s_box_core::rootfs_metadata::RootfsMetadataEntry {
+    ) -> aster_box_core::rootfs_metadata::RootfsMetadataEntry {
+        aster_box_core::rootfs_metadata::RootfsMetadataEntry {
             path_base64: encoded(path),
             kind,
             mode: if kind == RootfsEntryKind::Directory {
@@ -506,7 +506,7 @@ mod tests {
         }
     }
 
-    fn write_source(root: &Path, entries: Vec<a3s_box_core::rootfs_metadata::RootfsMetadataEntry>) {
+    fn write_source(root: &Path, entries: Vec<aster_box_core::rootfs_metadata::RootfsMetadataEntry>) {
         let manifest = RootfsMetadataManifest::new(entries);
         std::fs::write(
             root.join(IMAGE_ROOTFS_METADATA_PATH.trim_start_matches('/')),
@@ -576,8 +576,8 @@ mod tests {
     #[test]
     fn rejects_runtime_internal_and_unsafe_paths_without_publishing() {
         for path in [
-            b"./.a3s-box-env".as_slice(),
-            b"./.a3s-box-env/child".as_slice(),
+            b"./.aster-box-env".as_slice(),
+            b"./.aster-box-env/child".as_slice(),
             b"../escape".as_slice(),
             b"/absolute".as_slice(),
         ] {
@@ -739,7 +739,7 @@ mod tests {
         let mut annotations = HashMap::new();
         annotations.insert(
             PORTABLE_ROOTFS_METADATA_ANNOTATION.to_string(),
-            "a3s.oci.rootfs-metadata.v0".to_string(),
+            "aster.oci.rootfs-metadata.v0".to_string(),
         );
         let spec = oci_spec::runtime::SpecBuilder::default()
             .annotations(annotations)

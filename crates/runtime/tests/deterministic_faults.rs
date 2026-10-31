@@ -1,7 +1,7 @@
 mod support;
 
-use a3s_runtime::contract::{RuntimeInspection, RuntimeLogQuery};
-use a3s_runtime::{
+use aster_runtime::contract::{RuntimeInspection, RuntimeLogQuery};
+use aster_runtime::{
     FileRuntimeStateStore, ManagedRuntimeClient, RuntimeClient, RuntimeError, RuntimeRequestState,
     RuntimeStateStore,
 };
@@ -103,8 +103,8 @@ async fn fault_mutation_002_stop_remove_and_exec_replay_each_provider_boundary()
             Err(RuntimeError::Transport(message)) if message.contains("injected Stop")
         ));
         let expected_after_fault = match boundary {
-            FaultBoundary::BeforeEffect => a3s_runtime::contract::RuntimeUnitState::Running,
-            FaultBoundary::AfterEffect => a3s_runtime::contract::RuntimeUnitState::Stopped,
+            FaultBoundary::BeforeEffect => aster_runtime::contract::RuntimeUnitState::Running,
+            FaultBoundary::AfterEffect => aster_runtime::contract::RuntimeUnitState::Stopped,
         };
         assert_eq!(
             driver.resource_state(&unit_id, 1),
@@ -118,7 +118,7 @@ async fn fault_mutation_002_stop_remove_and_exec_replay_each_provider_boundary()
         };
         assert_eq!(
             observation.state,
-            a3s_runtime::contract::RuntimeUnitState::Stopped
+            aster_runtime::contract::RuntimeUnitState::Stopped
         );
         assert_eq!(driver.effect_count(FaultOperation::Stop), 1);
         assert_eq!(
@@ -246,7 +246,7 @@ async fn fault_apply_003_timeout_after_effect_needs_a_new_request_to_reconcile()
         .expect("new request reattaches timed-out provider effect");
     assert_eq!(
         recovered.state,
-        a3s_runtime::contract::RuntimeUnitState::Running
+        aster_runtime::contract::RuntimeUnitState::Running
     );
     assert_eq!(driver.resource_count(unit_id), 1);
     assert_eq!(driver.effect_count(FaultOperation::Apply), 1);
@@ -292,7 +292,7 @@ async fn fault_apply_004_provider_panic_releases_the_operation_lease() {
         .expect("replay apply after provider panic");
     assert_eq!(
         recovered.state,
-        a3s_runtime::contract::RuntimeUnitState::Running
+        aster_runtime::contract::RuntimeUnitState::Running
     );
     assert_eq!(driver.effect_count(FaultOperation::Apply), 1);
 }

@@ -1,5 +1,5 @@
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     CheckpointArtifactPath, CheckpointDigest, CheckpointQuiesce, CheckpointRequest,
     CheckpointResponse, ContainerRecord, ErrorCode, OperationId, Result, ValidateRequest,
 };
@@ -20,7 +20,7 @@ use super::{
 
 #[derive(Serialize)]
 struct CheckpointFingerprint<'a> {
-    target: &'a a3s_oci_sdk::ContainerTarget,
+    target: &'a aster_oci_sdk::ContainerTarget,
     artifact_path: &'a CheckpointArtifactPath,
     quiesce: CheckpointQuiesce,
 }
@@ -257,7 +257,7 @@ fn ensure_checkpoint_source(record: &ContainerRecord) -> Result<()> {
     Ok(())
 }
 
-fn invalid_outcome(operation_id: &OperationId) -> a3s_oci_sdk::Error {
+fn invalid_outcome(operation_id: &OperationId) -> aster_oci_sdk::Error {
     state_error(
         ErrorCode::FailedPrecondition,
         "checkpoint",

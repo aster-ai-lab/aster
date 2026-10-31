@@ -52,7 +52,7 @@ async fn test_graceful_shutdown_completes() {
         .expect("Shutdown should complete within 5 seconds")
         .unwrap();
 
-    assert_eq!(gw.state(), a3s_gateway::GatewayState::Stopped);
+    assert_eq!(gw.state(), aster_gateway::GatewayState::Stopped);
 }
 
 #[tokio::test]
@@ -105,7 +105,7 @@ async fn test_reload_waits_for_shutdown_and_cannot_restart_background_work() {
         shutdown_gateway.shutdown().await;
     });
     tokio::time::timeout(Duration::from_secs(2), async {
-        while gateway.state() != a3s_gateway::GatewayState::Stopping {
+        while gateway.state() != aster_gateway::GatewayState::Stopping {
             tokio::task::yield_now().await;
         }
     })
@@ -158,5 +158,5 @@ async fn test_reload_waits_for_shutdown_and_cannot_restart_background_work() {
             .await
             .is_err();
     assert!(candidate_checker_never_started);
-    assert_eq!(gateway.state(), a3s_gateway::GatewayState::Stopped);
+    assert_eq!(gateway.state(), aster_gateway::GatewayState::Stopped);
 }

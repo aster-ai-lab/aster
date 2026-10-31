@@ -2,7 +2,7 @@ use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_search::{
+use aster_search::{
     Bulkhead, BulkheadConfig, CircuitBreaker, CircuitBreakerConfig, CircuitState,
     CircuitWindowConfig, Engine, EngineConfig, EngineOutcomeKind, RetrievalRequirements, Search,
     SearchCascade, SearchCoalescer, SearchQuery, SearchResult, SearchResults,
@@ -23,25 +23,25 @@ pub(super) struct SoakConfig {
 
 impl SoakConfig {
     pub(super) fn from_env() -> Self {
-        let duration = Duration::from_secs(env_u64("A3S_SEARCH_SOAK_SECONDS", 300).max(1));
+        let duration = Duration::from_secs(env_u64("ASTER_SEARCH_SOAK_SECONDS", 300).max(1));
         Self {
             duration,
-            workers: env_usize("A3S_SEARCH_SOAK_WORKERS", 24).clamp(2, 256),
-            duplicate_group_size: env_usize("A3S_SEARCH_SOAK_DUPLICATE_GROUP", 4).clamp(2, 32),
+            workers: env_usize("ASTER_SEARCH_SOAK_WORKERS", 24).clamp(2, 256),
+            duplicate_group_size: env_usize("ASTER_SEARCH_SOAK_DUPLICATE_GROUP", 4).clamp(2, 32),
             request_timeout: Duration::from_millis(
-                env_u64("A3S_SEARCH_SOAK_REQUEST_TIMEOUT_MS", 2_000).max(100),
+                env_u64("ASTER_SEARCH_SOAK_REQUEST_TIMEOUT_MS", 2_000).max(100),
             ),
             resource_warmup: Duration::from_secs(
-                env_u64("A3S_SEARCH_SOAK_RESOURCE_WARMUP_SECONDS", 10)
+                env_u64("ASTER_SEARCH_SOAK_RESOURCE_WARMUP_SECONDS", 10)
                     .min(duration.as_secs().saturating_div(4)),
             ),
-            max_rss_growth_kib: env_u64("A3S_SEARCH_SOAK_MAX_RSS_GROWTH_KIB", 65_536),
+            max_rss_growth_kib: env_u64("ASTER_SEARCH_SOAK_MAX_RSS_GROWTH_KIB", 65_536),
             max_tail_rss_slope_kib_per_minute: env_f64(
-                "A3S_SEARCH_SOAK_MAX_TAIL_RSS_SLOPE_KIB_PER_MINUTE",
+                "ASTER_SEARCH_SOAK_MAX_TAIL_RSS_SLOPE_KIB_PER_MINUTE",
                 1_024.0,
             )
             .max(0.0),
-            max_fd_growth: env_usize("A3S_SEARCH_SOAK_MAX_FD_GROWTH", 8),
+            max_fd_growth: env_usize("ASTER_SEARCH_SOAK_MAX_FD_GROWTH", 8),
         }
     }
 }
@@ -167,7 +167,7 @@ impl Engine for FaultEngine {
         &self.config
     }
 
-    async fn search(&self, query: &SearchQuery) -> a3s_search::Result<Vec<SearchResult>> {
+    async fn search(&self, query: &SearchQuery) -> aster_search::Result<Vec<SearchResult>> {
         let _guard = self.probe.enter();
         match self.tier {
             Tier::Api => {
@@ -185,7 +185,7 @@ impl Engine for FaultEngine {
             Tier::Headless => {
                 tokio::time::sleep(Duration::from_millis(12)).await;
                 match self.clock.phase() {
-                    1 => Err(a3s_search::SearchError::RateLimited(
+                    1 => Err(aster_search::SearchError::RateLimited(
                         "deterministic soak throttle".to_string(),
                     )),
                     2 => Ok(Vec::new()),

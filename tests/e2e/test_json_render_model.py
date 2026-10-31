@@ -24,7 +24,7 @@ class ModelOracleTests(unittest.TestCase):
         self.assertTrue(event['offered'])
 
     def test_accepts_only_typed_correlated_non_permission_receipt(self):
-        result = {'schema': 'a3s.code.user-form.v1', 'values': EXPECTED, 'permission_grant': False}
+        result = {'schema': 'aster.code.user-form.v1', 'values': EXPECTED, 'permission_grant': False}
         self.assertTrue(decide(self.body(json.dumps(result)))[2]['accepted'])
         for key, value in [('amount', '4'), ('ready', 1), ('choice', 'beta')]:
             bad = copy.deepcopy(result)

@@ -1,0 +1,26 @@
+[package]
+license = "Apache-2.0"
+name = "aster-tools-api"
+version = "0.1.220-alpha.4"
+description = "Protobuf API definitions for Aster Code tools"
+edition = "2024"
+publish = false
+
+[dependencies]
+tonic-prost = {version = "0.14"}
+# Protobuf runtime
+prost = {workspace = true}
+tonic = {workspace = true}
+
+serde = {workspace = true}
+serde_json = {workspace = true}
+aster-tool-protocol = {path = "../../common/aster-tool-protocol"}
+
+[build-dependencies]
+aster-proto-build = {path = "../../build/aster-proto-build"}
+
+[package.metadata.cargo-shear]
+ignored = ["serde", "tonic"]
+
+[lints]
+workspace = true

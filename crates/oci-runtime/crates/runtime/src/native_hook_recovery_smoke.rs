@@ -2,8 +2,8 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
-use a3s_oci_sdk::ContainerTarget;
+use aster_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_sdk::ContainerTarget;
 use serde::{Deserialize, Serialize};
 use tokio::time::{sleep, Instant};
 
@@ -11,10 +11,10 @@ use crate::{native_linux_recovery_resume, NativeLinuxRecoverySmokeReport};
 
 /// Versioned input captured while the interrupted Hook is still alive.
 pub const NATIVE_LINUX_HOOK_OWNER_DEATH_EVIDENCE_SCHEMA_VERSION: &str =
-    "a3s.oci.native-linux-hook-owner-death-evidence.v1";
+    "aster.oci.native-linux-hook-owner-death-evidence.v1";
 /// Versioned real-host evidence for Hook cleanup across Native owner death.
 pub const NATIVE_LINUX_HOOK_OWNER_DEATH_SMOKE_SCHEMA_VERSION: &str =
-    "a3s.oci.native-linux-hook-owner-death-smoke.v1";
+    "aster.oci.native-linux-hook-owner-death-smoke.v1";
 
 const PROCESS_TERMINATION_TIMEOUT: Duration = Duration::from_secs(2);
 const PROCESS_POLL_INTERVAL: Duration = Duration::from_millis(10);
@@ -335,7 +335,7 @@ fn append_reason(report: &mut NativeLinuxHookOwnerDeathSmokeReport, reason: impl
 
 #[cfg(test)]
 mod tests {
-    use a3s_oci_sdk::{ContainerId, Generation};
+    use aster_oci_sdk::{ContainerId, Generation};
 
     use super::*;
 

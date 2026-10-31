@@ -40,40 +40,40 @@ pub(crate) struct QualificationConfig {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct RuntimeIdentity {
-    pub(crate) container_id: a3s_oci_sdk::ContainerId,
+    pub(crate) container_id: aster_oci_sdk::ContainerId,
     pub(crate) incarnation: String,
     pub(crate) generation: u64,
 }
 
 impl QualificationConfig {
     pub(crate) fn from_environment() -> TestResult<Self> {
-        require_environment("A3S_OCI_CONTAINERD_QUALIFY", "1")?;
-        require_environment("A3S_OCI_CONTAINERD_ALLOW_RESTART", "1")?;
-        let runtime_endpoint = std::env::var("A3S_OCI_RUNTIME_ENDPOINT")
-            .or_else(|_| std::env::var("A3S_OCI_RUNTIME_SOCKET"))
+        require_environment("ASTER_OCI_CONTAINERD_QUALIFY", "1")?;
+        require_environment("ASTER_OCI_CONTAINERD_ALLOW_RESTART", "1")?;
+        let runtime_endpoint = std::env::var("ASTER_OCI_RUNTIME_ENDPOINT")
+            .or_else(|_| std::env::var("ASTER_OCI_RUNTIME_SOCKET"))
             .map(PathBuf::from)
-            .unwrap_or_else(|_| PathBuf::from("/run/a3s-oci/runtime.sock"));
+            .unwrap_or_else(|_| PathBuf::from("/run/aster-oci/runtime.sock"));
         Ok(Self {
             socket: environment_path(
-                "A3S_OCI_CONTAINERD_SOCKET",
+                "ASTER_OCI_CONTAINERD_SOCKET",
                 "/run/containerd/containerd.sock",
             ),
             ttrpc_address: environment_value(
-                "A3S_OCI_CONTAINERD_TTRPC_ADDRESS",
+                "ASTER_OCI_CONTAINERD_TTRPC_ADDRESS",
                 "/run/containerd/containerd.sock.ttrpc",
             ),
             runtime_endpoint,
             state_root: environment_path(
-                "A3S_OCI_CONTAINERD_STATE_ROOT",
+                "ASTER_OCI_CONTAINERD_STATE_ROOT",
                 "/run/containerd/io.containerd.runtime.v2.task",
             ),
-            namespace: environment_value("A3S_OCI_CONTAINERD_NAMESPACE", "default"),
+            namespace: environment_value("ASTER_OCI_CONTAINERD_NAMESPACE", "default"),
             image: environment_value(
-                "A3S_OCI_CONTAINERD_IMAGE",
+                "ASTER_OCI_CONTAINERD_IMAGE",
                 "docker.io/library/busybox:latest",
             ),
-            runtime: environment_value("A3S_OCI_CONTAINERD_RUNTIME", "io.containerd.a3s-oci.v2"),
-            service: environment_value("A3S_OCI_CONTAINERD_SERVICE", "containerd"),
+            runtime: environment_value("ASTER_OCI_CONTAINERD_RUNTIME", "io.containerd.aster-oci.v2"),
+            service: environment_value("ASTER_OCI_CONTAINERD_SERVICE", "containerd"),
             restart_boundaries: RestartBoundaryLedger::default(),
         })
     }
@@ -103,7 +103,7 @@ pub(crate) async fn create_dedicated_vm_container(
     create_container_with_ctr(
         config,
         id,
-        Some(("dev.a3s.oci.runtime.v1.CreateOptions", options.as_str())),
+        Some(("dev.aster.oci.runtime.v1.CreateOptions", options.as_str())),
     )
     .await?;
     let container = ContainersClient::new(channel.clone())
@@ -122,7 +122,7 @@ pub(crate) async fn create_dedicated_vm_container(
     let document: Value = serde_json::from_slice(&spec.value)
         .map_err(|error| qualification_error(format!("decode dedicated-vm OCI spec: {error}")))?;
     let annotation = document
-        .pointer("/annotations/dev.a3s.oci.runtime.v1.CreateOptions")
+        .pointer("/annotations/dev.aster.oci.runtime.v1.CreateOptions")
         .and_then(Value::as_str)
         .ok_or_else(|| {
             qualification_error(
@@ -174,7 +174,7 @@ pub(crate) async fn read_shim_driver_isolation(
     id: &str,
 ) -> TestResult<(String, String)> {
     let bundle = config.bundle(id);
-    let metadata = tokio::fs::read(bundle.join("a3s-oci-shim-v1.json"))
+    let metadata = tokio::fs::read(bundle.join("aster-oci-shim-v1.json"))
         .await
         .map_err(|error| qualification_error(format!("read shim metadata: {error}")))?;
     let metadata: Value = serde_json::from_slice(&metadata)
@@ -329,12 +329,12 @@ pub(crate) async fn read_runtime_identity(
     id: &str,
 ) -> TestResult<RuntimeIdentity> {
     let bundle = config.bundle(id);
-    let incarnation = tokio::fs::read_to_string(bundle.join("a3s-oci-shim-incarnation-v1"))
+    let incarnation = tokio::fs::read_to_string(bundle.join("aster-oci-shim-incarnation-v1"))
         .await
         .map_err(|error| {
             qualification_error(format!("read containerd task incarnation: {error}"))
         })?;
-    let metadata = tokio::fs::read(bundle.join("a3s-oci-shim-v1.json"))
+    let metadata = tokio::fs::read(bundle.join("aster-oci-shim-v1.json"))
         .await
         .map_err(|error| qualification_error(format!("read shim metadata: {error}")))?;
     let metadata: Value = serde_json::from_slice(&metadata)
@@ -348,7 +348,7 @@ pub(crate) async fn read_runtime_identity(
         .and_then(Value::as_str)
         .ok_or_else(|| qualification_error("shim metadata omitted its runtime container ID"))?;
     Ok(RuntimeIdentity {
-        container_id: a3s_oci_sdk::ContainerId::new(container_id).map_err(|error| {
+        container_id: aster_oci_sdk::ContainerId::new(container_id).map_err(|error| {
             qualification_error(format!(
                 "shim metadata contains an invalid runtime container ID: {error}"
             ))

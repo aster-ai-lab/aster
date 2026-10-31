@@ -48,7 +48,7 @@ pub(super) async fn run_manifest_task(
     // dropping a runtime waits for every spawn_blocking job, while a detached
     // setup thread cannot hold runtime teardown hostage.
     let _ = thread::Builder::new()
-        .name("a3s-workspace-watcher".to_owned())
+        .name("aster-workspace-watcher".to_owned())
         .spawn(move || {
             if watcher_cancelled.load(Ordering::Acquire) {
                 return;
@@ -367,7 +367,7 @@ async fn scan_workspace(
     // cooperative flag is set. A detached standard thread keeps that call out
     // of Tokio's blocking pool, so runtime teardown never waits for it.
     if thread::Builder::new()
-        .name("a3s-workspace-scan".to_owned())
+        .name("aster-workspace-scan".to_owned())
         .spawn(move || {
             let files = scan_workspace_files_cancellable(&root, &scan_cancelled_for_task);
             let _ = scan_tx.send(files);

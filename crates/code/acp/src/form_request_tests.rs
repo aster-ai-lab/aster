@@ -23,10 +23,10 @@ async fn json_render_request_round_trips_without_a_core_session() {
         .run_until(async {
             // The protocol handler has no providers. Neither session/new nor
             // session/load is invoked: this proof cannot construct a runtime.
-            let handler = crate::agent::A3sCodeAgent::new(crate::config::LaunchConfig {
+            let handler = crate::agent::AsterCodeAgent::new(crate::config::LaunchConfig {
                 workspace: workspace.path().to_owned(),
                 model_id: String::new(),
-                config: a3s_code_core::CodeConfig::default(),
+                config: aster_core::CodeConfig::default(),
             });
             let (raw_client, agent_end) = tokio::io::duplex(4096);
             let (agent_read, agent_write) = tokio::io::split(agent_end);
@@ -49,8 +49,8 @@ async fn json_render_request_round_trips_without_a_core_session() {
                     assert!(reader.read_line(&mut line).await.expect("request") > 0);
                     let frame: Value = serde_json::from_str(&line).expect("JSON-RPC frame");
                     // ACP prefixes extension methods with an underscore on
-                    // the wire; Studio matches exactly `_a3s/form/request`.
-                    assert_eq!(frame["method"], "_a3s/form/request");
+                    // the wire; Studio matches exactly `_aster/form/request`.
+                    assert_eq!(frame["method"], "_aster/form/request");
                     assert_eq!(frame["params"]["sessionId"], "session-1");
                     assert_eq!(
                         frame["params"],

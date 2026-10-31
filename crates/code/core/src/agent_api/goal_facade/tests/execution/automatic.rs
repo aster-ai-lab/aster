@@ -45,11 +45,11 @@ pub(super) fn request(session: &AgentSession, operation: &str) -> GoalControlCom
     }
 }
 
-pub(super) fn slices(root: &std::path::Path) -> Vec<a3s_effect::Fact> {
+pub(super) fn slices(root: &std::path::Path) -> Vec<aster_effect::Fact> {
     crate::fact_control::read_workspace_facts(root, "goal-run")
         .unwrap()
         .into_iter()
-        .filter(|fact| fact.kind == "a3s.goal.slice.admitted")
+        .filter(|fact| fact.kind == "aster.goal.slice.admitted")
         .collect()
 }
 
@@ -397,11 +397,11 @@ async fn goal_tick_writer_revalidation_refuses_stale_or_invalid_origins() {
             crate::fact_control::read_workspace_facts(root.path(), "goal-run")
                 .unwrap()
                 .into_iter()
-                .filter(|fact| fact.kind.starts_with("a3s.goal."))
+                .filter(|fact| fact.kind.starts_with("aster.goal."))
                 .count(),
             before
                 .iter()
-                .filter(|fact| fact.kind.starts_with("a3s.goal."))
+                .filter(|fact| fact.kind.starts_with("aster.goal."))
                 .count(),
             "case {case}"
         );

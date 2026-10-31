@@ -13,7 +13,7 @@ import {
 } from './work-spreadsheet-dynamic-filter';
 import { workSpreadsheetWildcardMatcher } from './work-spreadsheet-wildcard';
 
-const AUTO_FILTER_CRITERIA_KIND = 'a3s-office-auto-filter-criteria';
+const AUTO_FILTER_CRITERIA_KIND = 'aster-office-auto-filter-criteria';
 const AUTO_FILTER_CRITERIA_VERSION = 1;
 
 const SINGLE_VALUE_FILTER_TYPES = new Set([

@@ -14,7 +14,7 @@ pub(super) async fn save_committed(
         .capability_binding
         .as_ref()
         .map(|binding| {
-            crate::content_digest::digest_json("a3s.code.tool-admission-binding.v1", binding)
+            crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", binding)
                 .map_err(|error| ActorError::Schema(error.to_string()))
         })
         .transpose()?;
@@ -29,7 +29,7 @@ pub(super) async fn save_committed(
         let Some(value) = fact.payload.get("receipt") else {
             return false;
         };
-        let Ok(result) = serde_json::from_value::<a3s_effect::ToolExecutionResultV1>(value.clone())
+        let Ok(result) = serde_json::from_value::<aster_effect::ToolExecutionResultV1>(value.clone())
         else {
             return false;
         };
@@ -124,7 +124,7 @@ pub(super) async fn save_committed(
 /// Export the provider wire shape, with identities and attachments from the
 /// same original prefix as the ledger. The compaction display transcript is
 /// intentionally text-only and cannot substitute for a tool checkpoint.
-pub(super) fn checkpoint_messages_from_facts(facts: &[a3s_effect::Fact]) -> Vec<Message> {
+pub(super) fn checkpoint_messages_from_facts(facts: &[aster_effect::Fact]) -> Vec<Message> {
     let start = facts
         .iter()
         .rposition(|fact| fact.kind == "compaction.done")

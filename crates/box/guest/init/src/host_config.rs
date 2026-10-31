@@ -1,6 +1,6 @@
 //! Guest hostname and sysctl configuration.
 
-use a3s_box_core::guest_exec::GuestHostConfig;
+use aster_box_core::guest_exec::GuestHostConfig;
 use std::path::Path;
 
 /// Apply host configuration from the boot environment: pod sysctls and, if
@@ -70,7 +70,7 @@ fn apply_sysctls_from_env() {
 }
 
 fn apply_hostname(hostname: &str, hostname_path: &Path) -> Result<(), Box<dyn std::error::Error>> {
-    a3s_box_core::dns::validate_hostname(hostname)
+    aster_box_core::dns::validate_hostname(hostname)
         .map_err(|e| format!("invalid BOX_HOSTNAME: {e}"))?;
 
     set_kernel_hostname(hostname)?;

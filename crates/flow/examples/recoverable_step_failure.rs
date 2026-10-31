@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RetryPolicy, RuntimeCommand, StepFailureAction,
     StepInvocation, StepStatus, WorkflowInvocation, WorkflowRunStatus, WorkflowSpec,
 };
@@ -13,7 +13,7 @@ impl FlowRuntime for ReportRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
 
         if let Some(fallback) = ctx.step_output("cached-report") {
@@ -47,7 +47,7 @@ impl FlowRuntime for ReportRuntime {
         ))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "load_fresh_report" => Err(FlowError::Runtime(
                 "fresh report service unavailable".to_string(),
@@ -63,7 +63,7 @@ impl FlowRuntime for ReportRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(ReportRuntime));
     let spec = WorkflowSpec::rust_embedded(
         "examples.recoverable-step-failure",

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@a3s-lab/ui'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@aster-ai-lab/ui'
 
 const meta: Meta<typeof Tabs> = {
   title: 'Components/Primitives/Tabs',

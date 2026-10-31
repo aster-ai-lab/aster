@@ -5,7 +5,7 @@
 //! routing and expert GEMMs still require separate qualification.
 //! Semantics follow the pinned MIT TileKernels references.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 
 use super::{invalid, tensor_error, CudaLayerDevice};

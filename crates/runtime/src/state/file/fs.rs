@@ -218,7 +218,7 @@ pub(super) fn atomic_write<T: Serialize>(path: &Path, value: &T, label: &str) ->
         .file_name()
         .and_then(|name| name.to_str())
         .ok_or_else(|| RuntimeError::Protocol(format!("{label} has an invalid file name")))?;
-    let staging_prefix = format!(".a3s-runtime-{target_name}-");
+    let staging_prefix = format!(".aster-runtime-{target_name}-");
     let mut temporary = tempfile::Builder::new()
         .prefix(&staging_prefix)
         .suffix(".tmp")
@@ -276,7 +276,7 @@ fn cleanup_stale_staging_files(parent: &Path) -> RuntimeResult<()> {
         let name = entry.file_name();
         let name = name.to_string_lossy();
         if !(name.starts_with(".tmp")
-            || name.starts_with(".a3s-runtime-") && name.ends_with(".tmp"))
+            || name.starts_with(".aster-runtime-") && name.ends_with(".tmp"))
         {
             continue;
         }

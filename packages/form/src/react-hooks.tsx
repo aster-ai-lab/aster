@@ -11,7 +11,7 @@ import {
   useWatch,
 } from 'react-hook-form';
 import {
-  type FieldError as A3SFieldError,
+  type FieldError as AsterFieldError,
   type FormAsyncValidator,
   type FormHostAdapter,
   type FormLocaleCatalogOverride,
@@ -64,24 +64,24 @@ export {
   Watch,
 } from 'react-hook-form';
 
-export interface A3SFormResolverOptions {
+export interface AsterFormResolverOptions {
   plan: FormPlan;
   validator?: FormAsyncValidator;
   locale?: string;
   localeCatalog?: FormLocaleCatalogOverride;
 }
 
-export interface A3SFormRendererBinding {
+export interface AsterFormRendererBinding {
   plan: FormPlan;
   value: JsonObject;
   onChange: (value: JsonObject) => void;
-  errors: A3SFieldError[];
+  errors: AsterFieldError[];
   hostAdapter?: FormHostAdapter;
   locale?: string;
   localeCatalog?: FormLocaleCatalogOverride;
 }
 
-export interface UseA3SFormProps<TFieldValues extends FieldValues = FieldValues, TContext = unknown>
+export interface UseAsterFormProps<TFieldValues extends FieldValues = FieldValues, TContext = unknown>
   extends Omit<UseFormProps<TFieldValues, TContext, TFieldValues>, 'resolver'> {
   plan: FormPlan;
   hostAdapter?: FormHostAdapter;
@@ -89,12 +89,12 @@ export interface UseA3SFormProps<TFieldValues extends FieldValues = FieldValues,
   localeCatalog?: FormLocaleCatalogOverride;
 }
 
-export interface UseA3SFormReturn<
+export interface UseAsterFormReturn<
   TFieldValues extends FieldValues = FieldValues,
   TContext = unknown,
 > extends UseFormReturn<TFieldValues, TContext, TFieldValues> {
   formPlan: FormPlan;
-  rendererProps: A3SFormRendererBinding;
+  rendererProps: AsterFormRendererBinding;
 }
 
 function fieldScope(plan: FormPlan, names: readonly string[] | undefined) {
@@ -111,13 +111,13 @@ function fieldScope(plan: FormPlan, names: readonly string[] | undefined) {
 function assignNestedError(
   target: Record<string, unknown>,
   path: string,
-  issue: A3SFieldError,
+  issue: AsterFieldError,
   criteriaMode: ResolverOptions<FieldValues>['criteriaMode'],
 ): void {
   if (!path) {
     if (!target.root) target.root = {};
     const root = target.root as Record<string, unknown>;
-    root.a3s = mergeFieldError(root.a3s, issue, criteriaMode);
+    root.aster = mergeFieldError(root.aster, issue, criteriaMode);
     return;
   }
 
@@ -136,7 +136,7 @@ function assignNestedError(
 
 function mergeFieldError(
   current: unknown,
-  issue: A3SFieldError,
+  issue: AsterFieldError,
   criteriaMode: ResolverOptions<FieldValues>['criteriaMode'],
 ): ReactHookFormFieldError {
   const existing =
@@ -159,7 +159,7 @@ function mergeFieldError(
 }
 
 export function toReactHookFormErrors<TFieldValues extends FieldValues>(
-  issues: readonly A3SFieldError[],
+  issues: readonly AsterFieldError[],
   criteriaMode: ResolverOptions<TFieldValues>['criteriaMode'] = 'firstError',
 ): FieldErrors<TFieldValues> {
   const errors: Record<string, unknown> = {};
@@ -176,14 +176,14 @@ function isReactHookFormFieldError(value: unknown): value is ReactHookFormFieldE
 }
 
 function rendererPath(path: readonly string[]): string {
-  if (path[0] === 'root' && path[1] === 'a3s') return '';
+  if (path[0] === 'root' && path[1] === 'aster') return '';
   return path.join('.');
 }
 
-export function toA3SFormErrors<TFieldValues extends FieldValues>(
+export function toAsterFormErrors<TFieldValues extends FieldValues>(
   errors: FieldErrors<TFieldValues>,
-): A3SFieldError[] {
-  const output: A3SFieldError[] = [];
+): AsterFieldError[] {
+  const output: AsterFieldError[] = [];
   const seen = new Set<string>();
 
   const append = (path: readonly string[], code: string, message: unknown) => {
@@ -212,14 +212,14 @@ export function toA3SFormErrors<TFieldValues extends FieldValues>(
 }
 
 /**
- * Bridges React Hook Form's subscription engine to the deterministic A3S Form Core.
+ * Bridges React Hook Form's subscription engine to the deterministic Aster Form Core.
  * The core remains authoritative for computed rules, schema validation, locale copy,
  * and host-provided asynchronous validation.
  */
-export function createA3SFormResolver<
+export function createAsterFormResolver<
   TFieldValues extends FieldValues = FieldValues,
   TContext = unknown,
->(options: A3SFormResolverOptions): Resolver<TFieldValues, TContext, TFieldValues> {
+>(options: AsterFormResolverOptions): Resolver<TFieldValues, TContext, TFieldValues> {
   let activeValidation: AbortController | undefined;
 
   return async (values, _context, resolverOptions) => {
@@ -253,16 +253,16 @@ export function createA3SFormResolver<
 }
 
 /**
- * React Hook Form-compatible state with an A3S Renderer binding.
- * Import this optional React surface from `@a3s-lab/ui/form/react-hooks`.
+ * React Hook Form-compatible state with an Aster Renderer binding.
+ * Import this optional React surface from `@aster-ai-lab/ui/form/react-hooks`.
  */
-export function useA3SForm<TFieldValues extends FieldValues = FieldValues, TContext = unknown>(
-  options: UseA3SFormProps<TFieldValues, TContext>,
-): UseA3SFormReturn<TFieldValues, TContext> {
+export function useAsterForm<TFieldValues extends FieldValues = FieldValues, TContext = unknown>(
+  options: UseAsterFormProps<TFieldValues, TContext>,
+): UseAsterFormReturn<TFieldValues, TContext> {
   const { plan, hostAdapter, locale, localeCatalog, ...formOptions } = options;
   const resolver = useMemo(
     () =>
-      createA3SFormResolver<TFieldValues, TContext>({
+      createAsterFormResolver<TFieldValues, TContext>({
         plan,
         validator: hostAdapter?.validateValue,
         locale,
@@ -290,10 +290,10 @@ export function useA3SForm<TFieldValues extends FieldValues = FieldValues, TCont
     [formOptions.mode, reset, trigger],
   );
   const rendererErrors = useMemo(
-    () => toA3SFormErrors(methods.formState.errors),
+    () => toAsterFormErrors(methods.formState.errors),
     [methods.formState.errors],
   );
-  const rendererProps = useMemo<A3SFormRendererBinding>(
+  const rendererProps = useMemo<AsterFormRendererBinding>(
     () => ({
       plan,
       value: (watchedValue ?? methods.getValues()) as JsonObject,

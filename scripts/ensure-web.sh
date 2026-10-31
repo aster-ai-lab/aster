@@ -13,13 +13,13 @@ pid_file="$state_dir/web.pid"
 log_file="$state_dir/web.log"
 stamp_file="$state_dir/tenant.stamp"
 
-slug="${A3S_TENANT_SLUG:-}"
+slug="${ASTER_TENANT_SLUG:-}"
 if [[ -z "$slug" ]] || ! [[ "$slug" =~ ^[a-z][a-z0-9-]{0,31}$ ]]; then
   echo "invalid tenant slug: ${slug}" >&2
   exit 1
 fi
-export A3S_TENANT_SLUG="$slug"
-export PUBLIC_A3S_TENANT_SLUG="$slug"
+export ASTER_TENANT_SLUG="$slug"
+export PUBLIC_ASTER_TENANT_SLUG="$slug"
 hash_line="$(bun "$repo_root/scripts/check-tenant.ts" "$slug")"
 if ! [[ "$hash_line" =~ ^[0-9a-f]{64}$ ]]; then
   echo "tenant check returned an unexpected digest for ${slug}" >&2
@@ -51,7 +51,7 @@ fi
 if health_ok && [[ "$stamp_matches" -eq 1 ]]; then
   service_pid_alive || remember_listener 3100
   ensure_ssh_bridge
-  echo "a3s console already answering on :3100"
+  echo "aster console already answering on :3100"
   exit 0
 fi
 
@@ -64,22 +64,22 @@ fi
 # stop-web does not stop the fleet SSH bridge on :13101.
 bash "$repo_root/scripts/stop-web.sh"
 
-echo "starting a3s console on :3100 (tenant=${slug})…"
+echo "starting aster console on :3100 (tenant=${slug})…"
 if [[ ! -x "$repo_root/apps/web/node_modules/.bin/rsbuild" && ! -x "$repo_root/node_modules/.bin/rsbuild" ]]; then
   echo "installing console dependencies…"
   bun install
 fi
-launch_service bun --filter @a3s/web dev
+launch_service bun --filter @aster/web dev
 ensure_ssh_bridge
 
 for _ in $(seq 1 80); do
   if health_ok; then
     printf '%s\n%s\n' "$slug" "$hash_line" > "$stamp_file"
-    echo "a3s console ready  (pid $(cat "$pid_file") · log $log_file)"
+    echo "aster console ready  (pid $(cat "$pid_file") · log $log_file)"
     exit 0
   fi
   sleep 0.5
 done
 
-echo "a3s console failed to answer on :3100 — see $log_file" >&2
+echo "aster console failed to answer on :3100 — see $log_file" >&2
 exit 1

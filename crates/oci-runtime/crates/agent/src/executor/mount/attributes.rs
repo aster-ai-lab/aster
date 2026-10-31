@@ -3,7 +3,7 @@ use std::io;
 use std::mem::{size_of, zeroed};
 use std::os::fd::{AsRawFd, FromRawFd, OwnedFd};
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 // Linux UAPI mount.h values are not consistently exposed by libc targets.
 pub(crate) const FSOPEN_CLOEXEC: libc::c_uint = 0x0000_0001;

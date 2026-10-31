@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_form_core::{
+use aster_form_core::{
     canonicalize_interaction_request_content, canonicalize_interaction_value,
     decode_interaction_request, decode_interaction_submission, digest_interaction_request,
     digest_interaction_value, FormInteractionRequest, FormInteractionSubmission,
@@ -45,7 +45,7 @@ fn matches_shared_interaction_contract_and_digests() {
     let fixture = fixture();
     assert_eq!(
         fixture.api_version,
-        "a3s.dev/form-interaction-conformance/v1"
+        "aster.dev/form-interaction-conformance/v1"
     );
     assert_eq!(
         fixture.request.api_version,

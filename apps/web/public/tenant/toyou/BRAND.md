@@ -4,7 +4,7 @@
 - 日期：2026-09-29
 - slug：`legacy`
 - 目录：`apps/web/public/tenant/legacy/`
-- 启动：`just up legacy` 与 `just up:legacy` 读取本目录。`just up` 读取 `tenant/a3s`
+- 启动：`just up legacy` 与 `just up:legacy` 读取本目录。`just up` 读取 `tenant/aster`
 
 本目录是通友科技这个租户的全部平台身份。旁边的 `INFO.md` 是加载器读取的记录。本文件给人读，加载器不解析它，也不把它算进重启用的哈希。
 
@@ -48,6 +48,6 @@
 
 `just up:legacy` 拉起的控制台用本目录的名称和字标：文档标题、favicon、登录字标、活动栏、侧栏品牌、门户和登录链接上的名称。设置里保存的名称或 logo 只盖住这一次启动的 `legacy`，颜色仍来自旁边的 `INFO.md`。PageLoading 从左到右描边再填色。亮色加载用品牌色 `#171717`，暗色加载用浅色字。
 
-服务名和进程名不在本目录里，也不随本租户改变。它们使用 `a3s-` 前缀，例如 `a3s-api`、`a3s-gateway`、`a3s-runtime`。控制台若回显这些服务名，显示的是 `a3s-` 名字。
+服务名和进程名不在本目录里，也不随本租户改变。它们使用 `aster-` 前缀，例如 `aster-api`、`aster-gateway`、`aster-runtime`。控制台若回显这些服务名，显示的是 `aster-` 名字。
 
-`just up` 读取 `apps/web/public/tenant/a3s`。本目录用 `just up legacy` 启动。氪锶科技在 `apps/web/public/tenant/kense/`，用 `just up kense` 启动。
+`just up` 读取 `apps/web/public/tenant/aster`。本目录用 `just up legacy` 启动。氪锶科技在 `apps/web/public/tenant/kense/`，用 `just up kense` 启动。

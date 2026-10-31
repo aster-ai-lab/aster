@@ -2,8 +2,8 @@
 //!
 //! Handles parsing of OCI image layout including manifest and configuration.
 
-use a3s_box_core::error::{BoxError, Result};
-use a3s_box_core::platform::Platform as BoxPlatform;
+use aster_box_core::error::{BoxError, Result};
+use aster_box_core::platform::Platform as BoxPlatform;
 use oci_spec::image::{Descriptor, ImageConfiguration, ImageIndex, ImageManifest};
 use sha2::{Digest, Sha256};
 use std::fs::File;
@@ -64,7 +64,7 @@ pub(crate) fn validate_plain_directory(path: &Path, what: &str) -> Result<()> {
 
 pub(crate) fn open_regular_file_no_follow(path: &Path, what: &str) -> Result<File> {
     #[cfg(windows)]
-    let opened = a3s_box_core::windows_file::open_regular_file(path, None).map(|(file, _)| file);
+    let opened = aster_box_core::windows_file::open_regular_file(path, None).map(|(file, _)| file);
 
     #[cfg(unix)]
     let opened = {
@@ -895,7 +895,7 @@ mod tests {
             .any(|(k, v)| k == "PATH" && v.contains("/usr/bin")));
 
         // Verify labels
-        assert_eq!(image.label("a3s.type"), Some("agent"));
+        assert_eq!(image.label("aster.type"), Some("agent"));
 
         // Verify Docker-compatible Healthcheck was parsed from raw config JSON.
         let health_check = image.config().health_check.as_ref().unwrap();
@@ -1079,12 +1079,12 @@ mod tests {
 
     #[cfg(windows)]
     fn windows_symlink_for_test(create: impl FnOnce() -> std::io::Result<()>) -> bool {
-        let guard = a3s_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
+        let guard = aster_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
         let assigned_privilege_enabled = guard.assigned_privilege_enabled();
         match create() {
             Ok(()) => true,
             Err(error)
-                if a3s_box_core::windows_symlink::is_capability_denial(
+                if aster_box_core::windows_symlink::is_capability_denial(
                     &error,
                     assigned_privilege_enabled,
                 ) =>
@@ -1143,8 +1143,8 @@ mod tests {
                 "Env": ["PATH=/usr/local/bin:/usr/bin:/bin"],
                 "WorkingDir": "/workspace",
                 "Labels": {
-                    "a3s.type": "agent",
-                    "a3s.version": "1.0.0"
+                    "aster.type": "agent",
+                    "aster.version": "1.0.0"
                 },
                 "Healthcheck": {
                     "Test": ["CMD-SHELL", "test -f /tmp/healthy"],

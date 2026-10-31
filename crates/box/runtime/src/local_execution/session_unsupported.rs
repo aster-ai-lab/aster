@@ -1,7 +1,7 @@
 //! OCI SDK sessions plus fail-closed legacy handling on hosts without Unix sockets.
 
-use a3s_box_core::pty::PtyRequest;
-use a3s_box_core::{
+use aster_box_core::pty::PtyRequest;
+use aster_box_core::{
     ExecOutput, ExecRequest, ExecutionGeneration, ExecutionId, ExecutionManagerError,
     ExecutionManagerResult, ExecutionProcess, ExecutionSessionManager, FileRequest, FileResponse,
     FilesystemRequest, FilesystemResponse,

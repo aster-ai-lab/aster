@@ -6,14 +6,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = std::env::args().skip(1).collect::<Vec<_>>();
     let result = match args.as_slice() {
         [operation, root] if operation == "begin" => {
-            serde_json::to_value(a3s_okf::begin_knowledge_maintenance(
+            serde_json::to_value(aster_okf::begin_knowledge_maintenance(
                 Path::new(root),
                 &[],
-                a3s_okf::MaintenanceOperation::Ingest,
+                aster_okf::MaintenanceOperation::Ingest,
             )?)?
         }
         [operation, root, job] if operation == "finish" => {
-            serde_json::to_value(a3s_okf::finish_knowledge_maintenance(Path::new(root), job)?)?
+            serde_json::to_value(aster_okf::finish_knowledge_maintenance(Path::new(root), job)?)?
         }
         _ => {
             return Err(std::io::Error::new(

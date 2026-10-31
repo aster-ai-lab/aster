@@ -1,4 +1,4 @@
-//! Browser-safe A3S Office layout kernel.
+//! Browser-safe Aster Office layout kernel.
 //!
 //! The crate intentionally has no filesystem, network, async-runtime, or DOM
 //! dependency. Native tests exercise the same deterministic layout function

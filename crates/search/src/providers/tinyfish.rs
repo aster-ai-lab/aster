@@ -387,7 +387,7 @@ mod tests {
     #[test]
     fn missing_key_is_not_ready() {
         let provider = TinyFishProvider::new(TinyFishConfig::new().unwrap().with_api_key(
-            CredentialSource::environment("A3S_SEARCH_TINYFISH_KEY_THAT_MUST_NOT_EXIST"),
+            CredentialSource::environment("ASTER_SEARCH_TINYFISH_KEY_THAT_MUST_NOT_EXIST"),
         ))
         .unwrap();
         assert!(!provider.readiness().is_ready());

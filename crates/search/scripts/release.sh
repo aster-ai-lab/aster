@@ -51,11 +51,11 @@ scripts/test-release-package.sh
 git diff --check
 
 git add Cargo.toml Cargo.lock
-git commit -m "release: prepare a3s-search ${version}"
+git commit -m "release: prepare aster-search ${version}"
 git tag "v${version}"
 
 cat <<EOF
-Prepared a3s-search ${version} and created tag v${version}.
+Prepared aster-search ${version} and created tag v${version}.
 Review the commit and tag, then publish explicitly:
 
   git push origin main

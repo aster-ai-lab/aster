@@ -7,7 +7,7 @@ export const meta = {
 
 ## ACP 负责哪一层
 
-`a3s-code-acp` 是运行在独立进程中的 Agent Client Protocol 代理。客户端负责界面、启动进程、请求权限和接收更新；代理把协议请求接到 Core，执行模型调用、受控工具与会话持久化。
+`aster-acp` 是运行在独立进程中的 Agent Client Protocol 代理。客户端负责界面、启动进程、请求权限和接收更新；代理把协议请求接到 Core，执行模型调用、受控工具与会话持久化。
 
 <PeleAtlasDiagram name="architecture" label="FIG.09 / ACP 客户端与运行时" description="客户端通过 stdio 请求 ACP，ACP 调用 Core，Core 访问受控工作区和宿主服务；权限与表单回到客户端。" />
 
@@ -25,13 +25,13 @@ Core 和 ACP 使用相同的运行时，并不具有完全相同的接口。Rust
 
 ## 版本与交付
 
-本组文档对应仓库 9.1.6 源码。`aster` 与 `a3s-code-acp` 必须配套构建、分发；不要把任意上游发行包覆盖到 Aster 安装中。源码引用固定到本版注册的 Git 提交，不包含工作树未提交的改动。
+本组文档对应仓库 9.1.6 源码。`aster` 与 `aster-acp` 必须配套构建、分发；不要把任意上游发行包覆盖到 Aster 安装中。源码引用固定到本版注册的 Git 提交，不包含工作树未提交的改动。
 
 ## 客户端与运行时怎样连接
 
 <PeleAtlasDiagram name="acp-boundary" label="客户端、ACP 与 Core" description="ACP 把进程间请求适配到 Core。Rust 宿主也可直接嵌入 Core，两条入口的公开能力不能混为一谈。" />
 
-协议实现从 <SourceRef path="crates/code/acp/src/agent.rs" match="pub struct A3sCodeAgent {">A3sCodeAgent</SourceRef> 开始；会话装配见 <SourceRef path="crates/code/acp/src/agent/session_open.rs" match="pub(super) async fn open_core_session(">open_core_session</SourceRef>，工具与模型运行则交给 Core。
+协议实现从 <SourceRef path="crates/code/acp/src/agent.rs" match="pub struct AsterCodeAgent {">AsterCodeAgent</SourceRef> 开始；会话装配见 <SourceRef path="crates/code/acp/src/agent/session_open.rs" match="pub(super) async fn open_core_session(">open_core_session</SourceRef>，工具与模型运行则交给 Core。
 
 | 想追踪的路径 | 实现入口 | 配套章节 |
 | --- | --- | --- |
@@ -48,7 +48,7 @@ Core 和 ACP 使用相同的运行时，并不具有完全相同的接口。Rust
 
 ## 实现依据
 
-- [ACP 进程入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/bin/a3s-code-acp.rs)
+- [ACP 进程入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/bin/aster-acp.rs)
 - [协议处理](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent.rs)
 - [Core 9.1.6 文档](../../code/9.1.6/)
 

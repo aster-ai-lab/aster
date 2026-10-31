@@ -1,9 +1,9 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::{
+use aster_use_core::{
     PluginPackageLock, PluginPackageLockHost, PluginReleaseChannel, PluginSurfaceRef, UseResult,
 };
-use a3s_use_extension::{
+use aster_use_extension::{
     download_selected_locked_cached_remote_packages, download_selected_locked_remote_packages,
     resolve_cached_remote_package_lock_with_observer, resolve_remote_package_lock_with_observer,
     DownloadedRemotePackage, PackageRegistryResolutionObserver, TrustedRegistry,

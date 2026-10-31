@@ -161,11 +161,11 @@ class EnterpriseGaStatusTests(unittest.TestCase):
                 "--envelope-status lab-extended\n", encoding="utf-8"
             )
             (scripts / "run-soak-gateway-published.sh").write_text(
-                "A3S_GATEWAY_DEDICATED_RUNNER\n7200\n--envelope-status published\n",
+                "ASTER_GATEWAY_DEDICATED_RUNNER\n7200\n--envelope-status published\n",
                 encoding="utf-8",
             )
             (scripts / "run-soak-gateway-published.ps1").write_text(
-                "A3S_GATEWAY_DEDICATED_RUNNER\n7200\n--envelope-status published\n",
+                "ASTER_GATEWAY_DEDICATED_RUNNER\n7200\n--envelope-status published\n",
                 encoding="utf-8",
             )
             old_root = mod.ROOT
@@ -203,7 +203,7 @@ class EnterpriseGaStatusTests(unittest.TestCase):
             ):
                 body = f"--envelope-status {status}\n{profiles}\n"
                 if "published" in name:
-                    body += "A3S_GATEWAY_DEDICATED_RUNNER\n7200\n"
+                    body += "ASTER_GATEWAY_DEDICATED_RUNNER\n7200\n"
                 (scripts / name).write_text(body, encoding="utf-8")
             old_root = mod.ROOT
             mod.ROOT = root
@@ -683,7 +683,7 @@ class EnterpriseGaStatusTests(unittest.TestCase):
                     "memory_gb": 64,
                 },
                 "gateway": {
-                    "version": "a3s-gateway 1.1.1",
+                    "version": "aster-gateway 1.1.1",
                     "git_sha": "a" * 40,
                 },
             },

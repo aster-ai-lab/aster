@@ -7,7 +7,7 @@ workbench/graph destinations, title/path quick open and retained search-list
 position are connected. Tabs/history and native GUI acceptance remain open.
 Owner/component checks do not establish T018.
 Execution is active. The prior missing-host blocker was resolved by recovering
-the retained A3S Test MCP bridge and its background-only guard. The current
+the retained Aster Test MCP bridge and its background-only guard. The current
 isolated native app launches. The initial blank observation is retained as a
 failed journey; a later diagnostic session reached the painted shell after a
 background Tab and passed body search/open/edit/save with exact native-byte
@@ -295,7 +295,7 @@ The following product-task history remains unchanged.
 
 ## Phase 3: Evidence and release gates — 3 tasks
 
-- [ ] **T018 [US1–US4] Desktop journeys.** Use a3s-test GUI agent sessions on an
+- [ ] **T018 [US1–US4] Desktop journeys.** Use aster-test GUI agent sessions on an
   isolated Aster instance with synthetic notes, background-only semantic input
   and disk/native read-back. Prove six SC-006 journeys, plus no new model calls
   from search/navigation. Observe before authoring deterministic ACL under
@@ -353,7 +353,7 @@ rename is explicitly scoped/refused, not an untracked assumption.
 - [ ] Six background GUI journeys and exact owned-process cleanup retained.
 - [ ] Relevant renderer/native build and locale/design gates pass.
 - [ ] `cargo fmt --all -- --check` run; unrelated failures identified without editing them.
-- [ ] No external `a3s-*` dependency, new workspace/lockfile, native select or allowlist growth.
+- [ ] No external `aster-*` dependency, new workspace/lockfile, native select or allowlist growth.
 - [ ] Product configuration, if scope changes to require it, remains ACL.
 - [ ] Root and submodule diffs reviewed separately; stage individual files only if
   the user later requests a commit. Nothing is staged by this plan.

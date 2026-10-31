@@ -3,7 +3,7 @@
 //! window explicitly enters XQ's FP8 grid. Compression/index selection and
 //! request-state composition are separate model-owned obligations.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;

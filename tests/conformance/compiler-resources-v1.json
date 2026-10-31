@@ -1,5 +1,5 @@
 {
-  "apiVersion": "a3s.dev/form-compiler-resource-conformance/v1",
+  "apiVersion": "aster.dev/form-compiler-resource-conformance/v1",
   "generator": "flat-string-fields-v1",
   "cases": [
     {

@@ -1,14 +1,14 @@
-# A3S Use Registry
+# Aster Use Registry
 
 The official signed package Registry deployment for
-[A3S Use](https://github.com/A3S-Lab/Use).
+[Aster Use](https://github.com/aster-ai-lab/Use).
 
 > **Status:** dev-preview bootstrap. The tree under `registry/` is signed by
 > the development custody key set and is verified end to end by the released
 > client, but it is **not** a production trust root. Production bootstrap
 > material is added only after the custody, rotation, expiry, withdrawal,
 > mirror-replacement, and recovery procedures in the
-> [A3S Use roadmap](https://github.com/A3S-Lab/Use/blob/main/ROADMAP.md) are
+> [Aster Use roadmap](https://github.com/aster-ai-lab/Use/blob/main/ROADMAP.md) are
 > implemented and reviewed.
 
 ## Bootstrap pin
@@ -27,10 +27,10 @@ consumption.
 
 ```bash
 # Prefer an explicit package-manager binary when PATH has a capability wrapper.
-export A3S_USE_BIN=/path/to/a3s-use   # crates/use target/debug/a3s-use
+export ASTER_USE_BIN=/path/to/aster-use   # crates/use target/debug/aster-use
 
-"$A3S_USE_BIN" registry source add official \
-  --github A3S-Lab/Use-Registry \
+"$ASTER_USE_BIN" registry source add official \
+  --github aster-ai-lab/Use-Registry \
   --trust-root sha256:ff399c6a599fd2acea8c3838c6efd073e87321413448c77dfa3b1616d076d172 \
   --json
 ```
@@ -42,8 +42,8 @@ Architecture (transport vs trust, ownership):
 
 | Package | Version | Surfaces |
 | --- | --- | --- |
-| `a3s/registry-selftest` | 0.1.0 | Skill |
-| `a3s/applet-demo` | 0.1.0 | Tool, MCP, Skill, UI (`bind_tool=["echo"]`) — package source + signed `registry/targets/.../applet-demo` (Track A/J6/S1) |
+| `aster/registry-selftest` | 0.1.0 | Skill |
+| `aster/applet-demo` | 0.1.0 | Tool, MCP, Skill, UI (`bind_tool=["echo"]`) — package source + signed `registry/targets/.../applet-demo` (Track A/J6/S1) |
 
 ## Ownership boundary
 
@@ -54,11 +54,11 @@ publication state (`registry/`).
 It does not own:
 
 - the package manager, Registry formats, or authoring and verification tools;
-  those belong to A3S Use (`crates/registry-tools` on Use `main`, binary
-  `a3s-use-registry-tools`);
+  those belong to Aster Use (`crates/registry-tools` on Use `main`, binary
+  `aster-use-registry-tools`);
 - package source code for third-party packages; those stay in their owning
   repositories and are admitted as reviewed release artifacts;
-- consumer installation authority; each A3S Use installation owns its selected
+- consumer installation authority; each Aster Use installation owns its selected
   source, independently obtained bootstrap-root digest, reviewed plan, Grants,
   and activation state;
 - Desktop Applet UiHost projection or rendering; registry supply for Applet UI
@@ -86,9 +86,9 @@ To start a stable local HTTP transport for the committed `registry/` tree
 ```bash
 ./scripts/serve_local.sh start
 ./scripts/smoke_local.sh
-# optional: prove Use package-manager consume (needs A3S_USE_BIN with registry routes)
+# optional: prove Use package-manager consume (needs ASTER_USE_BIN with registry routes)
 ./scripts/consume_local.sh
-# first-principles gate (ephemeral port; needs A3S_USE_BIN for I1/I5)
+# first-principles gate (ephemeral port; needs ASTER_USE_BIN for I1/I5)
 ./scripts/test_local_registry.sh
 ```
 

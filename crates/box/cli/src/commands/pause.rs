@@ -1,10 +1,10 @@
-//! `a3s-box pause` command — Pause one or more running boxes.
+//! `aster-box pause` command — Pause one or more running boxes.
 //!
 //! Uses the durable execution manager for managed boxes and SIGSTOP only for
 //! legacy state records.
 
-use a3s_box_core::{ExecutionGeneration, ExecutionId, ExecutionManager};
-use a3s_box_runtime::ManagedExecutionState;
+use aster_box_core::{ExecutionGeneration, ExecutionId, ExecutionManager};
+use aster_box_runtime::ManagedExecutionState;
 use clap::Args;
 
 use crate::lifecycle;
@@ -65,9 +65,9 @@ async fn pause_one(state: &StateFile, query: &str) -> Result<(), Box<dyn std::er
     {
         // The managed lifecycle uses the same cross-process lock. Release the
         // command guard before entering it so Sandbox pause is performed by
-        // the A3S OCI owner and the durable generation advances exactly once.
+        // the Aster OCI owner and the durable generation advances exactly once.
         drop(lifecycle_lock);
-        let home = a3s_box_core::dirs_home();
+        let home = aster_box_core::dirs_home();
         let manager = super::configured_local_execution_manager(&home).await?;
         manager.pause(&execution_id, generation, true).await?;
         println!("{}", record.name);
@@ -152,7 +152,7 @@ fn pause_plan(record: &crate::state::BoxRecord) -> Result<PausePlan, Box<dyn std
             .ok_or_else(|| format!("Box {} lost managed lifecycle metadata", record.name))?;
         if state != ManagedExecutionState::Running {
             return Err(format!(
-                "Cannot pause box {} because it is {state}. Use `a3s-box ps -a` to inspect state.",
+                "Cannot pause box {} because it is {state}. Use `aster-box ps -a` to inspect state.",
                 record.name
             )
             .into());
@@ -165,7 +165,7 @@ fn pause_plan(record: &crate::state::BoxRecord) -> Result<PausePlan, Box<dyn std
 
     if record.status != "running" {
         return Err(format!(
-            "Cannot pause box {} because it is {}. Use `a3s-box start {}` to start it or `a3s-box ps -a` to inspect state.",
+            "Cannot pause box {} because it is {}. Use `aster-box start {}` to start it or `aster-box ps -a` to inspect state.",
             record.name, record.status, record.name
         )
         .into());
@@ -178,8 +178,8 @@ fn pause_plan(record: &crate::state::BoxRecord) -> Result<PausePlan, Box<dyn std
 mod tests {
     use super::*;
     use crate::test_helpers::fixtures::{make_record, setup_state};
-    use a3s_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
-    use a3s_box_runtime::ManagedExecutionMetadata;
+    use aster_box_core::{BoxConfig, CreateExecutionRequest, ExecutionIsolation, OperationId};
+    use aster_box_runtime::ManagedExecutionMetadata;
     use std::collections::BTreeMap;
 
     fn managed_record(state: ManagedExecutionState) -> crate::state::BoxRecord {
@@ -244,7 +244,7 @@ mod tests {
         assert!(result.is_err());
         let error = result.unwrap_err().to_string();
         assert!(error.contains("no recorded PID"));
-        assert!(error.contains("a3s-box ps"));
+        assert!(error.contains("aster-box ps"));
         assert_eq!(
             state.find_by_id("id-1").unwrap().status,
             "running",

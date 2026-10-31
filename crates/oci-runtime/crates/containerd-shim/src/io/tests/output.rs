@@ -23,8 +23,8 @@ async fn output_pump_resumes_after_persisted_cursor_and_commits_after_fifo_write
     let runtime = OutputReplayService::default();
     let requested_cursors = runtime.requested_cursors.clone();
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
-        a3s_oci_sdk::IsolationRequest::SharedHostKernel,
+        aster_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::IsolationRequest::SharedHostKernel,
     );
     let committer = Arc::new(GatedCursorCommitter::new());
     let identity = TaskIdentity::new("k8s.io", "restored-output").expect("task identity");
@@ -131,8 +131,8 @@ async fn output_cancellation_commits_only_the_fifo_delivered_prefix() {
         .collect::<Vec<_>>();
     let runtime = OutputReplayService::with_payload(payload.clone());
     let adapter = RuntimeAdapter::from_client(
-        a3s_oci_sdk::RuntimeClient::new(runtime),
-        a3s_oci_sdk::IsolationRequest::SharedHostKernel,
+        aster_oci_sdk::RuntimeClient::new(runtime),
+        aster_oci_sdk::IsolationRequest::SharedHostKernel,
     );
     let committer = Arc::new(GatedCursorCommitter::new());
     let identity = TaskIdentity::new("k8s.io", "cancelled-output").expect("task identity");

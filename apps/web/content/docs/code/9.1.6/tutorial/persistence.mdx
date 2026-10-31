@@ -16,7 +16,7 @@ export const meta = {
 在第四章 `runtime::open` 的 `SessionOptions` 链上继续增加以下设置：
 
 ```rust
-use a3s_code_core::SessionOptions;
+use aster_core::SessionOptions;
 
 let options = SessionOptions::new()
     .with_session_id("tutorial-demo")
@@ -31,7 +31,7 @@ let options = SessionOptions::new()
 ## 重新打开保存的会话
 
 ```rust
-use a3s_code_core::{Agent, AgentSession, SessionOptions};
+use aster_core::{Agent, AgentSession, SessionOptions};
 
 async fn reopen(agent: &Agent, options: SessionOptions)
     -> anyhow::Result<AgentSession>
@@ -62,7 +62,7 @@ cargo run --locked -p tutorial-agent -- /absolute/host.acl /absolute/practice-re
 
 ```rust
 use std::time::Duration;
-use a3s_code_core::AgentSession;
+use aster_core::AgentSession;
 
 async fn stop_before_replacing(session: &AgentSession) -> anyhow::Result<()> {
     let retired = session.cancel_and_settle(

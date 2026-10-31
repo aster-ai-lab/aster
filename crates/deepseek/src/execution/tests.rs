@@ -1,5 +1,5 @@
 use super::*;
-use a3s_power::inference::DevicePreference;
+use aster_power::inference::DevicePreference;
 use greedy::{run, StepChoice};
 
 fn plan() -> XqPipelinePlan {

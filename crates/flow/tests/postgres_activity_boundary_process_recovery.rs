@@ -8,7 +8,7 @@
 
 #![cfg(feature = "postgres")]
 
-use a3s_flow::{
+use aster_flow::{
     ActivityInvocation, ActivityStatus, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope,
     FlowEventStore, FlowRuntime, FlowTask, FlowTaskQueue, FlowWorker, PostgresEventStore,
     PostgresFlowTaskQueue, RetryPolicy, RuntimeCommand, StepInvocation, WorkflowInvocation,
@@ -117,7 +117,7 @@ struct PauseBeforeBoundaryStore {
 
 #[async_trait]
 impl FlowEventStore for PauseBeforeBoundaryStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -126,7 +126,7 @@ impl FlowEventStore for PauseBeforeBoundaryStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if self.boundary.matches_event(&event) {
             publish_marker(&self.marker, run_id, expected_sequence, &self.lease_id).await?;
             pending::<()>().await;
@@ -137,11 +137,11 @@ impl FlowEventStore for PauseBeforeBoundaryStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -181,7 +181,7 @@ impl BoundaryRecoveryRuntime {
             .count()
     }
 
-    async fn record_attempt(&self) -> a3s_flow::Result<()> {
+    async fn record_attempt(&self) -> aster_flow::Result<()> {
         tokio::fs::create_dir_all(&self.state_dir).await?;
         let mut attempts = tokio::fs::OpenOptions::new()
             .create(true)
@@ -194,7 +194,7 @@ impl BoundaryRecoveryRuntime {
         Ok(())
     }
 
-    async fn write_durable_effect(&self, input: &serde_json::Value) -> a3s_flow::Result<()> {
+    async fn write_durable_effect(&self, input: &serde_json::Value) -> aster_flow::Result<()> {
         match tokio::fs::OpenOptions::new()
             .create_new(true)
             .write(true)
@@ -217,7 +217,7 @@ impl BoundaryRecoveryRuntime {
     async fn commit_durable_effect(
         &self,
         input: &serde_json::Value,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         self.record_attempt().await?;
         self.write_durable_effect(input).await?;
         Ok(json!({ "committed": true }))
@@ -229,7 +229,7 @@ impl FlowRuntime for BoundaryRecoveryRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         match context.activity_output("durable-effect") {
             Some(output) => Ok(context.complete(output.clone())),
@@ -244,14 +244,14 @@ impl FlowRuntime for BoundaryRecoveryRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.commit_durable_effect(&invocation.input).await
     }
 
     async fn run_activity(
         &self,
         invocation: ActivityInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         match self.boundary {
             CrashBoundary::Started => self.commit_durable_effect(&invocation.input).await,
             CrashBoundary::Heartbeat => {
@@ -311,7 +311,7 @@ async fn publish_marker(
     run_id: &str,
     expected_sequence: u64,
     lease_id: &str,
-) -> a3s_flow::Result<()> {
+) -> aster_flow::Result<()> {
     let temporary = marker.with_extension(format!("{}.tmp", std::process::id()));
     tokio::fs::write(
         &temporary,

@@ -87,7 +87,7 @@ busy/error/empty states, close/reopen and a native candidate-review fixture.
 - [x] Product-regime hermetic tests are assigned in tasks.
 - [x] New Rust closed sets have parse/as_str and unknown-value refusal.
 - [x] No new production unwrap/expect without an infallibility argument.
-- [x] A3S dependencies remain local; installed workspace serialization is reused.
+- [x] Aster dependencies remain local; installed workspace serialization is reused.
 - [x] No new product configuration format or configuration switches.
 - [x] Evidence: `docs/evidence/desktop/2026-10-23-living-wiki/OUTCOME.md`.
 

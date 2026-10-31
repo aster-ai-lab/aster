@@ -1,7 +1,7 @@
 //! An explicit experimental validation profile: one flag kernel, one scalar read.
 //! Keep the tensor control available for qualification. No precision changes.
 #[cfg(any(feature = "cuda", test))]
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 
 pub const ABI: &str = "aster-finite-f32-flag-v1";
 pub const SOURCE: &str = include_str!("finite.cu");

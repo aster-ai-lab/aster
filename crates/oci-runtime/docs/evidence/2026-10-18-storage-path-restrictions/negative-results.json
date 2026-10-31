@@ -1,26 +1,26 @@
 {
   "candidate": {
-    "root": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv",
+    "root": "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv",
     "source_revision": "dc30d18352b521da7e69eb5b0918b56408f9812e",
     "source_dirty": false,
     "sha256": {
       "qualify_hvf_workspace": "ec9a770a7d528c7455f31a9d93d62a115834c187e0c001349635d801264aec56",
-      "a3s-oci": "927495ce677f1381f7cf1d12f9a7ab1f3cce9277219c928226181b9c0e024303",
-      "a3s-oci-krun-shim": "283634f567ec98aacbbd223367dc2f23e163a3305d080d6af6dc5636f6c4228d",
-      "a3s-oci-krun-runtime/libkrun.1.17.0.dylib": "c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d",
-      "a3s-oci-krun-runtime/libkrunfw.5.dylib": "841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4"
+      "aster-oci": "927495ce677f1381f7cf1d12f9a7ab1f3cce9277219c928226181b9c0e024303",
+      "aster-oci-krun-shim": "283634f567ec98aacbbd223367dc2f23e163a3305d080d6af6dc5636f6c4228d",
+      "aster-oci-krun-runtime/libkrun.1.17.0.dylib": "c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d",
+      "aster-oci-krun-runtime/libkrunfw.5.dylib": "841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4"
     }
   },
   "previous_candidate": {
-    "root": "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi",
+    "root": "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi",
     "source_revision": "86e6cd2a21025875ba0903d7be74da58c7a66224",
     "source_dirty": false,
     "sha256": {
       "qualify_hvf_workspace": "36bcddc2bc8fed84ace246e5676882e246cf02e2a1df48cf21290ade573eb84b",
-      "a3s-oci": "8e3eb4cf86d653055f211aa1963dc4dfeb61e6cbf3787d51c8aa9ce76b4ccfdc",
-      "a3s-oci-krun-shim": "3cd5cc093becc2ce6c8fc2c36f15daced76aa24387c8eb0e4e6b8b1c63a66962",
-      "a3s-oci-krun-runtime/libkrun.1.17.0.dylib": "c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d",
-      "a3s-oci-krun-runtime/libkrunfw.5.dylib": "841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4"
+      "aster-oci": "8e3eb4cf86d653055f211aa1963dc4dfeb61e6cbf3787d51c8aa9ce76b4ccfdc",
+      "aster-oci-krun-shim": "3cd5cc093becc2ce6c8fc2c36f15daced76aa24387c8eb0e4e6b8b1c63a66962",
+      "aster-oci-krun-runtime/libkrun.1.17.0.dylib": "c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d",
+      "aster-oci-krun-runtime/libkrunfw.5.dylib": "841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4"
     }
   },
   "cases": [
@@ -28,11 +28,11 @@
       "case": "old-shim",
       "root": "/private/var/tmp/vn-nvpm33ef",
       "args": [
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/qualify_hvf_workspace",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/a3s-oci",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/a3s-oci-krun-shim",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/clean-system/system-image.json",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/qualify_hvf_workspace",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/aster-oci",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/aster-oci-krun-shim",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/clean-system/system-image.json",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
         "/private/var/tmp/vn-nvpm33ef"
       ],
       "exit_code": 1,
@@ -41,11 +41,11 @@
       "credential_preserved": true,
       "legacy_control_root": "/private/var/tmp/vc-5tb8se6b",
       "legacy_control_args": [
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/qualify_hvf_workspace",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/a3s-oci",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/a3s-oci-krun-shim",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/clean-system/system-image.json",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/qualify_hvf_workspace",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/aster-oci",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/aster-oci-krun-shim",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/clean-system/system-image.json",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
         "/private/var/tmp/vc-5tb8se6b"
       ],
       "legacy_control_exit_code": 0,
@@ -53,7 +53,7 @@
       "logs": [
         [
           "stderr.log",
-          "Error: Error { code: Unavailable, operation: Some(\"launch-hvf-utility-vm\"), message: \"libkrun shim exited before connecting the authenticated agent bridge; shim stdout: {\\n  \\\"schema_version\\\": \\\"a3s.oci.krun-agent-vm-smoke.v7\\\",\\n  \\\"platform\\\": \\\"macos\\\",\\n  \\\"status\\\": \\\"unavailable\\\",\\n  \\\"runtime_bundle_loaded\\\": false,\\n  \\\"context_created\\\": false,\\n  \\\"vm_configured\\\": false,\\n  \\\"rootfs_configured\\\": false,\\n  \\\"runtime_share_configured\\\": false,\\n  \\\"macos_host_sandbox_enforced\\\": false,\\n  \\\"kvm_device_opened\\\": false,\\n  \\\"kvm_api_verified\\\": false,\\n  \\\"kvm_post_probe_failure_injected\\\": false,\\n  \\\"agent_binary_present\\\": false,\\n  \\\"agent_vsock_configured\\\": false,\\n  \\\"workload_configured\\\": false,\\n  \\\"console_configured\\\": false,\\n  \\\"vm_entered\\\": false,\\n  \\\"console_created\\\": true,\\n  \\\"vcpus\\\": 1,\\n  \\\"memory_mib\\\": 512,\\n  \\\"reason\\\": \\\"failed to retain authenticated guest recovery report: failed to open guest recovery report /private/var/tmp/vn-nvpm33ef/service/runtime/shares/workspace-qualification/1/.a3s-oci-recovery-a3s-oci-agent-79b3d44f85225fdf1de625c626d5c1f2/report.json: No such file or directory (os error 2)\\\"\\n}\", retryable: true }\n"
+          "Error: Error { code: Unavailable, operation: Some(\"launch-hvf-utility-vm\"), message: \"libkrun shim exited before connecting the authenticated agent bridge; shim stdout: {\\n  \\\"schema_version\\\": \\\"aster.oci.krun-agent-vm-smoke.v7\\\",\\n  \\\"platform\\\": \\\"macos\\\",\\n  \\\"status\\\": \\\"unavailable\\\",\\n  \\\"runtime_bundle_loaded\\\": false,\\n  \\\"context_created\\\": false,\\n  \\\"vm_configured\\\": false,\\n  \\\"rootfs_configured\\\": false,\\n  \\\"runtime_share_configured\\\": false,\\n  \\\"macos_host_sandbox_enforced\\\": false,\\n  \\\"kvm_device_opened\\\": false,\\n  \\\"kvm_api_verified\\\": false,\\n  \\\"kvm_post_probe_failure_injected\\\": false,\\n  \\\"agent_binary_present\\\": false,\\n  \\\"agent_vsock_configured\\\": false,\\n  \\\"workload_configured\\\": false,\\n  \\\"console_configured\\\": false,\\n  \\\"vm_entered\\\": false,\\n  \\\"console_created\\\": true,\\n  \\\"vcpus\\\": 1,\\n  \\\"memory_mib\\\": 512,\\n  \\\"reason\\\": \\\"failed to retain authenticated guest recovery report: failed to open guest recovery report /private/var/tmp/vn-nvpm33ef/service/runtime/shares/workspace-qualification/1/.aster-oci-recovery-aster-oci-agent-79b3d44f85225fdf1de625c626d5c1f2/report.json: No such file or directory (os error 2)\\\"\\n}\", retryable: true }\n"
         ],
         [
           "host.stdout.log",
@@ -69,11 +69,11 @@
       "case": "old-guest",
       "root": "/private/var/tmp/vn-g2fyar43",
       "args": [
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/qualify_hvf_workspace",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/a3s-oci",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/a3s-oci-krun-shim",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/clean-system/system-image.json",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/qualify_hvf_workspace",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/aster-oci",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/aster-oci-krun-shim",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/clean-system/system-image.json",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
         "/private/var/tmp/vn-g2fyar43"
       ],
       "exit_code": 1,
@@ -82,11 +82,11 @@
       "credential_preserved": true,
       "legacy_control_root": "/private/var/tmp/vc-z7zq5cau",
       "legacy_control_args": [
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/qualify_hvf_workspace",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/a3s-oci",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/a3s-oci-krun-shim",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/clean-system/system-image.json",
-        "/Users/roylin/code/a3s/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/candidate-n664bosi/qualify_hvf_workspace",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/aster-oci",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/storage-path-restrictions-20261018/candidate-nyjwtgsv/aster-oci-krun-shim",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/hvf-directory-transport-20261018/clean-system/system-image.json",
+        "/Users/roylin/code/aster/.claude/worktrees/sandbox-lifecycle/crates/oci-runtime/target/qualification/macos-vmm-confinement-20261018/fixture",
         "/private/var/tmp/vc-z7zq5cau"
       ],
       "legacy_control_exit_code": 0,
@@ -94,7 +94,7 @@
       "logs": [
         [
           "stderr.log",
-          "Error: Error { code: Unavailable, operation: Some(\"launch-hvf-utility-vm\"), message: \"libkrun shim exited before connecting the authenticated agent bridge; shim stdout: {\\n  \\\"schema_version\\\": \\\"a3s.oci.krun-agent-vm-smoke.v7\\\",\\n  \\\"platform\\\": \\\"macos\\\",\\n  \\\"status\\\": \\\"unavailable\\\",\\n  \\\"runtime_bundle_loaded\\\": true,\\n  \\\"context_created\\\": true,\\n  \\\"vm_configured\\\": true,\\n  \\\"rootfs_configured\\\": true,\\n  \\\"runtime_share_configured\\\": true,\\n  \\\"macos_host_sandbox_enforced\\\": true,\\n  \\\"kvm_device_opened\\\": false,\\n  \\\"kvm_api_verified\\\": false,\\n  \\\"kvm_post_probe_failure_injected\\\": false,\\n  \\\"macos_boot_assets\\\": {\\n    \\\"manifest_sha256\\\": \\\"2a9d7ad6e72e8d93a8f6b4d9dae8a036e8c65a552094b2c2e2dbbc7f7319744f\\\",\\n    \\\"system_image_sha256\\\": \\\"e6119935a4de70c9c57c2e174a44766219d259279ed047761d03d639cd96dd70\\\",\\n    \\\"system_image_size\\\": 67108864,\\n    \\\"runtime_archive_sha256\\\": \\\"5486f38e91eb4da0e58888b543c93fe669c918ad4b84dd495f0d1dfdffc43b56\\\",\\n    \\\"libkrun_sha256\\\": \\\"c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d\\\",\\n    \\\"firmware_sha256\\\": \\\"841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4\\\",\\n    \\\"kernel_bundle_sha256\\\": \\\"b1180b50148ed14f5fbeadf17288ce8abcf245daa468255b7ff41113bbf01199\\\",\\n    \\\"kernel_bundle_size\\\": 22740992,\\n    \\\"kernel_guest_load_address\\\": \\\"0x0000000080000000\\\",\\n    \\\"kernel_entry_address\\\": \\\"0x0000000080000000\\\",\\n    \\\"root_disk_read_only\\\": true,\\n    \\\"runtime_share_separate\\\": true\\n  },\\n  \\\"agent_binary_present\\\": true,\\n  \\\"agent_vsock_configured\\\": true,\\n  \\\"workload_configured\\\": true,\\n  \\\"console_configured\\\": true,\\n  \\\"vm_entered\\\": true,\\n  \\\"guest_exit_code\\\": 0,\\n  \\\"console_created\\\": true,\\n  \\\"vcpus\\\": 1,\\n  \\\"memory_mib\\\": 512,\\n  \\\"reason\\\": \\\"failed to retain authenticated guest recovery report: failed to open guest recovery report /private/var/tmp/vn-g2fyar43/service/runtime/shares/workspace-qualification/1/.a3s-oci-recovery-a3s-oci-agent-b4835f0190fcde57defe13b0cbd0a3e7/report.json: No such file or directory (os error 2)\\\"\\n}\", retryable: true }\n"
+          "Error: Error { code: Unavailable, operation: Some(\"launch-hvf-utility-vm\"), message: \"libkrun shim exited before connecting the authenticated agent bridge; shim stdout: {\\n  \\\"schema_version\\\": \\\"aster.oci.krun-agent-vm-smoke.v7\\\",\\n  \\\"platform\\\": \\\"macos\\\",\\n  \\\"status\\\": \\\"unavailable\\\",\\n  \\\"runtime_bundle_loaded\\\": true,\\n  \\\"context_created\\\": true,\\n  \\\"vm_configured\\\": true,\\n  \\\"rootfs_configured\\\": true,\\n  \\\"runtime_share_configured\\\": true,\\n  \\\"macos_host_sandbox_enforced\\\": true,\\n  \\\"kvm_device_opened\\\": false,\\n  \\\"kvm_api_verified\\\": false,\\n  \\\"kvm_post_probe_failure_injected\\\": false,\\n  \\\"macos_boot_assets\\\": {\\n    \\\"manifest_sha256\\\": \\\"2a9d7ad6e72e8d93a8f6b4d9dae8a036e8c65a552094b2c2e2dbbc7f7319744f\\\",\\n    \\\"system_image_sha256\\\": \\\"e6119935a4de70c9c57c2e174a44766219d259279ed047761d03d639cd96dd70\\\",\\n    \\\"system_image_size\\\": 67108864,\\n    \\\"runtime_archive_sha256\\\": \\\"5486f38e91eb4da0e58888b543c93fe669c918ad4b84dd495f0d1dfdffc43b56\\\",\\n    \\\"libkrun_sha256\\\": \\\"c5353f9cbd91564ce26eceaf1bdc33341097b43280fe029203ccca02807c082d\\\",\\n    \\\"firmware_sha256\\\": \\\"841bc9d5eecbc2aeeb6098fbc75d484427680d7503f5ed9bcdfe9d072a9420d4\\\",\\n    \\\"kernel_bundle_sha256\\\": \\\"b1180b50148ed14f5fbeadf17288ce8abcf245daa468255b7ff41113bbf01199\\\",\\n    \\\"kernel_bundle_size\\\": 22740992,\\n    \\\"kernel_guest_load_address\\\": \\\"0x0000000080000000\\\",\\n    \\\"kernel_entry_address\\\": \\\"0x0000000080000000\\\",\\n    \\\"root_disk_read_only\\\": true,\\n    \\\"runtime_share_separate\\\": true\\n  },\\n  \\\"agent_binary_present\\\": true,\\n  \\\"agent_vsock_configured\\\": true,\\n  \\\"workload_configured\\\": true,\\n  \\\"console_configured\\\": true,\\n  \\\"vm_entered\\\": true,\\n  \\\"guest_exit_code\\\": 0,\\n  \\\"console_created\\\": true,\\n  \\\"vcpus\\\": 1,\\n  \\\"memory_mib\\\": 512,\\n  \\\"reason\\\": \\\"failed to retain authenticated guest recovery report: failed to open guest recovery report /private/var/tmp/vn-g2fyar43/service/runtime/shares/workspace-qualification/1/.aster-oci-recovery-aster-oci-agent-b4835f0190fcde57defe13b0cbd0a3e7/report.json: No such file or directory (os error 2)\\\"\\n}\", retryable: true }\n"
         ],
         [
           "host.stdout.log",

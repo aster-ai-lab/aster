@@ -32,7 +32,7 @@
   const ensureSemanticIds = (root, state) => {
     if (!state.instanceId) {
       instanceSequence += 1;
-      state.instanceId = root.id || `a3s-select-${instanceSequence}`;
+      state.instanceId = root.id || `aster-select-${instanceSequence}`;
     }
 
     if (!state.trigger.id) state.trigger.id = `${state.instanceId}-trigger`;

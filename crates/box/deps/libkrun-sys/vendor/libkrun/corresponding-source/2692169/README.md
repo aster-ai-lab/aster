@@ -1,6 +1,6 @@
-# Corresponding wrapper source for the current A3S prebuilt
+# Corresponding wrapper source for the current Aster prebuilt
 
-This directory preserves the exact minimal Rust build source used for the A3S
+This directory preserves the exact minimal Rust build source used for the Aster
 `libkrunfw.dll` whose SHA-256 is:
 
 `44f25540f58155c01258fe123617636fdc6cff27873e38e71dbc75f139602077`
@@ -27,5 +27,5 @@ Raw file SHA-256 identities:
 The embedded kernel bundle is byte-identical to the official libkrunfw v5.5.0
 x86_64 bundle. Its corresponding kernel source is Linux 6.12.91 plus the
 `config-libkrunfw_x86_64` configuration and the 30-patch series from the
-libkrunfw v5.5.0 source release. See the outer `a3s-libkrun-sys`
+libkrunfw v5.5.0 source release. See the outer `aster-libkrun-sys`
 `SOURCE-PROVENANCE.md` for the immutable source and artifact hashes.

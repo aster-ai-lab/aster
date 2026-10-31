@@ -6,7 +6,7 @@
 //! # Usage
 //!
 //! ```text
-//! a3s-box build -t myimage:latest .
+//! aster-box build -t myimage:latest .
 //! ```
 //!
 //! # Supported Instructions

@@ -41,7 +41,7 @@ pub(crate) fn try_network_a_response(
 ) -> Option<Vec<u8>> {
     let (qname, qtype) = parse_query_name_and_type(query)?;
     // Name must exist in NetworkStore; unknown names always forward.
-    let ip = a3s_box_core::network::lookup_network_a(networks_json, network_name, &qname)?;
+    let ip = aster_box_core::network::lookup_network_a(networks_json, network_name, &qname)?;
     match qtype {
         DNS_TYPE_A => build_a_response(query, ip),
         DNS_TYPE_AAAA => build_nodata_response(query),
@@ -325,7 +325,7 @@ fn ipv4_header_checksum(header: &[u8; 20]) -> u16 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::network::NetworkConfig;
+    use aster_box_core::network::NetworkConfig;
     use std::io::Write;
 
     fn encode_query_typed(name: &str, qtype: u16) -> Vec<u8> {

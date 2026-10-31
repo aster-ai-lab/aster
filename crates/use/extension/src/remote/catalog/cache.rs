@@ -1,7 +1,7 @@
 use std::path::Path;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tokio::fs;
@@ -17,7 +17,7 @@ use super::super::{
 };
 use super::{catalog_cache_error, VerifiedRegistryMetadata};
 
-const CATALOG_CACHE_SCHEMA: &str = "a3s.use.catalog-cache.v1";
+const CATALOG_CACHE_SCHEMA: &str = "aster.use.catalog-cache.v1";
 const CATALOG_CACHE_DIRECTORY: &str = "catalog-metadata";
 const CATALOG_CACHE_NAME: &str = "catalog-cache.json";
 const MAX_CATALOG_CACHE_BYTES: u64 = 16 * 1024;
@@ -169,7 +169,7 @@ pub(super) async fn load_cached_repository(
                 )
             }
         })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&datastore_metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&datastore_metadata)
         || !datastore_metadata.is_dir()
     {
         return Err(catalog_cache_error(
@@ -191,7 +191,7 @@ pub(super) async fn load_cached_repository(
                 io_error("inspect verified catalog snapshot", &cache_directory, error)
             }
         })?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&cache_metadata) || !cache_metadata.is_dir()
+    if aster_use_core::metadata_is_link_or_reparse_point(&cache_metadata) || !cache_metadata.is_dir()
     {
         return Err(catalog_cache_error(
             "use.extension.catalog_cache_invalid",
@@ -282,7 +282,7 @@ pub(super) async fn validate_cached_registry_identity_if_present(
             ));
         }
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&cache_metadata) || !cache_metadata.is_dir()
+    if aster_use_core::metadata_is_link_or_reparse_point(&cache_metadata) || !cache_metadata.is_dir()
     {
         return Err(catalog_cache_error(
             "use.extension.catalog_cache_invalid",
@@ -296,7 +296,7 @@ pub(super) async fn validate_cached_registry_identity_if_present(
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(false),
         Err(error) => return Err(io_error("inspect catalog cache stamp", &stamp_path, error)),
     };
-    if a3s_use_core::metadata_is_link_or_reparse_point(&stamp_metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&stamp_metadata)
         || !stamp_metadata.is_file()
         || stamp_metadata.len() == 0
         || stamp_metadata.len() > MAX_CATALOG_CACHE_BYTES
@@ -345,7 +345,7 @@ async fn ensure_cache_directory(datastore: &Path) -> UseResult<std::path::PathBu
     let metadata = fs::symlink_metadata(&path)
         .await
         .map_err(|error| io_error("inspect verified catalog snapshot directory", &path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_dir() {
         return Err(catalog_cache_error(
             "use.extension.catalog_cache_invalid",
             "The verified catalog snapshot path must be a real directory.",
@@ -372,7 +372,7 @@ async fn download_metadata_role(
     validate_download_url(url)?;
     let client = match registry.network_policy() {
         RegistryNetworkPolicy::Standard => reqwest::Client::builder()
-            .user_agent("a3s-use-extension/0.3")
+            .user_agent("aster-use-extension/0.3")
             .connect_timeout(Duration::from_secs(15))
             .timeout(Duration::from_secs(30))
             .redirect(reqwest::redirect::Policy::limited(5))
@@ -464,7 +464,7 @@ async fn read_metadata_file(path: &Path, max_bytes: u64) -> UseResult<Vec<u8>> {
     let metadata = fs::symlink_metadata(path)
         .await
         .map_err(|error| io_error("inspect cached TUF metadata", path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata)
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata)
         || !metadata.is_file()
         || metadata.len() == 0
         || metadata.len() > max_bytes

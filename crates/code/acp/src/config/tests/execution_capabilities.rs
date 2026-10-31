@@ -11,7 +11,7 @@ const WORKSPACE: &str =
 #[test]
 fn capability_settings_are_host_owned_in_actual_layer_loading() {
     env_locked(|| {
-        std::env::remove_var("A3S_DEFAULT_MODEL");
+        std::env::remove_var("ASTER_DEFAULT_MODEL");
         for host in ["", HOST] {
             let (_user, workspace) =
                 write_user_and_workspace_layers(&format!("{MODEL}\n{host}"), WORKSPACE);
@@ -35,7 +35,7 @@ fn capability_settings_are_host_owned_in_actual_layer_loading() {
 #[test]
 fn explicit_capability_config_does_not_merge_user_or_workspace_defaults() {
     env_locked(|| {
-        std::env::remove_var("A3S_DEFAULT_MODEL");
+        std::env::remove_var("ASTER_DEFAULT_MODEL");
         let (user, workspace) =
             write_user_and_workspace_layers(&format!("{MODEL}\n{HOST}"), WORKSPACE);
         let explicit = user.path().join("explicit.acl");
@@ -49,7 +49,7 @@ fn explicit_capability_config_does_not_merge_user_or_workspace_defaults() {
 #[test]
 fn invalid_capability_config_refuses_instead_of_falling_back() {
     env_locked(|| {
-        std::env::remove_var("A3S_DEFAULT_MODEL");
+        std::env::remove_var("ASTER_DEFAULT_MODEL");
         for bad in [
             "tool_presentation { mode = \"automatic\" }",
             "tool_presentation { mode = \"code\", mode = \"direct\" }",

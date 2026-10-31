@@ -1,10 +1,10 @@
 [package]
 publish = false
-name = "a3s-oci-core"
+name = "aster-oci-core"
 version = "0.3.2"
 edition = "2021"
 license = "MIT"
-description = "Pure capability and OCI lifecycle contracts for A3S OCI Runtime"
+description = "Pure capability and OCI lifecycle contracts for Aster OCI Runtime"
 
 [dependencies]
 serde.workspace = true

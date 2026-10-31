@@ -15,7 +15,7 @@
 //!
 //! # Minimum usage (Windows)
 //! ```no_run
-//! use a3s_libkrun_sys::*;
+//! use aster_libkrun_sys::*;
 //! use std::ffi::CString;
 //!
 //! unsafe {

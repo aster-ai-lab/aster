@@ -1,7 +1,7 @@
-//! `a3s-box shell` command — Open an interactive shell in a running box.
+//! `aster-box shell` command — Open an interactive shell in a running box.
 //!
 //! Convenience wrapper around `exec -t <box> /bin/sh`.
-//! Equivalent to: `a3s-box exec -t <box> -- /bin/sh`
+//! Equivalent to: `aster-box exec -t <box> -- /bin/sh`
 
 use clap::Args;
 
@@ -41,7 +41,7 @@ pub async fn execute(_args: ShellArgs) -> Result<(), Box<dyn std::error::Error>>
 #[cfg(not(windows))]
 pub async fn execute(args: ShellArgs) -> Result<(), Box<dyn std::error::Error>> {
     use crate::terminal;
-    use a3s_box_core::pty::PtyRequest;
+    use aster_box_core::pty::PtyRequest;
 
     let user = common::normalize_user_option(args.user.as_deref())
         .map_err(|e| -> Box<dyn std::error::Error> { e.into() })?;

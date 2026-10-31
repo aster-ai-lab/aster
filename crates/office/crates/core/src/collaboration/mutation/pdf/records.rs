@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::{Map as JsonMap, Number as JsonNumber, Value as JsonValue};
 use yrs::{Any, Array, ArrayRef, Map, Out, Transact};
 
@@ -886,7 +886,7 @@ mod tests {
             schema_version: 1,
             protocol: String::new(),
             protocol_version: 1,
-            namespace: "a3s.office".to_owned(),
+            namespace: "aster.office".to_owned(),
             artifact_id: "fixture-pdf".to_owned(),
             kind: NativeOfficeCollaborationArtifactKind::Pdf,
             actor_id: "agent-alpha".to_owned(),

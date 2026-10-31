@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{FileLog, MemoryLog};
+use aster_effect::{FileLog, MemoryLog};
 
 fn prove_original_log_admission(log: &dyn LogStore, log_dir: &Path, workspace: &Path) {
     let instructions = workspace.join("instructions.md");
@@ -69,7 +69,7 @@ fn prove_original_log_admission(log: &dyn LogStore, log_dir: &Path, workspace: &
 #[test]
 fn supplied_memory_log_is_used_without_opening_a_second_file_log() {
     let workspace = tempfile::tempdir().unwrap();
-    let log_dir = workspace.path().join(".a3s/effect-log");
+    let log_dir = workspace.path().join(".aster/effect-log");
     prove_original_log_admission(&MemoryLog::new(), &log_dir, workspace.path());
     assert!(
         !log_dir.exists(),
@@ -80,7 +80,7 @@ fn supplied_memory_log_is_used_without_opening_a_second_file_log() {
 #[test]
 fn supplied_file_log_survives_actual_reopen_with_original_admission_semantics() {
     let workspace = tempfile::tempdir().unwrap();
-    let log_dir = workspace.path().join(".a3s/effect-log");
+    let log_dir = workspace.path().join(".aster/effect-log");
     let retained = {
         let log = FileLog::open(&log_dir).unwrap();
         prove_original_log_admission(&log, &log_dir, workspace.path());
@@ -97,7 +97,7 @@ fn prove_read_append_is_not_compare_and_swap(first: &dyn LogStore, second: &dyn 
         .append(
             "unfenced",
             &[NewFact {
-                kind: "a3s.goal.created".into(),
+                kind: "aster.goal.created".into(),
                 key: "initial".into(),
                 payload: serde_json::json!({"goal_revision":1}),
             }],
@@ -112,7 +112,7 @@ fn prove_read_append_is_not_compare_and_swap(first: &dyn LogStore, second: &dyn 
         log.append(
             "unfenced",
             &[NewFact {
-                kind: format!("a3s.goal.{key}"),
+                kind: format!("aster.goal.{key}"),
                 key: key.into(),
                 payload: serde_json::json!({"expected_goal_sequence":stale_seq}),
             }],
@@ -149,13 +149,13 @@ fn raw_log_read_append_cannot_supply_goal_writer_exclusion() {
     );
 }
 
-/// These fixtures keep their logs under `<workspace>/.a3s`.
+/// These fixtures keep their logs under `<workspace>/.aster`.
 fn workspace_of_log(log_dir: &Path) -> &Path {
     log_dir
         .ancestors()
-        .find(|path| path.file_name().and_then(|name| name.to_str()) == Some(".a3s"))
+        .find(|path| path.file_name().and_then(|name| name.to_str()) == Some(".aster"))
         .and_then(Path::parent)
-        .expect("fixture log under <workspace>/.a3s")
+        .expect("fixture log under <workspace>/.aster")
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -250,7 +250,7 @@ fn optional_count_limits_keep_positive_digest_bytes_and_distinguish_zero_allowan
 #[test]
 fn instructions_change_the_digest_and_the_fact_keeps_only_the_digest() {
     let workspace = tempfile::tempdir().unwrap();
-    let log_dir = workspace.path().join(".a3s").join("effect-log");
+    let log_dir = workspace.path().join(".aster").join("effect-log");
     std::fs::write(workspace.path().join("instructions.md"), "OPEN-TIME\n").unwrap();
     let admitted = admit(
         &log_dir,
@@ -295,7 +295,7 @@ fn instructions_change_the_digest_and_the_fact_keeps_only_the_digest() {
 #[test]
 fn a_legacy_log_does_not_gain_a_synthetic_digest() {
     let workspace = tempfile::tempdir().unwrap();
-    let log_dir = workspace.path().join(".a3s").join("effect-log");
+    let log_dir = workspace.path().join(".aster").join("effect-log");
     let log = FileLog::open(&log_dir).unwrap();
     log.append(
         "legacy",
@@ -318,7 +318,7 @@ fn a_legacy_log_does_not_gain_a_synthetic_digest() {
 #[test]
 fn a_malformed_standing_fact_fails_closed() {
     let workspace = tempfile::tempdir().unwrap();
-    let log_dir = workspace.path().join(".a3s").join("effect-log");
+    let log_dir = workspace.path().join(".aster").join("effect-log");
     let log = FileLog::open(&log_dir).unwrap();
     log.append(
         "broken",
@@ -347,7 +347,7 @@ fn a_malformed_standing_fact_fails_closed() {
 #[test]
 fn a_new_tool_catalog_admits_again_when_the_files_stay() {
     let workspace = tempfile::tempdir().unwrap();
-    let log_dir = workspace.path().join(".a3s").join("effect-log");
+    let log_dir = workspace.path().join(".aster").join("effect-log");
     std::fs::write(workspace.path().join("instructions.md"), "OPEN-TIME\n").unwrap();
     let first = admit(
         &log_dir,
@@ -408,9 +408,9 @@ fn a_new_tool_catalog_admits_again_when_the_files_stay() {
 #[test]
 fn live_surfaces_stay_admitted_while_instructions_fail_closed() {
     let workspace = tempfile::tempdir().unwrap();
-    let log_dir = workspace.path().join(".a3s").join("effect-log");
+    let log_dir = workspace.path().join(".aster").join("effect-log");
     let skills = workspace.path().join("skills");
-    let memory = workspace.path().join(".a3s").join("memory");
+    let memory = workspace.path().join(".aster").join("memory");
     std::fs::create_dir_all(&skills).unwrap();
     std::fs::create_dir_all(&memory).unwrap();
     std::fs::write(skills.join("skill.md"), "SKILL-OPEN\n").unwrap();
@@ -448,7 +448,7 @@ fn live_surfaces_stay_admitted_while_instructions_fail_closed() {
 #[test]
 fn turn_end_extraction_and_skill_install_keep_the_next_turn_admitted() {
     let workspace = tempfile::tempdir().unwrap();
-    let log_dir = workspace.path().join(".a3s").join("effect-log");
+    let log_dir = workspace.path().join(".aster").join("effect-log");
     std::fs::write(workspace.path().join("instructions.md"), "OPEN-TIME\n").unwrap();
     let tools = ["read".to_string()];
     let first = admit(&log_dir, "extraction", None, &[], &tools, 4, 32, 2)
@@ -458,7 +458,7 @@ fn turn_end_extraction_and_skill_install_keep_the_next_turn_admitted() {
     // Between turns the system writes its own state: turn-end memory
     // extraction appends an item with fresh read telemetry, and a skill
     // the agent installed lands in the live catalog.
-    let items = workspace.path().join(".a3s").join("memory").join("items");
+    let items = workspace.path().join(".aster").join("memory").join("items");
     std::fs::create_dir_all(&items).unwrap();
     std::fs::write(
         items.join("item.json"),

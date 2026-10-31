@@ -2,10 +2,10 @@ use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentRecoveryReport, AGENT_RECOVERY_REPORT_MAX_BYTES, AGENT_RECOVERY_REPORT_PENDING_SUFFIX,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerRecord, ContainerTarget, Error, ErrorCode, ExitStatus, GuestSessionAttachment, Result,
 };
 use tokio::io::AsyncReadExt;
@@ -49,7 +49,7 @@ impl RecoveryStore {
         guest_session: Option<&GuestSessionAttachment>,
     ) -> Result<DriverRecovery> {
         let can_commit_stopped =
-            *record.state.status() != a3s_oci_sdk::oci_spec::runtime::ContainerState::Creating;
+            *record.state.status() != aster_oci_sdk::oci_spec::runtime::ContainerState::Creating;
         if !can_commit_stopped {
             // The durable create operation must resume. A stopped observation
             // is not legal while its host-side create intent is still active.
@@ -368,8 +368,8 @@ fn recovery_race_error(message: impl Into<String>) -> Error {
 mod tests {
     use std::os::unix::fs::PermissionsExt;
 
-    use a3s_oci_agent_protocol::{AgentRecoveryRecord, AgentRecoveryReport};
-    use a3s_oci_sdk::{
+    use aster_oci_agent_protocol::{AgentRecoveryRecord, AgentRecoveryReport};
+    use aster_oci_sdk::{
         ContainerId, ContainerTarget, ExitStatus, Generation, GuestSessionAttachment,
     };
 

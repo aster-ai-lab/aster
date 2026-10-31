@@ -4,7 +4,7 @@ use super::*;
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 
-fn original_facts(fixture: &CacheCoverageFixture) -> Vec<a3s_effect::Fact> {
+fn original_facts(fixture: &CacheCoverageFixture) -> Vec<aster_effect::Fact> {
     FileLog::open(crate::session_folder::effect_log_dir(
         fixture.workspace.path(),
         fixture.session.session_id(),
@@ -14,7 +14,7 @@ fn original_facts(fixture: &CacheCoverageFixture) -> Vec<a3s_effect::Fact> {
     .unwrap()
 }
 
-fn negative_facts(fixture: &CacheCoverageFixture) -> Vec<a3s_effect::Fact> {
+fn negative_facts(fixture: &CacheCoverageFixture) -> Vec<aster_effect::Fact> {
     original_facts(fixture)
         .into_iter()
         .filter(|fact| fact.kind == "recovery.unproved")
@@ -470,7 +470,7 @@ async fn malformed_and_unknown_negative_inputs_remain_unproved_on_fresh_surface_
             payload: valid.payload.clone(),
         };
         match scenario {
-            "schema" => input.payload["schema"] = json!("a3s.code.recovery-unproved.v99"),
+            "schema" => input.payload["schema"] = json!("aster.code.recovery-unproved.v99"),
             "missing-field" => {
                 input
                     .payload

@@ -48,7 +48,7 @@ export function exportXlsxCellComment(
       ? (source as WorkSpreadsheetCellComment).author!.trim()
       : '';
   const comments = [
-    { a: author.slice(0, 54) || 'A3S Work', t: text },
+    { a: author.slice(0, 54) || 'Aster Work', t: text },
   ] as Comments;
   comments.hidden = !source.isShow;
   return comments;

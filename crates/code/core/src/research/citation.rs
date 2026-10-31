@@ -5,8 +5,8 @@ use super::{
 };
 use serde::{Deserialize, Serialize};
 
-pub const RESEARCH_CITATION_SCHEMA_V1: &str = "a3s.code.research-citation.v1";
-const RESEARCH_CITATION_DIGEST_DOMAIN: &str = "a3s.code.research-citation.identity.v1";
+pub const RESEARCH_CITATION_SCHEMA_V1: &str = "aster.code.research-citation.v1";
+const RESEARCH_CITATION_DIGEST_DOMAIN: &str = "aster.code.research-citation.identity.v1";
 
 /// One bounded citation from a claim to a source span or evidence fact.
 ///

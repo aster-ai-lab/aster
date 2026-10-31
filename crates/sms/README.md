@@ -1,4 +1,4 @@
-# A3S SMS
+# Aster SMS
 
 Provider-neutral Rust SMS ports, an always-available deterministic virtual
 provider, and an opt-in SMSBao adapter. Cloud now owns scoped profile
@@ -42,7 +42,7 @@ rustup run 1.97.1 cargo run --manifest-path crates/sms/Cargo.toml \
 
 The diagnostic never sends SMS and prints no balance or credentials. Use a
 secret manager or a non-echo stdin wrapper. Product configuration is ACL only,
-parsed by `a3s-acl`; JSON here refers only to the external API response.
+parsed by `aster-acl`; JSON here refers only to the external API response.
 
 Protocol sources: [domestic API](https://user.smsbao.com/docs/developer/domestic-sms-api/)
 and [error codes](https://user.smsbao.com/docs/developer/error-codes/).

@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanScope, PluginHostApplyRequest, PluginHostApplyResult, PluginHostEnablementPlanRequest,
     PluginHostEnablementPlanResult, PluginHostManager, PluginHostObservationRequest,
     PluginHostObservationResult, PluginHostObservationStatus, PluginHostPlanRequest,
@@ -12,7 +12,7 @@ use a3s_use_core::{
     PLUGIN_HOST_APPLY_REQUEST_SCHEMA, PLUGIN_HOST_ENABLEMENT_PLAN_REQUEST_SCHEMA,
     PLUGIN_HOST_OBSERVATION_REQUEST_SCHEMA, PLUGIN_HOST_PLAN_REQUEST_SCHEMA,
 };
-use a3s_use_extension::PluginCatalogSearch;
+use aster_use_extension::PluginCatalogSearch;
 use semver::Version;
 use serde::Serialize;
 use sha2::{Digest, Sha256};
@@ -67,7 +67,7 @@ impl PluginManagerService {
         PluginManagerToolset::v4()
     }
 
-    pub fn managed_scope(&self) -> &a3s_use_core::PluginManagedScope {
+    pub fn managed_scope(&self) -> &aster_use_core::PluginManagedScope {
         self.host.managed_scope()
     }
 
@@ -122,7 +122,7 @@ impl PluginManagerService {
         &self,
         input: PluginManagerInspectInput,
         access: PackageRegistryAccess,
-    ) -> UseResult<a3s_use_extension::PluginCatalogInspection> {
+    ) -> UseResult<aster_use_extension::PluginCatalogInspection> {
         input.validate()?;
         let search = PluginCatalogSearch {
             query: input.package_id.to_string(),
@@ -132,7 +132,7 @@ impl PluginManagerService {
             category: None,
             availability: None,
             cursor: None,
-            limit: a3s_use_extension::MAX_PLUGIN_CATALOG_PAGE_SIZE,
+            limit: aster_use_extension::MAX_PLUGIN_CATALOG_PAGE_SIZE,
         };
         let result = self.host.search_packages(access, None, &search).await?;
         let candidate = select_inspection_candidate(
@@ -151,7 +151,7 @@ impl PluginManagerService {
         input.validate()?;
         self.verify_scope(&input.scope())?;
         let packages = self.stable_installed_packages().await?;
-        let snapshot_digest = digest_value("a3s.use.plugin-manager-installed-page.v1", &packages)?;
+        let snapshot_digest = digest_value("aster.use.plugin-manager-installed-page.v1", &packages)?;
         let start = input
             .cursor
             .as_deref()
@@ -581,7 +581,7 @@ impl PluginManagerService {
 
     pub(super) fn request_id<T: Serialize>(&self, domain: &str, payload: &T) -> UseResult<String> {
         let encoded = serde_json::to_vec(&(
-            "a3s.use.plugin-manager-request.v1",
+            "aster.use.plugin-manager-request.v1",
             domain,
             self.assignment_generation,
             self.capabilities_digest.as_str(),

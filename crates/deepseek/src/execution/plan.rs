@@ -4,7 +4,7 @@ use crate::{
     parallel::{XqDeviceMap, XqPlacement},
     weights::xq::{load::LoadedXqLayer, storage::XqWeights},
 };
-use a3s_power::{
+use aster_power::{
     error::{PowerError, Result},
     inference::{InferenceLimits, RuntimeDevice, RuntimeDeviceKind},
 };

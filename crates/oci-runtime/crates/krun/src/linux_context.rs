@@ -5,7 +5,7 @@ use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 use libloading::os::unix::{Library, RTLD_GLOBAL, RTLD_LOCAL, RTLD_NOW};
 use sha2::{Digest, Sha256};
 use zeroize::Zeroizing;
@@ -22,7 +22,7 @@ use crate::runtime_assets::{
 use crate::VmConfig;
 
 const KRUN_DISK_FORMAT_RAW: u32 = 0;
-const SYSTEM_DISK_ID: &str = "a3s-oci-system";
+const SYSTEM_DISK_ID: &str = "aster-oci-system";
 const ROOT_DISK_DEVICE: &str = "/dev/vda";
 const ROOT_DISK_FILESYSTEM: &str = "ext4";
 const ROOT_DISK_OPTIONS: &str = "ro";
@@ -393,7 +393,7 @@ impl KrunContext {
         )?;
         let image_path = path_to_cstring("krun_add_disk2", &image.pinned_path())?;
         let read_only =
-            image.attachment().access_mode() == a3s_oci_sdk::StorageAccessMode::ReadOnly;
+            image.attachment().access_mode() == aster_oci_sdk::StorageAccessMode::ReadOnly;
         // SAFETY: the retained descriptor pins the exact regular raw image,
         // both strings remain live for the call, and the public access grant
         // selects libkrun's native read-only enforcement bit.
@@ -654,7 +654,7 @@ fn resolve_runtime_dir(bundle: &'static RuntimeBundle) -> Result<PathBuf> {
             ),
         )
     })?;
-    let adjacent = executable_dir.join("a3s-oci-krun-runtime");
+    let adjacent = executable_dir.join("aster-oci-krun-runtime");
     match fs::symlink_metadata(&adjacent) {
         Ok(_) => return verify_runtime_dir(&adjacent, bundle),
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
@@ -669,7 +669,7 @@ fn resolve_runtime_dir(bundle: &'static RuntimeBundle) -> Result<PathBuf> {
         }
     }
 
-    verify_runtime_dir(Path::new(env!("A3S_OCI_KRUN_RUNTIME_DIR")), bundle)
+    verify_runtime_dir(Path::new(env!("ASTER_OCI_KRUN_RUNTIME_DIR")), bundle)
 }
 
 fn verify_runtime_dir(runtime_dir: &Path, bundle: &RuntimeBundle) -> Result<PathBuf> {

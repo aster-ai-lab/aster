@@ -1,4 +1,4 @@
-//! Centralized error types for A3S Gateway
+//! Centralized error types for Aster Gateway
 
 use thiserror::Error;
 

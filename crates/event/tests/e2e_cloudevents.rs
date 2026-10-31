@@ -3,7 +3,7 @@
 
 #![cfg(feature = "cloudevents")]
 
-use a3s_event::{CloudEvent, Event};
+use aster_event::{CloudEvent, Event};
 
 #[tokio::test]
 async fn event_to_cloudevent_preserves_the_envelope() {
@@ -35,12 +35,12 @@ async fn event_to_cloudevent_preserves_the_envelope() {
         "RFC3339: {time}"
     );
 
-    // A3S fields ride as extensions.
+    // Aster fields ride as extensions.
     assert_eq!(
-        ce.extensions.get("a3scategory"),
+        ce.extensions.get("astercategory"),
         Some(&serde_json::json!("market"))
     );
-    assert_eq!(ce.extensions.get("a3sversion"), Some(&serde_json::json!(3)));
+    assert_eq!(ce.extensions.get("asterversion"), Some(&serde_json::json!(3)));
 
     let _ = event.metadata; // metadata themselves are not required in CE form
 }
@@ -56,8 +56,8 @@ async fn untyped_events_get_a_default_type() {
     );
     let ce = CloudEvent::from(event);
     assert_eq!(
-        ce.event_type, "a3s.event",
-        "untyped events fall back to a3s.event"
+        ce.event_type, "aster.event",
+        "untyped events fall back to aster.event"
     );
 }
 

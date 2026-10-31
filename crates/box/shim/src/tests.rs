@@ -71,7 +71,7 @@ fn rejects_symlink_as_ext4_disk_rootfs_source() {
 #[cfg(target_os = "linux")]
 #[test]
 fn parses_sandbox_worker_pid_identity_after_complex_comm() {
-    let stat = "123 (a3s oci (sandbox) worker) S 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 4242";
+    let stat = "123 (aster oci (sandbox) worker) S 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 4242";
     assert_eq!(linux_process_identity_from_stat(stat), Some(('S', 4242)));
     assert_eq!(linux_process_identity_from_stat("malformed"), None);
 }
@@ -79,11 +79,11 @@ fn parses_sandbox_worker_pid_identity_after_complex_comm() {
 #[cfg(target_os = "linux")]
 #[test]
 fn validates_complete_sandbox_log_worker_identity() {
-    let mut spec = a3s_box_core::log::SandboxLogWorkerSpec {
-        schema: a3s_box_core::log::SANDBOX_LOG_WORKER_SCHEMA.to_string(),
+    let mut spec = aster_box_core::log::SandboxLogWorkerSpec {
+        schema: aster_box_core::log::SANDBOX_LOG_WORKER_SCHEMA.to_string(),
         box_id: "sandbox-id".to_string(),
         console_log: std::path::PathBuf::from("/tmp/sandbox-id/console.log"),
-        log_config: a3s_box_core::log::LogConfig::default(),
+        log_config: aster_box_core::log::LogConfig::default(),
         watched_pid: 123,
         watched_pid_start_time: 456,
         ready_file: std::path::PathBuf::from("/tmp/sandbox-id/log-worker.ready"),
@@ -181,12 +181,12 @@ fn test_prepare_windows_guest_unlinks_stream_reparse_without_touching_target() {
     let host_target = temp.path().join("host-target.txt");
     fs::write(&host_target, b"host secret").unwrap();
     let stream = rootfs.join(WINDOWS_GUEST_STDOUT);
-    let guard = a3s_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
+    let guard = aster_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
     let assigned_privilege_enabled = guard.assigned_privilege_enabled();
     match std::os::windows::fs::symlink_file(&host_target, &stream) {
         Ok(()) => {}
         Err(error)
-            if a3s_box_core::windows_symlink::is_capability_denial(
+            if aster_box_core::windows_symlink::is_capability_denial(
                 &error,
                 assigned_privilege_enabled,
             ) =>
@@ -361,17 +361,17 @@ fn test_tsi_port_map_for_spec_skips_linux_bridge_ports() {
 }
 
 #[cfg(not(target_os = "windows"))]
-fn test_network_config() -> a3s_box_core::vmm::NetworkInstanceConfig {
-    a3s_box_core::vmm::NetworkInstanceConfig {
+fn test_network_config() -> aster_box_core::vmm::NetworkInstanceConfig {
+    aster_box_core::vmm::NetworkInstanceConfig {
         egress_allowed_names: Vec::new(),
-        net_socket_path: std::path::PathBuf::from("/tmp/a3s-box-test-net.sock"),
-        net_stats_path: Some(std::path::PathBuf::from("/tmp/a3s-box-test-net.stats.json")),
+        net_socket_path: std::path::PathBuf::from("/tmp/aster-box-test-net.sock"),
+        net_stats_path: Some(std::path::PathBuf::from("/tmp/aster-box-test-net.stats.json")),
         #[cfg(unix)]
         net_socket_fd: Some(42),
         #[cfg(unix)]
         net_proxy_fd: Some(43),
         #[cfg(unix)]
-        bridge_socket_dir: Some(std::path::PathBuf::from("/tmp/a3s-switch")),
+        bridge_socket_dir: Some(std::path::PathBuf::from("/tmp/aster-switch")),
         ip_address: "10.89.0.2".parse().unwrap(),
         gateway: "10.89.0.1".parse().unwrap(),
         prefix_len: 24,

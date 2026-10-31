@@ -1,5 +1,5 @@
-use a3s_oci_core::{DriverKind, HostPlatform};
-use a3s_oci_sdk::{
+use aster_oci_core::{DriverKind, HostPlatform};
+use aster_oci_sdk::{
     CheckpointArtifactPath, CheckpointCompatibility, CheckpointDigest, CheckpointFormat,
     CheckpointReference, CheckpointRequest, CheckpointResponse, ContainerOperationRequest,
     OperationContext, RuntimeArtifact,
@@ -109,7 +109,7 @@ fn checkpoint_request(
 async fn drive_success(
     store: &DurableStateStore,
     request: &CheckpointRequest,
-) -> a3s_oci_sdk::Result<CheckpointResponse> {
+) -> aster_oci_sdk::Result<CheckpointResponse> {
     match store.prepare_checkpoint(request).await? {
         CheckpointOperationPreparation::Prepared(source)
         | CheckpointOperationPreparation::Resume(source) => {
@@ -126,7 +126,7 @@ async fn drive_failure(
     store: &DurableStateStore,
     request: &CheckpointRequest,
     failure: &Error,
-) -> a3s_oci_sdk::Result<()> {
+) -> aster_oci_sdk::Result<()> {
     match store.prepare_checkpoint(request).await {
         Ok(CheckpointOperationPreparation::Prepared(_))
         | Ok(CheckpointOperationPreparation::Resume(_)) => {
@@ -145,7 +145,7 @@ async fn drive_failure(
 
 pub(super) fn checkpoint_response(
     source: ContainerRecord,
-) -> a3s_oci_sdk::Result<CheckpointResponse> {
+) -> aster_oci_sdk::Result<CheckpointResponse> {
     let platform = match source.driver {
         DriverKind::NativeLinux | DriverKind::LibkrunKvm => HostPlatform::Linux,
         DriverKind::LibkrunHvf => HostPlatform::Macos,

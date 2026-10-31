@@ -131,7 +131,7 @@ fn host_report_binds_a_passed_required_check_to_the_digest() {
     let report = host_verification_report(&digest);
     assert_eq!(
         report.schema,
-        a3s_code_core::verification::VERIFICATION_REPORT_SCHEMA
+        aster_core::verification::VERIFICATION_REPORT_SCHEMA
     );
     assert_eq!(report.effect_digest.as_deref(), Some(digest.as_str()));
     assert_eq!(report.status, VerificationStatus::Passed);
@@ -266,7 +266,7 @@ fn events_count_into_the_record_and_the_gate_digest_is_read_back() {
             name: "bash".into(),
             output: "ok".into(),
             exit_code: 0,
-            metadata: Some(serde_json::json!({"artifact_uri": "a3s://one"})),
+            metadata: Some(serde_json::json!({"artifact_uri": "aster://one"})),
             error_kind: None,
             args: None,
         },
@@ -325,7 +325,7 @@ fn a_failed_tool_that_reports_http_401_is_a_provider_rejection() {
     assert!(attempt.failed);
     assert_eq!(progress.successful_tool_calls, 0);
     assert_eq!(progress.provider_status, Some(401));
-    let error = anyhow::anyhow!("A3S Code stream ended without a terminal event");
+    let error = anyhow::anyhow!("Aster Code stream ended without a terminal event");
     let (_, reason) = result::classify_failure(&progress, &error);
     assert!(matches!(reason, result::TerminalReason::ProviderRejected));
 }

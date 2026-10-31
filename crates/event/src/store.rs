@@ -1122,7 +1122,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_file_state_store_lifecycle() {
-        let dir = std::env::temp_dir().join(format!("a3s-event-bus-{}", uuid::Uuid::new_v4()));
+        let dir = std::env::temp_dir().join(format!("aster-event-bus-{}", uuid::Uuid::new_v4()));
         let path = dir.join("bus-state.json");
         let store = Arc::new(crate::state::FileStateStore::new(&path));
 

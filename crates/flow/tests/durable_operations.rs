@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     CancellationRequest, ChildOperationReference, FlowEngine, FlowError, FlowEvent,
     FlowEventEnvelope, FlowEventStore, FlowRuntime, HookStatus, InMemoryEventStore, RetryPolicy,
     RuntimeCommand, StepInvocation, StepStatus, WaitStatus, WorkflowInvocation, WorkflowProgress,
@@ -73,7 +73,7 @@ impl FlowRuntime for CleanupAwareRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.cancellation_request().is_some() {
             if !context.step_completed("cleanup-runtime") {
@@ -114,7 +114,7 @@ impl FlowRuntime for CleanupAwareRuntime {
         Ok(context.wait_until("keep-running", Utc::now() + ChronoDuration::hours(1)))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         assert_eq!(invocation.step_id, "cleanup-runtime");
         self.cleanup_attempts.fetch_add(1, Ordering::SeqCst);
         if !self.cleanup_effect_committed.swap(true, Ordering::SeqCst) {
@@ -347,7 +347,7 @@ impl FailCleanupCompletionOnceStore {
 
 #[async_trait]
 impl FlowEventStore for FailCleanupCompletionOnceStore {
-    async fn append(&self, run_id: &str, event: FlowEvent) -> a3s_flow::Result<FlowEventEnvelope> {
+    async fn append(&self, run_id: &str, event: FlowEvent) -> aster_flow::Result<FlowEventEnvelope> {
         self.inner.append(run_id, event).await
     }
 
@@ -356,7 +356,7 @@ impl FlowEventStore for FailCleanupCompletionOnceStore {
         run_id: &str,
         expected_sequence: u64,
         event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         if matches!(
             &event,
             FlowEvent::StepCompleted { step_id, .. } if step_id == "cleanup-runtime"
@@ -371,11 +371,11 @@ impl FlowEventStore for FailCleanupCompletionOnceStore {
             .await
     }
 
-    async fn list(&self, run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.inner.list(run_id).await
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.inner.list_run_ids().await
     }
 }
@@ -423,13 +423,13 @@ impl FlowRuntime for WaitingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation
             .context()
             .wait_until("wait", Utc::now() + ChronoDuration::hours(1)))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("waiting runtime does not execute steps")
     }
 }
@@ -469,11 +469,11 @@ impl FlowRuntime for FixedWaitingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().wait_until("wait", self.resume_at))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("fixed waiting runtime does not execute steps")
     }
 }
@@ -485,7 +485,7 @@ impl FlowRuntime for CancellationRaceRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let context = invocation.context();
         if context.cancellation_request().is_some() {
             return Ok(context.cancel());
@@ -496,7 +496,7 @@ impl FlowRuntime for CancellationRaceRuntime {
         Ok(context.wait_until("race-wait", Utc::now() + ChronoDuration::hours(1)))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("cancellation race runtime does not execute steps")
     }
 }
@@ -600,7 +600,7 @@ impl FlowRuntime for FailingStepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_step_with_retry(
             "terminal-step",
             "terminalStep",
@@ -609,7 +609,7 @@ impl FlowRuntime for FailingStepRuntime {
         ))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime("dependency unavailable".into()))
     }
 }

@@ -28,7 +28,7 @@ The first pattern still requires the harness/model to understand an MCP image
 content block. The second pattern is the one a gateway can generalize: a
 specialized model interprets the media before a text model receives a bounded
 text representation. Qwen-MM-Plugins is an agent-harness integration, not a
-transparent OpenAI request proxy, so A3S should reuse the architectural lesson
+transparent OpenAI request proxy, so Aster should reuse the architectural lesson
 rather than embed its Python/MCP runtime in the Gateway data plane.
 
 ## Current Gateway boundary
@@ -76,7 +76,7 @@ An adapter should return a versioned structure, not free-form prompt fragments:
 
 ```json
 {
-  "schema": "a3s.multimodal-evidence.v1",
+  "schema": "aster.multimodal-evidence.v1",
   "items": [
     {
       "index": 0,

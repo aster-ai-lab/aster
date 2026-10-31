@@ -9,7 +9,7 @@ pub(crate) fn record_network_name(record: &BoxRecord) -> Option<&str> {
         .network_name
         .as_deref()
         .or(match &record.network_mode {
-            a3s_box_core::NetworkMode::Bridge { network } => Some(network.as_str()),
+            aster_box_core::NetworkMode::Bridge { network } => Some(network.as_str()),
             _ => None,
         })
 }
@@ -24,24 +24,24 @@ pub fn cleanup_box_resources(
     box_id: &str,
     volume_names: &[String],
     network_name: Option<&str>,
-) -> a3s_box_core::error::Result<()> {
+) -> aster_box_core::error::Result<()> {
     // Only open NetworkStore when removal must disconnect. Soft-open (.ok())
     // invents clean detach while bridge endpoints can remain claimed.
     let store = match network_name {
-        Some(_) => Some(a3s_box_runtime::NetworkStore::default_path()?),
+        Some(_) => Some(aster_box_runtime::NetworkStore::default_path()?),
         None => None,
     };
     cleanup_box_resources_in(store.as_ref(), box_id, volume_names, network_name)
 }
 
 /// Inner [`cleanup_box_resources`] over an explicit network store (testable
-/// without touching `~/.a3s` or a real bridge).
+/// without touching `~/.aster` or a real bridge).
 fn cleanup_box_resources_in(
-    net_store: Option<&a3s_box_runtime::NetworkStore>,
+    net_store: Option<&aster_box_runtime::NetworkStore>,
     box_id: &str,
     volume_names: &[String],
     network_name: Option<&str>,
-) -> a3s_box_core::error::Result<()> {
+) -> aster_box_core::error::Result<()> {
     // Detach named volumes — fail closed so ownership metadata cannot linger.
     super::commands::volume::detach_volumes(volume_names, box_id)?;
 
@@ -51,11 +51,11 @@ fn cleanup_box_resources_in(
     // reads outside the lock and would clobber it).
     if let Some(net_name) = network_name {
         let Some(net_store) = net_store else {
-            return Err(a3s_box_core::error::BoxError::NetworkError(format!(
+            return Err(aster_box_core::error::BoxError::NetworkError(format!(
                 "Failed to open NetworkStore for disconnect of {box_id} from {net_name}; refusing invent-clean detach"
             )));
         };
-        net_store.with_write_lock(|networks| -> Result<(), a3s_box_core::error::BoxError> {
+        net_store.with_write_lock(|networks| -> Result<(), aster_box_core::error::BoxError> {
             if let Some(net_config) = networks.get_mut(net_name) {
                 // Absent endpoint is idempotent success.
                 let _ = net_config.disconnect(box_id);
@@ -67,7 +67,7 @@ fn cleanup_box_resources_in(
 }
 
 /// Detach named volumes and disconnect the persisted network for a box record.
-pub fn cleanup_record_resources(record: &BoxRecord) -> a3s_box_core::error::Result<()> {
+pub fn cleanup_record_resources(record: &BoxRecord) -> aster_box_core::error::Result<()> {
     cleanup_box_resources(
         &record.id,
         &record.volume_names,
@@ -75,19 +75,19 @@ pub fn cleanup_record_resources(record: &BoxRecord) -> a3s_box_core::error::Resu
     )
 }
 
-/// Remove a MicroVM's host cgroup `/sys/fs/cgroup/a3s-box/<id>`. The shim creates
+/// Remove a MicroVM's host cgroup `/sys/fs/cgroup/aster-box/<id>`. The shim creates
 /// it for CPU/memory limits and, taking over the process via libkrun, cannot
 /// remove it. Absent is success. A still-busy cgroup fails closed after a short
-/// retry. A3S OCI Runtime owns Sandbox cgroups and removes them through delete.
-pub(crate) fn remove_host_cgroup(record: &BoxRecord) -> a3s_box_core::error::Result<()> {
+/// retry. Aster OCI Runtime owns Sandbox cgroups and removes them through delete.
+pub(crate) fn remove_host_cgroup(record: &BoxRecord) -> aster_box_core::error::Result<()> {
     if record.isolation.is_sandbox() {
         return Ok(());
     }
-    a3s_box_runtime::process::remove_legacy_microvm_cgroup(&record.id)
+    aster_box_runtime::process::remove_legacy_microvm_cgroup(&record.id)
 }
 
 /// Remove transient host resources for a stopped box while keeping its state.
-pub fn cleanup_stopped_box(record: &BoxRecord) -> a3s_box_core::error::Result<()> {
+pub fn cleanup_stopped_box(record: &BoxRecord) -> aster_box_core::error::Result<()> {
     cleanup_sandbox_runtime(record)?;
     // Detach volumes but KEEP the network endpoint (network_name = None): a
     // persistent (non---rm) box must retain its IP/MAC across stop/start, the
@@ -99,8 +99,8 @@ pub fn cleanup_stopped_box(record: &BoxRecord) -> a3s_box_core::error::Result<()
     // Release the overlayfs mount so a stopped box never leaves a live mount
     // (and a later restart re-mounts cleanly instead of stacking). Fail closed:
     // do not invent a clean stop while merged remains mounted.
-    a3s_box_runtime::rootfs::unmount_box_overlay_for_reuse(&record.box_dir.join("merged"))?;
-    a3s_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&record.box_dir.join("rootfs"))?;
+    aster_box_runtime::rootfs::unmount_box_overlay_for_reuse(&record.box_dir.join("merged"))?;
+    aster_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&record.box_dir.join("rootfs"))?;
     cleanup_external_socket_dir(&record.box_dir, &record.exec_socket_path)?;
     remove_host_cgroup(record)?;
     Ok(())
@@ -110,12 +110,12 @@ pub fn cleanup_stopped_box(record: &BoxRecord) -> a3s_box_core::error::Result<()
 pub fn cleanup_anonymous_volumes(
     box_id: &str,
     anonymous_volumes: &[String],
-) -> a3s_box_core::error::Result<()> {
+) -> aster_box_core::error::Result<()> {
     if anonymous_volumes.is_empty() {
         return Ok(());
     }
 
-    let vol_store = a3s_box_runtime::VolumeStore::default_path()?;
+    let vol_store = aster_box_runtime::VolumeStore::default_path()?;
     for volume_name in anonymous_volumes {
         // Missing / already-removed anonymous volumes are success (`Ok(false)`).
         vol_store.remove_anonymous(volume_name, box_id)?;
@@ -127,12 +127,12 @@ pub fn cleanup_anonymous_volumes(
 /// forgotten. The record stores only this non-sensitive identity.
 pub(crate) fn cleanup_transient_secret_identity(
     identity: Option<&str>,
-) -> a3s_box_core::error::Result<()> {
+) -> aster_box_core::error::Result<()> {
     let Some(identity) = identity else {
         return Ok(());
     };
     crate::commands::compose::secrets::cleanup_persisted(identity).map_err(|error| {
-        a3s_box_core::error::BoxError::Other(format!(
+        aster_box_core::error::BoxError::Other(format!(
             "Failed to clean Compose transient Secret material: {error}"
         ))
     })
@@ -145,21 +145,21 @@ pub(crate) fn cleanup_transient_secret_identity(
 pub fn cleanup_external_socket_dir(
     box_dir: &Path,
     exec_socket_path: &Path,
-) -> a3s_box_core::error::Result<()> {
+) -> aster_box_core::error::Result<()> {
     let Some(socket_dir) = exec_socket_path.parent() else {
         return Ok(());
     };
     // Reap the box's passt daemon (Linux bridge mode). passt outlives the
     // process that launched it, so box teardown terminates it via its PID file.
     #[cfg(target_os = "linux")]
-    a3s_box_runtime::network::terminate_passt(socket_dir)?;
+    aster_box_runtime::network::terminate_passt(socket_dir)?;
     if socket_dir.starts_with(box_dir) {
         return Ok(());
     }
     match std::fs::remove_dir_all(socket_dir) {
         Ok(()) => Ok(()),
         Err(err) if err.kind() == std::io::ErrorKind::NotFound => Ok(()),
-        Err(err) => Err(a3s_box_core::error::BoxError::Other(format!(
+        Err(err) => Err(aster_box_core::error::BoxError::Other(format!(
             "Failed to remove external socket directory {}: {err}",
             socket_dir.display()
         ))),
@@ -167,8 +167,8 @@ pub fn cleanup_external_socket_dir(
 }
 
 /// Remove all host-side resources owned by a box record.
-pub fn cleanup_removed_box(record: &BoxRecord) -> a3s_box_core::error::Result<()> {
-    // A Sandbox log worker exits only after the A3S OCI owner closes both output streams.
+pub fn cleanup_removed_box(record: &BoxRecord) -> aster_box_core::error::Result<()> {
+    // A Sandbox log worker exits only after the Aster OCI owner closes both output streams.
     // Reconcile that runtime first so the archive includes final stderr and a
     // complete structured projection. This does not remove the box log dir.
     cleanup_sandbox_runtime(record)?;
@@ -197,10 +197,10 @@ pub fn cleanup_removed_box(record: &BoxRecord) -> a3s_box_core::error::Result<()
         // Keep-authority DNAT/veth/MASQUERADE leases live under boxes/{id}/sandbox/.
         // Tear down before wiping the claim; fail closed so present publish rules
         // cannot outlive durable lease state (same contract as managed remove).
-        let home = a3s_box_core::dirs_home();
-        a3s_box_runtime::teardown_sandbox_host_netdevice_lease(&home, &record.id).map_err(
+        let home = aster_box_core::dirs_home();
+        aster_box_runtime::teardown_sandbox_host_netdevice_lease(&home, &record.id).map_err(
             |error| {
-                a3s_box_core::error::BoxError::Other(format!(
+                aster_box_core::error::BoxError::Other(format!(
                     "Failed to tear down SandboxViaOci host netdevice lease for {}: {error}",
                     record.id
                 ))
@@ -208,8 +208,8 @@ pub fn cleanup_removed_box(record: &BoxRecord) -> a3s_box_core::error::Result<()
         )?;
 
         // MicroVM :ro virtio-fs RO-bind aliases must be detached before wipe.
-        a3s_box_runtime::cleanup_microvm_virtiofs_ro_shares(&record.box_dir).map_err(|error| {
-            a3s_box_core::error::BoxError::Other(format!(
+        aster_box_runtime::cleanup_microvm_virtiofs_ro_shares(&record.box_dir).map_err(|error| {
+            aster_box_core::error::BoxError::Other(format!(
                 "Failed to detach MicroVM :ro virtio-fs aliases for {}: {error}",
                 record.id
             ))
@@ -218,13 +218,13 @@ pub fn cleanup_removed_box(record: &BoxRecord) -> a3s_box_core::error::Result<()
         // Release the overlayfs mount FIRST: otherwise remove_dir_all deletes
         // into the live mount ("Stale file handle") and leaks it. Fail closed so
         // wipe cannot invent success while merged remains mounted.
-        a3s_box_runtime::rootfs::unmount_box_overlay_for_reuse(&record.box_dir.join("merged"))?;
-        a3s_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&record.box_dir.join("rootfs"))?;
+        aster_box_runtime::rootfs::unmount_box_overlay_for_reuse(&record.box_dir.join("merged"))?;
+        aster_box_runtime::rootfs::unmount_box_rootfs_for_reuse(&record.box_dir.join("rootfs"))?;
         match std::fs::remove_dir_all(&record.box_dir) {
             Ok(()) => {}
             Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
             Err(err) => {
-                return Err(a3s_box_core::error::BoxError::Other(format!(
+                return Err(aster_box_core::error::BoxError::Other(format!(
                     "Failed to remove box directory {}: {err}",
                     record.box_dir.display()
                 )));
@@ -234,18 +234,18 @@ pub fn cleanup_removed_box(record: &BoxRecord) -> a3s_box_core::error::Result<()
     cleanup_external_socket_dir(&record.box_dir, &record.exec_socket_path)?;
 
     // The shim stages single-file virtio-fs binds as
-    // `$TMPDIR/a3s-fs-mount-<box_id>-<tag>` and cannot clean them up after
+    // `$TMPDIR/aster-fs-mount-<box_id>-<tag>` and cannot clean them up after
     // libkrun takes over. Match that identity and fail closed if any remain.
-    a3s_box_runtime::fs::remove_file_mount_staging(&record.id)?;
+    aster_box_runtime::fs::remove_file_mount_staging(&record.id)?;
     Ok(())
 }
 
-fn cleanup_sandbox_runtime(record: &BoxRecord) -> a3s_box_core::error::Result<()> {
+fn cleanup_sandbox_runtime(record: &BoxRecord) -> aster_box_core::error::Result<()> {
     if !record.isolation.is_sandbox() {
         return Ok(());
     }
 
-    a3s_box_runtime::vm::reap::cleanup_recorded_sandbox_runtime(&record.box_dir, &record.id)
+    aster_box_runtime::vm::reap::cleanup_recorded_sandbox_runtime(&record.box_dir, &record.id)
 }
 
 /// Roll back a box record that was partially created.
@@ -355,8 +355,8 @@ mod tests {
 
     #[test]
     fn stop_keeps_network_endpoint_but_removal_releases_it() {
-        use a3s_box_core::network::NetworkConfig;
-        use a3s_box_runtime::NetworkStore;
+        use aster_box_core::network::NetworkConfig;
+        use aster_box_runtime::NetworkStore;
 
         let dir = tempfile::tempdir().unwrap();
         let store = NetworkStore::new(dir.path().join("networks.json"));
@@ -368,7 +368,7 @@ mod tests {
                 nets.get_mut("dev")
                     .unwrap()
                     .connect("box-1", "b1")
-                    .map_err(a3s_box_core::error::BoxError::NetworkError)
+                    .map_err(aster_box_core::error::BoxError::NetworkError)
             })
             .unwrap();
         assert_eq!(store.get("dev").unwrap().unwrap().endpoints.len(), 1);

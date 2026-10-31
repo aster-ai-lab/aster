@@ -4,7 +4,7 @@ use std::io;
 use std::os::fd::{AsRawFd, FromRawFd, OwnedFd, RawFd};
 use std::os::unix::fs::MetadataExt;
 
-use a3s_oci_sdk::{Error, ErrorCode, Result};
+use aster_oci_sdk::{Error, ErrorCode, Result};
 
 use super::{network_error, NetworkDevicePlan};
 
@@ -136,7 +136,7 @@ impl NetworkDeviceLease {
             return Ok(None);
         }
         let plan = plan.clone();
-        run_disposable_thread("a3s-oci-net-device-apply", move || {
+        run_disposable_thread("aster-oci-net-device-apply", move || {
             apply_sync(&plan, target_namespace)
         })
         .await
@@ -147,7 +147,7 @@ impl NetworkDeviceLease {
         let Some(state) = self.rollback.take() else {
             return Ok(());
         };
-        run_disposable_thread("a3s-oci-net-device-rollback", move || rollback_sync(&state)).await
+        run_disposable_thread("aster-oci-net-device-rollback", move || rollback_sync(&state)).await
     }
 
     pub(in crate::executor) fn commit(&mut self) {
@@ -161,7 +161,7 @@ impl Drop for NetworkDeviceLease {
             return;
         };
         let result = std::thread::Builder::new()
-            .name("a3s-oci-net-device-drop".to_string())
+            .name("aster-oci-net-device-drop".to_string())
             .spawn(move || rollback_sync(&state))
             .and_then(|thread| {
                 thread
@@ -170,7 +170,7 @@ impl Drop for NetworkDeviceLease {
                     .map_err(|error| io::Error::other(error.to_string()))
             });
         if let Err(error) = result {
-            eprintln!("a3s-oci-agent: network-device drop rollback warning: {error}");
+            eprintln!("aster-oci-agent: network-device drop rollback warning: {error}");
         }
     }
 }

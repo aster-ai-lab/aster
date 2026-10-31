@@ -10,7 +10,7 @@ fn crate_publication_is_source_bound_tested_and_idempotent() {
     assert!(workflow.contains("cargo publish --locked --dry-run"));
     assert!(workflow.contains("already exists; skipping upload"));
     assert!(workflow.contains("cargo publish --locked"));
-    assert!(workflow.contains("cargo info \"a3s-gateway@$VERSION\""));
+    assert!(workflow.contains("cargo info \"aster-gateway@$VERSION\""));
 
     for action in workflow.lines().filter_map(|line| {
         line.trim()
@@ -30,7 +30,7 @@ fn crate_publication_is_source_bound_tested_and_idempotent() {
 #[test]
 fn patch_release_metadata_is_synchronized() {
     let manifest = include_str!("../Cargo.toml");
-    let chart = include_str!("../deploy/helm/a3s-gateway/Chart.yaml");
+    let chart = include_str!("../deploy/helm/aster-gateway/Chart.yaml");
     let changelog = include_str!("../CHANGELOG.md");
     let roadmap = include_str!("../ROADMAP.md");
 

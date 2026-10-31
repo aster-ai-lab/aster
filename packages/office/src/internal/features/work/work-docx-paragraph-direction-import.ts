@@ -24,7 +24,7 @@ const WORD_NAMESPACE =
   'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const PARAGRAPH_DIRECTION_MARKER_PATTERN =
-  /__A3S_WORK_PARAGRAPH_DIRECTION_\d+__/g;
+  /__ASTER_WORK_PARAGRAPH_DIRECTION_\d+__/g;
 
 export function markDocxParagraphDirections(
   document: Document,
@@ -44,7 +44,7 @@ export function markDocxParagraphDirections(
     const direction = resolveDocxParagraphDirection(sources);
     if (!direction) continue;
     properties ??= insertParagraphProperties(document, paragraph);
-    const marker = `__A3S_WORK_PARAGRAPH_DIRECTION_${paragraphs.length + 1}__`;
+    const marker = `__ASTER_WORK_PARAGRAPH_DIRECTION_${paragraphs.length + 1}__`;
     insertParagraphMarker(document, paragraph, properties, marker);
     paragraphs.push({ marker, direction });
   }
@@ -59,7 +59,7 @@ export function applyImportedDocxParagraphDirectionMarkers(
     markers.paragraphs.map(({ marker, direction }) => [marker, direction]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_DIRECTION_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_DIRECTION_')) continue;
     const block = closestParagraphBlock(node.parentElement);
     node.data = node.data.replace(
       PARAGRAPH_DIRECTION_MARKER_PATTERN,

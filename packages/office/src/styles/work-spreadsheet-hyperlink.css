@@ -1,5 +1,5 @@
 .work-spreadsheet-hyperlink-dialog {
-  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--aster-ink));
 
   width: min(610px, 100%);
 }
@@ -18,7 +18,7 @@
 
 .work-spreadsheet-hyperlink-types > legend {
   margin-bottom: 8px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
   font-weight: 600;
 }
@@ -38,38 +38,38 @@
   align-items: center;
   gap: 8px;
   padding: 9px 10px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
-  background: var(--a3s-panel);
-  color: var(--a3s-muted);
+  background: var(--aster-panel);
+  color: var(--aster-muted);
   cursor: pointer;
 }
 
 .work-spreadsheet-hyperlink-types label:hover {
   border-color: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 42%,
-    var(--a3s-line)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 42%,
+    var(--aster-line)
   );
 }
 
 .work-spreadsheet-hyperlink-types label.selected {
   border-color: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 58%,
-    var(--a3s-line)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 58%,
+    var(--aster-line)
   );
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 8%,
-    var(--a3s-panel)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 8%,
+    var(--aster-panel)
   );
-  color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  color: var(--work-spreadsheet-accent, var(--aster-ink));
 }
 
 .work-spreadsheet-hyperlink-types label:has(input:focus-visible) {
   outline: 2px solid
-    color-mix(in srgb, var(--work-spreadsheet-accent, var(--a3s-ink)) 38%, transparent);
+    color-mix(in srgb, var(--work-spreadsheet-accent, var(--aster-ink)) 38%, transparent);
   outline-offset: 2px;
 }
 
@@ -94,13 +94,13 @@
 }
 
 .work-spreadsheet-hyperlink-types strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
   font-weight: 650;
 }
 
 .work-spreadsheet-hyperlink-types small {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 9px;
 }
 
@@ -113,7 +113,7 @@
   gap: 10px;
   padding: 9px 11px;
   border-radius: 8px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-hyperlink-preview > span {
@@ -124,10 +124,10 @@
   border-radius: 7px;
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 11%,
-    var(--a3s-panel)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 11%,
+    var(--aster-panel)
   );
-  color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  color: var(--work-spreadsheet-accent, var(--aster-ink));
 }
 
 .work-spreadsheet-hyperlink-preview > div {
@@ -144,13 +144,13 @@
 }
 
 .work-spreadsheet-hyperlink-preview strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
   font-weight: 650;
 }
 
 .work-spreadsheet-hyperlink-preview small {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
 }
 

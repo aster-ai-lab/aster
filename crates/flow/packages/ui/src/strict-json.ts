@@ -10,10 +10,10 @@
  */
 
 /** Maximum nesting accepted by the workflow JSON boundary. */
-export const A3S_FLOW_JSON_MAX_DEPTH = 256;
+export const ASTER_FLOW_JSON_MAX_DEPTH = 256;
 
 /** Parse one JSON value while rejecting duplicate keys at every object level. */
-export function parseA3sFlowStrictJson(source: string): unknown {
+export function parseAsterFlowStrictJson(source: string): unknown {
   const scanner = new JsonKeyScanner(source);
   scanner.scan();
   return JSON.parse(source);
@@ -34,9 +34,9 @@ class JsonKeyScanner {
   }
 
   private scanValue(depth: number): void {
-    if (depth > A3S_FLOW_JSON_MAX_DEPTH) {
+    if (depth > ASTER_FLOW_JSON_MAX_DEPTH) {
       throw this.error(
-        `JSON nesting exceeds the maximum depth ${A3S_FLOW_JSON_MAX_DEPTH}`,
+        `JSON nesting exceeds the maximum depth ${ASTER_FLOW_JSON_MAX_DEPTH}`,
       );
     }
     this.skipWhitespace();

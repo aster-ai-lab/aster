@@ -1,10 +1,10 @@
 import { useSyncExternalStore } from 'react';
-import iconDark from '../../assets/a3s-icon-dark-transparent.svg';
-import iconLight from '../../assets/a3s-icon-light-transparent.svg';
-import horizontalDark from '../../assets/a3s-horizontal-dark-transparent.svg';
-import horizontalLight from '../../assets/a3s-horizontal-light-transparent.svg';
-import verticalDark from '../../assets/a3s-vertical-dark-transparent.svg';
-import verticalLight from '../../assets/a3s-vertical-light-transparent.svg';
+import iconDark from '../../assets/aster-icon-dark-transparent.svg';
+import iconLight from '../../assets/aster-icon-light-transparent.svg';
+import horizontalDark from '../../assets/aster-horizontal-dark-transparent.svg';
+import horizontalLight from '../../assets/aster-horizontal-light-transparent.svg';
+import verticalDark from '../../assets/aster-vertical-dark-transparent.svg';
+import verticalLight from '../../assets/aster-vertical-light-transparent.svg';
 import { cn } from '../../lib/cn';
 
 /**
@@ -68,7 +68,7 @@ export function LogoMark({
   size = 28,
   className = '',
   tone = 'auto',
-  alt = 'A3S',
+  alt = 'Aster',
 }: {
   size?: number;
   className?: string;
@@ -84,7 +84,7 @@ export function Logo({
   layout: layoutProp,
   size = 28,
   tone = 'auto',
-  alt = 'A3S',
+  alt = 'Aster',
 }: LogoProps) {
   const surface = useSurfaceTone(tone);
   const layout: LogoLayout = markOnly ? 'icon' : (layoutProp ?? 'horizontal');

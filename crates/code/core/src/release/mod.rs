@@ -1,6 +1,6 @@
 //! Immutable, bounded Agent release manifests.
 //!
-//! This module owns admission and identity for `.a3s/asset.acl`. It does not
+//! This module owns admission and identity for `.aster/asset.acl`. It does not
 //! start an Agent daemon or claim that a Runtime Service is ready.
 
 mod error;
@@ -18,15 +18,15 @@ pub use types::{
     AgentReleaseSecretTarget, AgentReleaseStorage, AgentReleaseWorkspaceMode,
 };
 
-use a3s_acl::ParseLimits;
+use aster_acl::ParseLimits;
 
 /// Versioned ACL schema identifier accepted by this release contract.
-pub const AGENT_RELEASE_CONTRACT_V1: &str = "a3s.code.agent-release.v1";
+pub const AGENT_RELEASE_CONTRACT_V1: &str = "aster.code.agent-release.v1";
 
 /// Version-one headless Agent request protocol identifier.
-pub const AGENT_PROTOCOL_V1: &str = "a3s.code.agent.v1";
+pub const AGENT_PROTOCOL_V1: &str = "aster.code.agent.v1";
 
-/// Capabilities supplied by the native `a3s code harness` process.
+/// Capabilities supplied by the native `aster code harness` process.
 pub const AGENT_HARNESS_CAPABILITIES_V1: [(&str, u32); 3] = [
     ("runtime.service", 1),
     ("secrets.external", 1),
@@ -34,11 +34,11 @@ pub const AGENT_HARNESS_CAPABILITIES_V1: [(&str, u32); 3] = [
 ];
 
 /// Sole executable admitted by the version-one Agent release contract.
-pub const AGENT_RELEASE_ENTRYPOINT_COMMAND_V1: &str = "/usr/bin/a3s";
+pub const AGENT_RELEASE_ENTRYPOINT_COMMAND_V1: &str = "/usr/bin/aster";
 
-/// Arguments that select the A3S Code Harness in a version-one Agent release.
+/// Arguments that select the Aster Code Harness in a version-one Agent release.
 pub const AGENT_RELEASE_ENTRYPOINT_ARGS_V1: [&str; 4] =
-    ["code", "harness", "--manifest", "/app/.a3s/asset.acl"];
+    ["code", "harness", "--manifest", "/app/.aster/asset.acl"];
 
 /// Exact protocol and capability surface supplied by the native v1 Harness.
 ///

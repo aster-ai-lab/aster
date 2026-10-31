@@ -1,4 +1,4 @@
-use a3s_office_web_kernel::{
+use aster_office_web_kernel::{
     calculate_spreadsheet, SpreadsheetCalculatedCell, SpreadsheetCalculationRequest,
     SpreadsheetCoordinate, SpreadsheetInputCell, SpreadsheetInputSheet, SpreadsheetInputTable,
     SpreadsheetValue, OFFICE_KERNEL_PROTOCOL_VERSION,
@@ -245,7 +245,7 @@ fn row_and_column_follow_a_single_cell_reference() {
 }
 
 fn calculated(
-    result: &a3s_office_web_kernel::SpreadsheetCalculationResult,
+    result: &aster_office_web_kernel::SpreadsheetCalculationResult,
     row: u32,
     column: u32,
 ) -> SpreadsheetValue {
@@ -265,7 +265,7 @@ fn reports_cycles_and_unsupported_functions_without_losing_valid_cells() {
         SpreadsheetInputCell {
             row: 2,
             column: 1,
-            formula: Some("=A3S_UNKNOWN(A1)".into()),
+            formula: Some("=ASTER_UNKNOWN(A1)".into()),
             value: SpreadsheetValue::Number { value: 41.0 },
         },
         SpreadsheetInputCell {

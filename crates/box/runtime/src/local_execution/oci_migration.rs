@@ -1,14 +1,14 @@
-//! Explicit production composition for Sandbox migration to A3S OCI Runtime.
+//! Explicit production composition for Sandbox migration to Aster OCI Runtime.
 
 use std::ffi::OsString;
 use std::path::{Component, Path, PathBuf};
 use std::sync::Arc;
 
 #[cfg(target_os = "linux")]
-use a3s_box_core::ExecutionBackend;
+use aster_box_core::ExecutionBackend;
 #[cfg(target_os = "linux")]
-use a3s_box_core::{ExecutionIsolation, ExecutionState, KillOutcome};
-use a3s_box_core::{ExecutionManagerError, ExecutionManagerResult};
+use aster_box_core::{ExecutionIsolation, ExecutionState, KillOutcome};
+use aster_box_core::{ExecutionManagerError, ExecutionManagerResult};
 #[cfg(target_os = "linux")]
 use async_trait::async_trait;
 #[cfg(target_os = "linux")]
@@ -27,25 +27,25 @@ use super::{
 #[cfg(target_os = "linux")]
 use crate::{BoxRecord, ManagedRuntimeRoute};
 
-pub const OCI_MIGRATION_ENV: &str = "A3S_BOX_OCI_MIGRATION";
-pub const OCI_HOST_ROOT_ENV: &str = "A3S_BOX_OCI_HOST_ROOT";
-pub const OCI_RUNTIME_PATH_ENV: &str = "A3S_BOX_OCI_RUNTIME_PATH";
-pub const OCI_AGENT_PATH_ENV: &str = "A3S_BOX_OCI_AGENT_PATH";
-pub const OCI_WHPX_ENDPOINT_ENV: &str = "A3S_BOX_OCI_WHPX_ENDPOINT";
-pub const OCI_KVM_ENDPOINT_ENV: &str = "A3S_BOX_OCI_KVM_ENDPOINT";
-pub const OCI_KVM_BOX_OWNED_ENV: &str = "A3S_BOX_KVM_OCI_BOX_OWNED";
-pub const OCI_KVM_SERVICE_ROOT_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_ROOT";
-pub const OCI_KVM_SERVICE_BIN_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_BIN";
-pub const OCI_KVM_SERVICE_SHIM_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_SHIM";
-pub const OCI_KVM_SERVICE_MANIFEST_ENV: &str = "A3S_BOX_KVM_OCI_SERVICE_MANIFEST";
-pub const OCI_WHPX_BOX_OWNED_ENV: &str = "A3S_BOX_WHPX_OCI_BOX_OWNED";
-pub const OCI_WHPX_SERVICE_ROOT_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_ROOT";
-pub const OCI_WHPX_SERVICE_BIN_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_BIN";
-pub const OCI_WHPX_SERVICE_SHIM_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_SHIM";
-pub const OCI_WHPX_SERVICE_VM_ROOTFS_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_VM_ROOTFS";
-pub const OCI_WHPX_SERVICE_MANIFEST_ENV: &str = "A3S_BOX_WHPX_OCI_SERVICE_MANIFEST";
+pub const OCI_MIGRATION_ENV: &str = "ASTER_BOX_OCI_MIGRATION";
+pub const OCI_HOST_ROOT_ENV: &str = "ASTER_BOX_OCI_HOST_ROOT";
+pub const OCI_RUNTIME_PATH_ENV: &str = "ASTER_BOX_OCI_RUNTIME_PATH";
+pub const OCI_AGENT_PATH_ENV: &str = "ASTER_BOX_OCI_AGENT_PATH";
+pub const OCI_WHPX_ENDPOINT_ENV: &str = "ASTER_BOX_OCI_WHPX_ENDPOINT";
+pub const OCI_KVM_ENDPOINT_ENV: &str = "ASTER_BOX_OCI_KVM_ENDPOINT";
+pub const OCI_KVM_BOX_OWNED_ENV: &str = "ASTER_BOX_KVM_OCI_BOX_OWNED";
+pub const OCI_KVM_SERVICE_ROOT_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_ROOT";
+pub const OCI_KVM_SERVICE_BIN_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_BIN";
+pub const OCI_KVM_SERVICE_SHIM_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_SHIM";
+pub const OCI_KVM_SERVICE_MANIFEST_ENV: &str = "ASTER_BOX_KVM_OCI_SERVICE_MANIFEST";
+pub const OCI_WHPX_BOX_OWNED_ENV: &str = "ASTER_BOX_WHPX_OCI_BOX_OWNED";
+pub const OCI_WHPX_SERVICE_ROOT_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_ROOT";
+pub const OCI_WHPX_SERVICE_BIN_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_BIN";
+pub const OCI_WHPX_SERVICE_SHIM_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_SHIM";
+pub const OCI_WHPX_SERVICE_VM_ROOTFS_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_VM_ROOTFS";
+pub const OCI_WHPX_SERVICE_MANIFEST_ENV: &str = "ASTER_BOX_WHPX_OCI_SERVICE_MANIFEST";
 #[cfg(test)]
-const DEFAULT_OCI_WHPX_ENDPOINT: &str = r"\\.\pipe\a3s-oci-box-qualification";
+const DEFAULT_OCI_WHPX_ENDPOINT: &str = r"\\.\pipe\aster-oci-box-qualification";
 
 /// Explicit native-Linux owner and artifact selection for Sandbox migration.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -622,14 +622,14 @@ impl LocalExecutionManager {
 
     /// Select the production Sandbox migration composition.
     ///
-    /// On Linux, an absent `A3S_BOX_OCI_MIGRATION` prefers packaged KVM
+    /// On Linux, an absent `ASTER_BOX_OCI_MIGRATION` prefers packaged KVM
     /// DedicatedVm when artifacts are discoverable (gate 5), otherwise defaults
     /// to `SandboxViaOci`. Explicit `off` keeps the legacy VM backend. Explicit
     /// `sandbox` hard-fails when the OCI owner is not launch-ready; the Linux
     /// soft path composes a fail-closed unavailable OCI backend so MicroVM can
     /// continue on Box-libkrun when packaged KVM artifacts are absent.
     ///
-    /// On Windows x86_64, an absent `A3S_BOX_OCI_MIGRATION` prefers packaged
+    /// On Windows x86_64, an absent `ASTER_BOX_OCI_MIGRATION` prefers packaged
     /// WHPX DedicatedVm when Host artifacts are discoverable (gate 5); missing
     /// packages soft-fall to Box-libkrun/WHPX. Explicit `off`/`legacy` keeps
     /// the legacy VM backend. Sandbox migration values remain rejected.
@@ -775,7 +775,7 @@ impl UnavailableOciMigrationBackend {
     fn new(error: ExecutionManagerError) -> Self {
         Self {
             message: format!(
-                "Linux Sandbox OCI owner is not launch-ready ({error}); install the A3S OCI Runtime package or set {OCI_MIGRATION_ENV}=off for MicroVM-only hosts"
+                "Linux Sandbox OCI owner is not launch-ready ({error}); install the Aster OCI Runtime package or set {OCI_MIGRATION_ENV}=off for MicroVM-only hosts"
             ),
         }
     }
@@ -847,7 +847,7 @@ async fn connect_native_linux_sandbox_backend(
 ) -> ExecutionManagerResult<Arc<dyn LocalExecutionBackend>> {
     config.validate()?;
     let capabilities = crate::sandbox::probe_sandbox_capabilities_for(
-        ExecutionBackend::A3sOci,
+        ExecutionBackend::AsterOci,
         config.runtime_path(),
         config.agent_path(),
     );
@@ -856,7 +856,7 @@ async fn connect_native_linux_sandbox_backend(
             "native Linux OCI migration preflight failed: {error}"
         ))
     })?;
-    let artifacts = capabilities.a3s_oci.as_ref().ok_or_else(|| {
+    let artifacts = capabilities.aster_oci.as_ref().ok_or_else(|| {
         ExecutionManagerError::Unavailable(
             "native Linux OCI migration preflight returned no runtime artifacts".to_string(),
         )
@@ -1030,7 +1030,7 @@ fn parse_windows_environment(
         service_manifest,
     } = inputs;
     let Some(mode) = mode.filter(|value| !value.is_empty()) else {
-        // Gate 5: absent `A3S_BOX_OCI_MIGRATION` selects packaged DedicatedVm
+        // Gate 5: absent `ASTER_BOX_OCI_MIGRATION` selects packaged DedicatedVm
         // when runtime/shim/vm-rootfs/system-image are discoverable. Missing
         // packages soft-fall to Box-libkrun/WHPX instead of hard-failing hosts
         // without the WHPX Host package.
@@ -1051,7 +1051,7 @@ fn parse_windows_environment(
             ) {
                 Ok(config) => Ok(Some(config)),
                 Err(ExecutionManagerError::InvalidRequest(message))
-                    if message.contains("was not found in packaged A3S locations") =>
+                    if message.contains("was not found in packaged Aster locations") =>
                 {
                     Ok(None)
                 }
@@ -1359,7 +1359,7 @@ fn parse_linux_kvm_environment(
         service_manifest,
     } = inputs;
     let Some(mode) = mode.filter(|value| !value.is_empty()) else {
-        // Gate 5: absent `A3S_BOX_OCI_MIGRATION` selects packaged DedicatedVm
+        // Gate 5: absent `ASTER_BOX_OCI_MIGRATION` selects packaged DedicatedVm
         // when runtime/shim/system-image are discoverable. Missing packages
         // soft-fall through to SandboxViaOci / legacy (MicroVM stays
         // Box-libkrun) instead of hard-failing hosts without the KVM package.
@@ -1379,7 +1379,7 @@ fn parse_linux_kvm_environment(
             ) {
                 Ok(config) => Ok(Some(config)),
                 Err(ExecutionManagerError::InvalidRequest(message))
-                    if message.contains("was not found in packaged A3S locations") =>
+                    if message.contains("was not found in packaged Aster locations") =>
                 {
                     Ok(None)
                 }
@@ -1582,11 +1582,11 @@ fn default_service_root(home_dir: &Path) -> PathBuf {
         use std::os::unix::ffi::OsStrExt as _;
 
         // Keep runtime.sock below the small sockaddr_un limit while separating
-        // different A3S homes owned by the same UID.
+        // different Aster homes owned by the same UID.
         let digest = Sha256::digest(home_dir.as_os_str().as_bytes());
         // SAFETY: geteuid has no preconditions or failure result.
         let uid = unsafe { libc::geteuid() };
-        std::env::temp_dir().join(format!("a3s-box-oci-{uid}-{}", hex::encode(&digest[..6])))
+        std::env::temp_dir().join(format!("aster-box-oci-{uid}-{}", hex::encode(&digest[..6])))
     }
 
     #[cfg(not(target_os = "linux"))]
@@ -1618,7 +1618,7 @@ mod tests {
 
     #[test]
     fn environment_defaults_on_linux_and_rejects_unqualified_all_policy() {
-        let home = absolute("a3s-oci-config-home");
+        let home = absolute("aster-oci-config-home");
         #[cfg(target_os = "linux")]
         {
             let (selection, config) = parse_environment(None, None, None, None, &home)
@@ -1643,9 +1643,9 @@ mod tests {
 
     #[test]
     fn environment_requires_artifact_pair_and_accepts_sandbox() {
-        let home = absolute("a3s-oci-config-home");
-        let runtime = absolute("a3s-oci");
-        let agent = absolute("a3s-oci-agent");
+        let home = absolute("aster-oci-config-home");
+        let runtime = absolute("aster-oci");
+        let agent = absolute("aster-oci-agent");
         assert!(parse_environment(
             Some(OsString::from("sandbox")),
             None,
@@ -1656,7 +1656,7 @@ mod tests {
         .is_err());
         let (selection, config) = parse_environment(
             Some(OsString::from("sandbox")),
-            Some(absolute("a3s-oci-root").into_os_string()),
+            Some(absolute("aster-oci-root").into_os_string()),
             Some(runtime.clone().into_os_string()),
             Some(agent.clone().into_os_string()),
             &home,
@@ -1670,7 +1670,7 @@ mod tests {
 
     #[test]
     fn windows_environment_without_endpoint_fail_closed_or_accepts_qualification_pipe() {
-        let home = absolute("a3s-oci-config-home");
+        let home = absolute("aster-oci-config-home");
         // Opt-in without endpoint uses packaged discovery; empty install fail-closes.
         assert!(parse_windows_environment(
             WindowsWhpxEnvironmentInputs {
@@ -1684,7 +1684,7 @@ mod tests {
         let config = parse_windows_environment(
             WindowsWhpxEnvironmentInputs {
                 mode: Some(OsString::from("microvm")),
-                runtime_root: Some(absolute("a3s-oci-whpx-root").into_os_string()),
+                runtime_root: Some(absolute("aster-oci-whpx-root").into_os_string()),
                 endpoint: Some(OsString::from(DEFAULT_OCI_WHPX_ENDPOINT)),
                 ..Default::default()
             },
@@ -1707,19 +1707,19 @@ mod tests {
     fn windows_packaged_opt_in_builds_box_owned_without_endpoint() {
         use std::fs;
 
-        let home = absolute("a3s-oci-whpx-packaged-home");
+        let home = absolute("aster-oci-whpx-packaged-home");
         let _ = fs::remove_dir_all(&home);
         fs::create_dir_all(&home).unwrap();
         let plant = std::env::temp_dir().join(format!(
-            "a3s-whpx-migration-packaged-{}",
+            "aster-whpx-migration-packaged-{}",
             std::process::id()
         ));
         let _ = fs::remove_dir_all(&plant);
         fs::create_dir_all(plant.join("bin")).unwrap();
         fs::create_dir_all(plant.join("system-image")).unwrap();
         fs::create_dir_all(plant.join("bootstrap-vm-rootfs")).unwrap();
-        let runtime = plant.join("bin").join("a3s-oci.exe");
-        let shim = plant.join("bin").join("a3s-oci-krun-shim.exe");
+        let runtime = plant.join("bin").join("aster-oci.exe");
+        let shim = plant.join("bin").join("aster-oci-krun-shim.exe");
         let manifest = plant.join("system-image").join("system-image.json");
         let seed_bootstrap = plant.join("bootstrap-vm-rootfs");
         fs::write(&runtime, b"runtime").unwrap();
@@ -1773,24 +1773,24 @@ mod tests {
     fn windows_whpx_absent_mode_soft_skips_when_packaged_artifacts_missing() {
         use std::fs;
 
-        let home = absolute("a3s-oci-whpx-gate5-missing-home");
+        let home = absolute("aster-oci-whpx-gate5-missing-home");
         let _ = fs::remove_dir_all(&home);
         fs::create_dir_all(&home).unwrap();
-        // Isolate discovery from any tip-prove `A3S_HOME` still exported in the
+        // Isolate discovery from any tip-prove `ASTER_HOME` still exported in the
         // developer shell (packaged search roots include `dirs_home()`).
-        let previous = std::env::var_os("A3S_HOME");
+        let previous = std::env::var_os("ASTER_HOME");
         // SAFETY: unit test temporarily redirects packaged discovery roots.
         unsafe {
-            std::env::set_var("A3S_HOME", &home);
+            std::env::set_var("ASTER_HOME", &home);
         }
         let result = parse_windows_environment(WindowsWhpxEnvironmentInputs::default(), &home);
         match previous {
             // SAFETY: See the enclosing function's safety documentation.
             Some(value) => unsafe {
-                std::env::set_var("A3S_HOME", value);
+                std::env::set_var("ASTER_HOME", value);
             },
             None => unsafe {
-                std::env::remove_var("A3S_HOME");
+                std::env::remove_var("ASTER_HOME");
             },
         }
         assert_eq!(
@@ -1806,17 +1806,17 @@ mod tests {
     fn windows_whpx_absent_mode_uses_packaged_box_owned_when_artifacts_present() {
         use std::fs;
 
-        let home = absolute("a3s-oci-whpx-gate5-default-home");
+        let home = absolute("aster-oci-whpx-gate5-default-home");
         let _ = fs::remove_dir_all(&home);
         fs::create_dir_all(&home).unwrap();
         let plant =
-            std::env::temp_dir().join(format!("a3s-whpx-migration-gate5-{}", std::process::id()));
+            std::env::temp_dir().join(format!("aster-whpx-migration-gate5-{}", std::process::id()));
         let _ = fs::remove_dir_all(&plant);
         fs::create_dir_all(plant.join("bin")).unwrap();
         fs::create_dir_all(plant.join("system-image")).unwrap();
         fs::create_dir_all(plant.join("bootstrap-vm-rootfs")).unwrap();
-        let runtime = plant.join("bin").join("a3s-oci.exe");
-        let shim = plant.join("bin").join("a3s-oci-krun-shim.exe");
+        let runtime = plant.join("bin").join("aster-oci.exe");
+        let shim = plant.join("bin").join("aster-oci-krun-shim.exe");
         let manifest = plant.join("system-image").join("system-image.json");
         let seed_bootstrap = plant.join("bootstrap-vm-rootfs");
         fs::write(&runtime, b"runtime").unwrap();
@@ -1866,17 +1866,17 @@ mod tests {
     fn windows_packaged_opt_in_rejects_service_root_overlapping_system_image() {
         use std::fs;
 
-        let home = absolute("a3s-oci-whpx-packaged-overlap-home");
+        let home = absolute("aster-oci-whpx-packaged-overlap-home");
         let plant = std::env::temp_dir().join(format!(
-            "a3s-whpx-migration-packaged-overlap-{}",
+            "aster-whpx-migration-packaged-overlap-{}",
             std::process::id()
         ));
         let _ = fs::remove_dir_all(&plant);
         fs::create_dir_all(plant.join("bin")).unwrap();
         fs::create_dir_all(plant.join("system-image")).unwrap();
         fs::create_dir_all(plant.join("bootstrap-vm-rootfs")).unwrap();
-        let runtime = plant.join("bin").join("a3s-oci.exe");
-        let shim = plant.join("bin").join("a3s-oci-krun-shim.exe");
+        let runtime = plant.join("bin").join("aster-oci.exe");
+        let shim = plant.join("bin").join("aster-oci-krun-shim.exe");
         let manifest = plant.join("system-image").join("system-image.json");
         let bootstrap = plant.join("bootstrap-vm-rootfs");
         fs::write(&runtime, b"runtime").unwrap();
@@ -1907,18 +1907,18 @@ mod tests {
 
     #[test]
     fn windows_box_owned_environment_derives_pipe_from_service_root() {
-        let home = absolute("a3s-oci-config-home");
-        let service_root = absolute("a3s-whpx-service");
+        let home = absolute("aster-oci-config-home");
+        let service_root = absolute("aster-whpx-service");
         let expected =
             super::super::oci_whpx_owner::owned_pipe_name(&service_root).expect("derive pipe");
         let config = parse_windows_environment(
             WindowsWhpxEnvironmentInputs {
                 mode: Some(OsString::from("microvm")),
-                runtime_root: Some(absolute("a3s-oci-whpx-root").into_os_string()),
+                runtime_root: Some(absolute("aster-oci-whpx-root").into_os_string()),
                 box_owned: Some(OsString::from("1")),
                 service_root: Some(service_root.clone().into_os_string()),
-                service_bin: Some(absolute("a3s-oci.exe").into_os_string()),
-                service_shim: Some(absolute("a3s-oci-krun-shim.exe").into_os_string()),
+                service_bin: Some(absolute("aster-oci.exe").into_os_string()),
+                service_shim: Some(absolute("aster-oci-krun-shim.exe").into_os_string()),
                 service_vm_rootfs: Some(absolute("system").into_os_string()),
                 service_manifest: Some(absolute("system-image.json").into_os_string()),
                 ..Default::default()
@@ -1941,8 +1941,8 @@ mod tests {
 
     #[test]
     fn linux_kvm_environment_requires_explicit_socket_and_accepts_microvm() {
-        let home = absolute("a3s-oci-config-home");
-        let endpoint = absolute("a3s-oci-kvm-box-runtime.sock");
+        let home = absolute("aster-oci-config-home");
+        let endpoint = absolute("aster-oci-kvm-box-runtime.sock");
         assert!(parse_linux_kvm_environment(
             LinuxKvmEnvironmentInputs {
                 mode: Some(OsString::from("microvm")),
@@ -1966,7 +1966,7 @@ mod tests {
         let config = parse_linux_kvm_environment(
             LinuxKvmEnvironmentInputs {
                 mode: Some(OsString::from("microvm")),
-                runtime_root: Some(absolute("a3s-oci-kvm-runtime").into_os_string()),
+                runtime_root: Some(absolute("aster-oci-kvm-runtime").into_os_string()),
                 endpoint: Some(endpoint.clone().into_os_string()),
                 ..Default::default()
             },
@@ -1980,7 +1980,7 @@ mod tests {
         );
         assert_eq!(
             config.runtime_root(),
-            absolute("a3s-oci-kvm-runtime").as_path()
+            absolute("aster-oci-kvm-runtime").as_path()
         );
         assert!(config.box_owned_owner().is_none());
     }
@@ -1988,7 +1988,7 @@ mod tests {
     #[cfg(target_os = "linux")]
     #[test]
     fn linux_kvm_absent_mode_soft_skips_when_packaged_artifacts_missing() {
-        let home = absolute("a3s-oci-kvm-gate5-missing-home");
+        let home = absolute("aster-oci-kvm-gate5-missing-home");
         assert_eq!(
             parse_linux_kvm_environment(LinuxKvmEnvironmentInputs::default(), &home).unwrap(),
             None,
@@ -1999,11 +1999,11 @@ mod tests {
     #[cfg(target_os = "linux")]
     #[test]
     fn linux_kvm_absent_mode_uses_packaged_box_owned_when_artifacts_present() {
-        let home = absolute("a3s-oci-kvm-gate5-default-home");
-        let service_root = absolute("a3s-oci-kvm-gate5-default-service");
-        let runtime = absolute("a3s-oci-gate5-runtime-bin");
-        let shim = absolute("a3s-oci-gate5-shim-bin");
-        let manifest = absolute("a3s-oci-gate5-system-image.json");
+        let home = absolute("aster-oci-kvm-gate5-default-home");
+        let service_root = absolute("aster-oci-kvm-gate5-default-service");
+        let runtime = absolute("aster-oci-gate5-runtime-bin");
+        let shim = absolute("aster-oci-gate5-shim-bin");
+        let manifest = absolute("aster-oci-gate5-system-image.json");
 
         let config = parse_linux_kvm_environment(
             LinuxKvmEnvironmentInputs {
@@ -2037,11 +2037,11 @@ mod tests {
     #[cfg(target_os = "linux")]
     #[test]
     fn linux_kvm_packaged_opt_in_builds_box_owned_without_endpoint() {
-        let home = absolute("a3s-oci-kvm-packaged-home");
-        let service_root = absolute("a3s-oci-kvm-packaged-service");
-        let runtime = absolute("a3s-oci-packaged-runtime-bin");
-        let shim = absolute("a3s-oci-packaged-shim-bin");
-        let manifest = absolute("a3s-oci-packaged-system-image.json");
+        let home = absolute("aster-oci-kvm-packaged-home");
+        let service_root = absolute("aster-oci-kvm-packaged-service");
+        let runtime = absolute("aster-oci-packaged-runtime-bin");
+        let shim = absolute("aster-oci-packaged-shim-bin");
+        let manifest = absolute("aster-oci-packaged-system-image.json");
 
         let config = parse_linux_kvm_environment(
             LinuxKvmEnvironmentInputs {
@@ -2080,14 +2080,14 @@ mod tests {
     #[cfg(target_os = "linux")]
     #[test]
     fn linux_kvm_packaged_opt_in_all_mode_matches_microvm() {
-        let home = absolute("a3s-oci-kvm-packaged-all-home");
-        let service_root = absolute("a3s-oci-kvm-packaged-all-service");
+        let home = absolute("aster-oci-kvm-packaged-all-home");
+        let service_root = absolute("aster-oci-kvm-packaged-all-service");
         let config = parse_linux_kvm_environment(
             LinuxKvmEnvironmentInputs {
                 mode: Some(OsString::from("all")),
                 service_root: Some(service_root.clone().into_os_string()),
-                service_bin: Some(absolute("a3s-oci-all").into_os_string()),
-                service_shim: Some(absolute("a3s-oci-krun-shim-all").into_os_string()),
+                service_bin: Some(absolute("aster-oci-all").into_os_string()),
+                service_shim: Some(absolute("aster-oci-krun-shim-all").into_os_string()),
                 service_manifest: Some(absolute("system-image-all.json").into_os_string()),
                 ..Default::default()
             },
@@ -2107,13 +2107,13 @@ mod tests {
 
     #[test]
     fn linux_kvm_box_owned_requires_service_artifacts_and_fences_endpoint() {
-        let home = absolute("a3s-oci-config-home");
-        let service_root = absolute("a3s-oci-kvm-service");
+        let home = absolute("aster-oci-config-home");
+        let service_root = absolute("aster-oci-kvm-service");
         let endpoint = service_root.join("runtime.sock");
         assert!(parse_linux_kvm_environment(
             LinuxKvmEnvironmentInputs {
                 mode: Some(OsString::from("microvm")),
-                runtime_root: Some(absolute("a3s-oci-kvm-runtime").into_os_string()),
+                runtime_root: Some(absolute("aster-oci-kvm-runtime").into_os_string()),
                 endpoint: Some(endpoint.clone().into_os_string()),
                 box_owned: Some(OsString::from("1")),
                 service_root: Some(service_root.clone().into_os_string()),
@@ -2126,11 +2126,11 @@ mod tests {
         let config = parse_linux_kvm_environment(
             LinuxKvmEnvironmentInputs {
                 mode: Some(OsString::from("kvm")),
-                runtime_root: Some(absolute("a3s-oci-kvm-runtime").into_os_string()),
+                runtime_root: Some(absolute("aster-oci-kvm-runtime").into_os_string()),
                 box_owned: Some(OsString::from("true")),
                 service_root: Some(service_root.clone().into_os_string()),
-                service_bin: Some(absolute("a3s-oci").into_os_string()),
-                service_shim: Some(absolute("a3s-oci-kvm-shim").into_os_string()),
+                service_bin: Some(absolute("aster-oci").into_os_string()),
+                service_shim: Some(absolute("aster-oci-kvm-shim").into_os_string()),
                 service_manifest: Some(absolute("system-image.json").into_os_string()),
                 ..Default::default()
             },
@@ -2144,8 +2144,8 @@ mod tests {
         );
         let owner = config.box_owned_owner().expect("box-owned owner");
         assert_eq!(owner.service_root(), service_root.as_path());
-        assert_eq!(owner.runtime_path(), absolute("a3s-oci").as_path());
-        assert_eq!(owner.shim_path(), absolute("a3s-oci-kvm-shim").as_path());
+        assert_eq!(owner.runtime_path(), absolute("aster-oci").as_path());
+        assert_eq!(owner.shim_path(), absolute("aster-oci-kvm-shim").as_path());
         assert_eq!(
             owner.system_image_manifest(),
             absolute("system-image.json").as_path()
@@ -2154,7 +2154,7 @@ mod tests {
 
     #[test]
     fn kvm_box_owned_flag_rejects_unknown_values() {
-        let home = absolute("a3s-oci-kvm-flag-home");
+        let home = absolute("aster-oci-kvm-flag-home");
         let error = parse_linux_kvm_environment(
             LinuxKvmEnvironmentInputs {
                 mode: Some(OsString::from("microvm")),

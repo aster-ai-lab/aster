@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::editor::{
     NativeOfficeHorizontalAlignment, NativeSpreadsheetBorder, NativeSpreadsheetFill,

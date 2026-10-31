@@ -9,8 +9,8 @@
     },
     {
       "path": "crates/event",
-      "source": "/tmp/aster-import/a3s-event-0.3.0",
-      "revision": "crates.io/a3s-event/0.3.0"
+      "source": "/tmp/aster-import/aster-event-0.3.0",
+      "revision": "crates.io/aster-event/0.3.0"
     },
     {
       "path": "crates/orm",
@@ -54,22 +54,22 @@
     },
     {
       "path": "crates/office/crates/cli",
-      "source": "../a3s/packages/office/crates/cli",
+      "source": "../aster/packages/office/crates/cli",
       "revision": null
     },
     {
       "path": "crates/office/crates/core",
-      "source": "../a3s/packages/office/crates/core",
+      "source": "../aster/packages/office/crates/core",
       "revision": null
     },
     {
       "path": "crates/office/crates/formula-parser",
-      "source": "../a3s/packages/office/crates/formula-parser",
+      "source": "../aster/packages/office/crates/formula-parser",
       "revision": null
     },
     {
       "path": "crates/office/crates/web-kernel",
-      "source": "../a3s/packages/office/crates/web-kernel",
+      "source": "../aster/packages/office/crates/web-kernel",
       "revision": null
     }
   ]

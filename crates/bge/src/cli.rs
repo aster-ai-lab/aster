@@ -1,9 +1,9 @@
-//! The `a3s-use-bge` binary: manifest-driven install against the platform
+//! The `aster-use-bge` binary: manifest-driven install against the platform
 //! model supply, plus status and uninstall.
 
 use std::time::Duration;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 use clap::{Parser, Subcommand};
 use serde::{Deserialize, Serialize};
 
@@ -40,9 +40,9 @@ impl CommandOutput {
 
 #[derive(Debug, Parser)]
 #[command(
-    name = "a3s-use-bge",
+    name = "aster-use-bge",
     version,
-    about = "Local BGE embedding and reranker engines for A3S",
+    about = "Local BGE embedding and reranker engines for Aster",
     arg_required_else_help = true
 )]
 struct Cli {
@@ -60,7 +60,7 @@ enum Command {
     Install {
         /// bge-m3 or bge-reranker-v2-m3.
         family: String,
-        /// a3s-api origin, e.g. http://127.0.0.1:3000.
+        /// aster-api origin, e.g. http://127.0.0.1:3000.
         #[arg(long)]
         api: String,
         /// The model supply model id (uuid) holding the imported files.
@@ -72,7 +72,7 @@ enum Command {
         /// Manifest path of the tokenizer file.
         #[arg(long, default_value = "tokenizer.json")]
         tokenizer_file: String,
-        /// Bearer token for the admin API; defaults to A3S_MODEL_SUPPLY_TOKEN.
+        /// Bearer token for the admin API; defaults to ASTER_MODEL_SUPPLY_TOKEN.
         #[arg(long)]
         token: Option<String>,
         /// Replace a usable install instead of skipping it.
@@ -119,12 +119,12 @@ async fn run_install(
 ) -> UseResult<CommandOutput> {
     let family = Family::parse(&family)?;
     let token = token
-        .or_else(|| std::env::var("A3S_MODEL_SUPPLY_TOKEN").ok())
+        .or_else(|| std::env::var("ASTER_MODEL_SUPPLY_TOKEN").ok())
         .filter(|value| !value.trim().is_empty())
         .ok_or_else(|| {
             UseError::new(
                 "use.bge.token_missing",
-                "Pass --token or set A3S_MODEL_SUPPLY_TOKEN for the admin API.",
+                "Pass --token or set ASTER_MODEL_SUPPLY_TOKEN for the admin API.",
             )
         })?;
     let client = reqwest::Client::builder()
@@ -173,7 +173,7 @@ struct ApiEnvelope<T> {
 }
 
 impl<T> ApiEnvelope<T> {
-    /// Unwraps the a3s-api envelope, refusing an explicit failure.
+    /// Unwraps the aster-api envelope, refusing an explicit failure.
     fn into_data(self, what: &str) -> UseResult<T> {
         if !self.success {
             return Err(UseError::new(

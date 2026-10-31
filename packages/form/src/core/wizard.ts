@@ -6,7 +6,7 @@ import type {
 } from './types';
 
 export const FORM_WIZARD_CHECKPOINT_API_VERSION =
-  'a3s.dev/form-wizard-checkpoint/v1alpha1' as const;
+  'aster.dev/form-wizard-checkpoint/v1alpha1' as const;
 
 interface WizardDefinition {
   wizard: CompiledNode;

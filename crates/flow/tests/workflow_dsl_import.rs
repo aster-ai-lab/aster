@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     WorkflowDag, WorkflowDagEdge, WorkflowDagNode, WorkflowDsl, WorkflowDslCompatibility,
     WorkflowDslError,
 };
@@ -25,15 +25,15 @@ fn complete_workflow_yaml_round_trips_without_losing_vendor_fields() {
     let document = WorkflowDsl::from_yaml(WORKFLOW_DSL_ECHO).expect("import current workflow DSL");
 
     assert_eq!(document.version(), "0.7.0");
-    assert_eq!(document.app().name(), "A3S workflow import fixture");
+    assert_eq!(document.app().name(), "Aster workflow import fixture");
     assert_eq!(document.graph().nodes().len(), 3);
     assert_eq!(document.graph().edges().len(), 2);
     assert_eq!(
-        document.graph().node("llm").expect("LLM node").data()["x-a3s-fixture-extension"],
+        document.graph().node("llm").expect("LLM node").data()["x-aster-fixture-extension"],
         json!({"retained": true})
     );
     assert_eq!(
-        document.extensions()["x-a3s-document-extension"],
+        document.extensions()["x-aster-document-extension"],
         json!({"retained": true})
     );
 

@@ -2,10 +2,10 @@
 
 mod support;
 
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     EvidenceKind, MemoryNamespace, MemoryOperation, MemoryQuery, MemoryRepository, MemoryStatus,
 };
-use a3s_memory::{MemoryItem, MemoryType};
+use aster_durable_memory::{MemoryItem, MemoryType};
 use chrono::{DateTime, Utc};
 use serde_json::json;
 use std::sync::atomic::Ordering;
@@ -205,7 +205,7 @@ async fn supersede_preserves_original_and_exact_replacement_on_both_stores() {
         let mut expected_old = old.clone();
         expected_old
             .metadata
-            .insert("a3s.memory.status".into(), "superseded".into());
+            .insert("aster.memory.status".into(), "superseded".into());
         expected_old
             .metadata
             .insert("superseded_by".into(), canonical.id.clone());
@@ -542,37 +542,37 @@ async fn v2_shadow_candidate_and_failure_preserve_v1_truth_on_both_stores() {
             assert_eq!(draft.confidence, 0.94);
             assert_eq!(draft.importance, 0.85);
             assert_eq!(
-                draft.labels.get("a3s.origin").map(String::as_str),
+                draft.labels.get("aster.origin").map(String::as_str),
                 Some("code.llm_extraction")
             );
             assert_eq!(
                 draft
                     .labels
-                    .get("a3s.extraction.source")
+                    .get("aster.extraction.source")
                     .map(String::as_str),
                 Some("workflow")
             );
             assert_eq!(
-                draft.labels.get("a3s.extraction.scope").map(String::as_str),
+                draft.labels.get("aster.extraction.scope").map(String::as_str),
                 Some("workspace")
             );
             assert_eq!(
                 draft
                     .labels
-                    .get("a3s.extraction.reason")
+                    .get("aster.extraction.reason")
                     .map(String::as_str),
                 Some(REASON)
             );
             assert_eq!(
                 draft
                     .labels
-                    .get("a3s.extraction.schema")
+                    .get("aster.extraction.schema")
                     .map(String::as_str),
-                Some("a3s.memory.durable.v1")
+                Some("aster.memory.durable.v1")
             );
             assert_eq!(
                 serde_json::from_str::<Vec<String>>(
-                    draft.labels.get("a3s.extraction.tags").unwrap()
+                    draft.labels.get("aster.extraction.tags").unwrap()
                 )
                 .unwrap(),
                 expected_tags()
@@ -581,7 +581,7 @@ async fn v2_shadow_candidate_and_failure_preserve_v1_truth_on_both_stores() {
             assert_eq!(draft.evidence[0].kind, EvidenceKind::SessionTurn);
             assert_eq!(
                 draft.evidence[0].uri,
-                "a3s://session/T006%2DSession/turn/T006%2Dturn%2D0"
+                "aster://session/T006%2DSession/turn/T006%2Dturn%2D0"
             );
             assert_eq!(
                 draft.evidence[0].occurred_at.timestamp_millis(),

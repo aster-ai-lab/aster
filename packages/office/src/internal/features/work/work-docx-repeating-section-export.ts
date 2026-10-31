@@ -43,12 +43,12 @@ export class DocxRepeatingSectionPatchCollector {
     const index = this.nextMarker;
     this.nextMarker += 1;
     const patch: DocxRepeatingSectionPatch = {
-      startMarker: `__A3S_WORK_REPEATING_SECTION_START_${index}__`,
-      endMarker: `__A3S_WORK_REPEATING_SECTION_END_${index}__`,
+      startMarker: `__ASTER_WORK_REPEATING_SECTION_START_${index}__`,
+      endMarker: `__ASTER_WORK_REPEATING_SECTION_END_${index}__`,
       properties: normalizeRepeatingSectionProperties(properties),
       items: items.map((item, itemIndex) => ({
-        startMarker: `__A3S_WORK_REPEATING_SECTION_ITEM_START_${index}_${itemIndex + 1}__`,
-        endMarker: `__A3S_WORK_REPEATING_SECTION_ITEM_END_${index}_${itemIndex + 1}__`,
+        startMarker: `__ASTER_WORK_REPEATING_SECTION_ITEM_START_${index}_${itemIndex + 1}__`,
+        endMarker: `__ASTER_WORK_REPEATING_SECTION_ITEM_END_${index}_${itemIndex + 1}__`,
         properties: normalizeRepeatingSectionItemProperties(item),
       })),
     };

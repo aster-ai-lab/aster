@@ -33,7 +33,7 @@ import { meta as burncloudMeta } from './burncloud/meta'
 import { meta as bytedanceMeta } from './bytedance/meta'
 import { meta as cephalonMeta } from './cephalon/meta'
 import { meta as cerebrasMeta } from './cerebras/meta'
-import { meta as a3sMeta } from './a3s/meta'
+import { meta as asterMeta } from './aster/meta'
 import { meta as claudeCodeMeta } from './claude-code/meta'
 import { meta as cloudflareMeta } from './cloudflare/meta'
 import { meta as cohereMeta } from './cohere/meta'
@@ -198,7 +198,7 @@ export const PROVIDER_ICON_META_CATALOG = {
   bytedance: bytedanceMeta,
   cephalon: cephalonMeta,
   cerebras: cerebrasMeta,
-  a3s: a3sMeta,
+  aster: asterMeta,
   'claude-code': claudeCodeMeta,
   cloudflare: cloudflareMeta,
   cohere: cohereMeta,

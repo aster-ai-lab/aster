@@ -21,7 +21,7 @@ impl Host {
         std::fs::set_permissions(&shim, std::fs::Permissions::from_mode(0o700)).unwrap();
         let manifest = directory.join("system-image.json");
         std::fs::write(&manifest, b"{}\n").unwrap();
-        let mut command = Command::new(env!("CARGO_BIN_EXE_a3s-oci"));
+        let mut command = Command::new(env!("CARGO_BIN_EXE_aster-oci"));
         command
             .arg("macos-hvf-host-service")
             .arg("--root")

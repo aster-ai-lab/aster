@@ -9,7 +9,7 @@ use super::{
     AGENT_RELEASE_ENTRYPOINT_COMMAND_V1, AGENT_RELEASE_OCI_MEDIA_TYPE, MAX_CAPABILITY_LEVEL,
     MAX_ENTRYPOINT_ARGS, MAX_SHUTDOWN_GRACE_SECONDS,
 };
-use a3s_acl::{Block, Value};
+use aster_acl::{Block, Value};
 use std::collections::{BTreeMap, BTreeSet};
 use url::Url;
 
@@ -297,7 +297,7 @@ pub(crate) fn validate_dotted_name(
 
 pub(crate) fn validate_protocol(protocol: &str) -> Result<(), AgentReleaseError> {
     let valid = protocol
-        .strip_prefix("a3s.code.agent.v")
+        .strip_prefix("aster.code.agent.v")
         .and_then(|value| value.parse::<u32>().ok().map(|version| (value, version)))
         .is_some_and(|(source, version)| {
             version > 0 && version <= MAX_CAPABILITY_LEVEL && source == version.to_string()

@@ -1,6 +1,6 @@
 //! Host-admitted retrieval from the profile's original memory owners.
 
-use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use aster_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
 use async_trait::async_trait;
 use serde::Deserialize;
 use serde_json::{json, Value};
@@ -53,7 +53,7 @@ impl SearchMemoryTool {
         })
     }
     fn denied(&self, args: &Value) -> bool {
-        let mut policy = a3s_code_core::permissions::PermissionPolicy::new();
+        let mut policy = aster_core::permissions::PermissionPolicy::new();
         for rule in self
             .denies
             .lock()
@@ -62,7 +62,7 @@ impl SearchMemoryTool {
         {
             policy = policy.deny(rule);
         }
-        policy.check(TOOL_NAME, args) == a3s_code_core::permissions::PermissionDecision::Deny
+        policy.check(TOOL_NAME, args) == aster_core::permissions::PermissionDecision::Deny
     }
 }
 
@@ -107,7 +107,7 @@ impl Tool for SearchMemoryTool {
         let value = self
             .bridge
             .search_workspace_memories(
-                ctx.workspace_operation(a3s_code_core::capability::WorkspaceOperation::Read)?,
+                ctx.workspace_operation(aster_core::capability::WorkspaceOperation::Read)?,
                 &self.session,
                 query,
                 scope.as_str(),

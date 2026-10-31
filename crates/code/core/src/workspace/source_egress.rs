@@ -10,10 +10,10 @@ pub fn path_is_denied(path: &Path) -> bool {
 }
 
 pub(super) fn session_locator_path(path: &Path) -> bool {
-    path.ends_with("meta/a3s-session.json")
+    path.ends_with("meta/aster-session.json")
 }
 
-/// Personal knowledge vault under `.a3s/kb/` is shared agent/human substrate.
+/// Personal knowledge vault under `.aster/kb/` is shared agent/human substrate.
 ///
 /// Control-plane siblings (config, memory, auth, sessions) stay denied; only
 /// the vault subtree is admitted for catalog + retrieval.
@@ -29,7 +29,7 @@ fn personal_kb_rest(path: &Path) -> Option<PathBuf> {
         else {
             continue;
         };
-        if first.to_string_lossy().eq_ignore_ascii_case(".a3s")
+        if first.to_string_lossy().eq_ignore_ascii_case(".aster")
             && second.to_string_lossy().eq_ignore_ascii_case("kb")
         {
             return Some(comps[index + 2..].iter().collect());
@@ -61,9 +61,9 @@ fn has_sensitive_dir_name(path: &Path) -> bool {
         if matches!(
             name.to_string_lossy().to_ascii_lowercase().as_str(),
             ".git"
-                | ".a3s"
-                | ".a3s-code"
-                | ".a3s-agent-retrievals"
+                | ".aster"
+                | ".aster"
+                | ".aster-agent-retrievals"
                 | ".ssh"
                 | ".aws"
                 | ".azure"
@@ -142,11 +142,11 @@ mod tests {
             "apps/api/.env.local",
             "apps/api/.envrc",
             ".git-credentials",
-            ".a3s/config.acl",
-            ".a3s-code/index/CURRENT",
-            ".a3s-agent-retrievals",
-            "meta/a3s-session.json",
-            "child-task/meta/a3s-session.json",
+            ".aster/config.acl",
+            ".aster/index/CURRENT",
+            ".aster-agent-retrievals",
+            "meta/aster-session.json",
+            "child-task/meta/aster-session.json",
             ".git/config",
             "target/generated.rs",
             "node_modules/pkg/index.js",
@@ -165,9 +165,9 @@ mod tests {
             "child-task/meta/design.md",
             ".env.example",
             "fixtures/credentials.sample",
-            ".a3s/kb/sources/note.md",
-            ".a3s/kb/wiki/concept.md",
-            "nested/.a3s/kb/note.md",
+            ".aster/kb/sources/note.md",
+            ".aster/kb/wiki/concept.md",
+            "nested/.aster/kb/note.md",
         ] {
             assert!(
                 !path_is_denied(Path::new(path)),
@@ -175,10 +175,10 @@ mod tests {
             );
         }
         assert!(
-            path_is_denied(Path::new(".a3s/kb/.env")),
+            path_is_denied(Path::new(".aster/kb/.env")),
             "secret filenames under the personal KB stay denied"
         );
-        assert!(is_personal_kb_path(Path::new(".a3s/kb/sources/a.md")));
-        assert!(!is_personal_kb_path(Path::new(".a3s/config.acl")));
+        assert!(is_personal_kb_path(Path::new(".aster/kb/sources/a.md")));
+        assert!(!is_personal_kb_path(Path::new(".aster/config.acl")));
     }
 }

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use crate::SpreadsheetFormulaErrorLiteral;
 
@@ -589,7 +589,7 @@ fn record_number(
     *maximum = Some(maximum.map_or(value, |current| current.max(value)));
 }
 
-fn function_argument_limit() -> a3s_use_core::UseError {
+fn function_argument_limit() -> aster_use_core::UseError {
     calculation_error(
         "use.office.spreadsheet_formula_function_array_limit",
         format!(
@@ -643,7 +643,7 @@ fn append_formula_text(output: &mut String, value: &str) -> UseResult<()> {
     Ok(())
 }
 
-fn formula_text_limit() -> a3s_use_core::UseError {
+fn formula_text_limit() -> aster_use_core::UseError {
     calculation_error(
         "use.office.spreadsheet_formula_text_limit",
         format!(

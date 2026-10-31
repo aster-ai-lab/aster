@@ -464,7 +464,7 @@
 
 /**
  * GENERATED from DESIGN.md — DO NOT EDIT.
- * Change DESIGN.md, then run `pnpm --filter @a3s-lab/ui theme:build`.
+ * Change DESIGN.md, then run `pnpm --filter @aster-ai-lab/ui theme:build`.
  * The spec-role variables are the machine-readable projection of the
  * canonical design spec; semantic layers and the compatibility bridge
  * consume them instead of repeating literal values. Dark values live in
@@ -535,11 +535,11 @@
 }
 
 /* ==================== */
-/* a3s compatibility bridge */
+/* aster compatibility bridge */
 /* ==================== */
 
 /**
- * a3s compatibility bridge.
+ * aster compatibility bridge.
  *
  * Maps the legacy console `--color-*` names (formerly owned by packages/ui
  * styles.css) onto the shared shadcn variable graph, with the DESIGN.md values
@@ -574,8 +574,8 @@
   --color-primary-active: #2b2b2b;
   --color-primary-soft: #1a1a1a;
   --color-on-primary: var(--primary-foreground);
-  --color-brand: var(--a3s-tenant-brand, #171717);
-  --color-on-brand: var(--a3s-tenant-on-brand, #ffffff);
+  --color-brand: var(--aster-tenant-brand, #171717);
+  --color-on-brand: var(--aster-tenant-on-brand, #ffffff);
   --color-text-link: #0d74ce;
   --color-warm: #a07c60;
   --color-success: var(--success);

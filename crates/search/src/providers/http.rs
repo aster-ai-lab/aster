@@ -85,7 +85,7 @@ impl ProviderHttpClient {
         }
 
         let client = Client::builder()
-            .user_agent(concat!("a3s-search/", env!("CARGO_PKG_VERSION")))
+            .user_agent(concat!("aster-search/", env!("CARGO_PKG_VERSION")))
             .timeout(config.timeout)
             .redirect(reqwest::redirect::Policy::none())
             .build()

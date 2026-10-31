@@ -1,6 +1,6 @@
 use std::time::{Duration, Instant};
 
-use a3s_use_core::{Artifact, UseError, UseResult};
+use aster_use_core::{Artifact, UseError, UseResult};
 use async_trait::async_trait;
 use chromiumoxide::cdp::browser_protocol::network::SetUserAgentOverrideParams;
 use chromiumoxide::cdp::browser_protocol::page::CaptureScreenshotFormat;
@@ -442,10 +442,10 @@ mod tests {
             ..BrowserPoolConfig::default()
         });
         let request = RenderRequest {
-            url: Url::parse("data:text/html,<main id='fixture'>a3s-use</main>").unwrap(),
+            url: Url::parse("data:text/html,<main id='fixture'>aster-use</main>").unwrap(),
             timeout_ms: crate::test_support::CHROME_OPERATION_TIMEOUT_MS,
             wait: WaitCondition::Load,
-            user_agent: Some("a3s-use-browser-test".to_string()),
+            user_agent: Some("aster-use-browser-test".to_string()),
             screenshot_path: None,
         };
 
@@ -453,7 +453,7 @@ mod tests {
         pool.shutdown().await;
 
         let rendered = rendered.unwrap();
-        assert!(rendered.html.contains("a3s-use"));
+        assert!(rendered.html.contains("aster-use"));
         assert_eq!(rendered.content_type.as_deref(), Some("text/html"));
     }
 }

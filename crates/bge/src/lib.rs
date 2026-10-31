@@ -1,4 +1,4 @@
-//! Local BGE engines for A3S Use: embeddings and reranking.
+//! Local BGE engines for Aster Use: embeddings and reranking.
 //!
 //! [`EmbeddingClient`] and [`RerankClient`] own bounded request validation
 //! while inference runs on ONNX Runtime against locally installed weights.
@@ -6,7 +6,7 @@
 //! URL, byte length, and sha256 provided by the platform model supply,
 //! so swapping weights is an install action, never a code change.
 
-pub use a3s_use_core::{Artifact, Readiness, UseError, UseResult};
+pub use aster_use_core::{Artifact, Readiness, UseError, UseResult};
 
 mod assets;
 mod install;

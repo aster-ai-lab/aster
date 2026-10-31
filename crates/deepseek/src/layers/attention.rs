@@ -9,8 +9,8 @@
 
 use std::collections::BTreeSet;
 
-use a3s_power::error::Result;
-use a3s_power::inference::InferenceLimits;
+use aster_power::error::Result;
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 
@@ -631,7 +631,7 @@ fn attention_peak_bytes(
 
 fn check_cancel(cancellation: &CancellationToken) -> Result<()> {
     if cancellation.is_cancelled() {
-        Err(a3s_power::error::PowerError::InferenceCancelled)
+        Err(aster_power::error::PowerError::InferenceCancelled)
     } else {
         Ok(())
     }

@@ -1,4 +1,4 @@
-use a3s_memory::{
+use aster_durable_memory::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorIndexError, VectorIndexStatus,
     VectorMutationConsistency, VectorRecord, VectorResult, VectorRevision, VectorSearchRequest,
     VectorSearchResult,

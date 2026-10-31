@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootError, BootRequest, BootResponse, ControllerDefinition, HttpMethod, RouteDefinition,
     SseEvent,
 };

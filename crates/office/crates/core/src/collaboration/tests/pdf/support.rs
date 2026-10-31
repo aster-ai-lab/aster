@@ -51,8 +51,8 @@ pub(super) fn pdf_form_value(
     field_id: &str,
 ) -> Option<String> {
     let peer = pdf_peer(store);
-    let presence = peer.get_or_insert_map("a3s.office.pdf.form-values.presence");
-    let fields = peer.get_or_insert_map("a3s.office.pdf.form-values.fields");
+    let presence = peer.get_or_insert_map("aster.office.pdf.form-values.presence");
+    let fields = peer.get_or_insert_map("aster.office.pdf.form-values.fields");
     let transaction = peer.transact();
     assert!(matches!(
         presence.get(&transaction, field_id),
@@ -68,7 +68,7 @@ pub(super) fn pdf_form_value(
 
 pub(super) fn pdf_form_order(store: &NativeOfficeCollaborationStore) -> Vec<String> {
     let peer = pdf_peer(store);
-    let order = peer.get_or_insert_array("a3s.office.pdf.form-values.order");
+    let order = peer.get_or_insert_array("aster.office.pdf.form-values.order");
     let transaction = peer.transact();
     (0..order.len(&transaction))
         .map(|index| match order.get(&transaction, index) {
@@ -109,7 +109,7 @@ pub(super) fn portable_annotation(id: &str, color: &str, contents: &str) -> serd
         "color": color,
         "opacity": 0.48,
         "contents": contents,
-        "author": "A3S Agent",
+        "author": "Aster Agent",
         "created": "2026-08-15T08:00:00.000Z",
     })
 }
@@ -128,7 +128,7 @@ pub(super) fn portable_freetext_annotation(
             "size": { "width": 220, "height": 36 },
         },
         "contents": contents,
-        "author": "A3S Agent",
+        "author": "Aster Agent",
         "created": "2026-08-15T08:00:00.000Z",
         "fontSize": 12.0,
         "fontColor": "#111111",
@@ -150,8 +150,8 @@ pub(super) fn pdf_record(
     record_id: &str,
 ) -> serde_json::Value {
     let peer = pdf_peer(store);
-    let presence = peer.get_or_insert_map(format!("a3s.office.pdf.{collection}.presence"));
-    let fields = peer.get_or_insert_map(format!("a3s.office.pdf.{collection}.fields"));
+    let presence = peer.get_or_insert_map(format!("aster.office.pdf.{collection}.presence"));
+    let fields = peer.get_or_insert_map(format!("aster.office.pdf.{collection}.fields"));
     let transaction = peer.transact();
     assert!(matches!(
         presence.get(&transaction, record_id),

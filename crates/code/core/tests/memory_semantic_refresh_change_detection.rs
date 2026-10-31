@@ -4,19 +4,19 @@
 #[path = "durable_memory_semantic_refresh/support.rs"]
 mod refresh_support;
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingExecutorConfig, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError,
 };
-use a3s_code_core::llm::{LlmResponse, Message, StreamEvent, ToolDefinition};
-use a3s_code_core::memory::{MemoryMaintenanceOptions, ScheduledSemanticRefresh};
-use a3s_code_core::{Agent, AgentSession, LlmClient, SessionOptions};
-use a3s_memory::repository::{
+use aster_core::llm::{LlmResponse, Message, StreamEvent, ToolDefinition};
+use aster_core::memory::{MemoryMaintenanceOptions, ScheduledSemanticRefresh};
+use aster_core::{Agent, AgentSession, LlmClient, SessionOptions};
+use aster_durable_memory::repository::{
     InMemoryRepository, MemoryChangeSet, MemoryOperation, MemoryRepository, MemoryStatus,
     RevisionMode,
 };
-use a3s_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord};
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord};
+use aster_durable_memory::InMemoryStore;
 use async_trait::async_trait;
 use refresh_support::*;
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -109,7 +109,7 @@ impl EmbeddingProvider for CountingProvider {
 
 fn session_options(
     session_id: &str,
-    durable_memory: a3s_code_core::DurableMemorySession,
+    durable_memory: aster_core::DurableMemorySession,
     schedule: ScheduledSemanticRefresh,
 ) -> SessionOptions {
     let llm: Arc<dyn LlmClient> = Arc::new(UnusedLlmClient);
@@ -501,9 +501,9 @@ async fn failed_cas_publication_does_not_promote_prepared_embeddings() {
 }
 
 // This fixture owns only the explicitly scheduled V2 refresh job.
-fn semantic_only_code_config() -> a3s_code_core::CodeConfig {
-    a3s_code_core::CodeConfig {
-        memory: Some(a3s_code_core::memory::MemoryConfig {
+fn semantic_only_code_config() -> aster_core::CodeConfig {
+    aster_core::CodeConfig {
+        memory: Some(aster_core::memory::MemoryConfig {
             prune_policy: None,
             ..Default::default()
         }),

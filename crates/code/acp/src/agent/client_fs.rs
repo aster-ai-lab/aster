@@ -1,7 +1,7 @@
 //! `fs/read_text_file` overlay: Core and rich document reads share one transport.
 
-use super::A3sCodeAgent;
-use a3s_code_core::workspace::{WorkspacePath, WorkspaceReadOverlay, WorkspaceReadOverlayError};
+use super::AsterCodeAgent;
+use aster_core::workspace::{WorkspacePath, WorkspaceReadOverlay, WorkspaceReadOverlayError};
 use std::path::PathBuf;
 use std::sync::Arc;
 
@@ -28,15 +28,15 @@ impl WorkspaceReadOverlay for ClientReadOverlay {
     }
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     /// Enable the overlay only for a registered Studio document host that
     /// declared `fs.readTextFile`. Must run on the ACP `LocalSet`.
     pub(super) fn with_client_reads(
         &self,
-        options: a3s_code_core::SessionOptions,
+        options: aster_core::SessionOptions,
         session_id: &str,
         workspace: &std::path::Path,
-    ) -> a3s_code_core::SessionOptions {
+    ) -> aster_core::SessionOptions {
         if !self.client_reads_files.get() || self.client.borrow().is_none() {
             return options;
         }

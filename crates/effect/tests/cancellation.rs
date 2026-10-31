@@ -2,7 +2,7 @@
 //! and appended is durable work and settles; a transition that never started
 //! because the token fired refuses with [`Exit::Interrupt`].
 
-use a3s_effect::{
+use aster_effect::{
     coding_actor, component, ingest_with_cancel, message_fact, Actor, ActorError, CodingServices,
     Compactor, Completion, CompletionRequest, Effect, Exit, HarnessConfig, MemoryLog,
     ModelDecision, NewFact, ToolCall, ToolRunner, Transition,
@@ -20,7 +20,7 @@ impl Completion for HangingModel {
         &self,
         _request: CompletionRequest,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         Box::pin(std::future::pending())
     }
 }
@@ -32,7 +32,7 @@ impl ToolRunner for IdleTools {
         &self,
         _call: ToolCall,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<Value, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<Value, ActorError>> {
         Box::pin(std::future::pending())
     }
 }
@@ -43,7 +43,7 @@ impl Compactor for IdleCompactor {
     fn compact(
         &self,
         _messages: &[String],
-    ) -> a3s_effect::coding::BoxFuture<Result<String, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
         Box::pin(std::future::pending())
     }
 }

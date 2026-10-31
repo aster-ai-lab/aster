@@ -41,7 +41,7 @@ fn cancelled_atomic_history_compressor_main_and_index_cannot_publish_any_state()
         transaction::StateCommitBatch,
         CompressionKind, CompressionState,
     };
-    use a3s_power::inference::InferenceLimits;
+    use aster_power::inference::InferenceLimits;
     use candle_core::{DType, Tensor};
     use tokio_util::sync::CancellationToken;
     let device = CudaLayerDevice::cpu_for_tests(InferenceLimits::default());
@@ -114,7 +114,7 @@ fn late_foreign_history_poisoning_preserves_earlier_staged_kv() {
         kv::{KvCacheKind, KvState},
         transaction::StateCommitBatch,
     };
-    use a3s_power::inference::InferenceLimits;
+    use aster_power::inference::InferenceLimits;
     use candle_core::{DType, Tensor};
     use tokio_util::sync::CancellationToken;
     let device = CudaLayerDevice::cpu_for_tests(InferenceLimits::default());

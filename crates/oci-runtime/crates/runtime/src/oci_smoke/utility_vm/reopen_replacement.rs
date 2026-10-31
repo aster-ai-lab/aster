@@ -4,16 +4,16 @@ use std::sync::atomic::{AtomicBool, AtomicI32, AtomicU32, Ordering};
 use std::sync::{Arc, Mutex as StdMutex};
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportFaultInjector, AgentTransportFaultStage,
     AgentTransportOperationStage, AgentTransportQualificationRequest, GuestAgentService,
     AGENT_PROTOCOL_VERSION_MAX,
 };
-use a3s_oci_core::{
+use aster_oci_core::{
     CapabilityStatus, DriverCapability, DriverKind, DriverReadiness, HostPlatform, IsolationClass,
 };
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     async_trait, CloseStdinRequest, ContainerOperationRequest, ContainerRecord, ContainerStats,
     ContainerTarget, CreateAttachments, CreateRequest, DeleteMode, DeleteRequest, Error, ErrorCode,
     ExecRequest, ExitStatus, FileRequest, FileResponse, FilesystemRequest, FilesystemResponse,
@@ -48,7 +48,7 @@ use crate::{AgentVmSmokeReport, DriverRecovery, OciVmReopenReplacementReport};
 
 const QUALIFICATION_TIMEOUT: Duration = Duration::from_secs(15);
 const FAULT_OPERATION: &str = "oci-vm-transport-qualification-fault";
-const REPLACEMENT_MARKER_CONTENTS: &[u8] = b"a3s-oci-create-start-user-time-v1\n";
+const REPLACEMENT_MARKER_CONTENTS: &[u8] = b"aster-oci-create-start-user-time-v1\n";
 const MARKER_POLL_INTERVAL: Duration = Duration::from_millis(25);
 const QUALIFICATION_HVF_OPERATIONS: [RuntimeOperation; 20] = [
     RuntimeOperation::Create,
@@ -248,13 +248,13 @@ pub(super) async fn run(
     report.qualification_operation_id = Some(operation_id);
     report.container_id = Some(exact_target.id.clone());
 
-    let state_root = console_directory.join(format!("a3s-oci-reopen-{nonce}-state"));
+    let state_root = console_directory.join(format!("aster-oci-reopen-{nonce}-state"));
     if let Err(reason) = create_qualification_state_root(&state_root).await {
         return failed(report, reason);
     }
-    let first_console = console_directory.join(format!("a3s-oci-reopen-{nonce}-first.log"));
+    let first_console = console_directory.join(format!("aster-oci-reopen-{nonce}-first.log"));
     let replacement_console =
-        console_directory.join(format!("a3s-oci-reopen-{nonce}-replacement.log"));
+        console_directory.join(format!("aster-oci-reopen-{nonce}-replacement.log"));
 
     let exercise = exercise(
         shim,
@@ -838,7 +838,7 @@ struct QualificationHvfDriver {
     rehydrated_exec_pid: AtomicI32,
     create_identity: StdMutex<Option<(OperationId, ContainerTarget)>>,
     start_identity: StdMutex<Option<(OperationId, ContainerTarget)>>,
-    kill_identity: StdMutex<Option<(OperationId, ContainerTarget, a3s_oci_sdk::Signal, bool)>>,
+    kill_identity: StdMutex<Option<(OperationId, ContainerTarget, aster_oci_sdk::Signal, bool)>>,
     delete_identity: StdMutex<Option<(OperationId, ContainerTarget, DeleteMode)>>,
     wait_identity: StdMutex<Option<(ContainerTarget, Option<u64>)>>,
     wait_process_identity: StdMutex<Option<(ProcessTarget, Option<u64>)>>,
@@ -1451,7 +1451,7 @@ impl QualificationHvfDriver {
 
     fn kill_identity(
         &self,
-    ) -> std::result::Result<(OperationId, ContainerTarget, a3s_oci_sdk::Signal, bool), String>
+    ) -> std::result::Result<(OperationId, ContainerTarget, aster_oci_sdk::Signal, bool), String>
     {
         self.kill_identity
             .lock()
@@ -1592,7 +1592,7 @@ impl QualificationHvfDriver {
             .ok_or_else(|| "qualification HVF driver recorded no ReadOutput dispatch".to_string())
     }
 
-    fn guest_bundle(&self, bundle: &OciBundle) -> Result<a3s_oci_agent_protocol::GuestPath> {
+    fn guest_bundle(&self, bundle: &OciBundle) -> Result<aster_oci_agent_protocol::GuestPath> {
         guest_path(&self.vm_rootfs, bundle.directory()).map_err(|reason| {
             Error::new(ErrorCode::FailedPrecondition, reason)
                 .for_operation("map-qualification-hvf-bundle")
@@ -2492,8 +2492,8 @@ impl RuntimeDriver for QualificationHvfDriver {
         }
     }
 
-    fn linux_support(&self) -> Result<a3s_oci_sdk::OciLinuxSupport> {
-        a3s_oci_sdk::OciLinuxSupport::shared_executor()
+    fn linux_support(&self) -> Result<aster_oci_sdk::OciLinuxSupport> {
+        aster_oci_sdk::OciLinuxSupport::shared_executor()
     }
 
     fn operations(&self) -> &[RuntimeOperation] {

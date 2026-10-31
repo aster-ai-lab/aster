@@ -332,7 +332,7 @@ async fn test_agent_list_sessions_tracks_live_sessions() {
 #[tokio::test]
 async fn test_agent_rejects_duplicate_live_ids_across_sync_and_async_factories() {
     let agent = Agent::from_config(test_config()).await.unwrap();
-    let memory = || Arc::new(a3s_memory::InMemoryStore::new());
+    let memory = || Arc::new(aster_durable_memory::InMemoryStore::new());
 
     let sync_session = agent
         .session(
@@ -409,7 +409,7 @@ async fn synchronous_session_build_keeps_configured_memory_observers() {
             Some(
                 SessionOptions::new()
                     .with_session_id("sync-memory-observer")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_memory_observer(observer.clone()),
             ),
         )
@@ -418,7 +418,7 @@ async fn synchronous_session_build_keeps_configured_memory_observers() {
     session
         .memory()
         .unwrap()
-        .remember(a3s_memory::MemoryItem::new("A durable learned preference."))
+        .remember(aster_durable_memory::MemoryItem::new("A durable learned preference."))
         .await
         .unwrap();
 
@@ -461,7 +461,7 @@ async fn test_failed_sync_and_async_builds_release_session_id_reservations() {
 
     let invalid_sync = SessionOptions::new()
         .with_session_id("failed-sync-reservation")
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_tool_timeout(0);
     agent
         .session("/tmp/test-failed-sync-reservation", Some(invalid_sync))
@@ -472,7 +472,7 @@ async fn test_failed_sync_and_async_builds_release_session_id_reservations() {
             Some(
                 SessionOptions::new()
                     .with_session_id("failed-sync-reservation")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new())),
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new())),
             ),
         )
         .expect("failed sync build must release its reservation");
@@ -480,7 +480,7 @@ async fn test_failed_sync_and_async_builds_release_session_id_reservations() {
 
     let invalid_async = SessionOptions::new()
         .with_session_id("failed-async-reservation")
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_tool_timeout(0);
     agent
         .session_async("/tmp/test-failed-async-reservation", Some(invalid_async))
@@ -492,7 +492,7 @@ async fn test_failed_sync_and_async_builds_release_session_id_reservations() {
             Some(
                 SessionOptions::new()
                     .with_session_id("failed-async-reservation")
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new())),
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new())),
             ),
         )
         .await
@@ -647,7 +647,7 @@ async fn test_session_close_waits_for_accepted_memory_extraction_to_persist() {
     let agent = Agent::from_config(test_config()).await.unwrap();
     let opts = SessionOptions::new()
         .with_session_id("close-drains-memory")
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()));
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()));
     let session = Arc::new(
         agent
             .build_session(
@@ -671,10 +671,10 @@ async fn test_session_close_waits_for_accepted_memory_extraction_to_persist() {
             release.notified().await;
             memory
                 .remember(
-                    a3s_memory::MemoryItem::new(
+                    aster_durable_memory::MemoryItem::new(
                         "Session close preserves accepted durable memory extraction.",
                     )
-                    .with_type(a3s_memory::MemoryType::Semantic),
+                    .with_type(aster_durable_memory::MemoryType::Semantic),
                 )
                 .await
                 .unwrap();

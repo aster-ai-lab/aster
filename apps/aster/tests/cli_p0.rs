@@ -33,7 +33,7 @@ struct Isolated {
 }
 
 fn main_aster() -> PathBuf {
-    std::env::var_os("A3S_CODE_TUI_BIN")
+    std::env::var_os("ASTER_TUI_BIN")
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_aster")))
 }
@@ -360,11 +360,11 @@ fn run(isolated: &Isolated, args: &[&str], timeout: Duration) -> Captured {
         .env_clear()
         .env("HOME", &isolated.home)
         .env("GROK_HOME", &isolated.grok_home)
-        .env("A3S_CONFIG", &isolated.config)
+        .env("ASTER_CONFIG", &isolated.config)
         .env("ASTER_RELEASE_BASE", isolated.home.join("release-fixture"))
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .env("GROK_MANAGED_CONFIG", "0")
         .env("PATH", path)
         .env("TERM", "xterm-256color")
@@ -436,7 +436,7 @@ fn assert_no_installs(grok_home: &Path, name: &str) {
 
 fn assert_no_public_host(captured: &Captured, name: &str) {
     let combined = captured.combined();
-    for host in ["api.x.ai", "grok.com", "auth.a3s", "googleapis.com"] {
+    for host in ["api.x.ai", "grok.com", "auth.aster", "googleapis.com"] {
         assert!(
             !combined.contains(host),
             "{name} contacted or named {host}:\n{combined}"
@@ -604,17 +604,17 @@ fn install_snapshot(home: &Path) -> String {
         .join("\n")
 }
 
-fn fingerprint_a3s(path: &Path) -> String {
+fn fingerprint_aster(path: &Path) -> String {
     if !path.exists() {
         return "<missing>".to_string();
     }
     let mut rows = Vec::new();
-    walk_a3s(path, path, &mut rows);
+    walk_aster(path, path, &mut rows);
     rows.sort();
     rows.join("\n")
 }
 
-fn a3s_net_heartbeat(relative: &str) -> bool {
+fn aster_net_heartbeat(relative: &str) -> bool {
     let mut parts = relative.split('/');
     if parts.next() != Some("boxes") || parts.next().is_none() {
         return false;
@@ -625,7 +625,7 @@ fn a3s_net_heartbeat(relative: &str) -> bool {
     )
 }
 
-fn walk_a3s(root: &Path, dir: &Path, rows: &mut Vec<String>) {
+fn walk_aster(root: &Path, dir: &Path, rows: &mut Vec<String>) {
     let Ok(entries) = fs::read_dir(dir) else {
         return;
     };
@@ -637,10 +637,10 @@ fn walk_a3s(root: &Path, dir: &Path, rows: &mut Vec<String>) {
             .display()
             .to_string();
         // A live box netproxy rewrites this heartbeat and its directory mtime.
-        if a3s_net_heartbeat(&relative) {
+        if aster_net_heartbeat(&relative) {
             rows.push(format!("{relative} <live>"));
             if path.is_dir() {
-                walk_a3s(root, &path, rows);
+                walk_aster(root, &path, rows);
             }
             continue;
         }
@@ -653,7 +653,7 @@ fn walk_a3s(root: &Path, dir: &Path, rows: &mut Vec<String>) {
             .unwrap_or(0);
         rows.push(format!("{relative} {len} {modified}"));
         if path.is_dir() {
-            walk_a3s(root, &path, rows);
+            walk_aster(root, &path, rows);
         }
     }
 }
@@ -761,9 +761,9 @@ fn walk_summaries(dir: &Path, session_id: &str, found: &mut Option<String>) {
 #[test]
 fn shipped_cli_p0_oracles() {
     let developer_home = PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| "/".into()));
-    let developer_a3s = developer_home.join(".a3s");
+    let developer_aster = developer_home.join(".aster");
     let developer_grok = developer_home.join(".grok");
-    let before_a3s = fingerprint_a3s(&developer_a3s);
+    let before_aster = fingerprint_aster(&developer_aster);
     let binary = PathBuf::from(main_aster());
     let binary_before = fs::metadata(&binary).expect("aster binary").len();
 
@@ -1254,9 +1254,9 @@ default_model = "{MODEL_ID}"
     assert_macos_shell_refusal(&isolated, turn);
 
     assert_same_tree(
-        "developer ~/.a3s",
-        &before_a3s,
-        &fingerprint_a3s(&developer_a3s),
+        "developer ~/.aster",
+        &before_aster,
+        &fingerprint_aster(&developer_aster),
     );
     let mut session_ids = local_session_ids(&isolated.grok_home);
     if !session_ids.iter().any(|id| id == &origin) {
@@ -1264,9 +1264,9 @@ default_model = "{MODEL_ID}"
     }
     for id in session_ids {
         assert!(
-            !path_has_component(&developer_a3s, &id),
+            !path_has_component(&developer_aster, &id),
             "session {id} appeared under {}",
-            developer_a3s.display()
+            developer_aster.display()
         );
         assert!(
             !path_has_component(&developer_grok, &id),

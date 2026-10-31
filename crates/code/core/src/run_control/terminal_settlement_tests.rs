@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{append_input, message_fact, ActorError, FileLog, LogStore, MemoryLog};
+use aster_effect::{append_input, message_fact, ActorError, FileLog, LogStore, MemoryLog};
 use std::sync::Mutex as StdMutex;
 
 async fn adapter_campaign(log: &dyn LogStore) {

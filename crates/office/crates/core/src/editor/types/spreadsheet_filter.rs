@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde::{Deserialize, Serialize};
 
 use crate::spreadsheet_reference::CellRange;
@@ -430,6 +430,6 @@ fn validate_filter_text(value: &str, label: &str, allow_empty: bool) -> UseResul
     Ok(())
 }
 
-fn filter_error(code: &str, message: impl Into<String>) -> a3s_use_core::UseError {
+fn filter_error(code: &str, message: impl Into<String>) -> aster_use_core::UseError {
     super::super::editor_error(code, message)
 }

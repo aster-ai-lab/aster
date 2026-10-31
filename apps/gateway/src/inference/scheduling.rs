@@ -427,7 +427,7 @@ fn admission_pressure_basis_points(worker: &InferenceWorkerConfig) -> u64 {
 
 fn rendezvous_rank(key: &[u8], target: &ManagedTargetConfig) -> u64 {
     let mut digest = Sha256::new();
-    hash_part(&mut digest, b"a3s.gateway.worker-rendezvous.v1");
+    hash_part(&mut digest, b"aster.gateway.worker-rendezvous.v1");
     hash_part(&mut digest, key);
     hash_part(&mut digest, target.target_id.as_bytes());
     hash_part(&mut digest, target.unit_id.as_bytes());

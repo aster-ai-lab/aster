@@ -2,13 +2,13 @@ use std::path::Path;
 use std::process::{Command, Output};
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(provider: &Path, args: &[&str]) -> Output {
     Command::new(binary())
         .args(args)
-        .env("A3S_OFFICECLI_EXECUTABLE", provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", provider)
         .output()
         .unwrap()
 }
@@ -134,7 +134,7 @@ async fn native_mcp_annotated_view_reads_unsaved_typed_session_state() {
     let document = temp.path().join("session.docx");
     let mut child = tokio::process::Command::new(binary())
         .args(["mcp"])
-        .env("A3S_OFFICECLI_EXECUTABLE", &provider)
+        .env("ASTER_OFFICECLI_EXECUTABLE", &provider)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -213,7 +213,7 @@ async fn native_mcp_annotated_view_reads_unsaved_typed_session_state() {
     )
     .await;
     assert_ne!(applied["result"]["isError"], true, "{applied}");
-    let disk = a3s_office::NativeOfficeDocument::open(&document)
+    let disk = aster_office::NativeOfficeDocument::open(&document)
         .await
         .unwrap();
     assert_eq!(disk.text_view().text, "");

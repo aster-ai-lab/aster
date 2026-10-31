@@ -21,7 +21,7 @@ export interface DocxConnectorRegistration {
 }
 
 const DOC_PROPERTIES_ID_MAX = 0xffff_ffff;
-const CONNECTOR_ID_MARKER_PATTERN = /__A3S_CONNECTOR_ID_\d+__/g;
+const CONNECTOR_ID_MARKER_PATTERN = /__ASTER_CONNECTOR_ID_\d+__/g;
 const DRAWING_NAMESPACE =
   'http://schemas.openxmlformats.org/drawingml/2006/main';
 const GEOMETRY_SCALE = 100_000;
@@ -35,7 +35,7 @@ export class DocxConnectorPatchCollector {
   register(
     properties: WorkDocumentConnectorProperties,
   ): DocxConnectorRegistration {
-    const marker = `__A3S_CONNECTOR_ID_${this.nextMarker}__`;
+    const marker = `__ASTER_CONNECTOR_ID_${this.nextMarker}__`;
     this.nextMarker += 1;
     this.patches.push({
       marker,

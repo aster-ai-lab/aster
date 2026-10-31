@@ -17,7 +17,7 @@ const YJS_MARKDOWN_UPDATE_BASE64: &str = "AQey8hkAKAETYTNzLm9mZmljZS5tZXRhZGF0YQ
 const YJS_DOCUMENT_UPDATE_BASE64: &str = "AQ+y8hkAKAETYTNzLm9mZmljZS5tZXRhZGF0YQhwcm90b2NvbAF3GGEzcy5vZmZpY2UuY29sbGFib3JhdGlvbigBE2Ezcy5vZmZpY2UubWV0YWRhdGEHdmVyc2lvbgF9ASgBE2Ezcy5vZmZpY2UubWV0YWRhdGEKYXJ0aWZhY3RJZAF3EGZpeHR1cmUtZG9jdW1lbnQoARNhM3Mub2ZmaWNlLm1ldGFkYXRhBGtpbmQBdwhkb2N1bWVudCgBE2Ezcy5vZmZpY2UubWV0YWRhdGELaW5pdGlhbGl6ZWQBeAgBIWEzcy5vZmZpY2UuYm9vdHN0cmFwLmluaXRpYWxpemVycwF3FjQyNDI0Mjpicm93c2VyLWZpeHR1cmUHARthM3Mub2ZmaWNlLmRvY3VtZW50LmNvbnRlbnQDD2RvY3VtZW50U2VjdGlvbgcAsvIZBgMJcGFyYWdyYXBoBwCy8hkHBgQAsvIZCBBIZWxsbyDwn5iAIHdvcmxkKACy8hkHC3BhcmFncmFwaElkAXcIMDAwMDAwMDEoALLyGQcGdGV4dElkAXcIMDAwMDAwMDIoALLyGQYCaWQBdxJkb2N1bWVudC1zZWN0aW9uLTEoARthM3Mub2ZmaWNlLmRvY3VtZW50Lm9wdGlvbnMJcGFnZUNvbG9yAXcHI0Y4RkFGQygBG2Ezcy5vZmZpY2UuZG9jdW1lbnQub3B0aW9ucwx0cmFja0NoYW5nZXMBeAA=";
 
 fn binary() -> &'static str {
-    env!("CARGO_BIN_EXE_a3s-office")
+    env!("CARGO_BIN_EXE_aster-office")
 }
 
 fn execute(args: &[&str]) -> Output {
@@ -434,8 +434,8 @@ fn cli_applies_typed_document_text_option_and_paragraph_mutations() {
             .unwrap(),
         )
         .unwrap();
-    let fragment = peer.get_or_insert_xml_fragment("a3s.office.document.content");
-    let options = peer.get_or_insert_map("a3s.office.document.options");
+    let fragment = peer.get_or_insert_xml_fragment("aster.office.document.content");
+    let options = peer.get_or_insert_map("aster.office.document.options");
     let transaction = peer.transact();
     let paragraphs = fragment
         .successors(&transaction)
@@ -887,7 +887,7 @@ fn cli_session_bridges_live_browser_envelopes_and_external_agent_updates() {
     let transaction = typed_peer.transact();
     assert_eq!(
         transaction
-            .get_text("a3s.office.markdown.source")
+            .get_text("aster.office.markdown.source")
             .unwrap()
             .get_string(&transaction),
         "# Agent live 😀"
@@ -904,11 +904,11 @@ fn cli_session_bridges_live_browser_envelopes_and_external_agent_updates() {
         &serde_json::json!({
             "type": "receive",
             "message": {
-                "protocol": "a3s.office.collaboration",
+                "protocol": "aster.office.collaboration",
                 "version": 1,
                 "artifactId": "fixture-markdown",
                 "artifactKind": "markdown",
-                "namespace": "a3s.office",
+                "namespace": "aster.office",
                 "senderClientId": 424242,
                 "type": "sync-step-1",
                 "payloadBase64": "AA=="
@@ -939,16 +939,16 @@ fn cli_session_bridges_live_browser_envelopes_and_external_agent_updates() {
             "type": "receive",
             "operationId": "browser-delivery-1",
             "message": {
-                "protocol": "a3s.office.collaboration",
+                "protocol": "aster.office.collaboration",
                 "version": 1,
                 "artifactId": "fixture-markdown",
                 "artifactKind": "markdown",
-                "namespace": "a3s.office",
+                "namespace": "aster.office",
                 "senderClientId": 600006,
                 "type": "update",
                 "payloadBase64": STANDARD.encode(&browser_update),
                 "origin": {
-                    "protocol": "a3s.office.collaboration",
+                    "protocol": "aster.office.collaboration",
                     "kind": "editor",
                     "actorId": "browser-user",
                     "operationId": "browser-edit-1"
@@ -1005,7 +1005,7 @@ fn cli_session_bridges_ephemeral_native_presence_without_touching_the_replica() 
             "--timeout-ms",
             "30000",
             "--actor-name",
-            "A3S Agent",
+            "Aster Agent",
             "--actor-color",
             "#2563eb",
             "--json",
@@ -1022,7 +1022,7 @@ fn cli_session_bridges_ephemeral_native_presence_without_touching_the_replica() 
     let ready = read_jsonl(&mut stdout);
     assert_eq!(ready["type"], "ready");
     assert_eq!(ready["presenceEnabled"], true);
-    assert_eq!(ready["actorName"], "A3S Agent");
+    assert_eq!(ready["actorName"], "Aster Agent");
     assert_eq!(ready["replicaClientId"], 900_007);
     let presence_client_id = ready["clientId"].as_u64().unwrap();
     assert_ne!(presence_client_id, 900_007);
@@ -1045,9 +1045,9 @@ fn cli_session_bridges_ephemeral_native_presence_without_touching_the_replica() 
         .get(&ClientID::new(presence_client_id))
         .unwrap();
     let local: serde_json::Value = serde_json::from_str(local.json.as_ref()).unwrap();
-    assert_eq!(local["a3sOffice"]["actor"]["id"], "coding-agent-7");
-    assert_eq!(local["a3sOffice"]["actor"]["name"], "A3S Agent");
-    assert_eq!(local["a3sOffice"]["actor"]["kind"], "agent");
+    assert_eq!(local["asterOffice"]["actor"]["id"], "coding-agent-7");
+    assert_eq!(local["asterOffice"]["actor"]["name"], "Aster Agent");
+    assert_eq!(local["asterOffice"]["actor"]["kind"], "agent");
 
     write_jsonl(
         &mut stdin,
@@ -1080,12 +1080,12 @@ fn cli_session_bridges_ephemeral_native_presence_without_touching_the_replica() 
     let mut remote = Awareness::new(Doc::with_client_id(remote_client_id));
     remote
         .set_local_state(serde_json::json!({
-            "a3sOffice": {
-                "protocol": "a3s.office.collaboration",
+            "asterOffice": {
+                "protocol": "aster.office.collaboration",
                 "version": 1,
                 "artifactId": "fixture-markdown",
                 "artifactKind": "markdown",
-                "namespace": "a3s.office",
+                "namespace": "aster.office",
                 "presenceId": "browser-user:1",
                 "actor": {
                     "id": "browser-user",
@@ -1109,11 +1109,11 @@ fn cli_session_bridges_ephemeral_native_presence_without_touching_the_replica() 
         &serde_json::json!({
             "type": "receive-awareness",
             "message": {
-                "protocol": "a3s.office.collaboration",
+                "protocol": "aster.office.collaboration",
                 "version": 1,
                 "artifactId": "fixture-markdown",
                 "artifactKind": "markdown",
-                "namespace": "a3s.office",
+                "namespace": "aster.office",
                 "senderClientId": remote_client_id,
                 "payloadBase64": STANDARD.encode(&remote_payload)
             }

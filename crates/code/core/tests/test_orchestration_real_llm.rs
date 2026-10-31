@@ -1,10 +1,10 @@
 //! Real-LLM validation of the orchestration layer (Workflow phases).
 //!
-//! `#[ignore]` — requires a live provider in `.a3s/config.acl`. Run:
+//! `#[ignore]` — requires a live provider in `.aster/config.acl`. Run:
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_orchestration_real_llm -- --ignored --nocapture
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_orchestration_real_llm -- --ignored --nocapture
 //! ```
 
 mod support;
@@ -15,14 +15,14 @@ use std::sync::Arc;
 use async_trait::async_trait;
 use tokio::sync::Mutex;
 
-use a3s_code_core::llm::create_client_with_config;
-use a3s_code_core::orchestration::{
+use aster_core::llm::create_client_with_config;
+use aster_core::orchestration::{
     execute_pipeline, execute_steps_parallel, execute_steps_parallel_resumable, AgentExecutor,
     AgentStepSpec, PipelineStage, StepOutcome, WorkflowCheckpoint,
 };
-use a3s_code_core::store::{MemorySessionStore, SessionStore};
-use a3s_code_core::subagent::AgentRegistry;
-use a3s_code_core::tools::TaskExecutor;
+use aster_core::store::{MemorySessionStore, SessionStore};
+use aster_core::subagent::AgentRegistry;
+use aster_core::tools::TaskExecutor;
 use support::layer_c_model::load_pinned_layer_c_config;
 
 /// Returns the executor plus the workspace guard — keep the guard in scope so
@@ -192,7 +192,7 @@ impl AgentExecutor for CountingExecutor {
     async fn execute_step(
         &self,
         spec: AgentStepSpec,
-        event_tx: Option<tokio::sync::broadcast::Sender<a3s_code_core::AgentEvent>>,
+        event_tx: Option<tokio::sync::broadcast::Sender<aster_core::AgentEvent>>,
     ) -> StepOutcome {
         self.ran.lock().await.push(spec.task_id.clone());
         self.inner.execute_step(spec, event_tx).await

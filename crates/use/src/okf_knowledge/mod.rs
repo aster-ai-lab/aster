@@ -1,4 +1,4 @@
-//! Injected A3S Knowledge port and durable exact-generation OKF evidence.
+//! Injected Aster Knowledge port and durable exact-generation OKF evidence.
 
 mod adapter;
 mod lease;

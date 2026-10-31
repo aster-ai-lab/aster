@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
-    [string]$Version = $env:A3S_GATEWAY_VERSION,
-    [string]$InstallDir = $env:A3S_GATEWAY_INSTALL_DIR,
+    [string]$Version = $env:ASTER_GATEWAY_VERSION,
+    [string]$InstallDir = $env:ASTER_GATEWAY_INSTALL_DIR,
     [switch]$NoModifyPath
 )
 
@@ -12,26 +12,26 @@ Set-StrictMode -Version Latest
 [Net.ServicePointManager]::SecurityProtocol =
     [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
-$Program = "a3s-gateway"
+$Program = "aster-gateway"
 $Repository = "kense-labs/gateway"
-$ReleasesUrl = if ($env:A3S_GATEWAY_RELEASES_URL) {
-    $env:A3S_GATEWAY_RELEASES_URL.TrimEnd("/")
+$ReleasesUrl = if ($env:ASTER_GATEWAY_RELEASES_URL) {
+    $env:ASTER_GATEWAY_RELEASES_URL.TrimEnd("/")
 } else {
     "https://github.com/$Repository/releases/download"
 }
-$LatestApiUrl = if ($env:A3S_GATEWAY_LATEST_API_URL) {
-    $env:A3S_GATEWAY_LATEST_API_URL
+$LatestApiUrl = if ($env:ASTER_GATEWAY_LATEST_API_URL) {
+    $env:ASTER_GATEWAY_LATEST_API_URL
 } else {
     "https://api.github.com/repos/$Repository/releases/latest"
 }
-$AllowInsecure = $env:A3S_GATEWAY_ALLOW_INSECURE -eq "1"
-$SkipPathUpdate = $NoModifyPath -or $env:A3S_GATEWAY_NO_MODIFY_PATH -eq "1"
-$TempDir = Join-Path ([System.IO.Path]::GetTempPath()) "a3s-gateway-install-$([guid]::NewGuid().ToString('N'))"
+$AllowInsecure = $env:ASTER_GATEWAY_ALLOW_INSECURE -eq "1"
+$SkipPathUpdate = $NoModifyPath -or $env:ASTER_GATEWAY_NO_MODIFY_PATH -eq "1"
+$TempDir = Join-Path ([System.IO.Path]::GetTempPath()) "aster-gateway-install-$([guid]::NewGuid().ToString('N'))"
 $PendingBinary = $null
 
 function Write-InstallerLog {
     param([Parameter(Mandatory = $true)][string]$Message)
-    Write-Host "a3s-gateway installer: $Message"
+    Write-Host "aster-gateway installer: $Message"
 }
 
 function Assert-SafeUrl {
@@ -52,7 +52,7 @@ function Invoke-InstallerDownload {
         try {
             Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $Destination -Headers @{
                 Accept = "application/vnd.github+json"
-                "User-Agent" = "a3s-gateway-installer"
+                "User-Agent" = "aster-gateway-installer"
             } -TimeoutSec 300
             return
         } catch {
@@ -79,8 +79,8 @@ function Resolve-InstallerPlatform {
     )) {
         throw "This installer supports Windows only; use install.sh on macOS or Linux"
     }
-    if ($env:A3S_GATEWAY_PLATFORM) {
-        $platform = $env:A3S_GATEWAY_PLATFORM
+    if ($env:ASTER_GATEWAY_PLATFORM) {
+        $platform = $env:ASTER_GATEWAY_PLATFORM
     } else {
         $architecture = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
         switch ($architecture) {
@@ -170,7 +170,7 @@ try {
         if (-not $localAppData) {
             throw "LocalApplicationData is unavailable; pass -InstallDir explicitly"
         }
-        $InstallDir = Join-Path $localAppData "A3S/bin"
+        $InstallDir = Join-Path $localAppData "Aster/bin"
     }
     $InstallDir = [System.IO.Path]::GetFullPath($InstallDir)
 

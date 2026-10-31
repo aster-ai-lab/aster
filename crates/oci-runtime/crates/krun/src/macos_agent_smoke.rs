@@ -14,17 +14,17 @@ use crate::unix_process::{
     PinnedCurrentExecutable,
 };
 use crate::{KrunAgentVmSmokeReport, MacosBootAssetsEvidence, VmConfig};
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentTransportQualificationRequest, AgentVsockEndpoint, AGENT_RECOVERY_REPORT_ENV,
     AGENT_RUNTIME_SHARE_ENV, AGENT_RUNTIME_SHARE_TAG, AGENT_SESSION_TOKEN_FILE_ENV,
     AGENT_TRANSPORT_QUALIFICATION_ENV, AGENT_VSOCK_PORT,
 };
-use a3s_oci_core::{CapabilityStatus, HostPlatform};
+use aster_oci_core::{CapabilityStatus, HostPlatform};
 use serde::{Deserialize, Serialize};
 
-const AGENT_GUEST_PATH: &str = "/usr/bin/a3s-oci-agent";
+const AGENT_GUEST_PATH: &str = "/usr/bin/aster-oci-agent";
 const WORKER_COMMAND: &str = "__macos-agent-vm-worker";
-const WORKER_SCHEMA_VERSION: &str = "a3s.oci.macos-agent-vm-worker.v2";
+const WORKER_SCHEMA_VERSION: &str = "aster.oci.macos-agent-vm-worker.v2";
 const WORKER_TIMEOUT: Duration = Duration::from_secs(90);
 const MAX_WORKER_OUTPUT_BYTES: u64 = 64 * 1024;
 
@@ -477,13 +477,13 @@ pub(crate) fn run_worker(configuration: MacosAgentVmWorkerConfig<'_>) -> bool {
     ];
     if let Some(digest) = vm_attachment_manifest_sha256 {
         environment.push((
-            a3s_oci_agent_protocol::AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV.to_string(),
+            aster_oci_agent_protocol::AGENT_VM_ATTACHMENT_MANIFEST_SHA256_ENV.to_string(),
             digest.to_string(),
         ));
     }
     if let Some(digest) = host_path_restrictions_digest {
         environment.push((
-            a3s_oci_agent_protocol::AGENT_HOST_STORAGE_PATH_RESTRICTIONS_SHA256_ENV.to_string(),
+            aster_oci_agent_protocol::AGENT_HOST_STORAGE_PATH_RESTRICTIONS_SHA256_ENV.to_string(),
             digest,
         ));
     }
@@ -567,7 +567,7 @@ fn emit_worker_evidence(evidence: &WorkerEvidence) -> io::Result<()> {
 fn fail_worker(evidence: &mut WorkerEvidence, reason: String) -> bool {
     evidence.reason = Some(reason);
     if let Err(error) = emit_worker_evidence(evidence) {
-        eprintln!("a3s-oci-krun-shim: failed to emit worker failure evidence: {error}");
+        eprintln!("aster-oci-krun-shim: failed to emit worker failure evidence: {error}");
     }
     false
 }

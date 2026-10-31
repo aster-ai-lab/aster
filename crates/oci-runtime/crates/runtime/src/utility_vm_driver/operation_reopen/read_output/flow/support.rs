@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::{
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::{
     ContainerTarget, DeleteRequest, Error, ErrorCode, ExecRequest, OperationId, ProcessRecord,
     StartRequest,
 };
@@ -44,7 +44,7 @@ pub(super) fn exec_marker(init_marker: &Path) -> Result<PathBuf, String> {
 pub(super) async fn exec_journal_status(
     state_root: &Path,
     operation_id: &OperationId,
-    target: &a3s_oci_sdk::ProcessTarget,
+    target: &aster_oci_sdk::ProcessTarget,
 ) -> Result<ExecJournalStatus, String> {
     crate::operation_journal_evidence::process_operation_journal_status(
         state_root,
@@ -57,7 +57,7 @@ pub(super) async fn exec_journal_status(
 
 pub(super) async fn durable_exec_process(
     state_root: &Path,
-    target: &a3s_oci_sdk::ProcessTarget,
+    target: &aster_oci_sdk::ProcessTarget,
 ) -> Result<ProcessRecord, String> {
     crate::operation_journal_evidence::durable_process(state_root, target).await
 }

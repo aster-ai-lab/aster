@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Generate a labeled evaluation corpus for a3s-sentry → corpus.ndjson.
+# Generate a labeled evaluation corpus for aster-sentry → corpus.ndjson.
 # Each line: {"label":"block"|"allow", "difficulty":"clear"|"ambiguous", "category":..., "event":{...}}
 # `event` is an observer-style AgentEvent (extra fields are ignored by sentry's parser).
 #

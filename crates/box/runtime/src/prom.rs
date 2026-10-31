@@ -1,4 +1,4 @@
-//! Prometheus metrics for the A3S Box runtime.
+//! Prometheus metrics for the Aster Box runtime.
 //!
 //! Provides pre-registered metrics for VM lifecycle, exec operations,
 //! image management, and warm pool monitoring.
@@ -6,7 +6,7 @@
 //! # Usage
 //!
 //! ```rust,no_run
-//! use a3s_box_runtime::prom::RuntimeMetrics;
+//! use aster_box_runtime::prom::RuntimeMetrics;
 //!
 //! let metrics = RuntimeMetrics::new();
 //! metrics.vm_boot_duration.observe(0.195); // 195ms boot
@@ -110,7 +110,7 @@ impl RuntimeMetrics {
         // VM lifecycle
         let vm_boot_duration = Histogram::with_opts(
             HistogramOpts::new(
-                "a3s_box_vm_boot_duration_seconds",
+                "aster_box_vm_boot_duration_seconds",
                 "VM boot duration in seconds",
             )
             .buckets(vec![0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 1.0, 2.0, 5.0, 10.0]),
@@ -118,7 +118,7 @@ impl RuntimeMetrics {
 
         let vm_boot_phase_duration = HistogramVec::new(
             HistogramOpts::new(
-                "a3s_box_vm_boot_phase_duration_seconds",
+                "aster_box_vm_boot_phase_duration_seconds",
                 "VM boot duration in seconds by lifecycle phase",
             )
             .buckets(vec![
@@ -128,91 +128,91 @@ impl RuntimeMetrics {
         )?;
 
         let vm_count = IntGaugeVec::new(
-            Opts::new("a3s_box_vm_count", "Number of VMs by state"),
+            Opts::new("aster_box_vm_count", "Number of VMs by state"),
             &["state"],
         )?;
 
-        let vm_created_total = IntCounter::new("a3s_box_vm_created_total", "Total VMs created")?;
+        let vm_created_total = IntCounter::new("aster_box_vm_created_total", "Total VMs created")?;
 
         let vm_destroyed_total =
-            IntCounter::new("a3s_box_vm_destroyed_total", "Total VMs destroyed")?;
+            IntCounter::new("aster_box_vm_destroyed_total", "Total VMs destroyed")?;
 
         // VM resources
         let vm_cpu_percent = GaugeVec::new(
-            Opts::new("a3s_box_vm_cpu_percent", "VM CPU usage percentage"),
+            Opts::new("aster_box_vm_cpu_percent", "VM CPU usage percentage"),
             &["box_id"],
         )?;
 
         let vm_memory_bytes = GaugeVec::new(
-            Opts::new("a3s_box_vm_memory_bytes", "VM memory usage in bytes"),
+            Opts::new("aster_box_vm_memory_bytes", "VM memory usage in bytes"),
             &["box_id"],
         )?;
 
         // Exec operations
-        let exec_total = IntCounter::new("a3s_box_exec_total", "Total exec commands executed")?;
+        let exec_total = IntCounter::new("aster_box_exec_total", "Total exec commands executed")?;
 
         let exec_duration = Histogram::with_opts(
             HistogramOpts::new(
-                "a3s_box_exec_duration_seconds",
+                "aster_box_exec_duration_seconds",
                 "Exec command duration in seconds",
             )
             .buckets(vec![0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0, 30.0, 60.0]),
         )?;
 
         let exec_errors_total =
-            IntCounter::new("a3s_box_exec_errors_total", "Total failed exec commands")?;
+            IntCounter::new("aster_box_exec_errors_total", "Total failed exec commands")?;
 
         // Image operations
-        let image_pull_total = IntCounter::new("a3s_box_image_pull_total", "Total image pulls")?;
+        let image_pull_total = IntCounter::new("aster_box_image_pull_total", "Total image pulls")?;
 
         let image_pull_duration = Histogram::with_opts(
             HistogramOpts::new(
-                "a3s_box_image_pull_duration_seconds",
+                "aster_box_image_pull_duration_seconds",
                 "Image pull duration in seconds",
             )
             .buckets(vec![0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0, 120.0]),
         )?;
 
-        let image_build_total = IntCounter::new("a3s_box_image_build_total", "Total image builds")?;
+        let image_build_total = IntCounter::new("aster_box_image_build_total", "Total image builds")?;
 
         let rootfs_cache_hits =
-            IntCounter::new("a3s_box_rootfs_cache_hits_total", "Rootfs cache hits")?;
+            IntCounter::new("aster_box_rootfs_cache_hits_total", "Rootfs cache hits")?;
 
         let rootfs_cache_misses =
-            IntCounter::new("a3s_box_rootfs_cache_misses_total", "Rootfs cache misses")?;
+            IntCounter::new("aster_box_rootfs_cache_misses_total", "Rootfs cache misses")?;
 
         // Warm pool
         let warm_pool_size = IntGauge::new(
-            "a3s_box_warm_pool_size",
+            "aster_box_warm_pool_size",
             "Current warm pool size (idle VMs)",
         )?;
 
         let warm_pool_capacity =
-            IntGauge::new("a3s_box_warm_pool_capacity", "Warm pool max capacity")?;
+            IntGauge::new("aster_box_warm_pool_capacity", "Warm pool max capacity")?;
 
         let warm_pool_hits = IntCounter::new(
-            "a3s_box_warm_pool_hits_total",
+            "aster_box_warm_pool_hits_total",
             "VMs allocated from warm pool",
         )?;
 
         let warm_pool_misses = IntCounter::new(
-            "a3s_box_warm_pool_misses_total",
+            "aster_box_warm_pool_misses_total",
             "VMs created fresh (warm pool miss)",
         )?;
 
         let warm_pool_boots_inflight = IntGauge::new(
-            "a3s_box_warm_pool_boots_inflight",
+            "aster_box_warm_pool_boots_inflight",
             "VM boots currently in flight across warm pools",
         )?;
 
         let warm_pool_boot_failures_total = IntCounter::new(
-            "a3s_box_warm_pool_boot_failures_total",
+            "aster_box_warm_pool_boot_failures_total",
             "Warm-pool VM boot failures",
         )?;
 
         let warm_pool_initial_fill_duration = Histogram::with_opts(
             HistogramOpts::new(
-                "a3s_box_warm_pool_initial_fill_duration_seconds",
+                "aster_box_warm_pool_initial_fill_duration_seconds",
                 "Warm-pool initial fill duration in seconds",
             )
             .buckets(vec![
@@ -338,7 +338,7 @@ impl Default for RuntimeMetrics {
     }
 }
 
-impl a3s_box_core::traits::MetricsCollector for RuntimeMetrics {
+impl aster_box_core::traits::MetricsCollector for RuntimeMetrics {
     fn record_vm_boot(&self, duration_secs: f64) {
         self.vm_boot_duration.observe(duration_secs);
     }
@@ -385,7 +385,7 @@ impl std::fmt::Debug for RuntimeMetrics {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_box_core::traits::MetricsCollector;
+    use aster_box_core::traits::MetricsCollector;
 
     #[test]
     fn test_metrics_creation() {
@@ -423,7 +423,7 @@ mod tests {
             1
         );
         let output = m.encode();
-        assert!(output.contains("a3s_box_vm_boot_phase_duration_seconds"));
+        assert!(output.contains("aster_box_vm_boot_phase_duration_seconds"));
         assert!(output.contains("phase=\"layout\""));
     }
 
@@ -537,8 +537,8 @@ mod tests {
         m.vm_created_total.inc();
         m.exec_total.inc();
         let output = m.encode();
-        assert!(output.contains("a3s_box_vm_created_total 1"));
-        assert!(output.contains("a3s_box_exec_total 1"));
+        assert!(output.contains("aster_box_vm_created_total 1"));
+        assert!(output.contains("aster_box_exec_total 1"));
         assert!(output.contains("# HELP"));
         assert!(output.contains("# TYPE"));
     }

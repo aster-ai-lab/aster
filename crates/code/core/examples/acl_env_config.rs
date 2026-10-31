@@ -1,7 +1,7 @@
 //! Release-only ACL env injection. Credentials never cross stdout or argv.
 
-use a3s_acl::{Block, Document, Value};
-use a3s_code_core::config::CodeConfig;
+use aster_acl::{Block, Document, Value};
+use aster_core::config::CodeConfig;
 use anyhow::{anyhow, bail, ensure, Context, Result};
 use std::{
     collections::BTreeMap,
@@ -83,7 +83,7 @@ fn bind_environment(
             Value::String(secret) if lift => {
                 let mut index = vars.len();
                 let name = loop {
-                    let name = format!("A3S_ACL_VALUE_{index}");
+                    let name = format!("ASTER_ACL_VALUE_{index}");
                     if !vars.contains_key(&name) {
                         break name;
                     }
@@ -156,7 +156,7 @@ fn prepare(content: &str, env: impl Fn(&str) -> Option<String>) -> Result<Prepar
     let (provider, model) = config
         .default_model_config()
         .ok_or_else(|| anyhow!("configured default provider/model is missing"))?;
-    let mut document = a3s_acl::parse(content).map_err(|_| anyhow!("invalid ACL configuration"))?;
+    let mut document = aster_acl::parse(content).map_err(|_| anyhow!("invalid ACL configuration"))?;
     // This is an environment-variable spelling, never an entity classifier.
     let provider_env: String = provider
         .name
@@ -169,12 +169,12 @@ fn prepare(content: &str, env: impl Fn(&str) -> Option<String>) -> Result<Prepar
             }
         })
         .collect();
-    let api_key = nonempty(env(&format!("A3S_{provider_env}_API_KEY")))
+    let api_key = nonempty(env(&format!("ASTER_{provider_env}_API_KEY")))
         .or_else(|| nonempty(provider.get_api_key(model).map(str::to_owned)))
-        .or_else(|| nonempty(env("A3S_OPENAI_API_KEY")));
-    let base_url = nonempty(env(&format!("A3S_{provider_env}_BASE_URL")))
+        .or_else(|| nonempty(env("ASTER_OPENAI_API_KEY")));
+    let base_url = nonempty(env(&format!("ASTER_{provider_env}_BASE_URL")))
         .or_else(|| nonempty(provider.get_base_url(model).map(str::to_owned)))
-        .or_else(|| nonempty(env("A3S_OPENAI_BASE_URL")));
+        .or_else(|| nonempty(env("ASTER_OPENAI_BASE_URL")));
     let mut matches = document
         .blocks
         .iter_mut()
@@ -266,20 +266,20 @@ fn run() -> Result<i32> {
                 .next()
                 .ok_or_else(|| anyhow!("run requires a child command"))?;
             let mut temporary = tempfile::Builder::new()
-                .prefix("a3s-code-env-")
+                .prefix("aster-env-")
                 .suffix(".acl")
                 .tempfile()?;
             // NamedTempFile is exclusively created with mode 0600 on Unix and
             // is retained until the child exits; errors and signals fail closed.
-            temporary.write_all(a3s_acl::generate(&prepared.document).as_bytes())?;
+            temporary.write_all(aster_acl::generate(&prepared.document).as_bytes())?;
             temporary.flush()?;
             let mut child = Command::new(command);
             child
                 .args(args)
-                .env("A3S_CONFIG_FILE", temporary.path())
-                .env("A3S_CODE_ACL_ENV_PREPARED", "1")
+                .env("ASTER_CONFIG_FILE", temporary.path())
+                .env("ASTER_ACL_ENV_PREPARED", "1")
                 .env(
-                    "A3S_CODE_ACL_ENV_NAMES",
+                    "ASTER_ACL_ENV_NAMES",
                     serde_json::to_string(&prepared.environment.keys().collect::<Vec<_>>())?,
                 );
             for (name, value) in prepared.environment {

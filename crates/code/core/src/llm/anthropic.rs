@@ -294,7 +294,7 @@ fn glm_reasoning_model(model: &str) -> bool {
         || id.starts_with("glm-5-3")
 }
 
-/// Map an a3s thinking budget onto GLM-5.2/5.3 `low` / `high` / `max`.
+/// Map an aster thinking budget onto GLM-5.2/5.3 `low` / `high` / `max`.
 ///
 /// An unset budget becomes `low`. The server default is `max`.
 fn glm_budget_effort(budget: Option<usize>) -> &'static str {
@@ -1062,7 +1062,7 @@ mod tests {
     }
 
     #[test]
-    fn glm_effort_tracks_the_a3s_budget() {
+    fn glm_effort_tracks_the_aster_budget() {
         let mut low = make_client().with_thinking_budget(2_048);
         low.model = "glm-5.3".to_string();
         let low_req = low.build_request(&[Message::user("hi")], None, &[]);

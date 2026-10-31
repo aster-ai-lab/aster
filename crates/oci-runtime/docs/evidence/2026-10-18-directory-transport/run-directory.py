@@ -7,7 +7,7 @@ revision=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 assert revision==candidate['source_revision']
 for name,digest in candidate['sha256'].items(): assert hashlib.sha256((binary/name).read_bytes()).hexdigest()==digest
 root=Path(tempfile.mkdtemp(prefix='wd-',dir='/private/var/tmp'))
-args=[str(binary/'qualify_hvf_workspace'),str(binary/'a3s-oci'),str(binary/'a3s-oci-krun-shim'),str(q/'clean-system/system-image.json'),str(q.parent/'macos-vmm-confinement-20261018/fixture'),str(root)]
+args=[str(binary/'qualify_hvf_workspace'),str(binary/'aster-oci'),str(binary/'aster-oci-krun-shim'),str(q/'clean-system/system-image.json'),str(q.parent/'macos-vmm-confinement-20261018/fixture'),str(root)]
 meta={'root':str(root),'candidate':candidate,'source_revision':revision,'source_dirty':False,'args':args}
 (q/'directory-location.json').write_text(json.dumps(meta,indent=2)+'\n')
 started=time.monotonic(); timed_out=False

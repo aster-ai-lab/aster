@@ -8,7 +8,7 @@ struct FollowUpParams {
     response: String,
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     /// Independent post-turn generation. This never calls ask_user and never
     /// opens another user turn; an unavailable suggestion is returned as null.
     pub(super) async fn handle_follow_up(

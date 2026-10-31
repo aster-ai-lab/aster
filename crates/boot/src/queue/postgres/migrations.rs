@@ -1,4 +1,4 @@
-use a3s_orm::Migration;
+use aster_orm::Migration;
 
 const POSTGRES_QUEUE_SQL: &str = r#"
 CREATE TABLE IF NOT EXISTS boot_queue_jobs (
@@ -66,7 +66,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS boot_queue_jobs_active_dedup_idx
 
 pub(super) fn postgres_queue_migrations() -> Vec<Migration> {
     vec![Migration::new(
-        "a3s-boot-0001-queue",
+        "aster-boot-0001-queue",
         "create durable Boot queue jobs",
         POSTGRES_QUEUE_SQL,
     )]

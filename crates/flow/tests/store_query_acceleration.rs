@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ActiveHookSnapshot, FlowEngine, FlowError, FlowEvent, FlowEventEnvelope, FlowEventStore,
     FlowRuntime, HookSnapshot, HookStatus, RuntimeCommand, StepInvocation, WorkflowInvocation,
 };
@@ -38,7 +38,7 @@ impl FlowEventStore for IndexedOnlyStore {
         &self,
         _run_id: &str,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store("append is not available".into()))
     }
 
@@ -47,16 +47,16 @@ impl FlowEventStore for IndexedOnlyStore {
         _run_id: &str,
         _expected_sequence: u64,
         _event: FlowEvent,
-    ) -> a3s_flow::Result<FlowEventEnvelope> {
+    ) -> aster_flow::Result<FlowEventEnvelope> {
         Err(FlowError::Store("append is not available".into()))
     }
 
-    async fn list(&self, _run_id: &str) -> a3s_flow::Result<Vec<FlowEventEnvelope>> {
+    async fn list(&self, _run_id: &str) -> aster_flow::Result<Vec<FlowEventEnvelope>> {
         self.history_scans.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::Store("history replay is forbidden".into()))
     }
 
-    async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+    async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
         self.history_scans.fetch_add(1, Ordering::SeqCst);
         Err(FlowError::Store("global history scan is forbidden".into()))
     }
@@ -64,7 +64,7 @@ impl FlowEventStore for IndexedOnlyStore {
     async fn find_active_hooks_by_token(
         &self,
         token: &str,
-    ) -> a3s_flow::Result<Vec<ActiveHookSnapshot>> {
+    ) -> aster_flow::Result<Vec<ActiveHookSnapshot>> {
         self.indexed_queries.fetch_add(1, Ordering::SeqCst);
         Ok(self
             .hooks
@@ -74,7 +74,7 @@ impl FlowEventStore for IndexedOnlyStore {
             .collect())
     }
 
-    async fn list_active_hooks(&self) -> a3s_flow::Result<Vec<ActiveHookSnapshot>> {
+    async fn list_active_hooks(&self) -> aster_flow::Result<Vec<ActiveHookSnapshot>> {
         self.indexed_queries.fetch_add(1, Ordering::SeqCst);
         Ok(self.hooks.clone())
     }
@@ -87,11 +87,11 @@ impl FlowRuntime for UnusedRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Err(FlowError::Runtime("runtime must not be called".into()))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         Err(FlowError::Runtime("runtime must not be called".into()))
     }
 }

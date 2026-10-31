@@ -1,6 +1,6 @@
-# A3S Flow API Stability Policy
+# Aster Flow API Stability Policy
 
-This policy defines the compatibility commitment that A3S Flow must satisfy
+This policy defines the compatibility commitment that Aster Flow must satisfy
 before `1.0.0` and preserve throughout the `1.x` release line. It complements
 the capability and release gates in `FUNCTIONAL_PLAN.md`.
 
@@ -66,7 +66,7 @@ Flow's engine, lifecycle, task, DSL, and error enums are non-exhaustive so a
 compatible `1.x` release can add a state or operation without breaking source
 compatibility. Consumers must include a fallback arm when matching them.
 `NativeRuntimeKind` is the deliberate exception: it belongs to the closed
-`a3s.flow.native_ts.v1` protocol. Extending that protocol requires a new
+`aster.flow.native_ts.v1` protocol. Extending that protocol requires a new
 versioned envelope rather than silently adding a v1 discriminator.
 
 Construction types that may gain optional policy or metadata fields are also
@@ -114,7 +114,7 @@ CI compiles every target with all features on that toolchain. Stable CI may use
 a newer compiler for formatting, Clippy, tests, and documentation.
 
 Raising the MSRV is a compatibility decision. It requires a minor release, a
-changelog entry, an updated CI job, and confirmation that locked A3S consumers
+changelog entry, an updated CI job, and confirmation that locked Aster consumers
 can move to the new toolchain.
 
 ## Release Gates

@@ -7,18 +7,18 @@
 //! Opt-in:
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_meta_harness_compose_live_e2e \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_meta_harness_compose_live_e2e \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::harness_loop::CompletionTerminal;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
-use a3s_code_core::{
+use aster_core::harness_loop::CompletionTerminal;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::verification::{VerificationCheck, VerificationReport, VerificationStatus};
+use aster_core::{
     host_component_id, Agent, BuiltinHostHarnessRegistry, CompletionAttestor,
     HarnessComposeOptions, SessionOptions, INTENT_STAMP_MARKER,
 };
@@ -35,8 +35,8 @@ impl CompletionAttestor for DigestBindingAttestor {
     fn attest(
         &self,
         digest: &str,
-        paths: &[a3s_code_core::MutatedPathRecord],
-    ) -> Option<a3s_code_core::verification::VerificationReport> {
+        paths: &[aster_core::MutatedPathRecord],
+    ) -> Option<aster_core::verification::VerificationReport> {
         if paths.is_empty() {
             return None;
         }
@@ -59,7 +59,7 @@ async fn configured_agent() -> Agent {
     let config = load_pinned_layer_c_config();
     Agent::from_config(config)
         .await
-        .expect("build agent from .a3s/config.acl")
+        .expect("build agent from .aster/config.acl")
 }
 
 fn composed_options(session_id: &str) -> SessionOptions {
@@ -88,7 +88,7 @@ fn composed_options(session_id: &str) -> SessionOptions {
 
     SessionOptions::new()
         .with_session_id(session_id)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning(false)
@@ -104,7 +104,7 @@ fn composed_options(session_id: &str) -> SessionOptions {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn live_composed_harness_write_completes_when_host_attests() {
     let agent = configured_agent().await;
     let workspace = tempfile::tempdir().expect("workspace");

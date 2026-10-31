@@ -88,7 +88,7 @@ fn source_digest(root: &std::path::Path) -> String {
 fn source_digest_excludes_harness_state_and_tracks_source_edits() {
     let workspace = tempfile::tempdir().unwrap();
     let before = source_digest(workspace.path());
-    let harness = workspace.path().join(".a3s/child-runs/one");
+    let harness = workspace.path().join(".aster/child-runs/one");
     std::fs::create_dir_all(&harness).unwrap();
     std::fs::write(harness.join("one.jsonl"), "durable child fact").unwrap();
     assert_eq!(source_digest(workspace.path()), before);

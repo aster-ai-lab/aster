@@ -457,7 +457,7 @@ function contentForTemplate(templateId: string): WorkArtifactContent {
         `<p dir="rtl">${proofingLanguageTemplateSpan(languages, false, 'complexScript', 'لغة التدقيق العربية')}</p>`,
         '<h2>校对行为</h2>',
         `<p>${proofingLanguageTemplateSpan({ latin: 'en-GB' }, false, 'ascii', 'This text participates in proofing.')}</p>`,
-        `<p>${proofingLanguageTemplateSpan({ latin: 'x-none' }, true, 'ascii', 'A3S-API-v2: this product identifier is excluded from proofing.')}</p>`,
+        `<p>${proofingLanguageTemplateSpan({ latin: 'x-none' }, true, 'ascii', 'Aster-API-v2: this product identifier is excluded from proofing.')}</p>`,
       ].join(''),
     };
   }

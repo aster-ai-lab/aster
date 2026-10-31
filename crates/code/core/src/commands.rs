@@ -20,7 +20,7 @@
 //! ## Custom Commands
 //!
 //! ```rust,no_run
-//! use a3s_code_core::commands::{SlashCommand, CommandContext, CommandOutput};
+//! use aster_core::commands::{SlashCommand, CommandContext, CommandOutput};
 //!
 //! struct MyCommand;
 //!

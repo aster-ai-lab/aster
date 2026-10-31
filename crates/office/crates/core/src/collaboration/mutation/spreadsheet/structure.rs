@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::Value as JsonValue;
 use yrs::{GetString, Map, Out, ReadTxn, Transact};
 
@@ -712,7 +712,7 @@ fn validate_span(at: u32, count: u32, axis: ReferenceAxis) -> UseResult<()> {
     Ok(())
 }
 
-pub(super) fn structure_too_large() -> a3s_use_core::UseError {
+pub(super) fn structure_too_large() -> aster_use_core::UseError {
     super::super::super::collaboration_error(
         "office.collaboration.mutation_too_large",
         "The Spreadsheet structure edit exceeds the sheet bounds.",

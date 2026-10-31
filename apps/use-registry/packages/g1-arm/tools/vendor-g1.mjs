@@ -19,7 +19,7 @@
 //   right_wrist_yaw_link at 0.046 0 0 so hand +Z is wrist +X. A tcp site sits
 //   0.1034 m along hand +Z, as on the Panda.
 // - Right arm and waist_pitch position actuators get kp 1500.
-// - Timestep 0.002. The page inserts the task scene at <!-- a3s:world -->.
+// - Timestep 0.002. The page inserts the task scene at <!-- aster:world -->.
 //
 // The view policy has connect-src 'none', so g1.js carries everything as one
 // gzip pack in base64:
@@ -154,7 +154,7 @@ const pandaMaterials = materialsOf(panda)
 const g1VisualDefault = [...walk(child(g1, 'default'))].find((item) => item.name === 'default' && item.attrs.get('class') === 'visual')
 const g1VisualMaterial = child(g1VisualDefault ?? fail('g1 has no visual default'), 'geom').attrs.get('material')
 
-g1.attrs.set('model', 'a3s g1-arm')
+g1.attrs.set('model', 'aster g1-arm')
 const compiler = child(g1, 'compiler')
 if (!compiler.attrs.has('meshdir')) fail('compiler has no meshdir')
 compiler.attrs.delete('meshdir')
@@ -270,7 +270,7 @@ wrist.children.push(hand)
 
 const light = world.children.findIndex((item) => item.name === 'light')
 if (light < 0) fail('g1 worldbody has no light')
-world.children.splice(light + 1, 0, { comment: 'a3s:world', attrs: new Map(), children: [] })
+world.children.splice(light + 1, 0, { comment: 'aster:world', attrs: new Map(), children: [] })
 
 const physics = serialize(g1)
 const leftover = /<geom [^>]*class="(?:ph_)?visual"|<keyframe|meshdir|freejoint|right_hand_/.exec(physics)

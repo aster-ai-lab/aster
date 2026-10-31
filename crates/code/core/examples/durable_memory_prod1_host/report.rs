@@ -174,7 +174,7 @@ pub async fn write_pack(
     let manifest_path = directory.join("MANIFEST.json");
     let manifest = json!({
         "schemaVersion": 1,
-        "profile": "a3s.code.dm-prod1-host.v1",
+        "profile": "aster.code.dm-prod1-host.v1",
         "hygiene": if hygiene_ok { "HYGIENE_OK" } else { "HYGIENE_FAIL" },
         "files": entries,
     });

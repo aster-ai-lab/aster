@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{FileLog, LogStore, NewFact};
+use aster_effect::{FileLog, LogStore, NewFact};
 use serde_json::json;
 
 fn workspace() -> tempfile::TempDir {
@@ -50,7 +50,7 @@ fn empty_workspace_is_read_only_and_complete() {
     assert!(page.sessions.is_empty());
     assert!(!page.incomplete);
     assert!(!page.truncated);
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
 }
 
 #[test]
@@ -97,7 +97,7 @@ fn folder_has_runtime_precedence_over_the_legacy_log() {
 fn duplicate_dated_identity_is_ambiguous_even_with_a_legacy_log() {
     let root = workspace();
     let home = folder(root.path(), "same", 10, "first");
-    let other = root.path().join(".a3s/sessions/2026-10-11/same");
+    let other = root.path().join(".aster/sessions/2026-10-11/same");
     std::fs::create_dir_all(&other).expect("second home");
     for name in ["session.json", "same.jsonl"] {
         std::fs::copy(home.join(name), other.join(name)).expect("copy conflicting session");
@@ -186,7 +186,7 @@ fn counts_user_and_model_turns_but_not_tools_or_control_facts() {
         NewFact {
             kind: "model.turn".into(),
             key: "model:1".into(),
-            payload: serde_json::to_value(a3s_effect::coding::ModelDecision::Text {
+            payload: serde_json::to_value(aster_effect::coding::ModelDecision::Text {
                 text: "answer".into(),
             })
             .expect("decision"),
@@ -310,11 +310,11 @@ fn symlinks_at_every_repository_controlled_level_are_refused() {
     folder(outside.path(), "id", 11, "outside secret");
     legacy(outside.path(), "old", "outside legacy secret");
     for rel in [
-        ".a3s",
-        ".a3s/sessions",
-        ".a3s/sessions/2026-10-11",
-        ".a3s/sessions/2026-10-11/id",
-        ".a3s/effect-log",
+        ".aster",
+        ".aster/sessions",
+        ".aster/sessions/2026-10-11",
+        ".aster/sessions/2026-10-11/id",
+        ".aster/effect-log",
     ] {
         let root = workspace();
         let link = root.path().join(rel);
@@ -332,7 +332,7 @@ fn symlinks_at_every_repository_controlled_level_are_refused() {
         symlink(
             outside
                 .path()
-                .join(".a3s/sessions/2026-10-11/id")
+                .join(".aster/sessions/2026-10-11/id")
                 .join(name),
             home.join(name),
         )
@@ -345,7 +345,7 @@ fn symlinks_at_every_repository_controlled_level_are_refused() {
     let home = legacy(root.path(), "old", "inside legacy");
     std::fs::remove_file(home.join("old.jsonl")).expect("remove legacy log");
     symlink(
-        outside.path().join(".a3s/effect-log/old.jsonl"),
+        outside.path().join(".aster/effect-log/old.jsonl"),
         home.join("old.jsonl"),
     )
     .expect("legacy log symlink");
@@ -411,7 +411,7 @@ fn exact_resolution_does_not_create_missing_state() {
     assert!(resolve_workspace_session(root.path(), "missing")
         .expect("lookup")
         .is_none());
-    assert!(!root.path().join(".a3s").exists());
+    assert!(!root.path().join(".aster").exists());
     for id in ["", ".", "..", &"x".repeat(4097)] {
         assert!(resolve_workspace_session(root.path(), id).is_err());
     }
@@ -452,7 +452,7 @@ fn exact_resolution_ignores_other_logs_and_a_catalog_page_limit() {
         .expect("resolve")
         .expect("exact");
     assert_eq!(entry.id, "z-target");
-    let other = root.path().join(".a3s/effect-log/unrelated.jsonl");
+    let other = root.path().join(".aster/effect-log/unrelated.jsonl");
     std::fs::File::create(other)
         .expect("unrelated")
         .set_len(MAX_LOG_BYTES + 1)
@@ -466,7 +466,7 @@ fn exact_resolution_ignores_other_logs_and_a_catalog_page_limit() {
 fn exact_resolution_refuses_ambiguous_dated_identity_and_legacy_substitution() {
     let root = workspace();
     let home = folder(root.path(), "same", 10, "first");
-    let other = root.path().join(".a3s/sessions/2026-10-11/same");
+    let other = root.path().join(".aster/sessions/2026-10-11/same");
     std::fs::create_dir_all(&other).expect("other home");
     for name in ["session.json", "same.jsonl"] {
         std::fs::copy(home.join(name), other.join(name)).expect("copy");
@@ -511,7 +511,7 @@ fn exact_resolution_refuses_corrupt_or_oversized_preferred_logs() {
 fn exact_resolution_requires_complete_identity_traversal() {
     let root = workspace();
     legacy(root.path(), "id", "legacy");
-    let sessions = root.path().join(".a3s/sessions");
+    let sessions = root.path().join(".aster/sessions");
     std::fs::create_dir(&sessions).expect("sessions");
     for n in 0..=MAX_ENTRIES {
         std::fs::write(sessions.join(format!("unrelated-{n}")), b"").expect("entry");
@@ -526,7 +526,7 @@ fn exact_resolution_refuses_linked_state_and_writerless_fifo() {
     let root = workspace();
     let outside = workspace();
     legacy(outside.path(), "id", "outside");
-    symlink(outside.path().join(".a3s"), root.path().join(".a3s")).expect("state symlink");
+    symlink(outside.path().join(".aster"), root.path().join(".aster")).expect("state symlink");
     assert!(resolve_workspace_session(root.path(), "id").is_err());
     let root = workspace();
     let home = legacy(root.path(), "id", "replace");

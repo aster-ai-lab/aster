@@ -1,7 +1,7 @@
-# A3S Flow
+# Aster Flow
 
 <p align="center">
-  <img src="assets/readme/hero.svg" width="100%" alt="A3S Flow commits workflow decisions to append-only history and resumes safely after worker replacement" />
+  <img src="assets/readme/hero.svg" width="100%" alt="Aster Flow commits workflow decisions to append-only history and resumes safely after worker replacement" />
 </p>
 
 
@@ -17,17 +17,17 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/A3S-Lab/Flow/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/A3S-Lab/Flow/actions/workflows/ci.yml/badge.svg?branch=main" /></a>
-  <a href="https://github.com/A3S-Lab/Flow/actions/workflows/security.yml"><img alt="Security" src="https://github.com/A3S-Lab/Flow/actions/workflows/security.yml/badge.svg?branch=main" /></a>
-  <a href="https://crates.io/crates/a3s-flow"><img alt="crates.io" src="https://img.shields.io/crates/v/a3s-flow.svg" /></a>
-  <a href="https://docs.rs/a3s-flow"><img alt="docs.rs" src="https://docs.rs/a3s-flow/badge.svg" /></a>
-  <a href="https://opensource.org/license/mit"><img alt="MIT license" src="https://img.shields.io/crates/l/a3s-flow.svg" /></a>
+  <a href="https://github.com/aster-ai-lab/Flow/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/aster-ai-lab/Flow/actions/workflows/ci.yml/badge.svg?branch=main" /></a>
+  <a href="https://github.com/aster-ai-lab/Flow/actions/workflows/security.yml"><img alt="Security" src="https://github.com/aster-ai-lab/Flow/actions/workflows/security.yml/badge.svg?branch=main" /></a>
+  <a href="https://crates.io/crates/aster-flow"><img alt="crates.io" src="https://img.shields.io/crates/v/aster-flow.svg" /></a>
+  <a href="https://docs.rs/aster-flow"><img alt="docs.rs" src="https://docs.rs/aster-flow/badge.svg" /></a>
+  <a href="https://opensource.org/license/mit"><img alt="MIT license" src="https://img.shields.io/crates/l/aster-flow.svg" /></a>
 </p>
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/Flow/">中文文档</a> &middot;
-  <a href="https://a3s-lab.github.io/Flow/en/">English documentation</a> &middot;
-  <a href="https://a3s-lab.github.io/Flow/playground/">Workflow Playground</a> &middot;
+  <a href="https://aster-lab.github.io/Flow/">中文文档</a> &middot;
+  <a href="https://aster-lab.github.io/Flow/en/">English documentation</a> &middot;
+  <a href="https://aster-lab.github.io/Flow/playground/">Workflow Playground</a> &middot;
   <a href="#quick-start">Quick start</a> &middot;
   <a href="#execution-model">Execution model</a> &middot;
   <a href="#capability-map">Capabilities</a> &middot;
@@ -37,7 +37,7 @@
   <a href="#release-status">Status</a>
 </p>
 
-A3S Flow is an AI Native Workflow Engine and Rust SDK for work that must survive
+Aster Flow is an AI Native Workflow Engine and Rust SDK for work that must survive
 process restarts, delayed retries, timers, asynchronous messages, callbacks,
 and worker replacement. Every meaningful transition is appended to history.
 The engine projects state from that history and rejects replay drift instead of
@@ -58,33 +58,33 @@ that operate on Flow's versioned workflow document contract.
 > Flow owns workflow graph validation, append-only history, durable replay, and
 > lifecycle state. The host owns node implementations, authorization, tenant
 > policy, credentials, tool access, and logical idempotency for external side
-> effects. A3S Cloud binds those product capabilities; it does not duplicate
+> effects. Aster Cloud binds those product capabilities; it does not duplicate
 > Flow's compiler or runtime.
 
 ## Authoring components, hooks, CLI, and Skill
 
-`@a3s-lab/flow-ui` is the reusable authoring package for Flow workflows. It
+`@aster-ai-lab/flow-ui` is the reusable authoring package for Flow workflows. It
 keeps the node catalog, editor components, framework hooks, command-line tools,
 and agent instructions on the same manifest and graph contracts.
 
 | Surface      | Current contract                                                                                                                                                                                                                                                                                                                                                   |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Playground   | Integrated visual authoring route with a 35-node cross-border order fulfillment sample covering all 20 registry manifests, complete manifest-contract inspection, drag and drop, typed connections, editable presentation-only edge labels, A3S UI configuration forms, Worker and WebAssembly layout, visible-node rendering, DAG compilation, DSL inspection, and a host-injectable CLI / Skill / Copilot extension drawer |
+| Playground   | Integrated visual authoring route with a 35-node cross-border order fulfillment sample covering all 20 registry manifests, complete manifest-contract inspection, drag and drop, typed connections, editable presentation-only edge labels, Aster UI configuration forms, Worker and WebAssembly layout, visible-node rendering, DAG compilation, DSL inspection, and a host-injectable CLI / Skill / Copilot extension drawer |
 | Node catalog | 18 public manifests in six authoring groups, with fields, defaults, ports, runtime bindings, and durable node identity                                                                                                                                                                                                                                             |
 | React        | Node preview and configuration components plus `useKenseFlowNode` for controlled-ready node state; `createKenseFlowDesignerContext` and `KenseFlowDesignerExtensionArea` expose immutable full-DSL and selection context to host extensions                                                                                                                                 |
 | Vue          | A `useKenseFlowNode` composable over the same node object, defaults, and manifest registry                                                                                                                                                                                                                                                                           |
-| Custom nodes | Immutable host catalogs with A3S UI form rendering, exact executor capabilities, and a publication gate                                                                                                                                                                                                                                                            |
-| CLI          | JSON-first `a3s-flow` commands for node discovery plus file CRUD: `create`, `read`, `update`, `delete`, `validate`, `compile`, and `digest`; updates include stable-ID-preserving node moves and edge redirects, scoped container-child placement, batch or NDJSON-streamed patches from stdin or files, optimistic digest checks, dry-run, atomic writes, and final candidate revalidation                                                                                         |
-| Skill        | An installable `a3s-flow` Skill that queries the CLI before creating, connecting, validating, reviewing, or safely editing a workflow file                                                                                                                                                                                                                         |
+| Custom nodes | Immutable host catalogs with Aster UI form rendering, exact executor capabilities, and a publication gate                                                                                                                                                                                                                                                            |
+| CLI          | JSON-first `aster-flow` commands for node discovery plus file CRUD: `create`, `read`, `update`, `delete`, `validate`, `compile`, and `digest`; updates include stable-ID-preserving node moves and edge redirects, scoped container-child placement, batch or NDJSON-streamed patches from stdin or files, optimistic digest checks, dry-run, atomic writes, and final candidate revalidation                                                                                         |
+| Skill        | An installable `aster-flow` Skill that queries the CLI before creating, connecting, validating, reviewing, or safely editing a workflow file                                                                                                                                                                                                                         |
 
-The [Workflow Playground](https://a3s-lab.github.io/Flow/playground/),
-[React guide](https://a3s-lab.github.io/Flow/reference/react),
-[Vue guide](https://a3s-lab.github.io/Flow/reference/vue),
-[custom node guide](https://a3s-lab.github.io/Flow/reference/custom-nodes),
-[CLI reference](https://a3s-lab.github.io/Flow/reference/cli), and
-[Skill guide](https://a3s-lab.github.io/Flow/reference/agent-skill) document each
+The [Workflow Playground](https://aster-lab.github.io/Flow/playground/),
+[React guide](https://aster-lab.github.io/Flow/reference/react),
+[Vue guide](https://aster-lab.github.io/Flow/reference/vue),
+[custom node guide](https://aster-lab.github.io/Flow/reference/custom-nodes),
+[CLI reference](https://aster-lab.github.io/Flow/reference/cli), and
+[Skill guide](https://aster-lab.github.io/Flow/reference/agent-skill) document each
 surface. The complete node catalog and configuration reference live under
-[Workflow nodes](https://a3s-lab.github.io/Flow/nodes/).
+[Workflow nodes](https://aster-lab.github.io/Flow/nodes/).
 
 ## Quick start
 
@@ -92,7 +92,7 @@ Add Flow and an async runtime:
 
 ```toml
 [dependencies]
-a3s-flow = "=2.0.0"
+aster-flow = "=2.0.0"
 async-trait = "0.1"
 serde_json = "1"
 tokio = { version = "1", features = ["macros", "rt"] }
@@ -101,7 +101,7 @@ tokio = { version = "1", features = ["macros", "rt"] }
 Keep deterministic workflow decisions separate from side-effecting steps:
 
 ```rust
-use a3s_flow::{
+use aster_flow::{
     FlowEngine, FlowError, FlowRuntime, RuntimeCommand, StepInvocation,
     WorkflowInvocation, WorkflowSpec,
 };
@@ -116,7 +116,7 @@ impl FlowRuntime for GreetingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
 
         if let Some(output) = ctx.step_output("greet") {
@@ -133,7 +133,7 @@ impl FlowRuntime for GreetingRuntime {
     async fn run_step(
         &self,
         invocation: StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
+    ) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "greet_user" => {
                 let name = invocation.input["name"].as_str().unwrap_or("unknown");
@@ -145,7 +145,7 @@ impl FlowRuntime for GreetingRuntime {
 }
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() -> a3s_flow::Result<()> {
+async fn main() -> aster_flow::Result<()> {
     let engine = FlowEngine::in_memory(Arc::new(GreetingRuntime));
     let spec = WorkflowSpec::rust_embedded("demo.greeting", "0.1.0", "demo", "main");
 
@@ -170,7 +170,7 @@ cargo run --example sequential_steps
 ## Execution model
 
 <p align="center">
-  <img src="assets/readme/execution-model.svg" width="100%" alt="A3S Flow projects history, asks workflow code for one command, commits resulting events, then replays or suspends" />
+  <img src="assets/readme/execution-model.svg" width="100%" alt="Aster Flow projects history, asks workflow code for one command, commits resulting events, then replays or suspends" />
 </p>
 
 One replay cycle has four explicit phases:
@@ -223,9 +223,9 @@ by runnable examples or integration tests.
 | Child workflows   | First-class single children and bounded concurrent batches persist every child identity before execution and recover partial cross-stream progress             | [`child_workflow`](examples/child_workflow.rs), [`child_workflow_batch`](examples/child_workflow_batch.rs)                                                                   |
 | Long histories    | `continue_as_new` closes one stream and resumes from a fresh linked stream with the exact inherited workflow authority                                         | [`continue_as_new`](examples/continue_as_new.rs)                                                                                                                             |
 | Safe rollout      | Exact runtime-build routing rejects incompatible workers before mutation; immutable patch markers preserve old and new replay branches                         | [`replay_safe_patch`](examples/replay_safe_patch.rs), [rollout recipe](docs/COOKBOOK.md#replay-safe-workflow-patches)                                                        |
-| Persistence       | In-memory and JSONL stores are built in; SQLite and PostgreSQL share the `FlowEventStore` contract and canonical A3S ORM migrations                            | [`local_file_durability`](examples/local_file_durability.rs), [`sqlite_durability`](examples/sqlite_durability.rs), [`postgres_durability`](examples/postgres_durability.rs) |
-| Dispatch          | A3S Boot task management is recommended; embedded compatibility queues and `FlowWorker` remain available                                                       | [`boot_task_policy`](examples/boot_task_policy.rs), [`task_queue_durability`](examples/task_queue_durability.rs)                                                             |
-| Observability     | Post-commit observers with bounded panic/timeout isolation, concurrent fan-out, an A3S Event bridge, and a repair-aware local JSONL audit sink mirror committed events without becoming state authority | [`observer_fanout`](examples/observer_fanout.rs), [`local_audit_log`](examples/local_audit_log.rs)                                                                           |
+| Persistence       | In-memory and JSONL stores are built in; SQLite and PostgreSQL share the `FlowEventStore` contract and canonical Aster ORM migrations                            | [`local_file_durability`](examples/local_file_durability.rs), [`sqlite_durability`](examples/sqlite_durability.rs), [`postgres_durability`](examples/postgres_durability.rs) |
+| Dispatch          | Aster Boot task management is recommended; embedded compatibility queues and `FlowWorker` remain available                                                       | [`boot_task_policy`](examples/boot_task_policy.rs), [`task_queue_durability`](examples/task_queue_durability.rs)                                                             |
+| Observability     | Post-commit observers with bounded panic/timeout isolation, concurrent fan-out, an Aster Event bridge, and a repair-aware local JSONL audit sink mirror committed events without becoming state authority | [`observer_fanout`](examples/observer_fanout.rs), [`local_audit_log`](examples/local_audit_log.rs)                                                                           |
 | Native TypeScript | Optional source compilation, artifact identity, dependency-manifest verification, and a versioned JSON invocation protocol; Rust remains the durable authority | [`native_ts_preflight`](examples/native_ts_preflight.rs), [protocol guide](docs/NATIVE_TYPESCRIPT.md)                                                                        |
 
 ### Bounded retries
@@ -235,7 +235,7 @@ jitter from immutable run, step, and attempt identity, so a restart cannot
 change the selected durable deadline:
 
 ```rust
-use a3s_flow::RetryPolicy;
+use aster_flow::RetryPolicy;
 use std::time::Duration;
 
 let retry = RetryPolicy::exponential(
@@ -287,13 +287,13 @@ derives a deterministic plan; the host binds each node's `data.type` to an
 authorized executor.
 
 <p align="center">
-  <img src="assets/readme/workflow-dag.svg" width="100%" alt="A3S Flow takes nodes and edges through one structural compiler, then a host binds node capabilities before the durable runtime executes them" />
+  <img src="assets/readme/workflow-dag.svg" width="100%" alt="Aster Flow takes nodes and edges through one structural compiler, then a host binds node capabilities before the durable runtime executes them" />
 </p>
 
 Compile the same wire shape into a stable plan and semantic identity:
 
 ```rust
-use a3s_flow::WorkflowDag;
+use aster_flow::WorkflowDag;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let source = std::fs::read_to_string("workflow.json")?;
@@ -329,7 +329,7 @@ All stores preserve the same event envelope and replay contract.
 | `SqliteEventStore`    | Single-node durable applications                    | `sqlite`   |
 | `PostgresEventStore`  | Multi-process workers sharing authoritative history | `postgres` |
 
-SQLite and PostgreSQL use `a3s-orm` for typed access, checksummed migrations,
+SQLite and PostgreSQL use `aster-orm` for typed access, checksummed migrations,
 projection-validated transactional appends, active-hook routing, scheduled-wakeup indexes,
 durable projection checkpoints, and whole-history retention. `FlowEngine::checkpoint`
 persists only disposable materialized state; SQL append transactions advance that
@@ -379,8 +379,8 @@ source of truth.
 | `native-ts` (default) | Native TypeScript compile and invocation adapter |
 | `sqlite`              | SQLite event history and retention               |
 | `postgres`            | PostgreSQL history and compatibility task queue  |
-| `boot`                | Recommended A3S Boot task-manager integration    |
-| `a3s-event`           | Post-commit A3S Event sink                       |
+| `boot`                | Recommended Aster Boot task-manager integration    |
+| `aster-event`           | Post-commit Aster Event sink                       |
 
 `BootFlowTaskManager` owns processor registration, job state, retry/timeout
 policy, stalled-job handling, logical deduplication, startup, and shutdown.
@@ -395,13 +395,13 @@ binds source, compiler backend, working directory, protocol, OS, and
 architecture. In strict compiler-manifest mode, Flow verifies the complete
 dependency graph before and after atomic publication.
 
-Install the compiler and provide Bun on `PATH` (or set `A3S_FLOW_BUN`):
+Install the compiler and provide Bun on `PATH` (or set `ASTER_FLOW_BUN`):
 
 ```sh
-cargo install a3s-flow --version 2.0.0 --locked \
-  --bin a3s-flow-native-compiler
+cargo install aster-flow --version 2.0.0 --locked \
+  --bin aster-flow-native-compiler
 
-a3s-flow-native-compiler capabilities
+aster-flow-native-compiler capabilities
 ```
 
 TypeScript is an adapter, not a second SDK, event store, scheduler, or workflow
@@ -441,19 +441,19 @@ Start with one executable path, then move to the concern you need.
 
 | Reference                                                | What it owns                                                                             |
 | -------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [Documentation website](https://a3s-lab.github.io/Flow/) | Guided setup, execution concepts, production operations, runtimes, examples, and API map |
+| [Documentation website](https://aster-lab.github.io/Flow/) | Guided setup, execution concepts, production operations, runtimes, examples, and API map |
 | [Architecture](docs/ARCHITECTURE.md)                     | Event sourcing, replay, store, scheduler, and native-runtime boundaries                  |
 | [Cookbook](docs/COOKBOOK.md)                             | Stable IDs, retries, batches, timers, hooks, signals, cancellation, and compensation     |
 | [Execution-kernel roadmap](docs/ROADMAP.md)              | Ordered kernel work, Flow/Cloud ownership, compatibility, scale, and release gates       |
 | [Functional plan](docs/FUNCTIONAL_PLAN.md)               | Capability-level evidence, completion gates, maintenance work, and non-goals             |
 | [API stability](docs/API_STABILITY.md)                   | SemVer, durable compatibility, MSRV, and the `1.0.0` release contract                    |
 | [Upgrading to Flow 1.0](docs/UPGRADING_TO_V1.md)         | Supported pre-v1 histories/schemas, rollout, verification, and rollback                  |
-| [API docs](https://docs.rs/a3s-flow)                     | Public Rust types and methods                                                            |
+| [API docs](https://docs.rs/aster-flow)                     | Public Rust types and methods                                                            |
 | [Security policy](SECURITY.md)                           | Supported releases, trust boundaries, and private reporting                              |
 
 ## Development
 
-Run checks from this crate, not from the A3S monorepo root:
+Run checks from this crate, not from the Aster monorepo root:
 
 ```sh
 cargo +1.88.0 check --all-targets --all-features --locked
@@ -468,9 +468,9 @@ deeper matrices:
 
 ```sh
 just deep-test-non-pg
-KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/a3s_flow \
+KENSE_FLOW_POSTGRES_URL=postgres://user:pass@localhost:5432/aster_flow \
   just postgres-test
-A3S_FLOW_NATIVE_TS_COMPILER=/path/to/a3s-flow-native-compiler \
+ASTER_FLOW_NATIVE_TS_COMPILER=/path/to/aster-flow-native-compiler \
   just native-ts-bun-test
 ```
 
@@ -487,7 +487,7 @@ and persistence contracts for compatible 2.x hosts.
 Reusable workflow-authoring components, React and Vue hooks, the CLI, and the
 Skill are maintained in this repository. Hosted tenancy, authorization,
 product-specific capability binding, deployment policy, and the multi-tenant
-control plane remain outside the Rust crate; A3S Cloud owns those product
+control plane remain outside the Rust crate; Aster Cloud owns those product
 surfaces.
 
 Maintenance is contract-led: preserve SemVer and replay compatibility, keep
@@ -498,4 +498,4 @@ evidence and release gates.
 
 ## License
 
-[MIT](https://opensource.org/license/mit) &copy; A3S Lab
+[MIT](https://opensource.org/license/mit) &copy; Aster

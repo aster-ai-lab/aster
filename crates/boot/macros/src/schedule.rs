@@ -66,12 +66,12 @@ pub(crate) fn expand_schedule(mut item_impl: ItemImpl) -> Result<proc_macro2::To
         impl #self_ty {
             pub fn scheduled_jobs(
                 self: ::std::sync::Arc<Self>,
-            ) -> ::std::vec::Vec<::a3s_boot::ScheduledJob> {
-                let mut __a3s_boot_jobs = ::std::vec::Vec::new();
+            ) -> ::std::vec::Vec<::aster_boot::ScheduledJob> {
+                let mut __aster_boot_jobs = ::std::vec::Vec::new();
                 #(
-                    __a3s_boot_jobs.push(#jobs);
+                    __aster_boot_jobs.push(#jobs);
                 )*
-                __a3s_boot_jobs
+                __aster_boot_jobs
             }
         }
     })
@@ -115,7 +115,7 @@ fn schedule_job_registration(
             };
             let expression = args.expression;
             quote! {
-                ::a3s_boot::ScheduledJob::cron(#name, #expression, #handler)
+                ::aster_boot::ScheduledJob::cron(#name, #expression, #handler)
             }
         }
         ScheduleJobKind::Interval => {
@@ -124,7 +124,7 @@ fn schedule_job_registration(
             };
             let millis = args.duration_millis()?;
             quote! {
-                ::a3s_boot::ScheduledJob::interval(
+                ::aster_boot::ScheduledJob::interval(
                     #name,
                     ::std::time::Duration::from_millis(#millis),
                     #handler
@@ -137,7 +137,7 @@ fn schedule_job_registration(
             };
             let millis = args.duration_millis()?;
             quote! {
-                ::a3s_boot::ScheduledJob::timeout(
+                ::aster_boot::ScheduledJob::timeout(
                     #name,
                     ::std::time::Duration::from_millis(#millis),
                     #handler
@@ -151,9 +151,9 @@ fn scheduled_task_handler(
     method_ident: &Ident,
     input: &ScheduleMethodInput,
 ) -> proc_macro2::TokenStream {
-    let scheduled_name = format_ident!("__a3s_boot_scheduled_{}", method_ident);
+    let scheduled_name = format_ident!("__aster_boot_scheduled_{}", method_ident);
     let (closure_arg, method_args) = if input.accepts_context {
-        (quote!(__a3s_boot_context), quote!(__a3s_boot_context))
+        (quote!(__aster_boot_context), quote!(__aster_boot_context))
     } else {
         (quote!(_context), quote!())
     };
@@ -161,7 +161,7 @@ fn scheduled_task_handler(
     quote! {
         {
             let #scheduled_name = ::std::sync::Arc::clone(&self);
-            move |#closure_arg: ::a3s_boot::ScheduleContext| {
+            move |#closure_arg: ::aster_boot::ScheduleContext| {
                 let #scheduled_name = ::std::sync::Arc::clone(&#scheduled_name);
                 async move { #scheduled_name.#method_ident(#method_args).await }
             }

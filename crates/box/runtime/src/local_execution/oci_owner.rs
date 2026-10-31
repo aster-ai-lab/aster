@@ -6,22 +6,22 @@ use std::path::{Component, Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::time::{Duration, Instant};
 
-use a3s_box_core::{ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult};
+use aster_box_core::{ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult};
 use serde::{Deserialize, Serialize};
 
 use super::{OciLifecycleAdapter, OciRuntimeEndpoint};
 use crate::file_lock::FileLock;
-use crate::sandbox::CertifiedA3sOci;
+use crate::sandbox::CertifiedAsterOci;
 
-const OWNER_RECORD_SCHEMA: &str = "a3s.box.native-linux-oci-owner.v1";
+const OWNER_RECORD_SCHEMA: &str = "aster.box.native-linux-oci-owner.v1";
 const OWNER_RECORD_NAME: &str = "box-owner.json";
 const OWNER_LOCK_TARGET: &str = "box-owner";
 const OWNER_SOCKET_NAME: &str = "runtime.sock";
-const NATIVE_SESSION_SUPERVISOR_ENV: &str = "A3S_OCI_NATIVE_SESSION_SUPERVISOR";
+const NATIVE_SESSION_SUPERVISOR_ENV: &str = "ASTER_OCI_NATIVE_SESSION_SUPERVISOR";
 /// Destination cgroup for an operator setuid owner. The parent cannot write
-/// the cgroup v2 common ancestor; `a3s-oci` migrates after exec while euid is 0.
-const OWNER_CGROUP_ENV: &str = "A3S_BOX_OWNER_CGROUP";
-pub(crate) use a3s_box_core::OCI_NATIVE_KEEP_NETWORK_DEVICE_AUTHORITY_ENV as KEEP_NETWORK_DEVICE_AUTHORITY_ENV;
+/// the cgroup v2 common ancestor; `aster-oci` migrates after exec while euid is 0.
+const OWNER_CGROUP_ENV: &str = "ASTER_BOX_OWNER_CGROUP";
+pub(crate) use aster_box_core::OCI_NATIVE_KEEP_NETWORK_DEVICE_AUTHORITY_ENV as KEEP_NETWORK_DEVICE_AUTHORITY_ENV;
 const STARTUP_TIMEOUT: Duration = Duration::from_secs(10);
 const STARTUP_POLL_INTERVAL: Duration = Duration::from_millis(50);
 
@@ -46,7 +46,7 @@ impl NativeLinuxOwnerRecord {
     fn new(
         pid: u32,
         pid_start_time: u64,
-        artifacts: &CertifiedA3sOci,
+        artifacts: &CertifiedAsterOci,
         socket_path: PathBuf,
         keep_network_device_authority: bool,
     ) -> Self {
@@ -81,7 +81,7 @@ impl NativeLinuxOwnerRecord {
         Ok(())
     }
 
-    fn artifacts_match(&self, expected: &CertifiedA3sOci) -> bool {
+    fn artifacts_match(&self, expected: &CertifiedAsterOci) -> bool {
         self.runtime_path == expected.runtime_path
             && self.runtime_sha256 == expected.runtime_sha256
             && self.agent_path == expected.agent_path
@@ -153,7 +153,7 @@ pub(crate) struct EnsureNativeLinuxOwnerOptions {
 
 pub(crate) async fn ensure_native_linux_oci_owner(
     service_root: &Path,
-    artifacts: &CertifiedA3sOci,
+    artifacts: &CertifiedAsterOci,
 ) -> ExecutionManagerResult<OciRuntimeEndpoint> {
     ensure_native_linux_oci_owner_with_options(
         service_root,
@@ -165,7 +165,7 @@ pub(crate) async fn ensure_native_linux_oci_owner(
 
 pub(crate) async fn ensure_native_linux_oci_owner_with_options(
     service_root: &Path,
-    artifacts: &CertifiedA3sOci,
+    artifacts: &CertifiedAsterOci,
     options: EnsureNativeLinuxOwnerOptions,
 ) -> ExecutionManagerResult<OciRuntimeEndpoint> {
     validate_service_root(service_root)?;
@@ -238,7 +238,7 @@ pub(crate) async fn ensure_native_linux_oci_owner_with_options(
     })?;
     // Provisional identity: elevated CI launches go through sudo/setpriv, so the
     // Child PID may be a supervisor. Rewrite from SO_PEERCRED after the socket is
-    // ready so owner-death recovery finds the real a3s-oci executor root.
+    // ready so owner-death recovery finds the real aster-oci executor root.
     let provisional = NativeLinuxOwnerRecord::new(
         launch_pid,
         launch_start_time,
@@ -295,7 +295,7 @@ pub(crate) async fn ensure_native_linux_oci_owner_with_options(
     // Retaining the Child in this waiter prevents a persistent SDK host from
     // accumulating a zombie without tying the owner's lifetime to the caller.
     std::thread::Builder::new()
-        .name("a3s-oci-owner-reaper".to_string())
+        .name("aster-oci-owner-reaper".to_string())
         .spawn(move || {
             let _ = child.wait();
         })
@@ -349,7 +349,7 @@ async fn wait_until_ready(
 
 fn resolve_owner_identity_from_socket(
     socket_path: &Path,
-    artifacts: &CertifiedA3sOci,
+    artifacts: &CertifiedAsterOci,
     keep_network_device_authority: bool,
 ) -> ExecutionManagerResult<NativeLinuxOwnerRecord> {
     use std::mem::{size_of, MaybeUninit};
@@ -418,7 +418,7 @@ fn resolve_owner_identity_from_socket(
 fn keep_network_device_authority_requested() -> ExecutionManagerResult<bool> {
     let flag = match std::env::var(KEEP_NETWORK_DEVICE_AUTHORITY_ENV) {
         Err(std::env::VarError::NotPresent) => return Ok(false),
-        Ok(value) => a3s_box_core::parse_keep_network_device_authority(Some(&value))
+        Ok(value) => aster_box_core::parse_keep_network_device_authority(Some(&value))
             .map_err(ExecutionManagerError::InvalidRequest)?,
         Err(error) => {
             return Err(ExecutionManagerError::Unavailable(format!(
@@ -427,8 +427,8 @@ fn keep_network_device_authority_requested() -> ExecutionManagerResult<bool> {
         }
     };
     match flag {
-        a3s_box_core::KeepNetworkAuthorityFlag::Off => Ok(false),
-        a3s_box_core::KeepNetworkAuthorityFlag::On => {
+        aster_box_core::KeepNetworkAuthorityFlag::Off => Ok(false),
+        aster_box_core::KeepNetworkAuthorityFlag::On => {
             // SAFETY: reading real/effective UIDs is async-signal-safe and
             // does not mutate process state.
             let euid = unsafe { libc::geteuid() };
@@ -449,7 +449,7 @@ pub(crate) fn keep_network_device_authority_active() -> ExecutionManagerResult<b
 
 fn spawn_owner(
     service_root: &Path,
-    artifacts: &CertifiedA3sOci,
+    artifacts: &CertifiedAsterOci,
     keep_network_device_authority: bool,
 ) -> ExecutionManagerResult<Child> {
     let stdout = open_owner_log(&service_root.join("owner.stdout.log"))?;
@@ -460,7 +460,7 @@ fn spawn_owner(
         prepare_owner_delegation_child()?
     };
     // Prefer the Sandbox OCI launcher name so production setuid installs elevate
-    // for device-policy bootstrap; CI packages the same a3s-oci binary there.
+    // for device-policy bootstrap; CI packages the same aster-oci binary there.
     let launcher = crate::sandbox::resolve_sandbox_oci_launcher(None)
         .unwrap_or_else(|_| artifacts.runtime_path.clone());
     // Matched-cred CI harnesses (euid==ruid) cannot bootstrap device policy.
@@ -469,7 +469,7 @@ fn spawn_owner(
     // drop to the real identity for Unix peer auth with the matched harness.
     // Without that lab wrapper, non-root operators must use the setuid libexec
     // launcher — CI setpriv is not proof of that install.
-    let elevate_wrapper = std::env::var_os("A3S_BOX_CI_SETPRIV_WRAPPER")
+    let elevate_wrapper = std::env::var_os("ASTER_BOX_CI_SETPRIV_WRAPPER")
         .filter(|value| !value.is_empty())
         // SAFETY: See the enclosing function's safety documentation.
         .filter(|_| unsafe { libc::geteuid() } != 0);
@@ -478,7 +478,7 @@ fn spawn_owner(
     let operator_setuid = elevate_wrapper.is_none() && unsafe { libc::geteuid() } != 0;
     if keep_network_device_authority && elevate_wrapper.is_some() {
         return Err(ExecutionManagerError::Unavailable(format!(
-            "{KEEP_NETWORK_DEVICE_AUTHORITY_ENV} is incompatible with A3S_BOX_CI_SETPRIV_WRAPPER; matched-root keep-authority cannot use the lab setpriv drop path"
+            "{KEEP_NETWORK_DEVICE_AUTHORITY_ENV} is incompatible with ASTER_BOX_CI_SETPRIV_WRAPPER; matched-root keep-authority cannot use the lab setpriv drop path"
         )));
     }
     // SAFETY: See the enclosing function's safety documentation.
@@ -490,8 +490,8 @@ fn spawn_owner(
         let mut command = Command::new("bash");
         command.arg(wrapper);
         command.arg(&launcher);
-        command.env_remove("A3S_BOX_CI_SETPRIV_MATCHED_CREDS");
-        command.env_remove("A3S_BOX_CI_PROBE_CGROUP");
+        command.env_remove("ASTER_BOX_CI_SETPRIV_MATCHED_CREDS");
+        command.env_remove("ASTER_BOX_CI_PROBE_CGROUP");
         command
     } else {
         Command::new(&launcher)
@@ -531,8 +531,8 @@ fn spawn_owner(
     // membership without moving the Sandbox CI harness out of its probe cgroup.
     // An operator setuid exec is still the unprivileged uid in this pre_exec
     // hook, so an EACCES from the cgroup v2 common ancestor is deferred to
-    // a3s-oci (A3S_BOX_OWNER_CGROUP). Keep-authority omits that flag so the
-    // owner stays Privileged and can advertise a3s.oci.attachments.v3.
+    // aster-oci (ASTER_BOX_OWNER_CGROUP). Keep-authority omits that flag so the
+    // owner stays Privileged and can advertise aster.oci.attachments.v3.
     // SAFETY: See the enclosing function's safety documentation.
     unsafe {
         command.pre_exec(move || {
@@ -888,7 +888,7 @@ fn reap_orphaned_supervised_sessions(
     dead_owner: &NativeLinuxOwnerRecord,
 ) -> ExecutionManagerResult<()> {
     let executor_root = service_root.join("executor").join(format!(
-        "a3s-oci-agent-{}-{:016x}",
+        "aster-oci-agent-{}-{:016x}",
         dead_owner.pid, dead_owner.pid_start_time
     ));
     if !executor_root.is_dir() {
@@ -1052,13 +1052,13 @@ mod tests {
 
     #[test]
     fn owner_record_fences_endpoint_and_artifacts() {
-        let artifacts = CertifiedA3sOci {
-            runtime_path: PathBuf::from("/opt/a3s/a3s-oci"),
+        let artifacts = CertifiedAsterOci {
+            runtime_path: PathBuf::from("/opt/aster/aster-oci"),
             runtime_sha256: "a".repeat(64),
-            agent_path: PathBuf::from("/opt/a3s/a3s-oci-agent"),
+            agent_path: PathBuf::from("/opt/aster/aster-oci-agent"),
             agent_sha256: "b".repeat(64),
         };
-        let socket = PathBuf::from("/tmp/a3s-owner/runtime.sock");
+        let socket = PathBuf::from("/tmp/aster-owner/runtime.sock");
         let record = NativeLinuxOwnerRecord::new(42, 7, &artifacts, socket.clone(), false);
         record.validate(&socket).unwrap();
         assert!(record.artifacts_match(&artifacts));
@@ -1068,16 +1068,16 @@ mod tests {
     #[test]
     fn device_policy_helper_death_detector_is_narrow() {
         assert!(is_rootless_device_policy_helper_dead(
-            "A3S OCI create: rootless device-policy helper exited with signal 9: Broken pipe (os error 32)"
+            "Aster OCI create: rootless device-policy helper exited with signal 9: Broken pipe (os error 32)"
         ));
         assert!(is_rootless_device_policy_helper_dead(
             "helper channel is unavailable: helper exited with signal 9"
         ));
         assert!(!is_rootless_device_policy_helper_dead(
-            "A3S OCI create: execution backend unavailable: socket connect refused"
+            "Aster OCI create: execution backend unavailable: socket connect refused"
         ));
         assert!(!is_rootless_device_policy_helper_dead(
-            "A3S OCI create rejected the lifecycle boundary: conflict"
+            "Aster OCI create rejected the lifecycle boundary: conflict"
         ));
     }
 
@@ -1090,10 +1090,10 @@ mod tests {
 
     #[test]
     fn completed_zombie_owner_is_not_reused() {
-        let artifacts = CertifiedA3sOci {
-            runtime_path: PathBuf::from("/opt/a3s/a3s-oci"),
+        let artifacts = CertifiedAsterOci {
+            runtime_path: PathBuf::from("/opt/aster/aster-oci"),
             runtime_sha256: "a".repeat(64),
-            agent_path: PathBuf::from("/opt/a3s/a3s-oci-agent"),
+            agent_path: PathBuf::from("/opt/aster/aster-oci-agent"),
             agent_sha256: "b".repeat(64),
         };
         let mut child = Command::new("/bin/true")
@@ -1116,7 +1116,7 @@ mod tests {
             pid,
             start_time,
             &artifacts,
-            PathBuf::from("/tmp/a3s-owner/runtime.sock"),
+            PathBuf::from("/tmp/aster-owner/runtime.sock"),
             false,
         );
         assert!(!record.is_alive(), "a zombie owner must be reclaimed");
@@ -1127,7 +1127,7 @@ mod tests {
     fn box_owned_spawn_forces_supervised_create_env() {
         assert_eq!(
             NATIVE_SESSION_SUPERVISOR_ENV,
-            "A3S_OCI_NATIVE_SESSION_SUPERVISOR"
+            "ASTER_OCI_NATIVE_SESSION_SUPERVISOR"
         );
         // spawn_owner always exports this as "1" so Box-owned Sandbox create
         // and Live reopen share the supervised Host path.
@@ -1175,13 +1175,13 @@ mod tests {
 
     #[test]
     fn owner_record_preserves_keep_authority_flag() {
-        let artifacts = CertifiedA3sOci {
-            runtime_path: PathBuf::from("/opt/a3s/a3s-oci"),
+        let artifacts = CertifiedAsterOci {
+            runtime_path: PathBuf::from("/opt/aster/aster-oci"),
             runtime_sha256: "a".repeat(64),
-            agent_path: PathBuf::from("/opt/a3s/a3s-oci-agent"),
+            agent_path: PathBuf::from("/opt/aster/aster-oci-agent"),
             agent_sha256: "b".repeat(64),
         };
-        let socket = PathBuf::from("/tmp/a3s-owner/runtime.sock");
+        let socket = PathBuf::from("/tmp/aster-owner/runtime.sock");
         let record = NativeLinuxOwnerRecord::new(42, 7, &artifacts, socket, true);
         let encoded = serde_json::to_string(&record).unwrap();
         assert!(
@@ -1194,7 +1194,7 @@ mod tests {
             42,
             7,
             &artifacts,
-            PathBuf::from("/tmp/a3s-owner/runtime.sock"),
+            PathBuf::from("/tmp/aster-owner/runtime.sock"),
             false,
         );
         let encoded_off = serde_json::to_string(&off).unwrap();
@@ -1203,14 +1203,14 @@ mod tests {
             "false keep-authority must omit the field for legacy field-set: {encoded_off}"
         );
         let legacy = r#"{
-            "schema":"a3s.box.native-linux-oci-owner.v1",
+            "schema":"aster.box.native-linux-oci-owner.v1",
             "pid":1,
             "pid_start_time":2,
-            "runtime_path":"/opt/a3s/a3s-oci",
+            "runtime_path":"/opt/aster/aster-oci",
             "runtime_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "agent_path":"/opt/a3s/a3s-oci-agent",
+            "agent_path":"/opt/aster/aster-oci-agent",
             "agent_sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-            "socket_path":"/tmp/a3s-owner/runtime.sock"
+            "socket_path":"/tmp/aster-owner/runtime.sock"
         }"#;
         let legacy: NativeLinuxOwnerRecord = serde_json::from_str(legacy).unwrap();
         assert!(!legacy.keep_network_device_authority);
@@ -1222,7 +1222,7 @@ mod tests {
             "sessionSupervisor": {"pid": 11, "startTimeTicks": 22},
             "launcher": {"pid": 33, "startTimeTicks": 44},
             "init": {"pid": 55, "startTimeTicks": 66},
-            "schemaVersion": "a3s.oci.native-linux-recovery.v6"
+            "schemaVersion": "aster.oci.native-linux-recovery.v6"
         }"#;
         let parsed: RecoverySupervisedFields =
             serde_json::from_slice(with_supervisor).expect("parse supervised recovery");

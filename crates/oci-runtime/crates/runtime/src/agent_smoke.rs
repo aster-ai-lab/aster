@@ -8,7 +8,7 @@ use std::path::Path;
         any(target_arch = "x86_64", target_arch = "aarch64")
     )
 )))]
-use a3s_oci_core::HostPlatform;
+use aster_oci_core::HostPlatform;
 
 use crate::report::AgentVmSmokeReport;
 

@@ -9,7 +9,7 @@ use std::path::{Path, PathBuf};
 
 fn private_directory() -> (tempfile::TempDir, PathBuf) {
     let directory = tempfile::Builder::new()
-        .prefix("a3s-gw-")
+        .prefix("aster-gw-")
         .tempdir_in("/tmp")
         .unwrap();
     let path = directory.path().canonicalize().unwrap();

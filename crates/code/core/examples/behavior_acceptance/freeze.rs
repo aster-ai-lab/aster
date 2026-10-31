@@ -6,9 +6,9 @@ use super::manifest::{
     MAX_FILE_BYTES, MAX_PATH_BYTES, MAX_TOTAL_BYTES,
 };
 use super::report::AcceptanceReasonV1;
-use a3s_code_core::content_digest::digest_json;
-use a3s_code_core::evaluation::ExecutionTargetV1;
-use a3s_code_core::workspace::source_snapshot::WorkspaceSourceSnapshotV1;
+use aster_core::content_digest::digest_json;
+use aster_core::evaluation::ExecutionTargetV1;
+use aster_core::workspace::source_snapshot::WorkspaceSourceSnapshotV1;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
@@ -18,8 +18,8 @@ use std::path::Path;
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 mod unix;
 
-pub const FROZEN_SCHEMA: &str = "a3s.code.frozen-candidate.v1";
-const BYTES_DOMAIN: &[u8] = b"a3s.code.frozen-candidate.bytes.v1\0";
+pub const FROZEN_SCHEMA: &str = "aster.code.frozen-candidate.v1";
+const BYTES_DOMAIN: &[u8] = b"aster.code.frozen-candidate.bytes.v1\0";
 
 #[derive(Debug, thiserror::Error)]
 #[error("candidate freeze {}: {detail}", .reason.as_str())]
@@ -92,7 +92,7 @@ pub struct FrozenCandidateV1 {
 impl FrozenCandidateV1 {
     pub fn record_digest(&self) -> Result<DigestV1> {
         self.validate()?;
-        digest_json("a3s.code.frozen-candidate.record.v1", self)
+        digest_json("aster.code.frozen-candidate.record.v1", self)
             .map_err(|error| invalid(error.to_string()))
             .and_then(canonical_digest)
     }
@@ -281,7 +281,7 @@ fn validate_declaration(value: &CandidateDeclarationV1) -> Result<()> {
 fn validate_path(path: &str, ceiling: u64) -> Result<()> {
     validate_relative_path(path, ceiling).map_err(|error| invalid(error.to_string()))?;
     let first = path.split('/').next();
-    if matches!(first, Some(".a3s" | ".a3s-code" | ".git"))
+    if matches!(first, Some(".aster" | ".aster" | ".git"))
         || path == "docs/evidence"
         || path.starts_with("docs/evidence/")
     {

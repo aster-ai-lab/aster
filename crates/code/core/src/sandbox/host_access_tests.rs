@@ -9,24 +9,40 @@ async fn yolo_runs_actual_host_tools_and_git_while_normal_keeps_its_sandbox() {
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../target/yolo-fixtures");
     std::fs::create_dir_all(&target).unwrap();
     let root = tempfile::tempdir_in(target).unwrap();
-    let base = ToolContext::new(root.path().to_path_buf())
-        .with_sandbox(Arc::new(NativeBashSandbox::new(root.path()).unwrap()));
+    let sandbox = crate::agent_api::select_default_local_sandbox(
+        root.path(),
+        crate::sandbox::SandboxNetworkMode::Deny,
+        false,
+        NativeBashSandbox::new(root.path()),
+    );
+    let base = ToolContext::new(root.path().to_path_buf()).with_sandbox(sandbox.clone());
     let yolo = base
         .clone()
         .with_run_governance(Some(Arc::new(policy_for_posture("yolo"))), None);
     assert!(!yolo.sandbox.as_ref().unwrap().is_isolated());
-    let command = "git init -q && printf selected > selected.txt && git add selected.txt && git -c user.name=Fixture -c user.email=fixture@example.invalid -c commit.gpgsign=false commit -qm fixture && git show HEAD:selected.txt && printf '\\n' && uname -s";
+    #[cfg(windows)]
+    let write = "Set-Content -LiteralPath selected.txt -Value selected -NoNewline";
+    #[cfg(not(windows))]
+    let write = "printf selected > selected.txt";
+    let command = format!("git init -q; {write}; git add selected.txt; git -c user.name=Fixture -c user.email=fixture@example.invalid -c commit.gpgsign=false commit -qm fixture; git show HEAD:selected.txt");
+    #[cfg(target_os = "macos")]
+    let command = format!("{command}; printf '\\n'; uname -s");
     let output = crate::tools::builtin::bash::BashTool
         .execute(&serde_json::json!({"command":command}), &yolo)
         .await
         .unwrap();
     assert!(output.success, "{}", output.content);
-    assert!(output.content.contains("selected\n"));
+    assert!(output.content.contains("selected"));
+    assert_eq!(
+        std::fs::read(root.path().join("selected.txt")).unwrap(),
+        b"selected"
+    );
     assert_eq!(output.metadata.as_ref().unwrap()["sandboxed"], false);
     #[cfg(target_os = "macos")]
     assert!(output.content.contains("Darwin"));
     let normal = base.with_run_governance(Some(Arc::new(policy_for_posture("default"))), None);
     assert!(normal.sandbox.as_ref().unwrap().is_isolated());
+    assert!(Arc::ptr_eq(normal.sandbox.as_ref().unwrap(), &sandbox));
 }
 
 #[tokio::test]

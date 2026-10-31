@@ -9,7 +9,7 @@
 
 //! Incremental ANN + FTS mutations keep DocumentMap authority (I1/I5).
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema, Fts,
     HnswQueryParams, IndexParams, MetricType, SearchQuery,
 };
@@ -93,7 +93,7 @@ fn hnsw_fts_scalar_incremental_upsert_delete_match_exact_oracle() {
     assert!(!ann.is_empty());
     for hit in &ann {
         match hit.field("tag") {
-            Some(a3s_vec::FieldValue::String(value)) => assert_eq!(value, "even"),
+            Some(aster_vec::FieldValue::String(value)) => assert_eq!(value, "even"),
             other => panic!("expected even tag, got {other:?}"),
         }
         assert_ne!(hit.get_pk(), Some("doc-002"));

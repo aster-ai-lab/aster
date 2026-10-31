@@ -1,5 +1,5 @@
 #![cfg(feature = "state-graph")]
-use a3s_code_core::{
+use aster_core::{
     EventFilter, FnBehavior, GraphEvent, GraphEventStore, GraphPatch, GraphRuntime,
     MemoryGraphEventStore, PatchOperation,
 };

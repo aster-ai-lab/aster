@@ -8,18 +8,18 @@ use std::path::{Component, Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::time::{Duration, Instant};
 
-use a3s_box_core::{ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult};
+use aster_box_core::{ExecutionIsolation, ExecutionManagerError, ExecutionManagerResult};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 use super::{OciLifecycleAdapter, OciRuntimeEndpoint};
 use crate::file_lock::FileLock;
 
-const OWNER_RECORD_SCHEMA: &str = "a3s.box.windows-whpx-oci-owner.v2";
+const OWNER_RECORD_SCHEMA: &str = "aster.box.windows-whpx-oci-owner.v2";
 const OWNER_RECORD_NAME: &str = "box-owner.json";
 const OWNER_LOCK_TARGET: &str = "box-whpx-owner";
 const READY_FILE_NAME: &str = "service-ready.json";
-const READY_SCHEMA: &str = "a3s.oci.box-whpx-service-ready.v2";
+const READY_SCHEMA: &str = "aster.oci.box-whpx-service-ready.v2";
 const STARTUP_TIMEOUT: Duration = Duration::from_secs(60);
 const STARTUP_POLL_INTERVAL: Duration = Duration::from_millis(100);
 
@@ -92,7 +92,7 @@ pub(crate) fn owned_pipe_name(service_root: &Path) -> ExecutionManagerResult<Str
     let mut hasher = Sha256::new();
     hasher.update(service_root.to_string_lossy().as_bytes());
     let digest = format!("{:x}", hasher.finalize());
-    Ok(format!(r"\\.\pipe\a3s-box-whpx-owner-{}", &digest[..32]))
+    Ok(format!(r"\\.\pipe\aster-box-whpx-owner-{}", &digest[..32]))
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -320,7 +320,7 @@ pub(crate) async fn ensure_windows_whpx_oci_owner(
     }
 
     std::thread::Builder::new()
-        .name("a3s-whpx-oci-owner-reaper".to_string())
+        .name("aster-whpx-oci-owner-reaper".to_string())
         .spawn(move || {
             let _ = child.wait();
         })
@@ -730,12 +730,12 @@ mod tests {
 
     fn sample_artifacts() -> WindowsWhpxOwnerArtifacts {
         WindowsWhpxOwnerArtifacts {
-            runtime_path: PathBuf::from(r"C:\opt\a3s\a3s-oci.exe"),
+            runtime_path: PathBuf::from(r"C:\opt\aster\aster-oci.exe"),
             runtime_sha256: "a".repeat(64),
-            shim_path: PathBuf::from(r"C:\opt\a3s\a3s-oci-krun-shim.exe"),
+            shim_path: PathBuf::from(r"C:\opt\aster\aster-oci-krun-shim.exe"),
             shim_sha256: "b".repeat(64),
-            vm_rootfs: PathBuf::from(r"C:\opt\a3s\system"),
-            system_image_manifest: PathBuf::from(r"C:\opt\a3s\system-image.json"),
+            vm_rootfs: PathBuf::from(r"C:\opt\aster\system"),
+            system_image_manifest: PathBuf::from(r"C:\opt\aster\system-image.json"),
             system_image_manifest_sha256: "c".repeat(64),
         }
     }
@@ -743,7 +743,7 @@ mod tests {
     #[test]
     fn owner_record_fences_endpoint_and_artifacts() {
         let artifacts = sample_artifacts();
-        let pipe = r"\\.\pipe\a3s-box-whpx-owner-test";
+        let pipe = r"\\.\pipe\aster-box-whpx-owner-test";
         let record = WindowsWhpxOwnerRecord::new(42, 7, &artifacts, pipe.to_string());
         record.validate(pipe).unwrap();
         assert!(record.artifacts_match(&artifacts));
@@ -763,11 +763,11 @@ mod tests {
 
     #[test]
     fn owned_pipe_name_is_stable_for_service_root() {
-        let root = Path::new(r"C:\absolute\a3s-whpx-service");
+        let root = Path::new(r"C:\absolute\aster-whpx-service");
         let first = owned_pipe_name(root).unwrap();
         let second = owned_pipe_name(root).unwrap();
         assert_eq!(first, second);
-        assert!(first.starts_with(r"\\.\pipe\a3s-box-whpx-owner-"));
-        assert_eq!(first.len(), r"\\.\pipe\a3s-box-whpx-owner-".len() + 32);
+        assert!(first.starts_with(r"\\.\pipe\aster-box-whpx-owner-"));
+        assert_eq!(first.len(), r"\\.\pipe\aster-box-whpx-owner-".len() + 32);
     }
 }

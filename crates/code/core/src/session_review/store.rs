@@ -6,7 +6,7 @@ use super::{
 };
 use serde::{Deserialize, Serialize};
 
-pub const SESSION_REVIEW_STORE_SCHEMA_V1: &str = "a3s.code.session-review-store.v1";
+pub const SESSION_REVIEW_STORE_SCHEMA_V1: &str = "aster.code.session-review-store.v1";
 
 /// One session's durable review findings (sticky reply / science review).
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

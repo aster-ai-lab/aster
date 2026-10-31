@@ -1,7 +1,7 @@
 use super::host_support::*;
 use super::*;
 
-use a3s_use_core::{PluginDesiredState, PluginHostManager, PluginOperationAction};
+use aster_use_core::{PluginDesiredState, PluginHostManager, PluginOperationAction};
 
 #[test]
 fn killed_host_protocol_disable_apply_replays_hide_drain_and_grant_retirement() {
@@ -139,7 +139,7 @@ fn killed_host_protocol_disable_apply_replays_hide_drain_and_grant_retirement() 
             MANAGED_SCOPE_ID,
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(diagnostic.status.success(), "{diagnostic:?}");

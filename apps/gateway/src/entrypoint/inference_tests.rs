@@ -25,14 +25,14 @@ use uuid::Uuid;
 
 mod prefix_affinity_tests;
 
-const KEY_PREFIX: &str = "a3s_inf_abc12345";
+const KEY_PREFIX: &str = "aster_inf_abc12345";
 
 pub(super) fn inference_key(character: char) -> String {
     format!("{KEY_PREFIX}{}", character.to_string().repeat(64))
 }
 
 fn verifier(secret: &str) -> String {
-    let salt = SaltString::encode_b64(b"a3s-entrypoint-test").unwrap();
+    let salt = SaltString::encode_b64(b"aster-entrypoint-test").unwrap();
     Argon2::default()
         .hash_password(secret.as_bytes(), &salt)
         .unwrap()
@@ -735,7 +735,7 @@ async fn managed_inference_authenticates_before_body_and_strips_authorization() 
     assert_eq!(response.status(), 401);
     assert_eq!(
         response.headers()["www-authenticate"],
-        r#"Bearer realm="a3s-inference""#
+        r#"Bearer realm="aster-inference""#
     );
 
     let request_body = r#"{"model":"allowed-model","messages":[]}"#;
@@ -1622,7 +1622,7 @@ async fn managed_snapshot_apply_unknown_tokenizer_successor_retains_prior_routin
 
     let mut bad_tokenizer = first.clone();
     bad_tokenizer.inference.as_mut().unwrap().tokenizer_revision =
-        "a3s.gateway.tokenizer.v0".into();
+        "aster.gateway.tokenizer.v0".into();
     let bad_expires = Utc::now() + ChronoDuration::hours(1);
     bad_tokenizer.inference.as_mut().unwrap().expires_at = bad_expires;
     let rejected = store

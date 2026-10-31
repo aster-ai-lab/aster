@@ -1,14 +1,14 @@
 [package]
-name = "a3s-effect"
+name = "aster-effect"
 version = "0.2.1"
 edition = "2021"
 license = "MIT"
-description = "Effect-style actor runtime for projecting an A3S Code harness from an immutable event log"
-repository = "https://github.com/A3S-Lab/Effect"
-homepage = "https://github.com/A3S-Lab/Effect"
-documentation = "https://docs.rs/a3s-effect"
+description = "Effect-style actor runtime for projecting an Aster Code harness from an immutable event log"
+repository = "https://github.com/aster-ai-lab/Effect"
+homepage = "https://github.com/aster-ai-lab/Effect"
+documentation = "https://docs.rs/aster-effect"
 readme = "README.md"
-keywords = ["effect", "actor", "agent", "harness", "a3s"]
+keywords = ["effect", "actor", "agent", "harness", "aster"]
 categories = ["asynchronous", "development-tools"]
 rust-version = "1.85"
 include = [

@@ -131,7 +131,7 @@ pub(crate) struct CreateTaskRequest {
     #[prost(bool, tag = "7")]
     pub(crate) terminal: bool,
     // tag 8 = checkpoint (Descriptor) — omit unless restoring.
-    /// Forwarded to the shim as Create options (A3S CreateOptions JSON Any).
+    /// Forwarded to the shim as Create options (Aster CreateOptions JSON Any).
     #[prost(message, optional, tag = "9")]
     pub(crate) options: Option<Any>,
 }

@@ -116,9 +116,9 @@ fn manifest_for(url: &str, body: &[u8], sha256: &str) -> InstallManifest {
 }
 
 fn with_managed_home(home: &std::path::Path) {
-    std::env::set_var("A3S_USE_BGE_HOME", home);
-    std::env::remove_var("A3S_BGE_M3_MODEL_DIR");
-    std::env::remove_var("A3S_BGE_RERANKER_MODEL_DIR");
+    std::env::set_var("ASTER_USE_BGE_HOME", home);
+    std::env::remove_var("ASTER_BGE_M3_MODEL_DIR");
+    std::env::remove_var("ASTER_BGE_RERANKER_MODEL_DIR");
 }
 
 #[tokio::test]

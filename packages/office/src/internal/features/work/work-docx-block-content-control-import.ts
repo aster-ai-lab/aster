@@ -344,7 +344,7 @@ function readLeafBlockContentControl(
       }
       if (runs.some((run) => !validRun(run))) return null;
       const text = runs.map(runText).join('');
-      if (text.includes('__A3S_WORK_BLOCK_CONTENT_CONTROL_')) continue;
+      if (text.includes('__ASTER_WORK_BLOCK_CONTENT_CONTROL_')) continue;
       paragraphTexts.push(text);
       continue;
     }
@@ -574,8 +574,8 @@ function blockContentControlMarkers(
   const occupiedText = document.documentElement.textContent ?? '';
   let index = initialIndex;
   for (let attempts = 0; attempts < 1_000_000; attempts += 1) {
-    const start = `__A3S_WORK_BLOCK_CONTENT_CONTROL_START_${index}__`;
-    const end = `__A3S_WORK_BLOCK_CONTENT_CONTROL_END_${index}__`;
+    const start = `__ASTER_WORK_BLOCK_CONTENT_CONTROL_START_${index}__`;
+    const end = `__ASTER_WORK_BLOCK_CONTENT_CONTROL_END_${index}__`;
     if (!occupiedText.includes(start) && !occupiedText.includes(end)) {
       return [start, end];
     }

@@ -21,7 +21,7 @@ or every optional upstream integration.
 | Core meta-harness composition | 19 passed |
 | macOS native process-lifetime refusal | 1 passed; no process or file effects |
 | Code and Work launchers | 3 passed: built executable, quoted arguments, failed builds, newest bundle, missing build |
-| Complete internal dependency boundary | 2 passed; zero remote A3S packages in Cargo metadata/lockfile |
+| Complete internal dependency boundary | 2 passed; zero remote Aster packages in Cargo metadata/lockfile |
 | Both Flow engines with all features | Passed with local Boot, Event, and ORM |
 | Work native build (`just build-work`) | Passed; ACP and Office resources match the workspace binaries |
 | Work platform and document-import regression | 32 passed |
@@ -33,7 +33,7 @@ or every optional upstream integration.
 | Work production renderer | Passed |
 | Work Web and aiCore typechecks | Passed |
 
-The default product dependency tree resolves the imported A3S runtime
+The default product dependency tree resolves the imported Aster runtime
 packages to this workspace. The source manifest's 135 package paths resolve
 locally. Core's native sandbox and guest guards match the source checkout.
 Code's Node, Python, and Go SDK packages are absent.
@@ -41,7 +41,7 @@ Code's Node, Python, and Go SDK packages are absent.
 ## Terminal evidence
 
 The deterministic [startup ACL](../tests/e2e/startup.acl) runs through
-`a3s-test` with isolated user state and a local-only fixture provider. It
+`aster-test` with isolated user state and a local-only fixture provider. It
 waits for live glyph animation and checks a full welcome, a small terminal,
 and the standard 80-by-24 compact welcome. Resize waits require new visible
 state so stale, clipped frames cannot satisfy the regression.
@@ -52,7 +52,7 @@ state so stale, clipped frames cannot satisfy the regression.
 - [Bounded VT recording](evidence/terminal/aster-logo.vt)
 - [Machine-readable scenario result](evidence/terminal/result.json)
 
-With `a3s-test` installed, reproduce the startup check from the repository:
+With `aster-test` installed, reproduce the startup check from the repository:
 
 ```sh
 cargo build --locked
@@ -144,7 +144,7 @@ shipped debug `aster` binary on macOS: version, doctor, inspect, unconfigured
 `setup --json`, source-build `update --check`, local session commands, one
 loopback conversation with continue, resume, fork, and delete, a sandbox-profile
 refusal, and the macOS shell refusal. 1 P0 process passed, 43 binary unit
-tests passed, and 2 workspace tests passed. Developer `~/.a3s` was unchanged.
+tests passed, and 2 workspace tests passed. Developer `~/.aster` was unchanged.
 
 This still does not qualify a signed installer, a release-profile binary,
 Linux or Windows, or a live provider. The macOS native shell remains refused.

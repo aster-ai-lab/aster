@@ -2,7 +2,7 @@ use super::*;
 
 #[tokio::test]
 async fn wiki_attribution_survives_a_core_bounded_preview_as_structured_output() {
-    use a3s_code_core::tools::{Tool, ToolContext, ToolOutput, ToolRegistry};
+    use aster_core::tools::{Tool, ToolContext, ToolOutput, ToolRegistry};
     struct RecordedWiki(serde_json::Value);
     #[async_trait::async_trait]
     impl Tool for RecordedWiki {

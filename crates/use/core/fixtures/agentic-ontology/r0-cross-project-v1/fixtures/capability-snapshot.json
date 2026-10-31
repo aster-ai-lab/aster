@@ -3,7 +3,7 @@
   "lifecycleGeneration": 7,
   "packageId": "contra-sense/handbook",
   "packageVersion": "0.1.0",
-  "schema": "a3s.use.capability-snapshot.v1",
+  "schema": "aster.use.capability-snapshot.v1",
   "snapshotDigest": "sha256:1e0f0a0162f5b290887ade8886af69fbba4548c863df026178e3550c77813455",
   "surfaces": [
     {

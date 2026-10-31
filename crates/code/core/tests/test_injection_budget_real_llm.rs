@@ -20,8 +20,8 @@
 //!   any raise", so the recall answer is a recorded datum, not a gate.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo +1.97.1 test -p a3s-code-core --test test_injection_budget_real_llm \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo +1.97.1 test -p aster-core --test test_injection_budget_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -30,8 +30,8 @@ mod support;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::path_instructions::PathRule;
-use a3s_code_core::{Agent, PlanningMode, SessionOptions};
+use aster_core::path_instructions::PathRule;
+use aster_core::{Agent, PlanningMode, SessionOptions};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 const CODENAME: &str = "XYLOPHONE-4471";
@@ -93,7 +93,7 @@ async fn run_arm(agent: &Agent, label: &str, budget: Option<usize>) -> ArmOutcom
 
     let mut options = SessionOptions::new()
         .with_session_id(format!("wc-inject1-{label}"))
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_planning(false)
         .with_planning_mode(PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
@@ -159,7 +159,7 @@ async fn run_arm(agent: &Agent, label: &str, budget: Option<usize>) -> ArmOutcom
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn budget_cut_hides_the_tail_and_full_budget_pays_for_recall() {
     let mut config = load_pinned_layer_c_config();
     config.default_model = Some(support::layer_c_model::pinned_layer_c_model(&config));

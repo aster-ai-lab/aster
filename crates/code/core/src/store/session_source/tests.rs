@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{FileLog, LogStore, MemoryLog, NewFact};
+use aster_effect::{FileLog, LogStore, MemoryLog, NewFact};
 
 mod legacy_reader {
     include!(concat!(
@@ -17,7 +17,7 @@ fn prove_source(log: &dyn LogStore) {
     log.append(
         "session",
         &[NewFact {
-            kind: "a3s.work-policy.admitted".into(),
+            kind: "aster.work-policy.admitted".into(),
             key: "policy".into(),
             payload: serde_json::json!({"original":"bytes"}),
         }],
@@ -89,7 +89,7 @@ async fn durable_snapshot_requires_version_and_original_old_reader_rejects_it() 
         .unwrap();
     let facts = [Fact {
         seq: 1,
-        kind: "a3s.goal.created".into(),
+        kind: "aster.goal.created".into(),
         key: "goal".into(),
         cause: None,
         payload: serde_json::json!({}),

@@ -7,12 +7,12 @@
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
-use a3s_use_core::{
+use aster_use_core::{
     InstalledPluginPlanEvidence, OkfCapabilityProjection, PlanScope, PluginSurfaceRef, Readiness,
     UseError, UseResult,
 };
 #[cfg(feature = "extensions")]
-use a3s_use_core::{
+use aster_use_core::{
     PackageSurfaceKind, PlanQualifiedSurfaceRef, INSTALLED_PLUGIN_PLAN_EVIDENCE_SCHEMA,
 };
 use serde::Serialize;
@@ -59,7 +59,7 @@ use crate::{
 };
 
 pub const CAPABILITY_REGISTRY_SCHEMA_VERSION: u32 = 2;
-pub const UI_DEPENDENCY_EVIDENCE_SCHEMA: &str = "a3s.use.ui-dependency-evidence.v1";
+pub const UI_DEPENDENCY_EVIDENCE_SCHEMA: &str = "aster.use.ui-dependency-evidence.v1";
 #[cfg(feature = "extensions")]
 const PLANNER_EVIDENCE_SCHEMA_VERSION: u32 = 1;
 const WATCH_INTERVAL: Duration = Duration::from_millis(100);
@@ -79,30 +79,30 @@ pub struct CapabilityRegistrySnapshot {
 
 /// Host-composed capability projection over one authoritative Use Registry.
 ///
-/// Managed hosts inject the same [`a3s_use_extension::ExtensionRegistry`]
+/// Managed hosts inject the same [`aster_use_extension::ExtensionRegistry`]
 /// used by package planning and lifecycle cutover. [`Self::from_env`] is only
 /// the standalone facade composition.
 #[derive(Debug, Clone)]
 pub struct CapabilityRegistry {
     #[cfg(feature = "extensions")]
-    extensions: a3s_use_extension::ExtensionRegistry,
+    extensions: aster_use_extension::ExtensionRegistry,
 }
 
 impl CapabilityRegistry {
     pub fn from_env() -> UseResult<Self> {
         Ok(Self {
             #[cfg(feature = "extensions")]
-            extensions: a3s_use_extension::ExtensionRegistry::from_env()?,
+            extensions: aster_use_extension::ExtensionRegistry::from_env()?,
         })
     }
 
     #[cfg(feature = "extensions")]
-    pub fn new(extensions: a3s_use_extension::ExtensionRegistry) -> Self {
+    pub fn new(extensions: aster_use_extension::ExtensionRegistry) -> Self {
         Self { extensions }
     }
 
     #[cfg(feature = "extensions")]
-    pub fn extension_registry(&self) -> &a3s_use_extension::ExtensionRegistry {
+    pub fn extension_registry(&self) -> &aster_use_extension::ExtensionRegistry {
         &self.extensions
     }
 
@@ -271,7 +271,7 @@ pub struct SkillSurface {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum FlowEngine {
-    A3sFlow,
+    AsterFlow,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -524,7 +524,7 @@ async fn skill_surface(id: &str, path: PathBuf) -> UseResult<SkillSurface> {
     let metadata = tokio::fs::symlink_metadata(&path)
         .await
         .map_err(|error| skill_io_error("inspect", &path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(UseError::new(
             "use.capability.skill_invalid",
             format!(
@@ -559,7 +559,7 @@ async fn skill_surface(id: &str, path: PathBuf) -> UseResult<SkillSurface> {
 
 #[cfg(feature = "extensions")]
 async fn project_ui_root(
-    surface: &a3s_use_extension::PluginUiSurface,
+    surface: &aster_use_extension::PluginUiSurface,
     package_root: &Path,
 ) -> UseResult<(
     ManagedAsset,
@@ -568,7 +568,7 @@ async fn project_ui_root(
     Vec<ManagedAsset>,
 )> {
     const MAX_UI_ROOT_FILE_BYTES: u64 = 8 * 1024 * 1024;
-    let listed = a3s_use_extension::list_ui_package_assets(surface, package_root).await?;
+    let listed = aster_use_extension::list_ui_package_assets(surface, package_root).await?;
     let mut styles = Vec::new();
     let mut scripts = Vec::new();
     let mut assets = Vec::with_capacity(listed.len());
@@ -616,7 +616,7 @@ async fn read_activity_asset(
     let metadata = tokio::fs::symlink_metadata(&path)
         .await
         .map_err(|error| activity_io_error("inspect", &path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(UseError::new(
             "use.capability.activity_asset_invalid",
             format!(
@@ -659,11 +659,11 @@ async fn flow_asset(path: PathBuf) -> UseResult<ManagedAsset> {
     let metadata = tokio::fs::symlink_metadata(&path)
         .await
         .map_err(|error| flow_io_error("inspect", &path, error))?;
-    if a3s_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
+    if aster_use_core::metadata_is_link_or_reparse_point(&metadata) || !metadata.is_file() {
         return Err(UseError::new(
             "use.capability.flow_source_invalid",
             format!(
-                "Projected A3S Flow source '{}' must be a regular package file.",
+                "Projected Aster Flow source '{}' must be a regular package file.",
                 path.display()
             ),
         ));
@@ -672,7 +672,7 @@ async fn flow_asset(path: PathBuf) -> UseResult<ManagedAsset> {
         return Err(UseError::new(
             "use.capability.flow_source_invalid",
             format!(
-                "Projected A3S Flow source '{}' exceeds the supported size.",
+                "Projected Aster Flow source '{}' exceeds the supported size.",
                 path.display()
             ),
         ));
@@ -684,7 +684,7 @@ async fn flow_asset(path: PathBuf) -> UseResult<ManagedAsset> {
         UseError::new(
             "use.capability.flow_source_invalid",
             format!(
-                "Projected A3S Flow source '{}' must be UTF-8 TypeScript: {error}",
+                "Projected Aster Flow source '{}' must be UTF-8 TypeScript: {error}",
                 path.display(),
             ),
         )
@@ -710,7 +710,7 @@ fn flow_io_error(action: &str, path: &Path, error: std::io::Error) -> UseError {
     UseError::new(
         "use.capability.flow_source_unreadable",
         format!(
-            "Failed to {action} projected A3S Flow source '{}': {error}",
+            "Failed to {action} projected Aster Flow source '{}': {error}",
             path.display()
         ),
     )
@@ -728,7 +728,7 @@ fn skill_io_error(action: &str, path: &Path, error: std::io::Error) -> UseError 
 
 #[cfg(feature = "extensions")]
 async fn stable_extensions(
-    registry: &a3s_use_extension::ExtensionRegistry,
+    registry: &aster_use_extension::ExtensionRegistry,
 ) -> UseResult<(ExtensionCursorEvidence, Vec<CapabilityBinding>)> {
     for _ in 0..MAX_STABLE_SNAPSHOT_ATTEMPTS {
         let before = registry.snapshot().await?;
@@ -757,8 +757,8 @@ async fn stable_extensions() -> UseResult<(ExtensionCursorEvidence, Vec<Capabili
 
 #[cfg(feature = "extensions")]
 async fn project_extensions(
-    registry: &a3s_use_extension::ExtensionRegistry,
-    snapshot: &a3s_use_extension::ExtensionRegistrySnapshot,
+    registry: &aster_use_extension::ExtensionRegistry,
+    snapshot: &aster_use_extension::ExtensionRegistrySnapshot,
 ) -> UseResult<Option<Vec<CapabilityBinding>>> {
     let mut capabilities = Vec::with_capacity(snapshot.routes.len());
     for route in &snapshot.routes {
@@ -790,9 +790,9 @@ async fn project_extensions(
 
 #[cfg(feature = "extensions")]
 async fn project_extension(
-    extension: &a3s_use_extension::InstalledExtension,
+    extension: &aster_use_extension::InstalledExtension,
     surfaces: Vec<String>,
-    paths: &a3s_use_extension::ExtensionPaths,
+    paths: &aster_use_extension::ExtensionPaths,
 ) -> UseResult<CapabilityBinding> {
     let scope = default_plan_scope();
     let flow_observations = SurfaceObservations::new();
@@ -846,7 +846,7 @@ async fn project_extension(
 #[cfg(feature = "extensions")]
 #[cfg(test)]
 async fn project_extension_for_host(
-    extension: &a3s_use_extension::InstalledExtension,
+    extension: &aster_use_extension::InstalledExtension,
     surfaces: Vec<String>,
     host_version: &str,
 ) -> UseResult<CapabilityBinding> {
@@ -864,7 +864,7 @@ async fn project_extension_for_host(
 
 #[cfg(feature = "extensions")]
 async fn project_extension_for_host_with_flow_observations(
-    extension: &a3s_use_extension::InstalledExtension,
+    extension: &aster_use_extension::InstalledExtension,
     surfaces: Vec<String>,
     host_version: &str,
     host_observations: &SurfaceObservations,
@@ -952,10 +952,10 @@ async fn project_extension_for_host_with_flow_observations(
             flows.push(FlowSurface {
                 id: surface.id.clone(),
                 engine: match surface.engine {
-                    a3s_use_extension::PluginFlowEngine::A3sFlow => FlowEngine::A3sFlow,
+                    aster_use_extension::PluginFlowEngine::AsterFlow => FlowEngine::AsterFlow,
                 },
                 runtime: match surface.runtime {
-                    a3s_use_extension::PluginFlowRuntime::NativeTs => FlowRuntime::NativeTs,
+                    aster_use_extension::PluginFlowRuntime::NativeTs => FlowRuntime::NativeTs,
                 },
                 source: flow_asset(receipt.package_root.join(&surface.source)).await?,
                 export_name: surface.export_name.clone(),
@@ -1063,7 +1063,7 @@ async fn project_extension_for_host_with_flow_observations(
 
 #[cfg(feature = "extensions")]
 async fn surface_observations(
-    extension: &a3s_use_extension::InstalledExtension,
+    extension: &aster_use_extension::InstalledExtension,
     inspect_enabled_surfaces: bool,
     host_observations: &SurfaceObservations,
 ) -> UseResult<SurfaceObservations> {
@@ -1077,8 +1077,8 @@ async fn surface_observations(
             tool.id == surface.id
                 && matches!(
                     &tool.workload,
-                    a3s_use_extension::ToolWorkload::Task(task)
-                        if matches!(&task.source, a3s_use_extension::ToolTaskSource::Release { .. })
+                    aster_use_extension::ToolWorkload::Task(task)
+                        if matches!(&task.source, aster_use_extension::ToolTaskSource::Release { .. })
                             && !task.interactive
                 )
         }),
@@ -1105,7 +1105,7 @@ async fn surface_observations(
 
     let mut observations = host_observations.clone();
     for surface in &extension.manifest.flows {
-        if a3s_use_extension::inspect_flow_surface_file(surface, &extension.receipt.package_root)
+        if aster_use_extension::inspect_flow_surface_file(surface, &extension.receipt.package_root)
             .await
             .is_err()
         {
@@ -1119,7 +1119,7 @@ async fn surface_observations(
         }
     }
     for surface in &extension.manifest.skills {
-        let observed = match a3s_use_extension::inspect_skill_surface_file(
+        let observed = match aster_use_extension::inspect_skill_surface_file(
             surface,
             &extension.receipt.package_root,
         )
@@ -1137,7 +1137,7 @@ async fn surface_observations(
         );
     }
     for surface in &extension.manifest.ui {
-        let observed = match a3s_use_extension::inspect_ui_surface_files(
+        let observed = match aster_use_extension::inspect_ui_surface_files(
             surface,
             &extension.receipt.package_root,
         )
@@ -1165,10 +1165,10 @@ struct KnowledgeEvidence {
 
 #[cfg(feature = "extensions")]
 async fn knowledge_evidence_from_store(
-    extension: &a3s_use_extension::InstalledExtension,
+    extension: &aster_use_extension::InstalledExtension,
     store: &OkfKnowledgeBindingStore,
     client: &OkfKnowledgeClient,
-    scope: &a3s_use_core::PlanScope,
+    scope: &aster_use_core::PlanScope,
 ) -> UseResult<KnowledgeEvidence> {
     let mut bindings = Vec::new();
     let mut failures = SurfaceObservations::new();
@@ -1214,16 +1214,16 @@ async fn knowledge_evidence_from_store(
 }
 
 #[cfg(feature = "extensions")]
-fn default_plan_scope() -> a3s_use_core::PlanScope {
-    a3s_use_core::PlanScope {
-        kind: a3s_use_core::PlanScopeKind::User,
+fn default_plan_scope() -> aster_use_core::PlanScope {
+    aster_use_core::PlanScope {
+        kind: aster_use_core::PlanScopeKind::User,
         id: PACKAGE_DEFAULT_SCOPE.to_owned(),
     }
 }
 
 #[cfg(feature = "extensions")]
 fn plugin_planner_evidence(
-    extension: &a3s_use_extension::InstalledExtension,
+    extension: &aster_use_extension::InstalledExtension,
     reconciliation: Option<&SurfaceReconcileSnapshot>,
 ) -> UseResult<Option<PluginPlannerEvidence>> {
     if extension.manifest.schema_version != 3 {
@@ -1293,7 +1293,7 @@ fn plugin_planner_evidence(
 #[cfg(feature = "extensions")]
 fn installed_plugin_plan_evidence_from_snapshot(
     snapshot: &CapabilityRegistrySnapshot,
-    extension: &a3s_use_extension::InstalledExtension,
+    extension: &aster_use_extension::InstalledExtension,
 ) -> UseResult<InstalledPluginPlanEvidence> {
     let receipt = &extension.receipt;
     let binding = snapshot
@@ -1439,7 +1439,7 @@ extension "acme/workflow" {
   }
 
   flow "review" {
-    engine        = "a3s-flow"
+    engine        = "aster-flow"
     runtime       = "native-ts"
     source        = "flows/review.ts"
     export        = "run"
@@ -1453,10 +1453,10 @@ extension "acme/workflow" {
 
     #[cfg(feature = "extensions")]
     fn installed_extension(
-        manifest: a3s_use_extension::ExtensionManifest,
+        manifest: aster_use_extension::ExtensionManifest,
         package_root: PathBuf,
         enabled: bool,
-    ) -> a3s_use_extension::InstalledExtension {
+    ) -> aster_use_extension::InstalledExtension {
         let mut selected_surfaces = manifest
             .plugin_surfaces()
             .unwrap()
@@ -1464,7 +1464,7 @@ extension "acme/workflow" {
             .map(|surface| surface.surface)
             .collect::<Vec<_>>();
         selected_surfaces.sort();
-        let receipt = a3s_use_extension::ExtensionReceipt {
+        let receipt = aster_use_extension::ExtensionReceipt {
             schema_version: 4,
             package_id: manifest.package_id.clone(),
             component_id: format!("use/{}", manifest.route),
@@ -1473,7 +1473,7 @@ extension "acme/workflow" {
             package_root,
             manifest_sha256: "0".repeat(64),
             package_sha256: Some("0".repeat(64)),
-            trust: a3s_use_extension::ExtensionTrust::LocalExplicit,
+            trust: aster_use_extension::ExtensionTrust::LocalExplicit,
             registry: None,
             verified_catalog: None,
             planning_bundle: None,
@@ -1482,7 +1482,7 @@ extension "acme/workflow" {
             enabled,
             lifecycle_generation: Some(1),
         };
-        a3s_use_extension::InstalledExtension { receipt, manifest }
+        aster_use_extension::InstalledExtension { receipt, manifest }
     }
 
     #[tokio::test]
@@ -1549,7 +1549,7 @@ extension "acme/workflow" {
             skill: Some("science".to_string()),
             dependency_evidence_schema: UI_DEPENDENCY_EVIDENCE_SCHEMA.to_owned(),
             dependencies: vec![PluginSurfaceRef {
-                kind: a3s_use_core::PackageSurfaceKind::Skill,
+                kind: aster_use_core::PackageSurfaceKind::Skill,
                 id: "science".to_string(),
             }],
             order: 120,
@@ -1568,21 +1568,21 @@ extension "acme/workflow" {
     #[tokio::test]
     async fn promoted_sqlite_knowledge_enters_the_scope_aware_capability_projection() {
         const MANIFEST: &str = include_str!(
-            "../extension//fixtures/packages/plugin-v3-okf/package/a3s-use-extension.acl"
+            "../extension//fixtures/packages/plugin-v3-okf/package/aster-use-extension.acl"
         );
         const PACKAGE_DIGEST: &str =
             include_str!("../extension//fixtures/packages/plugin-v3-okf/package.sha256");
         let temporary = tempfile::tempdir().unwrap();
         let package_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("extension//fixtures/packages/plugin-v3-okf/package");
-        let manifest = a3s_use_extension::ExtensionManifest::parse_acl(MANIFEST).unwrap();
+        let manifest = aster_use_extension::ExtensionManifest::parse_acl(MANIFEST).unwrap();
         let mut extension = installed_extension(manifest.clone(), package_root.clone(), true);
         let package_digest = PACKAGE_DIGEST.trim().to_owned();
         extension.receipt.package_sha256 =
             Some(package_digest.strip_prefix("sha256:").unwrap().to_owned());
         extension.receipt.manifest_sha256 = format!("{:x}", Sha256::digest(MANIFEST.as_bytes()));
         extension.receipt.lifecycle_generation = Some(7);
-        let paths = a3s_use_extension::ExtensionPaths::new(
+        let paths = aster_use_extension::ExtensionPaths::new(
             temporary.path().join("data"),
             temporary.path().join("state"),
         );
@@ -1590,7 +1590,7 @@ extension "acme/workflow" {
         let client = OkfKnowledgeClient::new(adapter);
         let store = OkfKnowledgeBindingStore::from_extension_paths(&paths);
         let surface = &manifest.okf[0];
-        let files = a3s_use_extension::load_okf_bundle_files(surface, &package_root)
+        let files = aster_use_extension::load_okf_bundle_files(surface, &package_root)
             .await
             .unwrap();
         let scope = default_plan_scope();
@@ -1673,7 +1673,7 @@ extension "acme/workflow" {
             .await
             .unwrap();
         tokio::fs::write(&path, b"# Guide\n").await.unwrap();
-        let manifest = a3s_use_extension::ExtensionManifest::parse_acl(SKILL_ONLY_PLUGIN).unwrap();
+        let manifest = aster_use_extension::ExtensionManifest::parse_acl(SKILL_ONLY_PLUGIN).unwrap();
         let mut extension = installed_extension(manifest, temp.path().to_path_buf(), true);
         extension.receipt.package_sha256 = Some("a".repeat(64));
         extension.receipt.lifecycle_generation = Some(7);
@@ -1736,7 +1736,7 @@ extension "acme/workflow" {
         tokio::fs::write(&standalone, b"<main>standalone</main>")
             .await
             .unwrap();
-        let manifest = a3s_use_extension::ExtensionManifest::parse_acl(SKILL_UI_PLUGIN).unwrap();
+        let manifest = aster_use_extension::ExtensionManifest::parse_acl(SKILL_UI_PLUGIN).unwrap();
         let mut extension = installed_extension(manifest, temp.path().to_path_buf(), true);
         extension.receipt.package_sha256 = Some("a".repeat(64));
         extension.receipt.lifecycle_generation = Some(9);
@@ -1794,7 +1794,7 @@ extension "acme/workflow" {
 
     #[cfg(feature = "extensions")]
     #[tokio::test]
-    async fn schema_three_requires_a3s_flow_host_preflight_before_catalog_publication() {
+    async fn schema_three_requires_aster_flow_host_preflight_before_catalog_publication() {
         let temp = tempfile::tempdir().unwrap();
         let source = temp.path().join("flows/review.ts");
         tokio::fs::create_dir_all(source.parent().unwrap())
@@ -1806,7 +1806,7 @@ extension "acme/workflow" {
         )
         .await
         .unwrap();
-        let manifest = a3s_use_extension::ExtensionManifest::parse_acl(FLOW_PLUGIN).unwrap();
+        let manifest = aster_use_extension::ExtensionManifest::parse_acl(FLOW_PLUGIN).unwrap();
         let extension = installed_extension(manifest, temp.path().to_path_buf(), true);
         let surfaces = extension
             .surfaces()
@@ -1858,7 +1858,7 @@ extension "acme/workflow" {
         assert_eq!(binding.flows.len(), 1);
         let flow = &binding.flows[0];
         assert_eq!(flow.id, "review");
-        assert_eq!(flow.engine, FlowEngine::A3sFlow);
+        assert_eq!(flow.engine, FlowEngine::AsterFlow);
         assert_eq!(flow.runtime, FlowRuntime::NativeTs);
         assert_eq!(flow.source.path, source);
         assert_eq!(flow.source.sha256.len(), 64);
@@ -1871,7 +1871,7 @@ extension "acme/workflow" {
             .publishes(PackageSurfaceKind::Flow, "review"));
 
         let json = serde_json::to_value(&binding).unwrap();
-        assert_eq!(json["flows"][0]["engine"], "a3s-flow");
+        assert_eq!(json["flows"][0]["engine"], "aster-flow");
         assert_eq!(json["flows"][0]["runtime"], "native-ts");
         assert_eq!(json["flows"][0]["exportName"], "run");
         assert_eq!(json["flows"][0]["source"]["mediaType"], "text/typescript");
@@ -1879,14 +1879,14 @@ extension "acme/workflow" {
 
     #[cfg(feature = "extensions")]
     #[tokio::test]
-    async fn required_a3s_flow_source_corruption_withholds_the_generation() {
+    async fn required_aster_flow_source_corruption_withholds_the_generation() {
         let temp = tempfile::tempdir().unwrap();
         let source = temp.path().join("flows/review.ts");
         tokio::fs::create_dir_all(source.parent().unwrap())
             .await
             .unwrap();
         tokio::fs::write(&source, [0xff_u8]).await.unwrap();
-        let manifest = a3s_use_extension::ExtensionManifest::parse_acl(FLOW_PLUGIN).unwrap();
+        let manifest = aster_use_extension::ExtensionManifest::parse_acl(FLOW_PLUGIN).unwrap();
         let extension = installed_extension(manifest, temp.path().to_path_buf(), true);
         let mut flow_observations = SurfaceObservations::new();
         flow_observations.insert(
@@ -1956,7 +1956,7 @@ extension "acme/workflow" {
         .await
         .unwrap();
 
-        let manifest = a3s_use_extension::ExtensionManifest::parse_acl(SKILL_UI_PLUGIN).unwrap();
+        let manifest = aster_use_extension::ExtensionManifest::parse_acl(SKILL_UI_PLUGIN).unwrap();
         let required = installed_extension(manifest.clone(), temp.path().to_path_buf(), true);
         let binding = project_extension_for_host(
             &required,
@@ -2032,7 +2032,7 @@ extension "acme/workflow" {
         tokio::fs::write(panel.join("mark.png"), [0x89, b'P', b'N', b'G', 0x0d, 0x0a])
             .await
             .unwrap();
-        let manifest = a3s_use_extension::ExtensionManifest::parse_acl(
+        let manifest = aster_use_extension::ExtensionManifest::parse_acl(
             r#"
 extension "acme/spa" {
   schema_version = 3
@@ -2098,7 +2098,7 @@ extension "acme/spa" {
     #[cfg(feature = "extensions")]
     #[tokio::test]
     async fn schema_three_with_unobserved_runtime_surfaces_stays_unpublished() {
-        let manifest = a3s_use_extension::ExtensionManifest::parse_acl(include_str!(
+        let manifest = aster_use_extension::ExtensionManifest::parse_acl(include_str!(
             "../extension//fixtures/manifests/plugin-v3.acl"
         ))
         .unwrap();

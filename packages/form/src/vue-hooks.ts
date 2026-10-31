@@ -28,24 +28,24 @@ import {
   validateFormValueAsync,
 } from './core';
 
-export type A3SVueFormValidationMode = 'onSubmit' | 'onBlur' | 'onChange' | 'all';
+export type AsterVueFormValidationMode = 'onSubmit' | 'onBlur' | 'onChange' | 'all';
 
-export interface UseA3SVueFormOptions<TFieldValues extends JsonObject = JsonObject> {
+export interface UseAsterVueFormOptions<TFieldValues extends JsonObject = JsonObject> {
   plan: MaybeRefOrGetter<FormPlan>;
   initialValues?: TFieldValues;
   hostAdapter?: MaybeRefOrGetter<FormHostAdapter | undefined>;
   locale?: MaybeRefOrGetter<string | undefined>;
   localeCatalog?: MaybeRefOrGetter<FormLocaleCatalogOverride | undefined>;
-  mode?: A3SVueFormValidationMode;
+  mode?: AsterVueFormValidationMode;
 }
 
-export interface A3SVueFormSetValueOptions {
+export interface AsterVueFormSetValueOptions {
   shouldDirty?: boolean;
   shouldTouch?: boolean;
   shouldValidate?: boolean;
 }
 
-export interface A3SVueFormState {
+export interface AsterVueFormState {
   isDirty: boolean;
   isValid: boolean;
   isValidating: boolean;
@@ -59,18 +59,18 @@ export interface A3SVueFormState {
   errors: readonly FieldError[];
 }
 
-export interface A3SVueFieldBinding<TValue extends JsonValue = JsonValue> {
+export interface AsterVueFieldBinding<TValue extends JsonValue = JsonValue> {
   readonly name: string;
   readonly modelValue: TValue | undefined;
   readonly 'onUpdate:modelValue': (value: TValue) => void;
   readonly onBlur: () => void;
 }
 
-export interface A3SVueFormContext<TFieldValues extends JsonObject = JsonObject> {
+export interface AsterVueFormContext<TFieldValues extends JsonObject = JsonObject> {
   plan: ComputedRef<FormPlan>;
   values: Readonly<ShallowRef<TFieldValues>>;
   errors: Readonly<ShallowRef<readonly FieldError[]>>;
-  formState: ComputedRef<A3SVueFormState>;
+  formState: ComputedRef<AsterVueFormState>;
   rendererProps: ComputedRef<{
     plan: FormPlan;
     value: JsonObject;
@@ -81,11 +81,11 @@ export interface A3SVueFormContext<TFieldValues extends JsonObject = JsonObject>
     localeCatalog?: FormLocaleCatalogOverride;
   }>;
   getValue<TValue extends JsonValue = JsonValue>(path: string): TValue | undefined;
-  setValue(path: string, value: JsonValue, options?: A3SVueFormSetValueOptions): void;
-  setValues(value: TFieldValues, options?: A3SVueFormSetValueOptions): void;
+  setValue(path: string, value: JsonValue, options?: AsterVueFormSetValueOptions): void;
+  setValues(value: TFieldValues, options?: AsterVueFormSetValueOptions): void;
   setError(error: FieldError): void;
   clearErrors(path?: string | readonly string[]): void;
-  register<TValue extends JsonValue = JsonValue>(path: string): A3SVueFieldBinding<TValue>;
+  register<TValue extends JsonValue = JsonValue>(path: string): AsterVueFieldBinding<TValue>;
   validate(path?: string | readonly string[]): Promise<boolean>;
   reset(value?: TFieldValues): void;
   handleSubmit(
@@ -94,17 +94,17 @@ export interface A3SVueFormContext<TFieldValues extends JsonObject = JsonObject>
   ): (event?: { preventDefault?: () => void }) => Promise<void>;
 }
 
-export interface UseA3SVueFieldOptions<
+export interface UseAsterVueFieldOptions<
   TFieldValues extends JsonObject = JsonObject,
   TValue extends JsonValue = JsonValue,
 > {
   name: string;
-  form?: A3SVueFormContext<TFieldValues>;
+  form?: AsterVueFormContext<TFieldValues>;
   validateOnValueUpdate?: boolean;
   transform?: (value: TValue) => JsonValue;
 }
 
-export interface UseA3SVueFieldReturn<TValue extends JsonValue = JsonValue> {
+export interface UseAsterVueFieldReturn<TValue extends JsonValue = JsonValue> {
   name: string;
   value: WritableComputedRef<TValue | undefined>;
   errors: ComputedRef<readonly FieldError[]>;
@@ -120,20 +120,20 @@ export interface UseA3SVueFieldReturn<TValue extends JsonValue = JsonValue> {
   validate(): Promise<boolean>;
 }
 
-export interface A3SVueFieldArrayEntry<TValue extends JsonValue = JsonValue> {
+export interface AsterVueFieldArrayEntry<TValue extends JsonValue = JsonValue> {
   key: string;
   index: number;
   value: TValue;
 }
 
-export interface UseA3SVueFieldArrayOptions<TFieldValues extends JsonObject = JsonObject> {
+export interface UseAsterVueFieldArrayOptions<TFieldValues extends JsonObject = JsonObject> {
   name: string;
-  form?: A3SVueFormContext<TFieldValues>;
+  form?: AsterVueFormContext<TFieldValues>;
   keyFactory?: () => string;
 }
 
-export interface UseA3SVueFieldArrayReturn<TValue extends JsonValue = JsonValue> {
-  fields: ComputedRef<readonly A3SVueFieldArrayEntry<TValue>[]>;
+export interface UseAsterVueFieldArrayReturn<TValue extends JsonValue = JsonValue> {
+  fields: ComputedRef<readonly AsterVueFieldArrayEntry<TValue>[]>;
   append(value: TValue): void;
   prepend(value: TValue): void;
   insert(index: number, value: TValue): void;
@@ -144,7 +144,7 @@ export interface UseA3SVueFieldArrayReturn<TValue extends JsonValue = JsonValue>
   replace(value: readonly TValue[]): void;
 }
 
-const formContextKey = Symbol('A3S UI Form') as InjectionKey<A3SVueFormContext<JsonObject>>;
+const formContextKey = Symbol('Aster UI Form') as InjectionKey<AsterVueFormContext<JsonObject>>;
 let fieldArrayIdentity = 0;
 
 function clone<T>(value: T): T {
@@ -179,9 +179,9 @@ function fieldPaths(plan: FormPlan): string[] {
   ];
 }
 
-export function useA3SForm<TFieldValues extends JsonObject = JsonObject>(
-  options: UseA3SVueFormOptions<TFieldValues>,
-): A3SVueFormContext<TFieldValues> {
+export function useAsterForm<TFieldValues extends JsonObject = JsonObject>(
+  options: UseAsterVueFormOptions<TFieldValues>,
+): AsterVueFormContext<TFieldValues> {
   const plan = computed(() => toValue(options.plan));
   const initial = clone(options.initialValues ?? ({} as TFieldValues));
   const defaultValues = shallowRef<TFieldValues>(clone(initial));
@@ -248,7 +248,7 @@ export function useA3SForm<TFieldValues extends JsonObject = JsonObject>(
     return result.errors.length === 0;
   };
 
-  const setValue = (path: string, value: JsonValue, setOptions: A3SVueFormSetValueOptions = {}) => {
+  const setValue = (path: string, value: JsonValue, setOptions: AsterVueFormSetValueOptions = {}) => {
     setDerivedValues(updateFormValue(internalValues.value, path, value) as TFieldValues);
     if (setOptions.shouldDirty !== false) updateDirtyFields([path]);
     if (setOptions.shouldTouch) touchedFields.value = new Set([...touchedFields.value, path]);
@@ -257,7 +257,7 @@ export function useA3SForm<TFieldValues extends JsonObject = JsonObject>(
     }
   };
 
-  const setValues = (value: TFieldValues, setOptions: A3SVueFormSetValueOptions = {}) => {
+  const setValues = (value: TFieldValues, setOptions: AsterVueFormSetValueOptions = {}) => {
     setDerivedValues(clone(value));
     const paths = fieldPaths(plan.value);
     if (setOptions.shouldDirty !== false) updateDirtyFields(paths);
@@ -297,7 +297,7 @@ export function useA3SForm<TFieldValues extends JsonObject = JsonObject>(
 
   const register = <TValue extends JsonValue = JsonValue>(
     path: string,
-  ): A3SVueFieldBinding<TValue> => ({
+  ): AsterVueFieldBinding<TValue> => ({
     name: path,
     get modelValue() {
       return getValue<TValue>(path);
@@ -347,7 +347,7 @@ export function useA3SForm<TFieldValues extends JsonObject = JsonObject>(
     };
   };
 
-  const formState = computed<A3SVueFormState>(() => ({
+  const formState = computed<AsterVueFormState>(() => ({
     isDirty: !jsonValuesEqual(internalValues.value, defaultValues.value),
     isValid:
       internalErrors.value.length === 0 &&
@@ -395,26 +395,26 @@ export function useA3SForm<TFieldValues extends JsonObject = JsonObject>(
   };
 }
 
-export function provideA3SForm<TFieldValues extends JsonObject>(
-  form: A3SVueFormContext<TFieldValues>,
-): A3SVueFormContext<TFieldValues> {
-  provide(formContextKey, form as unknown as A3SVueFormContext<JsonObject>);
+export function provideAsterForm<TFieldValues extends JsonObject>(
+  form: AsterVueFormContext<TFieldValues>,
+): AsterVueFormContext<TFieldValues> {
+  provide(formContextKey, form as unknown as AsterVueFormContext<JsonObject>);
   return form;
 }
 
-export function useA3SFormContext<
+export function useAsterFormContext<
   TFieldValues extends JsonObject = JsonObject,
->(): A3SVueFormContext<TFieldValues> {
+>(): AsterVueFormContext<TFieldValues> {
   const form = inject(formContextKey);
-  if (!form) throw new Error('useA3SFormContext must be used below provideA3SForm.');
-  return form as unknown as A3SVueFormContext<TFieldValues>;
+  if (!form) throw new Error('useAsterFormContext must be used below provideAsterForm.');
+  return form as unknown as AsterVueFormContext<TFieldValues>;
 }
 
-export function useA3SField<
+export function useAsterField<
   TFieldValues extends JsonObject = JsonObject,
   TValue extends JsonValue = JsonValue,
->(options: UseA3SVueFieldOptions<TFieldValues, TValue>): UseA3SVueFieldReturn<TValue> {
-  const form = options.form ?? useA3SFormContext<TFieldValues>();
+>(options: UseAsterVueFieldOptions<TFieldValues, TValue>): UseAsterVueFieldReturn<TValue> {
+  const form = options.form ?? useAsterFormContext<TFieldValues>();
   const errors = computed(() =>
     form.errors.value.filter((error) => pathMatchesScope(error.path, options.name)),
   );
@@ -449,14 +449,14 @@ export function useA3SField<
 
 function defaultFieldArrayKey(): string {
   fieldArrayIdentity += 1;
-  return globalThis.crypto?.randomUUID?.() ?? `a3s-field-${fieldArrayIdentity}`;
+  return globalThis.crypto?.randomUUID?.() ?? `aster-field-${fieldArrayIdentity}`;
 }
 
-export function useA3SFieldArray<
+export function useAsterFieldArray<
   TFieldValues extends JsonObject = JsonObject,
   TValue extends JsonValue = JsonValue,
->(options: UseA3SVueFieldArrayOptions<TFieldValues>): UseA3SVueFieldArrayReturn<TValue> {
-  const form = options.form ?? useA3SFormContext<TFieldValues>();
+>(options: UseAsterVueFieldArrayOptions<TFieldValues>): UseAsterVueFieldArrayReturn<TValue> {
+  const form = options.form ?? useAsterFormContext<TFieldValues>();
   const createKey = options.keyFactory ?? defaultFieldArrayKey;
   const keys = shallowRef<string[]>([]);
   const current = () => {

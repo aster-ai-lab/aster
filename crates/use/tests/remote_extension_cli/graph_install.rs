@@ -314,7 +314,7 @@ async fn enablement_planning_distinguishes_planned_no_change_and_completed_outco
     assert_eq!(envelope.plan.action, PluginOperationAction::Disable);
     assert_eq!(
         envelope.plan.schema,
-        a3s_use_core::PLUGIN_OPERATION_PLAN_SCHEMA_V4
+        aster_use_core::PLUGIN_OPERATION_PLAN_SCHEMA_V4
     );
     assert_eq!(envelope.plan.operation_id, disable.operation_id);
     assert!(planned.result.is_none());
@@ -409,7 +409,7 @@ fn schema_v3_install_resolves_and_activates_the_complete_dependency_graph() {
             serde_json::from_slice(&std::fs::read(receipt_path).unwrap()).unwrap();
         assert_eq!(
             receipt["schemaVersion"],
-            a3s_use_extension::EXTENSION_RECEIPT_SCHEMA_VERSION
+            aster_use_extension::EXTENSION_RECEIPT_SCHEMA_VERSION
         );
         assert_eq!(receipt["enabled"], true);
         assert!(receipt["lifecycleGeneration"].as_u64().unwrap() > 0);
@@ -634,7 +634,7 @@ fn schema_v3_cli_resolves_dependencies_from_the_persisted_source_set() {
                 &repository.root_sha256,
                 "--json",
             ])
-            .env("A3S_USE_HOME", &home)
+            .env("ASTER_USE_HOME", &home)
             .output()
             .unwrap();
         assert!(configured.status.success(), "{configured:?}");
@@ -654,7 +654,7 @@ fn schema_v3_cli_resolves_dependencies_from_the_persisted_source_set() {
             "1.0.0",
             "--json",
         ])
-        .env("A3S_USE_HOME", &home)
+        .env("ASTER_USE_HOME", &home)
         .output()
         .unwrap();
     assert!(installed.status.success(), "{installed:?}");

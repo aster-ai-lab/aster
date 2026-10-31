@@ -245,15 +245,15 @@ function importedBookmarkMarker(
   let suffix = base;
   let collision = 2;
   while (
-    occupiedText.includes(`__A3S_WORK_BOOKMARK_START_${suffix}__`) ||
-    occupiedText.includes(`__A3S_WORK_BOOKMARK_END_${suffix}__`)
+    occupiedText.includes(`__ASTER_WORK_BOOKMARK_START_${suffix}__`) ||
+    occupiedText.includes(`__ASTER_WORK_BOOKMARK_END_${suffix}__`)
   ) {
     suffix = `${base}_${collision}`;
     collision += 1;
   }
   return {
-    start: `__A3S_WORK_BOOKMARK_START_${suffix}__`,
-    end: `__A3S_WORK_BOOKMARK_END_${suffix}__`,
+    start: `__ASTER_WORK_BOOKMARK_START_${suffix}__`,
+    end: `__ASTER_WORK_BOOKMARK_END_${suffix}__`,
     id,
     name,
     sourceName,
@@ -272,15 +272,15 @@ function importedBookmarkReferenceMarker(
   let suffix = base;
   let collision = 2;
   while (
-    occupiedText.includes(`__A3S_WORK_BOOKMARK_REFERENCE_START_${suffix}__`) ||
-    occupiedText.includes(`__A3S_WORK_BOOKMARK_REFERENCE_END_${suffix}__`)
+    occupiedText.includes(`__ASTER_WORK_BOOKMARK_REFERENCE_START_${suffix}__`) ||
+    occupiedText.includes(`__ASTER_WORK_BOOKMARK_REFERENCE_END_${suffix}__`)
   ) {
     suffix = `${base}_${collision}`;
     collision += 1;
   }
   return {
-    start: `__A3S_WORK_BOOKMARK_REFERENCE_START_${suffix}__`,
-    end: `__A3S_WORK_BOOKMARK_REFERENCE_END_${suffix}__`,
+    start: `__ASTER_WORK_BOOKMARK_REFERENCE_START_${suffix}__`,
+    end: `__ASTER_WORK_BOOKMARK_REFERENCE_END_${suffix}__`,
     targetId: target.id,
     targetName: target.name,
     instruction: documentBookmarkReferenceInstruction(

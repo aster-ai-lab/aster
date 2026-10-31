@@ -17,7 +17,7 @@ export interface DocxTextBoxIdentityRegistration {
 }
 
 const DOC_PROPERTIES_ID_MAX = 0xffff_ffff;
-const TEXT_BOX_ID_MARKER_PATTERN = /__A3S_TEXT_BOX_ID_\d+__/g;
+const TEXT_BOX_ID_MARKER_PATTERN = /__ASTER_TEXT_BOX_ID_\d+__/g;
 
 /**
  * Allocates a marker for each text box and lets the package patcher assign a
@@ -35,7 +35,7 @@ export class DocxTextBoxIdentityPatchCollector {
   register(
     properties: WorkDocumentTextBoxProperties,
   ): DocxTextBoxIdentityRegistration {
-    const marker = `__A3S_TEXT_BOX_ID_${this.nextMarker}__`;
+    const marker = `__ASTER_TEXT_BOX_ID_${this.nextMarker}__`;
     this.nextMarker += 1;
     this.patches.push({
       marker,

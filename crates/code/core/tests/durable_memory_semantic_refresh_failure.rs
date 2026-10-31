@@ -1,18 +1,18 @@
 #[path = "durable_memory_semantic_refresh/support.rs"]
 mod refresh_support;
 
-use a3s_code_core::embedding::{
+use aster_core::embedding::{
     EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingExecutorConfig, EmbeddingNormalization,
     EmbeddingProvider, EmbeddingProviderDescriptor, EmbeddingProviderError, EmbeddingVector,
 };
-use a3s_code_core::{DurableMemoryRecallPolicy, DurableMemorySemanticError, DurableMemorySession};
-use a3s_memory::repository::{
+use aster_core::{DurableMemoryRecallPolicy, DurableMemorySemanticError, DurableMemorySession};
+use aster_durable_memory::repository::{
     InMemoryRepository, MemoryAccessEvent, MemoryChangeResult, MemoryChangeSet, MemoryNamespace,
     MemoryNamespaceSnapshot, MemoryNode, MemoryOperation, MemoryQuery, MemoryQueryResult,
     MemoryRepository, MemoryRepositoryError, MemorySnapshotRequest, MemoryStatus,
     MemoryUsageSummary, RevisionMode,
 };
-use a3s_memory::vector::{
+use aster_durable_memory::vector::{
     InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorIndexStatus,
     VectorMutationConsistency, VectorRecord, VectorResult, VectorSearchRequest, VectorSearchResult,
 };

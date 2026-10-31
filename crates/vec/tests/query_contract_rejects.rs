@@ -9,7 +9,7 @@
 
 //! Query-contract rejection oracles for mismatched ANN control parameters.
 
-use a3s_vec::{
+use aster_vec::{
     Collection, CollectionOptions, CollectionSchema, DataType, Doc, Durability, FieldSchema,
     IndexParams, MetricType, SearchQuery,
 };
@@ -208,7 +208,7 @@ fn fts_binary_and_sparse_query_contracts_fail_closed() {
     doc.add_vector_f32("embedding", &[1.0, 0.0]).expect("vec");
     collection.insert(&[&doc]).expect("insert");
 
-    let mut fts = a3s_vec::Fts::new().expect("fts");
+    let mut fts = aster_vec::Fts::new().expect("fts");
     fts.set_match_string("rust").expect("match");
     let mut fts_query = SearchQuery::fts("body", &fts, 3).expect("fts query");
     fts_query.params.insert("ef".into(), json!(8));

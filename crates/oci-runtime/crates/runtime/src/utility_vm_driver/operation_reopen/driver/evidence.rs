@@ -1,6 +1,6 @@
 use std::sync::atomic::Ordering;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, DeleteMode, FileRequest, FilesystemRequest, OperationId, ProcessTarget, Signal,
 };
 

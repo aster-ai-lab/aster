@@ -14,13 +14,13 @@ fn test_build_box_config_uses_keepalive_for_interactive_tty_boot() {
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )
     .unwrap();
 
-    assert_eq!(config.cmd, vec!["a3s-box-pty-keepalive"]);
+    assert_eq!(config.cmd, vec!["aster-box-pty-keepalive"]);
     assert_eq!(
         config.entrypoint_override,
         Some(interactive_keepalive_entrypoint())
@@ -40,7 +40,7 @@ fn test_build_box_config_plumbs_virtiofs_cache_mode() {
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )
@@ -63,7 +63,7 @@ fn test_build_box_config_preserves_non_tty_command() {
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )
@@ -84,7 +84,7 @@ fn test_build_box_config_controls_stdin_open() {
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )
@@ -101,7 +101,7 @@ fn test_build_box_config_controls_stdin_open() {
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )
@@ -118,7 +118,7 @@ fn test_build_box_config_controls_stdin_open() {
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )
@@ -154,7 +154,7 @@ fn test_mark_record_stopped_persists_exit_context() {
 
 #[test]
 fn test_completed_managed_start_requires_stopped_state_and_exact_exit_code() {
-    fn managed_record(status: a3s_box_runtime::ManagedExecutionState) -> BoxRecord {
+    fn managed_record(status: aster_box_runtime::ManagedExecutionState) -> BoxRecord {
         let id = "11111111-1111-4111-8111-111111111111";
         let mut record = crate::test_helpers::fixtures::make_record(
             id,
@@ -162,15 +162,15 @@ fn test_completed_managed_start_requires_stopped_state_and_exact_exit_code() {
             status.as_status(),
             None,
         );
-        record.isolation = a3s_box_core::ExecutionIsolation::Sandbox;
+        record.isolation = aster_box_core::ExecutionIsolation::Sandbox;
         record.managed_execution = Some(
-            a3s_box_runtime::ManagedExecutionMetadata::new(
+            aster_box_runtime::ManagedExecutionMetadata::new(
                 OperationId::new("operation-startup-completion").unwrap(),
                 ExecutionGeneration::INITIAL,
                 CreateExecutionRequest {
                     external_sandbox_id: "startup-completion".to_string(),
                     config: BoxConfig {
-                        isolation: a3s_box_core::ExecutionIsolation::Sandbox,
+                        isolation: aster_box_core::ExecutionIsolation::Sandbox,
                         image: record.image.clone(),
                         ..Default::default()
                     },
@@ -184,14 +184,14 @@ fn test_completed_managed_start_requires_stopped_state_and_exact_exit_code() {
         record
     }
 
-    let mut stopped = managed_record(a3s_box_runtime::ManagedExecutionState::Stopped);
+    let mut stopped = managed_record(aster_box_runtime::ManagedExecutionState::Stopped);
     stopped.exit_code = Some(17);
     assert!(is_completed_managed_start(&stopped));
 
     stopped.exit_code = None;
     assert!(!is_completed_managed_start(&stopped));
 
-    let mut failed = managed_record(a3s_box_runtime::ManagedExecutionState::Failed);
+    let mut failed = managed_record(aster_box_runtime::ManagedExecutionState::Failed);
     failed.exit_code = Some(17);
     assert!(!is_completed_managed_start(&failed));
 }
@@ -266,20 +266,20 @@ fn test_foreground_workload_exit_code_refuses_invented_provider_zero() {
         foreground_workload_exit_code(
             temporary.path(),
             Some(0),
-            a3s_box_core::ExecutionIsolation::Microvm,
+            aster_box_core::ExecutionIsolation::Microvm,
             false,
         ),
         None
     );
 
-    let exit_path = temporary.path().join("upper/.a3s_exit_code");
+    let exit_path = temporary.path().join("upper/.aster_exit_code");
     std::fs::create_dir_all(exit_path.parent().unwrap()).unwrap();
     std::fs::write(exit_path, "7\n").unwrap();
     assert_eq!(
         foreground_workload_exit_code(
             temporary.path(),
             Some(1),
-            a3s_box_core::ExecutionIsolation::Microvm,
+            aster_box_core::ExecutionIsolation::Microvm,
             false,
         ),
         Some(7)
@@ -293,7 +293,7 @@ fn test_foreground_sandbox_trusts_provider_exit_zero() {
         foreground_workload_exit_code(
             temporary.path(),
             Some(0),
-            a3s_box_core::ExecutionIsolation::Sandbox,
+            aster_box_core::ExecutionIsolation::Sandbox,
             false,
         ),
         Some(0)
@@ -310,7 +310,7 @@ fn test_foreground_oci_routed_microvm_trusts_provider_exit_zero() {
         foreground_workload_exit_code(
             temporary.path(),
             Some(0),
-            a3s_box_core::ExecutionIsolation::Microvm,
+            aster_box_core::ExecutionIsolation::Microvm,
             true,
         ),
         Some(0)
@@ -319,7 +319,7 @@ fn test_foreground_oci_routed_microvm_trusts_provider_exit_zero() {
         foreground_workload_exit_code(
             temporary.path(),
             Some(17),
-            a3s_box_core::ExecutionIsolation::Microvm,
+            aster_box_core::ExecutionIsolation::Microvm,
             true,
         ),
         Some(17)
@@ -466,12 +466,12 @@ fn test_build_box_config_passes_security_options() {
     let config = build_box_config(
         &args,
         512,
-        a3s_box_core::config::ResourceLimits::default(),
+        aster_box_core::config::ResourceLimits::default(),
         None,
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )
@@ -492,12 +492,12 @@ fn test_build_box_config_passes_user_and_workdir() {
     let config = build_box_config(
         &args,
         512,
-        a3s_box_core::config::ResourceLimits::default(),
+        aster_box_core::config::ResourceLimits::default(),
         None,
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )
@@ -516,12 +516,12 @@ fn test_build_box_config_passes_hostname_and_add_hosts() {
     let config = build_box_config(
         &args,
         512,
-        a3s_box_core::config::ResourceLimits::default(),
+        aster_box_core::config::ResourceLimits::default(),
         None,
         vec![],
         vec![],
         vec![],
-        a3s_box_core::NetworkMode::Tsi,
+        aster_box_core::NetworkMode::Tsi,
         vec![],
         TeeConfig::None,
     )

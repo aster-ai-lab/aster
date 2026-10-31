@@ -19,7 +19,7 @@ Coverage layers used below:
 | Open | Required release evidence is missing |
 
 The latest published workspace archive is
-[`v0.3.6`](https://github.com/A3S-Lab/OCI-Runtime/releases/tag/v0.3.6).
+[`v0.3.6`](https://github.com/aster-ai-lab/OCI-Runtime/releases/tag/v0.3.6).
 It does not promote readiness. Fresh-host matrices check out current `main`.
 
 ## Public operations
@@ -73,5 +73,5 @@ All 41 `features-linux.md` requirements are enforced.
 | CLI | Short-process adapter | Unix and Windows IPC lifecycle tests | No terminal bundle, console socket, or `LISTEN_FDS` |
 | containerd runtime-v2 | Adapter implemented. Not production-ready | Unit tests plus dated live observations | Cross-driver and signed-package qualification. Production drivers do not advertise Checkpoint |
 | Attachments v1–v4 | SDK contract | Unit tests | Production HVF/KVM/WHPX registrations advertise only qualified profiles |
-| A3S Box consumer | Public SDK only | Box CI on Native Linux with `/dev/kvm` absent | Default and cross-platform cutover remain open. A finished consumer is not runtime completion |
+| Aster Box consumer | Public SDK only | Box CI on Native Linux with `/dev/kvm` absent | Default and cross-platform cutover remain open. A finished consumer is not runtime completion |
 | W4 Box cutover | Not started | None that can close the gate | Must not land before the fresh-host matrices |

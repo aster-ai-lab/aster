@@ -58,7 +58,7 @@ compensate for violating one of them.
 
 ## Current conclusion
 
-Fixture v1 meets the predeclared `0.90` relation Recall@5 gate, so A3S Code does
+Fixture v1 meets the predeclared `0.90` relation Recall@5 gate, so Aster Code does
 not add embeddings, a vector index, model egress, or vector lifecycle state to
 this path. This synthetic result is a deterministic correctness gate, not a
 claim about every production distribution. Hosts should retain shadow
@@ -74,5 +74,5 @@ on a representative production distribution.
 Run the report from the Code crate workspace:
 
 ```text
-cargo test -p a3s-code-core --test durable_memory_retrieval_eval -- --nocapture
+cargo test -p aster-core --test durable_memory_retrieval_eval -- --nocapture
 ```

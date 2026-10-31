@@ -3,13 +3,13 @@
 //! Detects an existing Chrome/Chromium installation or explicitly downloads
 //! Chrome for Testing from Google's official CDN.
 //!
-//! Downloaded binaries are stored under the A3S Use Browser data root.
+//! Downloaded binaries are stored under the Aster Use Browser data root.
 
 use std::path::{Path, PathBuf};
 
 use tracing::{debug, info};
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use crate::pool::browser_error;
 
@@ -111,24 +111,24 @@ pub(crate) fn managed_cache_dir() -> UseResult<PathBuf> {
 }
 
 pub(crate) fn browser_data_root() -> UseResult<PathBuf> {
-    if let Some(value) = std::env::var_os("A3S_USE_BROWSER_HOME") {
+    if let Some(value) = std::env::var_os("ASTER_USE_BROWSER_HOME") {
         return absolute(PathBuf::from(value));
     }
-    if let Some(value) = std::env::var_os("A3S_DATA_HOME") {
+    if let Some(value) = std::env::var_os("ASTER_DATA_HOME") {
         return Ok(absolute(PathBuf::from(value))?.join("use/browser"));
     }
     if let Some(value) = std::env::var_os("XDG_DATA_HOME") {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s/use/browser"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster/use/browser"));
     }
     if let Some(home) = std::env::var_os("HOME").map(PathBuf::from) {
-        return Ok(absolute(home)?.join(".local/share/a3s/use/browser"));
+        return Ok(absolute(home)?.join(".local/share/aster/use/browser"));
     }
     #[cfg(windows)]
     if let Some(value) = std::env::var_os("LOCALAPPDATA") {
-        return Ok(absolute(PathBuf::from(value))?.join("a3s/use/browser"));
+        return Ok(absolute(PathBuf::from(value))?.join("aster/use/browser"));
     }
     Err(browser_error(
-        "Cannot determine the A3S Use Browser data directory.",
+        "Cannot determine the Aster Use Browser data directory.",
     ))
 }
 
@@ -151,7 +151,7 @@ fn absolute(path: PathBuf) -> UseResult<PathBuf> {
 /// Returns `Some(path)` if found, `None` otherwise.
 pub fn detect_chrome() -> Option<PathBuf> {
     // 1. Check explicit environment overrides.
-    for name in ["A3S_BROWSER_EXECUTABLE", "CHROME"] {
+    for name in ["ASTER_BROWSER_EXECUTABLE", "CHROME"] {
         if let Some(path) = std::env::var_os(name).map(PathBuf::from) {
             if path.is_file() {
                 debug!("Chrome found via {name}: {}", path.display());
@@ -183,7 +183,7 @@ pub fn detect_chrome() -> Option<PathBuf> {
 /// Ensure Chrome is available, downloading it if necessary.
 ///
 /// 1. If Chrome is already installed on the system, returns its path.
-/// 2. If a cached download exists in `the A3S Use data directory/`, returns that path.
+/// 2. If a cached download exists in `the Aster Use data directory/`, returns that path.
 /// 3. Otherwise, downloads Chrome for Testing and caches it.
 ///
 /// Returns the path to the Chrome executable.
@@ -215,7 +215,7 @@ pub(crate) fn resolve_chrome() -> UseResult<PathBuf> {
                 "No compatible Chrome executable is installed.",
             )
             .with_suggestion(
-                "Run 'a3s install use/browser' or select BrowserProvider::ManagedChrome.",
+                "Run 'aster install use/browser' or select BrowserProvider::ManagedChrome.",
             )
         })
 }
@@ -259,7 +259,7 @@ pub(crate) fn find_managed_chrome() -> UseResult<PathBuf> {
 /// Download Chrome for Testing from Google's official CDN.
 ///
 /// Downloads the stable version for the current platform and extracts it
-/// to `the A3S Use data directory/<version>/`.
+/// to `the Aster Use data directory/<version>/`.
 pub async fn download_latest_chrome() -> UseResult<PathBuf> {
     crate::chrome_install::download_latest_chrome().await
 }

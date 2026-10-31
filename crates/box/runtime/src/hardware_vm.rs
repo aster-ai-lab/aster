@@ -2,7 +2,7 @@
 //! and Windows x86_64/WHPX.
 //!
 //! Profile bytes, the device allowlist, lifecycle names, snapshot tier names,
-//! resource bounds, and control limits come from `a3s-oci-core` and are
+//! resource bounds, and control limits come from `aster-oci-core` and are
 //! identical on every host. Boot layout is selected only by guest ISA.
 //! Decisions here do not start a hypervisor.
 
@@ -11,8 +11,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use a3s_oci_core::hardware_vm::{self as core_vm, GuestArch, HardwareVmError};
-use a3s_oci_core::{DriverKind, IsolationClass};
+use aster_oci_core::hardware_vm::{self as core_vm, GuestArch, HardwareVmError};
+use aster_oci_core::{DriverKind, IsolationClass};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use thiserror::Error;
@@ -142,7 +142,7 @@ impl HardwareVmProfile {
     }
 }
 
-/// Profile bytes ignore host, ISA, and `A3S_BOX_OCI_MIGRATION`.
+/// Profile bytes ignore host, ISA, and `ASTER_BOX_OCI_MIGRATION`.
 pub fn stored_profile_bytes(_migration: Option<&str>) -> Vec<u8> {
     profile_bytes(&HardwareVmProfile::current())
 }
@@ -251,7 +251,7 @@ pub enum IsolationSelection {
 }
 
 /// `migration` is accepted and ignored. The stored hardware-vm profile does
-/// not change when `A3S_BOX_OCI_MIGRATION` is set or unset.
+/// not change when `ASTER_BOX_OCI_MIGRATION` is set or unset.
 pub fn select_isolation(
     selector: Option<&str>,
     migration: Option<&str>,
@@ -720,8 +720,8 @@ pub struct ControlLaunch {
 pub fn control_launch(credential: &str) -> ControlLaunch {
     let _ = credential;
     ControlLaunch {
-        argv: vec!["a3s-box".to_string(), "exec".to_string()],
-        env: vec![("A3S_BOX_CONTROL".to_string(), "present".to_string())],
+        argv: vec!["aster-box".to_string(), "exec".to_string()],
+        env: vec![("ASTER_BOX_CONTROL".to_string(), "present".to_string())],
         log: "control-channel-open".to_string(),
         snapshot: stored_profile_bytes(None),
     }

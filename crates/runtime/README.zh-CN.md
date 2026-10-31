@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="A3S Runtime: one durable lifecycle for provider-neutral Tasks and Services">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Aster Runtime: one durable lifecycle for provider-neutral Tasks and Services">
 </p>
 
 
@@ -10,10 +10,10 @@
 </p>
 
 <p align="center">
-  <a href="https://crates.io/crates/a3s-runtime"><img alt="Crates.io release" src="https://img.shields.io/crates/v/a3s-runtime?style=flat-square&color=f97316"></a>
-  <a href="https://docs.rs/a3s-runtime/latest/a3s_runtime/"><img alt="docs.rs API documentation" src="https://img.shields.io/docsrs/a3s-runtime?style=flat-square"></a>
-  <a href="https://github.com/A3S-Lab/Runtime/actions/workflows/ci.yml"><img alt="Continuous integration status" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/Runtime/ci.yml?branch=main&style=flat-square&label=CI"></a>
-  <a href="https://github.com/A3S-Lab/Runtime/blob/main/LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-5eead4?style=flat-square"></a>
+  <a href="https://crates.io/crates/aster-runtime"><img alt="Crates.io release" src="https://img.shields.io/crates/v/aster-runtime?style=flat-square&color=f97316"></a>
+  <a href="https://docs.rs/aster-runtime/latest/aster_runtime/"><img alt="docs.rs API documentation" src="https://img.shields.io/docsrs/aster-runtime?style=flat-square"></a>
+  <a href="https://github.com/aster-ai-lab/Runtime/actions/workflows/ci.yml"><img alt="Continuous integration status" src="https://img.shields.io/github/actions/workflow/status/aster-ai-lab/Runtime/ci.yml?branch=main&style=flat-square&label=CI"></a>
+  <a href="https://github.com/aster-ai-lab/Runtime/blob/main/LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-5eead4?style=flat-square"></a>
   <img alt="Minimum supported Rust version 1.85" src="https://img.shields.io/badge/MSRV-1.85-8b949e?style=flat-square">
 </p>
 
@@ -26,15 +26,15 @@
   <a href="#deliberate-boundaries">边界</a>
 </p>
 
-**A3S Runtime** 是有限任务的提供者中立执行合约
+**Aster Runtime** 是有限任务的提供者中立执行合约
 长期运行的服务。它为调用者提供了跨本地的生命周期 API，
 容器、沙箱和远程提供程序，同时保留提供程序机制
 在类型化的驱动程序边界后面。
 
-它是 A3S Cloud AaaS 下的单一执行底层，可执行 WaaS
+它是 Aster Cloud AaaS 下的单一执行底层，可执行 WaaS
 节点、FaaS、托管 MCP 和 Durable Cell 应用程序服务。支持的
-生产链使用A3S Box作为流程/沙箱提供者；公网流量
-通过 A3S Gateway 进入，而不是直接通过运行时端点进入。
+生产链使用Aster Box作为流程/沙箱提供者；公网流量
+通过 Aster Gateway 进入，而不是直接通过运行时端点进入。
 
 运行时拥有验证、不可变代、能力准入、持久
 请求身份，并观察收敛。调度、路由、部署
@@ -66,24 +66,24 @@
 | `Task` | `succeeded` |构建、有限功能、迁移、评估、备份 |
 | `Service` | `running`，配置完毕即可上线 |有状态代理、无状态功能/MCP、持久单元应用程序 |
 
-工作流编排不是第三个单元类别。 A3S Flow拥有经久耐用
+工作流编排不是第三个单元类别。 Aster Flow拥有经久耐用
 工作流状态机；仅其可执行的 Agent 或 Function 子项目
 到运行时任务或服务。
 
 ## 架构
 
 <p align="center">
-  <img src="./assets/readme/architecture.svg" width="100%" alt="A3S Runtime architecture from caller policy through ManagedRuntimeClient and RuntimeDriver to an external provider">
+  <img src="./assets/readme/architecture.svg" width="100%" alt="Aster Runtime architecture from caller policy through ManagedRuntimeClient and RuntimeDriver to an external provider">
 </p>
 
 `ManagedRuntimeClient` 是共享生命周期实现。它由三部分组成
 可更换端口：
 
-- [`RuntimeStateStore`](https://docs.rs/a3s-runtime/latest/a3s_runtime/trait.RuntimeStateStore.html)
+- [`RuntimeStateStore`](https://docs.rs/aster-runtime/latest/aster_runtime/trait.RuntimeStateStore.html)
   拥有单位记录、请求收据和每个单位的运营租赁。
-- [`RuntimeDriver`](https://docs.rs/a3s-runtime/latest/a3s_runtime/trait.RuntimeDriver.html)
+- [`RuntimeDriver`](https://docs.rs/aster-runtime/latest/aster_runtime/trait.RuntimeDriver.html)
   拥有提供商资源机制和稳定的提供商身份。
-- [`RuntimeClock`](https://docs.rs/a3s-runtime/latest/a3s_runtime/trait.RuntimeClock.html)
+- [`RuntimeClock`](https://docs.rs/aster-runtime/latest/aster_runtime/trait.RuntimeClock.html)
   供应期限和观察时间。
 
 驱动程序从不决定生成或请求冲突策略。注册表
@@ -93,7 +93,7 @@
 ### 云、运行时、Box 和网关
 
 ```text
-Client -> A3S Gateway -> A3S Cloud -> A3S Runtime -> A3S Box
+Client -> Aster Gateway -> Aster Cloud -> Aster Runtime -> Aster Box
           public path    semantics    lifecycle     execution
 ```
 
@@ -103,8 +103,8 @@ Client -> A3S Gateway -> A3S Cloud -> A3S Runtime -> A3S Box
 端点，同时将所有产品字段保留在调用者中：
 
 ```rust,ignore
-use a3s_runtime::contract::{RuntimeFeature, RuntimeUnitClass};
-use a3s_runtime::RuntimeConsumerRequirements;
+use aster_runtime::contract::{RuntimeFeature, RuntimeUnitClass};
+use aster_runtime::RuntimeConsumerRequirements;
 
 let requirements = RuntimeConsumerRequirements::new(RuntimeUnitClass::Service)
     .require_semantics_profile()
@@ -141,20 +141,20 @@ requirements.accept_observation(&spec, &observation)?;
 安装最新版本：
 
 ```bash
-cargo add a3s-runtime
+cargo add aster-runtime
 ```
 
 实现提供程序驱动程序后，将其与托管生命周期组合在一起：
 
 ```rust,ignore
-use a3s_runtime::{
+use aster_runtime::{
     FileRuntimeStateStore, ManagedRuntimeClient, RuntimeClient, RuntimeDriver,
 };
 use std::sync::Arc;
 
 let driver: Arc<dyn RuntimeDriver> = Arc::new(provider_driver);
 let client = ManagedRuntimeClient::new(
-    Arc::new(FileRuntimeStateStore::new("/var/lib/a3s/runtime")),
+    Arc::new(FileRuntimeStateStore::new("/var/lib/aster/runtime")),
     driver,
 );
 
@@ -165,7 +165,7 @@ let observation = client.apply(&request).await?;
 选择与您的角色匹配的切入点：
 
 - **运行时消费者：**调用
-  [`RuntimeClient`](https://docs.rs/a3s-runtime/latest/a3s_runtime/trait.RuntimeClient.html)
+  [`RuntimeClient`](https://docs.rs/aster-runtime/latest/aster_runtime/trait.RuntimeClient.html)
   直接获取生命周期或从`RuntimeClientRegistry`获取生命周期。
 - **提供者作者：** 实现`RuntimeDriver`，通过
   `RuntimeProviderFactory`，制作`apply`，`stop`，`remove`，并做广告
@@ -175,10 +175,10 @@ let observation = client.apply(&request).await?;
   等效的围栏每单位租赁。
 
 > [!NOTE]
-> `a3s-runtime` 0.5.0 使用功能 v6 和单位规格/观察 v4。它
+> `aster-runtime` 0.5.0 使用功能 v6 和单位规格/观察 v4。它
 > 将服务就绪性与活跃性分开，带有有限的优雅停止
 > 策略，并保留类型化端点以及不透明的身份证明绑定。
-> 生产声明仍需要准确的 A3S Box 认证。
+> 生产声明仍需要准确的 Aster Box 认证。
 
 ## 运行时规范
 
@@ -291,7 +291,7 @@ Capability v6 独立通告 `ServiceTcp` 和 `ServiceUdp`，
 针对真实的一次性基础设施的套件：
 
 ```rust,ignore
-use a3s_runtime::{verify_runtime_profiles, RuntimeConformanceFixture};
+use aster_runtime::{verify_runtime_profiles, RuntimeConformanceFixture};
 
 let fixture: &dyn RuntimeConformanceFixture = provider_fixture;
 let report = verify_runtime_profiles(client.as_ref(), fixture).await?;
@@ -310,14 +310,14 @@ assert_eq!(report.inventory_before, report.inventory_after);
 较低级别的`verify_runtime_provider`帮助器涵盖了成功的任务和
 服务生命周期，但它本身并不是生产认证。
 
-A3S Box 包含生产`RuntimeDriver` 和能力触发
+Aster Box 包含生产`RuntimeDriver` 和能力触发
 固定装置。云产品只有在确切的运行时和框之后才能请求支持
 修订通过每个广告配置文件并恢复预测试库存；
 无法推断出站网络等未公开的功能。
 
 ## 刻意的界限
 
-A3S Runtime 故意不拥有：
+Aster Runtime 故意不拥有：
 
 - 调度、布局、路由、流量交换或部署工作流程；
 - 提供商选择策略、登录发现或默认提供商回退；
@@ -334,7 +334,7 @@ A3S Runtime 故意不拥有：
 - [ADR 0003 — Interactive streaming exec stays outside v0.2](docs/adr/0003-keep-interactive-streaming-exec-outside-v0.2-core.md)
 - [ADR 0004 — Typed Service endpoints and protocol capabilities](docs/adr/0004-type-service-endpoints-and-protocol-capabilities.md)
 - [ADR 0005 — Host modern stateless MCP as a Service profile](docs/adr/0005-host-modern-stateless-mcp-as-a-service-profile.md)
-- [ADR 0006 — Unify AI service consumers on Task, Service, and A3S Box](docs/adr/0006-unify-ai-service-consumers-on-task-service-and-box.md)
+- [ADR 0006 — Unify AI service consumers on Task, Service, and Aster Box](docs/adr/0006-unify-ai-service-consumers-on-task-service-and-box.md)
 - [ADR 0007 — Bind opaque identity attachment to provider attestation](docs/adr/0007-bind-opaque-identity-attachment-to-provider-attestation.md)
 - [ADR 0009 — v4 编码与身份绑定/证明边界](docs/adr/0009-preserve-v4-encoding-and-distinguish-identity-proof.md)
 - [ADR 0008 — Separate Service readiness, liveness, and graceful stop](docs/adr/0008-separate-service-readiness-liveness-and-graceful-stop.md)
@@ -362,4 +362,4 @@ RUSTDOCFLAGS="-D warnings" cargo doc --locked --no-deps
 
 ## 执照
 
-[MIT](LICENSE) © A3S 实验室
+[MIT](LICENSE) © Aster 实验室

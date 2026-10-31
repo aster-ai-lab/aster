@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::sync::Arc;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::{Map as JsonMap, Number as JsonNumber, Value as JsonValue};
 use yrs::Any;
 

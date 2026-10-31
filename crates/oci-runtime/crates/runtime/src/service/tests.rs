@@ -11,13 +11,13 @@ use std::os::unix::fs::OpenOptionsExt;
 #[cfg(target_os = "linux")]
 use std::os::unix::net::UnixListener;
 
-use a3s_oci_core::{
+use aster_oci_core::{
     CapabilityStatus, DriverCapability, DriverKind, DriverReadiness, HostPlatform, IsolationClass,
 };
-use a3s_oci_sdk::oci_spec::runtime::{
+use aster_oci_sdk::oci_spec::runtime::{
     ContainerState, LinuxNamespaceType, LinuxResources, LinuxSeccompAction, Process,
 };
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     async_trait, canonical_json_bytes, AttachmentCapabilities, CheckpointArtifactPath,
     CheckpointCompatibility, CheckpointDigest, CheckpointFormat, CheckpointReference,
     CheckpointRequest, CloseStdinRequest, ContainerId, ContainerOperationRequest, ContainerRecord,
@@ -251,7 +251,7 @@ struct RecordingDriver {
     checkpoint_replays:
         Mutex<HashMap<OperationId, (DriverCheckpointRequest, DriverCheckpointResult)>>,
     checkpoint_gate: tokio::sync::Mutex<()>,
-    checkpoint_runtime_artifact: Mutex<Option<a3s_oci_sdk::RuntimeArtifact>>,
+    checkpoint_runtime_artifact: Mutex<Option<aster_oci_sdk::RuntimeArtifact>>,
     checkpoint_artifact_evidence: Mutex<Option<(CheckpointDigest, u64)>>,
     restore_replays: Mutex<HashMap<OperationId, (DriverRestoreRequest, DriverState)>>,
     restore_gate: tokio::sync::Mutex<()>,
@@ -446,7 +446,7 @@ impl RecordingDriver {
         driver
     }
 
-    fn override_checkpoint_runtime_artifact(&self, artifact: a3s_oci_sdk::RuntimeArtifact) {
+    fn override_checkpoint_runtime_artifact(&self, artifact: aster_oci_sdk::RuntimeArtifact) {
         *self
             .checkpoint_runtime_artifact
             .lock()
@@ -769,7 +769,7 @@ impl RecordingDriver {
         &self,
         artifact_path: &CheckpointArtifactPath,
         reference: &CheckpointReference,
-        runtime_artifact: &a3s_oci_sdk::RuntimeArtifact,
+        runtime_artifact: &aster_oci_sdk::RuntimeArtifact,
         operation: &'static str,
     ) -> Result<()> {
         let compatibility = reference.compatibility();
@@ -2062,7 +2062,7 @@ fn checkpoint_fixture_io_error(action: &str, path: &Path, error: std::io::Error)
     .for_operation("driver-checkpoint")
 }
 
-fn identifier<T>(value: &str, constructor: impl FnOnce(String) -> a3s_oci_sdk::Result<T>) -> T {
+fn identifier<T>(value: &str, constructor: impl FnOnce(String) -> aster_oci_sdk::Result<T>) -> T {
     constructor(value.to_string()).unwrap_or_else(|error| panic!("valid identifier: {error}"))
 }
 
@@ -2405,7 +2405,7 @@ async fn rejects_caller_vm_configuration_before_durable_reservation_and_create_d
             "root": {"path": "rootfs", "readonly": true},
             "vm": {
                 "hypervisor": {
-                    "path": "/untrusted/a3s-vmm",
+                    "path": "/untrusted/aster-vmm",
                     "parameters": ["--untrusted-option"]
                 },
                 "kernel": {
@@ -2511,7 +2511,7 @@ async fn rejects_unsupported_mount_labels_before_durable_reservation_and_create_
 
 #[tokio::test]
 async fn reports_builtin_and_driver_unsafe_config_annotations_for_configured_services() {
-    const DRIVER_EXTENSION: &str = "dev.a3s.network.tsi";
+    const DRIVER_EXTENSION: &str = "dev.aster.network.tsi";
 
     let temporary = tempfile::tempdir().expect("temporary directory");
     let driver = Arc::new(RecordingDriver::with_attachment_extension(
@@ -3298,16 +3298,16 @@ async fn required_runtime_extension_fails_before_durable_or_driver_mutation() {
             "  \"ociVersion\": \"1.3.0\",\n",
             "  \"process\": {\"terminal\": false, \"user\": {\"uid\": 0, \"gid\": 0}, \"args\": [\"/bin/true\"], \"cwd\": \"/\"},\n",
             "  \"root\": {\"path\": \"rootfs\", \"readonly\": true},\n",
-            "  \"annotations\": {\"dev.a3s.network.tsi\": \"proxy-v1\"}\n",
+            "  \"annotations\": {\"dev.aster.network.tsi\": \"proxy-v1\"}\n",
             "}\n"
         ),
     )
     .expect("extension bundle");
     let attachments = CreateAttachments::from_bundle(&bundle, ProcessIo::default())
         .expect("base attachments")
-        .add_extension_from_annotation(&bundle, "dev.a3s.network.tsi", 1, true)
+        .add_extension_from_annotation(&bundle, "dev.aster.network.tsi", 1, true)
         .expect("required extension declaration")
-        .attach_network_extension("dev.a3s.network.tsi")
+        .attach_network_extension("dev.aster.network.tsi")
         .expect("network extension classification");
     let request = CreateRequest {
         context: OperationContext::new(operation_id("required-extension-create")),
@@ -3322,7 +3322,7 @@ async fn required_runtime_extension_fails_before_durable_or_driver_mutation() {
         .await
         .expect_err("unsupported required extension must fail");
     assert_eq!(error.code, ErrorCode::Unsupported);
-    assert!(error.message.contains("dev.a3s.network.tsi"));
+    assert!(error.message.contains("dev.aster.network.tsi"));
     assert!(driver.calls().is_empty());
     assert!(!temporary
         .path()
@@ -4528,7 +4528,7 @@ async fn multi_driver_registration_rejects_ambiguous_sets_before_state() {
 
 #[tokio::test]
 async fn negotiates_versioned_capabilities_for_the_selected_driver_and_artifact() {
-    const NETWORK_EXTENSION: &str = "dev.a3s.network.tsi";
+    const NETWORK_EXTENSION: &str = "dev.aster.network.tsi";
 
     let temporary = tempfile::tempdir().expect("temporary directory");
     let mut dedicated_driver = RecordingDriver::supported();
@@ -4860,15 +4860,15 @@ async fn recovered_optional_operation_capability_drift_fails_terminally() {
 }
 
 #[cfg(any(unix, windows))]
-const PROCESS_OWNER_CHILD_ENV: &str = "A3S_OCI_TEST_RUNTIME_OWNER_CHILD";
+const PROCESS_OWNER_CHILD_ENV: &str = "ASTER_OCI_TEST_RUNTIME_OWNER_CHILD";
 #[cfg(any(unix, windows))]
-const PROCESS_OWNER_STATE_ENV: &str = "A3S_OCI_TEST_RUNTIME_OWNER_STATE";
+const PROCESS_OWNER_STATE_ENV: &str = "ASTER_OCI_TEST_RUNTIME_OWNER_STATE";
 #[cfg(any(unix, windows))]
-const PROCESS_OWNER_ENDPOINT_ENV: &str = "A3S_OCI_TEST_RUNTIME_OWNER_ENDPOINT";
+const PROCESS_OWNER_ENDPOINT_ENV: &str = "ASTER_OCI_TEST_RUNTIME_OWNER_ENDPOINT";
 #[cfg(any(unix, windows))]
-const PROCESS_OWNER_READY_ENV: &str = "A3S_OCI_TEST_RUNTIME_OWNER_READY";
+const PROCESS_OWNER_READY_ENV: &str = "ASTER_OCI_TEST_RUNTIME_OWNER_READY";
 #[cfg(any(unix, windows))]
-const PROCESS_OWNER_LOG_ENV: &str = "A3S_OCI_TEST_RUNTIME_OWNER_LOG";
+const PROCESS_OWNER_LOG_ENV: &str = "ASTER_OCI_TEST_RUNTIME_OWNER_LOG";
 #[cfg(any(unix, windows))]
 const PROCESS_OWNER_TEST_NAME: &str =
     "service::tests::retained_sdk_client_recovers_after_runtime_owner_process_restart";
@@ -4975,7 +4975,7 @@ async fn run_process_owner_child() {
     {
         let endpoint_name = std::env::var(PROCESS_OWNER_ENDPOINT_ENV)
             .expect("Windows runtime owner endpoint environment");
-        let endpoint = a3s_oci_sdk::LocalIpcEndpoint::windows_named_pipe(endpoint_name)
+        let endpoint = aster_oci_sdk::LocalIpcEndpoint::windows_named_pipe(endpoint_name)
             .expect("valid child named-pipe endpoint");
         let owner = crate::WindowsHostService::bind(endpoint, service)
             .expect("bind child Windows host service");
@@ -4997,7 +4997,7 @@ async fn run_process_owner_child() {
         let service: Arc<dyn OciRuntimeService> = Arc::new(service);
         std::fs::write(&ready_path, b"ready").expect("publish child readiness");
         let (stream, _) = listener.accept().await.expect("accept parent SDK client");
-        a3s_oci_sdk::serve_transport_connection(service, stream)
+        aster_oci_sdk::serve_transport_connection(service, stream)
             .await
             .expect("serve child Unix SDK connection");
     }
@@ -5022,18 +5022,18 @@ async fn retained_sdk_client_recovers_after_runtime_owner_process_restart() {
         use std::sync::atomic::{AtomicU64, Ordering};
         static NEXT_PIPE: AtomicU64 = AtomicU64::new(30_000);
         let name = format!(
-            r"\\.\pipe\a3s-oci-owner-restart-test-{}-{}",
+            r"\\.\pipe\aster-oci-owner-restart-test-{}-{}",
             std::process::id(),
             NEXT_PIPE.fetch_add(1, Ordering::Relaxed)
         );
-        let endpoint = a3s_oci_sdk::LocalIpcEndpoint::windows_named_pipe(name.clone())
+        let endpoint = aster_oci_sdk::LocalIpcEndpoint::windows_named_pipe(name.clone())
             .expect("valid parent named-pipe endpoint");
         (std::ffi::OsString::from(name), endpoint)
     };
     #[cfg(unix)]
     let (endpoint_value, endpoint) = {
         let path = temporary.path().join("runtime.sock");
-        let endpoint = a3s_oci_sdk::LocalIpcEndpoint::unix_socket(path.clone())
+        let endpoint = aster_oci_sdk::LocalIpcEndpoint::unix_socket(path.clone())
             .expect("valid parent Unix endpoint");
         (path.into_os_string(), endpoint)
     };
@@ -5047,7 +5047,7 @@ async fn retained_sdk_client_recovers_after_runtime_owner_process_restart() {
         temporary.path().join("owner-1.stderr"),
     );
     first_owner.wait_until_ready(&first_ready);
-    let client = a3s_oci_sdk::RuntimeClient::connect(&endpoint)
+    let client = aster_oci_sdk::RuntimeClient::connect(&endpoint)
         .await
         .expect("connect retained SDK client to first owner");
     let create = create_request(&bundle_directory, "process-restart-create");

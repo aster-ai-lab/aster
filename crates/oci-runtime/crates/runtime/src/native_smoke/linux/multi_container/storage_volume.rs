@@ -2,7 +2,7 @@ use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     ContainerTarget, DeleteMode, DeleteRequest, ExitStatus, OciBundle, RuntimeClient, StartRequest,
 };
 use serde_json::{json, Map, Value};
@@ -14,7 +14,7 @@ use super::lifecycle::{
 };
 use crate::NativeLinuxMultiContainerSmokeReport;
 
-const PAYLOAD: &[u8] = b"a3s-oci-shared-volume-v1\n";
+const PAYLOAD: &[u8] = b"aster-oci-shared-volume-v1\n";
 const POLL_INTERVAL: Duration = Duration::from_millis(25);
 const POLL_TIMEOUT: Duration = Duration::from_secs(15);
 
@@ -54,7 +54,7 @@ impl StorageVolumeFixture {
                 )
             })?;
 
-        let target_name = format!(".a3s-oci-volume-{nonce}");
+        let target_name = format!(".aster-oci-volume-{nonce}");
         let target = format!("/{target_name}");
         let writer = build_profile(
             writer_base,
@@ -62,7 +62,7 @@ impl StorageVolumeFixture {
             &target,
             false,
             &writer_command(&target),
-            &format!("a3s-oci-volume-writer-{nonce}"),
+            &format!("aster-oci-volume-writer-{nonce}"),
         )?;
         let reader = build_profile(
             reader_base,
@@ -70,7 +70,7 @@ impl StorageVolumeFixture {
             &target,
             true,
             &reader_command(&target),
-            &format!("a3s-oci-volume-reader-{nonce}"),
+            &format!("aster-oci-volume-reader-{nonce}"),
         )?;
 
         Ok(Self {
@@ -301,8 +301,8 @@ fn build_profile(
 fn writer_command(target: &str) -> String {
     format!(
         "set -eu; test ! -e {target}/private/writer-only; \
-         printf 'a3s-oci-private-writer-v1\\n' > {target}/private/writer-only; \
-         printf 'a3s-oci-shared-volume-v1\\n' > {target}/shared/payload; \
+         printf 'aster-oci-private-writer-v1\\n' > {target}/private/writer-only; \
+         printf 'aster-oci-shared-volume-v1\\n' > {target}/shared/payload; \
          exec /bin/busybox sleep 300"
     )
 }
@@ -310,9 +310,9 @@ fn writer_command(target: &str) -> String {
 fn reader_command(target: &str) -> String {
     format!(
         "set -eu; test \"$(/bin/busybox cat {target}/shared/payload)\" = \
-         a3s-oci-shared-volume-v1; test ! -e {target}/private/writer-only; \
+         aster-oci-shared-volume-v1; test ! -e {target}/private/writer-only; \
          if printf forbidden > {target}/shared/forbidden 2>/dev/null; then exit 91; fi; \
-         printf 'a3s-oci-private-reader-v1\\n' > {target}/private/reader-only; exit 0"
+         printf 'aster-oci-private-reader-v1\\n' > {target}/private/reader-only; exit 0"
     )
 }
 
@@ -365,7 +365,7 @@ fn object_mut<'a>(
 mod tests {
     use std::path::Path;
 
-    use a3s_oci_sdk::OciBundle;
+    use aster_oci_sdk::OciBundle;
     use serde_json::Value;
 
     use super::{build_profile, reader_command, writer_command};
@@ -384,11 +384,11 @@ mod tests {
         ] {
             let bundle = build_profile(
                 &base,
-                Path::new("/tmp/a3s-oci-volume-source"),
+                Path::new("/tmp/aster-oci-volume-source"),
                 "/.matrix",
                 readonly,
                 &command,
-                "a3s-oci-volume-test",
+                "aster-oci-volume-test",
             )
             .expect("storage profile");
             let config: Value = serde_json::from_str(bundle.config_json()).expect("profile JSON");

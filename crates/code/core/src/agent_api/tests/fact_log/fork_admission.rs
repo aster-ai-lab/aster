@@ -5,7 +5,7 @@ use crate::goal_control::{GoalCommandKindV1, GoalDefinitionCommandV1};
 use crate::permissions::{PermissionDecision, PermissionPolicy};
 use crate::store::{FileSessionStore, MemorySessionStore, SessionSnapshotV1, SessionStore};
 use crate::{Agent, SessionOptions, WorkPolicyV1};
-use a3s_effect::LogStore;
+use aster_effect::LogStore;
 
 fn options(id: &str, store: Arc<dyn SessionStore>, client: Arc<dyn LlmClient>) -> SessionOptions {
     SessionOptions::new()
@@ -80,7 +80,7 @@ async fn prove_fork(file: bool) {
             .artifact_store()
             .put(crate::tools::ToolArtifact {
                 artifact_id: "fork-evidence".into(),
-                artifact_uri: "a3s://tool-output/fork/evidence".into(),
+                artifact_uri: "aster://tool-output/fork/evidence".into(),
                 tool_name: "read".into(),
                 content: "retained evidence".into(),
                 original_bytes: 17,
@@ -89,7 +89,7 @@ async fn prove_fork(file: bool) {
         source
             .tool_executor
             .artifact_store()
-            .set_retained_uris(["a3s://tool-output/fork/evidence"]);
+            .set_retained_uris(["aster://tool-output/fork/evidence"]);
         source
             .session_review
             .write()
@@ -192,13 +192,13 @@ async fn prove_fork(file: bool) {
         assert_eq!(finding.evidence, "retained evidence");
         assert_eq!(
             saved.retained_artifact_uris,
-            ["a3s://tool-output/fork/evidence"]
+            ["aster://tool-output/fork/evidence"]
         );
         assert_eq!(saved.artifacts[0].content, "retained evidence");
         assert!(read_workspace_facts(target_workspace.path(), "fork-target")
             .unwrap()
             .iter()
-            .all(|f| !f.kind.starts_with("a3s.goal.")));
+            .all(|f| !f.kind.starts_with("aster.goal.")));
         target.close().await;
         source.close().await;
         agent.close().await;
@@ -306,7 +306,7 @@ async fn fork_admission_refuses_debt_busy_and_changed_source_without_execution()
     let snapshot = store.load_snapshot("fork-source").await.unwrap().unwrap();
     let target_options = options("fork-target", store, client);
     let directory = crate::session_folder::effect_log_dir(workspace.path(), "fork-source");
-    let log = a3s_effect::FileLog::open(&directory).unwrap();
+    let log = aster_effect::FileLog::open(&directory).unwrap();
     let thread = crate::fact_control::thread_for_session("fork-source");
     let owner = log.try_run_owner(&thread).unwrap();
     refuses(
@@ -343,7 +343,7 @@ async fn fork_admission_refuses_debt_busy_and_changed_source_without_execution()
     .await;
     assert!(!directory.exists());
     std::fs::rename(retained, &directory).unwrap();
-    let log = a3s_effect::FileLog::open(&directory).unwrap();
+    let log = aster_effect::FileLog::open(&directory).unwrap();
     let fact_file = directory.join(format!("{thread}.jsonl"));
     let original_bytes = std::fs::read(&fact_file).unwrap();
     let mut changed = log.read(&thread).unwrap();
@@ -373,7 +373,7 @@ async fn fork_admission_refuses_debt_busy_and_changed_source_without_execution()
         "omits",
     )
     .await;
-    log.append(&thread, &[a3s_effect::NewFact {
+    log.append(&thread, &[aster_effect::NewFact {
         kind: "tool.result".into(), key: "orphan".into(),
         payload: serde_json::json!({"toolCallId":"orphan","ok":false,"output":"unknown","unresolvedLegacy":true}),
     }], None).unwrap();
@@ -507,7 +507,7 @@ async fn fork_admission_refuses_nonterminal_and_existing_targets() {
         saved_before
     );
     store.delete("fork-target").await.unwrap();
-    let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+    let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
         target_workspace.path(),
         "fork-target",
     ))
@@ -515,7 +515,7 @@ async fn fork_admission_refuses_nonterminal_and_existing_targets() {
     let thread = crate::fact_control::thread_for_session("fork-target");
     log.append(
         &thread,
-        &[a3s_effect::NewFact {
+        &[aster_effect::NewFact {
             kind: "user.message".into(),
             key: "existing".into(),
             payload: serde_json::json!({"text":"keep target"}),
@@ -600,7 +600,7 @@ async fn fork_admission_failed_save_keeps_source_and_never_publishes_target() {
         read_workspace_facts(target_workspace.path(), "fork-target").unwrap(),
         partial
     );
-    let source_log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+    let source_log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
         workspace.path(),
         "fork-source",
     ))

@@ -204,7 +204,7 @@ PY"#
 
 #[test]
 fn baseline_policy_fixture_matches_default() {
-    let policy = SandboxPolicy::a3s_bash_baseline();
+    let policy = SandboxPolicy::aster_bash_baseline();
     assert!(!policy.features.mediated_network);
     assert!(policy.network.allow.is_empty());
 }

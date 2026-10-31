@@ -1,6 +1,6 @@
 #![cfg(feature = "file-upload")]
 
-use a3s_boot::{BootError, BootRequest, HttpMethod, MultipartOptions};
+use aster_boot::{BootError, BootRequest, HttpMethod, MultipartOptions};
 
 #[tokio::test]
 async fn multipart_form_parses_fields_and_files() {

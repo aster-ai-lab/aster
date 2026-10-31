@@ -1,5 +1,5 @@
 use super::invalid;
-use a3s_memory::repository::{DurableMemoryKind, MemoryRepositoryError, MAX_QUERY_LIMIT};
+use aster_durable_memory::repository::{DurableMemoryKind, MemoryRepositoryError, MAX_QUERY_LIMIT};
 use serde::{Deserialize, Serialize};
 
 /// Runtime behavior enabled for one durable-memory binding.

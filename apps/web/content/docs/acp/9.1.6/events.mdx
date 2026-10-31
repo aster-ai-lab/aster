@@ -36,10 +36,10 @@ export const meta = {
 希望区分“客户端正在等待”和“Core Run 已准入”时，在 prompt 的 `_meta` 中传：
 
 ```json
-{"a3sExecutionObservation":1,"promptId":"prompt-20261026-001"}
+{"asterExecutionObservation":1,"promptId":"prompt-20261026-001"}
 ```
 
-代理通过 `_a3s/execution/observe` 发扩展通知，含 protocolVersion、sessionId、promptId、coreSessionId、runId、sequence、kind、turn、status。kind 是 run-opened、model-turn-opened、model-turn-closed、run-closed。
+代理通过 `_aster/execution/observe` 发扩展通知，含 protocolVersion、sessionId、promptId、coreSessionId、runId、sequence、kind、turn、status。kind 是 run-opened、model-turn-opened、model-turn-closed、run-closed。
 
 promptId 需为 1–128 字节的受支持标识，允许 ASCII 字母、数字和 `._-`。元数据不符合要求时不启用这条观测路线。sequence 用于本次 Observer 内排序；它不是所有会话共用的全局序号。
 

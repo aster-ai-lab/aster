@@ -27,7 +27,7 @@ fn malformed_merged_acl_identifies_both_participating_sources() {
         let message = format!("{error:#}");
         for root in [home.path(), workspace.path()] {
             assert!(
-                message.contains(&root.join(".a3s/config.acl").display().to_string()),
+                message.contains(&root.join(".aster/config.acl").display().to_string()),
                 "{message}"
             );
         }

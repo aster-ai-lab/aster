@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" role="img" aria-labelledby="title desc">
-  <title id="title">A3S Office — Office editing inside your product</title>
+  <title id="title">Aster Office — Office editing inside your product</title>
   <desc id="desc">Five format-native Office surfaces run inside a host-owned product boundary for data, identity, collaboration, and AI.</desc>
 
   <defs>
@@ -23,7 +23,7 @@
       <path d="M20 24h12M20 30h12M20 36h8" fill="none" stroke="#1456f0" stroke-linecap="round" stroke-width="2.2"/>
     </g>
 
-    <text x="134" y="73" fill="#142033" font-size="25" font-weight="750" letter-spacing="3.4">A3S OFFICE</text>
+    <text x="134" y="73" fill="#142033" font-size="25" font-weight="750" letter-spacing="3.4">Aster OFFICE</text>
     <text x="134" y="99" fill="#748095" font-size="17" font-weight="650" letter-spacing="1.7">OPEN-SOURCE OFFICE ENGINE</text>
 
     <text x="64" y="188" fill="#142033" font-size="62" font-weight="760" letter-spacing="-2.4">Office editing,</text>
@@ -118,6 +118,6 @@
     <rect x="724" y="38" width="416" height="384" rx="28" fill="none" stroke="#aab7c8" stroke-width="2"/>
     <rect x="778" y="370" width="307" height="31" rx="15.5" fill="#1456f0"/>
     <circle cx="799" cy="385.5" r="5" fill="#ffffff"/>
-    <text x="814" y="391" fill="#ffffff" font-size="15" font-weight="750" letter-spacing="1.2">A3S OFFICE ENGINE</text>
+    <text x="814" y="391" fill="#ffffff" font-size="15" font-weight="750" letter-spacing="1.2">Aster OFFICE ENGINE</text>
   </g>
 </svg>

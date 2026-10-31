@@ -1,6 +1,6 @@
-//! A3S Box Runtime - MicroVM runtime implementation.
+//! Aster Box Runtime - MicroVM runtime implementation.
 //!
-//! This module provides the actual runtime implementation for A3S Box,
+//! This module provides the actual runtime implementation for Aster Box,
 //! including VM management, OCI image handling, rootfs building, and gRPC health checks.
 //!
 //! # Feature Flags
@@ -11,14 +11,14 @@
 //! - `operator` — Kubernetes CRD autoscaler controller (enabled by default)
 //! - `build` — Dockerfile/Containerfile build engine (enabled by default)
 //! - `runtime-provider-qualification` — Explicit downstream real-process
-//!   qualification seam for the Linux A3S Runtime provider (disabled by
+//!   qualification seam for the Linux Aster Runtime provider (disabled by
 //!   default; never a production capability-probe fallback)
 
 #![allow(clippy::result_large_err)]
 
 // -- Core modules (always compiled) --
 #[cfg(all(feature = "vm", any(target_os = "linux", target_os = "macos")))]
-pub mod a3s_runtime_driver;
+pub mod aster_runtime_driver;
 pub mod audit;
 pub mod box_record;
 pub mod box_state;
@@ -67,7 +67,7 @@ pub mod scale;
 pub use audit::{read_audit_log, AuditLog, AuditQuery};
 
 #[cfg(all(feature = "vm", any(target_os = "linux", target_os = "macos")))]
-pub use a3s_runtime_driver::{
+pub use aster_runtime_driver::{
     BoxArtifactPort, BoxArtifactPortError, BoxHostServiceResolver, BoxRegistryCredential,
     BoxRuntimeDriver, BoxRuntimeDriverConfig, BoxRuntimeSevSnpConfig,
     BoxSecretEnvironmentProjection, BoxSecretMaterial, BoxSecretMaterializationError,
@@ -75,7 +75,7 @@ pub use a3s_runtime_driver::{
 };
 
 // Canonical local execution metadata
-pub use a3s_oci_sdk::{IO_READ_BYTES_METRIC, IO_WRITE_BYTES_METRIC};
+pub use aster_oci_sdk::{IO_READ_BYTES_METRIC, IO_WRITE_BYTES_METRIC};
 pub use box_record::{
     BoxRecord, HealthCheck, ManagedExecutionMetadata, ManagedExecutionOperation,
     ManagedExecutionState, ManagedResourceUpdateCompletion, ManagedRestartCompletion,
@@ -99,7 +99,7 @@ pub use local_execution::{
 /// for retry (same contract as managed execution path cleanup).
 pub fn cleanup_microvm_virtiofs_ro_shares(
     box_dir: &std::path::Path,
-) -> a3s_box_core::error::Result<()> {
+) -> aster_box_core::error::Result<()> {
     #[cfg(feature = "vm")]
     {
         vm::cleanup_virtiofs_ro_shares(box_dir)
@@ -118,7 +118,7 @@ pub fn cleanup_microvm_virtiofs_ro_shares(
 pub fn teardown_sandbox_host_netdevice_lease(
     home_dir: &std::path::Path,
     box_id: &str,
-) -> a3s_box_core::ExecutionManagerResult<()> {
+) -> aster_box_core::ExecutionManagerResult<()> {
     local_execution::oci_host_netdevice::teardown_lease(home_dir, box_id)
 }
 
@@ -127,7 +127,7 @@ pub fn teardown_sandbox_host_netdevice_lease(
 pub fn teardown_sandbox_host_netdevice_lease(
     _home_dir: &std::path::Path,
     _box_id: &str,
-) -> a3s_box_core::ExecutionManagerResult<()> {
+) -> aster_box_core::ExecutionManagerResult<()> {
     Ok(())
 }
 #[cfg(feature = "vm")]
@@ -161,7 +161,7 @@ pub use host_check::check_virtualization_support;
 pub use network::NetworkStore;
 
 // OCI images
-pub use a3s_box_core::{ExecutionIsolation, StoredImage};
+pub use aster_box_core::{ExecutionIsolation, StoredImage};
 pub use oci::{
     prune_stale_pull_temp_dirs, ImagePuller, ImageReference, ImageStore, PullProgress,
     PullProgressEventFn, PullProgressState, PullTempPruneResult, RegistryAuth, RegistryPullPolicy,
@@ -246,10 +246,10 @@ pub use scale::{
 
 // ── Constants ──
 
-/// A3S Box Runtime version.
+/// Aster Box Runtime version.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-pub use a3s_box_core::{ATTEST_VSOCK_PORT, EXEC_VSOCK_PORT, PORT_FWD_VSOCK_PORT, PTY_VSOCK_PORT};
+pub use aster_box_core::{ATTEST_VSOCK_PORT, EXEC_VSOCK_PORT, PORT_FWD_VSOCK_PORT, PTY_VSOCK_PORT};
 
 /// Default maximum image cache size: 10 GB.
 pub const DEFAULT_IMAGE_CACHE_SIZE: u64 = 10 * 1024 * 1024 * 1024;

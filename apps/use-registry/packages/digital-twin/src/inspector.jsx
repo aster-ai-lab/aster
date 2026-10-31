@@ -1,6 +1,6 @@
-import { Button } from '@a3s-lab/ui/components/primitives/button'
-import { Input } from '@a3s-lab/ui/components/primitives/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@a3s-lab/ui/components/primitives/select'
+import { Button } from '@aster-ai-lab/ui/components/primitives/button'
+import { Input } from '@aster-ai-lab/ui/components/primitives/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@aster-ai-lab/ui/components/primitives/select'
 import { useEffect, useRef, useState } from 'react'
 
 import * as THREE from '../../g1-arm/ui/workbench/vendor/three/three.module.min.js'

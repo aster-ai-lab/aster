@@ -1,8 +1,8 @@
 //! Slash commands the agent handles inside a prompt, announced to the client
 //! with the ACP `available_commands_update` session notification.
 
-use super::A3sCodeAgent;
-use a3s_code_core::AgentSession;
+use super::AsterCodeAgent;
+use aster_core::AgentSession;
 use agent_client_protocol::{self as acp, Client as _};
 
 fn goal_command() -> acp::AvailableCommand {
@@ -69,7 +69,7 @@ pub(super) fn session_commands(session: &AgentSession) -> acp::Result<Vec<acp::A
     merge_commands(session.command_registry().list_full())
 }
 
-impl A3sCodeAgent {
+impl AsterCodeAgent {
     /// Announce the commands once the session response has been written: the
     /// client only routes updates for a session id it has already received.
     pub(super) fn announce_commands(

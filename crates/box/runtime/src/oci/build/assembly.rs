@@ -6,8 +6,8 @@ use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::Arc;
 
-use a3s_box_core::error::{BoxError, Result as BoxResult};
-use a3s_box_core::platform::Platform;
+use aster_box_core::error::{BoxError, Result as BoxResult};
+use aster_box_core::platform::Platform;
 use oci_spec::image::{
     Arch, DescriptorBuilder, ImageIndexBuilder, MediaType, Os, PlatformBuilder, Sha256Digest,
     SCHEMA_VERSION,
@@ -253,7 +253,7 @@ struct StagedAssembly {
 
 fn stage_assembly(inputs: Vec<ResolvedAssemblyInput>) -> BoxResult<StagedAssembly> {
     let directory = tempfile::Builder::new()
-        .prefix("a3s-box-build-index-")
+        .prefix("aster-box-build-index-")
         .tempdir()
         .map_err(|error| {
             BoxError::BuildError(format!(

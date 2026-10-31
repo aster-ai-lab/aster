@@ -1,7 +1,7 @@
 //! Gateway→Cloud usage ingest batch / receipt contract.
 //!
-//! Wire schemas match A3S Cloud contracts (`a3s.gateway.usage-batch.v1` /
-//! `a3s.gateway.usage-batch-receipt.v1`). Gateway owns the local spool and the
+//! Wire schemas match Aster Cloud contracts (`aster.gateway.usage-batch.v1` /
+//! `aster.gateway.usage-batch-receipt.v1`). Gateway owns the local spool and the
 //! upload loop; Cloud owns the ledger. This module does not open sockets;
 //! production HTTP wiring lives in `http_transport`.
 
@@ -18,11 +18,11 @@ use uuid::Uuid;
 /// Wire schema for one authenticated usage ingest batch from Gateway.
 ///
 /// Must stay identical to Cloud's `INFERENCE_USAGE_BATCH_SCHEMA_V1`.
-pub(crate) const USAGE_INGEST_BATCH_SCHEMA: &str = "a3s.gateway.usage-batch.v1";
+pub(crate) const USAGE_INGEST_BATCH_SCHEMA: &str = "aster.gateway.usage-batch.v1";
 /// Wire schema for Cloud's batch receipt (highest-contiguous ACK + gaps).
 ///
 /// Must stay identical to Cloud's `INFERENCE_USAGE_RECEIPT_SCHEMA_V1`.
-pub(crate) const USAGE_INGEST_ACK_SCHEMA: &str = "a3s.gateway.usage-batch-receipt.v1";
+pub(crate) const USAGE_INGEST_ACK_SCHEMA: &str = "aster.gateway.usage-batch-receipt.v1";
 
 /// One durable spool record as carried in an ingest batch.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -509,10 +509,10 @@ mod tests {
             .expect("Cloud INFERENCE_USAGE_RECEIPT_SCHEMA_V1");
         assert_eq!(USAGE_INGEST_BATCH_SCHEMA, cloud_batch);
         assert_eq!(USAGE_INGEST_ACK_SCHEMA, cloud_receipt);
-        assert_eq!(USAGE_INGEST_BATCH_SCHEMA, "a3s.gateway.usage-batch.v1");
+        assert_eq!(USAGE_INGEST_BATCH_SCHEMA, "aster.gateway.usage-batch.v1");
         assert_eq!(
             USAGE_INGEST_ACK_SCHEMA,
-            "a3s.gateway.usage-batch-receipt.v1"
+            "aster.gateway.usage-batch-receipt.v1"
         );
         const { assert!(MAX_USAGE_EVENT_BYTES >= 1024) };
     }
@@ -593,11 +593,11 @@ mod tests {
     }
 
     /// Golden JSON shared with Cloud contracts: Gateway must accept the same
-    /// wire bytes Cloud encodes for `a3s.gateway.usage-batch.v1`.
+    /// wire bytes Cloud encodes for `aster.gateway.usage-batch.v1`.
     #[test]
     fn accepts_cloud_contract_golden_batch_json() {
         let json = r#"{
-            "schema": "a3s.gateway.usage-batch.v1",
+            "schema": "aster.gateway.usage-batch.v1",
             "gateway_id": "00000000-0000-0000-0000-000000000002",
             "batch_id": "00000000-0000-0000-0000-000000000003",
             "records": [

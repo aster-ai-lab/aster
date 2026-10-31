@@ -4,7 +4,7 @@ fn request(target: ContainerTarget, operation: &str, byte: u8) -> TeeAttestation
     TeeAttestationRequest::new(
         OperationContext::new(operation_id(operation)),
         target,
-        TeeReportData::new([byte; a3s_oci_sdk::TEE_REPORT_DATA_BYTES]),
+        TeeReportData::new([byte; aster_oci_sdk::TEE_REPORT_DATA_BYTES]),
     )
     .expect("TEE attestation request")
 }
@@ -130,7 +130,7 @@ async fn tee_attestation_is_capability_gated_exact_and_durably_replayed() {
     assert!(advertised.supports_operation(RuntimeOperation::Attest, RUNTIME_OPERATION_CONTRACT_V1));
     assert!(advertised.attachments().supports_extension(
         AMD_SEV_SNP_LAUNCH_EXTENSION,
-        a3s_oci_sdk::TEE_LAUNCH_EXTENSION_VERSION
+        aster_oci_sdk::TEE_LAUNCH_EXTENSION_VERSION
     ));
 
     let attest = request(target.clone(), "tee-attest", 0x5a);
@@ -234,7 +234,7 @@ async fn tee_attestation_is_capability_gated_exact_and_durably_replayed() {
         1
     );
     let mut drifted = attest;
-    drifted.report_data = TeeReportData::new([0x6b; a3s_oci_sdk::TEE_REPORT_DATA_BYTES]);
+    drifted.report_data = TeeReportData::new([0x6b; aster_oci_sdk::TEE_REPORT_DATA_BYTES]);
     let error = after_delete
         .attest(drifted)
         .await

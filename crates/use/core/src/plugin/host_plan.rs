@@ -11,13 +11,13 @@ use super::{
     VerifiedPluginCatalogRecord, MAX_PLUGIN_PLAN_ITEMS,
 };
 
-pub const PLUGIN_HOST_PLAN_REQUEST_SCHEMA: &str = "a3s.use.plugin-host-plan-request.v1";
-pub const PLUGIN_HOST_PLAN_RESULT_SCHEMA: &str = "a3s.use.plugin-host-plan-result.v1";
+pub const PLUGIN_HOST_PLAN_REQUEST_SCHEMA: &str = "aster.use.plugin-host-plan-request.v1";
+pub const PLUGIN_HOST_PLAN_RESULT_SCHEMA: &str = "aster.use.plugin-host-plan-result.v1";
 
 const PLAN_REQUEST_ERROR: &str = "use.plugin.host_plan_request_invalid";
 const PLAN_RESULT_ERROR: &str = "use.plugin.host_plan_result_invalid";
 
-/// Exact managed-scope input for creating one canonical A3S Use plan.
+/// Exact managed-scope input for creating one canonical Aster Use plan.
 ///
 /// Policy authority, provider choice, operation identity, and confirmation are
 /// deliberately absent. The trusted host binds those values while delegating

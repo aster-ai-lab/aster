@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_oci_sdk::{
+use aster_oci_sdk::{
     Error, ErrorCode, IsolationClass, IsolationRequest, RuntimeExtensions, RuntimeOperation,
     RUNTIME_OPERATION_CONTRACT_V1,
 };
@@ -124,7 +124,7 @@ fn decode_bytes(type_url: &str, value: &[u8]) -> Result<IsolationRequest, Error>
     let options: CreateOptions = serde_json::from_slice(value).map_err(|error| {
         options_error(
             ErrorCode::InvalidArgument,
-            format!("invalid A3S containerd create options: {error}"),
+            format!("invalid Aster containerd create options: {error}"),
         )
     })?;
     create_options_to_isolation(options)
@@ -135,7 +135,7 @@ fn create_options_to_isolation(options: CreateOptions) -> Result<IsolationReques
         return Err(options_error(
             ErrorCode::Unsupported,
             format!(
-                "unsupported A3S containerd create options schema {}; expected {CREATE_OPTIONS_SCHEMA_VERSION}",
+                "unsupported Aster containerd create options schema {}; expected {CREATE_OPTIONS_SCHEMA_VERSION}",
                 options.schema_version,
             ),
         ));
@@ -183,13 +183,13 @@ fn read_annotation_create_options(bundle: &Path) -> Result<Option<IsolationReque
         serde_json::Value::String(text) => serde_json::from_str(text).map_err(|error| {
             options_error(
                 ErrorCode::InvalidArgument,
-                format!("invalid A3S containerd create options annotation: {error}"),
+                format!("invalid Aster containerd create options annotation: {error}"),
             )
         })?,
         object => serde_json::from_value(object.clone()).map_err(|error| {
             options_error(
                 ErrorCode::InvalidArgument,
-                format!("invalid A3S containerd create options annotation object: {error}"),
+                format!("invalid Aster containerd create options annotation object: {error}"),
             )
         })?,
     };

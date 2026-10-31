@@ -338,7 +338,7 @@ async fn detached_run_remains_active_until_effect_cleanup_acknowledges() {
         .iter()
         .find(|fact| fact.kind == "tool.prepared")
         .unwrap();
-    let prepared: a3s_effect::ToolPreparedV1 =
+    let prepared: aster_effect::ToolPreparedV1 =
         serde_json::from_value(prepared.payload["prepared"].clone()).unwrap();
     assert_eq!(
         prepared.identity.admission.unwrap().run_id,
@@ -527,7 +527,7 @@ async fn cancellation_during_teardown_cannot_publish_the_earlier_model_success()
 
 #[tokio::test]
 async fn plain_host_context_cannot_promote_effects_to_an_unowned_run() {
-    let path = PathBuf::from("/tmp/a3s-unowned-run-resource");
+    let path = PathBuf::from("/tmp/aster-unowned-run-resource");
     let resource = Arc::new(Resource {
         path: path.clone(),
         closing: Semaphore::new(0),
@@ -585,15 +585,15 @@ async fn seed_resume(session: &AgentSession, checkpoint: bool) {
             .await
             .unwrap();
     } else {
-        use a3s_effect::LogStore;
-        a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+        use aster_effect::LogStore;
+        aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
             &session.workspace,
             session.id(),
         ))
         .unwrap()
         .append(
             &crate::fact_control::thread_for_session(session.id()),
-            &[a3s_effect::message_fact("resume-resource", "own resource")],
+            &[aster_effect::message_fact("resume-resource", "own resource")],
             None,
         )
         .unwrap();

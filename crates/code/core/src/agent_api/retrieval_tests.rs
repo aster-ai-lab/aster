@@ -50,7 +50,7 @@ async fn retrieval_is_disabled_without_explicit_typed_options() {
     );
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn default_local_agent_session_routes_bm25_to_persistent_projection() {
     let _permit = crate::test_support::resource_intensive_test_permit().await;
@@ -58,7 +58,7 @@ async fn default_local_agent_session_routes_bm25_to_persistent_projection() {
     std::fs::create_dir_all(workspace.path().join("src")).unwrap();
     std::fs::write(
         workspace.path().join("src/cache.rs"),
-        "pub fn persistent_workspace_cache() { /* a3s-vec route */ }\n",
+        "pub fn persistent_workspace_cache() { /* aster-vec route */ }\n",
     )
     .unwrap();
     let agent = Agent::from_config(super::tests::test_config())
@@ -88,7 +88,7 @@ async fn default_local_agent_session_routes_bm25_to_persistent_projection() {
                 .metadata
                 .as_ref()
                 .and_then(|metadata| metadata.get("index_kind"))
-                == Some(&serde_json::json!("persistent_a3s_vec_fts"))
+                == Some(&serde_json::json!("persistent_aster_vec_fts"))
             {
                 return result;
             }
@@ -100,7 +100,7 @@ async fn default_local_agent_session_routes_bm25_to_persistent_projection() {
     assert_eq!(result.exit_code, 0, "{}", result.output);
     assert!(result.output.contains("src/cache.rs"), "{}", result.output);
     session.close().await;
-    assert!(workspace.path().join(".a3s-code/index/CURRENT").is_file());
+    assert!(workspace.path().join(".aster/index/CURRENT").is_file());
 }
 
 #[tokio::test]
@@ -332,7 +332,7 @@ async fn sync_session_rejects_semantic_retrieval_as_an_async_resource() {
     let workspace = tempfile::tempdir().unwrap();
     let provider: Arc<dyn EmbeddingProvider> = Arc::new(BlockingProvider::new());
     let options = SessionOptions::new()
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_workspace_retrieval(WorkspaceRetrievalOptions::new(provider));
     let agent = Agent::from_config(super::tests::test_config())
         .await
@@ -546,9 +546,9 @@ async fn session_owned_workspace_uses_the_explicit_chunking_strategy() {
     session.close().await;
 }
 
-#[cfg(feature = "a3s-vec-fts")]
+#[cfg(feature = "aster-vec-fts")]
 #[tokio::test]
-async fn session_owned_workspace_uses_the_explicit_a3s_vec_lexical_engine() {
+async fn session_owned_workspace_uses_the_explicit_aster_vec_lexical_engine() {
     let _permit = crate::test_support::resource_intensive_test_permit().await;
     let workspace = tempfile::tempdir().unwrap();
     std::fs::write(
@@ -561,7 +561,7 @@ async fn session_owned_workspace_uses_the_explicit_a3s_vec_lexical_engine() {
     });
     let options = SessionOptions::new().with_workspace_retrieval(
         WorkspaceRetrievalOptions::new(provider)
-            .with_lexical_engine(crate::WorkspaceLexicalEngine::A3sVec),
+            .with_lexical_engine(crate::WorkspaceLexicalEngine::AsterVec),
     );
     let agent = Agent::from_config(super::tests::test_config())
         .await
@@ -582,7 +582,7 @@ async fn session_owned_workspace_uses_the_explicit_a3s_vec_lexical_engine() {
     assert_eq!(result.exit_code, 0, "{}", result.output);
     assert_eq!(
         result.metadata.unwrap()["parameters"]["engine"],
-        crate::WorkspaceLexicalEngine::A3sVec.stable_id()
+        crate::WorkspaceLexicalEngine::AsterVec.stable_id()
     );
     session.close().await;
 }

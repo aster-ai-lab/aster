@@ -7,7 +7,7 @@ export const meta = {
 
 ## 默认工程策略
 
-新会话默认选择 engineering-v1。宿主可通过 `_meta.a3sEngineering.policy` 明确选择 engineering-v1 或 none。这个值选择已编入的 WorkPolicy，不允许客户端提交任意系统执行策略代码。
+新会话默认选择 engineering-v1。宿主可通过 `_meta.asterEngineering.policy` 明确选择 engineering-v1 或 none。这个值选择已编入的 WorkPolicy，不允许客户端提交任意系统执行策略代码。
 
 工程策略提醒执行者读取原始来源、完成需求并核对结果，Core 负责准入、渲染和实际执行约束。提示中的“请验证”不能代替独立的验证记录。
 
@@ -30,9 +30,9 @@ export const meta = {
 
 ## 类型化目标扩展
 
-宿主可用 `a3s/goal/definition`、`plan`、`control`、`wait`、`state`，参数使用 Core 的目标合同。目标定义、计划提议与接受、执行控制、等待观测分别处理，携带正确 schema、操作身份和 revision。
+宿主可用 `aster/goal/definition`、`plan`、`control`、`wait`、`state`，参数使用 Core 的目标合同。目标定义、计划提议与接受、执行控制、等待观测分别处理，携带正确 schema、操作身份和 revision。
 
-`a3s/goal/import/preview` 在导入前显示候选及来源，`a3s/goal/import` 在明确准入后提交。预览不是接受；来源改变时重新预览。接受计划后，执行切片绑定 work policy、计划 revision 和当前源身份。
+`aster/goal/import/preview` 在导入前显示候选及来源，`aster/goal/import` 在明确准入后提交。预览不是接受；来源改变时重新预览。接受计划后，执行切片绑定 work policy、计划 revision 和当前源身份。
 
 等待条件必须由类型化证据解除。完成切片后检查原 Run 与修改验证，再接受结果；最后一步聊天结束不能独自把长期目标标成完成。
 
@@ -44,13 +44,13 @@ export const meta = {
 
 ## 审阅目标与发现
 
-`a3s/review/target` 确定审阅对象，`a3s/review/admit` 准入发现，`a3s/review/settle` 结算。工程场景区分 engineering.change 与 engineering.workspace，发现应绑定精确目标摘要和范围。
+`aster/review/target` 确定审阅对象，`aster/review/admit` 准入发现，`aster/review/settle` 结算。工程场景区分 engineering.change 与 engineering.workspace，发现应绑定精确目标摘要和范围。
 
 注册审阅能力不会自动开始审查。固定源快照审阅不能暴露工具，模型写出的建议也不会自动修改工作区。源码变化后旧发现仍可保留为历史，但不能无条件当作当前结论。
 
 ## 完成证明
 
-`a3sHost.completionAttestation` 当前接受 disk_content。宿主明确 opt-in 后才安装对应完成检查；模型不能通过 prompt 自己安装 attestor。验证报告需要与当前磁盘内容和修改摘要对应。
+`asterHost.completionAttestation` 当前接受 disk_content。宿主明确 opt-in 后才安装对应完成检查；模型不能通过 prompt 自己安装 attestor。验证报告需要与当前磁盘内容和修改摘要对应。
 
 ## 验收
 

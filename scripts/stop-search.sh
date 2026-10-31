@@ -13,7 +13,7 @@ if [[ -f "$pid_file" ]]; then
     kill "$pid" 2>/dev/null || true
     sleep 0.3
     kill -9 "$pid" 2>/dev/null || true
-    echo "stopped a3s-search pid $pid"
+    echo "stopped aster-search pid $pid"
   fi
   rm -f "$pid_file"
 fi
@@ -27,4 +27,4 @@ if curl -sf --max-time 1 "http://127.0.0.1:8090/health" >/dev/null 2>&1; then
   done
 fi
 
-echo "a3s-search stopped"
+echo "aster-search stopped"

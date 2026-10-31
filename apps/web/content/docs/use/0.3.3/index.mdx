@@ -1,11 +1,11 @@
 export const meta = {
   title: 'Aster Use 产品概览',
-  description: 'a3s-use 的 AIX 包、五类扩展表面、计划应用和宿主边界。',
+  description: 'aster-use 的 AIX 包、五类扩展表面、计划应用和宿主边界。',
   label: '产品概览',
   updated: '2026-10-29',
 };
 
-`a3s-use` 是 AI Native Package Manager 和本机能力宿主。当前主包版本为 `0.3.3`，要求 Rust 1.85 或更新版本。
+`aster-use` 是 AI Native Package Manager 和本机能力宿主。当前主包版本为 `0.3.3`，要求 Rust 1.85 或更新版本。
 
 Use 安装、升级和卸载扩展包，并通过审查后的计划启用能力。`.aix` 是当前原生包格式，使用 ACL manifest 描述包身份、版本和扩展表面。
 
@@ -26,11 +26,11 @@ Use 安装、升级和卸载扩展包，并通过审查后的计划启用能力�
 ## 当前包版本
 
 <DocTable caption="Use 相关 crate" headers={['Crate', '当前版本', '职责']} rows={[
-  ['a3s-use', '0.3.3', 'CLI、包生命周期、运行时和 MCP 宿主'],
-  ['a3s-use-extension', '0.3.3', 'AIX manifest、Registry 和表面合同'],
-  ['a3s-use-core', '0.2.4', '跨域共享类型和错误合同'],
-  ['a3s-use-tool-acquire', '0.2.4', '本机命令行工具获取'],
-  ['a3s-use-reconcile', '0.2.10', 'Skill、OKF、UI、MCP 和 Tool 的单代际协调'],
+  ['aster-use', '0.3.3', 'CLI、包生命周期、运行时和 MCP 宿主'],
+  ['aster-use-extension', '0.3.3', 'AIX manifest、Registry 和表面合同'],
+  ['aster-use-core', '0.2.4', '跨域共享类型和错误合同'],
+  ['aster-use-tool-acquire', '0.2.4', '本机命令行工具获取'],
+  ['aster-use-reconcile', '0.2.10', 'Skill、OKF、UI、MCP 和 Tool 的单代际协调'],
 ]} />
 
 默认 feature 是 `extensions` 和 `mcp`。`tool-acquire` 与 `reconcile` 是可选 feature。

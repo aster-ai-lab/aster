@@ -15,7 +15,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
-use a3s_search::SearchQuery;
+use aster_search::SearchQuery;
 use futures::future::join_all;
 use serde_json::json;
 use tokio::sync::Barrier;

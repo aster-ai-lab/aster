@@ -45,7 +45,7 @@
       <text x="300" y="46" fill="#101827" font-size="23" font-weight="730">5 alternating trials</text>
       <text x="300" y="76" fill="#56657b" font-size="16">same host · alternating order</text>
 
-      <text x="572" y="46" fill="#101827" font-size="23" font-weight="730">Feature-on A3S path</text>
+      <text x="572" y="46" fill="#101827" font-size="23" font-weight="730">Feature-on Aster path</text>
       <text x="572" y="76" fill="#56657b" font-size="16">JSON bound + model validation</text>
 
       <text x="844" y="46" fill="#101827" font-size="23" font-weight="730">Auditable output</text>

@@ -40,10 +40,10 @@ async fn last_step(root: &std::path::Path, judgment: &str) -> Vec<String> {
     inputs
 }
 
-fn kinds(facts: &[a3s_effect::Fact]) -> Vec<&str> {
+fn kinds(facts: &[aster_effect::Fact]) -> Vec<&str> {
     facts
         .iter()
-        .filter(|fact| fact.kind.starts_with("a3s.goal."))
+        .filter(|fact| fact.kind.starts_with("aster.goal."))
         .map(|fact| fact.kind.as_str())
         .collect()
 }
@@ -67,15 +67,15 @@ async fn the_last_step_judges_the_goal_and_its_owner_records_completion_once() {
     assert_eq!(
         tail,
         [
-            "a3s.goal.slice.admitted",
-            "a3s.goal.step.accepted",
-            "a3s.goal.slice.settled",
-            "a3s.goal.completed"
+            "aster.goal.slice.admitted",
+            "aster.goal.step.accepted",
+            "aster.goal.slice.settled",
+            "aster.goal.completed"
         ]
     );
     let accepted = all
         .iter()
-        .filter(|fact| fact.kind == "a3s.goal.step.accepted")
+        .filter(|fact| fact.kind == "aster.goal.step.accepted")
         .collect::<Vec<_>>();
     assert!(accepted[0].payload["body"].get("closes_goal").is_none());
     assert_eq!(accepted[1].payload["body"]["closes_goal"], true);
@@ -96,7 +96,7 @@ async fn the_last_step_judges_the_goal_and_its_owner_records_completion_once() {
     );
     assert_eq!(session.reconcile_goal_slices().unwrap(), 0);
     let workspace = goal.binding.workspace.clone();
-    let fold = |facts: &[a3s_effect::Fact]| {
+    let fold = |facts: &[aster_effect::Fact]| {
         crate::goal_control::definition_from_facts(facts, "goal-run", &workspace, None)
     };
     for field in ["step_sequence", "settle_sequence"] {
@@ -131,12 +131,12 @@ async fn an_unmet_goal_criterion_keeps_the_last_step_open_and_the_goal_active() 
     let all = facts(root.path());
     assert_eq!(
         all.iter()
-            .filter(|fact| fact.kind == "a3s.goal.step.accepted")
+            .filter(|fact| fact.kind == "aster.goal.step.accepted")
             .count(),
         1
     );
-    assert!(!all.iter().any(|fact| fact.kind == "a3s.goal.completed"));
-    assert_eq!(all.last().unwrap().kind, "a3s.goal.slice.settled");
+    assert!(!all.iter().any(|fact| fact.kind == "aster.goal.completed"));
+    assert_eq!(all.last().unwrap().kind, "aster.goal.slice.settled");
     let (agent, session, _) = host(root.path()).await;
     let goal = session.goal_definition().unwrap().unwrap();
     assert_eq!(goal.state, GoalState::Active);
@@ -151,8 +151,8 @@ async fn an_unmet_goal_criterion_keeps_the_last_step_open_and_the_goal_active() 
 async fn an_earlier_unclosed_slice_holds_completion_until_reconcile() {
     let root = tempfile::tempdir().unwrap();
     complete_slice(root.path()).await;
-    let first = seq_of(&facts(root.path()), "a3s.goal.step.accepted");
-    let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+    let first = seq_of(&facts(root.path()), "aster.goal.step.accepted");
+    let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
         root.path(),
         "goal-run",
     ))
@@ -168,7 +168,7 @@ async fn an_earlier_unclosed_slice_holds_completion_until_reconcile() {
         .unwrap();
     let all = facts(root.path());
     assert!(
-        !all.iter().any(|fact| fact.kind == "a3s.goal.completed"),
+        !all.iter().any(|fact| fact.kind == "aster.goal.completed"),
         "{:?}",
         kinds(&all)
     );
@@ -181,7 +181,7 @@ async fn an_earlier_unclosed_slice_holds_completion_until_reconcile() {
     let after = facts(root.path());
     assert_eq!(
         &kinds(&after)[kinds(&after).len() - 2..],
-        ["a3s.goal.slice.settled", "a3s.goal.completed"]
+        ["aster.goal.slice.settled", "aster.goal.completed"]
     );
     assert_eq!(
         session.goal_definition().unwrap().unwrap().state,
@@ -201,13 +201,13 @@ async fn a_stopped_owner_after_the_last_acceptance_completes_on_reconcile() {
     let reference = facts(probe.path());
     let accepted = reference
         .iter()
-        .rfind(|fact| fact.kind == "a3s.goal.step.accepted")
+        .rfind(|fact| fact.kind == "aster.goal.step.accepted")
         .unwrap()
         .seq;
     for (stop, appended) in [(accepted, 2), (accepted + 1, 1)] {
         let root = tempfile::tempdir().unwrap();
         last_step(root.path(), ACHIEVED).await;
-        let log = a3s_effect::FileLog::open(crate::session_folder::effect_log_dir(
+        let log = aster_effect::FileLog::open(crate::session_folder::effect_log_dir(
             root.path(),
             "goal-run",
         ))
@@ -223,13 +223,13 @@ async fn a_stopped_owner_after_the_last_acceptance_completes_on_reconcile() {
         assert_eq!(session.reconcile_goal_slices().unwrap(), appended);
         assert_eq!(session.reconcile_goal_slices().unwrap(), 0);
         let after = facts(root.path());
-        assert_eq!(after.last().unwrap().kind, "a3s.goal.completed");
+        assert_eq!(after.last().unwrap().kind, "aster.goal.completed");
         assert_eq!(
             after.last().unwrap().payload["body"]["step_sequence"],
             accepted
         );
         assert_eq!(
-            seq_of(&after, "a3s.goal.completed"),
+            seq_of(&after, "aster.goal.completed"),
             after.last().unwrap().seq
         );
         assert_eq!(

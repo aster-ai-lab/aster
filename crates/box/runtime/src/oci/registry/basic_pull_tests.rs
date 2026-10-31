@@ -18,7 +18,7 @@ use super::{ImageReference, RegistryAuth, RegistryProtocol, RegistryPuller};
 
 const USERNAME: &str = "fixture-user";
 const PASSWORD: &str = "fixture-secret-password";
-const REPOSITORY: &str = "a3s/app";
+const REPOSITORY: &str = "aster/app";
 
 #[derive(Clone, Debug)]
 struct RecordedRequest {
@@ -355,7 +355,7 @@ async fn registry_handler(
     {
         return Response::builder()
             .status(StatusCode::UNAUTHORIZED)
-            .header("www-authenticate", "Basic realm=\"A3S OCI Registry\"")
+            .header("www-authenticate", "Basic realm=\"Aster OCI Registry\"")
             .header("content-type", "application/json")
             .body(Body::from(
                 r#"{"errors":[{"code":"UNAUTHORIZED","message":"authentication required","detail":{}}]}"#,
@@ -526,7 +526,7 @@ async fn image_puller_common_to_explicit_pull_and_run_uses_basic_fallback() {
         "amd64".to_string(),
         RegistryProtocol::Http,
     );
-    // Both `a3s-box pull` and run's implicit image preparation call this same
+    // Both `aster-box pull` and run's implicit image preparation call this same
     // cache-first ImagePuller path.
     let puller = ImagePuller::with_registry_puller(Arc::clone(&store), registry_puller);
     let full_reference = fixture.reference.full_reference();

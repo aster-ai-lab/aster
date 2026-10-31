@@ -1,14 +1,14 @@
-# A3S Vec Architecture
+# Aster Vec Architecture
 
 This file defines the engine-internal contract. Cross-project ownership,
-`a3s-code`/`vgrep` integration, model-provider policy, and migration from the
+`aster`/`vgrep` integration, model-provider policy, and migration from the
 current Memory/BM25 path are defined in the
-[A3S local retrieval platform architecture](https://github.com/A3S-Lab/a3s/blob/main/docs/retrieval-platform-architecture.md).
+[Aster local retrieval platform architecture](https://github.com/aster-ai-lab/aster/blob/main/docs/retrieval-platform-architecture.md).
 The corresponding cross-project delivery gates are in the
-[A3S local retrieval platform roadmap](https://github.com/A3S-Lab/a3s/blob/main/docs/retrieval-platform-roadmap.md).
+[Aster local retrieval platform roadmap](https://github.com/aster-ai-lab/aster/blob/main/docs/retrieval-platform-roadmap.md).
 
-This document defines the architecture for `a3s-vec`, the native Rust vector
-database embedded in A3S. The target is behavioural parity with the zvec Rust
+This document defines the architecture for `aster-vec`, the native Rust vector
+database embedded in Aster. The target is behavioural parity with the zvec Rust
 surface (collection lifecycle, typed documents, vector and full-text queries,
 indexes, persistence, and maintenance), without a C/C++ runtime or a language
 binding layer.
@@ -39,11 +39,11 @@ The engine is built around six invariants:
 
 ## 2. Cross-project adapter boundary
 
-The engine remains independent of CLI, provider, and serving policy. A3S Code
+The engine remains independent of CLI, provider, and serving policy. Aster Code
 owns the optional workspace-retrieval adapter that exercises this engine as a
 migration shadow:
 
-- A single admitted embedding batch is passed to the authoritative A3S Memory
+- A single admitted embedding batch is passed to the authoritative Aster Memory
   path and mirrored once into a session-local temporary Vec collection. Vec
   never calls an embedding provider and never becomes the public result source.
 - The adapter compares stable document identifiers, partition/filter selection,
@@ -55,14 +55,14 @@ migration shadow:
   as serving data.
 
 The delivered adapter is pinned by the current Code dependency commit
-[`708a85e3`](https://github.com/A3S-Lab/Code/commit/708a85e3ac070640ca5fb8173d0b06e6070152e7) to Vec commit
-[`13585ccd`](https://github.com/A3S-Lab/Vec/commit/13585ccd3f956f6cb7d669b2ee6acc7096fca03d).
+[`708a85e3`](https://github.com/aster-ai-lab/Code/commit/708a85e3ac070640ca5fb8173d0b06e6070152e7) to Vec commit
+[`13585ccd`](https://github.com/aster-ai-lab/Vec/commit/13585ccd3f956f6cb7d669b2ee6acc7096fca03d).
 Its cross-SDK wire mapping, promotion gates, and rollback procedure live in
-[Code's migration note](https://github.com/A3S-Lab/Code/blob/main/manual/WORKSPACE_RETRIEVAL_VEC_MIGRATION.md).
+[Code's migration note](https://github.com/aster-ai-lab/Code/blob/main/manual/WORKSPACE_RETRIEVAL_VEC_MIGRATION.md).
 The engine revision documented and tested by this repository is now
-[`13585ccd`](https://github.com/A3S-Lab/Vec/commit/13585ccd3f956f6cb7d669b2ee6acc7096fca03d),
+[`13585ccd`](https://github.com/aster-ai-lab/Vec/commit/13585ccd3f956f6cb7d669b2ee6acc7096fca03d),
 with the complete hosted gate recorded in
-[CI run 33772179017](https://github.com/A3S-Lab/Vec/actions/runs/33772179017).
+[CI run 33772179017](https://github.com/aster-ai-lab/Vec/actions/runs/33772179017).
 The root Cloud compatibility lock remains a separate, older graph until its
 Code dependency and lock entry are promoted together.
 
@@ -192,7 +192,7 @@ the authoritative document generation separate from public projection;
 and never mutates the stored document. Internal modules remain replaceable and
 do not leak storage implementation details. Filter parsing, tokenization, and
 index quantization are private modules of this crate and are not re-exported
-as part of the A3S contract.
+as part of the Aster contract.
 
 The module inventory above is extended by `collection/maintenance.rs`, which
 owns the explicit scheduler lifecycle; `collection/mutation.rs`, which owns
@@ -437,7 +437,7 @@ exact refinement.
 
 ```text
 <collection>/
-├── .a3s-vec.lock
+├── .aster-vec.lock
 ├── manifest.json                       # sole commit point
 ├── wal/wal-<sequence:020>.bin          # version + length + payload + CRC
 ├── segments/snapshot-<generation:020>.bin # bounded MessagePack authority
@@ -499,7 +499,7 @@ membership validation. Every active cached vector and scalar value must also
 equal the deterministic encoding of its authoritative recovered document
 before publication.
 
-A cache containing Vamana or DiskANN additionally requires the A3S-native
+A cache containing Vamana or DiskANN additionally requires the Aster-native
 sector sidecar.
 The file starts with a versioned header and variable field metadata padded to a
 4 KiB boundary. Each fixed-length node record contains its `u64` ordinal,
@@ -513,7 +513,7 @@ The header binds the source revision while metadata binds the schema digest and
 manifest-derived storage identity. One CRC covers metadata, canonical zero
 padding, and every field data sector. Recovery also compares every vector/code and
 edge with the already document-validated cache generation. This is a native
-A3S format, not the Microsoft DiskANN C++ format.
+Aster format, not the Microsoft DiskANN C++ format.
 
 A missing, unreadable, oversized, stale, corrupt, or invalid cache/required
 sidecar is a cache miss, not a collection-open failure. The registry is rebuilt
@@ -831,7 +831,7 @@ Intel macOS uses the portable scalar/AVX2 path and POSIX file locks; Linux-only
 features and with all optional index/FTS features enabled.
 
 macOS 12 Monterey on Intel is unsupported. The former self-hosted
-`a3s-macos-12` qualification workflow has been removed and must not be treated
+`aster-macos-12` qualification workflow has been removed and must not be treated
 as an open release gate.
 
 The ordinary CI platform matrix runs the five smoke benchmarks on

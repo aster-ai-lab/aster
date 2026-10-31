@@ -36,10 +36,10 @@ pub enum Tier {
     Rules,
     /// L2 — fast LLM classifier.
     Llm,
-    /// L3 — deep a3s-code agent investigation.
+    /// L3 — deep aster agent investigation.
     Agent,
     /// Mechanistic interpretability — a Sparse Autoencoder over the model's residual stream, tapped
-    /// in-enclave by a3s-power. Judges the model's *internal concepts* from feature activations
+    /// in-enclave by aster-power. Judges the model's *internal concepts* from feature activations
     /// (never the plaintext), so the score is white-box and confidential.
     Sae,
 }
@@ -147,7 +147,7 @@ impl RiskDescriptor {
     }
 }
 
-/// A concrete block to push down to a3s-observer's deny-files. The target string is an IP/host
+/// A concrete block to push down to aster-observer's deny-files. The target string is an IP/host
 /// (egress), or a path (file / exec binary) — matching what the observer guards read.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum EnforceAction {

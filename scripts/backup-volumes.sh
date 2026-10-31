@@ -15,12 +15,12 @@ mkdir -p "$backup_dir"
 stamp="$(date +%Y%m%d-%H%M%S)"
 
 volumes=(
-  api_a3s_api_pg
-  api_a3s_api_redis
-  api_a3s_api_rustfs
-  api_a3s_api_clickhouse
-  a3s_cloud_registry
-  a3s_oci_registry
+  api_aster_api_pg
+  api_aster_api_redis
+  api_aster_api_rustfs
+  api_aster_api_clickhouse
+  aster_cloud_registry
+  aster_oci_registry
   kense_etcd
 )
 

@@ -1,4 +1,4 @@
-# A3S OS 未完成功能账本（aster 侧索引）
+# Aster OS 未完成功能账本（aster 侧索引）
 
 **快照日期**: 2026-10-21。本文只做**指针索引**——每一项的权威状态在
 被指来源里；本文不复制内容，以免双记录漂移。状态词汇沿用上游
@@ -7,7 +7,7 @@
 ## 读法
 
 - 上游门表：`apps/cloud/ROADMAP.md`（子模块 pin `59669e08`）
-- 收敛计划：`apps/cloud/docs/convergence/plan.md` + 根 `a3s-convergence-plan.html`
+- 收敛计划：`apps/cloud/docs/convergence/plan.md` + 根 `aster-convergence-plan.html`
 - 执行载体：`specs/005-os-convergence-execution/`（aster 侧）
 - 证据链：`docs/evidence/development/2026-10-21-runtime-export-honesty/`
 
@@ -33,7 +33,7 @@ K0/AUT0/S0；FROZEN P2 = EV0/AR0/I0-TrackB+/PW0.tee/CELL0。逐 lane 门表见
 | --- | --- | --- |
 | fork `aster-ai-lab/libkrun` + 插桩（11 早退 `KRUN_BOOT_ABORT`）+ main 合入 + 编译验证 | ✅ | fork main `02e1414`；证据 krun lane 段 |
 | Box 失败引导保留日志 `<home>/diag/failed-boots/<box_id>/` | ✅ | `crates/box/runtime/src/vm/boot_diag.rs` |
-| T0.4.2 重跑取证 → 修 fork → T021 重 vendor 切换 | 取证 ✅（2026-10-21：根因 = shim 硬拷贝缺 `~/.a3s/lib`，非 krun；stock 链补全后 converged，D-D 对 box 路径失效）→ **仅剩 D-A**。T021 血统勘误 + 吸收分支 `3b1a018` 已建并编译验证（2026-10-21 晚，零缺失证明；剩 owner D-1/D-2 两决定，见 research.md） | `specs/005/tasks.md` T015/T021；证据 `docs/evidence/development/2026-10-21-krun-t042-rerun-forensics/` |
+| T0.4.2 重跑取证 → 修 fork → T021 重 vendor 切换 | 取证 ✅（2026-10-21：根因 = shim 硬拷贝缺 `~/.aster/lib`，非 krun；stock 链补全后 converged，D-D 对 box 路径失效）→ **仅剩 D-A**。T021 血统勘误 + 吸收分支 `3b1a018` 已建并编译验证（2026-10-21 晚，零缺失证明；剩 owner D-1/D-2 两决定，见 research.md） | `specs/005/tasks.md` T015/T021；证据 `docs/evidence/development/2026-10-21-krun-t042-rerun-forensics/` |
 
 ## 四、解阻钥匙（owner 动作，按杠杆排序）
 

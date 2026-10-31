@@ -37,8 +37,8 @@ const WORD_NAMESPACE =
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 const TWIPS_PER_CSS_PIXEL = 15;
 const PARAGRAPH_TAB_STOP_MARKER_PATTERN =
-  /__A3S_WORK_PARAGRAPH_TAB_STOPS_\d+__/g;
-const INLINE_TAB_MARKER_PATTERN = /__A3S_WORK_INLINE_TAB_\d+__/g;
+  /__ASTER_WORK_PARAGRAPH_TAB_STOPS_\d+__/g;
+const INLINE_TAB_MARKER_PATTERN = /__ASTER_WORK_INLINE_TAB_\d+__/g;
 
 export function markDocxParagraphTabStops(
   document: Document,
@@ -61,13 +61,13 @@ export function markDocxParagraphTabStops(
     );
     if (tabStops.length) {
       properties ??= insertParagraphProperties(document, paragraph);
-      const marker = `__A3S_WORK_PARAGRAPH_TAB_STOPS_${paragraphs.length + 1}__`;
+      const marker = `__ASTER_WORK_PARAGRAPH_TAB_STOPS_${paragraphs.length + 1}__`;
       insertParagraphMarker(document, paragraph, properties, marker);
       paragraphs.push({ marker, tabStops });
     }
 
     for (const tab of inlineRunTabs(paragraph)) {
-      const marker = `__A3S_WORK_INLINE_TAB_${inlineTabs.length + 1}__`;
+      const marker = `__ASTER_WORK_INLINE_TAB_${inlineTabs.length + 1}__`;
       const text = document.createElementNS(WORD_NAMESPACE, 'w:t');
       text.setAttributeNS(XML_NAMESPACE, 'xml:space', 'preserve');
       text.textContent = marker;
@@ -86,7 +86,7 @@ export function applyImportedDocxParagraphTabStopMarkers(
     markers.paragraphs.map(({ marker, tabStops }) => [marker, tabStops]),
   );
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_PARAGRAPH_TAB_STOPS_')) continue;
+    if (!node.data.includes('__ASTER_WORK_PARAGRAPH_TAB_STOPS_')) continue;
     const block = closestParagraphBlock(node.parentElement);
     node.data = node.data.replace(
       PARAGRAPH_TAB_STOP_MARKER_PATTERN,
@@ -102,7 +102,7 @@ export function applyImportedDocxParagraphTabStopMarkers(
 
   const inlineMarkers = new Set(markers.inlineTabs);
   for (const node of textNodes(document.body)) {
-    if (!node.data.includes('__A3S_WORK_INLINE_TAB_')) continue;
+    if (!node.data.includes('__ASTER_WORK_INLINE_TAB_')) continue;
     replaceInlineTabMarkers(node, inlineMarkers);
   }
   document.body.normalize();

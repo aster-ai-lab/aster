@@ -1,11 +1,11 @@
 # Windows kernel bundle
 
-> **Current prebuilt provenance:** the A3S Box `libkrunfw.dll` with SHA-256
+> **Current prebuilt provenance:** the Aster Box `libkrunfw.dll` with SHA-256
 > `44f25540f58155c01258fe123617636fdc6cff27873e38e71dbc75f139602077`
 > contains a kernel bundle byte-identical to the official libkrunfw v5.5.0
 > x86_64 bundle. Its corresponding source is Linux 6.12.91,
 > `config-libkrunfw_x86_64`, and the upstream 30-patch series. It is **not** a
-> build of the WSL 6.6 recipe below. See the outer `a3s-libkrun-sys`
+> build of the WSL 6.6 recipe below. See the outer `aster-libkrun-sys`
 > `SOURCE-PROVENANCE.md` for immutable hashes and source locations. The WSL
 > instructions are an alternative development recipe; replacing the kernel
 > requires new runtime validation and provenance hashes.

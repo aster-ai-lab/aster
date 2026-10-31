@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use serde_json::json;
 use yrs::{Any, Array, ArrayRef, Map, MapPrelim, Out, ReadTxn};
 
@@ -317,7 +317,7 @@ fn validate_shared_text(value: &str) -> UseResult<()> {
     Err(invalid_decisions("suggestion text"))
 }
 
-fn invalid_decisions(label: &str) -> a3s_use_core::UseError {
+fn invalid_decisions(label: &str) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.content_invalid",
         format!("The shared Document tracked-change decision {label} is invalid."),

@@ -1,11 +1,11 @@
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanPackageChangeKind, PluginOperationAction, PluginOperationPlanEnvelope, PluginPackageId,
     PluginPackageLock, UseError, UseResult, MAX_PLUGIN_PLAN_ITEMS,
 };
-use a3s_use_extension::{validate_catalog_manifest_binding, ExtensionManifest};
+use aster_use_extension::{validate_catalog_manifest_binding, ExtensionManifest};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tokio::fs;
@@ -17,7 +17,7 @@ use super::{
     store_error, sync_parent, validate_existing_directory_chain, write_new,
 };
 
-const PENDING_GRAPH_SCHEMA: &str = "a3s.use.pending-package-graph-operation.v4";
+const PENDING_GRAPH_SCHEMA: &str = "aster.use.pending-package-graph-operation.v4";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]

@@ -1,6 +1,6 @@
 # MHS Bridge Fixture
 
-This package proves the A3S Use integration boundary for a Model Hardware
+This package proves the Aster Use integration boundary for a Model Hardware
 Standard (MHS) adapter without defining or emulating the MHS protocol.
 
 The package-owned MCP service is an adapter. It has no direct device authority.
@@ -12,9 +12,9 @@ This fixture is not an MHS implementation and must not be deployed against
 physical equipment.
 
 The package deliberately reuses the standard MCP, Flow, Skill, and UI surface
-graph. Dynamic device state stays behind MCP rather than entering the A3S Use
+graph. Dynamic device state stays behind MCP rather than entering the Aster Use
 capability snapshot. Physical mutations must not be retried after an ambiguous
 outcome; the caller must observe and reconcile first.
 
-See `docs/mhs-integration.md` in the A3S Use repository for the complete
+See `docs/mhs-integration.md` in the Aster Use repository for the complete
 ownership, readiness, permission, and safety contract.

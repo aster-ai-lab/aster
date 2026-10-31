@@ -567,17 +567,17 @@ function allocateSectionMarkers(
   const occupiedText = document.documentElement.textContent ?? '';
   let index = initialIndex;
   for (let attempts = 0; attempts < 1_000_000; attempts += 1) {
-    const start = `__A3S_WORK_REPEATING_SECTION_START_${index}__`;
-    const end = `__A3S_WORK_REPEATING_SECTION_END_${index}__`;
+    const start = `__ASTER_WORK_REPEATING_SECTION_START_${index}__`;
+    const end = `__ASTER_WORK_REPEATING_SECTION_END_${index}__`;
     const itemStarts = Array.from(
       { length: itemCount },
       (_, itemIndex) =>
-        `__A3S_WORK_REPEATING_SECTION_ITEM_START_${index}_${itemIndex + 1}__`,
+        `__ASTER_WORK_REPEATING_SECTION_ITEM_START_${index}_${itemIndex + 1}__`,
     );
     const itemEnds = Array.from(
       { length: itemCount },
       (_, itemIndex) =>
-        `__A3S_WORK_REPEATING_SECTION_ITEM_END_${index}_${itemIndex + 1}__`,
+        `__ASTER_WORK_REPEATING_SECTION_ITEM_END_${index}_${itemIndex + 1}__`,
     );
     const candidates = [start, end, ...itemStarts, ...itemEnds];
     if (candidates.every((marker) => !occupiedText.includes(marker))) {

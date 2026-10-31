@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityAdapterError, CapabilityCatalog, CapabilityContribution, CapabilityDescriptor,
     CapabilityEffect, CapabilityEffectError, CapabilityId, CapabilityKind, CapabilityProjection,
     CapabilityProjectionAdapter, CapabilityProjectionError, CapabilityReadinessPlan, CapabilitySet,
@@ -10,7 +10,7 @@ use a3s_code_core::capability::{
     UseCapabilityGeneration, UsePackageGeneration, MAX_CAPABILITIES,
     MAX_CAPABILITY_READINESS_WAVES,
 };
-use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
+use aster_core::tools::{Tool, ToolContext, ToolOutput};
 use async_trait::async_trait;
 use tokio_util::sync::CancellationToken;
 
@@ -91,7 +91,7 @@ fn readiness_plan_is_canonical_and_uses_minimal_dependency_waves() {
     assert_eq!(forward_plan, reverse_plan);
     assert_eq!(
         forward_plan.schema(),
-        "a3s.code.capability-readiness-plan.v1"
+        "aster.code.capability-readiness-plan.v1"
     );
     assert_eq!(forward_plan.generation(), CodeCatalogGeneration::new(1));
     assert_eq!(forward_plan.digest(), forward.digest());
@@ -495,5 +495,5 @@ fn readiness_types_are_send_and_sync() {
 
     assert_send_sync::<CapabilityReadinessPlan>();
     assert_send_sync::<CapabilityProjection>();
-    assert_send_sync::<a3s_code_core::capability::CapabilityProjectionLease>();
+    assert_send_sync::<aster_core::capability::CapabilityProjectionLease>();
 }

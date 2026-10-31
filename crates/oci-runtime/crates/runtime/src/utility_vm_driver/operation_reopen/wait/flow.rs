@@ -1,7 +1,7 @@
 use std::path::Path;
 
-use a3s_oci_agent_protocol::AgentTransportOperationStage;
-use a3s_oci_sdk::{CreateRequest, OperationId};
+use aster_oci_agent_protocol::AgentTransportOperationStage;
+use aster_oci_sdk::{CreateRequest, OperationId};
 
 use crate::utility_vm_driver::layout::PreparedUtilityVmLayout;
 use crate::OciVmOperationReopenReplacementReport;

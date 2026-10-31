@@ -12,8 +12,8 @@
   place-items: center;
   border: 0;
   background: rgba(0, 0, 0, 0.2);
-  color: var(--a3s-ink);
-  font-family: var(--a3s-ui-font);
+  color: var(--aster-ink);
+  font-family: var(--aster-ui-font);
 }
 
 .ds-dialog {
@@ -28,9 +28,9 @@
      .ds-dialog-body. */
   overflow: visible;
   border: 0;
-  border-radius: var(--a3s-overlay-radius);
-  background: var(--a3s-overlay-surface);
-  box-shadow: var(--a3s-shadow-soft);
+  border-radius: var(--aster-overlay-radius);
+  background: var(--aster-overlay-surface);
+  box-shadow: var(--aster-shadow-soft);
 }
 
 .ds-dialog > header {
@@ -49,7 +49,7 @@
   height: 24px;
   min-width: 24px;
   border-radius: 8px;
-  color: var(--a3s-body);
+  color: var(--aster-body);
 }
 
 .ds-dialog h2 {
@@ -60,7 +60,7 @@
 
 .ds-dialog header p {
   margin: 5px 0 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
 }
 
@@ -77,18 +77,18 @@
   gap: 8px;
   flex: 0 0 auto;
   padding: 14px 24px;
-  border-top: 1px solid var(--a3s-line);
-  background: var(--a3s-panel);
+  border-top: 1px solid var(--aster-line);
+  background: var(--aster-panel);
 }
 
 .ds-dialog > footer .ds-button.danger {
-  border-color: var(--a3s-red);
-  background: var(--a3s-red);
+  border-color: var(--aster-red);
+  background: var(--aster-red);
   color: white;
 }
 
 .ds-dialog > footer .ds-button.danger:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--a3s-red) 88%, black);
+  background: color-mix(in srgb, var(--aster-red) 88%, black);
 }
 
 @media (max-width: 520px) {
@@ -120,7 +120,7 @@
 }
 
 .ds-field-label {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
   font-weight: 400;
 }
@@ -130,10 +130,10 @@
   height: 36px;
   padding: 0 11px;
   border: 1px solid transparent;
-  border-radius: var(--a3s-radius-sm);
+  border-radius: var(--aster-radius-sm);
   outline: 0;
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
   font: inherit;
   font-size: 13px;
 }
@@ -144,10 +144,10 @@
   padding: 10px 11px;
   resize: vertical;
   border: 1px solid transparent;
-  border-radius: var(--a3s-radius-sm);
+  border-radius: var(--aster-radius-sm);
   outline: 0;
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
   font-family: inherit;
   font-size: 13px;
   line-height: 1.6;
@@ -155,25 +155,25 @@
 
 .ds-field > input:focus-visible,
 .ds-field > textarea:focus-visible {
-  outline: 2px solid var(--a3s-ink);
+  outline: 2px solid var(--aster-ink);
   outline-offset: 2px;
   box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
 }
 
 .ds-field.invalid > input,
 .ds-field.invalid > textarea {
-  border-color: var(--a3s-red);
+  border-color: var(--aster-red);
 }
 
 .ds-field-description,
 .ds-field-error {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
   line-height: 20px;
 }
 
 .ds-field-error {
-  color: var(--a3s-red);
+  color: var(--aster-red);
 }
 
 .ds-combobox {
@@ -187,10 +187,10 @@
   align-items: center;
   gap: 10px;
   padding: 0 11px;
-  border: 1px solid var(--a3s-line);
-  border-radius: var(--a3s-radius-sm);
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  border: 1px solid var(--aster-line);
+  border-radius: var(--aster-radius-sm);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
 }
 
 .ds-combobox-trigger-copy {
@@ -217,15 +217,15 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 7px;
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
 }
 
 .ds-combobox-trigger small,
 .ds-combobox-popover [role="option"] small,
 .ds-combobox-popover [role="option"] i,
 .ds-combobox-popover [role="option"] em {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 11px;
 }
 
@@ -262,7 +262,7 @@
   margin: -1px -1px 8px;
   padding: 1px 1px 8px;
   overflow-x: auto;
-  border-bottom: 1px solid var(--a3s-line);
+  border-bottom: 1px solid var(--aster-line);
   border-radius: 0;
   background: transparent;
   scrollbar-width: none;
@@ -280,19 +280,19 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   font-weight: 600;
 }
 
 .ds-combobox-source-tabs.ds-tabs > button:hover {
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
 }
 
 .ds-combobox-source-tabs.ds-tabs > button[aria-selected="true"] {
-  background: var(--a3s-action);
-  color: var(--a3s-action-ink);
+  background: var(--aster-action);
+  color: var(--aster-action-ink);
 }
 
 .ds-combobox-popover > .ds-combobox-search {
@@ -300,8 +300,8 @@
   align-items: center;
   gap: 7px;
   padding: 0 10px;
-  border: 1px solid var(--a3s-line);
-  border-radius: var(--a3s-radius-sm);
+  border: 1px solid var(--aster-line);
+  border-radius: var(--aster-radius-sm);
 }
 
 .ds-combobox-popover input {
@@ -310,7 +310,7 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
 }
 
 .ds-combobox-popover [role="listbox"] {
@@ -329,14 +329,14 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   text-align: left;
 }
 
 .ds-combobox-popover [role="option"]:hover,
 .ds-combobox-popover [role="option"][aria-selected="true"],
 .ds-combobox-popover [role="option"].active {
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .ds-combobox-option-copy {
@@ -350,18 +350,18 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-style: normal;
 }
 
 .ds-combobox-popover [role="option"] em {
-  color: var(--a3s-blue);
+  color: var(--aster-blue);
 }
 
 .ds-combobox-footer {
   margin: 6px -2px -2px;
   padding: 7px 2px 2px;
-  border-top: 1px solid var(--a3s-line);
+  border-top: 1px solid var(--aster-line);
 }
 
 .ds-combobox-footer > button {
@@ -374,12 +374,12 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   text-align: left;
 }
 
 .ds-combobox-footer > button:hover {
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
 }

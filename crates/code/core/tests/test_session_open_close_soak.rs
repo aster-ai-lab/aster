@@ -1,8 +1,8 @@
 //! S-RT-01: repeated open/close on one workspace must not leak handles or
 //! isolation directories, and a later open must still succeed.
 
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::{Agent, SessionOptions};
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::{Agent, SessionOptions};
 use std::path::Path;
 
 fn offline_config(sessions_dir: &Path) -> CodeConfig {
@@ -10,6 +10,7 @@ fn offline_config(sessions_dir: &Path) -> CodeConfig {
         default_model: Some("anthropic/claude-sonnet-4-20250514".to_string()),
         sessions_dir: Some(sessions_dir.to_path_buf()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "anthropic".to_string(),
             api_key: Some("offline-key".to_string()),
             base_url: None,
@@ -70,7 +71,7 @@ async fn soak_two_hundred_session_open_close_cycles_stay_bounded() {
         .path()
         .parent()
         .expect("workspace parent")
-        .join(".a3s-isolate-s-rt-01");
+        .join(".aster-isolate-s-rt-01");
     let agent = Agent::from_config(offline_config(sessions.path()))
         .await
         .expect("agent");

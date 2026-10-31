@@ -60,7 +60,7 @@ jobs:
         run: npm run build
         env:
           DOCS_BASE: /Use/
-          DOCS_ORIGIN: https://a3s-lab.github.io
+          DOCS_ORIGIN: https://aster-lab.github.io
 
       - name: Check built routes and assets
         run: npm run check:site

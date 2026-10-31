@@ -1,0 +1,14 @@
+[package]
+license = "Apache-2.0"
+name = "aster-prompt-queue"
+version = "0.1.0"
+description = "Shared prompt-queue wire types for aster-shell and aster-pager"
+edition = "2024"
+publish = false
+
+[dependencies]
+serde = {workspace = true}
+serde_json = {workspace = true}
+
+[lints]
+workspace = true

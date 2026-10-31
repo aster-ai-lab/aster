@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentOperation, AgentTransportFaultInjector, AgentTransportFaultStage,
     AgentTransportOperationStage, AGENT_PROTOCOL_VERSION_MAX,
 };
-use a3s_oci_core::IsolationClass;
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{ListRequest, OciRuntimeService, StateRequest};
+use aster_oci_core::IsolationClass;
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{ListRequest, OciRuntimeService, StateRequest};
 use tokio::time::timeout;
 
 use super::super::super::transport_fault_cleanup::{

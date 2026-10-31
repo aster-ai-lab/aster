@@ -6,8 +6,8 @@
 //! text is not an oracle.
 //!
 //! ```text
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --test test_complex_capability_live_e2e \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --test test_complex_capability_live_e2e \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -15,10 +15,10 @@ use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::time::Duration;
 
-use a3s_code_core::directory_projection::DirectoryProjection;
-use a3s_code_core::fact_control::read_workspace_facts;
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, AgentEvent};
+use aster_core::directory_projection::DirectoryProjection;
+use aster_core::fact_control::read_workspace_facts;
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, AgentEvent};
 
 mod support;
 use support::layer_c_model::load_pinned_layer_c_config;
@@ -127,7 +127,7 @@ fn files_containing(dir: &Path, needle: &str, found: &mut Vec<PathBuf>) {
     for entry in entries.flatten() {
         let path = entry.path();
         if path.is_dir() {
-            if path.file_name().and_then(|name| name.to_str()) == Some(".a3s") {
+            if path.file_name().and_then(|name| name.to_str()) == Some(".aster") {
                 continue;
             }
             files_containing(&path, needle, found);
@@ -142,7 +142,7 @@ fn files_containing(dir: &Path, needle: &str, found: &mut Vec<PathBuf>) {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires the DeepSeek Flash model configured in .a3s/config.acl"]
+#[ignore = "requires the DeepSeek Flash model configured in .aster/config.acl"]
 async fn live_schedule_program_repair_keeps_the_secret() {
     let config = load_pinned_layer_c_config();
     let model = config.default_model.clone().expect("pinned model");

@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use a3s_form_core::{
+use aster_form_core::{
     canonical_sha256, canonicalize_document_for_digest, canonicalize_json, digest_document_json,
     parse_json, CanonicalError,
 };
@@ -53,7 +53,7 @@ fn fixture() -> Fixture {
 #[test]
 fn matches_shared_canonical_json_cases() {
     let fixture = fixture();
-    assert_eq!(fixture.api_version, "a3s.dev/form-canonical-conformance/v1");
+    assert_eq!(fixture.api_version, "aster.dev/form-canonical-conformance/v1");
 
     for case in fixture.cases {
         let canonical = canonicalize_json(case.input_json.as_bytes())

@@ -5,8 +5,8 @@
 
 use std::path::{Path, PathBuf};
 
-use a3s_box_core::{ExecutionManagerError, ExecutionManagerResult};
-use a3s_oci_sdk::{CreateAttachments, OciBundle};
+use aster_box_core::{ExecutionManagerError, ExecutionManagerResult};
+use aster_oci_sdk::{CreateAttachments, OciBundle};
 
 /// Mark every OCI bind whose source is under the managed Secret root.
 ///
@@ -87,7 +87,7 @@ fn oci_bind_mount_sources(bundle: &OciBundle) -> ExecutionManagerResult<Vec<Opti
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_oci_sdk::ProcessIo;
+    use aster_oci_sdk::ProcessIo;
     use serde_json::json;
 
     fn write_bundle(home: &Path, config: serde_json::Value) -> OciBundle {

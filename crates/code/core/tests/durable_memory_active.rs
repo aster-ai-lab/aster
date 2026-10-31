@@ -1,10 +1,10 @@
-use a3s_code_core::{
+use aster_core::{
     DurableMemoryActivation, DurableMemoryBindingV1, DurableMemoryMode, DurableMemoryRecallChannel,
     DurableMemoryRecallHit, DurableMemoryRecallPolicy, DurableMemoryRecallPreview,
     DurableMemorySession, DurableMemoryUse, DURABLE_MEMORY_BINDING_SCHEMA_VERSION,
     DURABLE_MEMORY_CONTEXT_ID_PROFILE_V2, DURABLE_MEMORY_RETRIEVAL_PROFILE_V1,
 };
-use a3s_memory::repository::{
+use aster_durable_memory::repository::{
     DurableMemoryKind, EvidenceKind, EvidenceRef, InMemoryRepository, MemoryChangeSet,
     MemoryNamespace, MemoryNodeDraft, MemoryOperation, MemoryRepository, MemoryStatus,
 };
@@ -104,7 +104,7 @@ async fn active_recall_requires_explicit_evidence_backed_activation() {
                     MemoryStatus::Candidate,
                     "Run focused tests after changing durable memory",
                     vec![evidence(
-                        "a3s://session/one/turn/one",
+                        "aster://session/one/turn/one",
                         EvidenceKind::SessionTurn,
                         1,
                     )],
@@ -119,7 +119,7 @@ async fn active_recall_requires_explicit_evidence_backed_activation() {
         "activate-invalid",
         "candidate",
         1,
-        evidence("a3s://session/one/turn/two", EvidenceKind::SessionTurn, 2),
+        evidence("aster://session/one/turn/two", EvidenceKind::SessionTurn, 2),
         time(2),
     );
     assert!(
@@ -134,7 +134,7 @@ async fn active_recall_requires_explicit_evidence_backed_activation() {
                 "candidate",
                 1,
                 evidence(
-                    "a3s://verification/memory/candidate",
+                    "aster://verification/memory/candidate",
                     EvidenceKind::Verification,
                     2,
                 ),

@@ -55,15 +55,15 @@ function createPptxExportState(
   const slideWidth = artifact.content.width ?? 13.333;
   const slideHeight = artifact.content.height ?? 7.5;
   presentation.defineLayout({
-    name: 'A3S_WORK',
+    name: 'ASTER_WORK',
     width: slideWidth,
     height: slideHeight,
   });
-  presentation.layout = 'A3S_WORK';
-  presentation.author = 'A3S Work';
+  presentation.layout = 'ASTER_WORK';
+  presentation.author = 'Aster Work';
   presentation.subject = artifact.title;
   presentation.title = artifact.title;
-  presentation.company = 'A3S Lab';
+  presentation.company = 'Aster Lab';
   const design = definePptxSlideLayouts(
     presentation,
     artifact.content,

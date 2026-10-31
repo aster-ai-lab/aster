@@ -6,14 +6,14 @@ use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use a3s_search::{CircuitBreaker, CircuitSnapshot, CircuitState, EngineOutcomeKind, SearchResults};
+use aster_search::{CircuitBreaker, CircuitSnapshot, CircuitState, EngineOutcomeKind, SearchResults};
 use fs2::FileExt;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
-const STATE_SCHEMA: &str = "a3s/search-cli-circuit-state/v1";
+const STATE_SCHEMA: &str = "aster/search-cli-circuit-state/v1";
 const STATE_FILE_PREFIX: &str = "circuit-state-v1";
-const SCOPE_DOMAIN: &[u8] = b"a3s/search-cli-transport-scope/v1\0";
+const SCOPE_DOMAIN: &[u8] = b"aster/search-cli-transport-scope/v1\0";
 const MAX_STATE_BYTES: u64 = 1024 * 1024;
 const MAX_ENTRIES: usize = 256;
 const MAX_KEY_BYTES: usize = 128;
@@ -230,7 +230,7 @@ impl PersistentCircuitState {
 }
 
 fn open_update(
-    outcome: &a3s_search::EngineOutcome,
+    outcome: &aster_search::EngineOutcome,
     snapshot: CircuitSnapshot,
     now: u64,
 ) -> Option<StateUpdate> {
@@ -253,13 +253,13 @@ fn open_update(
 fn default_state_path(scope_sha256: &str) -> Option<PathBuf> {
     let scope = scope_sha256.strip_prefix("sha256:")?;
     let file_name = format!("{STATE_FILE_PREFIX}-{scope}.json");
-    if let Some(directory) = std::env::var_os("A3S_SEARCH_STATE_DIR") {
+    if let Some(directory) = std::env::var_os("ASTER_SEARCH_STATE_DIR") {
         let directory = PathBuf::from(directory);
         return directory.is_absolute().then(|| directory.join(&file_name));
     }
     dirs::state_dir()
         .or_else(dirs::data_local_dir)
-        .map(|directory| directory.join("a3s-search").join(file_name))
+        .map(|directory| directory.join("aster-search").join(file_name))
 }
 
 fn transport_scope(proxy: Option<&str>, browser: &str) -> String {

@@ -13,13 +13,13 @@ The runtime:
    `WHvDeletePartition`;
 3. queries `WHvCapabilityCodeHypervisorPresent`;
 4. optionally creates and deletes a WHPX partition object as a smoke test;
-5. links the `a3s-libkrun-sys 3.1.0` FFI ABI only into an isolated shim and
+5. links the `aster-libkrun-sys 3.1.0` FFI ABI only into an isolated shim and
    stages a runtime-owned, checksum-verified native bundle with firmware
-   provenance from `A3S-Lab/Box@93fc281` and the segmented stream, writable
+   provenance from `aster-ai-lab/Box@93fc281` and the segmented stream, writable
    virtio-fs, virtio queue, and owned PIT worker fixes from
-   `A3S-Lab/libkrun@de07dd8`; its NUMA-capable Linux 6.12.91 firmware is built
+   `aster-ai-lab/libkrun@de07dd8`; its NUMA-capable Linux 6.12.91 firmware is built
    from `libkrunfw` v5.5.0 and the strict wrapper from
-   `A3S-Lab/libkrun@10dca31`, merged as `414b2d3`;
+   `aster-ai-lab/libkrun@10dca31`, merged as `414b2d3`;
 6. creates, configures for one vCPU and 128 MiB, replaces implicit TSI with a
    zero-feature plain-vsock device, maps guest port 4093 to a validated bare
    Windows pipe name, and releases one real libkrun context without entering a
@@ -31,7 +31,7 @@ The runtime:
    authenticated agent protocol with a simulated local guest;
 8. enters a one-vCPU, 512 MiB utility VM, executes `/bin/sh` from a supplied
    Linux rootfs, and verifies a guest-written marker through virtiofs;
-9. boots `/usr/bin/a3s-oci-agent`, carries its host-CID port 4093 connection
+9. boots `/usr/bin/aster-oci-agent`, carries its host-CID port 4093 connection
    through libkrun to the protected pipe, authenticates the exact shim PID and
    one-time token, negotiates protocol version 10, advertises 20 workload
    operations plus the maintenance acknowledgement, and waits for zero
@@ -42,10 +42,10 @@ The runtime:
      PTYs, terminal resize, exact guest `MPOL_BIND` memory-policy readback, and
      delete calls, verifies replay and cleanup, and keeps the built-in driver
      disabled;
-11. emits stable JSON evidence through `a3s-oci features`,
-   `a3s-oci whpx-smoke`, `a3s-oci-krun-shim context-smoke`, and
-   `a3s-oci-krun-shim vm-smoke`, plus nested host/shim evidence through
-   `a3s-oci agent-vm-smoke` and `a3s-oci oci-vm-smoke`;
+11. emits stable JSON evidence through `aster-oci features`,
+   `aster-oci whpx-smoke`, `aster-oci-krun-shim context-smoke`, and
+   `aster-oci-krun-shim vm-smoke`, plus nested host/shim evidence through
+   `aster-oci agent-vm-smoke` and `aster-oci oci-vm-smoke`;
 12. stages the one-time guest token in a create-new, fixed-size bootstrap file
     instead of exposing it in the Windows guest command line or environment,
     rejects alternate paths and links, and removes the file on every exit;
@@ -57,7 +57,7 @@ The runtime:
     evidence;
 15. gives each candidate-driver VM only its exact protected
     `shares/<container>/<generation>` directory through a second virtio-fs
-    device, mounts the fixed `a3s-oci-runtime` tag before guest token access,
+    device, mounts the fixed `aster-oci-runtime` tag before guest token access,
     and leaves the system root disjoint from writable bundle and handoff data;
 16. exposes a versioned, qualification-only direct `RuntimeDriver` gate that
     verifies create/start/kill/wait replay, authenticated shutdown-report
@@ -71,12 +71,12 @@ The runtime:
     remains `probe-only`;
 18. builds a byte-reproducible Alpine 3.22.5 x86_64 ext4 image containing the
     protocol-v10 agent, binds Linux 6.12.91 and every Box/libkrun/firmware
-    revision and digest in `a3s.oci.windows-system-image.v1`, pins all boot
+    revision and digest in `aster.oci.windows-system-image.v1`, pins all boot
     inputs with read-only Windows handles, and switches from the empty
     bootstrap share to that read-only block root before starting the agent.
 
 Product bundle preparation no longer needs to guess the runtime generation.
-An explicitly annotated, digest-bound `dev.a3s.bundle-handoff` attachment lets
+An explicitly annotated, digest-bound `dev.aster.bundle-handoff` attachment lets
 the product stage one portable bundle below the protected create-operation
 path. Once durable state allocates the exact generation, the WHPX driver moves
 that directory atomically into its exact runtime share. Retries require the
@@ -173,7 +173,7 @@ A successful end-to-end agent VM smoke additionally proves that:
 A successful fixed OCI VM smoke additionally proves that:
 
 - the accepted bundle is a strict descendant of the supplied writable runtime
-  share and is addressed below `/run/a3s-oci-runtime` in the guest;
+  share and is addressed below `/run/aster-oci-runtime` in the guest;
 - create establishes a new UTS namespace, applies the configured hostname and
   domainname, and reports ready only afterward;
 - when configured, create establishes a new mount namespace, makes `/`
@@ -216,7 +216,7 @@ A successful fixed OCI VM smoke additionally proves that:
 - stopped-only delete and its exact retry succeed;
 - state returns NotFound after delete;
 - the marker is removed and VM shutdown leaves no new agent runtime directory
-  or A3S process.
+  or Aster process.
 
 A successful direct WHPX `RuntimeDriver` smoke additionally proves that:
 
@@ -234,7 +234,7 @@ A successful direct WHPX `RuntimeDriver` smoke additionally proves that:
 
 A successful WHPX owner-death recovery smoke additionally proves that:
 
-- the parent starts with no A3S OCI process and force-terminates only the exact
+- the parent starts with no Aster OCI process and force-terminates only the exact
   owner PID after one exact-generation workload is running and its marker is
   visible;
 - the owner-bound shim survives long enough to stop the VM, collect the guest's
@@ -257,7 +257,7 @@ created by the host (`0755` for directories and `0644` for regular files).
 Those values do not describe the host security boundary: every runtime-share
 generation is protected by a Windows DACL containing only the runtime owner
 and LocalSystem. The WHPX shim explicitly sets
-`A3S_OCI_AGENT_RUNTIME_SHARE_SECURITY=windows-virtiofs-acl-v1` for the Linux
+`ASTER_OCI_AGENT_RUNTIME_SHARE_SECURITY=windows-virtiofs-acl-v1` for the Linux
 Guest. After validating the fixed mount and token path, the Guest normalizes
 only those two known synthetic modes to `0700`/`0600` through opened,
 no-follow descriptors, then performs the existing type, length, identity,
@@ -266,29 +266,29 @@ unknown selectors, unexpected modes, and failed `fchmod` operations remain
 fail-closed. Native Linux/KVM and macOS handoffs continue to require their
 native private mode contracts.
 
-## A3S Box qualification owner
+## Aster Box qualification owner
 
-`a3s-oci box-whpx-qualification-service` exposes the same durable SDK service
-over a protected local Windows named pipe for the explicit A3S Box product
+`aster-oci box-whpx-qualification-service` exposes the same durable SDK service
+over a protected local Windows named pipe for the explicit Aster Box product
 lifecycle gate. It does not register or promote the public WHPX candidate. The
 service opens a separate crate-private override whose capability evidence is
 exactly `qualification_override=box-product-lifecycle-only`; the owner-death
 gate retains its different `host-service-owner-death-only` scope.
 
 ```powershell
-a3s-oci box-whpx-qualification-service `
-  --shim C:\a3s\bin\a3s-oci-krun-shim.exe `
-  --runtime-root C:\a3s\oci-runtime `
-  --vm-rootfs C:\a3s\oci-runtime\bootstrap `
-  --system-image-manifest C:\a3s\system-image\system-image.json `
-  --state-root C:\a3s\oci-runtime\state `
-  --pipe '\\.\pipe\a3s-oci-box-qualification' `
-  --ready-file C:\a3s\oci-runtime\box-service-ready.json
+aster-oci box-whpx-qualification-service `
+  --shim C:\aster\bin\aster-oci-krun-shim.exe `
+  --runtime-root C:\aster\oci-runtime `
+  --vm-rootfs C:\aster\oci-runtime\bootstrap `
+  --system-image-manifest C:\aster\system-image\system-image.json `
+  --state-root C:\aster\oci-runtime\state `
+  --pipe '\\.\pipe\aster-oci-box-qualification' `
+  --ready-file C:\aster\oci-runtime\box-service-ready.json
 ```
 
 The optional readiness file is created atomically only after the driver,
 durable state, protected pipe ACL, and first pipe instance are ready. It uses
-schema `a3s.oci.box-whpx-service-ready.v2`, records the owner PID, exact
+schema `aster.oci.box-whpx-service-ready.v2`, records the owner PID, exact
 endpoint and roots, and selected system-image manifest, and is removed on
 graceful shutdown. A stale file after owner death is never connection
 evidence; clients must still complete the SDK handshake and feature preflight.
@@ -301,9 +301,9 @@ atomically moves a valid source into its allocated generation before launch.
 
 Box converts its host-side image manifest to the SDK-owned portable contract
 and adds
-`dev.a3s.oci.rootfs-metadata=a3s.oci.rootfs-metadata.v1`. Before any OCI mount
+`dev.aster.oci.rootfs-metadata=aster.oci.rootfs-metadata.v1`. Before any OCI mount
 is installed, the guest validates and consumes the fixed
-`.a3s-oci-rootfs-metadata.v1.json` manifest from the relative rootfs, then
+`.aster-oci-rootfs-metadata.v1.json` manifest from the relative rootfs, then
 restores Linux ownership and mode data that cannot be represented directly by
 the Windows backing filesystem. Replay rejects an absolute root, a user or
 missing mount namespace, a wrong annotation, manifests above 16 MiB or 250,000
@@ -319,15 +319,15 @@ Every successful CI run retains `windows-whpx-qualification` for 14 days. Its
 v2 manifest binds the exact source and workflow commits, and lists every file
 size and SHA-256 digest. `bin/` contains the CLI, shim, `krun.dll`, and
 `libkrunfw.dll`; the disjoint `system-image/` directory contains the raw ext4
-image, compressed release copy, and `a3s.oci.windows-system-image.v1`
+image, compressed release copy, and `aster.oci.windows-system-image.v1`
 manifest. CI also publishes the same image separately as
 `windows-system-image`. `guest-agents-musl` remains available for development,
 but these qualification scripts boot the agent embedded in the immutable
 image and do not copy a loose agent into a guest root.
 
 ```powershell
-gh run download <run-id> --repo A3S-Lab/OCI-Runtime `
-  --name windows-whpx-qualification --dir C:\a3s\oci-artifacts\windows
+gh run download <run-id> --repo aster-ai-lab/OCI-Runtime `
+  --name windows-whpx-qualification --dir C:\aster\oci-artifacts\windows
 ```
 
 For a build-free qualification, copy the four files from `bin/` into
@@ -343,7 +343,7 @@ commits.
 powershell.exe -NoProfile -ExecutionPolicy Bypass `
   -File .\scripts\windows-whpx-soak.ps1 `
   -RootfsArchive C:\path\to\alpine-minirootfs.tar `
-  -SystemImageManifest C:\a3s\oci-artifacts\windows\system-image\system-image.json
+  -SystemImageManifest C:\aster\oci-artifacts\windows\system-image\system-image.json
 ```
 
 Run the nominal formal-driver gate separately:
@@ -352,7 +352,7 @@ Run the nominal formal-driver gate separately:
 powershell.exe -NoProfile -ExecutionPolicy Bypass `
   -File .\scripts\windows-whpx-driver-smoke.ps1 `
   -RootfsArchive C:\path\to\alpine-minirootfs.tar `
-  -SystemImageManifest C:\a3s\oci-artifacts\windows\system-image\system-image.json
+  -SystemImageManifest C:\aster\oci-artifacts\windows\system-image\system-image.json
 ```
 
 Run the owner-death and host-service recovery gate separately:
@@ -361,7 +361,7 @@ Run the owner-death and host-service recovery gate separately:
 powershell.exe -NoProfile -ExecutionPolicy Bypass `
   -File .\scripts\windows-whpx-recovery-smoke.ps1 `
   -RootfsArchive C:\path\to\alpine-minirootfs.tar `
-  -SystemImageManifest C:\a3s\oci-artifacts\windows\system-image\system-image.json
+  -SystemImageManifest C:\aster\oci-artifacts\windows\system-image\system-image.json
 ```
 
 Run the shared utility-VM transport-fault and Host-shutdown cleanup gate
@@ -373,18 +373,18 @@ separately. This is the Windows counterpart of the macOS/Linux 11-stage
 powershell.exe -NoProfile -ExecutionPolicy Bypass `
   -File .\scripts\windows-whpx-transport-fault-cleanup.ps1 `
   -RootfsArchive C:\path\to\alpine-minirootfs.tar `
-  -SystemImageManifest C:\a3s\oci-artifacts\windows\system-image\system-image.json
+  -SystemImageManifest C:\aster\oci-artifacts\windows\system-image\system-image.json
 ```
 
-A successful run emits `a3s.oci.whpx-transport-fault-cleanup-run.v1` with
+A successful run emits `aster.oci.whpx-transport-fault-cleanup-run.v1` with
 exactly 11 cases and requires the shared
-`a3s.oci.oci-vm-transport-fault-cleanup.v3` evidence plus WHPX handle
+`aster.oci.oci-vm-transport-fault-cleanup.v3` evidence plus WHPX handle
 reclamation and immutable boot-asset digests on every stage. Existing-host
 evidence does not close the freshly provisioned release-host gate.
 
 On September 7, 2026, clean `main` commit
 `35ed7465cfd02377d918d779278debf3ca8eea71` retained an available
-`a3s.oci.whpx-transport-fault-cleanup-run.v1` summary on the existing Windows
+`aster.oci.whpx-transport-fault-cleanup-run.v1` summary on the existing Windows
 10 Pro 23H2 x86_64 host. All 11 stages passed, including
 `host-before-shutdown` and `host-after-shutdown`, against the pinned system
 image (`manifest`
@@ -396,7 +396,7 @@ existing-host observation evidence for the R1 WHPX transport/shutdown gap; it
 does not promote readiness or close the fresh-host release gate.
 
 On September 7, 2026, the same assets retained an available
-`a3s.oci.windows-whpx-release-matrix.v1` summary with `host_class=existing`
+`aster.oci.windows-whpx-release-matrix.v1` summary with `host_class=existing`
 and `promotes_readiness=false` under
 `target/windows-whpx-release-matrix/existing-20260907165307`. All six bound
 gates passed (handle-reclamation, driver smoke, recovery smoke, 11-stage
@@ -412,7 +412,7 @@ On September 11, 2026, source-matched assets rebuilt from `b9d78ff` (agent
 `23336c3a1999df8b7a3b12a94986260e18e8f19ea5ca41b370715e8dfb17d2dc`, manifest
 `7e68a7dd3013a082c85eedf912f77c9856bb94b949accb21ab04eac38b58bd25`, ext4
 `e3f6dfa01837f7ace8c953e5ce4605bd7368aeeb61aaa0f7e78443d34525c9a4`) retained an
-available `a3s.oci.windows-whpx-release-matrix.v1` summary with
+available `aster.oci.windows-whpx-release-matrix.v1` summary with
 `host_class=existing` and `promotes_readiness=false` under
 `target/windows-whpx-release-matrix/existing-b9d78ff-fix`. All six bound gates
 passed in 2871.043 seconds after fixing optional first-owner Exec/SignalProcess
@@ -441,9 +441,9 @@ Run the digest-bound release matrix that a freshly provisioned WHPX host must
 pass before readiness can become `experimental`. It builds once, then runs
 handle-reclamation, driver smoke, recovery smoke, transport-fault cleanup,
 soak, and operation-reopen against the same immutable assets, emitting
-`a3s.oci.windows-whpx-release-matrix.v1`. Use `-HostClass fresh` only on a
+`aster.oci.windows-whpx-release-matrix.v1`. Use `-HostClass fresh` only on a
 newly provisioned host together with `-FreshHostAttestation` pointing at a
-digest-bound `a3s.oci.windows-whpx-fresh-host-attestation.v1` JSON that sets
+digest-bound `aster.oci.windows-whpx-fresh-host-attestation.v1` JSON that sets
 `operator_attests_fresh_provisioning=true` and `provisioned_at_utc`. The
 default `existing` class cannot close the promotion gate, `existing` with
 `-FreshHostAttestation` is rejected, and `fresh` without attestation is
@@ -456,16 +456,16 @@ readiness promotion):
 powershell.exe -NoProfile -ExecutionPolicy Bypass `
   -File .\scripts\windows-whpx-release-matrix.ps1 `
   -RootfsArchive C:\path\to\alpine-minirootfs.tar `
-  -SystemImageManifest C:\a3s\oci-artifacts\windows\system-image\system-image.json `
+  -SystemImageManifest C:\aster\oci-artifacts\windows\system-image\system-image.json `
   -HostClass fresh `
-  -FreshHostAttestation C:\a3s\oci-artifacts\windows\fresh-host-attestation.json
+  -FreshHostAttestation C:\aster\oci-artifacts\windows\fresh-host-attestation.json
 ```
 
 Example attestation:
 
 ```json
 {
-  "schema_version": "a3s.oci.windows-whpx-fresh-host-attestation.v1",
+  "schema_version": "aster.oci.windows-whpx-fresh-host-attestation.v1",
   "operator_attests_fresh_provisioning": true,
   "provisioned_at_utc": "2026-09-07T00:00:00Z",
   "hostname": "whpx-release-01"
@@ -530,7 +530,7 @@ newly-provisioned fresh-host release-promotion run.
 On September 3, 2026, the same clean current-main revision
 `28df6259c2cbb703b37fc8670ed224d1b34531e4` passed a full local Windows 10 Pro
 23H2 (build 22631.4890, AMD64) run against the pinned system image. The
-`a3s.oci.windows-whpx-soak.v2` report completed all 56 operation samples:
+`aster.oci.windows-whpx-soak.v2` report completed all 56 operation samples:
 25 serial lifecycles, three multi-container runs, three lifecycle-fault
 boundaries, six parallel runs, five workload profiles, ten typed negative
 cases, and four owner-kill points. All 51 VM reports retained equal
@@ -551,7 +551,7 @@ operation-stage or package-promotion gates.
 A subsequent run from current merged `main` commit
 `bf43388dc1a5630f3fbbd699203877cf84f1ee2d` repeated the same gate with a
 source-matched static guest agent and a newly rebuilt immutable system image.
-The `a3s.oci.windows-whpx-soak.v2` report again passed all 56 samples (25
+The `aster.oci.windows-whpx-soak.v2` report again passed all 56 samples (25
 serial, six parallel, three multi-container, three lifecycle-fault, five
 workload, ten typed-negative, and four owner-kill cases), with empty start and
 final host-process inventories. The source-matched image manifest, ext4 image,
@@ -578,7 +578,7 @@ On September 6, 2026, commit `9d1639ac335ddcadf6e63569e8b363fa92c10d61`
 completed the local Windows 10 Pro 23H2 (build 22631.4890, AMD64) rerun after
 adding the explicit Windows virtio-fs handoff metadata contract. The direct
 driver and owner-death/reopen reports both returned `available`; the complete
-`a3s.oci.windows-whpx-soak.v2` profile passed all 56 operation samples in
+`aster.oci.windows-whpx-soak.v2` profile passed all 56 operation samples in
 681.403 seconds (25 serial, six parallel, three multi-container, three
 lifecycle-fault, five workload, ten typed-negative, and four owner-kill
 cases). Start and final host process inventories were empty, all 51 VM reports
@@ -602,7 +602,7 @@ not claim the separately required freshly provisioned release-host gate.
 
 On September 6–7, 2026, the same Windows 10 Pro 23H2 host completed the
 operation-reopen qualification for every workload operation. Seven bounded
-`a3s.oci.whpx-operation-reopen-run.v1` reports passed all 180 cases (20
+`aster.oci.whpx-operation-reopen-run.v1` reports passed all 180 cases (20
 operations x 9 stages): Create/State/Start/Kill (36),
 Wait/Exec/SignalProcess/WaitProcess (36), Pause/Resume/Processes/Update (36),
 Stats (9), ReadOutput/WriteStdin/CloseStdin (27), Resize/File/Filesystem (27),
@@ -627,8 +627,8 @@ On September 7, 2026, Create reopen was extended to Host shutdown on the same
 existing host. After a successful Create retains durable `created`, injecting
 `host-before-shutdown` or `host-after-shutdown` on Host close returns retryable
 `Unavailable`, the replacement owner rehydrates the created record, and cleanup
-completes. Schema `a3s.oci.oci-vm-reopen-replacement.v3` records the shutdown
-stage; a focused `a3s.oci.whpx-operation-reopen-run.v1` summary covering both
+completes. Schema `aster.oci.oci-vm-reopen-replacement.v3` records the shutdown
+stage; a focused `aster.oci.whpx-operation-reopen-run.v1` summary covering both
 shutdown stages (plus one operation-stage control case) is available with
 SHA-256 `4632cc6c68f3d837a59d98b379972d62b6168202945bbdbe56f1e75100d4c552`.
 The full matrix is now 182 cases when Create's two Host-shutdown stages are
@@ -636,7 +636,7 @@ included with the prior 180 operation-stage paths. Existing-host evidence still
 does not close the freshly provisioned release-host gate.
 
 The independent
-`a3s.oci.windows-whpx-handle-reclamation-run.v1` report passed eight
+`aster.oci.windows-whpx-handle-reclamation-run.v1` report passed eight
 same-process cycles in one shim process. It retained a cold count of 115,
 baseline 122, peak/final 122, final delta 0, and
 `runtime_share_restored=true`; its summary and report SHA-256 values are
@@ -648,7 +648,7 @@ evidence remains required for release promotion.
 
 On September 7, 2026, the merged WHPX implementation completed a fresh
 current-host full soak from commit `385ea4321d56b487bd5e5c68d53ff1fbf56b731c`.
-The `a3s.oci.windows-whpx-soak.v2` report passed in 729.777 seconds with
+The `aster.oci.windows-whpx-soak.v2` report passed in 729.777 seconds with
 25/25 serial lifecycles, 3/3 multi-container runs, 3/3 lifecycle-fault runs,
 6/6 parallel runs, 5/5 workload cases, 10/10 typed-negative cases, and 4/4
 owner-kill points. Verification passed, both process inventories were empty,
@@ -683,7 +683,7 @@ Direct-driver and owner-death/service-recovery reports both returned
 `available`; their summary SHA-256 values are
 `b85d095ad0aa629a001ed4a526521848c81a00a357f308cce84f72ed85719aab` and
 `d6b9cd32c44790682291ae96e0f61be6c6da0ef48db4942c7ad19ad88329c13e`. The
-`a3s.oci.windows-whpx-soak.v2` report passed all 56 operation samples in
+`aster.oci.windows-whpx-soak.v2` report passed all 56 operation samples in
 640.797 seconds (25 serial, three multi-container, three lifecycle-fault, six
 parallel, five workload, ten typed-negative, and four owner-kill cases) with
 empty start and final host-process inventories and verification `PASS`. The
@@ -712,7 +712,7 @@ musl agent
 SHA-256 `a29422108d600183214cb133ab242f3b013144188210e2206eece234e5999614`,
 raw image SHA-256
 `bcbf6f955be0a9efc38a772c071faa023fa87bfe96cd57548cf7a1092a14ccb3`) restored
-the full 11/11 `a3s.oci.oci-vm-transport-fault-cleanup.v3` matrix on the same
+the full 11/11 `aster.oci.oci-vm-transport-fault-cleanup.v3` matrix on the same
 revision `afc78ae`; the aggregate summary SHA-256 is
 `9737f6f31547ac253b15819a8793d4159750b3f6f92fafa81805d3e4056d5891`. This
 remains existing-host observation evidence and does not close fresh-host
@@ -720,7 +720,7 @@ promotion.
 
 The August 1, 2026 direct-driver qualification ran from clean commit
 `7bb09dff81b5445e275c31faff6592ad4c32a45f` and emitted
-`a3s.oci.whpx-driver-smoke-run.v1`. From 12:50:37Z through 12:51:08Z it built
+`aster.oci.whpx-driver-smoke-run.v1`. From 12:50:37Z through 12:51:08Z it built
 the pinned artifacts and passed every nominal lifecycle, replay, exact-share,
 authenticated recovery-publication, and cleanup field. It used rootfs SHA-256
 `4b4daa9fe2fc696c4919c4412a4c3d3e770d8fb70292a004a2c72f5096175282`,
@@ -736,7 +736,7 @@ and `64d898fcad1f1ad597e8ad98a19233dec260a3d7831de39178ef24562766047f`.
 
 The August 1, 2026 owner-death qualification ran from clean commit
 `2d91cd04f6ec1ecd9ea3fce4673be6fdc2b6f631` with an empty recorded worktree and
-emitted `a3s.oci.whpx-recovery-smoke-run.v1`. From 13:41:20Z through 13:41:30Z
+emitted `aster.oci.whpx-recovery-smoke-run.v1`. From 13:41:20Z through 13:41:30Z
 it rebuilt the artifacts, force-terminated owner PID 57496 only after running
 and marker readiness, injected both Recover fault boundaries, reopened the host
 service, replayed exact signal 9, replayed the recovered driver tombstone kill,
@@ -761,7 +761,7 @@ and `krun.dll` SHA-256
 In 63.970 seconds it passed one serial lifecycle, two parallel lifecycles,
 five workload cases, nine typed negative cases, and owner termination at four
 timing points. Its storage create request crossed the 4 KiB WHPX stream
-boundary, and every case left zero A3S host processes and zero guest
+boundary, and every case left zero Aster host processes and zero guest
 bootstrap/runtime directories. This is focused transport regression evidence;
 the default profile above remains the broader hardware gate.
 
@@ -812,7 +812,7 @@ successful shim report, and returned exit status zero. This historical run
 predates the protocol-v2 wait gate and does not qualify the current report
 schemas.
 
-The UTS qualification configured hostname `a3s-smoke` and domainname
+The UTS qualification configured hostname `aster-smoke` and domainname
 `runtime.test`, checked the hostname from the workload, and crossed the create
 barrier only after the wrapper read both applied values back with `uname`.
 
@@ -849,7 +849,7 @@ does not build it.
 
 The fixed-bundle smokes do not prove that:
 
-- the pinned immutable A3S system image boots;
+- the pinned immutable Aster system image boots;
 - the rootful user/time namespace slice now exercised on native Linux and
   macOS, namespace joins, recursive or ID-mapped mounts, tmpfs, capabilities,
   seccomp, or hooks work through WHPX;
@@ -913,7 +913,7 @@ delete. If neither authenticated evidence nor a pending handoff exists, the
 stopped tombstone remains usable for cleanup while `wait` still fails instead
 of inventing a result. The nominal direct-driver path and the
 owner-death/service-restart path now have real WHPX evidence. The retained
-`a3s.oci.whpx-recovery-smoke-run.v1` report at clean commit `2d91cd0` covers
+`aster.oci.whpx-recovery-smoke-run.v1` report at clean commit `2d91cd0` covers
 exact owner termination, both recovery fault boundaries, service reopen,
 terminal replay, stopped-only delete, and complete transient cleanup.
 
@@ -921,7 +921,7 @@ terminal replay, stopped-only delete, and complete transient cleanup.
 
 Existing-host WHPX greening on this workstation does **not** promote readiness.
 Only a newly provisioned WHPX host with `-HostClass fresh` and a digest-bound
-`a3s.oci.windows-whpx-fresh-host-attestation.v1` attestation may set
+`aster.oci.windows-whpx-fresh-host-attestation.v1` attestation may set
 `promotes_readiness=true`. This used Windows + WSL machine cannot honestly
 attest fresh-host. Canonical checklist and ordered post-fresh-host gates
 (W4 cutover, default supervised create, HostRuntimeService KVM registration,
@@ -953,7 +953,7 @@ WHPX host through `scripts/windows-whpx-release-matrix.ps1 -HostClass fresh`:
 The release-matrix entry also binds the independent eight-cycle handle
 reclamation gate, the 11-stage transport-fault/Host-shutdown cleanup gate, and
 the 180-path operation-reopen matrix into one
-`a3s.oci.windows-whpx-release-matrix.v1` summary. A `host_class=existing` run
+`aster.oci.windows-whpx-release-matrix.v1` summary. A `host_class=existing` run
 is observation-only and must not set `promotes_readiness`. A
 `host_class=fresh` run requires `-FreshHostAttestation` and embeds its digest
 in the matrix summary before readiness may be promoted from that evidence.

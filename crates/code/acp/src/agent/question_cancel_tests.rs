@@ -10,7 +10,7 @@ async fn cancelled_question_cancels_only_its_own_turn() {
         let root = tempfile::tempdir().unwrap();
         let mut launch = tests::test_launch(Some(root.path().join("sessions")));
         launch.workspace = root.path().to_owned();
-        let agent = A3sCodeAgent::new(launch);
+        let agent = AsterCodeAgent::new(launch);
         let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path())).await.unwrap();
         let other = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path())).await.unwrap();
         let session = agent.sessions.lock().await[opened.session_id.0.as_ref()].session.clone();
@@ -20,7 +20,7 @@ async fn cancelled_question_cancels_only_its_own_turn() {
         let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
         let (read, write) = tokio::io::split(agent_end);
         let (connection, io) = acp::AgentSideConnection::new(
-            A3sCodeAgent::new(tests::test_launch(None)),
+            AsterCodeAgent::new(tests::test_launch(None)),
             write.compat_write(), read.compat(),
             |future| { tokio::task::spawn_local(future); },
         );
@@ -49,7 +49,7 @@ async fn cancelled_question_cancels_only_its_own_turn() {
         let permit = Arc::new(tokio::sync::Mutex::new(())).lock_owned().await;
         let response = tokio::time::timeout(std::time::Duration::from_secs(5), agent.drain_turn(
             &opened.session_id, &session,
-            a3s_code_core::AgentRunStream { run: None, events, worker: tokio::spawn(async {}) },
+            aster_core::AgentRunStream { run: None, events, worker: tokio::spawn(async {}) },
             None, 1, permit, None,
         )).await.expect("a dismissed question must release its ACP turn").unwrap();
         assert_eq!(response.stop_reason, acp::StopReason::Cancelled);

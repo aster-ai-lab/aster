@@ -117,7 +117,7 @@ impl PersistentIndexCoordinator {
             Err(std::io::Error::other("forced publish spawn failure"))
         } else {
             std::thread::Builder::new()
-                .name("a3s-persistent-publish".to_owned())
+                .name("aster-persistent-publish".to_owned())
                 .spawn(move || {
                     if drop_result {
                         drop(tx);
@@ -178,7 +178,7 @@ async fn sync_snapshot_with_retry(
             Err(std::io::Error::other("forced sync spawn failure"))
         } else {
             std::thread::Builder::new()
-                .name("a3s-persistent-sync".to_owned())
+                .name("aster-persistent-sync".to_owned())
                 .spawn(move || {
                     let _ = tx.send(persistent.sync_snapshot(snapshot.as_ref()));
                 })
@@ -578,5 +578,5 @@ async fn report_reconciliation(
     }
 }
 
-#[cfg(all(test, feature = "a3s-vec-fts"))]
+#[cfg(all(test, feature = "aster-vec-fts"))]
 mod tests;

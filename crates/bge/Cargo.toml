@@ -1,21 +1,21 @@
 [package]
-name = "a3s-use-bge"
+name = "aster-use-bge"
 version = "0.1.0"
 edition = "2021"
 publish = false
 license = "MIT"
-authors = ["A3S Lab"]
+authors = ["Aster"]
 rust-version = "1.82"
-description = "Local BGE embedding and reranker engines for A3S Use"
-keywords = ["embeddings", "rerank", "onnx", "bge", "a3s"]
+description = "Local BGE embedding and reranker engines for Aster Use"
+keywords = ["embeddings", "rerank", "onnx", "bge", "aster"]
 categories = ["science", "text-processing"]
 
 [lib]
-name = "a3s_use_bge"
+name = "aster_use_bge"
 path = "src/lib.rs"
 
 [[bin]]
-name = "a3s-use-bge"
+name = "aster-use-bge"
 path = "src/main.rs"
 required-features = ["cli"]
 
@@ -26,7 +26,7 @@ bge-reranker-v2-m3 = ["dep:ort", "dep:tokenizers"]
 cli = ["dep:clap"]
 
 [dependencies]
-a3s-use-core = { path = "../use/core" }
+aster-use-core = { path = "../use/core" }
 clap = { version = "4", features = ["derive"], optional = true }
 fs2 = "0.4"
 ort = { version = "=2.0.0-rc.10", default-features = false, features = ["copy-dylibs", "download-binaries", "ndarray", "std"], optional = true }

@@ -1,6 +1,6 @@
-//! Saved wiki pages, indexed by the in-process a3s-vec lexical engine.
+//! Saved wiki pages, indexed by the in-process aster-vec lexical engine.
 //!
-//! The catalog admits markdown pages and keeps chunk identity. a3s-vec indexes
+//! The catalog admits markdown pages and keeps chunk identity. aster-vec indexes
 //! only those admitted chunks. Publication runs off the caller: a search reads
 //! the last published generation, or returns [`WikiSearchPhase::NotReady`]
 //! when that generation is being replaced, and never waits for the build.
@@ -42,7 +42,7 @@ pub const WIKI_PASSAGE_CHARS: usize = PASSAGE_CHARS;
 pub enum WikiSearchPhase {
     /// No published generation is readable right now. The body is absent.
     NotReady,
-    /// Hits come from one published a3s-vec generation.
+    /// Hits come from one published aster-vec generation.
     Published,
 }
 
@@ -128,7 +128,7 @@ struct ReconcileCommand {
     reply: Option<oneshot::Sender<WorkspaceIndexResult<WikiReconcileReport>>>,
 }
 
-/// Incremental a3s-vec index of one saved-wiki directory.
+/// Incremental aster-vec index of one saved-wiki directory.
 pub struct WikiIndex {
     state: Arc<WikiState>,
     /// RAII keeper for the backing temp dir; never read on purpose.
@@ -165,14 +165,14 @@ impl WikiIndex {
         })?;
         let index = WorkspacePersistentIndex::open(
             storage.path().join("wiki-index"),
-            WorkspaceLexicalEngine::A3sVec,
+            WorkspaceLexicalEngine::AsterVec,
         )?;
         let file_system = Arc::new(RecordingFs {
             inner: LocalWorkspaceBackend::new_with_source_egress_policy(root.clone()),
             reads: Mutex::new(Vec::new()),
         });
         let catalog = WorkspaceChunkCatalog::default_catalog_with_engines(
-            WorkspaceLexicalEngine::A3sVec,
+            WorkspaceLexicalEngine::AsterVec,
             WorkspaceLexicalEngine::Portable,
         );
         let state = Arc::new(WikiState {
@@ -194,7 +194,7 @@ impl WikiIndex {
         let (publish_tx, publish_rx) = std::sync::mpsc::channel();
         let publisher_state = Arc::clone(&state);
         let publisher = std::thread::Builder::new()
-            .name("a3s-wiki-publish".to_owned())
+            .name("aster-wiki-publish".to_owned())
             .spawn(move || publish_loop(publisher_state, publish_rx))
             .map_err(|error| WorkspaceIndexError::ReadFailed {
                 path: root.display().to_string(),
@@ -244,11 +244,11 @@ impl WikiIndex {
         }
     }
 
-    /// Search the published a3s-vec generation. A generation swap returns
+    /// Search the published aster-vec generation. A generation swap returns
     /// [`WikiSearchPhase::NotReady`] without waiting and without unpublished text.
     pub fn search(&self, query: impl Into<String>) -> WorkspaceIndexResult<WikiSearchResult> {
-        let engine = WorkspaceLexicalEngine::A3sVec.stable_id();
-        let publication = match a3s_okf::try_workspace_knowledge_read(&self.state.root) {
+        let engine = WorkspaceLexicalEngine::AsterVec.stable_id();
+        let publication = match aster_okf::try_workspace_knowledge_read(&self.state.root) {
             Ok(guard) => guard,
             Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
                 return Ok(not_ready(engine));
@@ -449,7 +449,7 @@ async fn reconcile_once(
 ) -> WorkspaceIndexResult<WikiReconcileReport> {
     let root = state.root.clone();
     let _publication =
-        tokio::task::spawn_blocking(move || a3s_okf::workspace_knowledge_read(&root))
+        tokio::task::spawn_blocking(move || aster_okf::workspace_knowledge_read(&root))
             .await
             .map_err(|error| WorkspaceIndexError::ReadFailed {
                 path: state.root.display().to_string(),

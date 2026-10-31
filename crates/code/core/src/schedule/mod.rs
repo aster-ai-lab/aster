@@ -22,7 +22,7 @@ mod tests;
 
 pub use store::{FileScheduleStore, MemoryScheduleStore};
 
-pub const SCHEDULE_STORE_SCHEMA_V1: &str = "a3s.code.schedule-store.v1";
+pub const SCHEDULE_STORE_SCHEMA_V1: &str = "aster.code.schedule-store.v1";
 pub const SCHEDULE_STORE_MAX_BYTES: usize = 16 * 1024 * 1024;
 
 macro_rules! closed_set {

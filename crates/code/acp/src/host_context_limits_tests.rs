@@ -4,7 +4,7 @@ use super::*;
 
 #[test]
 fn host_guidelines_keep_a_fixed_unicode_character_bound() {
-    let input = serde_json::json!({"a3sHost": {
+    let input = serde_json::json!({"asterHost": {
         "guidelines": format!(" \0{}\0 ", "界".repeat(13_000))
     }});
     let host = studio_host_from_meta(input.as_object()).unwrap();

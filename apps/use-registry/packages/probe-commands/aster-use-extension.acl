@@ -1,0 +1,22 @@
+extension "aster/probe-commands" {
+  schema_version = 3
+  version        = "1.0.0"
+  route          = "probe-commands"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  repository {
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
+    revision = "0000000000000000000000000000000000000000"
+  }
+
+  plugin "probe" {
+    entry    = "probe.txt"
+    optional = true
+  }
+
+  command "probe" {
+    title    = "扩展点命令探针"
+    category = "扩展点"
+  }
+}

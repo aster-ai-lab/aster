@@ -19,7 +19,7 @@ use super::{
 /// Syntax used by one in-memory Compose source.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ComposeSourceFormat {
-    /// Canonical A3S Agent Configuration Language.
+    /// Canonical Aster Agent Configuration Language.
     Acl,
     /// Bounded Docker Compose-compatible YAML.
     Yaml,

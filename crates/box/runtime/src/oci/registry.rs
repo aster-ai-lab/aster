@@ -6,7 +6,7 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use a3s_box_core::error::{BoxError, Result};
+use aster_box_core::error::{BoxError, Result};
 use futures::{stream, StreamExt, TryStreamExt};
 use oci_distribution::client::{
     ClientConfig, ClientProtocol, Config, ImageLayer, PushResponse, DEFAULT_MAX_CONCURRENT_UPLOAD,
@@ -43,7 +43,7 @@ use basic_pull::{BasicImageManifest, BasicPullClient};
 #[cfg(test)]
 use blob_pull::HashingFileWriter;
 
-const REGISTRY_PROTOCOL_ENV: &str = "A3S_REGISTRY_PROTOCOL";
+const REGISTRY_PROTOCOL_ENV: &str = "ASTER_REGISTRY_PROTOCOL";
 const MANIFEST_ACCEPT: &str = "application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json";
 
 /// Transport protocol used for registry operations.
@@ -83,7 +83,7 @@ impl RegistryProtocol {
 ///
 /// `oci-distribution` returns the `Docker-Content-Digest` header verbatim with
 /// no validation, so a malicious/compromised registry (or a MITM when
-/// `A3S_REGISTRY_PROTOCOL=http`) can return e.g. `sha256:../../../../etc/cron.d/x`.
+/// `ASTER_REGISTRY_PROTOCOL=http`) can return e.g. `sha256:../../../../etc/cron.d/x`.
 /// That value is used to build on-disk paths (the manifest/blob write, the pull
 /// temp dir, the store key); without this check the `..` components make it a
 /// path-traversal arbitrary-file write/delete primitive that runs in the default
@@ -174,10 +174,10 @@ impl RegistryAuth {
         Self::from_external_sources(registry)
     }
 
-    /// Create authentication from an explicit A3S home credential store.
+    /// Create authentication from an explicit Aster home credential store.
     ///
     /// Runtime services can own a home directory without mutating the process
-    /// `A3S_HOME`. Registry-specific A3S credentials still take precedence over
+    /// `ASTER_HOME`. Registry-specific Aster credentials still take precedence over
     /// supported Docker credentials and environment fallback.
     pub fn from_credential_store_at(home_dir: &Path, registry: &str) -> Self {
         let store = CredentialStore::new(home_dir.join("auth").join("credentials.json"));
@@ -1407,7 +1407,7 @@ fn push_error_summary(error: &OciDistributionError) -> String {
             | OciDistributionError::ServerError { code: 401, .. }
     ) {
         message.push_str(
-            "; checked A3S credentials, Docker config/credential helpers, and REGISTRY_USERNAME/REGISTRY_PASSWORD",
+            "; checked Aster credentials, Docker config/credential helpers, and REGISTRY_USERNAME/REGISTRY_PASSWORD",
         );
     }
     message
@@ -1464,7 +1464,7 @@ mod tests {
     fn test_image_reference() -> ImageReference {
         ImageReference {
             registry: "registry.example.com".to_string(),
-            repository: "a3s/app".to_string(),
+            repository: "aster/app".to_string(),
             tag: Some("latest".to_string()),
             digest: None,
         }
@@ -1544,12 +1544,12 @@ mod tests {
 
     #[cfg(windows)]
     fn push_test_windows_symlink(create: impl FnOnce() -> std::io::Result<()>) -> bool {
-        let guard = a3s_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
+        let guard = aster_box_core::windows_symlink::WindowsSymlinkPrivilegeGuard::acquire();
         let assigned_privilege_enabled = guard.assigned_privilege_enabled();
         match create() {
             Ok(()) => true,
             Err(error)
-                if a3s_box_core::windows_symlink::is_capability_denial(
+                if aster_box_core::windows_symlink::is_capability_denial(
                     &error,
                     assigned_privilege_enabled,
                 ) =>
@@ -1624,7 +1624,7 @@ mod tests {
 
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("blob");
-        let payload = b"a3s-box streaming blob hash test payload";
+        let payload = b"aster-box streaming blob hash test payload";
 
         let mut writer = HashingFileWriter::new(tokio::fs::File::create(&path).await.unwrap());
         // Write in two chunks to exercise incremental hashing.
@@ -1818,7 +1818,7 @@ mod tests {
     fn test_repository_exists_push_error_matches_chinese_registry_message() {
         let error = OciDistributionError::ServerError {
             code: 500,
-            url: "http://10.12.111.133:49164/v2/a3s/api/blobs/uploads/".to_string(),
+            url: "http://10.12.111.133:49164/v2/aster/api/blobs/uploads/".to_string(),
             message: "该资源已存在，请勿重复创建".to_string(),
         };
 
@@ -1829,7 +1829,7 @@ mod tests {
     fn test_repository_exists_push_error_retries_conflict_status() {
         let error = OciDistributionError::ServerError {
             code: 409,
-            url: "http://registry.example.com/v2/a3s/api/blobs/uploads/".to_string(),
+            url: "http://registry.example.com/v2/aster/api/blobs/uploads/".to_string(),
             message: "conflict".to_string(),
         };
 
@@ -1839,7 +1839,7 @@ mod tests {
     #[test]
     fn test_unauthorized_push_error_is_not_repository_retryable() {
         let error = OciDistributionError::UnauthorizedError {
-            url: "http://registry.example.com/v2/a3s/web/blobs/uploads/".to_string(),
+            url: "http://registry.example.com/v2/aster/web/blobs/uploads/".to_string(),
         };
 
         assert!(!is_repository_already_exists_push_error(&error));
@@ -1878,7 +1878,7 @@ mod tests {
     "size": 2
   },
   "layers": [],
-  "annotations": {"com.a3s.test": "raw-byte-order"}
+  "annotations": {"com.aster.test": "raw-byte-order"}
 }"#;
         let digest = manifest_digest_from_bytes(bytes);
 
@@ -1889,7 +1889,7 @@ mod tests {
             manifest
                 .annotations
                 .as_ref()
-                .and_then(|annotations| annotations.get("com.a3s.test"))
+                .and_then(|annotations| annotations.get("com.aster.test"))
                 .map(String::as_str),
             Some("raw-byte-order")
         );
@@ -1916,7 +1916,7 @@ mod tests {
 
         let message = err.to_string();
         assert!(message.contains("Manifest verification failed after push"));
-        assert!(message.contains("registry.example.com/a3s/app"));
+        assert!(message.contains("registry.example.com/aster/app"));
     }
 
     #[test]
@@ -1924,12 +1924,12 @@ mod tests {
         let puller = RegistryPuller::new();
         let img_ref = ImageReference {
             registry: "ghcr.io".to_string(),
-            repository: "a3s-box/code".to_string(),
+            repository: "aster-box/code".to_string(),
             tag: Some("v0.1.0".to_string()),
             digest: None,
         };
         let oci_ref = puller.to_oci_reference(&img_ref).unwrap();
-        assert_eq!(oci_ref.to_string(), "ghcr.io/a3s-box/code:v0.1.0");
+        assert_eq!(oci_ref.to_string(), "ghcr.io/aster-box/code:v0.1.0");
     }
 
     #[test]
@@ -1937,7 +1937,7 @@ mod tests {
         let puller = RegistryPuller::new();
         let img_ref = ImageReference {
             registry: "ghcr.io".to_string(),
-            repository: "a3s-box/code".to_string(),
+            repository: "aster-box/code".to_string(),
             tag: None,
             digest: Some(
                 "sha256:abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
@@ -1968,7 +1968,7 @@ mod tests {
         let tagged = test_image_reference();
         assert_eq!(
             pusher.to_oci_reference(&tagged).unwrap().to_string(),
-            "registry.example.com/a3s/app:latest"
+            "registry.example.com/aster/app:latest"
         );
 
         let tagless = ImageReference {
@@ -1977,7 +1977,7 @@ mod tests {
         };
         assert_eq!(
             pusher.to_oci_reference(&tagless).unwrap().to_string(),
-            "registry.example.com/a3s/app:latest"
+            "registry.example.com/aster/app:latest"
         );
     }
 

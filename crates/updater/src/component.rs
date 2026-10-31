@@ -25,7 +25,7 @@ pub enum InstallProvenance {
 }
 
 impl InstallProvenance {
-    /// Whether A3S may remove receipt-owned paths directly.
+    /// Whether Aster may remove receipt-owned paths directly.
     pub fn owns_files(self) -> bool {
         matches!(self, Self::GithubRelease | Self::LocalPackage)
     }
@@ -241,7 +241,7 @@ pub fn uninstall_owned_files(
     validate_absolute_clean_path(allowed_data_root, "allowed data root")?;
     if !receipt.provenance.owns_files() {
         bail!(
-            "component '{}' is not directly owned by A3S ({:?})",
+            "component '{}' is not directly owned by Aster ({:?})",
             receipt.component_id,
             receipt.provenance
         );
@@ -440,12 +440,12 @@ fn unique_backup_path(active: &Path) -> PathBuf {
         .and_then(|value| value.to_str())
         .unwrap_or("component");
     for suffix in 0..u32::MAX {
-        let candidate = parent.join(format!(".{name}.a3s-backup-{suffix}"));
+        let candidate = parent.join(format!(".{name}.aster-backup-{suffix}"));
         if !candidate.exists() {
             return candidate;
         }
     }
-    parent.join(format!(".{name}.a3s-backup"))
+    parent.join(format!(".{name}.aster-backup"))
 }
 
 #[cfg(test)]

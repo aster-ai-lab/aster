@@ -5,8 +5,8 @@ use std::path::{Path, PathBuf};
 use std::ptr::null_mut;
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::AgentVsockEndpoint;
-use a3s_oci_core::CapabilityStatus;
+use aster_oci_agent_protocol::AgentVsockEndpoint;
+use aster_oci_core::CapabilityStatus;
 use tokio::time::{sleep, Instant};
 
 use crate::agent_socket::PRIVATE_TMP_ROOT;
@@ -295,14 +295,14 @@ mod tests {
     use std::path::Path;
     use std::process::{Command, Stdio};
 
-    use a3s_oci_agent_protocol::AgentVsockEndpoint;
-    use a3s_oci_core::HostPlatform;
+    use aster_oci_agent_protocol::AgentVsockEndpoint;
+    use aster_oci_core::HostPlatform;
 
     use super::{endpoint_directory, open_descriptor_inventory_for_pid, MacosHostCleanupTracker};
     use crate::agent_socket::PRIVATE_TMP_ROOT;
     use crate::{AgentVmSmokeReport, MacosAgentSocketListener};
 
-    const CHILD_ENV: &str = "A3S_OCI_TEST_HOST_CLEANUP_CHILD";
+    const CHILD_ENV: &str = "ASTER_OCI_TEST_HOST_CLEANUP_CHILD";
     const CHILD_TEST_NAME: &str = "host_cleanup::tests::isolated_cleanup_child";
 
     #[test]
@@ -361,7 +361,7 @@ mod tests {
             let directory = listener.directory().to_path_buf();
             let socket = listener.socket_path().to_path_buf();
             let unrelated_endpoint = tempfile::Builder::new()
-                .prefix("a3s-oci-agent-unrelated-")
+                .prefix("aster-oci-agent-unrelated-")
                 .tempdir_in(PRIVATE_TMP_ROOT)
                 .expect("create unrelated endpoint-shaped directory");
             drop(listener);

@@ -1,4 +1,4 @@
-//! Live dual-agent research-review composition against `.a3s/config.acl`.
+//! Live dual-agent research-review composition against `.aster/config.acl`.
 //!
 //! The main agent (real model) performs a bounded analysis turn whose events
 //! are captured as run evidence; the reviewer agent (real model, structured
@@ -11,8 +11,8 @@
 //! (which pins the substrate contracts with a mock reviewer executor).
 //!
 //! ```bash
-//! A3S_CONFIG_FILE=/abs/path/.a3s/config.acl \
-//!   cargo test -p a3s-code-core --features research \
+//! ASTER_CONFIG_FILE=/abs/path/.aster/config.acl \
+//!   cargo test -p aster-core --features research \
 //!   --test test_research_review_real_llm -- --ignored --nocapture \
 //!   --test-threads=1
 //! ```
@@ -24,21 +24,21 @@ mod support;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use a3s_code_core::capability::{
+use aster_core::capability::{
     CapabilityCeiling, CapabilityContribution, CapabilityDescriptor, CapabilityKind, CapabilitySet,
     CapabilitySource, CodeCatalogGeneration, GovernanceCapabilityCeiling, RunCapabilityBindingV1,
     Sha256Digest, UseCapabilityGeneration, UsePackageGeneration, WorkspaceCapabilityCeiling,
 };
-use a3s_code_core::evaluation::{
+use aster_core::evaluation::{
     AuxiliaryCapabilityProfileV1, AuxiliaryModeV1, AuxiliaryRunContextV1, AuxiliaryRunService,
     AuxiliaryRunSpecV1, EvaluationRecordV1, EvaluationResultSink, EvaluationResultV1,
     EvidenceReadRequestV1, ExecutionFactRecorder, ExecutionFrameV1, ExecutionTargetV1,
     InMemoryAuxiliaryRunService, InMemoryEvaluationResultStore, InMemoryExecutionFactJournal,
     RunEvidenceReader, StructuredAuxiliaryExecutor,
 };
-use a3s_code_core::llm::create_client_with_config;
-use a3s_code_core::llm::structured::{StructuredMode, StructuredRequest};
-use a3s_code_core::{
+use aster_core::llm::create_client_with_config;
+use aster_core::llm::structured::{StructuredMode, StructuredRequest};
+use aster_core::{
     Agent, AgentEvent, InMemoryRunStore, ResearchArtifactKindV1, ResearchProvenanceReceiptV1,
     ResearchReproducibilityV1, ResearchReviewBatchV1, ResearchReviewCategoryV1,
     ResearchReviewFindingV1, ResearchReviewSeverityV1, ResearchRunStatusV1, ResearchRunV1,
@@ -90,7 +90,7 @@ fn use_bound_capability() -> RunCapabilityBindingV1 {
         &set,
         WorkspaceCapabilityCeiling::all(),
         GovernanceCapabilityCeiling::none_required(),
-        a3s_code_core::capability::CapabilityExecutionCeiling::new(8, 4, None, None, None).unwrap(),
+        aster_core::capability::CapabilityExecutionCeiling::new(8, 4, None, None, None).unwrap(),
     )
     .unwrap();
     RunCapabilityBindingV1::from_set_and_ceiling(&set, &ceiling).unwrap()
@@ -161,7 +161,7 @@ fn review_request(context: &AuxiliaryRunContextV1) -> StructuredRequest {
 }
 
 /// Extract plain assistant text from a captured evidence envelope.
-fn plain_text(event: &a3s_code_core::EventEnvelopeV1) -> Option<String> {
+fn plain_text(event: &aster_core::EventEnvelopeV1) -> Option<String> {
     if event.event_type != "text_delta" && event.event_type != "end" {
         return None;
     }
@@ -190,7 +190,7 @@ fn category(value: &str) -> ResearchReviewCategoryV1 {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-#[ignore = "requires the model and credentials from .a3s/config.acl"]
+#[ignore = "requires the model and credentials from .aster/config.acl"]
 async fn real_reviewer_agent_reviews_real_main_run_with_provenance_binding() {
     let started = Instant::now();
     let mut config = load_pinned_layer_c_config();
@@ -211,8 +211,8 @@ async fn real_reviewer_agent_reviews_real_main_run_with_provenance_binding() {
 
     let agent = Agent::from_config(config.clone()).await.expect("agent");
     let mut permissions =
-        a3s_code_core::permissions::PermissionPolicy::new().allow_all(&["read", "ls", "grep"]);
-    permissions.default_decision = a3s_code_core::permissions::PermissionDecision::Deny;
+        aster_core::permissions::PermissionPolicy::new().allow_all(&["read", "ls", "grep"]);
+    permissions.default_decision = aster_core::permissions::PermissionDecision::Deny;
     let options = SessionOptions::new()
         .with_session_id("research-review-main")
         .with_model(model.clone())

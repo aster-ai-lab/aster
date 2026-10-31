@@ -256,27 +256,27 @@ mod tests {
 
         let cases = [
             serde_json::json!({
-                "protocol": "a3s.flow.native_ts.dependencies.v2",
+                "protocol": "aster.flow.native_ts.dependencies.v2",
                 "compilerIdentity": "test-compiler-v1",
                 "files": ["main.ts"]
             }),
             serde_json::json!({
-                "protocol": "a3s.flow.native_ts.dependencies.v1",
+                "protocol": "aster.flow.native_ts.dependencies.v1",
                 "compilerIdentity": "test-compiler-v1",
                 "files": ["shared.ts", "main.ts"]
             }),
             serde_json::json!({
-                "protocol": "a3s.flow.native_ts.dependencies.v1",
+                "protocol": "aster.flow.native_ts.dependencies.v1",
                 "compilerIdentity": "test-compiler-v1",
                 "files": ["../main.ts"]
             }),
             serde_json::json!({
-                "protocol": "a3s.flow.native_ts.dependencies.v1",
+                "protocol": "aster.flow.native_ts.dependencies.v1",
                 "compilerIdentity": "test-compiler-v1",
                 "files": ["shared.ts"]
             }),
             serde_json::json!({
-                "protocol": "a3s.flow.native_ts.dependencies.v1",
+                "protocol": "aster.flow.native_ts.dependencies.v1",
                 "compilerIdentity": "",
                 "files": ["main.ts"]
             }),

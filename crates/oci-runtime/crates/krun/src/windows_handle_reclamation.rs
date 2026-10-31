@@ -12,8 +12,8 @@ use std::io;
 use std::os::windows::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 
-use a3s_oci_agent_protocol::AGENT_RUNTIME_SHARE_TAG;
-use a3s_oci_core::CapabilityStatus;
+use aster_oci_agent_protocol::AGENT_RUNTIME_SHARE_TAG;
+use aster_oci_core::CapabilityStatus;
 use windows_sys::Win32::Storage::FileSystem::FILE_ATTRIBUTE_REPARSE_POINT;
 use windows_sys::Win32::System::Threading::{GetCurrentProcess, GetProcessHandleCount};
 
@@ -26,7 +26,7 @@ use crate::{
 };
 
 const MAX_ITERATIONS: u16 = 64;
-const WORKLOAD_TOKEN: &str = "a3s-oci-whpx-handle-reclamation-v1";
+const WORKLOAD_TOKEN: &str = "aster-oci-whpx-handle-reclamation-v1";
 const WINDOWS_RETURN_ON_EXIT_ENV: &str = "LIBKRUN_WINDOWS_RETURN_ON_EXIT";
 
 /// Run repeated complete WHPX VM entries without allowing process teardown to
@@ -220,7 +220,7 @@ fn run_cycle(
     };
     let console_file = console_directory.join(format!("{phase}.console.log"));
     let marker_name = format!(
-        ".a3s-oci-whpx-handle-reclamation-{}-{iteration}",
+        ".aster-oci-whpx-handle-reclamation-{}-{iteration}",
         std::process::id()
     );
     let marker = runtime_share.join(&marker_name);
@@ -253,7 +253,7 @@ fn run_cycle(
     }
 
     let endpoint_name = format!(
-        "a3s-oci-whpx-handle-reclamation-{}-{iteration}",
+        "aster-oci-whpx-handle-reclamation-{}-{iteration}",
         std::process::id()
     );
     let endpoint = match AgentVsockEndpoint::new(endpoint_name) {
@@ -283,9 +283,9 @@ fn run_cycle(
         return cycle_failed(sample, error.to_string());
     }
 
-    let marker_guest_path = format!("/run/a3s-oci-runtime/{marker_name}");
+    let marker_guest_path = format!("/run/aster-oci-runtime/{marker_name}");
     let command = format!(
-        "mkdir -p /run/a3s-oci-runtime && mount -t virtiofs {AGENT_RUNTIME_SHARE_TAG} /run/a3s-oci-runtime && printf '%s\\n' '{WORKLOAD_TOKEN}' > '{marker_guest_path}' && sync && printf '%s\\n' '{WORKLOAD_TOKEN}'"
+        "mkdir -p /run/aster-oci-runtime && mount -t virtiofs {AGENT_RUNTIME_SHARE_TAG} /run/aster-oci-runtime && printf '%s\\n' '{WORKLOAD_TOKEN}' > '{marker_guest_path}' && sync && printf '%s\\n' '{WORKLOAD_TOKEN}'"
     );
     let arguments = vec!["-c".to_string(), command];
     if let Err(error) = context.set_exec("/bin/sh", &arguments, &[]) {

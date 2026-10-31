@@ -91,7 +91,7 @@ fn test_compute_diff_id() {
 
 #[test]
 fn test_guest_metadata_overrides_host_uid_gid_and_mode_in_tar() {
-    use a3s_box_core::rootfs_metadata::{
+    use aster_box_core::rootfs_metadata::{
         RootfsEntryKind, RootfsMetadataEntry, RootfsMetadataManifest,
     };
     let rootfs = tempfile::TempDir::new().unwrap();
@@ -123,7 +123,7 @@ fn test_guest_metadata_overrides_host_uid_gid_and_mode_in_tar() {
 
 #[test]
 fn test_guest_metadata_preserves_hardlinks_without_duplicate_payloads() {
-    use a3s_box_core::rootfs_metadata::{
+    use aster_box_core::rootfs_metadata::{
         RootfsEntryKind, RootfsMetadataEntry, RootfsMetadataManifest,
     };
     let rootfs = tempfile::TempDir::new().unwrap();
@@ -163,7 +163,7 @@ fn test_guest_metadata_preserves_hardlinks_without_duplicate_payloads() {
 
 #[test]
 fn test_guest_metadata_rejects_parent_traversal() {
-    use a3s_box_core::rootfs_metadata::{
+    use aster_box_core::rootfs_metadata::{
         RootfsEntryKind, RootfsMetadataEntry, RootfsMetadataManifest,
     };
     let rootfs = tempfile::TempDir::new().unwrap();
@@ -187,7 +187,7 @@ fn test_guest_metadata_rejects_parent_traversal() {
 
 #[test]
 fn test_guest_metadata_rejects_symlink_parent_without_reading_outside_rootfs() {
-    use a3s_box_core::rootfs_metadata::{
+    use aster_box_core::rootfs_metadata::{
         RootfsEntryKind, RootfsMetadataEntry, RootfsMetadataManifest,
     };
 
@@ -227,7 +227,7 @@ fn test_guest_metadata_rejects_symlink_parent_without_reading_outside_rootfs() {
 
 #[test]
 fn guest_metadata_preserves_raw_linux_symlink_target_bytes() {
-    use a3s_box_core::rootfs_metadata::{
+    use aster_box_core::rootfs_metadata::{
         RootfsEntryKind, RootfsMetadataEntry, RootfsMetadataManifest,
     };
 
@@ -269,17 +269,17 @@ fn guest_metadata_preserves_raw_linux_symlink_target_bytes() {
 #[test]
 fn reserved_metadata_path_is_detected_after_curdir_normalization() {
     assert!(
-        a3s_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(Path::new(
-            "./.a3s_rootfs_metadata_v1.json"
+        aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(Path::new(
+            "./.aster_rootfs_metadata_v1.json"
         ))
     );
     assert!(
-        a3s_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(Path::new(
-            ".a3s_rootfs_metadata_v1.previous.json"
+        aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(Path::new(
+            ".aster_rootfs_metadata_v1.previous.json"
         ))
     );
     assert!(
-        a3s_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(Path::new("init-rust.log"))
+        aster_box_core::rootfs_metadata::is_runtime_internal_rootfs_path(Path::new("init-rust.log"))
     );
 }
 
@@ -304,7 +304,7 @@ fn windows_guest_paths_reject_aliases_and_reserved_names() {
 #[cfg(windows)]
 #[test]
 fn windows_guest_metadata_rejects_case_equivalent_duplicates() {
-    use a3s_box_core::rootfs_metadata::{
+    use aster_box_core::rootfs_metadata::{
         RootfsEntryKind, RootfsMetadataEntry, RootfsMetadataManifest,
     };
 
@@ -336,7 +336,7 @@ fn windows_guest_metadata_rejects_case_equivalent_duplicates() {
 #[cfg(windows)]
 #[test]
 fn windows_guest_metadata_rejects_final_directory_reparse_point() {
-    use a3s_box_core::rootfs_metadata::{
+    use aster_box_core::rootfs_metadata::{
         RootfsEntryKind, RootfsMetadataEntry, RootfsMetadataManifest,
     };
 
@@ -387,7 +387,7 @@ fn offline_commit_rejects_transitional_state_and_live_pid() {
 #[test]
 fn running_sandbox_selects_host_rootfs_commit() {
     use crate::test_helpers::fixtures::make_record;
-    use a3s_box_core::ExecutionIsolation;
+    use aster_box_core::ExecutionIsolation;
 
     let mut sandbox = make_record("id", "sandbox", "running", Some(std::process::id()));
     sandbox.isolation = ExecutionIsolation::Sandbox;
@@ -403,7 +403,7 @@ fn running_sandbox_selects_host_rootfs_commit() {
 #[test]
 fn paused_sandbox_selects_host_rootfs_commit() {
     use crate::test_helpers::fixtures::make_record;
-    use a3s_box_core::ExecutionIsolation;
+    use aster_box_core::ExecutionIsolation;
 
     let mut sandbox = make_record("id", "sandbox", "paused", Some(std::process::id()));
     sandbox.isolation = ExecutionIsolation::Sandbox;
@@ -419,7 +419,7 @@ fn paused_sandbox_selects_host_rootfs_commit() {
 #[test]
 fn paused_microvm_commit_fails_closed() {
     use crate::test_helpers::fixtures::make_record;
-    use a3s_box_core::ExecutionIsolation;
+    use aster_box_core::ExecutionIsolation;
 
     let mut microvm = make_record("id", "vm", "paused", Some(std::process::id()));
     microvm.isolation = ExecutionIsolation::Microvm;
@@ -432,10 +432,10 @@ fn paused_microvm_commit_fails_closed() {
 #[test]
 fn stopped_managed_sandbox_selects_host_rootfs_commit() {
     use crate::test_helpers::fixtures::make_record;
-    use a3s_box_core::{
+    use aster_box_core::{
         BoxConfig, CreateExecutionRequest, ExecutionGeneration, ExecutionIsolation, OperationId,
     };
-    use a3s_box_runtime::ManagedExecutionMetadata;
+    use aster_box_runtime::ManagedExecutionMetadata;
     use std::collections::BTreeMap;
 
     let id = "11111111-1111-4111-8111-111111111111";
@@ -471,7 +471,7 @@ fn stopped_managed_sandbox_selects_host_rootfs_commit() {
 #[test]
 fn running_microvm_selects_guest_archive_commit() {
     use crate::test_helpers::fixtures::make_record;
-    use a3s_box_core::ExecutionIsolation;
+    use aster_box_core::ExecutionIsolation;
 
     let mut microvm = make_record("id", "vm", "running", Some(std::process::id()));
     microvm.isolation = ExecutionIsolation::Microvm;

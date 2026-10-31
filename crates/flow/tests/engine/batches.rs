@@ -7,7 +7,7 @@ impl FlowRuntime for BatchStepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         let user = ctx.step_output("load-user");
         let orders = ctx.step_output("load-orders");
@@ -33,7 +33,7 @@ impl FlowRuntime for BatchStepRuntime {
         }
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         match invocation.step_name.as_str() {
             "loadUser" => Ok(json!({ "id": invocation.input["userId"], "name": "Ada" })),
             "loadOrders" => Ok(json!([{ "id": "o1" }, { "id": "o2" }])),
@@ -80,7 +80,7 @@ impl FlowRuntime for ConcurrentBatchStepRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.step_output("alpha").is_some() && ctx.step_output("beta").is_some() {
             return Ok(ctx.complete(json!({ "done": true })));
@@ -91,7 +91,7 @@ impl FlowRuntime for ConcurrentBatchStepRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let in_flight = self.in_flight.fetch_add(1, Ordering::SeqCst) + 1;
         self.maximum_in_flight
             .fetch_max(in_flight, Ordering::SeqCst);
@@ -138,7 +138,7 @@ impl FlowRuntime for HangingBatchSiblingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         Ok(ctx.schedule_steps(vec![
             ctx.step("fast", "partialBatch", json!({})),
@@ -146,7 +146,7 @@ impl FlowRuntime for HangingBatchSiblingRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         if invocation.step_id == "hanging" {
             return pending().await;
         }
@@ -218,7 +218,7 @@ impl FlowRuntime for FailingBatchWithSlowSiblingRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_steps(vec![
             invocation.context().step_with_retry(
                 "fail",
@@ -235,7 +235,7 @@ impl FlowRuntime for FailingBatchWithSlowSiblingRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         self.rendezvous.wait().await;
         if invocation.step_id == "fail" {
             return Err(FlowError::Runtime("intentional batch failure".to_string()));
@@ -290,7 +290,7 @@ impl FlowRuntime for MixedRetryBatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_steps(vec![
             invocation.context().step_with_retry(
                 "fail",
@@ -307,7 +307,7 @@ impl FlowRuntime for MixedRetryBatchRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         if invocation.step_id == "fail" {
             // The observer releases this barrier only after the delayed
             // sibling's retry event has committed. This makes the regression
@@ -396,7 +396,7 @@ impl FlowRuntime for PanickingBatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(invocation.context().schedule_steps(vec![
             invocation
                 .context()
@@ -407,7 +407,7 @@ impl FlowRuntime for PanickingBatchRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         if invocation.step_id == "panic" {
             panic!("intentional concurrent batch task panic");
         }
@@ -455,7 +455,7 @@ impl FlowRuntime for DelayedConcurrentBatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.step_output("alpha").is_some() && ctx.step_output("beta").is_some() {
             return Ok(ctx.complete(json!({ "done": true })));
@@ -467,7 +467,7 @@ impl FlowRuntime for DelayedConcurrentBatchRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempts = match invocation.step_id.as_str() {
             "alpha" => &self.alpha_attempts,
             "beta" => &self.beta_attempts,
@@ -541,7 +541,7 @@ impl FlowRuntime for StaggeredDelayedBatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         if ctx.step_output("alpha").is_some() && ctx.step_output("beta").is_some() {
             return Ok(ctx.complete(json!({ "done": true })));
@@ -562,7 +562,7 @@ impl FlowRuntime for StaggeredDelayedBatchRuntime {
         ]))
     }
 
-    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         let attempts = match invocation.step_id.as_str() {
             "alpha" => &self.alpha_attempts,
             "beta" => &self.beta_attempts,
@@ -626,7 +626,7 @@ impl FlowRuntime for DuplicateStepBatchRuntime {
     async fn run_workflow(
         &self,
         invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         let ctx = invocation.context();
         Ok(ctx.schedule_steps(vec![
             ctx.step("duplicate", "first", json!({})),
@@ -634,7 +634,7 @@ impl FlowRuntime for DuplicateStepBatchRuntime {
         ]))
     }
 
-    async fn run_step(&self, _invocation: StepInvocation) -> a3s_flow::Result<serde_json::Value> {
+    async fn run_step(&self, _invocation: StepInvocation) -> aster_flow::Result<serde_json::Value> {
         unreachable!("duplicate batch should fail before running steps")
     }
 }

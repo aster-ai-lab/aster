@@ -3,7 +3,7 @@
 //! codec's reciprocal products. Encoded bytes reuse existing typed storage;
 //! they do not remove the quantization or implicitly round its input to BF16.
 
-use a3s_power::error::Result;
+use aster_power::error::Result;
 use candle_core::{DType, Tensor};
 use tokio_util::sync::CancellationToken;
 

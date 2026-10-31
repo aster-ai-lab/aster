@@ -358,7 +358,7 @@ mod tests {
     #[tokio::test]
     async fn missing_executable_is_a_typed_spawn_error() {
         let command = LanguageServerCommand {
-            program: PathBuf::from("a3s-code-missing-language-server-executable"),
+            program: PathBuf::from("aster-missing-language-server-executable"),
             args: Vec::new(),
             env: BTreeMap::new(),
         };

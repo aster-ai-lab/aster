@@ -8,8 +8,8 @@
 //! Format follows the pinned MIT TileKernels torch/cast.py reference at
 //! c1cf914a82e6901c679445f872051ce44ac2cc63 and DeepInfer's index-cache profile.
 
-use a3s_power::error::Result;
-use a3s_power::inference::InferenceLimits;
+use aster_power::error::Result;
+use aster_power::inference::InferenceLimits;
 use candle_core::{DType, Device, Tensor};
 use tokio_util::sync::CancellationToken;
 
@@ -123,7 +123,7 @@ fn encode_rows(
 
 fn check_cancel(cancellation: &CancellationToken) -> Result<()> {
     if cancellation.is_cancelled() {
-        return Err(a3s_power::error::PowerError::InferenceCancelled);
+        return Err(aster_power::error::PowerError::InferenceCancelled);
     }
     Ok(())
 }

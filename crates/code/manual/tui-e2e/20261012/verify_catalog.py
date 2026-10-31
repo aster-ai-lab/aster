@@ -82,7 +82,7 @@ def main():
             p in inventory["source_hashes"] for f in features for p in f["source"]
         ),
     }
-    registry = root / "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs"
+    registry = root / "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs"
     checks["builtin_registry_count_matches"] = sum(
         "Arc::new(" in line for line in registry.read_text().split("#[cfg(test)]")[0].splitlines()
     ) == len(inventory["commands"])

@@ -1,8 +1,8 @@
 //! Prompt-free managed inference lifecycle evidence.
 //!
 //! These events are Gateway's durable spool payload bytes. After Cloud unwraps
-//! `a3s.gateway.usage-batch.v1`, Inference validates each payload against
-//! `a3s.gateway.usage-lifecycle.v2` (and still accepts v1 records replayed
+//! `aster.gateway.usage-batch.v1`, Inference validates each payload against
+//! `aster.gateway.usage-lifecycle.v2` (and still accepts v1 records replayed
 //! from older spools) before ledger insertion. Keep encode shape aligned with
 //! that contract; do not embed prompts or credential secrets.
 
@@ -23,7 +23,7 @@ use std::task::{Context, Poll};
 use std::time::Instant;
 use uuid::Uuid;
 
-const LIFECYCLE_SCHEMA: &str = "a3s.gateway.usage-lifecycle.v2";
+const LIFECYCLE_SCHEMA: &str = "aster.gateway.usage-lifecycle.v2";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]

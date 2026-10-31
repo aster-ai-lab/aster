@@ -20,21 +20,21 @@ if [[ -z "${OUT_ROOT}" ]]; then
 fi
 
 resolve_tools() {
-  if [[ -n "${A3S_USE_REGISTRY_TOOLS_BIN:-}" && -x "${A3S_USE_REGISTRY_TOOLS_BIN}" ]]; then
-    printf '%s\n' "${A3S_USE_REGISTRY_TOOLS_BIN}"
+  if [[ -n "${ASTER_USE_REGISTRY_TOOLS_BIN:-}" && -x "${ASTER_USE_REGISTRY_TOOLS_BIN}" ]]; then
+    printf '%s\n' "${ASTER_USE_REGISTRY_TOOLS_BIN}"
     return 0
   fi
   local candidate repo
   repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
   for candidate in \
-    "${repo}/crates/use/target/release/a3s-use-registry-tools" \
-    "${repo}/crates/use/target/debug/a3s-use-registry-tools"; do
+    "${repo}/crates/use/target/release/aster-use-registry-tools" \
+    "${repo}/crates/use/target/debug/aster-use-registry-tools"; do
     if [[ -x "${candidate}" ]]; then
       printf '%s\n' "${candidate}"
       return 0
     fi
   done
-  echo "error: set A3S_USE_REGISTRY_TOOLS_BIN or build a3s-use-registry-tools" >&2
+  echo "error: set ASTER_USE_REGISTRY_TOOLS_BIN or build aster-use-registry-tools" >&2
   exit 1
 }
 
@@ -43,8 +43,8 @@ mkdir -p "${OUT_ROOT}/packages/mock-alpha/skills/alpha"
 mkdir -p "${OUT_ROOT}/packages/mock-beta/skills/beta"
 mkdir -p "${OUT_ROOT}/packages/mock-echo/tools"
 
-cat >"${OUT_ROOT}/packages/mock-alpha/a3s-use-extension.acl" <<'EOF'
-extension "a3s/mock-alpha" {
+cat >"${OUT_ROOT}/packages/mock-alpha/aster-use-extension.acl" <<'EOF'
+extension "aster/mock-alpha" {
   schema_version = 3
   version        = "0.1.0"
   route          = "mock-alpha"
@@ -52,7 +52,7 @@ extension "a3s/mock-alpha" {
   actions        = ["read"]
 
   repository {
-    url      = "https://github.com/A3S-Lab/Use-Registry"
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
     revision = "0123456789abcdef0123456789abcdef01234567"
   }
 
@@ -77,8 +77,8 @@ description: Mock skill package alpha for Registry transport gates
 # Alpha
 EOF
 
-cat >"${OUT_ROOT}/packages/mock-beta/a3s-use-extension.acl" <<'EOF'
-extension "a3s/mock-beta" {
+cat >"${OUT_ROOT}/packages/mock-beta/aster-use-extension.acl" <<'EOF'
+extension "aster/mock-beta" {
   schema_version = 3
   version        = "0.1.0"
   route          = "mock-beta"
@@ -86,7 +86,7 @@ extension "a3s/mock-beta" {
   actions        = ["read"]
 
   repository {
-    url      = "https://github.com/A3S-Lab/Use-Registry"
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
     revision = "0123456789abcdef0123456789abcdef01234567"
   }
 
@@ -111,15 +111,15 @@ description: Mock skill package beta for Registry transport gates
 # Beta
 EOF
 
-cat >"${OUT_ROOT}/packages/mock-echo/a3s-use-extension.acl" <<'EOF'
-extension "a3s/mock-echo" {
+cat >"${OUT_ROOT}/packages/mock-echo/aster-use-extension.acl" <<'EOF'
+extension "aster/mock-echo" {
   schema_version = 3
   version        = "0.1.0"
   requires_use   = ">=0.3.0, <0.4.0"
   actions        = ["read", "execute"]
 
   repository {
-    url      = "https://github.com/A3S-Lab/Use-Registry"
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
     revision = "0123456789abcdef0123456789abcdef01234567"
   }
 
@@ -150,8 +150,8 @@ chmod 755 "${OUT_ROOT}/packages/mock-echo/tools/echo"
 # --- mock-compose: Tool + MCP + OKF + Skill + UI that must cooperate ----------
 mkdir -p "${OUT_ROOT}/packages/mock-compose/"{tools,mcp,okf/domain/concepts,skills/compose,ui/compose}
 
-cat >"${OUT_ROOT}/packages/mock-compose/a3s-use-extension.acl" <<'EOF'
-extension "a3s/mock-compose" {
+cat >"${OUT_ROOT}/packages/mock-compose/aster-use-extension.acl" <<'EOF'
+extension "aster/mock-compose" {
   schema_version = 3
   version        = "0.1.0"
   route          = "mock-compose"
@@ -159,7 +159,7 @@ extension "a3s/mock-compose" {
   actions        = ["read", "execute"]
 
   repository {
-    url      = "https://github.com/A3S-Lab/Use-Registry"
+    url      = "https://github.com/aster-ai-lab/Use-Registry"
     revision = "0123456789abcdef0123456789abcdef01234567"
   }
 
@@ -275,7 +275,7 @@ EOF
 
 cat >"${OUT_ROOT}/ceiling.json" <<'EOF'
 {
-  "schema": "a3s.use.plugin-permissions.v1",
+  "schema": "aster.use.plugin-permissions.v1",
   "surfaces": [
     {
       "surface": {"kind": "tool", "id": "echo"},
@@ -302,7 +302,7 @@ EOF
 
 cat >"${OUT_ROOT}/compose-ceiling.json" <<'EOF'
 {
-  "schema": "a3s.use.plugin-permissions.v1",
+  "schema": "aster.use.plugin-permissions.v1",
   "surfaces": [
     {
       "surface": {"kind": "mcp", "id": "context"},
@@ -344,7 +344,7 @@ cat >"${OUT_ROOT}/compose-ceiling.json" <<'EOF'
 EOF
 
 cat >"${OUT_ROOT}/admissions.acl" <<'EOF'
-admission "a3s/mock-alpha" {
+admission "aster/mock-alpha" {
   package_directory = "packages/mock-alpha"
   channel           = "stable"
   target            = "any"
@@ -355,7 +355,7 @@ admission "a3s/mock-alpha" {
   categories        = ["testing"]
 }
 
-admission "a3s/mock-beta" {
+admission "aster/mock-beta" {
   package_directory = "packages/mock-beta"
   channel           = "stable"
   target            = "any"
@@ -366,7 +366,7 @@ admission "a3s/mock-beta" {
   categories        = ["testing"]
 }
 
-admission "a3s/mock-echo" {
+admission "aster/mock-echo" {
   package_directory  = "packages/mock-echo"
   channel            = "stable"
   target             = "any"
@@ -378,7 +378,7 @@ admission "a3s/mock-echo" {
   permission_ceiling = "ceiling.json"
 }
 
-admission "a3s/mock-compose" {
+admission "aster/mock-compose" {
   package_directory  = "packages/mock-compose"
   channel            = "stable"
   target             = "any"
@@ -410,10 +410,10 @@ print(json.dumps({
   "rootSha256": os.environ["ROOT_SHA"],
   "registry": os.path.join(root, "registry"),
   "packages": [
-    "a3s/mock-alpha",
-    "a3s/mock-beta",
-    "a3s/mock-echo",
-    "a3s/mock-compose",
+    "aster/mock-alpha",
+    "aster/mock-beta",
+    "aster/mock-echo",
+    "aster/mock-compose",
   ],
 }))
 '

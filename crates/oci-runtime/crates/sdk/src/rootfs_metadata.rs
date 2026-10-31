@@ -3,11 +3,11 @@
 use serde::{Deserialize, Serialize};
 
 /// Annotation requesting guest-side replay of a portable metadata manifest.
-pub const PORTABLE_ROOTFS_METADATA_ANNOTATION: &str = "dev.a3s.oci.rootfs-metadata";
+pub const PORTABLE_ROOTFS_METADATA_ANNOTATION: &str = "dev.aster.oci.rootfs-metadata";
 /// Current portable rootfs metadata schema and annotation value.
-pub const PORTABLE_ROOTFS_METADATA_SCHEMA_V1: &str = "a3s.oci.rootfs-metadata.v1";
+pub const PORTABLE_ROOTFS_METADATA_SCHEMA_V1: &str = "aster.oci.rootfs-metadata.v1";
 /// Fixed manifest file carried inside a prepared relative rootfs.
-pub const PORTABLE_ROOTFS_METADATA_FILE: &str = ".a3s-oci-rootfs-metadata.v1.json";
+pub const PORTABLE_ROOTFS_METADATA_FILE: &str = ".aster-oci-rootfs-metadata.v1.json";
 /// Maximum encoded portable rootfs metadata accepted by the guest executor.
 pub const PORTABLE_ROOTFS_METADATA_MAX_BYTES: u64 = 16 * 1024 * 1024;
 /// Maximum number of entries accepted in one portable rootfs metadata manifest.

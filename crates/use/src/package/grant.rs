@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use a3s_use_core::{
+use aster_use_core::{
     PlanActor, PlanAuthority, PlanEnforcementProfile, PlanPackageChangeKind, PlanPolicyDecision,
     PlanScopeKind, PlannedPackageState, PlannedWorkspaceGrantChange, PlannedWorkspaceImpact,
     PluginGrantConfirmation, PluginOperationConfirmation, PluginOperationPlan,
@@ -10,7 +10,7 @@ use a3s_use_core::{
     PLUGIN_GRANT_CONFIRMATION_SCHEMA, PLUGIN_OPERATION_CONFIRMATION_SCHEMA,
     PLUGIN_WORKSPACE_GRANT_CHANGE_SET_SCHEMA, PLUGIN_WORKSPACE_GRANT_PROPOSAL_SCHEMA,
 };
-use a3s_use_extension::{WorkspaceGrantCandidateCeiling, WorkspaceGrantStore};
+use aster_use_extension::{WorkspaceGrantCandidateCeiling, WorkspaceGrantStore};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -19,7 +19,7 @@ use crate::plugin_lifecycle::PluginGrantLifecycleUnit;
 
 use super::package_manager_error;
 
-const STANDALONE_POLICY: &str = "a3s-use-standalone-package-policy-v1";
+const STANDALONE_POLICY: &str = "aster-use-standalone-package-policy-v1";
 
 /// Confirmation evidence returned by a trusted user- or host-facing adapter.
 ///
@@ -394,7 +394,7 @@ fn plan_workspace_grants_with_validation(
             && (matches!(
                 package.change,
                 PlanPackageChangeKind::Remove | PlanPackageChangeKind::Replace
-            ) || (draft.action == a3s_use_core::PluginOperationAction::Disable
+            ) || (draft.action == aster_use_core::PluginOperationAction::Disable
                 && package.change == PlanPackageChangeKind::Retain))
             && package
                 .before
@@ -404,7 +404,7 @@ fn plan_workspace_grants_with_validation(
             && (matches!(
                 package.change,
                 PlanPackageChangeKind::Add | PlanPackageChangeKind::Replace
-            ) || (draft.action == a3s_use_core::PluginOperationAction::Enable
+            ) || (draft.action == aster_use_core::PluginOperationAction::Enable
                 && package.change == PlanPackageChangeKind::Retain))
             && package
                 .after
@@ -484,7 +484,7 @@ fn plan_workspace_grants_with_validation(
     change_set.validate()?;
     draft
         .workspace_impacts
-        .push(a3s_use_core::PlannedWorkspaceImpact {
+        .push(aster_use_core::PlannedWorkspaceImpact {
             scope_id: binding.scope.id.clone(),
             grant_before_digest: Some(before_snapshot_digest),
             grant_after_digest: Some(change_set.descriptor_digest()?),
@@ -569,13 +569,13 @@ pub fn bind_package_grants(
     Ok(PackageGrantPlan { proposals })
 }
 
-fn grant_enablement(action: a3s_use_core::PluginOperationAction) -> (bool, bool) {
+fn grant_enablement(action: aster_use_core::PluginOperationAction) -> (bool, bool) {
     match action {
-        a3s_use_core::PluginOperationAction::Install => (false, true),
-        a3s_use_core::PluginOperationAction::Upgrade => (true, true),
-        a3s_use_core::PluginOperationAction::Uninstall => (true, false),
-        a3s_use_core::PluginOperationAction::Enable => (false, true),
-        a3s_use_core::PluginOperationAction::Disable => (true, false),
+        aster_use_core::PluginOperationAction::Install => (false, true),
+        aster_use_core::PluginOperationAction::Upgrade => (true, true),
+        aster_use_core::PluginOperationAction::Uninstall => (true, false),
+        aster_use_core::PluginOperationAction::Enable => (false, true),
+        aster_use_core::PluginOperationAction::Disable => (true, false),
     }
 }
 
@@ -613,7 +613,7 @@ pub(super) fn reconstruct_planned_workspace_grants(
 ) -> UseResult<Option<PlannedWorkspaceGrantOperation>> {
     plan.validate()?;
     let mut draft = PluginOperationPlanDraft {
-        schema: a3s_use_core::PLUGIN_OPERATION_PLAN_DRAFT_SCHEMA_V3.to_owned(),
+        schema: aster_use_core::PLUGIN_OPERATION_PLAN_DRAFT_SCHEMA_V3.to_owned(),
         action: plan.action,
         package_id: plan.package_id.clone(),
         component_id: plan.component_id.clone(),
@@ -758,7 +758,7 @@ fn expected_grant_packages(plan: &PluginOperationPlan) -> BTreeSet<&str> {
                 && (matches!(
                     package.change,
                     PlanPackageChangeKind::Remove | PlanPackageChangeKind::Replace
-                ) || (plan.action == a3s_use_core::PluginOperationAction::Disable
+                ) || (plan.action == aster_use_core::PluginOperationAction::Disable
                     && package.change == PlanPackageChangeKind::Retain))
                 && package
                     .before
@@ -768,7 +768,7 @@ fn expected_grant_packages(plan: &PluginOperationPlan) -> BTreeSet<&str> {
                     && (matches!(
                         package.change,
                         PlanPackageChangeKind::Add | PlanPackageChangeKind::Replace
-                    ) || (plan.action == a3s_use_core::PluginOperationAction::Enable
+                    ) || (plan.action == aster_use_core::PluginOperationAction::Enable
                         && package.change == PlanPackageChangeKind::Retain))
                     && package
                         .after
@@ -791,7 +791,7 @@ fn candidate_ceilings(
                 && (matches!(
                     package.change,
                     PlanPackageChangeKind::Add | PlanPackageChangeKind::Replace
-                ) || (plan.action == a3s_use_core::PluginOperationAction::Enable
+                ) || (plan.action == aster_use_core::PluginOperationAction::Enable
                     && package.change == PlanPackageChangeKind::Retain))
                 && package
                     .after
@@ -833,11 +833,11 @@ fn validate_workspace_impact(plan: &PluginOperationPlan) -> UseResult<()> {
 
 fn expected_enablement(plan: &PluginOperationPlan) -> (bool, bool) {
     match plan.action {
-        a3s_use_core::PluginOperationAction::Install => (false, true),
-        a3s_use_core::PluginOperationAction::Upgrade => (true, true),
-        a3s_use_core::PluginOperationAction::Uninstall => (true, false),
-        a3s_use_core::PluginOperationAction::Enable => (false, true),
-        a3s_use_core::PluginOperationAction::Disable => (true, false),
+        aster_use_core::PluginOperationAction::Install => (false, true),
+        aster_use_core::PluginOperationAction::Upgrade => (true, true),
+        aster_use_core::PluginOperationAction::Uninstall => (true, false),
+        aster_use_core::PluginOperationAction::Enable => (false, true),
+        aster_use_core::PluginOperationAction::Disable => (true, false),
     }
 }
 

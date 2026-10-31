@@ -1,4 +1,4 @@
-# a3s-code 9.0.0 completion roadmap
+# aster 9.0.0 completion roadmap
 
 > Historical upstream record. Foreign-language SDK results and external publishing
 > references do not describe this repository's Rust/ACP delivery or qualify its current release.
@@ -20,9 +20,9 @@ the repository's own definition of done.
 ## 0. First principles
 
 1. **The product delta is control, not features.** 9.0.0 exists to make the
-   immutable fact log the only coding control source (`a3s-effect`
+   immutable fact log the only coding control source (`aster-effect`
    `ingest_coding` / `resume_coding`). Everything else is either support
-   (a3s-vec 0.1.8 FTS) or out of cut ([Unreleased] Apofasi).
+   (aster-vec 0.1.8 FTS) or out of cut ([Unreleased] Apofasi).
 2. **Labels are not completion.** Version strings in `Cargo.toml` and a
    CHANGELOG section do not ship a channel. crates.io / npm / GitHub Release /
    docs line / tag do.
@@ -46,14 +46,14 @@ the repository's own definition of done.
 
 | Fact | Evidence |
 | --- | --- |
-| Fact-log control implemented | `core/src/fact_control.rs`, CHANGELOG `[9.0.0]`, `a3s-effect` |
+| Fact-log control implemented | `core/src/fact_control.rs`, CHANGELOG `[9.0.0]`, `aster-effect` |
 | Versions bumped to 9.0.0 | Core / TUI / Node / Python / Go bridge Cargo + package metadata |
 | Tip RC | `15d2a863` (L2 SessionClosed→Closed coverage close on top of `b8a13494` / `ee8f68ad` L5/L6) |
-| L0/L1 + L5 + L6 on tip | harness-convergence PASS; Layer C `/tmp/a3s-layer-c-9.0.0-tip/FINAL.txt` `LAYER_C_PASS`; L6 Actions `36092780724` / `36122389323` |
+| L0/L1 + L5 + L6 on tip | harness-convergence PASS; Layer C `/tmp/aster-layer-c-9.0.0-tip/FINAL.txt` `LAYER_C_PASS`; L6 Actions `36092780724` / `36122389323` |
 | Integrated-use ledger | Refreshed 2026-09-25 for tip; Enterprise GA still not claimed |
-| L2 F-kernel cov | **PASS** — `/tmp/a3s-llvm-cov-f95/FINAL.txt` `ALL_F_TABLE_KERNELS_GE_95_PASS scored=42`; `agent_protocol_harness.rs` **95.16%** |
-| L8 §7 9.0.0 pins | **PASS (hermetic)** — fact_log 34/34; effect park + tool_round_cap; bm25 a3s-vec FTS 17/17 |
-| L7 Harbor / CAR / DM | End-state A (channel release). Tip `b91462d3`: L0–L6 + L8 PASS; Layer C PASS (`/tmp/a3s-layer-c-b91462d3`). **DM-PROD1 closed**: host pack `/tmp/dm-prod1-host-be467457` (all seven dimensions, `HYGIENE_OK`). **TB-QUAL1 waived by product decision (2026-09-26)**; supporting diagnostic only (job `2026-09-26__02-14-59`, native `verifier_result` retained); full `-k 5` job stopped at 3/330 trials. CAR-01/03/04/05 out of scope: A3S Cloud retired by product decision (2026-09-26). The TB waiver and uncertified CAR forbid the Enterprise GA claim. |
+| L2 F-kernel cov | **PASS** — `/tmp/aster-llvm-cov-f95/FINAL.txt` `ALL_F_TABLE_KERNELS_GE_95_PASS scored=42`; `agent_protocol_harness.rs` **95.16%** |
+| L8 §7 9.0.0 pins | **PASS (hermetic)** — fact_log 34/34; effect park + tool_round_cap; bm25 aster-vec FTS 17/17 |
+| L7 Harbor / CAR / DM | End-state A (channel release). Tip `b91462d3`: L0–L6 + L8 PASS; Layer C PASS (`/tmp/aster-layer-c-b91462d3`). **DM-PROD1 closed**: host pack `/tmp/dm-prod1-host-be467457` (all seven dimensions, `HYGIENE_OK`). **TB-QUAL1 waived by product decision (2026-09-26)**; supporting diagnostic only (job `2026-09-26__02-14-59`, native `verifier_result` retained); full `-k 5` job stopped at 3/330 trials. CAR-01/03/04/05 out of scope: Aster Cloud retired by product decision (2026-09-26). The TB waiver and uncertified CAR forbid the Enterprise GA claim. |
 | `v9.0.0` tag / Release | Historical upstream multi-channel publication from `a3d86343` (release run `36208896307`); foreign SDKs and registry publishing are excluded from this repository |
 | Docs site | Current line `docs/v9.0.0`; `v8.7.0` was tagged but never published and has no archive |
 | Out of 9.0.0 CHANGELOG body | Apofasi typed decisions live under `[Unreleased]` |
@@ -147,7 +147,7 @@ RC.
 | L0/L1 | `just harness-convergence-check` + local-code lib | FINAL / CI |
 | L3 | Feature suites for published Cargo set | advanced-integ / L3 FINAL |
 | L4 | Node `npm test`, Python pytest, Go `test ./...`, alignment | SDK logs |
-| L5 | `A3S_TEST_MODEL=boyue/bailian/deepseek-v4-flash just layer-c-live-e2e` | `LAYER_C_PASS` on **RC** SHA |
+| L5 | `ASTER_TEST_MODEL=boyue/bailian/deepseek-v4-flash just layer-c-live-e2e` | `LAYER_C_PASS` on **RC** SHA |
 | Ledger | Refresh CAPABILITY_INTEGRATED_USE_LEDGER for RC | dated PASS |
 | L6 | `gh workflow run performance.yml` + hermetic-integrations on RC | digests in PERFORMANCE_QUALIFICATION |
 
@@ -169,7 +169,7 @@ L5/L6 cells updated to RC digests.
 | **9.0.0 park-until-fact** | Confirm/question not timer/oneshot | park suites |
 | **9.0.0 resume tool-once** | Missing tool result runs once | resume hermetic |
 | **9.0.0 empty-tool cap** | Cap is empty tool list | tool_round_cap |
-| **9.0.0 a3s-vec FTS** | `a3s_vec_fts_v1`; old zvec gens rebuild | FTS generation tests |
+| **9.0.0 aster-vec FTS** | `aster_vec_fts_v1`; old zvec gens rebuild | FTS generation tests |
 
 3. Confirm prior §7 pins (8.5.x / 8.6.x / serve absence) still green on RC.
 
@@ -291,7 +291,7 @@ ENTERPRISE_GA_E2E_PLAN       ──► GA board + L7 fork rules
 CAPABILITY_INTEGRATED_USE    ──► E+E+I ledger for RC
 PERFORMANCE_QUALIFICATION    ──► L6 digest sink
 HARNESS_CONVERGENCE          ──► L7 receipt sink
-a3s-effect README            ──► control-model axioms behind C1
+aster-effect README            ──► control-model axioms behind C1
 CHANGELOG [9.0.0]            ──► shipped product claims
 ```
 

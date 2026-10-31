@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use a3s_oci_sdk::{ErrorCode, IoMode, ProcessIo, TerminalSize};
+use aster_oci_sdk::{ErrorCode, IoMode, ProcessIo, TerminalSize};
 use tempfile::tempdir;
 
 use super::{prepare_container_init, RootfsScope};
@@ -190,7 +190,7 @@ fn prepared_init_reloads_terminal_bundle_with_forwarded_process_io() {
 
 #[tokio::test]
 async fn descriptor_pinned_rootfs_separates_mountpoint_from_descriptor_access() {
-    use a3s_oci_agent_protocol::GuestPath;
+    use aster_oci_agent_protocol::GuestPath;
 
     use crate::executor::bundle_scope::BundleDirectoryScope;
 
@@ -237,7 +237,7 @@ async fn descriptor_pinned_rootfs_separates_mountpoint_from_descriptor_access() 
 
 #[tokio::test]
 async fn descriptor_pinned_rootfs_rejects_an_entry_swap_before_namespace_entry() {
-    use a3s_oci_agent_protocol::GuestPath;
+    use aster_oci_agent_protocol::GuestPath;
 
     use crate::executor::bundle_scope::BundleDirectoryScope;
 

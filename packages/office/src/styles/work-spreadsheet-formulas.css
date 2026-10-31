@@ -14,7 +14,7 @@
   align-content: start;
   gap: 6px;
   padding: 9px;
-  border-right: 1px solid var(--a3s-line);
+  border-right: 1px solid var(--aster-line);
 }
 
 .work-spreadsheet-formula-manager > aside > div {
@@ -23,9 +23,9 @@
   min-height: 48px;
   align-content: center;
   padding: 6px 8px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
-  background: var(--a3s-bg);
+  background: var(--aster-bg);
 }
 
 .work-spreadsheet-formula-manager > aside strong {
@@ -33,12 +33,12 @@
 }
 
 .work-spreadsheet-formula-manager > aside span {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
 .work-spreadsheet-formula-manager > aside > div.error strong {
-  color: var(--a3s-red);
+  color: var(--aster-red);
 }
 
 .work-spreadsheet-formula-manager > form {
@@ -73,14 +73,14 @@
 
 .work-spreadsheet-calculation-fields .actions .status {
   margin-right: auto;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
 .work-spreadsheet-formula-diagnostics {
   min-width: 0;
   padding: 7px 8px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 6px;
 }
 
@@ -97,7 +97,7 @@
 }
 
 .work-spreadsheet-formula-diagnostics > header span {
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
 }
 
@@ -110,17 +110,17 @@
 
 .work-spreadsheet-formula-diagnostics article {
   padding: 5px 7px;
-  border-left: 2px solid var(--a3s-line-strong);
+  border-left: 2px solid var(--aster-line-strong);
   border-radius: 3px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-formula-diagnostics article.warning {
-  border-left-color: var(--a3s-warning);
+  border-left-color: var(--aster-warning);
 }
 
 .work-spreadsheet-formula-diagnostics article.error {
-  border-left-color: var(--a3s-red);
+  border-left-color: var(--aster-red);
 }
 
 .work-spreadsheet-formula-diagnostics article strong {
@@ -130,7 +130,7 @@
 .work-spreadsheet-formula-diagnostics article p,
 .work-spreadsheet-formula-diagnostics article small {
   margin: 2px 0 0;
-  color: var(--a3s-faint);
+  color: var(--aster-faint);
   font-size: 8px;
   line-height: 1.4;
 }

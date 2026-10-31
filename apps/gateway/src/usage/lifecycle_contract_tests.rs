@@ -333,7 +333,7 @@ fn lifecycle_schema_id_matches_cloud_contracts() {
         })
         .expect("Cloud INFERENCE_USAGE_LIFECYCLE_SCHEMA_V2");
     assert_eq!(LIFECYCLE_SCHEMA, cloud_schema);
-    assert_eq!(LIFECYCLE_SCHEMA, "a3s.gateway.usage-lifecycle.v2");
+    assert_eq!(LIFECYCLE_SCHEMA, "aster.gateway.usage-lifecycle.v2");
 }
 
 #[test]

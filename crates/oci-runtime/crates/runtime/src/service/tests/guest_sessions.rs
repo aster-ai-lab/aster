@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use a3s_oci_core::IsolationClass;
-use a3s_oci_sdk::{
+use aster_oci_core::IsolationClass;
+use aster_oci_sdk::{
     AttachmentCapabilities, CreateAttachments, CreateRequest, ErrorCode, GuestSessionCapacity,
     GuestSessionGeneration, GuestSessionId, GuestSessionReset, IsolationRequest, OciBundle,
     OciRuntimeService, OperationContext, ProcessIo, TrustDomainId, ATTACHMENT_SCHEMA_V4,

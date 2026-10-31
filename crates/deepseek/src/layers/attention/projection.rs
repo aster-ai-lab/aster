@@ -6,7 +6,7 @@
 //! DeepInfer Apache-2.0 attn.py/mla_attn.py/norm.py at revision
 //! 9bd9cf243fc53ef9afbf8f04d391d989117d6ab9. Unfused tensor control.
 
-use a3s_power::error::{PowerError, Result};
+use aster_power::error::{PowerError, Result};
 use candle_core::{DType, Tensor};
 use std::sync::atomic::{AtomicU64, Ordering};
 use tokio_util::sync::CancellationToken;

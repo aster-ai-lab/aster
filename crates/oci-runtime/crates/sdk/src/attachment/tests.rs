@@ -24,7 +24,7 @@ use crate::{
 
 fn bundle() -> OciBundle {
     OciBundle::from_json(
-        std::env::temp_dir().join("a3s-attachment-bundle"),
+        std::env::temp_dir().join("aster-attachment-bundle"),
         serde_json::to_string(&json!({
             "ociVersion": "1.3.0",
             "root": {"path": "rootfs", "readonly": true},
@@ -42,8 +42,8 @@ fn bundle() -> OciBundle {
                 "netDevices": {"tap0": {"name": "eth0"}}
             },
             "annotations": {
-                "dev.a3s.network.tsi": "{\"mode\":\"proxy\"}",
-                "dev.a3s.secret.channel": "fd-broker"
+                "dev.aster.network.tsi": "{\"mode\":\"proxy\"}",
+                "dev.aster.secret.channel": "fd-broker"
             }
         }))
         .expect("encode configuration"),
@@ -53,7 +53,7 @@ fn bundle() -> OciBundle {
 
 fn canonical_attachment_bundle(root: &str, mount: &str) -> OciBundle {
     OciBundle::from_json(
-        std::env::temp_dir().join("a3s-canonical-attachment-bundle"),
+        std::env::temp_dir().join("aster-canonical-attachment-bundle"),
         format!(
             r#"{{"ociVersion":"1.3.0","root":{root},"process":{{"cwd":"/","args":["/bin/true"],"user":{{"uid":0,"gid":0}}}},"mounts":[{mount}]}}"#
         ),
@@ -140,7 +140,7 @@ fn handoff_bundle() -> OciBundle {
     configuration["annotations"][RUNTIME_BUNDLE_HANDOFF_EXTENSION] =
         json!(RUNTIME_BUNDLE_HANDOFF_MOVE_V1);
     OciBundle::from_json(
-        std::env::temp_dir().join("a3s-bundle-handoff"),
+        std::env::temp_dir().join("aster-bundle-handoff"),
         serde_json::to_string(&configuration).expect("handoff configuration"),
     )
     .expect("handoff bundle")
@@ -152,7 +152,7 @@ fn tee_bundle(launch: &TeeLaunchRequest) -> OciBundle {
     configuration["annotations"][launch.technology().extension_name()] =
         json!(launch.to_annotation_value().expect("TEE launch annotation"));
     OciBundle::from_json(
-        std::env::temp_dir().join("a3s-tee-attachment-bundle"),
+        std::env::temp_dir().join("aster-tee-attachment-bundle"),
         serde_json::to_string(&configuration).expect("TEE configuration"),
     )
     .expect("TEE attachment fixture bundle")
@@ -202,7 +202,7 @@ fn tee_launch_rejects_mismatched_duplicate_and_misclassified_mechanisms() {
     configuration["annotations"][INTEL_TDX_LAUNCH_EXTENSION] =
         configuration["annotations"][AMD_SEV_SNP_LAUNCH_EXTENSION].clone();
     let duplicate = OciBundle::from_json(
-        std::env::temp_dir().join("a3s-duplicate-tee-attachment-bundle"),
+        std::env::temp_dir().join("aster-duplicate-tee-attachment-bundle"),
         serde_json::to_string(&configuration).expect("duplicate TEE configuration"),
     )
     .expect("duplicate TEE bundle");
@@ -223,7 +223,7 @@ fn tee_launch_rejects_mismatched_duplicate_and_misclassified_mechanisms() {
     assert!(attachments.validate(&bundle).is_err());
 
     let tdx_name_with_amd_payload = OciBundle::from_json(
-        std::env::temp_dir().join("a3s-mismatched-tee-attachment-bundle"),
+        std::env::temp_dir().join("aster-mismatched-tee-attachment-bundle"),
         serde_json::to_string(&json!({
             "ociVersion": "1.3.0",
             "root": {"path": "rootfs"},
@@ -247,7 +247,7 @@ fn terminal_bundle() -> OciBundle {
     configuration["process"]["terminal"] = json!(true);
     configuration["process"]["consoleSize"] = json!({"width": 120, "height": 40});
     OciBundle::from_json(
-        std::env::temp_dir().join("a3s-terminal-attachment-bundle"),
+        std::env::temp_dir().join("aster-terminal-attachment-bundle"),
         serde_json::to_string(&configuration).expect("terminal configuration"),
     )
     .expect("terminal attachment fixture bundle")
@@ -260,7 +260,7 @@ fn storage_bundle() -> OciBundle {
     configuration["mounts"][1]["source"] = json!("cache");
     configuration["mounts"][1]["options"] = json!(["rbind", "rw"]);
     OciBundle::from_json(
-        std::env::temp_dir().join("a3s-storage-attachment-bundle"),
+        std::env::temp_dir().join("aster-storage-attachment-bundle"),
         serde_json::to_string(&configuration).expect("storage configuration"),
     )
     .expect("storage attachment fixture bundle")
@@ -274,7 +274,7 @@ fn multi_interface_network_bundle() -> OciBundle {
         "veth-a": {"name": "eth0"}
     });
     OciBundle::from_json(
-        std::env::temp_dir().join("a3s-network-attachment-bundle"),
+        std::env::temp_dir().join("aster-network-attachment-bundle"),
         serde_json::to_string(&configuration).expect("network configuration"),
     )
     .expect("network attachment fixture bundle")
@@ -299,14 +299,14 @@ fn network_enforcement_bundle() -> OciBundle {
     let mut configuration: serde_json::Value =
         serde_json::from_str(bundle().config_json()).expect("base configuration");
     configuration["linux"]["namespaces"][1]["path"] =
-        json!("/run/a3s/network/authorized-namespace-7");
+        json!("/run/aster/network/authorized-namespace-7");
     configuration["annotations"][NETWORK_ENFORCEMENT_EXTENSION] = json!(
         network_enforcement_attachment("authorized-network-namespace-7")
             .to_annotation_value()
             .expect("network enforcement annotation")
     );
     OciBundle::from_json(
-        std::env::temp_dir().join("a3s-network-enforcement-bundle"),
+        std::env::temp_dir().join("aster-network-enforcement-bundle"),
         serde_json::to_string(&configuration).expect("network enforcement configuration"),
     )
     .expect("network enforcement bundle")
@@ -417,7 +417,7 @@ fn network_enforcement_rejects_unbound_or_mutable_namespace_mechanisms() {
             .to_annotation_value()
             .expect("mismatched annotation"));
     let mismatched = OciBundle::from_json(
-        std::env::temp_dir().join("a3s-network-enforcement-mismatch"),
+        std::env::temp_dir().join("aster-network-enforcement-mismatch"),
         configuration.to_string(),
     )
     .expect("mismatched network enforcement bundle");
@@ -442,7 +442,7 @@ fn network_enforcement_rejects_unbound_or_mutable_namespace_mechanisms() {
         .expect("network namespace")
         .remove("path");
     let runtime_owned = OciBundle::from_json(
-        std::env::temp_dir().join("a3s-network-enforcement-runtime-namespace"),
+        std::env::temp_dir().join("aster-network-enforcement-runtime-namespace"),
         configuration.to_string(),
     )
     .expect("runtime namespace bundle");
@@ -509,13 +509,13 @@ fn derives_and_digest_binds_every_standard_attachment_category() {
         .expect("derive attachments")
         .mark_secret_mount(1)
         .expect("classify secret mount")
-        .add_extension_from_annotation(&bundle, "dev.a3s.network.tsi", 1, true)
+        .add_extension_from_annotation(&bundle, "dev.aster.network.tsi", 1, true)
         .expect("declare network extension")
-        .attach_network_extension("dev.a3s.network.tsi")
+        .attach_network_extension("dev.aster.network.tsi")
         .expect("classify network extension")
-        .add_extension_from_annotation(&bundle, "dev.a3s.secret.channel", 1, false)
+        .add_extension_from_annotation(&bundle, "dev.aster.secret.channel", 1, false)
         .expect("declare secret extension")
-        .attach_secret_extension("dev.a3s.secret.channel")
+        .attach_secret_extension("dev.aster.secret.channel")
         .expect("classify secret extension");
 
     attachments.validate(&bundle).expect("valid attachments");
@@ -673,7 +673,7 @@ fn caller_owned_storage_cannot_be_transferred_with_a_runtime_owned_bundle() {
     configuration["annotations"][RUNTIME_BUNDLE_HANDOFF_EXTENSION] =
         json!(RUNTIME_BUNDLE_HANDOFF_MOVE_V1);
     let bundle = OciBundle::from_json(
-        std::env::temp_dir().join("a3s-storage-handoff-bundle"),
+        std::env::temp_dir().join("aster-storage-handoff-bundle"),
         serde_json::to_string(&configuration).expect("storage handoff configuration"),
     )
     .expect("storage handoff bundle");
@@ -1054,7 +1054,7 @@ fn network_attachment_validation_rejects_identity_cleanup_and_target_drift() {
         CreateAttachments::from_bundle(&bundle, ProcessIo::default()).expect("base attachments"),
     )
     .expect("encode base attachments");
-    invalid_schema["schemaVersion"] = json!("a3s.oci.attachments.unknown");
+    invalid_schema["schemaVersion"] = json!("aster.oci.attachments.unknown");
     let invalid: CreateAttachments =
         serde_json::from_value(invalid_schema).expect("decode unknown schema");
     let error = invalid
@@ -1085,7 +1085,7 @@ fn network_attachment_validation_rejects_identity_cleanup_and_target_drift() {
         serde_json::from_str(bundle.config_json()).expect("network configuration");
     template_configuration["linux"]["netDevices"]["veth-a"]["name"] = json!("eth%d");
     let template_bundle = OciBundle::from_json(
-        std::env::temp_dir().join("a3s-network-template-bundle"),
+        std::env::temp_dir().join("aster-network-template-bundle"),
         serde_json::to_string(&template_configuration).expect("template configuration"),
     )
     .expect("template bundle");
@@ -1108,7 +1108,7 @@ fn joined_network_namespace_requires_caller_preservation_cleanup() {
         serde_json::from_str(storage_bundle().config_json()).expect("network configuration");
     configuration["linux"]["namespaces"][1]["path"] = json!("/run/netns/authorized-7");
     let bundle = OciBundle::from_json(
-        std::env::temp_dir().join("a3s-joined-network-attachment-bundle"),
+        std::env::temp_dir().join("aster-joined-network-attachment-bundle"),
         serde_json::to_string(&configuration).expect("joined network configuration"),
     )
     .expect("joined network attachment bundle");
@@ -1180,11 +1180,11 @@ fn rejects_drift_unknown_references_and_unversioned_extensions() {
     assert!(attachments.clone().mark_secret_mount(9).is_err());
     assert!(attachments
         .clone()
-        .attach_network_extension("dev.a3s.missing")
+        .attach_network_extension("dev.aster.missing")
         .is_err());
     assert!(attachments
         .clone()
-        .add_extension_from_annotation(&bundle, "dev.a3s.network.tsi", 0, true)
+        .add_extension_from_annotation(&bundle, "dev.aster.network.tsi", 0, true)
         .is_err());
 
     let mut encoded = serde_json::to_value(&attachments).expect("encode attachments");
@@ -1202,7 +1202,7 @@ fn rejects_drift_unknown_references_and_unversioned_extensions() {
         .expect("network array")
         .push(json!({
             "kind": "runtime-extension",
-            "name": "dev.a3s.missing"
+            "name": "dev.aster.missing"
         }));
     let corrupt: CreateAttachments =
         serde_json::from_value(encoded).expect("decode missing extension reference");
@@ -1216,7 +1216,7 @@ fn required_extensions_are_fail_closed_but_advisory_extensions_are_explicit() {
         CreateAttachments::from_bundle(&bundle, ProcessIo::default()).expect("derive attachments");
     let required = base
         .clone()
-        .add_extension_from_annotation(&bundle, "dev.a3s.network.tsi", 1, true)
+        .add_extension_from_annotation(&bundle, "dev.aster.network.tsi", 1, true)
         .expect("required extension");
     let unsupported = AttachmentCapabilities::base_v1()
         .require(&required)
@@ -1224,12 +1224,12 @@ fn required_extensions_are_fail_closed_but_advisory_extensions_are_explicit() {
     assert_eq!(unsupported.code, ErrorCode::Unsupported);
 
     let supported = AttachmentCapabilities::base_v1()
-        .with_extension("dev.a3s.network.tsi", vec![2, 1, 2])
+        .with_extension("dev.aster.network.tsi", vec![2, 1, 2])
         .expect("extension capability");
     supported.require(&required).expect("supported extension");
 
     let advisory = base
-        .add_extension_from_annotation(&bundle, "dev.a3s.secret.channel", 1, false)
+        .add_extension_from_annotation(&bundle, "dev.aster.secret.channel", 1, false)
         .expect("advisory extension");
     AttachmentCapabilities::base_v1()
         .require(&advisory)
@@ -1239,43 +1239,43 @@ fn required_extensions_are_fail_closed_but_advisory_extensions_are_explicit() {
 #[test]
 fn extension_names_follow_the_canonical_capability_order() {
     let capabilities = AttachmentCapabilities::base_v1()
-        .with_extension("dev.a3s.network.zeta", vec![1])
+        .with_extension("dev.aster.network.zeta", vec![1])
         .expect("zeta extension capability")
-        .with_extension("dev.a3s.network.alpha", vec![2, 1])
+        .with_extension("dev.aster.network.alpha", vec![2, 1])
         .expect("alpha extension capability");
 
     assert_eq!(
         capabilities.extension_names().collect::<Vec<_>>(),
-        vec!["dev.a3s.network.alpha", "dev.a3s.network.zeta"]
+        vec!["dev.aster.network.alpha", "dev.aster.network.zeta"]
     );
 }
 
 #[test]
 fn capability_intersection_is_exact_and_wire_inventories_must_be_canonical() {
     let common = AttachmentCapabilities::base_v1()
-        .with_extension("dev.a3s.network.tsi", vec![1, 2])
+        .with_extension("dev.aster.network.tsi", vec![1, 2])
         .expect("left capabilities")
         .common_with(
             &AttachmentCapabilities::base_v1()
-                .with_extension("dev.a3s.network.tsi", vec![2, 3])
+                .with_extension("dev.aster.network.tsi", vec![2, 3])
                 .expect("right capabilities")
-                .with_extension("dev.a3s.storage.volume", vec![1])
+                .with_extension("dev.aster.storage.volume", vec![1])
                 .expect("right-only capabilities"),
         );
     common.validate().expect("canonical intersection");
     assert!(common.supports_schema(ATTACHMENT_SCHEMA_V1));
-    assert!(common.supports_extension("dev.a3s.network.tsi", 2));
-    assert!(!common.supports_extension("dev.a3s.network.tsi", 1));
-    assert!(!common.supports_extension("dev.a3s.storage.volume", 1));
+    assert!(common.supports_extension("dev.aster.network.tsi", 2));
+    assert!(!common.supports_extension("dev.aster.network.tsi", 1));
+    assert!(!common.supports_extension("dev.aster.storage.volume", 1));
     assert_eq!(
-        common.extension_versions("dev.a3s.network.tsi"),
+        common.extension_versions("dev.aster.network.tsi"),
         Some([2].as_slice())
     );
-    assert_eq!(common.extension_versions("dev.a3s.storage.volume"), None);
+    assert_eq!(common.extension_versions("dev.aster.storage.volume"), None);
 
     let invalid: AttachmentCapabilities = serde_json::from_value(json!({
         "schemas": [ATTACHMENT_SCHEMA_V1],
-        "extensions": {"dev.a3s.network.tsi": [2, 1]}
+        "extensions": {"dev.aster.network.tsi": [2, 1]}
     }))
     .expect("decode structurally valid non-canonical inventory");
     let error = invalid
@@ -1344,7 +1344,7 @@ fn external_storage_handoff_bundle(source: &str, annotation: &str) -> OciBundle 
     configuration["mounts"][0]["source"] = json!(source);
     configuration["mounts"][0]["options"] = json!(["rbind", "ro"]);
     OciBundle::from_json(
-        std::env::temp_dir().join("a3s-storage-handoff-bundle"),
+        std::env::temp_dir().join("aster-storage-handoff-bundle"),
         serde_json::to_string(&configuration).expect("storage handoff configuration"),
     )
     .expect("storage handoff bundle")
@@ -1379,7 +1379,7 @@ fn handoff_extension_cannot_bypass_annotation_semantics_via_generic_builder() {
 
 #[test]
 fn external_storage_handoff_requires_version_two_capability() {
-    let source = std::env::temp_dir().join("a3s-external-workspace");
+    let source = std::env::temp_dir().join("aster-external-workspace");
     let bundle = external_storage_handoff_bundle(source.to_str().unwrap(), "move-to-runtime-v2");
     let attachments = external_storage_attachment(&bundle)
         .add_extension_from_annotation(&bundle, RUNTIME_BUNDLE_HANDOFF_EXTENSION, 2, true)
@@ -1409,7 +1409,7 @@ fn external_storage_handoff_requires_version_two_capability() {
 
 #[test]
 fn external_storage_handoff_rejects_relative_and_owned_bundle_sources() {
-    let owned = std::env::temp_dir().join("a3s-storage-handoff-bundle");
+    let owned = std::env::temp_dir().join("aster-storage-handoff-bundle");
     for source in [
         "workspace".to_string(),
         "/srv/../workspace".to_string(),

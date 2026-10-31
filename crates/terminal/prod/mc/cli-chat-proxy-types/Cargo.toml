@@ -13,7 +13,7 @@ default-bazel = []
 chrono = {version = "0.4", features = ["serde"]}
 serde = {workspace = true}
 # The canonical requirements-TOML fail_closed parse, shared by the signer
-# (cli-chat-proxy) and the client (a3s-code-config) so they can't drift.
+# (cli-chat-proxy) and the client (aster-config) so they can't drift.
 serde_json = {workspace = true}
 toml = {workspace = true}
 

@@ -12,17 +12,17 @@ palette, radius, dark mode and motion rules, and cannot be inspected by the back
 
 ## Rule
 
-Applies to Studio, the Console (`apps/web`), `@a3s-lab/ui`, `@a3s-lab/intelligent-ui`, `@a3s-lab/form`,
+Applies to Studio, the Console (`apps/web`), `@aster-ai-lab/ui`, `@aster-ai-lab/intelligent-ui`, `@aster-ai-lab/form`,
 and vanilla shells (e.g. Studio's first-run shell):
 
 1. **Never** ship native `<select>`, `<datalist>` or `document.createElement('select')`.
-2. **Use** `SearchSelect` from `@a3s-lab/ui` by default:
+2. **Use** `SearchSelect` from `@aster-ai-lab/ui` by default:
    - `size="sm"` in toolbars (30px), default size in forms (36px);
    - `searchable={false}` when there are ≤ 8 options;
    - `allowClear={false}` when a value is always required;
    - an explicit `aria-label` (or a visible label), i18n option labels, string values.
 3. **Use** `Combobox` only when the trigger must read as a text field.
-4. Without React, draw the same anatomy (`SelectControl` in `@a3s-lab/form`, the shell picker in
+4. Without React, draw the same anatomy (`SelectControl` in `@aster-ai-lab/form`, the shell picker in
    `apps/studio/src/renderer/shell/studioClient.mjs`).
 5. The Radix `Select` composite is legacy: its screens are a shrink-only list in
    `apps/studio/src/renderer/__tests__/noNativeSelect.test.ts`. Do not add a new usage.

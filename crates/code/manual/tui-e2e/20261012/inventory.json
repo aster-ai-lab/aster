@@ -103,54 +103,54 @@
     {
       "name": "yolo",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/always_approve.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/always_approve.rs"
     },
     {
       "name": "announcements",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/announcements.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/announcements.rs"
     },
     {
       "name": "auto",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/auto.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/auto.rs"
     },
     {
       "name": "btw",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/btw.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/btw.rs"
     },
     {
       "name": "cd",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/cd.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/cd.rs"
     },
     {
       "name": "compact",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/compact.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/compact.rs"
     },
     {
       "name": "compact-mode",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/compact_mode.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/compact_mode.rs"
     },
     {
       "name": "config-agents",
       "aliases": [
         "agents"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/config_agents.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/config_agents.rs"
     },
     {
       "name": "context",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/context.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/context.rs"
     },
     {
       "name": "copy",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/copy.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/copy.rs"
     },
     {
       "name": "dashboard",
@@ -158,17 +158,17 @@
         "agents-dashboard",
         "sessions"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/dashboard.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/dashboard.rs"
     },
     {
       "name": "debug",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs"
     },
     {
       "name": "delete",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/delete.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/delete.rs"
     },
     {
       "name": "docs",
@@ -176,7 +176,7 @@
         "howto",
         "guides"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/docs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/docs.rs"
     },
     {
       "name": "doctor",
@@ -185,234 +185,234 @@
         "terminal-check",
         "terminal-info"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/doctor.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/doctor.rs"
     },
     {
       "name": "edit-prompt",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/edit_prompt.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/edit_prompt.rs"
     },
     {
       "name": "effort",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/effort.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/effort.rs"
     },
     {
       "name": "quit",
       "aliases": [
         "exit"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/exit.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/exit.rs"
     },
     {
       "name": "expand",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/expand.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/expand.rs"
     },
     {
       "name": "export",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/export.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/export.rs"
     },
     {
       "name": "feedback",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/feedback.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/feedback.rs"
     },
     {
       "name": "find",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/find.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/find.rs"
     },
     {
       "name": "fork",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/fork.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/fork.rs"
     },
     {
       "name": "gboom",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs"
     },
     {
       "name": "help",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/help.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/help.rs"
     },
     {
       "name": "history",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/history.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/history.rs"
     },
     {
       "name": "home",
       "aliases": [
         "welcome"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/home.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/home.rs"
     },
     {
       "name": "import-claude",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/import_claude.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/import_claude.rs"
     },
     {
       "name": "jump",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/jump.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/jump.rs"
     },
     {
       "name": "login",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/login.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/login.rs"
     },
     {
       "name": "logout",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/logout.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/logout.rs"
     },
     {
       "name": "loop",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/loop_cmd.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/loop_cmd.rs"
     },
     {
       "name": "mcps",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mcps.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mcps.rs"
     },
     {
       "name": "memory",
       "aliases": [
         "mem"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory.rs"
     },
     {
       "name": "flush",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory_ops.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory_ops.rs"
     },
     {
       "name": "dream",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory_ops.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory_ops.rs"
     },
     {
       "name": "model",
       "aliases": [
         "m"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/model.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/model.rs"
     },
     {
       "name": "config",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/model_config_cmd.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/model_config_cmd.rs"
     },
     {
       "name": "multiline",
       "aliases": [
         "ml"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/multiline.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/multiline.rs"
     },
     {
       "name": "new",
       "aliases": [
         "clear"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/new.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/new.rs"
     },
     {
       "name": "personas",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/personas.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/personas.rs"
     },
     {
       "name": "plan",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plan.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plan.rs"
     },
     {
       "name": "hooks",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs"
     },
     {
       "name": "plugins",
       "aliases": [
         "plugin"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs"
     },
     {
       "name": "marketplace",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs"
     },
     {
       "name": "skills",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs"
     },
     {
       "name": "privacy",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/privacy.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/privacy.rs"
     },
     {
       "name": "queue",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/queue.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/queue.rs"
     },
     {
       "name": "recap",
       "aliases": [
         "summarize"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/recap.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/recap.rs"
     },
     {
       "name": "release-notes",
       "aliases": [
         "changelog"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/release_notes.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/release_notes.rs"
     },
     {
       "name": "remember",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/remember.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/remember.rs"
     },
     {
       "name": "rename",
       "aliases": [
         "title"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/rename.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/rename.rs"
     },
     {
       "name": "resume",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/resume.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/resume.rs"
     },
     {
       "name": "rewind",
       "aliases": [
         "undo"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/rewind.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/rewind.rs"
     },
     {
       "name": "scroll-debug",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs"
     },
     {
       "name": "session-info",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/session_info.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/session_info.rs"
     },
     {
       "name": "settings",
@@ -420,46 +420,46 @@
         "preferences",
         "prefs"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/settings_cmd.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/settings_cmd.rs"
     },
     {
       "name": "share",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/share.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/share.rs"
     },
     {
       "name": "tasks",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/tasks.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/tasks.rs"
     },
     {
       "name": "theme",
       "aliases": [
         "t"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/theme.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/theme.rs"
     },
     {
       "name": "timeline",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/timeline.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/timeline.rs"
     },
     {
       "name": "timestamps",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/timestamps.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/timestamps.rs"
     },
     {
       "name": "toggle-mouse-reporting",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/toggle_mouse_reporting.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/toggle_mouse_reporting.rs"
     },
     {
       "name": "transcript",
       "aliases": [
         "log"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/transcript.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/transcript.rs"
     },
     {
       "name": "tutorial",
@@ -467,14 +467,14 @@
         "tour",
         "onboarding"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/tutorial.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/tutorial.rs"
     },
     {
       "name": "usage",
       "aliases": [
         "cost"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/usage.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/usage.rs"
     },
     {
       "name": "view-plan",
@@ -482,50 +482,50 @@
         "show-plan",
         "plan-view"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/view_plan.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/view_plan.rs"
     },
     {
       "name": "vim-mode",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/vim_mode.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/vim_mode.rs"
     },
     {
       "name": "voice",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/voice.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/voice.rs"
     },
     {
       "name": "workflow",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/workflow.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/workflow.rs"
     },
     {
       "name": "workflows",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/workflows.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/workflows.rs"
     },
     {
       "name": "minimal",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/screen_mode_switch.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/screen_mode_switch.rs"
     },
     {
       "name": "fullscreen",
       "aliases": [
         "full"
       ],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/screen_mode_switch.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/screen_mode_switch.rs"
     },
     {
       "name": "imagine",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/imagine.rs",
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/imagine.rs",
       "extraction": "symbolic slash_meta constant resolved from command source"
     },
     {
       "name": "imagine-video",
       "aliases": [],
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/imagine_video.rs",
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/imagine_video.rs",
       "extraction": "symbolic slash_meta constant resolved from command source"
     }
   ],
@@ -534,313 +534,313 @@
       "key": "compact_mode",
       "label": "Compact mode",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "screen_mode",
       "label": "Default screen mode",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "show_timestamps",
       "label": "Show timestamps",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "show_timeline",
       "label": "Timeline sidebar",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "dashboard_preview",
       "label": "Dashboard preview",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "page_flip_on_send",
       "label": "Snap prompt to top on send",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "combine_queued_prompts",
       "label": "Combine queued prompts",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "follow_up_behavior",
       "label": "Follow-up behavior",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "confirm_before_rewind",
       "label": "Confirm before rewind",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "simple_mode",
       "label": "Disable vim input mode",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "vim_mode",
       "label": "Vim scrollback navigation",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "theme",
       "label": "Theme",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "auto_dark_theme",
       "label": "Auto dark theme",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "auto_light_theme",
       "label": "Auto light theme",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "render_mermaid",
       "label": "Render Mermaid diagrams",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "permission_mode",
       "label": "Permission mode",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "remember_tool_approvals",
       "label": "Remember tool approvals",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "multiline_mode",
       "label": "Multiline",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "default_model",
       "label": "Default model",
       "kind": "DynamicEnum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "subagent_model_inheritance",
       "label": "Subagent model inheritance",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "max_thoughts_width",
       "label": "Max thoughts width",
       "kind": "Int",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "show_thinking_blocks",
       "label": "Show thinking blocks",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "prompt_suggestions",
       "label": "Prompt suggestions",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "respect_manual_folds",
       "label": "Respect manual folds",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "group_tool_verbs",
       "label": "Group tool calls",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "collapsed_edit_blocks",
       "label": "Collapsed edit blocks",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "display_refresh_auto_cadence",
       "label": "Match display refresh rate",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "scroll_speed",
       "label": "Scroll speed",
       "kind": "Int",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "scroll_mode",
       "label": "Scroll input",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "scroll_lines",
       "label": "Scroll lines",
       "kind": "Int",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "invert_scroll",
       "label": "Invert scroll",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "keep_text_selection",
       "label": "Text selection",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "coding_data_sharing",
       "label": "Coding data, retention, and training",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "default_selected_permission",
       "label": "Default selected permission",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "toolset.ask_user_question.timeout_enabled",
       "label": "Ask-Question timeout",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "plan_mode",
       "label": "Plan mode",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "show_tips",
       "label": "Show tips",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "contextual_hints",
       "label": "Show contextual hints",
       "kind": "Group",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "auto_update",
       "label": "Auto-update",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "hunk_tracker_mode",
       "label": "Hunk tracker",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "voice_keybind_enabled",
       "label": "Voice shortcut",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "voice_capture_mode",
       "label": "Voice capture",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "voice_stt_language",
       "label": "Voice language",
       "kind": "Enum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "contextual_hints.undo",
       "label": "Undo",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "contextual_hints.plan_mode",
       "label": "Plan mode",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "contextual_hints.image_input",
       "label": "Image input",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "contextual_hints.send_now",
       "label": "Send now",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "contextual_hints.small_screen",
       "label": "Small screen",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "contextual_hints.word_select",
       "label": "Word select",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "contextual_hints.export_copy",
       "label": "Copy and export",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "contextual_hints.ssh_wrap",
       "label": "SSH wrap",
       "kind": "Bool",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     },
     {
       "key": "fork_secondary_model",
       "label": "Fork secondary model",
       "kind": "DynamicEnum",
-      "source": "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs"
+      "source": "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs"
     }
   ],
   "actions": [
@@ -1168,107 +1168,107 @@
     "apps/code/core/src/tools/skill.rs": "48a3a886bb29b1fc71cba2db172fb032cb895ccbce898d9b316c09223ae5883d",
     "apps/code/core/src/tools/task.rs": "65376e42c3754c67aebb08142be71b39b48994b2b4643984170317a5fe7ade9e",
     "apps/code/core/src/verification.rs": "8de7048384d2d15887786af663e093ab901706eb19906a8597579a96ae5f0983",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/acp/a3s_spawn.rs": "7ccf30d7c8a4ebaa963a47cabec6676b158f5d2fb9e9c5df8bf45a6d87f2ec0c",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/actions/defaults.rs": "f64553eff089b85c04d65d3ce30a8e6b1218d2c950ae11b07b6d1ba3502c405e",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/interactions.rs": "61e15ca6f00fc41b56021ab06533dbb503ac469399689851eceae1fd643cd67d",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mcp.rs": "45ae45df605dada6a761c8dd2bee167f7b014f85fb14f55302ebaf684c4c9add",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/mod.rs": "e53c6c25451c7ef66547f1588fbbe86b20acd9ea45777c32fdfb8d9d36a578b2",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/routing.rs": "3bfce242e45f6849eb342bd98a6f50805fc20f9400706b5880381a4a7d753410",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/acp_handler/session_notification.rs": "12f85872157bbbe293a5e177abb1ad6cdb6752ec91c52d06da65b8e5a3178edc",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/actions.rs": "3276031b4c0fbf72adb178e539bcbbfb8a264373ab9a2f725f4d307f495c1b44",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs": "6e1e53122d591ad25b7afb89599f501e84f14d0217d78a3e7d2009507abfa5f9",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/import_claude.rs": "4dc608c27ee0c0c1e532ef04bf3ae4a2a3f3e93dfa711401b3364eb865ddf33f",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/interject.rs": "0ced99ab95ce225064edca31da2498fdfb08f2cbc4626f9de01bcb9884841854",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/permissions.rs": "baf4a3926429facac75e5297bf7527a25e9e8eaf86caea2756345393f3979226",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/prompt.rs": "799febfdadc15bd9e0f87970a9642fd3c4264dcea733bb37d9d02dead31ef4bb",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs": "49dee409e29a9ae06e490591586a84a25ce6f81d6bce02f3904bc5ff515186d9",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/lifecycle.rs": "b57b20d9dd0c9d505b3dd3836cc02612ce12eec3ae0e5010b0cb57c2799257f3",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/session/mod.rs": "b2bdbc5810a998f3c766f92192733c1af52e10af6795cc765b0dd86b4e636c59",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/settings/setters.rs": "5e20706e2fbe596e7ddf016136d03aa685ab1289f1392bf6048f7ae906fcf089",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/turn.rs": "173c4d53d108b9c7c07f008e9852fbcbdd47082e7b96af6e45ed7b97e2085db3",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/voice.rs": "03c55738197a9c1e6b93b877eab215bf1c01cfa6a22873bf2381f9a086f0e2c6",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/event_loop.rs": "ba2b38cabae9274a5fa047f4fcae820c274c987ff792f404e66dd23b7ffad302",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/mode_switch.rs": "2a6cf9d867e91d41b6109f933f1e493288a94b6adde6fc76362f73baa83faaa8",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/settings/defs.rs": "20eaaa8e97551d941eaeef94f80c1e300fa0b3b487d756665c9b9e86b275a356",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/always_approve.rs": "5bf61564d119dfa84a3f4646b4b8d3ddd74684efac1a393e1a069cf3d2fce3f6",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/announcements.rs": "26b8f03cfceeea43ab66db16719aa3b25f4cebe37e81be177684a11cd35e0f6a",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/auto.rs": "63bbc03bddfe305007ef3781ac93ba1e6767595e21f976aa33c0704278481bd4",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/btw.rs": "c77b864935786b6fce41275143a886bf734c513909a202ecfc7387e983a77b73",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/cd.rs": "2ef95aa24db5f0db8fe05a97e2350a881fb37abf16d26937f3ce16196ca970ab",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/compact.rs": "73b47b7c82d87ac67be90e21d3bf3f7e72cb53d3a3a7f560b65b1923c4500adf",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/compact_mode.rs": "592a78831f6e27ec661c969cf348e6bd33a421444fcb859e576bdbecab6d5d68",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/config_agents.rs": "accf4c08072c5c4cf492998c6bdf302f09d0e542a2b773e1bad25484cafbe33a",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/context.rs": "65a405cb9acde7d2dfd9c91abcce55a839c10dd8ec7da3829fb0a9dadcb6b594",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/copy.rs": "eea6409afa00f5ffab657bc21fb712b2520c5b064b3ef26b46f9e4d80d3862e6",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/dashboard.rs": "c9f247a80187fec1b6e6dce9df6f420183b6580f62d5281323ccd76ac91b6619",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/debug.rs": "a8ee77fcc6c8ca01d27ce6f2c92c560dba654a9c42bcb963f486826c7e4758f2",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/delete.rs": "f293f8f2df24f9281017c68c187d9afe7933fd22bbf3272c23b7277158661cd5",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/docs.rs": "a451252c10b4fa157ed7d7add275dc9fee8be3a4160d001eb81d523d5224e446",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/doctor.rs": "97ea2fca7863dd80281d1ccdfacf41c29dbd32c4ae63003e79a01241b2eb9a01",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/edit_prompt.rs": "12664441c0a56d73f0f85025e8b2dad15c8f52a611dd00866522a9a652f5a0c6",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/effort.rs": "b9c994ea31d297ad713411a4f56b05035a0f316f631fe139bf6792360a4c1d0d",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/exit.rs": "d0d983e8e3c52ee10776ee17ece85e8804a734eda497a7dbc36426bd7de99571",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/expand.rs": "ed962f7ee98e669c8d47fdfdacf693db21d1fe7e0bdc517502cb0a2f56273811",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/export.rs": "7d32af063273c0496a20a59f74ad53622905ea9cdcf4b42f756418bc855eff85",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/feedback.rs": "50545dcad81fe274d8c3607990102a51aea5d918be8ee35de7e268113da99fa2",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/find.rs": "bb47930bf458a7b3e64942f95cb1e485ddc8bc495f84b38e08c2c5e4688fc86e",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/fork.rs": "809c4dbd661dcab638719d391aecf7a111e210cfeae374b00a25e58da2ea416d",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/gboom.rs": "19eb95fae3673fc5f5966c4767f70927bb9962d8e37d15ba28320fc9781b6be3",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/help.rs": "9cdda2916b7a27b9f5228c1c0f7f0adf188f4b7c77e20d695ca661c6fb914e36",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/history.rs": "483e1f6147e7d57d15e4daa96c697b5c91189d0538bdbe094646ddd0aa9e7246",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/home.rs": "77604a98c6bc593151a0194ffca61746e43b18a6eec18acd5e2f2e899b0363f4",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/imagine.rs": "a0ba69c85f99a84eba077c4def0589c8523b122e0c1494e5c4a15c71d311aba1",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/imagine_video.rs": "dcc06a48b040b78b90a4ade3d10049e3aa80916f7f5cf4119e308ffddddfb727",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/import_claude.rs": "4de5c28e0f68983332075289b9b80753ff41c0fc93c08304c94228d8a7257c05",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/jump.rs": "961ab5a1bd17a6ff883fe4c85155f2aa2bf8c9239a44dd741e971f39e19a2b5e",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/login.rs": "7ee54c8caf796dc68ab0a2aad8f8076c285ba6680a63b363bec1d03cfb8e6e76",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/logout.rs": "0fdd94b25c30afcaa65985c544e53965c83aafdd94a09aee1a4d6369b4bbc0b4",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/loop_cmd.rs": "e06ed31f61efc67f32975aaf8761bbe7a963d21c6ce7f0f86c45d3b7fd412cd0",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mcps.rs": "524e61231e5b55103aef871e4d365db51fcc6a10f724abd8dd517bb5f20fcdd9",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory.rs": "64cd07c7b0167c36d08cc6be0ff3de79afbeb04b4e067497a68b9bdf152d314e",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/memory_ops.rs": "7f6793f5272ea1c58a5a0a27a214aa5fa33b16ae07333b32efd9ef68344ca521",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/mod.rs": "e42ad870c117f69679c4e2fe9a57128f3a02394b9916eebd18fb0f17474c4ab7",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/model.rs": "1880daa28f6f6f54a3ed7ed34b687e228d2d570baa2dd79a92ea940b68ea8a75",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/model_config_cmd.rs": "f664d06581a06b9452b7c323b1eb49a00665630ec8c87bb6ce0863875a0eaa87",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/multiline.rs": "bd3d346ee8f5a3360fc6ba226af45a862592dd683547036ea542c7979b400457",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/new.rs": "d56c12d0740c2f2ccddc0486d74fa80307d1cdfcd8d823ffaed947a26ebe5b99",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/personas.rs": "a7f44e731e92bed9166314e03e0e6a51f62ee87d3c83c0183a7e52b321704b2e",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plan.rs": "88e72716bce16b377bca67113a6e0812b52bcacfe5e6dd26a2410a84adefaa12",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/plugin.rs": "499cc2d8af91e08d048ce2ff62e103738f9001b30c721ddbfc44b30c408f7a60",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/privacy.rs": "dfa091651127de20a7c25d5818ff36bd4adac567384d0b55b4909f83e4a6dd0f",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/queue.rs": "43417c080deb8bffa664e3030b01e2281b548ea5f25ddd811ed4e78716efb666",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/recap.rs": "15d1091973311c5ef41c2dbd3f95cd49f2408e41e167c2c3179fba299461cc1c",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/release_notes.rs": "e1fea0c7cc0a84e1b01b02319702dfbef5fc219bb7b199cb41766794be0e7bc7",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/remember.rs": "91efb140a2df63588b89da949ca6b5d501bb7fa4a2c7828bd2cd76261f464050",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/rename.rs": "e0ed6e9bbe31c8314d60846323fc23fe683106978cdb384cf4fb79241dda112e",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/resume.rs": "d678a07c6902aa9c56eae11ed65ed7357d48ace6c6850e2ad3141d5e5b29f190",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/rewind.rs": "bacf0c7668f51621bc2271419721baf3864c26417ee9e40d694e1c691a853bd6",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/screen_mode_switch.rs": "648426cf8309ea0ffab088671762210b8cd3651b5e040805e4a34af4dc7c2b03",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/scroll_debug.rs": "aa92a160e4cdd03d170300f0984e7e869336e6fede9708edd6f7f2fd778bad27",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/session_info.rs": "2588d78eb69eeb5f00f6a44143458293bc8dbc589d3c016a42af0d654d5e2e83",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/settings_cmd.rs": "d2ac10b3955defd66105871d2e0faba8c95a6e009a1c92d0ca2ea6e604cc0506",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/share.rs": "c3f549feccf9eca02acb0c667341c7ca12f2f8b89d86455179014d145bd99e5d",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/tasks.rs": "64df267f051f27b5e80e4a87a6be3018d006ad871804641a9c685562db1b5e65",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/theme.rs": "f2e1a7a20b06294aebae41b416297df588c9607bec7901004fab8e0a26f7b33f",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/timeline.rs": "9aaf2391a52517ae6f9cd13219f4002f99b133b57f206bf9dced5eb3bb26ad3f",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/timestamps.rs": "3c75936ac70b6d5b000864257a7c0dff4909a46a88adcd09f89ed1ab3792e407",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/toggle_mouse_reporting.rs": "0a657887682903d0f69605b90aa8406bcf07801b31a4865bbdd99710252bdc4f",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/transcript.rs": "db634e1a23f807d85f1ab1a00a04510e2894ae527c267610ff46a5b647fb43e7",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/tutorial.rs": "8eebafa916b2b8ca33e897ff99f0fc56f9b967e17d0a34a8718ed50347c52ed2",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/usage.rs": "b12b557870c166312a36d2d986c6b736c131e743de5afada4acbbe2349ee8562",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/view_plan.rs": "ac360a96e62aac9ddc8f6958ea7471f77be53c5c6e95cce6a4860ef95b3d6f1e",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/vim_mode.rs": "8b8186097040f53c84f72a3c9a110a850575aba3961b17a257f59ca4f3a20d46",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/voice.rs": "fca0a9798d2b15d2b9cbc46fa4f33a7a4a80d5c4fa3b59a1e42464a96e619a39",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/workflow.rs": "fb5fd572e54057f59c0f112494f66d2c82405dc742d996f73195e0e141c5010c",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/commands/workflows.rs": "14cdd7d3177825487689de107b3d198eae8d3e2e17d3d04b4091b88b3d4845c6",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/slash/registry.rs": "13c0fa0f7bf2daece6b491f11c5bbb44827b3e33b75f6eff669d7ce6881c0e24",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/document.rs": "ba35c32d49ce8a616a3ac0ab95bd752be0706090e03af9685d32f79a98390cb6",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/model_config/state.rs": "2b7743f46ec2389a9e1115203b695425970badd2b9297dbba274ad005db499f8",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/new_worktree_dialog.rs": "a66b572d935de29d1befe6e268b38e47041c279692ba0fff0f426421da796625",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/prompt_widget/mod.rs": "e05bade970499cf3d37332eda022920df6d6ce2e45db1819413c14dd345e922c",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/settings_modal/state.rs": "309dbc329edd8faa97a648980d33da3ad330dec2dea80b3b423b48d501df385a",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs": "46b3113cc455a16f54e29754fbd551bb5786a346aa49d4a1463ae5ba92be8208",
-    "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-shell-base/src/util/changelog.rs": "a9557937ff3632af72bde0470ec9012a3662ec1649d4b97e2b517ea3c91cddd5",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/acp/aster_spawn.rs": "7ccf30d7c8a4ebaa963a47cabec6676b158f5d2fb9e9c5df8bf45a6d87f2ec0c",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/actions/defaults.rs": "f64553eff089b85c04d65d3ce30a8e6b1218d2c950ae11b07b6d1ba3502c405e",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/interactions.rs": "61e15ca6f00fc41b56021ab06533dbb503ac469399689851eceae1fd643cd67d",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mcp.rs": "45ae45df605dada6a761c8dd2bee167f7b014f85fb14f55302ebaf684c4c9add",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/mod.rs": "e53c6c25451c7ef66547f1588fbbe86b20acd9ea45777c32fdfb8d9d36a578b2",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/routing.rs": "3bfce242e45f6849eb342bd98a6f50805fc20f9400706b5880381a4a7d753410",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/acp_handler/session_notification.rs": "12f85872157bbbe293a5e177abb1ad6cdb6752ec91c52d06da65b8e5a3178edc",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/actions.rs": "3276031b4c0fbf72adb178e539bcbbfb8a264373ab9a2f725f4d307f495c1b44",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs": "6e1e53122d591ad25b7afb89599f501e84f14d0217d78a3e7d2009507abfa5f9",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/import_claude.rs": "4dc608c27ee0c0c1e532ef04bf3ae4a2a3f3e93dfa711401b3364eb865ddf33f",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/interject.rs": "0ced99ab95ce225064edca31da2498fdfb08f2cbc4626f9de01bcb9884841854",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/permissions.rs": "baf4a3926429facac75e5297bf7527a25e9e8eaf86caea2756345393f3979226",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/prompt.rs": "799febfdadc15bd9e0f87970a9642fd3c4264dcea733bb37d9d02dead31ef4bb",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs": "49dee409e29a9ae06e490591586a84a25ce6f81d6bce02f3904bc5ff515186d9",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/lifecycle.rs": "b57b20d9dd0c9d505b3dd3836cc02612ce12eec3ae0e5010b0cb57c2799257f3",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/session/mod.rs": "b2bdbc5810a998f3c766f92192733c1af52e10af6795cc765b0dd86b4e636c59",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/settings/setters.rs": "5e20706e2fbe596e7ddf016136d03aa685ab1289f1392bf6048f7ae906fcf089",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/turn.rs": "173c4d53d108b9c7c07f008e9852fbcbdd47082e7b96af6e45ed7b97e2085db3",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/voice.rs": "03c55738197a9c1e6b93b877eab215bf1c01cfa6a22873bf2381f9a086f0e2c6",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/event_loop.rs": "ba2b38cabae9274a5fa047f4fcae820c274c987ff792f404e66dd23b7ffad302",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/mode_switch.rs": "2a6cf9d867e91d41b6109f933f1e493288a94b6adde6fc76362f73baa83faaa8",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/settings/defs.rs": "20eaaa8e97551d941eaeef94f80c1e300fa0b3b487d756665c9b9e86b275a356",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/always_approve.rs": "5bf61564d119dfa84a3f4646b4b8d3ddd74684efac1a393e1a069cf3d2fce3f6",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/announcements.rs": "26b8f03cfceeea43ab66db16719aa3b25f4cebe37e81be177684a11cd35e0f6a",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/auto.rs": "63bbc03bddfe305007ef3781ac93ba1e6767595e21f976aa33c0704278481bd4",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/btw.rs": "c77b864935786b6fce41275143a886bf734c513909a202ecfc7387e983a77b73",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/cd.rs": "2ef95aa24db5f0db8fe05a97e2350a881fb37abf16d26937f3ce16196ca970ab",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/compact.rs": "73b47b7c82d87ac67be90e21d3bf3f7e72cb53d3a3a7f560b65b1923c4500adf",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/compact_mode.rs": "592a78831f6e27ec661c969cf348e6bd33a421444fcb859e576bdbecab6d5d68",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/config_agents.rs": "accf4c08072c5c4cf492998c6bdf302f09d0e542a2b773e1bad25484cafbe33a",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/context.rs": "65a405cb9acde7d2dfd9c91abcce55a839c10dd8ec7da3829fb0a9dadcb6b594",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/copy.rs": "eea6409afa00f5ffab657bc21fb712b2520c5b064b3ef26b46f9e4d80d3862e6",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/dashboard.rs": "c9f247a80187fec1b6e6dce9df6f420183b6580f62d5281323ccd76ac91b6619",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/debug.rs": "a8ee77fcc6c8ca01d27ce6f2c92c560dba654a9c42bcb963f486826c7e4758f2",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/delete.rs": "f293f8f2df24f9281017c68c187d9afe7933fd22bbf3272c23b7277158661cd5",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/docs.rs": "a451252c10b4fa157ed7d7add275dc9fee8be3a4160d001eb81d523d5224e446",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/doctor.rs": "97ea2fca7863dd80281d1ccdfacf41c29dbd32c4ae63003e79a01241b2eb9a01",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/edit_prompt.rs": "12664441c0a56d73f0f85025e8b2dad15c8f52a611dd00866522a9a652f5a0c6",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/effort.rs": "b9c994ea31d297ad713411a4f56b05035a0f316f631fe139bf6792360a4c1d0d",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/exit.rs": "d0d983e8e3c52ee10776ee17ece85e8804a734eda497a7dbc36426bd7de99571",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/expand.rs": "ed962f7ee98e669c8d47fdfdacf693db21d1fe7e0bdc517502cb0a2f56273811",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/export.rs": "7d32af063273c0496a20a59f74ad53622905ea9cdcf4b42f756418bc855eff85",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/feedback.rs": "50545dcad81fe274d8c3607990102a51aea5d918be8ee35de7e268113da99fa2",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/find.rs": "bb47930bf458a7b3e64942f95cb1e485ddc8bc495f84b38e08c2c5e4688fc86e",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/fork.rs": "809c4dbd661dcab638719d391aecf7a111e210cfeae374b00a25e58da2ea416d",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/gboom.rs": "19eb95fae3673fc5f5966c4767f70927bb9962d8e37d15ba28320fc9781b6be3",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/help.rs": "9cdda2916b7a27b9f5228c1c0f7f0adf188f4b7c77e20d695ca661c6fb914e36",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/history.rs": "483e1f6147e7d57d15e4daa96c697b5c91189d0538bdbe094646ddd0aa9e7246",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/home.rs": "77604a98c6bc593151a0194ffca61746e43b18a6eec18acd5e2f2e899b0363f4",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/imagine.rs": "a0ba69c85f99a84eba077c4def0589c8523b122e0c1494e5c4a15c71d311aba1",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/imagine_video.rs": "dcc06a48b040b78b90a4ade3d10049e3aa80916f7f5cf4119e308ffddddfb727",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/import_claude.rs": "4de5c28e0f68983332075289b9b80753ff41c0fc93c08304c94228d8a7257c05",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/jump.rs": "961ab5a1bd17a6ff883fe4c85155f2aa2bf8c9239a44dd741e971f39e19a2b5e",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/login.rs": "7ee54c8caf796dc68ab0a2aad8f8076c285ba6680a63b363bec1d03cfb8e6e76",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/logout.rs": "0fdd94b25c30afcaa65985c544e53965c83aafdd94a09aee1a4d6369b4bbc0b4",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/loop_cmd.rs": "e06ed31f61efc67f32975aaf8761bbe7a963d21c6ce7f0f86c45d3b7fd412cd0",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mcps.rs": "524e61231e5b55103aef871e4d365db51fcc6a10f724abd8dd517bb5f20fcdd9",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory.rs": "64cd07c7b0167c36d08cc6be0ff3de79afbeb04b4e067497a68b9bdf152d314e",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/memory_ops.rs": "7f6793f5272ea1c58a5a0a27a214aa5fa33b16ae07333b32efd9ef68344ca521",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/mod.rs": "e42ad870c117f69679c4e2fe9a57128f3a02394b9916eebd18fb0f17474c4ab7",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/model.rs": "1880daa28f6f6f54a3ed7ed34b687e228d2d570baa2dd79a92ea940b68ea8a75",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/model_config_cmd.rs": "f664d06581a06b9452b7c323b1eb49a00665630ec8c87bb6ce0863875a0eaa87",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/multiline.rs": "bd3d346ee8f5a3360fc6ba226af45a862592dd683547036ea542c7979b400457",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/new.rs": "d56c12d0740c2f2ccddc0486d74fa80307d1cdfcd8d823ffaed947a26ebe5b99",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/personas.rs": "a7f44e731e92bed9166314e03e0e6a51f62ee87d3c83c0183a7e52b321704b2e",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plan.rs": "88e72716bce16b377bca67113a6e0812b52bcacfe5e6dd26a2410a84adefaa12",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/plugin.rs": "499cc2d8af91e08d048ce2ff62e103738f9001b30c721ddbfc44b30c408f7a60",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/privacy.rs": "dfa091651127de20a7c25d5818ff36bd4adac567384d0b55b4909f83e4a6dd0f",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/queue.rs": "43417c080deb8bffa664e3030b01e2281b548ea5f25ddd811ed4e78716efb666",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/recap.rs": "15d1091973311c5ef41c2dbd3f95cd49f2408e41e167c2c3179fba299461cc1c",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/release_notes.rs": "e1fea0c7cc0a84e1b01b02319702dfbef5fc219bb7b199cb41766794be0e7bc7",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/remember.rs": "91efb140a2df63588b89da949ca6b5d501bb7fa4a2c7828bd2cd76261f464050",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/rename.rs": "e0ed6e9bbe31c8314d60846323fc23fe683106978cdb384cf4fb79241dda112e",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/resume.rs": "d678a07c6902aa9c56eae11ed65ed7357d48ace6c6850e2ad3141d5e5b29f190",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/rewind.rs": "bacf0c7668f51621bc2271419721baf3864c26417ee9e40d694e1c691a853bd6",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/screen_mode_switch.rs": "648426cf8309ea0ffab088671762210b8cd3651b5e040805e4a34af4dc7c2b03",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/scroll_debug.rs": "aa92a160e4cdd03d170300f0984e7e869336e6fede9708edd6f7f2fd778bad27",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/session_info.rs": "2588d78eb69eeb5f00f6a44143458293bc8dbc589d3c016a42af0d654d5e2e83",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/settings_cmd.rs": "d2ac10b3955defd66105871d2e0faba8c95a6e009a1c92d0ca2ea6e604cc0506",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/share.rs": "c3f549feccf9eca02acb0c667341c7ca12f2f8b89d86455179014d145bd99e5d",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/tasks.rs": "64df267f051f27b5e80e4a87a6be3018d006ad871804641a9c685562db1b5e65",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/theme.rs": "f2e1a7a20b06294aebae41b416297df588c9607bec7901004fab8e0a26f7b33f",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/timeline.rs": "9aaf2391a52517ae6f9cd13219f4002f99b133b57f206bf9dced5eb3bb26ad3f",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/timestamps.rs": "3c75936ac70b6d5b000864257a7c0dff4909a46a88adcd09f89ed1ab3792e407",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/toggle_mouse_reporting.rs": "0a657887682903d0f69605b90aa8406bcf07801b31a4865bbdd99710252bdc4f",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/transcript.rs": "db634e1a23f807d85f1ab1a00a04510e2894ae527c267610ff46a5b647fb43e7",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/tutorial.rs": "8eebafa916b2b8ca33e897ff99f0fc56f9b967e17d0a34a8718ed50347c52ed2",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/usage.rs": "b12b557870c166312a36d2d986c6b736c131e743de5afada4acbbe2349ee8562",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/view_plan.rs": "ac360a96e62aac9ddc8f6958ea7471f77be53c5c6e95cce6a4860ef95b3d6f1e",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/vim_mode.rs": "8b8186097040f53c84f72a3c9a110a850575aba3961b17a257f59ca4f3a20d46",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/voice.rs": "fca0a9798d2b15d2b9cbc46fa4f33a7a4a80d5c4fa3b59a1e42464a96e619a39",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/workflow.rs": "fb5fd572e54057f59c0f112494f66d2c82405dc742d996f73195e0e141c5010c",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/commands/workflows.rs": "14cdd7d3177825487689de107b3d198eae8d3e2e17d3d04b4091b88b3d4845c6",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/slash/registry.rs": "13c0fa0f7bf2daece6b491f11c5bbb44827b3e33b75f6eff669d7ce6881c0e24",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/document.rs": "ba35c32d49ce8a616a3ac0ab95bd752be0706090e03af9685d32f79a98390cb6",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/model_config/state.rs": "2b7743f46ec2389a9e1115203b695425970badd2b9297dbba274ad005db499f8",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/new_worktree_dialog.rs": "a66b572d935de29d1befe6e268b38e47041c279692ba0fff0f426421da796625",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/prompt_widget/mod.rs": "e05bade970499cf3d37332eda022920df6d6ce2e45db1819413c14dd345e922c",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/settings_modal/state.rs": "309dbc329edd8faa97a648980d33da3ad330dec2dea80b3b423b48d501df385a",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs": "46b3113cc455a16f54e29754fbd551bb5786a346aa49d4a1463ae5ba92be8208",
+    "apps/code/vendor/aster-ui/crates/codegen/aster-shell-base/src/util/changelog.rs": "a9557937ff3632af72bde0470ec9012a3662ec1649d4b97e2b517ea3c91cddd5",
     "apps/code/core/src/tools/builtin/read.rs": "702da2a9d6da24acdf6d62f4a207b2ecc56b633b1eaa5113042ec7b0bcb23ec8",
     "apps/code/core/src/tools/builtin/ls.rs": "316277c5d9eca14114e9f70e1a7cc2bf0e4c5d6439d87d82b2c9580d5877a82e",
     "apps/code/core/src/tools/builtin/write.rs": "c9b67da7c8cb2b919908030e52a1e0db2c211aac010d715ace2cbb80c72c6ac1",
@@ -1285,9 +1285,9 @@
     "apps/code/acp/tests/tui_913_real_llm/acp_trace_proxy_tests.py": "cf0cf5457fb6b32129ea06c7515af46ffcd08451acd246a2b48c18f54d524038",
     "apps/code/scripts/verify_tui_coding_evidence.py": "97526aba979d3f1083b524f0a8486ba71ab9a0474c5438c0d459b4c8f3f3d60f",
     "apps/code/scripts/tui_coding_evidence_tests.py": "a3d7c08c2195e203d7cfbf1f5a9dfc66fe727e58dd1927125252a6e801aed6a8",
-    "apps/code/acp/tests/a3s-test/native_refusal_recovery.acl": "ec86704f9d6d3f6c36059a51dac8108df83d2b3b8cea74b20e4670f0e20e1b65",
-    "apps/code/acp/tests/a3s-test/native_bash_refusal_recovery.acl": "b0df97f1b1971f18b5a38618b3662c7330f2c5d52f52ec50306bde2b2a1166b1",
-    "apps/code/acp/tests/a3s-test/native_background_refusal_recovery.acl": "7be33fe7c0bdc820232fe806ad19a388ccbf6e663d208b1d191dc9922fe1d051",
+    "apps/code/acp/tests/aster-test/native_refusal_recovery.acl": "ec86704f9d6d3f6c36059a51dac8108df83d2b3b8cea74b20e4670f0e20e1b65",
+    "apps/code/acp/tests/aster-test/native_bash_refusal_recovery.acl": "b0df97f1b1971f18b5a38618b3662c7330f2c5d52f52ec50306bde2b2a1166b1",
+    "apps/code/acp/tests/aster-test/native_background_refusal_recovery.acl": "7be33fe7c0bdc820232fe806ad19a388ccbf6e663d208b1d191dc9922fe1d051",
     "apps/code/scripts/tui_refusal_e2e.py": "70059fd77945b9b430744e117ebd9bb2ef25eaedb5f002e3556aa3d64092c42e",
     "apps/code/scripts/tui_refusal_evidence_tests.py": "503d0a72bf38fa3e6c0815a0dd9685248a997aa3c0f1e69c26ab6f6fa916a796"
   },
@@ -1300,9 +1300,9 @@
       "coverage": "TL23",
       "observation": "observed-display",
       "source": [
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs"
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs"
       ]
     },
     {
@@ -1312,9 +1312,9 @@
       "coverage": "SE03",
       "observation": "observed-display",
       "source": [
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs"
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs"
       ]
     },
     {
@@ -1324,10 +1324,10 @@
       "coverage": "UI16",
       "observation": "observed-display",
       "source": [
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-shell-base/src/util/changelog.rs"
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-shell-base/src/util/changelog.rs"
       ]
     },
     {
@@ -1337,9 +1337,9 @@
       "coverage": "UI15",
       "observation": "observed-display",
       "source": [
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs"
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs"
       ]
     },
     {
@@ -1349,9 +1349,9 @@
       "coverage": "GT27",
       "observation": "source-conditional; runtime reachability unqualified",
       "source": [
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs"
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs"
       ]
     },
     {
@@ -1361,9 +1361,9 @@
       "coverage": "GT10",
       "observation": "observed-advertisement; slash command disabled",
       "source": [
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/views/welcome/mod.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/app_view.rs",
-        "apps/code/vendor/a3s-code-ui/crates/codegen/a3s-code-pager/src/app/dispatch/router.rs"
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/views/welcome/mod.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/app_view.rs",
+        "apps/code/vendor/aster-ui/crates/codegen/aster-pager/src/app/dispatch/router.rs"
       ]
     }
   ],

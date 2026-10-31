@@ -1,7 +1,7 @@
 // Prompt Registry
 //
 // Central registry for default system prompts and prompt templates used in
-// A3S Code. Every LLM-facing default pack is externalized here as a
+// Aster Code. Every LLM-facing default pack is externalized here as a
 // compile-time `include_str!` so the shipping defaults are visible in one place.
 //
 // Ownership (`HARNESS-CONV6`):
@@ -492,7 +492,7 @@ pub struct SystemPromptSlots {
     /// Custom role/identity prepended before the core prompt.
     ///
     /// Example: "You are a senior Python developer specializing in FastAPI."
-    /// When set, replaces the default "You are A3S Code, an expert AI coding agent" line.
+    /// When set, replaces the default "You are Aster Code, an expert AI coding agent" line.
     pub role: Option<String>,
 
     /// Custom coding guidelines appended after the core prompt sections.

@@ -7,7 +7,7 @@ mod binaries;
 use std::process::Stdio;
 use std::time::Duration;
 
-use a3s_use_reconcile::{
+use aster_use_reconcile::{
     files_sha256, PackageFile, PackageSpec, Payload, ReconcileStore, SurfaceKind, SurfaceSpec,
 };
 use serde_json::{json, Value};
@@ -85,9 +85,9 @@ providers "mock" {
         .current_dir(&workspace)
         .env_clear()
         .env("PATH", std::env::var_os("PATH").unwrap_or_default())
-        .env("A3S_DISABLE_CC_SWITCH", "1")
-        .env("A3S_DISABLE_GROK_ACCOUNT", "1")
-        .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CC_SWITCH", "1")
+        .env("ASTER_DISABLE_GROK_ACCOUNT", "1")
+        .env("ASTER_DISABLE_CURSOR_ACCOUNT", "1")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
@@ -100,7 +100,7 @@ providers "mock" {
     assert!(initialized.get("result").is_some(), "{initialized}");
     for (id, method) in [(2, "session/new"), (3, "session/load")] {
         let mut params =
-            json!({"cwd":foreign,"mcpServers":[],"_meta":{"a3sPluginSelection":selected.cursor()}});
+            json!({"cwd":foreign,"mcpServers":[],"_meta":{"asterPluginSelection":selected.cursor()}});
         if method == "session/load" {
             params["sessionId"] = "foreign-session".into();
         }
@@ -126,17 +126,17 @@ providers "mock" {
                 "{refused}"
             );
         }
-        assert!(!foreign.join(".a3s").exists());
+        assert!(!foreign.join(".aster").exists());
     }
-    let opened = rpc(&mut input, &mut output, json!({"jsonrpc":"2.0","id":4,"method":"session/new","params":{"cwd":std::fs::canonicalize(&workspace).unwrap(),"mcpServers":[],"_meta":{"a3sPluginSelection":selected.cursor()}}})).await;
+    let opened = rpc(&mut input, &mut output, json!({"jsonrpc":"2.0","id":4,"method":"session/new","params":{"cwd":std::fs::canonicalize(&workspace).unwrap(),"mcpServers":[],"_meta":{"asterPluginSelection":selected.cursor()}}})).await;
     assert!(
         opened["result"]["sessionId"]
             .as_str()
             .is_some_and(|id| !id.is_empty()),
         "{opened}"
     );
-    assert!(workspace.join(".a3s").is_dir());
-    assert!(!foreign.join(".a3s").exists());
+    assert!(workspace.join(".aster").is_dir());
+    assert!(!foreign.join(".aster").exists());
     child.kill().await.unwrap();
     child.wait().await.unwrap();
 }

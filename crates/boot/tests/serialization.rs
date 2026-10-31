@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootRequest, BootResponse, ControllerDefinition, HttpMethod, RouteDefinition,
     SerializationInterceptor, SerializationOptions,
 };

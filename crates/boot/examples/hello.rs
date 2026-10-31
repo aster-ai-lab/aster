@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     AxumAdapter, BootApplication, BootResponse, ControllerDefinition, Module, ModuleRef,
     ProviderDefinition, Result,
 };
@@ -8,7 +8,7 @@ struct GreetingService;
 
 impl GreetingService {
     fn hello(&self) -> &'static str {
-        "Hello from A3S Boot"
+        "Hello from Aster Boot"
     }
 }
 

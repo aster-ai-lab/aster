@@ -2,7 +2,7 @@
 
 use super::{safe_search_result_url, sanitize_http_urls};
 use crate::tools::types::ToolErrorKind;
-use a3s_search::{EngineFailure, EngineOutcome, SearchResults};
+use aster_search::{EngineFailure, EngineOutcome, SearchResults};
 use std::time::Duration;
 
 pub(super) fn failure_reason(kind: &str) -> &'static str {

@@ -291,7 +291,7 @@ mod tests {
     use tokio::net::TcpListener;
 
     fn socks_policy(host: &str, port: u16) -> SandboxPolicy {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_socks = true;
         policy.network.allow.push(NetworkAllowRule {
             host: host.into(),
@@ -378,7 +378,7 @@ mod tests {
 
     #[tokio::test]
     async fn path_prefixed_rule_does_not_authorize_socks() {
-        let mut policy = SandboxPolicy::a3s_bash_baseline();
+        let mut policy = SandboxPolicy::aster_bash_baseline();
         policy.features.mediated_socks = true;
         policy.network.allow.push(NetworkAllowRule {
             host: "127.0.0.1".into(),

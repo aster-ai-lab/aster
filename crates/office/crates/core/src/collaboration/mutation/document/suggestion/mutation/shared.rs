@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use yrs::types::Attrs;
 use yrs::{Any, Out, ReadTxn, Text, Xml, XmlElementRef, XmlFragment, XmlOut, XmlTextRef};
 
@@ -301,25 +301,25 @@ pub(super) fn validate_text(value: &str, field: &str) -> UseResult<u32> {
     ))
 }
 
-pub(super) fn match_conflict(message: impl Into<String>) -> a3s_use_core::UseError {
+pub(super) fn match_conflict(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_match_conflict", message).with_suggestion(
         "Read the latest native collaboration projection before retrying the Document suggestion mutation.",
     )
 }
 
-pub(super) fn identity_conflict(message: impl Into<String>) -> a3s_use_core::UseError {
+pub(super) fn identity_conflict(message: impl Into<String>) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_identity_conflict", message)
 }
 
-pub(super) fn content_invalid(message: String) -> a3s_use_core::UseError {
+pub(super) fn content_invalid(message: String) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.content_invalid", message)
 }
 
-fn structure_conflict(message: &str) -> a3s_use_core::UseError {
+fn structure_conflict(message: &str) -> aster_use_core::UseError {
     collaboration_error("office.collaboration.mutation_structure_conflict", message)
 }
 
-fn range_conflict(start: u32, end: u32, length: u32) -> a3s_use_core::UseError {
+fn range_conflict(start: u32, end: u32, length: u32) -> aster_use_core::UseError {
     collaboration_error(
         "office.collaboration.mutation_range_invalid",
         "The Document suggestion range is outside the current paragraph or splits a UTF-16 surrogate pair.",

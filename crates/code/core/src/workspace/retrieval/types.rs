@@ -102,7 +102,7 @@ pub struct ChunkCatalogLimits {
 
 /// Local full-text index implementation used by the workspace chunk catalog.
 ///
-/// The normal product build selects the pure-Rust `a3s-vec` FTS engine. A
+/// The normal product build selects the pure-Rust `aster-vec` FTS engine. A
 /// dependency-free portable scorer remains available only for minimal builds
 /// that intentionally disable the engine feature; it keeps the model-free
 /// `bm25` capability usable in constrained environments and is reported
@@ -110,16 +110,16 @@ pub struct ChunkCatalogLimits {
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum WorkspaceLexicalEngine {
-    #[cfg_attr(feature = "a3s-vec-fts", default)]
-    A3sVec,
-    #[cfg_attr(not(feature = "a3s-vec-fts"), default)]
+    #[cfg_attr(feature = "aster-vec-fts", default)]
+    AsterVec,
+    #[cfg_attr(not(feature = "aster-vec-fts"), default)]
     Portable,
 }
 
 impl WorkspaceLexicalEngine {
     pub const fn stable_id(self) -> &'static str {
         match self {
-            Self::A3sVec => "a3s_vec_fts_v1",
+            Self::AsterVec => "aster_vec_fts_v1",
             Self::Portable => "portable_bm25_v1",
         }
     }
@@ -182,7 +182,7 @@ pub enum WorkspaceIndexError {
     ConcurrentUpdate { expected: u64, actual: u64 },
     #[error("workspace retrieval query is invalid: {0}")]
     InvalidQuery(String),
-    #[error("persistent a3s-vec index failed: {message}")]
+    #[error("persistent aster-vec index failed: {message}")]
     IndexBuildFailed {
         /// Whether retrying the same snapshot can plausibly succeed
         /// (environmental failures) as opposed to deterministic

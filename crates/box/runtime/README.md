@@ -1,11 +1,11 @@
-# A3S Box Runtime
+# Aster Box Runtime
 
-Local MicroVM, Sandbox, and shared A3S Runtime provider implementation for A3S
+Local MicroVM, Sandbox, and shared Aster Runtime provider implementation for Aster
 Box.
 
 ## Overview
 
-This package provides the actual runtime implementation for A3S Box, including:
+This package provides the actual runtime implementation for Aster Box, including:
 
 - **VM Management**: MicroVM lifecycle management with libkrun
 - **OCI Image Support**: Pull, store, and extract OCI container images
@@ -13,37 +13,37 @@ This package provides the actual runtime implementation for A3S Box, including:
 - **gRPC Communication**: Guest agent health checking over Unix socket
 - **Filesystem Operations**: virtio-fs mount management
 - **Metrics Collection**: Runtime metrics and monitoring
-- **A3S Runtime Provider**: generation-fenced Tasks and Services over Linux
+- **Aster Runtime Provider**: generation-fenced Tasks and Services over Linux
   MicroVM and explicit Sandbox backends
 - **Transient Secrets**: caller-authorized environment and file Secret
   materialization without durable plaintext
 
 ## Architecture
 
-The runtime package builds on top of `a3s-box-core` which provides foundational types:
+The runtime package builds on top of `aster-box-core` which provides foundational types:
 
 ```
 ┌─────────────────────────────────────┐
-│         a3s-box-runtime             │
+│         aster-box-runtime             │
 │  (VM, OCI, Rootfs, gRPC, etc.)     │
 └─────────────────────────────────────┘
                  │
                  ▼
 ┌─────────────────────────────────────┐
-│          a3s-box-core               │
+│          aster-box-core               │
 │  (Config, Error, Event)            │
 └─────────────────────────────────────┘
 ```
 
-## Shared A3S Runtime provider
+## Shared Aster Runtime provider
 
-`BoxRuntimeDriver` implements the shared `a3s-runtime` contract. It maps
+`BoxRuntimeDriver` implements the shared `aster-runtime` contract. It maps
 digest-pinned OCI Tasks and Services onto the canonical local execution manager
 instead of creating a second Box lifecycle path. The driver owns provider
 identity, generation fencing, recovery, Service endpoints, health observations,
 logs, exec, resource controls, and cleanup.
 
-The provider pins `a3s-runtime` 0.5.0 at
+The provider pins `aster-runtime` 0.5.0 at
 `aeb1dd96b5d3f823464d51fcabe99b6052874aee` and advertises its atomic
 `ServiceLifecycle` feature. `RuntimeUnitSpec::health` remains readiness for
 traffic admission. `RuntimeServiceLifecycle::liveness` independently drives
@@ -80,11 +80,11 @@ Callers that need Runtime Secrets compose the driver with exactly one
 ```rust
 use std::sync::Arc;
 
-use a3s_box_core::ExecutionIsolation;
-use a3s_box_runtime::{BoxRuntimeDriver, BoxRuntimeDriverConfig};
+use aster_box_core::ExecutionIsolation;
+use aster_box_runtime::{BoxRuntimeDriver, BoxRuntimeDriverConfig};
 
 let config = BoxRuntimeDriverConfig {
-    secret_root: "/run/a3s-box/runtime-secrets".into(),
+    secret_root: "/run/aster-box/runtime-secrets".into(),
     ..Default::default()
 };
 let driver = BoxRuntimeDriver::new_with_isolation(config, ExecutionIsolation::Sandbox)?
@@ -113,7 +113,7 @@ virtio-fs directory staging copy stays inside that tmpfs scope. The ordinary
 disk-backed `.filemounts` fallback is never used for managed Secret sources.
 
 Environment, file, and registry credential targets are supported. Environment
-values use a non-sensitive `A3S_BOX_SECRET_ENV_V1` binding manifest that Guest
+values use a non-sensitive `ASTER_BOX_SECRET_ENV_V1` binding manifest that Guest
 Init validates and consumes immediately before process creation. File material
 uses the exact requested mode. A registry credential is resolved only when the
 image is absent from the local cache, handed through a per-execution in-memory
@@ -133,9 +133,9 @@ the workload and therefore never become log-redaction inputs.
 
 ## Cloud image-build boundary
 
-`BoxBuildPlan` is the closed A3S ACL admission contract for Cloud-owned image
+`BoxBuildPlan` is the closed Aster ACL admission contract for Cloud-owned image
 build intent. It validates one `build "oci"` block, produces canonical ACL
-bytes and a stable SHA-256 digest through `a3s-acl`, confines both the context
+bytes and a stable SHA-256 digest through `aster-acl`, confines both the context
 and build file to one canonical source root, and compiles into the existing
 `BuildConfig`. The recorded-build API adds supervision by extending the same
 native engine, receipt journal, and `ImageStore`; it does not introduce another
@@ -151,7 +151,7 @@ build "oci" {
   file = "Dockerfile"
   network = "none"
   platform = "linux/amd64"
-  schema = "a3s.box.build-plan.v1"
+  schema = "aster.box.build-plan.v1"
 }
 ```
 
@@ -167,8 +167,8 @@ equivalent isolated network boundary.
 use std::path::Path;
 use std::sync::Arc;
 
-use a3s_box_core::OperationId;
-use a3s_box_runtime::{
+use aster_box_core::OperationId;
+use aster_box_runtime::{
     execute_recorded_build_plan, BoxBuildPlan, BuildOperationIdentity,
 };
 
@@ -180,7 +180,7 @@ let identity = BuildOperationIdentity::new(
 let result = execute_recorded_build_plan(
     &identity,
     &plan,
-    Path::new("/srv/a3s/source"),
+    Path::new("/srv/aster/source"),
     true,
     Arc::clone(&image_store),
 )
@@ -236,12 +236,12 @@ manifest store, or publisher.
 ```rust
 use std::sync::Arc;
 
-use a3s_box_runtime::{
+use aster_box_runtime::{
     assemble_recorded_build_outputs, BuildOutputAssembly, BuildOutputAssemblyInput,
 };
 
 let assembly = BuildOutputAssembly::new(
-    "registry.example/a3s/service:build-018f",
+    "registry.example/aster/service:build-018f",
     source_artifact_digest,
     vec![
         BuildOutputAssemblyInput::new(amd64_plan, amd64_result.receipt),
@@ -264,8 +264,8 @@ end-to-end SPDX/SLSA signing evidence remain separate integration gates.
 Manages the microVM lifecycle:
 
 ```rust
-use a3s_box_runtime::VmManager;
-use a3s_box_core::{BoxConfig, EventEmitter};
+use aster_box_runtime::VmManager;
+use aster_box_core::{BoxConfig, EventEmitter};
 
 let config = BoxConfig::default();
 let emitter = EventEmitter::new();
@@ -298,7 +298,7 @@ The runtime communicates with the guest agent over Unix socket (bridged to vsock
 - Health checks
 
 Agent-level operations (sessions, generation, skills) are handled by the
-a3s-code crate, not the Box runtime.
+aster crate, not the Box runtime.
 
 ## License
 

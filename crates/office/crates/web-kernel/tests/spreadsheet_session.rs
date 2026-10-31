@@ -1,4 +1,4 @@
-use a3s_office_web_kernel::{
+use aster_office_web_kernel::{
     calculate_spreadsheet_session, SpreadsheetCalculationSession,
     SpreadsheetCalculationSessionCellChange, SpreadsheetCalculationSessionRequest,
     SpreadsheetCalculationSessionScope, SpreadsheetCalculationSessionUpdate, SpreadsheetCoordinate,
@@ -229,7 +229,7 @@ fn keeps_unresolved_formulas_and_their_dependents_conservatively_dirty() {
                     name: "Sheet 1".into(),
                     cells: vec![
                         input_cell(0, 0, None, number(2.0)),
-                        input_cell(0, 1, Some("=A3S_UNKNOWN(A1)"), number(41.0)),
+                        input_cell(0, 1, Some("=ASTER_UNKNOWN(A1)"), number(41.0)),
                         input_cell(0, 2, Some("=B1+1"), number(42.0)),
                     ],
                     tables: vec![],

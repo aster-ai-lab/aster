@@ -1562,7 +1562,7 @@ function isSectionMarker(node: ChildNode, index: number): boolean {
 }
 
 function sectionMarker(index: number): string {
-  return `__A3S_WORK_DOCUMENT_SECTION_${index + 1}__`;
+  return `__ASTER_WORK_DOCUMENT_SECTION_${index + 1}__`;
 }
 
 function parseSectionBreak(

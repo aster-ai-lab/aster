@@ -1,10 +1,10 @@
 {
-  "schema": "a3s.runtime.unit-spec.v4",
+  "schema": "aster.runtime.unit-spec.v4",
   "unit_id": "execution:function-invocation:1",
   "generation": 1,
   "class": "task",
   "artifact": {
-    "uri": "oci://registry.example/a3s/function@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "uri": "oci://registry.example/aster/function@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
     "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
     "media_type": "application/vnd.oci.image.manifest.v1+json"
   },

@@ -1,4 +1,4 @@
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::{
     direct_children, ensure_no_merges, ensure_rectangular_rows, frame_extents, invalid_table,

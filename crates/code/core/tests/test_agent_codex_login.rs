@@ -3,7 +3,7 @@
 //! Run from `crates/code`:
 //!
 //! ```bash
-//! cargo test -p a3s-code-core --test test_agent_codex_login \
+//! cargo test -p aster-core --test test_agent_codex_login \
 //!   -- --ignored --nocapture --test-threads=1
 //! ```
 
@@ -12,11 +12,11 @@ mod support;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::hitl::AutoApproveConfirmation;
-use a3s_code_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
-use a3s_code_core::permissions::PermissionPolicy;
-use a3s_code_core::store::{MemorySessionStore, SessionStore};
-use a3s_code_core::{
+use aster_core::hitl::AutoApproveConfirmation;
+use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
+use aster_core::permissions::PermissionPolicy;
+use aster_core::store::{MemorySessionStore, SessionStore};
+use aster_core::{
     Agent, CodeConfig, ContentBlock, LlmClient, Message, PlanningMode, SessionOptions, TokenUsage,
 };
 use support::codex_login_client::{default_codex_model, CodexLoginClient};
@@ -53,8 +53,8 @@ async fn agent() -> Agent {
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires local Codex login and network access"]
 async fn codex_login_auto_compaction_retains_the_goal_and_continues() {
-    use a3s_code_core::fact_control::{read_workspace_facts, thread_for_session};
-    use a3s_code_core::AgentEvent;
+    use aster_core::fact_control::{read_workspace_facts, thread_for_session};
+    use aster_core::AgentEvent;
 
     let workspace = tempfile::tempdir().expect("isolated workspace");
     let session_id = "codex-context-compaction";
@@ -66,7 +66,7 @@ async fn codex_login_auto_compaction_retains_the_goal_and_continues() {
                 SessionOptions::new()
                     .with_session_id(session_id)
                     .with_llm_client(codex_client(session_id))
-                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
                     .with_permission_policy(PermissionPolicy::new())
                     .with_read_only_session(true)
                     .with_planning_mode(PlanningMode::Disabled)
@@ -147,7 +147,7 @@ async fn codex_login_agent_reads_workspace_and_converges() {
     let workspace = tempfile::tempdir().expect("workspace");
     std::fs::write(
         workspace.path().join("evidence.txt"),
-        "The verification token is A3S_CODEX_AGENT_OK.\n",
+        "The verification token is ASTERX_AGENT_OK.\n",
     )
     .expect("write fixture");
     let store: Arc<dyn SessionStore> = Arc::new(MemorySessionStore::new());
@@ -178,7 +178,7 @@ async fn codex_login_agent_reads_workspace_and_converges() {
     .expect("Codex AgentLoop call");
 
     assert!(
-        result.text.contains("A3S_CODEX_AGENT_OK"),
+        result.text.contains("ASTERX_AGENT_OK"),
         "final answer must contain fixture evidence: {}",
         result.text
     );
@@ -186,7 +186,7 @@ async fn codex_login_agent_reads_workspace_and_converges() {
     assert!(result.usage.total_tokens > 0, "real usage must be recorded");
     let runs = session.runs().await;
     assert_eq!(runs.len(), 1);
-    assert_eq!(runs[0].status, a3s_code_core::run::RunStatus::Completed);
+    assert_eq!(runs[0].status, aster_core::run::RunStatus::Completed);
     assert!(store
         .load_loop_checkpoint(&runs[0].id)
         .await
@@ -232,7 +232,7 @@ async fn codex_login_agent_uses_resumable_write_batch_and_bash() {
 2. Call write with file_path="segments.txt", content="beta\n", mode="append", and expected_offset=6.
 3. Call batch once with two read invocations for segments.txt (one from offset 0 and one from offset 1).
 4. Call bash with command="wc -c < segments.txt" and timeout=2000.
-After every tool succeeds, reply with the exact token A3S_CODEX_RESUMABLE_TOOLS_OK."#,
+After every tool succeeds, reply with the exact token ASTERX_RESUMABLE_TOOLS_OK."#,
             None,
         ),
     )
@@ -264,7 +264,7 @@ After every tool succeeds, reply with the exact token A3S_CODEX_RESUMABLE_TOOLS_
         "alpha\nbeta\n"
     );
     assert!(
-        result.text.contains("A3S_CODEX_RESUMABLE_TOOLS_OK"),
+        result.text.contains("ASTERX_RESUMABLE_TOOLS_OK"),
         "final answer must contain the convergence token: {}",
         result.text
     );
@@ -319,7 +319,7 @@ async fn codex_login_agent_recovers_after_bash_timeout() {
             r#"Perform both steps even though the first one is expected to fail:
 1. Call bash with command="sleep 30" and timeout=1000. Observe the timeout; do not retry it.
 2. Call write with file_path="recovered.txt" and content="recovered\n".
-Then reply with the exact token A3S_CODEX_TIMEOUT_RECOVERY_OK."#,
+Then reply with the exact token ASTERX_TIMEOUT_RECOVERY_OK."#,
             None,
         ),
     )
@@ -333,7 +333,7 @@ Then reply with the exact token A3S_CODEX_TIMEOUT_RECOVERY_OK."#,
         "recovered\n"
     );
     assert!(
-        result.text.contains("A3S_CODEX_TIMEOUT_RECOVERY_OK"),
+        result.text.contains("ASTERX_TIMEOUT_RECOVERY_OK"),
         "the session must converge after the timeout: {}",
         result.text
     );
@@ -429,7 +429,7 @@ async fn codex_login_agent_resume_preserves_cumulative_accounting() {
                 durable_source: None,
                 turn: 2,
                 messages: vec![
-                    Message::user("Finish with the exact token A3S_CODEX_RESUME_OK."),
+                    Message::user("Finish with the exact token ASTERX_RESUME_OK."),
                     Message {
                         role: "assistant".to_string(),
                         content: vec![ContentBlock::Text {
@@ -464,7 +464,7 @@ async fn codex_login_agent_resume_preserves_cumulative_accounting() {
         .with_max_tool_rounds(6);
     let session = agent()
         .await
-        .session_async("/tmp/a3s-codex-agent-resume", Some(options))
+        .session_async("/tmp/asterx-agent-resume", Some(options))
         .await
         .expect("session");
 
@@ -474,7 +474,7 @@ async fn codex_login_agent_resume_preserves_cumulative_accounting() {
         .expect("Codex resume");
 
     assert!(
-        result.text.contains("A3S_CODEX_RESUME_OK"),
+        result.text.contains("ASTERX_RESUME_OK"),
         "resumed answer must finish the seeded task: {}",
         result.text
     );

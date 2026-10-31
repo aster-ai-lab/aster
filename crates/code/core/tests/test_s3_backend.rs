@@ -1,17 +1,17 @@
-//! End-to-end integration test for [`a3s_code_core::S3WorkspaceBackend`].
+//! End-to-end integration test for [`aster_core::S3WorkspaceBackend`].
 //!
-//! Gated on `A3S_S3_TEST_ENDPOINT` so it does not run in default CI. The
+//! Gated on `ASTER_S3_TEST_ENDPOINT` so it does not run in default CI. The
 //! hermetic release gate starts `fixtures/s3-compat` and points this test at
 //! it. Locally, any S3-compatible endpoint works:
 //!
 //! ```sh
-//! export A3S_S3_TEST_ENDPOINT=http://127.0.0.1:9000
-//! export A3S_S3_TEST_REGION=us-east-1
-//! export A3S_S3_TEST_ACCESS_KEY_ID=a3s-code-akid
-//! export A3S_S3_TEST_SECRET_ACCESS_KEY=a3s-code-test-secret
-//! export A3S_S3_TEST_BUCKET=a3s-code-tests
-//! export A3S_S3_TEST_FORCE_PATH_STYLE=true
-//! cargo test -p a3s-code-core --features s3 --test test_s3_backend -- --ignored
+//! export ASTER_S3_TEST_ENDPOINT=http://127.0.0.1:9000
+//! export ASTER_S3_TEST_REGION=us-east-1
+//! export ASTER_S3_TEST_ACCESS_KEY_ID=aster-akid
+//! export ASTER_S3_TEST_SECRET_ACCESS_KEY=aster-test-secret
+//! export ASTER_S3_TEST_BUCKET=aster-tests
+//! export ASTER_S3_TEST_FORCE_PATH_STYLE=true
+//! cargo test -p aster-core --features s3 --test test_s3_backend -- --ignored
 //! ```
 //!
 //! The test uses a per-run UUID prefix so it never collides with other
@@ -19,8 +19,8 @@
 
 #![cfg(feature = "s3")]
 
-use a3s_code_core::tools::{ArtifactStoreLimits, ToolExecutor};
-use a3s_code_core::{S3BackendConfig, S3WorkspaceBackend, WorkspaceServices};
+use aster_core::tools::{ArtifactStoreLimits, ToolExecutor};
+use aster_core::{S3BackendConfig, S3WorkspaceBackend, WorkspaceServices};
 use serde_json::json;
 use std::sync::Arc;
 use std::time::Duration;
@@ -31,13 +31,13 @@ fn env_required(key: &str) -> Option<String> {
 }
 
 fn live_config() -> Option<S3BackendConfig> {
-    let endpoint = env_required("A3S_S3_TEST_ENDPOINT")?;
-    let bucket = env_required("A3S_S3_TEST_BUCKET")?;
-    let access_key_id = env_required("A3S_S3_TEST_ACCESS_KEY_ID")?;
-    let secret_access_key = env_required("A3S_S3_TEST_SECRET_ACCESS_KEY")?;
+    let endpoint = env_required("ASTER_S3_TEST_ENDPOINT")?;
+    let bucket = env_required("ASTER_S3_TEST_BUCKET")?;
+    let access_key_id = env_required("ASTER_S3_TEST_ACCESS_KEY_ID")?;
+    let secret_access_key = env_required("ASTER_S3_TEST_SECRET_ACCESS_KEY")?;
     let prefix = format!(
         "{}/{}",
-        env_required("A3S_S3_TEST_PREFIX").unwrap_or_else(|| "a3s-code-tests".to_string()),
+        env_required("ASTER_S3_TEST_PREFIX").unwrap_or_else(|| "aster-tests".to_string()),
         Uuid::new_v4()
     );
 
@@ -45,27 +45,27 @@ fn live_config() -> Option<S3BackendConfig> {
         .endpoint(endpoint)
         .request_timeout(Duration::from_secs(10));
 
-    if let Some(region) = env_required("A3S_S3_TEST_REGION") {
+    if let Some(region) = env_required("ASTER_S3_TEST_REGION") {
         cfg = cfg.region(region);
     } else {
         cfg = cfg.region("us-east-1");
     }
-    if let Some(force) = env_required("A3S_S3_TEST_FORCE_PATH_STYLE") {
+    if let Some(force) = env_required("ASTER_S3_TEST_FORCE_PATH_STYLE") {
         cfg = cfg.force_path_style(force.parse().unwrap_or(true));
     } else {
         cfg = cfg.force_path_style(true);
     }
-    if let Some(token) = env_required("A3S_S3_TEST_SESSION_TOKEN") {
+    if let Some(token) = env_required("ASTER_S3_TEST_SESSION_TOKEN") {
         cfg = cfg.session_token(token);
     }
     Some(cfg)
 }
 
 #[tokio::test]
-#[ignore = "requires A3S_S3_TEST_ENDPOINT and friends"]
+#[ignore = "requires ASTER_S3_TEST_ENDPOINT and friends"]
 async fn s3_backend_roundtrips_via_session_executor() {
     let Some(cfg) = live_config() else {
-        eprintln!("Skipping: A3S_S3_TEST_ENDPOINT not configured");
+        eprintln!("Skipping: ASTER_S3_TEST_ENDPOINT not configured");
         return;
     };
     let prefix_for_cleanup = cfg.prefix.clone();
@@ -260,10 +260,10 @@ async fn cleanup_prefix(
 /// including 5 oversize puts that must fail closed without leaving objects or
 /// leaking credentials in error strings.
 #[tokio::test]
-#[ignore = "S-S3-01 soak: requires A3S_S3_TEST_ENDPOINT (fixtures/s3-compat)"]
+#[ignore = "S-S3-01 soak: requires ASTER_S3_TEST_ENDPOINT (fixtures/s3-compat)"]
 async fn soak_s3_put_get_delete_returns_to_prefix_baseline() {
     let Some(mut cfg) = live_config() else {
-        eprintln!("Skipping: A3S_S3_TEST_ENDPOINT not configured");
+        eprintln!("Skipping: ASTER_S3_TEST_ENDPOINT not configured");
         return;
     };
     // Tight ceiling so oversize puts are cheap to exercise.

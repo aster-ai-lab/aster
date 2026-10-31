@@ -1,8 +1,8 @@
 //! Production-shaped Cloud usage-ledger semantics Gateway depends on.
 //!
-//! This is not a network endpoint and not a substitute for A3S Cloud. It encodes
+//! This is not a network endpoint and not a substitute for Aster Cloud. It encodes
 //! the highest-contiguous acknowledgement / gap / event-id dedup rules from the
-//! shared `a3s.gateway.usage-batch.v1` contract so Gateway can falsify its
+//! shared `aster.gateway.usage-batch.v1` contract so Gateway can falsify its
 //! uploader against ledger behavior before Cloud ships
 //! `POST /v1/inference-control/usage-batches`.
 

@@ -1,13 +1,13 @@
 [package]
 publish = false
-name = "a3s-oci-agent-protocol"
+name = "aster-oci-agent-protocol"
 version = "0.3.6"
 edition = "2021"
 license = "MIT"
-description = "Versioned host-to-guest protocol for A3S OCI Runtime"
+description = "Versioned host-to-guest protocol for Aster OCI Runtime"
 
 [dependencies]
-a3s-oci-sdk = { path = "../sdk" }
+aster-oci-sdk = { path = "../sdk" }
 async-trait.workspace = true
 base64.workspace = true
 getrandom.workspace = true

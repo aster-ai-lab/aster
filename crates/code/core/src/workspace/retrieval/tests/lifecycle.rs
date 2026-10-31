@@ -59,7 +59,7 @@ async fn retrieval_services_lazily_attach_lexical_catalog() {
 }
 
 #[tokio::test]
-async fn catalog_attach_does_not_open_durable_a3s_vec() {
+async fn catalog_attach_does_not_open_durable_aster_vec() {
     let temp = tempfile::tempdir().unwrap();
     let backend = crate::workspace::ManifestWorkspaceBackend::new(temp.path());
     let services =
@@ -70,13 +70,13 @@ async fn catalog_attach_does_not_open_durable_a3s_vec() {
         "catalog attach must leave durable FTS unattached"
     );
     assert!(
-        !temp.path().join(".a3s-code").join("index").exists(),
+        !temp.path().join(".aster").join("index").exists(),
         "catalog attach must not create the durable index directory"
     );
 }
 
 #[tokio::test]
-async fn host_configured_catalog_still_defers_durable_a3s_vec() {
+async fn host_configured_catalog_still_defers_durable_aster_vec() {
     use crate::workspace::{
         ChunkCatalogLimits, ChunkingConfig, WorkspaceChunkingStrategy, WorkspaceServices,
     };
@@ -93,19 +93,19 @@ async fn host_configured_catalog_still_defers_durable_a3s_vec() {
     let services = WorkspaceServices::local_with_retrieval_backend(Arc::clone(&backend));
     assert!(services.chunk_catalog().is_some());
     assert!(backend.persistent_index().is_none());
-    assert!(!temp.path().join(".a3s-code").join("index").exists());
+    assert!(!temp.path().join(".aster").join("index").exists());
 }
 
 #[tokio::test]
-#[cfg(feature = "a3s-vec-fts")]
-async fn durable_a3s_vec_opens_only_on_persistent_index_demand() {
+#[cfg(feature = "aster-vec-fts")]
+async fn durable_aster_vec_opens_only_on_persistent_index_demand() {
     let temp = tempfile::tempdir().unwrap();
     let backend = crate::workspace::ManifestWorkspaceBackend::new(temp.path());
     let services =
         crate::workspace::WorkspaceServices::local_with_retrieval_backend(Arc::clone(&backend));
     assert!(services.chunk_catalog().is_some());
     assert!(
-        !temp.path().join(".a3s-code").join("index").exists(),
+        !temp.path().join(".aster").join("index").exists(),
         "catalog path must not create durable index"
     );
     assert!(
@@ -113,7 +113,7 @@ async fn durable_a3s_vec_opens_only_on_persistent_index_demand() {
         "demand path must attach best-effort durable FTS"
     );
     assert!(
-        temp.path().join(".a3s-code").join("index").exists(),
+        temp.path().join(".aster").join("index").exists(),
         "first persistent_index demand creates the durable index root"
     );
 }

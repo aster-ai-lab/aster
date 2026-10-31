@@ -9,7 +9,7 @@
 
 //! SearchQuery / query-control builder coverage.
 
-use a3s_vec::{
+use aster_vec::{
     DiskannQueryParams, ErrorCode, FlatQueryParams, Fts, FtsQueryParams, HnswQueryParams,
     IvfQueryParams, IvfRabitqQueryParams, SearchQuery, SearchQueryBuilder,
 };
@@ -209,7 +209,7 @@ fn search_query_mutators_and_getters_cover_remaining_surface() {
     assert_eq!(via_builder.topk, 2);
 
     let mut grouped =
-        a3s_vec::GroupBySearchQuery::new("embedding", "tag", &[1.0, 0.0], 2, 2).expect("groupby");
+        aster_vec::GroupBySearchQuery::new("embedding", "tag", &[1.0, 0.0], 2, 2).expect("groupby");
     grouped.set_filter("tag == \"a\"").expect("filter");
     grouped.set_include_vector(true).expect("include");
     grouped.set_output_fields(&["tag"]).expect("fields");
@@ -244,11 +244,11 @@ fn search_query_mutators_and_getters_cover_remaining_surface() {
     fts_params.set_default_operator("or").expect("or");
     assert_eq!(fts_params.default_operator().as_deref(), Some("or"));
 
-    assert!(a3s_vec::GroupBySearchQuery::new("embedding", "tag", &[1.0], 0, 1).is_err());
-    assert!(a3s_vec::GroupBySearchQuery::new("embedding", "tag", &[1.0], 1, 0).is_err());
-    assert!(a3s_vec::GroupBySearchQuery::new("embedding", "tag", &[], 1, 1).is_err());
-    assert!(a3s_vec::GroupBySearchQuery::new("embedding", "tag", &[f32::NAN], 1, 1).is_err());
-    assert!(a3s_vec::GroupBySearchQuery::binary("bits", "tag", &[], 1, 1).is_err());
+    assert!(aster_vec::GroupBySearchQuery::new("embedding", "tag", &[1.0], 0, 1).is_err());
+    assert!(aster_vec::GroupBySearchQuery::new("embedding", "tag", &[1.0], 1, 0).is_err());
+    assert!(aster_vec::GroupBySearchQuery::new("embedding", "tag", &[], 1, 1).is_err());
+    assert!(aster_vec::GroupBySearchQuery::new("embedding", "tag", &[f32::NAN], 1, 1).is_err());
+    assert!(aster_vec::GroupBySearchQuery::binary("bits", "tag", &[], 1, 1).is_err());
 
     let mut empty_fts = SearchQuery::new("embedding", &[1.0, 0.0], 3).expect("q");
     assert!(empty_fts.set_fts(&Fts::new().expect("empty")).is_err());

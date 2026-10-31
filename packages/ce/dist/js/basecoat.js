@@ -356,7 +356,7 @@
       try {
         element._destroy();
       } catch (error) {
-        console.error("Failed to destroy A3S UI component:", error);
+        console.error("Failed to destroy Aster UI component:", error);
       }
     }
 
@@ -536,7 +536,7 @@
   window.basecoat = runtime;
 
   document.addEventListener("DOMContentLoaded", () => {
-    if (document.documentElement.hasAttribute("data-a3s-defer-init")) return;
+    if (document.documentElement.hasAttribute("data-aster-defer-init")) return;
     initAllComponents();
     startObserver();
   });

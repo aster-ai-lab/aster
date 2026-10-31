@@ -1,5 +1,5 @@
 {
-  "protocol": "a3s.flow.worker.v1",
+  "protocol": "aster.flow.worker.v1",
   "task_types": [
     "drive_run",
     "resume_wait",

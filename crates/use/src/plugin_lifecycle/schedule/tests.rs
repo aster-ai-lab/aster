@@ -1,6 +1,6 @@
 use super::*;
 use crate::plugin_lifecycle::test_support::{intent, ALL_SURFACES};
-use a3s_use_core::{PackageSurfaceKind, PluginSurfaceRef};
+use aster_use_core::{PackageSurfaceKind, PluginSurfaceRef};
 
 fn surface(kind: PackageSurfaceKind, id: &str) -> PluginSurfaceRef {
     PluginSurfaceRef {

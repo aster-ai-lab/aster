@@ -17,14 +17,14 @@
 
 .work-spreadsheet-sort-options legend {
   margin-block-end: 8px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
   font-weight: 700;
 }
 
 .work-spreadsheet-sort-options-lock-note {
   margin: 0 0 2px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   line-height: 1.45;
 }
@@ -35,23 +35,23 @@
   align-items: start;
   gap: 10px;
   padding: 10px 12px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
   cursor: pointer;
 }
 
 .work-spreadsheet-sort-options > label:has(input:checked) {
-  border-color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  border-color: var(--work-spreadsheet-accent, var(--aster-ink));
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, var(--a3s-ink)) 10%,
-    var(--a3s-panel)
+    var(--work-spreadsheet-accent, var(--aster-ink)) 10%,
+    var(--aster-panel)
   );
 }
 
 .work-spreadsheet-sort-options input {
   margin-block-start: 3px;
-  accent-color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  accent-color: var(--work-spreadsheet-accent, var(--aster-ink));
 }
 
 .work-spreadsheet-sort-options label > span {
@@ -60,12 +60,12 @@
 }
 
 .work-spreadsheet-sort-options small {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   line-height: 1.4;
 }
 
 .work-spreadsheet-sort-dialog {
-  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--aster-ink));
 
   width: min(820px, 100%);
 }
@@ -113,14 +113,14 @@
   align-items: end;
   gap: 9px;
   padding: 10px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-spreadsheet-sort-level legend {
   padding: 0 5px;
-  color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  color: var(--work-spreadsheet-accent, var(--aster-ink));
   font-size: 10px;
   font-weight: 700;
 }
@@ -134,7 +134,7 @@
 
 .work-spreadsheet-sort-level > .work-office-field > span,
 .work-spreadsheet-sort-order-controls > .work-office-field > span {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 9px;
 }
 
@@ -158,7 +158,7 @@
   min-width: 0;
   align-items: center;
   gap: 6px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 9px;
   line-height: 1.4;
 }
@@ -175,7 +175,7 @@
   width: 14px;
   height: 14px;
   flex: 0 0 14px;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 3px;
 }
 
@@ -184,11 +184,11 @@
     linear-gradient(
       135deg,
       transparent 43%,
-      var(--a3s-danger, #b42318) 44%,
-      var(--a3s-danger, #b42318) 56%,
+      var(--aster-danger, #b42318) 44%,
+      var(--aster-danger, #b42318) 56%,
       transparent 57%
     ),
-    var(--a3s-panel);
+    var(--aster-panel);
 }
 
 .work-spreadsheet-sort-level-actions {
@@ -223,7 +223,7 @@
 .work-spreadsheet-sort-custom-list-editor > label > span,
 .work-spreadsheet-sort-custom-list-editor > p {
   margin: 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 9px;
   line-height: 1.45;
 }
@@ -234,25 +234,25 @@
   min-height: 88px;
   resize: vertical;
   padding: 7px 8px;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 5px;
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
   font: inherit;
   font-size: 11px;
   line-height: 1.45;
 }
 
 .work-spreadsheet-sort-custom-list-editor textarea:focus-visible {
-  border-color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  border-color: var(--work-spreadsheet-accent, var(--aster-ink));
   outline: 2px solid
-    color-mix(in srgb, var(--work-spreadsheet-accent, var(--a3s-ink)) 24%, transparent);
+    color-mix(in srgb, var(--work-spreadsheet-accent, var(--aster-ink)) 24%, transparent);
   outline-offset: 1px;
 }
 
 .work-spreadsheet-sort-custom-list-editor
   > .work-spreadsheet-sort-custom-list-error {
-  color: var(--a3s-danger, #b42318);
+  color: var(--aster-danger, #b42318);
 }
 
 .work-spreadsheet-sort-custom-list-actions,
@@ -270,7 +270,7 @@
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  color: var(--work-spreadsheet-accent, var(--aster-ink));
   font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -278,13 +278,13 @@
 
 .work-spreadsheet-sort-note {
   margin: 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   line-height: 1.45;
 }
 
 .work-spreadsheet-sort-custom-list-manager {
-  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--aster-ink));
 
   width: min(720px, 100%);
 }
@@ -307,7 +307,7 @@
 }
 
 .work-spreadsheet-sort-custom-list-manager-layout label > span {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   font-weight: 650;
 }
@@ -319,10 +319,10 @@
   min-width: 0;
   min-height: 252px;
   padding: 8px;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid var(--aster-line-strong);
   border-radius: 6px;
-  background: var(--a3s-panel);
-  color: var(--a3s-ink);
+  background: var(--aster-panel);
+  color: var(--aster-ink);
   font: inherit;
   font-size: 11px;
   line-height: 1.5;
@@ -348,7 +348,7 @@
 
 .work-spreadsheet-sort-list-group {
   padding: 6px 10px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 12px;
 }
 
@@ -376,21 +376,21 @@
 }
 
 .work-spreadsheet-sort-custom-list-manager textarea[readonly] {
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-muted);
+  background: var(--aster-panel-soft);
+  color: var(--aster-muted);
 }
 
 .work-spreadsheet-sort-custom-list-manager textarea:focus-visible {
-  border-color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  border-color: var(--work-spreadsheet-accent, var(--aster-ink));
   outline: 2px solid
-    color-mix(in srgb, var(--work-spreadsheet-accent, var(--a3s-ink)) 24%, transparent);
+    color-mix(in srgb, var(--work-spreadsheet-accent, var(--aster-ink)) 24%, transparent);
   outline-offset: 1px;
 }
 
 .work-spreadsheet-sort-custom-list-manager-layout section > p,
 .work-spreadsheet-sort-custom-list-manager-note {
   margin: 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   line-height: 1.45;
 }
@@ -398,7 +398,7 @@
 .work-spreadsheet-sort-custom-list-manager-layout
   section
   > .work-spreadsheet-sort-custom-list-error {
-  color: var(--a3s-danger, #b42318);
+  color: var(--aster-danger, #b42318);
 }
 
 .work-spreadsheet-sort-custom-list-manager-actions {
@@ -423,7 +423,7 @@
 }
 
 .work-spreadsheet-sort-range-dialog {
-  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--aster-ink));
 
   width: min(500px, 100%);
 }
@@ -438,7 +438,7 @@
 
 .work-spreadsheet-sort-range-options legend {
   margin-bottom: 8px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   font-weight: 650;
 }
@@ -449,16 +449,16 @@
   align-items: start;
   gap: 10px;
   padding: 11px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 8px;
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
   cursor: pointer;
 }
 
 .work-spreadsheet-sort-range-options > label:has(input:checked) {
-  border-color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  border-color: var(--work-spreadsheet-accent, var(--aster-ink));
   box-shadow: 0 0 0 1px
-    color-mix(in srgb, var(--work-spreadsheet-accent, var(--a3s-ink)) 22%, transparent);
+    color-mix(in srgb, var(--work-spreadsheet-accent, var(--aster-ink)) 22%, transparent);
 }
 
 .work-spreadsheet-sort-range-options > label:has(input:disabled) {
@@ -468,7 +468,7 @@
 
 .work-spreadsheet-sort-range-options input {
   margin: 2px 0 0;
-  accent-color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  accent-color: var(--work-spreadsheet-accent, var(--aster-ink));
 }
 
 .work-spreadsheet-sort-range-options label > span {
@@ -478,12 +478,12 @@
 }
 
 .work-spreadsheet-sort-range-options strong {
-  color: var(--a3s-ink);
+  color: var(--aster-ink);
   font-size: 11px;
 }
 
 .work-spreadsheet-sort-range-options small {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 10px;
   line-height: 1.45;
 }
@@ -492,7 +492,7 @@
   width: fit-content;
   max-width: 100%;
   overflow: hidden;
-  color: var(--work-spreadsheet-accent, var(--a3s-ink));
+  color: var(--work-spreadsheet-accent, var(--aster-ink));
   font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;

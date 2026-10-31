@@ -3,8 +3,8 @@ use std::fs::{self, File, OpenOptions};
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
 
-use a3s_oci_sdk::oci_spec::runtime::Process;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::Process;
+use aster_oci_sdk::{
     ContainerId, DriverKind, Error, ErrorCode, ExitStatus, Generation, IsolationClass,
     ProcessRecord, Result, Signal, TerminalSize,
 };
@@ -24,8 +24,8 @@ pub(crate) use create_intent::{NewShimCreateIntent, ShimCreateIntent};
 pub(crate) use exec_delete::{ExecDeleteJournal, ExecDeleteReceipt};
 pub(crate) use task_delete::TaskDeleteReceipt;
 
-const METADATA_FILE_NAME: &str = "a3s-oci-shim-v1.json";
-const INCARNATION_FILE_NAME: &str = "a3s-oci-shim-incarnation-v1";
+const METADATA_FILE_NAME: &str = "aster-oci-shim-v1.json";
+const INCARNATION_FILE_NAME: &str = "aster-oci-shim-incarnation-v1";
 const METADATA_SCHEMA_VERSION: u32 = 10;
 const MIN_METADATA_SCHEMA_VERSION: u32 = 1;
 const CONTROL_RESOURCES_SCHEMA_VERSION: u32 = 9;
@@ -93,7 +93,7 @@ pub(crate) struct ExecMetadata {
     #[serde(default, skip_serializing_if = "is_zero")]
     pub(crate) incarnation: u64,
     pub(crate) stage: ExecStage,
-    #[serde(with = "a3s_oci_sdk::process_serde")]
+    #[serde(with = "aster_oci_sdk::process_serde")]
     pub(crate) process: Process,
     pub(crate) stdin: String,
     pub(crate) stdout: String,
@@ -1373,7 +1373,7 @@ mod tests {
         let directory = tempfile::tempdir().expect("temporary directory");
         let mut expected = metadata(directory.path());
         expected.schema_version = 9;
-        let resources: a3s_oci_sdk::oci_spec::runtime::LinuxResources =
+        let resources: aster_oci_sdk::oci_spec::runtime::LinuxResources =
             serde_json::from_value(serde_json::json!({
                 "unified": {
                     "memory.high": "1048576",
@@ -1414,7 +1414,7 @@ mod tests {
         let directory = tempfile::tempdir().expect("temporary directory");
         let mut expected = metadata(directory.path());
         expected.schema_version = 9;
-        let resources: a3s_oci_sdk::oci_spec::runtime::LinuxResources =
+        let resources: aster_oci_sdk::oci_spec::runtime::LinuxResources =
             serde_json::from_value(serde_json::json!({"pids": {"limit": 64}}))
                 .expect("Linux resources");
         let digest = update_request_digest(&resources).expect("Update digest");

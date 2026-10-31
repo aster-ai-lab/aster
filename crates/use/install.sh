@@ -2,19 +2,19 @@
 
 set -eu
 
-repository="A3S-Lab/Use"
-version="${A3S_USE_VERSION:-}"
-base_url="${A3S_USE_RELEASE_BASE_URL:-https://github.com/${repository}/releases/download}"
-install_root="${A3S_USE_INSTALL_ROOT:-}"
-bin_dir="${A3S_USE_BIN_DIR:-}"
-cosign_command="${A3S_USE_COSIGN:-cosign}"
+repository="aster-ai-lab/Use"
+version="${ASTER_USE_VERSION:-}"
+base_url="${ASTER_USE_RELEASE_BASE_URL:-https://github.com/${repository}/releases/download}"
+install_root="${ASTER_USE_INSTALL_ROOT:-}"
+bin_dir="${ASTER_USE_BIN_DIR:-}"
+cosign_command="${ASTER_USE_COSIGN:-cosign}"
 download_root=""
 stage_root=""
 install_lock=""
 
 usage() {
   cat <<'EOF'
-Install a verified A3S Use release archive.
+Install a verified Aster Use release archive.
 
 Usage: install.sh [options]
 
@@ -22,21 +22,21 @@ Options:
   --version <version>       Release version, with or without a leading v
   --base-url <url>          Release download root (default: GitHub Releases)
   --install-root <path>     Versioned installation root
-  --bin-dir <path>          Directory for the managed a3s-use symlink
+  --bin-dir <path>          Directory for the managed aster-use symlink
   --cosign <command>        Cosign executable (default: cosign from PATH)
   -h, --help                Show this help
 
 Environment equivalents:
-  A3S_USE_VERSION
-  A3S_USE_RELEASE_BASE_URL
-  A3S_USE_INSTALL_ROOT
-  A3S_USE_BIN_DIR
-  A3S_USE_COSIGN
+  ASTER_USE_VERSION
+  ASTER_USE_RELEASE_BASE_URL
+  ASTER_USE_INSTALL_ROOT
+  ASTER_USE_BIN_DIR
+  ASTER_USE_COSIGN
 EOF
 }
 
 fail() {
-  printf 'a3s-use installer: %s\n' "$*" >&2
+  printf 'aster-use installer: %s\n' "$*" >&2
   exit 1
 }
 
@@ -112,7 +112,7 @@ esac
 if [ -z "${install_root}" ] || [ -z "${bin_dir}" ]; then
   [ -n "${HOME:-}" ] || fail "HOME or explicit installation paths are required"
   if [ -z "${install_root}" ]; then
-    install_root="${XDG_DATA_HOME:-${HOME}/.local/share}/a3s-use"
+    install_root="${XDG_DATA_HOME:-${HOME}/.local/share}/aster-use"
   fi
   if [ -z "${bin_dir}" ]; then
     bin_dir="${HOME}/.local/bin"
@@ -161,7 +161,7 @@ download_file() {
   esac
 }
 
-download_root=$(mktemp -d "${TMPDIR:-/tmp}/a3s-use-install.XXXXXX")
+download_root=$(mktemp -d "${TMPDIR:-/tmp}/aster-use-install.XXXXXX")
 
 if [ -z "${version}" ]; then
   [ "${base_url}" = "https://github.com/${repository}/releases/download" ] || \
@@ -193,7 +193,7 @@ case "${system}:${machine}" in
   *) fail "unsupported platform: ${system} ${machine}" ;;
 esac
 
-archive_name="a3s-use-${version}-${platform}.tar.gz"
+archive_name="aster-use-${version}-${platform}.tar.gz"
 archive_path="${download_root}/${archive_name}"
 checksums_path="${download_root}/checksums.txt"
 signature_bundle_path="${download_root}/checksums.txt.sigstore.json"
@@ -258,7 +258,7 @@ fi
 printf '%s\n' "$$" > "${install_lock}/pid"
 
 mkdir -p "${bin_dir}"
-shim="${bin_dir}/a3s-use"
+shim="${bin_dir}/aster-use"
 if [ -e "${shim}" ] && [ ! -L "${shim}" ]; then
   fail "refusing to replace non-symlink command: ${shim}"
 fi
@@ -266,7 +266,7 @@ if [ -L "${shim}" ]; then
   existing_target=$(readlink "${shim}")
   case "${existing_target}" in
     "${install_root}/releases/"*) ;;
-    *) fail "refusing to replace a symlink not managed by A3S Use: ${shim}" ;;
+    *) fail "refusing to replace a symlink not managed by Aster Use: ${shim}" ;;
   esac
 fi
 
@@ -275,12 +275,12 @@ mkdir -p "${releases_root}"
 stage_root=$(mktemp -d "${releases_root}/.stage-${version}.XXXXXX")
 tar xzf "${archive_path}" -C "${stage_root}"
 
-[ -f "${stage_root}/a3s-use" ] && [ -x "${stage_root}/a3s-use" ] || \
-  fail "the release archive does not contain an executable a3s-use"
-[ ! -L "${stage_root}/a3s-use" ] || \
+[ -f "${stage_root}/aster-use" ] && [ -x "${stage_root}/aster-use" ] || \
+  fail "the release archive does not contain an executable aster-use"
+[ ! -L "${stage_root}/aster-use" ] || \
   fail "release executables cannot be links"
 
-cat > "${stage_root}/a3s-use-launcher" <<'EOF'
+cat > "${stage_root}/aster-use-launcher" <<'EOF'
 #!/bin/sh
 set -eu
 
@@ -300,31 +300,31 @@ else
 fi
 release_root=$(CDPATH= cd -P "$(dirname "${launcher_target}")" && pwd)
 
-exec "${release_root}/a3s-use" "$@"
+exec "${release_root}/aster-use" "$@"
 EOF
-chmod 0755 "${stage_root}/a3s-use-launcher"
-printf '%s\n' "${expected_sha256}" > "${stage_root}/.a3s-use-archive.sha256"
-cp "${checksums_path}" "${stage_root}/.a3s-use-checksums.txt"
-cp "${signature_bundle_path}" "${stage_root}/.a3s-use-checksums.sigstore.json"
+chmod 0755 "${stage_root}/aster-use-launcher"
+printf '%s\n' "${expected_sha256}" > "${stage_root}/.aster-use-archive.sha256"
+cp "${checksums_path}" "${stage_root}/.aster-use-checksums.txt"
+cp "${signature_bundle_path}" "${stage_root}/.aster-use-checksums.sigstore.json"
 chmod 0644 \
-  "${stage_root}/.a3s-use-archive.sha256" \
-  "${stage_root}/.a3s-use-checksums.txt" \
-  "${stage_root}/.a3s-use-checksums.sigstore.json"
+  "${stage_root}/.aster-use-archive.sha256" \
+  "${stage_root}/.aster-use-checksums.txt" \
+  "${stage_root}/.aster-use-checksums.sigstore.json"
 
 if [ -L "${release_root}" ]; then
   fail "the existing release path cannot be a symbolic link: ${release_root}"
 elif [ -e "${release_root}" ]; then
   installed_digest=""
-  if [ -f "${release_root}/.a3s-use-archive.sha256" ]; then
-    installed_digest=$(tr -d '\r\n' < "${release_root}/.a3s-use-archive.sha256")
+  if [ -f "${release_root}/.aster-use-archive.sha256" ]; then
+    installed_digest=$(tr -d '\r\n' < "${release_root}/.aster-use-archive.sha256")
   fi
   [ "${installed_digest}" = "${expected_sha256}" ] || \
     fail "${release_root} already exists with different or unverifiable content"
   if find "${release_root}" ! -type f ! -type d -print | grep -q .; then
     fail "${release_root} contains a link or special file"
   fi
-  [ -x "${release_root}/a3s-use" ] && \
-    [ -x "${release_root}/a3s-use-launcher" ] || \
+  [ -x "${release_root}/aster-use" ] && \
+    [ -x "${release_root}/aster-use-launcher" ] || \
     fail "${release_root} has invalid executable permissions"
   diff -qr "${stage_root}" "${release_root}" >/dev/null || \
     fail "${release_root} does not match the verified release archive"
@@ -335,17 +335,17 @@ else
   stage_root=""
 fi
 
-temporary_shim="${bin_dir}/.a3s-use.$$"
+temporary_shim="${bin_dir}/.aster-use.$$"
 [ ! -e "${temporary_shim}" ] && [ ! -L "${temporary_shim}" ] || \
   fail "temporary command path already exists: ${temporary_shim}"
-ln -s "${release_root}/a3s-use-launcher" "${temporary_shim}"
+ln -s "${release_root}/aster-use-launcher" "${temporary_shim}"
 mv -f "${temporary_shim}" "${shim}"
 
-printf 'Installed A3S Use %s for %s\n' "${version}" "${platform}"
+printf 'Installed Aster Use %s for %s\n' "${version}" "${platform}"
 printf 'Verified checksum signature: %s\n' "${certificate_identity}"
 printf 'Verified archive: sha256:%s\n' "${expected_sha256}"
 printf 'Command: %s\n' "${shim}"
 case ":${PATH:-}:" in
   *":${bin_dir}:"*) ;;
-  *) printf 'Add %s to PATH to invoke a3s-use directly.\n' "${bin_dir}" ;;
+  *) printf 'Add %s to PATH to invoke aster-use directly.\n' "${bin_dir}" ;;
 esac

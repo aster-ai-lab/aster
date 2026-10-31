@@ -1,0 +1,14 @@
+[package]
+license = "Apache-2.0"
+name = "aster-models"
+version = "0.1.0"
+description = "Default model IDs for the grok CLI, loaded from the embedded default_models.json."
+edition = "2024"
+publish = false
+
+[dependencies]
+serde = {workspace = true}
+serde_json = {workspace = true}
+
+[lints]
+workspace = true

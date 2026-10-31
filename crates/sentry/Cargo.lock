@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "a3s-sentry"
+name = "aster-sentry"
 version = "0.7.0"
 dependencies = [
  "anyhow",

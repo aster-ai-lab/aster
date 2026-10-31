@@ -5,8 +5,8 @@ use super::{
 };
 use serde::{Deserialize, Serialize};
 
-pub const RESEARCH_CLAIM_SCHEMA_V1: &str = "a3s.code.research-claim.v1";
-const RESEARCH_CLAIM_DIGEST_DOMAIN: &str = "a3s.code.research-claim.identity.v1";
+pub const RESEARCH_CLAIM_SCHEMA_V1: &str = "aster.code.research-claim.v1";
+const RESEARCH_CLAIM_DIGEST_DOMAIN: &str = "aster.code.research-claim.identity.v1";
 
 /// Explicit claim lifecycle. Missing evidence never becomes an implicit success.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]

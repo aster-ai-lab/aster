@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine as _;
 

@@ -1,18 +1,18 @@
-name: Release a3s-code
+name: Release aster
 
 # Core/ACP only. Aster CLI and Desktop use separate product namespaces.
 on:
   workflow_dispatch:
   push:
     tags:
-      - "a3s-code-v[0-9]+.[0-9]+.[0-9]+"
+      - "aster-v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: read
   actions: read
 
 concurrency:
-  group: a3s-code-${{ github.ref }}
+  group: aster-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
           set -euo pipefail
           successful_runs="$(gh api "repos/${GH_REPO}/actions/workflows/qualify-code.yml/runs?head_sha=${RELEASE_SHA}&event=push&status=completed&per_page=100" --jq "[.workflow_runs[] | select(.conclusion == \"success\" and .head_branch != \"${RELEASE_TAG}\")] | length")"
           if [[ "$successful_runs" -eq 0 ]]; then
-            echo "refusing release: tagged commit $RELEASE_SHA has no successful pre-merge A3S Code qualification run" >&2
+            echo "refusing release: tagged commit $RELEASE_SHA has no successful pre-merge Aster Code qualification run" >&2
             exit 1
           fi
 
@@ -89,31 +89,31 @@ jobs:
           save-if: "true"
       - name: Build locked ACP release
         shell: bash
-        run: cargo build --locked --release -p a3s-code-acp --bin a3s-code-acp
+        run: cargo build --locked --release -p aster-acp --bin aster-acp
       - name: Package ACP binary
         if: runner.os != 'Windows'
         shell: bash
         run: |
           set -euo pipefail
           version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/acp/Cargo.toml", "rb"))["package"]["version"])')"
-          tar -czf "a3s-code-acp-v${version}-${{ matrix.platform }}.tar.gz" -C target/release a3s-code-acp
+          tar -czf "aster-acp-v${version}-${{ matrix.platform }}.tar.gz" -C target/release aster-acp
       - name: Package ACP binary for Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           $manifest = Get-Content "crates/code/acp/Cargo.toml" -Raw
           if ($manifest -notmatch '(?m)^version = "([^"]+)"') { throw "ACP version missing" }
-          Compress-Archive -Path "target/release/a3s-code-acp.exe" -DestinationPath "a3s-code-acp-v$($Matches[1])-windows.zip"
+          Compress-Archive -Path "target/release/aster-acp.exe" -DestinationPath "aster-acp-v$($Matches[1])-windows.zip"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: a3s-code-acp-${{ matrix.platform }}
-          path: a3s-code-acp-v*
+          name: aster-acp-${{ matrix.platform }}
+          path: aster-acp-v*
           if-no-files-found: error
 
   publish:
     name: Publish Core/ACP source release
     needs: build
-    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'a3s-code-v')
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'aster-v')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -122,7 +122,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          pattern: a3s-code-acp-*
+          pattern: aster-acp-*
           merge-multiple: true
           path: dist
       - name: Publish versioned release
@@ -130,7 +130,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          version="${GITHUB_REF_NAME#a3s-code-v}"
+          version="${GITHUB_REF_NAME#aster-v}"
           acp_version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/acp/Cargo.toml", "rb"))["package"]["version"])')"
           core_version="$(python3 -c 'import tomllib; print(tomllib.load(open("crates/code/core/Cargo.toml", "rb"))["package"]["version"])')"
           if ! test "$version" = "$acp_version"; then
@@ -152,7 +152,7 @@ jobs:
             echo "expected 3 ACP release archives, found ${#files[@]}" >&2
             exit 1
           fi
-          for asset in "a3s-code-acp-v${version}-macos.tar.gz" "a3s-code-acp-v${version}-linux.tar.gz" "a3s-code-acp-v${version}-windows.zip"; do
+          for asset in "aster-acp-v${version}-macos.tar.gz" "aster-acp-v${version}-linux.tar.gz" "aster-acp-v${version}-windows.zip"; do
             if [[ ! -f "dist/$asset" ]]; then
               echo "missing ACP release archive: $asset" >&2
               exit 1
@@ -162,7 +162,7 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" \
             --verify-tag \
             --latest=false \
-            --title "A3S Code / ACP v${version}" \
+            --title "Aster Code / ACP v${version}" \
             --notes-file "$notes" \
             "${files[@]}" dist/SHA256SUMS
           gh release view "${GITHUB_REF_NAME}"

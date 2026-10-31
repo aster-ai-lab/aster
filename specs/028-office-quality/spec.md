@@ -3,7 +3,7 @@
 **Feature Branch**: none requested; current worktree
 **Created**: 2026-10-30
 **Status**: Implementing
-**Input**: 完成全部a3s-office的代码优化、功能修复、样式对齐
+**Input**: 完成全部aster-office的代码优化、功能修复、样式对齐
 **Gate context**: All existing Office editors in `packages/office`, their Rust
 implementation in `crates/office`, and their Studio integrations. This epic
 exists to fulfill the user's explicit quality goal and the root `DESIGN.md`.

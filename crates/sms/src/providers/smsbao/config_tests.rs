@@ -22,9 +22,9 @@ fn example_and_closed_sets_are_valid() {
 fn unknown_fields_missing_fields_nested_blocks_and_invalid_values_are_refused() {
     let invalid = [
         EXAMPLE.replace("provider \"smsbao\"", "provider \"other\""),
-        EXAMPLE.replace("signature = \"A3S\"", "password = \"do-not-echo-this\""),
-        EXAMPLE.replace("signature = \"A3S\"", "signature = \"\""),
-        EXAMPLE.replace("signature = \"A3S\"", "signature = \"【A3S】\""),
+        EXAMPLE.replace("signature = \"Aster\"", "password = \"do-not-echo-this\""),
+        EXAMPLE.replace("signature = \"Aster\"", "signature = \"\""),
+        EXAMPLE.replace("signature = \"Aster\"", "signature = \"【Aster】\""),
         EXAMPLE.replace("timeout_ms = 5000", "timeout_ms = 0"),
         EXAMPLE.replace("timeout_ms = 5000", "timeout_ms = 60001"),
         EXAMPLE.replace("timeout_ms = 5000", "timeout_ms = 1.5"),
@@ -33,7 +33,7 @@ fn unknown_fields_missing_fields_nested_blocks_and_invalid_values_are_refused() 
         EXAMPLE.replace("auth_method = \"password\"", "auth_method = \"other\""),
         EXAMPLE.replace("smsbao-password@1", "smsbao-password"),
         format!("{EXAMPLE}\nprovider \"smsbao\" {{}}"),
-        EXAMPLE.replace("signature = \"A3S\"", "nested {}"),
+        EXAMPLE.replace("signature = \"Aster\"", "nested {}"),
     ];
     for source in invalid {
         let error = SmsbaoConfig::from_acl(&source).unwrap_err();

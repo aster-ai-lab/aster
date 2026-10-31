@@ -9,10 +9,10 @@
 
 //! Schema index-contract validation error surface (I2).
 
-use a3s_vec::{DataType, FieldSchema, IndexParams, IndexType, MetricType, QuantizeType};
+use aster_vec::{DataType, FieldSchema, IndexParams, IndexType, MetricType, QuantizeType};
 use serde_json::json;
 
-fn attach(data_type: DataType, dimension: u32, params: &IndexParams) -> Result<(), a3s_vec::Error> {
+fn attach(data_type: DataType, dimension: u32, params: &IndexParams) -> Result<(), aster_vec::Error> {
     let mut field = FieldSchema::new("f", data_type, false, dimension)?;
     field.set_index_params(params)
 }

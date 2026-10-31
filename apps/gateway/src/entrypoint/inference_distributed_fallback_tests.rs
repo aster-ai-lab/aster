@@ -18,7 +18,7 @@ use tokio::io::AsyncWriteExt;
 use tokio::net::TcpListener;
 use uuid::Uuid;
 
-const POWER_SCHEMA: &str = "a3s.power.distributed-serving.v1";
+const POWER_SCHEMA: &str = "aster.power.distributed-serving.v1";
 
 async fn spawn_connection_closer(
     expected_requests: usize,

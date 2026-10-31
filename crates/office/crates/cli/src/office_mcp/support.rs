@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
-use a3s_office::MAX_NATIVE_OFFICE_REPLAY_MUTATIONS;
-use a3s_use_core::{UseError, UseResult, UseSessionId};
+use aster_office::MAX_NATIVE_OFFICE_REPLAY_MUTATIONS;
+use aster_use_core::{UseError, UseResult, UseSessionId};
 use rmcp::model::CallToolResult;
 
 use super::input::OfficeMutation;
@@ -87,7 +87,7 @@ fn tool_error(error: UseError) -> CallToolResult {
     CallToolResult::structured_error(serde_json::to_value(error).unwrap_or_else(|_| {
         serde_json::json!({
             "code": "use.error_encoding_failed",
-            "message": "Failed to encode A3S Use error."
+            "message": "Failed to encode Aster Use error."
         })
     }))
 }

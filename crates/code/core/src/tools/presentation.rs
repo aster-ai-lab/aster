@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashSet};
 use thiserror::Error;
 
-pub const TOOL_PRESENTATION_PROFILE_V1_SCHEMA: &str = "a3s.code.tool-presentation-profile.v1";
+pub const TOOL_PRESENTATION_PROFILE_V1_SCHEMA: &str = "aster.code.tool-presentation-profile.v1";
 
 const MAX_PRESENTATION_TOOLS: usize = 4_096;
 const MAX_CODE_CATALOG_BYTES: usize = 64 * 1024;
@@ -21,7 +21,7 @@ const MAX_CODE_CATALOG_DESCRIPTION_BYTES: usize = 192;
 /// Closed presentation modes supported by the version-1 profile contract.
 ///
 /// These modes change only the provider-facing definition list. They do not
-/// install Tools, alter permissions, or select an A3S Use generation.
+/// install Tools, alter permissions, or select an Aster Use generation.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ToolPresentationModeV1 {

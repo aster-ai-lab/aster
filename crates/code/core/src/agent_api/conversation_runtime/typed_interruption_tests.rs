@@ -31,7 +31,7 @@ fn test_options(session_id: &str) -> crate::SessionOptions {
         .with_planning_mode(crate::prompts::PlanningMode::Disabled)
         .with_auto_delegation_enabled(false)
         .with_manual_delegation_enabled(false)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
 }
 
 async fn test_agent() -> crate::Agent {

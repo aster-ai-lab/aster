@@ -151,7 +151,7 @@ function registerOrderedListNumbering(
     updateNumberingRestartRule(context, identity, list, level);
     return { reference: existingReference, level };
   }
-  const reference = `a3s-office-list-${context.nextNumberingReference}`;
+  const reference = `aster-office-list-${context.nextNumberingReference}`;
   context.nextNumberingReference += 1;
   const levels = Array.from({ length: 9 }, (_, currentLevel) =>
     currentLevel === level
@@ -191,7 +191,7 @@ function registerBulletListNumbering(
     updateNumberingRestartRule(context, identity, list, level);
     return { reference: existingReference, level };
   }
-  const reference = `a3s-office-list-${context.nextNumberingReference}`;
+  const reference = `aster-office-list-${context.nextNumberingReference}`;
   context.nextNumberingReference += 1;
   const levels = Array.from({ length: 9 }, (_, currentLevel) =>
     currentLevel === level

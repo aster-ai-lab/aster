@@ -1,4 +1,4 @@
-use a3s_boot::{
+use aster_boot::{
     BootApplication, BootError, Module, ModuleRef, ProviderDefinition, ProviderToken, Result,
 };
 use std::sync::{Arc, Mutex};

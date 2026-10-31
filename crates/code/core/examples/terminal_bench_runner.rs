@@ -1,30 +1,30 @@
-//! Minimal headless A3S Code runner used by the Harbor Terminal-Bench adapter.
+//! Minimal headless Aster Code runner used by the Harbor Terminal-Bench adapter.
 //!
 //! The benchmark harness owns the container and verifier. This example keeps the
-//! agent boundary in `a3s-code-core`: it loads the caller's ACL, binds one
+//! agent boundary in `aster-core`: it loads the caller's ACL, binds one
 //! session to the task workspace, and exposes the native Code tools through the
 //! normal session loop. No MCP transport or benchmark-specific tool executor is
 //! involved.
 //!
 //! Usage:
-//! `terminal_bench_runner --config /run/a3s/config.acl --workspace /root --prompt-file /run/a3s/instruction.md --result-file /logs/agent/a3s-code.result.json`
+//! `terminal_bench_runner --config /run/aster/config.acl --workspace /root --prompt-file /run/aster/instruction.md --result-file /logs/agent/aster.result.json`
 
 #[path = "terminal_bench_runner/result.rs"]
 mod result;
 #[path = "terminal_bench_runner/sandbox.rs"]
 mod sandbox;
 
-use a3s_code_core::execution_identity::ExecutionResultOutcomeV1;
-use a3s_code_core::hitl::AutoApproveConfirmation;
-use a3s_code_core::llm::CodexLoginClient;
-use a3s_code_core::skills::SkillRegistry;
-use a3s_code_core::verification::{
+use aster_core::execution_identity::ExecutionResultOutcomeV1;
+use aster_core::hitl::AutoApproveConfirmation;
+use aster_core::llm::CodexLoginClient;
+use aster_core::skills::SkillRegistry;
+use aster_core::verification::{
     VerificationCheck, VerificationReport, VerificationStatus, VERIFICATION_REPORT_SCHEMA,
 };
-use a3s_code_core::{
+use aster_core::{
     Agent, AgentEvent, AgentStyle, PlanningMode, SessionOptions, SystemPromptSlots,
 };
-use a3s_memory::InMemoryStore;
+use aster_durable_memory::InMemoryStore;
 use anyhow::{Context, Result};
 use std::collections::HashSet;
 use std::path::PathBuf;
@@ -164,7 +164,7 @@ fn parse_args() -> Result<Args> {
     let workspace = workspace.context("--workspace is required")?;
     Ok(Args {
         config: config.context("--config is required")?,
-        result_file: result_file.unwrap_or_else(|| workspace.join(".a3s-code.result.json")),
+        result_file: result_file.unwrap_or_else(|| workspace.join(".aster.result.json")),
         workspace,
         prompt_file: prompt_file.context("--prompt-file is required")?,
         max_execution_time_ms,
@@ -303,10 +303,10 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
     let task_prompt = tokio::fs::read_to_string(&args.prompt_file)
         .await
         .with_context(|| format!("read prompt {}", args.prompt_file.display()))?;
-    eprintln!("a3s-code: loading config");
+    eprintln!("aster: loading config");
     let agent = Agent::new(args.config.to_string_lossy().to_string())
         .await
-        .context("load A3S Code ACL")?;
+        .context("load Aster Code ACL")?;
     let mut options = SessionOptions::new()
         .with_confirmation_manager(Arc::new(AutoApproveConfirmation))
         // Benchmark instructions are arbitrary user tasks. Pin the execution
@@ -317,7 +317,7 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
             extra: Some(TASK_PROOF_NOTE.to_string()),
             ..SystemPromptSlots::default()
         })
-        // Harbor supplies the complete task instruction. Disable A3S planning
+        // Harbor supplies the complete task instruction. Disable Aster planning
         // pre-analysis so the model receives that instruction verbatim as the
         // user message instead of a planner-rewritten wrapper.
         .with_planning_mode(PlanningMode::Disabled)
@@ -333,7 +333,7 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
         // valid solution after a short fixed number of tool turns.
         .with_max_tool_rounds(256)
         .with_max_continuation_turns(32)
-        // Harbor tasks are ephemeral; avoid creating `.a3s/memory` under a
+        // Harbor tasks are ephemeral; avoid creating `.aster/memory` under a
         // non-writable workspace root (seen as startup_failed Permission denied).
         .with_memory(Arc::new(InMemoryStore::new()))
         // Empty skill registry: models sometimes call Skill("view-image") which
@@ -362,20 +362,20 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
         let client = CodexLoginClient::from_auth_file(
             auth_path.clone(),
             model,
-            "terminal-bench-a3s-code",
+            "terminal-bench-aster",
             args.codex_reasoning_effort.clone(),
         )
         .context("load Codex login client")?;
         options = options
             .with_model(format!("codex/{model}"))
             .with_llm_client(Arc::new(client));
-        eprintln!("a3s-code: using Codex login model {model}");
+        eprintln!("aster: using Codex login model {model}");
     }
     let session = agent
         .session_async(args.workspace.to_string_lossy().to_string(), Some(options))
         .await
-        .context("build workspace-bound A3S Code session")?;
-    eprintln!("a3s-code: session ready");
+        .context("build workspace-bound Aster Code session")?;
+    eprintln!("aster: session ready");
 
     let mut prompt = format!("{task_prompt}\n\n{TASK_PROOF_NOTE}");
     let mut bound_digests = HashSet::new();
@@ -384,11 +384,11 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
     loop {
         if execution_deadline_reached(progress.duration_ms(), args.max_execution_time_ms) {
             session.close().await;
-            anyhow::bail!("A3S Code execution deadline exceeded");
+            anyhow::bail!("Aster Code execution deadline exceeded");
         }
         stream_index = stream_index.saturating_add(1);
         eprintln!(
-            "a3s-code: stream started attempt={} bound={}",
+            "aster: stream started attempt={} bound={}",
             stream_index,
             bound_digests.len()
         );
@@ -401,7 +401,7 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
         let (mut events, worker) = session
             .stream(&prompt, None)
             .await
-            .context("start A3S Code stream")?;
+            .context("start Aster Code stream")?;
         let mut gate_digest: Option<String> = None;
         while let Some(event) = events.recv().await {
             match event {
@@ -416,7 +416,7 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
                 }
                 AgentEvent::ToolStart { name, .. } => {
                     progress.tool_calls = progress.tool_calls.saturating_add(1);
-                    eprintln!("[a3s-code tool={name}]");
+                    eprintln!("[aster tool={name}]");
                 }
                 AgentEvent::ToolEnd {
                     exit_code,
@@ -436,7 +436,7 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
                 AgentEvent::Error { message } => {
                     progress.error_count = progress.error_count.saturating_add(1);
                     progress.remember_error(&message);
-                    eprintln!("[a3s-code error] {message}");
+                    eprintln!("[aster error] {message}");
                     if let Some(digest) = parse_completion_gate_mutation_digest(&message) {
                         gate_digest = Some(digest);
                     }
@@ -476,7 +476,7 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
                     VERIFICATION_REPORT_SCHEMA
                 );
                 session.record_verification_reports([harbor_host_verification_report(&digest)]);
-                eprintln!("a3s-code: bound Harbor host verification for mutation {digest}");
+                eprintln!("aster: bound Harbor host verification for mutation {digest}");
                 prompt = bind_continuation(&digest);
             }
             HostAdmissionStep::SameDigestStillOpen => {
@@ -486,7 +486,7 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
             }
             HostAdmissionStep::NudgeIdleAfterBind => {
                 eprintln!(
-                    "a3s-code: idle end after host admission bind; continuing (attempt {})",
+                    "aster: idle end after host admission bind; continuing (attempt {})",
                     stream_index.saturating_add(1)
                 );
                 prompt = "You stopped without taking further tool actions after the host \
@@ -497,7 +497,7 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
             }
             HostAdmissionStep::NudgeBeforeAnyGate => {
                 eprintln!(
-                    "a3s-code: ended before any host admission gate; continuing (attempt {})",
+                    "aster: ended before any host admission gate; continuing (attempt {})",
                     stream_index.saturating_add(1)
                 );
                 prompt = "You stopped before producing a graded workspace solution. \
@@ -508,21 +508,21 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
             }
             HostAdmissionStep::NudgeUnprovenStop => {
                 eprintln!(
-                    "a3s-code: tool use after a bind is not a grade; continuing (attempt {})",
+                    "aster: tool use after a bind is not a grade; continuing (attempt {})",
                     stream_index.saturating_add(1)
                 );
                 prompt = unproven_stop_continuation();
             }
             HostAdmissionStep::FreshContextReview => {
                 eprintln!(
-                    "a3s-code: capped stop kept an anchored transcript; compacting before another reading (attempt {})",
+                    "aster: capped stop kept an anchored transcript; compacting before another reading (attempt {})",
                     stream_index.saturating_add(1)
                 );
                 if let Err(error) = session
                     .compact_conversation(Some(fresh_review_focus()))
                     .await
                 {
-                    eprintln!("a3s-code: compact skipped: {error}");
+                    eprintln!("aster: compact skipped: {error}");
                 }
                 prompt = fresh_review_prompt(&task_prompt);
             }
@@ -532,7 +532,7 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
                     .map(|error| format!("{error:#}"))
                     .unwrap_or_else(|| "stream closed without terminal event".to_string());
                 eprintln!(
-                    "a3s-code: non-terminal stream end ({detail}); continuing (attempt {})",
+                    "aster: non-terminal stream end ({detail}); continuing (attempt {})",
                     stream_index.saturating_add(1)
                 );
                 prompt = format!(
@@ -544,10 +544,10 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
             HostAdmissionStep::NonTerminalExhausted => {
                 session.close().await;
                 if let Some(error) = worker_error {
-                    return Err(error).context("join A3S Code stream");
+                    return Err(error).context("join Aster Code stream");
                 }
                 progress.stream_closed_without_terminal_event = true;
-                anyhow::bail!("A3S Code stream ended without a terminal event");
+                anyhow::bail!("Aster Code stream ended without a terminal event");
             }
             HostAdmissionStep::Finish => {
                 // Session close is unconditional once the gate is not requesting
@@ -556,13 +556,13 @@ async fn execute(args: &Args, progress: &mut RunProgress) -> Result<()> {
                 session.close().await;
                 if let Some(error) = worker_error {
                     if !progress.terminal_event {
-                        return Err(error).context("join A3S Code stream");
+                        return Err(error).context("join Aster Code stream");
                     }
-                    eprintln!("[a3s-code warning] worker ended after terminal event: {error}");
+                    eprintln!("[aster warning] worker ended after terminal event: {error}");
                 }
                 if !progress.terminal_event {
                     progress.stream_closed_without_terminal_event = true;
-                    anyhow::bail!("A3S Code stream ended without a terminal event");
+                    anyhow::bail!("Aster Code stream ended without a terminal event");
                 }
                 return Ok(());
             }
@@ -583,7 +583,7 @@ async fn main() -> Result<()> {
     if execution_error.is_none() && !progress.has_action_evidence() {
         progress.mark_evidence_missing();
         execution_error = Some(anyhow::anyhow!(
-            "A3S Code agent ended without a successful tool execution"
+            "Aster Code agent ended without a successful tool execution"
         ));
     }
 
@@ -599,7 +599,7 @@ async fn main() -> Result<()> {
         if execution_error.is_none() {
             return Err(write_error);
         }
-        eprintln!("[a3s-code warning] could not persist terminal result: {write_error}");
+        eprintln!("[aster warning] could not persist terminal result: {write_error}");
     }
 
     if let Some(error) = execution_error {
@@ -611,7 +611,7 @@ async fn main() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use a3s_code_core::sandbox::{BashSandbox, SandboxCommandRequest};
+    use aster_core::sandbox::{BashSandbox, SandboxCommandRequest};
     use std::time::Instant;
 
     #[test]
@@ -710,7 +710,7 @@ mod tests {
         assert!(fresh_review_focus().contains("current program"));
         assert!(fresh_review_focus().contains("still open"));
         assert!(fresh_review_focus().contains("Drop claims"));
-        let handoff = a3s_code_core::compaction_system_prompt();
+        let handoff = aster_core::compaction_system_prompt();
         assert!(handoff.contains("already finished"));
         assert!(handoff.contains("requirements"));
         assert!(handoff.contains("still open"));
@@ -741,12 +741,12 @@ mod tests {
         let effort = SessionOptions::new().with_reasoning_effort(HARBOR_HOST_REASONING_EFFORT);
         assert_eq!(effort.reasoning_effort.as_deref(), Some("max"));
         assert_eq!(
-            a3s_code_core::llm::deepseek_thinking_top_p("max"),
+            aster_core::llm::deepseek_thinking_top_p("max"),
             Some(0.95)
         );
-        assert_eq!(a3s_code_core::llm::deepseek_thinking_top_p("none"), None);
+        assert_eq!(aster_core::llm::deepseek_thinking_top_p("none"), None);
         assert_eq!(
-            a3s_code_core::context_window_for_model(
+            aster_core::context_window_for_model(
                 None,
                 None,
                 "boyue/deepseek-v4-flash",
@@ -756,7 +756,7 @@ mod tests {
             1_000_000
         );
         assert_eq!(
-            a3s_code_core::context_window_for_model(
+            aster_core::context_window_for_model(
                 None,
                 Some(32_000),
                 "boyue/deepseek-v4-flash",
@@ -766,27 +766,27 @@ mod tests {
             32_000
         );
         assert_eq!(
-            a3s_code_core::context_window_for_model(None, None, "openai/gpt-test", true, 200_000),
+            aster_core::context_window_for_model(None, None, "openai/gpt-test", true, 200_000),
             128_000
         );
         assert_eq!(
-            a3s_code_core::documented_context_tokens("boyue/bailian/deepseek-v4.1-flash"),
+            aster_core::documented_context_tokens("boyue/bailian/deepseek-v4.1-flash"),
             Some(1_000_000)
         );
     }
 
     #[test]
     fn summary_transcript_omits_chain_of_thought() {
-        let mut message = a3s_code_core::llm::Message::assistant("edited build.ts");
+        let mut message = aster_core::llm::Message::assistant("edited build.ts");
         message.reasoning_content = Some("the sample check already proved the task".to_string());
         message
             .content
-            .push(a3s_code_core::llm::ContentBlock::ToolUse {
+            .push(aster_core::llm::ContentBlock::ToolUse {
                 id: "call-1".into(),
                 name: "bash".into(),
                 input: serde_json::json!({"command": "echo hi"}),
             });
-        let rendered = a3s_code_core::render_message_for_summary(&message);
+        let rendered = aster_core::render_message_for_summary(&message);
         assert!(rendered.contains("edited build.ts"));
         assert!(rendered.contains("Tool call bash"));
         assert!(rendered.contains("echo hi"));
@@ -796,12 +796,12 @@ mod tests {
 
     #[tokio::test]
     async fn a_read_past_the_line_limit_marks_the_omitted_bytes() {
-        let dir = std::env::temp_dir().join(format!("a3s-read-line-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("aster-read-line-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("long.txt"), "a".repeat(2500)).unwrap();
         std::fs::write(dir.join("short.txt"), "hello\n").unwrap();
-        let executor = a3s_code_core::tools::ToolExecutor::new(dir.to_string_lossy().to_string());
+        let executor = aster_core::tools::ToolExecutor::new(dir.to_string_lossy().to_string());
         let long_result = executor
             .execute("read", &serde_json::json!({"file_path": "long.txt"}))
             .await

@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{FileLog, LogStore, MemoryLog};
+use aster_effect::{FileLog, LogStore, MemoryLog};
 
 fn create(log: &dyn LogStore) -> (GoalDefinitionCommandV1, GoalControlCommandV1) {
     let create = super::super::tests::command();

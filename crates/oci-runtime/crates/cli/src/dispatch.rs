@@ -4,7 +4,7 @@ use std::process::ExitCode;
 
 mod native;
 
-use a3s_oci_sdk::RuntimeClient;
+use aster_oci_sdk::RuntimeClient;
 
 #[cfg(all(
     target_os = "linux",
@@ -40,14 +40,14 @@ macro_rules! command_future {
 
 pub(super) fn run(
     cli: Cli,
-    rootless_device_policy_bootstrap: Option<a3s_oci_runtime::RootlessDevicePolicyBootstrap>,
+    rootless_device_policy_bootstrap: Option<aster_oci_runtime::RootlessDevicePolicyBootstrap>,
 ) -> CommandFuture {
     dispatch(cli, rootless_device_policy_bootstrap)
 }
 
 fn dispatch(
     cli: Cli,
-    rootless_device_policy_bootstrap: Option<a3s_oci_runtime::RootlessDevicePolicyBootstrap>,
+    rootless_device_policy_bootstrap: Option<aster_oci_runtime::RootlessDevicePolicyBootstrap>,
 ) -> CommandFuture {
     #[cfg(target_os = "linux")]
     let mut rootless_device_policy_bootstrap = rootless_device_policy_bootstrap;
@@ -55,7 +55,7 @@ fn dispatch(
     let _ = rootless_device_policy_bootstrap;
     match cli.command {
         Command::Features => command_future!({
-            let client = RuntimeClient::new(a3s_oci_runtime::HostRuntimeService::new());
+            let client = RuntimeClient::new(aster_oci_runtime::HostRuntimeService::new());
             let info = Box::pin(client.features()).await?;
             write_json(&info.drivers)?;
             Ok(ExitCode::SUCCESS)
@@ -95,7 +95,7 @@ fn dispatch(
             Ok(ExitCode::SUCCESS)
         }),
         Command::WhpxSmoke => command_future!({
-            let report = a3s_oci_runtime::whpx_smoke();
+            let report = aster_oci_runtime::whpx_smoke();
             let succeeded = report.is_success();
             write_json(&report)?;
             Ok(if succeeded {
@@ -105,7 +105,7 @@ fn dispatch(
             })
         }),
         Command::HvfSmoke => command_future!({
-            let report = a3s_oci_runtime::hvf_smoke();
+            let report = aster_oci_runtime::hvf_smoke();
             let succeeded = report.is_success();
             write_json(&report)?;
             Ok(if succeeded {
@@ -175,13 +175,13 @@ fn dispatch(
             #[cfg(target_os = "linux")]
             let report = if rootless_device_bootstrap {
                 let bootstrap = rootless_device_policy_bootstrap.take().ok_or_else(|| {
-                    a3s_oci_sdk::Error::new(
-                        a3s_oci_sdk::ErrorCode::FailedPrecondition,
+                    aster_oci_sdk::Error::new(
+                        aster_oci_sdk::ErrorCode::FailedPrecondition,
                         "rootless command did not complete synchronous device bootstrap",
                     )
                     .for_operation("rootless-device-bootstrap")
                 })?;
-                a3s_oci_runtime::native_linux_rootless_smoke_with_device_bootstrap_barrier(
+                aster_oci_runtime::native_linux_rootless_smoke_with_device_bootstrap_barrier(
                     &agent,
                     &bundle,
                     &work_parent,
@@ -191,7 +191,7 @@ fn dispatch(
                 )
                 .await
             } else {
-                a3s_oci_runtime::native_linux_rootless_smoke_with_cgroup_delegation_barrier(
+                aster_oci_runtime::native_linux_rootless_smoke_with_cgroup_delegation_barrier(
                     &agent,
                     &bundle,
                     &work_parent,
@@ -204,7 +204,7 @@ fn dispatch(
             #[cfg(not(target_os = "linux"))]
             let report = {
                 let _ = rootless_device_bootstrap;
-                a3s_oci_runtime::native_linux_rootless_smoke_with_cgroup_delegation_barrier(
+                aster_oci_runtime::native_linux_rootless_smoke_with_cgroup_delegation_barrier(
                     &agent,
                     &bundle,
                     &work_parent,
@@ -230,13 +230,13 @@ fn dispatch(
             delegated_cgroup_root: _,
         } => command_future!({
             let bootstrap = rootless_device_policy_bootstrap.take().ok_or_else(|| {
-                a3s_oci_sdk::Error::new(
-                    a3s_oci_sdk::ErrorCode::FailedPrecondition,
+                aster_oci_sdk::Error::new(
+                    aster_oci_sdk::ErrorCode::FailedPrecondition,
                     "rootless device-policy command did not complete synchronous bootstrap",
                 )
                 .for_operation("rootless-device-policy")
             })?;
-            let report = a3s_oci_runtime::native_linux_rootless_device_policy_smoke(
+            let report = aster_oci_runtime::native_linux_rootless_device_policy_smoke(
                 &agent,
                 &bundle,
                 &work_parent,
@@ -314,8 +314,8 @@ fn dispatch(
             source_revision,
         } => command_future!({
             let executable = std::env::current_exe().map_err(CliError::CurrentExecutable)?;
-            let report = a3s_oci_runtime::linux_kvm_recovery_smoke(
-                a3s_oci_runtime::LinuxKvmRecoverySmokeConfig {
+            let report = aster_oci_runtime::linux_kvm_recovery_smoke(
+                aster_oci_runtime::LinuxKvmRecoverySmokeConfig {
                     host_service_executable: executable,
                     shim,
                     system_image_manifest,
@@ -345,8 +345,8 @@ fn dispatch(
             source_revision,
         } => command_future!({
             let executable = std::env::current_exe().map_err(CliError::CurrentExecutable)?;
-            let report = a3s_oci_runtime::linux_kvm_live_recovery_smoke(
-                a3s_oci_runtime::LinuxKvmLiveRecoverySmokeConfig {
+            let report = aster_oci_runtime::linux_kvm_live_recovery_smoke(
+                aster_oci_runtime::LinuxKvmLiveRecoverySmokeConfig {
                     host_service_executable: executable,
                     shim,
                     system_image_manifest,
@@ -371,8 +371,8 @@ fn dispatch(
             work_parent,
             source_revision,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_native_live_recovery_smoke(
-                a3s_oci_runtime::LinuxNativeLiveRecoverySmokeConfig {
+            let report = aster_oci_runtime::linux_native_live_recovery_smoke(
+                aster_oci_runtime::LinuxNativeLiveRecoverySmokeConfig {
                     agent,
                     bundle,
                     work_parent,
@@ -399,8 +399,8 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_create_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmCreateReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_create_reopen_replacement(
+                aster_oci_runtime::LinuxKvmCreateReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
@@ -428,13 +428,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_state_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmStateReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_state_reopen_replacement(
+                aster_oci_runtime::LinuxKvmStateReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -458,13 +458,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_start_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmStartReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_start_reopen_replacement(
+                aster_oci_runtime::LinuxKvmStartReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -488,13 +488,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_kill_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmKillReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_kill_reopen_replacement(
+                aster_oci_runtime::LinuxKvmKillReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -518,13 +518,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_delete_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmDeleteReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_delete_reopen_replacement(
+                aster_oci_runtime::LinuxKvmDeleteReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -548,13 +548,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_wait_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmWaitReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_wait_reopen_replacement(
+                aster_oci_runtime::LinuxKvmWaitReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -578,13 +578,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_exec_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmExecReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_exec_reopen_replacement(
+                aster_oci_runtime::LinuxKvmExecReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -608,13 +608,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_signal_process_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmSignalProcessReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_signal_process_reopen_replacement(
+                aster_oci_runtime::LinuxKvmSignalProcessReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -638,13 +638,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_wait_process_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmWaitProcessReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_wait_process_reopen_replacement(
+                aster_oci_runtime::LinuxKvmWaitProcessReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -668,13 +668,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_pause_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmPauseReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_pause_reopen_replacement(
+                aster_oci_runtime::LinuxKvmPauseReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -698,13 +698,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_resume_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmResumeReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_resume_reopen_replacement(
+                aster_oci_runtime::LinuxKvmResumeReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -728,13 +728,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_processes_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmProcessesReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_processes_reopen_replacement(
+                aster_oci_runtime::LinuxKvmProcessesReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -758,13 +758,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_update_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmUpdateReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_update_reopen_replacement(
+                aster_oci_runtime::LinuxKvmUpdateReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -788,13 +788,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_stats_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmStatsReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_stats_reopen_replacement(
+                aster_oci_runtime::LinuxKvmStatsReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -818,13 +818,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_read_output_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmReadOutputReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_read_output_reopen_replacement(
+                aster_oci_runtime::LinuxKvmReadOutputReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -848,13 +848,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_write_stdin_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmWriteStdinReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_write_stdin_reopen_replacement(
+                aster_oci_runtime::LinuxKvmWriteStdinReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -878,13 +878,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_close_stdin_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmCloseStdinReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_close_stdin_reopen_replacement(
+                aster_oci_runtime::LinuxKvmCloseStdinReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -908,13 +908,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_resize_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmResizeReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_resize_reopen_replacement(
+                aster_oci_runtime::LinuxKvmResizeReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -938,13 +938,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_file_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmFileReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_file_reopen_replacement(
+                aster_oci_runtime::LinuxKvmFileReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -968,13 +968,13 @@ fn dispatch(
             bundle,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::linux_kvm_filesystem_reopen_replacement(
-                a3s_oci_runtime::LinuxKvmFilesystemReopenConfig {
+            let report = aster_oci_runtime::linux_kvm_filesystem_reopen_replacement(
+                aster_oci_runtime::LinuxKvmFilesystemReopenConfig {
                     shim,
                     runtime_root,
                     system_image_manifest,
                     bundle,
-                    stage: a3s_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
+                    stage: aster_oci_runtime::AgentTransportOperationStage::try_from(fault_at)
                         .map_err(CliError::Message)?,
                 },
             )
@@ -1001,7 +1001,7 @@ fn dispatch(
         } => command_future!({
             let executable = std::env::current_exe().map_err(CliError::CurrentExecutable)?;
             let report =
-                a3s_oci_runtime::linux_kvm_soak(a3s_oci_runtime::LinuxKvmSoakSmokeConfig {
+                aster_oci_runtime::linux_kvm_soak(aster_oci_runtime::LinuxKvmSoakSmokeConfig {
                     host_service_executable: executable,
                     shim,
                     system_image_manifest,
@@ -1039,8 +1039,8 @@ fn dispatch(
             source_revision,
         } => command_future!({
             let executable = std::env::current_exe().map_err(CliError::CurrentExecutable)?;
-            let report = a3s_oci_runtime::macos_hvf_host_service_smoke(
-                a3s_oci_runtime::MacosHvfHostServiceSmokeConfig {
+            let report = aster_oci_runtime::macos_hvf_host_service_smoke(
+                aster_oci_runtime::MacosHvfHostServiceSmokeConfig {
                     host_service_executable: executable,
                     shim,
                     system_image_manifest,
@@ -1071,13 +1071,13 @@ fn dispatch(
         } => command_future!({
             if rootless_device_bootstrap {
                 let bootstrap = rootless_device_policy_bootstrap.take().ok_or_else(|| {
-                    a3s_oci_sdk::Error::new(
-                        a3s_oci_sdk::ErrorCode::FailedPrecondition,
+                    aster_oci_sdk::Error::new(
+                        aster_oci_sdk::ErrorCode::FailedPrecondition,
                         "rootless recovery owner did not complete synchronous device bootstrap",
                     )
                     .for_operation("rootless-device-bootstrap")
                 })?;
-                a3s_oci_runtime::native_linux_recovery_owner_with_device_bootstrap(
+                aster_oci_runtime::native_linux_recovery_owner_with_device_bootstrap(
                     &agent,
                     &root,
                     &bundle,
@@ -1087,7 +1087,7 @@ fn dispatch(
                 )
                 .await?;
             } else {
-                a3s_oci_runtime::native_linux_recovery_owner_with_cgroup_delegation(
+                aster_oci_runtime::native_linux_recovery_owner_with_cgroup_delegation(
                     &agent,
                     &root,
                     &bundle,
@@ -1109,22 +1109,22 @@ fn dispatch(
             delegated_cgroup_root,
             rootless_device_bootstrap,
         } => command_future!({
-            let generation = a3s_oci_sdk::Generation(generation);
-            let target = a3s_oci_sdk::ContainerTarget::exact(container_id, generation);
+            let generation = aster_oci_sdk::Generation(generation);
+            let target = aster_oci_sdk::ContainerTarget::exact(container_id, generation);
             let report = if rootless_device_bootstrap {
                 let bootstrap = rootless_device_policy_bootstrap.take().ok_or_else(|| {
-                    a3s_oci_sdk::Error::new(
-                        a3s_oci_sdk::ErrorCode::FailedPrecondition,
+                    aster_oci_sdk::Error::new(
+                        aster_oci_sdk::ErrorCode::FailedPrecondition,
                         "rootless recovery resume did not complete synchronous device bootstrap",
                     )
                     .for_operation("rootless-device-bootstrap")
                 })?;
-                a3s_oci_runtime::native_linux_recovery_resume_with_device_bootstrap(
+                aster_oci_runtime::native_linux_recovery_resume_with_device_bootstrap(
                     &agent, &root, &bundle, target, bootstrap,
                 )
                 .await
             } else {
-                a3s_oci_runtime::native_linux_recovery_resume_with_cgroup_delegation(
+                aster_oci_runtime::native_linux_recovery_resume_with_cgroup_delegation(
                     &agent,
                     &root,
                     &bundle,
@@ -1149,7 +1149,7 @@ fn dispatch(
             container_id,
             ready_file,
         } => command_future!({
-            a3s_oci_runtime::native_linux_hook_owner_death_owner(
+            aster_oci_runtime::native_linux_hook_owner_death_owner(
                 &agent,
                 &root,
                 &bundle,
@@ -1174,18 +1174,18 @@ fn dispatch(
                     source,
                 }
             })?;
-            let evidence_record: a3s_oci_runtime::NativeLinuxHookOwnerDeathEvidence =
+            let evidence_record: aster_oci_runtime::NativeLinuxHookOwnerDeathEvidence =
                 serde_json::from_slice(&encoded).map_err(|source| {
                     CliError::ParseHookOwnerDeathEvidence {
                         path: evidence.clone(),
                         source,
                     }
                 })?;
-            let target = a3s_oci_sdk::ContainerTarget::exact(
+            let target = aster_oci_sdk::ContainerTarget::exact(
                 container_id,
-                a3s_oci_sdk::Generation(generation),
+                aster_oci_sdk::Generation(generation),
             );
-            let report = a3s_oci_runtime::native_linux_hook_owner_death_resume(
+            let report = aster_oci_runtime::native_linux_hook_owner_death_resume(
                 &agent,
                 &root,
                 &bundle,
@@ -1207,7 +1207,7 @@ fn dispatch(
             agent,
             delegated_cgroup_root,
             container_id,
-            a3s_box_control_fds: _,
+            aster_box_control_fds: _,
         } => command_future!({
             native_service::run(
                 root,
@@ -1225,7 +1225,7 @@ fn dispatch(
             work_parent,
         } => command_future!({
             let report =
-                a3s_oci_runtime::native_linux_service_smoke(&agent, &bundle, &work_parent).await;
+                aster_oci_runtime::native_linux_service_smoke(&agent, &bundle, &work_parent).await;
             let succeeded = report.is_success();
             write_json(&report)?;
             Ok(if succeeded {
@@ -1240,7 +1240,7 @@ fn dispatch(
             bundle_b,
             work_parent,
         } => command_future!({
-            let report = a3s_oci_runtime::native_linux_multi_container_smoke(
+            let report = aster_oci_runtime::native_linux_multi_container_smoke(
                 &agent,
                 &bundle_a,
                 &bundle_b,
@@ -1263,11 +1263,11 @@ fn dispatch(
             concurrent_containers,
             operation_timeout_ms,
         } => command_future!({
-            let report = a3s_oci_runtime::native_linux_soak(
+            let report = aster_oci_runtime::native_linux_soak(
                 &agent,
                 &bundles,
                 &work_parent,
-                a3s_oci_runtime::NativeLinuxSoakConfig::new(
+                aster_oci_runtime::NativeLinuxSoakConfig::new(
                     iterations,
                     concurrent_containers,
                     operation_timeout_ms,
@@ -1288,7 +1288,7 @@ fn dispatch(
             work_parent,
             fault_after,
         } => command_future!({
-            let report = a3s_oci_runtime::native_linux_fault_cleanup(
+            let report = aster_oci_runtime::native_linux_fault_cleanup(
                 &agent,
                 &bundle,
                 &work_parent,
@@ -1325,7 +1325,7 @@ fn dispatch(
                 any(target_arch = "x86_64", target_arch = "aarch64")
             ))]
             let report = if let Some(case) = qualify_kvm_compatibility_drift.as_deref() {
-                a3s_oci_runtime::qualify_kvm_compatibility_drift(
+                aster_oci_runtime::qualify_kvm_compatibility_drift(
                     &shim,
                     &rootfs,
                     system_image_manifest.as_deref(),
@@ -1335,7 +1335,7 @@ fn dispatch(
                 )
                 .await
             } else if qualify_kvm_post_probe_failure {
-                a3s_oci_runtime::qualify_kvm_post_probe_failure(
+                aster_oci_runtime::qualify_kvm_post_probe_failure(
                     &shim,
                     &rootfs,
                     system_image_manifest.as_deref(),
@@ -1344,7 +1344,7 @@ fn dispatch(
                 )
                 .await
             } else {
-                a3s_oci_runtime::agent_vm_smoke(
+                aster_oci_runtime::agent_vm_smoke(
                     &shim,
                     &rootfs,
                     system_image_manifest.as_deref(),
@@ -1357,7 +1357,7 @@ fn dispatch(
                 target_os = "linux",
                 any(target_arch = "x86_64", target_arch = "aarch64")
             )))]
-            let report = a3s_oci_runtime::agent_vm_smoke(
+            let report = aster_oci_runtime::agent_vm_smoke(
                 &shim,
                 &rootfs,
                 system_image_manifest.as_deref(),
@@ -1381,7 +1381,7 @@ fn dispatch(
             bundle,
             console,
         } => command_future!({
-            let report = a3s_oci_runtime::oci_vm_smoke(
+            let report = aster_oci_runtime::oci_vm_smoke(
                 &shim,
                 &vm_rootfs,
                 system_image_manifest.as_deref(),
@@ -1406,7 +1406,7 @@ fn dispatch(
             bundle,
             console,
         } => command_future!({
-            let report = a3s_oci_runtime::oci_vm_guest_isolation_smoke(
+            let report = aster_oci_runtime::oci_vm_guest_isolation_smoke(
                 &shim,
                 &vm_rootfs,
                 system_image_manifest.as_deref(),
@@ -1432,11 +1432,11 @@ fn dispatch(
             container_id,
             generation,
         } => command_future!({
-            let target = a3s_oci_sdk::ContainerTarget::exact(
+            let target = aster_oci_sdk::ContainerTarget::exact(
                 container_id,
-                a3s_oci_sdk::Generation(generation),
+                aster_oci_sdk::Generation(generation),
             );
-            let report = a3s_oci_runtime::whpx_driver_smoke(
+            let report = aster_oci_runtime::whpx_driver_smoke(
                 &shim,
                 &runtime_root,
                 &vm_rootfs,
@@ -1462,7 +1462,7 @@ fn dispatch(
             pipe,
             ready_file,
         } => command_future!({
-            let mut config = a3s_oci_runtime::BoxWhpxServiceConfig::new(
+            let mut config = aster_oci_runtime::BoxWhpxServiceConfig::new(
                 shim,
                 runtime_root,
                 vm_rootfs,
@@ -1473,7 +1473,7 @@ fn dispatch(
             if let Some(ready_file) = ready_file {
                 config = config.with_ready_file(ready_file);
             }
-            a3s_oci_runtime::serve_box_whpx_qualification(config, async {
+            aster_oci_runtime::serve_box_whpx_qualification(config, async {
                 let _ = tokio::signal::ctrl_c().await;
             })
             .await?;
@@ -1489,7 +1489,7 @@ fn dispatch(
             container_id,
             ready_file,
         } => command_future!({
-            a3s_oci_runtime::whpx_recovery_owner(a3s_oci_runtime::WhpxRecoveryOwnerConfig {
+            aster_oci_runtime::whpx_recovery_owner(aster_oci_runtime::WhpxRecoveryOwnerConfig {
                 shim: &shim,
                 runtime_root: &runtime_root,
                 vm_rootfs: &vm_rootfs,
@@ -1512,11 +1512,11 @@ fn dispatch(
             container_id,
             generation,
         } => command_future!({
-            let target = a3s_oci_sdk::ContainerTarget::exact(
+            let target = aster_oci_sdk::ContainerTarget::exact(
                 container_id,
-                a3s_oci_sdk::Generation(generation),
+                aster_oci_sdk::Generation(generation),
             );
-            let report = a3s_oci_runtime::whpx_recovery_resume(
+            let report = aster_oci_runtime::whpx_recovery_resume(
                 &shim,
                 &runtime_root,
                 &vm_rootfs,
@@ -1543,7 +1543,7 @@ fn dispatch(
             bundle_b,
             console,
         } => command_future!({
-            let report = a3s_oci_runtime::oci_vm_multi_container_smoke(
+            let report = aster_oci_runtime::oci_vm_multi_container_smoke(
                 &shim,
                 &vm_rootfs,
                 system_image_manifest.as_deref(),
@@ -1570,14 +1570,14 @@ fn dispatch(
             console_dir,
             iterations,
         } => command_future!({
-            let report = a3s_oci_runtime::macos_hvf_soak(
+            let report = aster_oci_runtime::macos_hvf_soak(
                 &shim,
                 &vm_rootfs,
                 &system_image_manifest,
                 &bundle_a,
                 &bundle_b,
                 &console_dir,
-                a3s_oci_runtime::MacosHvfSoakConfig::new(iterations),
+                aster_oci_runtime::MacosHvfSoakConfig::new(iterations),
             )
             .await;
             let succeeded = report.is_success();
@@ -1597,7 +1597,7 @@ fn dispatch(
             bundle_b,
             console,
         } => command_future!({
-            let report = a3s_oci_runtime::windows_oci_vm_multi_container_smoke(
+            let report = aster_oci_runtime::windows_oci_vm_multi_container_smoke(
                 &shim,
                 &vm_rootfs,
                 &system_image_manifest,
@@ -1624,7 +1624,7 @@ fn dispatch(
             console,
             fault_after,
         } => command_future!({
-            let report = a3s_oci_runtime::oci_vm_fault_cleanup(
+            let report = aster_oci_runtime::oci_vm_fault_cleanup(
                 &shim,
                 &vm_rootfs,
                 system_image_manifest.as_deref(),
@@ -1651,14 +1651,14 @@ fn dispatch(
             console,
             fault_at,
         } => command_future!({
-            let report = a3s_oci_runtime::oci_vm_transport_fault_cleanup(
+            let report = aster_oci_runtime::oci_vm_transport_fault_cleanup(
                 &shim,
                 &vm_rootfs,
                 system_image_manifest.as_deref(),
                 runtime_share.as_deref(),
                 &bundle,
                 &console,
-                a3s_oci_runtime::AgentTransportFaultStage::from(fault_at),
+                aster_oci_runtime::AgentTransportFaultStage::from(fault_at),
             )
             .await;
             let succeeded = report.is_success();
@@ -1726,7 +1726,7 @@ mod tests {
     #[test]
     fn linux_kvm_kill_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-kill-reopen",
             "--shim",
             "/tmp/shim",
@@ -1740,7 +1740,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-kill-reopen",
             "--shim",
             "/tmp/shim",
@@ -1757,11 +1757,11 @@ mod tests {
         let Command::LinuxKvmKillReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -1772,7 +1772,7 @@ mod tests {
     #[test]
     fn linux_kvm_delete_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-delete-reopen",
             "--shim",
             "/tmp/shim",
@@ -1786,7 +1786,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-delete-reopen",
             "--shim",
             "/tmp/shim",
@@ -1803,11 +1803,11 @@ mod tests {
         let Command::LinuxKvmDeleteReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -1818,7 +1818,7 @@ mod tests {
     #[test]
     fn linux_kvm_wait_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-wait-reopen",
             "--shim",
             "/tmp/shim",
@@ -1832,7 +1832,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-wait-reopen",
             "--shim",
             "/tmp/shim",
@@ -1849,11 +1849,11 @@ mod tests {
         let Command::LinuxKvmWaitReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -1864,7 +1864,7 @@ mod tests {
     #[test]
     fn linux_kvm_exec_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-exec-reopen",
             "--shim",
             "/tmp/shim",
@@ -1878,7 +1878,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-exec-reopen",
             "--shim",
             "/tmp/shim",
@@ -1895,11 +1895,11 @@ mod tests {
         let Command::LinuxKvmExecReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -1910,7 +1910,7 @@ mod tests {
     #[test]
     fn linux_kvm_signal_process_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-signal-process-reopen",
             "--shim",
             "/tmp/shim",
@@ -1924,7 +1924,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-signal-process-reopen",
             "--shim",
             "/tmp/shim",
@@ -1941,11 +1941,11 @@ mod tests {
         let Command::LinuxKvmSignalProcessReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -1956,7 +1956,7 @@ mod tests {
     #[test]
     fn linux_kvm_wait_process_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-wait-process-reopen",
             "--shim",
             "/tmp/shim",
@@ -1970,7 +1970,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-wait-process-reopen",
             "--shim",
             "/tmp/shim",
@@ -1987,11 +1987,11 @@ mod tests {
         let Command::LinuxKvmWaitProcessReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2002,7 +2002,7 @@ mod tests {
     #[test]
     fn linux_kvm_pause_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-pause-reopen",
             "--shim",
             "/tmp/shim",
@@ -2016,7 +2016,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-pause-reopen",
             "--shim",
             "/tmp/shim",
@@ -2033,11 +2033,11 @@ mod tests {
         let Command::LinuxKvmPauseReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2048,7 +2048,7 @@ mod tests {
     #[test]
     fn linux_kvm_resume_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-resume-reopen",
             "--shim",
             "/tmp/shim",
@@ -2062,7 +2062,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-resume-reopen",
             "--shim",
             "/tmp/shim",
@@ -2079,11 +2079,11 @@ mod tests {
         let Command::LinuxKvmResumeReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2094,7 +2094,7 @@ mod tests {
     #[test]
     fn linux_kvm_processes_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-processes-reopen",
             "--shim",
             "/tmp/shim",
@@ -2108,7 +2108,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-processes-reopen",
             "--shim",
             "/tmp/shim",
@@ -2125,11 +2125,11 @@ mod tests {
         let Command::LinuxKvmProcessesReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2140,7 +2140,7 @@ mod tests {
     #[test]
     fn linux_kvm_update_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-update-reopen",
             "--shim",
             "/tmp/shim",
@@ -2154,7 +2154,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-update-reopen",
             "--shim",
             "/tmp/shim",
@@ -2171,11 +2171,11 @@ mod tests {
         let Command::LinuxKvmUpdateReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2186,7 +2186,7 @@ mod tests {
     #[test]
     fn linux_kvm_stats_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-stats-reopen",
             "--shim",
             "/tmp/shim",
@@ -2200,7 +2200,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-stats-reopen",
             "--shim",
             "/tmp/shim",
@@ -2217,11 +2217,11 @@ mod tests {
         let Command::LinuxKvmStatsReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2232,7 +2232,7 @@ mod tests {
     #[test]
     fn linux_kvm_read_output_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-read-output-reopen",
             "--shim",
             "/tmp/shim",
@@ -2246,7 +2246,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-read-output-reopen",
             "--shim",
             "/tmp/shim",
@@ -2263,11 +2263,11 @@ mod tests {
         let Command::LinuxKvmReadOutputReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2278,7 +2278,7 @@ mod tests {
     #[test]
     fn linux_kvm_write_stdin_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-write-stdin-reopen",
             "--shim",
             "/tmp/shim",
@@ -2292,7 +2292,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-write-stdin-reopen",
             "--shim",
             "/tmp/shim",
@@ -2309,11 +2309,11 @@ mod tests {
         let Command::LinuxKvmWriteStdinReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2324,7 +2324,7 @@ mod tests {
     #[test]
     fn linux_kvm_close_stdin_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-close-stdin-reopen",
             "--shim",
             "/tmp/shim",
@@ -2338,7 +2338,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-close-stdin-reopen",
             "--shim",
             "/tmp/shim",
@@ -2355,11 +2355,11 @@ mod tests {
         let Command::LinuxKvmCloseStdinReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2370,7 +2370,7 @@ mod tests {
     #[test]
     fn linux_kvm_resize_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-resize-reopen",
             "--shim",
             "/tmp/shim",
@@ -2384,7 +2384,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-resize-reopen",
             "--shim",
             "/tmp/shim",
@@ -2401,11 +2401,11 @@ mod tests {
         let Command::LinuxKvmResizeReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2416,7 +2416,7 @@ mod tests {
     #[test]
     fn linux_kvm_file_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-file-reopen",
             "--shim",
             "/tmp/shim",
@@ -2430,7 +2430,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-file-reopen",
             "--shim",
             "/tmp/shim",
@@ -2447,11 +2447,11 @@ mod tests {
         let Command::LinuxKvmFileReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 
@@ -2462,7 +2462,7 @@ mod tests {
     #[test]
     fn linux_kvm_filesystem_reopen_cli_requires_the_complete_exact_input_set() {
         assert!(try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-filesystem-reopen",
             "--shim",
             "/tmp/shim",
@@ -2476,7 +2476,7 @@ mod tests {
         .is_err());
 
         let parsed = try_parse_cli_for_test(&[
-            "a3s-oci",
+            "aster-oci",
             "linux-kvm-filesystem-reopen",
             "--shim",
             "/tmp/shim",
@@ -2493,11 +2493,11 @@ mod tests {
         let Command::LinuxKvmFilesystemReopen { fault_at, .. } = parsed.command else {
             panic!("parsed a different command");
         };
-        let stage: a3s_oci_runtime::AgentTransportOperationStage =
+        let stage: aster_oci_runtime::AgentTransportOperationStage =
             fault_at.try_into().expect("operation stage");
         assert_eq!(
             stage,
-            a3s_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
+            aster_oci_runtime::AgentTransportOperationStage::GuestAfterResponseWrite
         );
     }
 }

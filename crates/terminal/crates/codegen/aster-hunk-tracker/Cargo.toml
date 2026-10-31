@@ -1,0 +1,28 @@
+[package]
+license = "Apache-2.0"
+name = "aster-hunk-tracker"
+version = "0.1.0"
+description = "Track file hunks (diffs) with agent/external attribution"
+edition = "2024"
+publish = false
+
+[dependencies]
+# External
+chrono = {version = "0.4", features = ["serde"]}
+dunce = {workspace = true}
+rustc-hash = {version = "2"}
+gix = {version = "0.83", default-features = false, features = ["sha1", "status", "index", "parallel"]}
+serde = {version = "1", features = ["derive", "rc"]}
+serde_json = {workspace = true}
+similar = {workspace = true}
+thiserror = {workspace = true}
+tokio = {workspace = true}
+tokio-util = {workspace = true}
+tracing = {workspace = true}
+uuid = {workspace = true}
+aster-gix-status = {path = "../aster-gix-status"}
+
+[dev-dependencies]
+tempfile = {workspace = true}
+aster-test-utils = {path = "../../common/aster-test-utils"}
+

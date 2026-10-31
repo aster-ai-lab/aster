@@ -230,7 +230,7 @@ export function spreadsheetWrittenCellProjection(
     {
       sheetId: cell.sheetId,
       username: 'Agent',
-      userId: 'a3s-office:frame-cell',
+      userId: 'aster-office:frame-cell',
       color: '#6d28d9',
       selection: { r: cell.row, c: cell.column },
     },
@@ -272,7 +272,7 @@ export function spreadsheetPresenceProjection(
       {
         sheetId: location.sheetId,
         username: participant.actor.name,
-        userId: `a3s-office:${participant.presenceId}`,
+        userId: `aster-office:${participant.presenceId}`,
         color: officePresenceColor(participant),
         selection: { r: selection.row, c: selection.column },
       },

@@ -46,7 +46,7 @@ The parent and Studio worktrees contain staged, unstaged and untracked work from
 
 - `TaskUpdated` had two Core publication paths. `conversation_runtime/host_events.rs` and the owned-fact tool bridge could record a Run event without applying `SessionPersistenceState.tasks`. The fix shares the existing `SessionPersistenceContext` across RuntimeEventSink and owned-fact surfaces; `plan_snapshot` never falls back to RunStore.
 - Interactive and background ACP entry points now share `agent/attempt.rs` for admitted-Run receive/cancel/deadline/join/terminal handling. Goal admission, host budgets and outcome mapping remain caller policies rather than another receive loop.
-- Studio `RuntimeClient` is the only production A3S command facade. It owns no Session/Message/Goal/Task/Run state; raw transport remains in `acp.rs`.
+- Studio `RuntimeClient` is the only production Aster command facade. It owns no Session/Message/Goal/Task/Run state; raw transport remains in `acp.rs`.
 - Studio no longer pre-decides Core permission requests. Run-admission posture remains Core/ACP policy, while every actual Ask goes to the same approval broker and times out/cancels closed.
 - Dynamic catalogs are ACP generation projections, not persisted Studio catalogs. `LaunchGeneration` binds Studio and ACP model IDs explicitly. First-draft prewarm creates a real runtime/session without a prompt or execution facts; no static model/command/tool fallback is allowed.
 - Core transcript pages preserve original fact history and expose strict source cuts. Prefix forks use validated turn.complete boundaries, not Studio message positions. ACP restore requires an actual snapshot and never falls back to creating an empty same-ID session.

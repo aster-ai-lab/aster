@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use a3s_code_core::{
+use aster_core::{
     ChunkCatalogLimits, ChunkingConfig, CustomWorkspaceChunkingStrategy,
     FixedWindowChunkingOptions, RecursiveChunkingOptions, WorkspaceChunkCatalog,
     WorkspaceChunkRange, WorkspaceChunkingError, WorkspaceChunkingInput, WorkspaceChunkingStrategy,

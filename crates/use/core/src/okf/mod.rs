@@ -1,7 +1,7 @@
 //! Bounded, non-executable Open Knowledge Format contracts.
 //!
 //! This module is the single conformance boundary shared by future manifest,
-//! catalog, plan, receipt, and A3S Knowledge adapters. It validates immutable
+//! catalog, plan, receipt, and Aster Knowledge adapters. It validates immutable
 //! content only; OKF executor and attester fields never dispatch work here.
 
 use std::collections::BTreeMap;
@@ -22,7 +22,7 @@ pub use control_plane::{
     OKF_KNOWLEDGE_OBSERVATION_SCHEMA, OKF_PROJECTION_RECEIPT_SCHEMA,
 };
 
-pub const OKF_BUNDLE_CONTRACT_SCHEMA: &str = "a3s.use.okf-bundle.v1";
+pub const OKF_BUNDLE_CONTRACT_SCHEMA: &str = "aster.use.okf-bundle.v1";
 
 const OKF_CONTRACT_MAX_BYTES: usize = 128 * 1024;
 const MAX_OKF_FILES: u64 = 4_096;
@@ -289,7 +289,7 @@ pub fn inspect_okf_bundle(
 /// Inspect an immutable borrowed OKF file snapshot without copying its bytes.
 ///
 /// This is the preferred boundary for host adapters that must validate the
-/// exact in-memory payload immediately before handing it to A3S Knowledge.
+/// exact in-memory payload immediately before handing it to Aster Knowledge.
 pub fn inspect_okf_bundle_files(
     format_version: OkfFormatVersion,
     limits: OkfBundleLimits,
@@ -369,7 +369,7 @@ pub fn inspect_okf_bundle_files(
 
 fn content_digest(files: &BTreeMap<String, &[u8]>) -> String {
     let mut digest = Sha256::new();
-    digest.update(b"a3s-use-okf-expanded-bundle-v1\0");
+    digest.update(b"aster-use-okf-expanded-bundle-v1\0");
     for (path, content) in files {
         digest.update((path.len() as u64).to_be_bytes());
         digest.update(path.as_bytes());

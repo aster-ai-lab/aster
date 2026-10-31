@@ -8,7 +8,7 @@ binary to migrate a production database.
 ## Supported starting points
 
 The automated durable-history and SQL upgrade floor is `v0.5.0`, the first
-release with the canonical A3S ORM migrations used by the current stores. The
+release with the canonical Aster ORM migrations used by the current stores. The
 v1 release gate replays fixtures produced by `v0.5.0` and by `v0.13.1`, the
 final published pre-v1 release. The fixtures contain an interrupted running
 step, so qualification requires deterministic replay, one redelivery, and a
@@ -19,21 +19,21 @@ database upgrade:
 
 | Store | Published releases | Applied migration prefix | v1 addition |
 | --- | --- | --- | --- |
-| SQLite | `v0.5.0` | `a3s-flow-0001-events` | `a3s-flow-0005-continue-as-new` |
-| SQLite | `v0.6.0` through `v0.7.1` | through `a3s-flow-0002-retention` | `a3s-flow-0005-continue-as-new` |
-| SQLite | `v0.8.0` | through `a3s-flow-0003-active-hooks` | `a3s-flow-0005-continue-as-new` |
-| SQLite | `v0.9.0` through `v0.13.1` | through `a3s-flow-0004-scheduled-wakeups` | `a3s-flow-0005-continue-as-new` |
-| PostgreSQL | `v0.5.0` through `v0.7.1` | through `a3s-flow-0003-retention` | `a3s-flow-0006-continue-as-new` |
-| PostgreSQL | `v0.8.0` | through `a3s-flow-0004-active-hooks` | `a3s-flow-0006-continue-as-new` |
-| PostgreSQL | `v0.9.0` through `v0.13.1` | through `a3s-flow-0005-scheduled-wakeups` | `a3s-flow-0006-continue-as-new` |
+| SQLite | `v0.5.0` | `aster-flow-0001-events` | `aster-flow-0005-continue-as-new` |
+| SQLite | `v0.6.0` through `v0.7.1` | through `aster-flow-0002-retention` | `aster-flow-0005-continue-as-new` |
+| SQLite | `v0.8.0` | through `aster-flow-0003-active-hooks` | `aster-flow-0005-continue-as-new` |
+| SQLite | `v0.9.0` through `v0.13.1` | through `aster-flow-0004-scheduled-wakeups` | `aster-flow-0005-continue-as-new` |
+| PostgreSQL | `v0.5.0` through `v0.7.1` | through `aster-flow-0003-retention` | `aster-flow-0006-continue-as-new` |
+| PostgreSQL | `v0.8.0` | through `aster-flow-0004-active-hooks` | `aster-flow-0006-continue-as-new` |
+| PostgreSQL | `v0.9.0` through `v0.13.1` | through `aster-flow-0005-scheduled-wakeups` | `aster-flow-0006-continue-as-new` |
 
 Patch releases inside a row share the same migration prefix. Tests pin the
 SHA-256 checksum of every published migration, so editing an applied migration
 fails CI before the ORM would reject a production database.
 
 Flow 1.1 adds one forward-only projection migration after these published
-prefixes: `a3s-flow-0006-step-cancellation-wakeup` for SQLite and
-`a3s-flow-0007-step-cancellation-wakeup` for PostgreSQL. It removes retry index
+prefixes: `aster-flow-0006-step-cancellation-wakeup` for SQLite and
+`aster-flow-0007-step-cancellation-wakeup` for PostgreSQL. It removes retry index
 rows left behind by an older writer when a concurrent batch step was cancelled
 and installs the matching event trigger. The migration does not rewrite event
 history or alter any earlier checksum.
@@ -76,7 +76,7 @@ committed.
 After startup:
 
 1. Confirm every expected migration and checksum appears in
-   `a3s_orm_migrations`.
+   `aster_orm_migrations`.
 2. Inspect representative terminal, waiting, hook, retry, child, and
    continue-as-new histories through Flow APIs.
 3. Resume a bounded canary history and verify that its next event sequence is
@@ -94,7 +94,7 @@ the previous binary against the unchanged schema.
 After a v1 migration commits, binary-only rollback is not supported. The ORM
 migration ledger is append-only: a pre-v1 binary does not know the v1 migration
 identifier and correctly refuses to open that database. Do not delete rows
-from `a3s_orm_migrations`, drop projection tables or triggers, or otherwise try
+from `aster_orm_migrations`, drop projection tables or triggers, or otherwise try
 to disguise the upgraded schema.
 
 To roll back after commit:

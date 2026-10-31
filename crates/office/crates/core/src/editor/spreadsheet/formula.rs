@@ -3,7 +3,7 @@ mod write;
 
 use std::collections::BTreeMap;
 
-use a3s_use_core::{UseError, UseResult};
+use aster_use_core::{UseError, UseResult};
 
 use crate::semantic::{DocumentNode, NativeOfficeDocument};
 use crate::spreadsheet_reference::{CellRange, CellReference};

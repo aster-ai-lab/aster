@@ -1,4 +1,4 @@
-use a3s_flow::{
+use aster_flow::{
     ChildOperationReference, FlowEngine, FlowEvent, FlowEventStore, FlowRunShardLayout,
     FlowRuntime, InMemoryEventStore, LocalFileEventStore, RuntimeCommand, ShardedFlowEventStore,
     WorkflowInvocation, WorkflowSpec,
@@ -15,7 +15,7 @@ impl FlowRuntime for NoopRuntime {
     async fn run_workflow(
         &self,
         _invocation: WorkflowInvocation,
-    ) -> a3s_flow::Result<RuntimeCommand> {
+    ) -> aster_flow::Result<RuntimeCommand> {
         Ok(RuntimeCommand::Complete {
             output: json!({ "ok": true }),
         })
@@ -23,9 +23,9 @@ impl FlowRuntime for NoopRuntime {
 
     async fn run_step(
         &self,
-        _invocation: a3s_flow::StepInvocation,
-    ) -> a3s_flow::Result<serde_json::Value> {
-        Err(a3s_flow::FlowError::Runtime("unused".into()))
+        _invocation: aster_flow::StepInvocation,
+    ) -> aster_flow::Result<serde_json::Value> {
+        Err(aster_flow::FlowError::Runtime("unused".into()))
     }
 }
 
@@ -184,7 +184,7 @@ async fn composed_sharded_store_routes_and_preserves_cross_shard_links() {
         )
         .await
         .unwrap_err();
-    assert!(matches!(missing, a3s_flow::FlowError::RunNotFound(_)));
+    assert!(matches!(missing, aster_flow::FlowError::RunNotFound(_)));
 }
 
 #[tokio::test]
@@ -221,7 +221,7 @@ async fn composed_sharded_store_rejects_duplicate_hook_tokens_across_shards() {
         .unwrap_err();
     assert!(matches!(
         conflict,
-        a3s_flow::FlowError::HookTokenConflict { .. }
+        aster_flow::FlowError::HookTokenConflict { .. }
     ));
 }
 
@@ -237,7 +237,7 @@ async fn composed_sharded_linked_run_check_does_not_require_unbounded_list() {
             &self,
             run_id: &str,
             event: FlowEvent,
-        ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+        ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
             self.inner.append(run_id, event).await
         }
 
@@ -246,7 +246,7 @@ async fn composed_sharded_linked_run_check_does_not_require_unbounded_list() {
             run_id: &str,
             expected_sequence: u64,
             event: FlowEvent,
-        ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+        ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
             self.inner
                 .append_if_sequence(run_id, expected_sequence, event)
                 .await
@@ -257,34 +257,34 @@ async fn composed_sharded_linked_run_check_does_not_require_unbounded_list() {
             run_id: &str,
             expected_sequence: u64,
             event: FlowEvent,
-        ) -> a3s_flow::Result<a3s_flow::FlowEventEnvelope> {
+        ) -> aster_flow::Result<aster_flow::FlowEventEnvelope> {
             self.inner
                 .append_shard_local_if_sequence(run_id, expected_sequence, event)
                 .await
         }
 
-        async fn list(&self, _run_id: &str) -> a3s_flow::Result<Vec<a3s_flow::FlowEventEnvelope>> {
-            Err(a3s_flow::FlowError::Store(
+        async fn list(&self, _run_id: &str) -> aster_flow::Result<Vec<aster_flow::FlowEventEnvelope>> {
+            Err(aster_flow::FlowError::Store(
                 "unbounded history read is not allowed for linked-run checks".into(),
             ))
         }
 
-        async fn list_run_ids(&self) -> a3s_flow::Result<Vec<String>> {
+        async fn list_run_ids(&self) -> aster_flow::Result<Vec<String>> {
             self.inner.list_run_ids().await
         }
 
-        async fn latest_event(&self, run_id: &str) -> a3s_flow::Result<Option<(u64, uuid::Uuid)>> {
+        async fn latest_event(&self, run_id: &str) -> aster_flow::Result<Option<(u64, uuid::Uuid)>> {
             self.inner.latest_event(run_id).await
         }
 
-        async fn list_active_hooks(&self) -> a3s_flow::Result<Vec<a3s_flow::ActiveHookSnapshot>> {
+        async fn list_active_hooks(&self) -> aster_flow::Result<Vec<aster_flow::ActiveHookSnapshot>> {
             Ok(Vec::new())
         }
 
         async fn find_active_hooks_by_token(
             &self,
             _token: &str,
-        ) -> a3s_flow::Result<Vec<a3s_flow::ActiveHookSnapshot>> {
+        ) -> aster_flow::Result<Vec<aster_flow::ActiveHookSnapshot>> {
             Ok(Vec::new())
         }
     }
@@ -352,14 +352,14 @@ fn composed_sharded_store_rejects_nested_or_mismatched_backends() {
         vec![Arc::new(InMemoryEventStore::new()) as _, nested],
     )
     .unwrap_err();
-    assert!(matches!(err, a3s_flow::FlowError::InvalidTransition(_)));
+    assert!(matches!(err, aster_flow::FlowError::InvalidTransition(_)));
 
     let mismatch =
         ShardedFlowEventStore::new(layout, vec![Arc::new(InMemoryEventStore::new()) as _])
             .unwrap_err();
     assert!(matches!(
         mismatch,
-        a3s_flow::FlowError::InvalidTransition(_)
+        aster_flow::FlowError::InvalidTransition(_)
     ));
 }
 
@@ -433,7 +433,7 @@ async fn composed_local_file_link_to_pruned_run_is_tombstone_conflict() {
     assert!(
         matches!(
             linked,
-            a3s_flow::FlowError::RunConflict { ref reason, .. } if reason.contains("tombstoned")
+            aster_flow::FlowError::RunConflict { ref reason, .. } if reason.contains("tombstoned")
         ),
         "got {linked}"
     );
@@ -536,7 +536,7 @@ async fn composed_local_file_prune_keeps_child_linked_from_another_shard() {
     assert_eq!(child_tombstone.terminal_sequence, 2);
     assert!(matches!(
         store.list(&child).await,
-        Err(a3s_flow::FlowError::RunNotFound(_))
+        Err(aster_flow::FlowError::RunNotFound(_))
     ));
 }
 
@@ -634,6 +634,6 @@ async fn composed_prune_finishes_after_a_linked_peer_was_already_retired() {
     );
     assert!(matches!(
         store.list(&parent).await,
-        Err(a3s_flow::FlowError::RunNotFound(_))
+        Err(aster_flow::FlowError::RunNotFound(_))
     ));
 }

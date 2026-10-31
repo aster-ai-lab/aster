@@ -18,7 +18,7 @@
 //! `cat` cannot stand in for five reads.
 //!
 //! ```text
-//! cargo +1.97.1 test -p a3s-code-core --test test_parallel_adoption_real_llm \
+//! cargo +1.97.1 test -p aster-core --test test_parallel_adoption_real_llm \
 //!   -- --ignored --test-threads=1 --nocapture
 //! ```
 
@@ -27,8 +27,8 @@ mod support;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{Agent, SessionOptions, SystemPromptSlots};
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{Agent, SessionOptions, SystemPromptSlots};
 use support::layer_c_model::load_pinned_layer_c_config;
 
 const REAL_TIMEOUT: Duration = Duration::from_secs(300);
@@ -84,7 +84,7 @@ async fn run_arm(label: &str, guidelines: Option<&str>) -> ArmReport {
 
     let mut options = SessionOptions::new()
         .with_session_id(format!("par-adopt-{label}"))
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_max_tool_rounds(16)
@@ -116,7 +116,7 @@ async fn run_arm(label: &str, guidelines: Option<&str>) -> ArmReport {
     println!("PAR-ADOPT arm={label} reply: {text}");
 
     let facts =
-        a3s_code_core::fact_control::read_workspace_facts(&root, &format!("par-adopt-{label}"))
+        aster_core::fact_control::read_workspace_facts(&root, &format!("par-adopt-{label}"))
             .expect("facts");
     let mut decisions = 0usize;
     let mut batch_turns = 0usize;
@@ -152,7 +152,7 @@ async fn run_arm(label: &str, guidelines: Option<&str>) -> ArmReport {
 }
 
 #[tokio::test]
-#[ignore = "requires the model and credentials from the repo .a3s/config.acl"]
+#[ignore = "requires the model and credentials from the repo .aster/config.acl"]
 async fn measures_spontaneous_and_guided_parallel_adoption() {
     let natural = run_arm("natural", None).await;
     let guided = run_arm("guided", Some(GUIDED_LINE)).await;

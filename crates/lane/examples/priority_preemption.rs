@@ -9,7 +9,7 @@
 //! 2. High priority queue at capacity → Low priority executes
 //! 3. High priority queue has pending + capacity → Low priority waits
 
-use a3s_lane::{Command, EventEmitter, LaneConfig, QueueManagerBuilder, Result};
+use aster_lane::{Command, EventEmitter, LaneConfig, QueueManagerBuilder, Result};
 use async_trait::async_trait;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Arc;
@@ -61,7 +61,7 @@ impl Command for TimedCommand {
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
-    println!("=== A3S Lane: Priority Preemption Test ===\n");
+    println!("=== Aster Lane: Priority Preemption Test ===\n");
 
     // Scenario 1: High priority queue empty
     scenario_1_high_priority_empty().await?;

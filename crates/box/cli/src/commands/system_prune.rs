@@ -1,4 +1,4 @@
-//! `a3s-box system-prune` command — Remove all unused data.
+//! `aster-box system-prune` command — Remove all unused data.
 //!
 //! Removes stopped boxes and unused images in one operation.
 
@@ -119,7 +119,7 @@ pub async fn execute(args: SystemPruneArgs) -> Result<(), Box<dyn std::error::Er
     // Fail closed on inventory/remove errors so system-prune cannot invent
     // success while unused NetworkStore claims remain (`network prune` parity).
     let state = StateFile::load_default()?;
-    let network_store = a3s_box_runtime::NetworkStore::default_path()?;
+    let network_store = aster_box_runtime::NetworkStore::default_path()?;
     let (removed, errors) = super::network::prune_unused_networks(&network_store, &state)?;
     for name in &removed {
         networks_removed += 1;
@@ -135,12 +135,12 @@ pub async fn execute(args: SystemPruneArgs) -> Result<(), Box<dyn std::error::Er
     if args.all {
         let state = StateFile::load_default()?;
         let protected_rootfs = referenced_rootfs_cache_keys(&state);
-        let cache_root = a3s_box_core::dirs_home().join("cache");
+        let cache_root = aster_box_core::dirs_home().join("cache");
         let rootfs_result = prune_rootfs_caches(&cache_root, &protected_rootfs)?;
         rootfs_cache_entries_removed = rootfs_result.entries_removed;
         space_freed = space_freed.saturating_add(rootfs_result.bytes_freed);
 
-        let pull_result = a3s_box_runtime::prune_stale_pull_temp_dirs(&images_dir)?;
+        let pull_result = aster_box_runtime::prune_stale_pull_temp_dirs(&images_dir)?;
         pull_temp_dirs_removed = pull_result.directories_removed;
         space_freed = space_freed.saturating_add(pull_result.bytes_freed);
     }
@@ -217,16 +217,16 @@ fn referenced_rootfs_cache_keys(state: &StateFile) -> HashSet<String> {
 fn prune_rootfs_caches(
     cache_root: &Path,
     protected: &HashSet<String>,
-) -> Result<a3s_box_runtime::cache::RootfsPruneResult, Box<dyn std::error::Error>> {
-    let mut result = a3s_box_runtime::cache::RootfsPruneResult::default();
+) -> Result<aster_box_runtime::cache::RootfsPruneResult, Box<dyn std::error::Error>> {
+    let mut result = aster_box_runtime::cache::RootfsPruneResult::default();
     let directory_cache = cache_root.join("rootfs");
     if directory_cache.exists() {
         result.merge(
-            a3s_box_runtime::cache::RootfsCache::new(&directory_cache)?
+            aster_box_runtime::cache::RootfsCache::new(&directory_cache)?
                 .prune_all_protecting(protected)?,
         );
     }
-    result.merge(a3s_box_runtime::cache::prune_apfs_rootfs_cache_all(
+    result.merge(aster_box_runtime::cache::prune_apfs_rootfs_cache_all(
         &cache_root.join("rootfs-apfs-v2"),
         protected,
     )?);
@@ -309,7 +309,7 @@ mod tests {
         let source = tmp.path().join("source");
         std::fs::create_dir_all(&source).unwrap();
         std::fs::write(source.join("payload"), b"rootfs").unwrap();
-        let cache = a3s_box_runtime::cache::RootfsCache::new(&directory_cache).unwrap();
+        let cache = aster_box_runtime::cache::RootfsCache::new(&directory_cache).unwrap();
         cache.put("live", &source, "live").unwrap();
         cache.put("unused", &source, "unused").unwrap();
 

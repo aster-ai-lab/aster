@@ -1,13 +1,13 @@
-use a3s_code_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
-use a3s_code_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
-use a3s_code_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
-use a3s_code_core::run::{RunRecord, RunSnapshot, RunStatus};
-use a3s_code_core::store::{
+use aster_core::config::{CodeConfig, ModelConfig, ModelModalities, ProviderConfig};
+use aster_core::llm::{ContentBlock, LlmClient, LlmResponse, Message, StreamEvent, TokenUsage};
+use aster_core::loop_checkpoint::{LoopCheckpoint, LOOP_CHECKPOINT_SCHEMA_VERSION};
+use aster_core::run::{RunRecord, RunSnapshot, RunStatus};
+use aster_core::store::{
     ContextUsage, FileSessionStore, MemorySessionStore, SessionConfig, SessionData,
     SessionSnapshotV1, SessionState, SessionStore,
 };
-use a3s_code_core::tools::{ArtifactStore, ImmutableContentAdapterBindingV1};
-use a3s_code_core::{
+use aster_core::tools::{ArtifactStore, ImmutableContentAdapterBindingV1};
+use aster_core::{
     Agent, AgentProtocolCheckpointRecoveryError, AgentProtocolCommandV1,
     AgentProtocolEventPageRequestV1, AgentProtocolHarness, AgentProtocolHarnessError,
     AgentProtocolRunCancelV1, AgentProtocolRunIdentityV1, AgentProtocolRunRecoverExactV1,
@@ -52,7 +52,7 @@ impl LlmClient for StaticStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         Ok(response())
     }
@@ -61,7 +61,7 @@ impl LlmClient for StaticStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         _cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let (sender, receiver) = mpsc::channel(2);
@@ -86,7 +86,7 @@ impl LlmClient for CancelAwareStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
         Ok(response())
     }
@@ -95,7 +95,7 @@ impl LlmClient for CancelAwareStreamingClient {
         &self,
         _messages: &[Message],
         _system: Option<&str>,
-        _tools: &[a3s_code_core::llm::ToolDefinition],
+        _tools: &[aster_core::llm::ToolDefinition],
         cancel_token: CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         let (sender, receiver) = mpsc::channel(2);
@@ -119,6 +119,7 @@ fn offline_config() -> CodeConfig {
     CodeConfig {
         default_model: Some("fixture/static".into()),
         providers: vec![ProviderConfig {
+            protocol: None,
             name: "fixture".into(),
             api_key: Some("offline".into()),
             base_url: None,
@@ -146,9 +147,9 @@ fn offline_config() -> CodeConfig {
     }
 }
 
-fn manifest() -> a3s_code_core::release::AgentReleaseManifest {
-    a3s_code_core::release::AgentReleaseManifest::parse(include_str!(
-        "../../fixtures/agent-release-contract/.a3s/asset.acl"
+fn manifest() -> aster_core::release::AgentReleaseManifest {
+    aster_core::release::AgentReleaseManifest::parse(include_str!(
+        "../../fixtures/agent-release-contract/.aster/asset.acl"
     ))
     .unwrap()
 }
@@ -156,7 +157,7 @@ fn manifest() -> a3s_code_core::release::AgentReleaseManifest {
 fn logical_resume_with_binding(
     session_id: &str,
     turn: usize,
-    capability_binding: Option<a3s_code_core::capability::RunCapabilityBindingV1>,
+    capability_binding: Option<aster_core::capability::RunCapabilityBindingV1>,
 ) -> LoopCheckpoint {
     LoopCheckpoint {
         schema_version: LOOP_CHECKPOINT_SCHEMA_VERSION,
@@ -181,8 +182,8 @@ fn logical_resume_with_binding(
     }
 }
 
-fn empty_catalog_capability_binding() -> a3s_code_core::capability::RunCapabilityBindingV1 {
-    use a3s_code_core::capability::{
+fn empty_catalog_capability_binding() -> aster_core::capability::RunCapabilityBindingV1 {
+    use aster_core::capability::{
         CapabilityCeiling, CapabilityExecutionCeiling, CapabilitySet, GovernanceCapabilityCeiling,
         RunCapabilityBindingV1, WorkspaceCapabilityCeiling,
     };
@@ -207,7 +208,7 @@ fn portable_export(session_id: &str, turn: usize) -> SessionCheckpointExportV1 {
 fn portable_export_with_binding(
     session_id: &str,
     turn: usize,
-    capability_binding: Option<a3s_code_core::capability::RunCapabilityBindingV1>,
+    capability_binding: Option<aster_core::capability::RunCapabilityBindingV1>,
 ) -> SessionCheckpointExportV1 {
     let logical = logical_resume_with_binding(session_id, turn, capability_binding);
     let session = SessionData {
@@ -597,7 +598,7 @@ async fn portable_restore_never_replaces_an_unrelated_live_session() {
     ));
     assert_eq!(
         error.code(),
-        "a3s.code.agent_protocol.checkpoint_session_already_active"
+        "aster.code.agent_protocol.checkpoint_session_already_active"
     );
     assert_eq!(harness.session_count().await, 1);
     assert!(store
@@ -626,8 +627,8 @@ async fn portable_recovery_rejects_foreign_release_identity() {
     assert!(matches!(
         error,
         AgentProtocolCheckpointRecoveryError::Harness(
-            a3s_code_core::AgentProtocolHarnessError::Host(
-                a3s_code_core::AgentProtocolHostError::ReleaseMismatch
+            aster_core::AgentProtocolHarnessError::Host(
+                aster_core::AgentProtocolHostError::ReleaseMismatch
             )
         )
     ));
@@ -653,7 +654,7 @@ async fn portable_recovery_requires_logical_resume_component() {
         .expect_err("exact recovery without logical resume must fail closed");
     // Transport validation rejects a descriptor that omits logical-resume evidence
     // before the Harness opens the payload.
-    assert_eq!(error.code(), "a3s.code.agent_protocol.invalid_field");
+    assert_eq!(error.code(), "aster.code.agent_protocol.invalid_field");
     harness.close().await;
 }
 
@@ -672,7 +673,7 @@ async fn portable_recovery_rejects_forced_invalid_capability_binding() {
         "forced-invalid-binding-target",
         &export,
     );
-    a3s_code_core::force_invalid_recovery_binding_for_test();
+    aster_core::force_invalid_recovery_binding_for_test();
     let error = harness
         .execute_checkpoint_recovery(&request, export)
         .await
@@ -706,7 +707,7 @@ async fn portable_recovery_rejects_closed_harness() {
     assert!(matches!(
         error,
         AgentProtocolCheckpointRecoveryError::Harness(
-            a3s_code_core::AgentProtocolHarnessError::Closed
+            aster_core::AgentProtocolHarnessError::Closed
         )
     ));
 }
@@ -750,7 +751,7 @@ async fn portable_recovery_rejects_when_session_capacity_is_exhausted() {
     assert!(matches!(
         error,
         AgentProtocolCheckpointRecoveryError::Harness(
-            a3s_code_core::AgentProtocolHarnessError::SessionCapacity
+            aster_core::AgentProtocolHarnessError::SessionCapacity
         )
     ));
     harness.close().await;
@@ -782,12 +783,12 @@ async fn portable_recovery_accepts_empty_catalog_binding_without_a_batch() {
 
 #[tokio::test]
 async fn portable_recovery_rejects_batch_when_restored_session_already_matches_binding() {
-    use a3s_code_core::capability::{
+    use aster_core::capability::{
         CapabilityContribution, CapabilityDescriptor, CapabilityKind, CapabilitySet,
         CapabilitySource, CapabilityValue, CodeCatalogGeneration, SessionCapabilityBatch,
         Sha256Digest,
     };
-    use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
+    use aster_core::tools::{Tool, ToolContext, ToolOutput};
 
     #[derive(Clone)]
     struct Probe;
@@ -912,12 +913,12 @@ async fn portable_recovery_surfaces_exact_recovery_run_identity_conflict() {
 
 #[tokio::test]
 async fn portable_recovery_rejects_capability_batch_for_legacy_unbound_checkpoint() {
-    use a3s_code_core::capability::{
+    use aster_core::capability::{
         CapabilityContribution, CapabilityDescriptor, CapabilityKind, CapabilitySet,
         CapabilitySource, CapabilityValue, CodeCatalogGeneration, SessionCapabilityBatch,
         Sha256Digest,
     };
-    use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
+    use aster_core::tools::{Tool, ToolContext, ToolOutput};
 
     #[derive(Clone)]
     struct Probe;
@@ -989,12 +990,12 @@ async fn portable_recovery_rejects_capability_batch_for_legacy_unbound_checkpoin
 
 #[tokio::test]
 async fn portable_recovery_rejects_capability_batch_when_session_already_active() {
-    use a3s_code_core::capability::{
+    use aster_core::capability::{
         CapabilityContribution, CapabilityDescriptor, CapabilityKind, CapabilitySet,
         CapabilitySource, CapabilityValue, CodeCatalogGeneration, SessionCapabilityBatch,
         Sha256Digest,
     };
-    use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
+    use aster_core::tools::{Tool, ToolContext, ToolOutput};
 
     #[derive(Clone)]
     struct Probe;
@@ -1292,15 +1293,15 @@ async fn file_store_restart_replays_the_exact_portable_checkpoint() {
     restarted.close().await;
 }
 
-fn invalid_schema_capability_binding() -> a3s_code_core::capability::RunCapabilityBindingV1 {
-    use a3s_code_core::capability::{
+fn invalid_schema_capability_binding() -> aster_core::capability::RunCapabilityBindingV1 {
+    use aster_core::capability::{
         CAPABILITY_CEILING_SCHEMA, CAPABILITY_SET_SCHEMA, RUN_CAPABILITY_BINDING_SCHEMA,
     };
     // Keep digests well-formed so export construction succeeds; only the binding
     // schema is invalid so ensure_recovery_capability_binding fails closed.
     let _ = RUN_CAPABILITY_BINDING_SCHEMA;
     serde_json::from_value(serde_json::json!({
-        "schema": "a3s.code.run-capability-binding.invalid",
+        "schema": "aster.code.run-capability-binding.invalid",
         "capabilitySetSchema": CAPABILITY_SET_SCHEMA,
         "codeCatalogGeneration": 1,
         "catalogDigest": format!("sha256:{}", "a".repeat(64)),

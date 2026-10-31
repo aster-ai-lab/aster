@@ -26,14 +26,14 @@ Use 把包生命周期分成计划、审查和应用。运行状态还涉及作�
 
 `component` 管理宿主已经命名的本机工具。工具获取与 AIX 包安装是不同的能力边界，不应混用凭据或安装目录。
 
-`a3s-use capabilities --json` 列出当前外部表面。`doctor --json` 用于检查运行条件和失败诊断。
+`aster-use capabilities --json` 列出当前外部表面。`doctor --json` 用于检查运行条件和失败诊断。
 
 ## MCP 宿主
 
 Use 可以按域或包 ID 启动 MCP 服务：
 
 ```bash
-./target/debug/a3s-use mcp serve office-native
+./target/debug/aster-use mcp serve office-native
 ```
 
 MCP 工具使用类型化输入和输出。宿主负责进程生命周期、授权和调用方身份，不要把包 Manifest 当作调用方授权。

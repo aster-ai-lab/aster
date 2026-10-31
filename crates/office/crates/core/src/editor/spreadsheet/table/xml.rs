@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 
 use super::table_error;
 use crate::editor::part::OfficeDialect;
@@ -503,7 +503,7 @@ const fn bool_token(value: bool) -> &'static str {
     }
 }
 
-fn unknown_content(part_name: &str, message: &str) -> a3s_use_core::UseError {
+fn unknown_content(part_name: &str, message: &str) -> aster_use_core::UseError {
     super::super::editor_error(
         "use.office.spreadsheet_table_unknown_content",
         message,

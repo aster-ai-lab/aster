@@ -1,7 +1,7 @@
 #![cfg(test)]
 
-use super::{A3sCodeAgent, SessionSetup};
-use a3s_code_core::{sandbox::SandboxNetworkMode, CodeConfig};
+use super::{AsterCodeAgent, SessionSetup};
+use aster_core::{sandbox::SandboxNetworkMode, CodeConfig};
 use agent_client_protocol::{self as acp, Agent as _};
 
 #[tokio::test]
@@ -13,7 +13,7 @@ async fn knowledge_compile_modes_keep_the_candidate_only_ceiling() {
     let root = root.canonicalize().unwrap();
     std::fs::write(root.join("source.md"), "Frozen evidence.").unwrap();
     let job =
-        a3s_okf::begin_knowledge_maintenance(&root, &[], a3s_okf::MaintenanceOperation::Ingest)
+        aster_okf::begin_knowledge_maintenance(&root, &[], aster_okf::MaintenanceOperation::Ingest)
             .unwrap();
     assert_compile_ceiling(
         directory.path(),
@@ -21,7 +21,7 @@ async fn knowledge_compile_modes_keep_the_candidate_only_ceiling() {
         json!({"root":root,"jobId":job.id}),
         "source.md",
         || {
-            a3s_okf::cancel_knowledge_maintenance(&root, &job.id).unwrap();
+            aster_okf::cancel_knowledge_maintenance(&root, &job.id).unwrap();
         },
     )
     .await;
@@ -38,14 +38,14 @@ async fn workspace_wiki_compile_modes_keep_the_candidate_only_ceiling() {
     let source = b"pub fn answer() -> u8 { 42 }\n";
     std::fs::create_dir(directory.path().join("src")).unwrap();
     std::fs::write(directory.path().join("src/lib.rs"), source).unwrap();
-    let input = a3s_okf::WorkspaceKnowledgeInput::new(
+    let input = aster_okf::WorkspaceKnowledgeInput::new(
         &directory.path().canonicalize().unwrap(),
         "tenant:permission:binding",
         &format!("sha256:{}", "a".repeat(64)),
-        vec![a3s_okf::WorkspaceKnowledgeSource::text("src/lib.rs", source).unwrap()],
+        vec![aster_okf::WorkspaceKnowledgeSource::text("src/lib.rs", source).unwrap()],
     )
     .unwrap();
-    let job = a3s_okf::begin_workspace_knowledge_maintenance(&input)
+    let job = aster_okf::begin_workspace_knowledge_maintenance(&input)
         .unwrap()
         .unwrap();
     assert_compile_ceiling(
@@ -53,7 +53,7 @@ async fn workspace_wiki_compile_modes_keep_the_candidate_only_ceiling() {
         &job,
         json!({"root":input.output_root(),"jobId":job.id,"workspaceRevision":input.binding_revision()}),
         &job.sources[0],
-        || { a3s_okf::cancel_workspace_knowledge_maintenance(&input, &job.id).unwrap(); },
+        || { aster_okf::cancel_workspace_knowledge_maintenance(&input, &job.id).unwrap(); },
     )
     .await;
     assert_eq!(
@@ -65,7 +65,7 @@ async fn workspace_wiki_compile_modes_keep_the_candidate_only_ceiling() {
 
 async fn assert_compile_ceiling(
     directory: &std::path::Path,
-    job: &a3s_okf::KnowledgeJob,
+    job: &aster_okf::KnowledgeJob,
     scope: serde_json::Value,
     source: &str,
     stop: impl FnOnce(),
@@ -76,7 +76,7 @@ async fn assert_compile_ceiling(
     launch.workspace = job.staging.clone().into();
     let ambient_memory = directory.join("ambient-memory");
     launch.config.memory_dir = Some(ambient_memory.clone());
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let setup = SessionSetup {
         workspace: job.staging.clone().into(),
         model_id: "fixture/model",
@@ -97,9 +97,9 @@ async fn assert_compile_ceiling(
         .expect("candidate completion needs host byte verification");
     let candidate = std::path::Path::new(&job.staging).join("concepts/attested.md");
     std::fs::write(&candidate, b"Candidate evidence.").unwrap();
-    let records = [a3s_code_core::completion_attestor::MutatedPathRecord {
+    let records = [aster_core::completion_attestor::MutatedPathRecord {
         path: "concepts/attested.md".into(),
-        content_digest: a3s_okf::content_generation(b"Candidate evidence."),
+        content_digest: aster_okf::content_generation(b"Candidate evidence."),
     }];
     let report = attestor.attest("fixture-effect-digest", &records).unwrap();
     assert_eq!(
@@ -109,13 +109,13 @@ async fn assert_compile_ceiling(
     assert!(report
         .checks
         .iter()
-        .all(|check| check.status == a3s_code_core::verification::VerificationStatus::Passed));
+        .all(|check| check.status == aster_core::verification::VerificationStatus::Passed));
     std::fs::write(&candidate, b"Changed after the effect receipt.").unwrap();
     assert!(attestor.attest("fixture-effect-digest", &records).is_none());
     let opened = agent
         .new_session(
             acp::NewSessionRequest::new(&job.staging).meta(Some(
-                [("a3sHost".into(), json!({"knowledgeCompile":scope}))]
+                [("asterHost".into(), json!({"knowledgeCompile":scope}))]
                     .into_iter()
                     .collect(),
             )),
@@ -231,13 +231,13 @@ async fn assert_compile_ceiling(
 
 #[test]
 fn empty_launch_model_is_omitted_and_named() {
-    let empty = A3sCodeAgent::core_session_options("session", "  ", None);
+    let empty = AsterCodeAgent::core_session_options("session", "  ", None);
     assert!(empty.model.is_none());
-    let set = A3sCodeAgent::core_session_options("session", "mock/gpt", None);
+    let set = AsterCodeAgent::core_session_options("session", "mock/gpt", None);
     assert_eq!(set.model.as_deref(), Some("mock/gpt"));
     assert_eq!(
         super::configured_model_id("").unwrap_err(),
-        "no model is configured; open /config and save ~/.a3s/config.acl, then start aster again"
+        "no model is configured; open /config and save ~/.aster/config.acl, then start aster again"
     );
     assert_eq!(
         super::configured_model_id(" mock/gpt ").unwrap(),
@@ -251,7 +251,7 @@ async fn blank_launch_model_session_and_prompt_use_the_no_model_sentence() {
     let mut launch = super::tests::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().to_path_buf();
     launch.model_id.clear();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     let created = agent
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
@@ -299,7 +299,7 @@ async fn initialize_refuses_invalid_prompt_metadata_instead_of_silently_ignoring
             serde_json::json!("Replace the whole system prompt"),
         ),
     ] {
-        let agent = A3sCodeAgent::new(super::tests::test_launch(None));
+        let agent = AsterCodeAgent::new(super::tests::test_launch(None));
         let error = agent
             .initialize(
                 acp::InitializeRequest::new(acp::ProtocolVersion::V1)
@@ -317,7 +317,7 @@ async fn initialize_rules_append_without_replacing_host_or_unattended_contracts(
         let root = tempfile::tempdir().unwrap();
         let mut launch = super::tests::test_launch(None);
         launch.workspace = root.path().into();
-        let mut agent = A3sCodeAgent::new(launch);
+        let mut agent = AsterCodeAgent::new(launch);
         if unattended {
             agent =
                 agent.with_unattended(crate::unattended::Unattended::new(10_000, None).unwrap());
@@ -386,7 +386,7 @@ fn trusted_acl_presentation_reaches_the_host_session_without_changing_default() 
         "tool_presentation { mode = \"disabled\" }",
     ] {
         let config = CodeConfig::from_acl(source).unwrap();
-        let options = A3sCodeAgent::host_session_options(
+        let options = AsterCodeAgent::host_session_options(
             "presentation",
             &setup,
             &config,
@@ -419,7 +419,7 @@ fn disk_attestor_is_installed_only_for_opted_in_non_review_sessions() {
             components: &[],
             mcp_servers: Vec::new(),
         };
-        let options = A3sCodeAgent::host_session_options(
+        let options = AsterCodeAgent::host_session_options(
             "attestation",
             &setup,
             &CodeConfig::default(),
@@ -454,7 +454,7 @@ fn typed_setup_preserves_host_safety_and_context_without_activation() {
         components: &[],
         mcp_servers: Vec::new(),
     };
-    let options = A3sCodeAgent::host_session_options("exact-session-id", &setup, &config, &store)
+    let options = AsterCodeAgent::host_session_options("exact-session-id", &setup, &config, &store)
         .expect("host options");
     assert_eq!(options.model.as_deref(), Some("fixture/exact-model-id"));
     assert_eq!(options.session_id.as_deref(), Some("exact-session-id"));
@@ -469,13 +469,13 @@ fn typed_setup_preserves_host_safety_and_context_without_activation() {
     assert!(confirmation.enabled);
     assert!(matches!(
         confirmation.timeout_action,
-        a3s_code_core::hitl::TimeoutAction::Reject
+        aster_core::hitl::TimeoutAction::Reject
     ));
     assert!(confirmation.yolo_lanes.is_empty());
     assert!(options.skill_dirs.contains(&skills));
     assert!(options
         .watch_skill_dirs
-        .contains(&root.path().join(".a3s/skills")));
+        .contains(&root.path().join(".aster/skills")));
     assert!(!store.exists());
     let slots = options.prompt_slots.expect("prompt slots");
     assert_eq!(slots.output_language.as_deref(), Some("zh-CN"));
@@ -500,12 +500,12 @@ fn host_session_status_names_live_search_and_closed_semantic() {
         mcp_servers: Vec::new(),
     };
     let trust = root.path().join("hooks-trust.json");
-    let options = A3sCodeAgent::core_session_options("host-session", setup.model_id, setup.effort);
+    let options = AsterCodeAgent::core_session_options("host-session", setup.model_id, setup.effort);
     let mut slots = crate::host_context::merge_studio_host(
         options.prompt_slots.clone().unwrap_or_default(),
         &setup.host,
     );
-    let options = A3sCodeAgent::host_session_options_with_hook_roots(
+    let options = AsterCodeAgent::host_session_options_with_hook_roots(
         options,
         &mut slots,
         &setup,
@@ -535,7 +535,7 @@ fn host_session_status_names_live_search_and_closed_semantic() {
 #[tokio::test]
 async fn trusted_session_hook_runs_and_a_pending_hook_does_not() {
     let root = tempfile::tempdir().expect("workspace");
-    let hooks_dir = root.path().join(".a3s");
+    let hooks_dir = root.path().join(".aster");
     std::fs::create_dir_all(&hooks_dir).expect("hook directory");
     std::fs::write(
         hooks_dir.join("hooks.json"),
@@ -553,7 +553,7 @@ async fn trusted_session_hook_runs_and_a_pending_hook_does_not() {
     .expect("hooks.json");
     let trust = root.path().join("hooks-trust.json");
     let preview =
-        a3s_code_core::hooks::CommandHookExecutor::discover(root.path(), None, trust.clone())
+        aster_core::hooks::CommandHookExecutor::discover(root.path(), None, trust.clone())
             .expect("discover");
     let listed = preview.status_value();
     let short_id = listed["hooks"]
@@ -579,12 +579,12 @@ async fn trusted_session_hook_runs_and_a_pending_hook_does_not() {
         components: &[],
         mcp_servers: Vec::new(),
     };
-    let options = A3sCodeAgent::core_session_options("hook-session", setup.model_id, setup.effort);
+    let options = AsterCodeAgent::core_session_options("hook-session", setup.model_id, setup.effort);
     let mut slots = crate::host_context::merge_studio_host(
         options.prompt_slots.clone().unwrap_or_default(),
         &setup.host,
     );
-    let options = A3sCodeAgent::host_session_options_with_hook_roots(
+    let options = AsterCodeAgent::host_session_options_with_hook_roots(
         options,
         &mut slots,
         &setup,
@@ -606,8 +606,8 @@ async fn trusted_session_hook_runs_and_a_pending_hook_does_not() {
 
     let executor = options.hook_executor.expect("hook executor");
     executor
-        .fire(&a3s_code_core::hooks::HookEvent::SessionStart(
-            a3s_code_core::hooks::SessionStartEvent {
+        .fire(&aster_core::hooks::HookEvent::SessionStart(
+            aster_core::hooks::SessionStartEvent {
                 session_id: "hook-session".to_string(),
                 system_prompt: None,
                 model_provider: "fixture".to_string(),
@@ -621,8 +621,8 @@ async fn trusted_session_hook_runs_and_a_pending_hook_does_not() {
 
 #[test]
 fn host_contract_setup_is_scoped_and_refuses_invalid_roots_before_activation() {
-    use a3s_code_core::config::WorkspaceVerificationContract;
-    use a3s_code_core::verification::VerificationContractV1;
+    use aster_core::config::WorkspaceVerificationContract;
+    use aster_core::verification::VerificationContractV1;
 
     let root = tempfile::tempdir().unwrap();
     let other = tempfile::tempdir().unwrap();
@@ -642,19 +642,19 @@ fn host_contract_setup_is_scoped_and_refuses_invalid_roots_before_activation() {
         components: &[],
         mcp_servers: Vec::new(),
     };
-    let options = A3sCodeAgent::host_session_options("session", &setup, &config, &store).unwrap();
+    let options = AsterCodeAgent::host_session_options("session", &setup, &config, &store).unwrap();
     assert_eq!(options.verification_contracts.len(), 1);
     assert_eq!(options.verification_contracts[0].command, "python3 gate.py");
     assert!(options.permission_checker.is_some());
     setup.workspace = other.path().to_owned();
     assert!(
-        A3sCodeAgent::host_session_options("session", &setup, &config, &store)
+        AsterCodeAgent::host_session_options("session", &setup, &config, &store)
             .unwrap()
             .verification_contracts
             .is_empty()
     );
     config.verification_contracts[0].workspace = root.path().join("missing");
-    assert!(A3sCodeAgent::host_session_options("session", &setup, &config, &store).is_err());
+    assert!(AsterCodeAgent::host_session_options("session", &setup, &config, &store).is_err());
     assert!(!store.exists());
 }
 
@@ -680,9 +680,9 @@ async fn source_review_has_no_tools_even_after_a_yolo_mode_change() {
         "Private personal evidence.",
     )
     .unwrap();
-    let host = A3sCodeAgent::new(launch);
+    let host = AsterCodeAgent::new(launch);
     let meta =
-        json!({"a3sHost":{"sourceReview":true,"officeTools":true,"workspaceWikiSearch":true,"workspaceMemorySearch":true,"assets":{"wiki":ambient_wiki}}})
+        json!({"asterHost":{"sourceReview":true,"officeTools":true,"workspaceWikiSearch":true,"workspaceMemorySearch":true,"assets":{"wiki":ambient_wiki}}})
             .as_object()
             .unwrap()
             .clone();
@@ -770,15 +770,64 @@ async fn source_review_has_no_tools_even_after_a_yolo_mode_change() {
 }
 
 #[tokio::test]
+async fn open_workspace_browser_follows_the_user_browser_pane_and_document_host() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = super::test_launch(Some(root.path().join("sessions")));
+    launch.workspace = root.path().into();
+    let agent = AsterCodeAgent::new(launch);
+    for (metadata, enabled) in [
+        (serde_json::json!({}), false),
+        (
+            serde_json::json!({"asterHost":{"userBrowserPane":true}}),
+            false,
+        ),
+        (
+            serde_json::json!({
+                "asterStudioDocuments": true,
+                "asterHost": {"userBrowserPane": true}
+            }),
+            true,
+        ),
+    ] {
+        let opened = agent
+            .new_session(
+                acp::NewSessionRequest::new(root.path())
+                    .meta(metadata.as_object().unwrap().clone()),
+            )
+            .await
+            .unwrap();
+        let session = agent
+            .sessions
+            .lock()
+            .await
+            .get(opened.session_id.0.as_ref())
+            .unwrap()
+            .session
+            .clone();
+        let tools = session
+            .presented_tool_definitions("Open https://github.com in the workspace browser.")
+            .unwrap();
+        assert_eq!(
+            tools
+                .iter()
+                .any(|tool| tool.name == "open_workspace_browser"),
+            enabled,
+            "{metadata}"
+        );
+        session.close().await;
+    }
+}
+
+#[tokio::test]
 async fn office_tools_follow_only_the_explicit_host_capability() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = super::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().into();
-    let agent = A3sCodeAgent::new(launch);
+    let agent = AsterCodeAgent::new(launch);
     for (metadata, enabled) in [
         (serde_json::json!({}), false),
-        (serde_json::json!({"a3sHost":{"officeTools":false}}), false),
-        (serde_json::json!({"a3sHost":{"officeTools":true}}), true),
+        (serde_json::json!({"asterHost":{"officeTools":false}}), false),
+        (serde_json::json!({"asterHost":{"officeTools":true}}), true),
     ] {
         let opened = agent
             .new_session(
@@ -815,8 +864,8 @@ async fn malformed_office_capability_refuses_before_session_admission() {
     let root = tempfile::tempdir().unwrap();
     let mut launch = super::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().into();
-    let agent = A3sCodeAgent::new(launch);
-    let metadata = serde_json::json!({"a3sHost":{"officeTools":"true"}});
+    let agent = AsterCodeAgent::new(launch);
+    let metadata = serde_json::json!({"asterHost":{"officeTools":"true"}});
     let error = agent
         .new_session(
             acp::NewSessionRequest::new(root.path()).meta(metadata.as_object().unwrap().clone()),
@@ -830,7 +879,7 @@ async fn malformed_office_capability_refuses_before_session_admission() {
 #[tokio::test]
 async fn durable_collection_stays_closed_until_the_first_recall() {
     let root = tempfile::tempdir().expect("workspace");
-    let memory_dir = root.path().join(".a3s/memory");
+    let memory_dir = root.path().join(".aster/memory");
     std::fs::create_dir_all(memory_dir.join("items")).expect("legacy items");
     std::fs::write(
         memory_dir.join("items/legacy-1.json"),
@@ -858,13 +907,14 @@ async fn durable_collection_stays_closed_until_the_first_recall() {
     };
     let config = CodeConfig {
         default_model: Some("fixture/model".to_string()),
-        providers: vec![a3s_code_core::ProviderConfig {
+        providers: vec![aster_core::ProviderConfig {
+            protocol: None,
             name: "fixture".to_string(),
             api_key: Some("test-key".to_string()),
             base_url: None,
             headers: Default::default(),
             session_id_header: None,
-            models: vec![a3s_code_core::ModelConfig {
+            models: vec![aster_core::ModelConfig {
                 id: "model".to_string(),
                 name: "model".to_string(),
                 family: "fixture".to_string(),
@@ -884,7 +934,7 @@ async fn durable_collection_stays_closed_until_the_first_recall() {
         }],
         ..Default::default()
     };
-    let options = A3sCodeAgent::host_session_options("memory-session", &setup, &config, &store)
+    let options = AsterCodeAgent::host_session_options("memory-session", &setup, &config, &store)
         .expect("host options");
     assert!(options.memory_store.is_some());
     assert!(!memory_dir.join("durable_memory").exists());
@@ -895,7 +945,7 @@ async fn durable_collection_stays_closed_until_the_first_recall() {
         .expect("capability status");
     assert!(extra.contains("memory: 耐久集合"));
 
-    let agent = a3s_code_core::Agent::from_config(config)
+    let agent = aster_core::Agent::from_config(config)
         .await
         .expect("agent");
     let session = agent

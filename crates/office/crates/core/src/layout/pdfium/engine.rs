@@ -2,7 +2,7 @@ use std::io::Write as _;
 use std::path::Path;
 use std::sync::{Arc, Mutex, OnceLock};
 
-use a3s_use_core::UseResult;
+use aster_use_core::UseResult;
 use pdfium_render::prelude::{
     PdfPageBoundaryBox, PdfPageRenderRotation, PdfRenderConfig, Pdfium, PdfiumError,
     PdfiumInternalError,
@@ -241,7 +241,7 @@ fn initialize_engine(bytes: Vec<u8>, binary_sha256: String) -> UseResult<Arc<Pdf
     }
 
     let staged_library = tempfile::Builder::new()
-        .prefix("a3s-office-pdfium-")
+        .prefix("aster-office-pdfium-")
         .tempdir()
         .map_err(|_| pdfium_library_invalid())?;
     let staged_path = staged_library
@@ -421,7 +421,7 @@ fn page_count(value: i32) -> UseResult<usize> {
     })
 }
 
-fn map_load_error(error: PdfiumError) -> a3s_use_core::UseError {
+fn map_load_error(error: PdfiumError) -> aster_use_core::UseError {
     match error {
         PdfiumError::PdfiumLibraryInternalError(PdfiumInternalError::PasswordError)
         | PdfiumError::PdfiumLibraryInternalError(PdfiumInternalError::SecurityError) => {
@@ -439,49 +439,49 @@ fn map_load_error(error: PdfiumError) -> a3s_use_core::UseError {
     }
 }
 
-fn map_page_error(_error: PdfiumError) -> a3s_use_core::UseError {
+fn map_page_error(_error: PdfiumError) -> aster_use_core::UseError {
     layout_error(
         "use.office.pdf_unsupported",
         "PDFium could not inspect or render the requested PDF feature.",
     )
 }
 
-fn pdfium_library_invalid() -> a3s_use_core::UseError {
+fn pdfium_library_invalid() -> aster_use_core::UseError {
     layout_error(
         "use.office.pdfium_library_invalid",
         "The explicit PDFium library is missing, unsafe, oversized, or incompatible with build 7881.",
     )
 }
 
-fn pdfium_unavailable() -> a3s_use_core::UseError {
+fn pdfium_unavailable() -> aster_use_core::UseError {
     layout_error(
         "use.office.pdfium_unavailable",
         "The process-wide PDFium engine is unavailable.",
     )
 }
 
-fn pdf_page_limit(total_pages: usize, max_pages: usize) -> a3s_use_core::UseError {
+fn pdf_page_limit(total_pages: usize, max_pages: usize) -> aster_use_core::UseError {
     layout_error(
         "use.office.pdf_page_limit",
         format!("PDF contains {total_pages} pages; the configured limit is {max_pages}."),
     )
 }
 
-fn pdf_page_not_found() -> a3s_use_core::UseError {
+fn pdf_page_not_found() -> aster_use_core::UseError {
     layout_error(
         "use.office.pdf_page_not_found",
         "The requested one-based PDF page does not exist.",
     )
 }
 
-fn pdf_bitmap_too_large() -> a3s_use_core::UseError {
+fn pdf_bitmap_too_large() -> aster_use_core::UseError {
     layout_error(
         "use.office.pdf_bitmap_too_large",
         "The requested PDF page bitmap exceeds the in-memory rendering limit.",
     )
 }
 
-fn pdf_render_invalid() -> a3s_use_core::UseError {
+fn pdf_render_invalid() -> aster_use_core::UseError {
     layout_error(
         "use.office.pdf_render_invalid",
         "The PDF page bitmap could not be encoded as a deterministic PNG.",

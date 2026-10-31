@@ -4,15 +4,15 @@
 //! inspect a specification and implementation, edit two source files, and
 //! verify the repair. It is ignored by default because it consumes provider
 //! quota. Select a model declared in the same ACL with
-//! `A3S_TEST_MODEL=provider/model`.
+//! `ASTER_TEST_MODEL=provider/model`.
 
 use std::path::Path;
 use std::process::Stdio;
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_code_core::permissions::{PermissionDecision, PermissionPolicy};
-use a3s_code_core::{
+use aster_core::permissions::{PermissionDecision, PermissionPolicy};
+use aster_core::{
     Agent, AgentEvent, AgentSession, PlanningMode, RunStatus, SessionOptions, SystemPromptSlots,
 };
 
@@ -78,7 +78,7 @@ fn session_options(model: &str) -> SessionOptions {
     SessionOptions::new()
         .with_session_id(format!("long-horizon-{}", model.replace('/', "-")))
         .with_model(model)
-        .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+        .with_memory(Arc::new(aster_durable_memory::InMemoryStore::new()))
         .with_permission_policy(policy)
         .with_default_security()
         .with_planning_mode(PlanningMode::Enabled)
@@ -102,7 +102,7 @@ fn seed_workspace(root: &Path) {
     std::fs::write(root.join("src/stats.mjs"), STATS_BUG).unwrap();
 }
 
-async fn run_task(session: &AgentSession) -> Result<a3s_code_core::AgentResult, String> {
+async fn run_task(session: &AgentSession) -> Result<aster_core::AgentResult, String> {
     match tokio::time::timeout(
         REAL_TIMEOUT,
         session.send(
@@ -124,7 +124,7 @@ async fn run_task(session: &AgentSession) -> Result<a3s_code_core::AgentResult, 
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires a real provider configured in .a3s/config.acl"]
+#[ignore = "requires a real provider configured in .aster/config.acl"]
 async fn real_model_completes_evidence_gated_multi_step_coding_task() {
     let workspace = tempfile::tempdir().expect("long-horizon workspace");
     seed_workspace(workspace.path());
@@ -240,7 +240,7 @@ async fn real_model_completes_evidence_gated_multi_step_coding_task() {
 }
 
 fn tool_trace(root: &Path) -> String {
-    let dir = root.join(".a3s").join("effect-log");
+    let dir = root.join(".aster").join("effect-log");
     let Ok(entries) = std::fs::read_dir(&dir) else {
         return format!("no fact log at {}", dir.display());
     };

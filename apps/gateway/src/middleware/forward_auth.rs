@@ -132,7 +132,7 @@ fn probe_forward_auth_url_sync(middleware_name: &str, auth_url: &str) -> Result<
             })
         }
         Ok(_) | Err(_) => std::thread::Builder::new()
-            .name("a3s-forward-auth-activation-probe".into())
+            .name("aster-forward-auth-activation-probe".into())
             .spawn(move || {
                 let runtime = tokio::runtime::Builder::new_current_thread()
                     .enable_all()

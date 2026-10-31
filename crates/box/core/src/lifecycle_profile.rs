@@ -1,7 +1,7 @@
 //! Opt-in machine-readable lifecycle profiling.
 //!
 //! The benchmark harness enables this through
-//! `A3S_BOX_LIFECYCLE_PROFILE=1`. Normal CLI output and production behavior are
+//! `ASTER_BOX_LIFECYCLE_PROFILE=1`. Normal CLI output and production behavior are
 //! unchanged when the variable is absent. Events deliberately contain only a
 //! stable phase name, elapsed time, and process identity; workload arguments,
 //! paths, credentials, and other caller data are never emitted.
@@ -11,12 +11,12 @@ use std::time::Duration;
 use serde::Serialize;
 
 /// Environment variable that enables lifecycle JSONL events on stderr.
-pub const LIFECYCLE_PROFILE_ENV: &str = "A3S_BOX_LIFECYCLE_PROFILE";
+pub const LIFECYCLE_PROFILE_ENV: &str = "ASTER_BOX_LIFECYCLE_PROFILE";
 
 /// Prefix that makes profile events unambiguous in mixed CLI stderr.
-pub const LIFECYCLE_PROFILE_PREFIX: &str = "A3S_BOX_LIFECYCLE ";
+pub const LIFECYCLE_PROFILE_PREFIX: &str = "ASTER_BOX_LIFECYCLE ";
 
-const LIFECYCLE_PROFILE_SCHEMA: &str = "a3s.box.lifecycle-profile.v1";
+const LIFECYCLE_PROFILE_SCHEMA: &str = "aster.box.lifecycle-profile.v1";
 
 #[derive(Serialize)]
 struct LifecycleProfileEvent<'a> {

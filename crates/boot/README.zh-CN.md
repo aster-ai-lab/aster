@@ -1,4 +1,4 @@
-# A3S Boot
+# Aster Boot
 
 <p align="center">
   <strong>Language / 语言:</strong>
@@ -8,7 +8,7 @@
 
 
 <p align="center">
-  <strong>A3S 的渐进式 Rust Web 框架</strong>
+  <strong>Aster 的渐进式 Rust Web 框架</strong>
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/Boot/">文档</a> •
+  <a href="https://aster-lab.github.io/Boot/">文档</a> •
   <a href="#overview">概述</a> •
   <a href="#features">特点</a> •
   <a href="#quick-start">快速入门</a> •
@@ -30,7 +30,7 @@
 
 ## 概述
 
-**A3S Boot** 是 Rust 的模块化异步服务框架，灵感来自
+**Aster Boot** 是 Rust 的模块化异步服务框架，灵感来自
 [Nest.js](https://nestjs.com/)。模块组织应用程序、类型提供程序
 供应依赖性、控制器公开路由以及协议中立的管道
 应用防护、拦截器、管道、验证和异常过滤器。
@@ -40,14 +40,14 @@ Boot 不是 Axum 包装器。请求、响应、路由和执行上下文
 属性宏在编译时生成普通的 Boot 定义，而不是
 依赖运行时装饰器元数据。
 
-[documentation website](https://a3s-lab.github.io/Boot/)提供完整的
+[documentation website](https://aster-lab.github.io/Boot/)提供完整的
 v0.2.0和v0.1.4的中英文指南，包括同页语言
 和版本切换。
 
 ### 基本用法
 
 ```rust,no_run
-use a3s_boot::{
+use aster_boot::{
     AxumAdapter, BootApplication, BootResponse, ControllerDefinition, Module,
     ModuleRef, ProviderDefinition, Result,
 };
@@ -57,7 +57,7 @@ struct GreetingService;
 
 impl GreetingService {
     fn hello(&self) -> &'static str {
-        "Hello from A3S Boot"
+        "Hello from Aster Boot"
     }
 }
 
@@ -129,10 +129,10 @@ async fn main() -> Result<()> {
 |会议 | `session` |会话中间件和可替换存储|
 |缓存| `cache` |缓存抽象、拦截器和内存存储 |
 |数据库| `database` |可替换的数据库外观和内存后端|
-|活动 | `events` | A3S Event 支持的发射器和监听器 |
+|活动 | `events` | Aster Event 支持的发射器和监听器 |
 | CQRS | `cqrs` |命令、查询和事件总线 |
-|队列| `queue` | A3S Lane 支持的进程内作业、重试、优先级和处理器 |
-|队列持久化 | `queue-postgres` | A3S ORM 支持的共享 PostgreSQL 租赁、恢复、防护和保留 |
+|队列| `queue` | Aster Lane 支持的进程内作业、重试、优先级和处理器 |
+|队列持久化 | `queue-postgres` | Aster ORM 支持的共享 PostgreSQL 租赁、恢复、防护和保留 |
 |日程安排 | `schedule` | Cron、间隔和超时作业 |
 |可观察性| `logging`、`health` |结构化日志记录和健康指标|
 | HTTP 实用程序 | `http-client`、`compression` |出站 HTTP 和 gzip 响应 |
@@ -156,7 +156,7 @@ async fn main() -> Result<()> {
 
 ```toml
 [dependencies]
-a3s-boot = "0.2.0"
+aster-boot = "0.2.0"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
@@ -164,14 +164,14 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 ```toml
 [dependencies]
-a3s-boot = { version = "0.2.0", default-features = false }
+aster-boot = { version = "0.2.0", default-features = false }
 ```
 
 仅启用应用程序使用的可选模块：
 
 ```toml
 [dependencies]
-a3s-boot = { version = "0.2.0", features = ["auth", "security", "openapi-schemas"] }
+aster-boot = { version = "0.2.0", features = ["auth", "security", "openapi-schemas"] }
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
@@ -184,7 +184,7 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```rust,no_run
 use std::sync::Arc;
 
-use a3s_boot::{
+use aster_boot::{
     controller, get, injectable, module, param, AxumAdapter, BootFactory, Result,
 };
 
@@ -266,13 +266,13 @@ async fn main() -> Result<()> {
 ### 持久的 PostgreSQL 队列
 
 当多个进程中的工作人员必须共享持久性时启用`queue-postgres`
-工作。 `PostgresQueueBackend` 通过 A3S ORM 存储作业，将就绪作业租赁给
+工作。 `PostgresQueueBackend` 通过 Aster ORM 存储作业，将就绪作业租赁给
 PostgreSQL `SKIP LOCKED`，续订实时租约，隔离过时的工作人员并恢复
 工人或进程死亡后租约到期。
 
 ```toml
 [dependencies]
-a3s-boot = { version = "0.2.0", features = ["queue-postgres"] }
+aster-boot = { version = "0.2.0", features = ["queue-postgres"] }
 serde_json = "1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
@@ -280,7 +280,7 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```rust,no_run
 use std::time::Duration;
 
-use a3s_boot::{
+use aster_boot::{
     ModuleRef, PostgresQueueBackend, Queue, QueueContext, QueueJob, QueueOptions,
     Result,
 };
@@ -303,7 +303,7 @@ async fn run_worker(database_url: &str) -> Result<()> {
 ```
 
 使用数据库 URL，其搜索路径选择专用于 Boot 的架构。的
-主机应用程序创建该模式； Boot 拥有队列表及其 A3S ORM
+主机应用程序创建该模式； Boot 拥有队列表及其 Aster ORM
 里面有迁移账本。共享流程或应用程序架构可以使一个
 组件接受另一个组件的迁移历史。
 
@@ -311,7 +311,7 @@ async fn run_worker(database_url: &str) -> Result<()> {
 规范迁移集。生产托管单独的权限：终止
 迁移过程调用`migrate_postgres_queue`，同时服务worker使用
 `connect_verified` 或 `from_executor_verified`。已验证的构造函数重用
-A3S ORM的只读账本入场并且从不创建表，获取一个
+Aster ORM的只读账本入场并且从不创建表，获取一个
 迁移锁，或者写入迁移历史。
 
 后端支持调用者分配的幂等键、优先级和 FIFO/LIFO
@@ -405,14 +405,14 @@ gRPC 在通用 `MessageTransport` 合约背后进行传输。
 开始/停止通知。
 
 ```rust
-use a3s_boot::ilink::IlinkModule;
+use aster_boot::ilink::IlinkModule;
 
-let module = IlinkModule::weixin("A3S/0.10.1");
+let module = IlinkModule::weixin("Aster/0.10.1");
 ```
 
 线路默认兼容腾讯`openclaw-weixin` v2.4.6：
 `iLink-App-Id: bot`、`bot_type=3`以及打包客户端版本`2.4.6`。的
-产品特定的 `bot_agent` 保留 `A3S/<version>`，因此上游诊断会这样做
+产品特定的 `bot_agent` 保留 `Aster/<version>`，因此上游诊断会这样做
 不会误认来电者。 Boot故意不拥有浏览器API，
 凭证持久性、所有者授权或代理/会话命令；那些
 策略保留在主机应用程序中。
@@ -439,12 +439,12 @@ modules + typed providers
 后端特征是主要的扩展合约。
 
 Axum 当前是捆绑的 HTTP 适配器。编译时属性位于
-单独的`a3s-boot-macros`crate并扩展为相同的显式定义
+单独的`aster-boot-macros`crate并扩展为相同的显式定义
 由核心 API 使用。
 
 ## 发展
 
-从 `a3s-boot` crate 目录运行检查：
+从 `aster-boot` crate 目录运行检查：
 
 ```bash
 cargo fmt --all -- --check

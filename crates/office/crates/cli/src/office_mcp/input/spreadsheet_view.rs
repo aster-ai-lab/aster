@@ -1,4 +1,4 @@
-use a3s_office::NativeSpreadsheetFrozenPane;
+use aster_office::NativeSpreadsheetFrozenPane;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, schemars::JsonSchema)]

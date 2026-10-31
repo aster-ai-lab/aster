@@ -72,7 +72,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex as StdMutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use a3s_oci_agent_protocol::{
+use aster_oci_agent_protocol::{
     AgentCapabilities, AgentCloseStdinRequest, AgentContainerOperationRequest, AgentCreateRequest,
     AgentDeleteRequest, AgentExecRequest, AgentKillRequest, AgentProcess, AgentProcessesRequest,
     AgentReadOutputRequest, AgentRecoveryRecord, AgentResizeRequest, AgentSignalProcessRequest,
@@ -80,8 +80,8 @@ use a3s_oci_agent_protocol::{
     AgentWaitProcessRequest, AgentWaitRequest, AgentWriteStdinRequest, GuestAgentService,
     AGENT_MAX_ACKNOWLEDGED_OPERATIONS,
 };
-use a3s_oci_sdk::oci_spec::runtime::ContainerState;
-use a3s_oci_sdk::{
+use aster_oci_sdk::oci_spec::runtime::ContainerState;
+use aster_oci_sdk::{
     async_trait, ContainerStats, DeleteMode, Error, ErrorCode, ExitStatus, FileRequest,
     FileResponse, FilesystemRequest, FilesystemResponse, OperationContext, OperationId,
     OutputChunk, ProcessRecord, Result,
@@ -762,7 +762,7 @@ async fn shutdown_executor(
         match plan {
             Ok((hooks, hook_state)) => hooks.run_poststop(&hook_state).await,
             Err(error) => {
-                eprintln!("a3s-oci-agent: shutdown poststop hook state warning: {error}");
+                eprintln!("aster-oci-agent: shutdown poststop hook state warning: {error}");
             }
         }
     }
@@ -1130,7 +1130,7 @@ impl LinuxExecutor {
     /// `SessionSupervisorReattachCache`.
     pub async fn recover_stale_generation(
         &self,
-        target: &a3s_oci_sdk::ContainerTarget,
+        target: &aster_oci_sdk::ContainerTarget,
         config_digest: &str,
         durable_pid: Option<i32>,
     ) -> Result<Option<StaleGenerationRecovery>> {
@@ -1403,7 +1403,7 @@ impl LinuxExecutor {
         state.containers.remove(&key);
         match poststop {
             Ok((hooks, hook_state)) => hooks.run_poststop(&hook_state).await,
-            Err(error) => eprintln!("a3s-oci-agent: poststop hook state warning: {error}"),
+            Err(error) => eprintln!("aster-oci-agent: poststop hook state warning: {error}"),
         }
         Ok(())
     }
@@ -1721,7 +1721,7 @@ async fn wait_for_unit_operation(
     }
 }
 
-fn confirms_terminal_kill(signal: a3s_oci_sdk::Signal) -> bool {
+fn confirms_terminal_kill(signal: aster_oci_sdk::Signal) -> bool {
     signal.get() == libc::SIGKILL
 }
 
@@ -1915,7 +1915,7 @@ fn executor_error(code: ErrorCode, message: impl Into<String>) -> Error {
 
 #[cfg(test)]
 mod kill_tests {
-    use a3s_oci_sdk::Signal;
+    use aster_oci_sdk::Signal;
 
     use super::confirms_terminal_kill;
 
@@ -1957,7 +1957,7 @@ mod shutdown_device_tests {
             let runtime_directory = temporary.path().join(format!("runtime-{index}"));
             std::fs::create_dir(&runtime_directory).expect("runtime directory");
             let manifest = serde_json::json!({
-                "schemaVersion": "a3s.oci.native-linux-device-targets.v2",
+                "schemaVersion": "aster.oci.native-linux-device-targets.v2",
                 "rootfs": {
                     "canonicalPath": rootfs,
                     "dev": rootfs_metadata.dev(),
@@ -1997,7 +1997,7 @@ mod shutdown_completion_tests {
     use std::sync::Arc;
     use std::time::Duration;
 
-    use a3s_oci_sdk::Result;
+    use aster_oci_sdk::Result;
     use tokio::sync::{oneshot, Notify};
 
     use super::ExecutorShutdownCompletion;
@@ -2045,9 +2045,9 @@ mod rootless_device_tests {
     use std::path::PathBuf;
     use std::sync::Arc;
 
-    use a3s_oci_agent_protocol::{AgentBundle, AgentCreateRequest, GuestPath};
-    use a3s_oci_sdk::OciBundle;
-    use a3s_oci_sdk::{
+    use aster_oci_agent_protocol::{AgentBundle, AgentCreateRequest, GuestPath};
+    use aster_oci_sdk::OciBundle;
+    use aster_oci_sdk::{
         ContainerId, ContainerTarget, ErrorCode, Generation, IoMode, OperationContext, OperationId,
         ProcessIo,
     };
@@ -2188,7 +2188,7 @@ mod rootless_device_tests {
                 "gidMappings": [
                     {"containerID": 0, "hostID": 1001, "size": 1}
                 ],
-                "cgroupsPath": "a3s/rootless-cgroup"
+                "cgroupsPath": "aster/rootless-cgroup"
             }
         });
         let config = serde_json::to_string(&config).expect("encode rootless cgroup config");

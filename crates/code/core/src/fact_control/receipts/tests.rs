@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use a3s_effect::{
+use aster_effect::{
     Fact, ToolFileIdentityV1, ToolFileKind, ToolInvocationIdentityV1, ToolPathChangeV1,
 };
 use serde_json::json;
@@ -23,7 +23,7 @@ mod tool_budget_cancel;
 mod workspace_boundary;
 
 fn preparation(id: &str) -> ToolPreparedV1 {
-    let digest = a3s_effect::tool_args_digest(&json!({"command":"write"})).unwrap();
+    let digest = aster_effect::tool_args_digest(&json!({"command":"write"})).unwrap();
     ToolPreparedV1 {
         schema: TOOL_PREPARED_SCHEMA.into(),
         identity: ToolInvocationIdentityV1 {
@@ -264,7 +264,7 @@ fn background_debt_fixture(cancelled: bool) -> Vec<Fact> {
     prepared.identity.admission = Some(ToolAdmissionIdentityV1 {
         run_id: "source-one".into(),
         thread_id: "thread-one".into(),
-        capability_binding_digest: a3s_effect::tool_args_digest(&json!({"binding":1})).unwrap(),
+        capability_binding_digest: aster_effect::tool_args_digest(&json!({"binding":1})).unwrap(),
     });
     let mut terminal = result_without_execution(
         &prepared,
@@ -543,13 +543,13 @@ impl Completion for NoModel {
         &self,
         _: CompletionRequest,
         _: tokio_util::sync::CancellationToken,
-    ) -> a3s_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
+    ) -> aster_effect::coding::BoxFuture<Result<ModelDecision, ActorError>> {
         Box::pin(async { Err(ActorError::Defect("test must not call a model".into())) })
     }
 }
 struct NoCompaction;
 impl Compactor for NoCompaction {
-    fn compact(&self, _: &[String]) -> a3s_effect::coding::BoxFuture<Result<String, ActorError>> {
+    fn compact(&self, _: &[String]) -> aster_effect::coding::BoxFuture<Result<String, ActorError>> {
         Box::pin(async { Err(ActorError::Defect("test must not compact".into())) })
     }
 }
@@ -564,6 +564,9 @@ impl crate::tools::Tool for ReceiptProbe {
     }
     fn parameters(&self) -> serde_json::Value {
         json!({"type":"object"})
+    }
+    fn requires_confirmation(&self, args: &serde_json::Value) -> bool {
+        args["requires_confirmation"] == true
     }
     fn capabilities(&self, args: &serde_json::Value) -> crate::tools::ToolCapabilities {
         if args["read_only"] == true {
@@ -948,6 +951,66 @@ async fn unchanged_ask_obeys_the_frozen_host_confirmation_authority() {
 }
 
 #[tokio::test]
+async fn tool_owned_confirmation_reuses_only_the_exact_actor_approval() {
+    for confirmed in [true, false] {
+        let root = tempfile::tempdir().unwrap();
+        let (base, count) = executor_tools(root.path());
+        let mut tools = base.as_ref().clone();
+        tools.permission.default_decision = if confirmed {
+            PermissionDecision::Ask
+        } else {
+            PermissionDecision::Allow
+        };
+        tools.permission.allow.clear();
+        let (events, mut receiver) = tokio::sync::broadcast::channel(8);
+        let manager = Arc::new(crate::hitl::ConfirmationManager::new(
+            crate::hitl::ConfirmationPolicy::enabled(),
+            events,
+        ));
+        tools.agent = Some(crate::agent::AgentLoop::new(
+            Arc::new(crate::agent::tests::MockLlmClient::new(Vec::new())),
+            Arc::clone(&tools.executor),
+            tools.context.clone(),
+            crate::agent::AgentConfig {
+                confirmation_manager: Some(manager.clone()),
+                ..Default::default()
+            },
+        ));
+        let tools = Arc::new(tools);
+        let mut call = request("owned", json!({"write":true,"requires_confirmation":true}));
+        call.call.needs_confirmation = confirmed;
+        let prepared = prepare_tools(
+            Arc::clone(&tools),
+            call,
+            tokio_util::sync::CancellationToken::new(),
+        )
+        .await
+        .unwrap();
+        let execute = execute_prepared(tools, prepared);
+        tokio::pin!(execute);
+        let mut approvals = 0;
+        let result = tokio::time::timeout(std::time::Duration::from_secs(3), async {
+            loop {
+                tokio::select! {
+                    result = &mut execute => break result,
+                    event = receiver.recv() => {
+                        if let crate::agent::AgentEvent::ConfirmationRequired { tool_id, .. } = event.unwrap() {
+                            approvals += 1;
+                            assert!(!confirmed, "the actor already approved this exact invocation");
+                            assert!(manager.confirm(&tool_id, true, None).await.unwrap());
+                        }
+                    }
+                }
+            }
+        }).await.unwrap();
+        assert_eq!(result.outcome, ToolExecutionOutcome::Succeeded);
+        assert_eq!(approvals, usize::from(!confirmed));
+        assert_eq!(count.load(Ordering::SeqCst), 1);
+        assert!(manager.pending_confirmations().await.is_empty());
+    }
+}
+
+#[tokio::test]
 async fn preparation_resolves_hooks_once_binds_effective_input_and_rechecks_approval() {
     let root = tempfile::tempdir().unwrap();
     let (base, count) = executor_tools(root.path());
@@ -978,11 +1041,11 @@ async fn preparation_resolves_hooks_once_binds_effective_input_and_rechecks_appr
     );
     assert_eq!(
         prepared.prepared.original_args_digest,
-        a3s_effect::tool_args_digest(&original).unwrap()
+        aster_effect::tool_args_digest(&original).unwrap()
     );
     assert_eq!(
         prepared.prepared.effective_args_digest,
-        a3s_effect::tool_args_digest(&json!({"write":true})).unwrap()
+        aster_effect::tool_args_digest(&json!({"write":true})).unwrap()
     );
     assert_eq!(
         execute_prepared(Arc::clone(&tools), prepared).await.outcome,
@@ -1080,7 +1143,7 @@ async fn preparation_binds_the_actual_run_and_refuses_frozen_generation_drift() 
     assert_eq!(admission.thread_id, thread_for_session("session"));
     assert_eq!(
         admission.capability_binding_digest,
-        crate::content_digest::digest_json("a3s.code.tool-admission-binding.v1", &original)
+        crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", &original)
             .unwrap()
     );
     tools.checkpoint.as_mut().unwrap().capability_binding = Some(binding(9));

@@ -18,7 +18,7 @@
 
 .work-document-compare-mode > legend {
   margin-bottom: 8px;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-weight: 700;
 }
@@ -43,32 +43,32 @@
   align-content: start;
   gap: 4px 9px;
   padding: 13px 14px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 10px;
-  background: var(--a3s-panel);
+  background: var(--aster-panel);
   transition:
     border-color 140ms ease,
     background-color 140ms ease;
 }
 
 .work-document-compare-mode label:hover > span {
-  border-color: var(--a3s-line-strong);
-  background: var(--a3s-panel-soft);
+  border-color: var(--aster-line-strong);
+  background: var(--aster-panel-soft);
 }
 
 .work-document-compare-mode input:checked + span {
-  border-color: var(--a3s-accent);
-  background: color-mix(in srgb, var(--a3s-accent) 8%, var(--a3s-panel));
+  border-color: var(--aster-accent);
+  background: color-mix(in srgb, var(--aster-accent) 8%, var(--aster-panel));
 }
 
 .work-document-compare-mode input:focus-visible + span {
-  outline: 2px solid var(--a3s-accent);
+  outline: 2px solid var(--aster-accent);
   outline-offset: 2px;
 }
 
 .work-document-compare-mode svg {
   grid-row: 1 / span 2;
-  color: var(--a3s-accent);
+  color: var(--aster-accent);
 }
 
 .work-document-compare-mode strong {
@@ -77,7 +77,7 @@
 }
 
 .work-document-compare-mode small {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   line-height: 1.45;
 }
@@ -90,21 +90,21 @@
   align-items: center;
   gap: 12px;
   padding: 13px 15px;
-  border: 1px dashed var(--a3s-line-strong);
+  border: 1px dashed var(--aster-line-strong);
   border-radius: 10px;
   outline: 0;
-  background: var(--a3s-panel-soft);
-  color: var(--a3s-ink);
+  background: var(--aster-panel-soft);
+  color: var(--aster-ink);
   text-align: left;
   cursor: pointer;
 }
 
 .work-document-compare-file:hover:not(:disabled) {
-  border-color: var(--a3s-accent);
+  border-color: var(--aster-accent);
 }
 
 .work-document-compare-file:focus-visible {
-  outline: 2px solid var(--a3s-accent);
+  outline: 2px solid var(--aster-accent);
   outline-offset: 2px;
 }
 
@@ -114,7 +114,7 @@
 }
 
 .work-document-compare-file > svg {
-  color: var(--a3s-accent);
+  color: var(--aster-accent);
 }
 
 .work-document-compare-file > span,
@@ -133,13 +133,13 @@
 
 .work-document-compare-file small,
 .work-document-compare-author small {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   line-height: 1.45;
 }
 
 .work-document-compare-author > span {
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
   font-size: 11px;
   font-weight: 700;
 }
@@ -153,14 +153,14 @@
 .work-document-compare-errors {
   margin: 0;
   padding: 12px 14px;
-  border: 1px solid var(--a3s-line);
+  border: 1px solid var(--aster-line);
   border-radius: 9px;
   font-size: 11px;
   line-height: 1.5;
 }
 
 .work-document-compare-boundary {
-  background: var(--a3s-panel-soft);
+  background: var(--aster-panel-soft);
 }
 
 .work-document-compare-boundary > strong,
@@ -170,18 +170,18 @@
 
 .work-document-compare-boundary > p {
   margin: 3px 0 0;
-  color: var(--a3s-muted);
+  color: var(--aster-muted);
 }
 
 .work-document-compare-status {
-  border-color: color-mix(in srgb, var(--a3s-green) 42%, var(--a3s-line));
-  color: var(--a3s-green);
+  border-color: color-mix(in srgb, var(--aster-green) 42%, var(--aster-line));
+  color: var(--aster-green);
 }
 
 .work-document-compare-errors {
-  border-color: color-mix(in srgb, var(--a3s-red) 35%, var(--a3s-line));
-  background: color-mix(in srgb, var(--a3s-red) 5%, var(--a3s-panel));
-  color: var(--a3s-red);
+  border-color: color-mix(in srgb, var(--aster-red) 35%, var(--aster-line));
+  background: color-mix(in srgb, var(--aster-red) 5%, var(--aster-panel));
+  color: var(--aster-red);
 }
 
 .work-document-compare-errors ul {

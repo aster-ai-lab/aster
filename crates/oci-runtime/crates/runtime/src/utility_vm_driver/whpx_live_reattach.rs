@@ -1,6 +1,6 @@
 //! Opt-in WHPX Live Host reattach through the durable session-owner bridge.
 //!
-//! When `A3S_OCI_WHPX_SESSION_OWNER=1` and a live authenticated binding exists
+//! When `ASTER_OCI_WHPX_SESSION_OWNER=1` and a live authenticated binding exists
 //! under the container runtime share, a replacement Host reconnects to the
 //! surviving Guest incarnation instead of seeding `RecoveredStopped`.
 //!
@@ -29,8 +29,8 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use a3s_oci_agent_protocol::{AgentClient, GuestAgentService, SessionToken};
-use a3s_oci_sdk::{ContainerRecord, ContainerTarget, Error, ErrorCode, Result};
+use aster_oci_agent_protocol::{AgentClient, GuestAgentService, SessionToken};
+use aster_oci_sdk::{ContainerRecord, ContainerTarget, Error, ErrorCode, Result};
 use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
 use tokio::time::timeout;
 
@@ -259,8 +259,8 @@ mod tests {
             generation: Some(1),
             config_digest: Some("digest".to_string()),
             session_token_hex: "00".repeat(32),
-            host_control_pipe: r"\\.\pipe\a3s-oci-whpx-live-control-test".to_string(),
-            service_pipe: r"\\.\pipe\a3s-oci-agent-test".to_string(),
+            host_control_pipe: r"\\.\pipe\aster-oci-whpx-live-control-test".to_string(),
+            service_pipe: r"\\.\pipe\aster-oci-agent-test".to_string(),
             session_owner: owner,
             shim,
         }
@@ -367,7 +367,7 @@ mod tests {
         let error = io::Error::new(io::ErrorKind::PermissionDenied, "ACCESS_DENIED");
         assert!(host_control_connect_error_is_permanent(&error));
         let remapped =
-            remap_host_control_connect_error(r"\\.\pipe\a3s-oci-whpx-live-control-test", error);
+            remap_host_control_connect_error(r"\\.\pipe\aster-oci-whpx-live-control-test", error);
         assert_eq!(remapped.code, ErrorCode::PermissionDenied);
         assert!(!remapped.retryable);
     }
@@ -386,10 +386,10 @@ mod tests {
 
     #[test]
     fn host_control_pipe_naming_matches_binding_contract() {
-        let service = r"\\.\pipe\a3s-oci-agent-abc";
+        let service = r"\\.\pipe\aster-oci-agent-abc";
         assert_eq!(
             WhpxLiveSessionBinding::host_control_pipe_for_service(service),
-            r"\\.\pipe\a3s-oci-whpx-live-control-a3s-oci-agent-abc"
+            r"\\.\pipe\aster-oci-whpx-live-control-aster-oci-agent-abc"
         );
     }
 }

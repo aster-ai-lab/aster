@@ -1,4 +1,4 @@
-//! Adapter for the session-local A3S Memory vector implementation.
+//! Adapter for the session-local Aster Memory vector implementation.
 //!
 //! Workspace retrieval talks only to [`WorkspaceVectorIndex`]. Keeping the
 //! dependency-owned trait import in this one module keeps the semantic runtime
@@ -9,7 +9,7 @@ use super::vector_contract::{
     VectorMutationConsistency, VectorRecord, VectorResult, VectorRevision, VectorSearchRequest,
     VectorSearchResult, WorkspaceVectorIndex,
 };
-use a3s_memory::vector::{InMemoryVectorIndex, VectorIndex as MemoryVectorIndex};
+use aster_durable_memory::vector::{InMemoryVectorIndex, VectorIndex as MemoryVectorIndex};
 
 #[derive(Debug)]
 pub(super) struct MemoryVectorIndexAdapter {
